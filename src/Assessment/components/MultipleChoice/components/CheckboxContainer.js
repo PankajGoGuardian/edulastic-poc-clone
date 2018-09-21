@@ -4,7 +4,7 @@ const CheckboxContainer = styled.div`
   width: 20px;
   height: 20px;
   border: solid 2px #b1b1b1;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 2px;
   box-sizing: border-box;
   margin-right: 10px;
@@ -25,7 +25,7 @@ const CheckboxContainer = styled.div`
     width: 100%;
     height: 100%;
     display: block;
-    border-radius: 50%;
+    border-radius: 3px;
     background-color: transparent;
     -webkit-transition: backgroundColor .6s;
     transition: backgroundColor .6s;

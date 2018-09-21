@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const Label = styled.label`
   max-width: 960px;
@@ -6,7 +6,7 @@ const Label = styled.label`
   padding-left: 20px;
   border: dotted 1px transparent;
   border-left: solid 3px transparent;
-  margin: 10px 0;
+  margin: ${props => (props.setAnswers ? '5px 0' : '10px 0')};
 
   &:hover {
     border: dotted 1px lightgrey;

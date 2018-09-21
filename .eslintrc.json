@@ -22,6 +22,8 @@
     "no-alert": 0,
     "jsx-a11y/label-has-for": 0,
     "jsx-a11y/label-has-associated-control": 0,
-    "max-len": "warn"
+    "max-len": "warn",
+    "react/no-did-mount-set-state": 0,
+    "no-nested-ternary": 0
   }
 }

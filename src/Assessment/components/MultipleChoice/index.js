@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import FlexContainer from '../common/FlexContainer';
 import DashboardControlBtn from '../common/DashboardControlBtn';
 import LinkBtn from '../common/LinkBtn';
+import Container from './components/Container';
 import PaddingDiv from '../common/PaddingDiv';
 import AssignmentTitle from './components/AssignmentTitle';
 import { translate } from '../../utilities/localization';
@@ -72,7 +73,6 @@ class MultipleChoice extends Component {
   };
 
   handleMultiSelect = (e) => {
-    console.log('e', e.target.value);
     const { userSelections } = this.state;
     const index = parseInt(e.target.value, 10);
     userSelections[index] = e.target.checked;
@@ -88,12 +88,13 @@ class MultipleChoice extends Component {
         break;
       }
       case 'preview': {
-        content = (
+        content = (<Container>
           <MultipleChoiceDisplay
+            preview
             userSelections={userSelections}
-            handleMultiSelect={this.handleMultiSelect}
+            onChange={this.handleMultiSelect}
           />
-        );
+        </Container>);
         break;
       }
       case 'answer': {

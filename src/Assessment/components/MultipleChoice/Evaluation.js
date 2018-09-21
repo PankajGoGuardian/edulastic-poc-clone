@@ -8,8 +8,7 @@ class MultipleChoiceEvaluation extends QuestionEvaluation {
     answers.forEach((answer, index) => {
       console.log('evaluate:', answer, studentResponse[index]);
       // eslint-disable-next-line
-      const ans =
-        answer === studentResponse[index] || (studentResponse[index] === undefined && !answer);
+      const ans = answer === studentResponse[index] === true || (studentResponse[index] === undefined && !answer);
       result.push(ans);
     });
     return result;

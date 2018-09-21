@@ -1,32 +1,26 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import MultiChoice from './MultiChoice';
+import MultipleChoiceDisplay from '../MultipleChoice/Display';
 
-const QuestionWrapper = ({
-  options,
-  question,
-  type,
-  setAnswers,
-  showAnswer,
-  answers,
-  onChange,
-  userSelections = [],
-}) => (
-  <div>
-    {type === 'mcq' && (
-      <MultiChoice
-        setAnswers={setAnswers}
-        showAnswer={showAnswer}
-        answers={answers}
-        userSelections={userSelections}
-        options={options}
-        question={question}
-        onChange={onChange}
-      />
-    )}
-  </div>
-);
+const QuestionWrapper = (props) => {
+  const { options, question, type, setAnswers, showAnswer, answers, userSelections = [] } = props;
+  return (
+    <div>
+      { type === 'mcq' &&
+        <MultipleChoiceDisplay
+          setAnswers={setAnswers}
+          showAnswer={showAnswer}
+          answers={answers}
+          userSelections={userSelections}
+          options={options}
+          question={question}
+          onChange={props.onChange}
+        />
+      }
+    </div>
+  );
+};
 
 QuestionWrapper.propTypes = {
   type: PropTypes.string.isRequired,

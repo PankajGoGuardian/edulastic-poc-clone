@@ -77,7 +77,6 @@ const ButtonBar = ({
           <Button
             onClick={() => changePreviewTab('clear')}
             color={previewTab === 'clear' ? 'primary' : 'default'}
-            icon={<FaEye />}
           >
             Clear
           </Button>

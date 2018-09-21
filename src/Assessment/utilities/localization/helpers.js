@@ -9,7 +9,9 @@ import { locale, dictionaries } from './globals';
  * @return {string}       translated string || error
  */
 export function translate(key, data = null) {
-  const dictionary = dictionaries[locale] || {};
+  // TODO: get from locale
+  const dictionary = dictionaries['en-us'] || {};
+  // const dictionary = dictionaries[locale] || {};
 
   // if dictionary key exists, return translated text
   if (dictionary && dictionary[key]) {
@@ -17,8 +19,7 @@ export function translate(key, data = null) {
   }
 
   return `[TRANSLATE ERR]: cannot find "${key}" key in "${locale}" locale`;
-};
-
+}
 
 /**
  * formatString
@@ -51,8 +52,7 @@ function formatString(text, data) {
 
     return newText || match;
   });
-};
-
+}
 
 /**
  * getObjProp
@@ -71,4 +71,4 @@ function getObjProp(obj, props) {
 
     return obj[props[i]];
   }
-};
+}

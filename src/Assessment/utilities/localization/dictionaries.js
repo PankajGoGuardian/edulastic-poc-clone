@@ -18,16 +18,22 @@ export function createDictionaries() {
       // determine locale files
       const languageFile = localeSplit[0];
       const countryFile = `${localeSplit[0]}-${localeSplit[1]}`;
-      const dialectFile = (localeSplit.length === 3) ? locale : null;
+      const dialectFile = localeSplit.length === 3 ? locale : null;
 
       // require locale files
       let language = {};
       let country = {};
       let dialect = {};
-      try { language = require(`../../locales/${languageFile}.json`); } catch (err) {}
-      try { country = require(`../../locales/${countryFile}.json`); } catch (err) {}
+      try {
+        language = require(`../../locales/${languageFile}.json`);
+      } catch (err) {}
+      try {
+        country = require(`../../locales/${countryFile}.json`);
+      } catch (err) {}
       if (dialectFile) {
-        try { dialect = require(`../../locales/${dialectFile}.json`); } catch (err) {}
+        try {
+          dialect = require(`../../locales/${dialectFile}.json`);
+        } catch (err) {}
       }
 
       // create locale dictionary

@@ -99,7 +99,7 @@ export default function reducer(state = initialState, { type, payload }) {
             ...state.validation.alt_responses,
             {
               score: 1,
-              value: initialList.map((item, i) => i),
+              value: state.list.map((item, i) => i),
             },
           ],
         },

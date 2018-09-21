@@ -21,35 +21,34 @@ import SettingImage from '../../assets/screwdriver.png';
 import QuestionWrapper from '../QuestionWrapper';
 
 /* eslint import/no-webpack-loader-syntax: off */
+// eslint-disable-next-line
 const defaultTheme = require('sass-extract-loader?{"plugins": ["sass-extract-js"]}!../../styles/vars.scss');
 
 class AssessmentPlayerDefault extends Assessment {
   static propTypes = {
     theme: PropTypes.object,
-  }
+  };
 
   static defaultProps = {
     theme: defaultTheme,
   };
 
   render() {
-    let { questions, currentQuestion, theme } = this.props;
-    const dropDownQuizOptions = questions.map((item, index) => {
-      return {
-        value: index,
-      }
-    });
+    const { questions, currentQuestion, theme } = this.props;
+    const dropDownQuizOptions = questions.map((item, index) => ({
+      value: index,
+    }));
     const survey = questions[currentQuestion] || {};
-    const { type='', options=[], stimulus='' } = survey;
+    const { type = '', options = [], stimulus = '' } = survey;
 
     return (
-      <ThemeProvider theme={theme} >
+      <ThemeProvider theme={theme}>
         <Container>
           <Header>
             <HeaderLeftMenu>
               <Logo src={LogoImage} alt="Logo" />
             </HeaderLeftMenu>
-            <HeaderMainMenu skin >
+            <HeaderMainMenu skin>
               <FlexContainer>
                 <QuestionSelectDropdown
                   key={currentQuestion}
@@ -57,13 +56,13 @@ class AssessmentPlayerDefault extends Assessment {
                   onChange={this.questionSelectChange}
                   options={dropDownQuizOptions}
                 />
-                <ControlBtn prev skin disabled={this.isFirst()} onClick={this.moveToPrev} >
-                  <i className="fa fa-angle-left"></i>
+                <ControlBtn prev skin disabled={this.isFirst()} onClick={this.moveToPrev}>
+                  <i className="fa fa-angle-left" />
                 </ControlBtn>
                 <ControlBtn next skin disabled={this.isLast()} onClick={this.moveToNext}>
-                  <i className="fa fa-angle-right"></i>
+                  <i className="fa fa-angle-right" />
                 </ControlBtn>
-                <ControlBtn setting skin >
+                <ControlBtn setting skin>
                   <img src={SettingImage} alt="Setting" />
                 </ControlBtn>
               </FlexContainer>
@@ -71,8 +70,8 @@ class AssessmentPlayerDefault extends Assessment {
             </HeaderMainMenu>
             <HeaderRightMenu skin />
           </Header>
-          <Main skin >
-            <MainWrapper >
+          <Main skin>
+            <MainWrapper>
               <QuestionWrapper
                 type={type}
                 skin
@@ -85,24 +84,21 @@ class AssessmentPlayerDefault extends Assessment {
         </Container>
       </ThemeProvider>
     );
-  };
-};
-
-
-const mapStateToProps = state => {
-  return {
-    questions: state.questions.questions,
-    currentQuestion: state.questions.currentQuestion
   }
-};
+}
+
+const mapStateToProps = state => ({
+  questions: state.questions.questions,
+  currentQuestion: state.questions.currentQuestion,
+});
 
 const mapDispatchToProps = dispatch => ({
-  gotoQuestion: question => {
+  gotoQuestion: (question) => {
     dispatch(gotoQuestion(question));
-  }
+  },
 });
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(AssessmentPlayerDefault);

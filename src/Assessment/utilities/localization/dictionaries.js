@@ -6,13 +6,14 @@ import * as settings from '../../locale-setting.json';
  * notes: uses app-settings.json as the source of truth
  * @return {object}  dictionaries
  */
+// eslint-disable-next-line
 export function createDictionaries() {
   const dictionaries = {};
 
   // check if supported locales exist
   if (settings && settings.SUPPORTED) {
     // iterate over supported locales
-    settings.SUPPORTED.forEach(locale => {
+    settings.SUPPORTED.forEach((locale) => {
       const localeSplit = locale.split('-');
 
       // determine locale files
@@ -25,15 +26,24 @@ export function createDictionaries() {
       let country = {};
       let dialect = {};
       try {
+        // eslint-disable-next-line
         language = require(`../../locales/${languageFile}.json`);
-      } catch (err) {}
+      } catch (err) {
+        console.error(err);
+      }
       try {
+        // eslint-disable-next-line
         country = require(`../../locales/${countryFile}.json`);
-      } catch (err) {}
+      } catch (err) {
+        console.error(err);
+      }
       if (dialectFile) {
         try {
+          // eslint-disable-next-line
           dialect = require(`../../locales/${dialectFile}.json`);
-        } catch (err) {}
+        } catch (err) {
+          console.error(err);
+        }
       }
 
       // create locale dictionary

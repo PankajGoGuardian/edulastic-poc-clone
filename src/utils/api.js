@@ -1,27 +1,29 @@
 import axios from 'axios';
 
-const base_url = 'http://localhost:9020/';
+const baseUrl = 'http://localhost:9020/';
 
-export const getAssessment = async id => {
-  let url = `${base_url}assessment/${id}`;
-  let data = await axios.get(url);
+export const getAssessment = async (id) => {
+  const url = `${baseUrl}assessment/${id}`;
+  const data = await axios.get(url);
   return data.data;
 };
 
 export const evaluateAnswer = async (qid, answer) => {
-  let url = `${base_url}question/evaluate`;
-  let result = await axios.post(url, { qid, answer });
+  const url = `${baseUrl}question/evaluate`;
+  const result = await axios.post(url, { qid, answer });
   return result.data;
 };
 
-export const addQuestion = async payload => {
-  let { assessmentId, question, options, type, answer } = payload;
-  let url = `${base_url}assessment/${assessmentId}/question`;
-  let result = await axios.post(url, {
+export const addQuestion = async (payload) => {
+  const {
+    assessmentId, question, options, type, answer,
+  } = payload;
+  const url = `${baseUrl}assessment/${assessmentId}/question`;
+  const result = await axios.post(url, {
     question,
     options,
     type,
-    answer
+    answer,
   });
   return result;
 };

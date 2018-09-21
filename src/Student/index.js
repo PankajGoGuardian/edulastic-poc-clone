@@ -7,8 +7,8 @@ class Student extends Component {
   render() {
     return (
       <div>
-        <AssessmentPlayerDefault/>
-        <AssessmentPlayerSimple/>
+        <AssessmentPlayerDefault />
+        <AssessmentPlayerSimple />
       </div>
     );
   }

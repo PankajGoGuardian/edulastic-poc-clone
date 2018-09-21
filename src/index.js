@@ -6,7 +6,6 @@ import 'font-awesome/css/font-awesome.css';
 import './normalize.css';
 import './index.css';
 import App from './App';
-import registerServiceWorker from './registerServiceWorker';
 import configureStore from './configureStore';
 
 // redux store
@@ -20,5 +19,3 @@ ReactDOM.render(
   </BrowserRouter>,
   document.getElementById('root'),
 );
-
-registerServiceWorker();

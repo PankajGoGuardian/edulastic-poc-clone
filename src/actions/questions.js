@@ -3,40 +3,40 @@ import {
   GOTO_QUESTION,
   ADD_ANSWER,
   CHECK_ANSWER,
-  AUTHOR_QUESTION
+  AUTHOR_QUESTION,
 } from '../constants/actions';
 
 export const loadQuestions = questions => ({
   type: LOAD_QUESTIONS,
   payload: {
-    questions
-  }
+    questions,
+  },
 });
 
 export const gotoQuestion = question => ({
   type: GOTO_QUESTION,
   payload: {
-    question
-  }
+    question,
+  },
 });
 
 export const addAnswer = (qid, answer) => ({
   type: ADD_ANSWER,
   payload: {
     qid,
-    answer
-  }
+    answer,
+  },
 });
 
 export const checkAnswer = (qid, answer) => ({
   type: CHECK_ANSWER,
   payload: {
     answer,
-    qid
-  }
+    qid,
+  },
 });
 
 export const addQuestion = payload => ({
   type: AUTHOR_QUESTION,
-  payload
+  payload,
 });

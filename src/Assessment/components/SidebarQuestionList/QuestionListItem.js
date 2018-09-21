@@ -7,22 +7,23 @@ import Circle from '../common/Circle';
 import Content from './Content';
 import { translate } from '../../utilities/localization';
 
-const QuestionListItem = (props) => {
-  const { index, active, beforeSelection } = props;
-  return (
-    <ItemContainter active={active} >
-      <FlexContainer alignItems={'center'} >
-        <Circle r={6} active={active} hide={!beforeSelection} />
-        <Content active={active} >{translate('common.layout.questionlist.question')} {index + 1}</Content>
-      </FlexContainer>
-    </ItemContainter>
-  );
-};
+const QuestionListItem = ({ index, active, beforeSelection }) => (
+  <ItemContainter active={active}>
+    <FlexContainer alignItems="center">
+      <Circle r={6} active={active} hide={!beforeSelection} />
+      <Content active={active}>
+        {translate('common.layout.questionlist.question')}
+        {' '}
+        {index + 1}
+      </Content>
+    </FlexContainer>
+  </ItemContainter>
+);
 
 QuestionListItem.propTypes = {
-  selectedQuestion: PropTypes.number,
-  questions: PropTypes.array,
-  index: PropTypes.number,
+  beforeSelection: PropTypes.bool.isRequired,
+  active: PropTypes.bool.isRequired,
+  index: PropTypes.number.isRequired,
 };
 
 export default QuestionListItem;

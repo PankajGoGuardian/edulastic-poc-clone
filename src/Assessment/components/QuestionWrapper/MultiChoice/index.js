@@ -9,65 +9,107 @@ import MultiChoiceContent from './MultiChoiceContent';
 import ProblemContainer from './ProblemContainer';
 import Label from './Label';
 
-const Option = (props) => {
-  const { index, setAnswers, item, showAnswer, userSelections, answers } = props;
-  return (
-    <Label setAnswers={setAnswers} showAnswer className={ showAnswer ? answers[index] ? 'right' : 'wrong' : ''} >
-      <PaddingDiv top={setAnswers ? 10 : 20} bottom={20} >
-        <FlexContainer>
-          <CheckboxContainter>
-            <input type="checkbox" value={index} defaultChecked={userSelections[index]} onClick={props.onChange}/>
-            <span />
-          </CheckboxContainter>
-          <MultiChoiceContent>
-            {item.label}
-          </MultiChoiceContent>
-          <PaddingDiv right={15} height={20}>
-            {showAnswer && answers[index] &&
-              <i className="fa fa-check" />
-            }
-            {showAnswer && !answers[index] &&
-              <i className="fa fa-times" />
-            }
-          </PaddingDiv>
-        </FlexContainer>
-      </PaddingDiv>
-    </Label>
-  );
+const Option = ({
+  index, setAnswers, item, showAnswer, userSelections, answers, onChange,
+}) => (
+  <Label
+    setAnswers={setAnswers}
+    showAnswer
+    // eslint-disable-next-line
+    className={showAnswer ? (answers[index] ? 'right' : 'wrong') : ''}
+  >
+    <PaddingDiv top={setAnswers ? 10 : 20} bottom={20}>
+      <FlexContainer>
+        <CheckboxContainter>
+          <input
+            type="checkbox"
+            value={index}
+            defaultChecked={userSelections[index]}
+            onClick={onChange}
+          />
+          <span />
+        </CheckboxContainter>
+        <MultiChoiceContent>{item.label}</MultiChoiceContent>
+        <PaddingDiv right={15} height={20}>
+          {showAnswer && answers[index] && <i className="fa fa-check" />}
+          {showAnswer && !answers[index] && <i className="fa fa-times" />}
+        </PaddingDiv>
+      </FlexContainer>
+    </PaddingDiv>
+  </Label>
+);
+
+Option.propTypes = {
+  index: PropTypes.number.isRequired,
+  setAnswers: PropTypes.func.isRequired,
+  item: PropTypes.any.isRequired,
+  showAnswer: PropTypes.bool.isRequired,
+  userSelections: PropTypes.array.isRequired,
+  answers: PropTypes.array.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
-const Options = (props) => {
-  const { options, showAnswer, setAnswers, userSelections, answers } = props;
-  return (
-    <div>
-      {options.map((option, index) => (
-        <Option key={index} index={index} setAnswers={setAnswers} item={option} showAnswer={showAnswer} userSelections={userSelections} answers={answers} onChange={props.onChange} />
-      ))}
-    </div>
-  );
-}
+const Options = ({
+  options, showAnswer, setAnswers, userSelections, answers, onChange,
+}) => (
+  <div>
+    {options.map((option, index) => (
+      <Option
+        key={index}
+        index={index}
+        setAnswers={setAnswers}
+        item={option}
+        showAnswer={showAnswer}
+        userSelections={userSelections}
+        answers={answers}
+        onChange={onChange}
+      />
+    ))}
+  </div>
+);
+
+Options.propTypes = {
+  options: PropTypes.array.isRequired,
+  showAnswer: PropTypes.bool.isRequired,
+  setAnswers: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  userSelections: PropTypes.array.isRequired,
+  answers: PropTypes.array.isRequired,
+};
 
 const MultiChoice = (props) => {
-  const { options, question, setAnswers, showAnswer, userSelections = [], answers = [] } = props;
+  const {
+    options,
+    question,
+    setAnswers,
+    showAnswer,
+    userSelections = [],
+    answers = [],
+    onChange,
+  } = props;
   return (
     <div>
-      { !setAnswers && 
-        <ProblemContainer dangerouslySetInnerHTML={{__html: question}} />
-      }
-      <Options options={options} setAnswers={setAnswers} showAnswer={showAnswer} userSelections={userSelections} answers={answers} onChange={props.onChange}/>
+      {!setAnswers && <ProblemContainer dangerouslySetInnerHTML={{ __html: question }} />}
+      <Options
+        options={options}
+        setAnswers={setAnswers}
+        showAnswer={showAnswer}
+        userSelections={userSelections}
+        answers={answers}
+        onChange={onChange}
+      />
     </div>
   );
 };
 
 MultiChoice.propTypes = {
-  skin: PropTypes.bool,
-  onChange: PropTypes.func,
-  options: PropTypes.array,
-  question: PropTypes.string,
-  showAnswer: PropTypes.bool,
-  answers: PropTypes.array,
-  setAnswers: PropTypes.bool,
-  userSelections: PropTypes.array,
-}
+  onChange: PropTypes.func.isRequired,
+  options: PropTypes.array.isRequired,
+  question: PropTypes.string.isRequired,
+  showAnswer: PropTypes.bool.isRequired,
+  answers: PropTypes.array.isRequired,
+  setAnswers: PropTypes.bool.isRequired,
+  userSelections: PropTypes.array.isRequired,
+};
 
 export default withTheme(MultiChoice);

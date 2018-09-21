@@ -1,10 +1,10 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const Label = styled.label`
   max-width: 960px;
   display: block;
   padding-left: 20px;
-  margin: ${props => props.setAnswers ? '5px 0' : '10px 0'};
+  margin: ${props => (props.setAnswers ? '5px 0' : '10px 0')};
   border-left: solid 3px transparent;
 
   &.right {

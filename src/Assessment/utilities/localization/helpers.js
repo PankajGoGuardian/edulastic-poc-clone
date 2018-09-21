@@ -1,24 +1,23 @@
 import { locale, dictionaries } from './globals';
+/* eslint import/prefer-default-export: 0 */
 
 /**
- * translate
- * desc: utility function to access translated string
- * note: uses the global dictionaries object
- * @param  {string} key   translation key
- * @param  {object} data  data object (optional)
- * @return {string}       translated string || error
+ * getObjProp
+ * desc: recursive function to access nested objects
+ * @param  {object} obj    Data object
+ * @param  {array}  props  Object prop(s)
+ * @return {*}             Property value
  */
-export function translate(key, data = null) {
-  // TODO: get from locale
-  const dictionary = dictionaries['en-us'] || {};
-  // const dictionary = dictionaries[locale] || {};
+function getObjProp(obj, props) {
+  // loop over props
+  for (let i = 0, l = props.length; i < l; i++) {
+    // if prop value is an object, dig deeper
+    if (typeof obj[props[i]] === 'object') {
+      return getObjProp(obj[props[i]], props.slice(i + 1));
+    }
 
-  // if dictionary key exists, return translated text
-  if (dictionary && dictionary[key]) {
-    return formatString(dictionary[key], data);
+    return obj[props[i]];
   }
-
-  return `[TRANSLATE ERR]: cannot find "${key}" key in "${locale}" locale`;
 }
 
 /**
@@ -29,7 +28,7 @@ export function translate(key, data = null) {
  * @param  {object} data  data object (optional)
  * @return {string}       interpolated text || regEx match
  */
-function formatString(text, data) {
+const formatString = (text, data) => {
   // regEx matches ES6 template syntax and submatches inner text
   // e.g. match = ${name}, submatch = name
   const regEx = /\${([A-Za-z0-9]+)}/g;
@@ -52,23 +51,25 @@ function formatString(text, data) {
 
     return newText || match;
   });
-}
+};
 
 /**
- * getObjProp
- * desc: recursive function to access nested objects
- * @param  {object} obj    Data object
- * @param  {array}  props  Object prop(s)
- * @return {*}             Property value
+ * translate
+ * desc: utility function to access translated string
+ * note: uses the global dictionaries object
+ * @param  {string} key   translation key
+ * @param  {object} data  data object (optional)
+ * @return {string}       translated string || error
  */
-function getObjProp(obj, props) {
-  // loop over props
-  for (let i = 0, l = props.length; i < l; i++) {
-    // if prop value is an object, dig deeper
-    if (typeof obj[props[i]] === 'object') {
-      return getObjProp(obj[props[i]], props.slice(i + 1));
-    }
+export const translate = (key, data = null) => {
+  // TODO: get from locale
+  const dictionary = dictionaries['en-us'] || {};
+  // const dictionary = dictionaries[locale] || {};
 
-    return obj[props[i]];
+  // if dictionary key exists, return translated text
+  if (dictionary && dictionary[key]) {
+    return formatString(dictionary[key], data);
   }
-}
+
+  return `[TRANSLATE ERR]: cannot find "${key}" key in "${locale}" locale`;
+};

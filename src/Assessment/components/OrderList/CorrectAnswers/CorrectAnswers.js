@@ -4,14 +4,15 @@ import { FaPlus } from 'react-icons/fa';
 import { connect } from 'react-redux';
 
 import CorrectAnswer from './CorrectAnswer';
-import Button from '../../UI/Button';
-import Heading from '../../UI/Heading';
-import Tabs, { Tab, TabContainer } from '../../UI/Tabs';
+import Button from '../../common/Button';
+import Heading from '../../common/Heading';
 import {
   updateAltValidationScoreAction,
   addAltResponsesAction,
   updateCorrectValidationScoreAction,
 } from '../../../../ducks/questionsOrderList';
+import { Tabs } from '../../common';
+import { Tab, TabContainer } from '../../common/Tabs';
 
 class CorrectAnswers extends Component {
   state = {
@@ -85,6 +86,7 @@ class CorrectAnswers extends Component {
                   <TabContainer key={i}>
                     <CorrectAnswer
                       response={alter}
+                      // eslint-disable-next-line
                       onSortCurrentAnswer={({ oldIndex, newIndex }) => onSortAltAnswer({ oldIndex, newIndex, altIndex: i })
                       }
                       onUpdatePoints={(points) => {

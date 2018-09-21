@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import TextField from '../../UI/TextField';
+import { TextField } from '../../common';
 import OrderListPreview from '../OrderListPreview';
 import { lightGrey } from '../../../utilities/css';
 

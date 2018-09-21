@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import TextareaAutosize from 'react-autosize-textarea';
-import Heading from '../../UI/Heading';
 import { grey } from '../../../utilities/css';
+import { Heading } from '../../common';
 
 const Question = ({ onQuestionChange, value }) => (
   <div>

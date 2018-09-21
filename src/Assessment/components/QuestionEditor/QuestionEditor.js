@@ -6,12 +6,15 @@ import { compose } from 'redux';
 
 import SourceModal from './SourceModal';
 import ButtonBar from './ButtonBar';
-import Paper from '../UI/Paper';
 import OrderList from '../OrderList';
 import { grey } from '../../utilities/css';
-import { getQuestionsStateSelector, setQuestionsStateAction } from '../../../ducks/questionsOrderList';
+import {
+  getQuestionsStateSelector,
+  setQuestionsStateAction,
+} from '../../../ducks/questionsOrderList';
 import { getPreivewTabSelector, changePreviewTabAction } from '../../../ducks/preview';
 import { getViewSelector, changeViewAction } from '../../../ducks/view';
+import { Paper } from '../common';
 
 class QuestionEditor extends Component {
   state = {

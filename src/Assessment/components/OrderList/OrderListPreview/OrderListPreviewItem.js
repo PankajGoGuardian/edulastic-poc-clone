@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { SortableElement } from 'react-sortable-hoc';
 import styled from 'styled-components';
 
-import DragHandle from '../../UI/DragHandle';
+import DragHandle from '../../common/DragHandle';
 import { grey } from '../../../utilities/css';
 
 const OrderListPreviewItem = SortableElement(({ children, showDragHandle }) => (

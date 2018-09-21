@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import AceEditor from 'react-ace';
 import PropTypes from 'prop-types';
 
-import Modal from '../../UI/Modal';
-
 import 'brace/mode/json';
 import 'brace/theme/github';
+import { Modal } from '../../common';
 
 class SourceModal extends Component {
   state = {

@@ -5,7 +5,7 @@ import {
   FaPencilAlt, FaSearch, FaEye, FaCog, FaSave, FaCode, FaQuestion,
 } from 'react-icons/fa';
 
-import Button from '../../UI/Button';
+import Button from '../../common/Button';
 
 const ButtonBar = ({
   onChangeView, onShowSource, view, changePreviewTab, previewTab,

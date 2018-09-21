@@ -108,7 +108,7 @@ MultiChoice.propTypes = {
   question: PropTypes.string.isRequired,
   showAnswer: PropTypes.bool.isRequired,
   answers: PropTypes.array.isRequired,
-  setAnswers: PropTypes.bool.isRequired,
+  setAnswers: PropTypes.func.isRequired,
   userSelections: PropTypes.array.isRequired,
 };
 

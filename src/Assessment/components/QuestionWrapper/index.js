@@ -32,11 +32,19 @@ QuestionWrapper.propTypes = {
   type: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
   question: PropTypes.string.isRequired,
-  showAnswer: PropTypes.bool.isRequired,
-  answers: PropTypes.array.isRequired,
-  userSelections: PropTypes.array.isRequired,
-  onChange: PropTypes.func.isRequired,
-  setAnswers: PropTypes.bool.isRequired,
+  showAnswer: PropTypes.bool,
+  answers: PropTypes.array,
+  userSelections: PropTypes.array,
+  onChange: PropTypes.func,
+  setAnswers: PropTypes.func,
+};
+
+QuestionWrapper.defaultProps = {
+  showAnswer: false,
+  answers: [],
+  userSelections: [],
+  onChange: () => {},
+  setAnswers: () => {},
 };
 
 export default QuestionWrapper;

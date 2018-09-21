@@ -1,3 +1,3 @@
 export default {
-  appName: 'Order list',
+  appName: 'learnosity',
 };

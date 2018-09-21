@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FaTimes } from 'react-icons/fa';
 
-import Button from './Button';
 import { white, blue } from '../../utilities/css';
+import Button from './Button';
 
 const modalRoot = document.getElementById('modal-root');
 

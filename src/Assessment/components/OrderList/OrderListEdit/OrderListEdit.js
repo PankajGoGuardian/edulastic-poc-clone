@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { SortableContainer } from 'react-sortable-hoc';
 
 import OrderListItem from './OrderListItem';
-import Button from '../../UI/Button';
+import Button from '../../common/Button';
 
 class OrderListEdit extends Component {
   render() {

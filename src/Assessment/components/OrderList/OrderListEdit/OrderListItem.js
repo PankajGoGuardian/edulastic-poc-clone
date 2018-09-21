@@ -4,8 +4,7 @@ import { SortableElement } from 'react-sortable-hoc';
 import TextareaAutosize from 'react-autosize-textarea';
 import styled from 'styled-components';
 
-import DragHandle from '../../UI/DragHandle';
-import DeleteButton from '../../UI/DeleteButton';
+import { DeleteButton, DragHandle } from '../../common';
 import { grey } from '../../../utilities/css';
 
 const OrderListItem = SortableElement(({ children, onQuestionsChange, onDeleteQuestion }) => (

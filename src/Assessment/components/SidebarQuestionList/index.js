@@ -24,7 +24,7 @@ const SidebarQuestionList = ({ questions, selectedQuestion }) => (
 
 SidebarQuestionList.propTypes = {
   questions: PropTypes.array.isRequired,
-  selectedQuestion: PropTypes.array.isRequired,
+  selectedQuestion: PropTypes.number.isRequired,
 };
 
 export default SidebarQuestionList;

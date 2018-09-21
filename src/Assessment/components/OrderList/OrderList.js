@@ -7,7 +7,6 @@ import { arrayMove } from 'react-sortable-hoc';
 import OrderListEdit from './OrderListEdit';
 import Question from './Question';
 import CorrectAnswers from './CorrectAnswers';
-import Heading from '../UI/Heading';
 import OrderListReport from './OrderListReport';
 import OrderListPreview from './OrderListPreview';
 import {
@@ -25,6 +24,7 @@ import {
   getPreivewTabSelector,
   updatePreviewListAction,
 } from '../../../ducks/preview';
+import { Heading } from '../common';
 
 class OrderList extends Component {
   componentDidMount() {

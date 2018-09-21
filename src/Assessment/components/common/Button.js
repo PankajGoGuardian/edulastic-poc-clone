@@ -2,7 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {
-  blue, white, darkBlue, textColor, grey, green, greenDark,
+  blue,
+  white,
+  darkBlue,
+  textColor,
+  grey,
+  green,
+  greenDark,
+  black,
 } from '../../utilities/css';
 
 const getRadius = (variant) => {
@@ -16,50 +23,92 @@ const getRadius = (variant) => {
   }
 };
 
-const Button = ({
-  onClick, color, icon, children, uppercase, variant, outlined, style,
-}) => {
-  const colors = {};
-  if (color === 'primary') {
-    colors.backgroundColor = blue;
-    colors.color = white;
-    colors.hoverColor = white;
-    colors.backgroundColorHover = darkBlue;
-    if (outlined) {
-      colors.backgroundColor = white;
-      colors.color = blue;
+const getTextTransparentColor = (color) => {
+  switch (color) {
+    case 'primary':
+      return {
+        color: blue,
+        hoverColor: darkBlue,
+      };
+    case 'default':
+      return {
+        color: textColor,
+        hoverColor: black,
+      };
+    case 'success':
+      return {
+        color: green,
+        hoverColor: greenDark,
+      };
+    default:
+      return {
+        color: blue,
+        hoverColor: darkBlue,
+      };
+  }
+};
+
+const getColors = ({ color, variant, outlined }) => {
+  let colors = {};
+
+  switch (color) {
+    case 'primary':
+      colors.backgroundColor = blue;
+      colors.color = white;
       colors.hoverColor = white;
       colors.backgroundColorHover = darkBlue;
-      colors.borderColor = darkBlue;
-    }
+      if (outlined) {
+        colors.backgroundColor = white;
+        colors.color = blue;
+        colors.hoverColor = white;
+        colors.backgroundColorHover = darkBlue;
+        colors.borderColor = darkBlue;
+      }
+      break;
+    case 'default':
+      colors.backgroundColor = white;
+      colors.color = textColor;
+      colors.hoverColor = textColor;
+      colors.backgroundColorHover = grey;
+      break;
+    case 'success':
+      colors.backgroundColor = green;
+      colors.color = white;
+      colors.hoverColor = white;
+      colors.backgroundColorHover = greenDark;
+      break;
+    default:
+      colors.backgroundColor = white;
+      colors.color = textColor;
+      colors.hoverColor = textColor;
+      colors.backgroundColorHover = grey;
   }
-  if (color === 'default') {
-    colors.backgroundColor = white;
-    colors.color = textColor;
-    colors.hoverColor = textColor;
-    colors.backgroundColorHover = grey;
+
+  if (variant === 'transparent') {
+    colors = getTextTransparentColor(color);
+    colors.backgroundColor = 'transparent';
+    colors.backgroundColorHover = 'transparent';
   }
-  if (color === 'success') {
-    colors.backgroundColor = green;
-    colors.color = white;
-    colors.hoverColor = white;
-    colors.backgroundColorHover = greenDark;
-  }
-  return (
-    <Container
-      onClick={onClick}
-      type="button"
-      uppercase={uppercase}
-      variant={variant}
-      style={style}
-      {...colors}
-    >
-      {icon && children && <Icon>{icon}</Icon>}
-      {icon && !children && icon}
-      {children}
-    </Container>
-  );
+
+  return colors;
 };
+
+const Button = ({
+  onClick, color, icon, children, uppercase, variant, outlined, style,
+}) => (
+  <Container
+    onClick={onClick}
+    type="button"
+    uppercase={uppercase}
+    variant={variant}
+    style={style}
+    {...getColors({ color, outlined, variant })}
+  >
+    {icon && children && <Icon>{icon}</Icon>}
+    {icon && !children && icon}
+    <span>{children}</span>
+  </Container>
+);
 
 Button.propTypes = {
   onClick: PropTypes.func.isRequired,
@@ -67,7 +116,7 @@ Button.propTypes = {
   color: PropTypes.string, // default, primary, success
   icon: PropTypes.any,
   uppercase: PropTypes.bool,
-  variant: PropTypes.string, // fab, extendedFab
+  variant: PropTypes.string, // fab, extendedFab, transparent
   outlined: PropTypes.bool,
   style: PropTypes.object,
 };

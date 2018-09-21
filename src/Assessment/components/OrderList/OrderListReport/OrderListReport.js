@@ -13,16 +13,24 @@ class OrderListReport extends Component {
       questionsList,
     } = this.props;
 
-    console.log('validationState', validationState);
-    console.log('questionsList', questionsList);
-    console.log('previewIndexesList', previewIndexesList);
+    const getCorrect = (index) => {
+      const questionText = questionsList[previewIndexesList[index]];
+      const correctAnswer = questionsList[validationState.valid_response.value[index]];
+      const altAnswers = validationState.alt_responses.reduce((acc, { value }) => {
+        acc.push(questionsList[value[index]]);
+        return acc;
+      }, []);
+      const answers = [correctAnswer, ...altAnswers];
+
+      return answers.includes(questionText);
+    };
 
     return (
       <div>
         {questions.map((q, i) => (
           <OrderListReportItem
             key={i}
-            correct={questionsList[i] === questionsList[validationState.valid_response.value[i]]}
+            correct={getCorrect(i)}
             correctText={validation.valid_response.value[i]}
             showAnswers={showAnswers}
           >

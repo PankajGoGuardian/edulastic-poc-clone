@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import './App.css';
 import Student from './Student';
-// import MultipleChoice from './Assessment/components/MultipleChoice';
+import MultipleChoice from './Assessment/components/MultipleChoice';
 import { loadJSON } from './utils';
 import { ASSESSMENTID } from './constants/others';
 import QuestionEditor from './Assessment/components/QuestionEditor';
@@ -23,8 +23,8 @@ class App extends Component {
       <div className="App">
         <Switch>
           <Redirect exact path="/" to="/student" />
-          {/* <Route path="/author" component={MultipleChoice} /> */}
-          <Route path="/author" component={QuestionEditor} />
+          <Route path="/author" component={MultipleChoice} />
+          <Route path="/orderList" component={QuestionEditor} />
           <Route path="/student" component={Student} />
         </Switch>
       </div>

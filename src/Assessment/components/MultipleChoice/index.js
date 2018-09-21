@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import FlexContainer from '../common/FlexContainer';
 import DashboardControlBtn from '../common/DashboardControlBtn';
@@ -12,7 +13,12 @@ import Main from './components/Main';
 import MultipleChoiceAuthoring from './Authoring';
 import MultipleChoiceDisplay from './Display';
 import MultipleChoiceReport from './Report';
-import { QUESTION_PROBLEM, QUESTION_OPTIONS, QUESTION_ANSWERS, ASSESSMENTID } from '../../../constants/others';
+import {
+  QUESTION_PROBLEM,
+  QUESTION_OPTIONS,
+  QUESTION_ANSWERS,
+  ASSESSMENTID,
+} from '../../../constants/others';
 import { addQuestion } from '../../../actions/questions';
 
 class MultipleChoice extends Component {
@@ -32,7 +38,7 @@ class MultipleChoice extends Component {
     const { userSelections } = this.state;
     this.setState({
       activePage: page,
-      userSelections: page === 'edit' ? [] : userSelections
+      userSelections: page === 'edit' ? [] : userSelections,
     });
   }
 
@@ -42,6 +48,7 @@ class MultipleChoice extends Component {
   }
 
   onSaveClicked = () => {
+    const { addQuestion: add } = this.props;
     console.log('save current question');
     const problem = localStorage.getItem(QUESTION_PROBLEM);
     const options = localStorage.getItem(QUESTION_OPTIONS);
@@ -52,80 +59,82 @@ class MultipleChoice extends Component {
       if (answer) {
         correctAnswer.push(index);
       }
-    })
+    });
     const question = {
-      assessmentId: assessmentId,
+      assessmentId,
       question: problem,
       options: JSON.parse(options),
       type: 'mcq',
-      answer: JSON.stringify(correctAnswer)
+      answer: JSON.stringify(correctAnswer),
     };
-    this.props.addQuestion(question);
+    add(question);
     // console.log('add question result:', json);
-  }
+  };
 
   handleMultiSelect = (e) => {
     console.log('e', e.target.value);
-    let {userSelections} = this.state;
+    const { userSelections } = this.state;
     const index = parseInt(e.target.value, 10);
     userSelections[index] = e.target.checked;
-    this.setState({userSelections});
-  }
+    this.setState({ userSelections });
+  };
 
   render() {
     const { activePage, userSelections } = this.state;
     let content;
-    switch(activePage) {
+    switch (activePage) {
       case 'edit': {
         content = <MultipleChoiceAuthoring edit />;
         break;
       }
       case 'preview': {
-        content = <MultipleChoiceDisplay
-        userSelections={userSelections}
-          handleMultiSelect={this.handleMultiSelect}
-        />;
+        content = (
+          <MultipleChoiceDisplay
+            userSelections={userSelections}
+            handleMultiSelect={this.handleMultiSelect}
+          />
+        );
         break;
       }
       case 'answer': {
-        content = <MultipleChoiceReport
-          showAnswer={this.showAnswer}
-          userSelections={userSelections}
-          handleMultiSelect={this.handleMultiSelect}
-        />;
+        content = (
+          <MultipleChoiceReport
+            showAnswer={this.showAnswer}
+            userSelections={userSelections}
+            handleMultiSelect={this.handleMultiSelect}
+          />
+        );
         break;
       }
       default:
-      content = <MultipleChoiceAuthoring />;
+        content = <MultipleChoiceAuthoring />;
     }
     return (
       <div>
         <Header>
-          <FlexContainer justifyContent={'space-between'}>
-            <AssignmentTitle>
-              {translate('common.layout.dashboard.title')}
-            </AssignmentTitle>
+          <FlexContainer justifyContent="space-between">
+            <AssignmentTitle>{translate('common.layout.dashboard.title')}</AssignmentTitle>
             <div>
-              { this.showAnswer && 
+              {this.showAnswer && (
                 <DashboardControlBtn
                   answerbtn
                   onClick={() => this.changeAnswerDisplay()}
                   active={this.isActivePage('answer')}
                 >
-                  <i className="fa fa-eye-slash"></i>
+                  <i className="fa fa-eye-slash" />
                   <span>{translate('common.layout.dashboard.hideanswerbtn')}</span>
                 </DashboardControlBtn>
-              }
-              { !this.showAnswer && 
+              )}
+              {!this.showAnswer && (
                 <DashboardControlBtn
                   answerbtn
                   onClick={() => this.changeAnswerDisplay()}
                   active={this.isActivePage('answer')}
                 >
-                  <i className="fa fa-eye"></i>
+                  <i className="fa fa-eye" />
                   <span>{translate('common.layout.dashboard.showanswerbtn')}</span>
-                </DashboardControlBtn>     
-              }
+                </DashboardControlBtn>
+              )}
               {/* <DashboardControlBtn
                 onClick={() => this.activatePage('settings')}
                 active={this.isActivePage('settings')}
@@ -137,42 +146,44 @@ class MultipleChoice extends Component {
                 onClick={() => this.activatePage('edit')}
                 active={this.isActivePage('edit')}
               >
-                <i className="fa fa-pencil"></i>  
+                <i className="fa fa-pencil" />
                 <span>{translate('common.layout.dashboard.editbtn')}</span>
-              </DashboardControlBtn>      
+              </DashboardControlBtn>
               <DashboardControlBtn
                 onClick={() => this.activatePage('preview')}
                 active={this.isActivePage('preview')}
               >
-                <i className="fa fa-file-o"></i>  
+                <i className="fa fa-file-o" />
                 <span>{translate('common.layout.dashboard.previewbtn')}</span>
               </DashboardControlBtn>
-              <DashboardControlBtn
-                save
-                onClick={this.onSaveClicked}
-              >
-                <i className="fa fa-floppy-o"></i>  
+              <DashboardControlBtn save onClick={this.onSaveClicked}>
+                <i className="fa fa-floppy-o" />
                 <span>{translate('common.layout.dashboard.savebtn')}</span>
               </DashboardControlBtn>
             </div>
           </FlexContainer>
           <LinkBtn>
-            &lt;&nbsp;&nbsp;&nbsp;{translate('common.layout.dashboard.headerbackbtn')}
+            &lt;&nbsp;&nbsp;&nbsp;
+            {translate('common.layout.dashboard.headerbackbtn')}
           </LinkBtn>
         </Header>
         <Main>
-          <PaddingDiv top={10}>
-            {content}
-          </PaddingDiv>
+          <PaddingDiv top={10}>{content}</PaddingDiv>
         </Main>
       </div>
     );
-  };
+  }
+}
+
+MultipleChoice.propTypes = {
+  addQuestion: PropTypes.func.isRequired,
 };
 
-
 const mapDispatchToProps = dispatch => ({
-  addQuestion: (question) => dispatch(addQuestion(question)),
+  addQuestion: question => dispatch(addQuestion(question)),
 });
 
-export default connect(null, mapDispatchToProps)(MultipleChoice);
+export default connect(
+  null,
+  mapDispatchToProps,
+)(MultipleChoice);

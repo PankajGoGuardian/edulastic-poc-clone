@@ -10,23 +10,23 @@ class MultipleChoiceReport extends QuestionReport {
   state = {
     question: '',
     options: [],
-    answers: []
+    answers: [],
   };
 
   componentDidMount() {
     const { options, question } = this.getResponse();
     const { userSelections } = this.props;
     const checkResult = MultipleChoiceEvaluation.evaluateResponse(userSelections);
-    this.setState({options, question, answers: checkResult});
+    this.setState({ options, question, answers: checkResult });
   }
 
   render() {
     const { options, question, answers } = this.state;
     const { showAnswer, userSelections, handleMultiSelect } = this.props;
     return (
-      <Container disabled={showAnswer} >
+      <Container disabled={showAnswer}>
         <QuestionWrapper
-          type={'mcq'}
+          type="mcq"
           options={options}
           question={question}
           userSelections={userSelections}
@@ -36,12 +36,12 @@ class MultipleChoiceReport extends QuestionReport {
         />
       </Container>
     );
-  };
-};
+  }
+}
 
 MultipleChoiceReport.propTypes = {
   showAnswer: PropTypes.bool,
   handleMultiSelect: PropTypes.func,
-}
+};
 
 export default MultipleChoiceReport;

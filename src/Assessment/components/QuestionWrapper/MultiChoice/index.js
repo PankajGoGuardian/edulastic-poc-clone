@@ -41,7 +41,7 @@ const Option = ({
 
 Option.propTypes = {
   index: PropTypes.number.isRequired,
-  setAnswers: PropTypes.func.isRequired,
+  setAnswers: PropTypes.bool.isRequired,
   item: PropTypes.any.isRequired,
   showAnswer: PropTypes.bool.isRequired,
   userSelections: PropTypes.array.isRequired,
@@ -71,7 +71,7 @@ const Options = ({
 Options.propTypes = {
   options: PropTypes.array.isRequired,
   showAnswer: PropTypes.bool.isRequired,
-  setAnswers: PropTypes.func.isRequired,
+  setAnswers: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
   userSelections: PropTypes.array.isRequired,
   answers: PropTypes.array.isRequired,
@@ -105,11 +105,15 @@ const MultiChoice = (props) => {
 MultiChoice.propTypes = {
   onChange: PropTypes.func.isRequired,
   options: PropTypes.array.isRequired,
-  question: PropTypes.string.isRequired,
+  question: PropTypes.string,
   showAnswer: PropTypes.bool.isRequired,
   answers: PropTypes.array.isRequired,
-  setAnswers: PropTypes.func.isRequired,
+  setAnswers: PropTypes.bool.isRequired,
   userSelections: PropTypes.array.isRequired,
+};
+
+MultiChoice.defaultProps = {
+  question: '',
 };
 
 export default withTheme(MultiChoice);

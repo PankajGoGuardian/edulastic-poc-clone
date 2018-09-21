@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const AssignmentTitle = styled.span`
   font-size: 25px;

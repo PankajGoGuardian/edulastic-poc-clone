@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const SortableItemContainer = styled.div`
   width: 100%;
@@ -37,7 +37,7 @@ const SortableItemContainer = styled.div`
     text-align: left;
     color: #7a7a7a;
     border: none;
-    padding: 0 10px
+    padding: 0 10px;
   }
   & i.fa-trash-o {
     color: #ee1658;

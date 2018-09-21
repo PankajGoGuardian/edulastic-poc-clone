@@ -7,12 +7,12 @@ import QuestionWrapper from '../QuestionWrapper';
 class MultipleChoiceDisplay extends QuestionDisplay {
   state = {
     question: '',
-    options: []
+    options: [],
   };
 
   componentDidMount() {
     const { options, question } = this.getResponse();
-    this.setState({options, question});
+    this.setState({ options, question });
   }
 
   render() {
@@ -21,7 +21,7 @@ class MultipleChoiceDisplay extends QuestionDisplay {
     return (
       <Container>
         <QuestionWrapper
-          type={'mcq'}
+          type="mcq"
           options={options}
           question={question}
           userSelections={userSelections}
@@ -29,7 +29,7 @@ class MultipleChoiceDisplay extends QuestionDisplay {
         />
       </Container>
     );
-  };
-};
+  }
+}
 
 export default MultipleChoiceDisplay;

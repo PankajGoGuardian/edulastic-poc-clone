@@ -31,12 +31,12 @@ const QuestionWrapper = ({
 QuestionWrapper.propTypes = {
   type: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
-  question: PropTypes.string.isRequired,
+  question: PropTypes.string,
   showAnswer: PropTypes.bool,
   answers: PropTypes.array,
   userSelections: PropTypes.array,
   onChange: PropTypes.func,
-  setAnswers: PropTypes.func,
+  setAnswers: PropTypes.bool,
 };
 
 QuestionWrapper.defaultProps = {
@@ -44,7 +44,8 @@ QuestionWrapper.defaultProps = {
   answers: [],
   userSelections: [],
   onChange: () => {},
-  setAnswers: () => {},
+  setAnswers: false,
+  question: null,
 };
 
 export default QuestionWrapper;

@@ -4,13 +4,14 @@ import styled from 'styled-components';
 import TextareaAutosize from 'react-autosize-textarea';
 import { grey } from '../../../utilities/css';
 import { Heading } from '../../common';
+import { translate } from '../../../utilities/localization';
 
 const Question = ({ onQuestionChange, value }) => (
   <div>
-    <Heading>Compose question</Heading>
+    <Heading>{translate('component.orderlist.question.composequestion')}</Heading>
     <StyledTextarea
       onChange={e => onQuestionChange(e.target.value)}
-      placeholder="Enter your questiion"
+      placeholder={translate('component.orderlist.question.enteryourquestion')}
       value={value}
     />
   </div>

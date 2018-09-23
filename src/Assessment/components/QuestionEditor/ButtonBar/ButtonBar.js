@@ -6,6 +6,7 @@ import {
 } from 'react-icons/fa';
 
 import Button from '../../common/Button';
+import { translate } from '../../../utilities/localization';
 
 const ButtonBar = ({
   onChangeView, onShowSource, view, changePreviewTab, previewTab,
@@ -15,18 +16,18 @@ const ButtonBar = ({
       {view === 'edit' && (
         <StyledButton>
           <Button onClick={onShowSource} icon={<FaCode />}>
-            Source
+            {translate('component.questioneditor.buttonbar.source')}
           </Button>
         </StyledButton>
       )}
       <StyledButton>
         <Button onClick={() => {}} icon={<FaCog />}>
-          Settings
+          {translate('component.questioneditor.buttonbar.settings')}
         </Button>
       </StyledButton>
       <StyledButton>
         <Button onClick={() => {}} icon={<FaQuestion />}>
-          Help
+          {translate('component.questioneditor.buttonbar.help')}
         </Button>
       </StyledButton>
       <StyledButton>
@@ -35,7 +36,7 @@ const ButtonBar = ({
           icon={<FaPencilAlt />}
           color={view === 'edit' ? 'primary' : 'default'}
         >
-          Edit
+          {translate('component.questioneditor.buttonbar.edit')}
         </Button>
       </StyledButton>
       <StyledButton>
@@ -44,12 +45,12 @@ const ButtonBar = ({
           icon={<FaSearch />}
           color={view === 'preview' ? 'primary' : 'default'}
         >
-          Preview
+          {translate('component.questioneditor.buttonbar.preview')}
         </Button>
       </StyledButton>
       <StyledButton>
         <Button onClick={() => {}} icon={<FaSave />} color="success">
-          Save
+          {translate('component.questioneditor.buttonbar.save')}
         </Button>
       </StyledButton>
     </Container>
@@ -61,7 +62,7 @@ const ButtonBar = ({
             color={previewTab === 'check' ? 'primary' : 'default'}
             icon={<FaEye />}
           >
-            Check Answer
+            {translate('component.questioneditor.buttonbar.checkanswer')}
           </Button>
         </StyledButton>
         <StyledButton>
@@ -70,7 +71,7 @@ const ButtonBar = ({
             color={previewTab === 'show' ? 'primary' : 'default'}
             icon={<FaEye />}
           >
-            Show Answers
+            {translate('component.questioneditor.buttonbar.showanswers')}
           </Button>
         </StyledButton>
         <StyledButton>
@@ -78,7 +79,7 @@ const ButtonBar = ({
             onClick={() => changePreviewTab('clear')}
             color={previewTab === 'clear' ? 'primary' : 'default'}
           >
-            Clear
+            {translate('component.questioneditor.buttonbar.clear')}
           </Button>
         </StyledButton>
       </Container>

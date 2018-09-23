@@ -6,6 +6,7 @@ import { FaTimes } from 'react-icons/fa';
 
 import { white, blue } from '../../utilities/css';
 import Button from './Button';
+import { translate } from '../../utilities/localization';
 
 const modalRoot = document.getElementById('modal-root');
 
@@ -28,7 +29,7 @@ class Modal extends Component {
           {children}
           <Footer>
             <Button onClick={onClose} variant="extendedFab" style={{ width: '40%' }}>
-              Cancel
+              {translate('component.common.modal.cancel')}
             </Button>
             <Button
               onClick={onApply}
@@ -36,7 +37,7 @@ class Modal extends Component {
               color="primary"
               style={{ width: '40%' }}
             >
-              Apply
+              {translate('component.common.modal.apply')}
             </Button>
           </Footer>
         </Content>

@@ -1,14 +1,20 @@
 import { createSelector } from 'reselect';
 
 import config from '../config';
+import { translate } from '../Assessment/utilities/localization';
 
 const { appName } = config;
 
-const initialList = ['[Choice A]', '[Choice B]', '[Choice C]', '[Choice D]'];
+const initialList = [
+  translate('common.initialoptionslist.itema'),
+  translate('common.initialoptionslist.itemb'),
+  translate('common.initialoptionslist.itemc'),
+  translate('common.initialoptionslist.itemd'),
+];
 
 export const initialState = {
   list: initialList,
-  stimulus: '[This is the stem.]',
+  stimulus: translate('component.orderlist.questionsorderlist.stimulusplaceholder'),
   validation: {
     valid_response: {
       score: 1,

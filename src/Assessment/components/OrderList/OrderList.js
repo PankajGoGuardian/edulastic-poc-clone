@@ -25,6 +25,7 @@ import {
   updatePreviewListAction,
 } from '../../../ducks/preview';
 import { Heading } from '../common';
+import { translate } from '../../utilities/localization';
 
 class OrderList extends Component {
   componentDidMount() {
@@ -65,7 +66,7 @@ class OrderList extends Component {
   handleAddQuestion = () => {
     const { questionsList } = this.props;
 
-    this.updateQuestions([...questionsList, `Choice ${questionsList.length}`]);
+    this.updateQuestions([...questionsList, `${translate('common.initialoptionslist.itemprefix')} ${questionsList.length}`]);
   };
 
   updateQuestions = (list) => {

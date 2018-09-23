@@ -13,6 +13,7 @@ import {
 } from '../../../../ducks/questionsOrderList';
 import { Tabs } from '../../common';
 import { Tab, TabContainer } from '../../common/Tabs';
+import { translate } from '../../../utilities/localization';
 
 class CorrectAnswers extends Component {
   state = {
@@ -27,7 +28,7 @@ class CorrectAnswers extends Component {
     const { validation } = this.props;
 
     if (validation.alt_responses && validation.alt_responses.length) {
-      return validation.alt_responses.map((res, i) => <Tab key={i} label={`Alternate ${i + 1}`} />);
+      return validation.alt_responses.map((res, i) => <Tab key={i} label={`${translate('component.orderlist.correctanswers.alternate')} ${i + 1}`} />);
     }
     return null;
   };
@@ -60,11 +61,11 @@ class CorrectAnswers extends Component {
 
     return (
       <div>
-        <Heading>Set correct answer(s)</Heading>
+        <Heading>{translate('component.orderlist.correctanswers.setcorrectanswers')}</Heading>
 
         <div>
           <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
-            <Tab label="Correct" />
+            <Tab label={translate('component.orderlist.correctanswers.correct')} />
             {this.renderAltResponses()}
           </Tabs>
           {value === 0 && (

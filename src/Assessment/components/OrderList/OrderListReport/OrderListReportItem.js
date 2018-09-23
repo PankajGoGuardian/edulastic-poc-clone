@@ -6,6 +6,7 @@ import { FaCheck, FaTimes } from 'react-icons/fa';
 import {
   grey, lightGreen, lightRed, green, red, textColor,
 } from '../../../utilities/css';
+import { translate } from '../../../utilities/localization';
 
 const OrderListReportItem = ({
   children, correctText, correct, showAnswers,
@@ -30,7 +31,7 @@ const OrderListReportItem = ({
       <CorrectAnswerItem>
         <Text showDragHandle={false}>
           <span>
-            <span> Correct Answer:</span>
+            <span>{translate('component.orderlist.orderlistreportitem.correctanswer')}</span>
             {' '}
             {correctText}
           </span>

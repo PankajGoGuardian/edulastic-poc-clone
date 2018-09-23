@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { TextField } from '../../common';
 import OrderListPreview from '../OrderListPreview';
 import { lightGrey } from '../../../utilities/css';
+import { translate } from '../../../utilities/localization';
 
 const CorrectAnswer = ({ response, onUpdatePoints, onSortCurrentAnswer }) => (
   <div>
@@ -13,7 +14,7 @@ const CorrectAnswer = ({ response, onUpdatePoints, onSortCurrentAnswer }) => (
         value={response.score}
         onChange={e => onUpdatePoints(+e.target.value)}
       />
-      <span>Points</span>
+      <span>{translate('component.orderlist.correctanswer.points')}</span>
     </Header>
 
     <OrderListPreview

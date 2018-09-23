@@ -4,6 +4,7 @@ import { SortableContainer } from 'react-sortable-hoc';
 
 import OrderListItem from './OrderListItem';
 import Button from '../../common/Button';
+import { translate } from '../../../utilities/localization';
 
 class OrderListEdit extends Component {
   render() {
@@ -30,7 +31,7 @@ class OrderListEdit extends Component {
           type="button"
           color="primary"
         >
-          Add new choice
+          {translate('component.orderlist.orderlistedit.addnewchoicebtn')}
         </Button>
       </div>
     );

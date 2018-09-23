@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 
 import {
-  grey, lightGreen, lightRed, green, red, textColor,
+  green, red,
 } from '../../../utilities/css';
 import { translate } from '../../../utilities/localization';
+import {
+  Container, Text, Icon, CorrectAnswerItem,
+} from './styled_components';
 
 const OrderListReportItem = ({
   children, correctText, correct, showAnswers,
@@ -53,51 +55,3 @@ OrderListReportItem.defaultProps = {
 };
 
 export default OrderListReportItem;
-
-const Container = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: stretch;
-  margin-bottom: 10px;
-  background: ${({ correct }) => (correct ? lightGreen : lightRed)};
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  border-left: 2px solid ${({ correct }) => (correct ? green : red)};
-`;
-
-const CorrectAnswerItem = styled.div`
-  width: calc(100% - 40px);
-  display: flex;
-  align-items: stretch;
-  margin-bottom: 10px;
-  cursor: pointer;
-  background: ${grey};
-  margin-left: 40px;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  border-left: 2px solid ${textColor};
-`;
-
-const Text = styled.div`
-  resize: none;
-  width: 100%;
-  border: none;
-  height: 100%;
-  border: 1px solid ${grey};
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  min-height: 50px;
-  padding: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const Icon = styled.div`
-  width: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  font-size: 24px;
-  color: ${({ color }) => color};
-`;

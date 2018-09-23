@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { TextField } from '../../common';
+
 import OrderListPreview from '../OrderListPreview';
-import { lightGrey } from '../../../utilities/css';
 import { translate } from '../../../utilities/localization';
+import { Header, PointField } from './styled_components';
 
 const CorrectAnswer = ({ response, onUpdatePoints, onSortCurrentAnswer }) => (
   <div>
@@ -32,16 +31,3 @@ CorrectAnswer.propTypes = {
 };
 
 export default CorrectAnswer;
-
-const Header = styled.div`
-  padding: 10px;
-  background: ${lightGrey};
-  display: flex;
-  align-items: center;
-`;
-
-const PointField = styled(TextField)`
-  width: 100px;
-  padding: 0 0 0 40px;
-  margin-right: 25px;
-`;

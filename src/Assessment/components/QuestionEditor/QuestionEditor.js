@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 import SourceModal from './SourceModal';
 import ButtonBar from './ButtonBar';
 import OrderList from '../OrderList';
-import { grey } from '../../utilities/css';
 import { getQuestionsStateSelector } from '../../../selectors/questionsOrderList';
 import { setQuestionsStateAction } from '../../../actions/questionsOrderList';
 import { changePreviewTabAction } from '../../../actions/preview';
@@ -15,6 +13,7 @@ import { getPreivewTabSelector } from '../../../selectors/preview';
 import { changeViewAction } from '../../../actions/view';
 import { getViewSelector } from '../../../selectors/view';
 import { Paper } from '../common';
+import { Container } from './styled_components';
 
 class QuestionEditor extends Component {
   state = {
@@ -100,8 +99,3 @@ const enhance = compose(
 );
 
 export default enhance(QuestionEditor);
-
-const Container = styled.div`
-  padding: 25px 40px;
-  background: ${grey};
-`;

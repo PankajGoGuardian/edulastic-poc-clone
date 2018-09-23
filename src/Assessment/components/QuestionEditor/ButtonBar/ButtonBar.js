@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import {
   FaPencilAlt, FaSearch, FaEye, FaCog, FaSave, FaCode, FaQuestion,
 } from 'react-icons/fa';
 
 import Button from '../../common/Button';
 import { translate } from '../../../utilities/localization';
+import { Container, StyledButton } from './styled_components';
 
 const ButtonBar = ({
   onChangeView, onShowSource, view, changePreviewTab, previewTab,
@@ -96,14 +96,3 @@ ButtonBar.propTypes = {
 };
 
 export default ButtonBar;
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-bottom: 25px;
-`;
-
-const StyledButton = styled.div`
-  margin-right: 10px;
-`;

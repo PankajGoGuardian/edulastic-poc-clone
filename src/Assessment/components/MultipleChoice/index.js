@@ -88,13 +88,14 @@ class MultipleChoice extends Component {
         break;
       }
       case 'preview': {
-        content = (<Container>
-          <MultipleChoiceDisplay
-            preview
-            userSelections={userSelections}
-            onChange={this.handleMultiSelect}
-          />
-        </Container>);
+        content = (
+          <Container>
+            <MultipleChoiceDisplay
+              preview
+              userSelections={userSelections}
+              onChange={this.handleMultiSelect}
+            />
+          </Container>);
         break;
       }
       case 'answer': {

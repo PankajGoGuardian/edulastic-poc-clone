@@ -11,13 +11,15 @@ import ProblemContainer from './components/ProblemContainer';
 
 
 const Option = (props) => {
-  const { index, setAnswers, item, showAnswer, userSelections, answers } = props;
+  const {
+    index, setAnswers, item, showAnswer, userSelections, answers, onChange,
+  } = props;
   return (
-    <Label setAnswers={setAnswers} showAnswer className={showAnswer ? answers[index] ? 'right' : 'wrong' : ''} >
-      <PaddingDiv top={setAnswers ? 10 : 20} bottom={20} >
+    <Label setAnswers={setAnswers} showAnswer className={showAnswer ? answers[index] ? 'right' : 'wrong' : ''}>
+      <PaddingDiv top={setAnswers ? 10 : 20} bottom={20}>
         <FlexContainer>
           <CheckboxContainter>
-            <input type="checkbox" value={index} defaultChecked={userSelections[index]} onClick={props.onChange} />
+            <input type="checkbox" value={index} defaultChecked={userSelections[index]} onClick={onChange} />
             <span />
           </CheckboxContainter>
           <MultiChoiceContent>
@@ -38,7 +40,9 @@ const Option = (props) => {
 };
 
 const Options = (props) => {
-  const { options, showAnswer, setAnswers, userSelections, answers } = props;
+  const {
+    options, showAnswer, setAnswers, userSelections, answers,
+  } = props;
   return (
     <div>
       {options.map((option, index) => (
@@ -61,11 +65,13 @@ class MultipleChoiceDisplay extends QuestionDisplay {
   render() {
     let { options, question } = this.props;
     if (this.props.preview) {
-      const response = this.getResponse();
-      options = response.options;
-      question = response.question;
+      const { options: responseOpt, question: responseQues } = this.getResponse();
+      options = responseOpt;
+      question = responseQues;
     }
-    const { setAnswers, showAnswer, userSelections = [], answers = [] } = this.props;
+    const {
+      setAnswers, showAnswer, userSelections = [], answers = [],
+    } = this.props;
     return (
       <div>
         { !setAnswers &&
@@ -94,6 +100,16 @@ Option.propTypes = {
   onChange: PropTypes.func,
 };
 
+Option.defaultProps = {
+  index: 0,
+  setAnswers: false,
+  showAnswer: false,
+  item: {},
+  userSelections: [],
+  answers: [],
+  onChange: () => {},
+};
+
 Options.propTypes = {
   setAnswers: PropTypes.bool,
   showAnswer: PropTypes.bool,
@@ -101,6 +117,15 @@ Options.propTypes = {
   answers: PropTypes.array,
   options: PropTypes.array,
   onChange: PropTypes.func,
+};
+
+Options.defaultProps = {
+  setAnswers: false,
+  showAnswer: false,
+  userSelections: [],
+  answers: [],
+  options: [],
+  onChange: () => {},
 };
 
 MultipleChoiceDisplay.propTypes = {

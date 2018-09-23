@@ -8,12 +8,12 @@ import SourceModal from './SourceModal';
 import ButtonBar from './ButtonBar';
 import OrderList from '../OrderList';
 import { grey } from '../../utilities/css';
-import {
-  getQuestionsStateSelector,
-  setQuestionsStateAction,
-} from '../../../ducks/questionsOrderList';
-import { getPreivewTabSelector, changePreviewTabAction } from '../../../ducks/preview';
-import { getViewSelector, changeViewAction } from '../../../ducks/view';
+import { getQuestionsStateSelector } from '../../../selectors/questionsOrderList';
+import { setQuestionsStateAction } from '../../../actions/questionsOrderList';
+import { changePreviewTabAction } from '../../../actions/preview';
+import { getPreivewTabSelector } from '../../../selectors/preview';
+import { changeViewAction } from '../../../actions/view';
+import { getViewSelector } from '../../../selectors/view';
 import { Paper } from '../common';
 
 class QuestionEditor extends Component {

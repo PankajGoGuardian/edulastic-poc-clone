@@ -14,16 +14,20 @@ import {
   getQuestionsListSelector,
   getValidationSelector,
   validationSelector,
+} from '../../../selectors/questionsOrderList';
+import {
   updateStimulusAction,
   updateQuestionsListAction,
   updateValidationAction,
-} from '../../../ducks/questionsOrderList';
+} from '../../../actions/questionsOrderList';
 import {
   getPreviewListSelector,
   getPreviewIndexesListSelector,
   getPreivewTabSelector,
+} from '../../../selectors/preview';
+import {
   updatePreviewListAction,
-} from '../../../ducks/preview';
+} from '../../../actions/preview';
 import { Heading } from '../common';
 import { translate } from '../../utilities/localization';
 

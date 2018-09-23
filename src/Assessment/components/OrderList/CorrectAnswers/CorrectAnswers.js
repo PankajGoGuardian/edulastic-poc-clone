@@ -10,7 +10,7 @@ import {
   updateAltValidationScoreAction,
   addAltResponsesAction,
   updateCorrectValidationScoreAction,
-} from '../../../../ducks/questionsOrderList';
+} from '../../../../actions/questionsOrderList';
 import { Tabs } from '../../common';
 import { Tab, TabContainer } from '../../common/Tabs';
 import { translate } from '../../../utilities/localization';

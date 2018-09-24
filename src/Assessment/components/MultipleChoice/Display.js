@@ -9,9 +9,7 @@ import CheckboxContainter from './components/CheckboxContainer';
 import Label from './components/Label';
 import ProblemContainer from './components/ProblemContainer';
 
-const Option = ({
-  index, setAnswers, item, showAnswer, userSelections, answers, onChange,
-}) => (
+const Option = ({ index, setAnswers, item, showAnswer, userSelections, answers, onChange }) => (
   <Label
     setAnswers={setAnswers}
     showAnswer
@@ -38,9 +36,7 @@ const Option = ({
   </Label>
 );
 
-const Options = ({
-  options, showAnswer, setAnswers, userSelections, answers, onChange,
-}) => (
+const Options = ({ options, showAnswer, setAnswers, userSelections, answers, onChange }) => (
   <div>
     {options.map((option, index) => (
       <Option
@@ -69,9 +65,7 @@ class MultipleChoiceDisplay extends QuestionDisplay {
       // eslint-disable-next-line
       question = response.question;
     }
-    const {
-      setAnswers, showAnswer, userSelections = [], answers = [],
-    } = this.props;
+    const { setAnswers, showAnswer, userSelections = [], answers = [] } = this.props;
     return (
       <div>
         {!setAnswers && <ProblemContainer dangerouslySetInnerHTML={{ __html: question }} />}

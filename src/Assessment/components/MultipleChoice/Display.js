@@ -9,33 +9,6 @@ import CheckboxContainter from './components/CheckboxContainer';
 import Label from './components/Label';
 import ProblemContainer from './components/ProblemContainer';
 
-const Option = ({ index, setAnswers, item, showAnswer, userSelections, answers, onChange }) => (
-  <Label
-    setAnswers={setAnswers}
-    showAnswer
-    className={showAnswer ? (answers[index] ? 'right' : 'wrong') : ''}
-  >
-    <PaddingDiv top={setAnswers ? 10 : 20} bottom={20}>
-      <FlexContainer>
-        <CheckboxContainter>
-          <input
-            type="checkbox"
-            value={index}
-            defaultChecked={userSelections[index]}
-            onClick={onChange}
-          />
-          <span />
-        </CheckboxContainter>
-        <MultiChoiceContent>{item.label}</MultiChoiceContent>
-        <PaddingDiv right={15} height={20}>
-          {showAnswer && answers[index] && <i className="fa fa-check" />}
-          {showAnswer && !answers[index] && <i className="fa fa-times" />}
-        </PaddingDiv>
-      </FlexContainer>
-    </PaddingDiv>
-  </Label>
-);
-
 const Option = (props) => {
   const {
     index, setAnswers, item, showAnswer, userSelections, answers, onChange,
@@ -67,7 +40,7 @@ const Option = (props) => {
 
 const Options = (props) => {
   const {
-    options, showAnswer, setAnswers, userSelections, answers,
+    options, showAnswer, setAnswers, userSelections, answers, onChange,
   } = props;
   return (
     <div>
@@ -80,7 +53,7 @@ const Options = (props) => {
           showAnswer={showAnswer}
           userSelections={userSelections}
           answers={answers}
-          onChange={props.onChange}
+          onChange={onChange}
         />
       ))}
     </div>
@@ -115,22 +88,20 @@ class MultipleChoiceDisplay extends QuestionDisplay {
 }
 
 Option.defaultProps = {
-  index: 0,
   setAnswers: false,
   showAnswer: false,
-  item: {},
   userSelections: [],
   answers: [],
-  onChange: () => {},
 };
 
-Options.propTypes = {
+Option.propTypes = {
+  index: PropTypes.number.isRequired,
   setAnswers: PropTypes.bool,
   showAnswer: PropTypes.bool,
+  item: PropTypes.object.isRequired,
   userSelections: PropTypes.array,
   answers: PropTypes.array,
-  options: PropTypes.array,
-  onChange: PropTypes.func,
+  onChange: PropTypes.func.isRequired,
 };
 
 Options.defaultProps = {
@@ -139,7 +110,15 @@ Options.defaultProps = {
   userSelections: [],
   answers: [],
   options: [],
-  onChange: () => {},
+};
+
+Options.propTypes = {
+  setAnswers: PropTypes.bool,
+  showAnswer: PropTypes.bool,
+  userSelections: PropTypes.array,
+  answers: PropTypes.array,
+  options: PropTypes.array,
+  onChange: PropTypes.func.isRequired,
 };
 
 MultipleChoiceDisplay.propTypes = {

@@ -67,7 +67,7 @@ const ButtonBar = ({
           icon={<FaCog />}
           options={[{ value: 'first', label: 'First' }, { value: 'second', label: 'Second' }]}
         >
-          Settings
+          {translate('component.questioneditor.buttonbar.settings')}
         </SelectButton>
       </StyledButton>
     </Container>

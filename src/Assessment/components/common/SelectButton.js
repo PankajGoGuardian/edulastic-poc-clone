@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FaCaretDown } from 'react-icons/fa';
 
-import { textColor, white, grey, blue } from '../../utilities/css';
+import {
+  textColor, white, grey, blue,
+} from '../../utilities/css';
 
 export default class SelectButton extends Component {
   state = {

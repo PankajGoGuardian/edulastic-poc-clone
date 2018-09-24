@@ -22,3 +22,5 @@ export { default as Modal } from './Modal';
 export { default as Paper } from './Paper';
 export { default as TextField } from './TextField';
 export { default as Tabs } from './Tabs';
+export { default as Select } from './Select';
+export { default as Preloader } from './Preloader';

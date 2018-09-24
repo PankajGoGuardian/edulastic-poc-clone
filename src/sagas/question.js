@@ -1,6 +1,6 @@
 import { takeLatest, call } from 'redux-saga/effects';
 
-import { addQuestion } from '../utils/api';
+import { addQuestion } from '../utils/api/assessment';
 import { AUTHOR_QUESTION } from '../constants/actions';
 
 function* authorQuestion(action) {

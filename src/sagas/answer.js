@@ -1,6 +1,6 @@
 import { takeLatest, put, call } from 'redux-saga/effects';
 
-import { evaluateAnswer } from '../utils/api';
+import { evaluateAnswer } from '../utils/api/questions';
 import { ADD_EVALUATION, CHECK_ANSWER } from '../constants/actions';
 
 function* addEvaluation(action) {

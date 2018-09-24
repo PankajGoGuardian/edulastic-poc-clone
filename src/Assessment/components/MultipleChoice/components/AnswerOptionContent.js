@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const AnswerOptionContent = styled.span`
   font-family: OpenSans;
@@ -7,7 +7,7 @@ const AnswerOptionContent = styled.span`
   font-style: normal;
   font-stretch: normal;
   line-height: 2;
-  letter-spacing: .6px;
+  letter-spacing: 0.6px;
   text-align: left;
   color: #444444;
 `;

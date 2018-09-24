@@ -95,7 +95,8 @@ class MultipleChoice extends Component {
               userSelections={userSelections}
               onChange={this.handleMultiSelect}
             />
-          </Container>);
+          </Container>
+        );
         break;
       }
       case 'answer': {

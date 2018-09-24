@@ -9,6 +9,32 @@ import CheckboxContainter from './components/CheckboxContainer';
 import Label from './components/Label';
 import ProblemContainer from './components/ProblemContainer';
 
+const Option = ({ index, setAnswers, item, showAnswer, userSelections, answers, onChange }) => (
+  <Label
+    setAnswers={setAnswers}
+    showAnswer
+    className={showAnswer ? (answers[index] ? 'right' : 'wrong') : ''}
+  >
+    <PaddingDiv top={setAnswers ? 10 : 20} bottom={20}>
+      <FlexContainer>
+        <CheckboxContainter>
+          <input
+            type="checkbox"
+            value={index}
+            defaultChecked={userSelections[index]}
+            onClick={onChange}
+          />
+          <span />
+        </CheckboxContainter>
+        <MultiChoiceContent>{item.label}</MultiChoiceContent>
+        <PaddingDiv right={15} height={20}>
+          {showAnswer && answers[index] && <i className="fa fa-check" />}
+          {showAnswer && !answers[index] && <i className="fa fa-times" />}
+        </PaddingDiv>
+      </FlexContainer>
+    </PaddingDiv>
+  </Label>
+);
 
 const Option = (props) => {
   const {
@@ -74,9 +100,7 @@ class MultipleChoiceDisplay extends QuestionDisplay {
     } = this.props;
     return (
       <div>
-        { !setAnswers &&
-          <ProblemContainer dangerouslySetInnerHTML={{ __html: question }} />
-        }
+        {!setAnswers && <ProblemContainer dangerouslySetInnerHTML={{ __html: question }} />}
         <Options
           options={options}
           setAnswers={setAnswers}
@@ -89,16 +113,6 @@ class MultipleChoiceDisplay extends QuestionDisplay {
     );
   }
 }
-
-Option.propTypes = {
-  index: PropTypes.number,
-  setAnswers: PropTypes.bool,
-  showAnswer: PropTypes.bool,
-  item: PropTypes.object,
-  userSelections: PropTypes.array,
-  answers: PropTypes.array,
-  onChange: PropTypes.func,
-};
 
 Option.defaultProps = {
   index: 0,

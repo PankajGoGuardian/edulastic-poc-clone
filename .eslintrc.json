@@ -25,6 +25,7 @@
     "max-len": "warn",
     "react/no-did-mount-set-state": 0,
     "no-nested-ternary": 0,
-    "operator-linebreak": 0
+    "operator-linebreak": 0,
+    "react/no-danger": 0
   }
 }

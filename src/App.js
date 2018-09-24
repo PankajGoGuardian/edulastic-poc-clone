@@ -9,6 +9,7 @@ import MultipleChoice from './Assessment/components/MultipleChoice';
 import { loadJSON } from './utils';
 import { ASSESSMENTID } from './constants/others';
 import QuestionEditor from './Assessment/components/QuestionEditor';
+import ItemDetail from './Assessment/components/ItemDetail';
 
 class App extends Component {
   componentDidMount() {
@@ -24,8 +25,9 @@ class App extends Component {
         <Switch>
           <Redirect exact path="/" to="/student" />
           <Route path="/author" component={MultipleChoice} />
-          <Route path="/orderList" component={QuestionEditor} />
+          <Route path="/order-list" component={QuestionEditor} />
           <Route path="/student" component={Student} />
+          <Route path="/items/:id" component={ItemDetail} />
         </Switch>
       </div>
     );

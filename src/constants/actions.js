@@ -28,3 +28,12 @@ export const ORDERLIST_CLEAR = 'ORDERLIST_CLEAR';
 export const ORDERLIST_ADD_ALT_RESPONSES = 'ORDERLIST_ADD_ALT_RESPONSES';
 export const ORDERLIST_UPDATE_ALT_VALIDATION_SCORE = 'ORDERLIST_UPDATE_ALT_VALIDATION_SCORE';
 export const ORDERLIST_UPDATE_CORRECT_VALIDATION_SCORE = 'ORDERLIST_UPDATE_CORRECT_VALIDATION_SCORE';
+
+// items
+export const RECEIVE_ITEMS_REQUEST = '[Items] receive items request';
+export const RECEIVE_ITEMS_SUCCESS = '[Items] receive items success';
+export const RECEIVE_ITEMS_ERROR = '[Items] receive items error';
+
+export const RECEIVE_ITEM_REQUEST = '[Items] receive item request';
+export const RECEIVE_ITEM_SUCCESS = '[Items] receive item success';
+export const RECEIVE_ITEM_ERROR = '[Items] receive item error';

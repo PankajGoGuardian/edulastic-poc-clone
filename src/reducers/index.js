@@ -5,6 +5,7 @@ import assessment from './assessment';
 import view from './view';
 import preview from './preview';
 import questionsOrderList from './questionsOrderList';
+import items from './items';
 
 const rootReducer = combineReducers({
   questions,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   questionsOrderList,
   view,
   preview,
+  items,
 });
 
 export default rootReducer;

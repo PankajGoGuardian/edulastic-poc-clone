@@ -1,12 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  FaPencilAlt, FaSearch, FaEye, FaCog, FaSave, FaCode, FaQuestion,
+  FaPencilAlt,
+  FaSearch,
+  FaEye,
+  FaCog,
+  FaSave,
+  FaCode,
+  FaQuestion,
+  FaCheck,
+  FaEraser,
 } from 'react-icons/fa';
 
-import Button from '../../common/Button';
 import { translate } from '../../../utilities/localization';
 import { Container, StyledButton } from './styled_components';
+import { Button, ButtonLink, SelectButton } from '../../common';
 
 const ButtonBar = ({
   onChangeView, onShowSource, view, changePreviewTab, previewTab,
@@ -53,34 +61,47 @@ const ButtonBar = ({
           {translate('component.questioneditor.buttonbar.save')}
         </Button>
       </StyledButton>
+      <StyledButton>
+        <SelectButton
+          onSelect={value => console.log(value)}
+          icon={<FaCog />}
+          options={[{ value: 'first', label: 'First' }, { value: 'second', label: 'Second' }]}
+        >
+          Settings
+        </SelectButton>
+      </StyledButton>
     </Container>
     {view === 'preview' && (
       <Container>
         <StyledButton>
-          <Button
+          <ButtonLink
             onClick={() => changePreviewTab('check')}
-            color={previewTab === 'check' ? 'primary' : 'default'}
-            icon={<FaEye />}
+            color="primary"
+            active={previewTab === 'check'}
+            icon={<FaCheck />}
           >
             {translate('component.questioneditor.buttonbar.checkanswer')}
-          </Button>
+          </ButtonLink>
         </StyledButton>
         <StyledButton>
-          <Button
+          <ButtonLink
             onClick={() => changePreviewTab('show')}
-            color={previewTab === 'show' ? 'primary' : 'default'}
+            color="primary"
+            active={previewTab === 'show'}
             icon={<FaEye />}
           >
             {translate('component.questioneditor.buttonbar.showanswers')}
-          </Button>
+          </ButtonLink>
         </StyledButton>
         <StyledButton>
-          <Button
+          <ButtonLink
             onClick={() => changePreviewTab('clear')}
-            color={previewTab === 'clear' ? 'primary' : 'default'}
+            color="primary"
+            active={previewTab === 'clear'}
+            icon={<FaEraser />}
           >
             {translate('component.questioneditor.buttonbar.clear')}
-          </Button>
+          </ButtonLink>
         </StyledButton>
       </Container>
     )}

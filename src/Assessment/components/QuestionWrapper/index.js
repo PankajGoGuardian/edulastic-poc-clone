@@ -4,10 +4,19 @@ import React from 'react';
 import MultipleChoiceDisplay from '../MultipleChoice/Display';
 
 const QuestionWrapper = (props) => {
-  const { options, question, type, setAnswers, showAnswer, answers, userSelections = [] } = props;
+  const {
+    options,
+    question,
+    type,
+    setAnswers,
+    showAnswer,
+    answers,
+    onChange,
+    userSelections = [],
+  } = props;
   return (
     <div>
-      { type === 'mcq' &&
+      {type === 'mcq' && (
         <MultipleChoiceDisplay
           setAnswers={setAnswers}
           showAnswer={showAnswer}
@@ -15,9 +24,9 @@ const QuestionWrapper = (props) => {
           userSelections={userSelections}
           options={options}
           question={question}
-          onChange={props.onChange}
+          onChange={onChange}
         />
-      }
+      )}
     </div>
   );
 };

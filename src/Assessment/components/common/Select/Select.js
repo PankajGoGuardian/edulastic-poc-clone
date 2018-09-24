@@ -40,8 +40,8 @@ const Main = styled.select`
 const SelectContainer = styled.div`
   position: relative;
   display: inline-block;
-  min-width: 200px;
-  height: 58px;
+  min-width: 150px;
+  min-height: 40px;
   &:before {
     position: absolute;
     font-family: 'FontAwesome';

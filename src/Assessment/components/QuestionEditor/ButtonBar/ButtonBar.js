@@ -2,14 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {
-  FaPencilAlt, FaSearch, FaEye, FaCog, FaSave, FaCode, FaQuestion,
+  FaPencilAlt,
+  FaSearch,
+  FaEye,
+  FaCog,
+  FaSave,
+  FaCode,
+  FaQuestion,
+  FaCheck,
+  FaEraser,
 } from 'react-icons/fa';
 
-import Button from '../../common/Button';
+import { Button, ButtonLink, SelectButton } from '../../common';
 
-const ButtonBar = ({
-  onChangeView, onShowSource, view, changePreviewTab, previewTab,
-}) => (
+const ButtonBar = ({ onChangeView, onShowSource, view, changePreviewTab, previewTab }) => (
   <React.Fragment>
     <Container>
       {view === 'edit' && (
@@ -19,11 +25,6 @@ const ButtonBar = ({
           </Button>
         </StyledButton>
       )}
-      <StyledButton>
-        <Button onClick={() => {}} icon={<FaCog />}>
-          Settings
-        </Button>
-      </StyledButton>
       <StyledButton>
         <Button onClick={() => {}} icon={<FaQuestion />}>
           Help
@@ -52,34 +53,47 @@ const ButtonBar = ({
           Save
         </Button>
       </StyledButton>
+      <StyledButton>
+        <SelectButton
+          onSelect={value => console.log(value)}
+          icon={<FaCog />}
+          options={[{ value: 'first', label: 'First' }, { value: 'second', label: 'Second' }]}
+        >
+          Settings
+        </SelectButton>
+      </StyledButton>
     </Container>
     {view === 'preview' && (
       <Container>
         <StyledButton>
-          <Button
+          <ButtonLink
             onClick={() => changePreviewTab('check')}
-            color={previewTab === 'check' ? 'primary' : 'default'}
-            icon={<FaEye />}
+            color="primary"
+            active={previewTab === 'check'}
+            icon={<FaCheck />}
           >
             Check Answer
-          </Button>
+          </ButtonLink>
         </StyledButton>
         <StyledButton>
-          <Button
+          <ButtonLink
             onClick={() => changePreviewTab('show')}
-            color={previewTab === 'show' ? 'primary' : 'default'}
+            color="primary"
+            active={previewTab === 'show'}
             icon={<FaEye />}
           >
             Show Answers
-          </Button>
+          </ButtonLink>
         </StyledButton>
         <StyledButton>
-          <Button
+          <ButtonLink
             onClick={() => changePreviewTab('clear')}
-            color={previewTab === 'clear' ? 'primary' : 'default'}
+            color="primary"
+            active={previewTab === 'clear'}
+            icon={<FaEraser />}
           >
             Clear
-          </Button>
+          </ButtonLink>
         </StyledButton>
       </Container>
     )}

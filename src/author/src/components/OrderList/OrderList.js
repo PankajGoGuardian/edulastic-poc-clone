@@ -4,11 +4,13 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { arrayMove } from 'react-sortable-hoc';
 
-import OrderListEdit from './OrderListEdit';
-import Question from './Question';
-import CorrectAnswers from './CorrectAnswers';
-import OrderListReport from './OrderListReport';
-import OrderListPreview from './OrderListPreview';
+import {
+  OrderListEdit,
+  Question,
+  OrderListPreview,
+  OrderListReport,
+  CorrectAnswers,
+} from '../../../../assessment/src/components/OrderList';
 import {
   getStimulusSelector,
   getQuestionsListSelector,

@@ -1,33 +1,26 @@
 import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import './App.css';
-import Student from './Student';
-import MultipleChoice from './Assessment/components/MultipleChoice';
-import { loadJSON } from './utils';
-import { ASSESSMENTID } from './constants/others';
-import QuestionEditor from './Assessment/components/QuestionEditor';
-import ItemDetail from './Assessment/components/ItemDetail';
+import Student from './student/src';
+import { QuestionEditor, MultipleChoice } from './author/src';
 
 class App extends Component {
-  componentDidMount() {
-    const { assessmentId, dispatch } = this.props;
-
-    loadJSON(assessmentId, dispatch);
-    localStorage.setItem(ASSESSMENTID, assessmentId);
+  componentWillMount() {
+    const { assessmentId } = this.props;
+    localStorage.setItem('AssessmentId', assessmentId);
   }
 
   render() {
     return (
-      <div className="App">
+      <div>
         <Switch>
           <Redirect exact path="/" to="/student" />
-          <Route path="/author" component={MultipleChoice} />
-          <Route path="/order-list" component={QuestionEditor} />
-          <Route path="/student" component={Student} />
-          <Route path="/items/:id" component={ItemDetail} />
+          <Route path="/author/mcq" component={MultipleChoice} />
+          <Route path="/author/orderlist" component={QuestionEditor} />
+          <Route path="/student/test" component={() => <Student defaultAP />} />
+          <Route path="/student/practice" component={Student} />
+          {/* <Route path="/items/:id" component={ItemDetail} /> */}
         </Switch>
       </div>
     );
@@ -36,7 +29,6 @@ class App extends Component {
 
 App.propTypes = {
   assessmentId: PropTypes.string.isRequired,
-  dispatch: PropTypes.func.isRequired,
 };
 
-export default connect()(App);
+export default App;

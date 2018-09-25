@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import { Paper, Select, Preloader } from '../common';
 import { receiveItemByIdAction } from '../../actions/items';
 import { getItemSelector, getItemLoadingSelector } from '../../selectors/items';
+import OrderListPreview from '../OrderList/OrderListPreview';
+import AddNew from './AddNew';
 
 class ItemDetail extends Component {
   componentDidMount() {
@@ -43,6 +45,9 @@ class ItemDetail extends Component {
           />{' '}
           will be empty
         </p>
+        <p>Lorem ipsum dolor sit amet?</p>
+        <OrderListPreview questions={item.list} />
+        <AddNew />
       </Paper>
     );
   }

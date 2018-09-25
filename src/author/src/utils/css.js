@@ -5,6 +5,7 @@ export const grey = '#dfdfdf';
 export const lightGrey = '#f9f9f9';
 export const darkGrey = '#a3a0a0';
 export const textColor = '#878282';
+export const secondaryTextColor = '#434b5d';
 
 export const red = '#ee1658';
 export const lightRed = '#fbdfe7';

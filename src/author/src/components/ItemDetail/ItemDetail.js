@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { Paper, Select, Preloader } from '../common';
 import { receiveItemByIdAction } from '../../actions/items';
 import { getItemSelector, getItemLoadingSelector } from '../../selectors/items';
-import OrderListPreview from '../OrderList/OrderListPreview';
+import { OrderListPreview } from '../../../../assessment/src/components/OrderList';
 import AddNew from './AddNew';
 
 class ItemDetail extends Component {

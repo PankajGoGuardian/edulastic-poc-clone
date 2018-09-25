@@ -5,7 +5,9 @@ import { FaClock, FaAngleDoubleRight } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
 
 import { Button } from '../common';
-import { textColor, blue, darkBlue, grey } from '../../utils/css';
+import {
+  textColor, blue, darkBlue, grey,
+} from '../../utils/css';
 
 /* eslint-disable no-underscore-dangle */
 const Item = ({ item, match }) => (
@@ -31,7 +33,9 @@ const Item = ({ item, match }) => (
     </Labels>
     <View>
       <Button
-        style={{ width: 166, height: 50, fontSize: 11, fontWeight: 600 }}
+        style={{
+          width: 166, height: 50, fontSize: 11, fontWeight: 600,
+        }}
         variant="extendedFab"
         color="primary"
         outlined

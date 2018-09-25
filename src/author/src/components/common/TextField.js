@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 
 import { grey } from '../../utils/css';
 
-const TextField = ({ icon, height, style, ...restProps }) => (
+const TextField = ({
+  icon, height, style, ...restProps
+}) => (
   <Container height={height} style={style}>
     <Field type="text" {...restProps} />
     {icon && <Icon>{icon}</Icon>}

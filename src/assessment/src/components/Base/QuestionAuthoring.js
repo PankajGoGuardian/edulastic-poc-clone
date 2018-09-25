@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { Component } from 'react';
 
-import { QUESTION_PROBLEM, QUESTION_OPTIONS, QUESTION_ANSWERS } from '../../../constants/others';
+import { QUESTION_PROBLEM, QUESTION_OPTIONS, QUESTION_ANSWERS } from '../../constants/others';
 
 class QuestionAuthoring extends Component {
   edited = false;

@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { Component } from 'react';
-import { QUESTION_PROBLEM, QUESTION_OPTIONS } from '../../../constants/others';
+import { QUESTION_PROBLEM, QUESTION_OPTIONS } from '../../constants/others';
 
 class QuestionDisplay extends Component {
   // - initialize(questionData)

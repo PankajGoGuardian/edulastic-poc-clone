@@ -11,9 +11,11 @@ import AssignmentTitle from './components/AssignmentTitle';
 import { translate } from '../../utils/localization';
 import Header from './components/Header';
 import Main from './components/Main';
-import MultipleChoiceAuthoring from './Authoring';
-import MultipleChoiceDisplay from './Display';
-import MultipleChoiceReport from './Report';
+import {
+  MultipleChoiceAuthoring,
+  MultipleChoiceDisplay,
+  MultipleChoiceReport,
+} from '../../../../assessment/src/components/MultipleChoice';
 import {
   QUESTION_PROBLEM,
   QUESTION_OPTIONS,

@@ -26,3 +26,4 @@ export { default as Select } from './Select';
 export { default as Preloader } from './Preloader';
 export { default as ButtonLink } from './ButtonLink';
 export { default as SelectButton } from './SelectButton';
+export { default as Pagination } from './Pagination';

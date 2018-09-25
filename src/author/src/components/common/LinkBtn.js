@@ -1,6 +1,7 @@
 import styled from 'styled-components';
+import { greenDark } from '../../utils/css';
 
-const LinkBtn = styled.a` 
+const LinkBtn = styled.a`
   font-size: 12px;
   font-weight: 600;
   font-style: normal;
@@ -8,7 +9,7 @@ const LinkBtn = styled.a`
   line-height: 1.38;
   letter-spacing: normal;
   text-align: left;
-  color: #4aac8b;
+  color: ${greenDark};
   cursor: pointer;
 `;
 

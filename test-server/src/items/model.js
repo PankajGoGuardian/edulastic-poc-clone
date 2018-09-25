@@ -1,9 +1,9 @@
-import mongoose, { Mongoose } from 'mongoose';
+import mongoose from 'mongoose';
 
 const shema = mongoose.Schema({}, { strict: false });
 
 class Item {
-  constructor(item) {
+  constructor() {
     this.Item = mongoose.model('items', shema);
   }
 
@@ -11,8 +11,8 @@ class Item {
     return this.Item.findById(id);
   }
 
-  update(_id, item) {
-    return this.Item.update({ _id: _id }, item);
+  getAll() {
+    return this.Item.find({});
   }
 }
 

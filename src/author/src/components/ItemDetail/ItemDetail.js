@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { Paper, Select, Preloader } from '../common';
 import { receiveItemByIdAction } from '../../actions/items';
-import { getItemSelector } from '../../selectors/items';
+import { getItemSelector, getItemLoadingSelector } from '../../selectors/items';
 
 class ItemDetail extends Component {
   componentDidMount() {
@@ -17,9 +17,11 @@ class ItemDetail extends Component {
   };
 
   render() {
-    const { item } = this.props;
-    console.log(item);
-    if (!item) return <Preloader />;
+    const { item, loading } = this.props;
+
+    if (loading) return <Preloader />;
+    if (!item) return null;
+
     return (
       <Paper>
         <div dangerouslySetInnerHTML={{ __html: item.stimulus }} />
@@ -50,6 +52,7 @@ ItemDetail.propTypes = {
   receiveItemById: PropTypes.func.isRequired,
   item: PropTypes.any,
   match: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 ItemDetail.defaultProps = {
@@ -59,6 +62,7 @@ ItemDetail.defaultProps = {
 export default connect(
   state => ({
     item: getItemSelector(state),
+    loading: getItemLoadingSelector(state),
   }),
   { receiveItemById: receiveItemByIdAction },
 )(ItemDetail);

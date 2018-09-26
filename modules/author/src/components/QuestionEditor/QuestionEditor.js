@@ -14,6 +14,8 @@ import { changeViewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
 import { Container } from './styled_components';
 import { Paper } from '../../../../assessment/src/components/common';
+import ItemHeader from '../../../../assessment/src/components/common/ItemHeader';
+import { translate } from '../../../../assessment/src/utils/localization';
 
 class QuestionEditor extends Component {
   state = {
@@ -57,13 +59,18 @@ class QuestionEditor extends Component {
           </SourceModal>
         )}
 
-        <ButtonBar
-          onShowSource={this.handleShowSource}
-          onChangeView={this.handleChangeView}
-          changePreviewTab={changePreviewTab}
-          view={view}
-          previewTab={previewTab}
-        />
+        <ItemHeader
+          title={translate('component.orderList')}
+          link={{ url: '/author', text: translate('component.backToItemDetail') }}
+        >
+          <ButtonBar
+            onShowSource={this.handleShowSource}
+            onChangeView={this.handleChangeView}
+            changePreviewTab={changePreviewTab}
+            view={view}
+            previewTab={previewTab}
+          />
+        </ItemHeader>
         <Paper>
           <OrderList view={view} />
         </Paper>

@@ -14,5 +14,7 @@
   "component.multiplechoice.multiplechoiceoptions": "Multiple Choice Options",
   "component.multiplechoice.addnewchoice": "Add New Choice",
   "component.multiplechoice.setcorrectanswers": "Set Correct Answer(s)",
-  "component.multiplechoice.thisisstem": "[This is the stem.]"
+  "component.multiplechoice.thisisstem": "[This is the stem.]",
+  "component.orderList": "Order List",
+  "component.backToItemDetail": "Back to item detail"
 }

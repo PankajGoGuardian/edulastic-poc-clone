@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { arrayMove } from 'react-sortable-hoc';
+import styled from 'styled-components';
 
 import {
   OrderListEdit,
@@ -29,7 +30,6 @@ import {
 } from '../../selectors/preview';
 import { updatePreviewListAction } from '../../actions/preview';
 import { translate } from '../../utils/localization';
-import { Heading } from '../../../../assessment/src/components/common';
 
 class OrderList extends Component {
   componentDidMount() {
@@ -156,7 +156,7 @@ class OrderList extends Component {
         )}
         {view === 'preview' && (
           <React.Fragment>
-            <Heading>{stimulus}</Heading>
+            <QuestionText dangerouslySetInnerHTML={{ __html: stimulus }} />
 
             {previewTab === 'check' && (
               <OrderListReport
@@ -225,3 +225,8 @@ const enhance = compose(
 );
 
 export default enhance(OrderList);
+
+const QuestionText = styled.p`
+  font-size: 16px;
+  padding: 10px;
+`;

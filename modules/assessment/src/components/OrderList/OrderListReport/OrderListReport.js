@@ -33,6 +33,7 @@ class OrderListReport extends Component {
             correct={getCorrect(i)}
             correctText={validation.valid_response.value[i]}
             showAnswers={showAnswers}
+            index={i + 1}
           >
             {q}
           </OrderListReportItem>

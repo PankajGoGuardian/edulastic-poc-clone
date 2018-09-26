@@ -1,10 +1,7 @@
-import { combineReducers } from 'redux';
-
 import questionsOrderList from './questionsOrderList';
 
-
-const rootReducer = combineReducers({
+const OrderListReducers = {
   questionsOrderList,
-});
+};
 
-export default rootReducer;
+export default OrderListReducers;

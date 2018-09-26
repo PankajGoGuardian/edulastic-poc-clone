@@ -4,7 +4,7 @@ import { FaCog, FaSave, FaCode, FaCheck, FaEraser } from 'react-icons/fa';
 
 import { translate } from '../../../utils/localization';
 import { Container, StyledButton } from './styled_components';
-import { Button, ButtonLink, SelectButton } from '../../../../../assessment/src/components/common';
+import { Button, ButtonLink, SelectButton } from '../../common';
 import {
   IconPensilEdit,
   IconEye,

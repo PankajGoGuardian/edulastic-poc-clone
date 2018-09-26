@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import { gotoQuestion } from '../../actions/questions';
 import Assessment from '../Assessment';
-import QuestionSelectDropdown from '../QuestionSelectDropdown';
+import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
 import MainWrapper from './MainWrapper';
 import HeaderLeftMenu from '../common/HeaderLeftMenu';
 import HeaderMainMenu from '../common/HeaderMainMenu';
@@ -20,7 +20,7 @@ import {
   Container,
   Logo,
   FlexContainer,
-} from '../../../../assessment/src/components/common';
+} from '../common';
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line

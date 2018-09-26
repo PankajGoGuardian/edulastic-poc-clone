@@ -11,14 +11,10 @@ import MainContent from './MainContent';
 import MainFooter from './MainFooter';
 import Sidebar from './Sidebar';
 import ProgressContainer from './ProgressContainer';
-import QuestionSelectDropdown from '../QuestionSelectDropdown';
-import HeaderLeftMenu from '../common/HeaderLeftMenu';
-import HeaderMainMenu from '../common/HeaderMainMenu';
-import HeaderRightMenu from '../common/HeaderRightMenu';
-import MobileMainMenu from '../common/MobileMainMenu';
+import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
 import LogoImage from '../../assets/logo.png';
 import SettingImage from '../../assets/screwdriver.png';
-import SidebarQuestionList from '../SidebarQuestionList';
+import SidebarQuestionList from './SidebarQuestionList';
 import { translate } from '../../utils/localization';
 import QuestionWrapper from '../QuestionWrapper';
 import {
@@ -30,7 +26,11 @@ import {
   Logo,
   DesktopMainMenu,
   FlexContainer,
-} from '../../../../assessment/src/components/common';
+  HeaderLeftMenu,
+  HeaderMainMenu,
+  HeaderRightMenu,
+  MobileMainMenu,
+} from '../common';
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line

@@ -7,7 +7,7 @@ import {
 } from '../utils/css';
 import { translate } from '../utils/localization';
 import { Container, Text, Icon, CorrectAnswerItem, Index, QuestionText } from './styled_components';
-import { FlexContainer } from '../../common';
+import { FlexContainer } from '../common';
 
 
 const OrderListReportItem = ({ children, correctText, correct, showAnswers, index }) => (

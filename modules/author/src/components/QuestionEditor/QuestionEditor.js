@@ -15,7 +15,7 @@ import { getViewSelector } from '../../selectors/view';
 import { Container } from './styled_components';
 import { Paper } from '../../../../assessment/src/components/common';
 import ItemHeader from '../../../../assessment/src/components/common/ItemHeader';
-import { translate } from '../../../../assessment/src/utils/localization';
+import { translate } from '../../utils/localization';
 
 class QuestionEditor extends Component {
   state = {

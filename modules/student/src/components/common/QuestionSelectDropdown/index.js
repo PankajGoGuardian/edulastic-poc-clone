@@ -3,7 +3,7 @@ import React from 'react';
 
 import SelectContainer from './SelectContainer';
 import Select from './Select';
-import { translate } from '../../utils/localization';
+import { translate } from '../../../utils/localization';
 
 const QuestionSelectDropdown = ({ onChange, options, value }) => (
   <SelectContainer>

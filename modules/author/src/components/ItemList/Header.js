@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { TextField, Button } from '../../../../assessment/src/components/common';
-import { blue, greenDarkSecondary } from '../../../../assessment/src/utils/css';
-import { IconPlus, IconSearch } from '../../../../assessment/src/components/common/icons';
+import { TextField, Button } from '../common';
+import { blue, greenDarkSecondary } from '../../utils/css';
+import { IconPlus, IconSearch } from '../common/icons';
 
 const Header = ({ onSearch, onCreate }) => (
   <Container>

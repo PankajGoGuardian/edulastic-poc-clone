@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import MultipleChoiceDisplay from '../MultipleChoice/Display';
+import { MultipleChoiceDisplay } from '../../../../assessment/src/components/MultipleChoice';
 
 const QuestionWrapper = (props) => {
   const {

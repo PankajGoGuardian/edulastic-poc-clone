@@ -3,8 +3,8 @@ import React from 'react';
 
 import QuestionReport from '../../Base/QuestionReport';
 import MultipleChoiceEvaluation from '../Evaluation';
-import QuestionWrapper from '../../QuestionWrapper';
 import { Container } from '../common';
+import MultipleChoiceDisplay from '../Display';
 
 class MultipleChoiceReport extends QuestionReport {
   state = {
@@ -25,8 +25,7 @@ class MultipleChoiceReport extends QuestionReport {
     const { showAnswer, userSelections, handleMultiSelect } = this.props;
     return (
       <Container disabled={showAnswer}>
-        <QuestionWrapper
-          type="mcq"
+        <MultipleChoiceDisplay
           options={options}
           question={question}
           userSelections={userSelections}

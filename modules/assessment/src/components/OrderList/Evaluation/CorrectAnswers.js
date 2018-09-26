@@ -93,8 +93,7 @@ class CorrectAnswers extends Component {
                     <CorrectAnswer
                       response={alter}
                       // eslint-disable-next-line
-                      onSortCurrentAnswer={({ oldIndex, newIndex }) =>
-                        onSortAltAnswer({ oldIndex, newIndex, altIndex: i })
+                      onSortCurrentAnswer={({ oldIndex, newIndex }) => onSortAltAnswer({ oldIndex, newIndex, altIndex: i })
                       }
                       onUpdatePoints={(points) => {
                         updateAltValidationScore(points, i);

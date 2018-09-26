@@ -1,24 +1,13 @@
 import { combineReducers } from 'redux';
 
 import assessmentReducers from './assessment/src/reducers';
-
-// import questions from './author/src/reducers/questions';
-// import view from './author/src/reducers/view';
-// import preview from './author/src/reducers/preview';
-// import questionsOrderList from './author/src/reducers/questionsOrderList';
-// import items from './author/src/reducers/items';
-// import assessment from './student/src/reducers/assessment';
-import studentQuestions from './student/src/reducers/questions';
+import authorReducers from './author/src/reducers';
+import studentReducers from './student/src/reducers';
 
 const rootReducer = combineReducers({
-  assessmentReducers,
-  // questions,
-  // assessment,
-  // questionsOrderList,
-  // view,
-  // preview,
-  // items,
-  studentQuestions,
+  ...assessmentReducers,
+  ...authorReducers,
+  ...studentReducers,
 });
 
 export default rootReducer;

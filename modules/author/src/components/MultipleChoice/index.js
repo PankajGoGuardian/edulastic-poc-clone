@@ -8,7 +8,7 @@ import {
   MultipleChoiceReport,
 } from '../../../../assessment/src/components/MultipleChoice';
 
-import { PaddingDiv } from '../../../../assessment/src/components/common';
+import { PaddingDiv } from '../common';
 
 class MultipleChoice extends Component {
   render() {

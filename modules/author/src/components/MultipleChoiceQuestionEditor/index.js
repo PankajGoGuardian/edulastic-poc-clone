@@ -18,7 +18,7 @@ import {
   FlexContainer,
   DashboardControlBtn,
   LinkBtn,
-} from '../../../../assessment/src/components/common';
+} from '../common';
 
 class MultipleChoiceQuestionEditor extends Component {
   state = {
@@ -140,7 +140,7 @@ class MultipleChoiceQuestionEditor extends Component {
         <Main>
           <MultipleChoice
             activePage={activePage}
-            showAnswer
+            showAnswer={this.showAnswer}
             userSelections={userSelections}
             handleMultiSelect={this.handleMultiSelect}
           />

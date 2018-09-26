@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { Paper, Select, Preloader } from '../common';
-import { receiveItemByIdAction } from '../../actions/items';
-import { getItemSelector } from '../../selectors/items';
+// import { receiveItemByIdAction } from '../../actions/items';
+// import { getItemSelector } from '../../selectors/items';
 
 class ItemDetail extends Component {
   componentDidMount() {
@@ -56,9 +56,10 @@ ItemDetail.defaultProps = {
   item: null,
 };
 
-export default connect(
-  state => ({
-    item: getItemSelector(state),
-  }),
-  { receiveItemById: receiveItemByIdAction },
-)(ItemDetail);
+export default ItemDetail;
+// export default connect(
+//   state => ({
+//     item: getItemSelector(state),
+//   }),
+//   { receiveItemById: receiveItemByIdAction },
+// )(ItemDetail);

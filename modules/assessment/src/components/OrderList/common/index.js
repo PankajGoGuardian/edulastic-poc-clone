@@ -4,3 +4,4 @@ export { default as Tabs } from './Tabs';
 export { default as DeleteButton } from './DeleteButton';
 export { default as DragHandle } from './DragHandle';
 export { default as TextField } from './TextField';
+export { default as FlexContainer } from './FlexContainer';

@@ -1,5 +1,6 @@
 import {
-  LOAD_QUESTIONS, GOTO_QUESTION,
+  LOAD_QUESTIONS,
+  GOTO_QUESTION,
 } from '../constants/actions';
 
 const initialState = {

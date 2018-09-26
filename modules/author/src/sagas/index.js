@@ -1,9 +1,11 @@
-import { all } from 'redux-saga/effects';
-
 import answerSaga from './answer';
-import question from './question';
-import items from './items';
+import questionSaga from './question';
+import itemsSaga from './items';
 
-export default function* () {
-  yield all([answerSaga(), question(), items()]);
-}
+const authorSagas = {
+  answerSaga,
+  questionSaga,
+  itemsSaga,
+};
+
+export default authorSagas;

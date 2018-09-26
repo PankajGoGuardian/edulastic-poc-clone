@@ -1,11 +1,9 @@
-import { combineReducers } from 'redux';
-
 import questions from './questions';
 import assessment from './assessment';
 
-const rootReducer = combineReducers({
+const studentReducer = {
   questions,
   assessment,
-});
+};
 
-export default rootReducer;
+export default studentReducer;

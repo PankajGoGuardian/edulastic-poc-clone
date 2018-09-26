@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { FaAngleDoubleRight } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
 
-import { Button } from '../../../../assessment/src/components/common';
+import { Button } from '../common';
 import { grey, blue, darkBlue, textColor } from '../../../../assessment/src/utils/css';
 import { IconClockCircularOutline } from '../../../../assessment/src/components/common/icons';
 

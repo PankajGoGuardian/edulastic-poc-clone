@@ -6,12 +6,12 @@ import {
 import QuestionAuthoring from '../../Base/QuestionAuthoring';
 import { translate } from '../utils/localization';
 import { ALPHABET } from '../constants/others';
-import QuestionWrapper from '../../QuestionWrapper';
 import { Container, PaddingDiv } from '../common';
 import SortableItemContainer from './SortableItemContainer';
 import Subtitle from './Sutitle';
 import QuestionTextArea from './QuestionTextArea';
 import AddNewChoiceBtn from './AddNewChoiceBtn';
+import MultipleChoiceDisplay from '../Display';
 
 const DragHandle = SortableHandle(() => <i className="fa fa-align-justify" />);
 
@@ -156,8 +156,7 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
             </AddNewChoiceBtn>
           </div>
           <Subtitle>{translate('component.multiplechoice.setcorrectanswers')}</Subtitle>
-          <QuestionWrapper
-            type="mcq"
+          <MultipleChoiceDisplay
             setAnswers
             options={choiceOptions}
             userSelections={answers}

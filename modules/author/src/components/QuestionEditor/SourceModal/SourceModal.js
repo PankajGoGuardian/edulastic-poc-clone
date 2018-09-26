@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import 'brace/mode/json';
 import 'brace/theme/github';
-import { Modal } from '../../../../../assessment/src/components/common';
+import { Modal } from '../../common';
 
 class SourceModal extends Component {
   state = {

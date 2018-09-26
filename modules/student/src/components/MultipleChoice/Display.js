@@ -2,35 +2,35 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import QuestionDisplay from '../Base/QuestionDisplay';
-import FlexContainer from '../common/FlexContainer';
-import PaddingDiv from '../common/PaddingDiv';
 import MultiChoiceContent from './components/MultiChoiceContent';
 import CheckboxContainter from './components/CheckboxContainer';
 import ProblemContainer from './components/ProblemContainer';
 import Label from './components/Label';
+import { FlexContainer, PaddingDiv } from '../../../../assessment/src/components/common';
 
 const Option = (props) => {
-  const {
-    index, setAnswers, item, showAnswer, userSelections, answers, onChange,
-  } = props;
+  const { index, setAnswers, item, showAnswer, userSelections, answers, onChange } = props;
   return (
-    <Label setAnswers={setAnswers} showAnswer className={showAnswer ? answers[index] ? 'right' : 'wrong' : ''}>
+    <Label
+      setAnswers={setAnswers}
+      showAnswer
+      className={showAnswer ? (answers[index] ? 'right' : 'wrong') : ''}
+    >
       <PaddingDiv top={setAnswers ? 10 : 20} bottom={20}>
         <FlexContainer>
           <CheckboxContainter>
-            <input type="checkbox" value={index} defaultChecked={userSelections[index]} onClick={onChange} />
+            <input
+              type="checkbox"
+              value={index}
+              defaultChecked={userSelections[index]}
+              onClick={onChange}
+            />
             <span />
           </CheckboxContainter>
-          <MultiChoiceContent>
-            {item.label}
-          </MultiChoiceContent>
+          <MultiChoiceContent>{item.label}</MultiChoiceContent>
           <PaddingDiv right={15} height={20}>
-            {showAnswer && answers[index] &&
-              <i className="fa fa-check" />
-            }
-            {showAnswer && !answers[index] &&
-              <i className="fa fa-times" />
-            }
+            {showAnswer && answers[index] && <i className="fa fa-check" />}
+            {showAnswer && !answers[index] && <i className="fa fa-times" />}
           </PaddingDiv>
         </FlexContainer>
       </PaddingDiv>
@@ -39,9 +39,7 @@ const Option = (props) => {
 };
 
 const Options = (props) => {
-  const {
-    options, showAnswer, setAnswers, userSelections, answers, onChange,
-  } = props;
+  const { options, showAnswer, setAnswers, userSelections, answers, onChange } = props;
   return (
     <div>
       {options.map((option, index) => (
@@ -68,9 +66,7 @@ class MultipleChoiceDisplay extends QuestionDisplay {
       options = responseOpt;
       question = responseQues;
     }
-    const {
-      setAnswers, showAnswer, userSelections = [], answers = [],
-    } = this.props;
+    const { setAnswers, showAnswer, userSelections = [], answers = [] } = this.props;
     return (
       <div>
         {!setAnswers && <ProblemContainer dangerouslySetInnerHTML={{ __html: question }} />}

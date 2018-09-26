@@ -12,23 +12,25 @@ import MainFooter from './MainFooter';
 import Sidebar from './Sidebar';
 import ProgressContainer from './ProgressContainer';
 import QuestionSelectDropdown from '../QuestionSelectDropdown';
-import Container from '../common/Container';
-import Header from '../common/Header';
 import HeaderLeftMenu from '../common/HeaderLeftMenu';
 import HeaderMainMenu from '../common/HeaderMainMenu';
 import HeaderRightMenu from '../common/HeaderRightMenu';
-import FlexContainer from '../common/FlexContainer';
-import Logo from '../common/Logo';
-import Main from '../common/Main';
-import ControlBtn from '../common/ControlBtn';
 import MobileMainMenu from '../common/MobileMainMenu';
-import DesktopMainMenu from '../common/DesktopMainMenu';
-import Blank from '../common/Blank';
 import LogoImage from '../../assets/logo.png';
 import SettingImage from '../../assets/screwdriver.png';
 import SidebarQuestionList from '../SidebarQuestionList';
 import { translate } from '../../utils/localization';
 import QuestionWrapper from '../QuestionWrapper';
+import {
+  Blank,
+  ControlBtn,
+  Main,
+  Header,
+  Container,
+  Logo,
+  DesktopMainMenu,
+  FlexContainer,
+} from '../../../../assessment/src/components/common';
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line

@@ -7,18 +7,20 @@ import { gotoQuestion } from '../../actions/questions';
 import Assessment from '../Assessment';
 import QuestionSelectDropdown from '../QuestionSelectDropdown';
 import MainWrapper from './MainWrapper';
-import Container from '../common/Container';
-import Header from '../common/Header';
 import HeaderLeftMenu from '../common/HeaderLeftMenu';
 import HeaderMainMenu from '../common/HeaderMainMenu';
 import HeaderRightMenu from '../common/HeaderRightMenu';
-import FlexContainer from '../common/FlexContainer';
-import Logo from '../common/Logo';
-import Main from '../common/Main';
-import ControlBtn from '../common/ControlBtn';
 import LogoImage from '../../assets/logo.png';
 import SettingImage from '../../assets/screwdriver.png';
 import QuestionWrapper from '../QuestionWrapper';
+import {
+  ControlBtn,
+  Main,
+  Header,
+  Container,
+  Logo,
+  FlexContainer,
+} from '../../../../assessment/src/components/common';
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line

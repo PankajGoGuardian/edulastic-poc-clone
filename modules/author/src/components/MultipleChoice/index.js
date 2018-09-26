@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import FlexContainer from '../common/FlexContainer';
-import DashboardControlBtn from '../common/DashboardControlBtn';
-import LinkBtn from '../common/LinkBtn';
 import Container from './components/Container';
-import PaddingDiv from '../common/PaddingDiv';
 import AssignmentTitle from './components/AssignmentTitle';
 import { translate } from '../../utils/localization';
 import Header from './components/Header';
@@ -23,6 +19,12 @@ import {
   ASSESSMENTID,
 } from '../../constants/others';
 import { addQuestion } from '../../actions/questions';
+import {
+  LinkBtn,
+  FlexContainer,
+  DashboardControlBtn,
+  PaddingDiv,
+} from '../../../../assessment/src/components/common';
 
 class MultipleChoice extends Component {
   state = {

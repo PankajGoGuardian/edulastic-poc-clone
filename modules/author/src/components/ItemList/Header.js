@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { FaSearch, FaPlus } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 
-import { TextField, Button } from '../common';
 import { blue } from '../../utils/css';
+import { TextField, Button } from '../../../../assessment/src/components/common';
 
 const Header = ({ onSearch, onCreate }) => (
   <Container>

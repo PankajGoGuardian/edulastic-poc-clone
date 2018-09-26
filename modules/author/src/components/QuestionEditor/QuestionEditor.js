@@ -12,8 +12,8 @@ import { changePreviewTabAction } from '../../actions/preview';
 import { getPreivewTabSelector } from '../../selectors/preview';
 import { changeViewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
-import { Paper } from '../common';
 import { Container } from './styled_components';
+import { Paper } from '../../../../assessment/src/components/common';
 
 class QuestionEditor extends Component {
   state = {
@@ -46,9 +46,7 @@ class QuestionEditor extends Component {
   };
 
   render() {
-    const {
-      questionsData, view, changePreviewTab, previewTab,
-    } = this.props;
+    const { questionsData, view, changePreviewTab, previewTab } = this.props;
     const { showModal } = this.state;
 
     return (

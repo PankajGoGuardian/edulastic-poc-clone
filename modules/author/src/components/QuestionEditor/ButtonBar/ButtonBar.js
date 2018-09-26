@@ -14,11 +14,9 @@ import {
 
 import { translate } from '../../../utils/localization';
 import { Container, StyledButton } from './styled_components';
-import { Button, ButtonLink, SelectButton } from '../../common';
+import { Button, ButtonLink, SelectButton } from '../../../../../assessment/src/components/common';
 
-const ButtonBar = ({
-  onChangeView, onShowSource, view, changePreviewTab, previewTab,
-}) => (
+const ButtonBar = ({ onChangeView, onShowSource, view, changePreviewTab, previewTab }) => (
   <React.Fragment>
     <Container>
       {view === 'edit' && (

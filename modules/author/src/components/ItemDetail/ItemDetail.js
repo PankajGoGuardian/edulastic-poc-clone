@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { Paper, Select, Preloader } from '../common';
 import { receiveItemByIdAction } from '../../actions/items';
 import { getItemSelector, getItemLoadingSelector } from '../../selectors/items';
 import { OrderListPreview } from '../../../../assessment/src/components/OrderList';
 import AddNew from './AddNew';
+import { Paper, Select, Preloader } from '../../../../assessment/src/components/common';
 
 class ItemDetail extends Component {
   componentDidMount() {

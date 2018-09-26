@@ -27,11 +27,9 @@ import {
   getPreviewIndexesListSelector,
   getPreivewTabSelector,
 } from '../../selectors/preview';
-import {
-  updatePreviewListAction,
-} from '../../actions/preview';
-import { Heading } from '../common';
+import { updatePreviewListAction } from '../../actions/preview';
 import { translate } from '../../utils/localization';
+import { Heading } from '../../../../assessment/src/components/common';
 
 class OrderList extends Component {
   componentDidMount() {
@@ -72,7 +70,10 @@ class OrderList extends Component {
   handleAddQuestion = () => {
     const { questionsList } = this.props;
 
-    this.updateQuestions([...questionsList, `${translate('common.initialoptionslist.itemprefix')} ${questionsList.length}`]);
+    this.updateQuestions([
+      ...questionsList,
+      `${translate('common.initialoptionslist.itemprefix')} ${questionsList.length}`,
+    ]);
   };
 
   updateQuestions = (list) => {
@@ -83,9 +84,7 @@ class OrderList extends Component {
   };
 
   onSortCurrentAnswer = ({ oldIndex, newIndex }) => {
-    const {
-      updateValidation, validation, questionsList, validationState,
-    } = this.props;
+    const { updateValidation, validation, questionsList, validationState } = this.props;
     const newValue = arrayMove(validation.valid_response.value, oldIndex, newIndex);
 
     updateValidation({
@@ -98,9 +97,7 @@ class OrderList extends Component {
   };
 
   onSortAltAnswer = ({ oldIndex, newIndex, altIndex }) => {
-    const {
-      validation, updateValidation, validationState, questionsList,
-    } = this.props;
+    const { validation, updateValidation, validationState, questionsList } = this.props;
     const newValue = arrayMove(validation.alt_responses[altIndex].value, oldIndex, newIndex);
     console.log('newValue', newValue);
 

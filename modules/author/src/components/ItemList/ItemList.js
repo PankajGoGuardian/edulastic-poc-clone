@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { getItemsListSelector } from '../../selectors/items';
-import { Paper, Pagination } from '../common';
 import Item from './Item';
 import { receiveItemsAction } from '../../actions/items';
 import Header from './Header';
+import { Paper, Pagination } from '../../../../assessment/src/components/common';
 
 class ItemList extends Component {
   componentDidMount() {

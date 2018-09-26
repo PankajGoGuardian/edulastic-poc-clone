@@ -36,5 +36,7 @@
   "common.initialoptionslist.itemb": "[Choice B]",
   "common.initialoptionslist.itemc": "[Choice C]",
   "common.initialoptionslist.itemd": "[Choice D]",
-  "common.initialoptionslist.itemprefix": "Choice"
+  "common.initialoptionslist.itemprefix": "Choice",
+  "component.orderList": "Order List",
+  "component.backToItemDetail": "Back to item detail"
 }

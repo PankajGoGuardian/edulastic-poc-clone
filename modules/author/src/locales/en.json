@@ -31,6 +31,11 @@
   "component.common.modal.cancel": "Cancel",
   "component.common.modal.apply": "Apply",
   "component.orderlist.questionsorderlist.stimulusplaceholder": "[This is the stem.]",
-  "common.initialoptionslist.itema": "[Choice A]",  "common.initialoptionslist.itemb": "[Choice B]",  "common.initialoptionslist.itemc": "[Choice C]",  "common.initialoptionslist.itemd": "[Choice D]",
-  "common.initialoptionslist.itemprefix": "Choice"
+  "common.initialoptionslist.itema": "[Choice A]",
+  "common.initialoptionslist.itemb": "[Choice B]",
+  "common.initialoptionslist.itemc": "[Choice C]",
+  "common.initialoptionslist.itemd": "[Choice D]",
+  "common.initialoptionslist.itemprefix": "Choice",
+  "component.orderList": "Order List",
+  "component.backToItemDetail": "Back to item detail"
 }

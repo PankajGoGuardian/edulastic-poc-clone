@@ -5,10 +5,11 @@ import PropTypes from 'prop-types';
 import { TextField, Button } from '../common';
 import { blue, greenDarkSecondary } from '../../utils/css';
 import { IconPlus, IconSearch } from '../common/icons';
+import { translate } from '../../utils/localization';
 
 const Header = ({ onSearch, onCreate }) => (
   <Container>
-    <Heading>Item List</Heading>
+    <Heading>{translate('component.itemlist.header.itemlist')}</Heading>
     <TextField
       onChange={e => onSearch(e.target.value)}
       height="50px"
@@ -22,7 +23,7 @@ const Header = ({ onSearch, onCreate }) => (
       onClick={onCreate}
       style={{ height: 50, width: 150 }}
     >
-      Create
+      {translate('component.itemlist.header.create')}
     </Button>
   </Container>
 );

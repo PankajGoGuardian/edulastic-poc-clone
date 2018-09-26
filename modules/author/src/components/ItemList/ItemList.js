@@ -6,7 +6,7 @@ import { getItemsListSelector } from '../../selectors/items';
 import Item from './Item';
 import { receiveItemsAction } from '../../actions/items';
 import Header from './Header';
-import { Paper, Pagination } from '../../../../assessment/src/components/common';
+import { Paper, Pagination } from '../common';
 
 class ItemList extends Component {
   componentDidMount() {

@@ -5,8 +5,9 @@ import {
   lightGrey,
   secondaryTextColor,
   green,
-} from '../../../../assessment/src/utils/css';
-import { IconPlus } from '../../../../assessment/src/components/common/icons';
+} from '../../utils/css';
+import { IconPlus } from '../common/icons';
+import { translate } from '../../utils/localization';
 
 const AddNew = () => (
   <Container>
@@ -18,7 +19,7 @@ const AddNew = () => (
         style={{ marginBottom: 15 }}
         hoverColor={green}
       />{' '}
-      <Text>Add New</Text>
+      <Text>{translate('component.itemdetail.addnew.addnew')}</Text>
     </PlusWrapper>
   </Container>
 );

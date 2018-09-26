@@ -6,7 +6,7 @@ import { receiveItemByIdAction } from '../../actions/items';
 import { getItemSelector, getItemLoadingSelector } from '../../selectors/items';
 import { OrderListPreview } from '../../../../assessment/src/components/OrderList';
 import AddNew from './AddNew';
-import { Paper, Select, Preloader } from '../../../../assessment/src/components/common';
+import { Paper, Select, Preloader } from '../common';
 
 class ItemDetail extends Component {
   componentDidMount() {

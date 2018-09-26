@@ -3,3 +3,5 @@ export { default as Select } from './Select';
 export { default as Preloader } from './Preloader';
 export { default as SelectButton } from './SelectButton';
 export { default as Pagination } from './Pagination';
+export { default as FlexContainer } from './FlexContainer';
+export { default as ItemHeader } from './ItemHeader';

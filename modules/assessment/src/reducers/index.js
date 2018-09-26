@@ -1,11 +1,9 @@
-// import questions from './questions';
-// import items from './items';
+import itemsReducer from './items';
 import OrderListReducers from '../components/OrderList/reducers';
 
 
 const assessmentReducers = {
-  // questions,
-  // items,
+  itemsReducer,
   ...OrderListReducers,
 };
 

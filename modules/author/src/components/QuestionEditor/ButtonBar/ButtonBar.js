@@ -1,11 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FaSearch, FaCog, FaSave, FaCode, FaQuestion, FaCheck, FaEraser } from 'react-icons/fa';
+import { FaCog, FaSave, FaCode, FaCheck, FaEraser } from 'react-icons/fa';
 
 import { translate } from '../../../utils/localization';
 import { Container, StyledButton } from './styled_components';
 import { Button, ButtonLink, SelectButton } from '../../../../../assessment/src/components/common';
-import { IconPensilEdit, IconEye } from '../../../../../assessment/src/components/common/icons';
+import {
+  IconPensilEdit,
+  IconEye,
+  IconSearch,
+  IconQuestion,
+} from '../../../../../assessment/src/components/common/icons';
 import { white, blue, darkBlue, textColor } from '../../../../../assessment/src/utils/css';
 
 const ButtonBar = ({ onChangeView, onShowSource, view, changePreviewTab, previewTab }) => (
@@ -24,7 +29,7 @@ const ButtonBar = ({ onChangeView, onShowSource, view, changePreviewTab, preview
         </Button>
       </StyledButton>
       <StyledButton>
-        <Button onClick={() => {}} icon={<FaQuestion />}>
+        <Button onClick={() => {}} icon={<IconQuestion color={textColor} />}>
           {translate('component.questioneditor.buttonbar.help')}
         </Button>
       </StyledButton>
@@ -40,7 +45,7 @@ const ButtonBar = ({ onChangeView, onShowSource, view, changePreviewTab, preview
       <StyledButton>
         <Button
           onClick={() => onChangeView('preview')}
-          icon={<FaSearch />}
+          icon={<IconSearch color={view === 'preview' ? white : textColor} />}
           color={view === 'preview' ? 'primary' : 'default'}
         >
           {translate('component.questioneditor.buttonbar.preview')}

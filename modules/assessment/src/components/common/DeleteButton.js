@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { green, red, lightGrey } from '../../utils/css';
-import { IconTrash } from './icons';
+import { green, greenDark, red, lightGrey } from '../../utils/css';
+import { IconTrashAlt } from './icons';
 
 const DeleteButton = ({ onDelete }) => (
   <Container onClick={onDelete}>
-    <IconTrash color={green} hoverColor={red} />
+    <IconTrashAlt color={greenDark} hoverColor={red} />
   </Container>
 );
 

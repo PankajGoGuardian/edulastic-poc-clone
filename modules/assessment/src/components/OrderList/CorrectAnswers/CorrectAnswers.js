@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { FaPlus } from 'react-icons/fa';
 import { connect } from 'react-redux';
 
 import CorrectAnswer from './CorrectAnswer';
@@ -14,6 +13,8 @@ import {
 import { Tabs } from '../../common';
 import { Tab, TabContainer } from '../../common/Tabs';
 import { translate } from '../../../utils/localization';
+import { IconPlus } from '../../common/icons';
+import { white } from '../../../utils/css';
 
 class CorrectAnswers extends Component {
   state = {
@@ -28,7 +29,12 @@ class CorrectAnswers extends Component {
     const { validation } = this.props;
 
     if (validation.alt_responses && validation.alt_responses.length) {
-      return validation.alt_responses.map((res, i) => <Tab key={i} label={`${translate('component.orderlist.correctanswers.alternate')} ${i + 1}`} />);
+      return validation.alt_responses.map((res, i) => (
+        <Tab
+          key={i}
+          label={`${translate('component.orderlist.correctanswers.alternate')} ${i + 1}`}
+        />
+      ));
     }
     return null;
   };
@@ -38,7 +44,8 @@ class CorrectAnswers extends Component {
 
     return (
       <Button
-        icon={<FaPlus />}
+        style={{ width: 70, height: 25 }}
+        icon={<IconPlus color={white} width={10} height={10} />}
         onClick={() => {
           this.handleTabChange(validation.alt_responses.length + 1);
           addAltResponses();
@@ -79,16 +86,17 @@ class CorrectAnswers extends Component {
               />
             </TabContainer>
           )}
-          {validation.alt_responses
-            && !!validation.alt_responses.length
-            && validation.alt_responses.map((alter, i) => {
+          {validation.alt_responses &&
+            !!validation.alt_responses.length &&
+            validation.alt_responses.map((alter, i) => {
               if (i + 1 === value) {
                 return (
                   <TabContainer key={i}>
                     <CorrectAnswer
                       response={alter}
                       // eslint-disable-next-line
-                      onSortCurrentAnswer={({ oldIndex, newIndex }) => onSortAltAnswer({ oldIndex, newIndex, altIndex: i })
+                      onSortCurrentAnswer={({ oldIndex, newIndex }) =>
+                        onSortAltAnswer({ oldIndex, newIndex, altIndex: i })
                       }
                       onUpdatePoints={(points) => {
                         updateAltValidationScore(points, i);

@@ -38,5 +38,8 @@
   "common.initialoptionslist.itemd": "[Choice D]",
   "common.initialoptionslist.itemprefix": "Choice",
   "component.orderList": "Order List",
-  "component.backToItemDetail": "Back to item detail"
+  "component.backToItemDetail": "Back to item detail",
+  "component.itemlist.header.create": "Create",
+  "component.itemlist.header.itemlist": "Item List",
+  "component.itemdetail.addnew.addnew": "Add New"
 }

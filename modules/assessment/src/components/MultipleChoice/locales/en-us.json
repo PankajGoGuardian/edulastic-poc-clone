@@ -1,6 +1,4 @@
 {
-  "common.layout.dashboard.title": "Multiple Choice - Standard",
-  "common.layout.dashboard.headerbackbtn": "BACK TO SELECT A QUESTION TYPE",
   "component.multiplechoice.composequestion": "Compose Question",
   "component.multiplechoice.multiplechoiceoptions": "Multiple Choice Options",
   "component.multiplechoice.addnewchoice": "Add New Choice",

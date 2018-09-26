@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Heading } from '../../common';
-import { translate } from '../../../utils/localization';
+import { Heading } from '../common';
+import { translate } from '../utils/localization';
 import { StyledTextarea } from './styled_components';
 
 const Question = ({ onQuestionChange, value }) => (

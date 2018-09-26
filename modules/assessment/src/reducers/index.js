@@ -1,9 +1,16 @@
 import { combineReducers } from 'redux';
 
-import assessment from './assessment';
+import questions from './questions';
+import items from './items';
+import MultiChoiceReducers from '../components/MultipleChoice/reducers';
+import OrderListReducers from '../components/OrderList/reducers';
+
 
 const rootReducer = combineReducers({
-  assessment,
+  questions,
+  items,
+  MultiChoiceReducers,
+  OrderListReducers,
 });
 
 export default rootReducer;

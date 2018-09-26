@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import TextareaAutosize from 'react-autosize-textarea';
-import { grey } from '../../../utils/css';
+import { grey } from '../utils/css';
 
 export const StyledTextarea = styled(TextareaAutosize)`
 resize: none;

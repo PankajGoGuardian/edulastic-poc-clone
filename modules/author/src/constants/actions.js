@@ -33,10 +33,10 @@ export const ORDERLIST_UPDATE_CORRECT_VALIDATION_SCORE =
   '[questionsOrderList] ORDERLIST_UPDATE_CORRECT_VALIDATION_SCORE';
 
 // items
-export const RECEIVE_ITEMS_REQUEST = '[Items] receive items request';
-export const RECEIVE_ITEMS_SUCCESS = '[Items] receive items success';
-export const RECEIVE_ITEMS_ERROR = '[Items] receive items error';
+export const RECEIVE_ITEMS_REQUEST = '[items] receive items request';
+export const RECEIVE_ITEMS_SUCCESS = '[items] receive items success';
+export const RECEIVE_ITEMS_ERROR = '[items] receive items error';
 
-export const RECEIVE_ITEM_REQUEST = '[Items] receive item request';
-export const RECEIVE_ITEM_SUCCESS = '[Items] receive item success';
-export const RECEIVE_ITEM_ERROR = '[Items] receive item error';
+export const RECEIVE_ITEM_REQUEST = '[items] receive item request';
+export const RECEIVE_ITEM_SUCCESS = '[items] receive item success';
+export const RECEIVE_ITEM_ERROR = '[items] receive item error';

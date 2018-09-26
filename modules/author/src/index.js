@@ -1,2 +1,2 @@
-export { default as MultipleChoice } from './components/MultipleChoice';
+export { default as MultipleChoiceQuestionEditor } from './components/MultipleChoiceQuestionEditor';
 export { default as QuestionEditor } from './components/QuestionEditor';

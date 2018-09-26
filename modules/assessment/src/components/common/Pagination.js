@@ -2,8 +2,7 @@ import React from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-
-import { green, greenDark, white, grey } from '../../../../author/src/utils/css';
+import { white, greenDark, grey, green } from '../../utils/css';
 
 const Pagination = ({ onPrevious, onNext, page, itemsPerPage, count }) => {
   // eslint-disable-next-line

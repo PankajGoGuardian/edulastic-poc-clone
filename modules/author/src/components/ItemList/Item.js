@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { FaClock, FaAngleDoubleRight } from 'react-icons/fa';
+import { FaAngleDoubleRight } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
 
-import { textColor, blue, darkBlue, grey } from '../../utils/css';
 import { Button } from '../../../../assessment/src/components/common';
+import { grey, blue, darkBlue, textColor } from '../../../../assessment/src/utils/css';
+import { IconClockCircularOutline } from '../../../../assessment/src/components/common/icons';
 
 /* eslint-disable no-underscore-dangle */
 const Item = ({ item, match }) => (
@@ -21,7 +22,7 @@ const Item = ({ item, match }) => (
         Author: <span>Kevin Hart</span>
       </div>
       <Time>
-        <Icon /> an hour ago
+        <Icon color="#ee1658" /> an hour ago
       </Time>
     </Author>
     <Labels>
@@ -75,8 +76,7 @@ const Link = styled(NavLink)`
   }
 `;
 
-const Icon = styled(FaClock)`
-  color: #ee1658;
+const Icon = styled(IconClockCircularOutline)`
   margin-right: 15px;
 `;
 

@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { FaCaretDown } from 'react-icons/fa';
 
-import {
-  textColor, white, grey, blue,
-} from '../../utils/css';
+import { textColor, white, grey, blue } from '../../utils/css';
+import { IconCaretDown } from './icons';
 
 export default class SelectButton extends Component {
   state = {
@@ -33,7 +31,7 @@ export default class SelectButton extends Component {
         <Button onClick={this.toggleList}>
           <span>{icon}</span>
           <span>
-            <FaCaretDown />
+            <IconCaretDown color={blue} width={12} height={12} />
           </span>
         </Button>
         {open && (

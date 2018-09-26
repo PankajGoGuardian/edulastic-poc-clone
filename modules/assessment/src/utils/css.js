@@ -5,6 +5,7 @@ export const grey = '#dfdfdf';
 export const lightGrey = '#f9f9f9';
 export const darkGrey = '#a3a0a0';
 export const textColor = '#878282';
+export const secondaryTextColor = '#434b5d';
 
 export const red = '#ee1658';
 export const lightRed = '#fbdfe7';
@@ -16,3 +17,4 @@ export const darkBlue = '#0080b9';
 export const green = '#1fe3a1';
 export const lightGreen = '#e1fbf2';
 export const greenDark = '#4aac8b';
+export const greenDarkSecondary = '#057750';

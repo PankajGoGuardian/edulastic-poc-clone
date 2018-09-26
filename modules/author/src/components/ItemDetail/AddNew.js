@@ -1,12 +1,24 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FaPlus } from 'react-icons/fa';
-import { lightGrey, secondaryTextColor, greenDark } from '../../utils/css';
+import {
+  greenDark,
+  lightGrey,
+  secondaryTextColor,
+  green,
+} from '../../../../assessment/src/utils/css';
+import { IconPlus } from '../../../../assessment/src/components/common/icons';
 
 const AddNew = () => (
   <Container>
     <PlusWrapper>
-      <FaPlus style={{ color: greenDark, fontSize: 40, marginBottom: 10 }} /> <Text>Add New</Text>
+      <IconPlus
+        color={greenDark}
+        width={60}
+        height={60}
+        style={{ marginBottom: 15 }}
+        hoverColor={green}
+      />{' '}
+      <Text>Add New</Text>
     </PlusWrapper>
   </Container>
 );

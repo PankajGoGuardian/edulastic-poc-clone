@@ -33,10 +33,12 @@ const Container = styled.span`
 `;
 
 const Icon = styled.span`
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
+    position: absolute;
+    right: 8px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    top: 0;
 `;
 
 const Field = styled.input`
@@ -44,5 +46,8 @@ const Field = styled.input`
   border-radius: 10px;
   min-height: 100%;
   width: 100%;
-  padding: 0 40px 0 10px;
+  padding: 10px 35px;
+  color: #7a7a7a;
+  font-size: 14px;
+  letter-spacing: 0.5px;
 `;

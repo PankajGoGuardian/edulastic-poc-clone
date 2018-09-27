@@ -76,6 +76,14 @@ const Button = styled.button`
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
+
+  span {
+    line-height: 1;
+    padding-top: 2px;
+  }
+  span:first-child {
+    flex: 1;
+  }
 `;
 
 const List = styled.div`

@@ -20,14 +20,14 @@ const ButtonBar = ({ onChangeView, view, changePreviewTab, previewTab }) => (
   <React.Fragment>
     <Container>
       <StyledButton>
-        <Button onClick={() => {}} icon={<IconQuestion color={textColor} />}>
+        <Button onClick={() => {}} icon={<IconQuestion color={textColor} width={12} />}>
           {translate('component.questioneditor.buttonbar.help')}
         </Button>
       </StyledButton>
       <StyledButton>
         <Button
           onClick={() => onChangeView('edit')}
-          icon={<IconPensilEdit color={view === 'edit' ? white : textColor} />}
+          icon={<IconPensilEdit color={view === 'edit' ? white : textColor} width={14} />}
           color={view === 'edit' ? 'primary' : 'default'}
         >
           {translate('component.questioneditor.buttonbar.edit')}
@@ -36,14 +36,14 @@ const ButtonBar = ({ onChangeView, view, changePreviewTab, previewTab }) => (
       <StyledButton>
         <Button
           onClick={() => onChangeView('preview')}
-          icon={<IconPreview color={view === 'preview' ? white : textColor} />}
+          icon={<IconPreview color={view === 'preview' ? white : textColor} width={18} />}
           color={view === 'preview' ? 'primary' : 'default'}
         >
           {translate('component.questioneditor.buttonbar.preview')}
         </Button>
       </StyledButton>
       <StyledButton>
-        <Button onClick={() => {}} icon={<IconSave color={white} />} color="success">
+        <Button onClick={() => {}} icon={<IconSave color={white} width={16} />} color="success">
           {translate('component.questioneditor.buttonbar.save')}
         </Button>
       </StyledButton>

@@ -23,7 +23,7 @@ class ItemAdd extends Component {
     return (
       <Container>
         <ItemHeader
-          title={translate('component.orderList')}
+          title={translate('component.itemAdd.itemlist')}
           link={{ url: '/author/items', text: translate('component.itemAdd.backToItemList') }}
           reference="1234567890"
         >

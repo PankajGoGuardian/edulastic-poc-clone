@@ -139,11 +139,13 @@ const Icon = styled.div`
 `;
 
 const Container = styled.button`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 5px 20px;
   min-height: 40px;
+  min-width: 130px;
   border-radius: ${({ variant }) => getRadius(variant)};
   font-weight: 600;
   font-size: 11px;
@@ -154,10 +156,24 @@ const Container = styled.button`
   background: ${({ backgroundColor }) => backgroundColor};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   min-height: 40px;
+  cursor: pointer;
 
-  :hover {
+  :hover, :hover span {
     background: ${({ backgroundColorHover }) => backgroundColorHover};
     color: ${({ hoverColor }) => hoverColor}
-    cursor: pointer;
+  }
+
+  & i, & svg {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    height: 100% !important;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+  }
+
+  &:hover svg {
+    fill: #ffffff;
   }
 `;

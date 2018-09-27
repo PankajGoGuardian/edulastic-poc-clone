@@ -14,10 +14,6 @@ import { translate } from '../../utils/localization';
 import { ButtonBar } from '../common';
 
 class QuestionEditor extends Component {
-  state = {
-    showModal: false,
-  };
-
   handleChangeView = (view) => {
     const { changeView } = this.props;
     changeView(view);

@@ -22,7 +22,14 @@ const Header = ({ onSearch, onCreate }) => (
       style={{ height: 50, width: 200, color: '#fff', margin: 0 }}
       onClick={onCreate}
     >
-      <IconPlus color={greenDarkSecondary} left={20} hoverColor={white} backgroundColor={green} />
+      <IconPlus
+        color={greenDarkSecondary}
+        left={20}
+        width={14}
+        height={14}
+        hoverColor={white}
+        backgroundColor={green}
+      />
       <span>{translate('component.itemlist.header.create')}</span>
     </DashboardControlBtn>
   </Container>

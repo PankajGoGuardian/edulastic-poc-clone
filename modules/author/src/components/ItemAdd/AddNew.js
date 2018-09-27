@@ -6,8 +6,8 @@ import {
   lightGrey,
   secondaryTextColor,
   green,
-} from '../../../../assessment/src/utils/css';
-import { IconPlus } from '../../../../assessment/src/components/common/icons';
+} from '../../utils/css';
+import { IconPlus } from '../common/icons';
 
 const AddNew = () => (
   <Container>

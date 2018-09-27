@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FaCode } from 'react-icons/fa';
 
 import { translate } from '../../../utils/localization';
 import { Container, StyledButton } from './styled_components';
@@ -17,16 +16,9 @@ import {
 } from '../../../../../assessment/src/components/common/icons';
 import { white, blue, darkBlue, textColor } from '../../../../../assessment/src/utils/css';
 
-const ButtonBar = ({ onChangeView, onShowSource, view, changePreviewTab, previewTab }) => (
+const ButtonBar = ({ onChangeView, view, changePreviewTab, previewTab }) => (
   <React.Fragment>
     <Container>
-      {view === 'edit' && (
-        <StyledButton>
-          <Button onClick={onShowSource} icon={<FaCode />}>
-            {translate('component.questioneditor.buttonbar.source')}
-          </Button>
-        </StyledButton>
-      )}
       <StyledButton>
         <Button onClick={() => {}} icon={<IconQuestion color={textColor} />}>
           {translate('component.questioneditor.buttonbar.help')}
@@ -104,7 +96,6 @@ const ButtonBar = ({ onChangeView, onShowSource, view, changePreviewTab, preview
 
 ButtonBar.propTypes = {
   onChangeView: PropTypes.func.isRequired,
-  onShowSource: PropTypes.func.isRequired,
   changePreviewTab: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,

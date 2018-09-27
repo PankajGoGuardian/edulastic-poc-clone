@@ -16,9 +16,11 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
+  const { page = 1, limit = 10, search } = req.query;
+
   try {
     const item = new Item();
-    const result = await item.getAll();
+    const result = await item.getList({ page: +page, limit: +limit, search });
     res.send(result);
   } catch (e) {
     console.log('error', e);

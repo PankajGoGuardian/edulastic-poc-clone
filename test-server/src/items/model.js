@@ -11,8 +11,18 @@ class Item {
     return this.Item.findById(id);
   }
 
-  getAll() {
-    return this.Item.find({});
+  async getList({ page, limit, search }) {
+    const filter = search ? { $text: { $search: search } } : {};
+    const items = await this.Item.find(filter)
+      .skip((page - 1) * limit)
+      .limit(limit);
+    const count = await this.Item.count();
+
+    return {
+      items,
+      count,
+      page,
+    };
   }
 }
 

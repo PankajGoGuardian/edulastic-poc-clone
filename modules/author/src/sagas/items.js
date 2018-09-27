@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all } from 'redux-saga/effects';
+import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects';
 
 import { receiveItemById, receiveItems } from '../utils/api/items';
 import {
@@ -10,13 +10,13 @@ import {
   RECEIVE_ITEMS_ERROR,
 } from '../constants/actions';
 
-function* receiveItemsSaga() {
+function* receiveItemsSaga({ payload }) {
   try {
-    const items = yield call(receiveItems);
+    const { items, page, count } = yield call(receiveItems, payload);
 
     yield put({
       type: RECEIVE_ITEMS_SUCCESS,
-      payload: { items },
+      payload: { items, page, limit: payload.limit, count },
     });
   } catch (err) {
     console.error(err);
@@ -47,6 +47,6 @@ function* receiveItemSaga({ payload }) {
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_REQUEST, receiveItemSaga),
-    yield takeEvery(RECEIVE_ITEMS_REQUEST, receiveItemsSaga),
+    yield takeLatest(RECEIVE_ITEMS_REQUEST, receiveItemsSaga),
   ]);
 }

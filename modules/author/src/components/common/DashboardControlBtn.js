@@ -38,7 +38,7 @@ const DashboardControlBtn = styled.button`
     position: absolute;
     top: 0;
     left: 10px;
-    height: 100%;
+    height: 100% !important;
     display: flex;
     align-items: center;
     font-size: 16px;

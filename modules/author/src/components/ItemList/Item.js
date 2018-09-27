@@ -69,6 +69,7 @@ const Link = styled(NavLink)`
   font-weight: 600;
   display: inline-flex;
   align-items: center;
+  text-decoration: none;
   color: ${blue};
 
   :hover {
@@ -107,6 +108,11 @@ const Label = styled.span`
 
 const Question = styled.div`
   width: 50%;
+
+  & p {
+    margin: 0.5em 0;
+    font-size: 13px;
+  }
 `;
 
 const Author = styled.div`

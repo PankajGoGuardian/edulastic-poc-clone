@@ -13,6 +13,7 @@ import Item from './Item';
 import { receiveItemsAction } from '../../actions/items';
 import Header from './Header';
 import { Paper, Pagination } from '../../../../assessment/src/components/common';
+import { PaddingDiv } from '../common';
 
 class ItemList extends Component {
   componentDidMount() {
@@ -43,7 +44,7 @@ class ItemList extends Component {
     const { items, match, page, limit, count, loading } = this.props;
 
     return (
-      <React.Fragment>
+      <PaddingDiv top={20} left={40} right={40}>
         <Header onSearch={this.handleSearch} onCreate={this.handleCreate} />
         <Paper style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
           {items.map(item => (
@@ -59,7 +60,7 @@ class ItemList extends Component {
           count={count}
           loading={loading}
         />
-      </React.Fragment>
+      </PaddingDiv>
     );
   }
 }

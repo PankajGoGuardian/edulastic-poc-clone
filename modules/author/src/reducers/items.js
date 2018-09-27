@@ -13,6 +13,9 @@ const initialItemsState = {
   items: [],
   error: null,
   loading: false,
+  page: 1,
+  limit: 5,
+  count: 0,
 };
 
 const itemsReducer = (state = initialItemsState, { type, payload }) => {
@@ -20,7 +23,14 @@ const itemsReducer = (state = initialItemsState, { type, payload }) => {
     case RECEIVE_ITEMS_REQUEST:
       return { ...state, loading: true };
     case RECEIVE_ITEMS_SUCCESS:
-      return { ...state, loading: false, items: payload.items };
+      return {
+        ...state,
+        loading: false,
+        items: payload.items,
+        page: payload.page,
+        limit: payload.limit,
+        count: payload.count,
+      };
     case RECEIVE_ITEMS_ERROR:
       return { ...state, loading: false, error: payload.error };
     default:

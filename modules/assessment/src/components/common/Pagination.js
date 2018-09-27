@@ -4,13 +4,13 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { white, greenDark, grey, green } from '../../utils/css';
 
-const Pagination = ({ onPrevious, onNext, page, itemsPerPage, count }) => {
+const Pagination = ({ onPrevious, onNext, page, itemsPerPage, count, loading }) => {
   // eslint-disable-next-line
   const isLastPage = Math.ceil(count / itemsPerPage) === page;
 
   return (
-    <Container>
-      {page === 1 ? (
+    <Container loading={loading}>
+      {page === 1 || loading ? (
         <Btn disabled>
           <FaChevronLeft style={{ marginRight: 10 }} /> Previous
         </Btn>
@@ -24,7 +24,7 @@ const Pagination = ({ onPrevious, onNext, page, itemsPerPage, count }) => {
         {page} to {itemsPerPage} of <i>{count}</i>
       </Info>
 
-      {isLastPage ? (
+      {isLastPage || loading ? (
         <Btn disabled>
           Next <FaChevronRight style={{ marginLeft: 10 }} />
         </Btn>
@@ -43,6 +43,11 @@ Pagination.propTypes = {
   page: PropTypes.number.isRequired,
   itemsPerPage: PropTypes.number.isRequired,
   count: PropTypes.number.isRequired,
+  loading: PropTypes.bool,
+};
+
+Pagination.defaultProps = {
+  loading: false,
 };
 
 export default Pagination;
@@ -54,6 +59,7 @@ const Container = styled.div`
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   padding: 20px 50px;
   background: ${white};
+  cursor: ${({ loading }) => (loading ? 'progress' : 'default')};
 `;
 
 const Btn = styled.span`

@@ -15,7 +15,7 @@ const Header = ({ onSearch, onCreate }) => (
       height="50px"
       type="search"
       icon={<IconSearch color={blue} />}
-      style={{ marginRight: 20 }}
+      containerStyle={{ marginRight: 20 }}
     />
     <Button
       color="success"

@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { grey } from '../../../../assessment/src/utils/css';
 
-const TextField = ({ icon, height, style, ...restProps }) => (
-  <Container height={height}>
+const TextField = ({ icon, height, style, containerStyle, ...restProps }) => (
+  <Container height={height} style={containerStyle}>
     <Field type="text" style={style} {...restProps} />
     {icon && <Icon>{icon}</Icon>}
   </Container>
@@ -14,12 +14,14 @@ TextField.propTypes = {
   icon: PropTypes.any,
   height: PropTypes.string,
   style: PropTypes.object,
+  containerStyle: PropTypes.object,
 };
 
 TextField.defaultProps = {
   icon: null,
   height: '45px',
   style: {},
+  containerStyle: {},
 };
 
 export default TextField;

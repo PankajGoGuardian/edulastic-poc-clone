@@ -9,3 +9,4 @@ export { default as IconSearch } from './IconSearch';
 export { default as IconClockCircularOutline } from './IconClockCircularOutline';
 export { default as IconQuestion } from './IconQuestion';
 export { default as IconChevronLeft } from './IconChevronLeft';
+export { default as IconPreview } from './IconPreview';

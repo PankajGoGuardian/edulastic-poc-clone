@@ -1,11 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { grey } from '../utils/css';
+import { grey } from '../../../utils/css';
 
-const TextField = ({
-  icon, height, style, ...restProps
-}) => (
+const TextField = ({ icon, height, style, ...restProps }) => (
   <Container height={height} style={style}>
     <Field type="text" {...restProps} />
     {icon && <Icon>{icon}</Icon>}

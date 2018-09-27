@@ -4,17 +4,15 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FaTimes } from 'react-icons/fa';
 
-import { white, blue } from '../../utils/css';
 import Button from './Button';
 import { translate } from '../../utils/localization';
+import { white, blue } from '../../../../assessment/src/utils/css';
 
 const modalRoot = document.getElementById('modal-root');
 
 class Modal extends Component {
   render() {
-    const {
-      onClose, onApply, title, children,
-    } = this.props;
+    const { onClose, onApply, title, children } = this.props;
 
     return ReactDOM.createPortal(
       <Container>

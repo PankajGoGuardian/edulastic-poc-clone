@@ -2,7 +2,7 @@ import React from 'react';
 import { SortableHandle } from 'react-sortable-hoc';
 import { FaBars } from 'react-icons/fa';
 import styled from 'styled-components';
-import { green, greenDark } from '../utils/css';
+import { greenDark, green } from '../../../utils/css';
 
 const DragHandle = SortableHandle(() => (
   <Container>

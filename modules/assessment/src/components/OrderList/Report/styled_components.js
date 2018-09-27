@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 import {
+  textColor,
   grey,
+  red,
+  green,
+  mainTextColor,
   lightGreen,
   lightRed,
-  green,
-  red,
-  textColor,
-  mainTextColor,
-} from '../utils/css';
+} from '../../../utils/css';
 
 export const Container = styled.div`
   width: 100%;

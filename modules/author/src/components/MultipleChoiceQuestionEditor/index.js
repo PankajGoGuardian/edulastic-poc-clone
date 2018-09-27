@@ -14,12 +14,8 @@ import {
   ASSESSMENTID,
 } from '../../constants/others';
 import { addQuestion } from '../../actions/questions';
-import {
-  FlexContainer,
-  DashboardControlBtn,
-  LinkBtn,
-} from '../common';
-import { IconPreview } from '../common/icons';
+import { FlexContainer, DashboardControlBtn, LinkBtn } from '../common';
+import { IconPreview } from '../../../../assessment/src/components/common/icons';
 
 class MultipleChoiceQuestionEditor extends Component {
   state = {

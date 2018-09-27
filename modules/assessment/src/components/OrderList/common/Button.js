@@ -10,7 +10,7 @@ import {
   green,
   greenDark,
   black,
-} from '../utils/css';
+} from '../../../utils/css';
 
 const getRadius = (variant) => {
   switch (variant) {
@@ -93,9 +93,7 @@ const getColors = ({ color, variant, outlined }) => {
   return colors;
 };
 
-const Button = ({
-  onClick, color, icon, children, uppercase, variant, outlined, style,
-}) => (
+const Button = ({ onClick, color, icon, children, uppercase, variant, outlined, style }) => (
   <Container
     onClick={onClick}
     type="button"

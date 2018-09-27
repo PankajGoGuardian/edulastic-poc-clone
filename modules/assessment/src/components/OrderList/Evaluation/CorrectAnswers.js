@@ -12,7 +12,7 @@ import {
 import { IconPlus } from '../../common/icons';
 import Tabs, { Tab, TabContainer } from '../common/Tabs';
 import { translate } from '../utils/localization';
-import { white } from '../utils/css';
+import { white } from '../../../utils/css';
 
 class CorrectAnswers extends Component {
   state = {
@@ -93,7 +93,8 @@ class CorrectAnswers extends Component {
                     <CorrectAnswer
                       response={alter}
                       // eslint-disable-next-line
-                      onSortCurrentAnswer={({ oldIndex, newIndex }) => onSortAltAnswer({ oldIndex, newIndex, altIndex: i })
+                      onSortCurrentAnswer={({ oldIndex, newIndex }) =>
+                        onSortAltAnswer({ oldIndex, newIndex, altIndex: i })
                       }
                       onUpdatePoints={(points) => {
                         updateAltValidationScore(points, i);

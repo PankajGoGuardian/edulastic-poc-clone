@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import { TextField, Button } from '../common';
-import { blue, greenDarkSecondary } from '../../utils/css';
-import { IconPlus, IconSearch } from '../common/icons';
 import { translate } from '../../utils/localization';
+import { IconSearch, IconPlus } from '../../../../assessment/src/components/common/icons';
+import { blue, greenDarkSecondary } from '../../../../assessment/src/utils/css';
 
 const Header = ({ onSearch, onCreate }) => (
   <Container>

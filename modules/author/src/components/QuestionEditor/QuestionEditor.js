@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 import SourceModal from './SourceModal';
-import ButtonBar from './ButtonBar';
 import OrderList from '../OrderList';
 import { getQuestionsStateSelector } from '../../selectors/questionsOrderList';
 import { setQuestionsStateAction } from '../../actions/questionsOrderList';
@@ -13,9 +12,9 @@ import { getPreivewTabSelector } from '../../selectors/preview';
 import { changeViewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
 import { Container } from './styled_components';
-import { Paper } from '../../../../assessment/src/components/common';
-import ItemHeader from '../../../../assessment/src/components/common/ItemHeader';
+import { Paper, ItemHeader } from '../../../../assessment/src/components/common';
 import { translate } from '../../utils/localization';
+import { ButtonBar } from '../common';
 
 class QuestionEditor extends Component {
   state = {
@@ -62,6 +61,7 @@ class QuestionEditor extends Component {
         <ItemHeader
           title={translate('component.orderList')}
           link={{ url: '/author', text: translate('component.backToItemDetail') }}
+          reference="1234567890"
         >
           <ButtonBar
             onShowSource={this.handleShowSource}

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
-import { white, textColor, grey } from '../../../utils/css';
+import { white, textColor, grey } from '../../../../../assessment/src/utils/css';
 
 const Select = ({ onChange, options, value }) => (
   <SelectContainer>

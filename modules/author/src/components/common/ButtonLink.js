@@ -2,8 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {
-  blue, darkBlue, textColor, green, greenDark, darkGrey,
-} from '../../utils/css';
+  blue,
+  darkBlue,
+  textColor,
+  green,
+  greenDark,
+  darkGrey,
+} from '../../../../assessment/src/utils/css';
 
 const getColors = ({ color, active }) => {
   const colors = {};
@@ -33,9 +38,7 @@ const getColors = ({ color, active }) => {
   return colors;
 };
 
-const ButtonLink = ({
-  onClick, color, icon, children, uppercase, style, active,
-}) => (
+const ButtonLink = ({ onClick, color, icon, children, uppercase, style, active }) => (
   <Container
     onClick={onClick}
     type="button"

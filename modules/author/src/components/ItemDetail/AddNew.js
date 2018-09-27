@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
+import { translate } from '../../utils/localization';
 import {
   greenDark,
   lightGrey,
   secondaryTextColor,
   green,
-} from '../../utils/css';
-import { IconPlus } from '../common/icons';
-import { translate } from '../../utils/localization';
+} from '../../../../assessment/src/utils/css';
+import { IconPlus } from '../../../../assessment/src/components/common/icons';
 
 const AddNew = () => (
   <Container>

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { translate } from '../../../utils/localization';
 import { Container, StyledButton } from './styled_components';
-import { Button, ButtonLink, SelectButton } from '../../common';
+import { Button, ButtonLink, SelectButton } from '..';
 import {
   IconPensilEdit,
   IconEye,

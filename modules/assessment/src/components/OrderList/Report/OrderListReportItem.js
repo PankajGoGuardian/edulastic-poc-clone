@@ -1,14 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FaCheck, FaTimes } from 'react-icons/fa';
 
-import {
-  green, red, textColor,
-} from '../utils/css';
+import { green, red, textColor } from '../utils/css';
 import { translate } from '../utils/localization';
 import { Container, Text, Icon, CorrectAnswerItem, Index, QuestionText } from './styled_components';
 import { FlexContainer } from '../common';
-
+import { IconCheck, IconClose } from '../../common/icons';
 
 const OrderListReportItem = ({ children, correctText, correct, showAnswers, index }) => (
   <React.Fragment>
@@ -20,12 +17,12 @@ const OrderListReportItem = ({ children, correctText, correct, showAnswers, inde
         </FlexContainer>
         {correct && (
           <Icon color={green}>
-            <FaCheck />
+            <IconCheck color={green} width={22} height={16} />
           </Icon>
         )}
         {!correct && (
           <Icon color={red}>
-            <FaTimes />
+            <IconClose color={red} width={16} height={16} />
           </Icon>
         )}
       </Text>

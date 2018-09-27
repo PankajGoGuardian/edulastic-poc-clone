@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FaCog, FaSave, FaCode, FaCheck, FaEraser } from 'react-icons/fa';
+import { FaCode } from 'react-icons/fa';
 
 import { translate } from '../../../utils/localization';
 import { Container, StyledButton } from './styled_components';
@@ -8,8 +8,12 @@ import { Button, ButtonLink, SelectButton } from '../../common';
 import {
   IconPensilEdit,
   IconEye,
-  IconSearch,
   IconQuestion,
+  IconSave,
+  IconSettings,
+  IconEraseText,
+  IconCheck,
+  IconPreview,
 } from '../../../../../assessment/src/components/common/icons';
 import { white, blue, darkBlue, textColor } from '../../../../../assessment/src/utils/css';
 
@@ -23,11 +27,6 @@ const ButtonBar = ({ onChangeView, onShowSource, view, changePreviewTab, preview
           </Button>
         </StyledButton>
       )}
-      <StyledButton>
-        <Button onClick={() => {}} icon={<FaCog />}>
-          {translate('component.questioneditor.buttonbar.settings')}
-        </Button>
-      </StyledButton>
       <StyledButton>
         <Button onClick={() => {}} icon={<IconQuestion color={textColor} />}>
           {translate('component.questioneditor.buttonbar.help')}
@@ -45,21 +44,21 @@ const ButtonBar = ({ onChangeView, onShowSource, view, changePreviewTab, preview
       <StyledButton>
         <Button
           onClick={() => onChangeView('preview')}
-          icon={<IconSearch color={view === 'preview' ? white : textColor} />}
+          icon={<IconPreview color={view === 'preview' ? white : textColor} />}
           color={view === 'preview' ? 'primary' : 'default'}
         >
           {translate('component.questioneditor.buttonbar.preview')}
         </Button>
       </StyledButton>
       <StyledButton>
-        <Button onClick={() => {}} icon={<FaSave />} color="success">
+        <Button onClick={() => {}} icon={<IconSave color={white} />} color="success">
           {translate('component.questioneditor.buttonbar.save')}
         </Button>
       </StyledButton>
       <StyledButton>
         <SelectButton
           onSelect={value => console.log(value)}
-          icon={<FaCog />}
+          icon={<IconSettings color={textColor} />}
           options={[{ value: 'first', label: 'First' }, { value: 'second', label: 'Second' }]}
         >
           {translate('component.questioneditor.buttonbar.settings')}
@@ -73,7 +72,7 @@ const ButtonBar = ({ onChangeView, onShowSource, view, changePreviewTab, preview
             onClick={() => changePreviewTab('check')}
             color="primary"
             active={previewTab === 'check'}
-            icon={<FaCheck />}
+            icon={<IconCheck color={previewTab === 'check' ? darkBlue : blue} />}
           >
             {translate('component.questioneditor.buttonbar.checkanswer')}
           </ButtonLink>
@@ -93,7 +92,7 @@ const ButtonBar = ({ onChangeView, onShowSource, view, changePreviewTab, preview
             onClick={() => changePreviewTab('clear')}
             color="primary"
             active={previewTab === 'clear'}
-            icon={<FaEraser />}
+            icon={<IconEraseText color={previewTab === 'clear' ? darkBlue : blue} />}
           >
             {translate('component.questioneditor.buttonbar.clear')}
           </ButtonLink>

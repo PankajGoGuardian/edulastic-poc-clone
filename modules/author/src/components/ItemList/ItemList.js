@@ -27,7 +27,8 @@ class ItemList extends Component {
   };
 
   handleCreate = () => {
-    console.log('create');
+    const { history } = this.props;
+    history.push('./add-item');
   };
 
   handlePrevious = () => {
@@ -73,6 +74,7 @@ ItemList.propTypes = {
   limit: PropTypes.number.isRequired,
   count: PropTypes.number.isRequired,
   loading: PropTypes.bool.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 export default connect(

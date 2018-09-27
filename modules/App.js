@@ -3,9 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import Student from './student/src';
-import { QuestionEditor, MultipleChoiceQuestionEditor } from './author/src';
-import ItemList from './author/src/components/ItemList/ItemList';
-import ItemDetail from './author/src/components/ItemDetail';
+import { QuestionEditor, MultipleChoiceQuestionEditor, ItemAdd, ItemList, ItemDetail } from './author/src';
 
 class App extends Component {
   componentWillMount() {
@@ -21,6 +19,7 @@ class App extends Component {
           <Route path="/author/mcq" component={MultipleChoiceQuestionEditor} />
           <Route path="/author/orderlist" component={QuestionEditor} />
           <Route exact path="/author/items" component={ItemList} />
+          <Route exact path="/author/add-item" component={ItemAdd} />
           <Route exact path="/author/items/:id" component={ItemDetail} />
           <Route path="/student/test" component={() => <Student defaultAP />} />
           <Route path="/student/practice" component={Student} />

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import FlexContainer from './FlexContainer';
 import { secondaryTextColor, greenDark, green } from '../../utils/css';
 import { IconChevronLeft } from './icons';
-import TextField from './index';
+import TextField from './TextField';
 
 const ItemHeader = ({ title, children, link, reference }) => (
   <FlexContainer alignItems="flex-start" style={{ marginBottom: 20 }}>

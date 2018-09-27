@@ -7,6 +7,7 @@ export const darkGrey = '#a3a0a0';
 export const mainTextColor = '#444444';
 export const textColor = '#878282';
 export const secondaryTextColor = '#434b5d';
+export const mainBgColor = '#f3f3f3';
 
 export const red = '#ee1658';
 export const lightRed = '#fbdfe7';

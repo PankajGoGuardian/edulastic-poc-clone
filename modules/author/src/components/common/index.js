@@ -13,3 +13,4 @@ export { default as Preloader } from './Preloader';
 export { default as Select } from './Select';
 export { default as ButtonBar } from './ButtonBar';
 export { default as Container } from './Container';
+export { default as ItemHeader } from './ItemHeader';

@@ -7,9 +7,8 @@ import { changePreviewTabAction } from '../../actions/preview';
 import { getPreivewTabSelector } from '../../selectors/preview';
 import { changeViewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
-import { Paper, ItemHeader } from '../../../../assessment/src/components/common';
 import { translate } from '../../utils/localization';
-import { ButtonBar, Container } from '../common';
+import { ButtonBar, ItemHeader, Container, PaddingDiv } from '../common';
 import AddNew from './AddNew';
 
 class ItemAdd extends Component {
@@ -35,9 +34,9 @@ class ItemAdd extends Component {
             previewTab={previewTab}
           />
         </ItemHeader>
-        <Paper>
+        <PaddingDiv top={160}>
           <AddNew />
-        </Paper>
+        </PaddingDiv>
       </Container>
     );
   }

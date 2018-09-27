@@ -9,7 +9,5 @@ export { default as Button } from './Button';
 export { default as ButtonLink } from './ButtonLink';
 export { default as SelectButton } from './SelectButton';
 export { default as Modal } from './Modal';
-export { default as Paper } from './Paper';
 export { default as Preloader } from './Preloader';
 export { default as Select } from './Select';
-export { default as Pagination } from './Pagination';

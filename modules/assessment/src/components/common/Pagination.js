@@ -21,7 +21,7 @@ const Pagination = ({ onPrevious, onNext, page, itemsPerPage, count }) => {
       )}
 
       <Info>
-        {page} to {itemsPerPage} of {count}
+        {page} to {itemsPerPage} of <i>{count}</i>
       </Info>
 
       {isLastPage ? (

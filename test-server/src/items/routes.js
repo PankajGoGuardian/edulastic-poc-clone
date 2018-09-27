@@ -28,4 +28,19 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.post('/', async (req, res) => {
+  try {
+    const { reference: id = '' } = req.body;
+    const item = new Item();
+    const itemDetails = await item.add({ id });
+    res.send({
+      message: 'item added',
+      data: itemDetails,
+    });
+  } catch (e) {
+    console.log('error', e);
+    res.status(400).send({ message: 'invalid data' });
+  }
+});
+
 export default router;

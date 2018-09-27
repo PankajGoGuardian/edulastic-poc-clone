@@ -19,6 +19,7 @@ import {
   DashboardControlBtn,
   LinkBtn,
 } from '../common';
+import { IconPreview } from '../common/icons';
 
 class MultipleChoiceQuestionEditor extends Component {
   state = {
@@ -123,7 +124,7 @@ class MultipleChoiceQuestionEditor extends Component {
                 onClick={() => this.activatePage('preview')}
                 active={this.isActivePage('preview')}
               >
-                <i className="fa fa-file-o" />
+                <IconPreview width={15} height={15} />
                 <span>{translate('common.layout.dashboard.previewbtn')}</span>
               </DashboardControlBtn>
               <DashboardControlBtn save onClick={this.onSaveClicked}>

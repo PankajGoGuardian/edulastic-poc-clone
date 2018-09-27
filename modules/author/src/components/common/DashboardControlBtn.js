@@ -34,7 +34,7 @@ const DashboardControlBtn = styled.button`
     padding-left: 5px;
   }
 
-  & i {
+  & i, & svg {
     position: absolute;
     top: 0;
     left: 10px;
@@ -43,12 +43,15 @@ const DashboardControlBtn = styled.button`
     align-items: center;
     font-size: 16px;
     color: ${props => (props.active ? '#ffffff' : props.save ? '#057750' : '#878282')};
+    fill: ${props => (props.active ? '#ffffff' : props.save ? '#057750' : '#878282')};
   }
 
   &:hover i,
+  &:hover svg,
   &:hover {
     background-color: #3fbef7;
     color: #ffffff;
+    fill: #ffffff;
   }
 `;
 

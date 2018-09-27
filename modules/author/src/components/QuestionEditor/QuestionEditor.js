@@ -3,10 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
-import SourceModal from './SourceModal';
 import OrderList from '../OrderList';
-import { getQuestionsStateSelector } from '../../selectors/questionsOrderList';
-import { setQuestionsStateAction } from '../../actions/questionsOrderList';
 import { changePreviewTabAction } from '../../actions/preview';
 import { getPreivewTabSelector } from '../../selectors/preview';
 import { changeViewAction } from '../../actions/view';
@@ -26,45 +23,17 @@ class QuestionEditor extends Component {
     changeView(view);
   };
 
-  handleShowSource = () => {
-    this.setState({ showModal: true });
-  };
-
-  handleHideSource = () => {
-    this.setState({ showModal: false });
-  };
-
-  handleApplySource = (json) => {
-    const { setQuestionsState } = this.props;
-
-    try {
-      const state = JSON.parse(json);
-      setQuestionsState(state);
-      this.handleHideSource();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   render() {
-    const { questionsData, view, changePreviewTab, previewTab } = this.props;
-    const { showModal } = this.state;
+    const { view, changePreviewTab, previewTab } = this.props;
 
     return (
       <Container>
-        {showModal && (
-          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
-            {JSON.stringify(questionsData, null, 4)}
-          </SourceModal>
-        )}
-
         <ItemHeader
           title={translate('component.orderList')}
           link={{ url: '/author', text: translate('component.backToItemDetail') }}
           reference="1234567890"
         >
           <ButtonBar
-            onShowSource={this.handleShowSource}
             onChangeView={this.handleChangeView}
             changePreviewTab={changePreviewTab}
             view={view}
@@ -80,10 +49,8 @@ class QuestionEditor extends Component {
 }
 
 QuestionEditor.propTypes = {
-  questionsData: PropTypes.object.isRequired,
   view: PropTypes.string.isRequired,
   changeView: PropTypes.func.isRequired,
-  setQuestionsState: PropTypes.func.isRequired,
   changePreviewTab: PropTypes.func.isRequired,
   previewTab: PropTypes.string.isRequired,
 };
@@ -91,13 +58,11 @@ QuestionEditor.propTypes = {
 const enhance = compose(
   connect(
     state => ({
-      questionsData: getQuestionsStateSelector(state),
       view: getViewSelector(state),
       previewTab: getPreivewTabSelector(state),
     }),
     {
       changeView: changeViewAction,
-      setQuestionsState: setQuestionsStateAction,
       changePreviewTab: changePreviewTabAction,
     },
   ),

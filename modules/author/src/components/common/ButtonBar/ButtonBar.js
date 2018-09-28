@@ -75,7 +75,7 @@ const ButtonBar = ({ onChangeView, view, changePreviewTab, previewTab, onShowSou
       </StyledButton>
     </Container>
     {view === 'preview' && (
-      <Container>
+      <Container style={{ position: 'absolute', marginTop: 20, width: '100%', justifyContent: 'flex-end' }}>
         <StyledButton>
           <ButtonLink
             onClick={() => changePreviewTab('check')}

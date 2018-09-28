@@ -29,9 +29,11 @@ class QuestionEditor extends Component {
   handleShowSource = () => {
     this.setState({ showModal: true });
   };
+
   handleHideSource = () => {
     this.setState({ showModal: false });
   };
+
   handleApplySource = (json) => {
     const { setQuestionsState } = this.props;
     try {

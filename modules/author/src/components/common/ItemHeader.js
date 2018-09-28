@@ -9,14 +9,14 @@ import { IconChevronLeft } from './icons';
 import TextField from './TextField';
 import { IconPensilEdit } from '../../../../assessment/src/components/common/icons';
 
-const ItemHeader = ({ title, children, link, reference }) => (
+const ItemHeader = ({ title, children, link, reference, editReference, onChange }) => (
   <React.Fragment>
     <FlexContainer alignItems="flex-start" style={{ marginBottom: 10 }}>
       <LeftSide>
         <TitleNav>
           <Title>{title}</Title>
         </TitleNav>
-        {reference && (
+        {reference !== null && (
           <FlexContainer>
             <span style={{ color: greenDark }}>Reference</span>
             <TextField
@@ -24,7 +24,8 @@ const ItemHeader = ({ title, children, link, reference }) => (
               type="text"
               height="40px"
               value={reference}
-              onChange={() => {}}
+              onChange={onChange}
+              onBlur={editReference}
               style={{ background: '#f3f3f3', border: '1px solid #dfdfdf', marginLeft: 10 }}
             />
           </FlexContainer>
@@ -47,12 +48,16 @@ ItemHeader.propTypes = {
   children: PropTypes.any,
   link: PropTypes.any,
   reference: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  editReference: PropTypes.func,
+  onChange: PropTypes.func,
 };
 
 ItemHeader.defaultProps = {
   children: null,
   link: null,
   reference: null,
+  editReference: () => {},
+  onChange: () => {},
 };
 
 export default ItemHeader;
@@ -65,6 +70,7 @@ const LeftSide = styled.div`
 const RightSide = styled.div`
   text-align: right;
   flex: 1;
+  position: relative;
 `;
 
 const Title = styled.div`

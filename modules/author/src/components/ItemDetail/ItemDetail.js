@@ -28,7 +28,7 @@ class ItemDetail extends Component {
     return (
       <Paper>
         <div dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-        <p>
+        <div>
           Bathtub{' '}
           <Select
             value="first"
@@ -36,8 +36,8 @@ class ItemDetail extends Component {
             options={[{ value: 'first', label: 'First' }, { value: 'second', label: 'Second' }]}
           />{' '}
           will be empty
-        </p>
-        <p>
+        </div>
+        <div>
           The time it will take for this bathtub to empty is{' '}
           <Select
             value="first"
@@ -45,8 +45,8 @@ class ItemDetail extends Component {
             options={[{ value: 'first', label: 'First' }, { value: 'second', label: 'Second' }]}
           />{' '}
           will be empty
-        </p>
-        <p>Lorem ipsum dolor sit amet?</p>
+        </div>
+        <div>Lorem ipsum dolor sit amet?</div>
         <OrderListPreview questions={item.list} />
         <AddNew />
       </Paper>

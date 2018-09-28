@@ -10,7 +10,7 @@ import {
   getItemsLoadingSelector,
 } from '../../selectors/items';
 import Item from './Item';
-import { receiveItemsAction } from '../../actions/items';
+import { receiveItemsAction, createItemAction } from '../../actions/items';
 import Header from './Header';
 import { Paper, Pagination } from '../../../../assessment/src/components/common';
 import { PaddingDiv } from '../common';
@@ -26,8 +26,9 @@ class ItemList extends Component {
     receiveItems({ page: 1, limit, search: value });
   };
 
-  handleCreate = () => {
-    const { history } = this.props;
+  handleCreate = async () => {
+    const { history, createItem } = this.props;
+    await createItem({ reference: '1234567895' });
     history.push('./add-item');
   };
 
@@ -43,7 +44,6 @@ class ItemList extends Component {
 
   render() {
     const { items, match, page, limit, count, loading } = this.props;
-
     return (
       <PaddingDiv top={20} left={40} right={40}>
         <Header onSearch={this.handleSearch} onCreate={this.handleCreate} />
@@ -75,6 +75,7 @@ ItemList.propTypes = {
   count: PropTypes.number.isRequired,
   loading: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
+  createItem: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -85,5 +86,8 @@ export default connect(
     count: getItemsCountSelector(state),
     loading: getItemsLoadingSelector(state),
   }),
-  { receiveItems: receiveItemsAction },
+  {
+    receiveItems: receiveItemsAction,
+    createItem: createItemAction,
+  },
 )(ItemList);

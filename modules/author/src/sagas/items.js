@@ -1,6 +1,6 @@
 import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects';
 
-import { receiveItemById, receiveItems } from '../utils/api/items';
+import { receiveItemById, receiveItems, createItem, updateItemById } from '../utils/api/items';
 import {
   RECEIVE_ITEM_REQUEST,
   RECEIVE_ITEM_SUCCESS,
@@ -8,6 +8,8 @@ import {
   RECEIVE_ITEMS_REQUEST,
   RECEIVE_ITEMS_SUCCESS,
   RECEIVE_ITEMS_ERROR,
+  CREATE_ITEM_REQUEST,
+  UPDATE_ITEM_REQUEST,
 } from '../constants/actions';
 
 function* receiveItemsSaga({ payload }) {
@@ -44,9 +46,44 @@ function* receiveItemSaga({ payload }) {
   }
 }
 
+function* createItemSaga({ payload }) {
+  try {
+    const item = yield call(createItem, payload);
+    yield put({
+      type: RECEIVE_ITEM_SUCCESS,
+      payload: { item: item.data },
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: RECEIVE_ITEM_ERROR,
+      payload: { error: 'Create item is failed' },
+    });
+  }
+}
+
+function* updateItemSaga({ payload }) {
+  console.log('update saga:', payload);
+  try {
+    const item = yield call(updateItemById, payload);
+    yield put({
+      type: RECEIVE_ITEM_SUCCESS,
+      payload: { item: item.data },
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: RECEIVE_ITEM_ERROR,
+      payload: { error: 'Update item is failed' },
+    });
+  }
+}
+
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_REQUEST, receiveItemSaga),
     yield takeLatest(RECEIVE_ITEMS_REQUEST, receiveItemsSaga),
+    yield takeLatest(CREATE_ITEM_REQUEST, createItemSaga),
+    yield takeLatest(UPDATE_ITEM_REQUEST, updateItemSaga),
   ]);
 }

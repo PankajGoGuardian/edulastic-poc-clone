@@ -35,7 +35,6 @@ router.post('/', async (req, res) => {
     let itemDetails = await itemModel.add({ id, type, list, stimulus, uiStyle, validation });
     const itemId = itemDetails._id;
     itemDetails = await itemModel.update(itemId, { id, type, list, stimulus, uiStyle, validation });
-    console.log('itemDetails:', itemDetails);
     itemDetails = await itemModel.get(itemId);
     res.send({
       message: 'item added',
@@ -48,6 +47,7 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
+  console.log('request body:', req.body);
   try {
     const { reference: id, type, list, stimulus, uiStyle, validation } = req.body;
     const itemId = req.params.id;

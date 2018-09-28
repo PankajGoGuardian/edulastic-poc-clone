@@ -2,7 +2,13 @@
   "name": "edulastic",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "dependencies": {
+    "@edulastic/colors": "1.0.0",
+    "@edulastic/common": "1.0.0",
+    "@edulastic/icons": "1.0.0",
     "autoprefixer": "7.1.6",
     "axios": "^0.18.0",
     "babel-core": "6.26.0",
@@ -46,6 +52,7 @@
     "react-icons": "^3.1.0",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
+    "react-scripts": "^1.1.5",
     "react-select": "^2.0.0",
     "react-sortable-hoc": "^0.8.3",
     "react-switch": "^3.0.4",
@@ -65,13 +72,13 @@
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
-    "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom",
+    "start": "react-app-rewired start scripts/start.js",
+    "build": "react-app-rewired build scripts/build.js",
+    "test": "react-app-rewired test scripts/test.js --env=jsdom",
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "modules/**/*.js": [
+    "src/**/*.js": [
       "eslint --fix",
       "git add"
     ]
@@ -81,6 +88,8 @@
     "husky": "^1.0.0-rc.15",
     "lint-staged": "^7.3.0",
     "node-sass": "^4.9.3",
+    "react-app-rewire-yarn-workspaces": "^1.0.3",
+    "react-app-rewired": "^1.6.2",
     "sass-extract": "^2.1.0",
     "sass-extract-js": "^0.4.0",
     "sass-extract-loader": "^1.1.0"

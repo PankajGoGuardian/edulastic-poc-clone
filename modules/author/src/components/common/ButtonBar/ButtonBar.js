@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FaCode, FaCog } from 'react-icons/fa';
 
 import { translate } from '../../../utils/localization';
 import { Container, StyledButton } from './styled_components';
@@ -16,7 +17,7 @@ import {
 } from '../../../../../assessment/src/components/common/icons';
 import { white, blue, darkBlue, textColor } from '../../../../../assessment/src/utils/css';
 
-const ButtonBar = ({ onChangeView, view, changePreviewTab, previewTab }) => (
+const ButtonBar = ({ onChangeView, view, changePreviewTab, previewTab, onShowSource }) => (
   <React.Fragment>
     <Container>
       <StyledButton>
@@ -49,9 +50,25 @@ const ButtonBar = ({ onChangeView, view, changePreviewTab, previewTab }) => (
       </StyledButton>
       <StyledButton>
         <SelectButton
-          onSelect={value => console.log(value)}
+          style={{ width: 130 }}
+          onSelect={(value) => {
+            if (value === 'source') {
+              onShowSource();
+            }
+          }}
           icon={<IconSettings color={textColor} />}
-          options={[{ value: 'first', label: 'First' }, { value: 'second', label: 'Second' }]}
+          options={[
+            {
+              value: 'source',
+              label: 'Source',
+              icon: <FaCode style={{ width: 16, height: 16 }} />,
+            },
+            {
+              value: 'settings',
+              label: 'Settings',
+              icon: <FaCog style={{ width: 16, height: 16 }} />,
+            },
+          ]}
         >
           {translate('component.questioneditor.buttonbar.settings')}
         </SelectButton>
@@ -99,6 +116,7 @@ ButtonBar.propTypes = {
   changePreviewTab: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
+  onShowSource: PropTypes.func.isRequired,
 };
 
 export default ButtonBar;

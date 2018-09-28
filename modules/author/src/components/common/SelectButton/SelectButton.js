@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { FaCaretDown } from 'react-icons/fa';
-import { textColor, white, grey, blue } from '../../../../assessment/src/utils/css';
+import { textColor, white } from '../../../../../assessment/src/utils/css';
+import SelectButtonItem from './SelectButtonItem';
+import { IconCaretDown } from '../icons';
+import { blue } from '../../../utils/css';
 
 export default class SelectButton extends Component {
   state = {
@@ -22,23 +24,23 @@ export default class SelectButton extends Component {
   };
 
   render() {
-    const { options, icon } = this.props;
+    const { options, icon, style } = this.props;
     const { open } = this.state;
 
     return (
-      <SelectContainer>
-        <Button onClick={this.toggleList}>
+      <SelectContainer style={style}>
+        <Button onClick={this.toggleList} open={open}>
           <span>{icon}</span>
           <span>
-            <FaCaretDown />
+            <IconCaretDown color={blue} width={11} height={6} />
           </span>
         </Button>
         {open && (
           <List>
             {options.map((item, index) => (
-              <ListItem key={index} onClick={this.handleSelectItem(item)}>
+              <SelectButtonItem key={index} onClick={this.handleSelectItem(item)} icon={item.icon}>
                 {item.label}
-              </ListItem>
+              </SelectButtonItem>
             ))}
           </List>
         )}
@@ -51,26 +53,31 @@ SelectButton.propTypes = {
   onSelect: PropTypes.func.isRequired,
   options: PropTypes.array.isRequired,
   icon: PropTypes.any,
+  style: PropTypes.object,
 };
 
 SelectButton.defaultProps = {
   icon: null,
+  style: {},
 };
 
 const SelectContainer = styled.div`
   position: relative;
+  min-width: 85px;
 `;
 
 const Button = styled.button`
   padding: 0 10px;
+  width: 100%;
   border-radius: 10px;
+  border-bottom-left-radius: ${({ open }) => (open ? 0 : 10)};
+  border-bottom-right-radius: ${({ open }) => (open ? 0 : 10)};
   background-color: ${white};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   color: ${textColor};
   font-size: 14px;
-  border: 1px solid ${grey};
+  border: none;
   -webkit-appearance: none;
-  min-width: 85px;
   min-height: 40px;
   display: inline-flex;
   align-items: center;
@@ -87,21 +94,13 @@ const Button = styled.button`
 `;
 
 const List = styled.div`
-  width: 100%;
   position: absolute;
   top: 40px;
-  left: 0;
+  width: 100%;
   background: ${white};
   z-index: 10000;
   border-radius: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-`;
-
-const ListItem = styled.div`
-  width: 100%;
-  padding: 10px;
-  cursor: pointer;
-  :hover {
-    background: ${blue};
-  }
 `;

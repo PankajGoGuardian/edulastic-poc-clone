@@ -7,7 +7,7 @@ export { default as FlexContainer } from './FlexContainer';
 export { default as TextField } from './TextField';
 export { default as Button } from './Button';
 export { default as ButtonLink } from './ButtonLink';
-export { default as SelectButton } from './SelectButton';
+export { default as SelectButton } from './SelectButton/SelectButton';
 export { default as Modal } from './Modal';
 export { default as Preloader } from './Preloader';
 export { default as Select } from './Select';

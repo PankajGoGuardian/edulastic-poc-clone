@@ -74,8 +74,12 @@
   "scripts": {
     "start": "react-app-rewired start scripts/start.js",
     "build": "react-app-rewired build scripts/build.js",
-    "test": "react-app-rewired test scripts/test.js --env=jsdom",
-    "precommit": "lint-staged"
+    "test": "react-app-rewired test scripts/test.js --env=jsdom"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "src/**/*.js": [

@@ -30,11 +30,32 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const { reference: id = '' } = req.body;
-    const item = new Item();
-    const itemDetails = await item.add({ id });
+    const { reference: id, type, list = [], stimulus = '', uiStyle, validation = {} } = req.body;
+    const itemModel = new Item();
+    let itemDetails = await itemModel.add({ id, type, list, stimulus, uiStyle, validation });
+    const itemId = itemDetails._id;
+    itemDetails = await itemModel.update(itemId, { id, type, list, stimulus, uiStyle, validation });
+    console.log('itemDetails:', itemDetails);
+    itemDetails = await itemModel.get(itemId);
     res.send({
       message: 'item added',
+      data: itemDetails,
+    });
+  } catch (e) {
+    console.log('error', e);
+    res.status(400).send({ message: 'invalid data' });
+  }
+});
+
+router.put('/:id', async (req, res) => {
+  try {
+    const { reference: id, type, list, stimulus, uiStyle, validation } = req.body;
+    const itemId = req.params.id;
+    const itemModel = new Item();
+    await itemModel.update(itemId, { id, type, list, stimulus, uiStyle, validation });
+    const itemDetails = await itemModel.get(itemId);
+    res.send({
+      message: 'successfully updated',
       data: itemDetails,
     });
   } catch (e) {

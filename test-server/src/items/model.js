@@ -24,6 +24,15 @@ class Item {
       page,
     };
   }
+
+  update(_id, item) {
+    return this.Item.update({ _id }, item);
+  }
+
+  add(item) {
+    const it = new this.Item(item);
+    return it.save();
+  }
 }
 
 export default Item;

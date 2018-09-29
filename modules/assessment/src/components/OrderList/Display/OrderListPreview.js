@@ -7,12 +7,12 @@ import OrderListPreviewItem from './OrderListPreviewItem';
 
 class OrderListPreview extends Component {
   render() {
-    const { questions } = this.props;
+    const { questions, smallSize } = this.props;
 
     return (
       <div>
         {questions.map((q, i) => (
-          <OrderListPreviewItem key={i} index={i}>
+          <OrderListPreviewItem smallSize={smallSize} key={i} index={i}>
             {q}
           </OrderListPreviewItem>
         ))}
@@ -23,6 +23,11 @@ class OrderListPreview extends Component {
 
 OrderListPreview.propTypes = {
   questions: PropTypes.array.isRequired,
+  smallSize: PropTypes.bool,
+};
+
+OrderListPreview.defaultProps = {
+  smallSize: false,
 };
 
 const enhance = compose(SortableContainer);

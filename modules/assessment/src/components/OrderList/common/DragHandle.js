@@ -4,8 +4,8 @@ import { FaBars } from 'react-icons/fa';
 import styled from 'styled-components';
 import { greenDark, green } from '../../../utils/css';
 
-const DragHandle = SortableHandle(() => (
-  <Container>
+const DragHandle = SortableHandle(({ smallSize }) => (
+  <Container smallSize={smallSize}>
     <FaBars />
   </Container>
 ));
@@ -19,7 +19,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   color: ${green};
-  font-size: 25px;
+  font-size: ${props => (props.smallSize ? 14 : 25)}px;
 
   :hover {
     cursor: pointer;

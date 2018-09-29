@@ -1,1 +1,1 @@
-export { default } from './QuestionEditor';
+export { default as QuestionEditor } from './QuestionEditor';

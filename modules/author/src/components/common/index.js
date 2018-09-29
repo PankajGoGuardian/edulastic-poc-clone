@@ -16,3 +16,4 @@ export { default as Container } from './Container';
 export { default as ItemHeader } from './ItemHeader';
 export { default as Title } from './Title';
 export { default as Back } from './Back';
+export { default as Paper } from './Paper';

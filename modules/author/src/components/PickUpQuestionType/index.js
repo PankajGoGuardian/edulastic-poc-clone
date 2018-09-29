@@ -13,8 +13,8 @@ import { translate } from '../../utils/localization';
 class PickUpQuestionType extends Component {
   selectQuestionType = (questionType) => {
     const { item, updateItemById, history } = this.props;
-    updateItemById({ id: item._id, type: questionType });
-    history.push('./questioncontainer');
+    updateItemById({ ...item, id: item._id, type: questionType, reference: item.id });
+    history.push({ pathname: `/author/items/${item._id}`, state: { type: questionType } });
   }
 
   render() {

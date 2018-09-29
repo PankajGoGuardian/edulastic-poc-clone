@@ -7,9 +7,10 @@ import FlexContainer from './FlexContainer';
 import { secondaryTextColor, greenDark, green } from '../../utils/css';
 import { IconChevronLeft } from './icons';
 import TextField from './TextField';
+import PaddingDiv from './PaddingDiv';
 import { IconPensilEdit } from '../../../../assessment/src/components/common/icons';
 
-const ItemHeader = ({ title, children, link, reference, editReference, onChange }) => (
+const ItemHeader = ({ title, children, link, reference, editReference, onChange, hideIcon }) => (
   <React.Fragment>
     <FlexContainer alignItems="flex-start" style={{ marginBottom: 10 }}>
       <LeftSide>
@@ -20,7 +21,7 @@ const ItemHeader = ({ title, children, link, reference, editReference, onChange 
           <FlexContainer>
             <span style={{ color: greenDark }}>Reference</span>
             <TextField
-              icon={<IconPensilEdit color={greenDark} />}
+              icon={!hideIcon && <IconPensilEdit color={greenDark} />}
               type="text"
               height="40px"
               value={reference}
@@ -40,6 +41,7 @@ const ItemHeader = ({ title, children, link, reference, editReference, onChange 
         </Back>
       )}
     </LeftSide>
+    <PaddingDiv height={40} />
   </React.Fragment>
 );
 
@@ -50,6 +52,7 @@ ItemHeader.propTypes = {
   reference: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   editReference: PropTypes.func,
   onChange: PropTypes.func,
+  hideIcon: PropTypes.bool,
 };
 
 ItemHeader.defaultProps = {
@@ -58,6 +61,7 @@ ItemHeader.defaultProps = {
   reference: null,
   editReference: () => {},
   onChange: () => {},
+  hideIcon: false,
 };
 
 export default ItemHeader;

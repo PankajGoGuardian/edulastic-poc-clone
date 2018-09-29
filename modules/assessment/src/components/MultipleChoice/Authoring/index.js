@@ -6,7 +6,7 @@ import {
 import QuestionAuthoring from '../../Base/QuestionAuthoring';
 import { translate } from '../utils/localization';
 import { ALPHABET } from '../constants/others';
-import { Container, PaddingDiv } from '../common';
+import { PaddingDiv } from '../common';
 import SortableItemContainer from './SortableItemContainer';
 import Subtitle from './Sutitle';
 import QuestionTextArea from './QuestionTextArea';
@@ -134,7 +134,7 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
   render() {
     const { choiceOptions, question, answers } = this.state;
     return (
-      <Container>
+      <React.Fragment>
         <PaddingDiv bottom={20}>
           <Subtitle>{translate('component.multiplechoice.composequestion')}</Subtitle>
           <QuestionTextArea
@@ -164,7 +164,7 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
             key={choiceOptions && answers}
           />
         </PaddingDiv>
-      </Container>
+      </React.Fragment>
     );
   }
 }

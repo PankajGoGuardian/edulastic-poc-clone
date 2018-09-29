@@ -1,62 +1,81 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 
-import Container from './components/Container';
 import {
   MultipleChoiceAuthoring,
   MultipleChoiceDisplay,
   MultipleChoiceReport,
 } from '../../../../assessment/src/components/MultipleChoice';
-
+import {
+  getPreivewTabSelector,
+} from '../../selectors/preview';
 import { PaddingDiv } from '../common';
 
 class MultipleChoice extends Component {
+  state = {
+    userSelections: [],
+  };
+
+  handleMultiSelect = (e) => {
+    const { userSelections } = this.state;
+    const index = parseInt(e.target.value, 10);
+    userSelections[index] = e.target.checked;
+    this.setState({ userSelections });
+  };
+
   render() {
-    const { activePage, userSelections, handleMultiSelect, showAnswer } = this.props;
-    let content;
-    switch (activePage) {
-      case 'edit': {
-        content = <MultipleChoiceAuthoring edit />;
-        break;
-      }
-      case 'preview': {
-        content = (
-          <Container>
-            <MultipleChoiceDisplay
-              preview
-              userSelections={userSelections}
-              onChange={handleMultiSelect}
-            />
-          </Container>
-        );
-        break;
-      }
-      case 'answer': {
-        content = (
-          <MultipleChoiceReport
-            showAnswer={showAnswer}
-            userSelections={userSelections}
-            handleMultiSelect={handleMultiSelect}
-          />
-        );
-        break;
-      }
-      default:
-        content = <MultipleChoiceAuthoring />;
-    }
-    return <PaddingDiv top={10}>{content}</PaddingDiv>;
+    const { view, previewTab } = this.props;
+    return (
+      <PaddingDiv top={10}>
+        {view === 'edit' && (
+          <React.Fragment>
+            <MultipleChoiceAuthoring edit />
+          </React.Fragment>
+        )}
+        {view === 'preview' && (
+          <React.Fragment>
+            {previewTab === 'check' && (
+              <MultipleChoiceReport
+                showAnswer
+                userSelections={this.userSelections}
+                handleMultiSelect={this.handleMultiSelect}
+              />
+            )}
+            {previewTab === 'show' && (
+              <MultipleChoiceReport
+                showAnswer
+                userSelections={this.userSelections}
+                handleMultiSelect={this.handleMultiSelect}
+              />
+            )}
+            {previewTab === 'clear' && (
+              <MultipleChoiceDisplay
+                preview
+                userSelections={this.userSelections}
+                onChange={this.handleMultiSelect}
+              />
+            )}
+          </React.Fragment>
+        )}
+      </PaddingDiv>
+    );
   }
 }
 
+
 MultipleChoice.propTypes = {
-  userSelections: PropTypes.array.isRequired,
-  handleMultiSelect: PropTypes.func.isRequired,
-  activePage: PropTypes.string.isRequired,
-  showAnswer: PropTypes.bool,
+  view: PropTypes.string.isRequired,
+  previewTab: PropTypes.string.isRequired,
 };
 
-MultipleChoice.defaultProps = {
-  showAnswer: false,
-};
+const enhance = compose(
+  connect(
+    state => ({
+      previewTab: getPreivewTabSelector(state),
+    }),
+  ),
+);
 
-export default MultipleChoice;
+export default enhance(MultipleChoice);

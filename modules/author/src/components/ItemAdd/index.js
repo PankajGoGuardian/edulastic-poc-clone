@@ -68,7 +68,7 @@ class ItemAdd extends Component {
       <Container>
         <ItemHeader
           title={translate('component.itemAdd.itemlist')}
-          link={{ url: '/author/add-item', text: translate('component.itemAdd.backToItemList') }}
+          link={{ url: '/author/items', text: translate('component.itemAdd.backToItemList') }}
           reference={reference}
           editReference={this.editReference}
           onChange={this.onInputReference}
@@ -77,6 +77,7 @@ class ItemAdd extends Component {
             onChangeView={this.handleChangeView}
             onShowSource={this.handleShowSource}
             changePreviewTab={changePreviewTab}
+            onSave={() => {}}
             view={view}
             previewTab={previewTab}
           />
@@ -91,12 +92,16 @@ class ItemAdd extends Component {
 
 ItemAdd.propTypes = {
   view: PropTypes.string.isRequired,
-  item: PropTypes.object.isRequired,
+  item: PropTypes.object,
   changeView: PropTypes.func.isRequired,
   changePreviewTab: PropTypes.func.isRequired,
   updateItemById: PropTypes.func.isRequired,
   previewTab: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
+};
+
+ItemAdd.defaultProps = {
+  item: {},
 };
 
 const enhance = compose(

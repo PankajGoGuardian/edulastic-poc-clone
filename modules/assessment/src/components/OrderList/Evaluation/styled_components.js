@@ -5,7 +5,7 @@ import { lightGrey } from '../../../utils/css';
 export const Header = styled.div`
   padding: 10px;
   background: ${lightGrey};
-  display: flex;
+  display: inline-flex;
   align-items: center;
 `;
 

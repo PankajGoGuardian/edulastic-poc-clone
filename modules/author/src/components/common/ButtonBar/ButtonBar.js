@@ -17,7 +17,7 @@ import {
 } from '../../../../../assessment/src/components/common/icons';
 import { white, blue, darkBlue, textColor } from '../../../../../assessment/src/utils/css';
 
-const ButtonBar = ({ onChangeView, view, changePreviewTab, previewTab, onShowSource }) => (
+const ButtonBar = ({ onChangeView, view, changePreviewTab, previewTab, onShowSource, onSave }) => (
   <React.Fragment>
     <Container>
       <StyledButton>
@@ -44,7 +44,7 @@ const ButtonBar = ({ onChangeView, view, changePreviewTab, previewTab, onShowSou
         </Button>
       </StyledButton>
       <StyledButton>
-        <Button onClick={() => {}} icon={<IconSave color={white} width={16} />} color="success">
+        <Button onClick={onSave} icon={<IconSave color={white} width={16} />} color="success">
           {translate('component.questioneditor.buttonbar.save')}
         </Button>
       </StyledButton>
@@ -117,6 +117,7 @@ ButtonBar.propTypes = {
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
   onShowSource: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
 };
 
 export default ButtonBar;

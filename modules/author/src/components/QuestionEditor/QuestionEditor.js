@@ -1,25 +1,42 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { connect } from 'react-redux';
 
 import SourceModal from './SourceModal';
 import OrderList from '../OrderList';
+import MultipleChoice from '../MultipleChoice';
 import { changePreviewTabAction } from '../../actions/preview';
 import { getPreivewTabSelector } from '../../selectors/preview';
+import { getItemSelector } from '../../selectors/items';
 import { changeViewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
 import { Container } from './styled_components';
-import { Paper, ItemHeader } from '../../../../assessment/src/components/common';
 import { translate } from '../../utils/localization';
-import { ButtonBar } from '../common';
+import { ButtonBar, ItemHeader, Paper } from '../common';
 import { setQuestionsStateAction } from '../../actions/questionsOrderList';
 import { getQuestionsStateSelector } from '../../selectors/questionsOrderList';
+import { addQuestion } from '../../actions/questions';
+import {
+  QUESTION_PROBLEM,
+  QUESTION_OPTIONS,
+  QUESTION_ANSWERS,
+  ASSESSMENTID,
+} from '../../constants/others';
+
+const headerTitle = {
+  mcq: 'MultipleChoice',
+  orderlist: 'Order List',
+};
 
 class QuestionEditor extends Component {
   state = {
     showModal: false,
   };
+
+  componentWillReceiveProps(nextProps) {
+    console.log('props chagned:', nextProps.item);
+  }
 
   handleChangeView = (view) => {
     const { changeView } = this.props;
@@ -34,6 +51,29 @@ class QuestionEditor extends Component {
     this.setState({ showModal: false });
   };
 
+  onSaveClicked = () => {
+    const { add } = this.props;
+    console.log('save current question');
+    const problem = localStorage.getItem(QUESTION_PROBLEM);
+    const options = localStorage.getItem(QUESTION_OPTIONS);
+    const answers = JSON.parse(localStorage.getItem(QUESTION_ANSWERS)) || [];
+    const assessmentId = localStorage.getItem(ASSESSMENTID);
+    const correctAnswer = [];
+    answers.forEach((answer, index) => {
+      if (answer) {
+        correctAnswer.push(index);
+      }
+    });
+    const question = {
+      assessmentId,
+      question: problem,
+      options: JSON.parse(options),
+      type: 'mcq',
+      answer: JSON.stringify(correctAnswer),
+    };
+    add(question);
+  }
+
   handleApplySource = (json) => {
     const { setQuestionsState } = this.props;
     try {
@@ -46,9 +86,13 @@ class QuestionEditor extends Component {
   };
 
   render() {
-    const { view, changePreviewTab, previewTab, questionsData } = this.props;
+    const { view, changePreviewTab, previewTab, questionsData, item, type, history } = this.props;
+    let questionType = type;
+    const itemId = item === null ? '' : item.id;
+    if (!type) {
+      questionType = history.location.state.type;
+    }
     const { showModal } = this.state;
-
     return (
       <Container>
         {showModal && (
@@ -57,20 +101,23 @@ class QuestionEditor extends Component {
           </SourceModal>
         )}
         <ItemHeader
-          title={translate('component.orderList')}
-          link={{ url: '/author', text: translate('component.backToItemDetail') }}
-          reference="1234567890"
+          hideIcon
+          title={headerTitle[questionType]}
+          link={{ url: '/author/items', text: translate('component.backToItemList') }}
+          reference={itemId}
         >
           <ButtonBar
             onChangeView={this.handleChangeView}
             onShowSource={this.handleShowSource}
             changePreviewTab={changePreviewTab}
+            onSave={this.onSaveClicked}
             view={view}
             previewTab={previewTab}
           />
         </ItemHeader>
         <Paper>
-          <OrderList view={view} />
+          {questionType === 'orderlist' && <OrderList view={view} />}
+          {questionType === 'mcq' && <MultipleChoice view={view} />}
         </Paper>
       </Container>
     );
@@ -84,6 +131,15 @@ QuestionEditor.propTypes = {
   changePreviewTab: PropTypes.func.isRequired,
   previewTab: PropTypes.string.isRequired,
   setQuestionsState: PropTypes.func.isRequired,
+  item: PropTypes.object,
+  add: PropTypes.func.isRequired,
+  type: PropTypes.string,
+  history: PropTypes.object.isRequired,
+};
+
+QuestionEditor.defaultProps = {
+  item: {},
+  type: undefined,
 };
 
 const enhance = compose(
@@ -92,11 +148,13 @@ const enhance = compose(
       questionsData: getQuestionsStateSelector(state),
       view: getViewSelector(state),
       previewTab: getPreivewTabSelector(state),
+      item: getItemSelector(state),
     }),
     {
       changeView: changeViewAction,
       changePreviewTab: changePreviewTabAction,
       setQuestionsState: setQuestionsStateAction,
+      add: addQuestion,
     },
   ),
 );

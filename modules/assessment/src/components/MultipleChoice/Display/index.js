@@ -11,17 +11,22 @@ import ProblemContainer from './ProblemContainer';
 
 const Option = (props) => {
   const {
-    index, setAnswers, item, showAnswer, userSelections, answers, onChange,
+    index, setAnswers, item, showAnswer, userSelections, answers, onChange, smallSize,
   } = props;
   return (
-    <Label setAnswers={setAnswers} showAnswer className={showAnswer ? answers[index] ? 'right' : 'wrong' : ''}>
-      <PaddingDiv top={setAnswers ? 15 : 20} bottom={setAnswers ? 15 : 20}>
+    <Label
+      smallSize={smallSize}
+      setAnswers={setAnswers}
+      showAnswer
+      className={showAnswer ? answers[index] ? 'right' : 'wrong' : ''}
+    >
+      <PaddingDiv smallSize={smallSize} top={setAnswers ? 15 : 20} bottom={setAnswers ? 15 : 20}>
         <FlexContainer>
           <CheckboxContainter>
             <input type="checkbox" value={index} defaultChecked={userSelections[index]} onClick={onChange} />
             <span />
           </CheckboxContainter>
-          <MultiChoiceContent>
+          <MultiChoiceContent smallSize={smallSize}>
             {item.label}
           </MultiChoiceContent>
           <PaddingDiv right={15} height={20}>
@@ -40,13 +45,14 @@ const Option = (props) => {
 
 const Options = (props) => {
   const {
-    options, showAnswer, setAnswers, userSelections, answers, onChange,
+    options, showAnswer, setAnswers, userSelections, answers, onChange, smallSize,
   } = props;
   return (
     <div>
       {options.map((option, index) => (
         <Option
           key={index}
+          smallSize={smallSize}
           index={index}
           setAnswers={setAnswers}
           item={option}
@@ -69,12 +75,18 @@ class MultipleChoiceDisplay extends QuestionDisplay {
       question = responseQues;
     }
     const {
-      setAnswers, showAnswer, userSelections = [], answers = [],
+      setAnswers, showAnswer, userSelections = [], answers = [], smallSize,
     } = this.props;
     return (
       <div>
-        {!setAnswers && <ProblemContainer dangerouslySetInnerHTML={{ __html: question }} />}
+        {!setAnswers && (
+          <ProblemContainer
+            smallSize={smallSize}
+            dangerouslySetInnerHTML={{ __html: question }}
+          />
+        )}
         <Options
+          smallSize={smallSize}
           options={options}
           setAnswers={setAnswers}
           showAnswer={showAnswer}
@@ -90,6 +102,7 @@ class MultipleChoiceDisplay extends QuestionDisplay {
 Option.defaultProps = {
   setAnswers: false,
   showAnswer: false,
+  smallSize: false,
   userSelections: [],
   answers: [],
 };
@@ -102,6 +115,7 @@ Option.propTypes = {
   userSelections: PropTypes.array,
   answers: PropTypes.array,
   onChange: PropTypes.func.isRequired,
+  smallSize: PropTypes.bool,
 };
 
 Options.defaultProps = {
@@ -110,6 +124,7 @@ Options.defaultProps = {
   userSelections: [],
   answers: [],
   options: [],
+  smallSize: false,
 };
 
 Options.propTypes = {
@@ -119,6 +134,7 @@ Options.propTypes = {
   answers: PropTypes.array,
   options: PropTypes.array,
   onChange: PropTypes.func.isRequired,
+  smallSize: PropTypes.bool,
 };
 
 MultipleChoiceDisplay.propTypes = {
@@ -130,6 +146,7 @@ MultipleChoiceDisplay.propTypes = {
   setAnswers: PropTypes.bool,
   preview: PropTypes.bool,
   userSelections: PropTypes.array,
+  smallSize: PropTypes.bool,
 };
 
 export default MultipleChoiceDisplay;

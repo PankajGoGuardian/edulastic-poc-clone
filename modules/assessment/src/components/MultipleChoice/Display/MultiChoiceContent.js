@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const MultiChoiceContent = styled.div`
-  font-size: 16px;
+  font-size: ${props => (props.smallSize ? 13 : 16)}px;
   color: ${props => props.theme.mainContentTextColor};
   display: flex;
   flex: 1;

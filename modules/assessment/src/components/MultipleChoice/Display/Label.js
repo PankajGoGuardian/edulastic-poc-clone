@@ -3,7 +3,7 @@ import styled from 'styled-components';
 const Label = styled.label`
   max-width: 960px;
   display: block;
-  padding-left: 20px;
+  padding-left: ${props => (props.smallSize ? 5 : 20)}px;
   border: dotted 1px transparent;
   border-left: solid 3px transparent;
   margin: ${props => (props.setAnswers ? '5px 0' : '10px 0')};

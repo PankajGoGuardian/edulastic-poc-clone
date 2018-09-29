@@ -46,7 +46,7 @@ const ItemHeader = ({ title, children, link, reference, editReference, onChange,
 );
 
 ItemHeader.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   children: PropTypes.any,
   link: PropTypes.any,
   reference: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -57,6 +57,7 @@ ItemHeader.propTypes = {
 
 ItemHeader.defaultProps = {
   children: null,
+  title: '',
   link: null,
   reference: null,
   editReference: () => {},

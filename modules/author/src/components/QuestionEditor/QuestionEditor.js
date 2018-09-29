@@ -11,6 +11,7 @@ import { getPreivewTabSelector } from '../../selectors/preview';
 import { getItemSelector } from '../../selectors/items';
 import { changeViewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
+import { receiveItemByIdAction } from '../../actions/items';
 import { Container } from './styled_components';
 import { translate } from '../../utils/localization';
 import { ButtonBar, ItemHeader, Paper } from '../common';
@@ -33,6 +34,13 @@ class QuestionEditor extends Component {
   state = {
     showModal: false,
   };
+
+  componentWillMount() {
+    const { match, receiveItemById } = this.props;
+    if (match.params !== undefined) {
+      receiveItemById(match.params.id);
+    }
+  }
 
   componentWillReceiveProps(nextProps) {
     console.log('props chagned:', nextProps.item);
@@ -86,11 +94,12 @@ class QuestionEditor extends Component {
   };
 
   render() {
-    const { view, changePreviewTab, previewTab, questionsData, item, type, history } = this.props;
+    const { view, changePreviewTab, previewTab, questionsData, item, type } = this.props;
     let questionType = type;
+    console.log('editor type', type, item);
     const itemId = item === null ? '' : item.id;
-    if (!type) {
-      questionType = history.location.state.type;
+    if (item !== {} && item !== null) {
+      questionType = item.type;
     }
     const { showModal } = this.state;
     return (
@@ -134,11 +143,13 @@ QuestionEditor.propTypes = {
   item: PropTypes.object,
   add: PropTypes.func.isRequired,
   type: PropTypes.string,
-  history: PropTypes.object.isRequired,
+  match: PropTypes.object,
+  receiveItemById: PropTypes.func.isRequired,
 };
 
 QuestionEditor.defaultProps = {
   item: {},
+  match: {},
   type: undefined,
 };
 
@@ -154,6 +165,7 @@ const enhance = compose(
       changeView: changeViewAction,
       changePreviewTab: changePreviewTabAction,
       setQuestionsState: setQuestionsStateAction,
+      receiveItemById: receiveItemByIdAction,
       add: addQuestion,
     },
   ),

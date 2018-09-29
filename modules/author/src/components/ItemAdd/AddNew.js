@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { translate } from '../../utils/localization';
 import {
@@ -8,9 +9,9 @@ import {
 } from '../../utils/css';
 import { IconPlus } from '../common/icons';
 
-const AddNew = () => (
+const AddNew = ({ moveNew }) => (
   <React.Fragment>
-    <PlusWrapper>
+    <PlusWrapper onClick={moveNew}>
       <IconPlus
         color={greenDark}
         width={60}
@@ -22,6 +23,10 @@ const AddNew = () => (
     </PlusWrapper>
   </React.Fragment>
 );
+
+AddNew.propTypes = {
+  moveNew: PropTypes.func.isRequired,
+};
 
 export default AddNew;
 

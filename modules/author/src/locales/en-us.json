@@ -43,5 +43,7 @@
   "component.itemlist.header.itemlist": "Item List",
   "component.itemdetail.addnew.addnew": "Add New",
   "component.itemAdd.backToItemList": "Back to Item List",
-  "component.itemAdd.itemlist": "Item List"
+  "component.itemAdd.itemlist": "Item List",
+  "component.pickupcomponent.headertitle": "Select a type of Question or Feature",
+  "component.pickupcomponent.backToAddNew": "Back to Add New"
 }

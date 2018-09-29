@@ -56,6 +56,11 @@ class ItemAdd extends Component {
     this.setState({ reference: e.target.value });
   }
 
+  moveNew = () => {
+    const { history, item } = this.props;
+    history.push(`/author/items/${item._id}/pickup-questiontype`);
+  }
+
   render() {
     const { view, changePreviewTab, previewTab } = this.props;
     const { reference } = this.state;
@@ -63,7 +68,7 @@ class ItemAdd extends Component {
       <Container>
         <ItemHeader
           title={translate('component.itemAdd.itemlist')}
-          link={{ url: '/author/items', text: translate('component.itemAdd.backToItemList') }}
+          link={{ url: '/author/add-item', text: translate('component.itemAdd.backToItemList') }}
           reference={reference}
           editReference={this.editReference}
           onChange={this.onInputReference}
@@ -77,7 +82,7 @@ class ItemAdd extends Component {
           />
         </ItemHeader>
         <PaddingDiv top={160}>
-          <AddNew />
+          <AddNew moveNew={this.moveNew} />
         </PaddingDiv>
       </Container>
     );
@@ -91,6 +96,7 @@ ItemAdd.propTypes = {
   changePreviewTab: PropTypes.func.isRequired,
   updateItemById: PropTypes.func.isRequired,
   previewTab: PropTypes.string.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 const enhance = compose(

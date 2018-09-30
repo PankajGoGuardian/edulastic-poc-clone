@@ -1,7 +1,5 @@
-import itemsSaga from './items';
-
 const assessmentSagas = {
-  itemsSaga,
+  // itemsSaga,
 };
 
 export default assessmentSagas;

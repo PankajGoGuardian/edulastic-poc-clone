@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { TextField } from '@edulastic/common';
+import { IconSearch, IconPlus } from '@edulastic/icons';
+import { blue, green, greenDarkSecondary, white } from '@edulastic/colors';
 
-import { TextField, DashboardControlBtn } from '../common';
+import { DashboardControlBtn } from '../common';
 import { translate } from '../../utils/localization';
-import { IconSearch, IconPlus } from '../../../../assessment/src/components/common/icons';
-import { blue, green, greenDarkSecondary, white } from '../../../../assessment/src/utils/css';
 
 const Header = ({ onSearch, onCreate }) => (
   <Container>

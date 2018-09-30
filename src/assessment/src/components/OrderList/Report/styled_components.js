@@ -7,7 +7,7 @@ import {
   mainTextColor,
   lightGreen,
   lightRed,
-} from '../../../utils/css';
+} from '@edulastic/colors';
 
 export const Container = styled.div`
   width: 100%;

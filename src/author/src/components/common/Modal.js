@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FaTimes } from 'react-icons/fa';
+import { white, blue } from '@edulastic/colors';
 
 import Button from './Button';
 import { translate } from '../../utils/localization';
-import { white, blue } from '../../../../assessment/src/utils/css';
 
 const modalRoot = document.getElementById('modal-root');
 

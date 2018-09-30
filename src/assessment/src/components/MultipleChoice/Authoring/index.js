@@ -2,11 +2,11 @@ import React from 'react';
 import {
   SortableContainer, SortableElement, SortableHandle, arrayMove,
 } from 'react-sortable-hoc';
+import { PaddingDiv } from '@edulastic/common';
 
 import QuestionAuthoring from '../../Base/QuestionAuthoring';
 import { translate } from '../utils/localization';
 import { ALPHABET } from '../constants/others';
-import { PaddingDiv } from '../common';
 import SortableItemContainer from './SortableItemContainer';
 import Subtitle from './Sutitle';
 import QuestionTextArea from './QuestionTextArea';

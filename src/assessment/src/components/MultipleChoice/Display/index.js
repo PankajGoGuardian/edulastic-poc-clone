@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { PaddingDiv } from '@edulastic/common';
 
 import QuestionDisplay from '../../Base/QuestionDisplay';
 import FlexContainer from './FlexContainer';
-import { PaddingDiv } from '../common';
 import MultiChoiceContent from './MultiChoiceContent';
 import CheckboxContainter from './CheckboxContainer';
 import Label from './Label';

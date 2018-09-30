@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { PaddingDiv } from '@edulastic/common';
 
 import {
   MultipleChoiceAuthoring,
@@ -11,7 +12,6 @@ import {
 import {
   getPreivewTabSelector,
 } from '../../selectors/preview';
-import { PaddingDiv } from '../common';
 import { getItemSelector } from '../../selectors/items';
 
 class MultipleChoice extends Component {

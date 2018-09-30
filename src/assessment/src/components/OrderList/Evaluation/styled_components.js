@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { TextField } from '../common';
-import { lightGrey } from '../../../utils/css';
+import { lightGrey } from '@edulastic/colors';
+
+import { TextField } from '@edulastic/common';
 
 export const Header = styled.div`
   padding: 10px;

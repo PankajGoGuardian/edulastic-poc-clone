@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FlexContainer } from '@edulastic/common';
+import { IconChevronLeft } from '@edulastic/icons';
+import { secondaryTextColor, greenDark, green } from '@edulastic/colors';
 
 import { Title, Back } from '../common';
-
-import FlexContainer from '../common/FlexContainer';
-import { secondaryTextColor, greenDark, green } from '../../utils/css';
-import { IconChevronLeft } from '../common/icons';
 
 const Header = ({ title, link }) => (
   <React.Fragment>

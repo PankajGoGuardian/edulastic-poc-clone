@@ -10,7 +10,7 @@ import {
   green,
   greenDark,
   black,
-} from '../../../utils/css';
+} from '@edulastic/colors';
 
 const getRadius = (variant) => {
   switch (variant) {

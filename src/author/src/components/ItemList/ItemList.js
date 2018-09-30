@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Paper, Pagination } from '@edulastic/common';
+import { Paper, Pagination, PaddingDiv } from '@edulastic/common';
 
 import {
   getItemsListSelector,
@@ -13,7 +13,6 @@ import {
 import Item from './Item';
 import { receiveItemsAction, createItemAction } from '../../actions/items';
 import Header from './Header';
-import { PaddingDiv } from '../common';
 
 class ItemList extends Component {
   componentDidMount() {

@@ -8,7 +8,7 @@ import {
   green,
   greenDark,
   darkGrey,
-} from '../../../../assessment/src/utils/css';
+} from '@edulastic/colors';
 
 const getColors = ({ color, active }) => {
   const colors = {};

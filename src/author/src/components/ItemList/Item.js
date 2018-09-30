@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FaAngleDoubleRight } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
+import { IconClockCircularOutline } from '@edulastic/icons';
+import { grey, blue, darkBlue, textColor } from '@edulastic/colors';
 
 import { Button } from '../common';
-import { grey, blue, darkBlue, textColor } from '../../../../assessment/src/utils/css';
-import { IconClockCircularOutline } from '../../../../assessment/src/components/common/icons';
 
 /* eslint-disable no-underscore-dangle */
 const Item = ({ item, match }) => (

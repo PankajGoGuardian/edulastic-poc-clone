@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { IconCheck, IconClose } from '@edulastic/icons';
+import { green, red, textColor } from '@edulastic/colors';
+import { FlexContainer } from '@edulastic/common';
 
 import { translate } from '../utils/localization';
 import { Container, Text, Icon, CorrectAnswerItem, Index, QuestionText } from './styled_components';
-import { FlexContainer } from '../common';
-import { IconCheck, IconClose } from '../../common/icons';
-import { green, red, textColor } from '../../../utils/css';
 
 const OrderListReportItem = ({ children, correctText, correct, showAnswers, index }) => (
   <React.Fragment>

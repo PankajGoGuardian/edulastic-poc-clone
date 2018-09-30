@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { grey } from '../../../utils/css';
+import { grey } from '@edulastic/colors';
 
 export const Container = styled.div`
   width: 100%;

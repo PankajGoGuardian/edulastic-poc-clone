@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FlexContainer } from '@edulastic/common';
 
 import Card from './Card';
-import { FlexContainer } from '../../../../assessment/src/components/common';
 
 
 const PickUpQuestionTypes = ({ onSelectQuestionType }) => (

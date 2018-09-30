@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { IconPlus } from '@edulastic/icons';
+import { white } from '@edulastic/colors';
 
 import CorrectAnswer from './CorrectAnswer';
 import { Button, Heading } from '../common';
@@ -9,10 +11,8 @@ import {
   addAltResponsesAction,
   updateCorrectValidationScoreAction,
 } from '../actions/questionsOrderList';
-import { IconPlus } from '../../common/icons';
 import Tabs, { Tab, TabContainer } from '../common/Tabs';
 import { translate } from '../utils/localization';
-import { white } from '../../../utils/css';
 
 class CorrectAnswers extends Component {
   state = {

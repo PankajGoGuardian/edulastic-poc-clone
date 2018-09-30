@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { IconPlus } from '@edulastic/icons';
 
 import { MultipleChoiceDisplay } from '../../../../assessment/src/components/MultipleChoice';
 import { OrderListPreview } from '../../../../assessment/src/components/OrderList';
 import { Content, Header, RoundDiv, QuestionText } from './components';
-import { IconPlus } from '../common/icons';
 
 const Card = ({ title, type, question, userSelections = [], options, onSelectQuestionType }) => (
   <React.Fragment>

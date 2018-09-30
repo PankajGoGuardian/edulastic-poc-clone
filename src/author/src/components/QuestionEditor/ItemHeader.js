@@ -3,11 +3,8 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { IconChevronLeft, IconPensilEdit } from '@edulastic/icons';
-
-import { FlexContainer } from '@edulastic/common';
-import { secondaryTextColor, greenDark, green } from '../../utils/css';
-import TextField from '../common/TextField';
-import PaddingDiv from '../common/PaddingDiv';
+import { FlexContainer, TextField, PaddingDiv } from '@edulastic/common';
+import { secondaryTextColor, greenDark, green } from '@edulastic/colors';
 
 const ItemHeader = ({ title, children, link, reference, editReference, onChange, hideIcon }) => (
   <React.Fragment>

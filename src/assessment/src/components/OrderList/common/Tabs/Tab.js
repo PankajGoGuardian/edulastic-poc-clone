@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { textColor, blue } from '../../../../utils/css';
+import { textColor, blue } from '@edulastic/colors';
 
 const Tab = ({ label, onClick, active }) => (
   <Container onClick={onClick} active={active}>

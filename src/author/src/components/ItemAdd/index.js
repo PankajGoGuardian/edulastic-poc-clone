@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { PaddingDiv, ItemHeader } from '@edulastic/common';
 
 import { changePreviewTabAction } from '../../actions/preview';
 import { getPreivewTabSelector } from '../../selectors/preview';
@@ -9,7 +10,7 @@ import { changeViewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
 import { updateItemByIdAction } from '../../actions/items';
 import { translate } from '../../utils/localization';
-import { ButtonBar, ItemHeader, Container, PaddingDiv } from '../common';
+import { ButtonBar, Container } from '../common';
 import AddNew from './AddNew';
 import { getItemSelector } from '../../selectors/items';
 import { setQuestionsStateAction } from '../../actions/questionsOrderList';

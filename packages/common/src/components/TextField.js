@@ -1,20 +1,46 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { grey } from '@edulastic/colors';
+import { grey, greenDark } from '@edulastic/colors';
 
-const TextField = ({ icon, height, style, containerStyle, ...restProps }) => (
-  <Container height={height} style={containerStyle}>
-    <Field type="text" style={style} {...restProps} />
-    {icon && <Icon>{icon}</Icon>}
-  </Container>
-);
+class TextField extends Component {
+  state = {
+    referenceEditable: false,
+  }
+
+  onIconClick = () => {
+    console.log('on icon click');
+    const { referenceEditable } = this.state;
+    this.setState({ referenceEditable: !referenceEditable });
+  }
+
+  render() {
+    // eslint-disable-next-line
+    const { icon, height, style, containerStyle, onChange, onBlur, ...restProps } = this.props;
+    const { referenceEditable } = this.state;
+    return (
+      <Container height={height} style={containerStyle}>
+        <Field
+          disabled={!referenceEditable}
+          type="text"
+          style={style}
+          referenceEditable={referenceEditable}
+          {...restProps}
+          onChange={onChange}
+          onBlur={(e) => { this.onIconClick(); onBlur(e); }}
+        />
+        {icon && <Icon onClick={this.onIconClick}>{icon}</Icon>}
+      </Container>
+    );
+  }
+}
 
 TextField.propTypes = {
   icon: PropTypes.any,
   height: PropTypes.string,
   style: PropTypes.object,
   containerStyle: PropTypes.object,
+  onChange: PropTypes.func.isRequired,
 };
 
 TextField.defaultProps = {
@@ -33,16 +59,20 @@ const Container = styled.span`
 `;
 
 const Icon = styled.span`
-  position: absolute;
-  right: 8px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  top: 0;
+    position: absolute;
+    right: 8px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    top: 0;
+
+    &:hover {
+      cursor: pointer;
+    }
 `;
 
 const Field = styled.input`
-  border: 1px solid ${grey};
+  border: 1px solid ${props => (props.referenceEditable ? greenDark : grey)};
   border-radius: 10px;
   min-height: 100%;
   width: 100%;

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { textColor, white } from '../../../../../assessment/src/utils/css';
+import { IconCaretDown } from '@edulastic/icons';
+import { textColor, white, blue } from '@edulastic/colors';
 import SelectButtonItem from './SelectButtonItem';
-import { IconCaretDown } from '../icons';
-import { blue } from '../../../utils/css';
 
 export default class SelectButton extends Component {
   state = {

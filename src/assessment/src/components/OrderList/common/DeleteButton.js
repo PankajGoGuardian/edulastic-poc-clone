@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { IconTrashAlt } from '../../common/icons';
-import { green, greenDark, red, lightGrey } from '../../../utils/css';
+import { IconTrashAlt } from '@edulastic/icons';
+import { green, greenDark, red, lightGrey } from '@edulastic/colors';
 
 const DeleteButton = ({ onDelete }) => (
   <Container onClick={onDelete}>

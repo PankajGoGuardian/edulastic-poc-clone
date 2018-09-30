@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { translate } from '../../utils/localization';
+import { IconPlus } from '@edulastic/icons';
 import {
   greenDark,
   secondaryTextColor,
   green,
-} from '../../utils/css';
-import { IconPlus } from '../common/icons';
+} from '@edulastic/colors';
+
+import { translate } from '../../utils/localization';
 
 const AddNew = ({ moveNew }) => (
   <React.Fragment>

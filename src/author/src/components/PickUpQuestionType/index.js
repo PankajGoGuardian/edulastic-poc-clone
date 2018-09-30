@@ -46,9 +46,13 @@ const enhance = compose(
 );
 
 PickUpQuestionType.propTypes = {
-  item: PropTypes.object.isRequired,
+  item: PropTypes.object,
   updateItemById: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
+};
+
+PickUpQuestionType.defaultProps = {
+  item: {},
 };
 
 export default enhance(PickUpQuestionType);

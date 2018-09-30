@@ -20,7 +20,7 @@ const Option = (props) => {
       showAnswer
       className={showAnswer ? answers[index] ? 'right' : 'wrong' : ''}
     >
-      <PaddingDiv smallSize={smallSize} top={setAnswers ? 15 : 20} bottom={setAnswers ? 15 : 20}>
+      <PaddingDiv top={setAnswers ? 15 : smallSize ? 0 : 20} bottom={setAnswers ? 15 : smallSize ? 0 : 20}>
         <FlexContainer>
           <CheckboxContainter>
             <input type="checkbox" value={index} defaultChecked={userSelections[index]} onClick={onChange} />

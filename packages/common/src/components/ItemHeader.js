@@ -53,13 +53,13 @@ ItemHeader.defaultProps = {
 export default ItemHeader;
 
 const LeftSide = styled.div`
-  min-width: 30%;
+  min-width: 40%;
   display: flex;
   align-items: flex-start;
 `;
 
 const RightSide = styled.div`
-  min-width: 70%;
+  min-width: 60%;
 `;
 
 const Title = styled.div`

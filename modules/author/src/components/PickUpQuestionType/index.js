@@ -14,7 +14,8 @@ class PickUpQuestionType extends Component {
   selectQuestionType = (questionType) => {
     const { item, updateItemById, history } = this.props;
     updateItemById({ ...item, id: item._id, type: questionType, reference: item.id });
-    history.push({ pathname: `/author/items/${item._id}`, state: { type: questionType } });
+    localStorage.setItem('PickUpQuestionType', true);
+    history.push(`/author/items/${item._id}`);
   }
 
   render() {

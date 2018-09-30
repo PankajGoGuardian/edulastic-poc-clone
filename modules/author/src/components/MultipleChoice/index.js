@@ -12,6 +12,7 @@ import {
   getPreivewTabSelector,
 } from '../../selectors/preview';
 import { PaddingDiv } from '../common';
+import { getItemSelector } from '../../selectors/items';
 
 class MultipleChoice extends Component {
   state = {
@@ -26,12 +27,13 @@ class MultipleChoice extends Component {
   };
 
   render() {
-    const { view, previewTab } = this.props;
+    const { view, previewTab, isNew, item } = this.props;
+    const { userSelections } = this.state;
     return (
       <PaddingDiv top={10}>
         {view === 'edit' && (
           <React.Fragment>
-            <MultipleChoiceAuthoring edit />
+            <MultipleChoiceAuthoring edit={!isNew} key={isNew} item={!!item && item} />
           </React.Fragment>
         )}
         {view === 'preview' && (
@@ -39,21 +41,21 @@ class MultipleChoice extends Component {
             {previewTab === 'check' && (
               <MultipleChoiceReport
                 showAnswer
-                userSelections={this.userSelections}
+                userSelections={userSelections}
                 handleMultiSelect={this.handleMultiSelect}
               />
             )}
             {previewTab === 'show' && (
               <MultipleChoiceReport
                 showAnswer
-                userSelections={this.userSelections}
+                userSelections={userSelections}
                 handleMultiSelect={this.handleMultiSelect}
               />
             )}
             {previewTab === 'clear' && (
               <MultipleChoiceDisplay
                 preview
-                userSelections={this.userSelections}
+                userSelections={userSelections}
                 onChange={this.handleMultiSelect}
               />
             )}
@@ -68,12 +70,20 @@ class MultipleChoice extends Component {
 MultipleChoice.propTypes = {
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
+  isNew: PropTypes.bool,
+  item: PropTypes.object,
+};
+
+MultipleChoice.defaultProps = {
+  isNew: true,
+  item: {},
 };
 
 const enhance = compose(
   connect(
     state => ({
       previewTab: getPreivewTabSelector(state),
+      item: getItemSelector(state),
     }),
   ),
 );

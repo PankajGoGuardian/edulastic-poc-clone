@@ -11,7 +11,7 @@ import { getPreivewTabSelector } from '../../selectors/preview';
 import { getItemSelector } from '../../selectors/items';
 import { changeViewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
-import { receiveItemByIdAction } from '../../actions/items';
+import { receiveItemByIdAction, updateItemByIdAction } from '../../actions/items';
 import { Container } from './styled_components';
 import { translate } from '../../utils/localization';
 import { ButtonBar, ItemHeader, Paper } from '../common';
@@ -60,7 +60,7 @@ class QuestionEditor extends Component {
   };
 
   onSaveClicked = () => {
-    const { add } = this.props;
+    const { add, item, updateItemById } = this.props;
     console.log('save current question');
     const problem = localStorage.getItem(QUESTION_PROBLEM);
     const options = localStorage.getItem(QUESTION_OPTIONS);
@@ -80,6 +80,8 @@ class QuestionEditor extends Component {
       answer: JSON.stringify(correctAnswer),
     };
     add(question);
+    // eslint-disable-next-line
+    updateItemById({ ...item, id: item._id, reference: item.id, stimulus: problem, list: JSON.parse(options), validation: { valid_response:  JSON.stringify(correctAnswer) } });
   }
 
   handleApplySource = (json) => {
@@ -94,13 +96,17 @@ class QuestionEditor extends Component {
   };
 
   render() {
-    const { view, changePreviewTab, previewTab, questionsData, item, type } = this.props;
+    const { view, changePreviewTab, previewTab, questionsData, item, type, history } = this.props;
     let questionType = type;
-    console.log('editor type', type, item);
     const itemId = item === null ? '' : item.id;
     if (item !== {} && item !== null) {
       questionType = item.type;
     }
+    let editable = false;
+    if (localStorage.getItem('PickUpQuestionType')) {
+      editable = true;
+    }
+    console.log('editable:', editable, history);
     const { showModal } = this.state;
     return (
       <Container>
@@ -125,8 +131,8 @@ class QuestionEditor extends Component {
           />
         </ItemHeader>
         <Paper>
-          {questionType === 'orderlist' && <OrderList view={view} />}
-          {questionType === 'mcq' && <MultipleChoice view={view} />}
+          {questionType === 'orderList' && <OrderList view={view} />}
+          {questionType === 'mcq' && <MultipleChoice view={view} isNew={editable} />}
         </Paper>
       </Container>
     );
@@ -145,11 +151,14 @@ QuestionEditor.propTypes = {
   type: PropTypes.string,
   match: PropTypes.object,
   receiveItemById: PropTypes.func.isRequired,
+  updateItemById: PropTypes.func.isRequired,
+  history: PropTypes.object,
 };
 
 QuestionEditor.defaultProps = {
   item: {},
   match: {},
+  history: {},
   type: undefined,
 };
 
@@ -166,6 +175,7 @@ const enhance = compose(
       changePreviewTab: changePreviewTabAction,
       setQuestionsState: setQuestionsStateAction,
       receiveItemById: receiveItemByIdAction,
+      updateItemById: updateItemByIdAction,
       add: addQuestion,
     },
   ),

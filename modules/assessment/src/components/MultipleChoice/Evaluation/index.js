@@ -6,7 +6,7 @@ class MultipleChoiceEvaluation extends QuestionEvaluation {
     const result = [];
     const answers = JSON.parse(localStorage.getItem(QUESTION_ANSWERS)) || [];
     answers.forEach((answer, index) => {
-      console.log('evaluate:', answer, studentResponse[index]);
+      console.log('evaluate:', answer, studentResponse);
       // eslint-disable-next-line
       const ans = answer === studentResponse[index] === true || (studentResponse[index] === undefined && !answer);
       result.push(ans);

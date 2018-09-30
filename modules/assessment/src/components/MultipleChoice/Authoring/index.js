@@ -44,7 +44,6 @@ const SortableList = SortableContainer(({ items, onRemove, onChange }) => (
 class MultipleChoiceAuthoring extends QuestionAuthoring {
   constructor(props) {
     super(props);
-
     if (!this.props.edit) {
       const options = [
         {
@@ -66,6 +65,7 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
       ];
       const answers = Array(options.length).fill(false);
       this.initialize({ options, answers });
+      localStorage.removeItem('PickUpQuestionType');
     }
     const { question, answers } = this.getData();
     this.choiceLength = question.options.length;
@@ -74,6 +74,17 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
       answers,
       question: question.stimulus,
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { item } = nextProps;
+    const { stimulus: question, list: options, validation: validAnswers } = item;
+    const validResponse = JSON.parse(validAnswers.valid_response);
+    Array(options.length).fill(false);
+    validResponse.forEach((answer) => {
+      validResponse[answer] = true;
+    });
+    this.setData({ question, options, answers: validResponse });
   }
 
   onChangeQuesiton = (e) => {

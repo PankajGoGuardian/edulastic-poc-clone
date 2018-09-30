@@ -21,6 +21,6 @@ export const gotoQuestion = question => ({
 export const addQuestion = question => ({
   type: AUTHOR_QUESTION,
   payload: {
-    question,
+    ...question,
   },
 });

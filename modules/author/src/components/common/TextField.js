@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { grey } from '../../../../assessment/src/utils/css';
+import { grey, greenDark } from '../../../../assessment/src/utils/css';
 
 class TextField extends Component {
   state = {
@@ -20,7 +20,15 @@ class TextField extends Component {
     const { referenceEditable } = this.state;
     return (
       <Container height={height} style={containerStyle}>
-        <Field disabled={!referenceEditable} type="text" style={style} {...restProps} onChange={onChange} onBlur={(e) => { this.onIconClick(); onBlur(e); }} />
+        <Field
+          disabled={!referenceEditable}
+          type="text"
+          style={style}
+          referenceEditable={referenceEditable}
+          {...restProps}
+          onChange={onChange}
+          onBlur={(e) => { this.onIconClick(); onBlur(e); }}
+        />
         {icon && <Icon onClick={this.onIconClick}>{icon}</Icon>}
       </Container>
     );
@@ -64,7 +72,7 @@ const Icon = styled.span`
 `;
 
 const Field = styled.input`
-  border: 1px solid ${grey};
+  border: 1px solid ${props => (props.referenceEditable ? greenDark : grey)};
   border-radius: 10px;
   min-height: 100%;
   width: 100%;

@@ -17,7 +17,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => (
       onSelectQuestionType={onSelectQuestionType}
     />
     <Card
-      type="orderlist"
+      type="orderList"
       title="OrderList-standard"
       question="Which color has the smallest walvelenght?"
       options={['Item A', 'Item B', 'Item C']}

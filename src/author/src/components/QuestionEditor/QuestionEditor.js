@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { Paper } from '@edulastic/common';
+import { Paper, ItemHeader } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
 
 import SourceModal from './SourceModal';
@@ -19,7 +19,6 @@ import { ButtonBar } from '../common';
 import { setQuestionsStateAction } from '../../actions/questionsOrderList';
 import { getQuestionsStateSelector } from '../../selectors/questionsOrderList';
 import { addQuestion } from '../../actions/questions';
-import QuestionEditorItemHeader from './ItemHeader';
 import {
   QUESTION_PROBLEM,
   QUESTION_OPTIONS,
@@ -42,10 +41,6 @@ class QuestionEditor extends Component {
     if (match.params !== undefined) {
       receiveItemById(match.params.id);
     }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    console.log('props chagned:', nextProps.item);
   }
 
   handleChangeView = (view) => {
@@ -133,8 +128,7 @@ class QuestionEditor extends Component {
             {JSON.stringify(questionsData, null, 4)}
           </SourceModal>
         )}
-        <QuestionEditorItemHeader
-          hideIcon
+        <ItemHeader
           title={headerTitle[questionType]}
           link={{ url: '/author/items', text: t('component.backToItemList') }}
           reference={itemId}
@@ -147,7 +141,7 @@ class QuestionEditor extends Component {
             view={view}
             previewTab={previewTab}
           />
-        </QuestionEditorItemHeader>
+        </ItemHeader>
         <Paper>
           {questionType === 'orderList' && <OrderList view={view} />}
           {questionType === 'mcq' && <MultipleChoice view={view} isNew={editable} />}

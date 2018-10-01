@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import { TextField } from '@edulastic/common';
 import { IconSearch, IconPlus } from '@edulastic/icons';
 import { blue, green, greenDarkSecondary, white } from '@edulastic/colors';
+import { withNamespaces } from '@edulastic/localization';
 
 import { DashboardControlBtn } from '../common';
-import { translate } from '../../utils/localization';
 
-const Header = ({ onSearch, onCreate }) => (
+const Header = ({ onSearch, onCreate, t }) => (
   <Container>
-    <Heading>{translate('component.itemlist.header.itemlist')}</Heading>
+    <Heading>{t('component.itemlist.header.itemlist')}</Heading>
     <TextField
       onChange={e => onSearch(e.target.value)}
       height="50px"
@@ -31,7 +31,7 @@ const Header = ({ onSearch, onCreate }) => (
         hoverColor={white}
         backgroundColor={green}
       />
-      <span>{translate('component.itemlist.header.create')}</span>
+      <span>{t('component.itemlist.header.create')}</span>
     </DashboardControlBtn>
   </Container>
 );
@@ -39,9 +39,10 @@ const Header = ({ onSearch, onCreate }) => (
 Header.propTypes = {
   onSearch: PropTypes.func.isRequired,
   onCreate: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default Header;
+export default withNamespaces('author')(Header);
 
 const Container = styled.div`
   display: flex;

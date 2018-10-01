@@ -4,6 +4,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { arrayMove } from 'react-sortable-hoc';
 import styled from 'styled-components';
+import { withNamespaces } from '@edulastic/localization';
 
 import {
   OrderListEdit,
@@ -29,7 +30,6 @@ import {
   getPreivewTabSelector,
 } from '../../selectors/preview';
 import { updatePreviewListAction } from '../../actions/preview';
-import { translate } from '../../utils/localization';
 
 class OrderList extends Component {
   componentDidMount() {
@@ -68,11 +68,11 @@ class OrderList extends Component {
   };
 
   handleAddQuestion = () => {
-    const { questionsList } = this.props;
+    const { questionsList, t } = this.props;
 
     this.updateQuestions([
       ...questionsList,
-      `${translate('common.initialoptionslist.itemprefix')} ${questionsList.length}`,
+      `${t('common.initialoptionslist.itemprefix')} ${questionsList.length}`,
     ]);
   };
 
@@ -202,9 +202,11 @@ OrderList.propTypes = {
   previewIndexesList: PropTypes.array.isRequired,
   validationState: PropTypes.object.isRequired,
   previewTab: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 const enhance = compose(
+  withNamespaces('author'),
   connect(
     state => ({
       stimulus: getStimulusSelector(state),

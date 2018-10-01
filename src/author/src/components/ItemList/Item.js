@@ -5,12 +5,12 @@ import { FaAngleDoubleRight } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
 import { IconClockCircularOutline } from '@edulastic/icons';
 import { grey, blue, darkBlue, textColor } from '@edulastic/colors';
+import { withNamespaces } from '@edulastic/localization';
 
 import { Button } from '../common';
-import { translate } from '../../utils/localization';
 
 /* eslint-disable no-underscore-dangle */
-const Item = ({ item, match }) => (
+const Item = ({ item, match, t }) => (
   <Container>
     <Question>
       <Link to={`${match.url}/${item._id}`}>
@@ -23,7 +23,7 @@ const Item = ({ item, match }) => (
         Author: <span>Kevin Hart</span>
       </div>
       <Time>
-        <Icon color="#ee1658" /> an hour ago
+        <Icon color="#ee1658" /> an hour ago {t('test')}
       </Time>
     </Author>
     <Labels>
@@ -44,7 +44,7 @@ const Item = ({ item, match }) => (
         outlined
         onClick={() => {}}
       >
-        {translate('component.item.view')}
+        {t('component.item.view')}
       </Button>
     </View>
   </Container>
@@ -53,9 +53,10 @@ const Item = ({ item, match }) => (
 Item.propTypes = {
   item: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default Item;
+export default withNamespaces('author')(Item);
 
 const Container = styled.div`
   display: flex;

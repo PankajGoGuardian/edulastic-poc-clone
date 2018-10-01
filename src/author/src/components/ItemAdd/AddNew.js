@@ -2,15 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { IconPlus } from '@edulastic/icons';
-import {
-  greenDark,
-  secondaryTextColor,
-  green,
-} from '@edulastic/colors';
+import { greenDark, secondaryTextColor, green } from '@edulastic/colors';
+import { withNamespaces } from '@edulastic/localization';
 
-import { translate } from '../../utils/localization';
-
-const AddNew = ({ moveNew }) => (
+const AddNew = ({ moveNew, t }) => (
   <React.Fragment>
     <PlusWrapper onClick={moveNew}>
       <IconPlus
@@ -20,16 +15,17 @@ const AddNew = ({ moveNew }) => (
         style={{ marginBottom: 35 }}
         hoverColor={green}
       />{' '}
-      <Text>{translate('component.itemdetail.addnew.addnew')}</Text>
+      <Text>{t('component.itemdetail.addnew.addnew')}</Text>
     </PlusWrapper>
   </React.Fragment>
 );
 
 AddNew.propTypes = {
   moveNew: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default AddNew;
+export default withNamespaces('author')(AddNew);
 
 const PlusWrapper = styled.div`
   width: 50%;
@@ -45,7 +41,7 @@ const PlusWrapper = styled.div`
   height: 360px;
 
   &:hover svg {
-    fill: ${green}
+    fill: ${green};
   }
 `;
 

@@ -12,17 +12,25 @@ import {
   IconPreview,
 } from '@edulastic/icons';
 import { white, blue, darkBlue, textColor } from '@edulastic/colors';
+import { withNamespaces } from '@edulastic/localization';
 
-import { translate } from '../../../utils/localization';
 import { Container, StyledButton } from './styled_components';
 import { Button, ButtonLink, SelectButton } from '..';
 
-const ButtonBar = ({ onChangeView, view, changePreviewTab, previewTab, onShowSource, onSave }) => (
+const ButtonBar = ({
+  onChangeView,
+  view,
+  changePreviewTab,
+  previewTab,
+  onShowSource,
+  onSave,
+  t,
+}) => (
   <React.Fragment>
     <Container>
       <StyledButton>
         <Button onClick={() => {}} icon={<IconQuestion color={textColor} width={12} />}>
-          {translate('component.questioneditor.buttonbar.help')}
+          {t('component.questioneditor.buttonbar.help')}
         </Button>
       </StyledButton>
       <StyledButton>
@@ -31,7 +39,7 @@ const ButtonBar = ({ onChangeView, view, changePreviewTab, previewTab, onShowSou
           icon={<IconPensilEdit color={view === 'edit' ? white : textColor} width={14} />}
           color={view === 'edit' ? 'primary' : 'default'}
         >
-          {translate('component.questioneditor.buttonbar.edit')}
+          {t('component.questioneditor.buttonbar.edit')}
         </Button>
       </StyledButton>
       <StyledButton>
@@ -40,12 +48,12 @@ const ButtonBar = ({ onChangeView, view, changePreviewTab, previewTab, onShowSou
           icon={<IconPreview color={view === 'preview' ? white : textColor} width={18} />}
           color={view === 'preview' ? 'primary' : 'default'}
         >
-          {translate('component.questioneditor.buttonbar.preview')}
+          {t('component.questioneditor.buttonbar.preview')}
         </Button>
       </StyledButton>
       <StyledButton>
         <Button onClick={onSave} icon={<IconSave color={white} width={16} />} color="success">
-          {translate('component.questioneditor.buttonbar.save')}
+          {t('component.questioneditor.buttonbar.save')}
         </Button>
       </StyledButton>
       <StyledButton>
@@ -70,12 +78,14 @@ const ButtonBar = ({ onChangeView, view, changePreviewTab, previewTab, onShowSou
             },
           ]}
         >
-          {translate('component.questioneditor.buttonbar.settings')}
+          {t('component.questioneditor.buttonbar.settings')}
         </SelectButton>
       </StyledButton>
     </Container>
     {view === 'preview' && (
-      <Container style={{ position: 'absolute', marginTop: 20, width: '100%', justifyContent: 'flex-end' }}>
+      <Container
+        style={{ position: 'absolute', marginTop: 20, width: '100%', justifyContent: 'flex-end' }}
+      >
         <StyledButton>
           <ButtonLink
             onClick={() => changePreviewTab('check')}
@@ -83,7 +93,7 @@ const ButtonBar = ({ onChangeView, view, changePreviewTab, previewTab, onShowSou
             active={previewTab === 'check'}
             icon={<IconCheck color={previewTab === 'check' ? darkBlue : blue} />}
           >
-            {translate('component.questioneditor.buttonbar.checkanswer')}
+            {t('component.questioneditor.buttonbar.checkanswer')}
           </ButtonLink>
         </StyledButton>
         <StyledButton>
@@ -93,7 +103,7 @@ const ButtonBar = ({ onChangeView, view, changePreviewTab, previewTab, onShowSou
             active={previewTab === 'show'}
             icon={<IconEye color={previewTab === 'show' ? darkBlue : blue} hoverColor={darkBlue} />}
           >
-            {translate('component.questioneditor.buttonbar.showanswers')}
+            {t('component.questioneditor.buttonbar.showanswers')}
           </ButtonLink>
         </StyledButton>
         <StyledButton>
@@ -103,7 +113,7 @@ const ButtonBar = ({ onChangeView, view, changePreviewTab, previewTab, onShowSou
             active={previewTab === 'clear'}
             icon={<IconEraseText color={previewTab === 'clear' ? darkBlue : blue} />}
           >
-            {translate('component.questioneditor.buttonbar.clear')}
+            {t('component.questioneditor.buttonbar.clear')}
           </ButtonLink>
         </StyledButton>
       </Container>
@@ -118,6 +128,7 @@ ButtonBar.propTypes = {
   previewTab: PropTypes.string.isRequired,
   onShowSource: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default ButtonBar;
+export default withNamespaces('author')(ButtonBar);

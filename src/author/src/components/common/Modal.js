@@ -4,15 +4,15 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FaTimes } from 'react-icons/fa';
 import { white, blue } from '@edulastic/colors';
+import { withNamespaces } from '@edulastic/localization';
 
 import Button from './Button';
-import { translate } from '../../utils/localization';
 
 const modalRoot = document.getElementById('modal-root');
 
 class Modal extends Component {
   render() {
-    const { onClose, onApply, title, children } = this.props;
+    const { onClose, onApply, title, children, t } = this.props;
 
     return ReactDOM.createPortal(
       <Container>
@@ -27,7 +27,7 @@ class Modal extends Component {
           {children}
           <Footer>
             <Button onClick={onClose} variant="extendedFab" style={{ width: '40%' }}>
-              {translate('component.common.modal.cancel')}
+              {t('component.common.modal.cancel')}
             </Button>
             <Button
               onClick={onApply}
@@ -35,7 +35,7 @@ class Modal extends Component {
               color="primary"
               style={{ width: '40%' }}
             >
-              {translate('component.common.modal.apply')}
+              {t('component.common.modal.apply')}
             </Button>
           </Footer>
         </Content>
@@ -50,9 +50,10 @@ Modal.propTypes = {
   onApply: PropTypes.func.isRequired,
   children: PropTypes.any.isRequired,
   title: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default Modal;
+export default withNamespaces('author')(Modal);
 
 const Container = styled.div`
   position: fixed;

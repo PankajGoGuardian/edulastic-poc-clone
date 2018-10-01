@@ -23,7 +23,7 @@ const Item = ({ item, match, t }) => (
         Author: <span>Kevin Hart</span>
       </div>
       <Time>
-        <Icon color="#ee1658" /> an hour ago {t('test')}
+        <Icon color="#ee1658" /> an hour ago
       </Time>
     </Author>
     <Labels>

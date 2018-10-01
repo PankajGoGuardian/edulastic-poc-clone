@@ -4,12 +4,16 @@ import XHR from 'i18next-xhr-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { reactI18nextModule } from 'react-i18next';
 
+const browserLocale =
+  navigator.language || navigator.browserLanguage || (navigator.languages || ['en-us'])[0];
+const locale = browserLocale.toLowerCase();
+
 i18n
   .use(XHR)
   .use(LanguageDetector)
   .use(reactI18nextModule)
   .init({
-    lng: 'en',
+    lng: locale,
     fallbackLng: 'en',
     debug: true,
     interpolation: {

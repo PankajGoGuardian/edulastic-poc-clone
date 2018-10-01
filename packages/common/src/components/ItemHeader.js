@@ -2,14 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { withNamespaces } from '@edulastic/localization';
 
 import { IconChevronLeft } from '@edulastic/icons';
 import { secondaryTextColor, greenDark, green } from '@edulastic/colors';
-import { translate as t } from '../utils/localization';
 import FlexContainer from './FlexContainer';
 import TextField from './TextField';
 
-const ItemHeader = ({ title, children, link, reference }) => (
+const ItemHeader = ({ title, children, link, reference, t }) => (
   <FlexContainer alignItems="flex-start" style={{ marginBottom: 20 }}>
     <LeftSide>
       <TitleNav>
@@ -22,7 +22,7 @@ const ItemHeader = ({ title, children, link, reference }) => (
       </TitleNav>
       {reference && (
         <FlexContainer>
-          <span style={{ color: greenDark }}>{t('components.ItemHeader.reference')}</span>
+          <span style={{ color: greenDark }}>{t('itemHeader.reference')}</span>
           <TextField
             type="text"
             height="40px"
@@ -41,6 +41,7 @@ ItemHeader.propTypes = {
   title: PropTypes.string,
   children: PropTypes.any,
   link: PropTypes.any,
+  t: PropTypes.func.isRequired,
   reference: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
@@ -51,7 +52,7 @@ ItemHeader.defaultProps = {
   title: '',
 };
 
-export default ItemHeader;
+export default withNamespaces('common')(ItemHeader);
 
 const LeftSide = styled.div`
   min-width: 40%;

@@ -1,0 +1,14 @@
+{
+  "itemHeader": {
+    "reference": "Reference"
+  },
+  "preloader": {
+    "loading": "loading"
+  },
+  "pagination": {
+    "of": "of",
+    "to": "to",
+    "previous": "Previous",
+    "next": "Next"
+  }
+}

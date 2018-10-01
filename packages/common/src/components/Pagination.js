@@ -3,9 +3,9 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { white, greenDark, grey, green } from '@edulastic/colors';
-import { translate as t } from '../utils/localization';
+import { withNamespaces } from '@edulastic/localization';
 
-const Pagination = ({ onPrevious, onNext, page, itemsPerPage, count, loading }) => {
+const Pagination = ({ onPrevious, onNext, page, itemsPerPage, count, loading, t }) => {
   // eslint-disable-next-line
   const isLastPage = Math.ceil(count / itemsPerPage) === page;
 
@@ -13,26 +13,25 @@ const Pagination = ({ onPrevious, onNext, page, itemsPerPage, count, loading }) 
     <Container loading={loading}>
       {page === 1 || loading ? (
         <Btn disabled>
-          <FaChevronLeft style={{ marginRight: 10 }} /> {t('components.pagination.previous')}
+          <FaChevronLeft style={{ marginRight: 10 }} /> {t('pagination.previous')}
         </Btn>
       ) : (
         <Btn onClick={onPrevious}>
-          <FaChevronLeft style={{ marginRight: 10 }} /> {t('components.pagination.previous')}
+          <FaChevronLeft style={{ marginRight: 10 }} /> {t('pagination.previous')}
         </Btn>
       )}
 
       <Info>
-        {page} {t('components.pagination.to')} {itemsPerPage} {t('components.pagination.of')}{' '}
-        <i>{count}</i>
+        {page} {t('pagination.to')} {itemsPerPage} {t('pagination.of')} <i>{count}</i>
       </Info>
 
       {isLastPage || loading ? (
         <Btn disabled>
-          {t('components.pagination.next')} <FaChevronRight style={{ marginLeft: 10 }} />
+          {t('pagination.next')} <FaChevronRight style={{ marginLeft: 10 }} />
         </Btn>
       ) : (
         <Btn onClick={onNext}>
-          {t('components.pagination.next')} <FaChevronRight style={{ marginLeft: 10 }} />
+          {t('pagination.next')} <FaChevronRight style={{ marginLeft: 10 }} />
         </Btn>
       )}
     </Container>
@@ -42,6 +41,7 @@ const Pagination = ({ onPrevious, onNext, page, itemsPerPage, count, loading }) 
 Pagination.propTypes = {
   onPrevious: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
   page: PropTypes.number.isRequired,
   itemsPerPage: PropTypes.number.isRequired,
   count: PropTypes.number.isRequired,
@@ -52,7 +52,7 @@ Pagination.defaultProps = {
   loading: false,
 };
 
-export default Pagination;
+export default withNamespaces('common')(Pagination);
 
 const Container = styled.div`
   display: flex;

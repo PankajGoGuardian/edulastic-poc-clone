@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { Paper } from '@edulastic/common';
+import { withNamespaces } from '@edulastic/localization';
 
 import SourceModal from './SourceModal';
 import OrderList from '../OrderList';
@@ -14,7 +15,6 @@ import { changeViewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
 import { receiveItemByIdAction, updateItemByIdAction } from '../../actions/items';
 import { Container } from './styled_components';
-import { translate } from '../../utils/localization';
 import { ButtonBar } from '../common';
 import { setQuestionsStateAction } from '../../actions/questionsOrderList';
 import { getQuestionsStateSelector } from '../../selectors/questionsOrderList';
@@ -94,11 +94,27 @@ class QuestionEditor extends Component {
     };
     add(question);
     // eslint-disable-next-line
-    updateItemById({ ...item, id: item._id, reference: item.id, stimulus: problem, list: JSON.parse(options), validation: { valid_response:  JSON.stringify(correctAnswer) } });
-  }
+    updateItemById({
+      ...item,
+      id: item._id,
+      reference: item.id,
+      stimulus: problem,
+      list: JSON.parse(options),
+      validation: { valid_response: JSON.stringify(correctAnswer) },
+    });
+  };
 
   render() {
-    const { view, changePreviewTab, previewTab, questionsData, item, type, history } = this.props;
+    const {
+      view,
+      changePreviewTab,
+      previewTab,
+      questionsData,
+      item,
+      type,
+      history,
+      t,
+    } = this.props;
     let questionType = type;
     const itemId = item === null ? '' : item.id;
     if (item !== {} && item !== null) {
@@ -120,7 +136,7 @@ class QuestionEditor extends Component {
         <QuestionEditorItemHeader
           hideIcon
           title={headerTitle[questionType]}
-          link={{ url: '/author/items', text: translate('component.backToItemList') }}
+          link={{ url: '/author/items', text: t('component.backToItemList') }}
           reference={itemId}
         >
           <ButtonBar
@@ -155,6 +171,7 @@ QuestionEditor.propTypes = {
   updateItemById: PropTypes.func.isRequired,
   add: PropTypes.func.isRequired,
   history: PropTypes.object,
+  t: PropTypes.func.isRequired,
 };
 
 QuestionEditor.defaultProps = {
@@ -165,6 +182,7 @@ QuestionEditor.defaultProps = {
 };
 
 const enhance = compose(
+  withNamespaces('author'),
   connect(
     state => ({
       questionsData: getQuestionsStateSelector(state),

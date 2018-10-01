@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { PaddingDiv, ItemHeader } from '@edulastic/common';
+import { withNamespaces } from '@edulastic/localization';
 
 import { changePreviewTabAction } from '../../actions/preview';
 import { getPreivewTabSelector } from '../../selectors/preview';
 import { changeViewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
 import { updateItemByIdAction } from '../../actions/items';
-import { translate } from '../../utils/localization';
 import { ButtonBar, Container } from '../common';
 import AddNew from './AddNew';
 import { getItemSelector } from '../../selectors/items';
@@ -54,16 +54,16 @@ class ItemAdd extends Component {
     if (item.id !== e.target.value) {
       updateItemById({ id: item._id, reference: e.target.value });
     }
-  }
+  };
 
   onInputReference = (e) => {
     this.setState({ reference: e.target.value });
-  }
+  };
 
   moveNew = () => {
     const { history, item } = this.props;
     history.push(`/author/items/${item._id}/pickup-questiontype`);
-  }
+  };
 
   handleHideSource = () => {
     this.setState({ showModal: false });
@@ -81,7 +81,7 @@ class ItemAdd extends Component {
   };
 
   render() {
-    const { view, changePreviewTab, previewTab, questionsData } = this.props;
+    const { view, changePreviewTab, previewTab, questionsData, t } = this.props;
     const { showModal, reference } = this.state;
 
     return (
@@ -92,8 +92,8 @@ class ItemAdd extends Component {
           </SourceModal>
         )}
         <ItemHeader
-          title={translate('component.itemAdd.itemlist')}
-          link={{ url: '/author/items', text: translate('component.itemAdd.backToItemList') }}
+          title={t('component.itemAdd.itemlist')}
+          link={{ url: '/author/items', text: t('component.itemAdd.backToItemList') }}
           reference={reference}
           editReference={this.editReference}
           onChange={this.onInputReference}
@@ -125,6 +125,7 @@ ItemAdd.propTypes = {
   previewTab: PropTypes.string.isRequired,
   setQuestionsState: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 ItemAdd.defaultProps = {
@@ -132,6 +133,7 @@ ItemAdd.defaultProps = {
 };
 
 const enhance = compose(
+  withNamespaces('author'),
   connect(
     state => ({
       questionsData: getQuestionsStateSelector(state),

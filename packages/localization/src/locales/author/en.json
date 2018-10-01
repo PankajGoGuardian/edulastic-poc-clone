@@ -1,0 +1,91 @@
+{
+  "common": {
+    "layout": {
+      "dashboard": {
+        "headerbackbtn": "BACK TO SELECT A QUESTION TYPE",
+        "title": "Multiple Choice - Standard",
+        "hideanswerbtn": "Hide Answer",
+        "showanswerbtn": "Show Answer",
+        "previewbtn": "preview",
+        "savebtn": "save",
+        "settingbtn": "settings",
+        "editbtn": "edit"
+      }
+    },
+    "initialoptionslist": {
+      "itemprefix": "Choice",
+      "itemd": "[Choice D]",
+      "itemc": "[Choice C]",
+      "itemb": "[Choice B]",
+      "itema": "[Choice A]"
+    }
+  },
+
+  "component": {
+    "backToItemList": "Back to item list",
+    "multiplechoice": {
+      "thisisstem": "[This is the stem.]",
+      "setcorrectanswers": "Set Correct Answer(s)",
+      "addnewchoice": "Add New Choice",
+      "multiplechoiceoptions": "Multiple Choice Options",
+      "composequestion": "Compose Question"
+    },
+    "questioneditor": {
+      "buttonbar": {
+        "clear": "Clear",
+        "showanswers": "Show Answers",
+        "checkanswer": "Check Answer",
+        "save": "Save",
+        "preview": "Preview",
+        "edit": "Edit",
+        "help": "Help",
+        "settings": "Settings",
+        "source": "Source"
+      }
+    },
+    "common": {
+      "modal": {
+        "cancel": "Cancel",
+        "apply": "Apply"
+      }
+    },
+    "orderList": {
+      "correctanswer": {
+        "points": "Points"
+      },
+      "orderlistedit": {
+        "addnewchoicebtn": "Add new choice"
+      },
+      "orderlistreportitem": {
+        "correctanswer": " Correct Answer:"
+      },
+      "question": {
+        "composequestion": "Compose question",
+        "enteryourquestion": "Enter your question"
+      },
+      "correctanswers": {
+        "setcorrectanswers": "Set correct answer(s)",
+        "correct": "Correct",
+        "alternate": "Alternate"
+      },
+      "questionsorderlist": {
+        "stimulusplaceholder": "[This is the stem.]"
+      }
+    },
+    "backToItemDetail": "Back to item detail",
+    "item": {
+      "view": "View"
+    },
+    "itemlist": {
+      "header": {
+        "create": "Create",
+        "itemlist": "Item List"
+      }
+    },
+    "itemdetail": {
+      "addnew": {
+        "addnew": "View"
+      }
+    }
+  }
+}

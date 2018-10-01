@@ -1,0 +1,24 @@
+{
+  "common": {
+    "initialoptionslist": {
+      "itemd": "[Choice D]",
+      "itemc": "[Choice C]",
+      "itemb": "[Choice B]",
+      "itema": "[Choice A]"
+    }
+  },
+  "component": {
+    "orderlist": {
+      "questionsorderlist": {
+        "stimulusplaceholder": "[This is the stem.]"
+      }
+    },
+    "multiplechoice": {
+      "thisisstem": "[This is the stem.]",
+      "setcorrectanswers": "Set Correct Answer(s)",
+      "addnewchoice": "Add New Choice",
+      "multiplechoiceoptions": "Multiple Choice Options",
+      "composequestion": "Compose Question"
+    }
+  }
+}

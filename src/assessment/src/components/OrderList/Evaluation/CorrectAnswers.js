@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { IconPlus } from '@edulastic/icons';
 import { white } from '@edulastic/colors';
+import { withNamespaces } from '@edulastic/localization';
+import { compose } from 'redux';
 
 import CorrectAnswer from './CorrectAnswer';
 import { Button, Heading } from '../common';
@@ -12,7 +14,6 @@ import {
   updateCorrectValidationScoreAction,
 } from '../actions/questionsOrderList';
 import Tabs, { Tab, TabContainer } from '../common/Tabs';
-import { translate } from '../utils/localization';
 
 class CorrectAnswers extends Component {
   state = {
@@ -24,14 +25,11 @@ class CorrectAnswers extends Component {
   };
 
   renderAltResponses = () => {
-    const { validation } = this.props;
+    const { validation, t } = this.props;
 
     if (validation.alt_responses && validation.alt_responses.length) {
       return validation.alt_responses.map((res, i) => (
-        <Tab
-          key={i}
-          label={`${translate('component.orderlist.correctanswers.alternate')} ${i + 1}`}
-        />
+        <Tab key={i} label={`${t('component.orderlist.correctanswers.alternate')} ${i + 1}`} />
       ));
     }
     return null;
@@ -61,16 +59,17 @@ class CorrectAnswers extends Component {
       validation,
       updateAltValidationScore,
       updateCorrectValidationScore,
+      t,
     } = this.props;
     const { value } = this.state;
 
     return (
       <div>
-        <Heading>{translate('component.orderlist.correctanswers.setcorrectanswers')}</Heading>
+        <Heading>{t('component.orderlist.correctanswers.setcorrectanswers')}</Heading>
 
         <div>
           <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
-            <Tab label={translate('component.orderlist.correctanswers.correct')} />
+            <Tab label={t('component.orderlist.correctanswers.correct')} />
             {this.renderAltResponses()}
           </Tabs>
           {value === 0 && (
@@ -118,13 +117,19 @@ CorrectAnswers.propTypes = {
   updateAltValidationScore: PropTypes.func.isRequired,
   updateCorrectValidationScore: PropTypes.func.isRequired,
   validation: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default connect(
-  null,
-  {
-    updateAltValidationScore: updateAltValidationScoreAction,
-    addAltResponses: addAltResponsesAction,
-    updateCorrectValidationScore: updateCorrectValidationScoreAction,
-  },
-)(CorrectAnswers);
+const enhance = compose(
+  withNamespaces('assessment'),
+  connect(
+    null,
+    {
+      updateAltValidationScore: updateAltValidationScoreAction,
+      addAltResponses: addAltResponsesAction,
+      updateCorrectValidationScore: updateCorrectValidationScoreAction,
+    },
+  ),
+);
+
+export default enhance(CorrectAnswers);

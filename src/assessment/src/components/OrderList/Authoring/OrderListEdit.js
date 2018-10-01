@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { SortableContainer } from 'react-sortable-hoc';
+import { compose } from 'redux';
+import { withNamespaces } from '@edulastic/localization';
 
 import OrderListItem from './OrderListItem';
 import { Button } from '../common';
-import { translate } from '../utils/localization';
 
 class OrderListEdit extends Component {
   render() {
-    const {
-      questions, onQuestionsChange, onDeleteQuestion, onAddQuestion,
-    } = this.props;
+    const { questions, onQuestionsChange, onDeleteQuestion, onAddQuestion, t } = this.props;
 
     return (
       <div>
@@ -31,7 +30,7 @@ class OrderListEdit extends Component {
           type="button"
           color="primary"
         >
-          {translate('component.orderlist.orderlistedit.addnewchoicebtn')}
+          {t('component.orderlist.orderlistedit.addnewchoicebtn')}
         </Button>
       </div>
     );
@@ -43,6 +42,12 @@ OrderListEdit.propTypes = {
   onQuestionsChange: PropTypes.func.isRequired,
   onDeleteQuestion: PropTypes.func.isRequired,
   onAddQuestion: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default SortableContainer(OrderListEdit);
+const enhance = compose(
+  withNamespaces('assessment'),
+  SortableContainer,
+);
+
+export default enhance(OrderListEdit);

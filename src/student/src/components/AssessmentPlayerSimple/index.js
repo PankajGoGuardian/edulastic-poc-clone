@@ -3,6 +3,8 @@ import React from 'react';
 import { Line } from 'rc-progress';
 import { ThemeProvider } from 'styled-components';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { withNamespaces } from '@edulastic/localization';
 
 import { gotoQuestion } from '../../actions/questions';
 import Assessment from '../Assessment';
@@ -15,7 +17,6 @@ import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
 import LogoImage from '../../assets/logo.png';
 import SettingImage from '../../assets/screwdriver.png';
 import SidebarQuestionList from './SidebarQuestionList';
-import { translate } from '../../utils/localization';
 import QuestionWrapper from '../QuestionWrapper';
 import {
   Blank,
@@ -39,6 +40,7 @@ const defaultTheme = require('sass-extract-loader?{"plugins": ["sass-extract-js"
 class AssessmentPlayerSimple extends Assessment {
   static propTypes = {
     theme: PropTypes.object,
+    t: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -46,7 +48,7 @@ class AssessmentPlayerSimple extends Assessment {
   };
 
   render() {
-    const { questions, currentQuestion, theme } = this.props;
+    const { questions, currentQuestion, theme, t } = this.props;
     const dropDownQuizOptions = questions.map((item, index) => ({
       value: index,
     }));
@@ -132,7 +134,7 @@ class AssessmentPlayerSimple extends Assessment {
                   </ControlBtn>
                   <ControlBtn next skinB disabled={this.isLast()} onClick={this.moveToNext}>
                     <i className="fa fa-angle-right" />
-                    <span>{translate('common.layout.nextbtn')}</span>
+                    <span>{t('common.layout.nextbtn')}</span>
                   </ControlBtn>
                 </FlexContainer>
               </MainFooter>
@@ -151,18 +153,19 @@ class AssessmentPlayerSimple extends Assessment {
   }
 }
 
-const mapStateToProps = state => ({
-  questions: state.questions.questions,
-  currentQuestion: state.questions.currentQuestion,
-});
+const enhance = compose(
+  withNamespaces('student'),
+  connect(
+    state => ({
+      questions: state.questions.questions,
+      currentQuestion: state.questions.currentQuestion,
+    }),
+    dispatch => ({
+      gotoQuestion: (question) => {
+        dispatch(gotoQuestion(question));
+      },
+    }),
+  ),
+);
 
-const mapDispatchToProps = dispatch => ({
-  gotoQuestion: (question) => {
-    dispatch(gotoQuestion(question));
-  },
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AssessmentPlayerSimple);
+export default enhance(AssessmentPlayerSimple);

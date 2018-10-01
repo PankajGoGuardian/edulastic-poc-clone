@@ -1,0 +1,32 @@
+{
+  "common": {
+    "layout": {
+      "nextbtn": "next",
+      "questionlist": {
+        "question": "question"
+      },
+      "selectbox": {
+        "question": "Question"
+      },
+      "dashboard": {
+        "headerbackbtn": "BACK TO SELECT A QUESTION TYPE",
+        "title": "Multiple Choice - Standard",
+        "hideanswerbtn": "Hide Answer",
+        "showanswerbtn": "Show Answer",
+        "previewbtn": "preview",
+        "savebtn": "save",
+        "settingbtn": "settings",
+        "editbtn": "edit"
+      }
+    }
+  },
+  "component": {
+    "multiplechoice": {
+      "thisisstem": "[This is the stem.]",
+      "setcorrectanswers": "Set Correct Answer(s)",
+      "addnewchoice": "Add New Choice",
+      "multiplechoiceoptions": "Multiple Choice Options",
+      "composequestion": "Compose Question"
+    }
+  }
+}

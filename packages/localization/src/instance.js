@@ -15,7 +15,7 @@ i18n
     interpolation: {
       escapeValue: false, // not needed for react!!
     },
-    ns: ['default', 'author'],
+    ns: ['default', 'author', 'student'],
     defaultNS: 'default',
     react: {
       wait: false,
@@ -27,6 +27,7 @@ i18n
       en: {
         default: require('./locales/default/en'),
         author: require('./locales/author/en'),
+        student: require('./locales/student/en'),
       },
     },
   });

@@ -1,11 +1,9 @@
 import React from 'react';
-import {
-  SortableContainer, SortableElement, SortableHandle, arrayMove,
-} from 'react-sortable-hoc';
+import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
 import { PaddingDiv } from '@edulastic/common';
+import { withNamespaces } from '@edulastic/localization';
 
 import QuestionAuthoring from '../../Base/QuestionAuthoring';
-import { translate } from '../utils/localization';
 import { ALPHABET } from '../constants/others';
 import SortableItemContainer from './SortableItemContainer';
 import Subtitle from './Sutitle';
@@ -144,16 +142,18 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
 
   render() {
     const { choiceOptions, question, answers } = this.state;
+    const { t } = this.props;
+
     return (
       <React.Fragment>
         <PaddingDiv bottom={20}>
-          <Subtitle>{translate('component.multiplechoice.composequestion')}</Subtitle>
+          <Subtitle>{t('component.multiplechoice.composequestion')}</Subtitle>
           <QuestionTextArea
-            placeholder={translate('component.multiplechoice.thisisstem')}
+            placeholder={t('component.multiplechoice.thisisstem')}
             onChange={this.onChangeQuesiton}
             value={question}
           />
-          <Subtitle>{translate('component.multiplechoice.multiplechoiceoptions')}</Subtitle>
+          <Subtitle>{t('component.multiplechoice.multiplechoiceoptions')}</Subtitle>
           <SortableList
             items={choiceOptions}
             onSortEnd={this.onSortEnd}
@@ -163,10 +163,10 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
           />
           <div>
             <AddNewChoiceBtn onClick={this.addNewChoiceBtn}>
-              {translate('component.multiplechoice.addnewchoice')}
+              {t('component.multiplechoice.addnewchoice')}
             </AddNewChoiceBtn>
           </div>
-          <Subtitle>{translate('component.multiplechoice.setcorrectanswers')}</Subtitle>
+          <Subtitle>{t('component.multiplechoice.setcorrectanswers')}</Subtitle>
           <MultipleChoiceDisplay
             setAnswers
             options={choiceOptions}
@@ -180,4 +180,4 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
   }
 }
 
-export default MultipleChoiceAuthoring;
+export default withNamespaces('assessment')(MultipleChoiceAuthoring);

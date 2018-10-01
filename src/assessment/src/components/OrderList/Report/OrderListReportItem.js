@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { IconCheck, IconClose } from '@edulastic/icons';
 import { green, red, textColor } from '@edulastic/colors';
 import { FlexContainer } from '@edulastic/common';
+import { withNamespaces } from '@edulastic/localization';
 
-import { translate } from '../utils/localization';
 import { Container, Text, Icon, CorrectAnswerItem, Index, QuestionText } from './styled_components';
 
-const OrderListReportItem = ({ children, correctText, correct, showAnswers, index }) => (
+const OrderListReportItem = ({ children, correctText, correct, showAnswers, index, t }) => (
   <React.Fragment>
     <Container correct={correct}>
       <Text>
@@ -33,7 +33,7 @@ const OrderListReportItem = ({ children, correctText, correct, showAnswers, inde
           <FlexContainer>
             <Index color={textColor}>{index}</Index>
             <QuestionText style={{ color: textColor }}>
-              <span>{translate('component.orderlist.orderlistreportitem.correctanswer')}</span>{' '}
+              <span>{t('component.orderlist.orderlistreportitem.correctanswer')}</span>{' '}
               {correctText}
             </QuestionText>
           </FlexContainer>
@@ -49,10 +49,11 @@ OrderListReportItem.propTypes = {
   showAnswers: PropTypes.bool,
   correctText: PropTypes.string,
   index: PropTypes.number.isRequired,
+  t: PropTypes.func.isRequired,
 };
 OrderListReportItem.defaultProps = {
   showAnswers: false,
   correctText: '',
 };
 
-export default OrderListReportItem;
+export default withNamespaces('assessment')(OrderListReportItem);

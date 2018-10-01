@@ -1,4 +1,5 @@
-import { translate } from '../utils/localization';
+import i18n from '@edulastic/localization';
+
 import {
   ORDERLIST_ADD_ALT_RESPONSES,
   ORDERLIST_UPDATE_ALT_VALIDATION_SCORE,
@@ -6,15 +7,15 @@ import {
 } from '../constants/actions';
 
 const initialList = [
-  translate('common.initialoptionslist.itema'),
-  translate('common.initialoptionslist.itemb'),
-  translate('common.initialoptionslist.itemc'),
-  translate('common.initialoptionslist.itemd'),
+  i18n.t('assessment:common.initialoptionslist.itema'),
+  i18n.t('assessment:common.initialoptionslist.itemb'),
+  i18n.t('assessment:common.initialoptionslist.itemc'),
+  i18n.t('assessment:common.initialoptionslist.itemd'),
 ];
 
 export const initialState = {
   list: initialList,
-  stimulus: translate('component.orderlist.questionsorderlist.stimulusplaceholder'),
+  stimulus: i18n.t('assessment:component.orderlist.questionsorderlist.stimulusplaceholder'),
   validation: {
     valid_response: {
       score: 1,

@@ -1,16 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withNamespaces } from '@edulastic/localization';
 
 import { Heading } from '../common';
-import { translate } from '../utils/localization';
 import { StyledTextarea } from './styled_components';
 
-const Question = ({ onQuestionChange, value }) => (
+const Question = ({ onQuestionChange, value, t }) => (
   <div>
-    <Heading>{translate('component.orderlist.question.composequestion')}</Heading>
+    <Heading>{t('component.orderlist.question.composequestion')}</Heading>
     <StyledTextarea
       onChange={e => onQuestionChange(e.target.value)}
-      placeholder={translate('component.orderlist.question.enteryourquestion')}
+      placeholder={t('component.orderlist.question.enteryourquestion')}
       value={value}
     />
   </div>
@@ -19,6 +19,7 @@ const Question = ({ onQuestionChange, value }) => (
 Question.propTypes = {
   onQuestionChange: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default Question;
+export default withNamespaces('assessment')(Question);

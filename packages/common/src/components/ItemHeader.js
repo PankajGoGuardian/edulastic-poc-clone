@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 import { IconChevronLeft } from '@edulastic/icons';
 import { secondaryTextColor, greenDark, green } from '@edulastic/colors';
+import { translate as t } from '../utils/localization';
 import FlexContainer from './FlexContainer';
 import TextField from './TextField';
 
@@ -21,7 +22,7 @@ const ItemHeader = ({ title, children, link, reference }) => (
       </TitleNav>
       {reference && (
         <FlexContainer>
-          <span style={{ color: greenDark }}>Reference</span>
+          <span style={{ color: greenDark }}>{t('components.ItemHeader.reference')}</span>
           <TextField
             type="text"
             height="40px"

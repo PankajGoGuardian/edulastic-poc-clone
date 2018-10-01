@@ -7,6 +7,7 @@ import { IconClockCircularOutline } from '@edulastic/icons';
 import { grey, blue, darkBlue, textColor } from '@edulastic/colors';
 
 import { Button } from '../common';
+import { translate } from '../../utils/localization';
 
 /* eslint-disable no-underscore-dangle */
 const Item = ({ item, match }) => (
@@ -43,7 +44,7 @@ const Item = ({ item, match }) => (
         outlined
         onClick={() => {}}
       >
-        View
+        {translate('component.item.view')}
       </Button>
     </View>
   </Container>

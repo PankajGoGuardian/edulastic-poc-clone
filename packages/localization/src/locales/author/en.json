@@ -82,9 +82,13 @@
         "itemlist": "Item List"
       }
     },
+    "itemAdd": {
+      "itemlist": "Item List",
+      "backToItemList": "Back to Item List"
+    },
     "itemdetail": {
       "addnew": {
-        "addnew": "View"
+        "addnew": "Add New"
       }
     }
   }

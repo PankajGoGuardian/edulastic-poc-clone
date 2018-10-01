@@ -1,6 +1,6 @@
 import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects';
+import { itemsApi } from '@edulastic/api';
 
-import { receiveItemById, receiveItems, createItem, updateItemById } from '../utils/api/items';
 import {
   RECEIVE_ITEM_REQUEST,
   RECEIVE_ITEM_SUCCESS,
@@ -14,7 +14,7 @@ import {
 
 function* receiveItemsSaga({ payload }) {
   try {
-    const { items, page, count } = yield call(receiveItems, payload);
+    const { items, page, count } = yield call(itemsApi.receiveItems, payload);
 
     yield put({
       type: RECEIVE_ITEMS_SUCCESS,
@@ -31,7 +31,7 @@ function* receiveItemsSaga({ payload }) {
 
 function* receiveItemSaga({ payload }) {
   try {
-    const item = yield call(receiveItemById, payload.id);
+    const item = yield call(itemsApi.receiveItemById, payload.id);
 
     yield put({
       type: RECEIVE_ITEM_SUCCESS,
@@ -48,7 +48,7 @@ function* receiveItemSaga({ payload }) {
 
 function* createItemSaga({ payload }) {
   try {
-    const item = yield call(createItem, payload);
+    const item = yield call(itemsApi.createItem, payload);
     yield put({
       type: RECEIVE_ITEM_SUCCESS,
       payload: { item: item.data },
@@ -65,7 +65,7 @@ function* createItemSaga({ payload }) {
 function* updateItemSaga({ payload }) {
   console.log('update saga:', payload);
   try {
-    const item = yield call(updateItemById, payload);
+    const item = yield call(itemsApi.updateItemById, payload);
     yield put({
       type: RECEIVE_ITEM_SUCCESS,
       payload: { item: item.data },

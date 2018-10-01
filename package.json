@@ -9,6 +9,7 @@
     "@edulastic/colors": "1.0.0",
     "@edulastic/common": "1.0.0",
     "@edulastic/icons": "1.0.0",
+    "@edulastic/api": "1.0.0",
     "autoprefixer": "7.1.6",
     "axios": "^0.18.0",
     "babel-core": "6.26.0",

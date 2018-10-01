@@ -1,6 +1,6 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects';
+import { itemsApi } from '@edulastic/api';
 
-import { receiveItemById, receiveItems } from '../utils/api/items';
 import {
   RECEIVE_ITEM_REQUEST,
   RECEIVE_ITEM_SUCCESS,
@@ -12,7 +12,7 @@ import {
 
 function* receiveItemsSaga() {
   try {
-    const items = yield call(receiveItems);
+    const items = yield call(itemsApi.receiveItems);
 
     yield put({
       type: RECEIVE_ITEMS_SUCCESS,
@@ -29,7 +29,7 @@ function* receiveItemsSaga() {
 
 function* receiveItemSaga({ payload }) {
   try {
-    const item = yield call(receiveItemById, payload.id);
+    const item = yield call(itemsApi.receiveItemById, payload.id);
 
     yield put({
       type: RECEIVE_ITEM_SUCCESS,

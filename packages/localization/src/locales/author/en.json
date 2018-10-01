@@ -90,6 +90,10 @@
       "addnew": {
         "addnew": "Add New"
       }
+    },
+    "pickupcomponent": {
+      "headertitle": "Select a type of Question or Feature",
+      "backToAddNew": "Back to Add New"
     }
   }
 }

@@ -92,6 +92,7 @@ class ItemAdd extends Component {
           </SourceModal>
         )}
         <ItemHeader
+          showIcon
           title={t('component.itemAdd.itemlist')}
           link={{ url: '/author/items', text: t('component.itemAdd.backToItemList') }}
           reference={reference}

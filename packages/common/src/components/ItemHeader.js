@@ -2,66 +2,79 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { withNamespaces } from '@edulastic/localization';
 
-import { IconChevronLeft } from '@edulastic/icons';
+import { IconPensilEdit, IconChevronLeft } from '@edulastic/icons';
 import { secondaryTextColor, greenDark, green } from '@edulastic/colors';
 import FlexContainer from './FlexContainer';
 import TextField from './TextField';
+import PaddingDiv from './PaddingDiv';
 
-const ItemHeader = ({ title, children, link, reference, t }) => (
-  <FlexContainer alignItems="flex-start" style={{ marginBottom: 20 }}>
-    <LeftSide>
-      <TitleNav>
-        <Title>{title}</Title>
-        {link && (
-          <Back to={link.url}>
-            <IconChevronLeft color={greenDark} width={10} height={10} /> {link.text}
-          </Back>
+const ItemHeader = ({ title, children, link, reference, editReference, onChange, showIcon }) => (
+  <React.Fragment>
+    <FlexContainer alignItems="flex-start" style={{ marginBottom: 10 }}>
+      <LeftSide>
+        <TitleNav>
+          <Title>{title}</Title>
+        </TitleNav>
+        {reference !== null && (
+          <FlexContainer>
+            <span style={{ color: greenDark }}>Reference</span>
+            <TextField
+              icon={showIcon && <IconPensilEdit color={greenDark} />}
+              type="text"
+              height="40px"
+              value={reference}
+              onChange={onChange}
+              onBlur={editReference}
+              style={{ background: '#f3f3f3', marginLeft: 10 }}
+            />
+          </FlexContainer>
         )}
-      </TitleNav>
-      {reference && (
-        <FlexContainer>
-          <span style={{ color: greenDark }}>{t('itemHeader.reference')}</span>
-          <TextField
-            type="text"
-            height="40px"
-            value={reference}
-            onChange={() => {}}
-            style={{ background: '#f3f3f3', border: '1px solid #dfdfdf' }}
-          />
-        </FlexContainer>
+      </LeftSide>
+      <RightSide>{children}</RightSide>
+    </FlexContainer>
+    <LeftSide>
+      {link && (
+        <Back to={link.url}>
+          <IconChevronLeft color={greenDark} width={10} height={10} /> {link.text}
+        </Back>
       )}
     </LeftSide>
-    <RightSide>{children}</RightSide>
-  </FlexContainer>
+    <PaddingDiv height={40} />
+  </React.Fragment>
 );
 
 ItemHeader.propTypes = {
   title: PropTypes.string,
   children: PropTypes.any,
   link: PropTypes.any,
-  t: PropTypes.func.isRequired,
   reference: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  editReference: PropTypes.func,
+  onChange: PropTypes.func,
+  showIcon: PropTypes.bool,
 };
 
 ItemHeader.defaultProps = {
   children: null,
+  title: '',
   link: null,
   reference: null,
-  title: '',
+  editReference: () => {},
+  onChange: () => {},
+  showIcon: false,
 };
 
-export default withNamespaces('common')(ItemHeader);
+export default ItemHeader;
 
 const LeftSide = styled.div`
-  min-width: 40%;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
 `;
 
 const RightSide = styled.div`
-  min-width: 60%;
+  text-align: right;
+  flex: 1;
+  position: relative;
 `;
 
 const Title = styled.div`
@@ -69,7 +82,6 @@ const Title = styled.div`
   font-weight: 700;
   line-height: 1.36;
   color: ${secondaryTextColor};
-  margin-bottom: 15px;
 `;
 
 const Back = styled(Link)`
@@ -85,8 +97,5 @@ const Back = styled(Link)`
 `;
 
 const TitleNav = styled.div`
-  margin-right: 40px;
+  width: 200px;
 `;
-
-// const ItemHeader = () => null;
-// export default ItemHeader;

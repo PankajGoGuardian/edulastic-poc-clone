@@ -7,7 +7,8 @@ import { withNamespaces } from '@edulastic/localization';
 import { compose } from 'redux';
 
 import CorrectAnswer from './CorrectAnswer';
-import { Button, Heading } from '../common';
+import { Heading } from '../common';
+import { Button } from '../../common';
 import {
   updateAltValidationScoreAction,
   addAltResponsesAction,

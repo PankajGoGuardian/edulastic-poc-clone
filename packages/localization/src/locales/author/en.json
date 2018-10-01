@@ -82,10 +82,18 @@
         "itemlist": "Item List"
       }
     },
+    "itemAdd": {
+      "itemlist": "Item List",
+      "backToItemList": "Back to Item List"
+    },
     "itemdetail": {
       "addnew": {
-        "addnew": "View"
+        "addnew": "Add New"
       }
+    },
+    "pickupcomponent": {
+      "headertitle": "Select a type of Question or Feature",
+      "backToAddNew": "Back to Add New"
     }
   }
 }

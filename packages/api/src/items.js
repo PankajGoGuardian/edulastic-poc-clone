@@ -11,7 +11,26 @@ const receiveItemById = id =>
     })
     .then(result => result.data);
 
+const createItem = ({ payload }) => api.callApi({
+  method: 'post',
+  url: '/items',
+  data: {
+    ...payload,
+  },
+}).then(result => result.data);
+
+const updateItemById = ({ payload }) => api.callApi({
+  method: 'put',
+  url: `/items/${payload.id}`,
+  data: {
+    ...payload,
+  },
+}).then(result => result.data);
+
+
 export default {
   receiveItems,
   receiveItemById,
+  createItem,
+  updateItemById,
 };

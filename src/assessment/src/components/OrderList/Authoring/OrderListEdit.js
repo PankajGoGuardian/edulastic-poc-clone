@@ -5,7 +5,7 @@ import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
 
 import OrderListItem from './OrderListItem';
-import { Button } from '../common';
+import { Button } from '../../common';
 
 class OrderListEdit extends Component {
   render() {

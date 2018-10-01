@@ -3,6 +3,7 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { white, greenDark, grey, green } from '@edulastic/colors';
+import { translate as t } from '../utils/localization';
 
 const Pagination = ({ onPrevious, onNext, page, itemsPerPage, count, loading }) => {
   // eslint-disable-next-line
@@ -12,25 +13,26 @@ const Pagination = ({ onPrevious, onNext, page, itemsPerPage, count, loading }) 
     <Container loading={loading}>
       {page === 1 || loading ? (
         <Btn disabled>
-          <FaChevronLeft style={{ marginRight: 10 }} /> Previous
+          <FaChevronLeft style={{ marginRight: 10 }} /> {t('components.pagination.previous')}
         </Btn>
       ) : (
         <Btn onClick={onPrevious}>
-          <FaChevronLeft style={{ marginRight: 10 }} /> Previous
+          <FaChevronLeft style={{ marginRight: 10 }} /> {t('components.pagination.previous')}
         </Btn>
       )}
 
       <Info>
-        {page} to {itemsPerPage} of <i>{count}</i>
+        {page} {t('components.pagination.to')} {itemsPerPage} {t('components.pagination.of')}{' '}
+        <i>{count}</i>
       </Info>
 
       {isLastPage || loading ? (
         <Btn disabled>
-          Next <FaChevronRight style={{ marginLeft: 10 }} />
+          {t('components.pagination.next')} <FaChevronRight style={{ marginLeft: 10 }} />
         </Btn>
       ) : (
         <Btn onClick={onNext}>
-          Next <FaChevronRight style={{ marginLeft: 10 }} />
+          {t('components.pagination.next')} <FaChevronRight style={{ marginLeft: 10 }} />
         </Btn>
       )}
     </Container>

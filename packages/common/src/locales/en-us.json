@@ -1,0 +1,8 @@
+{
+  "components.pagination.next": "Next",
+  "components.pagination.previous": "Previous",
+  "components.pagination.to": "to",
+  "components.pagination.of": "of",
+  "components.preloader.loading": "loading",
+  "components.ItemHeader.reference": "Reference"
+}

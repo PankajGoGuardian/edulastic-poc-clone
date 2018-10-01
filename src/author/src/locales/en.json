@@ -16,7 +16,8 @@
   "component.orderlist.correctanswers.setcorrectanswers": "Set correct answer(s)",
   "component.orderlist.correctanswers.correct": "Correct",
   "component.orderlist.orderlistedit.addnewchoicebtn": "Add new choice",
-  "component.orderlist.orderlistreportitem.correctanswer": " Correct Answer:","component.orderlist.question.enteryourquestion": "Enter your question",
+  "component.orderlist.orderlistreportitem.correctanswer": " Correct Answer:",
+  "component.orderlist.question.enteryourquestion": "Enter your question",
   "component.orderlist.question.composequestion": "Compose question",
   "component.orderlist.correctanswers.alternate": "Alternate",
   "component.questioneditor.buttonbar.source": "Source",
@@ -40,5 +41,6 @@
   "component.backToItemDetail": "Back to item detail",
   "component.itemlist.header.create": "Create",
   "component.itemlist.header.itemlist": "Item List",
-  "component.itemdetail.addnew.addnew": "Add New"
+  "component.itemdetail.addnew.addnew": "View",
+  "component.item.view": "View"
 }

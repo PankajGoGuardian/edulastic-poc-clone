@@ -4,12 +4,20 @@ import { SortableContainer } from 'react-sortable-hoc';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
 
-import { Button } from '@edulastic/common';
+import { Button, withWindowSizes } from '@edulastic/common';
 import OrderListItem from './OrderListItem';
 
 class OrderListEdit extends Component {
   render() {
-    const { questions, onQuestionsChange, onDeleteQuestion, onAddQuestion, t, style } = this.props;
+    const {
+      questions,
+      onQuestionsChange,
+      onDeleteQuestion,
+      onAddQuestion,
+      t,
+      style,
+      windowWidth,
+    } = this.props;
 
     return (
       <div style={style}>
@@ -24,6 +32,7 @@ class OrderListEdit extends Component {
           </OrderListItem>
         ))}
         <Button
+          style={{ minWidth: windowWidth <= 480 ? '100%' : 130 }}
           onClick={onAddQuestion}
           variant="extendedFab"
           outlined
@@ -44,6 +53,7 @@ OrderListEdit.propTypes = {
   onAddQuestion: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   style: PropTypes.object,
+  windowWidth: PropTypes.number.isRequired,
 };
 
 OrderListEdit.defaultProps = {
@@ -51,6 +61,7 @@ OrderListEdit.defaultProps = {
 };
 
 const enhance = compose(
+  withWindowSizes,
   withNamespaces('assessment'),
   SortableContainer,
 );

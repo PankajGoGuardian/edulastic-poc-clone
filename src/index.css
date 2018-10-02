@@ -1,7 +1,6 @@
-/* @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700'); */
-
 html {
   box-sizing: border-box;
+  font-family: 'Open Sans';
 }
 *,
 *:before,
@@ -12,7 +11,7 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: OpenSans;
+  font-family: 'Open Sans';
   background: #f3f3f3;
   color: #444;
 }

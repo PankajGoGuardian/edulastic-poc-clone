@@ -25,7 +25,7 @@ import {
 import Question from '../../../../assessment/src/components/Question';
 import ItemHeader from './ItemHeader';
 
-const headerTitle = {
+const headerTitles = {
   mcq: 'MultipleChoice',
   orderList: 'Order List',
 };
@@ -98,6 +98,14 @@ class QuestionEditor extends Component {
     });
   };
 
+  getQuestionType = () => {
+    const { item } = this.props;
+    if (item !== {} && item !== null) {
+      const questionType = item.type;
+      return questionType;
+    }
+  }
+
   render() {
     const {
       view,
@@ -105,20 +113,10 @@ class QuestionEditor extends Component {
       previewTab,
       questionsData,
       item,
-      type,
-      history,
       location,
     } = this.props;
-    let questionType = type;
     const itemId = item === null ? '' : item.id;
-    if (item !== {} && item !== null) {
-      questionType = item.type;
-    }
-    let editable = false;
-    if (localStorage.getItem('PickUpQuestionType')) {
-      editable = true;
-    }
-    console.log('editable:', editable, history);
+    const questionType = this.getQuestionType();
     const { showModal } = this.state;
     return (
       <Container>
@@ -128,7 +126,7 @@ class QuestionEditor extends Component {
           </SourceModal>
         )}
         <ItemHeader
-          title={headerTitle[questionType]}
+          title={headerTitles[questionType]}
           link={{ url: location.state.backUrl, text: location.state.backText }}
           reference={itemId}
         >
@@ -141,7 +139,7 @@ class QuestionEditor extends Component {
             previewTab={previewTab}
           />
         </ItemHeader>
-        <Question type={questionType} view={view} isNew={editable} />
+        <Question type={questionType} view={view} key={questionType} />
       </Container>
     );
   }
@@ -155,20 +153,16 @@ QuestionEditor.propTypes = {
   previewTab: PropTypes.string.isRequired,
   setQuestionsState: PropTypes.func.isRequired,
   item: PropTypes.object,
-  type: PropTypes.string,
   match: PropTypes.object,
   receiveItemById: PropTypes.func.isRequired,
   updateItemById: PropTypes.func.isRequired,
   add: PropTypes.func.isRequired,
-  history: PropTypes.object,
   location: PropTypes.object.isRequired,
 };
 
 QuestionEditor.defaultProps = {
   item: {},
   match: {},
-  history: {},
-  type: undefined,
 };
 
 const enhance = compose(

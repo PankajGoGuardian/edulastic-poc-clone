@@ -16,8 +16,6 @@ class App extends Component {
       <div>
         <Switch>
           <Redirect exact path="/" to="/student/test" />
-          <Route path="/author/mcq" component={() => <QuestionEditor type="mcq" view="preview" />} />
-          <Route path="/author/orderlist" component={() => <QuestionEditor type="orderlist" view="preview" />} />
           <Route exact path="/author/items" component={ItemList} />
           <Route exact path="/author/add-item" component={ItemAdd} />
           <Route exact path="/author/items/:id" component={QuestionEditor} />

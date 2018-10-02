@@ -2,11 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IconPlus } from '@edulastic/icons';
 
-import { MultipleChoiceDisplay } from '../../../../assessment/src/components/MultipleChoice';
-import { OrderListPreview } from '../../../../assessment/src/components/OrderList';
-import { Content, Header, RoundDiv, QuestionText } from './components';
+import Question from '../../../../assessment/src/components/Question';
+import { Content, Header, RoundDiv } from './components';
 
-const Card = ({ title, type, question, userSelections = [], options, onSelectQuestionType }) => (
+const Card = ({ title, type, onSelectQuestionType }) => (
   <React.Fragment>
     <RoundDiv borderRadius={10}>
       <Header borderRadius={10}>
@@ -20,7 +19,12 @@ const Card = ({ title, type, question, userSelections = [], options, onSelectQue
             height={50}
           />
         </div>
-        {type === 'mcq' && (
+        <Question
+          type={type}
+          view="preview"
+          smallSize
+        />
+        {/* {type === 'mcq' && (
           <MultipleChoiceDisplay
             smallSize
             userSelections={userSelections}
@@ -38,23 +42,16 @@ const Card = ({ title, type, question, userSelections = [], options, onSelectQue
               questions={options}
             />
           </React.Fragment>
-        )}
+        )} */}
       </Content>
     </RoundDiv>
   </React.Fragment>
 );
 
 Card.propTypes = {
-  options: PropTypes.array.isRequired,
-  question: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  userSelections: PropTypes.array,
   onSelectQuestionType: PropTypes.func.isRequired,
-};
-
-Card.defaultProps = {
-  userSelections: [],
 };
 
 export default Card;

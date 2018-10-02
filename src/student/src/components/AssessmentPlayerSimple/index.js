@@ -31,7 +31,7 @@ import {
   HeaderRightMenu,
   MobileMainMenu,
 } from '../common';
-import Question from '../../../../assessment/src/components/Question';
+import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapper';
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line
@@ -118,7 +118,7 @@ class AssessmentPlayerSimple extends Assessment {
             <Blank />
             <MainWrapper>
               <MainContent>
-                <Question
+                <QuestionWrapper
                   skin
                   type={type}
                   view="preview"

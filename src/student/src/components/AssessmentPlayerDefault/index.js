@@ -20,7 +20,7 @@ import {
   Logo,
   FlexContainer,
 } from '../common';
-import Question from '../../../../assessment/src/components/Question';
+import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapper';
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line
@@ -74,7 +74,7 @@ class AssessmentPlayerDefault extends Assessment {
           </Header>
           <Main skin>
             <MainWrapper>
-              <Question type={type} view="preview" key={type} data={survey} />
+              <QuestionWrapper type={type} view="preview" key={type} data={survey} />
             </MainWrapper>
           </Main>
         </Container>

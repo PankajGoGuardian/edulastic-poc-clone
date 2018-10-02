@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Paper } from '@edulastic/common';
 
-import OrderList from '../../../../author/src/components/OrderList';
-import MultipleChoice from '../../../../author/src/components/MultipleChoice';
+import { OrderList } from '../OrderList';
+import { MultipleChoice } from '../MultipleChoice';
 
-export default class Question extends Component {
+export default class QuestionWrapper extends Component {
   render() {
     const { type, view, isNew } = this.props;
 
@@ -18,12 +18,13 @@ export default class Question extends Component {
   }
 }
 
-Question.propTypes = {
+QuestionWrapper.propTypes = {
   type: PropTypes.oneOf(['orderList', 'mcq']),
   view: PropTypes.string.isRequired,
-  isNew: PropTypes.bool.isRequired,
+  isNew: PropTypes.bool,
 };
 
-Question.defaultProps = {
+QuestionWrapper.defaultProps = {
+  isNew: false,
   type: null,
 };

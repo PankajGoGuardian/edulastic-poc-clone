@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IconPlus } from '@edulastic/icons';
 
-import Question from '../../../../assessment/src/components/Question';
+import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapper';
 import { Content, Header, RoundDiv } from './components';
 
 const Card = ({ title, type, onSelectQuestionType }) => (
@@ -19,7 +19,7 @@ const Card = ({ title, type, onSelectQuestionType }) => (
             height={50}
           />
         </div>
-        <Question
+        <QuestionWrapper
           type={type}
           view="preview"
           smallSize

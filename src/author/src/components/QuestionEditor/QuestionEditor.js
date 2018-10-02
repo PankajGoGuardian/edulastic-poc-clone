@@ -22,7 +22,7 @@ import {
   QUESTION_ANSWERS,
   ASSESSMENTID,
 } from '../../constants/others';
-import Question from '../../../../assessment/src/components/Question';
+import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapper';
 import ItemHeader from './ItemHeader';
 
 const headerTitles = {
@@ -139,7 +139,7 @@ class QuestionEditor extends Component {
             previewTab={previewTab}
           />
         </ItemHeader>
-        <Question type={questionType} view={view} key={questionType} />
+        <QuestionWrapper type={questionType} view={view} key={questionType} />
       </Container>
     );
   }

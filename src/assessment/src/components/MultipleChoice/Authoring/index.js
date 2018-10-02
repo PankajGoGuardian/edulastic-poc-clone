@@ -40,9 +40,27 @@ const SortableList = SortableContainer(({ items, onRemove, onChange }) => (
 ));
 
 class MultipleChoiceAuthoring extends QuestionAuthoring {
-  constructor(props) {
-    super(props);
-    if (!this.props.edit) {
+  state = {
+    choiceOptions: [],
+    question: '',
+    answers: [],
+  };
+
+  componentWillReceiveProps(nextProps) {
+    const { item } = nextProps;
+    const { edit } = this.props;
+    if (item && edit) {
+      const { stimulus: question, list: options, validation: validAnswers } = item;
+      const validResponse = Array(options.length).fill(false);
+      let answersFromItem = [];
+      if (validAnswers !== null) {
+        answersFromItem = JSON.parse(validAnswers.valid_response);
+      }
+      answersFromItem.forEach((answer) => {
+        validResponse[answer] = true;
+      });
+      this.setData({ question, options, answers: validResponse });
+    } else {
       const options = [
         {
           value: 0,
@@ -67,22 +85,11 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
     }
     const { question, answers } = this.getData();
     this.choiceLength = question.options.length;
-    this.state = {
+    this.setState({
       choiceOptions: question.options,
       answers,
       question: question.stimulus,
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { item } = nextProps;
-    const { stimulus: question, list: options, validation: validAnswers } = item;
-    const validResponse = JSON.parse(validAnswers.valid_response);
-    Array(options.length).fill(false);
-    validResponse.forEach((answer) => {
-      validResponse[answer] = true;
     });
-    this.setData({ question, options, answers: validResponse });
   }
 
   onChangeQuesiton = (e) => {

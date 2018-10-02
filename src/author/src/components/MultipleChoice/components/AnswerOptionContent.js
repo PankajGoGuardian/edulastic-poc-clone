@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const AnswerOptionContent = styled.span`
-  font-family: OpenSans;
+  font-family: 'Open Sans';
   font-size: 13px;
   font-weight: 600;
   font-style: normal;

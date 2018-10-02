@@ -9,26 +9,22 @@
   },
   "component": {
     "orderlist": {
-      "correctanswer": {
-        "points": "Points"
+      "question": {
+        "composequestion": "Compose Question"
       },
       "orderlistedit": {
-        "addnewchoicebtn": "Add new choice"
+        "addnewchoicebtn": "Add New Choice"
       },
-      "orderlistreportitem": {
-        "correctanswer": " Correct Answer:"
-      },
-      "question": {
-        "composequestion": "Compose question",
-        "enteryourquestion": "Enter your question"
+      "questionsorderlist": {
+        " ": "[This is the stem.]"
       },
       "correctanswers": {
-        "setcorrectanswers": "Set correct answer(s)",
+        "setcorrectanswers": "Set Correct Answer(s)",
         "correct": "Correct",
         "alternate": "Alternate"
       },
-      "questionsorderlist": {
-        "stimulusplaceholder": "[This is the stem.]"
+      "correctanswer": {
+        "points": "Points"
       }
     },
     "multiplechoice": {

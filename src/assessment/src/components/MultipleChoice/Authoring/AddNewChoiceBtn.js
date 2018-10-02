@@ -10,7 +10,7 @@ const AddNewChoiceBtn = styled.a`
   justify-content: center;
   cursor: pointer;
 
-  font-family: OpenSans;
+  font-family: 'Open Sans';
   text-transform: uppercase;
   font-size: 11px;
   font-weight: 600;

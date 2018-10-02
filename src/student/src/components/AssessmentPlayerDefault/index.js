@@ -12,7 +12,6 @@ import HeaderMainMenu from '../common/HeaderMainMenu';
 import HeaderRightMenu from '../common/HeaderRightMenu';
 import LogoImage from '../../assets/logo.png';
 import SettingImage from '../../assets/screwdriver.png';
-import QuestionWrapper from '../QuestionWrapper';
 import {
   ControlBtn,
   Main,
@@ -21,6 +20,7 @@ import {
   Logo,
   FlexContainer,
 } from '../common';
+import Question from '../../../../assessment/src/components/Question';
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line
@@ -41,7 +41,7 @@ class AssessmentPlayerDefault extends Assessment {
       value: index,
     }));
     const survey = questions[currentQuestion] || {};
-    const { type = '', options = [], stimulus = '' } = survey;
+    const { type = '' } = survey;
 
     return (
       <ThemeProvider theme={theme}>
@@ -74,13 +74,7 @@ class AssessmentPlayerDefault extends Assessment {
           </Header>
           <Main skin>
             <MainWrapper>
-              <QuestionWrapper
-                type={type}
-                skin
-                key={currentQuestion}
-                options={options}
-                question={stimulus}
-              />
+              <Question type={type} view="preview" key={type} data={survey} />
             </MainWrapper>
           </Main>
         </Container>

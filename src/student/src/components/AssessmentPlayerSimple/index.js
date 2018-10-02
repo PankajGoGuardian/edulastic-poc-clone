@@ -17,7 +17,6 @@ import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
 import LogoImage from '../../assets/logo.png';
 import SettingImage from '../../assets/screwdriver.png';
 import SidebarQuestionList from './SidebarQuestionList';
-import QuestionWrapper from '../QuestionWrapper';
 import {
   Blank,
   ControlBtn,
@@ -32,6 +31,7 @@ import {
   HeaderRightMenu,
   MobileMainMenu,
 } from '../common';
+import Question from '../../../../assessment/src/components/Question';
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line
@@ -53,7 +53,7 @@ class AssessmentPlayerSimple extends Assessment {
       value: index,
     }));
     const survey = questions[currentQuestion] || {};
-    const { type = '', options = [], stimulus = '' } = survey;
+    const { type = '' } = survey;
     const percent = Math.round(((currentQuestion + 1) * 100) / dropDownQuizOptions.length);
     return (
       <ThemeProvider theme={theme}>
@@ -118,12 +118,12 @@ class AssessmentPlayerSimple extends Assessment {
             <Blank />
             <MainWrapper>
               <MainContent>
-                <QuestionWrapper
-                  type={type}
+                <Question
                   skin
+                  type={type}
+                  view="preview"
                   key={currentQuestion}
-                  options={options}
-                  question={stimulus}
+                  data={survey}
                 />
               </MainContent>
               <MainFooter>

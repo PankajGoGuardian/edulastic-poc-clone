@@ -12,24 +12,24 @@ import {
   OrderListPreview,
   OrderListReport,
   CorrectAnswers,
-} from '../../../../assessment/src/components/OrderList';
+} from './index';
 import {
   getStimulusSelector,
   getQuestionsListSelector,
   getValidationSelector,
   validationSelector,
-} from '../../selectors/questionsOrderList';
+} from './selectors/questionsOrderList';
 import {
   updateStimulusAction,
   updateQuestionsListAction,
   updateValidationAction,
-} from '../../actions/questionsOrderList';
+} from './actions/questionsOrderList';
 import {
   getPreviewListSelector,
   getPreviewIndexesListSelector,
   getPreivewTabSelector,
-} from '../../selectors/preview';
-import { updatePreviewListAction } from '../../actions/preview';
+} from './selectors/preview';
+import { updatePreviewListAction } from './actions/preview';
 
 class OrderList extends Component {
   componentDidMount() {

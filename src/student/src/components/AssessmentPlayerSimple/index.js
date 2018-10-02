@@ -53,7 +53,7 @@ class AssessmentPlayerSimple extends Assessment {
       value: index,
     }));
     const survey = questions[currentQuestion] || {};
-    const { type = '' } = survey;
+    const { type } = survey;
     const percent = Math.round(((currentQuestion + 1) * 100) / dropDownQuizOptions.length);
     return (
       <ThemeProvider theme={theme}>

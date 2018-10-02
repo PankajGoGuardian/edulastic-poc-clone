@@ -41,8 +41,7 @@ class AssessmentPlayerDefault extends Assessment {
       value: index,
     }));
     const survey = questions[currentQuestion] || {};
-    const { type = '' } = survey;
-
+    const { type } = survey;
     return (
       <ThemeProvider theme={theme}>
         <Container>

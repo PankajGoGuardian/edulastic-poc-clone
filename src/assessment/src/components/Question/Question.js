@@ -19,7 +19,11 @@ export default class Question extends Component {
 }
 
 Question.propTypes = {
-  type: PropTypes.oneOf(['orderList', 'mcq']).isRequired,
+  type: PropTypes.oneOf(['orderList', 'mcq']),
   view: PropTypes.string.isRequired,
   isNew: PropTypes.bool.isRequired,
+};
+
+Question.defaultProps = {
+  type: null,
 };

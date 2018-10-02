@@ -4,9 +4,7 @@ import styled from 'styled-components';
 
 class Tabs extends Component {
   render() {
-    const {
-      children, onChange, value, extra,
-    } = this.props;
+    const { children, onChange, value, extra } = this.props;
 
     return (
       <Container>
@@ -41,4 +39,5 @@ export default Tabs;
 const Container = styled.div`
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 `;

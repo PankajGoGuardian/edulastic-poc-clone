@@ -138,8 +138,13 @@ class OrderList extends Component {
       <React.Fragment>
         {view === 'edit' && (
           <React.Fragment>
-            <Question onQuestionChange={this.handleQuestionChange} value={stimulus} />
+            <Question
+              onQuestionChange={this.handleQuestionChange}
+              value={stimulus}
+              style={{ marginBottom: 30 }}
+            />
             <OrderListEdit
+              style={{ marginBottom: 30 }}
               questions={questionsList}
               onSortEnd={this.onSortOrderListEnd}
               onQuestionsChange={this.handleQuestionsChange}

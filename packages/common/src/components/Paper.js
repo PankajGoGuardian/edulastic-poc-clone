@@ -6,6 +6,10 @@ const Paper = styled.div`
   background: ${white};
   padding: 40px;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 480px) {
+    padding: 25px;
+  }
 `;
 
 export default Paper;

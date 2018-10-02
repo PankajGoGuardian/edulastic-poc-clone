@@ -3,10 +3,9 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FaTimes } from 'react-icons/fa';
-import { white, blue } from '@edulastic/colors';
+import { white, blue, mobileWidth } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
-
-import Button from './Button';
+import { Button } from '@edulastic/common';
 
 const modalRoot = document.getElementById('modal-root');
 
@@ -75,6 +74,11 @@ const Content = styled.div`
   background: ${white};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   border-radius: 5px;
+
+  @media (max-width: ${mobileWidth}) {
+    width: 100%;
+    min-width: 100%;
+  }
 `;
 
 const BackDoor = styled.div`

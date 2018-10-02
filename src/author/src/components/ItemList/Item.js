@@ -4,10 +4,9 @@ import styled from 'styled-components';
 import { FaAngleDoubleRight } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
 import { IconClockCircularOutline } from '@edulastic/icons';
-import { grey, blue, darkBlue, textColor } from '@edulastic/colors';
+import { grey, blue, darkBlue, textColor, tabletWidth } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
-
-import { Button } from '../common';
+import { Button } from '@edulastic/common';
 
 /* eslint-disable no-underscore-dangle */
 const Item = ({ item, match, t }) => (
@@ -34,7 +33,7 @@ const Item = ({ item, match, t }) => (
     <View>
       <Button
         style={{
-          width: 166,
+          width: '100%',
           height: 50,
           fontSize: 11,
           fontWeight: 600,
@@ -64,6 +63,10 @@ const Container = styled.div`
   justify-content: space-between;
   border-bottom: 1px solid ${grey};
   padding: 30px 0;
+
+  @media (max-width: ${tabletWidth}) {
+    flex-direction: column;
+  }
 `;
 
 const Link = styled(NavLink)`
@@ -87,6 +90,10 @@ const Time = styled.div`
   display: flex;
   align-items: center;
   margin-top: 10px;
+
+  @media (max-width: ${tabletWidth}) {
+    justify-content: center;
+  }
 `;
 
 const Label = styled.span`
@@ -106,6 +113,10 @@ const Label = styled.span`
   :last-child {
     margin-right: 0;
   }
+
+  @media (max-width: ${tabletWidth}) {
+    width: 100%;
+  }
 `;
 
 const Question = styled.div`
@@ -115,21 +126,42 @@ const Question = styled.div`
     margin: 0.5em 0;
     font-size: 13px;
   }
+
+  @media (max-width: ${tabletWidth}) {
+    width: 100%;
+    margin-bottom: 15px;
+    text-align: center;
+  }
 `;
 
 const Author = styled.div`
   width: 15%;
   font-size: 13px;
+
+  @media (max-width: ${tabletWidth}) {
+    width: 100%;
+    text-align: center;
+  }
 `;
 
 const Labels = styled.div`
   width: 20%;
   display: flex;
   flex-wrap: wrap;
+
+  @media (max-width: ${tabletWidth}) {
+    width: 100%;
+    flex-direction: column;
+    margin: 20px 0;
+  }
 `;
 
 const View = styled.div`
   width: 15%;
   display: flex;
   justify-content: flex-end;
+
+  @media (max-width: ${tabletWidth}) {
+    width: 100%;
+  }
 `;

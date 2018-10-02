@@ -2,7 +2,6 @@ export { default as DashboardSidebar } from './DashboardSidebar';
 export { default as Header } from './Header';
 export { default as LinkBtn } from './LinkBtn';
 export { default as DashboardControlBtn } from './DashboardControlBtn';
-export { default as Button } from './Button';
 export { default as ButtonLink } from './ButtonLink';
 export { default as SelectButton } from './SelectButton/SelectButton';
 export { default as Modal } from './Modal';

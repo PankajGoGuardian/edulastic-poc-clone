@@ -1,16 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { TextField } from '@edulastic/common';
+import { TextField, Button } from '@edulastic/common';
 import { IconSearch, IconPlus } from '@edulastic/icons';
-import { blue, green, greenDarkSecondary, white } from '@edulastic/colors';
+import { blue, greenDarkSecondary, white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
+import { compose } from 'redux';
 
-import { DashboardControlBtn } from '../common';
-
-const Header = ({ onSearch, onCreate, t }) => (
+const Header = ({ onSearch, onCreate, t, windowWidth }) => (
   <Container>
-    <Heading>{t('component.itemlist.header.itemlist')}</Heading>
+    {windowWidth > 480 && <Heading>{t('component.itemlist.header.itemlist')}</Heading>}
     <TextField
       onChange={e => onSearch(e.target.value)}
       height="50px"
@@ -18,21 +17,21 @@ const Header = ({ onSearch, onCreate, t }) => (
       icon={<IconSearch color={blue} />}
       containerStyle={{ marginRight: 20 }}
     />
-    <DashboardControlBtn
-      save
-      style={{ height: 50, width: 200, color: '#fff', margin: 0 }}
+    <Button
+      style={{
+        height: 50,
+        minWidth: windowWidth > 768 ? 200 : 55,
+        color: '#fff',
+        margin: 0,
+      }}
       onClick={onCreate}
+      color="success"
+      icon={
+        <IconPlus color={greenDarkSecondary} left={20} width={14} height={14} hoverColor={white} />
+      }
     >
-      <IconPlus
-        color={greenDarkSecondary}
-        left={20}
-        width={14}
-        height={14}
-        hoverColor={white}
-        backgroundColor={green}
-      />
-      <span>{t('component.itemlist.header.create')}</span>
-    </DashboardControlBtn>
+      {windowWidth > 768 && t('component.itemlist.header.create')}
+    </Button>
   </Container>
 );
 
@@ -40,9 +39,12 @@ Header.propTypes = {
   onSearch: PropTypes.func.isRequired,
   onCreate: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
+  windowWidth: PropTypes.number.isRequired,
 };
 
-export default withNamespaces('author')(Header);
+const enhance = compose(withNamespaces('author'));
+
+export default enhance(Header);
 
 const Container = styled.div`
   display: flex;

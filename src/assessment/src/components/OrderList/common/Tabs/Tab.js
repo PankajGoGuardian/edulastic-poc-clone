@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { textColor, blue } from '@edulastic/colors';
+import { textColor, blue, mobileWidth } from '@edulastic/colors';
 
 const Tab = ({ label, onClick, active }) => (
   <Container onClick={onClick} active={active}>
@@ -27,4 +27,9 @@ const Container = styled.div`
   padding: 10px 25px;
   cursor: pointer;
   border-bottom: 2px solid ${({ active }) => (active ? blue : 'transparent')};
+
+  @media (max-width: ${mobileWidth}) {
+    width: 50%;
+    margin-bottom: 10px;
+  }
 `;

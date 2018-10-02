@@ -1,16 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import {
-  blue,
-  white,
-  darkBlue,
-  textColor,
-  grey,
-  green,
-  greenDark,
-  black,
-} from '@edulastic/colors';
+import { blue, white, darkBlue, textColor, grey, green, greenDark, black } from '@edulastic/colors';
 
 const getRadius = (variant) => {
   switch (variant) {
@@ -110,7 +101,7 @@ const Button = ({ onClick, color, icon, children, uppercase, variant, outlined, 
 
 Button.propTypes = {
   onClick: PropTypes.func.isRequired,
-  children: PropTypes.string,
+  children: PropTypes.any,
   color: PropTypes.string, // default, primary, success
   icon: PropTypes.any,
   uppercase: PropTypes.bool,
@@ -139,7 +130,6 @@ const Icon = styled.div`
 `;
 
 const Container = styled.button`
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -155,25 +145,10 @@ const Container = styled.button`
   color: ${({ color }) => color};
   background: ${({ backgroundColor }) => backgroundColor};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  min-height: 40px;
-  cursor: pointer;
 
-  :hover, :hover span {
+  :hover {
     background: ${({ backgroundColorHover }) => backgroundColorHover};
     color: ${({ hoverColor }) => hoverColor}
-  }
-
-  & i, & svg {
-    position: absolute;
-    top: 0;
-    left: 10px;
-    height: 100% !important;
-    display: flex;
-    align-items: center;
-    font-size: 16px;
-  }
-
-  &:hover svg {
-    fill: #ffffff;
+    cursor: pointer;
   }
 `;

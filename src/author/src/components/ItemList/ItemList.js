@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Paper, Pagination, PaddingDiv } from '@edulastic/common';
+import { Paper, Pagination, withWindowSizes } from '@edulastic/common';
+import { compose } from 'redux';
+import styled from 'styled-components';
 
+import { mobileWidth } from '@edulastic/colors';
 import {
   getItemsListSelector,
   getItemsPageSelector,
@@ -42,10 +45,14 @@ class ItemList extends Component {
   };
 
   render() {
-    const { items, match, page, limit, count, loading } = this.props;
+    const { items, match, page, limit, count, loading, windowWidth } = this.props;
     return (
-      <PaddingDiv top={20} left={40} right={40}>
-        <Header onSearch={this.handleSearch} onCreate={this.handleCreate} />
+      <Container>
+        <Header
+          onSearch={this.handleSearch}
+          onCreate={this.handleCreate}
+          windowWidth={windowWidth}
+        />
         <Paper style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
           {items.map(item => (
             // eslint-disable-next-line
@@ -60,7 +67,7 @@ class ItemList extends Component {
           count={count}
           loading={loading}
         />
-      </PaddingDiv>
+      </Container>
     );
   }
 }
@@ -75,18 +82,32 @@ ItemList.propTypes = {
   loading: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
   createItem: PropTypes.func.isRequired,
+  windowWidth: PropTypes.number.isRequired,
 };
 
-export default connect(
-  state => ({
-    items: getItemsListSelector(state),
-    page: getItemsPageSelector(state),
-    limit: getItemsLimitSelector(state),
-    count: getItemsCountSelector(state),
-    loading: getItemsLoadingSelector(state),
-  }),
-  {
-    receiveItems: receiveItemsAction,
-    createItem: createItemAction,
-  },
-)(ItemList);
+const enhance = compose(
+  withWindowSizes,
+  connect(
+    state => ({
+      items: getItemsListSelector(state),
+      page: getItemsPageSelector(state),
+      limit: getItemsLimitSelector(state),
+      count: getItemsCountSelector(state),
+      loading: getItemsLoadingSelector(state),
+    }),
+    {
+      receiveItems: receiveItemsAction,
+      createItem: createItemAction,
+    },
+  ),
+);
+
+export default enhance(ItemList);
+
+const Container = styled.div`
+  padding: 20px 40px;
+
+  @media (max-width: ${mobileWidth}) {
+    padding: 10px 25px;
+  }
+`;

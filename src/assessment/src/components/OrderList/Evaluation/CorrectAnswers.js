@@ -5,10 +5,10 @@ import { IconPlus } from '@edulastic/icons';
 import { white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { compose } from 'redux';
+import { Button } from '@edulastic/common';
 
 import CorrectAnswer from './CorrectAnswer';
 import { Heading } from '../common';
-import { Button } from '../../common';
 import {
   updateAltValidationScoreAction,
   addAltResponsesAction,
@@ -41,7 +41,7 @@ class CorrectAnswers extends Component {
 
     return (
       <Button
-        style={{ width: 70, minHeight: 25 }}
+        style={{ minWidth: 70, minHeight: 25 }}
         icon={<IconPlus color={white} width={10} height={10} />}
         onClick={() => {
           this.handleTabChange(validation.alt_responses.length + 1);

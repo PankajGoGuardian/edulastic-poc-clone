@@ -2,12 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { Paper } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
 
 import SourceModal from './SourceModal';
-import OrderList from '../OrderList';
-import MultipleChoice from '../MultipleChoice';
 import { changePreviewTabAction } from '../../actions/preview';
 import { getPreivewTabSelector } from '../../selectors/preview';
 import { getItemSelector } from '../../selectors/items';
@@ -26,6 +23,7 @@ import {
   QUESTION_ANSWERS,
   ASSESSMENTID,
 } from '../../constants/others';
+import Question from '../../../../assessment/src/components/Question';
 
 const headerTitle = {
   mcq: 'MultipleChoice',
@@ -148,10 +146,7 @@ class QuestionEditor extends Component {
             previewTab={previewTab}
           />
         </QuestionEditorItemHeader>
-        <Paper>
-          {questionType === 'orderList' && <OrderList view={view} />}
-          {questionType === 'mcq' && <MultipleChoice view={view} isNew={editable} />}
-        </Paper>
+        <Question type={questionType} view={view} isNew={editable} />
       </Container>
     );
   }

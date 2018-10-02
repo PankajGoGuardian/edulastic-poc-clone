@@ -1,59 +1,74 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FaAngleDoubleRight } from 'react-icons/fa';
-import { NavLink } from 'react-router-dom';
 import { IconClockCircularOutline } from '@edulastic/icons';
 import { grey, blue, darkBlue, textColor, tabletWidth } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { Button } from '@edulastic/common';
 
 /* eslint-disable no-underscore-dangle */
-const Item = ({ item, match, t }) => (
-  <Container>
-    <Question>
-      <Link to={`${match.url}/${item._id}`}>
-        {item.id}# <FaAngleDoubleRight />
-      </Link>
-      <div dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-    </Question>
-    <Author>
-      <div>
-        Author: <span>Kevin Hart</span>
-      </div>
-      <Time>
-        <Icon color="#ee1658" /> an hour ago
-      </Time>
-    </Author>
-    <Labels>
-      <Label>Order List</Label>
-      <Label>Order List</Label>
-      <Label>Order List</Label>
-    </Labels>
-    <View>
-      <Button
-        style={{
-          width: '100%',
-          height: 50,
-          fontSize: 11,
-          fontWeight: 600,
-        }}
-        variant="extendedFab"
-        color="primary"
-        outlined
-        onClick={() => {}}
-      >
-        {t('component.item.view')}
-      </Button>
-    </View>
-  </Container>
-);
+class Item extends Component {
+  static propTypes = {
+    item: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+    t: PropTypes.func.isRequired,
+  };
 
-Item.propTypes = {
-  item: PropTypes.object.isRequired,
-  match: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired,
-};
+  moveToItem = () => {
+    const { history, item, t } = this.props;
+    history.push({
+      pathname: `/author/items/${item._id}`,
+      state: {
+        backText: t('component.itemAdd.backToItemList'),
+        backUrl: '/author/items',
+      },
+    });
+  }
+
+  render() {
+    const { item, t } = this.props;
+    return (
+      <Container>
+        <Question>
+          <Link onClick={this.moveToItem}>
+            {item.id}# <FaAngleDoubleRight />
+          </Link>
+          <div dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+        </Question>
+        <Author>
+          <div>
+            Author: <span>Kevin Hart</span>
+          </div>
+          <Time>
+            <Icon color="#ee1658" /> an hour ago
+          </Time>
+        </Author>
+        <Labels>
+          <Label>Order List</Label>
+          <Label>Order List</Label>
+          <Label>Order List</Label>
+        </Labels>
+        <View>
+          <Button
+            style={{
+              width: '100%',
+              height: 50,
+              fontSize: 11,
+              fontWeight: 600,
+            }}
+            variant="extendedFab"
+            color="primary"
+            outlined
+            onClick={() => {}}
+          >
+            {t('component.item.view')}
+          </Button>
+        </View>
+      </Container>
+    );
+  }
+}
 
 export default withNamespaces('author')(Item);
 
@@ -69,7 +84,7 @@ const Container = styled.div`
   }
 `;
 
-const Link = styled(NavLink)`
+const Link = styled.a`
   font-size: 16px;
   font-weight: 600;
   display: inline-flex;

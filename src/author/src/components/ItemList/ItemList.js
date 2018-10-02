@@ -45,7 +45,7 @@ class ItemList extends Component {
   };
 
   render() {
-    const { items, match, page, limit, count, loading, windowWidth } = this.props;
+    const { items, page, limit, count, loading, windowWidth, history } = this.props;
     return (
       <Container>
         <Header
@@ -56,7 +56,7 @@ class ItemList extends Component {
         <Paper style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
           {items.map(item => (
             // eslint-disable-next-line
-            <Item key={item._id} item={item} match={match} />
+            <Item key={item._id} item={item} history={history} />
           ))}
         </Paper>
         <Pagination
@@ -75,7 +75,6 @@ class ItemList extends Component {
 ItemList.propTypes = {
   items: PropTypes.array.isRequired,
   receiveItems: PropTypes.func.isRequired,
-  match: PropTypes.object.isRequired,
   page: PropTypes.number.isRequired,
   limit: PropTypes.number.isRequired,
   count: PropTypes.number.isRequired,

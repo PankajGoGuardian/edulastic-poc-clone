@@ -5,7 +5,7 @@ import { IconPlus } from '@edulastic/icons';
 import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapper';
 import { Content, Header, RoundDiv } from './components';
 
-const Card = ({ title, type, onSelectQuestionType }) => (
+const Card = ({ title, type, onSelectQuestionType, userSelections, question, options }) => (
   <React.Fragment>
     <RoundDiv borderRadius={10}>
       <Header borderRadius={10}>
@@ -22,27 +22,14 @@ const Card = ({ title, type, onSelectQuestionType }) => (
         <QuestionWrapper
           type={type}
           view="preview"
-          smallSize
+          isNew
+          data={{
+            smallSize: true,
+            stimulus: question,
+            list: options,
+            userSelections,
+          }}
         />
-        {/* {type === 'mcq' && (
-          <MultipleChoiceDisplay
-            smallSize
-            userSelections={userSelections}
-            options={options.map((option, index) => ({ value: index, label: option }))}
-            question={question}
-            onChange={() => {}}
-          />)
-        }
-        {type === 'orderList' && (
-          <React.Fragment>
-            <QuestionText dangerouslySetInnerHTML={{ __html: question }} />
-            <OrderListPreview
-              smallSize
-              onSortEnd={() => {}}
-              questions={options}
-            />
-          </React.Fragment>
-        )} */}
       </Content>
     </RoundDiv>
   </React.Fragment>
@@ -51,7 +38,16 @@ const Card = ({ title, type, onSelectQuestionType }) => (
 Card.propTypes = {
   type: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
+  userSelections: PropTypes.array,
+  options: PropTypes.array,
+  question: PropTypes.string,
   onSelectQuestionType: PropTypes.func.isRequired,
+};
+
+Card.defaultProps = {
+  userSelections: [],
+  question: '',
+  options: [],
 };
 
 export default Card;

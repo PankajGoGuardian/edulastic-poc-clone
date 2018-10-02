@@ -132,8 +132,12 @@ class OrderList extends Component {
       previewIndexesList,
       validationState,
       previewTab,
+      smallSize,
+      initialData,
     } = this.props;
 
+    const previewQuestionsList = initialData.list !== 0 ? initialData.list : previewList;
+    const previewStimulus = initialData.stimulus ? initialData.stimulus : stimulus;
     return (
       <React.Fragment>
         {view === 'edit' && (
@@ -161,7 +165,7 @@ class OrderList extends Component {
         )}
         {view === 'preview' && (
           <React.Fragment>
-            <QuestionText dangerouslySetInnerHTML={{ __html: stimulus }} />
+            <QuestionText dangerouslySetInnerHTML={{ __html: previewStimulus }} />
 
             {previewTab === 'check' && (
               <OrderListReport
@@ -185,7 +189,7 @@ class OrderList extends Component {
             )}
 
             {previewTab === 'clear' && (
-              <OrderListPreview onSortEnd={this.onSortPreviewEnd} questions={previewList} />
+              <OrderListPreview onSortEnd={this.onSortPreviewEnd} questions={previewQuestionsList} smallSize={smallSize} />
             )}
           </React.Fragment>
         )}
@@ -208,6 +212,13 @@ OrderList.propTypes = {
   validationState: PropTypes.object.isRequired,
   previewTab: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
+  smallSize: PropTypes.bool,
+  initialData: PropTypes.object,
+};
+
+OrderList.defaultProps = {
+  smallSize: false,
+  initialData: {},
 };
 
 const enhance = compose(
@@ -233,7 +244,8 @@ const enhance = compose(
 
 export default enhance(OrderList);
 
-const QuestionText = styled.p`
-  font-size: 16px;
-  padding: 10px;
+const QuestionText = styled.div`
+  font-size: 14px;
+  padding: 15px 0;
+  font-weight: bold;
 `;

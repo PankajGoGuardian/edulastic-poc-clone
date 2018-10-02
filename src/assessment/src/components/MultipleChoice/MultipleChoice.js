@@ -12,7 +12,6 @@ import {
 import {
   getPreivewTabSelector,
 } from './selectors/preview';
-import { getItemSelector } from './selectors/items';
 
 class MultipleChoice extends Component {
   state = {
@@ -27,13 +26,14 @@ class MultipleChoice extends Component {
   };
 
   render() {
-    const { view, previewTab, isNew, item } = this.props;
+    const { view, previewTab, isNew, item, smallSize } = this.props;
     const { userSelections } = this.state;
+    console.log('item from question wrapper:', item, previewTab);
     return (
-      <PaddingDiv top={10}>
+      <PaddingDiv>
         {view === 'edit' && (
           <React.Fragment>
-            <MultipleChoiceAuthoring edit={!isNew} key={isNew} item={!!item && item} />
+            <MultipleChoiceAuthoring key={isNew} item={item} />
           </React.Fragment>
         )}
         {view === 'preview' && (
@@ -55,7 +55,10 @@ class MultipleChoice extends Component {
             {previewTab === 'clear' && (
               <MultipleChoiceDisplay
                 preview
-                userSelections={userSelections}
+                smallSize={smallSize}
+                options={item.list || item.options}
+                question={item.stimulus}
+                userSelections={item.userSelections}
                 onChange={this.handleMultiSelect}
               />
             )}
@@ -72,18 +75,19 @@ MultipleChoice.propTypes = {
   previewTab: PropTypes.string.isRequired,
   isNew: PropTypes.bool,
   item: PropTypes.object,
+  smallSize: PropTypes.bool,
 };
 
 MultipleChoice.defaultProps = {
-  isNew: true,
+  isNew: false,
   item: {},
+  smallSize: false,
 };
 
 const enhance = compose(
   connect(
     state => ({
       previewTab: getPreivewTabSelector(state),
-      item: getItemSelector(state),
     }),
   ),
 );

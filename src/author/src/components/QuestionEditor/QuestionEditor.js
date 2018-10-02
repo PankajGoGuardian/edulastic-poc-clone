@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withNamespaces } from '@edulastic/localization';
+import { Paper } from '@edulastic/common';
 
 import SourceModal from './SourceModal';
 import { changePreviewTabAction } from '../../actions/preview';
@@ -33,6 +34,7 @@ const headerTitles = {
 class QuestionEditor extends Component {
   state = {
     showModal: false,
+    saveClicked: false,
   };
 
   componentWillMount() {
@@ -96,6 +98,7 @@ class QuestionEditor extends Component {
       list: JSON.parse(options),
       validation: { valid_response: JSON.stringify(correctAnswer) },
     });
+    this.setState({ saveClicked: true });
   };
 
   getQuestionType = () => {
@@ -117,7 +120,7 @@ class QuestionEditor extends Component {
     } = this.props;
     const itemId = item === null ? '' : item.id;
     const questionType = this.getQuestionType();
-    const { showModal } = this.state;
+    const { showModal, saveClicked } = this.state;
     return (
       <Container>
         {showModal && (
@@ -139,7 +142,15 @@ class QuestionEditor extends Component {
             previewTab={previewTab}
           />
         </ItemHeader>
-        <QuestionWrapper type={questionType} view={view} key={questionType} />
+        <Paper>
+          <QuestionWrapper
+            type={questionType}
+            view={view}
+            key={questionType && view && saveClicked}
+            data={item}
+            saveClicked={saveClicked}
+          />
+        </Paper>
       </Container>
     );
   }

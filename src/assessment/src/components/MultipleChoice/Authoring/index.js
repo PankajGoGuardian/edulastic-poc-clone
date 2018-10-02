@@ -48,20 +48,19 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
 
   componentWillReceiveProps(nextProps) {
     const { item } = nextProps;
-    const { edit } = this.props;
-    if (item && edit) {
-      const { stimulus: question, list: options, validation: validAnswers } = item;
-      const validResponse = Array(options.length).fill(false);
-      let answersFromItem = [];
-      if (validAnswers !== null) {
-        answersFromItem = JSON.parse(validAnswers.valid_response);
-      }
-      answersFromItem.forEach((answer) => {
-        validResponse[answer] = true;
-      });
-      this.setData({ question, options, answers: validResponse });
-    } else {
-      const options = [
+    const { stimulus: question, list: options, validation: validAnswers } = item;
+    const validResponse = Array(options.length).fill(false);
+    let answersFromItem = [];
+    if (validAnswers !== null) {
+      answersFromItem = JSON.parse(validAnswers.valid_response);
+    }
+    answersFromItem.forEach((answer) => {
+      validResponse[answer] = true;
+    });
+    this.setData({ question, options, answers: validResponse });
+    let choiceOptions = options;
+    if (options.length === 0) {
+      choiceOptions = [
         {
           value: 0,
           label: 'Choice A',
@@ -79,16 +78,13 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
           label: 'Choice D',
         },
       ];
-      const answers = Array(options.length).fill(false);
-      this.initialize({ options, answers });
-      localStorage.removeItem('PickUpQuestionType');
     }
-    const { question, answers } = this.getData();
-    this.choiceLength = question.options.length;
+    const answers = Array(choiceOptions.length).fill(false);
+    this.choiceLength = choiceOptions.length;
     this.setState({
-      choiceOptions: question.options,
+      choiceOptions,
       answers,
-      question: question.stimulus,
+      question,
     });
   }
 

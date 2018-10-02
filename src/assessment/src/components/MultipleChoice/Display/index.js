@@ -68,12 +68,7 @@ const Options = (props) => {
 
 class MultipleChoiceDisplay extends QuestionDisplay {
   render() {
-    let { options, question } = this.props;
-    if (this.props.preview) {
-      const { options: responseOpt, question: responseQues } = this.getResponse();
-      options = responseOpt;
-      question = responseQues;
-    }
+    const { options, question } = this.props;
     const {
       setAnswers, showAnswer, userSelections = [], answers = [], smallSize,
     } = this.props;

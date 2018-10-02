@@ -13,10 +13,16 @@ import Header from './Header';
 
 class PickUpQuestionType extends Component {
   selectQuestionType = (questionType) => {
-    const { item, updateItemById, history } = this.props;
+    const { item, updateItemById, history, t } = this.props;
     updateItemById({ ...item, id: item._id, type: questionType, reference: item.id });
     localStorage.setItem('PickUpQuestionType', true);
-    history.push(`/author/items/${item._id}`);
+    history.push({
+      pathname: `/author/items/${item._id}`,
+      state: {
+        backText: t('component.pickupcomponent.backToSelect'),
+        backUrl: `/author/items/${item._id}/pickup-questiontype`,
+      },
+    });
   };
 
   render() {
@@ -26,7 +32,10 @@ class PickUpQuestionType extends Component {
       <Container>
         <Header
           title={t('component.pickupcomponent.headertitle')}
-          link={{ url: '/author/items', text: t('component.pickupcomponent.backToAddNew') }}
+          link={{
+            url: '/author/add-item',
+            text: t('component.pickupcomponent.backToAddNew'),
+          }}
         />
         <PaddingDiv top={30}>
           <QuestionTypes onSelectQuestionType={this.selectQuestionType} />

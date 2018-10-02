@@ -107,7 +107,7 @@ class QuestionEditor extends Component {
       item,
       type,
       history,
-      t,
+      location,
     } = this.props;
     let questionType = type;
     const itemId = item === null ? '' : item.id;
@@ -129,7 +129,7 @@ class QuestionEditor extends Component {
         )}
         <ItemHeader
           title={headerTitle[questionType]}
-          link={{ url: '/author/items', text: t('component.backToItemList') }}
+          link={{ url: location.state.backUrl, text: location.state.backText }}
           reference={itemId}
         >
           <ButtonBar
@@ -161,7 +161,7 @@ QuestionEditor.propTypes = {
   updateItemById: PropTypes.func.isRequired,
   add: PropTypes.func.isRequired,
   history: PropTypes.object,
-  t: PropTypes.func.isRequired,
+  location: PropTypes.object.isRequired,
 };
 
 QuestionEditor.defaultProps = {

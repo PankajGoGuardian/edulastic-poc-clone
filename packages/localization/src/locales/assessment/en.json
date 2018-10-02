@@ -9,8 +9,22 @@
   },
   "component": {
     "orderlist": {
+      "question": {
+        "composequestion": "Compose Question"
+      },
+      "orderlistedit": {
+        "addnewchoicebtn": "Add New Choice"
+      },
       "questionsorderlist": {
-        "stimulusplaceholder": "[This is the stem.]"
+        " ": "[This is the stem.]"
+      },
+      "correctanswers": {
+        "setcorrectanswers": "Set Correct Answer(s)",
+        "correct": "Correct",
+        "alternate": "Alternate"
+      },
+      "correctanswer": {
+        "points": "Points"
       }
     },
     "multiplechoice": {

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { ItemHeader } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
 
 import SourceModal from './SourceModal';
@@ -24,6 +23,7 @@ import {
   ASSESSMENTID,
 } from '../../constants/others';
 import Question from '../../../../assessment/src/components/Question';
+import ItemHeader from './ItemHeader';
 
 const headerTitle = {
   mcq: 'MultipleChoice',

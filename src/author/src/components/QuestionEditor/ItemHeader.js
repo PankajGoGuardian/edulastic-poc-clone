@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { IconChevronLeft, IconPensilEdit } from '@edulastic/icons';
-import { FlexContainer, TextField, PaddingDiv } from '@edulastic/common';
-import { secondaryTextColor, greenDark, green } from '@edulastic/colors';
+import { FlexContainer, TextField } from '@edulastic/common';
+import { secondaryTextColor, greenDark, green, tabletWidth, mobileWidth } from '@edulastic/colors';
 
 const ItemHeader = ({ title, children, link, reference, editReference, onChange, hideIcon }) => (
-  <React.Fragment>
+  <Container>
     <FlexContainer alignItems="flex-start" style={{ marginBottom: 10 }}>
       <LeftSide>
         <TitleNav>
@@ -37,8 +37,7 @@ const ItemHeader = ({ title, children, link, reference, editReference, onChange,
         </Back>
       )}
     </LeftSide>
-    <PaddingDiv height={40} />
-  </React.Fragment>
+  </Container>
 );
 
 ItemHeader.propTypes = {
@@ -63,9 +62,22 @@ ItemHeader.defaultProps = {
 
 export default ItemHeader;
 
+const Container = styled.div`
+  margin-bottom: 40px;
+
+  @media (max-width: ${mobileWidth}) {
+    margin-bottom: 30px;
+  }
+`;
+
 const LeftSide = styled.div`
   display: flex;
   align-items: center;
+
+  @media (max-width: ${tabletWidth}) {
+    display: none;
+    height: 0;
+  }
 `;
 
 const RightSide = styled.div`

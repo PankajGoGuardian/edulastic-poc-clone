@@ -9,6 +9,24 @@
   },
   "component": {
     "orderlist": {
+      "correctanswer": {
+        "points": "Points"
+      },
+      "orderlistedit": {
+        "addnewchoicebtn": "Add new choice"
+      },
+      "orderlistreportitem": {
+        "correctanswer": " Correct Answer:"
+      },
+      "question": {
+        "composequestion": "Compose question",
+        "enteryourquestion": "Enter your question"
+      },
+      "correctanswers": {
+        "setcorrectanswers": "Set correct answer(s)",
+        "correct": "Correct",
+        "alternate": "Alternate"
+      },
       "questionsorderlist": {
         "stimulusplaceholder": "[This is the stem.]"
       }

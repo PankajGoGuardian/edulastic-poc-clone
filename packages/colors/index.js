@@ -20,3 +20,9 @@ export const green = '#1fe3a1';
 export const lightGreen = '#e1fbf2';
 export const greenDark = '#4aac8b';
 export const greenDarkSecondary = '#057750';
+
+// Sizes
+export const mobileWidth = '480px';
+export const tabletWidth = '768px';
+export const desktopWidth = '992px';
+export const largeDesktopWidth = '1200px';

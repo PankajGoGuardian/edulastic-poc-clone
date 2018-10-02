@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { lightGrey } from '@edulastic/colors';
+import { lightGrey, tabletWidth } from '@edulastic/colors';
 
 import { TextField } from '@edulastic/common';
 
@@ -8,6 +8,10 @@ export const Header = styled.div`
   background: ${lightGrey};
   display: inline-flex;
   align-items: center;
+
+  @media (max-width: ${tabletWidth}) {
+    width: 100%;
+  }
 `;
 
 export const PointField = styled(TextField)`

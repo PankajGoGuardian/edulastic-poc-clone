@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { PaddingDiv, ItemHeader } from '@edulastic/common';
+import { PaddingDiv } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
 
 import { changePreviewTabAction } from '../../actions/preview';
@@ -16,6 +16,7 @@ import { getItemSelector } from '../../selectors/items';
 import { setQuestionsStateAction } from '../../actions/questionsOrderList';
 import { getQuestionsStateSelector } from '../../selectors/questionsOrderList';
 import SourceModal from '../QuestionEditor/SourceModal';
+import ItemHeader from '../QuestionEditor/ItemHeader';
 
 class ItemAdd extends Component {
   constructor(props) {

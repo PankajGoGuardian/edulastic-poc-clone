@@ -5,8 +5,7 @@ import styled from 'styled-components';
 import { FaTimes } from 'react-icons/fa';
 import { white, blue } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
-
-import Button from './Button';
+import { Button } from '@edulastic/common';
 
 const modalRoot = document.getElementById('modal-root');
 

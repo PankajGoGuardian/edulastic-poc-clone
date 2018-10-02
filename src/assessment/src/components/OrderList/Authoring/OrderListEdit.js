@@ -4,15 +4,15 @@ import { SortableContainer } from 'react-sortable-hoc';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
 
+import { Button } from '@edulastic/common';
 import OrderListItem from './OrderListItem';
-import { Button } from '../common';
 
 class OrderListEdit extends Component {
   render() {
-    const { questions, onQuestionsChange, onDeleteQuestion, onAddQuestion, t } = this.props;
+    const { questions, onQuestionsChange, onDeleteQuestion, onAddQuestion, t, style } = this.props;
 
     return (
-      <div>
+      <div style={style}>
         {questions.map((q, i) => (
           <OrderListItem
             key={i}
@@ -43,6 +43,11 @@ OrderListEdit.propTypes = {
   onDeleteQuestion: PropTypes.func.isRequired,
   onAddQuestion: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
+  style: PropTypes.object,
+};
+
+OrderListEdit.defaultProps = {
+  style: {},
 };
 
 const enhance = compose(

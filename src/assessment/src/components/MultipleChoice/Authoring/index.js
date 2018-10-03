@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
 import { PaddingDiv } from '@edulastic/common';
 import { compose } from 'redux';
@@ -11,7 +13,6 @@ import SortableItemContainer from './SortableItemContainer';
 import Subtitle from './Sutitle';
 import QuestionTextArea from './QuestionTextArea';
 import AddNewChoiceBtn from './AddNewChoiceBtn';
-import MultipleChoiceDisplay from '../Display';
 
 const DragHandle = SortableHandle(() => <i className="fa fa-align-justify" />);
 
@@ -41,23 +42,26 @@ const SortableList = SortableContainer(({ items, onRemove, onChange }) => (
   </div>
 ));
 
-class MultipleChoiceAuthoring extends QuestionAuthoring {
+class MultipleChoiceAuthoring extends Component {
   state = {
     choiceOptions: [],
     question: '',
     answers: [],
   };
 
+  static propTypes = {
+    item: PropTypes.object,
+    t: PropTypes.func.isRequired,
+  }
+
+  static defaultProps = {
+    item: {},
+  }
+
   async componentDidMount() {
-    const { item, history, smallSize } = this.props;
+    const { item } = this.props;
     const { stimulus, list, validation } = item;
-    const isDetailPage = history.location.state !== undefined ? history.location.state.itemDetail : false;
-    if (smallSize || isDetailPage) {
-      console.log('smallsize is true or detail page');
-      this.baseQuestion.initializeData({ question: stimulus, options: list, answers: validation });
-    } else {
-      await this.baseQuestion.initialize();
-    }
+    await this.baseQuestion.initializeData({ question: stimulus, options: list, answers: validation });
     const { question, options, answers } = this.baseQuestion.getData();
 
     this.choiceLength = options.length;
@@ -160,7 +164,7 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
   };
 
   render() {
-    const { choiceOptions, question, answers } = this.state;
+    const { choiceOptions, question } = this.state;
     const { t } = this.props;
 
     return (
@@ -187,13 +191,6 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
             </AddNewChoiceBtn>
           </div>
           <Subtitle>{t('component.multiplechoice.setcorrectanswers')}</Subtitle>
-          <MultipleChoiceDisplay
-            setAnswers
-            options={choiceOptions}
-            userSelections={answers}
-            onChange={this.handleMultiSelect}
-            key={choiceOptions && answers}
-          />
         </PaddingDiv>
       </QuestionAuthoring>
     );
@@ -204,6 +201,5 @@ const enhance = compose(
   withRouter,
   withNamespaces('assessment'),
 );
-
 
 export default enhance(MultipleChoiceAuthoring);

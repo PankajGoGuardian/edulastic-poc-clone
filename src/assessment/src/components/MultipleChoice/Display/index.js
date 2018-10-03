@@ -11,14 +11,16 @@ import ProblemContainer from './ProblemContainer';
 
 const Option = (props) => {
   const {
-    index, setAnswers, item, showAnswer, userSelections, answers, onChange, smallSize,
+    index, checkAnswer, setAnswers, item, showAnswer, userSelections, answers, onChange, smallSize,
   } = props;
+  const className = checkAnswer ? answers[index] ? 'right' : 'wrong' : answers[index] && showAnswer ? 'right' : '';
+  console.log('class name:', className);
   return (
     <Label
       smallSize={smallSize}
       setAnswers={setAnswers}
       showAnswer
-      className={showAnswer ? answers[index] ? 'right' : 'wrong' : ''}
+      className={className}
     >
       <PaddingDiv top={setAnswers ? 15 : smallSize ? 0 : 20} bottom={setAnswers ? 15 : smallSize ? 0 : 20}>
         <FlexContainer>
@@ -33,7 +35,10 @@ const Option = (props) => {
             {showAnswer && answers[index] &&
               <i className="fa fa-check" />
             }
-            {showAnswer && !answers[index] &&
+            {checkAnswer && answers[index] &&
+              <i className="fa fa-check" />
+            }
+            {checkAnswer && !answers[index] &&
               <i className="fa fa-times" />
             }
           </PaddingDiv>
@@ -45,14 +50,16 @@ const Option = (props) => {
 
 const Options = (props) => {
   const {
-    options, showAnswer, setAnswers, userSelections, answers, onChange, smallSize,
+    options, checkAnswer, showAnswer, setAnswers, userSelections, answers, onChange, smallSize,
   } = props;
+  console.log('options checkAnswer:', checkAnswer);
   return (
     <div>
       {options.map((option, index) => (
         <Option
           key={index}
           smallSize={smallSize}
+          checkAnswer={checkAnswer}
           index={index}
           setAnswers={setAnswers}
           item={option}
@@ -70,9 +77,10 @@ class MultipleChoiceDisplay extends Component {
   render() {
     const { onChange, options, question } = this.props;
     const {
-      showAnswer, userSelections = [], answers = [], smallSize,
+      showAnswer, userSelections = [], answers = [], smallSize, checkAnswer,
     } = this.props;
-    console.log('options, question', options, question);
+
+    console.log('mcq display userSelections answers', userSelections, answers, checkAnswer, showAnswer);
     return (
       <QuestionDisplay onRef={(ref) => { this.baseQuestion = ref; }}>
         <ProblemContainer
@@ -80,7 +88,9 @@ class MultipleChoiceDisplay extends Component {
           dangerouslySetInnerHTML={{ __html: question }}
         />
         <Options
+          key={checkAnswer && showAnswer}
           smallSize={smallSize}
+          checkAnswer={checkAnswer}
           options={options.map((option, index) => ({ value: index, label: option }))}
           showAnswer={showAnswer}
           userSelections={userSelections}
@@ -109,6 +119,7 @@ Option.propTypes = {
   answers: PropTypes.array,
   onChange: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
+  checkAnswer: PropTypes.bool.isRequired,
 };
 
 Options.defaultProps = {
@@ -128,6 +139,7 @@ Options.propTypes = {
   options: PropTypes.array,
   onChange: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
+  checkAnswer: PropTypes.bool.isRequired,
 };
 
 MultipleChoiceDisplay.propTypes = {
@@ -138,6 +150,7 @@ MultipleChoiceDisplay.propTypes = {
   answers: PropTypes.array,
   userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
+  checkAnswer: PropTypes.bool,
 };
 
 MultipleChoiceDisplay.defaultProps = {
@@ -148,6 +161,7 @@ MultipleChoiceDisplay.defaultProps = {
   answers: [],
   userSelections: [],
   smallSize: false,
+  checkAnswer: false,
 };
 
 export default MultipleChoiceDisplay;

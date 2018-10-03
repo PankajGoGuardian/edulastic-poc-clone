@@ -13,6 +13,7 @@ import {
 import {
   getStimulusSelector,
   getQuestionsListSelector,
+  getValidationSelector,
 } from '../../selectors/questionCommon';
 import {
   getPreivewTabSelector,
@@ -30,40 +31,55 @@ class MultipleChoice extends Component {
     this.setState({ userSelections });
   };
 
+  componentDidMount() {
+    const { questionsList } = this.props;
+    const userSelections = Array(questionsList.length).fill(false);
+    this.setState({ userSelections });
+  }
+
   render() {
-    const { view, previewTab, stimulus, questionList, item, smallSize, history } = this.props;
+    const { view, previewTab, stimulus, questionsList, validation, item, smallSize, history } = this.props;
     const { userSelections } = this.state;
     const isDetailPage = history.location.state !== undefined ? history.location.state.itemDetail : false;
     let previewDisplayOptions;
     let previewStimulus;
+    let itemForEdit;
     if (smallSize || isDetailPage) {
       previewStimulus = item.stimulus;
       previewDisplayOptions = item.list || item.options;
+      itemForEdit = item;
     } else {
       previewStimulus = stimulus;
-      previewDisplayOptions = questionList;
-      console.log('stimulus, preview Display options', previewStimulus, previewDisplayOptions);
+      previewDisplayOptions = questionsList;
+      itemForEdit = {
+        stimulus,
+        list: questionsList,
+        validation,
+      };
     }
     return (
       <PaddingDiv>
         {view === 'edit' && (
           <React.Fragment>
-            <MultipleChoiceAuthoring key={item} item={item} smallSize={smallSize} />
+            <MultipleChoiceAuthoring key={item} item={itemForEdit} />
           </React.Fragment>
         )}
         {view === 'preview' && (
           <React.Fragment>
             {previewTab === 'check' && (
               <MultipleChoiceReport
-                showAnswer
+                checkAnswer
                 userSelections={userSelections}
+                options={previewDisplayOptions}
+                question={previewStimulus}
                 handleMultiSelect={this.handleMultiSelect}
               />
             )}
             {previewTab === 'show' && (
               <MultipleChoiceReport
                 showAnswer
-                userSelections={userSelections}
+                options={previewDisplayOptions}
+                question={previewStimulus}
                 handleMultiSelect={this.handleMultiSelect}
               />
             )}
@@ -73,7 +89,7 @@ class MultipleChoice extends Component {
                 key={previewDisplayOptions && previewStimulus}
                 smallSize={smallSize}
                 options={previewDisplayOptions}
-                question={item.stimulus}
+                question={previewStimulus}
                 userSelections={!!item && item.userSelections ? item.userSelections : userSelections}
                 onChange={this.handleMultiSelect}
               />
@@ -90,18 +106,20 @@ MultipleChoice.propTypes = {
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
   stimulus: PropTypes.string,
-  questionList: PropTypes.array,
+  questionsList: PropTypes.array,
   item: PropTypes.object,
   smallSize: PropTypes.bool,
   history: PropTypes.object,
+  validation: PropTypes.object,
 };
 
 MultipleChoice.defaultProps = {
   stimulus: '',
-  questionList: [],
+  questionsList: [],
   item: {},
   smallSize: false,
   history: {},
+  validation: {},
 };
 
 const enhance = compose(
@@ -111,6 +129,7 @@ const enhance = compose(
       stimulus: getStimulusSelector(state),
       questionsList: getQuestionsListSelector(state),
       previewTab: getPreivewTabSelector(state),
+      validation: getValidationSelector(state),
     }),
     null,
   ),

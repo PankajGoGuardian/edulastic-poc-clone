@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
 import { PaddingDiv } from '@edulastic/common';
 
 import QuestionDisplay from '../../Base/QuestionDisplay';
@@ -66,30 +66,28 @@ const Options = (props) => {
   );
 };
 
-class MultipleChoiceDisplay extends QuestionDisplay {
+class MultipleChoiceDisplay extends Component {
   render() {
-    const { options, question } = this.props;
+    const { onChange, options, question } = this.props;
     const {
-      setAnswers, showAnswer, userSelections = [], answers = [], smallSize,
+      showAnswer, userSelections = [], answers = [], smallSize,
     } = this.props;
+    console.log('options, question', options, question);
     return (
-      <div>
-        {!setAnswers && (
-          <ProblemContainer
-            smallSize={smallSize}
-            dangerouslySetInnerHTML={{ __html: question }}
-          />
-        )}
+      <QuestionDisplay onRef={(ref) => { this.baseQuestion = ref; }}>
+        <ProblemContainer
+          smallSize={smallSize}
+          dangerouslySetInnerHTML={{ __html: question }}
+        />
         <Options
           smallSize={smallSize}
-          options={options}
-          setAnswers={setAnswers}
+          options={options.map((option, index) => ({ value: index, label: option }))}
           showAnswer={showAnswer}
           userSelections={userSelections}
           answers={answers}
-          onChange={this.props.onChange}
+          onChange={onChange}
         />
-      </div>
+      </QuestionDisplay>
     );
   }
 }
@@ -138,10 +136,18 @@ MultipleChoiceDisplay.propTypes = {
   onChange: PropTypes.func,
   showAnswer: PropTypes.bool,
   answers: PropTypes.array,
-  setAnswers: PropTypes.bool,
-  preview: PropTypes.bool,
   userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
+};
+
+MultipleChoiceDisplay.defaultProps = {
+  options: [],
+  question: '',
+  onChange: () => {},
+  showAnswer: false,
+  answers: [],
+  userSelections: [],
+  smallSize: false,
 };
 
 export default MultipleChoiceDisplay;

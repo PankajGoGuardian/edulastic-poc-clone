@@ -1,6 +1,8 @@
 import React from 'react';
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
 import { PaddingDiv } from '@edulastic/common';
+import { compose } from 'redux';
+import { withRouter } from 'react-router-dom';
 import { withNamespaces } from '@edulastic/localization';
 
 import QuestionAuthoring from '../../Base/QuestionAuthoring';
@@ -46,70 +48,81 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
     answers: [],
   };
 
-  componentWillReceiveProps(nextProps) {
-    const { item } = nextProps;
-    const { stimulus: question, list: options, validation: validAnswers } = item;
-    const validResponse = Array(options.length).fill(false);
-    let answersFromItem = [];
-    if (validAnswers !== null) {
-      answersFromItem = JSON.parse(validAnswers.valid_response);
+  async componentDidMount() {
+    const { item, history, smallSize } = this.props;
+    const { stimulus, list, validation } = item;
+    const isDetailPage = history.location.state !== undefined ? history.location.state.itemDetail : false;
+    if (smallSize || isDetailPage) {
+      console.log('smallsize is true or detail page');
+      this.baseQuestion.initializeData({ question: stimulus, options: list, answers: validation });
+    } else {
+      await this.baseQuestion.initialize();
     }
-    answersFromItem.forEach((answer) => {
-      validResponse[answer] = true;
-    });
-    this.setData({ question, options, answers: validResponse });
-    let choiceOptions = options;
-    if (options.length === 0) {
-      choiceOptions = [
-        {
-          value: 0,
-          label: 'Choice A',
-        },
-        {
-          value: 1,
-          label: 'Choice B',
-        },
-        {
-          value: 2,
-          label: 'Choice C',
-        },
-        {
-          value: 3,
-          label: 'Choice D',
-        },
-      ];
-    }
-    const answers = Array(choiceOptions.length).fill(false);
-    this.choiceLength = choiceOptions.length;
+    const { question, options, answers } = this.baseQuestion.getData();
+
+    this.choiceLength = options.length;
+    const stateAnswers = this.getStateAnswersFromData(options, answers);
     this.setState({
-      choiceOptions,
-      answers,
       question,
+      choiceOptions: options.map((label, index) => ({ value: index, label })),
+      answers: stateAnswers,
     });
+  }
+
+  getStateOptionsFromData = options => options.map((label, index) => ({ value: index, label }));
+
+  getOptionsFromState = stateOptions => (stateOptions.map(option => option.label));
+
+  getStateAnswersFromData = (options, answers) => {
+    const { valid_response } = answers;
+    const stateAnswers = Array(options.length).fill(false);
+    valid_response.value.forEach((item) => {
+      stateAnswers[item] = true;
+    });
+    return stateAnswers;
+  }
+
+  getAnswersFromState = (stateAnswers) => {
+    const correctAnswer = [];
+    stateAnswers.forEach((answer, index) => {
+      if (answer) {
+        correctAnswer.push(index);
+      }
+    });
+    return {
+      valid_response: {
+        score: 1,
+        value: correctAnswer,
+      },
+      alt_responses: [],
+    };
   }
 
   onChangeQuesiton = (e) => {
     const question = e.target.value;
-    this.setData({ question });
+    this.baseQuestion.setData({ question });
     this.setState({ question });
   };
 
   onSortEnd = ({ oldIndex, newIndex }) => {
     const { choiceOptions: choiceOptionsState, answers: answersState } = this.state;
-    const choiceOptions = arrayMove(choiceOptionsState, oldIndex, newIndex);
-    const answers = arrayMove(answersState, oldIndex, newIndex);
+    const newChoiceOptionsState = arrayMove(choiceOptionsState, oldIndex, newIndex);
+    const newAnswersState = arrayMove(answersState, oldIndex, newIndex);
     this.setState({
-      choiceOptions,
-      answers,
+      choiceOptions: newChoiceOptionsState,
+      answers: newAnswersState,
     });
-    this.setData({ options: choiceOptions, answers });
+    this.baseQuestion.setData({
+      options: this.getOptionsFromState(newChoiceOptionsState),
+      answers: this.getAnswersFromState(newAnswersState),
+    });
   };
 
   remove = (index) => {
     const { choiceOptions, answers } = this.state;
     choiceOptions.splice(index, 1);
     answers.splice(index, 1);
-    this.setData({ options: choiceOptions, answers });
+    this.baseQuestion.setData({ options: this.getOptionsFromState(choiceOptions), answers: this.getAnswersFromState(answers) });
     this.setState({ choiceOptions, answers });
   };
 
@@ -117,7 +130,7 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
     const { answers } = this.state;
     const changedOption = parseInt(e.target.value, 10);
     answers[changedOption] = !answers[changedOption];
-    this.setData({ answers });
+    this.baseQuestion.setData({ answers: this.getAnswersFromState(answers) });
     this.setState({ answers });
   };
 
@@ -127,7 +140,7 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
       value: index,
       label: e.target.value,
     };
-    this.setData({ options: choiceOptions });
+    this.baseQuestion.setData({ options: this.getOptionsFromState(choiceOptions) });
     this.setState({ choiceOptions });
   };
 
@@ -139,7 +152,10 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
     });
     answers.push(false);
     this.choiceLength++;
-    this.setData({ options: choiceOptions, answers });
+    this.baseQuestion.setData({
+      options: this.getOptionsFromState(choiceOptions),
+      answers: this.getAnswersFromState(answers),
+    });
     this.setState({ choiceOptions, answers });
   };
 
@@ -148,7 +164,7 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
     const { t } = this.props;
 
     return (
-      <React.Fragment>
+      <QuestionAuthoring onRef={(ref) => { this.baseQuestion = ref; }}>
         <PaddingDiv bottom={20}>
           <Subtitle>{t('component.multiplechoice.composequestion')}</Subtitle>
           <QuestionTextArea
@@ -163,6 +179,7 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
             useDragHandle
             onRemove={this.remove}
             onChange={this.editOptions}
+            key={choiceOptions.length}
           />
           <div>
             <AddNewChoiceBtn onClick={this.addNewChoiceBtn}>
@@ -178,9 +195,15 @@ class MultipleChoiceAuthoring extends QuestionAuthoring {
             key={choiceOptions && answers}
           />
         </PaddingDiv>
-      </React.Fragment>
+      </QuestionAuthoring>
     );
   }
 }
 
-export default withNamespaces('assessment')(MultipleChoiceAuthoring);
+const enhance = compose(
+  withRouter,
+  withNamespaces('assessment'),
+);
+
+
+export default enhance(MultipleChoiceAuthoring);

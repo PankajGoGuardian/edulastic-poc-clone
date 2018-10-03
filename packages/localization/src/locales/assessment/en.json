@@ -1,10 +1,10 @@
 {
   "common": {
     "initialoptionslist": {
-      "itemd": "[Choice D]",
-      "itemc": "[Choice C]",
-      "itemb": "[Choice B]",
-      "itema": "[Choice A]"
+      "itemd": "Choice D",
+      "itemc": "Choice C",
+      "itemb": "Choice B",
+      "itema": "Choice A"
     }
   },
   "component": {

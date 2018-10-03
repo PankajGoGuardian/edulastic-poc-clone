@@ -25,6 +25,7 @@ const ButtonBar = ({
   changePreviewTab,
   previewTab,
   onShowSource,
+  onShowSettings,
   onSave,
   t,
   windowWidth,
@@ -80,6 +81,9 @@ const ButtonBar = ({
             onSelect={(value) => {
               if (value === 'source') {
                 onShowSource();
+              }
+              if (value === 'settings') {
+                onShowSettings();
               }
             }}
             icon={<IconSettings color={textColor} />}
@@ -148,6 +152,7 @@ ButtonBar.propTypes = {
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
   onShowSource: PropTypes.func.isRequired,
+  onShowSettings: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,

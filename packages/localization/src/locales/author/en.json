@@ -86,6 +86,10 @@
       "itemlist": "Item List",
       "backToItemList": "Back to Item List"
     },
+    "itemDetail": {
+      "itemDetail": "Item Detail",
+      "backToItemList": "Back to Item List"
+    },
     "itemdetail": {
       "addnew": {
         "addnew": "Add New"

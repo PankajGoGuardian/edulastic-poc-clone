@@ -1,12 +1,30 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import styled from 'styled-components';
 
 import QuestionReport from '../../Base/QuestionReport';
 import MultipleChoiceEvaluation from '../Evaluation';
-import { Container } from '../common';
 import MultipleChoiceDisplay from '../Display';
 
 class MultipleChoiceReport extends QuestionReport {
+  static propTypes = {
+    showAnswer: PropTypes.bool,
+    checkAnswer: PropTypes.bool,
+    userSelections: PropTypes.array,
+    handleMultiSelect: PropTypes.func,
+    options: PropTypes.array.isRequired,
+    question: PropTypes.string.isRequired,
+  };
+
+  static defaultProps = {
+    showAnswer: false,
+    checkAnswer: false,
+    userSelections: [],
+    handleMultiSelect: () => {},
+    options: [],
+    question: '',
+  }
+
   state = {
     question: '',
     options: [],
@@ -14,33 +32,51 @@ class MultipleChoiceReport extends QuestionReport {
   };
 
   componentDidMount() {
-    const { options, question } = this.getResponse();
-    const { userSelections } = this.props;
-    const checkResult = MultipleChoiceEvaluation.evaluateResponse(userSelections);
-    this.setState({ options, question, answers: checkResult });
+    const { userSelections, showAnswer, options } = this.props;
+    let answers = [];
+    if (showAnswer) {
+      const correctanswers = this.evaluationCmp.getCorrectAnswers();
+      answers = this.getStateAnswersFromData(options, correctanswers);
+    } else {
+      answers = this.evaluationCmp.evaluateResponse(userSelections);
+    }
+    console.log('userSelections:', userSelections, answers);
+
+    this.setState({ answers });
+  }
+
+  getStateAnswersFromData = (options, answers) => {
+    const { valid_response } = answers;
+    const stateAnswers = Array(options.length).fill(false);
+    valid_response.value.forEach((item) => {
+      stateAnswers[item] = true;
+    });
+    return stateAnswers;
   }
 
   render() {
-    const { options, question, answers } = this.state;
-    const { showAnswer, userSelections, handleMultiSelect } = this.props;
+    const { answers } = this.state;
+    const { options, question, checkAnswer, showAnswer, userSelections, handleMultiSelect } = this.props;
     return (
-      <Container disabled={showAnswer}>
-        <MultipleChoiceDisplay
-          options={options}
-          question={question}
-          userSelections={userSelections}
-          onChange={handleMultiSelect}
-          answers={answers}
-          showAnswer={showAnswer}
-        />
-      </Container>
+      <MultipleChoiceEvaluation onRef={(ref) => { this.evaluationCmp = ref; }}>
+        <Container disabled={showAnswer}>
+          <MultipleChoiceDisplay
+            options={options}
+            question={question}
+            userSelections={userSelections}
+            onChange={handleMultiSelect}
+            answers={answers}
+            showAnswer={showAnswer}
+            checkAnswer={checkAnswer}
+          />
+        </Container>
+      </MultipleChoiceEvaluation>
     );
   }
 }
 
-MultipleChoiceReport.propTypes = {
-  showAnswer: PropTypes.bool,
-  handleMultiSelect: PropTypes.func,
-};
-
 export default MultipleChoiceReport;
+
+const Container = styled.div`
+  pointer-events: ${props => (props.disabled ? 'none' : 'inherit')};
+`;

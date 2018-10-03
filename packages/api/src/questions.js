@@ -1,6 +1,6 @@
 import API from './API';
 
-const api = new API();
+const api = new API('http://localhost:9020');
 
 const evaluateAnswer = (qid, answer) =>
   api

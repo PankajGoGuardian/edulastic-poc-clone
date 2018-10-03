@@ -1,15 +1,40 @@
-import QuestionEvaluation from '../../Base/QuestionEvaluation';
-import { QUESTION_ANSWERS } from '../constants/others';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-class MultipleChoiceEvaluation extends QuestionEvaluation {
-  static evaluateResponse(studentResponse) {
-    const result = [];
-    const answers = JSON.parse(localStorage.getItem(QUESTION_ANSWERS)) || [];
-    answers.forEach((answer, index) => {
-      console.log('evaluate:', answer, studentResponse);
-      // eslint-disable-next-line
-      const ans = answer === studentResponse[index] === true || (studentResponse[index] === undefined && !answer);
-      result.push(ans);
+import QuestionEvaluation from '../../Base/QuestionEvaluation';
+
+class MultipleChoiceEvaluation extends Component {
+  static propTypes = {
+    onRef: PropTypes.func.isRequired,
+    children: PropTypes.node.isRequired,
+  }
+
+  componentDidMount() {
+    const { onRef } = this.props;
+    onRef(this);
+  }
+
+  componentWillUnmount() {
+    const { onRef } = this.props;
+    onRef(undefined);
+  }
+
+  render() {
+    const { children } = this.props;
+    return (
+      <QuestionEvaluation onRef={(ref) => { this.evaluationCmp = ref; }}>
+        { children }
+      </QuestionEvaluation>
+    );
+  }
+
+  getCorrectAnswers = () => this.evaluationCmp.getValidation();
+
+  evaluateResponse = (studentResponse) => {
+    const result = Array(studentResponse.length).fill(false);
+    const { valid_response } = this.evaluationCmp.getValidation();
+    valid_response.value.forEach((answer) => {
+      result[answer] = true;
     });
     return result;
   }

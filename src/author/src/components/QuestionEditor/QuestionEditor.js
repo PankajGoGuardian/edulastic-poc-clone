@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { withNamespaces } from '@edulastic/localization';
 import { Paper } from '@edulastic/common';
 
@@ -116,7 +117,7 @@ class QuestionEditor extends Component {
       previewTab,
       questionsData,
       item,
-      location,
+      history,
     } = this.props;
     const itemId = item === null ? '' : item.id;
     const questionType = this.getQuestionType();
@@ -130,7 +131,7 @@ class QuestionEditor extends Component {
         )}
         <ItemHeader
           title={headerTitles[questionType]}
-          link={{ url: location.state.backUrl, text: location.state.backText }}
+          link={{ url: history.location.state.backUrl, text: history.location.state.backText }}
           reference={itemId}
         >
           <ButtonBar
@@ -168,7 +169,7 @@ QuestionEditor.propTypes = {
   receiveItemById: PropTypes.func.isRequired,
   updateItemById: PropTypes.func.isRequired,
   add: PropTypes.func.isRequired,
-  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 QuestionEditor.defaultProps = {
@@ -177,6 +178,7 @@ QuestionEditor.defaultProps = {
 };
 
 const enhance = compose(
+  withRouter,
   withNamespaces('author'),
   connect(
     state => ({

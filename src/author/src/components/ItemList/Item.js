@@ -22,6 +22,7 @@ class Item extends Component {
       state: {
         backText: t('component.itemAdd.backToItemList'),
         backUrl: '/author/items',
+        itemDetail: true,
       },
     });
   }

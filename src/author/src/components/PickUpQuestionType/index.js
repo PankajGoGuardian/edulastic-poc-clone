@@ -21,6 +21,7 @@ class PickUpQuestionType extends Component {
       state: {
         backText: t('component.pickupcomponent.backToSelect'),
         backUrl: `/author/items/${item._id}/pickup-questiontype`,
+        itemDetail: false,
       },
     });
   };

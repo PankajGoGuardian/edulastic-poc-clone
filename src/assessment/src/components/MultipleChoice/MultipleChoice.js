@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { withRouter } from 'react-router-dom';
 import { PaddingDiv } from '@edulastic/common';
 
 import {
@@ -9,6 +10,10 @@ import {
   MultipleChoiceDisplay,
   MultipleChoiceReport,
 } from './index';
+import {
+  getStimulusSelector,
+  getQuestionsListSelector,
+} from '../../selectors/questionCommon';
 import {
   getPreivewTabSelector,
 } from './selectors/preview';
@@ -26,14 +31,24 @@ class MultipleChoice extends Component {
   };
 
   render() {
-    const { view, previewTab, isNew, item, smallSize } = this.props;
+    const { view, previewTab, stimulus, questionList, item, smallSize, history } = this.props;
     const { userSelections } = this.state;
-    console.log('item from question wrapper:', item, previewTab);
+    const isDetailPage = history.location.state !== undefined ? history.location.state.itemDetail : false;
+    let previewDisplayOptions;
+    let previewStimulus;
+    if (smallSize || isDetailPage) {
+      previewStimulus = item.stimulus;
+      previewDisplayOptions = item.list || item.options;
+    } else {
+      previewStimulus = stimulus;
+      previewDisplayOptions = questionList;
+      console.log('stimulus, preview Display options', previewStimulus, previewDisplayOptions);
+    }
     return (
       <PaddingDiv>
         {view === 'edit' && (
           <React.Fragment>
-            <MultipleChoiceAuthoring key={isNew} item={item} />
+            <MultipleChoiceAuthoring key={item} item={item} smallSize={smallSize} />
           </React.Fragment>
         )}
         {view === 'preview' && (
@@ -55,10 +70,11 @@ class MultipleChoice extends Component {
             {previewTab === 'clear' && (
               <MultipleChoiceDisplay
                 preview
+                key={previewDisplayOptions && previewStimulus}
                 smallSize={smallSize}
-                options={item.list || item.options}
+                options={previewDisplayOptions}
                 question={item.stimulus}
-                userSelections={item.userSelections}
+                userSelections={!!item && item.userSelections ? item.userSelections : userSelections}
                 onChange={this.handleMultiSelect}
               />
             )}
@@ -73,22 +89,30 @@ class MultipleChoice extends Component {
 MultipleChoice.propTypes = {
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
-  isNew: PropTypes.bool,
+  stimulus: PropTypes.string,
+  questionList: PropTypes.array,
   item: PropTypes.object,
   smallSize: PropTypes.bool,
+  history: PropTypes.object,
 };
 
 MultipleChoice.defaultProps = {
-  isNew: false,
+  stimulus: '',
+  questionList: [],
   item: {},
   smallSize: false,
+  history: {},
 };
 
 const enhance = compose(
+  withRouter,
   connect(
     state => ({
+      stimulus: getStimulusSelector(state),
+      questionsList: getQuestionsListSelector(state),
       previewTab: getPreivewTabSelector(state),
     }),
+    null,
   ),
 );
 

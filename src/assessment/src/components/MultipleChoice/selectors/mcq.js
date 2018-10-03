@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-export const moduleName = 'questionsOrderList';
+export const moduleName = 'mcq';
 
 export const getQuestionsStateSelector = state => state[moduleName];
 export const getQuestionsListSelector = createSelector(

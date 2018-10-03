@@ -42,3 +42,8 @@ export const RECEIVE_ITEM_SUCCESS = '[items] receive item success';
 export const RECEIVE_ITEM_ERROR = '[items] receive item error';
 export const CREATE_ITEM_REQUEST = '[items] create item request';
 export const UPDATE_ITEM_REQUEST = '[items] update item request';
+
+// item detail
+export const RECEIVE_ITEM_DETAIL_REQUEST = '[iteDetail] receive item detail request';
+export const RECEIVE_ITEM_DETAIL_SUCCESS = '[iteDetail] receive item detail success';
+export const RECEIVE_ITEM_DETAIL_ERROR = '[iteDetail] receive item detail error';

@@ -5,6 +5,7 @@ import { withNamespaces } from '@edulastic/localization';
 import PropTypes from 'prop-types';
 
 import styled from 'styled-components';
+import { Preloader } from '@edulastic/common';
 import { Container, ButtonBar } from '../common';
 import SourceModal from '../QuestionEditor/SourceModal';
 import ItemHeader from '../QuestionEditor/ItemHeader';
@@ -15,6 +16,8 @@ import { getPreivewTabSelector } from '../../../../assessment/src/components/Mul
 import Left from './Left';
 import Right from './Right';
 import SettingsBar from './SettingsBar/SettingsBar';
+import { getItemDetailByIdAction } from '../../actions/itemDetail';
+import { getItemDetailSelector, getItemDetailLoadingSelector } from '../../selectors/itemDetail';
 
 class ItemDetail extends Component {
   state = {
@@ -22,6 +25,11 @@ class ItemDetail extends Component {
     showSettings: false,
     layout: 'single',
   };
+
+  componentDidMount() {
+    const { getItemDetailById, match } = this.props;
+    getItemDetailById(match.params.id);
+  }
 
   getSizes = () => {
     const { layout } = this.state;
@@ -93,7 +101,7 @@ class ItemDetail extends Component {
   render() {
     const questionsData = {};
     const { showModal, showSettings } = this.state;
-    const { t, changePreviewTab, previewTab, view, match } = this.props;
+    const { t, changePreviewTab, previewTab, view, match, item, loading } = this.props;
     const { left, right } = this.getSizes();
 
     return (
@@ -124,7 +132,8 @@ class ItemDetail extends Component {
         </ItemHeader>
         <Content>
           <div style={{ width: left }}>
-            <Left />
+            {loading && <Preloader />}
+            {item && <Left item={item} />}
           </div>
           <div style={{ width: right }}>
             <Right onAdd={this.handleAdd} />
@@ -141,6 +150,13 @@ ItemDetail.propTypes = {
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
   match: PropTypes.object.isRequired,
+  getItemDetailById: PropTypes.func.isRequired,
+  item: PropTypes.object,
+  loading: PropTypes.bool.isRequired,
+};
+
+ItemDetail.defaultProps = {
+  item: null,
 };
 
 const enhance = compose(
@@ -149,10 +165,13 @@ const enhance = compose(
     state => ({
       view: getViewSelector(state),
       previewTab: getPreivewTabSelector(state),
+      item: getItemDetailSelector(state),
+      loading: getItemDetailLoadingSelector(state),
     }),
     {
       changeView: changeViewAction,
       changePreviewTab: changePreviewTabAction,
+      getItemDetailById: getItemDetailByIdAction,
     },
   ),
 );

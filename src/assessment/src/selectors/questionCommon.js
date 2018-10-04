@@ -18,15 +18,15 @@ export const getStimulusSelector = createSelector(
 export const getValidationSelector = createSelector(
   validationSelector,
   getQuestionsListSelector,
-  (validation, list) => ({
+  validation => ({
     ...validation,
     valid_response: {
       score: validation.valid_response.score,
-      value: validation.valid_response.value.map(val => list[val]),
+      value: validation.valid_response.value,
     },
     alt_responses: validation.alt_responses.map(res => ({
       score: res.score,
-      value: res.value.map(val => list[val]),
+      value: res.value,
     })),
   }),
 );

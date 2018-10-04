@@ -30,39 +30,12 @@ export const initialState = {
   },
 };
 
-const updateValue = (state, payload) => {
-  let result = state.validation.valid_response.value.map((qIndex) => {
-    const index = payload.questions.indexOf(state.list[qIndex]);
-    if (index === -1) {
-      return qIndex;
-    }
-    return payload.questions.indexOf(state.list[qIndex]);
-  });
-
-  if (result.length < payload.questions.length) {
-    result = [...result, payload.questions.length - 1];
-  }
-
-  if (result.length > payload.questions.length) {
-    result = result.filter(rItem => payload.questions[rItem] !== undefined);
-  }
-
-  return Array.from(new Set(result));
-};
-
 export default function reducer(state = initialState, { type, payload }) {
   switch (type) {
     case QUESTIONCOMMON_UPDATE_QUESTIONS_LIST:
       return {
         ...state,
         list: payload.questions.length === 0 ? initialList : payload.questions,
-        validation: {
-          ...state.validation,
-          valid_response: {
-            score: state.validation.valid_response.score,
-            value: updateValue(state, payload),
-          },
-        },
       };
     case QUESTIONCOMMON_UPDATE_VALIDATION:
       return { ...state, validation: payload.validation };
@@ -101,7 +74,7 @@ export default function reducer(state = initialState, { type, payload }) {
             ...state.validation.alt_responses,
             {
               score: 1,
-              value: state.list.map((item, i) => i),
+              value: [],
             },
           ],
         },

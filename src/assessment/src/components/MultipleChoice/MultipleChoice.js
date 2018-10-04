@@ -48,7 +48,13 @@ class MultipleChoice extends Component {
     const { updateItemById, add } = this.props;
     console.log('save buttn envent called in MCQ');
     const { previewStimulus, previewDisplayOptions, itemForEdit } = this.getRenderData();
-    updateItemById({ ...itemForEdit, id: itemForEdit._id, reference: itemForEdit.id, stimulus: previewStimulus, list: previewDisplayOptions });
+    updateItemById({
+      ...itemForEdit,
+      id: itemForEdit._id,
+      reference: itemForEdit.id,
+      stimulus: previewStimulus,
+      list: previewDisplayOptions,
+    });
     const question = {
       assessmentId: localStorage.getItem(ASSESSMENTID),
       question: previewStimulus,
@@ -61,7 +67,8 @@ class MultipleChoice extends Component {
 
   getRenderData = () => {
     const { stimulus, questionsList, validation, item, smallSize, history } = this.props;
-    const isDetailPage = history.location.state !== undefined ? history.location.state.itemDetail : false;
+    const locationState = history.location.state;
+    const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
     let previewDisplayOptions;
     let previewStimulus;
     let itemForEdit;
@@ -97,8 +104,8 @@ class MultipleChoice extends Component {
             <MultipleChoiceAuthoring key={item} item={itemForEdit} />
             <CorrectAnswers
               validation={validation}
-              onSortCurrentAnswer={this.onSortCurrentAnswer}
-              onSortAltAnswer={this.onSortAltAnswer}
+              options={previewDisplayOptions}
+              question={previewStimulus}
             />
           </React.Fragment>
         )}

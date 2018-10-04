@@ -13,8 +13,9 @@ const Option = (props) => {
   const {
     index, checkAnswer, setAnswers, item, showAnswer, userSelections, answers, onChange, smallSize,
   } = props;
-  const className = checkAnswer ? answers[index] ? 'right' : 'wrong' : answers[index] && showAnswer ? 'right' : '';
-  console.log('class name:', className);
+  const className = checkAnswer ?
+    answers[index] && userSelections[index] ? 'right' : 'wrong' :
+    answers[index] && showAnswer ? 'right' : '';
   return (
     <Label
       smallSize={smallSize}
@@ -77,19 +78,22 @@ class MultipleChoiceDisplay extends Component {
   render() {
     const { onChange, options, question } = this.props;
     const {
-      showAnswer, userSelections = [], answers = [], smallSize, checkAnswer,
+      showAnswer, userSelections = [], answers = [], smallSize, checkAnswer, setAnswers,
     } = this.props;
 
     console.log('mcq display userSelections answers', userSelections, answers, checkAnswer, showAnswer);
     return (
       <QuestionDisplay onRef={(ref) => { this.baseQuestion = ref; }}>
-        <ProblemContainer
-          smallSize={smallSize}
-          dangerouslySetInnerHTML={{ __html: question }}
-        />
+        {!setAnswers && (
+          <ProblemContainer
+            smallSize={smallSize}
+            dangerouslySetInnerHTML={{ __html: question }}
+          />
+        )}
         <Options
           key={checkAnswer && showAnswer}
           smallSize={smallSize}
+          setAnswers={setAnswers}
           checkAnswer={checkAnswer}
           options={options.map((option, index) => ({ value: index, label: option }))}
           showAnswer={showAnswer}
@@ -143,6 +147,7 @@ Options.propTypes = {
 };
 
 MultipleChoiceDisplay.propTypes = {
+  setAnswers: PropTypes.bool,
   options: PropTypes.array,
   question: PropTypes.string,
   onChange: PropTypes.func,
@@ -162,6 +167,7 @@ MultipleChoiceDisplay.defaultProps = {
   userSelections: [],
   smallSize: false,
   checkAnswer: false,
+  setAnswers: false,
 };
 
 export default MultipleChoiceDisplay;

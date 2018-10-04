@@ -13,6 +13,7 @@ import {
   updateAltValidationScoreAction,
   addAltResponsesAction,
   updateCorrectValidationScoreAction,
+  updateValidationAction,
 } from '../../../actions/questionCommon';
 import Tabs, { Tab, TabContainer } from '../../common/Tabs';
 
@@ -53,13 +54,53 @@ class CorrectAnswers extends Component {
     );
   };
 
+  updateCorrectValidationAnswers = (answers) => {
+    const { validation, updateValidation } = this.props;
+    const correctAnswer = [];
+    answers.forEach((answer, index) => {
+      if (answer) {
+        correctAnswer.push(index);
+      }
+    });
+    const updatedValidation = {
+      ...validation,
+      valid_response: {
+        score: validation.valid_response.score,
+        value: correctAnswer,
+      },
+    };
+    console.log('updatedValidation:', validation, updatedValidation);
+    updateValidation(updatedValidation);
+  }
+
+  updateAltCorrectValidationAnswers = (answers, tabIndex) => {
+    const { validation, updateValidation } = this.props;
+    const correctAnswer = [];
+    answers.forEach((answer, index) => {
+      if (answer) {
+        correctAnswer.push(index);
+      }
+    });
+    const updatedAltResponses = validation.alt_responses;
+    updatedAltResponses[tabIndex] = {
+      score: validation.alt_responses[tabIndex].score,
+      value: correctAnswer,
+    };
+    const updatedValidation = {
+      ...validation,
+      alt_responses: updatedAltResponses,
+    };
+    console.log('updatedValidation alt_responses:', validation, updatedValidation);
+    updateValidation(updatedValidation);
+  }
+
   render() {
     const {
-      onSortCurrentAnswer,
-      onSortAltAnswer,
       validation,
       updateAltValidationScore,
       updateCorrectValidationScore,
+      stimulus,
+      options,
       t,
     } = this.props;
     const { value } = this.state;
@@ -76,7 +117,9 @@ class CorrectAnswers extends Component {
             <TabContainer>
               <CorrectAnswer
                 response={validation.valid_response}
-                onSortCurrentAnswer={onSortCurrentAnswer}
+                stimulus={stimulus}
+                options={options}
+                onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={(points) => {
                   updateCorrectValidationScore(points);
                 }}
@@ -91,10 +134,9 @@ class CorrectAnswers extends Component {
                   <TabContainer key={i}>
                     <CorrectAnswer
                       response={alter}
-                      // eslint-disable-next-line
-                      onSortCurrentAnswer={({ oldIndex, newIndex }) =>
-                        onSortAltAnswer({ oldIndex, newIndex, altIndex: i })
-                      }
+                      stimulus={stimulus}
+                      options={options}
+                      onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                       onUpdatePoints={(points) => {
                         updateAltValidationScore(points, i);
                       }}
@@ -111,13 +153,21 @@ class CorrectAnswers extends Component {
 }
 
 CorrectAnswers.propTypes = {
-  onSortCurrentAnswer: PropTypes.func.isRequired,
-  onSortAltAnswer: PropTypes.func.isRequired,
   addAltResponses: PropTypes.func.isRequired,
+  updateValidation: PropTypes.func.isRequired,
   updateAltValidationScore: PropTypes.func.isRequired,
   updateCorrectValidationScore: PropTypes.func.isRequired,
-  validation: PropTypes.object.isRequired,
+  validation: PropTypes.object,
   t: PropTypes.func.isRequired,
+  stimulus: PropTypes.string,
+  options: PropTypes.array,
+};
+
+
+CorrectAnswers.defaultProps = {
+  stimulus: '',
+  options: [],
+  validation: {},
 };
 
 const enhance = compose(
@@ -128,6 +178,7 @@ const enhance = compose(
       updateAltValidationScore: updateAltValidationScoreAction,
       addAltResponses: addAltResponsesAction,
       updateCorrectValidationScore: updateCorrectValidationScoreAction,
+      updateValidation: updateValidationAction,
     },
   ),
 );

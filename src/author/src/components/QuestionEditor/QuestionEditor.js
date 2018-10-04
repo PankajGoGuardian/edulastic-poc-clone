@@ -15,8 +15,6 @@ import { getViewSelector } from '../../selectors/view';
 import { receiveItemByIdAction } from '../../actions/items';
 import { Container } from './styled_components';
 import { ButtonBar } from '../common';
-import { setQuestionsStateAction } from '../../actions/questionsOrderList';
-import { getQuestionsStateSelector } from '../../selectors/questionsOrderList';
 import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapper';
 import ItemHeader from './ItemHeader';
 
@@ -52,10 +50,10 @@ class QuestionEditor extends Component {
   };
 
   handleApplySource = (json) => {
-    const { setQuestionsState } = this.props;
     try {
       const state = JSON.parse(json);
-      setQuestionsState(state);
+      console.log('state:', state);
+      // setQuestionsState(state);
       this.handleHideSource();
     } catch (err) {
       console.error(err);
@@ -79,7 +77,6 @@ class QuestionEditor extends Component {
       view,
       changePreviewTab,
       previewTab,
-      questionsData,
       item,
       history,
     } = this.props;
@@ -90,7 +87,7 @@ class QuestionEditor extends Component {
       <Container>
         {showModal && (
           <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
-            {JSON.stringify(questionsData, null, 4)}
+            {JSON.stringify({}, null, 4)}
           </SourceModal>
         )}
         <ItemHeader
@@ -122,12 +119,10 @@ class QuestionEditor extends Component {
 }
 
 QuestionEditor.propTypes = {
-  questionsData: PropTypes.object.isRequired,
   view: PropTypes.string.isRequired,
   changeView: PropTypes.func.isRequired,
   changePreviewTab: PropTypes.func.isRequired,
   previewTab: PropTypes.string.isRequired,
-  setQuestionsState: PropTypes.func.isRequired,
   item: PropTypes.object,
   match: PropTypes.object,
   receiveItemById: PropTypes.func.isRequired,
@@ -144,7 +139,6 @@ const enhance = compose(
   withNamespaces('author'),
   connect(
     state => ({
-      questionsData: getQuestionsStateSelector(state),
       view: getViewSelector(state),
       previewTab: getPreivewTabSelector(state),
       item: getItemSelector(state),
@@ -152,7 +146,6 @@ const enhance = compose(
     {
       changeView: changeViewAction,
       changePreviewTab: changePreviewTabAction,
-      setQuestionsState: setQuestionsStateAction,
       receiveItemById: receiveItemByIdAction,
     },
   ),

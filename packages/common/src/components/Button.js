@@ -84,8 +84,19 @@ const getColors = ({ color, variant, outlined }) => {
   return colors;
 };
 
-const Button = ({ onClick, color, icon, children, uppercase, variant, outlined, style }) => (
+const Button = ({
+  onClick,
+  color,
+  icon,
+  children,
+  uppercase,
+  variant,
+  outlined,
+  style,
+  disabled,
+}) => (
   <Container
+    disabled={disabled}
     onClick={onClick}
     type="button"
     uppercase={uppercase}
@@ -143,7 +154,7 @@ const Container = styled.button`
   border: ${({ borderColor }) => (borderColor ? `1px solid ${borderColor}` : 'none')};
   text-transform: ${({ uppercase }) => (uppercase ? 'uppercase' : '')};
   color: ${({ color }) => color};
-  background: ${({ backgroundColor }) => backgroundColor};
+  background: ${({ backgroundColor, disabled }) => (disabled ? grey : backgroundColor)};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
 
   :hover {

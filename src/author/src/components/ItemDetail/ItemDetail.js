@@ -14,10 +14,18 @@ import { changePreviewTabAction } from '../../actions/preview';
 import { getViewSelector } from '../../selectors/view';
 import { getPreivewTabSelector } from '../../../../assessment/src/components/MultipleChoice/selectors/preview';
 import SettingsBar from './SettingsBar/SettingsBar';
-import { getItemDetailByIdAction } from '../../actions/itemDetail';
+import {
+  getItemDetailByIdAction,
+  updateItemDetailByIdAction,
+  setItemDetailDataAction,
+  updateItemDetailDimensionAction,
+} from '../../actions/itemDetail';
 import {
   getItemDetailLoadingSelector,
   getItemDetailRowsSelector,
+  getItemDetailSelector,
+  getItemDetailUpdatingSelector,
+  getItemDetailDimensionTypeSelector,
 } from '../../selectors/itemDetail';
 import ItemDetailRow from './ItemDetailRow/ItemDetailRow';
 
@@ -25,7 +33,6 @@ class ItemDetail extends Component {
   state = {
     showModal: false,
     showSettings: false,
-    layout: 'single',
   };
 
   componentDidMount() {
@@ -33,10 +40,8 @@ class ItemDetail extends Component {
     getItemDetailById(match.params.id, { data: true });
   }
 
-  getSizes = () => {
-    const { layout } = this.state;
-
-    switch (layout) {
+  getSizes = (type) => {
+    switch (type) {
       case 'single':
         return {
           left: '100%',
@@ -77,7 +82,9 @@ class ItemDetail extends Component {
 
   handleChangeView = () => {};
 
-  handleShowSource = () => {};
+  handleShowSource = () => {
+    this.setState({ showModal: true });
+  };
 
   handleShowSettings = () => {
     this.setState({
@@ -87,34 +94,73 @@ class ItemDetail extends Component {
 
   handleAdd = () => {};
 
-  handleCancel = () => {
+  handleCancelSettings = () => {
     this.setState({
       showSettings: false,
     });
   };
 
-  handleApply = ({ type }) => {
+  handleApplySettings = ({ type }) => {
+    const { updateDimension } = this.props;
+    const { left, right } = this.getSizes(type);
+
+    updateDimension(left, right);
+    this.handleCancelSettings();
+  };
+
+  handleApplySource = (data) => {
+    const { setItemDetailData } = this.props;
+
+    try {
+      setItemDetailData(JSON.parse(data));
+      this.handleHideSource();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  handleHideSource = () => {
     this.setState({
-      layout: type,
+      showModal: false,
     });
-    this.handleCancel();
+  };
+
+  handleSave = () => {
+    const { updateItemDetailById, match, item } = this.props;
+
+    updateItemDetailById(match.params.id, item);
   };
 
   render() {
-    const questionsData = {};
     const { showModal, showSettings } = this.state;
-    const { t, changePreviewTab, previewTab, view, match, rows, loading } = this.props;
-    const { left, right } = this.getSizes();
-    console.log(left, right);
+    const {
+      t,
+      changePreviewTab,
+      previewTab,
+      view,
+      match,
+      rows,
+      loading,
+      item,
+      updating,
+      type,
+    } = this.props;
 
     return (
       <Container>
-        {showModal && (
-          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
-            {JSON.stringify(questionsData, null, 4)}
-          </SourceModal>
+        {showModal &&
+          item && (
+            <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
+              {JSON.stringify(item, null, 4)}
+            </SourceModal>
         )}
-        {showSettings && <SettingsBar onCancel={this.handleCancel} onApply={this.handleApply} />}
+        {showSettings && (
+          <SettingsBar
+            type={type}
+            onCancel={this.handleCancelSettings}
+            onApply={this.handleApplySettings}
+          />
+        )}
         <ItemHeader
           showIcon
           title={t('component.itemDetail.itemDetail')}
@@ -128,7 +174,8 @@ class ItemDetail extends Component {
             onShowSettings={this.handleShowSettings}
             onChangeView={this.handleChangeView}
             changePreviewTab={changePreviewTab}
-            onSave={() => {}}
+            onSave={this.handleSave}
+            saving={updating}
             view={view}
             previewTab={previewTab}
           />
@@ -153,10 +200,17 @@ ItemDetail.propTypes = {
   getItemDetailById: PropTypes.func.isRequired,
   rows: PropTypes.array,
   loading: PropTypes.bool.isRequired,
+  item: PropTypes.object,
+  updateItemDetailById: PropTypes.func.isRequired,
+  setItemDetailData: PropTypes.func.isRequired,
+  updating: PropTypes.bool.isRequired,
+  updateDimension: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
 };
 
 ItemDetail.defaultProps = {
   rows: [],
+  item: null,
 };
 
 const enhance = compose(
@@ -167,11 +221,17 @@ const enhance = compose(
       previewTab: getPreivewTabSelector(state),
       rows: getItemDetailRowsSelector(state),
       loading: getItemDetailLoadingSelector(state),
+      item: getItemDetailSelector(state),
+      updating: getItemDetailUpdatingSelector(state),
+      type: getItemDetailDimensionTypeSelector(state),
     }),
     {
       changeView: changeViewAction,
       changePreviewTab: changePreviewTabAction,
       getItemDetailById: getItemDetailByIdAction,
+      updateItemDetailById: updateItemDetailByIdAction,
+      setItemDetailData: setItemDetailDataAction,
+      updateDimension: updateItemDetailDimensionAction,
     },
   ),
 );

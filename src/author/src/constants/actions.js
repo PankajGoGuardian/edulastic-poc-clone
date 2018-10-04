@@ -47,3 +47,10 @@ export const UPDATE_ITEM_REQUEST = '[items] update item request';
 export const RECEIVE_ITEM_DETAIL_REQUEST = '[iteDetail] receive item detail request';
 export const RECEIVE_ITEM_DETAIL_SUCCESS = '[iteDetail] receive item detail success';
 export const RECEIVE_ITEM_DETAIL_ERROR = '[iteDetail] receive item detail error';
+
+export const UPDATE_ITEM_DETAIL_REQUEST = '[iteDetail] update item detail by id request';
+export const UPDATE_ITEM_DETAIL_SUCCESS = '[iteDetail] update item detail by id success';
+export const UPDATE_ITEM_DETAIL_ERROR = '[iteDetail] update item detail by id error';
+
+export const SET_ITEM_DETAIL_DATA = '[iteDetail] set item detail data';
+export const UPDATE_ITEM_DETAIL_DIMENSION = '[iteDetail] update dimension';

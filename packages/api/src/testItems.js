@@ -1,4 +1,4 @@
-import API from './API';
+import API from './utils/API';
 
 const api = new API();
 const prefix = '/TestItems';
@@ -20,7 +20,17 @@ const getById = (id, params = {}) =>
     })
     .then(result => result.data);
 
+const updateById = (id, data) =>
+  api
+    .callApi({
+      url: `${prefix}/${id}`,
+      method: 'put',
+      data,
+    })
+    .then(result => result.data);
+
 export default {
   getAll,
   getById,
+  updateById,
 };

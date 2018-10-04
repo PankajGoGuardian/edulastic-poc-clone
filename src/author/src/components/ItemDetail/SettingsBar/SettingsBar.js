@@ -8,10 +8,18 @@ import SettingsBarItem from './SettingsBarItem';
 
 export default class SettingsBar extends Component {
   state = {
-    type: 'single',
+    type: '',
     verticalDivider: false,
     scrolling: false,
   };
+
+  componentDidMount() {
+    const { type } = this.props;
+
+    this.setState({
+      type,
+    });
+  }
 
   layouts = [
     {
@@ -43,6 +51,7 @@ export default class SettingsBar extends Component {
   static propTypes = {
     onCancel: PropTypes.func.isRequired,
     onApply: PropTypes.func.isRequired,
+    type: PropTypes.string.isRequired,
   };
 
   handleItemChange = (type) => {

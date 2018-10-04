@@ -1,4 +1,4 @@
-import API from './API';
+import API from './utils/API';
 
 const api = new API('http://localhost:9020');
 

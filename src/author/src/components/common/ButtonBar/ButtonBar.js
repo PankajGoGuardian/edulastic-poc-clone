@@ -27,6 +27,7 @@ const ButtonBar = ({
   onShowSource,
   onShowSettings,
   onSave,
+  saving,
   t,
   windowWidth,
 }) => {
@@ -67,6 +68,7 @@ const ButtonBar = ({
         </StyledButton>
         <StyledButton>
           <Button
+            disabled={saving}
             style={buttonStyles}
             onClick={onSave}
             icon={<IconSave color={white} width={16} />}
@@ -156,6 +158,7 @@ ButtonBar.propTypes = {
   onSave: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
+  saving: PropTypes.bool.isRequired,
 };
 
 const enhance = compose(

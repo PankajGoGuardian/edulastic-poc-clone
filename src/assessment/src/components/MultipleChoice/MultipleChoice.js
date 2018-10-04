@@ -9,6 +9,7 @@ import {
   MultipleChoiceAuthoring,
   MultipleChoiceDisplay,
   MultipleChoiceReport,
+  CorrectAnswers,
 } from './index';
 import {
   getStimulusSelector,
@@ -86,7 +87,7 @@ class MultipleChoice extends Component {
   }
 
   render() {
-    const { view, previewTab, smallSize, item } = this.props;
+    const { view, previewTab, smallSize, item, validation } = this.props;
     const { userSelections } = this.state;
     const { previewStimulus, previewDisplayOptions, itemForEdit } = this.getRenderData();
     return (
@@ -94,6 +95,11 @@ class MultipleChoice extends Component {
         {view === 'edit' && (
           <React.Fragment>
             <MultipleChoiceAuthoring key={item} item={itemForEdit} />
+            <CorrectAnswers
+              validation={validation}
+              onSortCurrentAnswer={this.onSortCurrentAnswer}
+              onSortAltAnswer={this.onSortAltAnswer}
+            />
           </React.Fragment>
         )}
         {view === 'preview' && (

@@ -1,7 +1,6 @@
 import answerSaga from './answer';
-import questionSaga from './question';
 import itemsSaga from './items';
 
-const authorSagas = [answerSaga(), questionSaga(), itemsSaga()];
+const authorSagas = [answerSaga(), itemsSaga()];
 
 export default authorSagas;

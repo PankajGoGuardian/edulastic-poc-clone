@@ -5,7 +5,7 @@ import { withNamespaces } from '@edulastic/localization';
 import PropTypes from 'prop-types';
 
 import styled from 'styled-components';
-import { Preloader } from '@edulastic/common';
+import { Preloader, Paper } from '@edulastic/common';
 import { Container, ButtonBar } from '../common';
 import SourceModal from '../QuestionEditor/SourceModal';
 import ItemHeader from '../QuestionEditor/ItemHeader';
@@ -13,11 +13,13 @@ import { changeViewAction } from '../../actions/view';
 import { changePreviewTabAction } from '../../actions/preview';
 import { getViewSelector } from '../../selectors/view';
 import { getPreivewTabSelector } from '../../../../assessment/src/components/MultipleChoice/selectors/preview';
-import Left from './Left';
-import Right from './Right';
 import SettingsBar from './SettingsBar/SettingsBar';
 import { getItemDetailByIdAction } from '../../actions/itemDetail';
-import { getItemDetailSelector, getItemDetailLoadingSelector } from '../../selectors/itemDetail';
+import {
+  getItemDetailLoadingSelector,
+  getItemDetailRowsSelector,
+} from '../../selectors/itemDetail';
+import ItemDetailRow from './ItemDetailRow/ItemDetailRow';
 
 class ItemDetail extends Component {
   state = {
@@ -28,7 +30,7 @@ class ItemDetail extends Component {
 
   componentDidMount() {
     const { getItemDetailById, match } = this.props;
-    getItemDetailById(match.params.id);
+    getItemDetailById(match.params.id, { data: true });
   }
 
   getSizes = () => {
@@ -101,8 +103,9 @@ class ItemDetail extends Component {
   render() {
     const questionsData = {};
     const { showModal, showSettings } = this.state;
-    const { t, changePreviewTab, previewTab, view, match, item, loading } = this.props;
+    const { t, changePreviewTab, previewTab, view, match, rows, loading } = this.props;
     const { left, right } = this.getSizes();
+    console.log(left, right);
 
     return (
       <Container>
@@ -131,13 +134,10 @@ class ItemDetail extends Component {
           />
         </ItemHeader>
         <Content>
-          <div style={{ width: left }}>
-            {loading && <Preloader />}
-            {item && <Left item={item} />}
-          </div>
-          <div style={{ width: right }}>
-            <Right onAdd={this.handleAdd} />
-          </div>
+          {loading && <Preloader />}
+          {rows &&
+            !!rows.length &&
+            rows.map((row, i) => <ItemDetailRow key={i} row={row} onAdd={this.handleAdd} />)}
         </Content>
       </Container>
     );
@@ -151,12 +151,12 @@ ItemDetail.propTypes = {
   previewTab: PropTypes.string.isRequired,
   match: PropTypes.object.isRequired,
   getItemDetailById: PropTypes.func.isRequired,
-  item: PropTypes.object,
+  rows: PropTypes.array,
   loading: PropTypes.bool.isRequired,
 };
 
 ItemDetail.defaultProps = {
-  item: null,
+  rows: [],
 };
 
 const enhance = compose(
@@ -165,7 +165,7 @@ const enhance = compose(
     state => ({
       view: getViewSelector(state),
       previewTab: getPreivewTabSelector(state),
-      item: getItemDetailSelector(state),
+      rows: getItemDetailRowsSelector(state),
       loading: getItemDetailLoadingSelector(state),
     }),
     {
@@ -178,7 +178,8 @@ const enhance = compose(
 
 export default enhance(ItemDetail);
 
-const Content = styled.div`
+const Content = styled(Paper)`
   display: flex;
   flex-wrap: wrap;
+  padding: 0;
 `;

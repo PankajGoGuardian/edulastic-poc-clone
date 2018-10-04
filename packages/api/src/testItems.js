@@ -11,11 +11,12 @@ const getAll = () =>
     })
     .then(result => result.data);
 
-const getById = id =>
+const getById = (id, params = {}) =>
   api
     .callApi({
       url: `${prefix}/${id}`,
       method: 'get',
+      params,
     })
     .then(result => result.data);
 

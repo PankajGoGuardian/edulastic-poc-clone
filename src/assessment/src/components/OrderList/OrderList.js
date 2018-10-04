@@ -189,7 +189,11 @@ class OrderList extends Component {
             )}
 
             {previewTab === 'clear' && (
-              <OrderListPreview onSortEnd={this.onSortPreviewEnd} questions={previewQuestionsList} smallSize={smallSize} />
+              <OrderListPreview
+                onSortEnd={this.onSortPreviewEnd}
+                questions={previewQuestionsList}
+                smallSize={smallSize}
+              />
             )}
           </React.Fragment>
         )}

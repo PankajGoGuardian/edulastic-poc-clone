@@ -9,7 +9,7 @@ import {
 
 function* receiveItemSaga({ payload }) {
   try {
-    const item = yield call(testItemsApi.getById, payload.id);
+    const item = yield call(testItemsApi.getById, payload.id, payload.params);
 
     yield put({
       type: RECEIVE_ITEM_DETAIL_SUCCESS,

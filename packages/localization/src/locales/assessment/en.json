@@ -17,14 +17,6 @@
       },
       "questionsorderlist": {
         " ": "[This is the stem.]"
-      },
-      "correctanswers": {
-        "setcorrectanswers": "Set Correct Answer(s)",
-        "correct": "Correct",
-        "alternate": "Alternate"
-      },
-      "correctanswer": {
-        "points": "Points"
       }
     },
     "multiplechoice": {
@@ -33,6 +25,12 @@
       "addnewchoice": "Add New Choice",
       "multiplechoiceoptions": "Multiple Choice Options",
       "composequestion": "Compose Question"
+    },
+    "correctanswers": {
+      "setcorrectanswers": "Set Correct Answer(s)",
+      "correct": "Correct",
+      "alternate": "Alternate",
+      "points": "Points"
     }
   }
 }

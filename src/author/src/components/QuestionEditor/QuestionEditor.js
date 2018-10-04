@@ -12,18 +12,11 @@ import { getPreivewTabSelector } from '../../selectors/preview';
 import { getItemSelector } from '../../selectors/items';
 import { changeViewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
-import { receiveItemByIdAction, updateItemByIdAction } from '../../actions/items';
+import { receiveItemByIdAction } from '../../actions/items';
 import { Container } from './styled_components';
 import { ButtonBar } from '../common';
 import { setQuestionsStateAction } from '../../actions/questionsOrderList';
 import { getQuestionsStateSelector } from '../../selectors/questionsOrderList';
-import { addQuestion } from '../../actions/questions';
-import {
-  QUESTION_PROBLEM,
-  QUESTION_OPTIONS,
-  QUESTION_ANSWERS,
-  ASSESSMENTID,
-} from '../../constants/others';
 import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapper';
 import ItemHeader from './ItemHeader';
 
@@ -70,35 +63,6 @@ class QuestionEditor extends Component {
   };
 
   onSaveClicked = () => {
-    const { add, updateItemById, item } = this.props;
-    console.log('save current question');
-    const problem = localStorage.getItem(QUESTION_PROBLEM);
-    const options = localStorage.getItem(QUESTION_OPTIONS);
-    const answers = JSON.parse(localStorage.getItem(QUESTION_ANSWERS)) || [];
-    const assessmentId = localStorage.getItem(ASSESSMENTID);
-    const correctAnswer = [];
-    answers.forEach((answer, index) => {
-      if (answer) {
-        correctAnswer.push(index);
-      }
-    });
-    const question = {
-      assessmentId,
-      question: problem,
-      options: JSON.parse(options),
-      type: 'mcq',
-      answer: JSON.stringify(correctAnswer),
-    };
-    add(question);
-    // eslint-disable-next-line
-    updateItemById({
-      ...item,
-      id: item._id,
-      reference: item.id,
-      stimulus: problem,
-      list: JSON.parse(options),
-      validation: { valid_response: JSON.stringify(correctAnswer) },
-    });
     this.setState({ saveClicked: true });
   };
 
@@ -167,8 +131,6 @@ QuestionEditor.propTypes = {
   item: PropTypes.object,
   match: PropTypes.object,
   receiveItemById: PropTypes.func.isRequired,
-  updateItemById: PropTypes.func.isRequired,
-  add: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
 };
 
@@ -192,8 +154,6 @@ const enhance = compose(
       changePreviewTab: changePreviewTabAction,
       setQuestionsState: setQuestionsStateAction,
       receiveItemById: receiveItemByIdAction,
-      updateItemById: updateItemByIdAction,
-      add: addQuestion,
     },
   ),
 );

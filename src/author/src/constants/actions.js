@@ -19,19 +19,6 @@ export const CHANGE_VIEW = '[view] CHANGE_VIEW';
 export const PREVIEW_UPDATE_LIST = '[preview] PREVIEW_UPDATE_LIST';
 export const CHANGE_PREVIEW_TAB = '[preview] CHANGE_PREVIEW_TAB';
 
-// questionsOrderList
-export const ORDERLIST_UPDATE_QUESTIONS_LIST =
-  '[questionsOrderList] ORDERLIST_UPDATE_QUESTIONS_LIST';
-export const ORDERLIST_UPDATE_VALIDATION = '[questionsOrderList] ORDERLIST_UPDATE_VALIDATION';
-export const ORDERLIST_UPDATE_STIMULUS = '[questionsOrderList] ORDERLIST_UPDATE_STIMULUS';
-export const ORDERLIST_SET_STATE = '[questionsOrderList] ORDERLIST_SET_STATE';
-export const ORDERLIST_CLEAR = '[questionsOrderList] ORDERLIST_CLEAR';
-export const ORDERLIST_ADD_ALT_RESPONSES = '[questionsOrderList] ORDERLIST_ADD_ALT_RESPONSES';
-export const ORDERLIST_UPDATE_ALT_VALIDATION_SCORE =
-  '[questionsOrderList] ORDERLIST_UPDATE_ALT_VALIDATION_SCORE';
-export const ORDERLIST_UPDATE_CORRECT_VALIDATION_SCORE =
-  '[questionsOrderList] ORDERLIST_UPDATE_CORRECT_VALIDATION_SCORE';
-
 // items
 export const RECEIVE_ITEMS_REQUEST = '[items] receive items request';
 export const RECEIVE_ITEMS_SUCCESS = '[items] receive items success';

@@ -10,7 +10,7 @@ import { withNamespaces } from '@edulastic/localization';
 import QuestionAuthoring from '../../Base/QuestionAuthoring';
 import { ALPHABET } from '../constants/others';
 import SortableItemContainer from './SortableItemContainer';
-import Subtitle from './Sutitle';
+import Subtitle from '../common/Sutitle';
 import QuestionTextArea from './QuestionTextArea';
 import AddNewChoiceBtn from './AddNewChoiceBtn';
 
@@ -190,7 +190,6 @@ class MultipleChoiceAuthoring extends Component {
               {t('component.multiplechoice.addnewchoice')}
             </AddNewChoiceBtn>
           </div>
-          <Subtitle>{t('component.multiplechoice.setcorrectanswers')}</Subtitle>
         </PaddingDiv>
       </QuestionAuthoring>
     );

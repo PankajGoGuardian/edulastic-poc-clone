@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { white } from '@edulastic/colors';
-import { Button, FlexContainer } from '@edulastic/common';
+import { white, greenDark } from '@edulastic/colors';
+import { Button, FlexContainer, Checkbox } from '@edulastic/common';
+import { IconSettings } from '@edulastic/icons';
 import PropTypes from 'prop-types';
 
 import SettingsBarItem from './SettingsBarItem';
+import SettingsBarTags from './SettingsBarTags';
+import SettingsBarUseTabs from './SettingsBarUseTabs';
 
 export default class SettingsBar extends Component {
   state = {
     type: '',
     verticalDivider: false,
     scrolling: false,
+    useTabsLeft: false,
+    useTabsRight: false,
   };
 
   componentDidMount() {
@@ -60,15 +65,10 @@ export default class SettingsBar extends Component {
     });
   };
 
-  handleCheckboxChange = ({ target }) => {
-    this.setState({
-      [target.name]: target.checked,
-    });
-  };
-
-  handleCancel = () => {
-    const { onCancel } = this.props;
-    onCancel();
+  handleCheckboxChange = name => () => {
+    this.setState(state => ({
+      [name]: !state[name],
+    }));
   };
 
   handleApply = () => {
@@ -76,11 +76,32 @@ export default class SettingsBar extends Component {
     onApply(this.state);
   };
 
+  handleRemoveTag = () => {};
+
+  handleChangeLeftTab = () => {
+    this.setState(({ useTabsLeft }) => ({
+      useTabsLeft: !useTabsLeft,
+    }));
+  };
+
+  handleChangeRightTab = () => {
+    this.setState(({ useTabsRight }) => ({
+      useTabsRight: !useTabsRight,
+    }));
+  };
+
   render() {
-    const { type, verticalDivider, scrolling } = this.state;
+    const { type, verticalDivider, scrolling, useTabsLeft, useTabsRight } = this.state;
+    const { onCancel } = this.props;
 
     return (
       <Container>
+        <SettingsButtonWrapper justifyContent="flex-end">
+          <Button color="primary" onClick={onCancel} style={{ minWidth: 85 }}>
+            <IconSettings color={white} />
+          </Button>
+        </SettingsButtonWrapper>
+        <Heading>Layout</Heading>
         <Items>
           {this.layouts.map(item => (
             <SettingsBarItem
@@ -91,32 +112,29 @@ export default class SettingsBar extends Component {
             />
           ))}
         </Items>
+        <SettingsBarUseTabs
+          onChangeLeft={this.handleChangeLeftTab}
+          onChangeRight={this.handleChangeRightTab}
+          checkedLeft={useTabsLeft}
+          checkedRight={useTabsRight}
+        />
         <Checkboxes>
-          <div>
-            <Label>
-              <input
-                type="checkbox"
-                name="verticalDivider"
-                checked={verticalDivider}
-                onChange={this.handleCheckboxChange}
-              />
-              Show vertical divider
-            </Label>
-          </div>
-          <div>
-            <Label>
-              <input
-                type="checkbox"
-                name="scrolling"
-                checked={scrolling}
-                onChange={this.handleCheckboxChange}
-              />
-              Enable scrolling for long content
-            </Label>
-          </div>
+          <Checkbox
+            style={{ marginBottom: 20 }}
+            label="Show vertical divider"
+            checked={verticalDivider}
+            onChange={this.handleCheckboxChange('verticalDivider')}
+          />
+          <Checkbox
+            label="Enable Scrolling For Long Content"
+            checked={scrolling}
+            onChange={this.handleCheckboxChange('scrolling')}
+          />
         </Checkboxes>
+        <Heading>Tags</Heading>
+        <SettingsBarTags tags={['equations', 'algebra']} onRemove={this.handleRemoveTag} />
         <FlexContainer justifyContent="center">
-          <Button onClick={this.handleCancel}>Cancel</Button>
+          <Button onClick={onCancel}>Cancel</Button>
           <Button onClick={this.handleApply} color="success">
             Apply
           </Button>
@@ -128,13 +146,26 @@ export default class SettingsBar extends Component {
 
 const Container = styled.div`
   width: 25vw;
-  background: rgba(0, 0, 0, 0.7);
+  background: ${white};
   position: fixed;
   right: 0;
   top: 0;
   bottom: 0;
   z-index: 1000;
   padding: 30px;
+  box-shadow: -3px 3px 6px 0 rgba(0, 0, 0, 0.16);
+  overflow-y: auto;
+`;
+
+const SettingsButtonWrapper = styled(FlexContainer)`
+  margin-bottom: 25px;
+`;
+
+const Heading = styled.div`
+  color: ${greenDark};
+  margin-bottom: 25px;
+  font-size: 16px;
+  font-weight: 600;
 `;
 
 const Items = styled.div`
@@ -143,10 +174,8 @@ const Items = styled.div`
   justify-content: space-between;
 `;
 
-const Label = styled.label`
-  color: ${white};
-`;
-
 const Checkboxes = styled.div`
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
 `;

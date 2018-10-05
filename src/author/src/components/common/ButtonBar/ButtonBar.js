@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FaCode, FaCog } from 'react-icons/fa';
+import { FaCode } from 'react-icons/fa';
 import {
   IconPensilEdit,
   IconEye,
@@ -17,7 +17,7 @@ import { withWindowSizes, Button } from '@edulastic/common';
 import { compose } from 'redux';
 
 import { Container, StyledButton } from './styled_components';
-import { ButtonLink, SelectButton } from '..';
+import { ButtonLink } from '..';
 
 const ButtonBar = ({
   onChangeView,
@@ -78,32 +78,14 @@ const ButtonBar = ({
           </Button>
         </StyledButton>
         <StyledButton>
-          <SelectButton
-            style={{ width: iTablet ? 100 : 130 }}
-            onSelect={(value) => {
-              if (value === 'source') {
-                onShowSource();
-              }
-              if (value === 'settings') {
-                onShowSettings();
-              }
-            }}
-            icon={<IconSettings color={textColor} />}
-            options={[
-              {
-                value: 'source',
-                label: 'Source',
-                icon: <FaCode style={{ width: 16, height: 16 }} />,
-              },
-              {
-                value: 'settings',
-                label: 'Settings',
-                icon: <FaCog style={{ width: 16, height: 16 }} />,
-              },
-            ]}
-          >
-            {t('component.questioneditor.buttonbar.settings')}
-          </SelectButton>
+          <Button onClick={onShowSource} style={{ minWidth: 85 }}>
+            <FaCode style={{ width: 16, height: 16 }} />
+          </Button>
+        </StyledButton>
+        <StyledButton>
+          <Button onClick={onShowSettings} style={{ minWidth: 85 }}>
+            <IconSettings color={textColor} />
+          </Button>
         </StyledButton>
       </Container>
       {view === 'preview' && (

@@ -69,7 +69,6 @@ class CorrectAnswers extends Component {
         value: correctAnswer,
       },
     };
-    console.log('updatedValidation:', validation, updatedValidation);
     updateValidation(updatedValidation);
   }
 
@@ -90,7 +89,6 @@ class CorrectAnswers extends Component {
       ...validation,
       alt_responses: updatedAltResponses,
     };
-    console.log('updatedValidation alt_responses:', validation, updatedValidation);
     updateValidation(updatedValidation);
   }
 

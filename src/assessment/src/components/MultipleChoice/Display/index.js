@@ -13,9 +13,12 @@ const Option = (props) => {
   const {
     index, checkAnswer, setAnswers, item, showAnswer, userSelections, answers, onChange, smallSize,
   } = props;
-  const className = checkAnswer ?
-    answers[index] && userSelections[index] ? 'right' : 'wrong' :
-    answers[index] && showAnswer ? 'right' : '';
+  let className = checkAnswer || showAnswer ?
+    userSelections[index] ? answers[index] ? 'right' : 'wrong' : '' : '';
+  if (showAnswer && answers[index]) {
+    className = 'right';
+  }
+
   return (
     <Label
       smallSize={smallSize}
@@ -26,20 +29,17 @@ const Option = (props) => {
       <PaddingDiv top={setAnswers ? 15 : smallSize ? 0 : 20} bottom={setAnswers ? 15 : smallSize ? 0 : 20}>
         <FlexContainer>
           <CheckboxContainter>
-            <input type="checkbox" value={index} defaultChecked={userSelections[index]} onClick={onChange} />
+            <input type="radio" name="mcq_group" value={index} defaultChecked={userSelections[index]} onClick={onChange} />
             <span />
           </CheckboxContainter>
           <MultiChoiceContent smallSize={smallSize}>
             {item.label}
           </MultiChoiceContent>
           <PaddingDiv right={15} height={20}>
-            {showAnswer && answers[index] &&
+            {className === 'right' &&
               <i className="fa fa-check" />
             }
-            {checkAnswer && answers[index] &&
-              <i className="fa fa-check" />
-            }
-            {checkAnswer && !answers[index] &&
+            {className === 'wrong' &&
               <i className="fa fa-times" />
             }
           </PaddingDiv>

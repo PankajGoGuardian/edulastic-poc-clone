@@ -59,7 +59,7 @@ class MultipleChoiceReport extends QuestionReport {
     const { options, question, checkAnswer, showAnswer, userSelections, handleMultiSelect } = this.props;
     return (
       <MultipleChoiceEvaluation onRef={(ref) => { this.evaluationCmp = ref; }}>
-        <Container disabled={showAnswer}>
+        <Container disabled={showAnswer || checkAnswer}>
           <MultipleChoiceDisplay
             options={options}
             question={question}

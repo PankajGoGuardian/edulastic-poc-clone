@@ -38,15 +38,16 @@ class MultipleChoice extends Component {
   }
 
   handleMultiSelect = (e) => {
-    const { userSelections } = this.state;
+    let { userSelections } = this.state;
     const index = parseInt(e.target.value, 10);
+    userSelections = Array(userSelections.length).fill(false);
     userSelections[index] = e.target.checked;
+    console.log('usere selections', userSelections);
     this.setState({ userSelections });
   };
 
   saveData = () => {
     const { updateItemById, add } = this.props;
-    console.log('save buttn envent called in MCQ');
     const { previewStimulus, previewDisplayOptions, itemForEdit } = this.getRenderData();
     updateItemById({
       ...itemForEdit,
@@ -125,6 +126,7 @@ class MultipleChoice extends Component {
                 showAnswer
                 options={previewDisplayOptions}
                 question={previewStimulus}
+                userSelections={userSelections}
                 handleMultiSelect={this.handleMultiSelect}
               />
             )}

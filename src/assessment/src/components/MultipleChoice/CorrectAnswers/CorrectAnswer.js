@@ -19,7 +19,6 @@ class CorrectAnswer extends Component {
     super(props);
     const userSelections = Array(props.options.length).fill(false);
     props.response.value.forEach((answer) => { userSelections[answer] = true; });
-    console.log('userSelections', userSelections);
     this.state = {
       responseScore: props.response.score,
       userSelections,
@@ -56,6 +55,7 @@ class CorrectAnswer extends Component {
             onBlur={this.updateScore}
             disabled={false}
             min={0}
+            step={0.5}
           />
           <span>{t('component.correctanswers.points')}</span>
         </Header>

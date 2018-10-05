@@ -38,6 +38,7 @@ const CheckboxContainer = styled.div`
     width: 100%;
     height: 100%;
     border-radius: 50%;
+    display: ${props => (props.smallSize ? 'block' : 'none')};
     background-color: 'transparent';
   }
 

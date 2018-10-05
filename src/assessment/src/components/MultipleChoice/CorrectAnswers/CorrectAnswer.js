@@ -29,7 +29,7 @@ class CorrectAnswer extends Component {
     const { onUpdatePoints } = this.props;
     if (e.target.value < 0) e.target.value = 0;
     this.setState({ responseScore: e.target.value });
-    onUpdatePoints(parseInt(e.target.value, 10));
+    onUpdatePoints(parseFloat(e.target.value, 10));
   }
 
   handleMultiSelect = (e) => {

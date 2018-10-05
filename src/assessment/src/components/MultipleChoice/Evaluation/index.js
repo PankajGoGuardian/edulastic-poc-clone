@@ -32,9 +32,14 @@ class MultipleChoiceEvaluation extends Component {
 
   evaluateResponse = (studentResponse) => {
     const result = Array(studentResponse.length).fill(false);
-    const { valid_response } = this.evaluationCmp.getValidation();
+    const { valid_response, alt_responses } = this.evaluationCmp.getValidation();
     valid_response.value.forEach((answer) => {
       result[answer] = true;
+    });
+    alt_responses.forEach((alt_response) => {
+      alt_response.value.forEach((answer) => {
+        result[answer] = true;
+      });
     });
     return result;
   }

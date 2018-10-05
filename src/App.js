@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 import Student from './student/src';
 import { QuestionEditor, ItemAdd, ItemList, PickUpQuestionType } from './author/src';
@@ -38,4 +40,4 @@ App.propTypes = {
   assessmentId: PropTypes.string.isRequired,
 };
 
-export default App;
+export default DragDropContext(HTML5Backend)(App);

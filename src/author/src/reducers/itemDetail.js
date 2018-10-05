@@ -8,6 +8,7 @@ import {
   UPDATE_ITEM_DETAIL_ERROR,
   SET_ITEM_DETAIL_DATA,
   UPDATE_ITEM_DETAIL_DIMENSION,
+  SET_DRAGGING,
 } from '../constants/actions';
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
   loading: false,
   updating: false,
   updateError: null,
+  dragging: false,
 };
 
 export default function reducer(state = initialState, { type, payload }) {
@@ -29,6 +31,9 @@ export default function reducer(state = initialState, { type, payload }) {
 
     case SET_ITEM_DETAIL_DATA:
       return { ...state, item: payload.item };
+
+    case SET_DRAGGING:
+      return { ...state, dragging: payload.dragging };
 
     case UPDATE_ITEM_DETAIL_DIMENSION:
       /* eslint-disable  */

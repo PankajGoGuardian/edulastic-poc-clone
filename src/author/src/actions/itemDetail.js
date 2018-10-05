@@ -3,6 +3,7 @@ import {
   UPDATE_ITEM_DETAIL_REQUEST,
   SET_ITEM_DETAIL_DATA,
   UPDATE_ITEM_DETAIL_DIMENSION,
+  SET_DRAGGING,
 } from '../constants/actions';
 
 export const getItemDetailByIdAction = (id, params) => ({
@@ -23,4 +24,9 @@ export const updateItemDetailByIdAction = (id, data) => ({
 export const updateItemDetailDimensionAction = (left, right) => ({
   type: UPDATE_ITEM_DETAIL_DIMENSION,
   payload: { left, right },
+});
+
+export const setItemDetailDraggingAction = dragging => ({
+  type: SET_DRAGGING,
+  payload: { dragging },
 });

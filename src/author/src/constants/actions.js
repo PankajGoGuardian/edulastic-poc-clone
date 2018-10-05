@@ -54,3 +54,5 @@ export const UPDATE_ITEM_DETAIL_ERROR = '[iteDetail] update item detail by id er
 
 export const SET_ITEM_DETAIL_DATA = '[iteDetail] set item detail data';
 export const UPDATE_ITEM_DETAIL_DIMENSION = '[iteDetail] update dimension';
+
+export const SET_DRAGGING = '[iteDetail] set dragging';

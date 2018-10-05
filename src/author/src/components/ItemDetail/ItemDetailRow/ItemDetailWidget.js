@@ -1,43 +1,103 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 import { IconMoveArrows, IconPensilEdit, IconTrash } from '@edulastic/icons';
 import { white, red, green } from '@edulastic/colors';
-import QuestionWrapper from '../../../../../assessment/src/components/QuestionWrapper';
+import { DragSource } from 'react-dnd';
 
-const ItemDetailWidget = ({ widget, onEdit, onDelete }) => (
-  <Container>
-    {widget.widgetType === 'question' && (
-      <QuestionWrapper type={widget.type} view="preview" data={widget.referencePopulate.data} />
-    )}
-    {widget.widgetType === 'resource' && (
+import QuestionWrapper from '../../../../../assessment/src/components/QuestionWrapper';
+import { Types } from '../constants';
+import { setItemDetailDraggingAction } from '../../../actions/itemDetail';
+
+const ItemDetailWidget = ({
+  widget,
+  onEdit,
+  onDelete,
+  isDragging,
+  connectDragSource,
+  connectDragPreview,
+  setItemDetailDragging,
+}) => {
+  setItemDetailDragging(isDragging);
+  return (
+    connectDragPreview &&
+    connectDragSource &&
+    connectDragPreview(
       <div>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti, optio quod sunt libero
-        magnam, dolores, consectetur recusandae necessitatibus repudiandae animi provident aperiam
-        exercitationem ipsa distinctio consequatur cumque nobis itaque quia.
-      </div>
-    )}
-    <Buttons>
-      <Button title="Move">
-        <IconMoveArrows color={white} hoverColor={green} />
-      </Button>
-      <Button title="Edit" onClick={onEdit}>
-        <IconPensilEdit color={white} hoverColor={green} />
-      </Button>
-      <Button title="Delete" onClick={onDelete}>
-        <IconTrash color={white} hoverColor={red} />
-      </Button>
-    </Buttons>
-  </Container>
-);
+        <Container isDragging={isDragging}>
+          {widget.widgetType === 'question' && (
+            <QuestionWrapper
+              type={widget.type}
+              view="preview"
+              data={widget.referencePopulate.data}
+            />
+          )}
+          {widget.widgetType === 'resource' && (
+            <div>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti, optio quod sunt
+              libero magnam, dolores, consectetur recusandae necessitatibus repudiandae animi
+              provident aperiam exercitationem ipsa distinctio consequatur cumque nobis itaque quia.
+            </div>
+          )}
+          <Buttons>
+            {connectDragSource(
+              <div>
+                <Button title="Move">
+                  <IconMoveArrows color={white} hoverColor={green} />
+                </Button>
+              </div>,
+            )}
+            <Button title="Edit" onClick={onEdit}>
+              <IconPensilEdit color={white} hoverColor={green} />
+            </Button>
+            <Button title="Delete" onClick={onDelete}>
+              <IconTrash color={white} hoverColor={red} />
+            </Button>
+          </Buttons>
+        </Container>
+      </div>,
+    )
+  );
+};
 
 ItemDetailWidget.propTypes = {
   widget: PropTypes.object.isRequired,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
+  isDragging: PropTypes.bool.isRequired,
+  connectDragSource: PropTypes.func.isRequired,
+  connectDragPreview: PropTypes.func.isRequired,
+  setItemDetailDragging: PropTypes.func.isRequired,
 };
 
-export default ItemDetailWidget;
+const itemSource = {
+  beginDrag() {
+    return {};
+  },
+  endDrag() {
+    return {};
+  },
+};
+
+function collect(c, monitor) {
+  return {
+    connectDragSource: c.dragSource(),
+    connectDragPreview: c.dragPreview(),
+    isDragging: monitor.isDragging(),
+  };
+}
+
+const enhance = compose(
+  connect(
+    null,
+    { setItemDetailDragging: setItemDetailDraggingAction },
+  ),
+  DragSource(Types.WIDGET, itemSource, collect),
+);
+
+export default enhance(ItemDetailWidget);
 
 const Container = styled.div`
   display: flex;
@@ -45,6 +105,7 @@ const Container = styled.div`
   padding: 40px 20px;
   min-height: 200px;
   flex-direction: column;
+  opacity: ${({ isDragging }) => (isDragging ? '0.4' : '1')};
 `;
 
 const Buttons = styled.div`

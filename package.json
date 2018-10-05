@@ -51,6 +51,8 @@
     "react-ace": "^6.1.4",
     "react-autosize-textarea": "^4.0.0",
     "react-dev-utils": "^5.0.2",
+    "react-dnd": "^5.0.0",
+    "react-dnd-html5-backend": "^5.0.1",
     "react-dom": "^16.4.2",
     "react-icons": "^3.1.0",
     "react-redux": "^5.0.7",

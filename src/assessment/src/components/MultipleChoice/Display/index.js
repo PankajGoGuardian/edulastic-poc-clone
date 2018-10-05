@@ -8,6 +8,7 @@ import MultiChoiceContent from './MultiChoiceContent';
 import CheckboxContainter from './CheckboxContainer';
 import Label from './Label';
 import ProblemContainer from './ProblemContainer';
+import { ALPHABET } from '../constants/others';
 
 const Option = (props) => {
   const {
@@ -28,9 +29,10 @@ const Option = (props) => {
     >
       <PaddingDiv top={setAnswers ? 15 : smallSize ? 0 : 20} bottom={setAnswers ? 15 : smallSize ? 0 : 20}>
         <FlexContainer>
-          <CheckboxContainter>
+          <CheckboxContainter smallSize={smallSize}>
             <input type="radio" name="mcq_group" value={index} defaultChecked={userSelections[index]} onClick={onChange} />
-            <span />
+            <span>{ALPHABET[index]}</span>
+            <div />
           </CheckboxContainter>
           <MultiChoiceContent smallSize={smallSize}>
             {item.label}

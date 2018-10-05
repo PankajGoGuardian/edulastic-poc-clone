@@ -137,7 +137,7 @@ class MultipleChoice extends Component {
                 smallSize={smallSize}
                 options={previewDisplayOptions}
                 question={previewStimulus}
-                userSelections={!!item && item.userSelections ? item.userSelections : userSelections}
+                userSelections={!!item && item.userSelections ? item.userSelections : []}
                 onChange={this.handleMultiSelect}
               />
             )}

@@ -6,6 +6,7 @@ const MultiChoiceContent = styled.div`
   display: flex;
   flex: 1;
   align-items: center;
+  font-weight: 600;
 `;
 
 export default MultiChoiceContent;

@@ -9,6 +9,7 @@ import {
   SET_ITEM_DETAIL_DATA,
   UPDATE_ITEM_DETAIL_DIMENSION,
   SET_DRAGGING,
+  DELETE_ITEM_DETAIL_WIDGET,
 } from '../constants/actions';
 
 const initialState = {
@@ -18,6 +19,22 @@ const initialState = {
   updating: false,
   updateError: null,
   dragging: false,
+};
+
+const deleteWidget = (state, { rowIndex, widgetIndex }) => {
+  const newState = cloneDeep(state);
+  newState.item.rows[rowIndex].widgets = newState.item.rows[rowIndex].widgets.filter(
+    (w, i) => i !== widgetIndex,
+  );
+
+  return newState;
+};
+
+const updateDimension = (state, { left, right }) => {
+  const newState = cloneDeep(state);
+  newState.item.rows[0].dimension = left;
+  newState.item.rows[1].dimension = right;
+  return newState;
 };
 
 export default function reducer(state = initialState, { type, payload }) {
@@ -32,15 +49,14 @@ export default function reducer(state = initialState, { type, payload }) {
     case SET_ITEM_DETAIL_DATA:
       return { ...state, item: payload.item };
 
+    case DELETE_ITEM_DETAIL_WIDGET:
+      return deleteWidget(state, payload);
+
     case SET_DRAGGING:
       return { ...state, dragging: payload.dragging };
 
     case UPDATE_ITEM_DETAIL_DIMENSION:
-      /* eslint-disable  */
-      const newState = cloneDeep(state);
-      newState.item.rows[0].dimension = payload.left;
-      newState.item.rows[1].dimension = payload.right;
-      return newState;
+      return updateDimension(state, payload);
 
     case UPDATE_ITEM_DETAIL_REQUEST:
       return { ...state, updating: true };

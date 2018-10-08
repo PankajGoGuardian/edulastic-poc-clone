@@ -88,12 +88,24 @@
     },
     "itemDetail": {
       "itemDetail": "Item Detail",
-      "backToItemList": "Back to Item List"
+      "backToItemList": "Back to Item List",
+      "backText": "Back to Item Detail",
+      "addNew": "Add New"
     },
     "itemdetail": {
+      "backText": "Back to Item Detail",
       "addnew": {
         "addnew": "Add New"
       }
+    },
+    "settingsBar": {
+      "leftColumn": "Left Column",
+      "rightColumn": "Right Column",
+      "useTabs": "Use Tabs",
+      "layout": "Layout",
+      "showVerticalDivider": "Show vertical divider",
+      "enableScrolling": "Enable Scrolling For Long Content",
+      "tags": "Tags"
     },
     "pickupcomponent": {
       "headertitle": "Select a type of Question or Feature",

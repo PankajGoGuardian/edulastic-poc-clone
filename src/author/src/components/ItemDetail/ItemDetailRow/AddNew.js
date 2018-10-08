@@ -3,21 +3,23 @@ import styled from 'styled-components';
 import { textColor, white, green } from '@edulastic/colors';
 import { IconPlus } from '@edulastic/icons';
 import PropTypes from 'prop-types';
+import { withNamespaces } from '@edulastic/localization';
 
-const AddNew = ({ onClick }) => (
+const AddNew = ({ onClick, t }) => (
   <Container onClick={onClick}>
     <Icon>
       <IconPlus color={textColor} />
     </Icon>
-    <span>Add new</span>
+    <span>{t('component.itemDetail.addNew')}</span>
   </Container>
 );
 
 AddNew.propTypes = {
   onClick: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default AddNew;
+export default withNamespaces('author')(AddNew);
 
 const Container = styled.div`
   position: relative;

@@ -4,6 +4,7 @@ import {
   SET_ITEM_DETAIL_DATA,
   UPDATE_ITEM_DETAIL_DIMENSION,
   SET_DRAGGING,
+  DELETE_ITEM_DETAIL_WIDGET,
 } from '../constants/actions';
 
 export const getItemDetailByIdAction = (id, params) => ({
@@ -29,4 +30,9 @@ export const updateItemDetailDimensionAction = (left, right) => ({
 export const setItemDetailDraggingAction = dragging => ({
   type: SET_DRAGGING,
   payload: { dragging },
+});
+
+export const deleteWidgetAction = (rowIndex, widgetIndex) => ({
+  type: DELETE_ITEM_DETAIL_WIDGET,
+  payload: { rowIndex, widgetIndex },
 });

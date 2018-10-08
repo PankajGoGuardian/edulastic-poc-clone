@@ -16,14 +16,12 @@ class ItemDetailRow extends Component {
     row: PropTypes.object.isRequired,
     onAdd: PropTypes.func.isRequired,
     dragging: PropTypes.bool.isRequired,
+    onDeleteWidget: PropTypes.func.isRequired,
+    onEditWidget: PropTypes.func.isRequired,
   };
 
-  handleEdit = () => {};
-
-  handleDelete = () => {};
-
   render() {
-    const { row, onAdd, dragging } = this.props;
+    const { row, onAdd, dragging, onDeleteWidget, onEditWidget } = this.props;
 
     return (
       <Container style={{ width: row.dimension }}>
@@ -33,8 +31,8 @@ class ItemDetailRow extends Component {
             <ItemDetailWidget
               key={i}
               widget={widget}
-              onEdit={this.handleEdit}
-              onDelete={this.handleDelete}
+              onEdit={() => onEditWidget(widget)}
+              onDelete={() => onDeleteWidget(i)}
             />
           </React.Fragment>
         ))}

@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { IconMoveArrows, IconPensilEdit, IconTrash } from '@edulastic/icons';
 import { white, red, green } from '@edulastic/colors';
 import { DragSource } from 'react-dnd';
+import { withNamespaces } from '@edulastic/localization';
 
 import QuestionWrapper from '../../../../../assessment/src/components/QuestionWrapper';
 import { Types } from '../constants';
@@ -19,6 +20,7 @@ const ItemDetailWidget = ({
   connectDragSource,
   connectDragPreview,
   setItemDetailDragging,
+  t,
 }) => {
   setItemDetailDragging(isDragging);
   return (
@@ -44,15 +46,15 @@ const ItemDetailWidget = ({
           <Buttons>
             {connectDragSource(
               <div>
-                <Button title="Move">
+                <Button title={t('move')}>
                   <IconMoveArrows color={white} hoverColor={green} />
                 </Button>
               </div>,
             )}
-            <Button title="Edit" onClick={onEdit}>
+            <Button title={t('edit')} onClick={onEdit}>
               <IconPensilEdit color={white} hoverColor={green} />
             </Button>
-            <Button title="Delete" onClick={onDelete}>
+            <Button title={t('delete')} onClick={onDelete}>
               <IconTrash color={white} hoverColor={red} />
             </Button>
           </Buttons>
@@ -70,6 +72,7 @@ ItemDetailWidget.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   connectDragPreview: PropTypes.func.isRequired,
   setItemDetailDragging: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 const itemSource = {
@@ -90,6 +93,7 @@ function collect(c, monitor) {
 }
 
 const enhance = compose(
+  withNamespaces('default'),
   connect(
     null,
     { setItemDetailDragging: setItemDetailDraggingAction },

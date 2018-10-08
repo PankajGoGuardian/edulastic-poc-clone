@@ -4,12 +4,13 @@ import { white, greenDark } from '@edulastic/colors';
 import { Button, FlexContainer, Checkbox } from '@edulastic/common';
 import { IconSettings } from '@edulastic/icons';
 import PropTypes from 'prop-types';
+import { withNamespaces } from '@edulastic/localization';
 
 import SettingsBarItem from './SettingsBarItem';
 import SettingsBarTags from './SettingsBarTags';
 import SettingsBarUseTabs from './SettingsBarUseTabs';
 
-export default class SettingsBar extends Component {
+class SettingsBar extends Component {
   state = {
     type: '',
     verticalDivider: false,
@@ -57,6 +58,7 @@ export default class SettingsBar extends Component {
     onCancel: PropTypes.func.isRequired,
     onApply: PropTypes.func.isRequired,
     type: PropTypes.string.isRequired,
+    t: PropTypes.func.isRequired,
   };
 
   handleItemChange = (type) => {
@@ -92,7 +94,7 @@ export default class SettingsBar extends Component {
 
   render() {
     const { type, verticalDivider, scrolling, useTabsLeft, useTabsRight } = this.state;
-    const { onCancel } = this.props;
+    const { onCancel, t } = this.props;
 
     return (
       <Container>
@@ -101,7 +103,7 @@ export default class SettingsBar extends Component {
             <IconSettings color={white} />
           </Button>
         </SettingsButtonWrapper>
-        <Heading>Layout</Heading>
+        <Heading>{t('author:component.settingsBar.layout')}</Heading>
         <Items>
           {this.layouts.map(item => (
             <SettingsBarItem
@@ -121,28 +123,30 @@ export default class SettingsBar extends Component {
         <Checkboxes>
           <Checkbox
             style={{ marginBottom: 20 }}
-            label="Show vertical divider"
+            label={t('author:component.settingsBar.showVerticalDivider')}
             checked={verticalDivider}
             onChange={this.handleCheckboxChange('verticalDivider')}
           />
           <Checkbox
-            label="Enable Scrolling For Long Content"
+            label={t('author:component.settingsBar.enableScrolling')}
             checked={scrolling}
             onChange={this.handleCheckboxChange('scrolling')}
           />
         </Checkboxes>
-        <Heading>Tags</Heading>
+        <Heading>{t('author:component.settingsBar.tags')}</Heading>
         <SettingsBarTags tags={['equations', 'algebra']} onRemove={this.handleRemoveTag} />
         <FlexContainer justifyContent="center">
-          <Button onClick={onCancel}>Cancel</Button>
+          <Button onClick={onCancel}>{t('cancel')}</Button>
           <Button onClick={this.handleApply} color="success">
-            Apply
+            {t('apply')}
           </Button>
         </FlexContainer>
       </Container>
     );
   }
 }
+
+export default withNamespaces(['default', 'author'])(SettingsBar);
 
 const Container = styled.div`
   width: 25vw;

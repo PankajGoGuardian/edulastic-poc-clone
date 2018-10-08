@@ -19,6 +19,7 @@ import {
   updateItemDetailByIdAction,
   setItemDetailDataAction,
   updateItemDetailDimensionAction,
+  deleteWidgetAction,
 } from '../../actions/itemDetail';
 import {
   getItemDetailLoadingSelector,
@@ -80,7 +81,9 @@ class ItemDetail extends Component {
     }
   };
 
-  handleChangeView = () => {};
+  handleChangeView = (view) => {
+    console.log(view);
+  };
 
   handleShowSource = () => {
     this.setState({ showModal: true });
@@ -92,7 +95,16 @@ class ItemDetail extends Component {
     });
   };
 
-  handleAdd = () => {};
+  handleAdd = () => {
+    const { match, history, t } = this.props;
+    history.push({
+      pathname: `/author/items/${match.params.id}/pickup-questiontype`,
+      state: {
+        backText: t('component.itemDetail.backText'),
+        backUrl: match.path,
+      },
+    });
+  };
 
   handleCancelSettings = () => {
     this.setState({
@@ -131,6 +143,18 @@ class ItemDetail extends Component {
     updateItemDetailById(match.params.id, item);
   };
 
+  handleEditWidget = (widget) => {
+    const { match, history, t } = this.props;
+
+    history.push({
+      pathname: `/author/items/${widget.reference}`,
+      state: {
+        backText: t('component.itemDetail.backText'),
+        backUrl: match.path,
+      },
+    });
+  };
+
   render() {
     const { showModal, showSettings } = this.state;
     const {
@@ -144,6 +168,7 @@ class ItemDetail extends Component {
       item,
       updating,
       type,
+      deleteWidget,
     } = this.props;
 
     return (
@@ -184,7 +209,15 @@ class ItemDetail extends Component {
           {loading && <Preloader />}
           {rows &&
             !!rows.length &&
-            rows.map((row, i) => <ItemDetailRow key={i} row={row} onAdd={this.handleAdd} />)}
+            rows.map((row, i) => (
+              <ItemDetailRow
+                key={i}
+                row={row}
+                onAdd={this.handleAdd}
+                onDeleteWidget={widgetIndex => deleteWidget(i, widgetIndex)}
+                onEditWidget={this.handleEditWidget}
+              />
+            ))}
         </Content>
       </Container>
     );
@@ -206,6 +239,8 @@ ItemDetail.propTypes = {
   updating: PropTypes.bool.isRequired,
   updateDimension: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
+  deleteWidget: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 ItemDetail.defaultProps = {
@@ -232,6 +267,7 @@ const enhance = compose(
       updateItemDetailById: updateItemDetailByIdAction,
       setItemDetailData: setItemDetailDataAction,
       updateDimension: updateItemDetailDimensionAction,
+      deleteWidget: deleteWidgetAction,
     },
   ),
 );

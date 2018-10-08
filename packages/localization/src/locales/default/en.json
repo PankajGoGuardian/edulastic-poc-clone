@@ -1,1 +1,7 @@
-{}
+{
+  "delete": "Delete",
+  "edit": "Edit",
+  "move": "Move",
+  "cancel": "Cancel",
+  "apply": "Apply"
+}

@@ -1,72 +1,128 @@
 /* eslint-disable */
-import { Component } from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import { QUESTION_PROBLEM, QUESTION_OPTIONS, QUESTION_ANSWERS } from '../../constants/others';
+import {
+  getStimulusSelector,
+  getQuestionsListSelector,
+  getValidationSelector,
+  validationSelector,
+} from '../../selectors/questionCommon';
+import {
+  updateStimulusAction,
+  updateQuestionsListAction,
+  updateValidationAction,
+  clearQuestionsAction,
+} from '../../actions/questionCommon';
 
 class QuestionAuthoring extends Component {
   edited = false;
 
-  // - initialize(data): initialize with JSON data
-  initialize(data) {
-    const { question = '', options = [], answers = [] } = data;
-
-    localStorage.setItem(QUESTION_PROBLEM, question);
-    localStorage.setItem(QUESTION_OPTIONS, JSON.stringify(options));
-    localStorage.setItem(QUESTION_ANSWERS, JSON.stringify(answers));
+  componentDidMount() {
+    this.props.onRef(this)
   }
 
-  setData(data) {
+  componentWillUnmount() {
+    this.props.onRef(undefined)
+  }
+
+  render() {
+    return (
+      <React.Fragment>
+        {this.props.children}
+      </React.Fragment>
+    )
+  }
+
+  // - initialize(data): initialize with JSON data
+  initializeData = (data) => {
+    const { updateStimulus, updateQuestionsList, updateValidation } = this.props;
+    const { validationQuestion, validationOptions, validationAnswers } = this.validateData(data);
+    updateStimulus(validationQuestion);
+    updateQuestionsList(validationOptions);
+    updateValidation(validationAnswers);
+  }
+
+  initialize = () => {
+    const { clearQuestions } = this.props;
+    clearQuestions();
+  }
+
+  validateData(data) {
     const { question, options, answers } = data;
-    if (question) localStorage.setItem(QUESTION_PROBLEM, question);
-    if (options) localStorage.setItem(QUESTION_OPTIONS, JSON.stringify(options));
-    if (answers) localStorage.setItem(QUESTION_ANSWERS, JSON.stringify(answers));
+
+    console.log('validate data:', question, options, answers);
+
+    let validationQuestion = question;
+    let validationAnswers = answers;
+    let validationOptions = options;
+    if (question === null) {
+      validationQuestion = '';
+    }
+    if (options === null) {
+      validationOptions = [];
+    }
+    if (validationAnswers === {} || validationAnswers === null) {
+      validationAnswers = {
+        valid_response: {
+          score: 1,
+          value: [],
+        },
+        alt_responses: [],
+      };
+    }
+    return {
+      validationQuestion,
+      validationOptions,
+      validationAnswers,
+    }
+  }
+
+  setData = (data) => {
+    const { updateStimulus, updateQuestionsList, updateValidation } = this.props;
+    const { validationQuestion, validationOptions, validationAnswers } = this.validateData(data);
+    if (validationQuestion !== undefined) updateStimulus(validationQuestion);
+    if (validationOptions !== undefined) updateQuestionsList(validationOptions);
+    if (validationAnswers !== undefined) updateValidation(validationAnswers);
   }
 
   // - getData(): returns the question and correct answer JSON in one object
-  getData() {
-    const problem = localStorage.getItem(QUESTION_PROBLEM);
-    const options = localStorage.getItem(QUESTION_OPTIONS);
-    const answers = localStorage.getItem(QUESTION_ANSWERS);
+  getData = () => {
+    const { stimulus, questionsList, validation } = this.props;
     return {
-      question: {
-        stimulus: problem,
-        options: JSON.parse(options),
-      },
-      answers: JSON.parse(answers),
+      question: stimulus,
+      options: questionsList,
+      answers: validation,
     };
   }
 
   // - getQuestion(): returns only the question JSON
-  getQuestion() {
-    const problem = localStorage.getItem(QUESTION_PROBLEM);
-    const options = localStorage.getItem(QUESTION_OPTIONS);
+  getQuestion = () => {
+    const { stimulus, questionsList } = this.props;
     return {
-      question: {
-        stimulus: problem,
-        options: JSON.parse(options),
-      },
+      question: stimulus,
+      options: questionsList,
     };
   }
 
   // - getCorrectAnswer(): returns only the correct answer JSON
-  getCorrectAnswer() {
-    const answers = localStorage.getItem(QUESTION_ANSWERS);
-    return JSON.parse(answers);
+  getCorrectAnswer = () => {
+    const { validation } = this.props;
+    return validation;
   }
 
   // - hasChanged(): boolean to indicate whether the content has been edited
-  hasChanged() {
+  hasChanged = () => {
     return this.edited;
   }
 
   // - setChanged(state): set it to false after a save etc.
-  setChanged(state) {}
+  setChanged = (state) => {}
 
   // - clear(): clear everything and set to defaults
   clear() {
-    localStorage.removeItem(QUESTION_PROBLEM);
-    localStorage.removeItem(QUESTION_ANSWERS);
-    localStorage.removeItem(QUESTION_OPTIONS);
+    const { clearQuestionsAction } = this.props;
+    clearQuestionsAction();
   }
 
   // - undo(): undo the last change
@@ -76,4 +132,19 @@ class QuestionAuthoring extends Component {
   redo() {}
 }
 
-export default QuestionAuthoring;
+const enhance = connect(
+  state => ({
+    stimulus: getStimulusSelector(state),
+    questionsList: getQuestionsListSelector(state),
+    validation: getValidationSelector(state),
+    validationState: validationSelector(state),
+  }),
+  {
+    updateStimulus: updateStimulusAction,
+    updateQuestionsList: updateQuestionsListAction,
+    updateValidation: updateValidationAction,
+    clearQuestions: clearQuestionsAction,
+  },
+);
+
+export default enhance(QuestionAuthoring);

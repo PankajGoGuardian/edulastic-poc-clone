@@ -19,8 +19,9 @@ class PickUpQuestionType extends Component {
     history.push({
       pathname: `/author/items/${item._id}`,
       state: {
-        backText: t('component.pickupcomponent.backToSelect'),
-        backUrl: `/author/items/${item._id}/pickup-questiontype`,
+        backText: t('component.backToItemList'),
+        backUrl: '/author/items',
+        itemDetail: false,
       },
     });
   };

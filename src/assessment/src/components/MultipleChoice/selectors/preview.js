@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { getQuestionsListSelector } from './questionsOrderList';
+import { getQuestionsListSelector } from './mcq';
 
 export const moduleName = 'preview';
 

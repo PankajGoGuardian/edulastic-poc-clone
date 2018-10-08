@@ -13,7 +13,7 @@ const CorrectAnswer = ({ response, onUpdatePoints, onSortCurrentAnswer, t }) => 
         value={response.score}
         onChange={e => onUpdatePoints(+e.target.value)}
       />
-      <span>{t('component.orderlist.correctanswer.points')}</span>
+      <span>{t('component.correctanswers.points')}</span>
     </Header>
 
     <OrderListPreview

@@ -12,8 +12,8 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => (
       type="mcq"
       title="MultipleChoice-standard"
       question="Which color has the smallest walvelenght?"
-      options={['Red', 'Violet', 'Green'].map((option, index) => ({ value: index, label: option }))}
-      userSelections={[true, false, true]}
+      options={['Red', 'Violet', 'Green']}
+      userSelections={[false, true, false]}
       onSelectQuestionType={onSelectQuestionType}
     />
     <Card

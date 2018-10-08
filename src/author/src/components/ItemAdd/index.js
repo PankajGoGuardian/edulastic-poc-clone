@@ -13,8 +13,6 @@ import { updateItemByIdAction } from '../../actions/items';
 import { ButtonBar, Container } from '../common';
 import AddNew from './AddNew';
 import { getItemSelector } from '../../selectors/items';
-import { setQuestionsStateAction } from '../../actions/questionsOrderList';
-import { getQuestionsStateSelector } from '../../selectors/questionsOrderList';
 import SourceModal from '../QuestionEditor/SourceModal';
 import ItemHeader from '../QuestionEditor/ItemHeader';
 
@@ -138,7 +136,6 @@ const enhance = compose(
   withNamespaces('author'),
   connect(
     state => ({
-      questionsData: getQuestionsStateSelector(state),
       view: getViewSelector(state),
       item: getItemSelector(state),
       previewTab: getPreivewTabSelector(state),
@@ -147,7 +144,6 @@ const enhance = compose(
       changeView: changeViewAction,
       changePreviewTab: changePreviewTabAction,
       updateItemById: updateItemByIdAction,
-      setQuestionsState: setQuestionsStateAction,
     },
   ),
 );

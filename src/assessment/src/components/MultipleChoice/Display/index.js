@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
 import { PaddingDiv } from '@edulastic/common';
 
 import QuestionDisplay from '../../Base/QuestionDisplay';
@@ -8,34 +8,60 @@ import MultiChoiceContent from './MultiChoiceContent';
 import CheckboxContainter from './CheckboxContainer';
 import Label from './Label';
 import ProblemContainer from './ProblemContainer';
+import { ALPHABET } from '../constants/others';
 
-const Option = (props) => {
-  const {
-    index, setAnswers, item, showAnswer, userSelections, answers, onChange, smallSize,
-  } = props;
+const Option = ({
+  index,
+  checkAnswer,
+  setAnswers,
+  item,
+  showAnswer,
+  userSelections,
+  answers,
+  onChange,
+  smallSize,
+}) => {
+  let className =
+    checkAnswer || showAnswer
+      ? userSelections[index]
+        ? answers[index]
+          ? 'right'
+          : 'wrong'
+        : ''
+      : '';
+  if (showAnswer && answers[index]) {
+    className = 'right';
+  }
+
   return (
     <Label
       smallSize={smallSize}
       setAnswers={setAnswers}
       showAnswer
-      className={showAnswer ? answers[index] ? 'right' : 'wrong' : ''}
+      className={className}
     >
-      <PaddingDiv top={setAnswers ? 15 : smallSize ? 0 : 20} bottom={setAnswers ? 15 : smallSize ? 0 : 20}>
+      <PaddingDiv
+        top={setAnswers ? 15 : smallSize ? 0 : 20}
+        bottom={setAnswers ? 15 : smallSize ? 0 : 20}
+      >
         <FlexContainer>
-          <CheckboxContainter>
-            <input type="checkbox" value={index} defaultChecked={userSelections[index]} onClick={onChange} />
-            <span />
+          <CheckboxContainter smallSize={smallSize}>
+            <input
+              type="radio"
+              name="mcq_group"
+              value={index}
+              defaultChecked={userSelections[index]}
+              onClick={onChange}
+            />
+            <span>{ALPHABET[index]}</span>
+            <div />
           </CheckboxContainter>
           <MultiChoiceContent smallSize={smallSize}>
             {item.label}
           </MultiChoiceContent>
           <PaddingDiv right={15} height={20}>
-            {showAnswer && answers[index] &&
-              <i className="fa fa-check" />
-            }
-            {showAnswer && !answers[index] &&
-              <i className="fa fa-times" />
-            }
+            {className === 'right' && <i className="fa fa-check" />}
+            {className === 'wrong' && <i className="fa fa-times" />}
           </PaddingDiv>
         </FlexContainer>
       </PaddingDiv>
@@ -45,7 +71,14 @@ const Option = (props) => {
 
 const Options = (props) => {
   const {
-    options, showAnswer, setAnswers, userSelections, answers, onChange, smallSize,
+    options,
+    checkAnswer,
+    showAnswer,
+    setAnswers,
+    userSelections,
+    answers,
+    onChange,
+    smallSize,
   } = props;
   return (
     <div>
@@ -53,6 +86,7 @@ const Options = (props) => {
         <Option
           key={index}
           smallSize={smallSize}
+          checkAnswer={checkAnswer}
           index={index}
           setAnswers={setAnswers}
           item={option}
@@ -66,14 +100,24 @@ const Options = (props) => {
   );
 };
 
-class MultipleChoiceDisplay extends QuestionDisplay {
+class MultipleChoiceDisplay extends Component {
   render() {
-    const { options, question } = this.props;
+    const { onChange, options, question } = this.props;
     const {
-      setAnswers, showAnswer, userSelections = [], answers = [], smallSize,
+      showAnswer,
+      userSelections = [],
+      answers = [],
+      smallSize,
+      checkAnswer,
+      setAnswers,
     } = this.props;
+
     return (
-      <div>
+      <QuestionDisplay
+        onRef={(ref) => {
+          this.baseQuestion = ref;
+        }}
+      >
         {!setAnswers && (
           <ProblemContainer
             smallSize={smallSize}
@@ -81,15 +125,17 @@ class MultipleChoiceDisplay extends QuestionDisplay {
           />
         )}
         <Options
+          key={checkAnswer && showAnswer}
           smallSize={smallSize}
-          options={options}
           setAnswers={setAnswers}
+          checkAnswer={checkAnswer}
+          options={options}
           showAnswer={showAnswer}
           userSelections={userSelections}
           answers={answers}
-          onChange={this.props.onChange}
+          onChange={onChange}
         />
-      </div>
+      </QuestionDisplay>
     );
   }
 }
@@ -111,6 +157,7 @@ Option.propTypes = {
   answers: PropTypes.array,
   onChange: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
+  checkAnswer: PropTypes.bool.isRequired,
 };
 
 Options.defaultProps = {
@@ -130,18 +177,31 @@ Options.propTypes = {
   options: PropTypes.array,
   onChange: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
+  checkAnswer: PropTypes.bool.isRequired,
 };
 
 MultipleChoiceDisplay.propTypes = {
+  setAnswers: PropTypes.bool,
   options: PropTypes.array,
   question: PropTypes.string,
   onChange: PropTypes.func,
   showAnswer: PropTypes.bool,
   answers: PropTypes.array,
-  setAnswers: PropTypes.bool,
-  preview: PropTypes.bool,
   userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
+  checkAnswer: PropTypes.bool,
+};
+
+MultipleChoiceDisplay.defaultProps = {
+  options: [],
+  question: '',
+  onChange: () => {},
+  showAnswer: false,
+  answers: [],
+  userSelections: [],
+  smallSize: false,
+  checkAnswer: false,
+  setAnswers: false,
 };
 
 export default MultipleChoiceDisplay;

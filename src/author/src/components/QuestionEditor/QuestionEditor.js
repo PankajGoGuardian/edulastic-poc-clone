@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { withNamespaces } from '@edulastic/localization';
 import { Paper } from '@edulastic/common';
 
@@ -11,18 +12,9 @@ import { getPreivewTabSelector } from '../../selectors/preview';
 import { getItemSelector } from '../../selectors/items';
 import { changeViewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
-import { receiveItemByIdAction, updateItemByIdAction } from '../../actions/items';
+import { receiveItemByIdAction } from '../../actions/items';
 import { Container } from './styled_components';
 import { ButtonBar } from '../common';
-import { setQuestionsStateAction } from '../../actions/questionsOrderList';
-import { getQuestionsStateSelector } from '../../selectors/questionsOrderList';
-import { addQuestion } from '../../actions/questions';
-import {
-  QUESTION_PROBLEM,
-  QUESTION_OPTIONS,
-  QUESTION_ANSWERS,
-  ASSESSMENTID,
-} from '../../constants/others';
 import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapper';
 import ItemHeader from './ItemHeader';
 
@@ -58,10 +50,10 @@ class QuestionEditor extends Component {
   };
 
   handleApplySource = (json) => {
-    const { setQuestionsState } = this.props;
     try {
       const state = JSON.parse(json);
-      setQuestionsState(state);
+      console.log('state:', state);
+      // setQuestionsState(state);
       this.handleHideSource();
     } catch (err) {
       console.error(err);
@@ -69,35 +61,6 @@ class QuestionEditor extends Component {
   };
 
   onSaveClicked = () => {
-    const { add, updateItemById, item } = this.props;
-    console.log('save current question');
-    const problem = localStorage.getItem(QUESTION_PROBLEM);
-    const options = localStorage.getItem(QUESTION_OPTIONS);
-    const answers = JSON.parse(localStorage.getItem(QUESTION_ANSWERS)) || [];
-    const assessmentId = localStorage.getItem(ASSESSMENTID);
-    const correctAnswer = [];
-    answers.forEach((answer, index) => {
-      if (answer) {
-        correctAnswer.push(index);
-      }
-    });
-    const question = {
-      assessmentId,
-      question: problem,
-      options: JSON.parse(options),
-      type: 'mcq',
-      answer: JSON.stringify(correctAnswer),
-    };
-    add(question);
-    // eslint-disable-next-line
-    updateItemById({
-      ...item,
-      id: item._id,
-      reference: item.id,
-      stimulus: problem,
-      list: JSON.parse(options),
-      validation: { valid_response: JSON.stringify(correctAnswer) },
-    });
     this.setState({ saveClicked: true });
   };
 
@@ -114,9 +77,8 @@ class QuestionEditor extends Component {
       view,
       changePreviewTab,
       previewTab,
-      questionsData,
       item,
-      location,
+      history,
     } = this.props;
     const itemId = item === null ? '' : item.id;
     const questionType = this.getQuestionType();
@@ -125,12 +87,12 @@ class QuestionEditor extends Component {
       <Container>
         {showModal && (
           <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
-            {JSON.stringify(questionsData, null, 4)}
+            {JSON.stringify({}, null, 4)}
           </SourceModal>
         )}
         <ItemHeader
           title={headerTitles[questionType]}
-          link={{ url: location.state.backUrl, text: location.state.backText }}
+          link={{ url: history.location.state.backUrl, text: history.location.state.backText }}
           reference={itemId}
         >
           <ButtonBar
@@ -157,18 +119,14 @@ class QuestionEditor extends Component {
 }
 
 QuestionEditor.propTypes = {
-  questionsData: PropTypes.object.isRequired,
   view: PropTypes.string.isRequired,
   changeView: PropTypes.func.isRequired,
   changePreviewTab: PropTypes.func.isRequired,
   previewTab: PropTypes.string.isRequired,
-  setQuestionsState: PropTypes.func.isRequired,
   item: PropTypes.object,
   match: PropTypes.object,
   receiveItemById: PropTypes.func.isRequired,
-  updateItemById: PropTypes.func.isRequired,
-  add: PropTypes.func.isRequired,
-  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 QuestionEditor.defaultProps = {
@@ -177,10 +135,10 @@ QuestionEditor.defaultProps = {
 };
 
 const enhance = compose(
+  withRouter,
   withNamespaces('author'),
   connect(
     state => ({
-      questionsData: getQuestionsStateSelector(state),
       view: getViewSelector(state),
       previewTab: getPreivewTabSelector(state),
       item: getItemSelector(state),
@@ -188,10 +146,7 @@ const enhance = compose(
     {
       changeView: changeViewAction,
       changePreviewTab: changePreviewTabAction,
-      setQuestionsState: setQuestionsStateAction,
       receiveItemById: receiveItemByIdAction,
-      updateItemById: updateItemByIdAction,
-      add: addQuestion,
     },
   ),
 );

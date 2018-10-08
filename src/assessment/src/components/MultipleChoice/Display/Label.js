@@ -11,6 +11,7 @@ const Label = styled.label`
   &:hover {
     border: dotted 1px lightgrey;
     border-left: solid 3px lightgrey;
+    cursor: pointer;
   }
 
   &.right {

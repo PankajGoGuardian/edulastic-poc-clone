@@ -30,7 +30,7 @@ class CorrectAnswers extends Component {
 
     if (validation.alt_responses && validation.alt_responses.length) {
       return validation.alt_responses.map((res, i) => (
-        <Tab key={i} label={`${t('component.orderlist.correctanswers.alternate')} ${i + 1}`} />
+        <Tab key={i} label={`${t('component.correctanswers.alternate')} ${i + 1}`} />
       ));
     }
     return null;
@@ -66,11 +66,11 @@ class CorrectAnswers extends Component {
 
     return (
       <div>
-        <Heading>{t('component.orderlist.correctanswers.setcorrectanswers')}</Heading>
+        <Heading>{t('component.correctanswers.setcorrectanswers')}</Heading>
 
         <div>
           <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
-            <Tab label={t('component.orderlist.correctanswers.correct')} />
+            <Tab label={t('component.correctanswers.correct')} />
             {this.renderAltResponses()}
           </Tabs>
           {value === 0 && (

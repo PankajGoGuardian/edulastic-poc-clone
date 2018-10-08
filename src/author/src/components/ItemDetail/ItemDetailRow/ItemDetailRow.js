@@ -5,10 +5,11 @@ import { greenDark } from '@edulastic/colors';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 
-import AddNew from '../../ItemAdd/AddNew';
+import { FlexContainer } from '@edulastic/common';
 import ItemDetailWidget from './ItemDetailWidget';
 import ItemDetailDropTarget from './ItemDetailDropTarget';
 import { getItemDetailDraggingSelector } from '../../../selectors/itemDetail';
+import AddNew from './AddNew';
 
 class ItemDetailRow extends Component {
   static propTypes = {
@@ -37,7 +38,9 @@ class ItemDetailRow extends Component {
             />
           </React.Fragment>
         ))}
-        <AddNew moveNew={onAdd} style={{ height: 150, width: '90%', marginBottom: 40 }} />
+        <FlexContainer justifyContent="center" style={{ marginBottom: 30 }}>
+          <AddNew onClick={onAdd} />
+        </FlexContainer>
       </Container>
     );
   }

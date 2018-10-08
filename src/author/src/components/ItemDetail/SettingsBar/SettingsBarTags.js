@@ -28,7 +28,6 @@ const Container = styled.div`
   border-radius: 10px;
   border: 1px solid #e9e9e9;
   padding: 15px;
-  margin-bottom: 20px;
 `;
 
 const Tag = styled.div`

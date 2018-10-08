@@ -10,6 +10,8 @@ import {
   UPDATE_ITEM_DETAIL_DIMENSION,
   SET_DRAGGING,
   DELETE_ITEM_DETAIL_WIDGET,
+  UPDATE_TAB_TITLE,
+  USE_TABS,
 } from '../constants/actions';
 
 const initialState = {
@@ -37,6 +39,23 @@ const updateDimension = (state, { left, right }) => {
   return newState;
 };
 
+const updateTabTitle = (state, { rowIndex, tabIndex, value }) => {
+  const newState = cloneDeep(state);
+  newState.item.rows[rowIndex].tabs[tabIndex] = value;
+  return newState;
+};
+
+const useTabs = (state, { rowIndex, isUseTabs }) => {
+  const newState = cloneDeep(state);
+  if (isUseTabs) {
+    newState.item.rows[rowIndex].tabs = ['Tab 1', 'Tab 2'];
+  }
+  if (!isUseTabs) {
+    newState.item.rows[rowIndex].tabs = [];
+  }
+  return newState;
+};
+
 export default function reducer(state = initialState, { type, payload }) {
   switch (type) {
     case RECEIVE_ITEM_DETAIL_REQUEST:
@@ -51,6 +70,12 @@ export default function reducer(state = initialState, { type, payload }) {
 
     case DELETE_ITEM_DETAIL_WIDGET:
       return deleteWidget(state, payload);
+
+    case UPDATE_TAB_TITLE:
+      return updateTabTitle(state, payload);
+
+    case USE_TABS:
+      return useTabs(state, payload);
 
     case SET_DRAGGING:
       return { ...state, dragging: payload.dragging };

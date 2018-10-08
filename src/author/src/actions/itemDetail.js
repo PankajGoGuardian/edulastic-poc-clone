@@ -5,6 +5,8 @@ import {
   UPDATE_ITEM_DETAIL_DIMENSION,
   SET_DRAGGING,
   DELETE_ITEM_DETAIL_WIDGET,
+  UPDATE_TAB_TITLE,
+  USE_TABS,
 } from '../constants/actions';
 
 export const getItemDetailByIdAction = (id, params) => ({
@@ -35,4 +37,14 @@ export const setItemDetailDraggingAction = dragging => ({
 export const deleteWidgetAction = (rowIndex, widgetIndex) => ({
   type: DELETE_ITEM_DETAIL_WIDGET,
   payload: { rowIndex, widgetIndex },
+});
+
+export const updateTabTitleAction = ({ rowIndex, tabIndex, value }) => ({
+  type: UPDATE_TAB_TITLE,
+  payload: { rowIndex, tabIndex, value },
+});
+
+export const useTabsAction = ({ rowIndex, isUseTabs }) => ({
+  type: USE_TABS,
+  payload: { rowIndex, isUseTabs },
 });

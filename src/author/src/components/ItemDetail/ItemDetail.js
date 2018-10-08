@@ -20,6 +20,8 @@ import {
   setItemDetailDataAction,
   updateItemDetailDimensionAction,
   deleteWidgetAction,
+  updateTabTitleAction,
+  useTabsAction,
 } from '../../actions/itemDetail';
 import {
   getItemDetailLoadingSelector,
@@ -117,7 +119,6 @@ class ItemDetail extends Component {
     const { left, right } = this.getSizes(type);
 
     updateDimension(left, right);
-    this.handleCancelSettings();
   };
 
   handleApplySource = (data) => {
@@ -169,6 +170,8 @@ class ItemDetail extends Component {
       updating,
       type,
       deleteWidget,
+      updateTabTitle,
+      useTabs,
     } = this.props;
 
     return (
@@ -184,6 +187,9 @@ class ItemDetail extends Component {
             type={type}
             onCancel={this.handleCancelSettings}
             onApply={this.handleApplySettings}
+            useTabs={useTabs}
+            useTabsLeft={!!rows[0].tabs.length}
+            useTabsRight={!!rows[1].tabs.length}
           />
         )}
         <ItemHeader
@@ -216,6 +222,9 @@ class ItemDetail extends Component {
                 onAdd={this.handleAdd}
                 onDeleteWidget={widgetIndex => deleteWidget(i, widgetIndex)}
                 onEditWidget={this.handleEditWidget}
+                onEditTabTitle={(tabIndex, value) =>
+                  updateTabTitle({ rowIndex: i, tabIndex, value })
+                }
               />
             ))}
         </Content>
@@ -241,6 +250,8 @@ ItemDetail.propTypes = {
   type: PropTypes.string.isRequired,
   deleteWidget: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
+  updateTabTitle: PropTypes.func.isRequired,
+  useTabs: PropTypes.func.isRequired,
 };
 
 ItemDetail.defaultProps = {
@@ -268,6 +279,8 @@ const enhance = compose(
       setItemDetailData: setItemDetailDataAction,
       updateDimension: updateItemDetailDimensionAction,
       deleteWidget: deleteWidgetAction,
+      updateTabTitle: updateTabTitleAction,
+      useTabs: useTabsAction,
     },
   ),
 );

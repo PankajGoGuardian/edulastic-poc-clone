@@ -12,20 +12,9 @@ import SettingsBarUseTabs from './SettingsBarUseTabs';
 
 class SettingsBar extends Component {
   state = {
-    type: '',
     verticalDivider: false,
     scrolling: false,
-    useTabsLeft: false,
-    useTabsRight: false,
   };
-
-  componentDidMount() {
-    const { type } = this.props;
-
-    this.setState({
-      type,
-    });
-  }
 
   layouts = [
     {
@@ -59,12 +48,9 @@ class SettingsBar extends Component {
     onApply: PropTypes.func.isRequired,
     type: PropTypes.string.isRequired,
     t: PropTypes.func.isRequired,
-  };
-
-  handleItemChange = (type) => {
-    this.setState({
-      type,
-    });
+    useTabs: PropTypes.func.isRequired,
+    useTabsLeft: PropTypes.bool.isRequired,
+    useTabsRight: PropTypes.bool.isRequired,
   };
 
   handleCheckboxChange = name => () => {
@@ -73,28 +59,21 @@ class SettingsBar extends Component {
     }));
   };
 
-  handleApply = () => {
-    const { onApply } = this.props;
-    onApply(this.state);
-  };
-
   handleRemoveTag = () => {};
 
   handleChangeLeftTab = () => {
-    this.setState(({ useTabsLeft }) => ({
-      useTabsLeft: !useTabsLeft,
-    }));
+    const { useTabs, useTabsLeft } = this.props;
+    useTabs({ rowIndex: 0, isUseTabs: !useTabsLeft });
   };
 
   handleChangeRightTab = () => {
-    this.setState(({ useTabsRight }) => ({
-      useTabsRight: !useTabsRight,
-    }));
+    const { useTabs, useTabsRight } = this.props;
+    useTabs({ rowIndex: 1, isUseTabs: !useTabsRight });
   };
 
   render() {
-    const { type, verticalDivider, scrolling, useTabsLeft, useTabsRight } = this.state;
-    const { onCancel, t } = this.props;
+    const { verticalDivider, scrolling } = this.state;
+    const { onCancel, type, t, useTabsLeft, useTabsRight, onApply } = this.props;
 
     return (
       <Container>
@@ -107,7 +86,7 @@ class SettingsBar extends Component {
         <Items>
           {this.layouts.map(item => (
             <SettingsBarItem
-              onSelect={() => this.handleItemChange(item.value)}
+              onSelect={() => onApply({ type: item.value })}
               selected={type === item.value}
               key={item.value}
               item={item}
@@ -135,12 +114,6 @@ class SettingsBar extends Component {
         </Checkboxes>
         <Heading>{t('author:component.settingsBar.tags')}</Heading>
         <SettingsBarTags tags={['equations', 'algebra']} onRemove={this.handleRemoveTag} />
-        <FlexContainer justifyContent="center">
-          <Button onClick={onCancel}>{t('cancel')}</Button>
-          <Button onClick={this.handleApply} color="success">
-            {t('apply')}
-          </Button>
-        </FlexContainer>
       </Container>
     );
   }

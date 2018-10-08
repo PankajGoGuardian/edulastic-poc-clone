@@ -6,6 +6,8 @@ export { default as FlexContainer } from './src/components/FlexContainer';
 export { default as PaddingDiv } from './src/components/PaddingDiv';
 export { default as TextField } from './src/components/TextField';
 export { default as Button } from './src/components/Button';
+export { default as Checkbox } from './src/components/Checkbox';
+export { default as Tabs } from './src/components/Tabs';
 
 // HOC
 export { default as withWindowSizes } from './src/HOC/withWindowSizes';

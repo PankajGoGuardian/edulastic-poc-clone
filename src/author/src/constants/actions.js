@@ -29,3 +29,21 @@ export const RECEIVE_ITEM_SUCCESS = '[items] receive item success';
 export const RECEIVE_ITEM_ERROR = '[items] receive item error';
 export const CREATE_ITEM_REQUEST = '[items] create item request';
 export const UPDATE_ITEM_REQUEST = '[items] update item request';
+
+// item detail
+export const RECEIVE_ITEM_DETAIL_REQUEST = '[itemDetail] receive request';
+export const RECEIVE_ITEM_DETAIL_SUCCESS = '[itemDetail] receive success';
+export const RECEIVE_ITEM_DETAIL_ERROR = '[itemDetail] receive error';
+
+export const UPDATE_ITEM_DETAIL_REQUEST = '[itemDetail] update by id request';
+export const UPDATE_ITEM_DETAIL_SUCCESS = '[itemDetail] update by id success';
+export const UPDATE_ITEM_DETAIL_ERROR = '[itemDetail] update by id error';
+
+export const SET_ITEM_DETAIL_DATA = '[itemDetail] set data';
+export const UPDATE_ITEM_DETAIL_DIMENSION = '[itemDetail] update dimension';
+
+export const SET_DRAGGING = '[itemDetail] set dragging';
+
+export const DELETE_ITEM_DETAIL_WIDGET = '[itemDetail] delete widget';
+export const UPDATE_TAB_TITLE = '[itemDetail] update tab title';
+export const USE_TABS = '[itemDetail] is use tabs';

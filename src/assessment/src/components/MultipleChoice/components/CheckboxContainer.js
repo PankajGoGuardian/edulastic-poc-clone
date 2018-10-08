@@ -27,14 +27,14 @@ const CheckboxContainer = styled.div`
     display: block;
     border-radius: 3px;
     background-color: transparent;
-    -webkit-transition: backgroundColor .6s;
-    transition: backgroundColor .6s;
+    -webkit-transition: backgroundColor 0.6s;
+    transition: backgroundColor 0.6s;
   }
 
   & input:checked + span {
     background-color: #1fe3a1;
-    -webkit-transition: backgroundColor .6s;
-    transition: backgroundColor .6s;
+    -webkit-transition: backgroundColor 0.6s;
+    transition: backgroundColor 0.6s;
   }
 `;
 

@@ -9,15 +9,31 @@ export default class QuestionWrapper extends Component {
     const { type, view, isNew, data, saveClicked } = this.props;
     return (
       <React.Fragment>
-        {type === 'orderList' && data && <OrderList view={view} saveClicked={saveClicked} smallSize={data.smallSize} initialData={data} />}
-        {type === 'mcq' && <MultipleChoice view={view} isNew={isNew} item={data} saveClicked={saveClicked} smallSize={data.smallSize} />}
+        {type === 'orderList' &&
+          data && (
+            <OrderList
+              view={view}
+              saveClicked={saveClicked}
+              smallSize={data.smallSize}
+              initialData={data}
+            />
+        )}
+        {type === 'multipleChoice' && (
+          <MultipleChoice
+            view={view}
+            isNew={isNew}
+            item={data}
+            saveClicked={saveClicked}
+            smallSize={data.smallSize}
+          />
+        )}
       </React.Fragment>
     );
   }
 }
 
 QuestionWrapper.propTypes = {
-  type: PropTypes.oneOf(['orderList', 'mcq']),
+  type: PropTypes.oneOf(['orderList', 'multipleChoice']),
   view: PropTypes.string.isRequired,
   isNew: PropTypes.bool,
   data: PropTypes.object,

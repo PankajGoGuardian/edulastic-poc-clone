@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FaCode, FaCog } from 'react-icons/fa';
+import { FaCode } from 'react-icons/fa';
 import {
   IconPensilEdit,
   IconEye,
@@ -17,7 +17,7 @@ import { withWindowSizes, Button } from '@edulastic/common';
 import { compose } from 'redux';
 
 import { Container, StyledButton } from './styled_components';
-import { ButtonLink, SelectButton } from '..';
+import { ButtonLink } from '..';
 
 const ButtonBar = ({
   onChangeView,
@@ -25,7 +25,9 @@ const ButtonBar = ({
   changePreviewTab,
   previewTab,
   onShowSource,
+  onShowSettings,
   onSave,
+  saving,
   t,
   windowWidth,
 }) => {
@@ -66,6 +68,7 @@ const ButtonBar = ({
         </StyledButton>
         <StyledButton>
           <Button
+            disabled={saving}
             style={buttonStyles}
             onClick={onSave}
             icon={<IconSave color={white} width={16} />}
@@ -75,29 +78,14 @@ const ButtonBar = ({
           </Button>
         </StyledButton>
         <StyledButton>
-          <SelectButton
-            style={{ width: iTablet ? 100 : 130 }}
-            onSelect={(value) => {
-              if (value === 'source') {
-                onShowSource();
-              }
-            }}
-            icon={<IconSettings color={textColor} />}
-            options={[
-              {
-                value: 'source',
-                label: 'Source',
-                icon: <FaCode style={{ width: 16, height: 16 }} />,
-              },
-              {
-                value: 'settings',
-                label: 'Settings',
-                icon: <FaCog style={{ width: 16, height: 16 }} />,
-              },
-            ]}
-          >
-            {t('component.questioneditor.buttonbar.settings')}
-          </SelectButton>
+          <Button onClick={onShowSource} style={{ minWidth: 85 }}>
+            <FaCode style={{ width: 16, height: 16 }} />
+          </Button>
+        </StyledButton>
+        <StyledButton>
+          <Button onClick={onShowSettings} style={{ minWidth: 85 }}>
+            <IconSettings color={textColor} />
+          </Button>
         </StyledButton>
       </Container>
       {view === 'preview' && (
@@ -148,9 +136,11 @@ ButtonBar.propTypes = {
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
   onShowSource: PropTypes.func.isRequired,
+  onShowSettings: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
+  saving: PropTypes.bool.isRequired,
 };
 
 const enhance = compose(

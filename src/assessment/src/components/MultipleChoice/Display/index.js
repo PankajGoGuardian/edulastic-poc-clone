@@ -19,7 +19,7 @@ const Option = ({
   userSelections,
   answers,
   onChange,
-  smallSize
+  smallSize,
 }) => {
   let className =
     checkAnswer || showAnswer
@@ -69,7 +69,7 @@ const Option = ({
   );
 };
 
-const Options = props => {
+const Options = (props) => {
   const {
     options,
     checkAnswer,
@@ -78,7 +78,7 @@ const Options = props => {
     userSelections,
     answers,
     onChange,
-    smallSize
+    smallSize,
   } = props;
   return (
     <div>
@@ -109,12 +109,12 @@ class MultipleChoiceDisplay extends Component {
       answers = [],
       smallSize,
       checkAnswer,
-      setAnswers
+      setAnswers,
     } = this.props;
 
     return (
       <QuestionDisplay
-        onRef={ref => {
+        onRef={(ref) => {
           this.baseQuestion = ref;
         }}
       >
@@ -145,7 +145,7 @@ Option.defaultProps = {
   showAnswer: false,
   smallSize: false,
   userSelections: [],
-  answers: []
+  answers: [],
 };
 
 Option.propTypes = {
@@ -157,7 +157,7 @@ Option.propTypes = {
   answers: PropTypes.array,
   onChange: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
-  checkAnswer: PropTypes.bool.isRequired
+  checkAnswer: PropTypes.bool.isRequired,
 };
 
 Options.defaultProps = {
@@ -166,7 +166,7 @@ Options.defaultProps = {
   userSelections: [],
   answers: [],
   options: [],
-  smallSize: false
+  smallSize: false,
 };
 
 Options.propTypes = {
@@ -177,7 +177,7 @@ Options.propTypes = {
   options: PropTypes.array,
   onChange: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
-  checkAnswer: PropTypes.bool.isRequired
+  checkAnswer: PropTypes.bool.isRequired,
 };
 
 MultipleChoiceDisplay.propTypes = {
@@ -189,7 +189,7 @@ MultipleChoiceDisplay.propTypes = {
   answers: PropTypes.array,
   userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
-  checkAnswer: PropTypes.bool
+  checkAnswer: PropTypes.bool,
 };
 
 MultipleChoiceDisplay.defaultProps = {
@@ -201,7 +201,7 @@ MultipleChoiceDisplay.defaultProps = {
   userSelections: [],
   smallSize: false,
   checkAnswer: false,
-  setAnswers: false
+  setAnswers: false,
 };
 
 export default MultipleChoiceDisplay;

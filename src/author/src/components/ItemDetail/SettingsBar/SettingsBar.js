@@ -18,7 +18,7 @@ class SettingsBar extends Component {
 
   layouts = [
     {
-      value: 'single',
+      value: '100-100',
       text: 'Single column',
     },
     {

@@ -9,7 +9,9 @@ export const getItemDetailRowsSelector = createSelector(getItemDetailSelector, (
   return item.rows.map(row => ({
     ...row,
     widgets: row.widgets.map((widget) => {
-      let referencePopulate = null;
+      let referencePopulate = {
+        data: null,
+      };
 
       if (item.data.questions && item.data.questions.length) {
         referencePopulate = item.data.questions.find(q => q.id === widget.reference);
@@ -34,6 +36,6 @@ export const getItemDetailDraggingSelector = createSelector(stateSelector, state
 export const getItemDetailDimensionTypeSelector = createSelector(getItemDetailSelector, (state) => {
   if (!state) return '';
   const left = state.rows[0].dimension.trim().slice(0, -1);
-  const right = state.rows[1].dimension.trim().slice(0, -1);
+  const right = state.rows[1] ? state.rows[1].dimension.trim().slice(0, -1) : '100';
   return `${left}-${right}`;
 });

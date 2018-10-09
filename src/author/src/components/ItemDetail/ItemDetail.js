@@ -46,7 +46,7 @@ class ItemDetail extends Component {
 
   getSizes = (type) => {
     switch (type) {
-      case 'single':
+      case '100-100':
         return {
           left: '100%',
           right: '100%',
@@ -193,7 +193,7 @@ class ItemDetail extends Component {
             onApply={this.handleApplySettings}
             useTabs={useTabs}
             useTabsLeft={!!rows[0].tabs.length}
-            useTabsRight={!!rows[1].tabs.length}
+            useTabsRight={!!(!!rows[1] && !!rows[1].tabs.length)}
           />
         )}
         <ItemHeader

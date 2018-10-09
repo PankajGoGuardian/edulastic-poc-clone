@@ -73,7 +73,10 @@ class ItemDetailRow extends Component {
             {!row.tabs.length && this.renderTabContent(i, widget)}
           </React.Fragment>
         ))}
-        <FlexContainer justifyContent="center" style={{ marginBottom: 30 }}>
+        <FlexContainer
+          justifyContent="center"
+          style={{ marginBottom: 30, height: row.widgets.length ? 'auto' : '100%' }}
+        >
           <AddNew onClick={onAdd} />
         </FlexContainer>
       </Container>

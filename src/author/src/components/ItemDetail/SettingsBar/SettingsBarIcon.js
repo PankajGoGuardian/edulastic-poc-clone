@@ -43,6 +43,6 @@ const Divider = styled.div`
   width: 1px;
   background: ${({ active }) => (active ? white : textColor)};
   height: 100%;
-  display: ${({ type }) => (type === 'single' ? 'none' : 'block')};
+  display: ${({ type }) => (type === '100-100' ? 'none' : 'block')};
   margin-left: ${({ type }) => getMarginLeft(type)};
 `;

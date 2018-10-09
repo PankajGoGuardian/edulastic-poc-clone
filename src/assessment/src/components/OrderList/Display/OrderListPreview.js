@@ -11,19 +11,25 @@ class OrderListPreview extends Component {
 
     return (
       <div>
-        {questions.map((q, i) => (
-          <OrderListPreviewItem smallSize={smallSize} key={i} index={i}>
-            {q}
-          </OrderListPreviewItem>
-        ))}
+        {questions &&
+          !!questions.length &&
+          questions.map((q, i) => (
+            <OrderListPreviewItem smallSize={smallSize} key={i} index={i}>
+              {q}
+            </OrderListPreviewItem>
+          ))}
       </div>
     );
   }
 }
 
 OrderListPreview.propTypes = {
-  questions: PropTypes.array.isRequired,
+  questions: PropTypes.array,
   smallSize: PropTypes.bool,
+};
+
+OrderListPreview.defaultProps = {
+  questions: [],
 };
 
 OrderListPreview.defaultProps = {

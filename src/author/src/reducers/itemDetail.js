@@ -35,7 +35,22 @@ const deleteWidget = (state, { rowIndex, widgetIndex }) => {
 const updateDimension = (state, { left, right }) => {
   const newState = cloneDeep(state);
   newState.item.rows[0].dimension = left;
-  newState.item.rows[1].dimension = right;
+
+  if (left === '100%') {
+    newState.item.rows[0].widgets = [
+      ...newState.item.rows[0].widgets,
+      ...newState.item.rows[1].widgets,
+    ];
+    newState.item.rows.length = 1;
+  } else if (!newState.item.rows[1]) {
+    newState.item.rows[1] = {
+      tabs: ['Tab 1', 'Tab 2'],
+      dimension: right,
+      widgets: [],
+    };
+  } else {
+    newState.item.rows[1].dimension = right;
+  }
   return newState;
 };
 

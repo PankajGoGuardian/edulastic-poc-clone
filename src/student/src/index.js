@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import { ASSESSMENTID } from './constants/others';
 import AssessmentPlayer from '../../assessment/src/index';

@@ -6,6 +6,7 @@ import i18n, { I18nextProvider } from '@edulastic/localization';
 
 import 'font-awesome/css/font-awesome.css';
 import './index.css';
+import 'react-notifications/lib/notifications.css';
 import App from './App';
 import configureStore from './configureStore';
 

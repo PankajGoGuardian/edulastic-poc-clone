@@ -33,7 +33,7 @@ const ItemDetailWidget = ({
             <QuestionWrapper
               type={widget.type}
               view="preview"
-              data={widget.referencePopulate.data}
+              data={{ ...widget.referencePopulate.data, smallSize: true }}
             />
           )}
           {widget.widgetType === 'resource' && (

@@ -1,5 +1,6 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects';
 import { testItemsApi } from '@edulastic/api';
+import { NotificationManager } from 'react-notifications';
 
 import {
   RECEIVE_ITEM_DETAIL_REQUEST,
@@ -36,6 +37,7 @@ function* updateItemSaga({ payload }) {
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item },
     });
+    NotificationManager.success('Update item by id is success', 'Success');
   } catch (err) {
     console.error(err);
     yield put({

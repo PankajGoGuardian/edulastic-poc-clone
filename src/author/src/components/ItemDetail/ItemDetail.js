@@ -224,6 +224,7 @@ class ItemDetail extends Component {
                 <ItemDetailRow
                   key={i}
                   row={row}
+                  rowIndex={i}
                   onAdd={this.handleAdd}
                   onDeleteWidget={widgetIndex => deleteWidget(i, widgetIndex)}
                   onEditWidget={this.handleEditWidget}

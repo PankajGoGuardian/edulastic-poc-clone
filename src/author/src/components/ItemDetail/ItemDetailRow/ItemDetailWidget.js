@@ -19,50 +19,45 @@ const ItemDetailWidget = ({
   isDragging,
   connectDragSource,
   connectDragPreview,
-  setItemDetailDragging,
   t,
-}) => {
-  setItemDetailDragging(isDragging);
-  return (
-    connectDragPreview &&
-    connectDragSource &&
-    connectDragPreview(
-      <div>
-        <Container isDragging={isDragging}>
-          {widget.widgetType === 'question' && (
-            <QuestionWrapper
-              type={widget.type}
-              view="preview"
-              data={{ ...widget.referencePopulate.data, smallSize: true }}
-            />
-          )}
-          {widget.widgetType === 'resource' && (
+}) =>
+  connectDragPreview &&
+  connectDragSource &&
+  connectDragPreview(
+    <div>
+      <Container isDragging={isDragging}>
+        {widget.widgetType === 'question' && (
+          <QuestionWrapper
+            type={widget.type}
+            view="preview"
+            data={{ ...widget.referencePopulate.data, smallSize: true }}
+          />
+        )}
+        {widget.widgetType === 'resource' && (
+          <div>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti, optio quod sunt
+            libero magnam, dolores, consectetur recusandae necessitatibus repudiandae animi
+            provident aperiam exercitationem ipsa distinctio consequatur cumque nobis itaque quia.
+          </div>
+        )}
+        <Buttons>
+          {connectDragSource(
             <div>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti, optio quod sunt
-              libero magnam, dolores, consectetur recusandae necessitatibus repudiandae animi
-              provident aperiam exercitationem ipsa distinctio consequatur cumque nobis itaque quia.
-            </div>
+              <Button title={t('move')}>
+                <IconMoveArrows color={white} hoverColor={green} />
+              </Button>
+            </div>,
           )}
-          <Buttons>
-            {connectDragSource(
-              <div>
-                <Button title={t('move')}>
-                  <IconMoveArrows color={white} hoverColor={green} />
-                </Button>
-              </div>,
-            )}
-            <Button title={t('edit')} onClick={onEdit}>
-              <IconPensilEdit color={white} hoverColor={green} />
-            </Button>
-            <Button title={t('delete')} onClick={onDelete}>
-              <IconTrash color={white} hoverColor={red} />
-            </Button>
-          </Buttons>
-        </Container>
-      </div>,
-    )
+          <Button title={t('edit')} onClick={onEdit}>
+            <IconPensilEdit color={white} hoverColor={green} />
+          </Button>
+          <Button title={t('delete')} onClick={onDelete}>
+            <IconTrash color={white} hoverColor={red} />
+          </Button>
+        </Buttons>
+      </Container>
+    </div>,
   );
-};
 
 ItemDetailWidget.propTypes = {
   widget: PropTypes.object.isRequired,
@@ -71,15 +66,23 @@ ItemDetailWidget.propTypes = {
   isDragging: PropTypes.bool.isRequired,
   connectDragSource: PropTypes.func.isRequired,
   connectDragPreview: PropTypes.func.isRequired,
-  setItemDetailDragging: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
+  rowIndex: PropTypes.number.isRequired,
+  widgetIndex: PropTypes.number.isRequired,
 };
 
 const itemSource = {
-  beginDrag() {
-    return {};
+  beginDrag({ setItemDetailDragging, widgetIndex, rowIndex }) {
+    setTimeout(() => {
+      setItemDetailDragging(true);
+    }, 0);
+    return {
+      rowIndex,
+      widgetIndex,
+    };
   },
-  endDrag() {
+  endDrag({ setItemDetailDragging }) {
+    setItemDetailDragging(false);
     return {};
   },
 };

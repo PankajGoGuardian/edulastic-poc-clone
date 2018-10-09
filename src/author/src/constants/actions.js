@@ -47,3 +47,4 @@ export const SET_DRAGGING = '[itemDetail] set dragging';
 export const DELETE_ITEM_DETAIL_WIDGET = '[itemDetail] delete widget';
 export const UPDATE_TAB_TITLE = '[itemDetail] update tab title';
 export const USE_TABS = '[itemDetail] is use tabs';
+export const MOVE_WIDGET = '[itemDetail] move widget';

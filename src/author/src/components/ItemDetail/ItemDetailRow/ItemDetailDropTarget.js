@@ -3,8 +3,12 @@ import { DropTarget } from 'react-dnd';
 import styled from 'styled-components';
 import { blue, white } from '@edulastic/colors';
 import { FaArrowDown } from 'react-icons/fa';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { Types } from '../constants';
+import { moveItemDetailWidgetAction } from '../../../actions/itemDetail';
 
 const ItemDetailDropTarget = ({ connectDropTarget, isOver, canDrop }) =>
   connectDropTarget(
@@ -15,15 +19,47 @@ const ItemDetailDropTarget = ({ connectDropTarget, isOver, canDrop }) =>
     </div>,
   );
 
-function collect(connect, monitor) {
+ItemDetailDropTarget.propTypes = {
+  moveItemDetailWidget: PropTypes.func.isRequired,
+  widgetIndex: PropTypes.number.isRequired,
+  rowIndex: PropTypes.number.isRequired,
+  tabIndex: PropTypes.number,
+};
+
+const itemSource = {
+  drop({ moveItemDetailWidget, widgetIndex, rowIndex, tabIndex }, monitor) {
+    const from = monitor.getItem();
+    const to = {
+      widgetIndex,
+      rowIndex,
+      tabIndex,
+    };
+
+    moveItemDetailWidget({
+      from,
+      to,
+    });
+    return { moved: true };
+  },
+};
+
+function collect(c, monitor) {
   return {
-    connectDropTarget: connect.dropTarget(),
+    connectDropTarget: c.dropTarget(),
     isOver: monitor.isOver(),
     canDrop: monitor.canDrop(),
   };
 }
 
-export default DropTarget(Types.WIDGET, {}, collect)(ItemDetailDropTarget);
+const enhance = compose(
+  connect(
+    null,
+    { moveItemDetailWidget: moveItemDetailWidgetAction },
+  ),
+  DropTarget(Types.WIDGET, itemSource, collect),
+);
+
+export default enhance(ItemDetailDropTarget);
 
 const Container = styled.div`
   border: 2px dashed ${blue};

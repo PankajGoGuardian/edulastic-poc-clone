@@ -6,7 +6,12 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { NotificationContainer } from 'react-notifications';
 
 import Student from './student/src';
-import { QuestionEditor, ItemAdd, ItemList, PickUpQuestionType } from './author/src';
+import {
+  QuestionEditor,
+  ItemAdd,
+  ItemList,
+  PickUpQuestionType
+} from './author/src';
 import ItemDetail from './author/src/components/ItemDetail';
 
 class App extends Component {
@@ -29,7 +34,11 @@ class App extends Component {
             path="/author/items/:id/pickup-questiontype"
             component={PickUpQuestionType}
           />
-          <Route exact path="/author/items/:id/item-detail" component={ItemDetail} />
+          <Route
+            exact
+            path="/author/items/:id/item-detail"
+            component={ItemDetail}
+          />
           <Route path="/student/test" component={() => <Student defaultAP />} />
           <Route path="/student/practice" component={Student} />
         </Switch>
@@ -39,7 +48,7 @@ class App extends Component {
 }
 
 App.propTypes = {
-  assessmentId: PropTypes.string.isRequired,
+  assessmentId: PropTypes.string.isRequired
 };
 
 export default DragDropContext(HTML5Backend)(App);

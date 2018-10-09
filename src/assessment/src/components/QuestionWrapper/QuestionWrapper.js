@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import { OrderList } from '../OrderList';
-import { MultipleChoice } from '../MultipleChoice';
+import { OrderList } from "../OrderList";
+import { MultipleChoice } from "../MultipleChoice";
 
 export default class QuestionWrapper extends Component {
   render() {
@@ -10,7 +10,7 @@ export default class QuestionWrapper extends Component {
     console.log(data);
     return (
       <React.Fragment>
-        {type === 'orderList' &&
+        {type === "orderList" &&
           data && (
             <OrderList
               view={view}
@@ -18,8 +18,8 @@ export default class QuestionWrapper extends Component {
               smallSize={data.smallSize}
               initialData={data}
             />
-        )}
-        {type === 'multipleChoice' && (
+          )}
+        {type === "mcq" && (
           <MultipleChoice
             view={view}
             isNew={isNew}
@@ -34,16 +34,16 @@ export default class QuestionWrapper extends Component {
 }
 
 QuestionWrapper.propTypes = {
-  type: PropTypes.oneOf(['orderList', 'multipleChoice']),
+  type: PropTypes.oneOf(["orderList", "mcq"]),
   view: PropTypes.string.isRequired,
   isNew: PropTypes.bool,
   data: PropTypes.object,
-  saveClicked: PropTypes.bool,
+  saveClicked: PropTypes.bool
 };
 
 QuestionWrapper.defaultProps = {
   isNew: false,
   type: null,
   data: {},
-  saveClicked: false,
+  saveClicked: false
 };

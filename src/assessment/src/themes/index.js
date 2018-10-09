@@ -1,11 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-
 import { gotoQuestion } from "../actions/questions";
+import AssesmentPlayerDefault from "./AssessmentPlayerDefault";
 import AssesmentPlayerSimple from "./AssessmentPlayerSimple";
 
-const AssessmentContainer = ({ gotoQuestion, questions, currentQuestion }) => {
+const AssessmentContainer = ({
+  gotoQuestion,
+  questions,
+  currentQuestion,
+  defaultAP
+}) => {
   const isLast = () => currentQuestion === questions.length - 1;
   const isFirst = () => currentQuestion === 0;
 
@@ -34,7 +39,11 @@ const AssessmentContainer = ({ gotoQuestion, questions, currentQuestion }) => {
     currentQuestion
   };
 
-  return <AssesmentPlayerSimple {...props} />;
+  return defaultAP ? (
+    <AssesmentPlayerDefault {...props} />
+  ) : (
+    <AssesmentPlayerSimple {...props} />
+  );
 };
 
 AssessmentContainer.PropType = {

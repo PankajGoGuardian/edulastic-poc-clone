@@ -13,12 +13,12 @@ const QuestionWrapper = ({ type, data, ...restProps }) => {
     restProps
   );
 
-  const Question = type === 'mcq' ? MultipleChoice : OrderList;
+  const Question = type === 'multipleChoice' ? MultipleChoice : OrderList;
   return <Question {...questionProps} />;
 };
 
 QuestionWrapper.propTypes = {
-  type: PropTypes.oneOf(['orderList', 'mcq', 'image']),
+  type: PropTypes.oneOf(['orderList', 'multipleChoice', 'image']),
   view: PropTypes.string.isRequired,
   isNew: PropTypes.bool,
   data: PropTypes.object,

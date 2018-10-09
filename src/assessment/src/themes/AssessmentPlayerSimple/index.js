@@ -2,12 +2,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Line } from 'rc-progress';
 import { ThemeProvider } from 'styled-components';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-
-import { gotoQuestion } from '../../actions/questions';
-import Assessment from '../Assessment';
 import MainWrapper from './MainWrapper';
 import MainContent from './MainContent';
 import MainFooter from './MainFooter';
@@ -37,10 +31,17 @@ import QuestionWrapper from '../../components/QuestionWrapper';
 // eslint-disable-next-line
 const defaultTheme = require('sass-extract-loader?{"plugins": ["sass-extract-js"]}!../../styles/vars.scss');
 
-class AssessmentPlayerSimple extends Assessment {
+class AssessmentPlayerSimple extends React.Component {
   static propTypes = {
     theme: PropTypes.object,
-    t: PropTypes.func.isRequired,
+    // t: PropTypes.func.isRequired,
+    questions: PropTypes.array.isRequired,
+    currentQuestion: PropTypes.number.isRequired,
+    isLast: PropTypes.func.isRequired,
+    isFirst: PropTypes.func.isRequired,
+    moveToNext: PropTypes.func.isRequired,
+    moveToPrev: PropTypes.func.isRequired,
+    questionSelectChange: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -48,7 +49,17 @@ class AssessmentPlayerSimple extends Assessment {
   };
 
   render() {
-    const { questions, currentQuestion, theme, t } = this.props;
+    const {
+      questions,
+      currentQuestion,
+      theme,
+      // t,
+      isLast,
+      isFirst,
+      moveToNext,
+      moveToPrev,
+      questionSelectChange,
+    } = this.props;
     const dropDownQuizOptions = questions.map((item, index) => ({
       value: index,
     }));
@@ -94,13 +105,13 @@ class AssessmentPlayerSimple extends Assessment {
                   <QuestionSelectDropdown
                     key={currentQuestion}
                     value={currentQuestion}
-                    onChange={this.questionSelectChange}
+                    onChange={questionSelectChange}
                     options={dropDownQuizOptions}
                   />
-                  <ControlBtn prev skinB disabled={this.isFirst()} onClick={this.moveToPrev}>
+                  <ControlBtn prev skinB disabled={isFirst()} onClick={moveToPrev}>
                     <i className="fa fa-angle-left" />
                   </ControlBtn>
-                  <ControlBtn next skinB disabled={this.isLast()} onClick={this.moveToNext}>
+                  <ControlBtn next skinB disabled={isLast()} onClick={moveToNext}>
                     <i className="fa fa-angle-right" />
                     <span>Next</span>
                   </ControlBtn>
@@ -129,12 +140,12 @@ class AssessmentPlayerSimple extends Assessment {
               <MainFooter>
                 <FlexContainer />
                 <FlexContainer>
-                  <ControlBtn prev skinB disabled={this.isFirst()} onClick={this.moveToPrev}>
+                  <ControlBtn prev skinB disabled={isFirst()} onClick={moveToPrev}>
                     <i className="fa fa-angle-left" />
                   </ControlBtn>
-                  <ControlBtn next skinB disabled={this.isLast()} onClick={this.moveToNext}>
+                  <ControlBtn next skinB disabled={isLast()} onClick={moveToNext}>
                     <i className="fa fa-angle-right" />
-                    <span>{t('common.layout.nextbtn')}</span>
+                    {/* <span>{t("common.layout.nextbtn")}</span> */}
                   </ControlBtn>
                 </FlexContainer>
               </MainFooter>
@@ -153,19 +164,4 @@ class AssessmentPlayerSimple extends Assessment {
   }
 }
 
-const enhance = compose(
-  withNamespaces('student'),
-  connect(
-    state => ({
-      questions: state.questions.questions,
-      currentQuestion: state.questions.currentQuestion,
-    }),
-    dispatch => ({
-      gotoQuestion: (question) => {
-        dispatch(gotoQuestion(question));
-      },
-    }),
-  ),
-);
-
-export default enhance(AssessmentPlayerSimple);
+export default AssessmentPlayerSimple;

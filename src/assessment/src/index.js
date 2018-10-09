@@ -14,13 +14,15 @@ class AssessmentPlayer extends React.Component {
   }
 
   render() {
-    return <ThemeContainer />;
+    const { defaultAP } = this.props;
+    return <ThemeContainer defaultAP={defaultAP} />;
   }
 }
 
 AssessmentPlayer.propTypes = {
   dispatch: PropTypes.func.isRequired,
   assessmentId: PropTypes.string.isRequired,
+  defaultAP: PropTypes.any.isRequired,
 };
 
 // export component

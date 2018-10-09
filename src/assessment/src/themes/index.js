@@ -1,17 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-import { gotoQuestion } from '../actions/questions';
+import { gotoQuestion as gotoQuestionAction } from '../actions/questions';
 import AssesmentPlayerDefault from './AssessmentPlayerDefault';
+import AssesmentPlayerSimple from './AssessmentPlayerSimple';
 
-const AssessmentContainer = ({ gotoQuestion, questions, currentQuestion }) => {
+const AssessmentContainer = ({ gotoQuestion, questions, currentQuestion, defaultAP }) => {
   const isLast = () => currentQuestion === questions.length - 1;
   const isFirst = () => currentQuestion === 0;
 
   const questionSelectChange = (e) => {
-    const currentQuestion = parseInt(e.target.value, 10);
-    gotoQuestion(currentQuestion);
+    gotoQuestion(parseInt(e.target.value, 10));
   };
 
   const moveToNext = () => {
@@ -34,7 +33,7 @@ const AssessmentContainer = ({ gotoQuestion, questions, currentQuestion }) => {
     currentQuestion,
   };
 
-  return <AssesmentPlayerDefault {...props} />;
+  return defaultAP ? <AssesmentPlayerDefault {...props} /> : <AssesmentPlayerSimple {...props} />;
 };
 
 AssessmentContainer.PropType = {
@@ -48,5 +47,5 @@ export default connect(
     questions: questions.questions,
     currentQuestion: questions.currentQuestion,
   }),
-  { gotoQuestion },
+  { gotoQuestion: gotoQuestionAction },
 )(AssessmentContainer);

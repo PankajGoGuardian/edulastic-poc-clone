@@ -9,17 +9,17 @@ import {
   MultipleChoiceAuthoring,
   MultipleChoiceDisplay,
   MultipleChoiceReport,
-  CorrectAnswers,
+  CorrectAnswers
 } from './index';
 import { getValidationSelector } from '../../selectors/questionCommon';
 import { updateItemByIdAction } from '../../actions/items';
-import { addQuestion } from '../../actions/questions';
+import { addQuestion, addAnswer } from '../../actions/questions';
 import { getPreivewTabSelector } from './selectors/preview';
 import { ASSESSMENTID } from '../../constants/others';
 
 class MultipleChoice extends Component {
   state = {
-    userSelections: [],
+    userSelections: []
   };
 
   componentDidMount() {
@@ -31,37 +31,29 @@ class MultipleChoice extends Component {
     }
   }
 
-  handleMultiSelect = (e) => {
-    let { userSelections } = this.state;
-    const index = parseInt(e.target.value, 10);
-    userSelections = Array(userSelections.length).fill(false);
-    userSelections[index] = e.target.checked;
-    this.setState({ userSelections });
-  };
-
   saveData = () => {
     const { updateItemById, add } = this.props;
     const {
       previewStimulus,
       previewDisplayOptions,
-      itemForEdit,
+      itemForEdit
     } = this.getRenderData();
     updateItemById({
       ...itemForEdit,
       id: itemForEdit._id,
       reference: itemForEdit.id,
       stimulus: previewStimulus,
-      list: previewDisplayOptions,
+      list: previewDisplayOptions
     });
     const question = {
       assessmentId: localStorage.getItem(ASSESSMENTID),
       question: previewStimulus,
       options: previewDisplayOptions.map((option, index) => ({
         value: index,
-        label: option,
+        label: option
       })),
       type: itemForEdit.type,
-      answer: itemForEdit.validation.valid_response.value,
+      answer: itemForEdit.validation.valid_response.value
     };
     add(question);
   };
@@ -73,7 +65,7 @@ class MultipleChoice extends Component {
       validation,
       item,
       smallSize,
-      history,
+      history
     } = this.props;
     const locationState = history.location.state;
     const isDetailPage =
@@ -92,23 +84,32 @@ class MultipleChoice extends Component {
         ...item,
         stimulus,
         list: questionsList,
-        validation,
+        validation
       };
     }
     return {
       previewStimulus,
       previewDisplayOptions,
-      itemForEdit,
+      itemForEdit
     };
   };
 
   render() {
-    const { view, previewTab, smallSize, item, validation } = this.props;
+    const {
+      view,
+      previewTab,
+      smallSize,
+      item,
+      validation,
+      addAnswer,
+      answer,
+      question
+    } = this.props;
     const { userSelections } = this.state;
     const {
       previewStimulus,
       previewDisplayOptions,
-      itemForEdit,
+      itemForEdit
     } = this.getRenderData();
 
     return (
@@ -149,11 +150,14 @@ class MultipleChoice extends Component {
                 key={previewDisplayOptions && previewStimulus}
                 smallSize={smallSize}
                 options={previewDisplayOptions}
+                answer={answer}
                 question={previewStimulus}
+                addAnswer={addAnswer}
+                data={question}
                 userSelections={
                   !!item && item.userSelections ? item.userSelections : []
                 }
-                onChange={this.handleMultiSelect}
+                onChange={addAnswer}
               />
             )}
           </React.Fragment>
@@ -174,7 +178,7 @@ MultipleChoice.propTypes = {
   validation: PropTypes.object,
   saveClicked: PropTypes.bool,
   updateItemById: PropTypes.func.isRequired,
-  add: PropTypes.func.isRequired,
+  add: PropTypes.func.isRequired
 };
 
 MultipleChoice.defaultProps = {
@@ -184,29 +188,31 @@ MultipleChoice.defaultProps = {
   smallSize: false,
   saveClicked: false,
   history: {},
-  validation: {},
+  validation: {}
 };
 
 const enhance = compose(
   withRouter,
   connect(
-    (state) => {
+    state => {
       const { questions, currentQuestion } = state.assessmentQuestions;
 
       const question = questions[currentQuestion] || {};
 
       return {
+        question,
         stimulus: question.stimulus,
         questionsList: question.options,
         previewTab: getPreivewTabSelector(state),
-        validation: getValidationSelector(state),
+        validation: getValidationSelector(state)
       };
     },
     {
+      addAnswer,
       updateItemById: updateItemByIdAction,
-      add: addQuestion,
-    },
-  ),
+      add: addQuestion
+    }
+  )
 );
 
 export default enhance(MultipleChoice);

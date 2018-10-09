@@ -18,7 +18,7 @@ export default class QuestionWrapper extends Component {
               initialData={data}
             />
         )}
-        {type === 'multipleChoice' && (
+        {type === 'mcq' && (
           <MultipleChoice
             view={view}
             isNew={isNew}
@@ -33,7 +33,7 @@ export default class QuestionWrapper extends Component {
 }
 
 QuestionWrapper.propTypes = {
-  type: PropTypes.oneOf(['orderList', 'multipleChoice']),
+  type: PropTypes.oneOf(['orderList', 'mcq']),
   view: PropTypes.string.isRequired,
   isNew: PropTypes.bool,
   data: PropTypes.object,

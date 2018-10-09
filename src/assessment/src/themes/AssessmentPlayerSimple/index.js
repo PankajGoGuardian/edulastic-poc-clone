@@ -31,7 +31,7 @@ import {
   HeaderRightMenu,
   MobileMainMenu,
 } from '../common';
-import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapper';
+import QuestionWrapper from '../../components/QuestionWrapper';
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line

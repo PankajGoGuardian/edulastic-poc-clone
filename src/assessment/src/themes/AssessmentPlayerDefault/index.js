@@ -1,10 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
-import { connect } from 'react-redux';
 
-import { gotoQuestion } from '../../actions/questions';
-import Assessment from '../Assessment';
 import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
 import MainWrapper from './MainWrapper';
 import HeaderLeftMenu from '../common/HeaderLeftMenu';
@@ -20,15 +17,22 @@ import {
   Logo,
   FlexContainer,
 } from '../common';
-import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapper';
+import QuestionWrapper from '../../components/QuestionWrapper';
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line
 const defaultTheme = require('sass-extract-loader?{"plugins": ["sass-extract-js"]}!../../styles/vars.scss');
 
-class AssessmentPlayerDefault extends Assessment {
+class AssessmentPlayerDefault extends React.Component {
   static propTypes = {
     theme: PropTypes.object,
+    questions: PropTypes.array.isRequired,
+    currentQuestion: PropTypes.number,
+    isLast: PropTypes.func,
+    isFirst: PropTypes.func,
+    moveToNext: PropTypes.func,
+    moveToPrev: PropTypes.func,
+    questionSelectChange: PropTypes.func,
   };
 
   static defaultProps = {
@@ -36,10 +40,20 @@ class AssessmentPlayerDefault extends Assessment {
   };
 
   render() {
-    const { questions, currentQuestion, theme } = this.props;
+    const {
+      questions,
+      currentQuestion,
+      theme,
+      isLast,
+      isFirst,
+      moveToNext,
+      moveToPrev,
+      questionSelectChange,
+    } = this.props;
     const dropDownQuizOptions = questions.map((item, index) => ({
       value: index,
     }));
+
     const survey = questions[currentQuestion] || {};
     const { type } = survey;
     return (
@@ -54,13 +68,13 @@ class AssessmentPlayerDefault extends Assessment {
                 <QuestionSelectDropdown
                   key={currentQuestion}
                   value={currentQuestion}
-                  onChange={this.questionSelectChange}
+                  onChange={questionSelectChange}
                   options={dropDownQuizOptions}
                 />
-                <ControlBtn prev skin disabled={this.isFirst()} onClick={this.moveToPrev}>
+                <ControlBtn prev skin disabled={isFirst()} onClick={moveToPrev}>
                   <i className="fa fa-angle-left" />
                 </ControlBtn>
-                <ControlBtn next skin disabled={this.isLast()} onClick={this.moveToNext}>
+                <ControlBtn next skin disabled={isLast()} onClick={moveToNext}>
                   <i className="fa fa-angle-right" />
                 </ControlBtn>
                 <ControlBtn setting skin>
@@ -73,7 +87,12 @@ class AssessmentPlayerDefault extends Assessment {
           </Header>
           <Main skin>
             <MainWrapper>
-              <QuestionWrapper type={type} view="preview" key={type} data={survey} />
+              <QuestionWrapper
+                type={type}
+                view="preview"
+                key={type}
+                data={survey}
+              />
             </MainWrapper>
           </Main>
         </Container>
@@ -82,18 +101,4 @@ class AssessmentPlayerDefault extends Assessment {
   }
 }
 
-const mapStateToProps = state => ({
-  questions: state.questions.questions,
-  currentQuestion: state.questions.currentQuestion,
-});
-
-const mapDispatchToProps = dispatch => ({
-  gotoQuestion: (question) => {
-    dispatch(gotoQuestion(question));
-  },
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AssessmentPlayerDefault);
+export default AssessmentPlayerDefault;

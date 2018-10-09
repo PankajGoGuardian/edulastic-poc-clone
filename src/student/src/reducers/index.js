@@ -1,9 +1,3 @@
-import questions from './questions';
-import assessment from './assessment';
-
-const studentReducer = {
-  questions,
-  assessment,
-};
+const studentReducer = {};
 
 export default studentReducer;

@@ -41,7 +41,11 @@ class MultipleChoice extends Component {
 
   saveData = () => {
     const { updateItemById, add } = this.props;
-    const { previewStimulus, previewDisplayOptions, itemForEdit } = this.getRenderData();
+    const {
+      previewStimulus,
+      previewDisplayOptions,
+      itemForEdit,
+    } = this.getRenderData();
     updateItemById({
       ...itemForEdit,
       id: itemForEdit._id,
@@ -63,9 +67,17 @@ class MultipleChoice extends Component {
   };
 
   getRenderData = () => {
-    const { stimulus, questionsList, validation, item, smallSize, history } = this.props;
+    const {
+      stimulus,
+      questionsList,
+      validation,
+      item,
+      smallSize,
+      history,
+    } = this.props;
     const locationState = history.location.state;
-    const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
+    const isDetailPage =
+      locationState !== undefined ? locationState.itemDetail : false;
     let previewDisplayOptions;
     let previewStimulus;
     let itemForEdit;
@@ -93,7 +105,11 @@ class MultipleChoice extends Component {
   render() {
     const { view, previewTab, smallSize, item, validation } = this.props;
     const { userSelections } = this.state;
-    const { previewStimulus, previewDisplayOptions, itemForEdit } = this.getRenderData();
+    const {
+      previewStimulus,
+      previewDisplayOptions,
+      itemForEdit,
+    } = this.getRenderData();
 
     return (
       <PaddingDiv>
@@ -134,7 +150,9 @@ class MultipleChoice extends Component {
                 smallSize={smallSize}
                 options={previewDisplayOptions}
                 question={previewStimulus}
-                userSelections={!!item && item.userSelections ? item.userSelections : []}
+                userSelections={
+                  !!item && item.userSelections ? item.userSelections : []
+                }
                 onChange={this.handleMultiSelect}
               />
             )}
@@ -173,8 +191,7 @@ const enhance = compose(
   withRouter,
   connect(
     (state) => {
-      console.log('statee here is', state);
-      const { questions, currentQuestion } = state.questions;
+      const { questions, currentQuestion } = state.assessmentQuestions;
 
       const question = questions[currentQuestion] || {};
 

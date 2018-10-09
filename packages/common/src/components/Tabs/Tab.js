@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { textColor, blue, mobileWidth, greenDark } from '@edulastic/colors';
+import { textColor, blue, mobileWidth, greenDark, mainBgColor } from '@edulastic/colors';
 import { IconPensilEdit } from '@edulastic/icons';
 
 const Tab = ({ label, onClick, active, style, editable, onChange }) => {
@@ -41,7 +41,7 @@ const Container = styled.div`
   color: ${({ active }) => (active ? blue : textColor)};
   padding: 10px 25px;
   cursor: pointer;
-  border-bottom: 2px solid ${({ active }) => (active ? blue : 'transparent')};
+  border-bottom: 2px solid ${({ active }) => (active ? blue : mainBgColor)};
 
   @media (max-width: ${mobileWidth}) {
     width: 50%;

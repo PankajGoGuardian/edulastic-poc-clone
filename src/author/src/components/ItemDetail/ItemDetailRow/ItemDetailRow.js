@@ -59,7 +59,7 @@ class ItemDetailRow extends Component {
                 <Tabs.Tab
                   key={tabIndex}
                   label={tab}
-                  style={{ width: '50%', textAlign: 'center' }}
+                  style={{ width: '50%', textAlign: 'center', padding: '30px 20px 15px' }}
                   onChange={e => onEditTabTitle(tabIndex, e.target.value)}
                   editable
                 />

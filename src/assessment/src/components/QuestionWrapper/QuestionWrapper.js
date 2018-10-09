@@ -7,7 +7,6 @@ import { MultipleChoice } from '../MultipleChoice';
 export default class QuestionWrapper extends Component {
   render() {
     const { type, view, isNew, data, saveClicked } = this.props;
-    console.log(data);
     return (
       <React.Fragment>
         {type === 'orderList' &&
@@ -34,7 +33,7 @@ export default class QuestionWrapper extends Component {
 }
 
 QuestionWrapper.propTypes = {
-  type: PropTypes.oneOf(['orderList', 'multipleChoice']),
+  type: PropTypes.oneOf(['orderList', 'multipleChoice', 'image']),
   view: PropTypes.string.isRequired,
   isNew: PropTypes.bool,
   data: PropTypes.object,

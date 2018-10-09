@@ -31,7 +31,6 @@ function* receiveItemSaga({ payload }) {
 function* updateItemSaga({ payload }) {
   try {
     const item = yield call(testItemsApi.updateById, payload.id, payload.data);
-    console.log(item);
 
     yield put({
       type: UPDATE_ITEM_DETAIL_SUCCESS,
@@ -40,9 +39,11 @@ function* updateItemSaga({ payload }) {
     NotificationManager.success('Update item by id is success', 'Success');
   } catch (err) {
     console.error(err);
+    const errorMessage = 'Update item by id is failing';
+    NotificationManager.error(errorMessage, 'Error');
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,
-      payload: { error: 'Update item by id is failing' },
+      payload: { error: errorMessage },
     });
   }
 }

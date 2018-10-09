@@ -1,16 +1,16 @@
-import PropTypes from "prop-types";
-import React from "react";
-import { Line } from "rc-progress";
-import { ThemeProvider } from "styled-components";
-import MainWrapper from "./MainWrapper";
-import MainContent from "./MainContent";
-import MainFooter from "./MainFooter";
-import Sidebar from "./Sidebar";
-import ProgressContainer from "./ProgressContainer";
-import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
-import LogoImage from "../../assets/logo.png";
-import SettingImage from "../../assets/screwdriver.png";
-import SidebarQuestionList from "./SidebarQuestionList";
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Line } from 'rc-progress';
+import { ThemeProvider } from 'styled-components';
+import MainWrapper from './MainWrapper';
+import MainContent from './MainContent';
+import MainFooter from './MainFooter';
+import Sidebar from './Sidebar';
+import ProgressContainer from './ProgressContainer';
+import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
+import LogoImage from '../../assets/logo.png';
+import SettingImage from '../../assets/screwdriver.png';
+import SidebarQuestionList from './SidebarQuestionList';
 import {
   Blank,
   ControlBtn,
@@ -23,9 +23,9 @@ import {
   HeaderLeftMenu,
   HeaderMainMenu,
   HeaderRightMenu,
-  MobileMainMenu
-} from "../common";
-import QuestionWrapper from "../../components/QuestionWrapper";
+  MobileMainMenu,
+} from '../common';
+import QuestionWrapper from '../../components/QuestionWrapper';
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line
@@ -36,16 +36,16 @@ class AssessmentPlayerSimple extends React.Component {
     theme: PropTypes.object,
     // t: PropTypes.func.isRequired,
     questions: PropTypes.array.isRequired,
-    currentQuestion: PropTypes.number,
-    isLast: PropTypes.func,
-    isFirst: PropTypes.func,
-    moveToNext: PropTypes.func,
-    moveToPrev: PropTypes.func,
-    questionSelectChange: PropTypes.func
+    currentQuestion: PropTypes.number.isRequired,
+    isLast: PropTypes.func.isRequired,
+    isFirst: PropTypes.func.isRequired,
+    moveToNext: PropTypes.func.isRequired,
+    moveToPrev: PropTypes.func.isRequired,
+    questionSelectChange: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
-    theme: defaultTheme
+    theme: defaultTheme,
   };
 
   render() {
@@ -58,16 +58,14 @@ class AssessmentPlayerSimple extends React.Component {
       isFirst,
       moveToNext,
       moveToPrev,
-      questionSelectChange
+      questionSelectChange,
     } = this.props;
     const dropDownQuizOptions = questions.map((item, index) => ({
-      value: index
+      value: index,
     }));
     const survey = questions[currentQuestion] || {};
     const { type } = survey;
-    const percent = Math.round(
-      ((currentQuestion + 1) * 100) / dropDownQuizOptions.length
-    );
+    const percent = Math.round(((currentQuestion + 1) * 100) / dropDownQuizOptions.length);
     return (
       <ThemeProvider theme={theme}>
         <Container>
@@ -110,20 +108,10 @@ class AssessmentPlayerSimple extends React.Component {
                     onChange={questionSelectChange}
                     options={dropDownQuizOptions}
                   />
-                  <ControlBtn
-                    prev
-                    skinB
-                    disabled={isFirst()}
-                    onClick={moveToPrev}
-                  >
+                  <ControlBtn prev skinB disabled={isFirst()} onClick={moveToPrev}>
                     <i className="fa fa-angle-left" />
                   </ControlBtn>
-                  <ControlBtn
-                    next
-                    skinB
-                    disabled={isLast()}
-                    onClick={moveToNext}
-                  >
+                  <ControlBtn next skinB disabled={isLast()} onClick={moveToNext}>
                     <i className="fa fa-angle-right" />
                     <span>Next</span>
                   </ControlBtn>
@@ -152,20 +140,10 @@ class AssessmentPlayerSimple extends React.Component {
               <MainFooter>
                 <FlexContainer />
                 <FlexContainer>
-                  <ControlBtn
-                    prev
-                    skinB
-                    disabled={isFirst()}
-                    onClick={moveToPrev}
-                  >
+                  <ControlBtn prev skinB disabled={isFirst()} onClick={moveToPrev}>
                     <i className="fa fa-angle-left" />
                   </ControlBtn>
-                  <ControlBtn
-                    next
-                    skinB
-                    disabled={isLast()}
-                    onClick={moveToNext}
-                  >
+                  <ControlBtn next skinB disabled={isLast()} onClick={moveToNext}>
                     <i className="fa fa-angle-right" />
                     {/* <span>{t("common.layout.nextbtn")}</span> */}
                   </ControlBtn>

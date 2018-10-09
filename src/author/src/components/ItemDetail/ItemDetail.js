@@ -11,7 +11,6 @@ import SourceModal from '../QuestionEditor/SourceModal';
 import ItemHeader from '../QuestionEditor/ItemHeader';
 import { changeViewAction } from '../../actions/view';
 import { changePreviewTabAction } from '../../actions/preview';
-import { getViewSelector } from '../../selectors/view';
 import { getPreivewTabSelector } from '../../../../assessment/src/components/MultipleChoice/selectors/preview';
 import SettingsBar from './SettingsBar/SettingsBar';
 import {
@@ -30,12 +29,14 @@ import {
   getItemDetailUpdatingSelector,
   getItemDetailDimensionTypeSelector,
 } from '../../selectors/itemDetail';
-import ItemDetailRow from './ItemDetailRow/ItemDetailRow';
+import ItemDetailRow from './ItemDetailRow';
+import TestItemPreview from '../../../../assessment/src/components/TestItemPreview/TestItemPreview';
 
 class ItemDetail extends Component {
   state = {
     showModal: false,
     showSettings: false,
+    view: 'edit',
   };
 
   componentDidMount() {
@@ -45,7 +46,7 @@ class ItemDetail extends Component {
 
   getSizes = (type) => {
     switch (type) {
-      case 'single':
+      case '100-100':
         return {
           left: '100%',
           right: '100%',
@@ -84,7 +85,9 @@ class ItemDetail extends Component {
   };
 
   handleChangeView = (view) => {
-    console.log(view);
+    this.setState({
+      view,
+    });
   };
 
   handleShowSource = () => {
@@ -162,7 +165,6 @@ class ItemDetail extends Component {
       t,
       changePreviewTab,
       previewTab,
-      view,
       match,
       rows,
       loading,
@@ -173,6 +175,8 @@ class ItemDetail extends Component {
       updateTabTitle,
       useTabs,
     } = this.props;
+
+    const { view } = this.state;
 
     return (
       <Container>
@@ -189,7 +193,7 @@ class ItemDetail extends Component {
             onApply={this.handleApplySettings}
             useTabs={useTabs}
             useTabsLeft={!!rows[0].tabs.length}
-            useTabsRight={!!rows[1].tabs.length}
+            useTabsRight={!!(!!rows[1] && !!rows[1].tabs.length)}
           />
         )}
         <ItemHeader
@@ -211,23 +215,26 @@ class ItemDetail extends Component {
             previewTab={previewTab}
           />
         </ItemHeader>
-        <Content>
-          {loading && <Preloader />}
-          {rows &&
-            !!rows.length &&
-            rows.map((row, i) => (
-              <ItemDetailRow
-                key={i}
-                row={row}
-                onAdd={this.handleAdd}
-                onDeleteWidget={widgetIndex => deleteWidget(i, widgetIndex)}
-                onEditWidget={this.handleEditWidget}
-                onEditTabTitle={(tabIndex, value) =>
-                  updateTabTitle({ rowIndex: i, tabIndex, value })
-                }
-              />
-            ))}
-        </Content>
+        {view === 'edit' && (
+          <Content>
+            {loading && <Preloader />}
+            {rows &&
+              !!rows.length &&
+              rows.map((row, i) => (
+                <ItemDetailRow
+                  key={i}
+                  row={row}
+                  onAdd={this.handleAdd}
+                  onDeleteWidget={widgetIndex => deleteWidget(i, widgetIndex)}
+                  onEditWidget={this.handleEditWidget}
+                  onEditTabTitle={(tabIndex, value) =>
+                    updateTabTitle({ rowIndex: i, tabIndex, value })
+                  }
+                />
+              ))}
+          </Content>
+        )}
+        {view === 'preview' && <TestItemPreview cols={rows} />}
       </Container>
     );
   }
@@ -236,7 +243,6 @@ class ItemDetail extends Component {
 ItemDetail.propTypes = {
   t: PropTypes.func.isRequired,
   changePreviewTab: PropTypes.func.isRequired,
-  view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
   match: PropTypes.object.isRequired,
   getItemDetailById: PropTypes.func.isRequired,
@@ -263,7 +269,6 @@ const enhance = compose(
   withNamespaces('author'),
   connect(
     state => ({
-      view: getViewSelector(state),
       previewTab: getPreivewTabSelector(state),
       rows: getItemDetailRowsSelector(state),
       loading: getItemDetailLoadingSelector(state),

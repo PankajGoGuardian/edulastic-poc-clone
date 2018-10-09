@@ -10,7 +10,7 @@ import {
   QuestionEditor,
   ItemAdd,
   ItemList,
-  PickUpQuestionType
+  PickUpQuestionType,
 } from './author/src';
 import ItemDetail from './author/src/components/ItemDetail';
 
@@ -48,7 +48,7 @@ class App extends Component {
 }
 
 App.propTypes = {
-  assessmentId: PropTypes.string.isRequired
+  assessmentId: PropTypes.string.isRequired,
 };
 
 export default DragDropContext(HTML5Backend)(App);

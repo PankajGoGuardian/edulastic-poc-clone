@@ -1,15 +1,15 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import { gotoQuestion } from '../actions/questions';
-import AssesmentPlayerDefault from './AssessmentPlayerDefault';
+import { gotoQuestion } from "../actions/questions";
+import AssesmentPlayerSimple from "./AssessmentPlayerSimple";
 
 const AssessmentContainer = ({ gotoQuestion, questions, currentQuestion }) => {
   const isLast = () => currentQuestion === questions.length - 1;
   const isFirst = () => currentQuestion === 0;
 
-  const questionSelectChange = (e) => {
+  const questionSelectChange = e => {
     const currentQuestion = parseInt(e.target.value, 10);
     gotoQuestion(currentQuestion);
   };
@@ -31,22 +31,22 @@ const AssessmentContainer = ({ gotoQuestion, questions, currentQuestion }) => {
     moveToPrev,
     questionSelectChange,
     questions,
-    currentQuestion,
+    currentQuestion
   };
 
-  return <AssesmentPlayerDefault {...props} />;
+  return <AssesmentPlayerSimple {...props} />;
 };
 
 AssessmentContainer.PropType = {
   questions: PropTypes.array.isRequired,
   currentQuestion: PropTypes.number.isRequired,
-  gotoQuestion: PropTypes.func.isRequired,
+  gotoQuestion: PropTypes.func.isRequired
 };
 
 export default connect(
   ({ assessmentQuestions: questions }) => ({
     questions: questions.questions,
-    currentQuestion: questions.currentQuestion,
+    currentQuestion: questions.currentQuestion
   }),
-  { gotoQuestion },
+  { gotoQuestion }
 )(AssessmentContainer);

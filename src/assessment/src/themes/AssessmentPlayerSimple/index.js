@@ -1,22 +1,16 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import { Line } from 'rc-progress';
-import { ThemeProvider } from 'styled-components';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-
-import { gotoQuestion } from '../../actions/questions';
-import Assessment from '../Assessment';
-import MainWrapper from './MainWrapper';
-import MainContent from './MainContent';
-import MainFooter from './MainFooter';
-import Sidebar from './Sidebar';
-import ProgressContainer from './ProgressContainer';
-import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
-import LogoImage from '../../assets/logo.png';
-import SettingImage from '../../assets/screwdriver.png';
-import SidebarQuestionList from './SidebarQuestionList';
+import PropTypes from "prop-types";
+import React from "react";
+import { Line } from "rc-progress";
+import { ThemeProvider } from "styled-components";
+import MainWrapper from "./MainWrapper";
+import MainContent from "./MainContent";
+import MainFooter from "./MainFooter";
+import Sidebar from "./Sidebar";
+import ProgressContainer from "./ProgressContainer";
+import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
+import LogoImage from "../../assets/logo.png";
+import SettingImage from "../../assets/screwdriver.png";
+import SidebarQuestionList from "./SidebarQuestionList";
 import {
   Blank,
   ControlBtn,
@@ -29,32 +23,51 @@ import {
   HeaderLeftMenu,
   HeaderMainMenu,
   HeaderRightMenu,
-  MobileMainMenu,
-} from '../common';
-import QuestionWrapper from '../../components/QuestionWrapper';
+  MobileMainMenu
+} from "../common";
+import QuestionWrapper from "../../components/QuestionWrapper";
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line
 const defaultTheme = require('sass-extract-loader?{"plugins": ["sass-extract-js"]}!../../styles/vars.scss');
 
-class AssessmentPlayerSimple extends Assessment {
+class AssessmentPlayerSimple extends React.Component {
   static propTypes = {
     theme: PropTypes.object,
-    t: PropTypes.func.isRequired,
+    // t: PropTypes.func.isRequired,
+    questions: PropTypes.array.isRequired,
+    currentQuestion: PropTypes.number,
+    isLast: PropTypes.func,
+    isFirst: PropTypes.func,
+    moveToNext: PropTypes.func,
+    moveToPrev: PropTypes.func,
+    questionSelectChange: PropTypes.func
   };
 
   static defaultProps = {
-    theme: defaultTheme,
+    theme: defaultTheme
   };
 
   render() {
-    const { questions, currentQuestion, theme, t } = this.props;
+    const {
+      questions,
+      currentQuestion,
+      theme,
+      // t,
+      isLast,
+      isFirst,
+      moveToNext,
+      moveToPrev,
+      questionSelectChange
+    } = this.props;
     const dropDownQuizOptions = questions.map((item, index) => ({
-      value: index,
+      value: index
     }));
     const survey = questions[currentQuestion] || {};
     const { type } = survey;
-    const percent = Math.round(((currentQuestion + 1) * 100) / dropDownQuizOptions.length);
+    const percent = Math.round(
+      ((currentQuestion + 1) * 100) / dropDownQuizOptions.length
+    );
     return (
       <ThemeProvider theme={theme}>
         <Container>
@@ -94,13 +107,23 @@ class AssessmentPlayerSimple extends Assessment {
                   <QuestionSelectDropdown
                     key={currentQuestion}
                     value={currentQuestion}
-                    onChange={this.questionSelectChange}
+                    onChange={questionSelectChange}
                     options={dropDownQuizOptions}
                   />
-                  <ControlBtn prev skinB disabled={this.isFirst()} onClick={this.moveToPrev}>
+                  <ControlBtn
+                    prev
+                    skinB
+                    disabled={isFirst()}
+                    onClick={moveToPrev}
+                  >
                     <i className="fa fa-angle-left" />
                   </ControlBtn>
-                  <ControlBtn next skinB disabled={this.isLast()} onClick={this.moveToNext}>
+                  <ControlBtn
+                    next
+                    skinB
+                    disabled={isLast()}
+                    onClick={moveToNext}
+                  >
                     <i className="fa fa-angle-right" />
                     <span>Next</span>
                   </ControlBtn>
@@ -129,12 +152,22 @@ class AssessmentPlayerSimple extends Assessment {
               <MainFooter>
                 <FlexContainer />
                 <FlexContainer>
-                  <ControlBtn prev skinB disabled={this.isFirst()} onClick={this.moveToPrev}>
+                  <ControlBtn
+                    prev
+                    skinB
+                    disabled={isFirst()}
+                    onClick={moveToPrev}
+                  >
                     <i className="fa fa-angle-left" />
                   </ControlBtn>
-                  <ControlBtn next skinB disabled={this.isLast()} onClick={this.moveToNext}>
+                  <ControlBtn
+                    next
+                    skinB
+                    disabled={isLast()}
+                    onClick={moveToNext}
+                  >
                     <i className="fa fa-angle-right" />
-                    <span>{t('common.layout.nextbtn')}</span>
+                    {/* <span>{t("common.layout.nextbtn")}</span> */}
                   </ControlBtn>
                 </FlexContainer>
               </MainFooter>
@@ -153,19 +186,4 @@ class AssessmentPlayerSimple extends Assessment {
   }
 }
 
-const enhance = compose(
-  withNamespaces('student'),
-  connect(
-    state => ({
-      questions: state.questions.questions,
-      currentQuestion: state.questions.currentQuestion,
-    }),
-    dispatch => ({
-      gotoQuestion: (question) => {
-        dispatch(gotoQuestion(question));
-      },
-    }),
-  ),
-);
-
-export default enhance(AssessmentPlayerSimple);
+export default AssessmentPlayerSimple;

@@ -7,6 +7,7 @@ import {
   DELETE_ITEM_DETAIL_WIDGET,
   UPDATE_TAB_TITLE,
   USE_TABS,
+  MOVE_WIDGET,
 } from '../constants/actions';
 
 export const getItemDetailByIdAction = (id, params) => ({
@@ -47,4 +48,9 @@ export const updateTabTitleAction = ({ rowIndex, tabIndex, value }) => ({
 export const useTabsAction = ({ rowIndex, isUseTabs }) => ({
   type: USE_TABS,
   payload: { rowIndex, isUseTabs },
+});
+
+export const moveItemDetailWidgetAction = ({ from, to }) => ({
+  type: MOVE_WIDGET,
+  payload: { from, to },
 });

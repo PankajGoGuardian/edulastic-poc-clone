@@ -5,11 +5,10 @@ import { FlexContainer } from '@edulastic/common';
 
 import Card from './Card';
 
-
 const PickUpQuestionTypes = ({ onSelectQuestionType }) => (
   <FlexContainer>
     <Card
-      type="mcq"
+      type="multipleChoice"
       title="MultipleChoice-standard"
       question="Which color has the smallest walvelenght?"
       options={['Red', 'Violet', 'Green']}

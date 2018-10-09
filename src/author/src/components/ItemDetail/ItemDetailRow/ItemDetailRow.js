@@ -23,6 +23,7 @@ class ItemDetailRow extends Component {
     onDeleteWidget: PropTypes.func.isRequired,
     onEditWidget: PropTypes.func.isRequired,
     onEditTabTitle: PropTypes.func.isRequired,
+    rowIndex: PropTypes.number.isRequired,
   };
 
   handleTabChange = (value) => {
@@ -31,23 +32,31 @@ class ItemDetailRow extends Component {
     });
   };
 
-  renderTabContent = (i, widget) => {
-    const { onEditWidget, onDeleteWidget } = this.props;
+  renderTabContent = ({ widgetIndex, widget, rowIndex }) => {
+    const { onEditWidget, onDeleteWidget, dragging } = this.props;
 
     return (
       <Tabs.TabContainer>
+        {dragging && (
+          <ItemDetailDropTarget
+            widgetIndex={widgetIndex}
+            rowIndex={rowIndex}
+            tabIndex={widget.tabIndex}
+          />
+        )}
         <ItemDetailWidget
-          key={i}
           widget={widget}
           onEdit={() => onEditWidget(widget)}
-          onDelete={() => onDeleteWidget(i)}
+          onDelete={() => onDeleteWidget(widgetIndex)}
+          widgetIndex={widgetIndex}
+          rowIndex={rowIndex}
         />
       </Tabs.TabContainer>
     );
   };
 
   render() {
-    const { row, onAdd, dragging, onEditTabTitle } = this.props;
+    const { row, onAdd, onEditTabTitle, rowIndex } = this.props;
     const { value } = this.state;
 
     return (
@@ -68,15 +77,13 @@ class ItemDetailRow extends Component {
         )}
         {row.widgets.map((widget, i) => (
           <React.Fragment key={i}>
-            {dragging && <ItemDetailDropTarget />}
-            {!!row.tabs.length && value === widget.tabIndex && this.renderTabContent(i, widget)}
-            {!row.tabs.length && this.renderTabContent(i, widget)}
+            {!!row.tabs.length &&
+              value === widget.tabIndex &&
+              this.renderTabContent({ widgetIndex: i, widget, rowIndex })}
+            {!row.tabs.length && this.renderTabContent({ widgetIndex: i, widget, rowIndex })}
           </React.Fragment>
         ))}
-        <FlexContainer
-          justifyContent="center"
-          style={{ marginBottom: 30, height: row.widgets.length ? 'auto' : '100%' }}
-        >
+        <FlexContainer justifyContent="center" style={{ marginBottom: 30 }}>
           <AddNew onClick={onAdd} />
         </FlexContainer>
       </Container>

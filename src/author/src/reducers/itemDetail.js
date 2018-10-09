@@ -12,6 +12,7 @@ import {
   DELETE_ITEM_DETAIL_WIDGET,
   UPDATE_TAB_TITLE,
   USE_TABS,
+  MOVE_WIDGET,
 } from '../constants/actions';
 
 const initialState = {
@@ -71,6 +72,14 @@ const useTabs = (state, { rowIndex, isUseTabs }) => {
   return newState;
 };
 
+const moveWidget = (state, { from, to }) => {
+  const newState = cloneDeep(state);
+  const [movedWidget] = newState.item.rows[from.rowIndex].widgets.splice(from.widgetIndex, 1);
+  movedWidget.tabIndex = to.tabIndex || 0;
+  newState.item.rows[to.rowIndex].widgets.splice(to.widgetIndex, 0, movedWidget);
+  return newState;
+};
+
 export default function reducer(state = initialState, { type, payload }) {
   switch (type) {
     case RECEIVE_ITEM_DETAIL_REQUEST:
@@ -88,6 +97,9 @@ export default function reducer(state = initialState, { type, payload }) {
 
     case UPDATE_TAB_TITLE:
       return updateTabTitle(state, payload);
+
+    case MOVE_WIDGET:
+      return moveWidget(state, payload);
 
     case USE_TABS:
       return useTabs(state, payload);

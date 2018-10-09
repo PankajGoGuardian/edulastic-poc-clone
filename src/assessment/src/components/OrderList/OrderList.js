@@ -11,23 +11,23 @@ import {
   Question,
   OrderListPreview,
   OrderListReport,
-  CorrectAnswers,
+  CorrectAnswers
 } from './index';
 import {
   getStimulusSelector,
   getQuestionsListSelector,
   getValidationSelector,
-  validationSelector,
+  validationSelector
 } from './selectors/questionsOrderList';
 import {
   updateStimulusAction,
   updateQuestionsListAction,
-  updateValidationAction,
+  updateValidationAction
 } from './actions/questionsOrderList';
 import {
   getPreviewListSelector,
   getPreviewIndexesListSelector,
-  getPreivewTabSelector,
+  getPreivewTabSelector
 } from './selectors/preview';
 import { updatePreviewListAction } from './actions/preview';
 
@@ -38,7 +38,7 @@ class OrderList extends Component {
     updatePreviewList(questionsList.map((item, i) => i));
   }
 
-  handleQuestionChange = (value) => {
+  handleQuestionChange = value => {
     const { updateStimulus } = this.props;
     updateStimulus(value);
   };
@@ -58,11 +58,11 @@ class OrderList extends Component {
           return value;
         }
         return q;
-      }),
+      })
     );
   };
 
-  handleDeleteQuestion = (index) => {
+  handleDeleteQuestion = index => {
     const { questionsList } = this.props;
     this.updateQuestions(questionsList.filter((q, i) => i !== index));
   };
@@ -72,11 +72,11 @@ class OrderList extends Component {
 
     this.updateQuestions([
       ...questionsList,
-      `${t('common.initialoptionslist.itemprefix')} ${questionsList.length}`,
+      `${t('common.initialoptionslist.itemprefix')} ${questionsList.length}`
     ]);
   };
 
-  updateQuestions = (list) => {
+  updateQuestions = list => {
     const { updateQuestionsList, updatePreviewList } = this.props;
 
     updateQuestionsList(list);
@@ -84,21 +84,39 @@ class OrderList extends Component {
   };
 
   onSortCurrentAnswer = ({ oldIndex, newIndex }) => {
-    const { updateValidation, validation, questionsList, validationState } = this.props;
-    const newValue = arrayMove(validation.valid_response.value, oldIndex, newIndex);
+    const {
+      updateValidation,
+      validation,
+      questionsList,
+      validationState
+    } = this.props;
+    const newValue = arrayMove(
+      validation.valid_response.value,
+      oldIndex,
+      newIndex
+    );
 
     updateValidation({
       ...validationState,
       valid_response: {
         score: validation.valid_response.score,
-        value: newValue.map(q => questionsList.findIndex(i => q === i)),
-      },
+        value: newValue.map(q => questionsList.findIndex(i => q === i))
+      }
     });
   };
 
   onSortAltAnswer = ({ oldIndex, newIndex, altIndex }) => {
-    const { validation, updateValidation, validationState, questionsList } = this.props;
-    const newValue = arrayMove(validation.alt_responses[altIndex].value, oldIndex, newIndex);
+    const {
+      validation,
+      updateValidation,
+      validationState,
+      questionsList
+    } = this.props;
+    const newValue = arrayMove(
+      validation.alt_responses[altIndex].value,
+      oldIndex,
+      newIndex
+    );
     console.log('newValue', newValue);
 
     updateValidation({
@@ -107,11 +125,13 @@ class OrderList extends Component {
         if (i === altIndex) {
           return {
             ...res,
-            value: newValue.map(q => questionsList.findIndex(item => q === item)),
+            value: newValue.map(q =>
+              questionsList.findIndex(item => q === item)
+            )
           };
         }
         return res;
-      }),
+      })
     });
   };
 
@@ -119,7 +139,9 @@ class OrderList extends Component {
     const { updatePreviewList, previewList, questionsList } = this.props;
     const newPreviewList = arrayMove(previewList, oldIndex, newIndex);
 
-    updatePreviewList(newPreviewList.map(q => questionsList.findIndex(i => q === i)));
+    updatePreviewList(
+      newPreviewList.map(q => questionsList.findIndex(i => q === i))
+    );
   };
 
   render() {
@@ -133,11 +155,11 @@ class OrderList extends Component {
       validationState,
       previewTab,
       smallSize,
-      initialData,
+      item
     } = this.props;
 
-    const previewQuestionsList = initialData.list !== 0 ? initialData.list : previewList;
-    const previewStimulus = initialData.stimulus ? initialData.stimulus : stimulus;
+    const previewQuestionsList = item.list !== 0 ? item.list : previewList;
+    const previewStimulus = item.stimulus ? item.stimulus : stimulus;
     return (
       <React.Fragment>
         {view === 'edit' && (
@@ -165,7 +187,9 @@ class OrderList extends Component {
         )}
         {view === 'preview' && (
           <React.Fragment>
-            <QuestionText dangerouslySetInnerHTML={{ __html: previewStimulus }} />
+            <QuestionText
+              dangerouslySetInnerHTML={{ __html: previewStimulus }}
+            />
 
             {previewTab === 'check' && (
               <OrderListReport
@@ -217,12 +241,12 @@ OrderList.propTypes = {
   previewTab: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
-  initialData: PropTypes.object,
+  item: PropTypes.object
 };
 
 OrderList.defaultProps = {
   smallSize: false,
-  initialData: {},
+  item: {}
 };
 
 const enhance = compose(
@@ -235,15 +259,15 @@ const enhance = compose(
       previewList: getPreviewListSelector(state),
       previewIndexesList: getPreviewIndexesListSelector(state),
       validationState: validationSelector(state),
-      previewTab: getPreivewTabSelector(state),
+      previewTab: getPreivewTabSelector(state)
     }),
     {
       updateStimulus: updateStimulusAction,
       updateQuestionsList: updateQuestionsListAction,
       updatePreviewList: updatePreviewListAction,
-      updateValidation: updateValidationAction,
-    },
-  ),
+      updateValidation: updateValidationAction
+    }
+  )
 );
 
 export default enhance(OrderList);

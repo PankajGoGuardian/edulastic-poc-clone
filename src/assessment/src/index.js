@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import { loadJSON } from './utils/loadjson';
+import { loadJSON } from "./utils/loadjson";
 
 // themes
-import ThemeContainer from './themes/index';
+import ThemeContainer from "./themes/index";
 
 class AssessmentPlayer extends React.Component {
   componentDidMount() {
@@ -14,13 +14,13 @@ class AssessmentPlayer extends React.Component {
   }
 
   render() {
-    return <ThemeContainer />;
+    return <ThemeContainer defaultAP={this.props.defaultAP} />;
   }
 }
 
 AssessmentPlayer.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  assessmentId: PropTypes.string.isRequired,
+  assessmentId: PropTypes.string.isRequired
 };
 
 // export component

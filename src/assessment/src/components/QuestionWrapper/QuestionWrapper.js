@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+import { connect } from 'react-redux';
 import { OrderList } from '../OrderList';
 import { MultipleChoice } from '../MultipleChoice';
+
+import { addAnswer } from '../../actions/questions';
 
 const QuestionWrapper = ({ type, data, ...restProps }) => {
   let questionProps = Object.assign(

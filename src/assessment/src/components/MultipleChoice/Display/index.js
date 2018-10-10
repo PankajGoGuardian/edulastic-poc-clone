@@ -174,6 +174,7 @@ Options.defaultProps = {
   answers: [],
   options: [],
   smallSize: false,
+  answer: {},
 };
 
 Options.propTypes = {
@@ -184,7 +185,7 @@ Options.propTypes = {
   options: PropTypes.array,
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool.isRequired,
-  answer: PropTypes.any.isRequired,
+  answer: PropTypes.any,
   addAnswer: PropTypes.func.isRequired,
 };
 

@@ -29,8 +29,18 @@ const updateById = (id, data) =>
     })
     .then(result => result.data);
 
+const create = data =>
+  api
+    .callApi({
+      url: prefix,
+      method: 'post',
+      data,
+    })
+    .then(result => result.data);
+
 export default {
   getAll,
   getById,
   updateById,
+  create,
 };

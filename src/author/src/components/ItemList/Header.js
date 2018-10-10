@@ -7,7 +7,7 @@ import { blue, greenDarkSecondary, white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { compose } from 'redux';
 
-const Header = ({ onSearch, onCreate, t, windowWidth }) => (
+const Header = ({ onSearch, onCreate, t, windowWidth, creating }) => (
   <Container>
     {windowWidth > 480 && <Heading>{t('component.itemlist.header.itemlist')}</Heading>}
     <TextField
@@ -18,6 +18,7 @@ const Header = ({ onSearch, onCreate, t, windowWidth }) => (
       containerStyle={{ marginRight: 20 }}
     />
     <Button
+      disabled={creating}
       style={{
         height: 50,
         minWidth: windowWidth > 768 ? 200 : 55,
@@ -40,6 +41,7 @@ Header.propTypes = {
   onCreate: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
+  creating: PropTypes.bool.isRequired,
 };
 
 const enhance = compose(withNamespaces('author'));

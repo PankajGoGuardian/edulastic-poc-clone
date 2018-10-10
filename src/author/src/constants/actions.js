@@ -48,3 +48,13 @@ export const DELETE_ITEM_DETAIL_WIDGET = '[itemDetail] delete widget';
 export const UPDATE_TAB_TITLE = '[itemDetail] update tab title';
 export const USE_TABS = '[itemDetail] is use tabs';
 export const MOVE_WIDGET = '[itemDetail] move widget';
+
+// Test items
+export const RECEIVE_TEST_ITEMS_REQUEST = '[testItems] receive items request';
+export const RECEIVE_TEST_ITEMS_SUCCESS = '[testItems] receive items success';
+export const RECEIVE_TEST_ITEMS_ERROR = '[testItems] receive items error';
+
+// Test item
+export const CREATE_TEST_ITEM_REQUEST = '[testItem] create item request';
+export const CREATE_TEST_ITEM_SUCCESS = '[testItem] create item success';
+export const CREATE_TEST_ITEM_ERROR = '[testItem] create item error';

@@ -9,17 +9,20 @@ import {
   MultipleChoiceAuthoring,
   MultipleChoiceDisplay,
   MultipleChoiceReport,
-  CorrectAnswers
+  CorrectAnswers,
 } from './index';
 import { getValidationSelector } from '../../selectors/questionCommon';
 import { updateItemByIdAction } from '../../actions/items';
-import { addQuestion, addAnswer } from '../../actions/questions';
+import {
+  addQuestion as addQuestionAction,
+  addAnswer as addAnswerAction,
+} from '../../actions/questions';
 import { getPreivewTabSelector } from './selectors/preview';
 import { ASSESSMENTID } from '../../constants/others';
 
 class MultipleChoice extends Component {
   state = {
-    userSelections: []
+    userSelections: [],
   };
 
   componentDidMount() {
@@ -33,43 +36,31 @@ class MultipleChoice extends Component {
 
   saveData = () => {
     const { updateItemById, add } = this.props;
-    const {
-      previewStimulus,
-      previewDisplayOptions,
-      itemForEdit
-    } = this.getRenderData();
+    const { previewStimulus, previewDisplayOptions, itemForEdit } = this.getRenderData();
     updateItemById({
       ...itemForEdit,
       id: itemForEdit._id,
       reference: itemForEdit.id,
       stimulus: previewStimulus,
-      list: previewDisplayOptions
+      list: previewDisplayOptions,
     });
     const question = {
       assessmentId: localStorage.getItem(ASSESSMENTID),
       question: previewStimulus,
       options: previewDisplayOptions.map((option, index) => ({
         value: index,
-        label: option
+        label: option,
       })),
       type: itemForEdit.type,
-      answer: itemForEdit.validation.valid_response.value
+      answer: itemForEdit.validation.valid_response.value,
     };
     add(question);
   };
 
   getRenderData = () => {
-    const {
-      stimulus,
-      questionsList,
-      validation,
-      item,
-      smallSize,
-      history
-    } = this.props;
+    const { stimulus, questionsList, validation, item, smallSize, history } = this.props;
     const locationState = history.location.state;
-    const isDetailPage =
-      locationState !== undefined ? locationState.itemDetail : false;
+    const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
     let previewDisplayOptions;
     let previewStimulus;
     let itemForEdit;
@@ -84,13 +75,13 @@ class MultipleChoice extends Component {
         ...item,
         stimulus,
         list: questionsList,
-        validation
+        validation,
       };
     }
     return {
       previewStimulus,
       previewDisplayOptions,
-      itemForEdit
+      itemForEdit,
     };
   };
 
@@ -103,14 +94,10 @@ class MultipleChoice extends Component {
       validation,
       addAnswer,
       answer,
-      question
+      question,
     } = this.props;
     const { userSelections } = this.state;
-    const {
-      previewStimulus,
-      previewDisplayOptions,
-      itemForEdit
-    } = this.getRenderData();
+    const { previewStimulus, previewDisplayOptions, itemForEdit } = this.getRenderData();
 
     return (
       <PaddingDiv>
@@ -154,9 +141,7 @@ class MultipleChoice extends Component {
                 question={previewStimulus}
                 addAnswer={addAnswer}
                 data={question}
-                userSelections={
-                  !!item && item.userSelections ? item.userSelections : []
-                }
+                userSelections={!!item && item.userSelections ? item.userSelections : []}
                 onChange={addAnswer}
               />
             )}
@@ -178,7 +163,10 @@ MultipleChoice.propTypes = {
   validation: PropTypes.object,
   saveClicked: PropTypes.bool,
   updateItemById: PropTypes.func.isRequired,
-  add: PropTypes.func.isRequired
+  add: PropTypes.func.isRequired,
+  question: PropTypes.any.isRequired,
+  answer: PropTypes.any,
+  addAnswer: PropTypes.func.isRequired,
 };
 
 MultipleChoice.defaultProps = {
@@ -188,13 +176,14 @@ MultipleChoice.defaultProps = {
   smallSize: false,
   saveClicked: false,
   history: {},
-  validation: {}
+  validation: {},
+  answer: {},
 };
 
 const enhance = compose(
   withRouter,
   connect(
-    state => {
+    (state) => {
       const { questions, currentQuestion } = state.assessmentQuestions;
 
       const question = questions[currentQuestion] || {};
@@ -204,15 +193,15 @@ const enhance = compose(
         stimulus: question.stimulus,
         questionsList: question.options,
         previewTab: getPreivewTabSelector(state),
-        validation: getValidationSelector(state)
+        validation: getValidationSelector(state),
       };
     },
     {
-      addAnswer,
+      addAnswer: addAnswerAction,
       updateItemById: updateItemByIdAction,
-      add: addQuestion
-    }
-  )
+      add: addQuestionAction,
+    },
+  ),
 );
 
 export default enhance(MultipleChoice);

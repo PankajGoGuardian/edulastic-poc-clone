@@ -158,7 +158,7 @@ Option.propTypes = {
   index: PropTypes.number.isRequired,
   setAnswers: PropTypes.bool,
   showAnswer: PropTypes.bool,
-  item: PropTypes.object.isRequired,
+  item: PropTypes.any.isRequired,
   userSelections: PropTypes.array,
   answers: PropTypes.array,
   onChange: PropTypes.func.isRequired,

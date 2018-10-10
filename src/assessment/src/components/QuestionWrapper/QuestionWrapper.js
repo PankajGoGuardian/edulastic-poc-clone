@@ -1,18 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { OrderList } from '../OrderList';
 import { MultipleChoice } from '../MultipleChoice';
 
-import { addAnswer } from '../../actions/questions';
-
 const QuestionWrapper = ({ type, data, ...restProps }) => {
-  let questionProps = Object.assign(
+  const questionProps = Object.assign(
     {
       item: data,
-      smallSize: data.smallSize
+      smallSize: data.smallSize,
     },
-    restProps
+    restProps,
   );
 
   const Question = type === 'multipleChoice' ? MultipleChoice : OrderList;
@@ -24,14 +21,14 @@ QuestionWrapper.propTypes = {
   view: PropTypes.string.isRequired,
   isNew: PropTypes.bool,
   data: PropTypes.object,
-  saveClicked: PropTypes.bool
+  saveClicked: PropTypes.bool,
 };
 
 QuestionWrapper.defaultProps = {
   isNew: false,
   type: null,
   data: {},
-  saveClicked: false
+  saveClicked: false,
 };
 
 export default QuestionWrapper;

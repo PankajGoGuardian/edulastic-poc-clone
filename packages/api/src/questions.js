@@ -1,16 +1,26 @@
 import API from './utils/API';
 
-const api = new API('http://localhost:9020');
+const api = new API();
+const prefix = '/Questions';
 
-const evaluateAnswer = (qid, answer) =>
+const create = data =>
   api
     .callApi({
-      url: '/question/evaluate',
+      url: prefix,
       method: 'post',
-      data: { qid, answer },
+      data,
+    })
+    .then(result => result.data);
+
+const getAll = () =>
+  api
+    .callApi({
+      url: prefix,
+      method: 'get',
     })
     .then(result => result.data);
 
 export default {
-  evaluateAnswer,
+  create,
+  getAll,
 };

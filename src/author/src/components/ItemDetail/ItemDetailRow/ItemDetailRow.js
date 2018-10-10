@@ -84,7 +84,7 @@ class ItemDetailRow extends Component {
           </React.Fragment>
         ))}
         <FlexContainer justifyContent="center" style={{ marginBottom: 30 }}>
-          <AddNew onClick={onAdd} />
+          <AddNew onClick={() => onAdd({ rowIndex, tabIndex: value })} />
         </FlexContainer>
       </Container>
     );

@@ -100,13 +100,17 @@ class ItemDetail extends Component {
     });
   };
 
-  handleAdd = () => {
+  handleAdd = ({ rowIndex, tabIndex }) => {
+    console.log(rowIndex, tabIndex);
     const { match, history, t } = this.props;
     history.push({
       pathname: `/author/items/${match.params.id}/pickup-questiontype`,
       state: {
         backText: t('component.itemDetail.backText'),
-        backUrl: match.path,
+        backUrl: match.url,
+        rowIndex,
+        tabIndex,
+        testItemId: match.params.id,
       },
     });
   };

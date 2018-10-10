@@ -7,20 +7,22 @@ import styled from 'styled-components';
 
 import { mobileWidth } from '@edulastic/colors';
 import {
-  getItemsListSelector,
   getItemsPageSelector,
   getItemsLimitSelector,
   getItemsCountSelector,
   getItemsLoadingSelector,
 } from '../../selectors/items';
 import Item from './Item';
-import { receiveItemsAction, createItemAction } from '../../actions/items';
 import Header from './Header';
+import { receiveTestItemsAction } from '../../actions/testItems';
+import { createTestItemAction } from '../../actions/testItem';
+import { getTestItemsSelector } from '../../selectors/testItems';
+import { getTestItemCreatingSelector } from '../../selectors/testItem';
 
 class ItemList extends Component {
   componentDidMount() {
-    const { receiveItems, page, limit } = this.props;
-    receiveItems({ page, limit });
+    const { receiveItems } = this.props;
+    receiveItems();
   }
 
   handleSearch = (value) => {
@@ -29,9 +31,16 @@ class ItemList extends Component {
   };
 
   handleCreate = async () => {
-    const { history, createItem } = this.props;
-    await createItem({ reference: '1234567895' });
-    history.push('./add-item');
+    const { createItem } = this.props;
+    createItem({
+      rows: [
+        {
+          tabs: [],
+          dimension: '100%',
+          widgets: [],
+        },
+      ],
+    });
   };
 
   handlePrevious = () => {
@@ -45,18 +54,19 @@ class ItemList extends Component {
   };
 
   render() {
-    const { items, page, limit, count, loading, windowWidth, history } = this.props;
+    const { items, page, limit, count, loading, windowWidth, history, creating } = this.props;
     return (
       <Container>
         <Header
           onSearch={this.handleSearch}
           onCreate={this.handleCreate}
+          creating={creating}
           windowWidth={windowWidth}
         />
         <Paper style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
           {items.map(item => (
             // eslint-disable-next-line
-            <Item key={item._id} item={item} history={history} />
+            <Item key={item.id} item={item} history={history} />
           ))}
         </Paper>
         <Pagination
@@ -82,21 +92,23 @@ ItemList.propTypes = {
   history: PropTypes.object.isRequired,
   createItem: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
+  creating: PropTypes.bool.isRequired,
 };
 
 const enhance = compose(
   withWindowSizes,
   connect(
     state => ({
-      items: getItemsListSelector(state),
+      items: getTestItemsSelector(state),
       page: getItemsPageSelector(state),
       limit: getItemsLimitSelector(state),
       count: getItemsCountSelector(state),
       loading: getItemsLoadingSelector(state),
+      creating: getTestItemCreatingSelector(state),
     }),
     {
-      receiveItems: receiveItemsAction,
-      createItem: createItemAction,
+      receiveItems: receiveTestItemsAction,
+      createItem: createTestItemAction,
     },
   ),
 );

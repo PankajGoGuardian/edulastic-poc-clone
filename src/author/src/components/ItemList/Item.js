@@ -18,14 +18,14 @@ class Item extends Component {
   moveToItem = () => {
     const { history, item, t } = this.props;
     history.push({
-      pathname: `/author/items/${item._id}`,
+      pathname: `/author/items/${item.id}/item-detail`,
       state: {
         backText: t('component.itemAdd.backToItemList'),
         backUrl: '/author/items',
         itemDetail: true,
       },
     });
-  }
+  };
 
   render() {
     const { item, t } = this.props;
@@ -92,6 +92,7 @@ const Link = styled.a`
   align-items: center;
   text-decoration: none;
   color: ${blue};
+  cursor: pointer;
 
   :hover {
     color: ${darkBlue};

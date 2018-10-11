@@ -20,8 +20,7 @@ export const PREVIEW_UPDATE_LIST = '[preview] PREVIEW_UPDATE_LIST';
 export const CHANGE_PREVIEW_TAB = '[preview] CHANGE_PREVIEW_TAB';
 
 // questionsOrderList
-export const ORDERLIST_UPDATE_QUESTIONS_LIST =
-  '[questionsOrderList] ORDERLIST_UPDATE_QUESTIONS_LIST';
+
 export const ORDERLIST_UPDATE_VALIDATION = '[questionsOrderList] ORDERLIST_UPDATE_VALIDATION';
 export const ORDERLIST_UPDATE_STIMULUS = '[questionsOrderList] ORDERLIST_UPDATE_STIMULUS';
 export const ORDERLIST_SET_STATE = '[questionsOrderList] ORDERLIST_SET_STATE';

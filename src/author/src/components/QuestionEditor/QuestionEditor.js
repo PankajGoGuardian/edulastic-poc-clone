@@ -9,17 +9,17 @@ import { Paper } from '@edulastic/common';
 import SourceModal from './SourceModal';
 import { changePreviewTabAction } from '../../actions/preview';
 import { getPreivewTabSelector } from '../../selectors/preview';
-import { getItemSelector } from '../../selectors/items';
 import { changeViewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
-import { receiveItemByIdAction } from '../../actions/items';
 import { Container } from './styled_components';
 import { ButtonBar } from '../common';
 import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapper';
 import ItemHeader from './ItemHeader';
+import { getQuestionSelector } from '../../selectors/question';
+import { receiveQuestionByIdAction, saveQuestionAction } from '../../actions/question';
 
 const headerTitles = {
-  mcq: 'MultipleChoice',
+  multipleChoice: 'MultipleChoice',
   orderList: 'Order List',
 };
 
@@ -29,10 +29,10 @@ class QuestionEditor extends Component {
     saveClicked: false,
   };
 
-  componentWillMount() {
-    const { match, receiveItemById } = this.props;
-    if (match.params !== undefined) {
-      receiveItemById(match.params.id);
+  componentDidMount() {
+    const { match, receiveQuestionById } = this.props;
+    if (match.params) {
+      receiveQuestionById(match.params.id);
     }
   }
 
@@ -60,34 +60,29 @@ class QuestionEditor extends Component {
     }
   };
 
-  onSaveClicked = () => {
-    this.setState({ saveClicked: true });
+  handleSave = () => {
+    const { saveQuestion } = this.props;
+    saveQuestion();
   };
 
   getQuestionType = () => {
-    const { item } = this.props;
-    if (item !== {} && item !== null) {
-      const questionType = item.type;
+    const { question } = this.props;
+    if (question !== null) {
+      const questionType = question.data.type;
       return questionType;
     }
-  }
+  };
 
   render() {
-    const {
-      view,
-      changePreviewTab,
-      previewTab,
-      item,
-      history,
-    } = this.props;
-    const itemId = item === null ? '' : item.id;
+    const { view, changePreviewTab, previewTab, question, history } = this.props;
+    const itemId = question === null ? '' : question.id;
     const questionType = this.getQuestionType();
     const { showModal, saveClicked } = this.state;
     return (
       <Container>
         {showModal && (
           <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
-            {JSON.stringify({}, null, 4)}
+            {JSON.stringify(question, null, 4)}
           </SourceModal>
         )}
         <ItemHeader
@@ -99,19 +94,21 @@ class QuestionEditor extends Component {
             onChangeView={this.handleChangeView}
             onShowSource={this.handleShowSource}
             changePreviewTab={changePreviewTab}
-            onSave={this.onSaveClicked}
+            onSave={this.handleSave}
             view={view}
             previewTab={previewTab}
           />
         </ItemHeader>
         <Paper>
-          <QuestionWrapper
-            type={questionType}
-            view={view}
-            key={questionType && view && saveClicked}
-            data={item}
-            saveClicked={saveClicked}
-          />
+          {question && (
+            <QuestionWrapper
+              type={questionType}
+              view={view}
+              key={questionType && view && saveClicked}
+              data={question.data}
+              saveClicked={saveClicked}
+            />
+          )}
         </Paper>
       </Container>
     );
@@ -123,14 +120,15 @@ QuestionEditor.propTypes = {
   changeView: PropTypes.func.isRequired,
   changePreviewTab: PropTypes.func.isRequired,
   previewTab: PropTypes.string.isRequired,
-  item: PropTypes.object,
+  question: PropTypes.object,
   match: PropTypes.object,
-  receiveItemById: PropTypes.func.isRequired,
+  receiveQuestionById: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
+  saveQuestion: PropTypes.func.isRequired,
 };
 
 QuestionEditor.defaultProps = {
-  item: {},
+  question: null,
   match: {},
 };
 
@@ -141,12 +139,13 @@ const enhance = compose(
     state => ({
       view: getViewSelector(state),
       previewTab: getPreivewTabSelector(state),
-      item: getItemSelector(state),
+      question: getQuestionSelector(state),
     }),
     {
       changeView: changeViewAction,
       changePreviewTab: changePreviewTabAction,
-      receiveItemById: receiveItemByIdAction,
+      receiveQuestionById: receiveQuestionByIdAction,
+      saveQuestion: saveQuestionAction,
     },
   ),
 );

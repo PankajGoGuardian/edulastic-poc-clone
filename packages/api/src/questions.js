@@ -12,6 +12,15 @@ const create = data =>
     })
     .then(result => result.data);
 
+const updateById = (id, data) =>
+  api
+    .callApi({
+      url: `${prefix}/${id}`,
+      method: 'put',
+      data,
+    })
+    .then(result => result.data);
+
 const getAll = () =>
   api
     .callApi({
@@ -20,7 +29,17 @@ const getAll = () =>
     })
     .then(result => result.data);
 
+const getById = id =>
+  api
+    .callApi({
+      url: `${prefix}/${id}`,
+      method: 'get',
+    })
+    .then(result => result.data);
+
 export default {
   create,
+  updateById,
   getAll,
+  getById,
 };

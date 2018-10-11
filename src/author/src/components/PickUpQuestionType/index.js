@@ -14,7 +14,7 @@ import { createQuestionAction } from '../../actions/questions';
 const makeQuestion = (questionType, data) => {
   let question = {
     regionId: '1',
-    widgetType: 'response',
+    widgetType: 'question',
   };
 
   switch (questionType) {
@@ -24,7 +24,15 @@ const makeQuestion = (questionType, data) => {
         data: {
           stimulus: data.stimulus,
           type: questionType,
-          options: data.list.map((label, i) => ({ value: i, label })),
+          list: data.list,
+          validation: {
+            scoring_type: 'exactMatch',
+            valid_response: {
+              score: 1,
+              value: [0, 1, 2],
+            },
+            alt_responses: [],
+          },
         },
       };
       break;

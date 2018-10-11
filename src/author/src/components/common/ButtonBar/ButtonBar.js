@@ -136,11 +136,16 @@ ButtonBar.propTypes = {
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
   onShowSource: PropTypes.func.isRequired,
-  onShowSettings: PropTypes.func.isRequired,
+  onShowSettings: PropTypes.func,
   onSave: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  saving: PropTypes.bool.isRequired,
+  saving: PropTypes.bool,
+};
+
+ButtonBar.defaultProps = {
+  onShowSettings: () => {},
+  saving: false,
 };
 
 const enhance = compose(

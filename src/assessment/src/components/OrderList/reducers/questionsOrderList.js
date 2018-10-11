@@ -15,7 +15,7 @@ const initialList = [
 
 export const initialState = {
   list: initialList,
-  stimulus: i18n.t('assessment:component.orderlist.questionsorderlist.stimulusplaceholder'),
+  stimulus: i18n.t('author:component.orderList.questionsorderlist.stimulusplaceholder'),
   validation: {
     valid_response: {
       score: 1,

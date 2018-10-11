@@ -5,173 +5,142 @@ import { connect } from 'react-redux';
 import { arrayMove } from 'react-sortable-hoc';
 import styled from 'styled-components';
 import { withNamespaces } from '@edulastic/localization';
+import { cloneDeep } from 'lodash';
 
 import {
   OrderListEdit,
   Question,
   OrderListPreview,
   OrderListReport,
-  CorrectAnswers
+  CorrectAnswers,
 } from './index';
-import {
-  getStimulusSelector,
-  getQuestionsListSelector,
-  getValidationSelector,
-  validationSelector
-} from './selectors/questionsOrderList';
-import {
-  updateStimulusAction,
-  updateQuestionsListAction,
-  updateValidationAction
-} from './actions/questionsOrderList';
-import {
-  getPreviewListSelector,
-  getPreviewIndexesListSelector,
-  getPreivewTabSelector
-} from './selectors/preview';
+import { getPreviewIndexesListSelector, getPreivewTabSelector } from './selectors/preview';
 import { updatePreviewListAction } from './actions/preview';
+import { setQuestionDataAction } from '../../../../author/src/actions/question';
 
 class OrderList extends Component {
-  componentDidMount() {
-    const { updatePreviewList, questionsList } = this.props;
+  get validation() {
+    const { item } = this.props;
 
-    updatePreviewList(questionsList.map((item, i) => i));
+    return {
+      ...item.validation,
+      valid_response: {
+        score: item.validation.valid_response.score,
+        value: item.validation.valid_response.value.map(val => item.list[val]),
+      },
+      alt_responses: item.validation.alt_responses.map(res => ({
+        score: res.score,
+        value: res.value.map(val => item.list[val]),
+      })),
+    };
   }
 
-  handleQuestionChange = value => {
-    const { updateStimulus } = this.props;
-    updateStimulus(value);
+  handleQuestionChange = (value) => {
+    const { setQuestionData, item } = this.props;
+    setQuestionData({ ...item, stimulus: value });
   };
 
   onSortOrderListEnd = ({ oldIndex, newIndex }) => {
-    const { questionsList } = this.props;
+    const { item, setQuestionData } = this.props;
 
-    this.updateQuestions(arrayMove(questionsList, oldIndex, newIndex));
+    setQuestionData({ ...item, list: arrayMove(item.list, oldIndex, newIndex) });
   };
 
   handleQuestionsChange = (value, index) => {
-    const { updateQuestionsList, questionsList } = this.props;
+    const { setQuestionData, item } = this.props;
 
-    updateQuestionsList(
-      questionsList.map((q, i) => {
+    setQuestionData({
+      ...item,
+      list: item.list.map((q, i) => {
         if (i === index) {
           return value;
         }
         return q;
-      })
-    );
+      }),
+    });
   };
 
-  handleDeleteQuestion = index => {
-    const { questionsList } = this.props;
-    this.updateQuestions(questionsList.filter((q, i) => i !== index));
+  handleDeleteQuestion = (index) => {
+    const { setQuestionData, item } = this.props;
+    const newItem = cloneDeep(item);
+
+    newItem.list = newItem.list.filter((q, i) => i !== index);
+    newItem.validation.valid_response.value = newItem.validation.valid_response.value.filter(
+      val => val !== index,
+    );
+    setQuestionData(newItem);
   };
 
   handleAddQuestion = () => {
-    const { questionsList, t } = this.props;
-
-    this.updateQuestions([
-      ...questionsList,
-      `${t('common.initialoptionslist.itemprefix')} ${questionsList.length}`
-    ]);
-  };
-
-  updateQuestions = list => {
-    const { updateQuestionsList, updatePreviewList } = this.props;
-
-    updateQuestionsList(list);
-    updatePreviewList(list.map((item, i) => i));
+    const { setQuestionData, item, t } = this.props;
+    setQuestionData({
+      ...item,
+      list: [...item.list, `${t('common.initialoptionslist.itemprefix')} ${item.list.length}`],
+    });
   };
 
   onSortCurrentAnswer = ({ oldIndex, newIndex }) => {
-    const {
-      updateValidation,
-      validation,
-      questionsList,
-      validationState
-    } = this.props;
-    const newValue = arrayMove(
-      validation.valid_response.value,
-      oldIndex,
-      newIndex
-    );
+    const { setQuestionData, item } = this.props;
+    const newValue = arrayMove(item.validation.valid_response.value, oldIndex, newIndex);
 
-    updateValidation({
-      ...validationState,
-      valid_response: {
-        score: validation.valid_response.score,
-        value: newValue.map(q => questionsList.findIndex(i => q === i))
-      }
+    setQuestionData({
+      ...item,
+      validation: {
+        ...item.validation,
+        valid_response: {
+          score: item.validation.valid_response.score,
+          value: newValue,
+        },
+      },
     });
   };
 
   onSortAltAnswer = ({ oldIndex, newIndex, altIndex }) => {
-    const {
-      validation,
-      updateValidation,
-      validationState,
-      questionsList
-    } = this.props;
-    const newValue = arrayMove(
-      validation.alt_responses[altIndex].value,
-      oldIndex,
-      newIndex
-    );
+    const { item, setQuestionData } = this.props;
+    const newValue = arrayMove(item.validation.alt_responses[altIndex].value, oldIndex, newIndex);
     console.log('newValue', newValue);
 
-    updateValidation({
-      ...validationState,
-      alt_responses: validationState.alt_responses.map((res, i) => {
-        if (i === altIndex) {
-          return {
-            ...res,
-            value: newValue.map(q =>
-              questionsList.findIndex(item => q === item)
-            )
-          };
-        }
-        return res;
-      })
+    setQuestionData({
+      ...item,
+      validation: {
+        ...item.validation,
+        alt_responses: item.validation.alt_responses.map((res, i) => {
+          if (i === altIndex) {
+            return {
+              ...res,
+              value: newValue.map(q => item.list.findIndex(it => q === it)),
+            };
+          }
+          return res;
+        }),
+      },
     });
   };
 
   onSortPreviewEnd = ({ oldIndex, newIndex }) => {
-    const { updatePreviewList, previewList, questionsList } = this.props;
-    const newPreviewList = arrayMove(previewList, oldIndex, newIndex);
+    const { updatePreviewList, item } = this.props;
+    const newPreviewList = arrayMove(item.list, oldIndex, newIndex);
 
-    updatePreviewList(
-      newPreviewList.map(q => questionsList.findIndex(i => q === i))
-    );
+    updatePreviewList(newPreviewList.map(q => item.list.findIndex(i => q === i)));
   };
 
   render() {
-    const {
-      view,
-      questionsList,
-      validation,
-      stimulus,
-      previewList,
-      previewIndexesList,
-      validationState,
-      previewTab,
-      smallSize,
-      item
-    } = this.props;
+    const { view, previewIndexesList, previewTab, smallSize, item } = this.props;
 
-    const previewQuestionsList = item.list !== 0 ? item.list : previewList;
-    const previewStimulus = item.stimulus ? item.stimulus : stimulus;
+    if (!item) return null;
+
     return (
       <React.Fragment>
         {view === 'edit' && (
           <React.Fragment>
             <Question
               onQuestionChange={this.handleQuestionChange}
-              value={stimulus}
+              value={item.stimulus}
               style={{ marginBottom: 30 }}
             />
             <OrderListEdit
               style={{ marginBottom: 30 }}
-              questions={questionsList}
+              questions={item.list}
               onSortEnd={this.onSortOrderListEnd}
               onQuestionsChange={this.handleQuestionsChange}
               onDeleteQuestion={this.handleDeleteQuestion}
@@ -179,7 +148,7 @@ class OrderList extends Component {
               useDragHandle
             />
             <CorrectAnswers
-              validation={validation}
+              validation={this.validation}
               onSortCurrentAnswer={this.onSortCurrentAnswer}
               onSortAltAnswer={this.onSortAltAnswer}
             />
@@ -187,26 +156,24 @@ class OrderList extends Component {
         )}
         {view === 'preview' && (
           <React.Fragment>
-            <QuestionText
-              dangerouslySetInnerHTML={{ __html: previewStimulus }}
-            />
+            <QuestionText dangerouslySetInnerHTML={{ __html: item.stimulus }} />
 
             {previewTab === 'check' && (
               <OrderListReport
-                questions={previewList}
-                questionsList={questionsList}
-                validation={validation}
-                validationState={validationState}
+                questions={item.list}
+                questionsList={item.list}
+                validation={this.validation}
+                validationState={item.validation}
                 previewIndexesList={previewIndexesList}
               />
             )}
 
             {previewTab === 'show' && (
               <OrderListReport
-                questions={previewList}
-                questionsList={questionsList}
-                validation={validation}
-                validationState={validationState}
+                questions={item.list}
+                questionsList={item.list}
+                validation={this.validation}
+                validationState={item.validation}
                 previewIndexesList={previewIndexesList}
                 showAnswers
               />
@@ -215,7 +182,7 @@ class OrderList extends Component {
             {previewTab === 'clear' && (
               <OrderListPreview
                 onSortEnd={this.onSortPreviewEnd}
-                questions={previewQuestionsList}
+                questions={item.list}
                 smallSize={smallSize}
               />
             )}
@@ -227,47 +194,33 @@ class OrderList extends Component {
 }
 
 OrderList.propTypes = {
-  updateStimulus: PropTypes.func.isRequired,
-  updateQuestionsList: PropTypes.func.isRequired,
   updatePreviewList: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
-  stimulus: PropTypes.string.isRequired,
-  questionsList: PropTypes.array.isRequired,
-  validation: PropTypes.object.isRequired,
-  updateValidation: PropTypes.func.isRequired,
-  previewList: PropTypes.array.isRequired,
   previewIndexesList: PropTypes.array.isRequired,
-  validationState: PropTypes.object.isRequired,
   previewTab: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
-  item: PropTypes.object
+  item: PropTypes.object,
+  setQuestionData: PropTypes.func.isRequired,
 };
 
 OrderList.defaultProps = {
   smallSize: false,
-  item: {}
+  item: {},
 };
 
 const enhance = compose(
   withNamespaces('author'),
   connect(
     state => ({
-      stimulus: getStimulusSelector(state),
-      questionsList: getQuestionsListSelector(state),
-      validation: getValidationSelector(state),
-      previewList: getPreviewListSelector(state),
       previewIndexesList: getPreviewIndexesListSelector(state),
-      validationState: validationSelector(state),
-      previewTab: getPreivewTabSelector(state)
+      previewTab: getPreivewTabSelector(state),
     }),
     {
-      updateStimulus: updateStimulusAction,
-      updateQuestionsList: updateQuestionsListAction,
       updatePreviewList: updatePreviewListAction,
-      updateValidation: updateValidationAction
-    }
-  )
+      setQuestionData: setQuestionDataAction,
+    },
+  ),
 );
 
 export default enhance(OrderList);

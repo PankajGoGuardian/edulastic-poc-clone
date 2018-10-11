@@ -199,8 +199,8 @@ MultipleChoiceDisplay.propTypes = {
   userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool,
-  data: PropTypes.any.isRequired,
-  addAnswer: PropTypes.func.isRequired,
+  data: PropTypes.any,
+  addAnswer: PropTypes.func,
 };
 
 MultipleChoiceDisplay.defaultProps = {
@@ -213,6 +213,8 @@ MultipleChoiceDisplay.defaultProps = {
   smallSize: false,
   checkAnswer: false,
   setAnswers: false,
+  data: {},
+  addAnswer: () => {},
 };
 
 export default MultipleChoiceDisplay;

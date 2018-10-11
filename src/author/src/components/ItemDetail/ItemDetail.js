@@ -101,7 +101,6 @@ class ItemDetail extends Component {
   };
 
   handleAdd = ({ rowIndex, tabIndex }) => {
-    console.log(rowIndex, tabIndex);
     const { match, history, t } = this.props;
     history.push({
       pathname: `/author/items/${match.params.id}/pickup-questiontype`,
@@ -155,10 +154,10 @@ class ItemDetail extends Component {
     const { match, history, t } = this.props;
 
     history.push({
-      pathname: `/author/items/${widget.reference}`,
+      pathname: `/author/questions/${widget.reference}`,
       state: {
         backText: t('component.itemDetail.backText'),
-        backUrl: match.path,
+        backUrl: match.url,
       },
     });
   };

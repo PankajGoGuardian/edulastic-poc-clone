@@ -4,6 +4,7 @@ import itemDetailSaga from './itemDetail';
 import testItemsSaga from './testItems';
 import testItemSaga from './testItem';
 import questionsSaga from './questions';
+import questionSaga from './question';
 
 const authorSagas = [
   answerSaga(),
@@ -12,6 +13,7 @@ const authorSagas = [
   testItemsSaga(),
   testItemSaga(),
   questionsSaga(),
+  questionSaga(),
 ];
 
 export default authorSagas;

@@ -1,4 +1,5 @@
 import questions from './questions';
+import question from './question';
 import view from './view';
 import preview from './preview';
 import items from './items';
@@ -8,6 +9,7 @@ import itemDetail from './itemDetail';
 
 const authorReducers = {
   questions,
+  question,
   view,
   preview,
   items,

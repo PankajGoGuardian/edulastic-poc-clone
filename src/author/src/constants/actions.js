@@ -1,14 +1,6 @@
 // theme
 export const LOAD_THEME = 'load theme';
 
-// questions
-export const LOAD_QUESTIONS = '[questions] load questions';
-export const GOTO_QUESTION = '[questions] goto question';
-export const ADD_ANSWER = '[questions] add answer';
-export const CHECK_ANSWER = '[questions] check answer';
-export const ADD_EVALUATION = '[questions] add evaluation';
-export const AUTHOR_QUESTION = '[questions] author question';
-
 // question
 export const RECEIVE_QUESTION_REQUEST = '[question] receive question request';
 export const RECEIVE_QUESTION_SUCCESS = '[question] receive question success';

@@ -162,6 +162,11 @@ class ItemDetail extends Component {
     });
   };
 
+  handleDeleteWidget = i => (widgetIndex) => {
+    const { deleteWidget } = this.props;
+    deleteWidget(i, widgetIndex);
+  };
+
   render() {
     const { showModal, showSettings } = this.state;
     const {
@@ -174,7 +179,6 @@ class ItemDetail extends Component {
       item,
       updating,
       type,
-      deleteWidget,
       updateTabTitle,
       useTabs,
     } = this.props;
@@ -229,7 +233,7 @@ class ItemDetail extends Component {
                   row={row}
                   rowIndex={i}
                   onAdd={this.handleAdd}
-                  onDeleteWidget={widgetIndex => deleteWidget(i, widgetIndex)}
+                  onDeleteWidget={this.handleDeleteWidget(i)}
                   onEditWidget={this.handleEditWidget}
                   onEditTabTitle={(tabIndex, value) =>
                     updateTabTitle({ rowIndex: i, tabIndex, value })

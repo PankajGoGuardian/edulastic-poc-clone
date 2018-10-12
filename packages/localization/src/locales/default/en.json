@@ -3,5 +3,7 @@
   "edit": "Edit",
   "move": "Move",
   "cancel": "Cancel",
-  "apply": "Apply"
+  "apply": "Apply",
+  "confirm": "Confirm",
+  "proceed": "Proceed"
 }

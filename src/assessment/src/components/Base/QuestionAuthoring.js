@@ -14,39 +14,38 @@ import {
   updateValidationAction,
   clearQuestionsAction,
 } from '../../actions/questionCommon';
+import { setQuestionDataAction } from '../../../../author/src/actions/question';
+import { getQuestionSelector } from '../../../../author/src/selectors/question';
 
 class QuestionAuthoring extends Component {
   edited = false;
 
   componentDidMount() {
-    this.props.onRef(this)
+    this.props.onRef(this);
   }
 
   componentWillUnmount() {
-    this.props.onRef(undefined)
+    this.props.onRef(undefined);
   }
 
   render() {
-    return (
-      <React.Fragment>
-        {this.props.children}
-      </React.Fragment>
-    )
+    return <React.Fragment>{this.props.children}</React.Fragment>;
   }
 
   // - initialize(data): initialize with JSON data
-  initializeData = (data) => {
-    const { updateStimulus, updateQuestionsList, updateValidation } = this.props;
+  initializeData = data => {
+    const { updateStimulus, updateQuestionsList, updateValidation, question } = this.props;
     const { validationQuestion, validationOptions, validationAnswers } = this.validateData(data);
     updateStimulus(validationQuestion);
     updateQuestionsList(validationOptions);
     updateValidation(validationAnswers);
-  }
+    this.setData(question.data);
+  };
 
   initialize = () => {
     const { clearQuestions } = this.props;
     clearQuestions();
-  }
+  };
 
   validateData(data) {
     const { question, options, answers } = data;
@@ -75,16 +74,23 @@ class QuestionAuthoring extends Component {
       validationQuestion,
       validationOptions,
       validationAnswers,
-    }
+    };
   }
 
-  setData = (data) => {
-    const { updateStimulus, updateQuestionsList, updateValidation } = this.props;
+  setData = data => {
+    const {
+      updateStimulus,
+      updateQuestionsList,
+      updateValidation,
+      question,
+      setQuestionData,
+    } = this.props;
+    setQuestionData({ ...question.data, stimulus: data.question });
     const { validationQuestion, validationOptions, validationAnswers } = this.validateData(data);
     if (validationQuestion !== undefined) updateStimulus(validationQuestion);
     if (validationOptions !== undefined) updateQuestionsList(validationOptions);
     if (validationAnswers !== undefined) updateValidation(validationAnswers);
-  }
+  };
 
   // - getData(): returns the question and correct answer JSON in one object
   getData = () => {
@@ -94,7 +100,7 @@ class QuestionAuthoring extends Component {
       options: questionsList,
       answers: validation,
     };
-  }
+  };
 
   // - getQuestion(): returns only the question JSON
   getQuestion = () => {
@@ -103,21 +109,21 @@ class QuestionAuthoring extends Component {
       question: stimulus,
       options: questionsList,
     };
-  }
+  };
 
   // - getCorrectAnswer(): returns only the correct answer JSON
   getCorrectAnswer = () => {
     const { validation } = this.props;
     return validation;
-  }
+  };
 
   // - hasChanged(): boolean to indicate whether the content has been edited
   hasChanged = () => {
     return this.edited;
-  }
+  };
 
   // - setChanged(state): set it to false after a save etc.
-  setChanged = (state) => {}
+  setChanged = state => {};
 
   // - clear(): clear everything and set to defaults
   clear() {
@@ -138,12 +144,14 @@ const enhance = connect(
     questionsList: getQuestionsListSelector(state),
     validation: getValidationSelector(state),
     validationState: validationSelector(state),
+    question: getQuestionSelector(state),
   }),
   {
     updateStimulus: updateStimulusAction,
     updateQuestionsList: updateQuestionsListAction,
     updateValidation: updateValidationAction,
     clearQuestions: clearQuestionsAction,
+    setQuestionData: setQuestionDataAction,
   },
 );
 

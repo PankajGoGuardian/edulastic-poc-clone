@@ -101,7 +101,6 @@ class ItemDetail extends Component {
   };
 
   handleAdd = ({ rowIndex, tabIndex }) => {
-    console.log(rowIndex, tabIndex);
     const { match, history, t } = this.props;
     history.push({
       pathname: `/author/items/${match.params.id}/pickup-questiontype`,
@@ -155,12 +154,17 @@ class ItemDetail extends Component {
     const { match, history, t } = this.props;
 
     history.push({
-      pathname: `/author/items/${widget.reference}`,
+      pathname: `/author/questions/${widget.reference}`,
       state: {
         backText: t('component.itemDetail.backText'),
-        backUrl: match.path,
+        backUrl: match.url,
       },
     });
+  };
+
+  handleDeleteWidget = i => (widgetIndex) => {
+    const { deleteWidget } = this.props;
+    deleteWidget(i, widgetIndex);
   };
 
   render() {
@@ -175,7 +179,6 @@ class ItemDetail extends Component {
       item,
       updating,
       type,
-      deleteWidget,
       updateTabTitle,
       useTabs,
     } = this.props;
@@ -230,7 +233,7 @@ class ItemDetail extends Component {
                   row={row}
                   rowIndex={i}
                   onAdd={this.handleAdd}
-                  onDeleteWidget={widgetIndex => deleteWidget(i, widgetIndex)}
+                  onDeleteWidget={this.handleDeleteWidget(i)}
                   onEditWidget={this.handleEditWidget}
                   onEditTabTitle={(tabIndex, value) =>
                     updateTabTitle({ rowIndex: i, tabIndex, value })

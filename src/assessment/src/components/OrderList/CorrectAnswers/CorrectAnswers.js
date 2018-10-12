@@ -28,7 +28,7 @@ class CorrectAnswers extends Component {
   renderAltResponses = () => {
     const { validation, t } = this.props;
 
-    if (validation.alt_responses && validation.alt_responses.length) {
+    if (validation && validation.alt_responses && validation.alt_responses.length) {
       return validation.alt_responses.map((res, i) => (
         <Tab key={i} label={`${t('component.correctanswers.alternate')} ${i + 1}`} />
       ));
@@ -63,6 +63,8 @@ class CorrectAnswers extends Component {
       t,
     } = this.props;
     const { value } = this.state;
+
+    if (!validation) return null;
 
     return (
       <div>

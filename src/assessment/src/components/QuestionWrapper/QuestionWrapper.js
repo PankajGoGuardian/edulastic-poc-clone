@@ -7,7 +7,7 @@ const QuestionWrapper = ({ type, data, ...restProps }) => {
   const questionProps = Object.assign(
     {
       item: data,
-      smallSize: data.smallSize,
+      smallSize: !!data.smallSize,
     },
     restProps,
   );

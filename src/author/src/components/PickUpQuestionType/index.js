@@ -9,12 +9,12 @@ import { Container } from '../common';
 import QuestionTypes from './questionTypes';
 import { getItemSelector } from '../../selectors/items';
 import Header from './Header';
-import { createQuestionAction } from '../../actions/questions';
+import { setQuestionAction } from '../../actions/question';
 
 const makeQuestion = (questionType, data) => {
   let question = {
     regionId: '1',
-    widgetType: 'response',
+    widgetType: 'question',
   };
 
   switch (questionType) {
@@ -24,7 +24,15 @@ const makeQuestion = (questionType, data) => {
         data: {
           stimulus: data.stimulus,
           type: questionType,
-          options: data.list.map((label, i) => ({ value: i, label })),
+          list: data.list,
+          validation: {
+            scoring_type: 'exactMatch',
+            valid_response: {
+              score: 1,
+              value: [0, 1, 2],
+            },
+            alt_responses: [],
+          },
         },
       };
       break;
@@ -46,8 +54,19 @@ const makeQuestion = (questionType, data) => {
 
 class PickUpQuestionType extends Component {
   selectQuestionType = (questionType, data) => {
-    const { createQuestion } = this.props;
-    createQuestion(makeQuestion(questionType, data));
+    const { setQuestion, history, match, t } = this.props;
+    const question = makeQuestion(questionType, data);
+
+    setQuestion(question.data);
+
+    history.push({
+      pathname: '/author/questions/create',
+      state: {
+        ...history.location.state,
+        backUrl: match.url,
+        backText: t('component.pickupcomponent.headertitle'),
+      },
+    });
   };
 
   render() {
@@ -77,7 +96,7 @@ const enhance = compose(
       item: getItemSelector(state),
     }),
     {
-      createQuestion: createQuestionAction,
+      setQuestion: setQuestionAction,
     },
   ),
 );
@@ -85,7 +104,8 @@ const enhance = compose(
 PickUpQuestionType.propTypes = {
   history: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
-  createQuestion: PropTypes.func.isRequired,
+  setQuestion: PropTypes.func.isRequired,
+  match: PropTypes.object.isRequired,
 };
 
 export default enhance(PickUpQuestionType);

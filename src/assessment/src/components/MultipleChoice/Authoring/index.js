@@ -52,16 +52,20 @@ class MultipleChoiceAuthoring extends Component {
   static propTypes = {
     item: PropTypes.object,
     t: PropTypes.func.isRequired,
-  }
+  };
 
   static defaultProps = {
     item: {},
-  }
+  };
 
   async componentDidMount() {
     const { item } = this.props;
     const { stimulus, list, validation } = item;
-    await this.baseQuestion.initializeData({ question: stimulus, options: list, answers: validation });
+    await this.baseQuestion.initializeData({
+      question: stimulus,
+      options: list,
+      answers: validation,
+    });
     const { question, options, answers } = this.baseQuestion.getData();
 
     this.choiceLength = options.length;
@@ -75,7 +79,7 @@ class MultipleChoiceAuthoring extends Component {
 
   getStateOptionsFromData = options => options.map((label, index) => ({ value: index, label }));
 
-  getOptionsFromState = stateOptions => (stateOptions.map(option => option.label));
+  getOptionsFromState = stateOptions => stateOptions.map(option => option.label);
 
   getStateAnswersFromData = (options, answers) => {
     const { valid_response } = answers;
@@ -84,7 +88,7 @@ class MultipleChoiceAuthoring extends Component {
       stateAnswers[item] = true;
     });
     return stateAnswers;
-  }
+  };
 
   getAnswersFromState = (stateAnswers) => {
     const correctAnswer = [];
@@ -100,7 +104,7 @@ class MultipleChoiceAuthoring extends Component {
       },
       alt_responses: [],
     };
-  }
+  };
 
   onChangeQuesiton = (e) => {
     const question = e.target.value;
@@ -126,7 +130,10 @@ class MultipleChoiceAuthoring extends Component {
     const { choiceOptions, answers } = this.state;
     choiceOptions.splice(index, 1);
     answers.splice(index, 1);
-    this.baseQuestion.setData({ options: this.getOptionsFromState(choiceOptions), answers: this.getAnswersFromState(answers) });
+    this.baseQuestion.setData({
+      options: this.getOptionsFromState(choiceOptions),
+      answers: this.getAnswersFromState(answers),
+    });
     this.setState({ choiceOptions, answers });
   };
 
@@ -168,7 +175,11 @@ class MultipleChoiceAuthoring extends Component {
     const { t } = this.props;
 
     return (
-      <QuestionAuthoring onRef={(ref) => { this.baseQuestion = ref; }}>
+      <QuestionAuthoring
+        onRef={(ref) => {
+          this.baseQuestion = ref;
+        }}
+      >
         <PaddingDiv bottom={20}>
           <Subtitle>{t('component.multiplechoice.composequestion')}</Subtitle>
           <QuestionTextArea

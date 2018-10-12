@@ -1,17 +1,17 @@
 // theme
 export const LOAD_THEME = 'load theme';
 
-// questions
-export const LOAD_QUESTIONS = '[questions] load questions';
-export const GOTO_QUESTION = '[questions] goto question';
-export const ADD_ANSWER = '[questions] add answer';
-export const CHECK_ANSWER = '[questions] check answer';
-export const ADD_EVALUATION = '[questions] add evaluation';
-export const AUTHOR_QUESTION = '[questions] author question';
+// question
+export const RECEIVE_QUESTION_REQUEST = '[question] receive question request';
+export const RECEIVE_QUESTION_SUCCESS = '[question] receive question success';
+export const RECEIVE_QUESTION_ERROR = '[question] receive question error';
 
-export const CREATE_QUESTION_REQUEST = '[questions] create request';
-export const CREATE_QUESTION_SUCCESS = '[questions] create success';
-export const CREATE_QUESTION_ERROR = '[questions] create error';
+export const SAVE_QUESTION_REQUEST = '[question] save question request';
+export const SAVE_QUESTION_SUCCESS = '[question] save question success';
+export const SAVE_QUESTION_ERROR = '[question] save question error';
+
+export const SET_QUESTION_DATA = '[question] set question data';
+export const SET_QUESTION = '[question] set question';
 
 // assessment
 export const LOAD_ASSESSMENT = 'load assessment';

@@ -6,12 +6,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { NotificationContainer } from 'react-notifications';
 
 import Student from './student/src';
-import {
-  QuestionEditor,
-  ItemAdd,
-  ItemList,
-  PickUpQuestionType,
-} from './author/src';
+import { QuestionEditor, ItemAdd, ItemList, PickUpQuestionType } from './author/src';
 import ItemDetail from './author/src/components/ItemDetail';
 
 class App extends Component {
@@ -28,17 +23,14 @@ class App extends Component {
           <Redirect exact path="/" to="/student/test" />
           <Route exact path="/author/items" component={ItemList} />
           <Route exact path="/author/add-item" component={ItemAdd} />
-          <Route exact path="/author/items/:id" component={QuestionEditor} />
+          <Route exact path="/author/questions/create" component={QuestionEditor} />
+          <Route exact path="/author/questions/:id" component={QuestionEditor} />
           <Route
             exact
             path="/author/items/:id/pickup-questiontype"
             component={PickUpQuestionType}
           />
-          <Route
-            exact
-            path="/author/items/:id/item-detail"
-            component={ItemDetail}
-          />
+          <Route exact path="/author/items/:id/item-detail" component={ItemDetail} />
           <Route path="/student/test" component={() => <Student defaultAP />} />
           <Route path="/student/practice" component={Student} />
         </Switch>

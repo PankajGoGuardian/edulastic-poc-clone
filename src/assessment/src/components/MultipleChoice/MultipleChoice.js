@@ -18,7 +18,6 @@ import {
   addAnswer as addAnswerAction,
 } from '../../actions/questions';
 import { getPreivewTabSelector } from './selectors/preview';
-import { ASSESSMENTID } from '../../constants/others';
 
 class MultipleChoice extends Component {
   state = {
@@ -45,7 +44,6 @@ class MultipleChoice extends Component {
       list: previewDisplayOptions,
     });
     const question = {
-      assessmentId: localStorage.getItem(ASSESSMENTID),
       question: previewStimulus,
       options: previewDisplayOptions.map((option, index) => ({
         value: index,
@@ -58,7 +56,7 @@ class MultipleChoice extends Component {
   };
 
   getRenderData = () => {
-    const { stimulus, questionsList, validation, item, smallSize, history } = this.props;
+    const { questionsList, validation, item, smallSize, history } = this.props;
     const locationState = history.location.state;
     const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
     let previewDisplayOptions;
@@ -69,11 +67,11 @@ class MultipleChoice extends Component {
       previewDisplayOptions = item.list || item.options;
       itemForEdit = item;
     } else {
-      previewStimulus = stimulus;
+      previewStimulus = item.stimulus;
       previewDisplayOptions = questionsList;
       itemForEdit = {
         ...item,
-        stimulus,
+        stimulus: item.stimulus,
         list: questionsList,
         validation,
       };
@@ -86,16 +84,7 @@ class MultipleChoice extends Component {
   };
 
   render() {
-    const {
-      view,
-      previewTab,
-      smallSize,
-      item,
-      validation,
-      addAnswer,
-      answer,
-      question,
-    } = this.props;
+    const { view, previewTab, smallSize, item, validation, addAnswer, answer } = this.props;
     const { userSelections } = this.state;
     const { previewStimulus, previewDisplayOptions, itemForEdit } = this.getRenderData();
 
@@ -103,7 +92,7 @@ class MultipleChoice extends Component {
       <PaddingDiv>
         {view === 'edit' && (
           <React.Fragment>
-            <MultipleChoiceAuthoring key={item} item={itemForEdit} />
+            <MultipleChoiceAuthoring item={itemForEdit} />
             <CorrectAnswers
               validation={validation}
               options={previewDisplayOptions}
@@ -140,7 +129,7 @@ class MultipleChoice extends Component {
                 answer={answer}
                 question={previewStimulus}
                 addAnswer={addAnswer}
-                data={question}
+                data={item}
                 userSelections={!!item && item.userSelections ? item.userSelections : []}
                 onChange={addAnswer}
               />
@@ -155,7 +144,6 @@ class MultipleChoice extends Component {
 MultipleChoice.propTypes = {
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
-  stimulus: PropTypes.string,
   questionsList: PropTypes.array,
   item: PropTypes.object,
   smallSize: PropTypes.bool,
@@ -164,13 +152,11 @@ MultipleChoice.propTypes = {
   saveClicked: PropTypes.bool,
   updateItemById: PropTypes.func.isRequired,
   add: PropTypes.func.isRequired,
-  question: PropTypes.any.isRequired,
   answer: PropTypes.any,
   addAnswer: PropTypes.func.isRequired,
 };
 
 MultipleChoice.defaultProps = {
-  stimulus: '',
   questionsList: [],
   item: {},
   smallSize: false,
@@ -183,19 +169,10 @@ MultipleChoice.defaultProps = {
 const enhance = compose(
   withRouter,
   connect(
-    (state) => {
-      const { questions, currentQuestion } = state.assessmentQuestions;
-
-      const question = questions[currentQuestion] || {};
-
-      return {
-        question,
-        stimulus: question.stimulus,
-        questionsList: question.options,
-        previewTab: getPreivewTabSelector(state),
-        validation: getValidationSelector(state),
-      };
-    },
+    state => ({
+      previewTab: getPreivewTabSelector(state),
+      validation: getValidationSelector(state),
+    }),
     {
       addAnswer: addAnswerAction,
       updateItemById: updateItemByIdAction,

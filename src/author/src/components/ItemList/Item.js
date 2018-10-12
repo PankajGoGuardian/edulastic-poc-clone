@@ -61,7 +61,7 @@ class Item extends Component {
             variant="extendedFab"
             color="primary"
             outlined
-            onClick={() => {}}
+            onClick={this.moveToItem}
           >
             {t('component.item.view')}
           </Button>

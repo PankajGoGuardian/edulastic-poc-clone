@@ -56,7 +56,7 @@ class ItemDetailRow extends Component {
   };
 
   render() {
-    const { row, onAdd, onEditTabTitle, rowIndex } = this.props;
+    const { row, onAdd, onEditTabTitle, rowIndex, dragging } = this.props;
     const { value } = this.state;
 
     return (
@@ -75,6 +75,8 @@ class ItemDetailRow extends Component {
               ))}
             </Tabs>
         )}
+        {!row.widgets.length &&
+          dragging && <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={0} />}
         {row.widgets.map((widget, i) => (
           <React.Fragment key={i}>
             {!!row.tabs.length &&

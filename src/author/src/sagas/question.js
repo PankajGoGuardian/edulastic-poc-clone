@@ -2,6 +2,7 @@ import { takeEvery, call, put, all, select } from 'redux-saga/effects';
 import { questionsApi } from '@edulastic/api';
 import { NotificationManager } from 'react-notifications';
 
+import { history } from '../../../configureStore';
 import {
   RECEIVE_QUESTION_REQUEST,
   RECEIVE_QUESTION_SUCCESS,
@@ -11,6 +12,9 @@ import {
   SAVE_QUESTION_ERROR,
 } from '../constants/actions';
 import { getQuestionSelector } from '../selectors/question';
+
+import { getItemDetailSelector } from '../selectors/itemDetail';
+import { updateItemDetailByIdAction } from '../actions/itemDetail';
 
 function* receiveQuestionSaga({ payload }) {
   try {
@@ -32,13 +36,41 @@ function* receiveQuestionSaga({ payload }) {
 function* saveQuestionSaga() {
   try {
     const question = yield select(getQuestionSelector);
-    const entity = yield call(questionsApi.updateById, question.id, question);
+    const itemDetail = yield select(getItemDetailSelector);
+    const { rowIndex, tabIndex } = history.location.state;
+    let entity = null;
+
+    if (question.id) {
+      entity = yield call(questionsApi.updateById, question.id, question);
+    } else {
+      entity = yield call(questionsApi.create, question);
+
+      itemDetail.rows[rowIndex].widgets.push({
+        widgetType: entity.widgetType,
+        type: entity.data.type,
+        title: 'Multiple choice',
+        reference: entity.id,
+        tabIndex,
+      });
+
+      yield put(updateItemDetailByIdAction(itemDetail.id, itemDetail));
+    }
 
     yield put({
       type: SAVE_QUESTION_SUCCESS,
       payload: { entity },
     });
+
     NotificationManager.success('Update item by id is success', 'Success');
+
+    yield call(history.push, {
+      pathname: `/author/items/${itemDetail.id}/item-detail`,
+      state: {
+        backText: 'Back to item list',
+        backUrl: '/author/items',
+        itemDetail: false,
+      },
+    });
   } catch (err) {
     console.error(err);
     const errorMessage = 'Save question is failing';

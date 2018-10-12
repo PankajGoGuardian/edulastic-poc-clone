@@ -3,7 +3,6 @@ import itemsSaga from './items';
 import itemDetailSaga from './itemDetail';
 import testItemsSaga from './testItems';
 import testItemSaga from './testItem';
-import questionsSaga from './questions';
 import questionSaga from './question';
 
 const authorSagas = [
@@ -12,7 +11,6 @@ const authorSagas = [
   itemDetailSaga(),
   testItemsSaga(),
   testItemSaga(),
-  questionsSaga(),
   questionSaga(),
 ];
 

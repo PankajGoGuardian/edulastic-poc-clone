@@ -1,9 +1,4 @@
-import {
-  LOAD_QUESTIONS,
-  GOTO_QUESTION,
-  AUTHOR_QUESTION,
-  CREATE_QUESTION_REQUEST,
-} from '../constants/actions';
+import { LOAD_QUESTIONS, GOTO_QUESTION, AUTHOR_QUESTION } from '../constants/actions';
 
 export const loadQuestions = questions => ({
   type: LOAD_QUESTIONS,
@@ -24,9 +19,4 @@ export const addQuestion = question => ({
   payload: {
     ...question,
   },
-});
-
-export const createQuestionAction = data => ({
-  type: CREATE_QUESTION_REQUEST,
-  payload: data,
 });

@@ -31,7 +31,7 @@ class QuestionEditor extends Component {
 
   componentDidMount() {
     const { match, receiveQuestionById } = this.props;
-    if (match.params) {
+    if (match.params.id) {
       receiveQuestionById(match.params.id);
     }
   }
@@ -78,6 +78,7 @@ class QuestionEditor extends Component {
     const itemId = question === null ? '' : question.id;
     const questionType = this.getQuestionType();
     const { showModal, saveClicked } = this.state;
+
     return (
       <Container>
         {showModal && (

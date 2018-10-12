@@ -23,6 +23,7 @@ class App extends Component {
           <Redirect exact path="/" to="/student/test" />
           <Route exact path="/author/items" component={ItemList} />
           <Route exact path="/author/add-item" component={ItemAdd} />
+          <Route exact path="/author/questions/create" component={QuestionEditor} />
           <Route exact path="/author/questions/:id" component={QuestionEditor} />
           <Route
             exact

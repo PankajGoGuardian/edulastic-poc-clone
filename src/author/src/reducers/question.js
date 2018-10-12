@@ -6,6 +6,7 @@ import {
   SAVE_QUESTION_SUCCESS,
   SAVE_QUESTION_ERROR,
   SET_QUESTION_DATA,
+  SET_QUESTION,
 } from '../constants/actions';
 
 const initialState = {
@@ -57,6 +58,13 @@ const question = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entity: { ...state.entity, data: payload.data },
+      };
+    case SET_QUESTION:
+      return {
+        ...state,
+        entity: {
+          data: payload.data,
+        },
       };
 
     default:

@@ -2,6 +2,7 @@ import {
   RECEIVE_QUESTION_REQUEST,
   SAVE_QUESTION_REQUEST,
   SET_QUESTION_DATA,
+  SET_QUESTION,
 } from '../constants/actions';
 
 export const receiveQuestionByIdAction = id => ({
@@ -20,6 +21,13 @@ export function saveQuestionAction() {
 export function setQuestionDataAction(data) {
   return {
     type: SET_QUESTION_DATA,
+    payload: { data },
+  };
+}
+
+export function setQuestionAction(data) {
+  return {
+    type: SET_QUESTION,
     payload: { data },
   };
 }

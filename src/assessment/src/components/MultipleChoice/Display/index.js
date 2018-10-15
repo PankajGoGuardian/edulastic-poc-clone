@@ -36,7 +36,12 @@ const Option = ({
   }
 
   return (
-    <Label smallSize={smallSize} setAnswers={setAnswers} showAnswer className={className}>
+    <Label
+      smallSize={smallSize}
+      setAnswers={setAnswers}
+      showAnswer
+      className={className}
+    >
       <PaddingDiv
         top={setAnswers ? 15 : smallSize ? 0 : 20}
         bottom={setAnswers ? 15 : smallSize ? 0 : 20}
@@ -53,7 +58,9 @@ const Option = ({
             <span>{ALPHABET[index]}</span>
             <div />
           </CheckboxContainter>
-          <MultiChoiceContent smallSize={smallSize}>{item.label}</MultiChoiceContent>
+          <MultiChoiceContent smallSize={smallSize}>
+            {item.label}
+          </MultiChoiceContent>
           <PaddingDiv right={15} height={20}>
             {className === 'right' && <i className="fa fa-check" />}
             {className === 'wrong' && <i className="fa fa-times" />}
@@ -126,7 +133,10 @@ class MultipleChoiceDisplay extends Component {
         }}
       >
         {!setAnswers && (
-          <ProblemContainer smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          <ProblemContainer
+            smallSize={smallSize}
+            dangerouslySetInnerHTML={{ __html: question }}
+          />
         )}
         <Options
           key={checkAnswer && showAnswer}

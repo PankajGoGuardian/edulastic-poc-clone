@@ -4,7 +4,7 @@ const ProgressContainer = styled.div`
   width: 600px;
 
   @media (max-width: 1600px) {
-    width: 480px;
+    width: 740px;
   }
   @media (max-width: 760px) {
     width: 120px;

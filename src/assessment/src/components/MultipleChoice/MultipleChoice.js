@@ -35,7 +35,11 @@ class MultipleChoice extends Component {
 
   saveData = () => {
     const { updateItemById, add } = this.props;
-    const { previewStimulus, previewDisplayOptions, itemForEdit } = this.getRenderData();
+    const {
+      previewStimulus,
+      previewDisplayOptions,
+      itemForEdit,
+    } = this.getRenderData();
     updateItemById({
       ...itemForEdit,
       id: itemForEdit._id,
@@ -58,7 +62,8 @@ class MultipleChoice extends Component {
   getRenderData = () => {
     const { questionsList, validation, item, smallSize, history } = this.props;
     const locationState = history.location.state;
-    const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
+    const isDetailPage =
+      locationState !== undefined ? locationState.itemDetail : false;
     let previewDisplayOptions;
     let previewStimulus;
     let itemForEdit;
@@ -68,7 +73,7 @@ class MultipleChoice extends Component {
       itemForEdit = item;
     } else {
       previewStimulus = item.stimulus;
-      previewDisplayOptions = questionsList;
+      previewDisplayOptions = item.options;
       itemForEdit = {
         ...item,
         stimulus: item.stimulus,
@@ -84,9 +89,21 @@ class MultipleChoice extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item, validation, addAnswer, answer } = this.props;
+    const {
+      view,
+      previewTab,
+      smallSize,
+      item,
+      validation,
+      addAnswer,
+      answer,
+    } = this.props;
     const { userSelections } = this.state;
-    const { previewStimulus, previewDisplayOptions, itemForEdit } = this.getRenderData();
+    const {
+      previewStimulus,
+      previewDisplayOptions,
+      itemForEdit,
+    } = this.getRenderData();
 
     return (
       <PaddingDiv>
@@ -130,7 +147,9 @@ class MultipleChoice extends Component {
                 question={previewStimulus}
                 addAnswer={addAnswer}
                 data={item}
-                userSelections={!!item && item.userSelections ? item.userSelections : []}
+                userSelections={
+                  !!item && item.userSelections ? item.userSelections : []
+                }
                 onChange={addAnswer}
               />
             )}

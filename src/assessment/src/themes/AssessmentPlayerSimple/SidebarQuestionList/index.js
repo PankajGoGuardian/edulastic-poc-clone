@@ -3,19 +3,18 @@ import React from 'react';
 
 import QuestionListItem from './QuestionListItem';
 
-const SidebarQuestionList = ({ questions, selectedQuestion }) => (
+const SidebarQuestionList = ({ questions, selectedQuestion, gotoQuestion }) => (
   <div>
     {questions.map((item, index) => {
-      let active = false;
-      let beforeSelection = false;
-      if (selectedQuestion === index) active = true;
-      if (selectedQuestion >= index) beforeSelection = true;
+      const active = selectedQuestion === index;
+      const beforeSelection = selectedQuestion >= index;
       return (
         <QuestionListItem
           index={index}
           active={active}
           beforeSelection={beforeSelection}
           key={index}
+          gotoQuestion={gotoQuestion}
         />
       );
     })}

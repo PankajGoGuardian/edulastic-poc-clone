@@ -48,7 +48,7 @@ class AssessmentPlayerDefault extends React.Component {
       isFirst,
       moveToNext,
       moveToPrev,
-      questionSelectChange,
+      gotoQuestion,
     } = this.props;
     const dropDownQuizOptions = questions.map((item, index) => ({
       value: index,
@@ -68,7 +68,7 @@ class AssessmentPlayerDefault extends React.Component {
                 <QuestionSelectDropdown
                   key={currentQuestion}
                   value={currentQuestion}
-                  onChange={questionSelectChange}
+                  gotoQuestion={gotoQuestion}
                   options={dropDownQuizOptions}
                 />
                 <ControlBtn prev skin disabled={isFirst()} onClick={moveToPrev}>

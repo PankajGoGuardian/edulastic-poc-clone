@@ -7,8 +7,19 @@ import ItemContainter from './ItemContainter';
 import Circle from '../../common/Circle';
 import Content from './Content';
 
-const QuestionListItem = ({ index, active, beforeSelection, t }) => (
-  <ItemContainter active={active}>
+const QuestionListItem = ({
+  index,
+  active,
+  beforeSelection,
+  t,
+  gotoQuestion,
+}) => (
+  <ItemContainter
+    active={active}
+    onClick={() => {
+      gotoQuestion(index);
+    }}
+  >
     <FlexContainer alignItems="center">
       <Circle r={6} active={active} hide={!beforeSelection} />
       <Content active={active}>
@@ -22,6 +33,7 @@ QuestionListItem.propTypes = {
   beforeSelection: PropTypes.bool.isRequired,
   active: PropTypes.bool.isRequired,
   index: PropTypes.number.isRequired,
+  gotoQuestion: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
 };
 

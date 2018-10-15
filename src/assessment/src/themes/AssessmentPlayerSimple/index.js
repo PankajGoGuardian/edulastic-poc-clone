@@ -2,11 +2,18 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Line } from 'rc-progress';
 import { ThemeProvider } from 'styled-components';
+import styled from 'styled-components';
+import { IconClockCircularOutline } from '@edulastic/icons';
+import { IconSave } from '@edulastic/icons';
 import MainWrapper from './MainWrapper';
 import MainContent from './MainContent';
 import MainFooter from './MainFooter';
 import Sidebar from './Sidebar';
 import ProgressContainer from './ProgressContainer';
+import QuestionAttempt from './QuestionAttempt';
+import TimeDuration from './TimeDuration';
+import QuitAssesment from './QuitAssesment';
+import TotalTimeDuration from './TotalTimeDuration';
 import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
 import LogoImage from '../../assets/logo.png';
 import SettingImage from '../../assets/screwdriver.png';
@@ -23,7 +30,7 @@ import {
   HeaderLeftMenu,
   HeaderMainMenu,
   HeaderRightMenu,
-  MobileMainMenu,
+  MobileMainMenu
 } from '../common';
 import QuestionWrapper from '../../components/QuestionWrapper';
 
@@ -40,12 +47,11 @@ class AssessmentPlayerSimple extends React.Component {
     isLast: PropTypes.func.isRequired,
     isFirst: PropTypes.func.isRequired,
     moveToNext: PropTypes.func.isRequired,
-    moveToPrev: PropTypes.func.isRequired,
-    questionSelectChange: PropTypes.func.isRequired,
+    moveToPrev: PropTypes.func.isRequired
   };
 
   static defaultProps = {
-    theme: defaultTheme,
+    theme: defaultTheme
   };
 
   render() {
@@ -58,14 +64,16 @@ class AssessmentPlayerSimple extends React.Component {
       isFirst,
       moveToNext,
       moveToPrev,
-      questionSelectChange,
+      gotoQuestion
     } = this.props;
     const dropDownQuizOptions = questions.map((item, index) => ({
-      value: index,
+      value: index
     }));
     const survey = questions[currentQuestion] || {};
     const { type } = survey;
-    const percent = Math.round(((currentQuestion + 1) * 100) / dropDownQuizOptions.length);
+    const percent = Math.round(
+      ((currentQuestion + 1) * 100) / dropDownQuizOptions.length
+    );
     return (
       <ThemeProvider theme={theme}>
         <Container>
@@ -98,6 +106,18 @@ class AssessmentPlayerSimple extends React.Component {
                       trailColor="#e2e2e2"
                     />
                   </ProgressContainer>
+                  <Time>
+                    <QuestionAttempt />
+                  </Time>
+                  <Icon color="#756e6e" />
+                  <TimeDuration />
+                  <TotalTimeDuration />
+                  <Save>
+                    <IconSave color="#756e6e" />
+                  </Save>
+                  <Save>
+                    <IconSave color="#756e6e" />
+                  </Save>
                 </FlexContainer>
               </DesktopMainMenu>
               <MobileMainMenu>
@@ -105,13 +125,23 @@ class AssessmentPlayerSimple extends React.Component {
                   <QuestionSelectDropdown
                     key={currentQuestion}
                     value={currentQuestion}
-                    onChange={questionSelectChange}
+                    onChange={gotoQuestion}
                     options={dropDownQuizOptions}
                   />
-                  <ControlBtn prev skinB disabled={isFirst()} onClick={moveToPrev}>
+                  <ControlBtn
+                    prev
+                    skinB
+                    disabled={isFirst()}
+                    onClick={moveToPrev}
+                  >
                     <i className="fa fa-angle-left" />
                   </ControlBtn>
-                  <ControlBtn next skinB disabled={isLast()} onClick={moveToNext}>
+                  <ControlBtn
+                    next
+                    skinB
+                    disabled={isLast()}
+                    onClick={moveToNext}
+                  >
                     <i className="fa fa-angle-right" />
                     <span>Next</span>
                   </ControlBtn>
@@ -138,13 +168,29 @@ class AssessmentPlayerSimple extends React.Component {
                 />
               </MainContent>
               <MainFooter>
-                <FlexContainer />
                 <FlexContainer>
-                  <ControlBtn prev skinB disabled={isFirst()} onClick={moveToPrev}>
+                  <QuitAssesment />
+                  <ControlBtn next skinB disabled>
+                    <span>CHECK ANSWER</span>
+                  </ControlBtn>
+                </FlexContainer>
+                <FlexContainer>
+                  <ControlBtn
+                    prev
+                    skinB
+                    disabled={isFirst()}
+                    onClick={moveToPrev}
+                  >
                     <i className="fa fa-angle-left" />
                   </ControlBtn>
-                  <ControlBtn next skinB disabled={isLast()} onClick={moveToNext}>
+                  <ControlBtn
+                    next
+                    skinB
+                    disabled={isLast()}
+                    onClick={moveToNext}
+                  >
                     <i className="fa fa-angle-right" />
+                    <span>NEXT</span>
                     {/* <span>{t("common.layout.nextbtn")}</span> */}
                   </ControlBtn>
                 </FlexContainer>
@@ -154,6 +200,7 @@ class AssessmentPlayerSimple extends React.Component {
               <SidebarQuestionList
                 questions={dropDownQuizOptions}
                 selectedQuestion={currentQuestion}
+                gotoQuestion={gotoQuestion}
               />
             </Sidebar>
             <Blank />
@@ -165,3 +212,31 @@ class AssessmentPlayerSimple extends React.Component {
 }
 
 export default AssessmentPlayerSimple;
+
+const Icon = styled(IconClockCircularOutline)`
+  margin: 0px 15px;
+  width: 20px !important;
+  height: 20px !important;
+`;
+
+const Time = styled.div`
+  color: #756e6e;
+  font-weight: bold;
+  font-size: 14px;
+  margin: 0px 30px 0px 20px;
+`;
+
+const Save = styled.div`
+  color: #e2e2e2;
+  background: #e2e2e2;
+  border-radius: 5px;
+  padding: 10px;
+  margin-left: 42px;
+`;
+
+const Quit = styled.span`
+  margin-left: 42px !important;
+  font-weight: bold;
+  font-size: 14px;
+  color: #ee1658;
+`;

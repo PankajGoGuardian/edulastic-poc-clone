@@ -5,13 +5,14 @@ import { gotoQuestion as gotoQuestionAction } from '../actions/questions';
 import AssesmentPlayerDefault from './AssessmentPlayerDefault';
 import AssesmentPlayerSimple from './AssessmentPlayerSimple';
 
-const AssessmentContainer = ({ gotoQuestion, questions, currentQuestion, defaultAP }) => {
+const AssessmentContainer = ({
+  gotoQuestion,
+  questions,
+  currentQuestion,
+  defaultAP
+}) => {
   const isLast = () => currentQuestion === questions.length - 1;
   const isFirst = () => currentQuestion === 0;
-
-  const questionSelectChange = (e) => {
-    gotoQuestion(parseInt(e.target.value, 10));
-  };
 
   const moveToNext = () => {
     if (!isLast()) {
@@ -28,24 +29,28 @@ const AssessmentContainer = ({ gotoQuestion, questions, currentQuestion, default
     isLast,
     moveToNext,
     moveToPrev,
-    questionSelectChange,
     questions,
     currentQuestion,
+    gotoQuestion
   };
 
-  return defaultAP ? <AssesmentPlayerDefault {...props} /> : <AssesmentPlayerSimple {...props} />;
+  return defaultAP ? (
+    <AssesmentPlayerDefault {...props} />
+  ) : (
+    <AssesmentPlayerSimple {...props} />
+  );
 };
 
 AssessmentContainer.PropType = {
   questions: PropTypes.array.isRequired,
   currentQuestion: PropTypes.number.isRequired,
-  gotoQuestion: PropTypes.func.isRequired,
+  gotoQuestion: PropTypes.func.isRequired
 };
 
 export default connect(
   ({ assessmentQuestions: questions }) => ({
     questions: questions.questions,
-    currentQuestion: questions.currentQuestion,
+    currentQuestion: questions.currentQuestion
   }),
-  { gotoQuestion: gotoQuestionAction },
+  { gotoQuestion: gotoQuestionAction }
 )(AssessmentContainer);

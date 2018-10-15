@@ -9,7 +9,7 @@ import {
   RECEIVE_QUESTION_ERROR,
   SAVE_QUESTION_REQUEST,
   SAVE_QUESTION_SUCCESS,
-  SAVE_QUESTION_ERROR,
+  SAVE_QUESTION_ERROR
 } from '../constants/actions';
 import { getQuestionSelector } from '../selectors/question';
 
@@ -22,13 +22,13 @@ function* receiveQuestionSaga({ payload }) {
 
     yield put({
       type: RECEIVE_QUESTION_SUCCESS,
-      payload: { entity },
+      payload: { entity }
     });
   } catch (err) {
     console.error(err);
     yield put({
       type: RECEIVE_QUESTION_ERROR,
-      payload: { error: 'Receive question is failing' },
+      payload: { error: 'Receive question is failing' }
     });
   }
 }
@@ -45,12 +45,13 @@ function* saveQuestionSaga() {
     } else {
       entity = yield call(questionsApi.create, question);
 
+      console.log('entity is', entity);
       itemDetail.rows[rowIndex].widgets.push({
-        widgetType: entity.widgetType,
+        widgetType: 'question',
         type: entity.data.type,
         title: 'Multiple choice',
         reference: entity.id,
-        tabIndex,
+        tabIndex
       });
 
       yield put(updateItemDetailByIdAction(itemDetail.id, itemDetail));
@@ -58,7 +59,7 @@ function* saveQuestionSaga() {
 
     yield put({
       type: SAVE_QUESTION_SUCCESS,
-      payload: { entity },
+      payload: { entity }
     });
 
     NotificationManager.success('Update item by id is success', 'Success');
@@ -68,8 +69,8 @@ function* saveQuestionSaga() {
       state: {
         backText: 'Back to item list',
         backUrl: '/author/items',
-        itemDetail: false,
-      },
+        itemDetail: false
+      }
     });
   } catch (err) {
     console.error(err);
@@ -77,7 +78,7 @@ function* saveQuestionSaga() {
     NotificationManager.error(errorMessage, 'Error');
     yield put({
       type: SAVE_QUESTION_ERROR,
-      payload: { error: errorMessage },
+      payload: { error: errorMessage }
     });
   }
 }
@@ -85,6 +86,6 @@ function* saveQuestionSaga() {
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_QUESTION_REQUEST, receiveQuestionSaga),
-    yield takeEvery(SAVE_QUESTION_REQUEST, saveQuestionSaga),
+    yield takeEvery(SAVE_QUESTION_REQUEST, saveQuestionSaga)
   ]);
 }

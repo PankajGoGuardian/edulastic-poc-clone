@@ -8,19 +8,42 @@ import Card from './Card';
 const PickUpQuestionTypes = ({ onSelectQuestionType }) => (
   <FlexContainer>
     <Card
-      type="multipleChoice"
       title="MultipleChoice-standard"
-      question="Which color has the smallest walvelenght?"
-      options={['Red', 'Violet', 'Green']}
-      userSelections={[false, true, false]}
+      data={{
+        type: 'multipleChoice',
+        stimulus: 'Which color has the smallest walvelenght?',
+        options: [
+          { value: '1', label: 'Red' },
+          { value: '1', label: 'Violet' },
+          { value: '1', label: 'Green' },
+        ],
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [],
+          },
+          alt_responses: [],
+        },
+        multiple_responses: true,
+      }}
       onSelectQuestionType={onSelectQuestionType}
     />
     <Card
-      type="orderList"
       title="OrderList-standard"
-      question="Which color has the smallest walvelenght?"
-      options={['Item A', 'Item B', 'Item C']}
-      userSelections={[]}
+      data={{
+        type: 'orderList',
+        stimulus: 'Which color has the smallest walvelenght?',
+        list: ['Item A', 'Item B', 'Item C'],
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [0, 1, 2],
+          },
+          alt_responses: [],
+        },
+      }}
       onSelectQuestionType={onSelectQuestionType}
     />
   </FlexContainer>

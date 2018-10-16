@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import QuestionEvaluation from '../../Base/QuestionEvaluation';
-
 class MultipleChoiceEvaluation extends Component {
   static propTypes = {
     onRef: PropTypes.func.isRequired,
     children: PropTypes.node.isRequired,
-  }
+  };
 
   componentDidMount() {
     const { onRef } = this.props;
@@ -21,11 +19,7 @@ class MultipleChoiceEvaluation extends Component {
 
   render() {
     const { children } = this.props;
-    return (
-      <QuestionEvaluation onRef={(ref) => { this.evaluationCmp = ref; }}>
-        { children }
-      </QuestionEvaluation>
-    );
+    return <div>{children}</div>;
   }
 
   getCorrectAnswers = () => this.evaluationCmp.getValidation();
@@ -42,7 +36,7 @@ class MultipleChoiceEvaluation extends Component {
       });
     });
     return result;
-  }
+  };
 }
 
 export default MultipleChoiceEvaluation;

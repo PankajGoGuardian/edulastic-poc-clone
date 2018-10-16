@@ -6,16 +6,14 @@ import { white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { compose } from 'redux';
 import { Button } from '@edulastic/common';
+import { cloneDeep } from 'lodash';
 
 import CorrectAnswer from './CorrectAnswer';
 import { Subtitle } from '../common';
-import {
-  updateAltValidationScoreAction,
-  addAltResponsesAction,
-  updateCorrectValidationScoreAction,
-  updateValidationAction,
-} from '../../../actions/questionCommon';
+
 import Tabs, { Tab, TabContainer } from '../../common/Tabs';
+import { setQuestionDataAction } from '../../../../../author/src/actions/question';
+import { getQuestionDataSelector } from '../../../../../author/src/selectors/question';
 
 class CorrectAnswers extends Component {
   state = {
@@ -38,7 +36,7 @@ class CorrectAnswers extends Component {
   };
 
   renderPlusButton = () => {
-    const { addAltResponses, validation } = this.props;
+    const { onAddAltResponses, validation } = this.props;
 
     return (
       <Button
@@ -46,7 +44,7 @@ class CorrectAnswers extends Component {
         icon={<IconPlus color={white} width={10} height={10} />}
         onClick={() => {
           this.handleTabChange(validation.alt_responses.length + 1);
-          addAltResponses();
+          onAddAltResponses();
         }}
         color="primary"
         variant="extendedFab"
@@ -55,52 +53,67 @@ class CorrectAnswers extends Component {
   };
 
   updateCorrectValidationAnswers = (answers) => {
-    const { validation, updateValidation } = this.props;
+    const { question, setQuestionData } = this.props;
+    const newData = cloneDeep(question);
+
     const correctAnswer = [];
     answers.forEach((answer, index) => {
       if (answer) {
         correctAnswer.push(index);
       }
     });
+
     const updatedValidation = {
-      ...validation,
+      ...question.data,
       valid_response: {
-        score: validation.valid_response.score,
+        score: question.validation.valid_response.score,
         value: correctAnswer,
       },
     };
-    updateValidation(updatedValidation);
-  }
+    newData.validation.valid_response = updatedValidation.valid_response;
+    setQuestionData(newData);
+  };
 
   updateAltCorrectValidationAnswers = (answers, tabIndex) => {
-    const { validation, updateValidation } = this.props;
+    const { question, setQuestionData } = this.props;
+    const newData = cloneDeep(question);
+
     const correctAnswer = [];
     answers.forEach((answer, index) => {
       if (answer) {
         correctAnswer.push(index);
       }
     });
-    const updatedAltResponses = validation.alt_responses;
+    const updatedAltResponses = newData.validation.alt_responses;
     updatedAltResponses[tabIndex] = {
-      score: validation.alt_responses[tabIndex].score,
+      score: newData.validation.alt_responses[tabIndex].score,
       value: correctAnswer,
     };
-    const updatedValidation = {
-      ...validation,
-      alt_responses: updatedAltResponses,
-    };
-    updateValidation(updatedValidation);
-  }
+
+    newData.validation.alt_responses = updatedAltResponses;
+    setQuestionData(newData);
+  };
+
+  handleUpdateCorrectScore = (points) => {
+    const { question, setQuestionData } = this.props;
+    const newData = cloneDeep(question);
+
+    newData.validation.valid_response.score = points;
+
+    setQuestionData(newData);
+  };
+
+  handleUpdateAltValidationScore = i => (points) => {
+    const { question, setQuestionData } = this.props;
+    const newData = cloneDeep(question);
+
+    newData.validation.alt_responses[i].score = points;
+
+    setQuestionData(newData);
+  };
 
   render() {
-    const {
-      validation,
-      updateAltValidationScore,
-      updateCorrectValidationScore,
-      stimulus,
-      options,
-      t,
-    } = this.props;
+    const { validation, stimulus, options, t } = this.props;
     const { value } = this.state;
 
     return (
@@ -118,9 +131,7 @@ class CorrectAnswers extends Component {
                 stimulus={stimulus}
                 options={options}
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
-                onUpdatePoints={(points) => {
-                  updateCorrectValidationScore(points);
-                }}
+                onUpdatePoints={this.handleUpdateCorrectScore}
               />
             </TabContainer>
           )}
@@ -134,10 +145,10 @@ class CorrectAnswers extends Component {
                       response={alter}
                       stimulus={stimulus}
                       options={options}
-                      onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
-                      onUpdatePoints={(points) => {
-                        updateAltValidationScore(points, i);
-                      }}
+                      onUpdateValidationValue={answers =>
+                        this.updateAltCorrectValidationAnswers(answers, i)
+                      }
+                      onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                     />
                   </TabContainer>
                 );
@@ -151,16 +162,14 @@ class CorrectAnswers extends Component {
 }
 
 CorrectAnswers.propTypes = {
-  addAltResponses: PropTypes.func.isRequired,
-  updateValidation: PropTypes.func.isRequired,
-  updateAltValidationScore: PropTypes.func.isRequired,
-  updateCorrectValidationScore: PropTypes.func.isRequired,
+  onAddAltResponses: PropTypes.func.isRequired,
+  setQuestionData: PropTypes.func.isRequired,
   validation: PropTypes.object,
   t: PropTypes.func.isRequired,
   stimulus: PropTypes.string,
   options: PropTypes.array,
+  question: PropTypes.object.isRequired,
 };
-
 
 CorrectAnswers.defaultProps = {
   stimulus: '',
@@ -171,13 +180,10 @@ CorrectAnswers.defaultProps = {
 const enhance = compose(
   withNamespaces('assessment'),
   connect(
-    null,
-    {
-      updateAltValidationScore: updateAltValidationScoreAction,
-      addAltResponses: addAltResponsesAction,
-      updateCorrectValidationScore: updateCorrectValidationScoreAction,
-      updateValidation: updateValidationAction,
-    },
+    state => ({
+      question: getQuestionDataSelector(state),
+    }),
+    { setQuestionData: setQuestionDataAction },
   ),
 );
 

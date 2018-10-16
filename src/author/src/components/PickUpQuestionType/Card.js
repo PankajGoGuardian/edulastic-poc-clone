@@ -5,24 +5,21 @@ import { IconPlus } from '@edulastic/icons';
 import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapper';
 import { Content, Header, RoundDiv } from './components';
 
-const Card = ({ title, type, onSelectQuestionType, userSelections, question, options }) => {
-  const data = {
+const Card = ({ title, onSelectQuestionType, data }) => {
+  const smallData = {
+    ...data,
     smallSize: true,
-    stimulus: question,
-    list: options,
-    userSelections,
-    type,
   };
 
   return (
     <React.Fragment>
       <RoundDiv borderRadius={10}>
         <Header borderRadius={10}>{title}</Header>
-        <Content borderRadius={10} onClick={() => onSelectQuestionType(type, data)}>
+        <Content borderRadius={10} onClick={() => onSelectQuestionType(smallData)}>
           <div className="add-icon">
             <IconPlus color="#fff" width={50} height={50} />
           </div>
-          <QuestionWrapper type={type} view="preview" isNew data={data} />
+          <QuestionWrapper type={smallData.type} view="preview" data={smallData} />
         </Content>
       </RoundDiv>
     </React.Fragment>
@@ -30,18 +27,9 @@ const Card = ({ title, type, onSelectQuestionType, userSelections, question, opt
 };
 
 Card.propTypes = {
-  type: PropTypes.string.isRequired,
+  data: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
-  userSelections: PropTypes.array,
-  options: PropTypes.array,
-  question: PropTypes.string,
   onSelectQuestionType: PropTypes.func.isRequired,
-};
-
-Card.defaultProps = {
-  userSelections: [],
-  question: '',
-  options: [],
 };
 
 export default Card;

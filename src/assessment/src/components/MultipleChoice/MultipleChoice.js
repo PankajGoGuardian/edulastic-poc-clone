@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { PaddingDiv } from '@edulastic/common';
+import { cloneDeep } from 'lodash';
 
 import {
   MultipleChoiceAuthoring,
@@ -11,65 +12,24 @@ import {
   MultipleChoiceReport,
   CorrectAnswers,
 } from './index';
-import { getValidationSelector } from '../../selectors/questionCommon';
-import { updateItemByIdAction } from '../../actions/items';
 import {
   addQuestion as addQuestionAction,
   addAnswer as addAnswerAction,
 } from '../../actions/questions';
 import { getPreivewTabSelector } from './selectors/preview';
+import { setQuestionDataAction } from '../../../../author/src/actions/question';
 
 class MultipleChoice extends Component {
-  state = {
-    userSelections: [],
-  };
-
-  componentDidMount() {
-    const { questionsList, saveClicked } = this.props;
-    const userSelections = Array(questionsList.length).fill(false);
-    this.setState({ userSelections });
-    if (saveClicked) {
-      this.saveData();
-    }
-  }
-
-  saveData = () => {
-    const { updateItemById, add } = this.props;
-    const {
-      previewStimulus,
-      previewDisplayOptions,
-      itemForEdit,
-    } = this.getRenderData();
-    updateItemById({
-      ...itemForEdit,
-      id: itemForEdit._id,
-      reference: itemForEdit.id,
-      stimulus: previewStimulus,
-      list: previewDisplayOptions,
-    });
-    const question = {
-      question: previewStimulus,
-      options: previewDisplayOptions.map((option, index) => ({
-        value: index,
-        label: option,
-      })),
-      type: itemForEdit.type,
-      answer: itemForEdit.validation.valid_response.value,
-    };
-    add(question);
-  };
-
   getRenderData = () => {
-    const { questionsList, validation, item, smallSize, history } = this.props;
+    const { item, history } = this.props;
     const locationState = history.location.state;
-    const isDetailPage =
-      locationState !== undefined ? locationState.itemDetail : false;
+    const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
     let previewDisplayOptions;
     let previewStimulus;
     let itemForEdit;
-    if (smallSize || isDetailPage) {
+    if (item.smallSize || isDetailPage) {
       previewStimulus = item.stimulus;
-      previewDisplayOptions = item.list || item.options;
+      previewDisplayOptions = item.options;
       itemForEdit = item;
     } else {
       previewStimulus = item.stimulus;
@@ -77,8 +37,8 @@ class MultipleChoice extends Component {
       itemForEdit = {
         ...item,
         stimulus: item.stimulus,
-        list: questionsList,
-        validation,
+        list: item.options,
+        validation: item.validation,
       };
     }
     return {
@@ -88,22 +48,32 @@ class MultipleChoice extends Component {
     };
   };
 
+  get userSelections() {
+    const { item } = this.props;
+    return item.options.map(o => o.label);
+  }
+
+  handleAddAltResponses = () => {
+    const { setQuestionData, item } = this.props;
+    const newItem = cloneDeep(item);
+
+    const response = {
+      score: 1,
+      value: [],
+    };
+
+    if (newItem.validation.alt_responses && newItem.validation.alt_responses.length) {
+      newItem.validation.alt_responses.push(response);
+    } else {
+      newItem.validation.alt_responses = [response];
+    }
+
+    setQuestionData(newItem);
+  };
+
   render() {
-    const {
-      view,
-      previewTab,
-      smallSize,
-      item,
-      validation,
-      addAnswer,
-      answer,
-    } = this.props;
-    const { userSelections } = this.state;
-    const {
-      previewStimulus,
-      previewDisplayOptions,
-      itemForEdit,
-    } = this.getRenderData();
+    const { view, previewTab, smallSize, item, addAnswer, answer } = this.props;
+    const { previewStimulus, previewDisplayOptions, itemForEdit } = this.getRenderData();
 
     return (
       <PaddingDiv>
@@ -111,9 +81,10 @@ class MultipleChoice extends Component {
           <React.Fragment>
             <MultipleChoiceAuthoring item={itemForEdit} />
             <CorrectAnswers
-              validation={validation}
+              validation={item.validation}
               options={previewDisplayOptions}
               question={previewStimulus}
+              onAddAltResponses={this.handleAddAltResponses}
             />
           </React.Fragment>
         )}
@@ -122,7 +93,7 @@ class MultipleChoice extends Component {
             {previewTab === 'check' && (
               <MultipleChoiceReport
                 checkAnswer
-                userSelections={userSelections}
+                userSelections={this.userSelections}
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 handleMultiSelect={this.handleMultiSelect}
@@ -133,7 +104,7 @@ class MultipleChoice extends Component {
                 showAnswer
                 options={previewDisplayOptions}
                 question={previewStimulus}
-                userSelections={userSelections}
+                userSelections={this.userSelections}
                 handleMultiSelect={this.handleMultiSelect}
               />
             )}
@@ -147,9 +118,7 @@ class MultipleChoice extends Component {
                 question={previewStimulus}
                 addAnswer={addAnswer}
                 data={item}
-                userSelections={
-                  !!item && item.userSelections ? item.userSelections : []
-                }
+                userSelections={!!item && item.userSelections ? item.userSelections : []}
                 onChange={addAnswer}
               />
             )}
@@ -163,25 +132,20 @@ class MultipleChoice extends Component {
 MultipleChoice.propTypes = {
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
-  questionsList: PropTypes.array,
   item: PropTypes.object,
   smallSize: PropTypes.bool,
   history: PropTypes.object,
-  validation: PropTypes.object,
-  saveClicked: PropTypes.bool,
-  updateItemById: PropTypes.func.isRequired,
-  add: PropTypes.func.isRequired,
   answer: PropTypes.any,
   addAnswer: PropTypes.func.isRequired,
+  setQuestionData: PropTypes.func.isRequired,
 };
 
 MultipleChoice.defaultProps = {
-  questionsList: [],
-  item: {},
+  item: {
+    options: [],
+  },
   smallSize: false,
-  saveClicked: false,
   history: {},
-  validation: {},
   answer: {},
 };
 
@@ -190,11 +154,10 @@ const enhance = compose(
   connect(
     state => ({
       previewTab: getPreivewTabSelector(state),
-      validation: getValidationSelector(state),
     }),
     {
       addAnswer: addAnswerAction,
-      updateItemById: updateItemByIdAction,
+      setQuestionData: setQuestionDataAction,
       add: addQuestionAction,
     },
   ),

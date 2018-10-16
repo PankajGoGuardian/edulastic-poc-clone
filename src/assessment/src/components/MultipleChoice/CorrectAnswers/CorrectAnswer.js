@@ -13,12 +13,14 @@ class CorrectAnswer extends Component {
     t: PropTypes.func.isRequired,
     stimulus: PropTypes.string.isRequired,
     options: PropTypes.array.isRequired,
-  }
+  };
 
   constructor(props) {
     super(props);
     const userSelections = Array(props.options.length).fill(false);
-    props.response.value.forEach((answer) => { userSelections[answer] = true; });
+    props.response.value.forEach((answer) => {
+      userSelections[answer] = true;
+    });
     this.state = {
       responseScore: props.response.score,
       userSelections,
@@ -30,17 +32,17 @@ class CorrectAnswer extends Component {
     if (e.target.value < 0) e.target.value = 0;
     this.setState({ responseScore: e.target.value });
     onUpdatePoints(parseFloat(e.target.value, 10));
-  }
+  };
 
-  handleMultiSelect = (e) => {
+  handleMultiSelect = (index) => {
     const { onUpdateValidationValue } = this.props;
     const { userSelections } = this.state;
-    const changedOption = parseInt(e.target.value, 10);
+    const changedOption = parseInt(index, 10);
     userSelections[changedOption] = !userSelections[changedOption];
     this.setState({ userSelections });
 
     onUpdateValidationValue(userSelections);
-  }
+  };
 
   render() {
     const { t, options, stimulus } = this.props;

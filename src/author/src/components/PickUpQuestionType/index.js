@@ -11,51 +11,16 @@ import { getItemSelector } from '../../selectors/items';
 import Header from './Header';
 import { setQuestionAction } from '../../actions/question';
 
-const makeQuestion = (questionType, data) => {
-  let question = {
-    regionId: '1',
-    widgetType: 'question',
-  };
-
-  switch (questionType) {
-    case 'orderList':
-      question = {
-        ...question,
-        data: {
-          stimulus: data.stimulus,
-          type: questionType,
-          list: data.list,
-          validation: {
-            scoring_type: 'exactMatch',
-            valid_response: {
-              score: 1,
-              value: [0, 1, 2],
-            },
-            alt_responses: [],
-          },
-        },
-      };
-      break;
-    case 'multipleChoice':
-      question = {
-        ...question,
-        data: {
-          stimulus: data.stimulus,
-          type: questionType,
-          options: data.list.map((label, i) => ({ value: i, label })),
-        },
-      };
-      break;
-    default:
-  }
-
-  return question;
-};
+const makeQuestion = data => ({
+  regionId: '1',
+  widgetType: 'question',
+  data,
+});
 
 class PickUpQuestionType extends Component {
-  selectQuestionType = (questionType, data) => {
+  selectQuestionType = (data) => {
     const { setQuestion, history, match, t } = this.props;
-    const question = makeQuestion(questionType, data);
+    const question = makeQuestion(data);
 
     setQuestion(question.data);
 

@@ -23,7 +23,7 @@ QuestionSelectDropdown.propTypes = {
   value: PropTypes.number.isRequired,
   onChange: PropTypes.func.isRequired,
   options: PropTypes.array.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
 };
 
 export default withNamespaces('student')(QuestionSelectDropdown);

@@ -10,7 +10,9 @@ const QuestionSelectDropdown = ({ onChange, options, value, t }) => (
     <Select onChange={onChange} defaultValue={value}>
       {options.map((item, index) => (
         <option key={index} value={item.value}>
-          {`${t('common.layout.selectbox.question')} ${index + 1} / ${options.length}`}
+          {`${t('common.layout.selectbox.question')} ${index + 1} / ${
+            options.length
+          }`}
         </option>
       ))}
     </Select>
@@ -21,7 +23,7 @@ QuestionSelectDropdown.propTypes = {
   value: PropTypes.number.isRequired,
   onChange: PropTypes.func.isRequired,
   options: PropTypes.array.isRequired,
-  t: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 export default withNamespaces('student')(QuestionSelectDropdown);

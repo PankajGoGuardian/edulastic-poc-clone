@@ -10,7 +10,7 @@ const QuestionSelectDropdown = ({ gotoQuestion, options, value, t }) => (
   <SelectContainer>
     <Select
       defaultValue={value}
-      onChange={(e) => {
+      onChange={e => {
         gotoQuestion(parseInt(e.target.value));
       }}
     >
@@ -27,9 +27,8 @@ const QuestionSelectDropdown = ({ gotoQuestion, options, value, t }) => (
 
 QuestionSelectDropdown.propTypes = {
   value: PropTypes.number.isRequired,
-  gotoQuestion: PropTypes.func.isRequired,
   options: PropTypes.array.isRequired,
-  t: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 export default withNamespaces('student')(QuestionSelectDropdown);

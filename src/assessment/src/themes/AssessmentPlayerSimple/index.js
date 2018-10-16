@@ -10,9 +10,8 @@ import Sidebar from './Sidebar';
 import ProgressContainer from './ProgressContainer';
 import QuestionAttempt from './QuestionAttempt';
 import TimeDuration from './TimeDuration';
+import ResponsiveTestDuration from './ResponsiveTestDuration';
 import QuitAssesment from './QuitAssesment';
-import TotalTimeDuration from './TotalTimeDuration';
-import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
 import LogoImage from '../../assets/logo.png';
 import SettingImage from '../../assets/screwdriver.png';
 import SidebarQuestionList from './SidebarQuestionList';
@@ -31,6 +30,7 @@ import {
   MobileMainMenu,
 } from '../common';
 import QuestionWrapper from '../../components/QuestionWrapper';
+import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line
@@ -88,6 +88,10 @@ class AssessmentPlayerSimple extends React.Component {
                       trailColor="#e2e2e2"
                     />
                   </ProgressContainer>
+                  <Timer>
+                    <Icon color="#756e6e" />
+                    <ResponsiveTestDuration />
+                  </Timer>
                 </FlexContainer>
               </MobileMainMenu>
             </HeaderLeftMenu>
@@ -97,24 +101,27 @@ class AssessmentPlayerSimple extends React.Component {
                   <ProgressContainer>
                     <Line
                       percent={percent}
-                      strokeWidth="2"
+                      strokeWidth="1"
                       strokeColor="#00b0ff"
-                      trailWidth="2"
+                      trailWidth="1"
                       trailColor="#e2e2e2"
                     />
                   </ProgressContainer>
                   <Time>
                     <QuestionAttempt />
                   </Time>
-                  <Icon color="#756e6e" />
-                  <TimeDuration />
-                  <TotalTimeDuration />
-                  <Save>
-                    <IconSave color="#756e6e" />
-                  </Save>
-                  <Save>
-                    <IconSave color="#756e6e" />
-                  </Save>
+                  <Timer>
+                    <Icon color="#756e6e" />
+                    <TimeDuration />
+                  </Timer>
+                  <Timer>
+                    <Save>
+                      <IconSave color="#756e6e" />
+                    </Save>
+                    <Save>
+                      <IconSave color="#756e6e" />
+                    </Save>
+                  </Timer>
                 </FlexContainer>
               </DesktopMainMenu>
               <MobileMainMenu>
@@ -191,7 +198,7 @@ class AssessmentPlayerSimple extends React.Component {
 export default AssessmentPlayerSimple;
 
 const Icon = styled(IconClockCircularOutline)`
-  margin: 0px 15px;
+  margin: 10px 15px;
   width: 20px !important;
   height: 20px !important;
 `;
@@ -208,5 +215,9 @@ const Save = styled.div`
   background: #e2e2e2;
   border-radius: 5px;
   padding: 10px;
-  margin-left: 42px;
+  margin-left: 20px;
+`;
+
+const Timer = styled.div`
+  display: flex;
 `;

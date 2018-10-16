@@ -24,9 +24,9 @@ const QuestionSelectDropdown = ({ gotoQuestion, options, value, t }) => (
 
 QuestionSelectDropdown.propTypes = {
   value: PropTypes.number.isRequired,
-  gotoQuestion: PropTypes.func.isRequired,
   options: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
+  gotoQuestion: PropTypes.func.isRequired,
 };
 
 export default withNamespaces('student')(QuestionSelectDropdown);

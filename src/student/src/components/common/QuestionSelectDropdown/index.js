@@ -10,7 +10,9 @@ const QuestionSelectDropdown = ({ onChange, options, value, t }) => (
     <Select onChange={onChange} defaultValue={value}>
       {options.map((item, index) => (
         <option key={index} value={item.value}>
-          {`${t('common.layout.selectbox.question')} ${index + 1} / ${options.length}`}
+          {`${t('common.layout.selectbox.question')} ${index + 1} / ${
+            options.length
+          }`}
         </option>
       ))}
     </Select>

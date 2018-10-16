@@ -8,7 +8,7 @@ const MainFooter = styled.div`
   justify-content: space-between;
 
   @media (max-width: 1600px) {
-    padding: 34px 0;
+    padding: 60px 0;
   }
   @media (max-width: 760px) {
     display: none;

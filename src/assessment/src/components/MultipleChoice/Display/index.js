@@ -102,9 +102,11 @@ class MultipleChoiceDisplay extends Component {
       checkAnswer,
       data,
     } = this.props;
+    console.log(data);
 
     return (
       <div>
+        <h5>{data.stimulus}</h5>
         <Options
           key={checkAnswer && showAnswer}
           smallSize={smallSize}

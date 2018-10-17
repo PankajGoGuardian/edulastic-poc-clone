@@ -27,8 +27,6 @@ const defaultTheme = require('sass-extract-loader?{"plugins": ["sass-extract-js"
 class AssessmentPlayerDefault extends React.Component {
   static propTypes = {
     theme: PropTypes.object,
-    questions: PropTypes.array.isRequired,
-    currentQuestion: PropTypes.number,
     isLast: PropTypes.func,
     isFirst: PropTypes.func,
     moveToNext: PropTypes.func,
@@ -42,8 +40,6 @@ class AssessmentPlayerDefault extends React.Component {
 
   render() {
     const {
-      questions,
-      currentQuestion,
       theme,
       isLast,
       items,
@@ -62,8 +58,6 @@ class AssessmentPlayerDefault extends React.Component {
     if (!item) {
       return <div />;
     }
-    const survey = questions[currentQuestion] || {};
-    const { type } = survey;
     return (
       <ThemeProvider theme={theme}>
         <Container>
@@ -74,7 +68,7 @@ class AssessmentPlayerDefault extends React.Component {
             <HeaderMainMenu skin>
               <FlexContainer>
                 <QuestionSelectDropdown
-                  key={currentQuestion}
+                  key={currentItem}
                   currentItem={currentItem}
                   gotoQuestion={gotoQuestion}
                   options={dropdownOptions}

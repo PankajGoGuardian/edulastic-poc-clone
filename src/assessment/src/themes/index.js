@@ -7,8 +7,6 @@ import AssesmentPlayerSimple from './AssessmentPlayerSimple';
 
 const AssessmentContainer = ({
   gotoQuestion,
-  questions,
-  currentQuestion,
   currentItem,
   defaultAP,
   items
@@ -32,8 +30,6 @@ const AssessmentContainer = ({
     isLast,
     moveToNext,
     moveToPrev,
-    questions,
-    currentQuestion,
     currentItem,
     gotoQuestion
   };
@@ -46,17 +42,15 @@ const AssessmentContainer = ({
 };
 
 AssessmentContainer.PropType = {
-  questions: PropTypes.array.isRequired,
-  currentQuestion: PropTypes.number.isRequired,
-  gotoQuestion: PropTypes.func.isRequired
+  gotoQuestion: PropTypes.func.isRequired,
+  items: PropTypes.array.isRequired,
+  currentItem: PropTypes.number.isRequired
 };
 
 export default connect(
-  ({ assessmentQuestions: questions, test }) => ({
-    questions: questions.questions,
+  ({ test }) => ({
     items: test.items,
-    currentItem: test.currentItem,
-    currentQuestion: questions.currentQuestion
+    currentItem: test.currentItem
   }),
   { gotoQuestion: gotoItem }
 )(AssessmentContainer);

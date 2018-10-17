@@ -27,11 +27,11 @@ import {
   HeaderLeftMenu,
   HeaderMainMenu,
   HeaderRightMenu,
-  MobileMainMenu,
+  MobileMainMenu
 } from '../common';
 import QuestionWrapper from '../../components/QuestionWrapper';
 import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
-
+import TestPreviewItem from '../../components/TestItemPreview';
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line
 const defaultTheme = require('sass-extract-loader?{"plugins": ["sass-extract-js"]}!../../styles/vars.scss');
@@ -46,31 +46,37 @@ class AssessmentPlayerSimple extends React.Component {
     isFirst: PropTypes.func.isRequired,
     moveToNext: PropTypes.func.isRequired,
     moveToPrev: PropTypes.func.isRequired,
-    gotoQuestion: PropTypes.func.isRequired,
+    gotoQuestion: PropTypes.func.isRequired
   };
 
   static defaultProps = {
-    theme: defaultTheme,
+    theme: defaultTheme
   };
 
   render() {
     const {
-      questions,
-      currentQuestion,
       theme,
       // t,
       isLast,
       isFirst,
       moveToNext,
       moveToPrev,
-      gotoQuestion,
+      items,
+      currentItem,
+      gotoQuestion
     } = this.props;
-    const dropDownQuizOptions = questions.map((item, index) => ({
-      value: index,
-    }));
-    const survey = questions[currentQuestion] || {};
-    const { type } = survey;
-    const percent = Math.round(((currentQuestion + 1) * 100) / dropDownQuizOptions.length);
+    let dropdownOptions = Array.isArray(items)
+      ? items.map((item, index) => index)
+      : [];
+
+    const item = items[currentItem];
+    if (!item) {
+      return <div />;
+    }
+
+    const percent = Math.round(
+      ((currentItem + 1) * 100) / dropdownOptions.length
+    );
     return (
       <ThemeProvider theme={theme}>
         <Container>
@@ -127,15 +133,25 @@ class AssessmentPlayerSimple extends React.Component {
               <MobileMainMenu>
                 <FlexContainer>
                   <QuestionSelectDropdown
-                    key={currentQuestion}
-                    value={currentQuestion}
+                    key={currentItem}
+                    value={currentItem}
                     onChange={gotoQuestion}
-                    options={dropDownQuizOptions}
+                    options={dropdownOptions}
                   />
-                  <ControlBtn prev skinB disabled={isFirst()} onClick={moveToPrev}>
+                  <ControlBtn
+                    prev
+                    skinB
+                    disabled={isFirst()}
+                    onClick={moveToPrev}
+                  >
                     <i className="fa fa-angle-left" />
                   </ControlBtn>
-                  <ControlBtn next skinB disabled={isLast()} onClick={moveToNext}>
+                  <ControlBtn
+                    next
+                    skinB
+                    disabled={isLast()}
+                    onClick={moveToNext}
+                  >
                     <i className="fa fa-angle-right" />
                     <span>Next</span>
                   </ControlBtn>
@@ -153,13 +169,7 @@ class AssessmentPlayerSimple extends React.Component {
             <Blank />
             <MainWrapper>
               <MainContent>
-                <QuestionWrapper
-                  skin
-                  type={type}
-                  view="preview"
-                  key={currentQuestion}
-                  data={survey}
-                />
+                <TestPreviewItem cols={item.rows} />
               </MainContent>
               <MainFooter>
                 <FlexContainer>
@@ -169,10 +179,20 @@ class AssessmentPlayerSimple extends React.Component {
                   </ControlBtn>
                 </FlexContainer>
                 <FlexContainer>
-                  <ControlBtn prev skinB disabled={isFirst()} onClick={moveToPrev}>
+                  <ControlBtn
+                    prev
+                    skinB
+                    disabled={isFirst()}
+                    onClick={moveToPrev}
+                  >
                     <i className="fa fa-angle-left" />
                   </ControlBtn>
-                  <ControlBtn next skinB disabled={isLast()} onClick={moveToNext}>
+                  <ControlBtn
+                    next
+                    skinB
+                    disabled={isLast()}
+                    onClick={moveToNext}
+                  >
                     <i className="fa fa-angle-right" />
                     <span>NEXT</span>
                     {/* <span>{t("common.layout.nextbtn")}</span> */}
@@ -182,8 +202,8 @@ class AssessmentPlayerSimple extends React.Component {
             </MainWrapper>
             <Sidebar>
               <SidebarQuestionList
-                questions={dropDownQuizOptions}
-                selectedQuestion={currentQuestion}
+                questions={dropdownOptions}
+                selectedQuestion={currentItem}
                 gotoQuestion={gotoQuestion}
               />
             </Sidebar>

@@ -114,7 +114,10 @@ class AssessmentPlayerSimple extends React.Component {
                     />
                   </ProgressContainer>
                   <Time>
-                    <QuestionAttempt />
+                    <QuestionAttempt
+                      current={currentItem + 1}
+                      total={items.length}
+                    />
                   </Time>
                   <Timer>
                     <Icon color="#756e6e" />

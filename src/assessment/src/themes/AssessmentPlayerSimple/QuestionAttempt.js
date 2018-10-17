@@ -1,5 +1,9 @@
 import React from 'react';
 
-const QuestionAttempt = () => <p>10/15</p>;
+const QuestionAttempt = ({ current, total }) => (
+  <p>
+    {current}/{total}
+  </p>
+);
 
 export default QuestionAttempt;

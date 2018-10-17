@@ -7,14 +7,13 @@ import TestItemCol from './TestItemCol';
 
 export default class TestItemPreview extends Component {
   static propTypes = {
-    cols: PropTypes.array.isRequired,
+    cols: PropTypes.array.isRequired
   };
 
   render() {
     const { cols } = this.props;
-
     const colStyle = {
-      borderRight: `3px solid ${mainBgColor}`,
+      borderRight: `3px solid ${mainBgColor}`
     };
 
     return (
@@ -22,7 +21,11 @@ export default class TestItemPreview extends Component {
         {cols &&
           !!cols.length &&
           cols.map((col, i) => (
-            <TestItemCol key={i} col={col} style={i !== cols.length - 1 ? colStyle : {}} />
+            <TestItemCol
+              key={i}
+              col={col}
+              style={i !== cols.length - 1 ? colStyle : {}}
+            />
           ))}
       </Paper>
     );

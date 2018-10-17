@@ -10,6 +10,10 @@ export const ADD_EVALUATION = '[questions] add evulation';
 // assessment
 export const LOAD_ASSESSMENT = '[assessment] load assessment';
 
+// test
+export const LOAD_TEST = '[test] load test';
+export const LOAD_TEST_ITEMS = '[test] load test items';
+
 // items
 export const RECEIVE_ITEMS_REQUEST = '[items] receive items request';
 export const RECEIVE_ITEMS_SUCCESS = '[items] receive items success';
@@ -20,6 +24,8 @@ export const RECEIVE_ITEM_SUCCESS = '[items] receive item success';
 export const RECEIVE_ITEM_ERROR = '[items] receive item error';
 export const CREATE_ITEM_REQUEST = '[items] create item request';
 export const UPDATE_ITEM_REQUEST = '[items] update item request';
+
+export const GOTO_ITEM = '[items] goto a particular item';
 
 // QuestionCommon
 export const QUESTIONCOMMON_UPDATE_QUESTIONS_LIST =

@@ -1,16 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import queryString from 'query-string';
+import { withRouter } from 'react-router-dom';
 
 import { ASSESSMENTID } from './constants/others';
 import AssessmentPlayer from '../../assessment/src/index';
 
-const Student = ({ defaultAP }) => {
+const Student = ({ defaultAP, location }) => {
+  let { id: aId } = queryString.parse(location.search);
   const assessmentId = localStorage.getItem(ASSESSMENTID);
-  return <AssessmentPlayer assessmentId={assessmentId} defaultAP={defaultAP} />;
+  aId = aId || 'all';
+
+  return (
+    <AssessmentPlayer
+      assessmentId={assessmentId}
+      aId={aId}
+      defaultAP={defaultAP}
+    />
+  );
 };
 
 Student.propTypes = {
-  defaultAP: PropTypes.any.isRequired,
+  defaultAP: PropTypes.any.isRequired
 };
 
-export default Student;
+export default withRouter(Student);

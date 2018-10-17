@@ -6,11 +6,13 @@ import { loadJSON } from './utils/loadjson';
 
 // themes
 import ThemeContainer from './themes/index';
+import { loadTest } from './actions/test';
 
 class AssessmentPlayer extends React.Component {
   componentDidMount() {
-    const { dispatch, assessmentId } = this.props;
+    const { dispatch, assessmentId, aId } = this.props;
     loadJSON(assessmentId, dispatch);
+    this.props.dispatch(loadTest());
   }
 
   render() {
@@ -22,7 +24,7 @@ class AssessmentPlayer extends React.Component {
 AssessmentPlayer.propTypes = {
   dispatch: PropTypes.func.isRequired,
   assessmentId: PropTypes.string.isRequired,
-  defaultAP: PropTypes.any.isRequired,
+  defaultAP: PropTypes.any.isRequired
 };
 
 // export component

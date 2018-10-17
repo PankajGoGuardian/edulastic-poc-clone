@@ -7,7 +7,7 @@ import {
   RECEIVE_ITEM_ERROR,
   RECEIVE_ITEMS_REQUEST,
   RECEIVE_ITEMS_SUCCESS,
-  RECEIVE_ITEMS_ERROR,
+  RECEIVE_ITEMS_ERROR
 } from '../constants/actions';
 
 function* receiveItemsSaga() {
@@ -16,13 +16,13 @@ function* receiveItemsSaga() {
 
     yield put({
       type: RECEIVE_ITEMS_SUCCESS,
-      payload: { items },
+      payload: { items }
     });
   } catch (err) {
     console.error(err);
     yield put({
       type: RECEIVE_ITEMS_ERROR,
-      payload: { error: 'Receive items is failing' },
+      payload: { error: 'Receive items is failing' }
     });
   }
 }
@@ -33,13 +33,13 @@ function* receiveItemSaga({ payload }) {
 
     yield put({
       type: RECEIVE_ITEM_SUCCESS,
-      payload: { item },
+      payload: { item }
     });
   } catch (err) {
     console.error(err);
     yield put({
       type: RECEIVE_ITEM_ERROR,
-      payload: { error: 'Receive item by id is failing' },
+      payload: { error: 'Receive item by id is failing' }
     });
   }
 }
@@ -47,6 +47,6 @@ function* receiveItemSaga({ payload }) {
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_REQUEST, receiveItemSaga),
-    yield takeEvery(RECEIVE_ITEMS_REQUEST, receiveItemsSaga),
+    yield takeEvery(RECEIVE_ITEMS_REQUEST, receiveItemsSaga)
   ]);
 }

@@ -15,9 +15,10 @@ import {
   Header,
   Container,
   Logo,
-  FlexContainer,
+  FlexContainer
 } from '../common';
 import QuestionWrapper from '../../components/QuestionWrapper';
+import TestItemPreview from '../../components/TestItemPreview';
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line
@@ -32,11 +33,11 @@ class AssessmentPlayerDefault extends React.Component {
     isFirst: PropTypes.func,
     moveToNext: PropTypes.func,
     moveToPrev: PropTypes.func,
-    questionSelectChange: PropTypes.func,
+    questionSelectChange: PropTypes.func
   };
 
   static defaultProps = {
-    theme: defaultTheme,
+    theme: defaultTheme
   };
 
   render() {
@@ -45,15 +46,22 @@ class AssessmentPlayerDefault extends React.Component {
       currentQuestion,
       theme,
       isLast,
+      items,
       isFirst,
       moveToNext,
       moveToPrev,
       gotoQuestion,
+      currentItem
     } = this.props;
-    const dropDownQuizOptions = questions.map((item, index) => ({
-      value: index,
-    }));
 
+    let dropdownOptions = Array.isArray(items)
+      ? items.map((item, index) => index)
+      : [];
+
+    const item = items[currentItem];
+    if (!item) {
+      return <div />;
+    }
     const survey = questions[currentQuestion] || {};
     const { type } = survey;
     return (
@@ -67,9 +75,9 @@ class AssessmentPlayerDefault extends React.Component {
               <FlexContainer>
                 <QuestionSelectDropdown
                   key={currentQuestion}
-                  value={currentQuestion}
+                  currentItem={currentItem}
                   gotoQuestion={gotoQuestion}
-                  options={dropDownQuizOptions}
+                  options={dropdownOptions}
                 />
                 <ControlBtn prev skin disabled={isFirst()} onClick={moveToPrev}>
                   <i className="fa fa-angle-left" />
@@ -87,12 +95,7 @@ class AssessmentPlayerDefault extends React.Component {
           </Header>
           <Main skin>
             <MainWrapper>
-              <QuestionWrapper
-                type={type}
-                view="preview"
-                key={type}
-                data={survey}
-              />
+              <TestItemPreview cols={item.rows} />
             </MainWrapper>
           </Main>
         </Container>

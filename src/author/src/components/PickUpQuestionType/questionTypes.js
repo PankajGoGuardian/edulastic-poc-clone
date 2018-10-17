@@ -13,9 +13,9 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => (
         type: 'multipleChoice',
         stimulus: 'Which color has the smallest walvelenght?',
         options: [
-          { value: '1', label: 'Red' },
-          { value: '1', label: 'Violet' },
-          { value: '1', label: 'Green' },
+          { value: 0, label: 'Red' },
+          { value: 1, label: 'Violet' },
+          { value: 2, label: 'Green' },
         ],
         validation: {
           scoring_type: 'exactMatch',

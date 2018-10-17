@@ -45,8 +45,8 @@ class CorrectAnswer extends Component {
   };
 
   render() {
-    const { t, options, stimulus } = this.props;
-    const { responseScore, userSelections } = this.state;
+    const { t, options, stimulus, response } = this.props;
+    const { responseScore } = this.state;
     return (
       <div>
         <Header>
@@ -66,7 +66,7 @@ class CorrectAnswer extends Component {
           setAnswers
           options={options}
           question={stimulus}
-          userSelections={userSelections}
+          userSelections={response.value}
           onChange={this.handleMultiSelect}
         />
       </div>

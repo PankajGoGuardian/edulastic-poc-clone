@@ -12,6 +12,7 @@ class MultipleChoiceReport extends Component {
     handleMultiSelect: PropTypes.func,
     options: PropTypes.array,
     question: PropTypes.string,
+    validation: PropTypes.object.isRequired,
   };
 
   static defaultProps = {
@@ -23,18 +24,7 @@ class MultipleChoiceReport extends Component {
     question: '',
   };
 
-  state = {
-    answers: [],
-  };
-
-  componentDidMount() {
-    const { options } = this.props;
-
-    this.setState({ answers: options });
-  }
-
   render() {
-    const { answers } = this.state;
     const {
       options,
       question,
@@ -42,6 +32,7 @@ class MultipleChoiceReport extends Component {
       showAnswer,
       userSelections,
       handleMultiSelect,
+      validation,
     } = this.props;
     return (
       <div>
@@ -51,7 +42,7 @@ class MultipleChoiceReport extends Component {
             question={question}
             userSelections={userSelections}
             onChange={handleMultiSelect}
-            answers={answers}
+            validation={validation}
             showAnswer={showAnswer}
             checkAnswer={checkAnswer}
           />

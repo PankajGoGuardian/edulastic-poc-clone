@@ -12,14 +12,15 @@ import {
   MultipleChoiceReport,
   CorrectAnswers,
 } from './index';
-import {
-  addQuestion as addQuestionAction,
-  addAnswer as addAnswerAction,
-} from '../../actions/questions';
+import { addQuestion as addQuestionAction } from '../../actions/questions';
 import { getPreivewTabSelector } from './selectors/preview';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 
 class MultipleChoice extends Component {
+  state = {
+    userSelections: [],
+  };
+
   getRenderData = () => {
     const { item, history } = this.props;
     const locationState = history.location.state;
@@ -48,11 +49,6 @@ class MultipleChoice extends Component {
     };
   };
 
-  get userSelections() {
-    const { item } = this.props;
-    return item.options.map(o => o.label);
-  }
-
   handleAddAltResponses = () => {
     const { setQuestionData, item } = this.props;
     const newItem = cloneDeep(item);
@@ -71,8 +67,23 @@ class MultipleChoice extends Component {
     setQuestionData(newItem);
   };
 
+  handleAddAnswer = (qid) => {
+    this.setState(({ userSelections }) => {
+      if (userSelections.includes(qid)) {
+        const removeIndex = userSelections.findIndex(el => el === qid);
+        userSelections.splice(removeIndex, 1);
+        return userSelections;
+      }
+
+      return {
+        userSelections: [...userSelections, qid],
+      };
+    });
+  };
+
   render() {
-    const { view, previewTab, smallSize, item, addAnswer, answer } = this.props;
+    const { view, previewTab, smallSize, item } = this.props;
+    const { userSelections } = this.state;
     const { previewStimulus, previewDisplayOptions, itemForEdit } = this.getRenderData();
 
     return (
@@ -93,10 +104,11 @@ class MultipleChoice extends Component {
             {previewTab === 'check' && (
               <MultipleChoiceReport
                 checkAnswer
-                userSelections={this.userSelections}
+                userSelections={userSelections}
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 handleMultiSelect={this.handleMultiSelect}
+                validation={item.validation}
               />
             )}
             {previewTab === 'show' && (
@@ -104,8 +116,9 @@ class MultipleChoice extends Component {
                 showAnswer
                 options={previewDisplayOptions}
                 question={previewStimulus}
-                userSelections={this.userSelections}
+                userSelections={userSelections}
                 handleMultiSelect={this.handleMultiSelect}
+                validation={item.validation}
               />
             )}
             {previewTab === 'clear' && (
@@ -114,12 +127,11 @@ class MultipleChoice extends Component {
                 key={previewDisplayOptions && previewStimulus}
                 smallSize={smallSize}
                 options={previewDisplayOptions}
-                answer={answer}
+                validation={item.validation}
                 question={previewStimulus}
-                addAnswer={addAnswer}
                 data={item}
-                userSelections={!!item && item.userSelections ? item.userSelections : []}
-                onChange={addAnswer}
+                userSelections={userSelections}
+                onChange={this.handleAddAnswer}
               />
             )}
           </React.Fragment>
@@ -135,8 +147,6 @@ MultipleChoice.propTypes = {
   item: PropTypes.object,
   smallSize: PropTypes.bool,
   history: PropTypes.object,
-  answer: PropTypes.any,
-  addAnswer: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
 };
 
@@ -146,7 +156,6 @@ MultipleChoice.defaultProps = {
   },
   smallSize: false,
   history: {},
-  answer: {},
 };
 
 const enhance = compose(
@@ -156,7 +165,6 @@ const enhance = compose(
       previewTab: getPreivewTabSelector(state),
     }),
     {
-      addAnswer: addAnswerAction,
       setQuestionData: setQuestionDataAction,
       add: addQuestionAction,
     },

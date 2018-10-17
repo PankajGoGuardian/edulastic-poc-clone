@@ -16,7 +16,11 @@ import { ButtonBar } from '../common';
 import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapper';
 import ItemHeader from './ItemHeader';
 import { getQuestionSelector } from '../../selectors/question';
-import { receiveQuestionByIdAction, saveQuestionAction } from '../../actions/question';
+import {
+  receiveQuestionByIdAction,
+  saveQuestionAction,
+  setQuestionDataAction,
+} from '../../actions/question';
 
 const headerTitles = {
   multipleChoice: 'MultipleChoice',
@@ -52,8 +56,9 @@ class QuestionEditor extends Component {
   handleApplySource = (json) => {
     try {
       const state = JSON.parse(json);
-      console.log('state:', state);
-      // setQuestionsState(state);
+      const { setQuestionData } = this.props;
+
+      setQuestionData(state);
       this.handleHideSource();
     } catch (err) {
       console.error(err);
@@ -83,7 +88,7 @@ class QuestionEditor extends Component {
       <Container>
         {showModal && (
           <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
-            {JSON.stringify(question, null, 4)}
+            {JSON.stringify(question.data, null, 4)}
           </SourceModal>
         )}
         <ItemHeader
@@ -126,6 +131,7 @@ QuestionEditor.propTypes = {
   receiveQuestionById: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   saveQuestion: PropTypes.func.isRequired,
+  setQuestionData: PropTypes.func.isRequired,
 };
 
 QuestionEditor.defaultProps = {
@@ -147,6 +153,7 @@ const enhance = compose(
       changePreviewTab: changePreviewTabAction,
       receiveQuestionById: receiveQuestionByIdAction,
       saveQuestion: saveQuestionAction,
+      setQuestionData: setQuestionDataAction,
     },
   ),
 );

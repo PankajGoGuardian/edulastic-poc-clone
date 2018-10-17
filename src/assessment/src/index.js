@@ -10,9 +10,7 @@ import { loadTest } from './actions/test';
 
 class AssessmentPlayer extends React.Component {
   componentDidMount() {
-    const { dispatch, assessmentId, aId } = this.props;
-    loadJSON(assessmentId, dispatch);
-    this.props.dispatch(loadTest());
+    this.props.loadTest();
   }
 
   render() {
@@ -23,9 +21,13 @@ class AssessmentPlayer extends React.Component {
 
 AssessmentPlayer.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  assessmentId: PropTypes.string.isRequired,
   defaultAP: PropTypes.any.isRequired
 };
 
 // export component
-export default connect()(AssessmentPlayer);
+export default connect(
+  () => {},
+  {
+    loadTest
+  }
+)(AssessmentPlayer);

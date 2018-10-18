@@ -9,15 +9,7 @@ import HeaderMainMenu from '../common/HeaderMainMenu';
 import HeaderRightMenu from '../common/HeaderRightMenu';
 import LogoImage from '../../assets/logo.png';
 import SettingImage from '../../assets/screwdriver.png';
-import {
-  ControlBtn,
-  Main,
-  Header,
-  Container,
-  Logo,
-  FlexContainer
-} from '../common';
-import QuestionWrapper from '../../components/QuestionWrapper';
+import { ControlBtn, Main, Header, Container, Logo, FlexContainer } from '../common';
 import TestItemPreview from '../../components/TestItemPreview';
 
 /* eslint import/no-webpack-loader-syntax: off */
@@ -27,15 +19,17 @@ const defaultTheme = require('sass-extract-loader?{"plugins": ["sass-extract-js"
 class AssessmentPlayerDefault extends React.Component {
   static propTypes = {
     theme: PropTypes.object,
-    isLast: PropTypes.func,
-    isFirst: PropTypes.func,
-    moveToNext: PropTypes.func,
-    moveToPrev: PropTypes.func,
-    questionSelectChange: PropTypes.func
+    isLast: PropTypes.func.isRequired,
+    isFirst: PropTypes.func.isRequired,
+    moveToNext: PropTypes.func.isRequired,
+    moveToPrev: PropTypes.func.isRequired,
+    currentItem: PropTypes.any.isRequired,
+    items: PropTypes.any.isRequired,
+    gotoQuestion: PropTypes.any.isRequired,
   };
 
   static defaultProps = {
-    theme: defaultTheme
+    theme: defaultTheme,
   };
 
   render() {
@@ -47,12 +41,10 @@ class AssessmentPlayerDefault extends React.Component {
       moveToNext,
       moveToPrev,
       gotoQuestion,
-      currentItem
+      currentItem,
     } = this.props;
 
-    let dropdownOptions = Array.isArray(items)
-      ? items.map((item, index) => index)
-      : [];
+    const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
     const item = items[currentItem];
     if (!item) {

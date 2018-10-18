@@ -2,15 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { loadJSON } from './utils/loadjson';
-
 // themes
 import ThemeContainer from './themes/index';
 import { loadTest } from './actions/test';
 
 class AssessmentPlayer extends React.Component {
   componentDidMount() {
-    this.props.loadTest();
+    const { loadTest: load } = this.props;
+    load();
   }
 
   render() {
@@ -20,14 +19,14 @@ class AssessmentPlayer extends React.Component {
 }
 
 AssessmentPlayer.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  defaultAP: PropTypes.any.isRequired
+  defaultAP: PropTypes.any.isRequired,
+  loadTest: PropTypes.func.isRequired,
 };
 
 // export component
 export default connect(
   () => {},
   {
-    loadTest
-  }
+    loadTest,
+  },
 )(AssessmentPlayer);

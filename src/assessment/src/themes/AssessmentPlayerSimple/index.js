@@ -27,9 +27,8 @@ import {
   HeaderLeftMenu,
   HeaderMainMenu,
   HeaderRightMenu,
-  MobileMainMenu
+  MobileMainMenu,
 } from '../common';
-import QuestionWrapper from '../../components/QuestionWrapper';
 import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
 import TestPreviewItem from '../../components/TestItemPreview';
 /* eslint import/no-webpack-loader-syntax: off */
@@ -39,18 +38,17 @@ const defaultTheme = require('sass-extract-loader?{"plugins": ["sass-extract-js"
 class AssessmentPlayerSimple extends React.Component {
   static propTypes = {
     theme: PropTypes.object,
-    // t: PropTypes.func.isRequired,
-    questions: PropTypes.array.isRequired,
-    currentQuestion: PropTypes.number.isRequired,
     isLast: PropTypes.func.isRequired,
     isFirst: PropTypes.func.isRequired,
     moveToNext: PropTypes.func.isRequired,
     moveToPrev: PropTypes.func.isRequired,
-    gotoQuestion: PropTypes.func.isRequired
+    gotoQuestion: PropTypes.func.isRequired,
+    currentItem: PropTypes.any.isRequired,
+    items: PropTypes.any.isRequired,
   };
 
   static defaultProps = {
-    theme: defaultTheme
+    theme: defaultTheme,
   };
 
   render() {
@@ -63,20 +61,16 @@ class AssessmentPlayerSimple extends React.Component {
       moveToPrev,
       items,
       currentItem,
-      gotoQuestion
+      gotoQuestion,
     } = this.props;
-    let dropdownOptions = Array.isArray(items)
-      ? items.map((item, index) => index)
-      : [];
+    const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
     const item = items[currentItem];
     if (!item) {
       return <div />;
     }
 
-    const percent = Math.round(
-      ((currentItem + 1) * 100) / dropdownOptions.length
-    );
+    const percent = Math.round(((currentItem + 1) * 100) / dropdownOptions.length);
     return (
       <ThemeProvider theme={theme}>
         <Container>
@@ -114,10 +108,7 @@ class AssessmentPlayerSimple extends React.Component {
                     />
                   </ProgressContainer>
                   <Time>
-                    <QuestionAttempt
-                      current={currentItem + 1}
-                      total={items.length}
-                    />
+                    <QuestionAttempt current={currentItem + 1} total={items.length} />
                   </Time>
                   <Timer>
                     <Icon color="#756e6e" />
@@ -141,20 +132,10 @@ class AssessmentPlayerSimple extends React.Component {
                     onChange={gotoQuestion}
                     options={dropdownOptions}
                   />
-                  <ControlBtn
-                    prev
-                    skinB
-                    disabled={isFirst()}
-                    onClick={moveToPrev}
-                  >
+                  <ControlBtn prev skinB disabled={isFirst()} onClick={moveToPrev}>
                     <i className="fa fa-angle-left" />
                   </ControlBtn>
-                  <ControlBtn
-                    next
-                    skinB
-                    disabled={isLast()}
-                    onClick={moveToNext}
-                  >
+                  <ControlBtn next skinB disabled={isLast()} onClick={moveToNext}>
                     <i className="fa fa-angle-right" />
                     <span>Next</span>
                   </ControlBtn>
@@ -182,20 +163,10 @@ class AssessmentPlayerSimple extends React.Component {
                   </ControlBtn>
                 </FlexContainer>
                 <FlexContainer>
-                  <ControlBtn
-                    prev
-                    skinB
-                    disabled={isFirst()}
-                    onClick={moveToPrev}
-                  >
+                  <ControlBtn prev skinB disabled={isFirst()} onClick={moveToPrev}>
                     <i className="fa fa-angle-left" />
                   </ControlBtn>
-                  <ControlBtn
-                    next
-                    skinB
-                    disabled={isLast()}
-                    onClick={moveToNext}
-                  >
+                  <ControlBtn next skinB disabled={isLast()} onClick={moveToNext}>
                     <i className="fa fa-angle-right" />
                     <span>NEXT</span>
                     {/* <span>{t("common.layout.nextbtn")}</span> */}

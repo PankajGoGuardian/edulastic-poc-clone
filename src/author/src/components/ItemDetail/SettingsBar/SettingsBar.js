@@ -11,11 +11,6 @@ import SettingsBarTags from './SettingsBarTags';
 import SettingsBarUseTabs from './SettingsBarUseTabs';
 
 class SettingsBar extends Component {
-  state = {
-    verticalDivider: false,
-    scrolling: false,
-  };
-
   layouts = [
     {
       value: '100-100',
@@ -51,6 +46,10 @@ class SettingsBar extends Component {
     useTabs: PropTypes.func.isRequired,
     useTabsLeft: PropTypes.bool.isRequired,
     useTabsRight: PropTypes.bool.isRequired,
+    verticalDivider: PropTypes.bool.isRequired,
+    scrolling: PropTypes.bool.isRequired,
+    onVerticalDividerChange: PropTypes.func.isRequired,
+    onScrollingChange: PropTypes.func.isRequired,
   };
 
   handleCheckboxChange = name => () => {
@@ -72,8 +71,18 @@ class SettingsBar extends Component {
   };
 
   render() {
-    const { verticalDivider, scrolling } = this.state;
-    const { onCancel, type, t, useTabsLeft, useTabsRight, onApply } = this.props;
+    const {
+      onCancel,
+      type,
+      t,
+      useTabsLeft,
+      useTabsRight,
+      onApply,
+      verticalDivider,
+      scrolling,
+      onVerticalDividerChange,
+      onScrollingChange,
+    } = this.props;
 
     return (
       <Container>
@@ -104,12 +113,12 @@ class SettingsBar extends Component {
             style={{ marginBottom: 20 }}
             label={t('author:component.settingsBar.showVerticalDivider')}
             checked={verticalDivider}
-            onChange={this.handleCheckboxChange('verticalDivider')}
+            onChange={onVerticalDividerChange}
           />
           <Checkbox
             label={t('author:component.settingsBar.enableScrolling')}
             checked={scrolling}
-            onChange={this.handleCheckboxChange('scrolling')}
+            onChange={onScrollingChange}
           />
         </Checkboxes>
         <Heading>{t('author:component.settingsBar.tags')}</Heading>

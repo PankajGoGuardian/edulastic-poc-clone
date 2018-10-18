@@ -3,9 +3,10 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withNamespaces } from '@edulastic/localization';
 import PropTypes from 'prop-types';
-
 import styled from 'styled-components';
 import { Preloader, Paper } from '@edulastic/common';
+import { cloneDeep } from 'lodash';
+
 import { Container, ButtonBar } from '../common';
 import SourceModal from '../QuestionEditor/SourceModal';
 import ItemHeader from '../QuestionEditor/ItemHeader';
@@ -167,6 +168,22 @@ class ItemDetail extends Component {
     deleteWidget(i, widgetIndex);
   };
 
+  handleVerticalDividerChange = () => {
+    const { item, setItemDetailData } = this.props;
+    const newItem = cloneDeep(item);
+
+    newItem.verticalDivider = !newItem.verticalDivider;
+    setItemDetailData(newItem);
+  };
+
+  handleScrollingChange = () => {
+    const { item, setItemDetailData } = this.props;
+    const newItem = cloneDeep(item);
+
+    newItem.scrolling = !newItem.scrolling;
+    setItemDetailData(newItem);
+  };
+
   render() {
     const { showModal, showSettings } = this.state;
     const {
@@ -201,6 +218,10 @@ class ItemDetail extends Component {
             useTabs={useTabs}
             useTabsLeft={!!rows[0].tabs.length}
             useTabsRight={!!(!!rows[1] && !!rows[1].tabs.length)}
+            onVerticalDividerChange={this.handleVerticalDividerChange}
+            onScrollingChange={this.handleScrollingChange}
+            verticalDivider={item.verticalDivider}
+            scrolling={item.scrolling}
           />
         )}
         <ItemHeader
@@ -242,7 +263,13 @@ class ItemDetail extends Component {
               ))}
           </Content>
         )}
-        {view === 'preview' && <TestItemPreview cols={rows} />}
+        {view === 'preview' && (
+          <TestItemPreview
+            cols={rows}
+            verticalDivider={item.verticalDivider}
+            scrolling={item.scrolling}
+          />
+        )}
       </Container>
     );
   }
@@ -302,6 +329,6 @@ export default enhance(ItemDetail);
 
 const Content = styled(Paper)`
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   padding: 0;
 `;

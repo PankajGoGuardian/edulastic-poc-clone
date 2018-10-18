@@ -6,16 +6,15 @@ import { grey, greenDark } from '@edulastic/colors';
 class TextField extends Component {
   state = {
     referenceEditable: false,
-  }
+  };
 
   onIconClick = () => {
     console.log('on icon click');
     const { referenceEditable } = this.state;
     this.setState({ referenceEditable: !referenceEditable });
-  }
+  };
 
   render() {
-    // eslint-disable-next-line
     const { icon, height, style, containerStyle, onChange, onBlur, ...restProps } = this.props;
     const { referenceEditable } = this.state;
     return (
@@ -27,7 +26,10 @@ class TextField extends Component {
           referenceEditable={referenceEditable}
           {...restProps}
           onChange={onChange}
-          onBlur={(e) => { this.onIconClick(); onBlur(e); }}
+          onBlur={(e) => {
+            this.onIconClick();
+            onBlur(e);
+          }}
         />
         {icon && <Icon onClick={this.onIconClick}>{icon}</Icon>}
       </Container>
@@ -41,6 +43,7 @@ TextField.propTypes = {
   style: PropTypes.object,
   containerStyle: PropTypes.object,
   onChange: PropTypes.func.isRequired,
+  onBlur: PropTypes.func,
 };
 
 TextField.defaultProps = {
@@ -48,6 +51,7 @@ TextField.defaultProps = {
   height: '45px',
   style: {},
   containerStyle: {},
+  onBlur: () => {},
 };
 
 export default TextField;
@@ -59,16 +63,16 @@ const Container = styled.span`
 `;
 
 const Icon = styled.span`
-    position: absolute;
-    right: 8px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    top: 0;
+  position: absolute;
+  right: 8px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  top: 0;
 
-    &:hover {
-      cursor: pointer;
-    }
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const Field = styled.input`

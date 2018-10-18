@@ -1,32 +1,18 @@
-import i18n from '@edulastic/localization';
-
 import {
   ORDERLIST_ADD_ALT_RESPONSES,
   ORDERLIST_UPDATE_ALT_VALIDATION_SCORE,
   ORDERLIST_UPDATE_CORRECT_VALIDATION_SCORE,
+  PREVIEW_UPDATE_LIST,
 } from '../constants/actions';
 
-const initialList = [
-  i18n.t('assessment:common.initialoptionslist.itema'),
-  i18n.t('assessment:common.initialoptionslist.itemb'),
-  i18n.t('assessment:common.initialoptionslist.itemc'),
-  i18n.t('assessment:common.initialoptionslist.itemd'),
-];
-
 export const initialState = {
-  list: initialList,
-  stimulus: i18n.t('author:component.orderList.questionsorderlist.stimulusplaceholder'),
-  validation: {
-    valid_response: {
-      score: 1,
-      value: initialList.map((item, i) => i),
-    },
-    alt_responses: [],
-  },
+  list: [],
 };
 
 export default function reducer(state = initialState, { type, payload }) {
   switch (type) {
+    case PREVIEW_UPDATE_LIST:
+      return { ...state, list: payload.list };
     case ORDERLIST_UPDATE_ALT_VALIDATION_SCORE:
       return {
         ...state,

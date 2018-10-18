@@ -10,13 +10,17 @@
   "component": {
     "orderlist": {
       "question": {
-        "composequestion": "Compose Question"
+        "composequestion": "Compose Question",
+        "enteryourquestion": "Enter your question"
       },
       "orderlistedit": {
         "addnewchoicebtn": "Add New Choice"
       },
       "questionsorderlist": {
         " ": "[This is the stem.]"
+      },
+      "orderlistreportitem": {
+        "correctanswer": "Correct Answer:"
       }
     },
     "multiplechoice": {

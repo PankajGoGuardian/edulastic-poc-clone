@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { IconPlus } from '@edulastic/icons';
 import { white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
@@ -9,11 +8,6 @@ import { Button } from '@edulastic/common';
 
 import CorrectAnswer from './CorrectAnswer';
 import { Heading } from '../common';
-import {
-  updateAltValidationScoreAction,
-  addAltResponsesAction,
-  updateCorrectValidationScoreAction,
-} from '../actions/questionsOrderList';
 import Tabs, { Tab, TabContainer } from '../common/Tabs';
 
 class CorrectAnswers extends Component {
@@ -37,7 +31,7 @@ class CorrectAnswers extends Component {
   };
 
   renderPlusButton = () => {
-    const { addAltResponses, validation } = this.props;
+    const { onAddAltResponses, validation } = this.props;
 
     return (
       <Button
@@ -45,7 +39,7 @@ class CorrectAnswers extends Component {
         icon={<IconPlus color={white} width={10} height={10} />}
         onClick={() => {
           this.handleTabChange(validation.alt_responses.length + 1);
-          addAltResponses();
+          onAddAltResponses();
         }}
         color="primary"
         variant="extendedFab"
@@ -58,8 +52,8 @@ class CorrectAnswers extends Component {
       onSortCurrentAnswer,
       onSortAltAnswer,
       validation,
-      updateAltValidationScore,
-      updateCorrectValidationScore,
+      onUpdatePoints,
+      onDelete,
       t,
     } = this.props;
     const { value } = this.state;
@@ -81,7 +75,7 @@ class CorrectAnswers extends Component {
                 response={validation.valid_response}
                 onSortCurrentAnswer={onSortCurrentAnswer}
                 onUpdatePoints={(points) => {
-                  updateCorrectValidationScore(points);
+                  onUpdatePoints(points);
                 }}
               />
             </TabContainer>
@@ -93,13 +87,20 @@ class CorrectAnswers extends Component {
                 return (
                   <TabContainer key={i}>
                     <CorrectAnswer
+                      showDelete
+                      onDelete={() => {
+                        onDelete(i);
+                        this.setState(({ value: val }) => ({
+                          value: --val,
+                        }));
+                      }}
                       response={alter}
                       // eslint-disable-next-line
                       onSortCurrentAnswer={({ oldIndex, newIndex }) =>
                         onSortAltAnswer({ oldIndex, newIndex, altIndex: i })
                       }
                       onUpdatePoints={(points) => {
-                        updateAltValidationScore(points, i);
+                        onUpdatePoints(points, i);
                       }}
                     />
                   </TabContainer>
@@ -116,23 +117,17 @@ class CorrectAnswers extends Component {
 CorrectAnswers.propTypes = {
   onSortCurrentAnswer: PropTypes.func.isRequired,
   onSortAltAnswer: PropTypes.func.isRequired,
-  addAltResponses: PropTypes.func.isRequired,
-  updateAltValidationScore: PropTypes.func.isRequired,
-  updateCorrectValidationScore: PropTypes.func.isRequired,
+  onAddAltResponses: PropTypes.func.isRequired,
+  onUpdatePoints: PropTypes.func.isRequired,
   validation: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
+  onDelete: PropTypes.func,
 };
 
-const enhance = compose(
-  withNamespaces('assessment'),
-  connect(
-    null,
-    {
-      updateAltValidationScore: updateAltValidationScoreAction,
-      addAltResponses: addAltResponsesAction,
-      updateCorrectValidationScore: updateCorrectValidationScoreAction,
-    },
-  ),
-);
+CorrectAnswers.defaultProps = {
+  onDelete: () => {},
+};
+
+const enhance = compose(withNamespaces('assessment'));
 
 export default enhance(CorrectAnswers);

@@ -13,6 +13,7 @@ class TestItemCol extends Component {
   static propTypes = {
     col: PropTypes.object.isRequired,
     style: PropTypes.object,
+    previewTab: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -25,15 +26,20 @@ class TestItemCol extends Component {
     });
   };
 
-  renderTabContent = widget => (
-    <Tabs.TabContainer style={{ padding: 20 }}>
-      <QuestionWrapper
-        type={widget.type}
-        view="preview"
-        data={{ ...widget.referencePopulate.data, smallSize: true }}
-      />
-    </Tabs.TabContainer>
-  );
+  renderTabContent = (widget) => {
+    const { previewTab } = this.props;
+
+    return (
+      <Tabs.TabContainer style={{ padding: 20 }}>
+        <QuestionWrapper
+          type={widget.type}
+          view="preview"
+          previewTab={previewTab}
+          data={{ ...widget.referencePopulate.data, smallSize: true }}
+        />
+      </Tabs.TabContainer>
+    );
+  };
 
   render() {
     const { col, style } = this.props;

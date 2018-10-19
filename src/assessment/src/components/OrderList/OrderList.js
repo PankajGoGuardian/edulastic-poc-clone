@@ -14,12 +14,13 @@ import {
   OrderListReport,
   CorrectAnswers,
 } from './index';
-import { getPreviewIndexesListSelector, getPreivewTabSelector } from './selectors/preview';
-import { updatePreviewListAction } from './actions/preview';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
-import { getQuestionsListSelector } from './selectors/questionsOrderList';
 
 class OrderList extends Component {
+  state = {
+    previewListClear: [],
+  };
+
   get validation() {
     const { item } = this.props;
 
@@ -37,8 +38,11 @@ class OrderList extends Component {
   }
 
   componentDidMount() {
-    const { updatePreviewList, item } = this.props;
-    updatePreviewList(item.list.map((q, i) => i));
+    const { item } = this.props;
+
+    this.setState({
+      previewListClear: item.list.map((q, i) => i),
+    });
   }
 
   handleQuestionChange = (value) => {
@@ -67,7 +71,7 @@ class OrderList extends Component {
   };
 
   handleDeleteQuestion = (index) => {
-    const { setQuestionData, item, updatePreviewList } = this.props;
+    const { setQuestionData, item } = this.props;
     const newItem = cloneDeep(item);
 
     newItem.list = newItem.list.filter((q, i) => i !== index);
@@ -81,12 +85,15 @@ class OrderList extends Component {
       return res;
     });
 
-    updatePreviewList(indexList);
+    this.setState({
+      previewListClear: indexList,
+    });
+
     setQuestionData(newItem);
   };
 
   handleAddQuestion = () => {
-    const { setQuestionData, item, t, updatePreviewList } = this.props;
+    const { setQuestionData, item, t } = this.props;
     const newItem = cloneDeep(item);
 
     newItem.list = [
@@ -105,7 +112,9 @@ class OrderList extends Component {
       });
     }
 
-    updatePreviewList(newItem.list.map((q, i) => i));
+    this.setState({
+      previewListClear: newItem.list.map((q, i) => i),
+    });
 
     setQuestionData(newItem);
   };
@@ -131,10 +140,12 @@ class OrderList extends Component {
   };
 
   onSortPreviewEnd = ({ oldIndex, newIndex }) => {
-    const { updatePreviewList, previewListClear } = this.props;
+    const { previewListClear } = this.state;
     const newPreviewList = arrayMove(previewListClear, oldIndex, newIndex);
 
-    updatePreviewList(newPreviewList);
+    this.setState({
+      previewListClear: newPreviewList,
+    });
   };
 
   handleAddAltResponse = () => {
@@ -172,7 +183,8 @@ class OrderList extends Component {
   };
 
   render() {
-    const { view, previewIndexesList, previewTab, smallSize, item, previewListClear } = this.props;
+    const { view, previewTab, smallSize, item } = this.props;
+    const { previewListClear } = this.state;
 
     if (!item) return null;
 
@@ -210,21 +222,19 @@ class OrderList extends Component {
 
             {previewTab === 'check' && (
               <OrderListReport
-                questions={item.list}
                 questionsList={item.list}
                 validation={this.validation}
                 validationState={item.validation}
-                previewIndexesList={previewIndexesList}
+                previewIndexesList={previewListClear}
               />
             )}
 
             {previewTab === 'show' && (
               <OrderListReport
-                questions={item.list}
                 questionsList={item.list}
                 validation={this.validation}
                 validationState={item.validation}
-                previewIndexesList={previewIndexesList}
+                previewIndexesList={previewListClear}
                 showAnswers
               />
             )}
@@ -244,18 +254,16 @@ class OrderList extends Component {
 }
 
 OrderList.propTypes = {
-  updatePreviewList: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
-  previewIndexesList: PropTypes.array.isRequired,
-  previewTab: PropTypes.string.isRequired,
+  previewTab: PropTypes.string,
   t: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
   item: PropTypes.object,
   setQuestionData: PropTypes.func.isRequired,
-  previewListClear: PropTypes.any.isRequired,
 };
 
 OrderList.defaultProps = {
+  previewTab: 'clear',
   smallSize: false,
   item: {},
 };
@@ -263,13 +271,8 @@ OrderList.defaultProps = {
 const enhance = compose(
   withNamespaces('author'),
   connect(
-    state => ({
-      previewIndexesList: getPreviewIndexesListSelector(state),
-      previewTab: getPreivewTabSelector(state),
-      previewListClear: getQuestionsListSelector(state),
-    }),
+    null,
     {
-      updatePreviewList: updatePreviewListAction,
       setQuestionData: setQuestionDataAction,
     },
   ),

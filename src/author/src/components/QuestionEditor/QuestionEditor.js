@@ -7,8 +7,6 @@ import { withNamespaces } from '@edulastic/localization';
 import { Paper } from '@edulastic/common';
 
 import SourceModal from './SourceModal';
-import { changePreviewTabAction } from '../../actions/preview';
-import { getPreivewTabSelector } from '../../selectors/preview';
 import { changeViewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
 import { Container } from './styled_components';
@@ -31,6 +29,7 @@ class QuestionEditor extends Component {
   state = {
     showModal: false,
     saveClicked: false,
+    previewTab: 'clear',
   };
 
   componentDidMount() {
@@ -78,8 +77,15 @@ class QuestionEditor extends Component {
     }
   };
 
+  handleChangePreviewTab = (previewTab) => {
+    this.setState({
+      previewTab,
+    });
+  };
+
   render() {
-    const { view, changePreviewTab, previewTab, question, history } = this.props;
+    const { view, question, history } = this.props;
+    const { previewTab } = this.state;
     const itemId = question === null ? '' : question.id;
     const questionType = this.getQuestionType();
     const { showModal, saveClicked } = this.state;
@@ -99,7 +105,7 @@ class QuestionEditor extends Component {
           <ButtonBar
             onChangeView={this.handleChangeView}
             onShowSource={this.handleShowSource}
-            changePreviewTab={changePreviewTab}
+            changePreviewTab={this.handleChangePreviewTab}
             onSave={this.handleSave}
             view={view}
             previewTab={previewTab}
@@ -110,6 +116,7 @@ class QuestionEditor extends Component {
             <QuestionWrapper
               type={questionType}
               view={view}
+              previewTab={previewTab}
               key={questionType && view && saveClicked}
               data={question.data}
               saveClicked={saveClicked}
@@ -124,8 +131,6 @@ class QuestionEditor extends Component {
 QuestionEditor.propTypes = {
   view: PropTypes.string.isRequired,
   changeView: PropTypes.func.isRequired,
-  changePreviewTab: PropTypes.func.isRequired,
-  previewTab: PropTypes.string.isRequired,
   question: PropTypes.object,
   match: PropTypes.object,
   receiveQuestionById: PropTypes.func.isRequired,
@@ -145,12 +150,10 @@ const enhance = compose(
   connect(
     state => ({
       view: getViewSelector(state),
-      previewTab: getPreivewTabSelector(state),
       question: getQuestionSelector(state),
     }),
     {
       changeView: changeViewAction,
-      changePreviewTab: changePreviewTabAction,
       receiveQuestionById: receiveQuestionByIdAction,
       saveQuestion: saveQuestionAction,
       setQuestionData: setQuestionDataAction,

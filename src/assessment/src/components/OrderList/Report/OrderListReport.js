@@ -6,7 +6,6 @@ import OrderListReportItem from './OrderListReportItem';
 class OrderListReport extends Component {
   render() {
     const {
-      questions,
       validation,
       previewIndexesList,
       validationState,
@@ -28,7 +27,7 @@ class OrderListReport extends Component {
 
     return (
       <div>
-        {questions.map((q, i) => (
+        {questionsList.map((q, i) => (
           <OrderListReportItem
             key={i}
             correct={getCorrect(i)}
@@ -45,7 +44,6 @@ class OrderListReport extends Component {
 }
 
 OrderListReport.propTypes = {
-  questions: PropTypes.array.isRequired,
   validation: PropTypes.object.isRequired,
   previewIndexesList: PropTypes.array.isRequired,
   validationState: PropTypes.object.isRequired,

@@ -10,6 +10,7 @@ export default class TestItemPreview extends Component {
     cols: PropTypes.array.isRequired,
     verticalDivider: PropTypes.bool,
     scrolling: PropTypes.bool,
+    previewTab: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -35,14 +36,21 @@ export default class TestItemPreview extends Component {
   };
 
   render() {
-    const { cols } = this.props;
+    const { cols, previewTab } = this.props;
+    console.log(cols);
 
     return (
       <Paper style={{ padding: 0, display: 'flex' }}>
         {cols &&
           !!cols.length &&
           cols.map((col, i) => (
-            <TestItemCol key={i} col={col} style={this.getStyle(i !== cols.length - 1)} />
+            <TestItemCol
+              key={i}
+              col={col}
+              view="preview"
+              previewTab={previewTab}
+              style={this.getStyle(i !== cols.length - 1)}
+            />
           ))}
       </Paper>
     );

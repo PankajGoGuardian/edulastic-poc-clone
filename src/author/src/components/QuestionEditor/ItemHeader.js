@@ -23,7 +23,7 @@ const ItemHeader = ({ title, children, link, reference, editReference, onChange,
               value={reference}
               onChange={onChange}
               onBlur={editReference}
-              style={{ background: '#f3f3f3', marginLeft: 10 }}
+              style={{ background: '#f3f3f3', marginLeft: 10, width: 290 }}
             />
           </FlexContainer>
         )}

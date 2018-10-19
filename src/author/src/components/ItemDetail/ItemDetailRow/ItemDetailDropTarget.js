@@ -8,7 +8,10 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { Types } from '../constants';
-import { moveItemDetailWidgetAction } from '../../../actions/itemDetail';
+import {
+  moveItemDetailWidgetAction,
+  setItemDetailDraggingAction,
+} from '../../../actions/itemDetail';
 
 const ItemDetailDropTarget = ({ connectDropTarget, isOver, canDrop }) =>
   connectDropTarget(
@@ -23,11 +26,12 @@ ItemDetailDropTarget.propTypes = {
   moveItemDetailWidget: PropTypes.func.isRequired,
   widgetIndex: PropTypes.number.isRequired,
   rowIndex: PropTypes.number.isRequired,
+  setItemDetailDragging: PropTypes.func.isRequired,
   tabIndex: PropTypes.number,
 };
 
 const itemSource = {
-  drop({ moveItemDetailWidget, widgetIndex, rowIndex, tabIndex }, monitor) {
+  drop({ moveItemDetailWidget, widgetIndex, rowIndex, tabIndex, setItemDetailDragging }, monitor) {
     const from = monitor.getItem();
     const to = {
       widgetIndex,
@@ -39,6 +43,7 @@ const itemSource = {
       from,
       to,
     });
+    setItemDetailDragging(false);
     return { moved: true };
   },
 };
@@ -54,7 +59,10 @@ function collect(c, monitor) {
 const enhance = compose(
   connect(
     null,
-    { moveItemDetailWidget: moveItemDetailWidgetAction },
+    {
+      moveItemDetailWidget: moveItemDetailWidgetAction,
+      setItemDetailDragging: setItemDetailDraggingAction,
+    },
   ),
   DropTarget(Types.WIDGET, itemSource, collect),
 );

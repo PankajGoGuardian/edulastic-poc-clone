@@ -34,18 +34,28 @@ class PickUpQuestionType extends Component {
     });
   };
 
+  get link() {
+    const { history, t } = this.props;
+
+    if (history.location.state) {
+      return {
+        url: history.location.state.backUrl,
+        text: history.location.state.backText,
+      };
+    }
+
+    return {
+      url: '/author/items',
+      text: t('component.itemDetail.backToItemList'),
+    };
+  }
+
   render() {
-    const { t, history } = this.props;
+    const { t } = this.props;
 
     return (
       <Container>
-        <Header
-          title={t('component.pickupcomponent.headertitle')}
-          link={{
-            url: history.location.state.backUrl,
-            text: history.location.state.backText,
-          }}
-        />
+        <Header title={t('component.pickupcomponent.headertitle')} link={this.link} />
         <PaddingDiv top={30}>
           <QuestionTypes onSelectQuestionType={this.selectQuestionType} />
         </PaddingDiv>

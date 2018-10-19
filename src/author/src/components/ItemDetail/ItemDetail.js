@@ -11,8 +11,6 @@ import { Container, ButtonBar } from '../common';
 import SourceModal from '../QuestionEditor/SourceModal';
 import ItemHeader from '../QuestionEditor/ItemHeader';
 import { changeViewAction } from '../../actions/view';
-import { changePreviewTabAction } from '../../actions/preview';
-import { getPreivewTabSelector } from '../../../../assessment/src/components/MultipleChoice/selectors/preview';
 import SettingsBar from './SettingsBar/SettingsBar';
 import {
   getItemDetailByIdAction,
@@ -38,6 +36,7 @@ class ItemDetail extends Component {
     showModal: false,
     showSettings: false,
     view: 'edit',
+    previewTab: 'clear',
   };
 
   componentDidMount() {
@@ -184,23 +183,54 @@ class ItemDetail extends Component {
     setItemDetailData(newItem);
   };
 
+  handleChangePreviewTab = (previewTab) => {
+    this.setState({
+      previewTab,
+    });
+  };
+
+  renderPreview = () => {
+    const { previewTab } = this.state;
+    const { rows, item } = this.props;
+
+    switch (previewTab) {
+      case 'clear':
+        return (
+          <TestItemPreview
+            cols={rows}
+            previewTab="clear"
+            verticalDivider={item.verticalDivider}
+            scrolling={item.scrolling}
+          />
+        );
+      case 'check':
+        return (
+          <TestItemPreview
+            cols={rows}
+            previewTab="check"
+            verticalDivider={item.verticalDivider}
+            scrolling={item.scrolling}
+          />
+        );
+      case 'show':
+        return (
+          <TestItemPreview
+            cols={rows}
+            previewTab="show"
+            verticalDivider={item.verticalDivider}
+            scrolling={item.scrolling}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   render() {
     const { showModal, showSettings } = this.state;
-    const {
-      t,
-      changePreviewTab,
-      previewTab,
-      match,
-      rows,
-      loading,
-      item,
-      updating,
-      type,
-      updateTabTitle,
-      useTabs,
-    } = this.props;
+    const { t, match, rows, loading, item, updating, type, updateTabTitle, useTabs } = this.props;
 
-    const { view } = this.state;
+    const { view, previewTab } = this.state;
 
     return (
       <Container>
@@ -236,7 +266,7 @@ class ItemDetail extends Component {
             onShowSource={this.handleShowSource}
             onShowSettings={this.handleShowSettings}
             onChangeView={this.handleChangeView}
-            changePreviewTab={changePreviewTab}
+            changePreviewTab={this.handleChangePreviewTab}
             onSave={this.handleSave}
             saving={updating}
             view={view}
@@ -263,13 +293,7 @@ class ItemDetail extends Component {
               ))}
           </Content>
         )}
-        {view === 'preview' && (
-          <TestItemPreview
-            cols={rows}
-            verticalDivider={item.verticalDivider}
-            scrolling={item.scrolling}
-          />
-        )}
+        {view === 'preview' && this.renderPreview()}
       </Container>
     );
   }
@@ -277,8 +301,6 @@ class ItemDetail extends Component {
 
 ItemDetail.propTypes = {
   t: PropTypes.func.isRequired,
-  changePreviewTab: PropTypes.func.isRequired,
-  previewTab: PropTypes.string.isRequired,
   match: PropTypes.object.isRequired,
   getItemDetailById: PropTypes.func.isRequired,
   rows: PropTypes.array,
@@ -304,7 +326,6 @@ const enhance = compose(
   withNamespaces('author'),
   connect(
     state => ({
-      previewTab: getPreivewTabSelector(state),
       rows: getItemDetailRowsSelector(state),
       loading: getItemDetailLoadingSelector(state),
       item: getItemDetailSelector(state),
@@ -313,7 +334,6 @@ const enhance = compose(
     }),
     {
       changeView: changeViewAction,
-      changePreviewTab: changePreviewTabAction,
       getItemDetailById: getItemDetailByIdAction,
       updateItemDetailById: updateItemDetailByIdAction,
       setItemDetailData: setItemDetailDataAction,

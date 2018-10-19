@@ -12,8 +12,6 @@ import {
   MultipleChoiceReport,
   CorrectAnswers,
 } from './index';
-import { addQuestion as addQuestionAction } from '../../actions/questions';
-import { getPreivewTabSelector } from './selectors/preview';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 
 class MultipleChoice extends Component {
@@ -143,7 +141,7 @@ class MultipleChoice extends Component {
 
 MultipleChoice.propTypes = {
   view: PropTypes.string.isRequired,
-  previewTab: PropTypes.string.isRequired,
+  previewTab: PropTypes.string,
   item: PropTypes.object,
   smallSize: PropTypes.bool,
   history: PropTypes.object,
@@ -151,6 +149,7 @@ MultipleChoice.propTypes = {
 };
 
 MultipleChoice.defaultProps = {
+  previewTab: 'clear',
   item: {
     options: [],
   },
@@ -161,12 +160,9 @@ MultipleChoice.defaultProps = {
 const enhance = compose(
   withRouter,
   connect(
-    state => ({
-      previewTab: getPreivewTabSelector(state),
-    }),
+    null,
     {
       setQuestionData: setQuestionDataAction,
-      add: addQuestionAction,
     },
   ),
 );

@@ -1,10 +1,11 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects';
 import { testItemsApi } from '@edulastic/api';
+import { NotificationManager } from 'react-notifications';
 
 import {
   RECEIVE_TEST_ITEMS_REQUEST,
   RECEIVE_TEST_ITEMS_SUCCESS,
-  RECEIVE_TEST_ITEMS_ERROR
+  RECEIVE_TEST_ITEMS_ERROR,
 } from '../constants/actions';
 
 function* receiveTestItemsSaga() {
@@ -13,19 +14,19 @@ function* receiveTestItemsSaga() {
 
     yield put({
       type: RECEIVE_TEST_ITEMS_SUCCESS,
-      payload: { items }
+      payload: { items },
     });
   } catch (err) {
     console.error(err);
+    const errorMessage = 'Receive items is failing';
+    NotificationManager.error(errorMessage, 'Error');
     yield put({
       type: RECEIVE_TEST_ITEMS_ERROR,
-      payload: { error: 'Receive items is failing' }
+      payload: { error: errorMessage },
     });
   }
 }
 
 export default function* watcherSaga() {
-  yield all([
-    yield takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga)
-  ]);
+  yield all([yield takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga)]);
 }

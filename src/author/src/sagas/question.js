@@ -26,9 +26,11 @@ function* receiveQuestionSaga({ payload }) {
     });
   } catch (err) {
     console.error(err);
+    const errorMessage = 'Receive question is failing';
+    NotificationManager.error(errorMessage, 'Error');
     yield put({
       type: RECEIVE_QUESTION_ERROR,
-      payload: { error: 'Receive question is failing' },
+      payload: { error: errorMessage },
     });
   }
 }

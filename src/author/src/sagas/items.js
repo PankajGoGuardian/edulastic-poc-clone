@@ -1,5 +1,6 @@
 import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects';
 import { itemsApi } from '@edulastic/api';
+import { NotificationManager } from 'react-notifications';
 
 import {
   RECEIVE_ITEM_REQUEST,
@@ -22,9 +23,11 @@ function* receiveItemsSaga({ payload }) {
     });
   } catch (err) {
     console.error(err);
+    const errorMessage = 'Receive items is failing';
+    NotificationManager.error(errorMessage, 'Error');
     yield put({
       type: RECEIVE_ITEMS_ERROR,
-      payload: { error: 'Receive items is failing' },
+      payload: { error: errorMessage },
     });
   }
 }
@@ -39,9 +42,11 @@ function* receiveItemSaga({ payload }) {
     });
   } catch (err) {
     console.error(err);
+    const errorMessage = 'Receive item by id is failing';
+    NotificationManager.error(errorMessage, 'Error');
     yield put({
       type: RECEIVE_ITEM_ERROR,
-      payload: { error: 'Receive item by id is failing' },
+      payload: { error: errorMessage },
     });
   }
 }
@@ -55,9 +60,11 @@ function* createItemSaga({ payload }) {
     });
   } catch (err) {
     console.error(err);
+    const errorMessage = 'Create item is failed';
+    NotificationManager.error(errorMessage, 'Error');
     yield put({
       type: RECEIVE_ITEM_ERROR,
-      payload: { error: 'Create item is failed' },
+      payload: { error: errorMessage },
     });
   }
 }
@@ -72,9 +79,11 @@ function* updateItemSaga({ payload }) {
     });
   } catch (err) {
     console.error(err);
+    const errorMessage = 'Update item is failed';
+    NotificationManager.error(errorMessage, 'Error');
     yield put({
       type: RECEIVE_ITEM_ERROR,
-      payload: { error: 'Update item is failed' },
+      payload: { error: errorMessage },
     });
   }
 }

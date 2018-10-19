@@ -27,18 +27,19 @@ const OrderListReportItem = ({ children, correctText, correct, showAnswers, inde
         )}
       </Text>
     </Container>
-    {showAnswers && (
-      <CorrectAnswerItem>
-        <Text showDragHandle={false}>
-          <FlexContainer>
-            <Index color={textColor}>{index}</Index>
-            <QuestionText style={{ color: textColor }}>
-              <span>{t('component.orderlist.orderlistreportitem.correctanswer')}</span>{' '}
-              {correctText}
-            </QuestionText>
-          </FlexContainer>
-        </Text>
-      </CorrectAnswerItem>
+    {showAnswers &&
+      !correct && (
+        <CorrectAnswerItem>
+          <Text showDragHandle={false}>
+            <FlexContainer>
+              <Index color={textColor}>{index}</Index>
+              <QuestionText style={{ color: textColor }}>
+                <span>{t('component.orderlist.orderlistreportitem.correctanswer')}</span>{' '}
+                {correctText}
+              </QuestionText>
+            </FlexContainer>
+          </Text>
+        </CorrectAnswerItem>
     )}
   </React.Fragment>
 );

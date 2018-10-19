@@ -28,24 +28,21 @@ const ItemDetailWidget = ({
   connectDragPreview(
     <div>
       <Container isDragging={isDragging}>
-        {widget.widgetType === 'question' && (
-          <QuestionWrapper
-            type={widget.type}
-            view="preview"
-            data={{ ...getWidgetData(widget), smallSize: true }}
-          />
-        )}
-        {widget.widgetType === 'resource' && (
-          <div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti, optio quod sunt
-            libero magnam, dolores, consectetur recusandae necessitatibus repudiandae animi
-            provident aperiam exercitationem ipsa distinctio consequatur cumque nobis itaque quia.
-          </div>
-        )}
+        <div>
+          <Hider />
+          {widget.widgetType === 'question' && (
+            <QuestionWrapper
+              type={widget.type}
+              view="preview"
+              data={{ ...getWidgetData(widget), smallSize: true }}
+            />
+          )}
+        </div>
+
         <Buttons>
           {connectDragSource(
             <div>
-              <Button title={t('move')}>
+              <Button title={t('move')} move>
                 <IconMoveArrows color={white} hoverColor={green} />
               </Button>
             </div>,
@@ -108,6 +105,15 @@ const enhance = compose(
 
 export default enhance(ItemDetailWidget);
 
+const Hider = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  cursor: not-allowed;
+`;
+
 const Container = styled.div`
   display: flex;
   position: relative;
@@ -128,6 +134,6 @@ const Buttons = styled.div`
 `;
 
 const Button = styled.div`
-  cursor: pointer;
   margin-bottom: 20px;
+  cursor: ${({ move }) => (move ? 'grab' : 'pointer')};
 `;

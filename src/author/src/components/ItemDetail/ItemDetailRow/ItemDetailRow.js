@@ -33,25 +33,16 @@ class ItemDetailRow extends Component {
   };
 
   renderTabContent = ({ widgetIndex, widget, rowIndex }) => {
-    const { onEditWidget, onDeleteWidget, dragging } = this.props;
+    const { onEditWidget, onDeleteWidget } = this.props;
 
     return (
-      <Tabs.TabContainer>
-        {dragging && (
-          <ItemDetailDropTarget
-            widgetIndex={widgetIndex}
-            rowIndex={rowIndex}
-            tabIndex={widget.tabIndex}
-          />
-        )}
-        <ItemDetailWidget
-          widget={widget}
-          onEdit={() => onEditWidget(widget)}
-          onDelete={() => onDeleteWidget(widgetIndex)}
-          widgetIndex={widgetIndex}
-          rowIndex={rowIndex}
-        />
-      </Tabs.TabContainer>
+      <ItemDetailWidget
+        widget={widget}
+        onEdit={() => onEditWidget(widget)}
+        onDelete={() => onDeleteWidget(widgetIndex)}
+        widgetIndex={widgetIndex}
+        rowIndex={rowIndex}
+      />
     );
   };
 
@@ -77,8 +68,16 @@ class ItemDetailRow extends Component {
         )}
         {!row.widgets.length &&
           dragging && <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={0} />}
+        {dragging &&
+          row.widgets.filter(w => w.tabIndex === value).length === 0 && (
+            <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={value} />
+        )}
         {row.widgets.map((widget, i) => (
           <React.Fragment key={i}>
+            {dragging &&
+              widget.tabIndex === value && (
+                <ItemDetailDropTarget widgetIndex={i} rowIndex={rowIndex} tabIndex={value} />
+            )}
             {!!row.tabs.length &&
               value === widget.tabIndex &&
               this.renderTabContent({ widgetIndex: i, widget, rowIndex })}

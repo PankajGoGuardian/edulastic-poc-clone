@@ -17,10 +17,6 @@ import {
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 
 class OrderList extends Component {
-  state = {
-    previewListClear: [],
-  };
-
   get validation() {
     const { item } = this.props;
 
@@ -38,11 +34,11 @@ class OrderList extends Component {
   }
 
   componentDidMount() {
-    const { item } = this.props;
+    const { item, saveAnswer, userAnswer } = this.props;
 
-    this.setState({
-      previewListClear: item.list.map((q, i) => i),
-    });
+    if (!userAnswer.length) {
+      saveAnswer(item.list.map((q, i) => i));
+    }
   }
 
   handleQuestionChange = (value) => {
@@ -71,7 +67,7 @@ class OrderList extends Component {
   };
 
   handleDeleteQuestion = (index) => {
-    const { setQuestionData, item } = this.props;
+    const { setQuestionData, item, saveAnswer } = this.props;
     const newItem = cloneDeep(item);
 
     newItem.list = newItem.list.filter((q, i) => i !== index);
@@ -85,15 +81,12 @@ class OrderList extends Component {
       return res;
     });
 
-    this.setState({
-      previewListClear: indexList,
-    });
-
+    saveAnswer(indexList);
     setQuestionData(newItem);
   };
 
   handleAddQuestion = () => {
-    const { setQuestionData, item, t } = this.props;
+    const { setQuestionData, item, t, saveAnswer } = this.props;
     const newItem = cloneDeep(item);
 
     newItem.list = [
@@ -112,10 +105,7 @@ class OrderList extends Component {
       });
     }
 
-    this.setState({
-      previewListClear: newItem.list.map((q, i) => i),
-    });
-
+    saveAnswer(newItem.list.map((q, i) => i));
     setQuestionData(newItem);
   };
 
@@ -140,12 +130,11 @@ class OrderList extends Component {
   };
 
   onSortPreviewEnd = ({ oldIndex, newIndex }) => {
-    const { previewListClear } = this.state;
-    const newPreviewList = arrayMove(previewListClear, oldIndex, newIndex);
+    const { saveAnswer, userAnswer } = this.props;
 
-    this.setState({
-      previewListClear: newPreviewList,
-    });
+    const newPreviewList = arrayMove(userAnswer, oldIndex, newIndex);
+
+    saveAnswer(newPreviewList);
   };
 
   handleAddAltResponse = () => {
@@ -183,8 +172,7 @@ class OrderList extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item } = this.props;
-    const { previewListClear } = this.state;
+    const { view, previewTab, smallSize, item, userAnswer } = this.props;
 
     if (!item) return null;
 
@@ -225,7 +213,7 @@ class OrderList extends Component {
                 questionsList={item.list}
                 validation={this.validation}
                 validationState={item.validation}
-                previewIndexesList={previewListClear}
+                previewIndexesList={userAnswer}
               />
             )}
 
@@ -234,7 +222,7 @@ class OrderList extends Component {
                 questionsList={item.list}
                 validation={this.validation}
                 validationState={item.validation}
-                previewIndexesList={previewListClear}
+                previewIndexesList={userAnswer}
                 showAnswers
               />
             )}
@@ -242,7 +230,7 @@ class OrderList extends Component {
             {previewTab === 'clear' && (
               <OrderListPreview
                 onSortEnd={this.onSortPreviewEnd}
-                questions={previewListClear.map(index => item.list[index])}
+                questions={userAnswer.map(index => item.list[index])}
                 smallSize={smallSize}
               />
             )}
@@ -260,12 +248,15 @@ OrderList.propTypes = {
   smallSize: PropTypes.bool,
   item: PropTypes.object,
   setQuestionData: PropTypes.func.isRequired,
+  saveAnswer: PropTypes.func.isRequired,
+  userAnswer: PropTypes.any,
 };
 
 OrderList.defaultProps = {
   previewTab: 'clear',
   smallSize: false,
   item: {},
+  userAnswer: [],
 };
 
 const enhance = compose(

@@ -34,6 +34,7 @@ const ItemDetailWidget = ({
             <QuestionWrapper
               type={widget.type}
               view="preview"
+              questionId={widget.reference}
               data={{ ...getWidgetData(widget), smallSize: true }}
             />
           )}

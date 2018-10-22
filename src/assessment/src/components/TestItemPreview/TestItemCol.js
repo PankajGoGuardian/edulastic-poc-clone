@@ -35,6 +35,7 @@ class TestItemCol extends Component {
           type={widget.type}
           view="preview"
           previewTab={previewTab}
+          questionId={widget.reference}
           data={{ ...widget.referencePopulate.data, smallSize: true }}
         />
       </Tabs.TabContainer>

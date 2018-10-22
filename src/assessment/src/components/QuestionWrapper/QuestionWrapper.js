@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { OrderList } from '../OrderList';
 import { MultipleChoice } from '../MultipleChoice';
+import withAnswerSave from '../HOC/withAnswerSave';
 
 const QuestionWrapper = ({ type, data, ...restProps }) => {
   const questionProps = Object.assign(
@@ -31,4 +32,4 @@ QuestionWrapper.defaultProps = {
   saveClicked: false,
 };
 
-export default QuestionWrapper;
+export default withAnswerSave(QuestionWrapper);

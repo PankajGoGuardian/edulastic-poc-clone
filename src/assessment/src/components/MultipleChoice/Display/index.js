@@ -116,15 +116,15 @@ class MultipleChoiceDisplay extends Component {
       setAnswers,
       userSelections,
       smallSize,
-      data,
       onChange,
       options,
       validation,
+      question,
     } = this.props;
 
     return (
       <div>
-        <h5>{data.stimulus}</h5>
+        <h5>{question}</h5>
         <Options
           smallSize={smallSize}
           addAnswer={this.selectAnswer}
@@ -191,8 +191,8 @@ MultipleChoiceDisplay.propTypes = {
   validation: PropTypes.object,
   userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
-  data: PropTypes.any,
   checkAnswer: PropTypes.bool,
+  question: PropTypes.string.isRequired,
 };
 
 MultipleChoiceDisplay.defaultProps = {
@@ -204,7 +204,6 @@ MultipleChoiceDisplay.defaultProps = {
   validation: {},
   userSelections: [],
   smallSize: false,
-  data: {},
 };
 
 export default MultipleChoiceDisplay;

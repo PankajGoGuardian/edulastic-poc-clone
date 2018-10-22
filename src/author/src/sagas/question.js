@@ -14,7 +14,7 @@ import {
 import { getQuestionSelector } from '../selectors/question';
 
 import { getItemDetailSelector } from '../selectors/itemDetail';
-import { updateItemDetailByIdAction } from '../actions/itemDetail';
+import { updateItemSaga } from './itemDetail';
 
 function* receiveQuestionSaga({ payload }) {
   try {
@@ -55,7 +55,12 @@ function* saveQuestionSaga() {
         tabIndex,
       });
 
-      yield put(updateItemDetailByIdAction(itemDetail.id, itemDetail));
+      yield call(updateItemSaga, {
+        payload: {
+          id: itemDetail.id,
+          data: itemDetail,
+        },
+      });
     }
 
     yield put({

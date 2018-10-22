@@ -41,7 +41,7 @@ class ItemDetail extends Component {
 
   componentDidMount() {
     const { getItemDetailById, match } = this.props;
-    getItemDetailById(match.params.id, { data: true });
+    getItemDetailById(match.params.id, { data: true, validation: true });
   }
 
   getSizes = (type) => {

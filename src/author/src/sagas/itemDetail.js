@@ -30,7 +30,7 @@ function* receiveItemSaga({ payload }) {
   }
 }
 
-function* updateItemSaga({ payload }) {
+export function* updateItemSaga({ payload }) {
   try {
     // avoid data part being put into db
     delete payload.data.data;

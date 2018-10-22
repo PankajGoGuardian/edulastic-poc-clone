@@ -37,7 +37,6 @@ export default class TestItemPreview extends Component {
 
   render() {
     const { cols, previewTab } = this.props;
-    console.log(cols);
 
     return (
       <Paper style={{ padding: 0, display: 'flex' }}>

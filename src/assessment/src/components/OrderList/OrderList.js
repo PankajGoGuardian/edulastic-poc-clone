@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { arrayMove } from 'react-sortable-hoc';
-import styled from 'styled-components';
 import { withNamespaces } from '@edulastic/localization';
 import { cloneDeep } from 'lodash';
 
@@ -15,6 +14,7 @@ import {
   CorrectAnswers,
 } from './index';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
+import QuestionHeader from '../MultipleChoice/common/QuestionHeader';
 
 class OrderList extends Component {
   get validation() {
@@ -206,7 +206,10 @@ class OrderList extends Component {
         )}
         {view === 'preview' && (
           <React.Fragment>
-            <QuestionText dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+            <QuestionHeader
+              smallSize={smallSize}
+              dangerouslySetInnerHTML={{ __html: item.stimulus }}
+            />
 
             {previewTab === 'check' && (
               <OrderListReport
@@ -270,9 +273,3 @@ const enhance = compose(
 );
 
 export default enhance(OrderList);
-
-const QuestionText = styled.div`
-  font-size: 14px;
-  padding: 15px 0;
-  font-weight: bold;
-`;

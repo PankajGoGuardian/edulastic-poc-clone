@@ -19,7 +19,7 @@ const Card = ({ title, onSelectQuestionType, data }) => {
           <div className="add-icon">
             <IconPlus color="#fff" width={50} height={50} />
           </div>
-          <QuestionWrapper type={smallData.type} view="preview" data={smallData} />
+          <QuestionWrapper type={smallData.type} smallSize view="preview" data={smallData} />
         </Content>
       </RoundDiv>
     </React.Fragment>

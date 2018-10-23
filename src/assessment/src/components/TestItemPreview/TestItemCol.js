@@ -7,26 +7,26 @@ import QuestionWrapper from '../QuestionWrapper';
 
 class TestItemCol extends Component {
   state = {
-    value: 0
+    value: 0,
   };
 
   static propTypes = {
     col: PropTypes.object.isRequired,
     style: PropTypes.object,
-    previewTab: PropTypes.string.isRequired
+    previewTab: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
-    style: {}
+    style: {},
   };
 
-  handleTabChange = value => {
+  handleTabChange = (value) => {
     this.setState({
-      value
+      value,
     });
   };
 
-  renderTabContent = widget => {
+  renderTabContent = (widget) => {
     const { previewTab } = this.props;
 
     return (
@@ -58,17 +58,15 @@ class TestItemCol extends Component {
                   style={{
                     width: '50%',
                     textAlign: 'center',
-                    padding: '30px 20px 15px'
+                    padding: '30px 20px 15px',
                   }}
                 />
               ))}
             </Tabs>
-          )}
+        )}
         {col.widgets.map((widget, i) => (
           <React.Fragment key={i}>
-            {!!col.tabs.length &&
-              value === widget.tabIndex &&
-              this.renderTabContent(widget)}
+            {!!col.tabs.length && value === widget.tabIndex && this.renderTabContent(widget)}
             {!col.tabs.length && this.renderTabContent(widget)}
           </React.Fragment>
         ))}

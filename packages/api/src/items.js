@@ -1,6 +1,6 @@
 import API from './utils/API';
 
-const api = new API('http://localhost:3100/api');
+const api = new API();
 
 const receiveItems = () =>
   api.callApi({ url: '/items' }).then(result => result.data);

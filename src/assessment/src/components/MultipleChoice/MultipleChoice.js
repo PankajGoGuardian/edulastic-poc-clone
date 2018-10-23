@@ -15,10 +15,6 @@ import {
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 
 class MultipleChoice extends Component {
-  state = {
-    userSelections: [],
-  };
-
   getRenderData = () => {
     const { item, history } = this.props;
     const locationState = history.location.state;
@@ -66,22 +62,20 @@ class MultipleChoice extends Component {
   };
 
   handleAddAnswer = (qid) => {
-    this.setState(({ userSelections }) => {
-      if (userSelections.includes(qid)) {
-        const removeIndex = userSelections.findIndex(el => el === qid);
-        userSelections.splice(removeIndex, 1);
-        return userSelections;
-      }
+    const { saveAnswer, userAnswer } = this.props;
+    const newAnswer = cloneDeep(userAnswer);
 
-      return {
-        userSelections: [...userSelections, qid],
-      };
-    });
+    if (newAnswer.includes(qid)) {
+      const removeIndex = newAnswer.findIndex(el => el === qid);
+      newAnswer.splice(removeIndex, 1);
+      saveAnswer(newAnswer);
+    } else {
+      saveAnswer([...newAnswer, qid]);
+    }
   };
 
   render() {
-    const { view, previewTab, smallSize, item } = this.props;
-    const { userSelections } = this.state;
+    const { view, previewTab, smallSize, item, userAnswer } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit } = this.getRenderData();
 
     return (
@@ -102,7 +96,7 @@ class MultipleChoice extends Component {
             {previewTab === 'check' && (
               <MultipleChoiceReport
                 checkAnswer
-                userSelections={userSelections}
+                userSelections={userAnswer}
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 handleMultiSelect={this.handleMultiSelect}
@@ -114,7 +108,7 @@ class MultipleChoice extends Component {
                 showAnswer
                 options={previewDisplayOptions}
                 question={previewStimulus}
-                userSelections={userSelections}
+                userSelections={userAnswer}
                 handleMultiSelect={this.handleMultiSelect}
                 validation={item.validation}
               />
@@ -128,7 +122,7 @@ class MultipleChoice extends Component {
                 validation={item.validation}
                 question={previewStimulus}
                 data={item}
-                userSelections={userSelections}
+                userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
               />
             )}
@@ -146,6 +140,8 @@ MultipleChoice.propTypes = {
   smallSize: PropTypes.bool,
   history: PropTypes.object,
   setQuestionData: PropTypes.func.isRequired,
+  saveAnswer: PropTypes.func.isRequired,
+  userAnswer: PropTypes.any,
 };
 
 MultipleChoice.defaultProps = {
@@ -155,6 +151,7 @@ MultipleChoice.defaultProps = {
   },
   smallSize: false,
   history: {},
+  userAnswer: [],
 };
 
 const enhance = compose(

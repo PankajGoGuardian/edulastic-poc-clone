@@ -6,11 +6,7 @@ class User extends React.Component {
       <div className="s-user">
         {/* <!-- Avatar --> */}
         <div className="s-user__avatar">
-          <img
-            src="pic/assignments/s-user-avatar.png"
-            src="pic/assignments/s-user-avatar@2x.png 2x"
-            alt="Zack Oliver"
-          />
+          <img src="pic/assignments/s-user-avatar.png" alt="Zack Oliver" />
         </div>
 
         {/* <!-- Information --> */}
@@ -22,9 +18,7 @@ class User extends React.Component {
         </div>
 
         {/* <!-- Arrow --> */}
-        <svg className="s-user__arrow">
-          {/* <use xlink:href="#icon-arrow-down"></use> */}
-        </svg>
+        <svg className="s-user__arrow">{/* <use xlink:href="#icon-arrow-down"></use> */}</svg>
       </div>
     );
   }

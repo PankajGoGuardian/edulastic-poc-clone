@@ -1,7 +1,7 @@
 import React from 'react';
-import { translate, Trans } from 'react-i18next';
-// components
+import { translate } from '@edulastic/localization';
 import styled from 'styled-components';
+
 import Sidebar from './Sidebar';
 import MainContent from './MainContent';
 

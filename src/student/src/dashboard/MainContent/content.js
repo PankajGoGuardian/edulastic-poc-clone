@@ -10,7 +10,7 @@ class Content extends React.Component {
         <AssignmentContentWrapper>
           <Wrapper>
             <ImageWrapper>
-              <img src="https://placem.at/things/?w=500&random=cats" />
+              <img src="https://placem.at/things/?w=500&random=cats" alt="" />
             </ImageWrapper>
             <AssignmentSummary>
               <AssignmentSubject>Math MCAS-CALCULATOR</AssignmentSubject>
@@ -28,7 +28,7 @@ class Content extends React.Component {
         <AssignmentContentWrapper>
           <Wrapper>
             <ImageWrapper>
-              <img src="https://placem.at/things/?w=500&random=cats" />
+              <img src="https://placem.at/things/?w=500&random=cats" alt="" />
             </ImageWrapper>
             <AssignmentSummary>
               <AssignmentSubject>Math MCAS-CALCULATOR</AssignmentSubject>

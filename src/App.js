@@ -6,6 +6,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { NotificationContainer } from 'react-notifications';
 
 import Student from './student/src';
+import AppContainer from './student/src/dashboard';
 import {
   QuestionEditor,
   ItemAdd,
@@ -27,6 +28,7 @@ class App extends Component {
         <Switch>
           <Redirect exact path="/" to="/student/test" />
           <Route exact path="/author/items" component={ItemList} />
+          <Route exact path="/home" component={AppContainer} />
           <Route exact path="/author/add-item" component={ItemAdd} />
           <Route
             exact
@@ -48,10 +50,7 @@ class App extends Component {
             path="/author/items/:id/item-detail"
             component={ItemDetail}
           />
-          <Route
-            path="/student/test"
-            component={() => <Student defaultAP />}
-          />
+          <Route path="/student/test" component={() => <Student defaultAP />} />
           <Route
             path="/student/practice"
             component={() => <Student defaultAP={false} />}

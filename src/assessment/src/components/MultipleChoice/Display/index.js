@@ -12,38 +12,40 @@ const Option = ({
   index,
   item,
   showAnswer,
-  setAnswers,
   checkAnswer,
   userSelections,
   validation,
   onChange,
   smallSize,
 }) => {
+  const isValidUserSelections = userSelections.includes(item.value);
+  const isValidAltResponses = () => {
+    const values = [];
+    validation.alt_responses.forEach((res) => {
+      values.push(...res.value);
+    });
+
+    return values.includes(parseInt(item.value, 10)) && isValidUserSelections;
+  };
+
   let className = '';
   const isValidResponse =
     validation &&
     validation.valid_response &&
     validation.valid_response.value.includes(parseInt(item.value, 10));
-  const isValidUserSelections = userSelections.includes(item.value);
 
-  if (checkAnswer) {
-    if (isValidResponse && isValidUserSelections) {
+  if (isValidUserSelections && checkAnswer) {
+    if (isValidResponse) {
       className = 'right';
-    } else if (validation.alt_responses.length) {
-      let valid = false;
-      const values = [];
-      validation.alt_responses.forEach((res) => {
-        values.push(...res.value);
-      });
-      valid = values.includes(parseInt(item.value, 10)) && isValidUserSelections;
-      className = valid ? 'right' : 'wrong';
-    } else if (isValidUserSelections && !isValidResponse) {
+    } else if (validation.alt_responses.length && isValidAltResponses()) {
+      className = 'right';
+    } else {
       className = 'wrong';
     }
   }
 
-  if (setAnswers) {
-    // ----------------
+  if (userSelections && userSelections.length === 0) {
+    className = '';
   }
 
   if (showAnswer && isValidResponse) {
@@ -81,7 +83,6 @@ const Options = (props) => {
     options,
     checkAnswer,
     showAnswer,
-    setAnswers,
     userSelections,
     smallSize,
     onChange,
@@ -96,7 +97,6 @@ const Options = (props) => {
           smallSize={smallSize}
           checkAnswer={checkAnswer}
           showAnswer={showAnswer}
-          setAnswers={setAnswers}
           index={index}
           item={option}
           userSelections={userSelections}
@@ -113,7 +113,6 @@ class MultipleChoiceDisplay extends Component {
     const {
       showAnswer,
       checkAnswer,
-      setAnswers,
       userSelections,
       smallSize,
       onChange,
@@ -131,7 +130,6 @@ class MultipleChoiceDisplay extends Component {
           options={options}
           showAnswer={showAnswer}
           checkAnswer={checkAnswer}
-          setAnswers={setAnswers}
           userSelections={userSelections}
           validation={validation}
           onChange={onChange}
@@ -144,7 +142,6 @@ class MultipleChoiceDisplay extends Component {
 Option.defaultProps = {
   showAnswer: false,
   smallSize: false,
-  setAnswers: false,
   checkAnswer: false,
   userSelections: [],
   validation: {},
@@ -153,7 +150,6 @@ Option.defaultProps = {
 Option.propTypes = {
   index: PropTypes.number.isRequired,
   showAnswer: PropTypes.bool,
-  setAnswers: PropTypes.bool,
   checkAnswer: PropTypes.bool,
   item: PropTypes.any.isRequired,
   userSelections: PropTypes.array,
@@ -164,7 +160,6 @@ Option.propTypes = {
 
 Options.defaultProps = {
   showAnswer: false,
-  setAnswers: false,
   checkAnswer: false,
   userSelections: [],
   validation: {},
@@ -174,7 +169,6 @@ Options.defaultProps = {
 
 Options.propTypes = {
   showAnswer: PropTypes.bool,
-  setAnswers: PropTypes.bool,
   checkAnswer: PropTypes.bool,
   userSelections: PropTypes.array,
   validation: PropTypes.object,
@@ -187,7 +181,6 @@ MultipleChoiceDisplay.propTypes = {
   options: PropTypes.array,
   onChange: PropTypes.func,
   showAnswer: PropTypes.bool,
-  setAnswers: PropTypes.bool,
   validation: PropTypes.object,
   userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
@@ -200,7 +193,6 @@ MultipleChoiceDisplay.defaultProps = {
   onChange: () => {},
   showAnswer: false,
   checkAnswer: false,
-  setAnswers: false,
   validation: {},
   userSelections: [],
   smallSize: false,

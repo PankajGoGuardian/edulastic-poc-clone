@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 const CheckboxContainer = styled.div`
-  width: ${props => (props.smallSize ? 22 : 30)}px;
-  height: ${props => (props.smallSize ? 22 : 30)}px;
+  width: ${props => (props.smallSize ? 22 : 36)}px;
+  height: ${props => (props.smallSize ? 22 : 36)}px;
   padding: ${props => (props.smallSize ? 0 : 0)}px;
   border: solid 2px #1fe3a1;
   border-radius: 50%;
@@ -28,12 +28,13 @@ const CheckboxContainer = styled.div`
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    color: #000;
     background-color: transparent;
     -webkit-transition: backgroundColor 0.6s;
     transition: backgroundColor 0.6s;
     text-align: center;
     font-size: ${props => (props.smallSize ? '15px' : '20px')};
+    font-weight: 700;
+    color: #444444;
   }
 
   & div {

@@ -11,7 +11,7 @@ export const RoundDiv = styled.div`
 export const Header = styled.div`
   height: 68px;
   background-color: #00b0ff;
-  display: flex; 
+  display: flex;
   align-items: center;
   padding: 0 40px;
   color: white;
@@ -30,6 +30,7 @@ export const Content = styled.div`
   user-select: none;
   position: relative;
   cursor: pointer;
+  overflow: hidden;
 
   .add-icon {
     position: absolute;

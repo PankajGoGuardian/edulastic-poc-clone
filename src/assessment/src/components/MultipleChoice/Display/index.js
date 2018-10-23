@@ -1,12 +1,15 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { PaddingDiv } from '@edulastic/common';
+import { IconCheck, IconClose } from '@edulastic/icons';
+import { green, red } from '@edulastic/colors';
 
 import FlexContainer from './FlexContainer';
 import MultiChoiceContent from './MultiChoiceContent';
-import CheckboxContainter from './CheckboxContainer';
+import CheckboxContainer from './CheckboxContainer';
 import Label from './Label';
 import { ALPHABET } from '../constants/others';
+import QuestionHeader from '../common/QuestionHeader';
 
 const Option = ({
   index,
@@ -54,9 +57,9 @@ const Option = ({
 
   return (
     <Label smallSize={smallSize} showAnswer className={className}>
-      <PaddingDiv top={0} bottom={0}>
+      <PaddingDiv top={smallSize ? 0 : 10} bottom={smallSize ? 0 : 10}>
         <FlexContainer>
-          <CheckboxContainter smallSize={smallSize}>
+          <CheckboxContainer smallSize={smallSize}>
             <input
               type="checkbox"
               name="mcq_group"
@@ -66,11 +69,11 @@ const Option = ({
             />
             <span>{ALPHABET[index]}</span>
             <div />
-          </CheckboxContainter>
+          </CheckboxContainer>
           <MultiChoiceContent smallSize={smallSize}>{item.label}</MultiChoiceContent>
           <PaddingDiv right={15} height={20}>
-            {className === 'right' && <i className="fa fa-check" />}
-            {className === 'wrong' && <i className="fa fa-times" />}
+            {className === 'right' && <IconCheck color={green} width={20} height={20} />}
+            {className === 'wrong' && <IconClose color={red} />}
           </PaddingDiv>
         </FlexContainer>
       </PaddingDiv>
@@ -123,7 +126,7 @@ class MultipleChoiceDisplay extends Component {
 
     return (
       <div>
-        <h5>{question}</h5>
+        <QuestionHeader smallSize={smallSize}>{question}</QuestionHeader>
         <Options
           smallSize={smallSize}
           addAnswer={this.selectAnswer}

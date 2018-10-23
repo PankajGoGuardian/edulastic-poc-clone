@@ -63,13 +63,14 @@ class MultipleChoice extends Component {
 
   handleAddAnswer = (qid) => {
     const { saveAnswer, userAnswer } = this.props;
+    const newAnswer = cloneDeep(userAnswer);
 
-    if (userAnswer.includes(qid)) {
-      const removeIndex = userAnswer.findIndex(el => el === qid);
-      userAnswer.splice(removeIndex, 1);
-      saveAnswer(userAnswer);
+    if (newAnswer.includes(qid)) {
+      const removeIndex = newAnswer.findIndex(el => el === qid);
+      newAnswer.splice(removeIndex, 1);
+      saveAnswer(newAnswer);
     } else {
-      saveAnswer([...userAnswer, qid]);
+      saveAnswer([...newAnswer, qid]);
     }
   };
 

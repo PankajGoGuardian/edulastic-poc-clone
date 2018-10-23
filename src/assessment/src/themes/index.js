@@ -5,11 +5,13 @@ import { gotoItem } from '../actions/items';
 import AssesmentPlayerDefault from './AssessmentPlayerDefault';
 import AssesmentPlayerSimple from './AssessmentPlayerSimple';
 
+import { currentItemRowsSelector } from '../selectors/item';
 const AssessmentContainer = ({
   gotoQuestion,
   currentItem,
   defaultAP,
-  items
+  items,
+  itemRows
 }) => {
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
@@ -31,7 +33,8 @@ const AssessmentContainer = ({
     moveToNext,
     moveToPrev,
     currentItem,
-    gotoQuestion
+    gotoQuestion,
+    itemRows
   };
 
   return defaultAP ? (
@@ -48,9 +51,10 @@ AssessmentContainer.PropType = {
 };
 
 export default connect(
-  ({ test }) => ({
-    items: test.items,
-    currentItem: test.currentItem
+  state => ({
+    items: state.test.items,
+    currentItem: state.test.currentItem,
+    itemRows: currentItemRowsSelector(state)
   }),
   { gotoQuestion: gotoItem }
 )(AssessmentContainer);

@@ -60,7 +60,6 @@ class AssessmentPlayerSimple extends React.Component {
 
   switchView = () => {
     let { checkAnswer } = this.state;
-    console.log('check assnswe', checkAnswer);
     this.setState({ checkAnswer: !checkAnswer });
   };
 
@@ -74,7 +73,8 @@ class AssessmentPlayerSimple extends React.Component {
       moveToPrev,
       items,
       currentItem,
-      gotoQuestion
+      gotoQuestion,
+      itemRows
     } = this.props;
 
     let previewTab = this.state.checkAnswer ? 'check' : 'clear';
@@ -187,7 +187,7 @@ class AssessmentPlayerSimple extends React.Component {
             <Blank />
             <MainWrapper>
               <MainContent>
-                <TestPreviewItem cols={item.rows} previewTab={previewTab} />
+                <TestPreviewItem cols={itemRows} previewTab={previewTab} />
               </MainContent>
               <MainFooter>
                 <FlexContainer>

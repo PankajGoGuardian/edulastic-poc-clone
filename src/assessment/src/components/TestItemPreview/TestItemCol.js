@@ -29,7 +29,6 @@ class TestItemCol extends Component {
   renderTabContent = widget => {
     const { previewTab } = this.props;
 
-    console.log('widget data her is ', widget);
     return (
       <Tabs.TabContainer style={{ padding: 20 }}>
         <QuestionWrapper

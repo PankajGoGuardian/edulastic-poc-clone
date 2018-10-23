@@ -9,7 +9,14 @@ import HeaderMainMenu from '../common/HeaderMainMenu';
 import HeaderRightMenu from '../common/HeaderRightMenu';
 import LogoImage from '../../assets/logo.png';
 import SettingImage from '../../assets/screwdriver.png';
-import { ControlBtn, Main, Header, Container, Logo, FlexContainer } from '../common';
+import {
+  ControlBtn,
+  Main,
+  Header,
+  Container,
+  Logo,
+  FlexContainer
+} from '../common';
 import TestItemPreview from '../../components/TestItemPreview';
 
 /* eslint import/no-webpack-loader-syntax: off */
@@ -25,11 +32,11 @@ class AssessmentPlayerDefault extends React.Component {
     moveToPrev: PropTypes.func.isRequired,
     currentItem: PropTypes.any.isRequired,
     items: PropTypes.any.isRequired,
-    gotoQuestion: PropTypes.any.isRequired,
+    gotoQuestion: PropTypes.any.isRequired
   };
 
   static defaultProps = {
-    theme: defaultTheme,
+    theme: defaultTheme
   };
 
   render() {
@@ -42,9 +49,12 @@ class AssessmentPlayerDefault extends React.Component {
       moveToPrev,
       gotoQuestion,
       currentItem,
+      itemRows
     } = this.props;
 
-    const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
+    const dropdownOptions = Array.isArray(items)
+      ? items.map((item, index) => index)
+      : [];
 
     const item = items[currentItem];
     if (!item) {
@@ -81,7 +91,7 @@ class AssessmentPlayerDefault extends React.Component {
           </Header>
           <Main skin>
             <MainWrapper>
-              <TestItemPreview cols={item.rows} />
+              <TestItemPreview cols={itemRows} />
             </MainWrapper>
           </Main>
         </Container>

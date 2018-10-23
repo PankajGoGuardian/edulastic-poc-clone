@@ -6,7 +6,6 @@ import SelectContainer from './SelectContainer';
 import Select from './Select';
 
 const QuestionSelectDropdown = ({ gotoQuestion, options, currentItem, t }) => {
-  console.log('currentItme', currentItem);
   return (
     <SelectContainer>
       <Select

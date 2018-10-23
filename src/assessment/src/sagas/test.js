@@ -5,7 +5,10 @@ import { LOAD_TEST, LOAD_TEST_ITEMS } from '../constants/actions';
 
 function* loadTest() {
   try {
-    let items = yield call(testItemsApi.getAll);
+    let items = yield call(testItemsApi.getAll, {
+      validation: true,
+      data: true
+    });
     items = items.map(item => {
       item.rows = item.rows.map(row => ({
         ...row,

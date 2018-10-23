@@ -10,15 +10,15 @@ export default class TestItemPreview extends Component {
     cols: PropTypes.array.isRequired,
     verticalDivider: PropTypes.bool,
     scrolling: PropTypes.bool,
-    previewTab: PropTypes.string.isRequired,
+    previewTab: PropTypes.string.isRequired
   };
 
   static defaultProps = {
     verticalDivider: false,
-    scrolling: false,
+    scrolling: false
   };
 
-  getStyle = (first) => {
+  getStyle = first => {
     const { verticalDivider, scrolling } = this.props;
 
     const style = {};
@@ -37,7 +37,6 @@ export default class TestItemPreview extends Component {
 
   render() {
     const { cols, previewTab } = this.props;
-
     return (
       <Paper style={{ padding: 0, display: 'flex' }}>
         {cols &&

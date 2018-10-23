@@ -27,7 +27,7 @@ import {
   HeaderLeftMenu,
   HeaderMainMenu,
   HeaderRightMenu,
-  MobileMainMenu,
+  MobileMainMenu
 } from '../common';
 import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
 import TestPreviewItem from '../../components/TestItemPreview';
@@ -36,6 +36,13 @@ import TestPreviewItem from '../../components/TestItemPreview';
 const defaultTheme = require('sass-extract-loader?{"plugins": ["sass-extract-js"]}!../../styles/vars.scss');
 
 class AssessmentPlayerSimple extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      checkAnswer: false
+    };
+  }
+
   static propTypes = {
     theme: PropTypes.object,
     isLast: PropTypes.func.isRequired,
@@ -44,11 +51,17 @@ class AssessmentPlayerSimple extends React.Component {
     moveToPrev: PropTypes.func.isRequired,
     gotoQuestion: PropTypes.func.isRequired,
     currentItem: PropTypes.any.isRequired,
-    items: PropTypes.any.isRequired,
+    items: PropTypes.any.isRequired
   };
 
   static defaultProps = {
-    theme: defaultTheme,
+    theme: defaultTheme
+  };
+
+  switchView = () => {
+    let { checkAnswer } = this.state;
+    console.log('check assnswe', checkAnswer);
+    this.setState({ checkAnswer: !checkAnswer });
   };
 
   render() {
@@ -61,16 +74,24 @@ class AssessmentPlayerSimple extends React.Component {
       moveToPrev,
       items,
       currentItem,
-      gotoQuestion,
+      gotoQuestion
     } = this.props;
-    const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
+
+    let previewTab = this.state.checkAnswer ? 'check' : 'clear';
+    let buttonContent = this.state.checkAnswer ? 'Clear' : 'Check Answer';
+
+    const dropdownOptions = Array.isArray(items)
+      ? items.map((item, index) => index)
+      : [];
 
     const item = items[currentItem];
     if (!item) {
       return <div />;
     }
 
-    const percent = Math.round(((currentItem + 1) * 100) / dropdownOptions.length);
+    const percent = Math.round(
+      ((currentItem + 1) * 100) / dropdownOptions.length
+    );
     return (
       <ThemeProvider theme={theme}>
         <Container>
@@ -108,7 +129,10 @@ class AssessmentPlayerSimple extends React.Component {
                     />
                   </ProgressContainer>
                   <Time>
-                    <QuestionAttempt current={currentItem + 1} total={items.length} />
+                    <QuestionAttempt
+                      current={currentItem + 1}
+                      total={items.length}
+                    />
                   </Time>
                   <Timer>
                     <Icon color="#756e6e" />
@@ -132,10 +156,20 @@ class AssessmentPlayerSimple extends React.Component {
                     onChange={gotoQuestion}
                     options={dropdownOptions}
                   />
-                  <ControlBtn prev skinB disabled={isFirst()} onClick={moveToPrev}>
+                  <ControlBtn
+                    prev
+                    skinB
+                    disabled={isFirst()}
+                    onClick={moveToPrev}
+                  >
                     <i className="fa fa-angle-left" />
                   </ControlBtn>
-                  <ControlBtn next skinB disabled={isLast()} onClick={moveToNext}>
+                  <ControlBtn
+                    next
+                    skinB
+                    disabled={isLast()}
+                    onClick={moveToNext}
+                  >
                     <i className="fa fa-angle-right" />
                     <span>Next</span>
                   </ControlBtn>
@@ -153,20 +187,30 @@ class AssessmentPlayerSimple extends React.Component {
             <Blank />
             <MainWrapper>
               <MainContent>
-                <TestPreviewItem cols={item.rows} />
+                <TestPreviewItem cols={item.rows} previewTab={previewTab} />
               </MainContent>
               <MainFooter>
                 <FlexContainer>
                   <QuitAssesment />
-                  <ControlBtn next skinB disabled>
-                    <span>CHECK ANSWER</span>
+                  <ControlBtn next skinB onClick={this.switchView}>
+                    <span> {buttonContent} </span>
                   </ControlBtn>
                 </FlexContainer>
                 <FlexContainer>
-                  <ControlBtn prev skinB disabled={isFirst()} onClick={moveToPrev}>
+                  <ControlBtn
+                    prev
+                    skinB
+                    disabled={isFirst()}
+                    onClick={moveToPrev}
+                  >
                     <i className="fa fa-angle-left" />
                   </ControlBtn>
-                  <ControlBtn next skinB disabled={isLast()} onClick={moveToNext}>
+                  <ControlBtn
+                    next
+                    skinB
+                    disabled={isLast()}
+                    onClick={moveToNext}
+                  >
                     <i className="fa fa-angle-right" />
                     <span>NEXT</span>
                     {/* <span>{t("common.layout.nextbtn")}</span> */}

@@ -3,11 +3,12 @@ import API from './utils/API';
 const api = new API();
 const prefix = '/TestItems';
 
-const getAll = () =>
+const getAll = (params = {}) =>
   api
     .callApi({
       url: prefix,
       method: 'get',
+      params
     })
     .then(result => result.data);
 
@@ -16,7 +17,7 @@ const getById = (id, params = {}) =>
     .callApi({
       url: `${prefix}/${id}`,
       method: 'get',
-      params,
+      params
     })
     .then(result => result.data);
 
@@ -25,7 +26,7 @@ const updateById = (id, data) =>
     .callApi({
       url: `${prefix}/${id}`,
       method: 'put',
-      data,
+      data
     })
     .then(result => result.data);
 
@@ -34,7 +35,7 @@ const create = data =>
     .callApi({
       url: prefix,
       method: 'post',
-      data,
+      data
     })
     .then(result => result.data);
 
@@ -43,7 +44,7 @@ const update = ({ id, data }) =>
     .callApi({
       url: `${prefix}/${id}`,
       method: 'put',
-      data,
+      data
     })
     .then(result => result.data);
 
@@ -52,5 +53,5 @@ export default {
   getById,
   updateById,
   create,
-  update,
+  update
 };

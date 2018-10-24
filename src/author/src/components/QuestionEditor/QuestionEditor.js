@@ -4,7 +4,6 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { withNamespaces } from '@edulastic/localization';
-import { Paper } from '@edulastic/common';
 
 import SourceModal from './SourceModal';
 import { changeViewAction } from '../../actions/view';
@@ -111,18 +110,16 @@ class QuestionEditor extends Component {
             previewTab={previewTab}
           />
         </ItemHeader>
-        <Paper>
-          {question && (
-            <QuestionWrapper
-              type={questionType}
-              view={view}
-              previewTab={previewTab}
-              key={questionType && view && saveClicked}
-              data={question.data}
-              saveClicked={saveClicked}
-            />
-          )}
-        </Paper>
+        {question && (
+          <QuestionWrapper
+            type={questionType}
+            view={view}
+            previewTab={previewTab}
+            key={questionType && view && saveClicked}
+            data={question.data}
+            saveClicked={saveClicked}
+          />
+        )}
       </Container>
     );
   }

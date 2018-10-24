@@ -15,7 +15,7 @@ export const Heading = styled.div`
 
 export const Block = styled.div`
   border-bottom: 1px solid #d9d6d6;
-  padding-bottom: 35px;
+  padding-bottom: 20px;
 `;
 
 export const Label = styled.label`
@@ -44,7 +44,8 @@ export const Col = styled.div`
 `;
 
 export const Header = styled.div`
-  padding: 20px;
+  padding: 20px 0;
+  margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   cursor: pointer;

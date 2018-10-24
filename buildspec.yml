@@ -1,89 +1,15 @@
-
-CodeBuild:
-  Type: 'AWS::CodeBuild::Project'
-  Properties:
-    Name: !Sub ${AWS::StackName}-CodeBuild
-    ServiceRole: !GetAtt CodeBuildRole.Arn
-    Artifacts:
-      # The downloaded source code for the build will come from CodePipeline
-      Type: CODEPIPELINE
-      Name: MyProject
-    Source: 
-      Type: CODEPIPELINE
-    Environment:
-      # Linux container with node installed
-      ComputeType: BUILD_GENERAL1_SMALL
-      Type: LINUX_CONTAINER
-      Image: "aws/codebuild/nodejs:8.11.0"
-    Source:
-      Type: CODEPIPELINE
-      BuildSpec: !Sub |
-        version: 0.1
-        phases:
-          pre_build:
-            commands:
-              - echo Installing source NPM dependencies...
-              - npm i -g yarn
-              - yarn .
-          build:
-            commands:
-              - echo Build started on `date`
-              - yarn start
-          post_build:
-            commands:
-              # copy the contents of /build to S3
-              - echo server starting on port 3000
-        artifacts:
-          files:
-            - '**/*'
-          base-directory: build
-# IAM role that allows CodeBuild to interact with S3, CloudWatch, and CloudFront
-CodeBuildRole:
-  Type: AWS::IAM::Role
-  Properties:
-    AssumeRolePolicyDocument:
-      Version: "2012-10-17"
-      Statement:
-        - 
-          Effect: Allow
-          Principal:
-            Service:
-              - "codebuild.amazonaws.com"
-          Action:
-            - "sts:AssumeRole"
-    Path: /service-role/
-    Policies:
-      - PolicyName: root
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement: 
-            - 
-              Effect: Allow
-              Action:
-                - "s3:GetObject"
-                - "s3:GetObjectVersion"
-                - "s3:GetBucketVersioning"
-                - "s3:PutObject"
-              Resource: 
-                - !GetAtt PipelineBucket.Arn
-                - !Join ['', [!GetAtt PipelineBucket.Arn, "/*"]]
-            - 
-              Effect: Allow
-              Action:
-                - "s3:GetObject"
-                - "s3:GetObjectVersion"
-                - "s3:GetBucketVersioning"
-                - "s3:PutObject"
-                - "s3:PutObjectAcl"
-              Resource: 
-                - !GetAtt DeployBucket.Arn
-                - !Join ['', [!GetAtt DeployBucket.Arn, "/*"]]
-            -
-              Effect: Allow
-              Action:
-                - "logs:CreateLogGroup"
-                - "logs:CreateLogStream"
-                - "logs:PutLogEvents"
-                - "cloudfront:CreateInvalidation"
-              Resource:
-                - "*"
+version: 0.2
+phases:
+  install:
+    commands:
+      - echo Installing Mocha...
+  pre_build:
+    commands:
+      - echo Installing source NPM dependencies...
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Compiling the Node.js code
+  post_build:
+    commands:
+      - echo Build completed on `date`

@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import { withNamespaces } from '@edulastic/localization';
 import { connect } from 'react-redux';
 import { cloneDeep } from 'lodash';
+import 'react-quill/dist/quill.snow.css';
 
 import { ALPHABET } from '../constants/others';
 import SortableItemContainer from './SortableItemContainer';

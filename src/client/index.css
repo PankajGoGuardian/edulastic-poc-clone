@@ -364,3 +364,39 @@ template {
 }
 
 @import '~antd/dist/antd.css';
+.toolgroup {
+  background: white;
+  height: 24px;
+  display: inline-block;
+  padding: 2px;
+  box-sizing: content-box;
+  border-radius: 3px;
+}
+
+.toolgroup button:hover {
+  background: #1e22aa;
+}
+
+.response-btn {
+  border-radius: 5px;
+  display: inline-flex;
+  margin: 0 5px;
+}
+
+.response-btn .index {
+  padding: 4px 8px;
+  background: darkgray;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.response-btn .text {
+  padding: 4px 8px;
+  background: lightgray;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.ql-editor p {
+  display: inline-block;
+}

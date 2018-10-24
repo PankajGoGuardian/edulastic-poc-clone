@@ -13,6 +13,7 @@ class MultipleChoiceReport extends Component {
     options: PropTypes.array,
     question: PropTypes.string,
     validation: PropTypes.object.isRequired,
+    uiStyle: PropTypes.object.isRequired,
   };
 
   static defaultProps = {
@@ -33,6 +34,7 @@ class MultipleChoiceReport extends Component {
       userSelections,
       handleMultiSelect,
       validation,
+      uiStyle,
     } = this.props;
     return (
       <div>
@@ -45,6 +47,7 @@ class MultipleChoiceReport extends Component {
             validation={validation}
             showAnswer={showAnswer}
             checkAnswer={checkAnswer}
+            uiStyle={uiStyle}
           />
         </Container>
       </div>

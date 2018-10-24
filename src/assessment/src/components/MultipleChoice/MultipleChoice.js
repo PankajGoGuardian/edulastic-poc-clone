@@ -42,6 +42,7 @@ class MultipleChoice extends Component {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
+      uiStyle: item.ui_style,
     };
   };
 
@@ -87,7 +88,7 @@ class MultipleChoice extends Component {
 
   render() {
     const { view, previewTab, smallSize, item, userAnswer, t } = this.props;
-    const { previewStimulus, previewDisplayOptions, itemForEdit } = this.getRenderData();
+    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
 
     return (
       <React.Fragment>
@@ -114,6 +115,7 @@ class MultipleChoice extends Component {
                     question={previewStimulus}
                     handleMultiSelect={this.handleMultiSelect}
                     validation={item.validation}
+                    uiStyle={uiStyle}
                   />
                 )}
                 {previewTab === 'show' && (
@@ -124,6 +126,7 @@ class MultipleChoice extends Component {
                     userSelections={userAnswer}
                     handleMultiSelect={this.handleMultiSelect}
                     validation={item.validation}
+                    uiStyle={uiStyle}
                   />
                 )}
                 {previewTab === 'clear' && (
@@ -150,7 +153,7 @@ class MultipleChoice extends Component {
             checked={item.multiple_responses}
           />
         </Paper>
-        <Options onChange={this.handleOptionsChange} uiStyle={item.ui_style} />
+        <Options onChange={this.handleOptionsChange} uiStyle={uiStyle} />
       </React.Fragment>
     );
   }

@@ -16,7 +16,17 @@
       "layout": "Layout",
       "columns": "Number of columns",
       "orientation": "Orientation",
-      "fontSize": "Font Size"
+      "fontSize": "Font Size",
+      "standard": "Standard",
+      "block": "Block",
+      "radioButtonBelow": "Radio Button Below",
+      "horizontal": "Horizontal",
+      "vertical": "Vertical",
+      "small": "Small",
+      "normal": "Normal",
+      "large": "Large",
+      "extraLarge": "Extra Large",
+      "huge": "Huge"
     },
     "orderlist": {
       "question": {

@@ -25,9 +25,9 @@ function Options({ onChange, uiStyle, t }) {
               style={{ width: '80%' }}
               onChange={val => changeUiStyle('type', val)}
               options={[
-                { value: 'standard', label: 'Standard' },
-                { value: 'block', label: 'Block' },
-                { value: 'radio', label: 'Radio Button Below' },
+                { value: 'standard', label: t('component.options.standard') },
+                { value: 'block', label: t('component.options.block') },
+                { value: 'radio', label: t('component.options.radioButtonBelow') },
               ]}
               value={uiStyle.type}
             />
@@ -51,8 +51,8 @@ function Options({ onChange, uiStyle, t }) {
               style={{ width: '80%' }}
               onChange={val => changeUiStyle('orientation', val)}
               options={[
-                { value: 'horizontal', label: 'Horizontal' },
-                { value: 'vertical', label: 'Vertical' },
+                { value: 'horizontal', label: t('component.options.horizontal') },
+                { value: 'vertical', label: t('component.options.vertical') },
               ]}
               value={uiStyle.orientation}
             />
@@ -63,11 +63,11 @@ function Options({ onChange, uiStyle, t }) {
               style={{ width: '80%' }}
               onChange={fontsize => changeUiStyle('fontsize', fontsize)}
               options={[
-                { value: 'small', label: 'Small' },
-                { value: 'normal', label: 'Normal' },
-                { value: 'large', label: 'Large' },
-                { value: 'xlarge', label: 'Extra Large' },
-                { value: 'xxlarge', label: 'Huge' },
+                { value: 'small', label: t('component.options.small') },
+                { value: 'normal', label: t('component.options.normal') },
+                { value: 'large', label: t('component.options.large') },
+                { value: 'xlarge', label: t('component.options.extraLarge') },
+                { value: 'xxlarge', label: t('component.options.huge') },
               ]}
               value={uiStyle.fontsize}
             />

@@ -1,3 +1,3 @@
 set -e
 cd ~/edulastic-poc
-yarn start
+pm2 start scripts/start.js

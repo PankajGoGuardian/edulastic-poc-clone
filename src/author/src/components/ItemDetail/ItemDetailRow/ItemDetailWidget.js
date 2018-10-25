@@ -31,6 +31,7 @@ const ItemDetailWidget = ({
         <div>
           {widget.widgetType === 'question' && (
             <QuestionWrapper
+              testItem
               type={widget.type}
               view="preview"
               questionId={widget.reference}

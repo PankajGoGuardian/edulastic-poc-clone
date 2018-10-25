@@ -22,6 +22,7 @@ QuestionWrapper.propTypes = {
   isNew: PropTypes.bool,
   data: PropTypes.object,
   saveClicked: PropTypes.bool,
+  testItem: PropTypes.bool,
 };
 
 QuestionWrapper.defaultProps = {
@@ -29,6 +30,7 @@ QuestionWrapper.defaultProps = {
   type: null,
   data: {},
   saveClicked: false,
+  testItem: false,
 };
 
 export default withAnswerSave(QuestionWrapper);

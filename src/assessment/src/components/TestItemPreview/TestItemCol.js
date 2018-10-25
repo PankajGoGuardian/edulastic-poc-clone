@@ -32,6 +32,7 @@ class TestItemCol extends Component {
     return (
       <Tabs.TabContainer style={{ padding: 20 }}>
         <QuestionWrapper
+          testItem
           type={widget.type}
           view="preview"
           previewTab={previewTab}

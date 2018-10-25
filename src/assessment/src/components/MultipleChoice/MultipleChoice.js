@@ -7,9 +7,12 @@ import { PaddingDiv, Paper, Checkbox } from '@edulastic/common';
 import { cloneDeep } from 'lodash';
 import { withNamespaces } from '@edulastic/localization';
 
+import styled from 'styled-components';
 import { MultipleChoiceAuthoring, MultipleChoiceDisplay, CorrectAnswers } from './index';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 import Options from './Options/Options';
+
+const EmptyWrapper = styled.div``;
 
 class MultipleChoice extends Component {
   getRenderData = () => {
@@ -105,7 +108,7 @@ class MultipleChoice extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item, userAnswer, t } = this.props;
+    const { view, previewTab, smallSize, item, userAnswer, t, testItem } = this.props;
     const {
       previewStimulus,
       previewDisplayOptions,
@@ -113,6 +116,9 @@ class MultipleChoice extends Component {
       uiStyle,
       multipleResponses,
     } = this.getRenderData();
+    console.log(testItem);
+
+    const Wrapper = testItem ? EmptyWrapper : Paper;
 
     return (
       <React.Fragment>
@@ -140,7 +146,7 @@ class MultipleChoice extends Component {
             </React.Fragment>
           )}
           {view === 'preview' && (
-            <Paper>
+            <Wrapper>
               {previewTab === 'check' && (
                 <MultipleChoiceDisplay
                   checkAnswer
@@ -180,7 +186,7 @@ class MultipleChoice extends Component {
                   uiStyle={uiStyle}
                 />
               )}
-            </Paper>
+            </Wrapper>
           )}
         </PaddingDiv>
       </React.Fragment>
@@ -198,6 +204,7 @@ MultipleChoice.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   t: PropTypes.func.isRequired,
+  testItem: PropTypes.bool,
 };
 
 MultipleChoice.defaultProps = {
@@ -208,6 +215,7 @@ MultipleChoice.defaultProps = {
   smallSize: false,
   history: {},
   userAnswer: [],
+  testItem: false,
 };
 
 const enhance = compose(

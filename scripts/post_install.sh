@@ -1,7 +1,7 @@
 set -e
 
 cd ~/edulastic-poc
-npm install
+yarn
 
 # setup NODE_ENV
 if [ ! -z "$DEPLOYMENT_GROUP_NAME" ]; then

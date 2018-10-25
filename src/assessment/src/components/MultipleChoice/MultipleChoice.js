@@ -7,12 +7,7 @@ import { PaddingDiv, Paper, Checkbox } from '@edulastic/common';
 import { cloneDeep } from 'lodash';
 import { withNamespaces } from '@edulastic/localization';
 
-import {
-  MultipleChoiceAuthoring,
-  MultipleChoiceDisplay,
-  MultipleChoiceReport,
-  CorrectAnswers,
-} from './index';
+import { MultipleChoiceAuthoring, MultipleChoiceDisplay, CorrectAnswers } from './index';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 import Options from './Options/Options';
 
@@ -92,10 +87,10 @@ class MultipleChoice extends Component {
 
     return (
       <React.Fragment>
-        <Paper style={{ marginBottom: 25 }}>
-          <PaddingDiv>
-            {view === 'edit' && (
-              <React.Fragment>
+        <PaddingDiv>
+          {view === 'edit' && (
+            <React.Fragment>
+              <Paper style={{ marginBottom: 25 }}>
                 <MultipleChoiceAuthoring item={itemForEdit} />
                 <CorrectAnswers
                   validation={item.validation}
@@ -103,57 +98,61 @@ class MultipleChoice extends Component {
                   question={previewStimulus}
                   onAddAltResponses={this.handleAddAltResponses}
                 />
-              </React.Fragment>
-            )}
-            {view === 'preview' && (
-              <React.Fragment>
-                {previewTab === 'check' && (
-                  <MultipleChoiceReport
-                    checkAnswer
-                    userSelections={userAnswer}
-                    options={previewDisplayOptions}
-                    question={previewStimulus}
-                    handleMultiSelect={this.handleMultiSelect}
-                    validation={item.validation}
-                    uiStyle={uiStyle}
-                  />
-                )}
-                {previewTab === 'show' && (
-                  <MultipleChoiceReport
-                    showAnswer
-                    options={previewDisplayOptions}
-                    question={previewStimulus}
-                    userSelections={userAnswer}
-                    handleMultiSelect={this.handleMultiSelect}
-                    validation={item.validation}
-                    uiStyle={uiStyle}
-                  />
-                )}
-                {previewTab === 'clear' && (
-                  <MultipleChoiceDisplay
-                    preview
-                    key={previewDisplayOptions && previewStimulus}
-                    smallSize={smallSize}
-                    options={previewDisplayOptions}
-                    validation={item.validation}
-                    question={previewStimulus}
-                    data={item}
-                    userSelections={userAnswer}
-                    onChange={this.handleAddAnswer}
-                  />
-                )}
-              </React.Fragment>
-            )}
-          </PaddingDiv>
-          <Checkbox
-            onChange={() =>
-              this.handleOptionsChange('multiple_responses', !item.multiple_responses)
-            }
-            label={t('component.multiplechoice.multipleResponses')}
-            checked={item.multiple_responses}
-          />
-        </Paper>
-        <Options onChange={this.handleOptionsChange} uiStyle={uiStyle} />
+                <Checkbox
+                  onChange={() =>
+                    this.handleOptionsChange('multiple_responses', !item.multiple_responses)
+                  }
+                  label={t('component.multiplechoice.multipleResponses')}
+                  checked={item.multiple_responses}
+                />
+              </Paper>
+              <Options onChange={this.handleOptionsChange} uiStyle={uiStyle} />
+            </React.Fragment>
+          )}
+          {view === 'preview' && (
+            <Paper>
+              {previewTab === 'check' && (
+                <MultipleChoiceDisplay
+                  checkAnswer
+                  data={item}
+                  onChange={this.handleAddAnswer}
+                  smallSize={smallSize}
+                  userSelections={userAnswer}
+                  options={previewDisplayOptions}
+                  question={previewStimulus}
+                  handleMultiSelect={this.handleMultiSelect}
+                  validation={item.validation}
+                  uiStyle={uiStyle}
+                />
+              )}
+              {previewTab === 'show' && (
+                <MultipleChoiceDisplay
+                  showAnswer
+                  smallSize={smallSize}
+                  options={previewDisplayOptions}
+                  question={previewStimulus}
+                  userSelections={userAnswer}
+                  handleMultiSelect={this.handleMultiSelect}
+                  validation={item.validation}
+                  uiStyle={uiStyle}
+                />
+              )}
+              {previewTab === 'clear' && (
+                <MultipleChoiceDisplay
+                  preview
+                  smallSize={smallSize}
+                  options={previewDisplayOptions}
+                  validation={item.validation}
+                  question={previewStimulus}
+                  data={item}
+                  userSelections={userAnswer}
+                  onChange={this.handleAddAnswer}
+                  uiStyle={uiStyle}
+                />
+              )}
+            </Paper>
+          )}
+        </PaddingDiv>
       </React.Fragment>
     );
   }

@@ -57,7 +57,12 @@ MultipleChoiceDisplay.defaultProps = {
   validation: {},
   userSelections: [],
   smallSize: false,
-  uiStyle: {},
+  uiStyle: {
+    type: 'standard',
+    fontsize: 'normal',
+    columns: 1,
+    orientation: 'horizontal',
+  },
 };
 
 export default MultipleChoiceDisplay;

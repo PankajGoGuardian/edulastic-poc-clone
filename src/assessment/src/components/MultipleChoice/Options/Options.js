@@ -27,13 +27,13 @@ function Options({ onChange, uiStyle, t }) {
               options={[
                 { value: 'standard', label: t('component.options.standard') },
                 { value: 'block', label: t('component.options.block') },
-                { value: 'radio', label: t('component.options.radioButtonBelow') },
+                { value: 'radioBelow', label: t('component.options.radioButtonBelow') },
               ]}
               value={uiStyle.type}
             />
           </O.Col>
           <O.Col md={6}>
-            <O.Label>{t('component.options.style')}</O.Label>
+            <O.Label>{t('component.options.columns')}</O.Label>
             <TextField
               type="number"
               disabled={false}

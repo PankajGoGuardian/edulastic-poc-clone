@@ -1,10 +1,12 @@
 import styled from 'styled-components';
+import { green } from '@edulastic/colors';
 
 export const CheckboxContainer = styled.div`
+  display: ${props => (props.hide ? 'none' : 'block')};
   width: ${props => (props.smallSize ? 22 : 36)}px;
   height: ${props => (props.smallSize ? 22 : 36)}px;
   padding: ${props => (props.smallSize ? 0 : 0)}px;
-  border: solid 2px #1fe3a1;
+  border: solid 2px ${green};
   border-radius: 50%;
   box-sizing: border-box;
   margin-right: 10px;
@@ -47,34 +49,21 @@ export const CheckboxContainer = styled.div`
 
   & input:checked + span {
     color: white;
-    background-color: #1fe3a1;
+    background-color: ${green};
     -webkit-transition: backgroundColor 0.6s;
     transition: backgroundColor 0.6s;
   }
 
   & input:checked + span + div {
-    background-color: #1fe3a1;
+    background-color: ${green};
     -webkit-transition: backgroundColor 0.6s;
     transition: backgroundColor 0.6s;
     display: none;
   }
 `;
 
-export const FlexContainer = styled.div`
-  display: flex;
-  align-items: ${props => (props.alignItems ? props.alignItems : 'center')};
-  justify-content: ${props => (props.justifyContent ? props.justifyContent : 'flex-start')};
-
-  & > * {
-    margin-left: 10px;
-  }
-  & > *:first-child {
-    margin-left: 0;
-  }
-`;
-
 export const MultiChoiceContent = styled.div`
-  font-size: ${props => (props.smallSize ? 13 : 16)}px;
+  font-size: ${props => props.fontSize || '13px'};
   color: ${props => props.theme.mainContentTextColor};
   display: flex;
   flex: 1;
@@ -93,12 +82,13 @@ export const ProblemContainer = styled.div`
 `;
 
 export const Label = styled.label`
-  max-width: 960px;
-  display: block;
+  position: relative;
+  display: inline-block;
   padding-left: ${props => (props.smallSize ? 5 : 20)}px;
   border: dotted 1px transparent;
   border-left: solid 3px transparent;
   margin: ${props => (props.setAnswers ? '5px 0' : '10px 0')};
+  width: ${props => props.width || '100%'};
 
   &:hover {
     border: dotted 1px lightgrey;
@@ -106,9 +96,16 @@ export const Label = styled.label`
     cursor: pointer;
   }
 
+  &.checked {
+    background-color: #fcfbd4;
+    border-left: solid 3px #c3c055;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+
   &.right {
     background-color: #1fe3a11e;
-    border-left: solid 3px #1fe3a1;
+    border-left: solid 3px ${green};
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
   }
@@ -123,9 +120,21 @@ export const Label = styled.label`
     line-height: 1;
   }
   & .fa-check {
-    color: #1fe3a1;
+    color: ${green};
   }
   & .fa-times {
     color: #ee1658;
   }
+`;
+
+export const Icon = styled.div`
+  position: absolute;
+  right: 10px;
+  top: calc(50% - 10px);
+`;
+
+export const OptionsList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 `;

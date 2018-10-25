@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Option from './Option';
+import { OptionsList } from './styles';
 
 const Options = (props) => {
   const {
@@ -16,7 +17,7 @@ const Options = (props) => {
   } = props;
 
   return (
-    <div>
+    <OptionsList>
       {options.map((option, index) => (
         <Option
           key={index}
@@ -31,7 +32,7 @@ const Options = (props) => {
           uiStyle={uiStyle}
         />
       ))}
-    </div>
+    </OptionsList>
   );
 };
 

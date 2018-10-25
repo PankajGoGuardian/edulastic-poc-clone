@@ -116,7 +116,6 @@ class MultipleChoice extends Component {
       uiStyle,
       multipleResponses,
     } = this.getRenderData();
-    console.log(testItem);
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 

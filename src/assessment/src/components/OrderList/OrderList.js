@@ -4,7 +4,9 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { arrayMove } from 'react-sortable-hoc';
 import { withNamespaces } from '@edulastic/localization';
+import { Paper } from '@edulastic/common';
 import { cloneDeep } from 'lodash';
+import styled from 'styled-components';
 
 import {
   OrderListEdit,
@@ -15,6 +17,8 @@ import {
 } from './index';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 import QuestionHeader from '../MultipleChoice/common/QuestionHeader';
+
+const EmptyWrapper = styled.div``;
 
 class OrderList extends Component {
   get validation() {
@@ -172,14 +176,16 @@ class OrderList extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item, userAnswer } = this.props;
+    const { view, previewTab, smallSize, item, userAnswer, testItem } = this.props;
 
     if (!item) return null;
+
+    const Wrapper = testItem ? EmptyWrapper : Paper;
 
     return (
       <React.Fragment>
         {view === 'edit' && (
-          <React.Fragment>
+          <Paper>
             <Question
               onQuestionChange={this.handleQuestionChange}
               value={item.stimulus}
@@ -202,10 +208,10 @@ class OrderList extends Component {
               onDelete={this.handleDeleteAltAnswers}
               onUpdatePoints={this.handleUpdatePoints}
             />
-          </React.Fragment>
+          </Paper>
         )}
         {view === 'preview' && (
-          <React.Fragment>
+          <Wrapper>
             <QuestionHeader
               smallSize={smallSize}
               dangerouslySetInnerHTML={{ __html: item.stimulus }}
@@ -237,7 +243,7 @@ class OrderList extends Component {
                 smallSize={smallSize}
               />
             )}
-          </React.Fragment>
+          </Wrapper>
         )}
       </React.Fragment>
     );
@@ -253,6 +259,7 @@ OrderList.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
+  testItem: PropTypes.bool,
 };
 
 OrderList.defaultProps = {
@@ -260,6 +267,7 @@ OrderList.defaultProps = {
   smallSize: false,
   item: {},
   userAnswer: [],
+  testItem: false,
 };
 
 const enhance = compose(

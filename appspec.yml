@@ -5,7 +5,6 @@ files:
     destination: /home/ec2-user/edulastic-poc
 permissions:
   - object: /
-    pattern: '**'
     owner: ec2-user
     group: ec2-user
     type:
@@ -13,10 +12,10 @@ permissions:
       - file
 hooks:
   AfterInstall:
-    - location: scripts/npm-install.sh
+    - location: /home/ec2-user/edulastic-poc/scripts/npm-install.sh
       runas: ec2-user
       timeout: 300
   ApplicationStart:
-    - location: scripts/npm-start.sh
+    - location: /home/ec2-user/edulastic-poc/scripts/npm-start.sh
       runas: ec2-user
       timeout: 60

@@ -11,10 +11,14 @@ permissions:
       - directory
       - file
 hooks:
-  AfterInstall:
+  BeforeInstall:
     - location: scripts/npm-install.sh
-      runas: ec2-user
+      runas: root
       timeout: 300
+  AfterInstall:
+    - location: post_install.sh
+      timeout: 600
+      runas: ec2-user
   ApplicationStart:
     - location: scripts/npm-start.sh
       runas: ec2-user

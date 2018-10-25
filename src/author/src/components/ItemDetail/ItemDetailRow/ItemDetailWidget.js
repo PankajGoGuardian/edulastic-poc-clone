@@ -29,7 +29,6 @@ const ItemDetailWidget = ({
     <div>
       <Container isDragging={isDragging}>
         <div>
-          <Hider />
           {widget.widgetType === 'question' && (
             <QuestionWrapper
               type={widget.type}
@@ -105,15 +104,6 @@ const enhance = compose(
 );
 
 export default enhance(ItemDetailWidget);
-
-const Hider = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  cursor: not-allowed;
-`;
 
 const Container = styled.div`
   display: flex;

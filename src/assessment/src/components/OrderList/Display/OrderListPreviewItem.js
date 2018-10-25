@@ -6,18 +6,16 @@ import { DragHandle } from '../common';
 import { Container, StyledDragHandle, Text } from './styled_components';
 
 const OrderListPreviewItem = SortableElement(({ children, showDragHandle, smallSize }) => (
-  <React.Fragment>
-    <Container>
-      {showDragHandle && (
-        <StyledDragHandle smallSize={smallSize}>
-          <DragHandle smallSize={smallSize} />
-        </StyledDragHandle>
-      )}
-      <Text showDragHandle={showDragHandle} smallSize={smallSize}>
-        <span>{children}</span>
-      </Text>
-    </Container>
-  </React.Fragment>
+  <Container>
+    {showDragHandle && (
+      <StyledDragHandle smallSize={smallSize}>
+        <DragHandle smallSize={smallSize} />
+      </StyledDragHandle>
+    )}
+    <Text showDragHandle={showDragHandle} smallSize={smallSize}>
+      <span>{children}</span>
+    </Text>
+  </Container>
 ));
 
 OrderListPreviewItem.propTypes = {

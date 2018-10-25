@@ -83,7 +83,7 @@ class QuestionEditor extends Component {
   };
 
   render() {
-    const { view, question, history } = this.props;
+    const { view, question, history, match } = this.props;
     const { previewTab } = this.state;
     const itemId = question === null ? '' : question.id;
     const questionType = this.getQuestionType();
@@ -117,6 +117,7 @@ class QuestionEditor extends Component {
             previewTab={previewTab}
             key={questionType && view && saveClicked}
             data={question.data}
+            questionId={match.params.id}
             saveClicked={saveClicked}
           />
         )}

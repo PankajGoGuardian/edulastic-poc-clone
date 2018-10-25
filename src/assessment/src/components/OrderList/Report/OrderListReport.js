@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { SortableContainer } from 'react-sortable-hoc';
 
 import OrderListReportItem from './OrderListReportItem';
 
@@ -39,7 +40,8 @@ class OrderListReport extends Component {
             correct={getCorrect(i)}
             correctText={validation.valid_response.value[i]}
             showAnswers={showAnswers}
-            index={i + 1}
+            index={i}
+            ind={i + 1}
           >
             {q}
           </OrderListReportItem>
@@ -60,4 +62,4 @@ OrderListReport.defaultProps = {
   showAnswers: false,
 };
 
-export default OrderListReport;
+export default SortableContainer(OrderListReport);

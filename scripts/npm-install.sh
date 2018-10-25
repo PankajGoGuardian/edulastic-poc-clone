@@ -1,1 +1,1 @@
-npm i -g yarn && yarn .
+npm i -g yarn && yarn 

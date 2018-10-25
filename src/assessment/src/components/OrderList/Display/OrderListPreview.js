@@ -14,7 +14,7 @@ class OrderListPreview extends Component {
         {questions &&
           !!questions.length &&
           questions.map((q, i) => (
-            <OrderListPreviewItem smallSize={smallSize} key={i} index={i}>
+            <OrderListPreviewItem showDragHandle smallSize={smallSize} key={i} index={i}>
               {q}
             </OrderListPreviewItem>
           ))}

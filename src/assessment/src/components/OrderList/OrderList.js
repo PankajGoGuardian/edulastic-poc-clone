@@ -219,6 +219,7 @@ class OrderList extends Component {
 
             {previewTab === 'check' && (
               <OrderListReport
+                onSortEnd={this.onSortPreviewEnd}
                 questionsList={item.list}
                 validation={this.validation}
                 validationState={item.validation}
@@ -228,6 +229,7 @@ class OrderList extends Component {
 
             {previewTab === 'show' && (
               <OrderListReport
+                onSortEnd={this.onSortPreviewEnd}
                 questionsList={item.list}
                 validation={this.validation}
                 validationState={item.validation}

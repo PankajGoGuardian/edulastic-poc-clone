@@ -24,6 +24,7 @@ const Card = ({ title, onSelectQuestionType, data }) => {
             type={smallData.type}
             smallSize
             view="preview"
+            questionId="tmp"
             data={smallData}
           />
         </Content>

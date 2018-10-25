@@ -38,6 +38,7 @@ class MultipleChoice extends Component {
       previewDisplayOptions,
       itemForEdit,
       uiStyle: item.ui_style,
+      multipleResponses: !!item.multiple_responses,
     };
   };
 
@@ -60,21 +61,43 @@ class MultipleChoice extends Component {
   };
 
   handleAddAnswer = (qid) => {
-    const { saveAnswer, userAnswer } = this.props;
+    const { saveAnswer, userAnswer, item } = this.props;
     const newAnswer = cloneDeep(userAnswer);
 
-    if (newAnswer.includes(qid)) {
-      const removeIndex = newAnswer.findIndex(el => el === qid);
-      newAnswer.splice(removeIndex, 1);
-      saveAnswer(newAnswer);
+    if (item.multiple_responses) {
+      if (newAnswer.includes(qid)) {
+        const removeIndex = newAnswer.findIndex(el => el === qid);
+        newAnswer.splice(removeIndex, 1);
+        saveAnswer(newAnswer);
+      } else {
+        saveAnswer([...newAnswer, qid]);
+      }
     } else {
-      saveAnswer([...newAnswer, qid]);
+      saveAnswer([qid]);
     }
   };
 
   handleOptionsChange = (name, value) => {
-    const { setQuestionData, item } = this.props;
+    const { setQuestionData, item, saveAnswer } = this.props;
     const newItem = cloneDeep(item);
+    const reduceResponses = (acc, val, index) => {
+      if (index === 0) {
+        acc.push(val);
+      }
+      return acc;
+    };
+
+    if (name === 'multiple_responses' && value === false) {
+      newItem.validation.valid_response.value = newItem.validation.valid_response.value.reduce(
+        reduceResponses,
+        [],
+      );
+      newItem.validation.alt_responses = newItem.validation.alt_responses.map((res) => {
+        res.value = res.value.reduce(reduceResponses, []);
+        return res;
+      });
+      saveAnswer([]);
+    }
 
     newItem[name] = value;
 
@@ -83,7 +106,13 @@ class MultipleChoice extends Component {
 
   render() {
     const { view, previewTab, smallSize, item, userAnswer, t } = this.props;
-    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
+    const {
+      previewStimulus,
+      previewDisplayOptions,
+      itemForEdit,
+      uiStyle,
+      multipleResponses,
+    } = this.getRenderData();
 
     return (
       <React.Fragment>
@@ -96,14 +125,15 @@ class MultipleChoice extends Component {
                   validation={item.validation}
                   options={previewDisplayOptions}
                   question={previewStimulus}
+                  multipleResponses={multipleResponses}
                   onAddAltResponses={this.handleAddAltResponses}
                 />
                 <Checkbox
                   onChange={() =>
-                    this.handleOptionsChange('multiple_responses', !item.multiple_responses)
+                    this.handleOptionsChange('multiple_responses', !multipleResponses)
                   }
                   label={t('component.multiplechoice.multipleResponses')}
-                  checked={item.multiple_responses}
+                  checked={multipleResponses}
                 />
               </Paper>
               <Options onChange={this.handleOptionsChange} uiStyle={uiStyle} />

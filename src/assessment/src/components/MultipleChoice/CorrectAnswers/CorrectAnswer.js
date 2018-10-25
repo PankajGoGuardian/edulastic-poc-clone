@@ -13,6 +13,7 @@ class CorrectAnswer extends Component {
     t: PropTypes.func.isRequired,
     stimulus: PropTypes.string.isRequired,
     options: PropTypes.array.isRequired,
+    multipleResponses: PropTypes.bool.isRequired,
   };
 
   constructor(props) {
@@ -35,10 +36,17 @@ class CorrectAnswer extends Component {
   };
 
   handleMultiSelect = (index) => {
-    const { onUpdateValidationValue } = this.props;
-    const { userSelections } = this.state;
+    const { onUpdateValidationValue, multipleResponses } = this.props;
+    let { userSelections } = this.state;
     const changedOption = parseInt(index, 10);
+
     userSelections[changedOption] = !userSelections[changedOption];
+    if (!multipleResponses) {
+      userSelections = userSelections.map((it, i) => {
+        if (changedOption !== i) return false;
+        return true;
+      });
+    }
     this.setState({ userSelections });
 
     onUpdateValidationValue(userSelections);

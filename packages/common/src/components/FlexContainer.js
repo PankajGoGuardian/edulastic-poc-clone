@@ -4,6 +4,7 @@ const FlexContainer = styled.div`
   display: flex;
   align-items: ${props => (props.alignItems ? props.alignItems : 'center')};
   justify-content: ${props => (props.justifyContent ? props.justifyContent : 'flex-start')};
+  flex-direction: ${props => (props.flexDirection ? props.flexDirection : 'row')};
 
   & > * {
     margin-left: 10px;

@@ -5,9 +5,29 @@
       "itemc": "Choice C",
       "itemb": "Choice B",
       "itema": "Choice A"
+    },
+    "options": {
+      "title": "Advanced Options"
     }
   },
   "component": {
+    "options": {
+      "style": "Style",
+      "layout": "Layout",
+      "columns": "Number of columns",
+      "orientation": "Orientation",
+      "fontSize": "Font Size",
+      "standard": "Standard",
+      "block": "Block",
+      "radioButtonBelow": "Radio Button Below",
+      "horizontal": "Horizontal",
+      "vertical": "Vertical",
+      "small": "Small",
+      "normal": "Normal",
+      "large": "Large",
+      "extraLarge": "Extra Large",
+      "huge": "Huge"
+    },
     "orderlist": {
       "question": {
         "composequestion": "Compose Question",
@@ -28,7 +48,8 @@
       "setcorrectanswers": "Set Correct Answer(s)",
       "addnewchoice": "Add New Choice",
       "multiplechoiceoptions": "Multiple Choice Options",
-      "composequestion": "Compose Question"
+      "composequestion": "Compose Question",
+      "multipleResponses": "Multiple Responses"
     },
     "correctanswers": {
       "setcorrectanswers": "Set Correct Answer(s)",

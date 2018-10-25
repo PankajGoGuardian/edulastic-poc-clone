@@ -113,7 +113,7 @@ class CorrectAnswers extends Component {
   };
 
   render() {
-    const { validation, stimulus, options, t } = this.props;
+    const { validation, stimulus, options, t, multipleResponses } = this.props;
     const { value } = this.state;
 
     return (
@@ -129,6 +129,7 @@ class CorrectAnswers extends Component {
               <CorrectAnswer
                 response={validation.valid_response}
                 stimulus={stimulus}
+                multipleResponses={multipleResponses}
                 options={options}
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}
@@ -143,6 +144,7 @@ class CorrectAnswers extends Component {
                   <TabContainer key={i}>
                     <CorrectAnswer
                       response={alter}
+                      multipleResponses={multipleResponses}
                       stimulus={stimulus}
                       options={options}
                       onUpdateValidationValue={answers =>
@@ -169,6 +171,7 @@ CorrectAnswers.propTypes = {
   stimulus: PropTypes.string,
   options: PropTypes.array,
   question: PropTypes.object.isRequired,
+  multipleResponses: PropTypes.bool.isRequired,
 };
 
 CorrectAnswers.defaultProps = {

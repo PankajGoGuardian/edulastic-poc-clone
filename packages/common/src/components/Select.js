@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
-import { white, textColor, grey } from '@edulastic/colors';
+import { white, textColor, grey, blue } from '@edulastic/colors';
 
-const Select = ({ onChange, options, value }) => (
-  <SelectContainer>
+const Select = ({ onChange, options, value, style, arrowColor }) => (
+  <SelectContainer style={style} arrowColor={arrowColor}>
     <Main onChange={e => onChange(e.target.value)} defaultValue={value}>
       {options.map((item, index) => (
         <option key={index} value={item.value}>
@@ -19,6 +19,13 @@ Select.propTypes = {
   value: PropTypes.any.isRequired,
   onChange: PropTypes.func.isRequired,
   options: PropTypes.array.isRequired,
+  style: PropTypes.object,
+  arrowColor: PropTypes.string,
+};
+
+Select.defaultProps = {
+  style: {},
+  arrowColor: blue,
 };
 
 export default Select;
@@ -50,7 +57,7 @@ const SelectContainer = styled.div`
     display: flex;
     align-items: center;
     height: 100%;
-    color: ${props => props.theme.selectArrowColor};
+    color: ${props => props.arrowColor};
     content: '\f0d7';
   }
   @media (max-width: 760px) {

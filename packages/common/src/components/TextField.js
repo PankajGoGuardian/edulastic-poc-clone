@@ -9,7 +9,6 @@ class TextField extends Component {
   };
 
   onIconClick = () => {
-    console.log('on icon click');
     const { referenceEditable } = this.state;
     this.setState({ referenceEditable: !referenceEditable });
   };

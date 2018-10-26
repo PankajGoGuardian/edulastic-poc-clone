@@ -2,7 +2,7 @@
   "itemHeader": {
     "reference": "Reference"
   },
-  "preloader": {
+  "progress": {
     "loading": "loading"
   },
   "pagination": {

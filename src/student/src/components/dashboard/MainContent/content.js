@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { IconClockCircularOutline } from '@edulastic/icons';
+import PropTypes from 'prop-types';
+
 import AssignmentsContent from '../common/content';
 
 const Content = ({ flag }) => (
@@ -9,7 +11,7 @@ const Content = ({ flag }) => (
     <AssignmentContentWrapper>
       <Wrapper>
         <ImageWrapper>
-          <img src="https://placem.at/things/?w=500&random=cats" />
+          <img src="https://placem.at/things/?w=500&random=cats" alt="" />
         </ImageWrapper>
         <AssignmentSummary>
           <AssignmentSubject>Math MCAS-CALCULATOR</AssignmentSubject>
@@ -27,7 +29,7 @@ const Content = ({ flag }) => (
     <AssignmentContentWrapper>
       <Wrapper>
         <ImageWrapper>
-          <img src="https://placem.at/things/?w=500&random=cats" />
+          <img src="https://placem.at/things/?w=500&random=cats" alt="" />
         </ImageWrapper>
         <AssignmentSummary>
           <AssignmentSubject>Math MCAS-CALCULATOR</AssignmentSubject>
@@ -44,6 +46,10 @@ const Content = ({ flag }) => (
     </AssignmentContentWrapper>
   </AssignmentsContent>
 );
+
+Content.propTypes = {
+  flag: PropTypes.any.isRequired,
+};
 
 export default connect(({ ui }) => ({ flag: ui.flag }))(Content);
 

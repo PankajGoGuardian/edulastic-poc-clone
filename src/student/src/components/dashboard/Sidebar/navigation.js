@@ -1,27 +1,14 @@
 import React from 'react';
-import { IconClockDashboard } from '@edulastic/icons';
-import { IconAssignment } from '@edulastic/icons';
-import { IconBarChart } from '@edulastic/icons';
-import { IconManage } from '@edulastic/icons';
-import { IconChevronLeft } from '@edulastic/icons';
-// import Sidebar from '../common/sidebar';
+import { IconManage, IconClockDashboard, IconBarChart, IconAssignment } from '@edulastic/icons';
 import styled from 'styled-components';
-
-const Icon = styled(IconClockDashboard)`
-  width: 22px !important;
-  height: 22px !important;
-  fill: rgb(67, 75, 93);
-  margin-right: 1rem;
-`;
+import PropTypes from 'prop-types';
 
 const NavLink = styled.ul`
-   {
-    list-style: none;
-    padding: 0rem;
-    margin: 3rem 2rem;
-    @media (max-width: 425px) {
-      margin: 3rem 4rem;
-    }
+  list-style: none;
+  padding: 0rem;
+  margin: 3rem 2rem;
+  @media (max-width: 425px) {
+    margin: 3rem 4rem;
   }
 `;
 const NavList = styled.li`
@@ -65,6 +52,12 @@ const NavButton = ({ icon, label, flag }) => {
   );
 };
 
+NavButton.propTypes = {
+  icon: PropTypes.any.isRequired,
+  label: PropTypes.any.isRequired,
+  flag: PropTypes.any.isRequired,
+};
+
 const Navigation = ({ flag }) => (
   <NavLink>
     <NavButton label="Dashboard" icon={IconClockDashboard} flag={flag} />
@@ -73,5 +66,9 @@ const Navigation = ({ flag }) => (
     <NavButton label="Manage Class" icon={IconManage} flag={flag} />
   </NavLink>
 );
+
+Navigation.propTypes = {
+  flag: PropTypes.any.isRequired,
+};
 
 export default Navigation;

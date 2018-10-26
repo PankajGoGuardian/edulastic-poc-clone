@@ -7,9 +7,9 @@ import { blue, greenDarkSecondary, white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { compose } from 'redux';
 
-const Header = ({ onSearch, onCreate, t, windowWidth, creating }) => (
+const ListHeader = ({ onSearch, onCreate, t, windowWidth, creating, title }) => (
   <Container>
-    {windowWidth > 480 && <Heading>{t('component.itemlist.header.itemlist')}</Heading>}
+    {windowWidth > 480 && <Heading>{title}</Heading>}
     <TextField
       onChange={e => onSearch(e.target.value)}
       height="50px"
@@ -36,17 +36,18 @@ const Header = ({ onSearch, onCreate, t, windowWidth, creating }) => (
   </Container>
 );
 
-Header.propTypes = {
+ListHeader.propTypes = {
   onSearch: PropTypes.func.isRequired,
   onCreate: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   creating: PropTypes.bool.isRequired,
+  title: PropTypes.string.isRequired,
 };
 
 const enhance = compose(withNamespaces('author'));
 
-export default enhance(Header);
+export default enhance(ListHeader);
 
 const Container = styled.div`
   display: flex;

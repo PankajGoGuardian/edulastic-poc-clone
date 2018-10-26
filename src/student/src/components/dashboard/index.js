@@ -1,9 +1,9 @@
 import React from 'react';
-import { translate, Trans } from 'react-i18next';
 import { IconMenuOpenClose } from '@edulastic/icons';
 import { connect } from 'react-redux';
-// components
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+
 import Sidebar from './Sidebar';
 import MainContent from './MainContent';
 // y capital bruh? v . change? and better names?
@@ -26,23 +26,25 @@ class AppContainer extends React.Component {
   }
 }
 
+AppContainer.propTypes = {
+  responsiveSideBar: PropTypes.any.isRequired,
+};
+
 export default connect(
   ({ ui }) => ({ sidebar: ui.sidebar }),
-  { responsiveSideBar }
+  { responsiveSideBar },
 )(AppContainer);
 
 // export default translate('common')(AppContainer);
 
 const AssignmentHammerger = styled.div`
-   {
-    padding: 1.7rem 2rem;
-    background: #0eb08d;
-    color: #fff;
-    font-weight: 700;
-    font-size: 1.5rem;
-    @media (min-width: 1200px) {
-      display: none;
-    }
+  padding: 1.7rem 2rem;
+  background: #0eb08d;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.5rem;
+  @media (min-width: 1200px) {
+    display: none;
   }
 `;
 
@@ -56,5 +58,3 @@ const IconMenu = styled(IconMenuOpenClose)`
     fill: #fff;
   }
 `;
-
-IconMenuOpenClose;

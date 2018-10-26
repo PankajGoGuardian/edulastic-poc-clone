@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withNamespaces } from '@edulastic/localization';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Preloader, Paper } from '@edulastic/common';
+import { Progress, Paper } from '@edulastic/common';
 import { cloneDeep } from 'lodash';
 
 import { Container, ButtonBar } from '../common';
@@ -19,14 +19,14 @@ import {
   updateItemDetailDimensionAction,
   deleteWidgetAction,
   updateTabTitleAction,
-  useTabsAction
+  useTabsAction,
 } from '../../actions/itemDetail';
 import {
   getItemDetailLoadingSelector,
   getItemDetailRowsSelector,
   getItemDetailSelector,
   getItemDetailUpdatingSelector,
-  getItemDetailDimensionTypeSelector
+  getItemDetailDimensionTypeSelector,
 } from '../../selectors/itemDetail';
 import ItemDetailRow from './ItemDetailRow';
 import TestItemPreview from '../../../../assessment/src/components/TestItemPreview/TestItemPreview';
@@ -36,7 +36,7 @@ class ItemDetail extends Component {
     showModal: false,
     showSettings: false,
     view: 'edit',
-    previewTab: 'clear'
+    previewTab: 'clear',
   };
 
   componentDidMount() {
@@ -44,49 +44,49 @@ class ItemDetail extends Component {
     getItemDetailById(match.params.id, { data: true, validation: true });
   }
 
-  getSizes = type => {
+  getSizes = (type) => {
     switch (type) {
       case '100-100':
         return {
           left: '100%',
-          right: '100%'
+          right: '100%',
         };
       case '30-70':
         return {
           left: '30%',
-          right: '70%'
+          right: '70%',
         };
       case '70-30':
         return {
           left: '70%',
-          right: '30%'
+          right: '30%',
         };
       case '50-50':
         return {
           left: '50%',
-          right: '50%'
+          right: '50%',
         };
       case '40-60':
         return {
           left: '40%',
-          right: '60%'
+          right: '60%',
         };
       case '60-40':
         return {
           left: '60%',
-          right: '40%'
+          right: '40%',
         };
       default:
         return {
           left: '100%',
-          right: '100%'
+          right: '100%',
         };
     }
   };
 
-  handleChangeView = view => {
+  handleChangeView = (view) => {
     this.setState({
-      view
+      view,
     });
   };
 
@@ -96,7 +96,7 @@ class ItemDetail extends Component {
 
   handleShowSettings = () => {
     this.setState({
-      showSettings: true
+      showSettings: true,
     });
   };
 
@@ -109,14 +109,14 @@ class ItemDetail extends Component {
         backUrl: match.url,
         rowIndex,
         tabIndex,
-        testItemId: match.params.id
-      }
+        testItemId: match.params.id,
+      },
     });
   };
 
   handleCancelSettings = () => {
     this.setState({
-      showSettings: false
+      showSettings: false,
     });
   };
 
@@ -127,7 +127,7 @@ class ItemDetail extends Component {
     updateDimension(left, right);
   };
 
-  handleApplySource = data => {
+  handleApplySource = (data) => {
     const { setItemDetailData } = this.props;
 
     try {
@@ -140,7 +140,7 @@ class ItemDetail extends Component {
 
   handleHideSource = () => {
     this.setState({
-      showModal: false
+      showModal: false,
     });
   };
 
@@ -150,19 +150,19 @@ class ItemDetail extends Component {
     updateItemDetailById(match.params.id, item);
   };
 
-  handleEditWidget = widget => {
+  handleEditWidget = (widget) => {
     const { match, history, t } = this.props;
 
     history.push({
       pathname: `/author/questions/${widget.reference}`,
       state: {
         backText: t('component.itemDetail.backText'),
-        backUrl: match.url
-      }
+        backUrl: match.url,
+      },
     });
   };
 
-  handleDeleteWidget = i => widgetIndex => {
+  handleDeleteWidget = i => (widgetIndex) => {
     const { deleteWidget } = this.props;
     deleteWidget(i, widgetIndex);
   };
@@ -183,9 +183,9 @@ class ItemDetail extends Component {
     setItemDetailData(newItem);
   };
 
-  handleChangePreviewTab = previewTab => {
+  handleChangePreviewTab = (previewTab) => {
     this.setState({
-      previewTab
+      previewTab,
     });
   };
 
@@ -228,17 +228,7 @@ class ItemDetail extends Component {
 
   render() {
     const { showModal, showSettings } = this.state;
-    const {
-      t,
-      match,
-      rows,
-      loading,
-      item,
-      updating,
-      type,
-      updateTabTitle,
-      useTabs
-    } = this.props;
+    const { t, match, rows, loading, item, updating, type, updateTabTitle, useTabs } = this.props;
 
     const { view, previewTab } = this.state;
 
@@ -246,13 +236,10 @@ class ItemDetail extends Component {
       <Container>
         {showModal &&
           item && (
-            <SourceModal
-              onClose={this.handleHideSource}
-              onApply={this.handleApplySource}
-            >
+            <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
               {JSON.stringify(item, null, 4)}
             </SourceModal>
-          )}
+        )}
         {showSettings && (
           <SettingsBar
             type={type}
@@ -272,7 +259,7 @@ class ItemDetail extends Component {
           title={t('component.itemDetail.itemDetail')}
           link={{
             url: '/author/items',
-            text: t('component.itemDetail.backToItemList')
+            text: t('component.itemDetail.backToItemList'),
           }}
           reference={match.params.id}
           editReference={this.editReference}
@@ -291,7 +278,7 @@ class ItemDetail extends Component {
         </ItemHeader>
         {view === 'edit' && (
           <Content>
-            {loading && <Preloader />}
+            {loading && <Progress />}
             {rows &&
               !!rows.length &&
               rows.map((row, i) => (
@@ -330,12 +317,12 @@ ItemDetail.propTypes = {
   deleteWidget: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   updateTabTitle: PropTypes.func.isRequired,
-  useTabs: PropTypes.func.isRequired
+  useTabs: PropTypes.func.isRequired,
 };
 
 ItemDetail.defaultProps = {
   rows: [],
-  item: null
+  item: null,
 };
 
 const enhance = compose(
@@ -346,7 +333,7 @@ const enhance = compose(
       loading: getItemDetailLoadingSelector(state),
       item: getItemDetailSelector(state),
       updating: getItemDetailUpdatingSelector(state),
-      type: getItemDetailDimensionTypeSelector(state)
+      type: getItemDetailDimensionTypeSelector(state),
     }),
     {
       changeView: changeViewAction,
@@ -356,9 +343,9 @@ const enhance = compose(
       updateDimension: updateItemDetailDimensionAction,
       deleteWidget: deleteWidgetAction,
       updateTabTitle: updateTabTitleAction,
-      useTabs: useTabsAction
-    }
-  )
+      useTabs: useTabsAction,
+    },
+  ),
 );
 
 export default enhance(ItemDetail);

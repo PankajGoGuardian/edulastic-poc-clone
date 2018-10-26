@@ -2,15 +2,15 @@ import React from 'react';
 import { withNamespaces } from '@edulastic/localization';
 import PropTypes from 'prop-types';
 
-const Preloader = ({ t }) => (
+const Progress = ({ t }) => (
   <span>
-    {t('preloader.loading')}
+    {t('progress.loading')}
     ...
   </span>
 );
 
-Preloader.propTypes = {
+Progress.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withNamespaces('common')(Preloader);
+export default withNamespaces('common')(Progress);

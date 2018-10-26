@@ -4,9 +4,8 @@ import PropTypes from 'prop-types';
 import { Paper, Pagination, withWindowSizes } from '@edulastic/common';
 import { compose } from 'redux';
 import styled from 'styled-components';
-import { withNamespaces } from '@edulastic/localization';
-import { mobileWidth } from '@edulastic/colors';
 
+import { mobileWidth } from '@edulastic/colors';
 import {
   getItemsPageSelector,
   getItemsLimitSelector,
@@ -20,7 +19,7 @@ import { getTestItemsSelector } from '../../selectors/testItems';
 import { getTestItemCreatingSelector } from '../../selectors/testItem';
 import ListHeader from '../common/ListHeader';
 
-class ItemList extends Component {
+class TestList extends Component {
   componentDidMount() {
     const { receiveItems } = this.props;
     receiveItems();
@@ -55,7 +54,7 @@ class ItemList extends Component {
   };
 
   render() {
-    const { items, page, limit, count, loading, windowWidth, history, creating, t } = this.props;
+    const { items, page, limit, count, loading, windowWidth, history, creating } = this.props;
     return (
       <Container>
         <ListHeader
@@ -63,7 +62,7 @@ class ItemList extends Component {
           onCreate={this.handleCreate}
           creating={creating}
           windowWidth={windowWidth}
-          title={t('component.itemlist.header.itemlist')}
+          title="Test List"
         />
         <Paper style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
           {items.map(item => (
@@ -84,7 +83,7 @@ class ItemList extends Component {
   }
 }
 
-ItemList.propTypes = {
+TestList.propTypes = {
   items: PropTypes.array.isRequired,
   receiveItems: PropTypes.func.isRequired,
   page: PropTypes.number.isRequired,
@@ -95,12 +94,10 @@ ItemList.propTypes = {
   createItem: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   creating: PropTypes.bool.isRequired,
-  t: PropTypes.func.isRequired,
 };
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces('author'),
   connect(
     state => ({
       items: getTestItemsSelector(state),
@@ -117,7 +114,7 @@ const enhance = compose(
   ),
 );
 
-export default enhance(ItemList);
+export default enhance(TestList);
 
 const Container = styled.div`
   padding: 20px 40px;

@@ -18,9 +18,15 @@ const AssignmentSelectClass = styled.div`
   }
   @media (max-width: 1060px) {
     float: left;
+    width: 11rem;
   }
   @media (max-width: 425px) {
-    margin-right: 0rem;
+    margin-right: 2.5rem;
+    width: 10rem;
+  }
+  @media (max-width: 320px) {
+    margin-right: 0.5rem;
+    width: 9rem;
   }
 `;
 

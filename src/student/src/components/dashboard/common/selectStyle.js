@@ -5,7 +5,6 @@ const SelectStyle = styled.select`
   position: absolute;
   right: 0;
   padding: 16px;
-  border: none;
   background: #fff;
   outline: none;
   -webkit-appearance: none;
@@ -17,9 +16,12 @@ const SelectStyle = styled.select`
   &:hover {
     background-color: rgba(74, 172, 139, 0.05);
   }
+  @media (amx-width: 1060px) {
+    width: 6.3rem;
+  }
   @media (max-width: 900px) {
     width: 7.2rem;
-    padding: 19px;
+    padding: 16px;
   }
   @media (max-width: 768px) {
     width: 50%;

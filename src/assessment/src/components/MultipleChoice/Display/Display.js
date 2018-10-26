@@ -16,6 +16,7 @@ class MultipleChoiceDisplay extends Component {
       validation,
       question,
       uiStyle,
+      evaluation
     } = this.props;
 
     return (
@@ -31,6 +32,7 @@ class MultipleChoiceDisplay extends Component {
           validation={validation}
           onChange={onChange}
           uiStyle={uiStyle}
+          evaluation={evaluation}
         />
       </div>
     );
@@ -46,7 +48,7 @@ MultipleChoiceDisplay.propTypes = {
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool,
   question: PropTypes.string.isRequired,
-  uiStyle: PropTypes.object,
+  uiStyle: PropTypes.object
 };
 
 MultipleChoiceDisplay.defaultProps = {
@@ -61,8 +63,8 @@ MultipleChoiceDisplay.defaultProps = {
     type: 'standard',
     fontsize: 'normal',
     columns: 1,
-    orientation: 'horizontal',
-  },
+    orientation: 'horizontal'
+  }
 };
 
 export default MultipleChoiceDisplay;

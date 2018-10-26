@@ -7,11 +7,10 @@ import withAnswerSave from '../HOC/withAnswerSave';
 const QuestionWrapper = ({ type, data, ...restProps }) => {
   const questionProps = Object.assign(
     {
-      item: data,
+      item: data
     },
-    restProps,
+    restProps
   );
-
   const Question = type === 'multipleChoice' ? MultipleChoice : OrderList;
   return <Question {...questionProps} />;
 };
@@ -22,7 +21,7 @@ QuestionWrapper.propTypes = {
   isNew: PropTypes.bool,
   data: PropTypes.object,
   saveClicked: PropTypes.bool,
-  testItem: PropTypes.bool,
+  testItem: PropTypes.bool
 };
 
 QuestionWrapper.defaultProps = {
@@ -30,7 +29,7 @@ QuestionWrapper.defaultProps = {
   type: null,
   data: {},
   saveClicked: false,
-  testItem: false,
+  testItem: false
 };
 
 export default withAnswerSave(QuestionWrapper);

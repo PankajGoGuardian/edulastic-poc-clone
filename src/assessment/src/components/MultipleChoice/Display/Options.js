@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Option from './Option';
 import { OptionsList } from './styles';
 
-const Options = (props) => {
+const Options = props => {
   const {
     options,
     checkAnswer,
@@ -14,6 +14,7 @@ const Options = (props) => {
     onChange,
     validation,
     uiStyle,
+    evaluation
   } = props;
 
   return (
@@ -30,6 +31,7 @@ const Options = (props) => {
           validation={validation}
           onChange={() => onChange(option.value)}
           uiStyle={uiStyle}
+          correct={evaluation && evaluation[index]}
         />
       ))}
     </OptionsList>
@@ -44,7 +46,7 @@ Options.propTypes = {
   options: PropTypes.array,
   smallSize: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
-  uiStyle: PropTypes.object.isRequired,
+  uiStyle: PropTypes.object.isRequired
 };
 
 Options.defaultProps = {
@@ -53,7 +55,7 @@ Options.defaultProps = {
   userSelections: [],
   validation: {},
   options: [],
-  smallSize: false,
+  smallSize: false
 };
 
 export default Options;

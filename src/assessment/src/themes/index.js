@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { gotoItem, saveUserResponse, loadUserResponse } from '../actions/items';
+import { evaluateAnswer } from '../actions/evaluation';
+
 import AssesmentPlayerDefault from './AssessmentPlayerDefault';
 import AssesmentPlayerSimple from './AssessmentPlayerSimple';
 
@@ -13,7 +15,8 @@ const AssessmentContainer = ({
   items,
   itemRows,
   saveUserResponse,
-  loadUserResponse
+  loadUserResponse,
+  evaluateAnswer
 }) => {
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
@@ -42,7 +45,8 @@ const AssessmentContainer = ({
     moveToPrev,
     currentItem,
     gotoQuestion,
-    itemRows
+    itemRows,
+    evaluateAnswer
   };
 
   return defaultAP ? (
@@ -64,5 +68,5 @@ export default connect(
     currentItem: state.test.currentItem,
     itemRows: currentItemRowsSelector(state)
   }),
-  { gotoItem, saveUserResponse, loadUserResponse }
+  { gotoItem, saveUserResponse, loadUserResponse, evaluateAnswer }
 )(AssessmentContainer);

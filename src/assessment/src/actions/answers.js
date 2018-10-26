@@ -4,6 +4,6 @@ export const setUserAnswerAction = (questionId, data) => ({
   type: SET_ANSWER,
   payload: {
     id: questionId,
-    data,
-  },
+    data
+  }
 });

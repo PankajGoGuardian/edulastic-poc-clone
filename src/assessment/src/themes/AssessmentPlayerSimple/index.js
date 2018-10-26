@@ -15,6 +15,7 @@ import QuitAssesment from './QuitAssesment';
 import LogoImage from '../../assets/logo.png';
 import SettingImage from '../../assets/screwdriver.png';
 import SidebarQuestionList from './SidebarQuestionList';
+
 import {
   Blank,
   ControlBtn,
@@ -73,7 +74,8 @@ class AssessmentPlayerSimple extends React.Component {
       items,
       currentItem,
       gotoQuestion,
-      itemRows
+      itemRows,
+      evaluateAnswer
     } = this.props;
 
     let previewTab = this.state.checkAnswer ? 'check' : 'clear';
@@ -189,8 +191,8 @@ class AssessmentPlayerSimple extends React.Component {
               <MainFooter>
                 <FlexContainer>
                   <QuitAssesment />
-                  <ControlBtn next skinB onClick={this.checkAnswer}>
-                    <span> "Check Answer" </span>
+                  <ControlBtn next skinB onClick={evaluateAnswer}>
+                    <span> Check Answer </span>
                   </ControlBtn>
                 </FlexContainer>
                 <FlexContainer>

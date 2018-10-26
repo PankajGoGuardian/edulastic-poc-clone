@@ -8,7 +8,11 @@ import { cloneDeep } from 'lodash';
 import { withNamespaces } from '@edulastic/localization';
 
 import styled from 'styled-components';
-import { MultipleChoiceAuthoring, MultipleChoiceDisplay, CorrectAnswers } from './index';
+import {
+  MultipleChoiceAuthoring,
+  MultipleChoiceDisplay,
+  CorrectAnswers
+} from './index';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 import Options from './Options/Options';
 
@@ -18,7 +22,8 @@ class MultipleChoice extends Component {
   getRenderData = () => {
     const { item, history } = this.props;
     const locationState = history.location.state;
-    const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
+    const isDetailPage =
+      locationState !== undefined ? locationState.itemDetail : false;
     let previewDisplayOptions;
     let previewStimulus;
     let itemForEdit;
@@ -33,7 +38,7 @@ class MultipleChoice extends Component {
         ...item,
         stimulus: item.stimulus,
         list: item.options,
-        validation: item.validation,
+        validation: item.validation
       };
     }
     return {
@@ -41,7 +46,7 @@ class MultipleChoice extends Component {
       previewDisplayOptions,
       itemForEdit,
       uiStyle: item.ui_style,
-      multipleResponses: !!item.multiple_responses,
+      multipleResponses: !!item.multiple_responses
     };
   };
 
@@ -51,10 +56,13 @@ class MultipleChoice extends Component {
 
     const response = {
       score: 1,
-      value: [],
+      value: []
     };
 
-    if (newItem.validation.alt_responses && newItem.validation.alt_responses.length) {
+    if (
+      newItem.validation.alt_responses &&
+      newItem.validation.alt_responses.length
+    ) {
       newItem.validation.alt_responses.push(response);
     } else {
       newItem.validation.alt_responses = [response];
@@ -63,7 +71,7 @@ class MultipleChoice extends Component {
     setQuestionData(newItem);
   };
 
-  handleAddAnswer = (qid) => {
+  handleAddAnswer = qid => {
     const { saveAnswer, userAnswer, item } = this.props;
     const newAnswer = cloneDeep(userAnswer);
 
@@ -93,12 +101,14 @@ class MultipleChoice extends Component {
     if (name === 'multiple_responses' && value === false) {
       newItem.validation.valid_response.value = newItem.validation.valid_response.value.reduce(
         reduceResponses,
-        [],
+        []
       );
-      newItem.validation.alt_responses = newItem.validation.alt_responses.map((res) => {
-        res.value = res.value.reduce(reduceResponses, []);
-        return res;
-      });
+      newItem.validation.alt_responses = newItem.validation.alt_responses.map(
+        res => {
+          res.value = res.value.reduce(reduceResponses, []);
+          return res;
+        }
+      );
       saveAnswer([]);
     }
 
@@ -108,13 +118,22 @@ class MultipleChoice extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item, userAnswer, t, testItem } = this.props;
+    const {
+      view,
+      previewTab,
+      smallSize,
+      item,
+      userAnswer,
+      t,
+      testItem,
+      evaluation
+    } = this.props;
     const {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
       uiStyle,
-      multipleResponses,
+      multipleResponses
     } = this.getRenderData();
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
@@ -135,7 +154,10 @@ class MultipleChoice extends Component {
                 />
                 <Checkbox
                   onChange={() =>
-                    this.handleOptionsChange('multiple_responses', !multipleResponses)
+                    this.handleOptionsChange(
+                      'multiple_responses',
+                      !multipleResponses
+                    )
                   }
                   label={t('component.multiplechoice.multipleResponses')}
                   checked={multipleResponses}
@@ -158,6 +180,7 @@ class MultipleChoice extends Component {
                   handleMultiSelect={this.handleMultiSelect}
                   validation={item.validation}
                   uiStyle={uiStyle}
+                  evaluation={evaluation}
                 />
               )}
               {previewTab === 'show' && (
@@ -170,6 +193,7 @@ class MultipleChoice extends Component {
                   handleMultiSelect={this.handleMultiSelect}
                   validation={item.validation}
                   uiStyle={uiStyle}
+                  evaluation={evaluation}
                 />
               )}
               {previewTab === 'clear' && (
@@ -183,6 +207,7 @@ class MultipleChoice extends Component {
                   userSelections={userAnswer}
                   onChange={this.handleAddAnswer}
                   uiStyle={uiStyle}
+                  evaluation={evaluation}
                 />
               )}
             </Wrapper>
@@ -203,18 +228,18 @@ MultipleChoice.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   t: PropTypes.func.isRequired,
-  testItem: PropTypes.bool,
+  testItem: PropTypes.bool
 };
 
 MultipleChoice.defaultProps = {
   previewTab: 'clear',
   item: {
-    options: [],
+    options: []
   },
   smallSize: false,
   history: {},
   userAnswer: [],
-  testItem: false,
+  testItem: false
 };
 
 const enhance = compose(
@@ -223,9 +248,9 @@ const enhance = compose(
   connect(
     null,
     {
-      setQuestionData: setQuestionDataAction,
-    },
-  ),
+      setQuestionData: setQuestionDataAction
+    }
+  )
 );
 
 export default enhance(MultipleChoice);

@@ -7,7 +7,7 @@ import { green, red } from '@edulastic/colors';
 import { MultiChoiceContent, CheckboxContainer, Label, Icon } from './styles';
 import { ALPHABET } from '../constants/others';
 
-const getFontSize = (size) => {
+const getFontSize = size => {
   switch (size) {
     case 'small':
       return '10px';
@@ -34,11 +34,12 @@ const Option = ({
   onChange,
   smallSize,
   uiStyle,
+  correct
 }) => {
   const isValidUserSelections = userSelections.includes(item.value);
   const isValidAltResponses = () => {
     const values = [];
-    validation.alt_responses.forEach((res) => {
+    validation.alt_responses.forEach(res => {
       values.push(...res.value);
     });
 
@@ -67,6 +68,14 @@ const Option = ({
 
   if (showAnswer && isValidResponse) {
     className = 'right';
+  }
+
+  if (correct) {
+    className = 'right';
+  }
+
+  if (correct === false) {
+    className = 'wrong';
   }
 
   const fontSize = getFontSize(uiStyle.fontsize);
@@ -124,17 +133,31 @@ const Option = ({
 
   const width = uiStyle.columns ? `${100 / uiStyle.columns - 1}%` : '100%';
   const labelClassName =
-    isValidUserSelections && !className && uiStyle.type === 'block' && !showAnswer
+    isValidUserSelections &&
+    !className &&
+    uiStyle.type === 'block' &&
+    !showAnswer
       ? 'checked'
       : className;
 
   return (
-    <Label width={width} smallSize={smallSize} showAnswer className={labelClassName}>
+    <Label
+      width={width}
+      smallSize={smallSize}
+      showAnswer
+      className={labelClassName}
+    >
       <PaddingDiv top={smallSize ? 0 : 10} bottom={smallSize ? 0 : 10}>
-        <FlexContainer justifyContent={uiStyle.type === 'radioBelow' ? 'center' : 'space-between'}>
+        <FlexContainer
+          justifyContent={
+            uiStyle.type === 'radioBelow' ? 'center' : 'space-between'
+          }
+        >
           {renderCheckbox()}
           <Icon>
-            {className === 'right' && <IconCheck color={green} width={20} height={20} />}
+            {className === 'right' && (
+              <IconCheck color={green} width={20} height={20} />
+            )}
             {className === 'wrong' && <IconClose color={red} />}
           </Icon>
         </FlexContainer>
@@ -152,7 +175,7 @@ Option.propTypes = {
   validation: PropTypes.object,
   onChange: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
-  uiStyle: PropTypes.object.isRequired,
+  uiStyle: PropTypes.object.isRequired
 };
 
 Option.defaultProps = {
@@ -160,7 +183,7 @@ Option.defaultProps = {
   smallSize: false,
   checkAnswer: false,
   userSelections: [],
-  validation: {},
+  validation: {}
 };
 
 export default Option;

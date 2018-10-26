@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Tabs } from '@edulastic/common';
@@ -7,34 +8,35 @@ import QuestionWrapper from '../QuestionWrapper';
 
 class TestItemCol extends Component {
   state = {
-    value: 0,
+    value: 0
   };
 
   static propTypes = {
     col: PropTypes.object.isRequired,
     style: PropTypes.object,
-    previewTab: PropTypes.string.isRequired,
+    previewTab: PropTypes.string.isRequired
   };
 
   static defaultProps = {
-    style: {},
+    style: {}
   };
 
-  handleTabChange = (value) => {
+  handleTabChange = value => {
     this.setState({
-      value,
+      value
     });
   };
 
-  renderTabContent = (widget) => {
-    const { previewTab } = this.props;
-
+  renderTabContent = widget => {
+    const { previewTab, evaluation: evaluations } = this.props;
+    let evaluation = evaluations[widget.reference];
     return (
       <Tabs.TabContainer style={{ padding: 20 }}>
         <QuestionWrapper
           testItem
           type={widget.type}
           view="preview"
+          evaluation={evaluation}
           previewTab={previewTab}
           questionId={widget.reference}
           data={{ ...widget.referencePopulate.data, smallSize: true }}
@@ -59,15 +61,17 @@ class TestItemCol extends Component {
                   style={{
                     width: '50%',
                     textAlign: 'center',
-                    padding: '30px 20px 15px',
+                    padding: '30px 20px 15px'
                   }}
                 />
               ))}
             </Tabs>
-        )}
+          )}
         {col.widgets.map((widget, i) => (
           <React.Fragment key={i}>
-            {!!col.tabs.length && value === widget.tabIndex && this.renderTabContent(widget)}
+            {!!col.tabs.length &&
+              value === widget.tabIndex &&
+              this.renderTabContent(widget)}
             {!col.tabs.length && this.renderTabContent(widget)}
           </React.Fragment>
         ))}
@@ -76,7 +80,9 @@ class TestItemCol extends Component {
   }
 }
 
-export default TestItemCol;
+export default connect(state => ({
+  evaluation: state.evaluation
+}))(TestItemCol);
 
 const Container = styled.div`
   width: ${({ width }) => width};

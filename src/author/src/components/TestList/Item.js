@@ -7,24 +7,17 @@ import { grey, blue, darkBlue, textColor, tabletWidth } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization';
 import { Button } from '@edulastic/common';
 
-/* eslint-disable no-underscore-dangle */
 class Item extends Component {
   static propTypes = {
     item: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
     t: PropTypes.func.isRequired,
   };
 
   moveToItem = () => {
-    const { history, item, t } = this.props;
-    history.push({
-      pathname: `/author/items/${item.id}/item-detail`,
-      state: {
-        backText: t('component.itemAdd.backToItemList'),
-        backUrl: '/author/items',
-        itemDetail: true,
-      },
-    });
+    const { history, item, match } = this.props;
+    history.push(`${match.url}/${item.id}`);
   };
 
   render() {
@@ -32,9 +25,9 @@ class Item extends Component {
     return (
       <Container>
         <Question>
-          <Link onClick={this.moveToItem}>
+          <StyledLink onClick={this.moveToItem}>
             {item.id}# <FaAngleDoubleRight />
-          </Link>
+          </StyledLink>
           <div dangerouslySetInnerHTML={{ __html: item.stimulus }} />
         </Question>
         <Author>
@@ -85,7 +78,7 @@ const Container = styled.div`
   }
 `;
 
-const Link = styled.a`
+const StyledLink = styled.a`
   font-size: 16px;
   font-weight: 600;
   display: inline-flex;

@@ -5,6 +5,7 @@ import items from './items';
 import testItems from './testItems';
 import testItem from './testItem';
 import itemDetail from './itemDetail';
+import tests from './tests';
 
 const authorReducers = {
   question,
@@ -14,6 +15,7 @@ const authorReducers = {
   testItems,
   testItem,
   itemDetail,
+  tests,
 };
 
 export default authorReducers;

@@ -66,3 +66,12 @@ export const CREATE_TEST_ITEM_ERROR = '[testItem] create item error';
 export const UPDATE_TEST_ITEM_REQUEST = '[testItem] update by id request';
 export const UPDATE_TEST_ITEM_SUCCESS = '[testItem] update by id success';
 export const UPDATE_TEST_ITEM_ERROR = '[testItem] update by id error';
+
+// Tests
+export const RECEIVE_TESTS_REQUEST = '[tests] receive list request';
+export const RECEIVE_TESTS_SUCCESS = '[tests] receive list success';
+export const RECEIVE_TESTS_ERROR = '[tests] receive list error';
+
+export const CREATE_TEST_REQUEST = '[tests] create test request';
+export const CREATE_TEST_SUCCESS = '[tests] create test success';
+export const CREATE_TEST_ERROR = '[tests] create test error';

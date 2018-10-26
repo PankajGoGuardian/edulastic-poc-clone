@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { IconChevronLeft, IconPensilEdit } from '@edulastic/icons';
 import { FlexContainer, TextField } from '@edulastic/common';
-import { secondaryTextColor, greenDark, green, tabletWidth, mobileWidth } from '@edulastic/colors';
+import { greenDark, tabletWidth, mobileWidth, darkBlue, white, blue } from '@edulastic/colors';
 
 const ItemHeader = ({ title, children, link, reference, editReference, onChange, hideIcon }) => (
   <Container>
@@ -15,7 +15,7 @@ const ItemHeader = ({ title, children, link, reference, editReference, onChange,
         </TitleNav>
         {reference !== null && (
           <FlexContainer>
-            <span style={{ color: greenDark }}>Reference</span>
+            <span style={{ color: white }}>Reference</span>
             <TextField
               icon={!hideIcon && <IconPensilEdit color={greenDark} />}
               type="text"
@@ -33,7 +33,7 @@ const ItemHeader = ({ title, children, link, reference, editReference, onChange,
     <LeftSide>
       {link && (
         <Back to={link.url}>
-          <IconChevronLeft color={greenDark} width={10} height={10} /> {link.text}
+          <IconChevronLeft color={white} width={10} height={10} /> {link.text}
         </Back>
       )}
     </LeftSide>
@@ -64,6 +64,8 @@ export default ItemHeader;
 
 const Container = styled.div`
   margin-bottom: 40px;
+  background: ${darkBlue};
+  padding: 25px 40px;
 
   @media (max-width: ${mobileWidth}) {
     margin-bottom: 30px;
@@ -90,18 +92,18 @@ const Title = styled.div`
   font-size: 22px;
   font-weight: 700;
   line-height: 1.36;
-  color: ${secondaryTextColor};
+  color: ${white};
 `;
 
 const Back = styled(Link)`
-  color: ${greenDark};
+  color: ${white};
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
   text-transform: uppercase;
 
   :hover {
-    color: ${green};
+    color: ${blue};
   }
 `;
 

@@ -7,19 +7,20 @@ const Checkbox = ({ onChange, checked, label, style }) => (
   <Container onClick={onChange} style={style}>
     <Input type="checkbox" checked={checked} onChange={() => {}} />
     <span />
-    <span>{label}</span>
+    {label && <span>{label}</span>}
   </Container>
 );
 
 Checkbox.propTypes = {
   onChange: PropTypes.func.isRequired,
   checked: PropTypes.bool.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   style: PropTypes.object,
 };
 
 Checkbox.defaultProps = {
   style: {},
+  label: '',
 };
 
 export default Checkbox;

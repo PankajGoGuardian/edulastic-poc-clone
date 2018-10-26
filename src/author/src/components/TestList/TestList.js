@@ -4,57 +4,58 @@ import PropTypes from 'prop-types';
 import { Paper, Pagination, withWindowSizes } from '@edulastic/common';
 import { compose } from 'redux';
 import styled from 'styled-components';
-
 import { mobileWidth } from '@edulastic/colors';
-import {
-  getItemsPageSelector,
-  getItemsLimitSelector,
-  getItemsCountSelector,
-  getItemsLoadingSelector,
-} from '../../selectors/items';
+
 import Item from './Item';
-import { receiveTestItemsAction } from '../../actions/testItems';
-import { createTestItemAction } from '../../actions/testItem';
-import { getTestItemsSelector } from '../../selectors/testItems';
-import { getTestItemCreatingSelector } from '../../selectors/testItem';
 import ListHeader from '../common/ListHeader';
+import { receiveTestsAction } from '../../actions/tests';
+import {
+  getTestsSelector,
+  getTestsLoadingSelector,
+  getTestsCountSelector,
+  getTestsLimitSelector,
+  getTestsPageSelector,
+  getTestsCreatingSelector,
+} from '../../selectors/tests';
 
 class TestList extends Component {
   componentDidMount() {
-    const { receiveItems } = this.props;
-    receiveItems();
+    const { receiveTests } = this.props;
+    receiveTests();
   }
 
   handleSearch = (value) => {
-    const { receiveItems, limit } = this.props;
-    receiveItems({ page: 1, limit, search: value });
+    const { receiveTests, limit } = this.props;
+    receiveTests({ page: 1, limit, search: value });
   };
 
-  handleCreate = async () => {
-    const { createItem } = this.props;
-    createItem({
-      rows: [
-        {
-          tabs: [],
-          dimension: '100%',
-          widgets: [],
-        },
-      ],
-    });
+  handleCreate = () => {
+    const { history, match } = this.props;
+    history.push(`${match.url}/create`);
   };
 
   handlePrevious = () => {
-    const { receiveItems, page, limit } = this.props;
-    receiveItems({ page: page - 1, limit });
+    const { receiveTests, page, limit } = this.props;
+    receiveTests({ page: page - 1, limit });
   };
 
   handleNext = () => {
-    const { receiveItems, page, limit } = this.props;
-    receiveItems({ page: page + 1, limit });
+    const { receiveTests, page, limit } = this.props;
+    receiveTests({ page: page + 1, limit });
   };
 
   render() {
-    const { items, page, limit, count, loading, windowWidth, history, creating } = this.props;
+    const {
+      tests,
+      page,
+      limit,
+      count,
+      loading,
+      windowWidth,
+      history,
+      creating,
+      match,
+    } = this.props;
     return (
       <Container>
         <ListHeader
@@ -65,9 +66,8 @@ class TestList extends Component {
           title="Test List"
         />
         <Paper style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
-          {items.map(item => (
-            // eslint-disable-next-line
-            <Item key={item.id} item={item} history={history} />
+          {tests.map(item => (
+            <Item key={item.id} item={item} history={history} match={match} />
           ))}
         </Paper>
         <Pagination
@@ -84,32 +84,31 @@ class TestList extends Component {
 }
 
 TestList.propTypes = {
-  items: PropTypes.array.isRequired,
-  receiveItems: PropTypes.func.isRequired,
+  tests: PropTypes.array.isRequired,
+  receiveTests: PropTypes.func.isRequired,
+  creating: PropTypes.bool.isRequired,
   page: PropTypes.number.isRequired,
   limit: PropTypes.number.isRequired,
   count: PropTypes.number.isRequired,
   loading: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
-  createItem: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  creating: PropTypes.bool.isRequired,
+  match: PropTypes.object.isRequired,
 };
 
 const enhance = compose(
   withWindowSizes,
   connect(
     state => ({
-      items: getTestItemsSelector(state),
-      page: getItemsPageSelector(state),
-      limit: getItemsLimitSelector(state),
-      count: getItemsCountSelector(state),
-      loading: getItemsLoadingSelector(state),
-      creating: getTestItemCreatingSelector(state),
+      tests: getTestsSelector(state),
+      loading: getTestsLoadingSelector(state),
+      page: getTestsPageSelector(state),
+      limit: getTestsLimitSelector(state),
+      count: getTestsCountSelector(state),
+      creating: getTestsCreatingSelector(state),
     }),
     {
-      receiveItems: receiveTestItemsAction,
-      createItem: createTestItemAction,
+      receiveTests: receiveTestsAction,
     },
   ),
 );

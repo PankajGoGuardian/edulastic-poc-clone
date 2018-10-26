@@ -58,9 +58,8 @@ class AssessmentPlayerSimple extends React.Component {
     theme: defaultTheme
   };
 
-  switchView = () => {
-    let { checkAnswer } = this.state;
-    this.setState({ checkAnswer: !checkAnswer });
+  checkAnswer = () => {
+    this.setState({ checkAnswer: true });
   };
 
   render() {
@@ -78,8 +77,6 @@ class AssessmentPlayerSimple extends React.Component {
     } = this.props;
 
     let previewTab = this.state.checkAnswer ? 'check' : 'clear';
-    let buttonContent = this.state.checkAnswer ? 'Clear' : 'Check Answer';
-
     const dropdownOptions = Array.isArray(items)
       ? items.map((item, index) => index)
       : [];
@@ -192,8 +189,8 @@ class AssessmentPlayerSimple extends React.Component {
               <MainFooter>
                 <FlexContainer>
                   <QuitAssesment />
-                  <ControlBtn next skinB onClick={this.switchView}>
-                    <span> {buttonContent} </span>
+                  <ControlBtn next skinB onClick={this.checkAnswer}>
+                    <span> "Check Answer" </span>
                   </ControlBtn>
                 </FlexContainer>
                 <FlexContainer>

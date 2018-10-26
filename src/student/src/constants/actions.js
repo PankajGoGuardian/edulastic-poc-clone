@@ -11,3 +11,7 @@ export const AUTHOR_QUESTION = 'author question';
 
 // assessment
 export const LOAD_ASSESSMENT = 'load assessment';
+
+// ui
+export const TOGGLE_MENU = '[homeUI] toggle menu';
+export const RESPONSIVE_TOGGLE_MENU = '[homeUI] responsive toggle menu';

@@ -24,7 +24,6 @@ class Header extends React.Component {
               <option>FFC5</option>
               <option>FFC6</option>
             </SelectStyle>
-            <Icon />
           </AssignmentSelectClass>
           <AssignmentFilterBtn>
             <StatusSelect>
@@ -93,22 +92,10 @@ const StatusSelect = styled.div`
       border-radius: 2rem;
       background-color: #fff;
       box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.07);
-      outline: none;
     }
   }
 `;
 
 const Number = styled.span`
   font-size: 1.3rem !important;
-`;
-
-const Icon = styled(IconCaretDown)`
-   {
-    position: absolute;
-    left: 8.6rem;
-    top: 1rem;
-    fill: #12a6e8;
-    width: 11px !important;
-    height: 11px!Important;
-  }
 `;

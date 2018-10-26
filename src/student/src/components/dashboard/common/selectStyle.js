@@ -9,13 +9,20 @@ const SelectStyle = styled.select`
   background: #fff;
   outline: none;
   -webkit-appearance: none;
-  width: 4.7rem;
+  width: 5.7rem;
   font-size: 0.7rem;
   font-weight: 600;
   color: grey;
   cursor: pointer;
   &:hover {
     background-color: rgba(74, 172, 139, 0.05);
+  }
+  @media (max-width: 900px) {
+    width: 7.2rem;
+    padding: 19px;
+  }
+  @media (max-width: 768px) {
+    width: 50%;
   }
 `;
 

@@ -1,5 +1,9 @@
 import React from 'react';
 import { IconClockDashboard } from '@edulastic/icons';
+import { IconAssignment } from '@edulastic/icons';
+import { IconBarChart } from '@edulastic/icons';
+import { IconManage } from '@edulastic/icons';
+// import Sidebar from '../common/sidebar';
 import styled from 'styled-components';
 
 class Navigation extends React.Component {

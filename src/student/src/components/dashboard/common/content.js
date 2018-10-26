@@ -8,6 +8,9 @@ const AssignmentsContent = styled.div`
   @media (max-width: 1200px) {
     padding: 4.3rem 2rem 5rem 2rem;
   }
+  @media (max-width: 480px) {
+    padding: 0rem 1rem;
+  }
 `;
 
 export default AssignmentsContent;

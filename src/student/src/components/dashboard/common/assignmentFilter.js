@@ -7,7 +7,13 @@ const AssignmentsFilter = styled.div`
   }
   @media (max-width: 1200px) {
     width: 100%;
-    padding: 0rem 0.5rem;
+    padding: 1rem 0.5rem;
+  }
+  @media (max-width: 435px) {
+    padding: 1rem 0rem;
+  }
+  @media (max-width: 380px) {
+    display: flex;
   }
 `;
 

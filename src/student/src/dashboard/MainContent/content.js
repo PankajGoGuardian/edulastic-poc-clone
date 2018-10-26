@@ -10,25 +10,7 @@ class Content extends React.Component {
         <AssignmentContentWrapper>
           <Wrapper>
             <ImageWrapper>
-              <img src="https://placem.at/things/?w=500&random=cats" alt="" />
-            </ImageWrapper>
-            <AssignmentSummary>
-              <AssignmentSubject>Math MCAS-CALCULATOR</AssignmentSubject>
-              <AssignmentDuedate>
-                <Icon color="#ee1658" />
-                <span>Due on Aug 15, 2018 8:00 AM</span>
-              </AssignmentDuedate>
-              <AssignmentStatus>NOT STARTED</AssignmentStatus>
-            </AssignmentSummary>
-            <StartAssignmentBtn>
-              <p>start assignment</p>
-            </StartAssignmentBtn>
-          </Wrapper>
-        </AssignmentContentWrapper>
-        <AssignmentContentWrapper>
-          <Wrapper>
-            <ImageWrapper>
-              <img src="https://placem.at/things/?w=500&random=cats" alt="" />
+              <img src="https://placem.at/things/?w=500&random=cats" />
             </ImageWrapper>
             <AssignmentSummary>
               <AssignmentSubject>Math MCAS-CALCULATOR</AssignmentSubject>
@@ -62,7 +44,6 @@ const AssignmentContentWrapper = styled.div`
   border-radius: 1rem;
   padding: 1rem 1rem;
   background: #fff;
-  margin-bottom: 1rem;
   @media (min-width: 945px) {
     display: flex;
   }

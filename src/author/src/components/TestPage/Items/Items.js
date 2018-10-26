@@ -36,17 +36,17 @@ const Items = ({ items, loading, onSelect, checkedItems, onAddItems }) => {
     <Table>
       <thead>
         <Row>
-          <th width="10%">
+          <th width="3%">
             <Checkbox checked={checkedLen === items.length} onChange={handleSelectAll} />
           </th>
-          <th width="70%">
+          <th width="87%">
             {!!checkedLen && (
               <Button color="primary" variant="extendedFab" onClick={onAddItems}>
                 Add {checkedLen} items
               </Button>
             )}
           </th>
-          <th width="20%" />
+          <th width="10%" />
         </Row>
       </thead>
       <tbody>

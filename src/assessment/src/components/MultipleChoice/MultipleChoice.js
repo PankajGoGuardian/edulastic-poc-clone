@@ -146,7 +146,6 @@ class MultipleChoice extends Component {
               <Paper style={{ marginBottom: 25 }}>
                 <MultipleChoiceAuthoring item={itemForEdit} />
                 <CorrectAnswers
-                  validation={item.validation}
                   options={previewDisplayOptions}
                   question={previewStimulus}
                   multipleResponses={multipleResponses}
@@ -178,7 +177,6 @@ class MultipleChoice extends Component {
                   options={previewDisplayOptions}
                   question={previewStimulus}
                   handleMultiSelect={this.handleMultiSelect}
-                  validation={item.validation}
                   uiStyle={uiStyle}
                   evaluation={evaluation}
                 />
@@ -191,7 +189,6 @@ class MultipleChoice extends Component {
                   question={previewStimulus}
                   userSelections={userAnswer}
                   handleMultiSelect={this.handleMultiSelect}
-                  validation={item.validation}
                   uiStyle={uiStyle}
                   evaluation={evaluation}
                 />
@@ -201,7 +198,6 @@ class MultipleChoice extends Component {
                   preview
                   smallSize={smallSize}
                   options={previewDisplayOptions}
-                  validation={item.validation}
                   question={previewStimulus}
                   data={item}
                   userSelections={userAnswer}

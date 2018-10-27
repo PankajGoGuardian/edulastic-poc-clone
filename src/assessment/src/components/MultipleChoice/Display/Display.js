@@ -4,40 +4,14 @@ import PropTypes from 'prop-types';
 import QuestionHeader from '../common/QuestionHeader';
 import Options from './Options';
 
-class MultipleChoiceDisplay extends Component {
-  render() {
-    const {
-      showAnswer,
-      checkAnswer,
-      userSelections,
-      smallSize,
-      onChange,
-      options,
-      validation,
-      question,
-      uiStyle,
-      evaluation
-    } = this.props;
-
-    return (
-      <div>
-        <QuestionHeader smallSize={smallSize}>{question}</QuestionHeader>
-        <Options
-          smallSize={smallSize}
-          addAnswer={this.selectAnswer}
-          options={options}
-          showAnswer={showAnswer}
-          checkAnswer={checkAnswer}
-          userSelections={userSelections}
-          validation={validation}
-          onChange={onChange}
-          uiStyle={uiStyle}
-          evaluation={evaluation}
-        />
-      </div>
-    );
-  }
-}
+const MultipleChoiceDisplay = props => (
+  <div>
+    <QuestionHeader smallSize={props.smallSize}>
+      {props.question}
+    </QuestionHeader>
+    <Options {...props} />
+  </div>
+);
 
 MultipleChoiceDisplay.propTypes = {
   options: PropTypes.array,
@@ -67,4 +41,4 @@ MultipleChoiceDisplay.defaultProps = {
   }
 };
 
-export default MultipleChoiceDisplay;
+export default React.memo(MultipleChoiceDisplay);

@@ -28,45 +28,17 @@ const Option = ({
   index,
   item,
   showAnswer,
-  checkAnswer,
   userSelections,
-  validation,
   onChange,
   smallSize,
   uiStyle,
   correct
 }) => {
-  const isValidUserSelections = userSelections.includes(item.value);
-  const isValidAltResponses = () => {
-    const values = [];
-    validation.alt_responses.forEach(res => {
-      values.push(...res.value);
-    });
-
-    return values.includes(parseInt(item.value, 10)) && isValidUserSelections;
-  };
+  const isSelected = userSelections.includes(item.value);
 
   let className = '';
-  const isValidResponse =
-    validation &&
-    validation.valid_response &&
-    validation.valid_response.value.includes(parseInt(item.value, 10));
 
-  if (isValidUserSelections && checkAnswer) {
-    if (isValidResponse) {
-      className = 'right';
-    } else if (validation.alt_responses.length && isValidAltResponses()) {
-      className = 'right';
-    } else {
-      className = 'wrong';
-    }
-  }
-
-  if (userSelections && userSelections.length === 0) {
-    className = '';
-  }
-
-  if (showAnswer && isValidResponse) {
+  if (showAnswer) {
     className = 'right';
   }
 
@@ -86,7 +58,7 @@ const Option = ({
         type="checkbox"
         name="mcq_group"
         value={index}
-        checked={isValidUserSelections}
+        checked={isSelected}
         onChange={onChange}
       />
       <span>{ALPHABET[index]}</span>
@@ -133,10 +105,7 @@ const Option = ({
 
   const width = uiStyle.columns ? `${100 / uiStyle.columns - 1}%` : '100%';
   const labelClassName =
-    isValidUserSelections &&
-    !className &&
-    uiStyle.type === 'block' &&
-    !showAnswer
+    isSelected && !className && uiStyle.type === 'block' && !showAnswer
       ? 'checked'
       : className;
 
@@ -186,4 +155,4 @@ Option.defaultProps = {
   validation: {}
 };
 
-export default Option;
+export default React.memo(Option);

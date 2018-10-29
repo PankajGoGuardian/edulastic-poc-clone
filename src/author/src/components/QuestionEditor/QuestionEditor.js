@@ -92,13 +92,19 @@ class QuestionEditor extends Component {
     return (
       <Container>
         {showModal && (
-          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
+          <SourceModal
+            onClose={this.handleHideSource}
+            onApply={this.handleApplySource}
+          >
             {JSON.stringify(question.data, null, 4)}
           </SourceModal>
         )}
         <ItemHeader
           title={headerTitles[questionType]}
-          link={{ url: history.location.state.backUrl, text: history.location.state.backText }}
+          link={{
+            url: history.location.state.backUrl,
+            text: history.location.state.backText,
+          }}
           reference={itemId}
         >
           <ButtonBar

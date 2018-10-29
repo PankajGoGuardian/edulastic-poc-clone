@@ -150,6 +150,7 @@ class MultipleChoice extends Component {
                   question={previewStimulus}
                   multipleResponses={multipleResponses}
                   onAddAltResponses={this.handleAddAltResponses}
+                  validation={item.validation}
                 />
                 <Checkbox
                   onChange={() =>

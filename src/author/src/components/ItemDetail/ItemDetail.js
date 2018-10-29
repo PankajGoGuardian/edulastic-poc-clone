@@ -7,11 +7,8 @@ import styled from 'styled-components';
 import { Progress, Paper } from '@edulastic/common';
 import { cloneDeep } from 'lodash';
 
-import { Container, ButtonBar } from '../common';
-import SourceModal from '../QuestionEditor/SourceModal';
-import ItemHeader from '../QuestionEditor/ItemHeader';
 import { changeViewAction } from '../../actions/view';
-import SettingsBar from './SettingsBar/SettingsBar';
+import { checkAnswerAction, showAnswerAction } from '../../actions/testItem';
 import {
   getItemDetailByIdAction,
   updateItemDetailByIdAction,
@@ -29,6 +26,10 @@ import {
   getItemDetailDimensionTypeSelector,
 } from '../../selectors/itemDetail';
 import ItemDetailRow from './ItemDetailRow';
+import { Container, ButtonBar } from '../common';
+import SourceModal from '../QuestionEditor/SourceModal';
+import ItemHeader from '../QuestionEditor/ItemHeader';
+import SettingsBar from './SettingsBar/SettingsBar';
 import TestItemPreview from '../../../../assessment/src/components/TestItemPreview/TestItemPreview';
 
 class ItemDetail extends Component {
@@ -184,6 +185,15 @@ class ItemDetail extends Component {
   };
 
   handleChangePreviewTab = (previewTab) => {
+    const { checkAnswer, showAnswer } = this.props;
+
+    if (previewTab === 'check') {
+      checkAnswer();
+    }
+    if (previewTab === 'show') {
+      showAnswer();
+    }
+
     this.setState({
       previewTab,
     });
@@ -191,7 +201,7 @@ class ItemDetail extends Component {
 
   renderPreview = () => {
     const { previewTab } = this.state;
-    const { rows, item } = this.props;
+    const { rows, item, evaluation } = this.props;
 
     switch (previewTab) {
       case 'clear':
@@ -210,6 +220,7 @@ class ItemDetail extends Component {
             previewTab="check"
             verticalDivider={item.verticalDivider}
             scrolling={item.scrolling}
+            evaluation={evaluation}
           />
         );
       case 'show':
@@ -228,7 +239,17 @@ class ItemDetail extends Component {
 
   render() {
     const { showModal, showSettings } = this.state;
-    const { t, match, rows, loading, item, updating, type, updateTabTitle, useTabs } = this.props;
+    const {
+      t,
+      match,
+      rows,
+      loading,
+      item,
+      updating,
+      type,
+      updateTabTitle,
+      useTabs,
+    } = this.props;
 
     const { view, previewTab } = this.state;
 
@@ -236,7 +257,10 @@ class ItemDetail extends Component {
       <Container>
         {showModal &&
           item && (
-            <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
+            <SourceModal
+              onClose={this.handleHideSource}
+              onApply={this.handleApplySource}
+            >
               {JSON.stringify(item, null, 4)}
             </SourceModal>
         )}
@@ -318,6 +342,9 @@ ItemDetail.propTypes = {
   history: PropTypes.object.isRequired,
   updateTabTitle: PropTypes.func.isRequired,
   useTabs: PropTypes.func.isRequired,
+  checkAnswer: PropTypes.func.isRequired,
+  showAnswer: PropTypes.func.isRequired,
+  evaluation: PropTypes.isRequired,
 };
 
 ItemDetail.defaultProps = {
@@ -334,9 +361,12 @@ const enhance = compose(
       item: getItemDetailSelector(state),
       updating: getItemDetailUpdatingSelector(state),
       type: getItemDetailDimensionTypeSelector(state),
+      evaluation: state.evluation,
     }),
     {
       changeView: changeViewAction,
+      showAnswer: showAnswerAction,
+      checkAnswer: checkAnswerAction,
       getItemDetailById: getItemDetailByIdAction,
       updateItemDetailById: updateItemDetailByIdAction,
       setItemDetailData: setItemDetailDataAction,

@@ -1,7 +1,7 @@
-import { takeEvery, call, put, all } from 'redux-saga/effects';
-import { testItemsApi } from '@edulastic/api';
+import { takeEvery, call, put, all, select } from 'redux-saga/effects';
 import { NotificationManager } from 'react-notifications';
-
+import { testItemsApi } from '@edulastic/api';
+import { evaluateItem } from '../utils/evalution';
 import {
   CREATE_TEST_ITEM_REQUEST,
   CREATE_TEST_ITEM_ERROR,
@@ -9,8 +9,12 @@ import {
   UPDATE_TEST_ITEM_REQUEST,
   UPDATE_TEST_ITEM_SUCCESS,
   UPDATE_TEST_ITEM_ERROR,
+  SHOW_ANSWER,
+  CHECK_ANSWER,
+  ADD_ITEM_EVALUATION,
 } from '../constants/actions';
 import { history } from '../../../configureStore';
+import { getItemDetailValidationSelector } from '../selectors/itemDetail';
 
 function* createTestItemSaga({ payload }) {
   try {
@@ -49,9 +53,29 @@ function* updateTestItemSaga({ payload }) {
   }
 }
 
+function* evaluateAnswers() {
+  try {
+    const validations = yield select(getItemDetailValidationSelector);
+    const answers = yield select(state => state.answers);
+    const evaluation = evaluateItem(answers, validations);
+    yield put({
+      type: ADD_ITEM_EVALUATION,
+      payload: {
+        ...evaluation,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    const errorMessage = 'Answer Evaluation Failed';
+    NotificationManager.error(errorMessage, 'Error');
+  }
+}
+
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(CREATE_TEST_ITEM_REQUEST, createTestItemSaga),
     yield takeEvery(UPDATE_TEST_ITEM_REQUEST, updateTestItemSaga),
+    yield takeEvery(CHECK_ANSWER, evaluateAnswers),
+    yield takeEvery(SHOW_ANSWER, evaluateAnswers),
   ]);
 }

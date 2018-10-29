@@ -75,8 +75,7 @@ export const getItemDetailValidationSelector = createSelector(
     const validations = {};
     questions.forEach(({ id, data }) => {
       validations[id] = {
-        validation: data.validation,
-        type: data.type,
+        ...data,
       };
     });
     return validations;

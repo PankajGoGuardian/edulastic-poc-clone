@@ -2,6 +2,8 @@ import { takeEvery, call, put, all, select } from 'redux-saga/effects';
 import { NotificationManager } from 'react-notifications';
 import { testItemsApi } from '@edulastic/api';
 import { evaluateItem } from '../utils/evalution';
+import createShowAnswerData from '../utils/showAnswer';
+
 import {
   CREATE_TEST_ITEM_REQUEST,
   CREATE_TEST_ITEM_ERROR,
@@ -71,11 +73,28 @@ function* evaluateAnswers() {
   }
 }
 
+function* showAnswers() {
+  try {
+    const validations = yield select(getItemDetailValidationSelector);
+    const evaluation = createShowAnswerData(validations);
+    yield put({
+      type: ADD_ITEM_EVALUATION,
+      payload: {
+        ...evaluation,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    const errorMessage = 'Show Answer Failed';
+    NotificationManager.error(errorMessage, 'Error');
+  }
+}
+
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(CREATE_TEST_ITEM_REQUEST, createTestItemSaga),
     yield takeEvery(UPDATE_TEST_ITEM_REQUEST, updateTestItemSaga),
     yield takeEvery(CHECK_ANSWER, evaluateAnswers),
-    yield takeEvery(SHOW_ANSWER, evaluateAnswers),
+    yield takeEvery(SHOW_ANSWER, showAnswers),
   ]);
 }

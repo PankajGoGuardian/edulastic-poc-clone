@@ -14,10 +14,11 @@ import {
 function* receiveTestsSaga({ payload }) {
   try {
     const entities = yield call(testsApi.getAll, payload);
+    const { count } = yield call(testsApi.getCount);
 
     yield put({
       type: RECEIVE_TESTS_SUCCESS,
-      payload: { entities },
+      payload: { entities, count, page: payload.page, limit: payload.limit },
     });
   } catch (err) {
     console.error(err);

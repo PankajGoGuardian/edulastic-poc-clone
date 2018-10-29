@@ -101,10 +101,10 @@ class TestList extends Component {
               </TestFilters>
             </Col>
             <Col span={18}>
-              {loading ? (
-                <Spin size="large" />
-              ) : (
-                <Card>
+              <Card>
+                {loading ? (
+                  <Spin size="large" />
+                ) : (
                   <Row gutter={16}>
                     {tests.map(item => (
                       <Col key={item.id} span={8}>
@@ -112,15 +112,16 @@ class TestList extends Component {
                       </Col>
                     ))}
                   </Row>
-                </Card>
-              )}
-              <Pagination
-                defaultCurrent={page}
-                total={count}
-                pageSize={limit}
-                onChange={this.handlePaginationChange}
-                hideOnSinglePage
-              />
+                )}
+                <Pagination
+                  style={{ padding: '20px 0' }}
+                  defaultCurrent={page}
+                  total={count}
+                  pageSize={limit}
+                  onChange={this.handlePaginationChange}
+                  hideOnSinglePage
+                />
+              </Card>
             </Col>
           </Row>
         </Container>

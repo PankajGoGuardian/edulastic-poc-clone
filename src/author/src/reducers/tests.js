@@ -26,6 +26,9 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         loading: false,
         entities: payload.entities,
+        page: payload.page,
+        limit: payload.limit,
+        count: payload.count,
       };
     case RECEIVE_TESTS_ERROR:
       return { ...state, loading: false, error: payload.error };

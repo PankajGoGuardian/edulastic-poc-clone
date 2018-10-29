@@ -18,6 +18,14 @@ const getAll = ({ limit, page, search } = { limit: 10, page: 1 }) => {
     .then(result => result.data);
 };
 
+const getCount = () =>
+  api
+    .callApi({
+      url: `${prefix}/count`,
+      method: 'get',
+    })
+    .then(result => result.data);
+
 const getById = (id, params = {}) =>
   api
     .callApi({
@@ -50,4 +58,5 @@ export default {
   getById,
   create,
   update,
+  getCount,
 };

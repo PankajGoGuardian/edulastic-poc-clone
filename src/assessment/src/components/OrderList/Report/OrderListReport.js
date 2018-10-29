@@ -18,15 +18,21 @@ class OrderListReport extends Component {
       validationState,
       showAnswers,
       questionsList,
+      evaluation
     } = this.props;
 
-    const getCorrect = (index) => {
+    console.log('evaluation here at here ', evaluation);
+    const getCorrect = index => {
       const questionText = questionsList[previewIndexesList[index]];
-      const correctAnswer = questionsList[validationState.valid_response.value[index]];
-      const altAnswers = validationState.alt_responses.reduce((acc, { value }) => {
-        acc.push(questionsList[value[index]]);
-        return acc;
-      }, []);
+      const correctAnswer =
+        questionsList[validationState.valid_response.value[index]];
+      const altAnswers = validationState.alt_responses.reduce(
+        (acc, { value }) => {
+          acc.push(questionsList[value[index]]);
+          return acc;
+        },
+        []
+      );
       const answers = [correctAnswer, ...altAnswers];
 
       return answers.includes(questionText);
@@ -37,7 +43,7 @@ class OrderListReport extends Component {
         {this.rendererQuestions.map((q, i) => (
           <OrderListReportItem
             key={i}
-            correct={getCorrect(i)}
+            correct={evaluation && evaluation[i]}
             correctText={validation.valid_response.value[i]}
             showAnswers={showAnswers}
             index={i}
@@ -57,9 +63,10 @@ OrderListReport.propTypes = {
   validationState: PropTypes.object.isRequired,
   questionsList: PropTypes.array.isRequired,
   showAnswers: PropTypes.bool,
+  evaluation: PropTypes.array
 };
 OrderListReport.defaultProps = {
-  showAnswers: false,
+  showAnswers: false
 };
 
 export default SortableContainer(OrderListReport);

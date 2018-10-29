@@ -61,6 +61,7 @@ class AssessmentPlayerSimple extends React.Component {
 
   checkAnswer = () => {
     this.setState({ checkAnswer: true });
+    this.props.evaluateAnswer();
   };
 
   render() {
@@ -74,8 +75,7 @@ class AssessmentPlayerSimple extends React.Component {
       items,
       currentItem,
       gotoQuestion,
-      itemRows,
-      evaluateAnswer
+      itemRows
     } = this.props;
 
     let previewTab = this.state.checkAnswer ? 'check' : 'clear';
@@ -191,7 +191,7 @@ class AssessmentPlayerSimple extends React.Component {
               <MainFooter>
                 <FlexContainer>
                   <QuitAssesment />
-                  <ControlBtn next skinB onClick={evaluateAnswer}>
+                  <ControlBtn next skinB onClick={this.checkAnswer}>
                     <span> Check Answer </span>
                   </ControlBtn>
                 </FlexContainer>

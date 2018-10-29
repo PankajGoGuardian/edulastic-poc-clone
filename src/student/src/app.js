@@ -17,7 +17,7 @@ const Dashboard = ({ match }) => (
   </div>
 );
 
-export default React.memo(Dashboard);
+export default Dashboard;
 
 Dashboard.propTypes = {
   match: PropTypes.string.isRequired,

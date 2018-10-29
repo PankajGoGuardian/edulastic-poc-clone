@@ -10,9 +10,9 @@ import Student from './student/src';
 import Dashboard from './student/src/app';
 import { QuestionEditor, ItemAdd, ItemList, PickUpQuestionType } from './author/src';
 import ItemDetail from './author/src/components/ItemDetail';
-import TestPage from './author/src/components/TestPage';
 
 const TestList = lazy(() => import('./author/src/components/TestList'));
+const TestPage = lazy(() => import('./author/src/components/TestPage'));
 
 class App extends Component {
   componentWillMount() {

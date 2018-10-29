@@ -6,14 +6,15 @@ const evaluators = {
   multipleChoice,
 };
 
-const createShowAnswerResult = (questions) => {
+const createShowAnswerResult = (questions, answers) => {
   const questionIds = Object.keys(questions);
   const results = {};
   // for each question create evaluation obj
   questionIds.forEach((id) => {
     const question = questions[id];
     const evaluator = evaluators[question.type];
-    results[id] = evaluator(question);
+    const answer = answers[id];
+    results[id] = evaluator(question, answer);
   });
 
   return results;

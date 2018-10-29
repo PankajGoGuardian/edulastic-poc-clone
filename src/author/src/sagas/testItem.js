@@ -76,7 +76,8 @@ function* evaluateAnswers() {
 function* showAnswers() {
   try {
     const validations = yield select(getItemDetailValidationSelector);
-    const evaluation = createShowAnswerData(validations);
+    const answers = yield select(state => state.answers);
+    const evaluation = createShowAnswerData(validations, answers);
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {

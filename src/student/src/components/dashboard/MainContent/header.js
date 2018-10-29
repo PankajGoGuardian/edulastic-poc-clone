@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { IconCaretDown } from '@edulastic/icons';
-// import AssignmentsHeader from '../common/header';
 import AssignmentTitle from '../common/assignmentTitle';
 import AssignmentFilter from '../common/assignmentFilter';
 import AssignmentSelectClass from '../common/assignmentSelectClass';
@@ -16,7 +16,7 @@ const AssignmentSelect = () => (
     <ClassLabel>class</ClassLabel>
     <SelectStyle>
       {options.map(option => (
-        <option> option </option>
+        <option> {option} </option>
       ))}
     </SelectStyle>
     <Icon />
@@ -63,7 +63,11 @@ const Header = ({ flag }) => (
     </AssignmentFilter>
   </AssignmentsHeader>
 );
-export default connect(({ ui }) => ({ flag: ui.flag }))(Header);
+export default React.memo(connect(({ ui }) => ({ flag: ui.flag }))(Header));
+
+Header.propTypes = {
+  flag: PropTypes.bool.isRequired,
+};
 
 const AssignmentsHeader = styled.div`
   @media (min-width: 1200px) {
@@ -113,7 +117,7 @@ const StatusSelect = styled.div`
     margin-right: 0;
     border: none;
     width: 10rem;
-    height: 3.1rem;
+    height: 2.7rem;
     border-radius: 1rem;
     background-color: #fff;
     box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.07);
@@ -164,20 +168,19 @@ const NumberGraded = Number.extend`
 `;
 
 const Icon = styled(IconCaretDown)`
-   {
-    position: absolute;
-    left: 9rem;
-    top: 0.9rem;
-    fill: #12a6e8;
-    width: 11px !important;
-    height: 11px !important;
-  }
+  position: absolute;
+  left: 8rem;
+  top: 0.9rem;
+  fill: #12a6e8;
+  width: 11px !important;
+  height: 11px !important;
+
   @media (max-width: 900px) {
     left: 10.5rem;
     top: 1.17rem;
   }
   @media (max-width: 768px) {
-    left: 9rem;
+    left: 8.5rem;
   }
 `;
 

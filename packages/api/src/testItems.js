@@ -48,10 +48,20 @@ const update = ({ id, data }) =>
     })
     .then(result => result.data);
 
+const evaluate = (id, answers) =>
+  api
+    .callApi({
+      url: `${prefix}/${id}/evaluate`,
+      method: 'post',
+      data: answers,
+    })
+    .then(result => result.data);
+
 export default {
   getAll,
   getById,
   updateById,
   create,
   update,
+  evaluate,
 };

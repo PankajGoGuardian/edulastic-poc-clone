@@ -4,37 +4,20 @@ import PropTypes from 'prop-types';
 import Option from './Option';
 import { OptionsList } from './styles';
 
-const Options = (props) => {
-  const {
-    options,
-    checkAnswer,
-    showAnswer,
-    userSelections,
-    smallSize,
-    onChange,
-    validation,
-    uiStyle,
-  } = props;
-
-  return (
-    <OptionsList>
-      {options.map((option, index) => (
-        <Option
-          key={index}
-          smallSize={smallSize}
-          checkAnswer={checkAnswer}
-          showAnswer={showAnswer}
-          index={index}
-          item={option}
-          userSelections={userSelections}
-          validation={validation}
-          onChange={() => onChange(option.value)}
-          uiStyle={uiStyle}
-        />
-      ))}
-    </OptionsList>
-  );
-};
+const Options = ({ options, evaluation, onChange, ...restProps }) => (
+  <OptionsList>
+    {options.map((option, index) => (
+      <Option
+        key={index}
+        index={index}
+        item={option}
+        onChange={() => onChange(option.value)}
+        correct={evaluation && evaluation[index]}
+        {...restProps}
+      />
+    ))}
+  </OptionsList>
+);
 
 Options.propTypes = {
   showAnswer: PropTypes.bool,
@@ -45,6 +28,7 @@ Options.propTypes = {
   smallSize: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object.isRequired,
+  evaluation: PropTypes.object.isRequired,
 };
 
 Options.defaultProps = {
@@ -56,4 +40,4 @@ Options.defaultProps = {
   smallSize: false,
 };
 
-export default Options;
+export default React.memo(Options);

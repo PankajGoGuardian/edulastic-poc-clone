@@ -53,7 +53,10 @@ class OrderList extends Component {
   onSortOrderListEnd = ({ oldIndex, newIndex }) => {
     const { item, setQuestionData } = this.props;
 
-    setQuestionData({ ...item, list: arrayMove(item.list, oldIndex, newIndex) });
+    setQuestionData({
+      ...item,
+      list: arrayMove(item.list, oldIndex, newIndex),
+    });
   };
 
   handleQuestionsChange = (value, index) => {
@@ -176,12 +179,11 @@ class OrderList extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item, userAnswer, testItem } = this.props;
+    const { view, previewTab, smallSize, item, userAnswer, testItem, evaluation } = this.props;
 
     if (!item) return null;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
-
     return (
       <React.Fragment>
         {view === 'edit' && (
@@ -224,6 +226,7 @@ class OrderList extends Component {
                 validation={this.validation}
                 validationState={item.validation}
                 previewIndexesList={userAnswer}
+                evaluation={evaluation}
               />
             )}
 
@@ -262,6 +265,7 @@ OrderList.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
+  evaluation: PropTypes.any.isRequired,
 };
 
 OrderList.defaultProps = {

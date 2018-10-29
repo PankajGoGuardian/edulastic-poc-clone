@@ -2,21 +2,31 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { gotoItem, saveUserResponse, loadUserResponse } from '../actions/items';
+import { evaluateAnswer } from '../actions/evaluation';
+
 import AssesmentPlayerDefault from './AssessmentPlayerDefault';
 import AssesmentPlayerSimple from './AssessmentPlayerSimple';
 
 import { currentItemRowsSelector } from '../selectors/item';
+
 const AssessmentContainer = ({
-  gotoItem,
+  gotoItem: gotoIt,
   currentItem,
   defaultAP,
   items,
   itemRows,
-  saveUserResponse,
-  loadUserResponse
+  saveUserResponse: saveUser,
+  loadUserResponse: loadUser,
+  evaluateAnswer: evaluate,
 }) => {
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
+
+  const gotoQuestion = (index) => {
+    gotoIt(index);
+    saveUser(currentItem);
+    loadUser(index);
+  };
 
   const moveToNext = () => {
     if (!isLast()) {
@@ -28,12 +38,6 @@ const AssessmentContainer = ({
     if (!isFirst()) gotoQuestion(currentItem - 1);
   };
 
-  const gotoQuestion = index => {
-    gotoItem(index);
-    saveUserResponse(currentItem);
-    loadUserResponse(index);
-  };
-
   const props = {
     items,
     isFirst,
@@ -42,27 +46,24 @@ const AssessmentContainer = ({
     moveToPrev,
     currentItem,
     gotoQuestion,
-    itemRows
+    itemRows,
+    evaluate,
   };
 
-  return defaultAP ? (
-    <AssesmentPlayerDefault {...props} />
-  ) : (
-    <AssesmentPlayerSimple {...props} />
-  );
+  return defaultAP ? <AssesmentPlayerDefault {...props} /> : <AssesmentPlayerSimple {...props} />;
 };
 
-AssessmentContainer.PropType = {
+AssessmentContainer.propTypes = {
   gotoQuestion: PropTypes.func.isRequired,
   items: PropTypes.array.isRequired,
-  currentItem: PropTypes.number.isRequired
+  currentItem: PropTypes.number.isRequired,
 };
 
 export default connect(
   state => ({
     items: state.test.items,
     currentItem: state.test.currentItem,
-    itemRows: currentItemRowsSelector(state)
+    itemRows: currentItemRowsSelector(state),
   }),
-  { gotoItem, saveUserResponse, loadUserResponse }
+  { gotoItem, saveUserResponse, loadUserResponse, evaluateAnswer },
 )(AssessmentContainer);

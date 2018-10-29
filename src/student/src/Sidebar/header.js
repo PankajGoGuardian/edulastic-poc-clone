@@ -1,22 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
-import { IconLogoCompact, IconHeader, IconClose, IconChevronLeft } from '@edulastic/icons';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import { IconHeader, IconClose, IconChevronLeft, IconLogoCompact } from '@edulastic/icons';
 
-// components
 import Help from './help';
 import Navigation from './navigation';
-import { desktopSideBar as desktopSideBarAction } from '../../../actions/togglemenu';
-import { responsiveSideBar as responsiveSideBarAction } from '../../../actions/responsivetogglemenu';
+import { desktopSideBar } from '../actions/togglemenu';
+import { responsiveSideBar } from '../actions/responsivetogglemenu';
 
-const Header = ({ flag, desktopSideBar, sidebar, responsiveSideBar }) => (
+const Header = ({ flag, desktopSideBar: desktop, sidebar, responsiveSideBar: responsive }) => (
   <Sidebar flag={flag} sidebar={sidebar}>
     <SidebarWrapper>
       <HeaderWrapper flag={flag} sidebar={sidebar}>
         {flag ? <IconCompact /> : <Icon />}
-        <ArrowBtn onClick={desktopSideBar} />
-        <ResponsiveToggleMenu onClick={responsiveSideBar} />
+        <ArrowBtn onClick={desktop} />
+        <ResponsiveToggleMenu onClick={responsive} />
       </HeaderWrapper>
       <Navigation flag={flag} />
       <Help flag={flag} />
@@ -24,17 +23,19 @@ const Header = ({ flag, desktopSideBar, sidebar, responsiveSideBar }) => (
   </Sidebar>
 );
 
-Header.propTypes = {
-  flag: PropTypes.any.isRequired,
-  desktopSideBar: PropTypes.any.isRequired,
-  sidebar: PropTypes.any.isRequired,
-  responsiveSideBar: PropTypes.any.isRequired,
-};
+export default React.memo(
+  connect(
+    ({ ui }) => ({ flag: ui.flag, sidebar: ui.sidebar }),
+    { desktopSideBar, responsiveSideBar },
+  )(Header),
+);
 
-export default connect(
-  ({ ui }) => ({ flag: ui.flag, sidebar: ui.sidebar }),
-  { desktopSideBar: desktopSideBarAction, responsiveSideBar: responsiveSideBarAction },
-)(Header);
+Header.propTypes = {
+  flag: PropTypes.bool.isRequired,
+  sidebar: PropTypes.bool.isRequired,
+  desktopSideBar: PropTypes.func.isRequired,
+  responsiveSideBar: PropTypes.func.isRequired,
+};
 
 const Sidebar = styled.div`
   @media (min-width: 1200px) {
@@ -56,7 +57,7 @@ const Sidebar = styled.div`
     height:100
     background-color: #fbfafc;
   }
-  @media (max-width: 1024px) {
+  @media (max-width: 1060px) {
     width: 16rem;
     display: ${props => (props.sidebar ? 'block' : 'none')};
   }
@@ -68,7 +69,7 @@ const Sidebar = styled.div`
 // empty component???
 const SidebarWrapper = styled.div``;
 const HeaderWrapper = styled.div`
-  padding: ${props => (props.flag ? '2.2rem 1rem 2.2rem 2rem' : '1.8rem 1rem')};
+  padding: ${props => (props.flag ? ' 1.7rem 1rem 1.7rem 2.5rem' : '1.8rem 1rem')};
   margin: ${props => (props.flag ? '0rem' : '0rem 2rem')};
   border-bottom: 1px solid #d9d6d6;
   text-align: center;
@@ -111,21 +112,21 @@ const ArrowBtn = styled(IconChevronLeft)`
     margin-right: 1rem;
   }
 `;
+
 const ResponsiveToggleMenu = styled(IconClose)`
   @media (min-width: 1200px) {
     display: none;
-  }
-  display: none;
-  @media (max-width: 1024px) {
-    fill: #4aac8b;
-    width: 15px !important;
-    height: 15px !important;
-    float: left;
-    cursor: pointer;
-    display: block;
-    margin-right: 1rem;
-  }
-  &:hover {
-    fill: #1fe3a1;
+    @media (max-width: 1060px) {
+      fill: #4aac8b;
+      width: 15px !important;
+      height: 15px !important;
+      float: left;
+      cursor: pointer;
+      display: block;
+      margin-left: 1rem;
+    }
+    &:hover {
+      fill: #1fe3a1;
+    }
   }
 `;

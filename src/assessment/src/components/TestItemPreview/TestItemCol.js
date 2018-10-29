@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Tabs } from '@edulastic/common';
@@ -14,6 +15,7 @@ class TestItemCol extends Component {
     col: PropTypes.object.isRequired,
     style: PropTypes.object,
     previewTab: PropTypes.string.isRequired,
+    evaluation: PropTypes.any.isRequired,
   };
 
   static defaultProps = {
@@ -27,14 +29,15 @@ class TestItemCol extends Component {
   };
 
   renderTabContent = (widget) => {
-    const { previewTab } = this.props;
-
+    const { previewTab, evaluation: evaluations } = this.props;
+    const evaluation = evaluations[widget.reference];
     return (
       <Tabs.TabContainer style={{ padding: 20 }}>
         <QuestionWrapper
           testItem
           type={widget.type}
           view="preview"
+          evaluation={evaluation}
           previewTab={previewTab}
           questionId={widget.reference}
           data={{ ...widget.referencePopulate.data, smallSize: true }}
@@ -76,7 +79,9 @@ class TestItemCol extends Component {
   }
 }
 
-export default TestItemCol;
+export default connect(state => ({
+  evaluation: state.evaluation,
+}))(TestItemCol);
 
 const Container = styled.div`
   width: ${({ width }) => width};

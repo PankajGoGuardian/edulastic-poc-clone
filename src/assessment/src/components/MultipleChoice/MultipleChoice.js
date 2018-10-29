@@ -108,7 +108,7 @@ class MultipleChoice extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item, userAnswer, t, testItem } = this.props;
+    const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation } = this.props;
     const {
       previewStimulus,
       previewDisplayOptions,
@@ -127,7 +127,6 @@ class MultipleChoice extends Component {
               <Paper style={{ marginBottom: 25 }}>
                 <MultipleChoiceAuthoring item={itemForEdit} />
                 <CorrectAnswers
-                  validation={item.validation}
                   options={previewDisplayOptions}
                   question={previewStimulus}
                   multipleResponses={multipleResponses}
@@ -156,8 +155,8 @@ class MultipleChoice extends Component {
                   options={previewDisplayOptions}
                   question={previewStimulus}
                   handleMultiSelect={this.handleMultiSelect}
-                  validation={item.validation}
                   uiStyle={uiStyle}
+                  evaluation={evaluation}
                 />
               )}
               {previewTab === 'show' && (
@@ -168,8 +167,8 @@ class MultipleChoice extends Component {
                   question={previewStimulus}
                   userSelections={userAnswer}
                   handleMultiSelect={this.handleMultiSelect}
-                  validation={item.validation}
                   uiStyle={uiStyle}
+                  evaluation={evaluation}
                 />
               )}
               {previewTab === 'clear' && (
@@ -177,12 +176,12 @@ class MultipleChoice extends Component {
                   preview
                   smallSize={smallSize}
                   options={previewDisplayOptions}
-                  validation={item.validation}
                   question={previewStimulus}
                   data={item}
                   userSelections={userAnswer}
                   onChange={this.handleAddAnswer}
                   uiStyle={uiStyle}
+                  evaluation={evaluation}
                 />
               )}
             </Wrapper>
@@ -204,6 +203,7 @@ MultipleChoice.propTypes = {
   userAnswer: PropTypes.any,
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
+  evaluation: PropTypes.any.isRequired,
 };
 
 MultipleChoice.defaultProps = {

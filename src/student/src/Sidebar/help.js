@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { IconQuestion } from '@edulastic/icons';
-import { IconCaretDown } from '@edulastic/icons';
-import Profile from '../../../assets/Profile.png';
+import PropTypes from 'prop-types';
+import { IconQuestion, IconCaretDown } from '@edulastic/icons';
+import Profile from '../assets/Profile.png';
 
 const Help = ({ flag }) => (
   <HelpWrapper>
@@ -29,34 +29,32 @@ const Help = ({ flag }) => (
   </HelpWrapper>
 );
 
-export default Help;
+export default React.memo(Help);
+
+Help.propTypes = {
+  flag: PropTypes.bool.isRequired,
+};
 
 const ProfileWrapper = styled.div`
-   {
-    width: 47px;
-  }
+  width: 47px;
 `;
 const ProfileImg = styled.img`
   width: 100%;
   height: 40px;
 `;
 const SelectIcon = styled(IconCaretDown)`
-   {
-    margin-left: auto;
-    fill: #fff;
-    width: 11px !important;
-    display: ${props => (props.flag ? 'none' : 'block')};
-  }
+  margin-left: auto;
+  fill: #fff;
+  width: 11px !important;
+  display: ${props => (props.flag ? 'none' : 'block')};
 `;
 const ProfileDetail = styled.div`
-   {
-    padding-left: 0.5rem;
-    display: ${props => (props.flag ? 'none' : 'block')};
-    & p {
-      margin: 0rem;
-      padding-bottom: 0.2rem;
-      font-weight: 600;
-    }
+  padding-left: 0.5rem;
+  display: ${props => (props.flag ? 'none' : 'block')};
+  & p {
+    margin: 0rem;
+    padding-bottom: 0.2rem;
+    font-weight: 600;
   }
 `;
 
@@ -71,7 +69,7 @@ const HelpWrapper = styled.div`
   margin-top: auto;
 `;
 const HelpCenter = styled.div`
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.5rem;
   border-radius: 2rem;
   display: flex;
   min-height: 3.5rem;
@@ -97,6 +95,7 @@ const UserProfile = HelpCenter.extend`
 
 const HelpIconWrapper = styled.span`
   padding-right: 1rem;
+  padding-left: 0.5rem;
 `;
 
 const HelpIcon = styled(IconQuestion)`

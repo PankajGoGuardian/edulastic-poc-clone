@@ -19,7 +19,6 @@ class OrderListReport extends Component {
       showAnswers,
       questionsList,
     } = this.props;
-
     const getCorrect = (index) => {
       const questionText = questionsList[previewIndexesList[index]];
       const correctAnswer = questionsList[validationState.valid_response.value[index]];
@@ -37,7 +36,7 @@ class OrderListReport extends Component {
         {this.rendererQuestions.map((q, i) => (
           <OrderListReportItem
             key={i}
-            correct={getCorrect(i)}
+            correct={getCorrect()}
             correctText={validation.valid_response.value[i]}
             showAnswers={showAnswers}
             index={i}

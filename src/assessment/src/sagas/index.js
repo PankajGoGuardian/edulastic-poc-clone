@@ -1,6 +1,13 @@
 import questionSaga from './question';
 import itemsSaga from './items';
 import testSaga from './test';
-const assessmentSagas = [questionSaga(), itemsSaga(), testSaga()];
+import evaluationSaga from './evaluation';
+
+const assessmentSagas = [
+  questionSaga(),
+  itemsSaga(),
+  testSaga(),
+  evaluationSaga(),
+];
 
 export default assessmentSagas;

@@ -1,43 +1,33 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { IconMenuOpenClose } from '@edulastic/icons';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
-
-import Sidebar from './Sidebar';
 import MainContent from './MainContent';
-// y capital bruh? v . change? and better names?
 import { responsiveSideBar } from '../../actions/responsivetogglemenu';
 
-class AppContainer extends React.Component {
-  render() {
-    const { responsiveSideBar: desktopSideBar } = this.props;
-    // "hammerger"? :O
-    return (
-      <React.Fragment>
-        <AssignmentHammerger>
-          <IconMenu onClick={() => desktopSideBar()} />
-          Assignments
-        </AssignmentHammerger>
-        <Sidebar />
-        <MainContent />
-      </React.Fragment>
-    );
-  }
-}
+const AppContainer = ({ responsiveSideBar: sidebar }) => (
+  <React.Fragment>
+    <AssignmentHamburger>
+      <IconMenu onClick={sidebar} />
+      Assignments
+    </AssignmentHamburger>
+    <MainContent />
+  </React.Fragment>
+);
+
+export default React.memo(
+  connect(
+    ({ ui }) => ({ sidebar: ui.sidebar }),
+    { responsiveSideBar },
+  )(AppContainer),
+);
 
 AppContainer.propTypes = {
-  responsiveSideBar: PropTypes.any.isRequired,
+  responsiveSideBar: PropTypes.func.isRequired,
 };
 
-export default connect(
-  ({ ui }) => ({ sidebar: ui.sidebar }),
-  { responsiveSideBar },
-)(AppContainer);
-
-// export default translate('common')(AppContainer);
-
-const AssignmentHammerger = styled.div`
+const AssignmentHamburger = styled.div`
   padding: 1.7rem 2rem;
   background: #0eb08d;
   color: #fff;

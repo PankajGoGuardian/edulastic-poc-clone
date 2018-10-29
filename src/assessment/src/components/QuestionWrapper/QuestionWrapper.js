@@ -11,7 +11,6 @@ const QuestionWrapper = ({ type, data, ...restProps }) => {
     },
     restProps,
   );
-
   const Question = type === 'multipleChoice' ? MultipleChoice : OrderList;
   return <Question {...questionProps} />;
 };

@@ -12,31 +12,14 @@ class OrderListReport extends Component {
   }
 
   render() {
-    const {
-      validation,
-      previewIndexesList,
-      validationState,
-      showAnswers,
-      questionsList,
-    } = this.props;
-    const getCorrect = (index) => {
-      const questionText = questionsList[previewIndexesList[index]];
-      const correctAnswer = questionsList[validationState.valid_response.value[index]];
-      const altAnswers = validationState.alt_responses.reduce((acc, { value }) => {
-        acc.push(questionsList[value[index]]);
-        return acc;
-      }, []);
-      const answers = [correctAnswer, ...altAnswers];
-
-      return answers.includes(questionText);
-    };
+    const { validation, showAnswers, evaluation } = this.props;
 
     return (
       <div>
         {this.rendererQuestions.map((q, i) => (
           <OrderListReportItem
             key={i}
-            correct={getCorrect()}
+            correct={evaluation && evaluation[i]}
             correctText={validation.valid_response.value[i]}
             showAnswers={showAnswers}
             index={i}
@@ -52,13 +35,14 @@ class OrderListReport extends Component {
 
 OrderListReport.propTypes = {
   validation: PropTypes.object.isRequired,
-  previewIndexesList: PropTypes.array.isRequired,
-  validationState: PropTypes.object.isRequired,
   questionsList: PropTypes.array.isRequired,
+  previewIndexesList: PropTypes.array.isRequired,
   showAnswers: PropTypes.bool,
+  evaluation: PropTypes.array,
 };
 OrderListReport.defaultProps = {
   showAnswers: false,
+  evaluation: [],
 };
 
 export default SortableContainer(OrderListReport);

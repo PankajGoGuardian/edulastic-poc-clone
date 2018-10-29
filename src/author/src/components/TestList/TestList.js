@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Paper, Pagination, withWindowSizes } from '@edulastic/common';
+import { withWindowSizes, Card } from '@edulastic/common';
 import { compose } from 'redux';
-import styled from 'styled-components';
-import { mobileWidth } from '@edulastic/colors';
+import { Row, Col, Input, Pagination, Spin } from 'antd';
 
+import styled from 'styled-components';
 import Item from './Item';
-import ListHeader from '../common/ListHeader';
 import { receiveTestsAction } from '../../actions/tests';
 import {
   getTestsSelector,
@@ -17,16 +16,42 @@ import {
   getTestsPageSelector,
   getTestsCreatingSelector,
 } from '../../selectors/tests';
+import TestListHeader from './TestListHeader';
+import TestFilters from '../common/TestFilters';
+import TestFiltersNav from '../common/TestFilters/TestFiltersNav';
 
 class TestList extends Component {
+  state = {
+    searchStr: '',
+  };
+
+  items = [
+    { icon: '', key: 'library', text: 'Entire Library' },
+    { icon: '', key: 'byMe', text: 'Authored by me' },
+    { icon: '', key: 'coAuthor', text: 'I am a Co-Author' },
+    { icon: '', key: 'previously', text: 'Previously Used' },
+    { icon: '', key: 'favorites', text: 'My Favorites' },
+  ];
+
   componentDidMount() {
-    const { receiveTests } = this.props;
-    receiveTests();
+    const { receiveTests, page, limit } = this.props;
+    receiveTests({ page, limit });
   }
 
   handleSearch = (value) => {
     const { receiveTests, limit } = this.props;
-    receiveTests({ page: 1, limit, search: value });
+    this.setState(
+      {
+        searchStr: value,
+      },
+      () => receiveTests({ page: 1, limit, search: value }),
+    );
+  };
+
+  handleSearchChange = (e) => {
+    this.setState({
+      searchStr: e.target.value,
+    });
   };
 
   handleCreate = () => {
@@ -34,51 +59,72 @@ class TestList extends Component {
     history.push(`${match.url}/create`);
   };
 
-  handlePrevious = () => {
-    const { receiveTests, page, limit } = this.props;
-    receiveTests({ page: page - 1, limit });
+  handlePaginationChange = (page) => {
+    const { receiveTests, limit } = this.props;
+    const { searchStr } = this.state;
+
+    receiveTests({ page, limit, search: searchStr });
   };
 
-  handleNext = () => {
-    const { receiveTests, page, limit } = this.props;
-    receiveTests({ page: page + 1, limit });
+  handleFilterNavSelect = ({ item, key, selectedKeys }) => {
+    console.log(item, key, selectedKeys);
+  };
+
+  handleFiltersChange = (name, value) => {
+    console.log(name, value);
   };
 
   render() {
-    const {
-      tests,
-      page,
-      limit,
-      count,
-      loading,
-      windowWidth,
-      history,
-      creating,
-      match,
-    } = this.props;
+    const { tests, page, limit, count, loading, history, creating, match } = this.props;
+    const { searchStr } = this.state;
+
     return (
-      <Container>
-        <ListHeader
-          onSearch={this.handleSearch}
-          onCreate={this.handleCreate}
-          creating={creating}
-          windowWidth={windowWidth}
-          title="Test List"
-        />
-        <Paper style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
-          {tests.map(item => (
-            <Item key={item.id} item={item} history={history} match={match} />
-          ))}
-        </Paper>
-        <Pagination
-          onPrevious={this.handlePrevious}
-          onNext={this.handleNext}
-          page={page}
-          itemsPerPage={limit}
-          count={count}
-          loading={loading}
-        />
-      </Container>
+      <div>
+        <TestListHeader onCreate={this.handleCreate} creating={creating} title="Test List" />
+        <Container>
+          <Row gutter={16}>
+            <Col span={6}>
+              <Input.Search
+                placeholder="Search by skills and keywords"
+                onSearch={this.handleSearch}
+                onChange={this.handleSearchChange}
+                style={{ width: '100%' }}
+                size="large"
+                value={searchStr}
+              />
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={6}>
+              <TestFilters onChange={this.handleFiltersChange}>
+                <TestFiltersNav items={this.items} onSelect={this.handleFilterNavSelect} />
+              </TestFilters>
+            </Col>
+            <Col span={18}>
+              {loading ? (
+                <Spin size="large" />
+              ) : (
+                <Card>
+                  <Row gutter={16}>
+                    {tests.map(item => (
+                      <Col key={item.id} span={8}>
+                        <Item item={item} history={history} match={match} />
+                      </Col>
+                    ))}
+                  </Row>
+                </Card>
+              )}
+              <Pagination
+                defaultCurrent={page}
+                total={count}
+                pageSize={limit}
+                onChange={this.handlePaginationChange}
+                hideOnSinglePage
+              />
+            </Col>
+          </Row>
+        </Container>
+      </div>
     );
   }
 }
@@ -92,7 +138,6 @@ TestList.propTypes = {
   count: PropTypes.number.isRequired,
   loading: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
-  windowWidth: PropTypes.number.isRequired,
   match: PropTypes.object.isRequired,
 };
 
@@ -116,9 +161,5 @@ const enhance = compose(
 export default enhance(TestList);
 
 const Container = styled.div`
-  padding: 20px 40px;
-
-  @media (max-width: ${mobileWidth}) {
-    padding: 10px 25px;
-  }
+  padding: 30px;
 `;

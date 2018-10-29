@@ -1,8 +1,8 @@
 import { RECEIVE_TESTS_REQUEST, CREATE_TEST_REQUEST } from '../constants/actions';
 
-export const receiveTestsAction = ({ page, limit } = { page: 1, limit: 5 }) => ({
+export const receiveTestsAction = payload => ({
   type: RECEIVE_TESTS_REQUEST,
-  payload: { page, limit },
+  payload,
 });
 
 export const createTestAction = data => ({

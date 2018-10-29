@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FaAngleDoubleRight } from 'react-icons/fa';
-import { IconClockCircularOutline } from '@edulastic/icons';
-import { grey, blue, darkBlue, textColor, tabletWidth } from '@edulastic/colors';
+import { blue, darkBlue, lightBlue, greenDark, grey } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
-import { Button } from '@edulastic/common';
+import { Card } from '@edulastic/common';
+import { Rate, Icon } from 'antd';
 
 class Item extends Component {
   static propTypes = {
@@ -20,45 +20,57 @@ class Item extends Component {
     history.push(`${match.url}/${item.id}`);
   };
 
+  get name() {
+    const {
+      item: { createdBy },
+    } = this.props;
+    return `${createdBy.firstName} ${createdBy.lastName}`;
+  }
+
   render() {
     const { item, t } = this.props;
+    console.log(item);
     return (
-      <Container>
-        <Question>
-          <StyledLink onClick={this.moveToItem}>
-            {item.id}# <FaAngleDoubleRight />
-          </StyledLink>
-          <div dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-        </Question>
-        <Author>
-          <div>
-            Author: <span>Kevin Hart</span>
-          </div>
-          <Time>
-            <Icon color="#ee1658" /> an hour ago
-          </Time>
-        </Author>
-        <Labels>
-          <Label>Order List</Label>
-          <Label>Order List</Label>
-          <Label>Order List</Label>
-        </Labels>
-        <View>
-          <Button
-            style={{
-              width: '100%',
-              height: 50,
-              fontSize: 11,
-              fontWeight: 600,
-            }}
-            variant="extendedFab"
-            color="primary"
-            outlined
-            onClick={this.moveToItem}
-          >
-            {t('component.item.view')}
-          </Button>
-        </View>
+      <Container
+        title={(
+          <Header>
+            <Stars />
+          </Header>
+)}
+      >
+        <Inner>
+          <Question>
+            <StyledLink onClick={this.moveToItem}>
+              {item.title}# <FaAngleDoubleRight />
+            </StyledLink>
+          </Question>
+          <Labels>
+            {item.tags.map((tag, i) => (
+              <Label key={i}>{tag.name}</Label>
+            ))}
+          </Labels>
+        </Inner>
+        <Footer>
+          <Author>
+            <span>
+              {t('component.item.by')}
+              :&nbsp;
+            </span>{' '}
+            <AuthorName>{this.name}</AuthorName>
+          </Author>
+          <Icons>
+            <div>
+              <StyledIcon type="heart" theme="filled" />
+              &nbsp;
+              <span>9</span>
+            </div>
+            <div>
+              <StyledIcon type="share-alt" theme="outlined" />
+              &nbsp;
+              <span>9578 (1)</span>
+            </div>
+          </Icons>
+        </Footer>
       </Container>
     );
   }
@@ -66,16 +78,67 @@ class Item extends Component {
 
 export default withNamespaces('author')(Item);
 
-const Container = styled.div`
+const Container = styled(Card)`
+  .ant-card-body {
+    padding: 0;
+  }
+
+  .ant-card-head {
+    padding: 0;
+  }
+
+  .ant-card-head-title {
+    padding: 0;
+  }
+`;
+
+const StyledIcon = styled(Icon)`
+  color: ${greenDark};
+  font-size: 18px;
+`;
+
+const Inner = styled.div`
+  padding: 15px;
+  border-bottom: 1px solid ${grey};
+`;
+
+const Footer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+const Author = styled.div`
+  width: 70%;
+  padding: 15px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid ${grey};
-  padding: 30px 0;
+  border-right: 1px solid ${grey};
+`;
 
-  @media (max-width: ${tabletWidth}) {
-    flex-direction: column;
-  }
+const AuthorName = styled.span`
+  color: ${greenDark};
+`;
+
+const Icons = styled.div`
+  display: flex;
+  padding: 15px;
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Header = styled.div`
+  min-height: 100px;
+  position: relative;
+  background: url('https://fakeimg.pl/250x100/');
+  background-repeat: no-repeat;
+  background-size: cover;
+`;
+
+const Stars = styled(Rate)`
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
 `;
 
 const StyledLink = styled.a`
@@ -92,86 +155,30 @@ const StyledLink = styled.a`
   }
 `;
 
-const Icon = styled(IconClockCircularOutline)`
-  margin-right: 15px;
+const Question = styled.div`
+  margin-bottom: 15px;
 `;
 
-const Time = styled.div`
+const Labels = styled.div`
   display: flex;
-  align-items: center;
-  margin-top: 10px;
-
-  @media (max-width: ${tabletWidth}) {
-    justify-content: center;
-  }
+  flex-wrap: wrap;
 `;
 
 const Label = styled.span`
   text-transform: uppercase;
   border-radius: 10px;
-  color: ${textColor};
-  border: 1px solid #b1b1b1;
-  font-size: 8px;
-  width: 105px;
-  height: 25px;
-  display: flex;
+  padding: 10px;
+  color: ${darkBlue};
+  font-size: 12px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   margin-right: 7px;
   margin-bottom: 7px;
+  background: ${lightBlue};
+  font-weight: 700;
 
   :last-child {
     margin-right: 0;
-  }
-
-  @media (max-width: ${tabletWidth}) {
-    width: 100%;
-  }
-`;
-
-const Question = styled.div`
-  width: 50%;
-
-  & p {
-    margin: 0.5em 0;
-    font-size: 13px;
-  }
-
-  @media (max-width: ${tabletWidth}) {
-    width: 100%;
-    margin-bottom: 15px;
-    text-align: center;
-  }
-`;
-
-const Author = styled.div`
-  width: 15%;
-  font-size: 13px;
-
-  @media (max-width: ${tabletWidth}) {
-    width: 100%;
-    text-align: center;
-  }
-`;
-
-const Labels = styled.div`
-  width: 20%;
-  display: flex;
-  flex-wrap: wrap;
-
-  @media (max-width: ${tabletWidth}) {
-    width: 100%;
-    flex-direction: column;
-    margin: 20px 0;
-  }
-`;
-
-const View = styled.div`
-  width: 15%;
-  display: flex;
-  justify-content: flex-end;
-
-  @media (max-width: ${tabletWidth}) {
-    width: 100%;
   }
 `;

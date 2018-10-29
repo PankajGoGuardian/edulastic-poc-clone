@@ -74,7 +74,8 @@
     },
     "backToItemDetail": "Back to item detail",
     "item": {
-      "view": "View"
+      "view": "View",
+      "by": "By"
     },
     "itemlist": {
       "header": {

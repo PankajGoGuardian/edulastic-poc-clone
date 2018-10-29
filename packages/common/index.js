@@ -8,6 +8,7 @@ export { default as TextField } from './src/components/TextField';
 export { default as Button } from './src/components/Button';
 export { default as Checkbox } from './src/components/Checkbox';
 export { default as Tabs } from './src/components/Tabs';
+export { default as Card } from './src/components/Card';
 
 // HOC
 export { default as withWindowSizes } from './src/HOC/withWindowSizes';

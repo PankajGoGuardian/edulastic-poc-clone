@@ -3,14 +3,20 @@ import API from './utils/API';
 const api = new API();
 const prefix = '/Tests';
 
-const getAll = (params = {}) =>
-  api
+const getAll = ({ limit, page, search } = { limit: 10, page: 1 }) => {
+  let url = `${prefix}?filter[limit]=${limit}&filter[skip]=${limit * (page - 1)}`;
+
+  if (search) {
+    url += `&filter[where][title][like]=${search}`;
+  }
+
+  return api
     .callApi({
-      url: prefix,
+      url,
       method: 'get',
-      params,
     })
     .then(result => result.data);
+};
 
 const getById = (id, params = {}) =>
   api

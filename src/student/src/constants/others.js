@@ -24,7 +24,7 @@ export const ALPHABET = [
   'W',
   'X',
   'Y',
-  'Z',
+  'Z'
 ];
 export const APP_NAME = 'Edulastic';
 export const QUESTION_OPTIONS = 'QUESTION_OPTIONS';

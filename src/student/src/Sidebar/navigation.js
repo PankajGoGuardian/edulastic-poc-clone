@@ -1,24 +1,20 @@
 import React from 'react';
-import { IconClockDashboard } from '@edulastic/icons';
-import { IconAssignment } from '@edulastic/icons';
-import { IconBarChart } from '@edulastic/icons';
-import { IconManage } from '@edulastic/icons';
-import { IconChevronLeft } from '@edulastic/icons';
-// import Sidebar from '../common/sidebar';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-
-const Icon = styled(IconClockDashboard)`
-  width: 22px !important;
-  height: 22px !important;
-  fill: rgb(67, 75, 93);
-  margin-right: 1rem;
-`;
+import PropTypes from 'prop-types';
+import {
+  IconClockDashboard,
+  IconAssignment,
+  IconBarChart,
+  IconReport,
+  IconManage,
+} from '@edulastic/icons';
 
 const NavLink = styled.ul`
    {
     list-style: none;
     padding: 0rem;
-    margin: 3rem 2rem;
+    margin: 3rem 2.5rem 1rem 2.5rem;
     @media (max-width: 425px) {
       margin: 3rem 4rem;
     }
@@ -41,24 +37,25 @@ const TextWrapper = styled.span`
     margin-left: 2rem;
   }
 `;
-const LinkNavigation = styled.a`
+const LinkNavigation = styled(Link)`
   display: flex;
   align-items: center;
+  text-decoration: none;
 `;
 
 const renderIcon = icon => styled(icon)`
   width: 22px !important;
   height: 22px !important;
   fill: rgb(67, 75, 93);
-  margin-right: 1rem;
+  margin-right: ${props => (props.flag ? '0rem' : '1rem')};
 `;
 
 const NavButton = ({ icon, label, flag }) => {
   const Icon = renderIcon(icon);
   return (
     <NavList>
-      <LinkNavigation>
-        <Icon />
+      <LinkNavigation to={`/home/${label}`}>
+        <Icon flag={flag} />
         <TextWrapper flag={flag}>{label}</TextWrapper>
       </LinkNavigation>
     </NavList>
@@ -71,7 +68,17 @@ const Navigation = ({ flag }) => (
     <NavButton label="Assignements" icon={IconAssignment} flag={flag} />
     <NavButton label="SkillReport" icon={IconBarChart} flag={flag} />
     <NavButton label="Manage Class" icon={IconManage} flag={flag} />
+    <NavButton label="Report" icon={IconReport} flag={flag} />
   </NavLink>
 );
 
-export default Navigation;
+export default React.memo(Navigation);
+
+Navigation.PropTypes = {
+  flag: PropTypes.bool,
+};
+
+NavButton.PropTypes = {
+  label: PropTypes.string,
+  flag: PropTypes.bool,
+};

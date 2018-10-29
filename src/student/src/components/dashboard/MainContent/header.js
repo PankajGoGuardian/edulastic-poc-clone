@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { IconCaretDown } from '@edulastic/icons';
-// import AssignmentsHeader from '../common/header';
 import AssignmentTitle from '../common/assignmentTitle';
 import AssignmentFilter from '../common/assignmentFilter';
 import AssignmentSelectClass from '../common/assignmentSelectClass';
@@ -63,7 +63,11 @@ const Header = ({ flag }) => (
     </AssignmentFilter>
   </AssignmentsHeader>
 );
-export default connect(({ ui }) => ({ flag: ui.flag }))(Header);
+export default React.memo(connect(({ ui }) => ({ flag: ui.flag }))(Header));
+
+Header.PropTypes = {
+  flag: PropTypes.bool,
+};
 
 const AssignmentsHeader = styled.div`
   @media (min-width: 1200px) {

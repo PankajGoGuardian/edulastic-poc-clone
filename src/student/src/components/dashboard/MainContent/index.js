@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Header from './header';
 import AssignmentsContent from './content';
-// import MainContainer from '../common/mainContainer';
+
 const MainContent = ({ flag }) => (
   <MainContainer flag={flag}>
     <Header flag={flag} />
@@ -11,9 +12,15 @@ const MainContent = ({ flag }) => (
   </MainContainer>
 );
 
-export default connect(({ ui }) => ({
-  flag: ui.flag
-}))(MainContent);
+export default React.memo(
+  connect(({ ui }) => ({
+    flag: ui.flag,
+  }))(MainContent),
+);
+
+MainContent.PropTypes = {
+  flag: PropTypes.bool,
+};
 
 const MainContainer = styled.div`
   @media (min-width: 1200px) {

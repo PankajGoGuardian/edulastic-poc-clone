@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { IconQuestion } from '@edulastic/icons';
-import { IconCaretDown } from '@edulastic/icons';
-import Profile from '../../../assets/Profile.png';
+import PropTypes from 'prop-types';
+import { IconQuestion, IconCaretDown } from '@edulastic/icons';
+import Profile from '../assets/Profile.png';
 
 const Help = ({ flag }) => (
   <HelpWrapper>
@@ -29,7 +29,11 @@ const Help = ({ flag }) => (
   </HelpWrapper>
 );
 
-export default Help;
+export default React.memo(Help);
+
+Help.PropTypes = {
+  flag: PropTypes.bool,
+};
 
 const ProfileWrapper = styled.div`
    {
@@ -71,7 +75,7 @@ const HelpWrapper = styled.div`
   margin-top: auto;
 `;
 const HelpCenter = styled.div`
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.5rem;
   border-radius: 2rem;
   display: flex;
   min-height: 3.5rem;
@@ -97,6 +101,7 @@ const UserProfile = HelpCenter.extend`
 
 const HelpIconWrapper = styled.span`
   padding-right: 1rem;
+  padding-left: 0.5rem;
 `;
 
 const HelpIcon = styled(IconQuestion)`

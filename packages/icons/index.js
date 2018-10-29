@@ -25,4 +25,5 @@ export { default as IconBarChart } from './src/IconBarChart';
 export { default as IconManage } from './src/IconManage';
 export { default as IconMenuOpenClose } from './src/IconMenuOpenClose';
 export { default as IconLogoCompact } from './src/IconLogoCompact';
+export { default as IconReport } from './src/IconReport';
 // export { default as IconChevronRight } from './src/IconChevronRight';

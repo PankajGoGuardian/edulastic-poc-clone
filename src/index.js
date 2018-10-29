@@ -7,6 +7,7 @@ import { ConnectedRouter } from 'connected-react-router';
 import 'font-awesome/css/font-awesome.css';
 import './index.css';
 import 'react-notifications/lib/notifications.css';
+import 'antd/dist/antd.css';
 import App from './App';
 import configureStore, { history } from './configureStore';
 

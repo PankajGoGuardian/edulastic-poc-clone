@@ -11,6 +11,7 @@
     "@edulastic/common": "1.0.0",
     "@edulastic/icons": "1.0.0",
     "@edulastic/localization": "1.0.0",
+    "antd": "^3.10.3",
     "autoprefixer": "7.1.6",
     "axios": "^0.18.0",
     "babel-core": "6.26.0",

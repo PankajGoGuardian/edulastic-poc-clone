@@ -75,3 +75,13 @@ export const RECEIVE_TESTS_ERROR = '[tests] receive list error';
 export const CREATE_TEST_REQUEST = '[tests] create test request';
 export const CREATE_TEST_SUCCESS = '[tests] create test success';
 export const CREATE_TEST_ERROR = '[tests] create test error';
+
+export const UPDATE_TEST_REQUEST = '[tests] update test request';
+export const UPDATE_TEST_SUCCESS = '[tests] update test success';
+export const UPDATE_TEST_ERROR = '[tests] update test error';
+
+export const RECEIVE_TEST_BY_ID_REQUEST = '[tests] receive test by id request';
+export const RECEIVE_TEST_BY_ID_SUCCESS = '[tests] receive test by id success';
+export const RECEIVE_TEST_BY_ID_ERROR = '[tests] receive test by id error';
+
+export const SET_TEST_DATA = '[tests] set test data';

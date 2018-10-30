@@ -4,8 +4,9 @@ import styled from 'styled-components';
 import { FaAngleDoubleRight } from 'react-icons/fa';
 import { blue, darkBlue, lightBlue, greenDark, grey } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
+import { IconHeart, IconShare } from '@edulastic/icons';
 import { Card } from '@edulastic/common';
-import { Rate, Icon } from 'antd';
+import { Rate } from 'antd';
 
 class Item extends Component {
   static propTypes = {
@@ -60,12 +61,12 @@ class Item extends Component {
           </Author>
           <Icons>
             <div>
-              <StyledIcon type="heart" theme="filled" />
+              <IconHeart color={greenDark} />
               &nbsp;
               <span>9</span>
             </div>
             <div>
-              <StyledIcon type="share-alt" theme="outlined" />
+              <IconShare color={greenDark} />
               &nbsp;
               <span>9578 (1)</span>
             </div>
@@ -90,11 +91,6 @@ const Container = styled(Card)`
   .ant-card-head-title {
     padding: 0;
   }
-`;
-
-const StyledIcon = styled(Icon)`
-  color: ${greenDark};
-  font-size: 18px;
 `;
 
 const Inner = styled.div`

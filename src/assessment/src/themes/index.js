@@ -10,11 +10,12 @@ import AssesmentPlayerSimple from './AssessmentPlayerSimple';
 import { currentItemRowsSelector } from '../selectors/item';
 
 const AssessmentContainer = ({
-  gotoItem: gotoIt,
-  currentItem,
-  defaultAP,
+  view,
   items,
   itemRows,
+  defaultAP,
+  currentItem,
+  gotoItem: gotoIt,
   saveUserResponse: saveUser,
   loadUserResponse: loadUser,
   evaluateAnswer: evaluate,
@@ -48,9 +49,14 @@ const AssessmentContainer = ({
     gotoQuestion,
     itemRows,
     evaluate,
+    view,
   };
 
-  return defaultAP ? <AssesmentPlayerDefault {...props} /> : <AssesmentPlayerSimple {...props} />;
+  return defaultAP ? (
+    <AssesmentPlayerDefault {...props} />
+  ) : (
+    <AssesmentPlayerSimple {...props} />
+  );
 };
 
 AssessmentContainer.propTypes = {
@@ -61,6 +67,7 @@ AssessmentContainer.propTypes = {
 
 export default connect(
   state => ({
+    view: state.view.preview,
     items: state.test.items,
     currentItem: state.test.currentItem,
     itemRows: currentItemRowsSelector(state),

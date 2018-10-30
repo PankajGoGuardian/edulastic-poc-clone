@@ -4,8 +4,9 @@ import answers from './answers';
 import evaluation from './evaluation';
 
 const assessmentReducers = {
-  items,
   test,
+
+  items,
   answers,
   evaluation,
 };

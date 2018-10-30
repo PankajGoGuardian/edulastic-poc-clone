@@ -37,13 +37,6 @@ import TestPreviewItem from '../../components/TestItemPreview';
 const defaultTheme = require('sass-extract-loader?{"plugins": ["sass-extract-js"]}!../../styles/vars.scss');
 
 class AssessmentPlayerSimple extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      checkAnswer: false,
-    };
-  }
-
   static propTypes = {
     theme: PropTypes.object,
     isLast: PropTypes.func.isRequired,
@@ -55,6 +48,7 @@ class AssessmentPlayerSimple extends React.Component {
     items: PropTypes.any.isRequired,
     evaluate: PropTypes.any.isRequired,
     itemRows: PropTypes.any.isRequired,
+    view: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -63,7 +57,6 @@ class AssessmentPlayerSimple extends React.Component {
 
   checkAnswer = () => {
     const { evaluate } = this.props;
-    this.setState({ checkAnswer: true });
     evaluate();
   };
 
@@ -79,11 +72,9 @@ class AssessmentPlayerSimple extends React.Component {
       currentItem,
       gotoQuestion,
       itemRows,
+      view: previewTab,
     } = this.props;
 
-    const { checkAnswer } = this.state;
-
-    const previewTab = checkAnswer ? 'check' : 'clear';
     const dropdownOptions = Array.isArray(items)
       ? items.map((item, index) => index)
       : [];

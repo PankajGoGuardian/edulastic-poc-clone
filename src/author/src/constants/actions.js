@@ -18,6 +18,7 @@ export const LOAD_ASSESSMENT = 'load assessment';
 
 // view
 export const CHANGE_VIEW = '[view] CHANGE_VIEW';
+export const CHANGE_PREVIEW = '[view] change view';
 
 // preview
 export const PREVIEW_UPDATE_LIST = '[preview] PREVIEW_UPDATE_LIST';

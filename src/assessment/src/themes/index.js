@@ -60,7 +60,7 @@ const AssessmentContainer = ({
 };
 
 AssessmentContainer.propTypes = {
-  gotoQuestion: PropTypes.func.isRequired,
+  gotoItem: PropTypes.func.isRequired,
   items: PropTypes.array.isRequired,
   currentItem: PropTypes.number.isRequired,
 };

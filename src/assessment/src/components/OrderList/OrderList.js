@@ -286,7 +286,7 @@ OrderList.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any.isRequired,
+  evaluation: PropTypes.any,
 };
 
 OrderList.defaultProps = {

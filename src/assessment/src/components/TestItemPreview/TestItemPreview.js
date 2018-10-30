@@ -10,7 +10,7 @@ export default class TestItemPreview extends Component {
     cols: PropTypes.array.isRequired,
     verticalDivider: PropTypes.bool,
     scrolling: PropTypes.bool,
-    previewTab: PropTypes.string.isRequired,
+    previewTab: PropTypes.string,
   };
 
   static defaultProps = {

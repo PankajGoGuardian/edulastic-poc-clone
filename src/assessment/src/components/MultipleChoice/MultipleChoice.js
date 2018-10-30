@@ -225,7 +225,7 @@ MultipleChoice.propTypes = {
   userAnswer: PropTypes.any,
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any.isRequired,
+  evaluation: PropTypes.any,
 };
 
 MultipleChoice.defaultProps = {

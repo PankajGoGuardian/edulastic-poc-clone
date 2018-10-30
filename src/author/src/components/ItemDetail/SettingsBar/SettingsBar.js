@@ -122,7 +122,10 @@ class SettingsBar extends Component {
           />
         </Checkboxes>
         <Heading>{t('author:component.settingsBar.tags')}</Heading>
-        <SettingsBarTags tags={['equations', 'algebra']} onRemove={this.handleRemoveTag} />
+        <SettingsBarTags
+          tags={['equations', 'algebra']}
+          onRemove={this.handleRemoveTag}
+        />
       </Container>
     );
   }

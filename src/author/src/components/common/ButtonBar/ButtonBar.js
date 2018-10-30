@@ -111,10 +111,7 @@ const ButtonBar = ({
             <ButtonLink
               onClick={() => changePreviewTab('check')}
               color="primary"
-              active={previewTab === 'check'}
-              icon={
-                <IconCheck color={previewTab === 'check' ? darkBlue : blue} />
-              }
+              icon={<IconCheck color={blue} />}
             >
               {t('component.questioneditor.buttonbar.checkanswer')}
             </ButtonLink>
@@ -123,13 +120,7 @@ const ButtonBar = ({
             <ButtonLink
               onClick={() => changePreviewTab('show')}
               color="primary"
-              active={previewTab === 'show'}
-              icon={(
-                <IconEye
-                  color={previewTab === 'show' ? darkBlue : blue}
-                  hoverColor={darkBlue}
-                />
-)}
+              icon={<IconEye color={blue} hoverColor={darkBlue} />}
             >
               {t('component.questioneditor.buttonbar.showanswers')}
             </ButtonLink>
@@ -139,11 +130,7 @@ const ButtonBar = ({
               onClick={() => changePreviewTab('clear')}
               color="primary"
               active={previewTab === 'clear'}
-              icon={(
-                <IconEraseText
-                  color={previewTab === 'clear' ? darkBlue : blue}
-                />
-)}
+              icon={<IconEraseText color={blue} />}
             >
               {t('component.questioneditor.buttonbar.clear')}
             </ButtonLink>

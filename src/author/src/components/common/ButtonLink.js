@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {
   blue,
-  darkBlue,
+  white,
   textColor,
   green,
   greenDark,
@@ -16,8 +16,8 @@ const getColors = ({ color, active }) => {
   switch (color) {
     case 'primary':
       colors.color = blue;
-      colors.hoverColor = darkBlue;
-      if (active) colors.color = darkBlue;
+      colors.hoverColor = white;
+      if (active) colors.color = blue;
       break;
     case 'default':
       colors.color = textColor;
@@ -38,7 +38,15 @@ const getColors = ({ color, active }) => {
   return colors;
 };
 
-const ButtonLink = ({ onClick, color, icon, children, uppercase, style, active }) => (
+const ButtonLink = ({
+  onClick,
+  color,
+  icon,
+  children,
+  uppercase,
+  style,
+  active,
+}) => (
   <Container
     onClick={onClick}
     type="button"

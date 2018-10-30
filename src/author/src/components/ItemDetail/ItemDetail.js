@@ -6,8 +6,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Progress, Paper } from '@edulastic/common';
 import { cloneDeep } from 'lodash';
-
-import { changeViewAction } from '../../actions/view';
+import { changeViewAction, changePreviewAction } from '../../actions/view';
 import { checkAnswerAction, showAnswerAction } from '../../actions/testItem';
 import {
   getItemDetailByIdAction,
@@ -185,7 +184,7 @@ class ItemDetail extends Component {
   };
 
   handleChangePreviewTab = (previewTab) => {
-    const { checkAnswer, showAnswer } = this.props;
+    const { checkAnswer, showAnswer, changePreview } = this.props;
 
     if (previewTab === 'check') {
       checkAnswer();
@@ -194,16 +193,17 @@ class ItemDetail extends Component {
       showAnswer();
     }
 
+    changePreview(previewTab);
+
     this.setState({
       previewTab,
     });
   };
 
   renderPreview = () => {
-    const { previewTab } = this.state;
-    const { rows, item, evaluation } = this.props;
+    const { rows, item, evaluation, preview } = this.props;
 
-    switch (previewTab) {
+    switch (preview) {
       case 'clear':
         return (
           <TestItemPreview
@@ -249,6 +249,7 @@ class ItemDetail extends Component {
       type,
       updateTabTitle,
       useTabs,
+      changePreview,
     } = this.props;
 
     const { view, previewTab } = this.state;
@@ -293,6 +294,7 @@ class ItemDetail extends Component {
             onShowSource={this.handleShowSource}
             onShowSettings={this.handleShowSettings}
             onChangeView={this.handleChangeView}
+            changePreview={changePreview}
             changePreviewTab={this.handleChangePreviewTab}
             onSave={this.handleSave}
             saving={updating}
@@ -333,6 +335,7 @@ ItemDetail.propTypes = {
   rows: PropTypes.array,
   loading: PropTypes.bool.isRequired,
   item: PropTypes.object,
+  preview: PropTypes.string.isRequired,
   updateItemDetailById: PropTypes.func.isRequired,
   setItemDetailData: PropTypes.func.isRequired,
   updating: PropTypes.bool.isRequired,
@@ -344,6 +347,7 @@ ItemDetail.propTypes = {
   useTabs: PropTypes.func.isRequired,
   checkAnswer: PropTypes.func.isRequired,
   showAnswer: PropTypes.func.isRequired,
+  changePreview: PropTypes.func.isRequired,
   evaluation: PropTypes.isRequired,
 };
 
@@ -362,9 +366,11 @@ const enhance = compose(
       updating: getItemDetailUpdatingSelector(state),
       type: getItemDetailDimensionTypeSelector(state),
       evaluation: state.evluation,
+      preview: state.view.preview,
     }),
     {
       changeView: changeViewAction,
+      changePreview: changePreviewAction,
       showAnswer: showAnswerAction,
       checkAnswer: checkAnswerAction,
       getItemDetailById: getItemDetailByIdAction,

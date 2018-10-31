@@ -1,6 +1,6 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects';
 import { testItemsApi } from '@edulastic/api';
-import { NotificationManager } from 'react-notifications';
+import { message } from 'antd';
 
 import {
   CREATE_TEST_ITEM_REQUEST,
@@ -23,7 +23,7 @@ function* createTestItemSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = 'Create item is failed';
-    NotificationManager.error(errorMessage, 'Error');
+    yield call(message.error, errorMessage);
     yield put({
       type: CREATE_TEST_ITEM_ERROR,
       payload: { error: errorMessage },
@@ -41,7 +41,7 @@ function* updateTestItemSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = 'Update item is failed';
-    NotificationManager.error(errorMessage, 'Error');
+    yield call(message.error, errorMessage);
     yield put({
       type: UPDATE_TEST_ITEM_ERROR,
       payload: { error: errorMessage },

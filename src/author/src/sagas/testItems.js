@@ -1,6 +1,6 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects';
 import { testItemsApi } from '@edulastic/api';
-import { NotificationManager } from 'react-notifications';
+import { message } from 'antd';
 
 import {
   RECEIVE_TEST_ITEMS_REQUEST,
@@ -19,7 +19,7 @@ function* receiveTestItemsSaga() {
   } catch (err) {
     console.error(err);
     const errorMessage = 'Receive items is failing';
-    NotificationManager.error(errorMessage, 'Error');
+    yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_TEST_ITEMS_ERROR,
       payload: { error: errorMessage },

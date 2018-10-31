@@ -1,6 +1,6 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects';
 import { testsApi } from '@edulastic/api';
-import { NotificationManager } from 'react-notifications';
+import { message } from 'antd';
 
 import {
   RECEIVE_TESTS_REQUEST,
@@ -29,7 +29,7 @@ function* receiveTestsSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = 'Receive tests is failing';
-    NotificationManager.error(errorMessage, 'Error');
+    yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_TESTS_ERROR,
       payload: { error: errorMessage },
@@ -48,7 +48,7 @@ function* receiveTestByIdSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = 'Receive test by id is failing';
-    NotificationManager.error(errorMessage, 'Error');
+    yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_TEST_BY_ID_ERROR,
       payload: { error: errorMessage },
@@ -64,11 +64,11 @@ function* createTestSaga({ payload }) {
       type: CREATE_TEST_SUCCESS,
       payload: { entity },
     });
-    NotificationManager.success('Success create', 'Success');
+    yield call(message.success, 'Success create');
   } catch (err) {
     console.error(err);
     const errorMessage = 'Create test is failing';
-    NotificationManager.error(errorMessage, 'Error');
+    yield call(message.error, errorMessage);
     yield put({
       type: CREATE_TEST_ERROR,
       payload: { error: errorMessage },
@@ -84,11 +84,11 @@ function* updateTestSaga({ payload }) {
       type: UPDATE_TEST_SUCCESS,
       payload: { entity },
     });
-    NotificationManager.success('Success update', 'Success');
+    yield call(message.success, 'Success update');
   } catch (err) {
     console.error(err);
     const errorMessage = 'Update test is failing';
-    NotificationManager.error(errorMessage, 'Error');
+    yield call(message.error, errorMessage);
     yield put({
       type: UPDATE_TEST_ERROR,
       payload: { error: errorMessage },

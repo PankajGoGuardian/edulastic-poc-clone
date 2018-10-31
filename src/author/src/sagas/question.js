@@ -1,6 +1,6 @@
 import { takeEvery, call, put, all, select } from 'redux-saga/effects';
 import { questionsApi } from '@edulastic/api';
-import { NotificationManager } from 'react-notifications';
+import { message } from 'antd';
 
 import { history } from '../../../configureStore';
 import {
@@ -27,7 +27,7 @@ function* receiveQuestionSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = 'Receive question is failing';
-    NotificationManager.error(errorMessage, 'Error');
+    yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_QUESTION_ERROR,
       payload: { error: errorMessage },
@@ -68,7 +68,7 @@ function* saveQuestionSaga() {
       payload: { entity },
     });
 
-    NotificationManager.success('Update item by id is success', 'Success');
+    yield call(message.success, 'Update item by id is success', 'Success');
 
     if (itemDetail) {
       yield call(history.push, {
@@ -83,7 +83,7 @@ function* saveQuestionSaga() {
   } catch (err) {
     console.error(err);
     const errorMessage = 'Save question is failing';
-    NotificationManager.error(errorMessage, 'Error');
+    yield call(message.error, errorMessage);
     yield put({
       type: SAVE_QUESTION_ERROR,
       payload: { error: errorMessage },

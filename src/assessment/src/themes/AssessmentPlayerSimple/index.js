@@ -61,6 +61,7 @@ class AssessmentPlayerSimple extends React.Component {
   };
 
   render() {
+    console.log('assessmment player simple is rendered');
     const {
       theme,
       // t,

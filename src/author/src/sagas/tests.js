@@ -58,7 +58,7 @@ function* receiveTestByIdSaga({ payload }) {
 
 function* createTestSaga({ payload }) {
   try {
-    const entity = yield call(testsApi.create, payload);
+    const entity = yield call(testsApi.create, payload.data);
 
     yield put({
       type: CREATE_TEST_SUCCESS,

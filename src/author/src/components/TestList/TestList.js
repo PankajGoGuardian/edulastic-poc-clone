@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { withWindowSizes, Card } from '@edulastic/common';
+import { withWindowSizes, Card, helpers } from '@edulastic/common';
 import { compose } from 'redux';
 import { Row, Col, Input, Pagination, Spin } from 'antd';
 
@@ -77,6 +77,7 @@ class TestList extends Component {
   render() {
     const { tests, page, limit, count, loading, history, creating, match } = this.props;
     const { searchStr } = this.state;
+    const { from, to } = helpers.getPaginationInfo({ page, limit, count });
 
     return (
       <div>
@@ -92,6 +93,9 @@ class TestList extends Component {
                 size="large"
                 value={searchStr}
               />
+            </Col>
+            <Col span={18}>
+              {from} to {to} of {count}
             </Col>
           </Row>
           <Row gutter={16}>

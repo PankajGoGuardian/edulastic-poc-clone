@@ -15,6 +15,7 @@ import {
 } from '../../actions/tests';
 import { getTestSelector } from '../../selectors/tests';
 import SourceModal from '../QuestionEditor/SourceModal';
+import Review from './Review';
 
 const TestPage = ({ createTest, match, receiveTestById, test, setData, updateTest }) => {
   useEffect(() => {
@@ -44,6 +45,8 @@ const TestPage = ({ createTest, match, receiveTestById, test, setData, updateTes
     switch (current) {
       case 'addItems':
         return <AddItems onAddItems={handleAddItems} selectedItems={selectedItems} />;
+      case 'review':
+        return <Review />;
       default:
         return null;
     }

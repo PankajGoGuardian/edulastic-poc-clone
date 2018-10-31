@@ -31,4 +31,5 @@ export { default as IconAssign } from './src/IconAssign';
 export { default as IconCode } from './src/IconCode';
 export { default as IconReview } from './src/IconReview';
 export { default as IconSummary } from './src/IconSummary';
-export { default as IconHamburger } from './src/IconHamburger';
+export { default as IconList } from './src/IconList';
+export { default as IconTile } from './src/IconTile';

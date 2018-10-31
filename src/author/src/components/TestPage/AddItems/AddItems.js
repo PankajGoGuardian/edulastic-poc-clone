@@ -62,7 +62,7 @@ const Items = ({ items, loading, receiveTestItems, history, onAddItems, selected
       by: 'Kevin Hart',
       shared: '9578 (1)',
       likes: 9,
-      tags: item.tags && item.tags.length ? item.tags : [{ name: 'test' }],
+      tags: item.tags && item.tags.length ? item.tags : [],
     };
 
     if (item.data.questions && item.data.questions.length) {

@@ -2,11 +2,11 @@ import React, { memo } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { blue } from '@edulastic/colors';
-import { EduButton } from '@edulastic/common';
+import { EduButton, FlexContainer } from '@edulastic/common';
 
 function TestPageNav({ onChange, current, buttons }) {
   return (
-    <nav>
+    <FlexContainer>
       {buttons.map(({ value, text, icon }) => (
         <StyledButton
           type="primary"
@@ -15,11 +15,13 @@ function TestPageNav({ onChange, current, buttons }) {
           active={(current === value).toString()}
           onClick={() => onChange(value)}
         >
-          <IconWrapper>{icon}</IconWrapper>
-          <div>{text}</div>
+          <FlexContainer>
+            {icon}
+            <div>{text}</div>
+          </FlexContainer>
         </StyledButton>
       ))}
-    </nav>
+    </FlexContainer>
   );
 }
 
@@ -38,10 +40,4 @@ const StyledButton = styled(EduButton)`
   align-items: center;
   margin-right: 10px;
   background: ${props => (props.active === 'true' ? blue : 'transparent')};
-`;
-
-const IconWrapper = styled.div`
-  width: 16px;
-  height: 16px;
-  margin-right: 10px;
 `;

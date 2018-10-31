@@ -4,18 +4,25 @@ import styled from 'styled-components';
 import { Col, Row } from 'antd';
 import { darkBlue, white, green } from '@edulastic/colors';
 import { FlexContainer, EduButton } from '@edulastic/common';
-import { FaCode } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import {
+  IconAddItems,
+  IconAssign,
+  IconCode,
+  IconReview,
+  IconSettings,
+  IconSummary,
+} from '@edulastic/icons';
 
 import TestPageNav from './TestPageNav';
 
 const buttons = [
-  { icon: <FaCode style={{ width: 16, height: 16 }} />, value: 'summary', text: 'Summary' },
-  { icon: <FaCode style={{ width: 16, height: 16 }} />, value: 'addItems', text: 'Add Items' },
-  { icon: <FaCode style={{ width: 16, height: 16 }} />, value: 'review', text: 'Review' },
-  { icon: <FaCode style={{ width: 16, height: 16 }} />, value: 'settings', text: 'Settings' },
-  { icon: <FaCode style={{ width: 16, height: 16 }} />, value: 'assign', text: 'Assign' },
-  { icon: <FaCode style={{ width: 16, height: 16 }} />, value: 'source', text: 'Source' },
+  { icon: <IconSummary color={white} />, value: 'summary', text: 'Summary' },
+  { icon: <IconAddItems color={white} />, value: 'addItems', text: 'Add Items' },
+  { icon: <IconReview color={white} width={24} height={24} />, value: 'review', text: 'Review' },
+  { icon: <IconSettings color={white} />, value: 'settings', text: 'Settings' },
+  { icon: <IconAssign color={white} />, value: 'assign', text: 'Assign' },
+  { icon: <IconCode color={white} />, value: 'source', text: 'Source' },
 ];
 
 const getCurrentText = (current) => {

@@ -58,7 +58,11 @@ const Items = ({ items, loading, receiveTestItems, history, onAddItems, selected
       id: item.id,
     };
     const meta = {
+      id: item.id,
       by: 'Kevin Hart',
+      shared: '9578 (1)',
+      likes: 9,
+      tags: item.tags && item.tags.length ? item.tags : [{ name: 'test' }],
     };
 
     if (item.data.questions && item.data.questions.length) {

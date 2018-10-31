@@ -10,6 +10,7 @@ export { default as EduButton } from './src/components/EduButton';
 export { default as Checkbox } from './src/components/Checkbox';
 export { default as Tabs } from './src/components/Tabs';
 export { default as Card } from './src/components/Card';
+export { default as MoveLink } from './src/components/MoveLink';
 
 // HOC
 export { default as withWindowSizes } from './src/HOC/withWindowSizes';

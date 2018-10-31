@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { FaAngleDoubleRight } from 'react-icons/fa';
 import { IconClockCircularOutline } from '@edulastic/icons';
-import { grey, blue, darkBlue, textColor, tabletWidth } from '@edulastic/colors';
+import { grey, textColor, tabletWidth } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
-import { Button } from '@edulastic/common';
+import { Button, MoveLink } from '@edulastic/common';
 
 /* eslint-disable no-underscore-dangle */
 class Item extends Component {
@@ -32,9 +31,7 @@ class Item extends Component {
     return (
       <Container>
         <Question>
-          <Link onClick={this.moveToItem}>
-            {item.id}# <FaAngleDoubleRight />
-          </Link>
+          <MoveLink onClick={this.moveToItem}>{item.id}</MoveLink>
           <div dangerouslySetInnerHTML={{ __html: item.stimulus }} />
         </Question>
         <Author>
@@ -82,20 +79,6 @@ const Container = styled.div`
 
   @media (max-width: ${tabletWidth}) {
     flex-direction: column;
-  }
-`;
-
-const Link = styled.a`
-  font-size: 16px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-  color: ${blue};
-  cursor: pointer;
-
-  :hover {
-    color: ${darkBlue};
   }
 `;
 

@@ -13,17 +13,19 @@ import TestFilters from '../../common/TestFilters';
 import { getItemsLoadingSelector, getTestItemsSelector } from '../../../selectors/testItems';
 import { receiveTestItemsAction } from '../../../actions/testItems';
 
-const useSelectedItemsEffect = () => {
-  let isMappedSelectedItems = false;
-  return (selectedTests, selectedItems, setSelectedTests) => {
+const useSelectedItemsEffect = (selectedItems) => {
+  const [isMappedSelectedItems, setIsMappedSelectedItems] = useState(false);
+  const [selectedTests, setSelectedTests] = useState([]);
+
+  useEffect(() => {
     if (!selectedTests.length && selectedItems.length && !isMappedSelectedItems) {
-      isMappedSelectedItems = true;
+      setIsMappedSelectedItems(true);
       setSelectedTests(selectedItems);
     }
-  };
-};
+  });
 
-const selectedItemsEffect = useSelectedItemsEffect();
+  return { selectedTests, setSelectedTests };
+};
 
 const Items = ({ items, loading, receiveTestItems, history, onAddItems, selectedItems }) => {
   useEffect(() => {
@@ -31,11 +33,7 @@ const Items = ({ items, loading, receiveTestItems, history, onAddItems, selected
   }, []);
 
   const [searchStr, setSearchStr] = useState('');
-  const [selectedTests, setSelectedTests] = useState([]);
-
-  useEffect(() => {
-    selectedItemsEffect(selectedTests, selectedItems, setSelectedTests);
-  });
+  const { selectedTests, setSelectedTests } = useSelectedItemsEffect(selectedItems);
 
   if (loading) return <Spin size="large" />;
 

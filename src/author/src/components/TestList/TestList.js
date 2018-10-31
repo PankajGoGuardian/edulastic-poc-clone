@@ -130,9 +130,13 @@ class TestList extends Component {
                 {loading ? (
                   <Spin size="large" />
                 ) : (
-                  <Row gutter={16}>
+                  <Row gutter={16} type="flex">
                     {tests.map(item => (
-                      <Col key={item.id} span={blockStyle === 'tile' ? 8 : 24}>
+                      <Col
+                        key={item.id}
+                        span={blockStyle === 'tile' ? 8 : 24}
+                        style={{ marginBottom: 15 }}
+                      >
                         <Item item={item} history={history} match={match} />
                       </Col>
                     ))}

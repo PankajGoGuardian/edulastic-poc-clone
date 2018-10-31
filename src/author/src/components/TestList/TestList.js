@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { withWindowSizes, Card, helpers } from '@edulastic/common';
+import { withWindowSizes, Card, helpers, FlexContainer } from '@edulastic/common';
 import { compose } from 'redux';
 import { Row, Col, Input, Pagination, Spin } from 'antd';
 
@@ -19,10 +19,12 @@ import {
 import TestListHeader from './TestListHeader';
 import TestFilters from '../common/TestFilters';
 import TestFiltersNav from '../common/TestFilters/TestFiltersNav';
+import SortBar from './SortBar';
 
 class TestList extends Component {
   state = {
     searchStr: '',
+    blockStyle: 'tile',
   };
 
   items = [
@@ -74,9 +76,19 @@ class TestList extends Component {
     console.log(name, value);
   };
 
+  handleSortChange = (value) => {
+    console.log(value);
+  };
+
+  handleStyleChange = (blockStyle) => {
+    this.setState({
+      blockStyle,
+    });
+  };
+
   render() {
     const { tests, page, limit, count, loading, history, creating, match } = this.props;
-    const { searchStr } = this.state;
+    const { searchStr, blockStyle } = this.state;
     const { from, to } = helpers.getPaginationInfo({ page, limit, count });
 
     return (
@@ -95,7 +107,16 @@ class TestList extends Component {
               />
             </Col>
             <Col span={18}>
-              {from} to {to} of {count}
+              <FlexContainer justifyContent="space-between">
+                <PaginationInfo>
+                  {from} to {to} of <i>{count}</i>
+                </PaginationInfo>
+                <SortBar
+                  onSortChange={this.handleSortChange}
+                  onStyleChange={this.handleStyleChange}
+                  activeStyle={blockStyle}
+                />
+              </FlexContainer>
             </Col>
           </Row>
           <Row gutter={16}>
@@ -111,7 +132,7 @@ class TestList extends Component {
                 ) : (
                   <Row gutter={16}>
                     {tests.map(item => (
-                      <Col key={item.id} span={8}>
+                      <Col key={item.id} span={blockStyle === 'tile' ? 8 : 24}>
                         <Item item={item} history={history} match={match} />
                       </Col>
                     ))}
@@ -167,4 +188,9 @@ export default enhance(TestList);
 
 const Container = styled.div`
   padding: 30px;
+`;
+
+const PaginationInfo = styled.span`
+  font-weight: 600;
+  font-size: 13px;
 `;

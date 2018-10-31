@@ -30,7 +30,6 @@ class Item extends Component {
 
   render() {
     const { item, t } = this.props;
-    console.log(item);
     return (
       <Container
         title={(

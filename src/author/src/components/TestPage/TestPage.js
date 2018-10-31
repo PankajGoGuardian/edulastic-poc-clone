@@ -14,6 +14,7 @@ import {
   updateTestAction,
 } from '../../actions/tests';
 import { getTestSelector } from '../../selectors/tests';
+import SourceModal from '../QuestionEditor/SourceModal';
 
 const TestPage = ({ createTest, match, receiveTestById, test, setData, updateTest }) => {
   useEffect(() => {
@@ -23,8 +24,13 @@ const TestPage = ({ createTest, match, receiveTestById, test, setData, updateTes
   }, []);
 
   const [current, setCurrent] = useState('addItems');
+  const [showModal, setShowModal] = useState(false);
 
   const handleNavChange = (value) => {
+    if (value === 'source') {
+      setShowModal(true);
+      return;
+    }
     setCurrent(value);
   };
 
@@ -49,8 +55,23 @@ const TestPage = ({ createTest, match, receiveTestById, test, setData, updateTes
     }
   };
 
+  const handleApplySource = (source) => {
+    try {
+      const data = JSON.parse(source);
+      setData(data);
+      setShowModal(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div>
+      {showModal && (
+        <SourceModal onClose={() => setShowModal(false)} onApply={handleApplySource}>
+          {JSON.stringify(test, null, 4)}
+        </SourceModal>
+      )}
       <TestPageHeader
         onChangeNav={handleNavChange}
         current={current}

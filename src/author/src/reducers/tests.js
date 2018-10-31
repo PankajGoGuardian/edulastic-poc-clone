@@ -12,24 +12,27 @@ import {
   UPDATE_TEST_REQUEST,
   UPDATE_TEST_SUCCESS,
   UPDATE_TEST_ERROR,
+  SET_DEFAULT_TEST_DATA,
 } from '../constants/actions';
+
+const initialTestState = {
+  title: 'New Test',
+  description: '',
+  renderingType: 'assessment',
+  status: 'draft',
+  createdBy: {
+    id: 'demos-site',
+    firstName: 'Demos',
+    lastName: 'User',
+    email: 'demos@snapwiz.com',
+  },
+  tags: [],
+  testItems: [],
+};
 
 const initialState = {
   entities: [],
-  entity: {
-    title: 'New Test',
-    description: '',
-    renderingType: 'assessment',
-    status: 'draft',
-    createdBy: {
-      id: 'demos-site',
-      firstName: 'Demos',
-      lastName: 'User',
-      email: 'demos@snapwiz.com',
-    },
-    tags: [],
-    testItems: [],
-  },
+  entity: initialTestState,
   error: null,
   page: 1,
   limit: 5,
@@ -67,6 +70,9 @@ const reducer = (state = initialState, { type, payload }) => {
 
     case SET_TEST_DATA:
       return { ...state, entity: payload.data };
+
+    case SET_DEFAULT_TEST_DATA:
+      return { ...state, entity: initialTestState };
 
     case CREATE_TEST_REQUEST:
     case UPDATE_TEST_REQUEST:

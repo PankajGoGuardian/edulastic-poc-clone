@@ -85,3 +85,4 @@ export const RECEIVE_TEST_BY_ID_SUCCESS = '[tests] receive test by id success';
 export const RECEIVE_TEST_BY_ID_ERROR = '[tests] receive test by id error';
 
 export const SET_TEST_DATA = '[tests] set test data';
+export const SET_DEFAULT_TEST_DATA = '[tests] set default test data';

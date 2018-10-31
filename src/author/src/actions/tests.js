@@ -4,6 +4,7 @@ import {
   RECEIVE_TEST_BY_ID_REQUEST,
   SET_TEST_DATA,
   UPDATE_TEST_REQUEST,
+  SET_DEFAULT_TEST_DATA,
 } from '../constants/actions';
 
 export const receiveTestsAction = payload => ({
@@ -29,4 +30,8 @@ export const updateTestAction = (id, data) => ({
 export const setTestDataAction = data => ({
   type: SET_TEST_DATA,
   payload: { data },
+});
+
+export const setDefaultTestDataAction = () => ({
+  type: SET_DEFAULT_TEST_DATA,
 });

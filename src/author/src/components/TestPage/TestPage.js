@@ -12,15 +12,26 @@ import {
   receiveTestByIdAction,
   setTestDataAction,
   updateTestAction,
+  setDefaultTestDataAction,
 } from '../../actions/tests';
 import { getTestSelector } from '../../selectors/tests';
 import SourceModal from '../QuestionEditor/SourceModal';
 import Review from './Review';
 
-const TestPage = ({ createTest, match, receiveTestById, test, setData, updateTest }) => {
+const TestPage = ({
+  createTest,
+  match,
+  receiveTestById,
+  test,
+  setData,
+  updateTest,
+  setDefaultData,
+}) => {
   useEffect(() => {
     if (match.params.id) {
       receiveTestById(match.params.id);
+    } else {
+      setDefaultData();
     }
   }, []);
 
@@ -93,6 +104,7 @@ TestPage.propTypes = {
   updateTest: PropTypes.func.isRequired,
   receiveTestById: PropTypes.func.isRequired,
   setData: PropTypes.func.isRequired,
+  setDefaultData: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   test: PropTypes.object,
 };
@@ -113,6 +125,7 @@ const enhance = compose(
       updateTest: updateTestAction,
       receiveTestById: receiveTestByIdAction,
       setData: setTestDataAction,
+      setDefaultData: setDefaultTestDataAction,
     },
   ),
 );

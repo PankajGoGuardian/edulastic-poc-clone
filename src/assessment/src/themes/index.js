@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { gotoItem, saveUserResponse, loadUserResponse } from '../actions/items';
@@ -20,13 +20,18 @@ const AssessmentContainer = ({
   loadUserResponse: loadUser,
   evaluateAnswer: evaluate,
 }) => {
+  useEffect(() => {
+    if (items.length) {
+      loadUser(currentItem);
+    }
+  });
+
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
 
   const gotoQuestion = (index) => {
     gotoIt(index);
     saveUser(currentItem);
-    loadUser(index);
   };
 
   const moveToNext = () => {

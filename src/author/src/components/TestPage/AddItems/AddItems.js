@@ -13,13 +13,29 @@ import TestFilters from '../../common/TestFilters';
 import { getItemsLoadingSelector, getTestItemsSelector } from '../../../selectors/testItems';
 import { receiveTestItemsAction } from '../../../actions/testItems';
 
-const Items = ({ items, loading, receiveTestItems, history, onAddItems }) => {
+const useSelectedItemsEffect = () => {
+  let isMappedSelectedItems = false;
+  return (selectedTests, selectedItems, setSelectedTests) => {
+    if (!selectedTests.length && selectedItems.length && !isMappedSelectedItems) {
+      isMappedSelectedItems = true;
+      setSelectedTests(selectedItems);
+    }
+  };
+};
+
+const selectedItemsEffect = useSelectedItemsEffect();
+
+const Items = ({ items, loading, receiveTestItems, history, onAddItems, selectedItems }) => {
   useEffect(() => {
     receiveTestItems();
   }, []);
 
   const [searchStr, setSearchStr] = useState('');
   const [selectedTests, setSelectedTests] = useState([]);
+
+  useEffect(() => {
+    selectedItemsEffect(selectedTests, selectedItems, setSelectedTests);
+  });
 
   if (loading) return <Spin size="large" />;
 
@@ -62,6 +78,7 @@ const Items = ({ items, loading, receiveTestItems, history, onAddItems }) => {
     onChange: (selectedRowKeys) => {
       setSelectedTests(selectedRowKeys);
     },
+    selectedRowKeys: selectedTests,
   };
 
   const handleSearch = (val) => {
@@ -101,11 +118,9 @@ const Items = ({ items, loading, receiveTestItems, history, onAddItems }) => {
               <FlexContainer justifyContent="space-between">
                 <span>{items.length} questions</span>
                 <div>
-                  {!!selectedTests.length && (
-                    <StyledButton type="primary" size="large" onClick={handleAddItems}>
-                      <span>Add {selectedTests.length} selected items</span>
-                    </StyledButton>
-                  )}
+                  <StyledButton type="primary" size="large" onClick={handleAddItems}>
+                    <span>Add {selectedTests.length} selected items</span>
+                  </StyledButton>
                   <StyledButton type="secondary" size="large" onClick={handleCreateNewItem}>
                     Create new Item
                   </StyledButton>
@@ -148,6 +163,7 @@ Items.propTypes = {
   receiveTestItems: PropTypes.func.isRequired,
   onAddItems: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
+  selectedItems: PropTypes.array.isRequired,
 };
 
 const enhance = compose(

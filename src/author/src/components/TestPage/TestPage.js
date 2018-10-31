@@ -38,10 +38,12 @@ const TestPage = ({ createTest, match, receiveTestById, test, setData, updateTes
     setData({ ...test, testItems: items.map(id => ({ id })) });
   };
 
+  const selectedItems = test.testItems.map(({ id }) => id);
+
   const renderContent = () => {
     switch (current) {
       case 'addItems':
-        return <AddItems onAddItems={handleAddItems} />;
+        return <AddItems onAddItems={handleAddItems} selectedItems={selectedItems} />;
       default:
         return null;
     }

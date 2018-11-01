@@ -16,6 +16,7 @@ import {
   getItemsTypesSelector,
 } from '../../../selectors/testItems';
 import { receiveTestItemsAction } from '../../../actions/testItems';
+import { Container } from '../../common';
 
 const useSelectedItemsEffect = (selectedItems) => {
   const [isMappedSelectedItems, setIsMappedSelectedItems] = useState(false);
@@ -106,7 +107,7 @@ const Items = ({ items, loading, receiveTestItems, history, onAddItems, selected
   };
 
   return (
-    <React.Fragment>
+    <Container>
       <Row gutter={16} style={{ paddingTop: 15, paddingBottom: 15 }} align="middle">
         <Col span={6}>
           <Input.Search
@@ -159,7 +160,7 @@ const Items = ({ items, loading, receiveTestItems, history, onAddItems, selected
           </Paper>
         </Col>
       </Row>
-    </React.Fragment>
+    </Container>
   );
 };
 

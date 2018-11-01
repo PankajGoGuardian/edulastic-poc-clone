@@ -16,7 +16,7 @@ const HeaderBar = ({ onSelectAll, onRemoveSelected, onCollapse }) => {
   };
 
   return (
-    <FlexContainer>
+    <Container>
       <Item>
         <Checkbox onChange={onSelectAll} style={{ color: blue }}>
           Select all
@@ -41,7 +41,7 @@ const HeaderBar = ({ onSelectAll, onRemoveSelected, onCollapse }) => {
         <IconCollapse color={blue} />
         <span>Collapse Rows</span>
       </Item>
-    </FlexContainer>
+    </Container>
   );
 };
 
@@ -58,4 +58,8 @@ const Item = styled(FlexContainer)`
   margin-right: 20px;
   color: ${blue};
   position: relative;
+`;
+
+const Container = styled(FlexContainer)`
+  padding: 25px 45px;
 `;

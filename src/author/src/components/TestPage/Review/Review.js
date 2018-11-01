@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col } from 'antd';
 import HeaderBar from './HeaderBar';
+import Calculator from './Calculator';
 
 const Review = () => {
   const handleSelectAll = () => {
@@ -16,15 +17,17 @@ const Review = () => {
   };
 
   return (
-    <Row gutter={16}>
-      <Col span={20}>
+    <Row>
+      <Col span={19}>
         <HeaderBar
           onSelectAll={handleSelectAll}
           onRemoveSelected={handleRemoveSelected}
           onCollapse={handleCollapse}
         />
       </Col>
-      <Col span={4}>asdf</Col>
+      <Col span={5}>
+        <Calculator />
+      </Col>
     </Row>
   );
 };

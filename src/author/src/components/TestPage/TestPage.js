@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import { Container } from '../common';
 import AddItems from './AddItems';
 import TestPageHeader from './TestPageHeader';
 import {
@@ -94,7 +93,7 @@ const TestPage = ({
         onSave={handleSave}
         title={test.title}
       />
-      <Container>{renderContent()}</Container>
+      {renderContent()}
     </div>
   );
 };

@@ -59,12 +59,12 @@ class Item extends Component {
             <div>
               <IconHeart color={greenDark} />
               &nbsp;
-              <span>9</span>
+              <span>{item.analytics.likes}</span>
             </div>
             <div>
               <IconShare color={greenDark} />
               &nbsp;
-              <span>9578 (1)</span>
+              <span>{item.analytics.usage}</span>
             </div>
           </Icons>
         </Footer>

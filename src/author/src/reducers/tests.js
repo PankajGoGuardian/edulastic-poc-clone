@@ -21,13 +21,30 @@ const initialTestState = {
   renderingType: 'assessment',
   status: 'draft',
   createdBy: {
-    id: 'demos-site',
-    firstName: 'Demos',
-    lastName: 'User',
-    email: 'demos@snapwiz.com',
+    id: '',
+    firstName: '',
+    lastName: '',
+    email: '',
   },
   tags: [],
+  scoring: {
+    total: 0,
+    testItems: [],
+  },
   testItems: [],
+  assignments: [],
+  standardsTag: {
+    curriculum: '',
+    standards: [],
+  },
+  grades: [],
+  subjects: [],
+  courses: [],
+  collection: '',
+  analytics: {
+    usage: '0',
+    likes: '0',
+  },
 };
 
 const initialState = {

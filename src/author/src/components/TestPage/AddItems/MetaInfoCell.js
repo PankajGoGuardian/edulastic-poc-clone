@@ -27,11 +27,11 @@ const MetaInfoCell = ({ data }) => (
         <IconHeart color={greenDark} /> <span>{data.likes}</span>
       </FlexContainer>
     </FlexContainer>
-    {data.tags &&
-      !!data.tags.length && (
+    {data.types &&
+      !!data.types.length && (
         <FlexContainer style={{ marginLeft: 0 }}>
           <span>Type: </span>
-          <Tags tags={data.tags} />
+          <Tags tags={data.types} />
         </FlexContainer>
     )}
   </FlexContainer>

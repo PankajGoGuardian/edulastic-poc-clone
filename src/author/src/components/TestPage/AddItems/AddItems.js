@@ -10,7 +10,11 @@ import styled from 'styled-components';
 import MainInfoCell from './MainInfoCell';
 import MetaInfoCell from './MetaInfoCell';
 import TestFilters from '../../common/TestFilters';
-import { getItemsLoadingSelector, getTestItemsSelector } from '../../../selectors/testItems';
+import {
+  getItemsLoadingSelector,
+  getTestItemsSelector,
+  getItemsTypesSelector,
+} from '../../../selectors/testItems';
 import { receiveTestItemsAction } from '../../../actions/testItems';
 
 const useSelectedItemsEffect = (selectedItems) => {
@@ -27,7 +31,7 @@ const useSelectedItemsEffect = (selectedItems) => {
   return { selectedTests, setSelectedTests };
 };
 
-const Items = ({ items, loading, receiveTestItems, history, onAddItems, selectedItems }) => {
+const Items = ({ items, loading, receiveTestItems, history, onAddItems, selectedItems, types }) => {
   useEffect(() => {
     receiveTestItems();
   }, []);
@@ -62,7 +66,7 @@ const Items = ({ items, loading, receiveTestItems, history, onAddItems, selected
       by: 'Kevin Hart',
       shared: '9578 (1)',
       likes: 9,
-      tags: item.tags && item.tags.length ? item.tags : [],
+      types: types[item.id],
     };
 
     if (item.data.questions && item.data.questions.length) {
@@ -166,6 +170,7 @@ Items.propTypes = {
   onAddItems: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   selectedItems: PropTypes.array.isRequired,
+  types: PropTypes.object.isRequired,
 };
 
 const enhance = compose(
@@ -175,6 +180,7 @@ const enhance = compose(
     state => ({
       items: getTestItemsSelector(state),
       loading: getItemsLoadingSelector(state),
+      types: getItemsTypesSelector(state),
     }),
     { receiveTestItems: receiveTestItemsAction },
   ),

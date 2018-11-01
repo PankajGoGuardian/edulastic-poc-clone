@@ -6,7 +6,7 @@ import { darkBlue, lightBlue } from '@edulastic/colors';
 const Tags = ({ tags }) => (
   <Labels>
     {tags.map((tag, i) => (
-      <Label key={i}>{tag.name}</Label>
+      <Label key={i}>{tag}</Label>
     ))}
   </Labels>
 );

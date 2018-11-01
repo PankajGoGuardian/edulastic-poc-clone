@@ -33,3 +33,5 @@ export { default as IconReview } from './src/IconReview';
 export { default as IconSummary } from './src/IconSummary';
 export { default as IconList } from './src/IconList';
 export { default as IconTile } from './src/IconTile';
+export { default as IconMoveTo } from './src/IconMoveTo';
+export { default as IconCollapse } from './src/IconCollapse';

@@ -1,5 +1,5 @@
 import { takeEvery, call, put, all, select } from 'redux-saga/effects';
-import { NotificationManager } from 'react-notifications';
+import { message } from 'antd';
 import { testItemsApi } from '@edulastic/api';
 import { evaluateItem } from '../utils/evalution';
 import createShowAnswerData from '../utils/showAnswer';
@@ -29,7 +29,7 @@ function* createTestItemSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = 'Create item is failed';
-    NotificationManager.error(errorMessage, 'Error');
+    yield call(message.error, errorMessage);
     yield put({
       type: CREATE_TEST_ITEM_ERROR,
       payload: { error: errorMessage },
@@ -47,7 +47,7 @@ function* updateTestItemSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = 'Update item is failed';
-    NotificationManager.error(errorMessage, 'Error');
+    yield call(message.error, errorMessage);
     yield put({
       type: UPDATE_TEST_ITEM_ERROR,
       payload: { error: errorMessage },
@@ -69,7 +69,7 @@ function* evaluateAnswers() {
   } catch (err) {
     console.log(err);
     const errorMessage = 'Answer Evaluation Failed';
-    NotificationManager.error(errorMessage, 'Error');
+    yield call(message.error, errorMessage);
   }
 }
 
@@ -87,7 +87,7 @@ function* showAnswers() {
   } catch (err) {
     console.log(err);
     const errorMessage = 'Show Answer Failed';
-    NotificationManager.error(errorMessage, 'Error');
+    yield call(message.error, errorMessage);
   }
 }
 

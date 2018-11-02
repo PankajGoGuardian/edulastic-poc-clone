@@ -14,7 +14,7 @@ class TestItemCol extends Component {
   static propTypes = {
     col: PropTypes.object.isRequired,
     style: PropTypes.object,
-    previewTab: PropTypes.string,
+    previewTab: PropTypes.string.isRequired,
     evaluation: PropTypes.any.isRequired,
   };
 
@@ -70,9 +70,7 @@ class TestItemCol extends Component {
         )}
         {col.widgets.map((widget, i) => (
           <React.Fragment key={i}>
-            {!!col.tabs.length &&
-              value === widget.tabIndex &&
-              this.renderTabContent(widget)}
+            {!!col.tabs.length && value === widget.tabIndex && this.renderTabContent(widget)}
             {!col.tabs.length && this.renderTabContent(widget)}
           </React.Fragment>
         ))}

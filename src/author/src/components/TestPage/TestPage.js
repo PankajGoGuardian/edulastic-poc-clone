@@ -1,63 +1,79 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { FlexContainer, Paper } from '@edulastic/common';
+import React, { useState, useEffect, memo } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
+import { message } from 'antd';
 
-import ItemHeader from '../QuestionEditor/ItemHeader';
-import TestPageNav from './TestPageNav';
-import { Container } from '../common';
-import Items from './Items';
-import { getTestItemsSelector, getItemsLoadingSelector } from '../../selectors/testItems';
-import { receiveTestItemsAction } from '../../actions/testItems';
+import AddItems from './AddItems';
+import TestPageHeader from './TestPageHeader';
+import {
+  createTestAction,
+  receiveTestByIdAction,
+  setTestDataAction,
+  updateTestAction,
+  setDefaultTestDataAction,
+} from '../../actions/tests';
+import { getTestSelector, getTestItemsRowsSelector } from '../../selectors/tests';
+import SourceModal from '../QuestionEditor/SourceModal';
+import Review from './Review';
 
-class TestPage extends Component {
-  state = {
-    current: 'addItems',
-    checkedItems: [],
+const TestPage = ({
+  createTest,
+  match,
+  receiveTestById,
+  test,
+  setData,
+  updateTest,
+  setDefaultData,
+  rows,
+}) => {
+  useEffect(() => {
+    if (match.params.id) {
+      receiveTestById(match.params.id);
+    } else {
+      setDefaultData();
+    }
+  }, []);
+
+  const [current, setCurrent] = useState('addItems');
+  const [showModal, setShowModal] = useState(false);
+
+  const handleNavChange = (value) => {
+    if (value === 'source') {
+      setShowModal(true);
+      return;
+    }
+    setCurrent(value);
   };
 
-  static propTypes = {
-    match: PropTypes.object.isRequired,
-    testItems: PropTypes.array.isRequired,
-    receiveTestItems: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired,
+  const handleAddItems = (testItems) => {
+    setData({ ...test, testItems });
+    message.info('Selected items was added');
   };
 
-  componentDidMount() {
-    const { receiveTestItems } = this.props;
-    receiveTestItems();
-  }
-
-  handleNavChange = (value) => {
-    this.setState({
-      current: value,
-    });
+  const handleChangeGrade = (grades) => {
+    setData({ ...test, grades });
   };
 
-  handleSelectItems = (checkedItems) => {
-    this.setState({
-      checkedItems,
-    });
+  const handleChangeSubject = (subjects) => {
+    setData({ ...test, subjects });
   };
 
-  handleAddItems = () => {
-    console.log('handleAddItems');
-  };
+  const selectedItems = test.testItems.map(({ id }) => id);
 
-  renderContent = () => {
-    const { testItems, loading } = this.props;
-    const { current, checkedItems } = this.state;
-
+  const renderContent = () => {
     switch (current) {
       case 'addItems':
+        return <AddItems onAddItems={handleAddItems} selectedItems={selectedItems} />;
+      case 'review':
         return (
-          <Items
-            items={testItems}
-            loading={loading}
-            onSelect={this.handleSelectItems}
-            checkedItems={checkedItems}
-            onAddItems={this.handleAddItems}
+          <Review
+            test={test}
+            rows={rows}
+            setData={setData}
+            onChangeGrade={handleChangeGrade}
+            onChangeSubjects={handleChangeSubject}
           />
         );
       default:
@@ -65,37 +81,72 @@ class TestPage extends Component {
     }
   };
 
-  render() {
-    const { match } = this.props;
-    const { current } = this.state;
+  const handleSave = () => {
+    if (test.id) {
+      updateTest(test.id, test);
+    } else {
+      createTest(test);
+    }
+  };
 
-    return (
-      <div>
-        <ItemHeader
-          hideIcon
-          title="Test"
-          link={{ url: '/author/tests', text: 'Test list' }}
-          reference={match.params.id || ''}
-        >
-          <FlexContainer>
-            <TestPageNav onChange={this.handleNavChange} current={current} />
-          </FlexContainer>
-        </ItemHeader>
-        <Container>
-          <Paper>{this.renderContent()}</Paper>
-        </Container>
-      </div>
-    );
-  }
-}
+  const handleApplySource = (source) => {
+    try {
+      const data = JSON.parse(source);
+      setData(data);
+      setShowModal(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <div>
+      {showModal && (
+        <SourceModal onClose={() => setShowModal(false)} onApply={handleApplySource}>
+          {JSON.stringify(test, null, 4)}
+        </SourceModal>
+      )}
+      <TestPageHeader
+        onChangeNav={handleNavChange}
+        current={current}
+        onSave={handleSave}
+        title={test.title}
+      />
+      {renderContent()}
+    </div>
+  );
+};
+
+TestPage.propTypes = {
+  createTest: PropTypes.func.isRequired,
+  updateTest: PropTypes.func.isRequired,
+  receiveTestById: PropTypes.func.isRequired,
+  setData: PropTypes.func.isRequired,
+  setDefaultData: PropTypes.func.isRequired,
+  match: PropTypes.object.isRequired,
+  rows: PropTypes.array.isRequired,
+  test: PropTypes.object,
+};
+
+TestPage.defaultProps = {
+  test: null,
+};
 
 const enhance = compose(
+  memo,
+  withRouter,
   connect(
     state => ({
-      testItems: getTestItemsSelector(state),
-      loading: getItemsLoadingSelector(state),
+      test: getTestSelector(state),
+      rows: getTestItemsRowsSelector(state),
     }),
-    { receiveTestItems: receiveTestItemsAction },
+    {
+      createTest: createTestAction,
+      updateTest: updateTestAction,
+      receiveTestById: receiveTestByIdAction,
+      setData: setTestDataAction,
+      setDefaultData: setDefaultTestDataAction,
+    },
   ),
 );
 

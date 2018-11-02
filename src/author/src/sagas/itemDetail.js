@@ -1,6 +1,6 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects';
 import { testItemsApi } from '@edulastic/api';
-import { NotificationManager } from 'react-notifications';
+import { message } from 'antd';
 
 import {
   RECEIVE_ITEM_DETAIL_REQUEST,
@@ -22,7 +22,7 @@ function* receiveItemSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = 'Receive item by id is failing';
-    NotificationManager.error(errorMessage, 'Error');
+    yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_ITEM_DETAIL_ERROR,
       payload: { error: errorMessage },
@@ -40,11 +40,11 @@ export function* updateItemSaga({ payload }) {
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item },
     });
-    NotificationManager.success('Update item by id is success', 'Success');
+    yield call(message.success, 'Update item by id is success', 'Success');
   } catch (err) {
     console.error(err);
     const errorMessage = 'Update item by id is failing';
-    NotificationManager.error(errorMessage, 'Error');
+    yield call(message.error, errorMessage);
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,
       payload: { error: errorMessage },

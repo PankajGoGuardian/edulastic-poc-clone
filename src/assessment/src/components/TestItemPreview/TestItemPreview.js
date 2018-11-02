@@ -10,12 +10,14 @@ export default class TestItemPreview extends Component {
     cols: PropTypes.array.isRequired,
     verticalDivider: PropTypes.bool,
     scrolling: PropTypes.bool,
-    previewTab: PropTypes.string,
+    previewTab: PropTypes.string.isRequired,
+    style: PropTypes.object,
   };
 
   static defaultProps = {
     verticalDivider: false,
     scrolling: false,
+    style: { padding: 0, display: 'flex' },
   };
 
   getStyle = (first) => {
@@ -36,9 +38,9 @@ export default class TestItemPreview extends Component {
   };
 
   render() {
-    const { cols, previewTab } = this.props;
+    const { cols, previewTab, style } = this.props;
     return (
-      <Paper style={{ padding: 0, display: 'flex' }}>
+      <Paper style={style}>
         {cols &&
           !!cols.length &&
           cols.map((col, i) => (

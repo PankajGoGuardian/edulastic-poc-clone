@@ -1,53 +1,43 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { blue, white } from '@edulastic/colors';
+import { blue } from '@edulastic/colors';
+import { EduButton, FlexContainer } from '@edulastic/common';
 
-const buttons = [
-  { value: 'summary', text: 'Summary' },
-  { value: 'addItems', text: 'Add Items' },
-  { value: 'review', text: 'Review' },
-  { value: 'settings', text: 'Settings' },
-];
-
-function TestPageNav({ onChange, current }) {
+function TestPageNav({ onChange, current, buttons }) {
   return (
-    <List>
-      {buttons.map(({ value, text }) => (
-        <ListItem key={value} active={current === value} onClick={() => onChange(value)}>
-          {text}
-        </ListItem>
+    <FlexContainer>
+      {buttons.map(({ value, text, icon }) => (
+        <StyledButton
+          type="primary"
+          size="large"
+          key={value}
+          active={(current === value).toString()}
+          onClick={() => onChange(value)}
+        >
+          <FlexContainer>
+            {icon}
+            <div>{text}</div>
+          </FlexContainer>
+        </StyledButton>
       ))}
-    </List>
+    </FlexContainer>
   );
 }
 
 TestPageNav.propTypes = {
   onChange: PropTypes.func.isRequired,
   current: PropTypes.string.isRequired,
+  buttons: PropTypes.array.isRequired,
 };
 
 export default memo(TestPageNav);
 
-const List = styled.nav`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-left: 70px;
-`;
-
-const ListItem = styled.button`
+const StyledButton = styled(EduButton)`
+  display: inline-flex;
   border: none;
-  border-radius: 10px;
-  padding: 10px;
-  background: ${props => (props.active ? blue : 'transparent')};
-  cursor: pointer;
-  margin-right: 30px;
-  font-size: 16px;
-  color: ${white};
-
-  :hover {
-    background: ${blue};
-    color: ${white};
-  }
+  box-shadow: none;
+  align-items: center;
+  margin-right: 10px;
+  background: ${props => (props.active === 'true' ? blue : 'transparent')};
 `;

@@ -6,7 +6,7 @@ import Options from './Options';
 
 const MultipleChoiceDisplay = ({ smallSize, question, ...restProps }) => (
   <div>
-    <QuestionHeader smallSize={smallSize}>{question}</QuestionHeader>
+    <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
     <Options smallSize={smallSize} question={question} {...restProps} />
   </div>
 );

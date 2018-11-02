@@ -1,11 +1,37 @@
-import { RECEIVE_TESTS_REQUEST, CREATE_TEST_REQUEST } from '../constants/actions';
+import {
+  RECEIVE_TESTS_REQUEST,
+  CREATE_TEST_REQUEST,
+  RECEIVE_TEST_BY_ID_REQUEST,
+  SET_TEST_DATA,
+  UPDATE_TEST_REQUEST,
+  SET_DEFAULT_TEST_DATA,
+} from '../constants/actions';
 
-export const receiveTestsAction = ({ page, limit } = { page: 1, limit: 5 }) => ({
+export const receiveTestsAction = payload => ({
   type: RECEIVE_TESTS_REQUEST,
-  payload: { page, limit },
+  payload,
+});
+
+export const receiveTestByIdAction = id => ({
+  type: RECEIVE_TEST_BY_ID_REQUEST,
+  payload: { id },
 });
 
 export const createTestAction = data => ({
   type: CREATE_TEST_REQUEST,
   payload: { data },
+});
+
+export const updateTestAction = (id, data) => ({
+  type: UPDATE_TEST_REQUEST,
+  payload: { id, data },
+});
+
+export const setTestDataAction = data => ({
+  type: SET_TEST_DATA,
+  payload: { data },
+});
+
+export const setDefaultTestDataAction = () => ({
+  type: SET_DEFAULT_TEST_DATA,
 });

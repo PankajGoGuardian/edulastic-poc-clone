@@ -71,6 +71,8 @@ export const UPDATE_TEST_ITEM_ERROR = '[testItem] update by id error';
 export const CHECK_ANSWER = '[testItem] evaluate test item';
 export const SHOW_ANSWER = '[testItem] show test item answer';
 
+export const ADD_ITEM_EVALUATION = '[evaluation] add evaluation';
+
 // Tests
 export const RECEIVE_TESTS_REQUEST = '[tests] receive list request';
 export const RECEIVE_TESTS_SUCCESS = '[tests] receive list success';
@@ -80,5 +82,13 @@ export const CREATE_TEST_REQUEST = '[tests] create test request';
 export const CREATE_TEST_SUCCESS = '[tests] create test success';
 export const CREATE_TEST_ERROR = '[tests] create test error';
 
-// Evaluation
-export const ADD_ITEM_EVALUATION = '[evaluation] add evaluation';
+export const UPDATE_TEST_REQUEST = '[tests] update test request';
+export const UPDATE_TEST_SUCCESS = '[tests] update test success';
+export const UPDATE_TEST_ERROR = '[tests] update test error';
+
+export const RECEIVE_TEST_BY_ID_REQUEST = '[tests] receive test by id request';
+export const RECEIVE_TEST_BY_ID_SUCCESS = '[tests] receive test by id success';
+export const RECEIVE_TEST_BY_ID_ERROR = '[tests] receive test by id error';
+
+export const SET_TEST_DATA = '[tests] set test data';
+export const SET_DEFAULT_TEST_DATA = '[tests] set default test data';

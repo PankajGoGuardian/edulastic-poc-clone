@@ -9,15 +9,13 @@ const QuestionSelectDropdown = ({ gotoQuestion, options, currentItem, t }) => (
   <SelectContainer>
     <Select
       defaultValue={currentItem}
-      onChange={e => {
+      onChange={(e) => {
         gotoQuestion(parseInt(e.target.value, 10));
       }}
     >
       {options.map((item, index) => (
         <option key={index} value={item}>
-          {`${t('common.layout.selectbox.question')} ${index + 1}/ ${
-            options.length
-          }`}
+          {`${t('common.layout.selectbox.question')} ${index + 1}/ ${options.length}`}
         </option>
       ))}
     </Select>
@@ -27,8 +25,8 @@ const QuestionSelectDropdown = ({ gotoQuestion, options, currentItem, t }) => (
 QuestionSelectDropdown.propTypes = {
   options: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
-  gotoQuestion: PropTypes.func,
-  currentItem: PropTypes.number
+  gotoQuestion: PropTypes.func.isRequired,
+  currentItem: PropTypes.number.isRequired,
 };
 
 export default withNamespaces('student')(QuestionSelectDropdown);

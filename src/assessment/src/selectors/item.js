@@ -1,50 +1,36 @@
 import { createSelector } from 'reselect';
 
 export const stateSelector = state => state.test;
-export const getItemsSelector = createSelector(
-  stateSelector,
-  state => state.items
-);
+export const getItemsSelector = createSelector(stateSelector, state => state.items);
 
-export const currentItemIndexSelector = createSelector(
-  stateSelector,
-  state => state.currentItem
-);
+export const currentItemIndexSelector = createSelector(stateSelector, state => state.currentItem);
 
 export const currentItemRowsSelector = createSelector(
   getItemsSelector,
   currentItemIndexSelector,
   (items, currentIndex) => {
-    let item = items[currentIndex];
+    const item = items[currentIndex];
     if (!item) return [];
     return item.rows.map(row => ({
       ...row,
-      widgets: row.widgets.map(widget => {
+      widgets: row.widgets.map((widget) => {
         let referencePopulate = {
-          data: null
+          data: null,
         };
 
         if (item.data.questions && item.data.questions.length) {
-          referencePopulate = item.data.questions.find(
-            q => q.id === widget.reference
-          );
+          referencePopulate = item.data.questions.find(q => q.id === widget.reference);
         }
 
-        if (
-          !referencePopulate &&
-          item.data.resources &&
-          item.data.resources.length
-        ) {
-          referencePopulate = item.data.resources.find(
-            r => r.id === widget.reference
-          );
+        if (!referencePopulate && item.data.resources && item.data.resources.length) {
+          referencePopulate = item.data.resources.find(r => r.id === widget.reference);
         }
 
         return {
           ...widget,
-          referencePopulate
+          referencePopulate,
         };
-      })
+      }),
     }));
-  }
+  },
 );

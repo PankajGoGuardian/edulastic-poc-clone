@@ -3,12 +3,26 @@ import API from './utils/API';
 const api = new API();
 const prefix = '/Tests';
 
-const getAll = (params = {}) =>
+const getAll = ({ limit, page, search } = { limit: 10, page: 1 }) => {
+  let url = `${prefix}?filter[limit]=${limit}&filter[skip]=${limit * (page - 1)}`;
+
+  if (search) {
+    url += `&filter[where][title][like]=${search}`;
+  }
+
+  return api
+    .callApi({
+      url,
+      method: 'get',
+    })
+    .then(result => result.data);
+};
+
+const getCount = () =>
   api
     .callApi({
-      url: prefix,
+      url: `${prefix}/count`,
       method: 'get',
-      params,
     })
     .then(result => result.data);
 
@@ -44,4 +58,5 @@ export default {
   getById,
   create,
   update,
+  getCount,
 };

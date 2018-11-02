@@ -2,7 +2,11 @@ import { takeEvery, put, all, select } from 'redux-saga/effects';
 
 import { testItemsApi } from '@edulastic/api';
 // actions
-import { CHECK_ANSWER, ADD_ITEM_EVALUATION } from '../constants/actions';
+import {
+  CHECK_ANSWER,
+  ADD_ITEM_EVALUATION,
+  CHANGE_PREVIEW,
+} from '../constants/actions';
 
 function* evaluateAnswers() {
   const answers = yield select(state => state.answers);
@@ -13,6 +17,12 @@ function* evaluateAnswers() {
     type: ADD_ITEM_EVALUATION,
     payload: {
       ...result.result,
+    },
+  });
+  yield put({
+    type: CHANGE_PREVIEW,
+    payload: {
+      view: 'check',
     },
   });
 }

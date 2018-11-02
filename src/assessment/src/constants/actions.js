@@ -51,3 +51,6 @@ export const CHECK_ANSWER = '[answers] check answers';
 
 // Evalution
 export const ADD_ITEM_EVALUATION = '[evaluation] add evaluation';
+
+// testItem view
+export const CHANGE_PREVIEW = '[view] change view';

@@ -18,6 +18,7 @@ export const LOAD_ASSESSMENT = 'load assessment';
 
 // view
 export const CHANGE_VIEW = '[view] CHANGE_VIEW';
+export const CHANGE_PREVIEW = '[view] change view';
 
 // preview
 export const PREVIEW_UPDATE_LIST = '[preview] PREVIEW_UPDATE_LIST';
@@ -66,6 +67,11 @@ export const CREATE_TEST_ITEM_ERROR = '[testItem] create item error';
 export const UPDATE_TEST_ITEM_REQUEST = '[testItem] update by id request';
 export const UPDATE_TEST_ITEM_SUCCESS = '[testItem] update by id success';
 export const UPDATE_TEST_ITEM_ERROR = '[testItem] update by id error';
+
+export const CHECK_ANSWER = '[testItem] evaluate test item';
+export const SHOW_ANSWER = '[testItem] show test item answer';
+
+export const ADD_ITEM_EVALUATION = '[evaluation] add evaluation';
 
 // Tests
 export const RECEIVE_TESTS_REQUEST = '[tests] receive list request';

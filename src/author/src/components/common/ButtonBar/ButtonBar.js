@@ -50,7 +50,12 @@ const ButtonBar = ({
           <Button
             style={buttonStyles}
             onClick={() => onChangeView('edit')}
-            icon={<IconPensilEdit color={view === 'edit' ? white : textColor} width={14} />}
+            icon={(
+              <IconPensilEdit
+                color={view === 'edit' ? white : textColor}
+                width={14}
+              />
+)}
             color={view === 'edit' ? 'primary' : 'default'}
           >
             {!iTablet && t('component.questioneditor.buttonbar.edit')}
@@ -60,7 +65,12 @@ const ButtonBar = ({
           <Button
             style={buttonStyles}
             onClick={() => onChangeView('preview')}
-            icon={<IconPreview color={view === 'preview' ? white : textColor} width={18} />}
+            icon={(
+              <IconPreview
+                color={view === 'preview' ? white : textColor}
+                width={18}
+              />
+)}
             color={view === 'preview' ? 'primary' : 'default'}
           >
             {!iTablet && t('component.questioneditor.buttonbar.preview')}
@@ -90,14 +100,18 @@ const ButtonBar = ({
       </Container>
       {view === 'preview' && (
         <Container
-          style={{ position: 'absolute', marginTop: 20, width: '100%', justifyContent: 'flex-end' }}
+          style={{
+            position: 'absolute',
+            marginTop: 20,
+            width: '100%',
+            justifyContent: 'flex-end',
+          }}
         >
           <StyledButton>
             <ButtonLink
               onClick={() => changePreviewTab('check')}
               color="primary"
-              active={previewTab === 'check'}
-              icon={<IconCheck color={previewTab === 'check' ? darkBlue : blue} />}
+              icon={<IconCheck color={blue} />}
             >
               {t('component.questioneditor.buttonbar.checkanswer')}
             </ButtonLink>
@@ -106,10 +120,7 @@ const ButtonBar = ({
             <ButtonLink
               onClick={() => changePreviewTab('show')}
               color="primary"
-              active={previewTab === 'show'}
-              icon={
-                <IconEye color={previewTab === 'show' ? darkBlue : blue} hoverColor={darkBlue} />
-              }
+              icon={<IconEye color={blue} hoverColor={darkBlue} />}
             >
               {t('component.questioneditor.buttonbar.showanswers')}
             </ButtonLink>
@@ -119,7 +130,7 @@ const ButtonBar = ({
               onClick={() => changePreviewTab('clear')}
               color="primary"
               active={previewTab === 'clear'}
-              icon={<IconEraseText color={previewTab === 'clear' ? darkBlue : blue} />}
+              icon={<IconEraseText color={blue} />}
             >
               {t('component.questioneditor.buttonbar.clear')}
             </ButtonLink>

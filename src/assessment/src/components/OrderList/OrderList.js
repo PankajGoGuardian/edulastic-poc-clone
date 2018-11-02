@@ -238,6 +238,7 @@ class OrderList extends Component {
                 validationState={item.validation}
                 previewIndexesList={userAnswer}
                 showAnswers
+                evaluation={evaluation}
               />
             )}
 

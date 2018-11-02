@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { gotoItem, saveUserResponse, loadUserResponse } from '../actions/items';
@@ -10,22 +10,28 @@ import AssesmentPlayerSimple from './AssessmentPlayerSimple';
 import { currentItemRowsSelector } from '../selectors/item';
 
 const AssessmentContainer = ({
-  gotoItem: gotoIt,
-  currentItem,
-  defaultAP,
+  view,
   items,
   itemRows,
+  defaultAP,
+  currentItem,
+  gotoItem: gotoIt,
   saveUserResponse: saveUser,
   loadUserResponse: loadUser,
   evaluateAnswer: evaluate,
 }) => {
+  useEffect(() => {
+    if (items.length) {
+      loadUser(currentItem);
+    }
+  });
+
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
 
   const gotoQuestion = (index) => {
     gotoIt(index);
     saveUser(currentItem);
-    loadUser(index);
   };
 
   const moveToNext = () => {
@@ -48,19 +54,25 @@ const AssessmentContainer = ({
     gotoQuestion,
     itemRows,
     evaluate,
+    view,
   };
 
-  return defaultAP ? <AssesmentPlayerDefault {...props} /> : <AssesmentPlayerSimple {...props} />;
+  return defaultAP ? (
+    <AssesmentPlayerDefault {...props} />
+  ) : (
+    <AssesmentPlayerSimple {...props} />
+  );
 };
 
 AssessmentContainer.propTypes = {
-  gotoQuestion: PropTypes.func.isRequired,
+  gotoItem: PropTypes.func.isRequired,
   items: PropTypes.array.isRequired,
   currentItem: PropTypes.number.isRequired,
 };
 
 export default connect(
   state => ({
+    view: state.view.preview,
     items: state.test.items,
     currentItem: state.test.currentItem,
     itemRows: currentItemRowsSelector(state),

@@ -1,18 +1,33 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FlexContainer } from '@edulastic/common';
-import { Checkbox } from 'antd';
+import { Checkbox, message } from 'antd';
 import { blue } from '@edulastic/colors';
 import { IconClose, IconMoveTo, IconCollapse } from '@edulastic/icons';
 import styled from 'styled-components';
 import Prompt from './Prompt';
 
-const HeaderBar = ({ onSelectAll, onRemoveSelected, onCollapse }) => {
+const HeaderBar = ({ onSelectAll, onRemoveSelected, onCollapse, selectedItems, onMoveTo }) => {
   const [showPrompt, setShowPrompt] = useState(false);
 
   const handleSuccess = (position) => {
-    console.log(position);
-    setShowPrompt(false);
+    if (selectedItems.length < position) {
+      message.info('Value cannot be more than total questions count');
+    } else if (position < 0) {
+      message.info('Value cannot be less than total questions count');
+    } else {
+      onMoveTo(position);
+      setShowPrompt(false);
+    }
+  };
+
+  const handleMoveTo = () => {
+    if (selectedItems.length === 1) {
+      setShowPrompt(!showPrompt);
+    } else {
+      message.info('select one question at a time');
+      setShowPrompt(false);
+    }
   };
 
   return (
@@ -27,7 +42,7 @@ const HeaderBar = ({ onSelectAll, onRemoveSelected, onCollapse }) => {
         <span>Remove Selected</span>
       </Item>
       <Item>
-        <FlexContainer onClick={() => setShowPrompt(!showPrompt)}>
+        <FlexContainer onClick={handleMoveTo}>
           <IconMoveTo color={blue} />
           <span>Move to</span>
         </FlexContainer>
@@ -47,8 +62,10 @@ const HeaderBar = ({ onSelectAll, onRemoveSelected, onCollapse }) => {
 
 HeaderBar.propTypes = {
   onSelectAll: PropTypes.func.isRequired,
+  onMoveTo: PropTypes.func.isRequired,
   onRemoveSelected: PropTypes.func.isRequired,
   onCollapse: PropTypes.func.isRequired,
+  selectedItems: PropTypes.array.isRequired,
 };
 
 export default HeaderBar;
@@ -61,5 +78,5 @@ const Item = styled(FlexContainer)`
 `;
 
 const Container = styled(FlexContainer)`
-  padding: 25px 45px;
+  padding: 25px 0;
 `;

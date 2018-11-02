@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { FlexContainer } from '@edulastic/common';
 import { textColor, greenDark, lightGrey } from '@edulastic/colors';
 import { Table } from 'antd';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 const columns = [
   {
@@ -26,30 +26,24 @@ const columns = [
   },
 ];
 
-const data = [
-  {
-    key: 'standard',
-    standard: 'Standard',
-    qs: 'qs',
-    points: 100,
-  },
-];
-
-const Summary = () => (
+const Summary = ({ total, tableData }) => (
   <div>
     <FlexContainer style={{ marginBottom: 25 }}>
       <InfoBlock>
         <Count>3</Count> Questions
       </InfoBlock>
       <InfoBlock>
-        <Count>3</Count> Points
+        <Count>{total}</Count> Points
       </InfoBlock>
     </FlexContainer>
-    <Table pagination={false} columns={columns} dataSource={data} />
+    <Table pagination={false} columns={columns} dataSource={tableData} />
   </div>
 );
 
-Summary.propTypes = {};
+Summary.propTypes = {
+  total: PropTypes.string.isRequired,
+  tableData: PropTypes.array.isRequired,
+};
 
 export default Summary;
 

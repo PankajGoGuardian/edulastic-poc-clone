@@ -40,7 +40,7 @@ class OrderList extends Component {
   componentDidMount() {
     const { item, saveAnswer, userAnswer } = this.props;
 
-    if (!userAnswer.length) {
+    if (!userAnswer.length && item.list) {
       saveAnswer(item.list.map((q, i) => i));
     }
   }

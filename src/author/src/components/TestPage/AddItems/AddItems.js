@@ -99,7 +99,8 @@ const Items = ({ items, loading, receiveTestItems, history, onAddItems, selected
   const handleSortChange = () => {};
 
   const handleAddItems = () => {
-    onAddItems(selectedTests);
+    const tests = selectedTests.map(testId => items.find(item => item.id === testId));
+    onAddItems(tests);
   };
 
   const handleCreateNewItem = () => {

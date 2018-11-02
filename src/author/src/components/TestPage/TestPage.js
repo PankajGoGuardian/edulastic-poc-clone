@@ -3,6 +3,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import { message } from 'antd';
 
 import AddItems from './AddItems';
 import TestPageHeader from './TestPageHeader';
@@ -13,7 +14,7 @@ import {
   updateTestAction,
   setDefaultTestDataAction,
 } from '../../actions/tests';
-import { getTestSelector } from '../../selectors/tests';
+import { getTestSelector, getTestItemsRowsSelector } from '../../selectors/tests';
 import SourceModal from '../QuestionEditor/SourceModal';
 import Review from './Review';
 
@@ -25,6 +26,7 @@ const TestPage = ({
   setData,
   updateTest,
   setDefaultData,
+  rows,
 }) => {
   useEffect(() => {
     if (match.params.id) {
@@ -45,8 +47,17 @@ const TestPage = ({
     setCurrent(value);
   };
 
-  const handleAddItems = (items) => {
-    setData({ ...test, testItems: items.map(id => ({ id })) });
+  const handleAddItems = (testItems) => {
+    setData({ ...test, testItems });
+    message.info('Selected items was added');
+  };
+
+  const handleChangeGrade = (grades) => {
+    setData({ ...test, grades });
+  };
+
+  const handleChangeSubject = (subjects) => {
+    setData({ ...test, subjects });
   };
 
   const selectedItems = test.testItems.map(({ id }) => id);
@@ -56,7 +67,15 @@ const TestPage = ({
       case 'addItems':
         return <AddItems onAddItems={handleAddItems} selectedItems={selectedItems} />;
       case 'review':
-        return <Review />;
+        return (
+          <Review
+            test={test}
+            rows={rows}
+            setData={setData}
+            onChangeGrade={handleChangeGrade}
+            onChangeSubjects={handleChangeSubject}
+          />
+        );
       default:
         return null;
     }
@@ -105,6 +124,7 @@ TestPage.propTypes = {
   setData: PropTypes.func.isRequired,
   setDefaultData: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
+  rows: PropTypes.array.isRequired,
   test: PropTypes.object,
 };
 
@@ -118,6 +138,7 @@ const enhance = compose(
   connect(
     state => ({
       test: getTestSelector(state),
+      rows: getTestItemsRowsSelector(state),
     }),
     {
       createTest: createTestAction,

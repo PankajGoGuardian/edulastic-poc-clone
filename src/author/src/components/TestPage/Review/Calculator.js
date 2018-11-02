@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { white, greenDark, green } from '@edulastic/colors';
 import { FlexContainer } from '@edulastic/common';
@@ -9,32 +9,40 @@ import { Select } from 'antd';
 import Photo from '../common/Photo';
 import Summary from './Summary';
 
-const grades = [
-  { value: 'kindergarten', text: 'Kindergarten' },
-  { value: 'grade1', text: 'Grade 1' },
-  { value: 'grade2', text: 'Grade 2' },
-  { value: 'grade3', text: 'Grade 3' },
-  { value: 'grade4', text: 'Grade 4' },
-  { value: 'grade5', text: 'Grade 5' },
-  { value: 'grade6', text: 'Grade 6' },
-  { value: 'grade7', text: 'Grade 7' },
-  { value: 'grade8', text: 'Grade 8' },
-  { value: 'grade9', text: 'Grade 9' },
-  { value: 'grade10', text: 'Grade 10' },
-  { value: 'grade11', text: 'Grade 11' },
-  { value: 'grade12', text: 'Grade 12' },
+const allGrades = [
+  { value: 'k', text: 'Kindergarten' },
+  { value: '1', text: 'Grade 1' },
+  { value: '2', text: 'Grade 2' },
+  { value: '3', text: 'Grade 3' },
+  { value: '4', text: 'Grade 4' },
+  { value: '5', text: 'Grade 5' },
+  { value: '6', text: 'Grade 6' },
+  { value: '7', text: 'Grade 7' },
+  { value: '8', text: 'Grade 8' },
+  { value: '9', text: 'Grade 9' },
+  { value: '10', text: 'Grade 10' },
+  { value: '11', text: 'Grade 11' },
+  { value: '12', text: 'Grade 12' },
   { value: 'other', text: 'Other' },
 ];
 
-const subjects = [
-  { value: 'mathematics', text: 'Mathematics' },
-  { value: 'ela', text: 'ELA' },
-  { value: 'science', text: 'Science' },
-  { value: 'socialStudies', text: 'Social Studies' },
-  { value: 'other', text: 'Other Subjects' },
+const allSubjects = [
+  { value: 'Mathematics', text: 'Mathematics' },
+  { value: 'ELA', text: 'ELA' },
+  { value: 'Science', text: 'Science' },
+  { value: 'Social Studies', text: 'Social Studies' },
+  { value: 'Other Subjects', text: 'Other Subjects' },
 ];
 
-const Calculator = () => {
+const Calculator = ({
+  total,
+  grades,
+  subjects,
+  onChangeGrade,
+  onChangeSubjects,
+  thumbnail,
+  tableData,
+}) => {
   const [showEditGrade, setShowEditGrade] = useState(false);
   const [showEditSubject, setShowEditSubject] = useState(false);
 
@@ -48,7 +56,7 @@ const Calculator = () => {
 
   return (
     <Container>
-      <Photo />
+      <Photo url={thumbnail} />
 
       <Main>
         <Item>
@@ -56,7 +64,7 @@ const Calculator = () => {
             <Title>Grade:</Title>
             {!showEditGrade && (
               <Fragment>
-                <span>7.8</span>
+                <span>{grades.join(', ')}</span>
                 <IconPensilEdit
                   color={greenDark}
                   hoverColor={green}
@@ -73,9 +81,10 @@ const Calculator = () => {
                 mode="multiple"
                 style={{ width: '100%' }}
                 placeholder="Please select grades"
-                defaultValue={['grade1', 'grade2']}
+                onChange={onChangeGrade}
+                defaultValue={grades}
               >
-                {grades.map(({ value, text }) => (
+                {allGrades.map(({ value, text }) => (
                   <Select.Option key={value}>{text}</Select.Option>
                 ))}
               </Select>
@@ -94,7 +103,7 @@ const Calculator = () => {
             <Title>Subject:</Title>
             {!showEditSubject && (
               <Fragment>
-                <span>Mathematics, Other</span>
+                <span>{subjects.join(', ')}</span>
                 <IconPensilEdit
                   color={greenDark}
                   hoverColor={green}
@@ -111,9 +120,10 @@ const Calculator = () => {
                 mode="multiple"
                 style={{ width: '100%' }}
                 placeholder="Please select subjects"
-                defaultValue={['mathematics', 'other']}
+                onChange={onChangeSubjects}
+                defaultValue={subjects}
               >
-                {subjects.map(({ value, text }) => (
+                {allSubjects.map(({ value, text }) => (
                   <Select.Option key={value}>{text}</Select.Option>
                 ))}
               </Select>
@@ -130,13 +140,21 @@ const Calculator = () => {
         <Item>
           <Title>Summary</Title>
         </Item>
-        <Summary />
+        <Summary total={total} tableData={tableData} />
       </Main>
     </Container>
   );
 };
 
-Calculator.propTypes = {};
+Calculator.propTypes = {
+  total: PropTypes.string.isRequired,
+  grades: PropTypes.array.isRequired,
+  subjects: PropTypes.array.isRequired,
+  onChangeGrade: PropTypes.func.isRequired,
+  onChangeSubjects: PropTypes.func.isRequired,
+  thumbnail: PropTypes.string.isRequired,
+  tableData: PropTypes.array.isRequired,
+};
 
 export default Calculator;
 

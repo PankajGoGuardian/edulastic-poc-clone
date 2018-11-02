@@ -20,6 +20,7 @@ const initialTestState = {
   description: '',
   renderingType: 'assessment',
   status: 'draft',
+  thumbnail: 'https://fakeimg.pl/500x135/',
   createdBy: {
     id: '',
     firstName: '',

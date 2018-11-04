@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Line } from 'rc-progress';
 import styled, { ThemeProvider } from 'styled-components';
+import { withNamespaces } from '@edulastic/localization';
 import { IconClockCircularOutline, IconSave } from '@edulastic/icons';
 import MainWrapper from './MainWrapper';
 import MainContent from './MainContent';
@@ -49,6 +50,7 @@ class AssessmentPlayerSimple extends React.Component {
     evaluate: PropTypes.any.isRequired,
     itemRows: PropTypes.any.isRequired,
     view: PropTypes.string.isRequired,
+    t: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -64,7 +66,7 @@ class AssessmentPlayerSimple extends React.Component {
     console.log('assessmment player simple is rendered');
     const {
       theme,
-      // t,
+      t,
       isLast,
       isFirst,
       moveToNext,
@@ -167,7 +169,7 @@ class AssessmentPlayerSimple extends React.Component {
                     onClick={moveToNext}
                   >
                     <i className="fa fa-angle-right" />
-                    <span>Next</span>
+                    <span>{t('pagination.next')}</span>
                   </ControlBtn>
                   <ControlBtn setting skinB>
                     <img src={SettingImage} alt="Setting" />
@@ -189,7 +191,7 @@ class AssessmentPlayerSimple extends React.Component {
                 <FlexContainer>
                   <QuitAssesment />
                   <ControlBtn next skinB onClick={this.checkAnswer}>
-                    <span> Check Answer </span>
+                    <span>{t('pagination.checkanswer')} </span>
                   </ControlBtn>
                 </FlexContainer>
                 <FlexContainer>
@@ -208,8 +210,7 @@ class AssessmentPlayerSimple extends React.Component {
                     onClick={moveToNext}
                   >
                     <i className="fa fa-angle-right" />
-                    <span>NEXT</span>
-                    {/* <span>{t("common.layout.nextbtn")}</span> */}
+                    <span>{t('pagination.next')}</span>
                   </ControlBtn>
                 </FlexContainer>
               </MainFooter>
@@ -229,7 +230,7 @@ class AssessmentPlayerSimple extends React.Component {
   }
 }
 
-export default AssessmentPlayerSimple;
+export default withNamespaces('common')(AssessmentPlayerSimple);
 
 const Icon = styled(IconClockCircularOutline)`
   margin: 10px 15px;

@@ -9,6 +9,8 @@
     "of": "of",
     "to": "to",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "quit": "Quit",
+    "checkanswer": "Check answer"
   }
 }

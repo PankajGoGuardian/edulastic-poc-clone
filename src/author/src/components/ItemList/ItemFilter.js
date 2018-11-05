@@ -51,7 +51,13 @@ class ItemFilter extends Component {
             <Item>
               <ItemHeader>Subject</ItemHeader>
               <ItemBody>
-                <Select defaultValue="All subject" style={{ width: '100%' }}>
+                <Select
+                  defaultValue="All subject"
+                  style={{ width: '100%' }}
+                  suffixIcon={
+                    <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+                  }
+                >
                   <Select.Option value="math">Math</Select.Option>
                 </Select>
               </ItemBody>
@@ -59,7 +65,13 @@ class ItemFilter extends Component {
             <Item>
               <ItemHeader>Standard Set</ItemHeader>
               <ItemBody>
-                <Select defaultValue="All standard set" style={{ width: '100%' }}>
+                <Select
+                  defaultValue="All standard set"
+                  style={{ width: '100%' }}
+                  suffixIcon={
+                    <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+                  }
+                >
                   <Select.Option value="math">Math</Select.Option>
                 </Select>
               </ItemBody>
@@ -67,7 +79,13 @@ class ItemFilter extends Component {
             <Item>
               <ItemHeader>Select Standard</ItemHeader>
               <ItemBody>
-                <Select defaultValue="All standards" style={{ width: '100%' }}>
+                <Select
+                  defaultValue="All standards"
+                  style={{ width: '100%' }}
+                  suffixIcon={
+                    <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+                  }
+                >
                   <Select.Option value="math">Math</Select.Option>
                 </Select>
               </ItemBody>
@@ -75,7 +93,13 @@ class ItemFilter extends Component {
             <Item>
               <ItemHeader>Collection</ItemHeader>
               <ItemBody>
-                <Select defaultValue="All collections" style={{ width: '100%' }}>
+                <Select
+                  defaultValue="All collections"
+                  style={{ width: '100%' }}
+                  suffixIcon={
+                    <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+                  }
+                >
                   <Select.Option value="math">Math</Select.Option>
                 </Select>
               </ItemBody>
@@ -83,7 +107,13 @@ class ItemFilter extends Component {
             <Item>
               <ItemHeader>Question Types</ItemHeader>
               <ItemBody>
-                <Select defaultValue="All types" style={{ width: '100%' }}>
+                <Select
+                  defaultValue="All types"
+                  style={{ width: '100%' }}
+                  suffixIcon={
+                    <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+                  }
+                >
                   <Select.Option value="math">Math</Select.Option>
                 </Select>
               </ItemBody>
@@ -91,7 +121,13 @@ class ItemFilter extends Component {
             <Item>
               <ItemHeader>Depth of Knowledge</ItemHeader>
               <ItemBody>
-                <Select defaultValue="All depth of knowledge" style={{ width: '100%' }}>
+                <Select
+                  defaultValue="All depth of knowledge"
+                  style={{ width: '100%' }}
+                  suffixIcon={
+                    <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+                  }
+                >
                   <Select.Option value="math">Math</Select.Option>
                 </Select>
               </ItemBody>
@@ -99,7 +135,13 @@ class ItemFilter extends Component {
             <Item>
               <ItemHeader>Difficulty</ItemHeader>
               <ItemBody>
-                <Select defaultValue="All levels" style={{ width: '100%' }}>
+                <Select
+                  defaultValue="All levels"
+                  style={{ width: '100%' }}
+                  suffixIcon={
+                    <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+                  }
+                >
                   <Select.Option value="math">Math</Select.Option>
                 </Select>
               </ItemBody>

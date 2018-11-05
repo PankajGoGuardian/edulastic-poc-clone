@@ -63,7 +63,7 @@ const Container = styled.span`
 
 const Icon = styled.span`
   position: absolute;
-  right: 8px;
+  right: 16px;
   height: 100%;
   display: flex;
   align-items: center;
@@ -81,6 +81,10 @@ const Field = styled.input`
   width: 100%;
   padding: 10px 35px;
   color: #7a7a7a;
-  font-size: 14px;
-  letter-spacing: 0.5px;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  ::placeholder {
+    font-style: italic;
+    color: #b1b1b1;
+  }
 `;

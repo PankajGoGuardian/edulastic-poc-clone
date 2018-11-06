@@ -92,3 +92,7 @@ export const RECEIVE_TEST_BY_ID_ERROR = '[tests] receive test by id error';
 
 export const SET_TEST_DATA = '[tests] set test data';
 export const SET_DEFAULT_TEST_DATA = '[tests] set default test data';
+
+// ui
+export const TOGGLE_MENU = '[homeUI] toggle menu';
+export const RESPONSIVE_TOGGLE_MENU = '[homeUI] responsive toggle menu';

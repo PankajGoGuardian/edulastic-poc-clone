@@ -1,6 +1,12 @@
-import { LOAD_TEST_ITEMS, GOTO_ITEM } from '../constants/actions';
+import {
+  LOAD_TEST_ITEMS,
+  GOTO_ITEM,
+  SET_TEST_ACTIVITY_ID,
+  SET_TEST_ID,
+} from '../constants/actions';
 
 const initialState = {
+  testActivityId: '',
   items: [],
   currentItem: 0,
 };
@@ -17,6 +23,18 @@ const test = (state = initialState, { payload, type }) => {
       return {
         ...state,
         currentItem: payload.item,
+      };
+
+    case SET_TEST_ID:
+      return {
+        ...state,
+        testId: payload.testId,
+      };
+
+    case SET_TEST_ACTIVITY_ID:
+      return {
+        ...state,
+        testActivityId: payload.testActivityId,
       };
     default:
       return state;

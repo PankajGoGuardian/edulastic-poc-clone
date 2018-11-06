@@ -16,7 +16,7 @@ const QuestionWrapper = ({ type, data, ...restProps }) => {
 };
 
 QuestionWrapper.propTypes = {
-  type: PropTypes.oneOf(['orderList', 'multipleChoice', 'image']),
+  type: PropTypes.any,
   view: PropTypes.string.isRequired,
   isNew: PropTypes.bool,
   data: PropTypes.object,
@@ -32,4 +32,4 @@ QuestionWrapper.defaultProps = {
   testItem: false,
 };
 
-export default withAnswerSave(QuestionWrapper);
+export default React.memo(withAnswerSave(QuestionWrapper));

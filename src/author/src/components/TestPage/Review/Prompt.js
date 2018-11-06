@@ -6,7 +6,7 @@ import { EduButton, FlexContainer } from '@edulastic/common';
 import { Input } from 'antd';
 
 const Prompt = ({ style, show, onSuccess }) => {
-  const [position, setPosition] = useState(0);
+  const [position, setPosition] = useState(1);
 
   const handleChange = (e) => {
     setPosition(e.target.value);

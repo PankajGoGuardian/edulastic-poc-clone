@@ -3,16 +3,23 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { darkBlue, lightBlue } from '@edulastic/colors';
 
-const Tags = ({ tags }) => (
+const Tags = ({ tags, labelStyle }) => (
   <Labels>
     {tags.map((tag, i) => (
-      <Label key={i}>{tag}</Label>
+      <Label style={labelStyle} key={i}>
+        {tag}
+      </Label>
     ))}
   </Labels>
 );
 
 Tags.propTypes = {
   tags: PropTypes.array.isRequired,
+  labelStyle: PropTypes.object,
+};
+
+Tags.defaultProps = {
+  labelStyle: {},
 };
 
 export default Tags;
@@ -24,15 +31,14 @@ const Labels = styled.div`
 
 const Label = styled.span`
   text-transform: uppercase;
-  border-radius: 10px;
-  padding: 10px;
+  border-radius: 5px;
+  padding: 5px;
   color: ${darkBlue};
-  font-size: 12px;
+  font-size: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   margin-right: 7px;
-  margin-bottom: 7px;
   background: ${lightBlue};
   font-weight: 700;
 

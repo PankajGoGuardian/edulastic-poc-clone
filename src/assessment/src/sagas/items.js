@@ -61,6 +61,9 @@ function* saveUserResponse({ payload }) {
     const itemIndex = payload.itemId;
     const items = yield select(state => state.test && state.test.items);
     const answers = yield select(state => state.answers);
+    const userTestActivityId = yield select(
+      state => state.test && state.test.testActivityId,
+    );
     const currentItem = items.length && items[itemIndex];
     const questions = getQuestionIds(currentItem);
     const itemAnswers = {};
@@ -68,7 +71,11 @@ function* saveUserResponse({ payload }) {
       itemAnswers[question] = answers[question];
     });
     const testId = currentItem.id;
-    yield call(itemsApi.saveUserReponse, testId, itemAnswers);
+    yield call(itemsApi.saveUserReponse, {
+      testItemId: testId,
+      answers: itemAnswers,
+      userTestActivityId,
+    });
   } catch (err) {
     console.log(err);
   }

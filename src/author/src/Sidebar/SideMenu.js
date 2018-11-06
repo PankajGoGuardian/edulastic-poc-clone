@@ -278,6 +278,12 @@ const Menu = styled(AntMenu)`
       text-align: center;
       margin-top: 20px;
   }
+  &.ant-menu-inline {
+    padding-top: 23px;
+  }
+  &.ant-menu-inline > .ant-menu-item {
+    margin-top: 20px;
+  }
 `;
 
 const MenuItem = styled(AntMenu.Item)`

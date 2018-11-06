@@ -268,15 +268,21 @@ const Menu = styled(AntMenu)`
     display: flex;
     align-items: center;
     margin-top: 16px;
-    padding: 0px 50px !important;
+    padding-top: 20px;
   }
   &.ant-menu-inline-collapsed {
     width: 100px;
     padding-top: 20px;
   }
   &.ant-menu-inline-collapsed > .ant-menu-item {
-      text-align: center;
-      margin-top: 20px;
+    text-align: center;
+    margin-top: 20px;
+  }
+  &.ant-menu-inline {
+    padding-top: 23px;
+  }
+  &.ant-menu-inline > .ant-menu-item {
+    margin-top: 20px;
   }
 `;
 

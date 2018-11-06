@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { get, groupBy, forEach } from 'lodash';
 
 export const stateSelector = state => state.tests;
 
@@ -12,7 +13,7 @@ export const getTestsCountSelector = createSelector(stateSelector, state => stat
 
 export const getTestItemsRowsSelector = createSelector(getTestSelector, test =>
   test.testItems.map((item) => {
-    if (!item) return [];
+    if (!item || !item.rows) return [];
     return item.rows.map(row => ({
       ...row,
       widgets: row.widgets.map((widget) => {
@@ -35,3 +36,48 @@ export const getTestItemsRowsSelector = createSelector(getTestSelector, test =>
       }),
     }));
   }));
+
+export const getSummarySelector = createSelector(getTestSelector, (state) => {
+  const reduceTestItems = (acc, testItem) => {
+    const questions = get(testItem, 'data.questions', []);
+    const res = questions.map(q => ({
+      id: q.id,
+      score: testItem.points || 0,
+      standards: get(q, 'standardsMap.domains', []).reduce(
+        (st, domain) => [...st, ...domain.standards],
+        [],
+      ),
+    }));
+
+    acc.push(res);
+    return acc;
+  };
+
+  const toQuestions = (acc, question) => [...acc, ...question];
+
+  const toResult = (acc, question) => [
+    ...acc,
+    ...question.standards.map(standard => ({
+      score: question.score || 0,
+      id: question.id,
+      standard,
+    })),
+  ];
+
+  const testItems = state.testItems.reduce(reduceTestItems, []);
+  const questions = testItems.reduce(toQuestions, []);
+
+  const groupedResult = groupBy(questions.reduce(toResult, []), item => item.standard.name);
+
+  const result = [];
+
+  forEach(groupedResult, (value, key) => {
+    result.push({
+      standard: key,
+      questionsCount: value.length,
+      score: value.reduce((acc, item) => acc + +item.score, 0),
+    });
+  });
+
+  return result;
+});

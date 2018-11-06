@@ -2,18 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FlexContainer } from '@edulastic/common';
 import { IconShare, IconHeart } from '@edulastic/icons';
-import { greenDark, textColor } from '@edulastic/colors';
+import { greenDark, textColor, grey, white } from '@edulastic/colors';
 import styled from 'styled-components';
-
-import Tags from '../../common/Tags';
+import Tags from '../../../common/Tags';
 
 const MetaInfoCell = ({ data }) => (
-  <FlexContainer
-    flexDirection="column"
-    alignItems="flex-start"
-    style={{ fontWeight: 600, color: textColor }}
-  >
-    <FlexContainer style={{ marginBottom: 15 }}>
+  <FlexContainer style={{ fontWeight: 600, color: textColor, flexWrap: 'wrap' }}>
+    {data.standards &&
+      !!data.standards.length && (
+        <FlexContainer>
+          <Tags tags={data.standards} labelStyle={{ color: greenDark, background: white, border: `1px solid ${grey}` }} />
+        </FlexContainer>
+    )}
+    {data.types &&
+      !!data.types.length && (
+        <FlexContainer>
+          <span>Type: </span>
+          <Tags tags={data.types} />
+        </FlexContainer>
+    )}
+    <FlexContainer>
       <div>
         <span>By:</span> <FirstText>{data.by}</FirstText>
       </div>
@@ -27,13 +35,6 @@ const MetaInfoCell = ({ data }) => (
         <IconHeart color={greenDark} /> <span>{data.likes}</span>
       </FlexContainer>
     </FlexContainer>
-    {data.types &&
-      !!data.types.length && (
-        <FlexContainer style={{ marginLeft: 0 }}>
-          <span>Type: </span>
-          <Tags tags={data.types} />
-        </FlexContainer>
-    )}
   </FlexContainer>
 );
 

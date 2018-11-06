@@ -35,7 +35,8 @@ const allSubjects = [
 ];
 
 const Calculator = ({
-  total,
+  totalPoints,
+  questionsCount,
   grades,
   subjects,
   onChangeGrade,
@@ -140,20 +141,21 @@ const Calculator = ({
         <Item>
           <Title>Summary</Title>
         </Item>
-        <Summary total={total} tableData={tableData} />
+        <Summary total={totalPoints} questionsCount={questionsCount} tableData={tableData} />
       </Main>
     </Container>
   );
 };
 
 Calculator.propTypes = {
-  total: PropTypes.string.isRequired,
+  totalPoints: PropTypes.number.isRequired,
   grades: PropTypes.array.isRequired,
   subjects: PropTypes.array.isRequired,
   onChangeGrade: PropTypes.func.isRequired,
   onChangeSubjects: PropTypes.func.isRequired,
   thumbnail: PropTypes.string.isRequired,
   tableData: PropTypes.array.isRequired,
+  questionsCount: PropTypes.any.isRequired,
 };
 
 export default Calculator;

@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { get } from 'lodash';
 
 export const stateSelector = state => state.testItems;
 
@@ -15,6 +16,24 @@ export const getItemsTypesSelector = createSelector(getTestItemsSelector, (state
     );
 
     result[item.id] = [...new Set(types)];
+  });
+
+  return result;
+});
+
+export const getStandardsSelector = createSelector(getTestItemsSelector, (state) => {
+  const result = {};
+
+  state.forEach((item) => {
+    const tags = get(item, 'data.questions', []).reduce((acc, question) => {
+      const t = get(question, 'standardsMap.domains', []).reduce(
+        (r, { standards }) => [...r, ...standards.map(s => s.name)],
+        [],
+      );
+      return [...acc, ...t];
+    }, []);
+
+    result[item.id] = tags;
   });
 
   return result;

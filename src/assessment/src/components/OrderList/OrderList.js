@@ -266,7 +266,7 @@ OrderList.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any.isRequired,
+  evaluation: PropTypes.any,
 };
 
 OrderList.defaultProps = {
@@ -275,6 +275,7 @@ OrderList.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
+  evaluation: '',
 };
 
 const enhance = compose(

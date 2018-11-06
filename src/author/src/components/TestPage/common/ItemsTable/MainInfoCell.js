@@ -10,7 +10,7 @@ const MainInfoCell = ({ data, history }) => {
   return (
     <div>
       <MoveLink onClick={goToItem}>{data.title}</MoveLink>
-      <div>{data.stimulus}</div>
+      <div dangerouslySetInnerHTML={{ __html: data.stimulus }} />
     </div>
   );
 };

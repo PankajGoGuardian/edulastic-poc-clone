@@ -13,7 +13,7 @@ import {
   Question,
   OrderListPreview,
   OrderListReport,
-  CorrectAnswers
+  CorrectAnswers,
 } from './index';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 import QuestionHeader from '../MultipleChoice/common/QuestionHeader';
@@ -28,12 +28,12 @@ class OrderList extends Component {
       ...item.validation,
       valid_response: {
         score: item.validation.valid_response.score,
-        value: item.validation.valid_response.value.map(val => item.list[val])
+        value: item.validation.valid_response.value.map(val => item.list[val]),
       },
       alt_responses: item.validation.alt_responses.map(res => ({
         score: res.score,
-        value: res.value.map(val => item.list[val])
-      }))
+        value: res.value.map(val => item.list[val]),
+      })),
     };
   }
 
@@ -46,7 +46,7 @@ class OrderList extends Component {
     }
   }
 
-  handleQuestionChange = value => {
+  handleQuestionChange = (value) => {
     const { setQuestionData, item } = this.props;
     setQuestionData({ ...item, stimulus: value });
   };
@@ -56,7 +56,7 @@ class OrderList extends Component {
 
     setQuestionData({
       ...item,
-      list: arrayMove(item.list, oldIndex, newIndex)
+      list: arrayMove(item.list, oldIndex, newIndex),
     });
   };
 
@@ -70,11 +70,11 @@ class OrderList extends Component {
           return value;
         }
         return q;
-      })
+      }),
     });
   };
 
-  handleDeleteQuestion = index => {
+  handleDeleteQuestion = (index) => {
     const { setQuestionData, item, saveAnswer } = this.props;
     const newItem = cloneDeep(item);
 
@@ -84,12 +84,10 @@ class OrderList extends Component {
 
     newItem.validation.valid_response.value = indexList;
 
-    newItem.validation.alt_responses = newItem.validation.alt_responses.map(
-      res => {
-        res.value = indexList;
-        return res;
-      }
-    );
+    newItem.validation.alt_responses = newItem.validation.alt_responses.map((res) => {
+      res.value = indexList;
+      return res;
+    });
 
     saveAnswer(indexList);
     setQuestionData(newItem);
@@ -101,20 +99,18 @@ class OrderList extends Component {
 
     newItem.list = [
       ...item.list,
-      `${t('common.initialoptionslist.itemprefix')} ${item.list.length}`
+      `${t('common.initialoptionslist.itemprefix')} ${item.list.length}`,
     ];
     newItem.validation.valid_response.value = [
       ...newItem.validation.valid_response.value,
-      newItem.validation.valid_response.value.length
+      newItem.validation.valid_response.value.length,
     ];
 
     if (newItem.validation.alt_responses.length) {
-      newItem.validation.alt_responses = newItem.validation.alt_responses.map(
-        res => {
-          res.value.push(res.value.length);
-          return res;
-        }
-      );
+      newItem.validation.alt_responses = newItem.validation.alt_responses.map((res) => {
+        res.value.push(res.value.length);
+        return res;
+      });
     }
 
     saveAnswer(newItem.list.map((q, i) => i));
@@ -124,11 +120,7 @@ class OrderList extends Component {
   onSortCurrentAnswer = ({ oldIndex, newIndex }) => {
     const { setQuestionData, item } = this.props;
     const newItem = cloneDeep(item);
-    const newValue = arrayMove(
-      item.validation.valid_response.value,
-      oldIndex,
-      newIndex
-    );
+    const newValue = arrayMove(item.validation.valid_response.value, oldIndex, newIndex);
 
     newItem.validation.valid_response.value = newValue;
 
@@ -138,11 +130,7 @@ class OrderList extends Component {
   onSortAltAnswer = ({ oldIndex, newIndex, altIndex }) => {
     const { item, setQuestionData } = this.props;
     const newItem = cloneDeep(item);
-    const newValue = arrayMove(
-      item.validation.alt_responses[altIndex].value,
-      oldIndex,
-      newIndex
-    );
+    const newValue = arrayMove(item.validation.alt_responses[altIndex].value, oldIndex, newIndex);
 
     newItem.validation.alt_responses[altIndex].value = newValue;
 
@@ -163,13 +151,13 @@ class OrderList extends Component {
 
     newItem.validation.alt_responses.push({
       score: 1,
-      value: newItem.list.map((q, i) => i)
+      value: newItem.list.map((q, i) => i),
     });
 
     setQuestionData(newItem);
   };
 
-  handleDeleteAltAnswers = index => {
+  handleDeleteAltAnswers = (index) => {
     const { setQuestionData, item } = this.props;
     const newItem = cloneDeep(item);
 
@@ -192,15 +180,7 @@ class OrderList extends Component {
   };
 
   render() {
-    const {
-      view,
-      previewTab,
-      smallSize,
-      item,
-      userAnswer,
-      testItem,
-      evaluation
-    } = this.props;
+    const { view, previewTab, smallSize, item, userAnswer, testItem, evaluation } = this.props;
 
     if (!item) return null;
 
@@ -287,7 +267,7 @@ OrderList.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any.isRequired
+  evaluation: PropTypes.any,
 };
 
 OrderList.defaultProps = {
@@ -295,7 +275,8 @@ OrderList.defaultProps = {
   smallSize: false,
   item: {},
   userAnswer: [],
-  testItem: false
+  testItem: false,
+  evaluation: '',
 };
 
 const enhance = compose(
@@ -303,9 +284,9 @@ const enhance = compose(
   connect(
     null,
     {
-      setQuestionData: setQuestionDataAction
-    }
-  )
+      setQuestionData: setQuestionDataAction,
+    },
+  ),
 );
 
 export default enhance(OrderList);

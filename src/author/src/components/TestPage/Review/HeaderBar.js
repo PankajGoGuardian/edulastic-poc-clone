@@ -11,12 +11,13 @@ const HeaderBar = ({ onSelectAll, onRemoveSelected, onCollapse, selectedItems, o
   const [showPrompt, setShowPrompt] = useState(false);
 
   const handleSuccess = (position) => {
-    if (selectedItems.length < position) {
+    const post = position - 1;
+    if (selectedItems.length < post) {
       message.info('Value cannot be more than total questions count');
-    } else if (position < 0) {
+    } else if (post < 0) {
       message.info('Value cannot be less than total questions count');
     } else {
-      onMoveTo(position);
+      onMoveTo(post);
       setShowPrompt(false);
     }
   };

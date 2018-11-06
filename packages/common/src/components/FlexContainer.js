@@ -7,10 +7,10 @@ const FlexContainer = styled.div`
   flex-direction: ${props => (props.flexDirection ? props.flexDirection : 'row')};
 
   & > * {
-    margin-left: 10px;
+    margin-right: 10px;
   }
-  & > *:first-child {
-    margin-left: 0;
+  & > *:last-child {
+    margin-right: 0;
   }
 `;
 

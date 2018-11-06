@@ -32,4 +32,4 @@ QuestionWrapper.defaultProps = {
   testItem: false,
 };
 
-export default withAnswerSave(QuestionWrapper);
+export default React.memo(withAnswerSave(QuestionWrapper));

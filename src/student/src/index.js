@@ -1,17 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
 
 import AssessmentPlayer from '../../assessment/src/index';
 
-const Student = ({ defaultAP, location }) => {
-  let aId = 'all';
-
-  return <AssessmentPlayer aId={aId} defaultAP={defaultAP} />;
-};
+const Student = props => <AssessmentPlayer {...props} />;
 
 Student.propTypes = {
-  defaultAP: PropTypes.any.isRequired
+  defaultAP: PropTypes.any.isRequired,
 };
 
-export default withRouter(Student);
+export default Student;

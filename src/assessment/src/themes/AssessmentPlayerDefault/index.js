@@ -49,7 +49,8 @@ class AssessmentPlayerDefault extends React.Component {
       moveToPrev,
       gotoQuestion,
       currentItem,
-      itemRows
+      itemRows,
+      finishTest
     } = this.props;
 
     const dropdownOptions = Array.isArray(items)
@@ -80,6 +81,9 @@ class AssessmentPlayerDefault extends React.Component {
                 </ControlBtn>
                 <ControlBtn next skin disabled={isLast()} onClick={moveToNext}>
                   <i className="fa fa-angle-right" />
+                </ControlBtn>
+                <ControlBtn onClick={finishTest}>
+                  <i className="fa fa-paper-plane" />
                 </ControlBtn>
                 <ControlBtn setting skin>
                   <img src={SettingImage} alt="Setting" />

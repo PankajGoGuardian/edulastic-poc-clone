@@ -10,7 +10,7 @@ import {
   RECEIVE_ITEMS_ERROR,
   SAVE_USER_RESPONSE,
   LOAD_USER_RESPONSE,
-  LOAD_ANSWERS,
+  LOAD_ANSWERS
 } from '../constants/actions';
 
 function* receiveItemsSaga() {
@@ -19,13 +19,13 @@ function* receiveItemsSaga() {
 
     yield put({
       type: RECEIVE_ITEMS_SUCCESS,
-      payload: { items },
+      payload: { items }
     });
   } catch (err) {
     console.error(err);
     yield put({
       type: RECEIVE_ITEMS_ERROR,
-      payload: { error: 'Receive items is failing' },
+      payload: { error: 'Receive items is failing' }
     });
   }
 }
@@ -36,21 +36,21 @@ function* receiveItemSaga({ payload }) {
 
     yield put({
       type: RECEIVE_ITEM_SUCCESS,
-      payload: { item },
+      payload: { item }
     });
   } catch (err) {
     console.error(err);
     yield put({
       type: RECEIVE_ITEM_ERROR,
-      payload: { error: 'Receive item by id is failing' },
+      payload: { error: 'Receive item by id is failing' }
     });
   }
 }
 
 // fetch all questionIds from item
-const getQuestionIds = (item) => {
+const getQuestionIds = item => {
   let questions = [];
-  item.rows.forEach((row) => {
+  item.rows.forEach(row => {
     questions = [...questions, ...row.widgets.map(widget => widget.reference)];
   });
   return questions;
@@ -61,14 +61,21 @@ function* saveUserResponse({ payload }) {
     const itemIndex = payload.itemId;
     const items = yield select(state => state.test && state.test.items);
     const answers = yield select(state => state.answers);
+    const userTestActivityId = yield select(
+      state => state.test && state.test.testActivityId
+    );
     const currentItem = items.length && items[itemIndex];
     const questions = getQuestionIds(currentItem);
     const itemAnswers = {};
-    questions.forEach((question) => {
+    questions.forEach(question => {
       itemAnswers[question] = answers[question];
     });
     const testId = currentItem.id;
-    yield call(itemsApi.saveUserReponse, testId, itemAnswers);
+    yield call(itemsApi.saveUserReponse, {
+      testItemId: testId,
+      answers: itemAnswers,
+      userTestActivityId
+    });
   } catch (err) {
     console.log(err);
   }
@@ -83,8 +90,8 @@ function* loadUserResponse({ payload }) {
     yield put({
       type: LOAD_ANSWERS,
       payload: {
-        ...answers,
-      },
+        ...answers
+      }
     });
   } catch (e) {
     console.log(e);
@@ -95,6 +102,6 @@ export default function* watcherSaga() {
     yield takeEvery(RECEIVE_ITEM_REQUEST, receiveItemSaga),
     yield takeEvery(RECEIVE_ITEMS_REQUEST, receiveItemsSaga),
     yield takeEvery(SAVE_USER_RESPONSE, saveUserResponse),
-    yield takeEvery(LOAD_USER_RESPONSE, loadUserResponse),
+    yield takeEvery(LOAD_USER_RESPONSE, loadUserResponse)
   ]);
 }

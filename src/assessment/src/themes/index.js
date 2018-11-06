@@ -2,6 +2,10 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { gotoItem, saveUserResponse, loadUserResponse } from '../actions/items';
+import {
+  initiateTestActivityAction,
+  finishTestAcitivityAction
+} from '../actions/test';
 import { evaluateAnswer } from '../actions/evaluation';
 
 import AssesmentPlayerDefault from './AssessmentPlayerDefault';
@@ -15,10 +19,12 @@ const AssessmentContainer = ({
   itemRows,
   defaultAP,
   currentItem,
+  initTestActivity,
+  finishTest,
   gotoItem: gotoIt,
   saveUserResponse: saveUser,
   loadUserResponse: loadUser,
-  evaluateAnswer: evaluate,
+  evaluateAnswer: evaluate
 }) => {
   useEffect(() => {
     if (items.length) {
@@ -26,10 +32,14 @@ const AssessmentContainer = ({
     }
   });
 
+  useEffect(() => {
+    initTestActivity();
+  }, []);
+
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
 
-  const gotoQuestion = (index) => {
+  const gotoQuestion = index => {
     gotoIt(index);
     saveUser(currentItem);
   };
@@ -55,6 +65,7 @@ const AssessmentContainer = ({
     itemRows,
     evaluate,
     view,
+    finishTest
   };
 
   return defaultAP ? (
@@ -68,6 +79,7 @@ AssessmentContainer.propTypes = {
   gotoItem: PropTypes.func.isRequired,
   items: PropTypes.array.isRequired,
   currentItem: PropTypes.number.isRequired,
+  initTestActivity: PropTypes.func.isRequired
 };
 
 export default connect(
@@ -75,7 +87,14 @@ export default connect(
     view: state.view.preview,
     items: state.test.items,
     currentItem: state.test.currentItem,
-    itemRows: currentItemRowsSelector(state),
+    itemRows: currentItemRowsSelector(state)
   }),
-  { gotoItem, saveUserResponse, loadUserResponse, evaluateAnswer },
+  {
+    gotoItem,
+    saveUserResponse,
+    loadUserResponse,
+    evaluateAnswer,
+    initTestActivity: initiateTestActivityAction,
+    finishTest: finishTestAcitivityAction
+  }
 )(AssessmentContainer);

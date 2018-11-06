@@ -11,6 +11,7 @@ export const ADD_EVALUATION = '[questions] add evulation';
 export const LOAD_ASSESSMENT = '[assessment] load assessment';
 
 // test
+export const SET_TEST_ID = '[test] set test id';
 export const LOAD_TEST = '[test] load test';
 export const LOAD_TEST_ITEMS = '[test] load test items';
 

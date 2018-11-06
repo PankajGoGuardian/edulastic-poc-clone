@@ -268,7 +268,7 @@ const Menu = styled(AntMenu)`
     display: flex;
     align-items: center;
     margin-top: 16px;
-    padding-top: 20px;
+    padding: 0px 32px !important;
   }
   &.ant-menu-inline-collapsed {
     width: 100px;

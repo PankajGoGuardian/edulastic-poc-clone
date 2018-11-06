@@ -7,7 +7,7 @@ import {
   IconClockDashboard,
   IconAssignment,
   IconBarChart,
-  IconReport,
+  IconList,
   IconManage,
   IconQuestion,
 } from '@edulastic/icons';
@@ -24,16 +24,16 @@ const menuItems = [
     icon: IconAssignment,
   },
   {
-    label: 'Reports',
-    icon: IconReport,
-  },
-  {
     label: 'Skill Report',
     icon: IconBarChart,
   },
   {
     label: 'Manage Class',
     icon: IconManage,
+  },
+  {
+    label: 'Item List',
+    icon: IconList,
   },
 ];
 
@@ -268,7 +268,7 @@ const Menu = styled(AntMenu)`
     display: flex;
     align-items: center;
     margin-top: 16px;
-    padding: 0px 50px !important;
+    padding: 0px 32px !important;
   }
   &.ant-menu-inline-collapsed {
     width: 100px;

@@ -73,7 +73,7 @@ class SideMenu extends Component {
   render() {
     const { collapsed, broken } = this.state;
     const { windowWidth } = this.props;
-    const isCollapsed = windowWidth > 1200 ? collapsed : true;
+    const isCollapsed = (windowWidth > 1200 || windowWidth <= 480 || windowWidth === 646) ? collapsed : true;
     return (
       <SideBar
         collapsed={isCollapsed}

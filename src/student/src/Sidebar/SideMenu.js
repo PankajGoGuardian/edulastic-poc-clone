@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { compose } from 'redux';
+import PropTypes from 'prop-types';
 import { Layout, Menu as AntMenu, Row, Col, Select, Icon as AntIcon } from 'antd';
 import styled from 'styled-components';
 import {
@@ -11,6 +13,7 @@ import {
   IconManage,
   IconQuestion,
 } from '@edulastic/icons';
+import { withWindowSizes } from '@edulastic/common';
 
 import Profile from '../assets/Profile.png';
 
@@ -73,10 +76,11 @@ class SideMenu extends Component {
 
   render() {
     const { collapsed, broken } = this.state;
-
+    const { windowWidth } = this.props;
+    const isCollapsed = windowWidth > 1200 ? collapsed : true;
     return (
       <SideBar
-        collapsed={collapsed}
+        collapsed={isCollapsed}
         onCollapse={collapsedStatus => this.setState({ collapsed: collapsedStatus })}
         breakpoint="md"
         onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
@@ -97,13 +101,13 @@ class SideMenu extends Component {
             </Col>
           ) : null}
           <Col span={18} style={{ textAlign: 'left' }}>
-            {collapsed ? <LogoCompact /> : <Logo />}
+            {isCollapsed ? <LogoCompact /> : <Logo />}
           </Col>
           {broken ? null : (
             <Col span={6} style={{ textAlign: 'right', color: '#1fe3a1' }}>
               <AntIcon
                 className="trigger"
-                type={collapsed ? 'right' : 'left'}
+                type={isCollapsed ? 'right' : 'left'}
                 onClick={this.onCollapse}
               />
             </Col>
@@ -117,7 +121,7 @@ class SideMenu extends Component {
               return (
                 <MenuItem key={index.toString()}>
                   <MenuIcon />
-                  {!collapsed && <span>{menu.label}</span>}
+                  {!isCollapsed && <span>{menu.label}</span>}
                 </MenuItem>
               );
             })}
@@ -125,12 +129,12 @@ class SideMenu extends Component {
           <MenuFooter className="footerBottom">
             <QuestionButton className="questionBtn">
               <HelpIcon />
-              {collapsed ? null : <span>Help Center</span>}
+              {isCollapsed ? null : <span>Help Center</span>}
             </QuestionButton>
             <UserInfoButton className="userinfoBtn">
               <img src={Profile} alt="Profile" />
               <div>
-                {!collapsed && <label style={{ marginLeft: 11 }}>Zack oliver</label>}
+                {!isCollapsed && <label style={{ marginLeft: 11 }}>Zack oliver</label>}
                 <Select
                   defaultValue="Student"
                   suffixIcon={
@@ -148,7 +152,15 @@ class SideMenu extends Component {
   }
 }
 
-export default SideMenu;
+SideMenu.propTypes = {
+  windowWidth: PropTypes.number.isRequired,
+};
+
+const enhance = compose(
+  withWindowSizes,
+);
+
+export default enhance(SideMenu);
 
 const SideBar = styled(Layout.Sider)`
   width: 245px;

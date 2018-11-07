@@ -1,32 +1,44 @@
 import styled from 'styled-components';
 
 const FilterBtn = styled.button`
-  border: none;
-  height: 2.7rem;
-  border-radius: 10px;
-  background-color: #fff;
-  box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.07);
-  cursor: pointer;
-  margin-right: 0.9rem;
-  min-width: 5.9rem;
-  font-size: 0.2rem;
-  display: inline-flex;
+  margin-left: 10px;
+  padding: 5px 15px;
+  font-family: Open Sans;
+  font-size: 11px;
+  font-weight: 600;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.36;
+  letter-spacing: 0.2px;
+  text-align: left;
+  color: #ffffff;
+  display: flex;
   align-items: center;
-  justify-content: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background-color: transparent;
+  border: none;
+  
   & span {
-    margin-right: 0.5rem;
-    color: grey;
+    opacity: 0.8;
+    font-family: Open Sans;
+    font-size: 24px;
     font-weight: 600;
-    letter-spacing: 0.04rem;
-    line-height: 1.375;
-    font-size: 0.7rem;
-    font-weight: 600;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.38;
+    letter-spacing: 0.4px;
+    text-align: left;
+    transform: uppercase;
+    color: #ffffff;
+    padding-right: 10px;
   }
   &:nth-last-of-type(1) {
     margin-right: 0;
   }
-  @media (max-width: 875px) {
-    display: none;
+
+  @media screen and (max-width: 1420px){
+    padding: 5px 15px;
   }
 `;
 

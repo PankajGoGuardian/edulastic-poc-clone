@@ -7,13 +7,14 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { Progress } from '@edulastic/common';
 import Student from './student/src';
 import Dashboard from './student/src/app';
+
+import Author from './author/src/app';
+
 import {
   QuestionEditor,
   ItemAdd,
-  ItemList,
   PickUpQuestionType,
 } from './author/src';
-import ItemDetail from './author/src/components/ItemDetail';
 
 const TestList = lazy(() => import('./author/src/components/TestList'));
 const TestPage = lazy(() => import('./author/src/components/TestPage'));
@@ -29,18 +30,13 @@ class App extends Component {
       <div>
         <Switch>
           <Redirect exact path="/" to="/student/test" />
-          <Route exact path="/author/items" component={ItemList} />
+          <Route path="/author" component={Author} />
           <Route path="/home" component={Dashboard} />
           <Route exact path="/author/add-item" component={ItemAdd} />
           <Route
             exact
             path="/author/items/:id/pickup-questiontype"
             component={PickUpQuestionType}
-          />
-          <Route
-            exact
-            path="/author/items/:id/item-detail"
-            component={ItemDetail}
           />
           <Route
             exact

@@ -20,8 +20,8 @@ export default MoveLink;
 
 const Link = styled.a`
   font-size: 16px;
-  font-weight: 600;
-  display: flex;
+  font-weight: bold;
+  display: inline-flex;
   align-items: center;
   flex-wrap: nowrap;
   text-decoration: none;

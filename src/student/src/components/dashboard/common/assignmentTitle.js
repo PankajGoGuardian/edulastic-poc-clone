@@ -1,20 +1,15 @@
 import styled from 'styled-components';
 
 const AssignmentsTitle = styled.div`
-  @media (min-width: 1200px) {
-    
-    float:left
-    margin-top: 0;
-    margin-bottom: 0;
-    color: #434b5d;
-    font-size: 1.3rem;
-    font-weight: 700;
-    line-height: 2.36364;
-  }
-  @media (max-width: 1200px) {
-    display: none;
-  }
-  
+  font-family: Open Sans;
+  font-size: 22px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.36;
+  letter-spacing: normal;
+  text-align: left;
+  color: #ffffff;
 `;
 
 export default AssignmentsTitle;

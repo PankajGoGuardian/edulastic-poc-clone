@@ -14,7 +14,11 @@ import {
   updateTestAction,
   setDefaultTestDataAction,
 } from '../../actions/tests';
-import { getTestSelector, getTestItemsRowsSelector } from '../../selectors/tests';
+import {
+  getTestSelector,
+  getTestItemsRowsSelector,
+  getTestsCreatingSelector,
+} from '../../selectors/tests';
 import SourceModal from '../QuestionEditor/SourceModal';
 import Review from './Review';
 
@@ -27,6 +31,7 @@ const TestPage = ({
   updateTest,
   setDefaultData,
   rows,
+  creating,
 }) => {
   useEffect(() => {
     if (match.params.id) {
@@ -111,6 +116,7 @@ const TestPage = ({
         current={current}
         onSave={handleSave}
         title={test.title}
+        creating={creating}
       />
       {renderContent()}
     </div>
@@ -125,6 +131,7 @@ TestPage.propTypes = {
   setDefaultData: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   rows: PropTypes.array.isRequired,
+  creating: PropTypes.bool.isRequired,
   test: PropTypes.object,
 };
 
@@ -139,6 +146,7 @@ const enhance = compose(
     state => ({
       test: getTestSelector(state),
       rows: getTestItemsRowsSelector(state),
+      creating: getTestsCreatingSelector(state),
     }),
     {
       createTest: createTestAction,

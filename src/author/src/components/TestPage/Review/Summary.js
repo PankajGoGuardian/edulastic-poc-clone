@@ -26,11 +26,11 @@ const columns = [
   },
 ];
 
-const Summary = ({ total, tableData }) => (
+const Summary = ({ total, tableData, questionsCount }) => (
   <div>
     <FlexContainer style={{ marginBottom: 25 }}>
       <InfoBlock>
-        <Count>3</Count> Questions
+        <Count>{questionsCount}</Count> Questions
       </InfoBlock>
       <InfoBlock>
         <Count>{total}</Count> Points
@@ -41,8 +41,9 @@ const Summary = ({ total, tableData }) => (
 );
 
 Summary.propTypes = {
-  total: PropTypes.string.isRequired,
+  total: PropTypes.number.isRequired,
   tableData: PropTypes.array.isRequired,
+  questionsCount: PropTypes.any.isRequired,
 };
 
 export default Summary;

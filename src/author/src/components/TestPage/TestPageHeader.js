@@ -34,7 +34,7 @@ const getCurrentText = (current) => {
   return '';
 };
 
-const TestPageHeader = ({ onChangeNav, current, onSave, title }) => (
+const TestPageHeader = ({ onChangeNav, current, onSave, title, creating }) => (
   <Container>
     <Row gutter={16}>
       <Col span={6}>
@@ -46,8 +46,8 @@ const TestPageHeader = ({ onChangeNav, current, onSave, title }) => (
       <Col span={18}>
         <FlexContainer justifyContent="space-between">
           <TestPageNav onChange={onChangeNav} current={current} buttons={buttons} />
-          <EduButton size="large" type="secondary" onClick={onSave}>
-            Save changes
+          <EduButton disabled={creating} size="large" type="secondary" onClick={onSave}>
+            {creating ? 'Saving...' : 'Save changes'}
           </EduButton>
         </FlexContainer>
       </Col>
@@ -60,6 +60,7 @@ TestPageHeader.propTypes = {
   onSave: PropTypes.func.isRequired,
   current: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
+  creating: PropTypes.bool.isRequired,
 };
 
 export default memo(TestPageHeader);

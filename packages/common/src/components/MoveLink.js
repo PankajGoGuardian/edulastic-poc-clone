@@ -6,7 +6,8 @@ import { blue, darkBlue } from '@edulastic/colors';
 
 const MoveLink = ({ onClick, children }) => (
   <Link onClick={onClick}>
-    {children}# <FaAngleDoubleRight style={{ marginLeft: 5 }} />
+    <span>{children}</span>
+    <FaAngleDoubleRight style={{ marginLeft: 5 }} />
   </Link>
 );
 
@@ -22,6 +23,7 @@ const Link = styled.a`
   font-weight: bold;
   display: inline-flex;
   align-items: center;
+  flex-wrap: nowrap;
   text-decoration: none;
   color: ${blue};
   cursor: pointer;

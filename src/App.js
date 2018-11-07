@@ -7,8 +7,16 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { Progress } from '@edulastic/common';
 import Student from './student/src';
 import Dashboard from './student/src/app';
+
 import Author from './author/src/app';
-import { QuestionEditor, ItemAdd, PickUpQuestionType } from './author/src';
+
+import {
+  QuestionEditor,
+  ItemAdd,
+  ItemList,
+  PickUpQuestionType,
+} from './author/src';
+
 import ItemDetail from './author/src/components/ItemDetail';
 
 const TestList = lazy(() => import('./author/src/components/TestList'));
@@ -33,7 +41,11 @@ class App extends Component {
             path="/author/items/:id/pickup-questiontype"
             component={PickUpQuestionType}
           />
-          <Route exact path="/author/items/:id/item-detail" component={ItemDetail} />
+          <Route
+            exact
+            path="/author/items/:id/item-detail"
+            component={ItemDetail}
+          />
           <Route
             exact
             path="/author/tests"
@@ -62,10 +74,31 @@ class App extends Component {
             )}
           />
           <Route exact path="/author/add-item" component={ItemAdd} />
-          <Route exact path="/author/questions/create" component={QuestionEditor} />
-          <Route exact path="/author/questions/:id" component={QuestionEditor} />
+          <Route
+            exact
+            path="/author/questions/create"
+            component={QuestionEditor}
+          />
+          <Route
+            exact
+            path="/author/questions/:id"
+            component={QuestionEditor}
+          />
+          <Route
+            path="/student/test/:id"
+            component={() => <Student defaultAP test />}
+          />
           <Route path="/student/test" component={() => <Student defaultAP />} />
-          <Route path="/student/practice" component={() => <Student defaultAP={false} />} />
+          <Route
+            exact
+            path="/student/practice/:id"
+            component={() => <Student defaultAP={false} test />}
+          />
+          <Route
+            exact
+            path="/student/practice"
+            component={() => <Student defaultAP={false} />}
+          />
         </Switch>
       </div>
     );

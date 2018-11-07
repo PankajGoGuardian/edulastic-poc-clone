@@ -40,7 +40,8 @@ class OrderList extends Component {
   componentDidMount() {
     const { item, saveAnswer, userAnswer } = this.props;
 
-    if (!userAnswer.length && item.list) {
+    if (!userAnswer.length) {
+      console.log('itme here is', item);
       saveAnswer(item.list.map((q, i) => i));
     }
   }
@@ -266,7 +267,7 @@ OrderList.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any.isRequired,
+  evaluation: PropTypes.any,
 };
 
 OrderList.defaultProps = {
@@ -275,6 +276,7 @@ OrderList.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
+  evaluation: '',
 };
 
 const enhance = compose(

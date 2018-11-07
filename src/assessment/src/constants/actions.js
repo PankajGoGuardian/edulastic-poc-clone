@@ -11,6 +11,7 @@ export const ADD_EVALUATION = '[questions] add evulation';
 export const LOAD_ASSESSMENT = '[assessment] load assessment';
 
 // test
+export const SET_TEST_ID = '[test] set test id';
 export const LOAD_TEST = '[test] load test';
 export const LOAD_TEST_ITEMS = '[test] load test items';
 
@@ -54,3 +55,8 @@ export const ADD_ITEM_EVALUATION = '[evaluation] add evaluation';
 
 // testItem view
 export const CHANGE_PREVIEW = '[view] change view';
+
+// testActivity
+export const INIT_TEST_ACTIVITY = '[test] initiate test activity';
+export const SET_TEST_ACTIVITY_ID = '[test] add test activity id';
+export const FINISH_TEST = '[test] finish test';

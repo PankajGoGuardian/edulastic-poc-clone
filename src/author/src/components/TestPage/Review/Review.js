@@ -2,7 +2,7 @@ import React, { useState, memo } from 'react';
 import { Row, Col } from 'antd';
 import { Paper } from '@edulastic/common';
 import PropTypes from 'prop-types';
-import { cloneDeep, isNaN } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
@@ -12,6 +12,7 @@ import List from './List';
 import ItemsTable from '../common/ItemsTable/ItemsTable';
 import { getItemsTypesSelector, getStandardsSelector } from '../../../selectors/testItems';
 import { getSummarySelector } from '../../../selectors/tests';
+import { setTestDataAction } from '../../../actions/tests';
 
 const Review = ({
   test,
@@ -53,10 +54,19 @@ const Review = ({
   const handleRemoveSelected = () => {
     const newData = cloneDeep(test);
 
-    test.testItems = test.testItems.filter(item => !item.selected);
+    newData.testItems = test.testItems.filter(item => !item.selected);
 
-    setData(newData);
+    newData.scoring.testItems = test.scoring.testItems.filter((item) => {
+      const foundItem = test.testItems.find(({ id }) => id === item.id);
+      if (foundItem && foundItem.selected) {
+        return false;
+      }
+
+      return true;
+    });
+
     setSelected([]);
+    setData(newData);
   };
 
   const handleCollapse = () => {
@@ -77,10 +87,13 @@ const Review = ({
     moveTestItems({ oldIndex, newIndex });
   };
 
-  const handleChangePoints = (index, value) => {
+  const handleChangePoints = (testItemId, value) => {
     const newData = cloneDeep(test);
 
-    newData.testItems[index].points = value;
+    const itemIndex = newData.scoring.testItems.findIndex(({ id }) => testItemId === id);
+
+    newData.scoring.testItems[itemIndex].points = value;
+    newData.scoring.total = newData.scoring.testItems.reduce((acc, item) => acc + item.points, 0);
 
     setData(newData);
   };
@@ -92,10 +105,7 @@ const Review = ({
     points: data.score || 0,
   }));
 
-  const totalPoints = test.testItems.reduce(
-    (acc, t) => acc + (isNaN(+t.points) ? 0 : +t.points),
-    0,
-  );
+  const totalPoints = test.scoring.total;
   const questionsCount = test.testItems.length;
 
   const handleSelectedTest = (items) => {
@@ -137,6 +147,7 @@ const Review = ({
               setSelected={setSelected}
               onSortEnd={moveTestItems}
               types={types}
+              scoring={test.scoring}
             />
           )}
         </Paper>
@@ -170,11 +181,14 @@ Review.propTypes = {
 
 const enhance = compose(
   memo,
-  connect(state => ({
-    types: getItemsTypesSelector(state),
-    standards: getStandardsSelector(state),
-    summary: getSummarySelector(state),
-  })),
+  connect(
+    state => ({
+      types: getItemsTypesSelector(state),
+      standards: getStandardsSelector(state),
+      summary: getSummarySelector(state),
+    }),
+    { setData: setTestDataAction },
+  ),
 );
 
 export default enhance(Review);

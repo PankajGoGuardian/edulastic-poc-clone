@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { message } from 'antd';
+import { cloneDeep } from 'lodash';
 
 import AddItems from './AddItems';
 import TestPageHeader from './TestPageHeader';
@@ -53,7 +54,21 @@ const TestPage = ({
   };
 
   const handleAddItems = (testItems) => {
-    setData({ ...test, testItems });
+    const newTest = cloneDeep(test);
+
+    newTest.testItems = testItems;
+    newTest.scoring.testItems = testItems.map((item) => {
+      const foundItem = newTest.scoring.testItems.find(({ id }) => item.id === id);
+      if (!foundItem) {
+        return {
+          id: item.id,
+          points: 0,
+        };
+      }
+      return foundItem;
+    });
+
+    setData(newTest);
     message.info('Selected items was added');
   };
 
@@ -76,7 +91,6 @@ const TestPage = ({
           <Review
             test={test}
             rows={rows}
-            setData={setData}
             onChangeGrade={handleChangeGrade}
             onChangeSubjects={handleChangeSubject}
           />

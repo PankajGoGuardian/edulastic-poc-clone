@@ -32,7 +32,7 @@ const SortableItem = SortableElement(
             size="large"
             type="number"
             value={points}
-            onChange={e => onChangePoints(indx, e.target.value)}
+            onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
             style={{ width: 70 }}
           />
         </FlexContainer>
@@ -52,7 +52,7 @@ const SortableItem = SortableElement(
 );
 
 const List = SortableContainer(
-  ({ rows, selected, setSelected, testItems, onChangePoints, types, standards }) => {
+  ({ rows, selected, setSelected, testItems, onChangePoints, types, standards, scoring }) => {
     const handleCheckboxChange = (index, checked) => {
       if (checked) {
         setSelected([...selected, index]);
@@ -64,6 +64,8 @@ const List = SortableContainer(
         setSelected(newSelected);
       }
     };
+
+    const getPoints = i => scoring.testItems.find(({ id }) => id === testItems[i].id).points;
 
     return (
       <div>
@@ -81,7 +83,7 @@ const List = SortableContainer(
             index={i}
             indx={i}
             item={item}
-            points={testItems[i].points}
+            points={getPoints(i)}
             onCheck={handleCheckboxChange}
             onChangePoints={onChangePoints}
             selected={selected}
@@ -100,6 +102,7 @@ List.propTypes = {
   testItems: PropTypes.array.isRequired,
   types: PropTypes.any.isRequired,
   standards: PropTypes.object.isRequired,
+  scoring: PropTypes.object.isRequired,
 };
 
 export default List;

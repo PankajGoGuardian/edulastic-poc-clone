@@ -4,18 +4,20 @@ import PropTypes from 'prop-types';
 import { Layout } from 'antd';
 import Sidebar from './Sidebar/SideMenu';
 import ItemList from './components/ItemList';
+import ItemDetail from './components/ItemDetail';
 
-const Dashboard = ({ match }) => (
+const Author = ({ match }) => (
   <Layout>
     <Sidebar />
     <Switch>
       <Route path={`${match.url}/items`} component={ItemList} />
+      <Route path={`${match.url}/item/:id/item-detail`} component={ItemDetail} />
     </Switch>
   </Layout>
 );
 
-export default Dashboard;
+export default Author;
 
-Dashboard.propTypes = {
+Author.propTypes = {
   match: PropTypes.string.isRequired,
 };

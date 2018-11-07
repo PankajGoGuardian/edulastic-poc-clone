@@ -13,11 +13,8 @@ import Author from './author/src/app';
 import {
   QuestionEditor,
   ItemAdd,
-  ItemList,
   PickUpQuestionType,
 } from './author/src';
-
-import ItemDetail from './author/src/components/ItemDetail';
 
 const TestList = lazy(() => import('./author/src/components/TestList'));
 const TestPage = lazy(() => import('./author/src/components/TestPage'));
@@ -40,11 +37,6 @@ class App extends Component {
             exact
             path="/author/items/:id/pickup-questiontype"
             component={PickUpQuestionType}
-          />
-          <Route
-            exact
-            path="/author/items/:id/item-detail"
-            component={ItemDetail}
           />
           <Route
             exact

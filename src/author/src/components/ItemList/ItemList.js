@@ -125,6 +125,7 @@ const enhance = compose(
 export default enhance(ItemList);
 
 const Container = styled.div`
+  width: 100%;
   padding-bottom: 51px;
 
   @media (max-width: ${mobileWidth}) {

@@ -72,7 +72,6 @@ class ClozeDragDrop extends Component {
   };
 
   handleOptionsChange = (name, value) => {
-    console.log('value:', value);
     const { setQuestionData, item } = this.props;
     const newItem = cloneDeep(item);
     newItem[name] = value;
@@ -96,7 +95,6 @@ class ClozeDragDrop extends Component {
 
   handleAddAnswer = (userAnswer) => {
     const { saveAnswer } = this.props;
-    console.log('newAnswer:', userAnswer);
     const newAnswer = cloneDeep(userAnswer);
     saveAnswer(newAnswer);
   };
@@ -107,7 +105,6 @@ class ClozeDragDrop extends Component {
     const { duplicatedResponses, showDraghandle, shuffleOptions } = this.state;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
-    console.log('evaluation:', evaluation, item, userAnswer);
     return (
       <div>
         {view === 'edit' && (

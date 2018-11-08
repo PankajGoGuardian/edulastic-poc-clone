@@ -209,7 +209,8 @@ class ClozeDragDropDisplay extends Component {
       uiStyle,
       showAnswer,
       checkAnswer,
-      validation
+      validation,
+      evaluation
     } = this.props;
     const { templateParts, userAnswers, possibleResponses } = this.state;
     const { showDraghandle: dragHandler, shuffleOptions } = configureOptions;
@@ -340,6 +341,7 @@ class ClozeDragDropDisplay extends Component {
         hasGroupResponses={hasGroupResponses}
         fontSize={fontSize}
         userSelections={userAnswers}
+        evaluation={evaluation}
       />
     )
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;

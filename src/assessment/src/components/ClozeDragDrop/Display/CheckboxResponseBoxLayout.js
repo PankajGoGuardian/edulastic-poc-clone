@@ -13,9 +13,8 @@ const Icon = styled.div`
 `;
 
 // eslint-disable-next-line max-len
-const CheckboxTemplateBoxLayout = ({ templateParts, hasGroupResponses, responsecontainerindividuals, responseBtnStyle, fontSize, userSelections, stemNumeration }) => {
+const CheckboxTemplateBoxLayout = ({ templateParts, hasGroupResponses, responsecontainerindividuals, responseBtnStyle, fontSize, userSelections, stemNumeration, evaluation }) => {
   let responseIndex = 0;
-  const className = 'right';
   console.log('stemNumeration:', stemNumeration);
 
   return (
@@ -25,6 +24,7 @@ const CheckboxTemplateBoxLayout = ({ templateParts, hasGroupResponses, responsec
           const dropTargetIndex = responseIndex;
           responseIndex++;
           let indexStr;
+          const className = evaluation[dropTargetIndex] ? 'right' : 'wrong';
           switch (stemNumeration) {
             case 'lowercase': {
               indexStr = ALPHABET[dropTargetIndex];
@@ -35,7 +35,7 @@ const CheckboxTemplateBoxLayout = ({ templateParts, hasGroupResponses, responsec
               break;
             }
             case 'numerical': {
-              indexStr = dropTargetIndex;
+              indexStr = dropTargetIndex + 1;
               break;
             }
             default:
@@ -92,6 +92,7 @@ CheckboxTemplateBoxLayout.propTypes = {
   hasGroupResponses: PropTypes.bool,
   userSelections: PropTypes.array,
   stemNumeration: PropTypes.string,
+  evaluation: PropTypes.array,
 };
 
 CheckboxTemplateBoxLayout.defaultProps = {
@@ -102,6 +103,7 @@ CheckboxTemplateBoxLayout.defaultProps = {
   hasGroupResponses: false,
   userSelections: [],
   stemNumeration: 'numerical',
+  evaluation: [],
 };
 
 export default CheckboxTemplateBoxLayout;

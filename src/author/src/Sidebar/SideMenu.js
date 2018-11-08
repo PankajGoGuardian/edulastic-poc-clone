@@ -9,10 +9,10 @@ import {
   IconClockDashboard,
   IconAssignment,
   IconBarChart,
-  IconList,
   IconManage,
   IconQuestion,
-  IconSummary,
+  IconItemList,
+  IconTestList,
 } from '@edulastic/icons';
 import { withWindowSizes } from '@edulastic/common';
 
@@ -37,11 +37,11 @@ const menuItems = [
   },
   {
     label: 'Item List',
-    icon: IconList,
+    icon: IconItemList,
   },
   {
     label: 'Test List',
-    icon: IconSummary,
+    icon: IconTestList,
   },
 ];
 

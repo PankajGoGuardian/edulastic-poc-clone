@@ -36,3 +36,5 @@ export { default as IconTile } from './src/IconTile';
 export { default as IconMoveTo } from './src/IconMoveTo';
 export { default as IconCollapse } from './src/IconCollapse';
 export { default as IconPhotoCamera } from './src/IconPhotoCamera';
+export { default as IconItemList } from './src/IconItemList';
+export { default as IconTestList } from './src/IconTestList';

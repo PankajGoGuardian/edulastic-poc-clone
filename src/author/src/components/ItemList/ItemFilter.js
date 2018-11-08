@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Select, Icon } from 'antd';
+import { Select, Icon, Button } from 'antd';
 import { TextField } from '@edulastic/common';
-import { mobileWidth, blue, greenDark } from '@edulastic/colors';
+import { mobileWidth, blue, greenDark, textColor } from '@edulastic/colors';
 
 class ItemFilter extends Component {
   constructor(props) {
@@ -13,22 +13,31 @@ class ItemFilter extends Component {
     };
   }
 
+  handleFilters = () => {
+
+  }
+
   render() {
     const { onSearch } = this.props;
     const { subjectItems } = this.state;
     return (
       <Container>
-        <SearchField>
-          <TextField
-            onChange={e => onSearch(e.target.value)}
-            height="50px"
-            type="search"
-            icon={<Icon type="search" style={{ color: blue, fontSize: '18px' }} />}
-            containerStyle={{ marginRight: 20 }}
-            style={{ padding: 16, paddingRight: 68, outline: 'none' }}
-            placeholder="Search by skills and"
-          />
-        </SearchField>
+        <Header>
+          <SearchField>
+            <TextField
+              onChange={e => onSearch(e.target.value)}
+              height="50px"
+              type="search"
+              icon={<Icon type="search" style={{ color: blue, fontSize: '18px' }} />}
+              containerStyle={{ marginRight: 20 }}
+              style={{ padding: 16, paddingRight: 68, outline: 'none' }}
+              placeholder="Search by skills and"
+            />
+          </SearchField>
+          <FilterButton>
+            <Button onClick={() => this.handleFilters()}>FILTERS</Button>
+          </FilterButton>
+        </Header>
         <MainFilter>
           <MainFilterHeader>
             <Title>Filters</Title>
@@ -164,6 +173,10 @@ const Container = styled.div`
   min-width: 286px;
 `;
 
+const Header = styled.div`
+  display: flex;
+`;
+
 const SearchField = styled.div`
   margin: 24px 11px 0px 45px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
@@ -171,7 +184,33 @@ const SearchField = styled.div`
   height: 50px;
 
   @media (max-width: ${mobileWidth}) {
-    margin: 13px 26px;
+    margin: 13px 8px 13px 26px;
+  }
+`;
+
+const FilterButton = styled.div`
+  display: none;
+  flex: 1;
+  height: 50px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  border-radius: 10px;
+
+  .ant-btn {
+    height: 50px;
+    border-radius: 10px;
+    width: 100%;
+    
+    span {
+      font-size: 11px;
+      font-weight: 600;
+      color: ${textColor};
+    }
+  }
+
+  @media (max-width: ${mobileWidth}) {
+    margin-top: 13px;
+    margin-right: 26px;
+    display: block;
   }
 `;
 

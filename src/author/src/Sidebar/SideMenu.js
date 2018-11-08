@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { compose } from 'redux';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Layout, Menu as AntMenu, Row, Col, Select, Icon as AntIcon } from 'antd';
 import styled from 'styled-components';
@@ -38,10 +39,12 @@ const menuItems = [
   {
     label: 'Item List',
     icon: IconItemList,
+    path: 'author/items',
   },
   {
     label: 'Test List',
     icon: IconTestList,
+    path: 'author/tests',
   },
 ];
 
@@ -73,6 +76,13 @@ class SideMenu extends Component {
         fill: #4aac8b;
       }
     `;
+  }
+
+  handleMenu = (item) => {
+    const { history } = this.props;
+    if (menuItems[item.key].path !== undefined) {
+      history.push(`/${menuItems[item.key].path}`);
+    }
   }
 
   render() {
@@ -116,7 +126,7 @@ class SideMenu extends Component {
         </LogoWrapper>
         <LogoDash />
         <MenuWrapper>
-          <Menu theme="light" defaultSelectedKeys={['1']} mode="inline">
+          <Menu theme="light" defaultSelectedKeys={['1']} mode="inline" onClick={item => this.handleMenu(item)}>
             {menuItems.map((menu, index) => {
               const MenuIcon = this.renderIcon(menu.icon);
               return (
@@ -155,9 +165,11 @@ class SideMenu extends Component {
 
 SideMenu.propTypes = {
   windowWidth: PropTypes.number.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 const enhance = compose(
+  withRouter,
   withWindowSizes,
 );
 

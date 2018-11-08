@@ -12,6 +12,7 @@ import {
   IconList,
   IconManage,
   IconQuestion,
+  IconSummary,
 } from '@edulastic/icons';
 import { withWindowSizes } from '@edulastic/common';
 
@@ -40,7 +41,7 @@ const menuItems = [
   },
   {
     label: 'Test List',
-    icon: IconList,
+    icon: IconSummary,
   },
 ];
 

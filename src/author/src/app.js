@@ -18,8 +18,8 @@ const Author = ({ match }) => (
   <Layout>
     <Sidebar />
     <Switch>
-      <Route path={`${match.url}/items`} component={ItemList} />
-      <Route path={`${match.url}/item/:id/item-detail`} component={ItemDetail} />
+      <Route exact path={`${match.url}/items`} component={ItemList} />
+      <Route exact path={`${match.url}/items/:id/item-detail`} component={ItemDetail} />
       <Route exact path="/author/add-item" component={ItemAdd} />
       <Route
         exact

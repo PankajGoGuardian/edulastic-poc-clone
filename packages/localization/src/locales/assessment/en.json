@@ -55,6 +55,14 @@
       "composequestion": "Compose Question",
       "multipleResponses": "Multiple Responses"
     },
+    "clozeDragDrop": {
+      "templatemarkup": "Template Markup",
+      "thisisstem": "[This is the stem.]",
+      "setcorrectanswers": "Set Correct Answer(s)",
+      "addnewchoice": "Add New Choice",
+      "multiplechoiceoptions": "Multiple Choice Options",
+      "composequestion": "Compose Question"
+    },
     "correctanswers": {
       "setcorrectanswers": "Set Correct Answer(s)",
       "correct": "Correct",

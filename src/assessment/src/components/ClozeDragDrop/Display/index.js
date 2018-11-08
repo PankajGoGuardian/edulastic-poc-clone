@@ -120,7 +120,6 @@ class ClozeDragDropDisplay extends Component {
         newAnswers[index] = data.metal;
       }
     }
-    console.log('newAnswers display index:', newAnswers);
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });
     changeAnswers(newAnswers);
   }
@@ -224,8 +223,6 @@ class ClozeDragDropDisplay extends Component {
         responses = this.shuffle(possibleResponses);
       }
     }
-
-    console.log('userSelection in display: ', userSelections, validation);
 
     // Layout Options
     const fontSize = this.getFontSize(uiStyle.fontsize);

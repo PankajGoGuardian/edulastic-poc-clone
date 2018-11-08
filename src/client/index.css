@@ -482,7 +482,7 @@ input[type="checkbox"] {
   padding-left: 50px !important;
   flex-flow: row wrap;
   border-radius: 10px;
-  height: 60px;
+  min-height: 60px;
 }
 
 .toolbars {

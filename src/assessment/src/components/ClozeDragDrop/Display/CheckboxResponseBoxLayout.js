@@ -15,7 +15,7 @@ const Icon = styled.div`
 // eslint-disable-next-line max-len
 const CheckboxTemplateBoxLayout = ({ templateParts, hasGroupResponses, responsecontainerindividuals, responseBtnStyle, fontSize, userSelections, stemNumeration, evaluation }) => {
   let responseIndex = 0;
-  console.log('stemNumeration:', stemNumeration);
+  console.log('CheckboxTemplateBoxLayout evaluation:', evaluation);
 
   return (
     <div className="template_box" style={{ fontSize, padding: 20 }}>

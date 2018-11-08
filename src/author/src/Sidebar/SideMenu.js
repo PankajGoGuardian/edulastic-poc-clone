@@ -38,6 +38,10 @@ const menuItems = [
     label: 'Item List',
     icon: IconList,
   },
+  {
+    label: 'Test List',
+    icon: IconList,
+  },
 ];
 
 class SideMenu extends Component {

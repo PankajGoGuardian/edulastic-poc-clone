@@ -28,9 +28,24 @@
       "extraLarge": "Extra Large",
       "huge": "Huge",
       "labelType": "Label type",
-      "numerical": "Numerical",
       "uppercase": "Uppercase alphabet",
-      "lowercase": "Lowercase alphabet"
+      "lowercase": "Lowercase alphabet",
+      "responsecontainerposition": "Response Container Position",
+      "stemnumeration": "Stem numeration (review only)",
+      "fontsize": "Font Size",
+      "responsecontainerglobal": "Response Container (global)",
+      "widthpx": "Width (px)",
+      "heightpx": "Height (px)",
+      "wordwrap": "Wordwrap",
+      "lowercasealphabet": "Lowercase Alphabet",
+      "uppercasealphabet": "Uppercase Alphabet",
+      "numerical": "Numerical",
+      "top": "Top",
+      "bottom": "Bottom",
+      "right": "Right",
+      "left": "Left",
+      "responsecontainerindividual": "Response Container",
+      "responsecontainerindividuals": "Response container (individual)"
     },
     "orderlist": {
       "question": {
@@ -61,7 +76,14 @@
       "setcorrectanswers": "Set Correct Answer(s)",
       "addnewchoice": "Add New Choice",
       "multiplechoiceoptions": "Multiple Choice Options",
-      "composequestion": "Compose Question"
+      "composequestion": "Compose Question",
+      "templatemarkupplaceholder": "[This is the template markup]",
+      "grouppossibleresponses": "Group possible responses",
+      "group": "Group",
+      "choicesforresponse": "Choices for Responses",
+      "duplicatedresponses": "Duplicated responses",
+      "showdraghandle": "Show Drag Handle",
+      "shuffleoptions": "Shuffle Options"
     },
     "correctanswers": {
       "setcorrectanswers": "Set Correct Answer(s)",

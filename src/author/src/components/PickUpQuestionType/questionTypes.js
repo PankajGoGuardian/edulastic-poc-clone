@@ -50,11 +50,10 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => (
       title="Cloze with Drag & Drop"
       data={{
         type: 'clozeDragDrop',
-        stimulus: 'Which color has the smallest walvelenght?',
+        stimulus: '',
         options: [
-          { value: 0, label: 'Red' },
-          { value: 1, label: 'Violet' },
-          { value: 2, label: 'Green' },
+          'Choice A',
+          'Choice B'
         ],
         validation: {
           scoring_type: 'exactMatch',
@@ -64,7 +63,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => (
           },
           alt_responses: [],
         },
-        multiple_responses: true,
+        hasGroupResponses: false
       }}
       onSelectQuestionType={onSelectQuestionType}
     />

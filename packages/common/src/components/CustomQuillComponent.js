@@ -1,23 +1,37 @@
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill, { Quill } from 'react-quill';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import enhanceWithClickOutside from 'react-click-outside';
 
 const Embed = Quill.import('blots/block/embed');
-let responseCount = 0;
+
 
 class ResponseCmp extends Embed {
-  static create(index) {
+  static create() {
     const node = super.create();
+    const responseCount = document.querySelectorAll('.response-btn').length;
     node.setAttribute('contenteditable', false);
-    node.innerHTML = `<span class="index">${index + 1}</span><span class="text">Response</span>`;
+    node.innerHTML = `&nbsp;<span class="index">${responseCount + 1}</span><span class="text">Response</span>&nbsp;`;
     return node;
   }
 }
 ResponseCmp.blotName = 'Response';
-ResponseCmp.tagName = 'span';
+ResponseCmp.tagName = 'p';
 ResponseCmp.className = 'response-btn';
 Quill.register(ResponseCmp, true);
+
+class NewPara extends Embed {
+  static create() {
+    const node = super.create();
+    node.innerHTML = '<br>';
+    return node;
+  }
+}
+NewPara.blotName = 'NewPara';
+NewPara.tagName = 'p';
+NewPara.className = 'newline_section';
+Quill.register(NewPara, true);
 
 /*
  * Custom "star" icon for the toolbar using an Octicon
@@ -31,12 +45,16 @@ const ResponseButton = () => <div style={{ border: 'dotted 2px #000', padding: '
  */
 function insertStar() {
   const cursorPosition = this.quill.getSelection().index;
-  this.quill.insertEmbed(cursorPosition, 'Response', responseCount);
-  responseCount++;
+  this.quill.insertEmbed(cursorPosition, 'Response', 'value');
+  this.quill.setSelection(cursorPosition + 2);
 }
 
-const CustomToolbar = ({ showResponseBtn, active }) => (
-  <div id="toolbar" style={{ display: active ? 'block' : 'none' }}>
+function insertPara() {
+
+}
+
+const CustomToolbar = ({ showResponseBtn, active, id }) => (
+  <div id={id} style={{ display: active ? 'block' : 'none' }} className="toolbars">
     <span className="ql-formats">
       <select className="ql-font" />
       <select className="ql-size" />
@@ -91,41 +109,75 @@ const CustomToolbar = ({ showResponseBtn, active }) => (
 CustomToolbar.propTypes = {
   showResponseBtn: PropTypes.bool,
   active: PropTypes.bool,
+  id: PropTypes.string,
 };
 
 CustomToolbar.defaultProps = {
   showResponseBtn: true,
   active: false,
+  id: 'toolbar',
 };
 
 /*
  * Editor component with custom toolbar and content containers
  */
-class CustomQuillComponent extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = { editorHtml: '', active: false };
+class CustomQuillComponent extends Component {
+  state= {
+    active: false,
   }
 
-  handleChange = (e) => {
-    this.setState({ editorHtml: e });
+  static propTypes = {
+    value: PropTypes.string.isRequired,
+    placeholder: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+    showResponseBtn: PropTypes.bool.isRequired,
+    toolbarId: PropTypes.string.isRequired
   }
 
-  showToolbar = (status) => {
-    this.setState({ active: status });
+  constructor() {
+    super();
+    this.showToolbar = this.showToolbar.bind(this);
+    this.hideToolbar = this.hideToolbar.bind(this);
+  }
+
+  showToolbar() {
+    this.setState({ active: true });
+  }
+
+  hideToolbar() {
+    this.setState({ active: false });
+  }
+
+  handleClickOutside() {
+    this.hideToolbar();
+  }
+
+  onKeyDownHandler = (e) => {
+    if (e.which === 13) {
+      const cursorPosition = this.quillRef.getEditor().getSelection().index;
+      this.quillRef.getEditor().insertEmbed(cursorPosition, 'NewPara', 'value');
+      this.quillRef.getEditor().setSelection(cursorPosition + 1);
+    }
   }
 
   render() {
-    const { editorHtml, active } = this.state;
+    const { active } = this.state;
+    const { value, onChange, placeholder, showResponseBtn, toolbarId } = this.props;
     return (
       <div className="text-editor">
-        <CustomToolbar active={active} />
+        <CustomToolbar
+          active={active}
+          showResponseBtn={showResponseBtn}
+          id={toolbarId}
+        />
         <ReactQuill
-          modules={CustomQuillComponent.modules}
-          onChange={this.handleChange}
-          onFocus={() => this.showToolbar(true)}
-          onBlur={() => this.showToolbar(false)}
-          value={editorHtml}
+          ref={el => this.quillRef = el}
+          modules={CustomQuillComponent.modules(toolbarId)}
+          onChange={onChange}
+          onFocus={this.showToolbar}
+          onKeyDown={this.onKeyDownHandler}
+          placeholder={placeholder}
+          value={value}
         />
       </div>
     );
@@ -136,14 +188,15 @@ class CustomQuillComponent extends PureComponent {
  * Quill modules to attach to editor
  * See http://quilljs.com/docs/modules/ for complete options
  */
-CustomQuillComponent.modules = {
+CustomQuillComponent.modules = toolbarId => ({
   toolbar: {
-    container: '#toolbar',
+    container: `#${toolbarId}`,
     handlers: {
       insertStar,
+      insertPara,
     },
   },
-};
+});
 
 /*
  * Quill editor formats
@@ -156,4 +209,4 @@ CustomQuillComponent.formats = [
   'link', 'image',
 ];
 
-export default CustomQuillComponent;
+export default enhanceWithClickOutside(CustomQuillComponent);

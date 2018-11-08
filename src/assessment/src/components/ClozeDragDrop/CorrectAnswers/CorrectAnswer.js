@@ -13,6 +13,10 @@ class CorrectAnswer extends Component {
     t: PropTypes.func.isRequired,
     stimulus: PropTypes.string.isRequired,
     options: PropTypes.array.isRequired,
+    hasGroupResponses: PropTypes.bool.isRequired,
+    templateMarkUp: PropTypes.string.isRequired,
+    configureOptions: PropTypes.object.isRequired,
+    uiStyle: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -23,7 +27,6 @@ class CorrectAnswer extends Component {
     });
     this.state = {
       responseScore: props.response.score,
-      userSelections,
     };
   }
 
@@ -34,18 +37,14 @@ class CorrectAnswer extends Component {
     onUpdatePoints(parseFloat(e.target.value, 10));
   };
 
-  handleMultiSelect = (index) => {
+  handleMultiSelect = (answers) => {
     const { onUpdateValidationValue } = this.props;
-    const { userSelections } = this.state;
-    const changedOption = parseInt(index, 10);
-    userSelections[changedOption] = !userSelections[changedOption];
-    this.setState({ userSelections });
-
-    onUpdateValidationValue(userSelections);
+    onUpdateValidationValue(answers);
   };
 
   render() {
-    const { t, options, stimulus, response } = this.props;
+    /* eslint-disable max-len */
+    const { t, options, stimulus, response, templateMarkUp, hasGroupResponses, configureOptions, uiStyle } = this.props;
     const { responseScore } = this.state;
     return (
       <div>
@@ -64,10 +63,15 @@ class CorrectAnswer extends Component {
         <ClozeDragDropDisplay
           preview
           setAnswers
+          dragHandler
           options={options}
+          uiStyle={uiStyle}
           question={stimulus}
+          templateMarkUp={templateMarkUp}
           userSelections={response.value}
+          configureOptions={configureOptions}
           onChange={this.handleMultiSelect}
+          hasGroupResponses={hasGroupResponses}
         />
       </div>
     );

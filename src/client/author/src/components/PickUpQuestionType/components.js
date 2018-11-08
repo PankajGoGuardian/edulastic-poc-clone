@@ -28,9 +28,25 @@ export const Content = styled.div`
   border-bottom-left-radius: ${props => props.borderRadius}px;
   border-bottom-right-radius: ${props => props.borderRadius}px;
   user-select: none;
-  position: relative;
+  position: absolute;
   cursor: pointer;
   overflow: hidden;
+`;
+
+export const Wrapper = styled.div`
+  height: 190px;
+  width: 100%;
+  padding: 20px 40px;
+  background-color: transparent;
+  border-bottom-left-radius: ${props => props.borderRadius}px;
+  border-bottom-right-radius: ${props => props.borderRadius}px;
+  user-select: none;
+  position: absolute;
+  top:0;
+  left: 0;
+  cursor: pointer;
+  overflow: hidden;
+  z-index: 9999;
 
   .add-icon {
     position: absolute;

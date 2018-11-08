@@ -55,19 +55,11 @@ class CorrectAnswers extends Component {
   updateCorrectValidationAnswers = (answers) => {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
-
-    const correctAnswer = [];
-    answers.forEach((answer, index) => {
-      if (answer) {
-        correctAnswer.push(index);
-      }
-    });
-
     const updatedValidation = {
       ...question.data,
       valid_response: {
         score: question.validation.valid_response.score,
-        value: correctAnswer,
+        value: answers,
       },
     };
     newData.validation.valid_response = updatedValidation.valid_response;
@@ -78,16 +70,10 @@ class CorrectAnswers extends Component {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
 
-    const correctAnswer = [];
-    answers.forEach((answer, index) => {
-      if (answer) {
-        correctAnswer.push(index);
-      }
-    });
     const updatedAltResponses = newData.validation.alt_responses;
     updatedAltResponses[tabIndex] = {
       score: newData.validation.alt_responses[tabIndex].score,
-      value: correctAnswer,
+      value: answers,
     };
 
     newData.validation.alt_responses = updatedAltResponses;
@@ -113,9 +99,9 @@ class CorrectAnswers extends Component {
   };
 
   render() {
-    const { validation, stimulus, options, t } = this.props;
+    /* eslint-disable max-len */
+    const { validation, stimulus, options, t, templateMarkUp, hasGroupResponses, configureOptions, uiStyle } = this.props;
     const { value } = this.state;
-
     return (
       <div>
         <Subtitle>{t('component.correctanswers.setcorrectanswers')}</Subtitle>
@@ -127,9 +113,14 @@ class CorrectAnswers extends Component {
           {value === 0 && (
             <TabContainer>
               <CorrectAnswer
+                key={options}
                 response={validation.valid_response}
                 stimulus={stimulus}
                 options={options}
+                uiStyle={uiStyle}
+                templateMarkUp={templateMarkUp}
+                configureOptions={configureOptions}
+                hasGroupResponses={hasGroupResponses}
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}
               />
@@ -142,9 +133,14 @@ class CorrectAnswers extends Component {
                 return (
                   <TabContainer key={i}>
                     <CorrectAnswer
+                      key={options}
                       response={alter}
                       stimulus={stimulus}
                       options={options}
+                      configureOptions={configureOptions}
+                      hasGroupResponses={hasGroupResponses}
+                      templateMarkUp={templateMarkUp}
+                      uiStyle={uiStyle}
                       onUpdateValidationValue={answers =>
                         this.updateAltCorrectValidationAnswers(answers, i)
                       }
@@ -168,13 +164,27 @@ CorrectAnswers.propTypes = {
   t: PropTypes.func.isRequired,
   stimulus: PropTypes.string,
   options: PropTypes.array,
+  templateMarkUp: PropTypes.string,
   question: PropTypes.object.isRequired,
+  hasGroupResponses: PropTypes.bool,
+  configureOptions: PropTypes.object.isRequired,
+  uiStyle: PropTypes.object,
 };
 
 CorrectAnswers.defaultProps = {
   stimulus: '',
   options: [],
   validation: {},
+  hasGroupResponses: false,
+  templateMarkUp: '',
+  uiStyle: {
+    responsecontainerposition: 'bottom',
+    fontsize: 'normal',
+    stemnumeration: '',
+    widthpx: 0,
+    heightpx: 0,
+    wordwrap: false,
+  }
 };
 
 const enhance = compose(

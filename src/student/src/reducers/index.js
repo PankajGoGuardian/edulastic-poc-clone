@@ -1,6 +1,9 @@
 import ui from './ui';
+import tests from './test';
+
 const studentReducer = {
-  ui
+  ui,
+  studentTest: tests,
 };
 
 export default studentReducer;

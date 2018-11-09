@@ -135,8 +135,7 @@ export default Button;
 
 const Icon = styled.div`
   display: inline-flex;
-  align-items: center;
-  margin-right: 10px;
+  align-items: left;
   font-size: 16px;
 `;
 

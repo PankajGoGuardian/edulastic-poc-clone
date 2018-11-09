@@ -1,19 +1,18 @@
 import styled from 'styled-components';
 
 const AssignmentsFilter = styled.div`
-  float: right;
-  @media (max-width: 1060px) {
+  width: 53%;
+  display: flex;
+  justify-content: flex-end;
+
+  @media screen and (max-width: 1420px){
+    width: 60%;
+  }
+  @media screen and (max-width: 1300px){
+    justify-content: flex-start;
+  }
+  @media screen and (max-width: 767px){
     width: 100%;
-  }
-  @media (max-width: 1200px) {
-    width: 100%;
-    padding: 1rem 0.5rem;
-  }
-  @media (max-width: 435px) {
-    padding: 1rem 0rem;
-  }
-  @media (max-width: 380px) {
-    display: flex;
   }
 `;
 

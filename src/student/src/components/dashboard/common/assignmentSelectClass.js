@@ -1,32 +1,41 @@
 import styled from 'styled-components';
 
 const AssignmentSelectClass = styled.div`
-  overflow: hidden;
-  position: relative;
-  width: 10rem;
-  display: inline-flex;
-  margin-right: 2rem;
-  box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.07);
-  border-radius: 1rem;
-  height: 2.7rem;
+  display: flex;
+  padding-right: 20px;
 
-  & div {
-    position: relative;
-    background-color: #fff;
-    border-top-right-radius: 1rem;
-    border-bottom-right-radius: 1rem;
+  .ant-select {
+    min-width: 153px;
   }
-  @media (max-width: 1060px) {
-    float: left;
-    width: 11rem;
+  .ant-select-selection--single {
+    border-radius: 10px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
   }
-  @media (max-width: 425px) {
-    margin-right: 2.5rem;
-    width: 10rem;
+  .ant-select-selection {
+    border: 0px;
   }
-  @media (max-width: 320px) {
-    margin-right: 0.5rem;
-    width: 9rem;
+  .ant-select-selection:active {
+    box-shadow: unset;
+  }
+  .ant-select-open .ant-select-selection {
+    box-shadow: unset;
+  }
+  .ant-select-selection-selected-value {
+    float: none;
+    text-align: center;
+  }
+
+  @media screen and (max-width: 1300px) {
+    padding-right: 0px;
+    padding-left: 50px;
+  }
+
+  @media screen and (max-width: 1420px) {
+    .ant-select {
+      min-width: unset;
+      width: 85px !important;
+    }
   }
 `;
 

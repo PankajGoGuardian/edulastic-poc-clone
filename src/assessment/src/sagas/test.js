@@ -64,7 +64,9 @@ function* initiateTestActivity() {
 
 function* submitTest() {
   try {
-    const testActivityId = yield select(state => state.test && state.test.testActivityId);
+    const testActivityId = yield select(
+      state => state.test && state.test.testActivityId,
+    );
     console.log('submitting test');
     yield testActivityApi.submit(testActivityId);
   } catch (err) {

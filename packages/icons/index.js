@@ -38,3 +38,5 @@ export { default as IconCollapse } from './src/IconCollapse';
 export { default as IconPhotoCamera } from './src/IconPhotoCamera';
 export { default as IconWorldWide } from './src/IconWorldWide';
 export { default as IconCopy } from './src/IconCopy';
+export { default as IconItemList } from './src/IconItemList';
+export { default as IconTestList } from './src/IconTestList';

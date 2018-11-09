@@ -6,6 +6,7 @@ import testItems from './testItems';
 import testItem from './testItem';
 import itemDetail from './itemDetail';
 import tests from './tests';
+import ui from './ui';
 
 const authorReducers = {
   question,
@@ -16,6 +17,7 @@ const authorReducers = {
   testItem,
   itemDetail,
   tests,
+  ui,
 };
 
 export default authorReducers;

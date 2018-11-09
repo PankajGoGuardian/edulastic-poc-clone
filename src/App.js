@@ -1,22 +1,13 @@
-import React, { Component, lazy, Suspense } from 'react';
+import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
-import { Progress } from '@edulastic/common';
 import Student from './student/src';
 import Dashboard from './student/src/app';
-import {
-  QuestionEditor,
-  ItemAdd,
-  ItemList,
-  PickUpQuestionType,
-} from './author/src';
-import ItemDetail from './author/src/components/ItemDetail';
 
-const TestList = lazy(() => import('./author/src/components/TestList'));
-const TestPage = lazy(() => import('./author/src/components/TestPage'));
+import Author from './author/src/app';
 
 class App extends Component {
   componentWillMount() {
@@ -29,57 +20,8 @@ class App extends Component {
       <div>
         <Switch>
           <Redirect exact path="/" to="/student/test" />
-          <Route exact path="/author/items" component={ItemList} />
+          <Route path="/author" component={Author} />
           <Route path="/home" component={Dashboard} />
-          <Route exact path="/author/add-item" component={ItemAdd} />
-          <Route
-            exact
-            path="/author/items/:id/pickup-questiontype"
-            component={PickUpQuestionType}
-          />
-          <Route
-            exact
-            path="/author/items/:id/item-detail"
-            component={ItemDetail}
-          />
-          <Route
-            exact
-            path="/author/tests"
-            render={props => (
-              <Suspense fallback={<Progress />}>
-                <TestList {...props} />
-              </Suspense>
-            )}
-          />
-          <Route
-            exact
-            path="/author/tests/create"
-            render={props => (
-              <Suspense fallback={<Progress />}>
-                <TestPage {...props} />
-              </Suspense>
-            )}
-          />
-          <Route
-            exact
-            path="/author/tests/:id"
-            render={props => (
-              <Suspense fallback={<Progress />}>
-                <TestPage {...props} />
-              </Suspense>
-            )}
-          />
-          <Route exact path="/author/add-item" component={ItemAdd} />
-          <Route
-            exact
-            path="/author/questions/create"
-            component={QuestionEditor}
-          />
-          <Route
-            exact
-            path="/author/questions/:id"
-            component={QuestionEditor}
-          />
           <Route
             path="/student/test/:id"
             component={() => <Student defaultAP test />}

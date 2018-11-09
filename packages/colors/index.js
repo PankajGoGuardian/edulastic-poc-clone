@@ -16,6 +16,7 @@ export const redDark = '#dd2e44';
 export const blue = '#12a6e8';
 export const lightBlue = '#93d8f7';
 export const darkBlue = '#0080b9';
+export const darkBlueSecondary = '#0288d1';
 
 export const green = '#1fe3a1';
 export const lightGreen = '#e1fbf2';

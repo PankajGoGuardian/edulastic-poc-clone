@@ -2,65 +2,60 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { IconCaretDown } from '@edulastic/icons';
+import { Layout, Row, Col, Select, Icon } from 'antd';
 import AssignmentTitle from '../common/assignmentTitle';
 import AssignmentFilter from '../common/assignmentFilter';
 import AssignmentSelectClass from '../common/assignmentSelectClass';
-import SelectStyle from '../common/selectStyle';
 import FilterBtn from '../common/filterBtn';
 
 const options = ['FFC1', 'FFC2', 'FFC3', 'FFC4', 'FFC5', 'FFC6'];
+const { Option } = Select;
 
 const AssignmentSelect = () => (
   <AssignmentSelectClass>
     <ClassLabel>class</ClassLabel>
-    <SelectStyle>
-      {options.map(option => (
-        <option> {option} </option>
+    <Select
+      style={{ width: 120 }}
+      suffixIcon={
+        <Icon type="caret-down" className="topbarDropDown" theme="outlined" />
+      }
+    >
+      {options.map((option, i) => (
+        <Option key={i} value={option}>
+          {option}
+        </Option>
       ))}
-    </SelectStyle>
-    <Icon />
+    </Select>
   </AssignmentSelectClass>
 );
 
 const Header = ({ flag }) => (
   <AssignmentsHeader flag={flag}>
-    <AssignmentTitle>Assignments</AssignmentTitle>
-    <AssignmentFilter>
-      <AssignmentSelect />
-      <AssignmentFilterBtn>
-        <StatusSelect>
-          <select>
-            <option>6 ALL</option>
-            <option>qwdq</option>
-            <option>qwdq</option>
-            <option>qwdq</option>
-            <option>qwdq</option>
-          </select>
-          <StatusSelectIcon />
-        </StatusSelect>
-        <FilterBtn>
-          <Number>6</Number>
-          <span>ALL</span>
-        </FilterBtn>
-        <FilterBtn>
-          <NumberNotStarted>6</NumberNotStarted>
-          <span>NOT STARTED</span>
-        </FilterBtn>
-        <FilterBtn>
-          <NumberProgress>9</NumberProgress>
-          <span>IN PROGRESS</span>
-        </FilterBtn>
-        <FilterBtn>
-          <NumberSubmitted>0</NumberSubmitted>
-          <span>SUBMITTED</span>
-        </FilterBtn>
-        <FilterBtn>
-          <NumberGraded>0</NumberGraded>
-          <span>GRADED</span>
-        </FilterBtn>
-      </AssignmentFilterBtn>
-    </AssignmentFilter>
+    <Row>
+      <Col span={24}>
+        <Wrapper>
+          <AssignmentTitle>Assignments</AssignmentTitle>
+          <AssignmentSelect />
+        </Wrapper>
+        <AssignmentFilter>
+          <FilterBtn>
+            <span>6</span> All
+          </FilterBtn>
+          <FilterBtn>
+            <span>6</span> In progress
+          </FilterBtn>
+          <FilterBtn>
+            <span>6</span> Not Started
+          </FilterBtn>
+          <FilterBtn>
+            <span>6</span> Submitted
+          </FilterBtn>
+          <FilterBtn>
+            <span>6</span> Greaded
+          </FilterBtn>
+        </AssignmentFilter>
+      </Col>
+    </Row>
   </AssignmentsHeader>
 );
 export default React.memo(connect(({ ui }) => ({ flag: ui.flag }))(Header));
@@ -69,128 +64,71 @@ Header.propTypes = {
   flag: PropTypes.bool.isRequired,
 };
 
-const AssignmentsHeader = styled.div`
-  @media (min-width: 1200px) {
-    position: fixed;
-    top: 0;
-    left: ${props => (props.flag ? '7rem' : '16.3rem')};
-    right: 0;
+const AssignmentsHeader = styled(Layout.Header)`
+  background-color: #0288d1;
+  height: 89.1px;
+  color: #ffffff;
+
+  .ant-col-24 {
     align-items: center;
-    padding: 1.45rem 1.5rem;
-    background-color: #f3f3f3;
+    line-height: 1.2;
+    height: 90px;
+    display: flex;
   }
-  @media (max-width: 1200px) {
-    margin-left: 1.5rem;
-    margin-right: 1.5rem;
+
+  @media (max-width: 1300px) {
+    height: 135px;
+    padding: 15px 30px;
+
+    .ant-col-24 {
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      height: 100px;
+    }
   }
-  @media (max-width: 480px) {
-    margin: 0rem 1rem;
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  width: 45%;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 17px;
+
+  @media screen and (max-width: 1420px) {
+    width: 40%;
+  }
+  @media screen and (max-width: 767px) {
+    width: 100%;
+    justify-content: flex-start;
+
+    .anticon-bars {
+      font-size: 17px;
+      padding-right: 25px;
+    }
   }
 `;
 
 const ClassLabel = styled.span`
-  line-height: 2.5rem;
-  text-align: center;
-  width: 43%;
-  color: rgb(67, 75, 93);
+  width: 78px;
+  background-color: #e5e5e5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Open Sans;
+  font-size: 14px;
   font-weight: 600;
-  font-size: 0.9rem;
-  background-color: rgb(229, 229, 229);
-  @media (max-width: 900px) {
-    line-height: 3rem;
-    width: 40%;
-  }
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.36;
+  letter-spacing: 0.3px;
+  color: #434b5d;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+
   @media (max-width: 768px) {
-    width: 50%;
-  }
-`;
-
-const AssignmentFilterBtn = styled.div`
-  float: right;
-`;
-
-const StatusSelect = styled.div`
-  display: none;
-  float: right;
-  & select {
-    position: relative;
-    margin-right: 0;
-    border: none;
-    width: 10rem;
-    height: 2.7rem;
-    border-radius: 1rem;
-    background-color: #fff;
-    box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.07);
-    outline: none;
-    -webkit-appearance: none;
-    padding: 0rem 1rem;
-  }
-  @media (max-width: 900px) {
-    display: block;
-    & select {
-      width: 12rem;
-    }
-  }
-  @media (max-width: 768px) {
-    display: block;
-    & select {
-      width: 11rem;
-    }
-  }
-  @media (max-width: 480px) {
-    display: block;
-    & select {
-      width: 11rem;
-    }
-  }
-  @media (max-width: 480px) {
-    display: block;
-    & select {
-      width: 9rem;
-    }
-  }
-`;
-
-const Number = styled.span`
-  font-size: 1.3rem !important;
-`;
-const NumberNotStarted = Number.extend`
-  color: #ee1658 !important;
-`;
-const NumberProgress = Number.extend`
-  color: #12a6e8 !important;
-`;
-const NumberSubmitted = Number.extend`
-  color: #e8a812 !important;
-`;
-const NumberGraded = Number.extend`
-  color: #4aac8b !important;
-`;
-
-const Icon = styled(IconCaretDown)`
-  position: absolute;
-  left: 8rem;
-  top: 0.9rem;
-  fill: #12a6e8;
-  width: 11px !important;
-  height: 11px !important;
-
-  @media (max-width: 900px) {
-    left: 10.5rem;
-    top: 1.17rem;
-  }
-  @media (max-width: 768px) {
-    left: 8.5rem;
-  }
-`;
-
-const StatusSelectIcon = styled(IconCaretDown)`
-  @media (max-width: 900px) {
-    position: absolute;
-    fill: #12a6e8;
-    width: 11px !important;
-    height: 11px !important;
-    right: 3rem;
-    top: 7.2rem;
+    width: 65px;
   }
 `;

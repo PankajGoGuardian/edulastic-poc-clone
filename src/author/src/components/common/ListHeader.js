@@ -1,43 +1,35 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { TextField, Button } from '@edulastic/common';
-import { IconSearch, IconPlus } from '@edulastic/icons';
-import { blue, greenDarkSecondary, white } from '@edulastic/colors';
-import { withNamespaces } from '@edulastic/localization';
 import { compose } from 'redux';
+import { Button } from '@edulastic/common';
+import { IconPlus } from '@edulastic/icons';
+import { mobileWidth, greenDarkSecondary, darkBlueSecondary, white } from '@edulastic/colors';
+import { withNamespaces } from '@edulastic/localization';
 
-const ListHeader = ({ onSearch, onCreate, t, windowWidth, creating, title }) => (
+const ListHeader = ({ onCreate, t, windowWidth, creating, title }) => (
   <Container>
-    {windowWidth > 480 && <Heading>{title}</Heading>}
-    <TextField
-      onChange={e => onSearch(e.target.value)}
-      height="50px"
-      type="search"
-      icon={<IconSearch color={blue} />}
-      containerStyle={{ marginRight: 20 }}
-    />
+    <Heading>{title}</Heading>
     <Button
       disabled={creating}
       style={{
-        height: 50,
-        minWidth: windowWidth > 768 ? 200 : 55,
+        height: windowWidth > 768 ? 50 : 40,
+        minWidth: 151.9,
         color: '#fff',
         margin: 0,
       }}
       onClick={onCreate}
       color="success"
       icon={
-        <IconPlus color={greenDarkSecondary} left={20} width={14} height={14} hoverColor={white} />
+        <IconPlus color={greenDarkSecondary} style={{ position: 'relative' }} left={-25} width={14} height={14} hoverColor={white} />
       }
     >
-      {windowWidth > 768 && t('component.itemlist.header.create')}
+      {t('component.itemlist.header.create')}
     </Button>
   </Container>
 );
 
 ListHeader.propTypes = {
-  onSearch: PropTypes.func.isRequired,
   onCreate: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
@@ -53,10 +45,19 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 0;
+  background-color:  ${darkBlueSecondary};
+  padding: 0px 40px 0px 46px;
+  height: 89px;
+
+  @media (max-width: ${mobileWidth}) {
+    height: 61px;
+    padding 0px 26px 0px 26px;
+  }
 `;
 
 const Heading = styled.h1`
-  width: 200px;
+  width: 97px;
+  color: ${white};
   font-size: 22px;
+  font-weight: bold;
 `;

@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Paper, Pagination, withWindowSizes } from '@edulastic/common';
+import { Pagination } from 'antd';
+import { Paper, withWindowSizes } from '@edulastic/common';
 import { compose } from 'redux';
 import styled from 'styled-components';
 import { withNamespaces } from '@edulastic/localization';
-import { mobileWidth } from '@edulastic/colors';
+import { mobileWidth, secondaryTextColor, greenDark, white, tabletWidth } from '@edulastic/colors';
 
 import {
   getItemsPageSelector,
@@ -14,6 +15,7 @@ import {
   getItemsLoadingSelector,
 } from '../../selectors/items';
 import Item from './Item';
+import ItemFilter from './ItemFilter';
 import { receiveTestItemsAction } from '../../actions/testItems';
 import { createTestItemAction } from '../../actions/testItem';
 import { getTestItemsSelector } from '../../selectors/testItems';
@@ -44,41 +46,47 @@ class ItemList extends Component {
     });
   };
 
-  handlePrevious = () => {
-    const { receiveItems, page, limit } = this.props;
-    receiveItems({ page: page - 1, limit });
-  };
-
-  handleNext = () => {
-    const { receiveItems, page, limit } = this.props;
-    receiveItems({ page: page + 1, limit });
-  };
-
   render() {
-    const { items, page, limit, count, loading, windowWidth, history, creating, t } = this.props;
+    const { items, windowWidth, history, creating, t } = this.props;
     return (
       <Container>
         <ListHeader
-          onSearch={this.handleSearch}
           onCreate={this.handleCreate}
           creating={creating}
           windowWidth={windowWidth}
           title={t('component.itemlist.header.itemlist')}
         />
-        <Paper style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
-          {items.map(item => (
-            // eslint-disable-next-line
-            <Item key={item.id} item={item} history={history} />
-          ))}
-        </Paper>
-        <Pagination
-          onPrevious={this.handlePrevious}
-          onNext={this.handleNext}
-          page={page}
-          itemsPerPage={limit}
-          count={count}
-          loading={loading}
-        />
+        <MainList>
+          <ItemFilter
+            onSearch={this.handleSearch}
+          />
+          <ListItems>
+            <Pagination
+              simple={windowWidth <= 768 && true}
+              showTotal={(total, range) => `${range[0]} to ${range[1]} of ${total}`}
+              onChange={this.handlePageChange}
+              defaultPageSize={20}
+              total={300}
+            />
+            <Items>
+              <Paper
+                padding={windowWidth > 768 ? '25px 39px 0px 39px' : '0px'}
+              >
+                {items.map(item => (
+                  // eslint-disable-next-line
+                  <Item key={item.id} item={item} history={history} windowWidth={windowWidth} />
+                ))}
+              </Paper>
+            </Items>
+            <Pagination
+              simple={windowWidth <= 768 && true}
+              showTotal={(total, range) => `${range[0]} to ${range[1]} of ${total}`}
+              onChange={this.handlePageChange}
+              defaultPageSize={20}
+              total={300}
+            />
+          </ListItems>
+        </MainList>
       </Container>
     );
   }
@@ -87,10 +95,7 @@ class ItemList extends Component {
 ItemList.propTypes = {
   items: PropTypes.array.isRequired,
   receiveItems: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
   limit: PropTypes.number.isRequired,
-  count: PropTypes.number.isRequired,
-  loading: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
   createItem: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
@@ -120,9 +125,62 @@ const enhance = compose(
 export default enhance(ItemList);
 
 const Container = styled.div`
-  padding: 20px 40px;
+  width: 100%;
+  padding-bottom: 51px;
 
   @media (max-width: ${mobileWidth}) {
-    padding: 10px 25px;
+    padding-bottom: 40px;
+  }
+`;
+
+const MainList = styled.div`
+  display: flex;
+
+  @media (max-width: ${mobileWidth}) {
+    display: block;
+  }
+`;
+
+const ListItems = styled.div`
+  flex: 1;
+  margin: 29px 40px 0px 18px;
+  
+  .ant-pagination {
+    display: flex;
+
+    @media (max-width: ${tabletWidth}) {
+      justify-content: flex-end;
+    }
+  }
+
+  .ant-pagination-total-text {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Open Sans';
+    color: ${secondaryTextColor};
+    letter-spacing: normal;
+  }
+  
+  .ant-pagination-item-active {
+    border: none;
+    opacity: 0.75;
+    background-color: ${greenDark};
+  }
+
+  .ant-pagination-item-active a {
+    color: ${white};
+  }
+
+  @media (max-width: ${mobileWidth}) {
+    margin: 21px 26px 0px 26px;
+  }
+`;
+
+const Items = styled.div`
+  margin: 14px 0px;
+
+  @media (max-width: ${mobileWidth}) {
+    margin: 20px 0px;
   }
 `;

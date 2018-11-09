@@ -12,6 +12,9 @@ export const AUTHOR_QUESTION = 'author question';
 // assessment
 export const LOAD_ASSESSMENT = 'load assessment';
 
+export const LOAD_DASHBOARD_TEST = 'load dashboardtest';
+export const SET_STUDENT_TEST = 'load studenttest';
+
 // ui
 export const TOGGLE_MENU = '[homeUI] toggle menu';
 export const RESPONSIVE_TOGGLE_MENU = '[homeUI] responsive toggle menu';

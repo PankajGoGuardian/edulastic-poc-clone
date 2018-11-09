@@ -14,9 +14,16 @@ const { Option } = Select;
 const AssignmentSelect = () => (
   <AssignmentSelectClass>
     <ClassLabel>class</ClassLabel>
-    <Select style={{ width: 120 }} suffixIcon={<Icon type="caret-down" className="topbarDropDown" theme="outlined" />}>
-      {options.map(option => (
-        <Option value={option}>{option}</Option>
+    <Select
+      style={{ width: 120 }}
+      suffixIcon={
+        <Icon type="caret-down" className="topbarDropDown" theme="outlined" />
+      }
+    >
+      {options.map((option, i) => (
+        <Option key={i} value={option}>
+          {option}
+        </Option>
       ))}
     </Select>
   </AssignmentSelectClass>
@@ -61,8 +68,8 @@ const AssignmentsHeader = styled(Layout.Header)`
   background-color: #0288d1;
   height: 89.1px;
   color: #ffffff;
-  
-  .ant-col-24{
+
+  .ant-col-24 {
     align-items: center;
     line-height: 1.2;
     height: 90px;
@@ -72,8 +79,8 @@ const AssignmentsHeader = styled(Layout.Header)`
   @media (max-width: 1300px) {
     height: 135px;
     padding: 15px 30px;
-    
-    .ant-col-24{
+
+    .ant-col-24 {
       flex-direction: column;
       align-items: flex-start;
       justify-content: space-between;
@@ -89,14 +96,14 @@ const Wrapper = styled.div`
   align-items: center;
   font-size: 17px;
 
-  @media screen and (max-width: 1420px){
+  @media screen and (max-width: 1420px) {
     width: 40%;
   }
-  @media screen and (max-width: 767px){
+  @media screen and (max-width: 767px) {
     width: 100%;
     justify-content: flex-start;
-    
-    .anticon-bars{
+
+    .anticon-bars {
       font-size: 17px;
       padding-right: 25px;
     }
@@ -120,7 +127,7 @@ const ClassLabel = styled.span`
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  
+
   @media (max-width: 768px) {
     width: 65px;
   }

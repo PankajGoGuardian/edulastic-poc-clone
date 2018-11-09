@@ -5,6 +5,6 @@ export const loadAssessment = (id, name) => ({
   type: LOAD_ASSESSMENT,
   payload: {
     id,
-    name,
-  },
+    name
+  }
 });

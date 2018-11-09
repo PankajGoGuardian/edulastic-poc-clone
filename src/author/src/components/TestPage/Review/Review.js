@@ -7,12 +7,12 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 import HeaderBar from './HeaderBar';
-import Calculator from './Calculator';
 import List from './List';
 import ItemsTable from '../common/ItemsTable/ItemsTable';
 import { getItemsTypesSelector, getStandardsSelector } from '../../../selectors/testItems';
 import { getSummarySelector } from '../../../selectors/tests';
 import { setTestDataAction } from '../../../actions/tests';
+import { Calculator, Photo, Breadcrumbs } from '../common';
 
 const Review = ({
   test,
@@ -23,6 +23,7 @@ const Review = ({
   types,
   standards,
   summary,
+  current,
 }) => {
   const [isCollapse, setIsCollapse] = useState(false);
 
@@ -121,50 +122,54 @@ const Review = ({
   }, []);
 
   return (
-    <Row>
-      <Col span={19} style={{ padding: '0 45px' }}>
-        <HeaderBar
-          onSelectAll={handleSelectAll}
-          selectedItems={selected}
-          onRemoveSelected={handleRemoveSelected}
-          onCollapse={handleCollapse}
-          onMoveTo={handleMoveTo}
-        />
-        <Paper>
-          {isCollapse ? (
-            <ItemsTable
-              items={test.testItems}
-              setSelectedTests={handleSelectedTest}
-              selectedTests={selected.map(i => test.testItems[i].id)}
-            />
-          ) : (
-            <List
-              onChangePoints={handleChangePoints}
-              testItems={test.testItems}
-              rows={rows}
-              standards={standards}
-              selected={selected}
-              setSelected={setSelected}
-              onSortEnd={moveTestItems}
-              types={types}
-              scoring={test.scoring}
-            />
-          )}
-        </Paper>
-      </Col>
-      <Col span={5}>
-        <Calculator
-          totalPoints={totalPoints}
-          questionsCount={questionsCount}
-          grades={test.grades}
-          subjects={test.subjects}
-          thumbnail={test.thumbnail}
-          onChangeGrade={onChangeGrade}
-          onChangeSubjects={onChangeSubjects}
-          tableData={tableData}
-        />
-      </Col>
-    </Row>
+    <div style={{ paddingTop: 25 }}>
+      <Breadcrumbs current={current} style={{ paddingLeft: 45 }} />
+      <Row>
+        <Col span={19} style={{ padding: '0 45px' }}>
+          <HeaderBar
+            onSelectAll={handleSelectAll}
+            selectedItems={selected}
+            onRemoveSelected={handleRemoveSelected}
+            onCollapse={handleCollapse}
+            onMoveTo={handleMoveTo}
+          />
+          <Paper>
+            {isCollapse ? (
+              <ItemsTable
+                items={test.testItems}
+                setSelectedTests={handleSelectedTest}
+                selectedTests={selected.map(i => test.testItems[i].id)}
+              />
+            ) : (
+              <List
+                onChangePoints={handleChangePoints}
+                testItems={test.testItems}
+                rows={rows}
+                standards={standards}
+                selected={selected}
+                setSelected={setSelected}
+                onSortEnd={moveTestItems}
+                types={types}
+                scoring={test.scoring}
+              />
+            )}
+          </Paper>
+        </Col>
+        <Col span={5}>
+          <Calculator
+            totalPoints={totalPoints}
+            questionsCount={questionsCount}
+            grades={test.grades}
+            subjects={test.subjects}
+            onChangeGrade={onChangeGrade}
+            onChangeSubjects={onChangeSubjects}
+            tableData={tableData}
+          >
+            <Photo url={test.thumbnail} />
+          </Calculator>
+        </Col>
+      </Row>
+    </div>
   );
 };
 
@@ -177,6 +182,7 @@ Review.propTypes = {
   types: PropTypes.any.isRequired,
   standards: PropTypes.object.isRequired,
   summary: PropTypes.array.isRequired,
+  current: PropTypes.string.isRequired,
 };
 
 const enhance = compose(

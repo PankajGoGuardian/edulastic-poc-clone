@@ -23,7 +23,7 @@ const StyledButton = styled(Button)`
           background: green,
           color: white,
           border: 'none',
-          ':hover': {
+          ':hover, :focus': {
             background: greenDark,
             color: white,
           },

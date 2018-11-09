@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { IconMoveArrows, IconPensilEdit, IconTrash } from '@edulastic/icons';
+import { IconMoveArrows, IconPencilEdit, IconTrash } from '@edulastic/icons';
 import { white, red, green } from '@edulastic/colors';
 import { DragSource } from 'react-dnd';
 import { withNamespaces } from '@edulastic/localization';
@@ -49,7 +49,7 @@ const ItemDetailWidget = ({
             </div>,
           )}
           <Button title={t('edit')} onClick={onEdit}>
-            <IconPensilEdit color={white} hoverColor={green} />
+            <IconPencilEdit color={white} hoverColor={green} />
           </Button>
           <Button title={t('delete')} onClick={onDelete}>
             <IconTrash color={white} hoverColor={red} />

@@ -1,4 +1,4 @@
-export { default as IconPensilEdit } from './src/IconPensilEdit';
+export { default as IconPencilEdit } from './src/IconPencilEdit';
 export { default as IconCaretDown } from './src/IconCaretDown';
 export { default as IconTrash } from './src/IconTrash';
 export { default as IconTrashAlt } from './src/IconTrashAlt';
@@ -36,3 +36,5 @@ export { default as IconTile } from './src/IconTile';
 export { default as IconMoveTo } from './src/IconMoveTo';
 export { default as IconCollapse } from './src/IconCollapse';
 export { default as IconPhotoCamera } from './src/IconPhotoCamera';
+export { default as IconWorldWide } from './src/IconWorldWide';
+export { default as IconCopy } from './src/IconCopy';

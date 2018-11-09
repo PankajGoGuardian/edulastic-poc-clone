@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { textColor, blue, mobileWidth, greenDark, mainBgColor } from '@edulastic/colors';
-import { IconPensilEdit } from '@edulastic/icons';
+import { IconPencilEdit } from '@edulastic/icons';
 
 const Tab = ({ label, onClick, active, style, editable, onChange }) => {
   const inputTab = (
     <EditableTab>
       <Input type="text" value={label} onChange={onChange} />
-      <IconPensilEdit color={greenDark} />
+      <IconPencilEdit color={greenDark} />
     </EditableTab>
   );
   return (

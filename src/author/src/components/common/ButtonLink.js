@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {
   blue,
-  white,
   textColor,
   green,
   greenDark,
@@ -16,7 +15,7 @@ const getColors = ({ color, active }) => {
   switch (color) {
     case 'primary':
       colors.color = blue;
-      colors.hoverColor = white;
+      colors.hoverColor = blue;
       if (active) colors.color = blue;
       break;
     case 'default':
@@ -56,7 +55,7 @@ const ButtonLink = ({
   >
     {icon && children && <Icon>{icon}</Icon>}
     {icon && !children && icon}
-    <span>{children}</span>
+    <span style={{ marginTop: 1 }}>{children}</span>
   </Container>
 );
 
@@ -85,17 +84,16 @@ const Icon = styled.span`
   display: inline-flex;
   align-items: center;
   margin-right: 10px;
-  font-size: 16px;
+  font-size: 10px;
 `;
 
 const Container = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 20px;
   outline: none;
   font-weight: 600;
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.2px;
   border: none;
   text-transform: ${({ uppercase }) => (uppercase ? 'uppercase' : '')};

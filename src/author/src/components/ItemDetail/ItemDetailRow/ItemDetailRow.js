@@ -101,5 +101,7 @@ const enhance = compose(
 export default enhance(ItemDetailRow);
 
 const Container = styled.div`
+  padding-left: 40px;
+  padding-top: 20px;
   border-right: 60px solid ${greenDark};
 `;

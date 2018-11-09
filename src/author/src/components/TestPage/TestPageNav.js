@@ -1,16 +1,14 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { blue } from '@edulastic/colors';
-import { EduButton, FlexContainer } from '@edulastic/common';
+import { FlexContainer } from '@edulastic/common';
+import { StyledNavLink } from './common';
 
 function TestPageNav({ onChange, current, buttons }) {
   return (
-    <FlexContainer>
+    <Container style={{ height: 60 }}>
       {buttons.map(({ value, text, icon }) => (
-        <StyledButton
-          type="primary"
-          size="large"
+        <StyledNavLink
           key={value}
           active={(current === value).toString()}
           onClick={() => onChange(value)}
@@ -19,9 +17,9 @@ function TestPageNav({ onChange, current, buttons }) {
             {icon}
             <div>{text}</div>
           </FlexContainer>
-        </StyledButton>
+        </StyledNavLink>
       ))}
-    </FlexContainer>
+    </Container>
   );
 }
 
@@ -33,11 +31,7 @@ TestPageNav.propTypes = {
 
 export default memo(TestPageNav);
 
-const StyledButton = styled(EduButton)`
-  display: inline-flex;
-  border: none;
-  box-shadow: none;
+const Container = styled.div`
+  display: flex;
   align-items: center;
-  margin-right: 10px;
-  background: ${props => (props.active === 'true' ? blue : 'transparent')};
 `;

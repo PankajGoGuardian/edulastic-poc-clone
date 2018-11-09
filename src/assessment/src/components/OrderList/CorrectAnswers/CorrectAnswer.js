@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withNamespaces } from '@edulastic/localization';
-import { IconTrash, IconPensilEdit } from '@edulastic/icons';
+import { IconTrash, IconPencilEdit } from '@edulastic/icons';
 
 import { red, redDark, greenDark } from '@edulastic/colors';
 import OrderListPreview from '../Display';
@@ -21,7 +21,7 @@ const CorrectAnswer = ({
         <PointField
           type="number"
           value={response.score}
-          icon={<IconPensilEdit color={greenDark} />}
+          icon={<IconPencilEdit color={greenDark} />}
           onChange={e => onUpdatePoints(+e.target.value)}
         />
         <span>{t('component.correctanswers.points')}</span>

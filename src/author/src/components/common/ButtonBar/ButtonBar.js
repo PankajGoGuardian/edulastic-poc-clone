@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FaCode } from 'react-icons/fa';
 import {
-  IconPensilEdit,
+  IconPencilEdit,
   IconEye,
   IconQuestion,
   IconSave,
@@ -50,12 +50,7 @@ const ButtonBar = ({
           <Button
             style={buttonStyles}
             onClick={() => onChangeView('edit')}
-            icon={(
-              <IconPensilEdit
-                color={view === 'edit' ? white : textColor}
-                width={14}
-              />
-)}
+            icon={<IconPencilEdit color={view === 'edit' ? white : textColor} width={14} />}
             color={view === 'edit' ? 'primary' : 'default'}
           >
             {!iTablet && t('component.questioneditor.buttonbar.edit')}
@@ -65,12 +60,7 @@ const ButtonBar = ({
           <Button
             style={buttonStyles}
             onClick={() => onChangeView('preview')}
-            icon={(
-              <IconPreview
-                color={view === 'preview' ? white : textColor}
-                width={18}
-              />
-)}
+            icon={<IconPreview color={view === 'preview' ? white : textColor} width={18} />}
             color={view === 'preview' ? 'primary' : 'default'}
           >
             {!iTablet && t('component.questioneditor.buttonbar.preview')}

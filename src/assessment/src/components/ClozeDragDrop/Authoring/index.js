@@ -8,6 +8,7 @@ import { withNamespaces } from '@edulastic/localization';
 import { connect } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import 'react-quill/dist/quill.snow.css';
+import { Button, Icon, Input } from 'antd';
 
 import SortableItemContainer from './SortableItemContainer';
 import Subtitle from '../common/Sutitle';
@@ -228,16 +229,18 @@ class ClozeDragDropAuthoring extends Component {
           )}
           {hasGroupResponses && groupResponses.length > 0 && groupResponses.map((group, index) => (
             <div key={index}>
-              <fieldset style={{ borderColor: '#eee', borderRadius: 2, padding: 20, marginBottom: 15 }}>
-                <legend style={{ padding: '0 20px' }}>{t('component.clozeDragDrop.group')} {index + 1}</legend>
+              <fieldset style={{ borderColor: '#eee', borderRadius: 2, padding: '0 20px', marginBottom: 15, border: 'solid 1px' }}>
+                <legend style={{ padding: '0 20px', width: 'auto' }}>
+                  {t('component.clozeDragDrop.group')} {index + 1}
+                </legend>
                 <div style={{ float: 'right' }}>
-                  <button onClick={() => this.removeGroup(index)} type="button">X</button>
+                  <Button onClick={() => this.removeGroup(index)} size="small" type="button"><Icon type="close" /></Button>
                 </div>
                 <PaddingDiv top={10} bottom={10}>
                   <div>Title</div>
                 </PaddingDiv>
                 <div>
-                  <input type="text" style={{ width: '100%', padding: '0.5em 1em' }} onChange={e => this.changeGroupRespTitle(index, e)} value={group.title} />
+                  <Input size="large" style={{ width: '100%' }} onChange={e => this.changeGroupRespTitle(index, e)} value={group.title} />
                 </div>
                 <PaddingDiv top={20} bottom={10}>
                   <div>{t('component.clozeDragDrop.choicesforresponse')}</div>
@@ -258,7 +261,7 @@ class ClozeDragDropAuthoring extends Component {
             </div>
           ))}
           {hasGroupResponses &&
-            <button onClick={this.addGroup} type="button">Add Group</button>
+            <Button type="primary" onClick={this.addGroup} style={{ background: '#12a6e8' }}>Add Group</Button>
           }
         </PaddingDiv>
       </div>

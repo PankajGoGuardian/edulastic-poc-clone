@@ -56,7 +56,7 @@ function insertPara() {
 }
 
 const CustomToolbar = ({ showResponseBtn, active, id }) => (
-  <div id={id} style={{ display: active ? 'block' : 'none', width: 1080 }} className="toolbars">
+  <div id={id} style={{ display: active ? 'block' : 'none', width: 1100 }} className="toolbars">
     <span className="ql-formats">
       <select className="ql-font" />
       <select className="ql-size" />

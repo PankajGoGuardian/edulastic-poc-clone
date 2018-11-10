@@ -487,7 +487,7 @@ input[type="checkbox"] {
 
 .toolbars {
   position: absolute;
-  top: -45px;
+  top: -55px;
   z-index: 1200;
   background: white;
 }
@@ -611,4 +611,17 @@ input[type="checkbox"] {
 .ql-toolbar.ql-snow {
   background: #eee;
   border-radius: 3px;
+}
+
+.ql-editor .response-btn {
+  display: inline-flex !important;
+  margin: 5px !important;
+}
+
+.ql-editor .response-btn .text {
+  padding: 0px 8px;
+}
+
+.ql-editor .response-btn .index {
+  padding: 0px 8px;
 }

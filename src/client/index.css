@@ -601,3 +601,14 @@ input[type="checkbox"] {
 .response-btn.show-answer {
   top: -8px;
 }
+
+.ql-toolbar.ql-snow .ql-formats {
+  background: white;
+  padding: 2px;
+  border-radius: 3px;
+}
+
+.ql-toolbar.ql-snow {
+  background: #eee;
+  border-radius: 3px;
+}

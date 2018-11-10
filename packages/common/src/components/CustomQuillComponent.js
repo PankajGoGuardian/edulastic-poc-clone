@@ -1,7 +1,9 @@
+/* eslint-disable no-return-assign */
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill, { Quill } from 'react-quill';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import enhanceWithClickOutside from 'react-click-outside';
 
 const Embed = Quill.import('blots/block/embed');
@@ -54,7 +56,7 @@ function insertPara() {
 }
 
 const CustomToolbar = ({ showResponseBtn, active, id }) => (
-  <div id={id} style={{ display: active ? 'block' : 'none' }} className="toolbars">
+  <div id={id} style={{ display: active ? 'block' : 'none', width: 1080 }} className="toolbars">
     <span className="ql-formats">
       <select className="ql-font" />
       <select className="ql-size" />

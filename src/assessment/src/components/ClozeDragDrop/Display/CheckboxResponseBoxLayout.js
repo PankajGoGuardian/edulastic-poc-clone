@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { IconCheck, IconClose } from '@edulastic/icons';
 import { green, red } from '@edulastic/colors';
+import { Draggable, Droppable } from 'react-drag-and-drop';
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 
@@ -13,7 +14,9 @@ const Icon = styled.div`
 `;
 
 // eslint-disable-next-line max-len
-const CheckboxTemplateBoxLayout = ({ templateParts, hasGroupResponses, responsecontainerindividuals, responseBtnStyle, fontSize, userSelections, stemNumeration, evaluation }) => {
+const CheckboxTemplateBoxLayout = ({
+  showAnswer, templateParts, hasGroupResponses, responsecontainerindividuals, responseBtnStyle,
+  fontSize, userSelections, stemNumeration, evaluation, onDropHandler }) => {
   let responseIndex = 0;
   console.log('CheckboxTemplateBoxLayout evaluation:', evaluation);
 
@@ -55,8 +58,8 @@ const CheckboxTemplateBoxLayout = ({ templateParts, hasGroupResponses, responsec
           }
           return (
             <div key={index}>
-              {hasGroupResponses && (
-                <div className={`response-btn check-answer ${className}`} style={btnStyle}>
+              {showAnswer && hasGroupResponses && (
+                <div className={`response-btn check-answer ${className} ${showAnswer ? 'show-answer' : ''}`} style={btnStyle}>
                   &nbsp;<span className="index">{indexStr}</span><span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}</span>&nbsp;
                   <Icon>
                     {className === 'right' && <IconCheck color={green} width={8} height={8} />}
@@ -64,8 +67,8 @@ const CheckboxTemplateBoxLayout = ({ templateParts, hasGroupResponses, responsec
                   </Icon>
                 </div>
               )}
-              {!hasGroupResponses && (
-                <div className={`response-btn check-answer ${className}`} style={btnStyle}>
+              {showAnswer && !hasGroupResponses && (
+                <div className={`response-btn check-answer ${className} ${showAnswer ? 'show-answer' : ''}`} style={btnStyle}>
                   &nbsp;<span className="index">{indexStr}</span><span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>&nbsp;
                   <Icon>
                     {className === 'right' && <IconCheck color={green} width={8} height={8} />}
@@ -73,6 +76,34 @@ const CheckboxTemplateBoxLayout = ({ templateParts, hasGroupResponses, responsec
                   </Icon>
                 </div>
               )}
+              <Droppable
+                key={index}
+                types={['metal']}
+                onDrop={data => onDropHandler(data, dropTargetIndex)}
+              >
+                {!showAnswer && hasGroupResponses && (
+                  <Draggable type="metal" data={`${userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}_${userSelections[dropTargetIndex] && userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}>
+                    <div className={`response-btn check-answer ${className}`} style={btnStyle}>
+                      &nbsp;<span className="index">{indexStr}</span><span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}</span>&nbsp;
+                      <Icon>
+                        {className === 'right' && <IconCheck color={green} width={8} height={8} />}
+                        {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
+                      </Icon>
+                    </div>
+                  </Draggable>
+                )}
+                {!showAnswer && !hasGroupResponses && (
+                  <Draggable type="metal" data={`${userSelections[dropTargetIndex]}_${dropTargetIndex}_fromResp`}>
+                    <div className={`response-btn check-answer ${className}`} style={btnStyle}>
+                      &nbsp;<span className="index">{indexStr}</span><span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>&nbsp;
+                      <Icon>
+                        {className === 'right' && <IconCheck color={green} width={8} height={8} />}
+                        {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
+                      </Icon>
+                    </div>
+                  </Draggable>
+                )}
+              </Droppable>
             </div>
           );
         }
@@ -93,6 +124,8 @@ CheckboxTemplateBoxLayout.propTypes = {
   userSelections: PropTypes.array,
   stemNumeration: PropTypes.string,
   evaluation: PropTypes.array,
+  showAnswer: PropTypes.bool,
+  onDropHandler: PropTypes.func,
 };
 
 CheckboxTemplateBoxLayout.defaultProps = {
@@ -104,6 +137,8 @@ CheckboxTemplateBoxLayout.defaultProps = {
   userSelections: [],
   stemNumeration: 'numerical',
   evaluation: [],
+  showAnswer: false,
+  onDropHandler: () => {},
 };
 
 export default CheckboxTemplateBoxLayout;

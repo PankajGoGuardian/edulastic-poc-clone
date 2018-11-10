@@ -517,7 +517,7 @@ input[type="checkbox"] {
   height: 35px !important;
   display: inline-flex;
   position: relative;
-  top: -8px;
+  top: 0;
   margin: 5px;
 }
 
@@ -591,4 +591,13 @@ input[type="checkbox"] {
 
 .authoring .template_box {
   border: solid 1px #dfdfdf;
+}
+
+.Droppable {
+  position: relative;
+  top: -8px;
+}
+
+.response-btn.show-answer {
+  top: -8px;
 }

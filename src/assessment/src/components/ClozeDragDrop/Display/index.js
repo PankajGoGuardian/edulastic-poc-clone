@@ -54,6 +54,7 @@ class ClozeDragDropDisplay extends Component {
   }
 
   onDrop = (data, index) => {
+    console.log('on drop data:', data, index);
     const { userAnswers: newAnswers, possibleResponses } = this.state;
     const {
       onChange: changeAnswers,
@@ -143,12 +144,15 @@ class ClozeDragDropDisplay extends Component {
     const {
       hasGroupResponses,
       configureOptions,
+      userSelections: userSelectionsProp,
     } = this.props;
     const { duplicatedResponses: isDuplicated } = configureOptions;
     let userSelections = [];
     if (this.state !== undefined) {
       const { userAnswers } = this.state;
       userSelections = userAnswers;
+    } else {
+      userSelections = userSelectionsProp;
     }
 
     let possibleResps = [];
@@ -215,7 +219,7 @@ class ClozeDragDropDisplay extends Component {
     const { showDraghandle: dragHandler, shuffleOptions } = configureOptions;
     let responseIndex = 0;
     let responses = possibleResponses;
-
+    if (checkAnswer) console.log('possible responses', responses, userAnswers)
     if (preview && shuffleOptions) {
       if (hasGroupResponses) {
         responses = this.shuffleGroup(possibleResponses);
@@ -247,32 +251,6 @@ class ClozeDragDropDisplay extends Component {
                 whiteSpace: undefined,
                 wordwrap: undefined,
               }
-              // Object.defineProperties(btnStyle, {
-              //   width: {
-              //     value: 0,
-              //     writable: true
-              //   },
-              //   height: {
-              //     value: 0,
-              //     writable: true,
-              //   },
-              //   widthpx: {
-              //     value: 0,
-              //     writable: true
-              //   },
-              //   heightpx: {
-              //     value: 0,
-              //     writable: true,
-              //   },
-              //   whiteSpace: {
-              //     value: undefined,
-              //     writable: true,
-              //   },
-              //   wordwrap: {
-              //     value: undefined,
-              //     writable: true,
-              //   }
-              // });
               if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
                 const { widthpx, heightpx, wordwrap } = responsecontainerindividuals[dropTargetIndex];
                 btnStyle.width = widthpx;
@@ -301,6 +279,7 @@ class ClozeDragDropDisplay extends Component {
                 <Droppable
                   key={index}
                   types={['metal']} // <= allowed drop types
+                  style={{ top: 0 }}
                   onDrop={data => this.onDrop(data, dropTargetIndex)}
                 >
                   {!hasGroupResponses && (
@@ -337,8 +316,10 @@ class ClozeDragDropDisplay extends Component {
         stemNumeration={stemnumeration}
         hasGroupResponses={hasGroupResponses}
         fontSize={fontSize}
+        showAnswer={showAnswer}
         userSelections={userAnswers}
         evaluation={evaluation}
+        onDropHandler={this.onDrop}
       />
     )
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
@@ -359,7 +340,7 @@ class ClozeDragDropDisplay extends Component {
         userAnswers={validation.valid_response && validation.valid_response.value}
       />
     ) : (<div/>);
-    const responseBoxLayout = checkAnswer || showAnswer ? (<div/>) : previewResponseBoxLayout;
+    const responseBoxLayout = showAnswer ? (<div/>) : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : (<div/>);
     return (
       <div style={{ fontSize: fontSize }}>

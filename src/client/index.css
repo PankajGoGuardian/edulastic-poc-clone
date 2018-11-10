@@ -471,6 +471,7 @@ input[type="checkbox"] {
   padding: 18px 33px !important;
   border-radius: 10px;
   border: none;
+  height: 100%;
 }
 
 .responses_box {

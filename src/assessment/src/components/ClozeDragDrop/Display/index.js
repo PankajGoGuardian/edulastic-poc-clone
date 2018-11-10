@@ -113,12 +113,28 @@ class ClozeDragDropDisplay extends Component {
       if (hasGroupResponses) {
         const groupIndex = data.metal.split('_')[1];
         const groupData = data.metal.split('_')[0];
+        const sourceIndex = data.metal.split('_')[2];
+        const fromResp = data.metal.split('_')[3];
+
+        if (fromResp) {
+          const temp = newAnswers[sourceIndex];
+          newAnswers[sourceIndex] = newAnswers[index];
+          newAnswers[index] = temp;
+        }
         newAnswers[index] = {
           group: groupIndex,
           data: groupData
         };
       } else {
-        newAnswers[index] = data.metal;
+        const value = data.metal.split('_')[0];
+        const sourceIndex = data.metal.split('_')[1];
+        const fromResp = data.metal.split('_')[2];
+        if (fromResp) {
+          const temp = newAnswers[sourceIndex];
+          newAnswers[sourceIndex] = newAnswers[index];
+          newAnswers[index] = temp;
+        }
+        newAnswers[index] = value;
       }
     }
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });
@@ -368,7 +384,7 @@ class ClozeDragDropDisplay extends Component {
           )}
           {responsecontainerposition === 'left' && (
             <div style={{ display: 'flex', width: '80vw' }}>
-              <div hidden={checkAnswer || showAnswer} style={{ width: '30%', margin: 15, borderRadius: 10, background: 'lightgray', display: 'flex', justifyContent: 'center' }}>
+              <div hidden={checkAnswer || showAnswer} style={{ height: '100%', width: '30%', margin: 15, borderRadius: 10, background: 'lightgray', display: 'flex', justifyContent: 'center' }}>
                 {responseBoxLayout}
               </div>
               <div style={{ margin: 15, borderRadius: 10, flex: 1 }}>
@@ -381,7 +397,7 @@ class ClozeDragDropDisplay extends Component {
               <div style={{ flex: 1, margin: 15, borderRadius: 10 }}>
                 {templateBoxLayout}
               </div>
-              <div hidden={checkAnswer || showAnswer} style={{ width: '30%', margin: 15, borderRadius: 10, background: 'lightgray', display: 'flex', justifyContent: 'center' }}>
+              <div hidden={checkAnswer || showAnswer} style={{ height: '100%', width: '30%', margin: 15, borderRadius: 10, background: 'lightgray', display: 'flex', justifyContent: 'center' }}>
                 {responseBoxLayout}
               </div>
             </div>

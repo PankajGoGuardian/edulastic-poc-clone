@@ -51,7 +51,7 @@ const Header = ({ flag }) => (
             <span>6</span> Submitted
           </FilterBtn>
           <FilterBtn>
-            <span>6</span> Greaded
+            <span>6</span> Graded
           </FilterBtn>
         </AssignmentFilter>
       </Col>

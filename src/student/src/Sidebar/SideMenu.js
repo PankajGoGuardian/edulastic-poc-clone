@@ -8,7 +8,6 @@ import {
   IconHeader,
   IconLogoCompact,
   IconClockDashboard,
-  IconAssignment,
   IconBarChart,
   IconReport,
   IconManage,
@@ -23,10 +22,6 @@ const menuItems = [
     label: 'Dashboard',
     icon: IconClockDashboard,
     path: 'home/dashboard',
-  },
-  {
-    label: 'Assignements',
-    icon: IconAssignment,
   },
   {
     label: 'Reports',

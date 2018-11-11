@@ -1,11 +1,13 @@
 import multipleChoice from './multipleChoice';
 import orderList from './orderList';
 import clozeDragDrop from './clozeDragDrop';
+import clozeImageDragDrop from './clozeImageDragDrop';
 
 const evaluators = {
   orderList,
   multipleChoice,
   clozeDragDrop,
+  clozeImageDragDrop
 };
 
 const createShowAnswerResult = (questions, answers) => {

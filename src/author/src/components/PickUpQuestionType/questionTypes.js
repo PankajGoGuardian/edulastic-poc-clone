@@ -67,6 +67,27 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => (
       }}
       onSelectQuestionType={onSelectQuestionType}
     />
+    <Card
+      title="Cloze with Image Drag & Drop"
+      data={{
+        type: 'clozeImageDragDrop',
+        stimulus: '',
+        options: [
+          'Choice A',
+          'Choice B'
+        ],
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [],
+          },
+          alt_responses: [],
+        },
+        hasGroupResponses: false
+      }}
+      onSelectQuestionType={onSelectQuestionType}
+    />
   </FlexContainer>
 );
 

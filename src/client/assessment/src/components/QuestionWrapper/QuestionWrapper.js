@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { OrderList } from '../OrderList';
 import { MultipleChoice } from '../MultipleChoice';
 import { ClozeDragDrop } from '../ClozeDragDrop';
+import { ClozeImageDragDrop } from '../ClozeImageDragDrop';
 import withAnswerSave from '../HOC/withAnswerSave';
 
 const QuestionWrapper = ({ type, data, ...restProps }) => {
@@ -25,6 +26,10 @@ const QuestionWrapper = ({ type, data, ...restProps }) => {
     }
     case 'clozeDragDrop': {
       Question = ClozeDragDrop;
+      break;
+    }
+    case 'clozeImageDragDrop': {
+      Question = ClozeImageDragDrop;
       break;
     }
     default:

@@ -127,6 +127,7 @@ export default enhance(ItemList);
 const Container = styled.div`
   width: 100%;
   padding-bottom: 51px;
+  position: relative;
 
   @media (max-width: ${mobileWidth}) {
     padding-bottom: 40px;
@@ -135,6 +136,11 @@ const Container = styled.div`
 
 const MainList = styled.div`
   display: flex;
+  position: absolute;
+  height: 100%;
+  overflow: auto;
+  left: 0;
+  right: 0;
 
   @media (max-width: ${mobileWidth}) {
     display: block;

@@ -24,7 +24,7 @@ export const navButtons = [
   { icon: <IconAssign color={white} />, value: 'assign', text: 'Assign' },
 ];
 
-const TestPageHeader = ({ onChangeNav, current, onSave, title, creating }) => (
+const TestPageHeader = ({ onChangeNav, current, onSave, title, creating, onShare }) => (
   <Affix>
     <Container>
       <Title>{title}</Title>
@@ -38,6 +38,9 @@ const TestPageHeader = ({ onChangeNav, current, onSave, title, creating }) => (
             <div>Source</div>
           </FlexContainer>
         </StyledNavLink>
+        <EduButton size="large" onClick={onShare}>
+          Share
+        </EduButton>
         <EduButton disabled={creating} size="large" type="secondary" onClick={onSave}>
           {creating ? 'Saving...' : 'Save changes'}
         </EduButton>
@@ -52,6 +55,7 @@ TestPageHeader.propTypes = {
   current: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   creating: PropTypes.bool.isRequired,
+  onShare: PropTypes.func.isRequired,
 };
 
 export default memo(TestPageHeader);

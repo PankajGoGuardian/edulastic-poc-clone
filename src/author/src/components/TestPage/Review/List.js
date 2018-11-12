@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { FlexContainer } from '@edulastic/common';
 import styled from 'styled-components';
 import { Checkbox, Input } from 'antd';
-import { grey, greenDark } from '@edulastic/colors';
-import { IconList } from '@edulastic/icons';
+import { grey, greenDark, blue } from '@edulastic/colors';
+import { IconList, IconPreview } from '@edulastic/icons';
 
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
@@ -14,7 +14,7 @@ import MetaInfoCell from '../common/ItemsTable/MetaInfoCell';
 const DragHandle = SortableHandle(() => <IconList color={greenDark} style={{ cursor: 'grab' }} />);
 
 const SortableItem = SortableElement(
-  ({ indx, selected, item, onCheck, points, onChangePoints, metaInfoData }) => (
+  ({ indx, selected, item, onCheck, points, onChangePoints, metaInfoData, onPreview }) => (
     <TestItemWrapper>
       <FlexContainer justifyContent="space-between">
         <FlexContainer>
@@ -26,8 +26,15 @@ const SortableItem = SortableElement(
             Q{indx + 1}
           </Checkbox>
         </FlexContainer>
+
         <FlexContainer>
-          <span>Points</span>{' '}
+          <PreviewContainer onClick={() => onPreview(metaInfoData.id)}>
+            <IconPreview color={blue} />{' '}
+            <span style={{ textTransform: 'uppercase', fontSize: 11, fontWeight: 600 }}>
+              Preview
+            </span>
+          </PreviewContainer>
+          <span style={{ fontWeight: 600, fontSize: 14 }}>Points</span>{' '}
           <Input
             size="large"
             type="number"
@@ -52,7 +59,17 @@ const SortableItem = SortableElement(
 );
 
 const List = SortableContainer(
-  ({ rows, selected, setSelected, testItems, onChangePoints, types, standards, scoring }) => {
+  ({
+    rows,
+    selected,
+    setSelected,
+    testItems,
+    onChangePoints,
+    types,
+    standards,
+    scoring,
+    onPreview,
+  }) => {
     const handleCheckboxChange = (index, checked) => {
       if (checked) {
         setSelected([...selected, index]);
@@ -86,6 +103,7 @@ const List = SortableContainer(
             points={getPoints(i)}
             onCheck={handleCheckboxChange}
             onChangePoints={onChangePoints}
+            onPreview={onPreview}
             selected={selected}
           />
         ))}
@@ -99,6 +117,7 @@ List.propTypes = {
   selected: PropTypes.array.isRequired,
   setSelected: PropTypes.func.isRequired,
   onChangePoints: PropTypes.func.isRequired,
+  onPreview: PropTypes.func.isRequired,
   testItems: PropTypes.array.isRequired,
   types: PropTypes.any.isRequired,
   standards: PropTypes.object.isRequired,
@@ -115,4 +134,10 @@ const TestItemWrapper = styled.div`
     margin-bottom: 0;
     border-bottom: none;
   }
+`;
+
+const PreviewContainer = styled(FlexContainer)`
+  color: ${blue};
+  margin-right: 45px;
+  cursor: pointer;
 `;

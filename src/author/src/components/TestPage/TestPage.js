@@ -7,6 +7,7 @@ import { message } from 'antd';
 import { cloneDeep } from 'lodash';
 import uuidv4 from 'uuid/v4';
 
+import styled from 'styled-components';
 import AddItems from './AddItems';
 import TestPageHeader from './TestPageHeader';
 import {
@@ -145,7 +146,7 @@ const TestPage = ({
         title={test.title}
         creating={creating}
       />
-      {renderContent()}
+      <Container>{renderContent()}</Container>
     </div>
   );
 };
@@ -186,3 +187,12 @@ const enhance = compose(
 );
 
 export default enhance(TestPage);
+
+const Container = styled.div`
+  width: 100%;
+  position: absolute;
+  height: 100%;
+  overflow: auto;
+  left: 0;
+  right: 0;
+`;

@@ -11,6 +11,7 @@ import {
   IconSettings,
   IconSummary,
 } from '@edulastic/icons';
+import { Affix } from 'antd';
 
 import TestPageNav from './TestPageNav';
 import { StyledNavLink } from './common';
@@ -24,23 +25,25 @@ export const navButtons = [
 ];
 
 const TestPageHeader = ({ onChangeNav, current, onSave, title, creating }) => (
-  <Container>
-    <Title>{title}</Title>
+  <Affix>
+    <Container>
+      <Title>{title}</Title>
 
-    <TestPageNav onChange={onChangeNav} current={current} buttons={navButtons} />
+      <TestPageNav onChange={onChangeNav} current={current} buttons={navButtons} />
 
-    <FlexContainer justifyContent="space-between">
-      <StyledNavLink onClick={() => onChangeNav('source')}>
-        <FlexContainer>
-          <IconCode color={white} />
-          <div>Source</div>
-        </FlexContainer>
-      </StyledNavLink>
-      <EduButton disabled={creating} size="large" type="secondary" onClick={onSave}>
-        {creating ? 'Saving...' : 'Save changes'}
-      </EduButton>
-    </FlexContainer>
-  </Container>
+      <FlexContainer justifyContent="space-between">
+        <StyledNavLink onClick={() => onChangeNav('source')}>
+          <FlexContainer>
+            <IconCode color={white} />
+            <div>Source</div>
+          </FlexContainer>
+        </StyledNavLink>
+        <EduButton disabled={creating} size="large" type="secondary" onClick={onSave}>
+          {creating ? 'Saving...' : 'Save changes'}
+        </EduButton>
+      </FlexContainer>
+    </Container>
+  </Affix>
 );
 
 TestPageHeader.propTypes = {

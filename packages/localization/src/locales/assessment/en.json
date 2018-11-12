@@ -26,7 +26,11 @@
       "normal": "Normal",
       "large": "Large",
       "extraLarge": "Extra Large",
-      "huge": "Huge"
+      "huge": "Huge",
+      "labelType": "Label type",
+      "numerical": "Numerical",
+      "uppercase": "Uppercase alphabet",
+      "lowercase": "Lowercase alphabet"
     },
     "orderlist": {
       "question": {

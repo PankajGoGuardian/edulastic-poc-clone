@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { green } from '@edulastic/colors';
 
 export const CheckboxContainer = styled.div`
-  display: ${props => (props.hide ? 'none' : 'block')};
   width: ${props => (props.smallSize ? 22 : 36)}px;
   height: ${props => (props.smallSize ? 22 : 36)}px;
   padding: ${props => (props.smallSize ? 0 : 0)}px;

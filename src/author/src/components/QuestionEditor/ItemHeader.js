@@ -63,7 +63,6 @@ ItemHeader.defaultProps = {
 export default ItemHeader;
 
 const Container = styled.div`
-  margin-bottom: 40px;
   background: ${darkBlue};
   padding: 25px 40px;
 

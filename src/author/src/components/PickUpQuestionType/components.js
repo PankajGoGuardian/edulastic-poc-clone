@@ -44,12 +44,25 @@ export const Content = styled.div`
     display: none;
   }
 
-  &:hover {
-    background-color: #434b5db5;
-    box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  .hover-block {
+    display: none;
+  }
 
-    .add-icon {
+  &:hover {
+    .hover-block {
+      width: 100%;
+      height: 100%;
+      background-color: #434b5db5;
+      box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 1000;
       display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 `;

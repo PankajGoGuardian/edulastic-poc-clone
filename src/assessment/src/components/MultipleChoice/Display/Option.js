@@ -78,7 +78,9 @@ const Option = ({
         checked={isSelected}
         onChange={onChange}
       />
-      <span>{getLabel(index)}</span>
+      <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        {getLabel(index)}
+      </span>
       <div />
     </CheckboxContainer>
   );

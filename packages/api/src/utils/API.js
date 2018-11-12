@@ -3,7 +3,7 @@ import Storage from './Storage';
 
 export default class API {
   constructor(
-    baseURL = 'http://ec2-23-23-133-71.compute-1.amazonaws.com:3000/api'
+    baseURL = 'http://ec2-34-227-229-142.compute-1.amazonaws.com:3100/api'
   ) {
     this.baseURL = baseURL;
     this.storage = new Storage();

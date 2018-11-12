@@ -7,7 +7,12 @@ import { getAnswerByQuestionIdSelector } from '../../selectors/answers';
 
 export default (WrappedComponent) => {
   const hocComponent = ({ setUserAnswer, questionId, ...props }) => (
-    <WrappedComponent saveAnswer={data => setUserAnswer(questionId, data)} {...props} />
+    <WrappedComponent
+      saveAnswer={(data) => {
+        setUserAnswer(questionId, data);
+      }}
+      {...props}
+    />
   );
 
   hocComponent.propTypes = {

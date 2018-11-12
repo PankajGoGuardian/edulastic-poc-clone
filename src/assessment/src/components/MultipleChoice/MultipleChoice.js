@@ -180,6 +180,7 @@ class MultipleChoice extends Component {
                   options={previewDisplayOptions}
                   question={previewStimulus}
                   data={item}
+                  validation={item.validation}
                   userSelections={userAnswer}
                   onChange={this.handleAddAnswer}
                   uiStyle={uiStyle}

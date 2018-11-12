@@ -5,13 +5,16 @@ import { FlexContainer } from '@edulastic/common';
 
 import Card from './Card';
 
-const PickUpQuestionTypes = ({ onSelectQuestionType }) => (
-  <FlexContainer>
-    <Card
-      title="MultipleChoice-standard"
-      data={{
+const PickUpQuestionTypes = ({ onSelectQuestionType }) => {
+  const cards = [
+    {
+      title: 'Multiple choice - standard',
+      data: {
         type: 'multipleChoice',
         stimulus: 'Which color has the smallest walvelenght?',
+        ui_style: {
+          type: 'horizontal',
+        },
         options: [
           { value: 0, label: 'Red' },
           { value: 1, label: 'Violet' },
@@ -21,17 +24,90 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => (
           scoring_type: 'exactMatch',
           valid_response: {
             score: 1,
-            value: [],
+            value: [1],
+          },
+          alt_responses: [],
+        },
+        multiple_responses: false,
+      },
+      onSelectQuestionType,
+    },
+    {
+      title: 'Multiple choice - multiple response',
+      data: {
+        type: 'multipleChoice',
+        stimulus: 'Which color has the smallest walvelenght?',
+        ui_style: {
+          type: 'horizontal',
+        },
+        options: [
+          { value: 0, label: 'Red' },
+          { value: 1, label: 'Violet' },
+          { value: 2, label: 'Green' },
+        ],
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [1],
           },
           alt_responses: [],
         },
         multiple_responses: true,
-      }}
-      onSelectQuestionType={onSelectQuestionType}
-    />
-    <Card
-      title="OrderList-standard"
-      data={{
+      },
+      onSelectQuestionType,
+    },
+    {
+      title: 'True of false',
+      data: {
+        type: 'multipleChoice',
+        stimulus: 'The sky is blue due to gases.',
+        ui_style: {
+          type: 'horizontal',
+        },
+        options: [{ value: 0, label: 'True' }, { value: 1, label: 'False' }],
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [0],
+          },
+          alt_responses: [],
+        },
+        multiple_responses: false,
+      },
+      onSelectQuestionType,
+    },
+    {
+      title: 'Multiple choice - block layout',
+      data: {
+        type: 'multipleChoice',
+        stimulus: 'What is the capital city of England?',
+        ui_style: {
+          type: 'block',
+          choice_label: 'upper-alpha',
+        },
+        options: [
+          { value: 0, label: 'Dublin' },
+          { value: 1, label: 'London' },
+          { value: 2, label: 'Liverpool' },
+        ],
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [1],
+          },
+          alt_responses: [],
+        },
+        multiple_responses: true,
+      },
+      onSelectQuestionType,
+    },
+    {
+      title: 'OrderList-standard',
+      stimulus: 'Which color has the smallest walvelenght?',
+      data: {
         type: 'orderList',
         stimulus: 'Which color has the smallest walvelenght?',
         list: ['Item A', 'Item B', 'Item C'],
@@ -43,11 +119,19 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => (
           },
           alt_responses: [],
         },
-      }}
-      onSelectQuestionType={onSelectQuestionType}
-    />
-  </FlexContainer>
-);
+      },
+      onSelectQuestionType,
+    },
+  ];
+
+  return (
+    <FlexContainer style={{ flexWrap: 'wrap' }}>
+      {cards.map(({ title, data, onSelectQuestionType: onSelect }) => (
+        <Card key={title} title={title} data={data} onSelectQuestionType={onSelect} />
+      ))}
+    </FlexContainer>
+  );
+};
 
 PickUpQuestionTypes.propTypes = {
   onSelectQuestionType: PropTypes.func.isRequired,

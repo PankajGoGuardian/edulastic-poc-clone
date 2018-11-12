@@ -17,6 +17,14 @@ const ReportContent = ({ flag }) => (
             <DueText>Due on Aug 15, 2018 8:00 AM</DueText>
           </AssignmentDuedate>
         </AssignmentSummary>
+        <div>
+          <CorrectAns>8/8</CorrectAns>
+          <CorrectText>Correct Answer</CorrectText>
+        </div>
+        <div>
+          <CorrectAns>100%</CorrectAns>
+          <CorrectText>Score</CorrectText>
+        </div>
         <StartAssignmentBtn>
           <p>review</p>
         </StartAssignmentBtn>
@@ -29,6 +37,14 @@ const ReportContent = ({ flag }) => (
             <DueText>Due on Aug 15, 2018 8:00 AM</DueText>
           </AssignmentDuedate>
         </AssignmentSummary>
+        <div>
+          <CorrectAns>8/8</CorrectAns>
+          <CorrectText>Correct Answer</CorrectText>
+        </div>
+        <div>
+          <CorrectAns>100%</CorrectAns>
+          <CorrectText>Score</CorrectText>
+        </div>
         <StartAssignmentBtn>
           <p>review</p>
         </StartAssignmentBtn>
@@ -37,12 +53,30 @@ const ReportContent = ({ flag }) => (
   </AssignmentsContent>
 );
 
-export default React.memo(connect(({ ui }) => ({ flag: ui.flag }))(ReportContent));
+export default React.memo(
+  connect(({ ui }) => ({ flag: ui.flag }))(ReportContent),
+);
 
 ReportContent.propTypes = {
   flag: PropTypes.bool.isRequired,
 };
 
+const CorrectAns = styled.p`
+   {
+    margin: 0rem;
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-align: center;
+    color: #434b5d;
+  }
+`;
+const CorrectText = styled.p`
+   {
+    margin: 0rem;
+    text-align: center;
+    color: #434b5;
+  }
+`;
 const Wrapper = styled.div`
   width: 100%;
   display: flex;

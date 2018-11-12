@@ -45,7 +45,7 @@ class ButtonBar extends Component {
           >
             <Menu.Item key="edit">
               <HeadIcon>
-                <IconPensilEdit color={white} width={18} />
+                <IconPencilEdit color={white} width={18} />
               </HeadIcon>
               EDIT
             </Menu.Item>

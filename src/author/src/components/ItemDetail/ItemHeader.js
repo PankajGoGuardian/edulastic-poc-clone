@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { IconChevronLeft } from '@edulastic/icons';
 import { FlexContainer } from '@edulastic/common';
 import { tabletWidth, mobileWidth, darkBlueSecondary, white, blue } from '@edulastic/colors';
+import Breadcrumb from '../Breadcrumb';
 
 const ItemHeader = ({ title, children, link, reference }) => (
   <Container>
@@ -31,6 +32,7 @@ const ItemHeader = ({ title, children, link, reference }) => (
         </Back>
       )}
     </LeftSide>
+    <Breadcrumb data={['ITEM LIST', 'ITEM DETAIL']} />
   </Container>
 );
 

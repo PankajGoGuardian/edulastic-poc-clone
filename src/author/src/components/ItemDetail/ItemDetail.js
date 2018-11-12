@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Progress, Paper } from '@edulastic/common';
 import { cloneDeep } from 'lodash';
+import { Layout } from 'antd';
 import { changeViewAction, changePreviewAction } from '../../actions/view';
 import { checkAnswerAction, showAnswerAction } from '../../actions/testItem';
 import {
@@ -25,9 +26,9 @@ import {
   getItemDetailDimensionTypeSelector,
 } from '../../selectors/itemDetail';
 import ItemDetailRow from './ItemDetailRow';
-import { Container, ButtonBar } from '../common';
+import { ButtonBar } from '../common';
 import SourceModal from '../QuestionEditor/SourceModal';
-import ItemHeader from '../QuestionEditor/ItemHeader';
+import ItemHeader from './ItemHeader';
 import SettingsBar from './SettingsBar/SettingsBar';
 import TestItemPreview from '../../../../assessment/src/components/TestItemPreview/TestItemPreview';
 
@@ -206,31 +207,40 @@ class ItemDetail extends Component {
     switch (preview) {
       case 'clear':
         return (
-          <TestItemPreview
-            cols={rows}
-            previewTab="clear"
-            verticalDivider={item.verticalDivider}
-            scrolling={item.scrolling}
-          />
+          <Content>
+            <TestItemPreview
+              cols={rows}
+              previewTab="clear"
+              verticalDivider={item.verticalDivider}
+              scrolling={item.scrolling}
+              style={{ width: '100%' }}
+            />
+          </Content>
         );
       case 'check':
         return (
-          <TestItemPreview
-            cols={rows}
-            previewTab="check"
-            verticalDivider={item.verticalDivider}
-            scrolling={item.scrolling}
-            evaluation={evaluation}
-          />
+          <Content>
+            <TestItemPreview
+              cols={rows}
+              previewTab="check"
+              verticalDivider={item.verticalDivider}
+              scrolling={item.scrolling}
+              evaluation={evaluation}
+              style={{ width: '100%' }}
+            />
+          </Content>
         );
       case 'show':
         return (
-          <TestItemPreview
-            cols={rows}
-            previewTab="show"
-            verticalDivider={item.verticalDivider}
-            scrolling={item.scrolling}
-          />
+          <Content>
+            <TestItemPreview
+              cols={rows}
+              previewTab="show"
+              verticalDivider={item.verticalDivider}
+              scrolling={item.scrolling}
+              style={{ width: '100%' }}
+            />
+          </Content>
         );
       default:
         return null;
@@ -255,7 +265,7 @@ class ItemDetail extends Component {
     const { view, previewTab } = this.state;
 
     return (
-      <Container>
+      <Layout>
         {showModal &&
           item && (
             <SourceModal
@@ -282,13 +292,7 @@ class ItemDetail extends Component {
         <ItemHeader
           showIcon
           title={t('component.itemDetail.itemDetail')}
-          link={{
-            url: '/author/items',
-            text: t('component.itemDetail.backToItemList'),
-          }}
           reference={match.params.id}
-          editReference={this.editReference}
-          onChange={this.onInputReference}
         >
           <ButtonBar
             onShowSource={this.handleShowSource}
@@ -323,7 +327,7 @@ class ItemDetail extends Component {
           </Content>
         )}
         {view === 'preview' && this.renderPreview()}
-      </Container>
+      </Layout>
     );
   }
 }
@@ -388,6 +392,7 @@ export default enhance(ItemDetail);
 
 const Content = styled(Paper)`
   display: flex;
+  margin: 0px 40px 50px 40px;
   flex-wrap: nowrap;
   padding: 0;
 `;

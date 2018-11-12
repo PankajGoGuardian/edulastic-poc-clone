@@ -41,7 +41,6 @@ class OrderList extends Component {
     const { item, saveAnswer, userAnswer } = this.props;
 
     if (!userAnswer.length) {
-      console.log('itme here is', item);
       saveAnswer(item.list.map((q, i) => i));
     }
   }
@@ -84,10 +83,12 @@ class OrderList extends Component {
 
     newItem.validation.valid_response.value = indexList;
 
-    newItem.validation.alt_responses = newItem.validation.alt_responses.map((res) => {
-      res.value = indexList;
-      return res;
-    });
+    newItem.validation.alt_responses = newItem.validation.alt_responses.map(
+      (res) => {
+        res.value = indexList;
+        return res;
+      },
+    );
 
     saveAnswer(indexList);
     setQuestionData(newItem);
@@ -107,10 +108,12 @@ class OrderList extends Component {
     ];
 
     if (newItem.validation.alt_responses.length) {
-      newItem.validation.alt_responses = newItem.validation.alt_responses.map((res) => {
-        res.value.push(res.value.length);
-        return res;
-      });
+      newItem.validation.alt_responses = newItem.validation.alt_responses.map(
+        (res) => {
+          res.value.push(res.value.length);
+          return res;
+        },
+      );
     }
 
     saveAnswer(newItem.list.map((q, i) => i));
@@ -120,7 +123,11 @@ class OrderList extends Component {
   onSortCurrentAnswer = ({ oldIndex, newIndex }) => {
     const { setQuestionData, item } = this.props;
     const newItem = cloneDeep(item);
-    const newValue = arrayMove(item.validation.valid_response.value, oldIndex, newIndex);
+    const newValue = arrayMove(
+      item.validation.valid_response.value,
+      oldIndex,
+      newIndex,
+    );
 
     newItem.validation.valid_response.value = newValue;
 
@@ -130,7 +137,11 @@ class OrderList extends Component {
   onSortAltAnswer = ({ oldIndex, newIndex, altIndex }) => {
     const { item, setQuestionData } = this.props;
     const newItem = cloneDeep(item);
-    const newValue = arrayMove(item.validation.alt_responses[altIndex].value, oldIndex, newIndex);
+    const newValue = arrayMove(
+      item.validation.alt_responses[altIndex].value,
+      oldIndex,
+      newIndex,
+    );
 
     newItem.validation.alt_responses[altIndex].value = newValue;
 
@@ -180,7 +191,15 @@ class OrderList extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item, userAnswer, testItem, evaluation } = this.props;
+    const {
+      view,
+      previewTab,
+      smallSize,
+      item,
+      userAnswer,
+      testItem,
+      evaluation,
+    } = this.props;
 
     if (!item) return null;
 
@@ -224,8 +243,6 @@ class OrderList extends Component {
               <OrderListReport
                 onSortEnd={this.onSortPreviewEnd}
                 questionsList={item.list}
-                validation={this.validation}
-                validationState={item.validation}
                 previewIndexesList={userAnswer}
                 evaluation={evaluation}
               />
@@ -235,11 +252,11 @@ class OrderList extends Component {
               <OrderListReport
                 onSortEnd={this.onSortPreviewEnd}
                 questionsList={item.list}
-                validation={this.validation}
-                validationState={item.validation}
                 previewIndexesList={userAnswer}
                 showAnswers
                 evaluation={evaluation}
+                validation={item.validation}
+                list={item.list}
               />
             )}
 

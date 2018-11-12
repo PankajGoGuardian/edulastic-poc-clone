@@ -30,7 +30,7 @@ const AssessmentContainer = ({
     if (items.length) {
       loadUser(currentItem);
     }
-  });
+  }, []);
 
   useEffect(() => {
     initTestActivity();

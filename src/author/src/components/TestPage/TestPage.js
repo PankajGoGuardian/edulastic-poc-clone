@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { message } from 'antd';
 import { cloneDeep } from 'lodash';
+import uuidv4 from 'uuid/v4';
 
 import AddItems from './AddItems';
 import TestPageHeader from './TestPageHeader';
@@ -22,6 +23,8 @@ import {
 } from '../../selectors/tests';
 import SourceModal from '../QuestionEditor/SourceModal';
 import Review from './Review';
+import Summary from './Summary';
+import Assign from './Assign';
 
 const TestPage = ({
   createTest,
@@ -34,13 +37,16 @@ const TestPage = ({
   rows,
   creating,
 }) => {
-  useEffect(() => {
-    if (match.params.id) {
-      receiveTestById(match.params.id);
-    } else {
-      setDefaultData();
-    }
-  }, []);
+  useEffect(
+    () => {
+      if (match.params.id) {
+        receiveTestById(match.params.id);
+      } else {
+        setDefaultData();
+      }
+    },
+    [match],
+  );
 
   const [current, setCurrent] = useState('addItems');
   const [showModal, setShowModal] = useState(false);
@@ -58,10 +64,10 @@ const TestPage = ({
 
     newTest.testItems = testItems;
     newTest.scoring.testItems = testItems.map((item) => {
-      const foundItem = newTest.scoring.testItems.find(({ id }) => item.id === id);
+      const foundItem = newTest.scoring.testItems.find(({ id }) => item && item.id === id);
       if (!foundItem) {
         return {
-          id: item.id,
+          id: item ? item.id : uuidv4(),
           points: 0,
         };
       }
@@ -80,12 +86,16 @@ const TestPage = ({
     setData({ ...test, subjects });
   };
 
-  const selectedItems = test.testItems.map(({ id }) => id);
+  const selectedItems = test.testItems.map(({ id = uuidv4() }) => id);
 
   const renderContent = () => {
     switch (current) {
       case 'addItems':
-        return <AddItems onAddItems={handleAddItems} selectedItems={selectedItems} />;
+        return (
+          <AddItems onAddItems={handleAddItems} selectedItems={selectedItems} current={current} />
+        );
+      case 'summary':
+        return <Summary setData={setData} test={test} current={current} />;
       case 'review':
         return (
           <Review
@@ -93,8 +103,11 @@ const TestPage = ({
             rows={rows}
             onChangeGrade={handleChangeGrade}
             onChangeSubjects={handleChangeSubject}
+            current={current}
           />
         );
+      case 'assign':
+        return <Assign test={test} setData={setData} current={current} />;
       default:
         return null;
     }

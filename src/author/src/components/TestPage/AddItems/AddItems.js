@@ -12,28 +12,30 @@ import { getItemsLoadingSelector, getTestItemsSelector } from '../../../selector
 import { receiveTestItemsAction } from '../../../actions/testItems';
 import { Container } from '../../common';
 import ItemsTable from '../common/ItemsTable/ItemsTable';
+import { Breadcrumbs } from '../common';
 
-const useSelectedItemsEffect = (selectedItems) => {
-  const [isMappedSelectedItems, setIsMappedSelectedItems] = useState(false);
-  const [selectedTests, setSelectedTests] = useState([]);
-
-  useEffect(() => {
-    if (!selectedTests.length && selectedItems.length && !isMappedSelectedItems) {
-      setIsMappedSelectedItems(true);
-      setSelectedTests(selectedItems);
-    }
-  });
-
-  return { selectedTests, setSelectedTests };
-};
-
-const Items = ({ items, loading, receiveTestItems, history, onAddItems, selectedItems }) => {
+const Items = ({
+  items,
+  loading,
+  receiveTestItems,
+  history,
+  onAddItems,
+  selectedItems,
+  current,
+}) => {
   useEffect(() => {
     receiveTestItems();
   }, []);
 
   const [searchStr, setSearchStr] = useState('');
-  const { selectedTests, setSelectedTests } = useSelectedItemsEffect(selectedItems);
+  const [selectedTests, setSelectedTests] = useState([]);
+
+  useEffect(
+    () => {
+      setSelectedTests(selectedItems);
+    },
+    [selectedItems],
+  );
 
   if (loading) return <Spin size="large" />;
 
@@ -58,6 +60,7 @@ const Items = ({ items, loading, receiveTestItems, history, onAddItems, selected
 
   return (
     <Container>
+      <Breadcrumbs current={current} />
       <Row gutter={16} style={{ paddingTop: 15, paddingBottom: 15 }} align="middle">
         <Col span={6}>
           <Input.Search
@@ -120,6 +123,7 @@ Items.propTypes = {
   onAddItems: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   selectedItems: PropTypes.array.isRequired,
+  current: PropTypes.string.isRequired,
 };
 
 const enhance = compose(

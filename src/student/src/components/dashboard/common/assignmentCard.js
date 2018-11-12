@@ -1,21 +1,27 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Row, Col, Icon } from 'antd';
 
-const AssignmentCard = ({ startAssign }) => (
+const AssignmentCard = ({ data }) => (
   <CardWrapper>
     <Col span={4}>
       <ImageWrapper>
-        <img src="https://placem.at/things/?w=500&random=cats" alt="" />
+        <img src={data.thumbnail} alt="" />
       </ImageWrapper>
     </Col>
     <Col span={15}>
-      <CardTitle>Math MCAS-CACULATOR</CardTitle>
+      <CardTitle>{data.title}</CardTitle>
       <CardDate>
-        <Icon type="clock-circle" theme="outlined" style={{ color: '#ea326b' }} />
+        <Icon
+          type="clock-circle"
+          theme="outlined"
+          style={{ color: '#ea326b' }}
+        />
         <span>
-          <span className="bold"> Due on</span> Aug 15, 2018 8:00 AM
+          <span className="bold"> Due on</span>
+          {data.updatedDate}
         </span>
       </CardDate>
       <div>
@@ -23,8 +29,8 @@ const AssignmentCard = ({ startAssign }) => (
       </div>
     </Col>
     <Col span={5}>
-      <StartAssignButton onClick={startAssign}>
-        Start Assignment
+      <StartAssignButton>
+        <Link to={`/student/test/${data.id}`}>Start Assignment</Link>
       </StartAssignButton>
     </Col>
   </CardWrapper>
@@ -33,7 +39,7 @@ const AssignmentCard = ({ startAssign }) => (
 export default AssignmentCard;
 
 AssignmentCard.propTypes = {
-  startAssign: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired,
 };
 
 const CardWrapper = styled(Row)`
@@ -42,26 +48,26 @@ const CardWrapper = styled(Row)`
   padding-bottom: 27.8px;
   padding-top: 27.8px;
   border-bottom: 1px solid #f2f2f2;
-  &:last-child{
+  &:last-child {
     border-bottom: 0px;
   }
-  img{
+  img {
     max-width: 168.5px;
     border-radius: 10px;
     width: 100%;
   }
-  @media screen and (max-width: 767px){
+  @media screen and (max-width: 767px) {
     display: block;
     text-align: center;
 
-    &>div{
+    & > div {
       width: 100%;
     }
     img {
       max-width: 100%;
       width: 100%;
     }
-    .ant-col-14{
+    .ant-col-14 {
       width: 100%;
       margin: 25px 0px;
     }
@@ -75,12 +81,12 @@ const ImageWrapper = styled.div`
   border-radius: 10px;
   margin-right: 20px;
 
-  @media screen and (max-width: 767px){
+  @media screen and (max-width: 767px) {
     max-width: 100%;
     margin-right: 0px;
     max-height: 180px;
   }
-  @media screen and (max-width: 500px){
+  @media screen and (max-width: 500px) {
     max-height: 90.5px;
   }
 `;
@@ -97,7 +103,7 @@ const CardTitle = styled.div`
   color: #12a6e8;
   padding-bottom: 6px;
 
-  @media screen and (max-width: 767px){
+  @media screen and (max-width: 767px) {
     text-align: center;
     margin-top: 6px;
   }
@@ -120,7 +126,7 @@ const CardDate = styled.div`
     padding-left: 10px;
   }
 
-  @media screen and (max-width: 767px){
+  @media screen and (max-width: 767px) {
     font-size: 14px;
     line-height: 1.4;
     text-align: center;
@@ -144,8 +150,7 @@ const StatusButton = styled.button`
   color: #878282;
   padding: 6px 24px;
 
-
-  @media screen and (max-width: 767px){
+  @media screen and (max-width: 767px) {
     width: auto;
     display: inline-block;
     margin-top: 10px;
@@ -175,20 +180,20 @@ const StartAssignButton = styled.button`
   padding: 5px 20px;
   cursor: pointer;
   float: right;
-  &.selected{
+  &.selected {
     background-color: #00b0ff;
     color: #ffffff;
   }
-  :hover{
+  :hover {
     background: #0288d1;
     color: #ffffff;
   }
-  &.selected:hover{
+  &.selected:hover {
     background: #1fb6e3;
     border-color: #1fb6e3;
   }
 
-  @media screen and (max-width: 767px){
+  @media screen and (max-width: 767px) {
     font-size: 14px;
     line-height: 1.4;
     margin: 0 auto;

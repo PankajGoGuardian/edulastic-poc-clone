@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { IconChevronLeft, IconPensilEdit } from '@edulastic/icons';
+import { IconChevronLeft, IconPencilEdit } from '@edulastic/icons';
 import { FlexContainer, TextField } from '@edulastic/common';
 import { greenDark, tabletWidth, mobileWidth, darkBlue, white, blue } from '@edulastic/colors';
 
@@ -17,7 +17,7 @@ const ItemHeader = ({ title, children, link, reference, editReference, onChange,
           <FlexContainer>
             <span style={{ color: white }}>Reference</span>
             <TextField
-              icon={!hideIcon && <IconPensilEdit color={greenDark} />}
+              icon={!hideIcon && <IconPencilEdit color={greenDark} />}
               type="text"
               height="40px"
               value={reference}

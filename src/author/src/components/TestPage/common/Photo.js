@@ -27,6 +27,7 @@ const Container = styled.div`
   height: 135px;
   width: 100%;
   position: relative;
+  margin-bottom: 30px;
 `;
 
 const Image = styled.img`

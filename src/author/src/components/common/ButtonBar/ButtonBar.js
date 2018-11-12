@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Menu, Button } from 'antd';
 import {
-  IconPensilEdit,
+  IconPencilEdit,
   IconEye,
   IconSave,
   IconEraseText,

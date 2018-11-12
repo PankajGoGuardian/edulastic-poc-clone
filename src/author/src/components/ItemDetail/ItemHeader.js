@@ -32,7 +32,7 @@ const ItemHeader = ({ title, children, link, reference }) => (
         </Back>
       )}
     </LeftSide>
-    <Breadcrumb data={['IEM LIST', 'ITEM DETAIL']} />
+    <Breadcrumb data={['ITEM LIST', 'ITEM DETAIL']} />
   </Container>
 );
 

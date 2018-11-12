@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import QuestionHeader from '../common/QuestionHeader';
 import Options from './Options';
 
-const MultipleChoiceDisplay = ({ smallSize, question, ...restProps }) => (
+const MultipleChoiceDisplay = ({ smallSize, question, uiStyle, ...restProps }) => (
   <div>
     <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
-    <Options smallSize={smallSize} question={question} {...restProps} />
+    <Options smallSize={smallSize} question={question} uiStyle={uiStyle} {...restProps} />
   </div>
 );
 
@@ -36,7 +36,8 @@ MultipleChoiceDisplay.defaultProps = {
     fontsize: 'normal',
     columns: 1,
     orientation: 'horizontal',
+    choice_label: 'number',
   },
 };
 
-export default React.memo(MultipleChoiceDisplay);
+export default MultipleChoiceDisplay;

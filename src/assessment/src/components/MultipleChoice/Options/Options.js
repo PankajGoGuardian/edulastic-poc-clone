@@ -73,6 +73,24 @@ function Options({ onChange, uiStyle, t }) {
             />
           </O.Col>
         </O.Row>
+
+        {uiStyle.type === 'block' && (
+          <O.Row>
+            <O.Col md={6}>
+              <O.Label>{t('component.options.labelType')}</O.Label>
+              <Select
+                style={{ width: '80%' }}
+                onChange={val => changeUiStyle('choice_label', val)}
+                options={[
+                  { value: 'number', label: t('component.options.numerical') },
+                  { value: 'upper-alpha', label: t('component.options.uppercase') },
+                  { value: 'lower-alpha', label: t('component.options.lowercase') },
+                ]}
+                value={uiStyle.choice_label}
+              />
+            </O.Col>
+          </O.Row>
+        )}
       </O.Block>
     </O>
   );
@@ -90,6 +108,7 @@ Options.defaultProps = {
     fontsize: 'normal',
     columns: 0,
     orientation: 'horizontal',
+    choice_label: 'number',
   },
 };
 

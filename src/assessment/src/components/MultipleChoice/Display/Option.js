@@ -52,8 +52,25 @@ const Option = ({
 
   const fontSize = getFontSize(uiStyle.fontsize);
 
+  const getLabel = (inx) => {
+    if (uiStyle.type === 'block') {
+      switch (uiStyle.choice_label) {
+        case 'number':
+          return inx + 1;
+        case 'upper-alpha':
+          return ALPHABET[inx].toUpperCase();
+        case 'lower-alpha':
+          return ALPHABET[inx].toLowerCase();
+        default:
+          return inx + 1;
+      }
+    } else {
+      return '';
+    }
+  };
+
   const container = (
-    <CheckboxContainer smallSize={smallSize} hide={uiStyle.type === 'block'}>
+    <CheckboxContainer smallSize={smallSize}>
       <input
         type="checkbox"
         name="mcq_group"
@@ -61,7 +78,7 @@ const Option = ({
         checked={isSelected}
         onChange={onChange}
       />
-      <span>{ALPHABET[index]}</span>
+      <span>{getLabel(index)}</span>
       <div />
     </CheckboxContainer>
   );
@@ -84,10 +101,10 @@ const Option = ({
       case 'block':
         return (
           <FlexContainer alignItems="center">
+            {container}
             <MultiChoiceContent fontSize={fontSize} smallSize={smallSize}>
               <span>{item.label}</span>
             </MultiChoiceContent>
-            {container}
           </FlexContainer>
         );
       case 'standard':

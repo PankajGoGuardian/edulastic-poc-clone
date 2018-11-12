@@ -14,6 +14,7 @@ class CorrectAnswer extends Component {
     stimulus: PropTypes.string.isRequired,
     options: PropTypes.array.isRequired,
     multipleResponses: PropTypes.bool.isRequired,
+    uiStyle: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -56,7 +57,7 @@ class CorrectAnswer extends Component {
   };
 
   render() {
-    const { t, options, stimulus, response } = this.props;
+    const { t, options, stimulus, response, uiStyle } = this.props;
     const { responseScore } = this.state;
     return (
       <div>
@@ -75,6 +76,7 @@ class CorrectAnswer extends Component {
         <MultipleChoiceDisplay
           preview
           setAnswers
+          uiStyle={uiStyle}
           options={options}
           question={stimulus}
           userSelections={response.value}

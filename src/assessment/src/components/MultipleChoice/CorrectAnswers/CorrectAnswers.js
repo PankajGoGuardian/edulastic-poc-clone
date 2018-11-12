@@ -32,10 +32,7 @@ class CorrectAnswers extends Component {
 
     if (validation.alt_responses && validation.alt_responses.length) {
       return validation.alt_responses.map((res, i) => (
-        <Tab
-          key={i}
-          label={`${t('component.correctanswers.alternate')} ${i + 1}`}
-        />
+        <Tab key={i} label={`${t('component.correctanswers.alternate')} ${i + 1}`} />
       ));
     }
     return null;
@@ -119,24 +116,21 @@ class CorrectAnswers extends Component {
   };
 
   render() {
-    const { validation, stimulus, options, t, multipleResponses } = this.props;
+    const { validation, stimulus, options, t, multipleResponses, uiStyle } = this.props;
     const { value } = this.state;
 
     return (
       <div>
         <Subtitle>{t('component.correctanswers.setcorrectanswers')}</Subtitle>
         <div>
-          <Tabs
-            value={value}
-            onChange={this.handleTabChange}
-            extra={this.renderPlusButton()}
-          >
+          <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
             <Tab label={t('component.correctanswers.correct')} />
             {this.renderAltResponses()}
           </Tabs>
           {value === 0 && (
             <TabContainer>
               <CorrectAnswer
+                uiStyle={uiStyle}
                 response={validation.valid_response}
                 stimulus={stimulus}
                 multipleResponses={multipleResponses}
@@ -153,6 +147,7 @@ class CorrectAnswers extends Component {
                 return (
                   <TabContainer key={i}>
                     <CorrectAnswer
+                      uiStyle={uiStyle}
                       response={alter}
                       multipleResponses={multipleResponses}
                       stimulus={stimulus}
@@ -182,6 +177,7 @@ CorrectAnswers.propTypes = {
   options: PropTypes.array,
   question: PropTypes.object.isRequired,
   multipleResponses: PropTypes.bool.isRequired,
+  uiStyle: PropTypes.object.isRequired,
 };
 
 CorrectAnswers.defaultProps = {

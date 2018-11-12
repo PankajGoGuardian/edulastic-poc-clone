@@ -4,11 +4,11 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { withNamespaces } from '@edulastic/localization';
+import { ContentWrapper } from '@edulastic/common';
 
 import SourceModal from './SourceModal';
 import { changeViewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
-import { Container } from './styled_components';
 import { ButtonBar } from '../common';
 import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapper';
 import ItemHeader from './ItemHeader';
@@ -90,12 +90,9 @@ class QuestionEditor extends Component {
     const { showModal, saveClicked } = this.state;
 
     return (
-      <Container>
+      <div>
         {showModal && (
-          <SourceModal
-            onClose={this.handleHideSource}
-            onApply={this.handleApplySource}
-          >
+          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
             {JSON.stringify(question.data, null, 4)}
           </SourceModal>
         )}
@@ -116,18 +113,20 @@ class QuestionEditor extends Component {
             previewTab={previewTab}
           />
         </ItemHeader>
-        {question && (
-          <QuestionWrapper
-            type={questionType}
-            view={view}
-            previewTab={previewTab}
-            key={questionType && view && saveClicked}
-            data={question.data}
-            questionId={match.params.id}
-            saveClicked={saveClicked}
-          />
-        )}
-      </Container>
+        <ContentWrapper style={{ padding: '25px 45px' }}>
+          {question && (
+            <QuestionWrapper
+              type={questionType}
+              view={view}
+              previewTab={previewTab}
+              key={questionType && view && saveClicked}
+              data={question.data}
+              questionId={match.params.id}
+              saveClicked={saveClicked}
+            />
+          )}
+        </ContentWrapper>
+      </div>
     );
   }
 }

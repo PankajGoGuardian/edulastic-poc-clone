@@ -127,6 +127,7 @@ class MultipleChoice extends Component {
               <Paper style={{ marginBottom: 25 }}>
                 <MultipleChoiceAuthoring item={itemForEdit} />
                 <CorrectAnswers
+                  uiStyle={uiStyle}
                   options={previewDisplayOptions}
                   question={previewStimulus}
                   multipleResponses={multipleResponses}

@@ -122,6 +122,10 @@ const TestPage = ({
     }
   };
 
+  const handleShare = () => {
+    console.log('Share');
+  };
+
   const handleApplySource = (source) => {
     try {
       const data = JSON.parse(source);
@@ -143,6 +147,7 @@ const TestPage = ({
         onChangeNav={handleNavChange}
         current={current}
         onSave={handleSave}
+        onShare={handleShare}
         title={test.title}
         creating={creating}
       />

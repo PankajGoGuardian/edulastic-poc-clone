@@ -99,6 +99,10 @@ const Review = ({
     setData(newData);
   };
 
+  const handlePreview = (id) => {
+    console.log('preview', id);
+  };
+
   const tableData = summary.map(data => ({
     key: data.standard,
     standard: data.standard,
@@ -143,6 +147,7 @@ const Review = ({
             ) : (
               <List
                 onChangePoints={handleChangePoints}
+                onPreview={handlePreview}
                 testItems={test.testItems}
                 rows={rows}
                 standards={standards}
@@ -151,6 +156,7 @@ const Review = ({
                 onSortEnd={moveTestItems}
                 types={types}
                 scoring={test.scoring}
+                useDragHandle
               />
             )}
           </Paper>

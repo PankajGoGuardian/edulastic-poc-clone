@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Paper, FlexContainer } from '@edulastic/common';
+import { Paper, FlexContainer, EduButton } from '@edulastic/common';
 import { Table } from 'antd';
 import * as moment from 'moment';
 import { cloneDeep } from 'lodash';
-import { IconTrash, IconPencilEdit } from '@edulastic/icons';
-import { greenDark, green } from '@edulastic/colors';
+import { IconTrash, IconPencilEdit, IconPlus } from '@edulastic/icons';
+import { greenDark, green, white } from '@edulastic/colors';
 import uuidv4 from 'uuid/v4';
 
-import Header from './Header';
 import ClassCell from './ClassCell';
 import { Container } from '../../common';
 import { Breadcrumbs } from '../common';
@@ -94,10 +93,6 @@ const Assign = ({ test, setData, current }) => {
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState(getDefaultAssignData());
 
-  const handleSearch = (value) => {
-    console.log(value);
-  };
-
   const handleRemoveAssignment = (record) => {
     const newData = cloneDeep(test);
     newData.assignments = newData.assignments.filter((item, i) => i !== record.key);
@@ -149,12 +144,20 @@ const Assign = ({ test, setData, current }) => {
         modalData={modalData}
         setModalData={setModalData}
       />
-      <Breadcrumbs current={current} />
+      <FlexContainer justifyContent="space-between" style={{ marginBottom: 20 }}>
+        <Breadcrumbs style={{ marginBottom: 0 }} current={current} />
+        <EduButton
+          onClick={() => handleAddEditAssignment(getDefaultAssignData())}
+          type="secondary"
+          size="large"
+        >
+          <FlexContainer>
+            <IconPlus color={white} width={14} height={14} />
+            <span>Add new assignment</span>
+          </FlexContainer>
+        </EduButton>
+      </FlexContainer>
       <Paper>
-        <Header
-          onAdd={() => handleAddEditAssignment(getDefaultAssignData())}
-          onSearch={handleSearch}
-        />
         <Table columns={columns} dataSource={tableData} />
       </Paper>
     </Container>

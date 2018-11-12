@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Menu, Button } from 'antd';
 import {
-  IconPencilEdit,
   IconEye,
   IconSave,
-  IconEraseText,
   IconCheck,
+  IconSource,
   IconPreview,
+  IconSettings,
+  IconEraseText,
+  IconPencilEdit,
 } from '@edulastic/icons';
 import { white, blue, darkBlue } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
@@ -33,7 +35,15 @@ class ButtonBar extends Component {
 
   render() {
     const { current } = this.state;
-    const { onSave, view, changePreviewTab, t, previewTab } = this.props;
+    const {
+      t,
+      view,
+      onSave,
+      previewTab,
+      onShowSource,
+      onShowSettings,
+      changePreviewTab,
+    } = this.props;
     return (
       <React.Fragment>
         <Container>
@@ -65,6 +75,36 @@ class ButtonBar extends Component {
             </Button>
           </RightSide>
         </Container>
+        {view === 'edit' && (
+          <PreviewBar
+            style={{
+              position: 'absolute',
+              marginTop: 25,
+              width: '100%',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <Button>
+              <ButtonLink
+                onClick={onShowSource}
+                color="primary"
+                icon={<IconSource color={blue} />}
+              >
+                {t('component.questioneditor.buttonbar.source')}
+              </ButtonLink>
+            </Button>
+            <Button
+              onClick={onShowSettings}
+            >
+              <ButtonLink
+                color="primary"
+                icon={<IconSettings color={blue} />}
+              >
+                {t('component.questioneditor.buttonbar.layout')}
+              </ButtonLink>
+            </Button>
+          </PreviewBar>
+        )}
         {view === 'preview' && (
           <PreviewBar
             style={{
@@ -106,25 +146,6 @@ class ButtonBar extends Component {
           </PreviewBar>
         )}
       </React.Fragment>
-      /* <StyledButton>
-        <Button
-          style={buttonStyles}
-          onClick={() => {}}
-          icon={<IconQuestion color={textColor} width={12} />}
-        >
-          {!iTablet && t('component.questioneditor.buttonbar.help')}
-        </Button>
-      </StyledButton>
-      <StyledButton>
-        <Button onClick={onShowSource} style={{ minWidth: 85 }}>
-          <FaCode style={{ width: 16, height: 16 }} />
-        </Button>
-      </StyledButton>
-      <StyledButton>
-        <Button onClick={onShowSettings} style={{ minWidth: 85 }}>
-          <IconSettings color={textColor} />
-        </Button>
-      </StyledButton> */
     );
   }
 }
@@ -134,7 +155,8 @@ ButtonBar.propTypes = {
   changePreviewTab: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
-  // onShowSource: PropTypes.func.isRequired,
+  onShowSource: PropTypes.func.isRequired,
+  onShowSettings: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   // saving: PropTypes.bool,

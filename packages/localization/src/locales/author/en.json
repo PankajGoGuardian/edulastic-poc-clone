@@ -40,7 +40,8 @@
         "edit": "Edit",
         "help": "Help",
         "settings": "Settings",
-        "source": "Source"
+        "source": "Source",
+        "layout": "Layout"
       }
     },
     "common": {

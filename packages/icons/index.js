@@ -12,6 +12,7 @@ export { default as IconQuestionAlt } from './src/IconQuestionAlt';
 export { default as IconChevronLeft } from './src/IconChevronLeft';
 export { default as IconSave } from './src/IconSave';
 export { default as IconSettings } from './src/IconSettings';
+export { default as IconSource } from './src/IconSource';
 export { default as IconEraseText } from './src/IconEraseText';
 export { default as IconCheck } from './src/IconCheck';
 export { default as IconPreview } from './src/IconPreview';

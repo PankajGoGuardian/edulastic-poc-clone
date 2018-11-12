@@ -57,9 +57,7 @@ class ItemList extends Component {
           title={t('component.itemlist.header.itemlist')}
         />
         <MainList>
-          <ItemFilter
-            onSearch={this.handleSearch}
-          />
+          <ItemFilter onSearch={this.handleSearch} />
           <ListItems>
             <Pagination
               simple={windowWidth <= 768 && true}
@@ -69,9 +67,7 @@ class ItemList extends Component {
               total={300}
             />
             <Items>
-              <Paper
-                padding={windowWidth > 768 ? '25px 39px 0px 39px' : '0px'}
-              >
+              <Paper padding={windowWidth > 768 ? '25px 39px 0px 39px' : '0px'}>
                 {items.map(item => (
                   // eslint-disable-next-line
                   <Item key={item.id} item={item} history={history} windowWidth={windowWidth} />
@@ -126,6 +122,7 @@ export default enhance(ItemList);
 
 const Container = styled.div`
   width: 100%;
+  height: 100%;
   padding-bottom: 51px;
   position: relative;
 
@@ -150,7 +147,7 @@ const MainList = styled.div`
 const ListItems = styled.div`
   flex: 1;
   margin: 29px 40px 0px 18px;
-  
+
   .ant-pagination {
     display: flex;
 
@@ -167,7 +164,7 @@ const ListItems = styled.div`
     color: ${secondaryTextColor};
     letter-spacing: normal;
   }
-  
+
   .ant-pagination-item-active {
     border: none;
     opacity: 0.75;

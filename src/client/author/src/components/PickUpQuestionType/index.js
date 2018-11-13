@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { PaddingDiv } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
 
-import { Container } from '../common';
 import QuestionTypes from './questionTypes';
 import { getItemSelector } from '../../selectors/items';
 import Header from './Header';
@@ -56,7 +56,7 @@ class PickUpQuestionType extends Component {
     return (
       <Container>
         <Header title={t('component.pickupcomponent.headertitle')} link={this.link} />
-        <PaddingDiv top={30}>
+        <PaddingDiv left={30} right={30}>
           <QuestionTypes onSelectQuestionType={this.selectQuestionType} />
         </PaddingDiv>
       </Container>
@@ -84,3 +84,6 @@ PickUpQuestionType.propTypes = {
 };
 
 export default enhance(PickUpQuestionType);
+
+const Container = styled.div`
+`;

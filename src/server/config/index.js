@@ -31,6 +31,11 @@ const config = {
     host,
     port: 3000,
   },
+
+  db: {
+    uri: process.env.DB_URI || 'mongodb://localhost/',
+    options: {},
+  },
 };
 
 export default config;

@@ -1,16 +1,41 @@
-import express from 'express';
+import fs from 'fs';
 import path from 'path';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import express from 'express';
+import handlebars from 'handlebars';
+import bodyParser from 'body-parser';
 import proxy from 'http-proxy-middleware';
-import config from './config/default';
-import router from './router';
+import config from './config';
+import router from './routes';
+import initDbConnection from './services/mongodb';
 
+dotenv.config();
 const app = express();
-const { buildConfig: { assetsDir, targetDir }, server: { port }, proxyAssets } = config;
+const {
+  buildConfig: { assetsDir, targetDir },
+  server: { port },
+  proxyAssets,
+} = config;
+
+/** ***********************
+ *      middlewares      *
+ ************************ */
+
+app.use(cors());
+app.use(bodyParser.json());
+
+/** ************************
+ *        routes          *
+ ************************* */
 
 if (config.appModeDev) {
   app.use(
     `/${assetsDir}`,
-    proxy({ target: `http://${proxyAssets.host}:${proxyAssets.port}`, changeOrigin: true }),
+    proxy({
+      target: `http://${proxyAssets.host}:${proxyAssets.port}`,
+      changeOrigin: true,
+    }),
   );
 } else {
   app.use(
@@ -19,6 +44,27 @@ if (config.appModeDev) {
   );
 }
 
-app.use('*', router);
+// serve the client
+app.get('/', (req, res) => {
+  const template = handlebars.compile(
+    fs.readFileSync(path.join(__dirname, 'index.hbs'), 'utf8'),
+  );
+  const context = {
+    title: 'Edulastic Poc App',
+  };
+  res.send(template(context));
+});
 
+app.use('/api', router);
+
+app.use('*', (req, res) => {
+  res.statusCode = 400;
+  res.json({
+    status: 400,
+    message: 'invalid uri',
+  });
+});
+
+// app initialization
+initDbConnection();
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

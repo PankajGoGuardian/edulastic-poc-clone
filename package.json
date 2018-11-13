@@ -14,13 +14,17 @@
     "start-build": "NODE_ENV=localhost APP_MOCKS=0 node ./.build/server/app",
     "start-server": "SERVICE_HOST=0.0.0.0:3001 NODE_ENV=localhost APP_MOCKS=0 APP_MODE_DEV=1 nodemon --exec babel-node src/server/app --ignore src/client",
     "start-client": "webpack-dev-server --mode development",
-    "start": "node start.js"
+    "start": "node start.js",
+    "server-dev": "nodemon --exec babel-node -- ./src/server/app.js"
   },
   "dependencies": {
     "antd": "^3.10.7",
     "babel-runtime": "^6.26.0",
+    "body-parser": "^1.18.3",
     "brace": "^0.11.1",
     "connected-react-router": "^4.5.0",
+    "cors": "^2.8.5",
+    "dotenv": "^6.1.0",
     "express": "^4.16.4",
     "faker": "^4.1.0",
     "font-awesome": "^4.7.0",
@@ -28,6 +32,7 @@
     "history": "^4.7.2",
     "http-proxy-middleware": "^0.19.0",
     "lodash": "^4.17.11",
+    "mongoose": "^5.3.11",
     "prop-types": "^15.6.2",
     "react": "^16.7.0-alpha.0",
     "react-ace": "^6.2.0",

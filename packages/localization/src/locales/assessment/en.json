@@ -106,7 +106,7 @@
       "duplicatedresponses": "Duplicated responses",
       "showdraghandle": "Show drag handle",
       "shuffleoptions": "Shuffle possible responses",
-      "transparentoptions": "Transparent possible responses"
+      "transparentpossibleresponses": "Transparent possible responses"
     },
     "correctanswers": {
       "setcorrectanswers": "Set Correct Answer(s)",

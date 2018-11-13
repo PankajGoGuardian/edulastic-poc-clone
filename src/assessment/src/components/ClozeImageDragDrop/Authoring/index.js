@@ -2,21 +2,33 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
 import { PaddingDiv, CustomQuillComponent } from '@edulastic/common';
+import { IconUpload, IconDrawResize, IconPin } from '@edulastic/icons';
+import { greenDark } from '@edulastic/colors';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { withNamespaces } from '@edulastic/localization';
 import { connect } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import 'react-quill/dist/quill.snow.css';
-import { Button, Icon, Input } from 'antd';
+import { Button, Checkbox, Input, InputNumber, Select, Upload, message } from 'antd';
+import { ChromePicker } from 'react-color';
+import styled from 'styled-components';
 
 import SortableItemContainer from './SortableItemContainer';
 import Subtitle from '../common/Sutitle';
 import AddNewChoiceBtn from './AddNewChoiceBtn';
 import { setQuestionDataAction } from '../../../../../author/src/actions/question';
 import DeleteButton from '../components/DeleteButton';
+import FlexView from '../components/FlexView';
+import DropArea from '../common/DropArea';
 
 const DragHandle = SortableHandle(() => <i className="fa fa-align-justify" />);
+
+const defaultImageURL = 'https://assets.learnosity.com/demos/docs/colored_world_map.png';
+
+// eslint-disable-next-line prefer-destructuring
+const Option = Select.Option;
+const { Dragger } = Upload;
 
 const SortableItem = SortableElement(({ value, onRemove, onChange }) => (
   <SortableItemContainer>
@@ -26,7 +38,7 @@ const SortableItem = SortableElement(({ value, onRemove, onChange }) => (
         <input style={{ background: 'transparent' }} type="text" value={value} onChange={onChange} />
       </div>
     </div>
-    <DeleteButton onClick={onRemove} />
+    <DeleteButton onDelete={onRemove} />
   </SortableItemContainer>
 ));
 
@@ -44,9 +56,7 @@ const SortableList = SortableContainer(({ items, onRemove, onChange }) => (
   </div>
 ));
 
-const defaultTemplateMarkup = '<p>Risus </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>';
-
-class ClozeDragDropAuthoring extends Component {
+class clozeImageDragDropAuthoring extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
@@ -54,15 +64,8 @@ class ClozeDragDropAuthoring extends Component {
   };
 
   state = {
-    hasGroupResponses: false,
-    groupResponses: [{
-      title: '',
-      options: [
-        'Choice A',
-        'Choice B',
-      ]
-    }],
-  };
+    isColorPickerVisible: false,
+  }
 
   getNewItem() {
     const { item } = this.props;
@@ -103,166 +106,231 @@ class ClozeDragDropAuthoring extends Component {
     setQuestionData(newItem);
   };
 
-  onChangeMarkUp = (html) => {
-    const templateMarkUp = html;
-    console.log('templateMarkUp:', templateMarkUp);
-    const { item, setQuestionData } = this.props;
-    setQuestionData({ ...item, templateMarkUp });
-  }
-
-  groupResponsesHandler = (e) => {
-    const { item, setQuestionData } = this.props;
-    const hasGroupResponses = e.target.checked;
-    if (e.target.checked) {
-      this.setState({ hasGroupResponses });
-    } else {
-      this.setState({ hasGroupResponses });
+  onResponsePropChange = (prop, value) => {
+    console.log('prop', prop, value);
+    const { setQuestionData } = this.props;
+    const newItem = this.getNewItem();
+    if (newItem.responseLayout === undefined) {
+      newItem.responseLayout = {};
     }
-    setQuestionData({ ...item, hasGroupResponses });
+    newItem.responseLayout[prop] = value;
+    setQuestionData({ ...newItem });
   }
 
-  addGroup = () => {
-    const { groupResponses } = this.state;
-    groupResponses.push({ title: '', options: [] });
-    const newGroupResponses = groupResponses.slice();
-    this.setState({ groupResponses: newGroupResponses });
+  onItemPropChange = (prop, value) => {
+    const { setQuestionData } = this.props;
+    const newItem = this.getNewItem();
+    newItem[prop] = value;
+    setQuestionData({ ...newItem });
+  };
+
+  onResponseLabelChange = (index, value) => {
+    const { setQuestionData } = this.props;
+    const newItem = this.getNewItem();
+    newItem.responses[index].label = value;
+    setQuestionData({ ...newItem });
+  }
+
+  showColorPicker = (status) => {
+    this.setState({ isColorPickerVisible: status });
+  }
+
+  updateData = (item) => {
+    this.onItemPropChange('responses', item);
+  }
+
+  handlePointersChange = (value) => {
     const { item, setQuestionData } = this.props;
-    setQuestionData({ ...item, groupResponses: newGroupResponses });
+    const newResponses = item.responses.map((it) => {
+      if (it.active) {
+        it.pointerPosition = value;
+      }
+      return it;
+    });
+    setQuestionData({ ...item, responses: newResponses });
   }
 
-  removeGroup = (index) => {
-    const { groupResponses } = this.state;
-    groupResponses.splice(index, 1);
-    const newGroupResponses = groupResponses.slice();
-    this.setState({ groupResponses: newGroupResponses });
-    const { item, setQuestionData } = this.props;
-    setQuestionData({ ...item, groupResponses: newGroupResponses });
-  }
-
-  changeGroupRespTitle = (index, e) => {
-    const { groupResponses } = this.state;
-    const newGroupResponses = groupResponses.slice();
-    newGroupResponses[index].title = e.target.value;
-    this.setState({ groupResponses: newGroupResponses });
-    const { item, setQuestionData } = this.props;
-    setQuestionData({ ...item, groupResponses: newGroupResponses });
-  }
-
-  addNewGroupOption = (index) => {
-    const { groupResponses } = this.state;
-    const newGroupResponses = groupResponses.slice();
-    newGroupResponses[index].options.push('New Choice');
-    this.setState({ groupResponses: newGroupResponses });
-    const { item, setQuestionData } = this.props;
-    setQuestionData({ ...item, groupResponses: newGroupResponses });
-  }
-
-  editGroupOptions = (index, itemIndex, e) => {
-    console.log('params:', index, itemIndex, e);
-    const { groupResponses } = this.state;
-    const newGroupResponses = groupResponses.slice();
-    newGroupResponses[index].options[itemIndex] = e.target.value;
-    this.setState({ groupResponses: newGroupResponses });
-    const { item, setQuestionData } = this.props;
-    setQuestionData({ ...item, groupResponses: newGroupResponses });
-  }
-
-  removeGroupOptions = (index, itemIndex) => {
-    const { groupResponses } = this.state;
-    const newGroupResponses = groupResponses.slice();
-    newGroupResponses[index].options.splice(itemIndex, 1);
-    this.setState({ groupResponses: newGroupResponses });
-    const { item, setQuestionData } = this.props;
-    setQuestionData({ ...item, groupResponses: newGroupResponses });
-  }
-
-  onSortEndGroupOptions = () => {
-
+  handleImageUpload = (info) => {
+    const { status, response } = info.file;
+    console.log('info:', info);
+    if (status === 'done') {
+      message.success(`${info.file.name} file uploaded successfully.`);
+      const imageUrl = response.result.files.file[0].providerResponse.location;
+      this.onItemPropChange('imageUrl', imageUrl);
+    } else if (status === 'error') {
+      message.error(`${info.file.name} file upload failed.`);
+    }
   }
 
   render() {
     const { t, item } = this.props;
-    const { hasGroupResponses, groupResponses } = this.state;
+    const { maxRespCount, responseLayout, imageAlterText, isEditAriaLabels, responses } = item;
+    const { isColorPickerVisible } = this.state;
+    const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
+
     return (
       <div>
         <PaddingDiv bottom={20}>
-          <Subtitle>{t('component.clozeDragDrop.composequestion')}</Subtitle>
+          <Subtitle>{t('component.clozeImageDragDrop.composequestion')}</Subtitle>
           <CustomQuillComponent
             toolbarId="stimulus"
             wrappedRef={(instance) => { this.stimulus = instance; }}
-            placeholder={t('component.clozeDragDrop.thisisstem')}
+            placeholder={t('component.clozeImageDragDrop.thisisstem')}
             onChange={this.onChangeQuesiton}
             showResponseBtn={false}
             value={item.stimulus}
           />
-          <Subtitle>{t('component.clozeDragDrop.templatemarkup')}</Subtitle>
-          <CustomQuillComponent
-            toolbarId="templatemarkup"
-            wrappedRef={(instance) => { this.templatemarkup = instance; }}
-            placeholder={t('component.clozeDragDrop.templatemarkupplaceholder')}
-            onChange={this.onChangeMarkUp}
-            showResponseBtn
-            value={item.templateMarkUp || defaultTemplateMarkup}
-          />
-          <PaddingDiv>
-            <Subtitle>
-              <input id="groupResponseCheckbox" type="checkbox" onChange={e => this.groupResponsesHandler(e)} />
-              <label htmlFor="groupResponseCheckbox">{t('component.clozeDragDrop.grouppossibleresponses')}</label>
-            </Subtitle>
-          </PaddingDiv>
-          {!hasGroupResponses && (
-            <PaddingDiv>
-              <div>{t('component.clozeDragDrop.choicesforresponse')}</div>
-              <SortableList
-                items={item.options}
-                onSortEnd={this.onSortEnd}
-                useDragHandle
-                onRemove={this.remove}
-                onChange={this.editOptions}
-              />
-              <div>
-                <AddNewChoiceBtn onClick={this.addNewChoiceBtn}>
-                  {t('component.clozeDragDrop.addnewchoice')}
-                </AddNewChoiceBtn>
-              </div>
-            </PaddingDiv>
-          )}
-          {hasGroupResponses && groupResponses.length > 0 && groupResponses.map((group, index) => (
-            <div key={index}>
-              <fieldset style={{ borderColor: '#eee', borderRadius: 2, padding: '0 20px', marginBottom: 15, border: 'solid 1px' }}>
-                <legend style={{ padding: '0 20px', width: 'auto' }}>
-                  {t('component.clozeDragDrop.group')} {index + 1}
-                </legend>
-                <div style={{ float: 'right' }}>
-                  <Button onClick={() => this.removeGroup(index)} size="small" type="button"><Icon type="close" /></Button>
-                </div>
-                <PaddingDiv top={10} bottom={10}>
-                  <div>Title</div>
-                </PaddingDiv>
-                <div>
-                  <Input size="large" style={{ width: '100%' }} onChange={e => this.changeGroupRespTitle(index, e)} value={group.title} />
-                </div>
-                <PaddingDiv top={20} bottom={10}>
-                  <div>{t('component.clozeDragDrop.choicesforresponse')}</div>
-                  <SortableList
-                    items={group.options}
-                    onSortEnd={params => this.onSortEndGroupOptions(index, ...params)}
-                    useDragHandle
-                    onRemove={itemIndex => this.removeGroupOptions(index, itemIndex)}
-                    onChange={(itemIndex, e) => this.editGroupOptions(index, itemIndex, e)}
-                  />
-                  <PaddingDiv top={10} bottom={10}>
-                    <AddNewChoiceBtn onClick={() => this.addNewGroupOption(index)}>
-                      {t('component.clozeDragDrop.addnewchoice')}
-                    </AddNewChoiceBtn>
-                  </PaddingDiv>
-                </PaddingDiv>
-              </fieldset>
+          <PaddingDiv top={30} />
+          <FlexContainer style={{ background: '#e6e6e6', height: 70, fontSize: 13 }}>
+            <div style={{ alignItems: 'center' }}>
+              <InputNumber defaultValue={responseLayout && responseLayout.width} onChange={val => this.onResponsePropChange('width', val)} />
+              <PaddingDiv left={20}>
+                {t('component.clozeImageDragDrop.widthpx')}
+              </PaddingDiv>
             </div>
-          ))}
-          {hasGroupResponses &&
-            <Button type="primary" onClick={this.addGroup} style={{ background: '#12a6e8' }}>Add Group</Button>
-          }
+            <div style={{ alignItems: 'center' }}>
+              <Input
+                size="large"
+                style={{ width: 220 }}
+                defaultValue={imageAlterText}
+                onChange={val => this.onItemPropChange('imageAlterText', val.target.value)}
+              />
+              <PaddingDiv left={20}>
+                {t('component.clozeImageDragDrop.imagealtertext')}
+              </PaddingDiv>
+            </div>
+            <div style={{ alignItems: 'center' }}>
+              <ColorBox
+                style={{ background: responseLayout && responseLayout.background }}
+                onClick={() => this.showColorPicker(true)}
+              />
+              {isColorPickerVisible && (
+                <ColorPickerContainer>
+                  <ColorPickerWrapper onClick={() => this.showColorPicker(false)} />
+                  <ChromePicker
+                    color={responseLayout && responseLayout.background}
+                    onChangeComplete={color => this.onResponsePropChange('background', color.hex)}
+                  />
+                </ColorPickerContainer>
+              )}
+              <PaddingDiv left={20}>
+                {t('component.clozeImageDragDrop.fillcolor')}
+              </PaddingDiv>
+            </div>
+            <div style={{ alignItems: 'center' }}>
+              <InputNumber
+                min={1}
+                max={10}
+                style={{ width: 100 }}
+                defaultValue={maxRespCount}
+                onChange={val => this.onResponsePropChange('maxRespCount', val)}
+              />
+              <PaddingDiv left={20} style={{ width: 160 }}>
+                {t('component.clozeImageDragDrop.maximumresponses')}
+              </PaddingDiv>
+            </div>
+          </FlexContainer>
+          <PaddingDiv top={30} />
+          <FlexContainer>
+            <div
+              className="controls-bar"
+              style={{ width: 120, background: '#fbfafc', alignItems: 'center', alignSelf: 'flex-start', flexDirection: 'column' }}
+            >
+              <Button style={{ width: 100, height: 100, whiteSpace: 'normal' }}>
+                <IconDrawResize width={20} height={20} color={greenDark} />
+                {t('component.clozeImageDragDrop.drawresize')}
+              </Button>
+              <div style={{ position: 'relative', width: 100, marginTop: 10, marginBottom: 10, }}>
+                <Button disabled={!hasActive} style={{ width: 100, height: 100, position: 'absolute', top: 0, left: 0, whiteSpace: 'normal' }}>
+                  <IconPin width={20} height={20} />
+                  {t('component.clozeImageDragDrop.pointers')}
+                </Button>
+                <Select disabled={!hasActive} defaultValue="none" style={{ width: 100, height: 100, position: 'absolute', top: 0, left: 0, display: 'flex', alignItems: 'flex-end' }} onChange={this.handlePointersChange}>
+                  <Option value="none">None</Option>
+                  <Option value="top">Top</Option>
+                  <Option value="bottom">Bottom</Option>
+                  <Option value="left">Left</Option>
+                  <Option value="right">Right</Option>
+                </Select>
+              </div>
+            </div>
+            <FlexView
+              size={1}
+              style={{
+                flexDirection: 'column',
+                alignItems: 'center',
+                marginLeft: 20
+              }}
+            >
+              <div style={{ position: 'relative', top: 0, left: 0, minHeight: 400, display: 'flex', padding: 20 }}>
+                {item.imageUrl && (
+                  <React.Fragment>
+                    <img src={defaultImageURL} width={700} alt="resp-preview" style={{ userSelect: 'none', pointerEvents: 'none' }} />
+                    <DropArea updateData={this.updateData} item={item} key={item} />
+                  </React.Fragment>
+                )}
+                {!item.imageUrl && (
+                  <Dragger
+                    name="file"
+                    action="//ec2-34-227-229-142.compute-1.amazonaws.com:3100/api/files/edureact-dev/upload"
+                    onChange={this.handleImageUpload}
+                  >
+                    <p className="ant-upload-drag-icon">
+                      <IconUpload width={100} height={100} color="#e6e6e6" />
+                    </p>
+                    <p className="ant-upload-hint"><strong>Drag & Drop</strong></p>
+                    <h2 className="ant-upload-text">YOUR OWN Image</h2>
+                    <p className="ant-upload-hint">OR BROWSE: PNG, JPG, GIF (1024KB MAX.)</p>
+                  </Dragger>
+                )}
+              </div>
+              <PaddingDiv top={30} style={{ alignSelf: 'flex-start' }}>
+                <Checkbox
+                  defaultChecked={responseLayout && responseLayout.showdashedborder}
+                  onChange={val => this.onResponsePropChange('showdashedborder', val.target.checked)}
+                >
+                  {t('component.clozeImageDragDrop.showdashedborder')}
+                </Checkbox>
+                <Checkbox
+                  defaultChecked={isEditAriaLabels}
+                  onChange={val => this.onItemPropChange('isEditAriaLabels', val.target.checked)}
+                >
+                  {t('component.clozeImageDragDrop.editAriaLabels')}
+                </Checkbox>
+              </PaddingDiv>
+            </FlexView>
+          </FlexContainer>
+          <PaddingDiv>
+            {isEditAriaLabels && (
+              <React.Fragment>
+                <Subtitle>{t('component.clozeImageDragDrop.editAriaLabels')}</Subtitle>
+                {responses.map((responseContainer, index) => (
+                  <div className="imagelabeldragdrop-droppable iseditablearialabel" key={index}>
+                    <span className="index-box">{index + 1}</span>
+                    <Input
+                      defaultValue={responseContainer.label}
+                      onChange={value => this.onResponseLabelChange(index, value)}
+                    />
+                  </div>
+                ))}
+              </React.Fragment>
+            )}
+          </PaddingDiv>
+          <PaddingDiv>
+            <Subtitle>{t('component.clozeImageDragDrop.possibleresponses')}</Subtitle>
+            <SortableList
+              items={item.options}
+              onSortEnd={this.onSortEnd}
+              useDragHandle
+              onRemove={this.remove}
+              onChange={this.editOptions}
+            />
+            <div>
+              <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn()}>
+                {t('component.clozeImageDragDrop.add')}
+              </AddNewChoiceBtn>
+            </div>
+          </PaddingDiv>
         </PaddingDiv>
       </div>
     );
@@ -278,4 +346,41 @@ const enhance = compose(
   ),
 );
 
-export default enhance(ClozeDragDropAuthoring);
+export default enhance(clozeImageDragDropAuthoring);
+
+const ColorPickerWrapper = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+`;
+
+const ColorPickerContainer = styled.div`
+  position: relative;
+  top: 20px;
+  left: -30px;
+  width: 0;
+  height: 0;
+  z-index: 1000;
+`;
+
+const ColorBox = styled.div`
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 5px 10px;
+  background: white;
+`;
+
+const FlexContainer = styled.div`
+  display: flex;
+  padding: 10px;
+  align-items: center;
+  justify-content: space-between;
+
+  & > div {
+    display: flex;
+  }
+`;

@@ -9,8 +9,8 @@ import styled from 'styled-components';
 import { withNamespaces } from '@edulastic/localization';
 
 import {
-  ClozeDragDropAuthoring,
-  ClozeDragDropDisplay,
+  ClozeImageDragDropAuthoring,
+  ClozeImageDragDropDisplay,
   CorrectAnswers,
 } from './index';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
@@ -24,13 +24,14 @@ class ClozeImageDragDrop extends Component {
     duplicatedResponses: false,
     shuffleOptions: false,
     showDraghandle: false,
+    transparentResponses: false,
   }
 
   getRenderData = () => {
     const { item, history } = this.props;
     const locationState = history.location.state;
     const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
-    const previewDisplayOptions = item.hasGroupResponses ? item.groupResponses : item.options;
+    const previewDisplayOptions = item.options;
     let previewStimulus;
     let itemForEdit;
     if (item.smallSize || isDetailPage) {
@@ -89,6 +90,10 @@ class ClozeImageDragDrop extends Component {
         this.setState({ showDraghandle: value });
         break;
       }
+      case 'transparent_responses': {
+        this.setState({ transparentResponses: value });
+        break;
+      }
       default:
     }
   };
@@ -102,7 +107,8 @@ class ClozeImageDragDrop extends Component {
   render() {
     const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
-    const { duplicatedResponses, showDraghandle, shuffleOptions } = this.state;
+    const { duplicatedResponses, showDraghandle, shuffleOptions,
+      transparentResponses } = this.state;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
     return (
@@ -116,21 +122,24 @@ class ClozeImageDragDrop extends Component {
               left={120}
               right={120}
             >
-              <div style={{ width: 640 }} className="authoring">
-                <ClozeDragDropAuthoring item={itemForEdit} />
+              <div className="authoring">
+                <ClozeImageDragDropAuthoring item={itemForEdit} />
                 <CorrectAnswers
                   key={duplicatedResponses || showDraghandle || shuffleOptions}
                   validation={item.validation}
-                  hasGroupResponses={item.hasGroupResponses}
                   configureOptions={{
                     duplicatedResponses,
                     showDraghandle,
                     shuffleOptions,
+                    transparentResponses,
                   }}
                   options={previewDisplayOptions}
+                  responses={item.responses}
+                  imageUrl={item.imageUrl}
                   question={previewStimulus}
+                  showDashedBorder={item.showDashedBorder}
                   uiStyle={uiStyle}
-                  templateMarkUp={itemForEdit.templateMarkUp}
+                  backgroundColor={item.background}
                   onAddAltResponses={this.handleAddAltResponses}
                 />
                 <CorrectAnswerOptions>
@@ -142,7 +151,7 @@ class ClozeImageDragDrop extends Component {
                         !duplicatedResponses,
                       )
                   }
-                    label={t('component.clozeDragDrop.duplicatedresponses')}
+                    label={t('component.clozeImageDragDrop.duplicatedresponses')}
                     checked={duplicatedResponses}
                   />
                   <Checkbox
@@ -153,7 +162,7 @@ class ClozeImageDragDrop extends Component {
                         !showDraghandle,
                       )
                   }
-                    label={t('component.clozeDragDrop.showdraghandle')}
+                    label={t('component.clozeImageDragDrop.showdraghandle')}
                     checked={showDraghandle}
                   />
                   <Checkbox
@@ -164,8 +173,19 @@ class ClozeImageDragDrop extends Component {
                         !shuffleOptions,
                       )
                   }
-                    label={t('component.clozeDragDrop.shuffleoptions')}
+                    label={t('component.clozeImageDragDrop.shuffleoptions')}
                     checked={shuffleOptions}
+                  />
+                  <Checkbox
+                    className="additional-options"
+                    onChange={() =>
+                      this.handleOptionsChange(
+                        'transparent_responses',
+                        !transparentResponses,
+                      )
+                    }
+                    label={t('component.clozeImageDragDrop.transparentpossibleresponses')}
+                    checked={transparentResponses}
                   />
                 </CorrectAnswerOptions>
               </div>
@@ -184,7 +204,7 @@ class ClozeImageDragDrop extends Component {
         {view === 'preview' && (
           <Wrapper>
             {previewTab === 'check' && (
-              <ClozeDragDropDisplay
+              <ClozeImageDragDropDisplay
                 checkAnswer
                 hasGroupResponses={item.hasGroupResponses}
                 configureOptions={{
@@ -203,7 +223,7 @@ class ClozeImageDragDrop extends Component {
               />
             )}
             {previewTab === 'show' && (
-              <ClozeDragDropDisplay
+              <ClozeImageDragDropDisplay
                 showAnswer
                 hasGroupResponses={item.hasGroupResponses}
                 configureOptions={{
@@ -222,7 +242,7 @@ class ClozeImageDragDrop extends Component {
               />
             )}
             {previewTab === 'clear' && (
-              <ClozeDragDropDisplay
+              <ClozeImageDragDropDisplay
                 preview
                 hasGroupResponses={item.hasGroupResponses}
                 configureOptions={{

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { greenDark } from '@edulastic/colors';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 
@@ -84,7 +83,7 @@ class ItemDetailRow extends Component {
             {!row.tabs.length && this.renderTabContent({ widgetIndex: i, widget, rowIndex })}
           </React.Fragment>
         ))}
-        <FlexContainer justifyContent="center" style={{ marginBottom: 30 }}>
+        <FlexContainer justifyContent="center" style={{ marginBottom: 30, marginRight: 40 }}>
           <AddNew onClick={() => onAdd({ rowIndex, tabIndex: value })} />
         </FlexContainer>
       </Container>
@@ -101,7 +100,11 @@ const enhance = compose(
 export default enhance(ItemDetailRow);
 
 const Container = styled.div`
+  width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  overflow: auto;
   padding-left: 40px;
   padding-top: 20px;
-  border-right: 60px solid ${greenDark};
 `;

@@ -3,6 +3,7 @@ import path from 'path';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
+import boom from 'express-boom';
 import handlebars from 'handlebars';
 import bodyParser from 'body-parser';
 import proxy from 'http-proxy-middleware';
@@ -26,7 +27,7 @@ const {
 
 app.use(cors());
 app.use(bodyParser.json());
-
+app.use(boom());
 /** ************************
  *        routes          *
  ************************* */
@@ -46,8 +47,11 @@ if (config.appModeDev) {
   );
 }
 
-// serve the client
-app.get('/', (req, res) => {
+app.use('/api', router);
+app.use('/docs', swaggerUi.serve);
+app.get('/docs', swaggerSpec);
+
+app.use('*', (req, res) => {
   const template = handlebars.compile(
     fs.readFileSync(path.join(__dirname, 'index.hbs'), 'utf8'),
   );
@@ -55,18 +59,6 @@ app.get('/', (req, res) => {
     title: 'Edulastic Poc App',
   };
   res.send(template(context));
-});
-
-app.use('/api', router);
-app.use('/docs', swaggerUi.serve);
-app.get('/docs', swaggerSpec);
-
-app.use('*', (req, res) => {
-  res.statusCode = 400;
-  res.json({
-    status: 400,
-    message: 'invalid uri',
-  });
 });
 
 // app initialization

@@ -11,7 +11,8 @@ const IconMenuOpenClose = props => (
   >
     <defs>{/* <style>
             .cls-1{fill:#fff}
-        </style> */}</defs>
+        </style> */}
+    </defs>
     <g id="menu-open-close" transform="translate(-222.297 -43.748)">
       <g
         id="menu_1_"

@@ -395,4 +395,11 @@ const Content = styled(Paper)`
   margin: 0px 40px 50px 40px;
   flex-wrap: nowrap;
   padding: 0;
+  position: relative;
+  height: calc(100vh - 154px);
+  overflow: auto;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;

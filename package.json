@@ -48,7 +48,9 @@
     "redux-devtools-extension": "^2.13.5",
     "redux-saga": "^0.16.2",
     "reselect": "^3.0.1",
-    "styled-components": "^3.4.5"
+    "styled-components": "^3.4.5",
+    "swagger-jsdoc": "^3.2.3",
+    "swagger-ui-express": "^4.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

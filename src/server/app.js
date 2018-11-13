@@ -6,8 +6,10 @@ import express from 'express';
 import handlebars from 'handlebars';
 import bodyParser from 'body-parser';
 import proxy from 'http-proxy-middleware';
+import swaggerUi from 'swagger-ui-express';
 import config from './config';
 import router from './routes';
+import swaggerSpec from './services/swagger';
 import initDbConnection from './services/mongodb';
 
 dotenv.config();
@@ -56,6 +58,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api', router);
+app.use('/docs', swaggerUi.serve);
+app.get('/docs', swaggerSpec);
 
 app.use('*', (req, res) => {
   res.statusCode = 400;

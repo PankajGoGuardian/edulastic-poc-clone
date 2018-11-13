@@ -2,7 +2,20 @@ import express from 'express';
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+/**
+ * @swagger
+ * /hello:
+ *   get:
+ *     tags:
+ *       - test
+ *     description: test api
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: sucessfull
+ */
+router.get('/hello', (req, res) => {
   res.json({
     message: 'edulastic api',
     version: '0.1',

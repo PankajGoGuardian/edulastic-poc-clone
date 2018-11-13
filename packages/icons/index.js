@@ -41,3 +41,6 @@ export { default as IconWorldWide } from './src/IconWorldWide';
 export { default as IconCopy } from './src/IconCopy';
 export { default as IconItemList } from './src/IconItemList';
 export { default as IconTestList } from './src/IconTestList';
+export { default as IconUpload } from './src/IconUpload';
+export { default as IconPin } from './src/IconPin';
+export { default as IconDrawResize } from './src/IconDrawResize';

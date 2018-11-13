@@ -442,6 +442,14 @@ template {
   overflow: hidden;
 }
 
+.imagedragdrop_template_box {
+    background: white;
+    padding: 18px 33px !important;
+    border-radius: 10px;
+    border: solid 1px #dfdfdf;
+    height: 100%;
+}
+
 input[type="checkbox"] {
   zoom: 1.3;
   margin-right: 5px;
@@ -450,6 +458,13 @@ input[type="checkbox"] {
 .draggable_box {
   background: white;
   border: solid 1px lightgray;
+  display: inline-flex;
+  padding: 3px 8px;
+  align-items: center;
+  margin: 3px 5px;
+}
+
+.draggable_box_transparent {
   display: inline-flex;
   padding: 3px 8px;
   align-items: center;
@@ -648,7 +663,6 @@ input[type="checkbox"] {
   padding:0;
  	width: 100%;
  	height: 600px;
- 	border: 1px solid #999;
 }
 .drop-area .item {
  	position: absolute;
@@ -696,10 +710,35 @@ input[type="checkbox"] {
   display: inline-flex;
   align-items: center;
   height: 100%;
+  background: #878282;
+}
+
+.imagelabeldragdrop-droppable.active .index-box {
   background: #00b0ff;
+}
+
+.iseditablearialabel .index-box {
+  border-radius: 4px;
+  margin-right: 5px;
+  height: 32px;
+  width: 32px;
+  justify-content: center;
 }
 
 .imagelabeldragdrop-droppable .label-box {
   padding: 0 20px 0 10px;
   display: inline-flex;
+}
+
+.imagelabeldragdrop-droppable .container {
+  width: 100%;
+  height: 100%;
+}
+
+.controls-bar .ant-select-selection {
+  display: none;
+}
+
+.ant-upload.ant-upload-drag {
+  padding: 20px;
 }

@@ -100,7 +100,7 @@ class CorrectAnswers extends Component {
 
   render() {
     /* eslint-disable max-len */
-    const { validation, stimulus, options, t, templateMarkUp, hasGroupResponses, configureOptions, uiStyle } = this.props;
+    const { validation, stimulus, options, t, imageUrl, templateMarkUp, backgroundColor, responses, configureOptions, uiStyle, showDashedBorder } = this.props;
     const { value } = this.state;
     return (
       <div>
@@ -118,11 +118,13 @@ class CorrectAnswers extends Component {
                 stimulus={stimulus}
                 options={options}
                 uiStyle={uiStyle}
-                templateMarkUp={templateMarkUp}
+                responses={responses}
+                imageUrl={imageUrl}
+                showDashedBorder={showDashedBorder}
                 configureOptions={configureOptions}
-                hasGroupResponses={hasGroupResponses}
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}
+                backgroundColor={backgroundColor}
               />
             </TabContainer>
           )}
@@ -138,9 +140,12 @@ class CorrectAnswers extends Component {
                       stimulus={stimulus}
                       options={options}
                       configureOptions={configureOptions}
-                      hasGroupResponses={hasGroupResponses}
+                      responses={responses}
+                      imageUrl={imageUrl}
                       templateMarkUp={templateMarkUp}
+                      showDashedBorder={showDashedBorder}
                       uiStyle={uiStyle}
+                      backgroundColor={backgroundColor}
                       onUpdateValidationValue={answers =>
                         this.updateAltCorrectValidationAnswers(answers, i)
                       }
@@ -164,19 +169,25 @@ CorrectAnswers.propTypes = {
   t: PropTypes.func.isRequired,
   stimulus: PropTypes.string,
   options: PropTypes.array,
+  responses: PropTypes.array,
   templateMarkUp: PropTypes.string,
   question: PropTypes.object.isRequired,
-  hasGroupResponses: PropTypes.bool,
+  showDashedBorder: PropTypes.bool,
   configureOptions: PropTypes.object.isRequired,
   uiStyle: PropTypes.object,
+  backgroundColor: PropTypes.string,
+  imageUrl: PropTypes.string,
 };
 
 CorrectAnswers.defaultProps = {
   stimulus: '',
   options: [],
+  responses: [],
   validation: {},
-  hasGroupResponses: false,
+  showDashedBorder: false,
   templateMarkUp: '',
+  backgroundColor: '#fff',
+  imageUrl: '',
   uiStyle: {
     responsecontainerposition: 'bottom',
     fontsize: 'normal',

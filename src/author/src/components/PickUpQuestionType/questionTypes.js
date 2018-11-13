@@ -84,7 +84,10 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => (
           },
           alt_responses: [],
         },
-        hasGroupResponses: false
+        responses: [
+          { top: 100, left: 50, width: 100, height: 150 },
+          { top: 50, left: 200, width: 200, height: 100 },
+        ]
       }}
       onSelectQuestionType={onSelectQuestionType}
     />

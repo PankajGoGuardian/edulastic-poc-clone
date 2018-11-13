@@ -1,21 +1,20 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Draggable, Droppable } from 'react-drag-and-drop';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, flattenDeep } from 'lodash';
 import QuestionHeader from '../common/QuestionHeader';
-import ResponseContainer from './ResponseContainer';
 import ResponseBoxLayout from './ResponseBoxLayout';
 import CheckboxTemplateBoxLayout from './CheckboxResponseBoxLayout';
 import CorrectAnswerBoxLayout from './CorrectAnswerBoxLayout';
+import { Pointer, Point, Triangle } from '../common';
 
 /* eslint-disable */
-const defaultTemplateMarkup = '<p>Risus </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>';
+const defaultImageURL = 'https://assets.learnosity.com/demos/docs/colored_world_map.png';
 
 class ClozeDragDropDisplay extends Component {
   constructor(props) {
     super(props);
-    const { templateParts, respLength } = this.getTemplateParts(props);
-    let userAnswers = new Array(respLength).fill(false);
+    let userAnswers = new Array(props.responseContainers).fill(false);
     userAnswers = props.userSelections;
     props.userSelections.map((userSelection, index) => {
       userAnswers[index] = userSelection;
@@ -23,7 +22,6 @@ class ClozeDragDropDisplay extends Component {
     const possibleResponses = this.getInitialResponses(props.options);
 
     this.state = {
-      templateParts,
       userAnswers,
       possibleResponses
     };
@@ -33,24 +31,10 @@ class ClozeDragDropDisplay extends Component {
     const { options } = nextProps;
     if (this.state !== undefined) {
       const possibleResponses = this.getInitialResponses(options);
-      const { templateParts, respLength } = this.getTemplateParts(nextProps);
       this.setState({
         possibleResponses,
-        templateParts,
       });
     }
-  }
-
-  getTemplateParts = (props) => {
-    const { templateMarkUp } = props;
-    let templateMarkUpStr = templateMarkUp;
-    if (!templateMarkUpStr) {
-      templateMarkUpStr = defaultTemplateMarkup;
-    }
-    const templateParts = templateMarkUpStr.match(/<p.*?<\/p>/g);
-    const responseParts = templateMarkUpStr.match(/<p class="response-btn.*?<\/p>/g);
-    const respLength = responseParts !== null ? responseParts.length : 0;
-    return {templateParts, respLength}; 
   }
 
   onDrop = (data, index) => {
@@ -58,8 +42,6 @@ class ClozeDragDropDisplay extends Component {
     const { userAnswers: newAnswers, possibleResponses } = this.state;
     const {
       onChange: changeAnswers,
-      hasGroupResponses,
-      userSelections,
       configureOptions,
     } = this.props;
     const { duplicatedResponses: isDuplicated } = configureOptions;
@@ -67,40 +49,21 @@ class ClozeDragDropDisplay extends Component {
 
     // Remove duplicated responses if duplicated option is disable
     if (!isDuplicated) {
-      if (hasGroupResponses) {
-        const groupIndex = data.metal.split('_')[1];
-        const groupData = data.metal.split('_')[0];
-        const sourceIndex = data.metal.split('_')[2];
-        const fromResp = data.metal.split('_')[3];
-        if (fromResp) {
-          const temp = newAnswers[sourceIndex];
-          newAnswers[sourceIndex] = newAnswers[index];
-          newAnswers[index] = temp;
-        } else {
-          for (let i = 0; i < newResponses[groupIndex].options.length; i++) {
-            if (newResponses[groupIndex].options[i] === groupData) {
-              if (userSelections[index] !== null && typeof userSelections[index] === 'object') {
-                newResponses[userSelections[index].group].options.push(userSelections[index].data);
-              }
-              newResponses[groupIndex].options.splice(i, 1);
-              break;
-            }
-          }
-        }
-        newAnswers[index] = {
-          group: groupIndex,
-          data: groupData
-        };
-      } else {
         const sourceIndex = data.metal.split('_')[1];
         const sourceData = data.metal.split('_')[0];
         const fromResp = data.metal.split('_')[2];
         if (fromResp) {
-          const temp = newAnswers[sourceIndex];
-          newAnswers[sourceIndex] = newAnswers[index];
-          newAnswers[index] = temp;
+          if (newAnswers[index] === undefined) newAnswers[index] = [];
+          newAnswers[index].push(sourceData);
+          for (let i = 0; i < newAnswers[sourceIndex].length; i++) {
+            if (newAnswers[sourceIndex][i] === sourceData) {
+              newAnswers[sourceIndex].splice(i, 1);
+              break;
+            }
+          }
         } else {
-          newAnswers[index] = sourceData;
+          if (newAnswers[index] === undefined) newAnswers[index] = [];
+          newAnswers[index].push(sourceData);
           for (let i = 0; i < newResponses.length; i++) {
             if (newResponses[i] === sourceData) {
               newResponses.splice(i, 1);
@@ -108,33 +71,22 @@ class ClozeDragDropDisplay extends Component {
             }
           }
         }
-      }
     } else {
-      if (hasGroupResponses) {
-        const groupIndex = data.metal.split('_')[1];
-        const groupData = data.metal.split('_')[0];
-        const sourceIndex = data.metal.split('_')[2];
-        const fromResp = data.metal.split('_')[3];
-
-        if (fromResp) {
-          const temp = newAnswers[sourceIndex];
-          newAnswers[sourceIndex] = newAnswers[index];
-          newAnswers[index] = temp;
+      const value = data.metal.split('_')[0];
+      const sourceIndex = data.metal.split('_')[1];
+      const fromResp = data.metal.split('_')[2];
+      if (fromResp) {
+        if (newAnswers[index] === undefined) newAnswers[index] = [];
+        newAnswers[index].push(sourceData);
+        for (let i = 0; i < newAnswers[sourceIndex].length; i++) {
+          if (newAnswers[sourceIndex][i] === sourceData) {
+            newAnswers[sourceIndex].splice(i, 1);
+            break;
+          }
         }
-        newAnswers[index] = {
-          group: groupIndex,
-          data: groupData
-        };
       } else {
-        const value = data.metal.split('_')[0];
-        const sourceIndex = data.metal.split('_')[1];
-        const fromResp = data.metal.split('_')[2];
-        if (fromResp) {
-          const temp = newAnswers[sourceIndex];
-          newAnswers[sourceIndex] = newAnswers[index];
-          newAnswers[index] = temp;
-        }
-        newAnswers[index] = value;
+        if (newAnswers[index] === undefined) newAnswers[index] = [];
+        newAnswers[index].push(value);
       }
     }
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });
@@ -158,7 +110,6 @@ class ClozeDragDropDisplay extends Component {
 
   getInitialResponses = (options) => {
     const {
-      hasGroupResponses,
       configureOptions,
       userSelections: userSelectionsProp,
     } = this.props;
@@ -173,25 +124,13 @@ class ClozeDragDropDisplay extends Component {
 
     let possibleResps = [];
     possibleResps = cloneDeep(options);
+    userSelections = flattenDeep(userSelections);
     if (!isDuplicated) {
-      if (hasGroupResponses) {
-        userSelections.forEach((userSelection) => {
-          if (userSelection !== null && typeof userSelection === 'object') {
-            for (let i = 0; i < possibleResps[userSelection.group].options.length; i++) {
-              if (possibleResps[userSelection.group].options[i] === userSelection.data) {
-                possibleResps[userSelection.group].options.splice(i, 1);
-                break;
-              }
-            }
-          }
-        });
-      } else {
-        for (let j = 0; j < userSelections.length; j++) {
-          for (let i = 0; i < possibleResps.length; i++) {
-            if (possibleResps[i] === userSelections[j]) {
-              possibleResps.splice(i, 1);
-              break;
-            }
+      for (let j = 0; j < userSelections.length; j++) {
+        for (let i = 0; i < possibleResps.length; i++) {
+          if (possibleResps[i] === userSelections[j]) {
+            possibleResps.splice(i, 1);
+            break;
           }
         }
       }
@@ -218,32 +157,30 @@ class ClozeDragDropDisplay extends Component {
 
   render() {
     const {
-      userSelections,
       smallSize,
       question,
       configureOptions,
-      hasGroupResponses,
       preview,
       options,
       uiStyle,
       showAnswer,
       checkAnswer,
       validation,
-      evaluation
+      evaluation,
+      imageUrl,
+      responseContainers,
+      showDashedBorder,
+      backgroundColor
     } = this.props;
-    const { templateParts, userAnswers, possibleResponses } = this.state;
-    const { showDraghandle: dragHandler, shuffleOptions } = configureOptions;
-    let responseIndex = 0;
+    const { userAnswers, possibleResponses } = this.state;
+    const { showDraghandle: dragHandler, shuffleOptions, transparentResponses } = configureOptions;
     let responses = possibleResponses;
     if (checkAnswer) console.log('possible responses', responses, userAnswers)
     if (preview && shuffleOptions) {
-      if (hasGroupResponses) {
-        responses = this.shuffleGroup(possibleResponses);
-      } else {
-        responses = this.shuffle(possibleResponses);
-      }
+      responses = this.shuffle(possibleResponses);
     }
 
+    console.log('responseContainers:', responseContainers);
     // Layout Options
     const fontSize = this.getFontSize(uiStyle.fontsize);
     const { widthpx, heightpx, wordwrap, responsecontainerposition, responsecontainerindividuals, stemnumeration } = uiStyle;
@@ -254,83 +191,70 @@ class ClozeDragDropDisplay extends Component {
       whiteSpace: wordwrap ? 'inherit' : 'nowrap',
     }
     const previewTemplateBoxLayout = (
-      <div className="template_box" style={{ fontSize: smallSize ? 10 : fontSize, padding: smallSize ? 0 : 20 }}>
-          {templateParts.map((templatePart, index) => {
-            if (templatePart.indexOf('class="response-btn"') !== -1) {
-              const dropTargetIndex = responseIndex;
-              responseIndex++;
+      <div className="imagedragdrop_template_box" style={{ fontSize: smallSize ? 10 : fontSize, padding: smallSize ? 0 : 20 }}>
+      <div style={{ position: 'relative', top: 0, left: 0, width: smallSize ? '100%' : 700, margin: 'auto' }}>
+        <img src={imageUrl || defaultImageURL} width={'100%'} alt="resp-preview" style={{ userSelect: 'none', pointerEvents: 'none' }} />
+          {responseContainers.map((responseContainer, index) => {
+              const dropTargetIndex = index;
               let btnStyle = {
-                width: 0,
-                height: 0,
-                widthpx: 0,
-                heightpx: 0,
-                whiteSpace: undefined,
-                wordwrap: undefined,
+                widthpx: responseContainer.width,
+                width: responseContainer.width,
+                top: responseContainer.top,
+                left: responseContainer.left,
+                height: responseContainer.height,
+                border: showDashedBorder ? 'dashed 2px rgba(0, 0, 0, 0.65)' : 'solid 1px lightgray',
+                position: 'absolute',
+                background: backgroundColor,
+                borderRadius: 5,
               }
               if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-                const { widthpx, heightpx, wordwrap } = responsecontainerindividuals[dropTargetIndex];
+                const { widthpx } = responsecontainerindividuals[dropTargetIndex];
                 btnStyle.width = widthpx;
-                btnStyle.height = heightpx;
-                btnStyle.whiteSpace = wordwrap;
                 btnStyle.widthpx = widthpx;
-                btnStyle.heightpx = heightpx;
-                btnStyle.wordwrap = wordwrap;
               }
               if (btnStyle && btnStyle.width === 0) {
                 btnStyle['width'] = responseBtnStyle.widthpx;
               } else {
                 btnStyle.width = btnStyle.widthpx;
               }
-              if (btnStyle && btnStyle.height === 0) {
-                btnStyle['height'] = responseBtnStyle.heightpx;
-              } else {
-                btnStyle['height'] = btnStyle.heightpx;
-              }
-              if (btnStyle && btnStyle.whiteSpace === undefined) {
-                btnStyle['whiteSpace'] = responseBtnStyle.whiteSpace;
-              } else {
-                btnStyle['whiteSpace'] = btnStyle.wordwrap;
-              }
+              console.log('userAnswers[dropTargetIndex]:', userAnswers[dropTargetIndex]);
               return (
                 <Droppable
                   key={index}
                   types={['metal']} // <= allowed drop types
-                  style={{ top: 0 }}
+                  style={btnStyle}
+                  className={'imagelabeldragdrop-droppable active'}
                   onDrop={data => this.onDrop(data, dropTargetIndex)}
                 >
-                  {!hasGroupResponses && (
-                    <ResponseContainer style={btnStyle} smallSize={smallSize}>
-                      <Draggable className="content" type="metal" data={`${userAnswers[dropTargetIndex]}_${dropTargetIndex}_fromResp`}>
-                        {userAnswers[dropTargetIndex]}
-                      </Draggable>&nbsp;
-                    </ResponseContainer>
-                  )}
-                  {hasGroupResponses && (
-                    <ResponseContainer style={btnStyle} smallSize={smallSize}>
-                      <Draggable className="content" type="metal" data={`${userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].data}_${userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}>
-                      {
-                        (userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].data)
-                      }
-                      </Draggable>&nbsp;
-                    </ResponseContainer>
-                  )}
+                  <span className="index-box">{dropTargetIndex + 1}</span>
+                  <div className="container">
+                  {userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].map(answer => (
+                    <Draggable
+                      type="metal"
+                      data={`${answer}_${dropTargetIndex}_fromResp`}
+                      style={{ border: 'solid 1px lightgray', margin: 5, padding: 5, display: 'inline-block' }}
+                    >
+                      {answer}
+                    </Draggable>
+                  ))}
+                  </div>
+                  <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+                    <Point />
+                    <Triangle />
+                  </Pointer>
                 </Droppable>
               );
-            }
-            return (
-              <span style={{ userSelect: 'none' }} key={index} dangerouslySetInnerHTML={{ __html: templatePart }}></span>
-            );
           })}
+          </div>
         </div>
     )
 
     const checkboxTemplateBoxLayout = (
       <CheckboxTemplateBoxLayout
-        templateParts={templateParts}
+        responseContainers={responseContainers}
         responsecontainerindividuals={responsecontainerindividuals}
         responseBtnStyle={responseBtnStyle}
         stemNumeration={stemnumeration}
-        hasGroupResponses={hasGroupResponses}
         fontSize={fontSize}
         showAnswer={showAnswer}
         userSelections={userAnswers}
@@ -342,21 +266,20 @@ class ClozeDragDropDisplay extends Component {
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
         smallSize={smallSize}
-        hasGroupResponses={hasGroupResponses}
         responses={responses}
         fontSize={fontSize}
         dragHandler={dragHandler}
+        transparentResponses={transparentResponses}
       />
     )
     const correctAnswerBoxLayout = showAnswer ? (
       <CorrectAnswerBoxLayout
-        hasGroupResponses={hasGroupResponses}
         fontSize={fontSize}
         groupResponses={options}
         userAnswers={validation.valid_response && validation.valid_response.value}
       />
     ) : (<div/>);
-    const responseBoxLayout = showAnswer ? (<div/>) : previewResponseBoxLayout;
+    const responseBoxLayout = showAnswer || smallSize ? (<div/>) : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : (<div/>);
     return (
       <div style={{ fontSize: fontSize }}>
@@ -414,16 +337,18 @@ ClozeDragDropDisplay.propTypes = {
   onChange: PropTypes.func,
   preview: PropTypes.bool,
   showAnswer: PropTypes.bool,
+  responseContainers: PropTypes.array,
   userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool,
-  templateMarkUp: PropTypes.string,
+  showDashedBorder: PropTypes.bool,
   question: PropTypes.string.isRequired,
-  hasGroupResponses: PropTypes.bool,
   configureOptions: PropTypes.object,
   validation: PropTypes.object,
   evaluation: PropTypes.array,
+  backgroundColor: PropTypes.string.isRequired,
   uiStyle: PropTypes.object.isRequired,
+  imageUrl: PropTypes.string,
 };
 
 ClozeDragDropDisplay.defaultProps = {
@@ -434,14 +359,17 @@ ClozeDragDropDisplay.defaultProps = {
   evaluation: [],
   checkAnswer: false,
   userSelections: [],
-  templateMarkUp: defaultTemplateMarkup,
+  responseContainers: [],
+  showDashedBorder: false,
   smallSize: false,
-  hasGroupResponses: false,
+  backgroundColor: '#fff',
   validation: {},
+  imageUrl: undefined,
   configureOptions: {
     showDraghandle: false,
     duplicatedResponses: false,
     shuffleOptions: false,
+    transparentResponses: false,
   },
   uiStyle: {
     responsecontainerposition: 'bottom',

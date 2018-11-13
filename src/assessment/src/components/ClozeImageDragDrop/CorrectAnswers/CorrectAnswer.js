@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withNamespaces } from '@edulastic/localization';
 
 import { Header, PointField } from './styled_components';
-import ClozeDragDropDisplay from '../Display';
+import ClozeImageDragDropDisplay from '../Display';
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -13,10 +13,12 @@ class CorrectAnswer extends Component {
     t: PropTypes.func.isRequired,
     stimulus: PropTypes.string.isRequired,
     options: PropTypes.array.isRequired,
-    hasGroupResponses: PropTypes.bool.isRequired,
-    templateMarkUp: PropTypes.string.isRequired,
     configureOptions: PropTypes.object.isRequired,
     uiStyle: PropTypes.object.isRequired,
+    imageUrl: PropTypes.string.isRequired,
+    responses: PropTypes.array.isRequired,
+    showDashedBorder: PropTypes.bool.isRequired,
+    backgroundColor: PropTypes.string.isRequired,
   };
 
   constructor(props) {
@@ -44,7 +46,7 @@ class CorrectAnswer extends Component {
 
   render() {
     /* eslint-disable max-len */
-    const { t, options, stimulus, response, templateMarkUp, hasGroupResponses, configureOptions, uiStyle } = this.props;
+    const { t, options, stimulus, response, imageUrl, responses, configureOptions, uiStyle, showDashedBorder, backgroundColor } = this.props;
     const { responseScore } = this.state;
     return (
       <div>
@@ -60,18 +62,20 @@ class CorrectAnswer extends Component {
           />
           <span>{t('component.correctanswers.points')}</span>
         </Header>
-        <ClozeDragDropDisplay
+        <ClozeImageDragDropDisplay
           preview
           setAnswers
           dragHandler
           options={options}
           uiStyle={uiStyle}
           question={stimulus}
-          templateMarkUp={templateMarkUp}
+          showDashedBorder={showDashedBorder}
+          responseContainers={responses}
+          imageUrl={imageUrl}
+          backgroundColor={backgroundColor}
           userSelections={response.value}
           configureOptions={configureOptions}
           onChange={this.handleMultiSelect}
-          hasGroupResponses={hasGroupResponses}
         />
       </div>
     );

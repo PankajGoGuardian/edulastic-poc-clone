@@ -3,7 +3,7 @@ import styled from 'styled-components';
 const AddNewChoiceBtn = styled.a`
   width: 227px;
   height: 40px;
-  border-radius: 65px;
+  border-radius: 4px;
   border: solid 1px #12a6e8;
   display: flex;
   align-items: center;

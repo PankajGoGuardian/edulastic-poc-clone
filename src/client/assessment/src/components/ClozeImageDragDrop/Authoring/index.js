@@ -328,7 +328,7 @@ class clozeImageDragDropAuthoring extends Component {
             />
             <div>
               <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn()}>
-                {t('component.clozeImageDragDrop.add')}
+                {t('component.clozeImageDragDrop.addnewchoice')}
               </AddNewChoiceBtn>
             </div>
           </PaddingDiv>

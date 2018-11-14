@@ -1,5 +1,6 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
   entry: './src/client/index.js',
@@ -15,6 +16,7 @@ module.exports = {
         to: 'public',
       },
     ], { debug: 'error' }),
+    new BundleAnalyzerPlugin()
   ],
   module: {
     rules: [

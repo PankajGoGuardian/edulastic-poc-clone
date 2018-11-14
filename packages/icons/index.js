@@ -53,4 +53,3 @@ export { default as IconNewList } from './src/IconNewList';
 export { default as IconUpload } from './src/IconUpload';
 export { default as IconPin } from './src/IconPin';
 export { default as IconDrawResize } from './src/IconDrawResize';
-

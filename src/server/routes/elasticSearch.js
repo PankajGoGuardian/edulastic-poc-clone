@@ -22,12 +22,12 @@ router.post('/fields', async (req, res) => {
     const { data: searchResult } = await axios({
       method: 'POST',
       url: config.elasticSearch.uri,
-      data,
+      data
     });
 
     return successHandler(res, searchResult);
   } catch (e) {
-    console.log('error: ', e);
+    req.log.error(e);
     res.boom.badRequest(e);
   }
 });

@@ -5,6 +5,7 @@ import express from 'express';
 import boom from 'express-boom';
 import handlebars from 'handlebars';
 import bodyParser from 'body-parser';
+import pino from 'express-pino-logger';
 import proxy from 'http-proxy-middleware';
 import swaggerUi from 'swagger-ui-express';
 import config from './config';
@@ -26,9 +27,9 @@ const {
 
 app.use(boom());
 app.use(cors());
+app.use(pino());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 /** ************************
  *        routes          *
  ************************* */

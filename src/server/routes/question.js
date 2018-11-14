@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
     const output = postOutputFormatter(result);
     return successHandler(res, output);
   } catch (e) {
-    console.log('error:', e);
+    req.log.error(e);
     res.boom.badRequest(e);
   }
 });
@@ -69,7 +69,7 @@ router.get('/', async (req, res) => {
     const result = await question.get(limit, index);
     return successHandler(res, result);
   } catch (e) {
-    console.log('error:', e);
+    req.log.error(e);
     res.boom.badRequest(e);
   }
 });
@@ -103,7 +103,7 @@ router.get('/:id', async (req, res) => {
     const output = postOutputFormatter(result);
     successHandler(res, output);
   } catch (e) {
-    console.log('error: ', e);
+    req.log.error(e);
     res.boom.badRequest(e);
   }
 });
@@ -142,7 +142,7 @@ router.put('/:id', async (req, res) => {
     const output = postOutputFormatter(result);
     return successHandler(res, output);
   } catch (e) {
-    console.log('error: ', e);
+    req.log.error(e);
     res.boom.badRequest(e);
   }
 });
@@ -174,7 +174,7 @@ router.delete('/:id', async (req, res) => {
     await question.delete(id);
     return successHandler(res, 'successfully removed entry');
   } catch (e) {
-    console.log('error: ', e);
+    req.log.error(e);
     res.boom.badRequest(e);
   }
 });

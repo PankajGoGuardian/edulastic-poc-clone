@@ -2,7 +2,7 @@ import joi from 'joi';
 import express from 'express';
 import { elasticSearchQuerySchema } from '../validators/elasticSearchQuery';
 import { successHandler } from '../utils/responseHandler';
-import axios from '../config/axiosInstance';
+import axios from '../utils/axiosInstance';
 import config from '../config';
 import { createSearchByFieldsRequest } from '../utils/elasticSearchHelpers';
 

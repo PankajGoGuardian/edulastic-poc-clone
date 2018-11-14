@@ -45,6 +45,10 @@ const config = {
   elasticSearch: {
     uri: process.env.ELASTIC_SEARCH_URI || 'http://localhost:9200/bp_auth_otp/_search',
   },
+  s3: {
+    keyId: process.env.AWS_KEY_ID,
+    key: process.env.AWS_KEY,
+  }
 };
 
 export default config;

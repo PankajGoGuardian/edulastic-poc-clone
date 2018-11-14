@@ -7,6 +7,26 @@ import { hashPassword, comparePassword } from '../utils/passwordHash';
 import { successHandler } from '../utils/responseHandler';
 
 const router = express.Router();
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     tags:
+ *       - user
+ *     summary: Login a user with email and password
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: email, password
+ *          in: body
+ *          required: true
+ *          example:
+ *            email: juli@gmail.com
+ *            password: julijaiswal
+ *     responses:
+ *       200:
+ *         description: sucessfull
+ */
 
 // login api
 router.post('/login', async (req, res) => {
@@ -36,6 +56,26 @@ router.post('/login', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /auth/signup:
+ *   post:
+ *     tags:
+ *       - user
+ *     summary: Signup a user with email and password
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: email, password
+ *          in: body
+ *          required: true
+ *          example:
+ *            email: juli@gmail.com
+ *            password: julijaiswal
+ *     responses:
+ *       200:
+ *         description: sucessfull
+ */
 // create user api
 router.post('/signup', async (req, res) => {
   try {

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { Menu } from 'antd';
 import { PaddingDiv } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
 
@@ -55,10 +56,26 @@ class PickUpQuestionType extends Component {
 
     return (
       <Container>
-        <Header title={t('component.pickupcomponent.headertitle')} link={this.link} />
-        <PaddingDiv left={30} right={30}>
-          <QuestionTypes onSelectQuestionType={this.selectQuestionType} />
-        </PaddingDiv>
+        <LeftSide>
+          <Menu mode="inline">
+            <Menu.Item>Multiple Choice</Menu.Item>
+            <Menu.Item>Fill in the Blanks</Menu.Item>
+            <Menu.Item>Classify, Math & Order</Menu.Item>
+            <Menu.Item>Written & Spoken</Menu.Item>
+            <Menu.Item>Highlight</Menu.Item>
+            <Menu.Item>Math</Menu.Item>
+            <Menu.Item>Graphing</Menu.Item>
+            <Menu.Item>Charts</Menu.Item>
+            <Menu.Item>Chemistry</Menu.Item>
+            <Menu.Item>Other</Menu.Item>
+          </Menu>
+        </LeftSide>
+        <RightSide>
+          <Header title={t('component.pickupcomponent.headertitle')} link={this.link} />
+          <PaddingDiv left={30} right={30}>
+            <QuestionTypes onSelectQuestionType={this.selectQuestionType} />
+          </PaddingDiv>
+        </RightSide>
       </Container>
     );
   }
@@ -86,4 +103,33 @@ PickUpQuestionType.propTypes = {
 export default enhance(PickUpQuestionType);
 
 const Container = styled.div`
+  display: flex;
 `;
+
+const LeftSide = styled.div`
+  height: 100vh;
+  background-color: #fbfafc;
+
+  .ant-menu-item:after {
+    left: 0;
+    right: auto;
+    border-right: 3px solid #4aac8b;
+  }
+
+  .ant-menu-item {
+    font-size: 14px;
+    font-weight: 600;
+    color: #434b5d;
+  }
+
+  .ant-menu-item-selected {
+    color: #4aac8b;
+    background: transparent !important;
+  }
+
+  .ant-menu-inline .ant-menu-item:not(:last-child) {
+    margin-bottom: 18px;p
+  }
+
+`;
+const RightSide = styled.div``;

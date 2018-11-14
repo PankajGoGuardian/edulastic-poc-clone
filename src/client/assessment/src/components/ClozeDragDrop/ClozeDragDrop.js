@@ -20,12 +20,6 @@ import Options from './Options';
 const EmptyWrapper = styled.div``;
 
 class ClozeDragDrop extends Component {
-  state = {
-    duplicatedResponses: false,
-    shuffleOptions: false,
-    showDraghandle: false,
-  }
-
   getRenderData = () => {
     const { item, history } = this.props;
     const locationState = history.location.state;
@@ -72,25 +66,11 @@ class ClozeDragDrop extends Component {
   };
 
   handleOptionsChange = (name, value) => {
+    console.log('option changed', name, value);
     const { setQuestionData, item } = this.props;
     const newItem = cloneDeep(item);
     newItem[name] = value;
     setQuestionData(newItem);
-    switch (name) {
-      case 'duplicated_responses': {
-        this.setState({ duplicatedResponses: value });
-        break;
-      }
-      case 'shuffle_options': {
-        this.setState({ shuffleOptions: value });
-        break;
-      }
-      case 'show_draghandle': {
-        this.setState({ showDraghandle: value });
-        break;
-      }
-      default:
-    }
   };
 
   handleAddAnswer = (userAnswer) => {
@@ -102,7 +82,7 @@ class ClozeDragDrop extends Component {
   render() {
     const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
-    const { duplicatedResponses, showDraghandle, shuffleOptions } = this.state;
+    const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
     return (
@@ -136,9 +116,10 @@ class ClozeDragDrop extends Component {
                 <CorrectAnswerOptions>
                   <Checkbox
                     className="additional-options"
+                    key={`duplicatedResponses_${duplicatedResponses}`}
                     onChange={() =>
                       this.handleOptionsChange(
-                        'duplicated_responses',
+                        'duplicatedResponses',
                         !duplicatedResponses,
                       )
                   }
@@ -147,9 +128,10 @@ class ClozeDragDrop extends Component {
                   />
                   <Checkbox
                     className="additional-options"
+                    key={`showDraghandle_${showDraghandle}`}
                     onChange={() =>
                       this.handleOptionsChange(
-                        'show_draghandle',
+                        'showDraghandle',
                         !showDraghandle,
                       )
                   }
@@ -158,9 +140,10 @@ class ClozeDragDrop extends Component {
                   />
                   <Checkbox
                     className="additional-options"
+                    key={`shuffleOptions_${shuffleOptions}`}
                     onChange={() =>
                       this.handleOptionsChange(
-                        'shuffle_options',
+                        'shuffleOptions',
                         !shuffleOptions,
                       )
                   }

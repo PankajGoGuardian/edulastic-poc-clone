@@ -134,6 +134,7 @@ class ClozeImageDragDrop extends Component {
                     transparentResponses,
                   }}
                   options={previewDisplayOptions}
+                  imageAlterText={item.imageAlterText}
                   responses={item.responses}
                   imageUrl={item.imageUrl}
                   question={previewStimulus}

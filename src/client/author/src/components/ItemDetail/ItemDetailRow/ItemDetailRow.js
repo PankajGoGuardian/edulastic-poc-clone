@@ -107,4 +107,5 @@ const Container = styled.div`
   overflow: auto;
   padding-left: 40px;
   padding-top: 20px;
+  height: 100%;
 `;

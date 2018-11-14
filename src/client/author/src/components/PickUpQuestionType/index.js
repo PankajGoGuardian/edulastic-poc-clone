@@ -108,7 +108,7 @@ class PickUpQuestionType extends Component {
         </LeftSide>
         <RightSide>
           <Header title={t('component.pickupcomponent.headertitle')} link={this.link} />
-          <PaddingDiv left={30} right={30}>
+          <PaddingDiv left={30} right={30} style={{ position: 'absolute', left: 0, right: 0, overflow: 'auto', height: 'calc(100% - 140px)' }}>
             <QuestionTypes onSelectQuestionType={this.selectQuestionType} />
           </PaddingDiv>
         </RightSide>
@@ -198,7 +198,10 @@ const LeftSide = styled.div`
   }
 
 `;
-const RightSide = styled.div``;
+const RightSide = styled.div`
+  position: relative;
+  width: 100%;
+`;
 
 const NewListIcon = styled(IconNewList)`
   fill: #434b5d;

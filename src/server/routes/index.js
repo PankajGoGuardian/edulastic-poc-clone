@@ -1,11 +1,13 @@
 import express from 'express';
 import authApi from './auth';
 import userApi from './user';
+import elasticSearchApi from './elasticSearch';
 
 const router = express.Router();
 
 router.use('/user', userApi);
 router.use('/auth', authApi);
+router.use('/search', elasticSearchApi);
 
 /**
  * @swagger

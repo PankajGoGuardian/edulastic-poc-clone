@@ -29,6 +29,7 @@ const {
 app.use(cors());
 app.use(bodyParser.json());
 app.use(boom());
+
 /** ************************
  *        routes          *
  ************************* */

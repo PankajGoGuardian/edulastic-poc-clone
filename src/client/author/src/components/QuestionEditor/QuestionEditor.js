@@ -22,6 +22,8 @@ import {
 const headerTitles = {
   multipleChoice: 'MultipleChoice',
   orderList: 'Order List',
+  clozeDragDrop: 'Cloze Drag & Drop',
+  clozeImageDragDrop: 'Label Image with Drag & Drop',
 };
 
 class QuestionEditor extends Component {

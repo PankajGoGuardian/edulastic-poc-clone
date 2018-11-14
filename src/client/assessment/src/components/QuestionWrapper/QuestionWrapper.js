@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { OrderList } from '../OrderList';
 import { MultipleChoice } from '../MultipleChoice';
+import { ClozeDragDrop } from '../ClozeDragDrop';
+import { ClozeImageDragDrop } from '../ClozeImageDragDrop';
 import withAnswerSave from '../HOC/withAnswerSave';
 
 const QuestionWrapper = ({ type, data, ...restProps }) => {
@@ -11,7 +13,27 @@ const QuestionWrapper = ({ type, data, ...restProps }) => {
     },
     restProps,
   );
-  const Question = type === 'multipleChoice' ? MultipleChoice : OrderList;
+
+  let Question;
+  switch (type) {
+    case 'multipleChoice': {
+      Question = MultipleChoice;
+      break;
+    }
+    case 'orderList': {
+      Question = OrderList;
+      break;
+    }
+    case 'clozeDragDrop': {
+      Question = ClozeDragDrop;
+      break;
+    }
+    case 'clozeImageDragDrop': {
+      Question = ClozeImageDragDrop;
+      break;
+    }
+    default:
+  }
   return <Question {...questionProps} />;
 };
 

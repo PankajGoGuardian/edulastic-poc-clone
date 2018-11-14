@@ -16,7 +16,7 @@ const TestPage = lazy(() => import('./components/TestPage'));
 const Author = ({ match }) => (
   <Layout>
     <Sidebar />
-    <div style={{ width: '100%', position: 'relative' }}>
+    <div style={{ width: '100%', position: 'relative', overflow: 'auto', height: '100vh' }}>
       <Switch>
         <Route exact path={`${match.url}/items`} component={ItemList} />
         <Route exact path={`${match.url}/items/:id/item-detail`} component={ItemDetail} />

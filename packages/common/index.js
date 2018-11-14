@@ -12,6 +12,7 @@ export { default as Tabs } from './src/components/Tabs';
 export { default as Card } from './src/components/Card';
 export { default as MoveLink } from './src/components/MoveLink';
 export { default as ContentWrapper } from './src/components/ContentWrapper';
+export { default as CustomQuillComponent } from './src/components/CustomQuillComponent';
 
 // HOC
 export { default as withWindowSizes } from './src/HOC/withWindowSizes';

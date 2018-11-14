@@ -50,3 +50,7 @@ export { default as IconEdit } from './src/IconEdit';
 export { default as IconLayout } from './src/IconLayout';
 export { default as IconLineChart } from './src/IconLineChart';
 export { default as IconNewList } from './src/IconNewList';
+export { default as IconUpload } from './src/IconUpload';
+export { default as IconPin } from './src/IconPin';
+export { default as IconDrawResize } from './src/IconDrawResize';
+

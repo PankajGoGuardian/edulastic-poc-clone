@@ -13,10 +13,12 @@ class Options extends Component {
   static propTypes = {
     title: PropTypes.string,
     children: PropTypes.any.isRequired,
+    outerStyle: PropTypes.object
   };
 
   static defaultProps = {
     title: i18n.t('assessment:common.options.title'),
+    outerStyle: {},
   };
 
   static Heading = Heading;
@@ -36,13 +38,13 @@ class Options extends Component {
   };
 
   render() {
-    const { title, children } = this.props;
+    const { title, children, outerStyle } = this.props;
     const { show } = this.state;
 
     return (
-      <Paper>
+      <Paper style={outerStyle}>
         <Header onClick={this.handleToggle}>
-          <span>{title}</span>
+          <span style={{ fontWeight: 600 }}>{title}</span>
           <Toggler />
         </Header>
         {show && <div>{children}</div>}

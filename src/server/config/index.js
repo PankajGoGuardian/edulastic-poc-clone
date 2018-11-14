@@ -36,10 +36,19 @@ const config = {
     uri: process.env.DB_URI || 'mongodb://localhost/edulastic-poc',
     options: {},
   },
+
   jwt: {
     secret: process.env.JWT_SECRET || 'flyingPinkPikachu',
     expiresIn: process.env.JWT_EXPIRY || '30d',
   },
+
+  elasticSearch: {
+    uri: process.env.ELASTIC_SEARCH_URI || 'http://localhost:9200/bp_auth_otp/_search',
+  },
+  s3: {
+    keyId: process.env.AWS_KEY_ID,
+    key: process.env.AWS_KEY,
+  }
 };
 
 export default config;

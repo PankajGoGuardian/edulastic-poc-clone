@@ -219,7 +219,6 @@ class ClozeDragDropDisplay extends Component {
               } else {
                 btnStyle.width = btnStyle.widthpx;
               }
-              console.log('userAnswers[dropTargetIndex]:', userAnswers[dropTargetIndex]);
               return (
                 <Droppable
                   key={index}
@@ -289,20 +288,20 @@ class ClozeDragDropDisplay extends Component {
         <div>
           {responsecontainerposition === 'top' && (
             <React.Fragment>
-              <div style={{ margin: 15, borderRadius: 10 }}>
+              <div style={{ margin: '15px 0', borderRadius: 10 }}>
                 {responseBoxLayout}
               </div>
-              <div style={{ margin: 15, borderRadius: 10 }}>
+              <div style={{ margin: '15px 0', borderRadius: 10 }}>
                 {templateBoxLayout}
               </div>
             </React.Fragment>
           )}
           {responsecontainerposition === 'bottom' && (
             <React.Fragment>
-              <div style={{ margin: 15, borderRadius: 10 }}>
+              <div style={{ margin: '15px 0', borderRadius: 10 }}>
                 {templateBoxLayout}
               </div>
-              <div style={{ margin: 15, borderRadius: 10 }}>
+              <div style={{ margin: '15px 0', borderRadius: 10 }}>
                 {responseBoxLayout}
               </div>
             </React.Fragment>
@@ -312,14 +311,14 @@ class ClozeDragDropDisplay extends Component {
               <div hidden={checkAnswer || showAnswer} style={{ height: '100%', width: '30%', margin: 15, borderRadius: 10, background: 'lightgray', display: 'flex', justifyContent: 'center' }}>
                 {responseBoxLayout}
               </div>
-              <div style={{ margin: 15, borderRadius: 10, flex: 1 }}>
+              <div style={{ margin: '15px 0 15px 15px', borderRadius: 10, flex: 1 }}>
                 {templateBoxLayout}
               </div>
             </div>
           )}
           {responsecontainerposition === 'right' && (
             <div style={{ display: 'flex', width: '80vw' }}>
-              <div style={{ flex: 1, margin: 15, borderRadius: 10 }}>
+              <div style={{ flex: 1, margin: '15px 15px 15px 0', borderRadius: 10 }}>
                 {templateBoxLayout}
               </div>
               <div hidden={checkAnswer || showAnswer} style={{ height: '100%', width: '30%', margin: 15, borderRadius: 10, background: 'lightgray', display: 'flex', justifyContent: 'center' }}>

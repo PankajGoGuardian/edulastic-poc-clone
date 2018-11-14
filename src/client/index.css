@@ -491,7 +491,7 @@ input[type="checkbox"] {
 }
 
 .responses_box {
-  background: lightgray;
+  background: #efefef;
   display: flex;
   align-items: center;
   justify-content: flex-start;

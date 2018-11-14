@@ -182,7 +182,7 @@ class clozeImageDragDropAuthoring extends Component {
             value={item.stimulus}
           />
           <PaddingDiv top={30} />
-          <FlexContainer style={{ background: '#e6e6e6', height: 70, fontSize: 13 }}>
+          <FlexContainer style={{ background: '#efefefc2', height: 70, fontSize: 13 }}>
             <div style={{ alignItems: 'center' }}>
               <InputNumber defaultValue={imageWidth || 600} onChange={val => this.onItemPropChange('imageWidth', val)} />
               <PaddingDiv left={20}>

@@ -458,16 +458,18 @@ input[type="checkbox"] {
 .draggable_box {
   background: white;
   display: inline-flex;
-  padding: 3px 8px;
+  padding: 8px 20px;
   align-items: center;
-  margin: 3px 5px;
+  margin: 3px 8px;
+  border-radius: 5px;
 }
 
 .draggable_box_transparent {
   display: inline-flex;
-  padding: 3px 8px;
+  padding: 8px 20px;
   align-items: center;
-  margin: 3px 5px;
+  margin: 3px 8px;
+  border-radius: 5px;
 }
 
 .draggable_box div {
@@ -492,7 +494,7 @@ input[type="checkbox"] {
   background: lightgray;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding-right: 50px !important;
   padding-left: 50px !important;
   flex-flow: row wrap;
@@ -600,8 +602,8 @@ input[type="checkbox"] {
   margin-bottom: 1em;
 }
 
-.additional-options .label {
-  margin-left: 20px;
+.additional-options {
+  margin-right: 30px;
 }
 
 .authoring .template_box {

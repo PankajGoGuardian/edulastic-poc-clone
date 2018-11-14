@@ -16,11 +16,13 @@ Checkbox.propTypes = {
   checked: PropTypes.bool,
   label: PropTypes.string,
   style: PropTypes.object,
+  className: PropTypes.string,
 };
 
 Checkbox.defaultProps = {
   style: {},
   label: '',
+  className: '',
   checked: false,
 };
 

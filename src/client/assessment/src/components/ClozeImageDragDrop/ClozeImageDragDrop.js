@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-import { PaddingDiv, Checkbox, Paper } from '@edulastic/common';
+import { PaddingDiv, Paper } from '@edulastic/common';
 import { cloneDeep } from 'lodash';
 import styled from 'styled-components';
 import { withNamespaces } from '@edulastic/localization';
+import { Checkbox } from 'antd';
 
 import {
   ClozeImageDragDropAuthoring,
@@ -152,10 +153,11 @@ class ClozeImageDragDrop extends Component {
                         'duplicated_responses',
                         !duplicatedResponses,
                       )
-                  }
-                    label={t('component.clozeImageDragDrop.duplicatedresponses')}
-                    checked={duplicatedResponses}
-                  />
+                    }
+                    defaultChecked={duplicatedResponses}
+                  >
+                    {t('component.clozeImageDragDrop.duplicatedresponses')}
+                  </Checkbox>
                   <Checkbox
                     className="additional-options"
                     onChange={() =>
@@ -163,10 +165,11 @@ class ClozeImageDragDrop extends Component {
                         'show_draghandle',
                         !showDraghandle,
                       )
-                  }
-                    label={t('component.clozeImageDragDrop.showdraghandle')}
-                    checked={showDraghandle}
-                  />
+                    }
+                    defaultChecked={showDraghandle}
+                  >
+                    {t('component.clozeImageDragDrop.showdraghandle')}
+                  </Checkbox>
                   <Checkbox
                     className="additional-options"
                     onChange={() =>
@@ -174,10 +177,11 @@ class ClozeImageDragDrop extends Component {
                         'shuffle_options',
                         !shuffleOptions,
                       )
-                  }
-                    label={t('component.clozeImageDragDrop.shuffleoptions')}
-                    checked={shuffleOptions}
-                  />
+                    }
+                    defaultChecked={shuffleOptions}
+                  >
+                    {t('component.clozeImageDragDrop.shuffleoptions')}
+                  </Checkbox>
                   <Checkbox
                     className="additional-options"
                     onChange={() =>
@@ -186,9 +190,10 @@ class ClozeImageDragDrop extends Component {
                         !transparentResponses,
                       )
                     }
-                    label={t('component.clozeImageDragDrop.transparentpossibleresponses')}
-                    checked={transparentResponses}
-                  />
+                    defaultChecked={transparentResponses}
+                  >
+                    {t('component.clozeImageDragDrop.transparentpossibleresponses')}
+                  </Checkbox>
                 </CorrectAnswerOptions>
               </div>
             </PaddingDiv>

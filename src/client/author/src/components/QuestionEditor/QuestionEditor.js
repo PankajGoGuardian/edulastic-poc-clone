@@ -85,7 +85,7 @@ class QuestionEditor extends Component {
   };
 
   render() {
-    const { view, question, history, match } = this.props;
+    const { view, question, match } = this.props;
     const { previewTab } = this.state;
     const itemId = question === null ? '' : question.id;
     const questionType = this.getQuestionType();
@@ -100,10 +100,6 @@ class QuestionEditor extends Component {
         )}
         <ItemHeader
           title={headerTitles[questionType]}
-          link={{
-            url: history.location.state.backUrl,
-            text: history.location.state.backText,
-          }}
           reference={itemId}
         >
           <ButtonBar

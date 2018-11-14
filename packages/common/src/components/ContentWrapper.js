@@ -4,7 +4,7 @@ const ContentWrapper = styled.div`
   width: 100%;
   position: absolute;
   height: 100%;
-  overflow: auto;
+  overflow: inherit;
   left: 0;
   right: 0;
 `;

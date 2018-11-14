@@ -50,7 +50,7 @@ router.post('/login', async (req, res) => {
     const token = generateAuthToken({ _id: result._id });
     return successHandler(res, { token });
   } catch (e) {
-    console.log('error: ', e);
+    req.log.error(e);
     res.boom.badRequest(e);
   }
 });
@@ -92,7 +92,7 @@ router.post('/signup', async (req, res) => {
     await user.create(data);
     return successHandler(res, 'account sucesssfully created');
   } catch (e) {
-    console.log('error: ', e);
+    req.log.error(e);
     res.boom.badRequest(res, e);
   }
 });

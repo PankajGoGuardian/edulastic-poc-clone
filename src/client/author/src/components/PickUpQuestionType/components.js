@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const RoundDiv = styled.div`
   width: 400px;
-  margin: 10px;
+  margin: 0px 27px 27px 0px;
   background-color: #ffffff;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   border-radius: ${props => props.borderRadius}px;
@@ -16,7 +16,7 @@ export const Header = styled.div`
   padding: 0 40px;
   color: white;
   font-size: 16px;
-  letter-spacing: 1px;
+  font-weight: bold;
   border-top-left-radius: ${props => props.borderRadius}px;
   border-top-right-radius: ${props => props.borderRadius}px;
 `;

@@ -87,8 +87,11 @@ class SideMenu extends Component {
 
   render() {
     const { collapsed, broken } = this.state;
-    const { windowWidth } = this.props;
-    const isCollapsed = (windowWidth > 1200 || windowWidth <= 480 || windowWidth === 646) ? collapsed : true;
+    const { windowWidth, history } = this.props;
+    let isCollapsed = (windowWidth > 1200 || windowWidth <= 480 || windowWidth === 646) ? collapsed : true;
+    if (history.location.pathname.includes('pickup-questiontype')) {
+      isCollapsed = true;
+    }
     return (
       <SideBar
         collapsed={isCollapsed}

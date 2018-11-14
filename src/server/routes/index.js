@@ -1,9 +1,12 @@
 import express from 'express';
+import authApi from './auth';
 import userApi from './user';
 
 const router = express.Router();
 
 router.use('/user', userApi);
+router.use('/auth', authApi);
+
 /**
  * @swagger
  * /hello:

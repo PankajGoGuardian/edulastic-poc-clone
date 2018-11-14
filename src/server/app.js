@@ -11,6 +11,7 @@ import swaggerUi from 'swagger-ui-express';
 import config from './config';
 import router from './routes';
 import swaggerSpec from './services/swagger';
+import authMiddleware from './middelwares/authMiddleware';
 import initDbConnection from './services/mongodb';
 
 dotenv.config();
@@ -47,7 +48,7 @@ if (config.appModeDev) {
   );
 }
 
-app.use('/api', router);
+app.use('/api', [authMiddleware], router);
 app.use('/docs', swaggerUi.serve);
 app.get('/docs', swaggerSpec);
 

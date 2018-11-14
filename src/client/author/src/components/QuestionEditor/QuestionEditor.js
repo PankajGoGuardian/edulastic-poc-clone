@@ -111,7 +111,7 @@ class QuestionEditor extends Component {
             previewTab={previewTab}
           />
         </ItemHeader>
-        <ContentWrapper style={{ padding: '25px 45px', overflow: 'auto', height: 'calc(100% - 135px)' }}>
+        <ContentWrapper style={{ padding: '0px 45px', overflow: 'auto', height: 'calc(100% - 135px)' }}>
           {question && (
             <QuestionWrapper
               type={questionType}

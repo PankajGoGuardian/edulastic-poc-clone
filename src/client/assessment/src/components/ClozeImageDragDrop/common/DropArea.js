@@ -85,6 +85,9 @@ class DropArea extends React.Component {
     newResponseContainer.width = 150;
     newResponseContainer.height = 40;
     newResponseContainer.active = true;
+    list.forEach((responseContainer) => {
+      responseContainer.active = false;
+    });
     list.push(newResponseContainer);
     updateData(list);
   }
@@ -100,13 +103,6 @@ class DropArea extends React.Component {
     updateData(list);
   }
 
-  responseContainerDeActivated = (id) => {
-    const { updateData } = this.props;
-    const { list } = this.state;
-    list[id].active = false;
-    updateData(list);
-  }
-
   render() {
     const responseContainers = [];
     const { list } = this.state;
@@ -118,7 +114,6 @@ class DropArea extends React.Component {
         <div key={index}>
           <Draggable
             ref={`node_${index}`}
-            wrappedRef={(instance) => { this.draggableRefs[index] = instance; }}
             key={index}
             id={index}
             top={responseContainer.top}
@@ -135,7 +130,6 @@ class DropArea extends React.Component {
             funcResizing={this.funcResizing}
             onRemove={this.removeListResponseContainer}
             responseContainerActivated={e => this.responseContainerActivated(index, e)}
-            responseContainerDeActivated={() => this.responseContainerDeActivated(index)}
             pointerPosition={responseContainer.pointerPosition}
             label={responseContainer.label || ''}
           />

@@ -164,7 +164,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         },
         responses: [
           { top: 100, left: 50, width: 200, height: 50 },
-          { top: 100, left: 200, width: 200, height: 50 },
+          { top: 200, left: 200, width: 200, height: 50 },
         ]
       },
       onSelectQuestionType,

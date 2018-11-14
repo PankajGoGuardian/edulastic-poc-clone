@@ -2,7 +2,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import enhanceWithClickOutside from 'react-click-outside';
 
 import { IconTrashAlt } from '@edulastic/icons';
 import { greenDark, red } from '@edulastic/colors';
@@ -51,11 +50,6 @@ class Draggable extends React.Component {
     element.classList.remove('hideDraggableSource');
     const { updateStateDragging, id } = this.props;
     updateStateDragging(id, false);
-  }
-
-  handleClickOutside() {
-    const { responseContainerDeActivated } = this.props;
-    responseContainerDeActivated();
   }
 
   render() {
@@ -118,7 +112,6 @@ Draggable.propTypes = {
   funcResizing: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
   responseContainerActivated: PropTypes.func.isRequired,
-  responseContainerDeActivated: PropTypes.func.isRequired,
   active: PropTypes.bool,
   showDashedBorder: PropTypes.bool,
   pointerPosition: PropTypes.string,
@@ -133,7 +126,7 @@ Draggable.defaultProps = {
   isDragging: false,
 };
 
-export default enhanceWithClickOutside(Draggable);
+export default Draggable;
 
 const DeleteButton = styled.div`
   position: absolute;

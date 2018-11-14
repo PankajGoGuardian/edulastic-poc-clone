@@ -170,6 +170,7 @@ class ClozeDragDropDisplay extends Component {
       imageUrl,
       responseContainers,
       imageAlterText,
+      imageWidth,
       showDashedBorder,
       backgroundColor
     } = this.props;
@@ -193,7 +194,7 @@ class ClozeDragDropDisplay extends Component {
     }
     const previewTemplateBoxLayout = (
       <div className="imagedragdrop_template_box" style={{ fontSize: smallSize ? 10 : fontSize, padding: smallSize ? 0 : 20 }}>
-      <div style={{ position: 'relative', top: 0, left: 0, width: smallSize ? '100%' : 700, margin: 'auto' }}>
+      <div style={{ position: 'relative', top: 0, left: 0, width: smallSize ? '100%' : imageWidth, margin: 'auto', minWidth: smallSize ? '100%' : 600, maxWidth: '100%' }}>
         <img src={imageUrl || defaultImageURL} width={'100%'} alt="resp-preview" style={{ userSelect: 'none', pointerEvents: 'none' }} alt={imageAlterText} />
           {responseContainers.map((responseContainer, index) => {
               const dropTargetIndex = index;
@@ -350,7 +351,8 @@ ClozeDragDropDisplay.propTypes = {
   backgroundColor: PropTypes.string.isRequired,
   uiStyle: PropTypes.object.isRequired,
   imageUrl: PropTypes.string,
-  imageAlterText: PropTypes.string
+  imageAlterText: PropTypes.string,
+  imageWidth: PropTypes.number,
 };
 
 ClozeDragDropDisplay.defaultProps = {
@@ -368,6 +370,7 @@ ClozeDragDropDisplay.defaultProps = {
   validation: {},
   imageUrl: undefined,
   imageAlterText: '',
+  imageWidth: 600,
   configureOptions: {
     showDraghandle: false,
     duplicatedResponses: false,

@@ -20,6 +20,7 @@ class CorrectAnswer extends Component {
     showDashedBorder: PropTypes.bool.isRequired,
     backgroundColor: PropTypes.string.isRequired,
     imageAlterText: PropTypes.string.isRequired,
+    imageWidth: PropTypes.number.isRequired,
   };
 
   constructor(props) {
@@ -48,7 +49,7 @@ class CorrectAnswer extends Component {
   render() {
     /* eslint-disable max-len */
     const { t, options, stimulus, response, imageUrl, responses, configureOptions,
-      imageAlterText, uiStyle, showDashedBorder, backgroundColor } = this.props;
+      imageAlterText, imageWidth, uiStyle, showDashedBorder, backgroundColor } = this.props;
     const { responseScore } = this.state;
     return (
       <div>
@@ -77,6 +78,7 @@ class CorrectAnswer extends Component {
           backgroundColor={backgroundColor}
           userSelections={response.value}
           imageAlterText={imageAlterText}
+          imageWidth={imageWidth}
           configureOptions={configureOptions}
           onChange={this.handleMultiSelect}
         />

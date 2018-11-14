@@ -100,7 +100,7 @@ class CorrectAnswers extends Component {
 
   render() {
     /* eslint-disable max-len */
-    const { validation, stimulus, imageAlterText, options, t, imageUrl, templateMarkUp, backgroundColor, responses, configureOptions, uiStyle, showDashedBorder } = this.props;
+    const { validation, stimulus, imageAlterText, imageWidth, options, t, imageUrl, templateMarkUp, backgroundColor, responses, configureOptions, uiStyle, showDashedBorder } = this.props;
     const { value } = this.state;
     return (
       <div>
@@ -123,6 +123,7 @@ class CorrectAnswers extends Component {
                 showDashedBorder={showDashedBorder}
                 configureOptions={configureOptions}
                 imageAlterText={imageAlterText}
+                imageWidth={imageWidth}
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}
                 backgroundColor={backgroundColor}
@@ -144,6 +145,7 @@ class CorrectAnswers extends Component {
                       responses={responses}
                       imageUrl={imageUrl}
                       imageAlterText={imageAlterText}
+                      imageWidth={imageWidth}
                       templateMarkUp={templateMarkUp}
                       showDashedBorder={showDashedBorder}
                       uiStyle={uiStyle}
@@ -179,7 +181,8 @@ CorrectAnswers.propTypes = {
   uiStyle: PropTypes.object,
   backgroundColor: PropTypes.string,
   imageUrl: PropTypes.string,
-  imageAlterText: PropTypes.string
+  imageAlterText: PropTypes.string,
+  imageWidth: PropTypes.number,
 };
 
 CorrectAnswers.defaultProps = {
@@ -192,6 +195,7 @@ CorrectAnswers.defaultProps = {
   backgroundColor: '#fff',
   imageUrl: '',
   imageAlterText: '',
+  imageWidth: 600,
   uiStyle: {
     responsecontainerposition: 'bottom',
     fontsize: 'normal',

@@ -118,6 +118,7 @@ class clozeImageDragDropAuthoring extends Component {
   }
 
   onItemPropChange = (prop, value) => {
+    console.log('prop changed');
     const { setQuestionData } = this.props;
     const newItem = this.getNewItem();
     newItem[prop] = value;
@@ -164,7 +165,7 @@ class clozeImageDragDropAuthoring extends Component {
 
   render() {
     const { t, item } = this.props;
-    const { maxRespCount, responseLayout, imageAlterText, isEditAriaLabels, responses } = item;
+    const { maxRespCount, responseLayout, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
     const { isColorPickerVisible } = this.state;
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
 
@@ -183,7 +184,7 @@ class clozeImageDragDropAuthoring extends Component {
           <PaddingDiv top={30} />
           <FlexContainer style={{ background: '#e6e6e6', height: 70, fontSize: 13 }}>
             <div style={{ alignItems: 'center' }}>
-              <InputNumber defaultValue={responseLayout && responseLayout.width} onChange={val => this.onResponsePropChange('width', val)} />
+              <InputNumber defaultValue={imageWidth || 600} onChange={val => this.onItemPropChange('imageWidth', val)} />
               <PaddingDiv left={20}>
                 {t('component.clozeImageDragDrop.widthpx')}
               </PaddingDiv>

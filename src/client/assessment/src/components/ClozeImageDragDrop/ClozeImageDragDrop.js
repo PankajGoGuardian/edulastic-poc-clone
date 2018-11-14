@@ -137,6 +137,7 @@ class ClozeImageDragDrop extends Component {
                   imageAlterText={item.imageAlterText}
                   responses={item.responses}
                   imageUrl={item.imageUrl}
+                  imageWidth={item.imageWidth}
                   question={previewStimulus}
                   showDashedBorder={item.showDashedBorder}
                   uiStyle={uiStyle}

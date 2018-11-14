@@ -457,7 +457,6 @@ input[type="checkbox"] {
 
 .draggable_box {
   background: white;
-  border: solid 1px lightgray;
   display: inline-flex;
   padding: 3px 8px;
   align-items: center;
@@ -476,7 +475,7 @@ input[type="checkbox"] {
   min-width: 25px;
 }
 
-.draggable_box i {
+.draggable_box i, .draggable_box_transparent i {
   margin-right: 5px;
   margin-top: 3px;
 }

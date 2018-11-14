@@ -25,10 +25,9 @@ const router = express.Router();
  *            password: julijaiswal
  *     responses:
  *       200:
- *         description: sucessfull
+ *         description: successful
  */
 
-// login api
 router.post('/login', async (req, res) => {
   try {
     const data = req.body;
@@ -74,9 +73,9 @@ router.post('/login', async (req, res) => {
  *            password: julijaiswal
  *     responses:
  *       200:
- *         description: sucessfull
+ *         description: successful
  */
-// create user api
+
 router.post('/signup', async (req, res) => {
   try {
     const data = req.body;

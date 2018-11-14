@@ -6,6 +6,23 @@ import { successHandler } from '../utils/responseHandler';
 
 const router = Router();
 
+/**
+ * @swagger
+ * /question:
+ *   post:
+ *     tags:
+ *       - Question
+ *     summary: Create a question
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: question
+ *          in: body
+ *     responses:
+ *       200:
+ *         description: successful
+ */
+
 router.post('/', async (req, res) => {
   try {
     const data = req.body;
@@ -25,6 +42,23 @@ router.post('/', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /question:
+ *   get:
+ *     tags:
+ *       - Question
+ *     summary: Get all question
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: question
+ *          in: body
+ *     responses:
+ *       200:
+ *         description: successful
+ */
+
 router.get('/', async (req, res) => {
   try {
     let { limit, index } = req.query;
@@ -40,6 +74,26 @@ router.get('/', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /question/{id}:
+ *   get:
+ *     tags:
+ *       - Question
+ *     summary: Get question by id
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: id
+ *          in: body
+ *          required: true
+ *          example:
+ *            id: 5bebe8706c0d6e57f3219113
+ *     responses:
+ *       200:
+ *         description: successful
+ */
+
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -53,6 +107,26 @@ router.get('/:id', async (req, res) => {
     res.boom.badRequest(e);
   }
 });
+
+/**
+ * @swagger
+ * /question/{id}:
+ *   put:
+ *     tags:
+ *       - Question
+ *     summary: Update question by id
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: id
+ *          in: body
+ *          required: true
+ *          example:
+ *            id: 5bebe8706c0d6e57f3219113
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 
 router.put('/:id', async (req, res) => {
   try {
@@ -72,6 +146,26 @@ router.put('/:id', async (req, res) => {
     res.boom.badRequest(e);
   }
 });
+
+/**
+ * @swagger
+ * /question/{id}:
+ *   delete:
+ *     tags:
+ *       - Question
+ *     summary: Delete question by id
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: id
+ *          in: body
+ *          required: true
+ *          example:
+ *            id: 5bebe8706c0d6e57f3219113
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 
 router.delete('/:id', async (req, res) => {
   try {

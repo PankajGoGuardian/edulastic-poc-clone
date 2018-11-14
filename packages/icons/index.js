@@ -49,3 +49,4 @@ export { default as IconMath } from './src/IconMath';
 export { default as IconEdit } from './src/IconEdit';
 export { default as IconLayout } from './src/IconLayout';
 export { default as IconLineChart } from './src/IconLineChart';
+export { default as IconNewList } from './src/IconNewList';

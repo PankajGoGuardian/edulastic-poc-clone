@@ -111,7 +111,7 @@ class QuestionEditor extends Component {
             previewTab={previewTab}
           />
         </ItemHeader>
-        <ContentWrapper style={{ padding: '25px 45px' }}>
+        <ContentWrapper style={{ padding: '25px 45px', overflow: 'auto', height: 'calc(100% - 135px)' }}>
           {question && (
             <QuestionWrapper
               type={questionType}
@@ -135,7 +135,6 @@ QuestionEditor.propTypes = {
   question: PropTypes.object,
   match: PropTypes.object,
   receiveQuestionById: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
   saveQuestion: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
 };

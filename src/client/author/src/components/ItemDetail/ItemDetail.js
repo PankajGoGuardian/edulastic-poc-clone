@@ -397,7 +397,6 @@ const Content = styled(Paper)`
   padding: 0;
   position: relative;
   height: calc(100vh - 154px);
-  overflow: auto;
 
   ::-webkit-scrollbar {
     display: none;

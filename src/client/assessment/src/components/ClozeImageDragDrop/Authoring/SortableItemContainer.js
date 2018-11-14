@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const SortableItemContainer = styled.div`
-  width: 100%;
+  width: calc(50% - 20px);
   height: 50px;
   margin: 10px 0;
   display: flex;

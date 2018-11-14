@@ -43,7 +43,7 @@ const SortableItem = SortableElement(({ value, onRemove, onChange }) => (
 ));
 
 const SortableList = SortableContainer(({ items, onRemove, onChange }) => (
-  <div>
+  <FlexContainer style={{ flexFlow: 'row wrap' }}>
     {items.map((value, index) => (
       <SortableItem
         key={index}
@@ -53,7 +53,7 @@ const SortableList = SortableContainer(({ items, onRemove, onChange }) => (
         onChange={e => onChange(index, e)}
       />
     ))}
-  </div>
+  </FlexContainer>
 ));
 
 class clozeImageDragDropAuthoring extends Component {

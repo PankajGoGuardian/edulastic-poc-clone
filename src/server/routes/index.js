@@ -2,14 +2,17 @@ import express from 'express';
 import authApi from './auth';
 import userApi from './user';
 import fileApi from './files';
+import questionApi from './question';
 import elasticSearchApi from './elasticSearch';
 
 const router = express.Router();
 
 router.use('/user', userApi);
 router.use('/auth', authApi);
-router.use('/search', elasticSearchApi);
 router.use('/file', fileApi);
+router.use('/question', questionApi);
+router.use('/search', elasticSearchApi);
+
 /**
  * @swagger
  * /hello:
@@ -26,7 +29,7 @@ router.use('/file', fileApi);
 router.get('/hello', (req, res) => {
   res.json({
     message: 'edulastic api',
-    version: '0.1',
+    version: '0.1'
   });
 });
 

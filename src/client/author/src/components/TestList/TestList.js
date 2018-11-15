@@ -28,11 +28,11 @@ class TestList extends Component {
   };
 
   items = [
-    { icon: '', key: 'library', text: 'Entire Library' },
-    { icon: '', key: 'byMe', text: 'Authored by me' },
-    { icon: '', key: 'coAuthor', text: 'I am a Co-Author' },
-    { icon: '', key: 'previously', text: 'Previously Used' },
-    { icon: '', key: 'favorites', text: 'My Favorites' },
+    { icon: 'book', key: 'library', text: 'Entire Library' },
+    { icon: 'folder', key: 'byMe', text: 'Authored by me' },
+    { icon: 'copy', key: 'coAuthor', text: 'I am a Co-Author' },
+    { icon: 'reload', key: 'previously', text: 'Previously Used' },
+    { icon: 'heart', key: 'favorites', text: 'My Favorites' },
   ];
 
   componentDidMount() {

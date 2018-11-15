@@ -2,13 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Menu, Icon } from 'antd';
 import styled from 'styled-components';
+
 import { greenDark, white, mainTextColor } from '@edulastic/colors';
 
 const TestFiltersNav = ({ items, onSelect }) => (
   <Container onSelect={onSelect} defaultSelectedKeys={['library']}>
     {items.map(item => (
       <Item key={item.key}>
-        <Icon type="mail" /> {item.text}
+        <Icon type={item.icon} /> {item.text}
       </Item>
     ))}
   </Container>

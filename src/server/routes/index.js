@@ -3,6 +3,7 @@ import authApi from './auth';
 import userApi from './user';
 import fileApi from './files';
 import questionApi from './question';
+import resourcesApi from './resources';
 import elasticSearchApi from './elasticSearch';
 
 const router = express.Router();
@@ -11,6 +12,7 @@ router.use('/user', userApi);
 router.use('/auth', authApi);
 router.use('/file', fileApi);
 router.use('/question', questionApi);
+router.use('/resources', resourcesApi);
 router.use('/search', elasticSearchApi);
 
 /**

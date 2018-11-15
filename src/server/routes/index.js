@@ -1,6 +1,7 @@
 import express from 'express';
 import authApi from './auth';
 import userApi from './user';
+import testApi from './test';
 import fileApi from './files';
 import questionApi from './question';
 import testItemsApi from './testItem';
@@ -12,10 +13,12 @@ const router = express.Router();
 router.use('/user', userApi);
 router.use('/auth', authApi);
 router.use('/file', fileApi);
+router.use('/test', testApi);
 router.use('/question', questionApi);
 router.use('/resources', resourcesApi);
 router.use('/search', elasticSearchApi);
-router.use('/testITem', testItemsApi);
+router.use('/testitem', testItemsApi);
+
 /**
  * @swagger
  * /hello:

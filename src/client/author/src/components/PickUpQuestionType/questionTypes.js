@@ -5,10 +5,11 @@ import { FlexContainer } from '@edulastic/common';
 
 import Card from './Card';
 
-const PickUpQuestionTypes = ({ onSelectQuestionType }) => {
+const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
   const cards = [
     {
       title: 'Multiple choice - standard',
+      type: 'multiple-choice',
       data: {
         type: 'multipleChoice',
         stimulus: 'Which color has the smallest walvelenght?',
@@ -34,6 +35,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => {
     },
     {
       title: 'Multiple choice - multiple response',
+      type: 'multiple-choice',
       data: {
         type: 'multipleChoice',
         stimulus: 'Which color has the smallest walvelenght?',
@@ -58,7 +60,8 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => {
       onSelectQuestionType,
     },
     {
-      title: 'True of false',
+      title: 'True or false',
+      type: 'multiple-choice',
       data: {
         type: 'multipleChoice',
         stimulus: 'The sky is blue due to gases.',
@@ -80,6 +83,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => {
     },
     {
       title: 'Multiple choice - block layout',
+      type: 'multiple-choice',
       data: {
         type: 'multipleChoice',
         stimulus: 'What is the capital city of England?',
@@ -106,6 +110,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => {
     },
     {
       title: 'OrderList-standard',
+      type: 'classify',
       stimulus: 'Which color has the smallest walvelenght?',
       data: {
         type: 'orderList',
@@ -124,6 +129,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => {
     },
     {
       title: 'Cloze with Drag & Drop',
+      type: 'fill-blanks',
       stimulus: '',
       data: {
         type: 'clozeDragDrop',
@@ -142,6 +148,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => {
     },
     {
       title: 'Label Image with Drag & Drop',
+      type: 'fill-blanks',
       stimulus: '',
       data: {
         type: 'clozeImageDragDrop',
@@ -166,7 +173,8 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => {
 
   return (
     <FlexContainer style={{ flexWrap: 'wrap' }}>
-      {cards.map(({ title, data, onSelectQuestionType: onSelect }) => (
+      {cards.map(({ title, data, onSelectQuestionType: onSelect, type }) => (
+        type === questionType &&
         <Card key={title} title={title} data={data} onSelectQuestionType={onSelect} />
       ))}
     </FlexContainer>

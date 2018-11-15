@@ -79,7 +79,7 @@ router.get('/', async (req, res) => {
  * /resources/{id}:
  *   get:
  *     tags:
- *       - Resources
+ *       - Resource
  *     summary: Get data source by id
  *     produces:
  *       - application/json
@@ -113,7 +113,7 @@ router.get('/:id', async (req, res) => {
  * /resources/{id}:
  *   put:
  *     tags:
- *       - Resources
+ *       - Resource
  *     summary: Update data source by id
  *     produces:
  *       - application/json
@@ -152,7 +152,7 @@ router.put('/:id', async (req, res) => {
  * /resources/{id}:
  *   delete:
  *     tags:
- *       - Resources
+ *       - Resource
  *     summary: Delete data source by id
  *     produces:
  *       - application/json

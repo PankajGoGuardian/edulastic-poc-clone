@@ -12,7 +12,7 @@ const router = express.Router();
  * /auth/login:
  *   post:
  *     tags:
- *       - user
+ *       - User
  *     summary: Login a user with email and password
  *     produces:
  *       - application/json
@@ -21,8 +21,8 @@ const router = express.Router();
  *          in: body
  *          required: true
  *          example:
- *            email: juli@gmail.com
- *            password: julijaiswal
+ *            email: jsmith@snapwiz.com
+ *            password: jsmith123
  *     responses:
  *       200:
  *         description: successful
@@ -60,7 +60,7 @@ router.post('/login', async (req, res) => {
  * /auth/signup:
  *   post:
  *     tags:
- *       - user
+ *       - User
  *     summary: Signup a user with email and password
  *     produces:
  *       - application/json
@@ -69,8 +69,8 @@ router.post('/login', async (req, res) => {
  *          in: body
  *          required: true
  *          example:
- *            email: juli@gmail.com
- *            password: julijaiswal
+ *            email: jsmith@snapwiz.com
+ *            password: jsmith1234
  *     responses:
  *       200:
  *         description: successful

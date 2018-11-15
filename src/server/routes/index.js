@@ -21,7 +21,7 @@ router.use('/testITem', testItemsApi);
  * /hello:
  *   get:
  *     tags:
- *       - test
+ *       - Test
  *     description: test api
  *     produces:
  *       - application/json

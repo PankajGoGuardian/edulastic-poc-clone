@@ -146,13 +146,15 @@ const MainList = styled.div`
 
 const ListItems = styled.div`
   flex: 1;
-  margin: 29px 40px 0px 18px;
+  margin: 29px 40px 0px 325px;
 
   .ant-pagination {
     display: flex;
 
     @media (max-width: ${tabletWidth}) {
       justify-content: flex-end;
+      margin-left: 29px !important;
+      margin-top: 80px !important;
     }
   }
 

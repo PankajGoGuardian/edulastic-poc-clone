@@ -171,6 +171,7 @@ export default ItemFilter;
 
 const Container = styled.div`
   min-width: 286px;
+  position: fixed;
 `;
 
 const Header = styled.div`

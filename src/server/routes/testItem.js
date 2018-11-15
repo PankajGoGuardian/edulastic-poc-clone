@@ -6,7 +6,23 @@ import { successHandler } from '../utils/responseHandler';
 
 const router = Router();
 
-// get all testITems
+/**
+ * @swagger
+ * /testitems:
+ *   get:
+ *     tags:
+ *       - TestItem
+ *     summary: Get all testitems
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: question
+ *          in: body
+ *     responses:
+ *       200:
+ *         description: successful
+ */
+
 router.get('/', async (req, res) => {
   try {
     let { limit, index } = req.query;
@@ -23,7 +39,23 @@ router.get('/', async (req, res) => {
   }
 });
 
-// create test item
+/**
+ * @swagger
+ * /testitems:
+ *   post:
+ *     tags:
+ *       - TestItem
+ *     summary: Create testitem
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: question
+ *          in: body
+ *     responses:
+ *       200:
+ *         description: successful
+ */
+
 router.post('/', async (req, res) => {
   try {
     const data = req.body;
@@ -43,7 +75,26 @@ router.post('/', async (req, res) => {
   }
 });
 
-// update testItem
+/**
+ * @swagger
+ * /testitems/{id}:
+ *   put:
+ *     tags:
+ *       - TestItem
+ *     summary: Update testitem by ID
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: question
+ *          in: body
+ *          required: true
+ *          example:
+ *            id: 5bebe8706c0d6e57f3219113
+ *     responses:
+ *       200:
+ *         description: successful
+ */
+
 router.put('/:id', async (req, res) => {
   try {
     const data = req.body;
@@ -64,7 +115,24 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// get testItem by id
+/**
+ * @swagger
+ * /testitems/{id}:
+ *   get:
+ *     tags:
+ *       - TestItem
+ *     summary: Get testitem by ID
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: question
+ *          example:
+ *            id: 5bebe8706c0d6e57f3219113
+ *     responses:
+ *       200:
+ *         description: successful
+ */
+
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -79,7 +147,26 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// delete a particular  testItem
+/**
+ * @swagger
+ * /testitems/{id}:
+ *   delete:
+ *     tags:
+ *       - TestItem
+ *     summary: Delete testitem by ID
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: question
+ *          in: body
+ *          required: true
+ *          example:
+ *            id: 5bebe8706c0d6e57f3219113
+ *     responses:
+ *       200:
+ *         description: successful
+ */
+
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;

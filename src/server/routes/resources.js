@@ -85,8 +85,6 @@ router.get('/', async (req, res) => {
  *       - application/json
  *     parameters:
  *        - name: id
- *          in: body
- *          required: true
  *          example:
  *            id: 5bebe8706c0d6e57f3219113
  *     responses:

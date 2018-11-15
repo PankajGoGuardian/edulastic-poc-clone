@@ -106,7 +106,7 @@ class TestList extends Component {
                 value={searchStr}
               />
             </Col>
-            <Col span={18}>
+            <Col span={18} style={{ paddingLeft: 24 }}>
               <FlexContainer justifyContent="space-between">
                 <PaginationInfo>
                   {from} to {to} of <i>{count}</i>
@@ -125,7 +125,7 @@ class TestList extends Component {
                 <TestFiltersNav items={this.items} onSelect={this.handleFilterNavSelect} />
               </TestFilters>
             </Col>
-            <Col span={18}>
+            <Col span={18} style={{ paddingLeft: 24 }}>
               <Card>
                 {loading ? (
                   <Spin size="large" />
@@ -192,6 +192,23 @@ export default enhance(TestList);
 
 const Container = styled.div`
   padding: 30px;
+
+  .ant-input {
+    font-size: 13px;
+    letter-spacing: 0.2px;
+    color: #b1b1b1;
+    ::placeholder {
+      font-style: italic;
+      color: #b1b1b1;
+    }
+  }
+
+  .ant-input-suffix {
+    font-size: 15px;
+    svg {
+      fill: #00b0ff;
+    }
+  }
 `;
 
 const PaginationInfo = styled.span`

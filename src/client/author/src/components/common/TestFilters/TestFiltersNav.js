@@ -28,13 +28,27 @@ const Container = styled(Menu)`
 
 const Item = styled(Menu.Item)`
   color: ${mainTextColor};
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+
+  .anticon {
+    font-size: 18px;
+    margin-right: 22px;
+  }
 
   :hover {
     color: ${greenDark};
   }
 
+  &.ant-menu-item {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+  }
+
   &.ant-menu-item-selected {
-    border-left: 1px solid ${greenDark};
+    border-left: 2px solid ${greenDark};
     background-color: ${white} !important;
     color: ${greenDark};
     box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);

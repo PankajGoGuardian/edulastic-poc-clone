@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { greenDark, darkBlue, blue, mainTextColor } from '@edulastic/colors';
+import { blue, secondaryTextColor } from '@edulastic/colors';
 import PropTypes from 'prop-types';
 import { FlexContainer } from '@edulastic/common';
 import { Select } from 'antd';
@@ -18,7 +18,7 @@ const difficulties = [{ value: 'all', text: 'All levels' }, { value: 'sub1', tex
 
 const TestFilters = ({ children, onChange }) => (
   <Container>
-    <FlexContainer justifyContent="space-between" style={{ marginBottom: 15 }}>
+    <FlexContainer justifyContent="space-between" style={{ marginBottom: 26 }}>
       <Title>Filters</Title>
       <ClearAll>Clear all</ClearAll>
     </FlexContainer>
@@ -137,17 +137,63 @@ TestFilters.defaultProps = {
 export default TestFilters;
 
 const Container = styled.div`
-  padding: 15px 0;
+  padding: 27px 0;
+
+  .ant-select-selection {
+    background: transparent;
+  }
+  
+  .ant-select-lg {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: #434b5d;
+  }
+
+  .ant-select-selection__rendered {
+    margin-left: 26px;
+  }
+
+  .ant-select-selection__choice {
+    border-radius: 5px;
+    border: solid 1px #c8e8f6;
+    background-color: #c8e8f6;
+    height: 23.5px;
+  }
+
+  .ant-select-selection__choice__content {
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 0.2px;
+    color: #0083be;
+    opacity: 1;
+  }
+
+  .ant-select-remove-icon {
+    svg {
+      fill: #0083be;
+    }
+  }
+
+  .ant-select-arrow-icon {
+    font-size: 14px;
+    svg {
+      fill: #00b0ff;
+    }
+  }
 `;
 
 const Title = styled.span`
-  color: ${greenDark};
-  font-size: 16px;
+  color: #4aac8b;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 `;
 
 const ClearAll = styled.span`
-  color: ${darkBlue};
-  font-size: 16px;
+  color: #00b0ff;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
 
   :hover {
@@ -156,7 +202,8 @@ const ClearAll = styled.span`
 `;
 
 const SubTitle = styled.div`
-  margin: 15px 0;
-  color: ${mainTextColor};
-  font-size: 16px;
+  margin: 12px 0;
+  color: ${secondaryTextColor};
+  font-size: 13px;
+  font-weight: 600;
 `;

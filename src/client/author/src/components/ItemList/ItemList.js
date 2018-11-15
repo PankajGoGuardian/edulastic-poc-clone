@@ -13,19 +13,24 @@ import {
   getItemsLimitSelector,
   getItemsCountSelector,
   getItemsLoadingSelector,
+  getItemsListSelector
 } from '../../selectors/items';
 import Item from './Item';
 import ItemFilter from './ItemFilter';
-import { receiveTestItemsAction } from '../../actions/testItems';
+import { receiveItemsAction } from '../../actions/items';
 import { createTestItemAction } from '../../actions/testItem';
-import { getTestItemsSelector } from '../../selectors/testItems';
 import { getTestItemCreatingSelector } from '../../selectors/testItem';
 import ListHeader from '../common/ListHeader';
 
 class ItemList extends Component {
   componentDidMount() {
     const { receiveItems } = this.props;
-    receiveItems();
+    receiveItems({
+      page: 1,
+      limit: 1,
+      count: 1,
+      search: { orSearch: [], andSearch: [] }
+    });
   }
 
   handleSearch = (value) => {
@@ -104,7 +109,7 @@ const enhance = compose(
   withNamespaces('author'),
   connect(
     state => ({
-      items: getTestItemsSelector(state),
+      items: getItemsListSelector(state),
       page: getItemsPageSelector(state),
       limit: getItemsLimitSelector(state),
       count: getItemsCountSelector(state),
@@ -112,7 +117,7 @@ const enhance = compose(
       creating: getTestItemCreatingSelector(state),
     }),
     {
-      receiveItems: receiveTestItemsAction,
+      receiveItems: receiveItemsAction,
       createItem: createTestItemAction,
     },
   ),

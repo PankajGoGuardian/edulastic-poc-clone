@@ -192,6 +192,11 @@ export default enhance(TestList);
 
 const Container = styled.div`
   padding: 30px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 100%;
+  overflow: auto;
 
   .ant-input {
     font-size: 13px;

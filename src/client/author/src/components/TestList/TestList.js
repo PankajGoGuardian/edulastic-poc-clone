@@ -28,11 +28,11 @@ class TestList extends Component {
   };
 
   items = [
-    { icon: '', key: 'library', text: 'Entire Library' },
-    { icon: '', key: 'byMe', text: 'Authored by me' },
-    { icon: '', key: 'coAuthor', text: 'I am a Co-Author' },
-    { icon: '', key: 'previously', text: 'Previously Used' },
-    { icon: '', key: 'favorites', text: 'My Favorites' },
+    { icon: 'book', key: 'library', text: 'Entire Library' },
+    { icon: 'folder', key: 'byMe', text: 'Authored by me' },
+    { icon: 'copy', key: 'coAuthor', text: 'I am a Co-Author' },
+    { icon: 'reload', key: 'previously', text: 'Previously Used' },
+    { icon: 'heart', key: 'favorites', text: 'My Favorites' },
   ];
 
   componentDidMount() {
@@ -106,7 +106,7 @@ class TestList extends Component {
                 value={searchStr}
               />
             </Col>
-            <Col span={18}>
+            <Col span={18} style={{ paddingLeft: 24 }}>
               <FlexContainer justifyContent="space-between">
                 <PaginationInfo>
                   {from} to {to} of <i>{count}</i>
@@ -125,7 +125,7 @@ class TestList extends Component {
                 <TestFiltersNav items={this.items} onSelect={this.handleFilterNavSelect} />
               </TestFilters>
             </Col>
-            <Col span={18}>
+            <Col span={18} style={{ paddingLeft: 24, marginTop: 10 }}>
               <Card>
                 {loading ? (
                   <Spin size="large" />
@@ -192,6 +192,28 @@ export default enhance(TestList);
 
 const Container = styled.div`
   padding: 30px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 100%;
+  overflow: auto;
+
+  .ant-input {
+    font-size: 13px;
+    letter-spacing: 0.2px;
+    color: #b1b1b1;
+    ::placeholder {
+      font-style: italic;
+      color: #b1b1b1;
+    }
+  }
+
+  .ant-input-suffix {
+    font-size: 15px;
+    svg {
+      fill: #00b0ff;
+    }
+  }
 `;
 
 const PaginationInfo = styled.span`

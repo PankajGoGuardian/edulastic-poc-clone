@@ -10,6 +10,11 @@ const questionSchema = mongoose.Schema(
   }
 );
 
+const formatOutput = {
+  createdAt: 0,
+  __v: 0
+};
+
 class Question {
   constructor() {
     this.Question = mongoose.model('Question', questionSchema);
@@ -22,13 +27,7 @@ class Question {
   }
 
   get(limit = 25, skip = 0) {
-    return this.Question.find(
-      {},
-      {
-        createdAt: 0,
-        __v: 0
-      }
-    )
+    return this.Question.find({}, formatOutput)
       .limit(limit)
       .skip(skip);
   }
@@ -51,6 +50,16 @@ class Question {
 
   delete(id) {
     return this.Question.remove({ _id: new mongoose.Types.ObjectId(id) });
+  }
+
+  // get all questions from array of Ids
+  selectQuestionsByIds(ids) {
+    return this.Question.find(
+      {
+        _id: { $in: ids }
+      },
+      formatOutput
+    );
   }
 }
 

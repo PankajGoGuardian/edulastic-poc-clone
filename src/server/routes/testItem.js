@@ -1,8 +1,9 @@
 import joi from 'joi';
 import { Router } from 'express';
 import TestItemModel from '../models/testItem';
-import { testItemSchema, createItemFormatter } from '../validators/testItem';
+import { getQuestionsData } from '../utils/questions';
 import { successHandler } from '../utils/responseHandler';
+import { testItemSchema, createItemFormatter } from '../validators/testItem';
 
 const router = Router();
 
@@ -26,12 +27,31 @@ const router = Router();
 router.get('/', async (req, res) => {
   try {
     let { limit, index } = req.query;
+    const { data, validation } = req.query;
     limit = !Number.isNaN(limit) ? Number(limit) : 25;
     index = !Number.isNaN(index) ? Number(index) : 0;
 
-    const item = new TestItemModel();
-    const result = await item.get(limit, index);
+    const testItem = new TestItemModel();
+    const testItems = await testItem.get(limit, index);
 
+    // add question data!
+    const isAuthor = validation === 'true';
+    const isData = data === 'true';
+    let result;
+    if (isData) {
+      result = [];
+      /*eslint-disable */
+      for (const item of testItems) {
+        const questions = await getQuestionsData(item, isAuthor);
+        result.push({
+          ...item._doc,
+          data: { questions }
+        });
+      }
+      /* eslint-enable */
+    }
+
+    result = result || testItems;
     return successHandler(res, result);
   } catch (e) {
     req.log.error(e);
@@ -107,6 +127,7 @@ router.put('/:id', async (req, res) => {
 
     const testItem = new TestItemModel();
     const result = await testItem.update(id, data);
+
     const output = createItemFormatter(result);
     return successHandler(res, output);
   } catch (e) {
@@ -136,10 +157,24 @@ router.put('/:id', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-
+    const { data, validation } = req.query;
     const item = new TestItemModel();
     const result = await item.getById(id);
-    const output = createItemFormatter(result);
+    let output;
+
+    // should it return question data and validation?
+    const isAuthor = validation === 'true';
+    const isData = data === 'true';
+    if (isData) {
+      const questions = await getQuestionsData(result, isAuthor);
+      output = {
+        ...result._doc,
+        data: {
+          questions
+        }
+      };
+    }
+
     return successHandler(res, output);
   } catch (e) {
     req.log.error(e);

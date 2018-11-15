@@ -12,6 +12,11 @@ const testItemSchema = mongoose.Schema(
   }
 );
 
+const formatOutput = {
+  createdAt: 0,
+  __v: 0
+};
+
 class TestItem {
   constructor() {
     this.TestItem = mongoose.model('TestItem', testItemSchema);
@@ -24,13 +29,7 @@ class TestItem {
   }
 
   get(limit = 25, skip = 0) {
-    return this.TestItem.find(
-      {},
-      {
-        createdAt: 0,
-        __v: 0
-      }
-    )
+    return this.TestItem.find({}, formatOutput)
       .limit(limit)
       .skip(skip);
   }
@@ -46,9 +45,12 @@ class TestItem {
   }
 
   getById(id) {
-    return this.TestItem.findOne({
-      _id: new mongoose.Types.ObjectId(id)
-    });
+    return this.TestItem.findOne(
+      {
+        _id: new mongoose.Types.ObjectId(id)
+      },
+      formatOutput
+    );
   }
 
   delete(id) {

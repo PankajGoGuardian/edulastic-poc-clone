@@ -3,6 +3,7 @@ import authApi from './auth';
 import userApi from './user';
 import fileApi from './files';
 import questionApi from './question';
+import testItemsApi from './testItem';
 import resourcesApi from './resources';
 import elasticSearchApi from './elasticSearch';
 
@@ -14,7 +15,7 @@ router.use('/file', fileApi);
 router.use('/question', questionApi);
 router.use('/resources', resourcesApi);
 router.use('/search', elasticSearchApi);
-
+router.use('/testITem', testItemsApi);
 /**
  * @swagger
  * /hello:

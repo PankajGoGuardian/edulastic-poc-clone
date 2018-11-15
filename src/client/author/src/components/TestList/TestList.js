@@ -125,7 +125,7 @@ class TestList extends Component {
                 <TestFiltersNav items={this.items} onSelect={this.handleFilterNavSelect} />
               </TestFilters>
             </Col>
-            <Col span={18} style={{ paddingLeft: 24 }}>
+            <Col span={18} style={{ paddingLeft: 24, marginTop: 10 }}>
               <Card>
                 {loading ? (
                   <Spin size="large" />

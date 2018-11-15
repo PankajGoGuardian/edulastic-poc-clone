@@ -56,15 +56,15 @@ class Item extends Component {
             <AuthorName>{this.name}</AuthorName>
           </Author>
           <Icons>
-            <div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
               <IconHeart color={greenDark} />
               &nbsp;
-              <span>{item.analytics.likes}</span>
+              <span style={{ fontSize: 13 }}>{item.analytics.likes}</span>
             </div>
-            <div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
               <IconShare color={greenDark} />
               &nbsp;
-              <span>{item.analytics.usage}</span>
+              <span style={{ fontSize: 13 }}>{item.analytics.usage}</span>
             </div>
           </Icons>
         </Footer>
@@ -105,6 +105,8 @@ const Author = styled.div`
   display: flex;
   align-items: center;
   border-right: 1px solid ${grey};
+  font-size: 13px;
+  font-weight: 600;
 `;
 
 const AuthorName = styled.span`
@@ -134,8 +136,8 @@ const Stars = styled(Rate)`
 `;
 
 const StyledLink = styled.a`
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: bold;
   display: inline-flex;
   align-items: center;
   text-decoration: none;

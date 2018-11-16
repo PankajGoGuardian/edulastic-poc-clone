@@ -140,7 +140,7 @@ class ClozeImageDragDrop extends Component {
                   imageUrl={item.imageUrl}
                   imageWidth={item.imageWidth}
                   question={previewStimulus}
-                  showDashedBorder={item.showDashedBorder}
+                  showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
                   uiStyle={uiStyle}
                   backgroundColor={item.background}
                   onAddAltResponses={this.handleAddAltResponses}
@@ -251,17 +251,24 @@ class ClozeImageDragDrop extends Component {
             {previewTab === 'clear' && (
               <ClozeImageDragDropDisplay
                 preview
-                hasGroupResponses={item.hasGroupResponses}
+                validation={item.validation}
                 configureOptions={{
                   duplicatedResponses,
                   showDraghandle,
                   shuffleOptions,
+                  transparentResponses,
                 }}
+                options={previewDisplayOptions}
+                imageAlterText={item.imageAlterText}
+                responseContainers={item.responses}
+                imageUrl={item.imageUrl}
+                imageWidth={item.imageWidth}
+                question={previewStimulus}
+                showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+                uiStyle={uiStyle}
+                backgroundColor={item.background}
                 key={previewDisplayOptions && previewStimulus && uiStyle}
                 smallSize={smallSize}
-                options={previewDisplayOptions}
-                question={previewStimulus}
-                uiStyle={uiStyle}
                 templateMarkUp={item.templateMarkUp}
                 userSelections={[]}
                 onChange={this.handleAddAnswer}

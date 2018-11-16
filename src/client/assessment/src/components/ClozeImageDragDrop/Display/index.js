@@ -189,6 +189,8 @@ class ClozeDragDropDisplay extends Component {
       heightpx: heightpx !== 0 ? heightpx : 'auto',
       whiteSpace: wordwrap ? 'inherit' : 'nowrap',
     }
+
+    console.log('imagedragdrop_template_box responseContainers:', responseContainers);
     const previewTemplateBoxLayout = (
       <div className="imagedragdrop_template_box" style={{ fontSize: smallSize ? 10 : fontSize, padding: smallSize ? 0 : 20 }}>
       <div style={{ position: 'relative', top: 0, left: 0, width: smallSize ? '100%' : imageWidth, margin: 'auto', minWidth: smallSize ? '100%' : 600, maxWidth: '100%' }}>

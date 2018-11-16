@@ -222,7 +222,7 @@ Options.defaultProps = {
   },
 };
 
-export default withNamespaces('assessment')(Options);
+export default React.memo(withNamespaces('assessment')(Options));
 
 const Container = styled.div`
   position: relative;

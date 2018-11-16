@@ -64,4 +64,4 @@ ResponseBoxLayout.defaultProps = {
   dragHandler: false,
 };
 
-export default ResponseBoxLayout;
+export default React.memo(ResponseBoxLayout);

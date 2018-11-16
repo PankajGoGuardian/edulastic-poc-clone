@@ -60,6 +60,18 @@ router.post('/', async (req, res) => {
  *       200:
  *         description: successful
  */
+
+router.get('/count', async (req, res) => {
+  try {
+    const test = new TestModel();
+    const result = await test.getCount();
+    return successHandler(res, { count: result });
+  } catch (e) {
+    req.log.error(e);
+    res.boom.badRequest(e);
+  }
+});
+
 router.get('/', async (req, res) => {
   try {
     let { limit, index } = req.query;

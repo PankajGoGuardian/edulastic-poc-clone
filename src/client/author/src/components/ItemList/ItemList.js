@@ -113,7 +113,7 @@ class ItemList extends Component {
               <Paper padding={windowWidth > 768 ? '25px 39px 0px 39px' : '0px'}>
                 {items.map(item => (
                   // eslint-disable-next-line
-                  <Item key={item.id} item={item} history={history} windowWidth={windowWidth} />
+                  <Item key={item._id} item={item} history={history} windowWidth={windowWidth} />
                 ))}
               </Paper>
             </Items>

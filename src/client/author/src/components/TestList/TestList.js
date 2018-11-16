@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { withWindowSizes, Card, helpers, FlexContainer } from '@edulastic/common';
+import {
+  withWindowSizes,
+  Card,
+  helpers,
+  FlexContainer
+} from '@edulastic/common';
 import { compose } from 'redux';
 import { Row, Col, Input, Pagination, Spin } from 'antd';
 
@@ -14,7 +19,7 @@ import {
   getTestsCountSelector,
   getTestsLimitSelector,
   getTestsPageSelector,
-  getTestsCreatingSelector,
+  getTestsCreatingSelector
 } from '../../selectors/tests';
 import TestListHeader from './TestListHeader';
 import TestFilters from '../common/TestFilters';
@@ -24,7 +29,7 @@ import SortBar from './SortBar';
 class TestList extends Component {
   state = {
     searchStr: '',
-    blockStyle: 'tile',
+    blockStyle: 'tile'
   };
 
   items = [
@@ -32,11 +37,12 @@ class TestList extends Component {
     { icon: 'folder', key: 'byMe', text: 'Authored by me' },
     { icon: 'copy', key: 'coAuthor', text: 'I am a Co-Author' },
     { icon: 'reload', key: 'previously', text: 'Previously Used' },
-    { icon: 'heart', key: 'favorites', text: 'My Favorites' },
+    { icon: 'heart', key: 'favorites', text: 'My Favorites' }
   ];
 
   componentDidMount() {
     const { receiveTests, page, limit } = this.props;
+
     receiveTests({ page, limit });
   }
 
@@ -44,15 +50,15 @@ class TestList extends Component {
     const { receiveTests, limit } = this.props;
     this.setState(
       {
-        searchStr: value,
+        searchStr: value
       },
-      () => receiveTests({ page: 1, limit, search: value }),
+      () => receiveTests({ page: 1, limit, search: value })
     );
   };
 
   handleSearchChange = (e) => {
     this.setState({
-      searchStr: e.target.value,
+      searchStr: e.target.value
     });
   };
 
@@ -82,18 +88,31 @@ class TestList extends Component {
 
   handleStyleChange = (blockStyle) => {
     this.setState({
-      blockStyle,
+      blockStyle
     });
   };
 
   render() {
-    const { tests, page, limit, count, loading, history, creating, match } = this.props;
+    const {
+      tests,
+      page,
+      limit,
+      count,
+      loading,
+      history,
+      creating,
+      match
+    } = this.props;
     const { searchStr, blockStyle } = this.state;
     const { from, to } = helpers.getPaginationInfo({ page, limit, count });
 
     return (
       <div>
-        <TestListHeader onCreate={this.handleCreate} creating={creating} title="Test List" />
+        <TestListHeader
+          onCreate={this.handleCreate}
+          creating={creating}
+          title="Test List"
+        />
         <Container>
           <Row gutter={16}>
             <Col span={6}>
@@ -122,7 +141,10 @@ class TestList extends Component {
           <Row gutter={16}>
             <Col span={6}>
               <TestFilters onChange={this.handleFiltersChange}>
-                <TestFiltersNav items={this.items} onSelect={this.handleFilterNavSelect} />
+                <TestFiltersNav
+                  items={this.items}
+                  onSelect={this.handleFilterNavSelect}
+                />
               </TestFilters>
             </Col>
             <Col span={18} style={{ paddingLeft: 24, marginTop: 10 }}>
@@ -133,7 +155,7 @@ class TestList extends Component {
                   <Row gutter={16} type="flex">
                     {tests.map(item => (
                       <Col
-                        key={item.id}
+                        key={item._id}
                         span={blockStyle === 'tile' ? 8 : 24}
                         style={{ marginBottom: 15 }}
                       >
@@ -168,7 +190,7 @@ TestList.propTypes = {
   count: PropTypes.number.isRequired,
   loading: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
-  match: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired
 };
 
 const enhance = compose(
@@ -180,12 +202,12 @@ const enhance = compose(
       page: getTestsPageSelector(state),
       limit: getTestsLimitSelector(state),
       count: getTestsCountSelector(state),
-      creating: getTestsCreatingSelector(state),
+      creating: getTestsCreatingSelector(state)
     }),
     {
-      receiveTests: receiveTestsAction,
-    },
-  ),
+      receiveTests: receiveTestsAction
+    }
+  )
 );
 
 export default enhance(TestList);

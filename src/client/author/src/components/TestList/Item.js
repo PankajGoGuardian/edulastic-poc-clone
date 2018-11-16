@@ -19,7 +19,7 @@ class Item extends Component {
 
   moveToItem = () => {
     const { history, item, match } = this.props;
-    history.push(`${match.url}/${item.id}`);
+    history.push(`${match.url}/${item._id}`);
   };
 
   get name() {

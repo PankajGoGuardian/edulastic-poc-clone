@@ -16,8 +16,8 @@ export const testSchema = {
   grades: joi.array(),
   subjects: joi.array(),
   courses: joi.array(),
-  collection: joi.string().allow(''),
-  analytics: joi.object()
+  collections: joi.string().allow(''),
+  analytics: joi.any()
 };
 
 const createItemFields = [

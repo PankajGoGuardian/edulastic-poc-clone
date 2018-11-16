@@ -15,12 +15,12 @@ import {
   receiveTestByIdAction,
   setTestDataAction,
   updateTestAction,
-  setDefaultTestDataAction,
+  setDefaultTestDataAction
 } from '../../actions/tests';
 import {
   getTestSelector,
   getTestItemsRowsSelector,
-  getTestsCreatingSelector,
+  getTestsCreatingSelector
 } from '../../selectors/tests';
 import SourceModal from '../QuestionEditor/SourceModal';
 import Review from './Review';
@@ -36,7 +36,7 @@ const TestPage = ({
   updateTest,
   setDefaultData,
   rows,
-  creating,
+  creating
 }) => {
   useEffect(
     () => {
@@ -46,7 +46,7 @@ const TestPage = ({
         setDefaultData();
       }
     },
-    [match],
+    [match]
   );
 
   const [current, setCurrent] = useState('addItems');
@@ -65,11 +65,13 @@ const TestPage = ({
 
     newTest.testItems = testItems;
     newTest.scoring.testItems = testItems.map((item) => {
-      const foundItem = newTest.scoring.testItems.find(({ id }) => item && item.id === id);
+      const foundItem = newTest.scoring.testItems.find(
+        ({ id }) => item && item._id === id
+      );
       if (!foundItem) {
         return {
-          id: item ? item.id : uuidv4(),
-          points: 0,
+          id: item ? item._id : uuidv4(),
+          points: 0
         };
       }
       return foundItem;
@@ -87,13 +89,17 @@ const TestPage = ({
     setData({ ...test, subjects });
   };
 
-  const selectedItems = test.testItems.map(({ id = uuidv4() }) => id);
+  const selectedItems = test.testItems.map(({ _id = uuidv4() }) => _id);
 
   const renderContent = () => {
     switch (current) {
       case 'addItems':
         return (
-          <AddItems onAddItems={handleAddItems} selectedItems={selectedItems} current={current} />
+          <AddItems
+            onAddItems={handleAddItems}
+            selectedItems={selectedItems}
+            current={current}
+          />
         );
       case 'summary':
         return <Summary setData={setData} test={test} current={current} />;
@@ -115,8 +121,9 @@ const TestPage = ({
   };
 
   const handleSave = () => {
-    if (test.id) {
-      updateTest(test.id, test);
+    console.log('testId', test);
+    if (test._id) {
+      updateTest(test._id, test);
     } else {
       createTest(test);
     }
@@ -139,7 +146,10 @@ const TestPage = ({
   return (
     <div>
       {showModal && (
-        <SourceModal onClose={() => setShowModal(false)} onApply={handleApplySource}>
+        <SourceModal
+          onClose={() => setShowModal(false)}
+          onApply={handleApplySource}
+        >
           {JSON.stringify(test, null, 4)}
         </SourceModal>
       )}
@@ -165,11 +175,11 @@ TestPage.propTypes = {
   match: PropTypes.object.isRequired,
   rows: PropTypes.array.isRequired,
   creating: PropTypes.bool.isRequired,
-  test: PropTypes.object,
+  test: PropTypes.object
 };
 
 TestPage.defaultProps = {
-  test: null,
+  test: null
 };
 
 const enhance = compose(
@@ -179,16 +189,16 @@ const enhance = compose(
     state => ({
       test: getTestSelector(state),
       rows: getTestItemsRowsSelector(state),
-      creating: getTestsCreatingSelector(state),
+      creating: getTestsCreatingSelector(state)
     }),
     {
       createTest: createTestAction,
       updateTest: updateTestAction,
       receiveTestById: receiveTestByIdAction,
       setData: setTestDataAction,
-      setDefaultData: setDefaultTestDataAction,
-    },
-  ),
+      setDefaultData: setDefaultTestDataAction
+    }
+  )
 );
 
 export default enhance(TestPage);

@@ -1,7 +1,7 @@
 import QuestionModel from '../models/question';
 
 // append Questions data to testItems
-export const getQuestionsData = async (item, isAuthor) => {
+export const getQuestionsData = async (item, isAuthor = false) => {
   const { rows, columns } = item;
   let questionIds = [];
   [...rows, ...columns].forEach((entry) => {

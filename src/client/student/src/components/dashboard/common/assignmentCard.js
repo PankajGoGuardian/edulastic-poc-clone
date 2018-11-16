@@ -29,7 +29,7 @@ const AssignmentCard = ({ data }) => (
       </div>
     </Col>
     <Col span={5}>
-      <Link to={`/student/test/${data.id}`}>
+      <Link to={`/student/test/${data._id}`}>
         <StartAssignButton>Start Assignment</StartAssignButton>
       </Link>
     </Col>

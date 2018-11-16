@@ -17,7 +17,7 @@ const formatOutput = {
 
 class Question {
   constructor() {
-    this.Question = mongoose.model('Question', questionSchema);
+    this.Question = mongoose.model('Question', questionSchema, 'Question');
   }
 
   create(question) {

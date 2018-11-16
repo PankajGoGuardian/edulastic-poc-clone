@@ -31,7 +31,7 @@ const columns = [
   {
     title: 'Class Name',
     dataIndex: 'className',
-    sorter: (a, b) => a.className.id.localeCompare(b.className.id),
+    sorter: (a, b) => a.className._id.localeCompare(b.className._id),
     render: data => <ClassCell {...data} />,
   },
   {

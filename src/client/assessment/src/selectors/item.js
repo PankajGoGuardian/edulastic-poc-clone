@@ -19,11 +19,11 @@ export const currentItemRowsSelector = createSelector(
         };
 
         if (item.data.questions && item.data.questions.length) {
-          referencePopulate = item.data.questions.find(q => q.id === widget.reference);
+          referencePopulate = item.data.questions.find(q => q._id === widget.reference);
         }
 
         if (!referencePopulate && item.data.resources && item.data.resources.length) {
-          referencePopulate = item.data.resources.find(r => r.id === widget.reference);
+          referencePopulate = item.data.resources.find(r => r._id === widget.reference);
         }
 
         return {

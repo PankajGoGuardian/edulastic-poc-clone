@@ -7,6 +7,17 @@ import { testItemSchema, createItemFormatter } from '../validators/testItem';
 
 const router = Router();
 
+// return count of test
+router.get('/count', async (req, res) => {
+  try {
+    const testItem = new TestItemModel();
+    const result = await testItem.getCount();
+    return successHandler(res, { count: result });
+  } catch (e) {
+    req.log.error(e);
+    res.boom.badRequest(e);
+  }
+});
 /**
  * @swagger
  * /testitem:
@@ -128,10 +139,22 @@ router.put('/:id', async (req, res) => {
     }
 
     const testItem = new TestItemModel();
-    const result = await testItem.update(id, data);
+    const item = await testItem.update(id, data);
 
-    const output = createItemFormatter(result);
-    return successHandler(res, output);
+    const output = [];
+
+    /*eslint-disable */
+
+    const questions = await getQuestionsData(item, true);
+    output.push({
+      ...item._doc,
+      data: { questions }
+    });
+
+    /* eslint-enable */
+
+    // const output = createItemFormatter(result);
+    return successHandler(res, output[0]);
   } catch (e) {
     req.log.error(e);
     res.boom.badRequest(e);

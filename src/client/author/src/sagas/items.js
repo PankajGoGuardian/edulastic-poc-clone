@@ -10,7 +10,7 @@ import {
   RECEIVE_ITEMS_SUCCESS,
   RECEIVE_ITEMS_ERROR,
   CREATE_ITEM_REQUEST,
-  UPDATE_ITEM_REQUEST,
+  UPDATE_ITEM_REQUEST
 } from '../constants/actions';
 
 function* receiveItemsSaga({ payload }) {
@@ -19,7 +19,7 @@ function* receiveItemsSaga({ payload }) {
 
     yield put({
       type: RECEIVE_ITEMS_SUCCESS,
-      payload: { items, page, limit: payload.limit, count },
+      payload: { items, page, limit: payload.limit, count }
     });
   } catch (err) {
     console.error(err);
@@ -27,7 +27,7 @@ function* receiveItemsSaga({ payload }) {
     yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_ITEMS_ERROR,
-      payload: { error: errorMessage },
+      payload: { error: errorMessage }
     });
   }
 }
@@ -38,7 +38,7 @@ function* receiveItemSaga({ payload }) {
 
     yield put({
       type: RECEIVE_ITEM_SUCCESS,
-      payload: { item },
+      payload: { item }
     });
   } catch (err) {
     console.error(err);
@@ -46,7 +46,7 @@ function* receiveItemSaga({ payload }) {
     yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_ITEM_ERROR,
-      payload: { error: errorMessage },
+      payload: { error: errorMessage }
     });
   }
 }
@@ -56,7 +56,7 @@ function* createItemSaga({ payload }) {
     const item = yield call(itemsApi.createItem, payload);
     yield put({
       type: RECEIVE_ITEM_SUCCESS,
-      payload: { item: item.data },
+      payload: { item: item.data }
     });
   } catch (err) {
     console.error(err);
@@ -64,7 +64,7 @@ function* createItemSaga({ payload }) {
     yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_ITEM_ERROR,
-      payload: { error: errorMessage },
+      payload: { error: errorMessage }
     });
   }
 }
@@ -75,7 +75,7 @@ function* updateItemSaga({ payload }) {
     const item = yield call(itemsApi.updateItemById, payload);
     yield put({
       type: RECEIVE_ITEM_SUCCESS,
-      payload: { item: item.data },
+      payload: { item: item.data }
     });
   } catch (err) {
     console.error(err);
@@ -83,7 +83,7 @@ function* updateItemSaga({ payload }) {
     yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_ITEM_ERROR,
-      payload: { error: errorMessage },
+      payload: { error: errorMessage }
     });
   }
 }
@@ -93,6 +93,6 @@ export default function* watcherSaga() {
     yield takeEvery(RECEIVE_ITEM_REQUEST, receiveItemSaga),
     yield takeLatest(RECEIVE_ITEMS_REQUEST, receiveItemsSaga),
     yield takeLatest(CREATE_ITEM_REQUEST, createItemSaga),
-    yield takeLatest(UPDATE_ITEM_REQUEST, updateItemSaga),
+    yield takeLatest(UPDATE_ITEM_REQUEST, updateItemSaga)
   ]);
 }

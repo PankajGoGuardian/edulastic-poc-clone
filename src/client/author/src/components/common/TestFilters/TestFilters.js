@@ -5,16 +5,34 @@ import PropTypes from 'prop-types';
 import { FlexContainer } from '@edulastic/common';
 import { Select } from 'antd';
 
-const subjects = [{ value: 'sub1', text: 'Sub1' }, { value: 'sub2', text: 'Sub2' }];
-const subjects2 = [{ value: 'all', text: 'All subjects' }, { value: 'sub1', text: 'Sub1' }];
-const standardSets = [{ value: 'all', text: 'All standard set' }, { value: 'sub1', text: 'Sub1' }];
-const collections = [{ value: 'all', text: 'All collections' }, { value: 'sub1', text: 'Sub1' }];
-const questionTypes = [{ value: 'all', text: 'All types' }, { value: 'sub1', text: 'Sub1' }];
+const subjects = [
+  { value: 'sub1', text: 'Sub1' },
+  { value: 'sub2', text: 'Sub2' }
+];
+const subjects2 = [
+  { value: 'all', text: 'All subjects' },
+  { value: 'sub1', text: 'Sub1' }
+];
+const standardSets = [
+  { value: 'all', text: 'All standard set' },
+  { value: 'sub1', text: 'Sub1' }
+];
+const collections = [
+  { value: 'all', text: 'All collections' },
+  { value: 'sub1', text: 'Sub1' }
+];
+const questionTypes = [
+  { value: 'all', text: 'All types' },
+  { value: 'sub1', text: 'Sub1' }
+];
 const knowledges = [
   { value: 'all', text: 'All depth of knowledge' },
-  { value: 'sub1', text: 'Sub1' },
+  { value: 'sub1', text: 'Sub1' }
 ];
-const difficulties = [{ value: 'all', text: 'All levels' }, { value: 'sub1', text: 'Sub1' }];
+const difficulties = [
+  { value: 'all', text: 'All levels' },
+  { value: 'sub1', text: 'Sub1' }
+];
 
 const TestFilters = ({ children, onChange }) => (
   <Container>
@@ -72,7 +90,7 @@ const TestFilters = ({ children, onChange }) => (
       size="large"
       style={{ width: '100%' }}
       defaultValue="all"
-      onChange={value => onChange('collection', value)}
+      onChange={value => onChange('collections', value)}
     >
       {collections.map(({ value, text }) => (
         <Select.Option key={value} value={value}>
@@ -127,11 +145,11 @@ const TestFilters = ({ children, onChange }) => (
 
 TestFilters.propTypes = {
   children: PropTypes.any,
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired
 };
 
 TestFilters.defaultProps = {
-  children: null,
+  children: null
 };
 
 export default TestFilters;
@@ -142,7 +160,7 @@ const Container = styled.div`
   .ant-select-selection {
     background: transparent;
   }
-  
+
   .ant-select-lg {
     font-size: 13px;
     font-weight: 600;

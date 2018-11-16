@@ -16,7 +16,7 @@ export const getItemsTypesSelector = createSelector(getTestItemsSelector, (state
       [],
     );
 
-    result[item.id] = [...new Set(types)];
+    result[item._id] = [...new Set(types)];
   });
 
   return result;
@@ -34,7 +34,7 @@ export const getStandardsSelector = createSelector(getTestItemsSelector, (state)
       return [...acc, ...t];
     }, []);
 
-    result[item.id] = tags;
+    result[item._id] = tags;
   });
 
   return result;

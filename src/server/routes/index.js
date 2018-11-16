@@ -13,7 +13,7 @@ const router = express.Router();
 router.use('/user', userApi);
 router.use('/auth', authApi);
 router.use('/file', fileApi);
-router.use('/test', testApi);
+router.use('/test/', testApi);
 router.use('/question', questionApi);
 router.use('/resources', resourcesApi);
 router.use('/search', elasticSearchApi);

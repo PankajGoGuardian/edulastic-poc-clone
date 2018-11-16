@@ -19,7 +19,7 @@ class Item extends Component {
   moveToItem = () => {
     const { history, item, t } = this.props;
     history.push({
-      pathname: `/author/items/${item.id}/item-detail`,
+      pathname: `/author/items/${item._id}/item-detail`,
       state: {
         backText: t('component.itemAdd.backToItemList'),
         backUrl: '/author/items',
@@ -34,7 +34,7 @@ class Item extends Component {
       <Container>
         <Question>
           <QuestionContent>
-            <MoveLink onClick={this.moveToItem}>{item.id}</MoveLink>
+            <MoveLink onClick={this.moveToItem}>{item._id}</MoveLink>
             <Description>
               {'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum metus et luctus lacinia. Nullam vel tincidunt nibh. Duis ac eros nunc. '}
             </Description>

@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import { withNamespaces } from '@edulastic/localization';
 import styled from 'styled-components';
 
-import O from '../../common/Options';
+import O, { Heading, Block, Label, Row, Col } from '../../common/Options';
 import AddNewBtn from './AddNewChoiceBtn';
 
-function Options({ onChange, uiStyle, t, outerStyle }) {
+const Options = ({ onChange, uiStyle, t, outerStyle }) => {
   const changeUiStyle = (prop, value) => {
     onChange('ui_style', {
       ...uiStyle,
@@ -64,11 +64,11 @@ function Options({ onChange, uiStyle, t, outerStyle }) {
 
   return (
     <O outerStyle={outerStyle}>
-      <O.Block>
-        <O.Heading>{t('component.options.layout')}</O.Heading>
-        <O.Row>
-          <O.Col md={6}>
-            <O.Label>{t('component.options.responsecontainerposition')}</O.Label>
+      <Block>
+        <Heading>{t('component.options.layout')}</Heading>
+        <Row>
+          <Col md={6}>
+            <Label>{t('component.options.responsecontainerposition')}</Label>
             <Select
               style={{ width: '80%' }}
               onChange={val => changeUiStyle('responsecontainerposition', val)}
@@ -80,9 +80,9 @@ function Options({ onChange, uiStyle, t, outerStyle }) {
               ]}
               value={uiStyle.responsecontainerposition}
             />
-          </O.Col>
-          <O.Col md={6}>
-            <O.Label>{t('component.options.stemnumeration')}</O.Label>
+          </Col>
+          <Col md={6}>
+            <Label>{t('component.options.stemnumeration')}</Label>
             <Select
               style={{ width: '80%' }}
               onChange={val => changeUiStyle('stemnumeration', val)}
@@ -93,9 +93,9 @@ function Options({ onChange, uiStyle, t, outerStyle }) {
               ]}
               value={uiStyle.stemnumeration}
             />
-          </O.Col>
-          <O.Col md={6}>
-            <O.Label>{t('component.options.fontSize')}</O.Label>
+          </Col>
+          <Col md={6}>
+            <Label>{t('component.options.fontSize')}</Label>
             <Select
               style={{ width: '80%' }}
               onChange={fontsize => changeUiStyle('fontsize', fontsize)}
@@ -108,16 +108,16 @@ function Options({ onChange, uiStyle, t, outerStyle }) {
               ]}
               value={uiStyle.fontsize}
             />
-          </O.Col>
-        </O.Row>
-        <O.Row>
-          <O.Col md={12}>
-            <O.Label>{t('component.options.responsecontainerglobal')}</O.Label>
-          </O.Col>
-        </O.Row>
-        <O.Row>
-          <O.Col md={6}>
-            <O.Label>{t('component.options.widthpx')}</O.Label>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <Label>{t('component.options.responsecontainerglobal')}</Label>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={6}>
+            <Label>{t('component.options.widthpx')}</Label>
             <TextField
               type="number"
               disabled={false}
@@ -125,9 +125,9 @@ function Options({ onChange, uiStyle, t, outerStyle }) {
               onChange={e => changeUiStyle('widthpx', +e.target.value)}
               value={uiStyle.widthpx}
             />
-          </O.Col>
-          <O.Col md={6}>
-            <O.Label>{t('component.options.heightpx')}</O.Label>
+          </Col>
+          <Col md={6}>
+            <Label>{t('component.options.heightpx')}</Label>
             <TextField
               type="number"
               disabled={false}
@@ -135,33 +135,33 @@ function Options({ onChange, uiStyle, t, outerStyle }) {
               onChange={e => changeUiStyle('heightpx', +e.target.value)}
               value={uiStyle.heightpx}
             />
-          </O.Col>
-        </O.Row>
-        <O.Row>
-          <O.Col md={6}>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={6}>
             <Checkbox
               onChange={() => changeUiStyle('wordwrap', !uiStyle.wordwrap)}
               label={t('component.options.wordwrap')}
               checked={uiStyle.wordwrap}
             />
-          </O.Col>
-        </O.Row>
-        <O.Row>
-          <O.Col md={12}>
-            <O.Label>{t('component.options.responsecontainerindividuals')}</O.Label>
-          </O.Col>
-        </O.Row>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <Label>{t('component.options.responsecontainerindividuals')}</Label>
+          </Col>
+        </Row>
         {uiStyle.responsecontainerindividuals.map((responsecontainerindividual, index) => (
           <Container key={index}>
             <Delete onClick={() => removeIndividual(index)}>X</Delete>
             <div>
-              <O.Col md={12}>
-                <O.Label>{`${t('component.options.responsecontainerindividual')} ${index + 1}`}</O.Label>
-              </O.Col>
+              <Col md={12}>
+                <Label>{`${t('component.options.responsecontainerindividual')} ${index + 1}`}</Label>
+              </Col>
             </div>
-            <O.Row>
-              <O.Col md={6}>
-                <O.Label>{t('component.options.widthpx')}</O.Label>
+            <Row>
+              <Col md={6}>
+                <Label>{t('component.options.widthpx')}</Label>
                 <TextField
                   type="number"
                   disabled={false}
@@ -169,9 +169,9 @@ function Options({ onChange, uiStyle, t, outerStyle }) {
                   onChange={e => changeIndividualUiStyle('widthpx', +e.target.value, index)}
                   value={responsecontainerindividual.widthpx}
                 />
-              </O.Col>
-              <O.Col md={6}>
-                <O.Label>{t('component.options.heightpx')}</O.Label>
+              </Col>
+              <Col md={6}>
+                <Label>{t('component.options.heightpx')}</Label>
                 <TextField
                   type="number"
                   disabled={false}
@@ -179,28 +179,28 @@ function Options({ onChange, uiStyle, t, outerStyle }) {
                   onChange={e => changeIndividualUiStyle('heightpx', +e.target.value, index)}
                   value={responsecontainerindividual.heightpx}
                 />
-              </O.Col>
-            </O.Row>
-            <O.Row>
-              <O.Col md={6}>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
                 <Checkbox
                   onChange={() => changeIndividualUiStyle('wordwrap', !responsecontainerindividual.wordwrap, index)}
                   label={t('component.options.wordwrap')}
                   checked={responsecontainerindividual.wordwrap}
                 />
-              </O.Col>
-            </O.Row>
+              </Col>
+            </Row>
           </Container>
         ))}
-        <O.Row>
-          <O.Col md={12}>
-            <AddNewBtn onClick={() => addIndividual()}>add</AddNewBtn>
-          </O.Col>
-        </O.Row>
-      </O.Block>
+        <Row>
+          <Col md={12}>
+            <AddNewBtn onClick={() => addIndividual()}>{t('component.options.add')}</AddNewBtn>
+          </Col>
+        </Row>
+      </Block>
     </O>
   );
-}
+};
 
 Options.propTypes = {
   onChange: PropTypes.func.isRequired,
@@ -222,7 +222,7 @@ Options.defaultProps = {
   },
 };
 
-export default withNamespaces('assessment')(Options);
+export default React.memo(withNamespaces('assessment')(Options));
 
 const Container = styled.div`
   position: relative;

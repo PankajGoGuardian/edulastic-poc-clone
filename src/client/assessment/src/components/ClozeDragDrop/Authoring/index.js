@@ -16,9 +16,9 @@ import AddNewChoiceBtn from './AddNewChoiceBtn';
 import { setQuestionDataAction } from '../../../../../author/src/actions/question';
 import DeleteButton from '../components/DeleteButton';
 
-const DragHandle = SortableHandle(() => <i className="fa fa-align-justify" />);
+const DragHandle = React.memo(SortableHandle(() => <i className="fa fa-align-justify" />));
 
-const SortableItem = SortableElement(({ value, onRemove, onChange }) => (
+const SortableItem = React.memo(SortableElement(({ value, onRemove, onChange }) => (
   <SortableItemContainer>
     <div className="main">
       <DragHandle />
@@ -28,9 +28,9 @@ const SortableItem = SortableElement(({ value, onRemove, onChange }) => (
     </div>
     <DeleteButton onClick={onRemove} />
   </SortableItemContainer>
-));
+)));
 
-const SortableList = SortableContainer(({ items, onRemove, onChange }) => (
+const SortableList = React.memo(SortableContainer(({ items, onRemove, onChange }) => (
   <div>
     {items.map((value, index) => (
       <SortableItem
@@ -42,7 +42,7 @@ const SortableList = SortableContainer(({ items, onRemove, onChange }) => (
       />
     ))}
   </div>
-));
+)));
 
 const defaultTemplateMarkup = '<p>Risus </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>';
 
@@ -105,7 +105,6 @@ class ClozeDragDropAuthoring extends Component {
 
   onChangeMarkUp = (html) => {
     const templateMarkUp = html;
-    console.log('templateMarkUp:', templateMarkUp);
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, templateMarkUp });
   }
@@ -158,7 +157,6 @@ class ClozeDragDropAuthoring extends Component {
   }
 
   editGroupOptions = (index, itemIndex, e) => {
-    console.log('params:', index, itemIndex, e);
     const { groupResponses } = this.state;
     const newGroupResponses = groupResponses.slice();
     newGroupResponses[index].options[itemIndex] = e.target.value;
@@ -261,7 +259,7 @@ class ClozeDragDropAuthoring extends Component {
             </div>
           ))}
           {hasGroupResponses &&
-            <Button type="primary" onClick={this.addGroup} style={{ background: '#12a6e8' }}>Add Group</Button>
+            <Button type="primary" onClick={this.addGroup} style={{ background: '#12a6e8' }}>{t('component.clozeDragDrop.addgroup')}</Button>
           }
         </PaddingDiv>
       </div>

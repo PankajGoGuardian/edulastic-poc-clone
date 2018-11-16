@@ -30,7 +30,7 @@ const defaultImageURL = 'https://assets.learnosity.com/demos/docs/colored_world_
 const Option = Select.Option;
 const { Dragger } = Upload;
 
-const SortableItem = SortableElement(({ value, onRemove, onChange }) => (
+const SortableItem = React.memo(SortableElement(({ value, onRemove, onChange }) => (
   <SortableItemContainer>
     <div className="main">
       <DragHandle />
@@ -40,10 +40,10 @@ const SortableItem = SortableElement(({ value, onRemove, onChange }) => (
     </div>
     <DeleteButton onDelete={onRemove} />
   </SortableItemContainer>
-));
+)));
 
-const SortableList = SortableContainer(({ items, onRemove, onChange }) => (
-  <div>
+const SortableList = React.memo(SortableContainer(({ items, onRemove, onChange }) => (
+  <FlexContainer style={{ flexFlow: 'row wrap' }}>
     {items.map((value, index) => (
       <SortableItem
         key={index}
@@ -53,8 +53,8 @@ const SortableList = SortableContainer(({ items, onRemove, onChange }) => (
         onChange={e => onChange(index, e)}
       />
     ))}
-  </div>
-));
+  </FlexContainer>
+)));
 
 class clozeImageDragDropAuthoring extends Component {
   static propTypes = {
@@ -107,7 +107,6 @@ class clozeImageDragDropAuthoring extends Component {
   };
 
   onResponsePropChange = (prop, value) => {
-    console.log('prop', prop, value);
     const { setQuestionData } = this.props;
     const newItem = this.getNewItem();
     if (newItem.responseLayout === undefined) {
@@ -152,7 +151,6 @@ class clozeImageDragDropAuthoring extends Component {
 
   handleImageUpload = (info) => {
     const { status, response } = info.file;
-    console.log('info:', info);
     if (status === 'done') {
       message.success(`${info.file.name} file uploaded successfully.`);
       const imageUrl = response.result.files.file[0].providerResponse.location;
@@ -164,7 +162,7 @@ class clozeImageDragDropAuthoring extends Component {
 
   render() {
     const { t, item } = this.props;
-    const { maxRespCount, responseLayout, imageAlterText, isEditAriaLabels, responses } = item;
+    const { maxRespCount, responseLayout, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
     const { isColorPickerVisible } = this.state;
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
 
@@ -181,9 +179,9 @@ class clozeImageDragDropAuthoring extends Component {
             value={item.stimulus}
           />
           <PaddingDiv top={30} />
-          <FlexContainer style={{ background: '#e6e6e6', height: 70, fontSize: 13 }}>
+          <FlexContainer style={{ background: '#efefefc2', height: 70, fontSize: 13 }}>
             <div style={{ alignItems: 'center' }}>
-              <InputNumber defaultValue={responseLayout && responseLayout.width} onChange={val => this.onResponsePropChange('width', val)} />
+              <InputNumber defaultValue={imageWidth || 600} onChange={val => this.onItemPropChange('imageWidth', val)} />
               <PaddingDiv left={20}>
                 {t('component.clozeImageDragDrop.widthpx')}
               </PaddingDiv>
@@ -246,11 +244,11 @@ class clozeImageDragDropAuthoring extends Component {
                   {t('component.clozeImageDragDrop.pointers')}
                 </Button>
                 <Select disabled={!hasActive} defaultValue="none" style={{ width: 100, height: 100, position: 'absolute', top: 0, left: 0, display: 'flex', alignItems: 'flex-end' }} onChange={this.handlePointersChange}>
-                  <Option value="none">None</Option>
-                  <Option value="top">Top</Option>
-                  <Option value="bottom">Bottom</Option>
-                  <Option value="left">Left</Option>
-                  <Option value="right">Right</Option>
+                  <Option value="none">{t('component.clozeImageDragDrop.none')}</Option>
+                  <Option value="top">{t('component.clozeImageDragDrop.top')}</Option>
+                  <Option value="bottom">{t('component.clozeImageDragDrop.bottom')}</Option>
+                  <Option value="left">{t('component.clozeImageDragDrop.left')}</Option>
+                  <Option value="right">{t('component.clozeImageDragDrop.right')}</Option>
                 </Select>
               </div>
             </div>
@@ -327,7 +325,7 @@ class clozeImageDragDropAuthoring extends Component {
             />
             <div>
               <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn()}>
-                {t('component.clozeImageDragDrop.add')}
+                {t('component.clozeImageDragDrop.addnewchoice')}
               </AddNewChoiceBtn>
             </div>
           </PaddingDiv>

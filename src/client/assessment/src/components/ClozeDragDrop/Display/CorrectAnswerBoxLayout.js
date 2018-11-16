@@ -54,4 +54,4 @@ CorrectAnswerBoxLayout.defaultProps = {
   userAnswers: []
 };
 
-export default CorrectAnswerBoxLayout;
+export default React.memo(CorrectAnswerBoxLayout);

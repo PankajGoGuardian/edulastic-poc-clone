@@ -14,7 +14,7 @@ DeleteButton.propTypes = {
   onDelete: PropTypes.func.isRequired,
 };
 
-export default DeleteButton;
+export default React.memo(DeleteButton);
 
 const Container = styled.div`
   width: 50px;

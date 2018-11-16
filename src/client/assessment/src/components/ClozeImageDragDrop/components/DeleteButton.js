@@ -17,7 +17,7 @@ DeleteButton.propTypes = {
 export default DeleteButton;
 
 const Container = styled.div`
-  width: 50px;
+  width: 25px;
   height: 50px;
   display: inline-flex;
   border-radius: 10px;

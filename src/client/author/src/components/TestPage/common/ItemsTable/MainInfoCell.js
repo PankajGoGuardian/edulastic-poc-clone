@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 const MainInfoCell = ({ data, history }) => {
   const goToItem = () => {
-    history.push(`/author/items/${data._id}/item-detail`);
+    history.push(`/author/items/${data.id}/item-detail`);
   };
   return (
     <div>
@@ -17,7 +17,7 @@ const MainInfoCell = ({ data, history }) => {
 
 MainInfoCell.propTypes = {
   data: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired
 };
 
 export default withRouter(MainInfoCell);

@@ -16,7 +16,7 @@ export const testSchema = {
   grades: joi.array(),
   subjects: joi.array(),
   courses: joi.array(),
-  collections: joi.string().allow(''),
+  collections: joi.any(),
   analytics: joi.any()
 };
 

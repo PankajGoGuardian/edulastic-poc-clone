@@ -10,6 +10,7 @@ import { Pointer, Point, Triangle } from '../common';
 
 /* eslint-disable */
 const defaultImageURL = 'https://assets.learnosity.com/demos/docs/colored_world_map.png';
+const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 
 class ClozeDragDropDisplay extends Component {
   constructor(props) {
@@ -218,6 +219,19 @@ class ClozeDragDropDisplay extends Component {
               } else {
                 btnStyle.width = btnStyle.widthpx;
               }
+              let indexStr = '';
+              switch (stemnumeration) {
+                case 'lowercase': {
+                  indexStr = ALPHABET[dropTargetIndex];
+                  break;
+                }
+                case 'uppercase': {
+                  indexStr = ALPHABET[dropTargetIndex].toUpperCase();
+                  break;
+                }
+                default:
+                  indexStr = dropTargetIndex + 1;
+              }
               return (
                 <Droppable
                   key={index}
@@ -226,7 +240,7 @@ class ClozeDragDropDisplay extends Component {
                   className={'imagelabeldragdrop-droppable active'}
                   onDrop={data => this.onDrop(data, dropTargetIndex)}
                 >
-                  <span className="index-box">{dropTargetIndex + 1}</span>
+                  <span className="index-box">{indexStr}</span>
                   <div className="container">
                   {userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].map(answer => (
                     <Draggable

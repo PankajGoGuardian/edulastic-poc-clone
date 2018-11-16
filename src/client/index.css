@@ -743,3 +743,17 @@ input[type="checkbox"] {
 .ant-upload.ant-upload-drag {
   padding: 20px;
 }
+
+.responseboxContainer.left .responses_box {
+  display: block;
+  padding-right: 20px !important;
+  padding-left: 20px !important;
+  text-align: center;
+}
+
+.responseboxContainer.right .responses_box {
+  display: block;
+  padding-right: 20px !important;
+  padding-left: 20px !important;
+  text-align: center;
+}

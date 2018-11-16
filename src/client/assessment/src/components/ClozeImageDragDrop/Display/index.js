@@ -304,8 +304,8 @@ class ClozeDragDropDisplay extends Component {
             </React.Fragment>
           )}
           {responsecontainerposition === 'left' && (
-            <div style={{ display: 'flex', width: '80vw' }}>
-              <div hidden={checkAnswer || showAnswer} style={{ height: '100%', width: '30%', margin: 15, borderRadius: 10, background: 'lightgray', display: 'flex', justifyContent: 'center' }}>
+            <div style={{ display: 'flex' }}>
+              <div hidden={checkAnswer || showAnswer} className="left responseboxContainer" style={{ width: '20%', margin: 15, height: 'auto', borderRadius: 10, background: 'lightgray', display: 'flex', justifyContent: 'center' }}>
                 {responseBoxLayout}
               </div>
               <div style={{ margin: '15px 0 15px 15px', borderRadius: 10, flex: 1 }}>
@@ -314,11 +314,11 @@ class ClozeDragDropDisplay extends Component {
             </div>
           )}
           {responsecontainerposition === 'right' && (
-            <div style={{ display: 'flex', width: '80vw' }}>
+            <div style={{ display: 'flex' }}>
               <div style={{ flex: 1, margin: '15px 15px 15px 0', borderRadius: 10 }}>
                 {templateBoxLayout}
               </div>
-              <div hidden={checkAnswer || showAnswer} style={{ height: '100%', width: '30%', margin: 15, borderRadius: 10, background: 'lightgray', display: 'flex', justifyContent: 'center' }}>
+              <div hidden={checkAnswer || showAnswer} className="right responseboxContainer" style={{ height: 'auto', width: '20%', margin: 15, borderRadius: 10, background: 'lightgray', display: 'flex', justifyContent: 'center' }}>
                 {responseBoxLayout}
               </div>
             </div>

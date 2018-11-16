@@ -244,11 +244,11 @@ class clozeImageDragDropAuthoring extends Component {
                   {t('component.clozeImageDragDrop.pointers')}
                 </Button>
                 <Select disabled={!hasActive} defaultValue="none" style={{ width: 100, height: 100, position: 'absolute', top: 0, left: 0, display: 'flex', alignItems: 'flex-end' }} onChange={this.handlePointersChange}>
-                  <Option value="none">None</Option>
-                  <Option value="top">Top</Option>
-                  <Option value="bottom">Bottom</Option>
-                  <Option value="left">Left</Option>
-                  <Option value="right">Right</Option>
+                  <Option value="none">{t('component.clozeImageDragDrop.none')}</Option>
+                  <Option value="top">{t('component.clozeImageDragDrop.top')}</Option>
+                  <Option value="bottom">{t('component.clozeImageDragDrop.bottom')}</Option>
+                  <Option value="left">{t('component.clozeImageDragDrop.left')}</Option>
+                  <Option value="right">{t('component.clozeImageDragDrop.right')}</Option>
                 </Select>
               </div>
             </div>

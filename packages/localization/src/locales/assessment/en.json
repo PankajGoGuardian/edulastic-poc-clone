@@ -84,7 +84,8 @@
       "choicesforresponse": "Choices for Responses",
       "duplicatedresponses": "Duplicated responses",
       "showdraghandle": "Show Drag Handle",
-      "shuffleoptions": "Shuffle Options"
+      "shuffleoptions": "Shuffle Options",
+      "addgroup": "Add Group"
     },
     "clozeImageDragDrop": {
       "composequestion": "Compose Question",
@@ -99,6 +100,11 @@
       "pointers": "Pointers",
       "delete": "Delete",
       "fillcolor": "Fill color",
+      "top": "Top",
+      "bottom": "Bottom",
+      "right": "Right",
+      "left": "Left",
+      "none": "None",
       "maximumresponses": "Maximum responses per container",
       "showdashedborder": "Show dashed border",
       "editAriaLabels": "Edit ARIA labels",

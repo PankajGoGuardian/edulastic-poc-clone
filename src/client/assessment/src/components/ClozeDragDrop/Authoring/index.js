@@ -259,7 +259,7 @@ class ClozeDragDropAuthoring extends Component {
             </div>
           ))}
           {hasGroupResponses &&
-            <Button type="primary" onClick={this.addGroup} style={{ background: '#12a6e8' }}>Add Group</Button>
+            <Button type="primary" onClick={this.addGroup} style={{ background: '#12a6e8' }}>{t('component.clozeDragDrop.addgroup')}</Button>
           }
         </PaddingDiv>
       </div>

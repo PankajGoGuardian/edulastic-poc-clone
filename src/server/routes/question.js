@@ -52,8 +52,10 @@ router.post('/', async (req, res) => {
  *     produces:
  *       - application/json
  *     parameters:
- *        - name: question
- *          in: body
+ *        - name: limit
+ *          in: query
+ *        - name: index
+ *          in: query
  *     responses:
  *       200:
  *         description: successful

@@ -9,7 +9,7 @@ const router = Router();
 
 /**
  * @swagger
- * /testitems:
+ * /testitem:
  *   get:
  *     tags:
  *       - TestItem
@@ -17,8 +17,10 @@ const router = Router();
  *     produces:
  *       - application/json
  *     parameters:
- *        - name: question
- *          in: body
+ *        - name: limit
+ *          in: query
+ *        - name: index
+ *          in: query
  *     responses:
  *       200:
  *         description: successful
@@ -61,7 +63,7 @@ router.get('/', async (req, res) => {
 
 /**
  * @swagger
- * /testitems:
+ * /testitem:
  *   post:
  *     tags:
  *       - TestItem
@@ -97,7 +99,7 @@ router.post('/', async (req, res) => {
 
 /**
  * @swagger
- * /testitems/{id}:
+ * /testitem/{id}:
  *   put:
  *     tags:
  *       - TestItem
@@ -138,7 +140,7 @@ router.put('/:id', async (req, res) => {
 
 /**
  * @swagger
- * /testitems/{id}:
+ * /testitem/{id}:
  *   get:
  *     tags:
  *       - TestItem
@@ -184,7 +186,7 @@ router.get('/:id', async (req, res) => {
 
 /**
  * @swagger
- * /testitems/{id}:
+ * /testitem/{id}:
  *   delete:
  *     tags:
  *       - TestItem

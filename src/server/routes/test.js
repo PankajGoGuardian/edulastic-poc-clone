@@ -6,6 +6,22 @@ import { successHandler } from '../utils/responseHandler';
 
 const router = Router();
 
+/**
+ * @swagger
+ * /tests:
+ *   post:
+ *     tags:
+ *       - Tests
+ *     summary: Create a test
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: test
+ *          in: body
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 // create test
 router.post('/', async (req, res) => {
   try {
@@ -26,6 +42,24 @@ router.post('/', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /tests:
+ *   get:
+ *     tags:
+ *       - Tests
+ *     summary: Get all test
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: limit
+ *          in: query
+ *        - name: index
+ *          in: query
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 router.get('/', async (req, res) => {
   try {
     let { limit, index } = req.query;
@@ -43,6 +77,23 @@ router.get('/', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /tests/{id}:
+ *   get:
+ *     tags:
+ *       - Tests
+ *     summary: Get test by id
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: id
+ *          example:
+ *            id: 5bebe8706c0d6e57f3219113
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -57,6 +108,23 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /tets/{id}:
+ *   put:
+ *     tags:
+ *       - Tests
+ *     summary: Update test by id
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: id
+ *          example:
+ *            id: 5bebe8706c0d6e57f3219113
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 router.put('/:id', async (req, res) => {
   try {
     const data = req.body;
@@ -77,6 +145,23 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /tests/{id}:
+ *   delete:
+ *     tags:
+ *       - Tests
+ *     summary: Delete test by id
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: id
+ *          example:
+ *            id: 5bebe8706c0d6e57f3219113
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;

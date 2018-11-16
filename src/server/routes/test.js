@@ -88,6 +88,8 @@ router.get('/', async (req, res) => {
  *       - application/json
  *     parameters:
  *        - name: id
+ *          in: path
+ *          required: true
  *          example:
  *            id: 5bebe8706c0d6e57f3219113
  *     responses:
@@ -119,6 +121,8 @@ router.get('/:id', async (req, res) => {
  *       - application/json
  *     parameters:
  *        - name: id
+ *          in: path
+ *          required: true
  *          example:
  *            id: 5bebe8706c0d6e57f3219113
  *     responses:
@@ -156,6 +160,8 @@ router.put('/:id', async (req, res) => {
  *       - application/json
  *     parameters:
  *        - name: id
+ *          in: path
+ *          required: true
  *          example:
  *            id: 5bebe8706c0d6e57f3219113
  *     responses:

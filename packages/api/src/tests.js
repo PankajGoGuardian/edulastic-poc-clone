@@ -51,7 +51,7 @@ const create = data =>
     })
     .then(result => result.data.result);
 
-const update = ({ id, test }) => {
+const update = ({ id, data: test }) => {
   let data = formatData(test);
   api
     .callApi({

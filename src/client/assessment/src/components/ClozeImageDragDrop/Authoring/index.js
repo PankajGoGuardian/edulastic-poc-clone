@@ -30,7 +30,7 @@ const defaultImageURL = 'https://assets.learnosity.com/demos/docs/colored_world_
 const Option = Select.Option;
 const { Dragger } = Upload;
 
-const SortableItem = SortableElement(({ value, onRemove, onChange }) => (
+const SortableItem = React.memo(SortableElement(({ value, onRemove, onChange }) => (
   <SortableItemContainer>
     <div className="main">
       <DragHandle />
@@ -40,9 +40,9 @@ const SortableItem = SortableElement(({ value, onRemove, onChange }) => (
     </div>
     <DeleteButton onDelete={onRemove} />
   </SortableItemContainer>
-));
+)));
 
-const SortableList = SortableContainer(({ items, onRemove, onChange }) => (
+const SortableList = React.memo(SortableContainer(({ items, onRemove, onChange }) => (
   <FlexContainer style={{ flexFlow: 'row wrap' }}>
     {items.map((value, index) => (
       <SortableItem
@@ -54,7 +54,7 @@ const SortableList = SortableContainer(({ items, onRemove, onChange }) => (
       />
     ))}
   </FlexContainer>
-));
+)));
 
 class clozeImageDragDropAuthoring extends Component {
   static propTypes = {

@@ -18,7 +18,7 @@ import { setQuestionDataAction } from '../../../../author/src/actions/question';
 import CorrectAnswerOptions from './components/CorrectAnswerOptions';
 import Options from './Options';
 
-const EmptyWrapper = styled.div``;
+const EmptyWrapper = React.memo(styled.div``);
 
 class ClozeImageDragDrop extends Component {
   state = {

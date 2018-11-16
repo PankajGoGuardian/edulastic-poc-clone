@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Draggable } from 'react-drag-and-drop';
 
-const ResponseBoxLayout = ({ smallSize, responses, fontSize, dragHandler, transparentResponses }) => {
+const ResponseBoxLayout = ({ smallSize, responses, fontSize, dragHandler,
+  transparentResponses }) => {
   console.log('layout;');
   return (
     <div className="responses_box" style={{ padding: smallSize ? '5px 10px' : 16 }}>
@@ -39,4 +40,4 @@ ResponseBoxLayout.defaultProps = {
   transparentResponses: false,
 };
 
-export default ResponseBoxLayout;
+export default React.memo(ResponseBoxLayout);

@@ -5,7 +5,7 @@ import { withNamespaces } from '@edulastic/localization';
 
 import O from '../../common/Options';
 
-function Options({ onChange, uiStyle, t, outerStyle }) {
+const Options = ({ onChange, uiStyle, t, outerStyle }) => {
   const changeUiStyle = (prop, value) => {
     onChange('ui_style', {
       ...uiStyle,
@@ -64,7 +64,7 @@ function Options({ onChange, uiStyle, t, outerStyle }) {
       </O.Block>
     </O>
   );
-}
+};
 
 Options.propTypes = {
   onChange: PropTypes.func.isRequired,
@@ -86,4 +86,4 @@ Options.defaultProps = {
   },
 };
 
-export default withNamespaces('assessment')(Options);
+export default React.memo(withNamespaces('assessment')(Options));

@@ -44,6 +44,7 @@
       "bottom": "Bottom",
       "right": "Right",
       "left": "Left",
+      "add": "add",
       "responsecontainerindividual": "Response Container",
       "responsecontainerindividuals": "Response container (individual)"
     },

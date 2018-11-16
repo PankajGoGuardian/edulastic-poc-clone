@@ -3,7 +3,7 @@ import { Select } from '@edulastic/common';
 import PropTypes from 'prop-types';
 import { withNamespaces } from '@edulastic/localization';
 
-import O from '../../common/Options';
+import O, { Block, Label, Col, Heading, Row } from '../../common/Options';
 
 const Options = ({ onChange, uiStyle, t, outerStyle }) => {
   const changeUiStyle = (prop, value) => {
@@ -15,11 +15,11 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
 
   return (
     <O outerStyle={outerStyle}>
-      <O.Block>
-        <O.Heading>{t('component.options.layout')}</O.Heading>
-        <O.Row>
-          <O.Col md={6}>
-            <O.Label>{t('component.options.responsecontainerposition')}</O.Label>
+      <Block>
+        <Heading>{t('component.options.layout')}</Heading>
+        <Row>
+          <Col md={6}>
+            <Label>{t('component.options.responsecontainerposition')}</Label>
             <Select
               style={{ width: '80%' }}
               onChange={val => changeUiStyle('responsecontainerposition', val)}
@@ -31,9 +31,9 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
               ]}
               value={uiStyle.responsecontainerposition}
             />
-          </O.Col>
-          <O.Col md={6}>
-            <O.Label>{t('component.options.stemnumeration')}</O.Label>
+          </Col>
+          <Col md={6}>
+            <Label>{t('component.options.stemnumeration')}</Label>
             <Select
               style={{ width: '80%' }}
               onChange={val => changeUiStyle('stemnumeration', val)}
@@ -44,9 +44,9 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
               ]}
               value={uiStyle.stemnumeration}
             />
-          </O.Col>
-          <O.Col md={6}>
-            <O.Label>{t('component.options.fontSize')}</O.Label>
+          </Col>
+          <Col md={6}>
+            <Label>{t('component.options.fontSize')}</Label>
             <Select
               style={{ width: '80%' }}
               onChange={fontsize => changeUiStyle('fontsize', fontsize)}
@@ -59,9 +59,9 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
               ]}
               value={uiStyle.fontsize}
             />
-          </O.Col>
-        </O.Row>
-      </O.Block>
+          </Col>
+        </Row>
+      </Block>
     </O>
   );
 };

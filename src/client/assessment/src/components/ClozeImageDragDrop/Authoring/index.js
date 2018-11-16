@@ -107,7 +107,6 @@ class clozeImageDragDropAuthoring extends Component {
   };
 
   onResponsePropChange = (prop, value) => {
-    console.log('prop', prop, value);
     const { setQuestionData } = this.props;
     const newItem = this.getNewItem();
     if (newItem.responseLayout === undefined) {
@@ -118,7 +117,6 @@ class clozeImageDragDropAuthoring extends Component {
   }
 
   onItemPropChange = (prop, value) => {
-    console.log('prop changed');
     const { setQuestionData } = this.props;
     const newItem = this.getNewItem();
     newItem[prop] = value;
@@ -153,7 +151,6 @@ class clozeImageDragDropAuthoring extends Component {
 
   handleImageUpload = (info) => {
     const { status, response } = info.file;
-    console.log('info:', info);
     if (status === 'done') {
       message.success(`${info.file.name} file uploaded successfully.`);
       const imageUrl = response.result.files.file[0].providerResponse.location;

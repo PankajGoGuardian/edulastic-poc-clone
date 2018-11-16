@@ -38,7 +38,6 @@ class ClozeDragDropDisplay extends Component {
   }
 
   onDrop = (data, index) => {
-    console.log('on drop data:', data, index);
     const { userAnswers: newAnswers, possibleResponses } = this.state;
     const {
       onChange: changeAnswers,
@@ -177,12 +176,10 @@ class ClozeDragDropDisplay extends Component {
     const { userAnswers, possibleResponses } = this.state;
     const { showDraghandle: dragHandler, shuffleOptions, transparentResponses } = configureOptions;
     let responses = possibleResponses;
-    if (checkAnswer) console.log('possible responses', responses, userAnswers)
     if (preview && shuffleOptions) {
       responses = this.shuffle(possibleResponses);
     }
 
-    console.log('responseContainers:', responseContainers);
     // Layout Options
     const fontSize = this.getFontSize(uiStyle.fontsize);
     const { widthpx, heightpx, wordwrap, responsecontainerposition, responsecontainerindividuals, stemnumeration } = uiStyle;

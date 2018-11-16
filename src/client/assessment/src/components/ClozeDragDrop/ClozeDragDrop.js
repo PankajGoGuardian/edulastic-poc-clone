@@ -66,7 +66,6 @@ class ClozeDragDrop extends Component {
   };
 
   handleOptionsChange = (name, value) => {
-    console.log('option changed', name, value);
     const { setQuestionData, item } = this.props;
     const newItem = cloneDeep(item);
     newItem[name] = value;

@@ -105,7 +105,6 @@ class ClozeDragDropAuthoring extends Component {
 
   onChangeMarkUp = (html) => {
     const templateMarkUp = html;
-    console.log('templateMarkUp:', templateMarkUp);
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, templateMarkUp });
   }
@@ -158,7 +157,6 @@ class ClozeDragDropAuthoring extends Component {
   }
 
   editGroupOptions = (index, itemIndex, e) => {
-    console.log('params:', index, itemIndex, e);
     const { groupResponses } = this.state;
     const newGroupResponses = groupResponses.slice();
     newGroupResponses[index].options[itemIndex] = e.target.value;

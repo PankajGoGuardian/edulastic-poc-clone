@@ -2,51 +2,48 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Draggable } from 'react-drag-and-drop';
 
-const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, dragHandler }) => {
-  console.log('layout;');
-  return (
-    <div className="responses_box" style={{ padding: smallSize ? '5px 10px' : 16 }}>
-      {hasGroupResponses && responses.map((groupResponse, index) => {
-        if (groupResponse !== null && typeof groupResponse === 'object') {
-          return (
-            <div key={index} className="group">
-              <h3>{groupResponse.title}</h3>
-              {groupResponse.options && groupResponse.options.map((option, itemIndex) => (
-                <div key={itemIndex} className="draggable_box" style={{ fontSize: smallSize ? 10 : fontSize }}>
-                  {!dragHandler && (
-                    <Draggable type="metal" data={`${option}_${index}`}>{option}</Draggable>
-                  )}
-                  {dragHandler && (
-                    <React.Fragment>
-                      <Draggable type="metal" data={`${option}_${index}`}><i className="fa fa-arrows-alt" style={{ fontSize: 12 }} /><span>{option}</span></Draggable>
-                    </React.Fragment>
-                  )}
-                </div>
-              ))}
-            </div>
-          );
-        }
+const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, dragHandler }) => (
+  <div className="responses_box" style={{ padding: smallSize ? '5px 10px' : 16 }}>
+    {hasGroupResponses && responses.map((groupResponse, index) => {
+      if (groupResponse !== null && typeof groupResponse === 'object') {
         return (
-          <React.Fragment key={index} />
+          <div key={index} className="group">
+            <h3>{groupResponse.title}</h3>
+            {groupResponse.options && groupResponse.options.map((option, itemIndex) => (
+              <div key={itemIndex} className="draggable_box" style={{ fontSize: smallSize ? 10 : fontSize }}>
+                {!dragHandler && (
+                <Draggable type="metal" data={`${option}_${index}`}>{option}</Draggable>
+                )}
+                {dragHandler && (
+                <React.Fragment>
+                  <Draggable type="metal" data={`${option}_${index}`}><i className="fa fa-arrows-alt" style={{ fontSize: 12 }} /><span>{option}</span></Draggable>
+                </React.Fragment>
+                )}
+              </div>
+            ))}
+          </div>
         );
-      })
       }
-      {!hasGroupResponses && responses.map((option, index) => (
-        <div key={index} className="draggable_box" style={{ fontSize: smallSize ? 10 : fontSize }}>
-          {!dragHandler && (
-            <Draggable type="metal" data={option}>{option}</Draggable>
-          )}
-          {dragHandler && (
-            <React.Fragment>
-              <Draggable type="metal" data={option}><i className="fa fa-arrows-alt" style={{ fontSize: 12 }} /><span>{option}</span></Draggable>
-            </React.Fragment>
-          )}
-        </div>
-      ))
+      return (
+        <React.Fragment key={index} />
+      );
+    })
       }
-    </div>
-  );
-};
+    {!hasGroupResponses && responses.map((option, index) => (
+      <div key={index} className="draggable_box" style={{ fontSize: smallSize ? 10 : fontSize }}>
+        {!dragHandler && (
+        <Draggable type="metal" data={option}>{option}</Draggable>
+        )}
+        {dragHandler && (
+        <React.Fragment>
+          <Draggable type="metal" data={option}><i className="fa fa-arrows-alt" style={{ fontSize: 12 }} /><span>{option}</span></Draggable>
+        </React.Fragment>
+        )}
+      </div>
+    ))
+      }
+  </div>
+);
 
 ResponseBoxLayout.propTypes = {
   responses: PropTypes.array,

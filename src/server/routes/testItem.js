@@ -7,9 +7,20 @@ import { testItemSchema, createItemFormatter } from '../validators/testItem';
 
 const router = Router();
 
+// return count of test
+router.get('/count', async (req, res) => {
+  try {
+    const testItem = new TestItemModel();
+    const result = await testItem.getCount();
+    return successHandler(res, { count: result });
+  } catch (e) {
+    req.log.error(e);
+    res.boom.badRequest(e);
+  }
+});
 /**
  * @swagger
- * /testitems:
+ * /testitem:
  *   get:
  *     tags:
  *       - TestItem
@@ -17,8 +28,10 @@ const router = Router();
  *     produces:
  *       - application/json
  *     parameters:
- *        - name: question
- *          in: body
+ *        - name: limit
+ *          in: query
+ *        - name: index
+ *          in: query
  *     responses:
  *       200:
  *         description: successful
@@ -61,7 +74,7 @@ router.get('/', async (req, res) => {
 
 /**
  * @swagger
- * /testitems:
+ * /testitem:
  *   post:
  *     tags:
  *       - TestItem
@@ -97,7 +110,7 @@ router.post('/', async (req, res) => {
 
 /**
  * @swagger
- * /testitems/{id}:
+ * /testitem/{id}:
  *   put:
  *     tags:
  *       - TestItem
@@ -105,8 +118,8 @@ router.post('/', async (req, res) => {
  *     produces:
  *       - application/json
  *     parameters:
- *        - name: question
- *          in: body
+ *        - name: id
+ *          in: path
  *          required: true
  *          example:
  *            id: 5bebe8706c0d6e57f3219113
@@ -126,10 +139,22 @@ router.put('/:id', async (req, res) => {
     }
 
     const testItem = new TestItemModel();
-    const result = await testItem.update(id, data);
+    const item = await testItem.update(id, data);
 
-    const output = createItemFormatter(result);
-    return successHandler(res, output);
+    const output = [];
+
+    /*eslint-disable */
+
+    const questions = await getQuestionsData(item, true);
+    output.push({
+      ...item._doc,
+      data: { questions }
+    });
+
+    /* eslint-enable */
+
+    // const output = createItemFormatter(result);
+    return successHandler(res, output[0]);
   } catch (e) {
     req.log.error(e);
     res.boom.badRequest(e);
@@ -138,7 +163,7 @@ router.put('/:id', async (req, res) => {
 
 /**
  * @swagger
- * /testitems/{id}:
+ * /testitem/{id}:
  *   get:
  *     tags:
  *       - TestItem
@@ -146,7 +171,9 @@ router.put('/:id', async (req, res) => {
  *     produces:
  *       - application/json
  *     parameters:
- *        - name: question
+ *        - name: id
+ *          in: path
+ *          required: true
  *          example:
  *            id: 5bebe8706c0d6e57f3219113
  *     responses:
@@ -184,7 +211,7 @@ router.get('/:id', async (req, res) => {
 
 /**
  * @swagger
- * /testitems/{id}:
+ * /testitem/{id}:
  *   delete:
  *     tags:
  *       - TestItem
@@ -192,8 +219,8 @@ router.get('/:id', async (req, res) => {
  *     produces:
  *       - application/json
  *     parameters:
- *        - name: question
- *          in: body
+ *        - name: id
+ *          in: path
  *          required: true
  *          example:
  *            id: 5bebe8706c0d6e57f3219113

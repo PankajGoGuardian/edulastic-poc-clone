@@ -23,11 +23,11 @@ export const getTestItemsRowsSelector = createSelector(getTestSelector, test =>
         };
 
         if (item.data.questions && item.data.questions.length) {
-          referencePopulate = item.data.questions.find(q => q.id === widget.reference);
+          referencePopulate = item.data.questions.find(q => q._id === widget.reference);
         }
 
         if (!referencePopulate && item.data.resources && item.data.resources.length) {
-          referencePopulate = item.data.resources.find(r => r.id === widget.reference);
+          referencePopulate = item.data.resources.find(r => r._id === widget.reference);
         }
 
         return {
@@ -45,8 +45,8 @@ export const getSummarySelector = createSelector(
     const reduceTestItems = (acc, testItem) => {
       const questions = get(testItem, 'data.questions', []);
       const res = questions.map(q => ({
-        id: q.id,
-        score: scoring.testItems.find(({ id }) => testItem.id === id).points || 0,
+        id: q._id,
+        score: scoring.testItems.find(({ id }) => testItem._id === id).points || 0,
         standards: get(q, 'standardsMap.domains', []).reduce(
           (st, domain) => [...st, ...domain.standards],
           [],
@@ -63,7 +63,7 @@ export const getSummarySelector = createSelector(
       ...acc,
       ...question.standards.map(standard => ({
         score: question.score || 0,
-        id: question.id,
+        id: question._id,
         standard,
       })),
     ];

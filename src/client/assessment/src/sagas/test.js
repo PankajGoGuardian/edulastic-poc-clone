@@ -54,7 +54,7 @@ function* initiateTestActivity() {
     yield put({
       type: SET_TEST_ACTIVITY_ID,
       payload: {
-        testActivityId: '5bdbdad7af1f8b599b41d26c', // result.id,
+        testActivityId: '5bdbdad7af1f8b599b41d26c', // result._id,
       },
     });
   } catch (err) {

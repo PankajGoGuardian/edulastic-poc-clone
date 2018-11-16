@@ -8,16 +8,15 @@ import {
   RECEIVE_ITEM_DETAIL_ERROR,
   UPDATE_ITEM_DETAIL_REQUEST,
   UPDATE_ITEM_DETAIL_SUCCESS,
-  UPDATE_ITEM_DETAIL_ERROR,
+  UPDATE_ITEM_DETAIL_ERROR
 } from '../constants/actions';
 
 function* receiveItemSaga({ payload }) {
   try {
     const item = yield call(testItemsApi.getById, payload.id, payload.params);
-
     yield put({
       type: RECEIVE_ITEM_DETAIL_SUCCESS,
-      payload: { item },
+      payload: { item }
     });
   } catch (err) {
     console.error(err);
@@ -25,7 +24,7 @@ function* receiveItemSaga({ payload }) {
     yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_ITEM_DETAIL_ERROR,
-      payload: { error: errorMessage },
+      payload: { error: errorMessage }
     });
   }
 }
@@ -38,7 +37,7 @@ export function* updateItemSaga({ payload }) {
 
     yield put({
       type: UPDATE_ITEM_DETAIL_SUCCESS,
-      payload: { item },
+      payload: { item }
     });
     yield call(message.success, 'Update item by id is success', 'Success');
   } catch (err) {
@@ -47,7 +46,7 @@ export function* updateItemSaga({ payload }) {
     yield call(message.error, errorMessage);
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,
-      payload: { error: errorMessage },
+      payload: { error: errorMessage }
     });
   }
 }
@@ -55,6 +54,6 @@ export function* updateItemSaga({ payload }) {
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
-    yield takeEvery(UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga),
+    yield takeEvery(UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga)
   ]);
 }

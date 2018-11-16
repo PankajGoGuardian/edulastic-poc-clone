@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Draggable } from 'react-drag-and-drop';
 
-const ResponseBoxLayout = ({ smallSize, responses, fontSize, dragHandler, transparentResponses }) => {
-  console.log('layout;');
-  return (
+const ResponseBoxLayout = ({ smallSize, responses, fontSize, dragHandler,
+  transparentResponses }) => (
     <div className="responses_box" style={{ padding: smallSize ? '5px 10px' : 16 }}>
       {responses.map((option, index) => (
         <div key={index} className={transparentResponses ? 'draggable_box_transparent' : 'draggable_box'} style={{ fontSize: smallSize ? 10 : fontSize }}>
@@ -20,8 +19,7 @@ const ResponseBoxLayout = ({ smallSize, responses, fontSize, dragHandler, transp
       ))
       }
     </div>
-  );
-};
+);
 
 ResponseBoxLayout.propTypes = {
   responses: PropTypes.array,
@@ -39,4 +37,4 @@ ResponseBoxLayout.defaultProps = {
   transparentResponses: false,
 };
 
-export default ResponseBoxLayout;
+export default React.memo(ResponseBoxLayout);

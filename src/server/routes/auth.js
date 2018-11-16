@@ -12,7 +12,7 @@ const router = express.Router();
  * /auth/login:
  *   post:
  *     tags:
- *       - User
+ *       - Auth
  *     summary: Login a user with email and password
  *     produces:
  *       - application/json
@@ -60,7 +60,7 @@ router.post('/login', async (req, res) => {
  * /auth/signup:
  *   post:
  *     tags:
- *       - User
+ *       - Auth
  *     summary: Signup a user with email and password
  *     produces:
  *       - application/json

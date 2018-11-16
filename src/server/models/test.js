@@ -30,7 +30,7 @@ const formatOutput = {
 
 class Test {
   constructor() {
-    this.Test = mongoose.model('Tests', testSchema);
+    this.Test = mongoose.model('Tests', testSchema, 'Test');
   }
 
   create(test) {
@@ -68,6 +68,10 @@ class Test {
     return this.Test.remove({
       _id: new mongoose.Types.ObjectId(id)
     });
+  }
+
+  getCount() {
+    return this.Test.count();
   }
 }
 

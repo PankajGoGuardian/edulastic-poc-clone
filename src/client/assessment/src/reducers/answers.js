@@ -9,7 +9,7 @@ export default function reducer(state = initialState, { type, payload }) {
     case LOAD_ANSWERS:
       return {
         ...state,
-        ...payload,
+        ...payload
       };
     default:
       return state;

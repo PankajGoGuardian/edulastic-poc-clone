@@ -54,7 +54,6 @@ class ClozeDragDropDisplay extends Component {
   }
 
   onDrop = (data, index) => {
-    console.log('on drop data:', data, index);
     const { userAnswers: newAnswers, possibleResponses } = this.state;
     const {
       onChange: changeAnswers,
@@ -235,7 +234,6 @@ class ClozeDragDropDisplay extends Component {
     const { showDraghandle: dragHandler, shuffleOptions } = configureOptions;
     let responseIndex = 0;
     let responses = possibleResponses;
-    if (checkAnswer) console.log('possible responses', responses, userAnswers)
     if (preview && shuffleOptions) {
       if (hasGroupResponses) {
         responses = this.shuffleGroup(possibleResponses);

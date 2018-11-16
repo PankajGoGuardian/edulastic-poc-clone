@@ -118,7 +118,7 @@ const Container = styled.div`
 
 const Buttons = styled.div`
   position: absolute;
-  right: 0px;
+  right: -40px;
   top: 40px;
   width: 60px;
   display: flex;

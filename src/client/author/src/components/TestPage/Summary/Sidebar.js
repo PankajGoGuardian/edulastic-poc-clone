@@ -8,7 +8,15 @@ import { Input, Select } from 'antd';
 import { IconHeart, IconShare } from '@edulastic/icons';
 import { Title, Photo, selectsData } from '../common';
 
-const Sidebar = ({ title, description, onChangeField, tags, analytics, collection, createdBy }) => (
+const Sidebar = ({
+  title,
+  description,
+  onChangeField,
+  tags,
+  analytics,
+  collections,
+  createdBy
+}) => (
   <FlexContainer flexDirection="column">
     <Block>
       <Photo />
@@ -66,21 +74,23 @@ const Sidebar = ({ title, description, onChangeField, tags, analytics, collectio
         <FlexContainer>
           <IconShare color={greenDark} />
           <FlexContainer>
-            <Title>Shared:</Title> <span>{analytics.usage} times, since July 5, 2016</span>
+            <Title>Shared:</Title>{' '}
+            <span>{analytics.usage} times, since July 5, 2016</span>
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
     </Block>
     <Block>
       <FlexContainer style={{ marginBottom: 10 }}>
-        <MainTitle style={{ marginBottom: 0 }}>Collection:</MainTitle> <span>{collection}</span>
+        <MainTitle style={{ marginBottom: 0 }}>Collection:</MainTitle>{' '}
+        <span>{collections}</span>
       </FlexContainer>
       <Select
         size="large"
         style={{ width: '50%' }}
         placeholder="Please select"
-        defaultValue={collection}
-        onChange={value => onChangeField('collection', value)}
+        defaultValue={collections}
+        onChange={value => onChangeField('collections', value)}
       >
         {selectsData.allCollections.map(({ value, text }) => (
           <Select.Option key={value} value={value}>
@@ -99,7 +109,7 @@ Sidebar.propTypes = {
   onChangeField: PropTypes.func.isRequired,
   analytics: PropTypes.object.isRequired,
   createdBy: PropTypes.object.isRequired,
-  collection: PropTypes.string.isRequired,
+  collections: PropTypes.string.isRequired
 };
 
 export default Sidebar;

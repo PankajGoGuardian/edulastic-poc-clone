@@ -6,36 +6,45 @@ import { compose } from 'redux';
 
 import MainInfoCell from './MainInfoCell';
 import MetaInfoCell from './MetaInfoCell';
-import { getItemsTypesSelector, getStandardsSelector } from '../../../../selectors/testItems';
+import {
+  getItemsTypesSelector,
+  getStandardsSelector
+} from '../../../../selectors/testItems';
 
-const ItemsTable = ({ items, types, setSelectedTests, selectedTests, standards }) => {
+const ItemsTable = ({
+  items,
+  types,
+  setSelectedTests,
+  selectedTests,
+  standards
+}) => {
   const columns = [
     {
       title: 'Main info',
       dataIndex: 'main',
       key: 'main',
-      render: data => <MainInfoCell data={data} />,
+      render: data => <MainInfoCell data={data} />
     },
     {
       title: 'Meta info',
       dataIndex: 'meta',
       key: 'meta',
-      render: data => <MetaInfoCell data={data} />,
-    },
+      render: data => <MetaInfoCell data={data} />
+    }
   ];
 
   const data = items.map((item) => {
     const main = {
-      title: item.id,
-      id: item.id,
+      title: item._id,
+      id: item._id
     };
     const meta = {
-      id: item.id,
+      id: item._id,
       by: 'Kevin Hart',
       shared: '9578 (1)',
       likes: 9,
-      types: types[item.id],
-      standards: standards[item.id],
+      types: types[item._id],
+      standards: standards[item._id]
     };
 
     if (item.data.questions && item.data.questions.length) {
@@ -43,9 +52,9 @@ const ItemsTable = ({ items, types, setSelectedTests, selectedTests, standards }
     }
 
     return {
-      key: item.id,
+      key: item._id,
       main,
-      meta,
+      meta
     };
   });
 
@@ -53,11 +62,16 @@ const ItemsTable = ({ items, types, setSelectedTests, selectedTests, standards }
     onChange: (selectedRowKeys) => {
       setSelectedTests(selectedRowKeys);
     },
-    selectedRowKeys: selectedTests,
+    selectedRowKeys: selectedTests
   };
 
   return (
-    <Table rowSelection={rowSelection} columns={columns} dataSource={data} showHeader={false} />
+    <Table
+      rowSelection={rowSelection}
+      columns={columns}
+      dataSource={data}
+      showHeader={false}
+    />
   );
 };
 
@@ -66,15 +80,15 @@ ItemsTable.propTypes = {
   types: PropTypes.object.isRequired,
   setSelectedTests: PropTypes.func.isRequired,
   selectedTests: PropTypes.array.isRequired,
-  standards: PropTypes.object.isRequired,
+  standards: PropTypes.object.isRequired
 };
 
 const enhance = compose(
   memo,
   connect(state => ({
     types: getItemsTypesSelector(state),
-    standards: getStandardsSelector(state),
-  })),
+    standards: getStandardsSelector(state)
+  }))
 );
 
 export default enhance(ItemsTable);

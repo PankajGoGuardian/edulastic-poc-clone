@@ -28,7 +28,7 @@ const SortableItem = SortableElement(
         </FlexContainer>
 
         <FlexContainer>
-          <PreviewContainer onClick={() => onPreview(metaInfoData.id)}>
+          <PreviewContainer onClick={() => onPreview(metaInfoData._id)}>
             <IconPreview color={blue} />{' '}
             <span style={{ textTransform: 'uppercase', fontSize: 11, fontWeight: 600 }}>
               Preview
@@ -39,7 +39,7 @@ const SortableItem = SortableElement(
             size="large"
             type="number"
             value={points}
-            onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
+            onChange={e => onChangePoints(metaInfoData._id, +e.target.value)}
             style={{ width: 70 }}
           />
         </FlexContainer>
@@ -82,7 +82,7 @@ const List = SortableContainer(
       }
     };
 
-    const getPoints = i => scoring.testItems.find(({ id }) => id === testItems[i].id).points;
+    const getPoints = i => scoring.testItems.find(({ id }) => id === testItems[i]._id).points;
 
     return (
       <div>
@@ -90,12 +90,12 @@ const List = SortableContainer(
           <SortableItem
             key={i}
             metaInfoData={{
-              id: testItems[i].id,
+              id: testItems[i]._id,
               by: 'Kevin Hart',
               shared: '9578 (1)',
               likes: 9,
-              types: types[testItems[i].id],
-              standards: standards[testItems[i].id],
+              types: types[testItems[i]._id],
+              standards: standards[testItems[i]._id],
             }}
             index={i}
             indx={i}

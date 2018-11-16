@@ -8,7 +8,7 @@ const receiveItems = () =>
 const receiveItemById = id =>
   api
     .callApi({
-      url: `/items/${id}`,
+      url: `/items/${id}`
     })
     .then(result => result.data);
 
@@ -18,8 +18,8 @@ const createItem = ({ payload }) =>
       method: 'post',
       url: '/items',
       data: {
-        ...payload,
-      },
+        ...payload
+      }
     })
     .then(result => result.data);
 
@@ -29,8 +29,8 @@ const updateItemById = ({ payload }) =>
       method: 'put',
       url: `/items/${payload.id}`,
       data: {
-        ...payload,
-      },
+        ...payload
+      }
     })
     .then(result => result.data);
 
@@ -39,7 +39,7 @@ const saveUserReponse = data =>
     .callApi({
       method: 'post',
       url: '/UserTestItemActivities/saveResponse',
-      data,
+      data
     })
     .then(result => result.data);
 
@@ -48,7 +48,7 @@ const getUserResponse = itemId =>
     .callApi({
       method: 'get',
       url: 'UserTestItemActivities',
-      params: { item: itemId },
+      params: { item: itemId }
     })
     .then(result => result.data);
 
@@ -58,5 +58,5 @@ export default {
   createItem,
   updateItemById,
   saveUserReponse,
-  getUserResponse,
+  getUserResponse
 };

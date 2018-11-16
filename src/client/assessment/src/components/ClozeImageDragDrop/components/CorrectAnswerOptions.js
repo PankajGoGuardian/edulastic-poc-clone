@@ -3,7 +3,7 @@ import styled from 'styled-components';
 const CorrectAnswerOptions = styled.div`
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-start;
   margin: 10px 0;
 
   & .option {

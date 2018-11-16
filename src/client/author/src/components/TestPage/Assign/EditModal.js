@@ -66,7 +66,7 @@ const EditModal = ({ title, visible, onOk, onCancel, setModalData, modalData }) 
       <StyledRow>
         <Col span={24}>
           <Input
-            value={modalData.class.id}
+            value={modalData.class._id}
             size="large"
             onChange={e => onChange('class', { ...modalData.class, id: e.target.value })}
           />

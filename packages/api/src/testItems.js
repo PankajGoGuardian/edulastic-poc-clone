@@ -1,67 +1,96 @@
 import API from './utils/API';
 
-const api = new API();
-const prefix = '/TestItems';
+const api = new API('/api');
+const prefix = '/testItem';
 
-const getAll = (params = {}) =>
+const formatData = data => {
+  let item = JSON.parse(JSON.stringify(data));
+  delete item._id;
+  return item;
+};
+
+const getAll = (
+  { limit, page, search, data, validation } = { limit: 10, page: 1 }
+) => {
+  let url = `${prefix}?filter[limit]=${limit}&filter[skip]=${limit *
+    (page - 1)}`;
+
+  if (search) {
+    url += `&filter[where][title][like]=${search}`;
+  }
+
+  let params = { data, validation };
+  return api
+    .callApi({
+      url,
+      method: 'get',
+      params
+    })
+    .then(result => result.data.result);
+};
+
+const getCount = () =>
   api
     .callApi({
-      url: prefix,
-      method: 'get',
-      params,
+      url: `${prefix}/count`,
+      method: 'get'
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 const getById = (id, params = {}) =>
   api
     .callApi({
       url: `${prefix}/${id}`,
       method: 'get',
-      params,
+      params
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
-const updateById = (id, data) =>
-  api
+const updateById = (id, item) => {
+  let data = formatData(item);
+  return api
     .callApi({
       url: `${prefix}/${id}`,
       method: 'put',
-      data,
+      data
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
+};
 
 const create = data =>
   api
     .callApi({
       url: prefix,
       method: 'post',
-      data,
+      data
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
-const update = ({ id, data }) =>
-  api
+const update = ({ id, item }) => {
+  let data = formatData(item);
+  return api
     .callApi({
       url: `${prefix}/${id}`,
       method: 'put',
-      data,
+      data
     })
-    .then(result => result.data);
-
+    .then(result => result.data.result);
+};
 const evaluate = (id, answers) =>
   api
     .callApi({
       url: `${prefix}/${id}/evaluate`,
       method: 'post',
-      data: answers,
+      data: answers
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 export default {
   getAll,
+  getCount,
   getById,
   updateById,
   create,
   update,
-  evaluate,
+  evaluate
 };

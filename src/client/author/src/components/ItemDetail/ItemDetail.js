@@ -124,7 +124,6 @@ class ItemDetail extends Component {
   handleApplySettings = ({ type }) => {
     const { updateDimension } = this.props;
     const { left, right } = this.getSizes(type);
-
     updateDimension(left, right);
   };
 
@@ -262,6 +261,8 @@ class ItemDetail extends Component {
       changePreview,
     } = this.props;
 
+    console.log('Rows = ', rows);
+
     const { view, previewTab } = this.state;
 
     return (
@@ -307,7 +308,7 @@ class ItemDetail extends Component {
           />
         </ItemHeader>
         {view === 'edit' && (
-          <Content>
+          <ItemDetailWrapper>
             {loading && <Progress />}
             {rows &&
               !!rows.length &&
@@ -316,6 +317,7 @@ class ItemDetail extends Component {
                   key={i}
                   row={row}
                   rowIndex={i}
+                  count={rows.length}
                   onAdd={this.handleAdd}
                   onDeleteWidget={this.handleDeleteWidget(i)}
                   onEditWidget={this.handleEditWidget}
@@ -324,7 +326,7 @@ class ItemDetail extends Component {
                   }
                 />
               ))}
-          </Content>
+          </ItemDetailWrapper>
         )}
         {view === 'preview' && this.renderPreview()}
       </Layout>
@@ -397,6 +399,19 @@ const Content = styled(Paper)`
   padding: 0;
   position: relative;
   height: calc(100vh - 154px);
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const ItemDetailWrapper = styled.div`
+  display: flex;
+  padding: 0px 40px 0px 40px;
+  flex-wrap: nowrap;
+  position: relative;
+  height: calc(100vh - 154px);
+  width: 100%;
 
   ::-webkit-scrollbar {
     display: none;

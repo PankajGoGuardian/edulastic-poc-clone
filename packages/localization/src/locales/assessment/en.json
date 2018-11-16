@@ -85,7 +85,8 @@
       "duplicatedresponses": "Duplicated responses",
       "showdraghandle": "Show Drag Handle",
       "shuffleoptions": "Shuffle Options",
-      "addgroup": "Add Group"
+      "addgroup": "Add Group",
+      "correctanswer": "Correct Answer"
     },
     "clozeImageDragDrop": {
       "composequestion": "Compose Question",
@@ -113,7 +114,9 @@
       "duplicatedresponses": "Duplicated responses",
       "showdraghandle": "Show drag handle",
       "shuffleoptions": "Shuffle possible responses",
-      "transparentpossibleresponses": "Transparent possible responses"
+      "transparentpossibleresponses": "Transparent possible responses",
+      "theanswer": "THE ANSWER",
+      "draganddrop": "DRAG & DROP"
     },
     "correctanswers": {
       "setcorrectanswers": "Set Correct Answer(s)",

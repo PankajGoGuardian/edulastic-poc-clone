@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { IconCheck, IconClose } from '@edulastic/icons';
 import { green, red } from '@edulastic/colors';
 import { Draggable, Droppable } from 'react-drag-and-drop';
+import { Pointer, Point, Triangle } from '../common';
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 
@@ -14,19 +15,33 @@ const Icon = styled.div`
 `;
 
 const CheckboxTemplateBoxLayout = ({
-  showAnswer, templateParts, hasGroupResponses, responsecontainerindividuals, responseBtnStyle,
-  fontSize, userSelections, stemNumeration, evaluation, onDropHandler }) => {
-  let responseIndex = 0;
-
-  return (
-    <div className="template_box" style={{ fontSize, padding: 20 }}>
-      {templateParts.map((templatePart, index) => {
-        if (templatePart.indexOf('class="response-btn"') !== -1) {
-          const dropTargetIndex = responseIndex;
-          responseIndex++;
-          let indexStr;
-          const className = evaluation[dropTargetIndex] ? 'right' : 'wrong';
-          switch (stemNumeration) {
+  showAnswer, responseContainers, imageUrl, imageWidth, imageAlterText, responsecontainerindividuals, responseBtnStyle, fontSize, userSelections, stemnumeration, evaluation, onDropHandler }) => (
+    <div className="imagedragdrop_template_box" style={{ fontSize, padding: 20 }}>
+      <div style={{ position: 'relative', top: 0, left: 0, width: imageWidth, margin: 'auto', minWidth: 600, maxWidth: '100%' }}>
+        <img src={imageUrl} width="100%" style={{ userSelect: 'none', pointerEvents: 'none' }} alt={imageAlterText} />
+        {responseContainers.map((responseContainer, index) => {
+          const dropTargetIndex = index;
+          const btnStyle = {
+            widthpx: responseContainer.width,
+            width: responseContainer.width,
+            top: responseContainer.top,
+            left: responseContainer.left,
+            height: responseContainer.height,
+            position: 'absolute',
+            borderRadius: 5,
+          };
+          if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
+            const { widthpx } = responsecontainerindividuals[dropTargetIndex];
+            btnStyle.width = widthpx;
+            btnStyle.widthpx = widthpx;
+          }
+          if (btnStyle && btnStyle.width === 0) {
+            btnStyle.width = responseBtnStyle.widthpx;
+          } else {
+            btnStyle.width = btnStyle.widthpx;
+          }
+          let indexStr = '';
+          switch (stemnumeration) {
             case 'lowercase': {
               indexStr = ALPHABET[dropTargetIndex];
               break;
@@ -35,108 +50,89 @@ const CheckboxTemplateBoxLayout = ({
               indexStr = ALPHABET[dropTargetIndex].toUpperCase();
               break;
             }
-            case 'numerical': {
-              indexStr = dropTargetIndex + 1;
-              break;
-            }
             default:
+              indexStr = dropTargetIndex + 1;
           }
-          let btnStyle = responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex];
-          if (btnStyle === undefined) {
-            btnStyle = responseBtnStyle;
-          }
-          if (btnStyle && btnStyle.widthpx === 0) {
-            btnStyle.widthpx = responseBtnStyle.widthpx;
-          }
-          if (btnStyle && btnStyle.heightpx === 0) {
-            btnStyle.heightpx = responseBtnStyle.heightpx;
-          }
-          if (btnStyle && btnStyle.wordwrap === undefined) {
-            btnStyle.wordwrap = responseBtnStyle.wordwrap;
-          }
+          const className = evaluation[dropTargetIndex] ? 'right' : 'wrong';
+
           return (
-            <div key={index}>
-              {showAnswer && hasGroupResponses && (
-                <div className={`response-btn check-answer ${className} ${showAnswer ? 'show-answer' : ''}`} style={btnStyle}>
-                  &nbsp;<span className="index">{indexStr}</span><span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}</span>&nbsp;
+            <React.Fragment>
+              {!showAnswer && (
+                <Droppable
+                  key={index}
+                  types={['metal']} // <= allowed drop types
+                  style={btnStyle}
+                  className={`imagelabeldragdrop-droppable active check-answer ${className}`}
+                  onDrop={data => onDropHandler(data, dropTargetIndex)}
+                >
+                  <span className="index index-box">{indexStr}</span>
+                  <div className="text container">
+                    {userSelections[dropTargetIndex] && userSelections[dropTargetIndex].map(answer => (
+                      <Draggable
+                        type="metal"
+                        data={`${answer}_${dropTargetIndex}_fromResp`}
+                        style={{ border: 'solid 1px lightgray', margin: 5, padding: 5, display: 'inline-block' }}
+                      >
+                        {answer}
+                      </Draggable>
+                    ))}
+                  </div>
                   <Icon>
                     {className === 'right' && <IconCheck color={green} width={8} height={8} />}
                     {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
                   </Icon>
-                </div>
+                  <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+                    <Point />
+                    <Triangle />
+                  </Pointer>
+                </Droppable>
               )}
-              {showAnswer && !hasGroupResponses && (
-                <div className={`response-btn check-answer ${className} ${showAnswer ? 'show-answer' : ''}`} style={btnStyle}>
-                  &nbsp;<span className="index">{indexStr}</span><span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>&nbsp;
+              {showAnswer && (
+                <div
+                  key={index}
+                  style={btnStyle}
+                  className={`imagelabeldragdrop-droppable active check-answer ${className} show-answer`}
+                >
+                  <span className="index index-box">{indexStr}</span>
+                  <div className="text container">
+                    {userSelections[dropTargetIndex] && userSelections[dropTargetIndex].map(answer => (
+                      <div
+                        style={{ border: 'solid 1px lightgray', margin: 5, padding: 5, display: 'inline-block' }}
+                      >
+                        {answer}
+                      </div>
+                    ))}
+                  </div>
                   <Icon>
                     {className === 'right' && <IconCheck color={green} width={8} height={8} />}
                     {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
                   </Icon>
+                  <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+                    <Point />
+                    <Triangle />
+                  </Pointer>
                 </div>
               )}
-              <Droppable
-                key={index}
-                types={['metal']}
-                onDrop={data => onDropHandler(data, dropTargetIndex)}
-              >
-                {!showAnswer && hasGroupResponses && (
-                  <Draggable type="metal" data={`${userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}_${userSelections[dropTargetIndex] && userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}>
-                    <div className={`response-btn check-answer ${className}`} style={btnStyle}>
-                      &nbsp;<span className="index">{indexStr}</span><span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}</span>&nbsp;
-                      <Icon>
-                        {className === 'right' && <IconCheck color={green} width={8} height={8} />}
-                        {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
-                      </Icon>
-                    </div>
-                  </Draggable>
-                )}
-                {!showAnswer && !hasGroupResponses && (
-                  <Draggable type="metal" data={`${userSelections[dropTargetIndex]}_${dropTargetIndex}_fromResp`}>
-                    <div className={`response-btn check-answer ${className}`} style={btnStyle}>
-                      &nbsp;<span className="index">{indexStr}</span><span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>&nbsp;
-                      <Icon>
-                        {className === 'right' && <IconCheck color={green} width={8} height={8} />}
-                        {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
-                      </Icon>
-                    </div>
-                  </Draggable>
-                )}
-              </Droppable>
-            </div>
+            </React.Fragment>
           );
-        }
-        return (
-          <span style={{ userSelect: 'none' }} key={index} dangerouslySetInnerHTML={{ __html: templatePart }} />
-        );
-      })}
+        })}
+      </div>
     </div>
-  );
-};
+);
 
 CheckboxTemplateBoxLayout.propTypes = {
-  responsecontainerindividuals: PropTypes.array,
-  fontSize: PropTypes.string,
-  templateParts: PropTypes.array,
-  responseBtnStyle: PropTypes.object,
-  hasGroupResponses: PropTypes.bool,
-  userSelections: PropTypes.array,
-  stemNumeration: PropTypes.string,
-  evaluation: PropTypes.array,
-  showAnswer: PropTypes.bool,
-  onDropHandler: PropTypes.func,
-};
-
-CheckboxTemplateBoxLayout.defaultProps = {
-  responsecontainerindividuals: [],
-  fontSize: '13px',
-  templateParts: [],
-  responseBtnStyle: {},
-  hasGroupResponses: false,
-  userSelections: [],
-  stemNumeration: 'numerical',
-  evaluation: [],
-  showAnswer: false,
-  onDropHandler: () => {},
+  responsecontainerindividuals: PropTypes.array.isRequired,
+  fontSize: PropTypes.string.isRequired,
+  responseContainers: PropTypes.array.isRequired,
+  responseBtnStyle: PropTypes.object.isRequired,
+  userSelections: PropTypes.array.isRequired,
+  stemnumeration: PropTypes.string.isRequired,
+  evaluation: PropTypes.array.isRequired,
+  showAnswer: PropTypes.bool.isRequired,
+  onDropHandler: PropTypes.func.isRequired,
+  imageUrl: PropTypes.string.isRequired,
+  imageAlterText: PropTypes.string.isRequired,
+  imageWidth: PropTypes.number.isRequired,
 };
 
 export default React.memo(CheckboxTemplateBoxLayout);

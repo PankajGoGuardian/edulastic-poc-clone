@@ -194,73 +194,73 @@ class ClozeDragDropDisplay extends Component {
     console.log('imagedragdrop_template_box responseContainers:', responseContainers);
     const previewTemplateBoxLayout = (
       <div className="imagedragdrop_template_box" style={{ fontSize: smallSize ? 10 : fontSize, padding: smallSize ? 0 : 20 }}>
-      <div style={{ position: 'relative', top: 0, left: 0, width: smallSize ? '100%' : imageWidth, margin: 'auto', minWidth: smallSize ? '100%' : 600, maxWidth: '100%' }}>
-        <img src={imageUrl || defaultImageURL} width={'100%'} alt="resp-preview" style={{ userSelect: 'none', pointerEvents: 'none' }} alt={imageAlterText} />
-          {responseContainers.map((responseContainer, index) => {
-              const dropTargetIndex = index;
-              let btnStyle = {
-                widthpx: responseContainer.width,
-                width: responseContainer.width,
-                top: responseContainer.top,
-                left: responseContainer.left,
-                height: responseContainer.height,
-                border: showDashedBorder ? 'dashed 2px rgba(0, 0, 0, 0.65)' : 'solid 1px lightgray',
-                position: 'absolute',
-                background: backgroundColor,
-                borderRadius: 5,
-              }
-              if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-                const { widthpx } = responsecontainerindividuals[dropTargetIndex];
-                btnStyle.width = widthpx;
-                btnStyle.widthpx = widthpx;
-              }
-              if (btnStyle && btnStyle.width === 0) {
-                btnStyle['width'] = responseBtnStyle.widthpx;
-              } else {
-                btnStyle.width = btnStyle.widthpx;
-              }
-              let indexStr = '';
-              switch (stemnumeration) {
-                case 'lowercase': {
-                  indexStr = ALPHABET[dropTargetIndex];
-                  break;
+        <div style={{ position: 'relative', top: 0, left: 0, width: smallSize ? '100%' : imageWidth, margin: 'auto', minWidth: smallSize ? '100%' : 600, maxWidth: '100%' }}>
+          <img src={imageUrl || defaultImageURL} width={'100%'} alt="resp-preview" style={{ userSelect: 'none', pointerEvents: 'none' }} alt={imageAlterText} />
+            {responseContainers.map((responseContainer, index) => {
+                const dropTargetIndex = index;
+                let btnStyle = {
+                  widthpx: responseContainer.width,
+                  width: responseContainer.width,
+                  top: responseContainer.top,
+                  left: responseContainer.left,
+                  height: responseContainer.height,
+                  border: showDashedBorder ? 'dashed 2px rgba(0, 0, 0, 0.65)' : 'solid 1px lightgray',
+                  position: 'absolute',
+                  background: backgroundColor,
+                  borderRadius: 5,
                 }
-                case 'uppercase': {
-                  indexStr = ALPHABET[dropTargetIndex].toUpperCase();
-                  break;
+                if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
+                  const { widthpx } = responsecontainerindividuals[dropTargetIndex];
+                  btnStyle.width = widthpx;
+                  btnStyle.widthpx = widthpx;
                 }
-                default:
-                  indexStr = dropTargetIndex + 1;
-              }
-              return (
-                <Droppable
-                  key={index}
-                  types={['metal']} // <= allowed drop types
-                  style={btnStyle}
-                  className={'imagelabeldragdrop-droppable active'}
-                  onDrop={data => this.onDrop(data, dropTargetIndex)}
-                >
-                  <span className="index-box">{indexStr}</span>
-                  <div className="container">
-                  {userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].map(answer => (
-                    <Draggable
-                      type="metal"
-                      data={`${answer}_${dropTargetIndex}_fromResp`}
-                      style={{ border: 'solid 1px lightgray', margin: 5, padding: 5, display: 'inline-block' }}
-                    >
-                      {answer}
-                    </Draggable>
-                  ))}
-                  </div>
-                  <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
-                    <Point />
-                    <Triangle />
-                  </Pointer>
-                </Droppable>
-              );
-          })}
+                if (btnStyle && btnStyle.width === 0) {
+                  btnStyle['width'] = responseBtnStyle.widthpx;
+                } else {
+                  btnStyle.width = btnStyle.widthpx;
+                }
+                let indexStr = '';
+                switch (stemnumeration) {
+                  case 'lowercase': {
+                    indexStr = ALPHABET[dropTargetIndex];
+                    break;
+                  }
+                  case 'uppercase': {
+                    indexStr = ALPHABET[dropTargetIndex].toUpperCase();
+                    break;
+                  }
+                  default:
+                    indexStr = dropTargetIndex + 1;
+                }
+                return (
+                  <Droppable
+                    key={index}
+                    types={['metal']} // <= allowed drop types
+                    style={btnStyle}
+                    className={'imagelabeldragdrop-droppable active'}
+                    onDrop={data => this.onDrop(data, dropTargetIndex)}
+                  >
+                    <span className="index-box">{indexStr}</span>
+                    <div className="container">
+                    {userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].map(answer => (
+                      <Draggable
+                        type="metal"
+                        data={`${answer}_${dropTargetIndex}_fromResp`}
+                        style={{ border: 'solid 1px lightgray', margin: 5, padding: 5, display: 'inline-block' }}
+                      >
+                        {answer}
+                      </Draggable>
+                    ))}
+                    </div>
+                    <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+                      <Point />
+                      <Triangle />
+                    </Pointer>
+                  </Droppable>
+                );
+            })}
           </div>
-        </div>
+      </div>
     )
 
     const checkboxTemplateBoxLayout = (
@@ -268,7 +268,10 @@ class ClozeDragDropDisplay extends Component {
         responseContainers={responseContainers}
         responsecontainerindividuals={responsecontainerindividuals}
         responseBtnStyle={responseBtnStyle}
-        stemNumeration={stemnumeration}
+        imageUrl={imageUrl || defaultImageURL}
+        imageWidth={imageWidth}
+        imageAlterText={imageAlterText}
+        stemnumeration={stemnumeration}
         fontSize={fontSize}
         showAnswer={showAnswer}
         userSelections={userAnswers}

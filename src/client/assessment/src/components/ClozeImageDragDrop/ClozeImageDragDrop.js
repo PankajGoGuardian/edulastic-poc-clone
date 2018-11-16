@@ -213,38 +213,46 @@ class ClozeImageDragDrop extends Component {
             {previewTab === 'check' && (
               <ClozeImageDragDropDisplay
                 checkAnswer
-                hasGroupResponses={item.hasGroupResponses}
-                configureOptions={{
-                  duplicatedResponses,
-                  showDraghandle,
-                  shuffleOptions,
-                }}
-                smallSize={smallSize}
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
                 templateMarkUp={item.templateMarkUp}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
+                configureOptions={{
+                  duplicatedResponses,
+                  showDraghandle,
+                  shuffleOptions,
+                  transparentResponses,
+                }}
+                imageAlterText={item.imageAlterText}
+                responseContainers={item.responses}
+                imageUrl={item.imageUrl}
+                imageWidth={item.imageWidth}
+                key={previewDisplayOptions && previewStimulus && uiStyle}
                 evaluation={evaluation}
               />
             )}
             {previewTab === 'show' && (
               <ClozeImageDragDropDisplay
                 showAnswer
-                hasGroupResponses={item.hasGroupResponses}
-                configureOptions={{
-                  duplicatedResponses,
-                  showDraghandle,
-                  shuffleOptions,
-                }}
-                smallSize={smallSize}
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
                 templateMarkUp={item.templateMarkUp}
                 userSelections={userAnswer}
                 validation={item.validation}
+                configureOptions={{
+                  duplicatedResponses,
+                  showDraghandle,
+                  shuffleOptions,
+                  transparentResponses,
+                }}
+                imageAlterText={item.imageAlterText}
+                responseContainers={item.responses}
+                imageUrl={item.imageUrl}
+                imageWidth={item.imageWidth}
+                key={previewDisplayOptions && previewStimulus && uiStyle}
                 evaluation={evaluation}
               />
             )}

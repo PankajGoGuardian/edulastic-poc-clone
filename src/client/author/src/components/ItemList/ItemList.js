@@ -23,8 +23,23 @@ import { getTestItemCreatingSelector } from '../../selectors/testItem';
 import ListHeader from '../common/ListHeader';
 
 class ItemList extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isScroll: false,
+    };
+  }
+
   componentDidMount() {
     const { receiveItems } = this.props;
+    const itemList = window.document.getElementById('item-list');
+    const itemFilter = window.document.getElementById('item-filter');
+    if (itemFilter.scrollHeight - itemFilter.offsetHeight === 0) {
+      itemFilter.style.position = 'fixed';
+      itemList.style.marginLeft = '338px';
+      this.setState({ isScroll: true });
+    }
     receiveItems();
   }
 
@@ -46,6 +61,27 @@ class ItemList extends Component {
     });
   };
 
+  scrollHandler = () => {
+    const { isScroll } = this.state;
+    const itemFilter = window.document.getElementById('item-filter');
+    const mainList = window.document.getElementById('main-list');
+    const itemList = window.document.getElementById('item-list');
+
+    if (isScroll) {
+      return;
+    }
+
+    if (mainList.scrollTop > itemFilter.scrollHeight + 89 - itemFilter.offsetHeight) {
+      itemFilter.style.position = 'fixed';
+      itemFilter.style.bottom = '20px';
+      itemList.style.marginLeft = '338px';
+    } else {
+      itemFilter.style.position = 'relative';
+      itemFilter.style.bottom = '0px';
+      itemList.style.marginLeft = '29px';
+    }
+  }
+
   render() {
     const { items, windowWidth, history, creating, t } = this.props;
     return (
@@ -56,9 +92,9 @@ class ItemList extends Component {
           windowWidth={windowWidth}
           title={t('component.itemlist.header.itemlist')}
         />
-        <MainList>
+        <MainList id="main-list" onScroll={() => this.scrollHandler()}>
           <ItemFilter onSearch={this.handleSearch} />
-          <ListItems>
+          <ListItems id="item-list">
             <Pagination
               simple={windowWidth <= 768 && true}
               showTotal={(total, range) => `${range[0]} to ${range[1]} of ${total}`}
@@ -138,6 +174,7 @@ const MainList = styled.div`
   overflow: auto;
   left: 0;
   right: 0;
+  margin-top: 89px;
 
   @media (max-width: ${mobileWidth}) {
     display: block;
@@ -146,7 +183,7 @@ const MainList = styled.div`
 
 const ListItems = styled.div`
   flex: 1;
-  margin: 29px 40px 0px 325px;
+  margin: 29px 40px 0px 29px;
 
   .ant-pagination {
     display: flex;

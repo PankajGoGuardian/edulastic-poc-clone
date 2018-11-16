@@ -48,6 +48,10 @@ const Container = styled.div`
   background-color:  ${darkBlueSecondary};
   padding: 0px 40px 0px 46px;
   height: 89px;
+  z-index: 1;
+  position: absolute;
+  left: 0;
+  right: 0;
 
   @media (max-width: ${mobileWidth}) {
     height: 61px;

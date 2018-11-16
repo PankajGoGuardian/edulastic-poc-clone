@@ -52,17 +52,19 @@ class ItemDetailRow extends Component {
       <Container style={{ width: row.dimension, marginRight: count - 1 === rowIndex ? '0px' : '30px' }}>
         {row.tabs &&
           !!row.tabs.length && (
-            <Tabs value={value} onChange={this.handleTabChange}>
-              {row.tabs.map((tab, tabIndex) => (
-                <Tabs.Tab
-                  key={tabIndex}
-                  label={tab}
-                  style={{ width: '50%', textAlign: 'center', padding: '30px 20px 15px' }}
-                  onChange={e => onEditTabTitle(tabIndex, e.target.value)}
-                  editable
-                />
-              ))}
-            </Tabs>
+            <TabContainer>
+              <Tabs value={value} onChange={this.handleTabChange}>
+                {row.tabs.map((tab, tabIndex) => (
+                  <Tabs.Tab
+                    key={tabIndex}
+                    label={tab}
+                    style={{ width: '50%', textAlign: 'center', padding: '30px 20px 15px' }}
+                    onChange={e => onEditTabTitle(tabIndex, e.target.value)}
+                    editable
+                  />
+                ))}
+              </Tabs>
+            </TabContainer>
         )}
         {!row.widgets.length &&
           dragging && <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={0} />}
@@ -111,4 +113,8 @@ const Container = styled(Paper)`
   ::-webkit-scrollbar {
     display: none;
   }
+`;
+
+const TabContainer = styled.div`
+  margin-bottom: 30px;
 `;

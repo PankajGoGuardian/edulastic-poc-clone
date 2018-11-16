@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 
 import {
-  RECEIVE_ITEMS_REQUEST,
-  RECEIVE_ITEMS_SUCCESS,
-  RECEIVE_ITEMS_ERROR,
+  RECEIVE_ITEMS_SEARCH_REQUEST,
+  RECEIVE_ITEMS_SEARCH_SUCCESS,
+  RECEIVE_ITEMS_SEARCH_ERROR,
   RECEIVE_ITEM_REQUEST,
   RECEIVE_ITEM_SUCCESS,
   RECEIVE_ITEM_ERROR,
@@ -20,9 +20,9 @@ const initialItemsState = {
 
 const itemsReducer = (state = initialItemsState, { type, payload }) => {
   switch (type) {
-    case RECEIVE_ITEMS_REQUEST:
+    case RECEIVE_ITEMS_SEARCH_REQUEST:
       return { ...state, loading: true };
-    case RECEIVE_ITEMS_SUCCESS:
+    case RECEIVE_ITEMS_SEARCH_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -31,7 +31,7 @@ const itemsReducer = (state = initialItemsState, { type, payload }) => {
         limit: payload.limit,
         count: payload.count,
       };
-    case RECEIVE_ITEMS_ERROR:
+    case RECEIVE_ITEMS_SEARCH_ERROR:
       return { ...state, loading: false, error: payload.error };
     default:
       return state;

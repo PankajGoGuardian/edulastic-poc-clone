@@ -1,10 +1,9 @@
 import joi from 'joi';
 import express from 'express';
 import { elasticSearchQuerySchema } from '../validators/elasticSearchQuery';
-import { successHandler } from '../utils/responseHandler';
 import axios from '../utils/axiosInstance';
 import config from '../config';
-import { createSearchByFieldsRequest } from '../utils/elasticSearchHelpers';
+import { createSearchByFieldsRequest, prepareResult } from '../utils/elasticSearchHelpers';
 
 const router = express.Router();
 
@@ -25,7 +24,12 @@ router.post('/fields', async (req, res) => {
       data
     });
 
-    return successHandler(res, searchResult);
+    const isResultNotEmpty = searchResult.hits.total > 0;
+    let preparedRearchResult = [];
+    if (isResultNotEmpty) {
+      preparedRearchResult = prepareResult(searchResult);
+    }
+    return res.send(preparedRearchResult);
   } catch (e) {
     req.log.error(e);
     res.boom.badRequest(e);

@@ -61,32 +61,34 @@ const columns = [
     dataIndex: 'buttons',
     sorter: false,
     // eslint-disable-next-line react/prop-types
-    render: ({ remove, edit }, record) => (
-      <FlexContainer justifyContent="space-around">
-        <IconPencilEdit
-          onClick={() =>
-            edit({
-              key: record.key,
-              startDate: moment(record.openDate),
-              endDate: moment(record.closeDate),
-              openPolicy: record.openPolicy,
-              closePolicy: record.closePolicy,
-              class: record.className,
-            })
-          }
-          color={greenDark}
-          hoverColor={green}
-          style={{ cursor: 'pointer' }}
-        />
-        <IconTrash
-          onClick={() => remove(record)}
-          color={greenDark}
-          hoverColor={green}
-          style={{ cursor: 'pointer' }}
-        />
-      </FlexContainer>
-    ),
-  },
+    render: ({ remove, edit }, record) => {
+      const handleClick = () =>
+        edit({
+          key: record.key,
+          startDate: moment(record.openDate),
+          endDate: moment(record.closeDate),
+          openPolicy: record.openPolicy,
+          closePolicy: record.closePolicy,
+          class: record.className,
+        });
+      return (
+        <FlexContainer justifyContent="space-around">
+          <IconPencilEdit
+            onClick={handleClick}
+            color={greenDark}
+            hoverColor={green}
+            style={{ cursor: 'pointer' }}
+          />
+          <IconTrash
+            onClick={() => remove(record)}
+            color={greenDark}
+            hoverColor={green}
+            style={{ cursor: 'pointer' }}
+          />
+        </FlexContainer>
+      );
+    }
+  }
 ];
 
 const Assign = ({ test, setData, current }) => {

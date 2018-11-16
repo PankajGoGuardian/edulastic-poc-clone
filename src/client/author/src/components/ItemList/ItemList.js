@@ -12,13 +12,14 @@ import {
   getItemsPageSelector,
   getItemsLimitSelector,
   getItemsLoadingSelector,
+  getItemsListSelector,
+  getItemsCountSelector
 } from '../../selectors/items';
 
 import Item from './Item';
 import ItemFilter from './ItemFilter';
-import { receiveTestItemsAction } from '../../actions/testItems';
+import { receiveItemsAction } from '../../actions/items';
 import { createTestItemAction } from '../../actions/testItem';
-import { getTestItemsSelector, getTestsItemsCountSelector } from '../../selectors/testItems';
 import { getTestItemCreatingSelector } from '../../selectors/testItem';
 import ListHeader from '../common/ListHeader';
 
@@ -40,7 +41,12 @@ class ItemList extends Component {
       itemList.style.marginLeft = '338px';
       this.setState({ isScroll: true });
     }
-    receiveItems({ page, limit: 10 });
+    receiveItems({
+      page,
+      limit: 10,
+      count: 1,
+      search: { orSearch: [], andSearch: [] }
+    });
   }
 
   handleSearch = (value) => {
@@ -87,7 +93,7 @@ class ItemList extends Component {
       itemFilter.style.bottom = '0px';
       itemList.style.marginLeft = '29px';
     }
-  }
+  };
 
   render() {
     const { items, windowWidth, history, creating, count, t } = this.props;
@@ -113,7 +119,7 @@ class ItemList extends Component {
               <Paper padding={windowWidth > 768 ? '25px 39px 0px 39px' : '0px'}>
                 {items.map(item => (
                   // eslint-disable-next-line
-                  <Item key={item._id} item={item} history={history} windowWidth={windowWidth} />
+                  <Item key={item.id} item={item} history={history} windowWidth={windowWidth} />
                 ))}
               </Paper>
             </Items>
@@ -148,15 +154,15 @@ const enhance = compose(
   withNamespaces('author'),
   connect(
     state => ({
-      items: getTestItemsSelector(state),
+      items: getItemsListSelector(state),
       page: getItemsPageSelector(state),
       limit: getItemsLimitSelector(state),
-      count: getTestsItemsCountSelector(state),
+      count: getItemsCountSelector(state),
       loading: getItemsLoadingSelector(state),
       creating: getTestItemCreatingSelector(state),
     }),
     {
-      receiveItems: receiveTestItemsAction,
+      receiveItems: receiveItemsAction,
       createItem: createTestItemAction,
     },
   ),

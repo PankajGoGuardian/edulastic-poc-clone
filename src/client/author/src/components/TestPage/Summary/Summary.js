@@ -7,7 +7,8 @@ import { compose } from 'redux';
 
 import { Container } from '../../common';
 import Sidebar from './Sidebar';
-import { Calculator, Breadcrumbs } from '../common';
+import { Calculator } from '../common';
+import Breadcrumb from '../../Breadcrumb';
 import { getSummarySelector } from '../../../selectors/tests';
 
 const Summary = ({ setData, test, summary, current }) => {
@@ -32,10 +33,10 @@ const Summary = ({ setData, test, summary, current }) => {
 
   return (
     <Container>
-      <Breadcrumbs current={current} />
-      <Row>
-        <Col span={12}>
-          <Paper style={{ marginRight: 25 }}>
+      <Breadcrumb data={['ITEM LIST', current]} style={{ position: 'unset' }} />
+      <Paper style={{ marginRight: 25, marginTop: 25 }}>
+        <Row gutter={32}>
+          <Col span={12}>
             <Sidebar
               title={test.title}
               description={test.description}
@@ -45,10 +46,8 @@ const Summary = ({ setData, test, summary, current }) => {
               createdBy={test.createdBy}
               onChangeField={handleChangeField}
             />
-          </Paper>
-        </Col>
-        <Col span={12}>
-          <Paper>
+          </Col>
+          <Col span={12}>
             <Calculator
               totalPoints={test.scoring.total}
               questionsCount={test.scoring.testItems.length}
@@ -58,9 +57,22 @@ const Summary = ({ setData, test, summary, current }) => {
               onChangeSubjects={handleChangeSubjects}
               tableData={tableData}
             />
-          </Paper>
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+      </Paper>
+      {/* <Col span={12}>
+        <Paper style={{ marginTop: 45 }}>
+          <Calculator
+            totalPoints={test.scoring.total}
+            questionsCount={test.scoring.testItems.length}
+            grades={test.grades}
+            subjects={test.subjects}
+            onChangeGrade={handleChangeGrade}
+            onChangeSubjects={handleChangeSubjects}
+            tableData={tableData}
+          />
+        </Paper>
+      </Col> */}
     </Container>
   );
 };

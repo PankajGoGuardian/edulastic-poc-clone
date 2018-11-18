@@ -27,7 +27,7 @@ const columns = [
 
 const Summary = ({ total, tableData, questionsCount }) => (
   <div>
-    <FlexContainer style={{ marginBottom: 25 }}>
+    <FlexContainer style={{ marginTop: 12, marginBottom: 25 }}>
       <InfoBlock count={questionsCount}>Questions</InfoBlock>
       <InfoBlock count={total}>Points</InfoBlock>
     </FlexContainer>

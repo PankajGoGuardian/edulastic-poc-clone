@@ -7,7 +7,6 @@ import { Select } from 'antd';
 
 import Summary from './Summary';
 import selectsData from './selectsData';
-import Title from './Title';
 
 const Calculator = ({
   totalPoints,
@@ -24,9 +23,7 @@ const Calculator = ({
 
     <div>
       <Item>
-        <Item>
-          <Title>Grade</Title>
-        </Item>
+        <Title>Grade</Title>
         <Select
           mode="multiple"
           size="large"
@@ -44,9 +41,7 @@ const Calculator = ({
       </Item>
 
       <Item>
-        <Item>
-          <Title>Subject</Title>
-        </Item>
+        <Title>Subject</Title>
         <Select
           mode="multiple"
           size="large"
@@ -63,9 +58,7 @@ const Calculator = ({
         </Select>
       </Item>
 
-      <Item>
-        <Title>Summary</Title>
-      </Item>
+      <Title>Summary</Title>
       <Summary total={totalPoints} questionsCount={questionsCount} tableData={tableData} />
     </div>
   </Container>
@@ -91,10 +84,50 @@ export default Calculator;
 const Container = styled.div`
   padding: 15px;
   background: ${white};
+
+  .ant-table-body {
+    font-size: 13px;
+    font-weight: 600;
+  }
 `;
 
 const Item = styled(FlexContainer)`
-  margin-bottom: 15px;
+  margin-bottom: 25px;
   flex-direction: column;
   align-items: flex-start;
+
+  .ant-select-selection__choice {
+    height: 23px !important;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    background: #d1f0ff;
+    margin-top: 7px !important;
+  }
+
+  .ant-select-selection__rendered {
+    padding-left: 20px;
+  }
+
+  .ant-select-selection__choice__content {
+    font-size: 11px;
+    letter-spacing: 0.2px;
+    color: #0083be;
+    font-weight: bold;
+    height: 23px;
+    display: flex;
+    align-items: center;
+  }
+
+  .ant-select-remove-icon svg {
+    fill: #0083be;
+  }
+`;
+
+const Title = styled.span`
+  font-size: 13px;
+  font-weight: 600;
+  color: #434b5d;
+  margin-right: 3px;
+  margin-bottom: 12px;
 `;

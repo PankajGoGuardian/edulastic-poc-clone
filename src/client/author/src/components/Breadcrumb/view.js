@@ -5,9 +5,9 @@ import styled from 'styled-components';
 
 class BreadCrumb extends Component {
   render() {
-    const { data } = this.props;
+    const { data, style } = this.props;
     return (
-      <Container>
+      <Container style={style}>
         <Breadcrumb>
           {
             data && data.map((breadCrumb, index) => (
@@ -27,6 +27,11 @@ class BreadCrumb extends Component {
 
 BreadCrumb.propTypes = {
   data: PropTypes.array.isRequired,
+  style: PropTypes.object,
+};
+
+BreadCrumb.defaultProps = {
+  style: {},
 };
 
 export default BreadCrumb;
@@ -34,6 +39,7 @@ export default BreadCrumb;
 const Container = styled.div`
   position: fixed;
   top: 88px;
+  text-transform: uppercase;
 
   .ant-breadcrumb-link, .ant-breadcrumb-separator {
     font-size: 11px;

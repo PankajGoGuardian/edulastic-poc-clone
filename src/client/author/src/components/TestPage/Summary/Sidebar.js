@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FlexContainer } from '@edulastic/common';
-import { white, greenDark, textColor } from '@edulastic/colors';
+import { white, greenDark, secondaryTextColor } from '@edulastic/colors';
 
 import { Input, Select } from 'antd';
 import { IconHeart, IconShare } from '@edulastic/icons';
-import { Title, Photo, selectsData } from '../common';
+import { Photo, selectsData } from '../common';
 
 const Sidebar = ({
   title,
@@ -22,22 +22,22 @@ const Sidebar = ({
       <Photo />
       <FlexContainer>
         <Avatar>{createdBy.firstName ? createdBy.firstName[0] : 'E'}</Avatar>
-        <FlexContainer flexDirection="column" alignItems="flex-start">
+        <FlexContainer flexDirection="column" alignItems="flex-start" style={{ marginLeft: 20 }}>
           <Title>Created by:</Title>
-          <span>
+          <TitleContent>
             {createdBy.firstName} {createdBy.lastName}
-          </span>
+          </TitleContent>
         </FlexContainer>
       </FlexContainer>
     </Block>
     <Block>
-      <MainTitle>Assessment name</MainTitle>
+      <MainTitle>Assessment Name</MainTitle>
       <Input
         value={title}
         onChange={e => onChangeField('title', e.target.value)}
         size="large"
         placeholder="Enter an assessment name"
-        style={{ marginBottom: 40 }}
+        style={{ marginBottom: 25 }}
       />
       <MainTitle>Description</MainTitle>
       <Input.TextArea
@@ -45,7 +45,7 @@ const Sidebar = ({
         onChange={e => onChangeField('description', e.target.value)}
         size="large"
         placeholder="Enter a description"
-        style={{ marginBottom: 40 }}
+        style={{ marginBottom: 25 }}
       />
       <MainTitle>Tags</MainTitle>
       <Select
@@ -64,18 +64,19 @@ const Sidebar = ({
       </Select>
     </Block>
     <Block>
-      <FlexContainer>
+      <FlexContainer justifyContent="space-between">
         <FlexContainer>
           <IconHeart color={greenDark} />
           <FlexContainer>
-            <Title>Liked:</Title> <span>{analytics.likes} times</span>
+            <Title>Liked:</Title>
+            <TitleContent>{analytics.likes} times</TitleContent>
           </FlexContainer>
         </FlexContainer>
         <FlexContainer>
           <IconShare color={greenDark} />
           <FlexContainer>
-            <Title>Shared:</Title>{' '}
-            <span>{analytics.usage} times, since July 5, 2016</span>
+            <Title>Shared:</Title>
+            <TitleContent>{analytics.usage} times, since July 5, 2016</TitleContent>
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
@@ -127,12 +128,52 @@ const Block = styled.div`
     margin-bottom: 0;
     padding-bottom: 0;
   }
+
+  .ant-input {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: #434b5d;
+    padding-left: 20px;
+  }
+
+  .ant-select-selection__choice {
+    height: 23px !important;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    background: #d1f0ff;
+    margin-top: 7px !important;
+  }
+
+  .ant-select-selection__rendered {
+    padding-left: 20px;
+  }
+
+  .ant-select-selection__choice__content {
+    font-size: 11px;
+    letter-spacing: 0.2px;
+    color: #0083be;
+    font-weight: bold;
+    height: 23px;
+    display: flex;
+    align-items: center;
+  }
+
+  .ant-select-remove-icon svg {
+    fill: #0083be;
+  }
+
+  textarea {
+    height: 116px;
+  }
 `;
 
 const MainTitle = styled.div`
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 600;
-  color: ${textColor};
+  color: ${secondaryTextColor};
+  letter-spacing: 0.2px;
   margin-bottom: 10px;
 `;
 
@@ -147,4 +188,17 @@ const Avatar = styled.div`
   color: ${white};
   font-size: 22px;
   font-weight: 700;
+`;
+
+const Title = styled.span`
+  font-size: 13px;
+  font-weight: 600;
+  color: #4aac8b;
+  margin-right: 3px;
+`;
+
+const TitleContent = styled.span`
+  font-size: 13px;
+  font-weight: 600;
+  color: #444444;
 `;

@@ -1,17 +1,22 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Paper } from '@edulastic/common';
-import { Row, Col } from 'antd';
+import { Row, Col, Button } from 'antd';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import styled from 'styled-components';
 
-import { Container } from '../../common';
+import { IconSource } from '@edulastic/icons';
+import { blue } from '@edulastic/colors';
+import { withNamespaces } from '@edulastic/localization';
+
+import { Container, ButtonLink } from '../../common';
 import Sidebar from './Sidebar';
 import { Calculator } from '../common';
 import Breadcrumb from '../../Breadcrumb';
 import { getSummarySelector } from '../../../selectors/tests';
 
-const Summary = ({ setData, test, summary, current }) => {
+const Summary = ({ setData, test, summary, current, t }) => {
   const handleChangeField = (field, value) => {
     setData({ ...test, [field]: value });
   };
@@ -28,13 +33,24 @@ const Summary = ({ setData, test, summary, current }) => {
     key: data.standard,
     standard: data.standard,
     qs: data.questionsCount,
-    points: data.score || 0
+    points: data.score || 0,
   }));
 
   return (
     <Container>
-      <Breadcrumb data={['ITEM LIST', current]} style={{ position: 'unset' }} />
-      <Paper style={{ marginRight: 25, marginTop: 25 }}>
+      <SecondHeader>
+        <Breadcrumb data={['ITEM LIST', current]} style={{ position: 'unset' }} />
+        <Button>
+          <ButtonLink
+            // onClick={onShowSource}
+            color="primary"
+            icon={<IconSource color={blue} />}
+          >
+            {t('component.questioneditor.buttonbar.source')}
+          </ButtonLink>
+        </Button>
+      </SecondHeader>
+      <Paper style={{ marginTop: 25 }}>
         <Row gutter={32}>
           <Col span={12}>
             <Sidebar
@@ -42,7 +58,7 @@ const Summary = ({ setData, test, summary, current }) => {
               description={test.description}
               tags={test.tags}
               analytics={test.analytics}
-              collections={test.collection}
+              collection={test.collection}
               createdBy={test.createdBy}
               onChangeField={handleChangeField}
             />
@@ -60,19 +76,6 @@ const Summary = ({ setData, test, summary, current }) => {
           </Col>
         </Row>
       </Paper>
-      {/* <Col span={12}>
-        <Paper style={{ marginTop: 45 }}>
-          <Calculator
-            totalPoints={test.scoring.total}
-            questionsCount={test.scoring.testItems.length}
-            grades={test.grades}
-            subjects={test.subjects}
-            onChangeGrade={handleChangeGrade}
-            onChangeSubjects={handleChangeSubjects}
-            tableData={tableData}
-          />
-        </Paper>
-      </Col> */}
     </Container>
   );
 };
@@ -81,14 +84,27 @@ Summary.propTypes = {
   setData: PropTypes.func.isRequired,
   test: PropTypes.object.isRequired,
   summary: PropTypes.array.isRequired,
-  current: PropTypes.string.isRequired
+  t: PropTypes.func.isRequired,
+  current: PropTypes.string.isRequired,
 };
 
 const enhance = compose(
   memo,
+  withNamespaces('author'),
   connect(state => ({
-    summary: getSummarySelector(state)
-  }))
+    summary: getSummarySelector(state),
+  })),
 );
 
 export default enhance(Summary);
+
+const SecondHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  .ant-btn {
+    background: transparent;
+    height: 24px;
+    margin-left: 17px;
+  }
+`;

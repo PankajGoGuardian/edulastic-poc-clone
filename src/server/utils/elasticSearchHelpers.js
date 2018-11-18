@@ -1,6 +1,6 @@
-export function createSearchByFieldsRequest(data) {
-  const andSearchArr = data.andSearch.map(el => ({ match_phrase: el }));
-  const orSearchArr = data.orSearch.map(el => ({ match_phrase: el }));
+export const createSearchByFieldsRequest = (data) => {
+  const andSearchArr = data.andSearch ? data.andSearch.map(el => ({ match_phrase: el })) : [];
+  const orSearchArr = data.orSearch ? data.orSearch.map(el => ({ match_phrase: el })) : [];
   return {
     query: {
       bool: {
@@ -15,4 +15,6 @@ export function createSearchByFieldsRequest(data) {
       },
     },
   };
-}
+};
+
+export const prepareResult = data => (data.hits.hits.map(el => el._source));

@@ -20,7 +20,7 @@ export const getItemDetailRowsSelector = createSelector(
 
         if (item.data.questions && item.data.questions.length) {
           referencePopulate = item.data.questions.find(
-            q => q.id === widget.reference,
+            q => q._id === widget.reference,
           );
         }
 
@@ -30,7 +30,7 @@ export const getItemDetailRowsSelector = createSelector(
           item.data.resources.length
         ) {
           referencePopulate = item.data.resources.find(
-            r => r.id === widget.reference,
+            r => r._id === widget.reference,
           );
         }
 

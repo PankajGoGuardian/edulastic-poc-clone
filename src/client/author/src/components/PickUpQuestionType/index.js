@@ -31,6 +31,10 @@ const makeQuestion = data => ({
 });
 
 class PickUpQuestionType extends Component {
+  state = {
+    currentQuestion: 'multiple-choice',
+  }
+
   selectQuestionType = (data) => {
     const { setQuestion, history, match, t } = this.props;
     const question = makeQuestion(data);
@@ -63,8 +67,13 @@ class PickUpQuestionType extends Component {
     };
   }
 
+  handleCategory = (e) => {
+    this.setState({ currentQuestion: e.key });
+  }
+
   render() {
     const { t } = this.props;
+    const { currentQuestion } = this.state;
 
     return (
       <Container>
@@ -73,7 +82,7 @@ class PickUpQuestionType extends Component {
             <Menu.Item key="question">Question</Menu.Item>
             <Menu.Item key="feature" disabled>Feature</Menu.Item>
           </Menu>
-          <Menu mode="inline">
+          <Menu mode="inline" selectedKeys={[currentQuestion]} onClick={this.handleCategory}>
             <Menu.Item key="multiple-choice">
               <NewListIcon />{'Multiple Choice'}
             </Menu.Item>
@@ -108,8 +117,11 @@ class PickUpQuestionType extends Component {
         </LeftSide>
         <RightSide>
           <Header title={t('component.pickupcomponent.headertitle')} link={this.link} />
-          <PaddingDiv left={30} right={30}>
-            <QuestionTypes onSelectQuestionType={this.selectQuestionType} />
+          <PaddingDiv left={30} right={30} style={{ position: 'absolute', left: 0, right: 0, overflow: 'auto', height: 'calc(100% - 140px)' }}>
+            <QuestionTypes
+              onSelectQuestionType={this.selectQuestionType}
+              questionType={currentQuestion}
+            />
           </PaddingDiv>
         </RightSide>
       </Container>
@@ -198,7 +210,10 @@ const LeftSide = styled.div`
   }
 
 `;
-const RightSide = styled.div``;
+const RightSide = styled.div`
+  position: relative;
+  width: 100%;
+`;
 
 const NewListIcon = styled(IconNewList)`
   fill: #434b5d;

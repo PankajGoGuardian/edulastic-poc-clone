@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 
-import { FlexContainer, Tabs } from '@edulastic/common';
+import { FlexContainer, Tabs, Paper } from '@edulastic/common';
 import ItemDetailWidget from './ItemDetailWidget';
 import ItemDetailDropTarget from './ItemDetailDropTarget';
 import { getItemDetailDraggingSelector } from '../../../selectors/itemDetail';
@@ -23,6 +23,7 @@ class ItemDetailRow extends Component {
     onEditWidget: PropTypes.func.isRequired,
     onEditTabTitle: PropTypes.func.isRequired,
     rowIndex: PropTypes.number.isRequired,
+    count: PropTypes.number.isRequired,
   };
 
   handleTabChange = (value) => {
@@ -33,7 +34,6 @@ class ItemDetailRow extends Component {
 
   renderTabContent = ({ widgetIndex, widget, rowIndex }) => {
     const { onEditWidget, onDeleteWidget } = this.props;
-
     return (
       <ItemDetailWidget
         widget={widget}
@@ -46,24 +46,25 @@ class ItemDetailRow extends Component {
   };
 
   render() {
-    const { row, onAdd, onEditTabTitle, rowIndex, dragging } = this.props;
+    const { row, onAdd, onEditTabTitle, rowIndex, dragging, count } = this.props;
     const { value } = this.state;
-
     return (
-      <Container style={{ width: row.dimension }}>
+      <Container style={{ width: row.dimension, marginRight: count - 1 === rowIndex ? '0px' : '30px' }}>
         {row.tabs &&
           !!row.tabs.length && (
-            <Tabs value={value} onChange={this.handleTabChange}>
-              {row.tabs.map((tab, tabIndex) => (
-                <Tabs.Tab
-                  key={tabIndex}
-                  label={tab}
-                  style={{ width: '50%', textAlign: 'center', padding: '30px 20px 15px' }}
-                  onChange={e => onEditTabTitle(tabIndex, e.target.value)}
-                  editable
-                />
-              ))}
-            </Tabs>
+            <TabContainer>
+              <Tabs value={value} onChange={this.handleTabChange}>
+                {row.tabs.map((tab, tabIndex) => (
+                  <Tabs.Tab
+                    key={tabIndex}
+                    label={tab}
+                    style={{ width: '50%', textAlign: 'center', padding: '30px 20px 15px' }}
+                    onChange={e => onEditTabTitle(tabIndex, e.target.value)}
+                    editable
+                  />
+                ))}
+              </Tabs>
+            </TabContainer>
         )}
         {!row.widgets.length &&
           dragging && <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={0} />}
@@ -99,12 +100,21 @@ const enhance = compose(
 
 export default enhance(ItemDetailRow);
 
-const Container = styled.div`
+const Container = styled(Paper)`
   width: 100%;
-  position: absolute;
+  height: 100%;
   left: 0;
   right: 0;
   overflow: auto;
   padding-left: 40px;
   padding-top: 20px;
+  height: 100%;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const TabContainer = styled.div`
+  margin-bottom: 30px;
 `;

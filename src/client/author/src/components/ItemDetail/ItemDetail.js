@@ -16,14 +16,14 @@ import {
   updateItemDetailDimensionAction,
   deleteWidgetAction,
   updateTabTitleAction,
-  useTabsAction,
+  useTabsAction
 } from '../../actions/itemDetail';
 import {
   getItemDetailLoadingSelector,
   getItemDetailRowsSelector,
   getItemDetailSelector,
   getItemDetailUpdatingSelector,
-  getItemDetailDimensionTypeSelector,
+  getItemDetailDimensionTypeSelector
 } from '../../selectors/itemDetail';
 import ItemDetailRow from './ItemDetailRow';
 import { ButtonBar } from '../common';
@@ -37,11 +37,12 @@ class ItemDetail extends Component {
     showModal: false,
     showSettings: false,
     view: 'edit',
-    previewTab: 'clear',
+    previewTab: 'clear'
   };
 
   componentDidMount() {
     const { getItemDetailById, match } = this.props;
+    console.log('match here', match.params.id);
     getItemDetailById(match.params.id, { data: true, validation: true });
   }
 
@@ -50,44 +51,44 @@ class ItemDetail extends Component {
       case '100-100':
         return {
           left: '100%',
-          right: '100%',
+          right: '100%'
         };
       case '30-70':
         return {
           left: '30%',
-          right: '70%',
+          right: '70%'
         };
       case '70-30':
         return {
           left: '70%',
-          right: '30%',
+          right: '30%'
         };
       case '50-50':
         return {
           left: '50%',
-          right: '50%',
+          right: '50%'
         };
       case '40-60':
         return {
           left: '40%',
-          right: '60%',
+          right: '60%'
         };
       case '60-40':
         return {
           left: '60%',
-          right: '40%',
+          right: '40%'
         };
       default:
         return {
           left: '100%',
-          right: '100%',
+          right: '100%'
         };
     }
   };
 
   handleChangeView = (view) => {
     this.setState({
-      view,
+      view
     });
   };
 
@@ -97,34 +98,33 @@ class ItemDetail extends Component {
 
   handleShowSettings = () => {
     this.setState({
-      showSettings: true,
+      showSettings: true
     });
   };
 
   handleAdd = ({ rowIndex, tabIndex }) => {
     const { match, history, t } = this.props;
     history.push({
-      pathname: `/author/items/${match.params.id}/pickup-questiontype`,
+      pathname: `/author/items/${match.params._id}/pickup-questiontype`,
       state: {
         backText: t('component.itemDetail.backText'),
         backUrl: match.url,
         rowIndex,
         tabIndex,
-        testItemId: match.params.id,
-      },
+        testItemId: match.params._id
+      }
     });
   };
 
   handleCancelSettings = () => {
     this.setState({
-      showSettings: false,
+      showSettings: false
     });
   };
 
   handleApplySettings = ({ type }) => {
     const { updateDimension } = this.props;
     const { left, right } = this.getSizes(type);
-
     updateDimension(left, right);
   };
 
@@ -141,13 +141,13 @@ class ItemDetail extends Component {
 
   handleHideSource = () => {
     this.setState({
-      showModal: false,
+      showModal: false
     });
   };
 
   handleSave = () => {
     const { updateItemDetailById, match, item } = this.props;
-
+    console.log('handle save called', match.params);
     updateItemDetailById(match.params.id, item);
   };
 
@@ -158,8 +158,8 @@ class ItemDetail extends Component {
       pathname: `/author/questions/${widget.reference}`,
       state: {
         backText: t('component.itemDetail.backText'),
-        backUrl: match.url,
-      },
+        backUrl: match.url
+      }
     });
   };
 
@@ -197,7 +197,7 @@ class ItemDetail extends Component {
     changePreview(previewTab);
 
     this.setState({
-      previewTab,
+      previewTab
     });
   };
 
@@ -259,21 +259,22 @@ class ItemDetail extends Component {
       type,
       updateTabTitle,
       useTabs,
-      changePreview,
+      changePreview
     } = this.props;
+
+    console.log('Rows = ', rows);
 
     const { view, previewTab } = this.state;
 
     return (
       <Layout>
-        {showModal &&
-          item && (
-            <SourceModal
-              onClose={this.handleHideSource}
-              onApply={this.handleApplySource}
-            >
-              {JSON.stringify(item, null, 4)}
-            </SourceModal>
+        {showModal && item && (
+          <SourceModal
+            onClose={this.handleHideSource}
+            onApply={this.handleApplySource}
+          >
+            {JSON.stringify(item, null, 4)}
+          </SourceModal>
         )}
         {showSettings && (
           <SettingsBar
@@ -292,7 +293,7 @@ class ItemDetail extends Component {
         <ItemHeader
           showIcon
           title={t('component.itemDetail.itemDetail')}
-          reference={match.params.id}
+          reference={match.params._id}
         >
           <ButtonBar
             onShowSource={this.handleShowSource}
@@ -307,7 +308,7 @@ class ItemDetail extends Component {
           />
         </ItemHeader>
         {view === 'edit' && (
-          <Content>
+          <ItemDetailWrapper>
             {loading && <Progress />}
             {rows &&
               !!rows.length &&
@@ -316,6 +317,7 @@ class ItemDetail extends Component {
                   key={i}
                   row={row}
                   rowIndex={i}
+                  count={rows.length}
                   onAdd={this.handleAdd}
                   onDeleteWidget={this.handleDeleteWidget(i)}
                   onEditWidget={this.handleEditWidget}
@@ -324,7 +326,7 @@ class ItemDetail extends Component {
                   }
                 />
               ))}
-          </Content>
+          </ItemDetailWrapper>
         )}
         {view === 'preview' && this.renderPreview()}
       </Layout>
@@ -352,12 +354,12 @@ ItemDetail.propTypes = {
   checkAnswer: PropTypes.func.isRequired,
   showAnswer: PropTypes.func.isRequired,
   changePreview: PropTypes.func.isRequired,
-  evaluation: PropTypes.isRequired,
+  evaluation: PropTypes.isRequired
 };
 
 ItemDetail.defaultProps = {
   rows: [],
-  item: null,
+  item: null
 };
 
 const enhance = compose(
@@ -370,7 +372,7 @@ const enhance = compose(
       updating: getItemDetailUpdatingSelector(state),
       type: getItemDetailDimensionTypeSelector(state),
       evaluation: state.evluation,
-      preview: state.view.preview,
+      preview: state.view.preview
     }),
     {
       changeView: changeViewAction,
@@ -383,9 +385,9 @@ const enhance = compose(
       updateDimension: updateItemDetailDimensionAction,
       deleteWidget: deleteWidgetAction,
       updateTabTitle: updateTabTitleAction,
-      useTabs: useTabsAction,
-    },
-  ),
+      useTabs: useTabsAction
+    }
+  )
 );
 
 export default enhance(ItemDetail);
@@ -397,6 +399,19 @@ const Content = styled(Paper)`
   padding: 0;
   position: relative;
   height: calc(100vh - 154px);
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const ItemDetailWrapper = styled.div`
+  display: flex;
+  padding: 0px 40px 0px 40px;
+  flex-wrap: nowrap;
+  position: relative;
+  height: calc(100vh - 154px);
+  width: 100%;
 
   ::-webkit-scrollbar {
     display: none;

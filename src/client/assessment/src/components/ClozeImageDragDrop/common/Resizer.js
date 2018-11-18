@@ -14,13 +14,11 @@ class Resizer extends React.Component {
   }
 
   onMouseDown = () => {
-    console.log('Resizer.onMouseDown');
     const { updateStateResizing, id } = this.props;
     updateStateResizing(id, true);
   }
 
   onMouseMove = (e) => {
-    console.log('Resizer.onMouseMove');
     const { isResizing, funcResizing, id } = this.props;
     if (isResizing) {
       funcResizing(id, e.clientX, e.clientY);

@@ -28,7 +28,7 @@ const Summary = ({ setData, test, summary, current }) => {
     key: data.standard,
     standard: data.standard,
     qs: data.questionsCount,
-    points: data.score || 0,
+    points: data.score || 0
   }));
 
   return (
@@ -42,7 +42,7 @@ const Summary = ({ setData, test, summary, current }) => {
               description={test.description}
               tags={test.tags}
               analytics={test.analytics}
-              collection={test.collection}
+              collections={test.collection}
               createdBy={test.createdBy}
               onChangeField={handleChangeField}
             />
@@ -81,14 +81,14 @@ Summary.propTypes = {
   setData: PropTypes.func.isRequired,
   test: PropTypes.object.isRequired,
   summary: PropTypes.array.isRequired,
-  current: PropTypes.string.isRequired,
+  current: PropTypes.string.isRequired
 };
 
 const enhance = compose(
   memo,
   connect(state => ({
-    summary: getSummarySelector(state),
-  })),
+    summary: getSummarySelector(state)
+  }))
 );
 
 export default enhance(Summary);

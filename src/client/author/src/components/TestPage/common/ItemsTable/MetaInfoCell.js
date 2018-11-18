@@ -26,7 +26,7 @@ const MetaInfoCell = ({ data }) => (
         <span>By:</span> <FirstText>{data.by}</FirstText>
       </div>
       <div>
-        <span>ID:</span> <FirstText>{data.id}</FirstText>
+        <span>ID:</span> <FirstText>{data._id}</FirstText>
       </div>
       <FlexContainer>
         <IconShare color={greenDark} /> <span>{data.shared}</span>

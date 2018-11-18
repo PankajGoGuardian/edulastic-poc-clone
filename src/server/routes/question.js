@@ -6,6 +6,23 @@ import { successHandler } from '../utils/responseHandler';
 
 const router = Router();
 
+/**
+ * @swagger
+ * /question:
+ *   post:
+ *     tags:
+ *       - Question
+ *     summary: Create a question
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: question
+ *          in: body
+ *     responses:
+ *       200:
+ *         description: successful
+ */
+
 router.post('/', async (req, res) => {
   try {
     const data = req.body;
@@ -20,10 +37,29 @@ router.post('/', async (req, res) => {
     const output = postOutputFormatter(result);
     return successHandler(res, output);
   } catch (e) {
-    console.log('error:', e);
+    req.log.error(e);
     res.boom.badRequest(e);
   }
 });
+
+/**
+ * @swagger
+ * /question:
+ *   get:
+ *     tags:
+ *       - Question
+ *     summary: Get all question
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: limit
+ *          in: query
+ *        - name: index
+ *          in: query
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 
 router.get('/', async (req, res) => {
   try {
@@ -35,10 +71,30 @@ router.get('/', async (req, res) => {
     const result = await question.get(limit, index);
     return successHandler(res, result);
   } catch (e) {
-    console.log('error:', e);
+    req.log.error(e);
     res.boom.badRequest(e);
   }
 });
+
+/**
+ * @swagger
+ * /question/{id}:
+ *   get:
+ *     tags:
+ *       - Question
+ *     summary: Get question by id
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: id
+ *          in: path
+ *          required: true
+ *          example:
+ *            id: 5bebe8706c0d6e57f3219113
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 
 router.get('/:id', async (req, res) => {
   try {
@@ -49,10 +105,30 @@ router.get('/:id', async (req, res) => {
     const output = postOutputFormatter(result);
     successHandler(res, output);
   } catch (e) {
-    console.log('error: ', e);
+    req.log.error(e);
     res.boom.badRequest(e);
   }
 });
+
+/**
+ * @swagger
+ * /question/{id}:
+ *   put:
+ *     tags:
+ *       - Question
+ *     summary: Update question by id
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: id
+ *          in: path
+ *          required: true
+ *          example:
+ *            id: 5bebe8706c0d6e57f3219113
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 
 router.put('/:id', async (req, res) => {
   try {
@@ -68,10 +144,30 @@ router.put('/:id', async (req, res) => {
     const output = postOutputFormatter(result);
     return successHandler(res, output);
   } catch (e) {
-    console.log('error: ', e);
+    req.log.error(e);
     res.boom.badRequest(e);
   }
 });
+
+/**
+ * @swagger
+ * /question/{id}:
+ *   delete:
+ *     tags:
+ *       - Question
+ *     summary: Delete question by id
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: id
+ *          in: path
+ *          required: true
+ *          example:
+ *            id: 5bebe8706c0d6e57f3219113
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 
 router.delete('/:id', async (req, res) => {
   try {
@@ -80,7 +176,7 @@ router.delete('/:id', async (req, res) => {
     await question.delete(id);
     return successHandler(res, 'successfully removed entry');
   } catch (e) {
-    console.log('error: ', e);
+    req.log.error(e);
     res.boom.badRequest(e);
   }
 });

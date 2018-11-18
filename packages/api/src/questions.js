@@ -1,45 +1,47 @@
 import API from './utils/API';
 
-const api = new API();
-const prefix = '/Questions';
+const api = new API('/api');
+const prefix = '/question';
 
 const create = data =>
   api
     .callApi({
       url: prefix,
       method: 'post',
-      data,
+      data
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
-const updateById = (id, data) =>
-  api
+const updateById = (id, data) => {
+  delete data._id;
+  return api
     .callApi({
       url: `${prefix}/${id}`,
       method: 'put',
-      data,
+      data
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
+};
 
 const getAll = () =>
   api
     .callApi({
       url: prefix,
-      method: 'get',
+      method: 'get'
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 const getById = id =>
   api
     .callApi({
       url: `${prefix}/${id}`,
-      method: 'get',
+      method: 'get'
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 export default {
   create,
   updateById,
   getAll,
-  getById,
+  getById
 };

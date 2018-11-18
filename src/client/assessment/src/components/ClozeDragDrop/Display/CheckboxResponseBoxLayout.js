@@ -18,7 +18,6 @@ const CheckboxTemplateBoxLayout = ({
   showAnswer, templateParts, hasGroupResponses, responsecontainerindividuals, responseBtnStyle,
   fontSize, userSelections, stemNumeration, evaluation, onDropHandler }) => {
   let responseIndex = 0;
-  console.log('CheckboxTemplateBoxLayout evaluation:', evaluation);
 
   return (
     <div className="template_box" style={{ fontSize, padding: 20 }}>
@@ -141,4 +140,4 @@ CheckboxTemplateBoxLayout.defaultProps = {
   onDropHandler: () => {},
 };
 
-export default CheckboxTemplateBoxLayout;
+export default React.memo(CheckboxTemplateBoxLayout);

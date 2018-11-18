@@ -28,7 +28,7 @@ class ItemAdd extends Component {
   componentWillReceiveProps(nextProps) {
     console.log('props changed', nextProps);
     if (nextProps.item !== null) {
-      this.setState({ reference: nextProps.item.id });
+      this.setState({ reference: nextProps.item._id });
     }
   }
 
@@ -50,7 +50,7 @@ class ItemAdd extends Component {
 
   editReference = (e) => {
     const { item, updateItemById } = this.props;
-    if (item.id !== e.target.value) {
+    if (item._id !== e.target.value) {
       updateItemById({ id: item._id, reference: e.target.value });
     }
   };

@@ -12,6 +12,7 @@ class DropArea extends React.Component {
     this.state = {
       list: props.item.responses
     };
+    this.draggableRefs = [];
   }
 
   componentWillReceiveProps(nextProps) {
@@ -29,7 +30,7 @@ class DropArea extends React.Component {
     const { updateData } = this.props;
     const obj = JSON.parse(e.dataTransfer.getData('application/json'));
     const { list } = this.state;
-    const index = obj.id;
+    const index = obj._id;
     list[index].isDragging = false;
     list[index].top = (e.clientY - obj.y);
     list[index].left = (e.clientX - obj.x);
@@ -83,6 +84,10 @@ class DropArea extends React.Component {
     newResponseContainer.left = (e.clientX - elemRect.left);
     newResponseContainer.width = 150;
     newResponseContainer.height = 40;
+    newResponseContainer.active = true;
+    list.forEach((responseContainer) => {
+      responseContainer.active = false;
+    });
     list.push(newResponseContainer);
     updateData(list);
   }

@@ -14,7 +14,7 @@ import {
   RECEIVE_TEST_BY_ID_SUCCESS,
   UPDATE_TEST_REQUEST,
   UPDATE_TEST_SUCCESS,
-  UPDATE_TEST_ERROR,
+  UPDATE_TEST_ERROR
 } from '../constants/actions';
 
 function* receiveTestsSaga({ payload }) {
@@ -24,7 +24,7 @@ function* receiveTestsSaga({ payload }) {
 
     yield put({
       type: RECEIVE_TESTS_SUCCESS,
-      payload: { entities, count, page: payload.page, limit: payload.limit },
+      payload: { entities, count, page: payload.page, limit: payload.limit }
     });
   } catch (err) {
     console.error(err);
@@ -32,7 +32,7 @@ function* receiveTestsSaga({ payload }) {
     yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_TESTS_ERROR,
-      payload: { error: errorMessage },
+      payload: { error: errorMessage }
     });
   }
 }
@@ -43,7 +43,7 @@ function* receiveTestByIdSaga({ payload }) {
 
     yield put({
       type: RECEIVE_TEST_BY_ID_SUCCESS,
-      payload: { entity },
+      payload: { entity }
     });
   } catch (err) {
     console.error(err);
@@ -51,7 +51,7 @@ function* receiveTestByIdSaga({ payload }) {
     yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_TEST_BY_ID_ERROR,
-      payload: { error: errorMessage },
+      payload: { error: errorMessage }
     });
   }
 }
@@ -62,7 +62,7 @@ function* createTestSaga({ payload }) {
 
     yield put({
       type: CREATE_TEST_SUCCESS,
-      payload: { entity },
+      payload: { entity }
     });
     yield call(message.success, 'Success create');
   } catch (err) {
@@ -71,7 +71,7 @@ function* createTestSaga({ payload }) {
     yield call(message.error, errorMessage);
     yield put({
       type: CREATE_TEST_ERROR,
-      payload: { error: errorMessage },
+      payload: { error: errorMessage }
     });
   }
 }
@@ -82,7 +82,7 @@ function* updateTestSaga({ payload }) {
 
     yield put({
       type: UPDATE_TEST_SUCCESS,
-      payload: { entity },
+      payload: { entity }
     });
     yield call(message.success, 'Success update');
   } catch (err) {
@@ -91,7 +91,7 @@ function* updateTestSaga({ payload }) {
     yield call(message.error, errorMessage);
     yield put({
       type: UPDATE_TEST_ERROR,
-      payload: { error: errorMessage },
+      payload: { error: errorMessage }
     });
   }
 }
@@ -101,6 +101,6 @@ export default function* watcherSaga() {
     yield takeEvery(RECEIVE_TESTS_REQUEST, receiveTestsSaga),
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
     yield takeEvery(CREATE_TEST_REQUEST, createTestSaga),
-    yield takeEvery(UPDATE_TEST_REQUEST, updateTestSaga),
+    yield takeEvery(UPDATE_TEST_REQUEST, updateTestSaga)
   ]);
 }

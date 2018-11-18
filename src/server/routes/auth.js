@@ -12,7 +12,7 @@ const router = express.Router();
  * /auth/login:
  *   post:
  *     tags:
- *       - user
+ *       - Auth
  *     summary: Login a user with email and password
  *     produces:
  *       - application/json
@@ -21,14 +21,13 @@ const router = express.Router();
  *          in: body
  *          required: true
  *          example:
- *            email: juli@gmail.com
- *            password: julijaiswal
+ *            email: jsmith@snapwiz.com
+ *            password: jsmith123
  *     responses:
  *       200:
- *         description: sucessfull
+ *         description: successful
  */
 
-// login api
 router.post('/login', async (req, res) => {
   try {
     const data = req.body;
@@ -51,7 +50,7 @@ router.post('/login', async (req, res) => {
     const token = generateAuthToken({ _id: result._id });
     return successHandler(res, { token });
   } catch (e) {
-    console.log('error: ', e);
+    req.log.error(e);
     res.boom.badRequest(e);
   }
 });
@@ -61,7 +60,7 @@ router.post('/login', async (req, res) => {
  * /auth/signup:
  *   post:
  *     tags:
- *       - user
+ *       - Auth
  *     summary: Signup a user with email and password
  *     produces:
  *       - application/json
@@ -70,13 +69,13 @@ router.post('/login', async (req, res) => {
  *          in: body
  *          required: true
  *          example:
- *            email: juli@gmail.com
- *            password: julijaiswal
+ *            email: jsmith@snapwiz.com
+ *            password: jsmith1234
  *     responses:
  *       200:
- *         description: sucessfull
+ *         description: successful
  */
-// create user api
+
 router.post('/signup', async (req, res) => {
   try {
     const data = req.body;
@@ -93,7 +92,7 @@ router.post('/signup', async (req, res) => {
     await user.create(data);
     return successHandler(res, 'account sucesssfully created');
   } catch (e) {
-    console.log('error: ', e);
+    req.log.error(e);
     res.boom.badRequest(res, e);
   }
 });

@@ -62,6 +62,10 @@ const getLabelStyle = (type) => {
         background: ${lightGreen};
       `;
     case 'primary':
+      return `
+      color: #4aac8b;
+      background: #d7faee;
+    `;
     default:
       return `
       color: ${darkBlue};

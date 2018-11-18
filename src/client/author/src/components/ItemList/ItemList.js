@@ -6,20 +6,24 @@ import { Paper, withWindowSizes } from '@edulastic/common';
 import { compose } from 'redux';
 import styled from 'styled-components';
 import { withNamespaces } from '@edulastic/localization';
-import { mobileWidth, secondaryTextColor, greenDark, white, tabletWidth } from '@edulastic/colors';
+import {
+  mobileWidth,
+  secondaryTextColor,
+  greenDark,
+  white,
+  tabletWidth
+} from '@edulastic/colors';
 
 import {
-  getItemsPageSelector,
   getItemsLimitSelector,
-  getItemsLoadingSelector,
-  getItemsListSelector,
-  getItemsCountSelector
+  getItemsLoadingSelector
 } from '../../selectors/items';
 
 import Item from './Item';
 import ItemFilter from './ItemFilter';
-import { receiveItemsAction } from '../../actions/items';
+import { receiveTestItemsAction } from '../../actions/testItems';
 import { createTestItemAction } from '../../actions/testItem';
+import { getTestItemsSelector } from '../../selectors/testItems';
 import { getTestItemCreatingSelector } from '../../selectors/testItem';
 import ListHeader from '../common/ListHeader';
 
@@ -28,25 +32,13 @@ class ItemList extends Component {
     super(props);
 
     this.state = {
-      isScroll: false,
+      isScroll: false
     };
   }
 
   componentDidMount() {
-    const { receiveItems, page } = this.props;
-    const itemList = window.document.getElementById('item-list');
-    const itemFilter = window.document.getElementById('item-filter');
-    if (itemFilter.scrollHeight - itemFilter.offsetHeight === 0) {
-      itemFilter.style.position = 'fixed';
-      itemList.style.marginLeft = '338px';
-      this.setState({ isScroll: true });
-    }
-    receiveItems({
-      page,
-      limit: 10,
-      count: 1,
-      search: { orSearch: [], andSearch: [] }
-    });
+    const { receiveItems } = this.props;
+    receiveItems({});
   }
 
   handleSearch = (value) => {
@@ -61,9 +53,9 @@ class ItemList extends Component {
         {
           tabs: [],
           dimension: '100%',
-          widgets: [],
-        },
-      ],
+          widgets: []
+        }
+      ]
     });
   };
 
@@ -84,7 +76,10 @@ class ItemList extends Component {
       return;
     }
 
-    if (mainList.scrollTop > itemFilter.scrollHeight + 89 - itemFilter.offsetHeight) {
+    if (
+      mainList.scrollTop >
+      itemFilter.scrollHeight + 89 - itemFilter.offsetHeight
+    ) {
       itemFilter.style.position = 'fixed';
       itemFilter.style.bottom = '20px';
       itemList.style.marginLeft = '338px';
@@ -110,7 +105,9 @@ class ItemList extends Component {
           <ListItems id="item-list">
             <Pagination
               simple={windowWidth <= 768 && true}
-              showTotal={(total, range) => `${range[0]} to ${range[1]} of ${total}`}
+              showTotal={(total, range) =>
+                `${range[0]} to ${range[1]} of ${total}`
+              }
               onChange={this.handlePaginationChange}
               defaultPageSize={10}
               total={count}
@@ -119,13 +116,20 @@ class ItemList extends Component {
               <Paper padding={windowWidth > 768 ? '25px 39px 0px 39px' : '0px'}>
                 {items.map(item => (
                   // eslint-disable-next-line
-                  <Item key={item.id} item={item} history={history} windowWidth={windowWidth} />
+                  <Item
+                    key={item.id}
+                    item={item}
+                    history={history}
+                    windowWidth={windowWidth}
+                  />
                 ))}
               </Paper>
             </Items>
             <Pagination
               simple={windowWidth <= 768 && true}
-              showTotal={(total, range) => `${range[0]} to ${range[1]} of ${total}`}
+              showTotal={(total, range) =>
+                `${range[0]} to ${range[1]} of ${total}`
+              }
               onChange={this.handlePaginationChange}
               defaultPageSize={10}
               total={count}
@@ -140,13 +144,12 @@ class ItemList extends Component {
 ItemList.propTypes = {
   items: PropTypes.array.isRequired,
   count: PropTypes.number.isRequired,
-  page: PropTypes.number.isRequired,
   receiveItems: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   createItem: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   creating: PropTypes.bool.isRequired,
-  t: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 const enhance = compose(
@@ -154,18 +157,16 @@ const enhance = compose(
   withNamespaces('author'),
   connect(
     state => ({
-      items: getItemsListSelector(state),
-      page: getItemsPageSelector(state),
+      items: getTestItemsSelector(state),
       limit: getItemsLimitSelector(state),
-      count: getItemsCountSelector(state),
       loading: getItemsLoadingSelector(state),
-      creating: getTestItemCreatingSelector(state),
+      creating: getTestItemCreatingSelector(state)
     }),
     {
-      receiveItems: receiveItemsAction,
-      createItem: createTestItemAction,
-    },
-  ),
+      receiveItems: receiveTestItemsAction,
+      createItem: createTestItemAction
+    }
+  )
 );
 
 export default enhance(ItemList);

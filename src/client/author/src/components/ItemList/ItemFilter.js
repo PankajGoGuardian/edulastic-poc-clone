@@ -4,47 +4,22 @@ import styled from 'styled-components';
 import { Select, Icon, Button } from 'antd';
 import { TextField } from '@edulastic/common';
 import { mobileWidth, blue, greenDark, textColor } from '@edulastic/colors';
-import { compose } from 'redux';
-import connect from 'react-redux/es/connect/connect';
-import { receiveItemsAction } from '../../actions/items';
-import { DICT_GRADES, DICT_SUBJECTS } from '../../constants/others';
-
-const { Option } = Select;
 
 class ItemFilter extends Component {
-  state = {
-    gradeOptions: DICT_GRADES.map(el => (<Option key={el}>{ el }</Option>)),
-    subjectOptions: DICT_SUBJECTS.map(el => (<Option key={el}>{ el }</Option>)),
-    gradesSelected: [],
-    subjectSelected: []
-  };
-
-  handleGradesFieldChange = (value) => {
-    this.setState({ gradesSelected: value });
-  };
-
-  handleSubjectFieldChange = (value) => {
-    this.setState({ subjectSelected: [value] });
-  };
-
-  handleSearch = () => {
-    const { receiveItems } = this.props;
-    const { gradesSelected, subjectSelected } = this.state;
-    const search = {
-      orSearch: gradesSelected.map(el => ({ grades: el })),
-      andSearch: subjectSelected.map(el => ({ subject: el }))
+  constructor(props) {
+    super(props);
+    this.state = {
+      subjectItems: [],
     };
-    receiveItems({
-      page: 1,
-      limit: 1,
-      count: 1,
-      search
-    });
-  };
+  }
+
+  handleFilters = () => {
+
+  }
 
   render() {
     const { onSearch } = this.props;
-    const { gradeOptions, subjectOptions } = this.state;
+    const { subjectItems } = this.state;
     return (
       <Container id="item-filter">
         <Header>
@@ -60,29 +35,25 @@ class ItemFilter extends Component {
             />
           </SearchField>
           <FilterButton>
-            <Button onClick={this.handleSearch}>FILTERS</Button>
+            <Button onClick={() => this.handleFilters()}>FILTERS</Button>
           </FilterButton>
         </Header>
         <MainFilter>
           <MainFilterHeader>
             <Title>Filters</Title>
-          </MainFilterHeader>
-          <div>
-            <Button onClick={this.handleSearch}>Apply filters</Button>
             <Clear>Clear all</Clear>
-          </div>
+          </MainFilterHeader>
           <MainFilterItems>
             <Item>
-              <ItemHeader>Grade</ItemHeader>
+              <ItemHeader>Subject</ItemHeader>
               <ItemBody>
                 <Select
                   mode="multiple"
                   style={{ width: '100%' }}
                   placeholder="Please select"
-                  defaultValue={[]}
-                  onChange={this.handleGradesFieldChange}
+                  defaultValue={['GRADE 5']}
                 >
-                  {gradeOptions}
+                  {subjectItems}
                 </Select>
               </ItemBody>
             </Item>
@@ -95,9 +66,8 @@ class ItemFilter extends Component {
                   suffixIcon={
                     <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
                   }
-                  onChange={this.handleSubjectFieldChange}
                 >
-                  {subjectOptions}
+                  <Select.Option value="math">Math</Select.Option>
                 </Select>
               </ItemBody>
             </Item>
@@ -334,17 +304,9 @@ class ItemFilter extends Component {
 
 ItemFilter.propTypes = {
   onSearch: PropTypes.func.isRequired,
-  receiveItems: PropTypes.func.isRequired
 };
 
-const enhance = compose(
-  connect(
-    null,
-    { receiveItems: receiveItemsAction },
-  ),
-);
-
-export default enhance(ItemFilter);
+export default ItemFilter;
 
 
 const Container = styled.div`
@@ -399,7 +361,6 @@ const MainFilter = styled.div`
 
 const MainFilterHeader = styled.div`
   display: flex;
-  margin-bottom: 10px;
 
   @media (max-width: ${mobileWidth}) {
     display: none;

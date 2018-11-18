@@ -1,13 +1,8 @@
-import {
-  RECEIVE_ITEMS_SEARCH_REQUEST,
-  RECEIVE_ITEM_REQUEST,
-  CREATE_ITEM_REQUEST,
-  UPDATE_ITEM_REQUEST
-} from '../constants/actions';
+import { RECEIVE_ITEMS_REQUEST, RECEIVE_ITEM_REQUEST, CREATE_ITEM_REQUEST, UPDATE_ITEM_REQUEST } from '../constants/actions';
 
-export const receiveItemsAction = ({ page, limit, count, search }) => ({
-  type: RECEIVE_ITEMS_SEARCH_REQUEST,
-  payload: { page, limit, count, search },
+export const receiveItemsAction = ({ page, limit, search }) => ({
+  type: RECEIVE_ITEMS_REQUEST,
+  payload: { page, limit, search },
 });
 
 export const receiveItemByIdAction = id => ({

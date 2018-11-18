@@ -1,37 +1,32 @@
 import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects';
 import { itemsApi } from '@edulastic/api';
 import { message } from 'antd';
-import axios from '../../../utils/axiosInstance';
 
 import {
   RECEIVE_ITEM_REQUEST,
   RECEIVE_ITEM_SUCCESS,
   RECEIVE_ITEM_ERROR,
-  RECEIVE_ITEMS_SEARCH_REQUEST,
-  RECEIVE_ITEMS_SEARCH_SUCCESS,
-  RECEIVE_ITEMS_SEARCH_ERROR,
+  RECEIVE_ITEMS_REQUEST,
+  RECEIVE_ITEMS_SUCCESS,
+  RECEIVE_ITEMS_ERROR,
   CREATE_ITEM_REQUEST,
   UPDATE_ITEM_REQUEST
 } from '../constants/actions';
 
-function* receiveItemsSaga({ payload: { page, limit, count, search } }) {
+function* receiveItemsSaga({ payload }) {
   try {
-    const { data: items } = yield call(axios, {
-      method: 'POST',
-      url: '/api/search/fields',
-      data: search
-    });
+    const { items, page, count } = yield call(itemsApi.receiveItems, payload);
 
     yield put({
-      type: RECEIVE_ITEMS_SEARCH_SUCCESS,
-      payload: { items, page, limit, count }
+      type: RECEIVE_ITEMS_SUCCESS,
+      payload: { items, page, limit: payload.limit, count }
     });
   } catch (err) {
     console.error(err);
     const errorMessage = 'Receive items is failing';
     yield call(message.error, errorMessage);
     yield put({
-      type: RECEIVE_ITEMS_SEARCH_ERROR,
+      type: RECEIVE_ITEMS_ERROR,
       payload: { error: errorMessage }
     });
   }
@@ -96,7 +91,7 @@ function* updateItemSaga({ payload }) {
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_REQUEST, receiveItemSaga),
-    yield takeLatest(RECEIVE_ITEMS_SEARCH_REQUEST, receiveItemsSaga),
+    yield takeLatest(RECEIVE_ITEMS_REQUEST, receiveItemsSaga),
     yield takeLatest(CREATE_ITEM_REQUEST, createItemSaga),
     yield takeLatest(UPDATE_ITEM_REQUEST, updateItemSaga)
   ]);

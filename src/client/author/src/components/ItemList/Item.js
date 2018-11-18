@@ -34,10 +34,9 @@ class Item extends Component {
       <Container>
         <Question>
           <QuestionContent>
-            <MoveLink onClick={this.moveToItem}>Course {item.course}</MoveLink>
+            <MoveLink onClick={this.moveToItem}>{item.id}</MoveLink>
             <Description>
-              <div><b>Subject</b>: {item.subject}</div>
-              <div><b>Description</b>: {item.description}</div>
+              {'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum metus et luctus lacinia. Nullam vel tincidunt nibh. Duis ac eros nunc. '}
             </Description>
             {/* <div dangerouslySetInnerHTML={{ __html: item.stimulus }} /> */}
           </QuestionContent>
@@ -56,13 +55,17 @@ class Item extends Component {
         </Question>
         <Detail>
           <TypeCategory>
-            <CategoryName>Grades:</CategoryName>
+            <CategoryName>Type:</CategoryName>
             <CategoryContent>
-              {item.grades.map((grade, index) => (
-                <Label key={index}>
-                  <LabelText>{ grade }</LabelText>
-                </Label>
-              ))}
+              <Label>
+                <LabelText>CLOZE DROP DOWN</LabelText>
+              </Label>
+              <Label>
+                <LabelText>MULTIPLE CHOICE</LabelText>
+              </Label>
+              <Label>
+                <LabelText>ORDER LIST</LabelText>
+              </Label>
             </CategoryContent>
           </TypeCategory>
           <Categories>

@@ -557,7 +557,7 @@ input[type="checkbox"] {
   color: #878282;
   align-items: center;
   height: 100%;
-  padding: 0 40px 0 20px;
+  padding: 0 40px 0 10px;
 }
 
 .check-answer.wrong .index {

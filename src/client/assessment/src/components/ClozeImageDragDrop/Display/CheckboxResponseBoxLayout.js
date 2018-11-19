@@ -15,7 +15,8 @@ const Icon = styled.div`
 `;
 
 const CheckboxTemplateBoxLayout = ({
-  showAnswer, responseContainers, imageUrl, imageWidth, imageAlterText, responsecontainerindividuals, responseBtnStyle, fontSize, userSelections, stemnumeration, evaluation, onDropHandler }) => (
+  showAnswer, responseContainers, imageUrl, imageWidth, imageAlterText, responsecontainerindividuals, responseBtnStyle,
+  fontSize, userSelections, stemnumeration, evaluation, onDropHandler }) => (
     <div className="imagedragdrop_template_box" style={{ fontSize, padding: 20 }}>
       <div style={{ position: 'relative', top: 0, left: 0, width: imageWidth, margin: 'auto', minWidth: 600, maxWidth: '100%' }}>
         <img src={imageUrl} width="100%" style={{ userSelect: 'none', pointerEvents: 'none' }} alt={imageAlterText} />
@@ -56,10 +57,9 @@ const CheckboxTemplateBoxLayout = ({
           const className = evaluation[dropTargetIndex] ? 'right' : 'wrong';
 
           return (
-            <React.Fragment>
+            <React.Fragment key={index}>
               {!showAnswer && (
                 <Droppable
-                  key={index}
                   types={['metal']} // <= allowed drop types
                   style={btnStyle}
                   className={`imagelabeldragdrop-droppable active check-answer ${className}`}
@@ -67,9 +67,10 @@ const CheckboxTemplateBoxLayout = ({
                 >
                   <span className="index index-box">{indexStr}</span>
                   <div className="text container">
-                    {userSelections[dropTargetIndex] && userSelections[dropTargetIndex].map(answer => (
+                    {userSelections[dropTargetIndex] && userSelections[dropTargetIndex].map((answer, user_select_index) => (
                       <Draggable
                         type="metal"
+                        key={user_select_index}
                         data={`${answer}_${dropTargetIndex}_fromResp`}
                         style={{ border: 'solid 1px lightgray', margin: 5, padding: 5, display: 'inline-block' }}
                       >
@@ -89,14 +90,14 @@ const CheckboxTemplateBoxLayout = ({
               )}
               {showAnswer && (
                 <div
-                  key={index}
                   style={btnStyle}
                   className={`imagelabeldragdrop-droppable active check-answer ${className} show-answer`}
                 >
                   <span className="index index-box">{indexStr}</span>
                   <div className="text container">
-                    {userSelections[dropTargetIndex] && userSelections[dropTargetIndex].map(answer => (
+                    {userSelections[dropTargetIndex] && userSelections[dropTargetIndex].map((answer, user_select_index) => (
                       <div
+                        key={user_select_index}
                         style={{ border: 'solid 1px lightgray', margin: 5, padding: 5, display: 'inline-block' }}
                       >
                         {answer}

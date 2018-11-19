@@ -229,7 +229,6 @@ class ClozeImageDragDrop extends Component {
                 responseContainers={item.responses}
                 imageUrl={item.imageUrl}
                 imageWidth={item.imageWidth}
-                key={previewDisplayOptions && previewStimulus && uiStyle}
                 evaluation={evaluation}
               />
             )}
@@ -252,7 +251,6 @@ class ClozeImageDragDrop extends Component {
                 responseContainers={item.responses}
                 imageUrl={item.imageUrl}
                 imageWidth={item.imageWidth}
-                key={previewDisplayOptions && previewStimulus && uiStyle}
                 evaluation={evaluation}
               />
             )}

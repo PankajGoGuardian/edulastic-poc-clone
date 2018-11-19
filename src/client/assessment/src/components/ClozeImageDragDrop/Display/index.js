@@ -12,7 +12,7 @@ import { Pointer, Point, Triangle } from '../common';
 const defaultImageURL = 'https://assets.learnosity.com/demos/docs/colored_world_map.png';
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 
-class ClozeDragDropDisplay extends Component {
+class ClozeImageDragDropDisplay extends Component {
   constructor(props) {
     super(props);
     let userAnswers = new Array(props.responseContainers).fill(false);
@@ -191,7 +191,6 @@ class ClozeDragDropDisplay extends Component {
       whiteSpace: wordwrap ? 'inherit' : 'nowrap',
     }
 
-    console.log('imagedragdrop_template_box responseContainers:', responseContainers);
     const previewTemplateBoxLayout = (
       <div className="imagedragdrop_template_box" style={{ fontSize: smallSize ? 10 : fontSize, padding: smallSize ? 0 : 20 }}>
         <div style={{ position: 'relative', top: 0, left: 0, width: smallSize ? '100%' : imageWidth, margin: 'auto', minWidth: smallSize ? '100%' : 600, maxWidth: '100%' }}>
@@ -242,9 +241,10 @@ class ClozeDragDropDisplay extends Component {
                   >
                     <span className="index-box">{indexStr}</span>
                     <div className="container">
-                    {userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].map(answer => (
+                    {userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].map((answer, item_index) => (
                       <Draggable
                         type="metal"
+                        key={item_index}
                         data={`${answer}_${dropTargetIndex}_fromResp`}
                         style={{ border: 'solid 1px lightgray', margin: 5, padding: 5, display: 'inline-block' }}
                       >
@@ -349,7 +349,7 @@ class ClozeDragDropDisplay extends Component {
   }
 }
 
-ClozeDragDropDisplay.propTypes = {
+ClozeImageDragDropDisplay.propTypes = {
   options: PropTypes.array,
   onChange: PropTypes.func,
   preview: PropTypes.bool,
@@ -370,7 +370,7 @@ ClozeDragDropDisplay.propTypes = {
   imageWidth: PropTypes.number,
 };
 
-ClozeDragDropDisplay.defaultProps = {
+ClozeImageDragDropDisplay.defaultProps = {
   options: [],
   onChange: () => {},
   preview: true,
@@ -403,4 +403,4 @@ ClozeDragDropDisplay.defaultProps = {
   }
 };
 
-export default ClozeDragDropDisplay;
+export default ClozeImageDragDropDisplay;

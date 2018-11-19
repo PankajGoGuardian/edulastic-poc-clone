@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { MoveLink } from '@edulastic/common';
+import styled from 'styled-components';
 import { withRouter } from 'react-router-dom';
 
 const MainInfoCell = ({ data, history }) => {
@@ -10,7 +11,7 @@ const MainInfoCell = ({ data, history }) => {
   return (
     <div>
       <MoveLink onClick={goToItem}>{data.title}</MoveLink>
-      <div dangerouslySetInnerHTML={{ __html: data.stimulus }} />
+      <STIMULUS dangerouslySetInnerHTML={{ __html: data.stimulus }} />
     </div>
   );
 };
@@ -21,3 +22,9 @@ MainInfoCell.propTypes = {
 };
 
 export default withRouter(MainInfoCell);
+
+const STIMULUS = styled.div`
+  font-size: 13px;
+  color: #444444;
+  margin-top: 3px;
+`;

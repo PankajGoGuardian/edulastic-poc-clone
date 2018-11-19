@@ -193,7 +193,49 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         }
       },
       onSelectQuestionType
-    }
+    },
+    {
+      title: 'Cloze with Drag & Drop',
+      type: 'fill-blanks',
+      stimulus: '',
+      data: {
+        type: 'clozeDragDrop',
+        stimulus: '',
+        options: ['Choice A', 'Choice B'],
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [],
+          },
+          alt_responses: [],
+        },
+      },
+      onSelectQuestionType,
+    },
+    {
+      title: 'Label Image with Drag & Drop',
+      type: 'fill-blanks',
+      stimulus: '',
+      data: {
+        type: 'clozeImageDragDrop',
+        stimulus: '',
+        options: ['Choice A', 'Choice B'],
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [],
+          },
+          alt_responses: [],
+        },
+        responses: [
+          { top: 100, left: 50, width: 200, height: 50 },
+          { top: 200, left: 200, width: 200, height: 50 },
+        ]
+      },
+      onSelectQuestionType,
+    },
   ];
 
   return (

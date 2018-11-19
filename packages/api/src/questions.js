@@ -1,6 +1,6 @@
 import API from './utils/API';
 
-const api = new API('/api');
+const api = new API();
 const prefix = '/question';
 
 const create = data =>

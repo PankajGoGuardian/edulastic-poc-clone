@@ -8,7 +8,7 @@ const create = data =>
     .callApi({
       url: prefix,
       method: 'post',
-      data,
+      data
     })
     .then(result => result.data);
 
@@ -16,11 +16,11 @@ const submit = id =>
   api
     .callApi({
       url: `${prefix}/${id}/submit`,
-      method: 'post',
+      method: 'post'
     })
     .then(result => result.data);
 
 export default {
   create,
-  submit,
+  submit
 };

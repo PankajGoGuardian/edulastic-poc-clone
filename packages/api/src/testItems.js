@@ -1,17 +1,15 @@
 import API from './utils/API';
 
-const api = new API('/api');
+const api = new API();
 const prefix = '/testItem';
 
-const formatData = (data) => {
+const formatData = data => {
   const item = JSON.parse(JSON.stringify(data));
   delete item._id;
   return item;
 };
 
-const getAll = (
-  { limit = 10, page = 1, search, data, validation }
-) => {
+const getAll = ({ limit = 10, page = 1, search, data, validation }) => {
   let url = `${prefix}?filter[limit]=${limit}&filter[skip]=${limit *
     (page - 1)}`;
 

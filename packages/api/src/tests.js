@@ -1,15 +1,15 @@
 import API from './utils/API';
 
-const api = new API('/api');
+const api = new API();
 const prefix = '/test';
 
-const formatData = data => {
-  let item = JSON.parse(JSON.stringify(data));
+const formatData = (data) => {
+  const item = JSON.parse(JSON.stringify(data));
   delete item._id;
   return item;
 };
 
-const getAll = ({ limit, page, search } = { limit: 10, page: 1 }) => {
+const getAll = ({ limit = 10, page = 1, search }) => {
   let url = `${prefix}?filter[limit]=${limit}&filter[skip]=${limit *
     (page - 1)}`;
 
@@ -52,7 +52,7 @@ const create = data =>
     .then(result => result.data.result);
 
 const update = ({ id, data: test }) => {
-  let data = formatData(test);
+  const data = formatData(test);
   api
     .callApi({
       url: `${prefix}/${id}`,

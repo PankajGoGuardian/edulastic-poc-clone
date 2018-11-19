@@ -1,16 +1,16 @@
 import API from './utils/API';
 
-const api = new API('/api');
-const prefix = '/testItem';
+const api = new API();
+const prefix = '/testItems';
 
-const formatData = data => {
-  let item = JSON.parse(JSON.stringify(data));
+const formatData = (data) => {
+  const item = JSON.parse(JSON.stringify(data));
   delete item._id;
   return item;
 };
 
 const getAll = (
-  { limit, page, search, data, validation } = { limit: 10, page: 1 }
+  { limit = 10, page = 1, search, data, validation }
 ) => {
   let url = `${prefix}?filter[limit]=${limit}&filter[skip]=${limit *
     (page - 1)}`;
@@ -19,7 +19,7 @@ const getAll = (
     url += `&filter[where][title][like]=${search}`;
   }
 
-  let params = { data, validation };
+  const params = { data, validation };
   return api
     .callApi({
       url,
@@ -47,7 +47,7 @@ const getById = (id, params = {}) =>
     .then(result => result.data.result);
 
 const updateById = (id, item) => {
-  let data = formatData(item);
+  const data = formatData(item);
   return api
     .callApi({
       url: `${prefix}/${id}`,
@@ -67,7 +67,7 @@ const create = data =>
     .then(result => result.data.result);
 
 const update = ({ id, item }) => {
-  let data = formatData(item);
+  const data = formatData(item);
   return api
     .callApi({
       url: `${prefix}/${id}`,

@@ -34,8 +34,8 @@ const difficulties = [
   { value: 'sub1', text: 'Sub1' }
 ];
 
-const TestFilters = ({ children, onChange }) => (
-  <Container>
+const TestFilters = ({ children, onChange, style }) => (
+  <Container style={style}>
     <FlexContainer justifyContent="space-between" style={{ marginBottom: 26 }}>
       <Title>Filters</Title>
       <ClearAll>Clear all</ClearAll>
@@ -145,11 +145,13 @@ const TestFilters = ({ children, onChange }) => (
 
 TestFilters.propTypes = {
   children: PropTypes.any,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  style: PropTypes.object,
 };
 
 TestFilters.defaultProps = {
-  children: null
+  children: null,
+  style: {},
 };
 
 export default TestFilters;

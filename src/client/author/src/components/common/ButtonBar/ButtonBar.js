@@ -9,21 +9,26 @@ import {
   IconPreview,
   IconSettings,
   IconEraseText,
-  IconPencilEdit,
+  IconPencilEdit
 } from '@edulastic/icons';
 import { white, blue, darkBlue } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { withWindowSizes } from '@edulastic/common';
 import { compose } from 'redux';
 
-import { Container, RightSide, PreviewBar, HeadIcon } from './styled_components';
+import {
+  Container,
+  RightSide,
+  PreviewBar,
+  HeadIcon
+} from './styled_components';
 import { ButtonLink } from '..';
 
 class ButtonBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      current: 'edit',
+      current: 'edit'
     };
   }
 
@@ -31,7 +36,7 @@ class ButtonBar extends Component {
     const { onChangeView } = this.props;
     onChangeView(e.key);
     this.setState({ current: e.key });
-  }
+  };
 
   render() {
     const { current } = this.state;
@@ -42,7 +47,7 @@ class ButtonBar extends Component {
       previewTab,
       onShowSource,
       onShowSettings,
-      changePreviewTab,
+      changePreviewTab
     } = this.props;
     return (
       <React.Fragment>
@@ -81,7 +86,7 @@ class ButtonBar extends Component {
               position: 'absolute',
               marginTop: 25,
               width: '100%',
-              justifyContent: 'flex-end',
+              justifyContent: 'flex-end'
             }}
           >
             <Button>
@@ -93,13 +98,8 @@ class ButtonBar extends Component {
                 {t('component.questioneditor.buttonbar.source')}
               </ButtonLink>
             </Button>
-            <Button
-              onClick={onShowSettings}
-            >
-              <ButtonLink
-                color="primary"
-                icon={<IconSettings color={blue} />}
-              >
+            <Button onClick={onShowSettings}>
+              <ButtonLink color="primary" icon={<IconSettings color={blue} />}>
                 {t('component.questioneditor.buttonbar.layout')}
               </ButtonLink>
             </Button>
@@ -111,21 +111,15 @@ class ButtonBar extends Component {
               position: 'absolute',
               marginTop: 25,
               width: '100%',
-              justifyContent: 'flex-end',
+              justifyContent: 'flex-end'
             }}
           >
-            <Button>
-              <ButtonLink
-                onClick={() => changePreviewTab('check')}
-                color="primary"
-                icon={<IconCheck color={blue} />}
-              >
+            <Button onClick={() => changePreviewTab('check')}>
+              <ButtonLink color="primary" icon={<IconCheck color={blue} />}>
                 {t('component.questioneditor.buttonbar.checkanswer')}
               </ButtonLink>
             </Button>
-            <Button
-              onClick={() => changePreviewTab('show')}
-            >
+            <Button onClick={() => changePreviewTab('show')}>
               <ButtonLink
                 color="primary"
                 icon={<IconEye color={blue} hoverColor={darkBlue} />}
@@ -133,9 +127,8 @@ class ButtonBar extends Component {
                 {t('component.questioneditor.buttonbar.showanswers')}
               </ButtonLink>
             </Button>
-            <Button>
+            <Button onClick={() => changePreviewTab('clear')}>
               <ButtonLink
-                onClick={() => changePreviewTab('clear')}
                 color="primary"
                 active={previewTab === 'clear'}
                 icon={<IconEraseText color={blue} />}
@@ -158,7 +151,7 @@ ButtonBar.propTypes = {
   onShowSource: PropTypes.func.isRequired,
   onShowSettings: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
   // saving: PropTypes.bool,
 };
 
@@ -168,7 +161,7 @@ ButtonBar.defaultProps = {
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces('author'),
+  withNamespaces('author')
 );
 
 export default enhance(ButtonBar);

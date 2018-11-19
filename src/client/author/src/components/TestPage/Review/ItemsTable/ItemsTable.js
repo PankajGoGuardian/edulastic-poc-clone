@@ -14,8 +14,6 @@ import {
 const ItemsTable = ({
   items,
   types,
-  // setSelectedTests,
-  // selectedTests,
   standards
 }) => {
   const columns = [
@@ -58,16 +56,8 @@ const ItemsTable = ({
     };
   });
 
-  // const rowSelection = {
-  //   onChange: (selectedRowKeys) => {
-  //     setSelectedTests(selectedRowKeys);
-  //   },
-  //   selectedRowKeys: selectedTests
-  // };
-
   return (
     <Table
-      // rowSelection={rowSelection}
       columns={columns}
       dataSource={data}
       showHeader={false}
@@ -78,8 +68,6 @@ const ItemsTable = ({
 ItemsTable.propTypes = {
   items: PropTypes.array.isRequired,
   types: PropTypes.object.isRequired,
-  // setSelectedTests: PropTypes.func.isRequired,
-  // selectedTests: PropTypes.array.isRequired,
   standards: PropTypes.object.isRequired
 };
 

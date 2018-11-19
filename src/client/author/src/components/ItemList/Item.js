@@ -13,7 +13,7 @@ class Item extends Component {
     item: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     t: PropTypes.func.isRequired,
-    windowWidth: PropTypes.number.isRequired,
+    windowWidth: PropTypes.number.isRequired
   };
 
   moveToItem = () => {
@@ -23,8 +23,8 @@ class Item extends Component {
       state: {
         backText: t('component.itemAdd.backToItemList'),
         backUrl: '/author/items',
-        itemDetail: true,
-      },
+        itemDetail: true
+      }
     });
   };
 
@@ -34,7 +34,7 @@ class Item extends Component {
       <Container>
         <Question>
           <QuestionContent>
-            <MoveLink onClick={this.moveToItem}>{item.id}</MoveLink>
+            <MoveLink onClick={this.moveToItem}>{item._id}</MoveLink>
             <Description>
               {
                 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum metus et luctus lacinia. Nullam vel tincidunt nibh. Duis ac eros nunc. '

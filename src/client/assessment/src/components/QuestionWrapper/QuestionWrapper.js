@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { OrderList } from '../OrderList';
 import { MultipleChoice } from '../MultipleChoice';
+import { ClozeDragDrop } from '../ClozeDragDrop';
+import { ClozeImageDragDrop } from '../ClozeImageDragDrop';
 import withAnswerSave from '../HOC/withAnswerSave';
 import MatrixChoice from '../MatrixChoice/MatrixChoice';
 
@@ -13,6 +15,10 @@ const getQuestion = (type) => {
       return MatrixChoice;
     case 'orderList':
       return OrderList;
+    case 'clozeDragDrop':
+      return ClozeDragDrop;
+    case 'clozeImageDragDrop':
+      return ClozeImageDragDrop;
     default:
       return null;
   }
@@ -21,11 +27,12 @@ const getQuestion = (type) => {
 const QuestionWrapper = ({ type, data, ...restProps }) => {
   const questionProps = Object.assign(
     {
-      item: data,
+      item: data
     },
-    restProps,
+    restProps
   );
   const Question = getQuestion(type);
+
   return <Question {...questionProps} />;
 };
 
@@ -35,7 +42,7 @@ QuestionWrapper.propTypes = {
   isNew: PropTypes.bool,
   data: PropTypes.object,
   saveClicked: PropTypes.bool,
-  testItem: PropTypes.bool,
+  testItem: PropTypes.bool
 };
 
 QuestionWrapper.defaultProps = {
@@ -43,7 +50,7 @@ QuestionWrapper.defaultProps = {
   type: null,
   data: {},
   saveClicked: false,
-  testItem: false,
+  testItem: false
 };
 
 export default React.memo(withAnswerSave(QuestionWrapper));

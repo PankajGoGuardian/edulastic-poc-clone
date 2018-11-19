@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { Button } from 'antd';
 import { IconMoveArrows, IconPencilEdit, IconTrash } from '@edulastic/icons';
-import { white, red, green } from '@edulastic/colors';
+import { white, green } from '@edulastic/colors';
 import { DragSource } from 'react-dnd';
 import { withNamespaces } from '@edulastic/localization';
 
@@ -43,16 +44,16 @@ const ItemDetailWidget = ({
         <Buttons>
           {connectDragSource(
             <div>
-              <Button title={t('move')} move>
-                <IconMoveArrows color={white} hoverColor={green} />
+              <Button title={t('move')} move shape="circle">
+                <IconMoveArrows color={white} style={{ fontSize: 11 }} />
               </Button>
             </div>,
           )}
-          <Button title={t('edit')} onClick={onEdit}>
-            <IconPencilEdit color={white} hoverColor={green} />
+          <Button title={t('edit')} onClick={onEdit} shape="circle">
+            <IconPencilEdit color={white} />
           </Button>
-          <Button title={t('delete')} onClick={onDelete}>
-            <IconTrash color={white} hoverColor={red} />
+          <Button title={t('delete')} onClick={onDelete} shape="circle">
+            <IconTrash color={white} />
           </Button>
         </Buttons>
       </Container>
@@ -117,15 +118,19 @@ const Container = styled.div`
 
 const Buttons = styled.div`
   position: absolute;
-  right: -60px;
+  right: -40px;
   top: 40px;
   width: 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
 
-const Button = styled.div`
-  margin-bottom: 20px;
-  cursor: ${({ move }) => (move ? 'grab' : 'pointer')};
+  .ant-btn-circle {
+    background: ${green}
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16);
+    margin-bottom: 11px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;

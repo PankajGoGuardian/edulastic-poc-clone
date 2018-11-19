@@ -13,7 +13,7 @@ import {
   UPDATE_TEST_ITEM_ERROR,
   SHOW_ANSWER,
   CHECK_ANSWER,
-  ADD_ITEM_EVALUATION,
+  ADD_ITEM_EVALUATION
 } from '../constants/actions';
 import { history } from '../../../configureStore';
 import { getItemDetailValidationSelector } from '../selectors/itemDetail';
@@ -21,9 +21,10 @@ import { getItemDetailValidationSelector } from '../selectors/itemDetail';
 function* createTestItemSaga({ payload }) {
   try {
     const item = yield call(testItemsApi.create, payload);
+    console.log('item here is', item, item._id);
     yield put({
       type: CREATE_TEST_ITEM_SUCCESS,
-      payload: { item: item.data },
+      payload: { item: item.data }
     });
     yield call(history.push, `/author/items/${item._id}/item-detail`);
   } catch (err) {
@@ -32,7 +33,7 @@ function* createTestItemSaga({ payload }) {
     yield call(message.error, errorMessage);
     yield put({
       type: CREATE_TEST_ITEM_ERROR,
-      payload: { error: errorMessage },
+      payload: { error: errorMessage }
     });
   }
 }
@@ -42,7 +43,7 @@ function* updateTestItemSaga({ payload }) {
     const item = yield call(testItemsApi.update, payload);
     yield put({
       type: UPDATE_TEST_ITEM_SUCCESS,
-      payload: { item },
+      payload: { item }
     });
   } catch (err) {
     console.error(err);
@@ -50,7 +51,7 @@ function* updateTestItemSaga({ payload }) {
     yield call(message.error, errorMessage);
     yield put({
       type: UPDATE_TEST_ITEM_ERROR,
-      payload: { error: errorMessage },
+      payload: { error: errorMessage }
     });
   }
 }
@@ -63,8 +64,8 @@ function* evaluateAnswers() {
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {
-        ...evaluation,
-      },
+        ...evaluation
+      }
     });
   } catch (err) {
     console.log(err);
@@ -81,8 +82,8 @@ function* showAnswers() {
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {
-        ...evaluation,
-      },
+        ...evaluation
+      }
     });
   } catch (err) {
     console.log(err);
@@ -96,6 +97,6 @@ export default function* watcherSaga() {
     yield takeEvery(CREATE_TEST_ITEM_REQUEST, createTestItemSaga),
     yield takeEvery(UPDATE_TEST_ITEM_REQUEST, updateTestItemSaga),
     yield takeEvery(CHECK_ANSWER, evaluateAnswers),
-    yield takeEvery(SHOW_ANSWER, showAnswers),
+    yield takeEvery(SHOW_ANSWER, showAnswers)
   ]);
 }

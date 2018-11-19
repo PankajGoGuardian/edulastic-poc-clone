@@ -9,16 +9,18 @@ import { Header, Toggler, Heading, Block, Label, Row, Col } from './styles';
 
 class Options extends Component {
   state = {
-    show: false,
+    show: false
   };
 
   static propTypes = {
     title: PropTypes.string,
     children: PropTypes.any.isRequired,
+    outerStyle: PropTypes.object
   };
 
   static defaultProps = {
     title: i18n.t('assessment:common.options.title'),
+    outerStyle: {}
   };
 
   static Heading = Heading;
@@ -33,16 +35,16 @@ class Options extends Component {
 
   handleToggle = () => {
     this.setState(({ show }) => ({
-      show: !show,
+      show: !show
     }));
   };
 
   render() {
-    const { title, children } = this.props;
+    const { title, children, outerStyle } = this.props;
     const { show } = this.state;
 
     return (
-      <Paper>
+      <Paper style={outerStyle}>
         <Header onClick={this.handleToggle}>
           <span>{title}</span>
           {show && <Toggler />}

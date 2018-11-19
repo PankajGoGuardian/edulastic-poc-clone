@@ -8,7 +8,10 @@ import { withRouter } from 'react-router-dom';
 import { Row, Col, Input, Spin, Select } from 'antd';
 import styled from 'styled-components';
 import TestFilters from '../../common/TestFilters';
-import { getItemsLoadingSelector, getTestItemsSelector } from '../../../selectors/testItems';
+import {
+  getItemsLoadingSelector,
+  getTestItemsSelector
+} from '../../../selectors/testItems';
 import { receiveTestItemsAction } from '../../../actions/testItems';
 import { Container } from '../../common';
 import ItemsTable from '../common/ItemsTable/ItemsTable';
@@ -21,12 +24,11 @@ const Items = ({
   history,
   onAddItems,
   selectedItems,
-  current,
+  current
 }) => {
   useEffect(() => {
-    receiveTestItems();
+    receiveTestItems({});
   }, []);
-
   const [searchStr, setSearchStr] = useState('');
   const [selectedTests, setSelectedTests] = useState([]);
 
@@ -34,7 +36,7 @@ const Items = ({
     () => {
       setSelectedTests(selectedItems);
     },
-    [selectedItems],
+    [selectedItems]
   );
 
   if (loading) return <Spin size="large" />;
@@ -50,7 +52,8 @@ const Items = ({
   const handleSortChange = () => {};
 
   const handleAddItems = () => {
-    const tests = selectedTests.map(testId => items.find(item => item.id === testId));
+    const tests = selectedTests.map(testId =>
+      items.find(item => item._id === testId));
     onAddItems(tests);
   };
 
@@ -61,7 +64,11 @@ const Items = ({
   return (
     <Container>
       <Breadcrumbs current={current} />
-      <Row gutter={16} style={{ paddingTop: 15, paddingBottom: 15 }} align="middle">
+      <Row
+        gutter={16}
+        style={{ paddingTop: 15, paddingBottom: 15 }}
+        align="middle"
+      >
         <Col span={6}>
           <Input.Search
             placeholder="Search by skills and keywords"
@@ -78,10 +85,18 @@ const Items = ({
               <FlexContainer justifyContent="space-between">
                 <span>{items.length} questions</span>
                 <div>
-                  <StyledButton type="primary" size="large" onClick={handleAddItems}>
+                  <StyledButton
+                    type="primary"
+                    size="large"
+                    onClick={handleAddItems}
+                  >
                     <span>Add {selectedTests.length} selected items</span>
                   </StyledButton>
-                  <StyledButton type="secondary" size="large" onClick={handleCreateNewItem}>
+                  <StyledButton
+                    type="secondary"
+                    size="large"
+                    onClick={handleCreateNewItem}
+                  >
                     Create new Item
                   </StyledButton>
                   <Select
@@ -123,7 +138,7 @@ Items.propTypes = {
   onAddItems: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   selectedItems: PropTypes.array.isRequired,
-  current: PropTypes.string.isRequired,
+  current: PropTypes.string.isRequired
 };
 
 const enhance = compose(
@@ -132,10 +147,10 @@ const enhance = compose(
   connect(
     state => ({
       items: getTestItemsSelector(state),
-      loading: getItemsLoadingSelector(state),
+      loading: getItemsLoadingSelector(state)
     }),
-    { receiveTestItems: receiveTestItemsAction },
-  ),
+    { receiveTestItems: receiveTestItemsAction }
+  )
 );
 
 export default enhance(Items);

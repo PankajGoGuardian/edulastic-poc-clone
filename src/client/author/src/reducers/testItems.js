@@ -22,6 +22,7 @@ const itemsReducer = (state = initialState, { type, payload }) => {
         ...state,
         loading: false,
         items: payload.items,
+        count: payload.count,
       };
     case RECEIVE_TEST_ITEMS_ERROR:
       return { ...state, loading: false, error: payload.error };

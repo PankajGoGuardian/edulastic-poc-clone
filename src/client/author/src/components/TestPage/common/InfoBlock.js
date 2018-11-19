@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import React from 'react';
-import { textColor, lightGrey, greenDark, mainBgColor } from '@edulastic/colors';
+import { textColor, greenDark, mainBgColor } from '@edulastic/colors';
 import PropTypes from 'prop-types';
 
 const InfoBlock = ({ count, children }) => (
@@ -19,7 +19,7 @@ const Block = styled.div`
   width: 49%;
   padding: 8px;
   border-radius: 5px;
-  border: solid 1px ${lightGrey};
+  border: solid 1px rgba(0, 0, 0, 0.1);
   background-color: ${mainBgColor};
   text-align: center;
   font-size: 13px;

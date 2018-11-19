@@ -17,7 +17,7 @@ const MainInfoCell = ({ data, history }) => {
 
 MainInfoCell.propTypes = {
   data: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired
 };
 
 export default withRouter(MainInfoCell);

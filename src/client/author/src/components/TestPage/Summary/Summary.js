@@ -1,16 +1,22 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Paper } from '@edulastic/common';
-import { Row, Col } from 'antd';
+import { Row, Col, Button } from 'antd';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import styled from 'styled-components';
 
-import { Container } from '../../common';
+import { IconSource } from '@edulastic/icons';
+import { blue } from '@edulastic/colors';
+import { withNamespaces } from '@edulastic/localization';
+
+import { Container, ButtonLink } from '../../common';
 import Sidebar from './Sidebar';
-import { Calculator, Breadcrumbs } from '../common';
+import { Calculator } from '../common';
+import Breadcrumb from '../../Breadcrumb';
 import { getSummarySelector } from '../../../selectors/tests';
 
-const Summary = ({ setData, test, summary, current }) => {
+const Summary = ({ setData, test, summary, current, t }) => {
   const handleChangeField = (field, value) => {
     setData({ ...test, [field]: value });
   };
@@ -32,10 +38,21 @@ const Summary = ({ setData, test, summary, current }) => {
 
   return (
     <Container>
-      <Breadcrumbs current={current} />
-      <Row>
-        <Col span={12}>
-          <Paper style={{ marginRight: 25 }}>
+      <SecondHeader>
+        <Breadcrumb data={['ITEM LIST', current]} style={{ position: 'unset' }} />
+        <Button>
+          <ButtonLink
+            // onClick={onShowSource}
+            color="primary"
+            icon={<IconSource color={blue} />}
+          >
+            {t('component.questioneditor.buttonbar.source')}
+          </ButtonLink>
+        </Button>
+      </SecondHeader>
+      <Paper style={{ marginTop: 25 }}>
+        <Row gutter={32}>
+          <Col span={12}>
             <Sidebar
               title={test.title}
               description={test.description}
@@ -45,10 +62,8 @@ const Summary = ({ setData, test, summary, current }) => {
               createdBy={test.createdBy}
               onChangeField={handleChangeField}
             />
-          </Paper>
-        </Col>
-        <Col span={12}>
-          <Paper>
+          </Col>
+          <Col span={12}>
             <Calculator
               totalPoints={test.scoring.total}
               questionsCount={test.scoring.testItems.length}
@@ -58,9 +73,9 @@ const Summary = ({ setData, test, summary, current }) => {
               onChangeSubjects={handleChangeSubjects}
               tableData={tableData}
             />
-          </Paper>
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+      </Paper>
     </Container>
   );
 };
@@ -69,14 +84,27 @@ Summary.propTypes = {
   setData: PropTypes.func.isRequired,
   test: PropTypes.object.isRequired,
   summary: PropTypes.array.isRequired,
+  t: PropTypes.func.isRequired,
   current: PropTypes.string.isRequired,
 };
 
 const enhance = compose(
   memo,
+  withNamespaces('author'),
   connect(state => ({
     summary: getSummarySelector(state),
   })),
 );
 
 export default enhance(Summary);
+
+const SecondHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  .ant-btn {
+    background: transparent;
+    height: 24px;
+    margin-left: 17px;
+  }
+`;

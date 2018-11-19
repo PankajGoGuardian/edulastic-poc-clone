@@ -4,6 +4,7 @@ const appModeDev = process.env.APP_MODE_DEV === '1';
 const serviceHost = process.env.SERVICE_HOST || '0.0.0.0';
 const env = process.env.NODE_ENV || 'localhost';
 const host = process.env.HOST || '0.0.0.0';
+const port = process.env.PORT || 3000;
 console.log('appModeDev', appModeDev); // eslint-disable-line
 console.log('serviceHost', serviceHost); // eslint-disable-line
 console.log('env', env); // eslint-disable-line
@@ -18,19 +19,39 @@ const config = {
 
   buildConfig: {
     targetDir: '.build',
-    assetsDir: 'assets',
+    assetsDir: 'assets'
   },
 
   proxyAssets: {
     host: 'localhost',
-    port: 9090,
+    port: 9090
   },
 
   server: {
     serviceHost,
     host,
-    port: 3000,
+    port
   },
+
+  db: {
+    uri: process.env.DB_URI || 'mongodb://localhost/edulastic-poc',
+    options: {}
+  },
+
+  jwt: {
+    secret: process.env.JWT_SECRET || 'flyingPinkPikachu',
+    expiresIn: process.env.JWT_EXPIRY || '30d'
+  },
+
+  elasticSearch: {
+    uri:
+      process.env.ELASTIC_SEARCH_URI ||
+      'http://localhost:9200/bp_auth_otp/_search'
+  },
+  s3: {
+    keyId: process.env.AWS_KEY_ID,
+    key: process.env.AWS_KEY
+  }
 };
 
 export default config;

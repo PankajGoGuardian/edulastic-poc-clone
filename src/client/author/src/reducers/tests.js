@@ -12,7 +12,7 @@ import {
   UPDATE_TEST_REQUEST,
   UPDATE_TEST_SUCCESS,
   UPDATE_TEST_ERROR,
-  SET_DEFAULT_TEST_DATA,
+  SET_DEFAULT_TEST_DATA
 } from '../constants/actions';
 
 const initialTestState = {
@@ -25,27 +25,27 @@ const initialTestState = {
     id: '',
     firstName: '',
     lastName: '',
-    email: '',
+    email: ''
   },
   tags: [],
   scoring: {
     total: 0,
-    testItems: [],
+    testItems: []
   },
   testItems: [],
   assignments: [],
   standardsTag: {
     curriculum: '',
-    standards: [],
+    standards: []
   },
   grades: [],
   subjects: [],
   courses: [],
-  collection: '',
+  collections: '',
   analytics: {
     usage: '0',
-    likes: '0',
-  },
+    likes: '0'
+  }
 };
 
 const initialState = {
@@ -56,7 +56,7 @@ const initialState = {
   limit: 5,
   count: 0,
   loading: false,
-  creating: false,
+  creating: false
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -70,7 +70,7 @@ const reducer = (state = initialState, { type, payload }) => {
         entities: payload.entities,
         page: payload.page,
         limit: payload.limit,
-        count: payload.count,
+        count: payload.count
       };
     case RECEIVE_TESTS_ERROR:
       return { ...state, loading: false, error: payload.error };
@@ -81,7 +81,7 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         loading: false,
-        entity: payload.entity,
+        entity: payload.entity
       };
     case RECEIVE_TEST_BY_ID_ERROR:
       return { ...state, loading: false, error: payload.error };
@@ -100,7 +100,7 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         creating: false,
-        entities: [payload.entity, ...state.entities],
+        entities: [payload.entity, ...state.entities]
       };
     case CREATE_TEST_ERROR:
     case UPDATE_TEST_ERROR:

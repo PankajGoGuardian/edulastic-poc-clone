@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { IconChevronLeft, IconPencilEdit } from '@edulastic/icons';
 import { FlexContainer, TextField } from '@edulastic/common';
-import { greenDark, tabletWidth, mobileWidth, darkBlue, white, blue } from '@edulastic/colors';
+import { greenDark, tabletWidth, mobileWidth, darkBlue, white, blue, darkBlueSecondary } from '@edulastic/colors';
 
 const ItemHeader = ({ title, children, link, reference, editReference, onChange, hideIcon }) => (
   <Container>
-    <FlexContainer alignItems="flex-start" style={{ marginBottom: 10 }}>
+    <FlexContainer alignItems="center" style={{ flex: 1 }}>
       <LeftSide>
         <TitleNav>
           <Title>{title}</Title>
@@ -64,7 +64,12 @@ export default ItemHeader;
 
 const Container = styled.div`
   background: ${darkBlue};
-  padding: 25px 40px;
+  padding: 0px 40px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 70px;
+  background: ${darkBlueSecondary};
 
   @media (max-width: ${mobileWidth}) {
     margin-bottom: 30px;

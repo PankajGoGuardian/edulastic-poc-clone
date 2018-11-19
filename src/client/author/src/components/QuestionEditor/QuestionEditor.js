@@ -16,19 +16,21 @@ import { getQuestionSelector } from '../../selectors/question';
 import {
   receiveQuestionByIdAction,
   saveQuestionAction,
-  setQuestionDataAction,
+  setQuestionDataAction
 } from '../../actions/question';
 
 const headerTitles = {
   multipleChoice: 'MultipleChoice',
   orderList: 'Order List',
+  clozeDragDrop: 'Cloze Drag & Drop',
+  clozeImageDragDrop: 'Label Image with Drag & Drop'
 };
 
 class QuestionEditor extends Component {
   state = {
     showModal: false,
     saveClicked: false,
-    previewTab: 'clear',
+    previewTab: 'clear'
   };
 
   componentDidMount() {
@@ -78,32 +80,28 @@ class QuestionEditor extends Component {
 
   handleChangePreviewTab = (previewTab) => {
     this.setState({
-      previewTab,
+      previewTab
     });
   };
 
   render() {
-    const { view, question, history, match } = this.props;
+    const { view, question, match } = this.props;
     const { previewTab } = this.state;
-    const itemId = question === null ? '' : question.id;
+    const itemId = question === null ? '' : question._id;
     const questionType = this.getQuestionType();
     const { showModal, saveClicked } = this.state;
 
     return (
       <div>
         {showModal && (
-          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
+          <SourceModal
+            onClose={this.handleHideSource}
+            onApply={this.handleApplySource}
+          >
             {JSON.stringify(question.data, null, 4)}
           </SourceModal>
         )}
-        <ItemHeader
-          title={headerTitles[questionType]}
-          link={{
-            url: history.location.state.backUrl,
-            text: history.location.state.backText,
-          }}
-          reference={itemId}
-        >
+        <ItemHeader title={headerTitles[questionType]} reference={itemId}>
           <ButtonBar
             onChangeView={this.handleChangeView}
             onShowSource={this.handleShowSource}
@@ -113,7 +111,13 @@ class QuestionEditor extends Component {
             previewTab={previewTab}
           />
         </ItemHeader>
-        <ContentWrapper style={{ padding: '25px 45px' }}>
+        <ContentWrapper
+          style={{
+            padding: '0px 45px',
+            overflow: 'auto',
+            height: 'calc(100% - 135px)'
+          }}
+        >
           {question && (
             <QuestionWrapper
               type={questionType}
@@ -121,7 +125,7 @@ class QuestionEditor extends Component {
               previewTab={previewTab}
               key={questionType && view && saveClicked}
               data={question.data}
-              questionId={match.params.id}
+              questionId={match.params._id}
               saveClicked={saveClicked}
             />
           )}
@@ -137,14 +141,13 @@ QuestionEditor.propTypes = {
   question: PropTypes.object,
   match: PropTypes.object,
   receiveQuestionById: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
   saveQuestion: PropTypes.func.isRequired,
-  setQuestionData: PropTypes.func.isRequired,
+  setQuestionData: PropTypes.func.isRequired
 };
 
 QuestionEditor.defaultProps = {
   question: null,
-  match: {},
+  match: {}
 };
 
 const enhance = compose(
@@ -153,15 +156,15 @@ const enhance = compose(
   connect(
     state => ({
       view: getViewSelector(state),
-      question: getQuestionSelector(state),
+      question: getQuestionSelector(state)
     }),
     {
       changeView: changeViewAction,
       receiveQuestionById: receiveQuestionByIdAction,
       saveQuestion: saveQuestionAction,
-      setQuestionData: setQuestionDataAction,
-    },
-  ),
+      setQuestionData: setQuestionDataAction
+    }
+  )
 );
 
 export default enhance(QuestionEditor);

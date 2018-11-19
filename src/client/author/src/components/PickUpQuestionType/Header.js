@@ -1,29 +1,43 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { FlexContainer } from '@edulastic/common';
-import { IconChevronLeft } from '@edulastic/icons';
-import { secondaryTextColor, greenDark, green } from '@edulastic/colors';
+import { mobileWidth, darkBlueSecondary, white } from '@edulastic/colors';
+import Breadcrumb from '../Breadcrumb';
 
-import { Title, Back } from '../common';
-
-const Header = ({ title, link }) => (
+const Header = ({ title }) => (
   <React.Fragment>
-    <FlexContainer alignItems="flex-start" style={{ marginBottom: 10 }}>
-      <Title textcolor={secondaryTextColor} hovercolor={green}>{title}</Title>
-    </FlexContainer>
-    <FlexContainer>
-      {link && (
-        <Back to={link.url} textcolor={greenDark} hovercolor={green}>
-          <IconChevronLeft color={greenDark} width={10} height={10} /> {link.text}
-        </Back>
-      )}
-    </FlexContainer>
+    <Container>
+      <FlexContainer alignItems="flex-start">
+        <Title>{title}</Title>
+      </FlexContainer>
+      <Breadcrumb data={['ITEM LIST', 'ADD NEW', 'SELECT A QUESTION TYPE']} />
+    </Container>
   </React.Fragment>
 );
 
 Header.propTypes = {
   title: PropTypes.string.isRequired,
-  link: PropTypes.object.isRequired,
 };
 
 export default Header;
+
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 70px;
+  background: ${darkBlueSecondary};
+  padding: 0px 40px;
+  height: 62px;
+
+  @media (max-width: ${mobileWidth}) {
+    margin-bottom: 30px;
+  }
+`;
+
+const Title = styled.div`
+  font-size: 22px;
+  font-weight: bold;
+  line-height: 1.36;
+  color: ${white};
+`;

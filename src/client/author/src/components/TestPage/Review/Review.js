@@ -9,7 +9,10 @@ import { compose } from 'redux';
 import HeaderBar from './HeaderBar';
 import List from './List';
 import ItemsTable from '../common/ItemsTable/ItemsTable';
-import { getItemsTypesSelector, getStandardsSelector } from '../../../selectors/testItems';
+import {
+  getItemsTypesSelector,
+  getStandardsSelector
+} from '../../../selectors/testItems';
 import { getSummarySelector } from '../../../selectors/tests';
 import { setTestDataAction } from '../../../actions/tests';
 import { Calculator, Photo, Breadcrumbs } from '../common';
@@ -23,7 +26,7 @@ const Review = ({
   types,
   standards,
   summary,
-  current,
+  current
 }) => {
   const [isCollapse, setIsCollapse] = useState(false);
 
@@ -58,7 +61,7 @@ const Review = ({
     newData.testItems = test.testItems.filter(item => !item.selected);
 
     newData.scoring.testItems = test.scoring.testItems.filter((item) => {
-      const foundItem = test.testItems.find(({ id }) => id === item.id);
+      const foundItem = test.testItems.find(({ id }) => id === item._id);
       if (foundItem && foundItem.selected) {
         return false;
       }
@@ -91,10 +94,15 @@ const Review = ({
   const handleChangePoints = (testItemId, value) => {
     const newData = cloneDeep(test);
 
-    const itemIndex = newData.scoring.testItems.findIndex(({ id }) => testItemId === id);
+    const itemIndex = newData.scoring.testItems.findIndex(
+      ({ id }) => testItemId === id
+    );
 
     newData.scoring.testItems[itemIndex].points = value;
-    newData.scoring.total = newData.scoring.testItems.reduce((acc, item) => acc + item.points, 0);
+    newData.scoring.total = newData.scoring.testItems.reduce(
+      (acc, item) => acc + item.points,
+      0
+    );
 
     setData(newData);
   };
@@ -107,14 +115,15 @@ const Review = ({
     key: data.standard,
     standard: data.standard,
     qs: data.questionsCount,
-    points: data.score || 0,
+    points: data.score || 0
   }));
 
   const totalPoints = test.scoring.total;
   const questionsCount = test.testItems.length;
 
   const handleSelectedTest = (items) => {
-    const result = items.map(item => test.testItems.findIndex(i => item === i.id));
+    const result = items.map(item =>
+      test.testItems.findIndex(i => item === i._id));
     setSelected(result);
   };
 
@@ -142,7 +151,7 @@ const Review = ({
               <ItemsTable
                 items={test.testItems}
                 setSelectedTests={handleSelectedTest}
-                selectedTests={selected.map(i => test.testItems[i].id)}
+                selectedTests={selected.map(i => test.testItems[i]._id)}
               />
             ) : (
               <List
@@ -188,7 +197,7 @@ Review.propTypes = {
   types: PropTypes.any.isRequired,
   standards: PropTypes.object.isRequired,
   summary: PropTypes.array.isRequired,
-  current: PropTypes.string.isRequired,
+  current: PropTypes.string.isRequired
 };
 
 const enhance = compose(
@@ -197,10 +206,10 @@ const enhance = compose(
     state => ({
       types: getItemsTypesSelector(state),
       standards: getStandardsSelector(state),
-      summary: getSummarySelector(state),
+      summary: getSummarySelector(state)
     }),
-    { setData: setTestDataAction },
-  ),
+    { setData: setTestDataAction }
+  )
 );
 
 export default enhance(Review);

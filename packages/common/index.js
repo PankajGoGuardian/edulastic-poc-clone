@@ -11,6 +11,7 @@ export { default as Checkbox } from './src/components/Checkbox';
 export { default as Card } from './src/components/Card';
 export { default as MoveLink } from './src/components/MoveLink';
 export { default as ContentWrapper } from './src/components/ContentWrapper';
+export { default as CustomQuillComponent } from './src/components/CustomQuillComponent';
 
 export { default as Tabs } from './src/components/Tabs';
 export { default as Tab } from './src/components/Tabs/Tab';

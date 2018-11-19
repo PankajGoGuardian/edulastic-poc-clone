@@ -3,24 +3,27 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { green } from '@edulastic/colors';
 
-const Checkbox = ({ onChange, checked, label, style }) => (
-  <Container onClick={onChange} style={style}>
+const Checkbox = ({ onChange, checked, label, style, className }) => (
+  <Container onClick={onChange} style={style} className={className}>
     <Input type="checkbox" checked={checked} onChange={() => {}} />
     <span />
-    {label && <span>{label}</span>}
+    {label && <span className="label">{label}</span>}
   </Container>
 );
 
 Checkbox.propTypes = {
   onChange: PropTypes.func.isRequired,
-  checked: PropTypes.bool.isRequired,
+  checked: PropTypes.bool,
   label: PropTypes.string,
   style: PropTypes.object,
+  className: PropTypes.string,
 };
 
 Checkbox.defaultProps = {
   style: {},
   label: '',
+  className: '',
+  checked: false,
 };
 
 export default Checkbox;

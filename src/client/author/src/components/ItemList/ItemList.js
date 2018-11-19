@@ -6,14 +6,19 @@ import { Paper, withWindowSizes } from '@edulastic/common';
 import { compose } from 'redux';
 import styled from 'styled-components';
 import { withNamespaces } from '@edulastic/localization';
-import { mobileWidth, secondaryTextColor, greenDark, white, tabletWidth } from '@edulastic/colors';
+import {
+  mobileWidth,
+  secondaryTextColor,
+  greenDark,
+  white,
+  tabletWidth
+} from '@edulastic/colors';
 
 import {
-  getItemsPageSelector,
   getItemsLimitSelector,
-  getItemsCountSelector,
-  getItemsLoadingSelector,
+  getItemsLoadingSelector
 } from '../../selectors/items';
+
 import Item from './Item';
 import ItemFilter from './ItemFilter';
 import { receiveTestItemsAction } from '../../actions/testItems';
@@ -23,14 +28,22 @@ import { getTestItemCreatingSelector } from '../../selectors/testItem';
 import ListHeader from '../common/ListHeader';
 
 class ItemList extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isScroll: false
+    };
+  }
+
   componentDidMount() {
     const { receiveItems } = this.props;
-    receiveItems();
+    receiveItems({});
   }
 
   handleSearch = (value) => {
-    const { receiveItems, limit } = this.props;
-    receiveItems({ page: 1, limit, search: value });
+    const { receiveItems } = this.props;
+    receiveItems({ page: 1, limit: 10, search: value });
   };
 
   handleCreate = async () => {
@@ -40,14 +53,45 @@ class ItemList extends Component {
         {
           tabs: [],
           dimension: '100%',
-          widgets: [],
-        },
-      ],
+          widgets: []
+        }
+      ]
     });
   };
 
+  handlePaginationChange = (page) => {
+    const { receiveItems } = this.props;
+    const { searchStr } = this.state;
+
+    receiveItems({ page, limit: 10, search: searchStr });
+  };
+
+  scrollHandler = () => {
+    const { isScroll } = this.state;
+    const itemFilter = window.document.getElementById('item-filter');
+    const mainList = window.document.getElementById('main-list');
+    const itemList = window.document.getElementById('item-list');
+
+    if (isScroll) {
+      return;
+    }
+
+    if (
+      mainList.scrollTop >
+      itemFilter.scrollHeight + 89 - itemFilter.offsetHeight
+    ) {
+      itemFilter.style.position = 'fixed';
+      itemFilter.style.bottom = '20px';
+      itemList.style.marginLeft = '338px';
+    } else {
+      itemFilter.style.position = 'relative';
+      itemFilter.style.bottom = '0px';
+      itemList.style.marginLeft = '29px';
+    }
+  };
+
   render() {
-    const { items, windowWidth, history, creating, t } = this.props;
+    const { items, windowWidth, history, creating, count, t } = this.props;
     return (
       <Container>
         <ListHeader
@@ -56,30 +100,39 @@ class ItemList extends Component {
           windowWidth={windowWidth}
           title={t('component.itemlist.header.itemlist')}
         />
-        <MainList>
+        <MainList id="main-list" onScroll={() => this.scrollHandler()}>
           <ItemFilter onSearch={this.handleSearch} />
-          <ListItems>
+          <ListItems id="item-list">
             <Pagination
               simple={windowWidth <= 768 && true}
-              showTotal={(total, range) => `${range[0]} to ${range[1]} of ${total}`}
-              onChange={this.handlePageChange}
-              defaultPageSize={20}
-              total={300}
+              showTotal={(total, range) =>
+                `${range[0]} to ${range[1]} of ${total}`
+              }
+              onChange={this.handlePaginationChange}
+              defaultPageSize={10}
+              total={count}
             />
             <Items>
               <Paper padding={windowWidth > 768 ? '25px 39px 0px 39px' : '0px'}>
                 {items.map(item => (
                   // eslint-disable-next-line
-                  <Item key={item.id} item={item} history={history} windowWidth={windowWidth} />
+                  <Item
+                    key={item.id}
+                    item={item}
+                    history={history}
+                    windowWidth={windowWidth}
+                  />
                 ))}
               </Paper>
             </Items>
             <Pagination
               simple={windowWidth <= 768 && true}
-              showTotal={(total, range) => `${range[0]} to ${range[1]} of ${total}`}
-              onChange={this.handlePageChange}
-              defaultPageSize={20}
-              total={300}
+              showTotal={(total, range) =>
+                `${range[0]} to ${range[1]} of ${total}`
+              }
+              onChange={this.handlePaginationChange}
+              defaultPageSize={10}
+              total={count}
             />
           </ListItems>
         </MainList>
@@ -90,13 +143,13 @@ class ItemList extends Component {
 
 ItemList.propTypes = {
   items: PropTypes.array.isRequired,
+  count: PropTypes.number.isRequired,
   receiveItems: PropTypes.func.isRequired,
-  limit: PropTypes.number.isRequired,
   history: PropTypes.object.isRequired,
   createItem: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   creating: PropTypes.bool.isRequired,
-  t: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 const enhance = compose(
@@ -105,17 +158,15 @@ const enhance = compose(
   connect(
     state => ({
       items: getTestItemsSelector(state),
-      page: getItemsPageSelector(state),
       limit: getItemsLimitSelector(state),
-      count: getItemsCountSelector(state),
       loading: getItemsLoadingSelector(state),
-      creating: getTestItemCreatingSelector(state),
+      creating: getTestItemCreatingSelector(state)
     }),
     {
       receiveItems: receiveTestItemsAction,
-      createItem: createTestItemAction,
-    },
-  ),
+      createItem: createTestItemAction
+    }
+  )
 );
 
 export default enhance(ItemList);
@@ -138,6 +189,7 @@ const MainList = styled.div`
   overflow: auto;
   left: 0;
   right: 0;
+  margin-top: 89px;
 
   @media (max-width: ${mobileWidth}) {
     display: block;
@@ -146,13 +198,15 @@ const MainList = styled.div`
 
 const ListItems = styled.div`
   flex: 1;
-  margin: 29px 40px 0px 18px;
+  margin: 29px 40px 0px 29px;
 
   .ant-pagination {
     display: flex;
 
     @media (max-width: ${tabletWidth}) {
       justify-content: flex-end;
+      margin-left: 29px !important;
+      margin-top: 80px !important;
     }
   }
 

@@ -4,6 +4,7 @@ import { get } from 'lodash';
 export const stateSelector = state => state.testItems;
 
 export const getTestItemsSelector = createSelector(stateSelector, state => state.items);
+export const getTestsItemsCountSelector = createSelector(stateSelector, state => state.count);
 export const getItemsLoadingSelector = createSelector(stateSelector, state => state.loading);
 
 export const getItemsTypesSelector = createSelector(getTestItemsSelector, (state) => {
@@ -15,7 +16,7 @@ export const getItemsTypesSelector = createSelector(getTestItemsSelector, (state
       [],
     );
 
-    result[item.id] = [...new Set(types)];
+    result[item._id] = [...new Set(types)];
   });
 
   return result;
@@ -33,7 +34,7 @@ export const getStandardsSelector = createSelector(getTestItemsSelector, (state)
       return [...acc, ...t];
     }, []);
 
-    result[item.id] = tags;
+    result[item._id] = tags;
   });
 
   return result;

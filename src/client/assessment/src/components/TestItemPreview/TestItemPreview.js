@@ -11,13 +11,13 @@ export default class TestItemPreview extends Component {
     verticalDivider: PropTypes.bool,
     scrolling: PropTypes.bool,
     previewTab: PropTypes.string.isRequired,
-    style: PropTypes.object,
+    style: PropTypes.object
   };
 
   static defaultProps = {
     verticalDivider: false,
     scrolling: false,
-    style: { padding: 0, display: 'flex' },
+    style: { padding: 0, display: 'flex' }
   };
 
   getStyle = (first) => {
@@ -42,7 +42,7 @@ export default class TestItemPreview extends Component {
     return (
       <Paper style={style}>
         {cols &&
-          !!cols.length &&
+          cols.length &&
           cols.map((col, i) => (
             <TestItemCol
               key={i}

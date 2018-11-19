@@ -43,7 +43,7 @@ function* saveQuestionSaga() {
     let entity = null;
 
     if (question.id) {
-      entity = yield call(questionsApi.updateById, question.id, question);
+      entity = yield call(questionsApi.updateById, question._id, question);
     } else {
       entity = yield call(questionsApi.create, question);
 
@@ -51,13 +51,13 @@ function* saveQuestionSaga() {
         widgetType: 'question',
         type: entity.data.type,
         title: 'Multiple choice',
-        reference: entity.id,
+        reference: entity._id,
         tabIndex,
       });
 
       yield call(updateItemSaga, {
         payload: {
-          id: itemDetail.id,
+          id: itemDetail._id,
           data: itemDetail,
         },
       });
@@ -72,7 +72,7 @@ function* saveQuestionSaga() {
 
     if (itemDetail) {
       yield call(history.push, {
-        pathname: `/author/items/${itemDetail.id}/item-detail`,
+        pathname: `/author/items/${itemDetail._id}/item-detail`,
         state: {
           backText: 'Back to item list',
           backUrl: '/author/items',

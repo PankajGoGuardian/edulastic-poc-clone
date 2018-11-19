@@ -2,9 +2,7 @@ import axios from 'axios';
 import Storage from './Storage';
 
 export default class API {
-  constructor(
-    baseURL = 'http://ec2-34-227-229-142.compute-1.amazonaws.com:3100/api',
-  ) {
+  constructor(baseURL = 'http://edulastic-poc.snapwiz.net/api') {
     this.baseURL = baseURL;
     this.storage = new Storage();
 

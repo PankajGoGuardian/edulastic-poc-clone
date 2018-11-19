@@ -25,7 +25,7 @@ function* createTestItemSaga({ payload }) {
       type: CREATE_TEST_ITEM_SUCCESS,
       payload: { item: item.data },
     });
-    yield call(history.push, `/author/items/${item.id}/item-detail`);
+    yield call(history.push, `/author/items/${item._id}/item-detail`);
   } catch (err) {
     console.error(err);
     const errorMessage = 'Create item is failed';

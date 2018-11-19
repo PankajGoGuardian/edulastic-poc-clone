@@ -1,7 +1,7 @@
 import API from './utils/API';
 
 const api = new API();
-const prefix = '/TestItems';
+const prefix = '/testitem';
 
 const getAll = (params = {}) =>
   api
@@ -10,7 +10,7 @@ const getAll = (params = {}) =>
       method: 'get',
       params,
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 const getById = (id, params = {}) =>
   api
@@ -19,7 +19,7 @@ const getById = (id, params = {}) =>
       method: 'get',
       params,
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 const updateById = (id, data) =>
   api
@@ -28,7 +28,7 @@ const updateById = (id, data) =>
       method: 'put',
       data,
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 const create = data =>
   api
@@ -37,7 +37,7 @@ const create = data =>
       method: 'post',
       data,
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 const update = ({ id, data }) =>
   api
@@ -46,7 +46,7 @@ const update = ({ id, data }) =>
       method: 'put',
       data,
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 const evaluate = (id, answers) =>
   api
@@ -55,7 +55,7 @@ const evaluate = (id, answers) =>
       method: 'post',
       data: answers,
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 export default {
   getAll,

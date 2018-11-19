@@ -106,7 +106,6 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => {
     },
     {
       title: 'OrderList-standard',
-      stimulus: 'Which color has the smallest walvelenght?',
       data: {
         type: 'orderList',
         stimulus: 'Which color has the smallest walvelenght?',
@@ -118,6 +117,71 @@ const PickUpQuestionTypes = ({ onSelectQuestionType }) => {
             value: [0, 1, 2],
           },
           alt_responses: [],
+        },
+      },
+      onSelectQuestionType,
+    },
+    {
+      title: 'Choice matrix - standard',
+      data: {
+        type: 'choiceMatrix',
+        stimulus: 'This is the stem.',
+        ui_style: {
+          type: 'table',
+          horizontal_lines: false,
+        },
+        stems: ['[Stem 1]', '[Stem 2]', '[Stem 3]', '[Stem 4]'],
+        options: ['True', 'False'],
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [null, null, null, null],
+          },
+        },
+        multiple_responses: false,
+      },
+      onSelectQuestionType,
+    },
+    {
+      title: 'Choice matrix - inline',
+      data: {
+        options: ['True', 'False'],
+        stems: ['[Stem 1]', '[Stem 2]', '[Stem 3]', '[Stem 4]'],
+        stimulus: 'This is the stem.',
+        type: 'choiceMatrix',
+        ui_style: {
+          type: 'inline',
+          horizontal_lines: false,
+        },
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [null, null, null, null],
+          },
+        },
+      },
+      onSelectQuestionType,
+    },
+    {
+      title: 'Choice matrix - labels',
+      data: {
+        options: ['True', 'False'],
+        stems: ['[Stem 1]', '[Stem 2]', '[Stem 3]', '[Stem 4]'],
+        stimulus: 'This is the stem.',
+        type: 'choiceMatrix',
+        ui_style: {
+          stem_numeration: 'upper-alpha',
+          type: 'table',
+          horizontal_lines: false,
+        },
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [null, null, null, null],
+          },
         },
       },
       onSelectQuestionType,

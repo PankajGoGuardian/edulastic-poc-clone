@@ -8,10 +8,13 @@ export { default as TextField } from './src/components/TextField';
 export { default as Button } from './src/components/Button';
 export { default as EduButton } from './src/components/EduButton';
 export { default as Checkbox } from './src/components/Checkbox';
-export { default as Tabs } from './src/components/Tabs';
 export { default as Card } from './src/components/Card';
 export { default as MoveLink } from './src/components/MoveLink';
 export { default as ContentWrapper } from './src/components/ContentWrapper';
+
+export { default as Tabs } from './src/components/Tabs';
+export { default as Tab } from './src/components/Tabs/Tab';
+export { default as TabContainer } from './src/components/Tabs/TabContainer';
 
 // HOC
 export { default as withWindowSizes } from './src/HOC/withWindowSizes';

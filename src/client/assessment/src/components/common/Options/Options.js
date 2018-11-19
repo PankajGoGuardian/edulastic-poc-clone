@@ -3,6 +3,8 @@ import { Paper } from '@edulastic/common';
 import PropTypes from 'prop-types';
 import i18n from '@edulastic/localization';
 
+import { IconPlus } from '@edulastic/icons';
+import { greenDark } from '@edulastic/colors';
 import { Header, Toggler, Heading, Block, Label, Row, Col } from './styles';
 
 class Options extends Component {
@@ -43,7 +45,8 @@ class Options extends Component {
       <Paper>
         <Header onClick={this.handleToggle}>
           <span>{title}</span>
-          <Toggler />
+          {show && <Toggler />}
+          {!show && <IconPlus color={greenDark} />}
         </Header>
         {show && <div>{children}</div>}
       </Paper>

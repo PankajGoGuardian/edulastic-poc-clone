@@ -3,6 +3,20 @@ import PropTypes from 'prop-types';
 import { OrderList } from '../OrderList';
 import { MultipleChoice } from '../MultipleChoice';
 import withAnswerSave from '../HOC/withAnswerSave';
+import MatrixChoice from '../MatrixChoice/MatrixChoice';
+
+const getQuestion = (type) => {
+  switch (type) {
+    case 'multipleChoice':
+      return MultipleChoice;
+    case 'choiceMatrix':
+      return MatrixChoice;
+    case 'orderList':
+      return OrderList;
+    default:
+      return null;
+  }
+};
 
 const QuestionWrapper = ({ type, data, ...restProps }) => {
   const questionProps = Object.assign(
@@ -11,7 +25,7 @@ const QuestionWrapper = ({ type, data, ...restProps }) => {
     },
     restProps,
   );
-  const Question = type === 'multipleChoice' ? MultipleChoice : OrderList;
+  const Question = getQuestion(type);
   return <Question {...questionProps} />;
 };
 

@@ -1,7 +1,7 @@
 import API from './utils/API';
 
 const api = new API();
-const prefix = '/Tests';
+const prefix = '/tests';
 
 const getAll = ({ limit, page, search } = { limit: 10, page: 1 }) => {
   let url = `${prefix}?filter[limit]=${limit}&filter[skip]=${limit * (page - 1)}`;
@@ -15,7 +15,7 @@ const getAll = ({ limit, page, search } = { limit: 10, page: 1 }) => {
       url,
       method: 'get',
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 };
 
 const getCount = () =>
@@ -24,7 +24,7 @@ const getCount = () =>
       url: `${prefix}/count`,
       method: 'get',
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 const getById = (id, params = {}) =>
   api
@@ -33,7 +33,7 @@ const getById = (id, params = {}) =>
       method: 'get',
       params,
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 const create = data =>
   api
@@ -42,7 +42,7 @@ const create = data =>
       method: 'post',
       data,
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 const update = ({ id, data }) =>
   api
@@ -51,7 +51,7 @@ const update = ({ id, data }) =>
       method: 'put',
       data,
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 export default {
   getAll,

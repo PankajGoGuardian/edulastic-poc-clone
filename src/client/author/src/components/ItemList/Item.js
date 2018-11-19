@@ -19,7 +19,7 @@ class Item extends Component {
   moveToItem = () => {
     const { history, item, t } = this.props;
     history.push({
-      pathname: `/author/items/${item.id}/item-detail`,
+      pathname: `/author/items/${item._id}/item-detail`,
       state: {
         backText: t('component.itemAdd.backToItemList'),
         backUrl: '/author/items',
@@ -36,22 +36,22 @@ class Item extends Component {
           <QuestionContent>
             <MoveLink onClick={this.moveToItem}>{item.id}</MoveLink>
             <Description>
-              {'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum metus et luctus lacinia. Nullam vel tincidunt nibh. Duis ac eros nunc. '}
+              {
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum metus et luctus lacinia. Nullam vel tincidunt nibh. Duis ac eros nunc. '
+              }
             </Description>
             {/* <div dangerouslySetInnerHTML={{ __html: item.stimulus }} /> */}
           </QuestionContent>
-          {
-            windowWidth > 768 && (
-              <ViewButton>
-                <Button
-                  style={{ width: 144, height: 50, borderRadius: 65 }}
-                  onClick={this.moveToItem}
-                >
-                  {t('component.item.view')}
-                </Button>
-              </ViewButton>
-            )
-          }
+          {windowWidth > 768 && (
+            <ViewButton>
+              <Button
+                style={{ width: 144, height: 50, borderRadius: 65 }}
+                onClick={this.moveToItem}
+              >
+                {t('component.item.view')}
+              </Button>
+            </ViewButton>
+          )}
         </Question>
         <Detail>
           <TypeCategory>
@@ -99,18 +99,16 @@ class Item extends Component {
             </DetailCategory>
           </Categories>
         </Detail>
-        {
-            windowWidth < 768 && (
-              <ViewButton>
-                <Button
-                  style={{ width: '100%', height: 50, borderRadius: 65 }}
-                  onClick={this.moveToItem}
-                >
-                  {t('component.item.view')}
-                </Button>
-              </ViewButton>
-            )
-          }
+        {windowWidth < 768 && (
+          <ViewButton>
+            <Button
+              style={{ width: '100%', height: 50, borderRadius: 65 }}
+              onClick={this.moveToItem}
+            >
+              {t('component.item.view')}
+            </Button>
+          </ViewButton>
+        )}
       </Container>
     );
   }
@@ -139,7 +137,6 @@ const HeartIcon = styled(IconHeart)`
   align-items: center;
   fill: ${greenDark};
 `;
-
 
 const Question = styled.div`
   display: flex;
@@ -183,7 +180,7 @@ const ViewButton = styled.div`
   @media (max-width: ${tabletWidth}) {
     margin-top: 25px;
   }
-;`;
+`;
 
 const Detail = styled.div`
   display: flex;

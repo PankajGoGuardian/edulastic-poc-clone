@@ -1,7 +1,7 @@
 import API from './utils/API';
 
 const api = new API();
-const prefix = '/Questions';
+const prefix = '/question';
 
 const create = data =>
   api
@@ -10,7 +10,7 @@ const create = data =>
       method: 'post',
       data,
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 const updateById = (id, data) =>
   api
@@ -19,7 +19,7 @@ const updateById = (id, data) =>
       method: 'put',
       data,
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 const getAll = () =>
   api
@@ -27,7 +27,7 @@ const getAll = () =>
       url: prefix,
       method: 'get',
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 const getById = id =>
   api
@@ -35,7 +35,7 @@ const getById = id =>
       url: `${prefix}/${id}`,
       method: 'get',
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 export default {
   create,

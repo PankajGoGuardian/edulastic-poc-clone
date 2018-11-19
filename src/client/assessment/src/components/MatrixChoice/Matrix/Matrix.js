@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'antd';
-import { greenDark } from '@edulastic/colors';
+import { greenDark, white } from '@edulastic/colors';
 import { helpers } from '@edulastic/common';
 import { cloneDeep } from 'lodash';
 import styled from 'styled-components';
@@ -29,7 +29,7 @@ const validatedAnswers = (answers, responses, matrix, type) => {
             return false;
           }
           return responses[0][matIndex].includes(rowIndex);
-        })),
+        }))
     ];
   } else {
     result = responses.map((res) => {
@@ -59,7 +59,17 @@ const validatedAnswers = (answers, responses, matrix, type) => {
   return result;
 };
 
-const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, validation, type }) => {
+const Matrix = ({
+  stems,
+  options,
+  response,
+  isMultiple,
+  onCheck,
+  uiStyle,
+  validation,
+  type,
+  smallSize
+}) => {
   let correctAnswersMatrix;
 
   if (response && validation && type !== 'clear') {
@@ -102,7 +112,7 @@ const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, valida
       const checkData = {
         columnIndex,
         rowIndex: data.index,
-        checked: e.target.checked,
+        checked: e.target.checked
       };
 
       onCheck(checkData);
@@ -116,6 +126,7 @@ const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, valida
         type={uiStyle.type}
         label={options[columnIndex]}
         isMultiple={isMultiple}
+        smallSize={smallSize}
       />
     );
   };
@@ -125,14 +136,14 @@ const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, valida
       title: '',
       dataIndex: 'stem',
       key: 'stem',
-      render: stem => stem,
+      render: stem => stem
     },
     ...options.map((option, i) => ({
       title: <span style={{ color: greenDark }}>{option}</span>,
       dataIndex: `${i}`,
       key: i,
-      render: data => getCell(i, data),
-    })),
+      render: data => getCell(i, data)
+    }))
   ];
 
   if (uiStyle.type === 'table' && uiStyle.stem_numeration) {
@@ -141,9 +152,9 @@ const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, valida
         title: '',
         dataIndex: 'numeration',
         key: 'numeration',
-        render: stem => stem,
+        render: stem => stem
       },
-      ...columns,
+      ...columns
     ];
   }
 
@@ -153,7 +164,7 @@ const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, valida
     options.forEach((o, index) => {
       result[index] = {
         value: response.value[i],
-        index: i,
+        index: i
       };
     });
 
@@ -164,7 +175,7 @@ const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, valida
     key: i,
     stem,
     numeration: helpers.getNumeration(i, uiStyle.stem_numeration),
-    ...getData(i),
+    ...getData(i)
   }));
 
   return (
@@ -173,6 +184,7 @@ const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, valida
       columns={columns}
       dataSource={data}
       pagination={false}
+      smallSize={smallSize}
     />
   );
 };
@@ -183,24 +195,34 @@ Matrix.propTypes = {
   response: PropTypes.object.isRequired,
   onCheck: PropTypes.func.isRequired,
   uiStyle: PropTypes.object.isRequired,
+  smallSize: PropTypes.bool,
   isMultiple: PropTypes.bool,
   validation: PropTypes.object,
-  type: PropTypes.string,
+  type: PropTypes.string
 };
 
 Matrix.defaultProps = {
   isMultiple: false,
   validation: null,
   type: 'clear',
+  smallSize: false
 };
 
 export default Matrix;
 
 const StyledTable = styled(Table)`
+  tbody {
+    border-collapse: collapse !important;
+    border: 1px solid #e8e8e8 !important;
+  }
   th {
     text-align: center !important;
+    padding: ${props => (props.smallSize ? 3 : 16)}px !important;
+    border-bottom: 0 !important;
+    background: ${white} !important;
   }
   td {
     padding: 0 !important;
+    text-align: center;
   }
 `;

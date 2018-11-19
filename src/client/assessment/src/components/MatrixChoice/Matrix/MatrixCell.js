@@ -15,7 +15,7 @@ const getCellColor = (correct) => {
   }
 };
 
-const MatrixCell = ({ label, type, correct, isMultiple, checked, onChange }) => {
+const MatrixCell = ({ label, type, correct, isMultiple, checked, onChange, smallSize }) => {
   let input;
 
   if (isMultiple) {
@@ -25,7 +25,7 @@ const MatrixCell = ({ label, type, correct, isMultiple, checked, onChange }) => 
   }
 
   return (
-    <Wrapper correct={correct}>
+    <Wrapper smallSize={smallSize} correct={correct}>
       {input}
       {type === 'inline' && <span style={{ color: greenDark }}>{label}</span>}
     </Wrapper>
@@ -39,6 +39,11 @@ MatrixCell.propTypes = {
   isMultiple: PropTypes.bool.isRequired,
   checked: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
+  smallSize: PropTypes.bool
+};
+
+MatrixCell.defaultProps = {
+  smallSize: false
 };
 
 export default MatrixCell;
@@ -48,5 +53,5 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   background: ${props => getCellColor(props.correct, props.showAnswer)};
-  padding: 15px;
+  padding: ${props => (props.smallSize ? 1 : 15)}px;
 `;

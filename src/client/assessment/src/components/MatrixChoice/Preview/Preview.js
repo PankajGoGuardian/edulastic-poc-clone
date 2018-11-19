@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash';
 
 import Matrix from '../Matrix';
 
-const Preview = ({ type, saveAnswer, userAnswer, item }) => {
+const Preview = ({ type, saveAnswer, userAnswer, item, smallSize }) => {
   const handleCheck = ({ columnIndex, rowIndex, checked }) => {
     const newAnswer = cloneDeep(userAnswer);
 
@@ -41,6 +41,7 @@ const Preview = ({ type, saveAnswer, userAnswer, item }) => {
         onCheck={handleCheck}
         validation={item.validation}
         type={type}
+        smallSize={smallSize}
       />
     </div>
   );
@@ -51,6 +52,11 @@ Preview.propTypes = {
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.object.isRequired,
+  smallSize: PropTypes.bool
+};
+
+Preview.defaultProps = {
+  smallSize: false
 };
 
 export default Preview;

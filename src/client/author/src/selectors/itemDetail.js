@@ -4,7 +4,7 @@ export const stateSelector = state => state.itemDetail;
 
 export const getItemDetailSelector = createSelector(
   stateSelector,
-  state => state.item,
+  state => state.item
 );
 
 export const getItemDetailRowsSelector = createSelector(
@@ -15,12 +15,12 @@ export const getItemDetailRowsSelector = createSelector(
       ...row,
       widgets: row.widgets.map((widget) => {
         let referencePopulate = {
-          data: null,
+          data: null
         };
 
         if (item.data.questions && item.data.questions.length) {
           referencePopulate = item.data.questions.find(
-            q => q._id === widget.reference,
+            q => q._id === widget.reference
           );
         }
 
@@ -30,30 +30,30 @@ export const getItemDetailRowsSelector = createSelector(
           item.data.resources.length
         ) {
           referencePopulate = item.data.resources.find(
-            r => r._id === widget.reference,
+            r => r._id === widget.reference
           );
         }
 
         return {
           ...widget,
-          referencePopulate,
+          referencePopulate
         };
-      }),
+      })
     }));
-  },
+  }
 );
 
 export const getItemDetailLoadingSelector = createSelector(
   stateSelector,
-  state => state.loading,
+  state => state.loading
 );
 export const getItemDetailUpdatingSelector = createSelector(
   stateSelector,
-  state => state.updating,
+  state => state.updating
 );
 export const getItemDetailDraggingSelector = createSelector(
   stateSelector,
-  state => state.dragging,
+  state => state.dragging
 );
 
 export const getItemDetailDimensionTypeSelector = createSelector(
@@ -65,7 +65,7 @@ export const getItemDetailDimensionTypeSelector = createSelector(
       ? state.rows[1].dimension.trim().slice(0, -1)
       : '100';
     return `${left}-${right}`;
-  },
+  }
 );
 
 export const getItemDetailValidationSelector = createSelector(
@@ -73,11 +73,11 @@ export const getItemDetailValidationSelector = createSelector(
   (state) => {
     const { questions } = state.data;
     const validations = {};
-    questions.forEach(({ id, data }) => {
-      validations[id] = {
-        ...data,
+    questions.forEach(({ _id, data }) => {
+      validations[_id] = {
+        ...data
       };
     });
     return validations;
-  },
+  }
 );

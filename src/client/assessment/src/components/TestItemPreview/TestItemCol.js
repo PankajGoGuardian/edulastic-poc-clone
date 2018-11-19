@@ -8,23 +8,23 @@ import QuestionWrapper from '../QuestionWrapper';
 
 class TestItemCol extends Component {
   state = {
-    value: 0,
+    value: 0
   };
 
   static propTypes = {
     col: PropTypes.object.isRequired,
     style: PropTypes.object,
     previewTab: PropTypes.string.isRequired,
-    evaluation: PropTypes.any.isRequired,
+    evaluation: PropTypes.any.isRequired
   };
 
   static defaultProps = {
-    style: {},
+    style: {}
   };
 
   handleTabChange = (value) => {
     this.setState({
-      value,
+      value
     });
   };
 
@@ -52,26 +52,28 @@ class TestItemCol extends Component {
 
     return (
       <Container style={style} width={col.dimension}>
-        {col.tabs &&
-          !!col.tabs.length && (
-            <Tabs value={value} onChange={this.handleTabChange}>
-              {col.tabs.map((tab, tabIndex) => (
-                <Tabs.Tab
-                  key={tabIndex}
-                  label={tab}
-                  style={{
-                    width: '50%',
-                    textAlign: 'center',
-                    padding: '30px 20px 15px',
-                  }}
-                />
-              ))}
-            </Tabs>
+        {col.tabs && !!col.tabs.length && (
+          <Tabs value={value} onChange={this.handleTabChange}>
+            {col.tabs.map((tab, tabIndex) => (
+              <Tabs.Tab
+                key={tabIndex}
+                label={tab}
+                style={{
+                  width: '50%',
+                  textAlign: 'center',
+                  padding: '30px 20px 15px'
+                }}
+              />
+            ))}
+          </Tabs>
         )}
         {col.widgets.map((widget, i) => (
           <React.Fragment key={i}>
-            {!!col.tabs.length && value === widget.tabIndex && this.renderTabContent(widget)}
-            {!col.tabs.length && this.renderTabContent(widget)}
+            {col.tabs &&
+              !!col.tabs.length &&
+              value === widget.tabIndex &&
+              this.renderTabContent(widget)}
+            {col.tabs && !col.tabs.length && this.renderTabContent(widget)}
           </React.Fragment>
         ))}
       </Container>
@@ -80,7 +82,7 @@ class TestItemCol extends Component {
 }
 
 export default connect(state => ({
-  evaluation: state.evaluation,
+  evaluation: state.evaluation
 }))(TestItemCol);
 
 const Container = styled.div`

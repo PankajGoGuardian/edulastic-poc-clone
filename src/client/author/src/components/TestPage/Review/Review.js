@@ -5,17 +5,19 @@ import PropTypes from 'prop-types';
 import { cloneDeep } from 'lodash';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import styled from 'styled-components';
 
 import HeaderBar from './HeaderBar';
 import List from './List';
-import ItemsTable from '../common/ItemsTable/ItemsTable';
+import ItemsTable from './ItemsTable';
 import {
   getItemsTypesSelector,
   getStandardsSelector
 } from '../../../selectors/testItems';
 import { getSummarySelector } from '../../../selectors/tests';
 import { setTestDataAction } from '../../../actions/tests';
-import { Calculator, Photo, Breadcrumbs } from '../common';
+import { Calculator, Photo } from '../common';
+import Breadcrumb from '../../Breadcrumb';
 
 const Review = ({
   test,
@@ -136,16 +138,18 @@ const Review = ({
 
   return (
     <div style={{ paddingTop: 25 }}>
-      <Breadcrumbs current={current} style={{ paddingLeft: 45 }} />
       <Row>
         <Col span={19} style={{ padding: '0 45px' }}>
-          <HeaderBar
-            onSelectAll={handleSelectAll}
-            selectedItems={selected}
-            onRemoveSelected={handleRemoveSelected}
-            onCollapse={handleCollapse}
-            onMoveTo={handleMoveTo}
-          />
+          <SecondHeader>
+            <Breadcrumb data={['ITEM LIST', current]} style={{ position: 'unset' }} />
+            <HeaderBar
+              onSelectAll={handleSelectAll}
+              selectedItems={selected}
+              onRemoveSelected={handleRemoveSelected}
+              onCollapse={handleCollapse}
+              onMoveTo={handleMoveTo}
+            />
+          </SecondHeader>
           <Paper>
             {isCollapse ? (
               <ItemsTable
@@ -213,3 +217,14 @@ const enhance = compose(
 );
 
 export default enhance(Review);
+
+const SecondHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  .ant-btn {
+    background: transparent;
+    height: 24px;
+    margin-left: 17px;
+  }
+`;

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FlexContainer } from '@edulastic/common';
-import { Checkbox, message } from 'antd';
+import { Checkbox, message, Button } from 'antd';
 import { blue } from '@edulastic/colors';
 import { IconClose, IconMoveTo, IconCollapse } from '@edulastic/icons';
 import styled from 'styled-components';
 import Prompt from './Prompt';
+import { ButtonLink } from '../../common';
 
 const HeaderBar = ({ onSelectAll, onRemoveSelected, onCollapse, selectedItems, onMoveTo }) => {
   const [showPrompt, setShowPrompt] = useState(false);
@@ -34,29 +35,42 @@ const HeaderBar = ({ onSelectAll, onRemoveSelected, onCollapse, selectedItems, o
   return (
     <Container>
       <Item>
-        <Checkbox onChange={onSelectAll} style={{ color: blue }}>
-          Select all
+        <Checkbox onChange={onSelectAll} style={{ color: blue, fontSize: 11, fontWeight: '600' }}>
+          SELECT ALL
         </Checkbox>
       </Item>
-      <Item onClick={onRemoveSelected}>
-        <IconClose color={blue} width={12} height={12} />
-        <span>Remove Selected</span>
-      </Item>
-      <Item>
-        <FlexContainer onClick={handleMoveTo}>
-          <IconMoveTo color={blue} />
+      <Button style={{ marginLeft: 0 }}>
+        <ButtonLink
+          onClick={onRemoveSelected}
+          color="primary"
+          icon={<IconClose color={blue} width={12} height={12} />}
+        >
+          <span>Remove Selected</span>
+        </ButtonLink>
+      </Button>
+      <Button style={{ marginLeft: 0 }}>
+        <ButtonLink
+          onClick={handleMoveTo}
+          color="primary"
+          icon={<IconMoveTo color={blue} width={12} height={12} />}
+        >
           <span>Move to</span>
-        </FlexContainer>
+        </ButtonLink>
+      </Button>
+      <Button style={{ marginLeft: 0 }}>
+        <ButtonLink
+          onClick={onCollapse}
+          color="primary"
+          icon={<IconCollapse color={blue} width={12} height={12} />}
+        >
+          <span>Collapse Rows</span>
+        </ButtonLink>
         <Prompt
           show={showPrompt}
           style={{ position: 'absolute', left: 0, top: 25 }}
           onSuccess={handleSuccess}
         />
-      </Item>
-      <Item onClick={onCollapse}>
-        <IconCollapse color={blue} />
-        <span>Collapse Rows</span>
-      </Item>
+      </Button>
     </Container>
   );
 };
@@ -79,5 +93,5 @@ const Item = styled(FlexContainer)`
 `;
 
 const Container = styled(FlexContainer)`
-  padding: 25px 0;
+  padding-bottom: 22px;
 `;

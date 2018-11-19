@@ -10,8 +10,7 @@ const formatData = data => {
 };
 
 const getAll = ({ limit = 10, page = 1, search }) => {
-  let url = `${prefix}?filter[limit]=${limit}&filter[skip]=${limit *
-    (page - 1)}`;
+  let url = `${prefix}?limit=${limit}&skip=${limit * (page - 1)}`;
 
   if (search) {
     url += `&filter[where][title][like]=${search}`;

@@ -8,6 +8,31 @@ const router = Router();
 
 /**
  * @swagger
+ * /test/count:
+ *   get:
+ *     tags:
+ *       - Tests
+ *     summary: Get test count
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: successful
+ */
+
+router.get('/count', async (req, res) => {
+  try {
+    const test = new TestModel();
+    const result = await test.getCount();
+    return successHandler(res, { count: result });
+  } catch (e) {
+    req.log.error(e);
+    res.boom.badRequest(e);
+  }
+});
+
+/**
+ * @swagger
  * /test:
  *   post:
  *     tags:
@@ -181,28 +206,3 @@ router.delete('/:id', async (req, res) => {
   }
 });
 export default router;
-
-/**
- * @swagger
- * /test/count:
- *   get:
- *     tags:
- *       - Tests
- *     summary: Get test count
- *     produces:
- *       - application/json
- *     responses:
- *       200:
- *         description: successful
- */
-
-router.get('/count', async (req, res) => {
-  try {
-    const test = new TestModel();
-    const result = await test.getCount();
-    return successHandler(res, { count: result });
-  } catch (e) {
-    req.log.error(e);
-    res.boom.badRequest(e);
-  }
-});

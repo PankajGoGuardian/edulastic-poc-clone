@@ -9,7 +9,7 @@ import { IconList, IconPreview } from '@edulastic/icons';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
 import TestItemPreview from '../../../../../assessment/src/components/TestItemPreview';
-import MetaInfoCell from '../common/ItemsTable/MetaInfoCell';
+import MetaInfoCell from './ItemsTable/MetaInfoCell';
 
 const DragHandle = SortableHandle(() => <IconList color={greenDark} style={{ cursor: 'grab' }} />);
 
@@ -40,7 +40,7 @@ const SortableItem = SortableElement(
             type="number"
             value={points}
             onChange={e => onChangePoints(metaInfoData._id, +e.target.value)}
-            style={{ width: 70 }}
+            style={{ width: 70, fontSize: 13, fontWeight: 600 }}
           />
         </FlexContainer>
       </FlexContainer>

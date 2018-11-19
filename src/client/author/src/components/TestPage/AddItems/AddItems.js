@@ -4,6 +4,7 @@ import { Paper, FlexContainer, EduButton } from '@edulastic/common';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { secondaryTextColor } from '@edulastic/colors';
 
 import { Row, Col, Input, Spin, Select } from 'antd';
 import styled from 'styled-components';
@@ -13,9 +14,16 @@ import {
   getTestItemsSelector
 } from '../../../selectors/testItems';
 import { receiveTestItemsAction } from '../../../actions/testItems';
-import { Container } from '../../common';
+import TestFiltersNav from '../../common/TestFilters/TestFiltersNav';
 import ItemsTable from '../common/ItemsTable/ItemsTable';
-import { Breadcrumbs } from '../common';
+
+const filterItems = [
+  { icon: 'book', key: 'library', text: 'Entire Library' },
+  { icon: 'folder', key: 'byMe', text: 'Authored by me' },
+  { icon: 'copy', key: 'coAuthor', text: 'I am a Co-Author' },
+  { icon: 'reload', key: 'previously', text: 'Previously Used' },
+  { icon: 'heart', key: 'favorites', text: 'My Favorites' }
+];
 
 const Items = ({
   items,
@@ -24,7 +32,6 @@ const Items = ({
   history,
   onAddItems,
   selectedItems,
-  current
 }) => {
   useEffect(() => {
     receiveTestItems({});
@@ -63,10 +70,9 @@ const Items = ({
 
   return (
     <Container>
-      <Breadcrumbs current={current} />
       <Row
-        gutter={16}
-        style={{ paddingTop: 15, paddingBottom: 15 }}
+        gutter={29}
+        style={{ paddingBottom: 15 }}
         align="middle"
       >
         <Col span={6}>
@@ -83,8 +89,8 @@ const Items = ({
           <Row gutter={16}>
             <Col span={24}>
               <FlexContainer justifyContent="space-between">
-                <span>{items.length} questions</span>
-                <div>
+                <Question>{items.length} questions</Question>
+                <FlexContainer alignItems="center">
                   <StyledButton
                     type="primary"
                     size="large"
@@ -99,23 +105,28 @@ const Items = ({
                   >
                     Create new Item
                   </StyledButton>
-                  <Select
+                  <StyledSelect
                     size="large"
                     defaultValue="popularity"
                     style={{ width: 120 }}
                     onChange={handleSortChange}
                   >
                     <Select.Option value="popularity">Popularity</Select.Option>
-                  </Select>
-                </div>
+                  </StyledSelect>
+                </FlexContainer>
               </FlexContainer>
             </Col>
           </Row>
         </Col>
       </Row>
-      <Row gutter={16}>
+      <Row gutter={29}>
         <Col span={6}>
-          <TestFilters onChange={handleFiltersChange} />
+          <TestFilters style={{ paddingTop: 13 }} onChange={handleFiltersChange}>
+            <TestFiltersNav
+              items={filterItems}
+              // onSelect={this.handleFilterNavSelect}
+            />
+          </TestFilters>
         </Col>
         <Col span={18}>
           <Paper>
@@ -138,7 +149,6 @@ Items.propTypes = {
   onAddItems: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   selectedItems: PropTypes.array.isRequired,
-  current: PropTypes.string.isRequired
 };
 
 const enhance = compose(
@@ -155,11 +165,73 @@ const enhance = compose(
 
 export default enhance(Items);
 
+const Container = styled.div`
+  padding: 25px 30px 30px 30px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 100%;
+  overflow: auto;
+
+  .ant-input {
+    font-size: 13px;
+    letter-spacing: 0.2px;
+    color: #b1b1b1;
+    ::placeholder {
+      font-style: italic;
+      color: #b1b1b1;
+    }
+  }
+
+  .ant-input-suffix {
+    font-size: 15px;
+    svg {
+      fill: #00b0ff;
+    }
+  }
+`;
+
 const StyledButton = styled(EduButton)`
+  height: 32px;
+  font-size: 11px;
   margin-right: 15px;
   text-transform: uppercase;
 
   :last-child {
     margin-right: 0;
   }
+`;
+
+const StyledSelect = styled(Select)`
+  height: 32px;
+
+  .ant-select-selection--single {
+    height: 32px;
+  }
+
+  .ant-select-selection__rendered {
+    height: 32px;
+  }
+
+  .ant-select-selection-selected-value {
+    height: 32px;
+    display: flex !important;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: ${secondaryTextColor};
+  }
+
+  .ant-select-arrow-icon {
+    svg {
+      fill: #00b0ff;
+    }
+  }
+`;
+
+const Question = styled.span`
+  font-size: 13px;
+  font-weight: 600;
+  color: ${secondaryTextColor};
 `;

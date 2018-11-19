@@ -1,16 +1,18 @@
-const clozeDragDropEvaluation = ({ userResponse, validation, hasGroupResponses }) => {
+import { isEqual } from 'lodash';
+
+const clozeImageDragDropEvaluation = ({ userResponse, validation }) => {
   const { valid_response, alt_responses } = validation;
-  const result = {};
-  userResponse.forEach((resp, index) => {
-    const altResponses = alt_responses.map(res => res.value);
-    if (hasGroupResponses) {
-      result[index] = (valid_response.value[index].group === resp.group && valid_response.value[index].data === resp.data)
-        || (altResponses[index] && altResponses[index].group === resp.group && altResponses[index].data === resp.data);
-    } else {
-      result[index] = valid_response.value[index] === resp || altResponses[index] === resp;
+  const altResponses = alt_responses.map(res => res.value);
+  altResponses.push(valid_response);
+  const evaluation = userResponse.map((userResp, index) => {
+    for (let i = 0; i < altResponses.length; i++) {
+      if (isEqual(userResp, altResponses[i][index])) {
+        return true;
+      }
     }
+    return false;
   });
-  return result;
+  return evaluation;
 };
 
-export default clozeDragDropEvaluation;
+export default clozeImageDragDropEvaluation;

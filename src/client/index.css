@@ -538,7 +538,7 @@ input[type="checkbox"] {
   margin: 5px;
 }
 
-.response-btn.check-answer span.index {
+.check-answer .index {
   background: #ee1658;
   color: white;
   display: inline-flex;
@@ -548,7 +548,7 @@ input[type="checkbox"] {
   justify-content: center;
 }
 
-.response-btn.check-answer span.text {
+.check-answer .text {
   min-width: 100px;
   flex: 1;
   display: inline-flex;
@@ -557,35 +557,35 @@ input[type="checkbox"] {
   color: #878282;
   align-items: center;
   height: 100%;
-  padding: 0 40px 0 20px;
+  padding: 0 40px 0 10px;
 }
 
-.response-btn.check-answer.wrong span.index {
-  background: #ee1658;
+.check-answer.wrong .index {
+  background: #ee1658 !important;
   color: white;
 }
 
-.response-btn.check-answer.wrong span.text {
+.check-answer.wrong .text {
   background: #fce0e8;
   color: #878282;
 }
 
-.response-btn.check-answer.right span.index {
-  background: #1fe3a1;
+.check-answer.right .index {
+  background: #1fe3a1 !important;
   color: white;
 }
 
-.response-btn.check-answer.right span.text {
+.check-answer.right .text {
   background: #e1fbf2;
   color: #878282;
 }
 
-.response-btn.check-answer.showanswer span.index {
+.check-answer.showanswer .index {
   background: #00b0ff;
   color: white;
 }
 
-.response-btn.check-answer.showanswer span.text {
+.check-answer.showanswer .text {
   background: #fff;
   color: #878282;
 }
@@ -596,6 +596,15 @@ input[type="checkbox"] {
   padding-left: 50px !important;
   border-radius: 10px;
   margin-top: 20px;
+}
+
+.correctanswer-box .answer {
+  border-radius: 5px;
+  padding: 8px 30px;
+  background: white;
+  display: inline-block;
+  font-weight: 600;
+  margin: 10px 20px;
 }
 
 .template_box h3 {
@@ -712,6 +721,8 @@ input[type="checkbox"] {
   align-items: center;
   height: 100%;
   background: #878282;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 .imagelabeldragdrop-droppable.active .index-box {
@@ -734,6 +745,8 @@ input[type="checkbox"] {
 .imagelabeldragdrop-droppable .container {
   width: 100%;
   height: 100%;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 .controls-bar .ant-select-selection {
@@ -742,4 +755,18 @@ input[type="checkbox"] {
 
 .ant-upload.ant-upload-drag {
   padding: 20px;
+}
+
+.responseboxContainer.left .responses_box {
+  display: block;
+  padding-right: 20px !important;
+  padding-left: 20px !important;
+  text-align: center;
+}
+
+.responseboxContainer.right .responses_box {
+  display: block;
+  padding-right: 20px !important;
+  padding-left: 20px !important;
+  text-align: center;
 }

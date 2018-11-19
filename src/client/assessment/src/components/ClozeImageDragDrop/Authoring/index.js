@@ -162,7 +162,7 @@ class clozeImageDragDropAuthoring extends Component {
 
   render() {
     const { t, item } = this.props;
-    const { maxRespCount, responseLayout, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
+    const { maxRespCount, responseLayout, background, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
     const { isColorPickerVisible } = this.state;
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
 
@@ -199,15 +199,15 @@ class clozeImageDragDropAuthoring extends Component {
             </div>
             <div style={{ alignItems: 'center' }}>
               <ColorBox
-                style={{ background: responseLayout && responseLayout.background }}
+                style={{ backgroundColor: background }}
                 onClick={() => this.showColorPicker(true)}
               />
               {isColorPickerVisible && (
                 <ColorPickerContainer>
                   <ColorPickerWrapper onClick={() => this.showColorPicker(false)} />
                   <ChromePicker
-                    color={responseLayout && responseLayout.background}
-                    onChangeComplete={color => this.onResponsePropChange('background', color.hex)}
+                    color={background}
+                    onChangeComplete={color => this.onItemPropChange('background', color.hex)}
                   />
                 </ColorPickerContainer>
               )}

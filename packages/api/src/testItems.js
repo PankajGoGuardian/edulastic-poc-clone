@@ -1,9 +1,7 @@
 import API from './utils/API';
 
-const api = new API();
-
+const api = new API('/api');
 const prefix = '/testItem';
-
 
 const formatData = (data) => {
   const item = JSON.parse(JSON.stringify(data));

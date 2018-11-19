@@ -1,6 +1,6 @@
 import API from './utils/API';
 
-const api = new API();
+const api = new API('/api');
 const prefix = '/test';
 
 const formatData = (data) => {

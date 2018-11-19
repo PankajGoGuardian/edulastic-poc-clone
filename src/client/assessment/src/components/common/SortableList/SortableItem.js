@@ -4,6 +4,7 @@ import { SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { IconTrash } from '@edulastic/icons';
 import { greenDark, red } from '@edulastic/colors';
 import PropTypes from 'prop-types';
+import { Input } from 'antd';
 
 const DragHandle = SortableHandle(() => <i className="fa fa-align-justify" />);
 
@@ -11,9 +12,12 @@ const SortableItem = SortableElement(({ value, onRemove, onChange, columns }) =>
   <SortableItemContainer columns={columns}>
     <div className="main">
       <DragHandle />
-      <div>
-        <input type="text" value={value} onChange={onChange} />
-      </div>
+      <Input.TextArea
+        autosize
+        value={value}
+        onChange={onChange}
+        style={{ border: 0, resize: 'none', borderRadius: 10 }}
+      />
     </div>
     <IconTrash
       onClick={onRemove}
@@ -27,14 +31,14 @@ const SortableItem = SortableElement(({ value, onRemove, onChange, columns }) =>
 ));
 
 SortableItem.propTypes = {
-  columns: PropTypes.number.isRequired,
+  columns: PropTypes.number.isRequired
 };
 
 export default SortableItem;
 
 const SortableItemContainer = styled.div`
   width: ${props => (props.columns === 1 ? 100 / props.columns : 100 / props.columns - 2)}%;
-  height: 50px;
+  min-height: 50px;
   margin: 10px 0;
   display: inline-flex;
   align-items: center;

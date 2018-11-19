@@ -26,6 +26,7 @@ const MatrixChoice = ({
   setQuestionData,
   saveAnswer,
   userAnswer,
+  smallSize
 }) => {
   const Wrapper = testItem ? EmptyWrapper : Paper;
 
@@ -112,7 +113,7 @@ const MatrixChoice = ({
   };
 
   const answer = userAnswer || {
-    value: item.stems.map(() => null),
+    value: item.stems.map(() => null)
   };
 
   return (
@@ -161,7 +162,13 @@ const MatrixChoice = ({
           )}
 
           {previewTab === 'clear' && (
-            <Preview type="clear" saveAnswer={saveAnswer} userAnswer={answer} item={item} />
+            <Preview
+              smallSize={smallSize}
+              type="clear"
+              saveAnswer={saveAnswer}
+              userAnswer={answer}
+              item={item}
+            />
           )}
         </Wrapper>
       )}
@@ -174,9 +181,10 @@ MatrixChoice.propTypes = {
   userAnswer: PropTypes.object,
   saveAnswer: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
+  smallSize: PropTypes.bool,
   previewTab: PropTypes.string,
   testItem: PropTypes.bool,
-  item: PropTypes.object,
+  item: PropTypes.object
 };
 
 MatrixChoice.defaultProps = {
@@ -184,6 +192,7 @@ MatrixChoice.defaultProps = {
   testItem: false,
   item: {},
   userAnswer: null,
+  smallSize: false
 };
 
 const enhance = compose(
@@ -191,9 +200,9 @@ const enhance = compose(
   connect(
     null,
     {
-      setQuestionData: setQuestionDataAction,
-    },
-  ),
+      setQuestionData: setQuestionDataAction
+    }
+  )
 );
 
 export default enhance(MatrixChoice);

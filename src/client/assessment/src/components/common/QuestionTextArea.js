@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import TextareaAutosize from 'react-autosize-textarea';
 import styled from 'styled-components';
@@ -18,15 +18,15 @@ QuestionTextArea.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
   style: PropTypes.object,
-  placeholder: PropTypes.string,
+  placeholder: PropTypes.string
 };
 
 QuestionTextArea.defaultProps = {
   style: {},
-  placeholder: 'Enter a question',
+  placeholder: 'Enter a question'
 };
 
-export default QuestionTextArea;
+export default memo(QuestionTextArea);
 
 export const StyledTextarea = styled(TextareaAutosize)`
   resize: none;

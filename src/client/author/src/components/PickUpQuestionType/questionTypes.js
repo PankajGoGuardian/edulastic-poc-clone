@@ -110,6 +110,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     },
     {
       title: 'OrderList-standard',
+      type: 'classify',
       data: {
         type: 'orderList',
         stimulus: 'Which color has the smallest walvelenght?',
@@ -127,6 +128,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     },
     {
       title: 'Choice matrix - standard',
+      type: 'multiple-choice',
       data: {
         type: 'choiceMatrix',
         stimulus: 'This is the stem.',
@@ -149,6 +151,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     },
     {
       title: 'Choice matrix - inline',
+      type: 'multiple-choice',
       data: {
         options: ['True', 'False'],
         stems: ['[Stem 1]', '[Stem 2]', '[Stem 3]', '[Stem 4]'],
@@ -170,6 +173,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     },
     {
       title: 'Choice matrix - labels',
+      type: 'multiple-choice',
       data: {
         options: ['True', 'False'],
         stems: ['[Stem 1]', '[Stem 2]', '[Stem 3]', '[Stem 4]'],

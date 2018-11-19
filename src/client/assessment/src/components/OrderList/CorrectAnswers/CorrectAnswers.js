@@ -4,11 +4,10 @@ import { IconPlus } from '@edulastic/icons';
 import { white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { compose } from 'redux';
-import { Button } from '@edulastic/common';
+import { Button, Tabs, TabContainer, Tab } from '@edulastic/common';
 
 import CorrectAnswer from './CorrectAnswer';
 import { Heading } from '../common';
-import Tabs, { Tab, TabContainer } from '../common/Tabs';
 
 class CorrectAnswers extends Component {
   state = {

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { IconPlus } from '@edulastic/icons';
 import uuidv4 from 'uuid/v4';
@@ -25,7 +25,7 @@ const Card = ({ title, onSelectQuestionType, data, setUserAnswer }) => {
   );
 
   return (
-    <React.Fragment>
+    <Fragment>
       <RoundDiv borderRadius={10}>
         <Header borderRadius={10}>{title}</Header>
         <Content borderRadius={10} onClick={() => onSelectQuestionType(smallData)}>
@@ -45,7 +45,7 @@ const Card = ({ title, onSelectQuestionType, data, setUserAnswer }) => {
           />
         </Content>
       </RoundDiv>
-    </React.Fragment>
+    </Fragment>
   );
 };
 

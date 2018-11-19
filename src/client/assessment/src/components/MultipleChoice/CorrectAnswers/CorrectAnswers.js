@@ -5,15 +5,14 @@ import { IconPlus } from '@edulastic/icons';
 import { white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { compose } from 'redux';
-import { Button } from '@edulastic/common';
+import { Button, Tab, TabContainer, Tabs } from '@edulastic/common';
 import { cloneDeep } from 'lodash';
 
 import CorrectAnswer from './CorrectAnswer';
-import { Subtitle } from '../common';
 
-import Tabs, { Tab, TabContainer } from '../../common/Tabs';
 import { setQuestionDataAction } from '../../../../../author/src/actions/question';
 import { getQuestionDataSelector } from '../../../../../author/src/selectors/question';
+import { Subtitle } from '../../common';
 
 class CorrectAnswers extends Component {
   constructor(props) {

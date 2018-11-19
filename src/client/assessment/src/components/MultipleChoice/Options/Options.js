@@ -3,7 +3,7 @@ import { Select, TextField } from '@edulastic/common';
 import PropTypes from 'prop-types';
 import { withNamespaces } from '@edulastic/localization';
 
-import O from '../../common/Options';
+import O, { OrientationSelect, FontSizeSelect } from '../../common/Options';
 
 function Options({ onChange, uiStyle, t }) {
   const changeUiStyle = (prop, value) => {
@@ -46,29 +46,14 @@ function Options({ onChange, uiStyle, t }) {
 
         <O.Row>
           <O.Col md={6}>
-            <O.Label>{t('component.options.orientation')}</O.Label>
-            <Select
-              style={{ width: '80%' }}
+            <OrientationSelect
               onChange={val => changeUiStyle('orientation', val)}
-              options={[
-                { value: 'horizontal', label: t('component.options.horizontal') },
-                { value: 'vertical', label: t('component.options.vertical') },
-              ]}
               value={uiStyle.orientation}
             />
           </O.Col>
           <O.Col md={6}>
-            <O.Label>{t('component.options.fontSize')}</O.Label>
-            <Select
-              style={{ width: '80%' }}
+            <FontSizeSelect
               onChange={fontsize => changeUiStyle('fontsize', fontsize)}
-              options={[
-                { value: 'small', label: t('component.options.small') },
-                { value: 'normal', label: t('component.options.normal') },
-                { value: 'large', label: t('component.options.large') },
-                { value: 'xlarge', label: t('component.options.extraLarge') },
-                { value: 'xxlarge', label: t('component.options.huge') },
-              ]}
               value={uiStyle.fontsize}
             />
           </O.Col>

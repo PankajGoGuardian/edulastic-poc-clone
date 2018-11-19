@@ -5,19 +5,18 @@ import { IconPlus } from '@edulastic/icons';
 import { white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { compose } from 'redux';
-import { Button } from '@edulastic/common';
+import { Button, Tab, Tabs, TabContainer } from '@edulastic/common';
 import { cloneDeep } from 'lodash';
 
 import CorrectAnswer from './CorrectAnswer';
 import { Subtitle } from '../common';
 
-import Tabs, { Tab, TabContainer } from '../../common/Tabs';
 import { setQuestionDataAction } from '../../../../../author/src/actions/question';
 import { getQuestionDataSelector } from '../../../../../author/src/selectors/question';
 
 class CorrectAnswers extends Component {
   state = {
-    value: 0,
+    value: 0
   };
 
   handleTabChange = (value) => {
@@ -59,8 +58,8 @@ class CorrectAnswers extends Component {
       ...question.data,
       valid_response: {
         score: question.validation.valid_response.score,
-        value: answers,
-      },
+        value: answers
+      }
     };
     newData.validation.valid_response = updatedValidation.valid_response;
     setQuestionData(newData);
@@ -73,7 +72,7 @@ class CorrectAnswers extends Component {
     const updatedAltResponses = newData.validation.alt_responses;
     updatedAltResponses[tabIndex] = {
       score: newData.validation.alt_responses[tabIndex].score,
-      value: answers,
+      value: answers
     };
 
     newData.validation.alt_responses = updatedAltResponses;
@@ -100,7 +99,21 @@ class CorrectAnswers extends Component {
 
   render() {
     /* eslint-disable max-len */
-    const { validation, stimulus, imageAlterText, imageWidth, options, t, imageUrl, templateMarkUp, backgroundColor, responses, configureOptions, uiStyle, showDashedBorder } = this.props;
+    const {
+      validation,
+      stimulus,
+      imageAlterText,
+      imageWidth,
+      options,
+      t,
+      imageUrl,
+      templateMarkUp,
+      backgroundColor,
+      responses,
+      configureOptions,
+      uiStyle,
+      showDashedBorder
+    } = this.props;
     const { value } = this.state;
     return (
       <div>
@@ -182,7 +195,7 @@ CorrectAnswers.propTypes = {
   backgroundColor: PropTypes.string,
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
-  imageWidth: PropTypes.number,
+  imageWidth: PropTypes.number
 };
 
 CorrectAnswers.defaultProps = {
@@ -202,7 +215,7 @@ CorrectAnswers.defaultProps = {
     stemnumeration: '',
     widthpx: 0,
     heightpx: 0,
-    wordwrap: false,
+    wordwrap: false
   }
 };
 
@@ -210,10 +223,10 @@ const enhance = compose(
   withNamespaces('assessment'),
   connect(
     state => ({
-      question: getQuestionDataSelector(state),
+      question: getQuestionDataSelector(state)
     }),
-    { setQuestionData: setQuestionDataAction },
-  ),
+    { setQuestionData: setQuestionDataAction }
+  )
 );
 
 export default enhance(CorrectAnswers);

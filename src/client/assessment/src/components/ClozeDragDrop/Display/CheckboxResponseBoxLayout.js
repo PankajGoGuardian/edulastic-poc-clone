@@ -15,8 +15,17 @@ const Icon = styled.div`
 
 // eslint-disable-next-line max-len
 const CheckboxTemplateBoxLayout = ({
-  showAnswer, templateParts, hasGroupResponses, responsecontainerindividuals, responseBtnStyle,
-  fontSize, userSelections, stemNumeration, evaluation, onDropHandler }) => {
+  showAnswer,
+  templateParts,
+  hasGroupResponses,
+  responsecontainerindividuals,
+  responseBtnStyle,
+  fontSize,
+  userSelections,
+  stemNumeration,
+  evaluation,
+  onDropHandler
+}) => {
   let responseIndex = 0;
 
   return (
@@ -42,7 +51,8 @@ const CheckboxTemplateBoxLayout = ({
             }
             default:
           }
-          let btnStyle = responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex];
+          let btnStyle =
+            responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex];
           if (btnStyle === undefined) {
             btnStyle = responseBtnStyle;
           }
@@ -58,8 +68,17 @@ const CheckboxTemplateBoxLayout = ({
           return (
             <div key={index}>
               {showAnswer && hasGroupResponses && (
-                <div className={`response-btn check-answer ${className} ${showAnswer ? 'show-answer' : ''}`} style={btnStyle}>
-                  &nbsp;<span className="index">{indexStr}</span><span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}</span>&nbsp;
+                <div
+                  className={`response-btn check-answer ${className} ${
+                    showAnswer ? 'show-answer' : ''
+                  }`}
+                  style={btnStyle}
+                >
+                  &nbsp;<span className="index">{indexStr}</span>
+                  <span className="text">
+                    {userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}
+                  </span>
+                  &nbsp;
                   <Icon>
                     {className === 'right' && <IconCheck color={green} width={8} height={8} />}
                     {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
@@ -67,8 +86,17 @@ const CheckboxTemplateBoxLayout = ({
                 </div>
               )}
               {showAnswer && !hasGroupResponses && (
-                <div className={`response-btn check-answer ${className} ${showAnswer ? 'show-answer' : ''}`} style={btnStyle}>
-                  &nbsp;<span className="index">{indexStr}</span><span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>&nbsp;
+                <div
+                  className={`response-btn check-answer ${className} ${
+                    showAnswer ? 'show-answer' : ''
+                  }`}
+                  style={btnStyle}
+                >
+                  &nbsp;<span className="index">{indexStr}</span>
+                  <span className="text">
+                    {userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}
+                  </span>
+                  &nbsp;
                   <Icon>
                     {className === 'right' && <IconCheck color={green} width={8} height={8} />}
                     {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
@@ -81,9 +109,18 @@ const CheckboxTemplateBoxLayout = ({
                 onDrop={data => onDropHandler(data, dropTargetIndex)}
               >
                 {!showAnswer && hasGroupResponses && (
-                  <Draggable type="metal" data={`${userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}_${userSelections[dropTargetIndex] && userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}>
+                  <Draggable
+                    type="metal"
+                    data={`${userSelections[dropTargetIndex] &&
+                      userSelections[dropTargetIndex].data}_${userSelections[dropTargetIndex] &&
+                      userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
+                  >
                     <div className={`response-btn check-answer ${className}`} style={btnStyle}>
-                      &nbsp;<span className="index">{indexStr}</span><span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}</span>&nbsp;
+                      &nbsp;<span className="index">{indexStr}</span>
+                      <span className="text">
+                        {userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}
+                      </span>
+                      &nbsp;
                       <Icon>
                         {className === 'right' && <IconCheck color={green} width={8} height={8} />}
                         {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
@@ -92,9 +129,16 @@ const CheckboxTemplateBoxLayout = ({
                   </Draggable>
                 )}
                 {!showAnswer && !hasGroupResponses && (
-                  <Draggable type="metal" data={`${userSelections[dropTargetIndex]}_${dropTargetIndex}_fromResp`}>
+                  <Draggable
+                    type="metal"
+                    data={`${userSelections[dropTargetIndex]}_${dropTargetIndex}_fromResp`}
+                  >
                     <div className={`response-btn check-answer ${className}`} style={btnStyle}>
-                      &nbsp;<span className="index">{indexStr}</span><span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>&nbsp;
+                      &nbsp;<span className="index">{indexStr}</span>
+                      <span className="text">
+                        {userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}
+                      </span>
+                      &nbsp;
                       <Icon>
                         {className === 'right' && <IconCheck color={green} width={8} height={8} />}
                         {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
@@ -107,7 +151,11 @@ const CheckboxTemplateBoxLayout = ({
           );
         }
         return (
-          <span style={{ userSelect: 'none' }} key={index} dangerouslySetInnerHTML={{ __html: templatePart }} />
+          <span
+            style={{ userSelect: 'none' }}
+            key={index}
+            dangerouslySetInnerHTML={{ __html: templatePart }}
+          />
         );
       })}
     </div>
@@ -124,7 +172,7 @@ CheckboxTemplateBoxLayout.propTypes = {
   stemNumeration: PropTypes.string,
   evaluation: PropTypes.array,
   showAnswer: PropTypes.bool,
-  onDropHandler: PropTypes.func,
+  onDropHandler: PropTypes.func
 };
 
 CheckboxTemplateBoxLayout.defaultProps = {
@@ -137,7 +185,7 @@ CheckboxTemplateBoxLayout.defaultProps = {
   stemNumeration: 'numerical',
   evaluation: [],
   showAnswer: false,
-  onDropHandler: () => {},
+  onDropHandler: () => {}
 };
 
 export default React.memo(CheckboxTemplateBoxLayout);

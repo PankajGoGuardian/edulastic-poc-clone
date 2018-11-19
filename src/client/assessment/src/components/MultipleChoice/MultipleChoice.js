@@ -8,9 +8,10 @@ import { cloneDeep } from 'lodash';
 import { withNamespaces } from '@edulastic/localization';
 
 import styled from 'styled-components';
-import { MultipleChoiceAuthoring, MultipleChoiceDisplay, CorrectAnswers } from './index';
+import { MultipleChoiceDisplay, CorrectAnswers } from './index';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 import Options from './Options/Options';
+import Authoring from './Authoring';
 
 const EmptyWrapper = styled.div``;
 
@@ -125,7 +126,7 @@ class MultipleChoice extends Component {
           {view === 'edit' && (
             <React.Fragment>
               <Paper style={{ marginBottom: 25 }}>
-                <MultipleChoiceAuthoring item={itemForEdit} />
+                <Authoring item={itemForEdit} />
                 <CorrectAnswers
                   uiStyle={uiStyle}
                   options={previewDisplayOptions}

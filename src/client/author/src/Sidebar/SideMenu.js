@@ -13,7 +13,7 @@ import {
   IconManage,
   IconQuestion,
   IconItemList,
-  IconTestList,
+  IconTestList
 } from '@edulastic/icons';
 import { withWindowSizes } from '@edulastic/common';
 
@@ -22,30 +22,30 @@ import Profile from '../assets/Profile.png';
 const menuItems = [
   {
     label: 'Dashboard',
-    icon: IconClockDashboard,
+    icon: IconClockDashboard
   },
   {
     label: 'Assignements',
-    icon: IconAssignment,
+    icon: IconAssignment
   },
   {
     label: 'Skill Report',
-    icon: IconBarChart,
+    icon: IconBarChart
   },
   {
     label: 'Manage Class',
-    icon: IconManage,
+    icon: IconManage
   },
   {
     label: 'Item List',
     icon: IconItemList,
-    path: 'author/items',
+    path: 'author/items'
   },
   {
     label: 'Test List',
     icon: IconTestList,
-    path: 'author/tests',
-  },
+    path: 'author/tests'
+  }
 ];
 
 class SideMenu extends Component {
@@ -53,7 +53,7 @@ class SideMenu extends Component {
     super(props);
 
     this.state = {
-      collapsed: false,
+      collapsed: false
     };
   }
 
@@ -83,12 +83,13 @@ class SideMenu extends Component {
     if (menuItems[item.key].path !== undefined) {
       history.push(`/${menuItems[item.key].path}`);
     }
-  }
+  };
 
   render() {
     const { collapsed, broken } = this.state;
     const { windowWidth, history } = this.props;
-    let isCollapsed = (windowWidth > 1200 || windowWidth <= 480 || windowWidth === 646) ? collapsed : true;
+    let isCollapsed =
+      windowWidth > 1200 || windowWidth <= 480 || windowWidth === 646 ? collapsed : true;
     if (history.location.pathname.includes('pickup-questiontype')) {
       isCollapsed = true;
     }
@@ -129,7 +130,12 @@ class SideMenu extends Component {
         </LogoWrapper>
         <LogoDash />
         <MenuWrapper>
-          <Menu theme="light" defaultSelectedKeys={['1']} mode="inline" onClick={item => this.handleMenu(item)}>
+          <Menu
+            theme="light"
+            defaultSelectedKeys={['1']}
+            mode="inline"
+            onClick={item => this.handleMenu(item)}
+          >
             {menuItems.map((menu, index) => {
               const MenuIcon = this.renderIcon(menu.icon);
               return (
@@ -149,12 +155,7 @@ class SideMenu extends Component {
               <img src={Profile} alt="Profile" />
               <div>
                 {!isCollapsed && <label style={{ marginLeft: 11 }}>Zack oliver</label>}
-                <Select
-                  defaultValue="Student"
-                  suffixIcon={
-                    <IconDropdown type="caret-down" />
-                  }
-                >
+                <Select defaultValue="Student" suffixIcon={<IconDropdown type="caret-down" />}>
                   <Select.Option value="Student">Student</Select.Option>
                 </Select>
               </div>
@@ -168,12 +169,12 @@ class SideMenu extends Component {
 
 SideMenu.propTypes = {
   windowWidth: PropTypes.number.isRequired,
-  history: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired
 };
 
 const enhance = compose(
   withRouter,
-  withWindowSizes,
+  withWindowSizes
 );
 
 export default enhance(SideMenu);
@@ -188,10 +189,10 @@ const SideBar = styled(Layout.Sider)`
   &.ant-layout-sider-collapsed .logoWrapper {
     padding: 21px;
   }
-  &.ant-layout-sider-collapsed .footerBottom{
+  &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px;
   }
-  &.ant-layout-sider-collapsed .questionBtn{
+  &.ant-layout-sider-collapsed .questionBtn {
     width: 60px;
     height: 60px;
     border-radius: 65px;
@@ -218,7 +219,7 @@ const SideBar = styled(Layout.Sider)`
     right: 15px;
     top: 25px;
   }
-  &.ant-layout-sider-collapsed .ant-select-selection-selected-value{
+  &.ant-layout-sider-collapsed .ant-select-selection-selected-value {
     display: none !important;
   }
   &.ant-layout-sider-collapsed .ant-select {
@@ -250,7 +251,7 @@ const LogoDash = styled.div`
   width: 90%;
   height: 0;
   opacity: 0.61;
-  border-bottom:  solid 1px #d9d6d6;
+  border-bottom: solid 1px #d9d6d6;
   margin: 0 auto;
 `;
 
@@ -262,7 +263,7 @@ const MenuWrapper = styled.div`
   padding: 21px 0px;
 
   @media screen and (max-width: 1300px) {
-    height: 600px;    
+    height: 600px;
   }
 `;
 
@@ -281,7 +282,9 @@ const Menu = styled(AntMenu)`
   &.ant-menu-inline .ant-menu-item:after {
     content: unset;
   }
-  &.ant-menu-inline, &.ant-menu-vertical, &.ant-menu-vertical-left{
+  &.ant-menu-inline,
+  &.ant-menu-vertical,
+  &.ant-menu-vertical-left {
     border-right: 0px;
   }
   &.ant-menu-inline .ant-menu-item {
@@ -303,8 +306,8 @@ const Menu = styled(AntMenu)`
     padding-top: 20px;
   }
   &.ant-menu-inline-collapsed > .ant-menu-item {
-      text-align: center;
-      margin-top: 20px;
+    text-align: center;
+    margin-top: 20px;
   }
   &.ant-menu-inline {
     padding-top: 23px;
@@ -329,8 +332,7 @@ const MenuItem = styled(AntMenu.Item)`
   margin-top: 16px;
 `;
 
-const MenuFooter = styled.div`
-`;
+const MenuFooter = styled.div``;
 
 const QuestionButton = styled.div`
   border-radius: 65px;
@@ -372,7 +374,7 @@ const UserInfoButton = styled.div`
     width: 44px;
   }
 
-  .ant-select-selection{
+  .ant-select-selection {
     background: transparent;
     border: 0px;
     color: #ffffff;

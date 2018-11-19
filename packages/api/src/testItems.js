@@ -1,17 +1,16 @@
 import API from './utils/API';
 
 const api = new API();
-const prefix = '/testItem';
+const prefix = '/testitem';
 
-const formatData = data => {
+const formatData = (data) => {
   const item = JSON.parse(JSON.stringify(data));
   delete item._id;
   return item;
 };
 
 const getAll = ({ limit = 10, page = 1, search, data, validation }) => {
-  let url = `${prefix}?filter[limit]=${limit}&filter[skip]=${limit *
-    (page - 1)}`;
+  let url = `${prefix}?filter[limit]=${limit}&filter[skip]=${limit * (page - 1)}`;
 
   if (search) {
     url += `&filter[where][title][like]=${search}`;
@@ -74,6 +73,7 @@ const update = ({ id, item }) => {
     })
     .then(result => result.data.result);
 };
+
 const evaluate = (id, answers) =>
   api
     .callApi({

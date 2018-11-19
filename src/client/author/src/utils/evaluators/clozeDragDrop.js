@@ -4,8 +4,12 @@ const clozeDragDropEvaluation = ({ userResponse, validation, hasGroupResponses }
   userResponse.forEach((resp, index) => {
     const altResponses = alt_responses.map(res => res.value);
     if (hasGroupResponses) {
-      result[index] = (valid_response.value[index].group === resp.group && valid_response.value[index].data === resp.data)
-        || (altResponses[index] && altResponses[index].group === resp.group && altResponses[index].data === resp.data);
+      result[index] =
+        (valid_response.value[index].group === resp.group &&
+          valid_response.value[index].data === resp.data) ||
+        (altResponses[index] &&
+          altResponses[index].group === resp.group &&
+          altResponses[index].data === resp.data);
     } else {
       result[index] = valid_response.value[index] === resp || altResponses[index] === resp;
     }

@@ -112,9 +112,19 @@ const MatrixChoice = ({
     setQuestionData(newItem);
   };
 
-  const answer = userAnswer || {
-    value: item.stems.map(() => null)
-  };
+  let answer = userAnswer;
+
+  if (!userAnswer) {
+    answer = {
+      value: item.stems.map(() => null)
+    };
+  } else if (Array.isArray(userAnswer)) {
+    answer = {
+      value: userAnswer
+    };
+  }
+
+  console.log('eeeeeee', answer);
 
   return (
     <Fragment>

@@ -206,12 +206,12 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           scoring_type: 'exactMatch',
           valid_response: {
             score: 1,
-            value: [],
+            value: []
           },
-          alt_responses: [],
-        },
+          alt_responses: []
+        }
       },
-      onSelectQuestionType,
+      onSelectQuestionType
     },
     {
       title: 'Label Image with Drag & Drop',
@@ -225,17 +225,17 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           scoring_type: 'exactMatch',
           valid_response: {
             score: 1,
-            value: [],
+            value: []
           },
-          alt_responses: [],
+          alt_responses: []
         },
         responses: [
           { top: 100, left: 50, width: 200, height: 50 },
-          { top: 200, left: 200, width: 200, height: 50 },
+          { top: 200, left: 200, width: 200, height: 50 }
         ]
       },
-      onSelectQuestionType,
-    },
+      onSelectQuestionType
+    }
   ];
 
   return (

@@ -5,6 +5,7 @@ import { Anchor, Row, Col, Radio, Switch, List, Input } from 'antd';
 import { Paper } from '@edulastic/common';
 
 import ListCard from './Card';
+import UiTime from './ui-time';
 
 const settingCategories = [
   { id: 'mark-as-done', title: 'MARK AS DONE' },
@@ -303,6 +304,8 @@ class MainSetting extends Component {
                 }
               </Body>
             </Block>
+
+            <UiTime />
           </Col>
         </Row>
       </Paper>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Anchor, Row, Col, Radio, Switch, List, Input } from 'antd';
+import { Anchor, Row, Col, Radio, Switch, List, Input, Button } from 'antd';
 import { Paper } from '@edulastic/common';
 
 import ListCard from './Card';
@@ -63,6 +63,7 @@ class MainSetting extends Component {
 
     this.state = {
       markAsDoneValue: 1,
+      showAdvancedOption: true,
     };
   }
 
@@ -70,8 +71,13 @@ class MainSetting extends Component {
     this.setState({ markAsDoneValue: e.target.value });
   }
 
+  advancedHandler = () => {
+    const { showAdvancedOption } = this.state;
+    this.setState({ showAdvancedOption: !showAdvancedOption });
+  }
+
   render() {
-    const { markAsDoneValue } = this.state;
+    const { markAsDoneValue, showAdvancedOption } = this.state;
     const { history } = this.props;
     return (
       <Paper style={{ marginTop: 27 }}>
@@ -228,144 +234,153 @@ class MainSetting extends Component {
                 )}
               />
             </Block>
-
-            <Block id="title">
-              <Title>Title</Title>
-              <FlexBody>
-                <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
-                  <Radio value={1}>Enable</Radio>
-                  <Radio value={2}>Disable</Radio>
-                </RadioGroup>
-              </FlexBody>
-              <Row gutter={28} style={{ marginBottom: 30 }}>
-                <Col span={12}>
-                  <InputTitle>Activity Title</InputTitle>
-                  <Input placeholder="Title of activity" />
-                </Col>
-                <Col span={12}>
-                  <InputTitle>Activity Title</InputTitle>
-                  <Input placeholder="Title of activity" />
-                </Col>
-              </Row>
-            </Block>
-
-            <Block id="navigations">
-              <Title>Navigation / Control</Title>
-              <Body>
-                {
-                  navigations.map(navigation => (
-                    <Row style={{ width: '100%', marginBottom: 25 }}>
-                      <Col span={8}>
-                        <span style={{ fontSize: 13, fontWeight: 600 }}>{navigation}</span>
-                      </Col>
-                      <Col span={16}>
-                        <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
-                          <Radio value={1}>Enable</Radio>
-                          <Radio value={2}>Disable</Radio>
-                        </RadioGroup>
-                      </Col>
-                    </Row>
-                  ))
-                }
-              </Body>
-              <Row gutter={28} style={{ marginBottom: 30 }}>
-                <Col span={12}>
-                  <InputTitle>On Submit Redirect URL</InputTitle>
-                  <Input placeholder="https://edulastic.com/" />
-                </Col>
-                <Col span={12}>
-                  <InputTitle>On Discard Redirect URL</InputTitle>
-                  <Input placeholder="https://edulastic.com/" />
-                </Col>
-                <Col span={12} style={{ paddingTop: 30 }}>
-                  <InputTitle>On Save Redirect URL</InputTitle>
-                  <Input placeholder="https://edulastic.com/" />
-                </Col>
-              </Row>
-            </Block>
-
-            <Block id="accessibility">
-              <Title>Accessibility</Title>
-              <Body>
-                {
-                  accessibilities.map(accessibility => (
-                    <Row style={{ width: '100%', marginBottom: 25 }}>
-                      <Col span={8}>
-                        <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibility}</span>
-                      </Col>
-                      <Col span={16}>
-                        <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
-                          <Radio value={1}>Enable</Radio>
-                          <Radio value={2}>Disable</Radio>
-                        </RadioGroup>
-                      </Col>
-                    </Row>
-                  ))
-                }
-              </Body>
-            </Block>
-
-            <UiTime />
-
-            <Block id="administration">
-              <Title>Administration</Title>
-              <Body>
-                <Row style={{ width: '100%', marginBottom: 25 }}>
-                  <Col span={8}>
-                    <span style={{ fontSize: 13, fontWeight: 600 }}>Configuration Panel</span>
-                  </Col>
-                  <Col span={16}>
-                    <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
-                      <Radio value={1}>Enable</Radio>
-                      <Radio value={2}>Disable</Radio>
-                    </RadioGroup>
-                  </Col>
-                </Row>
-
+            <AdvancedSettings style={{ display: showAdvancedOption ? 'block' : 'none' }}>
+              <Block id="title">
+                <Title>Title</Title>
+                <FlexBody>
+                  <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                    <Radio value={1}>Enable</Radio>
+                    <Radio value={2}>Disable</Radio>
+                  </RadioGroup>
+                </FlexBody>
                 <Row gutter={28} style={{ marginBottom: 30 }}>
                   <Col span={12}>
-                    <InputTitle>Password</InputTitle>
-                    <Input placeholder="Your Password" />
+                    <InputTitle>Activity Title</InputTitle>
+                    <Input placeholder="Title of activity" />
+                  </Col>
+                  <Col span={12}>
+                    <InputTitle>Activity Title</InputTitle>
+                    <Input placeholder="Title of activity" />
                   </Col>
                 </Row>
+              </Block>
 
-                <Row style={{ width: '100%', marginBottom: 25 }}>
-                  <Col span={8}>
-                    <span style={{ fontSize: 13, fontWeight: 600 }}>Save & Quit</span>
+              <Block id="navigations">
+                <Title>Navigation / Control</Title>
+                <Body>
+                  {
+                    navigations.map(navigation => (
+                      <Row style={{ width: '100%', marginBottom: 25 }}>
+                        <Col span={8}>
+                          <span style={{ fontSize: 13, fontWeight: 600 }}>{navigation}</span>
+                        </Col>
+                        <Col span={16}>
+                          <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                            <Radio value={1}>Enable</Radio>
+                            <Radio value={2}>Disable</Radio>
+                          </RadioGroup>
+                        </Col>
+                      </Row>
+                    ))
+                  }
+                </Body>
+                <Row gutter={28} style={{ marginBottom: 30 }}>
+                  <Col span={12}>
+                    <InputTitle>On Submit Redirect URL</InputTitle>
+                    <Input placeholder="https://edulastic.com/" />
                   </Col>
-                  <Col span={16}>
-                    <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
-                      <Radio value={1}>Enable</Radio>
-                      <Radio value={2}>Disable</Radio>
-                    </RadioGroup>
+                  <Col span={12}>
+                    <InputTitle>On Discard Redirect URL</InputTitle>
+                    <Input placeholder="https://edulastic.com/" />
+                  </Col>
+                  <Col span={12} style={{ paddingTop: 30 }}>
+                    <InputTitle>On Save Redirect URL</InputTitle>
+                    <Input placeholder="https://edulastic.com/" />
                   </Col>
                 </Row>
+              </Block>
 
-                <Row style={{ width: '100%', marginBottom: 25 }}>
-                  <Col span={8}>
-                    <span style={{ fontSize: 13, fontWeight: 600 }}>Exit & Discard</span>
-                  </Col>
-                  <Col span={16}>
-                    <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
-                      <Radio value={1}>Enable</Radio>
-                      <Radio value={2}>Disable</Radio>
-                    </RadioGroup>
-                  </Col>
-                </Row>
+              <Block id="accessibility">
+                <Title>Accessibility</Title>
+                <Body>
+                  {
+                    accessibilities.map(accessibility => (
+                      <Row style={{ width: '100%', marginBottom: 25 }}>
+                        <Col span={8}>
+                          <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibility}</span>
+                        </Col>
+                        <Col span={16}>
+                          <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                            <Radio value={1}>Enable</Radio>
+                            <Radio value={2}>Disable</Radio>
+                          </RadioGroup>
+                        </Col>
+                      </Row>
+                    ))
+                  }
+                </Body>
+              </Block>
 
-                <Row style={{ width: '100%', marginBottom: 25 }}>
-                  <Col span={8}>
-                    <span style={{ fontSize: 13, fontWeight: 600 }}>Extend Assessment Time</span>
-                  </Col>
-                  <Col span={16}>
-                    <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
-                      <Radio value={1}>Enable</Radio>
-                      <Radio value={2}>Disable</Radio>
-                    </RadioGroup>
-                  </Col>
-                </Row>
-              </Body>
-            </Block>
+              <UiTime />
+
+              <Block id="administration">
+                <Title>Administration</Title>
+                <Body>
+                  <Row style={{ width: '100%', marginBottom: 25 }}>
+                    <Col span={8}>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>Configuration Panel</span>
+                    </Col>
+                    <Col span={16}>
+                      <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                        <Radio value={1}>Enable</Radio>
+                        <Radio value={2}>Disable</Radio>
+                      </RadioGroup>
+                    </Col>
+                  </Row>
+
+                  <Row gutter={28} style={{ marginBottom: 30 }}>
+                    <Col span={12}>
+                      <InputTitle>Password</InputTitle>
+                      <Input placeholder="Your Password" />
+                    </Col>
+                  </Row>
+
+                  <Row style={{ width: '100%', marginBottom: 25 }}>
+                    <Col span={8}>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>Save & Quit</span>
+                    </Col>
+                    <Col span={16}>
+                      <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                        <Radio value={1}>Enable</Radio>
+                        <Radio value={2}>Disable</Radio>
+                      </RadioGroup>
+                    </Col>
+                  </Row>
+
+                  <Row style={{ width: '100%', marginBottom: 25 }}>
+                    <Col span={8}>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>Exit & Discard</span>
+                    </Col>
+                    <Col span={16}>
+                      <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                        <Radio value={1}>Enable</Radio>
+                        <Radio value={2}>Disable</Radio>
+                      </RadioGroup>
+                    </Col>
+                  </Row>
+
+                  <Row style={{ width: '100%', marginBottom: 25 }}>
+                    <Col span={8}>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>Extend Assessment Time</span>
+                    </Col>
+                    <Col span={16}>
+                      <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                        <Radio value={1}>Enable</Radio>
+                        <Radio value={2}>Disable</Radio>
+                      </RadioGroup>
+                    </Col>
+                  </Row>
+                </Body>
+              </Block>
+            </AdvancedSettings>
+
+            <AdvancedButton>
+              <Line />
+              <Button onClick={() => this.advancedHandler()}>
+                {showAdvancedOption ? 'HIDE ADVANCED OPTIONS' : 'SHOW ADVANCED OPTIONS'}
+              </Button>
+              <Line />
+            </AdvancedButton>
           </Col>
         </Row>
       </Paper>
@@ -504,6 +519,25 @@ const InputTitle = styled.div`
   margin-bottom: 12px;
 `;
 
-// const AdvancedButton = styled.div`
+const AdvancedSettings = styled.div``;
 
-// `;
+const AdvancedButton = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  .ant-btn {
+    height: 40px;
+    width: 225px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #00b0ff;
+    border: 1px solid;
+  }
+`;
+
+const Line = styled.div`
+  border-top: 1px solid #00b0ff;
+  width: calc((100% - 285px) / 2);
+  position: relative;
+  top: 20px;
+`;

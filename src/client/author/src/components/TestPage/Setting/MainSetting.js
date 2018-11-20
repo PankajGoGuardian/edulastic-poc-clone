@@ -86,7 +86,7 @@ class MainSetting extends Component {
             </StyledAnchor>
           </Col>
           <Col span={18}>
-            <Block>
+            <Block id="mark-as-done">
               <Title>Mark as Done</Title>
               <Body>
                 <StyledRadioGroup onChange={this.markHandler} value={markAsDoneValue}>
@@ -103,7 +103,7 @@ class MainSetting extends Component {
               </Description>
             </Block>
 
-            <Block>
+            <Block id="release-scores">
               <Title>Release Scores</Title>
               <Body>
                 <Switch />
@@ -114,7 +114,7 @@ class MainSetting extends Component {
               </Description>
             </Block>
 
-            <Block>
+            <Block id="require-safe-exame-browser">
               <Title>Require Safe Exam Browser</Title>
               <Body>
                 <Switch />
@@ -124,7 +124,7 @@ class MainSetting extends Component {
               </Description>
             </Block>
 
-            <Block>
+            <Block id="show-questions">
               <Title>Show Questions to Students after Submission</Title>
               <Body>
                 <Switch />
@@ -134,7 +134,7 @@ class MainSetting extends Component {
               </Description>
             </Block>
 
-            <Block>
+            <Block id="suffle-question">
               <Title>Shuffle Question</Title>
               <Body>
                 <Switch defaultChecked />
@@ -144,7 +144,7 @@ class MainSetting extends Component {
               </Description>
             </Block>
 
-            <Block>
+            <Block id="show-answer-choice">
               <Title>Shuffle Answer Choice</Title>
               <Body>
                 <Switch defaultChecked />
@@ -155,7 +155,7 @@ class MainSetting extends Component {
               </Description>
             </Block>
 
-            <Block>
+            <Block id="show-calculator">
               <Title>Show Calculator</Title>
               <Body>
                 <StyledRadioGroup onChange={this.markHandler} value={markAsDoneValue}>
@@ -170,7 +170,7 @@ class MainSetting extends Component {
               </Description>
             </Block>
 
-            <Block>
+            <Block id="answer-on-paper">
               <Title>Answer on Paper</Title>
               <Body>
                 <Switch defaultChecked />
@@ -180,7 +180,7 @@ class MainSetting extends Component {
               </Description>
             </Block>
 
-            <Block>
+            <Block id="require-password">
               <Title>Require Password</Title>
               <Body>
                 <Switch defaultChecked />
@@ -203,7 +203,7 @@ class MainSetting extends Component {
               </Description>
             </Block>
 
-            <Block>
+            <Block id="performance-bands">
               <Row style={{ marginBottom: 18 }}>
                 <Col span={6}>
                   <BandsText>Performance Bands</BandsText>
@@ -229,7 +229,7 @@ class MainSetting extends Component {
               />
             </Block>
 
-            <Block>
+            <Block id="title">
               <Title>Title</Title>
               <FlexBody>
                 <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
@@ -249,7 +249,7 @@ class MainSetting extends Component {
               </Row>
             </Block>
 
-            <Block>
+            <Block id="navigations">
               <Title>Navigation / Control</Title>
               <Body>
                 {
@@ -284,7 +284,7 @@ class MainSetting extends Component {
               </Row>
             </Block>
 
-            <Block>
+            <Block id="accessibility">
               <Title>Accessibility</Title>
               <Body>
                 {
@@ -307,7 +307,7 @@ class MainSetting extends Component {
 
             <UiTime />
 
-            <Block>
+            <Block id="administration">
               <Title>Administration</Title>
               <Body>
                 <Row style={{ width: '100%', marginBottom: 25 }}>

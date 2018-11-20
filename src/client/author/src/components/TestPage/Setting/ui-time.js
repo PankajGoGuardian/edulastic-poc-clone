@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Row, Col, Radio, Select, Input } from 'antd';
 
 const UiTime = () => (
-  <Block>
+  <Block id="ui-time">
     <Title>UI / Time</Title>
     <Body>
       <Row style={{ width: '100%', marginBottom: 25 }}>

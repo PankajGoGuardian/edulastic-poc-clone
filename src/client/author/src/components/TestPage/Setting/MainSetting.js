@@ -306,6 +306,66 @@ class MainSetting extends Component {
             </Block>
 
             <UiTime />
+
+            <Block>
+              <Title>Administration</Title>
+              <Body>
+                <Row style={{ width: '100%', marginBottom: 25 }}>
+                  <Col span={8}>
+                    <span style={{ fontSize: 13, fontWeight: 600 }}>Configuration Panel</span>
+                  </Col>
+                  <Col span={16}>
+                    <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                      <Radio value={1}>Enable</Radio>
+                      <Radio value={2}>Disable</Radio>
+                    </RadioGroup>
+                  </Col>
+                </Row>
+
+                <Row gutter={28} style={{ marginBottom: 30 }}>
+                  <Col span={12}>
+                    <InputTitle>Password</InputTitle>
+                    <Input placeholder="Your Password" />
+                  </Col>
+                </Row>
+
+                <Row style={{ width: '100%', marginBottom: 25 }}>
+                  <Col span={8}>
+                    <span style={{ fontSize: 13, fontWeight: 600 }}>Save & Quit</span>
+                  </Col>
+                  <Col span={16}>
+                    <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                      <Radio value={1}>Enable</Radio>
+                      <Radio value={2}>Disable</Radio>
+                    </RadioGroup>
+                  </Col>
+                </Row>
+
+                <Row style={{ width: '100%', marginBottom: 25 }}>
+                  <Col span={8}>
+                    <span style={{ fontSize: 13, fontWeight: 600 }}>Exit & Discard</span>
+                  </Col>
+                  <Col span={16}>
+                    <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                      <Radio value={1}>Enable</Radio>
+                      <Radio value={2}>Disable</Radio>
+                    </RadioGroup>
+                  </Col>
+                </Row>
+
+                <Row style={{ width: '100%', marginBottom: 25 }}>
+                  <Col span={8}>
+                    <span style={{ fontSize: 13, fontWeight: 600 }}>Extend Assessment Time</span>
+                  </Col>
+                  <Col span={16}>
+                    <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                      <Radio value={1}>Enable</Radio>
+                      <Radio value={2}>Disable</Radio>
+                    </RadioGroup>
+                  </Col>
+                </Row>
+              </Body>
+            </Block>
           </Col>
         </Row>
       </Paper>

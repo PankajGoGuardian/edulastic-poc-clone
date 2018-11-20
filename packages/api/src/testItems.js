@@ -81,7 +81,7 @@ const evaluate = (id, answers) =>
       method: 'post',
       data: answers
     })
-    .then(result => result.data.result);
+    .then(result => result.data);
 
 export default {
   getAll,

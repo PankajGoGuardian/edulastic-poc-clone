@@ -11,7 +11,7 @@ import {
 function* evaluateAnswers() {
   const answers = yield select(state => state.answers);
   const { items, currentItem } = yield select(state => state.test);
-  const { id } = items[currentItem];
+  const id = items[currentItem]._id;
   const result = yield testItemsApi.evaluate(id, { answers });
   yield put({
     type: ADD_ITEM_EVALUATION,

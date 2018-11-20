@@ -11,6 +11,6 @@ export const testItemSchema = {
 };
 
 export const evaluationSchema = {
-  answers: joi.array()
+  answers: joi.object()
 };
 export const createItemFormatter = result => pick(result, createItemFields);

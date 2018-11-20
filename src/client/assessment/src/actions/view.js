@@ -4,6 +4,6 @@ import { CHANGE_PREVIEW } from '../constants/actions';
 export const changePreview = view => ({
   type: CHANGE_PREVIEW,
   payload: {
-    view,
-  },
+    view
+  }
 });

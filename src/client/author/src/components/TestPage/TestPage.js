@@ -26,6 +26,7 @@ import SourceModal from '../QuestionEditor/SourceModal';
 import Review from './Review';
 import Summary from './Summary';
 import Assign from './Assign';
+import Setting from './Setting';
 
 const TestPage = ({
   createTest,
@@ -112,6 +113,10 @@ const TestPage = ({
             onChangeSubjects={handleChangeSubject}
             current={current}
           />
+        );
+      case 'settings':
+        return (
+          <Setting current={current} />
         );
       case 'assign':
         return <Assign test={test} setData={setData} current={current} />;

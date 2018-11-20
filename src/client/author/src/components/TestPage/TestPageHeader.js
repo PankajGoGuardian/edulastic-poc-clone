@@ -23,7 +23,7 @@ export const navButtons = [
 ];
 
 const TestPageHeader = ({ onChangeNav, current, onSave, title, creating, onShare }) => (
-  <Affix>
+  <div>
     <Container>
       <Title>{title}</Title>
 
@@ -38,7 +38,7 @@ const TestPageHeader = ({ onChangeNav, current, onSave, title, creating, onShare
         </EduButton>
       </FlexContainer>
     </Container>
-  </Affix>
+  </div>
 );
 
 TestPageHeader.propTypes = {

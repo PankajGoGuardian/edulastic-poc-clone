@@ -7,15 +7,18 @@ module.exports = {
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, '.build/client'),
-    publicPath: 'assets/',
+    publicPath: 'assets/'
   },
   plugins: [
-    new CopyWebpackPlugin([
-      {
-        from: 'src/client/public',
-        to: 'public',
-      },
-    ], { debug: 'error' }),
+    new CopyWebpackPlugin(
+      [
+        {
+          from: 'src/client/public',
+          to: 'public'
+        }
+      ],
+      { debug: 'error' }
+    ),
     new BundleAnalyzerPlugin()
   ],
   module: {
@@ -23,7 +26,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         resolve: {
-          extensions: ['.js', '.jsx', '.json'],
+          extensions: ['.js', '.jsx', '.json']
         },
         exclude: /node_modules/,
         use: {
@@ -35,30 +38,31 @@ module.exports = {
               'transform-object-rest-spread',
               'transform-class-properties',
               'syntax-dynamic-import',
-              'transform-runtime',
-            ],
-          },
-        },
+              'transform-runtime'
+            ]
+          }
+        }
       },
       {
         test: /\.css$/,
         use: [
           'style-loader', // creates style nodes from JS strings
-          { loader: 'css-loader', options: { importLoaders: 1 } }, // translates CSS into CommonJS
-        ],
+          { loader: 'css-loader', options: { importLoaders: 1 } } // translates CSS into CommonJS
+        ]
       },
       {
         test: /\.(png|jpg|gif|woff|woff2|eot|ttf|otf|svg)$/,
         use: [
           {
             loader: 'file-loader',
-            options: {},
-          },
-        ],
-      },
-    ],
+            options: {}
+          }
+        ]
+      }
+    ]
   },
   devServer: {
-    port: 9090,
+    port: 9090
   },
+  devtool: 'source-map'
 };

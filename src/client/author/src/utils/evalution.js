@@ -8,11 +8,16 @@ export const evaluateItem = (answers, validations) => {
     if (validations && validations[id]) {
       const validation = validations[id];
       const evaluator = evaluators[validation.type];
-      results[id] = evaluator({
-        userResponse: answer,
-        hasGroupResponses: validation.hasGroupResponses,
-        validation: validation.validation,
-      });
+
+      if (!evaluator) {
+        results[id] = [];
+      } else {
+        results[id] = evaluator({
+          userResponse: answer,
+          hasGroupResponses: validation.hasGroupResponses,
+          validation: validation.validation
+        });
+      }
     } else {
       results[id] = [];
     }

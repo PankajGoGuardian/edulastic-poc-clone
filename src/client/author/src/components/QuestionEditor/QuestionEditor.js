@@ -94,10 +94,7 @@ class QuestionEditor extends Component {
     return (
       <div>
         {showModal && (
-          <SourceModal
-            onClose={this.handleHideSource}
-            onApply={this.handleApplySource}
-          >
+          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
             {JSON.stringify(question.data, null, 4)}
           </SourceModal>
         )}

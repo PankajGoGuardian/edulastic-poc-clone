@@ -105,7 +105,7 @@ class ItemDetail extends Component {
   handleAdd = ({ rowIndex, tabIndex }) => {
     const { match, history, t } = this.props;
     history.push({
-      pathname: `/author/items/${match.params._id}/pickup-questiontype`,
+      pathname: `/author/items/${match.params.id}/pickup-questiontype`,
       state: {
         backText: t('component.itemDetail.backText'),
         backUrl: match.url,
@@ -269,10 +269,7 @@ class ItemDetail extends Component {
     return (
       <Layout>
         {showModal && item && (
-          <SourceModal
-            onClose={this.handleHideSource}
-            onApply={this.handleApplySource}
-          >
+          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
             {JSON.stringify(item, null, 4)}
           </SourceModal>
         )}

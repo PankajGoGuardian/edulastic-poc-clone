@@ -13,22 +13,23 @@ export default (WrappedComponent) => {
       saveAnswer={(data) => {
         setUserAnswer(questionId || match.params.id, data);
       }}
+      questionId={questionId}
       {...props}
     />
   );
 
   hocComponent.propTypes = {
-    setUserAnswer: PropTypes.func.isRequired,
+    setUserAnswer: PropTypes.func.isRequired
   };
 
   const enhance = compose(
     withRouter,
     connect(
       (state, { questionId, match }) => ({
-        userAnswer: getAnswerByQuestionIdSelector(questionId || match.params.id)(state),
+        userAnswer: getAnswerByQuestionIdSelector(questionId || match.params.id)(state)
       }),
-      { setUserAnswer: setUserAnswerAction },
-    ),
+      { setUserAnswer: setUserAnswerAction }
+    )
   );
 
   return enhance(hocComponent);

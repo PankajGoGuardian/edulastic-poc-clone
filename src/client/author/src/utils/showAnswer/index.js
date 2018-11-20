@@ -19,7 +19,9 @@ const createShowAnswerResult = (questions, answers) => {
     const question = questions[id];
     const evaluator = evaluators[question.type];
     const answer = answers[id];
-    results[id] = evaluator(question, answer);
+    if (evaluator) {
+      results[id] = evaluator(question, answer);
+    }
   });
   console.log('utils show answer result', results);
   return results;

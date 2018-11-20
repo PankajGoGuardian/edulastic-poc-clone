@@ -28,18 +28,26 @@ class Item extends Component {
     });
   };
 
+  get description() {
+    const { item } = this.props;
+    let description = '';
+
+    if (item.data.questions && item.data.questions.length) {
+      description = item.data.questions[0].data.stimulus;
+    }
+
+    return description;
+  }
+
   render() {
     const { item, t, windowWidth } = this.props;
+
     return (
       <Container>
         <Question>
           <QuestionContent>
             <MoveLink onClick={this.moveToItem}>{item._id}</MoveLink>
-            <Description>
-              {
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum metus et luctus lacinia. Nullam vel tincidunt nibh. Duis ac eros nunc. '
-              }
-            </Description>
+            <Description>{this.description}</Description>
             {/* <div dangerouslySetInnerHTML={{ __html: item.stimulus }} /> */}
           </QuestionContent>
           {windowWidth > 768 && (

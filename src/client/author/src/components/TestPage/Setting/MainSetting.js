@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Anchor, Row, Col, Radio, Switch, List } from 'antd';
+import { Anchor, Row, Col, Radio, Switch, List, Input } from 'antd';
 import { Paper } from '@edulastic/common';
 
 import ListCard from './Card';
@@ -48,6 +48,13 @@ const data = [
   },
 ];
 
+const navigations = [
+  'Intro Item', 'Outro Item', 'Previous', 'Next', 'Pause', 'Save', 'Submit', 'Fullscreen', 'Response Masking', 'TOC Item Count', 'Calculator',
+  'Submit Criteria', 'Warning if question not attempted', 'Confirmation windows on submit', 'Scroll to test element on test start',
+  'Scroll to top on item change', 'Exit Secure Browser', 'Acknowledgements', 'Table of Contents'
+];
+
+const accessibilities = ['Show Colour Shceme', 'Show Font Size', 'Show Zoom'];
 
 class MainSetting extends Component {
   constructor(props) {
@@ -220,6 +227,82 @@ class MainSetting extends Component {
                 )}
               />
             </Block>
+
+            <Block>
+              <Title>Title</Title>
+              <FlexBody>
+                <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                  <Radio value={1}>Enable</Radio>
+                  <Radio value={2}>Disable</Radio>
+                </RadioGroup>
+              </FlexBody>
+              <Row gutter={28} style={{ marginBottom: 30 }}>
+                <Col span={12}>
+                  <InputTitle>Activity Title</InputTitle>
+                  <Input placeholder="Title of activity" />
+                </Col>
+                <Col span={12}>
+                  <InputTitle>Activity Title</InputTitle>
+                  <Input placeholder="Title of activity" />
+                </Col>
+              </Row>
+            </Block>
+
+            <Block>
+              <Title>Navigation / Control</Title>
+              <Body>
+                {
+                  navigations.map(navigation => (
+                    <Row style={{ width: '100%', marginBottom: 25 }}>
+                      <Col span={8}>
+                        <span style={{ fontSize: 13, fontWeight: 600 }}>{navigation}</span>
+                      </Col>
+                      <Col span={16}>
+                        <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                          <Radio value={1}>Enable</Radio>
+                          <Radio value={2}>Disable</Radio>
+                        </RadioGroup>
+                      </Col>
+                    </Row>
+                  ))
+                }
+              </Body>
+              <Row gutter={28} style={{ marginBottom: 30 }}>
+                <Col span={12}>
+                  <InputTitle>On Submit Redirect URL</InputTitle>
+                  <Input placeholder="https://edulastic.com/" />
+                </Col>
+                <Col span={12}>
+                  <InputTitle>On Discard Redirect URL</InputTitle>
+                  <Input placeholder="https://edulastic.com/" />
+                </Col>
+                <Col span={12} style={{ paddingTop: 30 }}>
+                  <InputTitle>On Save Redirect URL</InputTitle>
+                  <Input placeholder="https://edulastic.com/" />
+                </Col>
+              </Row>
+            </Block>
+
+            <Block>
+              <Title>Accessibility</Title>
+              <Body>
+                {
+                  accessibilities.map(accessibility => (
+                    <Row style={{ width: '100%', marginBottom: 25 }}>
+                      <Col span={8}>
+                        <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibility}</span>
+                      </Col>
+                      <Col span={16}>
+                        <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                          <Radio value={1}>Enable</Radio>
+                          <Radio value={2}>Disable</Radio>
+                        </RadioGroup>
+                      </Col>
+                    </Row>
+                  ))
+                }
+              </Body>
+            </Block>
           </Col>
         </Row>
       </Paper>
@@ -257,6 +340,16 @@ const StyledAnchor = styled(Anchor)`
 const Block = styled.div`
   margin-bottom: 30px;
   border-bottom: 1px solid lightgrey;
+
+  .ant-input {
+    height: 40px;
+    font-size: 13px;
+    border-radius: 4px;
+
+    ::placeholder {
+      font-style: italic;
+    }
+  }
 `;
 
 const Title = styled.div`
@@ -267,6 +360,12 @@ const Title = styled.div`
 `;
 
 const Body = styled.div`
+  margin-top: 30px;
+  margin-bottom: 22px;
+`;
+
+const FlexBody = styled.div`
+  display: flex;
   margin-top: 30px;
   margin-bottom: 22px;
 `;
@@ -297,6 +396,26 @@ const StyledRadioGroup = styled(Radio.Group)`
   }
 `;
 
+const RadioGroup = styled(Radio.Group)`
+  display: flex;
+
+  span {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: #434b5d;
+  }
+
+  .ant-radio {
+    margin-right: 25px;
+  }
+
+  .ant-radio-wrapper {
+    margin-bottom: 18px;
+    margin-right: 40px;
+  }
+`;
+
 const BlueText = styled.span`
   color: #00b0ff;
   font-weight: 600;
@@ -315,6 +434,13 @@ const NormalText = styled.span`
   color: #434b5d;
 `;
 
-// const ShowAdvancedContainer = styled.div`
+const InputTitle = styled.div`
+  font-size: 13px;
+  font-weight: 600;
+  color: #434b5d;
+  margin-bottom: 12px;
+`;
+
+// const AdvancedButton = styled.div`
 
 // `;

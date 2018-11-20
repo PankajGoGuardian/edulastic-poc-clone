@@ -10,7 +10,6 @@ import {
   IconSettings,
   IconSummary,
 } from '@edulastic/icons';
-import { Affix } from 'antd';
 
 import TestPageNav from './TestPageNav';
 

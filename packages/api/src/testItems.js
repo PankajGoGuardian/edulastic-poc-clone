@@ -1,7 +1,7 @@
 import API from './utils/API';
 
 const api = new API();
-const prefix = '/testItem';
+const prefix = '/testitem';
 
 const formatData = data => {
   const item = JSON.parse(JSON.stringify(data));
@@ -10,8 +10,7 @@ const formatData = data => {
 };
 
 const getAll = ({ limit = 10, page = 1, search, data, validation }) => {
-  let url = `${prefix}?filter[limit]=${limit}&filter[skip]=${limit *
-    (page - 1)}`;
+  let url = `${prefix}?limit=${limit}&skip=${limit * (page - 1)}`;
 
   if (search) {
     url += `&filter[where][title][like]=${search}`;
@@ -74,6 +73,7 @@ const update = ({ id, item }) => {
     })
     .then(result => result.data.result);
 };
+
 const evaluate = (id, answers) =>
   api
     .callApi({
@@ -81,7 +81,7 @@ const evaluate = (id, answers) =>
       method: 'post',
       data: answers
     })
-    .then(result => result.data.result);
+    .then(result => result.data);
 
 export default {
   getAll,

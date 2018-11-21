@@ -1,28 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { withRouter } from 'react-router-dom';
 
 import { setUserAnswerAction } from '../../actions/answers';
 import { getAnswerByQuestionIdSelector } from '../../selectors/answers';
 
 export default (WrappedComponent) => {
-  const hocComponent = ({ setUserAnswer, questionId, ...props }) => (
+  const hocComponent = ({ setUserAnswer, match, questionId, ...props }) => (
     <WrappedComponent
       saveAnswer={(data) => {
-        setUserAnswer(questionId, data);
+        setUserAnswer(questionId || match.params.id, data);
       }}
+      questionId={questionId}
       {...props}
     />
   );
 
   hocComponent.propTypes = {
-    setUserAnswer: PropTypes.func.isRequired,
+    setUserAnswer: PropTypes.func.isRequired
   };
 
-  return connect(
-    (state, { questionId }) => ({
-      userAnswer: getAnswerByQuestionIdSelector(questionId)(state),
-    }),
-    { setUserAnswer: setUserAnswerAction },
-  )(hocComponent);
+  const enhance = compose(
+    withRouter,
+    connect(
+      (state, { questionId, match }) => ({
+        userAnswer: getAnswerByQuestionIdSelector(questionId || match.params.id)(state)
+      }),
+      { setUserAnswer: setUserAnswerAction }
+    )
+  );
+
+  return enhance(hocComponent);
 };

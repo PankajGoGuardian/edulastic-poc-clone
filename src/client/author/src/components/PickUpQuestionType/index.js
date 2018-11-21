@@ -16,7 +16,7 @@ import {
   IconSelection,
   IconTarget,
   IconMore,
-  IconBarChart,
+  IconBarChart
 } from '@edulastic/icons';
 
 import QuestionTypes from './questionTypes';
@@ -27,13 +27,13 @@ import { setQuestionAction } from '../../actions/question';
 const makeQuestion = data => ({
   regionId: '1',
   widgetType: 'question',
-  data,
+  data
 });
 
 class PickUpQuestionType extends Component {
   state = {
-    currentQuestion: 'multiple-choice',
-  }
+    currentQuestion: 'multiple-choice'
+  };
 
   selectQuestionType = (data) => {
     const { setQuestion, history, match, t } = this.props;
@@ -46,8 +46,8 @@ class PickUpQuestionType extends Component {
       state: {
         ...history.location.state,
         backUrl: match.url,
-        backText: t('component.pickupcomponent.headertitle'),
-      },
+        backText: t('component.pickupcomponent.headertitle')
+      }
     });
   };
 
@@ -57,19 +57,19 @@ class PickUpQuestionType extends Component {
     if (history.location.state) {
       return {
         url: history.location.state.backUrl,
-        text: history.location.state.backText,
+        text: history.location.state.backText
       };
     }
 
     return {
       url: '/author/items',
-      text: t('component.itemDetail.backToItemList'),
+      text: t('component.itemDetail.backToItemList')
     };
   }
 
   handleCategory = (e) => {
     this.setState({ currentQuestion: e.key });
-  }
+  };
 
   render() {
     const { t } = this.props;
@@ -80,44 +80,66 @@ class PickUpQuestionType extends Component {
         <LeftSide>
           <Menu mode="horizontal" selectedKeys={['question']}>
             <Menu.Item key="question">Question</Menu.Item>
-            <Menu.Item key="feature" disabled>Feature</Menu.Item>
+            <Menu.Item key="feature" disabled>
+              Feature
+            </Menu.Item>
           </Menu>
           <Menu mode="inline" selectedKeys={[currentQuestion]} onClick={this.handleCategory}>
             <Menu.Item key="multiple-choice">
-              <NewListIcon />{'Multiple Choice'}
+              <NewListIcon />
+              {'Multiple Choice'}
             </Menu.Item>
             <Menu.Item key="fill-blanks">
-              <SelectionIcon />{'Fill in the Blanks'}
+              <SelectionIcon />
+              {'Fill in the Blanks'}
             </Menu.Item>
             <Menu.Item key="classify">
-              <LayoutIcon />{'Classify, Math & Order'}
+              <LayoutIcon />
+              {'Classify, Math & Order'}
             </Menu.Item>
             <Menu.Item key="edit">
-              <EditIcon />{'Written & Spoken'}
+              <EditIcon />
+              {'Written & Spoken'}
             </Menu.Item>
             <Menu.Item key="highlight">
-              <TargetIcon />{'Highlight'}
+              <TargetIcon />
+              {'Highlight'}
             </Menu.Item>
             <Menu.Item key="math">
-              <MathIcon />{'Math'}
+              <MathIcon />
+              {'Math'}
             </Menu.Item>
             <Menu.Item key="graphing">
-              <LineChartIcon />{'Graphing'}
+              <LineChartIcon />
+              {'Graphing'}
             </Menu.Item>
             <Menu.Item key="charts">
-              <BarChartIcon />{'Charts'}
+              <BarChartIcon />
+              {'Charts'}
             </Menu.Item>
             <Menu.Item key="chemistry">
-              <MoleculeIcon />{'Chemistry'}
+              <MoleculeIcon />
+              {'Chemistry'}
             </Menu.Item>
             <Menu.Item key="other">
-              <MoreIcon />{'Other'}
+              <MoreIcon />
+              {'Other'}
             </Menu.Item>
           </Menu>
         </LeftSide>
         <RightSide>
           <Header title={t('component.pickupcomponent.headertitle')} link={this.link} />
-          <PaddingDiv left={30} right={30} style={{ position: 'absolute', left: 0, right: 0, overflow: 'auto', height: 'calc(100% - 140px)' }}>
+          <PaddingDiv
+            left={30}
+            right={30}
+            style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              overflow: 'auto',
+              height: 'calc(100% - 140px)'
+            }}
+          >
             <QuestionTypes
               onSelectQuestionType={this.selectQuestionType}
               questionType={currentQuestion}
@@ -133,19 +155,19 @@ const enhance = compose(
   withNamespaces('author'),
   connect(
     state => ({
-      item: getItemSelector(state),
+      item: getItemSelector(state)
     }),
     {
-      setQuestion: setQuestionAction,
-    },
-  ),
+      setQuestion: setQuestionAction
+    }
+  )
 );
 
 PickUpQuestionType.propTypes = {
   history: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   setQuestion: PropTypes.func.isRequired,
-  match: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired
 };
 
 export default enhance(PickUpQuestionType);
@@ -206,10 +228,10 @@ const LeftSide = styled.div`
   }
 
   .ant-menu-inline .ant-menu-item:not(:last-child) {
-    margin-bottom: 18px;p
+    margin-bottom: 18px;
   }
-
 `;
+
 const RightSide = styled.div`
   position: relative;
   width: 100%;

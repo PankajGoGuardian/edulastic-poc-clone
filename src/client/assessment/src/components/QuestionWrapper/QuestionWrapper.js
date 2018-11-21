@@ -5,35 +5,34 @@ import { MultipleChoice } from '../MultipleChoice';
 import { ClozeDragDrop } from '../ClozeDragDrop';
 import { ClozeImageDragDrop } from '../ClozeImageDragDrop';
 import withAnswerSave from '../HOC/withAnswerSave';
+import MatrixChoice from '../MatrixChoice/MatrixChoice';
+
+const getQuestion = (type) => {
+  switch (type) {
+    case 'multipleChoice':
+      return MultipleChoice;
+    case 'choiceMatrix':
+      return MatrixChoice;
+    case 'orderList':
+      return OrderList;
+    case 'clozeDragDrop':
+      return ClozeDragDrop;
+    case 'clozeImageDragDrop':
+      return ClozeImageDragDrop;
+    default:
+      return null;
+  }
+};
 
 const QuestionWrapper = ({ type, data, ...restProps }) => {
   const questionProps = Object.assign(
     {
-      item: data,
+      item: data
     },
-    restProps,
+    restProps
   );
+  const Question = getQuestion(type);
 
-  let Question;
-  switch (type) {
-    case 'multipleChoice': {
-      Question = MultipleChoice;
-      break;
-    }
-    case 'orderList': {
-      Question = OrderList;
-      break;
-    }
-    case 'clozeDragDrop': {
-      Question = ClozeDragDrop;
-      break;
-    }
-    case 'clozeImageDragDrop': {
-      Question = ClozeImageDragDrop;
-      break;
-    }
-    default:
-  }
   return <Question {...questionProps} />;
 };
 
@@ -43,7 +42,7 @@ QuestionWrapper.propTypes = {
   isNew: PropTypes.bool,
   data: PropTypes.object,
   saveClicked: PropTypes.bool,
-  testItem: PropTypes.bool,
+  testItem: PropTypes.bool
 };
 
 QuestionWrapper.defaultProps = {
@@ -51,7 +50,7 @@ QuestionWrapper.defaultProps = {
   type: null,
   data: {},
   saveClicked: false,
-  testItem: false,
+  testItem: false
 };
 
 export default React.memo(withAnswerSave(QuestionWrapper));

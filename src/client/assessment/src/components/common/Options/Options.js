@@ -3,11 +3,13 @@ import { Paper } from '@edulastic/common';
 import PropTypes from 'prop-types';
 import i18n from '@edulastic/localization';
 
+import { IconPlus } from '@edulastic/icons';
+import { greenDark } from '@edulastic/colors';
 import { Header, Toggler, Heading, Block, Label, Row, Col } from './styles';
 
 class Options extends Component {
   state = {
-    show: false,
+    show: false
   };
 
   static propTypes = {
@@ -18,7 +20,7 @@ class Options extends Component {
 
   static defaultProps = {
     title: i18n.t('assessment:common.options.title'),
-    outerStyle: {},
+    outerStyle: {}
   };
 
   static Heading = Heading;
@@ -33,7 +35,7 @@ class Options extends Component {
 
   handleToggle = () => {
     this.setState(({ show }) => ({
-      show: !show,
+      show: !show
     }));
   };
 
@@ -44,8 +46,9 @@ class Options extends Component {
     return (
       <Paper style={outerStyle}>
         <Header onClick={this.handleToggle}>
-          <span style={{ fontWeight: 600 }}>{title}</span>
-          <Toggler />
+          <span>{title}</span>
+          {show && <Toggler />}
+          {!show && <IconPlus color={greenDark} />}
         </Header>
         {show && <div>{children}</div>}
       </Paper>

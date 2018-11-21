@@ -7,6 +7,7 @@ import questionApi from './question';
 import testItemsApi from './testItem';
 import resourcesApi from './resources';
 import elasticSearchApi from './elasticSearch';
+import userTestActivity from './userTestActivity';
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ router.use('/question', questionApi);
 router.use('/resources', resourcesApi);
 router.use('/search', elasticSearchApi);
 router.use('/testitem', testItemsApi);
-
+router.use('/usertestactivity', userTestActivity);
 /**
  * @swagger
  * /hello:

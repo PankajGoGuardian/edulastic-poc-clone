@@ -49,20 +49,22 @@ function* saveQuestionSaga() {
 
       console.log('itemDetail', itemDetail);
 
-      itemDetail.rows[rowIndex].widgets.push({
-        widgetType: 'question',
-        type: entity.data.type,
-        title: 'Multiple choice',
-        reference: entity._id,
-        tabIndex
-      });
+      if (itemDetail) {
+        itemDetail.rows[rowIndex].widgets.push({
+          widgetType: 'question',
+          type: entity.data.type,
+          title: 'Multiple choice',
+          reference: entity._id,
+          tabIndex
+        });
 
-      yield call(updateItemSaga, {
-        payload: {
-          id: itemDetail._id,
-          data: itemDetail
-        }
-      });
+        yield call(updateItemSaga, {
+          payload: {
+            id: itemDetail._id,
+            data: itemDetail
+          }
+        });
+      }
     }
 
     yield put({

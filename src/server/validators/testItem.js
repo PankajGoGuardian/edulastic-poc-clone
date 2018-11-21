@@ -10,4 +10,7 @@ export const testItemSchema = {
   metadata: joi.array()
 };
 
+export const evaluationSchema = {
+  answers: joi.object()
+};
 export const createItemFormatter = result => pick(result, createItemFields);

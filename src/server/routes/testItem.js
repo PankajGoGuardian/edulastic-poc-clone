@@ -1,9 +1,15 @@
 import joi from 'joi';
 import { Router } from 'express';
 import TestItemModel from '../models/testItem';
+import QuestionModel from '../models/question';
 import { getQuestionsData } from '../utils/questions';
 import { successHandler } from '../utils/responseHandler';
-import { testItemSchema, createItemFormatter } from '../validators/testItem';
+import { evaluateAnswer } from '../utils/evaluation';
+import {
+  testItemSchema,
+  createItemFormatter,
+  evaluationSchema
+} from '../validators/testItem';
 
 const router = Router();
 
@@ -241,3 +247,36 @@ router.delete('/:id', async (req, res) => {
   }
 });
 export default router;
+
+// evaluation api
+router.post('/:id/evaluate', async (req, res) => {
+  try {
+    const { answers } = req.body;
+    const body = joi.validate(req.body, evaluationSchema);
+
+    if (body.error) {
+      return res.boom.badRequest(body.error.message);
+    }
+
+    const qIds = Object.keys(answers);
+    const question = new QuestionModel();
+    const questions = await question.selectQuestionsByIds(qIds);
+
+    const questionsData = questions.map(({ data, _id }) => ({
+      _id,
+      type: data.type,
+      validation: data.validation,
+      userResponse: answers[_id]
+    }));
+
+    const evaluation = {};
+    questionsData.forEach((item) => {
+      evaluation[item._id] = evaluateAnswer(item);
+    });
+
+    return successHandler(res, evaluation);
+  } catch (e) {
+    res.log.error(e);
+    res.boom.badRequest(e);
+  }
+});

@@ -22,7 +22,7 @@ const ItemDetailWidget = ({
   isDragging,
   connectDragSource,
   connectDragPreview,
-  t,
+  t
 }) =>
   connectDragPreview &&
   connectDragSource &&
@@ -47,7 +47,7 @@ const ItemDetailWidget = ({
               <Button title={t('move')} move shape="circle">
                 <IconMoveArrows color={white} style={{ fontSize: 11 }} />
               </Button>
-            </div>,
+            </div>
           )}
           <Button title={t('edit')} onClick={onEdit} shape="circle">
             <IconPencilEdit color={white} />
@@ -57,7 +57,7 @@ const ItemDetailWidget = ({
           </Button>
         </Buttons>
       </Container>
-    </div>,
+    </div>
   );
 
 ItemDetailWidget.propTypes = {
@@ -69,7 +69,7 @@ ItemDetailWidget.propTypes = {
   connectDragPreview: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   rowIndex: PropTypes.number.isRequired,
-  widgetIndex: PropTypes.number.isRequired,
+  widgetIndex: PropTypes.number.isRequired
 };
 
 const itemSource = {
@@ -79,20 +79,20 @@ const itemSource = {
     }, 0);
     return {
       rowIndex,
-      widgetIndex,
+      widgetIndex
     };
   },
   endDrag({ setItemDetailDragging }) {
     setItemDetailDragging(false);
     return {};
-  },
+  }
 };
 
 function collect(c, monitor) {
   return {
     connectDragSource: c.dragSource(),
     connectDragPreview: c.dragPreview(),
-    isDragging: monitor.isDragging(),
+    isDragging: monitor.isDragging()
   };
 }
 
@@ -100,9 +100,9 @@ const enhance = compose(
   withNamespaces('default'),
   connect(
     null,
-    { setItemDetailDragging: setItemDetailDraggingAction },
+    { setItemDetailDragging: setItemDetailDraggingAction }
   ),
-  DragSource(Types.WIDGET, itemSource, collect),
+  DragSource(Types.WIDGET, itemSource, collect)
 );
 
 export default enhance(ItemDetailWidget);
@@ -126,7 +126,7 @@ const Buttons = styled.div`
   align-items: center;
 
   .ant-btn-circle {
-    background: ${green}
+    background: ${green};
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16);
     margin-bottom: 11px;
     display: flex;

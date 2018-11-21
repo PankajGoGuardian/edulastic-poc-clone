@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { IconPlus } from '@edulastic/icons';
 import uuidv4 from 'uuid/v4';
@@ -12,7 +12,7 @@ import { setUserAnswerAction } from '../../../../assessment/src/actions/answers'
 const Card = ({ title, onSelectQuestionType, data, setUserAnswer }) => {
   const smallData = {
     ...data,
-    smallSize: true,
+    smallSize: true
   };
 
   const questionId = uuidv4();
@@ -21,11 +21,11 @@ const Card = ({ title, onSelectQuestionType, data, setUserAnswer }) => {
     () => {
       setUserAnswer(questionId, data.validation.valid_response.value);
     },
-    [questionId],
+    [questionId]
   );
 
   return (
-    <React.Fragment>
+    <Fragment>
       <RoundDiv borderRadius={10}>
         <Header borderRadius={10}>{title}</Header>
         <Content borderRadius={10} onClick={() => onSelectQuestionType(smallData)}>
@@ -45,7 +45,7 @@ const Card = ({ title, onSelectQuestionType, data, setUserAnswer }) => {
           />
         </Content>
       </RoundDiv>
-    </React.Fragment>
+    </Fragment>
   );
 };
 
@@ -53,10 +53,10 @@ Card.propTypes = {
   data: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
   onSelectQuestionType: PropTypes.func.isRequired,
-  setUserAnswer: PropTypes.func.isRequired,
+  setUserAnswer: PropTypes.func.isRequired
 };
 
 export default connect(
   null,
-  { setUserAnswer: setUserAnswerAction },
+  { setUserAnswer: setUserAnswerAction }
 )(Card);

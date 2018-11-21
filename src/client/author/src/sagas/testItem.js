@@ -68,7 +68,7 @@ function* evaluateAnswers() {
       }
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     const errorMessage = 'Answer Evaluation Failed';
     yield call(message.error, errorMessage);
   }
@@ -86,7 +86,7 @@ function* showAnswers() {
       }
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     const errorMessage = 'Show Answer Failed';
     yield call(message.error, errorMessage);
   }

@@ -5,25 +5,25 @@ import { testItemsApi } from '@edulastic/api';
 import {
   CHECK_ANSWER,
   ADD_ITEM_EVALUATION,
-  CHANGE_PREVIEW,
+  CHANGE_PREVIEW
 } from '../constants/actions';
 
 function* evaluateAnswers() {
   const answers = yield select(state => state.answers);
   const { items, currentItem } = yield select(state => state.test);
-  const { id } = items[currentItem];
-  const result = yield testItemsApi.evaluate(id, answers);
+  const id = items[currentItem]._id;
+  const result = yield testItemsApi.evaluate(id, { answers });
   yield put({
     type: ADD_ITEM_EVALUATION,
     payload: {
-      ...result.result,
-    },
+      ...result.result
+    }
   });
   yield put({
     type: CHANGE_PREVIEW,
     payload: {
-      view: 'check',
-    },
+      view: 'check'
+    }
   });
 }
 

@@ -7,7 +7,7 @@ import {
   INIT_TEST_ACTIVITY,
   SET_TEST_ACTIVITY_ID,
   SET_TEST_ID,
-  FINISH_TEST,
+  FINISH_TEST
 } from '../constants/actions';
 
 function* loadTest({ payload }) {
@@ -17,18 +17,18 @@ function* loadTest({ payload }) {
     if (!payload.test) {
       items = yield call(testItemsApi.getAll, {
         validation: true,
-        data: true,
+        data: true
       });
     } else {
       yield put({
         type: SET_TEST_ID,
         payload: {
-          testId: payload.testId,
-        },
+          testId: payload.testId
+        }
       });
       const result = yield call(testsApi.getById, payload.testId, {
         validation: true,
-        data: true,
+        data: true
       });
       items = result.testItems;
     }
@@ -36,8 +36,8 @@ function* loadTest({ payload }) {
     yield put({
       type: LOAD_TEST_ITEMS,
       payload: {
-        items,
-      },
+        items
+      }
     });
   } catch (err) {
     console.error(err);
@@ -45,17 +45,23 @@ function* loadTest({ payload }) {
 }
 
 // create/load a testActivity and load it to store(test).
-function* initiateTestActivity() {
+function* initiateTestActivity({ payload }) {
   try {
-    // const result = yield testActivityApi.create({
-    //   userId: 'testUser',
-    //   testId: 'test',
-    // });
+    const { testId } = payload;
+    if (!testId) {
+      return;
+    }
+    const result = yield testActivityApi.create({
+      testId,
+      userId: 'testUser'
+    });
+
+    const { testActivityId } = result;
     yield put({
       type: SET_TEST_ACTIVITY_ID,
       payload: {
-        testActivityId: '5bdbdad7af1f8b599b41d26c', // result._id,
-      },
+        testActivityId
+      }
     });
   } catch (err) {
     console.log(err);
@@ -65,7 +71,7 @@ function* initiateTestActivity() {
 function* submitTest() {
   try {
     const testActivityId = yield select(
-      state => state.test && state.test.testActivityId,
+      state => state.test && state.test.testActivityId
     );
     console.log('submitting test');
     yield testActivityApi.submit(testActivityId);
@@ -78,7 +84,6 @@ export default function* watcherSaga() {
   yield all([
     yield takeEvery(LOAD_TEST, loadTest),
     yield takeEvery(INIT_TEST_ACTIVITY, initiateTestActivity),
-    yield takeEvery(INIT_TEST_ACTIVITY, initiateTestActivity),
-    yield takeEvery(FINISH_TEST, submitTest),
+    yield takeEvery(FINISH_TEST, submitTest)
   ]);
 }

@@ -1,7 +1,7 @@
 import API from '@edulastic/api/src/utils/API';
 
 const api = new API();
-const prefix = '/UserTestActivities';
+const prefix = '/usertestactivity';
 
 const create = data =>
   api
@@ -10,7 +10,7 @@ const create = data =>
       method: 'post',
       data
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 const submit = id =>
   api

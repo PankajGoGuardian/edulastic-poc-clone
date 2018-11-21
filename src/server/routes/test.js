@@ -8,7 +8,32 @@ const router = Router();
 
 /**
  * @swagger
- * /tests:
+ * /test/count:
+ *   get:
+ *     tags:
+ *       - Tests
+ *     summary: Get test count
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: successful
+ */
+
+router.get('/count', async (req, res) => {
+  try {
+    const test = new TestModel();
+    const result = await test.getCount();
+    return successHandler(res, { count: result });
+  } catch (e) {
+    req.log.error(e);
+    res.boom.badRequest(e);
+  }
+});
+
+/**
+ * @swagger
+ * /test:
  *   post:
  *     tags:
  *       - Tests
@@ -44,7 +69,7 @@ router.post('/', async (req, res) => {
 
 /**
  * @swagger
- * /tests:
+ * /test:
  *   get:
  *     tags:
  *       - Tests
@@ -60,17 +85,6 @@ router.post('/', async (req, res) => {
  *       200:
  *         description: successful
  */
-
-router.get('/count', async (req, res) => {
-  try {
-    const test = new TestModel();
-    const result = await test.getCount();
-    return successHandler(res, { count: result });
-  } catch (e) {
-    req.log.error(e);
-    res.boom.badRequest(e);
-  }
-});
 
 router.get('/', async (req, res) => {
   try {
@@ -91,7 +105,7 @@ router.get('/', async (req, res) => {
 
 /**
  * @swagger
- * /tests/{id}:
+ * /test/{id}:
  *   get:
  *     tags:
  *       - Tests
@@ -124,7 +138,7 @@ router.get('/:id', async (req, res) => {
 
 /**
  * @swagger
- * /tets/{id}:
+ * /test/{id}:
  *   put:
  *     tags:
  *       - Tests
@@ -163,7 +177,7 @@ router.put('/:id', async (req, res) => {
 
 /**
  * @swagger
- * /tests/{id}:
+ * /test/{id}:
  *   delete:
  *     tags:
  *       - Tests

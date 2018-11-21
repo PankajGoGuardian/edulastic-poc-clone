@@ -184,13 +184,7 @@ const Container = styled.div`
 
 const MainList = styled.div`
   display: flex;
-  position: absolute;
   height: 100%;
-  overflow: auto;
-  left: 0;
-  right: 0;
-  margin-top: 89px;
-
   @media (max-width: ${mobileWidth}) {
     display: block;
   }

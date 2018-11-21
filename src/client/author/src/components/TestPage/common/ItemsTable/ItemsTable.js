@@ -14,8 +14,9 @@ import {
 const ItemsTable = ({
   items,
   types,
-  // setSelectedTests,
-  // selectedTests,
+  setSelectedTests,
+  selectedTests,
+  onAddItems,
   standards
 }) => {
   const columns = [
@@ -29,7 +30,7 @@ const ItemsTable = ({
       title: 'Meta info',
       dataIndex: 'meta',
       key: 'meta',
-      render: data => <MetaInfoCell data={data} />
+      render: data => <MetaInfoCell data={data} setSelectedTests={setSelectedTests} selectedTests={selectedTests} onAddItems={onAddItems} />
     }
   ];
 
@@ -58,16 +59,8 @@ const ItemsTable = ({
     };
   });
 
-  // const rowSelection = {
-  //   onChange: (selectedRowKeys) => {
-  //     setSelectedTests(selectedRowKeys);
-  //   },
-  //   selectedRowKeys: selectedTests
-  // };
-
   return (
     <Table
-      // rowSelection={rowSelection}
       columns={columns}
       dataSource={data}
       showHeader={false}
@@ -78,8 +71,9 @@ const ItemsTable = ({
 ItemsTable.propTypes = {
   items: PropTypes.array.isRequired,
   types: PropTypes.object.isRequired,
-  // setSelectedTests: PropTypes.func.isRequired,
-  // selectedTests: PropTypes.array.isRequired,
+  setSelectedTests: PropTypes.func.isRequired,
+  onAddItems: PropTypes.func.isRequired,
+  selectedTests: PropTypes.array.isRequired,
   standards: PropTypes.object.isRequired
 };
 

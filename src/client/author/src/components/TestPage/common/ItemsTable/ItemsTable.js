@@ -17,7 +17,7 @@ const ItemsTable = ({
   setSelectedTests,
   selectedTests,
   onAddItems,
-  standards
+  standards,
 }) => {
   const columns = [
     {
@@ -30,7 +30,14 @@ const ItemsTable = ({
       title: 'Meta info',
       dataIndex: 'meta',
       key: 'meta',
-      render: data => <MetaInfoCell data={data} setSelectedTests={setSelectedTests} selectedTests={selectedTests} onAddItems={onAddItems} />
+      render: data => (
+        <MetaInfoCell
+          data={data}
+          setSelectedTests={setSelectedTests}
+          selectedTests={selectedTests}
+          onAddItems={onAddItems}
+        />
+      )
     }
   ];
 
@@ -74,15 +81,17 @@ ItemsTable.propTypes = {
   setSelectedTests: PropTypes.func.isRequired,
   onAddItems: PropTypes.func.isRequired,
   selectedTests: PropTypes.array.isRequired,
-  standards: PropTypes.object.isRequired
+  standards: PropTypes.object.isRequired,
 };
 
 const enhance = compose(
   memo,
-  connect(state => ({
-    types: getItemsTypesSelector(state),
-    standards: getStandardsSelector(state)
-  }))
+  connect(
+    state => ({
+      types: getItemsTypesSelector(state),
+      standards: getStandardsSelector(state)
+    }),
+  )
 );
 
 export default enhance(ItemsTable);

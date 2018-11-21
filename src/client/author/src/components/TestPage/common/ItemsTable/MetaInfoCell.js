@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Tag } from 'antd';
+import { Button, Tag, message } from 'antd';
 import { FlexContainer } from '@edulastic/common';
 import { IconShare, IconHeart } from '@edulastic/icons';
 import { greenDark, textColor, grey, white } from '@edulastic/colors';
@@ -31,11 +31,6 @@ class MetaInfoCell extends Component {
     this.setState({ selectedRowKeys: nextProps.selectedTests });
   }
 
-  handleAddItems = (keys) => {
-    const { onAddItems } = this.props;
-    onAddItems(keys);
-  };
-
   handleSelection = (row) => {
     const { selectedRowKeys } = this.state;
     const { setSelectedTests } = this.props;
@@ -45,10 +40,12 @@ class MetaInfoCell extends Component {
       keys[keys.length] = row.id;
       setSelectedTests(keys);
       this.setState({ isAddOrRemove: false });
+      message.info(`${row.id} was added`);
     } else {
       keys = keys.filter(item => item !== row.id);
       setSelectedTests(keys);
       this.setState({ isAddOrRemove: true });
+      message.info(`${row.id} was removed`);
     }
   };
 
@@ -109,7 +106,6 @@ class MetaInfoCell extends Component {
 MetaInfoCell.propTypes = {
   data: PropTypes.object.isRequired,
   setSelectedTests: PropTypes.func.isRequired,
-  onAddItems: PropTypes.func.isRequired,
   selectedTests: PropTypes.array.isRequired,
 };
 

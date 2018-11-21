@@ -21,7 +21,6 @@ import { getItemDetailValidationSelector } from '../selectors/itemDetail';
 function* createTestItemSaga({ payload }) {
   try {
     const item = yield call(testItemsApi.create, payload);
-    console.log('item here is', item, item._id);
     yield put({
       type: CREATE_TEST_ITEM_SUCCESS,
       payload: { item: item.data }

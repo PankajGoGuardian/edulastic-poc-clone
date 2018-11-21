@@ -53,6 +53,12 @@ class TestItem {
     );
   }
 
+  getByIds(Ids) {
+    return this.TestItem.find({
+      _id: { $in: Ids }
+    });
+  }
+
   delete(id) {
     return this.TestItem.remove({
       _id: new mongoose.Types.ObjectId(id)

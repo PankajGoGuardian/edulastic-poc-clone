@@ -5,12 +5,14 @@ const serviceHost = process.env.SERVICE_HOST || '0.0.0.0';
 const env = process.env.NODE_ENV || 'localhost';
 const host = process.env.HOST || '0.0.0.0';
 const port = process.env.PORT || 3000;
+const apiUri = process.env.API_URI || 'http://edulastic-poc.snapwiz.net/api/';
 console.log('appModeDev', appModeDev); // eslint-disable-line
 console.log('serviceHost', serviceHost); // eslint-disable-line
 console.log('env', env); // eslint-disable-line
 console.log('host', host); // eslint-disable-line
+console.log('apiUri', apiUri); // eslint-disable-line
 
-const config = {
+module.exports = {
   appId,
   useMocks,
   appModeDev,
@@ -25,6 +27,10 @@ const config = {
   proxyAssets: {
     host: 'localhost',
     port: 9090
+  },
+
+  client: {
+    apiUri
   },
 
   server: {
@@ -48,10 +54,9 @@ const config = {
       process.env.ELASTIC_SEARCH_URI ||
       'http://localhost:9200/bp_auth_otp/_search'
   },
+
   s3: {
     keyId: process.env.AWS_KEY_ID,
     key: process.env.AWS_KEY
   }
 };
-
-export default config;

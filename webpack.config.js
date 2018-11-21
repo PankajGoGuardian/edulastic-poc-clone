@@ -1,6 +1,8 @@
 const path = require('path');
+const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const config = require('./src/server/config');
 
 module.exports = {
   entry: './src/client/index.js',
@@ -19,7 +21,12 @@ module.exports = {
       ],
       { debug: 'error' }
     ),
-    new BundleAnalyzerPlugin()
+    new BundleAnalyzerPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        API_URI: JSON.stringify(config.client.apiUri)
+      }
+    })
   ],
   module: {
     rules: [

@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { gotoItem, saveUserResponse, loadUserResponse } from '../actions/items';
+import { gotoItem, saveUserResponse } from '../actions/items';
 import { finishTestAcitivityAction } from '../actions/test';
 import { evaluateAnswer } from '../actions/evaluation';
 
@@ -19,15 +19,8 @@ const AssessmentContainer = ({
   finishTest,
   gotoItem: gotoIt,
   saveUserResponse: saveUser,
-  loadUserResponse: loadUser,
   evaluateAnswer: evaluate
 }) => {
-  useEffect(() => {
-    if (items.length) {
-      loadUser(currentItem);
-    }
-  }, []);
-
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
 
@@ -83,7 +76,6 @@ export default connect(
   {
     gotoItem,
     saveUserResponse,
-    loadUserResponse,
     evaluateAnswer,
     finishTest: finishTestAcitivityAction
   }

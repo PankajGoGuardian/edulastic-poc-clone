@@ -12,7 +12,6 @@ const initialState = {
 };
 
 const test = (state = initialState, { payload, type }) => {
-  console.log('payload here is', payload);
   switch (type) {
     case LOAD_TEST_ITEMS:
       return {

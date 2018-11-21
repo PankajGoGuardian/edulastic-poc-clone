@@ -1,3 +1,3 @@
 export default {
-  api: process.env.uri || 'http://localhost:3000/api/'
+  api: process.env.uri || 'http://edulastic-poc.snapwiz.net/api/'
 };

@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
+import { Affix } from 'antd';
 import styled from 'styled-components';
 import { white } from '@edulastic/colors';
 import { FlexContainer, EduButton } from '@edulastic/common';
@@ -22,7 +23,7 @@ export const navButtons = [
 ];
 
 const TestPageHeader = ({ onChangeNav, current, onSave, title, creating, onShare }) => (
-  <div>
+  <Affix>
     <Container>
       <Title>{title}</Title>
 
@@ -37,7 +38,7 @@ const TestPageHeader = ({ onChangeNav, current, onSave, title, creating, onShare
         </EduButton>
       </FlexContainer>
     </Container>
-  </div>
+  </Affix>
 );
 
 TestPageHeader.propTypes = {

@@ -2,31 +2,34 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
+import { Affix } from 'antd';
 import { Button } from '@edulastic/common';
 import { IconPlus } from '@edulastic/icons';
 import { mobileWidth, greenDarkSecondary, darkBlueSecondary, white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 
 const ListHeader = ({ onCreate, t, windowWidth, creating, title }) => (
-  <Container>
-    <Heading>{title}</Heading>
-    <Button
-      disabled={creating}
-      style={{
-        height: windowWidth > 768 ? 50 : 40,
-        minWidth: 151.9,
-        color: '#fff',
-        margin: 0,
-      }}
-      onClick={onCreate}
-      color="success"
-      icon={
-        <IconPlus color={greenDarkSecondary} style={{ position: 'relative' }} left={-25} width={14} height={14} hoverColor={white} />
-      }
-    >
-      {t('component.itemlist.header.create')}
-    </Button>
-  </Container>
+  <Affix>
+    <Container>
+      <Heading>{title}</Heading>
+      <Button
+        disabled={creating}
+        style={{
+          height: windowWidth > 768 ? 50 : 40,
+          minWidth: 151.9,
+          color: '#fff',
+          margin: 0,
+        }}
+        onClick={onCreate}
+        color="success"
+        icon={
+          <IconPlus color={greenDarkSecondary} style={{ position: 'relative' }} left={-25} width={14} height={14} hoverColor={white} />
+        }
+      >
+        {t('component.itemlist.header.create')}
+      </Button>
+    </Container>
+  </Affix>
 );
 
 ListHeader.propTypes = {
@@ -49,9 +52,6 @@ const Container = styled.div`
   padding: 0px 40px 0px 46px;
   height: 89px;
   z-index: 1;
-  position: absolute;
-  left: 0;
-  right: 0;
 
   @media (max-width: ${mobileWidth}) {
     height: 61px;

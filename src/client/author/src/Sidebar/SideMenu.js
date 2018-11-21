@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Layout, Menu as AntMenu, Row, Col, Select, Icon as AntIcon } from 'antd';
+import { Affix, Layout, Menu as AntMenu, Row, Col, Select, Icon as AntIcon } from 'antd';
 import styled from 'styled-components';
 import {
   IconHeader,
@@ -94,75 +94,77 @@ class SideMenu extends Component {
       isCollapsed = true;
     }
     return (
-      <SideBar
-        collapsed={isCollapsed}
-        onCollapse={collapsedStatus => this.setState({ collapsed: collapsedStatus })}
-        breakpoint="md"
-        onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
-        width={broken ? '100%' : 245}
-        collapsedWidth={broken ? '0' : '100'}
-        theme="light"
-        className="sideBarwrapper"
-      >
-        <LogoWrapper className="logoWrapper">
-          {broken ? (
-            <Col span={3}>
-              <AntIcon
-                className="mobileCloseIcon"
-                type="close"
-                theme="outlined"
-                onClick={this.onCollapse}
-              />
+      <Affix style={{ width: isCollapsed ? 107 : 293 }}>
+        <SideBar
+          collapsed={isCollapsed}
+          onCollapse={collapsedStatus => this.setState({ collapsed: collapsedStatus })}
+          breakpoint="md"
+          onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
+          width="100%"
+          collapsedWidth={broken ? '0' : '100'}
+          theme="light"
+          className="sideBarwrapper"
+        >
+          <LogoWrapper className="logoWrapper">
+            {broken ? (
+              <Col span={3}>
+                <AntIcon
+                  className="mobileCloseIcon"
+                  type="close"
+                  theme="outlined"
+                  onClick={this.onCollapse}
+                />
+              </Col>
+            ) : null}
+            <Col span={18} style={{ textAlign: 'left' }}>
+              {isCollapsed ? <LogoCompact /> : <Logo />}
             </Col>
-          ) : null}
-          <Col span={18} style={{ textAlign: 'left' }}>
-            {isCollapsed ? <LogoCompact /> : <Logo />}
-          </Col>
-          {broken ? null : (
-            <Col span={6} style={{ textAlign: 'right', color: '#1fe3a1' }}>
-              <AntIcon
-                className="trigger"
-                type={isCollapsed ? 'right' : 'left'}
-                onClick={this.onCollapse}
-              />
-            </Col>
-          )}
-        </LogoWrapper>
-        <LogoDash />
-        <MenuWrapper>
-          <Menu
-            theme="light"
-            defaultSelectedKeys={['1']}
-            mode="inline"
-            onClick={item => this.handleMenu(item)}
-          >
-            {menuItems.map((menu, index) => {
-              const MenuIcon = this.renderIcon(menu.icon);
-              return (
-                <MenuItem key={index.toString()}>
-                  <MenuIcon />
-                  {!isCollapsed && <span>{menu.label}</span>}
-                </MenuItem>
-              );
-            })}
-          </Menu>
-          <MenuFooter className="footerBottom">
-            <QuestionButton className="questionBtn">
-              <HelpIcon />
-              {isCollapsed ? null : <span>Help Center</span>}
-            </QuestionButton>
-            <UserInfoButton className="userinfoBtn">
-              <img src={Profile} alt="Profile" />
-              <div>
-                {!isCollapsed && <label style={{ marginLeft: 11 }}>Zack oliver</label>}
-                <Select defaultValue="Student" suffixIcon={<IconDropdown type="caret-down" />}>
-                  <Select.Option value="Student">Student</Select.Option>
-                </Select>
-              </div>
-            </UserInfoButton>
-          </MenuFooter>
-        </MenuWrapper>
-      </SideBar>
+            {broken ? null : (
+              <Col span={6} style={{ textAlign: 'right', color: '#1fe3a1' }}>
+                <AntIcon
+                  className="trigger"
+                  type={isCollapsed ? 'right' : 'left'}
+                  onClick={this.onCollapse}
+                />
+              </Col>
+            )}
+          </LogoWrapper>
+          <LogoDash />
+          <MenuWrapper>
+            <Menu theme="light" defaultSelectedKeys={['1']} mode="inline" onClick={item => this.handleMenu(item)}>
+              {menuItems.map((menu, index) => {
+                const MenuIcon = this.renderIcon(menu.icon);
+                return (
+                  <MenuItem key={index.toString()}>
+                    <MenuIcon />
+                    {!isCollapsed && <span>{menu.label}</span>}
+                  </MenuItem>
+                );
+              })}
+            </Menu>
+            <MenuFooter className="footerBottom">
+              <QuestionButton className="questionBtn">
+                <HelpIcon />
+                {isCollapsed ? null : <span>Help Center</span>}
+              </QuestionButton>
+              <UserInfoButton className="userinfoBtn">
+                <img src={Profile} alt="Profile" />
+                <div>
+                  {!isCollapsed && <label style={{ marginLeft: 11 }}>Zack oliver</label>}
+                  <Select
+                    defaultValue="Student"
+                    suffixIcon={
+                      <IconDropdown type="caret-down" />
+                    }
+                  >
+                    <Select.Option value="Student">Student</Select.Option>
+                  </Select>
+                </div>
+              </UserInfoButton>
+            </MenuFooter>
+          </MenuWrapper>
+        </SideBar>
+      </Affix>
     );
   }
 }
@@ -180,7 +182,6 @@ const enhance = compose(
 export default enhance(SideMenu);
 
 const SideBar = styled(Layout.Sider)`
-  width: 245px;
   height: 900px;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
   background-color: #fbfafc;

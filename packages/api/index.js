@@ -4,3 +4,4 @@ export { default as assessmentApi } from './src/assessment';
 export { default as testItemsApi } from './src/testItems';
 export { default as testsApi } from './src/tests';
 export { default as testActivityApi } from './src/testActivity';
+export { default as testItemActivityApi } from './src/userTestItemActivity';

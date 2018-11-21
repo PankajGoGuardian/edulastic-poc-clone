@@ -20,7 +20,16 @@ const submit = id =>
     })
     .then(result => result.data);
 
+const previousResponses = testActivityId =>
+  api
+    .callApi({
+      url: `${prefix}/${testActivityId}/previousResponses`,
+      method: 'get'
+    })
+    .then(result => result.data.result);
+
 export default {
   create,
-  submit
+  submit,
+  previousResponses
 };

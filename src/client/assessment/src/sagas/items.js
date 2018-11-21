@@ -1,5 +1,5 @@
 import { takeEvery, call, put, all, select } from 'redux-saga/effects';
-import { itemsApi } from '@edulastic/api';
+import { itemsApi, testItemActivityApi } from '@edulastic/api';
 
 import {
   RECEIVE_ITEM_REQUEST,
@@ -48,9 +48,9 @@ function* receiveItemSaga({ payload }) {
 }
 
 // fetch all questionIds from item
-const getQuestionIds = (item) => {
+const getQuestionIds = item => {
   let questions = [];
-  item.rows.forEach((row) => {
+  item.rows.forEach(row => {
     questions = [...questions, ...row.widgets.map(widget => widget.reference)];
   });
   return questions;
@@ -67,14 +67,15 @@ function* saveUserResponse({ payload }) {
     const currentItem = items.length && items[itemIndex];
     const questions = getQuestionIds(currentItem);
     const itemAnswers = {};
-    questions.forEach((question) => {
+    questions.forEach(question => {
       itemAnswers[question] = answers[question];
     });
-    const testId = currentItem._id;
-    yield call(itemsApi.saveUserReponse, {
-      testItemId: testId,
+    const testItemId = currentItem._id;
+
+    yield call(testItemActivityApi.create, {
       answers: itemAnswers,
-      userTestActivityId
+      testItemId,
+      testActivityId: userTestActivityId
     });
   } catch (err) {
     console.log(err);

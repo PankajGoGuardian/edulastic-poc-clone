@@ -7,7 +7,9 @@ import {
   INIT_TEST_ACTIVITY,
   SET_TEST_ACTIVITY_ID,
   SET_TEST_ID,
-  FINISH_TEST
+  FINISH_TEST,
+  LOAD_PREVIOUS_RESPONSES,
+  LOAD_ANSWERS
 } from '../constants/actions';
 
 function* loadTest({ payload }) {
@@ -48,20 +50,41 @@ function* loadTest({ payload }) {
 function* initiateTestActivity({ payload }) {
   try {
     const { testId } = payload;
-    if (!testId) {
-      return;
-    }
-    const result = yield testActivityApi.create({
-      testId,
-      userId: 'testUser'
-    });
+    // test without testId can now have a place holder
+    let testActivityId = 'test';
+    if (testId !== 'test') {
+      const result = yield testActivityApi.create({
+        testId
+      });
 
-    const { testActivityId } = result;
+      testActivityId = result.testActivityId;
+    }
+
     yield put({
       type: SET_TEST_ACTIVITY_ID,
       payload: {
         testActivityId
       }
+    });
+
+    yield put({
+      type: LOAD_PREVIOUS_RESPONSES
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+// load users previous responses for a particular test
+function* loadPreviousResponses() {
+  try {
+    const testActivityId = yield select(
+      state => state.test && state.test.testActivityId
+    );
+    const answers = yield testActivityApi.previousResponses(testActivityId);
+    yield put({
+      type: LOAD_ANSWERS,
+      payload: { ...answers }
     });
   } catch (err) {
     console.log(err);
@@ -73,7 +96,6 @@ function* submitTest() {
     const testActivityId = yield select(
       state => state.test && state.test.testActivityId
     );
-    console.log('submitting test');
     yield testActivityApi.submit(testActivityId);
   } catch (err) {
     console.log(err);
@@ -84,6 +106,7 @@ export default function* watcherSaga() {
   yield all([
     yield takeEvery(LOAD_TEST, loadTest),
     yield takeEvery(INIT_TEST_ACTIVITY, initiateTestActivity),
-    yield takeEvery(FINISH_TEST, submitTest)
+    yield takeEvery(FINISH_TEST, submitTest),
+    yield takeEvery(LOAD_PREVIOUS_RESPONSES, loadPreviousResponses)
   ]);
 }

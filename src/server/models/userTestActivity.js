@@ -4,7 +4,10 @@ const testActivitySchema = mongoose.Schema({
   testId: String,
   createdAt: String,
   userId: String,
-  updatedAt: String
+  updatedAt: String,
+  status: String,
+  score: String,
+  totalQuestion: String
 });
 
 class UserTestActivity {
@@ -26,6 +29,16 @@ class UserTestActivity {
     return this.UserTestActivity.findOne({
       _id: new mongoose.Types.ObjectId(id)
     });
+  }
+
+  update(id, data) {
+    return this.UserTestActivity.findOneAndUpdate(
+      {
+        _id: new mongoose.Types.ObjectId(id)
+      },
+      data,
+      { new: true }
+    );
   }
 }
 

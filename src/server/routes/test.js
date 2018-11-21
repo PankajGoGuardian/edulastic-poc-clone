@@ -124,6 +124,7 @@ router.get('/', async (req, res) => {
  */
 router.get('/:id', async (req, res) => {
   try {
+    console.log('requset is hererere');
     const { id } = req.params;
     const test = new TestModel();
     const result = await test.getById(id);

@@ -96,6 +96,10 @@ function* submitTest() {
     const testActivityId = yield select(
       state => state.test && state.test.testActivityId
     );
+    if (testActivityId == 'test') {
+      console.log('practice test');
+      return;
+    }
     yield testActivityApi.submit(testActivityId);
   } catch (err) {
     console.log(err);

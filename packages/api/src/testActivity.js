@@ -12,11 +12,12 @@ const create = data =>
     })
     .then(result => result.data.result);
 
-const submit = id =>
+const submit = testActivityId =>
   api
     .callApi({
-      url: `${prefix}/${id}/submit`,
-      method: 'post'
+      url: `${prefix}/submit`,
+      method: 'post',
+      data: { testActivityId }
     })
     .then(result => result.data);
 

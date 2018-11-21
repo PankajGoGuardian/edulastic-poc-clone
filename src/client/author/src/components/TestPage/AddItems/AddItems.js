@@ -134,6 +134,7 @@ const Items = ({
               items={items}
               setSelectedTests={setSelectedTests}
               selectedTests={selectedTests}
+              onAddItems={onAddItems}
             />
           </Paper>
         </Col>

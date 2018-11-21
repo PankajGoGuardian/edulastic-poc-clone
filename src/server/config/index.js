@@ -41,7 +41,9 @@ module.exports = {
 
   db: {
     uri: process.env.DB_URI || 'mongodb://localhost/edulastic-poc',
-    options: {}
+    options: {
+      useNewUrlParser: true
+    }
   },
 
   jwt: {

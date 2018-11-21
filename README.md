@@ -8,6 +8,7 @@ This is the mono-repo holding front-end repos and packages together. The project
 
 - `yarn .` install all the packages required by front-end repos/packages.
 - `yarn start` to start the react client and Express server
+- `API_URI='/api/' yarn start` run using local API
 
 **Production Mode**
 

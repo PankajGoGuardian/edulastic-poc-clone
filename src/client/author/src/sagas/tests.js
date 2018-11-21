@@ -39,7 +39,7 @@ function* receiveTestsSaga({ payload }) {
 
 function* receiveTestByIdSaga({ payload }) {
   try {
-    const entity = yield call(testsApi.getById, payload.id);
+    const entity = yield call(testsApi.getById, payload.id, { data: true });
 
     yield put({
       type: RECEIVE_TEST_BY_ID_SUCCESS,

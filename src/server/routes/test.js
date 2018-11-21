@@ -1,6 +1,8 @@
 import joi from 'joi';
 import { Router } from 'express';
 import TestModel from '../models/test';
+import TestItemModel from '../models/testItem';
+import { getQuestionsData } from '../utils/questions';
 import { testSchema, createItemFormatter } from '../validators/test';
 import { successHandler } from '../utils/responseHandler';
 
@@ -95,7 +97,6 @@ router.get('/', async (req, res) => {
 
     const test = new TestModel();
     const result = await test.get(limit, index);
-
     return successHandler(res, result);
   } catch (e) {
     req.log.error(e);
@@ -124,13 +125,29 @@ router.get('/', async (req, res) => {
  */
 router.get('/:id', async (req, res) => {
   try {
-    console.log('requset is hererere');
     const { id } = req.params;
-    const test = new TestModel();
-    const result = await test.getById(id);
+    const { data } = req.query;
+    const Test = new TestModel();
+    const TestItem = new TestItemModel();
+    const test = await Test.getById(id);
 
-    const output = createItemFormatter(result);
-    return successHandler(res, output);
+    const testItemIds = test.testItems;
+    const testItems = await TestItem.getByIds(testItemIds);
+
+    const result = [];
+    if (data) {
+      /*eslint-disable */
+      for (const item of testItems) {
+        const questions = await getQuestionsData(item, false);
+        result.push({
+          ...item._doc,
+          data: { questions }
+        });
+      }
+      /* eslint-enable */
+    }
+    test.testItems = result;
+    return successHandler(res, test);
   } catch (e) {
     req.log.error(e);
     res.boom.badRequest(e);

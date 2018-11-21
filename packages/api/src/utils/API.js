@@ -4,7 +4,7 @@ import Storage from './Storage';
 
 export default class API {
   constructor(baseURL = config.api) {
-    this.baseURL = 'http://localhost:3000/api/';
+    this.baseURL = 'http://edulastic-poc.snapwiz.net/api/';
     this.storage = new Storage();
     axios.defaults.headers.common.Authorization = this.storage.token;
 

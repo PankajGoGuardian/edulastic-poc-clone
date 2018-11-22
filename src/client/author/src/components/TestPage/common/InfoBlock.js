@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 const InfoBlock = ({ count, children }) => (
   <Block>
     <Count>{count}</Count>
-    <span>{children}</span>
+    <Child>{children}</Child>
   </Block>
 );
 
@@ -35,6 +35,13 @@ const Count = styled.span`
   font-size: 18px;
   font-weight: 700;
   margin-right: 15px;
+`;
+
+const Child = styled.span`
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 0.2px;
+  color: #444444;
 `;
 
 export default InfoBlock;

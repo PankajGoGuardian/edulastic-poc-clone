@@ -14,7 +14,6 @@ const Sidebar = ({
   onChangeField,
   tags,
   analytics,
-  collections,
   createdBy
 }) => (
   <FlexContainer flexDirection="column">
@@ -80,12 +79,15 @@ const Sidebar = ({
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
-    </Block>
-    <Block>
-      <FlexContainer style={{ marginBottom: 10 }}>
-        <MainTitle style={{ marginBottom: 0 }}>Collection:</MainTitle>{' '}
-        <span>{collections}</span>
+      <FlexContainer style={{ marginTop: 15 }}>
+        <IconHeart color={greenDark} />
+        <FlexContainer>
+          <Title>Collection:</Title>
+          <TitleContent>Public Library</TitleContent>
+        </FlexContainer>
       </FlexContainer>
+    </Block>
+    {/* <Block>
       <Select
         size="large"
         style={{ width: '50%' }}
@@ -99,7 +101,7 @@ const Sidebar = ({
           </Select.Option>
         ))}
       </Select>
-    </Block>
+    </Block> */}
   </FlexContainer>
 );
 
@@ -110,7 +112,7 @@ Sidebar.propTypes = {
   onChangeField: PropTypes.func.isRequired,
   analytics: PropTypes.object.isRequired,
   createdBy: PropTypes.object.isRequired,
-  collections: PropTypes.string.isRequired
+  // collections: PropTypes.string.isRequired
 };
 
 export default Sidebar;

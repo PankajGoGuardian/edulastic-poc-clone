@@ -3,7 +3,6 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import { message } from 'antd';
 import { cloneDeep } from 'lodash';
 import uuidv4 from 'uuid/v4';
 
@@ -22,6 +21,7 @@ import {
   getTestItemsRowsSelector,
   getTestsCreatingSelector
 } from '../../selectors/tests';
+import { getSelectedItemSelector } from '../../selectors/testItems';
 import SourceModal from '../QuestionEditor/SourceModal';
 import Review from './Review';
 import Summary from './Summary';
@@ -37,7 +37,8 @@ const TestPage = ({
   updateTest,
   setDefaultData,
   rows,
-  creating
+  creating,
+  selectedRows
 }) => {
   useEffect(
     () => {
@@ -79,7 +80,6 @@ const TestPage = ({
     });
 
     setData(newTest);
-    message.info('Selected items was added');
   };
 
   const handleChangeGrade = (grades) => {
@@ -125,12 +125,30 @@ const TestPage = ({
     }
   };
 
-  const handleSave = () => {
-    console.log('testId', test);
+  const handleSave = async () => {
+    const testItems = selectedRows.data;
+    const newTest = cloneDeep(test);
+
+    newTest.testItems = testItems;
+    newTest.scoring.testItems = testItems.map((item) => {
+      const foundItem = newTest.scoring.testItems.find(
+        ({ id }) => item && item._id === id
+      );
+      if (!foundItem) {
+        return {
+          id: item ? item._id : uuidv4(),
+          points: 0
+        };
+      }
+      return foundItem;
+    });
+
+    setData(newTest);
+
     if (test._id) {
-      updateTest(test._id, test);
+      updateTest(test._id, newTest);
     } else {
-      createTest(test);
+      createTest(newTest);
     }
   };
 
@@ -180,6 +198,7 @@ TestPage.propTypes = {
   match: PropTypes.object.isRequired,
   rows: PropTypes.array.isRequired,
   creating: PropTypes.bool.isRequired,
+  selectedRows: PropTypes.object.isRequired,
   test: PropTypes.object
 };
 
@@ -194,7 +213,8 @@ const enhance = compose(
     state => ({
       test: getTestSelector(state),
       rows: getTestItemsRowsSelector(state),
-      creating: getTestsCreatingSelector(state)
+      creating: getTestsCreatingSelector(state),
+      selectedRows: getSelectedItemSelector(state),
     }),
     {
       createTest: createTestAction,

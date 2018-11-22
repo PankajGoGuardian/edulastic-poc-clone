@@ -2,6 +2,7 @@ import {
   RECEIVE_TEST_ITEMS_REQUEST,
   RECEIVE_TEST_ITEMS_SUCCESS,
   RECEIVE_TEST_ITEMS_ERROR,
+  SET_TEST_ITEMS_REQUEST,
 } from '../constants/actions';
 
 const initialState = {
@@ -26,6 +27,11 @@ const itemsReducer = (state = initialState, { type, payload }) => {
       };
     case RECEIVE_TEST_ITEMS_ERROR:
       return { ...state, loading: false, error: payload.error };
+    case SET_TEST_ITEMS_REQUEST:
+      return {
+        ...state,
+        selectedItems: payload,
+      };
     default:
       return state;
   }

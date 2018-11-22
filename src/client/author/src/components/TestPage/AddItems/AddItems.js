@@ -58,12 +58,6 @@ const Items = ({
 
   const handleSortChange = () => {};
 
-  const handleAddItems = () => {
-    const tests = selectedTests.map(testId =>
-      items.find(item => item._id === testId));
-    onAddItems(tests);
-  };
-
   const handleCreateNewItem = () => {
     history.push('/author/items');
   };
@@ -75,7 +69,7 @@ const Items = ({
         style={{ paddingBottom: 15 }}
         align="middle"
       >
-        <Col span={6}>
+        <Col span={5}>
           <Input.Search
             placeholder="Search by skills and keywords"
             onSearch={handleSearch}
@@ -85,19 +79,12 @@ const Items = ({
             value={searchStr}
           />
         </Col>
-        <Col span={18}>
+        <Col span={19}>
           <Row gutter={16}>
             <Col span={24}>
               <FlexContainer justifyContent="space-between">
                 <Question>{items.length} questions</Question>
                 <FlexContainer alignItems="center">
-                  <StyledButton
-                    type="primary"
-                    size="large"
-                    onClick={handleAddItems}
-                  >
-                    <span>Add {selectedTests.length} selected items</span>
-                  </StyledButton>
                   <StyledButton
                     type="secondary"
                     size="large"
@@ -120,7 +107,7 @@ const Items = ({
         </Col>
       </Row>
       <Row gutter={29}>
-        <Col span={6}>
+        <Col span={5}>
           <TestFilters style={{ paddingTop: 13 }} onChange={handleFiltersChange}>
             <TestFiltersNav
               items={filterItems}
@@ -128,7 +115,7 @@ const Items = ({
             />
           </TestFilters>
         </Col>
-        <Col span={18}>
+        <Col span={19}>
           <Paper>
             <ItemsTable
               items={items}

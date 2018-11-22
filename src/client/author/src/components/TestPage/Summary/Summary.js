@@ -51,28 +51,32 @@ const Summary = ({ setData, test, summary, current, t }) => {
         </Button>
       </SecondHeader>
       <Paper style={{ marginTop: 25 }}>
-        <Row gutter={32}>
-          <Col span={12}>
-            <Sidebar
-              title={test.title}
-              description={test.description}
-              tags={test.tags}
-              analytics={test.analytics}
-              collection={test.collection}
-              createdBy={test.createdBy}
-              onChangeField={handleChangeField}
-            />
-          </Col>
-          <Col span={12}>
-            <Calculator
-              totalPoints={test.scoring.total}
-              questionsCount={test.scoring.testItems.length}
-              grades={test.grades}
-              subjects={test.subjects}
-              onChangeGrade={handleChangeGrade}
-              onChangeSubjects={handleChangeSubjects}
-              tableData={tableData}
-            />
+        <Row style={{ display: 'flex', justifyContent: 'center' }}>
+          <Col span={16}>
+            <Row gutter={32}>
+              <Col span={12}>
+                <Sidebar
+                  title={test.title}
+                  description={test.description}
+                  tags={test.tags}
+                  analytics={test.analytics}
+                  collection={test.collection}
+                  createdBy={test.createdBy}
+                  onChangeField={handleChangeField}
+                />
+              </Col>
+              <Col span={12}>
+                <Calculator
+                  totalPoints={test.scoring.total}
+                  questionsCount={test.scoring.testItems.length}
+                  grades={test.grades}
+                  subjects={test.subjects}
+                  onChangeGrade={handleChangeGrade}
+                  onChangeSubjects={handleChangeSubjects}
+                  tableData={tableData}
+                />
+              </Col>
+            </Row>
           </Col>
         </Row>
       </Paper>

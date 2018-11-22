@@ -58,6 +58,7 @@ export const MOVE_WIDGET = '[itemDetail] move widget';
 export const RECEIVE_TEST_ITEMS_REQUEST = '[testItems] receive items request';
 export const RECEIVE_TEST_ITEMS_SUCCESS = '[testItems] receive items success';
 export const RECEIVE_TEST_ITEMS_ERROR = '[testItems] receive items error';
+export const SET_TEST_ITEMS_REQUEST = '[testItems] set items request';
 
 // Test item
 export const CREATE_TEST_ITEM_REQUEST = '[testItem] create item request';

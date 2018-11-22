@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Tag, message } from 'antd';
+import { withNamespaces } from '@edulastic/localization';
 import { FlexContainer } from '@edulastic/common';
 import { IconShare, IconHeart } from '@edulastic/icons';
 import { greenDark, textColor, grey, white } from '@edulastic/colors';
 import styled from 'styled-components';
 import Tags from '../../../common/Tags';
+import { setTestItemsAction } from '../../../../actions/testItems';
+import { getSelectedItemSelector } from '../../../../selectors/testItems';
+
 
 class MetaInfoCell extends Component {
   constructor(props) {
@@ -19,31 +25,31 @@ class MetaInfoCell extends Component {
 
   componentDidMount() {
     const { selectedRowKeys } = this.state;
-    const { data } = this.props;
+    const { data, setTestItems } = this.props;
     const keys = [];
     selectedRowKeys.map((selectedRow, index) => { keys[index] = selectedRow; return true; });
+    setTestItems(selectedRowKeys);
     if (keys.includes(data.id)) {
       this.setState({ isAddOrRemove: false });
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({ selectedRowKeys: nextProps.selectedTests });
-  }
-
   handleSelection = (row) => {
-    const { selectedRowKeys } = this.state;
-    const { setSelectedTests } = this.props;
+    const { setSelectedTests, setTestItems, selectedRows } = this.props;
     let keys = [];
-    selectedRowKeys.map((selectedRow, index) => { keys[index] = selectedRow; return true; });
+    if (selectedRows !== undefined) {
+      selectedRows.data.map((selectedRow, index) => { keys[index] = selectedRow; return true; });
+    }
     if (!keys.includes(row.id)) {
       keys[keys.length] = row.id;
       setSelectedTests(keys);
+      setTestItems(keys);
       this.setState({ isAddOrRemove: false });
       message.info(`${row.id} was added`);
     } else {
       keys = keys.filter(item => item !== row.id);
       setSelectedTests(keys);
+      setTestItems(keys);
       this.setState({ isAddOrRemove: true });
       message.info(`${row.id} was removed`);
     }
@@ -107,9 +113,23 @@ MetaInfoCell.propTypes = {
   data: PropTypes.object.isRequired,
   setSelectedTests: PropTypes.func.isRequired,
   selectedTests: PropTypes.array.isRequired,
+  setTestItems: PropTypes.func.isRequired,
+  selectedRows: PropTypes.object.isRequired,
 };
 
-export default MetaInfoCell;
+const enhance = compose(
+  withNamespaces('MetaInfoCell'),
+  connect(
+    state => ({
+      selectedRows: getSelectedItemSelector(state),
+    }),
+    {
+      setTestItems: setTestItemsAction,
+    }
+  )
+);
+
+export default enhance(MetaInfoCell);
 
 const FirstText = styled.span`
   font-size: 13px;
@@ -131,6 +151,11 @@ const CategoryTitle = styled.span`
 const TypeContainer = styled.div`
   margin-top: 10px;
   margin-bottom: 15px;
+
+  .ant-tag {
+    background: rgba(0, 176, 255, 0.2);
+    color: rgb(0, 131, 190);
+  }
 `;
 
 const StyledButton = styled(Button)`

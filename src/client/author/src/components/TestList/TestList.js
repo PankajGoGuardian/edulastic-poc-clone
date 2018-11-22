@@ -27,19 +27,23 @@ import TestFilters from '../common/TestFilters';
 import TestFiltersNav from '../common/TestFilters/TestFiltersNav';
 import SortBar from './SortBar';
 
-class TestList extends Component {
-  state = {
-    searchStr: '',
-    blockStyle: 'tile'
-  };
 
-  items = [
-    { icon: 'book', key: 'library', text: 'Entire Library' },
-    { icon: 'folder', key: 'byMe', text: 'Authored by me' },
-    { icon: 'copy', key: 'coAuthor', text: 'I am a Co-Author' },
-    { icon: 'reload', key: 'previously', text: 'Previously Used' },
-    { icon: 'heart', key: 'favorites', text: 'My Favorites' }
-  ];
+class TestList extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      searchStr: '',
+      blockStyle: 'tile',
+      items: [
+        { icon: 'book', key: 'library', text: 'Entire Library' },
+        { icon: 'folder', key: 'byMe', text: 'Authored by me' },
+        { icon: 'copy', key: 'coAuthor', text: 'I am a Co-Author' },
+        { icon: 'reload', key: 'previously', text: 'Previously Used' },
+        { icon: 'heart', key: 'favorites', text: 'My Favorites' }
+      ],
+    };
+  }
 
   componentDidMount() {
     const { receiveTests, page, limit } = this.props;
@@ -104,7 +108,7 @@ class TestList extends Component {
       creating,
       match
     } = this.props;
-    const { searchStr, blockStyle } = this.state;
+    const { searchStr, blockStyle, items } = this.state;
     const { from, to } = helpers.getPaginationInfo({ page, limit, count });
 
     return (

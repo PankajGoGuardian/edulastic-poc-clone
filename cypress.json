@@ -1,0 +1,7 @@
+{
+  "viewportHeight": 800,
+  "viewportWidth": 1280,
+  "video": false,
+  "baseUrl": "http://localhost:3000",
+  "integrationFolder": "cypress/e2e"
+}

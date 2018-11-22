@@ -2,15 +2,17 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { darkBlueSecondary, white, green, greenDark } from '@edulastic/colors';
-import { Button } from 'antd';
+import { Button, Affix } from 'antd';
 
 const TestListHeader = ({ onCreate, creating, title }) => (
-  <Container>
-    <Title>{title}</Title>
-    <StyledButton type="primary" size="large" loading={creating} onClick={onCreate} icon="plus">
-      Create Test
-    </StyledButton>
-  </Container>
+  <Affix>
+    <Container>
+      <Title>{title}</Title>
+      <StyledButton type="primary" size="large" loading={creating} onClick={onCreate} icon="plus">
+        Create Test
+      </StyledButton>
+    </Container>
+  </Affix>
 );
 
 TestListHeader.propTypes = {

@@ -8,8 +8,6 @@ import { withRouter } from 'react-router-dom';
 import { Paper, FlexContainer, EduButton } from '@edulastic/common';
 import { secondaryTextColor } from '@edulastic/colors';
 
-import 'react-perfect-scrollbar/dist/css/styles.css';
-
 import { Row, Col, Input, Spin, Select, Affix } from 'antd';
 import styled from 'styled-components';
 import TestFilters from '../../common/TestFilters';

@@ -4,15 +4,21 @@ import Storage from './Storage';
 
 export default class API {
   constructor(baseURL = config.api) {
-    this.baseURL = 'http://edulastic-poc.snapwiz.net/api/';
+    this.baseURL = baseURL;
     this.storage = new Storage();
-    axios.defaults.headers.common.Authorization = this.storage.token;
 
     this.instance = axios.create({
       baseURL: this.baseURL,
       headers: {
         'Content-Type': 'application/json'
       }
+    });
+    this.instance.interceptors.request.use(config => {
+      let token = this.storage.token;
+      if (token) {
+        config.headers['Authorization'] = token;
+      }
+      return config;
     });
   }
 

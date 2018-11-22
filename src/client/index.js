@@ -6,6 +6,7 @@ import { ConnectedRouter } from 'connected-react-router';
 
 import 'font-awesome/css/font-awesome.css';
 import 'antd/dist/antd.css';
+import 'react-perfect-scrollbar/dist/css/styles.css';
 import './index.css';
 import App from './App';
 import configureStore, { history } from './configureStore';

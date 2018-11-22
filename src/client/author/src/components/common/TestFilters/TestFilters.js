@@ -140,6 +140,62 @@ const TestFilters = ({ children, onChange, style }) => (
         </Select.Option>
       ))}
     </Select>
+
+    <SubTitle>Difficulty</SubTitle>
+    <Select
+      size="large"
+      style={{ width: '100%' }}
+      defaultValue="all"
+      onChange={value => onChange('difficulty', value)}
+    >
+      {difficulties.map(({ value, text }) => (
+        <Select.Option key={value} value={value}>
+          {text}
+        </Select.Option>
+      ))}
+    </Select>
+
+    <SubTitle>Difficulty</SubTitle>
+    <Select
+      size="large"
+      style={{ width: '100%' }}
+      defaultValue="all"
+      onChange={value => onChange('difficulty', value)}
+    >
+      {difficulties.map(({ value, text }) => (
+        <Select.Option key={value} value={value}>
+          {text}
+        </Select.Option>
+      ))}
+    </Select>
+
+    <SubTitle>Difficulty</SubTitle>
+    <Select
+      size="large"
+      style={{ width: '100%' }}
+      defaultValue="all"
+      onChange={value => onChange('difficulty', value)}
+    >
+      {difficulties.map(({ value, text }) => (
+        <Select.Option key={value} value={value}>
+          {text}
+        </Select.Option>
+      ))}
+    </Select>
+
+    <SubTitle>Difficulty</SubTitle>
+    <Select
+      size="large"
+      style={{ width: '100%' }}
+      defaultValue="all"
+      onChange={value => onChange('difficulty', value)}
+    >
+      {difficulties.map(({ value, text }) => (
+        <Select.Option key={value} value={value}>
+          {text}
+        </Select.Option>
+      ))}
+    </Select>
   </Container>
 );
 

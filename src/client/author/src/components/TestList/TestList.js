@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import {
   withWindowSizes,
@@ -8,7 +9,7 @@ import {
   FlexContainer
 } from '@edulastic/common';
 import { compose } from 'redux';
-import { Row, Col, Input, Pagination, Spin } from 'antd';
+import { Row, Col, Input, Pagination, Spin, Affix } from 'antd';
 
 import styled from 'styled-components';
 import Item from './Item';
@@ -139,13 +140,17 @@ class TestList extends Component {
             </Col>
           </Row>
           <Row gutter={16}>
-            <Col span={6}>
-              <TestFilters onChange={this.handleFiltersChange}>
-                <TestFiltersNav
-                  items={this.items}
-                  onSelect={this.handleFilterNavSelect}
-                />
-              </TestFilters>
+            <Col span={6} style={{ zIndex: 0 }}>
+              <Affix>
+                <PerfectScrollbar>
+                  <TestFilters onChange={this.handleFiltersChange}>
+                    <TestFiltersNav
+                      items={this.items}
+                      onSelect={this.handleFilterNavSelect}
+                    />
+                  </TestFilters>
+                </PerfectScrollbar>
+              </Affix>
             </Col>
             <Col span={18} style={{ paddingLeft: 24, marginTop: 10 }}>
               <Card>

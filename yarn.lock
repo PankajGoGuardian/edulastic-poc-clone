@@ -3744,6 +3744,10 @@ flatstr@^1.0.5, flatstr@^1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/flatstr/-/flatstr-1.0.8.tgz#0e849229751f2b9f6a0919f8e81e1229e84ba901"
 
+flow-bin@^0.86.0:
+  version "0.86.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.86.0.tgz#153a28722b4dc13b7200c74b644dd4d9f4969a11"
+
 flush-write-stream@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/flush-write-stream/-/flush-write-stream-1.0.3.tgz#c5d586ef38af6097650b49bc41b55fabb19f35bd"

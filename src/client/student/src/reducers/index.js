@@ -3,7 +3,7 @@ import tests from './test';
 
 const studentReducer = {
   ui,
-  studentTest: tests,
+  studentTest: tests
 };
 
 export default studentReducer;

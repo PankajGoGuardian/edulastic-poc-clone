@@ -5,6 +5,8 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 import Student from './student/src';
+import Signup from './student/src/components/authentication/signup';
+import Login from './student/src/components/authentication/login';
 import Dashboard from './student/src/app';
 
 import Author from './author/src/app';
@@ -22,6 +24,8 @@ class App extends Component {
           <Redirect exact path="/" to="/student/test" />
           <Route path="/author" component={Author} />
           <Route path="/home" component={Dashboard} />
+          <Route path="/Signup" component={Signup} />
+          <Route path="/Login" component={Login} />
           <Route
             path="/student/test/:id"
             component={() => <Student defaultAP test />}
@@ -44,7 +48,7 @@ class App extends Component {
 }
 
 App.propTypes = {
-  assessmentId: PropTypes.string.isRequired,
+  assessmentId: PropTypes.string.isRequired
 };
 
 export default DragDropContext(HTML5Backend)(App);

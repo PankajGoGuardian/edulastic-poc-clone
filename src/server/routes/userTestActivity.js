@@ -12,6 +12,22 @@ import {
 
 const router = Router();
 
+/**
+ * @swagger
+ * /usertestactivity:
+ *   post:
+ *     tags:
+ *       - TestActivity
+ *     summary: Create user testActivity
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: testactivity
+ *          in: body
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 // create user test activity
 router.post('/', async (req, res) => {
   try {
@@ -36,6 +52,25 @@ router.post('/', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /usertestactivity/{id}/previousResponses:
+ *   get:
+ *     tags:
+ *       - TestActivity
+ *     summary: Fetching previous responses
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: id
+ *          in: path
+ *          required: true
+ *          example:
+ *            id: 5bebe8706c0d6e57f3219113
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 router.get('/:id/previousResponses', async (req, res) => {
   try {
     const testActivityId = req.params.id;
@@ -57,12 +92,31 @@ router.get('/:id/previousResponses', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /usertestactivity/submit:
+ *   post:
+ *     tags:
+ *       - TestActivity
+ *     summary: Submit test
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: id
+ *          in: body
+ *          required: true
+ *          example:
+ *            testActivityId: ahgjsgjdghsshvd
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 router.post('/submit', async (req, res) => {
   try {
     const data = req.body;
     const body = joi.validate(data, submitTestSchema);
     if (body.error) {
-      return res.boom.badRequest(body.errors.message);
+      return res.boom.badRequest(body.error.message);
     }
 
     const userId = req.user._id;

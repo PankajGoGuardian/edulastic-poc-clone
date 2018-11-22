@@ -6,11 +6,27 @@ import UserTestItemActivity from '../models/userTestItemActivity';
 
 const router = Router();
 
+/**
+ * @swagger
+ * /usertestitemactivity:
+ *   post:
+ *     tags:
+ *       - TestActivityitem
+ *     summary: Create user testActivityitem
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: testactivityitem
+ *          in: body
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 // create user testActivityitem
 router.post('/', async (req, res) => {
   try {
-    let data = req.body;
-    let body = joi.validate(data, userTestItemActivitySchema);
+    const data = req.body;
+    const body = joi.validate(data, userTestItemActivitySchema);
 
     if (body.error) {
       res.boom.badRequest(body.error.message);
@@ -18,7 +34,7 @@ router.post('/', async (req, res) => {
 
     data.userId = req.user._id;
 
-    let testItemActivity = new UserTestItemActivity();
+    const testItemActivity = new UserTestItemActivity();
     await testItemActivity.create(data);
     return successHandler(res, 'save');
   } catch (e) {

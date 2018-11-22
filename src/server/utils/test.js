@@ -6,7 +6,11 @@ export const getTotalQuestions = async (testId) => {
   const TestItems = new TestItemModel();
 
   const testDetails = await Test.getById(testId);
-  const testItemsIds = await testDetails.testItems.map(items => items._id);
+  if (!testDetails) {
+    throw new Error('invalid test activity');
+  }
+  const testItemsIds = testDetails.testItems.map(items => items._id);
+
   const items = await TestItems.getByIds(testItemsIds);
   let questionCount = 0;
 

@@ -1,12 +1,16 @@
 import React, { useState, useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
-import { Paper, FlexContainer, EduButton } from '@edulastic/common';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+
+import { Paper, FlexContainer, EduButton } from '@edulastic/common';
 import { secondaryTextColor } from '@edulastic/colors';
 
-import { Row, Col, Input, Spin, Select } from 'antd';
+import 'react-perfect-scrollbar/dist/css/styles.css';
+
+import { Row, Col, Input, Spin, Select, Affix } from 'antd';
 import styled from 'styled-components';
 import TestFilters from '../../common/TestFilters';
 import {
@@ -107,13 +111,17 @@ const Items = ({
         </Col>
       </Row>
       <Row gutter={29}>
-        <Col span={5}>
-          <TestFilters style={{ paddingTop: 13 }} onChange={handleFiltersChange}>
-            <TestFiltersNav
-              items={filterItems}
-              // onSelect={this.handleFilterNavSelect}
-            />
-          </TestFilters>
+        <Col span={5} style={{ zIndex: 0 }}>
+          <Affix>
+            <PerfectScrollbar>
+              <TestFilters style={{ paddingTop: 13 }} onChange={handleFiltersChange}>
+                <TestFiltersNav
+                  items={filterItems}
+                  // onSelect={this.handleFilterNavSelect}
+                />
+              </TestFilters>
+            </PerfectScrollbar>
+          </Affix>
         </Col>
         <Col span={19}>
           <Paper>

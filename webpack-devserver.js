@@ -3,12 +3,10 @@ const WebpackDevServer = require('webpack-dev-server');
 const config = require('./webpack.config.js');
 const path = require('path');
 
-console.log('starting wepback !');
-
 const port = process.env.WEBPACK_PORT || 9090;
 
 const options = {
-  publicPath: config.output.publicPath,
+  publicPath: '/assets',
   hot: true,
   inline: true,
   stats: { colors: true }

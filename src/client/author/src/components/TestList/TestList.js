@@ -27,7 +27,6 @@ import TestFilters from '../common/TestFilters';
 import TestFiltersNav from '../common/TestFilters/TestFiltersNav';
 import SortBar from './SortBar';
 
-
 class TestList extends Component {
   constructor(props) {
     super(props);
@@ -41,7 +40,7 @@ class TestList extends Component {
         { icon: 'copy', key: 'coAuthor', text: 'I am a Co-Author' },
         { icon: 'reload', key: 'previously', text: 'Previously Used' },
         { icon: 'heart', key: 'favorites', text: 'My Favorites' }
-      ],
+      ]
     };
   }
 
@@ -149,7 +148,7 @@ class TestList extends Component {
                 <PerfectScrollbar>
                   <TestFilters onChange={this.handleFiltersChange}>
                     <TestFiltersNav
-                      items={this.items}
+                      items={items}
                       onSelect={this.handleFilterNavSelect}
                     />
                   </TestFilters>

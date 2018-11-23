@@ -8,36 +8,46 @@ import { FlexContainer } from '@edulastic/common';
 import { tabletWidth, mobileWidth, darkBlueSecondary, white, blue } from '@edulastic/colors';
 import Breadcrumb from '../Breadcrumb';
 
-const ItemHeader = ({ title, children, link, reference }) => (
-  <Affix>
-    <Container>
-      <FlexContainer alignItems="center" style={{ flex: 1 }}>
+const ItemHeader = ({ title, children, link, reference }) => {
+  const breadcrumbData = [
+    {
+      title: 'ITEM LIST', to: '/author/items',
+    },
+    {
+      title: 'ITEM DETAIL', to: ''
+    }
+  ];
+  return (
+    <Affix>
+      <Container>
+        <FlexContainer alignItems="center" style={{ flex: 1 }}>
+          <LeftSide>
+            <Title>{title}</Title>
+            {reference !== null && (
+              <FlexContainer>
+                <ReferenceText>
+                  Reference
+                </ReferenceText>
+                <ReferenceValue>
+                  {reference}
+                </ReferenceValue>
+              </FlexContainer>
+            )}
+          </LeftSide>
+          <RightSide>{children}</RightSide>
+        </FlexContainer>
         <LeftSide>
-          <Title>{title}</Title>
-          {reference !== null && (
-            <FlexContainer>
-              <ReferenceText>
-                Reference
-              </ReferenceText>
-              <ReferenceValue>
-                {reference}
-              </ReferenceValue>
-            </FlexContainer>
+          {link && (
+            <Back to={link.url}>
+              <IconChevronLeft color={white} width={10} height={10} /> {link.text}
+            </Back>
           )}
         </LeftSide>
-        <RightSide>{children}</RightSide>
-      </FlexContainer>
-      <LeftSide>
-        {link && (
-          <Back to={link.url}>
-            <IconChevronLeft color={white} width={10} height={10} /> {link.text}
-          </Back>
-        )}
-      </LeftSide>
-      <Breadcrumb data={['ITEM LIST', 'ITEM DETAIL']} />
-    </Container>
-  </Affix>
-);
+        <Breadcrumb data={breadcrumbData} />
+      </Container>
+    </Affix>
+  );
+};
 
 ItemHeader.propTypes = {
   title: PropTypes.string,

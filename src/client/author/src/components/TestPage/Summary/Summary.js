@@ -36,10 +36,19 @@ const Summary = ({ setData, test, summary, current, t }) => {
     points: data.score || 0,
   }));
 
+  const breadcrumbData = [
+    {
+      title: 'ITEM LIST', to: '/author/tests'
+    },
+    {
+      title: current, to: ''
+    }
+  ];
+
   return (
     <Container>
       <SecondHeader>
-        <Breadcrumb data={['ITEM LIST', current]} style={{ position: 'unset' }} />
+        <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
         <Button>
           <ButtonLink
             // onClick={onShowSource}

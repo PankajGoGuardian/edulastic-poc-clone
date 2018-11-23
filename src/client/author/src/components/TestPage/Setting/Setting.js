@@ -13,11 +13,20 @@ import Breadcrumb from '../../Breadcrumb';
 import MainSetting from './MainSetting';
 
 
-const Setting = ({ t, current, history }) =>
-  (
+const Setting = ({ t, current, history }) => {
+  const breadcrumbData = [
+    {
+      title: 'ITEM LIST', to: '/author/tests'
+    },
+    {
+      title: current, to: ''
+    }
+  ];
+
+  return (
     <Container>
       <SecondHeader>
-        <Breadcrumb data={['ITEM LIST', current]} style={{ position: 'unset' }} />
+        <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
         <Button>
           <ButtonLink
             color="primary"
@@ -30,6 +39,7 @@ const Setting = ({ t, current, history }) =>
       <MainSetting history={history} />
     </Container>
   );
+};
 
 Setting.propTypes = {
   t: PropTypes.func.isRequired,

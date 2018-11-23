@@ -5,16 +5,26 @@ import { FlexContainer } from '@edulastic/common';
 import { mobileWidth, darkBlueSecondary, white } from '@edulastic/colors';
 import Breadcrumb from '../Breadcrumb';
 
-const Header = ({ title }) => (
-  <React.Fragment>
-    <Container>
-      <FlexContainer alignItems="flex-start">
-        <Title>{title}</Title>
-      </FlexContainer>
-      <Breadcrumb data={['ITEM LIST', 'ADD NEW', 'SELECT A QUESTION TYPE']} />
-    </Container>
-  </React.Fragment>
-);
+const Header = ({ title }) => {
+  const breadcrumbData = [
+    {
+      title: 'ITEM LIST', to: '/author/items',
+    },
+    {
+      title: 'SELECT A QUESTION TYPE', to: ''
+    }
+  ];
+  return (
+    <React.Fragment>
+      <Container>
+        <FlexContainer alignItems="flex-start">
+          <Title>{title}</Title>
+        </FlexContainer>
+        <Breadcrumb data={breadcrumbData} />
+      </Container>
+    </React.Fragment>
+  );
+};
 
 Header.propTypes = {
   title: PropTypes.string.isRequired,

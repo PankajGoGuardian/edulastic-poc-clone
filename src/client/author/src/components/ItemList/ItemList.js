@@ -28,14 +28,6 @@ import { getTestItemCreatingSelector } from '../../selectors/testItem';
 import ListHeader from '../common/ListHeader';
 
 class ItemList extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isScroll: false
-    };
-  }
-
   componentDidMount() {
     const { receiveItems } = this.props;
     receiveItems({});
@@ -66,30 +58,6 @@ class ItemList extends Component {
     receiveItems({ page, limit: 10, search: searchStr });
   };
 
-  scrollHandler = () => {
-    const { isScroll } = this.state;
-    const itemFilter = window.document.getElementById('item-filter');
-    const mainList = window.document.getElementById('main-list');
-    const itemList = window.document.getElementById('item-list');
-
-    if (isScroll) {
-      return;
-    }
-
-    if (
-      mainList.scrollTop >
-      itemFilter.scrollHeight + 89 - itemFilter.offsetHeight
-    ) {
-      itemFilter.style.position = 'fixed';
-      itemFilter.style.bottom = '20px';
-      itemList.style.marginLeft = '338px';
-    } else {
-      itemFilter.style.position = 'relative';
-      itemFilter.style.bottom = '0px';
-      itemList.style.marginLeft = '29px';
-    }
-  };
-
   render() {
     const { items, windowWidth, history, creating, count, t } = this.props;
     return (
@@ -100,7 +68,7 @@ class ItemList extends Component {
           windowWidth={windowWidth}
           title={t('component.itemlist.header.itemlist')}
         />
-        <MainList id="main-list" onScroll={() => this.scrollHandler()}>
+        <MainList id="main-list">
           <ItemFilter onSearch={this.handleSearch} />
           <ListItems id="item-list">
             <Pagination

@@ -16,7 +16,8 @@
     "start-client": "webpack-dev-server --mode development",
     "start": "node start.js",
     "server-dev": "nodemon --exec babel-node -- ./src/server/app.js",
-    "test": "jest --coverage",
+    "test": "jest --coverage && ava",
+    "ava": "ava",
     "test:watch": "jest --watch",
     "test:automation-open": "cypress open",
     "test:automation-run": "cypress run",
@@ -102,6 +103,7 @@
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "ava": "1.0.0-rc.2",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.4.2",
@@ -136,6 +138,24 @@
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10"
+  },
+  "ava": {
+    "files": [
+      "src/server/tests/**/*.js"
+    ],
+    "sources": [
+      "src/server/**/*.js"
+    ],
+    "cache": true,
+    "verbose": true,
+    "require": [
+      "@babel/register"
+    ],
+    "babel": {
+      "testOptions": {
+        "babelrc": false
+      }
+    }
   },
   "husky": {
     "hooks": {

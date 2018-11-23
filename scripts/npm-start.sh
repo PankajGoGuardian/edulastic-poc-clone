@@ -1,5 +1,5 @@
 
 set -e
 cd ~/edulastic-poc
-pm2 stop start.js
-pm2 start start.js
+pm2 restart webpack-devserver.js
+pm2 restart start-server.js

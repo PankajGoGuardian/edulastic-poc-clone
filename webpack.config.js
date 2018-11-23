@@ -40,12 +40,12 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             babelrc: false,
-            presets: ['env', 'react'],
+            presets: ['@babel/preset-env', '@babel/preset-react'],
             plugins: [
-              'transform-object-rest-spread',
-              'transform-class-properties',
-              'syntax-dynamic-import',
-              'transform-runtime'
+              '@babel/plugin-proposal-object-rest-spread',
+              '@babel/plugin-proposal-class-properties',
+              '@babel/plugin-syntax-dynamic-import',
+              '@babel/plugin-transform-runtime'
             ]
           }
         }

@@ -10,16 +10,18 @@ class ItemFilter extends Component {
     super(props);
     this.state = {
       subjectItems: [],
+      isShowFilter: false,
     };
   }
 
-  handleFilters = () => {
-
+  showFilterHandler = () => {
+    const { isShowFilter } = this.state;
+    this.setState({ isShowFilter: !isShowFilter });
   }
 
   render() {
     const { onSearch } = this.props;
-    const { subjectItems } = this.state;
+    const { subjectItems, isShowFilter } = this.state;
     return (
       <Container id="item-filter">
         <Header>
@@ -35,10 +37,12 @@ class ItemFilter extends Component {
             />
           </SearchField>
           <FilterButton>
-            <Button onClick={() => this.handleFilters()}>FILTERS</Button>
+            <Button onClick={() => this.showFilterHandler()}>
+              {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
+            </Button>
           </FilterButton>
         </Header>
-        <MainFilter>
+        <MainFilter isVisible={isShowFilter}>
           <MainFilterHeader>
             <Title>Filters</Title>
             <Clear>Clear all</Clear>
@@ -357,6 +361,12 @@ const FilterButton = styled.div`
 const MainFilter = styled.div`
   margin-top: 17px;
   padding: 0px 11px 0px 39px;
+
+
+  @media (max-width: ${mobileWidth}) {
+    display: ${props => (props.isVisible ? 'block' : 'none')};
+    padding: 0px 25px 0px 19px;
+  }
 `;
 
 const MainFilterHeader = styled.div`
@@ -387,10 +397,6 @@ const Clear = styled.button`
 const MainFilterItems = styled.div`
   margin-top: 4px;
   padding-left: 6px;
-
-  @media (max-width: ${mobileWidth}) {
-    display: none;
-  }
 `;
 
 const Item = styled.div`

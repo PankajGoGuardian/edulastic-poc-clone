@@ -93,14 +93,17 @@ class SideMenu extends Component {
     if (history.location.pathname.includes('pickup-questiontype')) {
       isCollapsed = true;
     }
+
+    const isMobile = windowWidth < 480;
+    const sidebarWidth = isMobile ? 0 : isCollapsed ? 107 : 293;
     return (
-      <Affix style={{ width: isCollapsed ? 107 : 293 }}>
+      <Affix style={{ width: sidebarWidth }}>
         <SideBar
           collapsed={isCollapsed}
           onCollapse={collapsedStatus => this.setState({ collapsed: collapsedStatus })}
           breakpoint="md"
           onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
-          width="100%"
+          width={isMobile ? windowWidth : '100%'}
           collapsedWidth={broken ? '0' : '100'}
           theme="light"
           className="sideBarwrapper"

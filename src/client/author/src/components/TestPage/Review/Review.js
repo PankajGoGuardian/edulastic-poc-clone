@@ -136,12 +136,21 @@ const Review = ({
     return acc;
   }, []);
 
+  const breadcrumbData = [
+    {
+      title: 'ITEM LIST', to: '/author/tests'
+    },
+    {
+      title: current, to: ''
+    }
+  ];
+
   return (
     <div style={{ paddingTop: 25 }}>
       <Row>
         <Col span={19} style={{ padding: '0 45px' }}>
           <SecondHeader>
-            <Breadcrumb data={['ITEM LIST', current]} style={{ position: 'unset' }} />
+            <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
             <HeaderBar
               onSelectAll={handleSelectAll}
               selectedItems={selected}

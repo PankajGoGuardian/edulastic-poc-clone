@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Breadcrumb, Icon } from 'antd';
 import styled from 'styled-components';
@@ -15,7 +16,10 @@ class BreadCrumb extends Component {
                 {
                   index === 0 && <Icon type="left" style={{ fontSize: 11 }} />
                 }
-                {breadCrumb}
+                {
+                  index !== data.length - 1
+                    ? <Link to={breadCrumb.to}>{breadCrumb.title}</Link> : breadCrumb.title
+                }
               </Breadcrumb.Item>
             ))
           }
@@ -45,6 +49,10 @@ const Container = styled.div`
     font-size: 11px;
     font-weight: 600;
     color: #00b0ff;
+
+    a {
+      color: #00b0ff;
+    }
   }
 
   .anticon-left {

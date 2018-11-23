@@ -1,6 +1,6 @@
 const appId = 'edulastic-poc';
-const useMocks = process.env.APP_MOCKS === '1';
-const appModeDev = process.env.APP_MODE_DEV === '1';
+const useMocks = process.env.APP_MOCKS;
+const appModeDev = process.env.APP_MODE_DEV;
 const serviceHost = process.env.SERVICE_HOST || '0.0.0.0';
 const env = process.env.NODE_ENV || 'localhost';
 const host = process.env.HOST || '0.0.0.0';

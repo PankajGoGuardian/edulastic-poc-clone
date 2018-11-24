@@ -14,7 +14,7 @@
     "start-build": "NODE_ENV=localhost APP_MOCKS=0 node ./.build/server/app",
     "start-server": "nodemon --exec babel-node -- ./src/server/app.js --ignore **node_modules**",
     "start-client": "webpack-dev-server --mode development",
-    "start": "node start.js",
+    "start": "APP_MODE_DEV=1 node start.js",
     "server-dev": "nodemon --exec babel-node -- ./src/server/app.js",
     "test": "jest --coverage && ava",
     "ava": "ava",

@@ -1,3 +1,3 @@
+// Used by PM2 when deployed on server
 require('dotenv').config();
-require('@babel/register');
-require('./src/server/app');
+require('./.build/server/app');

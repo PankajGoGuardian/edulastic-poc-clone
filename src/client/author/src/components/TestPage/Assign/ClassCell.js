@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { FlexContainer } from '@edulastic/common';
 import Tags from '../../common/Tags';
 
@@ -11,7 +12,9 @@ const ClassCell = ({ id, students }) => {
   return (
     <FlexContainer>
       <span>{id}</span>
-      {students && !!students.length && <Tags tags={students} type="secondary" />}
+      <TagsContainer>
+        {students && !!students.length && <Tags tags={students} type="secondary" />}
+      </TagsContainer>
     </FlexContainer>
   );
 };
@@ -26,3 +29,7 @@ ClassCell.defaultProps = {
 };
 
 export default ClassCell;
+
+const TagsContainer = styled.div`
+  margin-left: 5px;
+`;

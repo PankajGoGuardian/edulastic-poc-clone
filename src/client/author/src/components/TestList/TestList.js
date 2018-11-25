@@ -13,6 +13,7 @@ import { Row, Col, Input, Pagination, Spin, Affix } from 'antd';
 
 import styled from 'styled-components';
 import Item from './Item';
+import ListItem from './ListItem';
 import { receiveTestsAction } from '../../actions/tests';
 import {
   getTestsSelector,
@@ -119,7 +120,7 @@ class TestList extends Component {
         />
         <Container>
           <Row gutter={16}>
-            <Col span={6}>
+            <Col span={5}>
               <Input.Search
                 placeholder="Search by skills and keywords"
                 onSearch={this.handleSearch}
@@ -129,7 +130,7 @@ class TestList extends Component {
                 value={searchStr}
               />
             </Col>
-            <Col span={18} style={{ paddingLeft: 24 }}>
+            <Col span={19} style={{ paddingLeft: 24 }}>
               <FlexContainer justifyContent="space-between">
                 <PaginationInfo>
                   {from} to {to} of <i>{count}</i>
@@ -143,7 +144,7 @@ class TestList extends Component {
             </Col>
           </Row>
           <Row gutter={16}>
-            <Col span={6} style={{ zIndex: 0 }}>
+            <Col span={5} style={{ zIndex: 0 }}>
               <Affix>
                 <PerfectScrollbar>
                   <TestFilters onChange={this.handleFiltersChange}>
@@ -155,23 +156,32 @@ class TestList extends Component {
                 </PerfectScrollbar>
               </Affix>
             </Col>
-            <Col span={18} style={{ paddingLeft: 24, marginTop: 10 }}>
+            <Col span={19} style={{ paddingLeft: 24, marginTop: 10 }}>
               <Card>
                 {loading ? (
                   <Spin size="large" />
                 ) : (
-                  <Row gutter={16} type="flex">
-                    {tests.map(item => (
-                      <Col
-                        key={item._id}
-                        span={blockStyle === 'tile' ? 8 : 24}
-                        style={{ marginBottom: 15 }}
-                      >
-                        <Item item={item} history={history} match={match} />
-                      </Col>
-                    ))}
-                  </Row>
-                )}
+                  blockStyle === 'tile' ? (
+                    <Row gutter={16} type="flex">
+                      {tests.map(item => (
+                        <Col
+                          key={item._id}
+                          span={8}
+                          style={{ marginBottom: 15 }}
+                        >
+                          <Item item={item} history={history} match={match} />
+                        </Col>
+                      ))}
+                    </Row>
+                  ) : (
+                    <Row>
+                      {tests.map(item => (
+                        <Col span={24}>
+                          <ListItem item={item} history={history} match={match} />
+                        </Col>
+                      ))}
+                    </Row>
+                  ))}
                 <Pagination
                   style={{ padding: '20px 0' }}
                   defaultCurrent={page}

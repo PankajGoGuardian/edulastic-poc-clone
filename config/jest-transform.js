@@ -2,17 +2,18 @@ const config = {
   babelrc: false,
   presets: [
     [
-      'env',
+      '@babel/preset-env',
       {
         modules: false
       },
     ],
-    'es2015',
-    'react',
-    'stage-2',
+    '@babel/preset-react',
   ],
   plugins: [
-    'transform-es2015-modules-commonjs'
+    '@babel/plugin-transform-modules-commonjs',
+    '@babel/plugin-syntax-dynamic-import',
+    ['@babel/plugin-proposal-decorators', { legacy: true }],
+    '@babel/plugin-proposal-class-properties',
   ]
 };
 module.exports = require('babel-jest').createTransformer(config);

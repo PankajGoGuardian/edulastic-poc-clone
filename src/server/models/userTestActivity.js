@@ -40,6 +40,10 @@ class UserTestActivity {
       { new: true }
     );
   }
+
+  getByUser(userId, filters) {
+    return this.UserTestActivity.find(filters, { __v: 0 });
+  }
 }
 
 export default UserTestActivity;

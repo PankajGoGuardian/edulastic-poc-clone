@@ -140,3 +140,36 @@ router.post('/submit', async (req, res) => {
   }
 });
 export default router;
+
+/**
+ * @swagger
+ * /usertestactivity/{id}/previousResponses:
+ *   get:
+ *     tags:
+ *       - TestActivity
+ *     summary: Fetching users test activities
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: status
+ *          in: query
+ *          example:
+ *            status: graded
+ *     responses:
+ *       200:
+ *         description: successful
+ */
+router.get('/', async (req, res) => {
+  try {
+    const { status } = req.query;
+
+    const userId = req.user._id;
+    const TestActivity = new UserTestActivityModel();
+    const testActivities = await TestActivity.getByUser(userId, { status });
+
+    return successHandler(res, testActivities);
+  } catch (e) {
+    req.log.error(e);
+    res.boom.badRequest(e);
+  }
+});

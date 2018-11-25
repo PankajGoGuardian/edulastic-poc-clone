@@ -92,7 +92,7 @@ const Label = styled.span`
   position: relative;
   text-transform: uppercase;
   border-radius: 5px;
-  padding: 5px;
+  padding: 4px 15px;
   font-size: 10px;
   display: inline-flex;
   align-items: center;

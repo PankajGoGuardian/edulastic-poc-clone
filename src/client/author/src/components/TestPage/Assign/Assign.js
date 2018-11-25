@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Paper, FlexContainer, EduButton } from '@edulastic/common';
 import { Table } from 'antd';
 import * as moment from 'moment';
+import styled from 'styled-components';
 import { cloneDeep } from 'lodash';
 import { IconTrash, IconPencilEdit, IconPlus } from '@edulastic/icons';
-import { greenDark, green, white } from '@edulastic/colors';
+import { Paper, FlexContainer, EduButton } from '@edulastic/common';
+import { greenDark, green, white, secondaryTextColor } from '@edulastic/colors';
 import uuidv4 from 'uuid/v4';
 
 import ClassCell from './ClassCell';
 import { Container } from '../../common';
-import { Breadcrumbs } from '../common';
+import Breadcrumb from '../../Breadcrumb';
 import EditModal from './EditModal';
 
 const formatDate = date => moment(date).format('MM-DD-YYYY');
@@ -136,6 +137,15 @@ const Assign = ({ test, setData, current }) => {
     setShowModal(false);
   };
 
+  const breadcrumbData = [
+    {
+      title: 'ITEM LIST', to: '/author/tests'
+    },
+    {
+      title: current, to: ''
+    }
+  ];
+
   return (
     <Container>
       <EditModal
@@ -147,11 +157,14 @@ const Assign = ({ test, setData, current }) => {
         setModalData={setModalData}
       />
       <FlexContainer justifyContent="space-between" style={{ marginBottom: 20 }}>
-        <Breadcrumbs style={{ marginBottom: 0 }} current={current} />
+        <div>
+          <Breadcrumb data={breadcrumbData} />
+        </div>
         <EduButton
           onClick={() => handleAddEditAssignment(getDefaultAssignData())}
           type="secondary"
           size="large"
+          style={{ height: 32 }}
         >
           <FlexContainer>
             <IconPlus color={white} width={14} height={14} />
@@ -159,8 +172,11 @@ const Assign = ({ test, setData, current }) => {
           </FlexContainer>
         </EduButton>
       </FlexContainer>
-      <Paper>
-        <Table columns={columns} dataSource={tableData} />
+      <Paper style={{ padding: '18px' }}>
+        <StyledTable
+          columns={columns}
+          dataSource={tableData}
+        />
       </Paper>
     </Container>
   );
@@ -173,3 +189,41 @@ Assign.propTypes = {
 };
 
 export default Assign;
+
+const StyledTable = styled(Table)`
+  .ant-table table {
+    border-collapse: separate;
+    border-spacing: 0px 10px;
+  }
+
+  .ant-table-thead > tr > th {
+    background: #f5f9fe;
+    font-size: 13px;
+    font-weight: 600;
+    color: ${secondaryTextColor};
+  }
+
+  .ant-table-row {
+    font-size: 13px;
+
+    td {
+      background: ${white} !important;
+      border-top: 1px solid #f8f8f8;
+      border-bottom: 1px solid #f8f8f8;
+    }
+
+    td:first-child {
+      border-left: 1px solid #f8f8f8;
+      border-radius: 5px;
+    }
+
+    td:last-child {
+      border-radius: 5px;
+      border-right: 1px solid #f8f8f8;
+    }
+
+    &:hover {
+      box-shadow: 0 10px 10px 0 rgba(150, 180, 191, 0.1);
+    }
+  } 
+`;

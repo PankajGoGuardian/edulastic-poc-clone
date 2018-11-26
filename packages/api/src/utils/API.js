@@ -20,6 +20,14 @@ export default class API {
       }
       return config;
     });
+    this.instance.interceptors.response.use(
+      response => response,
+      ({ response: { status } }) => {
+        if (status === 401) {
+          window.location.href = '/login';
+        }
+      }
+    );
   }
 
   callApi({ method = 'get', ...rest }) {

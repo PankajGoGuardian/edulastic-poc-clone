@@ -71,15 +71,19 @@ class ItemList extends Component {
         <MainList id="main-list">
           <ItemFilter onSearch={this.handleSearch} />
           <ListItems id="item-list">
-            <Pagination
-              simple={windowWidth <= 768 && true}
-              showTotal={(total, range) =>
-                `${range[0]} to ${range[1]} of ${total}`
-              }
-              onChange={this.handlePaginationChange}
-              defaultPageSize={10}
-              total={count}
-            />
+            {
+              windowWidth > 468 && (
+                <Pagination
+                  simple={windowWidth <= 768 && true}
+                  showTotal={(total, range) =>
+                    `${range[0]} to ${range[1]} of ${total}`
+                  }
+                  onChange={this.handlePaginationChange}
+                  defaultPageSize={10}
+                  total={count}
+                />
+              )
+            }
             <Items>
               <Paper padding={windowWidth > 768 ? '25px 39px 0px 39px' : '0px'}>
                 {items.map(item => (

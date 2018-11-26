@@ -73,6 +73,10 @@ class Test {
   getCount() {
     return this.Test.count();
   }
+
+  getByIds(ids) {
+    return this.Test.find({ _id: { $in: ids } });
+  }
 }
 
 export default Test;

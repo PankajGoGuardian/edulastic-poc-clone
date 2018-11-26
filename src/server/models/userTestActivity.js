@@ -42,7 +42,7 @@ class UserTestActivity {
   }
 
   getByUser(userId, filters) {
-    return this.UserTestActivity.find(filters, { __v: 0 });
+    return this.UserTestActivity.find({ userId, ...filters }, { __v: 0 });
   }
 }
 

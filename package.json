@@ -6,7 +6,12 @@
     "packages/*"
   ],
   "nodemonConfig": {
-    "ignore": ["**node_modules**", ".build/**", "coverage/**", "src/client/**r"]
+    "ignore": [
+      "**node_modules**",
+      ".build/**",
+      "coverage/**",
+      "src/client/**r"
+    ]
   },
   "scripts": {
     "lint": "eslint . --ext .js,.jsx",
@@ -28,6 +33,7 @@
     "run-client": "node webpack-devserver.js"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.0.0",
     "antd": "^3.10.7",
     "aws-sdk": "^2.355.0",
     "axios": "^0.18.0",
@@ -76,6 +82,7 @@
     "react-sortable-hoc": "^0.8.3",
     "redux": "^4.0.1",
     "redux-devtools-extension": "^2.13.5",
+    "redux-mock-store": "^1.5.3",
     "redux-saga": "^0.16.2",
     "reselect": "^3.0.1",
     "styled-components": "^3.4.5",

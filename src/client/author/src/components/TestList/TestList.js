@@ -119,8 +119,8 @@ class TestList extends Component {
           title="Test List"
         />
         <Container>
-          <Row gutter={16}>
-            <Col span={5}>
+          <FlexContainer>
+            <Filter>
               <Input.Search
                 placeholder="Search by skills and keywords"
                 onSearch={this.handleSearch}
@@ -129,8 +129,8 @@ class TestList extends Component {
                 size="large"
                 value={searchStr}
               />
-            </Col>
-            <Col span={19} style={{ paddingLeft: 24 }}>
+            </Filter>
+            <Main span={19} style={{ paddingLeft: 24 }}>
               <FlexContainer justifyContent="space-between">
                 <PaginationInfo>
                   {from} to {to} of <i>{count}</i>
@@ -141,11 +141,11 @@ class TestList extends Component {
                   activeStyle={blockStyle}
                 />
               </FlexContainer>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={5} style={{ zIndex: 0 }}>
-              <Affix>
+            </Main>
+          </FlexContainer>
+          <FlexContainer>
+            <Filter style={{ zIndex: 0 }}>
+              <Affix style={{ position: 'fixed', width: 280, top: 135 }}>
                 <PerfectScrollbar>
                   <TestFilters onChange={this.handleFiltersChange}>
                     <TestFiltersNav
@@ -155,8 +155,8 @@ class TestList extends Component {
                   </TestFilters>
                 </PerfectScrollbar>
               </Affix>
-            </Col>
-            <Col span={19} style={{ paddingLeft: 24, marginTop: 10 }}>
+            </Filter>
+            <Main style={{ paddingLeft: 24, marginTop: 10 }}>
               <Card>
                 {loading ? (
                   <Spin size="large" />
@@ -191,8 +191,8 @@ class TestList extends Component {
                   hideOnSinglePage
                 />
               </Card>
-            </Col>
-          </Row>
+            </Main>
+          </FlexContainer>
         </Container>
       </div>
     );
@@ -253,9 +253,26 @@ const Container = styled.div`
       fill: #00b0ff;
     }
   }
+
+  .scrollbar-container {
+    overflow: auto !important;
+    height: calc(100vh - 135px);
+
+    ::-webkit-scrollbar { 
+      display: none; 
+    }
+  }
 `;
 
 const PaginationInfo = styled.span`
   font-weight: 600;
   font-size: 13px;
+`;
+
+const Filter = styled.div`
+  width: 280px;
+`;
+
+const Main = styled.div`
+  flex: 1;
 `;

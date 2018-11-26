@@ -1,64 +1,78 @@
-import React from 'react';
+import * as moment from 'moment';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { IconClockCircularOutline } from '@edulastic/icons';
 import AssignmentsContent from '../../commonStyle/assignmentContent';
+import { fetchReportAction } from '../../../actions/report';
 import AssignmentContentWrapper from '../../commonStyle/assignmentContentWrapper';
 
-const ReportContent = ({ flag }) => (
-  <AssignmentsContent flag={flag}>
-    <AssignmentContentWrapper>
-      <Wrapper>
-        <AssignmentSummary>
-          <AssignmentSubject>Math MCAS-CALCULATOR</AssignmentSubject>
-          <AssignmentDuedate>
-            <Icon color="#ee1658" />
-            <DueText>Due on Aug 15, 2018 8:00 AM</DueText>
-          </AssignmentDuedate>
-        </AssignmentSummary>
-        <div>
-          <CorrectAns>8/8</CorrectAns>
-          <CorrectText>Correct Answer</CorrectText>
-        </div>
-        <div>
-          <CorrectAns>100%</CorrectAns>
-          <CorrectText>Score</CorrectText>
-        </div>
-        <StartAssignmentBtn>
-          <p>review</p>
-        </StartAssignmentBtn>
-      </Wrapper>
-      <Wrapper>
-        <AssignmentSummary>
-          <AssignmentSubject>Math MCAS-CALCULATOR</AssignmentSubject>
-          <AssignmentDuedate>
-            <Icon color="#ee1658" />
-            <DueText>Due on Aug 15, 2018 8:00 AM</DueText>
-          </AssignmentDuedate>
-        </AssignmentSummary>
-        <div>
-          <CorrectAns>8/8</CorrectAns>
-          <CorrectText>Correct Answer</CorrectText>
-        </div>
-        <div>
-          <CorrectAns>100%</CorrectAns>
-          <CorrectText>Score</CorrectText>
-        </div>
-        <StartAssignmentBtn>
-          <p>review</p>
-        </StartAssignmentBtn>
-      </Wrapper>
-    </AssignmentContentWrapper>
-  </AssignmentsContent>
+const Report = ({ testName, score, totalQuestion, createdAt }) => (
+  <Wrapper>
+    <AssignmentSummary>
+      <AssignmentSubject>{testName}</AssignmentSubject>
+      <AssignmentDuedate>
+        <Icon color="#ee1658" />
+        <DueText>{moment.unix(createdAt / 1000).toLocaleString()}</DueText>
+      </AssignmentDuedate>
+    </AssignmentSummary>
+    <div>
+      <CorrectAns>
+        {score}/{totalQuestion}
+      </CorrectAns>
+      <CorrectText>Correct Answer</CorrectText>
+    </div>
+    <div>
+      <CorrectAns>{score}</CorrectAns>
+      <CorrectText>Score</CorrectText>
+    </div>
+    <StartAssignmentBtn>
+      <p>review</p>
+    </StartAssignmentBtn>
+  </Wrapper>
 );
 
+Report.propTypes = {
+  testName: PropTypes.string,
+  score: PropTypes.number,
+  totalQuestion: PropTypes.number,
+  createdAt: PropTypes.string
+};
+
+Report.defaultProps = {
+  testName: '',
+  score: 0,
+  totalQuestion: 0,
+  createdAt: Date.now()
+};
+
+const ReportContent = ({ flag, fetchReports, reports }) => {
+  useEffect(() => {
+    fetchReports();
+  }, []);
+  return (
+    <AssignmentsContent flag={flag}>
+      <AssignmentContentWrapper>
+        {reports.map(report => (
+          <Report {...report} />
+        ))}
+      </AssignmentContentWrapper>
+    </AssignmentsContent>
+  );
+};
+
 export default React.memo(
-  connect(({ ui }) => ({ flag: ui.flag }))(ReportContent),
+  connect(
+    ({ ui, reports }) => ({ flag: ui.flag, reports: reports.reports }),
+    { fetchReports: fetchReportAction }
+  )(ReportContent)
 );
 
 ReportContent.propTypes = {
   flag: PropTypes.bool.isRequired,
+  fetchReports: PropTypes.func.isRequired,
+  reports: PropTypes.array.isRequired
 };
 
 const CorrectAns = styled.p`

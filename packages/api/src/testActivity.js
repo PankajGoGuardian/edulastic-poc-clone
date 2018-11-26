@@ -12,6 +12,14 @@ const create = data =>
     })
     .then(result => result.data.result);
 
+const fetchReports = () =>
+  api
+    .callApi({
+      url: `${prefix}/?status=graded`,
+      method: 'get'
+    })
+    .then(result => result.data.result);
+
 const submit = testActivityId =>
   api
     .callApi({
@@ -32,5 +40,6 @@ const previousResponses = testActivityId =>
 export default {
   create,
   submit,
+  fetchReports,
   previousResponses
 };

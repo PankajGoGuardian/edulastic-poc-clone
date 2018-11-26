@@ -4,6 +4,7 @@ import {
   questionSaga,
   answerSaga,
   testdashboardSaga,
+  reportSaga,
   authSaga
 } from './student/src/sagas';
 import authorSagas from './author/src/sagas';
@@ -14,6 +15,7 @@ export default function* () {
     questionSaga(),
     answerSaga(),
     authSaga(),
+    reportSaga(),
     testdashboardSaga(),
     ...authorSagas,
     ...assessmentSagas

@@ -9,9 +9,9 @@ export const getTotalQuestions = async (testId) => {
   if (!testDetails) {
     throw new Error('invalid test activity');
   }
-  const testItemsIds = testDetails.testItems.map(items => items._id);
+  const testItemIds = testDetails.testItems;
 
-  const items = await TestItems.getByIds(testItemsIds);
+  const items = await TestItems.getByIds(testItemIds);
   let questionCount = 0;
 
   items.forEach((item) => {

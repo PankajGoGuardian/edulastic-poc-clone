@@ -26,7 +26,7 @@ import {
   getItemDetailDimensionTypeSelector
 } from '../../selectors/itemDetail';
 import ItemDetailRow from './ItemDetailRow';
-import { ButtonBar } from '../common';
+import { ButtonBar, SecondHeadBar } from '../common';
 import SourceModal from '../QuestionEditor/SourceModal';
 import ItemHeader from './ItemHeader';
 import SettingsBar from './SettingsBar/SettingsBar';
@@ -262,8 +262,6 @@ class ItemDetail extends Component {
       changePreview
     } = this.props;
 
-    console.log('Rows = ', rows);
-
     const { view, previewTab } = this.state;
 
     return (
@@ -304,6 +302,17 @@ class ItemDetail extends Component {
             previewTab={previewTab}
           />
         </ItemHeader>
+        <SecondHeadBar
+          onShowSource={this.handleShowSource}
+          onShowSettings={this.handleShowSettings}
+          onChangeView={this.handleChangeView}
+          changePreview={changePreview}
+          changePreviewTab={this.handleChangePreviewTab}
+          onSave={this.handleSave}
+          saving={updating}
+          view={view}
+          previewTab={previewTab}
+        />
         {view === 'edit' && (
           <ItemDetailWrapper>
             {loading && <Progress />}
@@ -395,7 +404,6 @@ const Content = styled(Paper)`
   flex-wrap: nowrap;
   padding: 0;
   position: relative;
-  height: calc(100vh - 154px);
 
   ::-webkit-scrollbar {
     display: none;
@@ -406,8 +414,6 @@ const ItemDetailWrapper = styled.div`
   display: flex;
   padding: 0px 40px 0px 40px;
   flex-wrap: nowrap;
-  position: relative;
-  height: calc(100vh - 154px);
   width: 100%;
 
   ::-webkit-scrollbar {

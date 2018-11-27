@@ -19,7 +19,7 @@ const item = {
 
 const store = configureStore();
 
-describe('<TestList />', () => {
+describe('<ListItem />', () => {
   it('should render properly', () => {
     const renderedComponent = shallow(<ListItem />);
     expect(renderedComponent.length).toEqual(1);

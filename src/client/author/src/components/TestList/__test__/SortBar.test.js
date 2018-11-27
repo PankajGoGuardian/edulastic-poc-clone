@@ -7,7 +7,7 @@ import SortBar from '../SortBar';
 
 const store = configureStore();
 
-describe('<TestList />', () => {
+describe('<SortBar />', () => {
   it('should render properly', () => {
     const renderedComponent = shallow(<SortBar />);
     expect(renderedComponent.length).toEqual(1);

@@ -90,13 +90,13 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    let { limit, index } = req.query;
+    let { limit, skip } = req.query;
 
     limit = !Number.isNaN(limit) ? Number(limit) : 25;
-    index = !Number.isNaN(index) ? Number(index) : 0;
+    skip = !Number.isNaN(skip) ? Number(skip) : 0;
 
     const test = new TestModel();
-    const result = await test.get(limit, index);
+    const result = await test.get(limit, skip);
     return successHandler(res, result);
   } catch (e) {
     req.log.error(e);

@@ -45,13 +45,13 @@ router.get('/count', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    let { limit, index } = req.query;
+    let { limit, skip } = req.query;
     const { data, validation } = req.query;
     limit = !Number.isNaN(limit) ? Number(limit) : 25;
-    index = !Number.isNaN(index) ? Number(index) : 0;
+    skip = !Number.isNaN(skip) ? Number(skip) : 0;
 
     const testItem = new TestItemModel();
-    const testItems = await testItem.get(limit, index);
+    const testItems = await testItem.get(limit, skip);
 
     // add question data!
     const isAuthor = validation === 'true';

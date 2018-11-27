@@ -30,11 +30,9 @@ OrderListPreview.propTypes = {
 
 OrderListPreview.defaultProps = {
   questions: [],
+  smallSize: false
 };
 
-OrderListPreview.defaultProps = {
-  smallSize: false,
-};
 
 const enhance = compose(SortableContainer);
 

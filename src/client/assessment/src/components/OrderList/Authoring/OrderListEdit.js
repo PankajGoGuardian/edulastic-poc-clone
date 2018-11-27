@@ -19,6 +19,8 @@ class OrderListEdit extends Component {
       windowWidth,
     } = this.props;
 
+    console.log(questions);
+
     return (
       <div style={style}>
         {questions.map((q, i) => (

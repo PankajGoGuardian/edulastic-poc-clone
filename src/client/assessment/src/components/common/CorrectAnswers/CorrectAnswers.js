@@ -16,7 +16,7 @@ const CorrectAnswers = ({
   onAdd,
   validation,
   options,
-  onCloseTab,
+  onCloseTab
 }) => {
   const renderLabel = index => (
     <FlexContainer>
@@ -28,7 +28,10 @@ const CorrectAnswers = ({
         hoverColor={red}
         width={10}
         height={10}
-        onClick={() => onCloseTab(index)}
+        onClick={(e) => {
+          e.stopPropagation();
+          onCloseTab(index);
+        }}
       />
     </FlexContainer>
   );
@@ -45,7 +48,7 @@ const CorrectAnswers = ({
     <Button
       style={{
         minWidth: 70,
-        minHeight: 25,
+        minHeight: 25
       }}
       icon={<IconPlus color={white} width={10} height={10} />}
       onClick={() => {
@@ -79,13 +82,14 @@ CorrectAnswers.propTypes = {
   onAdd: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   validation: PropTypes.object.isRequired,
-  children: PropTypes.any.isRequired,
+  children: PropTypes.any,
   correctTab: PropTypes.number.isRequired,
-  options: PropTypes.any,
+  options: PropTypes.any
 };
 
 CorrectAnswers.defaultProps = {
   options: null,
+  children: undefined
 };
 
 const enhance = compose(withNamespaces('assessment'));

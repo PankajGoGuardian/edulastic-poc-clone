@@ -109,6 +109,68 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       onSelectQuestionType
     },
     {
+      title: 'Sort List',
+      type: 'classify',
+      data: {
+        type: 'sortList',
+        stimulus: 'Sort the sine and cosine values from lower to higher.',
+        ui_style: {},
+        source: ['Item A', 'Item B', 'Item C', 'Item D'],
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [1, 2, 0, 3]
+          },
+          alt_responses: []
+        }
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Classification',
+      type: 'classify',
+      data: {
+        possible_responses: ['Choice B', 'Choice C', 'Choice A', 'Choice D'],
+        stimulus: 'Your question is here',
+        type: 'classification',
+        ui_style: {
+          column_count: 2,
+          column_titles: ['COLUMN 1', 'COLUMN 2'],
+          row_count: 1,
+          row_titles: []
+        },
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [[0, 2], [1, 3]]
+          },
+          alt_responses: []
+        }
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Match list',
+      type: 'classify',
+      data: {
+        possible_responses: ['Choice A', 'Choice B', 'Choice C'],
+        type: 'matchList',
+        stimulus: '<p>This is the stem.</p>',
+        list: ['Stem 1', 'Stem 2', 'Stem 3'],
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: ['Choice A', 'Choice B', 'Choice C']
+          },
+          alt_responses: []
+        }
+      },
+      onSelectQuestionType
+    },
+    {
       title: 'OrderList-standard',
       type: 'classify',
       data: {

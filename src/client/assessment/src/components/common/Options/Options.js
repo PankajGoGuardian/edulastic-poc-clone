@@ -46,7 +46,7 @@ class Options extends Component {
     return (
       <Paper style={outerStyle}>
         <Header onClick={this.handleToggle}>
-          <span>{title}</span>
+          <span style={{ fontWeight: 600 }}>{title}</span>
           {show && <Toggler />}
           {!show && <IconPlus color={greenDark} />}
         </Header>

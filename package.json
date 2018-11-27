@@ -63,7 +63,6 @@
     "react": "^16.7.0-alpha.0",
     "react-ace": "^6.2.0",
     "react-autosize-textarea": "4.0.0",
-    "react-beautiful-dnd": "^9.0.2",
     "react-click-outside": "^3.0.1",
     "react-color": "^2.14.1",
     "react-dev-utils": "^5.0.2",

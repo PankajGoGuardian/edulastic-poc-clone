@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { OrderList } from '../OrderList';
+import { SortList } from '../SortList';
+import { MatchList } from '../MatchList';
+import { Classification } from '../Classification';
 import { MultipleChoice } from '../MultipleChoice';
 import { ClozeDragDrop } from '../ClozeDragDrop';
 import { ClozeImageDragDrop } from '../ClozeImageDragDrop';
@@ -16,6 +19,12 @@ const getQuestion = (type) => {
       return MultipleChoice;
     case 'choiceMatrix':
       return MatrixChoice;
+    case 'sortList':
+      return SortList;
+    case 'classification':
+      return Classification;
+    case 'matchList':
+      return MatchList;
     case 'orderList':
       return OrderList;
     case 'clozeDragDrop':

@@ -9,6 +9,10 @@ export const mainTextColor = '#444444';
 export const textColor = '#878282';
 export const secondaryTextColor = '#434b5d';
 
+export const dashBorderColor = '#e6e6e6';
+
+export const mainBlueColor = '#00b0ff';
+
 export const red = '#ee1658';
 export const lightRed = '#fbdfe7';
 export const redDark = '#dd2e44';

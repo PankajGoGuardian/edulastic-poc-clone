@@ -14,19 +14,22 @@ const SortableItem = SortableElement(({ value, onRemove, onChange, columns }) =>
       <DragHandle />
       <Input.TextArea
         autosize
+        readOnly={!onChange}
         value={value}
         onChange={onChange}
         style={{ border: 0, resize: 'none', borderRadius: 10 }}
       />
     </div>
-    <IconTrash
-      onClick={onRemove}
-      color={greenDark}
-      hoverColor={red}
-      width={20}
-      height={20}
-      style={{ cursor: 'pointer' }}
-    />
+    {onRemove && (
+      <IconTrash
+        onClick={onRemove}
+        color={greenDark}
+        hoverColor={red}
+        width={20}
+        height={20}
+        style={{ cursor: 'pointer' }}
+      />
+    )}
   </SortableItemContainer>
 ));
 
@@ -44,7 +47,7 @@ const SortableItemContainer = styled.div`
   align-items: center;
 
   & div.main {
-    border-radius: 10px;
+    border-radius: 4px;
     border: solid 1px #dfdfdf;
     margin-right: 10px;
     flex: 1;

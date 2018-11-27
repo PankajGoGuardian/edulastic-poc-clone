@@ -1,13 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { green } from '@edulastic/colors';
+import { blue, white, grey, secondaryTextColor } from '@edulastic/colors';
 
 const Checkbox = ({ onChange, checked, label, style, className }) => (
   <Container onClick={onChange} style={style} className={className}>
     <Input type="checkbox" checked={checked} onChange={() => {}} />
     <span />
-    {label && <span className="label">{label}</span>}
+    {label && (
+      <span style={{ fontSize: 13, fontWeight: 600, color: secondaryTextColor }} className="label">
+        {label}
+      </span>
+    )}
   </Container>
 );
 
@@ -16,14 +20,14 @@ Checkbox.propTypes = {
   checked: PropTypes.bool,
   label: PropTypes.string,
   style: PropTypes.object,
-  className: PropTypes.string,
+  className: PropTypes.string
 };
 
 Checkbox.defaultProps = {
   style: {},
   label: '',
   className: '',
-  checked: false,
+  checked: false
 };
 
 export default Checkbox;
@@ -34,20 +38,34 @@ const Input = styled.input`
   + span {
     display: inline-block;
     position: relative;
-    top: -1px;
-    width: 20px;
-    height: 20px;
-    border-radius: 5px;
-    margin: -1px 0px 0 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
     vertical-align: middle;
-    background: white left top no-repeat;
-    border: solid 2px #cfcfcf;
+    background: ${white} left top no-repeat;
+    border: solid 1px ${grey};
     cursor: pointer;
-    margin-right: 10px;
+    margin-right: 43px;
   }
 
   &:checked + span {
-    background: ${green} -19px top no-repeat;
+    background: ${blue};
+    border-color: ${blue};
+  }
+
+  + span:after {
+    display: block;
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 4px;
+    height: 9px;
+    border: solid ${white};
+    border-width: 0 1px 1px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
   }
 `;
 

@@ -1,16 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import {
-  blue,
-  white,
-  darkBlue,
-  textColor,
-  grey,
-  green,
-  greenDark,
-  black,
-} from '@edulastic/colors';
+import { blue, white, darkBlue, textColor, grey, green, greenDark, black } from '@edulastic/colors';
 
 const getRadius = (variant) => {
   switch (variant) {
@@ -28,22 +19,22 @@ const getTextTransparentColor = (color) => {
     case 'primary':
       return {
         color: blue,
-        hoverColor: darkBlue,
+        hoverColor: darkBlue
       };
     case 'default':
       return {
         color: textColor,
-        hoverColor: black,
+        hoverColor: black
       };
     case 'success':
       return {
         color: green,
-        hoverColor: greenDark,
+        hoverColor: greenDark
       };
     default:
       return {
         color: blue,
-        hoverColor: darkBlue,
+        hoverColor: darkBlue
       };
   }
 };
@@ -116,7 +107,7 @@ Button.propTypes = {
   uppercase: PropTypes.bool,
   variant: PropTypes.string, // fab, extendedFab, transparent
   outlined: PropTypes.bool,
-  style: PropTypes.object,
+  style: PropTypes.object
 };
 
 Button.defaultProps = {
@@ -126,7 +117,7 @@ Button.defaultProps = {
   uppercase: true,
   variant: 'contained',
   outlined: false,
-  style: {},
+  style: {}
 };
 
 export default Button;

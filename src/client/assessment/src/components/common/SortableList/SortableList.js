@@ -12,8 +12,8 @@ const SortableList = SortableContainer(({ items, onRemove, onChange, columns = 1
         index={index}
         value={value}
         columns={columns}
-        onRemove={() => onRemove(index)}
-        onChange={e => onChange(index, e.target.value)}
+        onRemove={onRemove ? () => onRemove(index) : null}
+        onChange={onChange ? e => onChange(index, e.target.value) : null}
       />
     ))}
   </FlexContainer>

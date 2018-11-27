@@ -12,6 +12,10 @@ export { default as Card } from './src/components/Card';
 export { default as MoveLink } from './src/components/MoveLink';
 export { default as ContentWrapper } from './src/components/ContentWrapper';
 export { default as CustomQuillComponent } from './src/components/CustomQuillComponent';
+export { default as CorrectAnswersContainer } from './src/components/CorrectAnswersContainer';
+export { default as Stimulus } from './src/components/Stimulus';
+export { default as Subtitle } from './src/components/Subtitle';
+export { default as CorItem } from './src/components/CorItem';
 
 export { default as Tabs } from './src/components/Tabs';
 export { default as Tab } from './src/components/Tabs/Tab';

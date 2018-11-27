@@ -14,7 +14,7 @@ class BreadCrumb extends Component {
             data && data.map((breadCrumb, index) => (
               <Breadcrumb.Item>
                 {
-                  index === 0 && <Icon type="left" style={{ fontSize: 11 }} />
+                  index === 0 && <Icon key={index} type="left" style={{ fontSize: 11 }} />
                 }
                 {
                   index !== data.length - 1

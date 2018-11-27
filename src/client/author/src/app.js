@@ -59,5 +59,5 @@ const Author = ({ match }) => (
 export default Author;
 
 Author.propTypes = {
-  match: PropTypes.shape({}).isRequired
+  match: PropTypes.object.isRequired
 };

@@ -1,4 +1,5 @@
 export { default as IconPencilEdit } from './src/IconPencilEdit';
+export { default as IconCarets } from './src/IconCarets';
 export { default as IconCaretDown } from './src/IconCaretDown';
 export { default as IconTrash } from './src/IconTrash';
 export { default as IconTrashAlt } from './src/IconTrashAlt';

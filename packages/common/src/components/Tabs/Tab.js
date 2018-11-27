@@ -24,7 +24,7 @@ Tab.propTypes = {
   active: PropTypes.bool,
   style: PropTypes.object,
   editable: PropTypes.bool,
-  onChange: PropTypes.func,
+  onChange: PropTypes.func
 };
 
 Tab.defaultProps = {
@@ -32,7 +32,7 @@ Tab.defaultProps = {
   active: false,
   style: {},
   editable: false,
-  onChange: () => {},
+  onChange: () => {}
 };
 
 export default Tab;

@@ -22,6 +22,9 @@ import {
 const headerTitles = {
   multipleChoice: 'MultipleChoice',
   orderList: 'Order List',
+  sortList: 'Sort List',
+  classification: 'Classification',
+  matchList: 'Match List',
   clozeDragDrop: 'Cloze Drag & Drop',
   clozeImageDragDrop: 'Label Image with Drag & Drop'
 };

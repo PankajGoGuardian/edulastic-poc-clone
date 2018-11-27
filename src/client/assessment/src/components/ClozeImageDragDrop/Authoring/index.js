@@ -192,6 +192,7 @@ class clozeImageDragDropAuthoring extends Component {
       responses,
       imageWidth
     } = item;
+
     const { isColorPickerVisible } = this.state;
     const hasActive =
       item.responses &&
@@ -230,9 +231,11 @@ class clozeImageDragDropAuthoring extends Component {
                 defaultValue={imageWidth || 600}
                 onChange={val => this.onItemPropChange('imageWidth', val)}
               />
+
               <PaddingDiv left={20}>
                 {t('component.clozeImageDragDrop.widthpx')}
               </PaddingDiv>
+
             </div>
             <div style={{ alignItems: 'center' }}>
               <Input
@@ -243,9 +246,7 @@ class clozeImageDragDropAuthoring extends Component {
                   this.onItemPropChange('imageAlterText', val.target.value)
                 }
               />
-              <PaddingDiv left={20}>
-                {t('component.clozeImageDragDrop.imagealtertext')}
-              </PaddingDiv>
+              <PaddingDiv left={20}>{t('component.clozeImageDragDrop.imagealtertext')}</PaddingDiv>
             </div>
             <div style={{ alignItems: 'center' }}>
               <ColorBox
@@ -265,9 +266,7 @@ class clozeImageDragDropAuthoring extends Component {
                   />
                 </ColorPickerContainer>
               )}
-              <PaddingDiv left={20}>
-                {t('component.clozeImageDragDrop.fillcolor')}
-              </PaddingDiv>
+              <PaddingDiv left={20}>{t('component.clozeImageDragDrop.fillcolor')}</PaddingDiv>
             </div>
             <div style={{ alignItems: 'center' }}>
               <InputNumber
@@ -298,6 +297,7 @@ class clozeImageDragDropAuthoring extends Component {
                 <IconDrawResize width={20} height={20} color={greenDark} />
                 {t('component.clozeImageDragDrop.drawresize')}
               </Button>
+
               <div
                 style={{
                   position: 'relative',
@@ -306,6 +306,7 @@ class clozeImageDragDropAuthoring extends Component {
                   marginBottom: 10
                 }}
               >
+
                 <Button
                   disabled={!hasActive}
                   style={{
@@ -334,6 +335,7 @@ class clozeImageDragDropAuthoring extends Component {
                   }}
                   onChange={this.handlePointersChange}
                 >
+
                   <Option value="none">
                     {t('component.clozeImageDragDrop.none')}
                   </Option>
@@ -349,6 +351,7 @@ class clozeImageDragDropAuthoring extends Component {
                   <Option value="right">
                     {t('component.clozeImageDragDrop.right')}
                   </Option>
+
                 </Select>
               </div>
             </div>
@@ -367,7 +370,7 @@ class clozeImageDragDropAuthoring extends Component {
                   left: 0,
                   minHeight: 400,
                   padding: 0,
-                  width: imageWidth || 600,
+                  width: imageWidth || 600
                 }}
               >
                 {item.imageUrl && (
@@ -383,6 +386,7 @@ class clozeImageDragDropAuthoring extends Component {
                       item={item}
                       key={item}
                     />
+
                   </React.Fragment>
                 )}
                 {!item.imageUrl && (

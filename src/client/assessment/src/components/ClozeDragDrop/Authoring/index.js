@@ -18,50 +18,59 @@ import DeleteButton from '../components/DeleteButton';
 
 const DragHandle = React.memo(SortableHandle(() => <i className="fa fa-align-justify" />));
 
-const SortableItem = React.memo(SortableElement(({ value, onRemove, onChange }) => (
-  <SortableItemContainer>
-    <div className="main">
-      <DragHandle />
-      <div>
-        <input style={{ background: 'transparent' }} type="text" value={value} onChange={onChange} />
+const SortableItem = React.memo(
+  SortableElement(({ value, onRemove, onChange }) => (
+    <SortableItemContainer>
+      <div className="main">
+        <DragHandle />
+        <div>
+          <input
+            style={{ background: 'transparent' }}
+            type="text"
+            value={value}
+            onChange={onChange}
+          />
+        </div>
       </div>
+      <DeleteButton onClick={onRemove} />
+    </SortableItemContainer>
+  ))
+);
+
+const SortableList = React.memo(
+  SortableContainer(({ items, onRemove, onChange }) => (
+    <div>
+      {items.map((value, index) => (
+        <SortableItem
+          key={index}
+          index={index}
+          value={value}
+          onRemove={() => onRemove(index)}
+          onChange={e => onChange(index, e)}
+        />
+      ))}
     </div>
-    <DeleteButton onClick={onRemove} />
-  </SortableItemContainer>
-)));
+  ))
+);
 
-const SortableList = React.memo(SortableContainer(({ items, onRemove, onChange }) => (
-  <div>
-    {items.map((value, index) => (
-      <SortableItem
-        key={index}
-        index={index}
-        value={value}
-        onRemove={() => onRemove(index)}
-        onChange={e => onChange(index, e)}
-      />
-    ))}
-  </div>
-)));
-
-const defaultTemplateMarkup = '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags? Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
+const defaultTemplateMarkup =
+  '<p>Risus </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>';
 
 class ClozeDragDropAuthoring extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
-    setQuestionData: PropTypes.func.isRequired,
+    setQuestionData: PropTypes.func.isRequired
   };
 
   state = {
     hasGroupResponses: false,
-    groupResponses: [{
-      title: '',
-      options: [
-        'Choice A',
-        'Choice B',
-      ]
-    }],
+    groupResponses: [
+      {
+        title: '',
+        options: ['Choice A', 'Choice B']
+      }
+    ]
   };
 
   getNewItem() {
@@ -107,7 +116,7 @@ class ClozeDragDropAuthoring extends Component {
     const templateMarkUp = html;
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, templateMarkUp });
-  }
+  };
 
   groupResponsesHandler = (e) => {
     const { item, setQuestionData } = this.props;
@@ -118,7 +127,7 @@ class ClozeDragDropAuthoring extends Component {
       this.setState({ hasGroupResponses });
     }
     setQuestionData({ ...item, hasGroupResponses });
-  }
+  };
 
   addGroup = () => {
     const { groupResponses } = this.state;
@@ -127,7 +136,7 @@ class ClozeDragDropAuthoring extends Component {
     this.setState({ groupResponses: newGroupResponses });
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, groupResponses: newGroupResponses });
-  }
+  };
 
   removeGroup = (index) => {
     const { groupResponses } = this.state;
@@ -136,7 +145,7 @@ class ClozeDragDropAuthoring extends Component {
     this.setState({ groupResponses: newGroupResponses });
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, groupResponses: newGroupResponses });
-  }
+  };
 
   changeGroupRespTitle = (index, e) => {
     const { groupResponses } = this.state;
@@ -145,7 +154,7 @@ class ClozeDragDropAuthoring extends Component {
     this.setState({ groupResponses: newGroupResponses });
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, groupResponses: newGroupResponses });
-  }
+  };
 
   addNewGroupOption = (index) => {
     const { groupResponses } = this.state;
@@ -154,7 +163,7 @@ class ClozeDragDropAuthoring extends Component {
     this.setState({ groupResponses: newGroupResponses });
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, groupResponses: newGroupResponses });
-  }
+  };
 
   editGroupOptions = (index, itemIndex, e) => {
     const { groupResponses } = this.state;
@@ -163,7 +172,7 @@ class ClozeDragDropAuthoring extends Component {
     this.setState({ groupResponses: newGroupResponses });
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, groupResponses: newGroupResponses });
-  }
+  };
 
   removeGroupOptions = (index, itemIndex) => {
     const { groupResponses } = this.state;
@@ -172,11 +181,9 @@ class ClozeDragDropAuthoring extends Component {
     this.setState({ groupResponses: newGroupResponses });
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, groupResponses: newGroupResponses });
-  }
+  };
 
-  onSortEndGroupOptions = () => {
-
-  }
+  onSortEndGroupOptions = () => {};
 
   render() {
     const { t, item } = this.props;
@@ -187,7 +194,9 @@ class ClozeDragDropAuthoring extends Component {
           <Subtitle>{t('component.clozeDragDrop.composequestion')}</Subtitle>
           <CustomQuillComponent
             toolbarId="stimulus"
-            wrappedRef={(instance) => { this.stimulus = instance; }}
+            wrappedRef={(instance) => {
+              this.stimulus = instance;
+            }}
             placeholder={t('component.clozeDragDrop.thisisstem')}
             onChange={this.onChangeQuesiton}
             showResponseBtn={false}
@@ -196,7 +205,9 @@ class ClozeDragDropAuthoring extends Component {
           <Subtitle>{t('component.clozeDragDrop.templatemarkup')}</Subtitle>
           <CustomQuillComponent
             toolbarId="templatemarkup"
-            wrappedRef={(instance) => { this.templatemarkup = instance; }}
+            wrappedRef={(instance) => {
+              this.templatemarkup = instance;
+            }}
             placeholder={t('component.clozeDragDrop.templatemarkupplaceholder')}
             onChange={this.onChangeMarkUp}
             showResponseBtn
@@ -204,8 +215,14 @@ class ClozeDragDropAuthoring extends Component {
           />
           <PaddingDiv>
             <Subtitle>
-              <input id="groupResponseCheckbox" type="checkbox" onChange={e => this.groupResponsesHandler(e)} />
-              <label htmlFor="groupResponseCheckbox">{t('component.clozeDragDrop.grouppossibleresponses')}</label>
+              <input
+                id="groupResponseCheckbox"
+                type="checkbox"
+                onChange={e => this.groupResponsesHandler(e)}
+              />
+              <label htmlFor="groupResponseCheckbox">
+                {t('component.clozeDragDrop.grouppossibleresponses')}
+              </label>
             </Subtitle>
           </PaddingDiv>
           {!hasGroupResponses && (
@@ -225,42 +242,61 @@ class ClozeDragDropAuthoring extends Component {
               </div>
             </PaddingDiv>
           )}
-          {hasGroupResponses && groupResponses.length > 0 && groupResponses.map((group, index) => (
-            <div key={index}>
-              <fieldset style={{ borderColor: '#eee', borderRadius: 2, padding: '0 20px', marginBottom: 15, border: 'solid 1px' }}>
-                <legend style={{ padding: '0 20px', width: 'auto' }}>
-                  {t('component.clozeDragDrop.group')} {index + 1}
-                </legend>
-                <div style={{ float: 'right' }}>
-                  <Button onClick={() => this.removeGroup(index)} size="small" type="button"><Icon type="close" /></Button>
-                </div>
-                <PaddingDiv top={10} bottom={10}>
-                  <div>Title</div>
-                </PaddingDiv>
-                <div>
-                  <Input size="large" style={{ width: '100%' }} onChange={e => this.changeGroupRespTitle(index, e)} value={group.title} />
-                </div>
-                <PaddingDiv top={20} bottom={10}>
-                  <div>{t('component.clozeDragDrop.choicesforresponse')}</div>
-                  <SortableList
-                    items={group.options}
-                    onSortEnd={params => this.onSortEndGroupOptions(index, ...params)}
-                    useDragHandle
-                    onRemove={itemIndex => this.removeGroupOptions(index, itemIndex)}
-                    onChange={(itemIndex, e) => this.editGroupOptions(index, itemIndex, e)}
-                  />
-                  <PaddingDiv top={10} bottom={10}>
-                    <AddNewChoiceBtn onClick={() => this.addNewGroupOption(index)}>
-                      {t('component.clozeDragDrop.addnewchoice')}
-                    </AddNewChoiceBtn>
-                  </PaddingDiv>
-                </PaddingDiv>
-              </fieldset>
-            </div>
-          ))}
           {hasGroupResponses &&
-            <Button type="primary" onClick={this.addGroup} style={{ background: '#12a6e8' }}>{t('component.clozeDragDrop.addgroup')}</Button>
-          }
+            groupResponses.length > 0 &&
+            groupResponses.map((group, index) => (
+              <div key={index}>
+                <fieldset
+                  style={{
+                    borderColor: '#eee',
+                    borderRadius: 2,
+                    padding: '0 20px',
+                    marginBottom: 15,
+                    border: 'solid 1px'
+                  }}
+                >
+                  <legend style={{ padding: '0 20px', width: 'auto' }}>
+                    {t('component.clozeDragDrop.group')} {index + 1}
+                  </legend>
+                  <div style={{ float: 'right' }}>
+                    <Button onClick={() => this.removeGroup(index)} size="small" type="button">
+                      <Icon type="close" />
+                    </Button>
+                  </div>
+                  <PaddingDiv top={10} bottom={10}>
+                    <div>Title</div>
+                  </PaddingDiv>
+                  <div>
+                    <Input
+                      size="large"
+                      style={{ width: '100%' }}
+                      onChange={e => this.changeGroupRespTitle(index, e)}
+                      value={group.title}
+                    />
+                  </div>
+                  <PaddingDiv top={20} bottom={10}>
+                    <div>{t('component.clozeDragDrop.choicesforresponse')}</div>
+                    <SortableList
+                      items={group.options}
+                      onSortEnd={params => this.onSortEndGroupOptions(index, ...params)}
+                      useDragHandle
+                      onRemove={itemIndex => this.removeGroupOptions(index, itemIndex)}
+                      onChange={(itemIndex, e) => this.editGroupOptions(index, itemIndex, e)}
+                    />
+                    <PaddingDiv top={10} bottom={10}>
+                      <AddNewChoiceBtn onClick={() => this.addNewGroupOption(index)}>
+                        {t('component.clozeDragDrop.addnewchoice')}
+                      </AddNewChoiceBtn>
+                    </PaddingDiv>
+                  </PaddingDiv>
+                </fieldset>
+              </div>
+            ))}
+          {hasGroupResponses && (
+            <Button type="primary" onClick={this.addGroup} style={{ background: '#12a6e8' }}>
+              {t('component.clozeDragDrop.addgroup')}
+            </Button>
+          )}
         </PaddingDiv>
       </div>
     );
@@ -272,8 +308,8 @@ const enhance = compose(
   withNamespaces('assessment'),
   connect(
     null,
-    { setQuestionData: setQuestionDataAction },
-  ),
+    { setQuestionData: setQuestionDataAction }
+  )
 );
 
 export default enhance(ClozeDragDropAuthoring);

@@ -12,6 +12,13 @@
   },
   "component": {
     "options": {
+      "unscored": "Unscored / Practice usage",
+      "instant_feedback": "Check answer button",
+      "automarkable": "Enable auto scoring",
+      "penalty": "Penalty Point(s)",
+      "feedback_attempts": "Check answer attempts",
+      "min_score_if_attempted": "Minimum score if attempted",
+      "scoring": "Scoring",
       "style": "Style",
       "layout": "Layout",
       "columns": "Number of columns",
@@ -52,6 +59,20 @@
       "responsecontainerindividual": "Response Container",
       "responsecontainerindividuals": "Response container (individual)"
     },
+    "matchList": {
+      "editPossibleResponses": "Possible responses",
+      "setcorrectanswers": "Set Correct Answer(s)"
+    },
+    "classification": {
+      "dragItemsTitle": "Drag & Drop the answer",
+      "correctAnswers": "Correct Answers",
+      "editColListSubtitle": "Column titles",
+      "columnsSubtitle": "Column",
+      "columnsCountSubtitle": "Column count",
+      "editRowListSubtitle": "Row titles",
+      "rowsSubtitle": "Row",
+      "rowsCountSubtitle": "Row count"
+    },
     "orderlist": {
       "question": {
         "composequestion": "Compose Question",
@@ -66,6 +87,13 @@
       "orderlistreportitem": {
         "correctanswer": "Correct Answer:"
       }
+    },
+    "sortList": {
+      "containerSourcePreview": "Source",
+      "containerTargetPreview": "Target",
+      "correctAnswers": "Correct Answers",
+      "editQuestionSubtitle": "Compose Question",
+      "editListSubtitle": "List"
     },
     "multiplechoice": {
       "thisisstem": "[This is the stem.]",

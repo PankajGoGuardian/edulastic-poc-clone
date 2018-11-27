@@ -5,6 +5,7 @@ import express from 'express';
 import boom from 'express-boom';
 import handlebars from 'handlebars';
 import bodyParser from 'body-parser';
+// eslint-disable-next-line import/no-unresolved
 import pino from 'express-pino-logger';
 import proxy from 'http-proxy-middleware';
 import swaggerUi from 'swagger-ui-express';
@@ -43,10 +44,7 @@ if (config.appModeDev) {
     })
   );
 } else {
-  app.use(
-    `/${assetsDir}`,
-    express.static(path.join(process.cwd(), targetDir, 'client'))
-  );
+  app.use(`/${assetsDir}`, express.static(path.join(process.cwd(), targetDir, 'client')));
 }
 
 app.use('/api', [authMiddleware], router);
@@ -54,9 +52,7 @@ app.use('/docs', swaggerUi.serve);
 app.get('/docs', swaggerSpec);
 
 app.use('*', (req, res) => {
-  const template = handlebars.compile(
-    fs.readFileSync(path.join(__dirname, 'index.hbs'), 'utf8')
-  );
+  const template = handlebars.compile(fs.readFileSync(path.join(__dirname, 'index.hbs'), 'utf8'));
   const context = {
     title: 'Edulastic Poc App'
   };

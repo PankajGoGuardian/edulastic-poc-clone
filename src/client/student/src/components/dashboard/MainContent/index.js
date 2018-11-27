@@ -6,7 +6,7 @@ import Header from './header';
 import AssignmentsContent from './content';
 
 const MainContent = ({ flag }) => (
-  <Layout flag={flag}>
+  <Layout flag={flag} style={{ width: '100%' }}>
     <Header flag={flag} />
     <AssignmentsContent />
   </Layout>
@@ -14,10 +14,10 @@ const MainContent = ({ flag }) => (
 
 export default React.memo(
   connect(({ ui }) => ({
-    flag: ui.flag,
-  }))(MainContent),
+    flag: ui.flag
+  }))(MainContent)
 );
 
 MainContent.propTypes = {
-  flag: PropTypes.bool.isRequired,
+  flag: PropTypes.bool.isRequired
 };

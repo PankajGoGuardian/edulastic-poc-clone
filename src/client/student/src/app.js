@@ -6,13 +6,18 @@ import { Layout } from 'antd';
 import Sidebar from './Sidebar/SideMenu';
 import AppContainer from './components/dashboard';
 import ReportContainer from './components/Report';
+import ReportListContainer from './components/ReportList';
 
 const Dashboard = ({ match }) => (
   <Layout>
     <Sidebar />
     <Switch>
       <Route path={`${match.url}/dashboard`} component={AppContainer} />
-      <Route path={`${match.url}/Report`} component={ReportContainer} />
+      <Route path={`${match.url}/reports`} component={ReportContainer} />
+      <Route
+        path={`${match.url}/report/list`}
+        component={ReportListContainer}
+      />
     </Switch>
   </Layout>
 );
@@ -20,5 +25,5 @@ const Dashboard = ({ match }) => (
 export default Dashboard;
 
 Dashboard.propTypes = {
-  match: PropTypes.string.isRequired,
+  match: PropTypes.string.isRequired
 };

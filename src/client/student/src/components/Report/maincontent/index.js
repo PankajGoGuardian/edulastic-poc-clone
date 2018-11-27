@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Button } from 'antd';
@@ -29,19 +30,21 @@ const Report = ({ testName, score, totalQuestion, createdAt }) => (
       <CorrectText>Score</CorrectText>
     </div>
     <StartAssignmentBtn>
-      <Button
-        style={{
-          width: 195,
-          height: 53,
-          fontWeight: 600,
-          border: '1px solid #12a6e8',
-          color: '#12a6e8',
-          fontSize: '0.7rem',
-          borderRadius: 65
-        }}
-      >
-        REVIEW
-      </Button>
+      <Link to="/home/report/list">
+        <Button
+          style={{
+            width: 195,
+            height: 53,
+            fontWeight: 600,
+            border: '1px solid #12a6e8',
+            color: '#12a6e8',
+            fontSize: '0.7rem',
+            borderRadius: 65
+          }}
+        >
+          REVIEW
+        </Button>
+      </Link>
     </StartAssignmentBtn>
   </Wrapper>
 );

@@ -9,7 +9,7 @@ import CheckboxTemplateBoxLayout from './CheckboxResponseBoxLayout';
 import CorrectAnswerBoxLayout from './CorrectAnswerBoxLayout';
 
 /* eslint-disable */
-const defaultTemplateMarkup = '<p>Risus </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>';
+const defaultTemplateMarkup = '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags? <br /> Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
 
 class ClozeDragDropDisplay extends Component {
   constructor(props) {
@@ -233,7 +233,7 @@ class ClozeDragDropDisplay extends Component {
     const { templateParts, userAnswers, possibleResponses } = this.state;
     const { showDraghandle: dragHandler, shuffleOptions } = configureOptions;
     let responseIndex = 0;
-    let responses = possibleResponses;
+    let responses = cloneDeep(possibleResponses);
     if (preview && shuffleOptions) {
       if (hasGroupResponses) {
         responses = this.shuffleGroup(possibleResponses);
@@ -252,7 +252,7 @@ class ClozeDragDropDisplay extends Component {
       whiteSpace: wordwrap ? 'inherit' : 'nowrap',
     }
     const previewTemplateBoxLayout = (
-      <div className="template_box" style={{ fontSize: smallSize ? 10 : fontSize, padding: smallSize ? 0 : 20 }}>
+      <div className={`template_box ${smallSize ? 'small' : ''}`} style={{ fontSize: smallSize ? 14 : fontSize }}>
           {templateParts.map((templatePart, index) => {
             if (templatePart.indexOf('class="response-btn"') !== -1) {
               const dropTargetIndex = responseIndex;
@@ -293,7 +293,7 @@ class ClozeDragDropDisplay extends Component {
                 <Droppable
                   key={index}
                   types={['metal']} // <= allowed drop types
-                  style={{ top: 0 }}
+                  style={{ top: -5 }}
                   onDrop={data => this.onDrop(data, dropTargetIndex)}
                 >
                   {!hasGroupResponses && (
@@ -372,10 +372,10 @@ class ClozeDragDropDisplay extends Component {
           )}
           {responsecontainerposition === 'bottom' && (
             <React.Fragment>
-              <div style={{ margin: 15, borderRadius: 10 }}>
+              <div style={{ margin: smallSize ? '-18px -20px 10px' : 15, borderRadius: smallSize ? 0 : 10 }}>
                 {templateBoxLayout}
               </div>
-              <div style={{ margin: 15, borderRadius: 10 }}>
+              <div style={{ margin: smallSize ? '0 -40px -20px' : 15, borderRadius: smallSize ? 0 : 10 }}>
                 {responseBoxLayout}
               </div>
             </React.Fragment>

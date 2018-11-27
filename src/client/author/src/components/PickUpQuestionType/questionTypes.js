@@ -201,7 +201,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       data: {
         type: 'clozeDragDrop',
         stimulus: '',
-        options: ['Choice A', 'Choice B'],
+        options: ['WHISPERED', 'HOLMES', 'INTRUDER'],
         validation: {
           scoring_type: 'exactMatch',
           valid_response: {
@@ -220,7 +220,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       data: {
         type: 'clozeImageDragDrop',
         stimulus: '',
-        options: ['Choice A', 'Choice B'],
+        options: ['Country A', 'Country B', 'Country C'],
         validation: {
           scoring_type: 'exactMatch',
           valid_response: {
@@ -230,12 +230,57 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           alt_responses: []
         },
         responses: [
-          { top: 100, left: 50, width: 200, height: 50 },
-          { top: 200, left: 200, width: 200, height: 50 }
-        ]
+          { top: 0, left: 240, width: 200, height: 40 },
+          { top: 100, left: 120, width: 220, height: 40 },
+          { top: 220, left: 200, width: 200, height: 40 },
+        ],
       },
-      onSelectQuestionType
-    }
+      onSelectQuestionType,
+    },
+    {
+      title: 'Cloze with Drop Down',
+      type: 'fill-blanks',
+      stimulus: '',
+      data: {
+        type: 'clozeDropDown',
+        stimulus: '',
+        options: {
+          0: ['A', 'B'],
+          1: ['Choice A', 'Choice B']
+        },
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [],
+          },
+          alt_responses: [],
+        },
+      },
+      onSelectQuestionType,
+    },
+    {
+      title: 'Cloze with Text',
+      type: 'fill-blanks',
+      stimulus: '',
+      data: {
+        type: 'clozeText',
+        stimulus: '',
+        options: {
+          0: '',
+          1: ''
+        },
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [],
+          },
+          alt_responses: [],
+        },
+      },
+      onSelectQuestionType,
+    },
   ];
 
   return (

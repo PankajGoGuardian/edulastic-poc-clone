@@ -112,6 +112,7 @@ class CorrectAnswers extends Component {
       responses,
       configureOptions,
       uiStyle,
+      maxRespCount,
       showDashedBorder
     } = this.props;
     const { value } = this.state;
@@ -137,6 +138,7 @@ class CorrectAnswers extends Component {
                 configureOptions={configureOptions}
                 imageAlterText={imageAlterText}
                 imageWidth={imageWidth}
+                maxRespCount={maxRespCount}
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}
                 backgroundColor={backgroundColor}
@@ -159,6 +161,7 @@ class CorrectAnswers extends Component {
                       imageUrl={imageUrl}
                       imageAlterText={imageAlterText}
                       imageWidth={imageWidth}
+                      maxRespCount={maxRespCount}
                       templateMarkUp={templateMarkUp}
                       showDashedBorder={showDashedBorder}
                       uiStyle={uiStyle}
@@ -195,7 +198,8 @@ CorrectAnswers.propTypes = {
   backgroundColor: PropTypes.string,
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
-  imageWidth: PropTypes.number
+  imageWidth: PropTypes.number,
+  maxRespCount: PropTypes.number,
 };
 
 CorrectAnswers.defaultProps = {
@@ -209,6 +213,7 @@ CorrectAnswers.defaultProps = {
   imageUrl: '',
   imageAlterText: '',
   imageWidth: 600,
+  maxRespCount: 1,
   uiStyle: {
     responsecontainerposition: 'bottom',
     fontsize: 'normal',

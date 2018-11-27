@@ -11,7 +11,7 @@ const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 const Icon = styled.div`
   position: absolute;
   right: 20px;
-  top: calc(50% - 10px);
+  display: flex;
 `;
 
 const CheckboxTemplateBoxLayout = ({

@@ -4,6 +4,9 @@ import { OrderList } from '../OrderList';
 import { MultipleChoice } from '../MultipleChoice';
 import { ClozeDragDrop } from '../ClozeDragDrop';
 import { ClozeImageDragDrop } from '../ClozeImageDragDrop';
+import { ClozeDropDown } from '../ClozeDropDown';
+import { ClozeText } from '../ClozeText';
+
 import withAnswerSave from '../HOC/withAnswerSave';
 import MatrixChoice from '../MatrixChoice/MatrixChoice';
 
@@ -19,6 +22,10 @@ const getQuestion = (type) => {
       return ClozeDragDrop;
     case 'clozeImageDragDrop':
       return ClozeImageDragDrop;
+    case 'clozeDropDown':
+      return ClozeDropDown;
+    case 'clozeText':
+      return ClozeText;
     default:
       return null;
   }
@@ -32,7 +39,6 @@ const QuestionWrapper = ({ type, data, ...restProps }) => {
     restProps
   );
   const Question = getQuestion(type);
-
   return <Question {...questionProps} />;
 };
 

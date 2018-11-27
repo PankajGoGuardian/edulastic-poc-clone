@@ -448,6 +448,13 @@ template {
     border-radius: 10px;
     border: solid 1px #dfdfdf;
     height: 100%;
+    max-height: calc(100vh - 300px);
+    overflow-y: auto;
+}
+
+.imagedragdrop_template_box.small {
+  padding: 10px !important;
+  border: none;
 }
 
 input[type="checkbox"] {
@@ -462,6 +469,7 @@ input[type="checkbox"] {
   align-items: center;
   margin: 3px 8px;
   border-radius: 5px;
+  text-transform: uppercase;
 }
 
 .draggable_box_transparent {
@@ -490,13 +498,23 @@ input[type="checkbox"] {
   height: 100%;
 }
 
+.template_box.small {
+  background: white;
+  border-radius: 10px;
+  border: none;
+  height: 100%;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 0 !important;
+}
+
 .responses_box {
   background: #efefef;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding-right: 50px !important;
-  padding-left: 50px !important;
+  padding-right: 30px !important;
+  padding-left: 30px !important;
   flex-flow: row wrap;
   border-radius: 10px;
   min-height: 60px;
@@ -531,11 +549,15 @@ input[type="checkbox"] {
 }
 
 .response-btn.check-answer {
-  height: 35px !important;
+  min-height: 35px;
+  height: 35px;
   display: inline-flex;
   position: relative;
   top: 0;
+  min-width: 130px;
   margin: 5px;
+  font-weight: 700;
+  font-size: 13px;
 }
 
 .check-answer .index {
@@ -549,7 +571,6 @@ input[type="checkbox"] {
 }
 
 .check-answer .text {
-  min-width: 100px;
   flex: 1;
   display: inline-flex;
   text-align: center;
@@ -710,7 +731,7 @@ input[type="checkbox"] {
   align-items: center;
   border-radius: 5px;
   min-width: 100px;
-  min-height: 40px;
+  min-height: 30px;
   z-index: 100;
 }
 
@@ -769,4 +790,49 @@ input[type="checkbox"] {
   padding-right: 20px !important;
   padding-left: 20px !important;
   text-align: center;
+}
+
+.responseboxContainer.right.small .responses_box {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px !important;
+  border-radius: 0;
+}
+
+.responseboxContainer.right.small .responses_box .draggable_box {
+  font-size: 11px;
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.ant-select-selection {
+  width: 100%;
+  height: 100%;
+  margin: 0 2px 0 5px;
+}
+
+.ant-select-selection__rendered {
+  display: block !important;
+}
+
+.ant-select, .ant-input, .ant-input-number {
+  min-width: 100px;
+  margin: 0 8px;
+}
+
+.template_box.dropdown-small, .template_box.text-small {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 0px !important;
+}
+
+.template_box.dropdown .response-btn.check-answer {
+  top: -8px;
+}
+
+.imagelabeldragdrop-droppable.iseditablearialabel {
+  margin: 5px 0;
 }

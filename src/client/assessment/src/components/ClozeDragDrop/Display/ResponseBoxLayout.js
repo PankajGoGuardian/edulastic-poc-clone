@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Draggable } from 'react-drag-and-drop';
 
 const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, dragHandler }) => (
-  <div className="responses_box" style={{ padding: smallSize ? '5px 10px' : 16 }}>
+  <div className="responses_box" style={{ padding: smallSize ? '5px 10px' : 16, borderRadius: smallSize ? 0 : 10, justifyContent: smallSize ? 'space-around' : 'flex-start' }}>
     {hasGroupResponses && responses.map((groupResponse, index) => {
       if (groupResponse !== null && typeof groupResponse === 'object') {
         return (
@@ -30,7 +30,7 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
     })
       }
     {!hasGroupResponses && responses.map((option, index) => (
-      <div key={index} className="draggable_box" style={{ fontSize: smallSize ? 10 : fontSize }}>
+      <div key={index} className="draggable_box" style={{ fontSize: smallSize ? 11 : fontSize, fontWeight: smallSize ? 600 : 300 }}>
         {!dragHandler && (
         <Draggable type="metal" data={option}>{option}</Draggable>
         )}

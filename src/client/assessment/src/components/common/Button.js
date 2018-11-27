@@ -157,7 +157,7 @@ const Container = styled.button`
 
   :hover {
     background: ${({ backgroundColorHover }) => backgroundColorHover};
-    color: ${({ hoverColor }) => hoverColor}
+    color: ${({ hoverColor }) => hoverColor};
     cursor: pointer;
   }
 `;

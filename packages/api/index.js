@@ -7,3 +7,4 @@ export { default as testActivityApi } from './src/testActivity';
 export { default as authApi } from './src/auth';
 export { default as testItemActivityApi } from './src/userTestItemActivity';
 export { default as reportsApi } from './src/reports';
+export { default as API_CONFIG } from './src/config';

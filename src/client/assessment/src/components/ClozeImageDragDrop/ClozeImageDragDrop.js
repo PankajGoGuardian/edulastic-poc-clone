@@ -143,6 +143,7 @@ class ClozeImageDragDrop extends Component {
                   showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
                   uiStyle={uiStyle}
                   backgroundColor={item.background}
+                  maxRespCount={item.maxRespCount}
                   onAddAltResponses={this.handleAddAltResponses}
                 />
                 <CorrectAnswerOptions>
@@ -277,6 +278,7 @@ class ClozeImageDragDrop extends Component {
                 smallSize={smallSize}
                 templateMarkUp={item.templateMarkUp}
                 userSelections={[]}
+                maxRespCount={item.maxRespCount}
                 onChange={this.handleAddAnswer}
               />
             )}
@@ -295,7 +297,7 @@ ClozeImageDragDrop.propTypes = {
   history: PropTypes.object,
   setQuestionData: PropTypes.func.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  userAnswer: PropTypes.any,
+  userAnswer: PropTypes.array,
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
   // eslint-disable-next-line react/no-unused-prop-types

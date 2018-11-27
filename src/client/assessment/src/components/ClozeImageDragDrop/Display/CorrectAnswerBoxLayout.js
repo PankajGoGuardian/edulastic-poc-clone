@@ -7,14 +7,15 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, t }) => {
   const results = userAnswers;
   return (
     <div className="correctanswer-box" style={{ padding: 16, fontSize }}>
-      <b style={{ fontSize: 13 }}>
+      <b style={{ fontSize }}>
         <span style={{ color: '#444' }}>{t('component.clozeImageDragDrop.draganddrop')}&nbsp;&nbsp;</span>
         <span style={{ color: '#878282' }}>{t('component.clozeImageDragDrop.theanswer')}</span>
       </b>
-      <div style={{ marginRight: -20, marginLeft: -20 }}>
+      <div style={{ marginTop: 10 }}>
         {results.map((result, index) => (
-          <div key={index} className="answer">
-            &nbsp;<span className="text">{result}</span>&nbsp;
+          <div key={index} className="imagelabeldragdrop-droppable active" style={{ margin: '8px 15px', marginLeft: 0, display: 'inline-flex' }}>
+            <span className="index index-box" style={{ padding: 8 }}>{index + 1}</span>
+            <span className="text container" style={{ padding: '8px 15px', fontWeight: 'bold', width: 'auto', background: 'white' }}>{result && result.join(', ')}</span>
           </div>
         ))
         }

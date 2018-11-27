@@ -37,6 +37,7 @@
       "widthpx": "Width (px)",
       "heightpx": "Height (px)",
       "wordwrap": "Wordwrap",
+      "placeholder": "placeholder",
       "lowercasealphabet": "Lowercase Alphabet",
       "uppercasealphabet": "Uppercase Alphabet",
       "numerical": "Numerical",
@@ -45,6 +46,9 @@
       "right": "Right",
       "left": "Left",
       "add": "add",
+      "text": "text",
+      "number": "number",
+      "inputtype": "inputtype",
       "responsecontainerindividual": "Response Container",
       "responsecontainerindividuals": "Response container (individual)"
     },
@@ -88,6 +92,14 @@
       "addgroup": "Add Group",
       "correctanswer": "Correct Answer"
     },
+    "clozeText": {
+      "templatemarkup": "Template Markup",
+      "thisisstem": "[This is the stem.]",
+      "setcorrectanswers": "Set Correct Answer(s)",
+      "composequestion": "Compose Question",
+      "templatemarkupplaceholder": "[This is the template markup]",
+      "correctanswer": "Correct Answer"
+    },
     "clozeImageDragDrop": {
       "composequestion": "Compose Question",
       "thisisstem": "[This is the stem.]",
@@ -117,6 +129,23 @@
       "transparentpossibleresponses": "Transparent possible responses",
       "theanswer": "THE ANSWER",
       "draganddrop": "DRAG & DROP"
+    },
+    "clozeDropDown": {
+      "templatemarkup": "Template Markup",
+      "thisisstem": "[This is the stem.]",
+      "setcorrectanswers": "Set Correct Answer(s)",
+      "addnewchoice": "Add New Choice",
+      "multiplechoiceoptions": "Multiple Choice Options",
+      "composequestion": "Compose Question",
+      "templatemarkupplaceholder": "[This is the template markup]",
+      "grouppossibleresponses": "Group possible responses",
+      "group": "Group",
+      "choicesforresponse": "Choices for Response",
+      "duplicatedresponses": "Duplicated responses",
+      "showdraghandle": "Show Drag Handle",
+      "shuffleoptions": "Shuffle Options",
+      "addgroup": "Add Group",
+      "correctanswer": "Correct Answer"
     },
     "correctanswers": {
       "setcorrectanswers": "Set Correct Answer(s)",

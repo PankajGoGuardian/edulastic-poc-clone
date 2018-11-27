@@ -53,7 +53,7 @@ class Draggable extends React.Component {
   }
 
   render() {
-    const { top, left, width, height, isDragging, id, label, pointerPosition,
+    const { top, left, width, height, isDragging, id, pointerPosition,
       responseContainerActivated, active, isResizing, updateStateResizing,
       funcResizing, onRemove, showDashedBorder } = this.props;
     const styles = {
@@ -78,7 +78,7 @@ class Draggable extends React.Component {
         onClick={responseContainerActivated}
       >
         <span className="index-box">{id + 1}</span>
-        <span className="label-box">{label}</span>
+        <span className="label-box">&nbsp;</span>
         <DeleteButton onClick={() => onRemove(id)}>
           <IconTrashAlt color={greenDark} hoverColor={red} />
         </DeleteButton>
@@ -115,7 +115,7 @@ Draggable.propTypes = {
   active: PropTypes.bool,
   showDashedBorder: PropTypes.bool,
   pointerPosition: PropTypes.string,
-  label: PropTypes.string.isRequired,
+  // label: PropTypes.string.isRequired,
 };
 
 Draggable.defaultProps = {

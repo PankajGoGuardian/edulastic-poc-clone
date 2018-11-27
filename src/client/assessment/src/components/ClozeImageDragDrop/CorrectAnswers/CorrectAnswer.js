@@ -13,6 +13,7 @@ class CorrectAnswer extends Component {
     t: PropTypes.func.isRequired,
     stimulus: PropTypes.string.isRequired,
     options: PropTypes.array.isRequired,
+    maxRespCount: PropTypes.number.isRequired,
     configureOptions: PropTypes.object.isRequired,
     uiStyle: PropTypes.object.isRequired,
     imageUrl: PropTypes.string.isRequired,
@@ -49,7 +50,7 @@ class CorrectAnswer extends Component {
   render() {
     /* eslint-disable max-len */
     const { t, options, stimulus, response, imageUrl, responses, configureOptions,
-      imageAlterText, imageWidth, uiStyle, showDashedBorder, backgroundColor } = this.props;
+      imageAlterText, imageWidth, uiStyle, showDashedBorder, backgroundColor, maxRespCount } = this.props;
     const { responseScore } = this.state;
     return (
       <div>
@@ -74,6 +75,7 @@ class CorrectAnswer extends Component {
           question={stimulus}
           showDashedBorder={showDashedBorder}
           responseContainers={responses}
+          maxRespCount={maxRespCount}
           imageUrl={imageUrl}
           backgroundColor={backgroundColor}
           userSelections={response.value}

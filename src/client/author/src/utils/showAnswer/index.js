@@ -2,12 +2,16 @@ import multipleChoice from './multipleChoice';
 import orderList from './orderList';
 import clozeDragDrop from './clozeDragDrop';
 import clozeImageDragDrop from './clozeImageDragDrop';
+import clozeDropDown from './clozeDropDown';
+import clozeText from './clozeText';
 
 const evaluators = {
   orderList,
   multipleChoice,
   clozeDragDrop,
-  clozeImageDragDrop
+  clozeImageDragDrop,
+  clozeDropDown,
+  clozeText,
 };
 
 const createShowAnswerResult = (questions, answers) => {

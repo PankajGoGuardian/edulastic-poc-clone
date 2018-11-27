@@ -27,15 +27,15 @@ class DropArea extends React.Component {
   }
 
   onDrop = (e) => {
+    e.preventDefault();
     const { updateData } = this.props;
     const obj = JSON.parse(e.dataTransfer.getData('application/json'));
     const { list } = this.state;
-    const index = obj._id;
+    const index = obj.id;
     list[index].isDragging = false;
     list[index].top = (e.clientY - obj.y);
     list[index].left = (e.clientX - obj.x);
     updateData(list);
-    e.preventDefault();
   }
 
   updateStateDragging = (id, isDragging) => {

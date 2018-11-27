@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Draggable, Droppable } from 'react-drag-and-drop';
-import { cloneDeep, flattenDeep } from 'lodash';
+import { cloneDeep, flattenDeep, isUndefined } from 'lodash';
 import QuestionHeader from '../common/QuestionHeader';
 import ResponseBoxLayout from './ResponseBoxLayout';
 import CheckboxTemplateBoxLayout from './CheckboxResponseBoxLayout';
@@ -40,6 +40,7 @@ class ClozeImageDragDropDisplay extends Component {
 
   onDrop = (data, index) => {
     const { userAnswers: newAnswers, possibleResponses } = this.state;
+    const { maxRespCount } = this.props;
     const {
       onChange: changeAnswers,
       configureOptions,
@@ -48,7 +49,8 @@ class ClozeImageDragDropDisplay extends Component {
     const newResponses = cloneDeep(possibleResponses);
 
     // Remove duplicated responses if duplicated option is disable
-    if (!isDuplicated) {
+    if (newAnswers[index] && newAnswers[index].length < maxRespCount || isUndefined(newAnswers[index])) {
+      if (!isDuplicated) {
         const sourceIndex = data.metal.split('_')[1];
         const sourceData = data.metal.split('_')[0];
         const fromResp = data.metal.split('_')[2];
@@ -71,7 +73,7 @@ class ClozeImageDragDropDisplay extends Component {
             }
           }
         }
-    } else {
+      } else {
       const value = data.metal.split('_')[0];
       const sourceIndex = data.metal.split('_')[1];
       const fromResp = data.metal.split('_')[2];
@@ -87,6 +89,7 @@ class ClozeImageDragDropDisplay extends Component {
       } else {
         if (newAnswers[index] === undefined) newAnswers[index] = [];
         newAnswers[index].push(value);
+      }
       }
     }
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });
@@ -176,11 +179,10 @@ class ClozeImageDragDropDisplay extends Component {
     } = this.props;
     const { userAnswers, possibleResponses } = this.state;
     const { showDraghandle: dragHandler, shuffleOptions, transparentResponses } = configureOptions;
-    let responses = possibleResponses;
+    let responses = cloneDeep(possibleResponses);
     if (preview && shuffleOptions) {
       responses = this.shuffle(possibleResponses);
     }
-
     // Layout Options
     const fontSize = this.getFontSize(uiStyle.fontsize);
     const { widthpx, heightpx, wordwrap, responsecontainerposition, responsecontainerindividuals, stemnumeration } = uiStyle;
@@ -192,17 +194,17 @@ class ClozeImageDragDropDisplay extends Component {
     }
 
     const previewTemplateBoxLayout = (
-      <div className="imagedragdrop_template_box" style={{ fontSize: smallSize ? 10 : fontSize, padding: smallSize ? 0 : 20 }}>
+      <div className={`imagedragdrop_template_box ${smallSize ? 'small' : ''}`} style={{ fontSize: smallSize ? 10 : fontSize, overflowY: smallSize && 'hidden' }}>
         <div style={{ position: 'relative', top: 0, left: 0, width: smallSize ? '100%' : imageWidth, margin: 'auto', minWidth: smallSize ? '100%' : 600, maxWidth: '100%' }}>
           <img src={imageUrl || defaultImageURL} width={'100%'} alt="resp-preview" style={{ userSelect: 'none', pointerEvents: 'none' }} alt={imageAlterText} />
             {responseContainers.map((responseContainer, index) => {
                 const dropTargetIndex = index;
                 let btnStyle = {
-                  widthpx: responseContainer.width,
-                  width: responseContainer.width,
-                  top: responseContainer.top,
-                  left: responseContainer.left,
-                  height: responseContainer.height,
+                  widthpx: smallSize ? responseContainer.width / 2 : responseContainer.width,
+                  width: smallSize ? responseContainer.width / 2 : responseContainer.width,
+                  top: smallSize ? responseContainer.top / 2 : responseContainer.top,
+                  left: smallSize ? responseContainer.left / 2 : responseContainer.left,
+                  height: smallSize ? responseContainer.height / 2 : responseContainer.height,
                   border: showDashedBorder ? 'dashed 2px rgba(0, 0, 0, 0.65)' : 'solid 1px lightgray',
                   position: 'absolute',
                   background: backgroundColor,
@@ -235,7 +237,10 @@ class ClozeImageDragDropDisplay extends Component {
                   <Droppable
                     key={index}
                     types={['metal']} // <= allowed drop types
-                    style={btnStyle}
+                    style={{
+                      ...btnStyle,
+                      borderStyle: smallSize ? 'dashed' : 'solid'
+                    }}
                     className={'imagelabeldragdrop-droppable active'}
                     onDrop={data => this.onDrop(data, dropTargetIndex)}
                   >
@@ -296,13 +301,16 @@ class ClozeImageDragDropDisplay extends Component {
         userAnswers={validation.valid_response && validation.valid_response.value}
       />
     ) : (<div/>);
-    const responseBoxLayout = showAnswer || smallSize ? (<div/>) : previewResponseBoxLayout;
+    const responseBoxLayout = showAnswer ? (<div/>) : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : (<div/>);
+
+    const responseposition  = smallSize ? 'right' : responsecontainerposition;
+
     return (
       <div style={{ fontSize: fontSize }}>
         <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }}/>
         <div>
-          {responsecontainerposition === 'top' && (
+          {responseposition === 'top' && (
             <React.Fragment>
               <div style={{ margin: '15px 0', borderRadius: 10 }}>
                 {responseBoxLayout}
@@ -312,7 +320,7 @@ class ClozeImageDragDropDisplay extends Component {
               </div>
             </React.Fragment>
           )}
-          {responsecontainerposition === 'bottom' && (
+          {responseposition === 'bottom' && (
             <React.Fragment>
               <div style={{ margin: '15px 0', borderRadius: 10 }}>
                 {templateBoxLayout}
@@ -322,9 +330,20 @@ class ClozeImageDragDropDisplay extends Component {
               </div>
             </React.Fragment>
           )}
-          {responsecontainerposition === 'left' && (
+          {responseposition === 'left' && (
             <div style={{ display: 'flex' }}>
-              <div hidden={checkAnswer || showAnswer} className="left responseboxContainer" style={{ width: '20%', margin: 15, height: 'auto', borderRadius: 10, background: 'lightgray', display: 'flex', justifyContent: 'center' }}>
+              <div
+                hidden={checkAnswer || showAnswer}
+                className="left responseboxContainer"
+                style={{
+                  width: '20%',
+                  margin: 15,
+                  height: 'auto',
+                  borderRadius: 10,
+                  background: 'lightgray',
+                  display: 'flex',
+                  justifyContent: 'center'
+                }}>
                 {responseBoxLayout}
               </div>
               <div style={{ margin: '15px 0 15px 15px', borderRadius: 10, flex: 1 }}>
@@ -332,12 +351,28 @@ class ClozeImageDragDropDisplay extends Component {
               </div>
             </div>
           )}
-          {responsecontainerposition === 'right' && (
-            <div style={{ display: 'flex' }}>
-              <div style={{ flex: 1, margin: '15px 15px 15px 0', borderRadius: 10 }}>
+          {responseposition === 'right' && (
+            <div style={{ display: 'flex', height: smallSize ? 190 : '100%', margin: smallSize ? '-30px -40px' : 0 }}>
+              <div style={{
+                flex: 1,
+                margin: smallSize ? 0 : '15px 15px 15px 0',
+                borderRadius: 10
+              }}>
                 {templateBoxLayout}
               </div>
-              <div hidden={checkAnswer || showAnswer} className="right responseboxContainer" style={{ height: 'auto', width: '20%', margin: 15, borderRadius: 10, background: 'lightgray', display: 'flex', justifyContent: 'center' }}>
+              <div
+                hidden={checkAnswer || showAnswer}
+                className={`right responseboxContainer ${smallSize ? 'small' : ''}`}
+                style={{
+                  height: 'auto',
+                  width: smallSize ? '120px' : '20%',
+                  margin: smallSize ? 0 : 15,
+                  borderRadius: smallSize ? 0 : 10,
+                  background: 'lightgray',
+                  display: 'flex',
+                  justifyContent: 'center'
+                }}
+              >
                 {responseBoxLayout}
               </div>
             </div>
@@ -368,6 +403,7 @@ ClozeImageDragDropDisplay.propTypes = {
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
   imageWidth: PropTypes.number,
+  maxRespCount: PropTypes.number,
 };
 
 ClozeImageDragDropDisplay.defaultProps = {
@@ -386,6 +422,7 @@ ClozeImageDragDropDisplay.defaultProps = {
   imageUrl: undefined,
   imageAlterText: '',
   imageWidth: 600,
+  maxRespCount: 1,
   configureOptions: {
     showDraghandle: false,
     duplicatedResponses: false,
@@ -400,7 +437,8 @@ ClozeImageDragDropDisplay.defaultProps = {
     heightpx: 0,
     wordwrap: false,
     responsecontainerindividuals: []
-  }
+  },
+  // item: {}
 };
 
 export default ClozeImageDragDropDisplay;

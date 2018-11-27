@@ -5,6 +5,20 @@ import TestModel from '../models/test';
 
 const router = Router();
 
+/**
+ * @swagger
+ * /reports:
+ *   get:
+ *     tags:
+ *       - Reports
+ *     summary: Fetch user reports
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 router.get('/', async (req, res) => {
   try {
     const userId = req.user._id;

@@ -143,7 +143,7 @@ export default router;
 
 /**
  * @swagger
- * /usertestactivity/{id}/previousResponses:
+ * /usertestactivity:
  *   get:
  *     tags:
  *       - TestActivity

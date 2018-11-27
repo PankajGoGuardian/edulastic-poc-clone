@@ -1,4 +1,5 @@
 set -e
 
 cd ~/edulastic-poc
-yarn
+yarn install --no-lockfile --production=false
+yarn build

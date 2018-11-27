@@ -2,6 +2,7 @@ import * as moment from 'moment';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import { Button } from 'antd';
 import PropTypes from 'prop-types';
 import { IconClockCircularOutline } from '@edulastic/icons';
 import AssignmentsContent from '../../commonStyle/assignmentContent';
@@ -28,7 +29,19 @@ const Report = ({ testName, score, totalQuestion, createdAt }) => (
       <CorrectText>Score</CorrectText>
     </div>
     <StartAssignmentBtn>
-      <p>review</p>
+      <Button
+        style={{
+          width: 195,
+          height: 53,
+          fontWeight: 600,
+          border: '1px solid #12a6e8',
+          color: '#12a6e8',
+          fontSize: '0.7rem',
+          borderRadius: 65
+        }}
+      >
+        REVIEW
+      </Button>
     </StartAssignmentBtn>
   </Wrapper>
 );
@@ -149,33 +162,12 @@ const Icon = styled(IconClockCircularOutline)`
 
 const StartAssignmentBtn = styled.div`
   width: 12.3rem;
-  & p {
-    color: #12a6e8;
-    border: 0.08rem solid #12a6e8;
-    padding: 1.1rem 1.5rem;
-    border-radius: 2rem;
-    text-align: center;
-    text-transform: uppercase;
-    font-size: 0.7rem;
-    margin: 1.3rem 0rem;
-    font-weight: 600;
-    cursor: pointer;
-    &:hover {
-      background: #12a6e8;
-      color: #fff;
-    }
-  }
+  text-align: center;
   @media (max-width: 900px) {
     width: 19rem;
-    & p {
-      padding: 1.3rem 1.5rem;
-      font-size: 1rem;
-      margin-bottom: 0rem;
-    }
+    margin-top: 1rem;
   }
   @media (max-width: 380px) {
     width: 100%;
-    & p {
-    }
   }
 `;

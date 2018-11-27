@@ -2,14 +2,24 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { IconHeader, IconClose, IconChevronLeft, IconLogoCompact } from '@edulastic/icons';
+import {
+  IconHeader,
+  IconClose,
+  IconChevronLeft,
+  IconLogoCompact
+} from '@edulastic/icons';
 
 import Help from './help';
 import Navigation from './navigation';
 import { desktopSideBar } from '../actions/togglemenu';
 import { responsiveSideBar } from '../actions/responsivetogglemenu';
 
-const Header = ({ flag, desktopSideBar: desktop, sidebar, responsiveSideBar: responsive }) => (
+const Header = ({
+  flag,
+  desktopSideBar: desktop,
+  sidebar,
+  responsiveSideBar: responsive
+}) => (
   <Sidebar flag={flag} sidebar={sidebar}>
     <SidebarWrapper>
       <HeaderWrapper flag={flag} sidebar={sidebar}>
@@ -26,15 +36,15 @@ const Header = ({ flag, desktopSideBar: desktop, sidebar, responsiveSideBar: res
 export default React.memo(
   connect(
     ({ ui }) => ({ flag: ui.flag, sidebar: ui.sidebar }),
-    { desktopSideBar, responsiveSideBar },
-  )(Header),
+    { desktopSideBar, responsiveSideBar }
+  )(Header)
 );
 
 Header.propTypes = {
   flag: PropTypes.bool.isRequired,
   sidebar: PropTypes.bool.isRequired,
   desktopSideBar: PropTypes.func.isRequired,
-  responsiveSideBar: PropTypes.func.isRequired,
+  responsiveSideBar: PropTypes.func.isRequired
 };
 
 const Sidebar = styled.div`
@@ -67,9 +77,12 @@ const Sidebar = styled.div`
 `;
 
 // empty component???
-const SidebarWrapper = styled.div``;
+const SidebarWrapper = styled.div`
+  position: fixed;
+`;
 const HeaderWrapper = styled.div`
-  padding: ${props => (props.flag ? ' 1.7rem 1rem 1.7rem 2.5rem' : '1.8rem 1rem')};
+  padding: ${props =>
+    (props.flag ? ' 1.7rem 1rem 1.7rem 2.5rem' : '1.8rem 1rem')};
   margin: ${props => (props.flag ? '0rem' : '0rem 2rem')};
   border-bottom: 1px solid #d9d6d6;
   text-align: center;

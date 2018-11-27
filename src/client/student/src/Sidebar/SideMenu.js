@@ -2,7 +2,15 @@ import React, { Component } from 'react';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Layout, Menu as AntMenu, Row, Col, Select, Icon as AntIcon } from 'antd';
+import {
+  Layout,
+  Menu as AntMenu,
+  Row,
+  Col,
+  Select,
+  Affix,
+  Icon as AntIcon
+} from 'antd';
 import styled from 'styled-components';
 import {
   IconHeader,
@@ -11,7 +19,7 @@ import {
   IconBarChart,
   IconReport,
   IconManage,
-  IconQuestion,
+  IconQuestion
 } from '@edulastic/icons';
 import { withWindowSizes } from '@edulastic/common';
 
@@ -21,20 +29,20 @@ const menuItems = [
   {
     label: 'Dashboard',
     icon: IconClockDashboard,
-    path: 'home/dashboard',
+    path: 'home/dashboard'
   },
   {
     label: 'Reports',
-    icon: IconReport,
+    icon: IconReport
   },
   {
     label: 'Skill Report',
-    icon: IconBarChart,
+    icon: IconBarChart
   },
   {
     label: 'Manage Class',
-    icon: IconManage,
-  },
+    icon: IconManage
+  }
 ];
 
 class SideMenu extends Component {
@@ -42,7 +50,7 @@ class SideMenu extends Component {
     super(props);
 
     this.state = {
-      collapsed: false,
+      collapsed: false
     };
   }
 
@@ -59,7 +67,7 @@ class SideMenu extends Component {
     if (menuItems[item.key].path !== undefined) {
       history.push(`/${menuItems[item.key].path}`);
     }
-  }
+  };
 
   renderIcon(icon) {
     const { collapsed } = this.state;
@@ -81,89 +89,101 @@ class SideMenu extends Component {
   render() {
     const { collapsed, broken } = this.state;
     const { windowWidth } = this.props;
-    const isCollapsed = (windowWidth > 1200 || windowWidth <= 480 || windowWidth === 646) ? collapsed : true;
+    const isCollapsed =
+      windowWidth > 1200 || windowWidth <= 480 || windowWidth === 646
+        ? collapsed
+        : true;
     return (
-      <SideBar
-        collapsed={isCollapsed}
-        onCollapse={collapsedStatus => this.setState({ collapsed: collapsedStatus })}
-        breakpoint="md"
-        onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
-        width={broken ? '100%' : 245}
-        collapsedWidth={broken ? '0' : '100'}
-        theme="light"
-        className="sideBarwrapper"
-      >
-        <LogoWrapper className="logoWrapper">
-          {broken ? (
-            <Col span={3}>
-              <AntIcon
-                className="mobileCloseIcon"
-                type="close"
-                theme="outlined"
-                onClick={this.onCollapse}
-              />
+      <Affix style={{ width: isCollapsed ? 107 : 293 }}>
+        <SideBar
+          collapsed={isCollapsed}
+          onCollapse={collapsedStatus =>
+            this.setState({ collapsed: collapsedStatus })
+          }
+          breakpoint="md"
+          onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
+          width={broken ? '100%' : 238}
+          collapsedWidth={broken ? '0' : '100'}
+          theme="light"
+          className="sideBarwrapper"
+        >
+          <LogoWrapper className="logoWrapper">
+            {broken ? (
+              <Col span={3}>
+                <AntIcon
+                  className="mobileCloseIcon"
+                  type="close"
+                  theme="outlined"
+                  onClick={this.onCollapse}
+                />
+              </Col>
+            ) : null}
+            <Col span={18} style={{ textAlign: 'left' }}>
+              {isCollapsed ? <LogoCompact /> : <Logo />}
             </Col>
-          ) : null}
-          <Col span={18} style={{ textAlign: 'left' }}>
-            {isCollapsed ? <LogoCompact /> : <Logo />}
-          </Col>
-          {broken ? null : (
-            <Col span={6} style={{ textAlign: 'right', color: '#1fe3a1' }}>
-              <AntIcon
-                className="trigger"
-                type={isCollapsed ? 'right' : 'left'}
-                onClick={this.onCollapse}
-              />
-            </Col>
-          )}
-        </LogoWrapper>
-        <LogoDash />
-        <MenuWrapper>
-          <Menu theme="light" defaultSelectedKeys={['1']} mode="inline" onClick={item => this.handleMenu(item)}>
-            {menuItems.map((menu, index) => {
-              const MenuIcon = this.renderIcon(menu.icon);
-              return (
-                <MenuItem key={index.toString()}>
-                  <MenuIcon />
-                  {!isCollapsed && <span>{menu.label}</span>}
-                </MenuItem>
-              );
-            })}
-          </Menu>
-          <MenuFooter className="footerBottom">
-            <QuestionButton className="questionBtn">
-              <HelpIcon />
-              {isCollapsed ? null : <span>Help Center</span>}
-            </QuestionButton>
-            <UserInfoButton className="userinfoBtn">
-              <img src={Profile} alt="Profile" />
-              <div>
-                {!isCollapsed && <label style={{ marginLeft: 11 }}>Zack oliver</label>}
-                <Select
-                  defaultValue="Student"
-                  suffixIcon={
-                    <IconDropdown type="caret-down" />
-                  }
-                >
-                  <Select.Option value="Student">Student</Select.Option>
-                </Select>
-              </div>
-            </UserInfoButton>
-          </MenuFooter>
-        </MenuWrapper>
-      </SideBar>
+            {broken ? null : (
+              <Col span={6} style={{ textAlign: 'right', color: '#1fe3a1' }}>
+                <AntIcon
+                  className="trigger"
+                  type={isCollapsed ? 'right' : 'left'}
+                  onClick={this.onCollapse}
+                />
+              </Col>
+            )}
+          </LogoWrapper>
+          <LogoDash />
+          <MenuWrapper>
+            <Menu
+              theme="light"
+              defaultSelectedKeys={['1']}
+              mode="inline"
+              onClick={item => this.handleMenu(item)}
+            >
+              {menuItems.map((menu, index) => {
+                const MenuIcon = this.renderIcon(menu.icon);
+                return (
+                  <MenuItem key={index.toString()}>
+                    <MenuIcon />
+                    {!isCollapsed && <span>{menu.label}</span>}
+                  </MenuItem>
+                );
+              })}
+            </Menu>
+            <MenuFooter className="footerBottom">
+              <QuestionButton className="questionBtn">
+                <HelpIcon />
+                {isCollapsed ? null : <span>Help Center</span>}
+              </QuestionButton>
+              <UserInfoButton className="userinfoBtn">
+                <img src={Profile} alt="Profile" />
+                <div>
+                  {!isCollapsed && (
+                    <label style={{ marginLeft: 11 }}>Zack oliver</label>
+                  )}
+                  <Select
+                    defaultValue="Student"
+                    suffixIcon={<IconDropdown type="caret-down" />}
+                  >
+                    <Select.Option value="Student">Student</Select.Option>
+                  </Select>
+                </div>
+              </UserInfoButton>
+            </MenuFooter>
+          </MenuWrapper>
+        </SideBar>
+      </Affix>
     );
   }
 }
 
 SideMenu.propTypes = {
   windowWidth: PropTypes.number.isRequired,
-  history: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired
 };
 
 const enhance = compose(
   withRouter,
-  withWindowSizes,
+  withWindowSizes
 );
 
 export default enhance(SideMenu);
@@ -178,10 +198,10 @@ const SideBar = styled(Layout.Sider)`
   &.ant-layout-sider-collapsed .logoWrapper {
     padding: 21px;
   }
-  &.ant-layout-sider-collapsed .footerBottom{
+  &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px;
   }
-  &.ant-layout-sider-collapsed .questionBtn{
+  &.ant-layout-sider-collapsed .questionBtn {
     width: 60px;
     height: 60px;
     border-radius: 65px;
@@ -208,7 +228,7 @@ const SideBar = styled(Layout.Sider)`
     right: 15px;
     top: 25px;
   }
-  &.ant-layout-sider-collapsed .ant-select-selection-selected-value{
+  &.ant-layout-sider-collapsed .ant-select-selection-selected-value {
     display: none !important;
   }
   &.ant-layout-sider-collapsed .ant-select {
@@ -240,7 +260,7 @@ const LogoDash = styled.div`
   width: 90%;
   height: 0;
   opacity: 0.61;
-  border-bottom:  solid 1px #d9d6d6;
+  border-bottom: solid 1px #d9d6d6;
   margin: 0 auto;
 `;
 
@@ -252,7 +272,7 @@ const MenuWrapper = styled.div`
   padding: 21px 0px;
 
   @media screen and (max-width: 1300px) {
-    height: 600px;    
+    height: 600px;
   }
 `;
 
@@ -271,7 +291,9 @@ const Menu = styled(AntMenu)`
   &.ant-menu-inline .ant-menu-item:after {
     content: unset;
   }
-  &.ant-menu-inline, &.ant-menu-vertical, &.ant-menu-vertical-left{
+  &.ant-menu-inline,
+  &.ant-menu-vertical,
+  &.ant-menu-vertical-left {
     border-right: 0px;
   }
   &.ant-menu-inline .ant-menu-item {
@@ -319,8 +341,7 @@ const MenuItem = styled(AntMenu.Item)`
   margin-top: 16px;
 `;
 
-const MenuFooter = styled.div`
-`;
+const MenuFooter = styled.div``;
 
 const QuestionButton = styled.div`
   border-radius: 65px;
@@ -362,7 +383,7 @@ const UserInfoButton = styled.div`
     width: 44px;
   }
 
-  .ant-select-selection{
+  .ant-select-selection {
     background: transparent;
     border: 0px;
     color: #ffffff;

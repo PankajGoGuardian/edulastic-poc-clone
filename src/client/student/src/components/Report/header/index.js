@@ -1,15 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { memo } from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { IconCaretDown, IconMenuOpenClose } from '@edulastic/icons';
-import AssignmentsHeader from '../../commonStyle/assignmentHeader';
+import { IconCaretDown } from '@edulastic/icons';
+import { darkBlueSecondary, white } from '@edulastic/colors';
+import { Affix } from 'antd';
 import ClassLabel from '../../commonStyle/classLabel';
-import AssignmentTitle from '../../commonStyle/assignmentTitle';
-import AssignmentFilter from '../../commonStyle/assignmentFilter';
 import AssignmentSelectClass from '../../commonStyle/assignmentSelectClass';
 import SelectStyle from '../../commonStyle/selectStyle';
-import { responsiveSideBar } from '../../../actions/responsivetogglemenu';
 
 const options = ['FFC1', 'FFC2', 'FFC3', 'FFC4', 'FFC5', 'FFC6'];
 
@@ -17,40 +13,41 @@ const AssignmentSelect = () => (
   <AssignmentSelectClass>
     <ClassLabel>class</ClassLabel>
     <SelectStyle>
-      {options.map(option => (
-        <option> {option} </option>
+      {options.map((option, index) => (
+        <option key={index}> {option} </option>
       ))}
     </SelectStyle>
     <Icon />
   </AssignmentSelectClass>
 );
 
-const ReportHeader = ({ flag, responsiveSideBar: responsive }) => (
-  <div>
-    <AssignmentsHeader flag={flag}>
-      <AssignmentHammerger>
-        <IconMenu onClick={responsive} />
-      </AssignmentHammerger>
-      <AssignmentTitle>Reports</AssignmentTitle>
-      <AssignmentFilter>
-        <AssignmentSelect />
-      </AssignmentFilter>
-    </AssignmentsHeader>
-  </div>
+const ReportHeader = () => (
+  <Affix>
+    <Container>
+      <Title>Reports</Title>
+      <AssignmentSelect />
+    </Container>
+  </Affix>
 );
 
-export default React.memo(
-  connect(
-    ({ ui }) => ({ flag: ui.flag }),
-    { responsiveSideBar },
-  )(ReportHeader),
-);
+export default memo(ReportHeader);
 
-ReportHeader.propTypes = {
-  flag: PropTypes.bool.isRequired,
-  responsiveSideBar: PropTypes.func.isRequired,
-};
+const Container = styled.div`
+  height: 89px;
+  padding: 0px 40px;
+  background: ${darkBlueSecondary};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
 
+const Title = styled.h1`
+  color: ${white};
+  font-size: 22px;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+`;
 const Icon = styled(IconCaretDown)`
   position: absolute;
   left: 11rem;
@@ -70,25 +67,5 @@ const Icon = styled(IconCaretDown)`
   @media (max-width: 320px) {
     left: 8rem;
     top: 1.05rem;
-  }
-`;
-
-const AssignmentHammerger = styled.div`
-  color: #fff;
-  font-weight: 700;
-  font-size: 1.5rem;
-  @media (min-width: 1200px) {
-    display: none;
-  }
-`;
-
-const IconMenu = styled(IconMenuOpenClose)`
-  fill: #fff;
-  margin-right: 2rem;
-  width: 20px !important;
-  height: 20px !important;
-  cursor: pointer;
-  &:hover {
-    fill: #fff;
   }
 `;

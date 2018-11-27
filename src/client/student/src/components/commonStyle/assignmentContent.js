@@ -4,7 +4,7 @@ const AssignmentsContent = styled.div`
    {
   }
   @media (min-width: 1200px) {
-    padding: 6.3rem 0rem 5rem 0rem;
+    margin: 1rem;
   }
   @media (max-width: 1060px) {
     padding: 1.3rem 2rem 5rem 2rem;

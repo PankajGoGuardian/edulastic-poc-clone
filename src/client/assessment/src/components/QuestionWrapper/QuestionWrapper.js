@@ -14,7 +14,7 @@ import withAnswerSave from '../HOC/withAnswerSave';
 import MatrixChoice from '../MatrixChoice/MatrixChoice';
 import Protractor from '../Protractor';
 
-const getQuestion = (type) => {
+const getQuestion = type => {
   switch (type) {
     case 'multipleChoice':
       return MultipleChoice;
@@ -38,6 +38,8 @@ const getQuestion = (type) => {
       return ClozeDropDown;
     case 'clozeText':
       return ClozeText;
+    case 'protractor':
+      return Protractor;
     default:
       return null;
   }

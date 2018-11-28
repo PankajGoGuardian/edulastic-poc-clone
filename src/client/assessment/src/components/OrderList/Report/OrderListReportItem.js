@@ -15,7 +15,7 @@ const OrderListReportItem = SortableElement(
         <Text>
           <FlexContainer>
             <Index>{ind}</Index>
-            <QuestionText>{children}</QuestionText>
+            <div dangerouslySetInnerHTML={{ __html: children }} />
           </FlexContainer>
           {correct && (
             <Icon color={green}>
@@ -29,22 +29,21 @@ const OrderListReportItem = SortableElement(
           )}
         </Text>
       </Container>
-      {showAnswers &&
-        !correct && (
-          <CorrectAnswerItem>
-            <Text>
-              <FlexContainer>
-                <Index color={textColor}>{ind}</Index>
-                <QuestionText style={{ color: textColor }}>
-                  <span>{t('component.orderlist.orderlistreportitem.correctanswer')}</span>{' '}
-                  {correctText}
-                </QuestionText>
-              </FlexContainer>
-            </Text>
-          </CorrectAnswerItem>
+      {showAnswers && !correct && (
+        <CorrectAnswerItem>
+          <Text>
+            <FlexContainer>
+              <Index color={textColor}>{ind}</Index>
+              <QuestionText style={{ color: textColor }}>
+                <span>{t('component.orderlist.orderlistreportitem.correctanswer')}</span>{' '}
+                <div dangerouslySetInnerHTML={{ __html: correctText }} />
+              </QuestionText>
+            </FlexContainer>
+          </Text>
+        </CorrectAnswerItem>
       )}
     </div>
-  ),
+  )
 );
 
 OrderListReportItem.propTypes = {
@@ -53,11 +52,11 @@ OrderListReportItem.propTypes = {
   showAnswers: PropTypes.bool,
   correctText: PropTypes.string,
   ind: PropTypes.number.isRequired,
-  t: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 OrderListReportItem.defaultProps = {
   showAnswers: false,
-  correctText: '',
+  correctText: ''
 };
 
 export default withNamespaces('assessment')(OrderListReportItem);

@@ -31,7 +31,7 @@ const Preview = ({ type, saveAnswer, userAnswer, item, smallSize }) => {
 
   return (
     <div>
-      <div style={{ marginBottom: 20 }}>{item.stimulus}</div>
+      <div style={{ marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
       <Matrix
         stems={item.stems}
         options={item.options}

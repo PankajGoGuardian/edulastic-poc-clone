@@ -406,15 +406,14 @@ template {
   color: #12a6e8;
 }
 
-.ql-editor p, .response-editor p {
+.ql-editor p,
+.response-editor p {
   display: inline;
 }
 
 .ql-editor {
   border-radius: 10px;
-  min-height: 134px;
-  border: 1px solid rgb(223, 223, 223);
-  padding: 18px 33px !important;
+  padding: 0 !important;
   font-size: 13px;
   letter-spacing: 0.2px;
   color: rgb(122, 122, 122);
@@ -443,13 +442,13 @@ template {
 }
 
 .imagedragdrop_template_box {
-    background: white;
-    padding: 18px 33px !important;
-    border-radius: 10px;
-    border: solid 1px #dfdfdf;
-    height: 100%;
-    max-height: calc(100vh - 300px);
-    overflow-y: auto;
+  background: white;
+  padding: 18px 33px !important;
+  border-radius: 10px;
+  border: solid 1px #dfdfdf;
+  height: 100%;
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
 }
 
 .imagedragdrop_template_box.small {
@@ -457,7 +456,7 @@ template {
   border: none;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   zoom: 1.3;
   margin-right: 5px;
 }
@@ -485,7 +484,8 @@ input[type="checkbox"] {
   min-width: 25px;
 }
 
-.draggable_box i, .draggable_box_transparent i {
+.draggable_box i,
+.draggable_box_transparent i {
   margin-right: 5px;
   margin-top: 3px;
 }
@@ -529,6 +529,7 @@ input[type="checkbox"] {
 
 .text-editor {
   position: relative;
+  width: 100%;
 }
 
 .responses_box .group {
@@ -673,14 +674,16 @@ input[type="checkbox"] {
   padding: 0px 8px;
 }
 
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   -webkit-box-sizing: border-box;
-  -moz-box-sizing:    border-box;
-  -o-box-sizing:      border-box;
-  -ms-box-sizing:     border-box;
-  box-sizing:         border-box;
+  -moz-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
 }
-[draggable=true] {
+[draggable='true'] {
   -moz-user-select: none;
   -khtml-user-select: none;
   -webkit-user-select: none;
@@ -690,21 +693,21 @@ input[type="checkbox"] {
   -webkit-user-drag: element;
 }
 .drop-area {
- 	position: relative;
-  padding:0;
- 	width: 100%;
- 	height: 600px;
+  position: relative;
+  padding: 0;
+  width: 100%;
+  height: 600px;
 }
 .drop-area .item {
- 	position: absolute;
-	cursor: pointer;
-  width:100px;
-  height:60px;
-	font-size: 105%;
+  position: absolute;
+  cursor: pointer;
+  width: 100px;
+  height: 60px;
+  font-size: 105%;
   background: white;
   border: dashed 1px black;
-  margin:0;
-  padding:0;
+  margin: 0;
+  padding: 0;
 }
 .unselectable {
   -moz-user-select: none;
@@ -817,11 +820,14 @@ input[type="checkbox"] {
   display: block !important;
 }
 
-.ant-select, .ant-input, .ant-input-number {
+.ant-select,
+.ant-input,
+.ant-input-number {
   min-width: 100px;
 }
 
-.template_box.dropdown-small, .template_box.text-small {
+.template_box.dropdown-small,
+.template_box.text-small {
   font-size: 14px;
   font-weight: 600;
   padding: 0px !important;

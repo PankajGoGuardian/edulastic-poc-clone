@@ -143,6 +143,7 @@ const MatrixChoice = ({
               onChange={handleChangeStem}
               onAdd={handleAddStem}
               columns={2}
+              prefix="list1"
             />
             <Subtitle>Steams</Subtitle>
             <List
@@ -153,6 +154,7 @@ const MatrixChoice = ({
               onChange={handleChangeOption}
               onAdd={handleAddOption}
               columns={2}
+              prefix="list2"
             />
             <Answers item={item} setQuestionData={setQuestionData} />
           </Paper>

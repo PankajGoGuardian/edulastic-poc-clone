@@ -11,13 +11,13 @@ import { cloneDeep } from 'lodash';
 import AddNewChoiceBtn from './AddNewChoiceBtn';
 import { setQuestionDataAction } from '../../../../../author/src/actions/question';
 import { ALPHABET } from '../constants/others';
-import { QuestionTextArea, SortableList, Subtitle } from '../../common';
+import { SortableList, Subtitle, QuestionTextArea } from '../../common';
 
 class MultipleChoiceAuthoring extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
-    setQuestionData: PropTypes.func.isRequired,
+    setQuestionData: PropTypes.func.isRequired
   };
 
   getNewItem() {
@@ -52,7 +52,7 @@ class MultipleChoiceAuthoring extends Component {
     const newItem = this.getNewItem();
     newItem.options[index] = {
       value: index,
-      label: value,
+      label: value
     };
 
     setQuestionData(newItem);
@@ -64,7 +64,7 @@ class MultipleChoiceAuthoring extends Component {
 
     newItem.options.push({
       value: newItem.options.length,
-      label: `Choice ${ALPHABET[newItem.options.length]}`,
+      label: `Choice ${ALPHABET[newItem.options.length]}`
     });
 
     setQuestionData(newItem);
@@ -78,9 +78,9 @@ class MultipleChoiceAuthoring extends Component {
         <PaddingDiv bottom={20}>
           <Subtitle>{t('component.multiplechoice.composequestion')}</Subtitle>
           <QuestionTextArea
-            placeholder={t('component.multiplechoice.thisisstem')}
             onChange={this.onChangeQuestion}
             value={item.stimulus}
+            placeholder={t('component.multiplechoice.thisisstem')}
           />
           <Subtitle>{t('component.multiplechoice.multiplechoiceoptions')}</Subtitle>
           <SortableList
@@ -106,8 +106,8 @@ const enhance = compose(
   withNamespaces('assessment'),
   connect(
     null,
-    { setQuestionData: setQuestionDataAction },
-  ),
+    { setQuestionData: setQuestionDataAction }
+  )
 );
 
 export default enhance(MultipleChoiceAuthoring);

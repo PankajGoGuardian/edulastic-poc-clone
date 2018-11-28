@@ -27,7 +27,9 @@ const MatrixCell = ({ label, type, correct, isMultiple, checked, onChange, small
   return (
     <Wrapper smallSize={smallSize} correct={correct}>
       {input}
-      {type === 'inline' && <span style={{ color: greenDark }}>{label}</span>}
+      {type === 'inline' && (
+        <div style={{ color: greenDark }} dangerouslySetInnerHTML={{ __html: label }} />
+      )}
     </Wrapper>
   );
 };

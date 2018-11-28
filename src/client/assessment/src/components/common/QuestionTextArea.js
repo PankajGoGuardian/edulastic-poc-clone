@@ -3,12 +3,15 @@ import PropTypes from 'prop-types';
 import TextareaAutosize from 'react-autosize-textarea';
 import styled from 'styled-components';
 import { grey } from '@edulastic/colors';
+import { CustomQuillComponent } from '@edulastic/common';
 
 const QuestionTextArea = ({ onChange, value, style, placeholder }) => (
   <div style={style}>
-    <StyledTextarea
-      onChange={e => onChange(e.target.value)}
+    <CustomQuillComponent
+      toolbarId="stimulus"
       placeholder={placeholder}
+      onChange={onChange}
+      showResponseBtn={false}
       value={value}
     />
   </div>

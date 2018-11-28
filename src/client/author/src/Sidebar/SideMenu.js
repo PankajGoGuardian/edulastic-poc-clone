@@ -2,7 +2,15 @@ import React, { Component } from 'react';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Affix, Layout, Menu as AntMenu, Row, Col, Select, Icon as AntIcon } from 'antd';
+import {
+  Affix,
+  Layout,
+  Menu as AntMenu,
+  Row,
+  Col,
+  Select,
+  Icon as AntIcon
+} from 'antd';
 import styled from 'styled-components';
 import {
   IconHeader,
@@ -89,7 +97,9 @@ class SideMenu extends Component {
     const { collapsed, broken } = this.state;
     const { windowWidth, history } = this.props;
     let isCollapsed =
-      windowWidth > 1200 || windowWidth <= 480 || windowWidth === 646 ? collapsed : true;
+      windowWidth > 1200 || windowWidth <= 480 || windowWidth === 646
+        ? collapsed
+        : true;
     if (history.location.pathname.includes('pickup-questiontype')) {
       isCollapsed = true;
     }
@@ -100,7 +110,9 @@ class SideMenu extends Component {
       <Affix style={{ width: sidebarWidth }}>
         <SideBar
           collapsed={isCollapsed}
-          onCollapse={collapsedStatus => this.setState({ collapsed: collapsedStatus })}
+          onCollapse={collapsedStatus =>
+            this.setState({ collapsed: collapsedStatus })
+          }
           breakpoint="md"
           onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
           width={isMobile ? windowWidth : '100%'}
@@ -158,8 +170,13 @@ class SideMenu extends Component {
               <UserInfoButton className="userinfoBtn">
                 <img src={Profile} alt="Profile" />
                 <div>
-                  {!isCollapsed && <label style={{ marginLeft: 11 }}>Zack oliver</label>}
-                  <Select defaultValue="Student" suffixIcon={<IconDropdown type="caret-down" />}>
+                  {!isCollapsed && (
+                    <label style={{ marginLeft: 11 }}>Zack oliver</label>
+                  )}
+                  <Select
+                    defaultValue="Student"
+                    suffixIcon={<IconDropdown type="caret-down" />}
+                  >
                     <Select.Option value="Student">Student</Select.Option>
                   </Select>
                 </div>

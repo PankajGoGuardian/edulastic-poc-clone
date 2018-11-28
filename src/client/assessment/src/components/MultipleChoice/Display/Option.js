@@ -32,7 +32,7 @@ const Option = ({
   onChange,
   smallSize,
   uiStyle,
-  correct,
+  correct
 }) => {
   const isSelected = userSelections.includes(item.value);
 
@@ -95,7 +95,7 @@ const Option = ({
               smallSize={smallSize}
               style={{ marginBottom: 10 }}
             >
-              <span>{item.label}</span>
+              <div dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
             {container}
           </FlexContainer>
@@ -105,7 +105,7 @@ const Option = ({
           <FlexContainer alignItems="center">
             {container}
             <MultiChoiceContent fontSize={fontSize} smallSize={smallSize}>
-              <span>{item.label}</span>
+              <div dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
           </FlexContainer>
         );
@@ -115,7 +115,7 @@ const Option = ({
           <React.Fragment>
             {container}
             <MultiChoiceContent fontSize={fontSize} smallSize={smallSize}>
-              {item.label}
+              <div dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
           </React.Fragment>
         );
@@ -149,13 +149,13 @@ Option.propTypes = {
   onChange: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
   uiStyle: PropTypes.object.isRequired,
-  correct: PropTypes.object.isRequired,
+  correct: PropTypes.object.isRequired
 };
 
 Option.defaultProps = {
   showAnswer: false,
   smallSize: false,
-  userSelections: [],
+  userSelections: []
 };
 
 export default React.memo(Option);

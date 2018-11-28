@@ -27,14 +27,25 @@ class App extends Component {
           <Route path="/home" component={Dashboard} />
           <Route path="/Signup" component={Signup} />
           <Route path="/Login" component={Login} />
-          <Route path="/student/test/:id" component={() => <Student defaultAP test />} />
+          <Route
+            path="/student/test/:id"
+            component={() => <Student defaultAP test />}
+          />
+          <Route
+            path="/student/test/:id"
+            component={() => <Student defaultAP test />}
+          />
           <Route path="/student/test" component={() => <Student defaultAP />} />
           <Route
             exact
             path="/student/practice/:id"
             component={() => <Student defaultAP={false} test />}
           />
-          <Route exact path="/student/practice" component={() => <Student defaultAP={false} />} />
+          <Route
+            exact
+            path="/student/practice"
+            component={() => <Student defaultAP={false} />}
+          />
         </Switch>
       </div>
     );

@@ -4,20 +4,20 @@ import { SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { IconTrash } from '@edulastic/icons';
 import { greenDark, red } from '@edulastic/colors';
 import PropTypes from 'prop-types';
-import { Input } from 'antd';
+import { CustomQuillComponent } from '@edulastic/common';
 
 const DragHandle = SortableHandle(() => <i className="fa fa-align-justify" />);
 
-const SortableItem = SortableElement(({ value, onRemove, onChange, columns }) => (
+const SortableItem = SortableElement(({ value, onRemove, onChange, columns, indx }) => (
   <SortableItemContainer columns={columns}>
     <div className="main">
       <DragHandle />
-      <Input.TextArea
-        autosize
-        readOnly={!onChange}
-        value={value}
+      <CustomQuillComponent
+        toolbarId={`id${indx}`}
         onChange={onChange}
-        style={{ border: 0, resize: 'none', borderRadius: 10 }}
+        showResponseBtn={false}
+        value={value}
+        style={{ minHeight: 'auto', padding: 10 }}
       />
     </div>
     {onRemove && (
@@ -59,24 +59,6 @@ const SortableItemContainer = styled.div`
     color: #1fe3a1;
     font-size: 16px;
     padding: 15px;
-  }
-  & div.main div {
-    border-left: solid 1px #dfdfdf;
-    padding: 10px 30px;
-    flex: 1;
-    height: 100%;
-    display: flex;
-    box-sizing: border-box;
-  }
-
-  & div.main input {
-    font-size: 13px;
-    line-height: 1.38;
-    letter-spacing: 1px;
-    text-align: left;
-    color: #7a7a7a;
-    border: none;
-    padding: 0 10px;
   }
   & i.fa-trash-o {
     color: #ee1658;

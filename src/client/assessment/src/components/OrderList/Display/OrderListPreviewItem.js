@@ -13,7 +13,7 @@ const OrderListPreviewItem = SortableElement(({ children, showDragHandle, smallS
       </StyledDragHandle>
     )}
     <Text showDragHandle={showDragHandle} smallSize={smallSize}>
-      <span>{children}</span>
+      <div dangerouslySetInnerHTML={{ __html: children }} />
     </Text>
   </Container>
 ));
@@ -22,12 +22,12 @@ OrderListPreviewItem.propTypes = {
   children: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   showDragHandle: PropTypes.bool,
-  smallSize: PropTypes.bool,
+  smallSize: PropTypes.bool
 };
 
 OrderListPreviewItem.defaultProps = {
   showDragHandle: true,
-  smallSize: false,
+  smallSize: false
 };
 
 export default OrderListPreviewItem;

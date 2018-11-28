@@ -85,15 +85,6 @@ const Matrix = ({
     if (correctAnswersMatrix) {
       const answers = correctAnswersMatrix.map(mat => mat[data.index][columnIndex]);
 
-      // const findIndex = correctAnswersMatrix.findIndex(
-      //   mat => mat[data.index][columnIndex] === true,
-      // );
-
-      // if (findIndex > -1) {
-      //   answers = correctAnswersMatrix[findIndex][data.index];
-      //   console.log(correct);
-      // }
-
       const isTrue = el => el === true;
       const isIncorrect = el => el === 'incorrect';
 
@@ -136,10 +127,10 @@ const Matrix = ({
       title: '',
       dataIndex: 'stem',
       key: 'stem',
-      render: stem => stem
+      render: stem => <span dangerouslySetInnerHTML={{ __html: stem }} />
     },
     ...options.map((option, i) => ({
-      title: <span style={{ color: greenDark }}>{option}</span>,
+      title: <span style={{ color: greenDark }} dangerouslySetInnerHTML={{ __html: option }} />,
       dataIndex: `${i}`,
       key: i,
       render: data => getCell(i, data)
@@ -152,7 +143,7 @@ const Matrix = ({
         title: '',
         dataIndex: 'numeration',
         key: 'numeration',
-        render: stem => stem
+        render: stem => <span dangerouslySetInnerHTML={{ __html: stem }} />
       },
       ...columns
     ];

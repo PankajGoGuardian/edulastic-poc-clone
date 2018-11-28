@@ -28,7 +28,12 @@ const ProtractorView = ({ item, smallSize }) => {
       {item.button && (
         <EduButton onClick={() => setShow(!show)} size="large">
           <FlexContainer>
-            <img src={item.image ? item.image : ProtractorImg} alt="" width={16} height={16} />
+            <img
+              src={item.image ? item.image : ProtractorImg}
+              alt=""
+              width={16}
+              height={16}
+            />
             <span>{item.label}</span>
           </FlexContainer>
         </EduButton>

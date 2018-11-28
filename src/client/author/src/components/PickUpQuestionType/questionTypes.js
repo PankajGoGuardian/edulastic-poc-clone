@@ -365,7 +365,12 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       {cards.map(
         ({ title, data, onSelectQuestionType: onSelect, type }) =>
           type === questionType && (
-            <Card key={title} title={title} data={data} onSelectQuestionType={onSelect} />
+            <Card
+              key={title}
+              title={title}
+              data={data}
+              onSelectQuestionType={onSelect}
+            />
           )
       )}
     </FlexContainer>

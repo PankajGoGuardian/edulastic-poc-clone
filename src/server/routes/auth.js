@@ -81,7 +81,7 @@ router.post('/signup', async (req, res) => {
     const data = req.body;
     const body = joi.validate(data, userSchema);
     if (body.error) {
-      return res.boom.badRequest(res, body.error.message);
+      return res.boom.badRequest(body.error.message);
     }
     data.password = await hashPassword(data.password);
     const user = new UserModel();
@@ -93,7 +93,7 @@ router.post('/signup', async (req, res) => {
     return successHandler(res, 'account sucesssfully created');
   } catch (e) {
     req.log.error(e);
-    res.boom.badRequest(res, e);
+    res.boom.badRequest(e);
   }
 });
 

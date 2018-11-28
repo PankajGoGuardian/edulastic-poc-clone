@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 
+import { mobileWidth } from '@edulastic/colors';
 import { FlexContainer, Tabs, Paper } from '@edulastic/common';
 import ItemDetailWidget from './ItemDetailWidget';
 import ItemDetailDropTarget from './ItemDetailDropTarget';
@@ -84,9 +85,9 @@ class ItemDetailRow extends Component {
             {!row.tabs.length && this.renderTabContent({ widgetIndex: i, widget, rowIndex })}
           </React.Fragment>
         ))}
-        <FlexContainer justifyContent="center" style={{ marginBottom: 30, marginRight: 40 }}>
+        <AddButtonContainer justifyContent="center">
           <AddNew onClick={() => onAdd({ rowIndex, tabIndex: value })} />
-        </FlexContainer>
+        </AddButtonContainer>
       </Container>
     );
   }
@@ -110,11 +111,20 @@ const Container = styled(Paper)`
   padding-top: 20px;
   height: 100%;
 
-  ::-webkit-scrollbar {
-    display: none;
+  @media (max-width: ${mobileWidth}) {
+    padding-left: 10px;
   }
 `;
 
 const TabContainer = styled.div`
   margin-bottom: 30px;
+`;
+
+const AddButtonContainer = styled(FlexContainer)`
+  margin-bottom: 30px;
+  margin-right: 40px;
+
+  @media (max-width: ${mobileWidth}) {
+    margin-right: 0px;
+  }
 `;

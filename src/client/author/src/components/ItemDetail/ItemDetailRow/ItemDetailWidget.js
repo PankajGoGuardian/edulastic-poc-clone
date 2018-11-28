@@ -5,7 +5,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { Button } from 'antd';
 import { IconMoveArrows, IconPencilEdit, IconTrash } from '@edulastic/icons';
-import { white, green } from '@edulastic/colors';
+import { white, green, mobileWidth } from '@edulastic/colors';
 import { DragSource } from 'react-dnd';
 import { withNamespaces } from '@edulastic/localization';
 
@@ -114,6 +114,10 @@ const Container = styled.div`
   min-height: 200px;
   flex-direction: column;
   opacity: ${({ isDragging }) => (isDragging ? '0.4' : '1')};
+
+  @media (max-width: ${mobileWidth}) {
+    padding: 20px;
+  }
 `;
 
 const Buttons = styled.div`
@@ -132,5 +136,9 @@ const Buttons = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  @media (max-width: ${mobileWidth}) {
+    right: 0px;
   }
 `;

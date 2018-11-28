@@ -69,7 +69,7 @@ class ItemList extends Component {
           title={t('component.itemlist.header.itemlist')}
         />
         <MainList id="main-list">
-          <ItemFilter onSearch={this.handleSearch} />
+          <ItemFilter onSearch={this.handleSearch} windowWidth={windowWidth} />
           <ListItems id="item-list">
             {
               windowWidth > 468 && (

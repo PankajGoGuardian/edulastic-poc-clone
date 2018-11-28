@@ -20,9 +20,269 @@ class ItemFilter extends Component {
     this.setState({ isShowFilter: !isShowFilter });
   }
 
+  renderMainFilter = () => {
+    const { subjectItems } = this.state;
+    return (
+      <MainFilterItems>
+        <Item>
+          <ItemHeader>Subject</ItemHeader>
+          <ItemBody>
+            <Select
+              mode="multiple"
+              style={{ width: '100%' }}
+              placeholder="Please select"
+              defaultValue={['GRADE 5']}
+            >
+              {subjectItems}
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Subject</ItemHeader>
+          <ItemBody>
+            <Select
+              defaultValue="All subject"
+              style={{ width: '100%' }}
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="math">Math</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Standard Set</ItemHeader>
+          <ItemBody>
+            <Select
+              defaultValue="All standard set"
+              style={{ width: '100%' }}
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="math">Math</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Select Standard</ItemHeader>
+          <ItemBody>
+            <Select
+              defaultValue="All standards"
+              style={{ width: '100%' }}
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="math">Math</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Collection</ItemHeader>
+          <ItemBody>
+            <Select
+              defaultValue="All collections"
+              style={{ width: '100%' }}
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="math">Math</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Question Types</ItemHeader>
+          <ItemBody>
+            <Select
+              defaultValue="All types"
+              style={{ width: '100%' }}
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="math">Math</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Depth of Knowledge</ItemHeader>
+          <ItemBody>
+            <Select
+              defaultValue="All depth of knowledge"
+              style={{ width: '100%' }}
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="math">Math</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Difficulty</ItemHeader>
+          <ItemBody>
+            <Select
+              defaultValue="All levels"
+              style={{ width: '100%' }}
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="math">Math</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Difficulty</ItemHeader>
+          <ItemBody>
+            <Select
+              defaultValue="All levels"
+              style={{ width: '100%' }}
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="math">Math</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Difficulty</ItemHeader>
+          <ItemBody>
+            <Select
+              defaultValue="All levels"
+              style={{ width: '100%' }}
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="math">Math</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Difficulty</ItemHeader>
+          <ItemBody>
+            <Select
+              defaultValue="All levels"
+              style={{ width: '100%' }}
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="math">Math</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Difficulty</ItemHeader>
+          <ItemBody>
+            <Select
+              defaultValue="All levels"
+              style={{ width: '100%' }}
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="math">Math</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Difficulty</ItemHeader>
+          <ItemBody>
+            <Select
+              defaultValue="All levels"
+              style={{ width: '100%' }}
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="math">Math</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Difficulty</ItemHeader>
+          <ItemBody>
+            <Select
+              defaultValue="All levels"
+              style={{ width: '100%' }}
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="math">Math</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Difficulty</ItemHeader>
+          <ItemBody>
+            <Select
+              defaultValue="All levels"
+              style={{ width: '100%' }}
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="math">Math</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Difficulty</ItemHeader>
+          <ItemBody>
+            <Select
+              defaultValue="All levels"
+              style={{ width: '100%' }}
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="math">Math</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Difficulty</ItemHeader>
+          <ItemBody>
+            <Select
+              defaultValue="All levels"
+              style={{ width: '100%' }}
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="math">Math</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Difficulty</ItemHeader>
+          <ItemBody>
+            <Select
+              defaultValue="All levels"
+              style={{ width: '100%' }}
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="math">Math</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+      </MainFilterItems>
+    );
+  }
+
   render() {
-    const { onSearch } = this.props;
-    const { subjectItems, isShowFilter } = this.state;
+    const { onSearch, windowWidth } = this.props;
+    const { isShowFilter } = this.state;
+
     return (
       <Container>
         <Header>
@@ -44,267 +304,20 @@ class ItemFilter extends Component {
           </FilterButton>
         </Header>
         <MainFilter isVisible={isShowFilter}>
-          <Affix style={{ width: 280 }}>
-            <PerfectScrollbar>
-              <MainFilterHeader>
-                <Title>Filters</Title>
-                <Clear>Clear all</Clear>
-              </MainFilterHeader>
-              <MainFilterItems>
-                <Item>
-                  <ItemHeader>Subject</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      mode="multiple"
-                      style={{ width: '100%' }}
-                      placeholder="Please select"
-                      defaultValue={['GRADE 5']}
-                    >
-                      {subjectItems}
-                    </Select>
-                  </ItemBody>
-                </Item>
-                <Item>
-                  <ItemHeader>Subject</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      defaultValue="All subject"
-                      style={{ width: '100%' }}
-                      suffixIcon={
-                        <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-                      }
-                    >
-                      <Select.Option value="math">Math</Select.Option>
-                    </Select>
-                  </ItemBody>
-                </Item>
-                <Item>
-                  <ItemHeader>Standard Set</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      defaultValue="All standard set"
-                      style={{ width: '100%' }}
-                      suffixIcon={
-                        <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-                      }
-                    >
-                      <Select.Option value="math">Math</Select.Option>
-                    </Select>
-                  </ItemBody>
-                </Item>
-                <Item>
-                  <ItemHeader>Select Standard</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      defaultValue="All standards"
-                      style={{ width: '100%' }}
-                      suffixIcon={
-                        <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-                      }
-                    >
-                      <Select.Option value="math">Math</Select.Option>
-                    </Select>
-                  </ItemBody>
-                </Item>
-                <Item>
-                  <ItemHeader>Collection</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      defaultValue="All collections"
-                      style={{ width: '100%' }}
-                      suffixIcon={
-                        <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-                      }
-                    >
-                      <Select.Option value="math">Math</Select.Option>
-                    </Select>
-                  </ItemBody>
-                </Item>
-                <Item>
-                  <ItemHeader>Question Types</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      defaultValue="All types"
-                      style={{ width: '100%' }}
-                      suffixIcon={
-                        <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-                      }
-                    >
-                      <Select.Option value="math">Math</Select.Option>
-                    </Select>
-                  </ItemBody>
-                </Item>
-                <Item>
-                  <ItemHeader>Depth of Knowledge</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      defaultValue="All depth of knowledge"
-                      style={{ width: '100%' }}
-                      suffixIcon={
-                        <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-                      }
-                    >
-                      <Select.Option value="math">Math</Select.Option>
-                    </Select>
-                  </ItemBody>
-                </Item>
-                <Item>
-                  <ItemHeader>Difficulty</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      defaultValue="All levels"
-                      style={{ width: '100%' }}
-                      suffixIcon={
-                        <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-                      }
-                    >
-                      <Select.Option value="math">Math</Select.Option>
-                    </Select>
-                  </ItemBody>
-                </Item>
-                <Item>
-                  <ItemHeader>Difficulty</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      defaultValue="All levels"
-                      style={{ width: '100%' }}
-                      suffixIcon={
-                        <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-                      }
-                    >
-                      <Select.Option value="math">Math</Select.Option>
-                    </Select>
-                  </ItemBody>
-                </Item>
-                <Item>
-                  <ItemHeader>Difficulty</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      defaultValue="All levels"
-                      style={{ width: '100%' }}
-                      suffixIcon={
-                        <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-                      }
-                    >
-                      <Select.Option value="math">Math</Select.Option>
-                    </Select>
-                  </ItemBody>
-                </Item>
-                <Item>
-                  <ItemHeader>Difficulty</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      defaultValue="All levels"
-                      style={{ width: '100%' }}
-                      suffixIcon={
-                        <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-                      }
-                    >
-                      <Select.Option value="math">Math</Select.Option>
-                    </Select>
-                  </ItemBody>
-                </Item>
-                <Item>
-                  <ItemHeader>Difficulty</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      defaultValue="All levels"
-                      style={{ width: '100%' }}
-                      suffixIcon={
-                        <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-                      }
-                    >
-                      <Select.Option value="math">Math</Select.Option>
-                    </Select>
-                  </ItemBody>
-                </Item>
-                <Item>
-                  <ItemHeader>Difficulty</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      defaultValue="All levels"
-                      style={{ width: '100%' }}
-                      suffixIcon={
-                        <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-                      }
-                    >
-                      <Select.Option value="math">Math</Select.Option>
-                    </Select>
-                  </ItemBody>
-                </Item>
-                <Item>
-                  <ItemHeader>Difficulty</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      defaultValue="All levels"
-                      style={{ width: '100%' }}
-                      suffixIcon={
-                        <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-                      }
-                    >
-                      <Select.Option value="math">Math</Select.Option>
-                    </Select>
-                  </ItemBody>
-                </Item>
-                <Item>
-                  <ItemHeader>Difficulty</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      defaultValue="All levels"
-                      style={{ width: '100%' }}
-                      suffixIcon={
-                        <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-                      }
-                    >
-                      <Select.Option value="math">Math</Select.Option>
-                    </Select>
-                  </ItemBody>
-                </Item>
-                <Item>
-                  <ItemHeader>Difficulty</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      defaultValue="All levels"
-                      style={{ width: '100%' }}
-                      suffixIcon={
-                        <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-                      }
-                    >
-                      <Select.Option value="math">Math</Select.Option>
-                    </Select>
-                  </ItemBody>
-                </Item>
-                <Item>
-                  <ItemHeader>Difficulty</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      defaultValue="All levels"
-                      style={{ width: '100%' }}
-                      suffixIcon={
-                        <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-                      }
-                    >
-                      <Select.Option value="math">Math</Select.Option>
-                    </Select>
-                  </ItemBody>
-                </Item>
-                <Item>
-                  <ItemHeader>Difficulty</ItemHeader>
-                  <ItemBody>
-                    <Select
-                      defaultValue="All levels"
-                      style={{ width: '100%' }}
-                      suffixIcon={
-                        <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-                      }
-                    >
-                      <Select.Option value="math">Math</Select.Option>
-                    </Select>
-                  </ItemBody>
-                </Item>
-              </MainFilterItems>
-            </PerfectScrollbar>
-          </Affix>
+          {
+            windowWidth > 468 ? (
+              <Affix style={{ width: 280 }}>
+                <PerfectScrollbar>
+                  <MainFilterHeader>
+                    <Title>Filters</Title>
+                    <Clear>Clear all</Clear>
+                  </MainFilterHeader>
+                  {this.renderMainFilter()}
+                </PerfectScrollbar>
+              </Affix>)
+              :
+              this.renderMainFilter()
+          }
         </MainFilter>
       </Container>
     );
@@ -313,6 +326,7 @@ class ItemFilter extends Component {
 
 ItemFilter.propTypes = {
   onSearch: PropTypes.func.isRequired,
+  windowWidth: PropTypes.number.isRequired,
 };
 
 export default ItemFilter;

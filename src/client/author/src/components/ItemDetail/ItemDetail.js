@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { withNamespaces } from '@edulastic/localization';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Progress, Paper } from '@edulastic/common';
+import { mobileWidth } from '@edulastic/colors';
+import { Progress, Paper, withWindowSizes } from '@edulastic/common';
 import { cloneDeep } from 'lodash';
 import { Layout } from 'antd';
 import { changeViewAction, changePreviewAction } from '../../actions/view';
@@ -259,7 +260,8 @@ class ItemDetail extends Component {
       type,
       updateTabTitle,
       useTabs,
-      changePreview
+      changePreview,
+      windowWidth
     } = this.props;
 
     const { view, previewTab } = this.state;
@@ -289,6 +291,7 @@ class ItemDetail extends Component {
           showIcon
           title={t('component.itemDetail.itemDetail')}
           reference={match.params._id}
+          windowWidth={windowWidth}
         >
           <ButtonBar
             onShowSource={this.handleShowSource}
@@ -302,17 +305,20 @@ class ItemDetail extends Component {
             previewTab={previewTab}
           />
         </ItemHeader>
-        <SecondHeadBar
-          onShowSource={this.handleShowSource}
-          onShowSettings={this.handleShowSettings}
-          onChangeView={this.handleChangeView}
-          changePreview={changePreview}
-          changePreviewTab={this.handleChangePreviewTab}
-          onSave={this.handleSave}
-          saving={updating}
-          view={view}
-          previewTab={previewTab}
-        />
+        {
+          windowWidth > 468 && (
+            <SecondHeadBar
+              onShowSource={this.handleShowSource}
+              onShowSettings={this.handleShowSettings}
+              onChangeView={this.handleChangeView}
+              changePreview={changePreview}
+              changePreviewTab={this.handleChangePreviewTab}
+              onSave={this.handleSave}
+              saving={updating}
+              view={view}
+              previewTab={previewTab}
+            />)
+        }
         {view === 'edit' && (
           <ItemDetailWrapper>
             {loading && <Progress />}
@@ -359,6 +365,7 @@ ItemDetail.propTypes = {
   useTabs: PropTypes.func.isRequired,
   checkAnswer: PropTypes.func.isRequired,
   showAnswer: PropTypes.func.isRequired,
+  windowWidth: PropTypes.number.isRequired,
   changePreview: PropTypes.func.isRequired,
   evaluation: PropTypes.isRequired
 };
@@ -369,6 +376,7 @@ ItemDetail.defaultProps = {
 };
 
 const enhance = compose(
+  withWindowSizes,
   withNamespaces('author'),
   connect(
     state => ({
@@ -405,18 +413,19 @@ const Content = styled(Paper)`
   padding: 0;
   position: relative;
 
-  ::-webkit-scrollbar {
-    display: none;
+  @media (max-width: ${mobileWidth}) {
+    margin: 50px 25px;
   }
 `;
 
 const ItemDetailWrapper = styled.div`
   display: flex;
-  padding: 0px 40px 0px 40px;
+  padding: 0px 40px;
   flex-wrap: nowrap;
   width: 100%;
 
-  ::-webkit-scrollbar {
-    display: none;
+  @media (max-width: ${mobileWidth}) {
+    margin-top: 50px;
+    padding: 0px 25px;
   }
 `;

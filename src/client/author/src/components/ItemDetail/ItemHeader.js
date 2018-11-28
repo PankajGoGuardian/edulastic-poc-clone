@@ -5,42 +5,75 @@ import { Affix } from 'antd';
 import { Link } from 'react-router-dom';
 import { IconChevronLeft } from '@edulastic/icons';
 import { FlexContainer } from '@edulastic/common';
-import { tabletWidth, mobileWidth, darkBlueSecondary, white, blue } from '@edulastic/colors';
+import { mobileWidth, darkBlueSecondary, white, blue } from '@edulastic/colors';
 
-const ItemHeader = ({ title, children, link, reference }) => (
-  <Affix>
-    <Container>
-      <FlexContainer alignItems="center" style={{ flex: 1 }}>
-        <LeftSide>
-          <Title>{title}</Title>
-          {reference !== null && (
-            <FlexContainer>
-              <ReferenceText>
-                Reference
-              </ReferenceText>
-              <ReferenceValue>
-                {reference}
-              </ReferenceValue>
+const ItemHeader = ({ title, children, link, reference, windowWidth }) => {
+  const width = windowWidth;
+  return (
+    width > 468 ? (
+      <Affix>
+        <Container>
+          <FlexContainer alignItems="center" style={{ flex: 1 }}>
+            <LeftSide>
+              <Title>{title}</Title>
+              {reference !== null && (
+                <FlexContainer>
+                  <ReferenceText>
+                    Reference
+                  </ReferenceText>
+                  <ReferenceValue>
+                    {reference}
+                  </ReferenceValue>
+                </FlexContainer>
+              )}
+            </LeftSide>
+            <RightSide>{children}</RightSide>
+          </FlexContainer>
+          <LeftSide>
+            {link && (
+              <Back to={link.url}>
+                <IconChevronLeft color={white} width={10} height={10} /> {link.text}
+              </Back>
+            )}
+          </LeftSide>
+        </Container>
+      </Affix>)
+      : (
+        <Affix>
+          <MobileContainer>
+            <FlexContainer alignItems="center" style={{ flex: 1, paddingBottom: 20 }}>
+              <LeftSide>
+                <Title>{title}</Title>
+                {reference !== null && (
+                  <FlexContainer>
+                    <ReferenceText>
+                      Reference
+                    </ReferenceText>
+                    <ReferenceValue>
+                      {reference}
+                    </ReferenceValue>
+                  </FlexContainer>
+                )}
+              </LeftSide>
             </FlexContainer>
-          )}
-        </LeftSide>
-        <RightSide>{children}</RightSide>
-      </FlexContainer>
-      <LeftSide>
-        {link && (
-          <Back to={link.url}>
-            <IconChevronLeft color={white} width={10} height={10} /> {link.text}
-          </Back>
-        )}
-      </LeftSide>
-    </Container>
-  </Affix>
-);
+            <RightSide>{children}</RightSide>
+            <LeftSide>
+              {link && (
+                <Back to={link.url}>
+                  <IconChevronLeft color={white} width={10} height={10} /> {link.text}
+                </Back>
+              )}
+            </LeftSide>
+          </MobileContainer>
+        </Affix>)
+  );
+};
 
 ItemHeader.propTypes = {
   title: PropTypes.string,
   children: PropTypes.any,
   link: PropTypes.any,
+  windowWidth: PropTypes.number.isRequired,
   reference: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
@@ -65,14 +98,16 @@ const Container = styled.div`
   }
 `;
 
+const MobileContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 16px 10px 0px 40px;
+  background: ${darkBlueSecondary};
+`;
+
 const LeftSide = styled.div`
   display: flex;
   align-items: center;
-
-  @media (max-width: ${tabletWidth}) {
-    display: none;
-    height: 0;
-  }
 `;
 
 const RightSide = styled.div`

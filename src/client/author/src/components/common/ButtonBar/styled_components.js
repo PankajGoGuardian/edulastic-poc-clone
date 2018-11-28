@@ -61,6 +61,37 @@ export const Container = styled.div`
   }
 `;
 
+export const MobileContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const MobileFirstContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding-bottom: 17px;
+  
+  .ant-btn {
+    background: transparent;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+
+    &:hover {
+      background: #1fe3a1;
+    }
+  }
+`;
+
+export const MobileSecondContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  text-align: left;
+  margin-bottom: 10px;
+`;
+
 export const PreviewBar = styled.div`
   display: flex;
   align-items: center;

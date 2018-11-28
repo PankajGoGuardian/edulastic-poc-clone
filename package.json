@@ -49,6 +49,7 @@
     "express-boom": "^2.0.0",
     "express-pino-logger": "^4.0.0",
     "faker": "^4.1.0",
+    "fetch-mock": "^7.2.5",
     "font-awesome": "^4.7.0",
     "handlebars": "^4.0.12",
     "history": "^4.7.2",

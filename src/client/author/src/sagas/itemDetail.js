@@ -19,7 +19,6 @@ function* receiveItemSaga({ payload }) {
       payload: { item }
     });
   } catch (err) {
-    console.error(err);
     const errorMessage = 'Receive item by id is failing';
     yield call(message.error, errorMessage);
     yield put({

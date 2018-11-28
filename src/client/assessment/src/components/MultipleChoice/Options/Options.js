@@ -9,7 +9,7 @@ function Options({ onChange, uiStyle, t }) {
   const changeUiStyle = (prop, value) => {
     onChange('ui_style', {
       ...uiStyle,
-      [prop]: value,
+      [prop]: value
     });
   };
 
@@ -27,7 +27,7 @@ function Options({ onChange, uiStyle, t }) {
               options={[
                 { value: 'standard', label: t('component.options.standard') },
                 { value: 'block', label: t('component.options.block') },
-                { value: 'radioBelow', label: t('component.options.radioButtonBelow') },
+                { value: 'radioBelow', label: t('component.options.radioButtonBelow') }
               ]}
               value={uiStyle.type}
             />
@@ -69,7 +69,7 @@ function Options({ onChange, uiStyle, t }) {
                 options={[
                   { value: 'number', label: t('component.options.numerical') },
                   { value: 'upper-alpha', label: t('component.options.uppercase') },
-                  { value: 'lower-alpha', label: t('component.options.lowercase') },
+                  { value: 'lower-alpha', label: t('component.options.lowercase') }
                 ]}
                 value={uiStyle.choice_label}
               />
@@ -84,7 +84,7 @@ function Options({ onChange, uiStyle, t }) {
 Options.propTypes = {
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
-  t: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 Options.defaultProps = {
@@ -93,8 +93,8 @@ Options.defaultProps = {
     fontsize: 'normal',
     columns: 0,
     orientation: 'horizontal',
-    choice_label: 'number',
-  },
+    choice_label: 'number'
+  }
 };
 
 export default withNamespaces('assessment')(Options);

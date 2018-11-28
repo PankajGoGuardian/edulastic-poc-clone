@@ -39,7 +39,7 @@ function* saveQuestionSaga() {
   try {
     const question = yield select(getQuestionSelector);
     const itemDetail = yield select(getItemDetailSelector);
-    const { rowIndex, tabIndex } = history.location.state;
+    const { rowIndex, tabIndex } = history.location.state || {};
     let entity = null;
 
     if (question._id) {
@@ -49,7 +49,7 @@ function* saveQuestionSaga() {
 
       console.log('itemDetail', itemDetail);
 
-      if (itemDetail) {
+      if (itemDetail && itemDetail.rows) {
         itemDetail.rows[rowIndex].widgets.push({
           widgetType: 'question',
           type: entity.data.type,

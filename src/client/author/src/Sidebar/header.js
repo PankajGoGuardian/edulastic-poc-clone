@@ -26,15 +26,15 @@ const Header = ({ flag, desktopSideBar: desktop, sidebar, responsiveSideBar: res
 export default React.memo(
   connect(
     ({ ui }) => ({ flag: ui.flag, sidebar: ui.sidebar }),
-    { desktopSideBar, responsiveSideBar },
-  )(Header),
+    { desktopSideBar, responsiveSideBar }
+  )(Header)
 );
 
 Header.propTypes = {
   flag: PropTypes.bool.isRequired,
   sidebar: PropTypes.bool.isRequired,
   desktopSideBar: PropTypes.func.isRequired,
-  responsiveSideBar: PropTypes.func.isRequired,
+  responsiveSideBar: PropTypes.func.isRequired
 };
 
 const Sidebar = styled.div`

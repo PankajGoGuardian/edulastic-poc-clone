@@ -5,10 +5,9 @@ import evaluation from './evaluation';
 
 const assessmentReducers = {
   test,
-
   items,
   answers,
-  evaluation,
+  evaluation
 };
 
 export default assessmentReducers;

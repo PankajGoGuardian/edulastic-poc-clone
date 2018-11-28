@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { Types } from '../constants';
 import {
   moveItemDetailWidgetAction,
-  setItemDetailDraggingAction,
+  setItemDetailDraggingAction
 } from '../../../actions/itemDetail';
 
 const ItemDetailDropTarget = ({ connectDropTarget, isOver, canDrop }) =>
@@ -19,7 +19,7 @@ const ItemDetailDropTarget = ({ connectDropTarget, isOver, canDrop }) =>
       <Container isOver={isOver} canDrop={canDrop}>
         <FaArrowDown />
       </Container>
-    </div>,
+    </div>
   );
 
 ItemDetailDropTarget.propTypes = {
@@ -27,7 +27,7 @@ ItemDetailDropTarget.propTypes = {
   widgetIndex: PropTypes.number.isRequired,
   rowIndex: PropTypes.number.isRequired,
   setItemDetailDragging: PropTypes.func.isRequired,
-  tabIndex: PropTypes.number,
+  tabIndex: PropTypes.number
 };
 
 const itemSource = {
@@ -36,23 +36,23 @@ const itemSource = {
     const to = {
       widgetIndex,
       rowIndex,
-      tabIndex,
+      tabIndex
     };
 
     moveItemDetailWidget({
       from,
-      to,
+      to
     });
     setItemDetailDragging(false);
     return { moved: true };
-  },
+  }
 };
 
 function collect(c, monitor) {
   return {
     connectDropTarget: c.dropTarget(),
     isOver: monitor.isOver(),
-    canDrop: monitor.canDrop(),
+    canDrop: monitor.canDrop()
   };
 }
 
@@ -61,10 +61,10 @@ const enhance = compose(
     null,
     {
       moveItemDetailWidget: moveItemDetailWidgetAction,
-      setItemDetailDragging: setItemDetailDraggingAction,
-    },
+      setItemDetailDragging: setItemDetailDraggingAction
+    }
   ),
-  DropTarget(Types.WIDGET, itemSource, collect),
+  DropTarget(Types.WIDGET, itemSource, collect)
 );
 
 export default enhance(ItemDetailDropTarget);

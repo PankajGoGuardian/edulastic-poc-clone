@@ -294,10 +294,25 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         responses: [
           { top: 0, left: 240, width: 200, height: 40 },
           { top: 100, left: 120, width: 220, height: 40 },
-          { top: 220, left: 200, width: 200, height: 40 },
-        ],
+          { top: 220, left: 200, width: 200, height: 40 }
+        ]
       },
-      onSelectQuestionType,
+      onSelectQuestionType
+    },
+    {
+      title: 'Protractor',
+      type: 'feature',
+      data: {
+        type: 'protractor',
+        stimulus: '',
+        image: '',
+        label: 'Protractor',
+        alt: 'A 180-degree standard protractor.',
+        width: 530,
+        height: 265,
+        rotate: true
+      },
+      onSelectQuestionType
     },
     {
       title: 'Cloze with Drop Down',
@@ -314,12 +329,12 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           scoring_type: 'exactMatch',
           valid_response: {
             score: 1,
-            value: [],
+            value: []
           },
-          alt_responses: [],
-        },
+          alt_responses: []
+        }
       },
-      onSelectQuestionType,
+      onSelectQuestionType
     },
     {
       title: 'Cloze with Text',
@@ -336,13 +351,13 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           scoring_type: 'exactMatch',
           valid_response: {
             score: 1,
-            value: [],
+            value: []
           },
-          alt_responses: [],
-        },
+          alt_responses: []
+        }
       },
-      onSelectQuestionType,
-    },
+      onSelectQuestionType
+    }
   ];
 
   return (

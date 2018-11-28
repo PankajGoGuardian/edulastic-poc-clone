@@ -7,7 +7,7 @@ const router = Router();
 router.post('/upload', s3Upload.single('file'), (req, res) => {
   const { location } = res.req.file;
   return successHandler(res, {
-    fileUri: location,
+    fileUri: location
   });
 });
 

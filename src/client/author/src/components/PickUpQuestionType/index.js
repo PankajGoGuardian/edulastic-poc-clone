@@ -32,7 +32,8 @@ const makeQuestion = data => ({
 
 class PickUpQuestionType extends Component {
   state = {
-    currentQuestion: 'multiple-choice'
+    currentQuestion: 'multiple-choice',
+    currentTab: 'question-tab'
   };
 
   selectQuestionType = (data) => {
@@ -67,22 +68,31 @@ class PickUpQuestionType extends Component {
     };
   }
 
-  handleCategory = (e) => {
-    this.setState({ currentQuestion: e.key });
+  handleCategory = ({ key }) => {
+    this.setState({ currentQuestion: key });
+  };
+
+  handleChangeTab = ({ key }) => {
+    this.setState({ currentTab: key });
+
+    if (key === 'feature-tab') {
+      this.setState({ currentQuestion: 'feature' });
+    }
+    if (key === 'question-tab') {
+      this.setState({ currentQuestion: 'multiple-choice' });
+    }
   };
 
   render() {
     const { t } = this.props;
-    const { currentQuestion } = this.state;
+    const { currentQuestion, currentTab } = this.state;
 
     return (
       <Container>
         <LeftSide>
-          <Menu mode="horizontal" selectedKeys={['question']}>
-            <Menu.Item key="question">Question</Menu.Item>
-            <Menu.Item key="feature" disabled>
-              Feature
-            </Menu.Item>
+          <Menu mode="horizontal" selectedKeys={[currentTab]} onClick={this.handleChangeTab}>
+            <Menu.Item key="question-tab">Question</Menu.Item>
+            <Menu.Item key="feature-tab">Feature</Menu.Item>
           </Menu>
           <Menu mode="inline" selectedKeys={[currentQuestion]} onClick={this.handleCategory}>
             <Menu.Item key="multiple-choice">

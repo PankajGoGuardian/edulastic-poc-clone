@@ -3,6 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import { compose } from 'redux';
 
 import Student from './student/src';
 import Signup from './student/src/components/authentication/signup';
@@ -26,21 +27,14 @@ class App extends Component {
           <Route path="/home" component={Dashboard} />
           <Route path="/Signup" component={Signup} />
           <Route path="/Login" component={Login} />
-          <Route
-            path="/student/test/:id"
-            component={() => <Student defaultAP test />}
-          />
+          <Route path="/student/test/:id" component={() => <Student defaultAP test />} />
           <Route path="/student/test" component={() => <Student defaultAP />} />
           <Route
             exact
             path="/student/practice/:id"
             component={() => <Student defaultAP={false} test />}
           />
-          <Route
-            exact
-            path="/student/practice"
-            component={() => <Student defaultAP={false} />}
-          />
+          <Route exact path="/student/practice" component={() => <Student defaultAP={false} />} />
         </Switch>
       </div>
     );
@@ -51,4 +45,6 @@ App.propTypes = {
   assessmentId: PropTypes.string.isRequired
 };
 
-export default DragDropContext(HTML5Backend)(App);
+const enhance = compose(DragDropContext(HTML5Backend));
+
+export default enhance(App);

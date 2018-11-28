@@ -57,6 +57,7 @@ function* initiateTestActivity({ payload }) {
         testId
       });
 
+      // eslint-disable-next-line prefer-destructuring
       testActivityId = result.testActivityId;
     }
 
@@ -78,9 +79,7 @@ function* initiateTestActivity({ payload }) {
 // load users previous responses for a particular test
 function* loadPreviousResponses() {
   try {
-    const testActivityId = yield select(
-      state => state.test && state.test.testActivityId
-    );
+    const testActivityId = yield select(state => state.test && state.test.testActivityId);
     const answers = yield testActivityApi.previousResponses(testActivityId);
     yield put({
       type: LOAD_ANSWERS,
@@ -93,10 +92,8 @@ function* loadPreviousResponses() {
 
 function* submitTest() {
   try {
-    const testActivityId = yield select(
-      state => state.test && state.test.testActivityId
-    );
-    if (testActivityId == 'test') {
+    const testActivityId = yield select(state => state.test && state.test.testActivityId);
+    if (testActivityId === 'test') {
       console.log('practice test');
       return;
     }

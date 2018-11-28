@@ -134,7 +134,12 @@ class SideMenu extends Component {
           </LogoWrapper>
           <LogoDash />
           <MenuWrapper>
-            <Menu theme="light" defaultSelectedKeys={['1']} mode="inline" onClick={item => this.handleMenu(item)}>
+            <Menu
+              theme="light"
+              defaultSelectedKeys={['1']}
+              mode="inline"
+              onClick={item => this.handleMenu(item)}
+            >
               {menuItems.map((menu, index) => {
                 const MenuIcon = this.renderIcon(menu.icon);
                 return (
@@ -154,12 +159,7 @@ class SideMenu extends Component {
                 <img src={Profile} alt="Profile" />
                 <div>
                   {!isCollapsed && <label style={{ marginLeft: 11 }}>Zack oliver</label>}
-                  <Select
-                    defaultValue="Student"
-                    suffixIcon={
-                      <IconDropdown type="caret-down" />
-                    }
-                  >
+                  <Select defaultValue="Student" suffixIcon={<IconDropdown type="caret-down" />}>
                     <Select.Option value="Student">Student</Select.Option>
                   </Select>
                 </div>

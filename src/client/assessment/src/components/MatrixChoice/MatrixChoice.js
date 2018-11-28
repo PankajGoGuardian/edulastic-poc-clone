@@ -124,8 +124,6 @@ const MatrixChoice = ({
     };
   }
 
-  console.log('eeeeeee', answer);
-
   return (
     <Fragment>
       {view === 'edit' && (

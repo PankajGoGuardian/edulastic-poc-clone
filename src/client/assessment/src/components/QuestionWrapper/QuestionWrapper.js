@@ -12,6 +12,7 @@ import { ClozeText } from '../ClozeText';
 
 import withAnswerSave from '../HOC/withAnswerSave';
 import MatrixChoice from '../MatrixChoice/MatrixChoice';
+import Protractor from '../Protractor';
 
 const getQuestion = (type) => {
   switch (type) {
@@ -31,6 +32,8 @@ const getQuestion = (type) => {
       return ClozeDragDrop;
     case 'clozeImageDragDrop':
       return ClozeImageDragDrop;
+    case 'protractor':
+      return Protractor;
     case 'clozeDropDown':
       return ClozeDropDown;
     case 'clozeText':

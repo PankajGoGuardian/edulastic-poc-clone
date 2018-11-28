@@ -19,7 +19,9 @@ const Card = ({ title, onSelectQuestionType, data, setUserAnswer }) => {
 
   useEffect(
     () => {
-      setUserAnswer(questionId, data.validation.valid_response.value);
+      if (data.validation && data.validation.valid_response) {
+        setUserAnswer(questionId, data.validation.valid_response.value);
+      }
     },
     [questionId]
   );
@@ -28,7 +30,10 @@ const Card = ({ title, onSelectQuestionType, data, setUserAnswer }) => {
     <Fragment>
       <RoundDiv borderRadius={10}>
         <Header borderRadius={10}>{title}</Header>
-        <Content borderRadius={10} onClick={() => onSelectQuestionType(smallData)}>
+        <Content
+          borderRadius={10}
+          onClick={() => onSelectQuestionType(smallData)}
+        >
           <div className="hover-block">
             <IconPlus color={white} width={70} height={70} />
           </div>

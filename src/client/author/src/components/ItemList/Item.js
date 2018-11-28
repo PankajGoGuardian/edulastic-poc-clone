@@ -47,8 +47,7 @@ class Item extends Component {
         <Question>
           <QuestionContent>
             <MoveLink onClick={this.moveToItem}>{item._id}</MoveLink>
-            <Description>{this.description}</Description>
-            {/* <div dangerouslySetInnerHTML={{ __html: item.stimulus }} /> */}
+            <div dangerouslySetInnerHTML={{ __html: this.description }} />
           </QuestionContent>
           {windowWidth > 768 && (
             <ViewButton>
@@ -166,17 +165,6 @@ const QuestionContent = styled.div`
 
   @media (max-width: ${tabletWidth}) {
     text-align: left;
-  }
-`;
-
-const Description = styled.div`
-  font-size: 13px;
-  margin-top: 3px;
-  color: #444444;
-  width: 430px;
-
-  @media (max-width: ${tabletWidth}) {
-    width: 100%;
   }
 `;
 

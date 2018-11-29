@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Input, Button } from 'antd';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { loginAction } from '../../../actions/login';
 
@@ -104,6 +105,9 @@ class Login extends React.Component {
           <Button type="primary" htmlType="submit">
             Submit
           </Button>
+          <Link to="/signup" style={{ float: 'right' }}>
+            CREATE ACCOUNT
+          </Link>
         </FormItem>
       </Form>
     );

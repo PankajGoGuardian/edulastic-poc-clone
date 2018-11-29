@@ -315,6 +315,18 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       onSelectQuestionType
     },
     {
+      title: 'Passage',
+      type: 'feature',
+      data: {
+        type: 'passage',
+        heading: 'Section 3',
+        math_renderer: '',
+        content:
+          'Enabling a <b>highlightable</b> text passage that can be used across multiple items.'
+      },
+      onSelectQuestionType
+    },
+    {
       title: 'Cloze with Drop Down',
       type: 'fill-blanks',
       stimulus: '',
@@ -365,12 +377,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       {cards.map(
         ({ title, data, onSelectQuestionType: onSelect, type }) =>
           type === questionType && (
-            <Card
-              key={title}
-              title={title}
-              data={data}
-              onSelectQuestionType={onSelect}
-            />
+            <Card key={title} title={title} data={data} onSelectQuestionType={onSelect} />
           )
       )}
     </FlexContainer>

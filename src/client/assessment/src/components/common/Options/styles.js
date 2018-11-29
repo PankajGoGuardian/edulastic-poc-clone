@@ -28,6 +28,7 @@ export const Label = styled.label`
   text-align: left;
   color: #434b5d;
   margin-bottom: 10px;
+  display: block;
 `;
 
 export const Row = styled.div`

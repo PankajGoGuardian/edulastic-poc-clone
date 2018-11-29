@@ -153,17 +153,11 @@ class CustomQuillComponent extends Component {
     }
   };
 
-  constructor() {
-    super();
-    this.showToolbar = this.showToolbar.bind(this);
-    this.hideToolbar = this.hideToolbar.bind(this);
-  }
-
-  showToolbar() {
+  showToolbar = () => {
     this.setState({ active: true });
   }
 
-  hideToolbar() {
+  hideToolbar = () => {
     this.setState({ active: false });
   }
 
@@ -179,9 +173,14 @@ class CustomQuillComponent extends Component {
     }
   };
 
+  handleChange = (content) => {
+    const { onChange } = this.props;
+    onChange(content);
+  };
+
   render() {
     const { active } = this.state;
-    const { value, onChange, placeholder, showResponseBtn, toolbarId, style } = this.props;
+    const { value, placeholder, showResponseBtn, toolbarId, style } = this.props;
 
     return (
       <div className="text-editor" style={style}>
@@ -189,7 +188,7 @@ class CustomQuillComponent extends Component {
         <ReactQuill
           ref={el => (this.quillRef = el)}
           modules={CustomQuillComponent.modules(toolbarId)}
-          onChange={onChange}
+          onChange={this.handleChange}
           onFocus={this.showToolbar}
           onKeyDown={this.onKeyDownHandler}
           placeholder={placeholder}

@@ -1,6 +1,14 @@
 import joi from 'joi';
 import { pick } from 'lodash';
 
+const sharingSchema = joi.object({
+  permission: joi.string().required(), // move it to a set of values
+  type: joi.string().required(), // .valid()
+  id: joi.string().required(),
+  name: joi.string(),
+  level: joi.string()
+});
+
 export const testSchema = {
   title: joi.string().allow(''),
   description: joi.string().allow(''),
@@ -17,7 +25,8 @@ export const testSchema = {
   subjects: joi.array(),
   courses: joi.array(),
   collections: joi.any(),
-  analytics: joi.any()
+  analytics: joi.any(),
+  sharing: joi.array().items(sharingSchema)
 };
 
 const createItemFields = [
@@ -39,7 +48,8 @@ const createItemFields = [
   'collections',
   'analytics',
   'createdDate',
-  'updatedDate'
+  'updatedDate',
+  'sharing'
 ];
 
 export const createItemFormatter = result => pick(result, createItemFields);

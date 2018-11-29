@@ -17,7 +17,8 @@ const testSchema = mongoose.Schema(
     subjects: Array,
     courses: Array,
     collections: Array,
-    analytics: Array
+    analytics: Array,
+    sharing: Object
   },
   {
     strict: true

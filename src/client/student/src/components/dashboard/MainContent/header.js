@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Layout, Row, Col, Select, Icon } from 'antd';
+import { Layout, Row, Col, Select, Icon, Affix } from 'antd';
 import AssignmentTitle from '../common/assignmentTitle';
 import AssignmentFilter from '../common/assignmentFilter';
 import AssignmentSelectClass from '../common/assignmentSelectClass';
@@ -30,38 +30,40 @@ const AssignmentSelect = () => (
 );
 
 const Header = ({ flag }) => (
-  <AssignmentsHeader flag={flag}>
-    <Row>
-      <Col span={24}>
-        <Wrapper>
-          <AssignmentTitle>Assignments</AssignmentTitle>
-          <AssignmentSelect />
-        </Wrapper>
-        <AssignmentFilter>
-          <FilterBtn>
-            <span>6</span> All
-          </FilterBtn>
-          <FilterBtn>
-            <span>6</span> In progress
-          </FilterBtn>
-          <FilterBtn>
-            <span>6</span> Not Started
-          </FilterBtn>
-          <FilterBtn>
-            <span>6</span> Submitted
-          </FilterBtn>
-          <FilterBtn>
-            <span>6</span> Graded
-          </FilterBtn>
-        </AssignmentFilter>
-      </Col>
-    </Row>
-  </AssignmentsHeader>
+  <Affix>
+    <AssignmentsHeader flag={flag}>
+      <Row>
+        <Col span={24}>
+          <Wrapper>
+            <AssignmentTitle>Assignments</AssignmentTitle>
+            <AssignmentSelect />
+          </Wrapper>
+          <AssignmentFilter>
+            <FilterBtn>
+              <span>6</span> All
+            </FilterBtn>
+            <FilterBtn>
+              <span>6</span> In progress
+            </FilterBtn>
+            <FilterBtn>
+              <span>6</span> Not Started
+            </FilterBtn>
+            <FilterBtn>
+              <span>6</span> Submitted
+            </FilterBtn>
+            <FilterBtn>
+              <span>6</span> Graded
+            </FilterBtn>
+          </AssignmentFilter>
+        </Col>
+      </Row>
+    </AssignmentsHeader>
+  </Affix>
 );
 export default React.memo(connect(({ ui }) => ({ flag: ui.flag }))(Header));
 
 Header.propTypes = {
-  flag: PropTypes.bool.isRequired,
+  flag: PropTypes.bool.isRequired
 };
 
 const AssignmentsHeader = styled(Layout.Header)`

@@ -32,14 +32,14 @@ const Content = ({ flag, loadDashboardtest, tests }) => {
 export default React.memo(
   connect(
     ({ ui, studentTest }) => ({ flag: ui.flag, tests: studentTest.tests }),
-    { loadDashboardtest: loadDashboardtestAction },
-  )(Content),
+    { loadDashboardtest: loadDashboardtestAction }
+  )(Content)
 );
 
 Content.propTypes = {
   flag: PropTypes.bool.isRequired,
   tests: PropTypes.array.isRequired,
-  loadDashboardtest: PropTypes.func.isRequired,
+  loadDashboardtest: PropTypes.func.isRequired
 };
 
 const LayoutContent = styled(Layout.Content)`
@@ -61,8 +61,6 @@ const ContainerRow = styled.div`
 
 const ContainerCell = styled.div`
   height: 100%;
-  overflow: auto;
-  position: absolute;
   width: 100%;
 `;
 

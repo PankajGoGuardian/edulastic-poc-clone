@@ -12,6 +12,10 @@ const userSchema = mongoose.Schema(
   }
 );
 
+const userDetailsFormatter = {
+  __id: 1,
+  name: 1
+};
 class User {
   constructor() {
     this.User = mongoose.model('User', userSchema);
@@ -26,6 +30,10 @@ class User {
 
   getByEmail(email) {
     return this.User.findOne({ email });
+  }
+
+  getByIds(userIds) {
+    return this.User.find({ _id: { $in: userIds } }, userDetailsFormatter);
   }
 }
 

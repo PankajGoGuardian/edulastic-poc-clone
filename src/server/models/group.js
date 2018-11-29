@@ -25,13 +25,15 @@ class Group {
   }
 
   create(group) {
-    group.createdAt = Date.now();
-    group.upatedAt = Date.now();
+    const currentDate = Date.now();
+    group.createdAt = currentDate;
+    group.upatedAt = currentDate;
     const newGroup = new this.Group(group);
     return newGroup.save();
   }
 
   update(id, data) {
+    data.updatedAt = Date.now();
     return this.Group.findOneAndUpdate(
       {
         _id: new mongoose.Types.ObjectId(id)

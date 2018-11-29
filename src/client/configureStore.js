@@ -11,10 +11,21 @@ export const history = createBrowserHistory();
 
 const sagaMiddleware = createSagaMiddleware();
 
+const middleware = [
+  sagaMiddleware,
+  routerMiddleware(history),
+];
+
+/* istanbul ignore next */
+if (process.env.NODE_ENV === 'development') {
+  const { createLogger } = require('redux-logger');
+  middleware.push(createLogger({ collapsed: true }));
+}
+
 export default () => {
   const store = createStore(
     connectRouter(history)(rootReducer),
-    composeWithDevTools(applyMiddleware(routerMiddleware(history), sagaMiddleware)),
+    composeWithDevTools(applyMiddleware(...middleware)),
   );
 
   sagaMiddleware.run(rootSaga);

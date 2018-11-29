@@ -137,6 +137,7 @@
     "lint-staged": "^8.0.4",
     "node-sass": "^4.10.0",
     "nodemon": "^1.18.6",
+    "redux-logger": "^3.0.6",
     "rimraf": "^2.6.2",
     "sass-extract": "^2.1.0",
     "sass-extract-js": "^0.4.0",

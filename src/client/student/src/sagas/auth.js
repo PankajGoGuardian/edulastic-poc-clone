@@ -8,7 +8,7 @@ function* login({ payload }) {
   try {
     const result = yield call(authApi.login, payload.value);
     localStorage.setItem('access_token', result.token);
-    yield put(push('/Home'));
+    yield put(push('/home/dashboard'));
   } catch (err) {
     console.error(err);
     const errorMessage = 'Invalid username or password';

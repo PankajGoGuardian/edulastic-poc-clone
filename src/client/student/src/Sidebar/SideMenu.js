@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { compose } from 'redux';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
@@ -25,6 +26,17 @@ import { withWindowSizes } from '@edulastic/common';
 
 import Profile from '../assets/Profile.png';
 
+const getIndex = (page, items) => {
+  let index;
+  items.forEach((item, i) => {
+    if (item.path && item.path.includes(page)) {
+      index = i;
+    }
+  });
+
+  return index || 0;
+};
+
 const menuItems = [
   {
     label: 'Dashboard',
@@ -33,7 +45,8 @@ const menuItems = [
   },
   {
     label: 'Reports',
-    icon: IconReport
+    icon: IconReport,
+    path: 'home/reports'
   },
   {
     label: 'Skill Report',
@@ -55,10 +68,6 @@ class SideMenu extends Component {
   }
 
   onCollapse = () => {
-    // const { collapseStatus } = this.props;
-    // const { collapsed } = this.state;
-
-    // collapseStatus(collapsed);
     this.setState(prevState => ({ collapsed: !prevState.collapsed }));
   };
 
@@ -88,11 +97,15 @@ class SideMenu extends Component {
 
   render() {
     const { collapsed, broken } = this.state;
-    const { windowWidth } = this.props;
+    const { windowWidth, currentPath } = this.props;
     const isCollapsed =
       windowWidth > 1200 || windowWidth <= 480 || windowWidth === 646
         ? collapsed
         : true;
+
+    const page = currentPath.split('/').filter(item => !!item)[1];
+
+    const menuIndex = getIndex(page, menuItems);
     return (
       <Affix style={{ width: isCollapsed ? 107 : 293 }}>
         <SideBar
@@ -135,7 +148,7 @@ class SideMenu extends Component {
           <MenuWrapper>
             <Menu
               theme="light"
-              defaultSelectedKeys={['1']}
+              defaultSelectedKeys={[menuIndex.toString()]}
               mode="inline"
               onClick={item => this.handleMenu(item)}
             >
@@ -178,12 +191,17 @@ class SideMenu extends Component {
 
 SideMenu.propTypes = {
   windowWidth: PropTypes.number.isRequired,
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  currentPath: PropTypes.string.isRequired
 };
 
 const enhance = compose(
   withRouter,
-  withWindowSizes
+  withWindowSizes,
+  connect(
+    ({ router }) => ({ currentPath: router.location.pathname }),
+    {}
+  )
 );
 
 export default enhance(SideMenu);

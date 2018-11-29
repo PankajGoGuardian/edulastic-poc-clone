@@ -7,7 +7,7 @@ import {
   IconAssignment,
   IconBarChart,
   IconReport,
-  IconManage,
+  IconManage
 } from '@edulastic/icons';
 
 const NavLink = styled.ul`
@@ -63,7 +63,7 @@ const NavButton = ({ icon, label, flag }) => {
 NavButton.propTypes = {
   icon: PropTypes.any.isRequired,
   label: PropTypes.any.isRequired,
-  flag: PropTypes.any.isRequired,
+  flag: PropTypes.any.isRequired
 };
 
 const Navigation = ({ flag }) => (
@@ -79,10 +79,10 @@ const Navigation = ({ flag }) => (
 export default React.memo(Navigation);
 
 Navigation.propTypes = {
-  flag: PropTypes.bool.isRequired,
+  flag: PropTypes.bool.isRequired
 };
 
 NavButton.propTypes = {
   label: PropTypes.string.isRequired,
-  flag: PropTypes.bool.isRequired,
+  flag: PropTypes.bool.isRequired
 };

@@ -39,7 +39,7 @@ const AssignmentCard = ({ data }) => (
 export default AssignmentCard;
 
 AssignmentCard.propTypes = {
-  data: PropTypes.object.isRequired,
+  data: PropTypes.object.isRequired
 };
 
 const CardWrapper = styled(Row)`
@@ -55,6 +55,7 @@ const CardWrapper = styled(Row)`
     max-width: 168.5px;
     border-radius: 10px;
     width: 100%;
+    height: 70px;
   }
   @media screen and (max-width: 767px) {
     display: block;

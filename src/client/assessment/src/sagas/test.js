@@ -1,5 +1,6 @@
 import { testItemsApi, testActivityApi, testsApi } from '@edulastic/api';
 import { takeEvery, call, all, put, select } from 'redux-saga/effects';
+import { push } from 'react-router-redux';
 
 import {
   LOAD_TEST,
@@ -79,7 +80,9 @@ function* initiateTestActivity({ payload }) {
 // load users previous responses for a particular test
 function* loadPreviousResponses() {
   try {
-    const testActivityId = yield select(state => state.test && state.test.testActivityId);
+    const testActivityId = yield select(
+      state => state.test && state.test.testActivityId
+    );
     const answers = yield testActivityApi.previousResponses(testActivityId);
     yield put({
       type: LOAD_ANSWERS,
@@ -92,12 +95,15 @@ function* loadPreviousResponses() {
 
 function* submitTest() {
   try {
-    const testActivityId = yield select(state => state.test && state.test.testActivityId);
+    const testActivityId = yield select(
+      state => state.test && state.test.testActivityId
+    );
     if (testActivityId === 'test') {
       console.log('practice test');
       return;
     }
     yield testActivityApi.submit(testActivityId);
+    yield put(push('/home/reports'));
   } catch (err) {
     console.log(err);
   }

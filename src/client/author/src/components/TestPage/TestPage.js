@@ -67,9 +67,7 @@ const TestPage = ({
 
     newTest.testItems = testItems;
     newTest.scoring.testItems = testItems.map((item) => {
-      const foundItem = newTest.scoring.testItems.find(
-        ({ id }) => item && item._id === id
-      );
+      const foundItem = newTest.scoring.testItems.find(({ id }) => item && item._id === id);
       if (!foundItem) {
         return {
           id: item ? item._id : uuidv4(),
@@ -96,14 +94,17 @@ const TestPage = ({
     switch (current) {
       case 'addItems':
         return (
-          <AddItems
-            onAddItems={handleAddItems}
-            selectedItems={selectedItems}
+          <AddItems onAddItems={handleAddItems} selectedItems={selectedItems} current={current} />
+        );
+      case 'summary':
+        return (
+          <Summary
+            onShowSource={() => handleNavChange('source')}
+            setData={setData}
+            test={test}
             current={current}
           />
         );
-      case 'summary':
-        return <Summary setData={setData} test={test} current={current} />;
       case 'review':
         return (
           <Review
@@ -115,9 +116,7 @@ const TestPage = ({
           />
         );
       case 'settings':
-        return (
-          <Setting current={current} />
-        );
+        return <Setting current={current} onShowSource={() => handleNavChange('source')} />;
       case 'assign':
         return <Assign test={test} setData={setData} current={current} />;
       default:
@@ -131,9 +130,7 @@ const TestPage = ({
 
     newTest.testItems = testItems;
     newTest.scoring.testItems = testItems.map((item) => {
-      const foundItem = newTest.scoring.testItems.find(
-        ({ id }) => item && item._id === id
-      );
+      const foundItem = newTest.scoring.testItems.find(({ id }) => item && item._id === id);
       if (!foundItem) {
         return {
           id: item ? item._id : uuidv4(),
@@ -169,10 +166,7 @@ const TestPage = ({
   return (
     <div>
       {showModal && (
-        <SourceModal
-          onClose={() => setShowModal(false)}
-          onApply={handleApplySource}
-        >
+        <SourceModal onClose={() => setShowModal(false)} onApply={handleApplySource}>
           {JSON.stringify(test, null, 4)}
         </SourceModal>
       )}
@@ -198,12 +192,13 @@ TestPage.propTypes = {
   match: PropTypes.object.isRequired,
   rows: PropTypes.array.isRequired,
   creating: PropTypes.bool.isRequired,
-  selectedRows: PropTypes.object.isRequired,
+  selectedRows: PropTypes.object,
   test: PropTypes.object
 };
 
 TestPage.defaultProps = {
-  test: null
+  test: null,
+  selectedRows: {}
 };
 
 const enhance = compose(
@@ -214,7 +209,7 @@ const enhance = compose(
       test: getTestSelector(state),
       rows: getTestItemsRowsSelector(state),
       creating: getTestsCreatingSelector(state),
-      selectedRows: getSelectedItemSelector(state),
+      selectedRows: getSelectedItemSelector(state)
     }),
     {
       createTest: createTestAction,

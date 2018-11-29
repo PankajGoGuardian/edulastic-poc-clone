@@ -16,7 +16,7 @@ import { Calculator } from '../common';
 import Breadcrumb from '../../Breadcrumb';
 import { getSummarySelector } from '../../../selectors/tests';
 
-const Summary = ({ setData, test, summary, current, t }) => {
+const Summary = ({ setData, test, summary, current, t, onShowSource }) => {
   const handleChangeField = (field, value) => {
     setData({ ...test, [field]: value });
   };
@@ -33,15 +33,17 @@ const Summary = ({ setData, test, summary, current, t }) => {
     key: data.standard,
     standard: data.standard,
     qs: data.questionsCount,
-    points: data.score || 0,
+    points: data.score || 0
   }));
 
   const breadcrumbData = [
     {
-      title: 'ITEM LIST', to: '/author/tests'
+      title: 'ITEM LIST',
+      to: '/author/tests'
     },
     {
-      title: current, to: ''
+      title: current,
+      to: ''
     }
   ];
 
@@ -50,11 +52,7 @@ const Summary = ({ setData, test, summary, current, t }) => {
       <SecondHeader>
         <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
         <Button>
-          <ButtonLink
-            // onClick={onShowSource}
-            color="primary"
-            icon={<IconSource color={blue} />}
-          >
+          <ButtonLink onClick={onShowSource} color="primary" icon={<IconSource color={blue} />}>
             {t('component.questioneditor.buttonbar.source')}
           </ButtonLink>
         </Button>
@@ -99,14 +97,15 @@ Summary.propTypes = {
   summary: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
   current: PropTypes.string.isRequired,
+  onShowSource: PropTypes.func.isRequired
 };
 
 const enhance = compose(
   memo,
   withNamespaces('author'),
   connect(state => ({
-    summary: getSummarySelector(state),
-  })),
+    summary: getSummarySelector(state)
+  }))
 );
 
 export default enhance(Summary);

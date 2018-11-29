@@ -86,7 +86,7 @@ class MainSetting extends Component {
             <StyledAnchor affix={false}>
               {
                 settingCategories.map(category => (
-                  <Anchor.Link href={`${history.location.pathname}#${category.id}`} title={category.title} />
+                  <Anchor.Link key={category.id} href={`${history.location.pathname}#${category.id}`} title={category.title} />
                 ))
               }
             </StyledAnchor>
@@ -260,7 +260,7 @@ class MainSetting extends Component {
                 <Body>
                   {
                     navigations.map(navigation => (
-                      <Row style={{ width: '100%', marginBottom: 25 }}>
+                      <Row key={navigation} style={{ width: '100%', marginBottom: 25 }}>
                         <Col span={8}>
                           <span style={{ fontSize: 13, fontWeight: 600 }}>{navigation}</span>
                         </Col>
@@ -295,7 +295,7 @@ class MainSetting extends Component {
                 <Body>
                   {
                     accessibilities.map(accessibility => (
-                      <Row style={{ width: '100%', marginBottom: 25 }}>
+                      <Row key={accessibility} style={{ width: '100%', marginBottom: 25 }}>
                         <Col span={8}>
                           <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibility}</span>
                         </Col>

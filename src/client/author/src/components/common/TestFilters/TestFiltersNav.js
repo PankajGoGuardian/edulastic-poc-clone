@@ -17,7 +17,11 @@ const TestFiltersNav = ({ items, onSelect }) => (
 
 TestFiltersNav.propTypes = {
   items: PropTypes.array.isRequired,
-  onSelect: PropTypes.func.isRequired,
+  onSelect: PropTypes.func
+};
+
+TestFiltersNav.defaultProps = {
+  onSelect: () => {}
 };
 
 export default TestFiltersNav;

@@ -12,14 +12,15 @@ import { Container, ButtonLink } from '../../common';
 import Breadcrumb from '../../Breadcrumb';
 import MainSetting from './MainSetting';
 
-
-const Setting = ({ t, current, history }) => {
+const Setting = ({ t, current, history, onShowSource }) => {
   const breadcrumbData = [
     {
-      title: 'ITEM LIST', to: '/author/tests'
+      title: 'ITEM LIST',
+      to: '/author/tests'
     },
     {
-      title: current, to: ''
+      title: current,
+      to: ''
     }
   ];
 
@@ -27,11 +28,8 @@ const Setting = ({ t, current, history }) => {
     <Container>
       <SecondHeader>
         <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
-        <Button>
-          <ButtonLink
-            color="primary"
-            icon={<IconSource color={blue} />}
-          >
+        <Button onClick={onShowSource}>
+          <ButtonLink color="primary" icon={<IconSource color={blue} />}>
             {t('component.questioneditor.buttonbar.source')}
           </ButtonLink>
         </Button>
@@ -45,12 +43,13 @@ Setting.propTypes = {
   t: PropTypes.func.isRequired,
   current: PropTypes.string.isRequired,
   history: PropTypes.func.isRequired,
+  onShowSource: PropTypes.func.isRequired
 };
 
 const enhance = compose(
   memo,
   withRouter,
-  withNamespaces('author'),
+  withNamespaces('author')
 );
 
 export default enhance(Setting);

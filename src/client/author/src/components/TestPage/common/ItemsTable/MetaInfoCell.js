@@ -12,14 +12,13 @@ import Tags from '../../../common/Tags';
 import { setTestItemsAction } from '../../../../actions/testItems';
 import { getSelectedItemSelector } from '../../../../selectors/testItems';
 
-
 class MetaInfoCell extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       selectedRowKeys: props.selectedTests,
-      isAddOrRemove: true,
+      isAddOrRemove: true
     };
   }
 
@@ -27,7 +26,9 @@ class MetaInfoCell extends Component {
     const { selectedRowKeys } = this.state;
     const { data, setTestItems } = this.props;
     const keys = [];
-    selectedRowKeys.map((selectedRow, index) => { keys[index] = selectedRow; return true; });
+    selectedRowKeys.forEach((selectedRow, index) => {
+      keys[index] = selectedRow;
+    });
     setTestItems(selectedRowKeys);
     if (keys.includes(data.id)) {
       this.setState({ isAddOrRemove: false });
@@ -38,7 +39,9 @@ class MetaInfoCell extends Component {
     const { setSelectedTests, setTestItems, selectedRows } = this.props;
     let keys = [];
     if (selectedRows !== undefined) {
-      selectedRows.data.map((selectedRow, index) => { keys[index] = selectedRow; return true; });
+      selectedRows.data.forEach((selectedRow, index) => {
+        keys[index] = selectedRow;
+      });
     }
     if (!keys.includes(row.id)) {
       keys[keys.length] = row.id;
@@ -59,7 +62,10 @@ class MetaInfoCell extends Component {
     const { isAddOrRemove } = this.state;
     const { data } = this.props;
     return (
-      <FlexContainer justifyContent="space-between" style={{ fontWeight: 600, color: textColor, flexWrap: 'wrap' }}>
+      <FlexContainer
+        justifyContent="space-between"
+        style={{ fontWeight: 600, color: textColor, flexWrap: 'wrap' }}
+      >
         <div>
           <FlexContainer>
             <div>
@@ -76,22 +82,23 @@ class MetaInfoCell extends Component {
             </FlexContainer>
           </FlexContainer>
           <TypeContainer>
-            {data.standards &&
-              !!data.standards.length && (
-                <FlexContainer>
-                  <Tags tags={data.standards} labelStyle={{ color: greenDark, background: white, border: `1px solid ${grey}` }} />
-                </FlexContainer>
+            {data.standards && !!data.standards.length && (
+              <FlexContainer>
+                <Tags
+                  tags={data.standards}
+                  labelStyle={{ color: greenDark, background: white, border: `1px solid ${grey}` }}
+                />
+              </FlexContainer>
             )}
-            {data.types &&
-              !!data.types.length && (
-                <FlexContainer>
-                  <CategoryTitle>Type: </CategoryTitle>
-                  {
-                    data.types.map(type => (
-                      <Tag color="cyan" key={type} style={{ marginTop: 3 }}>{type}</Tag>
-                    ))
-                  }
-                </FlexContainer>
+            {data.types && !!data.types.length && (
+              <FlexContainer>
+                <CategoryTitle>Type: </CategoryTitle>
+                {data.types.map(type => (
+                  <Tag color="cyan" key={type} style={{ marginTop: 3 }}>
+                    {type}
+                  </Tag>
+                ))}
+              </FlexContainer>
             )}
           </TypeContainer>
         </div>
@@ -99,7 +106,7 @@ class MetaInfoCell extends Component {
           onClick={() => this.handleSelection(data)}
           style={{
             border: isAddOrRemove ? '1px solid #00b0ff' : '1px solid #ee1658',
-            color: isAddOrRemove ? '#00b0ff' : '#ee1658',
+            color: isAddOrRemove ? '#00b0ff' : '#ee1658'
           }}
         >
           {isAddOrRemove ? 'ADD' : 'REMOVE'}
@@ -114,17 +121,21 @@ MetaInfoCell.propTypes = {
   setSelectedTests: PropTypes.func.isRequired,
   selectedTests: PropTypes.array.isRequired,
   setTestItems: PropTypes.func.isRequired,
-  selectedRows: PropTypes.object.isRequired,
+  selectedRows: PropTypes.object
+};
+
+MetaInfoCell.defaultProps = {
+  selectedRows: {}
 };
 
 const enhance = compose(
   withNamespaces('MetaInfoCell'),
   connect(
     state => ({
-      selectedRows: getSelectedItemSelector(state),
+      selectedRows: getSelectedItemSelector(state)
     }),
     {
-      setTestItems: setTestItemsAction,
+      setTestItems: setTestItemsAction
     }
   )
 );

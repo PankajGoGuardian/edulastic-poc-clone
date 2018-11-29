@@ -55,7 +55,7 @@ const SortableItem = SortableElement(
         <MetaInfoCell data={metaInfoData} />
       </FlexContainer>
     </TestItemWrapper>
-  ),
+  )
 );
 
 const List = SortableContainer(
@@ -68,7 +68,7 @@ const List = SortableContainer(
     types,
     standards,
     scoring,
-    onPreview,
+    onPreview
   }) => {
     const handleCheckboxChange = (index, checked) => {
       if (checked) {
@@ -82,7 +82,14 @@ const List = SortableContainer(
       }
     };
 
-    const getPoints = i => scoring.testItems.find(({ id }) => id === testItems[i]._id).points;
+    const getPoints = (i) => {
+      let item = null;
+      if (scoring.testItems && scoring.testItems.length) {
+        item = scoring.testItems.find(({ id }) => id === testItems[i]._id);
+      }
+
+      return item && item.points ? item.points : 0;
+    };
 
     return (
       <div>
@@ -95,7 +102,7 @@ const List = SortableContainer(
               shared: '9578 (1)',
               likes: 9,
               types: types[testItems[i]._id],
-              standards: standards[testItems[i]._id],
+              standards: standards[testItems[i]._id]
             }}
             index={i}
             indx={i}
@@ -109,7 +116,7 @@ const List = SortableContainer(
         ))}
       </div>
     );
-  },
+  }
 );
 
 List.propTypes = {
@@ -121,7 +128,7 @@ List.propTypes = {
   testItems: PropTypes.array.isRequired,
   types: PropTypes.any.isRequired,
   standards: PropTypes.object.isRequired,
-  scoring: PropTypes.object.isRequired,
+  scoring: PropTypes.object.isRequired
 };
 
 export default List;

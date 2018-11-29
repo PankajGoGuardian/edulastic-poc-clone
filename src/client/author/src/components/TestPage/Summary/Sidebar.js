@@ -8,14 +8,7 @@ import { Input, Select } from 'antd';
 import { IconHeart, IconShare } from '@edulastic/icons';
 import { Photo, selectsData } from '../common';
 
-const Sidebar = ({
-  title,
-  description,
-  onChangeField,
-  tags,
-  analytics,
-  createdBy
-}) => (
+const Sidebar = ({ title, description, onChangeField, tags, analytics, createdBy }) => (
   <FlexContainer flexDirection="column">
     <Block>
       <Photo />
@@ -110,8 +103,8 @@ Sidebar.propTypes = {
   description: PropTypes.string.isRequired,
   tags: PropTypes.array.isRequired,
   onChangeField: PropTypes.func.isRequired,
-  analytics: PropTypes.object.isRequired,
-  createdBy: PropTypes.object.isRequired,
+  analytics: PropTypes.array.isRequired,
+  createdBy: PropTypes.object.isRequired
   // collections: PropTypes.string.isRequired
 };
 

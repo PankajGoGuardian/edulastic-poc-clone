@@ -97,3 +97,52 @@ export const emObj3 = {
   multiple_responses: false,
   smallSize: true
 };
+
+// partial match object 1
+export const pmObj1 = {
+  userResponses: [0, 1],
+  validation: {
+    scoring_type: 'partialMatch',
+    valid_response: {
+      score: 1,
+      value: [1, 0]
+    },
+    alt_responses: []
+  },
+  multiple_responses: false,
+  smallSize: true
+};
+
+// partial match object 2
+export const pmObj2 = {
+  userResponses: [0, 1],
+  validation: {
+    scoring_type: 'partialMatch',
+    valid_response: {
+      score: 2,
+      value: [1, 2]
+    },
+    alt_responses: []
+  },
+  multiple_responses: false,
+  smallSize: true
+};
+
+export const pmObj3 = {
+  userResponses: [1],
+  validation: {
+    scoring_type: 'partialMatch',
+    valid_response: {
+      score: 2,
+      value: [1, 2]
+    },
+    alt_responses: [
+      {
+        score: 3,
+        value: [0, 1]
+      }
+    ]
+  },
+  multiple_responses: false,
+  smallSize: true
+};

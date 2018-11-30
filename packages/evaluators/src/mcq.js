@@ -39,13 +39,43 @@ const exactMatchEvaluator = (userResponse = [], answers) => {
   };
 };
 
+// partial Match evaluator
+const partialMatchEvaluator = (userResponse = [], answers) => {
+  let score = 0;
+  let maxScore = 0;
+  const evaluation = {};
+  let isCorrect = false;
+
+  answers.forEach(({ score: totalScore, value: correctAnswers }) => {
+    let scorePerAnswer = totalScore / correctAnswers.length;
+
+    let matches = userResponse.filter(resp => correctAnswers.includes(resp))
+      .length;
+    let currentScore = matches * scorePerAnswer;
+    score = Math.max(currentScore, score);
+    maxScore = Math.max(totalScore, maxScore);
+  });
+
+  const primaryResponse = answers[0].value;
+  userResponse.forEach(item => {
+    evaluation[item] = primaryResponse.includes(item);
+  });
+
+  return {
+    score,
+    maxScore,
+    evaluation
+  };
+};
+
 // mcq evaluator method
 const evaluator = ({ userResponses, validation }) => {
   const { valid_response, alt_responses, scoring_type } = validation;
-
   const answers = [valid_response, ...alt_responses];
 
   switch (scoring_type) {
+    case ScoringType.PARTIAL_MATCH:
+      return partialMatchEvaluator(userResponses, answers);
     case ScoringType.EXACT_MATCH:
     default:
       return exactMatchEvaluator(userResponses, answers);

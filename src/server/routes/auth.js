@@ -1,5 +1,6 @@
 import joi from 'joi';
 import express from 'express';
+import { pick } from 'lodash';
 import UserModel from '../models/user';
 import { userSchema } from '../validators/user';
 import { generateAuthToken } from '../utils/token';
@@ -40,15 +41,17 @@ router.post('/login', async (req, res) => {
     const user = new UserModel();
     const result = await user.getByEmail(data.email);
 
+    const userDetails = pick(result, ['email', 'role', '_id', 'name']);
     if (!result) {
       return res.boom.badRequest('invalid username or password');
     }
     const passwordMatch = await comparePassword(data.password, result.password);
+
     if (!passwordMatch) {
       return res.boom.badRequest('invalid username or password');
     }
     const token = generateAuthToken({ _id: result._id });
-    return successHandler(res, { token });
+    return successHandler(res, { token, ...userDetails });
   } catch (e) {
     req.log.error(e);
     res.boom.badRequest(e);

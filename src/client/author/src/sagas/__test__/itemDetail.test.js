@@ -51,3 +51,28 @@ describe('When testing a Saga that manipulates data', () => {
     expect(result).toBeUndefined();
   });
 });
+
+function* updateItemSaga() {
+  const item = yield call(testItemsApi.updateById, 1, {});
+  yield put({
+    type: types.UPDATE_ITEM_DETAIL_SUCCESS,
+    payload: item
+  });
+}
+
+describe('When testing a Saga that manipulates data', () => {
+  const it = sagaHelper(updateItemSaga());
+  it('should have called the mock API first, which returns some data', (result) => {
+    expect(result).toEqual(call(testItemsApi.updateById, 1, {}));
+    return { id: 1, title: 'foo' };
+  });
+  it('and then trigger an action with the transformed data we got from the API', (result) => {
+    expect(result).toEqual(put({
+      type: types.UPDATE_ITEM_DETAIL_SUCCESS,
+      payload: { id: 1, title: 'foo' }
+    }));
+  });
+  it('and then nothing', (result) => {
+    expect(result).toBeUndefined();
+  });
+});

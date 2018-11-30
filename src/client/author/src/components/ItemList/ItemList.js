@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { withNamespaces } from '@edulastic/localization';
 import {
   mobileWidth,
+  desktopWidth,
   secondaryTextColor,
   greenDark,
   white,
@@ -157,7 +158,7 @@ const Container = styled.div`
 const MainList = styled.div`
   display: flex;
   height: 100%;
-  @media (max-width: ${mobileWidth}) {
+  @media (max-width: ${desktopWidth}) {
     display: block;
   }
 `;

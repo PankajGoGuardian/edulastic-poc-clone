@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Select, Icon, Button, Affix } from 'antd';
+import { Select, Icon, Button, Affix, Row, Col } from 'antd';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { TextField } from '@edulastic/common';
-import { mobileWidth, blue, greenDark, textColor } from '@edulastic/colors';
+import { desktopWidth, blue, greenDark, textColor } from '@edulastic/colors';
 
 class ItemFilter extends Component {
   constructor(props) {
@@ -135,146 +135,6 @@ class ItemFilter extends Component {
             </Select>
           </ItemBody>
         </Item>
-        <Item>
-          <ItemHeader>Difficulty</ItemHeader>
-          <ItemBody>
-            <Select
-              defaultValue="All levels"
-              style={{ width: '100%' }}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              <Select.Option value="math">Math</Select.Option>
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Difficulty</ItemHeader>
-          <ItemBody>
-            <Select
-              defaultValue="All levels"
-              style={{ width: '100%' }}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              <Select.Option value="math">Math</Select.Option>
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Difficulty</ItemHeader>
-          <ItemBody>
-            <Select
-              defaultValue="All levels"
-              style={{ width: '100%' }}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              <Select.Option value="math">Math</Select.Option>
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Difficulty</ItemHeader>
-          <ItemBody>
-            <Select
-              defaultValue="All levels"
-              style={{ width: '100%' }}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              <Select.Option value="math">Math</Select.Option>
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Difficulty</ItemHeader>
-          <ItemBody>
-            <Select
-              defaultValue="All levels"
-              style={{ width: '100%' }}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              <Select.Option value="math">Math</Select.Option>
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Difficulty</ItemHeader>
-          <ItemBody>
-            <Select
-              defaultValue="All levels"
-              style={{ width: '100%' }}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              <Select.Option value="math">Math</Select.Option>
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Difficulty</ItemHeader>
-          <ItemBody>
-            <Select
-              defaultValue="All levels"
-              style={{ width: '100%' }}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              <Select.Option value="math">Math</Select.Option>
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Difficulty</ItemHeader>
-          <ItemBody>
-            <Select
-              defaultValue="All levels"
-              style={{ width: '100%' }}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              <Select.Option value="math">Math</Select.Option>
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Difficulty</ItemHeader>
-          <ItemBody>
-            <Select
-              defaultValue="All levels"
-              style={{ width: '100%' }}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              <Select.Option value="math">Math</Select.Option>
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Difficulty</ItemHeader>
-          <ItemBody>
-            <Select
-              defaultValue="All levels"
-              style={{ width: '100%' }}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              <Select.Option value="math">Math</Select.Option>
-            </Select>
-          </ItemBody>
-        </Item>
       </MainFilterItems>
     );
   }
@@ -285,28 +145,56 @@ class ItemFilter extends Component {
 
     return (
       <Container>
-        <Header>
-          <SearchField>
-            <TextField
-              onChange={e => onSearch(e.target.value)}
-              height="50px"
-              type="search"
-              icon={<Icon type="search" style={{ color: blue, fontSize: '18px' }} />}
-              containerStyle={{ marginRight: 20 }}
-              style={{ padding: 16, paddingRight: 68, outline: 'none' }}
-              placeholder="Search by skills and"
-            />
-          </SearchField>
-          <FilterButton>
-            <Button onClick={() => this.showFilterHandler()}>
-              {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
-            </Button>
-          </FilterButton>
-        </Header>
+        {
+          windowWidth > 468 ? (
+            <Header>
+              <Row style={{ width: '100%' }}>
+                <Col span={18}>
+                  <SearchField>
+                    <TextField
+                      onChange={e => onSearch(e.target.value)}
+                      height="50px"
+                      type="search"
+                      icon={<Icon type="search" style={{ color: blue, fontSize: '18px' }} />}
+                      containerStyle={{ marginRight: 20 }}
+                      style={{ padding: 16, paddingRight: 68, outline: 'none' }}
+                      placeholder="Search by skills and"
+                    />
+                  </SearchField>
+                </Col>
+                <Col span={6}>
+                  <FilterButton>
+                    <Button onClick={() => this.showFilterHandler()}>
+                      {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
+                    </Button>
+                  </FilterButton>
+                </Col>
+              </Row>
+            </Header>) : (
+              <Header>
+                <SearchField>
+                  <TextField
+                    onChange={e => onSearch(e.target.value)}
+                    height="50px"
+                    type="search"
+                    icon={<Icon type="search" style={{ color: blue, fontSize: '18px' }} />}
+                    containerStyle={{ marginRight: 20 }}
+                    style={{ padding: 16, paddingRight: 68, outline: 'none' }}
+                    placeholder="Search by skills and"
+                  />
+                </SearchField>
+                <FilterButton>
+                  <Button onClick={() => this.showFilterHandler()}>
+                    {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
+                  </Button>
+                </FilterButton>
+              </Header>
+          )
+        }
         <MainFilter isVisible={isShowFilter}>
           {
-            windowWidth > 468 ? (
-              <Affix style={{ width: 280 }}>
+            windowWidth > 992 ? (
+              <Affix style={{ width: 325 }}>
                 <PerfectScrollbar>
                   <MainFilterHeader>
                     <Title>Filters</Title>
@@ -347,7 +235,7 @@ const SearchField = styled.div`
   height: 50px;
   width: 280px;
 
-  @media (max-width: ${mobileWidth}) {
+  @media (max-width: ${desktopWidth}) {
     margin: 13px 8px 13px 26px;
   }
 `;
@@ -371,7 +259,7 @@ const FilterButton = styled.div`
     }
   }
 
-  @media (max-width: ${mobileWidth}) {
+  @media (max-width: ${desktopWidth}) {
     margin-top: 13px;
     margin-right: 26px;
     display: block;
@@ -394,7 +282,7 @@ const MainFilter = styled.div`
   }
 
 
-  @media (max-width: ${mobileWidth}) {
+  @media (max-width: ${desktopWidth}) {
     position: relative;
     display: ${props => (props.isVisible ? 'block' : 'none')};
     padding: 0px 25px 0px 19px;
@@ -403,8 +291,9 @@ const MainFilter = styled.div`
 
 const MainFilterHeader = styled.div`
   display: flex;
+  width: 280px;
 
-  @media (max-width: ${mobileWidth}) {
+  @media (max-width: ${desktopWidth}) {
     display: none;
   }
 `;
@@ -429,6 +318,7 @@ const Clear = styled.button`
 const MainFilterItems = styled.div`
   margin-top: 4px;
   padding-left: 6px;
+  width: 280px;
 `;
 
 const Item = styled.div`

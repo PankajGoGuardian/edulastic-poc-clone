@@ -181,7 +181,7 @@ const ViewButton = styled.div`
 const Detail = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin-top: 26px;
+  margin-top: 18px;
 
   @media (max-width: ${tabletWidth}) {
     margin-top: 9px;
@@ -191,6 +191,7 @@ const Detail = styled.div`
 const TypeCategory = styled.div`
   display: flex;
   margin-right: 24px;
+  margin-bottom: 10px;
 
   @media (max-width: ${tabletWidth}) {
     display: block;

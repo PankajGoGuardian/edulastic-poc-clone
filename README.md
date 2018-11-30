@@ -19,6 +19,11 @@ This is the mono-repo holding front-end repos and packages together. The project
 
 When starting with PM2 on server, need to build first and start `./.build/server/app`
 
+**Seed Data**
+
+If you need to seed data run `yarn seed`
+Specify DB_HOST, DB_PORT, DB_NAME in .env if needed.
+
 ### Routes
 
 - `/student/test` - Assessment Player with skin 1

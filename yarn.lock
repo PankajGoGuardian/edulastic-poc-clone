@@ -4104,7 +4104,6 @@ fd-slicer@~1.0.1:
   dependencies:
     pend "~1.2.0"
 
-
 fetch-mock@^7.2.5:
   version "7.2.5"
   resolved "https://registry.yarnpkg.com/fetch-mock/-/fetch-mock-7.2.5.tgz#4682f51b9fa74d790e10a471066cb22f3ff84d48"
@@ -6049,6 +6048,12 @@ kareem@2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/kareem/-/kareem-2.3.0.tgz#ef33c42e9024dce511eeaf440cd684f3af1fc769"
 
+kexec@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/kexec/-/kexec-3.0.0.tgz#0ef4aa9d3caa26180c11a10075ac1fce2681e36c"
+  dependencies:
+    nan "^2.4.0"
+
 killable@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/killable/-/killable-1.0.1.tgz#4c8ce441187a061c7474fb87ca08e2a638194892"
@@ -6922,7 +6927,7 @@ mute-stream@0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
 
-nan@2.11.1, nan@^2.10.0, nan@^2.9.2:
+nan@2.11.1, nan@^2.10.0, nan@^2.4.0, nan@^2.9.2:
   version "2.11.1"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.11.1.tgz#90e22bccb8ca57ea4cd37cc83d3819b52eea6766"
 
@@ -8594,13 +8599,6 @@ react-dom@^16.7.0-alpha.0:
 react-drag-and-drop@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/react-drag-and-drop/-/react-drag-and-drop-2.4.0.tgz#8d429f75d1e0b0a033df4f80b436b4bdd7d07ad5"
-
-react-draggable-rotate@0.0.21:
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/react-draggable-rotate/-/react-draggable-rotate-0.0.21.tgz#f5a58b4d89fd534c9c1da357284f0522424f5a5f"
-  dependencies:
-    classnames "^2.2.5"
-    prop-types "^15.5.10"
 
 react-draggable-rotate@0.0.21:
   version "0.0.21"

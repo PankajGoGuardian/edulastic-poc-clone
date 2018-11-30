@@ -87,4 +87,6 @@ export default connect(state => ({
 
 const Container = styled.div`
   width: ${({ width }) => width};
+  display: flex;
+  flex-direction: column;
 `;

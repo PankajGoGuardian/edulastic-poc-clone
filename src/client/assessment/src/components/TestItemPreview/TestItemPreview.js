@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Paper } from '@edulastic/common';
 import { mainBgColor } from '@edulastic/colors';
+import styled from 'styled-components';
 
 import TestItemCol from './TestItemCol';
 
@@ -40,7 +41,7 @@ export default class TestItemPreview extends Component {
   render() {
     const { cols, previewTab, style } = this.props;
     return (
-      <Paper style={style}>
+      <Container style={style}>
         {cols &&
           cols.length &&
           cols.map((col, i) => (
@@ -52,7 +53,11 @@ export default class TestItemPreview extends Component {
               style={this.getStyle(i !== cols.length - 1)}
             />
           ))}
-      </Paper>
+      </Container>
     );
   }
 }
+
+const Container = styled(Paper)`
+  display: flex;
+`;

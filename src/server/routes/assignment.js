@@ -43,4 +43,5 @@ router.get('/assigned', async (req, res) => {
     res.boom.badRequest(e);
   }
 });
+
 export default router;

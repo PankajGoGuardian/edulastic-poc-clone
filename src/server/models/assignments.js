@@ -49,6 +49,13 @@ class Assignment {
       'class.id': id
     });
   }
+
+  byTest(testId, ownerId) {
+    return this.Assignment.find({
+      'assignedBy.userId': ownerId,
+      testId
+    });
+  }
 }
 
 export default Assignment;

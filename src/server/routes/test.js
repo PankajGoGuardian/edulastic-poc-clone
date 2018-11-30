@@ -1,6 +1,7 @@
 import joi from 'joi';
 import { Router } from 'express';
 import TestModel from '../models/test';
+import AssignmentModel from '../models/assignments';
 import TestItemModel from '../models/testItem';
 import { getQuestionsData } from '../utils/questions';
 import { testSchema, createItemFormatter } from '../validators/test';
@@ -154,6 +155,18 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.get('/:id/assignments', async (req, res) => {
+  try {
+    const Assignment = new AssignmentModel();
+    const userId = req.user._id;
+    const testId = req.params.id;
+    const assignments = await Assignment.byTest(testId, userId);
+    return successHandler(res, assignments);
+  } catch (e) {
+    res.log.error(e);
+    res.boom.badRequest(e);
+  }
+});
 /**
  * @swagger
  * /test/{id}:

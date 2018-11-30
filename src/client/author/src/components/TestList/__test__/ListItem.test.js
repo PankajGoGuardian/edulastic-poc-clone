@@ -17,7 +17,7 @@ const item = {
   tags: [],
 };
 
-const store = configureStore();
+const { store } = configureStore();
 
 describe('<ListItem />', () => {
   it('should render properly', () => {

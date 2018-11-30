@@ -5,7 +5,7 @@ import configureStore from '../../../../../configureStore';
 
 import SortBar from '../SortBar';
 
-const store = configureStore();
+const { store } = configureStore();
 
 describe('<SortBar />', () => {
   it('should render properly', () => {

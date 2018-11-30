@@ -5,7 +5,7 @@ import configureStore from '../../../../../configureStore';
 
 import Item from '../Item';
 
-const store = configureStore();
+const { store } = configureStore();
 
 const item = {
   createdBy: {

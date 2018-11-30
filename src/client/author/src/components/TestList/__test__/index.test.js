@@ -5,7 +5,7 @@ import configureStore from '../../../../../configureStore';
 
 import TestList from '../TestList';
 
-const store = configureStore();
+const { store } = configureStore();
 
 describe('<TestList />', () => {
   it('should render properly', () => {

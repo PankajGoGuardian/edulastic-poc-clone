@@ -7,7 +7,7 @@ import configureStore, { history } from '../../../../../configureStore';
 
 import ItemDetail from '../ItemDetail';
 
-const store = configureStore();
+const { store } = configureStore();
 
 const match = {
   params: {

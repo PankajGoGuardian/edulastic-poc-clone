@@ -8,7 +8,7 @@ import * as types from '../../constants/actions';
 import configureStore from '../../../../configureStore';
 import sagaHelper from './main';
 
-const store = configureStore();
+const { store } = configureStore();
 
 describe('Receive Item Action', () => {
   afterEach(() => {

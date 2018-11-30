@@ -54,6 +54,15 @@ class Enrollment {
       getByClassFormatter
     );
   }
+
+  getClassOfStudent(userId) {
+    return this.Enrollment.findOne(
+      {
+        userId
+      },
+      { groupId: 1 }
+    );
+  }
 }
 
 export default Enrollment;

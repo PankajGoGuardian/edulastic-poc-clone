@@ -9,6 +9,7 @@ import questionApi from './question';
 import testItemsApi from './testItem';
 import resourcesApi from './resources';
 import enrollmentApi from './enrollment';
+import assignmentsApi from './assignment';
 import elasticSearchApi from './elasticSearch';
 import userTestActivity from './userTestActivity';
 import userTestItemActivity from './userTestItemActivity';
@@ -26,6 +27,7 @@ router.use('/resources', resourcesApi);
 router.use('/enrollment', enrollmentApi);
 router.use('/search', elasticSearchApi);
 router.use('/testitem', testItemsApi);
+router.use('/assignments', assignmentsApi);
 router.use('/usertestactivity', userTestActivity);
 router.use('/usertestitemactivity', userTestItemActivity);
 

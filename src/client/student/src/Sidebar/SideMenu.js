@@ -54,7 +54,8 @@ const menuItems = [
   },
   {
     label: 'Manage Class',
-    icon: IconManage
+    icon: IconManage,
+    path: 'home/manage'
   }
 ];
 

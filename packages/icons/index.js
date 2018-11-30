@@ -7,7 +7,9 @@ export { default as IconMoveArrows } from './src/IconMoveArrows';
 export { default as IconEye } from './src/IconEye';
 export { default as IconPlus } from './src/IconPlus';
 export { default as IconSearch } from './src/IconSearch';
-export { default as IconClockCircularOutline } from './src/IconClockCircularOutline';
+export {
+  default as IconClockCircularOutline
+} from './src/IconClockCircularOutline';
 export { default as IconQuestion } from './src/IconQuestion';
 export { default as IconQuestionAlt } from './src/IconQuestionAlt';
 export { default as IconChevronLeft } from './src/IconChevronLeft';
@@ -58,3 +60,4 @@ export { default as IconReturn } from './src/IconReturn';
 export { default as IconCopyContent } from './src/IconCopyContent';
 export { default as IconFolder } from './src/IconFolder';
 export { default as IconBookInformation } from './src/IconBookInformation';
+export { default as IconManageClass } from './src/IconManageClass';

@@ -6,6 +6,7 @@ import { Layout } from 'antd';
 import Sidebar from './Sidebar/SideMenu';
 import AppContainer from './components/dashboard';
 import ReportContainer from './components/Report';
+import ManageClassContainer from './components/manageClass';
 import ReportListContainer from './components/ReportList';
 
 const Dashboard = ({ match }) => (
@@ -14,6 +15,7 @@ const Dashboard = ({ match }) => (
     <Switch>
       <Route path={`${match.url}/dashboard`} component={AppContainer} />
       <Route path={`${match.url}/reports`} component={ReportContainer} />
+      <Route path={`${match.url}/manage`} component={ManageClassContainer} />
       <Route
         path={`${match.url}/report/list`}
         component={ReportListContainer}

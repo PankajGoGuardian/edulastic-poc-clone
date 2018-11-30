@@ -140,7 +140,7 @@ const TestPage = ({
       return foundItem;
     });
 
-    setData(newTest);
+    // setData(newTest);
 
     if (test._id) {
       updateTest(test._id, newTest);

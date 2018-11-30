@@ -8,35 +8,36 @@ import { FlexContainer } from '@edulastic/common';
 import { IconShare, IconHeart } from '@edulastic/icons';
 import { greenDark, textColor, grey, white } from '@edulastic/colors';
 import styled from 'styled-components';
+import { cloneDeep } from 'lodash';
+
 import Tags from '../../../common/Tags';
 import { setTestItemsAction } from '../../../../actions/testItems';
-import { getSelectedItemSelector } from '../../../../selectors/testItems';
+import { getSelectedItemSelector, getTestItemsSelector } from '../../../../selectors/testItems';
+import { setTestDataAction } from '../../../../actions/tests';
+import { getTestSelector } from '../../../../selectors/tests';
 
 class MetaInfoCell extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      selectedRowKeys: props.selectedTests,
-      isAddOrRemove: true
+      selectedRowKeys: props.selectedTests
     };
   }
 
   componentDidMount() {
     const { selectedRowKeys } = this.state;
-    const { data, setTestItems } = this.props;
+    const { setTestItems } = this.props;
     const keys = [];
     selectedRowKeys.forEach((selectedRow, index) => {
       keys[index] = selectedRow;
     });
     setTestItems(selectedRowKeys);
-    if (keys.includes(data.id)) {
-      this.setState({ isAddOrRemove: false });
-    }
   }
 
   handleSelection = (row) => {
-    const { setSelectedTests, setTestItems, selectedRows } = this.props;
+    const { setSelectedTests, setTestItems, selectedRows, setTestData, test, tests } = this.props;
+    const newTest = cloneDeep(test);
     let keys = [];
     if (selectedRows !== undefined) {
       selectedRows.data.forEach((selectedRow, index) => {
@@ -47,20 +48,28 @@ class MetaInfoCell extends Component {
       keys[keys.length] = row.id;
       setSelectedTests(keys);
       setTestItems(keys);
-      this.setState({ isAddOrRemove: false });
       message.info(`${row.id} was added`);
     } else {
       keys = keys.filter(item => item !== row.id);
       setSelectedTests(keys);
       setTestItems(keys);
-      this.setState({ isAddOrRemove: true });
       message.info(`${row.id} was removed`);
     }
+    newTest.testItems = keys.map(key => tests.find(t => key === t._id));
+    setTestData(newTest);
   };
 
+  get isAddOrRemove() {
+    const { data, selectedRows } = this.props;
+    if (selectedRows && selectedRows.data && selectedRows.data.length) {
+      return !selectedRows.data.includes(data.id);
+    }
+    return true;
+  }
+
   render() {
-    const { isAddOrRemove } = this.state;
     const { data } = this.props;
+
     return (
       <FlexContainer
         justifyContent="space-between"
@@ -105,11 +114,11 @@ class MetaInfoCell extends Component {
         <StyledButton
           onClick={() => this.handleSelection(data)}
           style={{
-            border: isAddOrRemove ? '1px solid #00b0ff' : '1px solid #ee1658',
-            color: isAddOrRemove ? '#00b0ff' : '#ee1658'
+            border: this.isAddOrRemove ? '1px solid #00b0ff' : '1px solid #ee1658',
+            color: this.isAddOrRemove ? '#00b0ff' : '#ee1658'
           }}
         >
-          {isAddOrRemove ? 'ADD' : 'REMOVE'}
+          {this.isAddOrRemove ? 'ADD' : 'REMOVE'}
         </StyledButton>
       </FlexContainer>
     );
@@ -118,7 +127,10 @@ class MetaInfoCell extends Component {
 
 MetaInfoCell.propTypes = {
   data: PropTypes.object.isRequired,
+  test: PropTypes.object.isRequired,
+  tests: PropTypes.array.isRequired,
   setSelectedTests: PropTypes.func.isRequired,
+  setTestData: PropTypes.func.isRequired,
   selectedTests: PropTypes.array.isRequired,
   setTestItems: PropTypes.func.isRequired,
   selectedRows: PropTypes.object
@@ -132,10 +144,13 @@ const enhance = compose(
   withNamespaces('MetaInfoCell'),
   connect(
     state => ({
-      selectedRows: getSelectedItemSelector(state)
+      selectedRows: getSelectedItemSelector(state),
+      test: getTestSelector(state),
+      tests: getTestItemsSelector(state)
     }),
     {
-      setTestItems: setTestItemsAction
+      setTestItems: setTestItemsAction,
+      setTestData: setTestDataAction
     }
   )
 );

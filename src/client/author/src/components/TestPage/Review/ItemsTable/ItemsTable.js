@@ -6,16 +6,9 @@ import { compose } from 'redux';
 
 import MainInfoCell from './MainInfoCell';
 import MetaInfoCell from './MetaInfoCell';
-import {
-  getItemsTypesSelector,
-  getStandardsSelector
-} from '../../../../selectors/testItems';
+import { getItemsTypesSelector, getStandardsSelector } from '../../../../selectors/testItems';
 
-const ItemsTable = ({
-  items,
-  types,
-  standards
-}) => {
+const ItemsTable = ({ items, types, standards }) => {
   const columns = [
     {
       title: 'Main info',
@@ -45,7 +38,7 @@ const ItemsTable = ({
       standards: standards[item._id]
     };
 
-    if (item.data.questions && item.data.questions.length) {
+    if (item.data && item.data.questions && item.data.questions.length) {
       main.stimulus = item.data.questions[0].data.stimulus;
     }
 
@@ -56,13 +49,7 @@ const ItemsTable = ({
     };
   });
 
-  return (
-    <Table
-      columns={columns}
-      dataSource={data}
-      showHeader={false}
-    />
-  );
+  return <Table columns={columns} dataSource={data} showHeader={false} />;
 };
 
 ItemsTable.propTypes = {

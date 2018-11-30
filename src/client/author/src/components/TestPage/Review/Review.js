@@ -10,10 +10,7 @@ import styled from 'styled-components';
 import HeaderBar from './HeaderBar';
 import List from './List';
 import ItemsTable from './ItemsTable';
-import {
-  getItemsTypesSelector,
-  getStandardsSelector
-} from '../../../selectors/testItems';
+import { getItemsTypesSelector, getStandardsSelector } from '../../../selectors/testItems';
 import { getSummarySelector } from '../../../selectors/tests';
 import { setTestDataAction } from '../../../actions/tests';
 import { Calculator, Photo } from '../common';
@@ -96,15 +93,10 @@ const Review = ({
   const handleChangePoints = (testItemId, value) => {
     const newData = cloneDeep(test);
 
-    const itemIndex = newData.scoring.testItems.findIndex(
-      ({ id }) => testItemId === id
-    );
+    const itemIndex = newData.scoring.testItems.findIndex(({ id }) => testItemId === id);
 
     newData.scoring.testItems[itemIndex].points = value;
-    newData.scoring.total = newData.scoring.testItems.reduce(
-      (acc, item) => acc + item.points,
-      0
-    );
+    newData.scoring.total = newData.scoring.testItems.reduce((acc, item) => acc + item.points, 0);
 
     setData(newData);
   };
@@ -124,8 +116,7 @@ const Review = ({
   const questionsCount = test.testItems.length;
 
   const handleSelectedTest = (items) => {
-    const result = items.map(item =>
-      test.testItems.findIndex(i => item === i._id));
+    const result = items.map(item => test.testItems.findIndex(i => item === i._id));
     setSelected(result);
   };
 
@@ -138,10 +129,12 @@ const Review = ({
 
   const breadcrumbData = [
     {
-      title: 'ITEM LIST', to: '/author/tests'
+      title: 'ITEM LIST',
+      to: '/author/tests'
     },
     {
-      title: current, to: ''
+      title: current,
+      to: ''
     }
   ];
 

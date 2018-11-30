@@ -301,6 +301,7 @@ const Menu = styled(AntMenu)`
     .ant-menu-item-selected {
       background-color: transparent;
       color: #4aac8b;
+      border-left: 3px solid #4aac8b;
     }
   }
 

@@ -18,14 +18,14 @@ const { store, persistor } = configureStore();
 ReactDOM.render(
   <I18nextProvider i18n={i18n}>
     <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <PersistGate
-          loading={null}
-          persistor={persistor}
-        >
+      <PersistGate
+        loading={null}
+        persistor={persistor}
+      >
+        <ConnectedRouter history={history}>
           <App assessmentId="5b964cd2162eb42127b2253e" />
-        </PersistGate>
-      </ConnectedRouter>
+        </ConnectedRouter>
+      </PersistGate>
     </Provider>
   </I18nextProvider>,
 

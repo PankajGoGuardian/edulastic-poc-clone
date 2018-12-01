@@ -51,7 +51,7 @@ module.exports = {
   elasticSearch: {
     uri:
       process.env.ELASTIC_SEARCH_URI ||
-      'http://localhost:9200/bp_auth_otp/_search'
+      'http://localhost:9200/edulastic-poc/_search'
   },
 
   s3: {

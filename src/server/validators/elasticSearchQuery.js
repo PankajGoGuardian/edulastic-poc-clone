@@ -9,6 +9,7 @@ const difficultyBaseSchema = joi.object({ difficulty: joi.string() });
 const questionTypesBaseSchema = joi.object({ questionTypes: joi.string() });
 const standardsStandardSetBaseSchema = joi.object({ 'standards.standardSet': joi.string() });
 const standardsDomainsStandardsNameBaseSchema = joi.object({ 'standards.domains.standards.name': joi.string() });
+const curriculumsBaseSchema = joi.object({ curriculumId: joi.string() });
 
 const itemsSchema = joi.array().items(
   gradesBaseSchema,
@@ -19,6 +20,7 @@ const itemsSchema = joi.array().items(
   questionTypesBaseSchema,
   standardsStandardSetBaseSchema,
   standardsDomainsStandardsNameBaseSchema,
+  curriculumsBaseSchema
 );
 
 export const elasticSearchQuerySchema = {

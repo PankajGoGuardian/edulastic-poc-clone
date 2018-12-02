@@ -20,9 +20,8 @@ const exactMatchEvaluator = (userResponse = [], answers) => {
     maxScore = Math.max(answer.score, maxScore);
   });
 
-  const correctAnswer = answers[0].value;
-
   if (!isCorrect) {
+    const correctAnswer = answers[0].value;
     userResponse.forEach(item => {
       evaluation[item] = correctAnswer.includes(item);
     });

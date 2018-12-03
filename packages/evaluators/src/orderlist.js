@@ -34,6 +34,45 @@ const exactMatchEvaluator = (userResponse = [], answers) => {
   };
 };
 
+// partial match evaluator
+const partialMatchEvaluator = (userResponse = [], answers) => {
+  let score = 0;
+  let maxScore = 0;
+  const evaluation = {};
+  let isCorrect = false;
+
+  answers.forEach(({ score: totalScore, value: correctAnswers }) => {
+    let scorePerAnswer = totalScore / correctAnswers.length;
+    let matches = userResponse.filter(
+      (resp, index) => correctAnswers[index] === resp
+    ).length;
+
+    if (matches === correctAnswers.length) {
+      isCorrect = true;
+    }
+    let currentScore = matches * scorePerAnswer;
+    score = Math.max(currentScore, score);
+    maxScore = Math.max(totalScore, maxScore);
+  });
+
+  if (isCorrect) {
+    userResponse.forEach(item => {
+      evaluation[item] = true;
+    });
+  } else {
+    let correctAnswer = answers[0].value;
+    userResponse.forEach((item, index) => {
+      evaluation[item] = userResponse[item] === correctAnswer[index];
+    });
+  }
+
+  return {
+    score,
+    maxScore,
+    evaluation
+  };
+};
+
 const evaluator = ({ userResponses, validation }) => {
   const { valid_response, alt_responses, scoring_type } = validation;
   const answers = [valid_response, ...alt_responses];

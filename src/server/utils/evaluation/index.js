@@ -1,16 +1,12 @@
-import multipleChoice from './evaluators/mcq';
-import orderList from './evaluators/orderlist';
-import clozeDragDrop from './evaluators/clozeDragDrop';
-import clozeImageDragDrop from './evaluators/clozeImageDragDrop';
+import { orderList, multipleChoice } from '@edulastic/evaluators';
 
 const evaluators = {
   orderList,
-  multipleChoice,
-  clozeDragDrop,
-  clozeImageDragDrop
+  multipleChoice
 };
 
 export const evaluateAnswer = (question) => {
   const evaluator = evaluators[question.type];
-  return evaluator(question);
+  const evaluation = evaluator(question);
+  return evaluation.evaluation;
 };

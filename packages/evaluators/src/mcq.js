@@ -68,16 +68,16 @@ const partialMatchEvaluator = (userResponse = [], answers) => {
 };
 
 // mcq evaluator method
-const evaluator = ({ userResponses, validation }) => {
+const evaluator = ({ userResponse, validation }) => {
   const { valid_response, alt_responses, scoring_type } = validation;
   const answers = [valid_response, ...alt_responses];
 
   switch (scoring_type) {
     case ScoringType.PARTIAL_MATCH:
-      return partialMatchEvaluator(userResponses, answers);
+      return partialMatchEvaluator(userResponse, answers);
     case ScoringType.EXACT_MATCH:
     default:
-      return exactMatchEvaluator(userResponses, answers);
+      return exactMatchEvaluator(userResponse, answers);
   }
 };
 export default evaluator;

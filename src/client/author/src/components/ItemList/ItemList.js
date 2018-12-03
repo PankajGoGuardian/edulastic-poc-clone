@@ -15,16 +15,13 @@ import {
   tabletWidth
 } from '@edulastic/colors';
 
-import {
-  getItemsLimitSelector,
-  getItemsLoadingSelector
-} from '../../selectors/items';
+import { getItemsLimitSelector, getItemsLoadingSelector } from '../../selectors/items';
 
 import Item from './Item';
 import ItemFilter from './ItemFilter';
 import { receiveTestItemsAction } from '../../actions/testItems';
 import { createTestItemAction } from '../../actions/testItem';
-import { getTestItemsSelector } from '../../selectors/testItems';
+import { getTestItemsSelector, getItemsTypesSelector } from '../../selectors/testItems';
 import { getTestItemCreatingSelector } from '../../selectors/testItem';
 import ListHeader from '../common/ListHeader';
 
@@ -60,7 +57,8 @@ class ItemList extends Component {
   };
 
   render() {
-    const { items, windowWidth, history, creating, count, t } = this.props;
+    const { items, windowWidth, history, creating, count, t, itemTypes } = this.props;
+
     return (
       <Container>
         <ListHeader
@@ -72,26 +70,22 @@ class ItemList extends Component {
         <MainList id="main-list">
           <ItemFilter onSearch={this.handleSearch} windowWidth={windowWidth} />
           <ListItems id="item-list">
-            {
-              windowWidth > 468 && (
-                <Pagination
-                  simple={windowWidth <= 768 && true}
-                  showTotal={(total, range) =>
-                    `${range[0]} to ${range[1]} of ${total}`
-                  }
-                  onChange={this.handlePaginationChange}
-                  defaultPageSize={10}
-                  total={count}
-                />
-              )
-            }
+            {windowWidth > 468 && (
+              <Pagination
+                simple={windowWidth <= 768 && true}
+                showTotal={(total, range) => `${range[0]} to ${range[1]} of ${total}`}
+                onChange={this.handlePaginationChange}
+                defaultPageSize={10}
+                total={count}
+              />
+            )}
             <Items>
               <Paper padding={windowWidth > 768 ? '25px 39px 0px 39px' : '0px'}>
                 {items.map(item => (
-                  // eslint-disable-next-line
                   <Item
-                    key={item.id}
+                    key={item._id}
                     item={item}
+                    types={itemTypes[item._id]}
                     history={history}
                     windowWidth={windowWidth}
                   />
@@ -100,9 +94,7 @@ class ItemList extends Component {
             </Items>
             <Pagination
               simple={windowWidth <= 768 && true}
-              showTotal={(total, range) =>
-                `${range[0]} to ${range[1]} of ${total}`
-              }
+              showTotal={(total, range) => `${range[0]} to ${range[1]} of ${total}`}
               onChange={this.handlePaginationChange}
               defaultPageSize={10}
               total={count}
@@ -122,7 +114,8 @@ ItemList.propTypes = {
   createItem: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   creating: PropTypes.bool.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  itemTypes: PropTypes.object.isRequired
 };
 
 const enhance = compose(
@@ -133,7 +126,8 @@ const enhance = compose(
       items: getTestItemsSelector(state),
       limit: getItemsLimitSelector(state),
       loading: getItemsLoadingSelector(state),
-      creating: getTestItemCreatingSelector(state)
+      creating: getTestItemCreatingSelector(state),
+      itemTypes: getItemsTypesSelector(state)
     }),
     {
       receiveItems: receiveTestItemsAction,

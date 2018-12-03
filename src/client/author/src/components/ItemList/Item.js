@@ -13,7 +13,8 @@ class Item extends Component {
     item: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     t: PropTypes.func.isRequired,
-    windowWidth: PropTypes.number.isRequired
+    windowWidth: PropTypes.number.isRequired,
+    types: PropTypes.array.isRequired
   };
 
   moveToItem = () => {
@@ -40,7 +41,7 @@ class Item extends Component {
   }
 
   render() {
-    const { item, t, windowWidth } = this.props;
+    const { item, t, windowWidth, types } = this.props;
 
     return (
       <Container>
@@ -64,15 +65,11 @@ class Item extends Component {
           <TypeCategory>
             <CategoryName>Type:</CategoryName>
             <CategoryContent>
-              <Label>
-                <LabelText>CLOZE DROP DOWN</LabelText>
-              </Label>
-              <Label>
-                <LabelText>MULTIPLE CHOICE</LabelText>
-              </Label>
-              <Label>
-                <LabelText>ORDER LIST</LabelText>
-              </Label>
+              {types.map(type => (
+                <Label key={type}>
+                  <LabelText>{type}</LabelText>
+                </Label>
+              ))}
             </CategoryContent>
           </TypeCategory>
           <Categories>
@@ -256,6 +253,7 @@ const LabelText = styled.span`
   letter-spacing: 0.1px;
   text-align: center;
   color: ${textColor};
+  text-transform: uppercase;
 
   @media (max-width: ${tabletWidth}) {
     letter-spacing: 0.2px;

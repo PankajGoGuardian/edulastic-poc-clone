@@ -15,13 +15,30 @@ router.post('/', async (req, res) => {
     const data = req.body;
     const body = joi.validate(data, assignmentSchema);
 
-    console.log('user Id', req.user._id);
     if (body.error) {
       return res.boom.badRequest(body.error.message);
     }
 
     const Assignment = new AssignmentModel();
     const result = await Assignment.create(data);
+    return successHandler(res, result);
+  } catch (e) {
+    res.log.error(e);
+    res.boom.badRequest(e);
+  }
+});
+
+router.put('/:id', async (req, res) => {
+  try {
+    const data = req.body;
+    const { id } = req.params;
+    const body = joi.validate(data, assignmentSchema);
+    if (body.error) {
+      return res.boom.badRequest(body.error.message);
+    }
+
+    const Assignment = new AssignmentModel();
+    const result = await Assignment.update(id, data);
     return successHandler(res, result);
   } catch (e) {
     res.log.error(e);

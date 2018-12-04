@@ -135,19 +135,21 @@ const EditSortList = ({ item, setQuestionData, t }) => {
 
   const renderOptions = () => (
     <OptionsList
+      prefix="options"
+      onChange={handleChange}
       items={
-          correctTab === 0
-            ? item.validation.valid_response.value.map(ind => item.source[ind])
-            : item.validation.alt_responses[correctTab - 1].value.map(ind => item.source[ind])
-        }
+        correctTab === 0
+          ? item.validation.valid_response.value.map(ind => item.source[ind])
+          : item.validation.alt_responses[correctTab - 1].value.map(ind => item.source[ind])
+      }
       onSortEnd={handleCorrectSortEnd}
       useDragHandle
       columns={1}
       points={
-          correctTab === 0
-            ? item.validation.valid_response.score
-            : item.validation.alt_responses[correctTab - 1].score
-        }
+        correctTab === 0
+          ? item.validation.valid_response.score
+          : item.validation.alt_responses[correctTab - 1].score
+      }
       onChangePoints={handlePointsChange}
     />
   );

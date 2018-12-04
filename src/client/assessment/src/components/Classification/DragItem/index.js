@@ -33,12 +33,13 @@ const specSource = {
 };
 
 const DragItem = ({ connectDragSource, item, isDragging, valid, preview, renderIndex }) =>
+  item &&
   connectDragSource(
     <div
       style={{
         display: 'flex',
         alignItems: 'center',
-        margin: '10px 30px 10px 0',
+        margin: '10px 15px 10px 15px',
         opacity: isDragging ? 0 : 1
       }}
     >
@@ -67,7 +68,7 @@ const DragItem = ({ connectDragSource, item, isDragging, valid, preview, renderI
           justifyContent="space-between"
           style={{ width: '100%', fontWeight: 600 }}
         >
-          <div>{item}</div>
+          <div dangerouslySetInnerHTML={{ __html: item }} />
           {preview && valid !== undefined && (
             <div>
               {valid && <IconCheck color={green} width={12} height={10} />}

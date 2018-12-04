@@ -81,7 +81,11 @@
       "columnsCountSubtitle": "Column count",
       "editRowListSubtitle": "Row titles",
       "rowsSubtitle": "Row",
-      "rowsCountSubtitle": "Row count"
+      "rowsCountSubtitle": "Row count",
+      "possibleRespTitle": "Possible responses",
+      "groupPossibleRespTitle": "Group possible responses",
+      "titleOfGroupTitleLabel": "Title",
+      "titleOfGroupTitle": "Group "
     },
     "orderlist": {
       "question": {

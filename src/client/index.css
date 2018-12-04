@@ -840,3 +840,11 @@ input[type='checkbox'] {
 .imagelabeldragdrop-droppable.iseditablearialabel {
   margin: 5px 0;
 }
+
+.ant-input {
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}

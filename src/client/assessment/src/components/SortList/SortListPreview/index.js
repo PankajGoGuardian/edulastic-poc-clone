@@ -143,7 +143,11 @@ class SortListPreview extends PureComponent {
 
     return (
       <Paper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
-        {!smallSize && <Stimulus>{item.stimulus}</Stimulus>}
+        {!smallSize && (
+          <Stimulus>
+            <div dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+          </Stimulus>
+        )}
         <FlexContainer alignItems="flex-start" style={styles.wrapperStyles(smallSize)}>
           <FullWidthContainer>
             {!smallSize && (

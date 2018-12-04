@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { cloneDeep, isEqual } from 'lodash';
 import styled from 'styled-components';
@@ -8,6 +8,7 @@ import {
   FlexContainer,
   CorrectAnswersContainer,
   Stimulus,
+  Subtitle,
   CorItem
 } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
@@ -17,7 +18,9 @@ import {
   mainTextColor,
   lightGreen,
   lightRed,
-  white
+  white,
+  greenDark,
+  separatorColor
 } from '@edulastic/colors';
 
 import { DropContainer } from '../../common';
@@ -53,7 +56,9 @@ const MatchListPreview = ({
   editCorrectAnswers
 }) => {
   const {
-    possible_responses,
+    possible_responses: posResponses,
+    possible_response_groups,
+    group_possible_responses,
     stimulus,
     list,
     validation: {
@@ -62,17 +67,25 @@ const MatchListPreview = ({
     }
   } = item;
 
+  let groupArrays = [];
+
+  possible_response_groups.forEach((o) => {
+    groupArrays = [...groupArrays, ...o.responses];
+  });
+
+  const possible_responses = group_possible_responses ? groupArrays : posResponses;
+
   const [ans, setAns] = useState(Array.from({ length: list.length }).fill(null));
 
   const [dragItems, setDragItems] = useState(possible_responses);
 
   if (editCorrectAnswers.length > 0) {
-    if (!isEqual(ans, editCorrectAnswers)) {
+    if (
+      !isEqual(ans, editCorrectAnswers) ||
+      !isEqual(dragItems, possible_responses.filter(ite => !editCorrectAnswers.includes(ite)))
+    ) {
       setAns(editCorrectAnswers);
-    }
-
-    if (!isEqual(dragItems, possible_responses.filter(ite => !ans.includes(ite)))) {
-      setDragItems(possible_responses.filter(ite => !ans.includes(ite)));
+      setDragItems(possible_responses.filter(ite => !editCorrectAnswers.includes(ite)));
     }
   }
 
@@ -115,7 +128,7 @@ const MatchListPreview = ({
     width: flag === 'dragItems' ? 'auto' : '100%',
     alignItems: 'center',
     justifyContent: preview ? 'space-between' : 'center',
-    margin: flag === 'dragItems' ? '10px 30px 10px 0' : '10px 0px 10px 0',
+    margin: flag === 'dragItems' ? '10px 15px 10px 15px' : '10px 0px 10px 0',
     background: preview ? (correct ? lightGreen : lightRed) : white,
     border: `1px solid ${dashBorderColor}`,
     height: 40,
@@ -145,7 +158,11 @@ const MatchListPreview = ({
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
-      {!smallSize && view === 'preview' && <Stimulus>{stimulus}</Stimulus>}
+      {!smallSize && view === 'preview' && (
+        <Stimulus>
+          <div dangerouslySetInnerHTML={{ __html: stimulus }} />
+        </Stimulus>
+      )}
 
       <FlexContainer flexDirection="column" alignItems="flex-start">
         {list.map((ite, i) => (
@@ -155,7 +172,9 @@ const MatchListPreview = ({
             alignItems="center"
             childMarginRight={smallSize ? 13 : 45}
           >
-            <ListItem smallSize={smallSize}>{ite}</ListItem>
+            <ListItem smallSize={smallSize}>
+              <div dangerouslySetInnerHTML={{ __html: ite }} />
+            </ListItem>
             <Separator smallSize={smallSize} />
             <DropContainer
               noBorder={!!ans[i]}
@@ -185,15 +204,76 @@ const MatchListPreview = ({
             style={styles.dragItemsContainerStyle}
             noBorder
           >
-            {dragItems.map((i, index) => (
-              <DragItem
-                flag="dragItems"
-                onDrop={onDrop}
-                key={index}
-                item={i}
-                getStyles={getStyles}
-              />
-            ))}
+            <FlexContainer style={{ width: '100%' }} alignItems="stretch" justifyContent="center">
+              {group_possible_responses ? (
+                possible_response_groups.map((i, index) => (
+                  <Fragment key={index}>
+                    <FlexContainer
+                      style={{ flex: 1 }}
+                      flexDirection="column"
+                      alignItems="center"
+                      justifyContent="flex-start"
+                    >
+                      <Subtitle style={{ color: greenDark }}>{i.title}</Subtitle>
+                      <FlexContainer
+                        justifyContent="center"
+                        style={{ width: '100%', flexWrap: 'wrap' }}
+                      >
+                        {i.responses.map(
+                          (ite, ind) =>
+                            dragItems.includes(ite) && (
+                              <DragItem
+                                flag="dragItems"
+                                onDrop={onDrop}
+                                key={ind}
+                                item={ite}
+                                getStyles={getStyles}
+                              />
+                            )
+                        )}
+                      </FlexContainer>
+                    </FlexContainer>
+                    {index !== possible_response_groups.length - 1 && (
+                      <div
+                        style={{
+                          width: 0,
+                          marginLeft: 35,
+                          marginRight: 35,
+                          borderLeft: `1px solid ${separatorColor}`
+                        }}
+                      />
+                    )}
+                  </Fragment>
+                ))
+              ) : (
+                <Fragment>
+                  <FlexContainer
+                    style={{ flex: 1 }}
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="flex-start"
+                  >
+                    <FlexContainer
+                      justifyContent="center"
+                      style={{ width: '100%', flexWrap: 'wrap' }}
+                    >
+                      {dragItems.map(
+                        (ite, ind) =>
+                          dragItems.includes(ite) && (
+                            <DragItem
+                              flag="dragItems"
+                              onDrop={onDrop}
+                              key={ind}
+                              item={ite}
+                              getStyles={getStyles}
+                            />
+                          )
+                      )}
+                    </FlexContainer>
+                  </FlexContainer>
+                </Fragment>
+              )}
+            </FlexContainer>
           </DropContainer>
         </CorrectAnswersContainer>
       )}
@@ -202,8 +282,12 @@ const MatchListPreview = ({
         <CorrectAnswersContainer title={t('component.classification.correctAnswers')}>
           {list.map((ite, i) => (
             <FlexContainer key={i} alignItems="center">
-              <CorTitle>{ite}</CorTitle>
-              <CorItem index={i}>{validArray[i]}</CorItem>
+              <CorTitle>
+                <div dangerouslySetInnerHTML={{ __html: ite }} />
+              </CorTitle>
+              <CorItem index={i}>
+                <div dangerouslySetInnerHTML={{ __html: validArray[i] }} />
+              </CorItem>
             </FlexContainer>
           ))}
         </CorrectAnswersContainer>

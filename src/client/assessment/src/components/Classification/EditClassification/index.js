@@ -9,7 +9,13 @@ import { Paper } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
 import { secondaryTextColor } from '@edulastic/colors';
 
-import { QuestionTextArea, Subtitle, SortableList, CorrectAnswers } from '../../common';
+import {
+  QuestionTextArea,
+  Subtitle,
+  SortableList,
+  CorrectAnswers,
+  GroupPossibleResponses
+} from '../../common';
 import { setQuestionDataAction } from '../../../../../author/src/actions/question';
 import withAddButton from '../../HOC/withAddButton';
 import withPoints from '../../HOC/withPoints';
@@ -18,6 +24,12 @@ import ClassificationPreview from '../ClassificationPreview';
 const List = withAddButton(SortableList);
 
 const OptionsList = withPoints(ClassificationPreview);
+
+const actions = {
+  ADD: 'ADD',
+  REMOVE: 'REMOVE',
+  SORTEND: 'SORTEND'
+};
 
 const EditClassification = ({ item, setQuestionData, t }) => {
   const { stimulus, ui_style } = item;
@@ -31,26 +43,157 @@ const EditClassification = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-  const handleAdd = prop => () => {
+  const onGroupPossibleResp = (e) => {
     const newItem = cloneDeep(item);
 
-    newItem.ui_style[prop].push('');
+    newItem.group_possible_responses = e.target.checked;
 
     setQuestionData(newItem);
   };
 
-  const handleRemove = prop => (index) => {
+  const handleGroupAdd = () => {
     const newItem = cloneDeep(item);
 
-    newItem.ui_style[prop].splice(index, 1);
+    newItem.possible_response_groups.push({ title: '', responses: [] });
 
     setQuestionData(newItem);
   };
 
-  const handleSortEnd = prop => ({ oldIndex, newIndex }) => {
+  const handleGroupRemove = index => () => {
     const newItem = cloneDeep(item);
 
-    newItem.ui_style[prop] = arrayMove(item.ui_style[prop], oldIndex, newIndex);
+    const colCount = newItem.ui_style.column_count;
+    const rowCount = newItem.ui_style.row_count;
+
+    const initialLength = (colCount || 2) * (rowCount || 1);
+    newItem.validation.valid_response.value = Array(...Array(initialLength)).map(() => []);
+
+    newItem.validation.alt_responses.forEach((ite) => {
+      ite.value = Array(...Array(initialLength)).map(() => []);
+    });
+
+    newItem.possible_response_groups.splice(index, 1);
+
+    setQuestionData(newItem);
+  };
+
+  const onAddInner = index => () => {
+    const newItem = cloneDeep(item);
+
+    newItem.possible_response_groups[index].responses.push('');
+
+    setQuestionData(newItem);
+  };
+
+  const onRemoveInner = ind => (index) => {
+    const newItem = cloneDeep(item);
+
+    const colCount = newItem.ui_style.column_count;
+    const rowCount = newItem.ui_style.row_count;
+
+    const initialLength = (colCount || 2) * (rowCount || 1);
+    newItem.validation.valid_response.value = Array(...Array(initialLength)).map(() => []);
+
+    newItem.validation.alt_responses.forEach((ite) => {
+      ite.value = Array(...Array(initialLength)).map(() => []);
+    });
+
+    newItem.possible_response_groups[ind].responses.splice(index, 1);
+
+    setQuestionData(newItem);
+  };
+
+  const onGroupTitleChange = (index, value) => {
+    const newItem = cloneDeep(item);
+
+    newItem.possible_response_groups[index].title = value;
+
+    setQuestionData(newItem);
+  };
+
+  const handleGroupSortEnd = index => ({ oldIndex, newIndex }) => {
+    const newItem = cloneDeep(item);
+
+    newItem.possible_response_groups[index].responses = arrayMove(
+      newItem.possible_response_groups[index].responses,
+      oldIndex,
+      newIndex
+    );
+
+    setQuestionData(newItem);
+  };
+
+  const handleGroupChange = ind => (index, value) => {
+    const newItem = cloneDeep(item);
+
+    newItem.possible_response_groups[ind].responses[index] = value;
+
+    setQuestionData(newItem);
+  };
+
+  const handleMainPossible = action => (restProp) => {
+    const newItem = cloneDeep(item);
+
+    switch (action) {
+      case actions.ADD:
+        newItem.possible_responses.push('');
+        break;
+
+      case actions.REMOVE:
+        newItem.validation.valid_response.value.forEach((arr) => {
+          if (arr.includes(restProp)) {
+            arr.splice(arr.indexOf(restProp), 1);
+          }
+        });
+        newItem.validation.alt_responses.forEach((arrs) => {
+          arrs.value.forEach((arr) => {
+            if (arr.includes(restProp)) {
+              arr.splice(arr.indexOf(restProp), 1);
+            }
+          });
+        });
+        newItem.possible_responses.splice(restProp, 1);
+        break;
+
+      case actions.SORTEND:
+        newItem.possible_responses = arrayMove(
+          item.possible_responses,
+          restProp.oldIndex,
+          restProp.newIndex
+        );
+        break;
+
+      default:
+        break;
+    }
+
+    setQuestionData(newItem);
+  };
+
+  const handleMain = (action, prop) => (restProp) => {
+    const newItem = cloneDeep(item);
+
+    switch (action) {
+      case actions.ADD:
+        newItem.ui_style[prop].push('');
+        break;
+
+      case actions.REMOVE:
+        newItem.ui_style[prop].splice(restProp, 1);
+        break;
+
+      case actions.SORTEND:
+        newItem.ui_style[prop] = arrayMove(
+          item.ui_style[prop],
+          restProp.oldIndex,
+          restProp.newIndex
+        );
+        break;
+
+      default:
+        break;
+    }
+
     setQuestionData(newItem);
   };
 
@@ -61,10 +204,31 @@ const EditClassification = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
+  const handleChangePossible = () => (index, value) => {
+    const newItem = cloneDeep(item);
+
+    newItem.possible_responses[index] = value;
+    setQuestionData(newItem);
+  };
+
   const onUiChange = prop => (val) => {
     const newItem = cloneDeep(item);
 
     newItem.ui_style[prop] = val;
+
+    const colCount = newItem.ui_style.column_count;
+    const rowCount = newItem.ui_style.row_count;
+
+    const initialLength = (colCount || 2) * (rowCount || 1);
+
+    if (prop === 'column_count' || prop === 'row_count') {
+      newItem.validation.valid_response.value = Array(...Array(initialLength)).map(() => []);
+
+      newItem.validation.alt_responses.forEach((ite) => {
+        ite.value = Array(...Array(initialLength)).map(() => []);
+      });
+    }
+
     setQuestionData(newItem);
   };
 
@@ -76,7 +240,7 @@ const EditClassification = ({ item, setQuestionData, t }) => {
     }
     newItem.validation.alt_responses.push({
       score: 1,
-      value: Array.from({ length: item.validation.valid_response.value.length }).fill([])
+      value: item.validation.valid_response.value
     });
 
     setQuestionData(newItem);
@@ -106,10 +270,20 @@ const EditClassification = ({ item, setQuestionData, t }) => {
   const handleAnswerChange = (ans) => {
     const newItem = cloneDeep(item);
 
+    let groupArray = item.group_possible_responses ? [] : item.possible_responses;
+
+    if (item.group_possible_responses) {
+      item.possible_response_groups.forEach((o) => {
+        groupArray = [...groupArray, ...o.responses];
+      });
+    }
+
     if (correctTab === 0) {
-      newItem.validation.valid_response.value = ans;
+      newItem.validation.valid_response.value = ans.map(arr =>
+        arr.map(ite => groupArray.indexOf(ite)));
     } else {
-      newItem.validation.alt_responses[correctTab - 1].value = ans;
+      newItem.validation.alt_responses[correctTab - 1].value = ans.map(arr =>
+        arr.map(ite => groupArray.indexOf(ite)));
     }
 
     setQuestionData(newItem);
@@ -164,12 +338,13 @@ const EditClassification = ({ item, setQuestionData, t }) => {
             </Subtitle>
 
             <List
+              prefix="columns"
               buttonText="Add new column"
               items={item.ui_style.column_titles.map(ite => ite)}
-              onAdd={handleAdd('column_titles')}
-              onSortEnd={handleSortEnd('column_titles')}
+              onAdd={handleMain(actions.ADD, 'column_titles')}
+              onSortEnd={handleMain(actions.SORTEND, 'column_titles')}
               onChange={handleChange('column_titles')}
-              onRemove={handleRemove('column_titles')}
+              onRemove={handleMain(actions.REMOVE, 'column_titles')}
               useDragHandle
               columns={1}
             />
@@ -192,17 +367,40 @@ const EditClassification = ({ item, setQuestionData, t }) => {
             </Subtitle>
 
             <List
+              prefix="rows"
               buttonText="Add new row"
               items={item.ui_style.row_titles.map(ite => ite)}
-              onAdd={handleAdd('row_titles')}
-              onSortEnd={handleSortEnd('row_titles')}
+              onAdd={handleMain(actions.ADD, 'row_titles')}
+              onSortEnd={handleMain(actions.SORTEND, 'row_titles')}
               onChange={handleChange('row_titles')}
-              onRemove={handleRemove('row_titles')}
+              onRemove={handleMain(actions.REMOVE, 'row_titles')}
               useDragHandle
               columns={1}
             />
           </Col>
         </Row>
+
+        <GroupPossibleResponses
+          checkboxChange={onGroupPossibleResp}
+          checkboxVal={item.group_possible_responses}
+          items={
+            item.group_possible_responses
+              ? item.possible_response_groups
+              : item.possible_responses.map(ite => ite)
+          }
+          onAddInner={onAddInner}
+          onTitleChange={onGroupTitleChange}
+          onAdd={item.group_possible_responses ? handleGroupAdd : handleMainPossible(actions.ADD)}
+          onSortEnd={
+            item.group_possible_responses ? handleGroupSortEnd : handleMainPossible(actions.SORTEND)
+          }
+          onChange={item.group_possible_responses ? handleGroupChange : handleChangePossible()}
+          onRemoveInner={onRemoveInner}
+          onRemove={
+            item.group_possible_responses ? handleGroupRemove : handleMainPossible(actions.REMOVE)
+          }
+        />
+
         <CorrectAnswers
           onTabChange={setCorrectTab}
           correctTab={correctTab}

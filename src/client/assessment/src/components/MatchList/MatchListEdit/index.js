@@ -8,7 +8,13 @@ import { Paper } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
 
 import withAddButton from '../../HOC/withAddButton';
-import { SortableList, QuestionTextArea, Subtitle, CorrectAnswers } from '../../common';
+import {
+  SortableList,
+  QuestionTextArea,
+  Subtitle,
+  CorrectAnswers,
+  GroupPossibleResponses
+} from '../../common';
 import { setQuestionDataAction } from '../../../../../author/src/actions/question';
 import withPoints from '../../HOC/withPoints';
 import MatchListPreview from '../MatchListPreview';
@@ -156,6 +162,22 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
+  const onGroupPossibleResp = (e) => {
+    const newItem = cloneDeep(item);
+
+    newItem.group_possible_responses = e.target.checked;
+
+    setQuestionData(newItem);
+  };
+
+  const onGroupTitleChange = (index, value) => {
+    const newItem = cloneDeep(item);
+
+    newItem.possible_response_groups[index].title = value;
+
+    setQuestionData(newItem);
+  };
+
   const renderOptions = () => (
     <OptionsList
       item={item}
@@ -175,6 +197,74 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
     />
   );
 
+  const onAddInner = index => () => {
+    const newItem = cloneDeep(item);
+
+    newItem.possible_response_groups[index].responses.push('');
+
+    setQuestionData(newItem);
+  };
+
+  const onRemoveInner = ind => (index) => {
+    const newItem = cloneDeep(item);
+
+    newItem.validation.valid_response.value = Array.from({
+      length: item.validation.valid_response.value.length
+    }).fill(null);
+
+    newItem.validation.alt_responses.forEach((ite) => {
+      ite.value = Array.from({ length: item.validation.valid_response.value.length }).fill(null);
+    });
+
+    newItem.possible_response_groups[ind].responses.splice(index, 1);
+
+    setQuestionData(newItem);
+  };
+
+  const handleGroupAdd = () => {
+    const newItem = cloneDeep(item);
+
+    newItem.possible_response_groups.push({ title: '', responses: [] });
+
+    setQuestionData(newItem);
+  };
+
+  const handleGroupRemove = index => () => {
+    const newItem = cloneDeep(item);
+
+    newItem.validation.valid_response.value = Array.from({
+      length: item.validation.valid_response.value.length
+    }).fill(null);
+
+    newItem.validation.alt_responses.forEach((ite) => {
+      ite.value = Array.from({ length: item.validation.valid_response.value.length }).fill(null);
+    });
+
+    newItem.possible_response_groups.splice(index, 1);
+
+    setQuestionData(newItem);
+  };
+
+  const handleGroupSortEnd = index => ({ oldIndex, newIndex }) => {
+    const newItem = cloneDeep(item);
+
+    newItem.possible_response_groups[index].responses = arrayMove(
+      newItem.possible_response_groups[index].responses,
+      oldIndex,
+      newIndex
+    );
+
+    setQuestionData(newItem);
+  };
+
+  const handleGroupChange = ind => (index, value) => {
+    const newItem = cloneDeep(item);
+
+    newItem.possible_response_groups[ind].responses[index] = value;
+
+    setQuestionData(newItem);
+  };
+
   return (
     <Fragment>
       <Paper style={{ marginBottom: 30 }}>
@@ -187,7 +277,7 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
         <Subtitle>{t('component.sortList.editListSubtitle')}</Subtitle>
         <List
           buttonText="Add new"
-          items={item.list.map(ite => ite)}
+          items={item.list}
           onAdd={handleAdd}
           onSortEnd={handleSortEnd}
           onChange={handleChange}
@@ -195,15 +285,20 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
           useDragHandle
           columns={1}
         />
-        <Subtitle>{t('component.matchList.editPossibleResponses')}</Subtitle>
-        <List
-          items={item.possible_responses.map(ite => ite)}
-          onAdd={handleAddResp}
-          onSortEnd={handleSortEndResp}
-          onChange={handleChangeResp}
-          onRemove={handleRemoveResp}
-          useDragHandle
-          columns={1}
+
+        <GroupPossibleResponses
+          checkboxChange={onGroupPossibleResp}
+          checkboxVal={item.group_possible_responses}
+          items={
+            item.group_possible_responses ? item.possible_response_groups : item.possible_responses
+          }
+          onAddInner={onAddInner}
+          onTitleChange={onGroupTitleChange}
+          onAdd={item.group_possible_responses ? handleGroupAdd : handleAddResp}
+          onSortEnd={item.group_possible_responses ? handleGroupSortEnd : handleSortEndResp}
+          onChange={item.group_possible_responses ? handleGroupChange : handleChangeResp}
+          onRemoveInner={onRemoveInner}
+          onRemove={item.group_possible_responses ? handleGroupRemove : handleRemoveResp}
         />
 
         <CorrectAnswers

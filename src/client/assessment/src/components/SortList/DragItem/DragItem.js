@@ -81,7 +81,7 @@ const DragItem = ({
               ) : (
                 ''
               )}
-              {obj}
+              <div dangerouslySetInnerHTML={{ __html: obj }} />
             </FlexCenter>
             {(previewTab === 'check' || previewTab === 'show') && (
               <div>

@@ -19,7 +19,6 @@ MatchList.propTypes = {
   previewTab: PropTypes.string,
   smallSize: PropTypes.bool,
   item: PropTypes.object,
-  setQuestionData: PropTypes.func.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,

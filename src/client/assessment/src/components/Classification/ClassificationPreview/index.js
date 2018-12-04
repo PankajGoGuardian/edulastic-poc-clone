@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import { cloneDeep, isEqual } from 'lodash';
 
 import {
@@ -8,17 +7,19 @@ import {
   FlexContainer,
   CorrectAnswersContainer,
   Stimulus,
-  Subtitle
+  Subtitle,
+  CenteredText
 } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
-import { white, grey } from '@edulastic/colors';
+import { white, grey, greenDark, separatorColor } from '@edulastic/colors';
 
 import { DropContainer } from '../../common';
 import DragItem from '../DragItem';
 import { getStyles, IndexBox } from '../DragItem/StyledItem';
+import TableRow from './TableRow';
 
 const styles = {
-  itemContainerStyle: { display: 'flex', alignItems: 'center', margin: '10px 30px 10px 0' },
+  itemContainerStyle: { display: 'flex', alignItems: 'center', margin: '10px 15px 10px 15px' },
   previewItemStyle: {
     paddingRight: 15,
     paddingLeft: 15,
@@ -28,15 +29,6 @@ const styles = {
     fontWeight: 600
   },
   noPreviewItemStyle: {},
-  columnContainerStyle: {
-    width: '100%',
-    display: 'flex',
-    flexWrap: 'wrap',
-    padding: '70px 50px',
-    minHeight: 204,
-    borderRadius: 4,
-    backgroundColor: white
-  },
   dragItemsContainerStyle: {
     display: 'flex',
     alignItems: 'flex-start',
@@ -44,10 +36,6 @@ const styles = {
     minHeight: 140,
     borderRadius: 4
   },
-  flexColumnsContainerStyle: smallSize => ({
-    marginTop: smallSize ? 0 : 40,
-    marginBottom: 160
-  }),
   correctAnswersMargins: { marginBottom: 0, marginRight: 30 }
 };
 
@@ -57,11 +45,13 @@ const ClassificationPreview = ({
   item,
   t,
   previewTab,
-  smallSize
-  // editCorrectAnswers
+  smallSize,
+  editCorrectAnswers
 }) => {
   const {
-    possible_responses,
+    possible_responses: posResponses,
+    group_possible_responses,
+    possible_response_groups,
     stimulus,
     ui_style: {
       column_count: colCount,
@@ -75,16 +65,47 @@ const ClassificationPreview = ({
     }
   } = item;
 
+  let groupArrays = [];
+
+  possible_response_groups.forEach((o) => {
+    groupArrays = [...groupArrays, ...o.responses];
+  });
+
+  const posResp = group_possible_responses ? groupArrays : posResponses;
+
+  const possible_responses =
+    editCorrectAnswers.length > 0
+      ? posResp.filter(ite => editCorrectAnswers.every(i => !i.includes(posResp.indexOf(ite))))
+      : posResp;
+
   const [dragItems, setDragItems] = useState(possible_responses);
 
-  const [answers, setAnswers] = useState(Array.from({ length: colCount * rowCount }, () => []));
+  const initialLength = (colCount || 2) * (rowCount || 1);
 
-  const columns = Array.from({ length: colCount }, () =>
-    Array.from({ length: rowCount }).fill(null));
+  const createEmptyArrayOfArrays = () => Array(...Array(initialLength)).map(() => []);
+
+  const initialAnswers =
+    editCorrectAnswers.length > 0
+      ? editCorrectAnswers.map(ite => ite.map(an => posResp[an]))
+      : createEmptyArrayOfArrays();
+
+  const [answers, setAnswers] = useState(initialAnswers);
+
+  useEffect(() => {
+    if (
+      answers.length !== createEmptyArrayOfArrays().length ||
+      (editCorrectAnswers.length > 0 && !isEqual(answers, initialAnswers)) ||
+      ((possible_responses.length !== dragItems.length && editCorrectAnswers.length > 0) ||
+        (editCorrectAnswers.length > 0 && !isEqual(possible_responses, dragItems)))
+    ) {
+      setAnswers(initialAnswers);
+      setDragItems(possible_responses);
+    }
+  });
+
+  const boxes = createEmptyArrayOfArrays();
 
   const onDrop = (itemCurrent, itemTo) => {
-    console.log(itemCurrent, itemTo);
-
     const dItems = cloneDeep(dragItems);
     const ansArrays = cloneDeep(answers);
 
@@ -94,33 +115,30 @@ const ClassificationPreview = ({
           arr.splice(arr.indexOf(itemCurrent.item), 1);
         }
       });
-      if (!isEqual(ansArrays, answers)) {
-        setAnswers(ansArrays);
-      }
 
       if (!dItems.includes(itemCurrent.item)) {
         dItems.push(itemCurrent.item);
         setDragItems(dItems);
       }
-    } else {
-      if (dItems.includes(itemCurrent.item)) {
-        dItems.splice(dItems.indexOf(itemCurrent.item), 1);
-        setDragItems(dItems);
-      }
-      /* Start */
-      // const colIndex = +itemTo.flag.replace('column', '');
-      /* Stop */
+    } else if (dItems.includes(itemCurrent.item)) {
+      dItems.splice(dItems.indexOf(itemCurrent.item), 1);
+      setDragItems(dItems);
+    }
+
+    if (itemTo.flag === 'column') {
       ansArrays.forEach((arr, i) => {
-        if (arr.includes(itemCurrent.item) && itemTo.index !== i) {
+        if (arr.includes(itemCurrent.item)) {
           arr.splice(arr.indexOf(itemCurrent.item), 1);
-        } else if (!arr.includes(itemCurrent.item) && itemTo.index === i) {
+        }
+
+        if (i === itemTo.index) {
           arr.push(itemCurrent.item);
         }
       });
+    }
 
-      if (!isEqual(ansArrays, answers)) {
-        setAnswers(ansArrays);
-      }
+    if (!isEqual(ansArrays, answers)) {
+      setAnswers(ansArrays);
     }
 
     saveAnswer(ansArrays);
@@ -132,67 +150,90 @@ const ClassificationPreview = ({
     const valRespArray = [];
     const altRespArray = [];
 
-    answers.forEach((arr, i) => {
-      arr.forEach((ans) => {
-        const indexOfAns = possible_responses.indexOf(ans);
-        if (validArray[i].includes(indexOfAns)) {
-          valRespArray.push(ans);
+    validArray.forEach((arr, i) => {
+      arr.forEach((ite) => {
+        if (answers[i].includes(possible_responses[ite])) {
+          valRespArray.push(possible_responses[ite]);
         }
+      });
+    });
 
-        altArray.forEach((alt) => {
-          if (alt.value[i].includes(indexOfAns)) {
-            altRespArray.push(ans);
+    altArray.forEach((ite) => {
+      ite.value.forEach((an, i) => {
+        an.forEach((ans) => {
+          if (answers[i].includes(possible_responses[ans])) {
+            altRespArray.push(possible_responses[ans]);
           }
         });
       });
     });
 
-    return valRespArray.length >= altRespArray.length ? valRespArray : altRespArray;
+    return [altRespArray, valRespArray];
   };
 
-  const validatedAnswers = validateAnswers(validArray);
+  const transformArray = (Arr) => {
+    const len = colCount || 2;
+
+    const res = Array(...Array(len)).map(() => []);
+
+    Arr.forEach((arr, i) => {
+      res[i % len] = res[i % len].concat(arr);
+    });
+
+    return res;
+  };
+
+  const [altRespArr, valRespArr] = validateAnswers();
 
   const preview = previewTab === 'check' || previewTab === 'show';
 
+  const arrayOfRows = new Set(
+    boxes.map((n, ind) => (ind % colCount === 0 ? ind : undefined)).filter(i => i !== undefined)
+  );
+
+  const arrayOfCols = transformArray(validArray);
+
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
-      {!smallSize && view === 'preview' && <Stimulus>{stimulus}</Stimulus>}
+      {!smallSize && view === 'preview' && (
+        <Stimulus>
+          <div dangerouslySetInnerHTML={{ __html: stimulus }} />
+        </Stimulus>
+      )}
 
-      <FlexContainer
-        alignItems="flex-start"
-        childMarginRight={37}
-        style={styles.flexColumnsContainerStyle(smallSize)}
-      >
-        {columns.map((i, ind) => (
-          <FullWidth key={ind}>
-            {colTitles[ind] && <CenteredText>{colTitles[ind]}</CenteredText>}
-            {i.map((ite, inde) => (
-              <FlexContainer>
-                {rowTitles[inde] && (
-                  <CenteredText style={{ flex: 0.3 }}>{rowTitles[inde]}</CenteredText>
-                )}
-                <DropContainer
-                  style={{ ...styles.columnContainerStyle, marginTop: colTitles[ind] ? 10 : 34 }}
-                  drop={drop}
-                  index={inde}
-                  flag={`column${ind}`}
-                >
-                  {answers[inde].map((an, index) => (
-                    <DragItem
-                      valid={validatedAnswers.includes(an)}
-                      preview={preview}
-                      key={index}
-                      renderIndex={possible_responses.indexOf(an)}
-                      onDrop={onDrop}
-                      item={an}
-                    />
-                  ))}
-                </DropContainer>
-              </FlexContainer>
+      <table style={{ width: '100%' }}>
+        <thead>
+          <tr>
+            {rowTitles.length > 0 && <th />}
+            {colTitles.slice(0, colCount).map((ite, ind) => (
+              <th key={ind}>
+                <CenteredText dangerouslySetInnerHTML={{ __html: ite }} />
+              </th>
             ))}
-          </FullWidth>
-        ))}
-      </FlexContainer>
+          </tr>
+        </thead>
+        <tbody>
+          {boxes.map(
+            (n, ind) =>
+              arrayOfRows.has(ind) && (
+                <TableRow
+                  key={ind}
+                  num={ind}
+                  colCount={colCount}
+                  arrayOfRows={arrayOfRows}
+                  rowTitles={rowTitles}
+                  drop={drop}
+                  answers={answers}
+                  validArray={valRespArr}
+                  altArray={altRespArr}
+                  preview={preview}
+                  possible_responses={possible_responses}
+                  onDrop={onDrop}
+                />
+              )
+          )}
+        </tbody>
+      </table>
 
       {dragItems.length > 0 && (
         <CorrectAnswersContainer title={t('component.classification.dragItemsTitle')}>
@@ -202,37 +243,94 @@ const ClassificationPreview = ({
             style={styles.dragItemsContainerStyle}
             noBorder
           >
-            {dragItems.map((i, index) => (
-              <DragItem
-                key={index}
-                preview={preview}
-                renderIndex={possible_responses.indexOf(i)}
-                onDrop={onDrop}
-                item={i}
-              />
-            ))}
+            <FlexContainer style={{ width: '100%' }} alignItems="stretch" justifyContent="center">
+              {group_possible_responses ? (
+                possible_response_groups.map((i, index) => (
+                  <Fragment key={index}>
+                    <FlexContainer
+                      style={{ flex: 1 }}
+                      flexDirection="column"
+                      alignItems="center"
+                      justifyContent="flex-start"
+                    >
+                      <Subtitle style={{ color: greenDark }}>{i.title}</Subtitle>
+                      <FlexContainer
+                        justifyContent="center"
+                        style={{ width: '100%', flexWrap: 'wrap' }}
+                      >
+                        {i.responses.map(
+                          (ite, ind) =>
+                            dragItems.includes(ite) && (
+                              <DragItem
+                                key={ind}
+                                preview={preview}
+                                renderIndex={possible_responses.indexOf(ite)}
+                                onDrop={onDrop}
+                                item={ite}
+                              />
+                            )
+                        )}
+                      </FlexContainer>
+                    </FlexContainer>
+                    {index !== possible_response_groups.length - 1 && (
+                      <div
+                        style={{
+                          width: 0,
+                          marginLeft: 35,
+                          marginRight: 35,
+                          borderLeft: `1px solid ${separatorColor}`
+                        }}
+                      />
+                    )}
+                  </Fragment>
+                ))
+              ) : (
+                <Fragment>
+                  <FlexContainer
+                    style={{ flex: 1 }}
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="flex-start"
+                  >
+                    <FlexContainer
+                      justifyContent="center"
+                      style={{ width: '100%', flexWrap: 'wrap' }}
+                    >
+                      {dragItems.map(
+                        (ite, ind) =>
+                          dragItems.includes(ite) && (
+                            <DragItem
+                              key={ind}
+                              preview={preview}
+                              renderIndex={possible_responses.indexOf(ite)}
+                              onDrop={onDrop}
+                              item={ite}
+                            />
+                          )
+                      )}
+                    </FlexContainer>
+                  </FlexContainer>
+                </Fragment>
+              )}
+            </FlexContainer>
           </DropContainer>
         </CorrectAnswersContainer>
       )}
 
       {previewTab === 'show' && (
         <CorrectAnswersContainer title={t('component.classification.correctAnswers')}>
-          {validArray.map((arr, i) => (
+          {arrayOfCols.map((arr, i) => (
             <FlexContainer>
-              <Subtitle style={styles.correctAnswersMargins}>{colTitles[i]}</Subtitle>
+              <Subtitle style={styles.correctAnswersMargins}>
+                <div dangerouslySetInnerHTML={{ __html: colTitles[i] }} />
+              </Subtitle>
               {arr.map(index => (
                 <div style={styles.itemContainerStyle} key={index}>
                   <IndexBox preview={preview}>{index + 1}</IndexBox>
                   <div
-                    style={getStyles(
-                      false,
-                      white,
-                      grey,
-                      preview ? styles.previewItemStyle : styles.noPreviewItemStyle
-                    )}
-                  >
-                    {possible_responses[index]}
-                  </div>
+                    style={getStyles(false, white, grey, styles.previewItemStyle)}
+                    dangerouslySetInnerHTML={{ __html: posResp[index] }}
+                  />
                 </div>
               ))}
             </FlexContainer>
@@ -245,7 +343,7 @@ const ClassificationPreview = ({
 
 ClassificationPreview.propTypes = {
   previewTab: PropTypes.string,
-  // editCorrectAnswers: PropTypes.array,
+  editCorrectAnswers: PropTypes.array,
   t: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
   item: PropTypes.object.isRequired,
@@ -255,20 +353,8 @@ ClassificationPreview.propTypes = {
 
 ClassificationPreview.defaultProps = {
   previewTab: 'clear',
-  smallSize: false
-  // editCorrectAnswers: []
+  smallSize: false,
+  editCorrectAnswers: []
 };
 
 export default withNamespaces('assessment')(ClassificationPreview);
-
-const FullWidth = styled.div`
-  width: 100%;
-`;
-
-const CenteredText = styled(FullWidth)`
-  width: 100%;
-  text-align: center;
-  font-weight: 600;
-  font-size: 13px;
-  margin-bottom: 15px;
-`;

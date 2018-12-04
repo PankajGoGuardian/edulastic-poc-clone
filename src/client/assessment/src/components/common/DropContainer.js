@@ -23,25 +23,29 @@ function collectTarget(connector, monitor) {
   };
 }
 
-const DropContainer = ({ connectDropTarget, isOver, style, children, noBorder }) =>
-  connectDropTarget(
+const DropContainer = ({ connectDropTarget, isOver, style, children, noBorder, noTopBorder }) => {
+  const border = `${
+    !noBorder
+      ? isOver
+        ? `2px solid ${green}`
+        : `2px dashed ${dashBorderColor}`
+      : isOver
+        ? `2px solid ${green}`
+        : '2px solid transparent'
+  }`;
+
+  return connectDropTarget(
     <div
       style={{
         ...style,
-        border: `${
-          !noBorder
-            ? isOver
-              ? `2px solid ${green}`
-              : `2px dashed ${dashBorderColor}`
-            : isOver
-              ? `2px solid ${green}`
-              : '2px solid transparent'
-        }`
+        border,
+        borderTopColor: noTopBorder && !isOver ? 'transparent' : border
       }}
     >
       {children}
     </div>
   );
+};
 
 DropContainer.propTypes = {
   connectDropTarget: PropTypes.func.isRequired,

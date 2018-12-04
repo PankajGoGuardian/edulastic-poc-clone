@@ -44,7 +44,7 @@ const DragItem = ({
   connectDragSource(
     <div style={getStyles({ isDragging, flag, preview, correct })}>
       {preview && <Index correct={correct}>{renderIndex + 1}</Index>}
-      {item}
+      <div dangerouslySetInnerHTML={{ __html: item }} />
       {preview && (
         <div style={{ marginRight: 15 }}>
           {correct && <IconCheck color={green} width={12} height={10} />}

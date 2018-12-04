@@ -10,19 +10,17 @@ class BreadCrumb extends Component {
     return (
       <Container style={style}>
         <Breadcrumb>
-          {
-            data && data.map((breadCrumb, index) => (
+          {Array.isArray(data) &&
+            data.map((breadCrumb, index) => (
               <Breadcrumb.Item>
-                {
-                  index === 0 && <Icon key={index} type="left" style={{ fontSize: 11 }} />
-                }
-                {
-                  index !== data.length - 1
-                    ? <Link to={breadCrumb.to}>{breadCrumb.title}</Link> : breadCrumb.title
-                }
+                {index === 0 && <Icon key={index} type="left" style={{ fontSize: 11 }} />}
+                {index !== data.length - 1 ? (
+                  <Link to={breadCrumb.to}>{breadCrumb.title}</Link>
+                ) : (
+                  breadCrumb.title
+                )}
               </Breadcrumb.Item>
-            ))
-          }
+            ))}
         </Breadcrumb>
       </Container>
     );
@@ -31,11 +29,11 @@ class BreadCrumb extends Component {
 
 BreadCrumb.propTypes = {
   data: PropTypes.array.isRequired,
-  style: PropTypes.object,
+  style: PropTypes.object
 };
 
 BreadCrumb.defaultProps = {
-  style: {},
+  style: {}
 };
 
 export default BreadCrumb;
@@ -45,7 +43,8 @@ const Container = styled.div`
   top: 88px;
   text-transform: uppercase;
 
-  .ant-breadcrumb-link, .ant-breadcrumb-separator {
+  .ant-breadcrumb-link,
+  .ant-breadcrumb-separator {
     font-size: 11px;
     font-weight: 600;
     color: #00b0ff;

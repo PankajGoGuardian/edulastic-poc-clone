@@ -7,3 +7,4 @@ export { default as SortableList } from './SortableList';
 export { default as Subtitle } from './Subtitle';
 export { default as CorrectAnswers } from './CorrectAnswers';
 export { default as DropContainer } from './DropContainer';
+export { default as GroupPossibleResponses } from './GroupPossibleResponses';

@@ -131,6 +131,13 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       title: 'Classification',
       type: 'classify',
       data: {
+        group_possible_responses: false,
+        possible_response_groups: [
+          {
+            title: '',
+            responses: ['Choice B', 'Choice C', 'Choice A', 'Choice D']
+          }
+        ],
         possible_responses: ['Choice B', 'Choice C', 'Choice A', 'Choice D'],
         stimulus: 'Your question is here',
         type: 'classification',
@@ -155,6 +162,13 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       title: 'Match list',
       type: 'classify',
       data: {
+        group_possible_responses: false,
+        possible_response_groups: [
+          {
+            title: '',
+            responses: ['Choice B', 'Choice C', 'Choice A']
+          }
+        ],
         possible_responses: ['Choice A', 'Choice B', 'Choice C'],
         type: 'matchList',
         stimulus: '<p>This is the stem.</p>',

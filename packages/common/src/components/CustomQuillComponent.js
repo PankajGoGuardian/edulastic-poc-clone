@@ -155,11 +155,11 @@ class CustomQuillComponent extends Component {
 
   showToolbar = () => {
     this.setState({ active: true });
-  }
+  };
 
   hideToolbar = () => {
     this.setState({ active: false });
-  }
+  };
 
   handleClickOutside() {
     this.hideToolbar();
@@ -228,7 +228,8 @@ CustomQuillComponent.formats = [
   'bullet',
   'indent',
   'link',
-  'image'
+  'image',
+  'formula'
 ];
 
 export default enhanceWithClickOutside(CustomQuillComponent);

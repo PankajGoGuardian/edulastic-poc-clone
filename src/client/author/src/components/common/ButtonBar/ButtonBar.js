@@ -10,6 +10,7 @@ import {
   IconEye,
   IconCheck,
   IconEraseText,
+  IconMetadata
 } from '@edulastic/icons';
 import { white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
@@ -44,7 +45,7 @@ class ButtonBar extends Component {
     const { onChangeView } = this.props;
     onChangeView(key);
     this.setState({ current: key });
-  }
+  };
 
   render() {
     const { current } = this.state;
@@ -78,6 +79,12 @@ class ButtonBar extends Component {
                     <IconPreview color={white} width={18} />
                   </HeadIcon>
                   PREVIEW
+                </Menu.Item>
+                <Menu.Item key="metadata">
+                  <HeadIcon>
+                    <IconMetadata color={white} width={18} />
+                  </HeadIcon>
+                  METADATA
                 </Menu.Item>
               </Menu>
               <RightSide>

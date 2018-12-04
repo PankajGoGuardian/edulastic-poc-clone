@@ -97,3 +97,11 @@ export const SET_DEFAULT_TEST_DATA = '[tests] set default test data';
 // ui
 export const TOGGLE_MENU = '[homeUI] toggle menu';
 export const RESPONSIVE_TOGGLE_MENU = '[homeUI] responsive toggle menu';
+
+// Dictionaries
+export const RECEIVE_DICT_CURRICULUMS_REQUEST = '[dictionaries] receive curriculums request';
+export const RECEIVE_DICT_CURRICULUMS_SUCCESS = '[dictionaries] receive curriculums success';
+export const RECEIVE_DICT_CURRICULUMS_ERROR = '[dictionaries] receive curriculums error';
+export const RECEIVE_DICT_STANDARDS_REQUEST = '[dictionaries] receive standards request';
+export const RECEIVE_DICT_STANDARDS_SUCCESS = '[dictionaries] receive standards success';
+export const RECEIVE_DICT_STANDARDS_ERROR = '[dictionaries] receive standards error';

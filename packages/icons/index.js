@@ -61,3 +61,4 @@ export { default as IconCopyContent } from './src/IconCopyContent';
 export { default as IconFolder } from './src/IconFolder';
 export { default as IconBookInformation } from './src/IconBookInformation';
 export { default as IconManageClass } from './src/IconManageClass';
+export { default as IconMetadata } from './src/IconMetadata';

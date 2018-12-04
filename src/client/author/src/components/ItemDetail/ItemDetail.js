@@ -19,6 +19,7 @@ import {
   updateTabTitleAction,
   useTabsAction
 } from '../../actions/itemDetail';
+import { getDictCurriculumsAction, getDictStandardsForCurriculumAction } from '../../actions/dictionaries';
 import {
   getItemDetailLoadingSelector,
   getItemDetailRowsSelector,
@@ -26,12 +27,14 @@ import {
   getItemDetailUpdatingSelector,
   getItemDetailDimensionTypeSelector
 } from '../../selectors/itemDetail';
+import { getCurriculumsListSelector, getStandardsListSelector } from '../../selectors/dictionaries';
 import ItemDetailRow from './ItemDetailRow';
 import { ButtonBar, SecondHeadBar } from '../common';
 import SourceModal from '../QuestionEditor/SourceModal';
 import ItemHeader from './ItemHeader';
 import SettingsBar from './SettingsBar/SettingsBar';
 import TestItemPreview from '../../../../assessment/src/components/TestItemPreview/TestItemPreview';
+import TestItemMetadata from '../../../../assessment/src/components/TestItemMetadata';
 
 class ItemDetail extends Component {
   state = {
@@ -42,9 +45,9 @@ class ItemDetail extends Component {
   };
 
   componentDidMount() {
-    const { getItemDetailById, match } = this.props;
-    console.log('match here', match.params.id);
+    const { getItemDetailById, match, getDictCurriculums } = this.props;
     getItemDetailById(match.params.id, { data: true, validation: true });
+    getDictCurriculums();
   }
 
   getSizes = (type) => {
@@ -148,7 +151,6 @@ class ItemDetail extends Component {
 
   handleSave = () => {
     const { updateItemDetailById, match, item } = this.props;
-    console.log('handle save called', match.params);
     updateItemDetailById(match.params.id, item);
   };
 
@@ -248,6 +250,19 @@ class ItemDetail extends Component {
     }
   };
 
+  renderMetadata = () => {
+    const { curriculums, getDictStandardsForCurriculum, standards } = this.props;
+    return (
+      <Content>
+        <TestItemMetadata
+          curriculums={curriculums}
+          getStandards={getDictStandardsForCurriculum}
+          standards={standards}
+        />
+      </Content>
+    );
+  };
+
   render() {
     const { showModal, showSettings } = this.state;
     const {
@@ -341,6 +356,7 @@ class ItemDetail extends Component {
           </ItemDetailWrapper>
         )}
         {view === 'preview' && this.renderPreview()}
+        {view === 'metadata' && this.renderMetadata()}
       </Layout>
     );
   }
@@ -367,12 +383,18 @@ ItemDetail.propTypes = {
   showAnswer: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   changePreview: PropTypes.func.isRequired,
-  evaluation: PropTypes.isRequired
+  evaluation: PropTypes.isRequired,
+  curriculums: PropTypes.array,
+  standards: PropTypes.array,
+  getDictCurriculums: PropTypes.func.isRequired,
+  getDictStandardsForCurriculum: PropTypes.func.isRequired
 };
 
 ItemDetail.defaultProps = {
   rows: [],
-  item: null
+  item: null,
+  curriculums: [],
+  standards: []
 };
 
 const enhance = compose(
@@ -385,6 +407,8 @@ const enhance = compose(
       item: getItemDetailSelector(state),
       updating: getItemDetailUpdatingSelector(state),
       type: getItemDetailDimensionTypeSelector(state),
+      curriculums: getCurriculumsListSelector(state),
+      standards: getStandardsListSelector(state),
       evaluation: state.evluation,
       preview: state.view.preview
     }),
@@ -396,6 +420,8 @@ const enhance = compose(
       getItemDetailById: getItemDetailByIdAction,
       updateItemDetailById: updateItemDetailByIdAction,
       setItemDetailData: setItemDetailDataAction,
+      getDictCurriculums: getDictCurriculumsAction,
+      getDictStandardsForCurriculum: getDictStandardsForCurriculumAction,
       updateDimension: updateItemDetailDimensionAction,
       deleteWidget: deleteWidgetAction,
       updateTabTitle: updateTabTitleAction,

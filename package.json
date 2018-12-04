@@ -10,7 +10,7 @@
       "**node_modules**",
       ".build/**",
       "coverage/**",
-      "src/client/**r"
+      "src/client/**"
     ]
   },
   "scripts": {

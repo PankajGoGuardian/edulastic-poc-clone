@@ -10,6 +10,8 @@ const questionTypesBaseSchema = joi.object({ questionTypes: joi.string() });
 const standardsStandardSetBaseSchema = joi.object({ 'standards.standardSet': joi.string() });
 const standardsDomainsStandardsNameBaseSchema = joi.object({ 'standards.domains.standards.name': joi.string() });
 const curriculumsBaseSchema = joi.object({ curriculumId: joi.string() });
+const standardIdentifierBaseSchema = joi.object({ standardIdentifier: joi.string() });
+const standardDescriptionBaseSchema = joi.object({ standardDescription: joi.string() });
 
 const itemsSchema = joi.array().items(
   gradesBaseSchema,
@@ -20,10 +22,14 @@ const itemsSchema = joi.array().items(
   questionTypesBaseSchema,
   standardsStandardSetBaseSchema,
   standardsDomainsStandardsNameBaseSchema,
-  curriculumsBaseSchema
+  curriculumsBaseSchema,
+  standardIdentifierBaseSchema,
+  standardDescriptionBaseSchema
 );
 
 export const elasticSearchQuerySchema = {
   orSearch: itemsSchema,
   andSearch: itemsSchema,
+  andSearchSubstr: itemsSchema,
+  orSearchSubstr: itemsSchema
 };

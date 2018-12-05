@@ -8,9 +8,9 @@ import {
   Menu as AntMenu,
   Row,
   Col,
-  Select,
   Affix,
-  Icon as AntIcon
+  Icon as AntIcon,
+  Dropdown
 } from 'antd';
 import styled from 'styled-components';
 import {
@@ -64,7 +64,8 @@ class SideMenu extends Component {
     super(props);
 
     this.state = {
-      collapsed: false
+      collapsed: false,
+      isVisible: false
     };
   }
 
@@ -77,6 +78,10 @@ class SideMenu extends Component {
     if (menuItems[item.key].path !== undefined) {
       history.push(`/${menuItems[item.key].path}`);
     }
+  };
+
+  toggleDropdown = () => {
+    this.setState(prevState => ({ isVisible: !prevState.isVisible }));
   };
 
   renderIcon(icon) {
@@ -97,7 +102,7 @@ class SideMenu extends Component {
   }
 
   render() {
-    const { collapsed, broken } = this.state;
+    const { collapsed, broken, isVisible } = this.state;
     const { windowWidth, currentPath } = this.props;
     const isCollapsed =
       windowWidth > 1200 || windowWidth <= 480 || windowWidth === 646
@@ -107,6 +112,18 @@ class SideMenu extends Component {
     const page = currentPath.split('/').filter(item => !!item)[1];
 
     const menuIndex = getIndex(page, menuItems);
+    const footerDropdownMenu = (
+      <FooterDropDown isVisible={isVisible} className="footerDropWrap">
+        <Menu>
+          <Menu.Item key="0">
+            <a href="#"><IconDropdown type="caret-down" /> {isCollapsed ? '' : 'SIGN OUT'}</a>
+          </Menu.Item>
+          <Menu.Item key="1">
+            <a href="#"><IconDropdown type="caret-down" /> {isCollapsed ? '' : 'MY PROFILE'}</a>
+          </Menu.Item>
+        </Menu>
+      </FooterDropDown>
+    );
     return (
       <Affix style={{ width: isCollapsed ? 107 : 293 }}>
         <SideBar
@@ -168,20 +185,32 @@ class SideMenu extends Component {
                 <HelpIcon />
                 {isCollapsed ? null : <span>Help Center</span>}
               </QuestionButton>
-              <UserInfoButton className="userinfoBtn">
-                <img src={Profile} alt="Profile" />
-                <div>
-                  {!isCollapsed && (
-                    <label style={{ marginLeft: 11 }}>Zack oliver</label>
-                  )}
-                  <Select
-                    defaultValue="Student"
-                    suffixIcon={<IconDropdown type="caret-down" />}
-                  >
-                    <Select.Option value="Student">Student</Select.Option>
-                  </Select>
-                </div>
+
+              <UserInfoButton onClick={this.toggleDropdown} isVisible={isVisible} isCollapsed={isCollapsed} className="userinfoBtn">
+                <Dropdown
+                  className="footerDropdown"
+                  overlay={footerDropdownMenu}
+                  trigger={['click']}
+                  placement="topCenter"
+                >
+                  <div>
+                    <img src={Profile} alt="Profile" />
+                    <div style={{ paddingLeft: 11 }}>
+                      {!isCollapsed && (
+                        <div style={{ fontSize: 14, color: '#057750' }}>Zack oliver</div>
+                      )}
+                      {!isCollapsed && (
+                        <div style={{ fontSize: 12, color: 'white' }}>Student</div>
+                      )}
+                    </div>
+                    {!isCollapsed && (
+                      <IconDropdown style={{ fontSize: 20 }} className="drop-caret" type="caret-down" />
+                    )}
+
+                  </div>
+                </Dropdown>
               </UserInfoButton>
+
             </MenuFooter>
           </MenuWrapper>
         </SideBar>
@@ -209,7 +238,7 @@ export default enhance(SideMenu);
 
 const SideBar = styled(Layout.Sider)`
   width: 245px;
-  height: 900px;
+  height: 100vh;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
   background-color: #fbfafc;
   z-index: 22;
@@ -287,7 +316,7 @@ const MenuWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  height: 786px;
+  height: calc(100vh - 89px);
   padding: 21px 0px;
 
   @media screen and (max-width: 1300px) {
@@ -388,19 +417,68 @@ const QuestionButton = styled.div`
   }
 `;
 
+const FooterDropDown = styled.div`
+position: relative;
+bottom: -3px;
+ul {
+  background: #1fe3a1;
+  border-bottom: 1px solid #4fd08c;
+  border-radius: 15px 15px 0px 0px;
+  overflow: hidden;
+  &.ant-menu-inline-collapsed {
+    width: 84px;
+    padding-top: 10px;
+    margin: -3px 0px 0px 8px;
+  }
+  li {
+    margin: 0px !important;
+    &:hover, &:focus {
+      background: #4fd08c;
+    }
+    a {
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      &:hover, &:focus {
+        color: white;
+      }
+      i {
+        position: relative;
+        margin-right: 5px;
+        top: auto;
+      }
+    }
+  }
+}
+`;
+
 const UserInfoButton = styled.div`
+.footerDropdown {
   width: auto;
-  margin: 0 21px;
   height: 60px;
-  border-radius: 65px;
+  border-radius: ${props => (props.isVisible ? '0px 0px 30px 30px' : '65px')};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   background-color: #1fe3a1;
   display: flex;
   align-items: center;
-  padding-left: 12px;
+  padding: ${props => (props.isCollapsed ? 0 : '0px 25px 0px 55px')};
+  margin: ${props => (props.isCollapsed ? 0 : '0 21px')};
+  position: relative;
+  font-weight: 600;
+  transition: 0s;
+  -webkit-transition: 0s;
+
+  .drop-caret {
+    position: absolute;
+    right: 10px;
+    top: 20px;
+  }
+}
 
   img {
     width: 44px;
+    position: absolute;
+    left: 10px;
   }
 
   .ant-select-selection {

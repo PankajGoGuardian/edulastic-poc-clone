@@ -75,7 +75,7 @@ class MetaInfoCell extends Component {
         justifyContent="space-between"
         style={{ fontWeight: 600, color: textColor, flexWrap: 'wrap' }}
       >
-        <div>
+        <div style={{ width: '70%' }}>
           <FlexContainer>
             <div>
               <CategoryTitle>By:</CategoryTitle> <FirstText>{data.by}</FirstText>
@@ -102,11 +102,13 @@ class MetaInfoCell extends Component {
             {data.types && !!data.types.length && (
               <FlexContainer>
                 <CategoryTitle>Type: </CategoryTitle>
-                {data.types.map(type => (
-                  <Tag color="cyan" key={type} style={{ marginTop: 3 }}>
-                    {type}
-                  </Tag>
-                ))}
+                <FlexContainer style={{ width: '100%', flexWrap: 'wrap' }}>
+                  {data.types.map(type => (
+                    <Tag color="cyan" key={type} style={{ marginTop: 3 }}>
+                      {type}
+                    </Tag>
+                  ))}
+                </FlexContainer>
               </FlexContainer>
             )}
           </TypeContainer>
@@ -170,6 +172,7 @@ const SecondText = styled.span`
 `;
 
 const CategoryTitle = styled.span`
+  width: 40px;
   font-size: 13px;
   color: #444444;
 `;

@@ -1,6 +1,6 @@
 // exact match Object 1
 export const emObj1 = {
-  userResponses: [0, 1, 2],
+  userResponse: [0, 1, 2],
   validation: {
     scoring_type: 'exactMatch',
     valid_response: {
@@ -13,7 +13,7 @@ export const emObj1 = {
 
 // exact match Object 1
 export const emObj2 = {
-  userResponses: [0, 1, 2],
+  userResponse: [0, 1, 2],
   validation: {
     scoring_type: 'exactMatch',
     valid_response: {
@@ -26,7 +26,7 @@ export const emObj2 = {
 
 // exact match Object 3
 export const emObj3 = {
-  userResponses: [0, 1, 2],
+  userResponse: [0, 1, 2],
   validation: {
     scoring_type: 'exactMatch',
     valid_response: {
@@ -44,7 +44,7 @@ export const emObj3 = {
 
 // partial match Object 3
 export const pmObj1 = {
-  userResponses: [0, 1, 2],
+  userResponse: [0, 1, 2],
   validation: {
     scoring_type: 'partialMatch',
     valid_response: {
@@ -56,7 +56,7 @@ export const pmObj1 = {
 };
 
 export const pmObj2 = {
-  userResponses: [0, 1, 2, 3],
+  userResponse: [0, 1, 2, 3],
   validation: {
     scoring_type: 'partialMatch',
     valid_response: {
@@ -73,7 +73,7 @@ export const pmObj2 = {
 };
 
 export const pmObj3 = {
-  userResponses: [0, 3, 2, 1],
+  userResponse: [0, 3, 2, 1],
   validation: {
     scoring_type: 'partialMatch',
     valid_response: {

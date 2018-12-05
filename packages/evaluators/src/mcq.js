@@ -21,7 +21,7 @@ const exactMatchEvaluator = (userResponse = [], answers) => {
   });
 
   if (!isCorrect) {
-    const correctAnswer = answers[0].value;
+    const correctAnswer = answers[0].value || [];
     userResponse.forEach(item => {
       evaluation[item] = correctAnswer.includes(item);
     });

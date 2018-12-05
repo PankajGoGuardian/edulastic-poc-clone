@@ -1,6 +1,6 @@
 // exact match Object 1
 export const emObj1 = {
-  userResponses: [0, 1],
+  userResponse: [0, 1],
   type: 'multipleChoice',
   stimulus: 'batman is black',
   ui_style: {
@@ -24,13 +24,12 @@ export const emObj1 = {
     },
     alt_responses: []
   },
-  multiple_responses: false,
-  smallSize: true
+
 };
 
 // exact match object 2
 export const emObj2 = {
-  userResponses: [1],
+  userResponse: [1],
   type: 'multipleChoice',
   stimulus: 'batman is black',
   ui_style: {
@@ -65,7 +64,7 @@ export const emObj2 = {
 
 // exact match object 3
 export const emObj3 = {
-  userResponses: [0, 1],
+  userResponse: [0, 1],
   type: 'multipleChoice',
   stimulus: 'batman is black',
   ui_style: {
@@ -100,7 +99,7 @@ export const emObj3 = {
 
 // partial match object 1
 export const pmObj1 = {
-  userResponses: [0, 1],
+  userResponse: [0, 1],
   validation: {
     scoring_type: 'partialMatch',
     valid_response: {
@@ -115,7 +114,7 @@ export const pmObj1 = {
 
 // partial match object 2
 export const pmObj2 = {
-  userResponses: [0, 1],
+  userResponse: [0, 1],
   validation: {
     scoring_type: 'partialMatch',
     valid_response: {
@@ -129,7 +128,7 @@ export const pmObj2 = {
 };
 
 export const pmObj3 = {
-  userResponses: [1],
+  userResponse: [1],
   validation: {
     scoring_type: 'partialMatch',
     valid_response: {

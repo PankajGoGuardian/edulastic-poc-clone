@@ -19,7 +19,7 @@ export const navButtons = [
   { icon: <IconAddItems color={white} />, value: 'addItems', text: 'Add Items' },
   { icon: <IconReview color={white} width={24} height={24} />, value: 'review', text: 'Review' },
   { icon: <IconSettings color={white} />, value: 'settings', text: 'Settings' },
-  { icon: <IconAssign color={white} />, value: 'assign', text: 'Assign' },
+  { icon: <IconAssign color={white} />, value: 'assign', text: 'ASSIGN' },
 ];
 
 const TestPageHeader = ({ onChangeNav, current, onSave, title, creating, onShare }) => (

@@ -60,13 +60,13 @@ const MatchListPreview = ({
     possible_response_groups,
     group_possible_responses,
     stimulus,
-    list,
-    validation: {
-      valid_response: { value: validArray },
-      alt_responses: altArray
-    }
+    list
   } = item;
 
+  const itemValidation = item.validation || {};
+  let validArray = (itemValidation.valid_response && itemValidation.valid_response.validArray);
+  validArray = validArray || [];
+  const altArray = itemValidation.alt_responses || [];
   let groupArrays = [];
 
   possible_response_groups.forEach((o) => {
@@ -260,13 +260,13 @@ const MatchListPreview = ({
                       {dragItems.map(
                         (ite, ind) =>
                           dragItems.includes(ite) && (
-                            <DragItem
-                              flag="dragItems"
-                              onDrop={onDrop}
-                              key={ind}
-                              item={ite}
-                              getStyles={getStyles}
-                            />
+                          <DragItem
+                            flag="dragItems"
+                            onDrop={onDrop}
+                            key={ind}
+                            item={ite}
+                            getStyles={getStyles}
+                          />
                           )
                       )}
                     </FlexContainer>

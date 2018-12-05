@@ -58,13 +58,13 @@ const ClassificationPreview = ({
       column_titles: colTitles,
       row_count: rowCount,
       row_titles: rowTitles
-    },
-    validation: {
-      valid_response: { value: validArray },
-      alt_responses: altArray
     }
   } = item;
 
+  const itemValidation = item.validation || {};
+  let validArray = itemValidation && itemValidation.valid_response && itemValidation.valid_response.value;
+  validArray = validArray || [];
+  const altArray = itemValidation.alt_responses || [];
   let groupArrays = [];
 
   possible_response_groups.forEach((o) => {
@@ -299,13 +299,13 @@ const ClassificationPreview = ({
                       {dragItems.map(
                         (ite, ind) =>
                           dragItems.includes(ite) && (
-                            <DragItem
-                              key={ind}
-                              preview={preview}
-                              renderIndex={possible_responses.indexOf(ite)}
-                              onDrop={onDrop}
-                              item={ite}
-                            />
+                          <DragItem
+                            key={ind}
+                            preview={preview}
+                            renderIndex={possible_responses.indexOf(ite)}
+                            onDrop={onDrop}
+                            item={ite}
+                          />
                           )
                       )}
                     </FlexContainer>

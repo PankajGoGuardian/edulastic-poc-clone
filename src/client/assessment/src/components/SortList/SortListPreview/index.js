@@ -118,13 +118,14 @@ class SortListPreview extends PureComponent {
       t,
       smallSize,
       item: {
-        validation: {
-          valid_response: { value: valid_response },
-          alt_responses
-        }
+        validation
       }
     } = this.props;
 
+    let valid_response = validation && validation.valid_response && validation.valid_response.value;
+    valid_response = valid_response || [];
+    let alt_responses = validation && validation.valid_response && validation.valid_response.alt_responses;
+    alt_responses = alt_responses || [];
     const { items, selected, active } = this.state;
 
     const inCorrectList = selected

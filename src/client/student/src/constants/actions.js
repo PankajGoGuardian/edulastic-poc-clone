@@ -26,3 +26,7 @@ export const RESPONSIVE_TOGGLE_MENU = '[homeUI] responsive toggle menu';
 // report
 export const FETCH_REPORTS = '[reports] fetch reports';
 export const LOAD_REPORTS = '[reports] load reports';
+
+
+// user
+export const SET_USER = '[user] set user';

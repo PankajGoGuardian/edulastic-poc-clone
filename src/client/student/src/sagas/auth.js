@@ -1,13 +1,22 @@
+
+import { pick } from 'lodash';
 import { takeLatest, call, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import { authApi } from '@edulastic/api';
 import { message } from 'antd';
-import { SIGNUP, LOGIN } from '../constants/actions';
+import { SIGNUP, LOGIN, SET_USER } from '../constants/actions';
 
 function* login({ payload }) {
   try {
     const result = yield call(authApi.login, payload.value);
     localStorage.setItem('access_token', result.token);
+    const user = pick(result, ['_id', 'firstName', 'lastName', 'email']);
+    yield put({
+      type: SET_USER,
+      payload: {
+        user
+      }
+    });
     yield put(push('/home/dashboard'));
   } catch (err) {
     console.error(err);

@@ -23,6 +23,7 @@ import {
 } from '../../selectors/tests';
 import { getSelectedItemSelector } from '../../selectors/testItems';
 import SourceModal from '../QuestionEditor/SourceModal';
+import ShareModal from '../common/ShareModal';
 import Review from './Review';
 import Summary from './Summary';
 import Assign from './Assign';
@@ -53,6 +54,7 @@ const TestPage = ({
 
   const [current, setCurrent] = useState('addItems');
   const [showModal, setShowModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const handleNavChange = (value) => {
     if (value === 'source') {
@@ -150,7 +152,11 @@ const TestPage = ({
   };
 
   const handleShare = () => {
-    console.log('Share');
+    setShowShareModal(true);
+  };
+
+  const onCloseShareModal = () => {
+    setShowShareModal(false);
   };
 
   const handleApplySource = (source) => {
@@ -170,6 +176,7 @@ const TestPage = ({
           {JSON.stringify(test, null, 4)}
         </SourceModal>
       )}
+      <ShareModal isVisible={showShareModal} onClose={onCloseShareModal} />
       <TestPageHeader
         onChangeNav={handleNavChange}
         current={current}

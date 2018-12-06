@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   Layout,
@@ -91,7 +91,6 @@ class SideMenu extends Component {
       height: 22px !important;
       fill: rgb(67, 75, 93);
       margin-right: ${() => (collapsed ? '0rem' : '1rem')};
-
       .ant-menu-item-active > & {
         fill: #1890ff;
       }
@@ -116,10 +115,15 @@ class SideMenu extends Component {
       <FooterDropDown isVisible={isVisible} className="footerDropWrap">
         <Menu>
           <Menu.Item key="0">
-            <a href="#"><IconDropdown type="caret-down" /> {isCollapsed ? '' : 'SIGN OUT'}</a>
+            <a href="#">
+              <IconDropdown type="caret-down" /> {isCollapsed ? '' : 'SIGN OUT'}
+            </a>
           </Menu.Item>
           <Menu.Item key="1">
-            <a href="#"><IconDropdown type="caret-down" /> {isCollapsed ? '' : 'MY PROFILE'}</a>
+            <Link to="/home/profile">
+              <IconDropdown type="caret-down" />{' '}
+              {isCollapsed ? '' : 'MY PROFILE'}
+            </Link>
           </Menu.Item>
         </Menu>
       </FooterDropDown>
@@ -186,7 +190,12 @@ class SideMenu extends Component {
                 {isCollapsed ? null : <span>Help Center</span>}
               </QuestionButton>
 
-              <UserInfoButton onClick={this.toggleDropdown} isVisible={isVisible} isCollapsed={isCollapsed} className="userinfoBtn">
+              <UserInfoButton
+                onClick={this.toggleDropdown}
+                isVisible={isVisible}
+                isCollapsed={isCollapsed}
+                className="userinfoBtn"
+              >
                 <Dropdown
                   className="footerDropdown"
                   overlay={footerDropdownMenu}
@@ -197,20 +206,26 @@ class SideMenu extends Component {
                     <img src={Profile} alt="Profile" />
                     <div style={{ paddingLeft: 11 }}>
                       {!isCollapsed && (
-                        <div style={{ fontSize: 14, color: '#057750' }}>Zack oliver</div>
+                        <div style={{ fontSize: 14, color: '#057750' }}>
+                          Zack oliver
+                        </div>
                       )}
                       {!isCollapsed && (
-                        <div style={{ fontSize: 12, color: 'white' }}>Student</div>
+                        <div style={{ fontSize: 12, color: 'white' }}>
+                          Student
+                        </div>
                       )}
                     </div>
                     {!isCollapsed && (
-                      <IconDropdown style={{ fontSize: 20 }} className="drop-caret" type="caret-down" />
+                      <IconDropdown
+                        style={{ fontSize: 20 }}
+                        className="drop-caret"
+                        type="caret-down"
+                      />
                     )}
-
                   </div>
                 </Dropdown>
               </UserInfoButton>
-
             </MenuFooter>
           </MenuWrapper>
         </SideBar>
@@ -242,7 +257,6 @@ const SideBar = styled(Layout.Sider)`
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
   background-color: #fbfafc;
   z-index: 22;
-
   &.ant-layout-sider-collapsed .logoWrapper {
     padding: 21px;
   }
@@ -259,7 +273,6 @@ const SideBar = styled(Layout.Sider)`
     margin: 0 auto;
     justify-content: center;
     margin-bottom: 15px;
-
     &:hover {
       background: #1890ff;
     }
@@ -318,7 +331,6 @@ const MenuWrapper = styled.div`
   flex-direction: column;
   height: calc(100vh - 89px);
   padding: 21px 0px;
-
   @media screen and (max-width: 1300px) {
     height: 600px;
   }
@@ -333,7 +345,6 @@ const Menu = styled(AntMenu)`
       border-left: 3px solid #4aac8b;
     }
   }
-
   &.ant-menu-vertical .ant-menu-item:after,
   &.ant-menu-vertical-left .ant-menu-item:after,
   &.ant-menu-vertical-right .ant-menu-item:after,
@@ -401,11 +412,9 @@ const QuestionButton = styled.div`
   margin: 10px 21px;
   display: flex;
   align-items: center;
-
   span {
     padding-left: 25px;
   }
-
   &:hover {
     background: #1890ff;
     svg {
@@ -418,69 +427,68 @@ const QuestionButton = styled.div`
 `;
 
 const FooterDropDown = styled.div`
-position: relative;
-bottom: -3px;
-ul {
-  background: #1fe3a1;
-  border-bottom: 1px solid #4fd08c;
-  border-radius: 15px 15px 0px 0px;
-  overflow: hidden;
-  &.ant-menu-inline-collapsed {
-    width: 84px;
-    padding-top: 10px;
-    margin: -3px 0px 0px 8px;
-  }
-  li {
-    margin: 0px !important;
-    &:hover, &:focus {
-      background: #4fd08c;
+  position: relative;
+  bottom: -3px;
+  ul {
+    background: #1fe3a1;
+    border-bottom: 1px solid #4fd08c;
+    border-radius: 15px 15px 0px 0px;
+    overflow: hidden;
+    &.ant-menu-inline-collapsed {
+      width: 84px;
+      padding-top: 10px;
+      margin: -3px 0px 0px 8px;
     }
-    a {
-      color: white;
-      font-size: 14px;
-      font-weight: 600;
-      &:hover, &:focus {
+    li {
+      margin: 0px !important;
+      &:hover,
+      &:focus {
+        background: #4fd08c;
+      }
+      a {
         color: white;
-      }
-      i {
-        position: relative;
-        margin-right: 5px;
-        top: auto;
+        font-size: 14px;
+        font-weight: 600;
+        &:hover,
+        &:focus {
+          color: white;
+        }
+        i {
+          position: relative;
+          margin-right: 5px;
+          top: auto;
+        }
       }
     }
   }
-}
 `;
 
 const UserInfoButton = styled.div`
-.footerDropdown {
-  width: auto;
-  height: 60px;
-  border-radius: ${props => (props.isVisible ? '0px 0px 30px 30px' : '65px')};
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  background-color: #1fe3a1;
-  display: flex;
-  align-items: center;
-  padding: ${props => (props.isCollapsed ? 0 : '0px 25px 0px 55px')};
-  margin: ${props => (props.isCollapsed ? 0 : '0 21px')};
-  position: relative;
-  font-weight: 600;
-  transition: 0s;
-  -webkit-transition: 0s;
-
-  .drop-caret {
-    position: absolute;
-    right: 10px;
-    top: 20px;
+  .footerDropdown {
+    width: auto;
+    height: 60px;
+    border-radius: ${props => (props.isVisible ? '0px 0px 30px 30px' : '65px')};
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+    background-color: #1fe3a1;
+    display: flex;
+    align-items: center;
+    padding: ${props => (props.isCollapsed ? 0 : '0px 25px 0px 55px')};
+    margin: ${props => (props.isCollapsed ? 0 : '0 21px')};
+    position: relative;
+    font-weight: 600;
+    transition: 0s;
+    -webkit-transition: 0s;
+    .drop-caret {
+      position: absolute;
+      right: 10px;
+      top: 20px;
+    }
   }
-}
-
   img {
     width: 44px;
     position: absolute;
     left: 10px;
   }
-
   .ant-select-selection {
     background: transparent;
     border: 0px;

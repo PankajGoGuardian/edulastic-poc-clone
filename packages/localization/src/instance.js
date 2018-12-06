@@ -5,7 +5,9 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import { reactI18nextModule } from 'react-i18next';
 
 const browserLocale =
-  navigator.language || navigator.browserLanguage || (navigator.languages || ['en-us'])[0];
+  navigator.language ||
+  navigator.browserLanguage ||
+  (navigator.languages || ['en-us'])[0];
 const locale = browserLocale.toLowerCase();
 
 i18n
@@ -17,7 +19,7 @@ i18n
     fallbackLng: 'en',
     debug: true,
     interpolation: {
-      escapeValue: false, // not needed for react!!
+      escapeValue: false // not needed for react!!
     },
     ns: ['default', 'author', 'student', 'assessment', 'common'],
     defaultNS: 'default',
@@ -25,7 +27,7 @@ i18n
       wait: false,
       bindI18n: 'languageChanged loaded',
       bindStore: 'added removed',
-      nsMode: 'default',
+      nsMode: 'default'
     },
     resources: {
       en: {
@@ -34,8 +36,9 @@ i18n
         student: require('./locales/student/en'),
         assessment: require('./locales/assessment/en'),
         common: require('./locales/common/en'),
-      },
-    },
+        dashboard: require('./locales/dashboard/en')
+      }
+    }
   });
 
 export default i18n;

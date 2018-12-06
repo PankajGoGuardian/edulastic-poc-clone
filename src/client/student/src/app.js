@@ -8,6 +8,7 @@ import AppContainer from './components/dashboard';
 import ReportContainer from './components/Report';
 import ManageClassContainer from './components/manageClass';
 import ReportListContainer from './components/ReportList';
+import ProfileContainer from './components/profile';
 
 const Dashboard = ({ match }) => (
   <Layout>
@@ -16,6 +17,7 @@ const Dashboard = ({ match }) => (
       <Route path={`${match.url}/dashboard`} component={AppContainer} />
       <Route path={`${match.url}/reports`} component={ReportContainer} />
       <Route path={`${match.url}/manage`} component={ManageClassContainer} />
+      <Route path={`${match.url}/profile`} component={ProfileContainer} />
       <Route
         path={`${match.url}/report/list`}
         component={ReportListContainer}

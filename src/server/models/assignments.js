@@ -7,7 +7,11 @@ const assignmentSchema = mongoose.Schema({
   endDate: String,
   createdAt: String,
   updatedAt: String,
-  class: Object
+  class: Array,
+  students: Array,
+  openPolicy: String,
+  closePolicy: String,
+  specificStudents: Boolean
 });
 
 class Assignment {
@@ -39,7 +43,7 @@ class Assignment {
   }
 
   delete(id) {
-    return this.Assingment.remove({
+    return this.Assignment.remove({
       _id: new mongoose.Types.ObjectId(id)
     });
   }
@@ -50,9 +54,9 @@ class Assignment {
     });
   }
 
-  byTest(testId, ownerId) {
+  byTest(testId) {
     return this.Assignment.find({
-      'assignedBy.userId': ownerId,
+      // 'assignedBy.userId': ownerId,
       testId
     });
   }

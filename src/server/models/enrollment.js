@@ -2,8 +2,7 @@ import mongoose from 'mongoose';
 
 // formatter
 const getByClassFormatter = {
-  __v: 0,
-  _id: 1
+  __v: 0
 };
 
 const enrollmentSchema = mongoose.Schema({

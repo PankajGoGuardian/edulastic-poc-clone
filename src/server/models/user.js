@@ -15,8 +15,11 @@ const userSchema = mongoose.Schema(
 
 const userDetailsFormatter = {
   __id: 1,
-  name: 1
+  firstName: 1,
+  lastName: 1,
+  email: 1
 };
+
 class User {
   constructor() {
     this.User = mongoose.model('User', userSchema);

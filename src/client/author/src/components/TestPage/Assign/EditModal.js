@@ -1,20 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Row, Input, Col, DatePicker, Select } from 'antd';
+import { connect } from 'react-redux';
+import { Modal, Row, Col, DatePicker, Select, Radio } from 'antd';
 import { EduButton, FlexContainer } from '@edulastic/common';
 
 import styled from 'styled-components';
 import { selectsData } from '../common';
+import { fetchStudentsOfGroupAction } from '../../../actions/group';
 
-const EditModal = ({ title, visible, onOk, onCancel, setModalData, modalData }) => {
+const RadioGroup = Radio.Group;
+const { Option } = Select;
+
+
+const EditModal = ({
+  title,
+  visible,
+  onOk,
+  onCancel,
+  setModalData,
+  modalData,
+  group,
+  fetchStudents
+}) => {
   const [endOpen, setEndOpen] = useState(false);
 
   const onChange = (field, value) => {
     setModalData({
       ...modalData,
-      [field]: value,
+      [field]: value
     });
   };
+
+  useEffect(() => {
+    modalData.class.forEach((classId) => {
+      fetchStudents({ classId });
+    });
+  }, [modalData.class]);
 
   const disabledStartDate = (startDate) => {
     const { endDate } = modalData;
@@ -50,6 +71,29 @@ const EditModal = ({ title, visible, onOk, onCancel, setModalData, modalData }) 
     setEndOpen(open);
   };
 
+
+  const selectedGroups = modalData.class;
+  const selectedStudents = modalData.students || [];
+
+  let allStudents = [];
+
+  group.forEach(({ _id, students }) => {
+    if (selectedGroups.includes(_id)) {
+      students = students || [];
+      allStudents = [...allStudents, ...students];
+    }
+  });
+
+  const studentNames = [];
+
+
+  allStudents.forEach(({ _id, firstName, lastName }) => {
+    if (selectedStudents.includes(_id)) {
+      studentNames.push(`${firstName} ${lastName}`);
+    }
+  });
+
+
   const footer = (
     <FlexContainer justifyContent="space-around" style={{ padding: '20px 0' }}>
       <Button key="back" size="large" onClick={onCancel}>
@@ -61,17 +105,76 @@ const EditModal = ({ title, visible, onOk, onCancel, setModalData, modalData }) 
     </FlexContainer>
   );
 
+
   return (
     <Modal title={title} visible={visible} footer={footer} width="50%">
+      <StyledRowLabel gutter={16}>
+        <Col span={12}>Class/Group Section</Col>
+      </StyledRowLabel>
       <StyledRow>
         <Col span={24}>
-          <Input
-            value={modalData.class._id}
-            size="large"
-            onChange={e => onChange('class', { ...modalData.class, id: e.target.value })}
-          />
+          <Select
+            placeholder="Please select"
+            style={{ width: '100%' }}
+            mode="multiple"
+            cache="false"
+            onChange={(event) => {
+              onChange('class', event);
+            }}
+            onSelect={(classId) => {
+              fetchStudents({ classId });
+            }}
+            value={modalData.class}
+          >
+            {group.map(data => (
+              <Option
+                key={data._id}
+              >
+                {data.name}
+              </Option>
+            ))}
+          </Select>
         </Col>
       </StyledRow>
+      <StyledRow gutter={16}>
+        <RadioGroup value={modalData.specificStudents ? 2 : 1}>
+          <Radio value={1} onClick={() => onChange('specificStudents', false)}>
+            Entire Class
+          </Radio>
+          <Radio value={2} onClick={() => onChange('specificStudents', true)}>
+            Specific Student
+          </Radio>
+        </RadioGroup>
+      </StyledRow>
+      <StudentWrapper show={modalData.specificStudents}>
+        <StyledRowLabel gutter={16}>
+          <Col span={12}>Student</Col>
+        </StyledRowLabel>
+        <StyledRow>
+          <Col span={24}>
+            <Select
+              placeholder="Please select"
+              style={{ width: '100%' }}
+              mode="multiple"
+              onChange={(event) => {
+                onChange('students', event);
+              }}
+              value={modalData.students}
+            >
+              {allStudents.map(({ _id, firstName, lastName }) => (
+                <Option key={_id}>
+                  {`${firstName} ${lastName}`}
+                </Option>
+              ))}
+
+            </Select>
+          </Col>
+        </StyledRow>
+      </StudentWrapper>
+      <StyledRowLabel gutter={16} style={{ marginBottom: '10' }}>
+        <Col span={12}>Open Date</Col>
+        <Col span={12}>Close Date</Col>
+      </StyledRowLabel>
       <StyledRow gutter={16}>
         <Col span={12}>
           <DatePicker
@@ -101,7 +204,10 @@ const EditModal = ({ title, visible, onOk, onCancel, setModalData, modalData }) 
           />
         </Col>
       </StyledRow>
-
+      <StyledRowLabel gutter={16}>
+        <Col span={12}>Open Policy</Col>
+        <Col span={12}>Close Policy</Col>
+      </StyledRowLabel>
       <StyledRow gutter={16}>
         <Col span={12}>
           <Select
@@ -145,9 +251,14 @@ EditModal.propTypes = {
   onCancel: PropTypes.func.isRequired,
   setModalData: PropTypes.func.isRequired,
   modalData: PropTypes.object.isRequired,
+  group: PropTypes.array.isRequired,
+  fetchStudents: PropTypes.func.isRequired
 };
 
-export default EditModal;
+export default connect(
+  () => { },
+  { fetchStudents: fetchStudentsOfGroupAction }
+)(EditModal);
 
 const Button = styled(EduButton)`
   width: 30%;
@@ -155,4 +266,12 @@ const Button = styled(EduButton)`
 
 const StyledRow = styled(Row)`
   margin-bottom: 20px;
+`;
+
+const StyledRowLabel = styled(Row)`
+  margin-bottom: 10px;
+`;
+
+const StudentWrapper = styled.div`
+  display: ${props => (props.show ? 'block' : 'none')};
 `;

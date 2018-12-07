@@ -99,9 +99,30 @@ export const TOGGLE_MENU = '[homeUI] toggle menu';
 export const RESPONSIVE_TOGGLE_MENU = '[homeUI] responsive toggle menu';
 
 // Dictionaries
-export const RECEIVE_DICT_CURRICULUMS_REQUEST = '[dictionaries] receive curriculums request';
-export const RECEIVE_DICT_CURRICULUMS_SUCCESS = '[dictionaries] receive curriculums success';
-export const RECEIVE_DICT_CURRICULUMS_ERROR = '[dictionaries] receive curriculums error';
-export const RECEIVE_DICT_STANDARDS_REQUEST = '[dictionaries] receive standards request';
-export const RECEIVE_DICT_STANDARDS_SUCCESS = '[dictionaries] receive standards success';
-export const RECEIVE_DICT_STANDARDS_ERROR = '[dictionaries] receive standards error';
+export const RECEIVE_DICT_CURRICULUMS_REQUEST =
+  '[dictionaries] receive curriculums request';
+export const RECEIVE_DICT_CURRICULUMS_SUCCESS =
+  '[dictionaries] receive curriculums success';
+export const RECEIVE_DICT_CURRICULUMS_ERROR =
+  '[dictionaries] receive curriculums error';
+export const RECEIVE_DICT_STANDARDS_REQUEST =
+  '[dictionaries] receive standards request';
+export const RECEIVE_DICT_STANDARDS_SUCCESS =
+  '[dictionaries] receive standards success';
+export const RECEIVE_DICT_STANDARDS_ERROR =
+  '[dictionaries] receive standards error';
+
+// assignments
+export const ADD_ASSIGNMENT = '[assignments] add assignment';
+export const SET_ASSIGNMENT = '[assignments] set assignment';
+export const UPDATE_ASSIGNMENT = '[assignments] update assignment';
+export const UPDATE_SET_ASSIGNMENT = '[assignments] update set assingment';
+export const FETCH_ASSIGNMENTS = '[assignments] fetch assignments';
+export const LOAD_ASSIGNMENTS = '[assignments] load assignments';
+export const DELETE_ASSIGNMENT = '[assignments] delete assignment';
+export const REMOVE_ASSIGNMENT = '[assignments] remove assignment';
+// groups
+export const FETCH_GROUPS = '[group] fetch owner groups';
+export const SET_GROUPS = '[group] set owner groups';
+export const FETCH_GROUP_STUDENTS = '[group] fetch students of group';
+export const SET_GROUP_STUDENTS = '[group] set group students';

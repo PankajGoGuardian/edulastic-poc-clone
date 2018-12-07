@@ -4,14 +4,22 @@ import styled from 'styled-components';
 import { FlexContainer } from '@edulastic/common';
 import Tags from '../../common/Tags';
 
-const ClassCell = ({ id, students }) => {
+const ClassCell = ({ group, data }) => {
+  let students;
   if (!students || !students.length) {
     students = ['All students'];
   }
 
+  const classNames = group.map(({ _id, name }) => {
+    if (Array.isArray(data) && data.includes(_id)) {
+      return name;
+    }
+    return null;
+  }).filter(Boolean).join(' ');
+
   return (
     <FlexContainer>
-      <span>{id}</span>
+      <span>{classNames}</span>
       <TagsContainer>
         {students && !!students.length && <Tags tags={students} type="secondary" />}
       </TagsContainer>
@@ -20,13 +28,15 @@ const ClassCell = ({ id, students }) => {
 };
 
 ClassCell.propTypes = {
-  id: PropTypes.string.isRequired,
-  students: PropTypes.array,
+  group: PropTypes.array,
+  data: PropTypes.array
 };
 
 ClassCell.defaultProps = {
-  students: [],
+  group: [],
+  data: []
 };
+
 
 export default ClassCell;
 

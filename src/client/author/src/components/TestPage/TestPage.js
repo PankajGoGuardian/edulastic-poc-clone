@@ -69,7 +69,9 @@ const TestPage = ({
 
     newTest.testItems = testItems;
     newTest.scoring.testItems = testItems.map((item) => {
-      const foundItem = newTest.scoring.testItems.find(({ id }) => item && item._id === id);
+      const foundItem = newTest.scoring.testItems.find(
+        ({ id }) => item && item._id === id
+      );
       if (!foundItem) {
         return {
           id: item ? item._id : uuidv4(),
@@ -96,7 +98,11 @@ const TestPage = ({
     switch (current) {
       case 'addItems':
         return (
-          <AddItems onAddItems={handleAddItems} selectedItems={selectedItems} current={current} />
+          <AddItems
+            onAddItems={handleAddItems}
+            selectedItems={selectedItems}
+            current={current}
+          />
         );
       case 'summary':
         return (
@@ -118,7 +124,12 @@ const TestPage = ({
           />
         );
       case 'settings':
-        return <Setting current={current} onShowSource={() => handleNavChange('source')} />;
+        return (
+          <Setting
+            current={current}
+            onShowSource={() => handleNavChange('source')}
+          />
+        );
       case 'assign':
         return <Assign test={test} setData={setData} current={current} />;
       default:
@@ -132,7 +143,9 @@ const TestPage = ({
 
     newTest.testItems = testItems;
     newTest.scoring.testItems = testItems.map((item) => {
-      const foundItem = newTest.scoring.testItems.find(({ id }) => item && item._id === id);
+      const foundItem = newTest.scoring.testItems.find(
+        ({ id }) => item && item._id === id
+      );
       if (!foundItem) {
         return {
           id: item ? item._id : uuidv4(),
@@ -172,7 +185,10 @@ const TestPage = ({
   return (
     <div>
       {showModal && (
-        <SourceModal onClose={() => setShowModal(false)} onApply={handleApplySource}>
+        <SourceModal
+          onClose={() => setShowModal(false)}
+          onApply={handleApplySource}
+        >
           {JSON.stringify(test, null, 4)}
         </SourceModal>
       )}

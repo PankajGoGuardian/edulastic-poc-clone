@@ -5,5 +5,9 @@ export const assignmentSchema = {
   assignedBy: joi.object(),
   startDate: joi.string(),
   endDate: joi.string(),
-  class: joi.object()
+  class: joi.array(),
+  students: joi.array(),
+  openPolicy: joi.string(),
+  closePolicy: joi.string(),
+  specificStudents: joi.boolean()
 };

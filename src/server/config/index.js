@@ -37,7 +37,8 @@ module.exports = {
   },
 
   db: {
-    uri: process.env.DB_URI || 'mongodb://localhost/edulastic-poc',
+    uri: process.env.DB_URI ||
+      'mongodb://localhost/edulastic-poc',
     options: {
       useNewUrlParser: true
     }

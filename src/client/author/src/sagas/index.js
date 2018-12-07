@@ -5,6 +5,8 @@ import testItemSaga from './testItem';
 import questionSaga from './question';
 import testsSaga from './tests';
 import dictionariesSaga from './dictionaries';
+import assignmentSaga from './assignment';
+import groupSaga from './group';
 
 const authorSagas = [
   itemsSaga(),
@@ -13,7 +15,9 @@ const authorSagas = [
   testItemSaga(),
   questionSaga(),
   testsSaga(),
-  dictionariesSaga()
+  dictionariesSaga(),
+  assignmentSaga(),
+  groupSaga(),
 ];
 
 export default authorSagas;

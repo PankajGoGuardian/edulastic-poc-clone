@@ -8,11 +8,14 @@ import {
   RECEIVE_TEST_BY_ID_REQUEST,
   RECEIVE_TEST_BY_ID_SUCCESS,
   RECEIVE_TEST_BY_ID_ERROR,
-  SET_TEST_DATA,
   UPDATE_TEST_REQUEST,
   UPDATE_TEST_SUCCESS,
   UPDATE_TEST_ERROR,
-  SET_DEFAULT_TEST_DATA
+  SET_DEFAULT_TEST_DATA,
+  SET_ASSIGNMENT,
+  UPDATE_SET_ASSIGNMENT,
+  LOAD_ASSIGNMENTS,
+  REMOVE_ASSIGNMENT
 } from '../constants/actions';
 
 const initialTestState = {
@@ -86,9 +89,6 @@ const reducer = (state = initialState, { type, payload }) => {
     case RECEIVE_TEST_BY_ID_ERROR:
       return { ...state, loading: false, error: payload.error };
 
-    case SET_TEST_DATA:
-      return { ...state, entity: payload.data };
-
     case SET_DEFAULT_TEST_DATA:
       return { ...state, entity: initialTestState };
 
@@ -105,7 +105,40 @@ const reducer = (state = initialState, { type, payload }) => {
     case CREATE_TEST_ERROR:
     case UPDATE_TEST_ERROR:
       return { ...state, creating: false, error: payload.error };
-
+    case SET_ASSIGNMENT:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          assignments: [...state.entity.assignments, payload.obj]
+        }
+      };
+    case UPDATE_SET_ASSIGNMENT:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          assignments: state.entity.assignments.map(item =>
+            (payload.id === item._id ? payload.data : item))
+        }
+      };
+    case REMOVE_ASSIGNMENT:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          assignments: state.entity.assignments
+            .filter(item => item._id !== payload.id)
+        }
+      };
+    case LOAD_ASSIGNMENTS:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          assignments: payload.data
+        }
+      };
     default:
       return state;
   }

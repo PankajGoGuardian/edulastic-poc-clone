@@ -9,4 +9,7 @@ export { default as authApi } from './src/auth';
 export { default as testItemActivityApi } from './src/userTestItemActivity';
 export { default as reportsApi } from './src/reports';
 export { default as dictionariesApi } from './src/dictionaries';
+export { default as assignmentApi } from './src/assignment';
 export { default as API_CONFIG } from './src/config';
+export { default as groupApi } from './src/group';
+export { default as enrollmentApi } from './src/enrollment';

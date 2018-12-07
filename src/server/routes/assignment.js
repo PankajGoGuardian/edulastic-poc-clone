@@ -20,7 +20,9 @@ router.post('/', async (req, res) => {
     }
 
     const Assignment = new AssignmentModel();
+
     const result = await Assignment.create(data);
+
     return successHandler(res, result);
   } catch (e) {
     res.log.error(e);
@@ -61,4 +63,15 @@ router.get('/assigned', async (req, res) => {
   }
 });
 
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const Assignments = new AssignmentModel();
+    await Assignments.delete(id);
+    return successHandler(res, 'sucessfully deleted the assignment');
+  } catch (e) {
+    res.log.error(e);
+    res.boom.badRequest(e);
+  }
+});
 export default router;

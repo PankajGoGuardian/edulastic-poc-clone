@@ -4,7 +4,7 @@ import { pick } from 'lodash';
 const sharingSchema = joi.object({
   permission: joi.string().required(), // move it to a set of values
   type: joi.string().required(), // .valid()
-  id: joi.string().required(),
+  id: joi.string(),
   name: joi.string(),
   level: joi.string()
 });

@@ -26,7 +26,8 @@ const persistConfig = {
     'test',
     'tests',
     'testItem',
-    'testItems'
+    'testItems',
+    'user',
   ],
 };
 

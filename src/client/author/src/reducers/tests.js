@@ -48,7 +48,7 @@ const initialTestState = {
   analytics: {
     usage: '0',
     likes: '0'
-  }
+  },
 };
 
 const initialState = {

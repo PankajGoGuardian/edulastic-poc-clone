@@ -164,13 +164,14 @@ class TestList extends Component {
                   blockStyle === 'tile' ? (
                     <Row gutter={16} type="flex">
                       {tests.map(item => (
+                        item !== null && (
                         <Col
                           key={item._id}
                           span={8}
                           style={{ marginBottom: 15 }}
                         >
                           <Item item={item} history={history} match={match} />
-                        </Col>
+                        </Col>)
                       ))}
                     </Row>
                   ) : (

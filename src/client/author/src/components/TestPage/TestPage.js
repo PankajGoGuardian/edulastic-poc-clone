@@ -22,6 +22,7 @@ import {
   getTestsCreatingSelector
 } from '../../selectors/tests';
 import { getSelectedItemSelector } from '../../selectors/testItems';
+import { getUserSelector } from '../../../../student/src/selectors/user';
 import SourceModal from '../QuestionEditor/SourceModal';
 import ShareModal from '../common/ShareModal';
 import Review from './Review';
@@ -34,6 +35,7 @@ const TestPage = ({
   match,
   receiveTestById,
   test,
+  user,
   setData,
   updateTest,
   setDefaultData,
@@ -141,6 +143,13 @@ const TestPage = ({
     const testItems = selectedRows.data;
     const newTest = cloneDeep(test);
 
+    newTest.createdBy = {
+      id: user._id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
+
     newTest.testItems = testItems;
     newTest.scoring.testItems = testItems.map((item) => {
       const foundItem = newTest.scoring.testItems.find(
@@ -154,8 +163,6 @@ const TestPage = ({
       }
       return foundItem;
     });
-
-    // setData(newTest);
 
     if (test._id) {
       updateTest(test._id, newTest);
@@ -216,12 +223,14 @@ TestPage.propTypes = {
   rows: PropTypes.array.isRequired,
   creating: PropTypes.bool.isRequired,
   selectedRows: PropTypes.object,
-  test: PropTypes.object
+  test: PropTypes.object,
+  user: PropTypes.object,
 };
 
 TestPage.defaultProps = {
   test: null,
-  selectedRows: {}
+  selectedRows: {},
+  user: {},
 };
 
 const enhance = compose(
@@ -232,7 +241,8 @@ const enhance = compose(
       test: getTestSelector(state),
       rows: getTestItemsRowsSelector(state),
       creating: getTestsCreatingSelector(state),
-      selectedRows: getSelectedItemSelector(state)
+      selectedRows: getSelectedItemSelector(state),
+      user: getUserSelector(state),
     }),
     {
       createTest: createTestAction,

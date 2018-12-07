@@ -1,12 +1,23 @@
 import React from 'react';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 import Modal from 'react-responsive-modal';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Radio, Input, Button, Row, Col } from 'antd';
+import { Radio, Input, Button, Row, Col, Select } from 'antd';
+import { cloneDeep } from 'lodash';
 
 import { FlexContainer } from '@edulastic/common';
 import { mainBlueColor } from '@edulastic/colors';
 import { IconClose, IconCopy } from '@edulastic/icons';
+
+import {
+  updateTestAction,
+} from '../../../actions/tests';
+
+import {
+  getTestSelector,
+} from '../../../selectors/tests';
 
 
 class ShareModal extends React.Component {
@@ -17,6 +28,7 @@ class ShareModal extends React.Component {
       address: '',
       shareType: 'everyone',
       peopleArray: [],
+      permission: 'rwx',
     };
   }
 
@@ -30,16 +42,41 @@ class ShareModal extends React.Component {
 
   removeHandler = (index) => {
     const { peopleArray } = this.state;
-    const temp = peopleArray;
+    const temp = peopleArray.slice();
     temp.splice(index, 1);
     this.setState({ peopleArray: temp });
   }
 
   onShare = () => {
-    const { address, shareType, peopleArray } = this.state;
-    const temp = peopleArray;
-    temp.push({ address, type: shareType, permission: ['assign'] });
+    const { address, shareType, peopleArray, permission } = this.state;
+    const temp = peopleArray.slice();
+    temp.push({ address, type: shareType, permission });
     this.setState({ peopleArray: temp, address: '' });
+  }
+
+  permissionHandler = (value) => {
+    this.setState({ permission: value });
+  }
+
+  doneHandler = () => {
+    const { peopleArray } = this.state;
+    const { updateTest, test, onClose } = this.props;
+
+    const updatedTest = cloneDeep(test);
+    const sharing = [];
+    peopleArray.map(data =>
+      sharing.push({
+        permission: data.permission,
+        type: data.type,
+        name: data.address,
+      }));
+
+    updatedTest.sharing = sharing;
+    delete updatedTest.createdDate;
+    delete updatedTest.updatedDate;
+
+    updateTest(test._id, updatedTest);
+    onClose();
   }
 
   render() {
@@ -73,11 +110,9 @@ class ShareModal extends React.Component {
                         {data.address}
                       </Col>
                       <Col span={11}>
-                        {
-                          data.permission.map(permission => (
-                            <span>{permission}</span>
-                          ))
-                        }
+                        <span>{data.permission === 'rwx' && 'Can Edit, Assign & See Results'}</span>
+                        <span>{data.permission === 'rw' && 'Can Edit, Add/Remove Items'}</span>
+                        <span>{data.permission === 'r' && 'Can View & Duplicate'}</span>
                       </Col>
                       <Col span={1}>
                         <a onClick={() => this.removeHandler(index)}>
@@ -105,12 +140,23 @@ class ShareModal extends React.Component {
                 placeholder="Enter names or email addresses"
                 onChange={e => this.addressHandler(e)}
               />
+              <Select defaultValue="rwx" style={{ width: 650 }} onChange={e => this.permissionHandler(e)}>
+                <Select.Option value="rwx">
+                  Can Edit, Assign & See Results
+                </Select.Option>
+                <Select.Option value="rw">
+                  Can Edit, Add/Remove Items
+                </Select.Option>
+                <Select.Option value="r">
+                  Can View & Duplicate
+                </Select.Option>
+              </Select>
               <ShareButton type="primary" onClick={() => this.onShare()}>
                 SHARE
               </ShareButton>
             </FlexContainer>
             <FlexContainer flex={1} justifyContent="center" style={{ marginTop: 20 }}>
-              <DoneButton type="primary" onClick={onClose}>
+              <DoneButton type="primary" onClick={() => this.doneHandler()}>
                 DONE
               </DoneButton>
             </FlexContainer>
@@ -124,12 +170,36 @@ class ShareModal extends React.Component {
 ShareModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  updateTest: PropTypes.func.isRequired,
+  test: PropTypes.object,
 };
 
-export default ShareModal;
+ShareModal.defaultProps = {
+  test: null,
+};
+
+
+const enhance = compose(
+  connect(
+    state => ({
+      test: getTestSelector(state),
+    }),
+    {
+      updateTest: updateTestAction,
+    }
+  )
+);
+
+export default enhance(ShareModal);
 
 const ModalContainer = styled.div`
   width: 600px;
+
+  .anticon-down {
+    svg {
+      fill: ${mainBlueColor};
+    }
+  }
 `;
 
 const ShareBlock = styled.div`

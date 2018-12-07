@@ -18,7 +18,7 @@ const testSchema = mongoose.Schema(
     courses: Array,
     collections: Array,
     analytics: Array,
-    sharing: Object,
+    sharing: Array,
     createdDate: Number,
     updatedDate: Number
   },

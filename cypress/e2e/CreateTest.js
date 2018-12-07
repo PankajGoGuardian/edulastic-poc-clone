@@ -17,6 +17,7 @@ describe('Check Create Test Flow', () => {
     cy.route('GET', '/api/testitem/limit=10&skip=0&data=true&validation=true')
       .as('load');
 
+    /* eslint-disable */
     cy.wait(2000);
 
     // Add test items

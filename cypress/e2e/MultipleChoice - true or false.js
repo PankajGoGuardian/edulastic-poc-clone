@@ -24,56 +24,54 @@ describe('Test Multiple Choice Flow', () => {
     cy.get('li').should('contain', 'Other');
   });
 
-  it('Multiple choice - multiple response Test', () => {
+  it('Multiple choice - True or False Test', () => {
     // Test Each Question Type
-    cy.get('div').should('contain', 'Multiple choice - multiple response');
-    cy.get('div').contains('Multiple choice - multiple response').next().click();
+    cy.get('div').should('contain', 'True or false');
+    cy.get('div').contains('True or false').next().click();
 
     cy.get('div').find('[contenteditable]').eq(0)
       .clear()
-      .type('What is your favorite color?');
+      .type('Do you like flower?');
 
-    cy.get('div').find('[contenteditable]').eq(2)
-      .clear()
-      .type('White');
+    cy.get('div').should('contain', 'Set Correct Answer(s)');
 
-    cy.get('div').find('[contenteditable]').eq(4)
-      .clear()
-      .type('Black');
+    // Set Answers
+    cy.get('div').find('label').eq(2).click();
 
-    cy.get('div').find('[contenteditable]').eq(6)
-      .clear()
-      .type('Blue');
-
-    cy.get('div').find('[contenteditable]').eq(6)
-      .trigger('mouseup');
-
-    // Add new choice
-
-    cy.contains('Add New Choice').should('be.visible');
-    cy.contains('Add New Choice').click();
-
-    // Save Multiple Choice - standard
-
+    // Save Multiple Choice - True or False
     cy.contains('SAVE').should('be.visible');
     cy.contains('SAVE').click();
   });
 
-  it('Visit Item Detail Page', () => {
-    cy.visit('/author/items/5c094fe34be5af0d7fe9ba83/item-detail');
+  it('Check Answer', () => {
+    cy.visit('/author/items/5c0a89fb69d6bd65cf937950/item-detail');
     /* eslint-disable */
     cy.wait(2000);
     cy.contains('PREVIEW').should('be.visible');
     cy.contains('PREVIEW').click();
-  });
 
-  it('Check Answers', () => {
+    // Check Answers
+    cy.get('div').find('label').eq(1).click();
+
+    cy.contains('Check Answer').should('be.visible');
+    cy.contains('Check Answer').click();
+
+    cy.get('div').find('label').eq(2).click();
+
+    cy.contains('Check Answer').should('be.visible');
+    cy.contains('Check Answer').click();
+
+    // Show Answers
     cy.contains('Show Answers').should('be.visible');
     cy.contains('Show Answers').click();
   });
 
-  it('Edit Answers', () => {
+  it('Edit Answer', () => {
     cy.contains('EDIT').should('be.visible');
     cy.contains('EDIT').click();
+
+    // Source Button Test
+    cy.contains('Source').should('be.visible');
+    cy.contains('Source').click();
   });
 });

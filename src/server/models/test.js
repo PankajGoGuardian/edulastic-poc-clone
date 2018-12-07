@@ -18,7 +18,9 @@ const testSchema = mongoose.Schema(
     courses: Array,
     collections: Array,
     analytics: Array,
-    sharing: Object
+    sharing: Object,
+    createdDate: Number,
+    updatedDate: Number
   },
   {
     strict: true
@@ -35,12 +37,15 @@ class Test {
   }
 
   create(test) {
-    test.createdDate = Date.now();
+    const now = Date.now();
+    test.createdDate = now;
+    test.updatedDate = now;
     const newTest = new this.Test(test);
     return newTest.save();
   }
 
   update(id, data) {
+    data.updatedDate = Date.now();
     return this.Test.findOneAndUpdate(
       {
         _id: new mongoose.Types.ObjectId(id)

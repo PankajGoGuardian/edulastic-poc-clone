@@ -69,7 +69,7 @@ NavButton.propTypes = {
 const Navigation = ({ flag }) => (
   <NavLink>
     <NavButton label="Dashboard" icon={IconClockDashboard} flag={flag} />
-    <NavButton label="Assignements" icon={IconAssignment} flag={flag} />
+    <NavButton label="Assignments" icon={IconAssignment} flag={flag} />
     <NavButton label="SkillReport" icon={IconBarChart} flag={flag} />
     <NavButton label="Manage Class" icon={IconManage} flag={flag} />
     <NavButton label="Report" icon={IconReport} flag={flag} />

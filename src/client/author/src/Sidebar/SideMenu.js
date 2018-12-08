@@ -33,7 +33,7 @@ const menuItems = [
     icon: IconClockDashboard
   },
   {
-    label: 'Assignements',
+    label: 'Assignments',
     icon: IconAssignment
   },
   {

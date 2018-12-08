@@ -11,6 +11,7 @@ import { withNamespaces } from '@edulastic/localization';
 import { DropContainer } from '../../common';
 import ShowCorrect from '../ShowCorrect';
 import { DragItem } from '../DragItem';
+import { SHOW, CLEAR } from '../../../constants/constantsForQuestions';
 
 const { IconCaretLeft, IconCaretRight, IconCaretUp, IconCaretDown } = IconCarets;
 
@@ -28,7 +29,7 @@ class SortListPreview extends PureComponent {
   };
 
   static defaultProps = {
-    previewTab: 'clear',
+    previewTab: CLEAR,
     smallSize: false,
     item: {}
   };
@@ -117,14 +118,13 @@ class SortListPreview extends PureComponent {
       item,
       t,
       smallSize,
-      item: {
-        validation
-      }
+      item: { validation }
     } = this.props;
 
     let valid_response = validation && validation.valid_response && validation.valid_response.value;
     valid_response = valid_response || [];
-    let alt_responses = validation && validation.valid_response && validation.valid_response.alt_responses;
+    let alt_responses =
+      validation && validation.valid_response && validation.valid_response.alt_responses;
     alt_responses = alt_responses || [];
     const { items, selected, active } = this.state;
 
@@ -217,7 +217,7 @@ class SortListPreview extends PureComponent {
           </FlexCol>
         </FlexContainer>
 
-        {previewTab === 'show' && (
+        {previewTab === SHOW && (
           <ShowCorrect source={item.source} list={inCorrectList} correctList={valid_response} />
         )}
       </Paper>

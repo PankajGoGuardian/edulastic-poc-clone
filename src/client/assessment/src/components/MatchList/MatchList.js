@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 
 import MatchListPreview from './MatchListPreview';
 import MatchListEdit from './MatchListEdit';
+import { PREVIEW, EDIT, CLEAR } from '../../constants/constantsForQuestions';
 
 const MatchList = (props) => {
   const { view } = props;
   return (
     <Fragment>
-      {view === 'preview' && <MatchListPreview {...props} />}
-      {view === 'edit' && <MatchListEdit {...props} />}
+      {view === PREVIEW && <MatchListPreview {...props} />}
+      {view === EDIT && <MatchListEdit {...props} />}
     </Fragment>
   );
 };
@@ -26,7 +27,7 @@ MatchList.propTypes = {
 };
 
 MatchList.defaultProps = {
-  previewTab: 'clear',
+  previewTab: CLEAR,
   smallSize: false,
   item: {},
   userAnswer: [],

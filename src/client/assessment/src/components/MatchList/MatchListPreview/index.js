@@ -25,6 +25,7 @@ import {
 
 import { DropContainer } from '../../common';
 import DragItem from './DragItem';
+import { CHECK, SHOW, PREVIEW, CLEAR } from '../../../constants/constantsForQuestions';
 
 const styles = {
   dropContainerStyle: smallSize => ({
@@ -64,7 +65,7 @@ const MatchListPreview = ({
   } = item;
 
   const itemValidation = item.validation || {};
-  let validArray = (itemValidation.valid_response && itemValidation.valid_response.validArray);
+  let validArray = itemValidation.valid_response && itemValidation.valid_response.validArray;
   validArray = validArray || [];
   const altArray = itemValidation.alt_responses || [];
   let groupArrays = [];
@@ -140,7 +141,7 @@ const MatchListPreview = ({
     opacity: isDragging ? 0.5 : 1
   });
 
-  const preview = previewTab === 'check' || previewTab === 'show';
+  const preview = previewTab === CHECK || previewTab === SHOW;
 
   const validAnswers = ans.filter((ite, i) => ite === validArray[i]);
 
@@ -158,7 +159,7 @@ const MatchListPreview = ({
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
-      {!smallSize && view === 'preview' && (
+      {!smallSize && view === PREVIEW && (
         <Stimulus>
           <div dangerouslySetInnerHTML={{ __html: stimulus }} />
         </Stimulus>
@@ -260,13 +261,13 @@ const MatchListPreview = ({
                       {dragItems.map(
                         (ite, ind) =>
                           dragItems.includes(ite) && (
-                          <DragItem
-                            flag="dragItems"
-                            onDrop={onDrop}
-                            key={ind}
-                            item={ite}
-                            getStyles={getStyles}
-                          />
+                            <DragItem
+                              flag="dragItems"
+                              onDrop={onDrop}
+                              key={ind}
+                              item={ite}
+                              getStyles={getStyles}
+                            />
                           )
                       )}
                     </FlexContainer>
@@ -278,7 +279,7 @@ const MatchListPreview = ({
         </CorrectAnswersContainer>
       )}
 
-      {previewTab === 'show' && (
+      {previewTab === SHOW && (
         <CorrectAnswersContainer title={t('component.classification.correctAnswers')}>
           {list.map((ite, i) => (
             <FlexContainer key={i} alignItems="center">
@@ -307,7 +308,7 @@ MatchListPreview.propTypes = {
 };
 
 MatchListPreview.defaultProps = {
-  previewTab: 'clear',
+  previewTab: CLEAR,
   smallSize: false,
   editCorrectAnswers: []
 };

@@ -4,9 +4,80 @@ import PropTypes from 'prop-types';
 import { FlexContainer } from '@edulastic/common';
 
 import Card from './Card';
+import { EXACT_MATCH, ON_LIMIT } from '../../../../assessment/src/constants/constantsForQuestions';
 
 const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
   const cards = [
+    {
+      title: 'Essay with rich text',
+      type: 'edit',
+      data: {
+        stimulus: '[This is the stem.]',
+        type: 'essayRichText',
+        show_word_count: true,
+        max_word: 5,
+        show_word_limit: ON_LIMIT,
+        formatting_options: [
+          { id: 'test1', value: 'bold', active: true },
+          { id: 'test2', value: 'italic', active: true },
+          { id: 'test3', value: 'underline', active: true },
+          { id: 'test4', value: 'strike', active: false },
+          { id: 'test5', value: 'header', param: 1, active: false },
+          { id: 'test6', value: 'header', param: 2, active: false },
+          { id: 'test9', value: '|', active: true },
+          { id: 'test10', value: 'list', param: 'ordered', active: true },
+          { id: 'test11', value: 'list', param: 'bullet', active: true },
+          { id: 'test12', value: 'align', param: 'center', active: false },
+          { id: 'test13', value: 'align', param: 'justify', active: false },
+          { id: 'test14', value: 'align', param: 'right', active: false },
+          { id: 'test15', value: '|', active: false },
+          { id: 'test16', value: '|', active: false },
+          { id: 'test17', value: 'blockquote', active: false },
+          { id: 'test18', value: 'script', param: 'sub', active: false },
+          { id: 'test19', value: 'script', param: 'super', active: false },
+          { id: 'test20', value: '|', active: false },
+          { id: 'test21', value: 'indent', param: '+1', active: false },
+          { id: 'test22', value: 'indent', param: '-1', active: false },
+          { id: 'test23', value: '|', active: false },
+          { id: 'test24', value: 'direction', param: 'rtl', active: false },
+          { id: 'test26', value: 'clean', active: false }
+        ]
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Essay with plain text',
+      type: 'edit',
+      data: {
+        stimulus: '[This is the stem.]',
+        type: 'essayPlainText',
+        show_copy: true,
+        show_cut: true,
+        show_paste: true,
+        max_word: 5,
+        show_word_limit: ON_LIMIT,
+        show_word_count: true
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Short text',
+      type: 'edit',
+      data: {
+        stimulus: '[This is the stem.]',
+        type: 'shortText',
+        validation: {
+          scoring_type: EXACT_MATCH,
+          valid_response: {
+            score: 1,
+            matching_rule: EXACT_MATCH,
+            value: ''
+          },
+          alt_responses: []
+        }
+      },
+      onSelectQuestionType
+    },
     {
       title: 'Multiple choice - standard',
       type: 'multiple-choice',
@@ -22,7 +93,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           { value: 2, label: 'Green' }
         ],
         validation: {
-          scoring_type: 'exactMatch',
+          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: [1]
@@ -48,7 +119,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           { value: 2, label: 'Green' }
         ],
         validation: {
-          scoring_type: 'exactMatch',
+          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: [1]
@@ -70,7 +141,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         },
         options: [{ value: 0, label: 'True' }, { value: 1, label: 'False' }],
         validation: {
-          scoring_type: 'exactMatch',
+          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: [0]
@@ -97,7 +168,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           { value: 2, label: 'Liverpool' }
         ],
         validation: {
-          scoring_type: 'exactMatch',
+          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: [1]
@@ -117,7 +188,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         ui_style: {},
         source: ['Item A', 'Item B', 'Item C', 'Item D'],
         validation: {
-          scoring_type: 'exactMatch',
+          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: [1, 2, 0, 3]
@@ -148,7 +219,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           row_titles: []
         },
         validation: {
-          scoring_type: 'exactMatch',
+          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: [[0, 2], [1, 3]]
@@ -174,7 +245,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         stimulus: '<p>This is the stem.</p>',
         list: ['Stem 1', 'Stem 2', 'Stem 3'],
         validation: {
-          scoring_type: 'exactMatch',
+          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: ['Choice A', 'Choice B', 'Choice C']
@@ -192,7 +263,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         stimulus: 'Which color has the smallest walvelenght?',
         list: ['Item A', 'Item B', 'Item C'],
         validation: {
-          scoring_type: 'exactMatch',
+          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: [0, 1, 2]
@@ -215,7 +286,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         stems: ['[Stem 1]', '[Stem 2]', '[Stem 3]', '[Stem 4]'],
         options: ['True', 'False'],
         validation: {
-          scoring_type: 'exactMatch',
+          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: [null, null, null, null]
@@ -238,7 +309,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           horizontal_lines: false
         },
         validation: {
-          scoring_type: 'exactMatch',
+          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: [null, null, null, null]
@@ -261,7 +332,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           horizontal_lines: false
         },
         validation: {
-          scoring_type: 'exactMatch',
+          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: [null, null, null, null]
@@ -279,7 +350,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         stimulus: '',
         options: ['WHISPERED', 'HOLMES', 'INTRUDER'],
         validation: {
-          scoring_type: 'exactMatch',
+          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: []
@@ -298,7 +369,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         stimulus: '',
         options: ['Country A', 'Country B', 'Country C'],
         validation: {
-          scoring_type: 'exactMatch',
+          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: []
@@ -352,7 +423,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           1: ['Choice A', 'Choice B']
         },
         validation: {
-          scoring_type: 'exactMatch',
+          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: []
@@ -374,7 +445,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           1: ''
         },
         validation: {
-          scoring_type: 'exactMatch',
+          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: []

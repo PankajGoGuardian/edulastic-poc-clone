@@ -17,6 +17,7 @@ import { DropContainer } from '../../common';
 import DragItem from '../DragItem';
 import { getStyles, IndexBox } from '../DragItem/StyledItem';
 import TableRow from './TableRow';
+import { PREVIEW, SHOW, CLEAR, CHECK } from '../../../constants/constantsForQuestions';
 
 const styles = {
   itemContainerStyle: { display: 'flex', alignItems: 'center', margin: '10px 15px 10px 15px' },
@@ -62,7 +63,8 @@ const ClassificationPreview = ({
   } = item;
 
   const itemValidation = item.validation || {};
-  let validArray = itemValidation && itemValidation.valid_response && itemValidation.valid_response.value;
+  let validArray =
+    itemValidation && itemValidation.valid_response && itemValidation.valid_response.value;
   validArray = validArray || [];
   const altArray = itemValidation.alt_responses || [];
   let groupArrays = [];
@@ -185,7 +187,7 @@ const ClassificationPreview = ({
 
   const [altRespArr, valRespArr] = validateAnswers();
 
-  const preview = previewTab === 'check' || previewTab === 'show';
+  const preview = previewTab === CHECK || previewTab === SHOW;
 
   const arrayOfRows = new Set(
     boxes.map((n, ind) => (ind % colCount === 0 ? ind : undefined)).filter(i => i !== undefined)
@@ -195,7 +197,7 @@ const ClassificationPreview = ({
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
-      {!smallSize && view === 'preview' && (
+      {!smallSize && view === PREVIEW && (
         <Stimulus>
           <div dangerouslySetInnerHTML={{ __html: stimulus }} />
         </Stimulus>
@@ -299,13 +301,13 @@ const ClassificationPreview = ({
                       {dragItems.map(
                         (ite, ind) =>
                           dragItems.includes(ite) && (
-                          <DragItem
-                            key={ind}
-                            preview={preview}
-                            renderIndex={possible_responses.indexOf(ite)}
-                            onDrop={onDrop}
-                            item={ite}
-                          />
+                            <DragItem
+                              key={ind}
+                              preview={preview}
+                              renderIndex={possible_responses.indexOf(ite)}
+                              onDrop={onDrop}
+                              item={ite}
+                            />
                           )
                       )}
                     </FlexContainer>
@@ -317,7 +319,7 @@ const ClassificationPreview = ({
         </CorrectAnswersContainer>
       )}
 
-      {previewTab === 'show' && (
+      {previewTab === SHOW && (
         <CorrectAnswersContainer title={t('component.classification.correctAnswers')}>
           {arrayOfCols.map((arr, i) => (
             <FlexContainer>
@@ -352,7 +354,7 @@ ClassificationPreview.propTypes = {
 };
 
 ClassificationPreview.defaultProps = {
-  previewTab: 'clear',
+  previewTab: CLEAR,
   smallSize: false,
   editCorrectAnswers: []
 };

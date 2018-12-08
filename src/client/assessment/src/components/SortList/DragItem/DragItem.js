@@ -14,6 +14,7 @@ import {
   FlexCenter
 } from './styled_components';
 import DragHandle from '../DragHandle';
+import { CHECK, SHOW, CLEAR } from '../../../constants/constantsForQuestions';
 
 function collectSource(connector, monitor) {
   return {
@@ -52,8 +53,10 @@ const DragItem = ({
   correct,
   previewTab,
   index
-}) =>
-  (obj ? (
+}) => {
+  const showPreview = previewTab === CHECK || previewTab === SHOW;
+
+  return obj ? (
     connectDragSource(
       <div
         onClick={() => (active ? onClick({}) : onClick(obj))}
@@ -64,26 +67,18 @@ const DragItem = ({
         }}
       >
         <Container smallSize={smallSize}>
-          {previewTab !== 'check' && previewTab !== 'show' && (
+          {!showPreview && (
             <StyledDragHandle smallSize={smallSize}>
               <DragHandle smallSize={smallSize} />
             </StyledDragHandle>
           )}
 
-          <Text
-            checkStyle={!active && (previewTab === 'check' || previewTab === 'show')}
-            correct={correct}
-            smallSize={smallSize}
-          >
+          <Text checkStyle={!active && showPreview} correct={correct} smallSize={smallSize}>
             <FlexCenter>
-              {previewTab === 'check' || previewTab === 'show' ? (
-                <WithIndex>{index + 1}</WithIndex>
-              ) : (
-                ''
-              )}
+              {showPreview ? <WithIndex>{index + 1}</WithIndex> : ''}
               <div dangerouslySetInnerHTML={{ __html: obj }} />
             </FlexCenter>
-            {(previewTab === 'check' || previewTab === 'show') && (
+            {showPreview && (
               <div>
                 {correct && <IconCheck color={green} width={22} height={16} />}
                 {!correct && <IconClose color={red} width={16} height={16} />}
@@ -97,7 +92,8 @@ const DragItem = ({
     <div>
       <TextEmpty smallSize={smallSize} />
     </div>
-  ));
+  );
+};
 
 DragItem.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
@@ -114,7 +110,7 @@ DragItem.propTypes = {
 DragItem.defaultProps = {
   obj: null,
   correct: false,
-  previewTab: 'clear'
+  previewTab: CLEAR
 };
 
 export default DragSource('item', specSource, collectSource)(DragItem);

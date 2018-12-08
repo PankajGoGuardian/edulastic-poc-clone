@@ -12,13 +12,9 @@
   },
   "component": {
     "options": {
-      "unscored": "Unscored / Practice usage",
       "instant_feedback": "Check answer button",
-      "automarkable": "Enable auto scoring",
-      "penalty": "Penalty Point(s)",
       "feedback_attempts": "Check answer attempts",
       "min_score_if_attempted": "Minimum score if attempted",
-      "scoring": "Scoring",
       "style": "Style",
       "layout": "Layout",
       "scoring": "Scoring",
@@ -86,6 +82,27 @@
       "groupPossibleRespTitle": "Group possible responses",
       "titleOfGroupTitleLabel": "Title",
       "titleOfGroupTitle": "Group "
+    },
+    "essayRichText": {
+      "templateText": "<p><b>William Shakespeare</b> was an English poet, playwright, and actor, widely regarded as the greatest writer in the English language and the world's...</p>",
+      "showWordCheckbox": "Show word count",
+      "formattingOptions": "Text formatting options"
+    },
+    "essayPlainText": {
+      "templateText": "The United States of America, is a federal republic composed of 50 states, a federal district, five major territories and various possessions.",
+      "copy": "Copy",
+      "paste": "Paste",
+      "cut": "Cut",
+      "scoring": "Scoring",
+      "formattinOptions": "Action formatting options",
+      "wordsTitle": "Words",
+      "wordsLimitTitle": "Word limit"
+    },
+    "shortText": {
+      "smallSizeTitle": "How many states are there in America?",
+      "smallSizePar": "Write your answer in the text field below.",
+      "selectLabel": "Allow",
+      "inputLabel": "Value"
     },
     "orderlist": {
       "question": {

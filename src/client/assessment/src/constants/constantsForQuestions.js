@@ -1,0 +1,13 @@
+export const ALWAYS = 'always';
+export const ON_LIMIT = 'on-limit';
+export const COPY = 'copy';
+export const CUT = 'cut';
+export const PASTE = 'paste';
+export const OFF = 'off';
+export const PREVIEW = 'preview';
+export const EDIT = 'edit';
+export const CLEAR = 'clear';
+export const SHOW = 'show';
+export const CHECK = 'check';
+export const CONTAINS = 'contains';
+export const EXACT_MATCH = 'exactMatch';

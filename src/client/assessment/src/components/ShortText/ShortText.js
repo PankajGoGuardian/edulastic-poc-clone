@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
-import SortListPreview from './SortListPreview';
-import EditSortList from './EditSortList';
+import EditShortText from './EditShortText';
+import ShortTextPreview from './ShortTextPreview';
 import { CLEAR, EDIT, PREVIEW } from '../../constants/constantsForQuestions';
 
-class SortList extends PureComponent {
+class ShortText extends PureComponent {
   static propTypes = {
     view: PropTypes.string.isRequired,
     previewTab: PropTypes.string,
@@ -34,8 +34,8 @@ class SortList extends PureComponent {
 
     return (
       <Fragment>
-        {view === EDIT && <EditSortList {...this.props} />}
-        {view === PREVIEW && <SortListPreview {...this.props} />}
+        {view === EDIT && <EditShortText {...this.props} />}
+        {view === PREVIEW && <ShortTextPreview {...this.props} />}
       </Fragment>
     );
   }
@@ -44,4 +44,4 @@ class SortList extends PureComponent {
 export default connect(
   null,
   { setQuestionData: setQuestionDataAction }
-)(SortList);
+)(ShortText);

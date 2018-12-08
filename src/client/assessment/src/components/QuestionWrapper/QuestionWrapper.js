@@ -9,6 +9,9 @@ import { ClozeDragDrop } from '../ClozeDragDrop';
 import { ClozeImageDragDrop } from '../ClozeImageDragDrop';
 import { ClozeDropDown } from '../ClozeDropDown';
 import { ClozeText } from '../ClozeText';
+import { ShortText } from '../ShortText';
+import { EssayPlainText } from '../EssayPlainText';
+import { EssayRichText } from '../EssayRichText';
 
 import withAnswerSave from '../HOC/withAnswerSave';
 import MatrixChoice from '../MatrixChoice/MatrixChoice';
@@ -17,6 +20,12 @@ import Passage from '../Passage';
 
 const getQuestion = (type) => {
   switch (type) {
+    case 'shortText':
+      return ShortText;
+    case 'essayPlainText':
+      return EssayPlainText;
+    case 'essayRichText':
+      return EssayRichText;
     case 'multipleChoice':
       return MultipleChoice;
     case 'choiceMatrix':

@@ -3,14 +3,15 @@ import PropTypes from 'prop-types';
 
 import EditClassification from './EditClassification';
 import ClassificationPreview from './ClassificationPreview';
+import { EDIT, PREVIEW, CLEAR } from '../../constants/constantsForQuestions';
 
 const Classification = (props) => {
   const { view } = props;
 
   return (
     <Fragment>
-      {view === 'edit' && <EditClassification {...props} />}
-      {view === 'preview' && <ClassificationPreview {...props} />}
+      {view === EDIT && <EditClassification {...props} />}
+      {view === PREVIEW && <ClassificationPreview {...props} />}
     </Fragment>
   );
 };
@@ -27,7 +28,7 @@ Classification.propTypes = {
 };
 
 Classification.defaultProps = {
-  previewTab: 'clear',
+  previewTab: CLEAR,
   smallSize: false,
   item: {},
   userAnswer: [],

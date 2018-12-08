@@ -12,6 +12,7 @@ import { OrderListPreview, OrderListReport, CorrectAnswers } from './index';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 import QuestionHeader from '../MultipleChoice/common/QuestionHeader';
 import { QuestionTextArea, SortableList } from '../common';
+import { EDIT, PREVIEW, CHECK, SHOW, CLEAR } from '../../constants/constantsForQuestions';
 
 const EmptyWrapper = styled.div``;
 
@@ -176,7 +177,7 @@ class OrderList extends Component {
     const Wrapper = testItem ? EmptyWrapper : Paper;
     return (
       <React.Fragment>
-        {view === 'edit' && (
+        {view === EDIT && (
           <Paper>
             <QuestionTextArea
               onChange={this.handleQuestionChange}
@@ -200,14 +201,14 @@ class OrderList extends Component {
             />
           </Paper>
         )}
-        {view === 'preview' && (
+        {view === PREVIEW && (
           <Wrapper>
             <QuestionHeader
               smallSize={smallSize}
               dangerouslySetInnerHTML={{ __html: item.stimulus }}
             />
 
-            {previewTab === 'check' && (
+            {previewTab === CHECK && (
               <OrderListReport
                 onSortEnd={this.onSortPreviewEnd}
                 questionsList={item.list}
@@ -216,7 +217,7 @@ class OrderList extends Component {
               />
             )}
 
-            {previewTab === 'show' && (
+            {previewTab === SHOW && (
               <OrderListReport
                 onSortEnd={this.onSortPreviewEnd}
                 questionsList={item.list}
@@ -228,7 +229,7 @@ class OrderList extends Component {
               />
             )}
 
-            {previewTab === 'clear' && (
+            {previewTab === CLEAR && (
               <OrderListPreview
                 onSortEnd={this.onSortPreviewEnd}
                 questions={userAnswer.map(index => item.list[index])}
@@ -256,7 +257,7 @@ OrderList.propTypes = {
 };
 
 OrderList.defaultProps = {
-  previewTab: 'clear',
+  previewTab: CLEAR,
   smallSize: false,
   item: {},
   userAnswer: [],

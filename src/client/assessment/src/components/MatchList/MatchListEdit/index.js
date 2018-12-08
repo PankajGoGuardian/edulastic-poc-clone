@@ -18,6 +18,7 @@ import {
 import { setQuestionDataAction } from '../../../../../author/src/actions/question';
 import withPoints from '../../HOC/withPoints';
 import MatchListPreview from '../MatchListPreview';
+import { EDIT } from '../../../constants/constantsForQuestions';
 
 const OptionsList = withPoints(MatchListPreview);
 
@@ -193,7 +194,7 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
           ? item.validation.valid_response.value
           : item.validation.alt_responses[correctTab - 1].value
       }
-      view="edit"
+      view={EDIT}
     />
   );
 

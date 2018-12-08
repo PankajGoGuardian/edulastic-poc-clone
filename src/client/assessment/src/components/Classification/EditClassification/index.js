@@ -20,6 +20,7 @@ import { setQuestionDataAction } from '../../../../../author/src/actions/questio
 import withAddButton from '../../HOC/withAddButton';
 import withPoints from '../../HOC/withPoints';
 import ClassificationPreview from '../ClassificationPreview';
+import { EDIT } from '../../../constants/constantsForQuestions';
 
 const List = withAddButton(SortableList);
 
@@ -304,7 +305,7 @@ const EditClassification = ({ item, setQuestionData, t }) => {
           ? item.validation.valid_response.value
           : item.validation.alt_responses[correctTab - 1].value
       }
-      view="edit"
+      view={EDIT}
     />
   );
 

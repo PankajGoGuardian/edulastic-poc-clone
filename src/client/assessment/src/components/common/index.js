@@ -6,5 +6,8 @@ export { default as QuestionTextArea } from './QuestionTextArea';
 export { default as SortableList } from './SortableList';
 export { default as Subtitle } from './Subtitle';
 export { default as CorrectAnswers } from './CorrectAnswers';
+export { default as WordLimitAndCount } from './WordLimitAndCount';
 export { default as DropContainer } from './DropContainer';
 export { default as GroupPossibleResponses } from './GroupPossibleResponses';
+export { default as Toolbar } from './Toolbar';
+export { default as Item } from './Item';

@@ -7,7 +7,8 @@ const FlexContainer = styled.div`
   flex-direction: ${props => (props.flexDirection ? props.flexDirection : 'row')};
 
   & > * {
-    margin-right: ${({ childMarginRight }) => (childMarginRight !== undefined ? childMarginRight : 10)}px;
+    margin-right: ${({ childMarginRight }) =>
+    (childMarginRight !== undefined ? childMarginRight : 10)}px;
   }
   & > *:last-child {
     margin-right: 0;

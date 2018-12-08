@@ -848,3 +848,47 @@ input[type='checkbox'] {
 p {
   margin: 0;
 }
+
+#mainQuill > .ql-container.ql-snow {
+  margin: 0 !important;
+  padding: 15px !important;
+  border-right: 1px solid #e6e6e6 !important;
+  border-left: 1px solid #e6e6e6 !important;
+}
+
+#mainQuill > .ql-toolbar.ql-snow {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-color: #e6e6e6 !important;
+  height: 38px;
+  padding: 4px;
+}
+
+#mainQuill .ql-editor {
+  min-height: 157px !important;
+}
+
+#mainQuill .ql-editor p {
+  font-size: 14px !important;
+  display: inherit !important;
+}
+
+#mainQuill .ql-formats {
+  background: transparent !important;
+  position: relative;
+}
+
+#mainQuill .ql-formats:not(:last-child) {
+  margin-right: 40px;
+}
+
+#mainQuill .ql-formats:not(:last-child)::after {
+  background: transparent !important;
+  display: block;
+  content: '|';
+  font-weight: 600;
+  font-size: 18px;
+  position: absolute;
+  right: -20px;
+  top: 0px;
+}

@@ -90,11 +90,19 @@ class PickUpQuestionType extends Component {
     return (
       <Container>
         <LeftSide>
-          <Menu mode="horizontal" selectedKeys={[currentTab]} onClick={this.handleChangeTab}>
+          <Menu
+            mode="horizontal"
+            selectedKeys={[currentTab]}
+            onClick={this.handleChangeTab}
+          >
             <Menu.Item key="question-tab">Question</Menu.Item>
             <Menu.Item key="feature-tab">Feature</Menu.Item>
           </Menu>
-          <Menu mode="inline" selectedKeys={[currentQuestion]} onClick={this.handleCategory}>
+          <Menu
+            mode="inline"
+            selectedKeys={[currentQuestion]}
+            onClick={this.handleCategory}
+          >
             <Menu.Item key="multiple-choice">
               <NewListIcon />
               {'Multiple Choice'}
@@ -105,7 +113,7 @@ class PickUpQuestionType extends Component {
             </Menu.Item>
             <Menu.Item key="classify">
               <LayoutIcon />
-              {'Classify, Math & Order'}
+              {'Classify, Match & Order'}
             </Menu.Item>
             <Menu.Item key="edit">
               <EditIcon />
@@ -138,7 +146,10 @@ class PickUpQuestionType extends Component {
           </Menu>
         </LeftSide>
         <RightSide>
-          <Header title={t('component.pickupcomponent.headertitle')} link={this.link} />
+          <Header
+            title={t('component.pickupcomponent.headertitle')}
+            link={this.link}
+          />
           <PaddingDiv
             left={30}
             right={30}

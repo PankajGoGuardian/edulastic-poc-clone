@@ -8,13 +8,15 @@ describe('Test Multiple Choice Flow', () => {
   });
 
   it('Check Flow', () => {
-    cy.get('button').contains('Create').should('be.visible');
+    cy.get('button')
+      .contains('Create')
+      .should('be.visible');
     cy.contains('Create').click();
     cy.contains('Add New').click();
 
     cy.get('li').should('contain', 'Multiple Choice');
     cy.get('li').should('contain', 'Fill in the Blanks');
-    cy.get('li').should('contain', 'Classify, Math & Order');
+    cy.get('li').should('contain', 'Classify, Match & Order');
     cy.get('li').should('contain', 'Written & Spoken');
     cy.get('li').should('contain', 'Highlight');
     cy.get('li').should('contain', 'Math');
@@ -27,25 +29,38 @@ describe('Test Multiple Choice Flow', () => {
   it('Multiple choice - multiple response Test', () => {
     // Test Each Question Type
     cy.get('div').should('contain', 'Multiple choice - multiple response');
-    cy.get('div').contains('Multiple choice - multiple response').next().click();
+    cy.get('div')
+      .contains('Multiple choice - multiple response')
+      .next()
+      .click();
 
-    cy.get('div').find('[contenteditable]').eq(0)
+    cy.get('div')
+      .find('[contenteditable]')
+      .eq(0)
       .clear()
       .type('What is your favorite color?');
 
-    cy.get('div').find('[contenteditable]').eq(2)
+    cy.get('div')
+      .find('[contenteditable]')
+      .eq(2)
       .clear()
       .type('White');
 
-    cy.get('div').find('[contenteditable]').eq(4)
+    cy.get('div')
+      .find('[contenteditable]')
+      .eq(4)
       .clear()
       .type('Black');
 
-    cy.get('div').find('[contenteditable]').eq(6)
+    cy.get('div')
+      .find('[contenteditable]')
+      .eq(6)
       .clear()
       .type('Blue');
 
-    cy.get('div').find('[contenteditable]').eq(6)
+    cy.get('div')
+      .find('[contenteditable]')
+      .eq(6)
       .trigger('mouseup');
 
     // Add new choice

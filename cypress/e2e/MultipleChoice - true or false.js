@@ -8,13 +8,15 @@ describe('Test Multiple Choice Flow', () => {
   });
 
   it('Check Flow', () => {
-    cy.get('button').contains('Create').should('be.visible');
+    cy.get('button')
+      .contains('Create')
+      .should('be.visible');
     cy.contains('Create').click();
     cy.contains('Add New').click();
 
     cy.get('li').should('contain', 'Multiple Choice');
     cy.get('li').should('contain', 'Fill in the Blanks');
-    cy.get('li').should('contain', 'Classify, Math & Order');
+    cy.get('li').should('contain', 'Classify, Match & Order');
     cy.get('li').should('contain', 'Written & Spoken');
     cy.get('li').should('contain', 'Highlight');
     cy.get('li').should('contain', 'Math');
@@ -27,16 +29,24 @@ describe('Test Multiple Choice Flow', () => {
   it('Multiple choice - True or False Test', () => {
     // Test Each Question Type
     cy.get('div').should('contain', 'True or false');
-    cy.get('div').contains('True or false').next().click();
+    cy.get('div')
+      .contains('True or false')
+      .next()
+      .click();
 
-    cy.get('div').find('[contenteditable]').eq(0)
+    cy.get('div')
+      .find('[contenteditable]')
+      .eq(0)
       .clear()
       .type('Do you like flower?');
 
     cy.get('div').should('contain', 'Set Correct Answer(s)');
 
     // Set Answers
-    cy.get('div').find('label').eq(2).click();
+    cy.get('div')
+      .find('label')
+      .eq(2)
+      .click();
 
     // Save Multiple Choice - True or False
     cy.contains('SAVE').should('be.visible');
@@ -51,12 +61,18 @@ describe('Test Multiple Choice Flow', () => {
     cy.contains('PREVIEW').click();
 
     // Check Answers
-    cy.get('div').find('label').eq(1).click();
+    cy.get('div')
+      .find('label')
+      .eq(1)
+      .click();
 
     cy.contains('Check Answer').should('be.visible');
     cy.contains('Check Answer').click();
 
-    cy.get('div').find('label').eq(2).click();
+    cy.get('div')
+      .find('label')
+      .eq(2)
+      .click();
 
     cy.contains('Check Answer').should('be.visible');
     cy.contains('Check Answer').click();

@@ -24,7 +24,7 @@ class Item extends Component {
 
   get name() {
     const {
-      item: { createdBy },
+      item: { createdBy = {} },
     } = this.props;
     return `${createdBy.firstName} ${createdBy.lastName}`;
   }

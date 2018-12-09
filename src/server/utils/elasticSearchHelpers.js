@@ -1,22 +1,21 @@
-export function createSearchByFieldsRequest(data) {
-  const andSearchArr = data.andSearch.map(el => ({ match_phrase: el }));
-  const andSearchSubstrArr = data.andSearchSubstr.map(el => ({ match: el }));
-  const orSearchArr = data.orSearch.map(el => ({ match_phrase: el }));
-  const orSearchSubstrArr = data.orSearchSubstr.map(el => ({ match: el }));
+export function createStandardsSearch({ curriculumId, grades, search }) {
+  const gradesSearchArr = grades.map(el => ({ match_phrase: { grades: el } }));
   return {
     query: {
       bool: {
         must: [
-          ...andSearchArr,
-          ...andSearchSubstrArr,
+          { match_phrase: { curriculumId } },
           {
             bool: {
-              should: orSearchArr
+              should: gradesSearchArr
             }
           },
           {
             bool: {
-              should: orSearchSubstrArr
+              should: [
+                { match_phrase: { identifier: search } },
+                { match: { description: search } }
+              ]
             }
           }
         ]

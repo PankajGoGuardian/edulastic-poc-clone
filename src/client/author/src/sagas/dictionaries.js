@@ -31,9 +31,7 @@ function* receiveCurriculumsSaga() {
 
 function* receiveStandardsSaga({ payload }) {
   try {
-    console.log('payload', payload);
     const items = yield call(dictionariesApi.receiveStandards, payload);
-    console.log('items', items);
 
     yield put({
       type: RECEIVE_DICT_STANDARDS_SUCCESS,

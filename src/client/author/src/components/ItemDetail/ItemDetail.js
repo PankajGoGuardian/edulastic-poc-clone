@@ -19,7 +19,6 @@ import {
   updateTabTitleAction,
   useTabsAction
 } from '../../actions/itemDetail';
-import { getDictCurriculumsAction, getDictStandardsForCurriculumAction } from '../../actions/dictionaries';
 import {
   getItemDetailLoadingSelector,
   getItemDetailRowsSelector,
@@ -27,7 +26,6 @@ import {
   getItemDetailUpdatingSelector,
   getItemDetailDimensionTypeSelector
 } from '../../selectors/itemDetail';
-import { getCurriculumsListSelector, getStandardsListSelector } from '../../selectors/dictionaries';
 import ItemDetailRow from './ItemDetailRow';
 import { ButtonBar, SecondHeadBar } from '../common';
 import SourceModal from '../QuestionEditor/SourceModal';
@@ -45,9 +43,8 @@ class ItemDetail extends Component {
   };
 
   componentDidMount() {
-    const { getItemDetailById, match, getDictCurriculums } = this.props;
+    const { getItemDetailById, match } = this.props;
     getItemDetailById(match.params.id, { data: true, validation: true });
-    getDictCurriculums();
   }
 
   getSizes = (type) => {
@@ -250,18 +247,11 @@ class ItemDetail extends Component {
     }
   };
 
-  renderMetadata = () => {
-    const { curriculums, getDictStandardsForCurriculum, standards } = this.props;
-    return (
-      <Content>
-        <TestItemMetadata
-          curriculums={curriculums}
-          getStandards={getDictStandardsForCurriculum}
-          standards={standards}
-        />
-      </Content>
-    );
-  };
+  renderMetadata = () => (
+    <Content>
+      <TestItemMetadata />
+    </Content>
+  );
 
   render() {
     const { showModal, showSettings } = this.state;
@@ -383,18 +373,12 @@ ItemDetail.propTypes = {
   showAnswer: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   changePreview: PropTypes.func.isRequired,
-  evaluation: PropTypes.isRequired,
-  curriculums: PropTypes.array,
-  standards: PropTypes.array,
-  getDictCurriculums: PropTypes.func.isRequired,
-  getDictStandardsForCurriculum: PropTypes.func.isRequired
+  evaluation: PropTypes.isRequired
 };
 
 ItemDetail.defaultProps = {
   rows: [],
-  item: null,
-  curriculums: [],
-  standards: []
+  item: null
 };
 
 const enhance = compose(
@@ -407,8 +391,6 @@ const enhance = compose(
       item: getItemDetailSelector(state),
       updating: getItemDetailUpdatingSelector(state),
       type: getItemDetailDimensionTypeSelector(state),
-      curriculums: getCurriculumsListSelector(state),
-      standards: getStandardsListSelector(state),
       evaluation: state.evluation,
       preview: state.view.preview
     }),
@@ -420,8 +402,6 @@ const enhance = compose(
       getItemDetailById: getItemDetailByIdAction,
       updateItemDetailById: updateItemDetailByIdAction,
       setItemDetailData: setItemDetailDataAction,
-      getDictCurriculums: getDictCurriculumsAction,
-      getDictStandardsForCurriculum: getDictStandardsForCurriculumAction,
       updateDimension: updateItemDetailDimensionAction,
       deleteWidget: deleteWidgetAction,
       updateTabTitle: updateTabTitleAction,

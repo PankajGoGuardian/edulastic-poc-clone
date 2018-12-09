@@ -8,9 +8,12 @@ import { ContentWrapper } from '@edulastic/common';
 
 import SourceModal from './SourceModal';
 import { changeViewAction } from '../../actions/view';
+import { getDictCurriculumsAction, getDictStandardsForCurriculumAction } from '../../actions/dictionaries';
 import { getViewSelector } from '../../selectors/view';
+import { getCurriculumsListSelector, getStandardsListSelector } from '../../selectors/dictionaries';
 import { ButtonBar } from '../common';
 import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapper';
+import QuestionMetadata from '../../../../assessment/src/components/QuestionMetadata';
 import ItemHeader from './ItemHeader';
 import { getQuestionSelector } from '../../selectors/question';
 import {
@@ -18,6 +21,7 @@ import {
   saveQuestionAction,
   setQuestionDataAction
 } from '../../actions/question';
+import selectData from '../TestPage/common/selectsData';
 
 const headerTitles = {
   multipleChoice: 'MultipleChoice',
@@ -40,9 +44,12 @@ class QuestionEditor extends Component {
   };
 
   componentDidMount() {
-    const { match, receiveQuestionById } = this.props;
+    const { match, receiveQuestionById, curriculums, getDictCurriculums } = this.props;
     if (match.params.id) {
       receiveQuestionById(match.params.id);
+    }
+    if (curriculums.length === 0) {
+      getDictCurriculums();
     }
   }
 
@@ -90,12 +97,46 @@ class QuestionEditor extends Component {
     });
   };
 
+  renderQuestion = (questionType) => {
+    const {
+      view,
+      question,
+      match,
+      curriculums,
+      getDictStandardsForCurriculum,
+      standards
+    } = this.props;
+    const { previewTab, saveClicked } = this.state;
+    if (view === 'metadata') {
+      return (
+        <QuestionMetadata
+          curriculums={curriculums}
+          getStandards={getDictStandardsForCurriculum}
+          standards={standards}
+          allGradesObj={selectData.allGradesObj}
+        />
+      );
+    }
+    if (question) {
+      return (
+        <QuestionWrapper
+          type={questionType}
+          view={view}
+          previewTab={previewTab}
+          key={questionType && view && saveClicked}
+          data={question.data}
+          questionId={match.params._id}
+          saveClicked={saveClicked}
+        />
+      );
+    }
+  };
+
   render() {
-    const { view, question, match } = this.props;
-    const { previewTab } = this.state;
+    const { view, question } = this.props;
+    const { previewTab, showModal } = this.state;
     const itemId = question === null ? '' : question._id;
     const questionType = this.getQuestionType();
-    const { showModal, saveClicked } = this.state;
 
     return (
       <div>
@@ -108,6 +149,7 @@ class QuestionEditor extends Component {
           <ButtonBar
             onChangeView={this.handleChangeView}
             onShowSource={this.handleShowSource}
+            onShowSettings={() => {}}
             changePreviewTab={this.handleChangePreviewTab}
             onSave={this.handleSave}
             view={view}
@@ -121,17 +163,7 @@ class QuestionEditor extends Component {
             height: 'calc(100% - 135px)'
           }}
         >
-          {question && (
-            <QuestionWrapper
-              type={questionType}
-              view={view}
-              previewTab={previewTab}
-              key={questionType && view && saveClicked}
-              data={question.data}
-              questionId={match.params._id}
-              saveClicked={saveClicked}
-            />
-          )}
+          { this.renderQuestion(questionType) }
         </ContentWrapper>
       </div>
     );
@@ -145,12 +177,18 @@ QuestionEditor.propTypes = {
   match: PropTypes.object,
   receiveQuestionById: PropTypes.func.isRequired,
   saveQuestion: PropTypes.func.isRequired,
-  setQuestionData: PropTypes.func.isRequired
+  setQuestionData: PropTypes.func.isRequired,
+  curriculums: PropTypes.array,
+  standards: PropTypes.array,
+  getDictCurriculums: PropTypes.func.isRequired,
+  getDictStandardsForCurriculum: PropTypes.func.isRequired
 };
 
 QuestionEditor.defaultProps = {
   question: null,
-  match: {}
+  match: {},
+  curriculums: [],
+  standards: []
 };
 
 const enhance = compose(
@@ -159,13 +197,17 @@ const enhance = compose(
   connect(
     state => ({
       view: getViewSelector(state),
-      question: getQuestionSelector(state)
+      question: getQuestionSelector(state),
+      curriculums: getCurriculumsListSelector(state),
+      standards: getStandardsListSelector(state)
     }),
     {
       changeView: changeViewAction,
       receiveQuestionById: receiveQuestionByIdAction,
       saveQuestion: saveQuestionAction,
-      setQuestionData: setQuestionDataAction
+      setQuestionData: setQuestionDataAction,
+      getDictCurriculums: getDictCurriculumsAction,
+      getDictStandardsForCurriculum: getDictStandardsForCurriculumAction
     }
   )
 );

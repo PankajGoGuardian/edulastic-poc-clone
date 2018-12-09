@@ -4,7 +4,7 @@ export const getDictCurriculumsAction = () => ({
   type: RECEIVE_DICT_CURRICULUMS_REQUEST
 });
 
-export const getDictStandardsForCurriculumAction = (curriculumId, grades, searchStr) => ({
+export const getDictStandardsForCurriculumAction = (curriculumId, grades, search) => ({
   type: RECEIVE_DICT_STANDARDS_REQUEST,
-  payload: { curriculumId, grades, searchStr }
+  payload: { curriculumId, grades, search }
 });

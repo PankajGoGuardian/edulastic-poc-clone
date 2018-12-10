@@ -53,9 +53,8 @@ router.get('/assigned', async (req, res) => {
     const Enrollment = new EnrollmentModel();
     const Assignments = new AssignmentModel();
     const userId = req.user._id;
-    const classDetails = await Enrollment.getClassOfStudent(userId);
-    const classId = classDetails.groupId;
-    const assignments = await Assignments.getByClassId(classId);
+    const { groupId } = await Enrollment.getClassOfStudent(userId);
+    const assignments = await Assignments.getByClassId(groupId, userId);
     return successHandler(res, assignments);
   } catch (e) {
     res.log.error(e);

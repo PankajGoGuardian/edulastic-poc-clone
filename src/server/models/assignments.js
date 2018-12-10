@@ -48,9 +48,9 @@ class Assignment {
     });
   }
 
-  getByClassId(id) {
+  getByClassId(groupId, studentId) {
     return this.Assignment.find({
-      'class.id': id
+      $or: [{ class: groupId, specificStudent: false }, { students: studentId }]
     });
   }
 

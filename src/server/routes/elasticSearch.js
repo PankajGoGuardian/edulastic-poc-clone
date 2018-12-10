@@ -8,7 +8,32 @@ import { createStandardsSearch } from '../utils/elasticSearchHelpers';
 
 const router = express.Router();
 
-// search standards
+/**
+ * @swagger
+ * /search/standards:
+ *   post:
+ *     tags:
+ *       - Standards
+ *     summary: Search standards
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: curriculumId
+ *          in: body
+ *          example:
+ *            curriculumId: "101fb864c08631ce28aa61bd"
+ *        - name: grades
+ *          in: body
+ *          example:
+ *            grades: ["K", "1"]
+ *        - name: search
+ *          in: body
+ *          example:
+ *            search: "K.CC"
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 router.post('/standards', async (req, res) => {
   try {
     const rawData = req.body;

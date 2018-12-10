@@ -11,6 +11,10 @@ export const SAVE_QUESTION_SUCCESS = '[question] save question success';
 export const SAVE_QUESTION_ERROR = '[question] save question error';
 
 export const SET_QUESTION_DATA = '[question] set question data';
+export const SET_QUESTION_ALIGNMENT_ADD_ROW = '[question] set question alignment add row';
+export const SET_QUESTION_ALIGNMENT_REMOVE_ROW = '[question] set question alignment remove row';
+export const SET_QUESTION_ALIGNMENT_ROW = '[question] set question alignment row';
+export const SET_QUESTION_ALIGNMENT_ROW_STANDARDS = '[question] set question alignment row standards';
 export const SET_QUESTION = '[question] set question';
 
 // assessment

@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 const questionSchema = mongoose.Schema(
   {
     data: Object,
-    metadata: Object
+    metadata: Object,
+    alignment: Array
   },
   {
     strict: true

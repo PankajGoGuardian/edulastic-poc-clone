@@ -6,7 +6,10 @@ import {
   SAVE_QUESTION_SUCCESS,
   SAVE_QUESTION_ERROR,
   SET_QUESTION_DATA,
+  SET_QUESTION_ALIGNMENT_ROW,
   SET_QUESTION,
+  SET_QUESTION_ALIGNMENT_ROW_STANDARDS,
+  SET_QUESTION_ALIGNMENT_ADD_ROW
 } from '../constants/actions';
 
 const initialState = {
@@ -14,7 +17,7 @@ const initialState = {
   loading: false,
   saving: false,
   error: null,
-  saveError: null,
+  saveError: null
 };
 
 const question = (state = initialState, { type, payload }) => {
@@ -22,49 +25,84 @@ const question = (state = initialState, { type, payload }) => {
     case RECEIVE_QUESTION_REQUEST:
       return {
         ...state,
-        loading: true,
+        loading: true
       };
     case RECEIVE_QUESTION_SUCCESS:
       return {
         ...state,
         loading: false,
-        entity: payload.entity,
+        entity: payload.entity
       };
     case RECEIVE_QUESTION_ERROR:
       return {
         ...state,
         loading: false,
-        error: payload.error,
+        error: payload.error
       };
 
     case SAVE_QUESTION_REQUEST:
       return {
         ...state,
-        saving: true,
+        saving: true
       };
     case SAVE_QUESTION_SUCCESS:
       return {
         ...state,
-        saving: false,
+        saving: false
       };
     case SAVE_QUESTION_ERROR:
       return {
         ...state,
         saving: false,
-        saveError: payload.error,
+        saveError: payload.error
       };
 
     case SET_QUESTION_DATA:
       return {
         ...state,
-        entity: { ...state.entity, data: payload.data },
+        entity: { ...state.entity, data: payload.data }
       };
+    case SET_QUESTION_ALIGNMENT_ROW: {
+      const { index, alignmentRow } = payload;
+      const newAlignment = [...state.entity.alignment];
+      newAlignment[index] = { ...alignmentRow, alignmentStandards: [] };
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          alignment: newAlignment
+        }
+      };
+    }
+    case SET_QUESTION_ALIGNMENT_ROW_STANDARDS: {
+      const { index, alignmentStandards } = payload;
+      const newAlignment = [...state.entity.alignment];
+      newAlignment[index] = { ...state.entity.alignment[index], alignmentStandards };
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          alignment: newAlignment
+        }
+      };
+    }
+    case SET_QUESTION_ALIGNMENT_ADD_ROW: {
+      const newAlignment = [...state.entity.alignment];
+      newAlignment.push({ alignmentStandards: [] });
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          alignment: newAlignment
+        }
+      };
+    }
     case SET_QUESTION:
       return {
         ...state,
         entity: {
-          data: payload.data,
-        },
+          data: payload.data
+        }
       };
 
     default:

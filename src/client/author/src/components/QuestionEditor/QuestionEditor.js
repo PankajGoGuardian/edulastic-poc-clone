@@ -8,9 +8,7 @@ import { ContentWrapper } from '@edulastic/common';
 
 import SourceModal from './SourceModal';
 import { changeViewAction } from '../../actions/view';
-import { getDictCurriculumsAction, getDictStandardsForCurriculumAction } from '../../actions/dictionaries';
 import { getViewSelector } from '../../selectors/view';
-import { getCurriculumsListSelector, getStandardsListSelector } from '../../selectors/dictionaries';
 import { ButtonBar } from '../common';
 import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapper';
 import QuestionMetadata from '../../../../assessment/src/components/QuestionMetadata';
@@ -21,7 +19,6 @@ import {
   saveQuestionAction,
   setQuestionDataAction
 } from '../../actions/question';
-import selectData from '../TestPage/common/selectsData';
 
 const headerTitles = {
   multipleChoice: 'MultipleChoice',
@@ -44,12 +41,9 @@ class QuestionEditor extends Component {
   };
 
   componentDidMount() {
-    const { match, receiveQuestionById, curriculums, getDictCurriculums } = this.props;
+    const { match, receiveQuestionById } = this.props;
     if (match.params.id) {
       receiveQuestionById(match.params.id);
-    }
-    if (curriculums.length === 0) {
-      getDictCurriculums();
     }
   }
 
@@ -101,20 +95,12 @@ class QuestionEditor extends Component {
     const {
       view,
       question,
-      match,
-      curriculums,
-      getDictStandardsForCurriculum,
-      standards
+      match
     } = this.props;
     const { previewTab, saveClicked } = this.state;
     if (view === 'metadata') {
       return (
-        <QuestionMetadata
-          curriculums={curriculums}
-          getStandards={getDictStandardsForCurriculum}
-          standards={standards}
-          allGradesObj={selectData.allGradesObj}
-        />
+        <QuestionMetadata />
       );
     }
     if (question) {
@@ -177,18 +163,12 @@ QuestionEditor.propTypes = {
   match: PropTypes.object,
   receiveQuestionById: PropTypes.func.isRequired,
   saveQuestion: PropTypes.func.isRequired,
-  setQuestionData: PropTypes.func.isRequired,
-  curriculums: PropTypes.array,
-  standards: PropTypes.array,
-  getDictCurriculums: PropTypes.func.isRequired,
-  getDictStandardsForCurriculum: PropTypes.func.isRequired
+  setQuestionData: PropTypes.func.isRequired
 };
 
 QuestionEditor.defaultProps = {
   question: null,
-  match: {},
-  curriculums: [],
-  standards: []
+  match: {}
 };
 
 const enhance = compose(
@@ -197,17 +177,13 @@ const enhance = compose(
   connect(
     state => ({
       view: getViewSelector(state),
-      question: getQuestionSelector(state),
-      curriculums: getCurriculumsListSelector(state),
-      standards: getStandardsListSelector(state)
+      question: getQuestionSelector(state)
     }),
     {
       changeView: changeViewAction,
       receiveQuestionById: receiveQuestionByIdAction,
       saveQuestion: saveQuestionAction,
-      setQuestionData: setQuestionDataAction,
-      getDictCurriculums: getDictCurriculumsAction,
-      getDictStandardsForCurriculum: getDictStandardsForCurriculumAction
+      setQuestionData: setQuestionDataAction
     }
   )
 );

@@ -63,7 +63,8 @@
       "number": "number",
       "inputtype": "inputtype",
       "responsecontainerindividual": "Response Container",
-      "responsecontainerindividuals": "Response container (individual)"
+      "responsecontainerindividuals": "Response container (individual)",
+      "newcurriculum": "New Curriculum"
     },
     "matchList": {
       "editPossibleResponses": "Possible responses",

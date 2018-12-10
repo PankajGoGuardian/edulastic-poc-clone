@@ -39,7 +39,7 @@
     "no-underscore-dangle": 0,
     "camelcase": 0,
     "import/no-extraneous-dependencies": 0,
-    "comma-dangle": 0,
+    "comma-dangle": ["warn", "never"],
     "no-await-in-loop": 0
   }
 }

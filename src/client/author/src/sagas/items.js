@@ -13,7 +13,7 @@ import {
   UPDATE_ITEM_REQUEST
 } from '../constants/actions';
 
-function* receiveItemsSaga({ payload }) {
+export function* receiveItemsSaga({ payload }) {
   try {
     const { items, page, count } = yield call(itemsApi.receiveItems, payload);
 
@@ -32,7 +32,7 @@ function* receiveItemsSaga({ payload }) {
   }
 }
 
-function* receiveItemSaga({ payload }) {
+export function* receiveItemSaga({ payload }) {
   try {
     const item = yield call(itemsApi.receiveItemById, payload.id);
 
@@ -51,7 +51,7 @@ function* receiveItemSaga({ payload }) {
   }
 }
 
-function* createItemSaga({ payload }) {
+export function* createItemSaga({ payload }) {
   try {
     const item = yield call(itemsApi.createItem, payload);
     yield put({
@@ -69,8 +69,7 @@ function* createItemSaga({ payload }) {
   }
 }
 
-function* updateItemSaga({ payload }) {
-  console.log('update saga:', payload);
+export function* updateItemSaga({ payload }) {
   try {
     const item = yield call(itemsApi.updateItemById, payload);
     yield put({

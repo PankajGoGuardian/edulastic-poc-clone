@@ -18,7 +18,7 @@ const initialItemsState = {
   count: 0,
 };
 
-const itemsReducer = (state = initialItemsState, { type, payload }) => {
+export const itemsReducer = (state = initialItemsState, { type, payload }) => {
   switch (type) {
     case RECEIVE_ITEMS_REQUEST:
       return { ...state, loading: true };
@@ -44,7 +44,7 @@ const initialItemState = {
   loading: false,
 };
 
-const itemReducer = (state = initialItemState, { type, payload }) => {
+export const itemReducer = (state = initialItemState, { type, payload }) => {
   switch (type) {
     case RECEIVE_ITEM_REQUEST:
       return { ...state, loading: true };

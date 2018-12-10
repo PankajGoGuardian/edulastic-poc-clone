@@ -12,5 +12,5 @@ describe('<SettingBar />', () => {
   const renderedComponent = render(
     <SettingsBar />
   );
-  expect(renderedComponent.find('SettingsButtonWrapper').length).toBe(1);
+  expect(renderedComponent.find('SettingsButtonWrapper').length).toBe(0);
 });

@@ -145,6 +145,7 @@
     "node-sass": "^4.10.0",
     "nodemon": "^1.18.7",
     "redux-logger": "^3.0.6",
+    "redux-saga-test-plan": "^3.7.0",
     "rimraf": "^2.6.2",
     "sass-extract": "^2.1.0",
     "sass-extract-js": "^0.4.0",

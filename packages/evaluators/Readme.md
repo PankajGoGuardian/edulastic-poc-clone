@@ -1,6 +1,6 @@
 # Evaluator package
 
-    As evaluation of questions is carried out both in front-end  and  back-end, this is abstracted away into a single packge @edulastic-poc/evaluators. This package will hold the evaluation of all question types - some question types even share the logic.
+As evaluation of questions is carried out both in front-end  and  back-end, this is abstracted away into a single packge @edulastic-poc/evaluators. This package will hold the evaluation of all question types - some question types even share the logic.
 
 ## Evalutor method :
 

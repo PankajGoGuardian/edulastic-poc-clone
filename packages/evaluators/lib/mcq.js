@@ -33,7 +33,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   });
 
   if (!isCorrect) {
-    var correctAnswer = answers[0].value;
+    var correctAnswer = answers[0].value || [];
     userResponse.forEach(function (item) {
       evaluation[item] = correctAnswer.includes(item);
     });
@@ -88,8 +88,6 @@ var evaluator = function evaluator(_ref2) {
       alt_responses = validation.alt_responses,
       scoring_type = validation.scoring_type;
   var answers = [valid_response].concat((0, _toConsumableArray2.default)(alt_responses));
-  console.log('answers', answers);
-  console.log('userResponse', userResponse);
 
   switch (scoring_type) {
     case _scoring.ScoringType.PARTIAL_MATCH:

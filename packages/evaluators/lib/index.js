@@ -17,7 +17,15 @@ Object.defineProperty(exports, "orderList", {
     return _orderlist.default;
   }
 });
+Object.defineProperty(exports, "clozeText", {
+  enumerable: true,
+  get: function get() {
+    return _clozeText.default;
+  }
+});
 
 var _mcq = _interopRequireDefault(require("./mcq"));
 
 var _orderlist = _interopRequireDefault(require("./orderlist"));
+
+var _clozeText = _interopRequireDefault(require("./clozeText"));

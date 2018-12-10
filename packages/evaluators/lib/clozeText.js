@@ -13,7 +13,7 @@ var _lodash = require("lodash");
 
 var _scoring = require("./const/scoring");
 
-// exact-match evaluator
+// exact match evaluator
 var exactMatchEvaluator = function exactMatchEvaluator() {
   var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var answers = arguments.length > 1 ? arguments[1] : undefined;
@@ -31,13 +31,13 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   });
 
   if (!isCorrect) {
-    var correctAnswer = answers[0].value;
-    userResponse.forEach(function (resp, index) {
-      evaluation[resp] = correctAnswer[index] === resp;
+    var solution = answers[0].value || [];
+    userResponse.forEach(function (item, index) {
+      evaluation[index] = solution.includes(item);
     });
   } else {
-    userResponse.forEach(function (item) {
-      evaluation[item] = true;
+    userResponse.forEach(function (item, index) {
+      evaluation[index] = true;
     });
   }
 
@@ -46,8 +46,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
     maxScore: maxScore,
     evaluation: evaluation
   };
-}; // partial match evaluator
-
+};
 
 var partialMatchEvaluator = function partialMatchEvaluator() {
   var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
@@ -63,24 +62,20 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
     var matches = userResponse.filter(function (resp, index) {
       return correctAnswers[index] === resp;
     }).length;
-
-    if (matches === correctAnswers.length) {
-      isCorrect = true;
-    }
-
+    isCorrect = matches === correctAnswers.length;
     var currentScore = matches * scorePerAnswer;
     score = Math.max(currentScore, score);
     maxScore = Math.max(totalScore, maxScore);
   });
 
-  if (isCorrect) {
+  if (!isCorrect) {
+    var solution = answers[0].value || [];
     userResponse.forEach(function (item, index) {
-      evaluation[index] = true;
+      evaluation[index] = solution.includes(item);
     });
   } else {
-    var correctAnswer = answers[0].value || [];
     userResponse.forEach(function (item, index) {
-      evaluation[item] = userResponse[item] === correctAnswer[index];
+      evaluation[index] = true;
     });
   }
 

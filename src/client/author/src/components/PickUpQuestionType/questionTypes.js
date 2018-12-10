@@ -454,6 +454,37 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         }
       },
       onSelectQuestionType
+    },
+    {
+      title: 'Math formula',
+      type: 'math',
+      stimulus: '',
+      data: {
+        is_math: true,
+        stimulus: '<p>[This is the stem.]</p>',
+        type: 'math',
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [
+              {
+                method: 'equivSymbolic',
+                options: {
+                  inverseResult: false,
+                  decimalPlaces: 10
+                },
+                value: ''
+              }
+            ]
+          }
+        },
+        ui_style: {
+          type: 'floating-keyboard'
+        },
+        template: ''
+      },
+      onSelectQuestionType
     }
   ];
 

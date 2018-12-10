@@ -146,7 +146,7 @@ class QuestionEditor extends Component {
           style={{
             padding: '0px 45px',
             overflow: 'auto',
-            height: 'calc(100% - 135px)'
+            height: 'calc(100vh - 135px)'
           }}
         >
           { this.renderQuestion(questionType) }

@@ -17,6 +17,7 @@ import withAnswerSave from '../HOC/withAnswerSave';
 import MatrixChoice from '../MatrixChoice/MatrixChoice';
 import Protractor from '../Protractor';
 import Passage from '../Passage';
+import MathFormula from '../MathFormula/MathFormula';
 
 const getQuestion = (type) => {
   switch (type) {
@@ -50,6 +51,8 @@ const getQuestion = (type) => {
       return ClozeText;
     case 'passage':
       return Passage;
+    case 'math':
+      return MathFormula;
     default:
       return null;
   }

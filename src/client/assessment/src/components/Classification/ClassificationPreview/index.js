@@ -220,7 +220,7 @@ const ClassificationPreview = ({
               arrayOfRows.has(ind) && (
                 <TableRow
                   key={ind}
-                  num={ind}
+                  startIndex={ind}
                   colCount={colCount}
                   arrayOfRows={arrayOfRows}
                   rowTitles={rowTitles}

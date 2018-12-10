@@ -256,7 +256,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       onSelectQuestionType
     },
     {
-      title: 'OrderList-standard',
+      title: 'OrderList',
       type: 'classify',
       data: {
         type: 'orderList',

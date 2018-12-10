@@ -140,12 +140,14 @@ class CustomQuillComponent extends Component {
     showResponseBtn: PropTypes.bool.isRequired,
     toolbarId: PropTypes.string.isRequired,
     onChange: PropTypes.func,
+    readOnly: PropTypes.bool,
     style: PropTypes.object
   };
 
   static defaultProps = {
     onChange: () => {},
     placeholder: '',
+    readOnly: false,
     style: {
       minHeight: 134,
       border: '1px solid rgb(223, 223, 223)',
@@ -180,13 +182,18 @@ class CustomQuillComponent extends Component {
 
   render() {
     const { active } = this.state;
-    const { value, placeholder, showResponseBtn, toolbarId, style } = this.props;
+    const { value, placeholder, showResponseBtn, toolbarId, style, readOnly } = this.props;
 
     return (
       <div className="text-editor" style={style}>
-        <CustomToolbar active={active} showResponseBtn={showResponseBtn} id={toolbarId} />
+        <CustomToolbar
+          active={active && !readOnly}
+          showResponseBtn={showResponseBtn}
+          id={toolbarId}
+        />
         <ReactQuill
           ref={el => (this.quillRef = el)}
+          readOnly={readOnly}
           modules={CustomQuillComponent.modules(toolbarId)}
           onChange={this.handleChange}
           onFocus={this.showToolbar}

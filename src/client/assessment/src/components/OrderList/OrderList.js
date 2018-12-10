@@ -1,62 +1,54 @@
-import React, { Component } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { arrayMove } from 'react-sortable-hoc';
-import { withNamespaces } from '@edulastic/localization';
-import { Paper } from '@edulastic/common';
 import { cloneDeep } from 'lodash';
 import styled from 'styled-components';
 
-import { OrderListPreview, OrderListReport, CorrectAnswers } from './index';
+import { withNamespaces } from '@edulastic/localization';
+import { Paper } from '@edulastic/common';
+
+import { OrderListPreview, OrderListReport } from './index';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 import QuestionHeader from '../MultipleChoice/common/QuestionHeader';
-import { QuestionTextArea, SortableList } from '../common';
+import { QuestionTextArea, SortableList, Subtitle, CorrectAnswers } from '../common';
 import { EDIT, PREVIEW, CHECK, SHOW, CLEAR } from '../../constants/constantsForQuestions';
+import withAddButton from '../HOC/withAddButton';
+import withPoints from '../HOC/withPoints';
 
 const EmptyWrapper = styled.div``;
 
-class OrderList extends Component {
-  get validation() {
-    const { item } = this.props;
+const List = withAddButton(SortableList);
+const OptionsList = withPoints(SortableList);
 
-    return {
-      ...item.validation,
-      valid_response: {
-        score: item.validation.valid_response.score,
-        value: item.validation.valid_response.value.map(val => item.list[val])
-      },
-      alt_responses: item.validation.alt_responses.map(res => ({
-        score: res.score,
-        value: res.value.map(val => item.list[val])
-      }))
-    };
-  }
+const OrderList = (props) => {
+  const [correctTab, setCorrectTab] = useState(0);
 
-  componentDidMount() {
-    const { item, saveAnswer, userAnswer } = this.props;
+  useEffect(() => {
+    const { item, saveAnswer, userAnswer } = props;
 
     if (!userAnswer.length) {
       saveAnswer(item.list.map((q, i) => i));
     }
-  }
+  });
 
-  handleQuestionChange = (value) => {
-    const { setQuestionData, item } = this.props;
+  const handleQuestionChange = (value) => {
+    const { setQuestionData, item } = props;
     setQuestionData({ ...item, stimulus: value });
   };
 
-  onSortOrderListEnd = ({ oldIndex, newIndex }) => {
-    const { item, setQuestionData } = this.props;
+  const onSortOrderListEnd = ({ oldIndex, newIndex }) => {
+    const { item, setQuestionData } = props;
+    const newData = cloneDeep(item);
 
-    setQuestionData({
-      ...item,
-      list: arrayMove(item.list, oldIndex, newIndex)
-    });
+    newData.list = arrayMove(newData.list, oldIndex, newIndex);
+
+    setQuestionData(newData);
   };
 
-  handleQuestionsChange = (value, index) => {
-    const { setQuestionData, item } = this.props;
+  const handleQuestionsChange = (value, index) => {
+    const { setQuestionData, item } = props;
     const newData = cloneDeep(item);
 
     newData.list[value] = index;
@@ -64,8 +56,8 @@ class OrderList extends Component {
     setQuestionData(newData);
   };
 
-  handleDeleteQuestion = (index) => {
-    const { setQuestionData, item, saveAnswer } = this.props;
+  const handleDeleteQuestion = (index) => {
+    const { setQuestionData, item, saveAnswer } = props;
     const newItem = cloneDeep(item);
 
     newItem.list = newItem.list.filter((q, i) => i !== index);
@@ -83,14 +75,11 @@ class OrderList extends Component {
     setQuestionData(newItem);
   };
 
-  handleAddQuestion = () => {
-    const { setQuestionData, item, t, saveAnswer } = this.props;
+  const handleAddQuestion = () => {
+    const { setQuestionData, item, saveAnswer } = props;
     const newItem = cloneDeep(item);
 
-    newItem.list = [
-      ...item.list,
-      `${t('common.initialoptionslist.itemprefix')} ${item.list.length}`
-    ];
+    newItem.list = [...item.list, ''];
     newItem.validation.valid_response.value = [
       ...newItem.validation.valid_response.value,
       newItem.validation.valid_response.value.length
@@ -107,36 +96,37 @@ class OrderList extends Component {
     setQuestionData(newItem);
   };
 
-  onSortCurrentAnswer = ({ oldIndex, newIndex }) => {
-    const { setQuestionData, item } = this.props;
+  const handleCorrectSortEnd = ({ oldIndex, newIndex }) => {
+    const { setQuestionData, item } = props;
     const newItem = cloneDeep(item);
-    const newValue = arrayMove(item.validation.valid_response.value, oldIndex, newIndex);
 
-    newItem.validation.valid_response.value = newValue;
+    if (correctTab === 0) {
+      newItem.validation.valid_response.value = arrayMove(
+        newItem.validation.valid_response.value,
+        oldIndex,
+        newIndex
+      );
+    } else {
+      newItem.validation.alt_responses[correctTab - 1].value = arrayMove(
+        newItem.validation.alt_responses[correctTab - 1].value,
+        oldIndex,
+        newIndex
+      );
+    }
 
     setQuestionData(newItem);
   };
 
-  onSortAltAnswer = ({ oldIndex, newIndex, altIndex }) => {
-    const { item, setQuestionData } = this.props;
-    const newItem = cloneDeep(item);
-    const newValue = arrayMove(item.validation.alt_responses[altIndex].value, oldIndex, newIndex);
-
-    newItem.validation.alt_responses[altIndex].value = newValue;
-
-    setQuestionData(newItem);
-  };
-
-  onSortPreviewEnd = ({ oldIndex, newIndex }) => {
-    const { saveAnswer, userAnswer } = this.props;
+  const onSortPreviewEnd = ({ oldIndex, newIndex }) => {
+    const { saveAnswer, userAnswer } = props;
 
     const newPreviewList = arrayMove(userAnswer, oldIndex, newIndex);
 
     saveAnswer(newPreviewList);
   };
 
-  handleAddAltResponse = () => {
-    const { setQuestionData, item } = this.props;
+  const handleAddAltResponse = () => {
+    const { setQuestionData, item } = props;
     const newItem = cloneDeep(item);
 
     newItem.validation.alt_responses.push({
@@ -144,20 +134,22 @@ class OrderList extends Component {
       value: newItem.list.map((q, i) => i)
     });
 
+    setCorrectTab(correctTab + 1);
     setQuestionData(newItem);
   };
 
-  handleDeleteAltAnswers = (index) => {
-    const { setQuestionData, item } = this.props;
+  const handleDeleteAltAnswers = (index) => {
+    const { setQuestionData, item } = props;
     const newItem = cloneDeep(item);
 
     newItem.validation.alt_responses.splice(index, 1);
 
+    setCorrectTab(0);
     setQuestionData(newItem);
   };
 
-  handleUpdatePoints = (points, index) => {
-    const { setQuestionData, item } = this.props;
+  const handleUpdatePoints = (points, index) => {
+    const { setQuestionData, item } = props;
     const newItem = cloneDeep(item);
 
     if (index !== undefined && typeof index === 'number') {
@@ -169,79 +161,107 @@ class OrderList extends Component {
     setQuestionData(newItem);
   };
 
-  render() {
-    const { view, previewTab, smallSize, item, userAnswer, testItem, evaluation } = this.props;
+  const renderOptions = () => {
+    const { item } = props;
 
-    if (!item) return null;
-
-    const Wrapper = testItem ? EmptyWrapper : Paper;
     return (
-      <React.Fragment>
-        {view === EDIT && (
-          <Paper>
-            <QuestionTextArea
-              onChange={this.handleQuestionChange}
-              value={item.stimulus}
-              style={{ marginBottom: 30 }}
-            />
-            <SortableList
-              items={item.list}
-              onSortEnd={this.onSortOrderListEnd}
-              useDragHandle
-              onRemove={this.handleDeleteQuestion}
-              onChange={this.handleQuestionsChange}
-            />
-            <CorrectAnswers
-              onAddAltResponses={this.handleAddAltResponse}
-              validation={this.validation}
-              onSortCurrentAnswer={this.onSortCurrentAnswer}
-              onSortAltAnswer={this.onSortAltAnswer}
-              onDelete={this.handleDeleteAltAnswers}
-              onUpdatePoints={this.handleUpdatePoints}
-            />
-          </Paper>
-        )}
-        {view === PREVIEW && (
-          <Wrapper>
-            <QuestionHeader
-              smallSize={smallSize}
-              dangerouslySetInnerHTML={{ __html: item.stimulus }}
-            />
-
-            {previewTab === CHECK && (
-              <OrderListReport
-                onSortEnd={this.onSortPreviewEnd}
-                questionsList={item.list}
-                previewIndexesList={userAnswer}
-                evaluation={evaluation}
-              />
-            )}
-
-            {previewTab === SHOW && (
-              <OrderListReport
-                onSortEnd={this.onSortPreviewEnd}
-                questionsList={item.list}
-                previewIndexesList={userAnswer}
-                showAnswers
-                evaluation={evaluation}
-                validation={item.validation}
-                list={item.list}
-              />
-            )}
-
-            {previewTab === CLEAR && (
-              <OrderListPreview
-                onSortEnd={this.onSortPreviewEnd}
-                questions={userAnswer.map(index => item.list[index])}
-                smallSize={smallSize}
-              />
-            )}
-          </Wrapper>
-        )}
-      </React.Fragment>
+      <OptionsList
+        prefix="options2"
+        readOnly
+        items={
+          correctTab === 0
+            ? item.validation.valid_response.value.map(ind => item.list[ind])
+            : item.validation.alt_responses[correctTab - 1].value.map(ind => item.list[ind])
+        }
+        onSortEnd={handleCorrectSortEnd}
+        useDragHandle
+        columns={1}
+        points={
+          correctTab === 0
+            ? item.validation.valid_response.score
+            : item.validation.alt_responses[correctTab - 1].score
+        }
+        onChangePoints={handleUpdatePoints}
+      />
     );
-  }
-}
+  };
+
+  const { view, previewTab, smallSize, item, userAnswer, testItem, evaluation, t } = props;
+
+  if (!item) return null;
+
+  const Wrapper = testItem ? EmptyWrapper : Paper;
+  return (
+    <Fragment>
+      {view === EDIT && (
+        <Paper>
+          <Subtitle>{t('component.sortList.editQuestionSubtitle')}</Subtitle>
+
+          <QuestionTextArea
+            onChange={handleQuestionChange}
+            value={item.stimulus}
+            style={{ marginBottom: 30 }}
+          />
+          <Subtitle>{t('component.sortList.editListSubtitle')}</Subtitle>
+          <List
+            onAdd={handleAddQuestion}
+            items={item.list}
+            onSortEnd={onSortOrderListEnd}
+            useDragHandle
+            onRemove={handleDeleteQuestion}
+            onChange={handleQuestionsChange}
+          />
+
+          <CorrectAnswers
+            onTabChange={setCorrectTab}
+            correctTab={correctTab}
+            onAdd={handleAddAltResponse}
+            validation={item.validation}
+            options={renderOptions()}
+            onCloseTab={handleDeleteAltAnswers}
+          />
+        </Paper>
+      )}
+      {view === PREVIEW && (
+        <Wrapper>
+          <QuestionHeader
+            smallSize={smallSize}
+            dangerouslySetInnerHTML={{ __html: item.stimulus }}
+          />
+
+          {previewTab === CHECK && (
+            <OrderListReport
+              onSortEnd={onSortPreviewEnd}
+              questionsList={item.list}
+              previewIndexesList={userAnswer}
+              evaluation={evaluation}
+            />
+          )}
+
+          {previewTab === SHOW && (
+            <OrderListReport
+              onSortEnd={onSortPreviewEnd}
+              questionsList={item.list}
+              previewIndexesList={userAnswer}
+              showAnswers
+              evaluation={evaluation}
+              validation={item.validation}
+              list={item.list}
+            />
+          )}
+
+          {previewTab === CLEAR && (
+            <OrderListPreview
+              onSortEnd={onSortPreviewEnd}
+              questions={userAnswer.map(index => item.list[index])}
+              smallSize={smallSize}
+            />
+          )}
+        </Wrapper>
+      )}
+    </Fragment>
+  );
+};
 
 OrderList.propTypes = {
   view: PropTypes.string.isRequired,
@@ -266,7 +286,7 @@ OrderList.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces('author'),
+  withNamespaces('assessment'),
   connect(
     null,
     {

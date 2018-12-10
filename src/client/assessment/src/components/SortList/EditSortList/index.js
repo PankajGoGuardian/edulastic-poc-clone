@@ -136,7 +136,7 @@ const EditSortList = ({ item, setQuestionData, t }) => {
   const renderOptions = () => (
     <OptionsList
       prefix="options"
-      onChange={handleChange}
+      readOnly
       items={
         correctTab === 0
           ? item.validation.valid_response.value.map(ind => item.source[ind])
@@ -165,7 +165,7 @@ const EditSortList = ({ item, setQuestionData, t }) => {
         />
         <Subtitle>{t('component.sortList.editListSubtitle')}</Subtitle>
         <List
-          items={item.source.map(ite => ite)}
+          items={item.source}
           onAdd={handleAdd}
           onSortEnd={handleSortEnd}
           onChange={handleChange}
@@ -177,6 +177,7 @@ const EditSortList = ({ item, setQuestionData, t }) => {
         <CorrectAnswers
           onTabChange={setCorrectTab}
           correctTab={correctTab}
+          readOnly
           onAdd={handleAddAnswer}
           validation={item.validation}
           options={renderOptions()}

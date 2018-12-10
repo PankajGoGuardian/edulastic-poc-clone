@@ -13,7 +13,7 @@ const ShowCorrect = ({ list, correctList, source, t }) => (
       {list.map((item, i) => (
         <Item key={i}>
           <Index>{correctList.indexOf(source.indexOf(item)) + 1}</Index>
-          <Content>{item}</Content>
+          <Content dangerouslySetInnerHTML={{ __html: item }} />
         </Item>
       ))}
     </FlexRow>

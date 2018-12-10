@@ -8,11 +8,12 @@ import { CustomQuillComponent } from '@edulastic/common';
 
 const DragHandle = SortableHandle(() => <i className="fa fa-align-justify" />);
 
-const SortableItem = SortableElement(({ value, onRemove, onChange, columns, indx }) => (
+const SortableItem = SortableElement(({ value, onRemove, rOnly, onChange, columns, indx }) => (
   <SortableItemContainer columns={columns}>
     <div className="main">
       <DragHandle />
       <CustomQuillComponent
+        readOnly={rOnly}
         toolbarId={`id${indx}`}
         onChange={onChange}
         showResponseBtn={false}
@@ -34,7 +35,12 @@ const SortableItem = SortableElement(({ value, onRemove, onChange, columns, indx
 ));
 
 SortableItem.propTypes = {
-  columns: PropTypes.number.isRequired
+  columns: PropTypes.number.isRequired,
+  rOnly: PropTypes.bool
+};
+
+SortableItem.defaultProps = {
+  rOnly: false
 };
 
 export default SortableItem;

@@ -20,7 +20,7 @@ const styles = {
 };
 
 const TableRow = ({
-  num,
+  startIndex,
   colCount,
   arrayOfRows,
   rowTitles,
@@ -34,10 +34,10 @@ const TableRow = ({
 }) => {
   const cols = [];
 
-  for (let ind = num; ind < num + colCount; ind++) {
+  for (let ind = startIndex; ind < startIndex + colCount; ind++) {
     if (arrayOfRows.has(ind) && rowTitles.length > 0) {
       cols.push(
-        <RowTitleCol colCount={colCount}>
+        <RowTitleCol key={ind} colCount={colCount}>
           <CenteredText style={{ wordWrap: 'break-word', textAlign: 'left' }}>
             <div dangerouslySetInnerHTML={{ __html: rowTitles[ind / colCount] }} />
           </CenteredText>
@@ -45,7 +45,7 @@ const TableRow = ({
       );
     }
     cols.push(
-      <Column rowTitles={rowTitles} colCount={colCount}>
+      <Column key={ind} rowTitles={rowTitles} colCount={colCount}>
         <DropContainer
           style={{
             ...styles.columnContainerStyle,
@@ -78,7 +78,7 @@ const TableRow = ({
 };
 
 TableRow.propTypes = {
-  num: PropTypes.number.isRequired,
+  startIndex: PropTypes.number.isRequired,
   colCount: PropTypes.number.isRequired,
   arrayOfRows: PropTypes.object.isRequired,
   rowTitles: PropTypes.array.isRequired,

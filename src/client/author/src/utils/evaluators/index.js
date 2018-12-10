@@ -1,17 +1,11 @@
-import orderList from './orderlist';
-import multipleChoice from './mcq';
-import clozeDragDrop from './clozeDragDrop';
-import clozeImageDragDrop from './clozeImageDragDrop';
-import clozeDropDown from './clozeDropDown';
-import clozeText from './clozeText';
+import { multipleChoice, orderList, clozeText } from '@edulastic/evaluators';
 
+// clozeDropDown and ClozeText shares same logic
 const evaluators = {
-  orderList,
   multipleChoice,
-  clozeDragDrop,
-  clozeDropDown,
-  clozeImageDragDrop,
+  orderList,
   clozeText,
+  clozeDropDown: clozeText
 };
 
 export default evaluators;

@@ -12,11 +12,12 @@ export const evaluateItem = (answers, validations) => {
       if (!evaluator) {
         results[id] = [];
       } else {
-        results[id] = evaluator({
+        const { evaluation } = evaluator({
           userResponse: answer,
           hasGroupResponses: validation.hasGroupResponses,
           validation: validation.validation
         });
+        results[id] = evaluation;
       }
     } else {
       results[id] = [];

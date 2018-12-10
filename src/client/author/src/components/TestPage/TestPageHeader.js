@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Affix } from 'antd';
 import styled from 'styled-components';
-import { white } from '@edulastic/colors';
+import { white, mainBlueColor } from '@edulastic/colors';
 import { FlexContainer, EduButton } from '@edulastic/common';
 import {
   IconAddItems,
@@ -10,6 +10,7 @@ import {
   IconReview,
   IconSettings,
   IconSummary,
+  IconShare
 } from '@edulastic/icons';
 
 import TestPageNav from './TestPageNav';
@@ -22,23 +23,42 @@ export const navButtons = [
   { icon: <IconAssign color={white} />, value: 'assign', text: 'ASSIGN' },
 ];
 
-const TestPageHeader = ({ onChangeNav, current, onSave, title, creating, onShare }) => (
-  <Affix>
-    <Container>
-      <Title>{title}</Title>
+const TestPageHeader = ({ onChangeNav, current, onSave, title, creating, onShare, windowWidth }) => (
+  windowWidth > 993 ? (
+    <Affix>
+      <Container>
+        <Title>{title}</Title>
 
-      <TestPageNav onChange={onChangeNav} current={current} buttons={navButtons} />
+        <TestPageNav onChange={onChangeNav} current={current} buttons={navButtons} />
 
-      <FlexContainer justifyContent="space-between">
-        <EduButton style={{ width: 120 }} size="large" onClick={onShare}>
-          Share
-        </EduButton>
-        <EduButton style={{ width: 120 }} disabled={creating} size="large" type="secondary" onClick={onSave}>
-          {creating ? 'Saving...' : 'Save changes'}
-        </EduButton>
-      </FlexContainer>
-    </Container>
-  </Affix>
+        <FlexContainer justifyContent="space-between">
+          <EduButton style={{ width: 120 }} size="large" onClick={onShare}>
+            Share
+          </EduButton>
+          <EduButton style={{ width: 120 }} disabled={creating} size="large" type="secondary" onClick={onSave}>
+            {creating ? 'Saving...' : 'Save changes'}
+          </EduButton>
+        </FlexContainer>
+      </Container>
+    </Affix>
+  ) : (
+    <Affix>
+      <Container style={{ flexDirection: 'column', paddingTop: 10 }}>
+        <FlexContainer style={{ width: '100%', justifyContent: 'space-between' }}>
+          <Title>{title}</Title>
+          <FlexContainer justifyContent="space-between">
+            <EduButton size="large" onClick={onShare}>
+              <ShareIcon />
+            </EduButton>
+            <EduButton style={{ width: 80 }} disabled={creating} size="large" type="secondary" onClick={onSave}>
+              {creating ? 'Saving...' : 'Save'}
+            </EduButton>
+          </FlexContainer>
+        </FlexContainer>
+        <TestPageNav onChange={onChangeNav} current={current} buttons={navButtons} />
+      </Container>
+    </Affix>
+  )
 );
 
 TestPageHeader.propTypes = {
@@ -48,6 +68,7 @@ TestPageHeader.propTypes = {
   title: PropTypes.string.isRequired,
   creating: PropTypes.bool.isRequired,
   onShare: PropTypes.func.isRequired,
+  windowWidth: PropTypes.number.isRequired,
 };
 
 export default memo(TestPageHeader);
@@ -59,6 +80,10 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   background-color: #0288d1;
+
+  @media (max-width: 468px) {
+    padding: 0px 20px 0px 45px;
+  }
 `;
 
 const Title = styled.div`
@@ -70,4 +95,8 @@ const Title = styled.div`
   line-height: 1.36;
   letter-spacing: normal;
   color: ${white};
+`;
+
+const ShareIcon = styled(IconShare)`
+  fill: ${mainBlueColor};
 `;

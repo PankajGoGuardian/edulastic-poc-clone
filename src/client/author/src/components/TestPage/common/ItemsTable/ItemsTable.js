@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Table } from 'antd';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { withWindowSizes } from '@edulastic/common';
 
 import MainInfoCell from './MainInfoCell';
 import MetaInfoCell from './MetaInfoCell';
@@ -18,6 +19,7 @@ const ItemsTable = ({
   selectedTests,
   onAddItems,
   standards,
+  windowWidth,
 }) => {
   const columns = [
     {
@@ -36,6 +38,24 @@ const ItemsTable = ({
           setSelectedTests={setSelectedTests}
           selectedTests={selectedTests}
           onAddItems={onAddItems}
+          windowWidth={windowWidth}
+        />
+      )
+    }
+  ];
+
+  const mobileColumns = [
+    {
+      title: 'Meta info',
+      dataIndex: 'meta',
+      key: 'meta',
+      render: data => (
+        <MetaInfoCell
+          data={data}
+          setSelectedTests={setSelectedTests}
+          selectedTests={selectedTests}
+          onAddItems={onAddItems}
+          windowWidth={windowWidth}
         />
       )
     }
@@ -48,6 +68,7 @@ const ItemsTable = ({
     };
     const meta = {
       id: item._id,
+      title: item._id,
       by: 'Kevin Hart',
       shared: '9578 (1)',
       likes: 9,
@@ -57,6 +78,7 @@ const ItemsTable = ({
 
     if (item.data.questions && item.data.questions.length) {
       main.stimulus = item.data.questions[0].data.stimulus;
+      meta.stimulus = item.data.questions[0].data.stimulus;
     }
 
     return {
@@ -68,7 +90,7 @@ const ItemsTable = ({
 
   return (
     <Table
-      columns={columns}
+      columns={windowWidth > 993 ? columns : mobileColumns}
       dataSource={data}
       showHeader={false}
     />
@@ -82,10 +104,12 @@ ItemsTable.propTypes = {
   onAddItems: PropTypes.func.isRequired,
   selectedTests: PropTypes.array.isRequired,
   standards: PropTypes.object.isRequired,
+  windowWidth: PropTypes.number.isRequired,
 };
 
 const enhance = compose(
   memo,
+  withWindowSizes,
   connect(
     state => ({
       types: getItemsTypesSelector(state),

@@ -16,8 +16,7 @@ class ItemFilter extends Component {
   }
 
   showFilterHandler = () => {
-    const { isShowFilter } = this.state;
-    this.setState({ isShowFilter: !isShowFilter });
+    this.setState(state => ({ isShowFilter: !state.isShowFilter }));
   }
 
   renderMainFilter = () => {
@@ -170,25 +169,26 @@ class ItemFilter extends Component {
                   </FilterButton>
                 </Col>
               </Row>
-            </Header>) : (
-              <Header>
-                <SearchField>
-                  <TextField
-                    onChange={e => onSearch(e.target.value)}
-                    height="50px"
-                    type="search"
-                    icon={<Icon type="search" style={{ color: blue, fontSize: '18px' }} />}
-                    containerStyle={{ marginRight: 20 }}
-                    style={{ padding: 16, paddingRight: 68, outline: 'none' }}
-                    placeholder="Search by skills and"
-                  />
-                </SearchField>
-                <FilterButton>
-                  <Button onClick={() => this.showFilterHandler()}>
-                    {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
-                  </Button>
-                </FilterButton>
-              </Header>
+            </Header>
+          ) : (
+            <Header>
+              <SearchField>
+                <TextField
+                  onChange={e => onSearch(e.target.value)}
+                  height="50px"
+                  type="search"
+                  icon={<Icon type="search" style={{ color: blue, fontSize: '18px' }} />}
+                  containerStyle={{ marginRight: 20 }}
+                  style={{ padding: 16, paddingRight: 68, outline: 'none' }}
+                  placeholder="Search by skills and"
+                />
+              </SearchField>
+              <FilterButton>
+                <Button onClick={() => this.showFilterHandler()}>
+                  {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
+                </Button>
+              </FilterButton>
+            </Header>
           )
         }
         <MainFilter isVisible={isShowFilter}>

@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Tag, message } from 'antd';
 import { withNamespaces } from '@edulastic/localization';
-import { FlexContainer } from '@edulastic/common';
+import { FlexContainer, MoveLink } from '@edulastic/common';
 import { IconShare, IconHeart } from '@edulastic/icons';
 import { greenDark, textColor, grey, white } from '@edulastic/colors';
 import styled from 'styled-components';
 import { cloneDeep } from 'lodash';
 
 import Tags from '../../../common/Tags';
+import PreviewModal from '../../../common/PreviewModal';
 import { setTestItemsAction } from '../../../../actions/testItems';
 import { getSelectedItemSelector, getTestItemsSelector } from '../../../../selectors/testItems';
 import { setTestDataAction } from '../../../../actions/tests';
@@ -67,62 +68,155 @@ class MetaInfoCell extends Component {
     return true;
   }
 
-  render() {
-    const { data } = this.props;
+  previewItem = () => {
+    this.setState({ isShowPreviewModal: true });
+  }
 
+  closeModal = () => {
+    this.setState({ isShowPreviewModal: false });
+  }
+
+  mobileRender = () => {
+    const { data } = this.props;
     return (
-      <FlexContainer
-        justifyContent="space-between"
-        style={{ fontWeight: 600, color: textColor, flexWrap: 'wrap' }}
-      >
-        <div style={{ width: '70%' }}>
-          <FlexContainer>
-            <div>
-              <CategoryTitle>By:</CategoryTitle> <FirstText>{data.by}</FirstText>
-            </div>
-            <div>
-              <CategoryTitle>ID:</CategoryTitle> <FirstText>{data._id}</FirstText>
-            </div>
+      <div style={{ padding: '5px 10px' }}>
+        <div style={{ marginBottom: 15 }}>
+          <MoveLink onClick={() => this.previewItem()}>{data.title}</MoveLink>
+          <STIMULUS dangerouslySetInnerHTML={{ __html: data.stimulus }} />
+        </div>
+        <TypeContainer>
+          {data.standards && !!data.standards.length && (
+            <FlexContainer>
+              <Tags
+                tags={data.standards}
+                labelStyle={{ color: greenDark, background: white, border: `1px solid ${grey}` }}
+              />
+            </FlexContainer>
+          )}
+          {data.types && !!data.types.length && (
+            <FlexContainer flexDirection="column" alignItems="self-start">
+              <CategoryTitle style={{ marginBottom: 5 }}>Type: </CategoryTitle>
+              <FlexContainer style={{ width: '100%', flexWrap: 'wrap' }}>
+                {data.types.map(type => (
+                  <Tag color="cyan" key={type} style={{ marginTop: 7 }}>
+                    {type}
+                  </Tag>
+                ))}
+              </FlexContainer>
+            </FlexContainer>
+          )}
+        </TypeContainer>
+        <FlexContainer style={{ flexWrap: 'wrap' }} justifyContent="space-between">
+          <CategoryDiv>
+            <CategoryTitle>By:</CategoryTitle> <FirstText>{data.by}</FirstText>
+          </CategoryDiv>
+          <CategoryDiv>
+            <CategoryTitle>ID:</CategoryTitle> <FirstText>{data._id}</FirstText>
+          </CategoryDiv>
+          <CategoryDiv>
             <FlexContainer>
               <IconShare color={greenDark} /> <SecondText>{data.shared}</SecondText>
             </FlexContainer>
+          </CategoryDiv>
+          <CategoryDiv style={{ marginRight: 10 }}>
             <FlexContainer>
               <IconHeart color={greenDark} /> <SecondText>{data.likes}</SecondText>
             </FlexContainer>
-          </FlexContainer>
-          <TypeContainer>
-            {data.standards && !!data.standards.length && (
-              <FlexContainer>
-                <Tags
-                  tags={data.standards}
-                  labelStyle={{ color: greenDark, background: white, border: `1px solid ${grey}` }}
-                />
-              </FlexContainer>
-            )}
-            {data.types && !!data.types.length && (
-              <FlexContainer>
-                <CategoryTitle>Type: </CategoryTitle>
-                <FlexContainer style={{ width: '100%', flexWrap: 'wrap' }}>
-                  {data.types.map(type => (
-                    <Tag color="cyan" key={type} style={{ marginTop: 3 }}>
-                      {type}
-                    </Tag>
-                  ))}
-                </FlexContainer>
-              </FlexContainer>
-            )}
-          </TypeContainer>
-        </div>
+          </CategoryDiv>
+        </FlexContainer>
         <StyledButton
           onClick={() => this.handleSelection(data)}
           style={{
             border: this.isAddOrRemove ? '1px solid #00b0ff' : '1px solid #ee1658',
-            color: this.isAddOrRemove ? '#00b0ff' : '#ee1658'
+            color: this.isAddOrRemove ? '#00b0ff' : '#ee1658',
+            marginTop: 15,
+            width: '100%'
           }}
         >
           {this.isAddOrRemove ? 'ADD' : 'REMOVE'}
         </StyledButton>
-      </FlexContainer>
+      </div>
+    );
+  }
+
+  render() {
+    const { isShowPreviewModal } = this.state;
+    const { data, windowWidth } = this.props;
+
+    return (
+      <Container>
+        <PreviewModal
+          isVisible={isShowPreviewModal}
+          onClose={this.closeModal}
+          data={data}
+        />
+        {
+          windowWidth > 468 ? (
+            <FlexContainer
+              justifyContent="space-between"
+              style={{ fontWeight: 600, color: textColor, flexWrap: 'wrap' }}
+            >
+              <div style={{ width: '70%' }}>
+                {
+                  windowWidth < 993 && (
+                  <div style={{ marginBottom: 15 }}>
+                    <MoveLink onClick={() => this.previewItem()}>{data.title}</MoveLink>
+                    <STIMULUS dangerouslySetInnerHTML={{ __html: data.stimulus }} />
+                  </div>
+                  )
+                }
+                <FlexContainer>
+                  <div>
+                    <CategoryTitle>By:</CategoryTitle> <FirstText>{data.by}</FirstText>
+                  </div>
+                  <div>
+                    <CategoryTitle>ID:</CategoryTitle> <FirstText>{data._id}</FirstText>
+                  </div>
+                  <FlexContainer>
+                    <IconShare color={greenDark} /> <SecondText>{data.shared}</SecondText>
+                  </FlexContainer>
+                  <FlexContainer>
+                    <IconHeart color={greenDark} /> <SecondText>{data.likes}</SecondText>
+                  </FlexContainer>
+                </FlexContainer>
+                <TypeContainer>
+                  {data.standards && !!data.standards.length && (
+                    <FlexContainer>
+                      <Tags
+                        tags={data.standards}
+                        labelStyle={{ color: greenDark, background: white, border: `1px solid ${grey}` }}
+                      />
+                    </FlexContainer>
+                  )}
+                  {data.types && !!data.types.length && (
+                    <FlexContainer>
+                      <CategoryTitle>Type: </CategoryTitle>
+                      <FlexContainer style={{ width: '100%', flexWrap: 'wrap' }}>
+                        {data.types.map(type => (
+                          <Tag color="cyan" key={type} style={{ marginTop: 3 }}>
+                            {type}
+                          </Tag>
+                        ))}
+                      </FlexContainer>
+                    </FlexContainer>
+                  )}
+                </TypeContainer>
+              </div>
+              <StyledButton
+                onClick={() => this.handleSelection(data)}
+                style={{
+                  border: this.isAddOrRemove ? '1px solid #00b0ff' : '1px solid #ee1658',
+                  color: this.isAddOrRemove ? '#00b0ff' : '#ee1658'
+                }}
+              >
+                {this.isAddOrRemove ? 'ADD' : 'REMOVE'}
+              </StyledButton>
+            </FlexContainer>
+          ) : (
+            this.mobileRender()
+          )
+        }
+      </Container>
     );
   }
 }
@@ -135,7 +229,8 @@ MetaInfoCell.propTypes = {
   setTestData: PropTypes.func.isRequired,
   selectedTests: PropTypes.array.isRequired,
   setTestItems: PropTypes.func.isRequired,
-  selectedRows: PropTypes.object
+  selectedRows: PropTypes.object,
+  windowWidth: PropTypes.number.isRequired,
 };
 
 MetaInfoCell.defaultProps = {
@@ -195,4 +290,17 @@ const StyledButton = styled(Button)`
   letter-spacing: 0.2px;
   color: #00b0ff;
   border: 1px solid #00b0ff;
+`;
+
+const Container = styled.div``;
+
+const STIMULUS = styled.div`
+  font-size: 13px;
+  color: #444444;
+  margin-top: 3px;
+`;
+
+const CategoryDiv = styled.div`
+  width: 45%;
+  margin-bottom: 5px;
 `;

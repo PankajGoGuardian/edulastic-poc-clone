@@ -7,12 +7,13 @@ import styled from 'styled-components';
 import { IconSource } from '@edulastic/icons';
 import { withNamespaces } from '@edulastic/localization';
 import { blue } from '@edulastic/colors';
+import { withWindowSizes } from '@edulastic/common';
 
 import { Container, ButtonLink } from '../../common';
 import Breadcrumb from '../../Breadcrumb';
 import MainSetting from './MainSetting';
 
-const Setting = ({ t, current, history, onShowSource }) => {
+const Setting = ({ t, current, history, onShowSource, windowWidth }) => {
   const breadcrumbData = [
     {
       title: 'ITEM LIST',
@@ -34,7 +35,7 @@ const Setting = ({ t, current, history, onShowSource }) => {
           </ButtonLink>
         </Button>
       </SecondHeader>
-      <MainSetting history={history} />
+      <MainSetting history={history} windowWidth={windowWidth} />
     </Container>
   );
 };
@@ -43,12 +44,14 @@ Setting.propTypes = {
   t: PropTypes.func.isRequired,
   current: PropTypes.string.isRequired,
   history: PropTypes.func.isRequired,
-  onShowSource: PropTypes.func.isRequired
+  onShowSource: PropTypes.func.isRequired,
+  windowWidth: PropTypes.number.isRequired,
 };
 
 const enhance = compose(
   memo,
   withRouter,
+  withWindowSizes,
   withNamespaces('author')
 );
 

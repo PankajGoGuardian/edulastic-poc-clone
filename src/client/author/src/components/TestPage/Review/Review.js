@@ -1,11 +1,11 @@
 import React, { useState, memo } from 'react';
 import { Row, Col } from 'antd';
-import { Paper } from '@edulastic/common';
 import PropTypes from 'prop-types';
 import { cloneDeep } from 'lodash';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import styled from 'styled-components';
+import { Paper, withWindowSizes } from '@edulastic/common';
 
 import HeaderBar from './HeaderBar';
 import List from './List';
@@ -25,7 +25,8 @@ const Review = ({
   types,
   standards,
   summary,
-  current
+  current,
+  windowWidth
 }) => {
   const [isCollapse, setIsCollapse] = useState(false);
 
@@ -138,11 +139,14 @@ const Review = ({
     }
   ];
 
+  const isSmallSize = windowWidth > 993 ? 1 : 0;
+  const isMobileSize = windowWidth > 468 ? 1 : 0;
+
   return (
     <div style={{ paddingTop: 25 }}>
       <Row>
-        <Col span={19} style={{ padding: '0 45px' }}>
-          <SecondHeader>
+        <Col span={isSmallSize ? 19 : 24} style={{ padding: isMobileSize ? '0 45px' : '0 25px' }}>
+          <SecondHeader isMobileSize={isMobileSize}>
             <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
             <HeaderBar
               onSelectAll={handleSelectAll}
@@ -150,6 +154,7 @@ const Review = ({
               onRemoveSelected={handleRemoveSelected}
               onCollapse={handleCollapse}
               onMoveTo={handleMoveTo}
+              windowWidth={windowWidth}
             />
           </SecondHeader>
           <Paper>
@@ -176,7 +181,10 @@ const Review = ({
             )}
           </Paper>
         </Col>
-        <Col span={5}>
+        <Col
+          span={isSmallSize ? 5 : 24}
+          style={{ padding: isSmallSize ? '0px' : isMobileSize ? '10px 45px' : '10px 25px' }}
+        >
           <Calculator
             totalPoints={totalPoints}
             questionsCount={questionsCount}
@@ -203,11 +211,13 @@ Review.propTypes = {
   types: PropTypes.any.isRequired,
   standards: PropTypes.object.isRequired,
   summary: PropTypes.array.isRequired,
-  current: PropTypes.string.isRequired
+  current: PropTypes.string.isRequired,
+  windowWidth: PropTypes.number.isRequired,
 };
 
 const enhance = compose(
   memo,
+  withWindowSizes,
   connect(
     state => ({
       types: getItemsTypesSelector(state),
@@ -222,6 +232,7 @@ export default enhance(Review);
 
 const SecondHeader = styled.div`
   display: flex;
+  flex-direction: ${props => (props.isMobileSize ? 'row' : 'column')}
   justify-content: space-between;
 
   .ant-btn {

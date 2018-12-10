@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { Button, Row, Col, Input, Pagination, Spin, Affix } from 'antd';
 import {
   withWindowSizes,
   Card,
   helpers,
   FlexContainer
 } from '@edulastic/common';
-import { compose } from 'redux';
-import { Row, Col, Input, Pagination, Spin, Affix } from 'antd';
+import { desktopWidth, textColor } from '@edulastic/colors';
 
 import styled from 'styled-components';
 import Item from './Item';
@@ -35,6 +36,7 @@ class TestList extends Component {
     this.state = {
       searchStr: '',
       blockStyle: 'tile',
+      isShowFilter: false,
       items: [
         { icon: 'book', key: 'library', text: 'Entire Library' },
         { icon: 'folder', key: 'byMe', text: 'Authored by me' },
@@ -97,6 +99,10 @@ class TestList extends Component {
     });
   };
 
+  showFilterHandler = () => {
+    this.setState(state => ({ isShowFilter: !state.isShowFilter }));
+  }
+
   render() {
     const {
       tests,
@@ -106,9 +112,10 @@ class TestList extends Component {
       loading,
       history,
       creating,
-      match
+      match,
+      windowWidth
     } = this.props;
-    const { searchStr, blockStyle, items } = this.state;
+    const { searchStr, blockStyle, items, isShowFilter } = this.state;
     const { from, to } = helpers.getPaginationInfo({ page, limit, count });
 
     return (
@@ -119,6 +126,31 @@ class TestList extends Component {
           title="Test List"
         />
         <Container>
+          <MobileFilter>
+            <Input.Search
+              placeholder="Search by skills and keywords"
+              onSearch={this.handleSearch}
+              onChange={this.handleSearchChange}
+              style={{ width: '100%', marginRight: 30 }}
+              size="large"
+              value={searchStr}
+            />
+            <FilterButton>
+              <Button onClick={() => this.showFilterHandler()}>
+                {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
+              </Button>
+            </FilterButton>
+          </MobileFilter>
+          {
+            isShowFilter && (
+            <TestFilters onChange={this.handleFiltersChange}>
+              <TestFiltersNav
+                items={items}
+                onSelect={this.handleFilterNavSelect}
+              />
+            </TestFilters>
+            )
+          }
           <FlexContainer>
             <Filter>
               <Input.Search
@@ -130,7 +162,7 @@ class TestList extends Component {
                 value={searchStr}
               />
             </Filter>
-            <Main span={19} style={{ paddingLeft: 24 }}>
+            <Main span={19}>
               <FlexContainer justifyContent="space-between">
                 <PaginationInfo>
                   {from} to {to} of <i>{count}</i>
@@ -145,7 +177,7 @@ class TestList extends Component {
           </FlexContainer>
           <FlexContainer>
             <Filter style={{ zIndex: 0 }}>
-              <Affix style={{ position: 'fixed', width: 280, top: 135 }}>
+              <Affix style={{ position: 'fixed', width: 315, top: 135 }}>
                 <PerfectScrollbar>
                   <TestFilters onChange={this.handleFiltersChange}>
                     <TestFiltersNav
@@ -156,7 +188,7 @@ class TestList extends Component {
                 </PerfectScrollbar>
               </Affix>
             </Filter>
-            <Main style={{ paddingLeft: 24, marginTop: 10 }}>
+            <Main style={{ marginTop: 10 }}>
               <Card>
                 {loading ? (
                   <Spin size="large" />
@@ -167,7 +199,7 @@ class TestList extends Component {
                         item !== null && (
                         <Col
                           key={item._id}
-                          span={8}
+                          span={windowWidth > 468 ? 8 : 24}
                           style={{ marginBottom: 15 }}
                         >
                           <Item item={item} history={history} match={match} />
@@ -209,7 +241,8 @@ TestList.propTypes = {
   count: PropTypes.number.isRequired,
   loading: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
+  windowWidth: PropTypes.number.isRequired,
 };
 
 const enhance = compose(
@@ -272,8 +305,52 @@ const PaginationInfo = styled.span`
 
 const Filter = styled.div`
   width: 280px;
+
+  @media (max-width: 993px) {
+    display: none;
+  }
+`;
+
+const MobileFilter = styled.div`
+  height: 50px;
+  margin-bottom: 15px;
+  @media (min-width: 993px) {
+    display: none;
+  }
+
+  @media (max-width: 993px) {
+    display: flex;
+  }
 `;
 
 const Main = styled.div`
   flex: 1;
+
+  @media (min-width: 993px) {
+    padding-left: 24px;
+  }
+`;
+
+const FilterButton = styled.div`
+  display: none;
+  flex: 1;
+  height: 50px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  border-radius: 10px;
+
+  .ant-btn {
+    height: 50px;
+    border-radius: 10px;
+    width: 100%;
+    
+    span {
+      font-size: 11px;
+      font-weight: 600;
+      color: ${textColor};
+    }
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    display: block;
+  }
 `;

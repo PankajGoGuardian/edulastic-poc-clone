@@ -78,11 +78,12 @@ class MainSetting extends Component {
 
   render() {
     const { markAsDoneValue, showAdvancedOption } = this.state;
-    const { history } = this.props;
+    const { history, windowWidth } = this.props;
+    const isSmallSize = windowWidth > 993 ? 1 : 0;
     return (
       <Paper style={{ marginTop: 27 }}>
-        <Row>
-          <Col span={6}>
+        <Row style={{ padding: windowWidth < 468 && '25px' }}>
+          <Col span={isSmallSize ? 6 : 0}>
             <StyledAnchor affix={false}>
               {
                 settingCategories.map(category => (
@@ -91,7 +92,7 @@ class MainSetting extends Component {
               }
             </StyledAnchor>
           </Col>
-          <Col span={18}>
+          <Col span={isSmallSize ? 18 : 24}>
             <Block id="mark-as-done">
               <Title>Mark as Done</Title>
               <Body>
@@ -390,6 +391,7 @@ class MainSetting extends Component {
 
 MainSetting.propTypes = {
   history: PropTypes.func.isRequired,
+  windowWidth: PropTypes.number.isRequired,
 };
 
 export default MainSetting;

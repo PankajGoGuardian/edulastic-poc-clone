@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-import { Paper } from '@edulastic/common';
 import { Row, Col, Button } from 'antd';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -8,6 +7,7 @@ import styled from 'styled-components';
 
 import { IconSource } from '@edulastic/icons';
 import { blue } from '@edulastic/colors';
+import { Paper, withWindowSizes } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
 
 import { Container, ButtonLink } from '../../common';
@@ -16,7 +16,7 @@ import { Calculator } from '../common';
 import Breadcrumb from '../../Breadcrumb';
 import { getSummarySelector } from '../../../selectors/tests';
 
-const Summary = ({ setData, test, summary, current, t, onShowSource }) => {
+const Summary = ({ setData, test, summary, current, t, onShowSource, windowWidth }) => {
   const handleChangeField = (field, value) => {
     setData({ ...test, [field]: value });
   };
@@ -59,9 +59,9 @@ const Summary = ({ setData, test, summary, current, t, onShowSource }) => {
       </SecondHeader>
       <Paper style={{ marginTop: 25 }}>
         <Row style={{ display: 'flex', justifyContent: 'center' }}>
-          <Col span={16}>
-            <Row gutter={32}>
-              <Col span={12}>
+          <Col span={windowWidth > 993 ? 16 : 24}>
+            <Row gutter={32} style={{ padding: windowWidth < 468 ? '20px 15px 20px 25px' : '0px' }}>
+              <Col span={windowWidth > 993 ? 12 : 24}>
                 <Sidebar
                   title={test.title}
                   description={test.description}
@@ -70,9 +70,10 @@ const Summary = ({ setData, test, summary, current, t, onShowSource }) => {
                   collection={test.collection}
                   createdBy={test.createdBy}
                   onChangeField={handleChangeField}
+                  windowWidth={windowWidth}
                 />
               </Col>
-              <Col span={12}>
+              <Col span={windowWidth > 993 ? 12 : 24}>
                 <Calculator
                   totalPoints={test.scoring.total}
                   questionsCount={test.scoring.testItems.length}
@@ -81,6 +82,7 @@ const Summary = ({ setData, test, summary, current, t, onShowSource }) => {
                   onChangeGrade={handleChangeGrade}
                   onChangeSubjects={handleChangeSubjects}
                   tableData={tableData}
+                  windowWidth={windowWidth}
                 />
               </Col>
             </Row>
@@ -97,11 +99,13 @@ Summary.propTypes = {
   summary: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
   current: PropTypes.string.isRequired,
-  onShowSource: PropTypes.func.isRequired
+  onShowSource: PropTypes.func.isRequired,
+  windowWidth: PropTypes.number.isRequired,
 };
 
 const enhance = compose(
   memo,
+  withWindowSizes,
   withNamespaces('author'),
   connect(state => ({
     summary: getSummarySelector(state)

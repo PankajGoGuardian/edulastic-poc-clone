@@ -16,7 +16,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: #f3f3f3;
   color: #444;
-  /* overflow-y: hidden; */
+  overflow-x: hidden;
 }
 
 /*! normalize.css v8.0.0 | MIT License | github.com/necolas/normalize.css */

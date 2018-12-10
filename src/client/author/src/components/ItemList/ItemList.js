@@ -161,6 +161,10 @@ const ListItems = styled.div`
   flex: 1;
   margin: 29px 40px 0px 29px;
 
+  @media (min-width: 993px) {
+    width: 200px;
+  }
+
   .ant-pagination {
     display: flex;
 

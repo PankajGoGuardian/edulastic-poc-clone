@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import Prompt from './Prompt';
 import { ButtonLink } from '../../common';
 
-const HeaderBar = ({ onSelectAll, onRemoveSelected, onCollapse, selectedItems, onMoveTo }) => {
+const HeaderBar = ({ onSelectAll, onRemoveSelected, onCollapse, selectedItems, onMoveTo, windowWidth }) => {
   const [showPrompt, setShowPrompt] = useState(false);
 
   const handleSuccess = (position) => {
@@ -33,7 +33,7 @@ const HeaderBar = ({ onSelectAll, onRemoveSelected, onCollapse, selectedItems, o
   };
 
   return (
-    <Container>
+    <Container windowWidth={windowWidth}>
       <Item>
         <Checkbox onChange={onSelectAll} style={{ color: blue, fontSize: 11, fontWeight: '600' }}>
           SELECT ALL
@@ -45,7 +45,10 @@ const HeaderBar = ({ onSelectAll, onRemoveSelected, onCollapse, selectedItems, o
           color="primary"
           icon={<IconClose color={blue} width={12} height={12} />}
         >
-          <span>Remove Selected</span>
+          {
+            windowWidth > 468 &&
+            <span>Remove Selected</span>
+          }
         </ButtonLink>
       </Button>
       <Button style={{ marginLeft: 0 }}>
@@ -54,7 +57,10 @@ const HeaderBar = ({ onSelectAll, onRemoveSelected, onCollapse, selectedItems, o
           color="primary"
           icon={<IconMoveTo color={blue} width={12} height={12} />}
         >
-          <span>Move to</span>
+          {
+            windowWidth > 468 &&
+            <span>Move to</span>
+          }
         </ButtonLink>
       </Button>
       <Button style={{ marginLeft: 0 }}>
@@ -63,7 +69,10 @@ const HeaderBar = ({ onSelectAll, onRemoveSelected, onCollapse, selectedItems, o
           color="primary"
           icon={<IconCollapse color={blue} width={12} height={12} />}
         >
-          <span>Collapse Rows</span>
+          {
+            windowWidth > 468 &&
+            <span>Collapse Rows</span>
+          }
         </ButtonLink>
         <Prompt
           show={showPrompt}
@@ -81,6 +90,7 @@ HeaderBar.propTypes = {
   onRemoveSelected: PropTypes.func.isRequired,
   onCollapse: PropTypes.func.isRequired,
   selectedItems: PropTypes.array.isRequired,
+  windowWidth: PropTypes.number.isRequired,
 };
 
 export default HeaderBar;
@@ -93,5 +103,7 @@ const Item = styled(FlexContainer)`
 `;
 
 const Container = styled(FlexContainer)`
+  justify-content: space-between;
   padding-bottom: 22px;
+  margin-top: ${props => (props.windowWidth > 468 ? '0px' : '15px')};
 `;

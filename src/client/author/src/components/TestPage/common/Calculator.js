@@ -17,8 +17,9 @@ const Calculator = ({
   onChangeSubjects,
   tableData,
   children,
+  windowWidth,
 }) => (
-  <Container>
+  <Container windowWidth={windowWidth}>
     {children}
 
     <div>
@@ -72,6 +73,7 @@ Calculator.propTypes = {
   onChangeSubjects: PropTypes.func.isRequired,
   tableData: PropTypes.array.isRequired,
   questionsCount: PropTypes.any.isRequired,
+  windowWidth: PropTypes.number.isRequired,
   children: PropTypes.any,
 };
 
@@ -82,7 +84,7 @@ Calculator.defaultProps = {
 export default Calculator;
 
 const Container = styled.div`
-  padding: 15px;
+  padding: ${props => (props.windowWidth < 468 ? '15px 5px 15px 0px' : '15px')};
   background: ${white};
 
   .ant-table-body {

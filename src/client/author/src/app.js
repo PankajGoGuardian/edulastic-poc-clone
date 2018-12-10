@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { Layout } from 'antd';
 import { Progress } from '@edulastic/common';
 import Sidebar from './Sidebar/SideMenu';
@@ -16,7 +17,7 @@ const TestPage = lazy(() => import('./components/TestPage'));
 const Author = ({ match }) => (
   <Layout>
     <Sidebar />
-    <div style={{ width: '100%', position: 'relative' }}>
+    <Wrapper>
       <Switch>
         <Route exact path={`${match.url}/items`} component={ItemList} />
         <Route exact path={`${match.url}/items/:id/item-detail`} component={ItemDetail} />
@@ -52,7 +53,7 @@ const Author = ({ match }) => (
         <Route exact path="/author/questions/create" component={QuestionEditor} />
         <Route exact path="/author/questions/:id" component={QuestionEditor} />
       </Switch>
-    </div>
+    </Wrapper>
   </Layout>
 );
 
@@ -61,3 +62,19 @@ export default Author;
 Author.propTypes = {
   match: PropTypes.object.isRequired
 };
+
+const Wrapper = styled.div`
+  position: relative;
+  
+  @media (min-width: 468px) and (max-width: 993px) {
+    width: calc(100% - 100px);
+  }
+
+  @media (min-width: 993px) {
+    width: 100%;
+  }
+
+  @media (max-width: 468px) {
+    width: 100%;
+  }
+`;

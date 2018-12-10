@@ -5,8 +5,9 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { cloneDeep } from 'lodash';
 import uuidv4 from 'uuid/v4';
-
 import styled from 'styled-components';
+import { withWindowSizes } from '@edulastic/common';
+
 import AddItems from './AddItems';
 import TestPageHeader from './TestPageHeader';
 import {
@@ -41,7 +42,8 @@ const TestPage = ({
   setDefaultData,
   rows,
   creating,
-  selectedRows
+  selectedRows,
+  windowWidth
 }) => {
   useEffect(
     () => {
@@ -207,6 +209,7 @@ const TestPage = ({
         onShare={handleShare}
         title={test.title}
         creating={creating}
+        windowWidth={windowWidth}
       />
       <Container>{renderContent()}</Container>
     </div>
@@ -222,6 +225,7 @@ TestPage.propTypes = {
   match: PropTypes.object.isRequired,
   rows: PropTypes.array.isRequired,
   creating: PropTypes.bool.isRequired,
+  windowWidth: PropTypes.number.isRequired,
   selectedRows: PropTypes.object,
   test: PropTypes.object,
   user: PropTypes.object,
@@ -236,6 +240,7 @@ TestPage.defaultProps = {
 const enhance = compose(
   memo,
   withRouter,
+  withWindowSizes,
   connect(
     state => ({
       test: getTestSelector(state),

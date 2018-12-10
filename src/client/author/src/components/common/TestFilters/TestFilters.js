@@ -201,6 +201,10 @@ const Container = styled.div`
       fill: #00b0ff;
     }
   }
+
+  @media (min-width: 993px) {
+    padding-right: 35px;
+  }
 `;
 
 const Title = styled.span`

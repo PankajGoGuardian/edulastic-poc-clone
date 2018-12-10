@@ -8,7 +8,7 @@ import { Input, Select } from 'antd';
 import { IconHeart, IconShare } from '@edulastic/icons';
 import { Photo, selectsData } from '../common';
 
-const Sidebar = ({ title, description, onChangeField, tags, analytics, createdBy }) => (
+const Sidebar = ({ title, description, onChangeField, tags, analytics, createdBy, windowWidth }) => (
   <FlexContainer flexDirection="column">
     <Block>
       <Photo />
@@ -56,15 +56,19 @@ const Sidebar = ({ title, description, onChangeField, tags, analytics, createdBy
       </Select>
     </Block>
     <Block>
-      <FlexContainer justifyContent="space-between">
-        <FlexContainer>
+      <FlexContainer
+        justifyContent="space-between"
+        alignItems={windowWidth < 468 && 'self-start'}
+        style={{ flexDirection: windowWidth < 468 ? 'column' : 'row' }}
+      >
+        <FlexContainer style={{ marginBottom: 15 }}>
           <IconHeart color={greenDark} />
           <FlexContainer>
             <Title>Liked:</Title>
             <TitleContent>{analytics.likes} times</TitleContent>
           </FlexContainer>
         </FlexContainer>
-        <FlexContainer>
+        <FlexContainer style={{ marginBottom: 15 }}>
           <IconShare color={greenDark} />
           <FlexContainer>
             <Title>Shared:</Title>
@@ -72,7 +76,7 @@ const Sidebar = ({ title, description, onChangeField, tags, analytics, createdBy
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
-      <FlexContainer style={{ marginTop: 15 }}>
+      <FlexContainer>
         <IconHeart color={greenDark} />
         <FlexContainer>
           <Title>Collection:</Title>
@@ -104,7 +108,8 @@ Sidebar.propTypes = {
   tags: PropTypes.array.isRequired,
   onChangeField: PropTypes.func.isRequired,
   analytics: PropTypes.array.isRequired,
-  createdBy: PropTypes.object.isRequired
+  createdBy: PropTypes.object.isRequired,
+  windowWidth: PropTypes.number.isRequired,
   // collections: PropTypes.string.isRequired
 };
 

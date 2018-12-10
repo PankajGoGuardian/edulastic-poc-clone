@@ -209,7 +209,7 @@ const DetailCategory = styled.div`
 
 const CategoryName = styled.span`
   display: flex;
-  align-items: center;
+  align-items: baseline;
   font-size: 13px;
   font-weight: 600;
   color: ${textColor};
@@ -223,6 +223,7 @@ const CategoryName = styled.span`
 const CategoryContent = styled.div`
   margin-left: 3px;
   display: flex;
+  flex-wrap: wrap;
 
   @media (max-width: ${tabletWidth}) {
     flex-wrap: wrap;
@@ -239,6 +240,7 @@ const Label = styled.div`
   height: 24px;
   padding: 6px 14px;
   margin-left: 10px;
+  margin-bottom: 5px;
 
   @media (max-width: ${tabletWidth}) {
     margin-left: -3px;

@@ -24,7 +24,7 @@ export const ALPHABET = [
   'W',
   'X',
   'Y',
-  'Z',
+  'Z'
 ];
 export const APP_NAME = 'Edulastic';
 export const QUESTION_OPTIONS = 'QUESTION_OPTIONS';
@@ -32,3 +32,4 @@ export const QUESTION_PROBLEM = 'QUESTION_PROBLEM';
 export const QUESTION_ANSWERS = 'QUESTION_ANSWERS';
 export const QUESTION_USERSELECTIONS = 'QUESTION_USERSELECTIONS';
 export const ASSESSMENTID = 'AssessmentId';
+export const MAX_MOBILE_WIDTH = 468;

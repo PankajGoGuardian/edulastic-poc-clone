@@ -47,7 +47,7 @@ ItemHeader.propTypes = {
   reference: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   editReference: PropTypes.func,
   onChange: PropTypes.func,
-  hideIcon: PropTypes.bool,
+  hideIcon: PropTypes.bool
 };
 
 ItemHeader.defaultProps = {
@@ -57,7 +57,7 @@ ItemHeader.defaultProps = {
   reference: null,
   editReference: () => {},
   onChange: () => {},
-  hideIcon: false,
+  hideIcon: false
 };
 
 export default ItemHeader;
@@ -68,7 +68,6 @@ const Container = styled.div`
   height: 62px;
   display: flex;
   align-items: center;
-  margin-bottom: 70px;
   background: ${darkBlueSecondary};
 
   @media (max-width: ${mobileWidth}) {

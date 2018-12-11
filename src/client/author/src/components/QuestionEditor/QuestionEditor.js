@@ -4,12 +4,13 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { withNamespaces } from '@edulastic/localization';
-import { ContentWrapper } from '@edulastic/common';
+import { ContentWrapper, withWindowSizes } from '@edulastic/common';
 
 import SourceModal from './SourceModal';
 import { changeViewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
-import { ButtonBar } from '../common';
+import { MAX_MOBILE_WIDTH } from '../../constants/others';
+import { ButtonBar, SecondHeadBar } from '../common';
 import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapper';
 import QuestionMetadata from '../../../../assessment/src/components/QuestionMetadata';
 import ItemHeader from './ItemHeader';
@@ -119,7 +120,7 @@ class QuestionEditor extends Component {
   };
 
   render() {
-    const { view, question } = this.props;
+    const { view, question, windowWidth } = this.props;
     const { previewTab, showModal } = this.state;
     const itemId = question === null ? '' : question._id;
     const questionType = this.getQuestionType();
@@ -142,6 +143,19 @@ class QuestionEditor extends Component {
             previewTab={previewTab}
           />
         </ItemHeader>
+        {
+          windowWidth > MAX_MOBILE_WIDTH && (
+          <SecondHeadBar
+            onShowSource={this.handleShowSource}
+            onShowSettings={this.handleShowSettings}
+            onChangeView={this.handleChangeView}
+            changePreviewTab={this.handleChangePreviewTab}
+            onSave={this.handleSave}
+            view={view}
+            previewTab={previewTab}
+            breadcrumb="create item"
+          />)
+        }
         <ContentWrapper
           style={{
             padding: '0px 45px',
@@ -163,7 +177,8 @@ QuestionEditor.propTypes = {
   match: PropTypes.object,
   receiveQuestionById: PropTypes.func.isRequired,
   saveQuestion: PropTypes.func.isRequired,
-  setQuestionData: PropTypes.func.isRequired
+  setQuestionData: PropTypes.func.isRequired,
+  windowWidth: PropTypes.number.isRequired
 };
 
 QuestionEditor.defaultProps = {
@@ -173,6 +188,7 @@ QuestionEditor.defaultProps = {
 
 const enhance = compose(
   withRouter,
+  withWindowSizes,
   withNamespaces('author'),
   connect(
     state => ({

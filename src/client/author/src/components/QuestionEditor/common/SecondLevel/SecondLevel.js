@@ -10,47 +10,22 @@ import {
 } from '@edulastic/icons';
 import { blue, darkBlue, white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
-import { withWindowSizes } from '@edulastic/common';
 import { compose } from 'redux';
 
 import { Container, PreviewBar } from './styled_components';
-import { ButtonLink } from '..';
-import Breadcrumb from '../../Breadcrumb';
+import { ButtonLink } from '../../../common';
 
-class SecondHeadBar extends Component {
+class SecondLevel extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      option: false,
-      breadcrumbData: [
-        {
-          title: 'ITEM LIST',
-          to: '/author/items'
-        },
-        {
-          title: props.breadcrumb,
-          to: ''
-        }
-      ]
+      option: false
     };
   }
 
-  componentDidMount() {
-    window.addEventListener('scroll', this.scrollHandler);
-  }
-
-  scrollHandler = () => {
-    const top = window.pageYOffset || window.document.documentElement.scrollTop;
-    if (top >= 65) {
-      this.setState({ option: true });
-    } else {
-      this.setState({ option: false });
-    }
-  };
-
   render() {
-    const { option, breadcrumbData } = this.state;
+    const { option } = this.state;
     const {
       t,
       view,
@@ -62,12 +37,6 @@ class SecondHeadBar extends Component {
 
     return (
       <Container type={option}>
-        {!option && (
-          <Breadcrumb
-            data={breadcrumbData}
-            style={{ position: 'unset', width: 200 }}
-          />
-        )}
         {view === 'edit' && (
           <PreviewBar
             style={{
@@ -142,23 +111,17 @@ class SecondHeadBar extends Component {
   }
 }
 
-SecondHeadBar.propTypes = {
+SecondLevel.propTypes = {
   changePreviewTab: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
   onShowSource: PropTypes.func.isRequired,
   onShowSettings: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
-  breadcrumb: PropTypes.string
-};
-
-SecondHeadBar.defaultProps = {
-  breadcrumb: 'ITEM DETAIL'
+  t: PropTypes.func.isRequired
 };
 
 const enhance = compose(
-  withWindowSizes,
   withNamespaces('author')
 );
 
-export default enhance(SecondHeadBar);
+export default enhance(SecondLevel);

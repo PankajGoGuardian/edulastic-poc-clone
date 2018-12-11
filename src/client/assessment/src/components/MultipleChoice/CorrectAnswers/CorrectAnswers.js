@@ -18,7 +18,7 @@ class CorrectAnswers extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: 0,
+      value: 0
     };
   }
 
@@ -31,7 +31,10 @@ class CorrectAnswers extends Component {
 
     if (validation.alt_responses && validation.alt_responses.length) {
       return validation.alt_responses.map((res, i) => (
-        <Tab key={i} label={`${t('component.correctanswers.alternate')} ${i + 1}`} />
+        <Tab
+          key={i}
+          label={`${t('component.correctanswers.alternate')} ${i + 1}`}
+        />
       ));
     }
     return null;
@@ -43,7 +46,7 @@ class CorrectAnswers extends Component {
     return (
       <Button
         style={{ minWidth: 70, minHeight: 25 }}
-        icon={<IconPlus color={white} width={10} height={10} />}
+        icon={<IconPlus id="alternate" color={white} width={10} height={10} />}
         onClick={() => {
           this.handleTabChange(validation.alt_responses.length + 1);
           onAddAltResponses();
@@ -69,8 +72,8 @@ class CorrectAnswers extends Component {
       ...question.data,
       valid_response: {
         score: question.validation.valid_response.score,
-        value: correctAnswer,
-      },
+        value: correctAnswer
+      }
     };
     newData.validation.valid_response = updatedValidation.valid_response;
     setQuestionData(newData);
@@ -89,7 +92,7 @@ class CorrectAnswers extends Component {
     const updatedAltResponses = newData.validation.alt_responses;
     updatedAltResponses[tabIndex] = {
       score: newData.validation.alt_responses[tabIndex].score,
-      value: correctAnswer,
+      value: correctAnswer
     };
 
     newData.validation.alt_responses = updatedAltResponses;
@@ -115,14 +118,25 @@ class CorrectAnswers extends Component {
   };
 
   render() {
-    const { validation, stimulus, options, t, multipleResponses, uiStyle } = this.props;
+    const {
+      validation,
+      stimulus,
+      options,
+      t,
+      multipleResponses,
+      uiStyle
+    } = this.props;
     const { value } = this.state;
 
     return (
       <div>
         <Subtitle>{t('component.correctanswers.setcorrectanswers')}</Subtitle>
         <div>
-          <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
+          <Tabs
+            value={value}
+            onChange={this.handleTabChange}
+            extra={this.renderPlusButton()}
+          >
             <Tab label={t('component.correctanswers.correct')} />
             {this.renderAltResponses()}
           </Tabs>
@@ -176,23 +190,23 @@ CorrectAnswers.propTypes = {
   options: PropTypes.array,
   question: PropTypes.object.isRequired,
   multipleResponses: PropTypes.bool.isRequired,
-  uiStyle: PropTypes.object.isRequired,
+  uiStyle: PropTypes.object.isRequired
 };
 
 CorrectAnswers.defaultProps = {
   stimulus: '',
   options: [],
-  validation: {},
+  validation: {}
 };
 
 const enhance = compose(
   withNamespaces('assessment'),
   connect(
     state => ({
-      question: getQuestionDataSelector(state),
+      question: getQuestionDataSelector(state)
     }),
-    { setQuestionData: setQuestionDataAction },
-  ),
+    { setQuestionData: setQuestionDataAction }
+  )
 );
 
 export default enhance(CorrectAnswers);

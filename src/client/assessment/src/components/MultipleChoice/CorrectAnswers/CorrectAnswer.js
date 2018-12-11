@@ -14,7 +14,7 @@ class CorrectAnswer extends Component {
     stimulus: PropTypes.string.isRequired,
     options: PropTypes.array.isRequired,
     multipleResponses: PropTypes.bool.isRequired,
-    uiStyle: PropTypes.object.isRequired,
+    uiStyle: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -27,7 +27,7 @@ class CorrectAnswer extends Component {
 
       this.state = {
         responseScore: props.response && props.response.score,
-        userSelections,
+        userSelections
       };
     }
   }

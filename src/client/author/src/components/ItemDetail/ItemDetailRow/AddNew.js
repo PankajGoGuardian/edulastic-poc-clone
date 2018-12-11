@@ -15,7 +15,7 @@ const AddNew = ({ onClick, t }) => (
 
 AddNew.propTypes = {
   onClick: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 export default withNamespaces('author')(AddNew);

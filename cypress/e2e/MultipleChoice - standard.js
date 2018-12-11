@@ -1,5 +1,5 @@
 describe('Test Multiple Choice Flow', () => {
-  beforeEach(() => {
+  before(() => {
     cy.setToken();
   });
 
@@ -8,10 +8,11 @@ describe('Test Multiple Choice Flow', () => {
   });
 
   it('Check Flow', () => {
-    cy.get('button')
+    cy.get('span')
       .contains('Create')
       .should('be.visible');
     cy.contains('Create').click();
+    cy.contains('Add New').should('be.visible');
     cy.contains('Add New').click();
 
     cy.get('li').should('contain', 'Multiple Choice');
@@ -44,19 +45,19 @@ describe('Test Multiple Choice Flow', () => {
       .find('[contenteditable]')
       .eq(2)
       .clear()
-      .type('White');
+      .type('Red');
 
     cy.get('div')
       .find('[contenteditable]')
       .eq(4)
       .clear()
-      .type('Black');
+      .type('Green');
 
     cy.get('div')
       .find('[contenteditable]')
       .eq(6)
       .clear()
-      .type('Blue');
+      .type('Violet');
 
     cy.get('div')
       .find('[contenteditable]')
@@ -64,31 +65,47 @@ describe('Test Multiple Choice Flow', () => {
       .trigger('mouseup');
 
     // Add new choice
-
     cy.contains('Add New Choice').should('be.visible');
     cy.contains('Add New Choice').click();
 
-    // Go to the Preview Tab
-
-    cy.contains('PREVIEW').should('be.visible');
-    cy.contains('PREVIEW').click();
+    // multiple responses
+    cy.contains('Multiple Responses').click();
+    cy.contains('Multiple Responses').click();
 
     // Save Multiple Choice - standard
-
     cy.contains('SAVE').should('be.visible');
     cy.contains('SAVE').click();
   });
 
   it('Visit Item Detail Page', () => {
-    cy.visit('/author/items/5c094fe34be5af0d7fe9ba83/item-detail');
-    /* eslint-disable */
     cy.wait(2000);
     cy.contains('PREVIEW').should('be.visible');
     cy.contains('PREVIEW').click();
-  });
 
-  it('Check Answers', () => {
+    //check answer
+    cy.contains('Violet').click();
+    cy.contains('Check Answer').should('be.visible');
+    cy.contains('Check Answer').click();
+    cy.contains('Clear').should('be.visible');
+    cy.contains('Clear').click();
+
+    cy.contains('Green').click();
+    cy.contains('Check Answer').should('be.visible');
+    cy.contains('Check Answer').click();
+    cy.contains('Clear').should('be.visible');
+    cy.contains('Clear').click();
+
+    //show answer
     cy.contains('Show Answers').should('be.visible');
     cy.contains('Show Answers').click();
+  });
+
+  it('Edit Answer', () => {
+    cy.contains('EDIT').should('be.visible');
+    cy.contains('EDIT').click();
+
+    // Source Button Test
+    cy.contains('Source').should('be.visible');
+    cy.contains('Source').click();
   });
 });

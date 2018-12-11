@@ -11,7 +11,7 @@ import { Heading } from '../common';
 
 class CorrectAnswers extends Component {
   state = {
-    value: 0,
+    value: 0
   };
 
   handleTabChange = (value) => {
@@ -21,9 +21,16 @@ class CorrectAnswers extends Component {
   renderAltResponses = () => {
     const { validation, t } = this.props;
 
-    if (validation && validation.alt_responses && validation.alt_responses.length) {
+    if (
+      validation &&
+      validation.alt_responses &&
+      validation.alt_responses.length
+    ) {
       return validation.alt_responses.map((res, i) => (
-        <Tab key={i} label={`${t('component.correctanswers.alternate')} ${i + 1}`} />
+        <Tab
+          key={i}
+          label={`${t('component.correctanswers.alternate')} ${i + 1}`}
+        />
       ));
     }
     return null;
@@ -53,7 +60,7 @@ class CorrectAnswers extends Component {
       validation,
       onUpdatePoints,
       onDelete,
-      t,
+      t
     } = this.props;
     const { value } = this.state;
 
@@ -64,7 +71,11 @@ class CorrectAnswers extends Component {
         <Heading>{t('component.correctanswers.setcorrectanswers')}</Heading>
 
         <div>
-          <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
+          <Tabs
+            value={value}
+            onChange={this.handleTabChange}
+            extra={this.renderPlusButton()}
+          >
             <Tab label={t('component.correctanswers.correct')} />
             {this.renderAltResponses()}
           </Tabs>
@@ -90,7 +101,7 @@ class CorrectAnswers extends Component {
                       onDelete={() => {
                         onDelete(i);
                         this.setState(({ value: val }) => ({
-                          value: --val,
+                          value: --val
                         }));
                       }}
                       response={alter}
@@ -120,11 +131,11 @@ CorrectAnswers.propTypes = {
   onUpdatePoints: PropTypes.func.isRequired,
   validation: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
-  onDelete: PropTypes.func,
+  onDelete: PropTypes.func
 };
 
 CorrectAnswers.defaultProps = {
-  onDelete: () => {},
+  onDelete: () => {}
 };
 
 const enhance = compose(withNamespaces('assessment'));

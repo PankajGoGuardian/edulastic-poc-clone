@@ -1,5 +1,5 @@
 describe('Test Multiple Choice Flow', () => {
-  beforeEach(() => {
+  before(() => {
     cy.setToken();
   });
 
@@ -54,7 +54,7 @@ describe('Test Multiple Choice Flow', () => {
   });
 
   it('Check Answer', () => {
-    cy.visit('/author/items/5c0a89fb69d6bd65cf937950/item-detail');
+    // cy.visit('/author/items/5c0a89fb69d6bd65cf937950/item-detail');
     /* eslint-disable */
     cy.wait(2000);
     cy.contains('PREVIEW').should('be.visible');

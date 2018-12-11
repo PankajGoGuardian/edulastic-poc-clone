@@ -8,31 +8,34 @@ import { CustomQuillComponent } from '@edulastic/common';
 
 const DragHandle = SortableHandle(() => <i className="fa fa-align-justify" />);
 
-const SortableItem = SortableElement(({ value, onRemove, rOnly, onChange, columns, indx }) => (
-  <SortableItemContainer columns={columns}>
-    <div className="main">
-      <DragHandle />
-      <CustomQuillComponent
-        readOnly={rOnly}
-        toolbarId={`id${indx}`}
-        onChange={onChange}
-        showResponseBtn={false}
-        value={value}
-        style={{ minHeight: 'auto', padding: 10 }}
-      />
-    </div>
-    {onRemove && (
-      <IconTrash
-        onClick={onRemove}
-        color={greenDark}
-        hoverColor={red}
-        width={20}
-        height={20}
-        style={{ cursor: 'pointer' }}
-      />
-    )}
-  </SortableItemContainer>
-));
+const SortableItem = SortableElement(
+  ({ value, onRemove, rOnly, onChange, columns, indx }) => (
+    <SortableItemContainer columns={columns}>
+      <div className="main">
+        <DragHandle />
+        <CustomQuillComponent
+          readOnly={rOnly}
+          toolbarId={`id${indx}`}
+          onChange={onChange}
+          showResponseBtn={false}
+          value={value}
+          style={{ minHeight: 'auto', padding: 10 }}
+        />
+      </div>
+      {onRemove && (
+        <IconTrash
+          id="delete"
+          onClick={onRemove}
+          color={greenDark}
+          hoverColor={red}
+          width={20}
+          height={20}
+          style={{ cursor: 'pointer' }}
+        />
+      )}
+    </SortableItemContainer>
+  )
+);
 
 SortableItem.propTypes = {
   columns: PropTypes.number.isRequired,
@@ -46,7 +49,8 @@ SortableItem.defaultProps = {
 export default SortableItem;
 
 const SortableItemContainer = styled.div`
-  width: ${props => (props.columns === 1 ? 100 / props.columns : 100 / props.columns - 2)}%;
+  width: ${props =>
+    props.columns === 1 ? 100 / props.columns : 100 / props.columns - 2}%;
   min-height: 50px;
   margin: 10px 0;
   display: inline-flex;

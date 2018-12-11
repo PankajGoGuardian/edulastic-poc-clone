@@ -1,5 +1,5 @@
 describe('Test Multiple Choice Flow', () => {
-  beforeEach(() => {
+  before(() => {
     cy.setToken();
   });
 
@@ -12,6 +12,7 @@ describe('Test Multiple Choice Flow', () => {
       .contains('Create')
       .should('be.visible');
     cy.contains('Create').click();
+    cy.contains('Add New').should('be.visible');
     cy.contains('Add New').click();
 
     cy.get('li').should('contain', 'Multiple Choice');
@@ -63,10 +64,18 @@ describe('Test Multiple Choice Flow', () => {
       .eq(6)
       .trigger('mouseup');
 
-    // Add new choice
+    //delete choice
+    // cy.get('#delete').click();
 
+    // Add new choice
     cy.contains('Add New Choice').should('be.visible');
     cy.contains('Add New Choice').click();
+
+    // alternate correct
+    cy.get('#alternate').click();
+
+    // advanced option click
+    cy.get('#iconPlus').click();
 
     // Save Multiple Choice - standard
 
@@ -75,20 +84,36 @@ describe('Test Multiple Choice Flow', () => {
   });
 
   it('Visit Item Detail Page', () => {
-    cy.visit('/author/items/5c094fe34be5af0d7fe9ba83/item-detail');
+    // cy.visit('/author/items/5c094fe34be5af0d7fe9ba83/item-detail');
     /* eslint-disable */
     cy.wait(2000);
     cy.contains('PREVIEW').should('be.visible');
     cy.contains('PREVIEW').click();
-  });
 
-  it('Check Answers', () => {
+    //check answer
+    cy.contains('White').click();
+    cy.contains('Check Answer').should('be.visible');
+    cy.contains('Check Answer').click();
+    cy.contains('Clear').should('be.visible');
+    cy.contains('Clear').click();
+
+    cy.contains('Black').click();
+    cy.contains('Check Answer').should('be.visible');
+    cy.contains('Check Answer').click();
+    cy.contains('Clear').should('be.visible');
+    cy.contains('Clear').click();
+
+    //show answer
     cy.contains('Show Answers').should('be.visible');
     cy.contains('Show Answers').click();
   });
 
-  it('Edit Answers', () => {
+  it('Edit Answer', () => {
     cy.contains('EDIT').should('be.visible');
     cy.contains('EDIT').click();
+
+    // Source Button Test
+    cy.contains('Source').should('be.visible');
+    cy.contains('Source').click();
   });
 });

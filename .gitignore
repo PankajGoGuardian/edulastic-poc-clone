@@ -12,3 +12,8 @@ package-lock.json
 .sass-cache
 .env
 cypress/screenshots/
+
+
+# vi swap files
+*.sw*
+

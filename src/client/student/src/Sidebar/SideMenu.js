@@ -197,6 +197,7 @@ class SideMenu extends Component {
                 className="userinfoBtn"
               >
                 <Dropdown
+                  overlayStyle={{ position: 'fixed' }}
                   className="footerDropdown"
                   overlay={footerDropdownMenu}
                   trigger={['click']}
@@ -260,8 +261,14 @@ const SideBar = styled(Layout.Sider)`
   &.ant-layout-sider-collapsed .logoWrapper {
     padding: 21px;
   }
+  .footerBottom {
+    position: fixed;
+    bottom: 10px;
+    width: 239px;
+  }
   &.ant-layout-sider-collapsed .footerBottom {
-    padding: 8px;
+    padding: 8px 8px 0px;
+    width: 100px;
   }
   &.ant-layout-sider-collapsed .questionBtn {
     width: 60px;
@@ -305,13 +312,10 @@ const SideBar = styled(Layout.Sider)`
   .ant-select {
     width: 125px;
   }
-  @media screen and (max-width: 1300px) {
-    height: 700px;
-  }
 `;
 
 const LogoWrapper = styled(Row)`
-  padding: 32px 21px;
+  padding: 30px 20px;
   text-align: center;
   display: flex;
   align-items: center;
@@ -330,10 +334,7 @@ const MenuWrapper = styled.div`
   justify-content: space-between;
   flex-direction: column;
   height: calc(100vh - 89px);
-  padding: 21px 0px;
-  @media screen and (max-width: 1300px) {
-    height: 600px;
-  }
+  padding: 20px 0px 10px;
 `;
 
 const Menu = styled(AntMenu)`
@@ -356,6 +357,10 @@ const Menu = styled(AntMenu)`
   &.ant-menu-vertical-left {
     border-right: 0px;
   }
+  &.ant-menu-inline {
+    height: calc(100vh - 300px);
+    overflow: auto;
+  }
   &.ant-menu-inline .ant-menu-item {
     font-family: Open Sans;
     font-size: 14px;
@@ -368,21 +373,19 @@ const Menu = styled(AntMenu)`
     display: flex;
     align-items: center;
     margin-top: 16px;
-    padding: 0px 32px !important;
+    padding: 0px 10px 0px 25px;
+    max-width: 100%;
   }
   &.ant-menu-inline-collapsed {
     width: 100px;
-    padding-top: 20px;
   }
   &.ant-menu-inline-collapsed > .ant-menu-item {
     text-align: center;
-    margin-top: 20px;
-  }
-  &.ant-menu-inline {
-    padding-top: 23px;
+    justify-content: center;
+    margin-top: 10px;
   }
   &.ant-menu-inline > .ant-menu-item {
-    margin-top: 20px;
+    margin-top: 10px;
   }
 `;
 
@@ -428,7 +431,10 @@ const QuestionButton = styled.div`
 
 const FooterDropDown = styled.div`
   position: relative;
-  bottom: -3px;
+  bottom: ${props => (props.isVisible ? '-4px' : '-30px')};
+  opacity: ${props => (props.isVisible ? '1' : '0')};
+  transition: .2s;
+  -webkit-transition: .2s;
   ul {
     background: #1fe3a1;
     border-bottom: 1px solid #4fd08c;
@@ -437,7 +443,7 @@ const FooterDropDown = styled.div`
     &.ant-menu-inline-collapsed {
       width: 84px;
       padding-top: 10px;
-      margin: -3px 0px 0px 8px;
+      margin: -4px 0px 0px 8px;
     }
     li {
       margin: 0px !important;

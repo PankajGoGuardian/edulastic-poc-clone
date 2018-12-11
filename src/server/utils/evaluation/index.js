@@ -1,8 +1,10 @@
-import { orderList, multipleChoice } from '@edulastic/evaluators';
+import { orderList, multipleChoice, clozeText } from '@edulastic/evaluators';
 
 const evaluators = {
   orderList,
-  multipleChoice
+  multipleChoice,
+  clozeText,
+  clozeDropDown: clozeText
 };
 
 export const evaluateAnswer = (question) => {

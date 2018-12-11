@@ -4,7 +4,7 @@ import ReactQuill from 'react-quill';
 
 import { Paper, Stimulus, FlexContainer } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
-import { red } from '@edulastic/colors';
+import { red, lightRed } from '@edulastic/colors';
 
 import { Toolbar, Item } from '../../common';
 import { validList } from '../constants';
@@ -43,6 +43,7 @@ const EssayRichTextPreview = ({ view, saveAnswer, t, item, smallSize }) => {
 
       <ReactQuill
         id="mainQuill"
+        style={item.max_word < wordCount ? { background: lightRed } : { background: 'transparent' }}
         defaultValue={smallSize ? t('component.essayRichText.templateText') : ''}
         onChange={handleTextChange}
         modules={EssayRichTextPreview.modules(item.formatting_options)}

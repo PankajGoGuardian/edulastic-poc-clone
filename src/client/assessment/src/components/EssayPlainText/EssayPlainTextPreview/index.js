@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { Paper, Stimulus, FlexContainer } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
-import { dashBorderColor, lightGrey, red } from '@edulastic/colors';
+import { dashBorderColor, lightGrey, red, lightRed } from '@edulastic/colors';
 
 import { Toolbar, Item } from '../../common';
 import {
@@ -117,7 +117,10 @@ const EssayPlainTextPreview = ({ view, saveAnswer, t, item, smallSize }) => {
         ref={(ref) => {
           node = ref;
         }}
-        style={{ borderRadius: 0 }}
+        style={{
+          borderRadius: 0,
+          background: item.max_word < wordCount ? lightRed : 'transparent'
+        }}
         rows={4}
         onSelect={handleSelect}
         value={smallSize ? t('component.essayPlainText.templateText') : text}

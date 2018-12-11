@@ -866,6 +866,7 @@ p {
 
 #mainQuill .ql-editor {
   min-height: 157px !important;
+  background: transparent;
 }
 
 #mainQuill .ql-editor p {

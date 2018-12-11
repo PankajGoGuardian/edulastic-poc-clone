@@ -45,7 +45,7 @@ describe('Test Multiple Choice Flow', () => {
     // Set Answers
     cy.get('div')
       .find('label')
-      .eq(2)
+      .eq(1)
       .click();
 
     // Save Multiple Choice - True or False
@@ -54,8 +54,6 @@ describe('Test Multiple Choice Flow', () => {
   });
 
   it('Check Answer', () => {
-    // cy.visit('/author/items/5c0a89fb69d6bd65cf937950/item-detail');
-    /* eslint-disable */
     cy.wait(2000);
     cy.contains('PREVIEW').should('be.visible');
     cy.contains('PREVIEW').click();
@@ -63,7 +61,7 @@ describe('Test Multiple Choice Flow', () => {
     // Check Answers
     cy.get('div')
       .find('label')
-      .eq(1)
+      .eq(0)
       .click();
 
     cy.contains('Check Answer').should('be.visible');
@@ -71,7 +69,7 @@ describe('Test Multiple Choice Flow', () => {
 
     cy.get('div')
       .find('label')
-      .eq(2)
+      .eq(1)
       .click();
 
     cy.contains('Check Answer').should('be.visible');

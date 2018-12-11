@@ -84,8 +84,6 @@ describe('Test Multiple Choice Flow', () => {
   });
 
   it('Visit Item Detail Page', () => {
-    // cy.visit('/author/items/5c094fe34be5af0d7fe9ba83/item-detail');
-    /* eslint-disable */
     cy.wait(2000);
     cy.contains('PREVIEW').should('be.visible');
     cy.contains('PREVIEW').click();

@@ -31,6 +31,11 @@ const formatOutput = {
   __v: 0
 };
 
+const getByIdsFormatter = {
+  title: 1,
+  thumbnail: 1
+};
+
 class Test {
   constructor() {
     this.Test = mongoose.model('Tests', testSchema, 'Test');
@@ -81,7 +86,7 @@ class Test {
   }
 
   getByIds(ids) {
-    return this.Test.find({ _id: { $in: ids } });
+    return this.Test.find({ _id: { $in: ids } }, getByIdsFormatter);
   }
 }
 

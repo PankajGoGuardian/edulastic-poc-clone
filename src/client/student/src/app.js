@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Layout } from 'antd';
 
 import Sidebar from './Sidebar/SideMenu';
-import AppContainer from './components/dashboard';
+import DashboardContainer from './components/dashboard';
 import ReportContainer from './components/Report';
 import ManageClassContainer from './components/manageClass';
 import ReportListContainer from './components/ReportList';
@@ -14,7 +14,7 @@ const Dashboard = ({ match }) => (
   <Layout>
     <Sidebar />
     <Switch>
-      <Route path={`${match.url}/dashboard`} component={AppContainer} />
+      <Route path={`${match.url}/dashboard`} component={DashboardContainer} />
       <Route path={`${match.url}/reports`} component={ReportContainer} />
       <Route path={`${match.url}/manage`} component={ManageClassContainer} />
       <Route path={`${match.url}/profile`} component={ProfileContainer} />

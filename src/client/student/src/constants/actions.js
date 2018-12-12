@@ -12,8 +12,6 @@ export const AUTHOR_QUESTION = 'author question';
 // assessment
 export const LOAD_ASSESSMENT = 'load assessment';
 
-export const LOAD_DASHBOARD_TEST = 'load dashboardtest';
-export const SET_STUDENT_TEST = 'load studenttest';
 
 // auth
 export const LOGIN = 'login user';
@@ -30,3 +28,7 @@ export const LOAD_REPORTS = '[reports] load reports';
 
 // user
 export const SET_USER = '[user] set user';
+
+// assignments
+export const LOAD_STUDENT_ASSIGNMENTS = '[assignments] load student assignments';
+export const SET_STUDENT_ASSIGNMENTS = '[assignments] set student assignments';

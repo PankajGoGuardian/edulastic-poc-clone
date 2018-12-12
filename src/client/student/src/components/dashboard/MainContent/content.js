@@ -3,13 +3,15 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Layout } from 'antd';
-import { loadDashboardtestAction } from '../../../actions/dashboard';
+import { loadAssignmentsAction } from '../../../actions/dashboard';
 import AssignmentCard from '../common/assignmentCard';
 
-const Content = ({ flag, loadDashboardtest, tests }) => {
+const Content = ({ flag, loadAssignments, assignments }) => {
   useEffect(() => {
-    loadDashboardtest();
+    loadAssignments();
   }, []);
+
+
   return (
     <LayoutContent flag={flag}>
       <Wrapper>
@@ -17,7 +19,7 @@ const Content = ({ flag, loadDashboardtest, tests }) => {
           <ContainerCell>
             <Container>
               <InnerContent>
-                {tests.map((item, index) => (
+                {assignments.map((item, index) => (
                   <AssignmentCard key={index} data={item} />
                 ))}
               </InnerContent>
@@ -31,15 +33,15 @@ const Content = ({ flag, loadDashboardtest, tests }) => {
 
 export default React.memo(
   connect(
-    ({ ui, studentTest }) => ({ flag: ui.flag, tests: studentTest.tests }),
-    { loadDashboardtest: loadDashboardtestAction }
+    ({ ui, assignments }) => ({ flag: ui.flag, assignments }),
+    { loadAssignments: loadAssignmentsAction }
   )(Content)
 );
 
 Content.propTypes = {
   flag: PropTypes.bool.isRequired,
-  tests: PropTypes.array.isRequired,
-  loadDashboardtest: PropTypes.func.isRequired
+  assignments: PropTypes.array.isRequired,
+  loadAssignments: PropTypes.func.isRequired
 };
 
 const LayoutContent = styled(Layout.Content)`

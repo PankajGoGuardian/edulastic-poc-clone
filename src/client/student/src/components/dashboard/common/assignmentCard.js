@@ -4,37 +4,47 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Row, Col, Icon } from 'antd';
 
-const AssignmentCard = ({ data }) => (
-  <CardWrapper>
-    <Col span={4}>
-      <ImageWrapper>
-        <img src={data.thumbnail} alt="" />
-      </ImageWrapper>
-    </Col>
-    <Col span={15}>
-      <CardTitle>{data.title}</CardTitle>
-      <CardDate>
-        <Icon
-          type="clock-circle"
-          theme="outlined"
-          style={{ color: '#ea326b' }}
-        />
-        <span>
-          <span className="bold"> Due on</span>
-          {data.updatedDate}
-        </span>
-      </CardDate>
-      <div>
-        <StatusButton>NOT STARTED</StatusButton>
-      </div>
-    </Col>
-    <Col span={5}>
-      <Link to={`/student/test/${data._id}`}>
-        <StartAssignButton>Start Assignment</StartAssignButton>
-      </Link>
-    </Col>
-  </CardWrapper>
-);
+const AssignmentCard = ({
+  data: {
+    endDate,
+    testId,
+    test: {
+      thumbnail,
+      title
+    }
+  }
+}) =>
+  (
+    <CardWrapper>
+      <Col span={4}>
+        <ImageWrapper>
+          <img src={thumbnail} alt="" />
+        </ImageWrapper>
+      </Col>
+      <Col span={15}>
+        <CardTitle>{title}</CardTitle>
+        <CardDate>
+          <Icon
+            type="clock-circle"
+            theme="outlined"
+            style={{ color: '#ea326b' }}
+          />
+          <span>
+            <span className="bold"> Due on</span>
+            {endDate}
+          </span>
+        </CardDate>
+        <div>
+          <StatusButton>NOT STARTED</StatusButton>
+        </div>
+      </Col>
+      <Col span={5}>
+        <Link to={`/student/test/${testId}`}>
+          <StartAssignButton>Start Assignment</StartAssignButton>
+        </Link>
+      </Col>
+    </CardWrapper>
+  );
 
 export default AssignmentCard;
 

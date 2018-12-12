@@ -1,5 +1,5 @@
 import ui from './ui';
-import tests from './test';
+import assignments from './assignment';
 import reports from './reports';
 import user from './user';
 
@@ -7,7 +7,7 @@ const studentReducer = {
   ui,
   reports,
   user,
-  studentTest: tests
+  assignments
 };
 
 export default studentReducer;

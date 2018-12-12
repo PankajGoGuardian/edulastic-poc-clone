@@ -21,7 +21,7 @@ const update = (id, data) =>
     })
     .then(result => result.data.result);
 
-const remove = (id) =>
+const remove = id =>
   api
     .callApi({
       url: `${prefix}/${id}`,
@@ -38,9 +38,19 @@ const fetchAssignments = testId =>
     .then(result => result.data.result);
 
 
+const fetchAssigned = () =>
+  api
+    .callApi({
+      url: `${prefix}/assigned`,
+      method: 'get'
+    })
+    .then(result => result.data.result);
+
+
 export default {
   create,
   update,
   remove,
-  fetchAssignments
+  fetchAssignments,
+  fetchAssigned
 };

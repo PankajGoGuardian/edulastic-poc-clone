@@ -3,7 +3,7 @@ import { all } from 'redux-saga/effects';
 import {
   questionSaga,
   answerSaga,
-  testdashboardSaga,
+  assignmentSaga,
   reportSaga,
   authSaga
 } from './student/src/sagas';
@@ -16,7 +16,7 @@ export default function* () {
     answerSaga(),
     authSaga(),
     reportSaga(),
-    testdashboardSaga(),
+    assignmentSaga(),
     ...authorSagas,
     ...assessmentSagas
   ]);

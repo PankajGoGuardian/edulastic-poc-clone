@@ -2,6 +2,7 @@ import joi from 'joi';
 import { Router } from 'express';
 import EnrollmentModel from '../models/enrollment';
 import AssignmentModel from '../models/assignments';
+import TestModel from '../models/test';
 import { assignmentSchema } from '../validators/assignment';
 import { successHandler } from '../utils/responseHandler';
 
@@ -52,9 +53,26 @@ router.get('/assigned', async (req, res) => {
   try {
     const Enrollment = new EnrollmentModel();
     const Assignments = new AssignmentModel();
+    const Test = new TestModel();
     const userId = req.user._id;
-    const { groupId } = await Enrollment.getClassOfStudent(userId);
+    const enrollment = await Enrollment.getClassOfStudent(userId);
+    if (!enrollment) {
+      return successHandler(res, []);
+    }
+    const { groupId } = enrollment;
     const assignments = await Assignments.getByClassId(groupId, userId);
+    const testIds = assignments.map(item => item.testId);
+    const result = await Test.getByIds(testIds);
+    const tests = {};
+    result.forEach(({ _doc: { _id, ...test } }) => {
+      tests[_id] = test;
+    });
+
+
+    assignments.forEach((assignment) => {
+      const { testId } = assignment;
+      assignment._doc.test = tests[testId];
+    });
     return successHandler(res, assignments);
   } catch (e) {
     res.log.error(e);

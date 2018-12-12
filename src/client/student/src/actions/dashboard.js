@@ -1,6 +1,7 @@
 /* eslint-disable */
-import { LOAD_DASHBOARD_TEST } from '../constants/actions';
+import { LOAD_STUDENT_ASSIGNMENTS } from '../constants/actions';
 
-export const loadDashboardtestAction = () => ({
-  type: LOAD_DASHBOARD_TEST
+export const loadAssignmentsAction = () => ({
+
+  type: LOAD_STUDENT_ASSIGNMENTS
 });

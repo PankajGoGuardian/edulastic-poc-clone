@@ -127,10 +127,11 @@ router.post('/submit', async (req, res) => {
       return res.boom.badRequest('invalid request');
     }
     const totalQuestion = await getTotalQuestions(activityDetails.testId);
-    const score = await scoreTestActivity(testActivityId, userId);
+    const { score, correctAnswers } = await scoreTestActivity(testActivityId, userId);
     await TestActivity.update(testActivityId, {
       score,
       totalQuestion,
+      correctAnswers,
       status: 'graded'
     });
     return successHandler(res, 'sucesfully submitted');

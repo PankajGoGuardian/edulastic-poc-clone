@@ -24,22 +24,24 @@ const scoreTestActivty = async (testActivityId, userId) => {
     validation: data.validation,
     userResponse: answers[_id]
   }));
-  const evaluation = {};
+  const evaluations = {};
 
   questionsData.forEach((item) => {
-    evaluation[item._id] = evaluateAnswer(item);
+    evaluations[item._id] = evaluateAnswer(item);
   });
 
-  const eIds = Object.keys(evaluation);
-  let score = 0;
+  const eIds = Object.keys(evaluations);
+  let totalScore = 0;
+  let correctAnswers = 0;
   eIds.forEach((eid) => {
-    const ev = evaluation[eid];
-    const values = Object.values(ev);
+    const { evaluation, score } = evaluations[eid];
+    const values = Object.values(evaluation);
     if (!values.includes(false)) {
-      score++;
+      correctAnswers++;
+      totalScore += score;
     }
   });
-  return score;
+  return { correctAnswers, score: totalScore };
 };
 
 export default scoreTestActivty;

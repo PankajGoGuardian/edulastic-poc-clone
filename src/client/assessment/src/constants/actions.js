@@ -53,10 +53,9 @@ export const ADD_ITEM_EVALUATION = '[evaluation] add evaluation';
 // testItem view
 export const CHANGE_PREVIEW = '[view] change view';
 
-// testActivity
-export const INIT_TEST_ACTIVITY = '[test] initiate test activity';
-export const SET_TEST_ACTIVITY_ID = '[test] add test activity id';
+// test acitivty
 export const FINISH_TEST = '[test] finish test';
+export const SET_TEST_ACTIVITY_ID = '[test] add test activity id';
 
 // file
 export const FILE_UPLOAD_REQUEST = '[test] upload file request';

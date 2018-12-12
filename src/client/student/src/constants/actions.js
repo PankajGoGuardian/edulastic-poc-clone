@@ -32,3 +32,11 @@ export const SET_USER = '[user] set user';
 // assignments
 export const LOAD_STUDENT_ASSIGNMENTS = '[assignments] load student assignments';
 export const SET_STUDENT_ASSIGNMENTS = '[assignments] set student assignments';
+
+
+// test activity
+export const INIT_TEST_ACTIVITY = '[testActivity] initate test activity';
+export const SET_TEST_ACTIVITY_ID = '[test] add test activity id';
+
+// test
+export const LOAD_PREVIOUS_RESPONSES = '[test] load previous responses';

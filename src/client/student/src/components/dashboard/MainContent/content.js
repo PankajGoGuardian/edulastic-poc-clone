@@ -10,8 +10,6 @@ const Content = ({ flag, loadAssignments, assignments }) => {
   useEffect(() => {
     loadAssignments();
   }, []);
-
-
   return (
     <LayoutContent flag={flag}>
       <Wrapper>

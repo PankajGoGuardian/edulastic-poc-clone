@@ -1,28 +1,37 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Row, Col, Icon } from 'antd';
 
+import { initiateTestActivityAction } from '../../../actions/test';
+
+
 const AssignmentCard = ({
+  initiateTestActivity,
   data: {
+    _id,
     endDate,
     testId,
-    test: {
-      thumbnail,
-      title
-    }
-  }
-}) =>
-  (
+    test
+  },
+  history
+}) => {
+  const startTest = () => {
+    initiateTestActivity(testId, _id);
+    history.push(`/student/test/${testId}`);
+  };
+
+  return (
     <CardWrapper>
       <Col span={4}>
         <ImageWrapper>
-          <img src={thumbnail} alt="" />
+          <img src={test && test.thumbnail} alt="" />
         </ImageWrapper>
       </Col>
       <Col span={15}>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle>{test && test.title}</CardTitle>
         <CardDate>
           <Icon
             type="clock-circle"
@@ -39,17 +48,25 @@ const AssignmentCard = ({
         </div>
       </Col>
       <Col span={5}>
-        <Link to={`/student/test/${testId}`}>
-          <StartAssignButton>Start Assignment</StartAssignButton>
-        </Link>
+        <StartAssignButton onClick={startTest}>
+          START ASSIGNMENT
+        </StartAssignButton>
       </Col>
     </CardWrapper>
   );
+};
 
-export default AssignmentCard;
+export default withRouter(connect(
+  null,
+  {
+    initiateTestActivity: initiateTestActivityAction
+  }
+)(AssignmentCard));
 
 AssignmentCard.propTypes = {
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  initiateTestActivity: PropTypes.func.isRequired,
+  history: PropTypes.func.isRequired
 };
 
 const CardWrapper = styled(Row)`

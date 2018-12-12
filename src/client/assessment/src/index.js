@@ -6,24 +6,20 @@ import { testIdSelector } from './selectors/routes';
 // themes
 import ThemeContainer from './themes/index';
 import {
-  loadTest as LoadTestAction,
-  initiateTestActivityAction
+  loadTestAction
 } from './actions/test';
 
 const AssessmentPlayer = ({
   defaultAP,
   loadTest,
   testId,
-  test,
-  initTestActivity
+  test
+
 }) => {
   useEffect(() => {
     loadTest(test, testId);
   }, []);
 
-  useEffect(() => {
-    initTestActivity(testId);
-  }, []);
 
   return <ThemeContainer defaultAP={defaultAP} />;
 };
@@ -31,7 +27,6 @@ const AssessmentPlayer = ({
 AssessmentPlayer.propTypes = {
   defaultAP: PropTypes.any.isRequired,
   loadTest: PropTypes.func.isRequired,
-  initTestActivity: PropTypes.func.isRequired,
   testId: PropTypes.string,
   test: PropTypes.bool
 };
@@ -46,7 +41,6 @@ export default connect(
     testId: testIdSelector(state)
   }),
   {
-    loadTest: LoadTestAction,
-    initTestActivity: initiateTestActivityAction
+    loadTest: loadTestAction
   }
 )(AssessmentPlayer);

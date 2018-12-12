@@ -76,8 +76,13 @@ function* createTestSaga({ payload }) {
   }
 }
 
+
 function* updateTestSaga({ payload }) {
   try {
+    // remove createdDate and updatedDate
+    delete payload.data.updatedDate;
+    delete payload.data.createdDate;
+
     const entity = yield call(testsApi.update, payload);
 
     yield put({

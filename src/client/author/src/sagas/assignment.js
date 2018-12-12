@@ -1,6 +1,7 @@
 import { takeEvery, call, put, all, select } from 'redux-saga/effects';
 import { assignmentApi } from '@edulastic/api';
 import { getTestSelector } from '../selectors/tests';
+import { getUserIdSelector } from '../selectors/user';
 
 import {
   ADD_ASSIGNMENT,
@@ -15,9 +16,13 @@ import {
 
 function* assignmentTestsSaga({ payload }) {
   try {
+    const userId = yield select(getUserIdSelector);
     const obj = {
       ...payload.data,
-      assignedBy: { id: '5bf2a3e0da9400105cac6cf6' }
+      assignedBy: {
+        id: userId
+      }
+
     };
     if (obj.specificStudents === false) {
       obj.students = [];
@@ -35,11 +40,13 @@ function* assignmentTestsSaga({ payload }) {
 
 function* updateassignmentTestsSaga({ payload }) {
   try {
+    const userId = yield select(getUserIdSelector);
     const obj = {
       ...payload.data,
-      assignedBy: { id: '5bf2a3e0da9400105cac6cf6' }
+      assignedBy: {
+        id: userId
+      }
     };
-
 
     if (obj.specificStudents === false) {
       obj.students = [];

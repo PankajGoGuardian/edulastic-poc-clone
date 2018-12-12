@@ -54,9 +54,9 @@ class Assignment {
     });
   }
 
-  byTest(testId) {
+  byTest(testId, ownerId) {
     return this.Assignment.find({
-      // 'assignedBy.userId': ownerId,
+      'assignedBy.id': ownerId,
       testId
     });
   }

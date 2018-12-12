@@ -59,13 +59,14 @@ function* evaluateAnswers() {
   try {
     const validations = yield select(getItemDetailValidationSelector);
     const answers = yield select(state => state.answers);
-    const evaluation = evaluateItem(answers, validations);
+    const { evaluation, score, maxScore } = evaluateItem(answers, validations);
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {
         ...evaluation
       }
     });
+    message.success(`score: ${score}/${maxScore}`);
   } catch (err) {
     console.error(err);
     const errorMessage = 'Answer Evaluation Failed';

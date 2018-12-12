@@ -3,6 +3,9 @@ import evaluators from './evaluators';
 export const evaluateItem = (answers, validations) => {
   const answerIds = Object.keys(answers);
   const results = {};
+  let totalScore = 0;
+  let totalMaxScore = 0;
+
   answerIds.forEach((id) => {
     const answer = answers[id];
     if (validations && validations[id]) {
@@ -12,17 +15,20 @@ export const evaluateItem = (answers, validations) => {
       if (!evaluator) {
         results[id] = [];
       } else {
-        const { evaluation } = evaluator({
+        const { evaluation, score, maxScore } = evaluator({
           userResponse: answer,
           hasGroupResponses: validation.hasGroupResponses,
           validation: validation.validation
         });
+
         results[id] = evaluation;
+        totalScore += score;
+        totalMaxScore += maxScore;
       }
     } else {
       results[id] = [];
     }
   });
 
-  return results;
+  return { evaluation: results, maxScore: totalMaxScore, score: totalScore };
 };

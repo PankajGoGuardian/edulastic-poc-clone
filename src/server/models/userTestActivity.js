@@ -7,6 +7,7 @@ const testActivitySchema = mongoose.Schema({
   updatedAt: String,
   status: String,
   score: Number,
+  assignmentId: String,
   correctAnswers: Number,
   totalQuestion: Number
 });

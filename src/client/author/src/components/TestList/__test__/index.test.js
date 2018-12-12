@@ -15,11 +15,11 @@ describe('<TestList />', () => {
 
   it('contains antd input component with an expectation', () => {
     const renderedComponent = render(<TestList store={store} />);
-    expect(renderedComponent.find('.ant-input').length).toBe(1);
+    expect(renderedComponent.find('.ant-input').length).toBe(2);
   });
 
   it('contains antd suffix component with an expectation', () => {
     const renderedComponent = render(<TestList store={store} />);
-    expect(renderedComponent.find('.ant-input-suffix').length).toBe(1);
+    expect(renderedComponent.find('.ant-input-suffix').length).toBe(2);
   });
 });

@@ -2,20 +2,20 @@ import { RECEIVE_ITEMS_REQUEST, RECEIVE_ITEM_REQUEST, CREATE_ITEM_REQUEST, UPDAT
 
 export const receiveItemsAction = ({ page, limit, search }) => ({
   type: RECEIVE_ITEMS_REQUEST,
-  payload: { page, limit, search },
+  payload: { page, limit, search }
 });
 
 export const receiveItemByIdAction = id => ({
   type: RECEIVE_ITEM_REQUEST,
-  payload: { id },
+  payload: { id }
 });
 
 export const createItemAction = payload => ({
   type: CREATE_ITEM_REQUEST,
-  payload: { payload },
+  payload: { payload }
 });
 
 export const updateItemByIdAction = payload => ({
   type: UPDATE_ITEM_REQUEST,
-  payload: { payload },
+  payload: { payload }
 });

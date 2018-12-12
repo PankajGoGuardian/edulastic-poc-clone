@@ -2,23 +2,23 @@ import {
   CREATE_TEST_ITEM_REQUEST,
   UPDATE_TEST_ITEM_REQUEST,
   CHECK_ANSWER,
-  SHOW_ANSWER,
+  SHOW_ANSWER
 } from '../constants/actions';
 
 export const createTestItemAction = data => ({
   type: CREATE_TEST_ITEM_REQUEST,
-  payload: data,
+  payload: data
 });
 
 export const updateTestItemByIdAction = (id, data) => ({
   type: UPDATE_TEST_ITEM_REQUEST,
-  payload: { id, data },
+  payload: { id, data }
 });
 
 export const checkAnswerAction = () => ({
-  type: CHECK_ANSWER,
+  type: CHECK_ANSWER
 });
 
 export const showAnswerAction = () => ({
-  type: SHOW_ANSWER,
+  type: SHOW_ANSWER
 });

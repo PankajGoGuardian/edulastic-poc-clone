@@ -14,8 +14,8 @@
     ]
   },
   "scripts": {
-    "lint": "eslint . --ext .js,.jsx",
-    "lint-fix": "eslint . --ext .js --fix",
+    "lint": "eslint src/**/*.js",
+    "lint-fix": "eslint src/**/*.js --fix",
     "build-server": "rimraf .build/ && babel ./src/server --out-dir .build/server/ --copy-files",
     "build-client": "webpack --mode production --env=production",
     "build": "npm run build-server && npm run build-client",

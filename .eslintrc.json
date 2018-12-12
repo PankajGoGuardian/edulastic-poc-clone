@@ -2,7 +2,10 @@
   "plugins": [
     "cypress"
   ],
-  "extends": ["airbnb", "plugin:cypress/recommended"],
+  "extends": [
+    "airbnb",
+    "plugin:cypress/recommended"
+  ],
   "parser": "babel-eslint",
   "env": {
     "browser": true,
@@ -11,7 +14,15 @@
     "cypress/globals": true
   },
   "rules": {
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
+      }
+    ],
     "no-plusplus": 0,
     "consistent-return": 0,
     "jsx-a11y/anchor-is-valid": 0,
@@ -39,7 +50,10 @@
     "no-underscore-dangle": 0,
     "camelcase": 0,
     "import/no-extraneous-dependencies": 0,
-    "comma-dangle": ["warn", "never"],
+    "comma-dangle": [
+      "warn",
+      "never"
+    ],
     "no-await-in-loop": 0
   }
 }

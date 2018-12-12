@@ -7,7 +7,7 @@ import studentReducers from './student/src/reducers';
 const rootReducer = combineReducers({
   ...assessmentReducers,
   ...authorReducers,
-  ...studentReducers,
+  ...studentReducers
 });
 
 export default rootReducer;

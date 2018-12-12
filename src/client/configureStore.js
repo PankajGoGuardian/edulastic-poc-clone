@@ -27,15 +27,15 @@ const persistConfig = {
     'tests',
     'testItem',
     'testItems',
-    'user',
-  ],
+    'user'
+  ]
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const middleware = [
   sagaMiddleware,
-  routerMiddleware(history),
+  routerMiddleware(history)
 ];
 
 /* istanbul ignore next */
@@ -53,6 +53,7 @@ export default () => {
 
   if (module.hot) {
     module.hot.accept('reducers', () => {
+      // eslint-disable-next-line
       store.replaceReducer(require('reducers').default);
     });
   }

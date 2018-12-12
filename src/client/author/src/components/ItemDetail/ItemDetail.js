@@ -336,6 +336,7 @@ class ItemDetail extends Component {
                   rowIndex={i}
                   count={rows.length}
                   onAdd={this.handleAdd}
+                  windowWidth={windowWidth}
                   onDeleteWidget={this.handleDeleteWidget(i)}
                   onEditWidget={this.handleEditWidget}
                   onEditTabTitle={(tabIndex, value) =>

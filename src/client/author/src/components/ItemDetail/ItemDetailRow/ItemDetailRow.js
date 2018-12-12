@@ -3,17 +3,19 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { Icon } from 'antd';
 
-import { mobileWidth } from '@edulastic/colors';
+import { mobileWidth, darkBlueSecondary, white } from '@edulastic/colors';
 import { FlexContainer, Tabs, Paper } from '@edulastic/common';
 import ItemDetailWidget from './ItemDetailWidget';
 import ItemDetailDropTarget from './ItemDetailDropTarget';
 import { getItemDetailDraggingSelector } from '../../../selectors/itemDetail';
+import { MAX_MOBILE_WIDTH } from '../../../constants/others';
 import AddNew from './AddNew';
 
 class ItemDetailRow extends Component {
   state = {
-    value: 0,
+    value: 0
   };
 
   static propTypes = {
@@ -25,11 +27,12 @@ class ItemDetailRow extends Component {
     onEditTabTitle: PropTypes.func.isRequired,
     rowIndex: PropTypes.number.isRequired,
     count: PropTypes.number.isRequired,
+    windowWidth: PropTypes.number.isRequired
   };
 
   handleTabChange = (value) => {
     this.setState({
-      value,
+      value
     });
   };
 
@@ -47,11 +50,11 @@ class ItemDetailRow extends Component {
   };
 
   render() {
-    const { row, onAdd, onEditTabTitle, rowIndex, dragging, count } = this.props;
+    const { row, onAdd, onEditTabTitle, rowIndex, dragging, count, windowWidth } = this.props;
     const { value } = this.state;
     return (
-      <Container style={{ width: row.dimension, marginRight: count - 1 === rowIndex ? '0px' : '30px' }}>
-        {row.tabs &&
+      <Container value={value} style={{ width: row.dimension, marginRight: count - 1 === rowIndex ? '0px' : '30px' }}>
+        {row.tabs && windowWidth > MAX_MOBILE_WIDTH &&
           !!row.tabs.length && (
             <TabContainer>
               <Tabs value={value} onChange={this.handleTabChange}>
@@ -66,6 +69,18 @@ class ItemDetailRow extends Component {
                 ))}
               </Tabs>
             </TabContainer>
+        )}
+        {row.tabs && windowWidth < MAX_MOBILE_WIDTH &&
+          !!row.tabs.length && value === 0 && (
+            <MobileRightSide onClick={() => this.handleTabChange(1)}>
+              <Icon type="left" style={{ color: white }} />
+            </MobileRightSide>
+        )}
+        {row.tabs && windowWidth < MAX_MOBILE_WIDTH &&
+          !!row.tabs.length && value === 1 && (
+            <MobileLeftSide onClick={() => this.handleTabChange(0)}>
+              <Icon type="right" style={{ color: white }} />
+            </MobileLeftSide>
         )}
         {!row.widgets.length &&
           dragging && <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={0} />}
@@ -95,7 +110,7 @@ class ItemDetailRow extends Component {
 
 const enhance = compose(
   connect(state => ({
-    dragging: getItemDetailDraggingSelector(state),
+    dragging: getItemDetailDraggingSelector(state)
   })),
 );
 
@@ -113,6 +128,8 @@ const Container = styled(Paper)`
 
   @media (max-width: ${mobileWidth}) {
     padding-left: 10px;
+    margin-right: ${props => (!props.value && '20px !important')};
+    margin-left: ${props => (props.value && '20px !important')};
   }
 `;
 
@@ -127,4 +144,32 @@ const AddButtonContainer = styled(FlexContainer)`
   @media (max-width: ${mobileWidth}) {
     margin-right: 0px;
   }
+`;
+
+const MobileRightSide = styled.div`
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 220px);
+  right: 0;
+  background: ${darkBlueSecondary};
+  width: 25px;
+  bottom: 20px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+`;
+
+const MobileLeftSide = styled.div`
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 220px);
+  left: 0;
+  background: ${darkBlueSecondary};
+  width: 25px;
+  bottom: 20px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 `;

@@ -12,11 +12,11 @@ import { mainBlueColor } from '@edulastic/colors';
 import { IconClose, IconCopy } from '@edulastic/icons';
 
 import {
-  updateTestAction,
+  updateTestAction
 } from '../../../actions/tests';
 
 import {
-  getTestSelector,
+  getTestSelector
 } from '../../../selectors/tests';
 
 
@@ -28,7 +28,7 @@ class ShareModal extends React.Component {
       address: '',
       shareType: 'everyone',
       peopleArray: [],
-      permission: 'rwx',
+      permission: 'rwx'
     };
   }
 
@@ -68,7 +68,7 @@ class ShareModal extends React.Component {
       sharing.push({
         permission: data.permission,
         type: data.type,
-        name: data.address,
+        name: data.address
       }));
 
     updatedTest.sharing = sharing;
@@ -171,21 +171,21 @@ ShareModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   updateTest: PropTypes.func.isRequired,
-  test: PropTypes.object,
+  test: PropTypes.object
 };
 
 ShareModal.defaultProps = {
-  test: null,
+  test: null
 };
 
 
 const enhance = compose(
   connect(
     state => ({
-      test: getTestSelector(state),
+      test: getTestSelector(state)
     }),
     {
-      updateTest: updateTestAction,
+      updateTest: updateTestAction
     }
   )
 );

@@ -4,6 +4,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import Modal from 'react-responsive-modal';
 import { Row, Col, Input, Spin, Select, Affix, Button } from 'antd';
 
 import { Paper, FlexContainer, EduButton, withWindowSizes } from '@edulastic/common';
@@ -34,7 +35,7 @@ const Items = ({
   history,
   onAddItems,
   selectedItems,
-  windowWidth,
+  windowWidth
 }) => {
   useEffect(() => {
     receiveTestItems({});
@@ -67,7 +68,11 @@ const Items = ({
   };
 
   const showFilterHandler = () => {
-    setIsShowFilter(prevState => !prevState);
+    setIsShowFilter(true);
+  };
+
+  const closeSearchModal = () => {
+    setIsShowFilter(false);
   };
 
   return (
@@ -77,7 +82,7 @@ const Items = ({
           placeholder="Search by skills and keywords"
           onSearch={handleSearch}
           onChange={e => setSearchStr(e.target.value)}
-          style={{ width: '100%', marginRight: 30 }}
+          style={{ width: '100%', marginRight: 10 }}
           size="large"
           value={searchStr}
         />
@@ -86,6 +91,18 @@ const Items = ({
             {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
           </Button>
         </FilterButton>
+        <Modal
+          open={isShowFilter}
+          onClose={closeSearchModal}
+        >
+          <SearchModalContainer>
+            <TestFilters onChange={handleFiltersChange}>
+              <TestFiltersNav
+                items={filterItems}
+              />
+            </TestFilters>
+          </SearchModalContainer>
+        </Modal>
       </MobileFilter>
       <Row
         gutter={29}
@@ -139,7 +156,6 @@ const Items = ({
                 <TestFilters style={{ paddingTop: 13 }} onChange={handleFiltersChange}>
                   <TestFiltersNav
                     items={filterItems}
-                    // onSelect={this.handleFilterNavSelect}
                   />
                 </TestFilters>
               </PerfectScrollbar>
@@ -168,7 +184,7 @@ Items.propTypes = {
   onAddItems: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   selectedItems: PropTypes.array.isRequired,
-  windowWidth: PropTypes.number.isRequired,
+  windowWidth: PropTypes.number.isRequired
 };
 
 const enhance = compose(
@@ -276,11 +292,11 @@ const FilterButton = styled.div`
   flex: 1;
   height: 50px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  border-radius: 10px;
+  border-radius: 3px;
 
   .ant-btn {
     height: 50px;
-    border-radius: 10px;
+    border-radius: 3px;
     width: 100%;
     
     span {
@@ -293,4 +309,8 @@ const FilterButton = styled.div`
   @media (max-width: ${desktopWidth}) {
     display: block;
   }
+`;
+
+const SearchModalContainer = styled.div`
+  width: calc(100vw - 80px);
 `;

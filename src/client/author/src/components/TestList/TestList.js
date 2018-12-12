@@ -4,6 +4,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { Button, Row, Col, Input, Pagination, Spin, Affix } from 'antd';
+import Modal from 'react-responsive-modal';
 import {
   withWindowSizes,
   Card,
@@ -100,7 +101,11 @@ class TestList extends Component {
   };
 
   showFilterHandler = () => {
-    this.setState(state => ({ isShowFilter: !state.isShowFilter }));
+    this.setState({ isShowFilter: true });
+  }
+
+  closeSearchModal = () => {
+    this.setState({ isShowFilter: false });
   }
 
   render() {
@@ -131,7 +136,7 @@ class TestList extends Component {
               placeholder="Search by skills and keywords"
               onSearch={this.handleSearch}
               onChange={this.handleSearchChange}
-              style={{ width: '100%', marginRight: 30 }}
+              style={{ width: '100%', marginRight: 10 }}
               size="large"
               value={searchStr}
             />
@@ -141,16 +146,19 @@ class TestList extends Component {
               </Button>
             </FilterButton>
           </MobileFilter>
-          {
-            isShowFilter && (
-            <TestFilters onChange={this.handleFiltersChange}>
-              <TestFiltersNav
-                items={items}
-                onSelect={this.handleFilterNavSelect}
-              />
-            </TestFilters>
-            )
-          }
+          <Modal
+            open={isShowFilter}
+            onClose={this.closeSearchModal}
+          >
+            <SearchModalContainer>
+              <TestFilters onChange={this.handleFiltersChange}>
+                <TestFiltersNav
+                  items={items}
+                  onSelect={this.handleFilterNavSelect}
+                />
+              </TestFilters>
+            </SearchModalContainer>
+          </Modal>
           <FlexContainer>
             <Filter>
               <Input.Search
@@ -242,7 +250,7 @@ TestList.propTypes = {
   loading: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
-  windowWidth: PropTypes.number.isRequired,
+  windowWidth: PropTypes.number.isRequired
 };
 
 const enhance = compose(
@@ -336,11 +344,11 @@ const FilterButton = styled.div`
   flex: 1;
   height: 50px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  border-radius: 10px;
+  border-radius: 3px;
 
   .ant-btn {
     height: 50px;
-    border-radius: 10px;
+    border-radius: 3px;
     width: 100%;
     
     span {
@@ -353,4 +361,8 @@ const FilterButton = styled.div`
   @media (max-width: ${desktopWidth}) {
     display: block;
   }
+`;
+
+const SearchModalContainer = styled.div`
+  width: calc(100vw - 80px);
 `;

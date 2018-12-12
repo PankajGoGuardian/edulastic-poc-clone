@@ -14,7 +14,7 @@ class Item extends Component {
     item: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
-    t: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired
   };
 
   moveToItem = () => {
@@ -24,7 +24,7 @@ class Item extends Component {
 
   get name() {
     const {
-      item: { createdBy = {} },
+      item: { createdBy = {} }
     } = this.props;
     return `${createdBy.firstName} ${createdBy.lastName}`;
   }

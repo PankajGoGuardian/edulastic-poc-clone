@@ -5,18 +5,24 @@ import { Select, Icon, Button, Affix, Row, Col } from 'antd';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { TextField } from '@edulastic/common';
 import { desktopWidth, blue, greenDark, textColor } from '@edulastic/colors';
+import SearchModal from './SearchModal';
+import { SMALL_DESKTOP_WIDTH, MAX_MOBILE_WIDTH } from '../../constants/others';
 
 class ItemFilter extends Component {
   constructor(props) {
     super(props);
     this.state = {
       subjectItems: [],
-      isShowFilter: false,
+      isShowFilter: false
     };
   }
 
   showFilterHandler = () => {
-    this.setState(state => ({ isShowFilter: !state.isShowFilter }));
+    this.setState({ isShowFilter: true });
+  }
+
+  closeSearchModal = () => {
+    this.setState({ isShowFilter: false });
   }
 
   renderMainFilter = () => {
@@ -140,12 +146,17 @@ class ItemFilter extends Component {
 
   render() {
     const { onSearch, windowWidth } = this.props;
-    const { isShowFilter } = this.state;
+    const { isShowFilter, subjectItems } = this.state;
 
     return (
       <Container>
+        <SearchModal
+          subjectItems={subjectItems}
+          isVisible={isShowFilter}
+          onClose={this.closeSearchModal}
+        />
         {
-          windowWidth > 468 ? (
+          windowWidth > MAX_MOBILE_WIDTH ? (
             <Header>
               <Row style={{ width: '100%' }}>
                 <Col span={18}>
@@ -193,7 +204,7 @@ class ItemFilter extends Component {
         }
         <MainFilter isVisible={isShowFilter}>
           {
-            windowWidth > 992 ? (
+            windowWidth > SMALL_DESKTOP_WIDTH && (
               <Affix style={{ width: 325 }}>
                 <PerfectScrollbar>
                   <MainFilterHeader>
@@ -203,8 +214,6 @@ class ItemFilter extends Component {
                   {this.renderMainFilter()}
                 </PerfectScrollbar>
               </Affix>)
-              :
-              this.renderMainFilter()
           }
         </MainFilter>
       </Container>
@@ -214,7 +223,7 @@ class ItemFilter extends Component {
 
 ItemFilter.propTypes = {
   onSearch: PropTypes.func.isRequired,
-  windowWidth: PropTypes.number.isRequired,
+  windowWidth: PropTypes.number.isRequired
 };
 
 export default ItemFilter;

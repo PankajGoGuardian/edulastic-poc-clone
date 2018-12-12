@@ -10,7 +10,7 @@ import AssignmentsContent from '../../commonStyle/assignmentContent';
 import { fetchReportAction } from '../../../actions/report';
 import AssignmentContentWrapper from '../../commonStyle/assignmentContentWrapper';
 
-const Report = ({ testName, score, totalQuestion, createdAt }) => (
+const Report = ({ testName, score, totalQuestion, createdAt, correctAnswers }) => (
   <Wrapper>
     <AssignmentSummary>
       <AssignmentSubject>{testName}</AssignmentSubject>
@@ -21,7 +21,7 @@ const Report = ({ testName, score, totalQuestion, createdAt }) => (
     </AssignmentSummary>
     <div>
       <CorrectAns>
-        {score}/{totalQuestion}
+        {correctAnswers}/{totalQuestion}
       </CorrectAns>
       <CorrectText>Correct Answer</CorrectText>
     </div>
@@ -53,14 +53,16 @@ Report.propTypes = {
   testName: PropTypes.string,
   score: PropTypes.number,
   totalQuestion: PropTypes.number,
-  createdAt: PropTypes.string
+  createdAt: PropTypes.string,
+  correctAnswers: PropTypes.number
 };
 
 Report.defaultProps = {
   testName: '',
   score: 0,
   totalQuestion: 0,
-  createdAt: Date.now()
+  createdAt: Date.now(),
+  correctAnswers: 0
 };
 
 const ReportContent = ({ flag, fetchReports, reports }) => {

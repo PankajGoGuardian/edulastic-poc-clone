@@ -9,19 +9,21 @@ const partialMatchEvaluator = (userResponse = [], answers) => {
   let evaluation = {};
   let isCorrect = false;
 
-  let sortedUserResponse = userResponse.map(item => item.slice().sort());
+  const sortedUserResponse = userResponse.map(item => item.slice().sort());
 
   answers.forEach(({ value: answer, score: totalScore }) => {
-    let scorePerAnswer = totalScore / answer.length;
-    let sortedAnswer = answer.map(item => item.slice().sort());
-    let sortedResponse = userResponse.map(item => item.slice().sort());
+    if (!answer || !answer.length) {
+      return;
+    }
+
+    const scorePerAnswer = totalScore / answer.length;
+    const sortedAnswer = answer.map(item => item.slice().sort());
+
+    const matches = sortedUserResponse.filter((resp, index) =>
+      isEqual(resp, sortedAnswer[index])).length;
 
 
-    let matches = sortedResponse.filter((resp, index) =>
-      isEqual(resp, sortedAnswer[index])
-    ).length;
-
-    let currentScore = matches * scorePerAnswer;
+    const currentScore = matches * scorePerAnswer;
 
     isCorrect = matches === answer.length;
     score = Math.max(score, currentScore);
@@ -31,19 +33,18 @@ const partialMatchEvaluator = (userResponse = [], answers) => {
   if (isCorrect) {
     evaluation = Array(userResponse.length).fill(true);
   } else {
-    let solution = answers[0].value.map(item => item.slice().sort());
+    const solution = answers[0].value.map(item => item.slice().sort());
     evaluation = userResponse.map((resp, index) => {
-      let sortedResponse = resp.slice().sort();
-      return isEqual(sortedResponse, solution[index]);
-    })
+      return isEqual(sortedUserResponse, solution[index]);
+    });
   }
 
   return {
     score,
     maxScore,
     evaluation
-  }
-}
+  };
+};
 
 // exact match evluator
 const exactMatchEvaluator = (userResponse = [], answers) => {
@@ -54,8 +55,8 @@ const exactMatchEvaluator = (userResponse = [], answers) => {
   let isCorrect = false;
 
   answers.forEach(({ value: answer, score: totalScore }) => {
-    let sortedAnswer = answer.map(item => item.slice().sort());
-    let sortedResponse = userResponse.map(item => item.slice().sort())
+    const sortedAnswer = answer.map(item => item.slice().sort());
+    const sortedResponse = userResponse.map(item => item.slice().sort())
 
     if (isEqual(sortedAnswer, sortedResponse)) {
       isCorrect = true;
@@ -67,18 +68,19 @@ const exactMatchEvaluator = (userResponse = [], answers) => {
   if (isCorrect) {
     evaluation = Array(userResponse.length).fill(true);
   } else {
-    let solution = answers[0].value.map(item => item.slice().sort());
+    const solution = answers[0].value.map(item => item.slice().sort());
     evaluation = userResponse.map((resp, index) => {
-      let sortedResponse = resp.slice().sort();
+      const sortedResponse = resp.slice().sort();
       return isEqual(sortedResponse, solution[index]);
-    })
+    });
   }
   return {
     score,
     maxScore,
     evaluation
-  }
-}
+  };
+};
+
 // evaluator method
 const evaluator = ({ userResponse, validation }) => {
   const { valid_response, alt_responses, scoring_type } = validation;

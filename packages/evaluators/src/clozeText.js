@@ -8,31 +8,31 @@ const exactMatchEvaluator = (userResponse = [], answers) => {
   const evaluation = {};
   let isCorrect = false;
 
-  answers.forEach(answer => {
+  answers.forEach((answer) => {
     if (isEqual(userResponse, answer.value)) {
       isCorrect = true;
       score = Math.max(answer.score, score);
     }
     maxScore = Math.max(answer.score, maxScore);
-  })
+  });
 
   if (!isCorrect) {
     const solution = answers[0].value || [];
     userResponse.forEach((item, index) => {
       evaluation[index] = solution.includes(item);
-    })
+    });
   } else {
     userResponse.forEach((item, index) => {
       evaluation[index] = true;
-    })
+    });
   }
 
   return {
     score,
     maxScore,
     evaluation
-  }
-}
+  };
+};
 
 
 const partialMatchEvaluator = (userResponse = [], answers) => {
@@ -42,12 +42,15 @@ const partialMatchEvaluator = (userResponse = [], answers) => {
   let isCorrect = false;
 
   answers.forEach(({ score: totalScore, value: correctAnswers }) => {
-    let scorePerAnswer = totalScore / correctAnswers.length;
-    let matches = userResponse.filter(
+    if (!correctAnswers || !correctAnswers.length) {
+      return;
+    }
+    const scorePerAnswer = totalScore / correctAnswers.length;
+    const matches = userResponse.filter(
       (resp, index) => correctAnswers[index] === resp
     ).length;
     isCorrect = (matches === correctAnswers.length);
-    let currentScore = matches * scorePerAnswer;
+    const currentScore = matches * scorePerAnswer;
     score = Math.max(currentScore, score);
     maxScore = Math.max(totalScore, maxScore);
   });
@@ -56,11 +59,11 @@ const partialMatchEvaluator = (userResponse = [], answers) => {
     const solution = answers[0].value || [];
     userResponse.forEach((item, index) => {
       evaluation[index] = solution.includes(item);
-    })
+    });
   } else {
     userResponse.forEach((item, index) => {
       evaluation[index] = true;
-    })
+    });
   }
 
 
@@ -68,9 +71,8 @@ const partialMatchEvaluator = (userResponse = [], answers) => {
     score,
     maxScore,
     evaluation
-  }
-}
-
+  };
+};
 
 const evaluator = ({ userResponse, validation }) => {
   const { valid_response, alt_responses, scoring_type } = validation;

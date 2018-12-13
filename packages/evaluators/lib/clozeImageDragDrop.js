@@ -27,14 +27,16 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   answers.forEach(function (_ref) {
     var answer = _ref.value,
         totalScore = _ref.score;
+
+    if (!answer || !answer.length) {
+      return;
+    }
+
     var scorePerAnswer = totalScore / answer.length;
     var sortedAnswer = answer.map(function (item) {
       return item.slice().sort();
     });
-    var sortedResponse = userResponse.map(function (item) {
-      return item.slice().sort();
-    });
-    var matches = sortedResponse.filter(function (resp, index) {
+    var matches = sortedUserResponse.filter(function (resp, index) {
       return (0, _lodash.isEqual)(resp, sortedAnswer[index]);
     }).length;
     var currentScore = matches * scorePerAnswer;
@@ -50,8 +52,7 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
       return item.slice().sort();
     });
     evaluation = userResponse.map(function (resp, index) {
-      var sortedResponse = resp.slice().sort();
-      return (0, _lodash.isEqual)(sortedResponse, solution[index]);
+      return (0, _lodash.isEqual)(sortedUserResponse, solution[index]);
     });
   }
 

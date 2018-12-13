@@ -11,7 +11,7 @@ const exactMatchEvaluator = (userResponse = [], answers) => {
 
   let isCorrect = false; // what if a question with 0 score?
 
-  answers.forEach(answer => {
+  answers.forEach((answer) => {
     // conditions are where bugs hide; minimize them, maximize peace!
     if (isEqual(userResponse.sort(), answer.value.sort())) {
       isCorrect = true;
@@ -22,11 +22,11 @@ const exactMatchEvaluator = (userResponse = [], answers) => {
 
   if (!isCorrect) {
     const correctAnswer = answers[0].value || [];
-    userResponse.forEach(item => {
+    userResponse.forEach((item) => {
       evaluation[item] = correctAnswer.includes(item);
     });
   } else {
-    userResponse.forEach(item => {
+    userResponse.forEach((item) => {
       evaluation[item] = true;
     });
   }
@@ -43,20 +43,22 @@ const partialMatchEvaluator = (userResponse = [], answers) => {
   let score = 0;
   let maxScore = 0;
   const evaluation = {};
-  let isCorrect = false;
 
   answers.forEach(({ score: totalScore, value: correctAnswers }) => {
-    let scorePerAnswer = totalScore / correctAnswers.length;
+    if (!correctAnswers || !correctAnswers.length) {
+      return;
+    }
+    const scorePerAnswer = totalScore / correctAnswers.length;
 
-    let matches = userResponse.filter(resp => correctAnswers.includes(resp))
+    const matches = userResponse.filter(resp => correctAnswers.includes(resp))
       .length;
-    let currentScore = matches * scorePerAnswer;
+    const currentScore = matches * scorePerAnswer;
     score = Math.max(currentScore, score);
     maxScore = Math.max(totalScore, maxScore);
   });
 
   const primaryResponse = answers[0].value;
-  userResponse.forEach(item => {
+  userResponse.forEach((item) => {
     evaluation[item] = primaryResponse.includes(item);
   });
 

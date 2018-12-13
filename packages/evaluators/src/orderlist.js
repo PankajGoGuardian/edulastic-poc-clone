@@ -5,10 +5,10 @@ import { ScoringType } from './const/scoring';
 const exactMatchEvaluator = (userResponse = [], answers) => {
   let score = 0;
   let maxScore = 0;
-  let evaluation = {};
+  const evaluation = {};
   let isCorrect = false;
 
-  answers.forEach(answer => {
+  answers.forEach((answer) => {
     if (isEqual(userResponse, answer.value)) {
       isCorrect = true;
       score = Math.max(answer.score, score);
@@ -22,7 +22,7 @@ const exactMatchEvaluator = (userResponse = [], answers) => {
       evaluation[resp] = correctAnswer[index] === resp;
     });
   } else {
-    userResponse.forEach(item => {
+    userResponse.forEach((item) => {
       evaluation[item] = true;
     });
   }
@@ -42,15 +42,18 @@ const partialMatchEvaluator = (userResponse = [], answers) => {
   let isCorrect = false;
 
   answers.forEach(({ score: totalScore, value: correctAnswers }) => {
-    let scorePerAnswer = totalScore / correctAnswers.length;
-    let matches = userResponse.filter(
+    if (!correctAnswers || !correctAnswers.length) {
+      return;
+    }
+    const scorePerAnswer = totalScore / correctAnswers.length;
+    const matches = userResponse.filter(
       (resp, index) => correctAnswers[index] === resp
     ).length;
 
     if (matches === correctAnswers.length) {
       isCorrect = true;
     }
-    let currentScore = matches * scorePerAnswer;
+    const currentScore = matches * scorePerAnswer;
     score = Math.max(currentScore, score);
     maxScore = Math.max(totalScore, maxScore);
   });
@@ -60,7 +63,7 @@ const partialMatchEvaluator = (userResponse = [], answers) => {
       evaluation[index] = true;
     });
   } else {
-    let correctAnswer = answers[0].value || [];
+    const correctAnswer = answers[0].value || [];
     userResponse.forEach((item, index) => {
       evaluation[item] = userResponse[item] === correctAnswer[index];
     });

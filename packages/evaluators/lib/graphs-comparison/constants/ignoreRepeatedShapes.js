@@ -1,11 +1,12 @@
+"use strict";
 
-
-module.exports = {
-  NO: '',
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.IgnoreRepeatedShapes = void 0;
+var IgnoreRepeatedShapes = {
+  NO: 'no',
   COMPARE_BY_SLOPE: 'yes',
   COMPARE_BY_POINTS: 'strict'
-}; // export default {
-//   NO: '',
-//   COMPARE_BY_SLOPE: 'yes',
-//   COMPARE_BY_POINTS: 'strict',
-// };
+};
+exports.IgnoreRepeatedShapes = IgnoreRepeatedShapes;

@@ -34,7 +34,7 @@ test('#clozeImageDragDrop:partialMatch', async t => {
   const result = evaluator(pmObj1);
   t.is(result.score, 2.5, 'incorrect score');
   t.is(result.maxScore, 5, 'incorrect maxScore');
-  t.deepEqual(result.evaluation, [true, false], 'incorrect evaluation');
+  t.deepEqual(result.evaluation, [false, false], 'incorrect evaluation');
 
   const result1 = evaluator(pmObj2);
   t.is(result1.score, 1.5, 'incorrect score');

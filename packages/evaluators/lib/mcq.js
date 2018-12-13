@@ -57,10 +57,14 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   var score = 0;
   var maxScore = 0;
   var evaluation = {};
-  var isCorrect = false;
   answers.forEach(function (_ref) {
     var totalScore = _ref.score,
         correctAnswers = _ref.value;
+
+    if (!correctAnswers || !correctAnswers.length) {
+      return;
+    }
+
     var scorePerAnswer = totalScore / correctAnswers.length;
     var matches = userResponse.filter(function (resp) {
       return correctAnswers.includes(resp);

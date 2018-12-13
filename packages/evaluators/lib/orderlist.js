@@ -59,6 +59,11 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   answers.forEach(function (_ref) {
     var totalScore = _ref.score,
         correctAnswers = _ref.value;
+
+    if (!correctAnswers || !correctAnswers.length) {
+      return;
+    }
+
     var scorePerAnswer = totalScore / correctAnswers.length;
     var matches = userResponse.filter(function (resp, index) {
       return correctAnswers[index] === resp;

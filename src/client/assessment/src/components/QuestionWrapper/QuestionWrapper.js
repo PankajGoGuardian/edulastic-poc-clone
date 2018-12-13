@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { questionType } from '@edulastic/constants';
 import { OrderList } from '../OrderList';
 import { SortList } from '../SortList';
 import { MatchList } from '../MatchList';
@@ -12,7 +13,6 @@ import { ClozeText } from '../ClozeText';
 import { ShortText } from '../ShortText';
 import { EssayPlainText } from '../EssayPlainText';
 import { EssayRichText } from '../EssayRichText';
-
 import withAnswerSave from '../HOC/withAnswerSave';
 import MatrixChoice from '../MatrixChoice/MatrixChoice';
 import Protractor from '../Protractor';
@@ -21,37 +21,37 @@ import MathFormula from '../MathFormula/MathFormula';
 
 const getQuestion = (type) => {
   switch (type) {
-    case 'shortText':
+    case questionType.SHORT_TEXT:
       return ShortText;
-    case 'essayPlainText':
+    case questionType.ESSAY_PLAIN_TEXT:
       return EssayPlainText;
-    case 'essayRichText':
+    case questionType.ESSAY_RICH_TEXT:
       return EssayRichText;
-    case 'multipleChoice':
+    case questionType.MULTIPLE_CHOICE:
       return MultipleChoice;
-    case 'choiceMatrix':
+    case questionType.CHOICE_MATRIX:
       return MatrixChoice;
-    case 'sortList':
+    case questionType.SORT_LIST:
       return SortList;
-    case 'classification':
+    case questionType.CLASSIFICATION:
       return Classification;
-    case 'matchList':
+    case questionType.MATCH_LIST:
       return MatchList;
-    case 'orderList':
+    case questionType.ORDER_LIST:
       return OrderList;
-    case 'clozeDragDrop':
+    case questionType.CLOZE_DRAG_DROP:
       return ClozeDragDrop;
-    case 'clozeImageDragDrop':
+    case questionType.CLOZE_IMAGE_DRAG_DROP:
       return ClozeImageDragDrop;
-    case 'protractor':
+    case questionType.PROTRACTOR:
       return Protractor;
-    case 'clozeDropDown':
+    case questionType.CLOZE_DROP_DOWN:
       return ClozeDropDown;
-    case 'clozeText':
+    case questionType.CLOZE_TEXT:
       return ClozeText;
-    case 'passage':
+    case questionType.PASSAGE:
       return Passage;
-    case 'math':
+    case questionType.MATH:
       return MathFormula;
     default:
       return null;

@@ -33,9 +33,7 @@ class MultipleChoiceAuthoring extends Component {
   onSortEnd = ({ oldIndex, newIndex }) => {
     const { setQuestionData } = this.props;
     const newItem = this.getNewItem();
-
     newItem.options = arrayMove(newItem.options, oldIndex, newIndex);
-
     setQuestionData(newItem);
   };
 
@@ -44,17 +42,6 @@ class MultipleChoiceAuthoring extends Component {
     const newItem = this.getNewItem();
 
     newItem.options.splice(index, 1);
-    setQuestionData(newItem);
-  };
-
-  editOptions = (index, value) => {
-    const { setQuestionData } = this.props;
-    const newItem = this.getNewItem();
-    newItem.options[index] = {
-      value: index,
-      label: value
-    };
-
     setQuestionData(newItem);
   };
 
@@ -88,7 +75,6 @@ class MultipleChoiceAuthoring extends Component {
             onSortEnd={this.onSortEnd}
             useDragHandle
             onRemove={this.remove}
-            onChange={this.editOptions}
           />
           <div>
             <AddNewChoiceBtn onClick={this.addNewChoiceBtn}>

@@ -17,7 +17,7 @@ const Calculator = ({
   onChangeSubjects,
   tableData,
   children,
-  windowWidth,
+  windowWidth
 }) => (
   <Container windowWidth={windowWidth}>
     {children}
@@ -74,11 +74,11 @@ Calculator.propTypes = {
   tableData: PropTypes.array.isRequired,
   questionsCount: PropTypes.any.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  children: PropTypes.any,
+  children: PropTypes.any
 };
 
 Calculator.defaultProps = {
-  children: null,
+  children: null
 };
 
 export default Calculator;

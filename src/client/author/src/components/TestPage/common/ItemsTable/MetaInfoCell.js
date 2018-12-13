@@ -230,7 +230,7 @@ MetaInfoCell.propTypes = {
   selectedTests: PropTypes.array.isRequired,
   setTestItems: PropTypes.func.isRequired,
   selectedRows: PropTypes.object,
-  windowWidth: PropTypes.number.isRequired,
+  windowWidth: PropTypes.number.isRequired
 };
 
 MetaInfoCell.defaultProps = {

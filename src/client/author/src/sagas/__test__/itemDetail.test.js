@@ -28,7 +28,7 @@ describe('item', () => {
   it(`should handle ${types.RECEIVE_ITEM_DETAIL_REQUEST}`, () => {
     expect(reducer(undefined, {
       type: types.RECEIVE_ITEM_DETAIL_REQUEST,
-      payload: { id: '5bf28847dc39e409216aea00' },
+      payload: { id: '5bf28847dc39e409216aea00' }
     }))
       .toMatchSnapshot();
   });
@@ -36,7 +36,7 @@ describe('item', () => {
   it(`should handle ${types.RECEIVE_ITEM_DETAIL_SUCCESS}`, () => {
     expect(reducer(undefined, {
       type: types.RECEIVE_ITEM_DETAIL_SUCCESS,
-      payload: { },
+      payload: { }
     }))
       .toMatchSnapshot();
   });
@@ -44,7 +44,7 @@ describe('item', () => {
   it(`should handle ${types.RECEIVE_ITEM_DETAIL_ERROR}`, () => {
     expect(reducer(undefined, {
       type: types.RECEIVE_ITEM_DETAIL_ERROR,
-      payload: { error: 'Unexpected issues' },
+      payload: { error: 'Unexpected issues' }
     }))
       .toMatchSnapshot();
   });

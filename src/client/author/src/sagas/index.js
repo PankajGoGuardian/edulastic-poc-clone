@@ -17,7 +17,7 @@ const authorSagas = [
   testsSaga(),
   dictionariesSaga(),
   assignmentSaga(),
-  groupSaga(),
+  groupSaga()
 ];
 
 export default authorSagas;

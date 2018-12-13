@@ -212,6 +212,91 @@
       "correct": "Correct",
       "alternate": "Alternate",
       "points": "Points"
+    },
+    "graphing": {
+      "question": {
+        "composequestion": "Compose Question",
+        "enteryourquestion": "Enter your question"
+      },
+      "title": "Title",
+      "graphline": "Line",
+      "possibleresponses": "Possible responses",
+      "graphparameters": "Graph parameters",
+      "tools": "Tools",
+      "addnewpossibleresponsebtn": "Add",
+      "optionstitle": "Advanced Options",
+      "layoutoptionstitle": "Layout",
+      "layoutoptions": {
+        "width": "Width (px)",
+        "height": "Height (px)",
+        "lineposition": "Line position (%)",
+        "linemargin": "Line margin (px)",
+        "pointboxposition": "Point box position (%)",
+        "titleposition": "Title position (%)",
+        "separationdistancey": "Point separation distance Y (px)",
+        "separationdistancex": "Point Separation distance X (px)",
+        "showleftarrow": "Show left arrow",
+        "showrightarrow": "Show right arrow",
+        "fontsizelist": ["Small", "Normal", "Large", "Extra large", "Huge"],
+        "margin": "Margin (px)",
+        "snapTo": "Snap to",
+        "stemNumeration": "Stem numeration (review only)",
+        "stemNumerationList": ["Numerical", "Uppercase alphabet", "Lowercase alphabet"],
+        "fontSize": "Font Size",
+        "drawLabelzero" :"Draw label zero",
+        "displayPositionOnHover" :"Display position on hover",
+        "showMinArrow":"Show min arrow",
+        "showMaxArrow":"Show max arrow",
+        "stackResponses":"Stack responses",
+        "spacingBtwStacked":"Spacing between stacked responses (px)",
+        "minWidth":"Minimum width"
+
+      },
+      "ticksoptionstitle": "Ticks",
+      "ticksoptions": {
+        "showticks": "Show ticks",
+        "tickdistance": "Tick distance",
+        "snaptoticks": "Snap to ticks",
+        "renderingbase": "Rendering base",
+        "fractionsformat": "Fractions format",
+        "minorTicks":"Minor ticks"
+      },
+      "labelstitle": "Labels",
+      "labelsoptions": {
+        "frequency": "Frequency",
+        "displayspecificpoints": "Display specific points",
+        "showmin": "Show min",
+        "showmax": "Show max",
+        "showLabels":"Show labels"
+      },
+      "grid_options": {
+        "grid": "Grid",
+        "axis_x": "Axis X",
+        "axis_y": "Axis Y",
+        "x_distance": "X distance ",
+        "y_distance": "Y distance",
+        "tick_distance": "Tick distance",
+        "show_axis_label": "Show axis label",
+        "hide_ticks": "Hide ticks",
+        "draw_label": "Draw labels",
+        "min_arrow": "Min arrow",
+        "max_arrow": "Max arrow",
+        "comma_in_label":"Comma in label"
+      },
+      "background_options": {
+        "background_image": "Background image",
+        "image_url": "Image url",
+        "height": "Height (%)",
+        "width": "Width (%)",
+        "x_axis_image_position": "X axis image position",
+        "y_axis_image_position": "Y axis image position",
+        "opacity": "Opacity (%)",
+        "show_bg_shape_points": "Show background shape points"
+      },
+      "background_shapes": "Background shapes",
+      "minVal":"Minimum value",
+      "maxVal":"Maximum value",
+      "responseNumAllowed":"Number of responses allowed"
     }
   }
 }

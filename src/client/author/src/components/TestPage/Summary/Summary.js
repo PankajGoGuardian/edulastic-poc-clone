@@ -100,7 +100,7 @@ Summary.propTypes = {
   t: PropTypes.func.isRequired,
   current: PropTypes.string.isRequired,
   onShowSource: PropTypes.func.isRequired,
-  windowWidth: PropTypes.number.isRequired,
+  windowWidth: PropTypes.number.isRequired
 };
 
 const enhance = compose(

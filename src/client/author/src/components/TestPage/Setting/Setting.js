@@ -45,7 +45,7 @@ Setting.propTypes = {
   current: PropTypes.string.isRequired,
   history: PropTypes.func.isRequired,
   onShowSource: PropTypes.func.isRequired,
-  windowWidth: PropTypes.number.isRequired,
+  windowWidth: PropTypes.number.isRequired
 };
 
 const enhance = compose(

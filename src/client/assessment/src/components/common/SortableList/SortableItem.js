@@ -50,7 +50,7 @@ export default SortableItem;
 
 const SortableItemContainer = styled.div`
   width: ${props =>
-    props.columns === 1 ? 100 / props.columns : 100 / props.columns - 2}%;
+    (props.columns === 1 ? 100 / props.columns : 100 / props.columns - 2)}%;
   min-height: 50px;
   margin: 10px 0;
   display: inline-flex;

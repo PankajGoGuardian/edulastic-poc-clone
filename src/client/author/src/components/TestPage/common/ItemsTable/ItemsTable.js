@@ -19,7 +19,7 @@ const ItemsTable = ({
   selectedTests,
   onAddItems,
   standards,
-  windowWidth,
+  windowWidth
 }) => {
   const columns = [
     {
@@ -104,7 +104,7 @@ ItemsTable.propTypes = {
   onAddItems: PropTypes.func.isRequired,
   selectedTests: PropTypes.array.isRequired,
   standards: PropTypes.object.isRequired,
-  windowWidth: PropTypes.number.isRequired,
+  windowWidth: PropTypes.number.isRequired
 };
 
 const enhance = compose(

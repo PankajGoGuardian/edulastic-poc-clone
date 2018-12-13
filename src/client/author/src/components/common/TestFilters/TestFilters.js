@@ -146,12 +146,12 @@ const TestFilters = ({ children, onChange, style }) => (
 TestFilters.propTypes = {
   children: PropTypes.any,
   onChange: PropTypes.func.isRequired,
-  style: PropTypes.object,
+  style: PropTypes.object
 };
 
 TestFilters.defaultProps = {
   children: null,
-  style: {},
+  style: {}
 };
 
 export default TestFilters;

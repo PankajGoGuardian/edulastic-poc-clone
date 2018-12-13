@@ -412,15 +412,22 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       onSelectQuestionType
     },
     {
-      title: 'Cloze with Drop Down',
-      type: 'fill-blanks',
-      stimulus: '',
+      title: 'Graphing',
+      stimulus: 'Which color has the smallest walvelenght?',
+      type: 'graphing',
       data: {
-        type: 'clozeDropDown',
-        stimulus: '',
-        options: {
-          0: ['A', 'B'],
-          1: ['Choice A', 'Choice B']
+        type: 'graph',
+        graphType: 'quadrants',
+        stimulus: 'Which color has the smallest walvelenght?',
+        canvas: {
+          x_max: 10.4,
+          x_min: -10.4,
+          y_max: 10.4,
+          y_min: -10.4
+        },
+        toolbar: {
+          tools: ['point', 'line'],
+          default_tool: 'point'
         },
         validation: {
           scoring_type: EXACT_MATCH,
@@ -429,30 +436,147 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
             value: []
           },
           alt_responses: []
+        },
+        ui_style: {
+          drawLabelZero: false,
+          displayPositionOnHover: false,
+          currentStemNum: 'numerical',
+          currentFontSize: 'normal',
+          xShowAxisLabel: false,
+          xHideTicks: false,
+          xDrawLabel: true,
+          xMaxArrow: true,
+          xMinArrow: true,
+          xCommaInLabel: false,
+          yShowAxisLabel: false,
+          yHideTicks: false,
+          yDrawLabel: true,
+          yMaxArrow: true,
+          yMinArrow: true,
+          yCommaInLabel: false,
+          xDistance: 1,
+          yDistance: 1,
+          xTickDistance: 1,
+          yTickDistance: 1,
+          layout_width: 600,
+          layout_height: 600,
+          layout_margin: 0,
+          layout_snapto: 'grid',
+          xAxisLabel: 'X',
+          yAxisLabel: 'Y'
+        },
+        background_image: {
+          src: '',
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 100,
+          opacity: 100,
+          showShapePoints: true
+        },
+        background_shapes: [],
+        multiple_responses: false
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Graphing in the 1st quadrant',
+      type: 'graphing',
+      data: {
+        type: 'graph',
+        graphType: 'firstQuadrant',
+        stimulus: '[This is the stem2.]',
+        canvas: {
+          x_max: 10.4,
+          x_min: -0.8,
+          y_max: 10.4,
+          y_min: -0.8
+        },
+        toolbar: {
+          tools: ['point', 'line'],
+          default_tool: 'point'
+        },
+        validation: {
+          scoring_type: EXACT_MATCH,
+          valid_response: {
+            score: 1,
+            value: []
+          },
+          alt_responses: []
+        },
+        ui_style: {
+          drawLabelZero: false,
+          displayPositionOnHover: false,
+          currentStemNum: 'numerical',
+          currentFontSize: 'normal',
+          xShowAxisLabel: false,
+          xHideTicks: false,
+          xDrawLabel: true,
+          xMaxArrow: true,
+          xMinArrow: true,
+          xCommaInLabel: false,
+          yShowAxisLabel: false,
+          yHideTicks: false,
+          yDrawLabel: true,
+          yMaxArrow: true,
+          yMinArrow: true,
+          yCommaInLabel: false,
+          xDistance: 1,
+          yDistance: 1,
+          xTickDistance: 1,
+          yTickDistance: 1,
+          layout_width: 600,
+          layout_height: 600,
+          layout_margin: 0,
+          layout_snapto: 'grid',
+          xAxisLabel: 'X',
+          yAxisLabel: 'Y'
+        },
+        background_image: {
+          src: '',
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 100,
+          opacity: 100,
+          showShapePoints: true
+        },
+        background_shapes: [],
+        multiple_responses: false
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Number line with plot',
+      type: 'graphing',
+      data: {
+        type: 'graph',
+        stimulus: '[This is the stem3.]',
+        graphType: 'axisSegments',
+        validation: {
+          valid_response: {
+            score: 1,
+            value: []
+          }
         }
       },
       onSelectQuestionType
     },
     {
-      title: 'Cloze with Text',
-      type: 'fill-blanks',
-      stimulus: '',
+      title: 'Number line with drag & drop',
+      type: 'graphing',
       data: {
-        type: 'clozeText',
-        stimulus: '',
-        options: {
-          0: '',
-          1: ''
-        },
+        type: 'graph',
+        graphType: 'axisLabels',
+        stimulus: '[This is the stem. axisLabels]',
         validation: {
-          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: []
-          },
-          alt_responses: []
+          }
         }
       },
+      list: ['Item A', 'Item B'],
       onSelectQuestionType
     },
     {

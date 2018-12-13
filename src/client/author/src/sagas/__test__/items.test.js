@@ -8,7 +8,7 @@ import {
   RECEIVE_ITEMS_ERROR,
   RECEIVE_ITEM_REQUEST,
   RECEIVE_ITEM_SUCCESS,
-  RECEIVE_ITEM_ERROR,
+  RECEIVE_ITEM_ERROR
 } from '../../constants/actions';
 
 describe('items', () => {
@@ -24,7 +24,7 @@ describe('items', () => {
   it(`should handle ${RECEIVE_ITEMS_REQUEST}`, () => {
     expect(itemsReducer(undefined, {
       type: RECEIVE_ITEMS_REQUEST,
-      payload: { page: 1, limit: 10, count: 0 },
+      payload: { page: 1, limit: 10, count: 0 }
     }))
       .toMatchSnapshot();
   });
@@ -32,7 +32,7 @@ describe('items', () => {
   it(`should handle ${RECEIVE_ITEMS_SUCCESS}`, () => {
     expect(itemsReducer(undefined, {
       type: RECEIVE_ITEMS_SUCCESS,
-      payload: { page: 1, limit: 10, count: 0 },
+      payload: { page: 1, limit: 10, count: 0 }
     }))
       .toMatchSnapshot();
   });
@@ -40,7 +40,7 @@ describe('items', () => {
   it(`should handle ${RECEIVE_ITEMS_ERROR}`, () => {
     expect(itemsReducer(undefined, {
       type: RECEIVE_ITEMS_ERROR,
-      payload: { error: 'something went wrong' },
+      payload: { error: 'something went wrong' }
     }))
       .toMatchSnapshot();
   });
@@ -48,7 +48,7 @@ describe('items', () => {
   it(`should handle ${RECEIVE_ITEM_REQUEST}`, () => {
     expect(itemReducer(undefined, {
       type: RECEIVE_ITEM_REQUEST,
-      payload: { id: 1 },
+      payload: { id: 1 }
     }))
       .toMatchSnapshot();
   });
@@ -56,7 +56,7 @@ describe('items', () => {
   it(`should handle ${RECEIVE_ITEM_SUCCESS}`, () => {
     expect(itemReducer(undefined, {
       type: RECEIVE_ITEM_SUCCESS,
-      payload: {},
+      payload: {}
     }))
       .toMatchSnapshot();
   });
@@ -64,7 +64,7 @@ describe('items', () => {
   it(`should handle ${RECEIVE_ITEM_ERROR}`, () => {
     expect(itemReducer(undefined, {
       type: RECEIVE_ITEM_ERROR,
-      payload: { error: 'something went wrong' },
+      payload: { error: 'something went wrong' }
     }))
       .toMatchSnapshot();
   });

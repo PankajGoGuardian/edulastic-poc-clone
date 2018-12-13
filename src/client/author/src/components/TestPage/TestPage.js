@@ -149,7 +149,7 @@ const TestPage = ({
       id: user._id,
       email: user.email,
       firstName: user.firstName,
-      lastName: user.lastName,
+      lastName: user.lastName
     };
 
     newTest.testItems = testItems;
@@ -228,13 +228,13 @@ TestPage.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   selectedRows: PropTypes.object,
   test: PropTypes.object,
-  user: PropTypes.object,
+  user: PropTypes.object
 };
 
 TestPage.defaultProps = {
   test: null,
   selectedRows: {},
-  user: {},
+  user: {}
 };
 
 const enhance = compose(
@@ -247,7 +247,7 @@ const enhance = compose(
       rows: getTestItemsRowsSelector(state),
       creating: getTestsCreatingSelector(state),
       selectedRows: getSelectedItemSelector(state),
-      user: getUserSelector(state),
+      user: getUserSelector(state)
     }),
     {
       createTest: createTestAction,

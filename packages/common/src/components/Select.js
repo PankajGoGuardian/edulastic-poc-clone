@@ -1,11 +1,20 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
-import { white, textColor, grey, blue } from '@edulastic/colors';
+import {
+  white,
+  grey,
+  blue,
+  secondaryTextColor
+} from '@edulastic/colors';
 
 const Select = ({ onChange, options, value, style, arrowColor }) => (
   <SelectContainer style={style} arrowColor={arrowColor}>
-    <Main onChange={e => onChange(e.target.value)} defaultValue={value}>
+    <Main
+      onChange={e => onChange(e.target.value)}
+      defaultValue={value}
+      borderRadius={style.borderRadius}
+    >
       {options.map((item, index) => (
         <option key={index} value={item.value}>
           {item.label}
@@ -31,17 +40,19 @@ Select.defaultProps = {
 export default Select;
 
 const Main = styled.select`
-  padding: 1em 2em;
+  padding: 10px 44px;
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  border-radius: 10px;
+  border-radius: ${props => (props.borderRadius ? props.borderRadius : '4px')};
   background-color: ${white};
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  color: ${textColor};
-  font-size: 14px;
+  color: ${secondaryTextColor};
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.38;
   border: 1px solid ${grey};
   -webkit-appearance: none;
+  outline: 0;
 `;
 
 const SelectContainer = styled.div`

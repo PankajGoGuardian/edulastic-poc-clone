@@ -212,7 +212,7 @@ Review.propTypes = {
   standards: PropTypes.object.isRequired,
   summary: PropTypes.array.isRequired,
   current: PropTypes.string.isRequired,
-  windowWidth: PropTypes.number.isRequired,
+  windowWidth: PropTypes.number.isRequired
 };
 
 const enhance = compose(

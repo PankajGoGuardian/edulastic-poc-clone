@@ -23,30 +23,30 @@ const settingCategories = [
   { id: 'navigations', title: 'NAVIGATIONS / CONTROL' },
   { id: 'accessibility', title: 'ACCESSIBILITY' },
   { id: 'ui-time', title: 'UI / TIME' },
-  { id: 'administration', title: 'ADMINISTRATION' },
+  { id: 'administration', title: 'ADMINISTRATION' }
 ];
 
 const data = [
   {
     bands: 'Advanced',
-    from: '100%',
+    from: '100%'
   },
   {
     bands: 'Mastery',
-    from: '100%',
+    from: '100%'
   },
   {
     bands: 'Basic',
-    from: '100%',
+    from: '100%'
   },
   {
     bands: 'Approaching Basic',
-    from: '100%',
+    from: '100%'
   },
   {
     bands: 'Unsatisfactory',
-    from: '100%',
-  },
+    from: '100%'
+  }
 ];
 
 const navigations = [
@@ -63,7 +63,7 @@ class MainSetting extends Component {
 
     this.state = {
       markAsDoneValue: 1,
-      showAdvancedOption: true,
+      showAdvancedOption: true
     };
   }
 
@@ -391,7 +391,7 @@ class MainSetting extends Component {
 
 MainSetting.propTypes = {
   history: PropTypes.func.isRequired,
-  windowWidth: PropTypes.number.isRequired,
+  windowWidth: PropTypes.number.isRequired
 };
 
 export default MainSetting;

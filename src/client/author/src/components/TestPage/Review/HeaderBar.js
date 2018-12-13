@@ -90,7 +90,7 @@ HeaderBar.propTypes = {
   onRemoveSelected: PropTypes.func.isRequired,
   onCollapse: PropTypes.func.isRequired,
   selectedItems: PropTypes.array.isRequired,
-  windowWidth: PropTypes.number.isRequired,
+  windowWidth: PropTypes.number.isRequired
 };
 
 export default HeaderBar;

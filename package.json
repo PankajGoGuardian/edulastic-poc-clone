@@ -31,7 +31,7 @@
     "test:automation-run": "cypress run",
     "run-server": "babel-node ./src/server/app.js",
     "run-client": "node webpack-devserver.js",
-    "seed": "DEBUG=mongo-seeding node ./db-seed/index.js"
+    "seed": "node ./db-seed/index.js"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",

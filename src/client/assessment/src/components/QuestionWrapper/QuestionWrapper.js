@@ -8,6 +8,7 @@ import { Classification } from '../Classification';
 import { MultipleChoice } from '../MultipleChoice';
 import { ClozeDragDrop } from '../ClozeDragDrop';
 import { ClozeImageDragDrop } from '../ClozeImageDragDrop';
+import { Graph } from '../Graph';
 import { ClozeDropDown } from '../ClozeDropDown';
 import { ClozeText } from '../ClozeText';
 import { ShortText } from '../ShortText';
@@ -53,6 +54,8 @@ const getQuestion = (type) => {
       return Passage;
     case questionType.MATH:
       return MathFormula;
+    case 'graph':
+      return Graph;
     default:
       return null;
   }

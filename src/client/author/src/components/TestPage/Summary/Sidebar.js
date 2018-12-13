@@ -109,7 +109,7 @@ Sidebar.propTypes = {
   onChangeField: PropTypes.func.isRequired,
   analytics: PropTypes.array.isRequired,
   createdBy: PropTypes.object.isRequired,
-  windowWidth: PropTypes.number.isRequired,
+  windowWidth: PropTypes.number.isRequired
   // collections: PropTypes.string.isRequired
 };
 

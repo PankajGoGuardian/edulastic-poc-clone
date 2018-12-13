@@ -11,7 +11,7 @@ Object {
   "payload": Object {
     "curriculumId": "5e26tw6q21",
     "grades": 5,
-    "searchStr": "search",
+    "search": "search",
   },
   "type": "[dictionaries] receive standards request",
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withNamespaces } from '@edulastic/localization';
+import { evaluationType } from '@edulastic/constants';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { cloneDeep } from 'lodash';
@@ -12,15 +13,11 @@ import { getQuestionDataSelector } from '../../../../../../author/src/selectors/
 
 const scoringTypes = [
   {
-    value: 'exactMatch',
+    value: evaluationType.EXACT_MATCH,
     label: 'Exact match'
   },
   {
-    value: 'partialMatch',
-    label: 'Partial match per response'
-  },
-  {
-    value: 'partialMatchV2',
+    value: evaluationType.PARTIAL_MATCH,
     label: 'Partial match'
   }
 ];

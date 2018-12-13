@@ -412,6 +412,50 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       onSelectQuestionType
     },
     {
+      title: 'Cloze with Drop Down',
+      type: 'fill-blanks',
+      stimulus: '',
+      data: {
+        type: 'clozeDropDown',
+        stimulus: '',
+        options: {
+          0: ['A', 'B'],
+          1: ['Choice A', 'Choice B']
+        },
+        validation: {
+          scoring_type: EXACT_MATCH,
+          valid_response: {
+            score: 1,
+            value: []
+          },
+          alt_responses: []
+        }
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Cloze with Text',
+      type: 'fill-blanks',
+      stimulus: '',
+      data: {
+        type: 'clozeText',
+        stimulus: '',
+        options: {
+          0: '',
+          1: ''
+        },
+        validation: {
+          scoring_type: EXACT_MATCH,
+          valid_response: {
+            score: 1,
+            value: []
+          },
+          alt_responses: []
+        }
+      },
+      onSelectQuestionType
+    },
+    {
       title: 'Graphing',
       stimulus: 'Which color has the smallest walvelenght?',
       type: 'graphing',

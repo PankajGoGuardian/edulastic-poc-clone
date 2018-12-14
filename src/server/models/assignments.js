@@ -54,6 +54,12 @@ class Assignment {
     });
   }
 
+  getByClassList(groupIds, studentId) {
+    return this.Assignment.find({
+      $or: [{ class: { $in: groupIds }, specificStudents: false }, { students: studentId }]
+    });
+  }
+
   byTest(testId, ownerId) {
     return this.Assignment.find({
       'assignedBy.id': ownerId,

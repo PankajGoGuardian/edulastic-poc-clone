@@ -62,6 +62,16 @@ class Enrollment {
       { groupId: 1 }
     );
   }
+
+  getClassListByStudent(userId) {
+    return this.Enrollment.find(
+      {
+        userId,
+        type: 'class'
+      },
+      { groupId: 1 }
+    );
+  }
 }
 
 export default Enrollment;

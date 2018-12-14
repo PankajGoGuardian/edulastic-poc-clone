@@ -46,6 +46,12 @@ class UserTestActivity {
   getByUser(userId, filters) {
     return this.UserTestActivity.find({ userId, ...filters }, { __v: 0 });
   }
+
+  // fetch assignment by Fields
+  getByFields(fields) {
+    return this.UserTestActivity.find(fields);
+  }
 }
+
 
 export default UserTestActivity;

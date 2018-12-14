@@ -3,6 +3,7 @@ import { Router } from 'express';
 import EnrollmentModel from '../models/enrollment';
 import AssignmentModel from '../models/assignments';
 import TestModel from '../models/test';
+import UserTestActivityModel from '../models/userTestActivity';
 import { assignmentSchema } from '../validators/assignment';
 import { successHandler } from '../utils/responseHandler';
 
@@ -91,4 +92,20 @@ router.delete('/:id', async (req, res) => {
     res.boom.badRequest(e);
   }
 });
+
+// fetch summary for a particular assignment
+router.get('/:id/test-activity/summary', async (req, res) => {
+  try {
+    const { id: assignmentId } = req.params;
+    const { _id: userId } = req.user;
+    const { status = 'graded' } = req.query;
+    const UserTestActivity = new UserTestActivityModel();
+    const testActivities = await UserTestActivity.getByFields({ assignmentId, userId, status });
+    return successHandler(res, testActivities);
+  } catch (e) {
+    res.log.error(e);
+    res.boom.badRequest(e);
+  }
+});
+
 export default router;

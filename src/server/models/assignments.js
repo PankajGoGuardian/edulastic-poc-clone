@@ -50,7 +50,7 @@ class Assignment {
 
   getByClassId(groupId, studentId) {
     return this.Assignment.find({
-      $or: [{ class: groupId, specificStudent: false }, { students: studentId }]
+      $or: [{ class: groupId, specificStudents: false }, { students: studentId }]
     });
   }
 

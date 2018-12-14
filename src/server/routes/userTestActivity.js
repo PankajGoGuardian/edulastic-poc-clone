@@ -174,3 +174,15 @@ router.get('/', async (req, res) => {
     res.boom.badRequest(e);
   }
 });
+
+router.get('/summary', async (req, res) => {
+  try {
+    const { _id: userId } = req.user;
+    const TestActivity = new UserTestActivityModel();
+    const testActivities = await TestActivity.getByFields({ userId });
+    return successHandler(res, testActivities);
+  } catch (e) {
+    req.log.error(e);
+    res.boom.badRequest(e);
+  }
+});

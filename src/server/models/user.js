@@ -39,6 +39,10 @@ class User {
   getByIds(userIds) {
     return this.User.find({ _id: { $in: userIds } }, userDetailsFormatter);
   }
+
+  deleteByEmail(email) {
+    return this.User.remove({ email });
+  }
 }
 
 export default User;

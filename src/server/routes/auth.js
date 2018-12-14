@@ -1,6 +1,7 @@
 import joi from 'joi';
 import express from 'express';
 import { pick } from 'lodash';
+import { httpMessages } from '@edulastic/constants';
 import UserModel from '../models/user';
 import { userSchema } from '../validators/user';
 import { generateAuthToken } from '../utils/token';
@@ -90,10 +91,10 @@ router.post('/signup', async (req, res) => {
     const user = new UserModel();
     const userExists = await user.getByEmail(data.email);
     if (userExists) {
-      return res.boom.badRequest('email already exists');
+      return res.boom.badRequest(httpMessages.EMAIL_EXIST);
     }
     await user.create(data);
-    return successHandler(res, 'account sucesssfully created');
+    return successHandler(res, httpMessages.ACCOUNT_CREATED);
   } catch (e) {
     req.log.error(e);
     res.boom.badRequest(e);

@@ -108,6 +108,19 @@ router.get('/:id/test-activity/summary', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /assignments:
+ *   get:
+ *     tags:
+ *       - Assignment
+ *     summary: Fetch all the assignments of an user
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 router.get('/', async (req, res) => {
   try {
     const Enrollment = new EnrollmentModel();

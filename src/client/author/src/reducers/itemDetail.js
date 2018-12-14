@@ -12,7 +12,7 @@ import {
   DELETE_ITEM_DETAIL_WIDGET,
   UPDATE_TAB_TITLE,
   USE_TABS,
-  MOVE_WIDGET,
+  MOVE_WIDGET
 } from '../constants/actions';
 
 const initialState = {
@@ -21,7 +21,7 @@ const initialState = {
   loading: false,
   updating: false,
   updateError: null,
-  dragging: false,
+  dragging: false
 };
 
 const deleteWidget = (state, { rowIndex, widgetIndex }) => {
@@ -40,14 +40,14 @@ const updateDimension = (state, { left, right }) => {
   if (left === '100%') {
     newState.item.rows[0].widgets = [
       ...newState.item.rows[0].widgets,
-      ...newState.item.rows[1].widgets,
+      ...newState.item.rows[1].widgets
     ];
     newState.item.rows.length = 1;
   } else if (!newState.item.rows[1]) {
     newState.item.rows[1] = {
       tabs: ['Tab 1', 'Tab 2'],
       dimension: right,
-      widgets: [],
+      widgets: []
     };
   } else {
     newState.item.rows[1].dimension = right;

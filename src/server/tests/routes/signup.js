@@ -23,7 +23,6 @@ test('#user Signup', async (t) => {
   try {
     let res = await request.post(url).send(user1);
     t.is(res.status, 200);
-    t.log(res.body);
     t.is(res.body.result, httpMessages.ACCOUNT_CREATED);
     res = await request.post(url).send(user1);
     t.is(res.status, 400);

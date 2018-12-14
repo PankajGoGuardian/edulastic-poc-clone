@@ -28,7 +28,12 @@ const {
 
 app.use(boom());
 app.use(cors());
-app.use(pino());
+
+// meh, test dont need logs 🗡
+if (process.env.NODE_ENV !== 'test') {
+  app.use(pino());
+}
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 /** ************************

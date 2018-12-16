@@ -94,6 +94,28 @@ router.delete('/:id', async (req, res) => {
 });
 
 // fetch summary for a particular assignment
+/**
+ * @swagger
+ * /assignments/{id}/test-activity/summary:
+ *   get:
+ *     tags:
+ *       - TestActivity
+ *     summary: Fetch user test activity by assignment
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: status
+ *          in: query
+ *          example:
+ *            status: graded
+ *        - name: id
+ *          in: path
+ *          example:
+ *            id: 5bfe576618ab6f48a5fa6594
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 router.get('/:id/test-activity/summary', async (req, res) => {
   try {
     const { id: assignmentId } = req.params;

@@ -175,6 +175,19 @@ router.get('/', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /usertestactivity/summary:
+ *   get:
+ *     tags:
+ *       - TestActivity
+ *     summary: Fetches all user test activity
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: successful
+ */
 router.get('/summary', async (req, res) => {
   try {
     const { _id: userId } = req.user;

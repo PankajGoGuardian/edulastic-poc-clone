@@ -13,7 +13,7 @@ const receiveStandards = ({ curriculumId, grades, search }) => {
       url: '/search/standards',
       data
     })
-    .then(result => result.data.result.hits.hits.map(el => el._source));
+    .then(result => result.data.result.hits.hits.map(el => ({ _id: el._id, ...el._source })));
 };
 
 export default {

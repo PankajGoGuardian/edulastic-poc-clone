@@ -13,8 +13,6 @@ export const SAVE_QUESTION_ERROR = '[question] save question error';
 export const SET_QUESTION_DATA = '[question] set question data';
 export const SET_QUESTION_ALIGNMENT_ADD_ROW = '[question] set question alignment add row';
 export const SET_QUESTION_ALIGNMENT_REMOVE_ROW = '[question] set question alignment remove row';
-export const SET_QUESTION_ALIGNMENT_ROW = '[question] set question alignment row';
-export const SET_QUESTION_ALIGNMENT_ROW_STANDARDS = '[question] set question alignment row standards';
 export const SET_QUESTION = '[question] set question';
 
 // assessment
@@ -115,6 +113,7 @@ export const RECEIVE_DICT_STANDARDS_SUCCESS =
   '[dictionaries] receive standards success';
 export const RECEIVE_DICT_STANDARDS_ERROR =
   '[dictionaries] receive standards error';
+export const CLEAR_DICT_STANDARDS = '[dictionaries] clear standards';
 
 // assignments
 export const ADD_ASSIGNMENT = '[assignments] add assignment';

@@ -15,21 +15,6 @@ Object {
 }
 `;
 
-exports[`dictionaries should return the initial state 2`] = `
-Object {
-  "curriculums": Object {
-    "curriculums": Array [],
-    "error": null,
-    "loading": true,
-  },
-  "standards": Object {
-    "error": null,
-    "loading": false,
-    "standards": Array [],
-  },
-}
-`;
-
 exports[`dictionaries should return the receive dictionary curriculums error state 1`] = `
 Object {
   "curriculums": Object {
@@ -69,21 +54,6 @@ Object {
       "search": "match",
     },
     "error": null,
-    "loading": false,
-  },
-  "standards": Object {
-    "error": null,
-    "loading": false,
-    "standards": Array [],
-  },
-}
-`;
-
-exports[`dictionaries should return the receive dictionary curriculums success state 2`] = `
-Object {
-  "curriculums": Object {
-    "curriculums": Array [],
-    "error": "unexpected error happened",
     "loading": false,
   },
   "standards": Object {

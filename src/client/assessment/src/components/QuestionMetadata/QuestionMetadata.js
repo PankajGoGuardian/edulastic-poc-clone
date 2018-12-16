@@ -3,18 +3,22 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Paper } from '@edulastic/common';
 import { Icon, Select, Button } from 'antd';
-import { blue } from '@edulastic/colors';
+import { blue, green, white } from '@edulastic/colors';
 import { compose } from 'redux';
 import { withNamespaces } from 'react-i18next';
 import connect from 'react-redux/es/connect/connect';
+import _ from 'lodash';
+import { IconPencilEdit, IconTrash } from '@edulastic/icons';
+
+import { Subtitle } from '../common';
 import {
   getDictCurriculumsAction,
-  getDictStandardsForCurriculumAction
+  getDictStandardsForCurriculumAction,
+  clearDictStandardsAction
 } from '../../../../author/src/actions/dictionaries';
 import {
-  setQuestionAlignmentRowAction,
-  setQuestionAlignmentRowStandardsAction,
-  setQuestionAlignmentAddRowAction
+  setQuestionAlignmentAddRowAction,
+  setQuestionAlignmentRemoveRowAction
 } from '../../../../author/src/actions/question';
 import { getCurriculumsListSelector, getStandardsListSelector } from '../../../../author/src/selectors/dictionaries';
 import { getQuestionAlignmentSelector } from '../../../../author/src/selectors/question';
@@ -27,22 +31,29 @@ class QuestionMetadata extends Component {
   static propTypes = {
     getCurriculums: PropTypes.func.isRequired,
     curriculums: PropTypes.arrayOf(PropTypes.shape({
+      _id: PropTypes.string.isRequired,
       curriculum: PropTypes.string.isRequired,
       grades: PropTypes.array.isRequired,
       subject: PropTypes.string.isRequired
     })).isRequired,
-    standards: PropTypes.array.isRequired,
+    curriculumStandards: PropTypes.array.isRequired,
     alignment: PropTypes.arrayOf(PropTypes.shape({
-      curriculumId: PropTypes.string,
-      curriculum: PropTypes.string,
-      subject: PropTypes.string,
-      grades: PropTypes.array,
-      alignmentStandards: PropTypes.array
+      curriculumId: PropTypes.string.isRequired,
+      curriculum: PropTypes.string.isRequired,
+      subject: PropTypes.string.isRequired,
+      standards: PropTypes.arrayOf(PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        level: PropTypes.string.isRequired,
+        identifier: PropTypes.string.isRequired,
+        tloIdentifier: PropTypes.string,
+        eloIdentifier: PropTypes.string,
+        subEloIdentifier: PropTypes.string
+      }))
     })),
-    getStandards: PropTypes.func.isRequired,
-    setQuestionAlignmentRow: PropTypes.func.isRequired,
-    setQuestionAlignmentRowStandards: PropTypes.func.isRequired,
+    getCurriculumStandards: PropTypes.func.isRequired,
     setQuestionAlignmentAddRow: PropTypes.func.isRequired,
+    setQuestionAlignmentRemoveRow: PropTypes.func.isRequired,
+    clearDictStandards: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired
   };
 
@@ -51,48 +62,96 @@ class QuestionMetadata extends Component {
   };
 
   state = {
-    grades: {}
+    isEditRow: false,
+    grades: [],
+    curriculum: undefined,
+    curriculumId: undefined,
+    subject: undefined,
+    standards: []
   };
 
-  handleCurriculumSelect = index => (curriculumId, option) => {
-    const { curriculum, subject, grades } = option.props.obj;
-    const { setQuestionAlignmentRow } = this.props;
-    setQuestionAlignmentRow(
-      index,
-      { curriculum, curriculumId, subject, grades }
-    );
+  handleEditRow = (index, rowData) => () => {
+    this.setState({
+      isEditRow: true,
+      grades: [],
+      curriculum: rowData.curriculum,
+      curriculumId: rowData.curriculumId,
+      subject: rowData.subject,
+      standards: rowData.standards
+    });
+    const { setQuestionAlignmentRemoveRow, clearDictStandards } = this.props;
+    clearDictStandards();
+    setQuestionAlignmentRemoveRow(index);
   };
 
-  handleGradeChange = index => (selectedGrades) => {
-    const { grades } = this.state;
-    this.setState({ grades: { ...grades, [index]: selectedGrades } });
+  handleDeleteRow = index => () => {
+    const { setQuestionAlignmentRemoveRow } = this.props;
+    setQuestionAlignmentRemoveRow(index);
   };
 
-  handleStandardSearch = (index, curriculumId) => (searchStr) => {
-    const { getStandards } = this.props;
-    const { grades } = this.state;
-    const searchGrades = grades[index] || [];
-    if (searchStr.length > 0) {
-      getStandards(curriculumId, searchGrades, searchStr);
+  handleCurriculumSelect = (curriculumId, option) => {
+    const { curriculum, subject } = option.props.obj;
+    this.setState({
+      curriculum,
+      curriculumId,
+      subject,
+      standards: []
+    });
+  };
+
+  handleGradeChange = (grades) => {
+    this.setState({ grades });
+  };
+
+  handleStandardSearch = (searchStr) => {
+    const { getCurriculumStandards } = this.props;
+    const { grades, curriculumId } = this.state;
+    if (curriculumId && searchStr.length >= 2) {
+      getCurriculumStandards(curriculumId, grades, searchStr);
     }
   };
 
-  handleStandardSelect = (index, alignmentStandards) => (standards, option) => {
-    const { setQuestionAlignmentRowStandards } = this.props;
-    const newStandard = option.props.obj;
-    const newAlignmentStandards = [...alignmentStandards, newStandard];
-    setQuestionAlignmentRowStandards(index, newAlignmentStandards);
+  handleStandardSelect = (chosenStandardsArr, option) => {
+    const { standards } = this.state;
+    const newStandard = _.pick(option.props.obj, [
+      '_id',
+      'level',
+      'identifier',
+      'tloIdentifier',
+      'eloIdentifier',
+      'subEloIdentifier'
+    ]);
+    const newStandards = [...standards, newStandard];
+    this.setState({ standards: newStandards });
   };
 
-  handleStandardDeselect = (index, alignmentStandards) => (removedElement) => {
-    const { setQuestionAlignmentRowStandards } = this.props;
-    const newAlignmentStandards = alignmentStandards.filter(el => el.identifier !== removedElement);
-    setQuestionAlignmentRowStandards(index, newAlignmentStandards);
+  handleStandardDeselect = (removedElement) => {
+    const { standards } = this.state;
+    const newStandards = standards.filter(el => el.identifier !== removedElement);
+    this.setState({ standards: newStandards });
+  };
+
+  handleSaveRow = () => {
+    const { setQuestionAlignmentAddRow } = this.props;
+    const newAlignmentRow = _.pick(this.state, [
+      'curriculum',
+      'curriculumId',
+      'subject',
+      'standards'
+    ]);
+    setQuestionAlignmentAddRow(newAlignmentRow);
+    this.setState({
+      isEditRow: false,
+      grades: [],
+      curriculum: undefined,
+      curriculumId: undefined,
+      subject: undefined,
+      standards: []
+    });
   };
 
   handleAdd = () => {
-    const { setQuestionAlignmentAddRow } = this.props;
-    setQuestionAlignmentAddRow();
+    this.setState({ isEditRow: true });
   };
 
   componentDidMount() {
@@ -102,34 +161,79 @@ class QuestionMetadata extends Component {
     }
   }
 
-  renderRow(row, index) {
+  renderShowAlignmentRow(row, index) {
+    const {
+      curriculum,
+      standards
+    } = row;
+    const standardsArr = standards.map(el => el.identifier);
+    return (
+      <RowContainer key={index}>
+        <ItemBody>
+          <CurruculumName>{curriculum}</CurruculumName>
+        </ItemBody>
+        <ItemBody>
+          <Select
+            mode="multiple"
+            style={{ width: 600 }}
+            placeholder="Select Standards"
+            filterOption={false}
+            value={standardsArr}
+            disabled
+          >
+            { standardsArr.map(el => (
+              <Select.Option key={el} value={el}>{el}</Select.Option>
+            )) }
+          </Select>
+        </ItemBody>
+        <ItemBody>
+          <Buttons>
+            <Button htmlType="button" onClick={this.handleEditRow(index, row)} shape="circle">
+              <IconPencilEdit color={white} />
+            </Button>
+            <Button htmlType="button" onClick={this.handleDeleteRow(index)} shape="circle">
+              <IconTrash color={white} />
+            </Button>
+          </Buttons>
+        </ItemBody>
+      </RowContainer>
+    );
+  }
+
+  renderEditAlignmentRow() {
     const {
       curriculums,
-      standards
+      curriculumStandards,
+      alignment,
+      t
     } = this.props;
     const {
       curriculumId,
       subject,
-      grades,
-      alignmentStandards
-    } = row;
-    const selectedStandards = alignmentStandards.map(el => el.identifier);
+      standards,
+      grades
+    } = this.state;
+    const standardsArr = standards.map(el => el.identifier);
+    const alignmentCurriculumsArr = alignment.map(el => el.curriculumId);
+    const availableCurriculums = curriculums.filter(
+      el => !alignmentCurriculumsArr.includes(el._id)
+    );
     return (
-      <RowContainer key={index}>
+      <RowContainer>
         <ItemBody>
           <Select
             showSearch
             style={{ width: 200 }}
             placeholder="Select Curriculum"
             optionFilterProp="children"
-            onSelect={this.handleCurriculumSelect(index)}
+            onSelect={this.handleCurriculumSelect}
             filterOption={handleFilter}
             value={curriculumId}
             suffixIcon={
               <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
             }
           >
-            { curriculums.map(el => (
+            { availableCurriculums.map(el => (
               <Select.Option key={el._id} value={el._id} obj={el}>{el.curriculum}</Select.Option>
             )) }
           </Select>
@@ -146,11 +250,9 @@ class QuestionMetadata extends Component {
               <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
             }
           >
-            { subject
+            { curriculumId
             && (
-              <Select.Option key={subject} value={subject}>
-                {subject}
-              </Select.Option>
+              <Select.Option key={subject} value={subject}>{subject}</Select.Option>
             )}
           </Select>
         </ItemBody>
@@ -159,44 +261,60 @@ class QuestionMetadata extends Component {
             mode="multiple"
             style={{ width: 200 }}
             placeholder="Select Grade"
-            onChange={this.handleGradeChange(index)}
+            onChange={this.handleGradeChange}
+            value={grades}
           >
-            { grades && grades.map(el => (
-              <Select.Option key={el} value={el}>{selectsData.allGradesObj[el].text}</Select.Option>
-            )) }
+            { curriculumId
+            && selectsData.allGrades.map(el => (
+              <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
+            ))}
           </Select>
         </ItemBody>
         <ItemBody>
           <Select
-            onSearch={this.handleStandardSearch(index, curriculumId)}
+            onSearch={this.handleStandardSearch}
             mode="multiple"
             style={{ width: 200 }}
             placeholder="Select Standards"
-            onSelect={this.handleStandardSelect(index, alignmentStandards)}
-            onDeselect={this.handleStandardDeselect(index, alignmentStandards)}
+            onSelect={this.handleStandardSelect}
+            onDeselect={this.handleStandardDeselect}
             filterOption={false}
-            value={selectedStandards}
+            value={standardsArr}
           >
-            { standards.map(el => (
+            { curriculumStandards.map(el => (
               <Select.Option key={el.identifier} value={el.identifier} obj={el}>
                 {`${el.identifier}: ${el.description}`}
               </Select.Option>
             )) }
           </Select>
         </ItemBody>
+        <ButtonSave>
+          <Button htmlType="button" type="primary" onClick={this.handleSaveRow}>
+            <span>{t('component.options.save')}</span>
+          </Button>
+        </ButtonSave>
       </RowContainer>
     );
   }
 
   render() {
     const { alignment, t } = this.props;
+    const { isEditRow } = this.state;
     return (
       <Container>
-        <AlignmentContainer>
-          { alignment.map((el, index) => this.renderRow(el, index))}
-        </AlignmentContainer>
+        <Subtitle>Associated Standards</Subtitle>
+        <ShowAlignmentRowsContainer>
+          { alignment.map((el, index) => this.renderShowAlignmentRow(el, index))}
+        </ShowAlignmentRowsContainer>
+        { isEditRow && this.renderEditAlignmentRow() }
         <AddButtonContainer>
-          <Button icon="plus" type="primary" onClick={this.handleAdd}>
+          <Button
+            htmlType="button"
+            icon="plus"
+            type="primary"
+            onClick={this.handleAdd}
+            disabled={isEditRow}
+          >
             <span>{t('component.options.newcurriculum')}</span>
           </Button>
         </AddButtonContainer>
@@ -210,15 +328,15 @@ const enhance = compose(
   connect(
     state => ({
       curriculums: getCurriculumsListSelector(state),
-      standards: getStandardsListSelector(state),
+      curriculumStandards: getStandardsListSelector(state),
       alignment: getQuestionAlignmentSelector(state)
     }),
     {
       getCurriculums: getDictCurriculumsAction,
-      getStandards: getDictStandardsForCurriculumAction,
-      setQuestionAlignmentRow: setQuestionAlignmentRowAction,
-      setQuestionAlignmentRowStandards: setQuestionAlignmentRowStandardsAction,
-      setQuestionAlignmentAddRow: setQuestionAlignmentAddRowAction
+      getCurriculumStandards: getDictStandardsForCurriculumAction,
+      setQuestionAlignmentAddRow: setQuestionAlignmentAddRowAction,
+      setQuestionAlignmentRemoveRow: setQuestionAlignmentRemoveRowAction,
+      clearDictStandards: clearDictStandardsAction
     }
   )
 );
@@ -229,9 +347,15 @@ const Container = styled(Paper)`
   width: 100%
 `;
 
-const AlignmentContainer = styled.div`
+const ShowAlignmentRowsContainer = styled.div`
   margin-top: 11px;
   margin-botton: 11px;
+`;
+
+const CurruculumName = styled.div`
+  margin-top: 8px;
+  width: 200px;
+  font-weight: bold;
 `;
 
 const RowContainer = styled.div`
@@ -273,6 +397,22 @@ const ItemBody = styled.div`
   .ant-select-arrow-icon {
     color: ${blue};
   }
+`;
+
+const Buttons = styled.div`
+  margin-top: 2px;
+  margin-left: 6px;
+  display: flex;
+
+  .ant-btn-circle {
+    background: ${green};
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16);
+  }
+`;
+
+const ButtonSave = styled.div`
+  margin-left: 6px;
+  margin-top: 14px;
 `;
 
 const AddButtonContainer = styled.div`

@@ -35,6 +35,9 @@ Object {
 
 exports[`Question set question alignment add row should return an action 1`] = `
 Object {
+  "payload": Object {
+    "alignmentRow": undefined,
+  },
   "type": "[question] set question alignment add row",
 }
 `;

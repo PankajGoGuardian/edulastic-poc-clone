@@ -13,7 +13,7 @@ export function createStandardsSearch({ curriculumId, grades, search }) {
           {
             bool: {
               should: [
-                { match_phrase: { identifier: search } },
+                { match_phrase_prefix: { identifier: search } },
                 { match: { description: search } }
               ]
             }

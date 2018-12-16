@@ -4,7 +4,8 @@ import {
   RECEIVE_DICT_CURRICULUMS_ERROR,
   RECEIVE_DICT_STANDARDS_REQUEST,
   RECEIVE_DICT_STANDARDS_SUCCESS,
-  RECEIVE_DICT_STANDARDS_ERROR
+  RECEIVE_DICT_STANDARDS_ERROR,
+  CLEAR_DICT_STANDARDS
 } from '../constants/actions';
 
 const initialItemsState = {
@@ -72,6 +73,14 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
           ...state.standards,
           loading: false,
           error: payload.error
+        }
+      };
+    case CLEAR_DICT_STANDARDS:
+      return {
+        ...state,
+        standards: {
+          ...state.standards,
+          standards: []
         }
       };
     default:

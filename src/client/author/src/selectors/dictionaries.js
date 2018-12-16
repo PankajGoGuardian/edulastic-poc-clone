@@ -5,5 +5,4 @@ export const curriculumsSelector = createSelector(stateSelector, state => state.
 export const getCurriculumsListSelector = createSelector(curriculumsSelector, state => state.curriculums);
 
 export const standardsSelector = createSelector(stateSelector, state => state.standards);
-// export const getStandardsListSelector = createSelector(standardsSelector, state => state.standards);
-export const getStandardsListSelector = state => state.dictionaries.standards.standards;
+export const getStandardsListSelector = createSelector(standardsSelector, state => state.standards);

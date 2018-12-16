@@ -6,10 +6,9 @@ import {
   SAVE_QUESTION_SUCCESS,
   SAVE_QUESTION_ERROR,
   SET_QUESTION_DATA,
-  SET_QUESTION_ALIGNMENT_ROW,
   SET_QUESTION,
-  SET_QUESTION_ALIGNMENT_ROW_STANDARDS,
-  SET_QUESTION_ALIGNMENT_ADD_ROW
+  SET_QUESTION_ALIGNMENT_ADD_ROW,
+  SET_QUESTION_ALIGNMENT_REMOVE_ROW
 } from '../constants/actions';
 
 const initialState = {
@@ -62,33 +61,22 @@ const question = (state = initialState, { type, payload }) => {
         ...state,
         entity: { ...state.entity, data: payload.data }
       };
-    case SET_QUESTION_ALIGNMENT_ROW: {
-      const { index, alignmentRow } = payload;
-      const newAlignment = [...state.entity.alignment];
-      newAlignment[index] = { ...alignmentRow, alignmentStandards: [] };
-      return {
-        ...state,
-        entity: {
-          ...state.entity,
-          alignment: newAlignment
-        }
-      };
-    }
-    case SET_QUESTION_ALIGNMENT_ROW_STANDARDS: {
-      const { index, alignmentStandards } = payload;
-      const newAlignment = [...state.entity.alignment];
-      newAlignment[index] = { ...state.entity.alignment[index], alignmentStandards };
-      return {
-        ...state,
-        entity: {
-          ...state.entity,
-          alignment: newAlignment
-        }
-      };
-    }
     case SET_QUESTION_ALIGNMENT_ADD_ROW: {
+      const { alignmentRow } = payload;
       const newAlignment = [...state.entity.alignment];
-      newAlignment.push({ alignmentStandards: [] });
+      newAlignment.push(alignmentRow);
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          alignment: newAlignment
+        }
+      };
+    }
+    case SET_QUESTION_ALIGNMENT_REMOVE_ROW: {
+      const { index } = payload;
+      const newAlignment = [...state.entity.alignment];
+      newAlignment.splice(index, 1);
       return {
         ...state,
         entity: {

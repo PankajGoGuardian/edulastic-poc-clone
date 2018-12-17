@@ -13,3 +13,4 @@ export { default as assignmentApi } from './src/assignment';
 export { default as API_CONFIG } from './src/config';
 export { default as groupApi } from './src/group';
 export { default as enrollmentApi } from './src/enrollment';
+export { default as evaluateApi } from './src/evaluate';

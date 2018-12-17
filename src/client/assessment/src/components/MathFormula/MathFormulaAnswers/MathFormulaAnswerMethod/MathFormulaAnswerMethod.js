@@ -5,39 +5,50 @@ import styled from 'styled-components';
 import { IconTrash } from '@edulastic/icons';
 import { greenDark, red, grey } from '@edulastic/colors';
 import { FlexContainer } from '@edulastic/common';
+import { math } from '@edulastic/constants';
 
 import Options from '../../../common/Options';
 import ThousandsSeparators from './ThousandsSeparators';
 import { MathInput } from '../../common';
 
+const {
+  methods: methodsConst,
+  fields: fieldsConst,
+  decimalSeparators: decimalSeparatorsConst,
+  syntaxes: syntaxesConst
+} = math;
+
 const methods = [
-  'equivSymbolic',
-  'equivLiteral',
-  'equivValue',
-  'isSimplified',
-  'isFactorised',
-  'isExpanded',
-  'isUnit',
-  'isTrue',
-  'stringMatch',
-  'equivSyntax'
+  methodsConst.EQUIV_SYMBOLIC,
+  methodsConst.EQUIV_LITERAL,
+  methodsConst.EQUIV_VALUE,
+  methodsConst.IS_SIMPLIFIED,
+  methodsConst.IS_FACTORISED,
+  methodsConst.IS_EXPANDED,
+  methodsConst.IS_UNIT,
+  methodsConst.IS_TRUE,
+  methodsConst.STRING_MATCH,
+  methodsConst.EQUIV_SYNTAX
 ];
 
-const fields = ['integer', 'real', 'complex'];
+const fields = [fieldsConst.INTEGER, fieldsConst.REAL, fieldsConst.COMPLEX];
 
-const decimalSeparators = [{ value: '.', label: 'Dot' }, { value: ',', label: 'Comma' }];
+const decimalSeparators = [
+  { value: decimalSeparatorsConst.DOT, label: 'Dot' },
+  { value: decimalSeparatorsConst.COMMA, label: 'Comma' }
+];
 
 const syntaxes = [
   { value: '', label: '' },
-  { value: 'number', label: 'Number' },
-  { value: 'integer', label: 'Integer' },
-  { value: 'decimal', label: 'Decimal' },
-  { value: 'scientific', label: 'Scientific' },
-  { value: 'variable', label: 'Variable' },
-  { value: 'fraction', label: 'Fraction' },
-  { value: 'mixedFraction', label: 'Mixed fraction' },
-  { value: 'simpleFraction', label: 'Simple fraction' },
-  { value: 'fractionOrDecimal', label: 'Fraction or decimal' }
+  { value: syntaxesConst.NUMBER, label: 'Number' },
+  { value: syntaxesConst.INTEGER, label: 'Integer' },
+  { value: syntaxesConst.DECIMAL, label: 'Decimal' },
+  { value: syntaxesConst.SCIENTIFIC, label: 'Scientific' },
+  { value: syntaxesConst.VARIABLE, label: 'Variable' },
+  { value: syntaxesConst.FRACTION, label: 'Fraction' },
+  { value: syntaxesConst.MIXED_FRACTION, label: 'Mixed fraction' },
+  { value: syntaxesConst.SIMPLE_FRACTION, label: 'Simple fraction' },
+  { value: syntaxesConst.FRACTION_OR_DECIMAL, label: 'Fraction or decimal' }
 ];
 
 const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label, options }) => {
@@ -103,7 +114,7 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
         </Col>
       </StyledRow>
 
-      {method === 'isFactorised' && (
+      {method === methods.IS_FACTORISED && (
         <StyledRow gutter={32}>
           <Col span={12}>
             <Options.Label>Field</Options.Label>
@@ -123,9 +134,13 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
         </StyledRow>
       )}
 
-      {['equivSymbolic', 'equivLiteral', 'equivValue', 'isUnit', 'stringMatch'].includes(
-        method
-      ) && (
+      {[
+        methodsConst.EQUIV_SYMBOLIC,
+        methodsConst.EQUIV_LITERAL,
+        methodsConst.EQUIV_VALUE,
+        methodsConst.IS_UNIT,
+        methodsConst.STRING_MATCH
+      ].includes(method) && (
         <StyledRow gutter={32}>
           <Col span={12}>
             <Options.Label>Value</Options.Label>
@@ -142,7 +157,7 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
         </StyledRow>
       )}
 
-      {method === 'stringMatch' && (
+      {method === methodsConst.STRING_MATCH && (
         <StyledRow gutter={32}>
           <Col span={12}>
             <Checkbox
@@ -165,7 +180,7 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
         </StyledRow>
       )}
 
-      {method === 'equivSyntax' && (
+      {method === methodsConst.EQUIV_SYNTAX && (
         <StyledRow gutter={32}>
           <Col span={12}>
             <Options.Label>Rule</Options.Label>
@@ -185,7 +200,7 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
         </StyledRow>
       )}
 
-      {method === 'equivLiteral' && (
+      {method === methodsConst.EQUIV_LITERAL && (
         <Fragment>
           <StyledRow gutter={32}>
             <Col span={12}>
@@ -240,7 +255,7 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
 
       {['equivSymbolic', 'equivValue', 'isTrue', 'equivSyntax'].includes(method) && (
         <StyledRow gutter={32}>
-          {method !== 'equivSyntax' && (
+          {method !== methodsConst.EQUIV_SYNTAX && (
             <Col span={12}>
               <FlexContainer>
                 <Input
@@ -254,7 +269,7 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
               </FlexContainer>
             </Col>
           )}
-          {method !== 'isTrue' && (
+          {method !== methodsConst.IS_TRUE && (
             <Col span={12}>
               <Checkbox
                 checked={options.ignoreText}
@@ -267,7 +282,7 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
         </StyledRow>
       )}
 
-      {['equivSymbolic', 'equivValue'].includes(method) && (
+      {[methodsConst.EQUIV_SYMBOLIC, methodsConst.EQUIV_VALUE].includes(method) && (
         <StyledRow gutter={32}>
           <Col span={12}>
             <Checkbox
@@ -277,7 +292,7 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
               Compare sides
             </Checkbox>
           </Col>
-          {method === 'equivSymbolic' && (
+          {method === methodsConst.EQUIV_SYMBOLIC && (
             <Col span={12}>
               <Checkbox
                 checked={options.allowEulersNumber}
@@ -290,7 +305,7 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
         </StyledRow>
       )}
 
-      {!['stringMatch', 'equivSyntax'].includes(method) && (
+      {![methodsConst.STRING_MATCH, methodsConst.EQUIV_SYNTAX].includes(method) && (
         <StyledRow gutter={32}>
           <Col span={12}>
             <Checkbox

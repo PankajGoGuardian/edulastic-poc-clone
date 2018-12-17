@@ -16,6 +16,11 @@ export const Heading = styled.div`
 export const Block = styled.div`
   border-bottom: 1px solid #d9d6d6;
   padding-bottom: 20px;
+  margin-bottom: 35px;
+
+  :last-child {
+    margin-bottom: 0;
+  }
 `;
 
 export const Label = styled.label`

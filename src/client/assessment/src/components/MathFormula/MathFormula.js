@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Paper } from '@edulastic/common';
 import styled from 'styled-components';
@@ -8,24 +8,26 @@ import { cloneDeep } from 'lodash';
 
 import { QuestionTextArea, Subtitle } from '../common';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
-import withAnswerSave from '../HOC/withAnswerSave';
 import MathFormulaPreview from './MathFormulaPreview';
 import MathFormulaOptions from './MathFormulaOptions';
 import MathFormulaAnswers from './MathFormulaAnswers';
 import { MathInput } from './common';
+import { CLEAR, PREVIEW, EDIT } from '../../constants/constantsForQuestions';
 
 const EmptyWrapper = styled.div``;
 
-const MathFormula = ({
-  view,
-  testItem,
-  previewTab,
-  item,
-  setQuestionData,
-  saveAnswer,
-  userAnswer
-}) => {
+const MathFormula = ({ view, testItem, previewTab, item, setQuestionData }) => {
   const Wrapper = testItem ? EmptyWrapper : Paper;
+  const [studentTemplate, setStudentTemplate] = useState();
+
+  const setTemplate = (template) => {
+    const latex = template.replace(/\\embed\{response\}/g, '\\MathQuillMathField{}');
+    setStudentTemplate(latex);
+  };
+
+  useState(() => {
+    setTemplate(item.template);
+  }, []);
 
   const handleItemChangeChange = (prop, uiStyle) => {
     const newItem = cloneDeep(item);
@@ -42,7 +44,7 @@ const MathFormula = ({
 
   return (
     <Fragment>
-      {view === 'edit' && (
+      {view === EDIT && (
         <Fragment>
           <Paper style={{ marginBottom: 30 }}>
             <Subtitle>Compose question</Subtitle>
@@ -52,31 +54,30 @@ const MathFormula = ({
               value={item.stimulus}
             />
             <Subtitle>Template</Subtitle>
-            <MathInput value={item.template} onInput={handleUpdateTemplate} />
+            <MathInput
+              showResponse
+              value={item.template}
+              onInput={(latex) => {
+                handleUpdateTemplate(latex);
+                setTemplate(latex);
+              }}
+            />
             <MathFormulaAnswers item={item} setQuestionData={setQuestionData} />
           </Paper>
-          <MathFormulaOptions onChange={handleItemChangeChange} uiStyle={item.ui_style} />
+          <MathFormulaOptions
+            onChange={handleItemChangeChange}
+            uiStyle={item.ui_style}
+            responseContainers={item.response_containers}
+            textBlocks={item.text_blocks}
+            stimulusReview={item.stimulus_review}
+            instructorStimulus={item.instructor_stimulus}
+            metadata={item.metadata}
+          />
         </Fragment>
       )}
-      {view === 'preview' && (
+      {view === PREVIEW && (
         <Wrapper style={{ height: '100%' }}>
-          {previewTab === 'show' && (
-            <MathFormulaPreview
-              type="show"
-              saveAnswer={saveAnswer}
-              userAnswer={userAnswer || item.template}
-              item={item}
-            />
-          )}
-
-          {previewTab === 'clear' && (
-            <MathFormulaPreview
-              type="clear"
-              saveAnswer={saveAnswer}
-              userAnswer={userAnswer || item.template}
-              item={item}
-            />
-          )}
+          <MathFormulaPreview type={previewTab} studentTemplate={studentTemplate} item={item} />
         </Wrapper>
       )}
     </Fragment>
@@ -85,23 +86,19 @@ const MathFormula = ({
 
 MathFormula.propTypes = {
   view: PropTypes.string.isRequired,
-  saveAnswer: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  userAnswer: PropTypes.string,
   previewTab: PropTypes.string,
   testItem: PropTypes.bool,
   item: PropTypes.object
 };
 
 MathFormula.defaultProps = {
-  previewTab: 'clear',
+  previewTab: CLEAR,
   testItem: false,
-  item: {},
-  userAnswer: ''
+  item: {}
 };
 
 const enhance = compose(
-  withAnswerSave,
   connect(
     null,
     {

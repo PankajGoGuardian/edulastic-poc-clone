@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { white, grey, blue } from '@edulastic/colors';
 
 const MathKeyboardStyles = styled.div`
   .keyboard {
@@ -30,6 +31,7 @@ const MathKeyboardStyles = styled.div`
     color: #434b5d;
     border: none;
     outline: none;
+    margin-right: 10px;
   }
   .keyboard__header__select .ant-select-selection--single {
     border: none;
@@ -37,6 +39,24 @@ const MathKeyboardStyles = styled.div`
 
   .keyboard__header__close {
     border-color: #d9d9d9;
+  }
+
+  .keyboard__header__response {
+    border: none;
+    background: ${white};
+    padding: 5px;
+    border: 1px solid ${grey};
+    cursor: pointer;
+
+    .keyboard__header__response_in {
+      border: 2px dashed #808080;
+      display: inline-block;
+      padding: 3px 10px;
+
+      :hover {
+        border-color: ${blue};
+      }
+    }
   }
 
   .row {

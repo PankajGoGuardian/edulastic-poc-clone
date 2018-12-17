@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { Button, Icon, Select } from 'antd';
 import PropTypes from 'prop-types';
+import { math } from '@edulastic/constants';
 
 import Left from '../../assets/images/numpads/left.svg';
 import Right from '../../assets/images/numpads/right.svg';
@@ -16,40 +17,78 @@ import Group993 from '../../assets/images/numpads/993.svg';
 
 import MathKeyboardStyles from './MathKeyboardStyles';
 
+const { EMBED_RESPONSE } = math;
+
 class MathKeyboard extends React.PureComponent {
   state = {
     dropdownOpened: false
   };
+
+  keyboardOptions = [
+    { value: 'all', label: 'All Symbols' },
+    { value: 'basic', label: 'Basic' },
+    { value: 'x', label: 'x' },
+    { value: '<', label: '<' },
+    { value: '∠', label: '∠' },
+    { value: 'matrix', label: 'matrix' },
+    { value: '∩', label: '∩' },
+    { value: 'sin', label: 'sin' },
+    { value: 'α', label: 'α' },
+    { value: 'discrete', label: 'Discrete' },
+    { value: 'kg', label: 'kg' },
+    { value: 'lb', label: 'lb' },
+    { value: 'groupingSymbols', label: <img src={Group944} width={16} height={16} /> },
+    { value: 'delta', label: 'Δ' },
+    { value: 'chem', label: 'Chem' }
+  ];
 
   close = () => {
     const { onClose } = this.props;
     onClose();
   };
 
+  handleGroupSelect = (value) => {
+    console.log(value);
+  }
+
   render() {
     const { dropdownOpened } = this.state;
-    const { onInput } = this.props;
+    const { onInput, showResponse } = this.props;
 
     return (
       <MathKeyboardStyles>
         <div className="keyboard">
           <div className="keyboard__header">
-            <Select
-              defaultValue="basic"
-              className="keyboard__header__select"
-              size="large"
-              onDropdownVisibleChange={open => this.setState({ dropdownOpened: open })}
-              suffixIcon={(
-                <Icon
-                  type={dropdownOpened ? 'up' : 'down'}
-                  style={{ color: '#51aef8' }}
-                  theme="outlined"
-                />
+            <div>
+              <Select
+                defaultValue="basic"
+                className="keyboard__header__select"
+                size="large"
+                onSelect={this.handleGroupSelect}
+                onDropdownVisibleChange={open => this.setState({ dropdownOpened: open })}
+                suffixIcon={(
+                  <Icon
+                    type={dropdownOpened ? 'up' : 'down'}
+                    style={{ color: '#51aef8' }}
+                    theme="outlined"
+                  />
 )}
-            >
-              <Select.Option value="basic">Basic</Select.Option>
-              <Select.Option value="x">x</Select.Option>
-            </Select>
+              >
+                {this.keyboardOptions.map(({ value, label }) => (
+                  <Select.Option value={value}>{label}</Select.Option>
+                ))}
+              </Select>
+              {showResponse && (
+                <button
+                  type="button"
+                  className="keyboard__header__response"
+                  title="Response"
+                  onClick={() => onInput(EMBED_RESPONSE)}
+                >
+                  <span className="keyboard__header__response_in">r</span>
+                </button>
+              )}
+            </div>
             <Button className="keyboard__header__close" onClick={this.close}>
               <Icon type="close" />
             </Button>
@@ -195,7 +234,12 @@ class MathKeyboard extends React.PureComponent {
 
 MathKeyboard.propTypes = {
   onClose: PropTypes.func.isRequired,
-  onInput: PropTypes.func.isRequired
+  onInput: PropTypes.func.isRequired,
+  showResponse: PropTypes.bool
+};
+
+MathKeyboard.defaultProps = {
+  showResponse: false
 };
 
 export default MathKeyboard;

@@ -1,10 +1,13 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import { math } from '@edulastic/constants';
 
 import { IconClose } from '@edulastic/icons';
 import { red, white, greenDark } from '@edulastic/colors';
 import MathKeyboard from '../MathKeyboard';
 import MathInputStyles from './MathInputStyles';
+
+const { mathInputTypes, EMBED_RESPONSE } = math;
 
 class MathInput extends React.PureComponent {
   state = {
@@ -30,20 +33,40 @@ class MathInput extends React.PureComponent {
     }
   };
 
+  componentWillReceiveProps(nextProps) {
+    const { mathField } = this.state;
+
+    if (mathField && mathField.latex() !== nextProps.value) {
+      mathField.latex(nextProps.value);
+    }
+  }
+
   componentDidMount() {
     const { onInput, value } = this.props;
 
     const MQ = window.MathQuill.getInterface(2);
+
+    MQ.registerEmbed('response', () => ({
+      htmlString: `<span class="response-embed">
+        <span class="response-embed__char">R</span>
+        <span class="response-embed__text">Response</span>
+      </span>`,
+      text() {
+        return 'custom_embed';
+      },
+      latex() {
+        return EMBED_RESPONSE;
+      }
+    }));
+
     const mathField = MQ.MathField(this.mathFieldRef.current, window.MathQuill);
-    mathField.latex(value);
+    mathField.write(value);
 
     mathField.config({
       spaceBehavesLikeTab: true,
       handlers: {
-        edit: (field) => {
-          field.focus();
-
-          const text = field.latex();
+        edit: () => {
+          const text = mathField.latex();
 
           if (onInput) {
             onInput(text);
@@ -78,6 +101,8 @@ class MathInput extends React.PureComponent {
       mathField.keystroke('Down');
     } else if (key === 'up_move') {
       mathField.keystroke('Up');
+    } else if (key === '\\embed{response}') {
+      mathField.write(key);
     } else {
       mathField.cmd(key);
     }
@@ -92,11 +117,11 @@ class MathInput extends React.PureComponent {
     const { type } = this.props;
 
     switch (type) {
-      case 'clear':
+      case mathInputTypes.CLEAR:
         return white;
-      case 'wrong':
+      case mathInputTypes.WRONG:
         return red;
-      case 'success':
+      case mathInputTypes.SUCCESS:
         return greenDark;
       default:
         return white;
@@ -105,7 +130,7 @@ class MathInput extends React.PureComponent {
 
   render() {
     const { mathFieldFocus } = this.state;
-    const { type } = this.props;
+    const { type, showResponse } = this.props;
 
     return (
       <MathInputStyles>
@@ -127,7 +152,13 @@ class MathInput extends React.PureComponent {
             )}
           </div>
           <div className="input__keyboard">
-            {mathFieldFocus && <MathKeyboard onInput={this.onInput} onClose={this.onClose} />}
+            {mathFieldFocus && (
+              <MathKeyboard
+                showResponse={showResponse}
+                onInput={this.onInput}
+                onClose={this.onClose}
+              />
+            )}
           </div>
         </div>
       </MathInputStyles>
@@ -137,13 +168,15 @@ class MathInput extends React.PureComponent {
 
 MathInput.propTypes = {
   onInput: PropTypes.func.isRequired,
-  type: PropTypes.oneOf(['clear', 'wrong', 'success']),
+  type: PropTypes.oneOf([mathInputTypes.CLEAR, mathInputTypes.WRONG, mathInputTypes.SUCCESS]),
+  showResponse: PropTypes.bool,
   value: PropTypes.string
 };
 
 MathInput.defaultProps = {
   value: '',
-  type: 'clear'
+  type: 'clear',
+  showResponse: false
 };
 
 export default MathInput;

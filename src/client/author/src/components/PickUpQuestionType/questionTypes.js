@@ -2,9 +2,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FlexContainer } from '@edulastic/common';
+import { math } from '@edulastic/constants';
 
 import Card from './Card';
 import { EXACT_MATCH, ON_LIMIT } from '../../../../assessment/src/constants/constantsForQuestions';
+
+const { EMBED_RESPONSE } = math;
 
 const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
   const cards = [
@@ -651,6 +654,189 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           type: 'floating-keyboard'
         },
         template: ''
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Math with fractions',
+      type: 'math',
+      stimulus: '',
+      data: {
+        is_math: true,
+        stimulus: '<p>[This is the stem.]</p>',
+        template: `\\frac${EMBED_RESPONSE}${EMBED_RESPONSE}`,
+        type: 'math',
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [
+              {
+                method: 'equivSymbolic',
+                options: {
+                  inverseResult: false,
+                  decimalPlaces: 10
+                },
+                value: ''
+              }
+            ]
+          }
+        },
+        ui_style: {
+          type: 'floating-keyboard'
+        }
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Math – fill in the blanks',
+      type: 'math',
+      stimulus: '',
+      data: {
+        is_math: true,
+        stimulus: '<p>[This is the stem.]</p>',
+        template: `${EMBED_RESPONSE} + ${EMBED_RESPONSE} =`,
+        type: 'math',
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [
+              {
+                method: 'equivSymbolic',
+                options: {
+                  inverseResult: false,
+                  decimalPlaces: 10
+                },
+                value: ''
+              }
+            ]
+          }
+        },
+        ui_style: {
+          type: 'floating-keyboard'
+        }
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Math with text',
+      type: 'math',
+      stimulus: '',
+      data: {
+        is_math: true,
+        response_containers: [
+          {
+            width: '60px'
+          }
+        ],
+        stimulus: '<p>[This is the stem.]</p>',
+        type: 'math',
+        template: `${EMBED_RESPONSE}\\text{sq ft}`,
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [
+              {
+                method: 'equivSymbolic',
+                options: {
+                  inverseResult: false,
+                  decimalPlaces: 10
+                },
+                value: '\\text{sq ft}'
+              }
+            ]
+          }
+        },
+        ui_style: {
+          type: 'floating-keyboard'
+        }
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Math with matrices',
+      type: 'math',
+      stimulus: '',
+      data: {
+        is_math: true,
+        stimulus: '<p>[This is the stem.]</p>',
+        template: `\\begin{bmatrix}4&0\\\\1&-9\\end{bmatrix}\\times2=${EMBED_RESPONSE}`,
+        symbols: ['matrices', 'general', 'qwerty'],
+        type: 'math',
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [
+              {
+                method: 'equivSymbolic',
+                options: {
+                  inverseResult: false,
+                  decimalPlaces: 10
+                },
+                value: '89\\ \\text{sq ft}'
+              }
+            ]
+          }
+        },
+        ui_style: {
+          type: 'floating-keyboard'
+        }
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Math with units',
+      type: 'math',
+      stimulus: '',
+      data: {
+        is_math: true,
+        stimulus: '<p>[This is the stem.]</p>',
+        template: `${EMBED_RESPONSE}=1m`,
+        symbols: ['units_si', 'units_us', 'qwerty'],
+        type: 'math',
+        validation: {
+          scoring_type: 'exactMatch',
+          valid_response: {
+            score: 1,
+            value: [
+              {
+                method: 'equivSymbolic',
+                options: {
+                  inverseResult: false,
+                  decimalPlaces: 10
+                },
+                value: '100cm=1m'
+              }
+            ]
+          }
+        },
+        text_blocks: [
+          'g',
+          'kg',
+          'mg',
+          'm',
+          'km',
+          'cm',
+          'mm',
+          'L',
+          'mL',
+          's',
+          'ms',
+          'oz',
+          'lb',
+          'in',
+          'ft',
+          'mi',
+          'fl oz',
+          'pt',
+          'gal'
+        ],
+        ui_style: {
+          type: 'floating-keyboard'
+        }
       },
       onSelectQuestionType
     }

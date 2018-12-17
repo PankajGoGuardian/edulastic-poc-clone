@@ -6,15 +6,30 @@ import { Checkbox, Input } from 'antd';
 import { grey, greenDark, blue } from '@edulastic/colors';
 import { IconList, IconPreview } from '@edulastic/icons';
 
-import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
+import {
+  SortableContainer,
+  SortableElement,
+  SortableHandle
+} from 'react-sortable-hoc';
 
 import TestItemPreview from '../../../../../assessment/src/components/TestItemPreview';
 import MetaInfoCell from './ItemsTable/MetaInfoCell';
 
-const DragHandle = SortableHandle(() => <IconList color={greenDark} style={{ cursor: 'grab' }} />);
+const DragHandle = SortableHandle(() => (
+  <IconList color={greenDark} style={{ cursor: 'grab' }} />
+));
 
 const SortableItem = SortableElement(
-  ({ indx, selected, item, onCheck, points, onChangePoints, metaInfoData, onPreview }) => (
+  ({
+    indx,
+    selected,
+    item,
+    onCheck,
+    points,
+    onChangePoints,
+    metaInfoData,
+    onPreview
+  }) => (
     <TestItemWrapper>
       <FlexContainer justifyContent="space-between">
         <FlexContainer>
@@ -28,9 +43,15 @@ const SortableItem = SortableElement(
         </FlexContainer>
 
         <FlexContainer>
-          <PreviewContainer onClick={() => onPreview(metaInfoData._id)}>
+          <PreviewContainer onClick={() => onPreview(metaInfoData.id)}>
             <IconPreview color={blue} />{' '}
-            <span style={{ textTransform: 'uppercase', fontSize: 11, fontWeight: 600 }}>
+            <span
+              style={{
+                textTransform: 'uppercase',
+                fontSize: 11,
+                fontWeight: 600
+              }}
+            >
               Preview
             </span>
           </PreviewContainer>

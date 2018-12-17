@@ -20,7 +20,7 @@ class PreviewModal extends React.Component {
     super(props);
 
     this.state = {
-      flag: false,
+      flag: false
     };
   }
 
@@ -37,10 +37,10 @@ class PreviewModal extends React.Component {
     const { onClose } = this.props;
     this.setState({ flag: false });
     onClose();
-  }
+  };
 
   render() {
-    const { isVisible, loading, item, rows } = this.props;
+    const { isVisible, loading, item, rows, data } = this.props;
     return (
       <Modal
         styles={{ minWidth: 200 }}
@@ -49,25 +49,19 @@ class PreviewModal extends React.Component {
         center
       >
         <h2 style={{ fontWeight: 'bold', fontSize: 20 }}>Preview</h2>
-        {
-          loading || item === null
-            ?
-            (
-              <ProgressContainer>
-                <Spin tip="Loading..." />
-              </ProgressContainer>
-            )
-            :
-            (
-              <TestItemPreview
-                cols={rows}
-                previewTab="clear"
-                verticalDivider={item.verticalDivider}
-                scrolling={item.scrolling}
-                style={{ width: '100%' }}
-              />
-            )
-        }
+        {loading || item === null ? (
+          <ProgressContainer>
+            <Spin tip="Loading..." />
+          </ProgressContainer>
+        ) : (
+          <TestItemPreview
+            cols={rows}
+            previewTab="clear"
+            verticalDivider={item.verticalDivider}
+            scrolling={item.scrolling}
+            style={{ width: '100%' }}
+          />
+        )}
       </Modal>
     );
   }
@@ -80,7 +74,7 @@ PreviewModal.propTypes = {
   getItemDetailById: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   rows: PropTypes.array,
-  item: PropTypes.object,
+  item: PropTypes.object
 };
 
 PreviewModal.defaultProps = {
@@ -93,10 +87,10 @@ const enhance = compose(
     state => ({
       rows: getItemDetailRowsSelector(state),
       loading: getItemDetailLoadingSelector(state),
-      item: getItemDetailSelector(state),
+      item: getItemDetailSelector(state)
     }),
     {
-      getItemDetailById: getItemDetailByIdAction,
+      getItemDetailById: getItemDetailByIdAction
     }
   )
 );

@@ -13,7 +13,10 @@ import { cloneDeep } from 'lodash';
 import Tags from '../../../common/Tags';
 import PreviewModal from '../../../common/PreviewModal';
 import { setTestItemsAction } from '../../../../actions/testItems';
-import { getSelectedItemSelector, getTestItemsSelector } from '../../../../selectors/testItems';
+import {
+  getSelectedItemSelector,
+  getTestItemsSelector
+} from '../../../../selectors/testItems';
 import { setTestDataAction } from '../../../../actions/tests';
 import { getTestSelector } from '../../../../selectors/tests';
 
@@ -37,7 +40,14 @@ class MetaInfoCell extends Component {
   }
 
   handleSelection = (row) => {
-    const { setSelectedTests, setTestItems, selectedRows, setTestData, test, tests } = this.props;
+    const {
+      setSelectedTests,
+      setTestItems,
+      selectedRows,
+      setTestData,
+      test,
+      tests
+    } = this.props;
     const newTest = cloneDeep(test);
     let keys = [];
     if (selectedRows !== undefined) {
@@ -70,11 +80,11 @@ class MetaInfoCell extends Component {
 
   previewItem = () => {
     this.setState({ isShowPreviewModal: true });
-  }
+  };
 
   closeModal = () => {
     this.setState({ isShowPreviewModal: false });
-  }
+  };
 
   mobileRender = () => {
     const { data } = this.props;
@@ -89,7 +99,11 @@ class MetaInfoCell extends Component {
             <FlexContainer>
               <Tags
                 tags={data.standards}
-                labelStyle={{ color: greenDark, background: white, border: `1px solid ${grey}` }}
+                labelStyle={{
+                  color: greenDark,
+                  background: white,
+                  border: `1px solid ${grey}`
+                }}
               />
             </FlexContainer>
           )}
@@ -106,7 +120,10 @@ class MetaInfoCell extends Component {
             </FlexContainer>
           )}
         </TypeContainer>
-        <FlexContainer style={{ flexWrap: 'wrap' }} justifyContent="space-between">
+        <FlexContainer
+          style={{ flexWrap: 'wrap' }}
+          justifyContent="space-between"
+        >
           <CategoryDiv>
             <CategoryTitle>By:</CategoryTitle> <FirstText>{data.by}</FirstText>
           </CategoryDiv>
@@ -115,19 +132,23 @@ class MetaInfoCell extends Component {
           </CategoryDiv>
           <CategoryDiv>
             <FlexContainer>
-              <IconShare color={greenDark} /> <SecondText>{data.shared}</SecondText>
+              <IconShare color={greenDark} />{' '}
+              <SecondText>{data.shared}</SecondText>
             </FlexContainer>
           </CategoryDiv>
           <CategoryDiv style={{ marginRight: 10 }}>
             <FlexContainer>
-              <IconHeart color={greenDark} /> <SecondText>{data.likes}</SecondText>
+              <IconHeart color={greenDark} />{' '}
+              <SecondText>{data.likes}</SecondText>
             </FlexContainer>
           </CategoryDiv>
         </FlexContainer>
         <StyledButton
           onClick={() => this.handleSelection(data)}
           style={{
-            border: this.isAddOrRemove ? '1px solid #00b0ff' : '1px solid #ee1658',
+            border: this.isAddOrRemove
+              ? '1px solid #00b0ff'
+              : '1px solid #ee1658',
             color: this.isAddOrRemove ? '#00b0ff' : '#ee1658',
             marginTop: 15,
             width: '100%'
@@ -137,7 +158,7 @@ class MetaInfoCell extends Component {
         </StyledButton>
       </div>
     );
-  }
+  };
 
   render() {
     const { isShowPreviewModal } = this.state;
@@ -150,72 +171,82 @@ class MetaInfoCell extends Component {
           onClose={this.closeModal}
           data={data}
         />
-        {
-          windowWidth > 468 ? (
-            <FlexContainer
-              justifyContent="space-between"
-              style={{ fontWeight: 600, color: textColor, flexWrap: 'wrap' }}
-            >
-              <div style={{ width: '70%' }}>
-                {
-                  windowWidth < 993 && (
-                  <div style={{ marginBottom: 15 }}>
-                    <MoveLink onClick={() => this.previewItem()}>{data.title}</MoveLink>
-                    <STIMULUS dangerouslySetInnerHTML={{ __html: data.stimulus }} />
-                  </div>
-                  )
-                }
+        {windowWidth > 468 ? (
+          <FlexContainer
+            justifyContent="space-between"
+            style={{ fontWeight: 600, color: textColor, flexWrap: 'wrap' }}
+          >
+            <div style={{ width: '70%' }}>
+              {windowWidth < 993 && (
+                <div style={{ marginBottom: 15 }}>
+                  <MoveLink onClick={() => this.previewItem()}>
+                    {data.title}
+                  </MoveLink>
+                  <STIMULUS
+                    dangerouslySetInnerHTML={{ __html: data.stimulus }}
+                  />
+                </div>
+              )}
+              <FlexContainer>
+                <div>
+                  <CategoryTitle>By:</CategoryTitle>{' '}
+                  <FirstText>{data.by}</FirstText>
+                </div>
+                <div>
+                  <CategoryTitle>ID:</CategoryTitle>{' '}
+                  <FirstText>{data._id}</FirstText>
+                </div>
                 <FlexContainer>
-                  <div>
-                    <CategoryTitle>By:</CategoryTitle> <FirstText>{data.by}</FirstText>
-                  </div>
-                  <div>
-                    <CategoryTitle>ID:</CategoryTitle> <FirstText>{data._id}</FirstText>
-                  </div>
-                  <FlexContainer>
-                    <IconShare color={greenDark} /> <SecondText>{data.shared}</SecondText>
-                  </FlexContainer>
-                  <FlexContainer>
-                    <IconHeart color={greenDark} /> <SecondText>{data.likes}</SecondText>
-                  </FlexContainer>
+                  <IconShare color={greenDark} />{' '}
+                  <SecondText>{data.shared}</SecondText>
                 </FlexContainer>
-                <TypeContainer>
-                  {data.standards && !!data.standards.length && (
-                    <FlexContainer>
-                      <Tags
-                        tags={data.standards}
-                        labelStyle={{ color: greenDark, background: white, border: `1px solid ${grey}` }}
-                      />
+                <FlexContainer>
+                  <IconHeart color={greenDark} />{' '}
+                  <SecondText>{data.likes}</SecondText>
+                </FlexContainer>
+              </FlexContainer>
+              <TypeContainer>
+                {data.standards && !!data.standards.length && (
+                  <FlexContainer>
+                    <Tags
+                      tags={data.standards}
+                      labelStyle={{
+                        color: greenDark,
+                        background: white,
+                        border: `1px solid ${grey}`
+                      }}
+                    />
+                  </FlexContainer>
+                )}
+                {data.types && !!data.types.length && (
+                  <FlexContainer>
+                    <CategoryTitle>Type: </CategoryTitle>
+                    <FlexContainer style={{ width: '100%', flexWrap: 'wrap' }}>
+                      {data.types.map(type => (
+                        <Tag color="cyan" key={type} style={{ marginTop: 3 }}>
+                          {type}
+                        </Tag>
+                      ))}
                     </FlexContainer>
-                  )}
-                  {data.types && !!data.types.length && (
-                    <FlexContainer>
-                      <CategoryTitle>Type: </CategoryTitle>
-                      <FlexContainer style={{ width: '100%', flexWrap: 'wrap' }}>
-                        {data.types.map(type => (
-                          <Tag color="cyan" key={type} style={{ marginTop: 3 }}>
-                            {type}
-                          </Tag>
-                        ))}
-                      </FlexContainer>
-                    </FlexContainer>
-                  )}
-                </TypeContainer>
-              </div>
-              <StyledButton
-                onClick={() => this.handleSelection(data)}
-                style={{
-                  border: this.isAddOrRemove ? '1px solid #00b0ff' : '1px solid #ee1658',
-                  color: this.isAddOrRemove ? '#00b0ff' : '#ee1658'
-                }}
-              >
-                {this.isAddOrRemove ? 'ADD' : 'REMOVE'}
-              </StyledButton>
-            </FlexContainer>
-          ) : (
-            this.mobileRender()
-          )
-        }
+                  </FlexContainer>
+                )}
+              </TypeContainer>
+            </div>
+            <StyledButton
+              onClick={() => this.handleSelection(data)}
+              style={{
+                border: this.isAddOrRemove
+                  ? '1px solid #00b0ff'
+                  : '1px solid #ee1658',
+                color: this.isAddOrRemove ? '#00b0ff' : '#ee1658'
+              }}
+            >
+              {this.isAddOrRemove ? 'ADD' : 'REMOVE'}
+            </StyledButton>
+          </FlexContainer>
+        ) : (
+          this.mobileRender()
+        )}
       </Container>
     );
   }

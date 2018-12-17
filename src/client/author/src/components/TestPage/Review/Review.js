@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import styled from 'styled-components';
 import { Paper, withWindowSizes } from '@edulastic/common';
-
+import PreviewModal from '../../common/PreviewModal';
 import HeaderBar from './HeaderBar';
 import List from './List';
 import ItemsTable from './ItemsTable';
@@ -32,8 +32,10 @@ const Review = ({
   windowWidth
 }) => {
   const [isCollapse, setIsCollapse] = useState(false);
+  const [isModalVisible, setModalVisibility] = useState(false);
+  const [item, setItem] = useState([]);
 
-  const setSelected = (values) => {
+  const setSelected = values => {
     const newData = cloneDeep(test);
 
     newData.testItems = newData.testItems.map((item, i) => {
@@ -48,7 +50,7 @@ const Review = ({
     setData(newData);
   };
 
-  const handleSelectAll = (e) => {
+  const handleSelectAll = e => {
     const { checked } = e.target;
 
     if (checked) {
@@ -63,7 +65,7 @@ const Review = ({
 
     newData.testItems = test.testItems.filter(item => !item.selected);
 
-    newData.scoring.testItems = test.scoring.testItems.filter((item) => {
+    newData.scoring.testItems = test.scoring.testItems.filter(item => {
       const foundItem = test.testItems.find(({ id }) => id === item._id);
       if (foundItem && foundItem.selected) {
         return false;
@@ -89,7 +91,7 @@ const Review = ({
     setData(newData);
   };
 
-  const handleMoveTo = (newIndex) => {
+  const handleMoveTo = newIndex => {
     const oldIndex = test.testItems.findIndex(item => item.selected);
     moveTestItems({ oldIndex, newIndex });
   };
@@ -110,8 +112,13 @@ const Review = ({
     setData(newData);
   };
 
-  const handlePreview = (id) => {
-    console.log('preview', id);
+  const handlePreview = data => {
+    setItem({ id: data });
+    setModalVisibility(true);
+  };
+
+  const closeModal = () => {
+    setModalVisibility(false);
   };
 
   const tableData = summary.map(data => ({
@@ -124,9 +131,10 @@ const Review = ({
   const totalPoints = test.scoring.total;
   const questionsCount = test.testItems.length;
 
-  const handleSelectedTest = (items) => {
+  const handleSelectedTest = items => {
     const result = items.map(item =>
-      test.testItems.findIndex(i => item === i._id));
+      test.testItems.findIndex(i => item === i._id)
+    );
     setSelected(result);
   };
 
@@ -200,8 +208,8 @@ const Review = ({
             padding: isSmallSize
               ? '0px'
               : isMobileSize
-                ? '10px 45px'
-                : '10px 25px'
+              ? '10px 45px'
+              : '10px 25px'
           }}
         >
           <Calculator
@@ -217,6 +225,11 @@ const Review = ({
           </Calculator>
         </Col>
       </Row>
+      <PreviewModal
+        isVisible={isModalVisible}
+        onClose={closeModal}
+        data={item}
+      />
     </div>
   );
 };

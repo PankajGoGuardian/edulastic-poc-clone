@@ -8,16 +8,30 @@ import { Input, Select } from 'antd';
 import { IconHeart, IconShare } from '@edulastic/icons';
 import { Photo, selectsData } from '../common';
 
-const Sidebar = ({ title, description, onChangeField, tags, analytics, createdBy, windowWidth }) => (
+const Sidebar = ({
+  title,
+  description,
+  onChangeField,
+  tags,
+  analytics,
+  createdBy,
+  windowWidth
+}) => (
   <FlexContainer flexDirection="column">
     <Block>
       <Photo />
       <FlexContainer>
-        <Avatar>{createdBy.firstName ? createdBy.firstName[0] : 'E'}</Avatar>
-        <FlexContainer flexDirection="column" alignItems="flex-start" style={{ marginLeft: 20 }}>
+        <Avatar>
+          {createdBy && createdBy.firstName ? createdBy.firstName[0] : 'E'}
+        </Avatar>
+        <FlexContainer
+          flexDirection="column"
+          alignItems="flex-start"
+          style={{ marginLeft: 20 }}
+        >
           <Title>Created by:</Title>
           <TitleContent>
-            {createdBy.firstName} {createdBy.lastName}
+            {createdBy && createdBy.firstName} {createdBy && createdBy.lastName}
           </TitleContent>
         </FlexContainer>
       </FlexContainer>
@@ -65,14 +79,16 @@ const Sidebar = ({ title, description, onChangeField, tags, analytics, createdBy
           <IconHeart color={greenDark} />
           <FlexContainer>
             <Title>Liked:</Title>
-            <TitleContent>{analytics.likes} times</TitleContent>
+            <TitleContent>{analytics && analytics.likes} times</TitleContent>
           </FlexContainer>
         </FlexContainer>
         <FlexContainer style={{ marginBottom: 15 }}>
           <IconShare color={greenDark} />
           <FlexContainer>
             <Title>Shared:</Title>
-            <TitleContent>{analytics.usage} times, since July 5, 2016</TitleContent>
+            <TitleContent>
+              {analytics && analytics.usage} times, since July 5, 2016
+            </TitleContent>
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>

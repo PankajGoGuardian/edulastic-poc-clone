@@ -1,11 +1,18 @@
 import React from 'react';
-import { Row, Col, Form, Icon, Input, Button, Checkbox } from 'antd';
+import { Row, Col, Form, Input, Button, Checkbox } from 'antd';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
 import { connect } from 'react-redux';
 import { loginAction } from '../../../actions/login';
+
+import loginBg from '../../../assets/bg-login.png';
+import mailIcon from '../../../assets/mail-icon.svg';
+import keyIcon from '../../../assets/key-icon.svg';
+import googleIcon from '../../../assets/google-btn.svg';
+import icon365 from '../../../assets/icons8-office-365.svg';
+import cleverIcon from '../../../assets/clever-icon.svg';
 
 const FormItem = Form.Item;
 
@@ -50,24 +57,24 @@ class Login extends React.Component {
 
     return (
       <div>
-        <LoginWrapper className="registration-wrapper">
-          <Row className="regs-head" type="flex" align="middle">
-            <Col className="head-col1" span={12}><img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" /></Col>
-            <Col className="head-col2" span={12} align="right">
+        <LoginWrapper>
+          <RegistrationHeader type="flex" align="middle">
+            <Col span={12}><img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" /></Col>
+            <Col span={12} align="right">
               <span>{t('common.donthaveanaccount')}</span>
               <Link to="/signup">{t('common.signupbtn')}</Link>
             </Col>
-          </Row>
-          <Row className="regs-body">
+          </RegistrationHeader>
+          <RegistrationBody>
             <Col xs={18} sm={12} md={9} lg={8} xl={7} offset={3}>
               <FormWrapper>
-                <Row className="form-head">
+                <FormHead>
                   <h3 align="center"><b>{t('common.loginboxheading')}</b></h3>
-                  <Col className="signIn-btns" span={20} offset={2}><Icon type="google" /> {t('common.googlesigninbtn')}</Col>
-                  <Col className="signIn-btns" span={20} offset={2}><Icon type="loading" /> {t('common.office365signinbtn')}</Col>
-                  <Col className="signIn-btns" span={20} offset={2}><Icon type="loading" /> {t('common.cleversigninbtn')}</Col>
-                </Row>
-                <Row className="form-body">
+                  <ThirdPartyLoginBtn span={20} offset={2}><img src={googleIcon} alt="" /> {t('common.googlesigninbtn')}</ThirdPartyLoginBtn>
+                  <ThirdPartyLoginBtn span={20} offset={2}><img src={icon365} alt="" /> {t('common.office365signinbtn')}</ThirdPartyLoginBtn>
+                  <ThirdPartyLoginBtn span={20} offset={2}><img src={cleverIcon} alt="" /> {t('common.cleversigninbtn')}</ThirdPartyLoginBtn>
+                </FormHead>
+                <FormBody>
                   <Col span={20} offset={2}>
                     <h5 align="center">{t('common.formboxheading')}</h5>
                     <Form onSubmit={this.handleSubmit}>
@@ -83,7 +90,7 @@ class Login extends React.Component {
                               message: t('common.validation.emptyemailid')
                             }
                           ]
-                        })(<Input prefix={<Icon type="mail" theme="filled" style={{ color: 'rgb(31,181,139)' }} />} />)}
+                        })(<Input prefix={<img src={mailIcon} alt="" />} />)}
                       </FormItem>
                       <FormItem {...formItemLayout} label={t('common.loginpasswordinputlabel')}>
                         {getFieldDecorator('password', {
@@ -93,7 +100,7 @@ class Login extends React.Component {
                               message: t('common.validation.emptypassword')
                             }
                           ]
-                        })(<Input prefix={<Icon type="lock" theme="filled" style={{ color: 'rgb(31,181,139)' }} />} type="password" />)}
+                        })(<Input prefix={<img src={keyIcon} alt="" />} type="password" />)}
                       </FormItem>
                       <FormItem>
                         {getFieldDecorator('remember', {
@@ -102,15 +109,18 @@ class Login extends React.Component {
                         })(
                           <Checkbox>{t('common.remembermetext')}</Checkbox>
                         )}
-                        <a className="pull-right" href="#" style={{ marginTop: 1 }}>{t('common.forgotpasswordtext')}</a>
-                        <Button type="primary" htmlType="submit" className="login-form-button">{t('common.signinbtn')}</Button>
+                        <ForgetPassword href="#" style={{ marginTop: 1 }}>{t('common.forgotpasswordtext')}</ForgetPassword>
+                        <LoginButton type="primary" htmlType="submit">{t('common.signinbtn')}</LoginButton>
                       </FormItem>
                     </Form>
                   </Col>
-                </Row>
+                </FormBody>
               </FormWrapper>
             </Col>
-          </Row>
+          </RegistrationBody>
+          <Copyright>
+            <Col span={24}>{t('common.copyright')}</Col>
+          </Copyright>
         </LoginWrapper>
       </div>
     );
@@ -130,80 +140,87 @@ const enhance = compose(
 export default enhance(LoginForm);
 
 const LoginWrapper = styled.div`
-  position: fixed;
-  background: #999999 url('https://images.unsplash.com/photo-1510531704581-5b2870972060?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1352&q=80');
+  background: #999999 url(${loginBg});
   background-position: top center;
   background-size: cover;
   background-repeat: no-repeat;
+  background-attachment: fixed;
   margin: 0px;
   padding: 0px;
-  height: 100vh;
+  min-height: 100vh;
+  height: 100%;
   width: 100%;
-  .regs-head {
-    padding: 10px 15px;
-    background: rgba(0,0,0,.2);
-    position: fixed;
+`;
+
+const RegistrationHeader = styled(Row)`
+  padding: 10px 15px;
+  color: white;
+  span {
+    font-size: 12px;
+    margin-right: 20px;
+  }
+  a {
+    padding: 5px 40px;
+    border: 1px solid #2d84dc;
+    text-decoration: none;
     color: white;
-    left: 0;
-    right: 0;
-    .head-col2 {
-      & > span {
-        font-size: 12px;
-        margin-right: 20px;
-      }
-      a {
-        padding: 5px 40px;
-        border: 1px solid #2d84dc;
-        text-decoration: none;
-        color: white;
-        border-radius: 4px;
-      }
-    }
+    border-radius: 4px;
   }
-  .regs-body {
-    padding-top: 50px;
-    margin-top: 50px;
-  }
+`;
+
+const RegistrationBody = styled(Row)`
+  padding-top: 30px;
+`;
+
+const Copyright = styled(Row)`
+  font-size: 10px;
+  color: #dddddd;
+  text-align: center;
+  margin: 25px 0px;
 `;
 
 const FormWrapper = styled.div`
   background: white;
   overflow: hidden;
   border-radius: 8px;
-  .form-head {
-    background: #157ad8;
-    background: -moz-linear-gradient(left, #157ad8 0%, #157ad8 19%, #36a0e2 54%, #36a0e2 100%);
-    background: -webkit-linear-gradient(left, #157ad8 0%,#157ad8 19%,#36a0e2 54%,#36a0e2 100%);
-    background: linear-gradient(to right, #157ad8 0%,#157ad8 19%,#36a0e2 54%,#36a0e2 100%);
-    padding: 15px;
-    h3 {
-      color: white;
-      margin: 5px 0px 15px;
-    }
-    .signIn-btns {
-      background: #ffffff;
-      margin-top: 5px;
-      border-radius: 4px;
-      text-align: center;
-      font-size: 10px;
-      padding: 8px;
-      cursor: pointer;
-      i {
-        float: left;
-        font-size: 14px;
-      }
-    }
+`;
+
+const FormHead = styled(Row)`
+  background: #157ad8;
+  background: -moz-linear-gradient(left, #157ad8 0%, #157ad8 19%, #36a0e2 54%, #36a0e2 100%);
+  background: -webkit-linear-gradient(left, #157ad8 0%,#157ad8 19%,#36a0e2 54%,#36a0e2 100%);
+  background: linear-gradient(to right, #157ad8 0%,#157ad8 19%,#36a0e2 54%,#36a0e2 100%);
+  padding: 15px;
+  h3 {
+    color: white;
+    margin: 5px 0px 15px;
   }
-  .form-body {
+`;
+
+const ThirdPartyLoginBtn = styled(Col)`
+  background: #ffffff;
+  margin-top: 5px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 10px;
+  padding: 8px;
+  cursor: pointer;
+  img {
+    float: left;
+    width: 14px;
+  }
+`;
+
+const FormBody = styled(Row)`
     padding: 15px;
     h5 {
-      margin-bottom: 25px;
-      margin-top: 10px;
+      margin-bottom: 20px;
+      margin-top: 5px;
       font-size: 13px;
     }
     form {
       .ant-form-item {
-        margin-bottom: 15px;
+        margin-bottom: 10px;
       }
       .ant-form-item-label {
         text-align: left;
@@ -233,15 +250,22 @@ const FormWrapper = styled.div`
         }
         label { float: left; }
       }
-      .login-form-button {
-        width: 100%;
-        background: #1fb58b;
-        font-size: 13px;
-        color: white;
-        border: 1px solid #1fb58b;
-        font-weight: 600;
-        margin-top: 10px;
-      }
+    }
+    .ant-input-affix-wrapper .ant-input-prefix {
+      width: 15px;
     }
   }
+`;
+
+const ForgetPassword = styled('a')`
+  float: right;
+`;
+
+const LoginButton = styled(Button)`
+  width: 100%;
+  background: #1fb58b;
+  font-size: 13px;
+  color: white;
+  border: 1px solid #1fb58b;
+  font-weight: 600;
 `;

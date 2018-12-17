@@ -1,5 +1,6 @@
 {
     "common": {
+        "edulastictext": "Edulastic",
         "donthaveanaccount": "Don't have an account yet? ",
         "signupbtn": "SIGN UP",
         "loginboxheading": "Login",
@@ -12,11 +13,30 @@
         "remembermetext": "REMEMBER ME",
         "forgotpasswordtext": "FORGOT PASSWORD?",
         "signinbtn": "SIGN IN",
+        "copyright": "Edulastic @ 2018 - All rights reserved.",
         "validation": {
             "emptyemailid": "Please input your Email!",
             "validemail": "The input is not valid Email!",
             "emptypassword": "Please input your password!"
         }
     },
-    "component": {}
+    "component": {
+        "signup": {
+            "infotext": "Edulastic doesn't share your information with third parties.Your data will be completely private and secure.",
+            "iamstudent": "No, I'm a Student.",
+            "signupasstudent": "SIGN ME UP AS A STUDENT!",
+            "teacher": {
+                "alreadyhaveanaccount": "Already have an account?",
+                "signupboxheading": "Sign up",
+                "googlesignupbtn": "SIGN UP WITH GOOGLE",
+                "office365signupbtn": "SIGN UP WITH OFFICE 365",
+                "formboxheading": "Or you can...",
+                "signupnamelabel": "Teacher Name",
+                "signupidlabel": "Email",
+                "signuppasswordlabel": "Password",
+                "signupteacher": "SIGN UP AS TEACHER",
+                "forteacher": "for Teachers"
+            }
+        }
+    }
 }

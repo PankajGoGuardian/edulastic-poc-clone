@@ -33,7 +33,14 @@ class MultipleChoiceAuthoring extends Component {
   onSortEnd = ({ oldIndex, newIndex }) => {
     const { setQuestionData } = this.props;
     const newItem = this.getNewItem();
-    newItem.options = arrayMove(newItem.options, oldIndex, newIndex);
+    // reorder the options and sort the key based on index
+    // editing is based on on index!
+    newItem.options = arrayMove(newItem.options, oldIndex, newIndex)
+      .map(({ label }, index) => ({
+        value: index,
+        label
+      }));
+
     setQuestionData(newItem);
   };
 
@@ -57,6 +64,21 @@ class MultipleChoiceAuthoring extends Component {
     setQuestionData(newItem);
   };
 
+  editOptions = (index, value) => {
+    const { setQuestionData } = this.props;
+    const newItem = this.getNewItem();
+    const { options } = newItem;
+    // if its an option reorder, just quit alredy
+    if (options[index].value !== index) {
+      return;
+    }
+    newItem.options[index] = {
+      value: index,
+      label: value
+    };
+    setQuestionData(newItem);
+  };
+
   render() {
     const { t, item } = this.props;
 
@@ -75,6 +97,7 @@ class MultipleChoiceAuthoring extends Component {
             onSortEnd={this.onSortEnd}
             useDragHandle
             onRemove={this.remove}
+            onChange={this.editOptions}
           />
           <div>
             <AddNewChoiceBtn onClick={this.addNewChoiceBtn}>

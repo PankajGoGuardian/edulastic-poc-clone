@@ -24,18 +24,28 @@
         "signup": {
             "infotext": "Edulastic doesn't share your information with third parties.Your data will be completely private and secure.",
             "iamstudent": "No, I'm a Student.",
+            "iamteacher": "No, I'm a Teacher.",
             "signupasstudent": "SIGN ME UP AS A STUDENT!",
+            "signupasteacher": "SIGN ME UP AS A TEACHER!",
+            "alreadyhaveanaccount": "Already have an account?",
+            "signupboxheading": "Sign up",
+            "googlesignupbtn": "SIGN UP WITH GOOGLE",
+            "office365signupbtn": "SIGN UP WITH OFFICE 365",
+            "formboxheading": "Or you can...",
+            "signuppasswordlabel": "Password",
             "teacher": {
-                "alreadyhaveanaccount": "Already have an account?",
-                "signupboxheading": "Sign up",
-                "googlesignupbtn": "SIGN UP WITH GOOGLE",
-                "office365signupbtn": "SIGN UP WITH OFFICE 365",
-                "formboxheading": "Or you can...",
                 "signupnamelabel": "Teacher Name",
                 "signupidlabel": "Email",
-                "signuppasswordlabel": "Password",
                 "signupteacher": "SIGN UP AS TEACHER",
-                "forteacher": "for Teachers"
+                "forteacher": "for Teachers",
+                "validinputname": "Please input Teacher Name!"
+            },
+            "admin": {
+                "signupnamelabel": "Administrator Name",
+                "signupidlabel": "Username / Email",
+                "signupadminbtn": "SIGN UP AS ADMINISTRATOR",
+                "foradmin": "for Administrators",
+                "validinputname": "Please input Administrators Name!"
             }
         }
     }

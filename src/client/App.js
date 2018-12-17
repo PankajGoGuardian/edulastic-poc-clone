@@ -8,6 +8,7 @@ import { compose } from 'redux';
 import Student from './student/src';
 import Signup from './student/src/components/authentication/signup';
 import Login from './student/src/components/authentication/login';
+import AdminSignup from './student/src/components/authentication/signup/adminSignup';
 import Dashboard from './student/src/app';
 
 import Author from './author/src/app';
@@ -27,6 +28,7 @@ class App extends Component {
           <Route path="/home" component={Dashboard} />
           <Route path="/Signup" component={Signup} />
           <Route path="/Login" component={Login} />
+          <Route path="/AdminSignup" component={AdminSignup} />
           <Route
             path="/student/test/:id"
             component={() => <Student defaultAP test />}

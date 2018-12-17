@@ -9,6 +9,7 @@ import Student from './student/src';
 import Signup from './student/src/components/authentication/signup';
 import Login from './student/src/components/authentication/login';
 import AdminSignup from './student/src/components/authentication/signup/adminSignup';
+import StudentSignup from './student/src/components/authentication/signup/studentSignup';
 import Dashboard from './student/src/app';
 
 import Author from './author/src/app';
@@ -29,6 +30,7 @@ class App extends Component {
           <Route path="/Signup" component={Signup} />
           <Route path="/Login" component={Login} />
           <Route path="/AdminSignup" component={AdminSignup} />
+          <Route path="/StudentSignup" component={StudentSignup} />
           <Route
             path="/student/test/:id"
             component={() => <Student defaultAP test />}

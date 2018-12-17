@@ -32,6 +32,7 @@
             "googlesignupbtn": "SIGN UP WITH GOOGLE",
             "office365signupbtn": "SIGN UP WITH OFFICE 365",
             "formboxheading": "Or you can...",
+            "signupnamelabel": "Name",
             "signuppasswordlabel": "Password",
             "teacher": {
                 "signupnamelabel": "Teacher Name",
@@ -46,6 +47,14 @@
                 "signupadminbtn": "SIGN UP AS ADMINISTRATOR",
                 "foradmin": "for Administrators",
                 "validinputname": "Please input Administrators Name!"
+            },
+            "student": {
+                "signupclasslabel": "Class Code",
+                "signupidlabel": "Username / Email",
+                "signupstudentbtn": "SIGN UP AS STUDENT",
+                "forstudent": "for Students",
+                "validclasscode": "Please input valid class code!",
+                "validinputname": "Please input Student Name!"
             }
         }
     }

@@ -16,7 +16,15 @@ import { Calculator } from '../common';
 import Breadcrumb from '../../Breadcrumb';
 import { getSummarySelector } from '../../../selectors/tests';
 
-const Summary = ({ setData, test, summary, current, t, onShowSource, windowWidth }) => {
+const Summary = ({
+  setData,
+  test,
+  summary,
+  current,
+  t,
+  onShowSource,
+  windowWidth
+}) => {
   const handleChangeField = (field, value) => {
     setData({ ...test, [field]: value });
   };
@@ -38,7 +46,7 @@ const Summary = ({ setData, test, summary, current, t, onShowSource, windowWidth
 
   const breadcrumbData = [
     {
-      title: 'ITEM LIST',
+      title: 'TESTS LIST',
       to: '/author/tests'
     },
     {
@@ -52,7 +60,11 @@ const Summary = ({ setData, test, summary, current, t, onShowSource, windowWidth
       <SecondHeader>
         <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
         <Button>
-          <ButtonLink onClick={onShowSource} color="primary" icon={<IconSource color={blue} />}>
+          <ButtonLink
+            onClick={onShowSource}
+            color="primary"
+            icon={<IconSource color={blue} />}
+          >
             {t('component.questioneditor.buttonbar.source')}
           </ButtonLink>
         </Button>
@@ -60,7 +72,12 @@ const Summary = ({ setData, test, summary, current, t, onShowSource, windowWidth
       <Paper style={{ marginTop: 25 }}>
         <Row style={{ display: 'flex', justifyContent: 'center' }}>
           <Col span={windowWidth > 993 ? 16 : 24}>
-            <Row gutter={32} style={{ padding: windowWidth < 468 ? '20px 15px 20px 25px' : '0px' }}>
+            <Row
+              gutter={32}
+              style={{
+                padding: windowWidth < 468 ? '20px 15px 20px 25px' : '0px'
+              }}
+            >
               <Col span={windowWidth > 993 ? 12 : 24}>
                 <Sidebar
                   title={test.title}

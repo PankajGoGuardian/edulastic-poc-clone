@@ -10,7 +10,10 @@ import { Paper, withWindowSizes } from '@edulastic/common';
 import HeaderBar from './HeaderBar';
 import List from './List';
 import ItemsTable from './ItemsTable';
-import { getItemsTypesSelector, getStandardsSelector } from '../../../selectors/testItems';
+import {
+  getItemsTypesSelector,
+  getStandardsSelector
+} from '../../../selectors/testItems';
 import { getSummarySelector } from '../../../selectors/tests';
 import { setTestDataAction } from '../../../actions/tests';
 import { Calculator, Photo } from '../common';
@@ -94,10 +97,15 @@ const Review = ({
   const handleChangePoints = (testItemId, value) => {
     const newData = cloneDeep(test);
 
-    const itemIndex = newData.scoring.testItems.findIndex(({ id }) => testItemId === id);
+    const itemIndex = newData.scoring.testItems.findIndex(
+      ({ id }) => testItemId === id
+    );
 
     newData.scoring.testItems[itemIndex].points = value;
-    newData.scoring.total = newData.scoring.testItems.reduce((acc, item) => acc + item.points, 0);
+    newData.scoring.total = newData.scoring.testItems.reduce(
+      (acc, item) => acc + item.points,
+      0
+    );
 
     setData(newData);
   };
@@ -117,7 +125,8 @@ const Review = ({
   const questionsCount = test.testItems.length;
 
   const handleSelectedTest = (items) => {
-    const result = items.map(item => test.testItems.findIndex(i => item === i._id));
+    const result = items.map(item =>
+      test.testItems.findIndex(i => item === i._id));
     setSelected(result);
   };
 
@@ -130,7 +139,7 @@ const Review = ({
 
   const breadcrumbData = [
     {
-      title: 'ITEM LIST',
+      title: 'TESTS LIST',
       to: '/author/tests'
     },
     {
@@ -145,7 +154,10 @@ const Review = ({
   return (
     <div style={{ paddingTop: 25 }}>
       <Row>
-        <Col span={isSmallSize ? 19 : 24} style={{ padding: isMobileSize ? '0 45px' : '0 25px' }}>
+        <Col
+          span={isSmallSize ? 19 : 24}
+          style={{ padding: isMobileSize ? '0 45px' : '0 25px' }}
+        >
           <SecondHeader isMobileSize={isMobileSize}>
             <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
             <HeaderBar
@@ -155,6 +167,7 @@ const Review = ({
               onCollapse={handleCollapse}
               onMoveTo={handleMoveTo}
               windowWidth={windowWidth}
+              setCollapse={isCollapse}
             />
           </SecondHeader>
           <Paper>
@@ -183,7 +196,13 @@ const Review = ({
         </Col>
         <Col
           span={isSmallSize ? 5 : 24}
-          style={{ padding: isSmallSize ? '0px' : isMobileSize ? '10px 45px' : '10px 25px' }}
+          style={{
+            padding: isSmallSize
+              ? '0px'
+              : isMobileSize
+                ? '10px 45px'
+                : '10px 25px'
+          }}
         >
           <Calculator
             totalPoints={totalPoints}

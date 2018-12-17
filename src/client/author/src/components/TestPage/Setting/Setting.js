@@ -16,7 +16,7 @@ import MainSetting from './MainSetting';
 const Setting = ({ t, current, history, onShowSource, windowWidth }) => {
   const breadcrumbData = [
     {
-      title: 'ITEM LIST',
+      title: 'TESTS LIST',
       to: '/author/tests'
     },
     {

@@ -31,7 +31,7 @@ const getDefaultAssignData = () => ({
   specificStudents: false
 });
 
-const columns = group => ([
+const columns = group => [
   {
     title: 'Class Name',
     dataIndex: 'class',
@@ -66,16 +66,17 @@ const columns = group => ([
     sorter: false,
     // eslint-disable-next-line react/prop-types
     render: ({ remove, edit }, record) => {
-      const handleClick = () => edit({
-        key: record.key,
-        startDate: moment(record.openDate),
-        endDate: moment(record.closeDate),
-        openPolicy: record.openPolicy,
-        closePolicy: record.closePolicy,
-        class: record.class || [],
-        students: record.students || [],
-        specificStudents: record.specificStudents || false
-      });
+      const handleClick = () =>
+        edit({
+          key: record.key,
+          startDate: moment(record.openDate),
+          endDate: moment(record.closeDate),
+          openPolicy: record.openPolicy,
+          closePolicy: record.closePolicy,
+          class: record.class || [],
+          students: record.students || [],
+          specificStudents: record.specificStudents || false
+        });
       return (
         <FlexContainer justifyContent="space-around">
           <IconPencilEdit
@@ -94,7 +95,7 @@ const columns = group => ([
       );
     }
   }
-]);
+];
 
 const Assign = ({
   test,
@@ -124,7 +125,6 @@ const Assign = ({
     setModalData(data);
   };
 
-
   const tableData = test.assignments.map((item, i) => ({
     key: i,
     _id: item._id,
@@ -140,7 +140,6 @@ const Assign = ({
       edit: handleAddEditAssignment
     }
   }));
-
 
   const saveAssignment = () => {
     const newData = cloneDeep(test);
@@ -165,7 +164,7 @@ const Assign = ({
 
   const breadcrumbData = [
     {
-      title: 'ITEM LIST',
+      title: 'TESTS LIST',
       to: '/author/tests'
     },
     {
@@ -234,7 +233,6 @@ export default connect(
     deleteAssignment: deleteAssignmentAction
   }
 )(Assign);
-
 
 const StyledTable = styled(Table)`
   .ant-table table {

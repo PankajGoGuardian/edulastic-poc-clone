@@ -32,6 +32,11 @@ const MainWrapper = styled.section`
     padding: 24px;
   }
 
+  @media (max-width: 468px) {
+    padding: 0px;
+    border-radius: 10px;
+  }
+
 `;
 
 export default MainWrapper;

@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
+import { compose } from 'redux';
 import PropTypes from 'prop-types';
-import { Paper } from '@edulastic/common';
+import { Paper, withWindowSizes } from '@edulastic/common';
 import { mainBgColor } from '@edulastic/colors';
 import styled from 'styled-components';
 
 import TestItemCol from './TestItemCol';
+import { SMALL_DESKTOP_WIDTH } from '../../constants/others';
 
-export default class TestItemPreview extends Component {
+class TestItemPreview extends Component {
   static propTypes = {
     cols: PropTypes.array.isRequired,
     verticalDivider: PropTypes.bool,
     scrolling: PropTypes.bool,
     previewTab: PropTypes.string.isRequired,
+    windowWidth: PropTypes.number.isRequired,
     style: PropTypes.object
   };
 
@@ -39,9 +42,9 @@ export default class TestItemPreview extends Component {
   };
 
   render() {
-    const { cols, previewTab, style } = this.props;
+    const { cols, previewTab, style, windowWidth } = this.props;
     return (
-      <Container style={style}>
+      <Container width={windowWidth} style={style}>
         {cols &&
           cols.length &&
           cols.map((col, i) => (
@@ -51,6 +54,7 @@ export default class TestItemPreview extends Component {
               view="preview"
               previewTab={previewTab}
               style={this.getStyle(i !== cols.length - 1)}
+              windowWidth={windowWidth}
             />
           ))}
       </Container>
@@ -58,6 +62,12 @@ export default class TestItemPreview extends Component {
   }
 }
 
+const enhance = compose(
+  withWindowSizes
+);
+
+export default enhance(TestItemPreview);
+
 const Container = styled(Paper)`
-  display: flex;
+  display: ${props => (props.width > SMALL_DESKTOP_WIDTH ? 'flex' : 'block !important')};
 `;

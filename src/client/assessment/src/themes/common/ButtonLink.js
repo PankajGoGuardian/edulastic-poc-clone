@@ -104,4 +104,12 @@ const Container = styled.button`
     color: ${({ hoverColor }) => hoverColor};
     cursor: pointer;
   }
+
+  span {
+    margin-top: 1px;
+    font-weight: bold;
+    svg {
+      width: 10px !important;
+    }
+  }
 `;

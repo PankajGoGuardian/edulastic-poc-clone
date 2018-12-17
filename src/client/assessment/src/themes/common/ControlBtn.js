@@ -1,10 +1,13 @@
 /* eslint-disable */
 import styled from 'styled-components';
+import { white } from '@edulastic/colors';
+import { Button } from 'antd';
 
-const ControlBtn = styled.button`
+const ControlBtn = styled(Button)`
   width: ${props => (props.next ? (props.skin ? '58px' : '187px') : '58px')};
-  height: 58px;
-  border-radius: 5px;
+  height: 40px !important;
+  width: 40px !important;
+  border-radius: 4px;
   background-color: ${props =>
     props.skin ? props.theme.controlBtnPrimaryColor : props.theme.controlBtnSecondaryColor};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
@@ -23,8 +26,9 @@ const ControlBtn = styled.button`
   cursor: normal;
 
   &[disabled] {
-    background-color: ${props => props.theme.controlBtnMutedColor};
+    background: transparent;
     cursor: not-allowed;
+    border: 1px solid ${white};
   }
 
   & > span {
@@ -47,10 +51,27 @@ const ControlBtn = styled.button`
     color: ${props => props.theme.controlBtnTextColor};
   }
 
+  .ant-btn {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+  }
+
+  .anticon-left, .anticon-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 15px;
+      height: 15px;
+      fill: ${white};
+    }
+  }
+
   @media (max-width: 1600px) {
     width: ${props =>
-      props.next ? (props.skin ? '58px' : '187px') : props.skin ? '58px' : '50px'};
-    height: ${props => (props.skin ? '58px' : '50px')};
+      props.next ? (props.skin ? '40px' : '187px') : props.skin ? '40px' : '50px'};
+    height: ${props => (props.skin ? '40px' : '50px')};
   }
   @media (max-width: 760px) {
     width: 52px;

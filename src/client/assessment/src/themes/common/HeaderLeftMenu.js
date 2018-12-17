@@ -1,12 +1,16 @@
 import styled from 'styled-components';
 
 const HeaderLeftMenu = styled.div`
-  flex: 1;
   text-align: left;
   height: 60px;
-  min-width: 60px;
+  min-width: 70px;
   display: flex;
   align-items: center;
+
+  @media (max-width: 468px) {
+    height: 35px;
+    width: 100%;
+  }
 `;
 
 export default HeaderLeftMenu;

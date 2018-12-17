@@ -18,6 +18,11 @@
         "settingbtn": "settings",
         "editbtn": "edit"
       }
+    },
+    "test": {
+      "checkanswer": "Check Answer",
+      "hint": "hint",
+      "bookmark": "bookmark"
     }
   },
   "component": {

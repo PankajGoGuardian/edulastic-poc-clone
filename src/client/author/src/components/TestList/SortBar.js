@@ -32,7 +32,7 @@ const SortBar = ({ onSortChange, activeStyle, onStyleChange }) => (
 SortBar.propTypes = {
   onSortChange: PropTypes.func.isRequired,
   onStyleChange: PropTypes.func.isRequired,
-  activeStyle: PropTypes.string.isRequired,
+  activeStyle: PropTypes.string.isRequired
 };
 
 export default SortBar;

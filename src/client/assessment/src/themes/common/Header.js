@@ -1,8 +1,9 @@
 import styled from 'styled-components';
+import { darkBlueSecondary } from '@edulastic/colors';
 
 const Header = styled.div`
   width: 100%;
-  height: 90px;
+  height: 62px;
   padding: 0 40px;
   box-sizing: border-box;
   display: flex;
@@ -11,14 +12,12 @@ const Header = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  background-color: ${props => props.theme.headerBgColor};
-  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.17);
+  background: ${darkBlueSecondary};
 
-  @media (max-width: 760px) {
-    height: 148px;
-    padding: 15px 26px;
-    align-items: flex-start;
-    display: block;
+  @media (max-width: 468px) {
+    flex-direction: column;
+    padding: 10px 26px;
+    height: 128px;
   }
 `;
 

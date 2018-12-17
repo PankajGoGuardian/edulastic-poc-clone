@@ -3,17 +3,28 @@ import styled from 'styled-components';
 const SelectContainer = styled.div`
   position: relative;
   width: 200px;
-  height: 58px;
-  &:before {
-    position: absolute;
-    font-family: 'FontAwesome';
-    top: 0;
-    right: 25px;
+  display: flex;
+  align-items: center;
+
+  .ant-select {
+    height: 40px;
+    width: 100%;
+  }
+  .ant-select-selection {
     display: flex;
     align-items: center;
-    height: 100%;
-    color: ${props => props.theme.selectArrowColor};
-    content: "\f0d7";
+    padding-left: 10px;
+  }
+  .ant-select-selection-selected-value {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: #434b5d;
+  }
+  .anticon-down {
+    svg {
+      fill: #00b0ff;
+    }
   }
   @media (max-width: 760px) {
     height: 52px;

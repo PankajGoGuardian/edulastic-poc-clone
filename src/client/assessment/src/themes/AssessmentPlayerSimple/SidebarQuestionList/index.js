@@ -24,7 +24,7 @@ const SidebarQuestionList = ({ questions, selectedQuestion, gotoQuestion }) => (
 SidebarQuestionList.propTypes = {
   questions: PropTypes.array.isRequired,
   selectedQuestion: PropTypes.number.isRequired,
-  gotoQuestion: PropTypes.func.isRequired,
+  gotoQuestion: PropTypes.func.isRequired
 };
 
 export default SidebarQuestionList;

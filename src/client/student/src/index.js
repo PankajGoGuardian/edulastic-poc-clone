@@ -6,7 +6,7 @@ import AssessmentPlayer from '../../assessment/src/index';
 const Student = props => <AssessmentPlayer {...props} />;
 
 Student.propTypes = {
-  defaultAP: PropTypes.any.isRequired,
+  defaultAP: PropTypes.any.isRequired
 };
 
 export default Student;

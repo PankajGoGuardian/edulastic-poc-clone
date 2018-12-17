@@ -12,7 +12,7 @@ const QuestionListItem = ({
   active,
   beforeSelection,
   t,
-  gotoQuestion,
+  gotoQuestion
 }) => (
   <ItemContainter
     active={active}
@@ -34,7 +34,7 @@ QuestionListItem.propTypes = {
   active: PropTypes.bool.isRequired,
   index: PropTypes.number.isRequired,
   gotoQuestion: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 export default withNamespaces('student')(QuestionListItem);

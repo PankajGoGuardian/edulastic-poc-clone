@@ -31,7 +31,8 @@ class TestItem {
   get(limit = 25, skip = 0) {
     return this.TestItem.find({}, formatOutput)
       .limit(limit)
-      .skip(skip);
+      .skip(skip)
+      .sort({ _id: -1 });
   }
 
   update(id, data) {

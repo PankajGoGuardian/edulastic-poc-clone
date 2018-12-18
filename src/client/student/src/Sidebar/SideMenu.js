@@ -102,7 +102,7 @@ class SideMenu extends Component {
 
   render() {
     const { collapsed, broken, isVisible } = this.state;
-    const { windowWidth, currentPath } = this.props;
+    const { windowWidth, currentPath, firstName } = this.props;
     const isCollapsed =
       windowWidth > 1200 || windowWidth <= 480 || windowWidth === 646
         ? collapsed
@@ -208,7 +208,7 @@ class SideMenu extends Component {
                     <div style={{ paddingLeft: 11 }}>
                       {!isCollapsed && (
                         <div style={{ fontSize: 14, color: '#057750' }}>
-                          Zack oliver
+                          {firstName}
                         </div>
                       )}
                       {!isCollapsed && (
@@ -238,14 +238,18 @@ class SideMenu extends Component {
 SideMenu.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   history: PropTypes.object.isRequired,
-  currentPath: PropTypes.string.isRequired
+  currentPath: PropTypes.string.isRequired,
+  firstName: PropTypes.string.isRequired
 };
 
 const enhance = compose(
   withRouter,
   withWindowSizes,
   connect(
-    ({ router }) => ({ currentPath: router.location.pathname }),
+    ({ router, user }) => ({
+      currentPath: router.location.pathname,
+      firstName: user.firstName
+    }),
     {}
   )
 );
@@ -433,8 +437,8 @@ const FooterDropDown = styled.div`
   position: relative;
   bottom: ${props => (props.isVisible ? '-4px' : '-30px')};
   opacity: ${props => (props.isVisible ? '1' : '0')};
-  transition: .2s;
-  -webkit-transition: .2s;
+  transition: 0.2s;
+  -webkit-transition: 0.2s;
   ul {
     background: #1fe3a1;
     border-bottom: 1px solid #4fd08c;

@@ -36,9 +36,15 @@ function* login({ payload }) {
 function* signup({ payload }) {
   try {
     const { name, email, password, role } = payload.value;
-    const split = name.split(' ');
-    const lastName = last(split);
-    const firstName = split.slice(0, -1).join(' ');
+    const nameList = name.split(' ');
+    let firstName; let
+      lastName;
+    if (nameList.length > 1) {
+      lastName = last(nameList);
+      firstName = nameList.slice(0, -1).join(' ');
+    } else {
+      firstName = name;
+    }
     const obj = {
       password,
       email,

@@ -25,11 +25,12 @@ class AdminSignup extends React.Component {
   handleSubmit = (e) => {
     const { form, signup } = this.props;
     e.preventDefault();
-    form.validateFieldsAndScroll((err, { password, email }) => {
+    form.validateFieldsAndScroll((err, { password, email, name }) => {
       if (!err) {
         signup({
           password,
           email,
+          name,
           role: 'admin'
         });
       }
@@ -123,7 +124,7 @@ class AdminSignup extends React.Component {
                             {...formItemLayout}
                             label={t('component.signup.admin.signupnamelabel')}
                           >
-                            {getFieldDecorator('text', {
+                            {getFieldDecorator('name', {
                               rules: [
                                 {
                                   required: true,

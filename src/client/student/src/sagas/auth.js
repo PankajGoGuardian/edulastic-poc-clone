@@ -1,4 +1,4 @@
-import { pick } from 'lodash';
+import { pick, last } from 'lodash';
 import { takeLatest, call, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import { authApi } from '@edulastic/api';
@@ -35,7 +35,18 @@ function* login({ payload }) {
 
 function* signup({ payload }) {
   try {
-    yield call(authApi.signup, payload.value);
+    const { name, email, password, role } = payload.value;
+    const split = name.split(' ');
+    const lastName = last(split);
+    const firstName = split.slice(0, -1).join(' ');
+    const obj = {
+      password,
+      email,
+      firstName,
+      lastName,
+      role
+    };
+    yield call(authApi.signup, obj);
     yield put(push('/Login'));
   } catch (err) {
     console.error(err);

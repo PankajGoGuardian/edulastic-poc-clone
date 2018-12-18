@@ -59,7 +59,12 @@ class Login extends React.Component {
       <div>
         <LoginWrapper>
           <RegistrationHeader type="flex" align="middle">
-            <Col span={12}><img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" /></Col>
+            <Col span={12}>
+              <img
+                src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png"
+                alt="Edulastic"
+              />
+            </Col>
             <Col span={12} align="right">
               <span>{t('common.donthaveanaccount')}</span>
               <Link to="/getstarted">{t('common.signupbtn')}</Link>
@@ -69,16 +74,30 @@ class Login extends React.Component {
             <Col xs={18} sm={12} md={9} lg={8} xl={7} offset={3}>
               <FormWrapper>
                 <FormHead>
-                  <h3 align="center"><b>{t('common.loginboxheading')}</b></h3>
-                  <ThirdPartyLoginBtn span={20} offset={2}><img src={googleIcon} alt="" /> {t('common.googlesigninbtn')}</ThirdPartyLoginBtn>
-                  <ThirdPartyLoginBtn span={20} offset={2}><img src={icon365} alt="" /> {t('common.office365signinbtn')}</ThirdPartyLoginBtn>
-                  <ThirdPartyLoginBtn span={20} offset={2}><img src={cleverIcon} alt="" /> {t('common.cleversigninbtn')}</ThirdPartyLoginBtn>
+                  <h3 align="center">
+                    <b>{t('common.loginboxheading')}</b>
+                  </h3>
+                  <ThirdPartyLoginBtn span={20} offset={2}>
+                    <img src={googleIcon} alt="" />{' '}
+                    {t('common.googlesigninbtn')}
+                  </ThirdPartyLoginBtn>
+                  <ThirdPartyLoginBtn span={20} offset={2}>
+                    <img src={icon365} alt="" />{' '}
+                    {t('common.office365signinbtn')}
+                  </ThirdPartyLoginBtn>
+                  <ThirdPartyLoginBtn span={20} offset={2}>
+                    <img src={cleverIcon} alt="" />{' '}
+                    {t('common.cleversigninbtn')}
+                  </ThirdPartyLoginBtn>
                 </FormHead>
                 <FormBody>
                   <Col span={20} offset={2}>
                     <h5 align="center">{t('common.formboxheading')}</h5>
                     <Form onSubmit={this.handleSubmit}>
-                      <FormItem {...formItemLayout} label={t('common.loginidinputlabel')}>
+                      <FormItem
+                        {...formItemLayout}
+                        label={t('common.loginidinputlabel')}
+                      >
                         {getFieldDecorator('email', {
                           rules: [
                             {
@@ -92,7 +111,10 @@ class Login extends React.Component {
                           ]
                         })(<Input prefix={<img src={mailIcon} alt="" />} />)}
                       </FormItem>
-                      <FormItem {...formItemLayout} label={t('common.loginpasswordinputlabel')}>
+                      <FormItem
+                        {...formItemLayout}
+                        label={t('common.loginpasswordinputlabel')}
+                      >
                         {getFieldDecorator('password', {
                           rules: [
                             {
@@ -100,17 +122,24 @@ class Login extends React.Component {
                               message: t('common.validation.emptypassword')
                             }
                           ]
-                        })(<Input prefix={<img src={keyIcon} alt="" />} type="password" />)}
+                        })(
+                          <Input
+                            prefix={<img src={keyIcon} alt="" />}
+                            type="password"
+                          />
+                        )}
                       </FormItem>
                       <FormItem>
                         {getFieldDecorator('remember', {
                           valuePropName: 'checked',
                           initialValue: true
-                        })(
-                          <Checkbox>{t('common.remembermetext')}</Checkbox>
-                        )}
-                        <ForgetPassword href="#" style={{ marginTop: 1 }}>{t('common.forgotpasswordtext')}</ForgetPassword>
-                        <LoginButton type="primary" htmlType="submit">{t('common.signinbtn')}</LoginButton>
+                        })(<Checkbox>{t('common.remembermetext')}</Checkbox>)}
+                        <ForgetPassword href="#" style={{ marginTop: 1 }}>
+                          {t('common.forgotpasswordtext')}
+                        </ForgetPassword>
+                        <LoginButton type="primary" htmlType="submit">
+                          {t('common.signinbtn')}
+                        </LoginButton>
                       </FormItem>
                     </Form>
                   </Col>
@@ -187,9 +216,27 @@ const FormWrapper = styled.div`
 
 const FormHead = styled(Row)`
   background: #157ad8;
-  background: -moz-linear-gradient(left, #157ad8 0%, #157ad8 19%, #36a0e2 54%, #36a0e2 100%);
-  background: -webkit-linear-gradient(left, #157ad8 0%,#157ad8 19%,#36a0e2 54%,#36a0e2 100%);
-  background: linear-gradient(to right, #157ad8 0%,#157ad8 19%,#36a0e2 54%,#36a0e2 100%);
+  background: -moz-linear-gradient(
+    left,
+    #157ad8 0%,
+    #157ad8 19%,
+    #36a0e2 54%,
+    #36a0e2 100%
+  );
+  background: -webkit-linear-gradient(
+    left,
+    #157ad8 0%,
+    #157ad8 19%,
+    #36a0e2 54%,
+    #36a0e2 100%
+  );
+  background: linear-gradient(
+    to right,
+    #157ad8 0%,
+    #157ad8 19%,
+    #36a0e2 54%,
+    #36a0e2 100%
+  );
   padding: 15px;
   h3 {
     color: white;

@@ -1,9 +1,9 @@
 import test from 'ava';
 import { multipleChoice as mcqEvaluator } from '../src/index';
 
-import { emObj1, emObj2, emObj3, pmObj1, pmObj2, pmObj3 } from './data/mcq';
+import { emObj1, emObj2, emObj3, pmObj1, pmObj2, pmObj3, attObj1, attObj2 } from './data/mcq';
 
-test('#MCQ:exactMatch', async t => {
+test('#MCQ:exactMatch', async (t) => {
   // case 1
   const result = mcqEvaluator(emObj1);
   t.is(result.score, 1, 'incorrect score');
@@ -27,7 +27,7 @@ test('#MCQ:exactMatch', async t => {
   );
 });
 
-test('#MCQ:partialMatch', async t => {
+test('#MCQ:partialMatch', async (t) => {
   // case 1
   const result = mcqEvaluator(pmObj1);
   t.is(result.score, 1, 'incorrect score');
@@ -58,4 +58,13 @@ test('#MCQ:partialMatch', async t => {
   const result2 = mcqEvaluator(pmObj3);
   t.is(result2.score, 1.5, 'incorrect score');
   t.is(result2.maxScore, 3, 'incorrect maxscore');
+});
+
+
+test('#MCQ:attemptScore', async (t) => {
+  const result = mcqEvaluator(attObj1);
+  t.is(result.score, 4, 'incorrect score');
+
+  const result1 = mcqEvaluator(attObj2);
+  t.is(result1.score, 0, 'incorrect score');
 });

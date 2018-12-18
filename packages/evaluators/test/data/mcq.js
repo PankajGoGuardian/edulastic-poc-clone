@@ -145,3 +145,39 @@ export const pmObj3 = {
   multiple_responses: false,
   smallSize: true
 };
+
+// attempt score
+// partial match object 2
+export const attObj1 = {
+  userResponse: [0, 1],
+  validation: {
+    scoring_type: 'exactMatch',
+    valid_response: {
+      score: 2,
+      value: [1, 2]
+    },
+    min_score_if_attempted: 4,
+    alt_responses: []
+  },
+  multiple_responses: false,
+  smallSize: true,
+
+};
+
+
+// attempt score
+// partial match object 2
+export const attObj2 = {
+  userResponse: [],
+  validation: {
+    scoring_type: 'exactMatch',
+    valid_response: {
+      score: 2,
+      value: [1, 2]
+    },
+    min_score_if_attempted: 4,
+    alt_responses: []
+  },
+  multiple_responses: false,
+  smallSize: true,
+};

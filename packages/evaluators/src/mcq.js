@@ -71,15 +71,25 @@ const partialMatchEvaluator = (userResponse = [], answers) => {
 
 // mcq evaluator method
 const evaluator = ({ userResponse, validation }) => {
-  const { valid_response, alt_responses, scoring_type } = validation;
+  const { valid_response, alt_responses, scoring_type, min_score_if_attempted: attemptScore } = validation;
   const answers = [valid_response, ...alt_responses];
 
+  let result;
   switch (scoring_type) {
     case ScoringType.PARTIAL_MATCH:
-      return partialMatchEvaluator(userResponse, answers);
+      result = partialMatchEvaluator(userResponse, answers);
+      break;
     case ScoringType.EXACT_MATCH:
     default:
-      return exactMatchEvaluator(userResponse, answers);
+      result = exactMatchEvaluator(userResponse, answers);
   }
+
+  // if score for attempting is greater than current score
+  // let it be the score!
+  if (!Number.isNaN(attemptScore) && (attemptScore > result.score) && userResponse.length) {
+    result.score = attemptScore;
+  }
+
+  return result;
 };
 export default evaluator;

@@ -15,7 +15,8 @@ import {
   SET_ASSIGNMENT,
   UPDATE_SET_ASSIGNMENT,
   LOAD_ASSIGNMENTS,
-  REMOVE_ASSIGNMENT
+  REMOVE_ASSIGNMENT,
+  SET_TEST_DATA
 } from '../constants/actions';
 
 const initialTestState = {
@@ -137,6 +138,14 @@ const reducer = (state = initialState, { type, payload }) => {
         entity: {
           ...state.entity,
           assignments: payload.data
+        }
+      };
+    case SET_TEST_DATA:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          ...payload.data
         }
       };
     default:

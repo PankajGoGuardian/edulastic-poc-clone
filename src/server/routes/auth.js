@@ -42,7 +42,7 @@ router.post('/login', async (req, res) => {
     const user = new UserModel();
     const result = await user.getByEmail(data.email);
 
-    const userDetails = pick(result, ['email', 'role', '_id', 'name']);
+    const userDetails = pick(result, ['email', 'role', '_id', 'firstName', 'lastName']);
     if (!result) {
       return res.boom.badRequest('invalid username or password');
     }

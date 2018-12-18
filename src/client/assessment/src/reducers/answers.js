@@ -1,4 +1,4 @@
-import { SET_ANSWER, LOAD_ANSWERS } from '../constants/actions';
+import { SET_ANSWER, LOAD_ANSWERS, REMOVE_ANSWERS } from '../constants/actions';
 
 const initialState = {};
 
@@ -11,6 +11,8 @@ export default function reducer(state = initialState, { type, payload }) {
         ...state,
         ...payload
       };
+    case REMOVE_ANSWERS:
+      return {};
     default:
       return state;
   }

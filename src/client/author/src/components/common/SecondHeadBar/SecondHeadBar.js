@@ -11,8 +11,10 @@ import {
 import { blue, darkBlue, white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { withWindowSizes } from '@edulastic/common';
+import { connect } from 'react-redux';
 import { compose } from 'redux';
 
+import { clearAnswersAction } from '../../../actions/answers';
 import { Container, PreviewBar } from './styled_components';
 import { ButtonLink } from '..';
 import Breadcrumb from '../../Breadcrumb';
@@ -57,7 +59,8 @@ class SecondHeadBar extends Component {
       previewTab,
       onShowSource,
       onShowSettings,
-      changePreviewTab
+      changePreviewTab,
+      clearAnswers
     } = this.props;
 
     return (
@@ -120,12 +123,12 @@ class SecondHeadBar extends Component {
                     color={option ? white : blue}
                     hoverColor={darkBlue}
                   />
-)}
+                )}
               >
                 {t('component.questioneditor.buttonbar.showanswers')}
               </ButtonLink>
             </Button>
-            <Button onClick={() => changePreviewTab('clear')}>
+            <Button onClick={() => clearAnswers()}>
               <ButtonLink
                 color="primary"
                 active={previewTab === 'clear'}
@@ -149,7 +152,8 @@ SecondHeadBar.propTypes = {
   onShowSource: PropTypes.func.isRequired,
   onShowSettings: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  breadcrumb: PropTypes.string
+  breadcrumb: PropTypes.string,
+  clearAnswers: PropTypes.func.isRequired
 };
 
 SecondHeadBar.defaultProps = {
@@ -158,7 +162,11 @@ SecondHeadBar.defaultProps = {
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces('author')
+  withNamespaces('author'),
+  connect(
+    null,
+    { clearAnswers: clearAnswersAction }
+  )
 );
 
 export default enhance(SecondHeadBar);

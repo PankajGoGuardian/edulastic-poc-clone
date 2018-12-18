@@ -129,3 +129,6 @@ export const FETCH_GROUPS = '[group] fetch owner groups';
 export const SET_GROUPS = '[group] set owner groups';
 export const FETCH_GROUP_STUDENTS = '[group] fetch students of group';
 export const SET_GROUP_STUDENTS = '[group] set group students';
+
+// answers
+export const CLEAR_ANSWERS = '[answers] clear answers';

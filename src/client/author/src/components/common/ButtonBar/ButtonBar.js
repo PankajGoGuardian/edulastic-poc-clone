@@ -15,8 +15,10 @@ import {
 import { white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { withWindowSizes } from '@edulastic/common';
+import { connect } from 'react-redux';
 import { compose } from 'redux';
 
+import { clearAnswersAction } from '../../../actions/answers';
 import { ButtonLink } from '..';
 import {
   Container,
@@ -24,7 +26,7 @@ import {
   HeadIcon,
   MobileContainer,
   MobileFirstContainer,
-  MobileSecondContainer,
+  MobileSecondContainer
 } from './styled_components';
 
 class ButtonBar extends Component {
@@ -55,7 +57,8 @@ class ButtonBar extends Component {
       onShowSource,
       onShowSettings,
       windowWidth,
-      changePreviewTab
+      changePreviewTab,
+      clearAnswers
     } = this.props;
     return (
       <React.Fragment>
@@ -156,7 +159,7 @@ class ButtonBar extends Component {
                       </Button>
                       <Button
                         style={{ background: 'transparent', border: 'none', padding: 0 }}
-                        onClick={() => changePreviewTab('clear')}
+                        onClick={() => clearAnswers()}
                       >
                         <ButtonLink
                           color="primary"
@@ -185,7 +188,7 @@ ButtonBar.propTypes = {
   onShowSettings: PropTypes.func.isRequired,
   changePreviewTab: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  // saving: PropTypes.bool,
+  clearAnswers: PropTypes.func.isRequired
 };
 
 ButtonBar.defaultProps = {
@@ -194,7 +197,11 @@ ButtonBar.defaultProps = {
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces('author')
+  withNamespaces('author'),
+  connect(
+    null,
+    { clearAnswers: clearAnswersAction }
+  )
 );
 
 export default enhance(ButtonBar);

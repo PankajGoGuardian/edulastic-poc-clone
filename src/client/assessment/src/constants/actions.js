@@ -46,7 +46,8 @@ export const QUESTIONCOMMON_UPDATE_CORRECT_VALIDATION_SCORE =
 export const SET_ANSWER = '[answers] set answer';
 export const LOAD_ANSWERS = '[answers] load answers';
 export const CHECK_ANSWER = '[answers] check answers';
-
+export const CLEAR_ANSWERS = '[answers] clear answers';
+export const REMOVE_ANSWERS = '[answers] remove answers';
 // Evalution
 export const ADD_ITEM_EVALUATION = '[evaluation] add evaluation';
 

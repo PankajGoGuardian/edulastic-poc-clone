@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 import {
   IconEye,
   IconCheck,
@@ -10,8 +12,7 @@ import {
 } from '@edulastic/icons';
 import { blue, darkBlue, white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
-import { compose } from 'redux';
-
+import { clearAnswersAction } from '../../../../actions/answers';
 import { Container, PreviewBar } from './styled_components';
 import { ButtonLink } from '../../../common';
 
@@ -32,7 +33,8 @@ class SecondLevel extends Component {
       previewTab,
       onShowSource,
       onShowSettings,
-      changePreviewTab
+      changePreviewTab,
+      clearAnswers
     } = this.props;
 
     return (
@@ -89,12 +91,12 @@ class SecondLevel extends Component {
                     color={option ? white : blue}
                     hoverColor={darkBlue}
                   />
-)}
+                )}
               >
                 {t('component.questioneditor.buttonbar.showanswers')}
               </ButtonLink>
             </Button>
-            <Button onClick={() => changePreviewTab('clear')}>
+            <Button onClick={() => clearAnswers()}>
               <ButtonLink
                 color="primary"
                 active={previewTab === 'clear'}
@@ -117,11 +119,16 @@ SecondLevel.propTypes = {
   previewTab: PropTypes.string.isRequired,
   onShowSource: PropTypes.func.isRequired,
   onShowSettings: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  clearAnswers: PropTypes.func.isRequired
 };
 
 const enhance = compose(
-  withNamespaces('author')
+  withNamespaces('author'),
+  connect(
+    null,
+    { clearAnswers: clearAnswersAction }
+  )
 );
 
 export default enhance(SecondLevel);

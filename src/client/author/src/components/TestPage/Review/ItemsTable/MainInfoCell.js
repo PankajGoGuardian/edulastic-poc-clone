@@ -3,22 +3,45 @@ import PropTypes from 'prop-types';
 import { MoveLink } from '@edulastic/common';
 import styled from 'styled-components';
 import { withRouter } from 'react-router-dom';
+import PreviewModal from '../../../common/PreviewModal';
 
-const MainInfoCell = ({ data, history }) => {
-  const goToItem = () => {
-    history.push(`/author/items/${data.id}/item-detail`);
+class MainInfoCell extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isShowPreviewModal: false
+    };
+  }
+
+  previewItem = () => {
+    this.setState({ isShowPreviewModal: true });
   };
-  return (
-    <div>
-      <MoveLink onClick={goToItem}>{data.title}</MoveLink>
-      <STIMULUS dangerouslySetInnerHTML={{ __html: data.stimulus }} />
-    </div>
-  );
-};
+
+  closeModal = () => {
+    this.setState({ isShowPreviewModal: false });
+  };
+
+  render() {
+    const { data } = this.props;
+    const { isShowPreviewModal } = this.state;
+
+    return (
+      <div>
+        <MoveLink onClick={() => this.previewItem()}>{data.title}</MoveLink>
+        <STIMULUS dangerouslySetInnerHTML={{ __html: data.stimulus }} />
+        <PreviewModal
+          isVisible={isShowPreviewModal}
+          onClose={this.closeModal}
+          data={data}
+        />
+      </div>
+    );
+  }
+}
 
 MainInfoCell.propTypes = {
-  data: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired
 };
 
 export default withRouter(MainInfoCell);

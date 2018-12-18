@@ -6,7 +6,10 @@ import { compose } from 'redux';
 
 import MainInfoCell from './MainInfoCell';
 import MetaInfoCell from './MetaInfoCell';
-import { getItemsTypesSelector, getStandardsSelector } from '../../../../selectors/testItems';
+import {
+  getItemsTypesSelector,
+  getStandardsSelector
+} from '../../../../selectors/testItems';
 
 const ItemsTable = ({ items, types, standards }) => {
   const columns = [

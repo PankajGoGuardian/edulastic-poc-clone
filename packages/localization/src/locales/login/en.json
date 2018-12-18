@@ -55,6 +55,15 @@
                 "forstudent": "for Students",
                 "validclasscode": "Please input valid class code!",
                 "validinputname": "Please input Student Name!"
+            },
+            "getstarted": {
+                "getstartedtext": "Get started with free account!",
+                "subtext": "Join the growing community of teachers who are using Edulastic assessment",
+                "subtext2": "to promote learning.",
+                "createaccount": "Create your Free Account",
+                "imstudent": "I'M STUDENT",
+                "imteacher": "I'M TEACHER",
+                "imadmin": "I'M ADMINISTRATOR"
             }
         }
     }

@@ -62,7 +62,7 @@ class Login extends React.Component {
             <Col span={12}><img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" /></Col>
             <Col span={12} align="right">
               <span>{t('common.donthaveanaccount')}</span>
-              <Link to="/signup">{t('common.signupbtn')}</Link>
+              <Link to="/getstarted">{t('common.signupbtn')}</Link>
             </Col>
           </RegistrationHeader>
           <RegistrationBody>

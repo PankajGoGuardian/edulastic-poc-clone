@@ -217,7 +217,7 @@ const Copyright = styled(Row)`
   font-size: 10px;
   color: #dddddd;
   text-align: center;
-  margin: 25px 0px;
+  margin: 25px 0px 10px;
 `;
 
 const FormWrapper = styled.div`

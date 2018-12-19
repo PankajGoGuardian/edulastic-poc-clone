@@ -85,6 +85,19 @@ class Test {
     return this.Test.count();
   }
 
+  /*
+  * get specified fields of a test
+  * @params {string} _id - test id
+  * @params {[]strings} fields - fields to be present in document output
+  */
+  getFields(_id, fields) {
+    const requiredFields = {};
+    fields.forEach((field) => {
+      requiredFields[field] = 1;
+    });
+    return this.Test.findOne({ _id }, { ...requiredFields });
+  }
+
   getByIds(ids) {
     return this.Test.find({ _id: { $in: ids } }, getByIdsFormatter);
   }

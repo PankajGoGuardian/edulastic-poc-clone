@@ -6,7 +6,12 @@ const testItemActivitySchema = mongoose.Schema({
   testItemId: String,
   createdAt: String,
   updatedAt: String,
-  testActivityId: String
+  testActivityId: String,
+  score: Number,
+  maxScore: Number,
+  correct: Number,
+  wrong: Number,
+  evaluations: Object
 });
 
 class UserTestItemActivity {
@@ -33,6 +38,30 @@ class UserTestItemActivity {
         testActivityId
       },
       { answers: 1 }
+    );
+  }
+
+  /*
+  * add a new entry if not present, else update user response
+  * @params testItemActivity {Obj} - userTestItemAcitivty object
+  */
+  add({ testItemId, testActivityId, answers, ...fields }) {
+    return this.UserTestItemActivity.findOneAndUpdate(
+      {
+        testItemId,
+        testActivityId
+      },
+      {
+        testItemId,
+        testActivityId,
+        answers,
+        ...fields,
+        updatedAt: Date.now()
+      },
+      {
+        upsert: true,
+        new: true
+      }
     );
   }
 }

@@ -71,11 +71,13 @@ describe('Test Multiple Choice Flow', () => {
     cy.contains('Add New Choice').should('be.visible');
     cy.contains('Add New Choice').click();
 
-    // alternate correct
-    cy.get('#alternate').click();
+    //click on alternate
+    cy.get('[data-cy=alternate]').should('be.visible');
+    cy.get('[data-cy=alternate]').click();
 
     // advanced option click
-    cy.get('#iconPlus').click();
+    cy.get('[data-cy=iconPlus]').should('be.visible');
+    cy.get('[data-cy=iconPlus]').click();
 
     // Save Multiple Choice - standard
 
@@ -107,6 +109,7 @@ describe('Test Multiple Choice Flow', () => {
   });
 
   it('Edit Answer', () => {
+    cy.wait(2000);
     cy.contains('EDIT').should('be.visible');
     cy.contains('EDIT').click();
 

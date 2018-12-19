@@ -110,8 +110,6 @@ describe('Test Multiple Choice Flow', () => {
     //icon plus click
     cy.get('[data-cy=iconPlus]').should('be.visible');
     cy.get('[data-cy=iconPlus]').click();
-    cy.get('.fdOowS').click();
-    cy.get('[data-cy=iconPlus]').click();
 
     //check enable auto scoring
     cy.contains('Enable auto scoring').click();
@@ -154,7 +152,7 @@ describe('Test Multiple Choice Flow', () => {
     cy.get('[data-cy=source]').click();
 
     //close source modal
-    cy.get('.gEyPor').click();
+    cy.get('[data-cy=close]').click();
 
     // Save Multiple Choice - standard
     cy.contains('SAVE').should('be.visible');
@@ -167,7 +165,7 @@ describe('Test Multiple Choice Flow', () => {
     cy.contains('PREVIEW').click();
 
     //check answer
-    cy.contains('Violet').click();
+    cy.contains('Green').click();
     cy.contains('Check Answer').should('be.visible');
     cy.contains('Check Answer').click();
     cy.contains('Clear').should('be.visible');
@@ -185,6 +183,7 @@ describe('Test Multiple Choice Flow', () => {
   });
 
   it('Edit Answer', () => {
+    cy.wait(2000);
     cy.contains('EDIT').should('be.visible');
     cy.contains('EDIT').click();
 

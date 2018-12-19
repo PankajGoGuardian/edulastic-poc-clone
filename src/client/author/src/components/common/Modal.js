@@ -19,13 +19,17 @@ class Modal extends Component {
         <Content>
           <Header>
             {title}
-            <Close onClick={onClose}>
+            <Close data-cy="close" onClick={onClose}>
               <FaTimes />
             </Close>
           </Header>
           {children}
           <Footer>
-            <Button onClick={onClose} variant="extendedFab" style={{ width: '40%' }}>
+            <Button
+              onClick={onClose}
+              variant="extendedFab"
+              style={{ width: '40%' }}
+            >
               {t('component.common.modal.cancel')}
             </Button>
             <Button
@@ -39,7 +43,7 @@ class Modal extends Component {
           </Footer>
         </Content>
       </Container>,
-      modalRoot,
+      modalRoot
     );
   }
 }
@@ -49,7 +53,7 @@ Modal.propTypes = {
   onApply: PropTypes.func.isRequired,
   children: PropTypes.any.isRequired,
   title: PropTypes.string.isRequired,
-  t: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 export default withNamespaces('author')(Modal);

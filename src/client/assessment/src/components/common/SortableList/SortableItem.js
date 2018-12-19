@@ -24,7 +24,7 @@ const SortableItem = SortableElement(
       </div>
       {onRemove && (
         <IconTrash
-          id="delete"
+          data-cy={`delete${indx}`}
           onClick={onRemove}
           color={greenDark}
           hoverColor={red}

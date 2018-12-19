@@ -46,7 +46,9 @@ class CorrectAnswers extends Component {
     return (
       <Button
         style={{ minWidth: 70, minHeight: 25 }}
-        icon={<IconPlus id="alternate" color={white} width={10} height={10} />}
+        icon={
+          <IconPlus data-cy="alternate" color={white} width={10} height={10} />
+        }
         onClick={() => {
           this.handleTabChange(validation.alt_responses.length + 1);
           onAddAltResponses();

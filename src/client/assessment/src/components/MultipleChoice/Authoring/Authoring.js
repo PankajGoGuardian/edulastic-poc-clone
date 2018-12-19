@@ -91,7 +91,9 @@ class MultipleChoiceAuthoring extends Component {
             value={item.stimulus}
             placeholder={t('component.multiplechoice.thisisstem')}
           />
-          <Subtitle>{t('component.multiplechoice.multiplechoiceoptions')}</Subtitle>
+          <Subtitle>
+            {t('component.multiplechoice.multiplechoiceoptions')}
+          </Subtitle>
           <SortableList
             items={item.options.map(o => o.label)}
             onSortEnd={this.onSortEnd}

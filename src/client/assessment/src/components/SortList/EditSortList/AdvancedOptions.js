@@ -6,12 +6,20 @@ import { withNamespaces } from '@edulastic/localization';
 import { Checkbox } from '@edulastic/common';
 import { secondaryTextColor, grey } from '@edulastic/colors';
 
-import Options, { FontSizeSelect, OrientationSelect } from '../../common/Options';
+import Options, {
+  FontSizeSelect,
+  OrientationSelect
+} from '../../common/Options';
 
 import { Subtitle } from '../../common';
 import LargeInput from './LargeInput';
 
-const AdvancedOptions = ({ t, onItemChange, onValidationChange, onUiChange }) => {
+const AdvancedOptions = ({
+  t,
+  onItemChange,
+  onValidationChange,
+  onUiChange
+}) => {
   const [unscored, setUnscored] = useState(false);
   const [instantFeedback, setInstantFeedback] = useState(false);
   const [automarkable, setAutomarkable] = useState(false);
@@ -23,7 +31,9 @@ const AdvancedOptions = ({ t, onItemChange, onValidationChange, onUiChange }) =>
 
   return (
     <Options title="Advanced Options">
-      <Subtitle style={{ padding: 0, marginBottom: 21 }}>{t('component.options.scoring')}</Subtitle>
+      <Subtitle style={{ padding: 0, marginBottom: 21 }}>
+        {t('component.options.scoring')}
+      </Subtitle>
 
       <FlexRow>
         <Flex>
@@ -93,12 +103,16 @@ const AdvancedOptions = ({ t, onItemChange, onValidationChange, onUiChange }) =>
                 setMinScoreIfAttempted(val);
               }}
             />
-            <LabelText>{t('component.options.min_score_if_attempted')}</LabelText>
+            <LabelText>
+              {t('component.options.min_score_if_attempted')}
+            </LabelText>
           </FlexRow>
         </Flex>
       </FlexRow>
       <Hr />
-      <Subtitle style={{ padding: 0, marginBottom: 21 }}>{t('component.options.layout')}</Subtitle>
+      <Subtitle style={{ padding: 0, marginBottom: 21 }}>
+        {t('component.options.layout')}
+      </Subtitle>
       <FlexRow>
         <Flex flexDir="column">
           <FontSizeSelect

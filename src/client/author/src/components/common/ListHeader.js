@@ -5,26 +5,38 @@ import { compose } from 'redux';
 import { Affix } from 'antd';
 import { Button } from '@edulastic/common';
 import { IconPlus } from '@edulastic/icons';
-import { mobileWidth, greenDarkSecondary, darkBlueSecondary, white } from '@edulastic/colors';
+import {
+  mobileWidth,
+  greenDarkSecondary,
+  darkBlueSecondary,
+  white
+} from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 
-const ListHeader = ({ onCreate, t, windowWidth, creating, title }) => (
+const ListHeader = ({ onCreate, t, windowWidth, title }) => (
   <Affix>
     <Container>
       <Heading>{title}</Heading>
       <Button
-        disabled={creating}
+        // disabled={creating}
         style={{
           height: windowWidth > 768 ? 50 : 40,
           minWidth: 151.9,
           color: '#fff',
-          margin: 0,
+          margin: 0
         }}
         onClick={onCreate}
         color="success"
-        icon={
-          <IconPlus color={greenDarkSecondary} style={{ position: 'relative' }} left={-25} width={14} height={14} hoverColor={white} />
-        }
+        icon={(
+          <IconPlus
+            color={greenDarkSecondary}
+            style={{ position: 'relative' }}
+            left={-25}
+            width={14}
+            height={14}
+            hoverColor={white}
+          />
+)}
       >
         {t('component.itemlist.header.create')}
       </Button>
@@ -36,8 +48,7 @@ ListHeader.propTypes = {
   onCreate: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  creating: PropTypes.bool.isRequired,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired
 };
 
 const enhance = compose(withNamespaces('author'));

@@ -16,7 +16,7 @@ import { getQuestionDataSelector } from '../../../../../author/src/selectors/que
 
 class CorrectAnswers extends Component {
   state = {
-    value: 0,
+    value: 0
   };
 
   handleTabChange = (value) => {
@@ -28,7 +28,10 @@ class CorrectAnswers extends Component {
 
     if (validation.alt_responses && validation.alt_responses.length) {
       return validation.alt_responses.map((res, i) => (
-        <Tab key={i} label={`${t('component.correctanswers.alternate')} ${i + 1}`} />
+        <Tab
+          key={i}
+          label={`${t('component.correctanswers.alternate')} ${i + 1}`}
+        />
       ));
     }
     return null;
@@ -58,8 +61,8 @@ class CorrectAnswers extends Component {
       ...question.data,
       valid_response: {
         score: question.validation.valid_response.score,
-        value: answers,
-      },
+        value: answers
+      }
     };
     newData.validation.valid_response = updatedValidation.valid_response;
     setQuestionData(newData);
@@ -72,7 +75,7 @@ class CorrectAnswers extends Component {
     const updatedAltResponses = newData.validation.alt_responses;
     updatedAltResponses[tabIndex] = {
       score: newData.validation.alt_responses[tabIndex].score,
-      value: answers,
+      value: answers
     };
 
     newData.validation.alt_responses = updatedAltResponses;
@@ -99,13 +102,26 @@ class CorrectAnswers extends Component {
 
   render() {
     /* eslint-disable max-len */
-    const { validation, stimulus, options, t, templateMarkUp, hasGroupResponses, configureOptions, uiStyle } = this.props;
+    const {
+      validation,
+      stimulus,
+      options,
+      t,
+      templateMarkUp,
+      hasGroupResponses,
+      configureOptions,
+      uiStyle
+    } = this.props;
     const { value } = this.state;
     return (
       <div>
         <Subtitle>{t('component.correctanswers.setcorrectanswers')}</Subtitle>
         <div>
-          <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
+          <Tabs
+            value={value}
+            onChange={this.handleTabChange}
+            extra={this.renderPlusButton()}
+          >
             <Tab label={t('component.correctanswers.correct')} />
             {this.renderAltResponses()}
           </Tabs>
@@ -167,7 +183,7 @@ CorrectAnswers.propTypes = {
   question: PropTypes.object.isRequired,
   hasGroupResponses: PropTypes.bool,
   configureOptions: PropTypes.object.isRequired,
-  uiStyle: PropTypes.object,
+  uiStyle: PropTypes.object
 };
 
 CorrectAnswers.defaultProps = {
@@ -182,7 +198,7 @@ CorrectAnswers.defaultProps = {
     stemnumeration: '',
     widthpx: 0,
     heightpx: 0,
-    placeholder: '',
+    placeholder: ''
   }
 };
 
@@ -190,10 +206,10 @@ const enhance = compose(
   withNamespaces('assessment'),
   connect(
     state => ({
-      question: getQuestionDataSelector(state),
+      question: getQuestionDataSelector(state)
     }),
-    { setQuestionData: setQuestionDataAction },
-  ),
+    { setQuestionData: setQuestionDataAction }
+  )
 );
 
 export default enhance(CorrectAnswers);

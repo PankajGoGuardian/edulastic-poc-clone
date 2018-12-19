@@ -49,7 +49,7 @@ class Options extends Component {
         <Header onClick={this.handleToggle}>
           <span style={{ fontWeight: 600 }}>{title}</span>
           {show && <Toggler />}
-          {!show && <IconPlus id="iconPlus" color={greenDark} />}
+          {!show && <IconPlus data-cy="iconPlus" color={greenDark} />}
         </Header>
         {show && (
           <Fragment>

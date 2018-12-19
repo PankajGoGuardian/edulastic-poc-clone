@@ -22,12 +22,16 @@ function Options({ onChange, uiStyle, t }) {
           <O.Col md={6}>
             <O.Label>{t('component.options.style')}</O.Label>
             <Select
+              id="select"
               style={{ width: '80%' }}
               onChange={val => changeUiStyle('type', val)}
               options={[
                 { value: 'standard', label: t('component.options.standard') },
                 { value: 'block', label: t('component.options.block') },
-                { value: 'radioBelow', label: t('component.options.radioButtonBelow') }
+                {
+                  value: 'radioBelow',
+                  label: t('component.options.radioButtonBelow')
+                }
               ]}
               value={uiStyle.type}
             />
@@ -36,6 +40,7 @@ function Options({ onChange, uiStyle, t }) {
             <O.Label>{t('component.options.columns')}</O.Label>
             <TextField
               type="number"
+              data-cy="columns"
               disabled={false}
               containerStyle={{ width: 120 }}
               onChange={e => changeUiStyle('columns', +e.target.value)}
@@ -68,8 +73,14 @@ function Options({ onChange, uiStyle, t }) {
                 onChange={val => changeUiStyle('choice_label', val)}
                 options={[
                   { value: 'number', label: t('component.options.numerical') },
-                  { value: 'upper-alpha', label: t('component.options.uppercase') },
-                  { value: 'lower-alpha', label: t('component.options.lowercase') }
+                  {
+                    value: 'upper-alpha',
+                    label: t('component.options.uppercase')
+                  },
+                  {
+                    value: 'lower-alpha',
+                    label: t('component.options.lowercase')
+                  }
                 ]}
                 value={uiStyle.choice_label}
               />

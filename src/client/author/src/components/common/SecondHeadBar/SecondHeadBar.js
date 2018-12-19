@@ -78,7 +78,7 @@ class SecondHeadBar extends Component {
               justifyContent: 'flex-end'
             }}
           >
-            <Button onClick={onShowSource}>
+            <Button onClick={onShowSource} data-cy="source">
               <ButtonLink
                 color="primary"
                 icon={<IconSource color={option ? white : blue} />}

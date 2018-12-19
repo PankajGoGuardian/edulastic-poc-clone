@@ -64,6 +64,7 @@ class CorrectAnswer extends Component {
         <Header>
           <PointField
             type="number"
+            data-cy="points"
             value={responseScore}
             onChange={this.updateScore}
             onBlur={this.updateScore}

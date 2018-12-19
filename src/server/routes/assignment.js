@@ -1,5 +1,7 @@
 import joi from 'joi';
 import { Router } from 'express';
+import { invert } from 'lodash';
+import { assignmentSortParams, assignmentPolicyOptions } from '@edulastic/constants';
 import EnrollmentModel from '../models/enrollment';
 import AssignmentModel from '../models/assignments';
 import TestModel from '../models/test';
@@ -7,8 +9,13 @@ import UserTestActivityModel from '../models/userTestActivity';
 import { assignmentSchema } from '../validators/assignment';
 import { successHandler } from '../utils/responseHandler';
 
-const router = Router();
 
+const router = Router();
+const {
+  DUEDATE
+} = assignmentSortParams;
+
+const policyOptions = invert(assignmentPolicyOptions);
 /**
  * create assignment
  */
@@ -149,12 +156,15 @@ router.get('/', async (req, res) => {
     const Assignments = new AssignmentModel();
     const Test = new TestModel();
     const userId = req.user._id;
+    const sort = req.query.sort ? assignmentSortParams[req.query.sort] : undefined;
+    const sortOptions = {};
     const enrollments = await Enrollment.getClassListByStudent(userId);
     if (!enrollments.length) {
       return successHandler(res, []);
     }
     const groupIds = enrollments.map(enrollment => enrollment.groupId);
-    const assignments = await Assignments.getByClassList(groupIds, userId);
+    if (sort) sortOptions[sort] = 1; else sortOptions[DUEDATE] = 1;
+    const assignments = await Assignments.getByClassList(groupIds, userId, sortOptions);
     const testIds = assignments.map(item => item.testId);
     const result = await Test.getByIds(testIds);
     const tests = {};
@@ -165,6 +175,8 @@ router.get('/', async (req, res) => {
     assignments.forEach((assignment) => {
       const { testId } = assignment;
       assignment._doc.test = tests[testId];
+      assignment._doc.openPolicy = policyOptions[assignment._doc.openPolicy];
+      assignment._doc.closePolicy = policyOptions[assignment._doc.closePolicy];
     });
     return successHandler(res, assignments);
   } catch (e) {

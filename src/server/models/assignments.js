@@ -54,10 +54,10 @@ class Assignment {
     });
   }
 
-  getByClassList(groupIds, studentId) {
+  getByClassList(groupIds, studentId, sortOptions = {}) {
     return this.Assignment.find({
       $or: [{ class: { $in: groupIds }, specificStudents: false }, { students: studentId }]
-    });
+    }).sort(sortOptions);
   }
 
   byTest(testId, ownerId) {

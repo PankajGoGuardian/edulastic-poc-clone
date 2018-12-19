@@ -4,6 +4,8 @@ const httpMessages = require('./const/httpMessage');
 const roleuser = require('./const/roleType');
 const math = require('./const/math.js');
 const testActivityStatus = require('./const/testActivityStatus');
+const assignmentSortParams = require('./const/assignmentSortParams');
+const assignmentPolicyOptions = require('./const/assignmentPolicyOptions');
 
 module.exports = {
   questionType,
@@ -11,5 +13,7 @@ module.exports = {
   httpMessages,
   roleuser,
   math,
-  testActivityStatus
+  testActivityStatus,
+  assignmentSortParams,
+  assignmentPolicyOptions
 };

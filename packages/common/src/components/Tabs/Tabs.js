@@ -10,17 +10,17 @@ class Tabs extends Component {
   static TabContainer = TabContainer;
 
   render() {
-    const { children, onChange, value, extra } = this.props;
+    const { children, onChange, value, extra, style } = this.props;
 
     return (
-      <Container>
+      <Container style={style}>
         {React.Children.map(children, (child, index) => {
           if (!child) return null;
           return React.cloneElement(child, {
             onClick: () => {
               onChange(index);
             },
-            active: value === index,
+            active: value === index
           });
         })}
         {extra}
@@ -34,10 +34,12 @@ Tabs.propTypes = {
   children: PropTypes.any.isRequired,
   value: PropTypes.number.isRequired,
   extra: PropTypes.any,
+  style: PropTypes.object
 };
 
 Tabs.defaultProps = {
   extra: null,
+  style: {}
 };
 
 export default Tabs;

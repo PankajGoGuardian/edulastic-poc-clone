@@ -81,6 +81,44 @@
       "distractorRationale": "Distractor rationale",
       "distractorRationalePerResponse": "Distractor rationale per response"
     },
+    "shading": {
+      "canvasSubtitle": "Canvas option",
+      "rowsCountSubtitle": "Row count",
+      "colsCountSubtitle": "Column count",
+      "cellWidthSubtitle": "Cell width",
+      "cellHeightSubtitle": "Cell height",
+      "shadesSubtitle": "Shade cells",
+      "read_only_author_cells": "Lock shaded cells",
+      "methodSubtitle": "Method"
+    },
+    "hotspot": {
+      "widthLabel": "Width (px)",
+      "heightLabel": "Height (px)",
+      "altTextLabel": "Image alternative text",
+      "dropZoneTitle": "DRAG & DROP",
+      "dropZoneSubTitle": "YOUR OWN IMAGE",
+      "areasBlockTitle": "Areas",
+      "undo": "Undo",
+      "redo": "Redo",
+      "clear": "Clear",
+      "draw": "Draw",
+      "delete": "Delete",
+      "attributesTitle": "Attributes",
+      "fillColorTitle": "Fill color",
+      "outlineColorTitle": "Outline color",
+      "global": "Global",
+      "local": "Local",
+      "multiple_responses": "Multiple responses",
+      "areaSelectLabel": "Select Area"
+    },
+    "tokenHighlight": {
+      "paragraph": "Paragraph",
+      "sentence": "Sentence",
+      "word": "Word",
+      "templateTitle": "Template",
+      "editTemplateTab": "Edit template",
+      "editTokenTab": "Edit token"
+    },
     "matchList": {
       "editPossibleResponses": "Possible responses",
       "setcorrectanswers": "Set Correct Answer(s)"

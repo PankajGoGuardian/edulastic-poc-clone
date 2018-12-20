@@ -6,11 +6,11 @@ const TabContainer = ({ children, style }) => <Container style={style}>{children
 
 TabContainer.propTypes = {
   children: PropTypes.any.isRequired,
-  style: PropTypes.object,
+  style: PropTypes.object
 };
 
 TabContainer.defaultProps = {
-  style: {},
+  style: {}
 };
 
 export default TabContainer;

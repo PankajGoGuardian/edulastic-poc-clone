@@ -864,6 +864,12 @@ p {
   padding: 4px;
 }
 
+.DefaultSettings {
+  caret-color: transparent;
+  outline: none !important;
+  border: none !important;
+}
+
 #mainQuill .ql-editor {
   min-height: 157px !important;
   background: transparent;
@@ -892,4 +898,52 @@ p {
   position: absolute;
   right: -20px;
   top: 0px;
+}
+
+span.token,
+span.token > *,
+span.token.answer {
+  padding: 1px;
+  line-height: 28px;
+  margin: 0 2px 0 2px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0);
+}
+
+span.token.without-cursor {
+  cursor: default;
+}
+
+span.token.answer:hover {
+  background: #fdcc3b80;
+  border: 1px solid #fdcc3b;
+}
+
+span.token.active-word.answer {
+  background: #fdcc3b80;
+  border: 1px solid #fdcc3b;
+}
+
+span.token.active-word {
+  background: #93d8f780;
+  border: 1px solid #12a6e8;
+}
+
+#svg-control-block {
+  font-size: 0;
+}
+
+.rc-color-picker-wrap {
+  display: block !important;
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.rc-color-picker-wrap > .rc-color-picker-trigger {
+  border: none !important;
+  padding: 0 !important;
+  border-radius: 4px !important;
+  width: 40px !important;
+  height: 40px !important;
+  box-shadow: none !important;
 }

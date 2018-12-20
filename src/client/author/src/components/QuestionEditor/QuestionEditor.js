@@ -28,6 +28,9 @@ const headerTitles = {
   shortText: 'Short Text',
   essayPlainText: 'Essay with plain text',
   essayRichText: 'Essay with rich text',
+  tokenhighlight: 'Token Highlight',
+  hotspot: 'Hotspot',
+  shading: 'Shading',
   classification: 'Classification',
   matchList: 'Match List',
   clozeDragDrop: 'Cloze Drag & Drop',
@@ -93,16 +96,10 @@ class QuestionEditor extends Component {
   };
 
   renderQuestion = (questionType) => {
-    const {
-      view,
-      question,
-      match
-    } = this.props;
+    const { view, question, match } = this.props;
     const { previewTab, saveClicked } = this.state;
     if (view === 'metadata') {
-      return (
-        <QuestionMetadata />
-      );
+      return <QuestionMetadata />;
     }
     if (question) {
       return (
@@ -163,7 +160,7 @@ class QuestionEditor extends Component {
             height: 'calc(100vh - 135px)'
           }}
         >
-          { this.renderQuestion(questionType) }
+          {this.renderQuestion(questionType)}
         </ContentWrapper>
       </div>
     );

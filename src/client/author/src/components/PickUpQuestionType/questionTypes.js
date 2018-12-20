@@ -1,16 +1,108 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import { FlexContainer } from '@edulastic/common';
 import { math } from '@edulastic/constants';
+import { svgMapFillColor, svgMapStrokeColor } from '@edulastic/colors';
 
 import Card from './Card';
-import { EXACT_MATCH, ON_LIMIT } from '../../../../assessment/src/constants/constantsForQuestions';
+import {
+  EXACT_MATCH,
+  ON_LIMIT,
+  previewAreas,
+  templateWithTokens,
+  BY_LOCATION_METHOD,
+  SENTENCE_MODE
+} from '../../../../assessment/src/constants/constantsForQuestions';
 
 const { EMBED_RESPONSE } = math;
 
 const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
   const cards = [
+    {
+      title: 'Shading',
+      type: 'highlight',
+      data: {
+        canvas: {
+          cell_height: 2,
+          cell_width: 2,
+          column_count: 6,
+          row_count: 1,
+          shaded: [],
+          read_only_author_cells: false
+        },
+        stimulus: '<p>[This is the stem.]</p>',
+        type: 'shading',
+        validation: {
+          scoring_type: EXACT_MATCH,
+          valid_response: {
+            score: 1,
+            value: {
+              method: BY_LOCATION_METHOD,
+              value: []
+            }
+          },
+          alt_responses: []
+        }
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Hotspot',
+      type: 'highlight',
+      data: {
+        stimulus: '<p>[This is the stem.]</p>',
+        type: 'hotspot',
+        image: {
+          source:
+            'https://assets.learnosity.com/organisations/1/bead7655-fb71-41af-aeea-9e08a47eac68.png',
+          width: 900,
+          altText: '',
+          height: 470
+        },
+        areas: [],
+        previewAreas,
+        area_attributes: {
+          global: {
+            fill: svgMapFillColor,
+            stroke: svgMapStrokeColor
+          },
+          local: []
+        },
+        validation: {
+          scoring_type: EXACT_MATCH,
+          valid_response: {
+            score: 1,
+            value: []
+          },
+          alt_responses: []
+        },
+        multiple_responses: false
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Token highlight',
+      type: 'highlight',
+      data: {
+        stimulus: '<p>[This is the stem.]</p>',
+        template:
+          '<p>Risus et tincidunt turpis facilisis.</p><p class="newline_section"><br></p><p>Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. dignissim, et tincidunt turpis facilisis.</p><p class="newline_section"><br></p><p>Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>',
+        templeWithTokens: templateWithTokens,
+        tokenization: SENTENCE_MODE,
+        type: 'tokenhighlight',
+        validation: {
+          scoring_type: EXACT_MATCH,
+          valid_response: {
+            score: 1,
+            value: []
+          },
+          alt_responses: []
+        }
+      },
+      onSelectQuestionType
+    },
     {
       title: 'Essay with rich text',
       type: 'edit',

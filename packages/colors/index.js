@@ -10,10 +10,13 @@ export const textColor = '#878282';
 export const secondaryTextColor = '#434b5d';
 
 export const separatorColor = '#d6d0d0';
-
 export const dashBorderColor = '#e6e6e6';
-
+export const dashBorderColorOpacity = '#e6e6e633';
+export const dropZoneTitleColor = '#b1b1b1';
 export const mainBlueColor = '#00b0ff';
+
+export const svgMapFillColor = 'rgba(0, 176, 255, 0.19)';
+export const svgMapStrokeColor = 'rgba(0, 176, 255, 1)';
 
 export const red = '#ee1658';
 export const lightRed = '#fbdfe7';

@@ -12,6 +12,9 @@ import { Graph } from '../Graph';
 import { ClozeDropDown } from '../ClozeDropDown';
 import { ClozeText } from '../ClozeText';
 import { ShortText } from '../ShortText';
+import { TokenHighlight } from '../TokenHighlight';
+import { Shading } from '../Shading';
+import { Hotspot } from '../Hotspot';
 import { EssayPlainText } from '../EssayPlainText';
 import { EssayRichText } from '../EssayRichText';
 import withAnswerSave from '../HOC/withAnswerSave';
@@ -22,6 +25,12 @@ import MathFormula from '../MathFormula/MathFormula';
 
 const getQuestion = (type) => {
   switch (type) {
+    case questionType.SHADING:
+      return Shading;
+    case questionType.HOTSPOT:
+      return Hotspot;
+    case questionType.TOKEN_HIGHLIGHT:
+      return TokenHighlight;
     case questionType.SHORT_TEXT:
       return ShortText;
     case questionType.ESSAY_PLAIN_TEXT:

@@ -11,8 +11,10 @@ export const SAVE_QUESTION_SUCCESS = '[question] save question success';
 export const SAVE_QUESTION_ERROR = '[question] save question error';
 
 export const SET_QUESTION_DATA = '[question] set question data';
-export const SET_QUESTION_ALIGNMENT_ADD_ROW = '[question] set question alignment add row';
-export const SET_QUESTION_ALIGNMENT_REMOVE_ROW = '[question] set question alignment remove row';
+export const SET_QUESTION_ALIGNMENT_ADD_ROW =
+  '[question] set question alignment add row';
+export const SET_QUESTION_ALIGNMENT_REMOVE_ROW =
+  '[question] set question alignment remove row';
 export const SET_QUESTION = '[question] set question';
 
 // assessment
@@ -132,3 +134,6 @@ export const SET_GROUP_STUDENTS = '[group] set group students';
 
 // answers
 export const CLEAR_ANSWERS = '[answers] clear answers';
+
+// upload image
+export const UPDATE_TEST_IMAGE = 'update test image';

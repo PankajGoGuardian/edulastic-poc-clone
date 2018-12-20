@@ -16,7 +16,8 @@ import {
   UPDATE_SET_ASSIGNMENT,
   LOAD_ASSIGNMENTS,
   REMOVE_ASSIGNMENT,
-  SET_TEST_DATA
+  SET_TEST_DATA,
+  UPDATE_TEST_IMAGE
 } from '../constants/actions';
 
 const initialTestState = {
@@ -128,8 +129,9 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: {
           ...state.entity,
-          assignments: state.entity.assignments
-            .filter(item => item._id !== payload.id)
+          assignments: state.entity.assignments.filter(
+            item => item._id !== payload.id
+          )
         }
       };
     case LOAD_ASSIGNMENTS:
@@ -146,6 +148,14 @@ const reducer = (state = initialState, { type, payload }) => {
         entity: {
           ...state.entity,
           ...payload.data
+        }
+      };
+    case UPDATE_TEST_IMAGE:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          thumbnail: payload.fileUrl
         }
       };
     default:

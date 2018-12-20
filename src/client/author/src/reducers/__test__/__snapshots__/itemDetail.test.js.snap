@@ -1,5 +1,47 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`item detail should return the delete item detail widget state 1`] = `
+Object {
+  "dragging": false,
+  "error": null,
+  "item": Object {
+    "rows": Array [
+      Object {
+        "dimension": "100%",
+        "tabs": Array [],
+        "widgets": Array [],
+      },
+    ],
+  },
+  "loading": false,
+  "updateError": null,
+  "updating": false,
+}
+`;
+
+exports[`item detail should return the delete item detail widget state 2`] = `
+Object {
+  "dragging": false,
+  "error": null,
+  "item": Object {
+    "rows": Array [
+      Object {
+        "dimension": "100%",
+        "tabs": Array [
+          undefined,
+          undefined,
+          "tab1",
+        ],
+        "widgets": Array [],
+      },
+    ],
+  },
+  "loading": false,
+  "updateError": null,
+  "updating": false,
+}
+`;
+
 exports[`item detail should return the initial state 1`] = `
 Object {
   "dragging": false,

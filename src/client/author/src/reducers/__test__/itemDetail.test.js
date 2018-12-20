@@ -171,7 +171,7 @@ describe('item detail', () => {
     expect(itemDetailReducer(initialState, {
       type: DELETE_ITEM_DETAIL_WIDGET,
       payload: {
-        rowIndex: 3,
+        rowIndex: 0,
         widgetIndex: 5
       }
     })).toMatchSnapshot();
@@ -181,7 +181,7 @@ describe('item detail', () => {
     expect(itemDetailReducer(initialState, {
       type: UPDATE_TAB_TITLE,
       payload: {
-        rowIndex: 3,
+        rowIndex: 0,
         tabIndex: 2,
         value: 'tab1'
       }
@@ -202,8 +202,8 @@ describe('item detail', () => {
     expect(itemDetailReducer(initialState, {
       type: MOVE_WIDGET,
       payload: {
-        from: 1,
-        to: 2
+        from: 0,
+        to: 1
       }
     })).toMatchSnapshot();
   });

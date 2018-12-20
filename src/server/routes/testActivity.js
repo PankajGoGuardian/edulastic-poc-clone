@@ -1,4 +1,5 @@
 import joi from 'joi';
+import { pick } from 'lodash';
 import { Router } from 'express';
 import { testActivityStatus, httpMessages } from '@edulastic/constants';
 import TestActivityModel from '../models/userTestActivity';
@@ -11,6 +12,8 @@ import { scoreTestItem } from '../utils/scoreItem';
 import { successHandler } from '../utils/responseHandler';
 import { testItemActivitySchema } from '../validators/testItemActivity';
 import { createTestActivitySchema } from '../validators/testActivity';
+import { submitAssignmentSchema } from '../validators/assignment';
+import { createTestActivityReport } from '../utils/testActivity';
 
 const router = Router();
 
@@ -48,6 +51,53 @@ router.post('/', async (req, res) => {
       userId,
       status: START
     });
+    return successHandler(res, result);
+  } catch (e) {
+    req.log.error(e);
+    res.boom.badRequest(e);
+  }
+});
+
+// submit an assignment
+router.put('/:id/status', async (req, res) => {
+  try {
+    const { id: testActivityId } = req.params;
+
+    const { error, value } = joi.validate(req.body, submitAssignmentSchema);
+    if (error) {
+      return res.boom.badRequest(error.message);
+    }
+    const TestActivity = new TestActivityModel();
+    const TestItemActivity = new TestItemActivityModel();
+    const activity = await TestActivity.getById(testActivityId);
+
+    // if not the real owner
+    if (activity.userId !== req.user._id) {
+      return res.boom.forbidden(httpMessages.NOT_OWNER);
+    }
+
+    // assignment shouldnot be resubmitted
+    if (activity.status === SUBMITTED) {
+      return res.boom.forbidden(httpMessages.ASSIGNMENT_ALREADY_SUBMITTED);
+    }
+
+    const updateFields = {};
+    // if its a submission!
+    if (value.status === SUBMITTED) {
+      const testItemActivities = await TestItemActivity.getByFields({ testActivityId });
+      const evaluation = createTestActivityReport(testItemActivities);
+      Object.assign(updateFields, {
+        ...evaluation,
+        status: SUBMITTED,
+        endDate: Date.now()
+      });
+    } else {
+      // pause needs to be added
+      return res.boom.forbidden('invalid status type');
+    }
+
+    const data = await TestActivity.update(testActivityId, updateFields);
+    const result = pick(data, ['_id', 'status', 'testId', 'assignmentId', 'startDate', 'endDate']);
     return successHandler(res, result);
   } catch (e) {
     req.log.error(e);

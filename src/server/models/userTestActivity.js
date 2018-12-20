@@ -11,7 +11,8 @@ const testActivitySchema = mongoose.Schema({
   score: Number,
   maxScore: Number,
   assignmentId: String,
-  correctAnswers: Number
+  correct: Number,
+  wrong: Number
 });
 
 class UserTestActivity {
@@ -39,11 +40,12 @@ class UserTestActivity {
   }
 
   update(id, data) {
+    data.updatedAt = Date.now();
     return this.UserTestActivity.findOneAndUpdate(
       {
         _id: new mongoose.Types.ObjectId(id)
       },
-      data,
+      { $set: data },
       { new: true }
     );
   }

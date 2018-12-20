@@ -41,6 +41,7 @@ class UserTestItemActivity {
     );
   }
 
+
   /*
   * add a new entry if not present, else update user response
   * @params testItemActivity {Obj} - userTestItemAcitivty object
@@ -63,6 +64,14 @@ class UserTestItemActivity {
         new: true
       }
     );
+  }
+
+  /*
+  * filter items by specified fields
+  * @params fields {Obj}
+  */
+  getByFields(fields) {
+    return this.UserTestItemActivity.find(fields);
   }
 }
 

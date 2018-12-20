@@ -18,6 +18,7 @@ import {
   IconLogoCompact,
   IconClockDashboard,
   IconBarChart,
+  IconAssignment,
   IconReport,
   IconManage,
   IconQuestion
@@ -42,6 +43,11 @@ const menuItems = [
     label: 'Dashboard',
     icon: IconClockDashboard,
     path: 'home/dashboard'
+  },
+  {
+    label: 'Assignments',
+    icon: IconAssignment,
+    path: 'home/assignments'
   },
   {
     label: 'Reports',

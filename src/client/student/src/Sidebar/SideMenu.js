@@ -208,7 +208,7 @@ class SideMenu extends Component {
                     <div style={{ paddingLeft: 11 }}>
                       {!isCollapsed && (
                         <div style={{ fontSize: 14, color: '#057750' }}>
-                          {firstName}
+                          {firstName || 'Zack Oliver'}
                         </div>
                       )}
                       {!isCollapsed && (

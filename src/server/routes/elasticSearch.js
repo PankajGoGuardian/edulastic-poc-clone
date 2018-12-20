@@ -45,6 +45,7 @@ router.post('/standards', async (req, res) => {
 
     const data = createStandardsSearch(rawData);
     const { data: searchResult } = await axios({
+      headers: { Authorization: `Basic ${config.elasticSearch.basicAuthCredentials}` },
       method: 'POST',
       url: config.elasticSearch.uri,
       data

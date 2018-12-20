@@ -6,6 +6,8 @@ const host = process.env.HOST || '0.0.0.0';
 const port = process.env.PORT || 3000;
 // apiUri used while build with Webpack
 const apiUri = process.env.API_URI || 'http://edulastic-poc.snapwiz.net/api/';
+const esUsername = process.env.ELASTIC_SEARCH_USERNAME || '';
+const esPassword = process.env.ELASTIC_SEARCH_PASSWORD || '';
 console.log('appModeDev', appModeDev); // eslint-disable-line
 console.log('env', env); // eslint-disable-line
 console.log('host', host); // eslint-disable-line
@@ -50,9 +52,9 @@ module.exports = {
   },
 
   elasticSearch: {
-    uri:
-      process.env.ELASTIC_SEARCH_URI ||
-      'http://localhost:9200/edulastic-poc/_search'
+    uri: process.env.ELASTIC_SEARCH_URI ||
+      'http://localhost:9200/edulastic-poc/_search',
+    basicAuthCredentials: Buffer.from(`${esUsername}:${esPassword}`).toString('base64')
   },
 
   s3: {

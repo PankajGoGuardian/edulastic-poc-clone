@@ -5,6 +5,8 @@ const testActivitySchema = mongoose.Schema({
   createdAt: String,
   userId: String,
   updatedAt: String,
+  startDate: Number,
+  endDate: Number,
   status: String,
   score: Number,
   maxScore: Number,
@@ -22,7 +24,10 @@ class UserTestActivity {
   }
 
   create(activity) {
-    activity.createdAt = Date.now();
+    const now = Date.now();
+    activity.startDate = now;
+    activity.createdAt = now;
+    activity.updatedAt = now;
     const newActivity = new this.UserTestActivity(activity);
     return newActivity.save();
   }

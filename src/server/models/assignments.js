@@ -42,6 +42,22 @@ class Assignment {
     );
   }
 
+  /*
+  * fetch assignment by id
+  * @params _id {string} - mongo id of assignments
+  * @params outputFields {[]string} - required fields in output
+  */
+  getById(_id, outputFields) {
+    const projections = {};
+    outputFields.forEach((field) => {
+      projections[field] = 1;
+    });
+
+    return this.Assignment.findOne({
+      _id
+    }, projections);
+  }
+
   delete(id) {
     return this.Assignment.remove({
       _id: new mongoose.Types.ObjectId(id)

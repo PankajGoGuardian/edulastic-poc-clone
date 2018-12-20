@@ -16,6 +16,7 @@ import elasticSearchApi from './elasticSearch';
 import userTestActivity from './userTestActivity';
 import userTestItemActivity from './userTestItemActivity';
 import curriculumApi from './curriculum';
+import skillReport from './skillReport';
 
 const router = express.Router();
 
@@ -35,6 +36,8 @@ router.use('/usertestactivity', userTestActivity);
 router.use('/usertestitemactivity', userTestItemActivity);
 router.use('/curriculum', curriculumApi);
 router.use('/test-activity', testActivityApi);
+router.use('/skill-report', skillReport);
+
 /**
  * @swagger
  * /hello:

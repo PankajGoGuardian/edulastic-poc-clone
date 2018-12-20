@@ -7,7 +7,7 @@ import { PaddingDiv } from '@edulastic/common';
 import {
   Col, Label, Row,
   StyledTextarea, StyledTextField,
-  Subtitle, TitleTextInput,
+  Subtitle, TitleTextInput
 } from '../common/styled_components';
 import { setQuestionDataAction } from '../../../../../author/src/actions/question';
 import AxisSegmentsOptions from './AxisSegmentsOptions/index';
@@ -24,9 +24,9 @@ class AxisSegments extends Component {
         max: 10,
         min: -10,
         right_arrow: true,
-        left_arrow: true,
+        left_arrow: true
       },
-      isMoreOptionsOpen: false,
+      isMoreOptionsOpen: false
     };
   }
 
@@ -47,7 +47,7 @@ class AxisSegments extends Component {
 
   onClickMoreOptions = (isClicked) => {
     this.setState({
-      isMoreOptionsOpen: isClicked,
+      isMoreOptionsOpen: isClicked
     });
   };
 
@@ -58,14 +58,14 @@ class AxisSegments extends Component {
       { value: 'normal', label: 'Normal' },
       { value: 'large', label: 'Large' },
       { value: 'extra_large', label: 'Extra large' },
-      { value: 'huge', label: 'Huge' },
+      { value: 'huge', label: 'Huge' }
     ]
   );
 
   getOrientationList = () => (
     [
       { value: 'horizontal', label: 'Horizontal' },
-      { value: 'vertical', label: 'Vertical' },
+      { value: 'vertical', label: 'Vertical' }
     ]
   );
 
@@ -73,7 +73,7 @@ class AxisSegments extends Component {
     [
       { value: '', label: '' },
       { value: 'lineMinValue', label: 'Line minimum value' },
-      { value: 'zero', label: 'Zero' },
+      { value: 'zero', label: 'Zero' }
     ]
   );
 
@@ -83,7 +83,7 @@ class AxisSegments extends Component {
       line,
       title,
       stacked_elements,
-      isMoreOptionsOpen,
+      isMoreOptionsOpen
     } = this.state;
     const { t } = this.props;
     return (
@@ -161,7 +161,7 @@ class AxisSegments extends Component {
 
 AxisSegments.propTypes = {
   t: PropTypes.func.isRequired,
-  graphData: PropTypes.object.isRequired,
+  graphData: PropTypes.object.isRequired
 };
 
 const enhance = compose(
@@ -169,7 +169,7 @@ const enhance = compose(
   connect(
     null,
     {
-      setQuestionData: setQuestionDataAction,
+      setQuestionData: setQuestionDataAction
     },
   ),
 );

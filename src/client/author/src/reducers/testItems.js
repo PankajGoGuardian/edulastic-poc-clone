@@ -2,7 +2,7 @@ import {
   RECEIVE_TEST_ITEMS_REQUEST,
   RECEIVE_TEST_ITEMS_SUCCESS,
   RECEIVE_TEST_ITEMS_ERROR,
-  SET_TEST_ITEMS_REQUEST,
+  SET_TEST_ITEMS_REQUEST
 } from '../constants/actions';
 
 const initialState = {
@@ -11,7 +11,7 @@ const initialState = {
   loading: false,
   page: 1,
   limit: 5,
-  count: 0,
+  count: 0
 };
 
 const itemsReducer = (state = initialState, { type, payload }) => {
@@ -23,14 +23,14 @@ const itemsReducer = (state = initialState, { type, payload }) => {
         ...state,
         loading: false,
         items: payload.items,
-        count: payload.count,
+        count: payload.count
       };
     case RECEIVE_TEST_ITEMS_ERROR:
       return { ...state, loading: false, error: payload.error };
     case SET_TEST_ITEMS_REQUEST:
       return {
         ...state,
-        selectedItems: payload,
+        selectedItems: payload
       };
     default:
       return state;

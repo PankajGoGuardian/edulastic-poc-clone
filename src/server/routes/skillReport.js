@@ -6,11 +6,11 @@ const router = Router();
 
 /**
  * @swagger
- * /skill-report/{classId}
+ * /skill-report/{classId}:
  *   get:
  *     tags:
  *       - skill-report
- *     summary: Fetch skill-report of the user for the given class
+ *     summary: Fetch skill-report of the current student of the given class
  *     produces:
  *       - application/json
  *     parameters:

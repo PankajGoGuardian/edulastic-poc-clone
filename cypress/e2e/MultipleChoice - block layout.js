@@ -105,6 +105,7 @@ describe('Test Multiple Choice Flow', () => {
   });
 
   it('Edit Answer', () => {
+    cy.wait(2000);
     cy.contains('EDIT').should('be.visible');
     cy.contains('EDIT').click();
 

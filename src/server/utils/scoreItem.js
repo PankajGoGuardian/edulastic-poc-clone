@@ -33,9 +33,10 @@ export const scoreTestItem = async (userResponses, qIds) => {
   let totalMaxScore = 0;
 
   eIds.forEach((eid) => {
-    const { evaluation, score, maxScore } = evaluations[eid];
-    const values = Object.values(evaluation);
-    if (!values.includes(false)) {
+    const { score, maxScore } = evaluations[eid];
+    // if score is not zero or undefined
+    // its a correctAnswer, also increment total score
+    if (score) {
       correctAnswers++;
       totalScore += score;
     }

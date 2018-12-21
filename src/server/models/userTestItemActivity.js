@@ -70,8 +70,8 @@ class UserTestItemActivity {
   * filter items by specified fields
   * @params fields {Obj}
   */
-  getByFields(fields) {
-    return this.UserTestItemActivity.find(fields);
+  getByFields(fields, projections = {}) {
+    return this.UserTestItemActivity.find(fields, projections);
   }
 }
 

@@ -229,4 +229,29 @@ router.get('/:id/report', async (req, res) => {
     res.boom.badRequest(e);
   }
 });
+
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id;
+    const TestActivity = new TestActivityModel();
+    const TestItemActivity = new TestItemActivityModel();
+    const testActivity = await TestActivity.getByFields({ _id: id }, { score: 0, correct: 0, wrong: 0, maxScore: 0 });
+    if (!testActivity) {
+      res.boom.badRequest(httpMessages.ASSIGNMENT_NOT_STARTED);
+    }
+    const testItemActivities = await TestItemActivity.getByFields(
+      { testActivityId: id, userId },
+      { score: 0, correct: 0, wrong: 0, maxScore: 0, evaluations: 0 }
+    );
+    const result = {};
+    result.testActivity = testActivity;
+    result.testItemActivities = testItemActivities;
+    return successHandler(res, result);
+  } catch (e) {
+    req.log.error(e);
+    res.boom.badRequest(e);
+  }
+});
+
 export default router;

@@ -55,8 +55,8 @@ class UserTestActivity {
   }
 
   // fetch assignment by Fields
-  getByFields(fields) {
-    return this.UserTestActivity.find(fields);
+  getByFields(fields, projections = {}) {
+    return this.UserTestActivity.find(fields, projections);
   }
 }
 

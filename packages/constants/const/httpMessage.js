@@ -5,6 +5,7 @@ const ASSIGNMENT_ALREADY_SUBMITTED = 'assignment already submitted';
 const INVALID_ASSIGNMENT = 'invalid assignment id';
 const TEST_ALREADY_SUBMITTED = 'test already submitted';
 const NOT_OWNER = 'not your resource';
+const ASSIGNMENT_NOT_STARTED = 'assignment is not started yet';
 
 module.exports = {
   EMAIL_EXIST,
@@ -13,5 +14,6 @@ module.exports = {
   INVALID_TEST_ITEM,
   INVALID_ASSIGNMENT,
   TEST_ALREADY_SUBMITTED,
-  NOT_OWNER
+  NOT_OWNER,
+  ASSIGNMENT_NOT_STARTED
 };

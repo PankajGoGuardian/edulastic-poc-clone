@@ -208,4 +208,25 @@ router.post('/:id/test-item/:itemId', async (req, res) => {
     res.boom.badRequest(e);
   }
 });
+
+router.get('/:id/report', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id;
+    const TestActivity = new TestActivityModel();
+    const TestItemActivity = new TestItemActivityModel();
+    const testActivity = await TestActivity.getById(id);
+    if (!testActivity) {
+      res.boom.badRequest(httpMessages.ASSIGNMENT_NOT_STARTED);
+    }
+    const testItemActivities = await TestItemActivity.getByFields({ testActivityId: id, userId });
+    const result = {};
+    result.testActivity = testActivity;
+    result.testItemActivities = testItemActivities;
+    return successHandler(res, result);
+  } catch (e) {
+    req.log.error(e);
+    res.boom.badRequest(e);
+  }
+});
 export default router;

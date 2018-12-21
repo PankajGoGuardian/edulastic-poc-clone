@@ -15,13 +15,19 @@ import {
   tabletWidth
 } from '@edulastic/colors';
 
-import { getItemsLimitSelector, getItemsLoadingSelector } from '../../selectors/items';
+import {
+  getItemsLimitSelector,
+  getItemsLoadingSelector
+} from '../../selectors/items';
 
 import Item from './Item';
 import ItemFilter from './ItemFilter';
 import { receiveTestItemsAction } from '../../actions/testItems';
 import { createTestItemAction } from '../../actions/testItem';
-import { getTestItemsSelector, getItemsTypesSelector } from '../../selectors/testItems';
+import {
+  getTestItemsSelector,
+  getItemsTypesSelector
+} from '../../selectors/testItems';
 import { getTestItemCreatingSelector } from '../../selectors/testItem';
 import ListHeader from '../common/ListHeader';
 
@@ -57,7 +63,15 @@ class ItemList extends Component {
   };
 
   render() {
-    const { items, windowWidth, history, creating, count, t, itemTypes } = this.props;
+    const {
+      items,
+      windowWidth,
+      history,
+      creating,
+      count,
+      t,
+      itemTypes
+    } = this.props;
 
     return (
       <Container>
@@ -73,7 +87,9 @@ class ItemList extends Component {
             {windowWidth > 468 && (
               <Pagination
                 simple={windowWidth <= 768 && true}
-                showTotal={(total, range) => `${range[0]} to ${range[1]} of ${total}`}
+                showTotal={(total, range) =>
+                  `${range[0]} to ${range[1]} of ${total}`
+                }
                 onChange={this.handlePaginationChange}
                 defaultPageSize={10}
                 total={count}
@@ -94,7 +110,9 @@ class ItemList extends Component {
             </Items>
             <Pagination
               simple={windowWidth <= 768 && true}
-              showTotal={(total, range) => `${range[0]} to ${range[1]} of ${total}`}
+              showTotal={(total, range) =>
+                `${range[0]} to ${range[1]} of ${total}`
+              }
               onChange={this.handlePaginationChange}
               defaultPageSize={10}
               total={count}

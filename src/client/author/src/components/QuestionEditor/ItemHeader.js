@@ -4,9 +4,26 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { IconChevronLeft, IconPencilEdit } from '@edulastic/icons';
 import { FlexContainer, TextField } from '@edulastic/common';
-import { greenDark, tabletWidth, mobileWidth, darkBlue, white, blue, darkBlueSecondary } from '@edulastic/colors';
+import {
+  greenDark,
+  tabletWidth,
+  mobileWidth,
+  darkBlue,
+  white,
+  blue,
+  darkBlueSecondary
+} from '@edulastic/colors';
+import HeaderWrapper from '../../mainContent/headerWrapper';
 
-const ItemHeader = ({ title, children, link, reference, editReference, onChange, hideIcon }) => (
+const ItemHeader = ({
+  title,
+  children,
+  link,
+  reference,
+  editReference,
+  onChange,
+  hideIcon
+}) => (
   <Container>
     <FlexContainer alignItems="center" style={{ flex: 1 }}>
       <LeftSide>
@@ -62,7 +79,7 @@ ItemHeader.defaultProps = {
 
 export default ItemHeader;
 
-const Container = styled.div`
+const Container = styled(HeaderWrapper)`
   background: ${darkBlue};
   padding: 0px 40px;
   height: 62px;

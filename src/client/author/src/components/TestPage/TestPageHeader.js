@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-import { Affix } from 'antd';
 import styled from 'styled-components';
 import { white, mainBlueColor } from '@edulastic/colors';
 import { FlexContainer, EduButton } from '@edulastic/common';
@@ -14,52 +13,88 @@ import {
 } from '@edulastic/icons';
 
 import TestPageNav from './TestPageNav';
+import HeaderWrapper from '../../mainContent/headerWrapper';
 
 export const navButtons = [
   { icon: <IconSummary color={white} />, value: 'summary', text: 'Summary' },
-  { icon: <IconAddItems color={white} />, value: 'addItems', text: 'Add Items' },
-  { icon: <IconReview color={white} width={24} height={24} />, value: 'review', text: 'Review' },
+  {
+    icon: <IconAddItems color={white} />,
+    value: 'addItems',
+    text: 'Add Items'
+  },
+  {
+    icon: <IconReview color={white} width={24} height={24} />,
+    value: 'review',
+    text: 'Review'
+  },
   { icon: <IconSettings color={white} />, value: 'settings', text: 'Settings' },
   { icon: <IconAssign color={white} />, value: 'assign', text: 'ASSIGN' }
 ];
 
-const TestPageHeader = ({ onChangeNav, current, onSave, title, creating, onShare, windowWidth }) => (
-  windowWidth > 993 ? (
-    <Affix>
-      <Container>
-        <Title>{title}</Title>
+const TestPageHeader = ({
+  onChangeNav,
+  current,
+  onSave,
+  title,
+  creating,
+  onShare,
+  windowWidth
+}) =>
+  (windowWidth > 993 ? (
+    <HeaderWrapper>
+      <Title>{title}</Title>
 
-        <TestPageNav onChange={onChangeNav} current={current} buttons={navButtons} />
+      <TestPageNav
+        onChange={onChangeNav}
+        current={current}
+        buttons={navButtons}
+      />
 
-        <FlexContainer justifyContent="space-between">
-          <EduButton style={{ width: 120 }} size="large" onClick={onShare}>
-            Share
-          </EduButton>
-          <EduButton style={{ width: 120 }} disabled={creating} size="large" type="secondary" onClick={onSave}>
-            {creating ? 'Saving...' : 'Save changes'}
-          </EduButton>
-        </FlexContainer>
-      </Container>
-    </Affix>
+      <FlexContainer justifyContent="space-between">
+        <EduButton style={{ width: 120 }} size="large" onClick={onShare}>
+          Share
+        </EduButton>
+        <EduButton
+          style={{ width: 120 }}
+          disabled={creating}
+          size="large"
+          type="secondary"
+          onClick={onSave}
+        >
+          {creating ? 'Saving...' : 'Save changes'}
+        </EduButton>
+      </FlexContainer>
+    </HeaderWrapper>
   ) : (
-    <Affix>
+    <HeaderWrapper>
       <Container style={{ flexDirection: 'column', paddingTop: 10 }}>
-        <FlexContainer style={{ width: '100%', justifyContent: 'space-between' }}>
+        <FlexContainer
+          style={{ width: '100%', justifyContent: 'space-between' }}
+        >
           <Title>{title}</Title>
           <FlexContainer justifyContent="space-between">
             <EduButton size="large" onClick={onShare}>
               <ShareIcon />
             </EduButton>
-            <EduButton style={{ width: 80 }} disabled={creating} size="large" type="secondary" onClick={onSave}>
+            <EduButton
+              style={{ width: 80 }}
+              disabled={creating}
+              size="large"
+              type="secondary"
+              onClick={onSave}
+            >
               {creating ? 'Saving...' : 'Save'}
             </EduButton>
           </FlexContainer>
         </FlexContainer>
-        <TestPageNav onChange={onChangeNav} current={current} buttons={navButtons} />
+        <TestPageNav
+          onChange={onChangeNav}
+          current={current}
+          buttons={navButtons}
+        />
       </Container>
-    </Affix>
-  )
-);
+    </HeaderWrapper>
+  ));
 
 TestPageHeader.propTypes = {
   onChangeNav: PropTypes.func.isRequired,
@@ -73,13 +108,12 @@ TestPageHeader.propTypes = {
 
 export default memo(TestPageHeader);
 
-const Container = styled.div`
+const Container = styled(HeaderWrapper)`
   padding: 0 45px;
   min-height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #0288d1;
 
   @media (max-width: 468px) {
     padding: 0px 20px 0px 45px;

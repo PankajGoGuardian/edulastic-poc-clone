@@ -125,7 +125,10 @@ class QuestionEditor extends Component {
     return (
       <div>
         {showModal && (
-          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
+          <SourceModal
+            onClose={this.handleHideSource}
+            onApply={this.handleApplySource}
+          >
             {JSON.stringify(question.data, null, 4)}
           </SourceModal>
         )}
@@ -140,8 +143,7 @@ class QuestionEditor extends Component {
             previewTab={previewTab}
           />
         </ItemHeader>
-        {
-          windowWidth > MAX_MOBILE_WIDTH && (
+        {windowWidth > MAX_MOBILE_WIDTH && (
           <SecondHeadBar
             onShowSource={this.handleShowSource}
             onShowSettings={this.handleShowSettings}
@@ -151,8 +153,8 @@ class QuestionEditor extends Component {
             view={view}
             previewTab={previewTab}
             breadcrumb="create item"
-          />)
-        }
+          />
+        )}
         <ContentWrapper
           style={{
             padding: '0px 45px',

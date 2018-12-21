@@ -114,7 +114,7 @@ class SideMenu extends Component {
 
     const isMobile = windowWidth < 480;
     const footerDropdownMenu = (
-      <FooterDropDown isVisible={isVisible} className="footerDropWrap">
+      <FooterDropDown isVisible={isVisible}>
         <Menu>
           <Menu.Item key="0">
             <a href="#">
@@ -431,8 +431,9 @@ const FooterDropDown = styled.div`
     overflow: hidden;
     &.ant-menu-inline-collapsed {
       width: 84px;
+      height: auto;
       padding-top: 10px;
-      margin: -4px 0px 0px 8px;
+      margin-left: 8px;
     }
     li {
       margin: 0px !important;

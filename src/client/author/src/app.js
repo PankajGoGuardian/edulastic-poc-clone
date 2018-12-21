@@ -16,14 +16,17 @@ const TestList = lazy(() => import('./components/TestList'));
 const TestPage = lazy(() => import('./components/TestPage'));
 
 const Author = ({ match, sidebar }) => (
-
   <Layout>
     <MainContainer sidebar={sidebar}>
       <Sidebar />
       <Wrapper>
         <Switch>
           <Route exact path={`${match.url}/items`} component={ItemList} />
-          <Route exact path={`${match.url}/items/:id/item-detail`} component={ItemDetail} />
+          <Route
+            exact
+            path={`${match.url}/items/:id/item-detail`}
+            component={ItemDetail}
+          />
           <Route exact path="/author/add-item" component={ItemAdd} />
           <Route
             exact
@@ -52,18 +55,30 @@ const Author = ({ match, sidebar }) => (
               </Suspense>
             )}
           />
-          <Route exact path="/author/items/:id/pickup-questiontype" component={PickUpQuestionType} />
-          <Route exact path="/author/questions/create" component={QuestionEditor} />
-          <Route exact path="/author/questions/:id" component={QuestionEditor} />
+          <Route
+            exact
+            path="/author/items/:id/pickup-questiontype"
+            component={PickUpQuestionType}
+          />
+          <Route
+            exact
+            path="/author/questions/create"
+            component={QuestionEditor}
+          />
+          <Route
+            exact
+            path="/author/questions/:id"
+            component={QuestionEditor}
+          />
         </Switch>
       </Wrapper>
     </MainContainer>
   </Layout>
 );
 
-export default connect(
-  ({ authorUi }) => ({ sidebar: authorUi.isSidebarCollapse }),
-)(Author);
+export default connect(({ authorUi }) => ({
+  sidebar: authorUi.isSidebarCollapse
+}))(Author);
 
 Author.propTypes = {
   match: PropTypes.object.isRequired
@@ -74,7 +89,7 @@ const MainContainer = styled.div`
   width: 100%;
   .fixed-header {
     position: fixed;
-    top: 0; 
+    top: 0;
     right: 0;
     left: ${props => (props.sidebar ? '100px' : '240px')};
     z-index: 1;

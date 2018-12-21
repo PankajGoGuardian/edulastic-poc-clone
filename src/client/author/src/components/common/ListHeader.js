@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
-import { Affix } from 'antd';
 import { Button } from '@edulastic/common';
 import { IconPlus } from '@edulastic/icons';
 import {
@@ -11,24 +10,35 @@ import {
   white
 } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
+import HeaderWrapper from '../../mainContent/headerWrapper';
 
-const ListHeader = ({ onCreate, t, title }) => (
-  <HeaderWrapper>
-    <Affix className="fixed-header" style={{ position: 'fixed', top: 0, right: 0 }}>
-      <Container>
-        <Heading>{title}</Heading>
-        <CreateButton
-          onClick={onCreate}
-          color="success"
-          icon={
-            <IconPlus color={greenDarkSecondary} style={{ position: 'relative' }} left={-25} width={14} height={14} hoverColor={white} />
-          }
-        >
-          {t('component.itemlist.header.create')}
-        </CreateButton>
-      </Container>
-    </Affix>
-  </HeaderWrapper>
+const ListHeader = ({ onCreate, t, windowWidth, title }) => (
+  <Container>
+    <Title>{title}</Title>
+    <Button
+      // disabled={creating}
+      style={{
+        height: windowWidth > 768 ? 50 : 40,
+        minWidth: 151.9,
+        color: '#fff',
+        margin: 0
+      }}
+      onClick={onCreate}
+      color="success"
+      icon={
+        <IconPlus
+          color={greenDarkSecondary}
+          style={{ position: 'relative' }}
+          left={-25}
+          width={14}
+          height={14}
+          hoverColor={white}
+        />
+      }
+    >
+      {t('component.itemlist.header.create')}
+    </Button>
+  </Container>
 );
 
 ListHeader.propTypes = {
@@ -41,11 +51,11 @@ const enhance = compose(withNamespaces('author'));
 
 export default enhance(ListHeader);
 
-const Container = styled.div`
+const Container = styled(HeaderWrapper)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color:  ${darkBlueSecondary};
+  background-color: ${darkBlueSecondary};
   padding: 0px 15px;
   height: 62px;
   z-index: 1;
@@ -57,14 +67,14 @@ const CreateButton = styled(Button)`
   margin: 0;
 `;
 
-const HeaderWrapper = styled.div`
-  padding-top: 62px;
-  margin-bottom: 10px;
-`;
-
-const Heading = styled.h1`
-  width: 97px;
+// const HeaderWrapper = styled.div`
+//   padding-top: 62px;
+//   margin-bottom: 10px;
+// `;
+const Title = styled.h1`
   color: ${white};
   font-size: 22px;
   font-weight: bold;
+  margin: 0;
+  padding: 0;
 `;

@@ -274,7 +274,10 @@ class ItemDetail extends Component {
     return (
       <Layout>
         {showModal && item && (
-          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
+          <SourceModal
+            onClose={this.handleHideSource}
+            onApply={this.handleApplySource}
+          >
             {JSON.stringify(item, null, 4)}
           </SourceModal>
         )}
@@ -310,20 +313,19 @@ class ItemDetail extends Component {
             previewTab={previewTab}
           />
         </ItemHeader>
-        {
-          windowWidth > 468 && (
-            <SecondHeadBar
-              onShowSource={this.handleShowSource}
-              onShowSettings={this.handleShowSettings}
-              onChangeView={this.handleChangeView}
-              changePreview={changePreview}
-              changePreviewTab={this.handleChangePreviewTab}
-              onSave={this.handleSave}
-              saving={updating}
-              view={view}
-              previewTab={previewTab}
-            />)
-        }
+        {windowWidth > 468 && (
+          <SecondHeadBar
+            onShowSource={this.handleShowSource}
+            onShowSettings={this.handleShowSettings}
+            onChangeView={this.handleChangeView}
+            changePreview={changePreview}
+            changePreviewTab={this.handleChangePreviewTab}
+            onSave={this.handleSave}
+            saving={updating}
+            view={view}
+            previewTab={previewTab}
+          />
+        )}
         {view === 'edit' && (
           <ItemDetailWrapper>
             {loading && <Progress />}

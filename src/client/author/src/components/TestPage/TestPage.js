@@ -165,7 +165,7 @@ const TestPage = ({
       }
       return foundItem;
     });
-
+    console.log('test is', test);
     if (test._id) {
       updateTest(test._id, newTest);
     } else {

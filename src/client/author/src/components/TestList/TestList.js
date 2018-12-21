@@ -25,10 +25,10 @@ import {
   getTestsPageSelector,
   getTestsCreatingSelector
 } from '../../selectors/tests';
-import TestListHeader from './TestListHeader';
 import TestFilters from '../common/TestFilters';
 import TestFiltersNav from '../common/TestFilters/TestFiltersNav';
 import SortBar from './SortBar';
+import ListHeader from '../common/ListHeader';
 
 class TestList extends Component {
   constructor(props) {
@@ -54,7 +54,7 @@ class TestList extends Component {
     receiveTests({ page, limit });
   }
 
-  handleSearch = (value) => {
+  handleSearch = value => {
     const { receiveTests, limit } = this.props;
     this.setState(
       {
@@ -64,7 +64,7 @@ class TestList extends Component {
     );
   };
 
-  handleSearchChange = (e) => {
+  handleSearchChange = e => {
     this.setState({
       searchStr: e.target.value
     });
@@ -75,7 +75,7 @@ class TestList extends Component {
     history.push(`${match.url}/create`);
   };
 
-  handlePaginationChange = (page) => {
+  handlePaginationChange = page => {
     const { receiveTests, limit } = this.props;
     const { searchStr } = this.state;
 
@@ -90,11 +90,11 @@ class TestList extends Component {
     console.log(name, value);
   };
 
-  handleSortChange = (value) => {
+  handleSortChange = value => {
     console.log(value);
   };
 
-  handleStyleChange = (blockStyle) => {
+  handleStyleChange = blockStyle => {
     this.setState({
       blockStyle
     });
@@ -102,11 +102,11 @@ class TestList extends Component {
 
   showFilterHandler = () => {
     this.setState({ isShowFilter: true });
-  }
+  };
 
   closeSearchModal = () => {
     this.setState({ isShowFilter: false });
-  }
+  };
 
   render() {
     const {
@@ -125,7 +125,7 @@ class TestList extends Component {
 
     return (
       <div>
-        <TestListHeader
+        <ListHeader
           onCreate={this.handleCreate}
           creating={creating}
           title="Test List"
@@ -145,10 +145,7 @@ class TestList extends Component {
               </Button>
             </FilterButton>
           </MobileFilter>
-          <Modal
-            open={isShowFilter}
-            onClose={this.closeSearchModal}
-          >
+          <Modal open={isShowFilter} onClose={this.closeSearchModal}>
             <SearchModalContainer>
               <TestFilters onChange={this.handleFiltersChange}>
                 <TestFiltersNav
@@ -160,7 +157,14 @@ class TestList extends Component {
           </Modal>
           <FlexContainer>
             <Filter style={{ zIndex: 0 }}>
-              <Affix style={{ position: 'fixed', width: 250, top: 85, paddingRight: 15 }}>
+              <Affix
+                style={{
+                  position: 'fixed',
+                  width: 250,
+                  top: 85,
+                  paddingRight: 15
+                }}
+              >
                 <Input.Search
                   placeholder="Search by skills and keywords"
                   onSearch={this.handleSearch}
@@ -171,9 +175,7 @@ class TestList extends Component {
                 <ScrollbarWrapper>
                   <PerfectScrollbar>
                     <ScrollBox>
-                      <TestFilters
-                        onChange={this.handleFiltersChange}
-                      >
+                      <TestFilters onChange={this.handleFiltersChange}>
                         <TestFiltersNav
                           items={items}
                           onSelect={this.handleFilterNavSelect}
@@ -185,7 +187,10 @@ class TestList extends Component {
               </Affix>
             </Filter>
             <Main>
-              <FlexContainer justifyContent="space-between" style={{ marginBottom: 10 }}>
+              <FlexContainer
+                justifyContent="space-between"
+                style={{ marginBottom: 10 }}
+              >
                 <PaginationInfo>
                   {from} to {to} of <i>{count}</i>
                 </PaginationInfo>
@@ -198,28 +203,30 @@ class TestList extends Component {
               <Card>
                 {loading ? (
                   <Spin size="large" />
+                ) : blockStyle === 'tile' ? (
+                  <Row gutter={16} type="flex">
+                    {tests.map(
+                      item =>
+                        item !== null && (
+                          <Col
+                            key={item._id}
+                            span={windowWidth > 468 ? 8 : 24}
+                            style={{ marginBottom: 15 }}
+                          >
+                            <Item item={item} history={history} match={match} />
+                          </Col>
+                        )
+                    )}
+                  </Row>
                 ) : (
-                    blockStyle === 'tile' ? (
-                      <Row gutter={16} type="flex">
-                        {tests.map(item => (
-                          item !== null && (
-                            <CardWrapper
-                              key={item._id}
-                              span={windowWidth > 468 ? 8 : 24}
-                            >
-                              <Item item={item} history={history} match={match} />
-                            </CardWrapper>)
-                        ))}
-                      </Row>
-                    ) : (
-                        <Row>
-                          {tests.map(item => (
-                            <Col span={24}>
-                              <ListItem item={item} history={history} match={match} />
-                            </Col>
-                          ))}
-                        </Row>
-                      ))}
+                  <Row>
+                    {tests.map(item => (
+                      <Col span={24}>
+                        <ListItem item={item} history={history} match={match} />
+                      </Col>
+                    ))}
+                  </Row>
+                )}
                 <Pagination
                   style={{ padding: '20px 0' }}
                   defaultCurrent={page}
@@ -270,15 +277,15 @@ const enhance = compose(
 export default enhance(TestList);
 
 const ScrollBox = styled.div`
-    & > div {
-      padding-top: 0px;
-      padding-bottom: 5px;
-      padding-right: 15px;
-    }
+  & > div {
+    padding-top: 0px;
+    padding-bottom: 5px;
+    padding-right: 15px;
+  }
 `;
 
 const CardWrapper = styled(Col)`
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 `;
 
 const Container = styled.div`
@@ -309,8 +316,8 @@ const Container = styled.div`
     overflow: auto !important;
     height: calc(100vh - 160px);
 
-    ::-webkit-scrollbar { 
-      display: none; 
+    ::-webkit-scrollbar {
+      display: none;
     }
   }
 `;
@@ -362,7 +369,7 @@ const FilterButton = styled.div`
     height: 50px;
     border-radius: 3px;
     width: 100%;
-    
+
     span {
       font-size: 11px;
       font-weight: 600;

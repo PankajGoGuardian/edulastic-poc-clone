@@ -3,36 +3,37 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FlexContainer } from '@edulastic/common';
 import { mobileWidth, darkBlueSecondary, white } from '@edulastic/colors';
+import HeaderWrapper from '../../mainContent/headerWrapper';
 import Breadcrumb from '../Breadcrumb';
 
 const Header = ({ title }) => {
   const breadcrumbData = [
     {
-      title: 'ITEM LIST', to: '/author/items',
+      title: 'ITEM LIST',
+      to: '/author/items'
     },
     {
-      title: 'SELECT A QUESTION TYPE', to: ''
+      title: 'SELECT A QUESTION TYPE',
+      to: ''
     }
   ];
   return (
-    <React.Fragment>
-      <Container>
-        <FlexContainer alignItems="flex-start">
-          <Title>{title}</Title>
-        </FlexContainer>
-        <Breadcrumb data={breadcrumbData} />
-      </Container>
-    </React.Fragment>
+    <Container>
+      <FlexContainer alignItems="flex-start">
+        <Title>{title}</Title>
+      </FlexContainer>
+      <Breadcrumb data={breadcrumbData} />
+    </Container>
   );
 };
 
 Header.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired
 };
 
 export default Header;
 
-const Container = styled.div`
+const Container = styled(HeaderWrapper)`
   display: flex;
   align-items: center;
   margin-bottom: 70px;

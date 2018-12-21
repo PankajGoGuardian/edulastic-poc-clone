@@ -40,6 +40,7 @@ const Sidebar = ({
       <MainTitle>Assessment Name</MainTitle>
       <Input
         value={title}
+        data-cy="inputTest"
         onChange={e => onChangeField('title', e.target.value)}
         size="large"
         placeholder="Enter an assessment name"

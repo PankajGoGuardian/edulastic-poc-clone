@@ -44,11 +44,15 @@ describe('Check Create Test Flow', () => {
 
     cy.contains('Summary').click();
 
-    cy.get('input')
-      .first()
-      .focus()
+    cy.get('[data-cy=inputTest]')
       .clear()
       .type('Nice Product!');
+
+    // cy.get('input')
+    //   .first()
+    //   .focus()
+    //   .clear()
+    //   .type('Nice Product!');
 
     cy.get('textarea')
       .eq(0)

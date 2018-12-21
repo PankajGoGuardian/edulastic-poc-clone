@@ -175,6 +175,7 @@ router.get('/', async (req, res) => {
     assignments.forEach((assignment) => {
       const { testId } = assignment;
       assignment._doc.test = tests[testId];
+      assignment._doc.noOfAttempts = 3;
       assignment._doc.openPolicy = policyOptions[assignment._doc.openPolicy];
       assignment._doc.closePolicy = policyOptions[assignment._doc.closePolicy];
     });

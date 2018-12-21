@@ -136,7 +136,6 @@ class TestList extends Component {
               placeholder="Search by skills and keywords"
               onSearch={this.handleSearch}
               onChange={this.handleSearchChange}
-              style={{ width: '100%', marginRight: 10 }}
               size="large"
               value={searchStr}
             />
@@ -160,18 +159,33 @@ class TestList extends Component {
             </SearchModalContainer>
           </Modal>
           <FlexContainer>
-            <Filter>
-              <Input.Search
-                placeholder="Search by skills and keywords"
-                onSearch={this.handleSearch}
-                onChange={this.handleSearchChange}
-                style={{ width: '100%' }}
-                size="large"
-                value={searchStr}
-              />
+            <Filter style={{ zIndex: 0 }}>
+              <Affix style={{ position: 'fixed', width: 250, top: 85, paddingRight: 15 }}>
+                <Input.Search
+                  placeholder="Search by skills and keywords"
+                  onSearch={this.handleSearch}
+                  onChange={this.handleSearchChange}
+                  size="large"
+                  value={searchStr}
+                />
+                <ScrollbarWrapper>
+                  <PerfectScrollbar>
+                    <ScrollBox>
+                      <TestFilters
+                        onChange={this.handleFiltersChange}
+                      >
+                        <TestFiltersNav
+                          items={items}
+                          onSelect={this.handleFilterNavSelect}
+                        />
+                      </TestFilters>
+                    </ScrollBox>
+                  </PerfectScrollbar>
+                </ScrollbarWrapper>
+              </Affix>
             </Filter>
-            <Main span={19}>
-              <FlexContainer justifyContent="space-between">
+            <Main>
+              <FlexContainer justifyContent="space-between" style={{ marginBottom: 10 }}>
                 <PaginationInfo>
                   {from} to {to} of <i>{count}</i>
                 </PaginationInfo>
@@ -181,48 +195,31 @@ class TestList extends Component {
                   activeStyle={blockStyle}
                 />
               </FlexContainer>
-            </Main>
-          </FlexContainer>
-          <FlexContainer>
-            <Filter style={{ zIndex: 0 }}>
-              <Affix style={{ position: 'fixed', width: 315, top: 135 }}>
-                <PerfectScrollbar>
-                  <TestFilters onChange={this.handleFiltersChange}>
-                    <TestFiltersNav
-                      items={items}
-                      onSelect={this.handleFilterNavSelect}
-                    />
-                  </TestFilters>
-                </PerfectScrollbar>
-              </Affix>
-            </Filter>
-            <Main style={{ marginTop: 10 }}>
               <Card>
                 {loading ? (
                   <Spin size="large" />
                 ) : (
-                  blockStyle === 'tile' ? (
-                    <Row gutter={16} type="flex">
-                      {tests.map(item => (
-                        item !== null && (
-                        <Col
-                          key={item._id}
-                          span={windowWidth > 468 ? 8 : 24}
-                          style={{ marginBottom: 15 }}
-                        >
-                          <Item item={item} history={history} match={match} />
-                        </Col>)
+                    blockStyle === 'tile' ? (
+                      <Row gutter={16} type="flex">
+                        {tests.map(item => (
+                          item !== null && (
+                            <CardWrapper
+                              key={item._id}
+                              span={windowWidth > 468 ? 8 : 24}
+                            >
+                              <Item item={item} history={history} match={match} />
+                            </CardWrapper>)
+                        ))}
+                      </Row>
+                    ) : (
+                        <Row>
+                          {tests.map(item => (
+                            <Col span={24}>
+                              <ListItem item={item} history={history} match={match} />
+                            </Col>
+                          ))}
+                        </Row>
                       ))}
-                    </Row>
-                  ) : (
-                    <Row>
-                      {tests.map(item => (
-                        <Col span={24}>
-                          <ListItem item={item} history={history} match={match} />
-                        </Col>
-                      ))}
-                    </Row>
-                  ))}
                 <Pagination
                   style={{ padding: '20px 0' }}
                   defaultCurrent={page}
@@ -272,8 +269,20 @@ const enhance = compose(
 
 export default enhance(TestList);
 
+const ScrollBox = styled.div`
+    & > div {
+      padding-top: 0px;
+      padding-bottom: 5px;
+      padding-right: 15px;
+    }
+`;
+
+const CardWrapper = styled(Col)`
+    margin-bottom: 15px;
+`;
+
 const Container = styled.div`
-  padding: 30px;
+  padding: 20px;
   left: 0;
   right: 0;
   height: 100%;
@@ -298,12 +307,16 @@ const Container = styled.div`
 
   .scrollbar-container {
     overflow: auto !important;
-    height: calc(100vh - 135px);
+    height: calc(100vh - 160px);
 
     ::-webkit-scrollbar { 
       display: none; 
     }
   }
+`;
+
+const ScrollbarWrapper = styled.div`
+  margin-top: 15px;
 `;
 
 const PaginationInfo = styled.span`
@@ -312,7 +325,7 @@ const PaginationInfo = styled.span`
 `;
 
 const Filter = styled.div`
-  width: 280px;
+  width: 250px;
 
   @media (max-width: 993px) {
     display: none;
@@ -328,15 +341,14 @@ const MobileFilter = styled.div`
 
   @media (max-width: 993px) {
     display: flex;
+    .ant-input-search {
+      margin-right: 10px;
+    }
   }
 `;
 
 const Main = styled.div`
   flex: 1;
-
-  @media (min-width: 993px) {
-    padding-left: 24px;
-  }
 `;
 
 const FilterButton = styled.div`
@@ -364,5 +376,5 @@ const FilterButton = styled.div`
 `;
 
 const SearchModalContainer = styled.div`
-  width: calc(100vw - 80px);
+  width: 100%;
 `;

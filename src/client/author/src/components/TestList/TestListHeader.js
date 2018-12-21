@@ -5,27 +5,34 @@ import { darkBlueSecondary, white, green, greenDark } from '@edulastic/colors';
 import { Button, Affix } from 'antd';
 
 const TestListHeader = ({ onCreate, creating, title }) => (
-  <Affix>
-    <Container>
-      <Title>{title}</Title>
-      <StyledButton type="primary" size="large" loading={creating} onClick={onCreate} icon="plus">
-        Create Test
-      </StyledButton>
-    </Container>
-  </Affix>
+  <HeaderWrapper>
+    <Affix className="fixed-header" style={{ position: 'fixed', top: 0, right: 0 }}>
+      <Container>
+        <Title>{title}</Title>
+        <StyledButton type="primary" size="large" loading={creating} onClick={onCreate} icon="plus">
+          Create Test
+        </StyledButton>
+      </Container>
+    </Affix>
+  </HeaderWrapper>
 );
 
 TestListHeader.propTypes = {
   onCreate: PropTypes.func.isRequired,
   creating: PropTypes.bool.isRequired,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired
 };
 
 export default memo(TestListHeader);
 
+const HeaderWrapper = styled.div`
+  padding-top: 62px;
+  margin-bottom: 10px;
+`;
+
 const Container = styled.div`
   height: 62px;
-  padding: 0px 40px;
+  padding: 0px 15px;
   background: ${darkBlueSecondary};
   display: flex;
   justify-content: space-between;

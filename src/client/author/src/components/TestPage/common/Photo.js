@@ -99,7 +99,7 @@ const Container = styled.div`
   position: relative;
 `;
 
-const UploadWrapper = styled('div')`
+const UploadWrapper = styled.div`
   height: 150px;
   .ant-upload-select {
     min-width: 100%;

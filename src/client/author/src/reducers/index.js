@@ -1,4 +1,4 @@
-import ui from './ui';
+import authorUi from './authorUi';
 import view from './view';
 import group from './group';
 import items from './items';
@@ -11,7 +11,7 @@ import itemDetail from './itemDetail';
 import dictionaries from './dictionaries';
 
 const authorReducers = {
-  ui,
+  authorUi,
   view,
   items,
   tests,

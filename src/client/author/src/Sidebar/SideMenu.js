@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { compose } from 'redux';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {
-  Affix,
   Layout,
   Menu as AntMenu,
   Row,
@@ -24,6 +24,7 @@ import {
   IconTestList
 } from '@edulastic/icons';
 import { withWindowSizes } from '@edulastic/common';
+import { desktopSideBarAction } from '../actions/togglemenu';
 
 import Profile from '../assets/Profile.png';
 
@@ -66,10 +67,6 @@ class SideMenu extends Component {
     };
   }
 
-  onCollapse = () => {
-    this.setState(prevState => ({ collapsed: !prevState.collapsed }));
-  };
-
   renderIcon(icon) {
     const { collapsed } = this.state;
     return styled(icon)`
@@ -94,6 +91,12 @@ class SideMenu extends Component {
     }
   };
 
+  toggleMenu = () => {
+    const { desktopSideBar } = this.props;
+    desktopSideBar();
+    this.setState(prevState => ({ collapsed: !prevState.collapsed }));
+  };
+
   toggleDropdown = () => {
     this.setState(prevState => ({ isVisible: !prevState.isVisible }));
   };
@@ -102,7 +105,7 @@ class SideMenu extends Component {
     const { collapsed, broken, isVisible } = this.state;
     const { windowWidth, history } = this.props;
     let isCollapsed =
-      windowWidth > 1200 || windowWidth <= 480 || windowWidth === 646
+      windowWidth > 768 || windowWidth <= 480 || windowWidth === 646
         ? collapsed
         : true;
     if (history.location.pathname.includes('pickup-questiontype')) {
@@ -110,7 +113,6 @@ class SideMenu extends Component {
     }
 
     const isMobile = windowWidth < 480;
-    const sidebarWidth = isMobile ? 0 : isCollapsed ? 107 : 293;
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible} className="footerDropWrap">
         <Menu>
@@ -129,15 +131,12 @@ class SideMenu extends Component {
       </FooterDropDown>
     );
     return (
-      <Affix style={{ width: sidebarWidth }}>
+      <FixedSidebar>
         <SideBar
           collapsed={isCollapsed}
-          onCollapse={collapsedStatus =>
-            this.setState({ collapsed: collapsedStatus })
-          }
           breakpoint="md"
           onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
-          width={isMobile ? windowWidth : '100%'}
+          width={isMobile ? windowWidth : '240'}
           collapsedWidth={broken ? '0' : '100'}
           theme="light"
           className="sideBarwrapper"
@@ -149,7 +148,7 @@ class SideMenu extends Component {
                   className="mobileCloseIcon"
                   type="close"
                   theme="outlined"
-                  onClick={this.onCollapse}
+                  onClick={this.toggleMenu}
                 />
               </Col>
             ) : null}
@@ -161,7 +160,7 @@ class SideMenu extends Component {
                 <AntIcon
                   className="trigger"
                   type={isCollapsed ? 'right' : 'left'}
-                  onClick={this.onCollapse}
+                  onClick={this.toggleMenu}
                 />
               </Col>
             )}
@@ -229,36 +228,54 @@ class SideMenu extends Component {
             </MenuFooter>
           </MenuWrapper>
         </SideBar>
-      </Affix>
+      </FixedSidebar>
     );
   }
 }
 
 SideMenu.propTypes = {
   windowWidth: PropTypes.number.isRequired,
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  desktopSideBar: PropTypes.func.isRequired
 };
 
 const enhance = compose(
   withRouter,
-  withWindowSizes
+  withWindowSizes,
+  connect(
+    ({ authorUi }) => ({ sidebar: authorUi.isSidebarCollapse }),
+    { desktopSideBar: desktopSideBarAction }
+  )
 );
 
 export default enhance(SideMenu);
 
+const FixedSidebar = styled.div`
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    bottom: 0px;
+    @media (max-width: 768px) {
+      z-index: 2;
+    }
+`;
+
 const SideBar = styled(Layout.Sider)`
   height: 100vh;
+  width: 240px;
+  max-width: 240px;
+  min-width: 240px;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
   background-color: #fbfafc;
   z-index: 22;
 
   &.ant-layout-sider-collapsed .logoWrapper {
-    padding: 21px;
+    padding: 5px 20px;
   }
   .footerBottom {
     position: fixed;
     bottom: 10px;
-    width: 239px;
+    width: 240px;
   }
   &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px 8px 0px;
@@ -310,7 +327,7 @@ const SideBar = styled(Layout.Sider)`
 `;
 
 const LogoWrapper = styled(Row)`
-  padding: 30px 20px;
+  padding: 18px 20px;
   text-align: center;
   display: flex;
   align-items: center;
@@ -373,6 +390,8 @@ const Menu = styled(AntMenu)`
   }
   &.ant-menu-inline-collapsed {
     width: 100px;
+    height: calc(100vh - 300px);
+    overflow: auto;
   }
   &.ant-menu-inline-collapsed > .ant-menu-item {
     text-align: center;

@@ -36,15 +36,14 @@ const difficulties = [
 
 const TestFilters = ({ children, onChange, style }) => (
   <Container style={style}>
-    <FlexContainer justifyContent="space-between" style={{ marginBottom: 26 }}>
+    <FilerHeading className="aaaa" justifyContent="space-between">
       <Title>Filters</Title>
       <ClearAll>Clear all</ClearAll>
-    </FlexContainer>
+    </FilerHeading>
     {children}
     <SubTitle>Subject</SubTitle>
     <Select
       mode="multiple"
-      style={{ width: '100%' }}
       size="large"
       placeholder="Please select"
       defaultValue={['sub1']}
@@ -60,7 +59,6 @@ const TestFilters = ({ children, onChange, style }) => (
     <SubTitle>Subject</SubTitle>
     <Select
       size="large"
-      style={{ width: '100%' }}
       defaultValue="all"
       onChange={value => onChange('subject2', value)}
     >
@@ -74,7 +72,6 @@ const TestFilters = ({ children, onChange, style }) => (
     <SubTitle>Standard Set</SubTitle>
     <Select
       size="large"
-      style={{ width: '100%' }}
       defaultValue="all"
       onChange={value => onChange('standardSet', value)}
     >
@@ -88,7 +85,6 @@ const TestFilters = ({ children, onChange, style }) => (
     <SubTitle>Collection</SubTitle>
     <Select
       size="large"
-      style={{ width: '100%' }}
       defaultValue="all"
       onChange={value => onChange('collections', value)}
     >
@@ -102,7 +98,6 @@ const TestFilters = ({ children, onChange, style }) => (
     <SubTitle>Question Types</SubTitle>
     <Select
       size="large"
-      style={{ width: '100%' }}
       defaultValue="all"
       onChange={value => onChange('questionType', value)}
     >
@@ -116,7 +111,6 @@ const TestFilters = ({ children, onChange, style }) => (
     <SubTitle>Depth of Knowledge</SubTitle>
     <Select
       size="large"
-      style={{ width: '100%' }}
       defaultValue="all"
       onChange={value => onChange('knowledge', value)}
     >
@@ -130,7 +124,6 @@ const TestFilters = ({ children, onChange, style }) => (
     <SubTitle>Difficulty</SubTitle>
     <Select
       size="large"
-      style={{ width: '100%' }}
       defaultValue="all"
       onChange={value => onChange('difficulty', value)}
     >
@@ -159,6 +152,11 @@ export default TestFilters;
 const Container = styled.div`
   padding: 27px 0;
 
+  .ant-select {
+    width: 100%;
+    min-width: 100%;
+  }
+
   .ant-select-selection {
     background: transparent;
   }
@@ -169,11 +167,7 @@ const Container = styled.div`
     letter-spacing: 0.2px;
     color: #434b5d;
   }
-
-  .ant-select-selection__rendered {
-    margin-left: 26px;
-  }
-
+  
   .ant-select-selection__choice {
     border-radius: 5px;
     border: solid 1px #c8e8f6;
@@ -207,6 +201,10 @@ const Container = styled.div`
   }
 `;
 
+const FilerHeading = styled(FlexContainer)`
+  margin-bottom: 10px;
+`;
+
 const Title = styled.span`
   color: #4aac8b;
   font-size: 14px;
@@ -226,7 +224,7 @@ const ClearAll = styled.span`
 `;
 
 const SubTitle = styled.div`
-  margin: 12px 0;
+  margin: 12px 0 5px;
   color: ${secondaryTextColor};
   font-size: 13px;
   font-weight: 600;

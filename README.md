@@ -2,6 +2,8 @@
 
 This is the mono-repo holding front-end repos and packages together. The project requires node ( 8+), yarn (1.9+).
 
+* Before Contributing please read the `Contributing.md` guide.
+
 ### How to Run
 
 **Dev Mode**

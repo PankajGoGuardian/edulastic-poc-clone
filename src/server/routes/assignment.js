@@ -143,9 +143,14 @@ router.get('/:id/test-activity/summary', async (req, res) => {
  *   get:
  *     tags:
  *       - Assignment
- *     summary: Fetch all the assignments of an user
+ *     summary: Fetch all the assignments of current user
  *     produces:
  *       - application/json
+ *     parameters:
+ *        - name: sort
+ *          in: query
+ *          example:
+ *            status: DUEDATE|ASSIGNEDDATE
  *     responses:
  *       200:
  *         description: successful

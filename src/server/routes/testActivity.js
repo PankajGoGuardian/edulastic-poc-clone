@@ -209,6 +209,27 @@ router.post('/:id/test-item/:itemId', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /test-activity/:id/report:
+ *   get:
+ *     tags:
+ *       - testActivity
+ *     summary: Fetch the userTestActivity and list of userTestItemActivites of current user for
+ *              given testActivityId
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: id
+ *          in: path
+ *          example:
+ *            id: 5bfe576618ab6f48a5fa6594
+ *     responses:
+ *       200:
+ *         description: successful
+ *       400:
+ *         description: assignment is not started yet
+ */
 router.get('/:id/report', async (req, res) => {
   try {
     const { id } = req.params;
@@ -230,6 +251,27 @@ router.get('/:id/report', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /test-activity/:id:
+ *   get:
+ *     tags:
+ *       - testActivity
+ *     summary: Fetch the userTestActivity and list of userTestItemActivites of current user for
+ *              given testActivityId, excludes evaluations and scores
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *        - name: id
+ *          in: path
+ *          example:
+ *            id: 5bfe576618ab6f48a5fa6594
+ *     responses:
+ *       200:
+ *         description: successful
+ *       400:
+ *         description: assignment is not started yet
+ */
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;

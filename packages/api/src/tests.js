@@ -65,17 +65,20 @@ const getById = (id, params = {}) =>
     })
     .then(result => result.data.result);
 
-const create = data =>
-  api
+const create = data => {
+  apiCache = {};
+  return api
     .callApi({
       url: prefix,
       method: 'post',
       data
     })
     .then(result => result.data.result);
+};
 
 const update = ({ id, data: test }) => {
   const data = formatData(test);
+  apiCache = {};
   api
     .callApi({
       url: `${prefix}/${id}`,

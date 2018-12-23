@@ -47,7 +47,7 @@ const getColoredElems = (elements, compareResult) => {
         if (detail && detail.result) {
           newEl = {
             colors: {
-              strokeColor: green,
+              strokeColor: green
             },
             ...el
           };
@@ -55,7 +55,7 @@ const getColoredElems = (elements, compareResult) => {
         } else {
           newEl = {
             colors: {
-              strokeColor: red,
+              strokeColor: red
             },
             ...el
           };
@@ -91,7 +91,7 @@ const getColoredElems = (elements, compareResult) => {
           newEl = {
             colors: {
               fillColor: red,
-              strokeColor: red,
+              strokeColor: red
             },
             ...el
           };
@@ -165,21 +165,21 @@ class GraphContainerHOC extends Component {
         xMin: canvasConfig.x_min,
         xMax: canvasConfig.x_max,
         yMin: canvasConfig.y_min,
-        yMax: canvasConfig.y_max,
+        yMax: canvasConfig.y_max
       },
       layout: {
         width: uiStyle.layout_width,
         margin: uiStyle.layout_margin,
         height: uiStyle.layout_height,
         snapTo: uiStyle.layout_snapto,
-        fontSize: getFontSizeVal(uiStyle.currentFontSize),
+        fontSize: getFontSizeVal(uiStyle.currentFontSize)
       },
       pointParameters: {
         snapToGrid: true,
         snapSizeX: getSnapSize(uiStyle.layout_snapto, parseFloat(uiStyle.xDistance)),
         snapSizeY: getSnapSize(uiStyle.layout_snapto, parseFloat(uiStyle.yDistance)),
         showInfoBox: uiStyle.displayPositionOnHover,
-        withLabel: false,
+        withLabel: false
       },
       xAxesParameters: {
         ticksDistance: safeParseFloat(uiStyle.xTickDistance),
@@ -188,7 +188,7 @@ class GraphContainerHOC extends Component {
         drawLabels: uiStyle.xDrawLabel,
         maxArrow: uiStyle.xMaxArrow,
         minArrow: uiStyle.xMinArrow,
-        commaInLabel: uiStyle.xCommaInLabel,
+        commaInLabel: uiStyle.xCommaInLabel
       },
       yAxesParameters: {
         ticksDistance: safeParseFloat(uiStyle.yTickDistance),
@@ -197,17 +197,17 @@ class GraphContainerHOC extends Component {
         drawLabels: uiStyle.yDrawLabel,
         maxArrow: uiStyle.yMaxArrow,
         minArrow: uiStyle.yMinArrow,
-        commaInLabel: uiStyle.yCommaInLabel,
+        commaInLabel: uiStyle.yCommaInLabel
       },
       gridParams: {
         gridY: safeParseFloat(uiStyle.yDistance),
-        gridX: safeParseFloat(uiStyle.xDistance),
+        gridX: safeParseFloat(uiStyle.xDistance)
       },
       bgImgOptions: {
         urlImg: bgImgOptions.src,
         opacity: bgImgOptions.opacity / 100,
         coords: [bgImgOptions.x, bgImgOptions.y],
-        size: [bgImgOptions.width, bgImgOptions.height],
+        size: [bgImgOptions.width, bgImgOptions.height]
       },
       backgroundShapes: {
         values: backgroundShapes || [],
@@ -226,7 +226,7 @@ class GraphContainerHOC extends Component {
       checkAnswer,
       validation,
       changePreviewTab,
-      evaluation,
+      evaluation
     } = this.props;
     let correct = false;
     let newElems = elements;
@@ -274,12 +274,12 @@ GraphContainerHOC.propTypes = {
   elements: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
   backgroundShapes: PropTypes.array,
-  evaluation: PropTypes.any,
+  evaluation: PropTypes.any
 };
 
 GraphContainerHOC.defaultProps = {
   backgroundShapes: [],
-  evaluation: null,
+  evaluation: null
 };
 
 export default GraphContainerHOC;

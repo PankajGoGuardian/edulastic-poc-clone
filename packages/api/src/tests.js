@@ -9,6 +9,9 @@ const formatData = data => {
   return item;
 };
 
+// experimental api cache
+let apiCache = {};
+
 const getAll = (
   { limit, page, search } = { limit: 10, page: 1, search: '' }
 ) => {
@@ -18,21 +21,40 @@ const getAll = (
     url += `&filter[where][title][like]=${search}`;
   }
 
+  // if url is cached, return cached result
+  if (apiCache[url]) {
+    return apiCache[url];
+  }
+
   return api
     .callApi({
       url,
       method: 'get'
     })
-    .then(result => result.data.result);
+    .then(result => {
+      result = result.data.result;
+      apiCache[url] = result;
+      return result;
+    });
 };
 
-const getCount = () =>
-  api
+const getCount = () => {
+  let url = `${prefix}/count`;
+  if (apiCache[url]) {
+    return apiCache[url];
+  }
+
+  return api
     .callApi({
-      url: `${prefix}/count`,
+      url,
       method: 'get'
     })
-    .then(result => result.data.result);
+    .then(result => {
+      result = result.data.result;
+      apiCache[url] = result;
+      return result;
+    });
+};
 
 const getById = (id, params = {}) =>
   api

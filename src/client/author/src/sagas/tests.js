@@ -19,15 +19,19 @@ import {
 
 function* receiveTestsSaga({ payload }) {
   try {
-    const entities = yield call(testsApi.getAll, payload);
-    const { count } = yield call(testsApi.getCount);
+    const [entities, { count }] = yield all([
+      call(testsApi.getAll, payload),
+      call(testsApi.getCount)
+    ]);
 
     yield put({
       type: RECEIVE_TESTS_SUCCESS,
       payload: { entities, count, page: payload.page, limit: payload.limit }
     });
+
+    const { page, limit } = payload;
+    yield call(testsApi.getAll, { page: page + 1, limit });
   } catch (err) {
-    console.error(err);
     const errorMessage = 'Receive tests is failing';
     yield call(message.error, errorMessage);
     yield put({
@@ -75,7 +79,6 @@ function* createTestSaga({ payload }) {
     });
   }
 }
-
 
 function* updateTestSaga({ payload }) {
   try {

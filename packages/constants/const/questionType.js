@@ -17,6 +17,7 @@ const CLOZE_DROP_DOWN = 'clozeDropDown';
 const TOKEN_HIGHLIGHT = 'tokenhighlight';
 const HOTSPOT = 'hotspot';
 const SHADING = 'shading';
+const HIGHLIGHT_IMAGE = 'highlightImage';
 
 module.exports = {
   SHORT_TEXT,
@@ -37,5 +38,6 @@ module.exports = {
   CLOZE_DROP_DOWN,
   TOKEN_HIGHLIGHT,
   HOTSPOT,
-  SHADING
+  SHADING,
+  HIGHLIGHT_IMAGE
 };

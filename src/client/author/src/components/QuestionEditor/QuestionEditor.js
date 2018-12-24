@@ -30,6 +30,7 @@ const headerTitles = {
   essayRichText: 'Essay with rich text',
   tokenhighlight: 'Token Highlight',
   hotspot: 'Hotspot',
+  highlightImage: 'Highlight Image',
   shading: 'Shading',
   classification: 'Classification',
   matchList: 'Match List',
@@ -125,10 +126,7 @@ class QuestionEditor extends Component {
     return (
       <div>
         {showModal && (
-          <SourceModal
-            onClose={this.handleHideSource}
-            onApply={this.handleApplySource}
-          >
+          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
             {JSON.stringify(question.data, null, 4)}
           </SourceModal>
         )}

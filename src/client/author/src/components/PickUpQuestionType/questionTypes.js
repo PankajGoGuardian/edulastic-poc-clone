@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { FlexContainer } from '@edulastic/common';
 import { math } from '@edulastic/constants';
-import { svgMapFillColor, svgMapStrokeColor } from '@edulastic/colors';
+import { svgMapFillColor, svgMapStrokeColor, mainBlueColor } from '@edulastic/colors';
 
 import Card from './Card';
 import {
@@ -20,6 +20,22 @@ const { EMBED_RESPONSE } = math;
 
 const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
   const cards = [
+    {
+      title: 'Highlight Image',
+      type: 'highlight',
+      data: {
+        image: {
+          source: '',
+          width: 900,
+          height: 470,
+          altText: ''
+        },
+        line_color: mainBlueColor,
+        stimulus: '<p>[This is the stem.]</p>',
+        type: 'highlightImage'
+      },
+      onSelectQuestionType
+    },
     {
       title: 'Shading',
       type: 'highlight',

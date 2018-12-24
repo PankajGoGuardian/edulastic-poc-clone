@@ -21,6 +21,7 @@ const ShadesView = ({
   shaded,
   correctAnswers,
   showAnswers,
+  marginTop,
   lockedCells
 }) => {
   const rowsArray = Array(rowCount).fill(null);
@@ -52,7 +53,7 @@ const ShadesView = ({
     correctAnswers.findIndex(shade =>
       (Array.isArray(shade) ? shade[0] === i && shade[1] === j : shade === getActiveShadesCount())) !== -1;
   return (
-    <Wrapper>
+    <Wrapper marginTop={marginTop}>
       {rowsArray.map((row, i) => (
         <Ul key={i}>
           {columnsArray.map((col, j) => (
@@ -82,13 +83,15 @@ ShadesView.propTypes = {
   shaded: PropTypes.array.isRequired,
   lockedCells: PropTypes.any,
   correctAnswers: PropTypes.any,
-  showAnswers: PropTypes.any
+  showAnswers: PropTypes.any,
+  marginTop: PropTypes.any
 };
 
 ShadesView.defaultProps = {
   lockedCells: undefined,
   correctAnswers: [],
-  showAnswers: false
+  showAnswers: false,
+  marginTop: undefined
 };
 
 export default ShadesView;
@@ -161,5 +164,5 @@ const Wrapper = styled.div`
   display: block;
   position: relative;
   padding: 1px 0;
-  margin-top: 40px;
+  margin-top: ${({ marginTop }) => marginTop || 40}px;
 `;

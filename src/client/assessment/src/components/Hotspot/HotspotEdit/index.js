@@ -1,6 +1,6 @@
 import 'rc-color-picker/assets/index.css';
 
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { cloneDeep } from 'lodash';
 import Dropzone from 'react-dropzone';
@@ -9,20 +9,23 @@ import ColorPicker from 'rc-color-picker';
 import { Row, Col, Checkbox } from 'antd';
 
 import { withNamespaces } from '@edulastic/localization';
-import { Paper, Tabs, Tab, Button, FlexContainer } from '@edulastic/common';
+import { Paper, Tabs, Tab, Button, FlexContainer, Image } from '@edulastic/common';
 import { secondaryTextColor, white, red, blue } from '@edulastic/colors';
 import { IconPlus, IconClose } from '@edulastic/icons';
 
-import { QuestionTextArea, Subtitle, CorrectAnswers } from '../../common';
-import StyledDropZone from './StyledDropZone';
-import DropZoneToolbar from './DropZoneToolbar';
-import { SOURCE } from './localConstants';
+import {
+  QuestionTextArea,
+  Subtitle,
+  CorrectAnswers,
+  DropZoneToolbar,
+  StyledDropZone
+} from '../../common';
 import AreasContainer from './AreasContainer';
 import LocalColorPickers from './LocalColorPickers';
 import { hexToRGB, getAlpha } from './AreasContainer/helpers';
 import withPoints from '../../HOC/withPoints';
 import HotspotPreview from '../HotspotPreview';
-import { EDIT } from '../../../constants/constantsForQuestions';
+import { EDIT, SOURCE } from '../../../constants/constantsForQuestions';
 
 const OptionsList = withPoints(HotspotPreview);
 
@@ -60,10 +63,6 @@ const HotspotEdit = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-  useEffect(() => () => {
-    URL.revokeObjectURL(file);
-  });
-
   const handleImageToolbarChange = prop => (val) => {
     const newItem = cloneDeep(item);
 
@@ -83,7 +82,7 @@ const HotspotEdit = ({ item, setQuestionData, t }) => {
     handleImageToolbarChange(SOURCE)(URL.createObjectURL(files));
   };
 
-  const thumb = file && <Image width={width} height={height} src={file} alt="upload" />;
+  const thumb = file && <Image width={width} height={height} src={file} alt={altText} />;
 
   const changeHandler = prop => (obj) => {
     const newItem = cloneDeep(item);
@@ -277,7 +276,7 @@ const HotspotEdit = ({ item, setQuestionData, t }) => {
               {...getRootProps()}
               className={`dropzone ${isDragActive ? 'dropzone--isActive' : ''}`}
             >
-              {thumb && <input {...getInputProps()} />}
+              <input {...getInputProps()} />
 
               <StyledDropZone isDragActive={isDragActive} thumb={thumb} />
             </div>
@@ -368,11 +367,6 @@ HotspotEdit.propTypes = {
 };
 
 export default withNamespaces('assessment')(HotspotEdit);
-
-const Image = styled.img`
-  width: ${({ width }) => (width ? `${width}px` : '100%')};
-  height: ${({ height }) => height || 616}px;
-`;
 
 const StyledCheckbox = styled(Checkbox)`
   margin-top: 31px;

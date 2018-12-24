@@ -128,12 +128,13 @@ const ShadingPreview = ({
 
         {view === PREVIEW && (
           <ShadesView
-            cellWidth={cell_width}
-            cellHeight={cell_height}
-            rowCount={row_count}
+            marginTop={smallSize ? 10 : 0}
+            cellWidth={smallSize ? 1 : cell_width}
+            cellHeight={smallSize ? 1 : cell_height}
+            rowCount={smallSize ? 3 : row_count}
             correctAnswers={correctAnswers}
             showAnswers={preview}
-            colCount={column_count}
+            colCount={smallSize ? 8 : column_count}
             onCellClick={handleCellClick}
             shaded={Array.isArray(userAnswer) ? userAnswer : []}
             lockedCells={read_only_author_cells ? shaded : undefined}

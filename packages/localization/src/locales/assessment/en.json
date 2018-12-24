@@ -81,6 +81,10 @@
       "distractorRationale": "Distractor rationale",
       "distractorRationalePerResponse": "Distractor rationale per response"
     },
+    "highlightImage": {
+      "lineColorOptionsSubtitle": "Line color options",
+      "lineColorLabel": "Line color"
+    },
     "shading": {
       "canvasSubtitle": "Canvas option",
       "rowsCountSubtitle": "Row count",

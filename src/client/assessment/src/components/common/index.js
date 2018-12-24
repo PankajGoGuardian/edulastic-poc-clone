@@ -12,3 +12,5 @@ export { default as GroupPossibleResponses } from './GroupPossibleResponses';
 export { default as Toolbar } from './Toolbar';
 export { default as Item } from './Item';
 export { default as LargeInput } from './LargeInput';
+export { default as DropZoneToolbar } from './DropZoneToolbar';
+export { default as StyledDropZone } from './StyledDropZone';

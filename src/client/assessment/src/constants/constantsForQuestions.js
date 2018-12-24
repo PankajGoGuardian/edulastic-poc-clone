@@ -20,6 +20,11 @@ export const DELETE_MODE = 'delete_mode';
 export const BY_LOCATION_METHOD = 'byLocation';
 export const BY_COUNT_METHOD = 'byCount';
 
+export const WIDTH = 'width';
+export const HEIGHT = 'height';
+export const ALT_TEXT = 'altText';
+export const SOURCE = 'source';
+
 export const templateWithTokens = [
   {
     value: 'Risus et tincidunt turpis facilisis.',

@@ -15,6 +15,7 @@ import { ShortText } from '../ShortText';
 import { TokenHighlight } from '../TokenHighlight';
 import { Shading } from '../Shading';
 import { Hotspot } from '../Hotspot';
+import { HighlightImage } from '../HighlightImage';
 import { EssayPlainText } from '../EssayPlainText';
 import { EssayRichText } from '../EssayRichText';
 import withAnswerSave from '../HOC/withAnswerSave';
@@ -25,6 +26,8 @@ import MathFormula from '../MathFormula/MathFormula';
 
 const getQuestion = (type) => {
   switch (type) {
+    case questionType.HIGHLIGHT_IMAGE:
+      return HighlightImage;
     case questionType.SHADING:
       return Shading;
     case questionType.HOTSPOT:

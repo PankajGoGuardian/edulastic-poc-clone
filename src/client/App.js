@@ -19,7 +19,7 @@ const StudentSignup = lazy(() =>
 const AdminSignup = lazy(() =>
   import(/* webpackChunkName: "adminSignup" */ './student/src/components/authentication/signup/adminSignup'));
 const Dashboard = lazy(() =>
-  import(/* webpackChunkName: "student" */ './student/src/App'));
+  import(/* webpackChunkName: "student" */ './student/src/app'));
 
 const Author = lazy(() =>
   import(/* webpackChunkName: "author" */ './author/src/app'));

@@ -4,7 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const config = require('./src/server/config');
 
-module.exports = (env) => {
+module.exports = env => {
   console.log('Webpack ENV', env);
   const plugins = [
     new CopyWebpackPlugin(
@@ -32,6 +32,7 @@ module.exports = (env) => {
     output: {
       filename: 'index.js',
       path: path.resolve(__dirname, '.build/client'),
+      chunkFilename: '[name].js',
       publicPath: 'assets/'
     },
     plugins,

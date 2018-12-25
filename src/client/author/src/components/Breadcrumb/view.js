@@ -12,7 +12,7 @@ class BreadCrumb extends Component {
         <Breadcrumb>
           {Array.isArray(data) &&
             data.map((breadCrumb, index) => (
-              <Breadcrumb.Item>
+              <Breadcrumb.Item key={`bread${index}`}>
                 {index === 0 && <Icon key={index} type="left" style={{ fontSize: 11 }} />}
                 {index !== data.length - 1 ? (
                   <Link to={breadCrumb.to}>{breadCrumb.title}</Link>

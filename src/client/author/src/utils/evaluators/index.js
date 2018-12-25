@@ -1,4 +1,4 @@
-import { multipleChoice, orderList, clozeText, math } from '@edulastic/evaluators';
+import { multipleChoice, orderList, clozeText, clozeImageDragDrop, clozeImageDropDown, math } from '@edulastic/evaluators';
 
 // clozeDropDown and ClozeText shares same logic
 const evaluators = {
@@ -6,6 +6,8 @@ const evaluators = {
   orderList,
   clozeText,
   clozeDropDown: clozeText,
+  clozeImageDragDrop,
+  clozeImageDropDown,
   math
 };
 

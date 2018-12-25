@@ -8,6 +8,7 @@ import { cloneDeep } from 'lodash';
 
 import { Input, Checkbox, Select } from 'antd';
 import Options from '../Options';
+import { FormGroup } from '../styles';
 import { setQuestionDataAction } from '../../../../../../author/src/actions/question';
 import { getQuestionDataSelector } from '../../../../../../author/src/selectors/question';
 
@@ -46,12 +47,14 @@ const Scoring = ({ setQuestionData, questionData, t }) => {
     setQuestionData(newData);
   };
 
+  console.log('QuestionData: ', questionData);
+
   return (
     <Options.Block>
       <Options.Heading>{t('component.options.scoring')}</Options.Heading>
 
-      <Options.Row>
-        {questionData.validation.automarkable && (
+      {questionData.validation.automarkable && (
+        <Options.Row>
           <Options.Col md={6}>
             <Checkbox
               checked={questionData.validation.unscored}
@@ -64,51 +67,20 @@ const Scoring = ({ setQuestionData, questionData, t }) => {
               {t('component.options.unscored')}
             </Checkbox>
           </Options.Col>
-        )}
-
-        <Options.Col md={6}>
-          <Checkbox
-            checked={questionData.validation.automarkable}
-            onChange={e =>
-              handleChangeValidation('automarkable', e.target.checked)
-            }
-            size="large"
-            style={{ width: '80%' }}
-          >
-            {t('component.options.automarkable')}
-          </Checkbox>
-        </Options.Col>
-      </Options.Row>
-
-      {questionData.validation.automarkable && (
-        <Options.Row>
           <Options.Col md={6}>
-            <Options.Label>{t('component.options.penalty')}</Options.Label>
-            <Input
-              type="number"
-              data-cy="penalty"
-              value={questionData.validation.penalty}
-              onChange={e => handleChangeValidation('penalty', +e.target.value)}
-              size="large"
-              style={{ width: '20%' }}
-            />
-          </Options.Col>
-          <Options.Col md={6}>
-            <Options.Label>{t('component.options.attempts')}</Options.Label>
-            <Input
-              type="number"
-              data-cy="feedback"
-              value={questionData.feedback_attempts}
-              onChange={e =>
-                handleChangeData('feedback_attempts', +e.target.value)
-              }
-              size="large"
-              style={{ width: '20%' }}
-            />
+            <FormGroup>
+              <Input
+                type="number"
+                value={questionData.validation.penalty}
+                onChange={e => handleChangeValidation('penalty', +e.target.value)}
+                size="large"
+                style={{ width: '20%', marginRight: 30 }}
+              />
+              <Options.Label>{t('component.options.penalty')}</Options.Label>
+            </FormGroup>
           </Options.Col>
         </Options.Row>
       )}
-
       {questionData.validation.automarkable && (
         <Options.Row>
           <Options.Col md={6}>
@@ -123,8 +95,46 @@ const Scoring = ({ setQuestionData, questionData, t }) => {
               {t('component.options.checkAnswerButton')}
             </Checkbox>
           </Options.Col>
+          <Options.Col md={6}>
+            <FormGroup>
+              <Input
+                type="number"
+                value={questionData.feedback_attempts}
+                onChange={e => handleChangeData('feedback_attempts', +e.target.value)}
+                size="large"
+                style={{ width: '20%', marginRight: 30 }}
+              />
+              <Options.Label>{t('component.options.attempts')}</Options.Label>
+            </FormGroup>
+          </Options.Col>
         </Options.Row>
       )}
+
+      <Options.Row>
+        <Options.Col md={6}>
+          <Checkbox
+            checked={questionData.validation.automarkable}
+            onChange={e => handleChangeValidation('automarkable', e.target.checked)}
+            size="large"
+            style={{ width: '80%' }}
+          >
+            {t('component.options.automarkable')}
+          </Checkbox>
+        </Options.Col>
+        <Options.Col md={6}>
+          <FormGroup>
+            <Input
+              type="number"
+              disabled={questionData.validation.unscored}
+              value={questionData.validation.min_score_if_attempted}
+              onChange={e => handleChangeValidation('min_score_if_attempted', +e.target.value)}
+              size="large"
+              style={{ width: '20%', marginRight: 30 }}
+            />
+            <Options.Label>{t('component.options.minScore')}</Options.Label>
+          </FormGroup>
+        </Options.Col>
+      </Options.Row>
 
       {questionData.validation.automarkable && (
         <Options.Row>
@@ -165,36 +175,22 @@ const Scoring = ({ setQuestionData, questionData, t }) => {
         </Options.Row>
       )}
 
-      <Options.Row>
-        <Options.Col md={6}>
-          <Options.Label>{t('component.options.minScore')}</Options.Label>
-          <Input
-            type="number"
-            data-cy="minscore"
-            disabled={questionData.validation.unscored}
-            value={questionData.validation.min_score_if_attempted}
-            onChange={e =>
-              handleChangeValidation('min_score_if_attempted', +e.target.value)
-            }
-            size="large"
-            style={{ width: '20%' }}
-          />
-        </Options.Col>
-        {!questionData.validation.automarkable && (
-          <Options.Col md={6}>
-            <Options.Label>{t('component.options.maxScore')}</Options.Label>
-            <Input
-              type="number"
-              value={questionData.validation.max_score}
-              onChange={e =>
-                handleChangeValidation('max_score', +e.target.value)
-              }
-              size="large"
-              style={{ width: '20%' }}
-            />
+      {!questionData.validation.automarkable && (
+        <Options.Row>
+          <Options.Col md={12}>
+            <FormGroup>
+              <Input
+                type="number"
+                value={questionData.validation.max_score}
+                onChange={e => handleChangeValidation('max_score', +e.target.value)}
+                size="large"
+                style={{ width: '20%', marginRight: 30 }}
+              />
+              <Options.Label>{t('component.options.maxScore')}</Options.Label>
+            </FormGroup>
           </Options.Col>
-        )}
-      </Options.Row>
+        </Options.Row>
+      )}
     </Options.Block>
   );
 };

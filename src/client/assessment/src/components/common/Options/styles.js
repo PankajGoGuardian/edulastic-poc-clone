@@ -10,17 +10,24 @@ export const Heading = styled.div`
   letter-spacing: 0.3px;
   text-align: left;
   color: ${greenDark};
+  margin-top: 10px;
   margin-bottom: 35px;
 `;
 
-export const Block = styled.div`
-  border-bottom: 1px solid #d9d6d6;
-  padding-bottom: 20px;
-  margin-bottom: 35px;
+// export const Block = styled.div`
+//   border-bottom: 1px solid #d9d6d6;
+//   padding-bottom: 20px;
+//   margin-bottom: 35px;
 
-  :last-child {
-    margin-bottom: 0;
-  }
+//   :last-child {
+//     margin-bottom: 0;
+//   }
+// `;
+
+export const Block = styled.div`
+  
+  border-top: 1px solid #d9d6d6;
+  padding-top: 20px;
 `;
 
 export const Label = styled.label`
@@ -93,4 +100,10 @@ export const Toggler = styled.div`
       background-color: ${greenDarkSecondary};
     }
   }
+`;
+
+export const FormGroup = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `;

@@ -35,7 +35,8 @@ const headerTitles = {
   classification: 'Classification',
   matchList: 'Match List',
   clozeDragDrop: 'Cloze Drag & Drop',
-  clozeImageDragDrop: 'Label Image with Drag & Drop'
+  clozeImageDragDrop: 'Label Image with Drag & Drop',
+  clozeImageDropDown: 'Label Image with DropDown'
 };
 
 class QuestionEditor extends Component {
@@ -60,6 +61,8 @@ class QuestionEditor extends Component {
   handleShowSource = () => {
     this.setState({ showModal: true });
   };
+
+  handleShowSettings = () => {};
 
   handleHideSource = () => {
     this.setState({ showModal: false });
@@ -156,8 +159,8 @@ class QuestionEditor extends Component {
         <ContentWrapper
           style={{
             padding: '0px 45px',
-            overflow: 'auto',
-            height: 'calc(100vh - 135px)'
+            overflow: 'auto'
+            // height: 'calc(100vh - 135px)'
           }}
         >
           {this.renderQuestion(questionType)}

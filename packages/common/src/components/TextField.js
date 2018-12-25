@@ -76,7 +76,7 @@ const Icon = styled.span`
 
 const Field = styled.input`
   border: 1px solid ${props => (props.referenceEditable ? greenDark : grey)};
-  border-radius: 10px;
+  border-radius: 4px;
   min-height: 100%;
   width: 100%;
   padding: 10px 35px;

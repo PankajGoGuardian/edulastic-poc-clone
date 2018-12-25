@@ -8,6 +8,7 @@ import { Classification } from '../Classification';
 import { MultipleChoice } from '../MultipleChoice';
 import { ClozeDragDrop } from '../ClozeDragDrop';
 import { ClozeImageDragDrop } from '../ClozeImageDragDrop';
+import { ClozeImageDropDown } from '../ClozeImageDropDown';
 import { Graph } from '../Graph';
 import { ClozeDropDown } from '../ClozeDropDown';
 import { ClozeText } from '../ClozeText';
@@ -58,6 +59,8 @@ const getQuestion = (type) => {
       return ClozeImageDragDrop;
     case questionType.PROTRACTOR:
       return Protractor;
+    case questionType.CLOZE_IMAGE_DROP_DOWN:
+      return ClozeImageDropDown;
     case questionType.CLOZE_DROP_DOWN:
       return ClozeDropDown;
     case questionType.CLOZE_TEXT:

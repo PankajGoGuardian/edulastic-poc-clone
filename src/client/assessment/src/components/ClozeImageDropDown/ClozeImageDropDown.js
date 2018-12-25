@@ -3,24 +3,21 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-import { PaddingDiv, Paper } from '@edulastic/common';
+import { PaddingDiv, Checkbox, Paper } from '@edulastic/common';
 import { cloneDeep } from 'lodash';
 import styled from 'styled-components';
 import { withNamespaces } from '@edulastic/localization';
-import { Checkbox } from 'antd';
 
 import {
-  ClozeImageDragDropAuthoring,
-  ClozeImageDragDropDisplay,
+  ClozeImageDropDownAuthoring,
+  ClozeImageDropDownDisplay,
   CorrectAnswers
 } from './index';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
-import CorrectAnswerOptions from './components/CorrectAnswerOptions';
+import CorrectAnswerOptions from './common/CorrectAnswerOptions';
 import Options from './Options';
 
-const EmptyWrapper = styled.div``;
-
-class ClozeImageDragDrop extends Component {
+class ClozeImageDropDown extends Component {
   state = {
     duplicatedResponses: false,
     shuffleOptions: false,
@@ -111,20 +108,19 @@ class ClozeImageDragDrop extends Component {
     const { duplicatedResponses, showDraghandle, shuffleOptions,
       transparentResponses } = this.state;
 
-    const Wrapper = testItem ? EmptyWrapper : Paper;
+    const Wrapper = testItem ? React.Fragment : Paper;
     return (
-      <div>
+      <React.Fragment>
         {view === 'edit' && (
           <React.Fragment>
-            <PaddingDiv
-              style={{ borderRadius: 5, background: 'white' }}
-              top={30}
-              bottom={30}
-              left={120}
-              right={120}
+            <EditorContainer
+              top={36}
+              bottom={36}
+              left={60}
+              right={60}
             >
               <div className="authoring">
-                <ClozeImageDragDropAuthoring item={itemForEdit} />
+                <ClozeImageDropDownAuthoring item={itemForEdit} />
                 <CorrectAnswers
                   key={duplicatedResponses || showDraghandle || shuffleOptions}
                   validation={item.validation}
@@ -151,68 +147,31 @@ class ClozeImageDragDrop extends Component {
                     className="additional-options"
                     onChange={() =>
                       this.handleOptionsChange(
-                        'duplicated_responses',
-                        !duplicatedResponses,
-                      )
-                    }
-                    defaultChecked={duplicatedResponses}
-                  >
-                    {t('component.clozeImageDragDrop.duplicatedresponses')}
-                  </Checkbox>
-                  <Checkbox
-                    className="additional-options"
-                    onChange={() =>
-                      this.handleOptionsChange(
-                        'show_draghandle',
-                        !showDraghandle,
-                      )
-                    }
-                    defaultChecked={showDraghandle}
-                  >
-                    {t('component.clozeImageDragDrop.showdraghandle')}
-                  </Checkbox>
-                  <Checkbox
-                    className="additional-options"
-                    onChange={() =>
-                      this.handleOptionsChange(
                         'shuffle_options',
-                        !shuffleOptions,
+                        !shuffleOptions
                       )
-                    }
-                    defaultChecked={shuffleOptions}
-                  >
-                    {t('component.clozeImageDragDrop.shuffleoptions')}
-                  </Checkbox>
-                  <Checkbox
-                    className="additional-options"
-                    onChange={() =>
-                      this.handleOptionsChange(
-                        'transparent_responses',
-                        !transparentResponses,
-                      )
-                    }
-                    defaultChecked={transparentResponses}
-                  >
-                    {t('component.clozeImageDragDrop.transparentpossibleresponses')}
-                  </Checkbox>
+                  }
+                    label={t('component.clozeDropDown.shuffleoptions')}
+                    checked={shuffleOptions}
+                  />
                 </CorrectAnswerOptions>
               </div>
-            </PaddingDiv>
-            <div style={{ marginTop: 35 }}>
+            </EditorContainer>
+            <OptionsContainer>
               <Options
                 onChange={this.handleOptionsChange}
                 uiStyle={uiStyle}
                 outerStyle={{
-                  padding: '30px 120px'
+                  padding: '16px 60px 7px 60px'
                 }}
               />
-            </div>
+            </OptionsContainer>
           </React.Fragment>
         )}
         {view === 'preview' && (
           <Wrapper>
             {previewTab === 'check' && (
-              <ClozeImageDragDropDisplay
+              <ClozeImageDropDownDisplay
                 checkAnswer
                 options={previewDisplayOptions}
                 question={previewStimulus}
@@ -234,7 +193,7 @@ class ClozeImageDragDrop extends Component {
               />
             )}
             {previewTab === 'show' && (
-              <ClozeImageDragDropDisplay
+              <ClozeImageDropDownDisplay
                 showAnswer
                 options={previewDisplayOptions}
                 question={previewStimulus}
@@ -256,7 +215,7 @@ class ClozeImageDragDrop extends Component {
               />
             )}
             {previewTab === 'clear' && (
-              <ClozeImageDragDropDisplay
+              <ClozeImageDropDownDisplay
                 preview
                 validation={item.validation}
                 configureOptions={{
@@ -284,12 +243,12 @@ class ClozeImageDragDrop extends Component {
             )}
           </Wrapper>
         )}
-      </div>
+      </React.Fragment>
     );
   }
 }
 
-ClozeImageDragDrop.propTypes = {
+ClozeImageDropDown.propTypes = {
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string,
   item: PropTypes.object,
@@ -304,7 +263,7 @@ ClozeImageDragDrop.propTypes = {
   evaluation: PropTypes.any.isRequired
 };
 
-ClozeImageDragDrop.defaultProps = {
+ClozeImageDropDown.defaultProps = {
   previewTab: 'clear',
   item: {
     options: []
@@ -326,4 +285,15 @@ const enhance = compose(
   ),
 );
 
-export default enhance(ClozeImageDragDrop);
+export default enhance(ClozeImageDropDown);
+
+const EditorContainer = styled(PaddingDiv)`
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+`;
+
+const OptionsContainer = styled.div`
+  margin-top: 35px;
+  margin-bottom: 35px;
+`;

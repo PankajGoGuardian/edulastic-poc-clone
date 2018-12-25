@@ -11,7 +11,7 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
   const changeUiStyle = (prop, value) => {
     onChange('ui_style', {
       ...uiStyle,
-      [prop]: value,
+      [prop]: value
     });
   };
 
@@ -21,22 +21,22 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
     Object.defineProperties(item, {
       widthpx: {
         value: responsecontainerindividuals[index].widthpx,
-        writable: true,
+        writable: true
       },
       heightpx: {
         value: responsecontainerindividuals[index].heightpx,
-        writable: true,
+        writable: true
       },
       wordwrap: {
         value: responsecontainerindividuals[index].wordwrap,
-        writable: true,
-      },
+        writable: true
+      }
     });
     item[prop] = value;
     responsecontainerindividuals[index] = item;
     onChange('ui_style', {
       ...uiStyle,
-      responsecontainerindividuals,
+      responsecontainerindividuals
     });
   };
 
@@ -45,11 +45,11 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
     responsecontainerindividuals.push({
       widthpx: 0,
       heightpx: 0,
-      wordwrap: false,
+      wordwrap: false
     });
     onChange('ui_style', {
       ...uiStyle,
-      responsecontainerindividuals,
+      responsecontainerindividuals
     });
   };
 
@@ -58,7 +58,7 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
     responsecontainerindividuals.splice(index, 1);
     onChange('ui_style', {
       ...uiStyle,
-      responsecontainerindividuals,
+      responsecontainerindividuals
     });
   };
 
@@ -76,7 +76,7 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
                 { value: 'top', label: t('component.options.top') },
                 { value: 'bottom', label: t('component.options.bottom') },
                 { value: 'right', label: t('component.options.right') },
-                { value: 'left', label: t('component.options.left') },
+                { value: 'left', label: t('component.options.left') }
               ]}
               value={uiStyle.responsecontainerposition}
             />
@@ -89,7 +89,7 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
               options={[
                 { value: 'numerical', label: t('component.options.numerical') },
                 { value: 'uppercase', label: t('component.options.uppercasealphabet') },
-                { value: 'lowercase', label: t('component.options.lowercasealphabet') },
+                { value: 'lowercase', label: t('component.options.lowercasealphabet') }
               ]}
               value={uiStyle.stemnumeration}
             />
@@ -104,7 +104,7 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
                 { value: 'normal', label: t('component.options.normal') },
                 { value: 'large', label: t('component.options.large') },
                 { value: 'xlarge', label: t('component.options.extraLarge') },
-                { value: 'xxlarge', label: t('component.options.huge') },
+                { value: 'xxlarge', label: t('component.options.huge') }
               ]}
               value={uiStyle.fontsize}
             />
@@ -206,7 +206,7 @@ Options.propTypes = {
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
   t: PropTypes.func.isRequired,
-  outerStyle: PropTypes.object,
+  outerStyle: PropTypes.object
 };
 
 Options.defaultProps = {
@@ -218,8 +218,8 @@ Options.defaultProps = {
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,
-    responsecontainerindividuals: [],
-  },
+    responsecontainerindividuals: []
+  }
 };
 
 export default React.memo(withNamespaces('assessment')(Options));

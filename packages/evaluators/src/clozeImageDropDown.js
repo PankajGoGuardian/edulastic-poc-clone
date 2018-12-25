@@ -8,7 +8,7 @@ const partialMatchEvaluator = (userResponse = [], answers) => {
   let evaluation = {};
   let isCorrect = false;
 
-  const sortedUserResponse = userResponse.map(item => item.slice().sort());
+  const sortedUserResponse = userResponse.sort();
 
   answers.forEach(({ value: answer, score: totalScore }) => {
     if (!answer || !answer.length) {
@@ -16,7 +16,7 @@ const partialMatchEvaluator = (userResponse = [], answers) => {
     }
 
     const scorePerAnswer = totalScore / answer.length;
-    const sortedAnswer = answer.map(item => item.slice().sort());
+    const sortedAnswer = answer.sort();
 
     const matches = sortedUserResponse.filter((resp, index) =>
       isEqual(resp, sortedAnswer[index])).length;
@@ -33,7 +33,7 @@ const partialMatchEvaluator = (userResponse = [], answers) => {
     evaluation = Array(userResponse.length).fill(true);
   } else {
     const solution = answers[0].value.map(item => item.slice().sort());
-    evaluation = userResponse.map((resp, index) => isEqual(sortedUserResponse, solution[index]));
+    evaluation = userResponse.map((resp, index) => isEqual(resp, solution[index]));
   }
 
   return {
@@ -49,11 +49,10 @@ const exactMatchEvaluator = (userResponse = [], answers) => {
   let maxScore = 0;
   let evaluation = [];
   let isCorrect = false;
+  const sortedResponse = userResponse.sort();
 
   answers.forEach(({ value: answer, score: totalScore }) => {
-    const sortedAnswer = answer.map(item => item.slice().sort());
-    const sortedResponse = userResponse.map(item => item.slice().sort());
-
+    const sortedAnswer = answer.sort();
     if (isEqual(sortedAnswer, sortedResponse)) {
       isCorrect = true;
       score = Math.max(score, totalScore);
@@ -64,11 +63,8 @@ const exactMatchEvaluator = (userResponse = [], answers) => {
   if (isCorrect) {
     evaluation = Array(userResponse.length).fill(true);
   } else {
-    const solution = answers[0].value.map(item => item.slice().sort());
-    evaluation = userResponse.map((resp, index) => {
-      const sortedResponse = resp.slice().sort();
-      return isEqual(sortedResponse, solution[index]);
-    });
+    const solution = answers[0].value;
+    evaluation = userResponse.map((resp, index) => resp === solution[index]);
   }
   return {
     score,

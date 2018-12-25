@@ -1,10 +1,12 @@
-import { orderList, multipleChoice, clozeText, math, graph } from '@edulastic/evaluators';
+import { orderList, multipleChoice, clozeText, clozeImageDragDrop, clozeImageDropDown, math, graph } from '@edulastic/evaluators';
 
 const evaluators = {
   orderList,
   multipleChoice,
   clozeText,
   clozeDropDown: clozeText,
+  clozeImageDragDrop,
+  clozeImageDropDown,
   graph,
   math
 };

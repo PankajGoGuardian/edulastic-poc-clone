@@ -3,18 +3,19 @@ import styled from 'styled-components';
 export const RoundDiv = styled.div`
   width: 400px;
   margin: 0px 27px 27px 0px;
-  background-color: #ffffff;
+  background-color: #0288d1;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   border-radius: ${props => props.borderRadius}px;
 `;
 
 export const Header = styled.div`
-  height: 68px;
-  background-color: #00b0ff;
+  height: 54px;
+  background-color: #0288d1;
   display: flex;
   align-items: center;
-  padding: 0 40px;
+  padding: 0 20px;
   color: white;
+  font-family: OpenSans;
   font-size: 16px;
   font-weight: bold;
   border-top-left-radius: ${props => props.borderRadius}px;
@@ -24,7 +25,7 @@ export const Header = styled.div`
 export const Content = styled.div`
   height: 190px;
   padding: 20px 40px;
-  background-color: #ffffff;
+  background-color: #0288d1;
   border-bottom-left-radius: ${props => props.borderRadius}px;
   border-bottom-right-radius: ${props => props.borderRadius}px;
   user-select: none;

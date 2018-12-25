@@ -456,6 +456,22 @@ template {
   border: none;
 }
 
+.imagedropdown_template_box {
+  background: #e6e6e63A;
+  padding: 18px 33px !important;
+  border: solid 1px #e6e6e63A;
+  height: 100%;
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+}
+
+.imagedropdown_template_box.small {
+  padding: 10px !important;
+  border: none;
+  border-radius: 10px;
+  background: #0288d1;
+}
+
 input[type='checkbox'] {
   zoom: 1.3;
   margin-right: 5px;
@@ -766,6 +782,13 @@ input[type='checkbox'] {
   display: inline-flex;
 }
 
+.imagelabeldragdrop-droppable .img-box {
+  width: 10px;
+  position: absolute;
+  right: 24px;
+  display: inline-flex;
+}
+
 .imagelabeldragdrop-droppable .container {
   width: 100%;
   height: 100%;
@@ -777,10 +800,20 @@ input[type='checkbox'] {
   display: none;
 }
 
+.drag-full-parent {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
 .ant-upload.ant-upload-drag {
   padding: 20px;
+  border: none;
+  background: white;
 }
-
+.ant-upload-drag > .ant-upload-list-item-progress {
+  margin-top: -50px;
+  bottom: 50px;
+}
 .responseboxContainer.left .responses_box {
   display: block;
   padding-right: 20px !important;

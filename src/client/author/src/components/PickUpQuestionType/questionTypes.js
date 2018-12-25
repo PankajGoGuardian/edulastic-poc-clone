@@ -472,57 +472,6 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       onSelectQuestionType
     },
     {
-      title: 'Label Image with Drag & Drop',
-      type: 'fill-blanks',
-      stimulus: '',
-      data: {
-        type: 'clozeImageDragDrop',
-        stimulus: '',
-        options: ['Country A', 'Country B', 'Country C'],
-        validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
-            score: 1,
-            value: []
-          },
-          alt_responses: []
-        },
-        responses: [
-          { top: 0, left: 240, width: 200, height: 40 },
-          { top: 100, left: 120, width: 220, height: 40 },
-          { top: 220, left: 200, width: 200, height: 40 }
-        ]
-      },
-      onSelectQuestionType
-    },
-    {
-      title: 'Protractor',
-      type: 'feature',
-      data: {
-        type: 'protractor',
-        stimulus: '',
-        image: '',
-        label: 'Protractor',
-        alt: 'A 180-degree standard protractor.',
-        width: 530,
-        height: 265,
-        rotate: true
-      },
-      onSelectQuestionType
-    },
-    {
-      title: 'Passage',
-      type: 'feature',
-      data: {
-        type: 'passage',
-        heading: 'Section 3',
-        math_renderer: '',
-        content:
-          'Enabling a <b>highlightable</b> text passage that can be used across multiple items.'
-      },
-      onSelectQuestionType
-    },
-    {
       title: 'Cloze with Drop Down',
       type: 'fill-blanks',
       stimulus: '',
@@ -556,13 +505,75 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           1: ''
         },
         validation: {
-          scoring_type: EXACT_MATCH,
+          scoring_type: 'exactMatch',
           valid_response: {
             score: 1,
             value: []
           },
           alt_responses: []
         }
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Label Image with Drag & Drop',
+      type: 'fill-blanks',
+      stimulus: '',
+      data: {
+        type: 'clozeImageDragDrop',
+        stimulus: '',
+        options: ['Country A', 'Country B', 'Country C'],
+        validation: {
+          scoring_type: EXACT_MATCH,
+          valid_response: {
+            score: 1,
+            value: []
+          },
+          alt_responses: []
+        },
+        responses: [
+          { top: 0, left: 240, width: 200, height: 40 },
+          { top: 100, left: 120, width: 220, height: 40 },
+          { top: 220, left: 200, width: 200, height: 40 }
+        ]
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Label Image with Drop Down',
+      type: 'fill-blanks',
+      stimulus: '',
+      ui_style: {
+        background: '#0288d1'
+      },
+      data: {
+        type: 'clozeImageDropDown',
+        stimulus: '',
+        options: [
+          ['A', 'B'],
+          ['Choice A', 'Choice B'],
+          ['Select A', 'Select B']
+        ],
+        validation: {
+          scoring_type: EXACT_MATCH,
+          valid_response: {
+            score: 1,
+            value: []
+          },
+          alt_responses: []
+        },
+        responses: [
+          { top: 0, left: 240, width: 200, height: 40 },
+          { top: 100, left: 120, width: 220, height: 40 },
+          { top: 220, left: 200, width: 200, height: 40 }
+        ],
+        imageWidth: 600,
+        stimulusReviewonly: '',
+        instructorStimulus: '',
+        rubricReference: '',
+        sampleAnswer: '',
+        distractorRationalePerResponse: '',
+        distractorRationaleOptions: []
       },
       onSelectQuestionType
     },
@@ -714,6 +725,20 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
             value: []
           }
         }
+      }
+    },
+    {
+      title: 'Protractor',
+      type: 'feature',
+      data: {
+        type: 'protractor',
+        stimulus: '',
+        image: '',
+        label: 'Protractor',
+        alt: 'A 180-degree standard protractor.',
+        width: 530,
+        height: 265,
+        rotate: true
       },
       onSelectQuestionType
     },
@@ -730,6 +755,17 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
             value: []
           }
         }
+      }
+    },
+    {
+      title: 'Passage',
+      type: 'feature',
+      data: {
+        type: 'passage',
+        heading: 'Section 3',
+        math_renderer: '',
+        content:
+          'Enabling a <b>highlightable</b> text passage that can be used across multiple items.'
       },
       list: ['Item A', 'Item B'],
       onSelectQuestionType

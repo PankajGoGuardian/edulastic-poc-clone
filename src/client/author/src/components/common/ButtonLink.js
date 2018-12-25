@@ -60,7 +60,7 @@ const ButtonLink = ({
 );
 
 ButtonLink.propTypes = {
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   children: PropTypes.string,
   color: PropTypes.string, // default, primary, success
   icon: PropTypes.any,
@@ -70,6 +70,7 @@ ButtonLink.propTypes = {
 };
 
 ButtonLink.defaultProps = {
+  onClick: () => {},
   color: 'default',
   icon: null,
   children: null,

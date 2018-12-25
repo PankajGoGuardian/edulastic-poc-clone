@@ -42,6 +42,10 @@ class SecondHeadBar extends Component {
     window.addEventListener('scroll', this.scrollHandler);
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.scrollHandler);
+  }
+
   scrollHandler = () => {
     const top = window.pageYOffset || window.document.documentElement.scrollTop;
     if (top >= 65) {
@@ -64,7 +68,7 @@ class SecondHeadBar extends Component {
     } = this.props;
 
     return (
-      <Container type={option}>
+      <Container>
         {!option && (
           <Breadcrumb
             data={breadcrumbData}

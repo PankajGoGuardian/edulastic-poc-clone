@@ -23,15 +23,13 @@ const decimalSeparators = {
 };
 
 const syntaxes = {
-  NUMBER: 'number',
-  INTEGER: 'integer',
-  DECIMAL: 'decimal',
-  SCIENTIFIC: 'scientific',
-  VARIABLE: 'variable',
-  FRACTION: 'fraction',
-  MIXED_FRACTION: 'mixedFraction',
-  SIMPLE_FRACTION: 'simpleFraction',
-  FRACTION_OR_DECIMAL: 'fractionOrDecimal'
+  DECIMAL: 'isDecimal',
+  SIMPLE_FRACTION: 'isSimpleFraction',
+  MIXED_FRACTION: 'isMixedFraction',
+  EXPONENT: 'isExponent',
+  STANDARD_FORM: 'isStandardForm',
+  SLOPE_INTERCEPT_FORM: 'isSlopeInterceptForm',
+  POINT_SLOPE_FORM: 'isPointSlopeForm'
 };
 
 const mathInputTypes = {

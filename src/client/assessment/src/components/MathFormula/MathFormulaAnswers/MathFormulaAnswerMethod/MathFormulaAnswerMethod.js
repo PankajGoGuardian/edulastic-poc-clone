@@ -41,15 +41,13 @@ const decimalSeparators = [
 
 const syntaxes = [
   { value: '', label: '' },
-  { value: syntaxesConst.NUMBER, label: 'Number' },
-  { value: syntaxesConst.INTEGER, label: 'Integer' },
   { value: syntaxesConst.DECIMAL, label: 'Decimal' },
-  { value: syntaxesConst.SCIENTIFIC, label: 'Scientific' },
-  { value: syntaxesConst.VARIABLE, label: 'Variable' },
-  { value: syntaxesConst.FRACTION, label: 'Fraction' },
-  { value: syntaxesConst.MIXED_FRACTION, label: 'Mixed fraction' },
   { value: syntaxesConst.SIMPLE_FRACTION, label: 'Simple fraction' },
-  { value: syntaxesConst.FRACTION_OR_DECIMAL, label: 'Fraction or decimal' }
+  { value: syntaxesConst.MIXED_FRACTION, label: 'Mixed fraction' },
+  { value: syntaxesConst.EXPONENT, label: 'Exponent' },
+  { value: syntaxesConst.STANDARD_FORM, label: 'Standard Form' },
+  { value: syntaxesConst.SLOPE_INTERCEPT_FORM, label: 'Slope Intercept Form' },
+  { value: syntaxesConst.POINT_SLOPE_FORM, label: 'Point SlopeForm' }
 ];
 
 const clearOptions = (method, options) => {
@@ -120,13 +118,8 @@ const clearOptions = (method, options) => {
       return pick(options, ['ignoreLeadingAndTrailingSpaces', 'treatMultipleSpacesAsOne']);
     case methodsConst.EQUIV_SYNTAX:
       return pick(options, [
-        'isDecimal',
-        'isSimpleFraction',
-        'isMixedFraction',
-        'isExponent',
-        'isStandardForm',
-        'isSlopeInterceptForm',
-        'isPointSlopeForm'
+        'syntax',
+        'argument'
       ]);
     default:
       return options;
@@ -157,6 +150,19 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
         newOptions.setThousandsSeparator = [','];
         newOptions.setDecimalSeparator = '.';
       }
+    }
+
+    onChange('options', newOptions);
+  };
+
+  const handleChangeRule = (val) => {
+    const newOptions = {
+      ...options,
+      syntax: val
+    };
+
+    if (![syntaxesConst.DECIMAL, syntaxesConst.STANDARD_FORM].includes(val)) {
+      delete newOptions.argument;
     }
 
     onChange('options', newOptions);
@@ -217,7 +223,8 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
         </Col>
       </StyledRow>
 
-      {method === methods.IS_FACTORISED && (
+      {/* TODO: API doesn’t support it. We will get back to it later */}
+      {false && (
         <StyledRow gutter={32}>
           <Col span={12}>
             <Options.Label>Field</Options.Label>
@@ -244,25 +251,39 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
         methodsConst.IS_UNIT,
         methodsConst.STRING_MATCH
       ].includes(method) && (
-        <StyledRow gutter={32}>
-          <Col span={12}>
-            <Options.Label>Value</Options.Label>
-            <MathInput
-              value={value}
-              onInput={(val) => {
-                onChange('value', val);
-              }}
-            />
-          </Col>
-          <Col span={12}>
-            <Options.Label>ARIA label</Options.Label>
-            <Input.TextArea
-              size="large"
-              value={aria_label}
-              onChange={e => onChange('aria_label', e.target.value)}
-            />
-          </Col>
-        </StyledRow>
+        <Fragment>
+          <StyledRow gutter={32}>
+            <Col span={12}>
+              <Options.Label>Value</Options.Label>
+              <MathInput
+                value={value}
+                onInput={(val) => {
+                  onChange('value', val);
+                }}
+              />
+            </Col>
+            <Col span={12}>
+              <Options.Label>ARIA label</Options.Label>
+              <Input.TextArea
+                size="large"
+                value={aria_label}
+                onChange={e => onChange('aria_label', e.target.value)}
+              />
+            </Col>
+          </StyledRow>
+          {methodsConst.IS_UNIT && (
+            <StyledRow gutter={32}>
+              <Col span={12}>
+                <Options.Label>Allowed units</Options.Label>
+                <Input
+                  size="large"
+                  value={options.allowedUnits}
+                  onChange={e => handleChangeOptions('allowedUnits', e.target.value)}
+                />
+              </Col>
+            </StyledRow>
+          )}
+        </Fragment>
       )}
 
       {method === methodsConst.STRING_MATCH && (
@@ -296,7 +317,9 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
               size="large"
               value={options.syntax || ''}
               style={{ width: '100%' }}
-              onChange={val => handleChangeOptions('syntax', val)}
+              onChange={(val) => {
+                handleChangeRule(val);
+              }}
             >
               {syntaxes.map(({ value: val, label }) => (
                 <Select.Option key={val} value={val}>
@@ -305,21 +328,32 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
               ))}
             </Select>
           </Col>
-          {[
-            syntaxesConst.NUMBER,
-            syntaxesConst.INTEGER,
-            syntaxesConst.DECIMAL,
-            syntaxesConst.SCIENTIFIC,
-            syntaxesConst.VARIABLE
-          ].includes(options.syntax) && (
+          {syntaxesConst.DECIMAL === options.syntax && (
             <Col span={12}>
               <Options.Label>Argument</Options.Label>
               <Input
                 size="large"
                 type="number"
                 value={options.argument}
-                onChange={e => handleChangeOptions('argument', e.target.value)}
+                onChange={e => handleChangeOptions('argument', +e.target.value)}
               />
+            </Col>
+          )}
+          {syntaxesConst.STANDARD_FORM === options.syntax && (
+            <Col span={12}>
+              <Options.Label>Argument</Options.Label>
+              <Select
+                size="large"
+                value={options.argument || ''}
+                style={{ width: '100%' }}
+                onChange={val => handleChangeOptions('argument', val)}
+              >
+                {['linear', 'quadratic'].map(val => (
+                  <Select.Option key={val} value={val}>
+                    {val}
+                  </Select.Option>
+                ))}
+              </Select>
             </Col>
           )}
         </StyledRow>

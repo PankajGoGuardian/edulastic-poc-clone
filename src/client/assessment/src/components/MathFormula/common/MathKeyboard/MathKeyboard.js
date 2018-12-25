@@ -265,19 +265,12 @@ class MathKeyboard extends React.PureComponent {
                 ))}
               </Select>
               {showResponse && (
-                <button
-                  type="button"
-                  className="keyboard__header__response"
-                  title="Response"
-                  onClick={() => onInput(EMBED_RESPONSE)}
-                >
-                  <span className="keyboard__header__response_in">r</span>
-                </button>
+                <span className="response-embed" style={{ cursor: 'pointer' }} onClick={() => onInput(EMBED_RESPONSE)}>
+                  <span className="response-embed__char">R</span>
+                  <span className="response-embed__text">Response</span>
+                </span>
               )}
             </div>
-            <Button className="keyboard__header__close" onClick={this.close}>
-              <Icon type="close" />
-            </Button>
           </div>
           <br />
           <div className="keyboard__main">

@@ -22,10 +22,14 @@ const getChecks = (validation) => {
     let options = val.options || {};
     options = omitBy(options, f => f === false);
 
-    valAcc += Object.keys(options).reduce((acc, key, i, initArr) => {
+    let midRes = Object.keys(options).reduce((acc, key, i) => {
       const fieldVal = options[key];
 
       acc += i === 0 ? ':' : '';
+
+      if (key === 'argument') {
+        return acc;
+      }
 
       if (fieldVal === false) {
         return acc;
@@ -42,15 +46,22 @@ const getChecks = (validation) => {
         return acc;
       } else if (key === 'setDecimalSeparator') {
         acc += `${key}='${fieldVal}'`;
+      } else if (key === 'allowedUnits') {
+        acc += `${key}=[${fieldVal}]`;
+      } else if (key === 'syntax') {
+        acc += options.argument === undefined ? fieldVal : `${fieldVal}=${options.argument}`;
       } else {
         acc += `${key}=${fieldVal}`;
       }
 
-      if (initArr.length === i + 1) {
-        return acc;
-      }
       return `${acc},`;
     }, val.method);
+
+    if (midRes[midRes.length - 1] === ',') {
+      midRes = midRes.slice(0, midRes.length - 1);
+    }
+
+    valAcc += midRes;
 
     valAcc += valIndex + 1 === values.length ? '' : ';';
 
@@ -85,7 +96,7 @@ const MathFormulaPreview = ({
 
       const data = {
         input,
-        expected,
+        expected: expected || ':""',
         checks: getChecks(item.validation)
       };
       try {

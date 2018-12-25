@@ -43,6 +43,14 @@ class User {
   deleteByEmail(email) {
     return this.User.remove({ email });
   }
+
+  /*
+   * get a users detail by id.
+   * @params _id {string} - user id in db
+   */
+  getById(_id) {
+    return this.User.findOne({ _id }, { password: 0, _v: 0 });
+  }
 }
 
 export default User;

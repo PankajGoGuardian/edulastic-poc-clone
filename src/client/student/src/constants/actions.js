@@ -12,7 +12,6 @@ export const AUTHOR_QUESTION = 'author question';
 // assessment
 export const LOAD_ASSESSMENT = 'load assessment';
 
-
 // auth
 export const LOGIN = 'login user';
 export const SIGNUP = 'signup user';
@@ -25,14 +24,14 @@ export const RESPONSIVE_TOGGLE_MENU = '[homeUI] responsive toggle menu';
 export const FETCH_REPORTS = '[reports] fetch reports';
 export const LOAD_REPORTS = '[reports] load reports';
 
-
 // user
 export const SET_USER = '[user] set user';
+export const FETCH_USER = '[user] fetch user data';
 
 // assignments
-export const LOAD_STUDENT_ASSIGNMENTS = '[assignments] load student assignments';
+export const LOAD_STUDENT_ASSIGNMENTS =
+  '[assignments] load student assignments';
 export const SET_STUDENT_ASSIGNMENTS = '[assignments] set student assignments';
-
 
 // test activity
 export const INIT_TEST_ACTIVITY = '[testActivity] initate test activity';

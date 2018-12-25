@@ -1,9 +1,12 @@
 import React, { Component, Suspense, lazy } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { compose } from 'redux';
+
+import { fetchUserAction } from './student/src/actions/user';
 
 // route wise splitting
 const Student = lazy(() =>
@@ -26,8 +29,8 @@ const Author = lazy(() =>
 
 class App extends Component {
   componentWillMount() {
-    const { assessmentId } = this.props;
-    localStorage.setItem('AssessmentId', assessmentId);
+    const { fetchUser } = this.props;
+    fetchUser();
   }
 
   render() {
@@ -73,9 +76,15 @@ class App extends Component {
 }
 
 App.propTypes = {
-  assessmentId: PropTypes.string.isRequired
+  fetchUser: PropTypes.func.isRequired
 };
 
-const enhance = compose(DragDropContext(HTML5Backend));
+const enhance = compose(
+  DragDropContext(HTML5Backend),
+  connect(
+    ({ user }) => ({ user }),
+    { fetchUser: fetchUserAction }
+  )
+);
 
 export default enhance(App);

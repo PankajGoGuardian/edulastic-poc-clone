@@ -1,24 +1,92 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { evaluateApi } from '@edulastic/api';
 import { math } from '@edulastic/constants';
+import { omitBy } from 'lodash';
 
-import { MathInput } from '../common';
 import { SHOW, CHECK, CLEAR } from '../../../constants/constantsForQuestions';
 import CorrectAnswerBox from './CorrectAnswerBox';
+import StaticMath from '../common/StaticMath';
 
 const { mathInputTypes } = math;
 
-const MathFormulaPreview = ({ item, studentTemplate, type: previewType }) => {
-  const [type, setType] = useState(mathInputTypes.CLEAR);
-  const [userAnswer, setUserAnswer] = useState(studentTemplate);
+const getChecks = (validation) => {
+  const altResponses = validation.alt_responses || [];
 
-  const checkAnswer = async (input) => {
+  const values = [
+    ...validation.valid_response.value,
+    ...altResponses.reduce((acc, res) => [...acc, ...res.value], [])
+  ];
+
+  return values.reduce((valAcc, val, valIndex) => {
+    let options = val.options || {};
+    options = omitBy(options, f => f === false);
+
+    valAcc += Object.keys(options).reduce((acc, key, i, initArr) => {
+      const fieldVal = options[key];
+
+      acc += i === 0 ? ':' : '';
+
+      if (fieldVal === false) {
+        return acc;
+      }
+
+      if (key === 'setThousandsSeparator') {
+        if (fieldVal.length) {
+          const stringArr = `[${fieldVal.map(f => `'${f}'`)}]`;
+          acc += `${key}=${stringArr}`;
+        } else {
+          return acc;
+        }
+      } else if (key === 'allowThousandsSeparator') {
+        return acc;
+      } else if (key === 'setDecimalSeparator') {
+        acc += `${key}='${fieldVal}'`;
+      } else {
+        acc += `${key}=${fieldVal}`;
+      }
+
+      if (initArr.length === i + 1) {
+        return acc;
+      }
+      return `${acc},`;
+    }, val.method);
+
+    valAcc += valIndex + 1 === values.length ? '' : ';';
+
+    return valAcc;
+  }, '');
+};
+
+const MathFormulaPreview = ({
+  item,
+  studentTemplate,
+  type: previewType,
+  saveAnswer,
+  check,
+  smallSize
+}) => {
+  const [type, setType] = useState(mathInputTypes.CLEAR);
+  const studentRef = useRef();
+
+  const checkAnswer = async () => {
     if (previewType === CHECK) {
+      saveAnswer(studentRef.current.getLatex());
+      let input = studentRef.current.getLatex();
+      let expected = item.validation.valid_response.value[0].value;
+
+      if (input) {
+        input = input.replace(/\\ /g, ' ');
+      }
+
+      if (expected) {
+        expected = expected.replace(/\\ /g, ' ');
+      }
+
       const data = {
         input,
-        expected: item.validation.valid_response.value[0].value,
-        checks: item.validation.valid_response.value[0].method
+        expected,
+        checks: getChecks(item.validation)
       };
       try {
         const { result } = await evaluateApi.evaluate(data);
@@ -29,6 +97,7 @@ const MathFormulaPreview = ({ item, studentTemplate, type: previewType }) => {
         } else {
           setType(mathInputTypes.SUCCESS);
         }
+        check();
       } catch (err) {
         setType(mathInputTypes.WRONG);
       }
@@ -38,26 +107,43 @@ const MathFormulaPreview = ({ item, studentTemplate, type: previewType }) => {
   useEffect(
     () => {
       if (previewType === CLEAR) {
-        setUserAnswer(studentTemplate);
         setType(mathInputTypes.CLEAR);
+        studentRef.current.setLatex(studentTemplate);
       }
 
       if (previewType === SHOW) {
         setType(mathInputTypes.CLEAR);
       }
 
-      checkAnswer(userAnswer);
+      if (previewType === CHECK) {
+        checkAnswer();
+      }
     },
     [studentTemplate, previewType]
+  );
+
+  useEffect(
+    () => {
+      setTimeout(() => {
+        if (!studentRef.current) return;
+
+        if (smallSize) {
+          studentRef.current.setLatex(item.validation.valid_response.value[0].value);
+        } else {
+          studentRef.current.setLatex(studentTemplate);
+        }
+      }, 0);
+    },
+    [studentTemplate]
   );
 
   return (
     <div>
       <div style={{ marginBottom: 15 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
 
-      <MathInput showResponse={false} type={type} value={userAnswer} onInput={setUserAnswer} />
+      <StaticMath onBlur={() => checkAnswer()} ref={studentRef} type={type} />
 
-      {previewType === SHOW && (
+      {previewType === SHOW && item.validation.valid_response.value[0].value !== undefined && (
         <CorrectAnswerBox>{item.validation.valid_response.value[0].value}</CorrectAnswerBox>
       )}
     </div>
@@ -66,7 +152,10 @@ const MathFormulaPreview = ({ item, studentTemplate, type: previewType }) => {
 MathFormulaPreview.propTypes = {
   item: PropTypes.object.isRequired,
   studentTemplate: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired
+  type: PropTypes.string.isRequired,
+  saveAnswer: PropTypes.func.isRequired,
+  check: PropTypes.func.isRequired,
+  smallSize: PropTypes.bool.isRequired
 };
 
 export default MathFormulaPreview;

@@ -2,11 +2,23 @@ import React, { Component, Fragment } from 'react';
 import { Paper } from '@edulastic/common';
 import PropTypes from 'prop-types';
 import i18n from '@edulastic/localization';
+import { evaluationType } from '@edulastic/constants';
 
 import { IconPlus } from '@edulastic/icons';
 import { greenDark } from '@edulastic/colors';
 import { Header, Toggler, Heading, Block, Label, Row, Col } from './styles';
 import Scoring from './components/Scoring';
+
+const types = [
+  {
+    value: evaluationType.EXACT_MATCH,
+    label: 'Exact match'
+  },
+  {
+    value: evaluationType.PARTIAL_MATCH,
+    label: 'Partial match'
+  }
+];
 
 class Options extends Component {
   state = {
@@ -16,12 +28,14 @@ class Options extends Component {
   static propTypes = {
     title: PropTypes.string,
     children: PropTypes.any.isRequired,
-    outerStyle: PropTypes.object
+    outerStyle: PropTypes.object,
+    scoringTypes: PropTypes.array
   };
 
   static defaultProps = {
     title: i18n.t('assessment:common.options.title'),
-    outerStyle: {}
+    outerStyle: {},
+    scoringTypes: types
   };
 
   static Heading = Heading;
@@ -41,7 +55,7 @@ class Options extends Component {
   };
 
   render() {
-    const { title, children, outerStyle } = this.props;
+    const { title, children, outerStyle, scoringTypes } = this.props;
     const { show } = this.state;
 
     return (
@@ -53,7 +67,7 @@ class Options extends Component {
         </Header>
         {show && (
           <Fragment>
-            <Scoring />
+            <Scoring scoringTypes={scoringTypes} />
             <div>{children}</div>
           </Fragment>
         )}

@@ -2,12 +2,10 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { math } from '@edulastic/constants';
 
-import { IconClose } from '@edulastic/icons';
-import { red, white, greenDark } from '@edulastic/colors';
 import MathKeyboard from '../MathKeyboard';
-import MathInputStyles from './MathInputStyles';
+import MathInputStyles from '../MathInputStyles';
 
-const { mathInputTypes, EMBED_RESPONSE } = math;
+const { EMBED_RESPONSE } = math;
 
 class MathInput extends React.PureComponent {
   state = {
@@ -22,13 +20,14 @@ class MathInput extends React.PureComponent {
   componentWillUnmount() {
     // make sure you remove the listener when the component is destroyed
     document.removeEventListener('click', this.handleClick, false);
+    document.removeEventListener('click', this.handleChangeField, false);
   }
 
   handleClick = (e) => {
     if (e.target.nodeName === 'LI' && e.target.attributes[0].nodeValue === 'option') {
       return;
     }
-    if (!this.containerRef.current.contains(e.target)) {
+    if (this.containerRef.current && !this.containerRef.current.contains(e.target)) {
       this.setState({ mathFieldFocus: false });
     }
   };
@@ -42,7 +41,7 @@ class MathInput extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { onInput, value } = this.props;
+    const { value } = this.props;
 
     const MQ = window.MathQuill.getInterface(2);
 
@@ -62,23 +61,23 @@ class MathInput extends React.PureComponent {
     const mathField = MQ.MathField(this.mathFieldRef.current, window.MathQuill);
     mathField.write(value);
 
-    mathField.config({
-      spaceBehavesLikeTab: true,
-      handlers: {
-        edit: () => {
-          const text = mathField.latex();
-
-          if (onInput) {
-            onInput(text);
-          }
-        }
+    this.setState(
+      () => ({ mathField }),
+      () => {
+        const textarea = mathField.el().querySelector('.mq-textarea textarea');
+        textarea.addEventListener('keyup', this.handleChangeField);
+        document.addEventListener('click', this.handleClick, false);
       }
-    });
-
-    this.setState({ mathField });
-
-    document.addEventListener('click', this.handleClick, false);
+    );
   }
+
+  handleChangeField = () => {
+    const { onInput } = this.props;
+    const { mathField } = this.state;
+
+    const text = mathField.latex();
+    onInput(text);
+  };
 
   onInput = (key) => {
     const { mathField } = this.state;
@@ -107,30 +106,16 @@ class MathInput extends React.PureComponent {
       mathField.cmd(key);
     }
     mathField.focus();
+    this.handleChangeField();
   };
 
   onClose = () => {
     this.setState({ mathFieldFocus: false });
   };
 
-  get iconColor() {
-    const { type } = this.props;
-
-    switch (type) {
-      case mathInputTypes.CLEAR:
-        return white;
-      case mathInputTypes.WRONG:
-        return red;
-      case mathInputTypes.SUCCESS:
-        return greenDark;
-      default:
-        return white;
-    }
-  }
-
   render() {
     const { mathFieldFocus } = this.state;
-    const { type, showResponse } = this.props;
+    const { showResponse } = this.props;
 
     return (
       <MathInputStyles>
@@ -139,17 +124,12 @@ class MathInput extends React.PureComponent {
           onFocus={() => this.setState({ mathFieldFocus: true })}
           className="input"
         >
-          <div className={`input__math ${type}`}>
+          <div className="input__math">
             <span
               className="input__math__field"
               ref={this.mathFieldRef}
               onClick={() => this.setState({ mathFieldFocus: true })}
             />
-            {['wrong', 'success'].includes(type) && (
-              <div className="input__math__icon">
-                <IconClose color={this.iconColor} />
-              </div>
-            )}
           </div>
           <div className="input__keyboard">
             {mathFieldFocus && (
@@ -168,14 +148,12 @@ class MathInput extends React.PureComponent {
 
 MathInput.propTypes = {
   onInput: PropTypes.func.isRequired,
-  type: PropTypes.oneOf([mathInputTypes.CLEAR, mathInputTypes.WRONG, mathInputTypes.SUCCESS]),
   showResponse: PropTypes.bool,
   value: PropTypes.string
 };
 
 MathInput.defaultProps = {
   value: '',
-  type: 'clear',
   showResponse: false
 };
 

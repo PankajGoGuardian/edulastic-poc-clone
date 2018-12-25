@@ -59,6 +59,20 @@ const MathKeyboardStyles = styled.div`
     }
   }
 
+  .keyboard__types3 {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .keyboard__main {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  .half-box {
+    width: 50%;
+  }
+
   .row {
     display: flex;
   }

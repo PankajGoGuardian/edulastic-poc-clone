@@ -4,6 +4,7 @@ import { Select, Checkbox, Input } from 'antd';
 import { withNamespaces } from '@edulastic/localization';
 import { cloneDeep } from 'lodash';
 import { grey } from '@edulastic/colors';
+import { evaluationType } from '@edulastic/constants';
 
 import { FlexContainer, CustomQuillComponent } from '@edulastic/common';
 import Options, { FontSizeSelect } from '../../common/Options';
@@ -22,6 +23,13 @@ const quillStyle = {
   border: `1px solid ${grey}`,
   width: '80%'
 };
+
+const scoringTypes = [
+  {
+    value: evaluationType.EXACT_MATCH,
+    label: 'Exact match'
+  }
+];
 
 function MathFormulaOptions({
   onChange,
@@ -80,7 +88,7 @@ function MathFormulaOptions({
   };
 
   return (
-    <Options>
+    <Options scoringTypes={scoringTypes}>
       <Options.Block>
         <Options.Heading>Layout</Options.Heading>
 

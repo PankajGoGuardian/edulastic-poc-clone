@@ -77,14 +77,8 @@ const getQuestion = (type) => {
 };
 
 const QuestionWrapper = ({ type, data, ...restProps }) => {
-  const questionProps = Object.assign(
-    {
-      item: data
-    },
-    restProps
-  );
   const Question = getQuestion(type);
-  return <Question {...questionProps} />;
+  return <Question item={data} {...restProps} />;
 };
 
 QuestionWrapper.propTypes = {

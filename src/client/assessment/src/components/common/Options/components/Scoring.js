@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withNamespaces } from '@edulastic/localization';
-import { evaluationType } from '@edulastic/constants';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { cloneDeep } from 'lodash';
@@ -11,17 +10,6 @@ import Options from '../Options';
 import { FormGroup } from '../styles';
 import { setQuestionDataAction } from '../../../../../../author/src/actions/question';
 import { getQuestionDataSelector } from '../../../../../../author/src/selectors/question';
-
-const scoringTypes = [
-  {
-    value: evaluationType.EXACT_MATCH,
-    label: 'Exact match'
-  },
-  {
-    value: evaluationType.PARTIAL_MATCH,
-    label: 'Partial match'
-  }
-];
 
 const roundingTypes = [
   {
@@ -34,7 +22,7 @@ const roundingTypes = [
   }
 ];
 
-const Scoring = ({ setQuestionData, questionData, t }) => {
+const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
   const handleChangeValidation = (param, value) => {
     const newData = cloneDeep(questionData);
     newData.validation[param] = value;
@@ -198,7 +186,8 @@ const Scoring = ({ setQuestionData, questionData, t }) => {
 Scoring.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  questionData: PropTypes.object.isRequired
+  questionData: PropTypes.object.isRequired,
+  scoringTypes: PropTypes.array.isRequired
 };
 
 const enhance = compose(

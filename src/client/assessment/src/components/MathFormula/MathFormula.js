@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Paper } from '@edulastic/common';
 import styled from 'styled-components';
@@ -13,10 +13,20 @@ import MathFormulaOptions from './MathFormulaOptions';
 import MathFormulaAnswers from './MathFormulaAnswers';
 import { MathInput } from './common';
 import { CLEAR, PREVIEW, EDIT } from '../../constants/constantsForQuestions';
+import { checkAnswerAction } from '../../../../author/src/actions/testItem';
 
 const EmptyWrapper = styled.div``;
 
-const MathFormula = ({ view, testItem, previewTab, item, setQuestionData }) => {
+const MathFormula = ({
+  view,
+  testItem,
+  previewTab,
+  item,
+  setQuestionData,
+  saveAnswer,
+  checkAnswer,
+  smallSize
+}) => {
   const Wrapper = testItem ? EmptyWrapper : Paper;
   const [studentTemplate, setStudentTemplate] = useState();
 
@@ -25,9 +35,12 @@ const MathFormula = ({ view, testItem, previewTab, item, setQuestionData }) => {
     setStudentTemplate(latex);
   };
 
-  useState(() => {
-    setTemplate(item.template);
-  }, []);
+  useEffect(
+    () => {
+      setTemplate(item.template);
+    },
+    [item.template]
+  );
 
   const handleItemChangeChange = (prop, uiStyle) => {
     const newItem = cloneDeep(item);
@@ -77,7 +90,14 @@ const MathFormula = ({ view, testItem, previewTab, item, setQuestionData }) => {
       )}
       {view === PREVIEW && (
         <Wrapper style={{ height: '100%' }}>
-          <MathFormulaPreview type={previewTab} studentTemplate={studentTemplate} item={item} />
+          <MathFormulaPreview
+            type={previewTab}
+            studentTemplate={studentTemplate}
+            item={item}
+            saveAnswer={saveAnswer}
+            check={checkAnswer}
+            smallSize={smallSize}
+          />
         </Wrapper>
       )}
     </Fragment>
@@ -87,22 +107,27 @@ const MathFormula = ({ view, testItem, previewTab, item, setQuestionData }) => {
 MathFormula.propTypes = {
   view: PropTypes.string.isRequired,
   setQuestionData: PropTypes.func.isRequired,
+  saveAnswer: PropTypes.func.isRequired,
+  checkAnswer: PropTypes.func.isRequired,
   previewTab: PropTypes.string,
   testItem: PropTypes.bool,
-  item: PropTypes.object
+  item: PropTypes.object,
+  smallSize: PropTypes.bool
 };
 
 MathFormula.defaultProps = {
   previewTab: CLEAR,
   testItem: false,
-  item: {}
+  item: {},
+  smallSize: false
 };
 
 const enhance = compose(
   connect(
     null,
     {
-      setQuestionData: setQuestionDataAction
+      setQuestionData: setQuestionDataAction,
+      checkAnswer: checkAnswerAction
     }
   )
 );

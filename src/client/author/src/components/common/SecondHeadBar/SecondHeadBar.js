@@ -1,13 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
-import {
-  IconEye,
-  IconCheck,
-  IconSource,
-  IconSettings,
-  IconEraseText
-} from '@edulastic/icons';
+import { IconEye, IconCheck, IconSource, IconSettings, IconEraseText } from '@edulastic/icons';
 import { blue, darkBlue, white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { withWindowSizes } from '@edulastic/common';
@@ -68,13 +62,10 @@ class SecondHeadBar extends Component {
     } = this.props;
 
     return (
-      <Container>
-        {!option && (
-          <Breadcrumb
-            data={breadcrumbData}
-            style={{ position: 'unset', width: 200 }}
-          />
-        )}
+
+      <Container type={option}>
+        {!option && <Breadcrumb data={breadcrumbData} style={{ position: 'unset', width: 200 }} />}
+
         {view === 'edit' && (
           <PreviewBar
             style={{
@@ -122,12 +113,7 @@ class SecondHeadBar extends Component {
               <ButtonLink
                 color="primary"
                 style={{ color: option ? white : blue }}
-                icon={(
-                  <IconEye
-                    color={option ? white : blue}
-                    hoverColor={darkBlue}
-                  />
-                )}
+                icon={<IconEye color={option ? white : blue} hoverColor={darkBlue} />}
               >
                 {t('component.questioneditor.buttonbar.showanswers')}
               </ButtonLink>

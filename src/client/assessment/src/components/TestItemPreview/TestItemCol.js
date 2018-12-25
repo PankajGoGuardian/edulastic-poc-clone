@@ -55,7 +55,11 @@ class TestItemCol extends Component {
     const { value } = this.state;
 
     return (
-      <Container value={value} style={{ ...style, width: windowWidth < SMALL_DESKTOP_WIDTH ? '100%' : '100%' }} width={col.dimension}>
+      <Container
+        value={value}
+        style={{ ...style, width: windowWidth < SMALL_DESKTOP_WIDTH ? '100%' : '100%' }}
+        width={col.dimension}
+      >
         {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
           <Tabs value={value} onChange={this.handleTabChange}>
             {col.tabs.map((tab, tabIndex) => (
@@ -71,17 +75,15 @@ class TestItemCol extends Component {
             ))}
           </Tabs>
         )}
-        {col.tabs && windowWidth < MAX_MOBILE_WIDTH &&
-          !!col.tabs.length && value === 0 && (
-            <MobileRightSide onClick={() => this.handleTabChange(1)}>
-              <Icon type="left" style={{ color: white }} />
-            </MobileRightSide>
+        {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 0 && (
+          <MobileRightSide onClick={() => this.handleTabChange(1)}>
+            <Icon type="left" style={{ color: white }} />
+          </MobileRightSide>
         )}
-        {col.tabs && windowWidth < MAX_MOBILE_WIDTH &&
-          !!col.tabs.length && value === 1 && (
-            <MobileLeftSide onClick={() => this.handleTabChange(0)}>
-              <Icon type="right" style={{ color: white }} />
-            </MobileLeftSide>
+        {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 1 && (
+          <MobileLeftSide onClick={() => this.handleTabChange(0)}>
+            <Icon type="right" style={{ color: white }} />
+          </MobileLeftSide>
         )}
         {col.widgets.map((widget, i) => (
           <React.Fragment key={i}>
@@ -108,8 +110,8 @@ const Container = styled.div`
 
   @media (max-width: 468px) {
     padding-left: 10px;
-    margin-right: ${props => (!props.value && '20px !important')};
-    margin-left: ${props => (props.value && '20px !important')};
+    margin-right: ${props => !props.value && '20px !important'};
+    margin-left: ${props => props.value && '20px !important'};
   }
 `;
 

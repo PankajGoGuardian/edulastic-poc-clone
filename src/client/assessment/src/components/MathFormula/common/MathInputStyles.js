@@ -13,6 +13,7 @@ const MathInputStyles = styled.div`
     position: relative;
     border-radius: 5px;
     border: 1px solid ${grey};
+    padding: 0 15px;
 
     &.clear {
       background: ${white};
@@ -52,6 +53,7 @@ const MathInputStyles = styled.div`
     left: 0px;
     right: 0px;
     z-index: 999;
+    width: 545px;
   }
 
   .response-embed {

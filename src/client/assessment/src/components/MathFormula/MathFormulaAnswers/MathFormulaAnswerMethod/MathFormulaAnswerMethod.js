@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Select, Input, Checkbox } from 'antd';
 import styled from 'styled-components';
@@ -6,6 +6,7 @@ import { IconTrash } from '@edulastic/icons';
 import { greenDark, red, grey } from '@edulastic/colors';
 import { FlexContainer } from '@edulastic/common';
 import { math } from '@edulastic/constants';
+import { pick } from 'lodash';
 
 import Options from '../../../common/Options';
 import ThousandsSeparators from './ThousandsSeparators';
@@ -51,12 +52,114 @@ const syntaxes = [
   { value: syntaxesConst.FRACTION_OR_DECIMAL, label: 'Fraction or decimal' }
 ];
 
+const clearOptions = (method, options) => {
+  switch (method) {
+    case methodsConst.EQUIV_SYMBOLIC:
+      return pick(options, [
+        'ignoreText',
+        'compareSides',
+        'allowThousandsSeparator',
+        'setDecimalSeparator',
+        'setThousandsSeparator',
+        'significantDecimalPlaces'
+      ]);
+    case methodsConst.EQUIV_LITERAL:
+      return pick(options, [
+        'inverseResult',
+        'ignoreTrailingZeros',
+        'allowThousandsSeparator',
+        'setDecimalSeparator',
+        'setThousandsSeparator',
+        'ignoreOrder',
+        'ignoreCoefficientOfOne',
+        'allowInterval'
+      ]);
+    case methodsConst.EQUIV_VALUE:
+      return pick(options, [
+        'significantDecimalPlaces',
+        'tolerance',
+        'ignoreText',
+        'allowThousandsSeparator',
+        'setDecimalSeparator',
+        'setThousandsSeparator'
+      ]);
+    case methodsConst.IS_SIMPLIFIED:
+      return pick(options, [
+        'allowThousandsSeparator',
+        'setDecimalSeparator',
+        'setThousandsSeparator',
+        'inverseResult'
+      ]);
+    case methodsConst.IS_FACTORISED:
+      return pick(options, [
+        'allowThousandsSeparator',
+        'setDecimalSeparator',
+        'setThousandsSeparator',
+        'field'
+      ]);
+    case methodsConst.IS_EXPANDED:
+      return pick(options, [
+        'allowThousandsSeparator',
+        'setDecimalSeparator',
+        'setThousandsSeparator'
+      ]);
+    case methodsConst.IS_UNIT:
+      return pick(options, [
+        'allowThousandsSeparator',
+        'setDecimalSeparator',
+        'setThousandsSeparator',
+        'allowedUnits'
+      ]);
+    case methodsConst.IS_TRUE:
+      return pick(options, [
+        'allowThousandsSeparator',
+        'setDecimalSeparator',
+        'setThousandsSeparator'
+      ]);
+    case methodsConst.STRING_MATCH:
+      return pick(options, ['ignoreLeadingAndTrailingSpaces', 'treatMultipleSpacesAsOne']);
+    case methodsConst.EQUIV_SYNTAX:
+      return pick(options, [
+        'isDecimal',
+        'isSimpleFraction',
+        'isMixedFraction',
+        'isExponent',
+        'isStandardForm',
+        'isSlopeInterceptForm',
+        'isPointSlopeForm'
+      ]);
+    default:
+      return options;
+  }
+};
+
 const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label, options }) => {
+  useEffect(
+    () => {
+      const newOptions = clearOptions(method, { ...options });
+      onChange('options', newOptions);
+    },
+    [method]
+  );
+
   const handleChangeOptions = (prop, val) => {
-    onChange('options', {
+    const newOptions = {
       ...options,
       [prop]: val
-    });
+    };
+
+    if (prop === 'allowThousandsSeparator') {
+      if (!val) {
+        delete newOptions.setThousandsSeparator;
+        delete newOptions.setDecimalSeparator;
+        delete newOptions.allowThousandsSeparator;
+      } else {
+        newOptions.setThousandsSeparator = [','];
+        newOptions.setDecimalSeparator = '.';
+      }
+    }
+
+    onChange('options', newOptions);
   };
 
   const handleChangeThousandsSeparator = ({ val, index }) => {
@@ -144,7 +247,12 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
         <StyledRow gutter={32}>
           <Col span={12}>
             <Options.Label>Value</Options.Label>
-            <MathInput value={value} onInput={val => onChange('value', val)} />
+            <MathInput
+              value={value}
+              onInput={(val) => {
+                onChange('value', val);
+              }}
+            />
           </Col>
           <Col span={12}>
             <Options.Label>ARIA label</Options.Label>
@@ -197,6 +305,23 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
               ))}
             </Select>
           </Col>
+          {[
+            syntaxesConst.NUMBER,
+            syntaxesConst.INTEGER,
+            syntaxesConst.DECIMAL,
+            syntaxesConst.SCIENTIFIC,
+            syntaxesConst.VARIABLE
+          ].includes(options.syntax) && (
+            <Col span={12}>
+              <Options.Label>Argument</Options.Label>
+              <Input
+                size="large"
+                type="number"
+                value={options.argument}
+                onChange={e => handleChangeOptions('argument', e.target.value)}
+              />
+            </Col>
+          )}
         </StyledRow>
       )}
 
@@ -230,21 +355,13 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
                 Ignore trailing zeros
               </Checkbox>
             </Col>
-            <Col span={12}>
-              <Checkbox
-                checked={options.inverseResult}
-                onChange={e => handleChangeOptions('inverseResult', e.target.checked)}
-              >
-                Inverse result
-              </Checkbox>
-            </Col>
           </StyledRow>
 
           <StyledRow gutter={32}>
             <Col span={12}>
               <Checkbox
-                checked={options.ignoreCoefficientOne}
-                onChange={e => handleChangeOptions('ignoreCoefficientOne', e.target.checked)}
+                checked={options.ignoreCoefficientOfOne}
+                onChange={e => handleChangeOptions('ignoreCoefficientOfOne', e.target.checked)}
               >
                 Ignore coefficient of 1
               </Checkbox>
@@ -253,7 +370,25 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
         </Fragment>
       )}
 
-      {['equivSymbolic', 'equivValue', 'isTrue', 'equivSyntax'].includes(method) && (
+      {[methodsConst.EQUIV_LITERAL, methodsConst.IS_SIMPLIFIED].includes(method) && (
+        <StyledRow gutter={32}>
+          <Col span={12}>
+            <Checkbox
+              checked={options.inverseResult}
+              onChange={e => handleChangeOptions('inverseResult', e.target.checked)}
+            >
+              Inverse result
+            </Checkbox>
+          </Col>
+        </StyledRow>
+      )}
+
+      {[
+        methodsConst.EQUIV_SYMBOLIC,
+        methodsConst.EQUIV_VALUE,
+        methodsConst.IS_TRUE,
+        methodsConst.EQUIV_SYNTAX
+      ].includes(method) && (
         <StyledRow gutter={32}>
           {method !== methodsConst.EQUIV_SYNTAX && (
             <Col span={12}>
@@ -262,8 +397,8 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
                   style={{ width: '30%' }}
                   size="large"
                   type="number"
-                  value={options.decimalPlaces}
-                  onChange={e => handleChangeOptions('decimalPlaces', e.target.value)}
+                  value={options.significantDecimalPlaces}
+                  onChange={e => handleChangeOptions('significantDecimalPlaces', e.target.value)}
                 />
                 <Options.Label>Significant decimal places</Options.Label>
               </FlexContainer>
@@ -302,6 +437,22 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
               </Checkbox>
             </Col>
           )}
+        </StyledRow>
+      )}
+
+      {method === methodsConst.EQUIV_VALUE && (
+        <StyledRow gutter={32}>
+          <Col span={12}>
+            <FlexContainer>
+              <Input
+                style={{ width: '30%' }}
+                size="large"
+                value={options.tolerance}
+                onChange={e => handleChangeOptions('tolerance', e.target.value)}
+              />
+              <Options.Label>Tolerance</Options.Label>
+            </FlexContainer>
+          </Col>
         </StyledRow>
       )}
 
@@ -350,7 +501,7 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
 MathFormulaAnswerMethod.propTypes = {
   onChange: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-  options: PropTypes.object.isRequired,
+  options: PropTypes.object,
   value: PropTypes.string,
   method: PropTypes.string,
   aria_label: PropTypes.string
@@ -359,7 +510,8 @@ MathFormulaAnswerMethod.propTypes = {
 MathFormulaAnswerMethod.defaultProps = {
   aria_label: '',
   value: '',
-  method: ''
+  method: '',
+  options: {}
 };
 
 export default MathFormulaAnswerMethod;

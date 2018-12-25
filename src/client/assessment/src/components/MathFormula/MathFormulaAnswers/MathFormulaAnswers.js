@@ -1,17 +1,20 @@
 import React, { useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { cloneDeep } from 'lodash';
+import { math } from '@edulastic/constants';
 
 import { CorrectAnswers } from '../../common';
 import withPoints from '../../HOC/withPoints';
 import MathFormulaAnswer from './MathFormulaAnswer';
 
+const { methods } = math;
+
 const MathFormulaWithPoints = withPoints(MathFormulaAnswer);
 const initialMethod = {
-  method: 'equivSymbolic',
+  method: methods.EQUIV_SYMBOLIC,
   value: '',
   options: {
-    decimalPlaces: 10
+    significantDecimalPlaces: 10
   }
 };
 
@@ -54,6 +57,19 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
   const handleChangeCorrectMethod = ({ index, prop, value }) => {
     const newItem = cloneDeep(item);
     newItem.validation.valid_response.value[index][prop] = value;
+
+    if (
+      [
+        methods.IS_SIMPLIFIED,
+        methods.IS_FACTORISED,
+        methods.IS_EXPANDED,
+        methods.IS_TRUE,
+        methods.EQUIV_SYNTAX
+      ].includes(newItem.validation.valid_response.value[index].method)
+    ) {
+      delete newItem.validation.valid_response.value[index].value;
+    }
+
     setQuestionData(newItem);
   };
 

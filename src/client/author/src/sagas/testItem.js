@@ -66,6 +66,9 @@ function* evaluateAnswers() {
         ...evaluation
       }
     });
+    message.config({
+      maxCount: 1
+    });
     message.success(`score: ${score}/${maxScore}`);
   } catch (err) {
     console.error(err);

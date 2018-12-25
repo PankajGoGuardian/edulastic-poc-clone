@@ -787,7 +787,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
                 method: 'equivSymbolic',
                 options: {
                   inverseResult: false,
-                  decimalPlaces: 10
+                  significantDecimalPlaces: 10
                 },
                 value: ''
               }
@@ -819,9 +819,9 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
                 method: 'equivSymbolic',
                 options: {
                   inverseResult: false,
-                  decimalPlaces: 10
+                  significantDecimalPlaces: 10
                 },
-                value: ''
+                value: '\\frac{x}{x}'
               }
             ]
           }
@@ -850,9 +850,9 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
                 method: 'equivSymbolic',
                 options: {
                   inverseResult: false,
-                  decimalPlaces: 10
+                  significantDecimalPlaces: 10
                 },
-                value: ''
+                value: 'x+y'
               }
             ]
           }
@@ -876,7 +876,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         ],
         stimulus: '<p>[This is the stem.]</p>',
         type: 'math',
-        template: `${EMBED_RESPONSE}\\text{sq ft}`,
+        template: `${EMBED_RESPONSE}\\text{q ft}`,
         validation: {
           scoring_type: 'exactMatch',
           valid_response: {
@@ -886,9 +886,9 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
                 method: 'equivSymbolic',
                 options: {
                   inverseResult: false,
-                  decimalPlaces: 10
+                  significantDecimalPlaces: 10
                 },
-                value: '\\text{sq ft}'
+                value: '\\text{s}\\text{q ft}'
               }
             ]
           }
@@ -918,7 +918,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
                 method: 'equivSymbolic',
                 options: {
                   inverseResult: false,
-                  decimalPlaces: 10
+                  significantDecimalPlaces: 10
                 },
                 value: '89\\ \\text{sq ft}'
               }
@@ -950,7 +950,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
                 method: 'equivSymbolic',
                 options: {
                   inverseResult: false,
-                  decimalPlaces: 10
+                  significantDecimalPlaces: 10
                 },
                 value: '100cm=1m'
               }

@@ -1,9 +1,10 @@
-import React, { memo } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { Affix, Select, Layout, Row, Col } from 'antd';
-import AssignmentSelectClass from '../../commonStyle/assignmentSelectClass';
-import AssignmentTitle from '../../assignments/common/assignmentTitle';
-
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Layout, Row, Col, Select, Affix } from 'antd';
+import AssignmentTitle from '../common/assignmentTitle';
+import AssignmentSelectClass from '../common/assignmentSelectClass';
 
 const options = ['FFC1', 'FFC2', 'FFC3', 'FFC4', 'FFC5', 'FFC6'];
 const { Option } = Select;
@@ -21,13 +22,13 @@ const AssignmentSelect = () => (
   </AssignmentSelectClass>
 );
 
-const ReportHeader = () => (
+const Header = ({ flag }) => (
   <Affix>
-    <AssignmentsHeader>
+    <AssignmentsHeader flag={flag}>
       <Row style={{ width: '100%' }}>
         <Col span={24}>
           <Wrapper>
-            <AssignmentTitle>Reports</AssignmentTitle>
+            <AssignmentTitle>Assignments</AssignmentTitle>
             <AssignmentSelect />
           </Wrapper>
         </Col>
@@ -35,8 +36,11 @@ const ReportHeader = () => (
     </AssignmentsHeader>
   </Affix>
 );
+export default React.memo(connect(({ ui }) => ({ flag: ui.flag }))(Header));
 
-export default memo(ReportHeader);
+Header.propTypes = {
+  flag: PropTypes.bool.isRequired
+};
 
 const AssignmentsHeader = styled(Layout.Header)`
   display: flex;

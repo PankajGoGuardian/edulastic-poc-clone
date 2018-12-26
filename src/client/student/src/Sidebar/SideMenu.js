@@ -14,6 +14,7 @@ import {
 } from 'antd';
 import styled from 'styled-components';
 import {
+  IconAssignment,
   IconHeader,
   IconLogoCompact,
   IconClockDashboard,
@@ -56,7 +57,8 @@ const menuItems = [
   },
   {
     label: 'Skill Report',
-    icon: IconBarChart
+    icon: IconBarChart,
+    path: 'home/skill-reports'
   },
   {
     label: 'Manage Class',

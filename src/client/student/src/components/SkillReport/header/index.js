@@ -21,13 +21,13 @@ const AssignmentSelect = () => (
   </AssignmentSelectClass>
 );
 
-const ReportHeader = () => (
+const SkillReportHeader = () => (
   <Affix>
     <AssignmentsHeader>
       <Row style={{ width: '100%' }}>
         <Col span={24}>
           <Wrapper>
-            <AssignmentTitle>Reports</AssignmentTitle>
+            <AssignmentTitle>Skill Report</AssignmentTitle>
             <AssignmentSelect />
           </Wrapper>
         </Col>
@@ -36,7 +36,7 @@ const ReportHeader = () => (
   </Affix>
 );
 
-export default memo(ReportHeader);
+export default memo(SkillReportHeader);
 
 const AssignmentsHeader = styled(Layout.Header)`
   display: flex;

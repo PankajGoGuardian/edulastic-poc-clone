@@ -41,7 +41,7 @@ const fetchAssignments = testId =>
 const fetchAssigned = () =>
   api
     .callApi({
-      url: `${prefix}/assigned`,
+      url: `${prefix}`,
       method: 'get'
     })
     .then(result => result.data.result);

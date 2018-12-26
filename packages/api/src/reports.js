@@ -1,7 +1,7 @@
 import API from '@edulastic/api/src/utils/API';
 
 const api = new API();
-const prefix = '/report';
+const prefix = '/test-activity/summary';
 
 const fetchReports = () =>
   api

@@ -80,6 +80,7 @@ const columns = group => [
       return (
         <FlexContainer justifyContent="space-around">
           <IconPencilEdit
+            data-cy="edit"
             onClick={handleClick}
             color={greenDark}
             hoverColor={green}

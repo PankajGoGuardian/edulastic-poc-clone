@@ -11,7 +11,6 @@ import { fetchStudentsOfGroupAction } from '../../../actions/group';
 const RadioGroup = Radio.Group;
 const { Option } = Select;
 
-
 const EditModal = ({
   title,
   visible,
@@ -31,11 +30,14 @@ const EditModal = ({
     });
   };
 
-  useEffect(() => {
-    modalData.class.forEach((classId) => {
-      fetchStudents({ classId });
-    });
-  }, [modalData.class]);
+  useEffect(
+    () => {
+      modalData.class.forEach((classId) => {
+        fetchStudents({ classId });
+      });
+    },
+    [modalData.class]
+  );
 
   const disabledStartDate = (startDate) => {
     const { endDate } = modalData;
@@ -71,7 +73,6 @@ const EditModal = ({
     setEndOpen(open);
   };
 
-
   const selectedGroups = modalData.class;
   const selectedStudents = modalData.students || [];
 
@@ -86,34 +87,44 @@ const EditModal = ({
 
   const studentNames = [];
 
-
   allStudents.forEach(({ _id, firstName, lastName }) => {
     if (selectedStudents.includes(_id)) {
       studentNames.push(`${firstName} ${lastName}`);
     }
   });
 
-
   const footer = (
     <FlexContainer justifyContent="space-around" style={{ padding: '20px 0' }}>
       <Button key="back" size="large" onClick={onCancel}>
         Cancel
       </Button>
-      <Button key="submit" size="large" type="primary" onClick={onOk}>
+      <Button
+        key="submit"
+        size="large"
+        type="primary"
+        onClick={onOk}
+        data-cy="apply"
+      >
         Apply
       </Button>
     </FlexContainer>
   );
 
-
   return (
-    <Modal title={title} visible={visible} footer={footer} width="50%">
+    <Modal
+      data-cy="title"
+      title={title}
+      visible={visible}
+      footer={footer}
+      width="50%"
+    >
       <StyledRowLabel gutter={16}>
         <Col span={12}>Class/Group Section</Col>
       </StyledRowLabel>
       <StyledRow>
         <Col span={24}>
           <Select
+            data-cy="selectClass"
             placeholder="Please select"
             style={{ width: '100%' }}
             mode="multiple"
@@ -127,9 +138,7 @@ const EditModal = ({
             value={modalData.class}
           >
             {group.map(data => (
-              <Option
-                key={data._id}
-              >
+              <Option data-cy="class" key={data._id}>
                 {data.name}
               </Option>
             ))}
@@ -141,7 +150,11 @@ const EditModal = ({
           <Radio value={1} onClick={() => onChange('specificStudents', false)}>
             Entire Class
           </Radio>
-          <Radio value={2} onClick={() => onChange('specificStudents', true)}>
+          <Radio
+            value={2}
+            data-cy="specificStudent"
+            onClick={() => onChange('specificStudents', true)}
+          >
             Specific Student
           </Radio>
         </RadioGroup>
@@ -162,11 +175,8 @@ const EditModal = ({
               value={modalData.students}
             >
               {allStudents.map(({ _id, firstName, lastName }) => (
-                <Option key={_id}>
-                  {`${firstName} ${lastName}`}
-                </Option>
+                <Option key={_id}>{`${firstName} ${lastName}`}</Option>
               ))}
-
             </Select>
           </Col>
         </StyledRow>
@@ -178,6 +188,7 @@ const EditModal = ({
       <StyledRow gutter={16}>
         <Col span={12}>
           <DatePicker
+            data-cy="startDate"
             style={{ width: '100%' }}
             size="large"
             disabledDate={disabledStartDate}
@@ -191,6 +202,7 @@ const EditModal = ({
         </Col>
         <Col span={12}>
           <DatePicker
+            data-cy="closeDate"
             style={{ width: '100%' }}
             size="large"
             disabledDate={disabledEndDate}
@@ -211,6 +223,7 @@ const EditModal = ({
       <StyledRow gutter={16}>
         <Col span={12}>
           <Select
+            data-cy="openPolicy"
             defaultValue="Automatically on Start Date"
             size="large"
             style={{ width: '100%' }}
@@ -218,7 +231,7 @@ const EditModal = ({
             onChange={value => onChange('openPolicy', value)}
           >
             {selectsData.openPolicy.map(({ value, text }) => (
-              <Select.Option key={value} value={value}>
+              <Select.Option key={value} value={value} data-cy="open">
                 {text}
               </Select.Option>
             ))}
@@ -226,6 +239,7 @@ const EditModal = ({
         </Col>
         <Col span={12}>
           <Select
+            data-cy="closePolicy"
             defaultValue="Automatically on Due Date"
             size="large"
             style={{ width: '100%' }}
@@ -233,7 +247,7 @@ const EditModal = ({
             onChange={value => onChange('closePolicy', value)}
           >
             {selectsData.closePolicy.map(({ value, text }) => (
-              <Select.Option key={value} value={value}>
+              <Select.Option key={value} value={value} data-cy="close">
                 {text}
               </Select.Option>
             ))}
@@ -256,7 +270,7 @@ EditModal.propTypes = {
 };
 
 export default connect(
-  () => { },
+  () => {},
   { fetchStudents: fetchStudentsOfGroupAction }
 )(EditModal);
 

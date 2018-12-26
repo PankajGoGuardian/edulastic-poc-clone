@@ -39,6 +39,32 @@ describe('Check Create Test Flow', () => {
     cy.get('button')
       .eq(6)
       .click();
+    cy.get('button')
+      .eq(7)
+      .find('span')
+      .should('contain', 'ADD');
+    cy.get('button')
+      .eq(7)
+      .click();
+    cy.get('button')
+      .eq(8)
+      .find('span')
+      .should('contain', 'ADD');
+    cy.get('button')
+      .eq(8)
+      .click();
+
+    //remove test item
+    cy.get('button')
+      .eq(8)
+      .find('span')
+      .should('contain', 'REMOVE');
+    cy.get('button')
+      .eq(8)
+      .click();
+
+    //click on save
+    cy.contains('Save changes').click();
 
     // Summary Tab Test
 
@@ -47,12 +73,6 @@ describe('Check Create Test Flow', () => {
     cy.get('[data-cy=inputTest]')
       .clear()
       .type('Nice Product!');
-
-    // cy.get('input')
-    //   .first()
-    //   .focus()
-    //   .clear()
-    //   .type('Nice Product!');
 
     cy.get('textarea')
       .eq(0)

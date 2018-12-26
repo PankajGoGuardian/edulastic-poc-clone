@@ -32,8 +32,8 @@ Cypress.Commands.add('assertHome', () => {
 
 Cypress.Commands.add('setToken', () => {
   const postData = {
-    email: 'vasilev123@snapwiz.com',
-    password: 'testpassword'
+    email: 'charles@xmen.com',
+    password: 'snapwiz'
   };
   cy.request({
     url: 'http://edulastic-poc.snapwiz.net/api/auth/login',

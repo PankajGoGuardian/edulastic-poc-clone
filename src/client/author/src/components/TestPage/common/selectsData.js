@@ -31,6 +31,20 @@ const allCollections = [
   { value: 'Edulastic Certified', text: 'Edulastic Certified' }
 ];
 
+const allDepthOfKnowledge = [
+  { value: 'Recall', text: 'Recall' },
+  { value: 'Skill/Concept', text: 'Skill/Concept' },
+  { value: 'Strategic Thinking', text: 'Strategic Thinking' },
+  { value: 'Extended Thinking', text: 'Extended Thinking' }
+];
+
+const allAuthorDifficulty = [
+  { value: 'All Levels', text: 'All Levels' },
+  { value: 'Easy', text: 'Easy' },
+  { value: 'Medium', text: 'Medium' },
+  { value: 'Hard', text: 'Hard' }
+];
+
 const openPolicy = [
   { value: 'Automatically on Start Date', text: 'Automatically on Start Date' },
   { value: 'Open Manually by Admin', text: 'Open Manually by Admin' },
@@ -47,6 +61,8 @@ export default {
   allSubjects,
   allTags,
   allCollections,
+  allDepthOfKnowledge,
+  allAuthorDifficulty,
   openPolicy,
   closePolicy
 };

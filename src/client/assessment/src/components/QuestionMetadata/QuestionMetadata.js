@@ -18,10 +18,17 @@ import {
 } from '../../../../author/src/actions/dictionaries';
 import {
   setQuestionAlignmentAddRowAction,
-  setQuestionAlignmentRemoveRowAction
+  setQuestionAlignmentRemoveRowAction,
+  setQuestionDataAction
 } from '../../../../author/src/actions/question';
-import { getCurriculumsListSelector, getStandardsListSelector } from '../../../../author/src/selectors/dictionaries';
-import { getQuestionAlignmentSelector } from '../../../../author/src/selectors/question';
+import {
+  getCurriculumsListSelector,
+  getStandardsListSelector
+} from '../../../../author/src/selectors/dictionaries';
+import {
+  getQuestionAlignmentSelector,
+  getQuestionDataSelector
+} from '../../../../author/src/selectors/question';
 import selectsData from '../../../../author/src/components/TestPage/common/selectsData';
 
 const handleFilter = (input, option) =>
@@ -50,10 +57,15 @@ class QuestionMetadata extends Component {
         subEloIdentifier: PropTypes.string
       }))
     })),
+    questionData: PropTypes.shape({
+      depthOfKnowledge: PropTypes.string,
+      authorDifficulty: PropTypes.string
+    }).isRequired,
     getCurriculumStandards: PropTypes.func.isRequired,
     setQuestionAlignmentAddRow: PropTypes.func.isRequired,
     setQuestionAlignmentRemoveRow: PropTypes.func.isRequired,
     clearDictStandards: PropTypes.func.isRequired,
+    setQuestionData: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired
   };
 
@@ -116,6 +128,7 @@ class QuestionMetadata extends Component {
     const newStandard = _.pick(option.props.obj, [
       '_id',
       'level',
+      'grades',
       'identifier',
       'tloIdentifier',
       'eloIdentifier',
@@ -152,6 +165,16 @@ class QuestionMetadata extends Component {
 
   handleAdd = () => {
     this.setState({ isEditRow: true });
+  };
+
+  handleQuestionDataSelect = fieldName => (value) => {
+    console.log(fieldName, value);
+    const { questionData, setQuestionData } = this.props;
+    const newQuestionData = {
+      ...questionData,
+      [fieldName]: value
+    };
+    setQuestionData(newQuestionData);
   };
 
   componentDidMount() {
@@ -264,8 +287,7 @@ class QuestionMetadata extends Component {
             onChange={this.handleGradeChange}
             value={grades}
           >
-            { curriculumId
-            && selectsData.allGrades.map(el => (
+            { curriculumId && selectsData.allGrades.map(el => (
               <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
             ))}
           </Select>
@@ -297,28 +319,78 @@ class QuestionMetadata extends Component {
     );
   }
 
+  renderEditSecondBlock() {
+    const {
+      questionData: {
+        depthOfKnowledge,
+        authorDifficulty
+      }
+    } = this.props;
+    return (
+      <SecondBlockContainer>
+        <ItemBody>
+          <div><b>Depth Of Knowledge</b></div>
+          <Select
+            style={{ width: 200 }}
+            placeholder="Select DOK"
+            onSelect={this.handleQuestionDataSelect('depthOfKnowledge')}
+            value={depthOfKnowledge}
+            suffixIcon={
+              <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+            }
+          >
+            { selectsData.allDepthOfKnowledge.map(el => (
+              <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
+            )) }
+          </Select>
+        </ItemBody>
+        <ItemBody>
+          <div><b>Difficulty Level</b></div>
+          <Select
+            style={{ width: 200 }}
+            placeholder="Select Difficulty"
+            onSelect={this.handleQuestionDataSelect('authorDifficulty')}
+            value={authorDifficulty}
+            suffixIcon={
+              <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+            }
+          >
+            { selectsData.allAuthorDifficulty.map(el => (
+              <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
+            )) }
+          </Select>
+        </ItemBody>
+      </SecondBlockContainer>
+    );
+  }
+
   render() {
     const { alignment, t } = this.props;
     const { isEditRow } = this.state;
     return (
-      <Container>
-        <Subtitle>Associated Standards</Subtitle>
-        <ShowAlignmentRowsContainer>
-          { alignment.map((el, index) => this.renderShowAlignmentRow(el, index))}
-        </ShowAlignmentRowsContainer>
-        { isEditRow && this.renderEditAlignmentRow() }
-        <AddButtonContainer>
-          <Button
-            htmlType="button"
-            icon="plus"
-            type="primary"
-            onClick={this.handleAdd}
-            disabled={isEditRow}
-          >
-            <span>{t('component.options.newcurriculum')}</span>
-          </Button>
-        </AddButtonContainer>
-      </Container>
+      <div>
+        <Container>
+          <Subtitle>Associated Standards</Subtitle>
+          <ShowAlignmentRowsContainer>
+            { alignment.map((el, index) => this.renderShowAlignmentRow(el, index))}
+          </ShowAlignmentRowsContainer>
+          { isEditRow && this.renderEditAlignmentRow() }
+          <AddButtonContainer>
+            <Button
+              htmlType="button"
+              icon="plus"
+              type="primary"
+              onClick={this.handleAdd}
+              disabled={isEditRow}
+            >
+              <span>{t('component.options.newcurriculum')}</span>
+            </Button>
+          </AddButtonContainer>
+        </Container>
+        <Container>
+          { this.renderEditSecondBlock() }
+        </Container>
+      </div>
     );
   }
 }
@@ -329,13 +401,15 @@ const enhance = compose(
     state => ({
       curriculums: getCurriculumsListSelector(state),
       curriculumStandards: getStandardsListSelector(state),
-      alignment: getQuestionAlignmentSelector(state)
+      alignment: getQuestionAlignmentSelector(state),
+      questionData: getQuestionDataSelector(state)
     }),
     {
       getCurriculums: getDictCurriculumsAction,
       getCurriculumStandards: getDictStandardsForCurriculumAction,
       setQuestionAlignmentAddRow: setQuestionAlignmentAddRowAction,
       setQuestionAlignmentRemoveRow: setQuestionAlignmentRemoveRowAction,
+      setQuestionData: setQuestionDataAction,
       clearDictStandards: clearDictStandardsAction
     }
   )
@@ -344,7 +418,8 @@ const enhance = compose(
 export default enhance(QuestionMetadata);
 
 const Container = styled(Paper)`
-  width: 100%
+  width: 100%;
+  margin-bottom: 20px;
 `;
 
 const ShowAlignmentRowsContainer = styled.div`
@@ -359,6 +434,10 @@ const CurruculumName = styled.div`
 `;
 
 const RowContainer = styled.div`
+  display: flex;
+`;
+
+const SecondBlockContainer = styled.div`
   display: flex;
 `;
 

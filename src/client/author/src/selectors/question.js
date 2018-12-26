@@ -8,7 +8,6 @@ export const getQuestionAlignmentSelector = createSelector(
   state => state.alignment
 );
 
-
 export const getValidationSelector = createSelector(
   getQuestionSelector,
   state => state.data.validation,

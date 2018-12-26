@@ -1,5 +1,5 @@
 import React, { Component, Suspense, lazy } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { DragDropContext } from 'react-dnd';
@@ -81,6 +81,7 @@ App.propTypes = {
 
 const enhance = compose(
   DragDropContext(HTML5Backend),
+  withRouter,
   connect(
     ({ user }) => ({ user }),
     { fetchUser: fetchUserAction }

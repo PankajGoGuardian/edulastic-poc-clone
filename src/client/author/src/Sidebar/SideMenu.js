@@ -24,7 +24,7 @@ import {
   IconTestList
 } from '@edulastic/icons';
 import { withWindowSizes } from '@edulastic/common';
-import { desktopSideBarAction } from '../actions/togglemenu';
+import { toggleSideBarAction } from '../actions/togglemenu';
 
 import Profile from '../assets/Profile.png';
 
@@ -62,7 +62,6 @@ class SideMenu extends Component {
     super(props);
 
     this.state = {
-      collapsed: false,
       isVisible: false
     };
   }
@@ -92,9 +91,8 @@ class SideMenu extends Component {
   };
 
   toggleMenu = () => {
-    const { desktopSideBar } = this.props;
-    desktopSideBar();
-    this.setState(prevState => ({ collapsed: !prevState.collapsed }));
+    const { toggleSideBar } = this.props;
+    toggleSideBar();
   };
 
   toggleDropdown = () => {
@@ -102,16 +100,10 @@ class SideMenu extends Component {
   };
 
   render() {
-    const { collapsed, broken, isVisible } = this.state;
-    const { windowWidth, history } = this.props;
-    let isCollapsed =
-      windowWidth > 768 || windowWidth <= 480 || windowWidth === 646
-        ? collapsed
-        : true;
-    if (history.location.pathname.includes('pickup-questiontype')) {
-      isCollapsed = true;
-    }
-
+    const { broken, isVisible } = this.state;
+    const { windowWidth, history, isSidebarCollapsed } = this.props;
+    const isPickQuestion = !!history.location.pathname.includes('pickup-questiontype');
+    const isCollapsed = isPickQuestion || isSidebarCollapsed;
     const isMobile = windowWidth < 480;
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible}>
@@ -134,6 +126,7 @@ class SideMenu extends Component {
       <FixedSidebar>
         <SideBar
           collapsed={isCollapsed}
+          collapsible
           breakpoint="md"
           onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
           width={isMobile ? windowWidth : '240'}
@@ -157,11 +150,13 @@ class SideMenu extends Component {
             </Col>
             {broken ? null : (
               <Col span={6} style={{ textAlign: 'right', color: '#1fe3a1' }}>
-                <AntIcon
-                  className="trigger"
-                  type={isCollapsed ? 'right' : 'left'}
-                  onClick={this.toggleMenu}
-                />
+                {!isPickQuestion && (
+                  <AntIcon
+                    className="trigger"
+                    type={isCollapsed ? 'right' : 'left'}
+                    onClick={this.toggleMenu}
+                  />
+                )}
               </Col>
             )}
           </LogoWrapper>
@@ -236,15 +231,16 @@ class SideMenu extends Component {
 SideMenu.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   history: PropTypes.object.isRequired,
-  desktopSideBar: PropTypes.func.isRequired
+  toggleSideBar: PropTypes.func.isRequired,
+  isSidebarCollapsed: PropTypes.func.isRequired
 };
 
 const enhance = compose(
   withRouter,
   withWindowSizes,
   connect(
-    ({ authorUi }) => ({ sidebar: authorUi.isSidebarCollapse }),
-    { desktopSideBar: desktopSideBarAction }
+    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapse }),
+    { toggleSideBar: toggleSideBarAction }
   )
 );
 
@@ -309,6 +305,9 @@ const SideBar = styled(Layout.Sider)`
     top: 25px;
   }
   &.ant-layout-sider-collapsed .ant-select-selection-selected-value {
+    display: none !important;
+  }
+  &.ant-layout-sider-has-trigger .ant-layout-sider-trigger {
     display: none !important;
   }
   &.ant-layout-sider-collapsed .ant-select {
@@ -394,9 +393,12 @@ const Menu = styled(AntMenu)`
     overflow: auto;
   }
   &.ant-menu-inline-collapsed > .ant-menu-item {
+    display: flex;
     text-align: center;
     justify-content: center;
     margin-top: 10px;
+    padding: 0px 10px 0px 25px !important;
+    width: 100%;
   }
   &.ant-menu-inline > .ant-menu-item {
     margin-top: 10px;

@@ -1,5 +1,5 @@
 import { TOGGLE_MENU } from '../constants/actions';
 
-export const desktopSideBarAction = () => ({
+export const toggleSideBarAction = () => ({
   type: TOGGLE_MENU
 });

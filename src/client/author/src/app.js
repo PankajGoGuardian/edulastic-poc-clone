@@ -15,69 +15,73 @@ import PickUpQuestionType from './components/PickUpQuestionType';
 const TestList = lazy(() => import('./components/TestList'));
 const TestPage = lazy(() => import('./components/TestPage'));
 
-const Author = ({ match, sidebar }) => (
-  <Layout>
-    <MainContainer sidebar={sidebar}>
-      <Sidebar />
-      <Wrapper>
-        <Switch>
-          <Route exact path={`${match.url}/items`} component={ItemList} />
-          <Route
-            exact
-            path={`${match.url}/items/:id/item-detail`}
-            component={ItemDetail}
-          />
-          <Route exact path="/author/add-item" component={ItemAdd} />
-          <Route
-            exact
-            path={`${match.url}/tests`}
-            render={props => (
-              <Suspense fallback={<Progress />}>
-                <TestList {...props} />
-              </Suspense>
-            )}
-          />
-          <Route
-            exact
-            path="/author/tests/create"
-            render={props => (
-              <Suspense fallback={<Progress />}>
-                <TestPage {...props} />
-              </Suspense>
-            )}
-          />
-          <Route
-            exact
-            path="/author/tests/:id"
-            render={props => (
-              <Suspense fallback={<Progress />}>
-                <TestPage {...props} />
-              </Suspense>
-            )}
-          />
-          <Route
-            exact
-            path="/author/items/:id/pickup-questiontype"
-            component={PickUpQuestionType}
-          />
-          <Route
-            exact
-            path="/author/questions/create"
-            component={QuestionEditor}
-          />
-          <Route
-            exact
-            path="/author/questions/:id"
-            component={QuestionEditor}
-          />
-        </Switch>
-      </Wrapper>
-    </MainContainer>
-  </Layout>
-);
+const Author = ({ match, history, isSidebarCollapsed }) => {
+  const isPickQuestion = !!history.location.pathname.includes('pickup-questiontype');
+  const isCollapsed = isPickQuestion || isSidebarCollapsed;
+  return (
+    <Layout>
+      <MainContainer isCollapsed={isCollapsed}>
+        <Sidebar />
+        <Wrapper>
+          <Switch>
+            <Route exact path={`${match.url}/items`} component={ItemList} />
+            <Route
+              exact
+              path={`${match.url}/items/:id/item-detail`}
+              component={ItemDetail}
+            />
+            <Route exact path="/author/add-item" component={ItemAdd} />
+            <Route
+              exact
+              path={`${match.url}/tests`}
+              render={props => (
+                <Suspense fallback={<Progress />}>
+                  <TestList {...props} />
+                </Suspense>
+              )}
+            />
+            <Route
+              exact
+              path="/author/tests/create"
+              render={props => (
+                <Suspense fallback={<Progress />}>
+                  <TestPage {...props} />
+                </Suspense>
+              )}
+            />
+            <Route
+              exact
+              path="/author/tests/:id"
+              render={props => (
+                <Suspense fallback={<Progress />}>
+                  <TestPage {...props} />
+                </Suspense>
+              )}
+            />
+            <Route
+              exact
+              path="/author/items/:id/pickup-questiontype"
+              component={PickUpQuestionType}
+            />
+            <Route
+              exact
+              path="/author/questions/create"
+              component={QuestionEditor}
+            />
+            <Route
+              exact
+              path="/author/questions/:id"
+              component={QuestionEditor}
+            />
+          </Switch>
+        </Wrapper>
+      </MainContainer>
+    </Layout>
+  );
+};
 
 export default connect(({ authorUi }) => ({
-  sidebar: authorUi.isSidebarCollapse
+  isSidebarCollapsed: authorUi.isSidebarCollapse
 }))(Author);
 
 Author.propTypes = {
@@ -85,13 +89,13 @@ Author.propTypes = {
 };
 
 const MainContainer = styled.div`
-  padding-left: ${props => (props.sidebar ? '100px' : '240px')};
+  padding-left: ${props => (props.isCollapsed ? '100px' : '240px')};
   width: 100%;
   .fixed-header {
     position: fixed;
     top: 0;
     right: 0;
-    left: ${props => (props.sidebar ? '100px' : '240px')};
+    left: ${props => (props.isCollapsed ? '100px' : '240px')};
     z-index: 1;
   }
   @media (max-width: 768px) {

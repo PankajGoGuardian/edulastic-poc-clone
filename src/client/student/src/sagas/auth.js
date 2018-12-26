@@ -63,6 +63,10 @@ function* signup({ payload }) {
 
 function* fetchUser() {
   try {
+    // TODO: handle the case of invalid token
+    if (!localStorage.access_token) {
+      return;
+    }
     const user = yield call(userApi.getUser);
     yield put({
       type: SET_USER,

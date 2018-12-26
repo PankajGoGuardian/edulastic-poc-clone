@@ -59,8 +59,11 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
             <FormGroup>
               <Input
                 type="number"
+                data-cy="penalty"
                 value={questionData.validation.penalty}
-                onChange={e => handleChangeValidation('penalty', +e.target.value)}
+                onChange={e =>
+                  handleChangeValidation('penalty', +e.target.value)
+                }
                 size="large"
                 style={{ width: '20%', marginRight: 30 }}
               />
@@ -86,9 +89,12 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
           <Options.Col md={6}>
             <FormGroup>
               <Input
+                data-cy="feedback"
                 type="number"
                 value={questionData.feedback_attempts}
-                onChange={e => handleChangeData('feedback_attempts', +e.target.value)}
+                onChange={e =>
+                  handleChangeData('feedback_attempts', +e.target.value)
+                }
                 size="large"
                 style={{ width: '20%', marginRight: 30 }}
               />
@@ -102,7 +108,9 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
         <Options.Col md={6}>
           <Checkbox
             checked={questionData.validation.automarkable}
-            onChange={e => handleChangeValidation('automarkable', e.target.checked)}
+            onChange={e =>
+              handleChangeValidation('automarkable', e.target.checked)
+            }
             size="large"
             style={{ width: '80%' }}
           >
@@ -112,10 +120,16 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
         <Options.Col md={6}>
           <FormGroup>
             <Input
+              data-cy="minscore"
               type="number"
               disabled={questionData.validation.unscored}
               value={questionData.validation.min_score_if_attempted}
-              onChange={e => handleChangeValidation('min_score_if_attempted', +e.target.value)}
+              onChange={e =>
+                handleChangeValidation(
+                  'min_score_if_attempted',
+                  +e.target.value
+                )
+              }
               size="large"
               style={{ width: '20%', marginRight: 30 }}
             />
@@ -170,7 +184,9 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
               <Input
                 type="number"
                 value={questionData.validation.max_score}
-                onChange={e => handleChangeValidation('max_score', +e.target.value)}
+                onChange={e =>
+                  handleChangeValidation('max_score', +e.target.value)
+                }
                 size="large"
                 style={{ width: '20%', marginRight: 30 }}
               />

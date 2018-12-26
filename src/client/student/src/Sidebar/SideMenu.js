@@ -14,7 +14,6 @@ import {
 } from 'antd';
 import styled from 'styled-components';
 import {
-  IconAssignment,
   IconHeader,
   IconLogoCompact,
   IconClockDashboard,

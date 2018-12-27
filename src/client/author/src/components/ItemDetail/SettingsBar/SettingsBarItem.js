@@ -14,7 +14,7 @@ const SettingsBarItem = ({ item, onSelect, selected }) => (
 SettingsBarItem.propTypes = {
   item: PropTypes.object.isRequired,
   onSelect: PropTypes.func.isRequired,
-  selected: PropTypes.bool.isRequired,
+  selected: PropTypes.bool.isRequired
 };
 
 export default SettingsBarItem;

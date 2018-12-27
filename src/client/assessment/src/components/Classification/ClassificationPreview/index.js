@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { cloneDeep, isEqual } from 'lodash';
+import { cloneDeep, isEqual, difference } from 'lodash';
 
 import {
   Paper,
@@ -142,35 +142,31 @@ const ClassificationPreview = ({
     if (!isEqual(ansArrays, answers)) {
       setAnswers(ansArrays);
     }
-
-    saveAnswer(ansArrays);
+    saveAnswer(ansArrays.map(ansArr => ansArr.map(ans => posResp.indexOf(ans))));
   };
 
   const drop = ({ flag, index }) => ({ flag, index });
 
   const validateAnswers = () => {
-    const valRespArray = [];
-    const altRespArray = [];
+    const testArr = answers.map(array => array.map(answer => possible_responses.indexOf(answer)));
 
-    validArray.forEach((arr, i) => {
-      arr.forEach((ite) => {
-        if (answers[i].includes(possible_responses[ite])) {
-          valRespArray.push(possible_responses[ite]);
+    let valid = cloneDeep(validArray);
+
+    let flag = true;
+
+    altArray.forEach((altItem) => {
+      flag = true;
+      altItem.value.forEach((answer, i) => {
+        if (difference(testArr[i], answer).length !== 0) {
+          flag = false;
         }
       });
+      if (flag) {
+        valid = cloneDeep(altItem.value);
+      }
     });
 
-    altArray.forEach((ite) => {
-      ite.value.forEach((an, i) => {
-        an.forEach((ans) => {
-          if (answers[i].includes(possible_responses[ans])) {
-            altRespArray.push(possible_responses[ans]);
-          }
-        });
-      });
-    });
-
-    return [altRespArray, valRespArray];
+    return valid;
   };
 
   const transformArray = (Arr) => {
@@ -185,7 +181,7 @@ const ClassificationPreview = ({
     return res;
   };
 
-  const [altRespArr, valRespArr] = validateAnswers();
+  const valRespArr = validateAnswers();
 
   const preview = previewTab === CHECK || previewTab === SHOW;
 
@@ -227,7 +223,6 @@ const ClassificationPreview = ({
                   drop={drop}
                   answers={answers}
                   validArray={valRespArr}
-                  altArray={altRespArr}
                   preview={preview}
                   possible_responses={possible_responses}
                   onDrop={onDrop}

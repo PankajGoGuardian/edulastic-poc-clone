@@ -30,7 +30,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           height: 470,
           altText: ''
         },
-        line_color: mainBlueColor,
+        line_color: [mainBlueColor],
         stimulus: '<p>[This is the stem.]</p>',
         type: 'highlightImage'
       },

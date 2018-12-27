@@ -1,34 +1,39 @@
 import {
-  multipleChoice,
   orderList,
+  multipleChoice,
   sortList,
   hotspot,
-  classification,
   clozeText,
   clozeImageDragDrop,
   clozeImageDropDown,
-  shortText,
   math,
+  shortText,
+  classification,
+  graph,
   tokenhighlight,
   shading
 } from '@edulastic/evaluators';
 
-// clozeDropDown and ClozeText shares same logic
 const evaluators = {
-  multipleChoice,
   orderList,
+  multipleChoice,
+  shortText,
   clozeText,
   clozeDropDown: clozeText,
   clozeImageDragDrop,
   clozeImageDropDown,
-  math,
-  shortText,
+  graph,
   classification,
   matchList: sortList,
   sortList,
+  math,
   hotspot,
   tokenhighlight,
   shading
 };
 
-export default evaluators;
+export const evaluateAnswer = (question) => {
+  const evaluator = evaluators[question.type];
+  const evaluation = evaluator(question);
+  return evaluation;
+};

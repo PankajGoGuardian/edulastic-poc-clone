@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, difference } from 'lodash';
 
 import { Paper, Stimulus, FlexContainer } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
@@ -30,14 +30,12 @@ const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, preview
   const altAnswers = validation && validation.alt_responses;
 
   const validate = () => {
-    const collection = cloneDeep(validAnswer);
+    let collection = cloneDeep(validAnswer);
 
     altAnswers.forEach((answer) => {
-      answer.value.forEach((val) => {
-        if (!collection.includes(val)) {
-          collection.push(val);
-        }
-      });
+      if (difference(answer.value, userAnswer).length === 0) {
+        collection = cloneDeep(answer.value);
+      }
     });
 
     return collection;

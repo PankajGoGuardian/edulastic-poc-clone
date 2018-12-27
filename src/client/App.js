@@ -9,8 +9,7 @@ import { compose } from 'redux';
 import { fetchUserAction } from './student/src/actions/user';
 
 // route wise splitting
-const Student = lazy(() =>
-  import(/* webpackChunkName: "assessmentPlayer" */ './student/src'));
+const Student = lazy(() => import(/* webpackChunkName: "assessmentPlayer" */ './student/src'));
 const Signup = lazy(() =>
   import(/* webpackChunkName: "teacherSignup" */ './student/src/components/authentication/signup'));
 const Login = lazy(() =>
@@ -21,13 +20,11 @@ const StudentSignup = lazy(() =>
   import(/* webpackChunkName: "studentSignup" */ './student/src/components/authentication/signup/studentSignup'));
 const AdminSignup = lazy(() =>
   import(/* webpackChunkName: "adminSignup" */ './student/src/components/authentication/signup/adminSignup'));
-const Dashboard = lazy(() =>
-  import(/* webpackChunkName: "student" */ './student/src/app'));
+const Dashboard = lazy(() => import(/* webpackChunkName: "student" */ './student/src/app'));
 const SummaryTest = lazy(() =>
   import(/* webpackChunkName: "student test summary" */ './student/src/components/Summary'));
 
-const Author = lazy(() =>
-  import(/* webpackChunkName: "author" */ './author/src/app'));
+const Author = lazy(() => import(/* webpackChunkName: "author" */ './author/src/app'));
 
 class App extends Component {
   componentWillMount() {
@@ -48,29 +45,16 @@ class App extends Component {
             <Route path="/GetStarted" component={GetStarted} />
             <Route path="/AdminSignup" component={AdminSignup} />
             <Route path="/StudentSignup" component={StudentSignup} />
-            <Route
-              path="/student/test/:id"
-              component={() => <Student defaultAP test />}
-            />
-            <Route
-              path="/student/test/:id"
-              component={() => <Student defaultAP test />}
-            />
-            <Route
-              path="/student/test"
-              component={() => <Student defaultAP />}
-            />
+            <Route path="/student/test/:id" component={() => <Student defaultAP test />} />
+            <Route path="/student/test/:id" component={() => <Student defaultAP test />} />
+            <Route path="/student/test" component={() => <Student defaultAP />} />
             <Route path="/student/test-summary" component={SummaryTest} />
             <Route
               exact
               path="/student/practice/:id"
               component={() => <Student defaultAP={false} test />}
             />
-            <Route
-              exact
-              path="/student/practice"
-              component={() => <Student defaultAP={false} />}
-            />
+            <Route exact path="/student/practice" component={() => <Student defaultAP={false} />} />
           </Switch>
         </Suspense>
       </div>

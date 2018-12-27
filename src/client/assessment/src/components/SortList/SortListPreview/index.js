@@ -46,7 +46,8 @@ class SortListPreview extends PureComponent {
 
   onDrop = (itemCurrent, itemTo, flag) => {
     const data = cloneDeep(this.state);
-    const { saveAnswer } = this.props;
+    const { saveAnswer, item } = this.props;
+
     let tmp = [];
 
     [tmp] = data[flag].splice(itemCurrent.index, 1, data[itemTo.flag][itemTo.index]);
@@ -55,7 +56,9 @@ class SortListPreview extends PureComponent {
 
     this.setState(data);
 
-    saveAnswer(data.selected);
+    saveAnswer(
+      data.selected.filter(ans => !!ans).map(currentAns => item.source.indexOf(currentAns))
+    );
   };
 
   setActive = (item) => {
@@ -64,7 +67,7 @@ class SortListPreview extends PureComponent {
 
   onRightLeftClick = () => {
     const { items, selected, active } = cloneDeep(this.state);
-    const { saveAnswer } = this.props;
+    const { saveAnswer, item } = this.props;
 
     if (items.includes(active)) {
       items.splice(items.indexOf(active), 1, null);
@@ -80,13 +83,13 @@ class SortListPreview extends PureComponent {
         selected,
         active: ''
       });
-      saveAnswer(selected);
+      saveAnswer(selected.filter(ans => !!ans).map(currentAns => item.source.indexOf(currentAns)));
     }
   };
 
   onUpDownClick = indicator => () => {
     const { selected, active } = cloneDeep(this.state);
-    const { saveAnswer } = this.props;
+    const { saveAnswer, item } = this.props;
 
     let tmp;
 
@@ -106,7 +109,7 @@ class SortListPreview extends PureComponent {
         selected,
         active
       });
-      saveAnswer(selected);
+      saveAnswer(selected.filter(ans => !!ans).map(currentAns => item.source.indexOf(currentAns)));
     }
   };
 
@@ -123,22 +126,26 @@ class SortListPreview extends PureComponent {
 
     let valid_response = validation && validation.valid_response && validation.valid_response.value;
     valid_response = valid_response || [];
-    let alt_responses =
-      validation && validation.valid_response && validation.valid_response.alt_responses;
+    let alt_responses = validation && validation.alt_responses && validation.alt_responses;
     alt_responses = alt_responses || [];
     const { items, selected, active } = this.state;
 
     const inCorrectList = selected
-      .filter((ite, i) => ite && ite !== item.source[valid_response[i]])
+      .filter((selectedItem, i) => selectedItem && selectedItem !== item.source[valid_response[i]])
       .concat(items.filter(i => i !== null));
 
-    let altRespCorrect = [];
+    const validRespCorrect = selected.filter(
+      (selectedItem, i) => selectedItem && selectedItem === item.source[valid_response[i]]
+    );
+
+    let altRespCorrect = [...validRespCorrect];
 
     alt_responses.forEach((ob) => {
-      const alt = selected.filter((ite, i) => ite && ite === item.source[ob.value[i]]);
-
+      const alt = selected.filter(
+        (selectedItem, i) => selectedItem && selectedItem === item.source[ob.value[i]]
+      );
       if (alt.length > altRespCorrect.length) {
-        altRespCorrect = alt;
+        altRespCorrect = [...alt];
       }
     });
 
@@ -154,24 +161,24 @@ class SortListPreview extends PureComponent {
             {!smallSize && (
               <Title smallSize={smallSize}>{t('component.sortList.containerSourcePreview')}</Title>
             )}
-            {items.map((o, i) => (
+            {items.map((draggableItem, i) => (
               <DropContainer
                 key={i}
-                noBorder={!!o}
+                noBorder={!!draggableItem}
                 style={styles.dropContainerStyles(smallSize)}
                 index={i}
                 flag="items"
-                obj={o}
+                obj={draggableItem}
                 drop={this.drop}
               >
                 <DragItem
                   index={i}
                   smallSize={smallSize}
-                  active={isEqual(active, o)}
+                  active={isEqual(active, draggableItem)}
                   onClick={this.setActive}
                   flag="items"
                   onDrop={this.onDrop}
-                  obj={o}
+                  obj={draggableItem}
                 />
               </DropContainer>
             ))}
@@ -186,26 +193,26 @@ class SortListPreview extends PureComponent {
             {!smallSize && (
               <Title smallSize={smallSize}>{t('component.sortList.containerTargetPreview')}</Title>
             )}
-            {selected.map((o, i) => (
+            {selected.map((selectedItem, i) => (
               <DropContainer
                 key={i}
-                noBorder={!!o}
+                noBorder={!!selectedItem}
                 style={styles.dropContainerStyles(smallSize)}
                 index={i}
                 flag="selected"
-                obj={o}
+                obj={selectedItem}
                 drop={this.drop}
               >
                 <DragItem
                   index={i}
-                  correct={altRespCorrect.includes(o) || !inCorrectList.includes(o)}
+                  correct={altRespCorrect.includes(selectedItem)}
                   smallSize={smallSize}
                   previewTab={previewTab}
                   flag="selected"
-                  active={isEqual(active, o)}
+                  active={isEqual(active, selectedItem)}
                   onClick={this.setActive}
                   onDrop={this.onDrop}
-                  obj={o}
+                  obj={selectedItem}
                 />
               </DropContainer>
             ))}

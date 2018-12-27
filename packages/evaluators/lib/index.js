@@ -47,6 +47,42 @@ Object.defineProperty(exports, "math", {
     return _math.default;
   }
 });
+Object.defineProperty(exports, "hotspot", {
+  enumerable: true,
+  get: function get() {
+    return _hotspot.default;
+  }
+});
+Object.defineProperty(exports, "sortList", {
+  enumerable: true,
+  get: function get() {
+    return _sortList.default;
+  }
+});
+Object.defineProperty(exports, "classification", {
+  enumerable: true,
+  get: function get() {
+    return _classification.default;
+  }
+});
+Object.defineProperty(exports, "shortText", {
+  enumerable: true,
+  get: function get() {
+    return _shortText.default;
+  }
+});
+Object.defineProperty(exports, "tokenhighlight", {
+  enumerable: true,
+  get: function get() {
+    return _tokenhighlight.default;
+  }
+});
+Object.defineProperty(exports, "shading", {
+  enumerable: true,
+  get: function get() {
+    return _shading.default;
+  }
+});
 
 var _mcq = _interopRequireDefault(require("./mcq"));
 
@@ -61,3 +97,15 @@ var _clozeImageDropDown = _interopRequireDefault(require("./clozeImageDropDown")
 var _clozeText = _interopRequireDefault(require("./clozeText"));
 
 var _math = _interopRequireDefault(require("./math"));
+
+var _hotspot = _interopRequireDefault(require("./hotspot"));
+
+var _sortList = _interopRequireDefault(require("./sortList"));
+
+var _classification = _interopRequireDefault(require("./classification"));
+
+var _shortText = _interopRequireDefault(require("./shortText"));
+
+var _tokenhighlight = _interopRequireDefault(require("./tokenhighlight"));
+
+var _shading = _interopRequireDefault(require("./shading"));

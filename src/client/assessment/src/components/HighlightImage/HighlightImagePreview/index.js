@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { Select } from 'antd';
 
 import { Paper, Stimulus, FlexContainer } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
@@ -14,6 +15,8 @@ import {
 
 import { PREVIEW } from '../../../constants/constantsForQuestions';
 
+const { Option } = Select;
+
 const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, t }) => {
   const canvas = useRef(null);
   const [ctx, setCtx] = useState(null);
@@ -21,7 +24,9 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, t }) => {
   const [historyTab, setHistoryTab] = useState(0);
   const [mouseDown, setMouseDown] = useState(false);
 
-  const { image } = item;
+  const { image, line_color } = item;
+
+  const [currentColor, setCurrentColor] = useState(line_color[0]);
 
   const width = image ? image.width : 900;
   const height = image ? image.height : 470;
@@ -49,15 +54,20 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, t }) => {
 
   useEffect(
     () => {
-      if (canvas && file) {
+      if (canvas) {
         canvas.current.width = width;
         canvas.current.height = height;
-
         const context = canvas.current.getContext('2d');
         context.lineWidth = 10;
         context.lineJoin = 'round';
         context.lineCap = 'round';
-        drawImage(context);
+
+        if (file) {
+          drawImage(context);
+        } else {
+          setCtx(context);
+          setHistory([canvas.current.toDataURL()]);
+        }
       }
     },
     [file]
@@ -71,14 +81,20 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, t }) => {
     setMouseDown(true);
   };
 
-  const onCanvasMouseUp = () => {
-    ctx.closePath();
-    const newHistory = [...history.slice(0, historyTab + 1), canvas.current.toDataURL()];
-    setHistory(newHistory);
-    setHistoryTab(newHistory.length - 1);
-    setCtx(ctx);
-    setMouseDown(false);
-    saveAnswer(canvas.current.toDataURL());
+  const onCanvasMouseUp = (e) => {
+    if (mouseDown) {
+      const bounded = canvas.current.getBoundingClientRect();
+      ctx.lineTo(e.clientX - bounded.left, e.clientY - bounded.top);
+      ctx.strokeStyle = currentColor;
+      ctx.stroke();
+      ctx.closePath();
+      const newHistory = [...history.slice(0, historyTab + 1), canvas.current.toDataURL()];
+      setHistory(newHistory);
+      setHistoryTab(newHistory.length - 1);
+      setCtx(ctx);
+      setMouseDown(false);
+      saveAnswer(canvas.current.toDataURL());
+    }
   };
 
   const onCanvasMouseMove = (e) => {
@@ -86,13 +102,21 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, t }) => {
       const bounded = canvas.current.getBoundingClientRect();
 
       ctx.lineTo(e.clientX - bounded.left, e.clientY - bounded.top);
+      ctx.strokeStyle = currentColor;
       ctx.stroke();
       setCtx(ctx);
     }
   };
 
   const onClearClick = () => {
-    drawImage(ctx);
+    if (file) {
+      drawImage(ctx);
+    } else {
+      ctx.clearRect(0, 0, width, height);
+      setCtx(ctx);
+      setHistoryTab(0);
+      setHistory([canvas.current.toDataURL()]);
+    }
   };
 
   const onUndoClick = () => {
@@ -127,22 +151,35 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, t }) => {
         <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
       )}
 
-      <Container width={`${+width}px`} justifyContent="flex-end" childMarginRight={45}>
-        <Button disabled={historyTab === 0} onClick={onUndoClick}>
-          <IconUndo style={{ marginRight: 25 }} width={18} height={18} />
-          <Text>{t('component.hotspot.undo')}</Text>
-        </Button>
-        <Button
-          disabled={historyTab === history.length - 1 || history.length === 0}
-          onClick={onRedoClick}
-        >
-          <IconRedo style={{ marginRight: 25 }} width={18} height={18} />
-          <Text>{t('component.hotspot.redo')}</Text>
-        </Button>
-        <Button onClick={onClearClick}>
-          <IconEraseText style={{ marginRight: 25 }} width={18} height={18} />
-          <Text>{t('component.hotspot.clear')}</Text>
-        </Button>
+      <Container width={`${+width}px`} justifyContent="space-between">
+        {line_color.length > 1 && (
+          <StyledSelect value={currentColor} onChange={setCurrentColor}>
+            {line_color.map((color, i) => (
+              <Option key={i} value={color}>
+                <div className="rc-color-picker-wrap">
+                  <span className="rc-color-picker-trigger" style={{ background: color }} />
+                </div>
+              </Option>
+            ))}
+          </StyledSelect>
+        )}
+        <FlexContainer childMarginRight={45}>
+          <Button disabled={historyTab === 0} onClick={onUndoClick}>
+            <IconUndo style={{ marginRight: 25 }} width={18} height={18} />
+            <Text>{t('component.hotspot.undo')}</Text>
+          </Button>
+          <Button
+            disabled={historyTab === history.length - 1 || history.length === 0}
+            onClick={onRedoClick}
+          >
+            <IconRedo style={{ marginRight: 25 }} width={18} height={18} />
+            <Text>{t('component.hotspot.redo')}</Text>
+          </Button>
+          <Button onClick={onClearClick}>
+            <IconEraseText style={{ marginRight: 25 }} width={18} height={18} />
+            <Text>{t('component.hotspot.clear')}</Text>
+          </Button>
+        </FlexContainer>
       </Container>
       <canvas
         onMouseDown={onCanvasMouseDown}
@@ -168,6 +205,24 @@ HighlightImagePreview.defaultProps = {
 };
 
 export default withNamespaces('assessment')(HighlightImagePreview);
+
+const StyledSelect = styled(Select)`
+  & > .ant-select-selection__rendered {
+    display: flex !important;
+    align-items: center !important;
+    padding: 0px !important;
+    line-height: 40px !important;
+    height: 40px !important;
+  }
+  & > .ant-select-selection {
+    background: transparent !important;
+    border: none !important;
+    &:focus {
+      outline: none;
+      box-shadow: none !important;
+    }
+  }
+`;
 
 const Container = styled(FlexContainer)`
   min-height: 67px;

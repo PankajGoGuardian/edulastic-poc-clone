@@ -8,9 +8,13 @@ import { Paper, Image } from '@edulastic/common';
 
 import { QuestionTextArea, Subtitle, DropZoneToolbar, StyledDropZone } from '../../common';
 import { SOURCE } from '../../../constants/constantsForQuestions';
+import withAddButton from '../../HOC/withAddButton';
+import ColorPickers from './colorPickers';
+
+const LineColors = withAddButton(ColorPickers);
 
 const HighlightImageEdit = ({ item, setQuestionData, t }) => {
-  const { image } = item;
+  const { image, line_color } = item;
 
   const width = image ? image.width : 900;
   const height = image ? image.height : 470;
@@ -33,6 +37,40 @@ const HighlightImageEdit = ({ item, setQuestionData, t }) => {
 
   const onDrop = ([files]) => {
     handleImageToolbarChange(SOURCE)(URL.createObjectURL(files));
+  };
+
+  const hexToRGB = (hex, alpha) => {
+    const r = parseInt(hex.slice(1, 3), 16);
+
+    const g = parseInt(hex.slice(3, 5), 16);
+
+    const b = parseInt(hex.slice(5, 7), 16);
+
+    if (alpha) {
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+    return `rgb(${r}, ${g}, ${b})`;
+  };
+
+  const colorChange = i => (obj) => {
+    const newItem = cloneDeep(item);
+    newItem.line_color[i] = hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100);
+    setQuestionData(newItem);
+  };
+
+  const handleAddLineColor = () => {
+    const newItem = cloneDeep(item);
+
+    newItem.line_color.push('#000000');
+    setQuestionData(newItem);
+  };
+
+  const handleRemove = i => () => {
+    const newItem = cloneDeep(item);
+
+    newItem.line_color.splice(i, 1);
+
+    setQuestionData(newItem);
   };
 
   const thumb = file && <Image width={width} height={height} src={file} alt={altText} />;
@@ -73,6 +111,14 @@ const HighlightImageEdit = ({ item, setQuestionData, t }) => {
         </Dropzone>
 
         <Subtitle>{t('component.highlightImage.lineColorOptionsSubtitle')}</Subtitle>
+
+        <LineColors
+          onRemove={line_color.length > 1 ? handleRemove : undefined}
+          changeHandler={colorChange}
+          colors={line_color}
+          buttonText={t('component.highlightImage.addButtonText')}
+          onAdd={handleAddLineColor}
+        />
       </Paper>
     </Fragment>
   );

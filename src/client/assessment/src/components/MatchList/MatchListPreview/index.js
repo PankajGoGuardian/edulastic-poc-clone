@@ -65,7 +65,7 @@ const MatchListPreview = ({
   } = item;
 
   const itemValidation = item.validation || {};
-  let validArray = itemValidation.valid_response && itemValidation.valid_response.validArray;
+  let validArray = itemValidation.valid_response && itemValidation.valid_response.value;
   validArray = validArray || [];
   const altArray = itemValidation.alt_responses || [];
   let groupArrays = [];
@@ -145,7 +145,7 @@ const MatchListPreview = ({
 
   const validAnswers = ans.filter((ite, i) => ite === validArray[i]);
 
-  let altAnswers = [];
+  let altAnswers = [...validAnswers];
 
   altArray.forEach((ite) => {
     let res = [];
@@ -186,7 +186,7 @@ const MatchListPreview = ({
             >
               <DragItem
                 preview={preview}
-                correct={validAnswers.includes(ans[i]) || altAnswers.includes(ans[i])}
+                correct={altAnswers.includes(ans[i])}
                 flag="ans"
                 renderIndex={i}
                 onDrop={onDrop}

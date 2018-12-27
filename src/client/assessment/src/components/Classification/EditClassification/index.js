@@ -268,24 +268,25 @@ const EditClassification = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-  const handleAnswerChange = (ans) => {
+  const handleAnswerChange = (answer) => {
     const newItem = cloneDeep(item);
-
     let groupArray = item.group_possible_responses ? [] : item.possible_responses;
 
     if (item.group_possible_responses) {
-      item.possible_response_groups.forEach((o) => {
-        groupArray = [...groupArray, ...o.responses];
+      item.possible_response_groups.forEach((group) => {
+        groupArray = [...groupArray, ...group.responses];
       });
     }
 
     if (correctTab === 0) {
-      newItem.validation.valid_response.value = ans.map(arr =>
-        arr.map(ite => groupArray.indexOf(ite)));
-    } else {
-      newItem.validation.alt_responses[correctTab - 1].value = ans.map(arr =>
-        arr.map(ite => groupArray.indexOf(ite)));
-    }
+      if (newItem.validation && newItem.validation.valid_response) {
+        newItem.validation.valid_response.value = [...answer];
+      }
+    } else if (
+      newItem.validation &&
+      newItem.validation.alt_responses &&
+      newItem.validation.alt_responses[correctTab - 1]
+    ) newItem.validation.alt_responses[correctTab - 1].value = [...answer];
 
     setQuestionData(newItem);
   };

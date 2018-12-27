@@ -29,44 +29,43 @@ const TableRow = ({
   preview,
   possible_responses,
   onDrop,
-  validArray,
-  altArray
+  validArray
 }) => {
   const cols = [];
 
-  for (let ind = startIndex; ind < startIndex + colCount; ind++) {
-    if (arrayOfRows.has(ind) && rowTitles.length > 0) {
+  for (let index = startIndex; index < startIndex + colCount; index++) {
+    if (arrayOfRows.has(index) && rowTitles.length > 0) {
       cols.push(
-        <RowTitleCol key={ind} colCount={colCount}>
+        <RowTitleCol key={index} colCount={colCount}>
           <CenteredText style={{ wordWrap: 'break-word', textAlign: 'left' }}>
-            <div dangerouslySetInnerHTML={{ __html: rowTitles[ind / colCount] }} />
+            <div dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] }} />
           </CenteredText>
         </RowTitleCol>
       );
     }
     cols.push(
-      <Column key={ind} rowTitles={rowTitles} colCount={colCount}>
+      <Column key={index} rowTitles={rowTitles} colCount={colCount}>
         <DropContainer
           style={{
             ...styles.columnContainerStyle,
             justifyContent: 'center'
           }}
-          noTopBorder={ind / colCount >= 1}
+          noTopBorder={index / colCount >= 1}
           drop={drop}
-          index={ind}
+          index={index}
           flag="column"
         >
           {Array.isArray(answers) &&
-            Array.isArray(answers[ind]) &&
-            answers[ind].length > 0 &&
-            answers[ind].map((an, index) => (
+            Array.isArray(answers[index]) &&
+            answers[index].length > 0 &&
+            answers[index].map((answerValue, answerIndex) => (
               <DragItem
-                valid={validArray.includes(an) || altArray.includes(an)}
+                valid={validArray[index].includes(possible_responses.indexOf(answerValue))}
                 preview={preview}
-                key={index}
-                renderIndex={possible_responses.indexOf(an)}
+                key={answerIndex}
+                renderIndex={possible_responses.indexOf(answerValue)}
                 onDrop={onDrop}
-                item={an}
+                item={answerValue}
               />
             ))}
         </DropContainer>
@@ -87,8 +86,7 @@ TableRow.propTypes = {
   preview: PropTypes.bool.isRequired,
   possible_responses: PropTypes.array.isRequired,
   onDrop: PropTypes.func.isRequired,
-  validArray: PropTypes.array.isRequired,
-  altArray: PropTypes.array.isRequired
+  validArray: PropTypes.array.isRequired
 };
 
 export default TableRow;

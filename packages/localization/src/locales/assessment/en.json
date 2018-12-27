@@ -97,7 +97,8 @@
     },
     "highlightImage": {
       "lineColorOptionsSubtitle": "Line color options",
-      "lineColorLabel": "Line color"
+      "lineColorLabel": "Line color",
+      "addButtonText": "Add new color"
     },
     "shading": {
       "canvasSubtitle": "Canvas option",

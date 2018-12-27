@@ -136,7 +136,7 @@ const Li = styled.li`
   margin-left: -2px;
   position: relative;
   padding: 0;
-  z-index: 10;
+  z-index: 0;
   &:first-child {
     margin-left: 0;
   }

@@ -23,6 +23,8 @@ const AdminSignup = lazy(() =>
   import(/* webpackChunkName: "adminSignup" */ './student/src/components/authentication/signup/adminSignup'));
 const Dashboard = lazy(() =>
   import(/* webpackChunkName: "student" */ './student/src/app'));
+const SummaryTest = lazy(() =>
+  import(/* webpackChunkName: "student test summary" */ './student/src/components/Summary'));
 
 const Author = lazy(() =>
   import(/* webpackChunkName: "author" */ './author/src/app'));
@@ -58,6 +60,7 @@ class App extends Component {
               path="/student/test"
               component={() => <Student defaultAP />}
             />
+            <Route path="/student/test-summary" component={SummaryTest} />
             <Route
               exact
               path="/student/practice/:id"

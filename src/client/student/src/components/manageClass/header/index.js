@@ -1,39 +1,29 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
-import { darkBlueSecondary, white } from '@edulastic/colors';
-import { Affix, Select } from 'antd';
+import { white } from '@edulastic/colors';
+import { Select } from 'antd';
+import HeaderWrapper from '../../../headerWrapper';
 
 const options = ['ARCHIVE(0)', 'ARCHIVE(1)', 'ARCHIVE(2)', 'ARCHIVE(3)'];
 const { Option } = Select;
 
 const ManageClassHeader = () => (
-  <Affix>
-    <Container>
-      <Title>Manage Class</Title>
-      <QuestionSelect>
-        <FilterBtn>
-          <span>Show</span>
-        </FilterBtn>
-        <Select defaultValue="Question 1/10" style={{ width: '70%' }}>
-          {options.map((option, index) => (
-            <Option key={index}> {option} </Option>
-          ))}
-        </Select>
-      </QuestionSelect>
-    </Container>
-  </Affix>
+  <HeaderWrapper>
+    <Title>Manage Class</Title>
+    <QuestionSelect>
+      <FilterBtn>
+        <span>Show</span>
+      </FilterBtn>
+      <SelectBtn defaultValue="Question 1/10">
+        {options.map((option, index) => (
+          <Option key={index}> {option} </Option>
+        ))}
+      </SelectBtn>
+    </QuestionSelect>
+  </HeaderWrapper>
 );
 
 export default memo(ManageClassHeader);
-
-const Container = styled.div`
-  height: 89px;
-  padding: 0px 40px;
-  background: ${darkBlueSecondary};
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
 
 const Title = styled.h1`
   color: ${white};
@@ -41,6 +31,10 @@ const Title = styled.h1`
   font-weight: bold;
   margin: 0;
   padding: 0;
+`;
+
+const SelectBtn = styled(Select)`
+  width: 70%;
 `;
 
 const QuestionSelect = styled.div`

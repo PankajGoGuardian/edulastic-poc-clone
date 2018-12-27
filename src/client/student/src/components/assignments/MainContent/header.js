@@ -2,9 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Layout, Row, Col, Select, Affix } from 'antd';
+import { Select } from 'antd';
 import AssignmentTitle from '../common/assignmentTitle';
 import AssignmentSelectClass from '../common/assignmentSelectClass';
+import HeaderWrapper from '../../../headerWrapper';
 
 const options = ['FFC1', 'FFC2', 'FFC3', 'FFC4', 'FFC5', 'FFC6'];
 const { Option } = Select;
@@ -23,38 +24,18 @@ const AssignmentSelect = () => (
 );
 
 const Header = ({ flag }) => (
-  <Affix>
-    <AssignmentsHeader flag={flag}>
-      <Row style={{ width: '100%' }}>
-        <Col span={24}>
-          <Wrapper>
-            <AssignmentTitle>Assignments</AssignmentTitle>
-            <AssignmentSelect />
-          </Wrapper>
-        </Col>
-      </Row>
-    </AssignmentsHeader>
-  </Affix>
+  <HeaderWrapper flag={flag}>
+    <Wrapper>
+      <AssignmentTitle>Assignments</AssignmentTitle>
+      <AssignmentSelect />
+    </Wrapper>
+  </HeaderWrapper>
 );
-export default React.memo(connect(({ ui }) => ({ flag: ui.flag }))(Header));
+export default connect(({ ui }) => ({ flag: ui.flag }))(Header);
 
 Header.propTypes = {
   flag: PropTypes.bool.isRequired
 };
-
-const AssignmentsHeader = styled(Layout.Header)`
-  display: flex;
-  align-items: center;
-  background-color: #0288d1;
-  height: 62px;
-  color: #ffffff;
-
-  .ant-col-24 {
-    align-items: center;
-    line-height: 1.2;
-    display: flex;
-  }
-`;
 
 const Wrapper = styled.div`
   display: flex;

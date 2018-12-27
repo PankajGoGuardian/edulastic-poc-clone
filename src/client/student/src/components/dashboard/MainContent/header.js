@@ -2,11 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Layout, Row, Col, Select, Icon, Affix } from 'antd';
+import { Select, Icon } from 'antd';
 import AssignmentTitle from '../common/assignmentTitle';
 import AssignmentFilter from '../common/assignmentFilter';
 import AssignmentSelectClass from '../common/assignmentSelectClass';
 import FilterBtn from '../common/filterBtn';
+import HeaderWrapper from '../../../headerWrapper';
 
 const options = ['FFC1', 'FFC2', 'FFC3', 'FFC4', 'FFC5', 'FFC6'];
 const { Option } = Select;
@@ -14,8 +15,7 @@ const { Option } = Select;
 const AssignmentSelect = () => (
   <AssignmentSelectClass>
     <ClassLabel>class</ClassLabel>
-    <Select
-      style={{ width: 120 }}
+    <SelectBtn
       suffixIcon={
         <Icon type="caret-down" className="topbarDropDown" theme="outlined" />
       }
@@ -25,71 +25,40 @@ const AssignmentSelect = () => (
           {option}
         </Option>
       ))}
-    </Select>
+    </SelectBtn>
   </AssignmentSelectClass>
 );
 
 const Header = ({ flag }) => (
-  <Affix>
-    <AssignmentsHeader flag={flag}>
-      <Row>
-        <Col span={24}>
-          <Wrapper>
-            <AssignmentTitle>Assignments</AssignmentTitle>
-            <AssignmentSelect />
-          </Wrapper>
-          <AssignmentFilter>
-            <FilterBtn>
-              <span>6</span> All
-            </FilterBtn>
-            <FilterBtn>
-              <span>6</span> In progress
-            </FilterBtn>
-            <FilterBtn>
-              <span>6</span> Not Started
-            </FilterBtn>
-            <FilterBtn>
-              <span>6</span> Submitted
-            </FilterBtn>
-            <FilterBtn>
-              <span>6</span> Graded
-            </FilterBtn>
-          </AssignmentFilter>
-        </Col>
-      </Row>
-    </AssignmentsHeader>
-  </Affix>
+  <HeaderWrapper flag={flag}>
+    <Wrapper>
+      <AssignmentTitle>Assignments</AssignmentTitle>
+      <AssignmentSelect />
+    </Wrapper>
+    <AssignmentFilter>
+      <FilterBtn>
+        <span>6</span> All
+      </FilterBtn>
+      <FilterBtn>
+        <span>6</span> In progress
+      </FilterBtn>
+      <FilterBtn>
+        <span>6</span> Not Started
+      </FilterBtn>
+      <FilterBtn>
+        <span>6</span> Submitted
+      </FilterBtn>
+      <FilterBtn>
+        <span>6</span> Graded
+      </FilterBtn>
+    </AssignmentFilter>
+  </HeaderWrapper>
 );
-export default React.memo(connect(({ ui }) => ({ flag: ui.flag }))(Header));
+export default connect(({ ui }) => ({ flag: ui.flag }))(Header);
 
 Header.propTypes = {
   flag: PropTypes.bool.isRequired
 };
-
-const AssignmentsHeader = styled(Layout.Header)`
-  background-color: #0288d1;
-  height: 89.1px;
-  color: #ffffff;
-
-  .ant-col-24 {
-    align-items: center;
-    line-height: 1.2;
-    height: 90px;
-    display: flex;
-  }
-
-  @media (max-width: 1300px) {
-    height: 135px;
-    padding: 15px 30px;
-
-    .ant-col-24 {
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: space-between;
-      height: 100px;
-    }
-  }
-`;
 
 const Wrapper = styled.div`
   display: flex;
@@ -110,6 +79,10 @@ const Wrapper = styled.div`
       padding-right: 25px;
     }
   }
+`;
+
+const SelectBtn = styled(Select)`
+  width: 120px;
 `;
 
 const ClassLabel = styled.span`

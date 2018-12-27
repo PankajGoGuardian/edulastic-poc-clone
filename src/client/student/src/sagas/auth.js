@@ -4,7 +4,13 @@ import { push } from 'react-router-redux';
 import { authApi, userApi } from '@edulastic/api';
 import { message } from 'antd';
 import { roleuser } from '@edulastic/constants';
-import { SIGNUP, LOGIN, SET_USER, FETCH_USER } from '../constants/actions';
+import {
+  SIGNUP,
+  LOGIN,
+  SET_USER,
+  FETCH_USER,
+  LOGOUT
+} from '../constants/actions';
 
 function* login({ payload }) {
   try {
@@ -79,8 +85,18 @@ function* fetchUser() {
     yield call(message.error, 'failed loading user data');
   }
 }
+
+function* logout() {
+  try {
+    delete localStorage.access_token;
+    yield put(push('/Login'));
+  } catch (e) {
+    console.log(e);
+  }
+}
 export default function* watcherSaga() {
   yield takeLatest(LOGIN, login);
   yield takeLatest(SIGNUP, signup);
+  yield takeLatest(LOGOUT, logout);
   yield takeLatest(FETCH_USER, fetchUser);
 }

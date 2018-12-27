@@ -24,6 +24,7 @@ import {
   IconQuestion
 } from '@edulastic/icons';
 import { withWindowSizes } from '@edulastic/common';
+import { logoutAction } from '../actions/auth';
 
 import Profile from '../assets/Profile.png';
 
@@ -109,7 +110,7 @@ class SideMenu extends Component {
 
   render() {
     const { collapsed, broken, isVisible } = this.state;
-    const { windowWidth, currentPath, firstName } = this.props;
+    const { windowWidth, currentPath, firstName, logout } = this.props;
     const isCollapsed =
       windowWidth > 1200 || windowWidth <= 480 || windowWidth === 646
         ? collapsed
@@ -122,7 +123,7 @@ class SideMenu extends Component {
       <FooterDropDown isVisible={isVisible} className="footerDropWrap">
         <Menu>
           <Menu.Item key="0">
-            <a href="#">
+            <a onClick={logout}>
               <IconDropdown type="caret-down" /> {isCollapsed ? '' : 'SIGN OUT'}
             </a>
           </Menu.Item>
@@ -246,7 +247,8 @@ SideMenu.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   history: PropTypes.object.isRequired,
   currentPath: PropTypes.string.isRequired,
-  firstName: PropTypes.string.isRequired
+  firstName: PropTypes.string.isRequired,
+  logout: PropTypes.func.isRequired
 };
 
 const enhance = compose(
@@ -257,7 +259,7 @@ const enhance = compose(
       currentPath: router.location.pathname,
       firstName: user.firstName
     }),
-    {}
+    { logout: logoutAction }
   )
 );
 

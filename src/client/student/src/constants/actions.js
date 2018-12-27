@@ -39,3 +39,6 @@ export const SET_TEST_ACTIVITY_ID = '[test] add test activity id';
 
 // test
 export const LOAD_PREVIOUS_RESPONSES = '[test] load previous responses';
+
+// test
+export const LOGOUT = 'LOGOUT'; // set redux store to initial values

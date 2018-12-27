@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
 import { connect } from 'react-redux';
-import { signupAction } from '../../../actions/signup';
+import { signupAction } from '../../../actions/auth';
 
 import studentBg from '../../../assets/bg-student.png';
 import hashIcon from '../../../assets/hashtag-icon.svg';

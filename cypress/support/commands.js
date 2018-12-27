@@ -1,12 +1,14 @@
 import { userBuilder } from './generate';
 
 Cypress.LocalStorage.clear = () => {};
+const BASE_URL =
+  'https://pnufcx7h1l.execute-api.us-east-1.amazonaws.com/development/api';
 
 Cypress.Commands.add('createUser', overrides => {
   const user = userBuilder(overrides);
   return cy
     .request({
-      url: 'http://edulastic-poc.snapwiz.net/api/auth/signup',
+      url: `${BASE_URL}/auth/signup`,
       method: 'POST',
       body: user
     })
@@ -16,7 +18,7 @@ Cypress.Commands.add('createUser', overrides => {
 Cypress.Commands.add('login', user =>
   cy
     .request({
-      url: 'http://edulastic-poc.snapwiz.net/api/auth/login',
+      url: `${BASE_URL}/auth/login`,
       method: 'POST',
       body: user
     })
@@ -36,7 +38,7 @@ Cypress.Commands.add('setToken', () => {
     password: 'snapwiz'
   };
   cy.request({
-    url: 'http://edulastic-poc.snapwiz.net/api/auth/login',
+    url: `${BASE_URL}/auth/login`,
     method: 'POST',
     body: postData
   }).then(({ body }) => {

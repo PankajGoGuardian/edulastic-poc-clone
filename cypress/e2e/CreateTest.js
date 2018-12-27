@@ -1,14 +1,7 @@
-describe('Visit Create Test Page', () => {
-  it('Visit Create Test Page', () => {
-    cy.setToken().then(() => {
-      cy.visit('/author/tests/create');
-    });
-  });
-});
-
 describe('Check Create Test Flow', () => {
   beforeEach(() => {
     cy.setToken();
+    cy.visit('/author/tests/create');
   });
 
   it('Visit Create Test Page', () => {

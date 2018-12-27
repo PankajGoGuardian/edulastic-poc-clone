@@ -7,15 +7,15 @@ import O from '../Options';
 
 const options = [
   { value: 'horizontal', label: i18.t('assessment:component.options.horizontal') },
-  { value: 'vertical', label: i18.t('assessment:component.options.vertical') },
+  { value: 'vertical', label: i18.t('assessment:component.options.vertical') }
 ];
 
 const OrientationSelect = ({ t, onChange, value }) => (
   <Fragment>
     <O.Label>{t('component.options.orientation')}</O.Label>
-    <Select size="large" value={value} style={{ width: '80%' }} onChange={onChange}>
+    <Select data-cy="orientationSelect" size="large" value={value} style={{ width: '80%' }} onChange={onChange}>
       {options.map(({ value: val, label }) => (
-        <Select.Option key={val} value={val}>
+        <Select.Option data-cy={val} key={val} value={val}>
           {label}
         </Select.Option>
       ))}
@@ -26,11 +26,11 @@ const OrientationSelect = ({ t, onChange, value }) => (
 OrientationSelect.propTypes = {
   t: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.any,
+  value: PropTypes.any
 };
 
 OrientationSelect.defaultProps = {
-  value: '',
+  value: ''
 };
 
 export default withNamespaces('assessment')(OrientationSelect);

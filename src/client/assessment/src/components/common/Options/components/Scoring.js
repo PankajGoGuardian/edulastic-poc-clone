@@ -144,13 +144,13 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
             <Options.Label>{t('component.options.scoringType')}</Options.Label>
             <Select
               size="large"
-              data-cy="scoring"
+              data-cy="scoringType"
               value={questionData.validation.scoring_type}
               style={{ width: '80%' }}
               onChange={value => handleChangeValidation('scoring_type', value)}
             >
               {scoringTypes.map(({ value: val, label }) => (
-                <Select.Option key={val} value={val}>
+                <Select.Option data-cy={val} key={val} value={val}>
                   {label}
                 </Select.Option>
               ))}

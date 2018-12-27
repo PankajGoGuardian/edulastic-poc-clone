@@ -116,6 +116,7 @@ const AdvancedOptions = ({
       <FlexRow>
         <Flex flexDir="column">
           <FontSizeSelect
+            data-cy="fontSize"
             value={fontsize}
             onChange={(val) => {
               onUiChange('fontsize', val);
@@ -125,6 +126,7 @@ const AdvancedOptions = ({
         </Flex>
         <Flex flexDir="column">
           <OrientationSelect
+            data-cy="orientation"
             value={orientation}
             onChange={(val) => {
               onUiChange('orientation', val);

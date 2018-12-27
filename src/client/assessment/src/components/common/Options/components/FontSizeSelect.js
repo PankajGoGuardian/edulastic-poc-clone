@@ -10,15 +10,15 @@ const options = [
   { value: 'normal', label: i18.t('assessment:component.options.normal') },
   { value: 'large', label: i18.t('assessment:component.options.large') },
   { value: 'xlarge', label: i18.t('assessment:component.options.extraLarge') },
-  { value: 'xxlarge', label: i18.t('assessment:component.options.huge') },
+  { value: 'xxlarge', label: i18.t('assessment:component.options.huge') }
 ];
 
 const FontSizeSelect = ({ t, onChange, value }) => (
   <Fragment>
     <O.Label>{t('component.options.fontSize')}</O.Label>
-    <Select size="large" value={value} style={{ width: '80%' }} onChange={onChange}>
+    <Select data-cy="fontSizeSelect" size="large" value={value} style={{ width: '80%' }} onChange={onChange}>
       {options.map(({ value: val, label }) => (
-        <Select.Option key={val} value={val}>
+        <Select.Option data-cy={val} key={val} value={val}>
           {label}
         </Select.Option>
       ))}
@@ -29,11 +29,11 @@ const FontSizeSelect = ({ t, onChange, value }) => (
 FontSizeSelect.propTypes = {
   t: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.any,
+  value: PropTypes.any
 };
 
 FontSizeSelect.defaultProps = {
-  value: 'normal',
+  value: 'normal'
 };
 
 export default withNamespaces('assessment')(FontSizeSelect);

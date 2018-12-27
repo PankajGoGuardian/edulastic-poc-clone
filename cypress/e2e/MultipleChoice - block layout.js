@@ -68,7 +68,7 @@ describe('Test Multiple Choice Flow', () => {
       .type('8');
   });
 
-  it('Select Correct Answer', () => {
+  it('Select Correct Answer and set Advance Options', () => {
     cy.get('div')
       .find('label')
       .eq(2)
@@ -78,6 +78,83 @@ describe('Test Multiple Choice Flow', () => {
       .eq(3)
       .click();
 
+    //advance option --->
+
+    //icon plus click
+    cy.get('[data-cy=iconPlus]').should('be.visible');
+    cy.get('[data-cy=iconPlus]').click();
+
+    //check enable auto scoring
+    cy.contains('Enable auto scoring').click();
+
+    //penalty points
+    cy.get('[data-cy=penalty]').type('{uparrow}');
+    cy.get('[data-cy=penalty]').type('{uparrow}');
+    cy.get('[data-cy=penalty]').type('{downarrow}');
+
+    //check answer attempts
+    cy.get('[data-cy=feedback]').type('{uparrow}');
+    cy.get('[data-cy=feedback]').type('{uparrow}');
+    cy.get('[data-cy=feedback]').type('{downarrow}');
+
+    // check answer button
+    cy.contains('Check answer button').click();
+
+    // select scoring type
+    cy.get('[data-cy="scoringType"]')
+        .should('be.visible')
+        .click();
+    
+    cy.get('[data-cy="partialMatch"]')
+      .should('be.visible')
+      .click()
+
+    cy.get('[data-cy="orientationSelect"]')
+      .get('.ant-select-selection-selected-value')
+      .should('contain','Partial match');
+
+    // minimum score attempted
+    cy.get('[data-cy=minscore]').type('{uparrow}');
+    cy.get('[data-cy=minscore]').type('{uparrow}');
+    cy.get('[data-cy=minscore]').type('{downarrow}');
+
+    // layout ---->
+
+    //verify style
+
+    // number of columns
+    cy.get('[data-cy=columns]').type('{uparrow}');
+    cy.get('[data-cy=columns]').type('{uparrow}');
+    cy.get('[data-cy=columns]').type('{downarrow}');
+
+    // select orientation
+
+    cy.get('[data-cy="orientationSelect"]')
+      .should('be.visible')
+      .click();
+    
+    cy.get('[data-cy="horizontal"]')
+      .should('be.visible')
+      .click()
+
+    cy.get('[data-cy="orientationSelect"]')
+      .get('.ant-select-selection-selected-value')
+      .should('contain','Horizontal');
+
+    // select font 
+    cy.get('[data-cy="fontSizeSelect"]')
+      .should('be.visible')
+      .click()
+    
+    cy.get('[data-cy="small"]')
+      .should('be.visible')
+      .click()
+    
+    cy.get('[data-cy="fontSizeSelect"]')
+      .get('.ant-select-selection-selected-value')
+      .should('contain','Small');
+  
+
     // Save Multiple Choice - standard
     cy.contains('SAVE').should('be.visible');
     cy.contains('SAVE').click();
@@ -85,7 +162,7 @@ describe('Test Multiple Choice Flow', () => {
 
   it('Visit Item Detail Page', () => {
     // cy.visit('/author/items/5c0ad0b2ef0a9d1535686fd1/item-detail');
-    cy.wait(2000);
+    cy.wait(5000);
     cy.contains('PREVIEW').should('be.visible');
     cy.contains('PREVIEW').click();
   });

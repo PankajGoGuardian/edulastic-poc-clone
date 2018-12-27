@@ -128,6 +128,17 @@ describe('Test Multiple Choice Flow', () => {
     cy.contains('Check answer button').click();
 
     // select scoring type
+    cy.get('[data-cy="scoringType"]')
+        .should('be.visible')
+        .click();
+    
+    cy.get('[data-cy="partialMatch"]')
+      .should('be.visible')
+      .click()
+
+    cy.get('[data-cy="orientationSelect"]')
+      .get('.ant-select-selection-selected-value')
+      .should('contain','Partial match');
 
     // minimum score attempted
     cy.get('[data-cy=minscore]').type('{uparrow}');
@@ -136,8 +147,19 @@ describe('Test Multiple Choice Flow', () => {
 
     // layout ---->
 
-    //select style
-
+  /*  //select style
+   cy.get('[data-cy="selectStyle"]')
+      .should('be.visible')
+      .click()
+    
+    cy.get('[data-cy="selectStyle"]')
+      .get('option')
+      .contains('Standard').click()
+    
+    cy.get('[data-cy="selectStyle"]')
+      .get('.ant-select-selection-selected-value')
+      .should('contain','Standard');
+ */
     // number of columns
     cy.get('[data-cy=columns]').type('{uparrow}');
     cy.get('[data-cy=columns]').type('{uparrow}');
@@ -145,7 +167,31 @@ describe('Test Multiple Choice Flow', () => {
 
     // select orientation
 
-    // select font size
+    cy.get('[data-cy="orientationSelect"]')
+      .should('be.visible')
+      .click();
+    
+    cy.get('[data-cy="horizontal"]')
+      .should('be.visible')
+      .click()
+
+    cy.get('[data-cy="orientationSelect"]')
+      .get('.ant-select-selection-selected-value')
+      .should('contain','Horizontal');
+
+    // select font 
+
+    cy.get('[data-cy="fontSizeSelect"]')
+      .should('be.visible')
+      .click()
+    
+    cy.get('[data-cy="small"]')
+      .should('be.visible')
+      .click()
+    
+    cy.get('[data-cy="fontSizeSelect"]')
+      .get('.ant-select-selection-selected-value')
+      .should('contain','Small');
 
     //click on source
     cy.get('[data-cy=source]').should('be.visible');
@@ -160,7 +206,7 @@ describe('Test Multiple Choice Flow', () => {
   });
 
   it('Visit Item Detail Page', () => {
-    cy.wait(2000);
+    cy.wait(5000);
     cy.contains('PREVIEW').should('be.visible');
     cy.contains('PREVIEW').click();
 

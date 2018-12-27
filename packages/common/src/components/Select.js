@@ -13,10 +13,11 @@ const Select = ({ onChange, options, value, style, arrowColor }) => (
     <Main
       onChange={e => onChange(e.target.value)}
       defaultValue={value}
+      data-cy="selectStyle"
       borderRadius={style.borderRadius}
     >
       {options.map((item, index) => (
-        <option key={index} value={item.value}>
+        <option data-cy={item.value} key={index} value={item.value}>
           {item.label}
         </option>
       ))}

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FlexContainer } from '@edulastic/common';
 import { mobileWidth, darkBlueSecondary, white } from '@edulastic/colors';
-import HeaderWrapper from '../../mainContent/headerWrapper';
 import Breadcrumb from '../Breadcrumb';
 
 const Header = ({ title }) => {
@@ -33,7 +32,11 @@ Header.propTypes = {
 
 export default Header;
 
-const Container = styled(HeaderWrapper)`
+const Container = styled.div`
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
   display: flex;
   align-items: center;
   margin-bottom: 70px;

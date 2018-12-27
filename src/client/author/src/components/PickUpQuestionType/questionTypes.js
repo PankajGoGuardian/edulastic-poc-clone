@@ -1,10 +1,62 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import { FlexContainer } from '@edulastic/common';
+import styled from 'styled-components';
 import { math } from '@edulastic/constants';
 import { svgMapFillColor, svgMapStrokeColor, mainBlueColor } from '@edulastic/colors';
+
+// Multiple Choice
+import MCStandard from '../../assets/multiple-choice/standard.svg';
+import MCMultipleResponses from '../../assets/multiple-choice/multiple-response.svg';
+import MCTrueFalse from '../../assets/multiple-choice/true-false.svg';
+import MCBlockLayout from '../../assets/multiple-choice/block-layout.svg';
+import MCMatrixStandard from '../../assets/multiple-choice/matrix-standard.svg';
+import MCMatrixInline from '../../assets/multiple-choice/matrix-inline.svg';
+import MCMatrixLabels from '../../assets/multiple-choice/matrix-labels.svg';
+
+// Fill In blanks
+import FBClozeDragDrop from '../../assets/fill-in-blanks/cloze-drag-drop.svg';
+import FBClozeDropDown from '../../assets/fill-in-blanks/cloze-dropdown.svg';
+import FBClozeText from '../../assets/fill-in-blanks/cloze-text.svg';
+import FBClozeImgDragDrop from '../../assets/fill-in-blanks/img-drag-drop.svg';
+import FBClozeImgDropDown from '../../assets/fill-in-blanks/img-dropdown.svg';
+// import FBClozeImgText from '../../assets/fill-in-blanks/img-text.svg';
+
+// Classy Match
+import CMClassification from '../../assets/classy-match/classification.svg';
+import CMMatch from '../../assets/classy-match/match.svg';
+import CMOrderList from '../../assets/classy-match/order-list.svg';
+import CMSortList from '../../assets/classy-match/sort-list.svg';
+
+// Written Spoken
+import WSEssayRichText from '../../assets/written-spoken/essay-rich-text.svg';
+import WSEssayPlainText from '../../assets/written-spoken/essay-plain-text.svg';
+import WSShortText from '../../assets/written-spoken/short-text.svg';
+// import WSAudioPlayer from '../../assets/written-spoken/audio-player.svg';
+// import WSVideoPlayer from '../../assets/written-spoken/video-player.svg';
+
+// Highlight
+import HLHightlight from '../../assets/highlight/highlight-img.svg';
+import HLHotspot from '../../assets/highlight/hotspot.svg';
+import HLShading from '../../assets/highlight/shading.svg';
+import HLTokenHighlight from '../../assets/highlight/token-highlight.svg';
+
+// Math
+import MTFormula from '../../assets/math/math-formula.svg';
+import MTFractions from '../../assets/math/math-fractions.svg';
+import MTFillInBlanks from '../../assets/math/math-fill-blanks.svg';
+import MTText from '../../assets/math/math-text.svg';
+import MTMatrices from '../../assets/math/math-matrices.svg';
+import MTUnits from '../../assets/math/math-units.svg';
+// import MTEssay from '../../assets/math/math-essay.svg';
+// import MTClozeMath from '../../assets/math/cloze-math.svg';
+// import MTClozeMathWithImage from '../../assets/math/cloze-math-img.svg';
+
+// Graphing
+import GRGraphing from '../../assets/graphing/graphing.svg';
+import GRGraphingQuadrant from '../../assets/graphing/graphing-quadrant.svg';
+import GRNumberLineDragDrop from '../../assets/graphing/line-drag-drop.svg';
+import GRNumberLinePlot from '../../assets/graphing/line-plot.svg';
 
 import Card from './Card';
 import {
@@ -15,6 +67,7 @@ import {
   BY_LOCATION_METHOD,
   SENTENCE_MODE
 } from '../../../../assessment/src/constants/constantsForQuestions';
+import { Dump } from './components';
 
 const { EMBED_RESPONSE } = math;
 
@@ -23,6 +76,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Highlight Image',
       type: 'highlight',
+      cardImage: HLHightlight,
       data: {
         image: {
           source: '',
@@ -39,6 +93,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Shading',
       type: 'highlight',
+      cardImage: HLShading,
       data: {
         canvas: {
           cell_height: 2,
@@ -67,6 +122,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Hotspot',
       type: 'highlight',
+      cardImage: HLHotspot,
       data: {
         stimulus: '<p>[This is the stem.]</p>',
         type: 'hotspot',
@@ -101,6 +157,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Token highlight',
       type: 'highlight',
+      cardImage: HLTokenHighlight,
       data: {
         stimulus: '<p>[This is the stem.]</p>',
         template:
@@ -122,6 +179,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Essay with rich text',
       type: 'edit',
+      cardImage: WSEssayRichText,
       data: {
         stimulus: '[This is the stem.]',
         type: 'essayRichText',
@@ -159,6 +217,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Essay with plain text',
       type: 'edit',
+      cardImage: WSEssayPlainText,
       data: {
         stimulus: '[This is the stem.]',
         type: 'essayPlainText',
@@ -174,6 +233,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Short text',
       type: 'edit',
+      cardImage: WSShortText,
       data: {
         stimulus: '[This is the stem.]',
         type: 'shortText',
@@ -192,6 +252,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Multiple choice - standard',
       type: 'multiple-choice',
+      cardImage: MCStandard,
       data: {
         type: 'multipleChoice',
         stimulus: 'Which color has the smallest walvelenght?',
@@ -218,6 +279,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Multiple choice - multiple response',
       type: 'multiple-choice',
+      cardImage: MCMultipleResponses,
       data: {
         type: 'multipleChoice',
         stimulus: 'Which color has the smallest walvelenght?',
@@ -244,6 +306,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'True or false',
       type: 'multiple-choice',
+      cardImage: MCTrueFalse,
       data: {
         type: 'multipleChoice',
         stimulus: 'The sky is blue due to gases.',
@@ -266,6 +329,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Multiple choice - block layout',
       type: 'multiple-choice',
+      cardImage: MCBlockLayout,
       data: {
         type: 'multipleChoice',
         stimulus: 'What is the capital city of England?',
@@ -293,6 +357,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Sort List',
       type: 'classify',
+      cardImage: CMSortList,
       data: {
         type: 'sortList',
         stimulus: 'Sort the sine and cosine values from lower to higher.',
@@ -312,6 +377,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Classification',
       type: 'classify',
+      cardImage: CMClassification,
       data: {
         group_possible_responses: false,
         possible_response_groups: [
@@ -343,6 +409,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Match list',
       type: 'classify',
+      cardImage: CMMatch,
       data: {
         group_possible_responses: false,
         possible_response_groups: [
@@ -369,6 +436,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'OrderList',
       type: 'classify',
+      cardImage: CMOrderList,
       data: {
         type: 'orderList',
         stimulus: 'Which color has the smallest walvelenght?',
@@ -387,6 +455,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Choice matrix - standard',
       type: 'multiple-choice',
+      cardImage: MCMatrixStandard,
       data: {
         type: 'choiceMatrix',
         stimulus: 'This is the stem.',
@@ -410,6 +479,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Choice matrix - inline',
       type: 'multiple-choice',
+      cardImage: MCMatrixInline,
       data: {
         options: ['True', 'False'],
         stems: ['[Stem 1]', '[Stem 2]', '[Stem 3]', '[Stem 4]'],
@@ -432,6 +502,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Choice matrix - labels',
       type: 'multiple-choice',
+      cardImage: MCMatrixLabels,
       data: {
         options: ['True', 'False'],
         stems: ['[Stem 1]', '[Stem 2]', '[Stem 3]', '[Stem 4]'],
@@ -455,6 +526,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Cloze with Drag & Drop',
       type: 'fill-blanks',
+      cardImage: FBClozeDragDrop,
       stimulus: '',
       data: {
         type: 'clozeDragDrop',
@@ -474,6 +546,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Cloze with Drop Down',
       type: 'fill-blanks',
+      cardImage: FBClozeDropDown,
       stimulus: '',
       data: {
         type: 'clozeDropDown',
@@ -496,6 +569,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Cloze with Text',
       type: 'fill-blanks',
+      cardImage: FBClozeText,
       stimulus: '',
       data: {
         type: 'clozeText',
@@ -518,6 +592,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Label Image with Drag & Drop',
       type: 'fill-blanks',
+      cardImage: FBClozeImgDragDrop,
       stimulus: '',
       data: {
         type: 'clozeImageDragDrop',
@@ -542,6 +617,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Label Image with Drop Down',
       type: 'fill-blanks',
+      cardImage: FBClozeImgDropDown,
       stimulus: '',
       ui_style: {
         background: '#0288d1'
@@ -581,6 +657,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       title: 'Graphing',
       stimulus: 'Which color has the smallest walvelenght?',
       type: 'graphing',
+      cardImage: GRGraphing,
       data: {
         type: 'graph',
         graphType: 'quadrants',
@@ -648,6 +725,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Graphing in the 1st quadrant',
       type: 'graphing',
+      cardImage: GRGraphingQuadrant,
       data: {
         type: 'graph',
         graphType: 'firstQuadrant',
@@ -715,6 +793,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Number line with plot',
       type: 'graphing',
+      cardImage: GRNumberLinePlot,
       data: {
         type: 'graph',
         stimulus: '[This is the stem3.]',
@@ -745,6 +824,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Number line with drag & drop',
       type: 'graphing',
+      cardImage: GRNumberLineDragDrop,
       data: {
         type: 'graph',
         graphType: 'axisLabels',
@@ -773,6 +853,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Math formula',
       type: 'math',
+      cardImage: MTFormula,
       stimulus: '',
       data: {
         is_math: true,
@@ -804,6 +885,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Math with fractions',
       type: 'math',
+      cardImage: MTFractions,
       stimulus: '',
       data: {
         is_math: true,
@@ -835,6 +917,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Math – fill in the blanks',
       type: 'math',
+      cardImage: MTFillInBlanks,
       stimulus: '',
       data: {
         is_math: true,
@@ -866,6 +949,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Math with text',
       type: 'math',
+      cardImage: MTText,
       stimulus: '',
       data: {
         is_math: true,
@@ -902,6 +986,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Math with matrices',
       type: 'math',
+      cardImage: MTMatrices,
       stimulus: '',
       data: {
         is_math: true,
@@ -934,6 +1019,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
     {
       title: 'Math with units',
       type: 'math',
+      cardImage: MTUnits,
       stimulus: '',
       data: {
         is_math: true,
@@ -987,17 +1073,31 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
   ];
 
   return (
-    <FlexContainer style={{ flexWrap: 'wrap' }}>
+    <FlexContainer>
       {cards.map(
-        ({ title, data, onSelectQuestionType: onSelect, type }) =>
+        ({ title, cardImage, data, onSelectQuestionType: onSelect, type }) =>
           type === questionType && (
-            <Card key={title} title={title} data={data} onSelectQuestionType={onSelect} />
+          <Card
+            key={title}
+            title={title}
+            data={data}
+            cardImage={cardImage}
+            onSelectQuestionType={onSelect}
+          />
           )
       )}
+      {[1, 2, 3, 4, 5, 6, 7].map(() => <Dump />)}
     </FlexContainer>
   );
 };
 
+const FlexContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-content: baseline;
+`;
 PickUpQuestionTypes.propTypes = {
   onSelectQuestionType: PropTypes.func.isRequired
 };

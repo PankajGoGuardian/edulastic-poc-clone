@@ -157,6 +157,7 @@ class PickUpQuestionType extends Component {
               position: 'absolute',
               left: 0,
               right: 0,
+              top: 140,
               overflow: 'auto',
               height: 'calc(100% - 140px)'
             }}
@@ -195,6 +196,7 @@ export default enhance(PickUpQuestionType);
 
 const Container = styled.div`
   display: flex;
+  background: #f3f3f3;
 `;
 
 const LeftSide = styled.div`

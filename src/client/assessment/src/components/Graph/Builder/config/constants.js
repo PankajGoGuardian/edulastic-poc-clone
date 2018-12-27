@@ -13,7 +13,7 @@ export const TOOLS = {
   LABEL: 'label',
 
   // Default
-  RESET: 'reset',
+  RESET: 'reset'
 };
 
 export const EVENT_NAMES = {
@@ -23,10 +23,10 @@ export const EVENT_NAMES = {
 
   // local
   CHANGE_NEW: 'change.new',
-  CHANGE_MOVE: 'change.move',
+  CHANGE_MOVE: 'change.move'
 };
 
 export default {
   TOOLS,
-  EVENT_NAMES,
+  EVENT_NAMES
 };

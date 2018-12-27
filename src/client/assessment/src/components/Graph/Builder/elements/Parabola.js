@@ -1,8 +1,10 @@
 import { Point } from '.';
 import { CONSTANT, Colors } from '../config';
+import { handleSnap } from '../utils';
 
 export const defaultConfig = {
   type: CONSTANT.TOOLS.PARABOLA,
+  fixed: false
 };
 
 export const getParabolaLabelParameters = () => ({
@@ -15,8 +17,8 @@ export const getParabolaLabelParameters = () => ({
 });
 
 const makeCallback = (p1, p2) => (x) => {
-  const a = (1 / (p2.X() - p1.X()) ** 2) * (p2.Y() - p1.Y());
-  return a * (x - p1.X()) ** 2 + p1.Y();
+  const a = (1 / ((p2.X() - p1.X()) ** 2)) * (p2.Y() - p1.Y());
+  return a * ((x - p1.X()) ** 2) + p1.Y();
 };
 
 let points = [];
@@ -32,14 +34,16 @@ function onHandler() {
         [makeCallback(...points)], {
           ...defaultConfig,
           ...Colors.default[CONSTANT.TOOLS.PARABOLA],
-          label: getParabolaLabelParameters(),
+          label: getParabolaLabelParameters()
         });
+
+      handleSnap(newLine, points);
 
       if (newLine) {
         newLine.addParents(points);
         newLine.ancestors = {
           [points[0].id]: points[0],
-          [points[1].id]: points[1],
+          [points[1].id]: points[1]
         };
         points = [];
         return newLine;
@@ -55,19 +59,19 @@ function getConfig(parabola) {
     id: parabola.id,
     label: parabola.hasLabel ? parabola.label.plaintext : false,
     points: Object.keys(parabola.ancestors)
-      .sort().map(n => Point.getConfig(parabola.ancestors[n])),
+      .sort().map(n => Point.getConfig(parabola.ancestors[n]))
   };
 }
 
-function parseConfig(points) {
+function parseConfig(pointsConfig) {
   return [
     'functiongraph',
-    [points => makeCallback(...points), points],
+    [pointsArgument => makeCallback(...pointsArgument), pointsConfig],
     {
       ...defaultConfig,
       fillColor: 'transparent',
-      label: getParabolaLabelParameters(),
-    },
+      label: getParabolaLabelParameters()
+    }
   ];
 }
 
@@ -80,5 +84,5 @@ export default {
   onHandler,
   getConfig,
   parseConfig,
-  abort,
+  abort
 };

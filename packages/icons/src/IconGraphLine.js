@@ -7,7 +7,7 @@ const IconGraphLine = props => (
     <path
       fill="none"
       strokeLinecap="round"
-      strokeWidth={2}
+      strokeWidth="2"
       d="M293.3,486l-15.908,15.908"
       transform="translate(12.092 -558.218) rotate(30)"
     />

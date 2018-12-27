@@ -50,6 +50,10 @@ class GraphContainer extends Component {
     };
   }
 
+  setDefaultToolState() {
+    this.setState({ selectedTool: this.getDefaultTool() });
+  }
+
   componentDidMount() {
     const {
       canvas,
@@ -121,7 +125,7 @@ class GraphContainer extends Component {
       showAnswer
     } = this.props;
     if (JSON.stringify(tools) !== JSON.stringify(prevProps.tools)) {
-      this.setState({ selectedTool: this.getDefaultTool() });
+      this.setDefaultToolState();
       this._graph.setTool(tools[0]);
     }
     if (this._graph) {
@@ -254,25 +258,66 @@ class GraphContainer extends Component {
       return '';
     }
 
+    const { width, height } = options;
+
     const iconsByToolName = {
       point: () => <IconPoint {...options} />,
-      line: () => <IconLine {...options} />,
-      ray: () => <IconRay {...options} />,
-      segment: () => <IconSegment {...options} />,
-      vector: () => <IconVector {...options} />,
+      line: () => {
+        const newOptions = {
+          ...options,
+          width: width + 10,
+          height: height + 5
+        };
+
+        return <IconLine {...newOptions} />;
+      },
+      ray: () => {
+        const newOptions = {
+          ...options,
+          width: width + 10,
+          height: height + 5
+        };
+
+        return <IconRay {...newOptions} />;
+      },
+      segment: () => {
+        const newOptions = {
+          ...options,
+          width: width + 10,
+          height: height + 5
+        };
+
+        return <IconSegment {...newOptions} />;
+      },
+      vector: () => {
+        const newOptions = {
+          ...options,
+          width: width + 10,
+          height: height + 5
+        };
+
+        return <IconVector {...newOptions} />;
+      },
       circle: () => <IconCircle {...options} />,
       parabola: () => <IconParabola {...options} />,
       sine: () => {
         const newOptions = {
           ...options,
-          width: 23,
-          height: 23
+          width: width + 10
         };
 
         return <IconSine {...newOptions} />;
       },
       polygon: () => <IconPolygon {...options} />,
-      label: () => <IconLabel {...options} />
+      label: () => {
+        const newOptions = {
+          ...options,
+          width: width + 10,
+          height: height - 2
+        };
+
+        return <IconLabel {...newOptions} />;
+      }
     };
 
     return iconsByToolName[toolName]();

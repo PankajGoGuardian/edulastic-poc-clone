@@ -16,7 +16,7 @@ DeleteButton.propTypes = {
 };
 
 DeleteButton.defaultProps = {
-  deleteToolStyles: {},
+  deleteToolStyles: {}
 };
 
 export default DeleteButton;

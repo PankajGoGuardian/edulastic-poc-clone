@@ -34,7 +34,7 @@ RenderingBaseDropdown.propTypes = {
   t: PropTypes.func.isRequired,
   renderingBaseList: PropTypes.array.isRequired,
   currentItem: PropTypes.object.isRequired,
-  onChangeRenderingBase: PropTypes.func.isRequired,
+  onChangeRenderingBase: PropTypes.func.isRequired
 };
 
 const enhance = compose(

@@ -13,7 +13,7 @@ import {
   MoreOptionsLabel,
   MoreOptionsRow,
   MoreOptionsRowInline,
-  MoreOptionsSubHeading,
+  MoreOptionsSubHeading
 } from '../../../common/styled_components';
 import GraphContainer from '../../../Display/GraphContainer';
 import { CONSTANT } from '../../../Builder/config';
@@ -58,7 +58,7 @@ class QuadrantsMoreOptions extends Component {
     CONSTANT.TOOLS.RAY,
     CONSTANT.TOOLS.VECTOR,
     CONSTANT.TOOLS.SEGMENT,
-    CONSTANT.TOOLS.LABEL,
+    CONSTANT.TOOLS.LABEL
   ];
 
   render() {
@@ -70,7 +70,7 @@ class QuadrantsMoreOptions extends Component {
       canvasConfig,
       bgImgOptions,
       backgroundShapes,
-      setBgShapes,
+      setBgShapes
     } = this.props;
     const {
       drawLabelZero,
@@ -98,7 +98,7 @@ class QuadrantsMoreOptions extends Component {
       layout_margin,
       layout_snapto,
       xAxisLabel,
-      yAxisLabel,
+      yAxisLabel
     } = options;
 
     return (
@@ -529,14 +529,14 @@ QuadrantsMoreOptions.propTypes = {
   setBgImg: PropTypes.func.isRequired,
   canvasConfig: PropTypes.object.isRequired,
   backgroundShapes: PropTypes.array,
-  setBgShapes: PropTypes.func,
+  setBgShapes: PropTypes.func
 };
 
 QuadrantsMoreOptions.defaultProps = {
   stemNumerationList: [],
   fontSizeList: [],
   backgroundShapes: [],
-  setBgShapes: () => {},
+  setBgShapes: () => {}
 };
 
 const enhance = compose(

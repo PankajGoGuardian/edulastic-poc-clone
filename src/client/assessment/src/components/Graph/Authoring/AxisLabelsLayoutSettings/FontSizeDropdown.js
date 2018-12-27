@@ -34,7 +34,7 @@ FontSizeDropdown.propTypes = {
   t: PropTypes.func.isRequired,
   fontSizeList: PropTypes.array.isRequired,
   currentItem: PropTypes.object.isRequired,
-  onChangeFontSize: PropTypes.func.isRequired,
+  onChangeFontSize: PropTypes.func.isRequired
 };
 
 const enhance = compose(

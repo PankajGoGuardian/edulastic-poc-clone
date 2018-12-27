@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
 import {
-  MoreOptions, MoreOptionsHeading,
+  MoreOptions, MoreOptionsHeading
 } from '../../common/styled_components';
 import AxisSegmentsMoreOptions from './AxisSegmentsMoreOptions';
 
@@ -20,7 +20,7 @@ class AxisSegmentsOptions extends Component {
       t,
       orientationList,
       fontSizeList,
-      renderingBaseList,
+      renderingBaseList
     } = this.props;
     return (
       <Fragment>
@@ -51,7 +51,7 @@ AxisSegmentsOptions.propTypes = {
   isMoreOptionsOpen: PropTypes.bool.isRequired,
   orientationList: PropTypes.array.isRequired,
   fontSizeList: PropTypes.array.isRequired,
-  renderingBaseList: PropTypes.array.isRequired,
+  renderingBaseList: PropTypes.array.isRequired
 };
 
 const enhance = compose(

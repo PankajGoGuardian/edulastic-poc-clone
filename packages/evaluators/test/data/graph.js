@@ -11,10 +11,10 @@ export const trueAnswerWith1Point = {
       id: 'lrn_1',
       type: ShapeTypes.POINT,
       x: 2,
-      y: 8,
-    }],
+      y: 8
+    }]
   },
-  ignore_repeated_shapes: IgnoreRepeatedShapes.NO,
+  ignore_repeated_shapes: IgnoreRepeatedShapes.NO
 };
 
 export const trueAnswerWith2Points = {
@@ -25,15 +25,15 @@ export const trueAnswerWith2Points = {
       id: 'lrn_1',
       type: ShapeTypes.POINT,
       x: 2,
-      y: 8,
+      y: 8
     }, {
       id: 'lrn_2',
       type: ShapeTypes.POINT,
       x: 0,
-      y: -3,
-    }],
+      y: -3
+    }]
   },
-  ignore_repeated_shapes: IgnoreRepeatedShapes.NO,
+  ignore_repeated_shapes: IgnoreRepeatedShapes.NO
 };
 
 // Line ============================================================================================
@@ -47,22 +47,22 @@ export const trueAnswerWith1Line = {
       type: ShapeTypes.POINT,
       x: 2,
       y: 6,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_2',
       type: ShapeTypes.POINT,
       x: -2,
       y: 5,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_3',
       type: ShapeTypes.LINE,
       subElementsIds: {
         startPoint: 'lrn_1',
-        endPoint: 'lrn_2',
-      },
-    }],
-  },
+        endPoint: 'lrn_2'
+      }
+    }]
+  }
 };
 
 export const trueLineWithOtherPoints = [{
@@ -70,20 +70,20 @@ export const trueLineWithOtherPoints = [{
   type: ShapeTypes.POINT,
   x: -6,
   y: 4,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_5',
   type: ShapeTypes.POINT,
   x: 6,
   y: 7,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_6',
   type: ShapeTypes.LINE,
   subElementsIds: {
     startPoint: 'lrn_4',
-    endPoint: 'lrn_5',
-  },
+    endPoint: 'lrn_5'
+  }
 }];
 
 export const secondTrueLine = [{
@@ -91,20 +91,20 @@ export const secondTrueLine = [{
   type: ShapeTypes.POINT,
   x: -1,
   y: 5,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_12',
   type: ShapeTypes.POINT,
   x: 2,
   y: -2,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_13',
   type: ShapeTypes.LINE,
   subElementsIds: {
     startPoint: 'lrn_11',
-    endPoint: 'lrn_12',
-  },
+    endPoint: 'lrn_12'
+  }
 }];
 
 export const errorLine = [{
@@ -112,20 +112,20 @@ export const errorLine = [{
   type: ShapeTypes.POINT,
   x: 0,
   y: 0,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_8',
   type: ShapeTypes.POINT,
   x: 10,
   y: 10,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_9',
   type: ShapeTypes.LINE,
   subElementsIds: {
     startPoint: 'lrn_7',
-    endPoint: 'lrn_8',
-  },
+    endPoint: 'lrn_8'
+  }
 }];
 
 export const EV315_trueAnswer = {
@@ -137,22 +137,22 @@ export const EV315_trueAnswer = {
       type: ShapeTypes.POINT,
       x: 1,
       y: 1,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_2',
       type: ShapeTypes.POINT,
       x: 2,
       y: 2,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_3',
       type: ShapeTypes.LINE,
       subElementsIds: {
         startPoint: 'lrn_1',
-        endPoint: 'lrn_2',
-      },
-    }],
-  },
+        endPoint: 'lrn_2'
+      }
+    }]
+  }
 };
 
 export const EV315_testPoints = [{
@@ -160,39 +160,39 @@ export const EV315_testPoints = [{
   type: ShapeTypes.POINT,
   x: 1,
   y: 1,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_5',
   type: ShapeTypes.POINT,
   x: 2,
   y: 2,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_6',
   type: ShapeTypes.LINE,
   subElementsIds: {
     startPoint: 'lrn_4',
-    endPoint: 'lrn_5',
-  },
+    endPoint: 'lrn_5'
+  }
 }, {
   id: 'lrn_7',
   type: ShapeTypes.POINT,
   x: 3,
   y: 3,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_8',
   type: ShapeTypes.POINT,
   x: 4,
   y: 4,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_9',
   type: ShapeTypes.LINE,
   subElementsIds: {
     startPoint: 'lrn_7',
-    endPoint: 'lrn_8',
-  },
+    endPoint: 'lrn_8'
+  }
 }];
 
 // Ray =============================================================================================
@@ -206,22 +206,22 @@ export const trueAnswerWith1Ray = {
       type: ShapeTypes.POINT,
       x: 2,
       y: 6,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_2',
       type: ShapeTypes.POINT,
       x: 4,
       y: 6,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_3',
       type: ShapeTypes.RAY,
       subElementsIds: {
         startPoint: 'lrn_1',
-        endPoint: 'lrn_2',
-      },
-    }],
-  },
+        endPoint: 'lrn_2'
+      }
+    }]
+  }
 };
 
 export const trueRayWithOtherPoints = [{
@@ -229,14 +229,14 @@ export const trueRayWithOtherPoints = [{
   type: ShapeTypes.POINT,
   x: 6,
   y: 6,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_6',
   type: ShapeTypes.RAY,
   subElementsIds: {
     startPoint: 'lrn_1',
-    endPoint: 'lrn_4',
-  },
+    endPoint: 'lrn_4'
+  }
 }];
 
 export const secondTrueRay = [{
@@ -244,20 +244,20 @@ export const secondTrueRay = [{
   type: ShapeTypes.POINT,
   x: -1,
   y: 5,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_12',
   type: ShapeTypes.POINT,
   x: 2,
   y: -2,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_13',
   type: ShapeTypes.RAY,
   subElementsIds: {
     startPoint: 'lrn_11',
-    endPoint: 'lrn_12',
-  },
+    endPoint: 'lrn_12'
+  }
 }];
 
 export const errorRay = [{
@@ -265,20 +265,20 @@ export const errorRay = [{
   type: ShapeTypes.POINT,
   x: 0,
   y: 0,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_8',
   type: ShapeTypes.POINT,
   x: 10,
   y: 10,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_9',
   type: ShapeTypes.RAY,
   subElementsIds: {
     startPoint: 'lrn_7',
-    endPoint: 'lrn_8',
-  },
+    endPoint: 'lrn_8'
+  }
 }];
 
 // Segment =========================================================================================
@@ -292,22 +292,22 @@ export const trueAnswerWith1Segment = {
       type: ShapeTypes.POINT,
       x: 2,
       y: 6,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_2',
       type: ShapeTypes.POINT,
       x: 4,
       y: 6,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_3',
       type: ShapeTypes.SEGMENT,
       subElementsIds: {
         startPoint: 'lrn_1',
-        endPoint: 'lrn_2',
-      },
-    }],
-  },
+        endPoint: 'lrn_2'
+      }
+    }]
+  }
 };
 
 export const trueSegmentWithReversedPoints = {
@@ -315,8 +315,8 @@ export const trueSegmentWithReversedPoints = {
   type: ShapeTypes.SEGMENT,
   subElementsIds: {
     startPoint: 'lrn_2',
-    endPoint: 'lrn_1',
-  },
+    endPoint: 'lrn_1'
+  }
 };
 
 export const secondTrueSegment = [{
@@ -324,20 +324,20 @@ export const secondTrueSegment = [{
   type: ShapeTypes.POINT,
   x: -1,
   y: 5,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_12',
   type: ShapeTypes.POINT,
   x: 2,
   y: -2,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_13',
   type: ShapeTypes.SEGMENT,
   subElementsIds: {
     startPoint: 'lrn_11',
-    endPoint: 'lrn_12',
-  },
+    endPoint: 'lrn_12'
+  }
 }];
 
 export const errorSegment = [{
@@ -345,20 +345,20 @@ export const errorSegment = [{
   type: ShapeTypes.POINT,
   x: 0,
   y: 0,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_8',
   type: ShapeTypes.POINT,
   x: 10,
   y: 10,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_9',
   type: ShapeTypes.SEGMENT,
   subElementsIds: {
     startPoint: 'lrn_7',
-    endPoint: 'lrn_8',
-  },
+    endPoint: 'lrn_8'
+  }
 }];
 
 
@@ -373,22 +373,22 @@ export const trueAnswerWith1Vector = {
       type: ShapeTypes.POINT,
       x: 2,
       y: 6,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_2',
       type: ShapeTypes.POINT,
       x: 4,
       y: 6,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_3',
       type: ShapeTypes.VECTOR,
       subElementsIds: {
         startPoint: 'lrn_1',
-        endPoint: 'lrn_2',
-      },
-    }],
-  },
+        endPoint: 'lrn_2'
+      }
+    }]
+  }
 };
 
 export const vectorWithReversedPoints = {
@@ -396,8 +396,8 @@ export const vectorWithReversedPoints = {
   type: ShapeTypes.VECTOR,
   subElementsIds: {
     startPoint: 'lrn_2',
-    endPoint: 'lrn_1',
-  },
+    endPoint: 'lrn_1'
+  }
 };
 
 export const secondTrueVector = [{
@@ -405,20 +405,20 @@ export const secondTrueVector = [{
   type: ShapeTypes.POINT,
   x: -1,
   y: 5,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_12',
   type: ShapeTypes.POINT,
   x: 2,
   y: -2,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_13',
   type: ShapeTypes.VECTOR,
   subElementsIds: {
     startPoint: 'lrn_11',
-    endPoint: 'lrn_12',
-  },
+    endPoint: 'lrn_12'
+  }
 }];
 
 export const errorVector = [{
@@ -426,20 +426,20 @@ export const errorVector = [{
   type: ShapeTypes.POINT,
   x: 0,
   y: 0,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_8',
   type: ShapeTypes.POINT,
   x: 10,
   y: 10,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_9',
   type: ShapeTypes.VECTOR,
   subElementsIds: {
     startPoint: 'lrn_7',
-    endPoint: 'lrn_8',
-  },
+    endPoint: 'lrn_8'
+  }
 }];
 
 // Circle ==========================================================================================
@@ -453,22 +453,22 @@ export const trueAnswerWith1Circle = {
       type: ShapeTypes.POINT,
       x: 2,
       y: 6,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_2',
       type: ShapeTypes.POINT,
       x: 4,
       y: 6,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_3',
       type: ShapeTypes.CIRCLE,
       subElementsIds: {
         startPoint: 'lrn_1',
-        endPoint: 'lrn_2',
-      },
-    }],
-  },
+        endPoint: 'lrn_2'
+      }
+    }]
+  }
 };
 
 export const trueCircleWithOtherPoints = [{
@@ -476,14 +476,14 @@ export const trueCircleWithOtherPoints = [{
   type: ShapeTypes.POINT,
   x: 2,
   y: 4,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_6',
   type: ShapeTypes.CIRCLE,
   subElementsIds: {
     startPoint: 'lrn_1',
-    endPoint: 'lrn_5',
-  },
+    endPoint: 'lrn_5'
+  }
 }];
 
 export const secondTrueCircle = [{
@@ -491,20 +491,20 @@ export const secondTrueCircle = [{
   type: ShapeTypes.POINT,
   x: -1,
   y: 5,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_12',
   type: ShapeTypes.POINT,
   x: 2,
   y: -2,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_13',
   type: ShapeTypes.CIRCLE,
   subElementsIds: {
     startPoint: 'lrn_11',
-    endPoint: 'lrn_12',
-  },
+    endPoint: 'lrn_12'
+  }
 }];
 
 export const errorCircle = [{
@@ -512,20 +512,20 @@ export const errorCircle = [{
   type: ShapeTypes.POINT,
   x: 0,
   y: 0,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_8',
   type: ShapeTypes.POINT,
   x: 10,
   y: 10,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_9',
   type: ShapeTypes.CIRCLE,
   subElementsIds: {
     startPoint: 'lrn_7',
-    endPoint: 'lrn_8',
-  },
+    endPoint: 'lrn_8'
+  }
 }];
 
 // Parabola ========================================================================================
@@ -539,22 +539,22 @@ export const trueAnswerWith1Parabola = {
       type: ShapeTypes.POINT,
       x: 2,
       y: 2,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_2',
       type: ShapeTypes.POINT,
       x: 4,
       y: 6,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_3',
       type: ShapeTypes.PARABOLA,
       subElementsIds: {
         startPoint: 'lrn_1',
-        endPoint: 'lrn_2',
-      },
-    }],
-  },
+        endPoint: 'lrn_2'
+      }
+    }]
+  }
 };
 
 export const trueParabolaWithOtherPoints = [{
@@ -562,14 +562,14 @@ export const trueParabolaWithOtherPoints = [{
   type: ShapeTypes.POINT,
   x: 0,
   y: 6,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_6',
   type: ShapeTypes.PARABOLA,
   subElementsIds: {
     startPoint: 'lrn_1',
-    endPoint: 'lrn_5',
-  },
+    endPoint: 'lrn_5'
+  }
 }];
 
 export const secondTrueParabola = [{
@@ -577,20 +577,20 @@ export const secondTrueParabola = [{
   type: ShapeTypes.POINT,
   x: -1,
   y: 5,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_12',
   type: ShapeTypes.POINT,
   x: 2,
   y: -2,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_13',
   type: ShapeTypes.PARABOLA,
   subElementsIds: {
     startPoint: 'lrn_11',
-    endPoint: 'lrn_12',
-  },
+    endPoint: 'lrn_12'
+  }
 }];
 
 export const errorParabola = [{
@@ -598,20 +598,20 @@ export const errorParabola = [{
   type: ShapeTypes.POINT,
   x: 0,
   y: 0,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_8',
   type: ShapeTypes.POINT,
   x: 10,
   y: 10,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_9',
   type: ShapeTypes.PARABOLA,
   subElementsIds: {
     startPoint: 'lrn_7',
-    endPoint: 'lrn_8',
-  },
+    endPoint: 'lrn_8'
+  }
 }];
 
 // Sine ============================================================================================
@@ -625,22 +625,22 @@ export const trueAnswerWith1Sine = {
       type: ShapeTypes.POINT,
       x: 2,
       y: 5,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_2',
       type: ShapeTypes.POINT,
       x: 4,
       y: 7,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_3',
       type: ShapeTypes.SINE,
       subElementsIds: {
         startPoint: 'lrn_1',
-        endPoint: 'lrn_2',
-      },
-    }],
-  },
+        endPoint: 'lrn_2'
+      }
+    }]
+  }
 };
 
 export const trueSineWithOtherPoints = [{
@@ -648,20 +648,20 @@ export const trueSineWithOtherPoints = [{
   type: ShapeTypes.POINT,
   x: -2,
   y: 5,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_5',
   type: ShapeTypes.POINT,
   x: 0,
   y: 3,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_6',
   type: ShapeTypes.SINE,
   subElementsIds: {
     startPoint: 'lrn_4',
-    endPoint: 'lrn_5',
-  },
+    endPoint: 'lrn_5'
+  }
 }];
 
 export const secondTrueSine = [{
@@ -669,20 +669,20 @@ export const secondTrueSine = [{
   type: ShapeTypes.POINT,
   x: 1,
   y: -3,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_12',
   type: ShapeTypes.POINT,
   x: 2,
   y: 0,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_13',
   type: ShapeTypes.SINE,
   subElementsIds: {
     startPoint: 'lrn_11',
-    endPoint: 'lrn_12',
-  },
+    endPoint: 'lrn_12'
+  }
 }];
 
 export const errorSine = [{
@@ -690,20 +690,20 @@ export const errorSine = [{
   type: ShapeTypes.POINT,
   x: 0,
   y: 0,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_8',
   type: ShapeTypes.POINT,
   x: 10,
   y: 10,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_9',
   type: ShapeTypes.SINE,
   subElementsIds: {
     startPoint: 'lrn_7',
-    endPoint: 'lrn_8',
-  },
+    endPoint: 'lrn_8'
+  }
 }];
 
 // Polygon =========================================================================================
@@ -717,25 +717,25 @@ export const trueAnswerWith1Polygon = {
       type: ShapeTypes.POINT,
       x: 1,
       y: 7,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_2',
       type: ShapeTypes.POINT,
       x: 1,
       y: 5,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_21',
       type: ShapeTypes.POINT,
       x: 1,
       y: 3,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_22',
       type: ShapeTypes.POINT,
       x: 3,
       y: 5,
-      subElement: true,
+      subElement: true
     }, {
       id: 'lrn_3',
       type: ShapeTypes.POLYGON,
@@ -744,10 +744,10 @@ export const trueAnswerWith1Polygon = {
         1: 'lrn_2',
         2: 'lrn_21',
         3: 'lrn_22',
-        4: 'lrn_1',
-      },
-    }],
-  },
+        4: 'lrn_1'
+      }
+    }]
+  }
 };
 
 export const truePolygonWithOtherOrderedPoints = {
@@ -758,8 +758,8 @@ export const truePolygonWithOtherOrderedPoints = {
     1: 'lrn_1',
     2: 'lrn_22',
     3: 'lrn_21',
-    4: 'lrn_2',
-  },
+    4: 'lrn_2'
+  }
 };
 
 export const secondTruePolygon = [{
@@ -767,25 +767,25 @@ export const secondTruePolygon = [{
   type: ShapeTypes.POINT,
   x: -7,
   y: 5,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_12',
   type: ShapeTypes.POINT,
   x: -6,
   y: 3,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_31',
   type: ShapeTypes.POINT,
   x: -3,
   y: -4,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_32',
   type: ShapeTypes.POINT,
   x: -5,
   y: 7,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_13',
   type: ShapeTypes.POLYGON,
@@ -794,8 +794,8 @@ export const secondTruePolygon = [{
     1: 'lrn_12',
     2: 'lrn_31',
     3: 'lrn_32',
-    4: 'lrn_11',
-  },
+    4: 'lrn_11'
+  }
 }];
 
 export const errorPolygon = [{
@@ -803,31 +803,31 @@ export const errorPolygon = [{
   type: ShapeTypes.POINT,
   x: 6,
   y: -4,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_8',
   type: ShapeTypes.POINT,
   x: -4,
   y: 3,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_41',
   type: ShapeTypes.POINT,
   x: -6,
   y: -6,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_42',
   type: ShapeTypes.POINT,
   x: 3,
   y: -7,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_43',
   type: ShapeTypes.POINT,
   x: 8,
   y: -8,
-  subElement: true,
+  subElement: true
 }, {
   id: 'lrn_9',
   type: ShapeTypes.POLYGON,
@@ -837,6 +837,6 @@ export const errorPolygon = [{
     2: 'lrn_41',
     3: 'lrn_42',
     4: 'lrn_43',
-    5: 'lrn_7',
-  },
+    5: 'lrn_7'
+  }
 }];

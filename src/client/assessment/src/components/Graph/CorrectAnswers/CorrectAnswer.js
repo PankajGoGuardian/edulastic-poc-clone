@@ -9,7 +9,7 @@ class CorrectAnswer extends Component {
     super(props);
 
     this.state = {
-      responseScore: props.response && props.response.score,
+      responseScore: props.response && props.response.score
     };
   }
 
@@ -67,10 +67,12 @@ CorrectAnswer.propTypes = {
   tools: PropTypes.array.isRequired,
   bgImgOptions: PropTypes.object.isRequired,
   backgroundShapes: PropTypes.array,
+  stimulus: PropTypes.string
 };
 
 CorrectAnswer.defaultProps = {
   backgroundShapes: [],
+  stimulus: ''
 };
 
 export default withNamespaces('assessment')(CorrectAnswer);

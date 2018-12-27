@@ -6,7 +6,7 @@ import { withNamespaces } from '@edulastic/localization';
 import {
   MoreOptionsContainer, MoreOptionsColumn, MoreOptionsRow,
   MoreOptionsLabel, MoreOptionsInput, MoreOptionsDivider,
-  MoreOptionsSubHeading, MoreOptionsColumnContainer,
+  MoreOptionsSubHeading, MoreOptionsColumnContainer
 } from '../../common/styled_components';
 import FontSizeDropdown from './FontSizeDropdown';
 import FractionsFormatDropdown from './FractionsFormatDropdown';
@@ -22,14 +22,14 @@ class MoreOptionsSettings extends Component {
     showTicksState: false,
     snapToTicksState: false,
     showMinLabelStatus: true,
-    showMaxLabelStatus: true,
+    showMaxLabelStatus: true
   };
 
   handleInputChange = (event) => {
     const { target: { name, value } } = event;
 
     this.setState(state => ({
-      [name]: !state[value],
+      [name]: !state[value]
     }));
   };
 
@@ -43,7 +43,7 @@ class MoreOptionsSettings extends Component {
 
     if (defaultSelectedItem && isCurrentFontSizeItemUndefined) {
       this.setState(() => ({
-        currentFontSizeItem: defaultSelectedItem,
+        currentFontSizeItem: defaultSelectedItem
       }));
     }
   };
@@ -58,7 +58,7 @@ class MoreOptionsSettings extends Component {
       findItem.selected = true;
 
       this.setState(() => ({
-        currentFontSizeItem: findItem,
+        currentFontSizeItem: findItem
       }));
     }
   };
@@ -73,7 +73,7 @@ class MoreOptionsSettings extends Component {
       findItem.selected = true;
 
       this.setState(() => ({
-        currentFractionItem: findItem,
+        currentFractionItem: findItem
       }));
     }
   };
@@ -88,7 +88,7 @@ class MoreOptionsSettings extends Component {
       findItem.selected = true;
 
       this.setState(() => ({
-        currentRenderingBaseItem: findItem,
+        currentRenderingBaseItem: findItem
       }));
     }
   };
@@ -107,13 +107,13 @@ class MoreOptionsSettings extends Component {
       showTicksState,
       snapToTicksState,
       showMinLabelStatus,
-      showMaxLabelStatus,
+      showMaxLabelStatus
     } = this.state;
     const {
       t,
       fontSizeList,
       fractionsFormatList,
-      renderingBaseList,
+      renderingBaseList
     } = this.props;
 
     return (
@@ -361,7 +361,7 @@ MoreOptionsSettings.propTypes = {
   t: PropTypes.func.isRequired,
   fontSizeList: PropTypes.array.isRequired,
   fractionsFormatList: PropTypes.array.isRequired,
-  renderingBaseList: PropTypes.array.isRequired,
+  renderingBaseList: PropTypes.array.isRequired
 };
 
 const enhance = compose(

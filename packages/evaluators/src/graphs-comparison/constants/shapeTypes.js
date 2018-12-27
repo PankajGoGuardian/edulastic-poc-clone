@@ -7,5 +7,5 @@ export const ShapeTypes = {
   CIRCLE: 'circle',
   PARABOLA: 'parabola',
   SINE: 'sine',
-  POLYGON: 'polygon',
+  POLYGON: 'polygon'
 };

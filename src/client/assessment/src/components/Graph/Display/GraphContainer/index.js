@@ -1,4 +1,4 @@
-import { default as GraphContainer } from './GraphContainerHOC';
+import GraphContainer from './GraphContainerHOC';
 import { CONSTANT } from '../../Builder/config/index';
 
 export const DEFAULT_TOOLS = [

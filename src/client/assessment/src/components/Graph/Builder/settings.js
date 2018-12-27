@@ -10,7 +10,7 @@ const graphParameters = {
   xMin: -10,
   xMax: 10,
   yMin: -10,
-  yMax: 10,
+  yMax: 10
 };
 
 const pointParameters = {
@@ -33,7 +33,7 @@ const pointParameters = {
   /**
    * @see https://jsxgraph.org/docs/symbols/Point.html#snapSizeY
    */
-  snapSizeY: 1,
+  snapSizeY: 1
 };
 
 const axesParameters = {
@@ -67,7 +67,7 @@ const axesParameters = {
   /**
    * @see https://jsxgraph.org/docs/symbols/Ticks.html#drawZero
    */
-  drawZero: true,
+  drawZero: true
 };
 
 const gridParameters = {
@@ -80,7 +80,7 @@ const gridParameters = {
    * special grid options
    * @see https://jsxgraph.org/docs/symbols/src/src_options.js.html
    */
-  gridY: 1,
+  gridY: 1
 };
 
 const bgObjectParameters = {
@@ -89,14 +89,14 @@ const bgObjectParameters = {
   fixed: true,
   highlightFillOpacity: 1,
   highlightStrokeColor: '#ccc',
-  highlightFillColor: '#ccc',
+  highlightFillColor: '#ccc'
 };
 
 const bgImageParameters = {
   urlImg: '',
   coords: [0, 0],
   size: [100, 100],
-  opacity: 0.5,
+  opacity: 0.5
 };
 
 const inputParameters = {
@@ -107,7 +107,7 @@ const inputParameters = {
   highlightCssClass: 'myLabelInput',
   fixed: true,
   highlightFillOpacity: 1,
-  highlightStrokeOpacity: 1,
+  highlightStrokeOpacity: 1
 };
 
 export const defaultInputParameters = () => ({ ...inputParameters });
@@ -118,7 +118,7 @@ export const graphParameters2Boundingbox = p => ([
   p.xMin,
   p.yMax,
   p.xMax,
-  p.yMin,
+  p.yMin
 ]);
 
 export const defaultBgObjectParameters = () => ({ ...bgObjectParameters });
@@ -197,7 +197,7 @@ export function mergeParams(defaultConfig, userConfig) {
   if ('gridParameters' in userConfig) {
     defaultConfig.grid = {
       ...defaultConfig.grid,
-      ...userConfig.gridParameters,
+      ...userConfig.gridParameters
     };
   }
   return defaultConfig;
@@ -213,7 +213,7 @@ export function fillConfigDefaultParameters(config) {
   if (!config.axesParameters) {
     config.axesParameters = {
       x: defaultAxesParameters(),
-      y: defaultAxesParameters(),
+      y: defaultAxesParameters()
     };
   }
   if (!config.gridParameters) {

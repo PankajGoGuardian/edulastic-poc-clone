@@ -17,7 +17,7 @@ const getFontSizeVal = (name) => {
 };
 
 const getSnapSize = (snapTo, axisDistance) => {
-  if (snapTo === 'grid' || isNaN(parseInt(snapTo))) {
+  if (snapTo === 'grid' || Number.isNaN(parseInt(snapTo, 10))) {
     if (axisDistance) return axisDistance;
     return 1; // default
   }

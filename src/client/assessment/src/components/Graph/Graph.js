@@ -45,7 +45,7 @@ const getIgnoreRepeatedShapesOptions = () => (
 
 class Graph extends Component {
   getRenderData = () => {
-    const { item, history } = this.props;
+    const { item } = this.props;
     let previewTools = [];
     let previewAnswer = [];
     if (item) {
@@ -131,7 +131,7 @@ class Graph extends Component {
   };
 
   handleAddAnswer = (qid) => {
-    const { saveAnswer, userAnswer, item } = this.props;
+    const { saveAnswer } = this.props;
     saveAnswer(qid);
   };
 
@@ -283,7 +283,7 @@ class Graph extends Component {
 }
 
 Graph.propTypes = {
-  view: PropTypes.object.isRequired,
+  view: PropTypes.string.isRequired,
   item: PropTypes.object.isRequired,
   smallSize: PropTypes.bool,
   setQuestionData: PropTypes.func.isRequired,
@@ -291,15 +291,17 @@ Graph.propTypes = {
   previewTab: PropTypes.string,
   userAnswer: PropTypes.any,
   saveAnswer: PropTypes.func.isRequired,
-  changePreviewTab: PropTypes.func.isRequired,
-  evaluation: PropTypes.any.isRequired
+  changePreviewTab: PropTypes.func,
+  evaluation: PropTypes.any
 };
 
 Graph.defaultProps = {
   smallSize: false,
   previewTab: 'clear',
   testItem: false,
-  userAnswer: []
+  userAnswer: [],
+  changePreviewTab: () => {},
+  evaluation: null
 };
 
 const enhance = compose(

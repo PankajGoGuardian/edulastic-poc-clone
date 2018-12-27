@@ -5,7 +5,7 @@ const elWeight = {
   polygon: 2,
   circle: 3,
   line: 4,
-  curve: 5,
+  curve: 5
 };
 
 const allowElements = [
@@ -13,7 +13,7 @@ const allowElements = [
   'point',
   'circle',
   'line',
-  'curve',
+  'curve'
 ];
 
 /**
@@ -21,13 +21,13 @@ const allowElements = [
  */
 function getElementUnderMouse(elements) {
   const filteredElements = elements
-    .filter(el => ~allowElements.indexOf(el.elType))
+    .filter(el => ~allowElements.indexOf(el.elType)) // eslint-disable-line
     .sort((a, b) => elWeight[a.elType] - elWeight[b.elType]);
   return filteredElements[0];
 }
 
 function onHandler() {
-  return (board, event) => {
+  return (board) => {
     const currentElement = getElementUnderMouse(board.$board.downObjects);
     if (!currentElement || currentElement.getAttribute('fixed') === true) {
       return;
@@ -40,5 +40,5 @@ function onHandler() {
 }
 
 export default {
-  onHandler,
+  onHandler
 };

@@ -106,7 +106,7 @@ class AxisSmallSize extends Component {
               </Label>
             </UnderAxis>
           )}
-          <img src={AxisImage} width="100%" height="auto" />
+          <img src={AxisImage} alt="axis" width="100%" height="auto" />
         </Top>
         {segments && (
           <Bottom>

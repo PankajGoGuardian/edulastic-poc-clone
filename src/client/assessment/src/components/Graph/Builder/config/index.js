@@ -12,7 +12,7 @@ const quadrantsDefaultConfig = {
     // X distance
     gridX: 1,
     // Y distance
-    gridY: 1,
+    gridY: 1
   },
   defaultaxes: {
     x: {
@@ -24,7 +24,7 @@ const quadrantsDefaultConfig = {
       label: {
         position: 'rt',
         anchorX: 'right',
-        anchorY: 'bottom',
+        anchorY: 'bottom'
       },
       ticks: {
         drawLabels: true,
@@ -34,14 +34,14 @@ const quadrantsDefaultConfig = {
         includeBoundaries: true,
         minorHeight: 1,
         majorHeight: 15,
-        ticksDistance: 1,
+        ticksDistance: 1
       },
       firstArrow: {
-        size: 5,
+        size: 5
       },
       lastArrow: {
-        size: 5,
-      },
+        size: 5
+      }
     },
     y: {
       name: '',
@@ -52,7 +52,7 @@ const quadrantsDefaultConfig = {
       label: {
         position: 'rt',
         anchorX: 'left',
-        anchorY: 'top',
+        anchorY: 'top'
       },
       ticks: {
         drawLabels: true,
@@ -60,14 +60,14 @@ const quadrantsDefaultConfig = {
         insertTicks: false,
         minorHeight: 0,
         ticksDistance: 1,
-        majorHeight: 15,
+        majorHeight: 15
       },
       firstArrow: {
-        size: 5,
+        size: 5
       },
       lastArrow: {
-        size: 5,
-      },
+        size: 5
+      }
     }
   }
 };

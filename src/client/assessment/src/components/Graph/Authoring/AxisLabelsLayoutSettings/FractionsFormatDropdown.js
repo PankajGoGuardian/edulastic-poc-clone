@@ -34,7 +34,7 @@ FractionsFormatDropdown.propTypes = {
   t: PropTypes.func.isRequired,
   fractionsFormatList: PropTypes.array.isRequired,
   currentItem: PropTypes.object.isRequired,
-  onChangeFractionsFormat: PropTypes.func.isRequired,
+  onChangeFractionsFormat: PropTypes.func.isRequired
 };
 
 const enhance = compose(

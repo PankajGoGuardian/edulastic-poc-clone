@@ -6,13 +6,13 @@ export default {
       fillColor: '#00b2ff',
       strokeColor: '#00b2ff',
       highlightStrokeColor: '#00b2ff',
-      highlightFillColor: '#00b2ff',
+      highlightFillColor: '#00b2ff'
     },
     [TOOLS.LINE]: {
       fillColor: '#00b2ff',
       strokeColor: '#00b2ff',
       highlightStrokeColor: '#00b2ff',
-      highlightFillColor: '#00b2ff',
+      highlightFillColor: '#00b2ff'
     },
     [TOOLS.POLYGON]: {
       fillColor: '#00b2ff',
@@ -23,27 +23,27 @@ export default {
         fillColor: '#00b2ff',
         strokeColor: '#00b2ff',
         highlightStrokeColor: '#00b2ff',
-        highlightFillColor: '#00b2ff',
-      },
+        highlightFillColor: '#00b2ff'
+      }
     },
     [TOOLS.CIRCLE]: {
       fillColor: 'transparent',
       strokeColor: '#00b2ff',
       highlightStrokeColor: '#00b2ff',
-      highlightFillColor: 'transparent',
+      highlightFillColor: 'transparent'
     },
     [TOOLS.SIN]: {
       fillColor: 'transparent',
       strokeColor: '#00b2ff',
       highlightStrokeColor: '#00b2ff',
-      highlightFillColor: 'transparent',
+      highlightFillColor: 'transparent'
     },
     [TOOLS.PARABOLA]: {
       fillColor: 'transparent',
       strokeColor: '#00b2ff',
       highlightStrokeColor: '#00b2ff',
-      highlightFillColor: 'transparent',
-    },
+      highlightFillColor: 'transparent'
+    }
   },
 
   red: {
@@ -51,13 +51,13 @@ export default {
       fillColor: '#ee1658',
       strokeColor: '#ee1658',
       highlightStrokeColor: '#ee1658',
-      highlightFillColor: '#ee1658',
+      highlightFillColor: '#ee1658'
     },
     [TOOLS.LINE]: {
       fillColor: '#ee1658',
       strokeColor: '#ee1658',
       highlightStrokeColor: '#ee1658',
-      highlightFillColor: '#ee1658',
+      highlightFillColor: '#ee1658'
     },
     [TOOLS.POLYGON]: {
       fillColor: '#ee1658',
@@ -68,27 +68,27 @@ export default {
         fillColor: '#ee1658',
         strokeColor: '#ee1658',
         highlightStrokeColor: '#ee1658',
-        highlightFillColor: '#ee1658',
+        highlightFillColor: '#ee1658'
       }
     },
     [TOOLS.CIRCLE]: {
       fillColor: 'transparent',
       strokeColor: '#ee1658',
       highlightStrokeColor: '#ee1658',
-      highlightFillColor: 'transparent',
+      highlightFillColor: 'transparent'
     },
     [TOOLS.SIN]: {
       fillColor: 'transparent',
       strokeColor: '#ee1658',
       highlightStrokeColor: '#ee1658',
-      highlightStrokeWidth: 1,
+      highlightStrokeWidth: 1
     },
     [TOOLS.PARABOLA]: {
       fillColor: 'transparent',
       strokeColor: '#ee1658',
       highlightStrokeColor: '#ee1658',
-      highlightStrokeWidth: 1,
-    },
+      highlightStrokeWidth: 1
+    }
   },
 
   green: {
@@ -96,13 +96,13 @@ export default {
       fillColor: '#1fe3a1',
       strokeColor: '#1fe3a1',
       highlightStrokeColor: '#1fe3a1',
-      highlightFillColor: '#1fe3a1',
+      highlightFillColor: '#1fe3a1'
     },
     [TOOLS.LINE]: {
       fillColor: '#1fe3a1',
       strokeColor: '#1fe3a1',
       highlightStrokeColor: '#1fe3a1',
-      highlightFillColor: '#1fe3a1',
+      highlightFillColor: '#1fe3a1'
     },
     [TOOLS.POLYGON]: {
       fillColor: '#1fe3a1',
@@ -113,26 +113,26 @@ export default {
         fillColor: '#1fe3a1',
         strokeColor: '#1fe3a1',
         highlightStrokeColor: '#1fe3a1',
-        highlightFillColor: '#1fe3a1',
-      },
+        highlightFillColor: '#1fe3a1'
+      }
     },
     [TOOLS.CIRCLE]: {
       fillColor: '#1fe3a1',
       strokeColor: '#1fe3a1',
       highlightStrokeColor: '#1fe3a1',
-      highlightFillColor: 'transparent',
+      highlightFillColor: 'transparent'
     },
     [TOOLS.SIN]: {
       fillColor: 'transparent',
       strokeColor: '#1fe3a1',
       highlightStrokeColor: '#1fe3a1',
-      highlightStrokeWidth: 1,
+      highlightStrokeWidth: 1
     },
     [TOOLS.PARABOLA]: {
       fillColor: 'transparent',
       strokeColor: '#1fe3a1',
       highlightStrokeColor: '#1fe3a1',
-      highlightStrokeWidth: 1,
+      highlightStrokeWidth: 1
     }
   },
 
@@ -141,37 +141,37 @@ export default {
       fillColor: '#ffcb00',
       strokeColor: '#ffcb00',
       highlightStrokeColor: '#ffcb00',
-      highlightFillColor: '#ffcb00',
+      highlightFillColor: '#ffcb00'
     },
     [TOOLS.LINE]: {
       fillColor: '#ffcb00',
       strokeColor: '#ffcb00',
       highlightStrokeColor: '#ffcb00',
-      highlightFillColor: '#ffcb00',
+      highlightFillColor: '#ffcb00'
     },
     [TOOLS.POLYGON]: {
       fillColor: '#ffcb00',
       strokeColor: '#ffcb00',
       highlightStrokeColor: '#ffcb00',
-      highlightFillColor: '#ffcb00',
+      highlightFillColor: '#ffcb00'
     },
     [TOOLS.CIRCLE]: {
       fillColor: '#ffcb00',
       strokeColor: '#ffcb00',
       highlightStrokeColor: '#ffcb00',
-      highlightFillColor: 'transparent',
+      highlightFillColor: 'transparent'
     },
     [TOOLS.SIN]: {
       fillColor: '#ffcb00',
       strokeColor: '#ffcb00',
       highlightStrokeColor: '#ffcb00',
-      highlightFillColor: 'transparent',
+      highlightFillColor: 'transparent'
     },
     [TOOLS.PARABOLA]: {
       fillColor: '#ffcb00',
       strokeColor: '#ffcb00',
       highlightStrokeColor: '#ffcb00',
-      highlightFillColor: 'transparent',
-    },
+      highlightFillColor: 'transparent'
+    }
   }
 };

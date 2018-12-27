@@ -1,5 +1,5 @@
 import { Point } from '.';
-import { default as segmentConfig } from './Segment';
+import segmentConfig from './Segment';
 import { CONSTANT, Colors } from '../config';
 
 export const getPointLabelParameters = () => ({
@@ -11,7 +11,7 @@ export const getPointLabelParameters = () => ({
 });
 
 export const defaultConfig = {
-  hasInnerPoints: true,
+  hasInnerPoints: true
 };
 
 function isStart(point, coords) {
@@ -37,7 +37,7 @@ function onHandler() {
         const newPolygon = board.$board.create('polygon', points, {
           ...defaultConfig,
           ...Colors.default[CONSTANT.TOOLS.POLYGON],
-          label: getPointLabelParameters(),
+          label: getPointLabelParameters()
         });
         points = [];
         lines = [];
@@ -56,7 +56,7 @@ function onHandler() {
           [points[points.length - 1], newPoint],
           {
             ...segmentConfig,
-            ...Colors.default[CONSTANT.TOOLS.LINE],
+            ...Colors.default[CONSTANT.TOOLS.LINE]
           }
         ));
       }
@@ -72,12 +72,12 @@ function getConfig(polygon) {
     id: polygon.id,
     label: polygon.hasLabel ? polygon.label.plaintext : false,
     points: Object.keys(polygon.ancestors)
-      .sort().map(n => Point.getConfig(polygon.ancestors[n])),
+      .sort().map(n => Point.getConfig(polygon.ancestors[n]))
   };
 }
 
-export function flatConfigPoints(points) {
-  return points.reduce((acc, p, i) => {
+function flatConfigPoints(pointsConfig) {
+  return pointsConfig.reduce((acc, p, i) => {
     acc[i] = p.id;
     return acc;
   }, {});
@@ -90,7 +90,7 @@ function parseConfig() {
     highlightFillOpacity: 0.3,
     fillColor: '#ccc',
     ...defaultConfig,
-    label: getPointLabelParameters(),
+    label: getPointLabelParameters()
   };
 }
 
@@ -105,5 +105,5 @@ export default {
   getConfig,
   parseConfig,
   flatConfigPoints,
-  abort,
+  abort
 };

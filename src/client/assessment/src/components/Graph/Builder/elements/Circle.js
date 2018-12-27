@@ -23,7 +23,7 @@ function onHandler() {
       const newLine = board.$board.create('circle', points, {
         ...defaultConfig,
         ...Colors.default[CONSTANT.TOOLS.CIRCLE],
-        label: getCircleLabelParameters(),
+        label: getCircleLabelParameters()
       });
       if (newLine) {
         points = [];
@@ -40,7 +40,7 @@ function getConfig(circle) {
     id: circle.id,
     label: circle.hasLabel ? circle.label.plaintext : false,
     points: Object.keys(circle.ancestors)
-      .sort().map(n => Point.getConfig(circle.ancestors[n])),
+      .sort().map(n => Point.getConfig(circle.ancestors[n]))
   };
 }
 
@@ -48,7 +48,7 @@ function parseConfig() {
   return {
     fillColor: 'transparent',
     highlightFillColor: 'transparent',
-    label: getCircleLabelParameters(),
+    label: getCircleLabelParameters()
   };
 }
 
@@ -61,5 +61,5 @@ export default {
   onHandler,
   getConfig,
   parseConfig,
-  abort,
+  abort
 };

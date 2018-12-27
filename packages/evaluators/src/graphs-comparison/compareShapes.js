@@ -16,12 +16,12 @@ class CompareShapes {
     if (!testShape || !trueShape || testShape.type !== trueShape.type) {
       return {
         id: testId,
-        result: false,
+        result: false
       };
     }
 
     switch (testShape.type) {
-      case ShapeTypes.POINT: return this.comparePoints(testShape, trueShape);
+      case ShapeTypes.POINT: return CompareShapes.comparePoints(testShape, trueShape);
       case ShapeTypes.LINE: return this.compareLines(testShape, trueShape);
       case ShapeTypes.RAY: return this.compareRays(testShape, trueShape);
       case ShapeTypes.SEGMENT: return this.compareSegments(testShape, trueShape);
@@ -32,24 +32,24 @@ class CompareShapes {
       case ShapeTypes.POLYGON: return this.comparePolygons(testShape, trueShape);
       default: return {
         id: testId,
-        result: false,
+        result: false
       };
     }
   }
 
-  comparePoints(testPoint, truePoint) {
+  static comparePoints(testPoint, truePoint) {
     if (testPoint.x === truePoint.x &&
       testPoint.y === truePoint.y) {
       return {
         id: testPoint.id,
         relatedId: truePoint.id,
-        result: true,
+        result: true
       };
     }
 
     return {
       id: testPoint.id,
-      result: false,
+      result: false
     };
   }
 
@@ -58,14 +58,14 @@ class CompareShapes {
       x1: +this.testAnswer.find(item => item.id === testLine.subElementsIds.startPoint).x,
       y1: +this.testAnswer.find(item => item.id === testLine.subElementsIds.startPoint).y,
       x2: +this.testAnswer.find(item => item.id === testLine.subElementsIds.endPoint).x,
-      y2: +this.testAnswer.find(item => item.id === testLine.subElementsIds.endPoint).y,
+      y2: +this.testAnswer.find(item => item.id === testLine.subElementsIds.endPoint).y
     };
 
     const trueLinePoints = {
       x1: +this.trueAnswerValue.find(item => item.id === trueLine.subElementsIds.startPoint).x,
       y1: +this.trueAnswerValue.find(item => item.id === trueLine.subElementsIds.startPoint).y,
       x2: +this.trueAnswerValue.find(item => item.id === trueLine.subElementsIds.endPoint).x,
-      y2: +this.trueAnswerValue.find(item => item.id === trueLine.subElementsIds.endPoint).y,
+      y2: +this.trueAnswerValue.find(item => item.id === trueLine.subElementsIds.endPoint).y
     };
 
     const testLineFunc = new LineFunction(testLinePoints);
@@ -76,13 +76,13 @@ class CompareShapes {
       return {
         id: testLine.id,
         relatedId: trueLine.id,
-        result: true,
+        result: true
       };
     }
 
     return {
       id: testLine.id,
-      result: false,
+      result: false
     };
   }
 
@@ -91,19 +91,19 @@ class CompareShapes {
       x1: +this.testAnswer.find(item => item.id === testRay.subElementsIds.startPoint).x,
       y1: +this.testAnswer.find(item => item.id === testRay.subElementsIds.startPoint).y,
       x2: +this.testAnswer.find(item => item.id === testRay.subElementsIds.endPoint).x,
-      y2: +this.testAnswer.find(item => item.id === testRay.subElementsIds.endPoint).y,
+      y2: +this.testAnswer.find(item => item.id === testRay.subElementsIds.endPoint).y
     };
 
     const trueRayPoints = {
       x1: +this.trueAnswerValue.find(item => item.id === trueRay.subElementsIds.startPoint).x,
       y1: +this.trueAnswerValue.find(item => item.id === trueRay.subElementsIds.startPoint).y,
       x2: +this.trueAnswerValue.find(item => item.id === trueRay.subElementsIds.endPoint).x,
-      y2: +this.trueAnswerValue.find(item => item.id === trueRay.subElementsIds.endPoint).y,
+      y2: +this.trueAnswerValue.find(item => item.id === trueRay.subElementsIds.endPoint).y
     };
 
     const testRayParams = {
       deltaX: testRayPoints.x2 - testRayPoints.x1,
-      deltaY: testRayPoints.y2 - testRayPoints.y1,
+      deltaY: testRayPoints.y2 - testRayPoints.y1
     };
     testRayParams.koef = testRayParams.deltaX === 0
       ? 'NaN'
@@ -111,7 +111,7 @@ class CompareShapes {
 
     const trueRayParams = {
       deltaX: trueRayPoints.x2 - trueRayPoints.x1,
-      deltaY: trueRayPoints.y2 - trueRayPoints.y1,
+      deltaY: trueRayPoints.y2 - trueRayPoints.y1
     };
     trueRayParams.koef = trueRayParams.deltaX === 0
       ? 'NaN'
@@ -125,13 +125,13 @@ class CompareShapes {
       return {
         id: testRay.id,
         relatedId: trueRay.id,
-        result: true,
+        result: true
       };
     }
 
     return {
       id: testRay.id,
-      result: false,
+      result: false
     };
   }
 
@@ -141,14 +141,14 @@ class CompareShapes {
       x1: +this.testAnswer.find(item => item.id === testSegment.subElementsIds.startPoint).x,
       y1: +this.testAnswer.find(item => item.id === testSegment.subElementsIds.startPoint).y,
       x2: +this.testAnswer.find(item => item.id === testSegment.subElementsIds.endPoint).x,
-      y2: +this.testAnswer.find(item => item.id === testSegment.subElementsIds.endPoint).y,
+      y2: +this.testAnswer.find(item => item.id === testSegment.subElementsIds.endPoint).y
     };
 
     const trueSegmentPoints = {
       x1: +this.trueAnswerValue.find(item => item.id === trueSegment.subElementsIds.startPoint).x,
       y1: +this.trueAnswerValue.find(item => item.id === trueSegment.subElementsIds.startPoint).y,
       x2: +this.trueAnswerValue.find(item => item.id === trueSegment.subElementsIds.endPoint).x,
-      y2: +this.trueAnswerValue.find(item => item.id === trueSegment.subElementsIds.endPoint).y,
+      y2: +this.trueAnswerValue.find(item => item.id === trueSegment.subElementsIds.endPoint).y
     };
 
     if (
@@ -165,13 +165,13 @@ class CompareShapes {
       return {
         id: testSegment.id,
         relatedId: trueSegment.id,
-        result: true,
+        result: true
       };
     }
 
     return {
       id: testSegment.id,
-      result: false,
+      result: false
     };
   }
 
@@ -180,14 +180,14 @@ class CompareShapes {
       x1: +this.testAnswer.find(item => item.id === testVector.subElementsIds.startPoint).x,
       y1: +this.testAnswer.find(item => item.id === testVector.subElementsIds.startPoint).y,
       x2: +this.testAnswer.find(item => item.id === testVector.subElementsIds.endPoint).x,
-      y2: +this.testAnswer.find(item => item.id === testVector.subElementsIds.endPoint).y,
+      y2: +this.testAnswer.find(item => item.id === testVector.subElementsIds.endPoint).y
     };
 
     const trueVectorPoints = {
       x1: +this.trueAnswerValue.find(item => item.id === trueVector.subElementsIds.startPoint).x,
       y1: +this.trueAnswerValue.find(item => item.id === trueVector.subElementsIds.startPoint).y,
       x2: +this.trueAnswerValue.find(item => item.id === trueVector.subElementsIds.endPoint).x,
-      y2: +this.trueAnswerValue.find(item => item.id === trueVector.subElementsIds.endPoint).y,
+      y2: +this.trueAnswerValue.find(item => item.id === trueVector.subElementsIds.endPoint).y
     };
 
     if (testVectorPoints.x1 === trueVectorPoints.x1 &&
@@ -198,13 +198,13 @@ class CompareShapes {
       return {
         id: testVector.id,
         relatedId: trueVector.id,
-        result: true,
+        result: true
       };
     }
 
     return {
       id: testVector.id,
-      result: false,
+      result: false
     };
   }
 
@@ -213,14 +213,14 @@ class CompareShapes {
       startX: +this.testAnswer.find(item => item.id === testCircle.subElementsIds.startPoint).x,
       startY: +this.testAnswer.find(item => item.id === testCircle.subElementsIds.startPoint).y,
       endX: +this.testAnswer.find(item => item.id === testCircle.subElementsIds.endPoint).x,
-      endY: +this.testAnswer.find(item => item.id === testCircle.subElementsIds.endPoint).y,
+      endY: +this.testAnswer.find(item => item.id === testCircle.subElementsIds.endPoint).y
     };
 
     const trueCirclePoints = {
       startX: +this.trueAnswerValue.find(item => item.id === trueCircle.subElementsIds.startPoint).x,
       startY: +this.trueAnswerValue.find(item => item.id === trueCircle.subElementsIds.startPoint).y,
       endX: +this.trueAnswerValue.find(item => item.id === trueCircle.subElementsIds.endPoint).x,
-      endY: +this.trueAnswerValue.find(item => item.id === trueCircle.subElementsIds.endPoint).y,
+      endY: +this.trueAnswerValue.find(item => item.id === trueCircle.subElementsIds.endPoint).y
     };
 
     let deltaX = testCirclePoints.startX - testCirclePoints.endX;
@@ -237,13 +237,13 @@ class CompareShapes {
       return {
         id: testCircle.id,
         relatedId: trueCircle.id,
-        result: true,
+        result: true
       };
     }
 
     return {
       id: testCircle.id,
-      result: false,
+      result: false
     };
   }
 
@@ -252,14 +252,14 @@ class CompareShapes {
       startX: +this.testAnswer.find(item => item.id === testParabola.subElementsIds.startPoint).x,
       startY: +this.testAnswer.find(item => item.id === testParabola.subElementsIds.startPoint).y,
       endX: +this.testAnswer.find(item => item.id === testParabola.subElementsIds.endPoint).x,
-      endY: +this.testAnswer.find(item => item.id === testParabola.subElementsIds.endPoint).y,
+      endY: +this.testAnswer.find(item => item.id === testParabola.subElementsIds.endPoint).y
     };
 
     const trueParabolaPoints = {
       startX: +this.trueAnswerValue.find(item => item.id === trueParabola.subElementsIds.startPoint).x,
       startY: +this.trueAnswerValue.find(item => item.id === trueParabola.subElementsIds.startPoint).y,
       endX: +this.trueAnswerValue.find(item => item.id === trueParabola.subElementsIds.endPoint).x,
-      endY: +this.trueAnswerValue.find(item => item.id === trueParabola.subElementsIds.endPoint).y,
+      endY: +this.trueAnswerValue.find(item => item.id === trueParabola.subElementsIds.endPoint).y
     };
 
     const testFunc = new ParabolaFunction(testParabolaPoints);
@@ -271,13 +271,13 @@ class CompareShapes {
       return {
         id: testParabola.id,
         relatedId: trueParabola.id,
-        result: true,
+        result: true
       };
     }
 
     return {
       id: testParabola.id,
-      result: false,
+      result: false
     };
   }
 
@@ -286,14 +286,14 @@ class CompareShapes {
       startX: +this.testAnswer.find(item => item.id === testSine.subElementsIds.startPoint).x,
       startY: +this.testAnswer.find(item => item.id === testSine.subElementsIds.startPoint).y,
       endX: +this.testAnswer.find(item => item.id === testSine.subElementsIds.endPoint).x,
-      endY: +this.testAnswer.find(item => item.id === testSine.subElementsIds.endPoint).y,
+      endY: +this.testAnswer.find(item => item.id === testSine.subElementsIds.endPoint).y
     };
 
     const trueSinePoints = {
       startX: +this.trueAnswerValue.find(item => item.id === trueSine.subElementsIds.startPoint).x,
       startY: +this.trueAnswerValue.find(item => item.id === trueSine.subElementsIds.startPoint).y,
       endX: +this.trueAnswerValue.find(item => item.id === trueSine.subElementsIds.endPoint).x,
-      endY: +this.trueAnswerValue.find(item => item.id === trueSine.subElementsIds.endPoint).y,
+      endY: +this.trueAnswerValue.find(item => item.id === trueSine.subElementsIds.endPoint).y
     };
 
     // amplitudes
@@ -328,26 +328,26 @@ class CompareShapes {
       return {
         id: testSine.id,
         relatedId: trueSine.id,
-        result: true,
+        result: true
       };
     }
 
     return {
       id: testSine.id,
-      result: false,
+      result: false
     };
   }
 
   comparePolygons(testPolygon, truePolygon) {
     const negativeResult = {
       id: testPolygon.id,
-      result: false,
+      result: false
     };
 
     const positiveResult = {
       id: testPolygon.id,
       relatedId: truePolygon.id,
-      result: true,
+      result: true
     };
 
     let testPolygonPoints = [];

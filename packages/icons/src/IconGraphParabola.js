@@ -7,7 +7,7 @@ const IconGraphParabola = props => (
     <path
       fill="none"
       strokeLinecap="round"
-      strokeWidth={2}
+      strokeWidth="2"
       d="M7446.464,1543.67s-.889,9.659,6.3,9.515,5.819-9.515,5.819-9.515"
       transform="translate(-7445.409 -1542.671)"
     />

@@ -10,7 +10,7 @@ import QuadrantsMoreOptions from './QuadrantsMoreOptions';
 
 class GraphQuadrantsOptions extends Component {
   state = {
-    isMoreOptionsOpen: false,
+    isMoreOptionsOpen: false
   };
 
   updateClickOnMoreOptions = () => {
@@ -31,7 +31,7 @@ class GraphQuadrantsOptions extends Component {
       bgImgOptions,
       setBgImg,
       backgroundShapes,
-      setBgShapes,
+      setBgShapes
     } = this.props;
     const { isMoreOptionsOpen } = this.state;
 
@@ -75,12 +75,12 @@ GraphQuadrantsOptions.propTypes = {
   setBgImg: PropTypes.func.isRequired,
   canvasConfig: PropTypes.object.isRequired,
   backgroundShapes: PropTypes.array,
-  setBgShapes: PropTypes.func,
+  setBgShapes: PropTypes.func
 };
 
 GraphQuadrantsOptions.defaultProps = {
   backgroundShapes: [],
-  setBgShapes: () => {},
+  setBgShapes: () => {}
 };
 
 const enhance = compose(

@@ -4,7 +4,7 @@ import { Colors, CONSTANT } from '../config';
 
 export const defaultConfig = {
   firstarrow: true,
-  lastarrow: true,
+  lastarrow: true
 };
 
 export const getLineLabelParameters = () => ({
@@ -28,7 +28,7 @@ function onLineHandler(type) {
       const newLine = board.$board.create('line', points, {
         ...getPropsByLineType(type),
         ...Colors.default[CONSTANT.TOOLS.LINE],
-        label: getLineLabelParameters(),
+        label: getLineLabelParameters()
       });
       if (newLine) {
         points = [];
@@ -45,14 +45,14 @@ function getConfig(line) {
     id: line.id,
     label: line.hasLabel ? line.label.plaintext : false,
     points: Object.keys(line.ancestors)
-      .sort().map(n => Point.getConfig(line.ancestors[n])),
+      .sort().map(n => Point.getConfig(line.ancestors[n]))
   };
 }
 
 function parseConfig(type) {
   return {
     ...getPropsByLineType(type),
-    label: getLineLabelParameters(),
+    label: getLineLabelParameters()
   };
 }
 
@@ -65,5 +65,5 @@ export default {
   onHandler(type) { return onLineHandler(type); },
   getConfig,
   parseConfig,
-  abort,
+  abort
 };

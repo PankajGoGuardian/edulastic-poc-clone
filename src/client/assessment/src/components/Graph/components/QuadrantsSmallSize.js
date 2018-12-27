@@ -18,9 +18,9 @@ class QuadrantsSmallSize extends Component {
     return (
       <Container>
         {first ? (
-          <img src={SmallSizeQuadrantsFirstImage} width="100%" height="100%" />
+          <img src={SmallSizeQuadrantsFirstImage} alt="quadrants first" width="100%" height="100%" />
         ) : (
-          <img src={SmallSizeQuadrantsImage} width="100%" height="100%" />
+          <img src={SmallSizeQuadrantsImage} alt="quadrants" width="100%" height="100%" />
         )}
       </Container>
     );

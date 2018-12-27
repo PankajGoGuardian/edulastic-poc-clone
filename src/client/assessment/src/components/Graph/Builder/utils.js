@@ -1,15 +1,43 @@
 import { CONSTANT } from './config';
 import Point from './elements/Point';
 import { defaultConfig as lineConfig } from './elements/Line';
-import { default as rayConfig } from './elements/Ray';
-import { default as segmentConfig } from './elements/Segment';
-import { default as vectorConfig } from './elements/Vector';
+import rayConfig from './elements/Ray';
+import segmentConfig from './elements/Segment';
+import vectorConfig from './elements/Vector';
 import Polygon from './elements/Polygon';
 import { JXG } from './index';
 
 function compareKeys(config, props) {
   return Object.keys(config).every(k => !!props[k] === !!config[k]);
 }
+
+function numberWithCommas(x) {
+  x = x.toString();
+  const pattern = /(-?\d+)(\d{3})/;
+  while (pattern.test(x)) { x = x.replace(pattern, '$1,$2'); }
+  return x;
+}
+
+function getPointsFromFlatConfig(type, pointIds, config) {
+  switch (type) {
+    case CONSTANT.TOOLS.POLYGON:
+      return (Object.keys(pointIds))
+        .sort()
+        .map(k => config.find(element => element.id === pointIds[k]));
+    default:
+      return [
+        config.find(element => element.id === pointIds.startPoint),
+        config.find(element => element.id === pointIds.endPoint)
+      ];
+  }
+}
+
+export const handleSnap = (line, points) => {
+  line.on('up', () => {
+    const setCoords = window.JXG.COORDS_BY_USER;
+    points.forEach(point => point.setPositionDirectly(setCoords, [Math.round(point.X()), Math.round(point.Y())]));
+  });
+};
 
 export function getLineTypeByProp(props) {
   if (compareKeys(lineConfig, props)) {
@@ -42,8 +70,24 @@ export function getPropsByLineType(type) {
   }
 }
 
+export function tickLabel(axe, withComma = true, distance = 0) {
+  return (coords) => {
+    const label = axe === 'x' ? coords.usrCoords[1] : coords.usrCoords[2];
+    if (axe === 'x' && label === 0) {
+      // offset fix for zero label
+      return '0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;';
+    }
+    return withComma ? numberWithCommas(label.toFixed(distance)) : label;
+  };
+}
+
 export function updatePointParameters(elements, attr, isSwitchToGrid) {
-  for (const el of elements) {
+  if (!elements) {
+    return;
+  }
+
+  Object.keys(elements).forEach((key) => {
+    const el = elements[key];
     if (el.type === JXG.OBJECT_TYPE_POINT) {
       el.setAttribute(attr);
       if (isSwitchToGrid) {
@@ -52,7 +96,7 @@ export function updatePointParameters(elements, attr, isSwitchToGrid) {
     } else {
       updatePointParameters(Object.values(el.ancestors), attr, isSwitchToGrid);
     }
-  }
+  });
 }
 
 export function updateAxe(line, parameters, axe) {
@@ -92,24 +136,6 @@ export function updateGrid(grids, parameters) {
   }
 }
 
-function numberWithCommas(x) {
-  x = x.toString();
-  const pattern = /(-?\d+)(\d{3})/;
-  while (pattern.test(x)) { x = x.replace(pattern, '$1,$2'); }
-  return x;
-}
-
-export function tickLabel(axe, withComma = true, distance = 0) {
-  return (coords) => {
-    const label = axe === 'x' ? coords.usrCoords[1] : coords.usrCoords[2];
-    if (axe === 'x' && label === 0) {
-      // offset fix for zero label
-      return '0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;';
-    }
-    return withComma ? numberWithCommas(label.toFixed(distance)) : label;
-  };
-}
-
 /**
  *
  * @param {object} boardParameters
@@ -135,7 +161,7 @@ export function getImageCoordsByPercent(boardParameters, bgImageParameters) {
   ];
 }
 
-export function flatConfig(config, acc = {}, isSub = false) {
+export function flatConfig(config, accArg = {}, isSub = false) {
   return config.reduce((acc, element) => {
     const { id, type, points } = element;
     if (type === CONSTANT.TOOLS.POINT) {
@@ -162,21 +188,7 @@ export function flatConfig(config, acc = {}, isSub = false) {
       acc[id].subElementsIds = Polygon.flatConfigPoints(points);
     }
     return flatConfig(points, acc, true);
-  }, acc);
-}
-
-function getPointsFromFlatConfig(type, pointIds, config) {
-  switch (type) {
-    case CONSTANT.TOOLS.POLYGON:
-      return (Object.keys(pointIds))
-        .sort()
-        .map(k => config.find(element => element.id === pointIds[k]));
-    default:
-      return [
-        config.find(element => element.id === pointIds.startPoint),
-        config.find(element => element.id === pointIds.endPoint)
-      ];
-  }
+  }, accArg);
 }
 
 export function flat2nestedConfig(config) {

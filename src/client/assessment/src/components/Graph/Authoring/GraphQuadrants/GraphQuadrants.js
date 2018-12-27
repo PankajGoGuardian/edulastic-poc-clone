@@ -9,7 +9,7 @@ import {
   StyledTextField,
   Label,
   Row,
-  Col,
+  Col
 } from '../../common/styled_components';
 import GraphToolsParams from '../../components/GraphToolsParams';
 import { setQuestionDataAction } from '../../../../../../author/src/actions/question';
@@ -46,7 +46,7 @@ class GraphQuadrants extends Component {
       { value: 'parabola', label: 'Parabola' },
       { value: 'sine', label: 'Sine' },
       { value: 'polygon', label: 'Polygon' },
-      { value: 'label', label: 'Label' },
+      { value: 'label', label: 'Label' }
     ]
   );
 
@@ -136,7 +136,7 @@ class GraphQuadrants extends Component {
 GraphQuadrants.propTypes = {
   t: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
-  setQuestionData: PropTypes.func.isRequired,
+  setQuestionData: PropTypes.func.isRequired
 };
 
 const enhance = compose(
@@ -144,7 +144,7 @@ const enhance = compose(
   connect(
     null,
     {
-      setQuestionData: setQuestionDataAction,
+      setQuestionData: setQuestionDataAction
     },
   ),
 );

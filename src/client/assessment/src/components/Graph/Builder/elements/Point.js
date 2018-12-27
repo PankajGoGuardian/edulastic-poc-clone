@@ -16,19 +16,33 @@ function roundCoords(coords) {
 
 export function findPoint(elements, coords) {
   const [x, y] = roundCoords(coords);
-  for (const el in elements) {
-    if (JXG.isPoint(elements[el])) {
-      if (elements[el].coords.usrCoords[1] === x && elements[el].coords.usrCoords[2] === y) {
-        return elements[el];
+  let result = null;
+  let found = false;
+
+  if (!elements) {
+    return null;
+  }
+
+  Object.keys(elements).forEach((key) => {
+    if (found) {
+      return;
+    }
+
+    if (JXG.isPoint(elements[key])) {
+      if (elements[key].coords.usrCoords[1] === x && elements[key].coords.usrCoords[2] === y) {
+        result = elements[key];
+        found = true;
       }
-    } else if (elements[el].ancestors) {
-      const point = findPoint(elements[el].ancestors, coords);
+    } else if (elements[key].ancestors) {
+      const point = findPoint(elements[key].ancestors, coords);
       if (point) {
-        return point;
+        result = point;
+        found = true;
       }
     }
-  }
-  return null;
+  });
+
+  return result;
 }
 
 function onHandler(board, event) {
@@ -41,7 +55,7 @@ function onHandler(board, event) {
       {
         ...board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters(),
         ...Colors.default[CONSTANT.TOOLS.POINT],
-        label: getPointLabelParameters(),
+        label: getPointLabelParameters()
       },
     );
   }
@@ -55,7 +69,7 @@ function getConfig(point) {
     x: point.coords.usrCoords[1],
     y: point.coords.usrCoords[2],
     id: point.id,
-    label: point.hasLabel ? point.label.plaintext : false,
+    label: point.hasLabel ? point.label.plaintext : false
   };
 }
 
@@ -65,8 +79,8 @@ function parseConfig(config, pointParameters) {
     [config.x, config.y],
     {
       ...(pointParameters || defaultPointParameters()),
-      label: getPointLabelParameters(),
-    },
+      label: getPointLabelParameters()
+    }
   ];
 }
 
@@ -75,5 +89,5 @@ export default {
   getConfig,
   parseConfig,
   roundCoords,
-  findPoint,
+  findPoint
 };

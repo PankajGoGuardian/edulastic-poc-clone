@@ -16,7 +16,7 @@ class OrderListResponse extends Component {
       onAddQuestion,
       t,
       style,
-      windowWidth,
+      windowWidth
     } = this.props;
 
     return (
@@ -53,11 +53,11 @@ OrderListResponse.propTypes = {
   onAddQuestion: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   style: PropTypes.object,
-  windowWidth: PropTypes.number.isRequired,
+  windowWidth: PropTypes.number.isRequired
 };
 
 OrderListResponse.defaultProps = {
-  style: {},
+  style: {}
 };
 
 const enhance = compose(

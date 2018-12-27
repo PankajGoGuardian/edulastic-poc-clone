@@ -27,59 +27,59 @@ class GraphAxisLabels extends Component {
         {
           id: 'small',
           value: 'Small',
-          selected: false,
+          selected: false
         },
         {
           id: 'normal',
           value: 'Normal',
-          selected: true,
+          selected: true
         },
         {
           id: 'large',
           value: 'Large',
-          selected: false,
+          selected: false
         },
         {
           id: 'extra_large',
           value: 'Extra large',
-          selected: false,
+          selected: false
         },
         {
           id: 'huge',
           value: 'Huge',
-          selected: false,
-        },
+          selected: false
+        }
       ],
       fractionsFormatList: [
         {
           id: 'not-normalized-fractions',
           value: 'Not normalized and mixed fractions',
-          selected: true,
+          selected: true
         },
         {
           id: 'normalized-fractions',
           value: 'Normalized and mixed fractions',
-          selected: false,
+          selected: false
         },
         {
           id: 'improper-fractions',
           value: 'Improper fractions',
-          selected: false,
-        },
+          selected: false
+        }
       ],
       renderingBaseList: [
         {
           id: 'min-value-based',
           value: 'Line minimum value',
-          selected: true,
+          selected: true
         },
         {
           id: 'zero-based',
           value: 'Zero',
-          selected: false,
-        },
+          selected: false
+        }
 
-      ],
+      ]
     };
   }
 
@@ -87,7 +87,7 @@ class GraphAxisLabels extends Component {
     if (e) {
       this.setState(state => ({
         ...state,
-        title: e.target.value,
+        title: e.target.value
       }));
     }
   };
@@ -95,7 +95,7 @@ class GraphAxisLabels extends Component {
   updateStimulus = (e) => {
     this.setState(state => ({
       ...state,
-      stimulus: e.target.value,
+      stimulus: e.target.value
     }));
   };
 
@@ -109,13 +109,13 @@ class GraphAxisLabels extends Component {
     if (lineType === 'min') {
       return this.setState(state => ({
         ...state,
-        lineMinValue: value,
+        lineMinValue: value
       }));
     }
 
     return this.setState(state => ({
       ...state,
-      lineMaxValue: value,
+      lineMaxValue: value
     }));
   };
 
@@ -135,7 +135,7 @@ class GraphAxisLabels extends Component {
           return value;
         }
         return q;
-      }),
+      })
     });
   };
 
@@ -164,7 +164,7 @@ class GraphAxisLabels extends Component {
 
     newItem.list = [
       ...graphData.list,
-      `${t('common.initialoptionslist.itemprefix')} ${graphData.list.length}`,
+      `${t('common.initialoptionslist.itemprefix')} ${graphData.list.length}`
     ];
     // newItem.validation.valid_response.value = [
     //   ...newItem.validation.valid_response.value,
@@ -185,7 +185,7 @@ class GraphAxisLabels extends Component {
   onClickMoreOptions = (isClicked) => {
     this.setState(state => ({
       ...state,
-      isMoreOptionsOpen: isClicked,
+      isMoreOptionsOpen: isClicked
     }));
   };
 
@@ -198,7 +198,7 @@ class GraphAxisLabels extends Component {
       isMoreOptionsOpen,
       fontSizeList,
       fractionsFormatList,
-      renderingBaseList,
+      renderingBaseList
     } = this.state;
     const { t, graphData } = this.props;
 
@@ -283,7 +283,7 @@ GraphAxisLabels.propTypes = {
   t: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  saveAnswer: PropTypes.func.isRequired,
+  saveAnswer: PropTypes.func.isRequired
 };
 
 const enhance = compose(
@@ -291,7 +291,7 @@ const enhance = compose(
   connect(
     null,
     {
-      setQuestionData: setQuestionDataAction,
+      setQuestionData: setQuestionDataAction
     },
   ),
 );

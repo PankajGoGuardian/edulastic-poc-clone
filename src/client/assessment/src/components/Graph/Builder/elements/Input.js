@@ -1,20 +1,27 @@
 import { defaultInputParameters } from '../settings';
 
-function onBlur(element, cb) {
+function onBlur(element, input, cb) {
   return () => {
-    element.setLabel(this.value);
+    element.setLabel(input.Value());
     element.label.setAttribute({ visible: true });
     cb();
   };
 }
 
-function onEnter(element, cb) {
+function onEnter(element, input, cb) {
   return (event) => {
     if (event.keyCode === 13) {
-      this.onblur = null;
       event.preventDefault();
-      element.setLabel(this.value);
-      element.label.setAttribute({ visible: true });
+      input.rendNodeInput.onblur = null;
+      input.rendNodeInput.onchange = null;
+
+      if (!element.label) {
+        element.setLabel(input.Value());
+      } else {
+        element.label.setText(input.Value());
+        element.label.setAttribute({ visible: true });
+      }
+
       cb();
     }
   };
@@ -25,7 +32,7 @@ function getInputCoords(element) {
     case 'point':
       return [
         element.coords.usrCoords[1],
-        element.coords.usrCoords[2],
+        element.coords.usrCoords[2]
       ];
     case 'polygon':
     case 'circle':
@@ -34,14 +41,14 @@ function getInputCoords(element) {
       if (element.hasLabel) {
         return [
           element.label.coords.usrCoords[1],
-          element.label.coords.usrCoords[2],
+          element.label.coords.usrCoords[2]
         ];
       }
       element.setLabel('');
       element.label.setAttribute({ visible: false });
       return [
         element.label.coords.usrCoords[1],
-        element.label.coords.usrCoords[2],
+        element.label.coords.usrCoords[2]
       ];
 
     default:
@@ -65,11 +72,11 @@ export default (element) => {
       input = this.create();
       input.rendNodeInput.focus();
       input.rendNodeInput.select();
-      input.rendNodeInput.onblur = onBlur(element, () => {
+      input.rendNodeInput.onblur = onBlur(element, input, () => {
         this.sub();
         this.removeInput();
       });
-      input.rendNodeInput.onkeyup = onEnter(element, () => {
+      input.rendNodeInput.onkeyup = onEnter(element, input, () => {
         this.sub();
         this.removeInput();
       });
@@ -78,7 +85,7 @@ export default (element) => {
       return board.create('input', [
         ...getInputCoords(element),
         value,
-        '',
+        ''
       ], defaultInputParameters());
     },
     update() {
@@ -86,14 +93,14 @@ export default (element) => {
       element.label.setAttribute({ visible: false });
       input = this.create(plaintext);
       setTimeout(() => {
-        input.setAttribute({ visible: true, });
+        input.setAttribute({ visible: true });
         input.rendNodeInput.focus();
         input.rendNodeInput.select();
-        input.rendNodeInput.onblur = onBlur(element, () => {
+        input.rendNodeInput.onblur = onBlur(element, input, () => {
           this.sub();
           this.removeInput();
         });
-        input.rendNodeInput.onkeyup = onEnter(element, () => {
+        input.rendNodeInput.onkeyup = onEnter(element, input, () => {
           this.sub();
           this.removeInput();
         });
@@ -107,6 +114,6 @@ export default (element) => {
         input.remove();
         input = null;
       }
-    },
+    }
   };
 };

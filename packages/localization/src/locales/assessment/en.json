@@ -345,19 +345,16 @@
         "margin": "Margin (px)",
         "snapTo": "Snap to",
         "stemNumeration": "Stem numeration (review only)",
-        "stemNumerationList": [
-          "Numerical",
-          "Uppercase alphabet",
-          "Lowercase alphabet"
-        ],
+        "stemNumerationList": ["Numerical", "Uppercase alphabet", "Lowercase alphabet"],
         "fontSize": "Font Size",
-        "drawLabelzero": "Draw label zero",
-        "displayPositionOnHover": "Display position on hover",
-        "showMinArrow": "Show min arrow",
-        "showMaxArrow": "Show max arrow",
-        "stackResponses": "Stack responses",
-        "spacingBtwStacked": "Spacing between stacked responses (px)",
-        "minWidth": "Minimum width"
+        "drawLabelzero" :"Draw label zero",
+        "displayPositionOnHover" :"Display position on hover",
+        "showMinArrow":"Show min arrow",
+        "showMaxArrow":"Show max arrow",
+        "stackResponses":"Stack responses",
+        "spacingBtwStacked":"Spacing between stacked responses (px)",
+        "minWidth":"Minimum width"
+
       },
       "ticksoptionstitle": "Ticks",
       "ticksoptions": {
@@ -366,7 +363,7 @@
         "snaptoticks": "Snap to ticks",
         "renderingbase": "Rendering base",
         "fractionsformat": "Fractions format",
-        "minorTicks": "Minor ticks"
+        "minorTicks":"Minor ticks"
       },
       "labelstitle": "Labels",
       "labelsoptions": {
@@ -374,7 +371,7 @@
         "displayspecificpoints": "Display specific points",
         "showmin": "Show min",
         "showmax": "Show max",
-        "showLabels": "Show labels"
+        "showLabels":"Show labels"
       },
       "grid_options": {
         "grid": "Grid",
@@ -388,7 +385,7 @@
         "draw_label": "Draw labels",
         "min_arrow": "Min arrow",
         "max_arrow": "Max arrow",
-        "comma_in_label": "Comma in label"
+        "comma_in_label":"Comma in label"
       },
       "background_options": {
         "background_image": "Background image",
@@ -401,9 +398,9 @@
         "show_bg_shape_points": "Show background shape points"
       },
       "background_shapes": "Background shapes",
-      "minVal": "Minimum value",
-      "maxVal": "Maximum value",
-      "responseNumAllowed": "Number of responses allowed"
+      "minVal":"Minimum value",
+      "maxVal":"Maximum value",
+      "responseNumAllowed":"Number of responses allowed"
     }
   }
 }

@@ -38,7 +38,7 @@ GraphQuadrantsDisplay.propTypes = {
   validation: PropTypes.object,
   elements: PropTypes.array,
   showAnswer: PropTypes.bool,
-  checkAnswer: PropTypes.bool,
+  checkAnswer: PropTypes.bool
 };
 
 GraphQuadrantsDisplay.defaultProps = {
@@ -49,7 +49,7 @@ GraphQuadrantsDisplay.defaultProps = {
   elements: [],
   showAnswer: false,
   checkAnswer: false,
-  backgroundShapes: [],
+  backgroundShapes: []
 };
 
 

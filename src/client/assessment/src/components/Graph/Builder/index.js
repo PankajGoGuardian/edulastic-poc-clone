@@ -7,13 +7,13 @@ import {
   Polygon,
   Parabola,
   Label,
-  Input,
+  Input
 } from './elements';
 import {
   mergeParams,
   graphParameters2Boundingbox,
   defaultBgObjectParameters,
-  fillConfigDefaultParameters,
+  fillConfigDefaultParameters
 } from './settings';
 import {
   updatePointParameters,
@@ -21,11 +21,12 @@ import {
   updateGrid,
   getImageCoordsByPercent,
   flatConfig,
-  flat2nestedConfig,
+  flat2nestedConfig
 } from './utils';
 import _events from './events';
+import '../common/MyLabelInput.css';
 
-export const JXG = window.JXG;
+export const { JXG } = window;
 
 /**
  * if the coords between mousedown and mouseup events are different - is it move
@@ -33,16 +34,14 @@ export const JXG = window.JXG;
 function dragDetector() {
   const start = {
     x: 0,
-    y: 0,
+    y: 0
   };
   return {
     start(coords) {
-      start.x = coords[0];
-      start.y = coords[1];
+      [start.x, start.y] = coords;
     },
     isSame(coords) {
-      const isSame = start.x === coords[0] && start.y === coords[1];
-      return isSame;
+      return start.x === coords[0] && start.y === coords[1];
     }
   };
 }
@@ -265,7 +264,7 @@ class Board {
     );
     this.parameters.pointParameters = {
       ...this.parameters.pointParameters,
-      ...pointParameters,
+      ...pointParameters
     };
     this.$board.fullUpdate();
   }
@@ -311,64 +310,64 @@ class Board {
     this.$board.resizeContainer(canvasWidth, canvasHeight);
   }
 
-  setBgObjects(flatConfig, showPoints = true) {
-    const config = flat2nestedConfig(flatConfig);
+  setBgObjects(flatCfg, showPoints = true) {
+    const config = flat2nestedConfig(flatCfg);
     const objectOptions = {
       [CONSTANT.TOOLS.POINT]: {
         ...defaultBgObjectParameters(),
-        visible: showPoints,
+        visible: showPoints
       },
       [CONSTANT.TOOLS.LINE]: {
-        ...defaultBgObjectParameters(),
+        ...defaultBgObjectParameters()
       },
       [CONSTANT.TOOLS.RAY]: {
-        ...defaultBgObjectParameters(),
+        ...defaultBgObjectParameters()
       },
       [CONSTANT.TOOLS.SEGMENT]: {
-        ...defaultBgObjectParameters(),
+        ...defaultBgObjectParameters()
       },
       [CONSTANT.TOOLS.VECTOR]: {
-        ...defaultBgObjectParameters(),
+        ...defaultBgObjectParameters()
       },
       [CONSTANT.TOOLS.CIRCLE]: {
         ...defaultBgObjectParameters(),
-        ...Circle.parseConfig(),
+        ...Circle.parseConfig()
       },
       [CONSTANT.TOOLS.POLYGON]: {
         ...defaultBgObjectParameters(),
         ...Polygon.parseConfig(),
-        borders: defaultBgObjectParameters(),
+        borders: defaultBgObjectParameters()
       },
       [CONSTANT.TOOLS.PARABOLA]: {
         ...defaultBgObjectParameters(),
         fillColor: 'transparent',
         highlightFillColor: 'transparent',
-        highlightStrokeWidth: 1,
+        highlightStrokeWidth: 1
       },
       [CONSTANT.TOOLS.SIN]: {
         ...defaultBgObjectParameters(),
         fillColor: 'transparent',
         highlightFillColor: 'transparent',
-        highlightStrokeWidth: 1,
-      },
+        highlightStrokeWidth: 1
+      }
     };
     this.bgElements.push(...this.loadObjects(config, ({ objectCreator, el }) => {
-      const { _type, colors = {}, } = el;
+      const { _type, colors = {} } = el;
       let type;
       if (_type === JXG.OBJECT_TYPE_CURVE) {
         type = el.type === CONSTANT.TOOLS.PARABOLA ? CONSTANT.TOOLS.PARABOLA : CONSTANT.TOOLS.SIN;
       } else {
-        type = el.type;
+        ({ type } = el);
       }
       return objectCreator({
         ...objectOptions[type],
-        ...colors,
+        ...colors
       });
     }));
   }
 
-  loadFromConfig(flatConfig) {
-    const config = flat2nestedConfig(flatConfig);
+  loadFromConfig(flatCfg) {
+    const config = flat2nestedConfig(flatCfg);
     this.elements.push(...this.loadObjects(config, ({ objectCreator, el }) => {
       const newElement = objectCreator({
         ...Colors.default[((type) => {
@@ -381,7 +380,7 @@ class Board {
           }
           return type;
         })(el.type)],
-        ...el.colors,
+        ...el.colors
       });
       if (el.label) {
         newElement.setLabel(el.label);
@@ -391,11 +390,11 @@ class Board {
     }));
   }
 
-  setAnswer(flatConfig) {
-    const config = flat2nestedConfig(flatConfig);
+  setAnswer(flatCfg) {
+    const config = flat2nestedConfig(flatCfg);
     this.answers.push(...this.loadObjects(config, ({ objectCreator, el }) => objectCreator({
       ...el.colors,
-      fixed: true,
+      fixed: true
     })));
   }
 
@@ -406,7 +405,7 @@ class Board {
    */
   loadObjects(objectArray, mixProps) {
     const objects = [];
-    for (const el of objectArray) {
+    objectArray.forEach((el) => {
       switch (el._type) {
         case JXG.OBJECT_TYPE_POINT:
           objects.push(
@@ -415,7 +414,7 @@ class Board {
               objectCreator: (attrs) => {
                 const [name, points, props] = Point.parseConfig(el, this.getParameters(CONSTANT.TOOLS.POINT));
                 return this.createElement(name, points, { ...props, ...attrs, visible: true });
-              },
+              }
             })
           );
           break;
@@ -428,18 +427,18 @@ class Board {
                 [
                   mixProps({
                     el: el.points[0],
-                    objectCreator: attrs => this.createPointFromConfig(el.points[0], attrs),
+                    objectCreator: attributes => this.createPointFromConfig(el.points[0], attributes)
                   }),
                   mixProps({
                     el: el.points[1],
-                    objectCreator: attrs => this.createPointFromConfig(el.points[1], attrs),
-                  }),
+                    objectCreator: attributes => this.createPointFromConfig(el.points[1], attributes)
+                  })
                 ],
                 {
                   ...Line.parseConfig(el.type),
                   ...attrs
                 }
-              ),
+              )
             })
           );
           break;
@@ -452,18 +451,18 @@ class Board {
                 [
                   mixProps({
                     el: el.points[0],
-                    objectCreator: attrs => this.createPointFromConfig(el.points[0], attrs),
+                    objectCreator: attributes => this.createPointFromConfig(el.points[0], attributes)
                   }),
                   mixProps({
                     el: el.points[1],
-                    objectCreator: attrs => this.createPointFromConfig(el.points[1], attrs),
-                  }),
+                    objectCreator: attributes => this.createPointFromConfig(el.points[1], attributes)
+                  })
                 ],
                 {
                   ...Circle.parseConfig(),
                   ...attrs
                 }
-              ),
+              )
             })
           );
           break;
@@ -473,15 +472,15 @@ class Board {
               el,
               objectCreator: attrs => this.createElement(
                 'polygon',
-                el.points.map(el => mixProps({
-                  el,
-                  objectCreator: attrs => this.createPointFromConfig(el, attrs),
+                el.points.map(pointEl => mixProps({
+                  el: pointEl,
+                  objectCreator: attributes => this.createPointFromConfig(pointEl, attributes)
                 })),
                 {
                   ...Polygon.parseConfig(),
-                  ...attrs,
+                  ...attrs
                 },
-              ),
+              )
             })
           );
           break;
@@ -491,29 +490,29 @@ class Board {
               el,
               objectCreator: (attrs) => {
                 const [name, [makeFn, points], props] = [Parabola, Sin][el.type === CONSTANT.TOOLS.PARABOLA ? 0 : 1].parseConfig(
-                  el.points.map(el => mixProps({
-                    el,
-                    objectCreator: attrs => this.createPointFromConfig(el, attrs),
+                  el.points.map(pointEl => mixProps({
+                    el: pointEl,
+                    objectCreator: attributes => this.createPointFromConfig(pointEl, attributes)
                   })),
                 );
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
-                  ...attrs,
+                  ...attrs
                 });
                 newElem.ancestors = {
                   [points[0].id]: points[0],
-                  [points[1].id]: points[1],
+                  [points[1].id]: points[1]
                 };
                 newElem.addParents(points);
                 return newElem;
-              },
+              }
             }),
           );
           break;
         default:
           throw new Error('Unknown element:', el);
       }
-    }
+    });
     return objects;
   }
 
@@ -544,7 +543,7 @@ class Board {
     bgImage.setAttribute({
       fixed: true,
       highlightFillOpacity: bgImageParameters.opacity,
-      opacity: bgImageParameters.opacity,
+      opacity: bgImageParameters.opacity
     });
     this.bgImage = bgImage;
   }

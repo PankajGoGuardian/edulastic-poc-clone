@@ -4,7 +4,9 @@ export default function () {
     on(name, handler) {
       let handlers = events[name];
       if (!!handlers === false) {
-        handlers = events[name] = [];
+        const arr = [];
+        handlers = arr;
+        events[name] = arr;
       }
       handlers.push(handler);
     },
@@ -14,6 +16,6 @@ export default function () {
         return;
       }
       handlers.forEach(handler => handler(data));
-    },
+    }
   };
 }

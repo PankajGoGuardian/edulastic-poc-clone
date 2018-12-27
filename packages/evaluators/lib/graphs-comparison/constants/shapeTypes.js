@@ -1,10 +1,6 @@
-"use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ShapeTypes = void 0;
-var ShapeTypes = {
+
+module.exports = {
   POINT: 'point',
   LINE: 'line',
   RAY: 'ray',
@@ -15,4 +11,3 @@ var ShapeTypes = {
   SINE: 'sine',
   POLYGON: 'polygon'
 };
-exports.ShapeTypes = ShapeTypes;

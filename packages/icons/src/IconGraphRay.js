@@ -8,7 +8,7 @@ const IconGraphRay = props => (
       <path
         fill="none"
         strokeLinecap="round"
-        strokeWidth={2}
+        strokeWidth="2"
         d="M292.38,486l-14.988,14.988"
         transform="translate(0.848 -0.151)"
       />

@@ -10,7 +10,7 @@ import {
   MoreOptionsLabel,
   MoreOptionsRow,
   MoreOptionsSubHeading,
-  Row, Col, MoreOptionsColumnContainer, MoreOptionsColumn,
+  Row, Col, MoreOptionsColumnContainer, MoreOptionsColumn
 } from '../../common/styled_components';
 
 class AxisSegmentsMoreOptions extends Component {
@@ -34,18 +34,18 @@ class AxisSegmentsMoreOptions extends Component {
     showLabels: true,
     labelShowMin: true,
     labelShowMax: true,
-    labelDisplaySpecPoints: '',
+    labelDisplaySpecPoints: ''
   };
 
   handleSelect = (name, value) => {
     this.setState({
-      [name]: value,
+      [name]: value
     });
   };
 
   handleCheckbox = (name, checked) => {
     this.setState({
-      [name]: !checked,
+      [name]: !checked
     });
   };
 
@@ -59,7 +59,7 @@ class AxisSegmentsMoreOptions extends Component {
       t,
       orientationList,
       fontSizeList,
-      renderingBaseList,
+      renderingBaseList
     } = this.props;
     const {
       layout,
@@ -81,7 +81,7 @@ class AxisSegmentsMoreOptions extends Component {
       showLabels,
       labelShowMin,
       labelShowMax,
-      labelDisplaySpecPoints,
+      labelDisplaySpecPoints
     } = this.state;
 
     return (
@@ -374,13 +374,13 @@ AxisSegmentsMoreOptions.propTypes = {
   t: PropTypes.func.isRequired,
   orientationList: PropTypes.array,
   fontSizeList: PropTypes.array,
-  renderingBaseList: PropTypes.array,
+  renderingBaseList: PropTypes.array
 };
 
 AxisSegmentsMoreOptions.defaultProps = {
   orientationList: [],
   fontSizeList: [],
-  renderingBaseList: [],
+  renderingBaseList: []
 };
 
 const enhance = compose(

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
 import {
-  MoreOptions, MoreOptionsHeading,
+  MoreOptions, MoreOptionsHeading
 } from '../../common/styled_components';
 import MoreOptionsSettings from './MoreOptionsSettings';
 
@@ -20,7 +20,7 @@ class AxisLabelsLayoutSettings extends Component {
       fontSizeList,
       fractionsFormatList,
       renderingBaseList,
-      t,
+      t
     } = this.props;
 
     return (
@@ -56,7 +56,7 @@ AxisLabelsLayoutSettings.propTypes = {
   isMoreOptionsOpen: PropTypes.bool.isRequired,
   fontSizeList: PropTypes.array.isRequired,
   fractionsFormatList: PropTypes.array.isRequired,
-  renderingBaseList: PropTypes.array.isRequired,
+  renderingBaseList: PropTypes.array.isRequired
 };
 
 const enhance = compose(

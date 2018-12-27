@@ -4,7 +4,7 @@ import CompareShapes from './compareShapes';
 const checkAnswer = (trueAnswer, testAnswer) => {
   const result = {
     commonResult: false,
-    details: [],
+    details: []
   };
 
   const trueAnswerValue = trueAnswer.valid_response.value;
@@ -15,7 +15,7 @@ const checkAnswer = (trueAnswer, testAnswer) => {
   testAnswer.filter(elem => !elem.subElement).forEach((testShape) => {
     let compareResult = {
       id: testShape.id,
-      result: false,
+      result: false
     };
     for (let i = 0; i < trueShapes.length; i++) {
       compareResult = compareShapes.compare(testShape.id, trueShapes[i].id);

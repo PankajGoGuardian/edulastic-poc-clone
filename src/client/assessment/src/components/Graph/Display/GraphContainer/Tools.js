@@ -7,6 +7,7 @@ import {
   ToolbarItemIcon
 } from './styled';
 import Dropdown from './Dropdown';
+import utils from './utils';
 
 export default function Tools(props) {
   const {
@@ -59,11 +60,11 @@ export default function Tools(props) {
                 key={Math.random().toString(36)}
               >
                 <ToolbarItem>
-                  <ToolbarItemIcon className="tool-btn-icon">
-                    { getIconTemplate(uiTool.name, { width: fontSize, height: fontSize, color: '' }) }
+                  <ToolbarItemIcon className="tool-btn-icon" style={{ marginBottom: fontSize / 2 }}>
+                    { getIconTemplate(uiTool.name, { width: fontSize + 2, height: fontSize + 2, color: '' }) }
                   </ToolbarItemIcon>
                   <ToolbarItemLabel style={{ fontSize }}>
-                    {uiTool.name}
+                    { utils.capitalizeFirstLetter(uiTool.name) }
                   </ToolbarItemLabel>
                 </ToolbarItem>
               </ToolBtn>
@@ -90,10 +91,10 @@ export default function Tools(props) {
         {
           <ToolBtn onClick={onReset} style={{ width: fontSize > 20 ? 105 : 93 }}>
             <ToolbarItem>
-              <ToolbarItemIcon>
+              <ToolbarItemIcon style={{ marginBottom: fontSize / 2 }}>
                 <IconClear
-                  width={21}
-                  height={19}
+                  width={fontSize + 2}
+                  height={fontSize}
                   style={{ color: '#4aac8b', fill: '#4aac8b', stroke: '#4aac8b' }}
                 />
               </ToolbarItemIcon>

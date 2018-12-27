@@ -6,6 +6,7 @@ import {
   ToolbarItemLabel, ToolbarItem, ToolbarItemIcon,
   DropdownArrowWrapper
 } from './styled';
+import utils from './utils';
 
 class Dropdown extends Component {
   constructor(props) {
@@ -85,8 +86,8 @@ class Dropdown extends Component {
     const { listOpen } = this.state;
     const isToolGroupActive = currentTool.groupIndex === list[0].groupIndex;
     const additionalStyles = {
-      width: fontSize,
-      height: fontSize,
+      width: fontSize + 2,
+      height: fontSize + 2,
       color: ''
     };
 
@@ -103,7 +104,7 @@ class Dropdown extends Component {
                 { getIconTemplate(this.getActiveOrDefaultToolName(), additionalStyles) }
               </ToolbarItemIcon>
               <ToolbarItemLabel style={{ fontSize }}>
-                { this.getActiveOrDefaultToolName() }
+                { utils.capitalizeFirstLetter(this.getActiveOrDefaultToolName()) }
               </ToolbarItemLabel>
             </ToolbarItem>
 
@@ -119,7 +120,7 @@ class Dropdown extends Component {
 
         {listOpen && (
         <DropdownMenu
-          innerRef={comp => this.dropdownMenu = comp}
+          innerRef={(comp) => { this.dropdownMenu = comp; }}
         >
           {list.map(uiTool => (
             <React.Fragment key={Math.random().toString(36)}>
@@ -129,10 +130,10 @@ class Dropdown extends Component {
                 onClick={() => this.selectItem(uiTool)}
                 style={{ fontSize }}
               >
-                <Icon>
-                  { getIconTemplate(uiTool.name, { width: fontSize, height: fontSize, color: '' }) }
+                <Icon style={{ width: fontSize + 10 }}>
+                  { getIconTemplate(uiTool.name, { width: fontSize + 2, height: fontSize + 2, color: '' }) }
                 </Icon>
-                { uiTool.name }
+                { utils.capitalizeFirstLetter(uiTool.name) }
               </GroupToolBtn>
             </React.Fragment>
           ))}

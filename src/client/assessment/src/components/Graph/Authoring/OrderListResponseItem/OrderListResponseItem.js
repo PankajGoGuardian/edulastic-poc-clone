@@ -5,7 +5,7 @@ import { SortableElement } from 'react-sortable-hoc';
 import DeleteButton from '../../common/DeleteButton';
 import DragHandle from '../../common/DragHandle';
 import {
-  Container, Item, StyledDragHandle, StyledTextarea,
+  Container, Item, StyledDragHandle, StyledTextarea
 } from '../../common/styled_components';
 
 const OrderListItem = SortableElement(({ children, onQuestionsChange, onDeleteQuestion }) => (
@@ -24,7 +24,7 @@ const OrderListItem = SortableElement(({ children, onQuestionsChange, onDeleteQu
 OrderListItem.propTypes = {
   children: PropTypes.string.isRequired,
   onQuestionsChange: PropTypes.func.isRequired,
-  index: PropTypes.number.isRequired,
+  index: PropTypes.number.isRequired
 };
 
 export default OrderListItem;

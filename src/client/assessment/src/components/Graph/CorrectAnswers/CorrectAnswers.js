@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from '@edulastic/common';
+import { Tabs, Tab, TabContainer, Button } from '@edulastic/common';
 import { IconPlus } from '@edulastic/icons';
 import { white } from '@edulastic/colors';
 import { compose } from 'redux';
@@ -7,7 +7,6 @@ import { withNamespaces } from '@edulastic/localization';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { cloneDeep } from 'lodash';
-import { Tabs, Tab, TabContainer } from '@edulastic/common';
 import { Subtitle } from '../common/styled_components';
 import { getQuestionDataSelector } from '../../../../../author/src/selectors/question';
 import { setQuestionDataAction } from '../../../../../author/src/actions/question';
@@ -17,7 +16,7 @@ class CorrectAnswers extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: 0,
+      value: 0
     };
   }
 
@@ -94,7 +93,7 @@ class CorrectAnswers extends Component {
       uiStyle,
       canvasConfig,
       bgImgOptions,
-      backgroundShapes,
+      backgroundShapes
     } = this.props;
     const { value } = this.state;
 
@@ -133,8 +132,8 @@ class CorrectAnswers extends Component {
                     tools={tools}
                     response={alter}
                     stimulus={stimulus}
-                    onUpdateValidationValue={value =>
-                      this.updateAltValidationValue(value, i)
+                    onUpdateValidationValue={val =>
+                      this.updateAltValidationValue(val, i)
                    }
                     onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                     bgImgOptions={bgImgOptions}
@@ -162,20 +161,20 @@ CorrectAnswers.propTypes = {
   canvasConfig: PropTypes.object.isRequired,
   tools: PropTypes.array.isRequired,
   bgImgOptions: PropTypes.object.isRequired,
-  backgroundShapes: PropTypes.array,
+  backgroundShapes: PropTypes.array
 };
 
 CorrectAnswers.defaultProps = {
   stimulus: '',
   validation: {},
-  backgroundShapes: [],
+  backgroundShapes: []
 };
 
 const enhance = compose(
   withNamespaces('assessment'),
   connect(
     state => ({
-      question: getQuestionDataSelector(state),
+      question: getQuestionDataSelector(state)
     }),
     { setQuestionData: setQuestionDataAction },
   ),

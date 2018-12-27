@@ -12,7 +12,7 @@ import {
   trueAnswerWith1Circle, trueCircleWithOtherPoints, secondTrueCircle, errorCircle,
   trueAnswerWith1Parabola, trueParabolaWithOtherPoints, secondTrueParabola, errorParabola,
   trueAnswerWith1Sine, trueSineWithOtherPoints, secondTrueSine, errorSine,
-  trueAnswerWith1Polygon, truePolygonWithOtherOrderedPoints, secondTruePolygon, errorPolygon,
+  trueAnswerWith1Polygon, truePolygonWithOtherOrderedPoints, secondTruePolygon, errorPolygon
 } from './data/graph';
 
 function clone(object) {

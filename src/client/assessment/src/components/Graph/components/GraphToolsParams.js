@@ -4,7 +4,7 @@ import { Button, Select } from '@edulastic/common';
 import {
   Row, Col, ToolSubTitle, SelectWrapper,
   GraphToolsParamsWrapper, AddToolBtnWrapper,
-  ToolSelect,
+  ToolSelect
 } from '../common/styled_components';
 import DeleteButton from '../common/DeleteButton';
 
@@ -23,7 +23,7 @@ class GraphToolsParams extends Component {
 
     onChange({
       ...toolbar,
-      tools: newTools,
+      tools: newTools
     });
   };
 
@@ -31,7 +31,7 @@ class GraphToolsParams extends Component {
     const { toolbar, onChange } = this.props;
     onChange({
       ...toolbar,
-      tools: [...toolbar.tools, []],
+      tools: [...toolbar.tools, []]
     });
   };
 
@@ -49,7 +49,7 @@ class GraphToolsParams extends Component {
 
     onChange({
       ...toolbar,
-      tools: newTools,
+      tools: newTools
     });
   };
 
@@ -61,7 +61,7 @@ class GraphToolsParams extends Component {
 
     onChange({
       ...toolbar,
-      tools: newTools,
+      tools: newTools
     });
   };
 
@@ -78,7 +78,7 @@ class GraphToolsParams extends Component {
 
     onChange({
       ...toolbar,
-      tools: newTools,
+      tools: newTools
     });
   };
 
@@ -149,7 +149,7 @@ class GraphToolsParams extends Component {
       if (Array.isArray(tool)) {
         return {
           tools: [...tool],
-          id: i,
+          id: i
         };
       }
       return null;
@@ -237,15 +237,15 @@ class GraphToolsParams extends Component {
 GraphToolsParams.propTypes = {
   toolbar: PropTypes.object,
   options: PropTypes.array.isRequired,
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired
 };
 
 GraphToolsParams.defaultProps = {
   toolbar: {
     default_tool: '',
     tools: [],
-    options: [],
-  },
+    options: []
+  }
 };
 
 const Tool = (props) => {
@@ -260,7 +260,7 @@ const Tool = (props) => {
     index,
     onDelete,
     // default_tool,
-    deleteToolStyles,
+    deleteToolStyles
   } = props;
 
   const isNeedToShowDeleteButton = () => countOfSingleTools > 1 || isGroup;
@@ -290,5 +290,23 @@ const Tool = (props) => {
   );
 };
 
+Tool.propTypes = {
+  countOfSingleTools: PropTypes.number.isRequired,
+  options: PropTypes.array.isRequired,
+  isGroup: PropTypes.bool,
+  groupIndex: PropTypes.number,
+  value: PropTypes.any.isRequired,
+  onChange: PropTypes.func.isRequired,
+  selectWidth: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  deleteToolStyles: PropTypes.object
+};
+
+Tool.defaultProps = {
+  deleteToolStyles: {},
+  groupIndex: undefined,
+  isGroup: false
+};
 
 export default GraphToolsParams;

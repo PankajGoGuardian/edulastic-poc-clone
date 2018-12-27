@@ -234,8 +234,8 @@ export const DropdownArrowWrapper = styled.div`
 `;
 
 export const Icon = styled.div`
-  display: inline-flex;
-  align-items: center;
+  display: flex;
+  justify-content: center;
   margin-right: 19px;
   font-size: 16px;
 `;

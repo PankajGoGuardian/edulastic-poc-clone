@@ -1,8 +1,10 @@
 import { Point } from '.';
 import { CONSTANT, Colors } from '../config';
+import { handleSnap } from '../utils';
 
 export const defaultConfig = {
   type: CONSTANT.TOOLS.SIN,
+  fixed: false
 };
 
 export const getSinLabelParameters = () => ({
@@ -35,14 +37,16 @@ function onHandler() {
         [makeCallback(...points)], {
           ...defaultConfig,
           ...Colors.default[CONSTANT.TOOLS.SIN],
-          label: getSinLabelParameters(),
+          label: getSinLabelParameters()
         });
+
+      handleSnap(newLine, points);
 
       if (newLine) {
         newLine.addParents(points);
         newLine.ancestors = {
           [points[0].id]: points[0],
-          [points[1].id]: points[1],
+          [points[1].id]: points[1]
         };
         points = [];
         return newLine;
@@ -51,15 +55,15 @@ function onHandler() {
   };
 }
 
-function parseConfig(points) {
+function parseConfig(pointsConfig) {
   return [
     'functiongraph',
-    [points => makeCallback(...points), points],
+    [pointsArgument => makeCallback(...pointsArgument), pointsConfig],
     {
       ...defaultConfig,
       fillColor: 'transparent',
-      label: getSinLabelParameters(),
-    },
+      label: getSinLabelParameters()
+    }
   ];
 }
 
@@ -71,5 +75,5 @@ function abort(cb) {
 export default {
   onHandler,
   parseConfig,
-  abort,
+  abort
 };

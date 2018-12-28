@@ -36,6 +36,8 @@ export const SET_STUDENT_ASSIGNMENTS = '[assignments] set student assignments';
 // test activity
 export const INIT_TEST_ACTIVITY = '[testActivity] initate test activity';
 export const SET_TEST_ACTIVITY_ID = '[test] add test activity id';
+export const GET_TEST_ACTIVITY_DETAIL = '[test] get test activity detail';
+export const LOAD_TEST_ACTIVITY_DETAIL = '[test] load test activity detail';
 
 // test
 export const LOAD_PREVIOUS_RESPONSES = '[test] load previous responses';

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Row, Col, Button } from 'antd';
 
@@ -27,12 +28,14 @@ class SummaryTest extends Component {
   }
 
   render() {
+    const { finishTest } = this.props;
     const { buttonIdx, isShowConfirmationModal } = this.state;
     return (
       <AssignmentContentWrapper style={{ margin: '24px 95px' }}>
         <Confirmation
           isVisible={isShowConfirmationModal}
           onClose={() => this.closeConfirmationModal()}
+          finishTest={finishTest}
         />
         <Container>
           <Header>
@@ -117,6 +120,10 @@ class SummaryTest extends Component {
     );
   }
 }
+
+SummaryTest.propTypes = {
+  finishTest: PropTypes.func.isRequired
+};
 
 export default SummaryTest;
 

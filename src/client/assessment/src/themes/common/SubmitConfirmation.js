@@ -6,7 +6,7 @@ import { Button, Row, Col } from 'antd';
 
 import { secondaryTextColor } from '@edulastic/colors';
 
-class Confirmation extends Component {
+class SubmitConfirmation extends Component {
   render() {
     const { isVisible, onClose, finishTest } = this.props;
     return (
@@ -18,7 +18,7 @@ class Confirmation extends Component {
         styles={{ modal: { borderRadius: 5, minWidth: 630 } }}
       >
         <ModalContainer>
-          <Title>Do you want to finish the questionnaire?</Title>
+          <Title>Are you sure?</Title>
           <TitleDescriptioin>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mauris nunc.
           </TitleDescriptioin>
@@ -29,7 +29,7 @@ class Confirmation extends Component {
               </Col>
               <Col span={12}>
                 <StyledButton type="primary" btnType={2} onClick={finishTest}>
-                  Sure, Take me to the report
+                  Proceed
                 </StyledButton>
               </Col>
             </Row>
@@ -40,19 +40,19 @@ class Confirmation extends Component {
   }
 }
 
-Confirmation.propTypes = {
+SubmitConfirmation.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   finishTest: PropTypes.func.isRequired
 };
 
-export default Confirmation;
+export default SubmitConfirmation;
 
 const ModalContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 50px 0px;
+  margin: 50px 0px 25px 0px;
 `;
 
 const Title = styled.div`

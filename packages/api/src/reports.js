@@ -11,6 +11,15 @@ const fetchReports = () =>
     })
     .then(result => result.data.result);
 
+const fetchTestActivityDetail = id =>
+  api
+    .callApi({
+      url: `/test-activity/${id}`,
+      method: 'get'
+    })
+    .then(result => result);
+
 export default {
-  fetchReports
+  fetchReports,
+  fetchTestActivityDetail
 };

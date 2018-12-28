@@ -11,6 +11,7 @@ import HeaderLeftMenu from '../common/HeaderLeftMenu';
 import HeaderMainMenu from '../common/HeaderMainMenu';
 import HeaderRightMenu from '../common/HeaderRightMenu';
 import ToolbarModal from '../common/ToolbarModal';
+import SubmitConfirmation from '../common/SubmitConfirmation';
 import {
   ControlBtn,
   ToolButton,
@@ -45,13 +46,13 @@ class AssessmentPlayerDefault extends React.Component {
     super(props);
     this.state = {
       testItemState: '',
-      isToolbarModalVisible: false
+      isToolbarModalVisible: false,
+      isSubmitConfirmationVisible: false
     };
   }
 
   static propTypes = {
     theme: PropTypes.object,
-    isLast: PropTypes.func.isRequired,
     isFirst: PropTypes.func.isRequired,
     moveToNext: PropTypes.func.isRequired,
     moveToPrev: PropTypes.func.isRequired,
@@ -97,10 +98,17 @@ class AssessmentPlayerDefault extends React.Component {
     this.setState({ isToolbarModalVisible: false });
   }
 
+  openSubmitConfirmation = () => {
+    this.setState({ isSubmitConfirmationVisible: true });
+  }
+
+  closeSubmitConfirmation = () => {
+    this.setState({ isSubmitConfirmationVisible: false });
+  }
+
   render() {
     const {
       theme,
-      isLast,
       items,
       isFirst,
       moveToNext,
@@ -113,7 +121,7 @@ class AssessmentPlayerDefault extends React.Component {
       windowWidth
     } = this.props;
 
-    const { testItemState, isToolbarModalVisible } = this.state;
+    const { testItemState, isToolbarModalVisible, isSubmitConfirmationVisible } = this.state;
 
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
@@ -128,6 +136,11 @@ class AssessmentPlayerDefault extends React.Component {
             isVisible={isToolbarModalVisible}
             onClose={() => this.closeToolbarModal()}
             checkanswer={() => this.changeTabItemState('check')}
+          />
+          <SubmitConfirmation
+            isVisible={isSubmitConfirmationVisible}
+            onClose={() => this.closeSubmitConfirmation()}
+            finishTest={finishTest}
           />
           <Affix>
             <Header>
@@ -145,7 +158,7 @@ class AssessmentPlayerDefault extends React.Component {
                   />
                   <FlexContainer style={{ flex: 1, justifyContent: windowWidth < MAX_MOBILE_WIDTH && 'flex-end' }}>
                     <ControlBtn prev skin type="primary" icon="left" disabled={isFirst()} onClick={moveToPrev} />
-                    <ControlBtn next skin type="primary" icon="right" disabled={isLast()} onClick={moveToNext} />
+                    <ControlBtn next skin type="primary" icon="right" onClick={moveToNext} />
                     { windowWidth < LARGE_DESKTOP_WIDTH && (
                       <ToolButton
                         next
@@ -159,7 +172,7 @@ class AssessmentPlayerDefault extends React.Component {
                     { windowWidth >= MEDIUM_DESKTOP_WIDTH && <TestButton checkAnwser={() => this.changeTabItemState('check')} /> }
                     { windowWidth >= LARGE_DESKTOP_WIDTH && <ToolBar /> }
                     { windowWidth >= MAX_MOBILE_WIDTH && <Clock /> }
-                    { windowWidth >= MAX_MOBILE_WIDTH && <SaveAndExit finishTest={finishTest} /> }
+                    { windowWidth >= MAX_MOBILE_WIDTH && <SaveAndExit finishTest={() => this.openSubmitConfirmation()} /> }
                   </FlexContainer>
                 </FlexContainer>
                 <FlexContainer />

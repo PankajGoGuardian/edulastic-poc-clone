@@ -1,4 +1,5 @@
 import React from 'react';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -6,18 +7,28 @@ import SummaryHeader from './header';
 import SummaryTest from './maincontent';
 
 import MainContainer from '../commonStyle/mainContainer';
+import { finishTestAcitivityAction } from '../../../../assessment/src/actions/test';
 
-const SummaryContainer = ({ flag }) => (
+const SummaryContainer = ({ finishTest }) => (
   <React.Fragment>
-    <MainContainer flag={flag}>
+    <MainContainer>
       <SummaryHeader />
-      <SummaryTest />
+      <SummaryTest finishTest={finishTest} />
     </MainContainer>
   </React.Fragment>
 );
 
-export default React.memo(connect(({ ui }) => ({ flag: ui.flag }))(SummaryContainer));
+const enhance = compose(
+  connect(
+    null,
+    {
+      finishTest: finishTestAcitivityAction
+    }
+  )
+);
+
+export default enhance(SummaryContainer);
 
 SummaryContainer.propTypes = {
-  flag: PropTypes.bool.isRequired
+  finishTest: PropTypes.func.isRequired
 };

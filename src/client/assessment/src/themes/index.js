@@ -1,6 +1,8 @@
 import React from 'react';
+import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { gotoItem, saveUserResponse } from '../actions/items';
 import { finishTestAcitivityAction } from '../actions/test';
 import { evaluateAnswer } from '../actions/evaluation';
@@ -17,6 +19,7 @@ const AssessmentContainer = ({
   defaultAP,
   currentItem,
   finishTest,
+  history,
   gotoItem: gotoIt,
   saveUserResponse: saveUser,
   evaluateAnswer: evaluate
@@ -32,6 +35,9 @@ const AssessmentContainer = ({
   const moveToNext = () => {
     if (!isLast()) {
       gotoQuestion(currentItem + 1);
+    }
+    if (isLast()) {
+      history.push('/student/test-summary');
     }
   };
 
@@ -66,17 +72,22 @@ AssessmentContainer.propTypes = {
   currentItem: PropTypes.number.isRequired
 };
 
-export default connect(
-  state => ({
-    view: state.view.preview,
-    items: state.test.items,
-    currentItem: state.test.currentItem,
-    itemRows: currentItemRowsSelector(state)
-  }),
-  {
-    gotoItem,
-    saveUserResponse,
-    evaluateAnswer,
-    finishTest: finishTestAcitivityAction
-  }
-)(AssessmentContainer);
+const enhance = compose(
+  withRouter,
+  connect(
+    state => ({
+      view: state.view.preview,
+      items: state.test.items,
+      currentItem: state.test.currentItem,
+      itemRows: currentItemRowsSelector(state)
+    }),
+    {
+      gotoItem,
+      saveUserResponse,
+      evaluateAnswer,
+      finishTest: finishTestAcitivityAction
+    }
+  )
+);
+
+export default enhance(AssessmentContainer);

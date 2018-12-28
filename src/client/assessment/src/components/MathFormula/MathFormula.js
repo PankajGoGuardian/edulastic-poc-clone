@@ -31,7 +31,10 @@ const MathFormula = ({
   const [studentTemplate, setStudentTemplate] = useState();
 
   const setTemplate = (template) => {
-    const latex = template.replace(/\\embed\{response\}/g, '\\MathQuillMathField{}');
+    const latex = template.search(/\\embed\{response\}/g) !== -1
+        ? template.replace(/\\embed\{response\}/g, '\\MathQuillMathField{}')
+        : '\\MathQuillMathField{${template}}';
+
     setStudentTemplate(latex);
   };
 

@@ -101,8 +101,10 @@ class SideMenu extends Component {
 
   render() {
     const { broken, isVisible } = this.state;
-    const { windowWidth, history, isSidebarCollapsed } = this.props;
-    const isPickQuestion = !!history.location.pathname.includes('pickup-questiontype');
+    const { windowWidth, history, isSidebarCollapsed, firstName } = this.props;
+    const isPickQuestion = !!history.location.pathname.includes(
+      'pickup-questiontype'
+    );
     const isCollapsed = isPickQuestion || isSidebarCollapsed;
     const isMobile = windowWidth < 480;
     const footerDropdownMenu = (
@@ -201,7 +203,7 @@ class SideMenu extends Component {
                     <div style={{ paddingLeft: 11 }}>
                       {!isCollapsed && (
                         <div style={{ fontSize: 14, color: '#057750' }}>
-                          Zack oliver
+                          {firstName || 'Zack Oliver'}
                         </div>
                       )}
                       {!isCollapsed && (
@@ -232,6 +234,7 @@ SideMenu.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   history: PropTypes.object.isRequired,
   toggleSideBar: PropTypes.func.isRequired,
+  firstName: PropTypes.string.isRequired,
   isSidebarCollapsed: PropTypes.func.isRequired
 };
 
@@ -239,7 +242,10 @@ const enhance = compose(
   withRouter,
   withWindowSizes,
   connect(
-    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapse }),
+    ({ authorUi, user }) => ({
+      isSidebarCollapsed: authorUi.isSidebarCollapse,
+      firstName: user.firstName
+    }),
     { toggleSideBar: toggleSideBarAction }
   )
 );
@@ -247,13 +253,13 @@ const enhance = compose(
 export default enhance(SideMenu);
 
 const FixedSidebar = styled.div`
-    position: fixed;
-    left: 0px;
-    top: 0px;
-    bottom: 0px;
-    @media (max-width: 768px) {
-      z-index: 2;
-    }
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+  @media (max-width: 768px) {
+    z-index: 2;
+  }
 `;
 
 const SideBar = styled(Layout.Sider)`
@@ -424,8 +430,8 @@ const FooterDropDown = styled.div`
   position: relative;
   bottom: ${props => (props.isVisible ? '-4px' : '-30px')};
   opacity: ${props => (props.isVisible ? '1' : '0')};
-  transition: .2s;
-  -webkit-transition: .2s;
+  transition: 0.2s;
+  -webkit-transition: 0.2s;
   ul {
     background: #1fe3a1;
     border-bottom: 1px solid #4fd08c;
@@ -501,8 +507,8 @@ const UserInfoButton = styled.div`
     margin: ${props => (props.isCollapsed ? 0 : '0 21px')};
     position: relative;
     font-weight: 600;
-    transition: .2s;
-    -webkit-transition: .2s;
+    transition: 0.2s;
+    -webkit-transition: 0.2s;
     .drop-caret {
       position: absolute;
       right: 10px;

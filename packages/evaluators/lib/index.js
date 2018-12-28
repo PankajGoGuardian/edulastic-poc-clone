@@ -83,6 +83,12 @@ Object.defineProperty(exports, "shading", {
     return _shading.default;
   }
 });
+Object.defineProperty(exports, "choiceMatrix", {
+  enumerable: true,
+  get: function get() {
+    return _choiceMatrix.default;
+  }
+});
 
 var _mcq = _interopRequireDefault(require("./mcq"));
 
@@ -109,3 +115,5 @@ var _shortText = _interopRequireDefault(require("./shortText"));
 var _tokenhighlight = _interopRequireDefault(require("./tokenhighlight"));
 
 var _shading = _interopRequireDefault(require("./shading"));
+
+var _choiceMatrix = _interopRequireDefault(require("./choiceMatrix"));

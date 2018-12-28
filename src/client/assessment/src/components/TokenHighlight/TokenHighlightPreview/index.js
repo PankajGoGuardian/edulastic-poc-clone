@@ -14,6 +14,7 @@ const TokenHighlightPreview = ({
   smallSize,
   saveAnswer,
   editCorrectAnswers,
+  userAnswer,
   previewTab
 }) => {
   const initialArray = item.templeWithTokens.map((el, i) => ({
@@ -33,6 +34,8 @@ const TokenHighlightPreview = ({
 
   const [answers, setAnswers] = useState(initialArray);
 
+  const [isCheck, setIsCheck] = useState(false);
+
   useEffect(
     () => {
       if (view === EDIT) {
@@ -44,6 +47,44 @@ const TokenHighlightPreview = ({
       }
     },
     [item.templeWithTokens, editCorrectAnswers]
+  );
+
+  useEffect(
+    () => {
+      if (previewTab === SHOW) {
+        if (answers.filter(answer => answer.selected).length !== 0) {
+          setAnswers([
+            ...validArray.filter((answer, i) => answers[i].selected === answer.selected),
+            ...answers.filter(
+              (answer, i) => answer.selected && validArray[i].selected !== answer.selected
+            )
+          ]);
+        } else {
+          setAnswers(validArray);
+        }
+      } else if (previewTab === CLEAR && !isCheck) {
+        saveAnswer(initialArray);
+        setAnswers(initialArray);
+      } else if (previewTab === CLEAR && isCheck) {
+        saveAnswer(userAnswer);
+      }
+      if (previewTab === CHECK) {
+        setIsCheck(true);
+      } else {
+        setIsCheck(false);
+      }
+    },
+    [previewTab]
+  );
+
+  useEffect(
+    () => {
+      if (userAnswer.length === 0) {
+        saveAnswer(initialArray);
+        setAnswers(initialArray);
+      }
+    },
+    [userAnswer]
   );
 
   const handleSelect = i => () => {
@@ -136,12 +177,14 @@ TokenHighlightPreview.propTypes = {
   view: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   editCorrectAnswers: PropTypes.array,
-  previewTab: PropTypes.string
+  previewTab: PropTypes.string,
+  userAnswer: PropTypes.any
 };
 
 TokenHighlightPreview.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
+  userAnswer: [],
   editCorrectAnswers: []
 };
 

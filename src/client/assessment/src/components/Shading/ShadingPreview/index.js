@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { cloneDeep } from 'lodash';
 import { Select, Input } from 'antd';
@@ -33,6 +33,8 @@ const ShadingPreview = ({
 }) => {
   const { canvas, validation } = item;
 
+  const [isCheck, setIsCheck] = useState(false);
+
   const cell_width = canvas ? canvas.cell_width : 1;
   const cell_height = canvas ? canvas.cell_height : 1;
   const row_count = canvas ? canvas.row_count : 1;
@@ -51,11 +53,29 @@ const ShadingPreview = ({
     () => {
       if (view === PREVIEW) {
         if (!read_only_author_cells) {
-          saveAnswer(shaded);
+          saveAnswer(cloneDeep(shaded));
         }
       }
     },
     [view]
+  );
+
+  useEffect(
+    () => {
+      if (previewTab === CLEAR && view !== EDIT && !isCheck) {
+        if (!read_only_author_cells) {
+          saveAnswer(cloneDeep(shaded));
+        } else {
+          saveAnswer([]);
+        }
+      }
+      if (previewTab === CHECK) {
+        setIsCheck(true);
+      } else {
+        setIsCheck(false);
+      }
+    },
+    [previewTab]
   );
 
   const validate = () => {
@@ -132,8 +152,9 @@ const ShadingPreview = ({
             cellWidth={smallSize ? 1 : cell_width}
             cellHeight={smallSize ? 1 : cell_height}
             rowCount={smallSize ? 3 : row_count}
-            correctAnswers={correctAnswers}
-            showAnswers={preview}
+            correctAnswers={previewTab === SHOW ? validAnswer : correctAnswers}
+            showAnswers={previewTab === SHOW}
+            checkAnswers={previewTab === CHECK}
             colCount={smallSize ? 8 : column_count}
             onCellClick={handleCellClick}
             shaded={Array.isArray(userAnswer) ? userAnswer : []}

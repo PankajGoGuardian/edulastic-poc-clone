@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { cloneDeep, difference } from 'lodash';
 
@@ -11,9 +11,25 @@ import { Polygon, Svg } from '../HotspotEdit/AreasContainer/styledSvgElements';
 const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, previewTab }) => {
   const { areas, area_attributes, image, validation, multiple_responses, previewAreas } = item;
 
+  const [isCheck, setIsCheck] = useState(false);
+
   const width = image ? image.width : 900;
   const height = image ? image.height : 470;
   const source = image ? image.source : '';
+
+  useEffect(
+    () => {
+      if (previewTab === CLEAR && view !== EDIT && !isCheck) {
+        saveAnswer([]);
+      }
+      if (previewTab === CHECK) {
+        setIsCheck(true);
+      } else {
+        setIsCheck(false);
+      }
+    },
+    [previewTab]
+  );
 
   const handleClick = i => () => {
     const newAnswer = cloneDeep(userAnswer);

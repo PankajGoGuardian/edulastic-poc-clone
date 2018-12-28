@@ -22,7 +22,7 @@ const exactMatchEvaluator = (userResponse = [], validAnswer, altAnswers) => {
     } = answer;
 
     if (answerMethod === ScoringType.BY_LOCATION_METHOD) {
-      let all = true;
+      let all = userResponse.length !== 0;
       userResponse.forEach((shade) => {
         if (
           answerValue.findIndex(
@@ -51,7 +51,7 @@ const exactMatchEvaluator = (userResponse = [], validAnswer, altAnswers) => {
         score = validScore;
       }
     } else {
-      let all = true;
+      let all = userResponse.length !== 0;
       userResponse.forEach((shade) => {
         if (
           validValue.findIndex(

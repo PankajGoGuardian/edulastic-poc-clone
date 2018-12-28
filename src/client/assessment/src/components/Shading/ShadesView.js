@@ -22,7 +22,8 @@ const ShadesView = ({
   correctAnswers,
   showAnswers,
   marginTop,
-  lockedCells
+  lockedCells,
+  checkAnswers
 }) => {
   const rowsArray = Array(rowCount).fill(null);
 
@@ -59,6 +60,7 @@ const ShadesView = ({
           {columnsArray.map((col, j) => (
             <Li
               correct={isCorrectAnswer(i, j)}
+              checkAnswers={checkAnswers}
               showAnswers={showAnswers}
               locked={isLockedIndexExists(i, j)}
               active={isShadeActive(i, j) || isLockedIndexExists(i, j)}
@@ -84,14 +86,16 @@ ShadesView.propTypes = {
   lockedCells: PropTypes.any,
   correctAnswers: PropTypes.any,
   showAnswers: PropTypes.any,
-  marginTop: PropTypes.any
+  marginTop: PropTypes.any,
+  checkAnswers: PropTypes.bool
 };
 
 ShadesView.defaultProps = {
   lockedCells: undefined,
   correctAnswers: [],
   showAnswers: false,
-  marginTop: undefined
+  marginTop: undefined,
+  checkAnswers: false
 };
 
 export default ShadesView;
@@ -109,23 +113,50 @@ const Ul = styled.ul`
   }
 `;
 
-const getItemBackground = (alpha, defaultColor) => ({ active, showAnswers, correct, locked }) =>
-  (showAnswers
-    ? active && !locked
-      ? correct
-        ? green
-        : red
-      : locked
-        ? Color(svgMapFillColor)
-          .alpha(alpha)
-          .string()
-        : defaultColor
-    : active
-      ? Color(svgMapFillColor)
-        .alpha(alpha)
-        .string()
-      : defaultColor);
+const getItemBackground = (alpha, defaultColor) => ({
+  active,
+  showAnswers,
+  checkAnswers,
+  correct,
+  locked
+}) => {
+  const isCheckGreen = checkAnswers && active && !locked && correct;
+  const isCheckRed = checkAnswers && active && !locked && !correct;
+  const isCheckLocked = (checkAnswers && active && locked) || (checkAnswers && !active && locked);
+  const isShowGreen = showAnswers && correct && !locked;
+  const isShowLocked =
+    (showAnswers && correct && locked) || (showAnswers && !correct && active && locked);
+  const isShowRed = showAnswers && !correct && active && !locked;
+  const isSimplyActive = !checkAnswers && !showAnswers && active;
 
+  if (isCheckGreen || isShowGreen) {
+    return green;
+  }
+  if (isCheckRed || isShowRed) {
+    return red;
+  }
+  if (isCheckLocked || isShowLocked || isSimplyActive) {
+    return Color(svgMapFillColor)
+      .alpha(alpha)
+      .string();
+  }
+  return defaultColor;
+};
+
+const getIcon = ({ showAnswers, correct, locked, checkAnswers, active }) => {
+  const isCheckTick = checkAnswers && active && !locked && correct;
+  const isShowTick = showAnswers && correct && !locked;
+  const isCheckCross = checkAnswers && active && !locked && !correct;
+  const isShowCross = showAnswers && !correct && active && !locked;
+
+  if (isCheckTick || isShowTick) {
+    return '\\f00c';
+  }
+  if (isCheckCross || isShowCross) {
+    return '\\f00d';
+  }
+  return '';
+};
 const Li = styled.li`
   width: ${({ width }) => width * 40}px;
   height: ${({ height }) => height * 40}px;
@@ -147,8 +178,7 @@ const Li = styled.li`
   }
   &::before {
     font-family: FontAwesome;
-    content: "${({ showAnswers, correct, locked, active }) =>
-    (showAnswers ? (active && !locked ? (correct ? '\\f00c' : '\\f00d') : '') : '')}";
+    content: "${getIcon}";
     display: block;
     position: absolute;
     top: 50%;

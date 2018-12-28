@@ -8,11 +8,7 @@ import { cloneDeep } from 'lodash';
 import styled from 'styled-components';
 import { withNamespaces } from '@edulastic/localization';
 
-import {
-  ClozeDragDropAuthoring,
-  ClozeDragDropDisplay,
-  CorrectAnswers,
-} from './index';
+import { ClozeDragDropAuthoring, ClozeDragDropDisplay, CorrectAnswers } from './index';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 import CorrectAnswerOptions from './components/CorrectAnswerOptions';
 import Options from './Options';
@@ -36,14 +32,14 @@ class ClozeDragDrop extends Component {
         ...item,
         stimulus: item.stimulus,
         list: item.options,
-        validation: item.validation,
+        validation: item.validation
       };
     }
     return {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
-      uiStyle: item.ui_style,
+      uiStyle: item.ui_style
     };
   };
 
@@ -53,7 +49,7 @@ class ClozeDragDrop extends Component {
 
     const response = {
       score: 1,
-      value: [],
+      value: []
     };
 
     if (newItem.validation.alt_responses && newItem.validation.alt_responses.length) {
@@ -104,7 +100,7 @@ class ClozeDragDrop extends Component {
                   configureOptions={{
                     duplicatedResponses,
                     showDraghandle,
-                    shuffleOptions,
+                    shuffleOptions
                   }}
                   options={previewDisplayOptions}
                   question={previewStimulus}
@@ -117,35 +113,22 @@ class ClozeDragDrop extends Component {
                     className="additional-options"
                     key={`duplicatedResponses_${duplicatedResponses}`}
                     onChange={() =>
-                      this.handleOptionsChange(
-                        'duplicatedResponses',
-                        !duplicatedResponses,
-                      )
-                  }
+                      this.handleOptionsChange('duplicatedResponses', !duplicatedResponses)
+                    }
                     label={t('component.clozeDragDrop.duplicatedresponses')}
                     checked={duplicatedResponses}
                   />
                   <Checkbox
                     className="additional-options"
                     key={`showDraghandle_${showDraghandle}`}
-                    onChange={() =>
-                      this.handleOptionsChange(
-                        'showDraghandle',
-                        !showDraghandle,
-                      )
-                  }
+                    onChange={() => this.handleOptionsChange('showDraghandle', !showDraghandle)}
                     label={t('component.clozeDragDrop.showdraghandle')}
                     checked={showDraghandle}
                   />
                   <Checkbox
                     className="additional-options"
                     key={`shuffleOptions_${shuffleOptions}`}
-                    onChange={() =>
-                      this.handleOptionsChange(
-                        'shuffleOptions',
-                        !shuffleOptions,
-                      )
-                  }
+                    onChange={() => this.handleOptionsChange('shuffleOptions', !shuffleOptions)}
                     label={t('component.clozeDragDrop.shuffleoptions')}
                     checked={shuffleOptions}
                   />
@@ -172,7 +155,7 @@ class ClozeDragDrop extends Component {
                 configureOptions={{
                   duplicatedResponses,
                   showDraghandle,
-                  shuffleOptions,
+                  shuffleOptions
                 }}
                 smallSize={smallSize}
                 options={previewDisplayOptions}
@@ -191,7 +174,7 @@ class ClozeDragDrop extends Component {
                 configureOptions={{
                   duplicatedResponses,
                   showDraghandle,
-                  shuffleOptions,
+                  shuffleOptions
                 }}
                 smallSize={smallSize}
                 options={previewDisplayOptions}
@@ -210,7 +193,7 @@ class ClozeDragDrop extends Component {
                 configureOptions={{
                   duplicatedResponses,
                   showDraghandle,
-                  shuffleOptions,
+                  shuffleOptions
                 }}
                 key={previewDisplayOptions && previewStimulus && uiStyle}
                 smallSize={smallSize}
@@ -241,18 +224,18 @@ ClozeDragDrop.propTypes = {
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
   // eslint-disable-next-line react/no-unused-prop-types
-  evaluation: PropTypes.any.isRequired,
+  evaluation: PropTypes.any.isRequired
 };
 
 ClozeDragDrop.defaultProps = {
   previewTab: 'clear',
   item: {
-    options: [],
+    options: []
   },
   smallSize: false,
   history: {},
   userAnswer: [],
-  testItem: false,
+  testItem: false
 };
 
 const enhance = compose(
@@ -261,9 +244,9 @@ const enhance = compose(
   connect(
     null,
     {
-      setQuestionData: setQuestionDataAction,
-    },
-  ),
+      setQuestionData: setQuestionDataAction
+    }
+  )
 );
 
 export default enhance(ClozeDragDrop);

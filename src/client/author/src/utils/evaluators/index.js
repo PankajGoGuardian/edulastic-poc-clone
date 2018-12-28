@@ -10,6 +10,7 @@ import {
   shortText,
   math,
   tokenhighlight,
+  choiceMatrix,
   shading
 } from '@edulastic/evaluators';
 
@@ -22,8 +23,10 @@ const evaluators = {
   clozeImageDragDrop,
   clozeImageDropDown,
   math,
+  clozeDragDrop: sortList,
   shortText,
   classification,
+  choiceMatrix,
   matchList: sortList,
   sortList,
   hotspot,

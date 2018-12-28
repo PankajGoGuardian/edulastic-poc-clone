@@ -11,3 +11,4 @@ export { default as classification } from './classification';
 export { default as shortText } from './shortText';
 export { default as tokenhighlight } from './tokenhighlight';
 export { default as shading } from './shading';
+export { default as choiceMatrix } from './choiceMatrix';

@@ -27,7 +27,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
         answerScore = answer.score;
 
     if (answerMethod === _scoring.ScoringType.BY_LOCATION_METHOD) {
-      var all = true;
+      var all = userResponse.length !== 0;
       userResponse.forEach(function (shade) {
         if (answerValue.findIndex(function (checkShade) {
           return checkShade[0] === shade[0] && checkShade[1] === shade[1];
@@ -55,7 +55,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
         score = validScore;
       }
     } else {
-      var all = true;
+      var all = userResponse.length !== 0;
       userResponse.forEach(function (shade) {
         if (validValue.findIndex(function (checkShade) {
           return checkShade[0] === shade[0] && checkShade[1] === shade[1];

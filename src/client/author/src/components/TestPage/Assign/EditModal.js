@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Modal, Row, Col, DatePicker, Select, Radio } from 'antd';
@@ -29,15 +29,6 @@ const EditModal = ({
       [field]: value
     });
   };
-
-  useEffect(
-    () => {
-      modalData.class.forEach((classId) => {
-        fetchStudents({ classId });
-      });
-    },
-    [modalData.class]
-  );
 
   const disabledStartDate = (startDate) => {
     const { endDate } = modalData;

@@ -30,6 +30,7 @@ const fetchStudents = () => {
       }
 
       const students = yield call(enrollmentApi.fetch, classId);
+      groupIdCache.push(classId);
       yield put({
         type: SET_GROUP_STUDENTS,
         payload: { students, classId }

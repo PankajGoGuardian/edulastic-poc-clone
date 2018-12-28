@@ -166,7 +166,9 @@ const EditModal = ({
               value={modalData.students}
             >
               {allStudents.map(({ _id, firstName, lastName }) => (
-                <Option key={_id}>{`${firstName} ${lastName}`}</Option>
+                <Option key={_id}>{`${firstName || 'Anonymous'} ${lastName ||
+                  ''}`}
+                </Option>
               ))}
             </Select>
           </Col>

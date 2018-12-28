@@ -137,3 +137,6 @@ export const CLEAR_ANSWERS = '[answers] clear answers';
 
 // upload image
 export const UPDATE_TEST_IMAGE = 'update test image';
+
+// logout
+export const AUTHOR_LOGOUT = 'LOGOUT'; // set redux store to initial values

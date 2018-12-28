@@ -24,6 +24,7 @@ import {
   IconTestList
 } from '@edulastic/icons';
 import { withWindowSizes } from '@edulastic/common';
+import { logoutAction } from '../actions/auth';
 import { toggleSideBarAction } from '../actions/togglemenu';
 
 import Profile from '../assets/Profile.png';
@@ -83,7 +84,7 @@ class SideMenu extends Component {
     `;
   }
 
-  handleMenu = (item) => {
+  handleMenu = item => {
     const { history } = this.props;
     if (menuItems[item.key].path !== undefined) {
       history.push(`/${menuItems[item.key].path}`);
@@ -101,7 +102,13 @@ class SideMenu extends Component {
 
   render() {
     const { broken, isVisible } = this.state;
-    const { windowWidth, history, isSidebarCollapsed, firstName } = this.props;
+    const {
+      windowWidth,
+      history,
+      isSidebarCollapsed,
+      firstName,
+      logout
+    } = this.props;
     const isPickQuestion = !!history.location.pathname.includes(
       'pickup-questiontype'
     );
@@ -111,7 +118,7 @@ class SideMenu extends Component {
       <FooterDropDown isVisible={isVisible}>
         <Menu>
           <Menu.Item key="0">
-            <a href="#">
+            <a onClick={logout}>
               <IconDropdown type="caret-down" /> {isCollapsed ? '' : 'SIGN OUT'}
             </a>
           </Menu.Item>
@@ -208,7 +215,7 @@ class SideMenu extends Component {
                       )}
                       {!isCollapsed && (
                         <div style={{ fontSize: 12, color: 'white' }}>
-                          Student
+                          Teacher
                         </div>
                       )}
                     </div>
@@ -235,7 +242,8 @@ SideMenu.propTypes = {
   history: PropTypes.object.isRequired,
   toggleSideBar: PropTypes.func.isRequired,
   firstName: PropTypes.string.isRequired,
-  isSidebarCollapsed: PropTypes.func.isRequired
+  isSidebarCollapsed: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired
 };
 
 const enhance = compose(
@@ -246,7 +254,7 @@ const enhance = compose(
       isSidebarCollapsed: authorUi.isSidebarCollapse,
       firstName: user.firstName
     }),
-    { toggleSideBar: toggleSideBarAction }
+    { toggleSideBar: toggleSideBarAction, logout: logoutAction }
   )
 );
 

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { Affix } from 'antd';
 import { withWindowSizes } from '@edulastic/common';
@@ -54,17 +55,18 @@ class AssessmentPlayerDefault extends React.Component {
   static propTypes = {
     theme: PropTypes.object,
     isFirst: PropTypes.func.isRequired,
+    isLast: PropTypes.func.isRequired,
     moveToNext: PropTypes.func.isRequired,
     moveToPrev: PropTypes.func.isRequired,
     currentItem: PropTypes.any.isRequired,
     items: PropTypes.any.isRequired,
     gotoQuestion: PropTypes.any.isRequired,
     itemRows: PropTypes.array.isRequired,
-    finishTest: PropTypes.any.isRequired,
     evaluation: PropTypes.any.isRequired,
     checkAnswer: PropTypes.func.isRequired,
     changePreview: PropTypes.func.isRequired,
     getItemDetailById: PropTypes.func.isRequired,
+    history: PropTypes.func.isRequired,
     windowWidth: PropTypes.number.isRequired
   };
 
@@ -106,17 +108,22 @@ class AssessmentPlayerDefault extends React.Component {
     this.setState({ isSubmitConfirmationVisible: false });
   }
 
+  finishTest = () => {
+    const { history } = this.props;
+    history.push('/home/assignments');
+  }
+
   render() {
     const {
       theme,
       items,
       isFirst,
+      isLast,
       moveToNext,
       moveToPrev,
       gotoQuestion,
       currentItem,
       itemRows,
-      finishTest,
       evaluation,
       windowWidth
     } = this.props;
@@ -140,7 +147,7 @@ class AssessmentPlayerDefault extends React.Component {
           <SubmitConfirmation
             isVisible={isSubmitConfirmationVisible}
             onClose={() => this.closeSubmitConfirmation()}
-            finishTest={finishTest}
+            finishTest={() => this.finishTest()}
           />
           <Affix>
             <Header>
@@ -158,7 +165,7 @@ class AssessmentPlayerDefault extends React.Component {
                   />
                   <FlexContainer style={{ flex: 1, justifyContent: windowWidth < MAX_MOBILE_WIDTH && 'flex-end' }}>
                     <ControlBtn prev skin type="primary" icon="left" disabled={isFirst()} onClick={moveToPrev} />
-                    <ControlBtn next skin type="primary" icon="right" onClick={moveToNext} />
+                    <ControlBtn next skin type="primary" icon={!isLast() ? 'right' : 'upload'} onClick={moveToNext} />
                     { windowWidth < LARGE_DESKTOP_WIDTH && (
                       <ToolButton
                         next
@@ -205,6 +212,7 @@ class AssessmentPlayerDefault extends React.Component {
 }
 
 const enhance = compose(
+  withRouter,
   withWindowSizes,
   connect(
     state => ({

@@ -12,9 +12,8 @@ import { loadAssignmentsAction } from '../../../actions/dashboard';
 
 import AssignmentContentWrapper from '../../commonStyle/assignmentContentWrapper';
 
-const Report = ({ score, totalQuestion, createdAt, correctAnswers, assignmentId, reports, assignments }) => {
+const Report = ({ _id, score, totalQuestion, createdAt, correctAnswers, assignmentId, reports, assignments }) => {
   const [isAttemptShow, setIsAttemptShow] = useState(false);
-
   const timeConverter = (UNIX_timestamp) => {
     const a = new Date(UNIX_timestamp * 1000);
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -109,7 +108,7 @@ const Report = ({ score, totalQuestion, createdAt, correctAnswers, assignmentId,
               <CorrectText>Score</CorrectText>
             </div>
             <StartAssignmentBtn>
-              <Link to="/home/report/list">
+              <Link to={{ pathname: '/home/report/list', testActivityId: _id }}>
                 <ReviewButton>
                   <span className="review">REVIEW</span>
                   <span className="retake">RETAKE</span>
@@ -131,9 +130,11 @@ const Report = ({ score, totalQuestion, createdAt, correctAnswers, assignmentId,
                   <AttemptTag style={{ fontSize: 16, fontWeight: 600 }}>
                     {report.score ? report.score : 0}
                   </AttemptTag>
-                  <ReviewTag style={{ borderTopRightRadius: 4, borderBottomRightRadius: 4 }}>
-                    REVIEW
-                  </ReviewTag>
+                  <Link to={{ pathname: '/home/report/list', testActivityId: report._id }}>
+                    <ReviewTag style={{ borderTopRightRadius: 4, borderBottomRightRadius: 4 }}>
+                      REVIEW
+                    </ReviewTag>
+                  </Link>
                 </AttemptContainer>)
               ))
             )
@@ -145,6 +146,7 @@ const Report = ({ score, totalQuestion, createdAt, correctAnswers, assignmentId,
 };
 
 Report.propTypes = {
+  _id: PropTypes.string,
   score: PropTypes.number,
   totalQuestion: PropTypes.number,
   createdAt: PropTypes.string,
@@ -155,6 +157,7 @@ Report.propTypes = {
 };
 
 Report.defaultProps = {
+  _id: '',
   score: 0,
   totalQuestion: 0,
   createdAt: Date.now(),
@@ -169,7 +172,6 @@ const ReportContent = ({ flag, fetchReports, reports, loadAssignments, assignmen
     loadAssignments();
     fetchReports();
   }, []);
-
   return (
     <AssignmentsContent style={{ zIndex: 1 }} flag={flag}>
       <AssignmentContentWrapper>

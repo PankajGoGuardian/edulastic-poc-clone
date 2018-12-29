@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import AssignmentsContent from '../../commonStyle/assignmentContent';
 import AssignmentContentWrapper from '../../commonStyle/assignmentContentWrapper';
 
-const ReportListContent = ({ flag }) => (
+const ReportListContent = ({ flag, testActivityId }) => (
   <AssignmentsContent flag={flag}>
     <AssignmentContentWrapper>
       <Wrapper>
         <Content>
           <Header>
-            <Title>MATH MCAS-CALCULATOR</Title>
+            <Title>MATH MCAS-CALCULATOR{testActivityId}</Title>
             <BackBtn>BACK TO REPORT LIST</BackBtn>
           </Header>
           <ReportListWrapper>

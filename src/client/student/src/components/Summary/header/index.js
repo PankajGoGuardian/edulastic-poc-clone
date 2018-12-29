@@ -1,11 +1,12 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { Affix, Layout, Row, Col } from 'antd';
 import { IconLogout } from '@edulastic/icons';
 
 import { LogoCompact } from '../../../../../assessment/src/themes/common';
 
-const SummaryHeader = () => (
+const SummaryHeader = ({ showConfirmationModal }) => (
   <Affix>
     <AssignmentsHeader>
       <Row style={{ width: '100%' }}>
@@ -13,12 +14,16 @@ const SummaryHeader = () => (
           <Wrapper>
             <LogoCompact />
           </Wrapper>
-          <LogoutIcon />
+          <LogoutIcon onClick={showConfirmationModal} />
         </Col>
       </Row>
     </AssignmentsHeader>
   </Affix>
 );
+
+SummaryHeader.propTypes = {
+  showConfirmationModal: PropTypes.func.isRequired
+};
 
 export default memo(SummaryHeader);
 

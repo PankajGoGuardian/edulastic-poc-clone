@@ -17,7 +17,6 @@ function* fetchTestActivityDetail(action) {
   const { id } = action.payload;
   try {
     const reports = yield call(reportsApi.fetchTestActivityDetail, id);
-
     yield put({ type: LOAD_TEST_ACTIVITY_DETAIL, payload: { reports } });
   } catch (err) {
     console.error(err);

@@ -100,6 +100,7 @@ class PickUpQuestionType extends Component {
           </Menu>
           <Menu
             mode="inline"
+            style={{ background: '#fbfafc' }}
             selectedKeys={[currentQuestion]}
             onClick={this.handleCategory}
           >

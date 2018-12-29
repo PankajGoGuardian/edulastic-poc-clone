@@ -1,26 +1,35 @@
+"use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-const shapeTypes = require('./constants/shapeTypes');
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
 
+var _shapeTypes = require("./constants/shapeTypes");
 
-const CompareShapes = require('./compare-shapes');
+var _compareShapes = _interopRequireDefault(require("./compareShapes"));
 
-
-function checkAnswer(trueAnswer, testAnswer) {
-  const result = {
+var checkAnswer = function checkAnswer(trueAnswer, testAnswer) {
+  var result = {
     commonResult: false,
     details: []
   };
-  const trueAnswerValue = trueAnswer.valid_response.value;
-  const trueShapes = trueAnswerValue.filter(item => !item.subElement);
-  const compareShapes = new CompareShapes(trueAnswerValue, testAnswer);
-  testAnswer.filter(elem => !elem.subElement).forEach((testShape) => {
-    let compareResult = {
+  var trueAnswerValue = trueAnswer.valid_response.value;
+  var trueShapes = trueAnswerValue.filter(function (item) {
+    return !item.subElement;
+  });
+  var compareShapes = new _compareShapes.default(trueAnswerValue, testAnswer);
+  testAnswer.filter(function (elem) {
+    return !elem.subElement;
+  }).forEach(function (testShape) {
+    var compareResult = {
       id: testShape.id,
       result: false
     };
 
-    for (let i = 0; i < trueShapes.length; i++) {
+    for (var i = 0; i < trueShapes.length; i++) {
       compareResult = compareShapes.compare(testShape.id, trueShapes[i].id);
 
       if (compareResult.result) {
@@ -31,15 +40,19 @@ function checkAnswer(trueAnswer, testAnswer) {
     result.details.push(compareResult);
   }); // if result contain error shapes
 
-  if (result.details.findIndex(item => !item.result) > -1) {
+  if (result.details.findIndex(function (item) {
+    return !item.result;
+  }) > -1) {
     result.commonResult = false;
     return result;
   } // check that all shapes are resolved
 
 
-  const relatedIds = [];
-  result.details.forEach((item) => {
-    if (relatedIds.findIndex(id => id === item.relatedId) === -1) {
+  var relatedIds = [];
+  result.details.forEach(function (item) {
+    if (relatedIds.findIndex(function (id) {
+      return id === item.relatedId;
+    }) === -1) {
       relatedIds.push(item.relatedId);
     }
   });
@@ -59,18 +72,26 @@ function checkAnswer(trueAnswer, testAnswer) {
   if (trueAnswer.ignore_repeated_shapes && trueAnswer.ignore_repeated_shapes === 'strict') {
     result.commonResult = true;
 
-    const _loop = function _loop(i) {
-      const sameShapes = result.details.filter(item => item.relatedId === relatedIds[i]);
-      const sameShapesType = testAnswer.find(item => item.id === sameShapes[0].id).type;
+    var _loop = function _loop(i) {
+      var sameShapes = result.details.filter(function (item) {
+        return item.relatedId === relatedIds[i];
+      });
+      var sameShapesType = testAnswer.find(function (item) {
+        return item.id === sameShapes[0].id;
+      }).type;
 
-      if (sameShapes.length > 1 && sameShapesType !== shapeTypes.POINT && sameShapesType !== shapeTypes.SEGMENT && sameShapesType !== shapeTypes.VECTOR && sameShapesType !== shapeTypes.POLYGON) {
-        const allowedSubElementsIds = testAnswer.find(item => item.id === sameShapes[0].id).subElementsIds;
+      if (sameShapes.length > 1 && sameShapesType !== _shapeTypes.ShapeTypes.POINT && sameShapesType !== _shapeTypes.ShapeTypes.SEGMENT && sameShapesType !== _shapeTypes.ShapeTypes.VECTOR && sameShapesType !== _shapeTypes.ShapeTypes.POLYGON) {
+        var allowedSubElementsIds = testAnswer.find(function (item) {
+          return item.id === sameShapes[0].id;
+        }).subElementsIds;
 
-        const _loop2 = function _loop2(j) {
-          const checkableShape = testAnswer.find(item => item.id === sameShapes[j].id);
+        var _loop2 = function _loop2(j) {
+          var checkableShape = testAnswer.find(function (item) {
+            return item.id === sameShapes[j].id;
+          });
 
           switch (checkableShape.type) {
-            case shapeTypes.CIRCLE:
+            case _shapeTypes.ShapeTypes.CIRCLE:
               if (checkableShape.subElementsIds.endPoint !== allowedSubElementsIds.endPoint) {
                 sameShapes[j].result = false;
                 result.commonResult = false;
@@ -78,19 +99,20 @@ function checkAnswer(trueAnswer, testAnswer) {
 
               break;
 
-            case shapeTypes.PARABOLA:
-            case shapeTypes.SINE:
-            case shapeTypes.LINE:
-            case shapeTypes.RAY:
+            case _shapeTypes.ShapeTypes.PARABOLA:
+            case _shapeTypes.ShapeTypes.SINE:
+            case _shapeTypes.ShapeTypes.LINE:
+            case _shapeTypes.ShapeTypes.RAY:
             default:
               if (checkableShape.subElementsIds.startPoint !== allowedSubElementsIds.startPoint || checkableShape.subElementsIds.endPoint !== allowedSubElementsIds.endPoint) {
                 sameShapes[j].result = false;
                 result.commonResult = false;
               }
+
           }
         };
 
-        for (let j = 1; j < sameShapes.length; j++) {
+        for (var j = 1; j < sameShapes.length; j++) {
           _loop2(j);
         }
       }
@@ -106,11 +128,13 @@ function checkAnswer(trueAnswer, testAnswer) {
 
   result.commonResult = true;
 
-  const _loop3 = function _loop3(i) {
-    const sameShapes = result.details.filter(item => item.relatedId === relatedIds[i]);
+  var _loop3 = function _loop3(i) {
+    var sameShapes = result.details.filter(function (item) {
+      return item.relatedId === relatedIds[i];
+    });
 
     if (sameShapes.length > 1) {
-      for (let j = 1; j < sameShapes.length; j++) {
+      for (var j = 1; j < sameShapes.length; j++) {
         sameShapes[j].result = false;
         result.commonResult = false;
       }
@@ -122,8 +146,9 @@ function checkAnswer(trueAnswer, testAnswer) {
   }
 
   return result;
-}
+};
 
-module.exports = {
-  checkAnswer
-}; // export default checkAnswer;
+var _default = {
+  checkAnswer: checkAnswer
+};
+exports.default = _default;

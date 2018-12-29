@@ -257,7 +257,7 @@ const enhance = compose(
   connect(
     ({ router, user }) => ({
       currentPath: router.location.pathname,
-      firstName: user.firstName
+      firstName: user.firstName || ''
     }),
     { logout: logoutAction }
   )

@@ -242,7 +242,7 @@ SideMenu.propTypes = {
   history: PropTypes.object.isRequired,
   toggleSideBar: PropTypes.func.isRequired,
   firstName: PropTypes.string.isRequired,
-  isSidebarCollapsed: PropTypes.func.isRequired,
+  isSidebarCollapsed: PropTypes.bool.isRequired,
   logout: PropTypes.func.isRequired
 };
 
@@ -252,7 +252,7 @@ const enhance = compose(
   connect(
     ({ authorUi, user }) => ({
       isSidebarCollapsed: authorUi.isSidebarCollapse,
-      firstName: user.firstName
+      firstName: user.firstName || ''
     }),
     { toggleSideBar: toggleSideBarAction, logout: logoutAction }
   )

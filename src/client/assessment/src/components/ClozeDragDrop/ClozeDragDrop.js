@@ -223,7 +223,6 @@ ClozeDragDrop.propTypes = {
   userAnswer: PropTypes.any,
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
-  // eslint-disable-next-line react/no-unused-prop-types
   evaluation: PropTypes.any.isRequired
 };
 

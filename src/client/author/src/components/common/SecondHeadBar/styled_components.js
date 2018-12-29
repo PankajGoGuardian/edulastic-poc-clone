@@ -5,8 +5,8 @@ export const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 20px 40px;
-  position: ${props => (props.type ? 'fixed' : 'unset')};
-  z-index: ${props => (props.type ? 10 : 1)};
+  position: ${props => props.position};
+  z-index: ${props => props.zIndex};
   right: 120px;
 `;
 

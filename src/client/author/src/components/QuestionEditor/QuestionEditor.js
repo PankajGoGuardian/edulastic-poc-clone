@@ -36,7 +36,8 @@ const headerTitles = {
   matchList: 'Match List',
   clozeDragDrop: 'Cloze Drag & Drop',
   clozeImageDragDrop: 'Label Image with Drag & Drop',
-  clozeImageDropDown: 'Label Image with DropDown'
+  clozeImageDropDown: 'Label Image with DropDown',
+  clozeImageText: 'Label Image with Text'
 };
 
 class QuestionEditor extends Component {

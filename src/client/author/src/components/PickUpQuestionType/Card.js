@@ -30,14 +30,6 @@ const Card = ({ title, cardImage, onSelectQuestionType, data, setUserAnswer }) =
       <RoundDiv onClick={() => onSelectQuestionType(smallData)}>
         <Header>{title}</Header>
         <Content>
-          {/* <QuestionWrapper
-            testItem
-            type={smallData.type}
-            smallSize
-            view="preview"
-            questionId={questionId}
-            data={smallData}
-          /> */}
           <StyledPreviewImage src={cardImage || CardMapImage} />
         </Content>
       </RoundDiv>

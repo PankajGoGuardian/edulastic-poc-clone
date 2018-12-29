@@ -8,6 +8,7 @@ const CLASSIFICATION = 'classification';
 const CLOZE_DRAG_DROP = 'clozeDragDrop';
 const CLOZE_IMAGE_DRAG_DROP = 'clozeImageDragDrop';
 const CLOZE_IMAGE_DROP_DOWN = 'clozeImageDropDown';
+const CLOZE_IMAGE_TEXT = 'clozeImageText';
 const PROTRACTOR = 'protractor';
 const PASSAGE = 'passage';
 const MATH = 'math';
@@ -31,6 +32,7 @@ module.exports = {
   CLOZE_DRAG_DROP,
   CLOZE_IMAGE_DRAG_DROP,
   CLOZE_IMAGE_DROP_DOWN,
+  CLOZE_IMAGE_TEXT,
   PROTRACTOR,
   PASSAGE,
   MATH,

@@ -20,7 +20,7 @@ import FBClozeDropDown from '../../assets/fill-in-blanks/cloze-dropdown.svg';
 import FBClozeText from '../../assets/fill-in-blanks/cloze-text.svg';
 import FBClozeImgDragDrop from '../../assets/fill-in-blanks/img-drag-drop.svg';
 import FBClozeImgDropDown from '../../assets/fill-in-blanks/img-dropdown.svg';
-// import FBClozeImgText from '../../assets/fill-in-blanks/img-text.svg';
+import FBClozeImgText from '../../assets/fill-in-blanks/img-text.svg';
 
 // Classy Match
 import CMClassification from '../../assets/classy-match/classification.svg';
@@ -630,6 +630,38 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           ['Choice A', 'Choice B'],
           ['Select A', 'Select B']
         ],
+        validation: {
+          scoring_type: EXACT_MATCH,
+          valid_response: {
+            score: 1,
+            value: []
+          },
+          alt_responses: []
+        },
+        responses: [
+          { top: 0, left: 240, width: 200, height: 40 },
+          { top: 100, left: 120, width: 220, height: 40 },
+          { top: 220, left: 200, width: 200, height: 40 }
+        ],
+        imageWidth: 600,
+        stimulusReviewonly: '',
+        instructorStimulus: '',
+        rubricReference: '',
+        sampleAnswer: '',
+        distractorRationalePerResponse: '',
+        distractorRationaleOptions: []
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Label Image with Text',
+      type: 'fill-blanks',
+      cardImage: FBClozeImgText,
+      stimulus: '',
+      data: {
+        type: 'clozeImageText',
+        stimulus: '',
+        options: [],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {

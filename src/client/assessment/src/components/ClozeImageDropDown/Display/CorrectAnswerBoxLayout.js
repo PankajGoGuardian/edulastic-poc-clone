@@ -3,12 +3,10 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 // eslint-disable-next-line react/prop-types
-const CorrectAnswerbox = ({ chidren }) => (
-  <div className="correctanswer-box">
-    {chidren}
-  </div>
-);
-const StyledCorrectAnswerbox = styled(CorrectAnswerbox)`
+const StyledCorrectAnswerbox = styled.div.attrs({
+  /* eslint-disable-next-line no-unused-vars */
+  className: props => 'correctanswer-box'
+})`
   padding: 16px;
   font-size: ${props => props.fontSize}px;
 `;

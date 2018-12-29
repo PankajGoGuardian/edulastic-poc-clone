@@ -63,7 +63,7 @@ class SecondHeadBar extends Component {
 
     return (
 
-      <Container type={option}>
+      <Container zIndex={option ? 10 : 1} position={option ? 'fixed' : 'unset'}>
         {!option && <Breadcrumb data={breadcrumbData} style={{ position: 'unset', width: 200 }} />}
 
         {view === 'edit' && (

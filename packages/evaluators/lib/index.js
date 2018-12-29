@@ -35,6 +35,12 @@ Object.defineProperty(exports, "clozeImageDropDown", {
     return _clozeImageDropDown.default;
   }
 });
+Object.defineProperty(exports, "clozeImageText", {
+  enumerable: true,
+  get: function get() {
+    return _clozeImageText.default;
+  }
+});
 Object.defineProperty(exports, "clozeText", {
   enumerable: true,
   get: function get() {
@@ -99,6 +105,8 @@ var _graph = _interopRequireDefault(require("./graph"));
 var _clozeImageDragDrop = _interopRequireDefault(require("./clozeImageDragDrop"));
 
 var _clozeImageDropDown = _interopRequireDefault(require("./clozeImageDropDown"));
+
+var _clozeImageText = _interopRequireDefault(require("./clozeImageText"));
 
 var _clozeText = _interopRequireDefault(require("./clozeText"));
 

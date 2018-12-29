@@ -47,7 +47,7 @@ function () {
 
       switch (testShape.type) {
         case _shapeTypes.ShapeTypes.POINT:
-          return this.comparePoints(testShape, trueShape);
+          return CompareShapes.comparePoints(testShape, trueShape);
 
         case _shapeTypes.ShapeTypes.LINE:
           return this.compareLines(testShape, trueShape);
@@ -79,22 +79,6 @@ function () {
             result: false
           };
       }
-    }
-  }, {
-    key: "comparePoints",
-    value: function comparePoints(testPoint, truePoint) {
-      if (testPoint.x === truePoint.x && testPoint.y === truePoint.y) {
-        return {
-          id: testPoint.id,
-          relatedId: truePoint.id,
-          result: true
-        };
-      }
-
-      return {
-        id: testPoint.id,
-        result: false
-      };
     }
   }, {
     key: "compareLines",
@@ -548,6 +532,22 @@ function () {
       }
 
       return negativeResult;
+    }
+  }], [{
+    key: "comparePoints",
+    value: function comparePoints(testPoint, truePoint) {
+      if (testPoint.x === truePoint.x && testPoint.y === truePoint.y) {
+        return {
+          id: testPoint.id,
+          relatedId: truePoint.id,
+          result: true
+        };
+      }
+
+      return {
+        id: testPoint.id,
+        result: false
+      };
     }
   }]);
   return CompareShapes;

@@ -3,6 +3,7 @@ export { default as orderList } from './orderlist';
 export { default as graph } from './graph';
 export { default as clozeImageDragDrop } from './clozeImageDragDrop';
 export { default as clozeImageDropDown } from './clozeImageDropDown';
+export { default as clozeImageText } from './clozeImageText';
 export { default as clozeText } from './clozeText';
 export { default as math } from './math';
 export { default as hotspot } from './hotspot';

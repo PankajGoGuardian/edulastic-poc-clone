@@ -268,7 +268,7 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
               />
             </Col>
           </StyledRow>
-          {methodsConst.IS_UNIT && (
+          {methodsConst.IS_UNIT === method && (
             <StyledRow gutter={32}>
               <Col span={12}>
                 <Options.Label>Allowed units</Options.Label>

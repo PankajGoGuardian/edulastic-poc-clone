@@ -5,15 +5,17 @@ import { darkBlueSecondary } from '@edulastic/colors';
 import { Affix, Layout, Row, Col } from 'antd';
 
 const HeaderWrapper = ({ children }) => (
-  <Affix>
-    <AssignmentsHeader>
-      <HeaderRow>
-        <Col span={24}>
-          <Wrapper>{children}</Wrapper>
-        </Col>
-      </HeaderRow>
-    </AssignmentsHeader>
-  </Affix>
+  <HeaderContainer>
+    <Affix className="fixed-header" style={{ position: 'fixed', top: 0, right: 0 }}>
+      <AssignmentsHeader>
+        <HeaderRow>
+          <Col span={24}>
+            <Wrapper>{children}</Wrapper>
+          </Col>
+        </HeaderRow>
+      </AssignmentsHeader>
+    </Affix>
+  </HeaderContainer>
 );
 
 HeaderWrapper.propTypes = {
@@ -21,6 +23,11 @@ HeaderWrapper.propTypes = {
 };
 
 export default memo(HeaderWrapper);
+
+const HeaderContainer = styled.div`
+  padding-top: 62px;
+  margin-bottom: 10px;
+`;
 
 const AssignmentsHeader = styled(Layout.Header)`
   display: flex;

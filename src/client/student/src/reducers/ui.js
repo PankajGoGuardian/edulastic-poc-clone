@@ -1,8 +1,8 @@
 import { TOGGLE_MENU, RESPONSIVE_TOGGLE_MENU } from '../constants/actions';
 
 const initialState = {
-  flag: false,
-  sidebar: false,
+  isSidebarCollapsed: false,
+  isResponsive: false
 };
 
 const reducer = (state = initialState, { type }) => {
@@ -10,12 +10,12 @@ const reducer = (state = initialState, { type }) => {
     case TOGGLE_MENU:
       return {
         ...state,
-        flag: !state.flag,
+        isSidebarCollapsed: !state.isSidebarCollapsed
       };
     case RESPONSIVE_TOGGLE_MENU:
       return {
         ...state,
-        sidebar: !state.sidebar,
+        isResponsive: !state.isResponsive
       };
     default:
       return state;

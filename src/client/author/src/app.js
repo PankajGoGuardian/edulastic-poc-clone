@@ -81,7 +81,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
 };
 
 export default connect(({ authorUi }) => ({
-  isSidebarCollapsed: authorUi.isSidebarCollapse
+  isSidebarCollapsed: authorUi.isSidebarCollapsed
 }))(Author);
 
 Author.propTypes = {

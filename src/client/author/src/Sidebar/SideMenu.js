@@ -67,13 +67,11 @@ class SideMenu extends Component {
     };
   }
 
-  renderIcon(icon) {
-    const { collapsed } = this.state;
-    return styled(icon)`
+  renderIcon = (icon, isSidebarCollapsed) => styled(icon)`
       width: 22px !important;
       height: 22px !important;
       fill: rgb(67, 75, 93);
-      margin-right: ${() => (collapsed ? '0rem' : '1rem')};
+      margin-right: ${() => (isSidebarCollapsed ? '0rem' : '1rem')};
 
       .ant-menu-item-active > & {
         fill: #1890ff;
@@ -81,10 +79,9 @@ class SideMenu extends Component {
       .ant-menu-item-selected > & {
         fill: #4aac8b;
       }
-    `;
-  }
+    `
 
-  handleMenu = item => {
+  handleMenu = (item) => {
     const { history } = this.props;
     if (menuItems[item.key].path !== undefined) {
       history.push(`/${menuItems[item.key].path}`);
@@ -95,6 +92,10 @@ class SideMenu extends Component {
     const { toggleSideBar } = this.props;
     toggleSideBar();
   };
+
+  handleVisibleChange = (flag) => {
+    this.setState({ isVisible: flag });
+  }
 
   toggleDropdown = () => {
     this.setState(prevState => ({ isVisible: !prevState.isVisible }));
@@ -117,14 +118,14 @@ class SideMenu extends Component {
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible}>
         <Menu>
-          <Menu.Item key="0">
+          <Menu.Item key="0" className="removeSelectedBorder">
             <a onClick={logout}>
-              <IconDropdown type="caret-down" /> {isCollapsed ? '' : 'SIGN OUT'}
+              <LogoutIcon type="logout" /> {isCollapsed ? '' : 'SIGN OUT'}
             </a>
           </Menu.Item>
-          <Menu.Item key="1">
+          <Menu.Item key="1" className="removeSelectedBorder">
             <Link to="/home/profile">
-              <IconDropdown type="caret-down" />{' '}
+              <IconDropdown type="user" />{' '}
               {isCollapsed ? '' : 'MY PROFILE'}
             </Link>
           </Menu.Item>
@@ -178,7 +179,7 @@ class SideMenu extends Component {
               onClick={item => this.handleMenu(item)}
             >
               {menuItems.map((menu, index) => {
-                const MenuIcon = this.renderIcon(menu.icon);
+                const MenuIcon = this.renderIcon(menu.icon, isCollapsed);
                 return (
                   <MenuItem key={index.toString()}>
                     <MenuIcon />
@@ -193,17 +194,19 @@ class SideMenu extends Component {
                 {isCollapsed ? null : <span>Help Center</span>}
               </QuestionButton>
               <UserInfoButton
-                onClick={this.toggleDropdown}
                 isVisible={isVisible}
                 isCollapsed={isCollapsed}
                 className="userinfoBtn"
               >
                 <Dropdown
-                  overlayStyle={{ position: 'fixed' }}
+                  onClick={this.toggleDropdown}
+                  overlayStyle={{ position: 'fixed', minWidth: '198px' }}
                   className="footerDropdown"
                   overlay={footerDropdownMenu}
                   trigger={['click']}
                   placement="topCenter"
+                  isVisible={isVisible}
+                  onVisibleChange={this.handleVisibleChange}
                 >
                   <div>
                     <img src={Profile} alt="Profile" />
@@ -223,7 +226,7 @@ class SideMenu extends Component {
                       <IconDropdown
                         style={{ fontSize: 20 }}
                         className="drop-caret"
-                        type="caret-down"
+                        type={isVisible ? 'caret-up' : 'caret-down'}
                       />
                     )}
                   </div>
@@ -251,7 +254,7 @@ const enhance = compose(
   withWindowSizes,
   connect(
     ({ authorUi, user }) => ({
-      isSidebarCollapsed: authorUi.isSidebarCollapse,
+      isSidebarCollapsed: authorUi.isSidebarCollapsed,
       firstName: user.firstName || ''
     }),
     { toggleSideBar: toggleSideBarAction, logout: logoutAction }
@@ -368,6 +371,10 @@ const Menu = styled(AntMenu)`
     .ant-menu-item-selected {
       background-color: transparent;
       color: #4aac8b;
+      border-left: 3px solid rgb(74, 172, 139);
+      &.removeSelectedBorder{
+        border:none;
+      }
     }
   }
 
@@ -411,7 +418,7 @@ const Menu = styled(AntMenu)`
     text-align: center;
     justify-content: center;
     margin-top: 10px;
-    padding: 0px 10px 0px 25px !important;
+    padding: 0px 10px 0px 10px !important;
     width: 100%;
   }
   &.ant-menu-inline > .ant-menu-item {
@@ -436,7 +443,7 @@ const MenuItem = styled(AntMenu.Item)`
 
 const FooterDropDown = styled.div`
   position: relative;
-  bottom: ${props => (props.isVisible ? '-4px' : '-30px')};
+  bottom: -4px;
   opacity: ${props => (props.isVisible ? '1' : '0')};
   transition: 0.2s;
   -webkit-transition: 0.2s;
@@ -448,11 +455,20 @@ const FooterDropDown = styled.div`
     &.ant-menu-inline-collapsed {
       width: 84px;
       height: auto;
-      padding-top: 10px;
+      margin-top: 10px;
       margin-left: 8px;
+      li{
+        &.ant-menu-item{
+          margin: 0px;
+          height: 58px;
+        }
+      }
     }
-    li {
-      margin: 0px !important;
+    li{
+      &.ant-menu-item {
+      margin: 0px;
+      padding: 5px 16px;
+      height: 50px;
       &:hover,
       &:focus {
         background: #4fd08c;
@@ -466,11 +482,14 @@ const FooterDropDown = styled.div`
           color: white;
         }
         i {
+          color: #425066;
           position: relative;
           margin-right: 5px;
-          top: auto;
+          top: 2px;
+          font-size:20px;
         }
       }
+    }
     }
   }
 `;
@@ -560,4 +579,8 @@ const IconDropdown = styled(AntIcon)`
   color: #ffffff;
   position: absolute;
   top: -10px;
+`;
+const LogoutIcon = styled(IconDropdown)`
+  transform:rotate(180deg);
+  -webkit-transform:rotate(180deg);
 `;

@@ -36,7 +36,9 @@ const HighlightImageEdit = ({ item, setQuestionData, t }) => {
   };
 
   const onDrop = ([files]) => {
-    handleImageToolbarChange(SOURCE)(URL.createObjectURL(files));
+    if (files) {
+      handleImageToolbarChange(SOURCE)(URL.createObjectURL(files));
+    }
   };
 
   const hexToRGB = (hex, alpha) => {
@@ -88,12 +90,15 @@ const HighlightImageEdit = ({ item, setQuestionData, t }) => {
         <DropZoneToolbar
           width={+width}
           height={+height}
+          maxWidth={1097}
           altText={altText}
           handleChange={handleImageToolbarChange}
         />
 
         <Dropzone
           onDrop={onDrop}
+          maxSize={1000000}
+          accept="image/*"
           className="dropzone"
           activeClassName="active-dropzone"
           multiple={false}

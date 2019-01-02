@@ -9,14 +9,16 @@ import { dashBorderColorOpacity } from '@edulastic/colors';
 import { LargeInput } from '.';
 import { HEIGHT, ALT_TEXT, WIDTH } from '../../constants/constantsForQuestions';
 
-const DropZoneToolbar = ({ width, height, altText, handleChange, t }) => (
+const DropZoneToolbar = ({ width, height, altText, handleChange, t, maxWidth }) => (
   <Container childMarginRight={40}>
     <LargeInput
       type="number"
       label={t('component.hotspot.widthLabel')}
       value={width}
       marginRight={15}
-      onChange={handleChange(WIDTH)}
+      onChange={(value) => {
+        if (value < maxWidth) handleChange(WIDTH)(value);
+      }}
     />
     <LargeInput
       type="number"
@@ -42,7 +44,8 @@ DropZoneToolbar.propTypes = {
   height: PropTypes.number.isRequired,
   altText: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  maxWidth: PropTypes.number.isRequired
 };
 
 export default withNamespaces('assessment')(DropZoneToolbar);

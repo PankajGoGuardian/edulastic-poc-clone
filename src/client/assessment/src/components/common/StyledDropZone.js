@@ -46,7 +46,7 @@ StyledDropZone.defaultProps = {
 export default withNamespaces('assessment')(StyledDropZone);
 
 const Container = styled(FlexContainer)`
-  height: 616px;
+  min-height: 616px;
   width: 100%;
   border: ${({ isDragActive }) =>
     (isDragActive ? `2px solid ${mainBlueColor}` : `1px solid ${dashBorderColor}`)};

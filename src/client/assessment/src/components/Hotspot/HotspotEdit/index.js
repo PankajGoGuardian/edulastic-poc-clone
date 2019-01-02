@@ -262,11 +262,14 @@ const HotspotEdit = ({ item, setQuestionData, t }) => {
           width={+width}
           height={+height}
           altText={altText}
+          maxWidth={980}
           handleChange={handleImageToolbarChange}
         />
 
         <Dropzone
           onDrop={onDrop}
+          maxSize={1000000}
+          accept="image/*"
           className="dropzone"
           activeClassName="active-dropzone"
           multiple={false}

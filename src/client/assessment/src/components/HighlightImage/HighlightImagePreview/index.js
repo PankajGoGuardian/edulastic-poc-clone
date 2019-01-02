@@ -110,12 +110,25 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, t }) => {
 
   const onClearClick = () => {
     if (file) {
-      drawImage(ctx);
+      const img = new Image();
+      img.alt = altText;
+      img.onload = () => {
+        ctx.clearRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+        const newHistory = [...history.slice(0, historyTab + 1), canvas.current.toDataURL()];
+        setHistory(newHistory);
+        setHistoryTab(newHistory.length - 1);
+        saveAnswer(canvas.current.toDataURL());
+        setCtx(ctx);
+      };
+
+      img.src = file;
     } else {
       ctx.clearRect(0, 0, width, height);
       setCtx(ctx);
-      setHistoryTab(0);
-      setHistory([canvas.current.toDataURL()]);
+      const newHistory = [...history.slice(0, historyTab + 1), canvas.current.toDataURL()];
+      setHistory(newHistory);
+      setHistoryTab(newHistory.length - 1);
     }
   };
 
@@ -151,7 +164,7 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, t }) => {
         <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
       )}
 
-      <Container width={`${+width}px`} justifyContent="space-between">
+      <Container style={{ maxWidth: '100%' }} width={`${+width}px`} justifyContent="space-between">
         {line_color.length > 1 && (
           <StyledSelect value={currentColor} onChange={setCurrentColor}>
             {line_color.map((color, i) => (

@@ -32,6 +32,7 @@ const CorrectAnswers = ({
           e.stopPropagation();
           onCloseTab(index);
         }}
+        data-cy="del-alter"
       />
     </FlexContainer>
   );
@@ -50,7 +51,7 @@ const CorrectAnswers = ({
         minWidth: 70,
         minHeight: 25
       }}
-      icon={<IconPlus color={white} width={10} height={10} />}
+      icon={<IconPlus data-cy="alternate" color={white} width={10} height={10} />}
       onClick={() => {
         onTabChange();
         onAdd();

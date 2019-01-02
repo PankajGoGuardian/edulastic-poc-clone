@@ -1,4 +1,3 @@
-/// <reference types="Cypress" />
 describe('Test Multiple Choice Flow', () => {
   before(() => {
     cy.setToken();
@@ -13,7 +12,6 @@ describe('Test Multiple Choice Flow', () => {
       .contains('Create')
       .should('be.visible');
     cy.contains('Create').click();
-    cy.contains('Add New').should('be.visible');
     cy.contains('Add New').click();
 
     cy.get('li').should('contain', 'Multiple Choice');
@@ -28,11 +26,11 @@ describe('Test Multiple Choice Flow', () => {
     cy.get('li').should('contain', 'Other');
   });
 
-  it('Multiple choice - multiple response Test', () => {
+  it('Multiple choice - True or False Test', () => {
     // Test Each Question Type
-    cy.get('div').should('contain', 'Multiple choice - multiple response');
+    cy.get('div').should('contain', 'True or false');
     cy.get('div')
-      .contains('Multiple choice - multiple response')
+      .contains('True or false')
       .next()
       .click();
 
@@ -40,84 +38,28 @@ describe('Test Multiple Choice Flow', () => {
       .find('[contenteditable]')
       .eq(0)
       .clear()
-      .type('What is your favorite color?');
-
-    cy.get('div')
-      .find('[contenteditable]')
-      .eq(2)
-      .clear()
-      .type('White');
-
-    cy.get('div')
-      .find('[contenteditable]')
-      .eq(4)
-      .clear()
-      .type('Black');
-
-    cy.get('div')
-      .find('[contenteditable]')
-      .eq(6)
-      .clear()
-      .type('Blue');
-
-    cy.get('div')
-      .find('[contenteditable]')
-      .eq(6)
-      .trigger('mouseup');
-
-    // reordering list
-
-    // delete choice
-    cy.get('[data-cy=deleteprefix2]').should('be.visible');
-    cy.get('[data-cy=deleteprefix2]').click();
-
-    // Add new choice
-    cy.contains('Add New Choice').should('be.visible');
-    cy.contains('Add New Choice').click();
+      .type('Do you like flower?');
 
     cy.get('div').should('contain', 'Set Correct Answer(s)');
 
-    //points
+    // points
     cy.get('[data-cy=points]').type('{uparrow}');
     cy.get('[data-cy=points]').type('{uparrow}');
     cy.get('[data-cy=points]').type('{downarrow}');
 
-    //select answer1
-    cy.get('div')
-      .find('label')
-      .eq(0)
-      .click();
-
-    //select answer2
+    // Set Answers
     cy.get('div')
       .find('label')
       .eq(1)
       .click();
+    
+    //advance option --->
 
-    //click on alternate
-    cy.get('[data-cy=alternate]').should('be.visible');
-    cy.get('[data-cy=alternate]').click();
+    //icon plus click
+    cy.get('[data-cy=iconPlus]').should('be.visible');
+    cy.get('[data-cy=iconPlus]').click();
 
-    //select answer2
-    cy.get('div')
-      .find('label')
-      .eq(1)
-      .click();
-
-    //select answer3
-    cy.get('div')
-      .find('label')
-      .eq(2)
-      .click();
-
-    // advanced option click
-
-    cy.contains('Advanced Options')
-      .should('be.visible')
-      .click();
-  
     //check enable auto scoring
-
     cy.contains('Enable auto scoring').click();
 
     //penalty points
@@ -195,36 +137,39 @@ describe('Test Multiple Choice Flow', () => {
     //close source modal
     cy.get('[data-cy=close]').click();
 
-    // Save Multiple Choice - multiple response
+    // Save Multiple Choice - True or False
     cy.contains('SAVE').should('be.visible');
     cy.contains('SAVE').click();
   });
 
-  it('Visit Item Detail Page', () => {
-    cy.wait(5000);
+  it('Check Answer', () => {
+    // cy.wait(5000);
     cy.contains('PREVIEW').should('be.visible');
     cy.contains('PREVIEW').click();
 
-    //check answer
-    cy.contains('White').click();
+    // Check Answers
+    cy.get('div')
+      .find('label')
+      .eq(0)
+      .click();
+
     cy.contains('Check Answer').should('be.visible');
     cy.contains('Check Answer').click();
-    cy.contains('Clear').should('be.visible');
-    cy.contains('Clear').click();
 
-    cy.contains('Black').click();
+    cy.get('div')
+      .find('label')
+      .eq(1)
+      .click();
+
     cy.contains('Check Answer').should('be.visible');
     cy.contains('Check Answer').click();
-    cy.contains('Clear').should('be.visible');
-    cy.contains('Clear').click();
 
-    //show answer
+    // Show Answers
     cy.contains('Show Answers').should('be.visible');
     cy.contains('Show Answers').click();
   });
 
   it('Edit Answer', () => {
-    cy.wait(2000);
     cy.contains('EDIT').should('be.visible');
     cy.contains('EDIT').click();
 

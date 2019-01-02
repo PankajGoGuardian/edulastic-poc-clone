@@ -8,7 +8,7 @@ const styleOptions = [{ value: 'inline', label: 'Inline' }, { value: 'table', la
 const stemNumerationOptions = [
   { value: 'number', label: 'Numerical' },
   { value: 'upper-alpha', label: 'Uppercase alphabet' },
-  { value: 'lower-alpha', label: 'Lowercase alphabet' },
+  { value: 'lower-alpha', label: 'Lowercase alphabet' }
 ];
 
 function Options({ onChange, uiStyle }) {
@@ -16,7 +16,7 @@ function Options({ onChange, uiStyle }) {
     console.log(prop, value);
     onChange('ui_style', {
       ...uiStyle,
-      [prop]: value,
+      [prop]: value
     });
   };
 
@@ -33,9 +33,10 @@ function Options({ onChange, uiStyle }) {
               size="large"
               onChange={val => changeUiStyle('type', val)}
               value={uiStyle.type}
+              data-cy="matrixStyle"
             >
               {styleOptions.map(option => (
-                <Select.Option key={option.value}>{option.label}</Select.Option>
+                <Select.Option data-cy={option.value} key={option.value}>{option.label}</Select.Option>
               ))}
             </Select>
           </O.Col>
@@ -47,9 +48,10 @@ function Options({ onChange, uiStyle }) {
                 size="large"
                 onChange={val => changeUiStyle('stem_numeration', val)}
                 value={uiStyle.stem_numeration}
+                data-cy="stemNum"
               >
                 {stemNumerationOptions.map(option => (
-                  <Select.Option key={option.value}>{option.label}</Select.Option>
+                  <Select.Option data-cy={option.value} key={option.value}>{option.label}</Select.Option>
                 ))}
               </Select>
             </O.Col>
@@ -71,7 +73,7 @@ function Options({ onChange, uiStyle }) {
 
 Options.propTypes = {
   onChange: PropTypes.func.isRequired,
-  uiStyle: PropTypes.object,
+  uiStyle: PropTypes.object
 };
 
 Options.defaultProps = {
@@ -80,8 +82,8 @@ Options.defaultProps = {
     fontsize: 'normal',
     columns: 0,
     orientation: 'horizontal',
-    choice_label: 'number',
-  },
+    choice_label: 'number'
+  }
 };
 
 export default Options;

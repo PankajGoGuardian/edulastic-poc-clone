@@ -4,5 +4,5 @@
   "viewportWidth": 1680,
   "video": false,
   "baseUrl": "http://localhost:3000",
-  "integrationFolder": "cypress/e2e"
+  "integrationFolder": "cypress/e2e/suites"
 }

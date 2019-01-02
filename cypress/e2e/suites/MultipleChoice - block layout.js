@@ -162,7 +162,7 @@ describe('Test Multiple Choice Flow', () => {
 
   it('Visit Item Detail Page', () => {
     // cy.visit('/author/items/5c0ad0b2ef0a9d1535686fd1/item-detail');
-    cy.wait(5000);
+    // cy.wait(5000); 
     cy.contains('PREVIEW').should('be.visible');
     cy.contains('PREVIEW').click();
   });
@@ -182,7 +182,7 @@ describe('Test Multiple Choice Flow', () => {
   });
 
   it('Edit Answer', () => {
-    cy.wait(2000);
+    // cy.wait(2000);
     cy.contains('EDIT').should('be.visible');
     cy.contains('EDIT').click();
 

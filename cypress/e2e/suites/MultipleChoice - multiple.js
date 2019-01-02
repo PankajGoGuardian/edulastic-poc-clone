@@ -1,3 +1,4 @@
+/// <reference types="Cypress" />
 describe('Test Multiple Choice Flow', () => {
   before(() => {
     cy.setToken();
@@ -8,13 +9,10 @@ describe('Test Multiple Choice Flow', () => {
   });
 
   it('Check Flow', () => {
-    //create test
-    cy.get('span')
+    cy.get('button')
       .contains('Create')
       .should('be.visible');
     cy.contains('Create').click();
-
-    //add new test
     cy.contains('Add New').should('be.visible');
     cy.contains('Add New').click();
 
@@ -30,11 +28,11 @@ describe('Test Multiple Choice Flow', () => {
     cy.get('li').should('contain', 'Other');
   });
 
-  it('Multiple choice - standard Test', () => {
+  it('Multiple choice - multiple response Test', () => {
     // Test Each Question Type
-    cy.get('div').should('contain', 'Multiple choice - standard');
+    cy.get('div').should('contain', 'Multiple choice - multiple response');
     cy.get('div')
-      .contains('Multiple choice - standard')
+      .contains('Multiple choice - multiple response')
       .next()
       .click();
 
@@ -48,19 +46,19 @@ describe('Test Multiple Choice Flow', () => {
       .find('[contenteditable]')
       .eq(2)
       .clear()
-      .type('Red');
+      .type('White');
 
     cy.get('div')
       .find('[contenteditable]')
       .eq(4)
       .clear()
-      .type('Green');
+      .type('Black');
 
     cy.get('div')
       .find('[contenteditable]')
       .eq(6)
       .clear()
-      .type('Violet');
+      .type('Blue');
 
     cy.get('div')
       .find('[contenteditable]')
@@ -68,9 +66,8 @@ describe('Test Multiple Choice Flow', () => {
       .trigger('mouseup');
 
     // reordering list
-    // cy.get('div[toolbarId=idprefix0]').trigger('mousedown');
 
-    //delete
+    // delete choice
     cy.get('[data-cy=deleteprefix2]').should('be.visible');
     cy.get('[data-cy=deleteprefix2]').click();
 
@@ -85,33 +82,42 @@ describe('Test Multiple Choice Flow', () => {
     cy.get('[data-cy=points]').type('{uparrow}');
     cy.get('[data-cy=points]').type('{downarrow}');
 
-    //select answer
+    //select answer1
     cy.get('div')
       .find('label')
       .eq(0)
+      .click();
+
+    //select answer2
+    cy.get('div')
+      .find('label')
+      .eq(1)
       .click();
 
     //click on alternate
     cy.get('[data-cy=alternate]').should('be.visible');
     cy.get('[data-cy=alternate]').click();
 
-    //select answer
+    //select answer2
     cy.get('div')
       .find('label')
       .eq(1)
       .click();
 
-    // multiple responses
-    cy.contains('Multiple Responses').click();
-    cy.contains('Multiple Responses').click();
+    //select answer3
+    cy.get('div')
+      .find('label')
+      .eq(2)
+      .click();
 
-    //advance option --->
+    // advanced option click
 
-    //icon plus click
-    cy.get('[data-cy=iconPlus]').should('be.visible');
-    cy.get('[data-cy=iconPlus]').click();
-
+    cy.contains('Advanced Options')
+      .should('be.visible')
+      .click();
+  
     //check enable auto scoring
+
     cy.contains('Enable auto scoring').click();
 
     //penalty points
@@ -132,13 +138,13 @@ describe('Test Multiple Choice Flow', () => {
         .should('be.visible')
         .click();
     
-    cy.get('[data-cy="partialMatch"]')
+    cy.get('[data-cy="exactMatch"]')
       .should('be.visible')
       .click()
 
     cy.get('[data-cy="orientationSelect"]')
       .get('.ant-select-selection-selected-value')
-      .should('contain','Partial match');
+      .should('contain','Exact match');
 
     // minimum score attempted
     cy.get('[data-cy=minscore]').type('{uparrow}');
@@ -147,19 +153,8 @@ describe('Test Multiple Choice Flow', () => {
 
     // layout ---->
 
-  /*  //select style
-   cy.get('[data-cy="selectStyle"]')
-      .should('be.visible')
-      .click()
-    
-    cy.get('[data-cy="selectStyle"]')
-      .get('option')
-      .contains('Standard').click()
-    
-    cy.get('[data-cy="selectStyle"]')
-      .get('.ant-select-selection-selected-value')
-      .should('contain','Standard');
- */
+    //select style
+
     // number of columns
     cy.get('[data-cy=columns]').type('{uparrow}');
     cy.get('[data-cy=columns]').type('{uparrow}');
@@ -200,24 +195,24 @@ describe('Test Multiple Choice Flow', () => {
     //close source modal
     cy.get('[data-cy=close]').click();
 
-    // Save Multiple Choice - standard
+    // Save Multiple Choice - multiple response
     cy.contains('SAVE').should('be.visible');
     cy.contains('SAVE').click();
   });
 
   it('Visit Item Detail Page', () => {
-    cy.wait(5000);
+    // cy.wait(5000);
     cy.contains('PREVIEW').should('be.visible');
     cy.contains('PREVIEW').click();
 
     //check answer
-    cy.contains('Green').click();
+    cy.contains('White').click();
     cy.contains('Check Answer').should('be.visible');
     cy.contains('Check Answer').click();
     cy.contains('Clear').should('be.visible');
     cy.contains('Clear').click();
 
-    cy.contains('Red').click();
+    cy.contains('Black').click();
     cy.contains('Check Answer').should('be.visible');
     cy.contains('Check Answer').click();
     cy.contains('Clear').should('be.visible');
@@ -229,7 +224,7 @@ describe('Test Multiple Choice Flow', () => {
   });
 
   it('Edit Answer', () => {
-    cy.wait(2000);
+    // cy.wait(2000);
     cy.contains('EDIT').should('be.visible');
     cy.contains('EDIT').click();
 

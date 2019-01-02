@@ -8,10 +8,14 @@ describe('Test Multiple Choice Flow', () => {
   });
 
   it('Check Flow', () => {
-    cy.get('button')
+    //create test
+    cy.get('span')
       .contains('Create')
       .should('be.visible');
     cy.contains('Create').click();
+
+    //add new test
+    cy.contains('Add New').should('be.visible');
     cy.contains('Add New').click();
 
     cy.get('li').should('contain', 'Multiple Choice');
@@ -26,11 +30,11 @@ describe('Test Multiple Choice Flow', () => {
     cy.get('li').should('contain', 'Other');
   });
 
-  it('Multiple choice - True or False Test', () => {
+  it('Multiple choice - standard Test', () => {
     // Test Each Question Type
-    cy.get('div').should('contain', 'True or false');
+    cy.get('div').should('contain', 'Multiple choice - standard');
     cy.get('div')
-      .contains('True or false')
+      .contains('Multiple choice - standard')
       .next()
       .click();
 
@@ -38,21 +42,69 @@ describe('Test Multiple Choice Flow', () => {
       .find('[contenteditable]')
       .eq(0)
       .clear()
-      .type('Do you like flower?');
+      .type('What is your favorite color?');
+
+    cy.get('div')
+      .find('[contenteditable]')
+      .eq(2)
+      .clear()
+      .type('Red');
+
+    cy.get('div')
+      .find('[contenteditable]')
+      .eq(4)
+      .clear()
+      .type('Green');
+
+    cy.get('div')
+      .find('[contenteditable]')
+      .eq(6)
+      .clear()
+      .type('Violet');
+
+    cy.get('div')
+      .find('[contenteditable]')
+      .eq(6)
+      .trigger('mouseup');
+
+    // reordering list
+    // cy.get('div[toolbarId=idprefix0]').trigger('mousedown');
+
+    //delete
+    cy.get('[data-cy=deleteprefix2]').should('be.visible');
+    cy.get('[data-cy=deleteprefix2]').click();
+
+    // Add new choice
+    cy.contains('Add New Choice').should('be.visible');
+    cy.contains('Add New Choice').click();
 
     cy.get('div').should('contain', 'Set Correct Answer(s)');
 
-    // points
+    //points
     cy.get('[data-cy=points]').type('{uparrow}');
     cy.get('[data-cy=points]').type('{uparrow}');
     cy.get('[data-cy=points]').type('{downarrow}');
 
-    // Set Answers
+    //select answer
+    cy.get('div')
+      .find('label')
+      .eq(0)
+      .click();
+
+    //click on alternate
+    cy.get('[data-cy=alternate]').should('be.visible');
+    cy.get('[data-cy=alternate]').click();
+
+    //select answer
     cy.get('div')
       .find('label')
       .eq(1)
       .click();
-    
+
+    // multiple responses
+    cy.contains('Multiple Responses').click();
+    cy.contains('Multiple Responses').click();
+
     //advance option --->
 
     //icon plus click
@@ -80,13 +132,13 @@ describe('Test Multiple Choice Flow', () => {
         .should('be.visible')
         .click();
     
-    cy.get('[data-cy="exactMatch"]')
+    cy.get('[data-cy="partialMatch"]')
       .should('be.visible')
       .click()
 
     cy.get('[data-cy="orientationSelect"]')
       .get('.ant-select-selection-selected-value')
-      .should('contain','Exact match');
+      .should('contain','Partial match');
 
     // minimum score attempted
     cy.get('[data-cy=minscore]').type('{uparrow}');
@@ -95,8 +147,19 @@ describe('Test Multiple Choice Flow', () => {
 
     // layout ---->
 
-    //select style
-
+  /*  //select style
+   cy.get('[data-cy="selectStyle"]')
+      .should('be.visible')
+      .click()
+    
+    cy.get('[data-cy="selectStyle"]')
+      .get('option')
+      .contains('Standard').click()
+    
+    cy.get('[data-cy="selectStyle"]')
+      .get('.ant-select-selection-selected-value')
+      .should('contain','Standard');
+ */
     // number of columns
     cy.get('[data-cy=columns]').type('{uparrow}');
     cy.get('[data-cy=columns]').type('{uparrow}');
@@ -137,39 +200,36 @@ describe('Test Multiple Choice Flow', () => {
     //close source modal
     cy.get('[data-cy=close]').click();
 
-    // Save Multiple Choice - True or False
+    // Save Multiple Choice - standard
     cy.contains('SAVE').should('be.visible');
     cy.contains('SAVE').click();
   });
 
-  it('Check Answer', () => {
-    cy.wait(5000);
+  it('Visit Item Detail Page', () => {
+    // cy.wait(5000);
     cy.contains('PREVIEW').should('be.visible');
     cy.contains('PREVIEW').click();
 
-    // Check Answers
-    cy.get('div')
-      .find('label')
-      .eq(0)
-      .click();
-
+    //check answer
+    cy.contains('Green').click();
     cy.contains('Check Answer').should('be.visible');
     cy.contains('Check Answer').click();
+    cy.contains('Clear').should('be.visible');
+    cy.contains('Clear').click();
 
-    cy.get('div')
-      .find('label')
-      .eq(1)
-      .click();
-
+    cy.contains('Red').click();
     cy.contains('Check Answer').should('be.visible');
     cy.contains('Check Answer').click();
+    cy.contains('Clear').should('be.visible');
+    cy.contains('Clear').click();
 
-    // Show Answers
+    //show answer
     cy.contains('Show Answers').should('be.visible');
     cy.contains('Show Answers').click();
   });
 
   it('Edit Answer', () => {
+    // cy.wait(2000);
     cy.contains('EDIT').should('be.visible');
     cy.contains('EDIT').click();
 

@@ -21,7 +21,7 @@ const Answers = ({ item, setQuestionData }) => {
     }
     newItem.validation.alt_responses.push({
       score: 1,
-      value: item.validation.valid_response.value.map(() => null),
+      value: item.validation.valid_response.value.map(() => null)
     });
 
     setQuestionData(newItem);
@@ -116,7 +116,7 @@ const Answers = ({ item, setQuestionData }) => {
 
   const renderOptions = () => (
     <FlexContainer style={{ marginTop: 20 }}>
-      <Checkbox onChange={handleChangeMultiple} checked={item.multiple_responses}>
+      <Checkbox data-cy="multi" onChange={handleChangeMultiple} checked={item.multiple_responses}>
         Multiple responses
       </Checkbox>
     </FlexContainer>
@@ -143,6 +143,7 @@ const Answers = ({ item, setQuestionData }) => {
               onCheck={handleCheck('valid_response')}
               points={item.validation.valid_response.score}
               onChangePoints={points => handleChangeValidPoints(points)}
+              data-cy="points"
             />
           </div>
         )}
@@ -173,7 +174,7 @@ const Answers = ({ item, setQuestionData }) => {
 
 Answers.propTypes = {
   item: PropTypes.object.isRequired,
-  setQuestionData: PropTypes.func.isRequired,
+  setQuestionData: PropTypes.func.isRequired
 };
 
 export default Answers;

@@ -37,7 +37,6 @@ import { checkAnswerAction } from '../../../../author/src/actions/testItem';
 import { changePreviewAction } from '../../../../author/src/actions/view';
 import { getItemDetailByIdAction } from '../../../../author/src/actions/itemDetail';
 
-
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line
 const defaultTheme = require('sass-extract-loader?{"plugins": ["sass-extract-js"]}!../../styles/vars.scss');
@@ -77,14 +76,20 @@ class AssessmentPlayerDefault extends React.Component {
   componentDidMount() {
     const { getItemDetailById, items, currentItem } = this.props;
     if (items[currentItem] !== undefined) {
-      getItemDetailById(items[currentItem]._id, { data: true, validation: true });
+      getItemDetailById(items[currentItem]._id, {
+        data: true,
+        validation: true
+      });
     }
   }
 
   componentWillReceiveProps(nextProps) {
     const { currentItem, items, getItemDetailById } = this.props;
     if (currentItem !== nextProps.currentItem) {
-      getItemDetailById(items[nextProps.currentItem]._id, { data: true, validation: true });
+      getItemDetailById(items[nextProps.currentItem]._id, {
+        data: true,
+        validation: true
+      });
     }
   }
 
@@ -94,19 +99,24 @@ class AssessmentPlayerDefault extends React.Component {
 
     changePreview(value);
     this.setState({ testItemState: value });
-  }
+  };
 
   closeToolbarModal = () => {
     this.setState({ isToolbarModalVisible: false });
-  }
+  };
 
   openSubmitConfirmation = () => {
     this.setState({ isSubmitConfirmationVisible: true });
-  }
+  };
 
   closeSubmitConfirmation = () => {
     this.setState({ isSubmitConfirmationVisible: false });
-  }
+  };
+
+  finishTest = () => {
+    const { history } = this.props;
+    history.push('/home/assignments');
+  };
 
   finishTest = () => {
     const { history } = this.props;
@@ -128,9 +138,15 @@ class AssessmentPlayerDefault extends React.Component {
       windowWidth
     } = this.props;
 
-    const { testItemState, isToolbarModalVisible, isSubmitConfirmationVisible } = this.state;
+    const {
+      testItemState,
+      isToolbarModalVisible,
+      isSubmitConfirmationVisible
+    } = this.state;
 
-    const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
+    const dropdownOptions = Array.isArray(items)
+      ? items.map((item, index) => index)
+      : [];
 
     const item = items[currentItem];
     if (!item) {
@@ -147,22 +163,28 @@ class AssessmentPlayerDefault extends React.Component {
           <SubmitConfirmation
             isVisible={isSubmitConfirmationVisible}
             onClose={() => this.closeSubmitConfirmation()}
-            finishTest={() => this.finishTest()}
+            finishTest={this.finishTest}
           />
           <Affix>
             <Header>
               <HeaderLeftMenu>
                 <LogoCompact />
-                { windowWidth < MAX_MOBILE_WIDTH && <Clock /> }
+                {windowWidth < MAX_MOBILE_WIDTH && <Clock />}
               </HeaderLeftMenu>
               <HeaderMainMenu skin>
-                <FlexContainer style={{ justifyContent: windowWidth < MAX_MOBILE_WIDTH && 'space-between' }}>
+                <FlexContainer
+                  style={{
+                    justifyContent:
+                      windowWidth < MAX_MOBILE_WIDTH && 'space-between'
+                  }}
+                >
                   <QuestionSelectDropdown
                     key={currentItem}
                     currentItem={currentItem}
                     gotoQuestion={gotoQuestion}
                     options={dropdownOptions}
                   />
+
                   <FlexContainer style={{ flex: 1, justifyContent: windowWidth < MAX_MOBILE_WIDTH && 'flex-end' }}>
                     <ControlBtn prev skin type="primary" icon="left" disabled={isFirst()} onClick={moveToPrev} />
                     <ControlBtn next skin type="primary" icon={!isLast() ? 'right' : 'upload'} onClick={moveToNext} />
@@ -173,13 +195,23 @@ class AssessmentPlayerDefault extends React.Component {
                         size="large"
                         type="primary"
                         icon="tool"
-                        onClick={() => this.setState({ isToolbarModalVisible: true })}
+                        onClick={() =>
+                          this.setState({ isToolbarModalVisible: true })
+                        }
                       />
                     )}
-                    { windowWidth >= MEDIUM_DESKTOP_WIDTH && <TestButton checkAnwser={() => this.changeTabItemState('check')} /> }
-                    { windowWidth >= LARGE_DESKTOP_WIDTH && <ToolBar /> }
-                    { windowWidth >= MAX_MOBILE_WIDTH && <Clock /> }
-                    { windowWidth >= MAX_MOBILE_WIDTH && <SaveAndExit finishTest={() => this.openSubmitConfirmation()} /> }
+                    {windowWidth >= MEDIUM_DESKTOP_WIDTH && (
+                      <TestButton
+                        checkAnwser={() => this.changeTabItemState('check')}
+                      />
+                    )}
+                    {windowWidth >= LARGE_DESKTOP_WIDTH && <ToolBar />}
+                    {windowWidth >= MAX_MOBILE_WIDTH && <Clock />}
+                    {windowWidth >= MAX_MOBILE_WIDTH && (
+                      <SaveAndExit
+                        finishTest={() => this.openSubmitConfirmation()}
+                      />
+                    )}
                   </FlexContainer>
                 </FlexContainer>
                 <FlexContainer />
@@ -189,20 +221,16 @@ class AssessmentPlayerDefault extends React.Component {
           </Affix>
           <Main skin>
             <MainWrapper>
-              {
-                testItemState === '' &&
-                <TestItemPreview cols={itemRows} />
-              }
-              {
-                testItemState === 'check' && (
+              {testItemState === '' && <TestItemPreview cols={itemRows} />}
+              {testItemState === 'check' && (
                 <TestItemPreview
                   cols={itemRows}
                   previewTab="check"
                   evaluation={evaluation}
                   verticalDivider={item.verticalDivider}
                   scrolling={item.scrolling}
-                />)
-              }
+                />
+              )}
             </MainWrapper>
           </Main>
         </Container>

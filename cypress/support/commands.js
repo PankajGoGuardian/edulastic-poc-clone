@@ -25,8 +25,7 @@ Cypress.Commands.add('login', user =>
     .then(({ body }) => {
       window.localStorage.setItem('access_token', body.token);
       return body.user;
-    })
-);
+    }));
 
 Cypress.Commands.add('assertHome', () => {
   cy.url().should('eq', `${Cypress.config().baseUrl}/`);

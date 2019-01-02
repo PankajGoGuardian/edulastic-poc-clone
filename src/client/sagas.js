@@ -5,6 +5,7 @@ import {
   answerSaga,
   assignmentSaga,
   reportSaga,
+  skillReportSaga,
   authSaga
 } from './student/src/sagas';
 import authorSagas from './author/src/sagas';
@@ -16,6 +17,7 @@ export default function* () {
     answerSaga(),
     authSaga(),
     reportSaga(),
+    skillReportSaga(),
     assignmentSaga(),
     ...authorSagas,
     ...assessmentSagas

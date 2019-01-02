@@ -44,3 +44,7 @@ export const LOAD_PREVIOUS_RESPONSES = '[test] load previous responses';
 
 // test
 export const LOGOUT = 'LOGOUT'; // set redux store to initial values
+
+// skill report
+export const GET_SKILL_REPORT_BY_CLASSID = '[skillReport] get skill reports by class id';
+export const LOAD_SKILL_REPORT_BY_CLASSID = '[skillReport] load skill report by class id';

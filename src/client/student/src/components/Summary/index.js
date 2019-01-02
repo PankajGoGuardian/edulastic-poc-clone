@@ -27,17 +27,16 @@ const SummaryContainer = ({ finishTest, history }) => {
   };
 
   return (
-    <React.Fragment>
-      <MainContainer>
-        <SubmitConfirmation
-          isVisible={showConfirmationModal}
-          onClose={closeConfirmationModal}
-          finishTest={closeTest}
-        />
-        <SummaryHeader showConfirmationModal={handlerConfirmationModal} />
-        <SummaryTest finishTest={finishTest} />
-      </MainContainer>
-    </React.Fragment>
+
+    <MainContainer>
+      <SubmitConfirmation
+        isVisible={showConfirmationModal}
+        onClose={closeConfirmationModal}
+        finishTest={closeTest}
+      />
+      <SummaryHeader showConfirmationModal={handlerConfirmationModal} />
+      <SummaryTest finishTest={finishTest} />
+    </MainContainer>
   );
 };
 

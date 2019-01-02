@@ -8,6 +8,7 @@ export { default as testActivityApi } from './src/testActivity';
 export { default as authApi } from './src/auth';
 export { default as testItemActivityApi } from './src/userTestItemActivity';
 export { default as reportsApi } from './src/reports';
+export { default as skillReportApi } from './src/skillReport';
 export { default as dictionariesApi } from './src/dictionaries';
 export { default as assignmentApi } from './src/assignment';
 export { default as API_CONFIG } from './src/config';

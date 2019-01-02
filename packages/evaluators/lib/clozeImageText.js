@@ -21,8 +21,6 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   var maxScore = 0;
   var evaluation = {};
   var isCorrect = false;
-  console.log('answers', answers);
-  console.log('userResponse', userResponse);
   answers.forEach(function (answer) {
     if ((0, _lodash.isEqual)(userResponse, answer.value)) {
       isCorrect = true;

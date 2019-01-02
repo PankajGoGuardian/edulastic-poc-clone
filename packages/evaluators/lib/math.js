@@ -50,14 +50,24 @@ var evaluator = function evaluator(_ref) {
   var valid_response = validation.valid_response,
       _validation$alt_respo = validation.alt_responses,
       alt_responses = _validation$alt_respo === void 0 ? [] : _validation$alt_respo,
-      scoring_type = validation.scoring_type;
+      scoring_type = validation.scoring_type,
+      attemptScore = validation.min_score_if_attempted;
   var answers = [valid_response].concat((0, _toConsumableArray2.default)(alt_responses));
+  var result;
 
   switch (scoring_type) {
     case _scoring.ScoringType.EXACT_MATCH:
     default:
-      return exactMatchEvaluator(userResponse, answers);
+      result = exactMatchEvaluator(userResponse, answers);
+  } // if score for attempting is greater than current score
+  // let it be the score!
+
+
+  if (!Number.isNaN(attemptScore) && attemptScore > result.score && userResponse.length) {
+    result.score = attemptScore;
   }
+
+  return result;
 };
 
 var _default = evaluator;

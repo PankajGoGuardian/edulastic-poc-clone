@@ -117,10 +117,7 @@ const clearOptions = (method, options) => {
     case methodsConst.STRING_MATCH:
       return pick(options, ['ignoreLeadingAndTrailingSpaces', 'treatMultipleSpacesAsOne']);
     case methodsConst.EQUIV_SYNTAX:
-      return pick(options, [
-        'syntax',
-        'argument'
-      ]);
+      return pick(options, ['syntax', 'argument']);
     default:
       return options;
   }
@@ -404,7 +401,9 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
         </Fragment>
       )}
 
-      {[methodsConst.EQUIV_LITERAL, methodsConst.IS_SIMPLIFIED].includes(method) && (
+      {[methodsConst.EQUIV_LITERAL, methodsConst.IS_SIMPLIFIED, methodsConst.EQUIV_VALUE].includes(
+        method
+      ) && (
         <StyledRow gutter={32}>
           <Col span={12}>
             <Checkbox

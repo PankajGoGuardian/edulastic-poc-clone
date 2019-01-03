@@ -27,6 +27,9 @@ export default memo(HeaderWrapper);
 const HeaderContainer = styled.div`
   padding-top: 62px;
   margin-bottom: 10px;
+  @media screen and (max-width: 767px) {
+    padding-top: 95px;
+  }
 `;
 
 const AssignmentsHeader = styled(Layout.Header)`

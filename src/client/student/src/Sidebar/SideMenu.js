@@ -23,6 +23,7 @@ import {
   IconQuestion
 } from '@edulastic/icons';
 import { withWindowSizes } from '@edulastic/common';
+import { tabletWidth } from '@edulastic/colors';
 import { toggleSideBarAction } from '../actions/togglemenu';
 import { logoutAction } from '../actions/auth';
 
@@ -35,7 +36,6 @@ const getIndex = (page, items) => {
       index = i;
     }
   });
-
   return index || 0;
 };
 
@@ -76,10 +76,13 @@ class SideMenu extends Component {
     };
   }
 
-  handleMenu = (item) => {
-    const { history } = this.props;
-    if (menuItems[item.key].path !== undefined) {
-      history.push(`/${menuItems[item.key].path}`);
+  handleMenu = (e) => {
+    const { history, windowWidth } = this.props;
+    if (menuItems[e.key].path !== undefined) {
+      history.push(`/${menuItems[e.key].path}`);
+    }
+    if (windowWidth < parseFloat(tabletWidth)) {
+      this.toggleMenu();
     }
   };
 
@@ -94,6 +97,14 @@ class SideMenu extends Component {
 
   toggleDropdown = () => {
     this.setState(prevState => ({ isVisible: !prevState.isVisible }));
+  };
+
+  handleProfileClick = () => {
+    const { windowWidth } = this.props;
+    this.toggleDropdown();
+    if (windowWidth < parseFloat(tabletWidth)) {
+      this.toggleMenu();
+    }
   };
 
   renderIcon = (icon, isSidebarCollapsed) => styled(icon)`
@@ -112,11 +123,9 @@ class SideMenu extends Component {
   render() {
     const { broken, isVisible } = this.state;
     const { windowWidth, currentPath, firstName, logout, isSidebarCollapsed } = this.props;
-
     const page = currentPath.split('/').filter(item => !!item)[1];
-
     const menuIndex = getIndex(page, menuItems);
-    const isMobile = windowWidth < 480;
+    const isMobile = windowWidth < parseFloat(tabletWidth);
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible} className="footerDropWrap">
         <Menu>
@@ -126,7 +135,7 @@ class SideMenu extends Component {
             </a>
           </Menu.Item>
           <Menu.Item key="1" className="removeSelectedBorder">
-            <Link to="/home/profile" onClick={this.toggleDropdown}>
+            <Link to="/home/profile" onClick={this.handleProfileClick}>
               <IconDropdown type="user" />{' '}
               {isSidebarCollapsed ? '' : 'MY PROFILE'}
             </Link>
@@ -172,11 +181,12 @@ class SideMenu extends Component {
           </LogoWrapper>
           <LogoDash />
           <MenuWrapper>
+            <IconBars type="bars" onClick={this.toggleMenu} />
             <Menu
               theme="light"
               defaultSelectedKeys={[menuIndex.toString()]}
               mode="inline"
-              onClick={item => this.handleMenu(item)}
+              onClick={this.handleMenu}
             >
               {menuItems.map((menu, index) => {
                 const MenuIcon = this.renderIcon(menu.icon, isSidebarCollapsed);
@@ -297,6 +307,9 @@ const SideBar = styled(Layout.Sider)`
   &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px 8px 0px;
     width: 100px;
+    @media (max-width: 767px) {
+     display:none;
+    }
   }
   &.ant-layout-sider-collapsed .questionBtn {
     width: 60px;
@@ -336,10 +349,7 @@ const SideBar = styled(Layout.Sider)`
     padding-left: 5px;
   }
   .ant-layout-sider-zero-width-trigger {
-    top: 10px;
-    right: -33px;
-    color: #fff;
-    background: transparent;
+    display:none;
   }
   .ant-select {
     width: 125px;
@@ -585,4 +595,17 @@ const IconDropdown = styled(AntIcon)`
 const LogoutIcon = styled(IconDropdown)`
   transform:rotate(180deg);
   -webkit-transform:rotate(180deg);
+`;
+
+const IconBars = styled(AntIcon)`
+  display:none;
+  @media (max-width: 767px) {
+    display:inline-block;
+    padding-left: 17px;
+    position: absolute;
+    top: 18px;
+    left: 12px;
+    font-size: 24px;
+    color: #fff;
+  }
 `;

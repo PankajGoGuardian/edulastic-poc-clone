@@ -401,9 +401,12 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
         </Fragment>
       )}
 
-      {[methodsConst.EQUIV_LITERAL, methodsConst.IS_SIMPLIFIED, methodsConst.EQUIV_VALUE].includes(
-        method
-      ) && (
+      {[
+        methodsConst.EQUIV_LITERAL,
+        methodsConst.IS_SIMPLIFIED,
+        methodsConst.EQUIV_VALUE,
+        methodsConst.IS_FACTORISED
+      ].includes(method) && (
         <StyledRow gutter={32}>
           <Col span={12}>
             <Checkbox

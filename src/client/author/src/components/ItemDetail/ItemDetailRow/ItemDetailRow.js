@@ -41,7 +41,7 @@ class ItemDetailRow extends Component {
     return (
       <ItemDetailWidget
         widget={widget}
-        onEdit={() => onEditWidget(widget)}
+        onEdit={() => onEditWidget(widget, rowIndex)}
         onDelete={() => onDeleteWidget(widgetIndex)}
         widgetIndex={widgetIndex}
         rowIndex={rowIndex}
@@ -50,54 +50,88 @@ class ItemDetailRow extends Component {
   };
 
   render() {
-    const { row, onAdd, onEditTabTitle, rowIndex, dragging, count, windowWidth } = this.props;
+    const {
+      row,
+      onAdd,
+      onEditTabTitle,
+      rowIndex,
+      dragging,
+      count,
+      windowWidth
+    } = this.props;
     const { value } = this.state;
     return (
-      <Container value={value} style={{ width: row.dimension, marginRight: count - 1 === rowIndex ? '0px' : '30px' }}>
-        {row.tabs && windowWidth > MAX_MOBILE_WIDTH &&
-          !!row.tabs.length && (
-            <TabContainer>
-              <Tabs value={value} onChange={this.handleTabChange}>
-                {row.tabs.map((tab, tabIndex) => (
-                  <Tabs.Tab
-                    key={tabIndex}
-                    label={tab}
-                    style={{ width: '50%', textAlign: 'center', padding: '30px 20px 15px' }}
-                    onChange={e => onEditTabTitle(tabIndex, e.target.value)}
-                    editable
-                  />
-                ))}
-              </Tabs>
-            </TabContainer>
+      <Container
+        value={value}
+        style={{
+          width: row.dimension,
+          marginRight: count - 1 === rowIndex ? '0px' : '30px'
+        }}
+      >
+        {row.tabs && windowWidth > MAX_MOBILE_WIDTH && !!row.tabs.length && (
+          <TabContainer>
+            <Tabs value={value} onChange={this.handleTabChange}>
+              {row.tabs.map((tab, tabIndex) => (
+                <Tabs.Tab
+                  key={tabIndex}
+                  label={tab}
+                  style={{
+                    width: '50%',
+                    textAlign: 'center',
+                    padding: '30px 20px 15px'
+                  }}
+                  onChange={e => onEditTabTitle(tabIndex, e.target.value)}
+                  editable
+                />
+              ))}
+            </Tabs>
+          </TabContainer>
         )}
-        {row.tabs && windowWidth < MAX_MOBILE_WIDTH &&
-          !!row.tabs.length && value === 0 && (
+        {row.tabs &&
+          windowWidth < MAX_MOBILE_WIDTH &&
+          !!row.tabs.length &&
+          value === 0 && (
             <MobileRightSide onClick={() => this.handleTabChange(1)}>
               <Icon type="left" style={{ color: white }} />
             </MobileRightSide>
         )}
-        {row.tabs && windowWidth < MAX_MOBILE_WIDTH &&
-          !!row.tabs.length && value === 1 && (
+        {row.tabs &&
+          windowWidth < MAX_MOBILE_WIDTH &&
+          !!row.tabs.length &&
+          value === 1 && (
             <MobileLeftSide onClick={() => this.handleTabChange(0)}>
               <Icon type="right" style={{ color: white }} />
             </MobileLeftSide>
         )}
-        {!row.widgets.length &&
-          dragging && <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={0} />}
+        {!row.widgets.length && dragging && (
+          <ItemDetailDropTarget
+            widgetIndex={0}
+            rowIndex={rowIndex}
+            tabIndex={0}
+          />
+        )}
         {dragging &&
           row.widgets.filter(w => w.tabIndex === value).length === 0 && (
-            <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={value} />
+            <ItemDetailDropTarget
+              widgetIndex={0}
+              rowIndex={rowIndex}
+              tabIndex={value}
+            />
         )}
         {row.widgets.map((widget, i) => (
           <React.Fragment key={i}>
-            {dragging &&
-              widget.tabIndex === value && (
-                <ItemDetailDropTarget widgetIndex={i} rowIndex={rowIndex} tabIndex={value} />
+            {dragging && widget.tabIndex === value && (
+              <ItemDetailDropTarget
+                widgetIndex={i}
+                rowIndex={rowIndex}
+                tabIndex={value}
+              />
             )}
             {!!row.tabs.length &&
               value === widget.tabIndex &&
               this.renderTabContent({ widgetIndex: i, widget, rowIndex })}
-            {!row.tabs.length && this.renderTabContent({ widgetIndex: i, widget, rowIndex })}
+            {!row.tabs.length &&
+              this.renderTabContent({ widgetIndex: i, widget, rowIndex })}
           </React.Fragment>
         ))}
         <AddButtonContainer justifyContent="center">
@@ -111,7 +145,7 @@ class ItemDetailRow extends Component {
 const enhance = compose(
   connect(state => ({
     dragging: getItemDetailDraggingSelector(state)
-  })),
+  }))
 );
 
 export default enhance(ItemDetailRow);
@@ -128,8 +162,8 @@ const Container = styled(Paper)`
 
   @media (max-width: ${mobileWidth}) {
     padding-left: 10px;
-    margin-right: ${props => (!props.value && '20px !important')};
-    margin-left: ${props => (props.value && '20px !important')};
+    margin-right: ${props => !props.value && '20px !important'};
+    margin-left: ${props => props.value && '20px !important'};
   }
 `;
 

@@ -13,8 +13,6 @@ import QuestionWrapper from '../../../../../assessment/src/components/QuestionWr
 import { Types } from '../constants';
 import { setItemDetailDraggingAction } from '../../../actions/itemDetail';
 
-const getWidgetData = widget => (widget.referencePopulate ? widget.referencePopulate.data : widget);
-
 const ItemDetailWidget = ({
   widget,
   onEdit,
@@ -36,7 +34,7 @@ const ItemDetailWidget = ({
               type={widget.type}
               view="preview"
               questionId={widget.reference}
-              data={{ ...getWidgetData(widget), smallSize: true }}
+              data={{ ...widget.entity, smallSize: true }}
             />
           )}
         </div>

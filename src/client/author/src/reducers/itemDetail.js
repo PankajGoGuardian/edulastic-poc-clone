@@ -26,9 +26,9 @@ const initialState = {
 
 const deleteWidget = (state, { rowIndex, widgetIndex }) => {
   const newState = cloneDeep(state);
-  newState.item.rows[rowIndex].widgets = newState.item.rows[rowIndex].widgets.filter(
-    (w, i) => i !== widgetIndex,
-  );
+  newState.item.rows[rowIndex].widgets = newState.item.rows[
+    rowIndex
+  ].widgets.filter((w, i) => i !== widgetIndex);
 
   return newState;
 };
@@ -74,9 +74,16 @@ const useTabs = (state, { rowIndex, isUseTabs }) => {
 
 const moveWidget = (state, { from, to }) => {
   const newState = cloneDeep(state);
-  const [movedWidget] = newState.item.rows[from.rowIndex].widgets.splice(from.widgetIndex, 1);
+  const [movedWidget] = newState.item.rows[from.rowIndex].widgets.splice(
+    from.widgetIndex,
+    1
+  );
   movedWidget.tabIndex = to.tabIndex || 0;
-  newState.item.rows[to.rowIndex].widgets.splice(to.widgetIndex, 0, movedWidget);
+  newState.item.rows[to.rowIndex].widgets.splice(
+    to.widgetIndex,
+    0,
+    movedWidget
+  );
   return newState;
 };
 

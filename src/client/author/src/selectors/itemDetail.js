@@ -69,14 +69,13 @@ export const getItemDetailDimensionTypeSelector = createSelector(
 );
 
 export const getItemDetailValidationSelector = createSelector(
-  getItemDetailSelector,
-  (state) => {
-    const { questions } = state.data;
+  getItemDetailRowsSelector,
+  (rows) => {
     const validations = {};
-    questions.forEach(({ _id, data }) => {
-      validations[_id] = {
-        ...data
-      };
+    rows.forEach((row) => {
+      row.widgets.forEach(({ entity }) => {
+        validations[entity.id] = entity;
+      });
     });
     return validations;
   }

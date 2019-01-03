@@ -6,74 +6,80 @@ import { Layout } from 'antd';
 import { connect } from 'react-redux';
 import { Progress } from '@edulastic/common';
 import Sidebar from './Sidebar/SideMenu';
-import ItemList from './components/ItemList';
-import ItemDetail from './components/ItemDetail';
-import ItemAdd from './components/ItemAdd';
-import QuestionEditor from './components/QuestionEditor';
-import PickUpQuestionType from './components/PickUpQuestionType';
 
+/* lazy load routes */
 const TestList = lazy(() => import('./components/TestList'));
 const TestPage = lazy(() => import('./components/TestPage'));
+const QuestionEditor = lazy(() => import('./components/QuestionEditor'));
+const ItemList = lazy(() => import('./components/ItemList'));
+const ItemDetail = lazy(() => import('./components/ItemDetail'));
+const ItemAdd = lazy(() => import('./components/ItemAdd'));
+const PickUpQuestionType = lazy(() =>
+  import('./components/PickUpQuestionType'));
 
 const Author = ({ match, history, isSidebarCollapsed }) => {
-  const isPickQuestion = !!history.location.pathname.includes('pickup-questiontype');
+  const isPickQuestion = !!history.location.pathname.includes(
+    'pickup-questiontype'
+  );
   const isCollapsed = isPickQuestion || isSidebarCollapsed;
   return (
     <Layout>
       <MainContainer isCollapsed={isCollapsed}>
         <Sidebar />
         <Wrapper>
-          <Switch>
-            <Route exact path={`${match.url}/items`} component={ItemList} />
-            <Route
-              exact
-              path={`${match.url}/items/:id/item-detail`}
-              component={ItemDetail}
-            />
-            <Route exact path="/author/add-item" component={ItemAdd} />
-            <Route
-              exact
-              path={`${match.url}/tests`}
-              render={props => (
-                <Suspense fallback={<Progress />}>
-                  <TestList {...props} />
-                </Suspense>
-              )}
-            />
-            <Route
-              exact
-              path="/author/tests/create"
-              render={props => (
-                <Suspense fallback={<Progress />}>
-                  <TestPage {...props} />
-                </Suspense>
-              )}
-            />
-            <Route
-              exact
-              path="/author/tests/:id"
-              render={props => (
-                <Suspense fallback={<Progress />}>
-                  <TestPage {...props} />
-                </Suspense>
-              )}
-            />
-            <Route
-              exact
-              path="/author/items/:id/pickup-questiontype"
-              component={PickUpQuestionType}
-            />
-            <Route
-              exact
-              path="/author/questions/create"
-              component={QuestionEditor}
-            />
-            <Route
-              exact
-              path="/author/questions/:id"
-              component={QuestionEditor}
-            />
-          </Switch>
+          <Suspense fallback={<Progress />}>
+            <Switch>
+              <Route exact path={`${match.url}/items`} component={ItemList} />
+              <Route
+                exact
+                path={`${match.url}/items/:id/item-detail`}
+                component={ItemDetail}
+              />
+              <Route exact path="/author/add-item" component={ItemAdd} />
+              <Route
+                exact
+                path={`${match.url}/tests`}
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <TestList {...props} />
+                  </Suspense>
+                )}
+              />
+              <Route
+                exact
+                path="/author/tests/create"
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <TestPage {...props} />
+                  </Suspense>
+                )}
+              />
+              <Route
+                exact
+                path="/author/tests/:id"
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <TestPage {...props} />
+                  </Suspense>
+                )}
+              />
+              <Route
+                exact
+                path="/author/items/:id/pickup-questiontype"
+                component={PickUpQuestionType}
+              />
+              <Route
+                exact
+                path="/author/questions/create"
+                component={QuestionEditor}
+              />
+              <Route
+                exact
+                path="/author/questions/edit"
+                component={QuestionEditor}
+              />
+            </Switch>
+          </Suspense>
         </Wrapper>
       </MainContainer>
     </Layout>

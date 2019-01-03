@@ -16,6 +16,7 @@ export const SET_QUESTION_ALIGNMENT_ADD_ROW =
 export const SET_QUESTION_ALIGNMENT_REMOVE_ROW =
   '[question] set question alignment remove row';
 export const SET_QUESTION = '[question] set question';
+export const LOAD_QUESTION = '[quesiton] load question from testItem';
 
 // assessment
 export const LOAD_ASSESSMENT = 'load assessment';

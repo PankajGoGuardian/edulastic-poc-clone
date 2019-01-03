@@ -13,13 +13,12 @@ const evaluators = {
   clozeImageDragDrop,
   clozeImageDropDown,
   clozeDropDown,
-  clozeText,
+  clozeText
 };
 
 const createShowAnswerResult = (questions, answers) => {
   const questionIds = Object.keys(questions);
   const results = {};
-  console.log('here utils show answer');
   // for each question create evaluation obj
   questionIds.forEach((id) => {
     const question = questions[id];
@@ -29,7 +28,6 @@ const createShowAnswerResult = (questions, answers) => {
       results[id] = evaluator(question, answer);
     }
   });
-  console.log('utils show answer result', results);
   return results;
 };
 export default createShowAnswerResult;

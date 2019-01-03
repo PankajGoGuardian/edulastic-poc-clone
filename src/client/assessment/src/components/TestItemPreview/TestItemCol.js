@@ -34,7 +34,7 @@ class TestItemCol extends Component {
 
   renderTabContent = (widget) => {
     const { previewTab, evaluation: evaluations } = this.props;
-    const evaluation = evaluations[widget.reference];
+    const evaluation = evaluations[widget.entity.id];
     return (
       <Tabs.TabContainer style={{ padding: 20 }}>
         <QuestionWrapper
@@ -44,7 +44,7 @@ class TestItemCol extends Component {
           evaluation={evaluation}
           previewTab={previewTab}
           questionId={widget.reference}
-          data={{ ...widget.referencePopulate.data, smallSize: true }}
+          data={{ ...widget.entity, smallSize: true }}
         />
       </Tabs.TabContainer>
     );
@@ -57,7 +57,10 @@ class TestItemCol extends Component {
     return (
       <Container
         value={value}
-        style={{ ...style, width: windowWidth < SMALL_DESKTOP_WIDTH ? '100%' : '100%' }}
+        style={{
+          ...style,
+          width: windowWidth < SMALL_DESKTOP_WIDTH ? '100%' : '100%'
+        }}
         width={col.dimension}
       >
         {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
@@ -75,15 +78,21 @@ class TestItemCol extends Component {
             ))}
           </Tabs>
         )}
-        {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 0 && (
-          <MobileRightSide onClick={() => this.handleTabChange(1)}>
-            <Icon type="left" style={{ color: white }} />
-          </MobileRightSide>
+        {col.tabs &&
+          windowWidth < MAX_MOBILE_WIDTH &&
+          !!col.tabs.length &&
+          value === 0 && (
+            <MobileRightSide onClick={() => this.handleTabChange(1)}>
+              <Icon type="left" style={{ color: white }} />
+            </MobileRightSide>
         )}
-        {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 1 && (
-          <MobileLeftSide onClick={() => this.handleTabChange(0)}>
-            <Icon type="right" style={{ color: white }} />
-          </MobileLeftSide>
+        {col.tabs &&
+          windowWidth < MAX_MOBILE_WIDTH &&
+          !!col.tabs.length &&
+          value === 1 && (
+            <MobileLeftSide onClick={() => this.handleTabChange(0)}>
+              <Icon type="right" style={{ color: white }} />
+            </MobileLeftSide>
         )}
         {col.widgets.map((widget, i) => (
           <React.Fragment key={i}>

@@ -19,6 +19,8 @@ import {
   updateTabTitleAction,
   useTabsAction
 } from '../../actions/itemDetail';
+import { loadQuestionAction } from '../../actions/question';
+
 import {
   getItemDetailLoadingSelector,
   getItemDetailRowsSelector,
@@ -151,16 +153,9 @@ class ItemDetail extends Component {
     updateItemDetailById(match.params.id, item);
   };
 
-  handleEditWidget = (widget) => {
-    const { match, history, t } = this.props;
-
-    history.push({
-      pathname: `/author/questions/${widget.reference}`,
-      state: {
-        backText: t('component.itemDetail.backText'),
-        backUrl: match.url
-      }
-    });
+  handleEditWidget = (widget, rowIndex) => {
+    const { loadQuestion } = this.props;
+    loadQuestion(widget, rowIndex);
   };
 
   handleDeleteWidget = i => (widgetIndex) => {
@@ -376,7 +371,8 @@ ItemDetail.propTypes = {
   showAnswer: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   changePreview: PropTypes.func.isRequired,
-  evaluation: PropTypes.isRequired
+  evaluation: PropTypes.isRequired,
+  loadQuestion: PropTypes.func.isRequired
 };
 
 ItemDetail.defaultProps = {
@@ -408,7 +404,8 @@ const enhance = compose(
       updateDimension: updateItemDetailDimensionAction,
       deleteWidget: deleteWidgetAction,
       updateTabTitle: updateTabTitleAction,
-      useTabs: useTabsAction
+      useTabs: useTabsAction,
+      loadQuestion: loadQuestionAction
     }
   )
 );

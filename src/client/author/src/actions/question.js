@@ -4,7 +4,8 @@ import {
   SET_QUESTION_DATA,
   SET_QUESTION_ALIGNMENT_ADD_ROW,
   SET_QUESTION_ALIGNMENT_REMOVE_ROW,
-  SET_QUESTION
+  SET_QUESTION,
+  LOAD_QUESTION
 } from '../constants/actions';
 
 export const receiveQuestionByIdAction = id => ({
@@ -36,4 +37,9 @@ export const setQuestionAlignmentRemoveRowAction = index => ({
 export const setQuestionAction = data => ({
   type: SET_QUESTION,
   payload: { data }
+});
+
+export const loadQuestionAction = (data, rowIndex) => ({
+  type: LOAD_QUESTION,
+  payload: { data, rowIndex }
 });

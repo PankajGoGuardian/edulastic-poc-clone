@@ -8,15 +8,18 @@ import { setUserAnswerAction } from '../../actions/answers';
 import { getAnswerByQuestionIdSelector } from '../../selectors/answers';
 
 export default (WrappedComponent) => {
-  const hocComponent = ({ setUserAnswer, match, questionId, ...props }) => (
-    <WrappedComponent
-      saveAnswer={(data) => {
-        setUserAnswer(questionId || match.params.id, data);
-      }}
-      questionId={questionId}
-      {...props}
-    />
-  );
+  const hocComponent = ({ setUserAnswer, match, ...props }) => {
+    const { data: question } = props;
+    return (
+      <WrappedComponent
+        saveAnswer={(data) => {
+          setUserAnswer(question.id || match.params.id, data);
+        }}
+        questionId={question.id}
+        {...props}
+      />
+    );
+  };
 
   hocComponent.propTypes = {
     setUserAnswer: PropTypes.func.isRequired
@@ -25,8 +28,8 @@ export default (WrappedComponent) => {
   const enhance = compose(
     withRouter,
     connect(
-      (state, { questionId, match }) => ({
-        userAnswer: getAnswerByQuestionIdSelector(questionId || match.params.id)(state)
+      (state, { data: { id } }) => ({
+        userAnswer: getAnswerByQuestionIdSelector(id)(state)
       }),
       { setUserAnswer: setUserAnswerAction }
     )

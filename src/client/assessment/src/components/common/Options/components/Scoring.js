@@ -35,8 +35,6 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
     setQuestionData(newData);
   };
 
-  console.log('QuestionData: ', questionData);
-
   return (
     <Options.Block>
       <Options.Heading>{t('component.options.scoring')}</Options.Heading>

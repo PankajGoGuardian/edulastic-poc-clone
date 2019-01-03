@@ -16,7 +16,6 @@ import QuestionMetadata from '../../../../assessment/src/components/QuestionMeta
 import ItemHeader from './ItemHeader';
 import { getQuestionSelector } from '../../selectors/question';
 import {
-  receiveQuestionByIdAction,
   saveQuestionAction,
   setQuestionDataAction
 } from '../../actions/question';
@@ -46,13 +45,6 @@ class QuestionEditor extends Component {
     saveClicked: false,
     previewTab: 'clear'
   };
-
-  componentDidMount() {
-    const { match, receiveQuestionById } = this.props;
-    if (match.params.id) {
-      receiveQuestionById(match.params.id);
-    }
-  }
 
   handleChangeView = (view) => {
     const { changeView } = this.props;
@@ -130,7 +122,10 @@ class QuestionEditor extends Component {
     return (
       <div>
         {showModal && (
-          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
+          <SourceModal
+            onClose={this.handleHideSource}
+            onApply={this.handleApplySource}
+          >
             {JSON.stringify(question.data, null, 4)}
           </SourceModal>
         )}
@@ -176,7 +171,6 @@ QuestionEditor.propTypes = {
   changeView: PropTypes.func.isRequired,
   question: PropTypes.object,
   match: PropTypes.object,
-  receiveQuestionById: PropTypes.func.isRequired,
   saveQuestion: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired
@@ -198,7 +192,6 @@ const enhance = compose(
     }),
     {
       changeView: changeViewAction,
-      receiveQuestionById: receiveQuestionByIdAction,
       saveQuestion: saveQuestionAction,
       setQuestionData: setQuestionDataAction
     }

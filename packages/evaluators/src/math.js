@@ -49,7 +49,7 @@ const evaluator = ({ userResponse, validation }) => {
 
   // if score for attempting is greater than current score
   // let it be the score!
-  if (!Number.isNaN(attemptScore) && attemptScore > result.score && userResponse.length) {
+  if (!Number.isNaN(attemptScore) && attemptScore > result.score) {
     result.score = attemptScore;
   }
 

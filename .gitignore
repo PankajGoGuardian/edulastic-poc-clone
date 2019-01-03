@@ -1,6 +1,7 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 node_modules/
+.vscode/
 .build/
 .idea/
 .DS_Store

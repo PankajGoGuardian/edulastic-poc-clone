@@ -63,7 +63,7 @@ var evaluator = function evaluator(_ref) {
   // let it be the score!
 
 
-  if (!Number.isNaN(attemptScore) && attemptScore > result.score && userResponse.length) {
+  if (!Number.isNaN(attemptScore) && attemptScore > result.score) {
     result.score = attemptScore;
   }
 

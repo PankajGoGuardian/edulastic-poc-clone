@@ -29,13 +29,19 @@ import {
   HeaderLeftMenu,
   HeaderMainMenu,
   HeaderRightMenu,
-  MobileMainMenu,
+  MobileMainMenu
 } from '../common';
 import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
 import TestPreviewItem from '../../components/TestItemPreview';
+import defaultTheme from '../defaultThemeStyle';
+import assessmentPlayerTheme from './themeStyle';
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line
-const defaultTheme = require('sass-extract-loader?{"plugins": ["sass-extract-js"]}!../../styles/vars.scss');
+
+const Theme = {
+  ...defaultTheme,
+  ...assessmentPlayerTheme
+};
 
 class AssessmentPlayerSimple extends React.Component {
   static propTypes = {
@@ -50,11 +56,11 @@ class AssessmentPlayerSimple extends React.Component {
     evaluate: PropTypes.any.isRequired,
     itemRows: PropTypes.any.isRequired,
     view: PropTypes.string.isRequired,
-    t: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired
   };
 
   static defaultProps = {
-    theme: defaultTheme,
+    theme: Theme
   };
 
   checkAnswer = () => {
@@ -74,7 +80,7 @@ class AssessmentPlayerSimple extends React.Component {
       currentItem,
       gotoQuestion,
       itemRows,
-      view: previewTab,
+      view: previewTab
     } = this.props;
 
     const dropdownOptions = Array.isArray(items)
@@ -101,13 +107,13 @@ class AssessmentPlayerSimple extends React.Component {
                     <Line
                       percent={percent}
                       strokeWidth="2"
-                      strokeColor="#00b0ff"
+                      strokeColor={theme.progressStrokeColor}
                       trailWidth="2"
-                      trailColor="#e2e2e2"
+                      trailColor={theme.progressTrailColor}
                     />
                   </ProgressContainer>
                   <Timer>
-                    <Icon color="#756e6e" />
+                    <Icon color={theme.timerIconColor} />
                     <ResponsiveTestDuration />
                   </Timer>
                 </FlexContainer>
@@ -120,9 +126,9 @@ class AssessmentPlayerSimple extends React.Component {
                     <Line
                       percent={percent}
                       strokeWidth="1"
-                      strokeColor="#00b0ff"
+                      strokeColor={theme.progressStrokeColor}
                       trailWidth="1"
-                      trailColor="#e2e2e2"
+                      trailColor={theme.progressTrailColor}
                     />
                   </ProgressContainer>
                   <Time>
@@ -132,15 +138,15 @@ class AssessmentPlayerSimple extends React.Component {
                     />
                   </Time>
                   <Timer>
-                    <Icon color="#756e6e" />
-                    <TimeDuration />
+                    <Icon color={theme.timerIconColor} />
+                    <TimeDurationText><TimeDuration /></TimeDurationText>
                   </Timer>
                   <Timer>
                     <Save>
-                      <IconSave color="#756e6e" />
+                      <IconSave color={theme.saveIconColor} />
                     </Save>
                     <Save>
-                      <IconSave color="#756e6e" />
+                      <IconSave color={theme.submitIconColor} />
                     </Save>
                   </Timer>
                 </FlexContainer>
@@ -187,13 +193,13 @@ class AssessmentPlayerSimple extends React.Component {
                 <TestPreviewItem cols={itemRows} previewTab={previewTab} />
               </MainContent>
               <MainFooter>
-                <FlexContainer>
+                <CheckAnswerButton>
                   <QuitAssesment />
                   <ControlBtn next skinB onClick={this.checkAnswer}>
                     <span>{t('pagination.checkanswer')} </span>
                   </ControlBtn>
-                </FlexContainer>
-                <FlexContainer>
+                </CheckAnswerButton>
+                <NextPrevButton>
                   <ControlBtn
                     prev
                     skinB
@@ -211,7 +217,7 @@ class AssessmentPlayerSimple extends React.Component {
                     <i className="fa fa-angle-right" />
                     <span>{t('pagination.next')}</span>
                   </ControlBtn>
-                </FlexContainer>
+                </NextPrevButton>
               </MainFooter>
             </MainWrapper>
             <Sidebar>
@@ -238,15 +244,38 @@ const Icon = styled(IconClockCircularOutline)`
 `;
 
 const Time = styled.div`
-  color: #756e6e;
+  color: ${props => props.theme.headerBarTextColor};
   font-weight: bold;
   font-size: 14px;
   margin: 0px 30px 0px 20px;
 `;
 
+const CheckAnswerButton = styled(FlexContainer)`
+  .ant-btn {
+    color: ${props => props.theme.CheckAnswerButtonText};
+    background-color: ${props => props.theme.CheckAnswerButtonBg};
+    border-color: ${props => props.theme.CheckAnswerButtonBg};
+    padding: 0px;
+  }
+`;
+
+const NextPrevButton = styled(FlexContainer)`
+  .ant-btn {
+    color: ${props => props.theme.NextPrevButtonTextColor};
+    background-color: ${props => props.theme.NextPrevButtonBg};
+    border-color: ${props => props.theme.NextPrevButtonBg};
+  }
+`;
+
+const TimeDurationText = styled.div`
+  p { 
+    color: ${props => props.theme.timeDurationTextColor};
+  }
+`;
+
 const Save = styled.div`
   color: #e2e2e2;
-  background: #e2e2e2;
+  background: ${props => props.theme.saveIconBgColor};
   border-radius: 5px;
   padding: 10px;
   margin-left: 20px;

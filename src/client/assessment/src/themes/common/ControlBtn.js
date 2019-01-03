@@ -5,8 +5,8 @@ import { Button } from 'antd';
 
 const ControlBtn = styled(Button)`
   width: ${props => (props.next ? (props.skin ? '58px' : '187px') : '58px')};
-  height: 40px !important;
-  width: 40px !important;
+  height: 40px;
+  width: 40px;
   border-radius: 4px;
   background-color: ${props =>
     props.skin ? props.theme.controlBtnPrimaryColor : props.theme.controlBtnSecondaryColor};
@@ -68,9 +68,9 @@ const ControlBtn = styled(Button)`
     }
   }
 
-  @media (max-width: 1600px) {
+  @media (min-width: 760px) {
     width: ${props =>
-      props.next ? (props.skin ? '40px' : '187px') : props.skin ? '40px' : '50px'};
+    props.next ? (props.skin ? '40px' : '187px') : props.skin ? '40px' : '50px'};
     height: ${props => (props.skin ? '40px' : '50px')};
   }
   @media (max-width: 760px) {
@@ -81,12 +81,12 @@ const ControlBtn = styled(Button)`
     align-items: center;
     justify-content: center;
     background-color: ${props => {
-      if (props.setting) {
-        return props.skin
-          ? props.theme.controlBtnSecondaryColor
-          : props.theme.controlBtnPrimaryColor;
-      }
-    }};
+    if (props.setting) {
+      return props.skin
+        ? props.theme.controlBtnSecondaryColor
+        : props.theme.controlBtnPrimaryColor;
+    }
+  }};
 
     & > span {
       display: none;

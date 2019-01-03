@@ -5,9 +5,10 @@ const MainContent = styled.div`
   color: ${props => props.theme.mainContentTextColor};
   border-radius: 10px;
   height: 600px;
-  padding: 40px 50px;
+  padding: 40px;
   text-align: left;
   font-size: 18px;
+  overflow: auto;
   
   & * {
     -webkit-touch-callout: none;

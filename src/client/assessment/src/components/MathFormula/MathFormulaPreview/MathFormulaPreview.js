@@ -7,6 +7,7 @@ import { omitBy } from 'lodash';
 import { SHOW, CHECK, CLEAR } from '../../../constants/constantsForQuestions';
 import CorrectAnswerBox from './CorrectAnswerBox';
 import StaticMath from '../common/StaticMath';
+import MathInput from '../common/MathInput';
 
 const { mathInputTypes } = math;
 
@@ -74,16 +75,18 @@ const MathFormulaPreview = ({
   studentTemplate,
   type: previewType,
   saveAnswer,
-  check,
-  smallSize
+  check
 }) => {
   const [type, setType] = useState(mathInputTypes.CLEAR);
   const studentRef = useRef();
+  const isStatic = studentTemplate.search(/\\MathQuillMathField\{(.*)\}/g) !== -1;
+
+  const [latex, setLatex] = useState(studentTemplate);
 
   const checkAnswer = async () => {
     if (previewType === CHECK) {
-      saveAnswer(studentRef.current.getLatex());
-      let input = studentRef.current.getLatex();
+      let input = isStatic ? studentRef.current.getLatex() : latex;
+      saveAnswer(input);
       let expected = item.validation.valid_response.value[0].value;
 
       if (input) {
@@ -119,7 +122,9 @@ const MathFormulaPreview = ({
     () => {
       if (previewType === CLEAR) {
         setType(mathInputTypes.CLEAR);
-        studentRef.current.setLatex(studentTemplate);
+        if (studentRef.current) {
+          studentRef.current.setLatex(studentTemplate);
+        }
       }
 
       if (previewType === SHOW) {
@@ -135,24 +140,23 @@ const MathFormulaPreview = ({
 
   useEffect(
     () => {
-      setTimeout(() => {
-        if (!studentRef.current) return;
-
-        if (smallSize) {
-          studentRef.current.setLatex(item.validation.valid_response.value[0].value);
-        } else {
-          studentRef.current.setLatex(studentTemplate);
-        }
-      }, 0);
+      if (!studentRef.current) return;
+      studentRef.current.setLatex(studentTemplate);
     },
     [studentTemplate]
   );
-
   return (
     <div>
       <div style={{ marginBottom: 15 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
 
-      <StaticMath onBlur={() => checkAnswer()} ref={studentRef} type={type} />
+      {
+        isStatic &&
+        <StaticMath onBlur={checkAnswer} ref={studentRef} type={type} />
+      }
+      {
+        !isStatic &&
+        <MathInput onBlur={checkAnswer} value={latex} onInput={setLatex} type={type} />
+      }
 
       {previewType === SHOW && item.validation.valid_response.value[0].value !== undefined && (
         <CorrectAnswerBox>{item.validation.valid_response.value[0].value}</CorrectAnswerBox>
@@ -162,11 +166,13 @@ const MathFormulaPreview = ({
 };
 MathFormulaPreview.propTypes = {
   item: PropTypes.object.isRequired,
-  studentTemplate: PropTypes.string.isRequired,
+  studentTemplate: PropTypes.string,
   type: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  check: PropTypes.func.isRequired,
-  smallSize: PropTypes.bool.isRequired
+  check: PropTypes.func.isRequired
+};
+MathFormulaPreview.defaultProps = {
+  studentTemplate: ''
 };
 
 export default MathFormulaPreview;

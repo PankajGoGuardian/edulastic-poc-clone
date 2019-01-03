@@ -160,7 +160,7 @@ class QuestionEditor extends Component {
         <ContentWrapper
           style={{
             padding: '0px 45px',
-            overflow: 'auto'
+            overflow: 'visible'
             // height: 'calc(100vh - 135px)'
           }}
         >

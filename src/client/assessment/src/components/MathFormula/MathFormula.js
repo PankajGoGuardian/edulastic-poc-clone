@@ -31,12 +31,7 @@ const MathFormula = ({
   const [studentTemplate, setStudentTemplate] = useState();
 
   const setTemplate = (template) => {
-    const latex =
-      template.search(/\\embed\{response\}/g) !== -1
-        ? template.replace(/\\embed\{response\}/g, '\\MathQuillMathField{}')
-        : `\\MathQuillMathField{${template}}`;
-
-    setStudentTemplate(latex);
+    setStudentTemplate(template.replace(/\\embed\{response\}/g, '\\MathQuillMathField{}'));
   };
 
   useEffect(
@@ -93,7 +88,7 @@ const MathFormula = ({
         </Fragment>
       )}
       {view === PREVIEW && (
-        <Wrapper style={{ height: '100%' }}>
+        <Wrapper style={{ height: '100%', overflow: 'visible' }}>
           <MathFormulaPreview
             type={previewTab}
             studentTemplate={studentTemplate}

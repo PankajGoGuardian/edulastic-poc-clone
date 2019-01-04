@@ -135,9 +135,9 @@ const AssignmentCard = ({
               </AnswerAndScore>
             )
           }
-          <StartAssignButton onClick={startTest} isRetake={attemptsData.length > 0}>
-            <span className="start">START ASSIGNMENT</span>
-            <span className="retake">RETAKE</span>
+          <StartAssignButton onClick={startTest}>
+            { attemptsData.length === 0 && <span>START ASSIGNMENT</span> }
+            { attemptsData.length > 0 && <span>RETAKE</span> }
           </StartAssignButton>
         </DetailContainer>
         {
@@ -327,10 +327,6 @@ const StartAssignButton = styled(Button)`
   cursor: pointer;
   float: right;
 
-  .retake {
-    display: none;
-  }
-
   span {
     color: #00b0ff;
     font-size: 11px;
@@ -342,12 +338,6 @@ const StartAssignButton = styled(Button)`
     background-color: #12a6e8;
     span {
       color: #ffffff;
-    }
-    .retake {
-      display: ${props => (props.isRetake ? 'inline' : 'none')};
-    }
-    .start {
-      display: ${props => (props.isRetake ? 'none' : 'inline')};
     }
   }
 

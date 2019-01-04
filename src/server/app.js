@@ -32,6 +32,11 @@ if (config.appModeDev) {
   );
 }
 
+// serve the project documentation
+if (process.env.NODE_ENV !== 'production') {
+  app.use('/guidelines', express.static(path.join(process.cwd(), 'docs')));
+}
+
 app.use('*', (req, res) => {
   const template = handlebars.compile(
     fs.readFileSync(path.join(__dirname, 'index.hbs'), 'utf8')

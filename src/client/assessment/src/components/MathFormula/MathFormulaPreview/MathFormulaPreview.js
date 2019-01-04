@@ -140,8 +140,10 @@ const MathFormulaPreview = ({
 
   useEffect(
     () => {
-      if (!studentRef.current) return;
-      studentRef.current.setLatex(studentTemplate);
+      setTimeout(() => {
+        if (!studentRef.current) return;
+        studentRef.current.setLatex(studentTemplate);
+      }, 0);
     },
     [studentTemplate]
   );

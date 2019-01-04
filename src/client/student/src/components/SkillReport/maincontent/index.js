@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 import AssignmentContentWrapper from '../../commonStyle/assignmentContentWrapper';
 import StyledTable from '../common/StyledTable';
@@ -25,7 +26,12 @@ class SkillReportMainContent extends Component {
         title: 'Percentage',
         dataIndex: 'percentage',
         sorter: true,
-        render: percentage => `${percentage}`,
+        render: percentage => (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {(Math.round(percentage * 10) / 10).toFixed(1)}%
+            <Circle percentage={percentage} />
+          </div>
+        ),
         width: '20%'
       }, {
         title: 'Hints',
@@ -33,33 +39,27 @@ class SkillReportMainContent extends Component {
         sorter: true,
         render: hints => `${hints}`,
         width: '20%'
-      }],
-      summaryData: [{
-        domain: 'Ratios & Proportional Relationships',
-        total: 30,
-        percentage: 38.7,
-        hints: 26
-      }, {
-        domain: 'Ratios & Proportional Relationships',
-        total: 30,
-        percentage: 38.7,
-        hints: 26
-      }, {
-        domain: 'Ratios & Proportional Relationships',
-        total: 30,
-        percentage: 38.7,
-        hints: 26
-      }, {
-        domain: 'Ratios & Proportional Relationships',
-        total: 30,
-        percentage: 38.7,
-        hints: 26
       }]
     };
   }
 
   render() {
-    const { summaryColumns, summaryData } = this.state;
+    const { skillReport } = this.props;
+    const { summaryColumns } = this.state;
+    const sumData = [];
+    if (skillReport) {
+      skillReport.reports.curriculum.domains.map((domain) => {
+        const { reportData } = skillReport.reports;
+        sumData.push({
+          domain: domain.description,
+          standards: domain.standards,
+          total: reportData[domain.id].totalQuestions,
+          hints: reportData[domain.id].hints,
+          percentage: reportData[domain.id].score / reportData[domain.id].maxScore * 100
+        });
+        return true;
+      });
+    }
     return (
       <SkillReportContainer>
         <AssignmentContentWrapper style={{ paddingTop: 32, paddingBottom: 32 }}>
@@ -68,18 +68,22 @@ class SkillReportMainContent extends Component {
           </SummaryTitle>
           <StyledTable
             columns={summaryColumns}
-            dataSource={summaryData}
+            dataSource={sumData}
           />
         </AssignmentContentWrapper>
         {
-          summaryData.map((summary, index) => (
-            <DomainDetail summary={summary} key={index} />
+          sumData.map((summary, index) => (
+            <DomainDetail summary={summary} skillReport={skillReport} key={index} />
           ))
         }
       </SkillReportContainer>
     );
   }
 }
+
+SkillReportMainContent.propTypes = {
+  skillReport: PropTypes.object.isRequired
+};
 
 export default SkillReportMainContent;
 
@@ -93,4 +97,12 @@ const SummaryTitle = styled.div`
   color: #4aac8b;
   letter-spacing: 0.3px;
   margin-bottom: 24px;
+`;
+
+const Circle = styled.div`
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  background: ${props => (props.percentage > 30 ? '#fdcc3b' : '#ee1658')};
+  margin-left: 18px;
 `;

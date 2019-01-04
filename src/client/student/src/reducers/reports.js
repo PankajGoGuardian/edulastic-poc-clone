@@ -1,4 +1,8 @@
-import { LOAD_REPORTS, LOAD_TEST_ACTIVITY_DETAIL } from '../constants/actions';
+import {
+  LOAD_REPORTS,
+  LOAD_TEST_ACTIVITY_DETAIL,
+  LOAD_SKILL_REPORT_BY_CLASSID
+} from '../constants/actions';
 
 const initialState = {
   reports: []
@@ -15,6 +19,11 @@ const reports = (state = initialState, { type, payload }) => {
       return {
         ...state,
         reportDetail: payload.reports.data.result
+      };
+    case LOAD_SKILL_REPORT_BY_CLASSID:
+      return {
+        ...state,
+        skillReport: payload
       };
     default:
       return state;

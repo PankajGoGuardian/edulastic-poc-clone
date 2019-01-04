@@ -27,7 +27,6 @@ const SummaryContainer = ({ finishTest, history }) => {
   };
 
   return (
-
     <MainContainer>
       <SubmitConfirmation
         isVisible={showConfirmationModal}

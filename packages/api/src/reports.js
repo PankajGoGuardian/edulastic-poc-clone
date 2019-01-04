@@ -19,7 +19,16 @@ const fetchTestActivityDetail = id =>
     })
     .then(result => result);
 
+const fetchSkillReport = classId =>
+  api
+    .callApi({
+      url: `/skill-report/${classId}`,
+      method: 'get'
+    })
+    .then(result => result.data.result);
+
 export default {
   fetchReports,
-  fetchTestActivityDetail
+  fetchTestActivityDetail,
+  fetchSkillReport
 };

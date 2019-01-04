@@ -13,50 +13,23 @@ class DomainDetail extends Component {
     this.state = {
       isShow: false,
       summaryColumns: [{
-        title: 'Domains',
+        title: 'Grade',
+        dataIndex: 'grade',
+        sorter: true,
+        render: grade => <GradeTag>{grade}</GradeTag>,
+        width: '15%'
+      }, {
+        title: 'Topic Name',
         dataIndex: 'domain',
         sorter: true,
         render: domain => `${domain}`,
-        width: '40%'
+        width: '45%'
       }, {
-        title: 'Total Questions',
-        dataIndex: 'total',
-        sorter: true,
-        render: total => `${total}`,
-        width: '20%'
-      }, {
-        title: 'Percentage',
+        title: 'Percent Score',
         dataIndex: 'percentage',
         sorter: true,
-        render: percentage => `${percentage}`,
+        render: percentage => `${percentage}%`,
         width: '20%'
-      }, {
-        title: 'Hints',
-        dataIndex: 'hints',
-        sorter: true,
-        render: hints => `${hints}`,
-        width: '20%'
-      }],
-      summaryData: [{
-        domain: 'Ratios & Proportional Relationships',
-        total: 30,
-        percentage: 38.7,
-        hints: 26
-      }, {
-        domain: 'Ratios & Proportional Relationships',
-        total: 30,
-        percentage: 38.7,
-        hints: 26
-      }, {
-        domain: 'Ratios & Proportional Relationships',
-        total: 30,
-        percentage: 38.7,
-        hints: 26
-      }, {
-        domain: 'Ratios & Proportional Relationships',
-        total: 30,
-        percentage: 38.7,
-        hints: 26
       }]
     };
   }
@@ -66,8 +39,23 @@ class DomainDetail extends Component {
   }
 
   render() {
-    const { summary } = this.props;
-    const { summaryColumns, summaryData, isShow } = this.state;
+    const { summary, skillReport } = this.props;
+    const { summaryColumns, isShow } = this.state;
+    const sumData = [];
+
+    if (summary) {
+      summary.standards.map((standard) => {
+        const { reportData } = skillReport.reports;
+        sumData.push({
+          domain: standard.description,
+          grade: standard.identifier,
+          total: 0,
+          percentage: reportData[standard.id] ? reportData[standard.id].score / reportData[standard.id].maxScore * 100 : 0
+        });
+        return true;
+      });
+    }
+
     return (
       <AssignmentContentWrapper
         style={{ paddingTop: 32, paddingBottom: 32 }}
@@ -82,7 +70,7 @@ class DomainDetail extends Component {
           isShow && (
           <StyledTable
             columns={summaryColumns}
-            dataSource={summaryData}
+            dataSource={sumData}
           />)
         }
       </AssignmentContentWrapper>
@@ -91,7 +79,8 @@ class DomainDetail extends Component {
 }
 
 DomainDetail.propTypes = {
-  summary: PropTypes.object.isRequired
+  summary: PropTypes.object.isRequired,
+  skillReport: PropTypes.object.isRequired
 };
 
 export default DomainDetail;
@@ -108,4 +97,17 @@ const RelationTitle = styled.div`
   letter-spacing: 0.3px;
   color: #434b5d;
   margin-bottom: 24px;
+`;
+
+const GradeTag = styled.div`
+  background: #d7faee;
+  height: 23.5px;
+  color: #4aac8b;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.2px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;

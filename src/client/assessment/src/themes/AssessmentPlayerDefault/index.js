@@ -123,6 +123,11 @@ class AssessmentPlayerDefault extends React.Component {
     history.push('/home/assignments');
   }
 
+  finishTest = () => {
+    const { history } = this.props;
+    history.push('/home/assignments');
+  }
+
   render() {
     const {
       theme,

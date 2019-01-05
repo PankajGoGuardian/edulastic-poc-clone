@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { Progress } from 'antd';
 import { IconPlus } from '@edulastic/icons';
 import { greenDark } from '@edulastic/colors';
 
@@ -15,20 +16,20 @@ class DomainDetail extends Component {
       summaryColumns: [{
         title: 'Grade',
         dataIndex: 'grade',
-        sorter: true,
+        sorter: (a, b) => a.grade - b.grade,
         render: grade => <GradeTag>{grade}</GradeTag>,
         width: '15%'
       }, {
         title: 'Topic Name',
         dataIndex: 'domain',
-        sorter: true,
+        sorter: (a, b) => a.domain.length - b.domain.length,
         render: domain => `${domain}`,
         width: '45%'
       }, {
         title: 'Percent Score',
         dataIndex: 'percentage',
-        sorter: true,
-        render: percentage => `${percentage}%`,
+        sorter: (a, b) => a.percentage - b.percentage,
+        render: percentage => <StyledProgress percent={percentage} />,
         width: '20%'
       }]
     };
@@ -42,7 +43,8 @@ class DomainDetail extends Component {
     const { summary, skillReport } = this.props;
     const { summaryColumns, isShow } = this.state;
     const sumData = [];
-
+    let score = 0;
+    let maxScore = 0;
     if (summary) {
       summary.standards.map((standard) => {
         const { reportData } = skillReport.reports;
@@ -52,6 +54,8 @@ class DomainDetail extends Component {
           total: 0,
           percentage: reportData[standard.id] ? reportData[standard.id].score / reportData[standard.id].maxScore * 100 : 0
         });
+        score += reportData[standard.id] && reportData[standard.id].score;
+        maxScore += reportData[standard.id] && reportData[standard.id].maxScore;
         return true;
       });
     }
@@ -64,7 +68,9 @@ class DomainDetail extends Component {
           <RelationTitle>
             {summary.domain}
           </RelationTitle>
-          <IconPlus color={greenDark} />
+          <StyledProgress percent={Math.round(score / maxScore * 100)} style={{ width: 220, marginRight: 40 }} />
+          { !isShow && <PlusIcon color={greenDark} />}
+          { isShow && <Toggler />}
         </Title>
         {
           isShow && (
@@ -110,4 +116,28 @@ const GradeTag = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+export const Toggler = styled.div`
+  position: relative;
+  cursor: pointer;
+  width: 17.7px;
+  height: 3.4px;
+  background-color: #4aac8b;
+  margin-top: 10px;
+`;
+
+export const PlusIcon = styled(IconPlus)`
+  margin-top: 5px;
+`;
+
+export const StyledProgress = styled(Progress)`
+  height: 16px;
+  .ant-progress-inner {
+    height: 16px;
+  }
+  .ant-progress-bg {
+    height: 16px !important;
+    background: ${props => (props.percent >= 50 ? '#1fe3a1' : props.percent >= 30 ? '#fdcc3b' : '#ee1658')};
+  }
 `;

@@ -13,19 +13,19 @@ class SkillReportMainContent extends Component {
       summaryColumns: [{
         title: 'Domains',
         dataIndex: 'domain',
-        sorter: true,
+        sorter: (a, b) => a.domain.length - b.domain.length,
         render: domain => `${domain}`,
         width: '40%'
       }, {
         title: 'Total Questions',
         dataIndex: 'total',
-        sorter: true,
+        sorter: (a, b) => a.total - b.total,
         render: total => `${total}`,
         width: '20%'
       }, {
         title: 'Percentage',
         dataIndex: 'percentage',
-        sorter: true,
+        sorter: (a, b) => a.percentage - b.percentage,
         render: percentage => (
           <div style={{ display: 'flex', alignItems: 'center' }}>
             {(Math.round(percentage * 10) / 10).toFixed(1)}%
@@ -36,7 +36,7 @@ class SkillReportMainContent extends Component {
       }, {
         title: 'Hints',
         dataIndex: 'hints',
-        sorter: true,
+        sorter: (a, b) => a.hints - b.hints,
         render: hints => `${hints}`,
         width: '20%'
       }]

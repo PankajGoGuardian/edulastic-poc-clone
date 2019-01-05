@@ -10,6 +10,9 @@ const AssignmentsTitle = styled.div`
   letter-spacing: normal;
   text-align: left;
   color: #ffffff;
+  @media screen and (max-width: 768px) {
+    padding-left: 40px;
+  }
 `;
 
 export default AssignmentsTitle;

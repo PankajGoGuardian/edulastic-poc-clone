@@ -27,7 +27,7 @@ export default memo(HeaderWrapper);
 const HeaderContainer = styled.div`
   padding-top: 62px;
   margin-bottom: 10px;
-  @media screen and (max-width: 767px) {
+  @media screen and (max-width: 768px) {
     padding-top: 95px;
   }
 `;
@@ -38,7 +38,10 @@ const AssignmentsHeader = styled(Layout.Header)`
   background-color: ${darkBlueSecondary};
   height: 62px;
   color: #ffffff;
-
+  @media screen and (max-width: 768px) {
+    height:104px;
+    padding: 0;
+  }
   .ant-col-24 {
     align-items: center;
     line-height: 1.2;
@@ -56,4 +59,8 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 17px;
+  @media (max-width:768px){
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;

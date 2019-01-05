@@ -23,12 +23,26 @@ const AssignmentSelect = () => (
 
 const SkillReportHeader = () => (
   <HeaderWrapper>
-    <AssignmentTitle>Skill Report</AssignmentTitle>
-    <AssignmentSelect />
+    <Wrapper>
+      <AssignmentTitle>Skill Report</AssignmentTitle>
+      <AssignmentSelect />
+    </Wrapper>
   </HeaderWrapper>
 );
 
 export default memo(SkillReportHeader);
+
+const Wrapper = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 17px;
+  @media (max-width:768px){
+    flex-direction: column;
+    align-items: flex-start;
+  }
+`;
 
 const ClassLabel = styled.span`
   display: flex;
@@ -40,5 +54,7 @@ const ClassLabel = styled.span`
 
   @media (max-width: 768px) {
     width: 65px;
+    width: auto;
+    margin-right: 10px;
   }
 `;

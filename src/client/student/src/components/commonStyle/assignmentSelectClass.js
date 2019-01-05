@@ -21,6 +21,9 @@ const AssignmentSelectClass = styled.div`
       fill: #12a6e8;
     }
   }
+  @media (max-width:768px){
+    padding-top: 10px;
+  }
 `;
 
 export default AssignmentSelectClass;

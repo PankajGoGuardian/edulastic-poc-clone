@@ -81,7 +81,7 @@ class SideMenu extends Component {
     if (menuItems[e.key].path !== undefined) {
       history.push(`/${menuItems[e.key].path}`);
     }
-    if (windowWidth < parseFloat(tabletWidth)) {
+    if (windowWidth <= parseFloat(tabletWidth)) {
       this.toggleMenu();
     }
   };
@@ -102,7 +102,7 @@ class SideMenu extends Component {
   handleProfileClick = () => {
     const { windowWidth } = this.props;
     this.toggleDropdown();
-    if (windowWidth < parseFloat(tabletWidth)) {
+    if (windowWidth <= parseFloat(tabletWidth)) {
       this.toggleMenu();
     }
   };
@@ -125,7 +125,7 @@ class SideMenu extends Component {
     const { windowWidth, currentPath, firstName, logout, isSidebarCollapsed } = this.props;
     const page = currentPath.split('/').filter(item => !!item)[1];
     const menuIndex = getIndex(page, menuItems);
-    const isMobile = windowWidth < parseFloat(tabletWidth);
+    const isMobile = windowWidth <= parseFloat(tabletWidth);
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible} className="footerDropWrap">
         <Menu>
@@ -181,7 +181,7 @@ class SideMenu extends Component {
           </LogoWrapper>
           <LogoDash />
           <MenuWrapper>
-            <IconBars type="bars" onClick={this.toggleMenu} />
+            {isMobile && isSidebarCollapsed ? <IconBars type="bars" onClick={this.toggleMenu} /> : null}
             <Menu
               theme="light"
               defaultSelectedKeys={[menuIndex.toString()]}
@@ -307,7 +307,7 @@ const SideBar = styled(Layout.Sider)`
   &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px 8px 0px;
     width: 100px;
-    @media (max-width: 767px) {
+    @media (max-width: 768px) {
      display:none;
     }
   }
@@ -357,7 +357,7 @@ const SideBar = styled(Layout.Sider)`
 `;
 
 const LogoWrapper = styled(Row)`
-  padding: 30px 20px;
+  padding: 18px 20px;
   text-align: center;
   display: flex;
   align-items: center;
@@ -599,7 +599,7 @@ const LogoutIcon = styled(IconDropdown)`
 
 const IconBars = styled(AntIcon)`
   display:none;
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     display:inline-block;
     padding-left: 17px;
     position: absolute;

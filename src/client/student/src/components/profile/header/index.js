@@ -29,4 +29,7 @@ const Title = styled.h1`
   font-weight: bold;
   margin: 0;
   padding: 0;
+  @media (max-width:768px){
+    padding: 0 40px 44px;
+  }
 `;

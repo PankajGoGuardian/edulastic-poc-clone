@@ -1,56 +1,57 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
-import { white } from '@edulastic/colors';
 import { Select } from 'antd';
+import AssignmentSelectClass from '../../commonStyle/assignmentSelectClass';
+import AssignmentTitle from '../../assignments/common/assignmentTitle';
 import HeaderWrapper from '../../../headerWrapper';
 
 const options = ['ARCHIVE(0)', 'ARCHIVE(1)', 'ARCHIVE(2)', 'ARCHIVE(3)'];
 const { Option } = Select;
 
+const AssignmentSelect = () => (
+  <AssignmentSelectClass>
+    <ClassLabel>Show</ClassLabel>
+    <Select defaultValue="Question 1/10">
+      {options.map((option, i) => (
+        <Option key={i} value={option}>
+          {option}
+        </Option>
+      ))}
+    </Select>
+  </AssignmentSelectClass>
+);
+
 const ManageClassHeader = () => (
   <HeaderWrapper>
-    <Title>Manage Class</Title>
-    <QuestionSelect>
-      <FilterBtn>
-        <span>Show</span>
-      </FilterBtn>
-      <SelectBtn defaultValue="Question 1/10">
-        {options.map((option, index) => (
-          <Option key={index}> {option} </Option>
-        ))}
-      </SelectBtn>
-    </QuestionSelect>
+    <Wrapper>
+      <AssignmentTitle>Manage Class</AssignmentTitle>
+      <AssignmentSelect />
+    </Wrapper>
   </HeaderWrapper>
 );
 
 export default memo(ManageClassHeader);
-
-const Title = styled.h1`
-  color: ${white};
-  font-size: 22px;
-  font-weight: bold;
-  margin: 0;
-  padding: 0;
-`;
-
-const SelectBtn = styled(Select)`
-  width: 70%;
-`;
-
-const QuestionSelect = styled.div`
+const Wrapper = styled.div`
   display: flex;
-  width: 30%;
+  width: 100%;
   justify-content: space-between;
+  align-items: center;
+  font-size: 17px;
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
-const FilterBtn = styled.button`
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  & span {
-    font-family: Open Sans;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    color: #ffffff;
+const ClassLabel = styled.span`
+  display: flex;
+  font-size: 13px;
+  font-weight: 600;
+  margin-right: 30px;
+  align-items: center;
+  letter-spacing: 0.2px;
+  @media (max-width: 768px) {
+    width: 65px;
+    width: auto;
+    margin-right: 10px;
   }
 `;

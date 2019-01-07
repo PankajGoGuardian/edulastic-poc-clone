@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { Affix } from 'antd';
 import { withWindowSizes } from '@edulastic/common';
+import { IconSend } from '@edulastic/icons';
 import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
 import MainWrapper from './MainWrapper';
 import HeaderLeftMenu from '../common/HeaderLeftMenu';
@@ -192,7 +193,9 @@ class AssessmentPlayerDefault extends React.Component {
 
                   <FlexContainer style={{ flex: 1, justifyContent: windowWidth < MAX_MOBILE_WIDTH && 'flex-end' }}>
                     <ControlBtn prev skin type="primary" icon="left" disabled={isFirst()} onClick={moveToPrev} />
-                    <ControlBtn next skin type="primary" icon={!isLast() ? 'right' : 'upload'} onClick={moveToNext} />
+                    <ControlBtn next skin type="primary" icon={!isLast() && 'right'} onClick={moveToNext}>
+                      { isLast() && <IconSend /> }
+                    </ControlBtn>
                     { windowWidth < LARGE_DESKTOP_WIDTH && (
                       <ToolButton
                         next

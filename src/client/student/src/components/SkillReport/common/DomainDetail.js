@@ -68,8 +68,9 @@ class DomainDetail extends Component {
           <RelationTitle>
             {summary.domain}
           </RelationTitle>
-          <StyledProgress percent={Math.round(score / maxScore * 100)} style={{ width: 220, marginRight: 40 }} />
-          {isShow ? <IconClose /> : <IconOpen color={greenDark} />}
+          <StyledScoreProgress percent={Math.round(score / maxScore * 100)} />
+          { !isShow && <PlusIcon color={greenDark} />}
+          { isShow && <Toggler />}
         </Title>
         {
           isShow && (
@@ -124,26 +125,29 @@ const GradeTag = styled.div`
   align-items: center;
 `;
 
-export const IconClose = styled.div`
+export const Toggler = styled.div`
   position: relative;
   cursor: pointer;
   width: 17.7px;
   height: 3.4px;
   background-color: #4aac8b;
   margin-top: 10px;
-  @media screen and (max-width: 767px) {
-    position:absolute;
-    top:0px;
-    right:0px;
-  }
 `;
 
-export const IconOpen = styled(IconPlus)`
+export const PlusIcon = styled(IconPlus)`
   margin-top: 5px;
-  @media screen and (max-width: 767px) {
-    position:absolute;
-    top:0px;
-    right:0px;
+`;
+
+export const StyledScoreProgress = styled(Progress)`
+  width: 220px;
+  margin-right: 40px;
+  height: 16px;
+  .ant-progress-inner {
+    height: 16px;
+  }
+  .ant-progress-bg {
+    height: 16px !important;
+    background: ${props => (props.percent >= 50 ? '#1fe3a1' : props.percent >= 30 ? '#fdcc3b' : '#ee1658')};
   }
 `;
 

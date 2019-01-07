@@ -87,3 +87,4 @@ export { default as IconGraphVector } from './src/IconGraphVector';
 export { default as IconUndo } from './src/IconUndo';
 export { default as IconRedo } from './src/IconRedo';
 export { default as IconDraw } from './src/IconDraw';
+export { default as IconSend } from './src/IconSend';

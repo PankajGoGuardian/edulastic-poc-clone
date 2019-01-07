@@ -196,8 +196,16 @@ describe('Test Multiple Choice Flow', () => {
     cy.get('[data-cy=close]').click();
 
     // Save Multiple Choice - multiple response
-    cy.contains('SAVE').should('be.visible');
-    cy.contains('SAVE').click();
+    cy.server();
+    cy.route('PUT','**/testitem/**').as('saveItem');
+    cy.route('GET','**/testitem/**').as('reload');
+
+    cy.contains('div','SAVE')
+        .should('be.visible')   
+        .click();
+
+    cy.wait('@saveItem');
+    cy.wait('@reload');
   });
 
   it('Visit Item Detail Page', () => {

@@ -156,12 +156,19 @@ describe('Test Multiple Choice Flow', () => {
   
 
     // Save Multiple Choice - standard
-    cy.contains('SAVE').should('be.visible');
-    cy.contains('SAVE').click();
+    cy.server();
+    cy.route('PUT','**/testitem/**').as('saveItem');
+    cy.route('GET','**/testitem/**').as('reload');
+
+    cy.contains('div','SAVE')
+        .should('be.visible')   
+        .click();
+
+    cy.wait('@saveItem');
+    cy.wait('@reload');
   });
 
   it('Visit Item Detail Page', () => {
-    // cy.visit('/author/items/5c0ad0b2ef0a9d1535686fd1/item-detail');
     // cy.wait(5000); 
     cy.contains('PREVIEW').should('be.visible');
     cy.contains('PREVIEW').click();

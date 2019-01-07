@@ -19,4 +19,24 @@ Each above mentioned part will have a project structure as described below:
 - **sagas**: redux sagas
 - **selectors**: redux selectors
 
-The idea is to follow presentational/container component pattern while developing react component. For reference read [this link](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0)
+The idea is to follow presentational/container component pattern while developing react component. For reference read [this link](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0).
+
+`containers` and `components` can further be aligned into folder based on feature.
+
+Sample Folder structure.
+
+```
+ ├── actions
+ ├── assets
+ ├── components
+ ├── Containers
+     ├── Navbar
+        ├──  Navbar.js
+        ├──  User.js
+ ├──  styled
+ ├──  reducers
+ ├──  sagas
+ ├──  selectors
+ |
+ ├── screens
+```

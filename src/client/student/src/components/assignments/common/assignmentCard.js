@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Row, Col, Icon, Button } from 'antd';
-import { map } from 'lodash';
 
 import { initiateTestActivityAction } from '../../../actions/test';
 
@@ -31,9 +30,9 @@ const AssignmentCard = ({
     setIsAttemptShow(!isAttemptShow);
   };
 
-  const getAttemptsData = (array, id) => {
+  const getAttemptsData = (attempts, id) => {
     const data = [];
-    map(array, (o) => {
+    attempts.forEach((o) => {
       if (o.assignmentId === id) {
         data.push(o);
       }
@@ -43,7 +42,6 @@ const AssignmentCard = ({
 
   const timeConverter = (data) => {
     const a = new Date(data);
-    console.log('A = ', data);
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const year = a.getFullYear();
     const month = months[a.getMonth()];
@@ -93,7 +91,7 @@ const AssignmentCard = ({
           </StatusButton>
         </div>
       </Col>
-      <Col span={15} style={{ display: 'flex', flexDirection: 'column' }}>
+      <FlexCol span={15}>
         <DetailContainer>
           {
             attemptsData.length > 1 && (
@@ -163,7 +161,7 @@ const AssignmentCard = ({
               </AttemptsData>)
             )))
         }
-      </Col>
+      </FlexCol>
     </CardWrapper>
   );
 };
@@ -416,4 +414,9 @@ const RowData = styled.div`
     font-weight: 600 !important;
     color: #9ca0a9;
   }
+`;
+
+const FlexCol = styled(Col)`
+  display: flex;
+  flex-direction: column;
 `;

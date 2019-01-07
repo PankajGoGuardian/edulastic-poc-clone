@@ -26,7 +26,7 @@ const AssignmentSelect = () => (
 const Header = ({ flag }) => (
   <HeaderWrapper flag={flag}>
     <Wrapper>
-      <AssignmentTitle>Assignments</AssignmentTitle>
+      <AssignmentTitle>Dashboard</AssignmentTitle>
       <AssignmentSelect />
     </Wrapper>
   </HeaderWrapper>

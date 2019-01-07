@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Row, Col, Icon } from 'antd';
+import { Row, Col, Icon, Button } from 'antd';
 
 import { initiateTestActivityAction } from '../../../actions/test';
 
@@ -16,6 +16,7 @@ const AssignmentCard = ({
     testId,
     test
   },
+  reports,
   history
 }) => {
   const startTest = () => {
@@ -23,6 +24,29 @@ const AssignmentCard = ({
     history.push(`/student/test/${testId}`);
   };
 
+  const getAttemptsData = (attempts, id) => {
+    const data = [];
+    attempts.forEach((o) => {
+      if (o.assignmentId === id) {
+        data.push(o);
+      }
+    });
+    return data;
+  };
+
+  const timeConverter = (data) => {
+    const a = new Date(data);
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const year = a.getFullYear();
+    const month = months[a.getMonth()];
+    const date = a.getDate();
+    const hour = a.getHours();
+    const min = a.getMinutes();
+    const time = hour > 11 ? `${month} ${date}, ${year} ${hour - 12}:${min} PM` : `${month} ${date}, ${year} ${hour}:${min} AM`;
+    return time;
+  };
+
+  const attemptsData = getAttemptsData(reports, _id);
   return (
     <CardWrapper>
       <Col span={4}>
@@ -30,28 +54,33 @@ const AssignmentCard = ({
           <img src={test && test.thumbnail} alt="" />
         </ImageWrapper>
       </Col>
-      <Col span={15}>
+      <Col span={5} style={{ marginLeft: 15 }}>
         <CardTitle>{test && test.title}</CardTitle>
         <CardDate>
           <Icon
             type="clock-circle"
             theme="outlined"
-            style={{ color: '#ea326b' }}
+            style={{ color: '#ee1658' }}
           />
           <span>
-            <span className="bold"> Due on</span>
-            {endDate}
+            <span className="bold">Due on&nbsp;</span>
+            {timeConverter(endDate)}
           </span>
         </CardDate>
         <div>
-          <StatusButton>NOT STARTED</StatusButton>
+          <StatusButton isSubmitted={attemptsData.length > 0}>
+            <span>{attemptsData.length > 0 ? 'SUBMITTED' : 'NOT STARTED'}</span>
+          </StatusButton>
         </div>
       </Col>
-      <Col span={5}>
-        <StartAssignButton onClick={startTest}>
-          START ASSIGNMENT
-        </StartAssignButton>
-      </Col>
+      <FlexCol span={15}>
+        <DetailContainer>
+          <StartAssignButton onClick={startTest}>
+            { attemptsData.length === 0 && <span>START ASSIGNMENT</span> }
+            { attemptsData.length > 0 && <span>RETAKE</span> }
+          </StartAssignButton>
+        </DetailContainer>
+      </FlexCol>
     </CardWrapper>
   );
 };
@@ -65,13 +94,17 @@ export default withRouter(connect(
 
 AssignmentCard.propTypes = {
   data: PropTypes.object.isRequired,
+  reports: PropTypes.array,
   initiateTestActivity: PropTypes.func.isRequired,
   history: PropTypes.func.isRequired
 };
 
+AssignmentCard.defaultProps = {
+  reports: []
+};
+
 const CardWrapper = styled(Row)`
   display: flex;
-  align-items: center;
   padding-bottom: 27.8px;
   padding-top: 27.8px;
   border-bottom: 1px solid #f2f2f2;
@@ -82,7 +115,7 @@ const CardWrapper = styled(Row)`
     max-width: 168.5px;
     border-radius: 10px;
     width: 100%;
-    height: 70px;
+    height: 90px;
   }
   @media screen and (max-width: 767px) {
     display: block;
@@ -138,6 +171,7 @@ const CardTitle = styled.div`
 `;
 
 const CardDate = styled.div`
+  display: flex;
   font-family: Open Sans;
   font-size: 13px;
   font-weight: normal;
@@ -147,11 +181,18 @@ const CardDate = styled.div`
   letter-spacing: normal;
   text-align: left;
   color: #444444;
-  padding-bottom: 6px;
+  padding-bottom: 8px;
 
   .bold {
     font-weight: 600;
     padding-left: 10px;
+  }
+
+  .anticon-clock-circle {
+    svg {
+      width: 17px;
+      height: 17px;
+    }
   }
 
   @media screen and (max-width: 767px) {
@@ -162,21 +203,23 @@ const CardDate = styled.div`
   }
 `;
 
-const StatusButton = styled.button`
-  width: 107.4px;
+const StatusButton = styled.div`
+  width: 135px;
   height: 23.5px;
   border-radius: 5px;
-  border: solid 1px #b1b1b1;
-  font-family: Open Sans;
-  font-size: 8px;
+  background-color: ${props => (props.isSubmitted ? 'rgba(154, 0, 255, 0.2)' : 'rgba(0, 176, 255, 0.2)')};
+  font-size: 10px;
   font-weight: bold;
-  font-style: normal;
-  font-stretch: normal;
   line-height: 1.38;
-  letter-spacing: 0.1px;
+  letter-spacing: 0.2px;
   text-align: center;
-  color: #878282;
   padding: 6px 24px;
+
+  span {
+    position: relative;
+    top: -1px;
+    color: ${props => (props.isSubmitted ? '#7d43a4' : '#0083be')};
+  }
 
   @media screen and (max-width: 767px) {
     width: auto;
@@ -186,39 +229,33 @@ const StatusButton = styled.button`
   }
 `;
 
-const StartAssignButton = styled.button`
-  max-width: 199.7px;
-  height: 50px;
-  border-radius: 65px;
-  font-family: Open Sans;
-  font-size: 12px;
-  font-weight: 600;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.42;
-  letter-spacing: 0.2px;
-  text-align: center;
+const StartAssignButton = styled(Button)`
+  max-width: 200px;
+  height: 40px;
+  margin-left: 15px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
   border: solid 1px #12a6e8;
-  color: #00b0ff;
   width: 100%;
   padding: 5px 20px;
   cursor: pointer;
   float: right;
-  &.selected {
-    background-color: #00b0ff;
-    color: #ffffff;
+
+  span {
+    color: #00b0ff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
   }
-  :hover {
-    background: #0288d1;
-    color: #ffffff;
-  }
-  &.selected:hover {
-    background: #1fb6e3;
-    border-color: #1fb6e3;
+
+  &:hover {
+    background-color: #12a6e8;
+    span {
+      color: #ffffff;
+    }
   }
 
   @media screen and (max-width: 767px) {
@@ -228,4 +265,16 @@ const StartAssignButton = styled.button`
     float: unset;
     margin-top: 15px;
   }
+`;
+
+const DetailContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 13px;
+`;
+
+const FlexCol = styled(Col)`
+  display: flex;
+  flex-direction: column;
 `;

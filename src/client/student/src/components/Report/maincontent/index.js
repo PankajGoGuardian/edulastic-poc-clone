@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Button, Row, Col } from 'antd';
 import PropTypes from 'prop-types';
-import { uniqBy, map } from 'lodash';
+import { uniqBy } from 'lodash';
 import { IconClockCircularOutline } from '@edulastic/icons';
 import AssignmentsContent from '../../commonStyle/assignmentContent';
 import { fetchReportAction } from '../../../actions/report';
@@ -26,9 +26,9 @@ const Report = ({ _id, score, totalQuestion, createdAt, correctAnswers, assignme
     return time;
   };
 
-  const getAttemptsData = (array, id) => {
+  const getAttemptsData = (attempts, id) => {
     const data = [];
-    map(array, (o) => {
+    attempts.forEach((o) => {
       if (o.assignmentId === id) {
         data.push(o);
       }

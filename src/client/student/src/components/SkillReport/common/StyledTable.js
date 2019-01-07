@@ -6,6 +6,10 @@ const StyledTable = styled(Table)`
   .ant-table table {
     border-collapse: separate;
     border-spacing: 0px 10px;
+    @media screen and (max-width: 767px) {
+      display:block;
+      overflow-x: auto;
+    }
   }
 
   .ant-table-thead > tr > th {
@@ -13,6 +17,9 @@ const StyledTable = styled(Table)`
     font-size: 13px;
     font-weight: 600;
     color: ${secondaryTextColor};
+    @media screen and (max-width: 767px) {
+      word-break:unset;
+    }    
   }
 
   .ant-table-row {
@@ -22,6 +29,9 @@ const StyledTable = styled(Table)`
       background: ${white} !important;
       border-top: 1px solid #f8f8f8;
       border-bottom: 1px solid #f8f8f8;
+      @media screen and (max-width: 767px) {
+        word-break:unset;
+      }   
     }
 
     td:first-child {

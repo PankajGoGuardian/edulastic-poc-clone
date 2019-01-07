@@ -6,9 +6,8 @@ const AssignmentContentWrapper = styled.div`
   padding: 0px 40px;
   background: #fff;
   margin-bottom: 1rem;
-  @media (min-width: 945px) {
-  }
-  @media (max-width: 945px) {
+  @media screen and (max-width: 767px) {
+    padding: 0px 15px;
   }
 `;
 

@@ -64,20 +64,19 @@ class DomainDetail extends Component {
       <AssignmentContentWrapper
         style={{ paddingTop: 32, paddingBottom: 32 }}
       >
-        <Title onClick={() => this.handlerTable()}>
+        <Title onClick={this.handlerTable}>
           <RelationTitle>
             {summary.domain}
           </RelationTitle>
           <StyledProgress percent={Math.round(score / maxScore * 100)} style={{ width: 220, marginRight: 40 }} />
-          { !isShow && <PlusIcon color={greenDark} />}
-          { isShow && <Toggler />}
+          {isShow ? <IconClose /> : <IconOpen color={greenDark} />}
         </Title>
         {
           isShow && (
-          <StyledTable
-            columns={summaryColumns}
-            dataSource={sumData}
-          />)
+            <StyledTable
+              columns={summaryColumns}
+              dataSource={sumData}
+            />)
         }
       </AssignmentContentWrapper>
     );
@@ -94,6 +93,10 @@ export default DomainDetail;
 const Title = styled.div`
   display: flex;
   cursor: pointer;
+  @media screen and (max-width: 767px) {
+    flex-direction: column;
+    position:relative;
+  }
 `;
 
 const RelationTitle = styled.div`
@@ -103,6 +106,9 @@ const RelationTitle = styled.div`
   letter-spacing: 0.3px;
   color: #434b5d;
   margin-bottom: 24px;
+  @media screen and (max-width: 767px) {
+    width: 90%;
+  }
 `;
 
 const GradeTag = styled.div`
@@ -118,17 +124,27 @@ const GradeTag = styled.div`
   align-items: center;
 `;
 
-export const Toggler = styled.div`
+export const IconClose = styled.div`
   position: relative;
   cursor: pointer;
   width: 17.7px;
   height: 3.4px;
   background-color: #4aac8b;
   margin-top: 10px;
+  @media screen and (max-width: 767px) {
+    position:absolute;
+    top:0px;
+    right:0px;
+  }
 `;
 
-export const PlusIcon = styled(IconPlus)`
+export const IconOpen = styled(IconPlus)`
   margin-top: 5px;
+  @media screen and (max-width: 767px) {
+    position:absolute;
+    top:0px;
+    right:0px;
+  }
 `;
 
 export const StyledProgress = styled(Progress)`

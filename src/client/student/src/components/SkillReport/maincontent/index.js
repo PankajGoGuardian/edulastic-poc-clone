@@ -89,6 +89,9 @@ export default SkillReportMainContent;
 
 const SkillReportContainer = styled.div`
   padding: 30px 50px;
+  @media screen and (max-width: 767px) {
+    padding: 16px 26px;
+  }
 `;
 
 const SummaryTitle = styled.div`

@@ -34,6 +34,13 @@
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.js"></script>
       <script type="text/javascript" src="assets/index.js"></script>
+      <script src="https://cdn.ravenjs.com/3.26.2/raven.min.js" crossorigin="anonymous">
+      </script>
+      <script>
+            Raven.config('http://8a02eaf36de84240a77c0dd7aaa6bdfe@ec2-107-22-35-151.compute-1.amazonaws.com/2', {
+                  whitelistUrls: [/edulastic-poc\.snapwiz\.net/]
+            }).install()
+      </script>
 </body>
 
 </html>

@@ -76,13 +76,12 @@ const AssignmentCard = ({
         <CardDetails>
           <CardTitle>{test && test.title}</CardTitle>
           <CardDate>
-            <Icon
+            <ClockIcon
               type="clock-circle"
               theme="outlined"
-              style={{ color: '#ee1658' }}
             />
             <span>
-              <span className="bold">Due on&nbsp;</span>
+              <StrongText>Due on&nbsp;</StrongText>
               {timeConverter(endDate)}
             </span>
           </CardDate>
@@ -93,7 +92,7 @@ const AssignmentCard = ({
           </div>
         </CardDetails>
       </AssessmentDetails>
-      <Col span={15} className="ButtonAndDetail">
+      <ButtonAndDetail>
         <DetailContainer>
           <AttemptDetails>
             {
@@ -157,15 +156,15 @@ const AssignmentCard = ({
                     <AnswerAndScore>
                       <span>{data.score ? data.score : 0}%</span>
                     </AnswerAndScore>
-                    <div style={{ width: 15 }} />
-                    <AnswerAndScore className="AnswerAndScoreReview">
-                      <span style={{ color: '#00b0ff', cursor: 'pointer' }}>REVIEW</span>
-                    </AnswerAndScore>
+                    <SpaceBetween />
+                    <AnswerAndScoreReview>
+                      <span>REVIEW</span>
+                    </AnswerAndScoreReview>
                   </RowData>
                 </AttemptsData>)
             )))
         }
-      </Col>
+      </ButtonAndDetail>
     </CardWrapper>
   );
 };
@@ -217,6 +216,17 @@ const CardWrapper = styled(Row)`
     flex-direction: column;
   }
 `;
+const ButtonAndDetail = styled(Col)`
+  display: flex;
+  flex-direction: column;
+  width:62%;
+  @media screen and (min-width: 1025px) {
+    margin-left:auto;
+  }   
+  @media screen and (max-width: 767px) {
+    width: 100%;
+  }
+`;
 
 const AssessmentDetails = styled(Col)`
     display: flex;
@@ -242,11 +252,11 @@ const ImageWrapper = styled.div`
 `;
 
 const CardDetails = styled(Col)`
-@media screen and (max-width: 767px) {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-}
+  @media screen and (max-width: 767px) {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
 `;
 
 const CardTitle = styled.div`
@@ -274,16 +284,20 @@ const CardDate = styled.div`
   text-align: left;
   color: #444444;
   padding-bottom: 8px;
-  .bold {
-    font-weight: 600;
-    padding-left: 10px;
-  }
   .anticon-clock-circle {
     svg {
       width: 17px;
       height: 17px;
     }
   }
+`;
+
+const ClockIcon = styled(Icon)`
+  color: #ee1658;
+`;
+const StrongText = styled.span`
+  font-weight: 600;
+  padding-left: 10px;
 `;
 
 const StatusButton = styled.div`
@@ -357,15 +371,25 @@ const AnswerAndScore = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  &.AnswerAndScoreReview{
-    @media screen and (min-width: 769px) {
-      width:200px;
-    }
-  }
   span {
     font-size: 31px;
     font-weight: bold;
     color: #434b5d;
+  }
+  @media screen and (max-width: 767px) {
+    width:33%;
+  }
+`;
+const SpaceBetween = styled.div`
+  width:10px;
+`;
+const AnswerAndScoreReview = styled(AnswerAndScore)`
+  span{
+    color: #00b0ff;
+    cursor: pointer;
+  }
+  @media screen and (min-width: 769px) {
+    width:200px;
   }
   @media screen and (max-width: 767px) {
     width:33%;

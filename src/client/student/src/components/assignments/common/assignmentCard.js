@@ -67,101 +67,105 @@ const AssignmentCard = ({
   const attemptsData = getAttemptsData(reports, _id);
   return (
     <CardWrapper>
-      <Col span={4}>
-        <ImageWrapper>
-          <img src={test && test.thumbnail} alt="" />
-        </ImageWrapper>
-      </Col>
-      <Col span={5} style={{ marginLeft: 15 }}>
-        <CardTitle>{test && test.title}</CardTitle>
-        <CardDate>
-          <Icon
-            type="clock-circle"
-            theme="outlined"
-            style={{ color: '#ee1658' }}
-          />
-          <span>
-            <span className="bold">Due on&nbsp;</span>
-            {timeConverter(endDate)}
-          </span>
-        </CardDate>
-        <div>
-          <StatusButton isSubmitted={attemptsData.length > 0}>
-            <span>{attemptsData.length > 0 ? 'SUBMITTED' : 'NOT STARTED'}</span>
-          </StatusButton>
-        </div>
-      </Col>
-      <FlexCol span={15}>
+      <AssessmentDetails>
+        <Col>
+          <ImageWrapper>
+            <img src={test && test.thumbnail} alt="" />
+          </ImageWrapper>
+        </Col>
+        <CardDetails>
+          <CardTitle>{test && test.title}</CardTitle>
+          <CardDate>
+            <Icon
+              type="clock-circle"
+              theme="outlined"
+              style={{ color: '#ee1658' }}
+            />
+            <span>
+              <span className="bold">Due on&nbsp;</span>
+              {timeConverter(endDate)}
+            </span>
+          </CardDate>
+          <div>
+            <StatusButton isSubmitted={attemptsData.length > 0}>
+              <span>{attemptsData.length > 0 ? 'SUBMITTED' : 'NOT STARTED'}</span>
+            </StatusButton>
+          </div>
+        </CardDetails>
+      </AssessmentDetails>
+      <Col span={15} className="ButtonAndDetail">
         <DetailContainer>
-          {
-            attemptsData.length > 1 && (
-            <Attempts onClick={attemptHandler}>
-              <span>{attemptsData.length - 1}/{attemptsData.length}</span>
-              {
-                isAttemptShow && (
-                  <AttemptsTitle>
-                    &#x2193;
-                    &nbsp;&nbsp;Attempts
-                  </AttemptsTitle>
-                )
-              }
-              {
-                !isAttemptShow && (
-                  <AttemptsTitle>
-                    &#x2191;
-                    &nbsp;&nbsp;Attempts
-                  </AttemptsTitle>
-                )
-              }
-            </Attempts>)
-          }
-          {
-            attemptsData.length > 0 && (
-              <AnswerAndScore>
-                <span>
-                  {attemptsData[0].correctAnswers ? attemptsData[0].correctAnswers : 0}/{attemptsData[0].totalQuestion ? attemptsData[0].totalQuestion : 0}
-                </span>
-                <Title>Correct Answer</Title>
-              </AnswerAndScore>
-            )
-          }
-          {
-            attemptsData.length > 0 && (
-              <AnswerAndScore>
-                <span>{attemptsData[0].score ? attemptsData[0].score : 0}%</span>
-                <Title>Score</Title>
-              </AnswerAndScore>
-            )
-          }
+          <AttemptDetails>
+            {
+              attemptsData.length > 1 && (
+                <Attempts onClick={attemptHandler}>
+                  <span>{attemptsData.length - 1}/{attemptsData.length}</span>
+                  {
+                    isAttemptShow && (
+                      <AttemptsTitle>
+                        &#x2193;
+                        &nbsp;&nbsp;Attempts
+                      </AttemptsTitle>
+                    )
+                  }
+                  {
+                    !isAttemptShow && (
+                      <AttemptsTitle>
+                        &#x2191;
+                        &nbsp;&nbsp;Attempts
+                      </AttemptsTitle>
+                    )
+                  }
+                </Attempts>)
+            }
+            {
+              attemptsData.length > 0 && (
+                <AnswerAndScore>
+                  <span>
+                    {attemptsData[0].correctAnswers ? attemptsData[0].correctAnswers : 0}/{attemptsData[0].totalQuestion ? attemptsData[0].totalQuestion : 0}
+                  </span>
+                  <Title>Correct Answer</Title>
+                </AnswerAndScore>
+              )
+            }
+            {
+              attemptsData.length > 0 && (
+                <AnswerAndScore>
+                  <span>{attemptsData[0].score ? attemptsData[0].score : 0}%</span>
+                  <Title>Score</Title>
+                </AnswerAndScore>
+              )
+            }
+          </AttemptDetails>
           <StartAssignButton onClick={startTest}>
-            { attemptsData.length === 0 && <span>START ASSIGNMENT</span> }
-            { attemptsData.length > 0 && <span>RETAKE</span> }
+            {attemptsData.length === 0 && <span>START ASSIGNMENT</span>}
+            {attemptsData.length > 0 && <span>RETAKE</span>}
           </StartAssignButton>
         </DetailContainer>
         {
           isAttemptShow && (
             attemptsData.map((data, index) => (
               index !== 0 && (
-              <AttemptsData key={index}>
-                <RowData>
-                  <Attempts>
-                    <span>{UnixConverter(data.createdAt / 1000)}</span>
-                  </Attempts>
-                  <AnswerAndScore>
-                    <span>{data.correctAnswers ? data.correctAnswers : 0}/{data.totalQuestion ? data.totalQuestion : 0}</span>
-                  </AnswerAndScore>
-                  <AnswerAndScore>
-                    <span>{data.score ? data.score : 0}%</span>
-                  </AnswerAndScore>
-                  <div style={{ width: 15 }} />
-                  <AnswerAndScore style={{ width: 200 }}>
-                    <span style={{ color: '#00b0ff', cursor: 'pointer' }}>REVIEW</span>
-                  </AnswerAndScore>
-                </RowData>
-              </AttemptsData>)
+                <AttemptsData key={index}>
+                  <RowData>
+                    <Attempts>
+                      <span>{UnixConverter(data.createdAt / 1000)}</span>
+                    </Attempts>
+                    <AnswerAndScore>
+                      <span>{data.correctAnswers ? data.correctAnswers : 0}/{data.totalQuestion ? data.totalQuestion : 0}</span>
+                    </AnswerAndScore>
+                    <AnswerAndScore>
+                      <span>{data.score ? data.score : 0}%</span>
+                    </AnswerAndScore>
+                    <div style={{ width: 15 }} />
+                    <AnswerAndScore className="AnswerAndScoreReview">
+                      <span style={{ color: '#00b0ff', cursor: 'pointer' }}>REVIEW</span>
+                    </AnswerAndScore>
+                  </RowData>
+                </AttemptsData>)
             )))
         }
-      </FlexCol>
+      </Col>
     </CardWrapper>
   );
 };
@@ -186,34 +190,40 @@ AssignmentCard.defaultProps = {
 
 const CardWrapper = styled(Row)`
   display: flex;
-  padding-bottom: 27.8px;
-  padding-top: 27.8px;
+  padding: 27.8px 0;
   border-bottom: 1px solid #f2f2f2;
   &:last-child {
     border-bottom: 0px;
+  }
+  .ButtonAndDetail{
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    @media screen and (min-width: 1025px) {
+      width: 72%;
+      margin-left:auto;
+    }   
+    @media screen and (max-width: 767px) {
+      width: 100%;
+    }
   }
   img {
     max-width: 168.5px;
     border-radius: 10px;
     width: 100%;
-    height: 90px;
+    height: 80px;
   }
   @media screen and (max-width: 767px) {
-    display: block;
-    text-align: center;
-
-    & > div {
-      width: 100%;
-    }
-    img {
-      max-width: 100%;
-      width: 100%;
-    }
-    .ant-col-14 {
-      width: 100%;
-      margin: 25px 0px;
-    }
+    flex-direction: column;
   }
+`;
+
+const AssessmentDetails = styled(Col)`
+    display: flex;
+    flex-direction: row;
+    @media screen and (max-width: 767px) {
+      flex-direction: column;
+    }
 `;
 
 const ImageWrapper = styled.div`
@@ -222,15 +232,21 @@ const ImageWrapper = styled.div`
   overflow: hidden;
   border-radius: 10px;
   margin-right: 20px;
-
   @media screen and (max-width: 767px) {
     max-width: 100%;
-    margin-right: 0px;
-    max-height: 180px;
+    margin: 0;
+    img{
+      max-width: 100%;
+    }
   }
-  @media screen and (max-width: 500px) {
-    max-height: 90.5px;
-  }
+`;
+
+const CardDetails = styled(Col)`
+@media screen and (max-width: 767px) {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
 `;
 
 const CardTitle = styled.div`
@@ -244,11 +260,6 @@ const CardTitle = styled.div`
   text-align: left;
   color: #12a6e8;
   padding-bottom: 6px;
-
-  @media screen and (max-width: 767px) {
-    text-align: center;
-    margin-top: 6px;
-  }
 `;
 
 const CardDate = styled.div`
@@ -263,24 +274,15 @@ const CardDate = styled.div`
   text-align: left;
   color: #444444;
   padding-bottom: 8px;
-
   .bold {
     font-weight: 600;
     padding-left: 10px;
   }
-
   .anticon-clock-circle {
     svg {
       width: 17px;
       height: 17px;
     }
-  }
-
-  @media screen and (max-width: 767px) {
-    font-size: 14px;
-    line-height: 1.4;
-    text-align: center;
-    margin-top: 6px;
   }
 `;
 
@@ -295,25 +297,26 @@ const StatusButton = styled.div`
   letter-spacing: 0.2px;
   text-align: center;
   padding: 6px 24px;
-
   span {
     position: relative;
     top: -1px;
     color: ${props => (props.isSubmitted ? '#7d43a4' : '#0083be')};
   }
-
   @media screen and (max-width: 767px) {
-    width: auto;
-    display: inline-block;
-    margin-top: 10px;
-    font-size: 10px;
+     width: 100%;
+  }
+`;
+
+const AttemptDetails = styled(Col)`
+  display: flex;
+  @media screen and (max-width: 768px) {
+    width: 100%;
   }
 `;
 
 const StartAssignButton = styled(Button)`
   max-width: 200px;
   height: 40px;
-  margin-left: 15px;
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -324,39 +327,28 @@ const StartAssignButton = styled(Button)`
   padding: 5px 20px;
   cursor: pointer;
   float: right;
-
+  margin: 10px 15px 0 10px;
   span {
     color: #00b0ff;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.2px;
   }
-
   &:hover {
     background-color: #12a6e8;
     span {
       color: #ffffff;
     }
   }
-
-  @media screen and (max-width: 767px) {
-    font-size: 14px;
-    line-height: 1.4;
-    margin: 0 auto;
-    float: unset;
-    margin-top: 15px;
+  @media screen and (min-width: 1025px) {
+    margin-right:0px;
   }
-`;
-
-const Attempts = styled.div`
-  width: 135px;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  span {
-    font-size: 31px;
-    font-weight: bold;
-    color: #434b5d;
+  @media screen and (max-width: 768px) {
+    max-width: 80%;
+    margin: 10px 0 0;
+  }
+  @media screen and (max-width: 767px) {
+    max-width: 100%;
   }
 `;
 
@@ -365,18 +357,30 @@ const AnswerAndScore = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
+  &.AnswerAndScoreReview{
+    @media screen and (min-width: 769px) {
+      width:200px;
+    }
+  }
   span {
     font-size: 31px;
     font-weight: bold;
     color: #434b5d;
   }
+  @media screen and (max-width: 767px) {
+    width:33%;
+  }
 `;
+
+const Attempts = AnswerAndScore;
 
 const DetailContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-bottom: 13px;
+  @media screen and (max-width: 1024px) {
+    flex-direction: column;
+  }
 `;
 
 const AttemptsTitle = styled.div`
@@ -408,15 +412,13 @@ const RowData = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    @media screen and (max-width: 767px){
+      justify-content: flex-start;
+    }
   }
   span {
     font-size: 12px !important;
     font-weight: 600 !important;
     color: #9ca0a9;
   }
-`;
-
-const FlexCol = styled(Col)`
-  display: flex;
-  flex-direction: column;
 `;

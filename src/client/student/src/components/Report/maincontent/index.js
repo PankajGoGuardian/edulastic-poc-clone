@@ -2,17 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Button, Row, Col } from 'antd';
+import { Icon, Row, Col } from 'antd';
 import PropTypes from 'prop-types';
 import { uniqBy } from 'lodash';
-import { IconClockCircularOutline } from '@edulastic/icons';
 import AssignmentsContent from '../../commonStyle/assignmentContent';
 import { fetchReportAction } from '../../../actions/report';
 import { loadAssignmentsAction } from '../../../actions/dashboard';
 
 import AssignmentContentWrapper from '../../commonStyle/assignmentContentWrapper';
 
-const Report = ({ _id, score, totalQuestion, createdAt, correctAnswers, assignmentId, reports, assignments }) => {
+const Report = ({ _id,
+  score,
+  totalQuestion,
+  createdAt,
+  correctAnswers,
+  assignmentId,
+  reports,
+  assignments
+}) => {
   const [isAttemptShow, setIsAttemptShow] = useState(false);
   const timeConverter = (UNIX_timestamp) => {
     const a = new Date(UNIX_timestamp * 1000);
@@ -40,108 +47,108 @@ const Report = ({ _id, score, totalQuestion, createdAt, correctAnswers, assignme
     setIsAttemptShow(!isAttemptShow);
   };
 
-  const getTestDetail = () => {
-    let title;
-    let thumbnail;
-    assignments.map((assignment) => {
-      if (assignment._id === assignmentId) {
-        title = assignment.test.title;
-        thumbnail = assignment.test.thumbnail;
-      }
-    });
-    return { title, thumbnail };
-  };
+  let title;
+  let thumbnail;
+  assignments.forEach((assignment) => {
+    if (assignment._id === assignmentId) {
+      title = assignment.test && assignment.test.title;
+      thumbnail = assignment.test && assignment.test.thumbnail;
+    }
+  });
 
   return (
-    <Wrapper>
-      <Col span={4}>
-        <ImageWrapper>
-          <img src={getTestDetail().thumbnail} alt="" />
-        </ImageWrapper>
-      </Col>
-      <Col span={5} style={{ marginLeft: 15 }}>
-        <AssignmentSummary>
-          <AssignmentSubject>{getTestDetail().title}</AssignmentSubject>
-          <AssignmentDuedate>
-            <Icon color="#ee1658" />
-            <DueText>
+    <CardWrapper>
+      <AssessmentDetails>
+        <Col>
+          <ImageWrapper>
+            <img src={thumbnail} alt="" />
+          </ImageWrapper>
+        </Col>
+        <CardDetails>
+          <CardTitle>{title}</CardTitle>
+          <CardDate>
+            <Icon
+              type="clock-circle"
+              theme="outlined"
+              style={{ color: '#ee1658' }}
+            />
+            <span>
               <StrongText>Finished in&nbsp;</StrongText>
               {timeConverter(createdAt / 1000)}
-            </DueText>
-          </AssignmentDuedate>
-        </AssignmentSummary>
-      </Col>
-      <Col span={15}>
+            </span>
+          </CardDate>
+        </CardDetails>
+      </AssessmentDetails>
+      <ButtonAndDetail>
         <DetailContainer>
-          <Detail>
+          <AttemptDetails>
             {
               getAttemptsData(reports, assignmentId).length > 1 && (
-                <div style={{ width: 150 }}>
-                  <CorrectAns>
+                <Attempts>
+                  <span>
                     {getAttemptsData(reports, assignmentId).length - 1}/{getAttemptsData(reports, assignmentId).length}
-                  </CorrectAns>
+                  </span>
                   {
                     isAttemptShow && (
-                      <AttemptText onClick={attemptHandler}>
+                      <AttemptsTitle onClick={attemptHandler}>
                         &#x2193;&nbsp;&nbsp;Attempts
-                      </AttemptText>
+                      </AttemptsTitle>
                     )
                   }
                   {
                     !isAttemptShow && (
-                      <AttemptText onClick={attemptHandler}>
+                      <AttemptsTitle onClick={attemptHandler}>
                         &#x2191;&nbsp;&nbsp;Attempts
-                      </AttemptText>
+                      </AttemptsTitle>
                     )
                   }
-                </div>
+                </Attempts>
               )
             }
-            <div style={{ width: 130 }}>
-              <CorrectAns>
+            <AnswerAndScore>
+              <span>
                 {correctAnswers}/{totalQuestion}
-              </CorrectAns>
-              <CorrectText>Correct Answer</CorrectText>
-            </div>
-            <div style={{ width: 130 }}>
-              <CorrectAns>{score}</CorrectAns>
-              <CorrectText>Score</CorrectText>
-            </div>
-            <StartAssignmentBtn>
-              <Link to={{ pathname: '/home/report/list', testActivityId: _id }}>
-                <ReviewButton>
-                  <span className="review">REVIEW</span>
-                  <span className="retake">RETAKE</span>
-                </ReviewButton>
-              </Link>
-            </StartAssignmentBtn>
-          </Detail>
-          {
-            isAttemptShow && (
-              getAttemptsData(reports, assignmentId).map((report, index) => (
-                index !== 0 && (
-                <AttemptContainer key={index}>
-                  <AttemptTag style={{ width: 150, borderTopLeftRadius: 4, borderBottomLeftRadius: 4 }}>
-                    {timeConverter(report.createdAt / 1000)}
-                  </AttemptTag>
-                  <AttemptTag style={{ fontSize: 16, fontWeight: 600 }}>
-                    {report.correctAnswers ? report.correctAnswers : 0}/{report.totalQuestion ? report.totalQuestion : 0}
-                  </AttemptTag>
-                  <AttemptTag style={{ fontSize: 16, fontWeight: 600 }}>
-                    {report.score ? report.score : 0}
-                  </AttemptTag>
-                  <Link to={{ pathname: '/home/report/list', testActivityId: report._id }}>
-                    <ReviewTag style={{ borderTopRightRadius: 4, borderBottomRightRadius: 4 }}>
-                      REVIEW
-                    </ReviewTag>
-                  </Link>
-                </AttemptContainer>)
-              ))
-            )
-          }
+              </span>
+              <Title>Correct Answer</Title>
+            </AnswerAndScore>
+            <AnswerAndScore>
+              <span>{score}</span>
+              <Title>Score</Title>
+            </AnswerAndScore>
+          </AttemptDetails>
+          <StartAssignButton to={{ pathname: '/home/report/list', testActivityId: _id }}>
+            <span>REVIEW</span>
+          </StartAssignButton>
+
         </DetailContainer>
-      </Col>
-    </Wrapper>
+        {
+          isAttemptShow && (
+            getAttemptsData(reports, assignmentId).map((report, index) => (
+              index !== 0 && (
+                <AttemptsData key={index}>
+                  <RowData>
+                    <Attempts>
+                      <span>{timeConverter(report.createdAt / 1000)}</span>
+                    </Attempts>
+                    <AnswerAndScore>
+                      <span>{report.correctAnswers ? report.correctAnswers : 0}/{report.totalQuestion ? report.totalQuestion : 0}</span>
+                    </AnswerAndScore>
+                    <AnswerAndScore>
+                      <span>{report.score ? report.score : 0}</span>
+                    </AnswerAndScore>
+                    <AnswerAndScoreReviewBtn>
+                      <Link to={{ pathname: '/home/report/list', testActivityId: report._id }}>
+                        <span style={{ color: '#00b0ff', cursor: 'pointer' }}>REVIEW</span>
+                      </Link>
+                    </AnswerAndScoreReviewBtn>
+                  </RowData>
+                </AttemptsData>)
+            ))
+          )
+        }
+
+      </ButtonAndDetail>
+    </CardWrapper>
   );
 };
 
@@ -173,7 +180,7 @@ const ReportContent = ({ flag, fetchReports, reports, loadAssignments, assignmen
     fetchReports();
   }, []);
   return (
-    <AssignmentsContent style={{ zIndex: 1 }} flag={flag}>
+    <AssignmentsContent flag={flag}>
       <AssignmentContentWrapper>
         {uniqBy(reports, 'assignmentId').map((report, index) => (
           <Report key={index} {...report} reports={reports} assignments={assignments} />
@@ -201,171 +208,42 @@ ReportContent.propTypes = {
   assignments: PropTypes.array.isRequired
 };
 
-const CorrectAns = styled.p`
-   {
-    margin: 0rem;
-    font-weight: bold;
-    font-size: 31px;
-    text-align: center;
-    color: #434b5d;
-  }
-`;
-const CorrectText = styled.p`
-  margin: 0rem;
-  text-align: center;
-  color: #434b5;
-  font-size: 12px;
-  font-weight: 600;
-`;
 
-const AttemptText = styled.p`
-  font-size: 12px;
-  font-weight: 600;
-  color: #12a6e8;
-  text-align: center;
-  cursor: pointer;
-`;
-
-const Wrapper = styled(Row)`
-  width: 100%;
+const CardWrapper = styled(Row)`
   display: flex;
-  padding: 30px 0px;
-  padding-right: 20px;
+  padding: 27.8px 0;
   border-bottom: 1px solid #f2f2f2;
-  justify-content: space-between;
-  @media (max-width: 900px) {
-    display: flex;
-    align-items: center;
+  &:last-child {
+    border-bottom: 0px;
+  }
+  img {
+    max-width: 168.5px;
+    border-radius: 10px;
+    width: 100%;
+    height: 80px;
+  }
+  @media screen and (max-width: 767px) {
     flex-direction: column;
   }
-  &:nth-last-of-type(1) {
-    border-bottom: none;
-  }
 `;
-
-const AssignmentSummary = styled.div`
-  float: left;
-
-  @media (min-width: 1024px) {
-    width: 30rem;
-  }
-  @media (max-width: 900px) {
-    text-align: center;
-  }
-`;
-
-const AssignmentSubject = styled.p`
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-  color: #12a6e8;
-  font-size: 1.1rem;
-  font-weight: 700;
-  & span {
-  }
-`;
-
-const AssignmentDuedate = styled.p`
+const ButtonAndDetail = styled(Col)`
   display: flex;
-  align-items: center;
-  margin-top: 0rem;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  @media (max-width: 900px) {
-    margin-bottom: 1.2rem;
-  }
-`;
-
-const DueText = styled.span`
-  vertical-align: middle;
-  font-size: 13px;
-  color: #444444;
-`;
-
-const StrongText = styled.span`
-  font-weight: 600;
-`;
-
-const Icon = styled(IconClockCircularOutline)`
-  margin-right: 0.5rem;
-  vertical-align: middle;
-`;
-
-const StartAssignmentBtn = styled.div`
-  width: 12.3rem;
-  text-align: center;
-  @media (max-width: 900px) {
-    width: 19rem;
-    margin-top: 1rem;
-  }
-  @media (max-width: 380px) {
+  flex-direction: column;
+  width:62%;
+  @media screen and (min-width: 1025px) {
+    margin-left:auto;
+  }   
+  @media screen and (max-width: 767px) {
     width: 100%;
   }
 `;
 
-const ReviewButton = styled(Button)`
-  width: 200px;
-  height: 40px;
-  border-radius: 4px;
-  border: 1px solid #12a6e8;
-  span {
-    color: #12a6e8;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
-  }
-
-  .retake { display: none; }
-
-  &:hover {
-    background: #12a6e8;
-    span {
-      color: #ffffff;
+const AssessmentDetails = styled(Col)`
+    display: flex;
+    flex-direction: row;
+    @media screen and (max-width: 767px) {
+      flex-direction: column;
     }
-    .review { display: none; }
-    .retake { display: inline; }
-  }
-`;
-
-const DetailContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const Detail = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-  justify-content: flex-end;
-`;
-
-const AttemptContainer = styled.div`
-  display: flex;
-  margin-bottom: 7px;
-  justify-content: flex-end;
-`;
-
-const AttemptTag = styled.div`
-  width: 130px;
-  height: 30px;
-  font-size: 12px;
-  color: #9ca0a9;
-  background: #f8f8f8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const ReviewTag = styled.div`
-  width: 200px;
-  height: 30px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-  color: #00b0ff;
-  background: #f8f8f8;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 const ImageWrapper = styled.div`
@@ -374,20 +252,176 @@ const ImageWrapper = styled.div`
   overflow: hidden;
   border-radius: 10px;
   margin-right: 20px;
-
-  img {
-    max-width: 168.5px;
-    border-radius: 10px;
-    width: 100%;
-    height: 90px;
-  }
-
   @media screen and (max-width: 767px) {
     max-width: 100%;
-    margin-right: 0px;
-    max-height: 180px;
+    margin: 0;
+    img{
+      max-width: 100%;
+    }
   }
-  @media screen and (max-width: 500px) {
-    max-height: 90.5px;
+`;
+
+const CardDetails = styled(Col)`
+  @media screen and (max-width: 767px) {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 0px;
+  }
+`;
+
+const CardTitle = styled.div`
+  font-family: Open Sans;
+  font-size: 16px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.38;
+  letter-spacing: normal;
+  text-align: left;
+  color: #12a6e8;
+  padding-bottom: 6px;
+`;
+
+const CardDate = styled.div`
+  display: flex;
+  font-family: Open Sans;
+  font-size: 13px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.38;
+  letter-spacing: normal;
+  text-align: left;
+  color: #444444;
+  padding-bottom: 8px;
+  .anticon-clock-circle {
+    svg {
+      width: 17px;
+      height: 17px;
+    }
+  }
+`;
+
+const StrongText = styled.span`
+  font-weight: 600;
+  padding-left: 10px;
+`;
+
+const AttemptDetails = styled(Col)`
+  display: flex;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
+`;
+
+const StartAssignButton = styled(Link)`
+  max-width: 200px;
+  height: 40px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  border: solid 1px #12a6e8;
+  width: 100%;
+  padding: 5px 20px;
+  cursor: pointer;
+  float: right;
+  margin: 10px 15px 0 10px;
+  span {
+    color: #00b0ff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+  &:hover {
+    background-color: #12a6e8;
+    span {
+      color: #ffffff;
+    }
+  }
+  @media screen and (min-width: 1025px) {
+    margin-right:0px;
+  }
+  @media screen and (max-width: 768px) {
+    max-width: 80%;
+    margin: 10px 0 0;
+  }
+  @media screen and (max-width: 767px) {
+    max-width: 100%;
+  }
+`;
+
+const AnswerAndScore = styled.div`
+  width: 135px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  span {
+    font-size: 31px;
+    font-weight: bold;
+    color: #434b5d;
+  }
+  @media screen and (max-width: 767px) {
+    width:33%;
+  }
+`;
+
+const AnswerAndScoreReviewBtn = styled(AnswerAndScore)`
+  @media screen and (min-width: 769px) {
+    width:200px;
+  }
+`;
+
+
+const Attempts = AnswerAndScore;
+
+const DetailContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  @media screen and (max-width: 1024px) {
+    flex-direction: column;
+  }
+`;
+
+const AttemptsTitle = styled.div`
+  font-size: 12px;
+  font-weight: 600;
+  color: #12a6e8;
+  cursor: pointer;
+`;
+
+const Title = styled.div`
+  font-size: 12px;
+  font-weight: 600;
+  color: #434b5d;
+`;
+
+const AttemptsData = styled.div`
+  margin-top: 7px;
+`;
+
+const RowData = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-radius: 4px;
+  height: 30px;
+  div {
+    background-color: #f8f8f8;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    @media screen and (max-width: 767px){
+      justify-content: flex-start;
+    }
+  }
+  span {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #9ca0a9;
   }
 `;

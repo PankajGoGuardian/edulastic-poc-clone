@@ -49,12 +49,12 @@ const AssignmentCard = ({
   const attemptsData = getAttemptsData(reports, _id);
   return (
     <CardWrapper>
-      <Col span={4}>
+      <Col span={3}>
         <ImageWrapper>
           <img src={test && test.thumbnail} alt="" />
         </ImageWrapper>
       </Col>
-      <Col span={5} style={{ marginLeft: 15 }}>
+      <Col span={16}>
         <CardTitle>{test && test.title}</CardTitle>
         <CardDate>
           <Icon
@@ -76,8 +76,8 @@ const AssignmentCard = ({
       <FlexCol span={15}>
         <DetailContainer>
           <StartAssignButton onClick={startTest}>
-            { attemptsData.length === 0 && <span>START ASSIGNMENT</span> }
-            { attemptsData.length > 0 && <span>RETAKE</span> }
+            {attemptsData.length === 0 && <span>START ASSIGNMENT</span>}
+            {attemptsData.length > 0 && <span>RETAKE</span>}
           </StartAssignButton>
         </DetailContainer>
       </FlexCol>
@@ -115,7 +115,7 @@ const CardWrapper = styled(Row)`
     max-width: 168.5px;
     border-radius: 10px;
     width: 100%;
-    height: 90px;
+    height: 80px;
   }
   @media screen and (max-width: 767px) {
     display: block;

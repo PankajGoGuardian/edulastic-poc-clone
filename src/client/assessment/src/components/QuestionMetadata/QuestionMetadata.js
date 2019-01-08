@@ -168,7 +168,6 @@ class QuestionMetadata extends Component {
   };
 
   handleQuestionDataSelect = fieldName => (value) => {
-    console.log(fieldName, value);
     const { questionData, setQuestionData } = this.props;
     const newQuestionData = {
       ...questionData,

@@ -63,25 +63,32 @@ const question = (state = initialState, { type, payload }) => {
       };
     case SET_QUESTION_ALIGNMENT_ADD_ROW: {
       const { alignmentRow } = payload;
-      const newAlignment = [...state.entity.alignment];
+      const currentAlignment = state.entity.data && state.entity.data.alignment;
+      const newAlignment = currentAlignment ? [...currentAlignment] : [];
       newAlignment.push(alignmentRow);
       return {
         ...state,
         entity: {
           ...state.entity,
-          alignment: newAlignment
+          data: {
+            ...state.entity.data,
+            alignment: newAlignment
+          }
         }
       };
     }
     case SET_QUESTION_ALIGNMENT_REMOVE_ROW: {
       const { index } = payload;
-      const newAlignment = [...state.entity.alignment];
+      const newAlignment = [...state.entity.data.alignment];
       newAlignment.splice(index, 1);
       return {
         ...state,
         entity: {
           ...state.entity,
-          alignment: newAlignment
+          data: {
+            ...state.entity.data,
+            alignment: newAlignment
+          }
         }
       };
     }

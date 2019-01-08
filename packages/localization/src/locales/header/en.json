@@ -1,0 +1,11 @@
+{
+  "common": {
+    "dashboardTitle": "Dashboard",
+    "classLabel": "Class",
+    "manageClassTitle": "Manage Class",
+    "showLabel": "Show",
+    "reportsTitle": "Reports",
+    "skillReportTitle": "Skill Report",
+    "assignmentsTitle": "Assignments"
+  }
+}

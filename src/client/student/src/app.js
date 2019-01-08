@@ -1,9 +1,10 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { Layout } from 'antd';
 import { connect } from 'react-redux';
+import { themes } from './themes';
 
 import Sidebar from './Sidebar/SideMenu';
 import DashboardContainer from './components/dashboard';
@@ -15,25 +16,27 @@ import SkillReportContainer from './components/SkillReport';
 import ProfileContainer from './components/profile';
 
 const Dashboard = ({ match, isSidebarCollapsed }) => (
-  <Layout>
-    <MainContainer isCollapsed={isSidebarCollapsed}>
-      <Sidebar />
-      <Wrapper>
-        <Switch>
-          <Route path={`${match.url}/dashboard`} component={DashboardContainer} />
-          <Route path={`${match.url}/assignments`} component={AssignmentsContainer} />
-          <Route path={`${match.url}/reports`} component={ReportContainer} />
-          <Route path={`${match.url}/skill-reports`} component={SkillReportContainer} />
-          <Route path={`${match.url}/manage`} component={ManageClassContainer} />
-          <Route path={`${match.url}/profile`} component={ProfileContainer} />
-          <Route
-            path={`${match.url}/report/list`}
-            component={ReportListContainer}
-          />
-        </Switch>
-      </Wrapper>
-    </MainContainer>
-  </Layout>
+  <ThemeProvider theme={themes.default}>
+    <Layout>
+      <MainContainer isCollapsed={isSidebarCollapsed}>
+        <Sidebar />
+        <Wrapper>
+          <Switch>
+            <Route path={`${match.url}/dashboard`} component={DashboardContainer} />
+            <Route path={`${match.url}/assignments`} component={AssignmentsContainer} />
+            <Route path={`${match.url}/reports`} component={ReportContainer} />
+            <Route path={`${match.url}/skill-reports`} component={SkillReportContainer} />
+            <Route path={`${match.url}/manage`} component={ManageClassContainer} />
+            <Route path={`${match.url}/profile`} component={ProfileContainer} />
+            <Route
+              path={`${match.url}/report/list`}
+              component={ReportListContainer}
+            />
+          </Switch>
+        </Wrapper>
+      </MainContainer>
+    </Layout>
+  </ThemeProvider>
 );
 
 export default connect(({ ui }) => ({

@@ -1,5 +1,8 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { withNamespaces } from '@edulastic/localization';
+import { compose } from 'redux';
 import { Select } from 'antd';
 import AssignmentSelectClass from '../../commonStyle/assignmentSelectClass';
 import AssignmentTitle from '../../assignments/common/assignmentTitle';
@@ -8,9 +11,9 @@ import HeaderWrapper from '../../../headerWrapper';
 const options = ['FFC1', 'FFC2', 'FFC3', 'FFC4', 'FFC5', 'FFC6'];
 const { Option } = Select;
 
-const AssignmentSelect = () => (
+const AssignmentSelect = ({ t }) => (
   <AssignmentSelectClass>
-    <ClassLabel>Class</ClassLabel>
+    <ClassLabel>{t('common.classLabel')}</ClassLabel>
     <Select defaultValue="FFC1">
       {options.map((option, i) => (
         <Option key={i} value={option}>
@@ -21,16 +24,29 @@ const AssignmentSelect = () => (
   </AssignmentSelectClass>
 );
 
-const SkillReportHeader = () => (
+const SkillReportHeader = ({ t }) => (
   <HeaderWrapper>
     <Wrapper>
-      <AssignmentTitle>Skill Report</AssignmentTitle>
-      <AssignmentSelect />
+      <AssignmentTitle>{t('common.skillReportTitle')}</AssignmentTitle>
+      <AssignmentSelect t={t} />
     </Wrapper>
   </HeaderWrapper>
 );
 
-export default memo(SkillReportHeader);
+AssignmentSelect.propTypes = {
+  t: PropTypes.func.isRequired
+};
+
+SkillReportHeader.propTypes = {
+  t: PropTypes.func.isRequired
+};
+
+const enhance = compose(
+  memo,
+  withNamespaces('header')
+);
+
+export default enhance(SkillReportHeader);
 
 const Wrapper = styled.div`
   display: flex;
@@ -46,7 +62,8 @@ const Wrapper = styled.div`
 
 const ClassLabel = styled.span`
   display: flex;
-  font-size: 13px;
+  font-size: ${props => props.theme.headerClassTitleFontSize};
+  color: ${props => props.theme.headerClassTitleColor};
   font-weight: 600;
   margin-right: 30px;
   align-items: center;

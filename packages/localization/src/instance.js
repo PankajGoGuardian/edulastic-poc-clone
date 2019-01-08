@@ -37,7 +37,8 @@ i18n
         assessment: require('./locales/assessment/en'),
         common: require('./locales/common/en'),
         dashboard: require('./locales/dashboard/en'),
-        login: require('./locales/login/en')
+        login: require('./locales/login/en'),
+        header: require('./locales/header/en')
       }
     }
   });

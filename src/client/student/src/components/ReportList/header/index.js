@@ -1,18 +1,30 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { withNamespaces } from '@edulastic/localization';
+import { compose } from 'redux';
 
-import { darkBlueSecondary, white } from '@edulastic/colors';
+import { darkBlueSecondary } from '@edulastic/colors';
 import { Affix } from 'antd';
 
-const ReportListHeader = () => (
+const ReportListHeader = ({ t }) => (
   <Affix>
     <Container>
-      <Title>Reports</Title>
+      <Title>{t('common.reportsTitle')}</Title>
     </Container>
   </Affix>
 );
 
-export default memo(ReportListHeader);
+ReportListHeader.propTypes = {
+  t: PropTypes.func.isRequired
+};
+
+const enhance = compose(
+  memo,
+  withNamespaces('header')
+);
+
+export default enhance(ReportListHeader);
 
 const Container = styled.div`
   height: 62px;
@@ -24,8 +36,8 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  color: ${white};
-  font-size: 22px;
+  color: ${props => props.theme.headerTitleTextColor};
+  font-size: ${props => props.theme.headerTitleFontSize};
   font-weight: bold;
   margin: 0;
   padding: 0;

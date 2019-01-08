@@ -1,5 +1,8 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { withNamespaces } from '@edulastic/localization';
+import { compose } from 'redux';
 import { Select } from 'antd';
 import AssignmentSelectClass from '../../commonStyle/assignmentSelectClass';
 import AssignmentTitle from '../../assignments/common/assignmentTitle';
@@ -8,9 +11,9 @@ import HeaderWrapper from '../../../headerWrapper';
 const options = ['ARCHIVE(0)', 'ARCHIVE(1)', 'ARCHIVE(2)', 'ARCHIVE(3)'];
 const { Option } = Select;
 
-const AssignmentSelect = () => (
+const AssignmentSelect = ({ t }) => (
   <AssignmentSelectClass>
-    <ClassLabel>Show</ClassLabel>
+    <ClassLabel>{t('common.showLabel')}</ClassLabel>
     <Select defaultValue="Question 1/10">
       {options.map((option, i) => (
         <Option key={i} value={option}>
@@ -21,16 +24,30 @@ const AssignmentSelect = () => (
   </AssignmentSelectClass>
 );
 
-const ManageClassHeader = () => (
+const ManageClassHeader = ({ t }) => (
   <HeaderWrapper>
     <Wrapper>
-      <AssignmentTitle>Manage Class</AssignmentTitle>
-      <AssignmentSelect />
+      <AssignmentTitle>{t('common.manageClassTitle')}</AssignmentTitle>
+      <AssignmentSelect t={t} />
     </Wrapper>
   </HeaderWrapper>
 );
 
-export default memo(ManageClassHeader);
+const enhance = compose(
+  memo,
+  withNamespaces('header')
+);
+
+AssignmentSelect.propTypes = {
+  t: PropTypes.func.isRequired
+};
+
+ManageClassHeader.propTypes = {
+  t: PropTypes.func.isRequired
+};
+
+export default enhance(ManageClassHeader);
+
 const Wrapper = styled.div`
   display: flex;
   width: 100%;
@@ -44,7 +61,8 @@ const Wrapper = styled.div`
 `;
 const ClassLabel = styled.span`
   display: flex;
-  font-size: 13px;
+  font-size: ${props => props.theme.headerClassTitleFontSize};
+  color: ${props => props.theme.headerClassTitleColor};
   font-weight: 600;
   margin-right: 30px;
   align-items: center;

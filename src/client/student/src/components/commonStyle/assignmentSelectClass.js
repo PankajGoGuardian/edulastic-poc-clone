@@ -9,6 +9,9 @@ const AssignmentSelectClass = styled.div`
   }
   .ant-select-selection {
     border: 0px;
+    background-color: ${props => props.theme.headerDropdownBgColor};
+    color: ${props => props.theme.headerDropdownTextColor};
+    font-size: ${props => props.theme.headerDropdownFontSize};
   }
   .ant-select-selection__rendered {
     height: 100%;
@@ -18,7 +21,7 @@ const AssignmentSelectClass = styled.div`
   }
   .anticon-down {
     svg {
-      fill: #12a6e8;
+      fill: ${props => props.theme.headerDropdownTextColor};
     }
   }
   @media (max-width:768px){

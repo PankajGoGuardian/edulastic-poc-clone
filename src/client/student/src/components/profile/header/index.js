@@ -1,7 +1,6 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { compose } from 'redux';
 import HeaderWrapper from '../../../headerWrapper';
@@ -24,8 +23,8 @@ const enhance = compose(
 export default enhance(ProfileHeader);
 
 const Title = styled.h1`
-  color: ${white};
-  font-size: 22px;
+  color: ${props => props.theme.headerTitleTextColor};
+  font-size: ${props => props.theme.headerTitleFontSize};
   font-weight: bold;
   margin: 0;
   padding: 0;

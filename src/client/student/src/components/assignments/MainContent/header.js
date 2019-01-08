@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { withNamespaces } from '@edulastic/localization';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { Select } from 'antd';
 import AssignmentTitle from '../common/assignmentTitle';
@@ -10,9 +12,9 @@ import HeaderWrapper from '../../../headerWrapper';
 const options = ['FFC1', 'FFC2', 'FFC3', 'FFC4', 'FFC5', 'FFC6'];
 const { Option } = Select;
 
-const AssignmentSelect = () => (
+const AssignmentSelect = ({ t }) => (
   <AssignmentSelectClass>
-    <ClassLabel>Class</ClassLabel>
+    <ClassLabel>{t('common.classLabel')}</ClassLabel>
     <Select defaultValue="FFC1">
       {options.map((option, i) => (
         <Option key={i} value={option}>
@@ -23,19 +25,33 @@ const AssignmentSelect = () => (
   </AssignmentSelectClass>
 );
 
-const Header = ({ flag }) => (
+const Header = ({ flag, t }) => (
   <HeaderWrapper flag={flag}>
     <Wrapper>
-      <AssignmentTitle>Assignments</AssignmentTitle>
-      <AssignmentSelect />
+      <AssignmentTitle>{t('common.assignmentsTitle')}</AssignmentTitle>
+      <AssignmentSelect t={t} />
     </Wrapper>
   </HeaderWrapper>
 );
-export default connect(({ ui }) => ({ flag: ui.flag }))(Header);
+
+AssignmentSelect.propTypes = {
+  t: PropTypes.func.isRequired
+};
 
 Header.propTypes = {
-  flag: PropTypes.bool.isRequired
+  flag: PropTypes.bool.isRequired,
+  t: PropTypes.func.isRequired
 };
+
+const enhance = compose(
+  withNamespaces('header'),
+  connect(
+    ({ ui }) => ({ flag: ui.flag })
+  )
+);
+
+export default enhance(Header);
+
 
 const Wrapper = styled.div`
   display: flex;
@@ -51,7 +67,8 @@ const Wrapper = styled.div`
 
 const ClassLabel = styled.span`
   display: flex;
-  font-size: 13px;
+  font-size: ${props => props.theme.headerClassTitleFontSize};
+  color: ${props => props.theme.headerClassTitleColor};
   font-weight: 600;
   margin-right: 30px;
   align-items: center;

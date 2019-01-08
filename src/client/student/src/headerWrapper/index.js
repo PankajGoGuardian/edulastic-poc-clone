@@ -1,7 +1,6 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { darkBlueSecondary } from '@edulastic/colors';
 import { Affix, Layout, Row, Col } from 'antd';
 
 const HeaderWrapper = ({ children }) => (
@@ -35,8 +34,9 @@ const HeaderContainer = styled.div`
 const AssignmentsHeader = styled(Layout.Header)`
   display: flex;
   align-items: center;
-  background-color: ${darkBlueSecondary};
+  background-color: ${props => props.theme.headerBgColor};
   height: 62px;
+  padding: 0px 15px;
   color: #ffffff;
   @media screen and (max-width: 768px) {
     height:104px;

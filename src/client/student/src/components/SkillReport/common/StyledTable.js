@@ -9,6 +9,7 @@ const StyledTable = styled(Table)`
     @media screen and (max-width: 767px) {
       display:block;
       overflow-x: auto;
+      margin-top: 10px;
     }
   }
 

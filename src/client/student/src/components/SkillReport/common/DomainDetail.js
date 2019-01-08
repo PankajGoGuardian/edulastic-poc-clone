@@ -69,8 +69,7 @@ class DomainDetail extends Component {
             {summary.domain}
           </RelationTitle>
           <StyledScoreProgress percent={Math.round(score / maxScore * 100)} />
-          { !isShow && <PlusIcon color={greenDark} />}
-          { isShow && <Toggler />}
+          {isShow ? <IconClose /> : <IconOpen color={greenDark} />}
         </Title>
         {
           isShow && (
@@ -125,17 +124,27 @@ const GradeTag = styled.div`
   align-items: center;
 `;
 
-export const Toggler = styled.div`
+export const IconClose = styled.div`
   position: relative;
   cursor: pointer;
   width: 17.7px;
   height: 3.4px;
   background-color: #4aac8b;
   margin-top: 10px;
+  @media screen and (max-width: 767px) {
+    position:absolute;
+    top:0px;
+    right:0px;
+  }
 `;
 
-export const PlusIcon = styled(IconPlus)`
+export const IconOpen = styled(IconPlus)`
   margin-top: 5px;
+  @media screen and (max-width: 767px) {
+    position:absolute;
+    top:0px;
+    right:0px;
+  }
 `;
 
 export const StyledScoreProgress = styled(Progress)`

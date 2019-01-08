@@ -10,12 +10,11 @@ class Confirmation extends Component {
   render() {
     const { isVisible, onClose, finishTest } = this.props;
     return (
-      <Modal
+      <ModalConfirmation
         open={isVisible}
         onClose={onClose}
         showCloseIcon={false}
         center
-        styles={{ modal: { borderRadius: 5, minWidth: 630 } }}
       >
         <ModalContainer>
           <Title>Do you want to finish the questionnaire?</Title>
@@ -24,10 +23,10 @@ class Confirmation extends Component {
           </TitleDescriptioin>
           <ButtonContainer>
             <Row gutter={20} style={{ width: '100%' }}>
-              <Col span={12}>
+              <Col md={12} sm={24}>
                 <StyledButton btnType={1} onClick={onClose}>Cancel</StyledButton>
               </Col>
-              <Col span={12}>
+              <Col md={12} sm={24}>
                 <StyledButton type="primary" btnType={2} onClick={finishTest}>
                   Sure, Take me to the report
                 </StyledButton>
@@ -35,7 +34,7 @@ class Confirmation extends Component {
             </Row>
           </ButtonContainer>
         </ModalContainer>
-      </Modal>
+      </ModalConfirmation>
     );
   }
 }
@@ -47,6 +46,13 @@ Confirmation.propTypes = {
 };
 
 export default Confirmation;
+
+const ModalConfirmation = styled(Modal)`
+  border-radius: 5;  
+  @media screen and (min-width: 768px) {
+    min-width: 630px;
+  }
+`;
 
 const ModalContainer = styled.div`
   display: flex;
@@ -83,5 +89,8 @@ const StyledButton = styled(Button)`
     font-size: 11px;
     font-weight: 600;
     color: ${props => (props.btnType === 1 ? '#00b0ff' : '#fff')};
+  }
+  @media screen and (max-width: 767px) {
+    margin-top:10px;
   }
 `;

@@ -31,10 +31,10 @@ class SummaryTest extends Component {
     const { finishTest } = this.props;
     const { buttonIdx, isShowConfirmationModal } = this.state;
     return (
-      <AssignmentContentWrapper style={{ margin: '24px 95px' }}>
+      <AssignmentContentWrapperSummary>
         <Confirmation
           isVisible={isShowConfirmationModal}
-          onClose={() => this.closeConfirmationModal()}
+          onClose={this.closeConfirmationModal}
           finishTest={finishTest}
         />
         <Container>
@@ -47,56 +47,60 @@ class SummaryTest extends Component {
           </Header>
           <MainContent>
             <ColorDescription>
-              <Row gutter={32} style={{ width: '100%' }}>
-                <Col span={8} style={{ display: 'flex', alignItems: 'center' }}>
+              <ColorDescriptionRow gutter={32}>
+                <FlexCol lg={8} md={24}>
                   <GreenMark />
-                  <div style={{ marginLeft: 22 }}>
+                  <SpaceLeft>
                     <Description>You have marked these questions.</Description>
                     <Description style={{ marginTop: -2 }}>
                       Review them before submitting your test.
                     </Description>
-                  </div>
-                </Col>
-                <Col span={8} style={{ display: 'flex', alignItems: 'center' }}>
+                  </SpaceLeft>
+                </FlexCol>
+                <FlexCol lg={8} md={24}>
                   <GrayMark />
-                  <div style={{ marginLeft: 22 }}>
+                  <SpaceLeft>
                     <Description>
                       Please review your skipped questions before submitting the test
                     </Description>
-                  </div>
-                </Col>
-                <Col span={8} style={{ display: 'flex', alignItems: 'center' }}>
+                  </SpaceLeft>
+                </FlexCol>
+                <FlexCol lg={8} md={24}>
                   <RedMark />
-                  <div style={{ marginLeft: 22 }}>
+                  <SpaceLeft>
                     <Description>You have marked for review these questions.</Description>
                     <Description style={{ marginTop: -2 }}>
                       Review them before submitting your test.
                     </Description>
-                  </div>
-                </Col>
-              </Row>
+                  </SpaceLeft>
+                </FlexCol>
+              </ColorDescriptionRow>
             </ColorDescription>
             <Questions>
               <Options>
-                <QuestionText>Questions</QuestionText>
-                <StyledButton
-                  onClick={() => this.handlerButton(0)}
-                  enabled={buttonIdx === 0 && true}
-                >
-                  ALL
-                </StyledButton>
-                <StyledButton
-                  onClick={() => this.handlerButton(1)}
-                  enabled={buttonIdx === 1 && true}
-                >
-                  FLAGGED
-                </StyledButton>
-                <StyledButton
-                  onClick={() => this.handlerButton(2)}
-                  enabled={buttonIdx === 2 && true}
-                >
-                  SKIPPED
-                </StyledButton>
+                <QuestionText lg={8} md={24}>Questions</QuestionText>
+                <Col lg={16} md={24}>
+                  <AnsweredTypeButtonContainer>
+                    <StyledButton
+                      onClick={() => this.handlerButton(0)}
+                      enabled={buttonIdx === 0 && true}
+                    >
+                      ALL
+                    </StyledButton>
+                    <StyledButton
+                      onClick={() => this.handlerButton(0)}
+                      enabled={buttonIdx === 1 && true}
+                    >
+                      FLAGGED
+                    </StyledButton>
+                    <StyledButton
+                      onClick={() => this.handlerButton(0)}
+                      enabled={buttonIdx === 2 && true}
+                    >
+                      SKIPPED
+                    </StyledButton>
+                  </AnsweredTypeButtonContainer>
+                </Col>
               </Options>
               <QuestionBlock>
                 <RedQuestionBlock><span>1</span></RedQuestionBlock>
@@ -111,12 +115,12 @@ class SummaryTest extends Component {
             <ShortDescription>
               Next Step: When you are done reviewing your answers, select Submit test. You cannot change your answers after you submit the test
             </ShortDescription>
-            <SubmitButton type="primary" onClick={() => this.handlerConfirmationModal()}>
+            <SubmitButton type="primary" onClick={this.handlerConfirmationModal}>
               SUBMIT
             </SubmitButton>
           </Footer>
         </Container>
-      </AssignmentContentWrapper>
+      </AssignmentContentWrapperSummary>
     );
   }
 }
@@ -127,6 +131,12 @@ SummaryTest.propTypes = {
 
 export default SummaryTest;
 
+const AssignmentContentWrapperSummary = styled(AssignmentContentWrapper)`
+  margin: 24px 95px;
+  @media screen and (max-width: 992px) {
+    margin: 15px 26px;
+  }
+`;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -169,24 +179,21 @@ const ColorDescription = styled.div`
   justify-content: center;
 `;
 
-const GreenMark = styled.div`
+const Markers = styled.div`
   width: 24px;
   height: 24px;
   border-radius: 2px;
-  background-color: #1fe3a1;
+  flex-shrink: 0;
+`;
+const GreenMark = styled(Markers)`
+background-color: #1fe3a1;
 `;
 
-const GrayMark = styled.div`
-  width: 24px;
-  height: 24px;
-  border-radius: 2px;
+const GrayMark = styled(Markers)`
   background-color: #b1b1b1;
 `;
 
-const RedMark = styled.div`
-  width: 24px;
-  height: 24px;
-  border-radius: 2px;
+const RedMark = styled(Markers)`
   background-color: #ee1658;
 `;
 
@@ -196,30 +203,46 @@ const Description = styled.div`
   color: #878282;
 `;
 
+const ColorDescriptionRow = styled(Row)`
+  width:100%;
+`;
+
+const FlexCol = styled(Col)`
+  display:flex;
+  align-items:center;
+`;
+
+const SpaceLeft = styled.div`
+  margin-left:22px;
+`;
+
 const Questions = styled.div`
   margin-top: 60px;
 `;
 
-const Options = styled.div`
-  display: flex;
+const Options = styled(Row)`
 `;
 
-const QuestionText = styled.div`
-  flex: 1;
+const QuestionText = styled(Col)`
   font-size: 16px;
   font-weight: bold;
   color: #434b5d;
 `;
 
+const AnsweredTypeButtonContainer = styled.div`
+  @media screen and (min-width: 992px) {
+    float:right;
+    margin-right: -20px;
+  }
+`;
+
 const StyledButton = styled(Button)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
   height: 24px;
+  float:left;
   color: ${props => (props.enabled ? '#fff' : '#00b0ff')};
   border: 1px solid #00b0ff;
   border-radius: 4px;
-  margin-left: 20px;
+  margin-right: 20px;
   min-width: 85px;
   background: ${props => (props.enabled ? '#00b0ff' : 'transparent')};
   &:focus, &:active {
@@ -230,10 +253,14 @@ const StyledButton = styled(Button)`
     font-size: 10px;
     font-weight: 600;
   }
+  @media screen and (max-width: 992px) {
+    margin-top: 10px;
+  }
 `;
 
 const QuestionBlock = styled.div`
   display: flex;
+  flex-flow: wrap;
   margin-top: 30px;
 `;
 
@@ -246,6 +273,7 @@ const RedQuestionBlock = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 5px;
 
   span {
     font-size: 14px;

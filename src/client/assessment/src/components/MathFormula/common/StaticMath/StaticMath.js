@@ -11,6 +11,7 @@ const { mathInputTypes } = math;
 
 class StaticMath extends PureComponent {
   state = {
+    MQ: null,
     mathField: null,
     innerField: null,
     showKeyboard: false
@@ -42,10 +43,52 @@ class StaticMath extends PureComponent {
     const MQ = window.MathQuill.getInterface(2);
 
     const mathField = MQ.StaticMath(this.mathFieldRef.current);
-    this.setState({ mathField });
+
+    this.setState({ mathField, MQ });
 
     document.addEventListener('click', this.handleClick.bind(this), false);
   }
+
+  setInnerFieldsFocuses = () => {
+    const { mathField, MQ } = this.state;
+
+    if (!mathField || !mathField.innerFields || !mathField.innerFields.length) {
+      return;
+    }
+
+    const goTo = (fieldIndex) => {
+      const nextField = mathField.innerFields[fieldIndex];
+      if (nextField) {
+        nextField
+          .focus()
+          .el()
+          .click();
+      }
+    };
+
+    mathField.innerFields.forEach((field, index) => {
+      const goToPrev = () => goTo(index - 1);
+      const goToNext = () => goTo(index + 1);
+
+      field.config({
+        handlers: {
+          upOutOf() {
+            goToPrev();
+          },
+          downOutOf() {
+            goToNext();
+          },
+          moveOutOf: (dir) => {
+            if (dir === MQ.L) {
+              goToPrev();
+            } else if (dir === MQ.R) {
+              goToNext();
+            }
+          }
+        }
+      });
+    });
+  };
 
   setLatex = (latex) => {
     const { mathField } = this.state;
@@ -58,6 +101,8 @@ class StaticMath extends PureComponent {
         this.onFocus(mathField.innerFields[i]);
       });
     }
+
+    this.setInnerFieldsFocuses();
   };
 
   getLatex = () => {

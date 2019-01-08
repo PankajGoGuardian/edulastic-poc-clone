@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Anchor, Row, Col, Radio, Switch, List, Input, Button } from 'antd';
+import { Anchor, Input, Row, Col, Radio, Switch, List, Button } from 'antd';
 import { Paper } from '@edulastic/common';
-
 import ListCard from './Card';
 import UiTime from './ui-time';
+import { setMaxAttemptsAction } from '../../../actions/tests';
+import { getMaxAttemptSelector } from '../../../selectors/tests';
 
 const settingCategories = [
   { id: 'mark-as-done', title: 'MARK AS DONE' },
   { id: 'release-scores', title: 'RELEASE SCORES' },
+  { id: 'maximum-attempts-allowed', title: 'MAXIMUM ATTEMPTS ALLOWED' },
   { id: 'require-safe-exame-browser', title: 'REQUIRE SAFE EXAME BROWSER' },
   { id: 'show-questions', title: 'SHOW QUESTIONS TO STUDENT' },
   { id: 'suffle-question', title: 'SUFFLE QUESTION' },
@@ -50,9 +53,25 @@ const data = [
 ];
 
 const navigations = [
-  'Intro Item', 'Outro Item', 'Previous', 'Next', 'Pause', 'Save', 'Submit', 'Fullscreen', 'Response Masking', 'TOC Item Count', 'Calculator',
-  'Submit Criteria', 'Warning if question not attempted', 'Confirmation windows on submit', 'Scroll to test element on test start',
-  'Scroll to top on item change', 'Exit Secure Browser', 'Acknowledgements', 'Table of Contents'
+  'Intro Item',
+  'Outro Item',
+  'Previous',
+  'Next',
+  'Pause',
+  'Save',
+  'Submit',
+  'Fullscreen',
+  'Response Masking',
+  'TOC Item Count',
+  'Calculator',
+  'Submit Criteria',
+  'Warning if question not attempted',
+  'Confirmation windows on submit',
+  'Scroll to test element on test start',
+  'Scroll to top on item change',
+  'Exit Secure Browser',
+  'Acknowledgements',
+  'Table of Contents'
 ];
 
 const accessibilities = ['Show Colour Shceme', 'Show Font Size', 'Show Zoom'];
@@ -65,38 +84,49 @@ class MainSetting extends Component {
       markAsDoneValue: 1,
       showAdvancedOption: true
     };
+    this.inputRef = React.createRef();
   }
 
   markHandler = (e) => {
     this.setState({ markAsDoneValue: e.target.value });
-  }
+  };
 
   advancedHandler = () => {
     const { showAdvancedOption } = this.state;
     this.setState({ showAdvancedOption: !showAdvancedOption });
-  }
+  };
+
+  updateAttempt = (e) => {
+    const { setMaxAttempts } = this.props;
+    setMaxAttempts(e.target.value);
+  };
 
   render() {
     const { markAsDoneValue, showAdvancedOption } = this.state;
-    const { history, windowWidth } = this.props;
+    const { history, windowWidth, maxAttempts } = this.props;
     const isSmallSize = windowWidth > 993 ? 1 : 0;
     return (
       <Paper style={{ marginTop: 27 }}>
         <Row style={{ padding: windowWidth < 468 && '25px' }}>
           <Col span={isSmallSize ? 6 : 0}>
             <StyledAnchor affix={false}>
-              {
-                settingCategories.map(category => (
-                  <Anchor.Link key={category.id} href={`${history.location.pathname}#${category.id}`} title={category.title} />
-                ))
-              }
+              {settingCategories.map(category => (
+                <Anchor.Link
+                  key={category.id}
+                  href={`${history.location.pathname}#${category.id}`}
+                  title={category.title}
+                />
+              ))}
             </StyledAnchor>
           </Col>
           <Col span={isSmallSize ? 18 : 24}>
             <Block id="mark-as-done">
               <Title>Mark as Done</Title>
               <Body>
-                <StyledRadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                <StyledRadioGroup
+                  onChange={this.markHandler}
+                  value={markAsDoneValue}
+                >
                   <Radio value={1}>Automatically</Radio>
                   <Radio value={2}>Manually</Radio>
                 </StyledRadioGroup>
@@ -116,8 +146,33 @@ class MainSetting extends Component {
                 <Switch />
               </Body>
               <Description>
-                {'Select '}<BlueText>ON</BlueText>{' for students to see their scores instantly after submission.'}<br />
-                {'Select '}<BlueText>OFF</BlueText>{' to manually control when students get to see their scores.\n'}
+                {'Select '}
+                <BlueText>ON</BlueText>
+                {
+                  ' for students to see their scores instantly after submission.'
+                }
+                <br />
+                {'Select '}
+                <BlueText>OFF</BlueText>
+                {
+                  ' to manually control when students get to see their scores.\n'
+                }
+              </Description>
+            </Block>
+
+            <Block id="maximum-attempts-allowed">
+              <Title>Maximum Attempts Allowed </Title>
+              <Body />
+              <Description>
+                <Input
+                  type="number"
+                  size="large"
+                  defaultValue={maxAttempts}
+                  onChange={this.updateAttempt}
+                  min={1}
+                  step={1}
+                  style={{ width: '20%', marginRight: 30 }}
+                />
               </Description>
             </Block>
 
@@ -127,7 +182,9 @@ class MainSetting extends Component {
                 <Switch />
               </Body>
               <Description>
-                {'Ensure secure testing environment by using Safe Exam Browser to lockdown the studen\'s device. To use this feature Safe Exam Browser (on Windows/Mac only) must be'}
+                {
+                  "Ensure secure testing environment by using Safe Exam Browser to lockdown the studen's device. To use this feature Safe Exam Browser (on Windows/Mac only) must be"
+                }
               </Description>
             </Block>
 
@@ -137,7 +194,11 @@ class MainSetting extends Component {
                 <Switch />
               </Body>
               <Description>
-                {'Select '}<BlueText>OFF</BlueText>{', if you do not want students to see the assessment questions, responses, and the correct answers after they submit.'}
+                {'Select '}
+                <BlueText>OFF</BlueText>
+                {
+                  ', if you do not want students to see the assessment questions, responses, and the correct answers after they submit.'
+                }
               </Description>
             </Block>
 
@@ -147,7 +208,11 @@ class MainSetting extends Component {
                 <Switch defaultChecked />
               </Body>
               <Description>
-                {'If '}<BlueText>ON</BlueText>{', then order of questions will be different for each student.'}
+                {'If '}
+                <BlueText>ON</BlueText>
+                {
+                  ', then order of questions will be different for each student.'
+                }
               </Description>
             </Block>
 
@@ -157,15 +222,25 @@ class MainSetting extends Component {
                 <Switch defaultChecked />
               </Body>
               <Description>
-                {'If set to '}<BlueText>ON</BlueText>{', answer choices for multiple choice and multiple select questions will be randomly shuffled for students.'}<br />
-                {'Text to speech does not work when the answer choices are shuffled.'}
+                {'If set to '}
+                <BlueText>ON</BlueText>
+                {
+                  ', answer choices for multiple choice and multiple select questions will be randomly shuffled for students.'
+                }
+                <br />
+                {
+                  'Text to speech does not work when the answer choices are shuffled.'
+                }
               </Description>
             </Block>
 
             <Block id="show-calculator">
               <Title>Show Calculator</Title>
               <Body>
-                <StyledRadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                <StyledRadioGroup
+                  onChange={this.markHandler}
+                  value={markAsDoneValue}
+                >
                   <Radio value={1}>None</Radio>
                   <Radio value={2}>Scientific</Radio>
                   <Radio value={3}>Basic</Radio>
@@ -173,7 +248,9 @@ class MainSetting extends Component {
                 </StyledRadioGroup>
               </Body>
               <Description>
-                {'Choose if student can use a calculator, also select the type of calculator that would be shown to the students.'}
+                {
+                  'Choose if student can use a calculator, also select the type of calculator that would be shown to the students.'
+                }
               </Description>
             </Block>
 
@@ -183,7 +260,9 @@ class MainSetting extends Component {
                 <Switch defaultChecked />
               </Body>
               <Description>
-                {'Use this opinion if you are administering this assessment on paper. If you use this opinion, you will have to manually grade student responses after the assessment is closed.'}
+                {
+                  'Use this opinion if you are administering this assessment on paper. If you use this opinion, you will have to manually grade student responses after the assessment is closed.'
+                }
               </Description>
             </Block>
 
@@ -193,20 +272,27 @@ class MainSetting extends Component {
                 <Switch defaultChecked />
               </Body>
               <Description>
-                {'Require your students to type a password when opening the assessment. Password ensures that your students can access this assessment only in the classroom.'}
+                {
+                  'Require your students to type a password when opening the assessment. Password ensures that your students can access this assessment only in the classroom.'
+                }
               </Description>
             </Block>
 
             <Block id="evaluation-method">
               <Title>Evaluation Method</Title>
               <Body>
-                <StyledRadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                <StyledRadioGroup
+                  onChange={this.markHandler}
+                  value={markAsDoneValue}
+                >
                   <Radio value={1}>All or Nothing</Radio>
                   <Radio value={2}>Partial Credit</Radio>
                 </StyledRadioGroup>
               </Body>
               <Description>
-                {'Choose if students should be awarded partial credit for their answers or not. If partial credit is allowed, then choose whether the student should be penalized for.'}
+                {
+                  'Choose if students should be awarded partial credit for their answers or not. If partial credit is allowed, then choose whether the student should be penalized for.'
+                }
               </Description>
             </Block>
 
@@ -215,13 +301,22 @@ class MainSetting extends Component {
                 <Col span={6}>
                   <BandsText>Performance Bands</BandsText>
                 </Col>
-                <Col span={6} style={{ display: 'flex', justifyContent: 'center' }}>
+                <Col
+                  span={6}
+                  style={{ display: 'flex', justifyContent: 'center' }}
+                >
                   <NormalText>Above or at Standard</NormalText>
                 </Col>
-                <Col span={6} style={{ display: 'flex', justifyContent: 'center' }}>
+                <Col
+                  span={6}
+                  style={{ display: 'flex', justifyContent: 'center' }}
+                >
                   <NormalText>From</NormalText>
                 </Col>
-                <Col span={6} style={{ display: 'flex', justifyContent: 'center' }}>
+                <Col
+                  span={6}
+                  style={{ display: 'flex', justifyContent: 'center' }}
+                >
                   <NormalText>To</NormalText>
                 </Col>
               </Row>
@@ -235,11 +330,16 @@ class MainSetting extends Component {
                 )}
               />
             </Block>
-            <AdvancedSettings style={{ display: showAdvancedOption ? 'block' : 'none' }}>
+            <AdvancedSettings
+              style={{ display: showAdvancedOption ? 'block' : 'none' }}
+            >
               <Block id="title">
                 <Title>Title</Title>
                 <FlexBody>
-                  <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                  <RadioGroup
+                    onChange={this.markHandler}
+                    value={markAsDoneValue}
+                  >
                     <Radio value={1}>Enable</Radio>
                     <Radio value={2}>Disable</Radio>
                   </RadioGroup>
@@ -259,21 +359,27 @@ class MainSetting extends Component {
               <Block id="navigations">
                 <Title>Navigation / Control</Title>
                 <Body>
-                  {
-                    navigations.map(navigation => (
-                      <Row key={navigation} style={{ width: '100%', marginBottom: 25 }}>
-                        <Col span={8}>
-                          <span style={{ fontSize: 13, fontWeight: 600 }}>{navigation}</span>
-                        </Col>
-                        <Col span={16}>
-                          <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
-                            <Radio value={1}>Enable</Radio>
-                            <Radio value={2}>Disable</Radio>
-                          </RadioGroup>
-                        </Col>
-                      </Row>
-                    ))
-                  }
+                  {navigations.map(navigation => (
+                    <Row
+                      key={navigation}
+                      style={{ width: '100%', marginBottom: 25 }}
+                    >
+                      <Col span={8}>
+                        <span style={{ fontSize: 13, fontWeight: 600 }}>
+                          {navigation}
+                        </span>
+                      </Col>
+                      <Col span={16}>
+                        <RadioGroup
+                          onChange={this.markHandler}
+                          value={markAsDoneValue}
+                        >
+                          <Radio value={1}>Enable</Radio>
+                          <Radio value={2}>Disable</Radio>
+                        </RadioGroup>
+                      </Col>
+                    </Row>
+                  ))}
                 </Body>
                 <Row gutter={28} style={{ marginBottom: 30 }}>
                   <Col span={12}>
@@ -294,21 +400,27 @@ class MainSetting extends Component {
               <Block id="accessibility">
                 <Title>Accessibility</Title>
                 <Body>
-                  {
-                    accessibilities.map(accessibility => (
-                      <Row key={accessibility} style={{ width: '100%', marginBottom: 25 }}>
-                        <Col span={8}>
-                          <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibility}</span>
-                        </Col>
-                        <Col span={16}>
-                          <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
-                            <Radio value={1}>Enable</Radio>
-                            <Radio value={2}>Disable</Radio>
-                          </RadioGroup>
-                        </Col>
-                      </Row>
-                    ))
-                  }
+                  {accessibilities.map(accessibility => (
+                    <Row
+                      key={accessibility}
+                      style={{ width: '100%', marginBottom: 25 }}
+                    >
+                      <Col span={8}>
+                        <span style={{ fontSize: 13, fontWeight: 600 }}>
+                          {accessibility}
+                        </span>
+                      </Col>
+                      <Col span={16}>
+                        <RadioGroup
+                          onChange={this.markHandler}
+                          value={markAsDoneValue}
+                        >
+                          <Radio value={1}>Enable</Radio>
+                          <Radio value={2}>Disable</Radio>
+                        </RadioGroup>
+                      </Col>
+                    </Row>
+                  ))}
                 </Body>
               </Block>
 
@@ -319,10 +431,15 @@ class MainSetting extends Component {
                 <Body>
                   <Row style={{ width: '100%', marginBottom: 25 }}>
                     <Col span={8}>
-                      <span style={{ fontSize: 13, fontWeight: 600 }}>Configuration Panel</span>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>
+                        Configuration Panel
+                      </span>
                     </Col>
                     <Col span={16}>
-                      <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                      <RadioGroup
+                        onChange={this.markHandler}
+                        value={markAsDoneValue}
+                      >
                         <Radio value={1}>Enable</Radio>
                         <Radio value={2}>Disable</Radio>
                       </RadioGroup>
@@ -338,10 +455,15 @@ class MainSetting extends Component {
 
                   <Row style={{ width: '100%', marginBottom: 25 }}>
                     <Col span={8}>
-                      <span style={{ fontSize: 13, fontWeight: 600 }}>Save & Quit</span>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>
+                        Save & Quit
+                      </span>
                     </Col>
                     <Col span={16}>
-                      <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                      <RadioGroup
+                        onChange={this.markHandler}
+                        value={markAsDoneValue}
+                      >
                         <Radio value={1}>Enable</Radio>
                         <Radio value={2}>Disable</Radio>
                       </RadioGroup>
@@ -350,10 +472,15 @@ class MainSetting extends Component {
 
                   <Row style={{ width: '100%', marginBottom: 25 }}>
                     <Col span={8}>
-                      <span style={{ fontSize: 13, fontWeight: 600 }}>Exit & Discard</span>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>
+                        Exit & Discard
+                      </span>
                     </Col>
                     <Col span={16}>
-                      <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                      <RadioGroup
+                        onChange={this.markHandler}
+                        value={markAsDoneValue}
+                      >
                         <Radio value={1}>Enable</Radio>
                         <Radio value={2}>Disable</Radio>
                       </RadioGroup>
@@ -362,10 +489,15 @@ class MainSetting extends Component {
 
                   <Row style={{ width: '100%', marginBottom: 25 }}>
                     <Col span={8}>
-                      <span style={{ fontSize: 13, fontWeight: 600 }}>Extend Assessment Time</span>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>
+                        Extend Assessment Time
+                      </span>
                     </Col>
                     <Col span={16}>
-                      <RadioGroup onChange={this.markHandler} value={markAsDoneValue}>
+                      <RadioGroup
+                        onChange={this.markHandler}
+                        value={markAsDoneValue}
+                      >
                         <Radio value={1}>Enable</Radio>
                         <Radio value={2}>Disable</Radio>
                       </RadioGroup>
@@ -378,7 +510,9 @@ class MainSetting extends Component {
             <AdvancedButton>
               <Line />
               <Button onClick={() => this.advancedHandler()}>
-                {showAdvancedOption ? 'HIDE ADVANCED OPTIONS' : 'SHOW ADVANCED OPTIONS'}
+                {showAdvancedOption
+                  ? 'HIDE ADVANCED OPTIONS'
+                  : 'SHOW ADVANCED OPTIONS'}
               </Button>
               <Line />
             </AdvancedButton>
@@ -391,10 +525,17 @@ class MainSetting extends Component {
 
 MainSetting.propTypes = {
   history: PropTypes.func.isRequired,
-  windowWidth: PropTypes.number.isRequired
+  windowWidth: PropTypes.number.isRequired,
+  setMaxAttempts: PropTypes.func.isRequired,
+  maxAttempts: PropTypes.number.isRequired
 };
 
-export default MainSetting;
+export default connect(
+  state => ({
+    maxAttempts: getMaxAttemptSelector(state)
+  }),
+  { setMaxAttempts: setMaxAttemptsAction }
+)(MainSetting);
 
 const StyledAnchor = styled(Anchor)`
   .ant-anchor-link {

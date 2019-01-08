@@ -17,12 +17,14 @@ import {
   LOAD_ASSIGNMENTS,
   REMOVE_ASSIGNMENT,
   SET_TEST_DATA,
-  UPDATE_TEST_IMAGE
+  UPDATE_TEST_IMAGE,
+  SET_MAX_ATTEMPT
 } from '../constants/actions';
 
 const initialTestState = {
   title: 'New Test',
   description: '',
+  maxAttempts: 1,
   renderingType: 'assessment',
   status: 'draft',
   thumbnail: 'https://fakeimg.pl/500x135/',
@@ -156,6 +158,14 @@ const reducer = (state = initialState, { type, payload }) => {
         entity: {
           ...state.entity,
           thumbnail: payload.fileUrl
+        }
+      };
+    case SET_MAX_ATTEMPT:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          maxAttempts: payload.data
         }
       };
     default:

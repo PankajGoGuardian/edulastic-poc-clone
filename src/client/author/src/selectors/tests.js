@@ -31,6 +31,10 @@ export const getTestsLimitSelector = createSelector(
   stateSelector,
   state => state.limit
 );
+export const getMaxAttemptSelector = createSelector(
+  stateSelector,
+  state => state.entity.maxAttempts
+);
 export const getTestsCountSelector = createSelector(
   stateSelector,
   state => state.count
@@ -49,7 +53,9 @@ export const getTestItemsRowsSelector = createSelector(
           };
 
           if (item.data && item.data.questions && item.data.questions.length) {
-            referencePopulate = item.data.questions.find(q => q._id === widget.reference);
+            referencePopulate = item.data.questions.find(
+              q => q._id === widget.reference
+            );
           }
 
           if (
@@ -58,7 +64,9 @@ export const getTestItemsRowsSelector = createSelector(
             item.data.resources &&
             item.data.resources.length
           ) {
-            referencePopulate = item.data.resources.find(r => r._id === widget.reference);
+            referencePopulate = item.data.resources.find(
+              r => r._id === widget.reference
+            );
           }
 
           return {
@@ -108,7 +116,10 @@ export const getSummarySelector = createSelector(
     const testItems = state.testItems.reduce(reduceTestItems, []);
     const questions = testItems.reduce(toQuestions, []);
 
-    const groupedResult = groupBy(questions.reduce(toResult, []), item => item.standard.name);
+    const groupedResult = groupBy(
+      questions.reduce(toResult, []),
+      item => item.standard.name
+    );
 
     const result = [];
 

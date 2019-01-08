@@ -141,3 +141,6 @@ export const UPDATE_TEST_IMAGE = 'update test image';
 
 // logout
 export const AUTHOR_LOGOUT = 'LOGOUT'; // set redux store to initial values
+
+// test page
+export const SET_MAX_ATTEMPT = '[tests] maximum attempt';

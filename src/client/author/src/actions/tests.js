@@ -4,7 +4,8 @@ import {
   RECEIVE_TEST_BY_ID_REQUEST,
   SET_TEST_DATA,
   UPDATE_TEST_REQUEST,
-  SET_DEFAULT_TEST_DATA
+  SET_DEFAULT_TEST_DATA,
+  SET_MAX_ATTEMPT
 } from '../constants/actions';
 
 export const receiveTestsAction = payload => ({
@@ -34,4 +35,9 @@ export const setTestDataAction = data => ({
 
 export const setDefaultTestDataAction = () => ({
   type: SET_DEFAULT_TEST_DATA
+});
+
+export const setMaxAttemptsAction = data => ({
+  type: SET_MAX_ATTEMPT,
+  payload: { data }
 });

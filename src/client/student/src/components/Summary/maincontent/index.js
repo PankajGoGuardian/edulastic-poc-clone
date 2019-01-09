@@ -83,19 +83,19 @@ class SummaryTest extends Component {
                   <AnsweredTypeButtonContainer>
                     <StyledButton
                       onClick={() => this.handlerButton(0)}
-                      enabled={buttonIdx === 0 && true}
+                      enabled={buttonIdx === 0}
                     >
                       ALL
                     </StyledButton>
                     <StyledButton
-                      onClick={() => this.handlerButton(0)}
-                      enabled={buttonIdx === 1 && true}
+                      onClick={() => this.handlerButton(1)}
+                      enabled={buttonIdx === 1}
                     >
                       FLAGGED
                     </StyledButton>
                     <StyledButton
-                      onClick={() => this.handlerButton(0)}
-                      enabled={buttonIdx === 2 && true}
+                      onClick={() => this.handlerButton(2)}
+                      enabled={buttonIdx === 2}
                     >
                       SKIPPED
                     </StyledButton>
@@ -103,11 +103,36 @@ class SummaryTest extends Component {
                 </Col>
               </Options>
               <QuestionBlock>
-                <RedQuestionBlock><span>1</span></RedQuestionBlock>
-                <RedQuestionBlock><span>2</span></RedQuestionBlock>
-                <RedQuestionBlock><span>3</span></RedQuestionBlock>
-                <RedQuestionBlock><span>4</span></RedQuestionBlock>
-                <RedQuestionBlock><span>5</span></RedQuestionBlock>
+                <QuestionColorBlock type={1} isVisible={buttonIdx === 0 || buttonIdx === 1}>
+                  <span>1</span>
+                </QuestionColorBlock>
+                <QuestionColorBlock type={1} isVisible={buttonIdx === 0 || buttonIdx === 1}>
+                  <span>2</span>
+                </QuestionColorBlock>
+                <QuestionColorBlock type={2} isVisible={buttonIdx === 0}>
+                  <span>3</span>
+                </QuestionColorBlock>
+                <QuestionColorBlock type={3} isVisible={buttonIdx === 0 || buttonIdx === 2}>
+                  <span>4</span>
+                </QuestionColorBlock>
+                <QuestionColorBlock type={2} isVisible={buttonIdx === 0}>
+                  <span>5</span>
+                </QuestionColorBlock>
+                <QuestionColorBlock type={2} isVisible={buttonIdx === 0}>
+                  <span>6</span>
+                </QuestionColorBlock>
+                <QuestionColorBlock type={1} isVisible={buttonIdx === 0 || buttonIdx === 1}>
+                  <span>7</span>
+                </QuestionColorBlock>
+                <QuestionColorBlock type={1} isVisible={buttonIdx === 0 || buttonIdx === 1}>
+                  <span>8</span>
+                </QuestionColorBlock>
+                <QuestionColorBlock type={2} isVisible={buttonIdx === 0}>
+                  <span>9</span>
+                </QuestionColorBlock>
+                <QuestionColorBlock type={3} isVisible={buttonIdx === 0 || buttonIdx === 2}>
+                  <span>10</span>
+                </QuestionColorBlock>
               </QuestionBlock>
             </Questions>
           </MainContent>
@@ -264,13 +289,13 @@ const QuestionBlock = styled.div`
   margin-top: 30px;
 `;
 
-const RedQuestionBlock = styled.div`
+const QuestionColorBlock = styled.div`
   width: 60px;
   height: 40px;
   border-radius: 4px;
-  background-color: #ee1658;
+  background-color: ${props => (props.type === 1 ? '#ee1658' : props.type === 2 ? '#1fe3a1' : '#b1b1b1')};
   margin-right: 23px;
-  display: flex;
+  display: ${props => (props.isVisible ? 'flex' : 'none')};
   align-items: center;
   justify-content: center;
   margin-top: 5px;

@@ -68,19 +68,19 @@ class TestConfirmation extends Component {
                 <QuestionText>Questions</QuestionText>
                 <StyledButton
                   onClick={() => this.handlerButton(0)}
-                  enabled={buttonIdx === 0 && true}
+                  enabled={buttonIdx === 0}
                 >
                   ALL
                 </StyledButton>
                 <StyledButton
                   onClick={() => this.handlerButton(1)}
-                  enabled={buttonIdx === 1 && true}
+                  enabled={buttonIdx === 1}
                 >
                   FLAGGED
                 </StyledButton>
                 <StyledButton
                   onClick={() => this.handlerButton(2)}
-                  enabled={buttonIdx === 2 && true}
+                  enabled={buttonIdx === 2}
                 >
                   SKIPPED
                 </StyledButton>

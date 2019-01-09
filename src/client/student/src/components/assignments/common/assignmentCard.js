@@ -21,11 +21,6 @@ const AssignmentCard = ({
 }) => {
   const [isAttemptShow, setIsAttemptShow] = useState(false);
 
-  const startTest = () => {
-    initiateTestActivity(testId, _id);
-    history.push(`/student/test/${testId}`);
-  };
-
   const attemptHandler = () => {
     setIsAttemptShow(!isAttemptShow);
   };
@@ -38,6 +33,14 @@ const AssignmentCard = ({
       }
     });
     return data;
+  };
+
+  const startTest = () => {
+    const attemptsData = getAttemptsData(reports, _id);
+    if (attemptsData.length === 0) {
+      initiateTestActivity(testId, _id);
+    }
+    history.push(`/student/test/${testId}`);
   };
 
   const timeConverter = (data) => {

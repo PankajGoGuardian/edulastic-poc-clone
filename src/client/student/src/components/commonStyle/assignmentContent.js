@@ -2,7 +2,8 @@ import styled from 'styled-components';
 
 const AssignmentsContent = styled.div`
   border-radius: 10px;
-  z-index:1;
+  z-index: 0;
+  position: relative;
   @media (min-width: 1200px) {
     margin: 30px 30px;
   }

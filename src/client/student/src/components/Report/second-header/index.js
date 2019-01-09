@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import Breadcrumb from '../../../../../author/src/components/Breadcrumb';
+import Breadcrumb from '../../Breadcrumb';
 
 class SecondHeadbar extends Component {
   constructor(props) {

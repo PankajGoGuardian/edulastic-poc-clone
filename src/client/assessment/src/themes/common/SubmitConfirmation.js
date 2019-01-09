@@ -10,12 +10,11 @@ class SubmitConfirmation extends Component {
   render() {
     const { isVisible, onClose, finishTest } = this.props;
     return (
-      <Modal
+      <ModalConfirmation
         open={isVisible}
         onClose={onClose}
         showCloseIcon={false}
         center
-        styles={{ modal: { borderRadius: 5, minWidth: 630 } }}
       >
         <ModalContainer>
           <Title>Are you sure?</Title>
@@ -35,7 +34,7 @@ class SubmitConfirmation extends Component {
             </Row>
           </ButtonContainer>
         </ModalContainer>
-      </Modal>
+      </ModalConfirmation>
     );
   }
 }
@@ -47,6 +46,13 @@ SubmitConfirmation.propTypes = {
 };
 
 export default SubmitConfirmation;
+
+const ModalConfirmation = styled(Modal)`
+  border-radius: 5;  
+  @media screen and (min-width: 768px) {
+    min-width: 630px;
+  }
+`;
 
 const ModalContainer = styled.div`
   display: flex;

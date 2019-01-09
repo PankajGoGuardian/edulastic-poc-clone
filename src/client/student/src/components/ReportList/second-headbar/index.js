@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Select, Button, Icon } from 'antd';
-import Breadcrumb from '../../../../../author/src/components/Breadcrumb';
+import Breadcrumb from '../../Breadcrumb';
 
 const options = [
   'Question 1/10',

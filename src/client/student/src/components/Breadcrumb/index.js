@@ -10,16 +10,16 @@ const BreadCrumb = (props) => {
     <Container style={style}>
       <Breadcrumb>
         {Array.isArray(data) &&
-                    data.map((breadCrumb, index) => (
-                      <Breadcrumb.Item key={`bread${index}`}>
-                        {index === 0 && <Icon key={index} type="left" style={{ fontSize: 11 }} />}
-                        {index !== data.length - 1 ? (
-                          <Link to={breadCrumb.to}>{breadCrumb.title}</Link>
-                        ) : (
-                          breadCrumb.title
-                        )}
-                      </Breadcrumb.Item>
-                    ))}
+          data.map((breadCrumb, index) => (
+            <Breadcrumb.Item key={`bread${index}`}>
+              {index === 0 && <Icon key={index} type="left" style={{ fontSize: 11 }} />}
+              {index !== data.length - 1 ? (
+                <Link to={breadCrumb.to}>{breadCrumb.title}</Link>
+              ) : (
+                breadCrumb.title
+              )}
+            </Breadcrumb.Item>
+          ))}
       </Breadcrumb>
     </Container>
   );
@@ -54,5 +54,8 @@ const Container = styled.div`
 
   .anticon-left {
     margin-right: 5px;
+  }
+  @media screen and (max-width: 768px) {
+    top: 120px;
   }
 `;

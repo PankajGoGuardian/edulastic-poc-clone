@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Button } from 'antd';
 
-import Breadcrumb from '../../../../../author/src/components/Breadcrumb';
+import Breadcrumb from '../../Breadcrumb';
 
 class SecondHeadbar extends Component {
   constructor(props) {
@@ -24,7 +24,7 @@ class SecondHeadbar extends Component {
         <div>
           <Breadcrumb data={breadcrumbData} />
         </div>
-        <div>
+        <StatusBtnsContainer>
           <StyledButton
             onClick={() => this.handlerButton(0)}
             enabled={buttonIdx === 0 && true}
@@ -55,7 +55,7 @@ class SecondHeadbar extends Component {
           >
             0 GRADED
           </StyledButton>
-        </div>
+        </StatusBtnsContainer>
       </Container>
     );
   }
@@ -69,6 +69,19 @@ const Container = styled.div`
   justify-content: space-between;
   margin-left: 30px;
   margin-right: 40px;
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+const StatusBtnsContainer = styled.div`
+  @media screen and (max-width: 768px) {
+    margin-top: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+  }
 `;
 
 const StyledButton = styled(Button)`
@@ -86,5 +99,9 @@ const StyledButton = styled(Button)`
   span {
     font-size: 10px;
     font-weight: 600;
+  }
+  @media screen and (max-width: 768px) {
+    margin:5px 10px 0px 0px;
+    min-width: auto;
   }
 `;

@@ -56,7 +56,8 @@ const ReportListContent = ({ flag, testActivityId }) => (
 export default React.memo(ReportListContent);
 
 ReportListContent.propTypes = {
-  flag: PropTypes.bool.isRequired
+  flag: PropTypes.bool.isRequired,
+  testActivityId: PropTypes.string.isRequired
 };
 
 const Wrapper = styled.div`
@@ -73,23 +74,31 @@ const Header = styled.div`
 `;
 
 const Title = styled.div`
-  color: #12a6e8;
+  color: ${props => props.theme.reportList.reportListTitleColor};
   font-weight: 600;
-  font-size: 16px;
+  font-size: ${props => props.theme.reportList.reportListTitleTextSize};
 `;
 
 const BackBtn = styled.div`
-  color: #00b0ff;
-  border: 1px solid #00b0ff;
+  background: ${props => props.theme.reportList.reportListBackButtonBgColor};
+  color: ${props => props.theme.reportList.reportListBackButtonTextColor};
+  border: 1px solid ${props => props.theme.reportList.reportListBackButtonBgBorderColor};
   padding: 0.4rem 1.4rem;
-  font-size: 0.7rem;
+  font-size: ${props => props.theme.reportList.reportListBackButtonTextSize};
   cursor: pointer;
+  &:hover {
+    background: ${props => props.theme.reportList.reportListBackButtonBgHoverColor};
+    color: ${props => props.theme.reportList.reportListBackButtonTextHoverColor};
+    border: 1px solid ${props => props.theme.reportList.reportListBackButtonBgBorderHoverColor};
+  }
 `;
 
 const QuestionWrapper = styled.div``;
 
 const Question = styled.div`
-  border: 0.1rem solid #e61e54;
+  border: 0.1rem solid ${props => props.theme.reportList.reportListQuestionBorderColor};
+  color: ${props => props.theme.reportList.reportListQuestionTextColor};
+  font-size: ${props => props.theme.reportList.reportListQuestionTextSize};
   padding: 1rem;
   border-radius: 0.5rem;
   word-break: break-all;
@@ -105,26 +114,26 @@ const FeedbackWrapper = styled.div`
 
 const Total = styled.div`
   font-weight: 600;
-  font-size: 1.5rem;
+  font-size: ${props => props.theme.reportList.reportListTotalScoreTextSize};
   text-align: center;
-  color: #434b5d;
+  color: ${props => props.theme.reportList.reportListTotalScoreTextColor};
 `;
 const Score = styled(Total)`
-  border-bottom: 0.2rem solid #434b5d;
+  border-bottom: 0.2rem solid ${props => props.theme.reportList.scoreBoxBorderBottomColor};
 `;
 const Feedback = styled.div``;
 
 const ScoreWrapper = styled.div``;
 const FeedbackText = styled.div`
-  color: #444444;
+  color: ${props => props.theme.reportList.teacherFeedbarLabelColor};
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: ${props => props.theme.reportList.teacherFeedbarLabelFontSize};
   padding-bottom: 1rem;
 `;
 const FeedbackGiven = styled.div`
   padding: 0.5rem 1rem 1rem 1rem;
-  color: #878282;
-  font-size: 0.8rem;
+  color: ${props => props.theme.reportList.teacherFeedbarTextColor};
+  font-size: ${props => props.theme.reportList.teacherFeedbarTextSize};
 `;
 const ReportListWrapper = styled.div`
   display: flex;
@@ -138,5 +147,6 @@ const SolutionWrapper = styled.div`
 const Answer = styled.span``;
 const AnswerText = styled(Answer)`
   font-weight: 700;
-  color: #444444;
+  color: ${props => props.theme.reportList.reportListAnswerLabelColor};
+  font-size: ${props => props.theme.reportList.reportListAnswerLabelFontSize};
 `;

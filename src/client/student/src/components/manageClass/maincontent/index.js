@@ -11,12 +11,8 @@ const ManageClassContent = ({ flag }) => (
       <Wrapper>
         <Content>
           <IconManage />
-          <ArchiveText style={{ fontSize: 17, fontWeight: 700, lineHeight: 4 }}>
-            No archived classes
-          </ArchiveText>
-          <ArchiveText style={{ fontSize: 15 }}>
-            You have no archived classes available
-          </ArchiveText>
+          <ArchiveText>No archived classes</ArchiveText>
+          <ArchiveSubText>You have no archived classes available</ArchiveSubText>
         </Content>
       </Wrapper>
     </ManageWrapper>
@@ -32,9 +28,10 @@ ManageClassContent.propTypes = {
 const Wrapper = styled.div`
   padding: 2rem 5rem;
 `;
+
 const ManageWrapper = styled(AssignmentContentWrapper)`
-  background: #efefef;
-  border: 2px solid #e9e9e9;
+  background: ${props => props.theme.manageClass.manageClassBgColor};
+  border: 2px solid ${props => props.theme.manageClass.manageClassBgBorderColor};
   padding: 0rem;
 `;
 
@@ -47,6 +44,15 @@ const IconManage = styled(IconManageClass)`
   width: 60px !important;
   height: 80px !important;
 `;
+
 const ArchiveText = styled.div`
-  color: #434b5d;
+  color: ${props => props.theme.manageClass.NoDataArchiveTextColor};
+  font-size: ${props => props.theme.manageClass.NoDataArchiveTextSize};
+  font-weight: 700;
+  line-height: 4;
+`;
+
+const ArchiveSubText = styled.div`
+  font-size: ${props => props.theme.manageClass.NoDataArchiveSubTextSize};
+  color: ${props => props.theme.manageClass.NoDataArchiveSubTextColor};
 `;

@@ -1,6 +1,5 @@
 import { Table } from 'antd';
 import styled from 'styled-components';
-import { white, secondaryTextColor } from '@edulastic/colors';
 
 const StyledTable = styled(Table)`
   .ant-table table {
@@ -14,35 +13,40 @@ const StyledTable = styled(Table)`
   }
 
   .ant-table-thead > tr > th {
-    background: #f5f9fe;
-    font-size: 13px;
+    background: ${props => props.theme.skillReport.tableHeaderBgColor};
+    font-size: ${props => props.theme.skillReport.tableHeaderTextSize};
     font-weight: 600;
-    color: ${secondaryTextColor};
+    color: ${props => props.theme.skillReport.tableHeaderTextColor};
+    &:hover {
+      background: ${props => props.theme.skillReport.tableHeaderHoverBgColor} !important;
+      color: ${props => props.theme.skillReport.tableHeaderHoverTextColor} !important;
+    }
     @media screen and (max-width: 767px) {
       word-break:unset;
     }    
   }
 
   .ant-table-row {
-    font-size: 13px;
+    font-size: ${props => props.theme.skillReport.tableDataFontSize};
 
     td {
-      background: ${white} !important;
-      border-top: 1px solid #f8f8f8;
-      border-bottom: 1px solid #f8f8f8;
+      background: ${props => props.theme.skillReport.tableDataBgColor} !important;
+      border-top: 1px solid ${props => props.theme.skillReport.tableDataBgBorderColor};
+      border-bottom: 1px solid ${props => props.theme.skillReport.tableDataBgBorderColor};
+      color: ${props => props.theme.skillReport.tableDataTextColor};
       @media screen and (max-width: 767px) {
         word-break:unset;
       }   
     }
 
     td:first-child {
-      border-left: 1px solid #f8f8f8;
-      border-radius: 5px;
+      border-left: 1px solid ${props => props.theme.skillReport.tableDataBgBorderColor};
+      border-radius: 5px 0px 0px 5px;
     }
 
     td:last-child {
-      border-radius: 5px;
-      border-right: 1px solid #f8f8f8;
+      border-radius: 0px 5px 5px 0px;
+      border-right: 1px solid ${props => props.theme.skillReport.tableDataBgBorderColor};
     }
 
     &:hover {

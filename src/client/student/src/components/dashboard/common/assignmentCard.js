@@ -1,8 +1,9 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { withTheme } from 'styled-components';
 import { Row, Col, Icon, Button } from 'antd';
 
 import { initiateTestActivityAction } from '../../../actions/test';
@@ -17,7 +18,8 @@ const AssignmentCard = ({
     test
   },
   reports,
-  history
+  history,
+  theme
 }) => {
   const startTest = () => {
     initiateTestActivity(testId, _id);
@@ -58,13 +60,11 @@ const AssignmentCard = ({
         <CardTitle>{test && test.title}</CardTitle>
         <CardDate>
           <Icon
-            type="clock-circle"
-            theme="outlined"
-            style={{ color: '#ee1658' }}
+            type={theme.assignment.cardTimeIconType}
+          // theme="outlined"
           />
           <span>
-            <span className="bold">Due on&nbsp;</span>
-            {timeConverter(endDate)}
+            <b> &nbsp; Due on </b> {timeConverter(endDate)}
           </span>
         </CardDate>
         <div>
@@ -73,7 +73,7 @@ const AssignmentCard = ({
           </StatusButton>
         </div>
       </Col>
-      <FlexCol span={15}>
+      <FlexCol span={5}>
         <DetailContainer>
           <StartAssignButton onClick={startTest}>
             {attemptsData.length === 0 && <span>START ASSIGNMENT</span>}
@@ -85,18 +85,25 @@ const AssignmentCard = ({
   );
 };
 
-export default withRouter(connect(
-  null,
-  {
-    initiateTestActivity: initiateTestActivityAction
-  }
-)(AssignmentCard));
+const enhance = compose(
+  withTheme,
+  withRouter,
+  connect(
+    null,
+    {
+      initiateTestActivity: initiateTestActivityAction
+    }
+  )
+);
+
+export default enhance(AssignmentCard);
 
 AssignmentCard.propTypes = {
   data: PropTypes.object.isRequired,
   reports: PropTypes.array,
   initiateTestActivity: PropTypes.func.isRequired,
-  history: PropTypes.func.isRequired
+  history: PropTypes.func.isRequired,
+  theme: PropTypes.func.isRequired
 };
 
 AssignmentCard.defaultProps = {
@@ -153,15 +160,15 @@ const ImageWrapper = styled.div`
 `;
 
 const CardTitle = styled.div`
-  font-family: Open Sans;
-  font-size: 16px;
+  font-family: ${props => props.theme.assignment.cardTitleFontFamily};
+  font-size: ${props => props.theme.assignment.cardTitleFontSize};
   font-weight: bold;
   font-style: normal;
   font-stretch: normal;
   line-height: 1.38;
   letter-spacing: normal;
   text-align: left;
-  color: #12a6e8;
+  color: ${props => props.theme.assignment.cardTitleColor};
   padding-bottom: 6px;
 
   @media screen and (max-width: 767px) {
@@ -172,20 +179,18 @@ const CardTitle = styled.div`
 
 const CardDate = styled.div`
   display: flex;
-  font-family: Open Sans;
-  font-size: 13px;
+  font-family: ${props => props.theme.assignment.cardTitleFontFamily};
+  font-size: ${props => props.theme.assignment.cardTimeTextFontSize};
   font-weight: normal;
   font-style: normal;
   font-stretch: normal;
   line-height: 1.38;
   letter-spacing: normal;
   text-align: left;
-  color: #444444;
+  color: ${props => props.theme.assignment.cardTimeTextColor};
   padding-bottom: 8px;
-
-  .bold {
-    font-weight: 600;
-    padding-left: 10px;
+  i { 
+    color: ${props => props.theme.assignment.cardTimeIconColor}; 
   }
 
   .anticon-clock-circle {
@@ -207,8 +212,12 @@ const StatusButton = styled.div`
   width: 135px;
   height: 23.5px;
   border-radius: 5px;
-  background-color: ${props => (props.isSubmitted ? 'rgba(154, 0, 255, 0.2)' : 'rgba(0, 176, 255, 0.2)')};
-  font-size: 10px;
+  background-color: ${props => (
+    props.isSubmitted ?
+      props.theme.assignment.cardSubmitLabelBgColor :
+      props.theme.assignment.cardNotStartedLabelBgColor
+  )};
+  font-size: ${props => props.theme.assignment.cardSubmitLabelFontSize};
   font-weight: bold;
   line-height: 1.38;
   letter-spacing: 0.2px;
@@ -218,7 +227,11 @@ const StatusButton = styled.div`
   span {
     position: relative;
     top: -1px;
-    color: ${props => (props.isSubmitted ? '#7d43a4' : '#0083be')};
+    color: ${props => (
+    props.isSubmitted ?
+      props.theme.assignment.cardSubmitLabelTextColor :
+      props.theme.assignment.cardNotStartedLabelTextColor
+  )};
   }
 
   @media screen and (max-width: 767px) {
@@ -238,23 +251,24 @@ const StartAssignButton = styled(Button)`
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
-  border: solid 1px #12a6e8;
+  background: ${props => props.theme.assignment.cardRetakeBtnBgColor};
+  border: solid 1px ${props => props.theme.assignment.cardRetakeBtnBgHoverColor};
   width: 100%;
   padding: 5px 20px;
   cursor: pointer;
   float: right;
 
   span {
-    color: #00b0ff;
-    font-size: 11px;
+    color: ${props => props.theme.assignment.cardRetakeBtnTextColor};
+    font-size: ${props => props.theme.assignment.cardRetakeBtnFontSize};
     font-weight: 600;
     letter-spacing: 0.2px;
   }
 
   &:hover {
-    background-color: #12a6e8;
+    background-color: ${props => props.theme.assignment.cardRetakeBtnBgHoverColor};
     span {
-      color: #ffffff;
+      color: ${props => props.theme.assignment.cardRetakeBtnTextHoverColor};
     }
   }
 

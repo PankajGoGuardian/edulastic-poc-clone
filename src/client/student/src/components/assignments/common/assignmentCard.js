@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { withTheme } from 'styled-components';
 import { Row, Col, Icon, Button } from 'antd';
 
 import { initiateTestActivityAction } from '../../../actions/test';
@@ -17,7 +18,8 @@ const AssignmentCard = ({
     test
   },
   reports,
-  history
+  history,
+  theme
 }) => {
   const [isAttemptShow, setIsAttemptShow] = useState(false);
 
@@ -79,12 +81,11 @@ const AssignmentCard = ({
         <CardDetails>
           <CardTitle>{test && test.title}</CardTitle>
           <CardDate>
-            <ClockIcon
-              type="clock-circle"
-              theme="outlined"
+            <Icon
+              type={theme.assignment.cardTimeIconType}
             />
             <span>
-              <StrongText>Due on&nbsp;</StrongText>
+              <StrongText>Due on </StrongText>
               {timeConverter(endDate)}
             </span>
           </CardDate>
@@ -124,7 +125,8 @@ const AssignmentCard = ({
               attemptsData.length > 0 && (
                 <AnswerAndScore>
                   <span>
-                    {attemptsData[0].correctAnswers ? attemptsData[0].correctAnswers : 0}/{attemptsData[0].totalQuestion ? attemptsData[0].totalQuestion : 0}
+                    {attemptsData[0].correctAnswers ? attemptsData[0].correctAnswers : 0}
+                    /{attemptsData[0].totalQuestion ? attemptsData[0].totalQuestion : 0}
                   </span>
                   <Title>Correct Answer</Title>
                 </AnswerAndScore>
@@ -154,14 +156,15 @@ const AssignmentCard = ({
                       <span>{UnixConverter(data.createdAt / 1000)}</span>
                     </Attempts>
                     <AnswerAndScore>
-                      <span>{data.correctAnswers ? data.correctAnswers : 0}/{data.totalQuestion ? data.totalQuestion : 0}</span>
+                      <span>{data.correctAnswers ? data.correctAnswers : 0}
+                        /{data.totalQuestion ? data.totalQuestion : 0}
+                      </span>
                     </AnswerAndScore>
                     <AnswerAndScore>
                       <span>{data.score ? data.score : 0}%</span>
                     </AnswerAndScore>
-                    <SpaceBetween />
                     <AnswerAndScoreReview>
-                      <span>REVIEW</span>
+                      <div>REVIEW</div>
                     </AnswerAndScoreReview>
                   </RowData>
                 </AttemptsData>)
@@ -172,18 +175,25 @@ const AssignmentCard = ({
   );
 };
 
-export default withRouter(connect(
-  null,
-  {
-    initiateTestActivity: initiateTestActivityAction
-  }
-)(AssignmentCard));
+const enhance = compose(
+  withTheme,
+  withRouter,
+  connect(
+    null,
+    {
+      initiateTestActivity: initiateTestActivityAction
+    }
+  )
+);
+
+export default enhance(AssignmentCard);
 
 AssignmentCard.propTypes = {
   data: PropTypes.object.isRequired,
   reports: PropTypes.array,
   initiateTestActivity: PropTypes.func.isRequired,
-  history: PropTypes.func.isRequired
+  history: PropTypes.func.isRequired,
+  theme: PropTypes.func.isRequired
 };
 
 AssignmentCard.defaultProps = {
@@ -197,18 +207,6 @@ const CardWrapper = styled(Row)`
   &:last-child {
     border-bottom: 0px;
   }
-  .ButtonAndDetail{
-    display: flex;
-    flex-direction: column; 
-    justify-content: center;
-    @media screen and (min-width: 1025px) {
-      width: 72%;
-      margin-left:auto;
-    }   
-    @media screen and (max-width: 767px) {
-      width: 100%;
-    }
-  }
   img {
     max-width: 168.5px;
     border-radius: 10px;
@@ -219,6 +217,7 @@ const CardWrapper = styled(Row)`
     flex-direction: column;
   }
 `;
+
 const ButtonAndDetail = styled(Col)`
   display: flex;
   flex-direction: column;
@@ -227,7 +226,7 @@ const ButtonAndDetail = styled(Col)`
     margin-left:auto;
   }   
   @media screen and (max-width: 767px) {
-    width: 100%;
+    flex-direction: column;
   }
 `;
 
@@ -263,30 +262,34 @@ const CardDetails = styled(Col)`
 `;
 
 const CardTitle = styled.div`
-  font-family: Open Sans;
-  font-size: 16px;
+  font-family: ${props => props.theme.assignment.cardTitleFontFamily};
+  font-size: ${props => props.theme.assignment.cardTitleFontSize};
   font-weight: bold;
   font-style: normal;
   font-stretch: normal;
   line-height: 1.38;
   letter-spacing: normal;
   text-align: left;
-  color: #12a6e8;
+  color: ${props => props.theme.assignment.cardTitleColor};
   padding-bottom: 6px;
 `;
 
 const CardDate = styled.div`
   display: flex;
-  font-family: Open Sans;
-  font-size: 13px;
+  font-family: ${props => props.theme.assignment.cardTitleFontFamily};
+  font-size: ${props => props.theme.assignment.cardTimeTextFontSize};
   font-weight: normal;
   font-style: normal;
   font-stretch: normal;
   line-height: 1.38;
   letter-spacing: normal;
   text-align: left;
-  color: #444444;
+  color: ${props => props.theme.assignment.cardTimeTextColor};
   padding-bottom: 8px;
+  i { 
+    color: ${props => props.theme.assignment.cardTimeIconColor}; 
+  }
+
   .anticon-clock-circle {
     svg {
       width: 17px;
@@ -295,20 +298,21 @@ const CardDate = styled.div`
   }
 `;
 
-const ClockIcon = styled(Icon)`
-  color: #ee1658;
-`;
 const StrongText = styled.span`
   font-weight: 600;
-  padding-left: 10px;
+  padding-left: 5px;
 `;
 
 const StatusButton = styled.div`
   width: 135px;
   height: 23.5px;
   border-radius: 5px;
-  background-color: ${props => (props.isSubmitted ? 'rgba(154, 0, 255, 0.2)' : 'rgba(0, 176, 255, 0.2)')};
-  font-size: 10px;
+  background-color: ${props => (
+    props.isSubmitted ?
+      props.theme.assignment.cardSubmitLabelBgColor :
+      props.theme.assignment.cardNotStartedLabelBgColor
+  )};
+  font-size: ${props => props.theme.assignment.cardSubmitLabelFontSize};
   font-weight: bold;
   line-height: 1.38;
   letter-spacing: 0.2px;
@@ -317,7 +321,11 @@ const StatusButton = styled.div`
   span {
     position: relative;
     top: -1px;
-    color: ${props => (props.isSubmitted ? '#7d43a4' : '#0083be')};
+    color: ${props => (
+    props.isSubmitted ?
+      props.theme.assignment.cardSubmitLabelTextColor :
+      props.theme.assignment.cardNotStartedLabelTextColor
+  )};
   }
   @media screen and (max-width: 767px) {
      width: 100%;
@@ -339,22 +347,23 @@ const StartAssignButton = styled(Button)`
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
-  border: solid 1px #12a6e8;
+  background: ${props => props.theme.assignment.cardRetakeBtnBgColor};
+  border: solid 1px ${props => props.theme.assignment.cardRetakeBtnBgHoverColor};
   width: 100%;
   padding: 5px 20px;
   cursor: pointer;
   float: right;
   margin: 10px 15px 0 10px;
   span {
-    color: #00b0ff;
-    font-size: 11px;
+    color: ${props => props.theme.assignment.cardRetakeBtnTextColor};
+    font-size: ${props => props.theme.assignment.cardRetakeBtnFontSize};
     font-weight: 600;
     letter-spacing: 0.2px;
   }
   &:hover {
-    background-color: #12a6e8;
+    background-color: ${props => props.theme.assignment.cardRetakeBtnBgHoverColor};
     span {
-      color: #ffffff;
+      color: ${props => props.theme.assignment.cardRetakeBtnTextHoverColor};
     }
   }
   @media screen and (min-width: 1025px) {
@@ -375,27 +384,24 @@ const AnswerAndScore = styled.div`
   align-items: center;
   flex-direction: column;
   span {
-    font-size: 31px;
+    font-size: ${props => props.theme.assignment.cardAnswerAndScoreTextSize};
     font-weight: bold;
-    color: #434b5d;
+    color: ${props => props.theme.assignment.cardAnswerAndScoreTextColor};
   }
   @media screen and (max-width: 767px) {
     width:33%;
   }
 `;
-const SpaceBetween = styled.div`
-  width:10px;
-`;
+
 const AnswerAndScoreReview = styled(AnswerAndScore)`
-  span{
-    color: #00b0ff;
+  div {
+    display: inline-block;
+    font-size: ${props => props.theme.assignment.attemptsRowReviewLinkSize};
+    color: ${props => props.theme.assignment.attemptsRowReviewLinkColor};
     cursor: pointer;
   }
   @media screen and (min-width: 769px) {
     width:200px;
-  }
-  @media screen and (max-width: 767px) {
-    width:33%;
   }
 `;
 
@@ -405,22 +411,22 @@ const DetailContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  @media screen and (max-width: 1024px) {
+  @media screen and(max-width: 1024px) {
     flex-direction: column;
   }
 `;
 
 const AttemptsTitle = styled.div`
-  font-size: 12px;
+  font-size: ${props => props.theme.assignment.cardAttemptLinkFontSize};
   font-weight: 600;
-  color: #12a6e8;
+  color: ${props => props.theme.assignment.cardAttemptLinkTextColor};
   cursor: pointer;
 `;
 
 const Title = styled.div`
-  font-size: 12px;
+  font-size: ${props => props.theme.assignment.cardResponseBoxLabelsFontSize};
   font-weight: 600;
-  color: #434b5d;
+  color: ${props => props.theme.assignment.cardResponseBoxLabelsColor};
 `;
 
 const AttemptsData = styled.div`
@@ -434,18 +440,18 @@ const RowData = styled.div`
   border-radius: 4px;
   height: 30px;
   div {
-    background-color: #f8f8f8;
+    background-color: ${props => props.theme.assignment.attemptsReviewRowBgColor};
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    @media screen and (max-width: 767px){
+    @media screen and(max-width: 767px){
       justify-content: flex-start;
     }
   }
   span {
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    color: #9ca0a9;
+    font-size: ${props => props.theme.assignment.attemptsReviewRowFontSize};
+    font-weight: 600;
+    color: ${props => props.theme.assignment.attemptsReviewRowTextColor};
   }
 `;

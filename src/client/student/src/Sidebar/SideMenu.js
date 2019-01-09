@@ -460,7 +460,10 @@ const MenuFooter = styled.div``;
 const QuestionButton = styled.div`
   border-radius: 65px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  color: ${props => props.theme.helpButtonTextColor};
   background-color: ${props => props.theme.helpButtonBgColor};
+  font-size: ${props => props.theme.helpButtonFontSize};
+  font-weight: 600;
   height: 60px;
   padding-left: 23px;
   margin: 10px 21px;
@@ -472,10 +475,10 @@ const QuestionButton = styled.div`
   &:hover {
     background: ${props => props.theme.helpButtonBgHoverColor};
     svg {
-      fill: ${props => props.theme.helpButtonSvgHoverColor};
+      fill: ${props => props.theme.helpButtonTextHoverColor};
     }
     span {
-      color: ${props => props.theme.helpButtonSvgHoverColor};
+      color: ${props => props.theme.helpButtonTextHoverColor};
     }
   }
 `;

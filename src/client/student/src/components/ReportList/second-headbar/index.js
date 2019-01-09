@@ -61,6 +61,15 @@ const Container = styled.div`
 
 const BreadcrumbContainer = styled.div`
   flex: 1;
+  .ant-breadcrumb-link {
+    color: ${props => props.theme.breadcrumbs.breadcrumbTextColor};
+    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize};
+    text-transform: uppercase;
+    font-weight: 600;
+    a {
+      color: ${props => props.theme.breadcrumbs.breadcrumbLinkColor};
+    }
+  }
 `;
 
 const QuestionSelect = styled.div`

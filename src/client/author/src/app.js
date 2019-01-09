@@ -102,7 +102,7 @@ const MainContainer = styled.div`
     top: 0;
     right: 0;
     left: ${props => (props.isCollapsed ? '100px' : '240px')};
-    z-index: 1;
+    z-index: 10;
   }
   @media (max-width: 768px) {
     padding-left: 0px;

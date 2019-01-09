@@ -51,8 +51,12 @@ function* receiveItemSaga({ payload }) {
 const getQuestionIds = (item) => {
   let questions = [];
   item.rows.forEach((row) => {
-    questions = [...questions, ...row.widgets.map(widget => widget.reference)];
+    questions = [
+      ...questions,
+      ...row.widgets.map(widget => widget.entity && widget.entity.id)
+    ].filter(q => !!q);
   });
+
   return questions;
 };
 

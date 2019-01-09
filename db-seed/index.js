@@ -8,13 +8,13 @@ const config = {
     port: process.env.DB_PORT || 27017,
     name: process.env.DB_NAME || 'edulastic-poc'
   },
-  dropDatabase: false,
+  dropDatabase: false
 };
 const seeder = new Seeder(config);
 const collections = seeder.readCollectionsFromPath(
   path.resolve('./db-seed/data'),
   {
-    transformers: [Seeder.Transformers.replaceDocumentIdWithUnderscoreId],
+    transformers: [Seeder.Transformers.replaceDocumentIdWithUnderscoreId]
   },
 );
 

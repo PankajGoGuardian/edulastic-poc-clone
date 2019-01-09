@@ -52,9 +52,9 @@ class QuestionMetadata extends Component {
         _id: PropTypes.string.isRequired,
         level: PropTypes.string.isRequired,
         identifier: PropTypes.string.isRequired,
-        tloIdentifier: PropTypes.string,
-        eloIdentifier: PropTypes.string,
-        subEloIdentifier: PropTypes.string
+        tloId: PropTypes.string,
+        eloId: PropTypes.string,
+        subEloId: PropTypes.string
       }))
     })),
     questionData: PropTypes.shape({
@@ -130,9 +130,9 @@ class QuestionMetadata extends Component {
       'level',
       'grades',
       'identifier',
-      'tloIdentifier',
-      'eloIdentifier',
-      'subEloIdentifier'
+      'tloId',
+      'eloId',
+      'subEloId'
     ]);
     const newStandards = [...standards, newStandard];
     this.setState({ standards: newStandards });

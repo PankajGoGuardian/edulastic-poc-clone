@@ -11,10 +11,7 @@ const getObjectIdByName = (name) => {
   return new ObjectID(hash.substring(0, 24));
 };
 
-const curriculumOneId = getObjectIdByName('curriculumOne10');
-
 module.exports = {
   getObjectId,
-  getObjectIdByName,
-  curriculumOneId
+  getObjectIdByName
 };

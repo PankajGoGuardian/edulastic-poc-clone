@@ -24,7 +24,10 @@ When starting with PM2 on server, need to build first and start `./.build/server
 **Seed Data**
 
 If you need to seed data run `yarn seed`
+
 Specify DB_HOST, DB_PORT, DB_NAME in .env if needed.
+
+Detailed information in `db-seed/README.md`
 
 ### Routes
 

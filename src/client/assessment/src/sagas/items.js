@@ -71,7 +71,6 @@ function* saveUserResponse({ payload }) {
       itemAnswers[question] = answers[question];
     });
     const testItemId = currentItem._id;
-
     yield call(testItemActivityApi.create, {
       answers: itemAnswers,
       testItemId,

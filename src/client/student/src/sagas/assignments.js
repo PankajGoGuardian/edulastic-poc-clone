@@ -27,18 +27,17 @@ function* loadAssignments() {
 // create/load a testActivity and load it to store(test).
 function* initiateTestActivity({ payload }) {
   try {
-    const { testId, assignmentId } = payload;
-    if (!testId || !assignmentId) return;
+    const { assignmentId } = payload;
+    if (!assignmentId) return;
 
-    const { testActivityId } = yield testActivityApi.create({
-      testId,
+    const { _id } = yield testActivityApi.create({
       assignmentId
     });
 
     yield put({
       type: SET_TEST_ACTIVITY_ID,
       payload: {
-        testActivityId
+        testActivityId: _id
       }
     });
     yield put({

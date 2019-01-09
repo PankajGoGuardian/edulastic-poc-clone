@@ -1,14 +1,14 @@
 import API from './utils/API';
 
 const api = new API();
-const prefix = '/usertestitemactivity';
+const prefix = '/test-activity';
 
-const create = data =>
+const create = ({ answers, testItemId, testActivityId }) =>
   api
     .callApi({
-      url: `${prefix}`,
+      url: `${prefix}/${testActivityId}/test-item/${testItemId}`,
       method: 'post',
-      data
+      data: { userResponse: answers }
     })
     .then(result => result.data.result);
 

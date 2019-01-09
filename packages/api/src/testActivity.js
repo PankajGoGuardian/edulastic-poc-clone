@@ -1,7 +1,7 @@
 import API from '@edulastic/api/src/utils/API';
 
 const api = new API();
-const prefix = '/usertestactivity';
+const prefix = '/test-activity';
 
 const create = data =>
   api
@@ -23,9 +23,9 @@ const fetchReports = () =>
 const submit = testActivityId =>
   api
     .callApi({
-      url: `${prefix}/submit`,
-      method: 'post',
-      data: { testActivityId }
+      url: `${prefix}/${testActivityId}/status`,
+      method: 'put',
+      data: { status: 1 }
     })
     .then(result => result.data);
 

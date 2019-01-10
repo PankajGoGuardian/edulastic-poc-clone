@@ -15,15 +15,27 @@ class SecondHeadbar extends Component {
     const { breadcrumbData } = this.state;
     return (
       <Container>
-        <div>
+        <BreadcrumbWrapper>
           <Breadcrumb data={breadcrumbData} />
-        </div>
+        </BreadcrumbWrapper>
       </Container>
     );
   }
 }
 
 export default SecondHeadbar;
+
+const BreadcrumbWrapper = styled.div`
+  .ant-breadcrumb-link {
+    color: ${props => props.theme.breadcrumbs.breadcrumbTextColor};
+    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize};
+    text-transform: uppercase;
+    font-weight: 600;
+    a {
+      color: ${props => props.theme.breadcrumbs.breadcrumbLinkColor};
+    }
+  }
+`;
 
 const Container = styled.div`
   display: flex;

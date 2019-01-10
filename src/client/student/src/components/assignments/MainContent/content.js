@@ -81,7 +81,7 @@ const Container = styled.div`
   margin: 30px 30px;
   border-radius: 10px;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  background-color: #ffffff;
+  background-color: ${props => props.theme.assignment.cardContainerBgColor};
   min-height: 550px;
 
   @media screen and (max-width: 767px) {
@@ -90,7 +90,7 @@ const Container = styled.div`
 `;
 
 const InnerContent = styled.div`
-  padding: 5px 46px;
+  padding: 5px 30px;
 
   @media screen and (max-width: 1300px) {
     padding: 5px 15px;

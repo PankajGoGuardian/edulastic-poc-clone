@@ -21,9 +21,9 @@ class SecondHeadbar extends Component {
     const { buttonIdx, breadcrumbData } = this.state;
     return (
       <Container>
-        <div>
+        <BreadcrumbWrapper>
           <Breadcrumb data={breadcrumbData} />
-        </div>
+        </BreadcrumbWrapper>
         <StatusBtnsContainer>
           <StyledButton
             onClick={() => this.handlerButton(0)}
@@ -84,20 +84,33 @@ const StatusBtnsContainer = styled.div`
   }
 `;
 
+const BreadcrumbWrapper = styled.div`
+  .ant-breadcrumb-link {
+    color: ${props => props.theme.breadcrumbs.breadcrumbTextColor};
+    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize};
+    text-transform: uppercase;
+    font-weight: 600;
+    a {
+      color: ${props => props.theme.breadcrumbs.breadcrumbLinkColor};
+    }
+  }
+`;
+
 const StyledButton = styled(Button)`
   height: 24px;
-  color: ${props => (props.enabled ? '#fff' : '#00b0ff')};
-  border: 1px solid #00b0ff;
+  color: ${props => (props.enabled ? props.theme.headerFilters.headerSelectedFilterTextColor : props.theme.headerFilters.headerFilterTextColor)};
+  border: 1px solid ${props => props.theme.headerFilters.headerFilterBgBorderColor};
   border-radius: 4px;
   margin-left: 20px;
   min-width: 85px;
-  background: ${props => (props.enabled ? '#00b0ff' : 'transparent')};
+  font-size: ${props => props.theme.headerFilters.headerFilterTextSize};
+  background: ${props => (props.enabled ? props.theme.headerFilters.headerSelectedFilterBgColor : props.theme.headerFilters.headerFilterBgColor)};
   &:focus, &:active {
-    color: ${props => (props.enabled ? '#fff' : '#00b0ff')};
-    background: ${props => (props.enabled ? '#00b0ff' : 'transparent')};
+    color: ${props => (props.enabled ? props.theme.headerFilters.headerSelectedFilterTextColor : props.theme.headerFilters.headerFilterTextColor)};
+    background: ${props => (props.enabled ? props.theme.headerFilters.headerSelectedFilterBgColor : props.theme.headerFilters.headerFilterBgColor)};
   }
   span {
-    font-size: 10px;
+    font-size: ${props => props.theme.headerFilters.headerFilterTextSize};
     font-weight: 600;
   }
   @media screen and (max-width: 768px) {

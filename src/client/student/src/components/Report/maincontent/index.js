@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
+import { compose } from 'redux';
+import styled, { withTheme } from 'styled-components';
 import { Icon, Row, Col } from 'antd';
 import PropTypes from 'prop-types';
 import { uniqBy } from 'lodash';
@@ -18,7 +19,8 @@ const Report = ({ _id,
   correctAnswers,
   assignmentId,
   reports,
-  assignments
+  assignments,
+  theme
 }) => {
   const [isAttemptShow, setIsAttemptShow] = useState(false);
   const timeConverter = (UNIX_timestamp) => {
@@ -68,12 +70,10 @@ const Report = ({ _id,
           <CardTitle>{title}</CardTitle>
           <CardDate>
             <Icon
-              type="clock-circle"
-              theme="outlined"
-              style={{ color: '#ee1658' }}
+              type={theme.assignment.cardTimeIconType}
             />
             <span>
-              <StrongText>Finished in&nbsp;</StrongText>
+              <StrongText>Finished in </StrongText>
               {timeConverter(createdAt / 1000)}
             </span>
           </CardDate>
@@ -138,7 +138,7 @@ const Report = ({ _id,
                     </AnswerAndScore>
                     <AnswerAndScoreReviewBtn>
                       <Link to={{ pathname: '/home/report/list', testActivityId: report._id }}>
-                        <span style={{ color: '#00b0ff', cursor: 'pointer' }}>REVIEW</span>
+                        <div>REVIEW</div>
                       </Link>
                     </AnswerAndScoreReviewBtn>
                   </RowData>
@@ -160,7 +160,8 @@ Report.propTypes = {
   correctAnswers: PropTypes.number,
   reports: PropTypes.array,
   assignments: PropTypes.array,
-  assignmentId: PropTypes.number
+  assignmentId: PropTypes.number,
+  theme: PropTypes.func.isRequired
 };
 
 Report.defaultProps = {
@@ -174,7 +175,7 @@ Report.defaultProps = {
   assignments: []
 };
 
-const ReportContent = ({ flag, fetchReports, reports, loadAssignments, assignments }) => {
+const ReportContent = ({ flag, fetchReports, reports, loadAssignments, assignments, theme }) => {
   useEffect(() => {
     loadAssignments();
     fetchReports();
@@ -183,29 +184,34 @@ const ReportContent = ({ flag, fetchReports, reports, loadAssignments, assignmen
     <AssignmentsContent flag={flag}>
       <AssignmentContentWrapper>
         {uniqBy(reports, 'assignmentId').map((report, index) => (
-          <Report key={index} {...report} reports={reports} assignments={assignments} />
+          <Report theme={theme} key={index} {...report} reports={reports} assignments={assignments} />
         ))}
       </AssignmentContentWrapper>
     </AssignmentsContent>
   );
 };
 
-export default React.memo(
+const enhance = compose(
+  withTheme,
+  React.memo,
   connect(
     ({ ui, reports, assignments }) => ({ flag: ui.flag, reports: reports.reports, assignments }),
     {
       fetchReports: fetchReportAction,
       loadAssignments: loadAssignmentsAction
     }
-  )(ReportContent)
+  )
 );
+
+export default enhance(ReportContent);
 
 ReportContent.propTypes = {
   flag: PropTypes.bool.isRequired,
   fetchReports: PropTypes.func.isRequired,
   reports: PropTypes.array.isRequired,
   loadAssignments: PropTypes.func.isRequired,
-  assignments: PropTypes.array.isRequired
+  assignments: PropTypes.array.isRequired,
+  theme: PropTypes.func.isRequired
 };
 
 
@@ -271,30 +277,33 @@ const CardDetails = styled(Col)`
 `;
 
 const CardTitle = styled.div`
-  font-family: Open Sans;
-  font-size: 16px;
+  font-family: ${props => props.theme.assignment.cardTitleFontFamily};
+  font-size: ${props => props.theme.assignment.cardTitleFontSize};
   font-weight: bold;
   font-style: normal;
   font-stretch: normal;
   line-height: 1.38;
   letter-spacing: normal;
   text-align: left;
-  color: #12a6e8;
+  color: ${props => props.theme.assignment.cardTitleColor};
   padding-bottom: 6px;
 `;
 
 const CardDate = styled.div`
   display: flex;
-  font-family: Open Sans;
-  font-size: 13px;
+  font-family: ${props => props.theme.assignment.cardTitleFontFamily};
+  font-size: ${props => props.theme.assignment.cardTimeTextFontSize};
   font-weight: normal;
   font-style: normal;
   font-stretch: normal;
   line-height: 1.38;
   letter-spacing: normal;
   text-align: left;
-  color: #444444;
+  color: ${props => props.theme.assignment.cardTimeTextColor};
   padding-bottom: 8px;
+  i { 
+    color: ${props => props.theme.assignment.cardTimeIconColor}; 
+  }
   .anticon-clock-circle {
     svg {
       width: 17px;
@@ -305,7 +314,7 @@ const CardDate = styled.div`
 
 const StrongText = styled.span`
   font-weight: 600;
-  padding-left: 10px;
+  padding-left: 5px;
 `;
 
 const AttemptDetails = styled(Col)`
@@ -323,22 +332,23 @@ const StartAssignButton = styled(Link)`
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
-  border: solid 1px #12a6e8;
+  background: ${props => props.theme.assignment.cardRetakeBtnBgColor};
+  border: solid 1px ${props => props.theme.assignment.cardRetakeBtnBgHoverColor};
   width: 100%;
   padding: 5px 20px;
   cursor: pointer;
   float: right;
   margin: 10px 15px 0 10px;
   span {
-    color: #00b0ff;
-    font-size: 11px;
+    color: ${props => props.theme.assignment.cardRetakeBtnTextColor};
+    font-size: ${props => props.theme.assignment.cardRetakeBtnFontSize};
     font-weight: 600;
     letter-spacing: 0.2px;
   }
   &:hover {
-    background-color: #12a6e8;
+    background-color: ${props => props.theme.assignment.cardRetakeBtnBgHoverColor};
     span {
-      color: #ffffff;
+      color: ${props => props.theme.assignment.cardRetakeBtnTextHoverColor};
     }
   }
   @media screen and (min-width: 1025px) {
@@ -359,9 +369,9 @@ const AnswerAndScore = styled.div`
   align-items: center;
   flex-direction: column;
   span {
-    font-size: 31px;
+    font-size: ${props => props.theme.assignment.cardAnswerAndScoreTextSize};
     font-weight: bold;
-    color: #434b5d;
+    color: ${props => props.theme.assignment.cardAnswerAndScoreTextColor};
   }
   @media screen and (max-width: 767px) {
     width:33%;
@@ -369,6 +379,12 @@ const AnswerAndScore = styled.div`
 `;
 
 const AnswerAndScoreReviewBtn = styled(AnswerAndScore)`
+  div {
+    display: inline-block;
+    font-size: ${props => props.theme.assignment.attemptsRowReviewLinkSize};
+    color: ${props => props.theme.assignment.attemptsRowReviewLinkColor};
+    cursor: pointer;
+  }
   @media screen and (min-width: 769px) {
     width:200px;
   }
@@ -387,16 +403,16 @@ const DetailContainer = styled.div`
 `;
 
 const AttemptsTitle = styled.div`
-  font-size: 12px;
+  font-size: ${props => props.theme.assignment.cardAttemptLinkFontSize};
   font-weight: 600;
-  color: #12a6e8;
+  color: ${props => props.theme.assignment.cardAttemptLinkTextColor};
   cursor: pointer;
 `;
 
 const Title = styled.div`
-  font-size: 12px;
+  font-size: ${props => props.theme.assignment.cardResponseBoxLabelsFontSize};
   font-weight: 600;
-  color: #434b5d;
+  color: ${props => props.theme.assignment.cardResponseBoxLabelsColor};
 `;
 
 const AttemptsData = styled.div`
@@ -410,7 +426,7 @@ const RowData = styled.div`
   border-radius: 4px;
   height: 30px;
   div {
-    background-color: #f8f8f8;
+    background-color: ${props => props.theme.assignment.attemptsReviewRowBgColor};
     height: 100%;
     display: flex;
     align-items: center;
@@ -420,8 +436,8 @@ const RowData = styled.div`
     }
   }
   span {
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    color: #9ca0a9;
+    font-size: ${props => props.theme.assignment.attemptsReviewRowFontSize};
+    font-weight: 600;
+    color: ${props => props.theme.assignment.attemptsReviewRowTextColor};
   }
 `;

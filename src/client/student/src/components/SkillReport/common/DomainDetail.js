@@ -52,7 +52,8 @@ class DomainDetail extends Component {
           domain: standard.description,
           grade: standard.identifier,
           total: 0,
-          percentage: reportData[standard.id] ? reportData[standard.id].score / reportData[standard.id].maxScore * 100 : 0
+          percentage: reportData[standard.id] ?
+            reportData[standard.id].score / reportData[standard.id].maxScore * 100 : 0
         });
         score += reportData[standard.id] && reportData[standard.id].score;
         maxScore += reportData[standard.id] && reportData[standard.id].maxScore;
@@ -101,10 +102,10 @@ const Title = styled.div`
 
 const RelationTitle = styled.div`
   flex: 1;
-  font-size: 14px;
+  font-size: ${props => props.theme.skillReport.RelationTitleFontSize};
   font-weight: 600;
   letter-spacing: 0.3px;
-  color: #434b5d;
+  color: ${props => props.theme.skillReport.RelationTitleColor};
   margin-bottom: 24px;
   @media screen and (max-width: 767px) {
     width: 90%;
@@ -112,10 +113,10 @@ const RelationTitle = styled.div`
 `;
 
 const GradeTag = styled.div`
-  background: #d7faee;
+  background: ${props => props.theme.skillReport.gradeColumnTagBgColor};
   height: 23.5px;
-  color: #4aac8b;
-  font-size: 10px;
+  color: ${props => props.theme.skillReport.gradeColumnTagColor};
+  font-size: ${props => props.theme.skillReport.gradeColumnTagTextSize};
   font-weight: bold;
   letter-spacing: 0.2px;
   border-radius: 5px;
@@ -129,7 +130,7 @@ export const IconClose = styled.div`
   cursor: pointer;
   width: 17.7px;
   height: 3.4px;
-  background-color: #4aac8b;
+  background-color: ${props => props.theme.skillReport.collapseIconColor};
   margin-top: 10px;
   @media screen and (max-width: 767px) {
     position:absolute;
@@ -140,6 +141,7 @@ export const IconClose = styled.div`
 
 export const IconOpen = styled(IconPlus)`
   margin-top: 5px;
+  fill: ${props => props.theme.skillReport.expandIconColor};
   @media screen and (max-width: 767px) {
     position:absolute;
     top:0px;
@@ -156,7 +158,7 @@ export const StyledScoreProgress = styled(Progress)`
   }
   .ant-progress-bg {
     height: 16px !important;
-    background: ${props => (props.percent >= 50 ? '#1fe3a1' : props.percent >= 30 ? '#fdcc3b' : '#ee1658')};
+    background: ${props => (props.percent >= 50 ? props.theme.skillReport.greenColor : props.percent >= 30 ? props.theme.skillReport.yellowColor : props.theme.skillReport.redColor)};
   }
 `;
 
@@ -167,6 +169,6 @@ export const StyledProgress = styled(Progress)`
   }
   .ant-progress-bg {
     height: 16px !important;
-    background: ${props => (props.percent >= 50 ? '#1fe3a1' : props.percent >= 30 ? '#fdcc3b' : '#ee1658')};
+    background: ${props => (props.percent >= 50 ? props.theme.skillReport.greenColor : props.percent >= 30 ? props.theme.skillReport.yellowColor : props.theme.skillReport.redColor)};
   }
 `;

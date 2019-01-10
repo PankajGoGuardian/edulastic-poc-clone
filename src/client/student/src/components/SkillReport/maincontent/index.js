@@ -95,9 +95,9 @@ const SkillReportContainer = styled.div`
 `;
 
 const SummaryTitle = styled.div`
-  font-size: 16px;
+  font-size: ${props => props.theme.skillReport.skillReportTitleFontSize};
   font-weight: 600;
-  color: #4aac8b;
+  color: ${props => props.theme.skillReport.skillReportTitleColor};
   letter-spacing: 0.3px;
   margin-bottom: 24px;
 `;
@@ -106,6 +106,10 @@ const Circle = styled.div`
   width: 12px;
   height: 12px;
   border-radius: 6px;
-  background: ${props => (props.percentage > 30 ? '#fdcc3b' : '#ee1658')};
+  background: ${props => (
+    props.percentage > 30 ?
+      props.theme.skillReport.yellowColor :
+      props.theme.skillReport.redColor
+  )};
   margin-left: 18px;
 `;

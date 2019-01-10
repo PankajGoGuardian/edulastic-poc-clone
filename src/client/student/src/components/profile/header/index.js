@@ -17,7 +17,7 @@ ProfileHeader.propTypes = {
 
 const enhance = compose(
   memo,
-  withNamespaces('dashboard')
+  withNamespaces('profile')
 );
 
 export default enhance(ProfileHeader);

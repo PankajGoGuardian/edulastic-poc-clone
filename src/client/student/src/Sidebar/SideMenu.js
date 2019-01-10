@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { withNamespaces } from '@edulastic/localization';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
@@ -122,7 +123,7 @@ class SideMenu extends Component {
 
   render() {
     const { broken, isVisible } = this.state;
-    const { windowWidth, currentPath, firstName, logout, isSidebarCollapsed } = this.props;
+    const { windowWidth, currentPath, firstName, logout, isSidebarCollapsed, t } = this.props;
     const page = currentPath.split('/').filter(item => !!item)[1];
     const menuIndex = getIndex(page, menuItems);
     const isMobile = windowWidth <= parseFloat(tabletWidth);
@@ -131,13 +132,13 @@ class SideMenu extends Component {
         <Menu>
           <Menu.Item key="0" className="removeSelectedBorder">
             <a onClick={logout}>
-              <LogoutIcon type="logout" /> {isSidebarCollapsed ? '' : 'SIGN OUT'}
+              <LogoutIcon type="logout" /> {isSidebarCollapsed ? '' : t('common.signOutText')}
             </a>
           </Menu.Item>
           <Menu.Item key="1" className="removeSelectedBorder">
             <Link to="/home/profile" onClick={this.handleProfileClick}>
               <IconDropdown type="user" />{' '}
-              {isSidebarCollapsed ? '' : 'MY PROFILE'}
+              {isSidebarCollapsed ? '' : t('common.myProfileText')}
             </Link>
           </Menu.Item>
         </Menu>
@@ -201,7 +202,7 @@ class SideMenu extends Component {
             <MenuFooter className="footerBottom">
               <QuestionButton className="questionBtn">
                 <HelpIcon />
-                {isSidebarCollapsed ? null : <span>Help Center</span>}
+                {isSidebarCollapsed ? null : <span>{t('common.helpButtonText')}</span>}
               </QuestionButton>
 
               <UserInfoButton
@@ -218,7 +219,6 @@ class SideMenu extends Component {
                   placement="topCenter"
                   isVisible={isVisible}
                   onVisibleChange={this.handleVisibleChange}
-
                 >
                   <div>
                     <img src={Profile} alt="Profile" />
@@ -227,7 +227,7 @@ class SideMenu extends Component {
                         <UserName>{firstName || 'Zack Oliver'}</UserName>
                       )}
                       {!isSidebarCollapsed && (
-                        <UserType>Student</UserType>
+                        <UserType>{t('common.userRoleStudent')}</UserType>
                       )}
                     </div>
                     {!isSidebarCollapsed && (
@@ -255,12 +255,14 @@ SideMenu.propTypes = {
   firstName: PropTypes.string.isRequired,
   logout: PropTypes.func.isRequired,
   toggleSideBar: PropTypes.func.isRequired,
-  isSidebarCollapsed: PropTypes.object.isRequired
+  isSidebarCollapsed: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 const enhance = compose(
   withRouter,
   withWindowSizes,
+  withNamespaces('sidemenu'),
   connect(
     ({ router, user, ui }) => ({
       currentPath: router.location.pathname,

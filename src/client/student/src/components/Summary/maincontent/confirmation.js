@@ -10,16 +10,25 @@ class Confirmation extends Component {
   render() {
     const { isVisible, onClose, finishTest } = this.props;
     return (
-      <ModalConfirmation
+      <Modal
         open={isVisible}
         onClose={onClose}
         showCloseIcon={false}
+        styles={{
+          modal: {
+            maxWidth: '640px',
+            borderRadius: 5,
+            textAlign: 'center',
+            padding: '20px 30px'
+          }
+        }}
         center
       >
         <ModalContainer>
-          <Title>Do you want to finish the questionnaire?</Title>
+          <Title>Submit assignment?</Title>
           <TitleDescriptioin>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mauris nunc.
+            This is your last chance to continue working on the assignment.
+            You can click on CANCEL to go back to the test or SUBMIT to end.
           </TitleDescriptioin>
           <ButtonContainer>
             <Row gutter={20} style={{ width: '100%' }}>
@@ -28,13 +37,13 @@ class Confirmation extends Component {
               </Col>
               <Col md={12} sm={24}>
                 <StyledButton type="primary" btnType={2} onClick={finishTest}>
-                  Sure, Take me to the report
+                  SUBMIT
                 </StyledButton>
               </Col>
             </Row>
           </ButtonContainer>
         </ModalContainer>
-      </ModalConfirmation>
+      </Modal>
     );
   }
 }
@@ -47,12 +56,6 @@ Confirmation.propTypes = {
 
 export default Confirmation;
 
-const ModalConfirmation = styled(Modal)`
-  border-radius: 5;  
-  @media screen and (min-width: 768px) {
-    min-width: 630px;
-  }
-`;
 
 const ModalContainer = styled.div`
   display: flex;

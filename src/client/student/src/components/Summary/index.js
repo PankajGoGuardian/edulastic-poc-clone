@@ -13,7 +13,6 @@ import SubmitConfirmation from '../../../../assessment/src/themes/common/SubmitC
 
 const SummaryContainer = ({ finishTest, history }) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-
   const handlerConfirmationModal = () => {
     setShowConfirmationModal(true);
   };

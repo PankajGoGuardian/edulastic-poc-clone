@@ -63,4 +63,10 @@ const StyledButton = styled(Button)`
   &:hover {
     background: transparent;
   }
+  &:focus {
+    background: transparent;
+  }
+  &:active {
+    background: transparent;
+  }
 `;

@@ -30,6 +30,14 @@ const ControlBtn = styled(Button)`
     cursor: not-allowed;
     border: 1px solid ${white};
   }
+  &:focus {
+    background: transparent;
+  }
+  &:active {
+    color: #fff;
+    background-color: #40a9ff;
+    border-color: #40a9ff;
+  }
 
   & > span {
     font-size: 0.5em;

@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { gotoItem, saveUserResponse } from '../actions/items';
 import { finishTestAcitivityAction } from '../actions/test';
 import { evaluateAnswer } from '../actions/evaluation';
-
+import { changePreview as changePreviewAction } from '../actions/view';
 import AssesmentPlayerDefault from './AssessmentPlayerDefault';
 import AssesmentPlayerSimple from './AssessmentPlayerSimple';
 
@@ -20,6 +20,7 @@ const AssessmentContainer = ({
   currentItem,
   finishTest,
   history,
+  changePreview,
   gotoItem: gotoIt,
   saveUserResponse: saveUser,
   evaluateAnswer: evaluate
@@ -29,6 +30,7 @@ const AssessmentContainer = ({
 
   const gotoQuestion = (index) => {
     gotoIt(index);
+    changePreview('clear');
     saveUser(currentItem);
   };
 
@@ -85,6 +87,7 @@ const enhance = compose(
       gotoItem,
       saveUserResponse,
       evaluateAnswer,
+      changePreview: changePreviewAction,
       finishTest: finishTestAcitivityAction
     }
   )

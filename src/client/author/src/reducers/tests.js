@@ -60,7 +60,7 @@ const initialState = {
   entity: initialTestState,
   error: null,
   page: 1,
-  limit: 5,
+  limit: 20,
   count: 0,
   loading: false,
   creating: false

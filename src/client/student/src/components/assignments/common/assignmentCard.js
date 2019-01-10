@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import styled, { withTheme } from 'styled-components';
+import { last } from 'lodash';
 import { Row, Col, Icon, Button } from 'antd';
-
+import Attempt from './attempt';
 import { initiateTestActivityAction } from '../../../actions/test';
 
 const AssignmentCard = ({
@@ -33,10 +34,32 @@ const AssignmentCard = ({
 
   const startTest = () => {
     const attemptsData = getAttemptsData(reports, _id);
-    if (attemptsData.length === 0) {
+    if (attemptsData.length < test.maxAttempts) {
       initiateTestActivity(testId, _id);
+      history.push(`/student/test/${testId}`);
+    } else {
+      console.log('ran out of max attempts');
     }
-    history.push(`/student/test/${testId}`);
+  };
+
+  const parseAttemptData = (attempt) => {
+    const correct = attempt.correct || 0;
+    const wrong = attempt.wrong || 0;
+    const totalQuestions = correct + wrong || 0;
+    const score = attempt.score || 0;
+    const maxScore = attempt.maxScore || 0;
+    let scorePercentage = (score / maxScore) * 100;
+    scorePercentage = Number.isNaN(scorePercentage)
+      ? 0
+      : scorePercentage.toFixed(2);
+    return {
+      correct,
+      wrong,
+      totalQuestions,
+      score,
+      maxScore,
+      scorePercentage
+    };
   };
 
   const timeConverter = (data) => {
@@ -67,35 +90,20 @@ const AssignmentCard = ({
     return time;
   };
 
-  const UnixConverter = (UNIX_timestamp) => {
-    const a = new Date(UNIX_timestamp * 1000);
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
-    const year = a.getFullYear();
-    const month = months[a.getMonth()];
-    const date = a.getDate();
-    const hour = a.getHours();
-    const min = a.getMinutes();
-    const time =
-      hour > 11
-        ? `${month} ${date}, ${year} ${hour - 12}:${min} PM`
-        : `${month} ${date}, ${year} ${hour - 12}:${min} AM`;
-    return time;
-  };
+  const attemptsData = getAttemptsData(reports, _id) || [];
+  const attemptCount = attemptsData.length;
+  const lastAttempt = last(attemptsData) || {};
+  const previousAttempts = attemptsData.slice(1, attemptCount);
+  const current = parseAttemptData(lastAttempt);
 
-  const attemptsData = getAttemptsData(reports, _id);
+  // / move it to the upper components, wtf!
+  const showAssignment = test.maxAttempts > attemptsData.length;
+
+  let startButtonText = '';
+  if (showAssignment) {
+    startButtonText = attemptCount ? 'RETAKE' : 'START ASSIGNMENT';
+  }
+
   return (
     <CardWrapper>
       <AssessmentDetails>
@@ -128,7 +136,7 @@ const AssignmentCard = ({
             {attemptsData.length > 1 && (
               <Attempts onClick={attemptHandler}>
                 <span>
-                  {attemptsData.length - 1}/{attemptsData.length}
+                  {attemptCount}/{test.maxAttempts || attemptCount}
                 </span>
                 {isAttemptShow && (
                   <AttemptsTitle>&#x2193; &nbsp;&nbsp;Attempts</AttemptsTitle>
@@ -141,56 +149,28 @@ const AssignmentCard = ({
             {attemptsData.length > 0 && (
               <AnswerAndScore>
                 <span>
-                  {attemptsData[0].correctAnswers
-                    ? attemptsData[0].correctAnswers
-                    : 0}
-                  /
-                  {attemptsData[0].totalQuestion
-                    ? attemptsData[0].totalQuestion
-                    : 0}
+                  {current.correct || 0}/{current.totalQuestions}
                 </span>
                 <Title>Correct Answer</Title>
               </AnswerAndScore>
             )}
             {attemptsData.length > 0 && (
               <AnswerAndScore>
-                <span>
-                  {attemptsData[0].score ? attemptsData[0].score : 0}%
-                </span>
+                <span>{current.scorePercentage}%</span>
                 <Title>Score</Title>
               </AnswerAndScore>
             )}
           </AttemptDetails>
-          <StartAssignButton onClick={startTest}>
-            {attemptsData.length === 0 && <span>START ASSIGNMENT</span>}
-            {attemptsData.length > 0 && <span>RETAKE</span>}
-          </StartAssignButton>
+          {showAssignment && (
+            <StartAssignButton onClick={startTest}>
+              <span> {startButtonText}</span>
+            </StartAssignButton>
+          )}
         </DetailContainer>
         {isAttemptShow &&
-          attemptsData.map(
-            (data, index) =>
-              index !== 0 && (
-                <AttemptsData key={index}>
-                  <RowData>
-                    <Attempts>
-                      <span>{UnixConverter(data.createdAt / 1000)}</span>
-                    </Attempts>
-                    <AnswerAndScore>
-                      <span>
-                        {data.correctAnswers ? data.correctAnswers : 0}/
-                        {data.totalQuestion ? data.totalQuestion : 0}
-                      </span>
-                    </AnswerAndScore>
-                    <AnswerAndScore>
-                      <span>{data.score ? data.score : 0}%</span>
-                    </AnswerAndScore>
-                    <AnswerAndScoreReview>
-                      <div>REVIEW</div>
-                    </AnswerAndScoreReview>
-                  </RowData>
-                </AttemptsData>
-              )
-          )}
+          previousAttempts.map((attempt, index) => (
+            <Attempt key={index} data={attempt} />
+          ))}
       </ButtonAndDetail>
     </CardWrapper>
   );
@@ -413,18 +393,6 @@ const AnswerAndScore = styled.div`
   }
 `;
 
-const AnswerAndScoreReview = styled(AnswerAndScore)`
-  div {
-    display: inline-block;
-    font-size: ${props => props.theme.assignment.attemptsRowReviewLinkSize};
-    color: ${props => props.theme.assignment.attemptsRowReviewLinkColor};
-    cursor: pointer;
-  }
-  @media screen and (min-width: 769px) {
-    width: 200px;
-  }
-`;
-
 const Attempts = AnswerAndScore;
 
 const DetailContainer = styled.div`
@@ -447,32 +415,4 @@ const Title = styled.div`
   font-size: ${props => props.theme.assignment.cardResponseBoxLabelsFontSize};
   font-weight: 600;
   color: ${props => props.theme.assignment.cardResponseBoxLabelsColor};
-`;
-
-const AttemptsData = styled.div`
-  margin-top: 7px;
-`;
-
-const RowData = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  border-radius: 4px;
-  height: 30px;
-  div {
-    background-color: ${props =>
-    props.theme.assignment.attemptsReviewRowBgColor};
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    @media screen and(max-width: 767px) {
-      justify-content: flex-start;
-    }
-  }
-  span {
-    font-size: ${props => props.theme.assignment.attemptsReviewRowFontSize};
-    font-weight: 600;
-    color: ${props => props.theme.assignment.attemptsReviewRowTextColor};
-  }
 `;

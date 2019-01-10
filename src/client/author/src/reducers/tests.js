@@ -24,7 +24,7 @@ import {
 const initialTestState = {
   title: 'New Test',
   description: '',
-  maxAttempts: 1,
+  maxAttempts: 3,
   renderingType: 'assessment',
   status: 'draft',
   thumbnail: 'https://fakeimg.pl/500x135/',

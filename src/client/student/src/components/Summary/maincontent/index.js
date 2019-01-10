@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { Row, Col, Button } from 'antd';
+import { themes } from '../../../themes';
 
 import Confirmation from './confirmation';
 import { attemptSummarySelector } from '../../../selectors/test';
+import AssignmentContentWrapper from '../../commonStyle/assignmentContentWrapper';
 
 class SummaryTest extends Component {
   constructor(props) {
@@ -36,106 +38,108 @@ class SummaryTest extends Component {
     const { finishTest } = this.props;
     const { buttonIdx, isShowConfirmationModal } = this.state;
     return (
-      <AssignmentContentWrapperSummary>
-        <Confirmation
-          isVisible={isShowConfirmationModal}
-          onClose={this.closeConfirmationModal}
-          finishTest={finishTest}
-        />
-        <Container>
-          <Header>
-            <Title>Congratulations, you reached out the end of the test!</Title>
-            <TitleDescription>
-              If you need to review your answers, select the question number you
-              wish to review. A flag icon appears for any questions that you
-              marked for review.
-            </TitleDescription>
-          </Header>
-          <MainContent>
-            <ColorDescription>
-              <ColorDescriptionRow gutter={32}>
-                <FlexCol lg={8} md={24}>
-                  <GreenMark />
-                  <SpaceLeft>
-                    <Description>You have marked these questions.</Description>
-                    <Description style={{ marginTop: -2 }}>
-                      Review them before submitting your test.
-                    </Description>
-                  </SpaceLeft>
-                </FlexCol>
-                <FlexCol lg={8} md={24}>
-                  <GrayMark />
-                  <SpaceLeft>
-                    <Description>
-                      Please review your skipped questions before submitting the
-                      test
-                    </Description>
-                  </SpaceLeft>
-                </FlexCol>
-                <FlexCol lg={8} md={24}>
-                  <RedMark />
-                  <SpaceLeft>
-                    <Description>
-                      You have marked for review these questions.
-                    </Description>
-                    <Description style={{ marginTop: -2 }}>
-                      Review them before submitting your test.
-                    </Description>
-                  </SpaceLeft>
-                </FlexCol>
-              </ColorDescriptionRow>
-            </ColorDescription>
-            <Questions>
-              <Row>
-                <QuestionText lg={8} md={24}>
-                  Questions
-                </QuestionText>
-                <Col lg={16} md={24}>
-                  <AnsweredTypeButtonContainer>
-                    <StyledButton
-                      onClick={() => this.handlerButton(0)}
-                      enabled={buttonIdx === 0}
-                    >
-                      ALL
-                    </StyledButton>
-                    <StyledButton
-                      onClick={() => this.handlerButton(1)}
-                      enabled={buttonIdx === 1}
-                    >
-                      FLAGGED
-                    </StyledButton>
-                    <StyledButton
-                      onClick={() => this.handlerButton(2)}
-                      enabled={buttonIdx === 2}
-                    >
-                      SKIPPED
-                    </StyledButton>
-                  </AnsweredTypeButtonContainer>
-                </Col>
-              </Row>
-              <QuestionBlock>
-                {questions.map((q, index) => (
-                  <QuestionColorBlock type={questionList[q]} isVisible>
-                    <span> {index} </span>
-                  </QuestionColorBlock>
-                ))}
-              </QuestionBlock>
-            </Questions>
-          </MainContent>
-          <Footer>
-            <ShortDescription>
-              Next Step: When you are done reviewing your answers, select Submit
-              test. You cannot change your answers after you submit the test
-            </ShortDescription>
-            <SubmitButton
-              type="primary"
-              onClick={this.handlerConfirmationModal}
-            >
-              SUBMIT
-            </SubmitButton>
-          </Footer>
-        </Container>
-      </AssignmentContentWrapperSummary>
+      <ThemeProvider theme={themes.default}>
+        <AssignmentContentWrapperSummary>
+          <Confirmation
+            isVisible={isShowConfirmationModal}
+            onClose={this.closeConfirmationModal}
+            finishTest={finishTest}
+          />
+          <Container>
+            <Header>
+              <Title>Congratulations, you reached out the end of the test!</Title>
+              <TitleDescription>
+                If you need to review your answers, select the question number you
+                wish to review. A flag icon appears for any questions that you
+                marked for review.
+              </TitleDescription>
+            </Header>
+            <MainContent>
+              <ColorDescription>
+                <ColorDescriptionRow gutter={32}>
+                  <FlexCol lg={8} md={24}>
+                    <GreenMark />
+                    <SpaceLeft>
+                      <Description>You have marked these questions.</Description>
+                      <Description style={{ marginTop: -2 }}>
+                        Review them before submitting your test.
+                      </Description>
+                    </SpaceLeft>
+                  </FlexCol>
+                  <FlexCol lg={8} md={24}>
+                    <GrayMark />
+                    <SpaceLeft>
+                      <Description>
+                        Please review your skipped questions before submitting the
+                        test
+                      </Description>
+                    </SpaceLeft>
+                  </FlexCol>
+                  <FlexCol lg={8} md={24}>
+                    <RedMark />
+                    <SpaceLeft>
+                      <Description>
+                        You have marked for review these questions.
+                      </Description>
+                      <Description style={{ marginTop: -2 }}>
+                        Review them before submitting your test.
+                      </Description>
+                    </SpaceLeft>
+                  </FlexCol>
+                </ColorDescriptionRow>
+              </ColorDescription>
+              <Questions>
+                <Row>
+                  <QuestionText lg={8} md={24}>
+                    Questions
+                  </QuestionText>
+                  <Col lg={16} md={24}>
+                    <AnsweredTypeButtonContainer>
+                      <StyledButton
+                        onClick={() => this.handlerButton(0)}
+                        enabled={buttonIdx === 0}
+                      >
+                        ALL
+                      </StyledButton>
+                      <StyledButton
+                        onClick={() => this.handlerButton(1)}
+                        enabled={buttonIdx === 1}
+                      >
+                        FLAGGED
+                      </StyledButton>
+                      <StyledButton
+                        onClick={() => this.handlerButton(2)}
+                        enabled={buttonIdx === 2}
+                      >
+                        SKIPPED
+                      </StyledButton>
+                    </AnsweredTypeButtonContainer>
+                  </Col>
+                </Row>
+                <QuestionBlock>
+                  {questions.map((q, index) => (
+                    <QuestionColorBlock type={questionList[q]} isVisible>
+                      <span> {index} </span>
+                    </QuestionColorBlock>
+                  ))}
+                </QuestionBlock>
+              </Questions>
+            </MainContent>
+            <Footer>
+              <ShortDescription>
+                Next Step: When you are done reviewing your answers, select Submit
+                test. You cannot change your answers after you submit the test
+              </ShortDescription>
+              <SubmitButton
+                type="primary"
+                onClick={this.handlerConfirmationModal}
+              >
+                SUBMIT
+              </SubmitButton>
+            </Footer>
+          </Container>
+        </AssignmentContentWrapperSummary>
+      </ThemeProvider>
     );
   }
 }
@@ -153,17 +157,10 @@ export default connect(state => ({
   questionList: attemptSummarySelector(state)
 }))(SummaryTest);
 
-const AssignmentContentWrapperSummary = styled.div`
-  border-radius: 10px;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  padding: 5px 30px;
-  background: #fff;
+const AssignmentContentWrapperSummary = styled(AssignmentContentWrapper)`
   margin: 24px 95px;
   @media screen and (max-width: 992px) {
     margin: 15px 26px;
-  }
-  @media screen and (max-width: 767px) {
-    padding: 0px 15px;
   }
 `;
 
@@ -176,6 +173,9 @@ const Container = styled.div`
 const Header = styled(Container)`
   max-width: 531px;
   margin-top: 52px;
+  @media screen and (max-width: 768px) {
+    margin-top: 20px;
+  }
 `;
 
 const Title = styled.div`

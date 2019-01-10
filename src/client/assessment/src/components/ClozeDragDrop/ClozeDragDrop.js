@@ -201,7 +201,7 @@ class ClozeDragDrop extends Component {
                 question={previewStimulus}
                 uiStyle={uiStyle}
                 templateMarkUp={item.templateMarkUp}
-                userSelections={[]}
+                userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
               />
             )}

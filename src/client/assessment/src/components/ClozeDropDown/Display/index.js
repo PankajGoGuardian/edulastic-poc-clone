@@ -17,11 +17,9 @@ class ClozeDropDownDisplay extends Component {
     super(props);
     const { templateParts, respLength } = this.getTemplateParts(props);
     let userAnswers = new Array(respLength).fill(false);
-    userAnswers = props.userSelections;
     props.userSelections.map((userSelection, index) => {
       userAnswers[index] = userSelection;
     });
-
     this.state = {
       templateParts,
       userAnswers,
@@ -167,7 +165,7 @@ class ClozeDropDownDisplay extends Component {
               }
               maxLineHeight = maxLineHeight < btnStyle['height'] ? btnStyle['height'] : maxLineHeight;
               return (
-                <Select defaultValue="**default_value**" style={btnStyle} onChange={value => this.selectChange(value, dropTargetIndex)}>
+                <Select defaultValue={userAnswers[dropTargetIndex]} style={btnStyle} onChange={value => this.selectChange(value, dropTargetIndex)}>
                   <Option value="**default_value**" disabled>{placeholder}</Option>
                   {responses && responses[dropTargetIndex] && responses[dropTargetIndex].map((response, respID) => (
                     <Option value={response} key={respID}>{response}</Option>

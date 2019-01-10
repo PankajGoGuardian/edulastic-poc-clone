@@ -29,7 +29,7 @@ const Content = ({
                 {assignments.map((item, index) => {
                   const systemDate = new Date();
                   const assignmentDate = new Date(item.endDate);
-                  if (systemDate >= assignmentDate) {
+                  if (systemDate <= assignmentDate) {
                     return (
                       <AssignmentCard
                         key={index}

@@ -7,7 +7,13 @@ import { fetchReportAction } from '../../../actions/report';
 import { loadAssignmentsAction } from '../../../actions/dashboard';
 import AssignmentCard from '../common/assignmentCard';
 
-const Content = ({ flag, loadAssignments, assignments, fetchReports, reports }) => {
+const Content = ({
+  flag,
+  loadAssignments,
+  assignments,
+  fetchReports,
+  reports
+}) => {
   useEffect(() => {
     loadAssignments();
     fetchReports();
@@ -20,9 +26,19 @@ const Content = ({ flag, loadAssignments, assignments, fetchReports, reports }) 
           <ContainerCell>
             <Container>
               <InnerContent>
-                {assignments.map((item, index) => (
-                  <AssignmentCard key={index} data={item} reports={reports} />
-                ))}
+                {assignments.map((item, index) => {
+                  const systemDate = new Date();
+                  const assignmentDate = new Date(item.endDate);
+                  if (systemDate >= assignmentDate) {
+                    return (
+                      <AssignmentCard
+                        key={index}
+                        data={item}
+                        reports={reports}
+                      />
+                    );
+                  }
+                })}
               </InnerContent>
             </Container>
           </ContainerCell>
@@ -34,7 +50,11 @@ const Content = ({ flag, loadAssignments, assignments, fetchReports, reports }) 
 
 export default React.memo(
   connect(
-    ({ ui, assignments, reports }) => ({ flag: ui.flag, reports: reports.reports, assignments }),
+    ({ ui, assignments, reports }) => ({
+      flag: ui.flag,
+      reports: reports.reports,
+      assignments
+    }),
     {
       fetchReports: fetchReportAction,
       loadAssignments: loadAssignmentsAction

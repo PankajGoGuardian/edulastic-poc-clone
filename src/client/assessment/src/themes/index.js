@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -7,6 +7,7 @@ import { gotoItem, saveUserResponse } from '../actions/items';
 import { finishTestAcitivityAction } from '../actions/test';
 import { evaluateAnswer } from '../actions/evaluation';
 import { changePreview as changePreviewAction } from '../actions/view';
+import { startAssessmentAction } from '../actions/assessment';
 import AssesmentPlayerDefault from './AssessmentPlayerDefault';
 import AssesmentPlayerSimple from './AssessmentPlayerSimple';
 
@@ -21,12 +22,18 @@ const AssessmentContainer = ({
   finishTest,
   history,
   changePreview,
+  startAssessment,
   gotoItem: gotoIt,
   saveUserResponse: saveUser,
   evaluateAnswer: evaluate
 }) => {
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
+
+  // start assessment
+  useEffect(() => {
+    startAssessment();
+  }, []);
 
   const gotoQuestion = (index) => {
     gotoIt(index);
@@ -88,6 +95,7 @@ const enhance = compose(
       saveUserResponse,
       evaluateAnswer,
       changePreview: changePreviewAction,
+      startAssessment: startAssessmentAction,
       finishTest: finishTestAcitivityAction
     }
   )

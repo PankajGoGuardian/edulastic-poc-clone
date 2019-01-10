@@ -2,7 +2,8 @@ import {
   LOAD_TEST_ITEMS,
   GOTO_ITEM,
   SET_TEST_ACTIVITY_ID,
-  SET_TEST_ID
+  SET_TEST_ID,
+  RESET_CURRENT_TEST_ITEM
 } from '../constants/actions';
 
 const initialState = {
@@ -31,6 +32,11 @@ const test = (state = initialState, { payload, type }) => {
         testId: payload.testId
       };
 
+    case RESET_CURRENT_TEST_ITEM:
+      return {
+        ...state,
+        currentItem: 0
+      };
     case SET_TEST_ACTIVITY_ID:
       return {
         ...state,

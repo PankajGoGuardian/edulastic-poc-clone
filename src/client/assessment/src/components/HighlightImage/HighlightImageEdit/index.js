@@ -35,9 +35,19 @@ const HighlightImageEdit = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
+  const getBase64 = NewFile =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(NewFile);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+
   const onDrop = ([files]) => {
     if (files) {
-      handleImageToolbarChange(SOURCE)(URL.createObjectURL(files));
+      getBase64(files).then((data) => {
+        handleImageToolbarChange(SOURCE)(data);
+      });
     }
   };
 

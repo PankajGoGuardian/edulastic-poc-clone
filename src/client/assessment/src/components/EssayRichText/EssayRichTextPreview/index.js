@@ -10,8 +10,10 @@ import { Toolbar, Item } from '../../common';
 import { validList } from '../constants';
 import { PREVIEW, ON_LIMIT, ALWAYS } from '../../../constants/constantsForQuestions';
 
-const EssayRichTextPreview = ({ view, saveAnswer, t, item, smallSize }) => {
-  const [wordCount, setWordCount] = useState(0);
+const EssayRichTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswer }) => {
+  const [wordCount, setWordCount] = useState(
+    Array.isArray(userAnswer) ? 0 : userAnswer.split(' ').filter(i => !!i.trim()).length
+  );
 
   const handleTextChange = (val, a, b, editor) => {
     setWordCount(
@@ -44,7 +46,13 @@ const EssayRichTextPreview = ({ view, saveAnswer, t, item, smallSize }) => {
       <ReactQuill
         id="mainQuill"
         style={item.max_word < wordCount ? { background: lightRed } : { background: 'transparent' }}
-        defaultValue={smallSize ? t('component.essayRichText.templateText') : ''}
+        defaultValue={
+          smallSize
+            ? t('component.essayRichText.templateText')
+            : Array.isArray(userAnswer)
+              ? ''
+              : userAnswer
+        }
         onChange={handleTextChange}
         modules={EssayRichTextPreview.modules(item.formatting_options)}
       />
@@ -64,7 +72,8 @@ EssayRichTextPreview.propTypes = {
   smallSize: PropTypes.bool,
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  view: PropTypes.string.isRequired
+  view: PropTypes.string.isRequired,
+  userAnswer: PropTypes.any.isRequired
 };
 
 EssayRichTextPreview.defaultProps = {

@@ -32,7 +32,7 @@ const TokenHighlightPreview = ({
 
   const altArray = (item && item.validation && item.validation.alt_responses) || [];
 
-  const [answers, setAnswers] = useState(initialArray);
+  const [answers, setAnswers] = useState(userAnswer.length !== 0 ? userAnswer : initialArray);
 
   const [isCheck, setIsCheck] = useState(false);
 
@@ -48,7 +48,7 @@ const TokenHighlightPreview = ({
     },
     [item.templeWithTokens, editCorrectAnswers]
   );
-
+  console.log();
   useEffect(
     () => {
       if (previewTab === SHOW) {
@@ -63,8 +63,10 @@ const TokenHighlightPreview = ({
           setAnswers(validArray);
         }
       } else if (previewTab === CLEAR && !isCheck) {
-        saveAnswer(initialArray);
-        setAnswers(initialArray);
+        if (!userAnswer.some(ans => ans.selected)) {
+          saveAnswer(initialArray);
+          setAnswers(initialArray);
+        }
       } else if (previewTab === CLEAR && isCheck) {
         saveAnswer(userAnswer);
       }

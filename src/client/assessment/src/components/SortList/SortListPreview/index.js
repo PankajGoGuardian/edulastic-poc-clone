@@ -25,6 +25,7 @@ class SortListPreview extends PureComponent {
     t: PropTypes.func.isRequired,
     smallSize: PropTypes.bool,
     item: PropTypes.object,
+    userAnswer: PropTypes.any.isRequired,
     saveAnswer: PropTypes.func.isRequired
   };
 
@@ -36,10 +37,23 @@ class SortListPreview extends PureComponent {
 
   state = {
     // eslint-disable-next-line react/destructuring-assignment
-    items: this.props.item.source,
+    items: this.props.item.source.map((item, i) => {
+      // eslint-disable-next-line react/destructuring-assignment
+      if (!this.props.userAnswer.includes(i)) {
+        return item;
+      }
+      return null;
+    }),
 
     // eslint-disable-next-line react/destructuring-assignment
-    selected: Array.from({ length: this.props.item.source.length }, () => null),
+    selected: Array.from({ length: this.props.item.source.length }).map((item, i) => {
+      // eslint-disable-next-line react/destructuring-assignment
+      if (this.props.userAnswer.includes(i)) {
+        // eslint-disable-next-line react/destructuring-assignment
+        return this.props.item.source[i];
+      }
+      return null;
+    }),
 
     active: ''
   };

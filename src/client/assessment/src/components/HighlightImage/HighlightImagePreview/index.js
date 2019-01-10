@@ -17,7 +17,7 @@ import { PREVIEW } from '../../../constants/constantsForQuestions';
 
 const { Option } = Select;
 
-const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, t }) => {
+const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, userAnswer, t }) => {
   const canvas = useRef(null);
   const [ctx, setCtx] = useState(null);
   const [history, setHistory] = useState([]);
@@ -49,7 +49,7 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, t }) => {
       setCtx(context);
     };
 
-    img.src = file;
+    img.src = Array.isArray(userAnswer) ? file : userAnswer;
   };
 
   useEffect(
@@ -199,7 +199,7 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, t }) => {
         onMouseUp={onCanvasMouseUp}
         onMouseMove={onCanvasMouseMove}
         ref={canvas}
-        id="canvas"
+        id="mycanvas"
       />
     </Paper>
   );
@@ -210,7 +210,8 @@ HighlightImagePreview.propTypes = {
   item: PropTypes.object.isRequired,
   view: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  userAnswer: PropTypes.any.isRequired
 };
 
 HighlightImagePreview.defaultProps = {

@@ -13,7 +13,7 @@ class SummaryTest extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      buttonIdx: 0,
+      buttonIdx: null,
       isShowConfirmationModal: false
     };
   }
@@ -100,20 +100,20 @@ class SummaryTest extends Component {
                   <Col lg={16} md={24}>
                     <AnsweredTypeButtonContainer>
                       <StyledButton
-                        onClick={() => this.handlerButton(0)}
-                        enabled={buttonIdx === 0}
+                        onClick={() => this.handlerButton(null)}
+                        enabled={buttonIdx === null}
                       >
                         ALL
                       </StyledButton>
                       <StyledButton
-                        onClick={() => this.handlerButton(1)}
-                        enabled={buttonIdx === 1}
+                        onClick={() => this.handlerButton(2)}
+                        enabled={buttonIdx === 2}
                       >
                         FLAGGED
                       </StyledButton>
                       <StyledButton
-                        onClick={() => this.handlerButton(2)}
-                        enabled={buttonIdx === 2}
+                        onClick={() => this.handlerButton(0)}
+                        enabled={buttonIdx === 0}
                       >
                         SKIPPED
                       </StyledButton>
@@ -122,10 +122,13 @@ class SummaryTest extends Component {
                 </Row>
                 <QuestionBlock>
                   {questions.map((q, index) => (
-                    <QuestionColorBlock type={questionList[q]} isVisible>
+                    <QuestionColorBlock
+                      type={questionList[q]}
+                      isVisible={buttonIdx === null || buttonIdx === questionList[q]}
+                    >
                       <span> {index + 1} </span>
-                    </QuestionColorBlock>
-                  ))}
+                    </QuestionColorBlock>))
+                  }
                 </QuestionBlock>
               </Questions>
             </MainContent>
@@ -318,7 +321,7 @@ const QuestionColorBlock = styled.div`
   height: 40px;
   border-radius: 4px;
   background-color: ${props =>
-    (props.type === 1 ? '#ee1658' : props.type === 2 ? '#1fe3a1' : '#b1b1b1')};
+    (props.type === 2 ? '#ee1658' : props.type === 1 ? '#1fe3a1' : '#b1b1b1')};
   margin-right: 23px;
   display: ${props => (props.isVisible ? 'flex' : 'none')};
   align-items: center;

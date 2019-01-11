@@ -23,9 +23,9 @@ export const attemptSummarySelector = createSelector(
             if (!qId) return;
 
             if (item.reviewLater) {
-              questions[qId] = 1;
+              questions[qId] = 2;
             } else {
-              questions[qId] = answers[qId] ? 2 : 0;
+              questions[qId] = answers[qId] ? 1 : 0;
             }
           });
         });

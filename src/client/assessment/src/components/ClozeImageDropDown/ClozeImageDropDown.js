@@ -236,7 +236,7 @@ class ClozeImageDropDown extends Component {
                 key={previewDisplayOptions && previewStimulus && uiStyle}
                 smallSize={smallSize}
                 templateMarkUp={item.templateMarkUp}
-                userSelections={[]}
+                userSelections={userAnswer}
                 maxRespCount={item.maxRespCount}
                 onChange={this.handleAddAnswer}
               />

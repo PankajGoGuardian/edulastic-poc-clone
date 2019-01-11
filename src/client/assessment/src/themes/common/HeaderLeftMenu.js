@@ -7,8 +7,7 @@ const HeaderLeftMenu = styled.div`
   display: flex;
   align-items: center;
 
-  @media (max-width: 468px) {
-    height: 35px;
+  @media (max-width: 768px) {
     width: 100%;
   }
 `;

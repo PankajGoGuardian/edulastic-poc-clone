@@ -14,5 +14,6 @@ export { default as LogoCompact } from './LogoCompact';
 export { default as TestButton } from './TestButton';
 export { default as ToolBar } from './ToolBar';
 export { default as Clock } from './Clock';
+export { default as SavePauseMobile } from './SavePauseMobile';
 export { default as SaveAndExit } from './SaveAndExit';
 export { default as ToolButton } from './ToolButton';

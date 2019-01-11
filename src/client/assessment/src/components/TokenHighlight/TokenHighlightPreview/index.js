@@ -48,7 +48,7 @@ const TokenHighlightPreview = ({
     },
     [item.templeWithTokens, editCorrectAnswers]
   );
-  console.log();
+
   useEffect(
     () => {
       if (previewTab === SHOW) {

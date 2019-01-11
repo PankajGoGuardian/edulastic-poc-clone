@@ -13,3 +13,4 @@ export { default as shortText } from './shortText';
 export { default as tokenhighlight } from './tokenhighlight';
 export { default as shading } from './shading';
 export { default as choiceMatrix } from './choiceMatrix';
+export { default as clozeDragDrop } from './clozeDragDrop';

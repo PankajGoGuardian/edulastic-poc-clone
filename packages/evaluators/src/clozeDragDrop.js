@@ -50,8 +50,8 @@ const exactMatchEvaluator = (userResponse = [], answers) => {
   let isCorrect = false;
 
   answers.forEach(({ value: answer, score: totalScore }) => {
-    const sortedAnswer = answer.map(item => item.slice().sort());
-    const sortedResponse = userResponse.map(item => item.slice().sort());
+    const sortedAnswer = answer;
+    const sortedResponse = userResponse;
 
     if (isEqual(sortedAnswer, sortedResponse)) {
       isCorrect = true;
@@ -63,9 +63,9 @@ const exactMatchEvaluator = (userResponse = [], answers) => {
   if (isCorrect) {
     evaluation = Array(userResponse.length).fill(true);
   } else {
-    const solution = answers[0].value.map(item => item.slice().sort());
+    const solution = answers[0].value;
     evaluation = userResponse.map((resp, index) => {
-      const sortedResponse = resp.slice().sort();
+      const sortedResponse = resp;
       return isEqual(sortedResponse, solution[index]);
     });
   }

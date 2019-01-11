@@ -95,6 +95,12 @@ Object.defineProperty(exports, "choiceMatrix", {
     return _choiceMatrix.default;
   }
 });
+Object.defineProperty(exports, "clozeDragDrop", {
+  enumerable: true,
+  get: function get() {
+    return _clozeDragDrop.default;
+  }
+});
 
 var _mcq = _interopRequireDefault(require("./mcq"));
 
@@ -125,3 +131,5 @@ var _tokenhighlight = _interopRequireDefault(require("./tokenhighlight"));
 var _shading = _interopRequireDefault(require("./shading"));
 
 var _choiceMatrix = _interopRequireDefault(require("./choiceMatrix"));
+
+var _clozeDragDrop = _interopRequireDefault(require("./clozeDragDrop"));

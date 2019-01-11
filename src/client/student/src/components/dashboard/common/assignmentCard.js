@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import PropTypes from 'prop-types';
+import { withNamespaces } from '@edulastic/localization';
 import styled, { withTheme } from 'styled-components';
 import { Row, Col, Icon, Button } from 'antd';
 
@@ -19,7 +20,8 @@ const AssignmentCard = ({
   },
   reports,
   history,
-  theme
+  theme,
+  t
 }) => {
   const startTest = () => {
     initiateTestActivity(testId, _id);
@@ -61,23 +63,22 @@ const AssignmentCard = ({
         <CardDate>
           <Icon
             type={theme.assignment.cardTimeIconType}
-          // theme="outlined"
           />
           <span>
-            <b> &nbsp; Due on </b> {timeConverter(endDate)}
+            <b>&nbsp; {t('common.dueOn')}</b> {timeConverter(endDate)}
           </span>
         </CardDate>
         <div>
           <StatusButton isSubmitted={attemptsData.length > 0}>
-            <span>{attemptsData.length > 0 ? 'SUBMITTED' : 'NOT STARTED'}</span>
+            <span>{attemptsData.length > 0 ? t('common.submittedTag') : t('common.notStartedTag')}</span>
           </StatusButton>
         </div>
       </Col>
       <FlexCol span={5}>
         <DetailContainer>
           <StartAssignButton onClick={startTest}>
-            {attemptsData.length === 0 && <span>START ASSIGNMENT</span>}
-            {attemptsData.length > 0 && <span>RETAKE</span>}
+            {attemptsData.length === 0 && <span>{t('common.startAssignment')}</span>}
+            {attemptsData.length > 0 && <span>{t('common.retake')}</span>}
           </StartAssignButton>
         </DetailContainer>
       </FlexCol>
@@ -88,6 +89,7 @@ const AssignmentCard = ({
 const enhance = compose(
   withTheme,
   withRouter,
+  withNamespaces('assignmentCard'),
   connect(
     null,
     {
@@ -103,7 +105,8 @@ AssignmentCard.propTypes = {
   reports: PropTypes.array,
   initiateTestActivity: PropTypes.func.isRequired,
   history: PropTypes.func.isRequired,
-  theme: PropTypes.func.isRequired
+  theme: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 AssignmentCard.defaultProps = {

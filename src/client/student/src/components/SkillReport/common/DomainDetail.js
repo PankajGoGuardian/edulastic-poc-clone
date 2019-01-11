@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { withNamespaces } from '@edulastic/localization';
 import { Progress } from 'antd';
 import { IconPlus } from '@edulastic/icons';
 import { greenDark } from '@edulastic/colors';
@@ -14,19 +16,19 @@ class DomainDetail extends Component {
     this.state = {
       isShow: false,
       summaryColumns: [{
-        title: 'Grade',
+        title: props.t('common.tableHeaderTitleGrade'),
         dataIndex: 'grade',
         sorter: (a, b) => a.grade - b.grade,
         render: grade => <GradeTag>{grade}</GradeTag>,
         width: '15%'
       }, {
-        title: 'Topic Name',
+        title: props.t('common.tableHeaderTitleTopicName'),
         dataIndex: 'domain',
         sorter: (a, b) => a.domain.length - b.domain.length,
         render: domain => `${domain}`,
         width: '45%'
       }, {
-        title: 'Percent Score',
+        title: props.t('common.tableHeaderTitlePercentScore'),
         dataIndex: 'percentage',
         sorter: (a, b) => a.percentage - b.percentage,
         render: percentage => <StyledProgress percent={percentage} />,
@@ -62,9 +64,7 @@ class DomainDetail extends Component {
     }
 
     return (
-      <AssignmentContentWrapper
-        style={{ paddingTop: 32, paddingBottom: 32 }}
-      >
+      <AssignmentContentWrap>
         <Title onClick={this.handlerTable}>
           <RelationTitle>
             {summary.domain}
@@ -79,17 +79,22 @@ class DomainDetail extends Component {
               dataSource={sumData}
             />)
         }
-      </AssignmentContentWrapper>
+      </AssignmentContentWrap>
     );
   }
 }
 
 DomainDetail.propTypes = {
   summary: PropTypes.object.isRequired,
-  skillReport: PropTypes.object.isRequired
+  skillReport: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired
 };
 
-export default DomainDetail;
+const enhance = compose(
+  withNamespaces('reports')
+);
+
+export default enhance(DomainDetail);
 
 const Title = styled.div`
   display: flex;
@@ -98,6 +103,11 @@ const Title = styled.div`
     flex-direction: column;
     position:relative;
   }
+`;
+
+const AssignmentContentWrap = styled(AssignmentContentWrapper)`
+  padding-top: 32px;
+  padding-bottom: 32px;
 `;
 
 const RelationTitle = styled.div`

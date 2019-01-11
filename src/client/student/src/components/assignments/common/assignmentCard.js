@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { withNamespaces } from '@edulastic/localization';
 import PropTypes from 'prop-types';
 import styled, { withTheme } from 'styled-components';
 import { last } from 'lodash';
@@ -14,7 +15,8 @@ const AssignmentCard = ({
   data: { _id, endDate, testId, test },
   reports,
   history,
-  theme
+  theme,
+  t
 }) => {
   const [isAttemptShow, setIsAttemptShow] = useState(false);
 
@@ -101,7 +103,7 @@ const AssignmentCard = ({
 
   let startButtonText = '';
   if (showAssignment) {
-    startButtonText = attemptCount ? 'RETAKE' : 'START ASSIGNMENT';
+    startButtonText = attemptCount ? t('common.retake') : t('common.startAssignment');
   }
 
   return (
@@ -117,15 +119,13 @@ const AssignmentCard = ({
           <CardDate>
             <Icon type={theme.assignment.cardTimeIconType} />
             <span>
-              <StrongText>Due on </StrongText>
+              <StrongText>{t('common.dueOn')} </StrongText>
               {timeConverter(endDate)}
             </span>
           </CardDate>
           <div>
             <StatusButton isSubmitted={attemptsData.length > 0}>
-              <span>
-                {attemptsData.length > 0 ? 'SUBMITTED' : 'NOT STARTED'}
-              </span>
+              <span>{attemptsData.length > 0 ? t('common.submittedTag') : t('common.notStartedTag')}</span>
             </StatusButton>
           </div>
         </CardDetails>
@@ -139,10 +139,10 @@ const AssignmentCard = ({
                   {attemptCount}/{test.maxAttempts || attemptCount}
                 </span>
                 {isAttemptShow && (
-                  <AttemptsTitle>&#x2193; &nbsp;&nbsp;Attempts</AttemptsTitle>
+                  <AttemptsTitle>&#x2193; &nbsp;&nbsp;{t('common.attemps')}</AttemptsTitle>
                 )}
                 {!isAttemptShow && (
-                  <AttemptsTitle>&#x2191; &nbsp;&nbsp;Attempts</AttemptsTitle>
+                  <AttemptsTitle>&#x2191; &nbsp;&nbsp;{t('common.attemps')}</AttemptsTitle>
                 )}
               </Attempts>
             )}
@@ -151,13 +151,13 @@ const AssignmentCard = ({
                 <span>
                   {current.correct || 0}/{current.totalQuestions}
                 </span>
-                <Title>Correct Answer</Title>
+                <Title>{t('common.correctAnswer')}</Title>
               </AnswerAndScore>
             )}
             {attemptsData.length > 0 && (
               <AnswerAndScore>
                 <span>{current.scorePercentage}%</span>
-                <Title>Score</Title>
+                <Title>{t('common.score')}</Title>
               </AnswerAndScore>
             )}
           </AttemptDetails>
@@ -179,6 +179,7 @@ const AssignmentCard = ({
 const enhance = compose(
   withTheme,
   withRouter,
+  withNamespaces('assignmentCard'),
   connect(
     null,
     {
@@ -194,7 +195,8 @@ AssignmentCard.propTypes = {
   reports: PropTypes.array,
   initiateTestActivity: PropTypes.func.isRequired,
   history: PropTypes.func.isRequired,
-  theme: PropTypes.func.isRequired
+  theme: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 AssignmentCard.defaultProps = {

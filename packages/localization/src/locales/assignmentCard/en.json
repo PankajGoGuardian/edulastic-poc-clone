@@ -1,0 +1,14 @@
+{
+  "common": {
+    "dueOn": "Due on",
+    "submittedTag": "SUBMITTED",
+    "notStartedTag": "NOT STARTED",
+    "startAssignment": "START ASSIGNMENT",
+    "retake": "RETAKE",
+    "review": "REVIEW",
+    "attemps": "Attempts",
+    "correctAnswer": "Correct Answer",
+    "score": "Score",
+    "finishedIn": "Finished in"
+  }
+}

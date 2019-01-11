@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { compose } from 'redux';
 import { Button } from 'antd';
+import PropTypes from 'prop-types';
+import { withNamespaces } from '@edulastic/localization';
 
 import Breadcrumb from '../../Breadcrumb';
 
@@ -19,6 +22,7 @@ class SecondHeadbar extends Component {
 
   render() {
     const { buttonIdx, breadcrumbData } = this.state;
+    const { t } = this.props;
     return (
       <Container>
         <BreadcrumbWrapper>
@@ -29,31 +33,31 @@ class SecondHeadbar extends Component {
             onClick={() => this.handlerButton(0)}
             enabled={buttonIdx === 0 && true}
           >
-            6 ALL
+            6 &nbsp; {t('all')}
           </StyledButton>
           <StyledButton
             onClick={() => this.handlerButton(1)}
             enabled={buttonIdx === 1 && true}
           >
-            1 NOT STARTED
+            1 &nbsp; {t('notStarted')}
           </StyledButton>
           <StyledButton
             onClick={() => this.handlerButton(2)}
             enabled={buttonIdx === 2 && true}
           >
-            0 IN PROGRESS
+            0 &nbsp; {t('inProgress')}
           </StyledButton>
           <StyledButton
             onClick={() => this.handlerButton(3)}
             enabled={buttonIdx === 3 && true}
           >
-            5 SUBMITTED
+            5 &nbsp; {t('submitted')}
           </StyledButton>
           <StyledButton
             onClick={() => this.handlerButton(4)}
             enabled={buttonIdx === 4 && true}
           >
-            0 GRADED
+            0 &nbsp; {t('graded')}
           </StyledButton>
         </StatusBtnsContainer>
       </Container>
@@ -61,7 +65,15 @@ class SecondHeadbar extends Component {
   }
 }
 
-export default SecondHeadbar;
+const enhance = compose(
+  withNamespaces('default')
+);
+
+export default enhance(SecondHeadbar);
+
+SecondHeadbar.propTypes = {
+  t: PropTypes.func.isRequired
+};
 
 const Container = styled.div`
   display: flex;

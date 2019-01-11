@@ -36,9 +36,13 @@ i18n
         student: require('./locales/student/en'),
         assessment: require('./locales/assessment/en'),
         common: require('./locales/common/en'),
-        dashboard: require('./locales/dashboard/en'),
+        profile: require('./locales/profile/en'),
         login: require('./locales/login/en'),
-        header: require('./locales/header/en')
+        header: require('./locales/header/en'),
+        assignmentCard: require('./locales/assignmentCard/en'),
+        sidemenu: require('./locales/sidemenu/en'),
+        reports: require('./locales/reports/en'),
+        manageClass: require('./locales/manageClass/en')
       }
     }
   });

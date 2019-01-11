@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { compose } from 'redux';
+import { withNamespaces } from '@edulastic/localization';
 import PropTypes from 'prop-types';
 import {
   IconClockDashboard,
@@ -66,20 +68,26 @@ NavButton.propTypes = {
   flag: PropTypes.any.isRequired
 };
 
-const Navigation = ({ flag }) => (
+const Navigation = ({ flag, t }) => (
   <NavLink>
-    <NavButton label="Dashboard" icon={IconClockDashboard} flag={flag} />
-    <NavButton label="Assignments" icon={IconAssignment} flag={flag} />
-    <NavButton label="SkillReport" icon={IconBarChart} flag={flag} />
-    <NavButton label="Manage Class" icon={IconManage} flag={flag} />
-    <NavButton label="Report" icon={IconReport} flag={flag} />
+    <NavButton label={t('common.dashboard')} icon={IconClockDashboard} flag={flag} />
+    <NavButton label={t('common.assignments')} icon={IconAssignment} flag={flag} />
+    <NavButton label={t('common.skillReport')} icon={IconBarChart} flag={flag} />
+    <NavButton label={t('common.manageClass')} icon={IconManage} flag={flag} />
+    <NavButton label={t('common.report')} icon={IconReport} flag={flag} />
   </NavLink>
 );
 
-export default React.memo(Navigation);
+const enhance = compose(
+  React.memo,
+  withNamespaces('sidemenu')
+);
+
+export default enhance(Navigation);
 
 Navigation.propTypes = {
-  flag: PropTypes.bool.isRequired
+  flag: PropTypes.bool.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 NavButton.propTypes = {

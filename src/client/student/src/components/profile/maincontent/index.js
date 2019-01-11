@@ -68,16 +68,16 @@ class ProfileContent extends React.Component {
           <Wrapper>
             <Content>
               <AssignmentDetail>
-                <AssignmentTitle>Welcome Zack</AssignmentTitle>
-                <Assignment>
+                <UserTitle>Welcome Zack</UserTitle>
+                <UserSubTitle>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   Quisque eget mauris nunc.
-                </Assignment>
+                </UserSubTitle>
               </AssignmentDetail>
-              <img src={ProfileImage} alt="ahsgj" style={{ margin: '2rem' }} />
-              <Form onSubmit={this.handleSubmit} style={{ textAlign: 'left' }}>
+              <ProfileImg src={ProfileImage} alt="" />
+              <FormWrapper onSubmit={this.handleSubmit}>
                 <FormItemWrapper {...formItemLayout}>
-                  <label>First Name</label>
+                  <label>{t('common.title.firstNameInputLabel')}</label>
                   {getFieldDecorator('First Name', {
                     rules: [
                       {
@@ -88,7 +88,7 @@ class ProfileContent extends React.Component {
                   })(<Input />)}
                 </FormItemWrapper>
                 <FormItemWrapper {...formItemLayout}>
-                  <label>Last Name</label>
+                  <label>{t('common.title.lastNameInputLabel')}</label>
                   {getFieldDecorator('Last Name', {
                     rules: [
                       {
@@ -99,7 +99,7 @@ class ProfileContent extends React.Component {
                   })(<Input />)}
                 </FormItemWrapper>
                 <FormItemWrapper {...formItemLayout}>
-                  <label>Email</label>
+                  <label>{t('common.title.emailInputLabel')}</label>
                   {getFieldDecorator('email', {
                     rules: [
                       {
@@ -114,7 +114,7 @@ class ProfileContent extends React.Component {
                   })(<Input />)}
                 </FormItemWrapper>
                 <FormItemWrapper {...formItemLayout}>
-                  <label>Password</label>
+                  <label>{t('common.title.passwordInputLabel')}</label>
                   {getFieldDecorator('password', {
                     rules: [
                       {
@@ -125,23 +125,21 @@ class ProfileContent extends React.Component {
                   })(<Input type="password" />)}
                 </FormItemWrapper>{' '}
                 <FormItem {...tailFormItemLayout}>
-                  <Button
+                  <CancelButton
                     type="primary"
                     ghost
-                    style={{ width: 100, marginRight: '1rem' }}
                     htmlType="submit"
                   >
                     {t('common.title.cancel')}
-                  </Button>
-                  <Button
+                  </CancelButton>
+                  <SaveButton
                     type="primary"
-                    style={{ width: 100 }}
                     htmlType="submit"
                   >
                     {t('common.title.save')}
-                  </Button>
+                  </SaveButton>
                 </FormItem>
-              </Form>
+              </FormWrapper>
             </Content>
           </Wrapper>
         </AssignmentContentWrapper>
@@ -152,7 +150,7 @@ class ProfileContent extends React.Component {
 
 const ProfileForm = Form.create()(ProfileContent);
 
-const enhance = compose(withNamespaces('dashboard'));
+const enhance = compose(withNamespaces('profile'));
 
 export default React.memo(enhance(ProfileForm));
 
@@ -168,21 +166,30 @@ const ProfileContentWrapper = styled(AssignmentsContent)`
   text-align: center;
 `;
 
-const AssignmentTitle = styled.p`
-  font-weight: 700;
-  color: #434b5d;
+const ProfileImg = styled.img`
+  margin: 2rem;
 `;
 
-const Assignment = styled.p`
-  font-size: 0.8rem;
-  color: #434b5d;
-`;
 const AssignmentDetail = styled.div`
   padding: 1.5rem 0rem;
   border-bottom: 1px solid #f2f2f2;
 `;
 
+const UserTitle = styled.p`
+  font-weight: 700;
+  color: #434b5d;
+`;
+
+const UserSubTitle = styled.p`
+  font-size: 0.8rem;
+  color: #434b5d;
+`;
+
 const Content = styled.div``;
+
+const FormWrapper = styled(Form)`
+  text-align: left;
+`;
 
 const FormItemWrapper = styled(FormItem)`
   width: 50%;
@@ -191,4 +198,12 @@ const FormItemWrapper = styled(FormItem)`
     width: 100%;
     display: block;
   }
+`;
+
+const SaveButton = styled(Button)`
+  width: 100px;
+`;
+
+const CancelButton = styled(SaveButton)`
+  margin-right: 1rem;
 `;

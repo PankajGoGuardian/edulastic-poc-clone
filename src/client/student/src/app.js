@@ -25,7 +25,7 @@ const Dashboard = ({ match, isSidebarCollapsed }) => (
             <Route path={`${match.url}/dashboard`} component={DashboardContainer} />
             <Route path={`${match.url}/assignments`} component={AssignmentsContainer} />
             <Route path={`${match.url}/reports`} component={ReportContainer} />
-            <Route path={`${match.url}/skill-reports`} component={SkillReportContainer} />
+            <Route path={`${match.url}/skill-report`} component={SkillReportContainer} />
             <Route path={`${match.url}/manage`} component={ManageClassContainer} />
             <Route path={`${match.url}/profile`} component={ProfileContainer} />
             <Route

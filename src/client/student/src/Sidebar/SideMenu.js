@@ -59,7 +59,7 @@ const menuItems = [
   {
     label: 'Skill Report',
     icon: IconBarChart,
-    path: 'home/skill-reports'
+    path: 'home/skill-report'
   },
   {
     label: 'Manage Class',

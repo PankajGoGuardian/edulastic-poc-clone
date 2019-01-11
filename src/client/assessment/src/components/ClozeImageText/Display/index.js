@@ -127,7 +127,7 @@ class ClozeImageTextDisplay extends Component {
       backgroundColor
     } = this.props;
     const { userAnswers } = this.state;
-    const responses = this.shuffle(options);
+    // const responses = this.shuffle(options);
 
     // Layout Options
     const fontSize = this.getFontSize(uiStyle.fontsize);

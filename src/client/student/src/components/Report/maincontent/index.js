@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import styled, { withTheme } from 'styled-components';
+import { withNamespaces } from '@edulastic/localization';
 import { Icon, Row, Col } from 'antd';
 import PropTypes from 'prop-types';
 import { uniqBy } from 'lodash';
@@ -20,7 +21,8 @@ const Report = ({ _id,
   assignmentId,
   reports,
   assignments,
-  theme
+  theme,
+  t
 }) => {
   const [isAttemptShow, setIsAttemptShow] = useState(false);
   const timeConverter = (UNIX_timestamp) => {
@@ -73,7 +75,7 @@ const Report = ({ _id,
               type={theme.assignment.cardTimeIconType}
             />
             <span>
-              <StrongText>Finished in </StrongText>
+              <StrongText>{t('common.finishedIn')} </StrongText>
               {timeConverter(createdAt / 1000)}
             </span>
           </CardDate>
@@ -86,19 +88,20 @@ const Report = ({ _id,
               getAttemptsData(reports, assignmentId).length > 1 && (
                 <Attempts>
                   <span>
-                    {getAttemptsData(reports, assignmentId).length - 1}/{getAttemptsData(reports, assignmentId).length}
+                    {getAttemptsData(reports, assignmentId).length - 1}
+                    /{getAttemptsData(reports, assignmentId).length}
                   </span>
                   {
                     isAttemptShow && (
                       <AttemptsTitle onClick={attemptHandler}>
-                        &#x2193;&nbsp;&nbsp;Attempts
+                        &#x2193;&nbsp;&nbsp;{t('common.attemps')}
                       </AttemptsTitle>
                     )
                   }
                   {
                     !isAttemptShow && (
                       <AttemptsTitle onClick={attemptHandler}>
-                        &#x2191;&nbsp;&nbsp;Attempts
+                        &#x2191;&nbsp;&nbsp;{t('common.attemps')}
                       </AttemptsTitle>
                     )
                   }
@@ -109,15 +112,15 @@ const Report = ({ _id,
               <span>
                 {correctAnswers}/{totalQuestion}
               </span>
-              <Title>Correct Answer</Title>
+              <Title>{t('common.correctAnswer')}</Title>
             </AnswerAndScore>
             <AnswerAndScore>
               <span>{score}</span>
-              <Title>Score</Title>
+              <Title>{t('common.score')}</Title>
             </AnswerAndScore>
           </AttemptDetails>
           <StartAssignButton to={{ pathname: '/home/report/list', testActivityId: _id }}>
-            <span>REVIEW</span>
+            <span>{t('common.review')}</span>
           </StartAssignButton>
 
         </DetailContainer>
@@ -131,14 +134,16 @@ const Report = ({ _id,
                       <span>{timeConverter(report.createdAt / 1000)}</span>
                     </Attempts>
                     <AnswerAndScore>
-                      <span>{report.correctAnswers ? report.correctAnswers : 0}/{report.totalQuestion ? report.totalQuestion : 0}</span>
+                      <span>{report.correctAnswers ? report.correctAnswers : 0}
+                        /{report.totalQuestion ? report.totalQuestion : 0}
+                      </span>
                     </AnswerAndScore>
                     <AnswerAndScore>
                       <span>{report.score ? report.score : 0}</span>
                     </AnswerAndScore>
                     <AnswerAndScoreReviewBtn>
                       <Link to={{ pathname: '/home/report/list', testActivityId: report._id }}>
-                        <div>REVIEW</div>
+                        <div>{t('common.review')}</div>
                       </Link>
                     </AnswerAndScoreReviewBtn>
                   </RowData>
@@ -161,7 +166,8 @@ Report.propTypes = {
   reports: PropTypes.array,
   assignments: PropTypes.array,
   assignmentId: PropTypes.number,
-  theme: PropTypes.func.isRequired
+  theme: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 Report.defaultProps = {
@@ -175,7 +181,7 @@ Report.defaultProps = {
   assignments: []
 };
 
-const ReportContent = ({ flag, fetchReports, reports, loadAssignments, assignments, theme }) => {
+const ReportContent = ({ flag, fetchReports, reports, loadAssignments, assignments, theme, t }) => {
   useEffect(() => {
     loadAssignments();
     fetchReports();
@@ -184,7 +190,14 @@ const ReportContent = ({ flag, fetchReports, reports, loadAssignments, assignmen
     <AssignmentsContent flag={flag}>
       <AssignmentContentWrapper>
         {uniqBy(reports, 'assignmentId').map((report, index) => (
-          <Report theme={theme} key={index} {...report} reports={reports} assignments={assignments} />
+          <Report
+            theme={theme}
+            t={t}
+            key={index}
+            {...report}
+            reports={reports}
+            assignments={assignments}
+          />
         ))}
       </AssignmentContentWrapper>
     </AssignmentsContent>
@@ -194,6 +207,7 @@ const ReportContent = ({ flag, fetchReports, reports, loadAssignments, assignmen
 const enhance = compose(
   withTheme,
   React.memo,
+  withNamespaces('assignmentCard'),
   connect(
     ({ ui, reports, assignments }) => ({ flag: ui.flag, reports: reports.reports, assignments }),
     {
@@ -211,7 +225,8 @@ ReportContent.propTypes = {
   reports: PropTypes.array.isRequired,
   loadAssignments: PropTypes.func.isRequired,
   assignments: PropTypes.array.isRequired,
-  theme: PropTypes.func.isRequired
+  theme: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 

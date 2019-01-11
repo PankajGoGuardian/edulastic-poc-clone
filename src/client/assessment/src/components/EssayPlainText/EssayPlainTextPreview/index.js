@@ -17,10 +17,10 @@ import {
   PREVIEW
 } from '../../../constants/constantsForQuestions';
 
-const EssayPlainTextPreview = ({ view, saveAnswer, t, item, smallSize }) => {
-  const [text, setText] = useState('');
+const EssayPlainTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswer }) => {
+  const [text, setText] = useState(Array.isArray(userAnswer) ? '' : userAnswer);
 
-  const [wordCount, setWordCount] = useState(0);
+  const [wordCount, setWordCount] = useState(text.split(' ').filter(i => !!i).length);
 
   const [selection, setSelection] = useState(null);
 
@@ -144,7 +144,8 @@ EssayPlainTextPreview.propTypes = {
   smallSize: PropTypes.bool,
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  view: PropTypes.string.isRequired
+  view: PropTypes.string.isRequired,
+  userAnswer: PropTypes.any.isRequired
 };
 
 EssayPlainTextPreview.defaultProps = {

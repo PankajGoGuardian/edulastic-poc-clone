@@ -1,17 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { withNamespaces } from '@edulastic/localization';
 import AssignmentsContent from '../../commonStyle/assignmentContent';
 import AssignmentContentWrapper from '../../commonStyle/assignmentContentWrapper';
 
-const ReportListContent = ({ flag, testActivityId }) => (
+const ReportListContent = ({ flag, testActivityId, t }) => (
   <AssignmentsContent flag={flag}>
     <AssignmentContentWrapper>
       <Wrapper>
         <Content>
           <Header>
             <Title>MATH MCAS-CALCULATOR{testActivityId}</Title>
-            <BackBtn>BACK TO REPORT LIST</BackBtn>
+            <BackBtn>{t('common.backButton')}</BackBtn>
           </Header>
           <ReportListWrapper>
             <div style={{ width: '70%' }}>
@@ -19,8 +21,8 @@ const ReportListContent = ({ flag, testActivityId }) => (
                 <Question>ahsfdhfsd ashgdjshdshgs</Question>
               </QuestionWrapper>
               <SolutionWrapper>
-                <FeedbackText>Solution</FeedbackText>
-                <AnswerText>Answer: </AnswerText>
+                <FeedbackText>{t('common.solutionLabel')}</FeedbackText>
+                <AnswerText>{t('common.answerLabel')}: </AnswerText>
                 <Answer>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin
                   commodo nec est sed placerat. Donec accumsan mauris sem, eu
@@ -41,7 +43,7 @@ const ReportListContent = ({ flag, testActivityId }) => (
                 <Total>2</Total>
               </ScoreWrapper>
               <Feedback>
-                <FeedbackText>Teacher Feedback</FeedbackText>
+                <FeedbackText>{t('common.teacherFeedbackLabel')}</FeedbackText>
                 <hr />
                 <FeedbackGiven>shgfg</FeedbackGiven>
               </Feedback>
@@ -53,11 +55,17 @@ const ReportListContent = ({ flag, testActivityId }) => (
   </AssignmentsContent>
 );
 
-export default React.memo(ReportListContent);
+const enhance = compose(
+  withNamespaces('reports'),
+  React.memo
+);
+
+export default enhance(ReportListContent);
 
 ReportListContent.propTypes = {
   flag: PropTypes.bool.isRequired,
-  testActivityId: PropTypes.string.isRequired
+  testActivityId: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 const Wrapper = styled.div`

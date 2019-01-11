@@ -50,6 +50,7 @@ const styles = {
 const MatchListPreview = ({
   view,
   saveAnswer,
+  userAnswer,
   item,
   t,
   previewTab,
@@ -76,9 +77,15 @@ const MatchListPreview = ({
 
   const possible_responses = group_possible_responses ? groupArrays : posResponses;
 
-  const [ans, setAns] = useState(Array.from({ length: list.length }).fill(null));
+  const [ans, setAns] = useState(
+    !userAnswer.every(answer => answer === null)
+      ? userAnswer
+      : Array.from({ length: list.length }).fill(null)
+  );
 
-  const [dragItems, setDragItems] = useState(possible_responses);
+  const [dragItems, setDragItems] = useState(
+    possible_responses.filter(answer => !userAnswer.includes(answer))
+  );
 
   if (editCorrectAnswers.length > 0) {
     if (
@@ -304,7 +311,8 @@ MatchListPreview.propTypes = {
   smallSize: PropTypes.bool,
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  view: PropTypes.string.isRequired
+  view: PropTypes.string.isRequired,
+  userAnswer: PropTypes.any.isRequired
 };
 
 MatchListPreview.defaultProps = {

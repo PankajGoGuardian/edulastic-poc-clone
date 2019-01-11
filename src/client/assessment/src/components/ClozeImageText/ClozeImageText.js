@@ -235,7 +235,7 @@ class ClozeImageText extends Component {
                 backgroundColor={item.background}
                 key={previewDisplayOptions && previewStimulus && uiStyle}
                 templateMarkUp={item.templateMarkUp}
-                userSelections={[]}
+                userSelections={userAnswer}
                 maxRespCount={item.maxRespCount}
                 onChange={this.handleAddAnswer}
               />

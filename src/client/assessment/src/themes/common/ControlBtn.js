@@ -30,6 +30,14 @@ const ControlBtn = styled(Button)`
     cursor: not-allowed;
     border: 1px solid ${white};
   }
+  &:focus {
+    background: transparent;
+  }
+  &:active {
+    color: #fff;
+    background-color: #40a9ff;
+    border-color: #40a9ff;
+  }
 
   & > span {
     font-size: 0.5em;
@@ -68,14 +76,14 @@ const ControlBtn = styled(Button)`
     }
   }
 
-  @media (min-width: 760px) {
+  @media (min-width: 767px) {
     width: ${props =>
     props.next ? (props.skin ? '40px' : '187px') : props.skin ? '40px' : '50px'};
     height: ${props => (props.skin ? '40px' : '50px')};
   }
-  @media (max-width: 760px) {
-    width: 52px;
-    height: 52px;
+  @media (max-width: 767px) {
+    width: 40px;
+    height: 40px;
     padding: 0;
     display: flex;
     align-items: center;

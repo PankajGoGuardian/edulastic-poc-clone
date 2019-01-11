@@ -9,7 +9,7 @@ const formatData = data => {
   return item;
 };
 
-const getAll = ({ limit = 10, page = 1, search, data, validation }) => {
+const getAll = ({ limit = 100, page = 1, search, data, validation }) => {
   let url = `${prefix}?limit=${limit}&skip=${limit * (page - 1)}`;
 
   if (search) {

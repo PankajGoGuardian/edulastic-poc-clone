@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -13,6 +13,7 @@ import HeaderLeftMenu from '../common/HeaderLeftMenu';
 import HeaderMainMenu from '../common/HeaderMainMenu';
 import HeaderRightMenu from '../common/HeaderRightMenu';
 import ToolbarModal from '../common/ToolbarModal';
+import SavePauseModalMobile from '../common/SavePauseModalMobile';
 import SubmitConfirmation from '../common/SubmitConfirmation';
 import {
   ControlBtn,
@@ -25,15 +26,15 @@ import {
   TestButton,
   ToolBar,
   Clock,
-  SaveAndExit
+  SaveAndExit,
+  SavePauseMobile
 } from '../common';
 import TestItemPreview from '../../components/TestItemPreview';
 import {
   LARGE_DESKTOP_WIDTH,
   MEDIUM_DESKTOP_WIDTH,
-  MAX_MOBILE_WIDTH
+  IPAD_PORTRAIT_WIDTH
 } from '../../constants/others';
-
 import { checkAnswerAction } from '../../../../author/src/actions/testItem';
 import { changePreviewAction } from '../../../../author/src/actions/view';
 import { getItemDetailByIdAction } from '../../../../author/src/actions/itemDetail';
@@ -48,7 +49,8 @@ class AssessmentPlayerDefault extends React.Component {
     this.state = {
       testItemState: '',
       isToolbarModalVisible: false,
-      isSubmitConfirmationVisible: false
+      isSubmitConfirmationVisible: false,
+      isSavePauseModalVisible: false
     };
   }
 
@@ -106,6 +108,14 @@ class AssessmentPlayerDefault extends React.Component {
     this.setState({ isToolbarModalVisible: false });
   };
 
+  closeSavePauseModal = () => {
+    this.setState({ isSavePauseModalVisible: false });
+  };
+
+  openSavePauseModal = () => {
+    this.setState({ isSavePauseModalVisible: true });
+  };
+
   openSubmitConfirmation = () => {
     this.setState({ isSubmitConfirmationVisible: true });
   };
@@ -122,12 +132,12 @@ class AssessmentPlayerDefault extends React.Component {
   finishTest = () => {
     const { history } = this.props;
     history.push('/home/assignments');
-  }
+  };
 
   finishTest = () => {
     const { history } = this.props;
     history.push('/home/assignments');
-  }
+  };
 
   render() {
     const {
@@ -147,7 +157,8 @@ class AssessmentPlayerDefault extends React.Component {
     const {
       testItemState,
       isToolbarModalVisible,
-      isSubmitConfirmationVisible
+      isSubmitConfirmationVisible,
+      isSavePauseModalVisible
     } = this.state;
 
     const dropdownOptions = Array.isArray(items)
@@ -166,6 +177,11 @@ class AssessmentPlayerDefault extends React.Component {
             onClose={() => this.closeToolbarModal()}
             checkanswer={() => this.changeTabItemState('check')}
           />
+          <SavePauseModalMobile
+            isVisible={isSavePauseModalVisible}
+            onClose={this.closeSavePauseModal}
+            onExitClick={this.openSubmitConfirmation}
+          />
           <SubmitConfirmation
             isVisible={isSubmitConfirmationVisible}
             onClose={() => this.closeSubmitConfirmation()}
@@ -175,13 +191,21 @@ class AssessmentPlayerDefault extends React.Component {
             <Header>
               <HeaderLeftMenu>
                 <LogoCompact />
-                {windowWidth < MAX_MOBILE_WIDTH && <Clock />}
+                {windowWidth < IPAD_PORTRAIT_WIDTH && (
+                  <Fragment>
+                    <Clock />
+                    <SavePauseMobile
+                      openSavePauseModal={this.openSavePauseModal}
+                      isVisible={isSavePauseModalVisible}
+                    />
+                  </Fragment>
+                )}
               </HeaderLeftMenu>
               <HeaderMainMenu skin>
                 <FlexContainer
                   style={{
                     justifyContent:
-                      windowWidth < MAX_MOBILE_WIDTH && 'space-between'
+                      windowWidth < IPAD_PORTRAIT_WIDTH && 'space-between'
                   }}
                 >
                   <QuestionSelectDropdown
@@ -191,21 +215,40 @@ class AssessmentPlayerDefault extends React.Component {
                     options={dropdownOptions}
                   />
 
-                  <FlexContainer style={{ flex: 1, justifyContent: windowWidth < MAX_MOBILE_WIDTH && 'flex-end' }}>
-                    <ControlBtn prev skin type="primary" icon="left" disabled={isFirst()} onClick={moveToPrev} />
-                    <ControlBtn next skin type="primary" icon={!isLast() && 'right'} onClick={moveToNext}>
-                      { isLast() && <IconSend /> }
+                  <FlexContainer
+                    style={{
+                      flex: 1,
+                      justifyContent:
+                        windowWidth < IPAD_PORTRAIT_WIDTH && 'flex-end'
+                    }}
+                  >
+                    <ControlBtn
+                      prev
+                      skin
+                      type="primary"
+                      icon="left"
+                      disabled={isFirst()}
+                      onClick={moveToPrev}
+                    />
+                    <ControlBtn
+                      next
+                      skin
+                      type="primary"
+                      icon={!isLast() && 'right'}
+                      onClick={moveToNext}
+                    >
+                      {isLast() && <IconSend />}
                     </ControlBtn>
-                    { windowWidth < LARGE_DESKTOP_WIDTH && (
+                    {windowWidth < LARGE_DESKTOP_WIDTH && (
                       <ToolButton
                         next
                         skin
                         size="large"
                         type="primary"
                         icon="tool"
-                        onClick={() =>
-                          this.setState({ isToolbarModalVisible: true })
-                        }
+                        onClick={() => {
+                          this.setState({ isToolbarModalVisible: true });
+                        }}
                       />
                     )}
                     {windowWidth >= MEDIUM_DESKTOP_WIDTH && (
@@ -214,8 +257,8 @@ class AssessmentPlayerDefault extends React.Component {
                       />
                     )}
                     {windowWidth >= LARGE_DESKTOP_WIDTH && <ToolBar />}
-                    {windowWidth >= MAX_MOBILE_WIDTH && <Clock />}
-                    {windowWidth >= MAX_MOBILE_WIDTH && (
+                    {windowWidth >= IPAD_PORTRAIT_WIDTH && <Clock />}
+                    {windowWidth >= IPAD_PORTRAIT_WIDTH && (
                       <SaveAndExit
                         finishTest={() => this.openSubmitConfirmation()}
                       />

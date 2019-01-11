@@ -40,7 +40,9 @@ i18n
         login: require('./locales/login/en'),
         header: require('./locales/header/en'),
         assignmentCard: require('./locales/assignmentCard/en'),
-        sidemenu: require('./locales/sidemenu/en')
+        sidemenu: require('./locales/sidemenu/en'),
+        reports: require('./locales/reports/en'),
+        manageClass: require('./locales/manageClass/en')
       }
     }
   });

@@ -24,7 +24,7 @@ import {
 const initialTestState = {
   title: 'New Test',
   description: '',
-  maxAttempts: 1,
+  maxAttempts: 3,
   renderingType: 'assessment',
   status: 'draft',
   thumbnail: 'https://fakeimg.pl/500x135/',
@@ -60,7 +60,7 @@ const initialState = {
   entity: initialTestState,
   error: null,
   page: 1,
-  limit: 5,
+  limit: 20,
   count: 0,
   loading: false,
   creating: false

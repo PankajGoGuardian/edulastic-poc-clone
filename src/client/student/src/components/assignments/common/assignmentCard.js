@@ -2,24 +2,21 @@ import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { withNamespaces } from '@edulastic/localization';
 import PropTypes from 'prop-types';
 import styled, { withTheme } from 'styled-components';
+import { last } from 'lodash';
 import { Row, Col, Icon, Button } from 'antd';
-
+import Attempt from './attempt';
 import { initiateTestActivityAction } from '../../../actions/test';
-
 
 const AssignmentCard = ({
   initiateTestActivity,
-  data: {
-    _id,
-    endDate,
-    testId,
-    test
-  },
+  data: { _id, endDate, testId, test },
   reports,
   history,
-  theme
+  theme,
+  t
 }) => {
   const [isAttemptShow, setIsAttemptShow] = useState(false);
 
@@ -39,37 +36,76 @@ const AssignmentCard = ({
 
   const startTest = () => {
     const attemptsData = getAttemptsData(reports, _id);
-    if (attemptsData.length === 0) {
+    if (attemptsData.length < test.maxAttempts) {
       initiateTestActivity(testId, _id);
+      history.push(`/student/test/${testId}`);
+    } else {
+      console.log('ran out of max attempts');
     }
-    history.push(`/student/test/${testId}`);
+  };
+
+  const parseAttemptData = (attempt) => {
+    const correct = attempt.correct || 0;
+    const wrong = attempt.wrong || 0;
+    const totalQuestions = correct + wrong || 0;
+    const score = attempt.score || 0;
+    const maxScore = attempt.maxScore || 0;
+    let scorePercentage = (score / maxScore) * 100;
+    scorePercentage = Number.isNaN(scorePercentage)
+      ? 0
+      : scorePercentage.toFixed(2);
+    return {
+      correct,
+      wrong,
+      totalQuestions,
+      score,
+      maxScore,
+      scorePercentage
+    };
   };
 
   const timeConverter = (data) => {
     const a = new Date(data);
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
     const year = a.getFullYear();
     const month = months[a.getMonth()];
     const date = a.getDate();
     const hour = a.getHours();
     const min = a.getMinutes();
-    const time = hour > 11 ? `${month} ${date}, ${year} ${hour - 12}:${min} PM` : `${month} ${date}, ${year} ${hour}:${min} AM`;
+    const time =
+      hour > 11
+        ? `${month} ${date}, ${year} ${hour - 12}:${min} PM`
+        : `${month} ${date}, ${year} ${hour}:${min} AM`;
     return time;
   };
 
-  const UnixConverter = (UNIX_timestamp) => {
-    const a = new Date(UNIX_timestamp * 1000);
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const year = a.getFullYear();
-    const month = months[a.getMonth()];
-    const date = a.getDate();
-    const hour = a.getHours();
-    const min = a.getMinutes();
-    const time = hour > 11 ? `${month} ${date}, ${year} ${hour - 12}:${min} PM` : `${month} ${date}, ${year} ${hour - 12}:${min} AM`;
-    return time;
-  };
+  const attemptsData = getAttemptsData(reports, _id) || [];
+  const attemptCount = attemptsData.length;
+  const lastAttempt = last(attemptsData) || {};
+  const previousAttempts = attemptsData.slice(0, attemptCount);
+  const current = parseAttemptData(lastAttempt);
 
-  const attemptsData = getAttemptsData(reports, _id);
+  // / move it to the upper components, wtf!
+  const showAssignment = test.maxAttempts > attemptsData.length;
+
+  let startButtonText = '';
+  if (showAssignment) {
+    startButtonText = attemptCount ? t('common.retake') : t('common.startAssignment');
+  }
+
   return (
     <CardWrapper>
       <AssessmentDetails>
@@ -81,17 +117,15 @@ const AssignmentCard = ({
         <CardDetails>
           <CardTitle>{test && test.title}</CardTitle>
           <CardDate>
-            <Icon
-              type={theme.assignment.cardTimeIconType}
-            />
+            <Icon type={theme.assignment.cardTimeIconType} />
             <span>
-              <StrongText>Due on </StrongText>
+              <StrongText>{t('common.dueOn')} </StrongText>
               {timeConverter(endDate)}
             </span>
           </CardDate>
           <div>
             <StatusButton isSubmitted={attemptsData.length > 0}>
-              <span>{attemptsData.length > 0 ? 'SUBMITTED' : 'NOT STARTED'}</span>
+              <span>{attemptsData.length > 0 ? t('common.submittedTag') : t('common.notStartedTag')}</span>
             </StatusButton>
           </div>
         </CardDetails>
@@ -99,77 +133,44 @@ const AssignmentCard = ({
       <ButtonAndDetail>
         <DetailContainer>
           <AttemptDetails>
-            {
-              attemptsData.length > 1 && (
-                <Attempts onClick={attemptHandler}>
-                  <span>{attemptsData.length - 1}/{attemptsData.length}</span>
-                  {
-                    isAttemptShow && (
-                      <AttemptsTitle>
-                        &#x2193;
-                        &nbsp;&nbsp;Attempts
-                      </AttemptsTitle>
-                    )
-                  }
-                  {
-                    !isAttemptShow && (
-                      <AttemptsTitle>
-                        &#x2191;
-                        &nbsp;&nbsp;Attempts
-                      </AttemptsTitle>
-                    )
-                  }
-                </Attempts>)
-            }
-            {
-              attemptsData.length > 0 && (
-                <AnswerAndScore>
-                  <span>
-                    {attemptsData[0].correctAnswers ? attemptsData[0].correctAnswers : 0}
-                    /{attemptsData[0].totalQuestion ? attemptsData[0].totalQuestion : 0}
-                  </span>
-                  <Title>Correct Answer</Title>
-                </AnswerAndScore>
-              )
-            }
-            {
-              attemptsData.length > 0 && (
-                <AnswerAndScore>
-                  <span>{attemptsData[0].score ? attemptsData[0].score : 0}%</span>
-                  <Title>Score</Title>
-                </AnswerAndScore>
-              )
-            }
+            {attemptsData.length > 1 && (
+              <Attempts onClick={attemptHandler}>
+                <span>
+                  {attemptCount}/{test.maxAttempts || attemptCount}
+                </span>
+                {isAttemptShow && (
+                  <AttemptsTitle>&#x2193; &nbsp;&nbsp;{t('common.attemps')}</AttemptsTitle>
+                )}
+                {!isAttemptShow && (
+                  <AttemptsTitle>&#x2191; &nbsp;&nbsp;{t('common.attemps')}</AttemptsTitle>
+                )}
+              </Attempts>
+            )}
+            {attemptsData.length > 0 && (
+              <AnswerAndScore>
+                <span>
+                  {current.correct || 0}/{current.totalQuestions}
+                </span>
+                <Title>{t('common.correctAnswer')}</Title>
+              </AnswerAndScore>
+            )}
+            {attemptsData.length > 0 && (
+              <AnswerAndScore>
+                <span>{current.scorePercentage}%</span>
+                <Title>{t('common.score')}</Title>
+              </AnswerAndScore>
+            )}
           </AttemptDetails>
-          <StartAssignButton onClick={startTest}>
-            {attemptsData.length === 0 && <span>START ASSIGNMENT</span>}
-            {attemptsData.length > 0 && <span>RETAKE</span>}
-          </StartAssignButton>
+          {showAssignment && (
+            <StartAssignButton onClick={startTest}>
+              <span> {startButtonText}</span>
+            </StartAssignButton>
+          )}
         </DetailContainer>
-        {
-          isAttemptShow && (
-            attemptsData.map((data, index) => (
-              index !== 0 && (
-                <AttemptsData key={index}>
-                  <RowData>
-                    <Attempts>
-                      <span>{UnixConverter(data.createdAt / 1000)}</span>
-                    </Attempts>
-                    <AnswerAndScore>
-                      <span>{data.correctAnswers ? data.correctAnswers : 0}
-                        /{data.totalQuestion ? data.totalQuestion : 0}
-                      </span>
-                    </AnswerAndScore>
-                    <AnswerAndScore>
-                      <span>{data.score ? data.score : 0}%</span>
-                    </AnswerAndScore>
-                    <AnswerAndScoreReview>
-                      <div>REVIEW</div>
-                    </AnswerAndScoreReview>
-                  </RowData>
-                </AttemptsData>)
-            )))
-        }
+        {isAttemptShow &&
+          previousAttempts.map((attempt, index) => (
+            <Attempt key={index} data={attempt} />
+          ))}
       </ButtonAndDetail>
     </CardWrapper>
   );
@@ -178,6 +179,7 @@ const AssignmentCard = ({
 const enhance = compose(
   withTheme,
   withRouter,
+  withNamespaces('assignmentCard'),
   connect(
     null,
     {
@@ -193,7 +195,8 @@ AssignmentCard.propTypes = {
   reports: PropTypes.array,
   initiateTestActivity: PropTypes.func.isRequired,
   history: PropTypes.func.isRequired,
-  theme: PropTypes.func.isRequired
+  theme: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 AssignmentCard.defaultProps = {
@@ -221,21 +224,21 @@ const CardWrapper = styled(Row)`
 const ButtonAndDetail = styled(Col)`
   display: flex;
   flex-direction: column;
-  width:62%;
+  width: 62%;
   @media screen and (min-width: 1025px) {
-    margin-left:auto;
-  }   
+    margin-left: auto;
+  }
   @media screen and (max-width: 767px) {
     flex-direction: column;
   }
 `;
 
 const AssessmentDetails = styled(Col)`
-    display: flex;
-    flex-direction: row;
-    @media screen and (max-width: 767px) {
-      flex-direction: column;
-    }
+  display: flex;
+  flex-direction: row;
+  @media screen and (max-width: 767px) {
+    flex-direction: column;
+  }
 `;
 
 const ImageWrapper = styled.div`
@@ -247,7 +250,7 @@ const ImageWrapper = styled.div`
   @media screen and (max-width: 767px) {
     max-width: 100%;
     margin: 0;
-    img{
+    img {
       max-width: 100%;
     }
   }
@@ -286,8 +289,8 @@ const CardDate = styled.div`
   text-align: left;
   color: ${props => props.theme.assignment.cardTimeTextColor};
   padding-bottom: 8px;
-  i { 
-    color: ${props => props.theme.assignment.cardTimeIconColor}; 
+  i {
+    color: ${props => props.theme.assignment.cardTimeIconColor};
   }
 
   .anticon-clock-circle {
@@ -307,11 +310,10 @@ const StatusButton = styled.div`
   width: 135px;
   height: 23.5px;
   border-radius: 5px;
-  background-color: ${props => (
-    props.isSubmitted ?
-      props.theme.assignment.cardSubmitLabelBgColor :
-      props.theme.assignment.cardNotStartedLabelBgColor
-  )};
+  background-color: ${props =>
+    (props.isSubmitted
+      ? props.theme.assignment.cardSubmitLabelBgColor
+      : props.theme.assignment.cardNotStartedLabelBgColor)};
   font-size: ${props => props.theme.assignment.cardSubmitLabelFontSize};
   font-weight: bold;
   line-height: 1.38;
@@ -321,14 +323,13 @@ const StatusButton = styled.div`
   span {
     position: relative;
     top: -1px;
-    color: ${props => (
-    props.isSubmitted ?
-      props.theme.assignment.cardSubmitLabelTextColor :
-      props.theme.assignment.cardNotStartedLabelTextColor
-  )};
+    color: ${props =>
+    (props.isSubmitted
+      ? props.theme.assignment.cardSubmitLabelTextColor
+      : props.theme.assignment.cardNotStartedLabelTextColor)};
   }
   @media screen and (max-width: 767px) {
-     width: 100%;
+    width: 100%;
   }
 `;
 
@@ -361,13 +362,14 @@ const StartAssignButton = styled(Button)`
     letter-spacing: 0.2px;
   }
   &:hover {
-    background-color: ${props => props.theme.assignment.cardRetakeBtnBgHoverColor};
+    background-color: ${props =>
+    props.theme.assignment.cardRetakeBtnBgHoverColor};
     span {
       color: ${props => props.theme.assignment.cardRetakeBtnTextHoverColor};
     }
   }
   @media screen and (min-width: 1025px) {
-    margin-right:0px;
+    margin-right: 0px;
   }
   @media screen and (max-width: 768px) {
     max-width: 80%;
@@ -389,19 +391,7 @@ const AnswerAndScore = styled.div`
     color: ${props => props.theme.assignment.cardAnswerAndScoreTextColor};
   }
   @media screen and (max-width: 767px) {
-    width:33%;
-  }
-`;
-
-const AnswerAndScoreReview = styled(AnswerAndScore)`
-  div {
-    display: inline-block;
-    font-size: ${props => props.theme.assignment.attemptsRowReviewLinkSize};
-    color: ${props => props.theme.assignment.attemptsRowReviewLinkColor};
-    cursor: pointer;
-  }
-  @media screen and (min-width: 769px) {
-    width:200px;
+    width: 33%;
   }
 `;
 
@@ -427,31 +417,4 @@ const Title = styled.div`
   font-size: ${props => props.theme.assignment.cardResponseBoxLabelsFontSize};
   font-weight: 600;
   color: ${props => props.theme.assignment.cardResponseBoxLabelsColor};
-`;
-
-const AttemptsData = styled.div`
-  margin-top: 7px;
-`;
-
-const RowData = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  border-radius: 4px;
-  height: 30px;
-  div {
-    background-color: ${props => props.theme.assignment.attemptsReviewRowBgColor};
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    @media screen and(max-width: 767px){
-      justify-content: flex-start;
-    }
-  }
-  span {
-    font-size: ${props => props.theme.assignment.attemptsReviewRowFontSize};
-    font-weight: 600;
-    color: ${props => props.theme.assignment.attemptsReviewRowTextColor};
-  }
 `;

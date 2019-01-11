@@ -11,7 +11,7 @@ import { withNamespaces } from '@edulastic/localization';
 import {
   ClozeDropDownAuthoring,
   ClozeDropDownDisplay,
-  CorrectAnswers,
+  CorrectAnswers
 } from './index';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 import CorrectAnswerOptions from './components/CorrectAnswerOptions';
@@ -36,14 +36,14 @@ class ClozeDropDown extends Component {
         ...item,
         stimulus: item.stimulus,
         list: item.options,
-        validation: item.validation,
+        validation: item.validation
       };
     }
     return {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
-      uiStyle: item.ui_style,
+      uiStyle: item.ui_style
     };
   };
 
@@ -53,7 +53,7 @@ class ClozeDropDown extends Component {
 
     const response = {
       score: 1,
-      value: [],
+      value: []
     };
 
     if (newItem.validation.alt_responses && newItem.validation.alt_responses.length) {
@@ -101,7 +101,7 @@ class ClozeDropDown extends Component {
                   key={shuffleOptions}
                   validation={item.validation}
                   configureOptions={{
-                    shuffleOptions,
+                    shuffleOptions
                   }}
                   options={previewDisplayOptions}
                   question={previewStimulus}
@@ -142,7 +142,7 @@ class ClozeDropDown extends Component {
               <ClozeDropDownDisplay
                 checkAnswer
                 configureOptions={{
-                  shuffleOptions,
+                  shuffleOptions
                 }}
                 smallSize={smallSize}
                 options={previewDisplayOptions}
@@ -158,7 +158,7 @@ class ClozeDropDown extends Component {
               <ClozeDropDownDisplay
                 showAnswer
                 configureOptions={{
-                  shuffleOptions,
+                  shuffleOptions
                 }}
                 smallSize={smallSize}
                 options={previewDisplayOptions}
@@ -174,7 +174,7 @@ class ClozeDropDown extends Component {
               <ClozeDropDownDisplay
                 preview
                 configureOptions={{
-                  shuffleOptions,
+                  shuffleOptions
                 }}
                 key={previewDisplayOptions && previewStimulus && uiStyle}
                 smallSize={smallSize}
@@ -182,7 +182,7 @@ class ClozeDropDown extends Component {
                 question={previewStimulus}
                 uiStyle={uiStyle}
                 templateMarkUp={item.templateMarkUp}
-                userSelections={[]}
+                userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
               />
             )}
@@ -205,18 +205,18 @@ ClozeDropDown.propTypes = {
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
   // eslint-disable-next-line react/no-unused-prop-types
-  evaluation: PropTypes.any.isRequired,
+  evaluation: PropTypes.any.isRequired
 };
 
 ClozeDropDown.defaultProps = {
   previewTab: 'clear',
   item: {
-    options: [],
+    options: []
   },
   smallSize: false,
   history: {},
   userAnswer: [],
-  testItem: false,
+  testItem: false
 };
 
 const enhance = compose(
@@ -225,7 +225,7 @@ const enhance = compose(
   connect(
     null,
     {
-      setQuestionData: setQuestionDataAction,
+      setQuestionData: setQuestionDataAction
     },
   ),
 );

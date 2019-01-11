@@ -11,7 +11,7 @@ import { withNamespaces } from '@edulastic/localization';
 import {
   ClozeTextAuthoring,
   ClozeTextDisplay,
-  CorrectAnswers,
+  CorrectAnswers
 } from './index';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 import Options from './Options';
@@ -35,14 +35,14 @@ class ClozeText extends Component {
         ...item,
         stimulus: item.stimulus,
         list: item.options,
-        validation: item.validation,
+        validation: item.validation
       };
     }
     return {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
-      uiStyle: item.ui_style,
+      uiStyle: item.ui_style
     };
   };
 
@@ -52,7 +52,7 @@ class ClozeText extends Component {
 
     const response = {
       score: 1,
-      value: [],
+      value: []
     };
 
     if (newItem.validation.alt_responses && newItem.validation.alt_responses.length) {
@@ -81,7 +81,6 @@ class ClozeText extends Component {
     const { view, previewTab, smallSize, item, userAnswer, testItem, evaluation } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
-
     const Wrapper = testItem ? EmptyWrapper : Paper;
     return (
       <div>
@@ -100,7 +99,7 @@ class ClozeText extends Component {
                   key={duplicatedResponses || showDraghandle || shuffleOptions}
                   validation={item.validation}
                   configureOptions={{
-                    shuffleOptions,
+                    shuffleOptions
                   }}
                   options={previewDisplayOptions}
                   question={previewStimulus}
@@ -127,7 +126,7 @@ class ClozeText extends Component {
               <ClozeTextDisplay
                 checkAnswer
                 configureOptions={{
-                  shuffleOptions,
+                  shuffleOptions
                 }}
                 smallSize={smallSize}
                 options={previewDisplayOptions}
@@ -143,7 +142,7 @@ class ClozeText extends Component {
               <ClozeTextDisplay
                 showAnswer
                 configureOptions={{
-                  shuffleOptions,
+                  shuffleOptions
                 }}
                 smallSize={smallSize}
                 options={previewDisplayOptions}
@@ -159,7 +158,7 @@ class ClozeText extends Component {
               <ClozeTextDisplay
                 preview
                 configureOptions={{
-                  shuffleOptions,
+                  shuffleOptions
                 }}
                 key={previewDisplayOptions && previewStimulus && uiStyle}
                 smallSize={smallSize}
@@ -167,7 +166,7 @@ class ClozeText extends Component {
                 question={previewStimulus}
                 uiStyle={uiStyle}
                 templateMarkUp={item.templateMarkUp}
-                userSelections={[]}
+                userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
               />
             )}
@@ -189,18 +188,18 @@ ClozeText.propTypes = {
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
   // eslint-disable-next-line react/no-unused-prop-types
-  evaluation: PropTypes.any.isRequired,
+  evaluation: PropTypes.any.isRequired
 };
 
 ClozeText.defaultProps = {
   previewTab: 'clear',
   item: {
-    options: [],
+    options: []
   },
   smallSize: false,
   history: {},
   userAnswer: [],
-  testItem: false,
+  testItem: false
 };
 
 const enhance = compose(
@@ -209,7 +208,7 @@ const enhance = compose(
   connect(
     null,
     {
-      setQuestionData: setQuestionDataAction,
+      setQuestionData: setQuestionDataAction
     },
   ),
 );

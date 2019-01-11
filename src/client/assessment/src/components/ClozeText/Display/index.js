@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Input, InputNumber } from 'antd';
-import { isEmpty, isUndefined, cloneDeep } from 'lodash';
+import { isEmpty, isUndefined/* , cloneDeep */ } from 'lodash';
 
 import QuestionHeader from '../common/QuestionHeader';
 import CheckboxTemplateBoxLayout from './CheckboxResponseBoxLayout';
@@ -21,7 +21,7 @@ class ClozeTextDisplay extends Component {
 
     this.state = {
       templateParts,
-      userAnswers,
+      userAnswers
     };
   }
 
@@ -29,7 +29,7 @@ class ClozeTextDisplay extends Component {
     if (this.state !== undefined) {
       const { templateParts } = this.getTemplateParts(nextProps);
       this.setState({
-        templateParts,
+        templateParts
       });
     }
   }
@@ -50,7 +50,7 @@ class ClozeTextDisplay extends Component {
   selectChange = (value, index) => {
     const { userAnswers: newAnswers } = this.state;
     const {
-      onChange: changeAnswers,
+      onChange: changeAnswers
     } = this.props;
     newAnswers[index] = value;
     this.setState({ userAnswers: newAnswers });
@@ -87,7 +87,7 @@ class ClozeTextDisplay extends Component {
     } = this.props;
     const { templateParts, userAnswers } = this.state;
     let responseIndex = 0;
-    const responses = cloneDeep(options);
+    // const responses = cloneDeep(options);
 
     // Layout Options
     const fontSize = this.getFontSize(uiStyle.fontsize);
@@ -95,7 +95,7 @@ class ClozeTextDisplay extends Component {
 
     const responseBtnStyle = {
       widthpx: widthpx !== 0 ? widthpx : '100px',
-      heightpx: heightpx !== 0 ? heightpx : '35px',
+      heightpx: heightpx !== 0 ? heightpx : '35px'
     };
 
     let maxLineHeight = smallSize ? 50 : 40;
@@ -112,14 +112,14 @@ class ClozeTextDisplay extends Component {
               widthpx: 0,
               heightpx: 0,
               placeholder,
-              inputtype,
+              inputtype
             };
             if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
               const {
                 widthpx: widthpx1,
                 heightpx: heightpx1,
                 placeholder: placeholder1,
-                inputtype: inputtype1,
+                inputtype: inputtype1
               } = responsecontainerindividuals[dropTargetIndex];
               btnStyle.width = widthpx1;
               btnStyle.height = heightpx1;
@@ -152,7 +152,7 @@ class ClozeTextDisplay extends Component {
             if (isUndefined(btnStyle.inputtype) || btnStyle.inputtype === 'text') {
               return (
                 <Input
-                  defaultValue={responses[dropTargetIndex]}
+                  defaultValue={userAnswers[dropTargetIndex]}
                   key={`input_${dropTargetIndex}`}
                   style={btnStyle}
                   placeholder={btnStyle.placeholder}
@@ -162,7 +162,7 @@ class ClozeTextDisplay extends Component {
             }
             return (
               <InputNumber
-                defaultValue={responses[dropTargetIndex]}
+                defaultValue={userAnswers[dropTargetIndex]}
                 key={`inputnumber${dropTargetIndex}`}
                 style={btnStyle}
                 onChange={e => this.selectChange(e, dropTargetIndex)}
@@ -223,7 +223,7 @@ ClozeTextDisplay.propTypes = {
   question: PropTypes.string.isRequired,
   validation: PropTypes.object,
   evaluation: PropTypes.object,
-  uiStyle: PropTypes.object,
+  uiStyle: PropTypes.object
 };
 
 ClozeTextDisplay.defaultProps = {

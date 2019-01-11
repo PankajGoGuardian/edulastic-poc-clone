@@ -51,7 +51,7 @@ const ShadingPreview = ({
 
   useEffect(
     () => {
-      if (view === PREVIEW) {
+      if (view === PREVIEW && userAnswer.length === 0) {
         if (!read_only_author_cells) {
           saveAnswer(cloneDeep(shaded));
         }
@@ -62,7 +62,7 @@ const ShadingPreview = ({
 
   useEffect(
     () => {
-      if (previewTab === CLEAR && view !== EDIT && !isCheck) {
+      if (previewTab === CLEAR && view !== EDIT && !isCheck && userAnswer.length === 0) {
         if (!read_only_author_cells) {
           saveAnswer(cloneDeep(shaded));
         } else {

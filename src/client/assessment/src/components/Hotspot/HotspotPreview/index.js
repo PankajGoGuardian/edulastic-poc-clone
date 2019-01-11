@@ -19,7 +19,7 @@ const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, preview
 
   useEffect(
     () => {
-      if (previewTab === CLEAR && view !== EDIT && !isCheck) {
+      if (previewTab === CLEAR && view !== EDIT && isCheck) {
         saveAnswer([]);
       }
       if (previewTab === CHECK) {

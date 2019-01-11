@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import { connect } from 'react-redux';
+import styled, { ThemeProvider } from 'styled-components';
 import { Row, Col, Button } from 'antd';
+import { themes } from '../../../themes';
 
 import Confirmation from './confirmation';
+import { attemptSummarySelector } from '../../../selectors/test';
 import AssignmentContentWrapper from '../../commonStyle/assignmentContentWrapper';
 
 class SummaryTest extends Component {
@@ -17,144 +20,147 @@ class SummaryTest extends Component {
 
   handlerButton = (buttonIdx) => {
     this.setState({ buttonIdx });
-  }
+  };
 
   handlerConfirmationModal = () => {
-    this.setState(prevState => ({ isShowConfirmationModal: !prevState.isShowConfirmationModal }));
-  }
+    this.setState(prevState => ({
+      isShowConfirmationModal: !prevState.isShowConfirmationModal
+    }));
+  };
 
   closeConfirmationModal = () => {
     this.setState({ isShowConfirmationModal: false });
-  }
+  };
 
   render() {
+    const { questionList } = this.props;
+    const questions = Object.keys(questionList);
     const { finishTest } = this.props;
     const { buttonIdx, isShowConfirmationModal } = this.state;
     return (
-      <AssignmentContentWrapperSummary>
-        <Confirmation
-          isVisible={isShowConfirmationModal}
-          onClose={this.closeConfirmationModal}
-          finishTest={finishTest}
-        />
-        <Container>
-          <Header>
-            <Title>Congratulations, you reached out the end of the test!</Title>
-            <TitleDescription>
-              If you need to review your answers, select the question number you wish to review.
-              A flag icon appears for any questions that you marked for review.
-            </TitleDescription>
-          </Header>
-          <MainContent>
-            <ColorDescription>
-              <ColorDescriptionRow gutter={32}>
-                <FlexCol lg={8} md={24}>
-                  <GreenMark />
-                  <SpaceLeft>
-                    <Description>You have marked these questions.</Description>
-                    <Description style={{ marginTop: -2 }}>
-                      Review them before submitting your test.
-                    </Description>
-                  </SpaceLeft>
-                </FlexCol>
-                <FlexCol lg={8} md={24}>
-                  <GrayMark />
-                  <SpaceLeft>
-                    <Description>
-                      Please review your skipped questions before submitting the test
-                    </Description>
-                  </SpaceLeft>
-                </FlexCol>
-                <FlexCol lg={8} md={24}>
-                  <RedMark />
-                  <SpaceLeft>
-                    <Description>You have marked for review these questions.</Description>
-                    <Description style={{ marginTop: -2 }}>
-                      Review them before submitting your test.
-                    </Description>
-                  </SpaceLeft>
-                </FlexCol>
-              </ColorDescriptionRow>
-            </ColorDescription>
-            <Questions>
-              <Options>
-                <QuestionText lg={8} md={24}>Questions</QuestionText>
-                <Col lg={16} md={24}>
-                  <AnsweredTypeButtonContainer>
-                    <StyledButton
-                      onClick={() => this.handlerButton(0)}
-                      enabled={buttonIdx === 0}
-                    >
-                      ALL
-                    </StyledButton>
-                    <StyledButton
-                      onClick={() => this.handlerButton(1)}
-                      enabled={buttonIdx === 1}
-                    >
-                      FLAGGED
-                    </StyledButton>
-                    <StyledButton
-                      onClick={() => this.handlerButton(2)}
-                      enabled={buttonIdx === 2}
-                    >
-                      SKIPPED
-                    </StyledButton>
-                  </AnsweredTypeButtonContainer>
-                </Col>
-              </Options>
-              <QuestionBlock>
-                <QuestionColorBlock type={1} isVisible={buttonIdx === 0 || buttonIdx === 1}>
-                  <span>1</span>
-                </QuestionColorBlock>
-                <QuestionColorBlock type={1} isVisible={buttonIdx === 0 || buttonIdx === 1}>
-                  <span>2</span>
-                </QuestionColorBlock>
-                <QuestionColorBlock type={2} isVisible={buttonIdx === 0}>
-                  <span>3</span>
-                </QuestionColorBlock>
-                <QuestionColorBlock type={3} isVisible={buttonIdx === 0 || buttonIdx === 2}>
-                  <span>4</span>
-                </QuestionColorBlock>
-                <QuestionColorBlock type={2} isVisible={buttonIdx === 0}>
-                  <span>5</span>
-                </QuestionColorBlock>
-                <QuestionColorBlock type={2} isVisible={buttonIdx === 0}>
-                  <span>6</span>
-                </QuestionColorBlock>
-                <QuestionColorBlock type={1} isVisible={buttonIdx === 0 || buttonIdx === 1}>
-                  <span>7</span>
-                </QuestionColorBlock>
-                <QuestionColorBlock type={1} isVisible={buttonIdx === 0 || buttonIdx === 1}>
-                  <span>8</span>
-                </QuestionColorBlock>
-                <QuestionColorBlock type={2} isVisible={buttonIdx === 0}>
-                  <span>9</span>
-                </QuestionColorBlock>
-                <QuestionColorBlock type={3} isVisible={buttonIdx === 0 || buttonIdx === 2}>
-                  <span>10</span>
-                </QuestionColorBlock>
-              </QuestionBlock>
-            </Questions>
-          </MainContent>
-          <Footer>
-            <ShortDescription>
-              Next Step: When you are done reviewing your answers, select Submit test. You cannot change your answers after you submit the test
-            </ShortDescription>
-            <SubmitButton type="primary" onClick={this.handlerConfirmationModal}>
-              SUBMIT
-            </SubmitButton>
-          </Footer>
-        </Container>
-      </AssignmentContentWrapperSummary>
+      <ThemeProvider theme={themes.default}>
+        <AssignmentContentWrapperSummary>
+          <Confirmation
+            isVisible={isShowConfirmationModal}
+            onClose={this.closeConfirmationModal}
+            finishTest={finishTest}
+          />
+          <Container>
+            <Header>
+              <Title>
+                Congratulations, you reached out the end of the test!
+              </Title>
+              <TitleDescription>
+                If you need to review your answers, select the question number
+                you wish to review. A flag icon appears for any questions that
+                you marked for review.
+              </TitleDescription>
+            </Header>
+            <MainContent>
+              <ColorDescription>
+                <ColorDescriptionRow gutter={32}>
+                  <FlexCol lg={8} md={24}>
+                    <GreenMark />
+                    <SpaceLeft>
+                      <Description>
+                        You have marked these questions.
+                      </Description>
+                      <Description style={{ marginTop: -2 }}>
+                        Review them before submitting your test.
+                      </Description>
+                    </SpaceLeft>
+                  </FlexCol>
+                  <FlexCol lg={8} md={24}>
+                    <GrayMark />
+                    <SpaceLeft>
+                      <Description>
+                        Please review your skipped questions before submitting
+                        the test
+                      </Description>
+                    </SpaceLeft>
+                  </FlexCol>
+                  <FlexCol lg={8} md={24}>
+                    <RedMark />
+                    <SpaceLeft>
+                      <Description>
+                        You have marked for review these questions.
+                      </Description>
+                      <Description style={{ marginTop: -2 }}>
+                        Review them before submitting your test.
+                      </Description>
+                    </SpaceLeft>
+                  </FlexCol>
+                </ColorDescriptionRow>
+              </ColorDescription>
+              <Questions>
+                <Row>
+                  <QuestionText lg={8} md={24}>
+                    Questions
+                  </QuestionText>
+                  <Col lg={16} md={24}>
+                    <AnsweredTypeButtonContainer>
+                      <StyledButton
+                        onClick={() => this.handlerButton(0)}
+                        enabled={buttonIdx === 0}
+                      >
+                        ALL
+                      </StyledButton>
+                      <StyledButton
+                        onClick={() => this.handlerButton(1)}
+                        enabled={buttonIdx === 1}
+                      >
+                        FLAGGED
+                      </StyledButton>
+                      <StyledButton
+                        onClick={() => this.handlerButton(2)}
+                        enabled={buttonIdx === 2}
+                      >
+                        SKIPPED
+                      </StyledButton>
+                    </AnsweredTypeButtonContainer>
+                  </Col>
+                </Row>
+                <QuestionBlock>
+                  {questions.map((q, index) => (
+                    <QuestionColorBlock type={questionList[q]} isVisible>
+                      <span> {index + 1} </span>
+                    </QuestionColorBlock>
+                  ))}
+                </QuestionBlock>
+              </Questions>
+            </MainContent>
+            <Footer>
+              <ShortDescription>
+                Next Step: When you are done reviewing your answers, select
+                Submit test. You cannot change your answers after you submit the
+                test
+              </ShortDescription>
+              <SubmitButton
+                type="primary"
+                onClick={this.handlerConfirmationModal}
+              >
+                SUBMIT
+              </SubmitButton>
+            </Footer>
+          </Container>
+        </AssignmentContentWrapperSummary>
+      </ThemeProvider>
     );
   }
 }
 
 SummaryTest.propTypes = {
-  finishTest: PropTypes.func.isRequired
+  finishTest: PropTypes.func.isRequired,
+  questionList: PropTypes.array
 };
 
-export default SummaryTest;
+SummaryTest.defaultProps = {
+  questionList: []
+};
+
+export default connect(state => ({
+  questionList: attemptSummarySelector(state)
+}))(SummaryTest);
 
 const AssignmentContentWrapperSummary = styled(AssignmentContentWrapper)`
   margin: 24px 95px;
@@ -162,18 +168,19 @@ const AssignmentContentWrapperSummary = styled(AssignmentContentWrapper)`
     margin: 15px 26px;
   }
 `;
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
-const Header = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+const Header = styled(Container)`
   max-width: 531px;
   margin-top: 52px;
+  @media screen and (max-width: 768px) {
+    margin-top: 20px;
+  }
 `;
 
 const Title = styled.div`
@@ -197,7 +204,10 @@ const MainContent = styled.div`
   width: 100%;
   border-top: 1px solid #f2f2f2;
   padding-top: 38px;
-  `;
+  @media screen and (max-width: 768px) {
+    padding-top: 20px;
+  }
+`;
 
 const ColorDescription = styled.div`
   display: flex;
@@ -211,7 +221,7 @@ const Markers = styled.div`
   flex-shrink: 0;
 `;
 const GreenMark = styled(Markers)`
-background-color: #1fe3a1;
+  background-color: #1fe3a1;
 `;
 
 const GrayMark = styled(Markers)`
@@ -229,23 +239,23 @@ const Description = styled.div`
 `;
 
 const ColorDescriptionRow = styled(Row)`
-  width:100%;
+  width: 100%;
 `;
 
 const FlexCol = styled(Col)`
-  display:flex;
-  align-items:center;
+  display: flex;
+  align-items: center;
 `;
 
 const SpaceLeft = styled.div`
-  margin-left:22px;
+  margin-left: 22px;
 `;
 
 const Questions = styled.div`
   margin-top: 60px;
-`;
-
-const Options = styled(Row)`
+  @media screen and (max-width: 768px) {
+    margin-top: 20px;
+  }
 `;
 
 const QuestionText = styled(Col)`
@@ -256,21 +266,27 @@ const QuestionText = styled(Col)`
 
 const AnsweredTypeButtonContainer = styled.div`
   @media screen and (min-width: 992px) {
-    float:right;
-    margin-right: -20px;
+    float: right;
+    padding-left: 20px;
+  }
+  @media screen and (max-width: 768px) {
+    display: flex;
+    justify-content: center;
+    padding-left: 10px;
   }
 `;
 
 const StyledButton = styled(Button)`
   height: 24px;
-  float:left;
+  float: left;
   color: ${props => (props.enabled ? '#fff' : '#00b0ff')};
   border: 1px solid #00b0ff;
   border-radius: 4px;
   margin-right: 20px;
   min-width: 85px;
   background: ${props => (props.enabled ? '#00b0ff' : 'transparent')};
-  &:focus, &:active {
+  &:focus,
+  &:active {
     color: ${props => (props.enabled ? '#fff' : '#00b0ff')};
     background: ${props => (props.enabled ? '#00b0ff' : 'transparent')};
   }
@@ -279,7 +295,10 @@ const StyledButton = styled(Button)`
     font-weight: 600;
   }
   @media screen and (max-width: 992px) {
-    margin-top: 10px;
+    margin-top: 20px;
+  }
+  @media screen and (max-width: 768px) {
+    margin-right: 10px;
   }
 `;
 
@@ -287,13 +306,19 @@ const QuestionBlock = styled.div`
   display: flex;
   flex-flow: wrap;
   margin-top: 30px;
+  @media screen and (max-width: 768px) {
+    margin-top: 20px;
+    justify-content: center;
+    padding-left: 20px;
+  }
 `;
 
 const QuestionColorBlock = styled.div`
   width: 60px;
   height: 40px;
   border-radius: 4px;
-  background-color: ${props => (props.type === 1 ? '#ee1658' : props.type === 2 ? '#1fe3a1' : '#b1b1b1')};
+  background-color: ${props =>
+    (props.type === 1 ? '#ee1658' : props.type === 2 ? '#1fe3a1' : '#b1b1b1')};
   margin-right: 23px;
   display: ${props => (props.isVisible ? 'flex' : 'none')};
   align-items: center;
@@ -306,13 +331,20 @@ const QuestionColorBlock = styled.div`
     color: #ffffff;
     letter-spacing: 0.3px;
   }
+  @media screen and (max-width: 768px) {
+    margin-right: 20px;
+  }
 `;
 
-const Footer = styled.div`
+const Footer = styled(Container)`
   margin-top: 186px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  @media screen and (max-width: 768px) {
+    margin-top: 20px;
+    text-align: center;
+  }
 `;
 
 const ShortDescription = styled.div`
@@ -330,5 +362,8 @@ const SubmitButton = styled(Button)`
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.2px;
+  }
+  @media screen and (max-width: 768px) {
+    margin: 20px 0px;
   }
 `;

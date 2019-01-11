@@ -45,6 +45,7 @@ const ClassificationPreview = ({
   saveAnswer,
   item,
   t,
+  userAnswer,
   previewTab,
   smallSize,
   editCorrectAnswers
@@ -80,8 +81,6 @@ const ClassificationPreview = ({
       ? posResp.filter(ite => editCorrectAnswers.every(i => !i.includes(posResp.indexOf(ite))))
       : posResp;
 
-  const [dragItems, setDragItems] = useState(possible_responses);
-
   const initialLength = (colCount || 2) * (rowCount || 1);
 
   const createEmptyArrayOfArrays = () => Array(...Array(initialLength)).map(() => []);
@@ -89,9 +88,15 @@ const ClassificationPreview = ({
   const initialAnswers =
     editCorrectAnswers.length > 0
       ? editCorrectAnswers.map(ite => ite.map(an => posResp[an]))
-      : createEmptyArrayOfArrays();
+      : userAnswer.some(arr => arr.length !== 0)
+        ? userAnswer.map(arr => arr.map(ans => possible_responses[ans]))
+        : createEmptyArrayOfArrays();
 
   const [answers, setAnswers] = useState(initialAnswers);
+
+  const [dragItems, setDragItems] = useState(
+    possible_responses.filter(resp => initialAnswers.every(arr => !arr.includes(resp)))
+  );
 
   useEffect(() => {
     if (
@@ -345,6 +350,7 @@ ClassificationPreview.propTypes = {
   smallSize: PropTypes.bool,
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
+  userAnswer: PropTypes.any.isRequired,
   view: PropTypes.string.isRequired
 };
 

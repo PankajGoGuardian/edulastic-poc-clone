@@ -14,10 +14,10 @@ const Header = styled.div`
   left: 0;
   background: ${darkBlueSecondary};
 
-  @media (max-width: 468px) {
+  @media (max-width: 767px) {
     flex-direction: column;
-    padding: 10px 26px;
-    height: 128px;
+    padding: 10px 26px 5px 26px;
+    height: 104px;
   }
 `;
 

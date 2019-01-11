@@ -1,28 +1,36 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { withNamespaces } from '@edulastic/localization';
 import { IconManageClass } from '@edulastic/icons';
 import AssignmentsContent from '../../commonStyle/assignmentContent';
 import AssignmentContentWrapper from '../../commonStyle/assignmentContentWrapper';
 
-const ManageClassContent = ({ flag }) => (
+const ManageClassContent = ({ flag, t }) => (
   <AssignmentsContent flag={flag}>
     <ManageWrapper>
       <Wrapper>
         <Content>
           <IconManage />
-          <ArchiveText>No archived classes</ArchiveText>
-          <ArchiveSubText>You have no archived classes available</ArchiveSubText>
+          <ArchiveText>{t('common.noClassesTitle')}</ArchiveText>
+          <ArchiveSubText>{t('common.noClassesSubTitle')}</ArchiveSubText>
         </Content>
       </Wrapper>
     </ManageWrapper>
   </AssignmentsContent>
 );
 
-export default React.memo(ManageClassContent);
+const enhance = compose(
+  withNamespaces('manageClass'),
+  React.memo
+);
+
+export default enhance(ManageClassContent);
 
 ManageClassContent.propTypes = {
-  flag: PropTypes.bool.isRequired
+  flag: PropTypes.bool.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 const Wrapper = styled.div`

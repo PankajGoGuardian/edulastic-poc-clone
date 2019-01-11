@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { withNamespaces } from '@edulastic/localization';
 
 import AssignmentContentWrapper from '../../commonStyle/assignmentContentWrapper';
 import StyledTable from '../common/StyledTable';
@@ -11,19 +13,19 @@ class SkillReportMainContent extends Component {
     super(props);
     this.state = {
       summaryColumns: [{
-        title: 'Domains',
+        title: props.t('common.tableHeaderTitleDomains'),
         dataIndex: 'domain',
         sorter: (a, b) => a.domain.length - b.domain.length,
         render: domain => `${domain}`,
         width: '40%'
       }, {
-        title: 'Total Questions',
+        title: props.t('common.tableHeaderTitleTotalQuestions'),
         dataIndex: 'total',
         sorter: (a, b) => a.total - b.total,
         render: total => `${total}`,
         width: '20%'
       }, {
-        title: 'Percentage',
+        title: props.t('common.tableHeaderTitlePercentage'),
         dataIndex: 'percentage',
         sorter: (a, b) => a.percentage - b.percentage,
         render: percentage => (
@@ -34,7 +36,7 @@ class SkillReportMainContent extends Component {
         ),
         width: '20%'
       }, {
-        title: 'Hints',
+        title: props.t('common.tableHeaderTitleHints'),
         dataIndex: 'hints',
         sorter: (a, b) => a.hints - b.hints,
         render: hints => `${hints}`,
@@ -44,7 +46,7 @@ class SkillReportMainContent extends Component {
   }
 
   render() {
-    const { skillReport } = this.props;
+    const { skillReport, t } = this.props;
     const { summaryColumns } = this.state;
     const sumData = [];
     if (skillReport) {
@@ -62,15 +64,15 @@ class SkillReportMainContent extends Component {
     }
     return (
       <SkillReportContainer>
-        <AssignmentContentWrapper style={{ paddingTop: 32, paddingBottom: 32 }}>
+        <AssignmentContentWrap>
           <SummaryTitle>
-            Skill Summary
+            {t('common.skillSummary')}
           </SummaryTitle>
           <StyledTable
             columns={summaryColumns}
             dataSource={sumData}
           />
-        </AssignmentContentWrapper>
+        </AssignmentContentWrap>
         {
           sumData.map((summary, index) => (
             <DomainDetail summary={summary} skillReport={skillReport} key={index} />
@@ -82,10 +84,20 @@ class SkillReportMainContent extends Component {
 }
 
 SkillReportMainContent.propTypes = {
-  skillReport: PropTypes.object.isRequired
+  skillReport: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired
 };
 
-export default SkillReportMainContent;
+const enhance = compose(
+  withNamespaces('reports')
+);
+
+export default enhance(SkillReportMainContent);
+
+const AssignmentContentWrap = styled(AssignmentContentWrapper)`
+  padding-top: 32px;
+  padding-bottom: 32px;
+`;
 
 const SkillReportContainer = styled.div`
   padding: 30px 50px;

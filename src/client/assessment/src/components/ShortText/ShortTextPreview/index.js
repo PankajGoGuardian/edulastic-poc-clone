@@ -8,8 +8,8 @@ import { lightGreen, lightRed } from '@edulastic/colors';
 import styled from 'styled-components';
 import { CHECK, SHOW, PREVIEW, CLEAR, CONTAINS } from '../../../constants/constantsForQuestions';
 
-const ShortTextPreview = ({ view, saveAnswer, t, item, previewTab, smallSize }) => {
-  const [text, setText] = useState('');
+const ShortTextPreview = ({ view, saveAnswer, t, item, previewTab, smallSize, userAnswer }) => {
+  const [text, setText] = useState(Array.isArray(userAnswer) ? '' : userAnswer);
 
   const handleTextChange = (e) => {
     const val = e.target.value;
@@ -87,7 +87,8 @@ ShortTextPreview.propTypes = {
   smallSize: PropTypes.bool,
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  view: PropTypes.string.isRequired
+  view: PropTypes.string.isRequired,
+  userAnswer: PropTypes.any.isRequired
 };
 
 ShortTextPreview.defaultProps = {

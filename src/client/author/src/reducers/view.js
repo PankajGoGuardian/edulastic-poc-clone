@@ -3,7 +3,7 @@ import { CHANGE_VIEW, CHANGE_PREVIEW } from '../constants/actions';
 const initialState = {
   view: 'edit',
   preview: 'clear',
-  showAnswers: false,
+  showAnswers: false
 };
 
 export default function reducer(state = initialState, { type, payload }) {
@@ -13,7 +13,7 @@ export default function reducer(state = initialState, { type, payload }) {
     case CHANGE_PREVIEW:
       return {
         ...state,
-        preview: payload.view,
+        preview: payload.view
       };
     default:
       return state;

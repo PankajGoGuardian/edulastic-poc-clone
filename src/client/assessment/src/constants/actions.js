@@ -51,6 +51,7 @@ export const QUESTIONCOMMON_UPDATE_CORRECT_VALIDATION_SCORE =
 export const SET_ANSWER = '[answers] set answer';
 export const LOAD_ANSWERS = '[answers] load answers';
 export const CHECK_ANSWER = '[answers] check answers';
+export const CHECK_ANSWER_EVALUATION = '[answers] check answers evaluation';
 export const CLEAR_ANSWERS = '[answers] clear answers';
 export const REMOVE_ANSWERS = '[answers] remove answers';
 

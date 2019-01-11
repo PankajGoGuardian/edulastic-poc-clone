@@ -33,7 +33,7 @@ class TestItemCol extends Component {
   };
 
   renderTabContent = (widget) => {
-    const { previewTab, evaluation: evaluations } = this.props;
+    const { previewTab, preview, evaluation: evaluations } = this.props;
     const evaluation = evaluations[widget.entity.id];
     return (
       <Tabs.TabContainer style={{ padding: 20 }}>
@@ -42,7 +42,7 @@ class TestItemCol extends Component {
           type={widget.type}
           view="preview"
           evaluation={evaluation}
-          previewTab={previewTab}
+          previewTab={preview}
           questionId={widget.reference}
           data={{ ...widget.entity, smallSize: true }}
         />
@@ -109,7 +109,8 @@ class TestItemCol extends Component {
 }
 
 export default connect(state => ({
-  evaluation: state.evaluation
+  evaluation: state.evaluation,
+  preview: state.view.preview
 }))(TestItemCol);
 
 const Container = styled.div`

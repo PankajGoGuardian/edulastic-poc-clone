@@ -74,14 +74,15 @@ const update = ({ id, item }) => {
     .then(result => result.data.result);
 };
 
-const evaluate = (id, answers) =>
-  api
+const evaluation = (id, answers) => {
+  return api
     .callApi({
-      url: `${prefix}/${id}/evaluate`,
+      url: `${prefix}/${id}/evaluation`,
       method: 'post',
-      data: answers
+      data: { answers }
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
+};
 
 export default {
   getAll,
@@ -90,5 +91,5 @@ export default {
   updateById,
   create,
   update,
-  evaluate
+  evaluation
 };

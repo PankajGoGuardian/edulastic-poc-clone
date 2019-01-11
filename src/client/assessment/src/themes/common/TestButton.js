@@ -1,16 +1,18 @@
 import React from 'react';
 import { compose } from 'redux';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Button } from 'antd';
 import { white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { IconCheck, IconLightBulb, IconBookmark } from '@edulastic/icons';
 import ButtonLink from './ButtonLink';
+import { checkAnswerEvaluation } from '../../actions/checkanswer';
 
-const TestButton = ({ t, checkAnwser }) => (
+const TestButton = ({ t, checkAnswerEvaluation }) => (
   <Container>
-    <StyledButton onClick={checkAnwser}>
+    <StyledButton onClick={checkAnswerEvaluation}>
       <ButtonLink
         color="primary"
         icon={<IconCheck color={white} />}
@@ -31,7 +33,9 @@ const TestButton = ({ t, checkAnwser }) => (
     <StyledButton>
       <ButtonLink
         color="primary"
-        icon={<IconBookmark style={{ width: '10px !important' }} color={white} />}
+        icon={
+          <IconBookmark style={{ width: '10px !important' }} color={white} />
+        }
         style={{ color: white }}
       >
         {t('common.test.bookmark')}
@@ -42,11 +46,15 @@ const TestButton = ({ t, checkAnwser }) => (
 
 TestButton.propTypes = {
   t: PropTypes.func.isRequired,
-  checkAnwser: PropTypes.func.isRequired
+  checkAnswerEvaluation: PropTypes.func.isRequired
 };
 
 const enhance = compose(
-  withNamespaces('student')
+  withNamespaces('student'),
+  connect(
+    null,
+    { checkAnswerEvaluation }
+  )
 );
 
 export default enhance(TestButton);

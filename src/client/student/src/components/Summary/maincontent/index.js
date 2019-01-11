@@ -47,11 +47,13 @@ class SummaryTest extends Component {
           />
           <Container>
             <Header>
-              <Title>Congratulations, you reached out the end of the test!</Title>
+              <Title>
+                Congratulations, you reached out the end of the test!
+              </Title>
               <TitleDescription>
-                If you need to review your answers, select the question number you
-                wish to review. A flag icon appears for any questions that you
-                marked for review.
+                If you need to review your answers, select the question number
+                you wish to review. A flag icon appears for any questions that
+                you marked for review.
               </TitleDescription>
             </Header>
             <MainContent>
@@ -60,7 +62,9 @@ class SummaryTest extends Component {
                   <FlexCol lg={8} md={24}>
                     <GreenMark />
                     <SpaceLeft>
-                      <Description>You have marked these questions.</Description>
+                      <Description>
+                        You have marked these questions.
+                      </Description>
                       <Description style={{ marginTop: -2 }}>
                         Review them before submitting your test.
                       </Description>
@@ -70,8 +74,8 @@ class SummaryTest extends Component {
                     <GrayMark />
                     <SpaceLeft>
                       <Description>
-                        Please review your skipped questions before submitting the
-                        test
+                        Please review your skipped questions before submitting
+                        the test
                       </Description>
                     </SpaceLeft>
                   </FlexCol>
@@ -119,7 +123,7 @@ class SummaryTest extends Component {
                 <QuestionBlock>
                   {questions.map((q, index) => (
                     <QuestionColorBlock type={questionList[q]} isVisible>
-                      <span> {index} </span>
+                      <span> {index + 1} </span>
                     </QuestionColorBlock>
                   ))}
                 </QuestionBlock>
@@ -127,8 +131,9 @@ class SummaryTest extends Component {
             </MainContent>
             <Footer>
               <ShortDescription>
-                Next Step: When you are done reviewing your answers, select Submit
-                test. You cannot change your answers after you submit the test
+                Next Step: When you are done reviewing your answers, select
+                Submit test. You cannot change your answers after you submit the
+                test
               </ShortDescription>
               <SubmitButton
                 type="primary"
@@ -216,7 +221,7 @@ const Markers = styled.div`
   flex-shrink: 0;
 `;
 const GreenMark = styled(Markers)`
-background-color: #1fe3a1;
+  background-color: #1fe3a1;
 `;
 
 const GrayMark = styled(Markers)`
@@ -234,16 +239,16 @@ const Description = styled.div`
 `;
 
 const ColorDescriptionRow = styled(Row)`
-  width:100%;
+  width: 100%;
 `;
 
 const FlexCol = styled(Col)`
-  display:flex;
-  align-items:center;
+  display: flex;
+  align-items: center;
 `;
 
 const SpaceLeft = styled.div`
-  margin-left:22px;
+  margin-left: 22px;
 `;
 
 const Questions = styled.div`
@@ -261,26 +266,27 @@ const QuestionText = styled(Col)`
 
 const AnsweredTypeButtonContainer = styled.div`
   @media screen and (min-width: 992px) {
-    float:right;
+    float: right;
     padding-left: 20px;
   }
-  @media screen and (max-width:768px){
+  @media screen and (max-width: 768px) {
     display: flex;
     justify-content: center;
-    padding-left:10px;
+    padding-left: 10px;
   }
 `;
 
 const StyledButton = styled(Button)`
   height: 24px;
-  float:left;
+  float: left;
   color: ${props => (props.enabled ? '#fff' : '#00b0ff')};
   border: 1px solid #00b0ff;
   border-radius: 4px;
   margin-right: 20px;
   min-width: 85px;
   background: ${props => (props.enabled ? '#00b0ff' : 'transparent')};
-  &:focus, &:active {
+  &:focus,
+  &:active {
     color: ${props => (props.enabled ? '#fff' : '#00b0ff')};
     background: ${props => (props.enabled ? '#00b0ff' : 'transparent')};
   }
@@ -291,7 +297,7 @@ const StyledButton = styled(Button)`
   @media screen and (max-width: 992px) {
     margin-top: 20px;
   }
-  @media screen and (max-width:768px){
+  @media screen and (max-width: 768px) {
     margin-right: 10px;
   }
 `;
@@ -311,7 +317,8 @@ const QuestionColorBlock = styled.div`
   width: 60px;
   height: 40px;
   border-radius: 4px;
-  background-color: ${props => (props.type === 1 ? '#ee1658' : props.type === 2 ? '#1fe3a1' : '#b1b1b1')};
+  background-color: ${props =>
+    (props.type === 1 ? '#ee1658' : props.type === 2 ? '#1fe3a1' : '#b1b1b1')};
   margin-right: 23px;
   display: ${props => (props.isVisible ? 'flex' : 'none')};
   align-items: center;
@@ -336,7 +343,7 @@ const Footer = styled(Container)`
   align-items: center;
   @media screen and (max-width: 768px) {
     margin-top: 20px;
-    text-align:center;
+    text-align: center;
   }
 `;
 

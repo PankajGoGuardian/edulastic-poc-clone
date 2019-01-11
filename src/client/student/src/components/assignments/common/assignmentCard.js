@@ -93,7 +93,7 @@ const AssignmentCard = ({
   const attemptsData = getAttemptsData(reports, _id) || [];
   const attemptCount = attemptsData.length;
   const lastAttempt = last(attemptsData) || {};
-  const previousAttempts = attemptsData.slice(1, attemptCount);
+  const previousAttempts = attemptsData.slice(0, attemptCount);
   const current = parseAttemptData(lastAttempt);
 
   // / move it to the upper components, wtf!

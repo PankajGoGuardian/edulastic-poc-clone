@@ -132,12 +132,12 @@ class AssessmentPlayerDefault extends React.Component {
   finishTest = () => {
     const { history } = this.props;
     history.push('/home/assignments');
-  }
+  };
 
   finishTest = () => {
     const { history } = this.props;
     history.push('/home/assignments');
-  }
+  };
 
   render() {
     const {
@@ -192,10 +192,13 @@ class AssessmentPlayerDefault extends React.Component {
               <HeaderLeftMenu>
                 <LogoCompact />
                 {windowWidth < IPAD_PORTRAIT_WIDTH && (
-                <Fragment>
-                  <Clock />
-                  <SavePauseMobile openSavePauseModal={this.openSavePauseModal} isVisible={isSavePauseModalVisible} />
-                </Fragment>
+                  <Fragment>
+                    <Clock />
+                    <SavePauseMobile
+                      openSavePauseModal={this.openSavePauseModal}
+                      isVisible={isSavePauseModalVisible}
+                    />
+                  </Fragment>
                 )}
               </HeaderLeftMenu>
               <HeaderMainMenu skin>
@@ -212,9 +215,28 @@ class AssessmentPlayerDefault extends React.Component {
                     options={dropdownOptions}
                   />
 
-                  <FlexContainer style={{ flex: 1, justifyContent: windowWidth < IPAD_PORTRAIT_WIDTH && 'flex-end' }}>
-                    <ControlBtn prev skin type="primary" icon="left" disabled={isFirst()} onClick={moveToPrev} />
-                    <ControlBtn next skin type="primary" icon={!isLast() && 'right'} onClick={moveToNext}>
+                  <FlexContainer
+                    style={{
+                      flex: 1,
+                      justifyContent:
+                        windowWidth < IPAD_PORTRAIT_WIDTH && 'flex-end'
+                    }}
+                  >
+                    <ControlBtn
+                      prev
+                      skin
+                      type="primary"
+                      icon="left"
+                      disabled={isFirst()}
+                      onClick={moveToPrev}
+                    />
+                    <ControlBtn
+                      next
+                      skin
+                      type="primary"
+                      icon={!isLast() && 'right'}
+                      onClick={moveToNext}
+                    >
                       {isLast() && <IconSend />}
                     </ControlBtn>
                     {windowWidth < LARGE_DESKTOP_WIDTH && (
@@ -224,9 +246,9 @@ class AssessmentPlayerDefault extends React.Component {
                         size="large"
                         type="primary"
                         icon="tool"
-                        onClick={() =>
-                          this.setState({ isToolbarModalVisible: true })
-                        }
+                        onClick={() => {
+                          this.setState({ isToolbarModalVisible: true });
+                        }}
                       />
                     )}
                     {windowWidth >= MEDIUM_DESKTOP_WIDTH && (

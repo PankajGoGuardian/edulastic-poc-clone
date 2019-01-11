@@ -46,6 +46,7 @@ const AssessmentContainer = ({
       gotoQuestion(currentItem + 1);
     }
     if (isLast()) {
+      saveUser(currentItem);
       history.push('/student/test-summary');
     }
   };

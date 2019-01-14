@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled, { ThemeProvider } from 'styled-components';
+import { compose } from 'redux';
+import { withNamespaces } from '@edulastic/localization';
 import { Row, Col, Button } from 'antd';
 import { themes } from '../../../themes';
 
@@ -33,7 +35,7 @@ class SummaryTest extends Component {
   };
 
   render() {
-    const { questionList } = this.props;
+    const { questionList, t } = this.props;
     const questions = Object.keys(questionList);
     const { finishTest } = this.props;
     const { buttonIdx, isShowConfirmationModal } = this.state;
@@ -47,14 +49,8 @@ class SummaryTest extends Component {
           />
           <Container>
             <Header>
-              <Title>
-                Congratulations, you reached out the end of the test!
-              </Title>
-              <TitleDescription>
-                If you need to review your answers, select the question number
-                you wish to review. A flag icon appears for any questions that
-                you marked for review.
-              </TitleDescription>
+              <Title>{t('common.headingText')}</Title>
+              <TitleDescription>{t('common.message')}</TitleDescription>
             </Header>
             <MainContent>
               <ColorDescription>
@@ -63,10 +59,10 @@ class SummaryTest extends Component {
                     <GreenMark />
                     <SpaceLeft>
                       <Description>
-                        You have marked these questions.
+                        {t('common.markedQuestionLineOne')}
                       </Description>
                       <Description style={{ marginTop: -2 }}>
-                        Review them before submitting your test.
+                        {t('common.markedQuestionLineTwo')}
                       </Description>
                     </SpaceLeft>
                   </FlexCol>
@@ -74,8 +70,7 @@ class SummaryTest extends Component {
                     <GrayMark />
                     <SpaceLeft>
                       <Description>
-                        Please review your skipped questions before submitting
-                        the test
+                        {t('common.skippedQues')}
                       </Description>
                     </SpaceLeft>
                   </FlexCol>
@@ -83,10 +78,10 @@ class SummaryTest extends Component {
                     <RedMark />
                     <SpaceLeft>
                       <Description>
-                        You have marked for review these questions.
+                        {t('common.markedForReview')}
                       </Description>
                       <Description style={{ marginTop: -2 }}>
-                        Review them before submitting your test.
+                        {t('common.markedQuestionLineTwo')}
                       </Description>
                     </SpaceLeft>
                   </FlexCol>
@@ -95,7 +90,7 @@ class SummaryTest extends Component {
               <Questions>
                 <Row>
                   <QuestionText lg={8} md={24}>
-                    Questions
+                    {t('common.questionsLabel')}
                   </QuestionText>
                   <Col lg={16} md={24}>
                     <AnsweredTypeButtonContainer>
@@ -103,19 +98,19 @@ class SummaryTest extends Component {
                         onClick={() => this.handlerButton(null)}
                         enabled={buttonIdx === null}
                       >
-                        ALL
+                        {t('default:all')}
                       </StyledButton>
                       <StyledButton
                         onClick={() => this.handlerButton(2)}
                         enabled={buttonIdx === 2}
                       >
-                        FLAGGED
+                        {t('default:flagged')}
                       </StyledButton>
                       <StyledButton
                         onClick={() => this.handlerButton(0)}
                         enabled={buttonIdx === 0}
                       >
-                        SKIPPED
+                        {t('default:skipped')}
                       </StyledButton>
                     </AnsweredTypeButtonContainer>
                   </Col>
@@ -134,15 +129,13 @@ class SummaryTest extends Component {
             </MainContent>
             <Footer>
               <ShortDescription>
-                Next Step: When you are done reviewing your answers, select
-                Submit test. You cannot change your answers after you submit the
-                test
+                {t('common.nextStep')}
               </ShortDescription>
               <SubmitButton
                 type="primary"
                 onClick={this.handlerConfirmationModal}
               >
-                SUBMIT
+                {t('default:submit')}
               </SubmitButton>
             </Footer>
           </Container>
@@ -154,16 +147,22 @@ class SummaryTest extends Component {
 
 SummaryTest.propTypes = {
   finishTest: PropTypes.func.isRequired,
-  questionList: PropTypes.array
+  questionList: PropTypes.array,
+  t: PropTypes.func.isRequired
 };
 
 SummaryTest.defaultProps = {
   questionList: []
 };
 
-export default connect(state => ({
-  questionList: attemptSummarySelector(state)
-}))(SummaryTest);
+const enhance = compose(
+  withNamespaces(['summary', 'default']),
+  connect(state => ({
+    questionList: attemptSummarySelector(state)
+  }))
+);
+
+export default enhance(SummaryTest);
 
 const AssignmentContentWrapperSummary = styled(AssignmentContentWrapper)`
   margin: 24px 95px;

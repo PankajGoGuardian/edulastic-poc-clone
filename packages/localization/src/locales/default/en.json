@@ -10,5 +10,8 @@
   "notStarted": "NOT STARTED",
   "inProgress": "IN PROGRESS",
   "submitted": "SUBMITTED",
-  "graded": "GRADED"
+  "graded": "GRADED",
+  "submit": "SUBMIT",
+  "flagged": "FLAGGED",
+  "skipped": "SKIPPED"
 }

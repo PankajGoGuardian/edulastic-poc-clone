@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import Modal from 'react-responsive-modal';
 import PropTypes from 'prop-types';
+import { withNamespaces } from '@edulastic/localization';
+import { compose } from 'redux';
 import { Button, Row, Col } from 'antd';
 
 import { secondaryTextColor } from '@edulastic/colors';
 
 class Confirmation extends Component {
   render() {
-    const { isVisible, onClose, finishTest } = this.props;
+    const { isVisible, onClose, finishTest, t } = this.props;
     return (
       <Modal
         open={isVisible}
@@ -25,22 +27,21 @@ class Confirmation extends Component {
         center
       >
         <ModalContainer>
-          <Title>Submit assignment?</Title>
-          <TitleDescriptioin>
-            This is your last chance to continue working on the assignment.
-            You can click on CANCEL to go back to the test or SUBMIT to end.
-          </TitleDescriptioin>
+          <Title>{t('confirmation.submitAssignment')}</Title>
+          <TitleDescriptioin>{t('confirmation.confirmationMessage')}</TitleDescriptioin>
           <ButtonContainer>
-            <Row gutter={20} style={{ width: '100%' }}>
+            <ButtonRow gutter={20}>
               <Col md={12} sm={24}>
-                <StyledButton btnType={1} onClick={onClose}>Cancel</StyledButton>
+                <StyledButton btnType={1} onClick={onClose}>
+                  {t('default:cancel')}
+                </StyledButton>
               </Col>
               <Col md={12} sm={24}>
                 <StyledButton type="primary" btnType={2} onClick={finishTest}>
-                  SUBMIT
+                  {t('default:submit')}
                 </StyledButton>
               </Col>
-            </Row>
+            </ButtonRow>
           </ButtonContainer>
         </ModalContainer>
       </Modal>
@@ -51,10 +52,15 @@ class Confirmation extends Component {
 Confirmation.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  finishTest: PropTypes.func.isRequired
+  finishTest: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 
-export default Confirmation;
+const enhance = compose(
+  withNamespaces(['summary', 'default'])
+);
+
+export default enhance(Confirmation);
 
 
 const ModalContainer = styled.div`
@@ -80,6 +86,10 @@ const ButtonContainer = styled.div`
   display: flex;
   width: 80%;
   margin-top: 60px;
+`;
+
+const ButtonRow = styled(Row)`
+  width: 100%;
 `;
 
 const StyledButton = styled(Button)`

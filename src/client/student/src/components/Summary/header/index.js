@@ -9,14 +9,14 @@ import { LogoCompact } from '../../../../../assessment/src/themes/common';
 const SummaryHeader = ({ showConfirmationModal }) => (
   <Affix>
     <AssignmentsHeader>
-      <Row style={{ width: '100%' }}>
-        <Col span={24} style={{ display: 'flex' }}>
+      <HeaderRow>
+        <HeaderCol span={24}>
           <Wrapper>
             <LogoCompact />
           </Wrapper>
           <LogoutIcon onClick={showConfirmationModal} />
-        </Col>
-      </Row>
+        </HeaderCol>
+      </HeaderRow>
     </AssignmentsHeader>
   </Affix>
 );
@@ -48,6 +48,14 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 17px;
+`;
+
+const HeaderRow = styled(Row)`
+  width: 100%;
+`;
+
+const HeaderCol = styled(Col)`
+  display: flex;
 `;
 
 const LogoutIcon = styled(IconLogout)`

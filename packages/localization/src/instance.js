@@ -42,7 +42,8 @@ i18n
         assignmentCard: require('./locales/assignmentCard/en'),
         sidemenu: require('./locales/sidemenu/en'),
         reports: require('./locales/reports/en'),
-        manageClass: require('./locales/manageClass/en')
+        manageClass: require('./locales/manageClass/en'),
+        summary: require('./locales/summary/en')
       }
     }
   });

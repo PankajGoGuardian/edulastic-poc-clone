@@ -62,7 +62,7 @@ const ShadingPreview = ({
 
   useEffect(
     () => {
-      if (previewTab === CLEAR && view !== EDIT && !isCheck && userAnswer.length === 0) {
+      if (previewTab === CLEAR && view !== EDIT && isCheck && userAnswer.length === 0) {
         if (!read_only_author_cells) {
           saveAnswer(cloneDeep(shaded));
         } else {
@@ -120,14 +120,6 @@ const ShadingPreview = ({
 
   const preview = previewTab === CHECK || previewTab === SHOW;
 
-  const shadedByProps = Array.isArray(userAnswer)
-    ? !read_only_author_cells
-      ? userAnswer.filter(
-        shade => !shaded.every(pair => pair[0] !== shade[0] && pair[1] !== shade[1])
-      )
-      : userAnswer
-    : [];
-
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
       {view === PREVIEW && !smallSize && (
@@ -171,7 +163,7 @@ const ShadingPreview = ({
             showAnswers={preview}
             colCount={column_count}
             onCellClick={handleCellClick}
-            shaded={shadedByProps}
+            shaded={Array.isArray(userAnswer) ? userAnswer : []}
             lockedCells={read_only_author_cells ? shaded : undefined}
           />
         ) : (

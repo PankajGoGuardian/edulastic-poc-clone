@@ -78,13 +78,13 @@ const MatchListPreview = ({
   const possible_responses = group_possible_responses ? groupArrays : posResponses;
 
   const [ans, setAns] = useState(
-    !userAnswer.every(answer => answer === null)
+    Array.isArray(userAnswer) && !userAnswer.every(answer => answer === null)
       ? userAnswer
       : Array.from({ length: list.length }).fill(null)
   );
 
   const [dragItems, setDragItems] = useState(
-    possible_responses.filter(answer => !userAnswer.includes(answer))
+    possible_responses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer))
   );
 
   if (editCorrectAnswers.length > 0) {

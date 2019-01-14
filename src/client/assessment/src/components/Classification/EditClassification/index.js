@@ -177,10 +177,20 @@ const EditClassification = ({ item, setQuestionData, t }) => {
     switch (action) {
       case actions.ADD:
         newItem.ui_style[prop].push('');
+        if (prop === 'column_titles') {
+          newItem.ui_style.column_count += 1;
+        } else if (prop === 'row_titles') {
+          newItem.ui_style.row_count += 1;
+        }
         break;
 
       case actions.REMOVE:
         newItem.ui_style[prop].splice(restProp, 1);
+        if (prop === 'column_titles') {
+          newItem.ui_style.column_count -= 1;
+        } else if (prop === 'row_titles') {
+          newItem.ui_style.row_count -= 1;
+        }
         break;
 
       case actions.SORTEND:

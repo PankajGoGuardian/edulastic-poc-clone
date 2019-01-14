@@ -8,7 +8,7 @@ export const getStyles = (isDragging, backgroundColor, borderColor, styles = {})
   justifyContent: 'center',
   opacity: isDragging ? 0 : 1,
   minWidth: 136,
-  height: 40,
+  minHeight: 40,
   borderRadius: 5,
   border: `1px solid ${borderColor}`,
   backgroundColor,
@@ -25,7 +25,7 @@ export const IndexBox = styled.div`
   align-items: center;
   justify-content: center;
   min-width: 40px;
-  height: 40px;
+  min-height: 40px;
   border-bottom-left-radius: 4px;
   border-top-left-radius: 4px;
   color: ${white};

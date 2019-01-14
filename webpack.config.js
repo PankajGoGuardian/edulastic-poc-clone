@@ -20,7 +20,8 @@ module.exports = env => {
       'process.env': {
         API_URI: JSON.stringify(config.client.apiUri)
       }
-    })
+    }),
+    new webpack.HotModuleReplacementPlugin()
   ];
   // DEV PLUGINS
   if (env === 'development') {

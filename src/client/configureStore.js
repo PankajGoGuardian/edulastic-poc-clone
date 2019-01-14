@@ -36,13 +36,16 @@ export default () => {
     composeWithDevTools(applyMiddleware(...middleware))
   );
 
-  if (module.hot) {
-    module.hot.accept('reducers', () => {
-      // eslint-disable-next-line
-      store.replaceReducer(require('reducers').default);
-    });
-  }
   const persistor = persistStore(store);
   sagaMiddleware.run(rootSaga);
+
+  if (process.env.NODE_ENV !== 'production') {
+    if (module.hot) {
+      module.hot.accept('./reducers', () => {
+        store.replaceReducer(reducer);
+      });
+    }
+  }
+
   return { store, persistor };
 };

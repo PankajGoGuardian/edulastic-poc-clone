@@ -15,7 +15,7 @@ import configureStore, { history } from './configureStore';
 // redux store
 const { store, persistor } = configureStore();
 
-ReactDOM.render(
+const RootComp = () => (
   <I18nextProvider i18n={i18n}>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
@@ -24,7 +24,25 @@ ReactDOM.render(
         </ConnectedRouter>
       </PersistGate>
     </Provider>
-  </I18nextProvider>,
-
-  document.getElementById('react-app')
+  </I18nextProvider>
 );
+ReactDOM.render(<RootComp />, document.getElementById('react-app'));
+
+// hmr
+if (module.hot) {
+  module.hot.accept('./App', () => {
+    const NextApp = require('./App').default;
+    ReactDOM.render(
+      <I18nextProvider i18n={i18n}>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <ConnectedRouter history={history}>
+              <NextApp />
+            </ConnectedRouter>
+          </PersistGate>
+        </Provider>
+      </I18nextProvider>,
+      document.getElementById('react-app')
+    );
+  });
+}

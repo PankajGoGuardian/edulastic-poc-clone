@@ -62,9 +62,14 @@ const ItemsTable = ({
   ];
 
   const data = items.map((item) => {
+    const stimulus = (item.rows[0]
+      && item.rows[0].widgets[0]
+      && item.rows[0].widgets[0].entity
+      && item.rows[0].widgets[0].entity.stimulus) || '';
     const main = {
       title: item._id,
-      id: item._id
+      id: item._id,
+      stimulus
     };
     const meta = {
       id: item._id,
@@ -73,13 +78,9 @@ const ItemsTable = ({
       shared: '9578 (1)',
       likes: 9,
       types: types[item._id],
-      standards: standards[item._id]
+      standards: standards[item._id],
+      stimulus
     };
-
-    if (item.data.questions && item.data.questions.length) {
-      main.stimulus = item.data.questions[0].data.stimulus;
-      meta.stimulus = item.data.questions[0].data.stimulus;
-    }
 
     return {
       key: item._id,

@@ -8,20 +8,20 @@ import {
   RECEIVE_TEST_ITEMS_ERROR
 } from '../constants/actions';
 
-function* receiveTestItemsSaga({ payload }) {
+function* receiveTestItemsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
   try {
-    const items = yield call(testItemsApi.getAll, {
-      data: true,
-      validation: true
+    const { items, count } = yield call(testItemsApi.getAll, {
+      search,
+      page,
+      limit
     });
-    const { count } = yield call(testItemsApi.getCount);
     yield put({
       type: RECEIVE_TEST_ITEMS_SUCCESS,
       payload: {
         items,
         count,
-        page: payload.page || 1,
-        limit: payload.limit || 10
+        page,
+        limit
       }
     });
   } catch (err) {

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+
 import { withNamespaces } from '@edulastic/localization';
 import { ContentWrapper, withWindowSizes } from '@edulastic/common';
 
@@ -15,10 +16,7 @@ import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapp
 import QuestionMetadata from '../../../../assessment/src/components/QuestionMetadata';
 import ItemHeader from './ItemHeader';
 import { getQuestionSelector } from '../../selectors/question';
-import {
-  saveQuestionAction,
-  setQuestionDataAction
-} from '../../actions/question';
+import { saveQuestionAction, setQuestionDataAction } from '../../actions/question';
 
 const headerTitles = {
   multipleChoice: 'MultipleChoice',
@@ -122,10 +120,7 @@ class QuestionEditor extends Component {
     return (
       <div>
         {showModal && (
-          <SourceModal
-            onClose={this.handleHideSource}
-            onApply={this.handleApplySource}
-          >
+          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
             {JSON.stringify(question.data, null, 4)}
           </SourceModal>
         )}
@@ -149,7 +144,13 @@ class QuestionEditor extends Component {
             onSave={this.handleSave}
             view={view}
             previewTab={previewTab}
-            breadcrumb="create item"
+            breadcrumb={[
+              {
+                title: 'ITEM DETAIL',
+                to: `/author/items/${window.history.state.state.backUrl.split('/')[3]}/item-detail`
+              },
+              { title: headerTitles[questionType], to: '' }
+            ]}
           />
         )}
         <ContentWrapper

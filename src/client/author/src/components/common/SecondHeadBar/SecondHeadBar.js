@@ -24,10 +24,8 @@ class SecondHeadBar extends Component {
           title: 'ITEM LIST',
           to: '/author/items'
         },
-        {
-          title: props.breadcrumb,
-          to: ''
-        }
+        // eslint-disable-next-line react/destructuring-assignment
+        ...this.props.breadcrumb
       ]
     };
   }
@@ -62,9 +60,10 @@ class SecondHeadBar extends Component {
     } = this.props;
 
     return (
-
       <Container zIndex={option ? 10 : 1} position={option ? 'fixed' : 'unset'}>
-        {!option && <Breadcrumb data={breadcrumbData} style={{ position: 'unset', width: 200 }} />}
+        {!option && (
+          <Breadcrumb data={breadcrumbData} style={{ position: 'unset', width: '100%' }} />
+        )}
 
         {view === 'edit' && (
           <PreviewBar
@@ -142,12 +141,17 @@ SecondHeadBar.propTypes = {
   onShowSource: PropTypes.func.isRequired,
   onShowSettings: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  breadcrumb: PropTypes.string,
+  breadcrumb: PropTypes.array,
   clearAnswers: PropTypes.func.isRequired
 };
 
 SecondHeadBar.defaultProps = {
-  breadcrumb: 'ITEM DETAIL'
+  breadcrumb: [
+    {
+      title: 'ITEM DETAIL',
+      to: `/author/items/${window.location.pathname.split('/')[3]}/item-detail`
+    }
+  ]
 };
 
 const enhance = compose(

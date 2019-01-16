@@ -40,14 +40,9 @@ class PreviewModal extends React.Component {
   };
 
   render() {
-    const { isVisible, loading, item, rows, data } = this.props;
+    const { isVisible, loading, item, rows } = this.props;
     return (
-      <Modal
-        styles={{ minWidth: 200 }}
-        open={isVisible}
-        onClose={this.closeModal}
-        center
-      >
+      <Modal styles={{ minWidth: 200 }} open={isVisible} onClose={this.closeModal} center>
         <h2 style={{ fontWeight: 'bold', fontSize: 20 }}>Preview</h2>
         {loading || item === null ? (
           <ProgressContainer>

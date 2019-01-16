@@ -12,6 +12,10 @@ const Header = ({ title }) => {
       to: '/author/items'
     },
     {
+      title: 'ITEM DETAIL',
+      to: `/author/items/${window.location.pathname.split('/')[3]}/item-detail`
+    },
+    {
       title: 'SELECT A QUESTION TYPE',
       to: ''
     }

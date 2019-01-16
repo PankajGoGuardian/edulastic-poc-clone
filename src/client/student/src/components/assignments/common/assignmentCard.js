@@ -238,6 +238,7 @@ const AssessmentDetails = styled(Col)`
   flex-direction: row;
   @media screen and (max-width: 767px) {
     flex-direction: column;
+    align-items: flex-start;
   }
 `;
 
@@ -252,6 +253,7 @@ const ImageWrapper = styled.div`
     margin: 0;
     img {
       max-width: 100%;
+      height: 120px;
     }
   }
 `;
@@ -259,8 +261,9 @@ const ImageWrapper = styled.div`
 const CardDetails = styled(Col)`
   @media screen and (max-width: 767px) {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     flex-direction: column;
+    margin-top: 20px;
   }
 `;
 

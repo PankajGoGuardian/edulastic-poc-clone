@@ -26,6 +26,13 @@ const AssignmentSelectClass = styled.div`
   }
   @media (max-width:768px){
     padding-top: 10px;
+    width: 100%;
+    .ant-select {
+      height: 32px;
+      flex: 1;
+      margin-right: 26px;
+      margin-left: 20px;
+    }
   }
 `;
 

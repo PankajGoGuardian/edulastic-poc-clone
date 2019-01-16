@@ -15,74 +15,31 @@ import {
   tabletWidth
 } from '@edulastic/colors';
 
+import {
+  getItemsLimitSelector,
+  getItemsLoadingSelector
+} from '../../selectors/items';
+
 import Item from './Item';
 import ItemFilter from './ItemFilter';
-import ListHeader from '../common/ListHeader';
 import { receiveTestItemsAction } from '../../actions/testItems';
 import { createTestItemAction } from '../../actions/testItem';
 import {
-  getDictCurriculumsAction,
-  getDictStandardsForCurriculumAction,
-  clearDictStandardsAction
-} from '../../actions/dictionaries';
-import { getItemsLoadingSelector } from '../../selectors/items';
-import {
   getTestItemsSelector,
-  getItemsTypesSelector,
-  getTestsItemsCountSelector,
-  getTestsItemsLimitSelector,
-  getTestsItemsPageSelector
+  getItemsTypesSelector
 } from '../../selectors/testItems';
 import { getTestItemCreatingSelector } from '../../selectors/testItem';
-import {
-  getCurriculumsListSelector,
-  getStandardsListSelector
-} from '../../selectors/dictionaries';
+import ListHeader from '../common/ListHeader';
 
 class ItemList extends Component {
-  state = {
-    search: {
-      subject: '',
-      curriculumId: '',
-      standardIds: [],
-      questionType: '',
-      depthOfKnowledge: '',
-      authorDifficulty: '',
-      grades: []
-    }
-  };
+  componentDidMount() {
+    const { receiveItems } = this.props;
+    receiveItems({});
+  }
 
-  handleSearch = () => {
-    const { search } = this.state;
-    const { limit, receiveItems } = this.props;
-    receiveItems(search, 1, limit);
-  };
-
-  handleSearchFieldChangeCurriculumId = (value) => {
-    const { search } = this.state;
-    const { clearDictStandards } = this.props;
-    clearDictStandards();
-    this.setState({
-      search: {
-        ...search,
-        curriculumId: value,
-        standardIds: []
-      }
-    }, this.handleSearch);
-  };
-
-  handleSearchFieldChange = fieldName => (value) => {
-    const { search } = this.state;
-    if (fieldName === 'curriculumId') {
-      this.handleSearchFieldChangeCurriculumId(value);
-    } else {
-      this.setState({
-        search: {
-          ...search,
-          [fieldName]: value
-        }
-      }, this.handleSearch);
-    }
+  handleSearch = (value) => {
+    const { receiveItems } = this.props;
+    receiveItems({ page: 1, limit: 10, search: value });
   };
 
   handleCreate = async () => {
@@ -99,22 +56,11 @@ class ItemList extends Component {
   };
 
   handlePaginationChange = (page) => {
-    const { search } = this.state;
-    const { receiveItems, limit } = this.props;
-    receiveItems(search, page, limit);
-  };
+    const { receiveItems } = this.props;
+    const { searchStr } = this.state;
 
-  componentDidMount() {
-    const {
-      receiveItems,
-      curriculums,
-      getCurriculums
-    } = this.props;
-    receiveItems();
-    if (curriculums.length === 0) {
-      getCurriculums();
-    }
-  }
+    receiveItems({ page, limit: 10, search: searchStr });
+  };
 
   render() {
     const {
@@ -124,13 +70,9 @@ class ItemList extends Component {
       creating,
       count,
       t,
-      itemTypes,
-      page,
-      curriculums,
-      getCurriculumStandards,
-      curriculumStandards
+      itemTypes
     } = this.props;
-    const { search } = this.state;
+
     return (
       <Container>
         <ListHeader
@@ -140,15 +82,7 @@ class ItemList extends Component {
           title={t('component.itemlist.header.itemlist')}
         />
         <MainList id="main-list">
-          <ItemFilter
-            onSearchFieldChange={this.handleSearchFieldChange}
-            onSearch={this.handleSearch}
-            windowWidth={windowWidth}
-            search={search}
-            curriculums={curriculums}
-            getCurriculumStandards={getCurriculumStandards}
-            curriculumStandards={curriculumStandards}
-          />
+          <ItemFilter onSearch={this.handleSearch} windowWidth={windowWidth} />
           <ListItems id="item-list">
             {windowWidth > 468 && (
               <Pagination
@@ -159,7 +93,6 @@ class ItemList extends Component {
                 onChange={this.handlePaginationChange}
                 defaultPageSize={10}
                 total={count}
-                current={page}
               />
             )}
             <Items>
@@ -183,7 +116,6 @@ class ItemList extends Component {
               onChange={this.handlePaginationChange}
               defaultPageSize={10}
               total={count}
-              current={page}
             />
           </ListItems>
         </MainList>
@@ -194,8 +126,6 @@ class ItemList extends Component {
 
 ItemList.propTypes = {
   items: PropTypes.array.isRequired,
-  limit: PropTypes.number.isRequired,
-  page: PropTypes.number.isRequired,
   count: PropTypes.number.isRequired,
   receiveItems: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
@@ -203,17 +133,7 @@ ItemList.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   creating: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
-  itemTypes: PropTypes.object.isRequired,
-  curriculums: PropTypes.arrayOf(PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    curriculum: PropTypes.string.isRequired,
-    grades: PropTypes.array.isRequired,
-    subject: PropTypes.string.isRequired
-  })).isRequired,
-  getCurriculums: PropTypes.func.isRequired,
-  getCurriculumStandards: PropTypes.func.isRequired,
-  curriculumStandards: PropTypes.array.isRequired,
-  clearDictStandards: PropTypes.func.isRequired
+  itemTypes: PropTypes.object.isRequired
 };
 
 const enhance = compose(
@@ -222,21 +142,14 @@ const enhance = compose(
   connect(
     state => ({
       items: getTestItemsSelector(state),
-      limit: getTestsItemsLimitSelector(state),
-      page: getTestsItemsPageSelector(state),
-      count: getTestsItemsCountSelector(state),
+      limit: getItemsLimitSelector(state),
       loading: getItemsLoadingSelector(state),
       creating: getTestItemCreatingSelector(state),
-      itemTypes: getItemsTypesSelector(state),
-      curriculums: getCurriculumsListSelector(state),
-      curriculumStandards: getStandardsListSelector(state)
+      itemTypes: getItemsTypesSelector(state)
     }),
     {
       receiveItems: receiveTestItemsAction,
-      createItem: createTestItemAction,
-      getCurriculums: getDictCurriculumsAction,
-      getCurriculumStandards: getDictStandardsForCurriculumAction,
-      clearDictStandards: clearDictStandardsAction
+      createItem: createTestItemAction
     }
   )
 );

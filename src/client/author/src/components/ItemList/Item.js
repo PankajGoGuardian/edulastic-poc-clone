@@ -31,11 +31,13 @@ class Item extends Component {
 
   get description() {
     const { item } = this.props;
-    const description = item.rows[0]
-      && item.rows[0].widgets[0]
-      && item.rows[0].widgets[0].entity
-      && item.rows[0].widgets[0].entity.stimulus;
-    return description || '';
+    let description = '';
+
+    if (item.data.questions && item.data.questions.length) {
+      description = item.data.questions[0].data.stimulus;
+    }
+
+    return description;
   }
 
   render() {

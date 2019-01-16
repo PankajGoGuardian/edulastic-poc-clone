@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Affix, Layout, Row, Col } from 'antd';
 import { IconLogout } from '@edulastic/icons';
 
-import { LogoCompact } from '../../../../../assessment/src/themes/common';
+import { LogoCompact } from '../../../../assessment/src/themes/common';
 
 const SummaryHeader = ({ showConfirmationModal }) => (
   <Affix>

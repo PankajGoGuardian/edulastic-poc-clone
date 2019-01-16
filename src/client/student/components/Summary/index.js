@@ -8,8 +8,8 @@ import SummaryHeader from './header';
 import SummaryTest from './maincontent';
 
 import MainContainer from '../commonStyle/mainContainer';
-import { finishTestAcitivityAction } from '../../../../assessment/src/actions/test';
-import SubmitConfirmation from '../../../../assessment/src/themes/common/SubmitConfirmation';
+import { finishTestAcitivityAction } from '../../../assessment/src/actions/test';
+import SubmitConfirmation from '../../../assessment/src/themes/common/SubmitConfirmation';
 
 const SummaryContainer = ({ finishTest, history }) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);

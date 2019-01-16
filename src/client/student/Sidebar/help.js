@@ -32,7 +32,7 @@ const Help = ({ flag }) => (
 export default React.memo(Help);
 
 Help.propTypes = {
-  flag: PropTypes.bool.isRequired,
+  flag: PropTypes.bool.isRequired
 };
 
 const ProfileWrapper = styled.div`

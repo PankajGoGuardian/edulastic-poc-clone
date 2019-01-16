@@ -23,7 +23,7 @@ import {
   getTestsCreatingSelector
 } from '../../selectors/tests';
 import { getSelectedItemSelector } from '../../selectors/testItems';
-import { getUserSelector } from '../../../../student/src/selectors/user';
+import { getUserSelector } from '../../../../student/selectors/user';
 import SourceModal from '../QuestionEditor/SourceModal';
 import ShareModal from '../common/ShareModal';
 import Review from './Review';

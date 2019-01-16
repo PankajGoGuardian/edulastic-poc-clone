@@ -1,10 +1,10 @@
 import {
-  LOAD_QUESTIONS, GOTO_QUESTION, ADD_ANSWER, ADD_EVALUATION,
+  LOAD_QUESTIONS, GOTO_QUESTION, ADD_ANSWER, ADD_EVALUATION
 } from '../constants/actions';
 
 const initialState = {
   currentQuestion: 0,
-  questions: [],
+  questions: []
 };
 
 const question = (state, action) => {
@@ -17,7 +17,7 @@ const question = (state, action) => {
         return {
           ...state,
           answer,
-          evaluation,
+          evaluation
         };
       }
       return state;
@@ -26,7 +26,7 @@ const question = (state, action) => {
       if (action.payload.qid === state._id) {
         return {
           ...state,
-          evaluation: action.payload.answer,
+          evaluation: action.payload.answer
         };
       }
       return state;
@@ -40,22 +40,22 @@ const questions = (state = initialState, action) => {
     case LOAD_QUESTIONS:
       return {
         ...state,
-        questions: action.payload.questions,
+        questions: action.payload.questions
       };
     case GOTO_QUESTION:
       return {
         ...state,
-        currentQuestion: action.payload.question,
+        currentQuestion: action.payload.question
       };
     case ADD_ANSWER:
       return {
         ...state,
-        questions: state.questions.slice().map(q => question(q, action)),
+        questions: state.questions.slice().map(q => question(q, action))
       };
     case ADD_EVALUATION:
       return {
         ...state,
-        questions: state.questions.slice().map(q => question(q, action)),
+        questions: state.questions.slice().map(q => question(q, action))
       };
     default:
       return state;

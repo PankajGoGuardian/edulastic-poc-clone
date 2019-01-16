@@ -11,8 +11,8 @@ function* addEvaluation(action) {
       type: ADD_EVALUATION,
       payload: {
         answer: response.answer,
-        qid,
-      },
+        qid
+      }
     });
   } catch (e) {
     console.log('error: ', e);

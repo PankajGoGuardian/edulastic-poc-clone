@@ -30,6 +30,11 @@ module.exports = env => {
 
   return {
     entry: './src/client/index.js',
+    resolve: {
+      alias: {
+        Root: path.resolve(__dirname, 'src/client/')
+      }
+    },
     output: {
       filename: 'index.js',
       path: path.resolve(__dirname, '.build/client'),

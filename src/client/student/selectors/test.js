@@ -14,11 +14,11 @@ export const attemptSummarySelector = createSelector(
   answersSelector,
   (items, answers) => {
     const questions = {};
-    //eslint-disable
+    // eslint-disable
     for (const item of items) {
       if (item && item.rows) {
-        item.rows.forEach(row => {
-          row.widgets.forEach(widget => {
+        item.rows.forEach((row) => {
+          row.widgets.forEach((widget) => {
             const qId = widget.entity && widget.entity.id;
             if (!qId) return;
 

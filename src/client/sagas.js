@@ -7,7 +7,7 @@ import {
   reportSaga,
   skillReportSaga,
   authSaga
-} from './student/src/sagas';
+} from './student/sagas';
 import authorSagas from './author/src/sagas';
 import assessmentSagas from './assessment/src/sagas';
 

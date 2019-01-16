@@ -2,8 +2,8 @@ import { combineReducers } from 'redux';
 
 import assessmentReducers from './assessment/src/reducers';
 import authorReducers from './author/src/reducers';
-import studentReducers from './student/src/reducers';
-import { LOGOUT } from './student/src/constants/actions';
+import studentReducers from './student/reducers';
+import { LOGOUT } from './student/constants/actions';
 
 const rootReducer = combineReducers({
   ...assessmentReducers,

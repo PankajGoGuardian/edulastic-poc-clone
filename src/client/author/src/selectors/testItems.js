@@ -11,14 +11,6 @@ export const getTestsItemsCountSelector = createSelector(
   stateSelector,
   state => state.count
 );
-export const getTestsItemsPageSelector = createSelector(
-  stateSelector,
-  state => state.page
-);
-export const getTestsItemsLimitSelector = createSelector(
-  stateSelector,
-  state => state.limit
-);
 export const getItemsLoadingSelector = createSelector(
   stateSelector,
   state => state.loading

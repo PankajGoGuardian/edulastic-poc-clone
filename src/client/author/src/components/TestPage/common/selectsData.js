@@ -16,7 +16,6 @@ const allGrades = [
 ];
 
 const allSubjects = [
-  { value: '', text: 'All Subjects' },
   { value: 'Mathematics', text: 'Mathematics' },
   { value: 'ELA', text: 'ELA' },
   { value: 'Science', text: 'Science' },
@@ -33,7 +32,6 @@ const allCollections = [
 ];
 
 const allDepthOfKnowledge = [
-  { value: '', text: 'All Depth of Knowledge' },
   { value: 'Recall', text: 'Recall' },
   { value: 'Skill/Concept', text: 'Skill/Concept' },
   { value: 'Strategic Thinking', text: 'Strategic Thinking' },
@@ -41,17 +39,10 @@ const allDepthOfKnowledge = [
 ];
 
 const allAuthorDifficulty = [
-  { value: '', text: 'All Levels' },
+  { value: 'All Levels', text: 'All Levels' },
   { value: 'Easy', text: 'Easy' },
   { value: 'Medium', text: 'Medium' },
   { value: 'Hard', text: 'Hard' }
-];
-
-const allQuestionTypes = [
-  { value: '', text: 'All Types' },
-  { value: 'multipleChoice', text: 'Multiple Choice' },
-  { value: 'trueOrFalse', text: 'True or False' },
-  { value: 'multipleSelection', text: 'Multiple Selection' }
 ];
 
 const openPolicy = [
@@ -72,7 +63,6 @@ export default {
   allCollections,
   allDepthOfKnowledge,
   allAuthorDifficulty,
-  allQuestionTypes,
   openPolicy,
   closePolicy
 };

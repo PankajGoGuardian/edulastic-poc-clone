@@ -116,7 +116,7 @@ const Assign = ({
     fetchAssignments();
   }, []);
 
-  const handleRemoveAssignment = (record) => {
+  const handleRemoveAssignment = record => {
     deleteAssignment(record._id);
   };
 

@@ -5,11 +5,24 @@ import { Modal, Row, Col, DatePicker, Select, Radio } from 'antd';
 import { EduButton, FlexContainer } from '@edulastic/common';
 
 import styled from 'styled-components';
+import {
+  findIndex as _findIndex,
+  groupBy as _groupBy,
+  cloneDeep as _cloneDeep,
+  uniq as _uniq,
+  uniqBy,
+  flatMap as _flatmap
+} from 'lodash';
 import { selectsData } from '../common';
 import { fetchStudentsOfGroupAction } from '../../../actions/group';
 
 const RadioGroup = Radio.Group;
 const { Option } = Select;
+
+const getGroupFromId = (id, groups) => {
+  const group = groups.filter(g => g.students.map(s => s._id).includes(id))[0];
+  return group._id;
+};
 
 const EditModal = ({
   title,
@@ -28,6 +41,39 @@ const EditModal = ({
       ...modalData,
       [field]: value
     });
+  };
+
+  // FIXME: fix delete
+  const updateStudents = (students) => {
+    const modalDataCloned = _cloneDeep(modalData);
+    const studentsGroup = _groupBy(students, 'class_id');
+    for (const _class of modalDataCloned.class) {
+      // _class.students = [];
+    }
+
+    for (const classId in studentsGroup) {
+      const index = _findIndex(
+        modalDataCloned.class,
+        ({ _id }) => _id === classId
+      );
+      if (index >= 0) {
+        if (!modalDataCloned.class[index].students) {
+          modalDataCloned.class[index].students = studentsGroup[classId].map(
+            x => x._id
+          );
+        } else {
+          modalDataCloned.class[index].students = modalDataCloned.class[
+            index
+          ].students.concat(studentsGroup[classId].map(x => x._id));
+        }
+
+        modalDataCloned.class[index].students = _uniq(
+          modalDataCloned.class[index].students
+        );
+      }
+    }
+
+    setModalData(modalDataCloned);
   };
 
   const disabledStartDate = (startDate) => {
@@ -64,15 +110,20 @@ const EditModal = ({
     setEndOpen(open);
   };
 
-  const selectedGroups = modalData.class;
-  const selectedStudents = modalData.students || [];
+  const selectedGroups = modalData.class.map(x => x._id);
+  const selectedStudents = _flatmap(modalData.class, _class =>
+    (_class.students ? _uniq(_class.students) : []));
 
   let allStudents = [];
 
   group.forEach(({ _id, students }) => {
     if (selectedGroups.includes(_id)) {
       students = students || [];
-      allStudents = [...allStudents, ...students];
+      students = students.map((s) => {
+        s.class_id = _id;
+        return s;
+      });
+      allStudents = uniqBy([...allStudents, ...students], '_id');
     }
   });
 
@@ -121,12 +172,20 @@ const EditModal = ({
             mode="multiple"
             cache="false"
             onChange={(event) => {
-              onChange('class', event);
+              onChange(
+                'class',
+                event.map(_id => ({
+                  _id,
+                  status: 3,
+                  totalNumber: 0,
+                  submittedNumber: 0
+                }))
+              );
             }}
             onSelect={(classId) => {
               fetchStudents({ classId });
             }}
-            value={modalData.class}
+            value={modalData.class.map(obj => obj._id)}
           >
             {group.map(data => (
               <Option data-cy="class" key={data._id}>
@@ -161,13 +220,14 @@ const EditModal = ({
               style={{ width: '100%' }}
               mode="multiple"
               onChange={(event) => {
-                onChange('students', event);
+                updateStudents(event);
+                // onChange('students', event);
               }}
-              value={modalData.students}
+              value={studentNames}
             >
-              {allStudents.map(({ _id, firstName, lastName }) => (
-                <Option key={_id}>{`${firstName || 'Anonymous'} ${lastName ||
-                  ''}`}
+              {allStudents.map(({ _id, firstName, lastName, class_id }) => (
+                <Option key={_id} value={{ _id, class_id }}>
+                  {`${firstName || 'Anonymous'} ${lastName || ''}`}
                 </Option>
               ))}
             </Select>
@@ -263,7 +323,7 @@ EditModal.propTypes = {
 };
 
 export default connect(
-  () => {},
+  () => ({}),
   { fetchStudents: fetchStudentsOfGroupAction }
 )(EditModal);
 

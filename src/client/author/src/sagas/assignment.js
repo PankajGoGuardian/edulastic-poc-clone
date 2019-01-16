@@ -22,8 +22,17 @@ function* assignmentTestsSaga({ payload }) {
       assignedBy: {
         id: userId
       }
-
     };
+
+    // FIXME: move it out
+
+    const group = yield select(state => state.group);
+    const students = obj.specificStudents && obj.students;
+
+    // if(students) {
+    //   group
+    // }
+
     if (obj.specificStudents === false) {
       obj.students = [];
     }
@@ -79,7 +88,6 @@ function* loadAssignments() {
     console.error(e);
   }
 }
-
 
 // delete assignment
 function* deleteAssignment({ payload: { id } }) {

@@ -45,15 +45,15 @@ class SortListPreview extends PureComponent {
       return null;
     }),
 
-    // eslint-disable-next-line react/destructuring-assignment
-    selected: Array.from({ length: this.props.item.source.length }).map((item, i) => {
+    selected:
       // eslint-disable-next-line react/destructuring-assignment
-      if (this.props.userAnswer.includes(i)) {
-        // eslint-disable-next-line react/destructuring-assignment
-        return this.props.item.source[i];
-      }
-      return null;
-    }),
+      this.props.userAnswer.length > 0
+        ? // eslint-disable-next-line react/destructuring-assignment
+        this.props.userAnswer.map(index =>
+          // eslint-disable-next-line react/destructuring-assignment
+          (index !== null ? this.props.item.source[index] : null))
+        : // eslint-disable-next-line react/destructuring-assignment
+        Array.from({ length: this.props.item.source.length }).fill(null),
 
     active: ''
   };
@@ -71,12 +71,12 @@ class SortListPreview extends PureComponent {
     this.setState(data);
 
     saveAnswer(
-      data.selected.filter(ans => !!ans).map(currentAns => item.source.indexOf(currentAns))
+      data.selected.map(currentAns => (currentAns ? item.source.indexOf(currentAns) : null))
     );
   };
 
   setActive = (item) => {
-    this.setState({ active: cloneDeep(item) });
+    this.setState({ active: typeof item === 'string' ? item : '' });
   };
 
   onRightLeftClick = () => {
@@ -97,7 +97,9 @@ class SortListPreview extends PureComponent {
         selected,
         active: ''
       });
-      saveAnswer(selected.filter(ans => !!ans).map(currentAns => item.source.indexOf(currentAns)));
+      saveAnswer(
+        selected.map(currentAns => (currentAns ? item.source.indexOf(currentAns) : null))
+      );
     }
   };
 
@@ -123,7 +125,7 @@ class SortListPreview extends PureComponent {
         selected,
         active
       });
-      saveAnswer(selected.filter(ans => !!ans).map(currentAns => item.source.indexOf(currentAns)));
+      saveAnswer(selected.map(currentAns => (currentAns ? item.source.indexOf(currentAns) : null)));
     }
   };
 

@@ -59,7 +59,7 @@ const DragItem = ({
   return obj ? (
     connectDragSource(
       <div
-        onClick={() => (active ? onClick({}) : onClick(obj))}
+        onClick={() => (active ? onClick('') : onClick(obj))}
         style={{
           opacity: isDragging ? 0 : 1,
           background: active ? grey : 'transparent',

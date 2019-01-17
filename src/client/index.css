@@ -457,9 +457,9 @@ template {
 }
 
 .imagedropdown_template_box {
-  background: #e6e6e63A;
+  background: #e6e6e63a;
   padding: 18px 33px !important;
-  border: solid 1px #e6e6e63A;
+  border: solid 1px #e6e6e63a;
   height: 100%;
   max-height: calc(100vh - 300px);
   overflow-y: auto;
@@ -979,4 +979,14 @@ span.token.active-word {
   width: 40px !important;
   height: 40px !important;
   box-shadow: none !important;
+}
+
+#tool .rc-color-picker-wrap {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+#tool .rc-color-picker-wrap .rc-color-picker-trigger {
+  width: 32px !important;
+  height: 32px !important;
 }

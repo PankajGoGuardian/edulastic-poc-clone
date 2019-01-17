@@ -33,11 +33,14 @@ import TestItemPreview from '../../components/TestItemPreview';
 import {
   LARGE_DESKTOP_WIDTH,
   MEDIUM_DESKTOP_WIDTH,
-  IPAD_PORTRAIT_WIDTH
+  IPAD_PORTRAIT_WIDTH,
+  MAX_MOBILE_WIDTH
 } from '../../constants/others';
 import { checkAnswerAction } from '../../../../author/src/actions/testItem';
 import { changePreviewAction } from '../../../../author/src/actions/view';
 import { getItemDetailByIdAction } from '../../../../author/src/actions/itemDetail';
+import SvgDraw from './SvgDraw';
+import Tools from './Tools';
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line
@@ -47,10 +50,16 @@ class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentColor: '#ff0000',
+      activeMode: '',
+      lineWidth: 4,
+      scratchPadMode: false,
       testItemState: '',
       isToolbarModalVisible: false,
       isSubmitConfirmationVisible: false,
-      isSavePauseModalVisible: false
+      isSavePauseModalVisible: false,
+      history: [{ points: [], pathes: [], figures: [] }],
+      currentTab: 0
     };
   }
 
@@ -129,14 +138,62 @@ class AssessmentPlayerDefault extends React.Component {
     history.push('/home/assignments');
   };
 
-  finishTest = () => {
-    const { history } = this.props;
-    history.push('/home/assignments');
+  hexToRGB = (hex, alpha) => {
+    const r = parseInt(hex.slice(1, 3), 16);
+
+    const g = parseInt(hex.slice(3, 5), 16);
+
+    const b = parseInt(hex.slice(5, 7), 16);
+
+    if (alpha) {
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+    return `rgb(${r}, ${g}, ${b})`;
   };
 
-  finishTest = () => {
-    const { history } = this.props;
-    history.push('/home/assignments');
+  handleModeChange = (flag) => {
+    this.setState({ scratchPadMode: flag });
+  };
+
+  handleToolChange = value => () => {
+    const { activeMode } = this.state;
+    if (activeMode === value) {
+      this.setState({ activeMode: '' });
+    } else {
+      this.setState({ activeMode: value });
+    }
+  };
+
+  handleColorChange = (obj) => {
+    this.setState({ currentColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100) });
+  };
+
+  handleLineWidthChange = (value) => {
+    this.setState({ lineWidth: value });
+  };
+
+  saveHistory = (data) => {
+    const { history, currentTab } = this.state;
+
+    const newHist = history.slice(0, currentTab + 1);
+
+    newHist.push(data);
+
+    this.setState({ history: newHist, currentTab: currentTab + 1 });
+  };
+
+  handleUndo = () => {
+    const { currentTab } = this.state;
+    if (currentTab > 0) {
+      this.setState({ currentTab: currentTab - 1 });
+    }
+  };
+
+  handleRedo = () => {
+    const { history, currentTab } = this.state;
+    if (currentTab < history.length - 1) {
+      this.setState({ currentTab: currentTab + 1 });
+    }
   };
 
   render() {
@@ -158,12 +215,16 @@ class AssessmentPlayerDefault extends React.Component {
       testItemState,
       isToolbarModalVisible,
       isSubmitConfirmationVisible,
-      isSavePauseModalVisible
+      isSavePauseModalVisible,
+      scratchPadMode,
+      activeMode,
+      currentColor,
+      history,
+      currentTab,
+      lineWidth
     } = this.state;
 
-    const dropdownOptions = Array.isArray(items)
-      ? items.map((item, index) => index)
-      : [];
+    const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
     const item = items[currentItem];
     if (!item) {
@@ -172,6 +233,26 @@ class AssessmentPlayerDefault extends React.Component {
     return (
       <ThemeProvider theme={theme}>
         <Container>
+          <SvgDraw
+            activeMode={activeMode}
+            scratchPadMode={scratchPadMode}
+            lineColor={currentColor}
+            lineWidth={lineWidth}
+            saveHistory={this.saveHistory}
+            history={history[currentTab]}
+          />
+          {scratchPadMode && (
+            <Tools
+              currentColor={currentColor}
+              onToolChange={this.handleToolChange}
+              lineWidth={lineWidth}
+              onLineWidthChange={this.handleLineWidthChange}
+              activeMode={activeMode}
+              undo={this.handleUndo}
+              redo={this.handleRedo}
+              onColorChange={this.handleColorChange}
+            />
+          )}
           <ToolbarModal
             isVisible={isToolbarModalVisible}
             onClose={() => this.closeToolbarModal()}
@@ -204,8 +285,7 @@ class AssessmentPlayerDefault extends React.Component {
               <HeaderMainMenu skin>
                 <FlexContainer
                   style={{
-                    justifyContent:
-                      windowWidth < IPAD_PORTRAIT_WIDTH && 'space-between'
+                    justifyContent: windowWidth < IPAD_PORTRAIT_WIDTH && 'space-between'
                   }}
                 >
                   <QuestionSelectDropdown
@@ -218,8 +298,7 @@ class AssessmentPlayerDefault extends React.Component {
                   <FlexContainer
                     style={{
                       flex: 1,
-                      justifyContent:
-                        windowWidth < IPAD_PORTRAIT_WIDTH && 'flex-end'
+                      justifyContent: windowWidth < IPAD_PORTRAIT_WIDTH && 'flex-end'
                     }}
                   >
                     <ControlBtn
@@ -252,16 +331,14 @@ class AssessmentPlayerDefault extends React.Component {
                       />
                     )}
                     {windowWidth >= MEDIUM_DESKTOP_WIDTH && (
-                      <TestButton
-                        checkAnwser={() => this.changeTabItemState('check')}
-                      />
+                      <TestButton checkAnwser={() => this.changeTabItemState('check')} />
                     )}
-                    {windowWidth >= LARGE_DESKTOP_WIDTH && <ToolBar />}
-                    {windowWidth >= IPAD_PORTRAIT_WIDTH && <Clock />}
-                    {windowWidth >= IPAD_PORTRAIT_WIDTH && (
-                      <SaveAndExit
-                        finishTest={() => this.openSubmitConfirmation()}
-                      />
+                    {windowWidth >= LARGE_DESKTOP_WIDTH && (
+                      <ToolBar changeMode={this.handleModeChange} />
+                    )}
+                    {windowWidth >= MAX_MOBILE_WIDTH && <Clock />}
+                    {windowWidth >= MAX_MOBILE_WIDTH && (
+                      <SaveAndExit finishTest={() => this.openSubmitConfirmation()} />
                     )}
                   </FlexContainer>
                 </FlexContainer>

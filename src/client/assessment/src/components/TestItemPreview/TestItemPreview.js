@@ -62,9 +62,7 @@ class TestItemPreview extends Component {
   }
 }
 
-const enhance = compose(
-  withWindowSizes
-);
+const enhance = compose(withWindowSizes);
 
 export default enhance(TestItemPreview);
 

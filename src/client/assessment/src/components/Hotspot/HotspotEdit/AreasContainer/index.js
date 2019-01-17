@@ -95,7 +95,10 @@ const AreasContainer = ({ itemData, areas, width, imageSrc, height, t, setQuesti
             <IconUndo style={{ marginRight: 25 }} width={18} height={18} />
             <Text>{t('component.hotspot.undo')}</Text>
           </Button>
-          <Button disabled={historyTab === history.length - 1} onClick={handleRedoClick}>
+          <Button
+            disabled={history.length === 0 || historyTab === history.length - 1}
+            onClick={handleRedoClick}
+          >
             <IconRedo style={{ marginRight: 25 }} width={18} height={18} />
             <Text>{t('component.hotspot.redo')}</Text>
           </Button>

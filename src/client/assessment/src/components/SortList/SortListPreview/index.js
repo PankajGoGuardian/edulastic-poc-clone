@@ -86,7 +86,7 @@ class SortListPreview extends PureComponent {
     if (items.includes(active)) {
       items.splice(items.indexOf(active), 1, null);
       selected.splice(selected.indexOf(null), 1, active);
-    } else if (active) {
+    } else if (active && Object.keys(active).length !== 0) {
       selected.splice(selected.indexOf(active), 1, null);
       items.splice(items.indexOf(null), 1, active);
     }

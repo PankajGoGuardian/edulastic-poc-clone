@@ -11,7 +11,7 @@ const AssignmentsTitle = styled.div`
   text-align: left;
   color: ${props => props.theme.headerTitleTextColor};
   @media screen and (max-width: 768px) {
-    padding-left: 0px;
+    padding-left: 40px;
   }
 `;
 

@@ -16,7 +16,11 @@ import QuestionWrapper from '../../../../assessment/src/components/QuestionWrapp
 import QuestionMetadata from '../../../../assessment/src/components/QuestionMetadata';
 import ItemHeader from './ItemHeader';
 import { getQuestionSelector } from '../../selectors/question';
-import { saveQuestionAction, setQuestionDataAction } from '../../actions/question';
+import { getItemIdSelector } from '../../selectors/itemDetail';
+import {
+  saveQuestionAction,
+  setQuestionDataAction
+} from '../../actions/question';
 
 const headerTitles = {
   multipleChoice: 'MultipleChoice',
@@ -112,7 +116,7 @@ class QuestionEditor extends Component {
   };
 
   render() {
-    const { view, question, windowWidth } = this.props;
+    const { view, question, windowWidth, testItemId } = this.props;
     const { previewTab, showModal } = this.state;
     const itemId = question === null ? '' : question._id;
     const questionType = this.getQuestionType();
@@ -120,7 +124,10 @@ class QuestionEditor extends Component {
     return (
       <div>
         {showModal && (
-          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
+          <SourceModal
+            onClose={this.handleHideSource}
+            onApply={this.handleApplySource}
+          >
             {JSON.stringify(question.data, null, 4)}
           </SourceModal>
         )}
@@ -147,7 +154,7 @@ class QuestionEditor extends Component {
             breadcrumb={[
               {
                 title: 'ITEM DETAIL',
-                to: `/author/items/${window.history.state.state.backUrl.split('/')[3]}/item-detail`
+                to: `/author/items/${testItemId}/item-detail`
               },
               { title: headerTitles[questionType], to: '' }
             ]}
@@ -174,7 +181,8 @@ QuestionEditor.propTypes = {
   match: PropTypes.object,
   saveQuestion: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  windowWidth: PropTypes.number.isRequired
+  windowWidth: PropTypes.number.isRequired,
+  testItemId: PropTypes.func.isRequired
 };
 
 QuestionEditor.defaultProps = {
@@ -189,7 +197,8 @@ const enhance = compose(
   connect(
     state => ({
       view: getViewSelector(state),
-      question: getQuestionSelector(state)
+      question: getQuestionSelector(state),
+      testItemId: getItemIdSelector(state)
     }),
     {
       changeView: changeViewAction,

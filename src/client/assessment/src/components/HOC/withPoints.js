@@ -10,6 +10,7 @@ export default (WrappedComponent) => {
       <Container>
         <Input
           type="number"
+          data-cy="points"
           value={points}
           onChange={e => onChangePoints(+e.target.value)}
           style={{ width: 105 }}
@@ -23,7 +24,7 @@ export default (WrappedComponent) => {
 
   hocComponent.propTypes = {
     points: PropTypes.number.isRequired,
-    onChangePoints: PropTypes.func.isRequired,
+    onChangePoints: PropTypes.func.isRequired
   };
 
   return hocComponent;

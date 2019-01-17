@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { blue, white, grey, secondaryTextColor } from '@edulastic/colors';
 
 const Checkbox = ({ onChange, checked, label, style, className }) => (
-  <Container onClick={onChange} style={style} className={className}>
+  <Container data-cy="multi" onClick={onChange} style={style} className={className}>
     <Input type="checkbox" checked={checked} onChange={() => {}} />
     <span />
     {label && (

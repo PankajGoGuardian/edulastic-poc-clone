@@ -43,6 +43,7 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
         <Options.Row>
           <Options.Col md={6}>
             <Checkbox
+              data-cy="unscoredChk"
               checked={questionData.validation.unscored}
               onChange={e => handleChangeValidation('unscored', e.target.checked)}
               size="large"
@@ -70,6 +71,7 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
         <Options.Row>
           <Options.Col md={6}>
             <Checkbox
+              data-cy="feedbackChk"
               checked={questionData.instant_feedback}
               onChange={e => handleChangeData('instant_feedback', e.target.checked)}
               size="large"
@@ -97,6 +99,7 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
       <Options.Row>
         <Options.Col md={6}>
           <Checkbox
+            data-cy="autoscoreChk"
             checked={questionData.validation.automarkable}
             onChange={e => handleChangeValidation('automarkable', e.target.checked)}
             size="large"
@@ -166,6 +169,7 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
           <Options.Col md={12}>
             <FormGroup>
               <Input
+                data-cy="maxscore"
                 type="number"
                 value={questionData.validation.max_score}
                 onChange={e => handleChangeValidation('max_score', +e.target.value)}

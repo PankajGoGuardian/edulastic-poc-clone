@@ -46,3 +46,35 @@ Cypress.Commands.add('setToken', () => {
     return true;
   });
 });
+
+Cypress.Commands.add('makeSelection', {
+  prevSubject: 'element'
+}, (subject) => {
+    cy.wrap(subject)
+      .trigger('mousedown')
+      .then(($el) => {
+        const el = $el[0];
+        const document = el.ownerDocument;
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        document.getSelection().removeAllRanges(range);
+        document.getSelection().addRange(range);
+      })
+      .trigger('mouseup');
+    
+    cy.document().trigger('selectionchange');
+});
+
+Cypress.Commands.add('verifyNumInput', {
+  prevSubject: 'element'
+}, (subject, step ) => {
+    const exp = `${step+1}`;
+    cy.wrap(subject)
+      .type('{selectall}')
+      .type(1)
+      .should('have.value', '1')
+      .type('{uparrow}')
+      .should('have.value', exp)
+      .type('{downarrow}')
+      .should('have.value', '1');
+})

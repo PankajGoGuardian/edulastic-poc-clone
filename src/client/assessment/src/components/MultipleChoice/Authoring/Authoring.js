@@ -102,7 +102,7 @@ class MultipleChoiceAuthoring extends Component {
             onChange={this.editOptions}
           />
           <div>
-            <AddNewChoiceBtn onClick={this.addNewChoiceBtn}>
+            <AddNewChoiceBtn data-cy="add-new-ch" onClick={this.addNewChoiceBtn}>
               {t('component.multiplechoice.addnewchoice')}
             </AddNewChoiceBtn>
           </div>

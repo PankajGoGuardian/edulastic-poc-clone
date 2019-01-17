@@ -3,33 +3,40 @@ import styled from 'styled-components';
 import Modal from 'react-responsive-modal';
 import PropTypes from 'prop-types';
 import { Button, Row, Col } from 'antd';
+import { withNamespaces } from '@edulastic/localization';
 
 import { secondaryTextColor } from '@edulastic/colors';
 
 class SubmitConfirmation extends Component {
   render() {
-    const { isVisible, onClose, finishTest } = this.props;
+    const { isVisible, onClose, finishTest, t } = this.props;
     return (
       <ModalConfirmation
         open={isVisible}
         onClose={onClose}
         showCloseIcon={false}
+        styles={{
+          modal: {
+            maxWidth: '640px',
+            borderRadius: 5,
+            textAlign: 'center',
+            padding: '20px 30px'
+          }
+        }}
         center
       >
         <ModalContainer>
-          <Title>Are you sure?</Title>
-          <TitleDescriptioin>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mauris nunc.
-          </TitleDescriptioin>
+          <Title>{t('exitConfirmation.title')}</Title>
+          <TitleDescription>
+            {t('exitConfirmation.body')}
+          </TitleDescription>
           <ButtonContainer>
             <Row gutter={20} style={{ width: '100%' }}>
-              <Col span={12}>
-                <StyledButton btnType={1} onClick={onClose}>Cancel</StyledButton>
+              <Col md={12} sm={24}>
+                <StyledButton btnType={1} onClick={onClose}>{t('exitConfirmation.buttonCancel')}</StyledButton>
               </Col>
-              <Col span={12}>
-                <StyledButton type="primary" btnType={2} onClick={finishTest}>
-                  Proceed
-                </StyledButton>
+              <Col md={12} sm={24}>
+                <StyledButton type="primary" btnType={2} onClick={finishTest}>{t('exitConfirmation.buttonProceed')}</StyledButton>
               </Col>
             </Row>
           </ButtonContainer>
@@ -42,10 +49,11 @@ class SubmitConfirmation extends Component {
 SubmitConfirmation.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  finishTest: PropTypes.func.isRequired
+  finishTest: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 
-export default SubmitConfirmation;
+export default withNamespaces('common')(SubmitConfirmation);
 
 const ModalConfirmation = styled(Modal)`
   border-radius: 5;  
@@ -67,7 +75,7 @@ const Title = styled.div`
   color: ${secondaryTextColor};
 `;
 
-const TitleDescriptioin = styled.div`
+const TitleDescription = styled.div`
   font-size: 13px;
   font-weight: 600;
   margin-top: 12px;
@@ -89,5 +97,8 @@ const StyledButton = styled(Button)`
     font-size: 11px;
     font-weight: 600;
     color: ${props => (props.btnType === 1 ? '#00b0ff' : '#fff')};
+  }
+  @media screen and (max-width: 767px) {
+    margin-top:10px;
   }
 `;

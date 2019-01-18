@@ -119,7 +119,7 @@ const Report = ({ _id,
               <Title>{t('common.score')}</Title>
             </AnswerAndScore>
           </AttemptDetails>
-          <StartAssignButton to={{ pathname: '/home/report/list', testActivityId: _id }}>
+          <StartAssignButton to={{ pathname: '/home/report/list', testActivityId: _id, title }}>
             <span>{t('common.review')}</span>
           </StartAssignButton>
 
@@ -142,7 +142,7 @@ const Report = ({ _id,
                       <span>{report.score ? report.score : 0}</span>
                     </AnswerAndScore>
                     <AnswerAndScoreReviewBtn>
-                      <Link to={{ pathname: '/home/report/list', testActivityId: report._id }}>
+                      <Link to={{ pathname: '/home/report/list', testActivityId: report._id, title }}>
                         <div>{t('common.review')}</div>
                       </Link>
                     </AnswerAndScoreReviewBtn>

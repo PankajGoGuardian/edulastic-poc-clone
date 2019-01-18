@@ -48,19 +48,17 @@ const Content = ({
   );
 };
 
-export default React.memo(
-  connect(
-    ({ ui, assignments, reports }) => ({
-      flag: ui.flag,
-      reports: reports.reports,
-      assignments
-    }),
-    {
-      fetchReports: fetchReportAction,
-      loadAssignments: loadAssignmentsAction
-    }
-  )(Content)
-);
+export default connect(
+  ({ ui, assignments, reports }) => ({
+    flag: ui.flag,
+    reports: reports.reports,
+    assignments
+  }),
+  {
+    fetchReports: fetchReportAction,
+    loadAssignments: loadAssignmentsAction
+  }
+)(Content);
 
 Content.propTypes = {
   flag: PropTypes.bool.isRequired,

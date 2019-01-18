@@ -2,7 +2,8 @@
 import {
   FETCH_REPORTS,
   GET_TEST_ACTIVITY_DETAIL,
-  GET_SKILL_REPORT_BY_CLASSID
+  GET_SKILL_REPORT_BY_CLASSID,
+  LOAD_TEST_REPORT
 } from '../constants/actions';
 
 export const fetchReportAction = () => ({
@@ -17,4 +18,15 @@ export const fetchTestActivityDetailAction = id => ({
 export const fetchSkillReportAction = classId => ({
   type: GET_SKILL_REPORT_BY_CLASSID,
   payload: { classId }
+});
+
+/*
+ * load student test Activity
+ * @params {string} testActivityId - id of a particular test Activty
+ */
+export const loadReportAction = testActivityId => ({
+  type: LOAD_TEST_REPORT,
+  payload: {
+    testActivityId
+  }
 });

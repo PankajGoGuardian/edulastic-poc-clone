@@ -26,6 +26,7 @@ export default memo(HeaderWrapper);
 const HeaderContainer = styled.div`
   padding-top: 62px;
   margin-bottom: 10px;
+  z-index: 1000;
   @media screen and (max-width: 768px) {
     padding-top: 95px;
   }

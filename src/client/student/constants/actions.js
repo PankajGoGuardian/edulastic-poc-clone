@@ -23,10 +23,14 @@ export const RESPONSIVE_TOGGLE_MENU = '[homeUI] responsive toggle menu';
 // report
 export const FETCH_REPORTS = '[reports] fetch reports';
 export const LOAD_REPORTS = '[reports] load reports';
-
+export const LOAD_TEST_REPORT = '[reports] load test report';
 // user
 export const SET_USER = '[user] set user';
 export const FETCH_USER = '[user] fetch user data';
+
+// items
+export const SET_STUDENT_ITEMS = '[studentItems] set Student items';
+export const SET_CURRENT_ITEM = '[studentItems] set Current item';
 
 // assignments
 export const LOAD_STUDENT_ASSIGNMENTS =
@@ -46,5 +50,7 @@ export const LOAD_PREVIOUS_RESPONSES = '[test] load previous responses';
 export const LOGOUT = 'LOGOUT'; // set redux store to initial values
 
 // skill report
-export const GET_SKILL_REPORT_BY_CLASSID = '[reports] get skill reports by class id';
-export const LOAD_SKILL_REPORT_BY_CLASSID = '[reports] load skill report by class id';
+export const GET_SKILL_REPORT_BY_CLASSID =
+  '[reports] get skill reports by class id';
+export const LOAD_SKILL_REPORT_BY_CLASSID =
+  '[reports] load skill report by class id';

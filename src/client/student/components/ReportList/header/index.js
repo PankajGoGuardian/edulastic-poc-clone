@@ -1,38 +1,30 @@
-import React, { memo } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { withNamespaces } from '@edulastic/localization';
-import { compose } from 'redux';
+import { Col } from 'antd';
 
-import { darkBlueSecondary } from '@edulastic/colors';
-import { Affix } from 'antd';
+import HeaderWrapper from '../../../headerWrapper';
+import QuestionSelect from '../../../src/components/ReportList/QuestionSelect';
 
-const ReportListHeader = ({ t }) => (
-  <Affix>
+const ReportListHeader = () => (
+  <HeaderWrapper>
     <Container>
-      <Title>{t('common.reportsTitle')}</Title>
+      <Title>Reports</Title>
+      <QuestionSelectMobile>
+        <QuestionSelect />
+      </QuestionSelectMobile>
     </Container>
-  </Affix>
+  </HeaderWrapper>
 );
 
-ReportListHeader.propTypes = {
-  t: PropTypes.func.isRequired
-};
+export default ReportListHeader;
 
-const enhance = compose(
-  memo,
-  withNamespaces('header')
-);
-
-export default enhance(ReportListHeader);
-
-const Container = styled.div`
-  height: 62px;
-  padding: 0px 40px;
-  background: ${darkBlueSecondary};
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+const Container = styled.div``;
+const QuestionSelectMobile = styled(Col)`
+  display:none;
+  @media (max-width:768px){
+    display:flex;
+    margin-top: 12px;
+  }
 `;
 
 const Title = styled.h1`
@@ -41,4 +33,7 @@ const Title = styled.h1`
   font-weight: bold;
   margin: 0;
   padding: 0;
+  @media (max-width:768px){
+    padding-left: 40px;
+  }
 `;

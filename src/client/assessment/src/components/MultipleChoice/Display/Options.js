@@ -30,7 +30,7 @@ Options.propTypes = {
   smallSize: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object.isRequired,
-  evaluation: PropTypes.object.isRequired,
+  evaluation: PropTypes.object.isRequired
 };
 
 Options.defaultProps = {
@@ -39,7 +39,7 @@ Options.defaultProps = {
   userSelections: [],
   validation: {},
   options: [],
-  smallSize: false,
+  smallSize: false
 };
 
 export default React.memo(Options);

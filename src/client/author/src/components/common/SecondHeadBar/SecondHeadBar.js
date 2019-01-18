@@ -117,7 +117,12 @@ class SecondHeadBar extends Component {
                 {t('component.questioneditor.buttonbar.showanswers')}
               </ButtonLink>
             </Button>
-            <Button onClick={() => clearAnswers()}>
+            <Button
+              onClick={() => {
+                clearAnswers();
+                changePreviewTab('clear');
+              }}
+            >
               <ButtonLink
                 color="primary"
                 active={previewTab === 'clear'}

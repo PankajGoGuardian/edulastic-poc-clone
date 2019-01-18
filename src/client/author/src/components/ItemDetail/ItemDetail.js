@@ -269,10 +269,7 @@ class ItemDetail extends Component {
     return (
       <Layout>
         {showModal && item && (
-          <SourceModal
-            onClose={this.handleHideSource}
-            onApply={this.handleApplySource}
-          >
+          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
             {JSON.stringify(item, null, 4)}
           </SourceModal>
         )}

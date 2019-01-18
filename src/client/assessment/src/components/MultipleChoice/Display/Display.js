@@ -20,7 +20,7 @@ MultipleChoiceDisplay.propTypes = {
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool,
   question: PropTypes.string.isRequired,
-  uiStyle: PropTypes.object,
+  uiStyle: PropTypes.object
 };
 
 MultipleChoiceDisplay.defaultProps = {
@@ -36,8 +36,8 @@ MultipleChoiceDisplay.defaultProps = {
     fontsize: 'normal',
     columns: 1,
     orientation: 'horizontal',
-    choice_label: 'number',
-  },
+    choice_label: 'number'
+  }
 };
 
 export default MultipleChoiceDisplay;

@@ -8,7 +8,7 @@ import { withNamespaces } from '@edulastic/localization';
 import { ContentWrapper, withWindowSizes } from '@edulastic/common';
 
 import SourceModal from './SourceModal';
-import { changeViewAction } from '../../actions/view';
+import { changeViewAction, changePreviewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
 import { MAX_MOBILE_WIDTH } from '../../constants/others';
 import { ButtonBar, SecondHeadBar } from '../common';
@@ -17,10 +17,8 @@ import QuestionMetadata from '../../../../assessment/src/components/QuestionMeta
 import ItemHeader from './ItemHeader';
 import { getQuestionSelector } from '../../selectors/question';
 import { getItemIdSelector } from '../../selectors/itemDetail';
-import {
-  saveQuestionAction,
-  setQuestionDataAction
-} from '../../actions/question';
+import { saveQuestionAction, setQuestionDataAction } from '../../actions/question';
+import { checkAnswerAction, showAnswerAction } from '../../actions/testItem';
 
 const headerTitles = {
   multipleChoice: 'MultipleChoice',
@@ -89,13 +87,25 @@ class QuestionEditor extends Component {
   };
 
   handleChangePreviewTab = (previewTab) => {
+    const { checkAnswer, showAnswer, changePreview } = this.props;
+
+    if (previewTab === 'check') {
+      checkAnswer();
+    }
+    if (previewTab === 'show') {
+      showAnswer();
+    }
+
+    changePreview(previewTab);
+
     this.setState({
       previewTab
     });
   };
 
   renderQuestion = (questionType) => {
-    const { view, question, match } = this.props;
+    const { view, question, match, evaluation: evaluations } = this.props;
+    const evaluation = evaluations[question.data.id];
     const { previewTab, saveClicked } = this.state;
     if (view === 'metadata') {
       return <QuestionMetadata />;
@@ -105,6 +115,7 @@ class QuestionEditor extends Component {
         <QuestionWrapper
           type={questionType}
           view={view}
+          evaluation={evaluation}
           previewTab={previewTab}
           key={questionType && view && saveClicked}
           data={question.data}
@@ -176,6 +187,10 @@ class QuestionEditor extends Component {
 
 QuestionEditor.propTypes = {
   view: PropTypes.string.isRequired,
+  evaluation: PropTypes.any.isRequired,
+  checkAnswer: PropTypes.func.isRequired,
+  changePreview: PropTypes.func.isRequired,
+  showAnswer: PropTypes.func.isRequired,
   changeView: PropTypes.func.isRequired,
   question: PropTypes.object,
   match: PropTypes.object,
@@ -196,6 +211,7 @@ const enhance = compose(
   withNamespaces('author'),
   connect(
     state => ({
+      evaluation: state.evaluation,
       view: getViewSelector(state),
       question: getQuestionSelector(state),
       testItemId: getItemIdSelector(state)
@@ -203,7 +219,10 @@ const enhance = compose(
     {
       changeView: changeViewAction,
       saveQuestion: saveQuestionAction,
-      setQuestionData: setQuestionDataAction
+      setQuestionData: setQuestionDataAction,
+      checkAnswer: checkAnswerAction,
+      showAnswer: showAnswerAction,
+      changePreview: changePreviewAction
     }
   )
 );

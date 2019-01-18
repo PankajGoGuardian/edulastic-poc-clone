@@ -17,7 +17,7 @@ class TestItemCol extends Component {
   static propTypes = {
     col: PropTypes.object.isRequired,
     style: PropTypes.object,
-    previewTab: PropTypes.string.isRequired,
+    preview: PropTypes.string.isRequired,
     windowWidth: PropTypes.number.isRequired,
     evaluation: PropTypes.any.isRequired
   };
@@ -33,7 +33,7 @@ class TestItemCol extends Component {
   };
 
   renderTabContent = (widget) => {
-    const { previewTab, preview, evaluation: evaluations } = this.props;
+    const { preview, evaluation: evaluations } = this.props;
     const evaluation = evaluations[widget.entity.id];
     return (
       <Tabs.TabContainer style={{ padding: 20 }}>
@@ -78,21 +78,15 @@ class TestItemCol extends Component {
             ))}
           </Tabs>
         )}
-        {col.tabs &&
-          windowWidth < MAX_MOBILE_WIDTH &&
-          !!col.tabs.length &&
-          value === 0 && (
-            <MobileRightSide onClick={() => this.handleTabChange(1)}>
-              <Icon type="left" style={{ color: white }} />
-            </MobileRightSide>
+        {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 0 && (
+          <MobileRightSide onClick={() => this.handleTabChange(1)}>
+            <Icon type="left" style={{ color: white }} />
+          </MobileRightSide>
         )}
-        {col.tabs &&
-          windowWidth < MAX_MOBILE_WIDTH &&
-          !!col.tabs.length &&
-          value === 1 && (
-            <MobileLeftSide onClick={() => this.handleTabChange(0)}>
-              <Icon type="right" style={{ color: white }} />
-            </MobileLeftSide>
+        {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 1 && (
+          <MobileLeftSide onClick={() => this.handleTabChange(0)}>
+            <Icon type="right" style={{ color: white }} />
+          </MobileLeftSide>
         )}
         {col.widgets.map((widget, i) => (
           <React.Fragment key={i}>

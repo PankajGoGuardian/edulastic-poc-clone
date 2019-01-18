@@ -1,6 +1,6 @@
 import { createAction } from 'redux-starter-kit';
 import { takeEvery, put, call, all } from 'redux-saga/effects';
-import { keyBy, values } from 'lodash';
+import { values, groupBy } from 'lodash';
 import { createSelector } from 'reselect';
 import { normalize } from 'normalizr';
 import { assignmentApi, reportsApi } from '@edulastic/api';
@@ -63,21 +63,22 @@ export const getAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
   (assignmentsObj, reportsObj) => {
-    // remove  assignments with endDate less than now
-    const assignmentsArray = values(assignmentsObj);
-    const reportsArray = values(reportsObj);
-    let assignments = assignmentsArray.filter(
-      ({ endDate }) => new Date(endDate) > new Date()
-    );
-    assignments = keyBy(assignments, '_id');
+    const assignmentIds = values(assignmentsObj)
+      .filter(({ endDate }) => new Date(endDate) > new Date())
+      .map(({ _id }) => _id);
 
-    reportsArray.forEach(({ assignmentId, ...report }) => {
-      if (assignments[assignmentId]) {
-        assignments[assignmentId].reports = assignments[assignmentId].reports
-          ? [...assignments[assignmentId].reports, report]
-          : [report];
-      }
-    });
-    return values(assignments).sort((a, b) => a.createdAt > b.createdAt);
+    const reportsGrouped = groupBy(
+      values(reportsObj).filter(({ assignmentId }) =>
+        assignmentIds.includes(assignmentId)
+      ),
+      'assignmentId'
+    );
+
+    return Object.keys(reportsGrouped)
+      .map(assignmentId => ({
+        ...assignmentsObj[assignmentId],
+        reports: reportsGrouped[assignmentId]
+      }))
+      .sort((a, b) => a.createdAt - b.createdAt);
   }
 );

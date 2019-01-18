@@ -47,6 +47,7 @@ function* initiateTestActivity({ payload }) {
     console.log(err);
   }
 }
+
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(LOAD_STUDENT_ASSIGNMENTS, loadAssignments),

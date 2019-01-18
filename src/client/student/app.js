@@ -8,7 +8,7 @@ import { themes } from './themes';
 
 import Sidebar from './Sidebar/SideMenu';
 import DashboardContainer from './components/dashboard';
-import AssignmentsContainer from './components/assignments';
+import { Assignment } from './Assignments';
 import ReportContainer from './components/Report';
 import ManageClassContainer from './components/manageClass';
 import ReportListContainer from './components/ReportList';
@@ -22,11 +22,20 @@ const Dashboard = ({ match, isSidebarCollapsed }) => (
         <Sidebar />
         <Wrapper>
           <Switch>
-            <Route path={`${match.url}/dashboard`} component={DashboardContainer} />
-            <Route path={`${match.url}/assignments`} component={AssignmentsContainer} />
+            <Route
+              path={`${match.url}/dashboard`}
+              component={DashboardContainer}
+            />
+            <Route path={`${match.url}/assignments`} component={Assignment} />
             <Route path={`${match.url}/reports`} component={ReportContainer} />
-            <Route path={`${match.url}/skill-report`} component={SkillReportContainer} />
-            <Route path={`${match.url}/manage`} component={ManageClassContainer} />
+            <Route
+              path={`${match.url}/skill-report`}
+              component={SkillReportContainer}
+            />
+            <Route
+              path={`${match.url}/manage`}
+              component={ManageClassContainer}
+            />
             <Route path={`${match.url}/profile`} component={ProfileContainer} />
             <Route
               path={`${match.url}/report/list`}
@@ -42,7 +51,6 @@ const Dashboard = ({ match, isSidebarCollapsed }) => (
 export default connect(({ ui }) => ({
   isSidebarCollapsed: ui.isSidebarCollapsed
 }))(Dashboard);
-
 
 Dashboard.propTypes = {
   match: PropTypes.object.isRequired,

@@ -4,3 +4,4 @@ export { default as assignmentSaga } from './assignments';
 export { default as authSaga } from './auth';
 export { default as reportSaga } from './report';
 export { default as skillReportSaga } from './skillreport';
+export { AssignmentSaga as studentAssignmentsSaga } from '../Assignments';

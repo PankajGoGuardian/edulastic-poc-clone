@@ -6,7 +6,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import ClassSelector from './ClassSelector';
 
-import HeaderWrapper from '../../headerWrapper';
+import HeaderWrapper from '../../styled/header/headerWrapper';
 
 const Header = ({ t }) => (
   <HeaderWrapper>

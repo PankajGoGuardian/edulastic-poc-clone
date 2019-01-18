@@ -26,11 +26,13 @@ const SummaryTest = lazy(() =>
 const Author = lazy(() =>
   import(/* webpackChunkName: "author" */ './author/src/app'));
 
+const Loading = () => <div> Loading ...</div>;
+
 class App extends Component {
   render() {
     return (
       <div>
-        <Suspense fallback={() => <div> Loading ...</div>}>
+        <Suspense fallback={<Loading />}>
           <Switch>
             <Redirect exact path="/" to="/home/dashboard" />
             <Route path="/author" component={Author} />

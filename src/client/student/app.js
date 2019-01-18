@@ -12,7 +12,7 @@ import { Assignment } from './Assignments';
 import ReportContainer from './components/Report';
 import ManageClassContainer from './components/manageClass';
 import ReportListContainer from './components/ReportList';
-import SkillReportContainer from './components/SkillReport';
+import SkillReportContainer from './components/skillReport';
 import ProfileContainer from './components/profile';
 
 const Dashboard = ({ match, isSidebarCollapsed }) => (

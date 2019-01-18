@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Col } from 'antd';
 
-import HeaderWrapper from '../../../headerWrapper';
+import HeaderWrapper from '../../../styled/header/headerWrapper';
 import QuestionSelect from '../../../src/components/ReportList/QuestionSelect';
 
 const ReportListHeader = () => (

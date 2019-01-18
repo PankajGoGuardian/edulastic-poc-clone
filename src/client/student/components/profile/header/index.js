@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { withNamespaces } from '@edulastic/localization';
 import { compose } from 'redux';
-import HeaderWrapper from '../../../headerWrapper';
+import HeaderWrapper from '../../../styled/header/headerWrapper';
 
 const ProfileHeader = ({ t }) => (
   <HeaderWrapper>

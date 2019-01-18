@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { Select } from 'antd';
 import AssignmentTitle from '../common/assignmentTitle';
 import AssignmentSelectClass from '../common/assignmentSelectClass';
-import HeaderWrapper from '../../../headerWrapper';
+import HeaderWrapper from '../../../styled/header/headerWrapper';
 
 const options = ['FFC1', 'FFC2', 'FFC3', 'FFC4', 'FFC5', 'FFC6'];
 const { Option } = Select;

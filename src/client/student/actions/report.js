@@ -2,9 +2,10 @@
 import {
   FETCH_REPORTS,
   GET_TEST_ACTIVITY_DETAIL,
-  GET_SKILL_REPORT_BY_CLASSID,
   LOAD_TEST_REPORT
 } from '../constants/actions';
+
+import {GET_SKILL_REPORT_BY_CLASSID} from '../components/skillReport/ducks';
 
 export const fetchReportAction = () => ({
   type: FETCH_REPORTS

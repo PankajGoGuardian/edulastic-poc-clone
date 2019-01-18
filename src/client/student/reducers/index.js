@@ -1,7 +1,7 @@
 import ui from './ui';
 import assignments from './assignment';
 import reports from './reports';
-import skillReport from './skillreport';
+import skillReport from '../components/skillReport/ducks';
 import testItemActivity from '../src/reducers/testItemActivity';
 import items from '../src/reducers/items';
 import { studentAssignmentReducer } from '../AssignmentModule';

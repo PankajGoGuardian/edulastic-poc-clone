@@ -1,8 +1,9 @@
 import {
   LOAD_REPORTS,
-  LOAD_TEST_ACTIVITY_DETAIL,
-  LOAD_SKILL_REPORT_BY_CLASSID
+  LOAD_TEST_ACTIVITY_DETAIL
 } from '../constants/actions';
+
+import { LOAD_SKILL_REPORT_BY_CLASSID } from '../components/skillReport/ducks';
 
 const initialState = {
   reports: []

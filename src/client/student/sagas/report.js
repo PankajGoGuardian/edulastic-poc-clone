@@ -7,16 +7,17 @@ import {
   LOAD_REPORTS,
   GET_TEST_ACTIVITY_DETAIL,
   LOAD_TEST_ACTIVITY_DETAIL,
-  GET_SKILL_REPORT_BY_CLASSID,
-  LOAD_SKILL_REPORT_BY_CLASSID,
   LOAD_TEST_REPORT,
   SET_STUDENT_ITEMS
 } from '../constants/actions';
 
+import {
+  GET_SKILL_REPORT_BY_CLASSID,
+  LOAD_SKILL_REPORT_BY_CLASSID } from '../components/skillReport/ducks';
+
 function* fetchReports() {
   try {
     const reports = yield call(reportsApi.fetchReports);
-
     yield put({ type: LOAD_REPORTS, payload: { reports } });
   } catch (err) {
     console.error(err);

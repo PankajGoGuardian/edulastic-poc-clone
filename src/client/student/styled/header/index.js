@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import { withNamespaces } from '@edulastic/localization';
 import { compose } from 'redux';
 import { Select } from 'antd';
-import AssignmentSelectClass from '../../commonStyle/assignmentSelectClass';
-import AssignmentTitle from '../../assignments/common/assignmentTitle';
-import HeaderWrapper from '../../../headerWrapper';
+import AssignmentSelectClass from '../../components/commonStyle/assignmentSelectClass';
+import AssignmentTitle from '../../components/assignments/common/assignmentTitle';
+import HeaderWrapper from './headerWrapper';
 
 const options = ['FFC1', 'FFC2', 'FFC3', 'FFC4', 'FFC5', 'FFC6'];
 const { Option } = Select;
@@ -24,10 +24,10 @@ const AssignmentSelect = ({ t }) => (
   </AssignmentSelectClass>
 );
 
-const SkillReportHeader = ({ t }) => (
+const Header = ({ t, titleText }) => (
   <HeaderWrapper>
     <Wrapper>
-      <AssignmentTitle>{t('common.skillReportTitle')}</AssignmentTitle>
+      <AssignmentTitle>{t(titleText)}</AssignmentTitle>
       <AssignmentSelect t={t} />
     </Wrapper>
   </HeaderWrapper>
@@ -37,8 +37,9 @@ AssignmentSelect.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-SkillReportHeader.propTypes = {
-  t: PropTypes.func.isRequired
+Header.propTypes = {
+  t: PropTypes.func.isRequired,
+  titleText: PropTypes.string.isRequired
 };
 
 const enhance = compose(
@@ -46,7 +47,7 @@ const enhance = compose(
   withNamespaces('header')
 );
 
-export default enhance(SkillReportHeader);
+export default enhance(Header);
 
 const Wrapper = styled.div`
   display: flex;

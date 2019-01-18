@@ -6,7 +6,7 @@ import { compose } from 'redux';
 import { Select } from 'antd';
 import AssignmentSelectClass from '../../commonStyle/assignmentSelectClass';
 import AssignmentTitle from '../../assignments/common/assignmentTitle';
-import HeaderWrapper from '../../../headerWrapper';
+import HeaderWrapper from '../../../styled/header/headerWrapper';
 
 const options = ['FFC1', 'FFC2', 'FFC3', 'FFC4', 'FFC5', 'FFC6'];
 const { Option } = Select;

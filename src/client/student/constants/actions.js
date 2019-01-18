@@ -50,7 +50,5 @@ export const LOAD_PREVIOUS_RESPONSES = '[test] load previous responses';
 export const LOGOUT = 'LOGOUT'; // set redux store to initial values
 
 // skill report
-export const GET_SKILL_REPORT_BY_CLASSID =
-  '[reports] get skill reports by class id';
-export const LOAD_SKILL_REPORT_BY_CLASSID =
-  '[reports] load skill report by class id';
+// export const GET_SKILL_REPORT_BY_CLASSID = '[reports] get skill reports by class id';
+// export const LOAD_SKILL_REPORT_BY_CLASSID = '[reports] load skill report by class id';

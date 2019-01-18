@@ -29,13 +29,15 @@ class Options extends Component {
     title: PropTypes.string,
     children: PropTypes.any.isRequired,
     outerStyle: PropTypes.object,
-    scoringTypes: PropTypes.array
+    scoringTypes: PropTypes.array,
+    showScoring: PropTypes.bool
   };
 
   static defaultProps = {
     title: i18n.t('assessment:common.options.title'),
     outerStyle: {},
-    scoringTypes: types
+    scoringTypes: types,
+    showScoring: true
   };
 
   static Heading = Heading;
@@ -55,7 +57,7 @@ class Options extends Component {
   };
 
   render() {
-    const { title, children, outerStyle, scoringTypes } = this.props;
+    const { title, children, outerStyle, scoringTypes, showScoring } = this.props;
     const { show } = this.state;
 
     return (
@@ -67,7 +69,7 @@ class Options extends Component {
         </Header>
         {show && (
           <Fragment>
-            <Scoring scoringTypes={scoringTypes} />
+            {showScoring && <Scoring scoringTypes={scoringTypes} />}
             <div>{children}</div>
           </Fragment>
         )}

@@ -7,13 +7,14 @@ const MathInputStyles = styled.div`
   }
 
   .input__math {
+    min-height: 66px;
     display: inline-block;
     width: 100%;
     padding-right: 40px;
     position: relative;
     border-radius: 5px;
     border: 1px solid ${grey};
-    padding: 0 15px;
+    padding: 15px 25px;
 
     &.clear {
       background: ${white};
@@ -27,7 +28,6 @@ const MathInputStyles = styled.div`
   }
 
   .input__math__field {
-    min-height: 66px;
     width: 100%;
     border: 0;
     display: flex;

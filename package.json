@@ -61,6 +61,7 @@
     "joi": "^14.0.6",
     "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.11",
+    "mathquill": "^0.10.1-a",
     "mongo-seeding": "^3.0.0",
     "mongodb": "^3.1.10",
     "mongoose": "^5.3.11",
@@ -190,7 +191,7 @@
     }
   },
   "lint-staged": {
-    "src/**/*.js": [
+    "src/**/*.js,!src/client/public/vendors": [
       "eslint --fix",
       "git add"
     ]

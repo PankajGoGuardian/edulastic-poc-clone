@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { math } from '@edulastic/constants';
 
@@ -21,13 +21,17 @@ class MathInput extends React.PureComponent {
     // make sure you remove the listener when the component is destroyed
     document.removeEventListener('click', this.handleClick, false);
     document.removeEventListener('click', this.handleChangeField, false);
+    this.setState({ mathFieldFocus: false });
   }
 
   handleClick = (e) => {
+    const { onFocus } = this.props;
+
     if (e.target.nodeName === 'LI' && e.target.attributes[0].nodeValue === 'option') {
       return;
     }
     if (this.containerRef.current && !this.containerRef.current.contains(e.target)) {
+      onFocus(false);
       this.setState({ mathFieldFocus: false });
     }
   };
@@ -79,7 +83,7 @@ class MathInput extends React.PureComponent {
     onInput(text);
   };
 
-  onInput = (key) => {
+  onInput = (key, command = 'cmd') => {
     const { mathField } = this.state;
 
     if (!mathField) return;
@@ -103,7 +107,7 @@ class MathInput extends React.PureComponent {
     } else if (key === '\\embed{response}') {
       mathField.write(key);
     } else {
-      mathField.cmd(key);
+      mathField[command](key);
     }
     mathField.focus();
     this.handleChangeField();
@@ -113,18 +117,26 @@ class MathInput extends React.PureComponent {
     this.setState({ mathFieldFocus: false });
   };
 
+  focus = () => {
+    const { mathField } = this.state;
+    mathField.focus();
+  };
+
   render() {
     const { mathFieldFocus } = this.state;
-    const { showResponse } = this.props;
+    const { showResponse, style, onFocus, onKeyDown, symbols, numberPad } = this.props;
 
     return (
       <MathInputStyles>
         <div
           ref={this.containerRef}
-          onFocus={() => this.setState({ mathFieldFocus: true })}
+          onFocus={() => {
+            onFocus(true);
+            this.setState({ mathFieldFocus: true });
+          }}
           className="input"
         >
-          <div className="input__math">
+          <div style={style} onKeyDown={onKeyDown} className="input__math">
             <span
               className="input__math__field"
               ref={this.mathFieldRef}
@@ -134,6 +146,8 @@ class MathInput extends React.PureComponent {
           <div className="input__keyboard">
             {mathFieldFocus && (
               <MathKeyboard
+                symbols={symbols}
+                numberPad={numberPad}
                 showResponse={showResponse}
                 onInput={this.onInput}
                 onClose={this.onClose}
@@ -148,13 +162,21 @@ class MathInput extends React.PureComponent {
 
 MathInput.propTypes = {
   onInput: PropTypes.func.isRequired,
+  symbols: PropTypes.array.isRequired,
+  numberPad: PropTypes.array.isRequired,
   showResponse: PropTypes.bool,
-  value: PropTypes.string
+  value: PropTypes.string,
+  style: PropTypes.object,
+  onFocus: PropTypes.func,
+  onKeyDown: PropTypes.func
 };
 
 MathInput.defaultProps = {
   value: '',
-  showResponse: false
+  showResponse: false,
+  style: {},
+  onFocus: () => {},
+  onKeyDown: () => {}
 };
 
 export default MathInput;

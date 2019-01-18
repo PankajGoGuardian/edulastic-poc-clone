@@ -413,17 +413,19 @@ template {
 
 .ql-editor {
   border-radius: 10px;
-  padding: 0 !important;
-  font-size: 13px;
+  padding: 0 25px 0 15px !important;
+  font-size: 16px;
   letter-spacing: 0.2px;
-  color: rgb(122, 122, 122);
+  color: rgb(68, 68, 68);
   background: white;
   line-height: 1.8 !important;
+  height: auto !important;
 }
 
 .ql-container {
   border: none !important;
   margin-top: 5px !important;
+  height: auto !important;
 }
 
 .template_box p {

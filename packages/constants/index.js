@@ -6,6 +6,7 @@ const math = require('./const/math.js');
 const testActivityStatus = require('./const/testActivityStatus');
 const assignmentSortParams = require('./const/assignmentSortParams');
 const assignmentPolicyOptions = require('./const/assignmentPolicyOptions');
+const typedList = require('./const/typedList');
 
 module.exports = {
   questionType,
@@ -15,5 +16,6 @@ module.exports = {
   math,
   testActivityStatus,
   assignmentSortParams,
-  assignmentPolicyOptions
+  assignmentPolicyOptions,
+  typedList
 };

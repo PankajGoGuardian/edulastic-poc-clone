@@ -115,6 +115,7 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
         {correctTab === 0 && (
           <div>
             <MathFormulaWithPoints
+              item={item}
               onChange={handleChangeCorrectMethod}
               onAdd={handleAddCorrectMethod}
               onDelete={handleDeleteCorrectMethod}
@@ -131,6 +132,7 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
               return (
                 <MathFormulaWithPoints
                   key={i}
+                  item={item}
                   onChange={handleChangeAltMethod(i)}
                   onAdd={handleAddAltMethod(i)}
                   onDelete={handleDeleteAltMethod(i)}

@@ -1,26 +1,28 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { EduButton } from '@edulastic/common';
 
-export default (WrappedComponent) => {
-  const hocComponent = ({ buttonText, onAdd, ...props }) => (
-    <div>
+const withAddButton = (WrappedComponent) => {
+  const withAddButtonHocComponent = ({ buttonText, onAdd, ...props }) => (
+    <Fragment>
       <WrappedComponent {...props} />
       <EduButton onClick={onAdd} type="primary">
         {buttonText}
       </EduButton>
-    </div>
+    </Fragment>
   );
 
-  hocComponent.propTypes = {
+  withAddButtonHocComponent.propTypes = {
     buttonText: PropTypes.string,
-    onAdd: PropTypes.func,
+    onAdd: PropTypes.func
   };
 
-  hocComponent.defaultProps = {
+  withAddButtonHocComponent.defaultProps = {
     buttonText: 'Add new choice',
-    onAdd: () => {},
+    onAdd: () => {}
   };
 
-  return hocComponent;
+  return withAddButtonHocComponent;
 };
+
+export default withAddButton;

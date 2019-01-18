@@ -68,6 +68,8 @@ const MathFormula = ({
             <Subtitle>Template</Subtitle>
             <MathInput
               showResponse
+              symbols={item.symbols}
+              numberPad={item.numberPad}
               value={item.template}
               onInput={(latex) => {
                 handleUpdateTemplate(latex);
@@ -79,6 +81,7 @@ const MathFormula = ({
           <MathFormulaOptions
             onChange={handleItemChangeChange}
             uiStyle={item.ui_style}
+            item={item}
             responseContainers={item.response_containers}
             textBlocks={item.text_blocks}
             stimulusReview={item.stimulus_review}

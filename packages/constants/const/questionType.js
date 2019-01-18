@@ -12,6 +12,7 @@ const CLOZE_IMAGE_TEXT = 'clozeImageText';
 const PROTRACTOR = 'protractor';
 const PASSAGE = 'passage';
 const MATH = 'math';
+const FORMULA_ESSAY = 'formulaessay';
 const ORDER_LIST = 'orderList';
 const MULTIPLE_CHOICE = 'multipleChoice';
 const CLOZE_TEXT = 'clozeText';
@@ -36,6 +37,7 @@ module.exports = {
   PROTRACTOR,
   PASSAGE,
   MATH,
+  FORMULA_ESSAY,
   ORDER_LIST,
   MULTIPLE_CHOICE,
   CLOZE_TEXT,

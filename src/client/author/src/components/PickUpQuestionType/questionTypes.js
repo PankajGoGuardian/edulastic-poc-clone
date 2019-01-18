@@ -48,7 +48,7 @@ import MTFillInBlanks from '../../assets/math/math-fill-blanks.svg';
 import MTText from '../../assets/math/math-text.svg';
 import MTMatrices from '../../assets/math/math-matrices.svg';
 import MTUnits from '../../assets/math/math-units.svg';
-// import MTEssay from '../../assets/math/math-essay.svg';
+import MTEssay from '../../assets/math/math-essay.svg';
 // import MTClozeMath from '../../assets/math/cloze-math.svg';
 // import MTClozeMathWithImage from '../../assets/math/cloze-math-img.svg';
 
@@ -625,11 +625,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       data: {
         type: 'clozeImageDropDown',
         stimulus: '',
-        options: [
-          ['A', 'B'],
-          ['Choice A', 'Choice B'],
-          ['Select A', 'Select B']
-        ],
+        options: [['A', 'B'], ['Choice A', 'Choice B'], ['Select A', 'Select B']],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -910,6 +906,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         ui_style: {
           type: 'floating-keyboard'
         },
+        symbols: ['units_si', 'units_us', 'qwerty'],
         template: ''
       },
       onSelectQuestionType
@@ -942,7 +939,8 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         },
         ui_style: {
           type: 'floating-keyboard'
-        }
+        },
+        symbols: ['basic', 'qwerty']
       },
       onSelectQuestionType
     },
@@ -974,7 +972,8 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         },
         ui_style: {
           type: 'floating-keyboard'
-        }
+        },
+        symbols: ['basic', 'qwerty']
       },
       onSelectQuestionType
     },
@@ -1011,7 +1010,8 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         },
         ui_style: {
           type: 'floating-keyboard'
-        }
+        },
+        symbols: ['basic', 'qwerty']
       },
       onSelectQuestionType
     },
@@ -1024,7 +1024,6 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         is_math: true,
         stimulus: '<p>[This is the stem.]</p>',
         template: `\\begin{bmatrix}4&0\\\\1&-9\\end{bmatrix}\\times2=${EMBED_RESPONSE}`,
-        symbols: ['matrices', 'general', 'qwerty'],
         type: 'math',
         validation: {
           scoring_type: 'exactMatch',
@@ -1037,14 +1036,37 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
                   inverseResult: false,
                   significantDecimalPlaces: 10
                 },
-                value: '89\\ \\text{sq ft}'
+                value: ''
               }
             ]
           }
         },
         ui_style: {
           type: 'floating-keyboard'
-        }
+        },
+        numberPad: [
+          '7',
+          '8',
+          '9',
+          '\\div',
+          '4',
+          '5',
+          '6',
+          '\\times',
+          '1',
+          '2',
+          '3',
+          '-',
+          '0',
+          '.',
+          ',',
+          '+',
+          'left_move',
+          'right_move',
+          'Backspace',
+          '='
+        ],
+        symbols: ['matrices', 'general', 'qwerty']
       },
       onSelectQuestionType
     },
@@ -1057,7 +1079,6 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         is_math: true,
         stimulus: '<p>[This is the stem.]</p>',
         template: `${EMBED_RESPONSE}=1m`,
-        symbols: ['units_si', 'units_us', 'qwerty'],
         type: 'math',
         validation: {
           scoring_type: 'exactMatch',
@@ -1098,7 +1119,27 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         ],
         ui_style: {
           type: 'floating-keyboard'
-        }
+        },
+        symbols: ['units_si', 'units_us', 'qwerty']
+      },
+      onSelectQuestionType
+    },
+    {
+      title: 'Math essay',
+      type: 'math',
+      cardImage: MTEssay,
+      stimulus: '',
+      data: {
+        stimulus: '<p>[This is the stem.]</p>',
+        type: 'formulaessay',
+        ui_style: {
+          default_mode: 'math',
+          fontsize: '',
+          text_formatting_options: ['bold', 'italic', 'underline', 'unorderedList']
+        },
+        metadata: {},
+        is_math: true,
+        symbols: ['basic', 'qwerty']
       },
       onSelectQuestionType
     }
@@ -1109,16 +1150,18 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       {cards.map(
         ({ title, cardImage, data, onSelectQuestionType: onSelect, type }) =>
           type === questionType && (
-          <Card
-            key={title}
-            title={title}
-            data={data}
-            cardImage={cardImage}
-            onSelectQuestionType={onSelect}
-          />
+            <Card
+              key={title}
+              title={title}
+              data={data}
+              cardImage={cardImage}
+              onSelectQuestionType={onSelect}
+            />
           )
       )}
-      {[1, 2, 3, 4, 5, 6, 7].map(() => <Dump />)}
+      {[1, 2, 3, 4, 5, 6, 7].map(() => (
+        <Dump />
+      ))}
     </FlexContainer>
   );
 };

@@ -152,7 +152,7 @@ class StaticMath extends PureComponent {
 
   render() {
     const { showKeyboard } = this.state;
-    const { type, onBlur } = this.props;
+    const { type, onBlur, symbols, numberPad } = this.props;
 
     return (
       <MathInputStyles>
@@ -167,7 +167,13 @@ class StaticMath extends PureComponent {
           </div>
           <div className="input__keyboard">
             {showKeyboard && (
-              <MathKeyboard onInput={this.onInput} showResponse={false} onClose={this.onClose} />
+              <MathKeyboard
+                symbols={symbols}
+                numberPad={numberPad}
+                onInput={this.onInput}
+                showResponse={false}
+                onClose={this.onClose}
+              />
             )}
           </div>
         </div>
@@ -178,7 +184,9 @@ class StaticMath extends PureComponent {
 
 StaticMath.propTypes = {
   type: PropTypes.oneOf([mathInputTypes.CLEAR, mathInputTypes.WRONG, mathInputTypes.SUCCESS]),
-  onBlur: PropTypes.func.isRequired
+  onBlur: PropTypes.func.isRequired,
+  symbols: PropTypes.array.isRequired,
+  numberPad: PropTypes.array.isRequired
 };
 
 StaticMath.defaultProps = {

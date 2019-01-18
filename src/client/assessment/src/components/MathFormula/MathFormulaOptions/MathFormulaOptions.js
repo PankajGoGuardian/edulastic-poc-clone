@@ -4,17 +4,12 @@ import { Select, Checkbox, Input } from 'antd';
 import { withNamespaces } from '@edulastic/localization';
 import { cloneDeep } from 'lodash';
 import { grey } from '@edulastic/colors';
-import { evaluationType } from '@edulastic/constants';
+import { evaluationType, math } from '@edulastic/constants';
 
 import { FlexContainer, CustomQuillComponent } from '@edulastic/common';
-import Options, { FontSizeSelect } from '../../common/Options';
+import Options, { FontSizeSelect, KeyPadOptions } from '../../common/Options';
 import ResponseContainers from './ResponseContainers';
 import TextBlocks from './TextBlocks';
-
-const templateFontScaleOption = [
-  { value: 'normal', label: 'Normal (100%)' },
-  { value: 'boosted', label: 'Boosted (150%)' }
-];
 
 const quillStyle = {
   minHeight: 40,
@@ -39,7 +34,8 @@ function MathFormulaOptions({
   textBlocks,
   stimulusReview,
   instructorStimulus,
-  metadata
+  metadata,
+  item
 }) {
   const changeUiStyle = (prop, value) => {
     onChange('ui_style', {
@@ -101,7 +97,7 @@ function MathFormulaOptions({
               style={{ width: '80%' }}
               onChange={val => changeUiStyle('response_font_scale', val)}
             >
-              {templateFontScaleOption.map(({ value: val, label }) => (
+              {math.templateFontScaleOption.map(({ value: val, label }) => (
                 <Select.Option key={val} value={val}>
                   {label}
                 </Select.Option>
@@ -141,6 +137,8 @@ function MathFormulaOptions({
           </Options.Col>
         </Options.Row>
       </Options.Block>
+
+      <KeyPadOptions onChange={onChange} item={item} />
 
       <ResponseContainers
         containers={responseContainers}
@@ -236,6 +234,7 @@ function MathFormulaOptions({
 
 MathFormulaOptions.propTypes = {
   onChange: PropTypes.func.isRequired,
+  item: PropTypes.object.isRequired,
   stimulusReview: PropTypes.string,
   instructorStimulus: PropTypes.string,
   metadata: PropTypes.object,

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { grey, white } from '@edulastic/colors';
 
 const MathKeyboardStyles = styled.div`
   .keyboard {
@@ -52,14 +53,15 @@ const MathKeyboardStyles = styled.div`
 
   .half-box {
     width: 50%;
-  }
-
-  .row {
     display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    max-height: 325px;
+    overflow-y: auto;
   }
 
   .num {
-    width: 65px;
+    width: 25%;
     height: 65px;
     border-color: white;
     border-radius: 0;
@@ -73,8 +75,18 @@ const MathKeyboardStyles = styled.div`
     text-align: center;
     color: #808080;
 
+    :disabled,
+    :disabled:hover {
+      background: ${white};
+      border-color: ${white};
+    }
+
     :active {
-      background-color: #fff;
+      background-color: ${white};
+    }
+
+    :hover {
+      background-color: ${grey};
     }
   }
 
@@ -97,6 +109,7 @@ const MathKeyboardStyles = styled.div`
 
   .num__image {
     object-fit: contain;
+    width: 25px;
   }
 
   .num__image-sqrt {

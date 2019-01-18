@@ -70,13 +70,7 @@ const getChecks = (validation) => {
   }, '');
 };
 
-const MathFormulaPreview = ({
-  item,
-  studentTemplate,
-  type: previewType,
-  saveAnswer,
-  check
-}) => {
+const MathFormulaPreview = ({ item, studentTemplate, type: previewType, saveAnswer, check }) => {
   const [type, setType] = useState(mathInputTypes.CLEAR);
   const studentRef = useRef();
   const isStatic = studentTemplate.search(/\\MathQuillMathField\{(.*)\}/g) !== -1;
@@ -99,7 +93,7 @@ const MathFormulaPreview = ({
 
       const data = {
         input,
-        expected: expected || ':""',
+        expected: expected || ':',
         checks: getChecks(item.validation)
       };
       try {
@@ -151,14 +145,25 @@ const MathFormulaPreview = ({
     <div>
       <div style={{ marginBottom: 15 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
 
-      {
-        isStatic &&
-        <StaticMath onBlur={checkAnswer} ref={studentRef} type={type} />
-      }
-      {
-        !isStatic &&
-        <MathInput onBlur={checkAnswer} value={latex} onInput={setLatex} type={type} />
-      }
+      {isStatic && (
+        <StaticMath
+          symbols={item.symbols}
+          numberPad={item.numberPad}
+          onBlur={checkAnswer}
+          ref={studentRef}
+          type={type}
+        />
+      )}
+      {!isStatic && (
+        <MathInput
+          symbols={item.symbols}
+          numberPad={item.numberPad}
+          onBlur={checkAnswer}
+          value={latex}
+          onInput={setLatex}
+          type={type}
+        />
+      )}
 
       {previewType === SHOW && item.validation.valid_response.value[0].value !== undefined && (
         <CorrectAnswerBox>{item.validation.valid_response.value[0].value}</CorrectAnswerBox>

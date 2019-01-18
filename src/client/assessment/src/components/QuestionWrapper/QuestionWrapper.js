@@ -24,7 +24,8 @@ import withAnswerSave from '../HOC/withAnswerSave';
 import MatrixChoice from '../MatrixChoice/MatrixChoice';
 import Protractor from '../Protractor';
 import Passage from '../Passage';
-import MathFormula from '../MathFormula/MathFormula';
+import MathFormula from '../MathFormula';
+import FormulaEssay from '../FormulaEssay';
 
 const getQuestion = (type) => {
   switch (type) {
@@ -72,6 +73,8 @@ const getQuestion = (type) => {
       return Passage;
     case questionType.MATH:
       return MathFormula;
+    case questionType.FORMULA_ESSAY:
+      return FormulaEssay;
     case 'graph':
       return Graph;
     default:

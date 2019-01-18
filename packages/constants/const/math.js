@@ -38,6 +38,41 @@ const mathInputTypes = {
   SUCCESS: 'success'
 };
 
+const symbols = [
+  { value: 'all', label: 'All symbols' },
+  { value: 'qwerty', label: 'Keyboard' },
+  { value: 'basic', label: 'Basic' },
+  { value: 'basic_junior', label: 'Basic Junior' },
+  { value: 'algebra', label: 'Algebra' },
+  { value: 'comparison', label: 'Comparison' },
+  { value: 'geometry', label: 'Geometry' },
+  { value: 'matrices', label: 'Matrices' },
+  { value: 'trigonometry', label: 'Trigonometry' },
+  { value: 'sets', label: 'Sets' },
+  { value: 'units_si', label: 'Units (SI)' },
+  { value: 'units_us', label: 'Units (US Customary)' },
+  { value: 'greek', label: 'Greek letters' },
+  { value: 'chemistry', label: 'Chemistry' },
+  { value: 'grouping', label: 'Grouping Symbols' },
+  { value: 'calculus', label: 'Calculus' },
+  { value: 'misc', label: 'Miscellaneous' },
+  { value: 'discrete', label: 'Discrete' },
+  { value: 'general', label: 'General' }
+];
+
+const modes = [{ value: 'text', label: 'Text' }, { value: 'math', label: 'Math' }];
+
+const mathRenderOptions = [
+  { value: '', label: '' },
+  { value: 'mathjax', label: 'MathJax (response inputs rendered with MathQuill)' },
+  { value: 'mathquill', label: 'MathQuill' }
+];
+
+const templateFontScaleOption = [
+  { value: 'normal', label: 'Normal (100%)' },
+  { value: 'boosted', label: 'Boosted (150%)' }
+];
+
 const EMBED_RESPONSE = '\\embed{response}';
 
 module.exports = {
@@ -46,5 +81,9 @@ module.exports = {
   decimalSeparators,
   syntaxes,
   mathInputTypes,
+  symbols,
+  modes,
+  mathRenderOptions,
+  templateFontScaleOption,
   EMBED_RESPONSE
 };

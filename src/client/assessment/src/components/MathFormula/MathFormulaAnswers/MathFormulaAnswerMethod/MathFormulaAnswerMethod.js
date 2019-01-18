@@ -123,7 +123,15 @@ const clearOptions = (method, options) => {
   }
 };
 
-const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label, options }) => {
+const MathFormulaAnswerMethod = ({
+  onChange,
+  onDelete,
+  method,
+  value,
+  aria_label,
+  options,
+  item
+}) => {
   useEffect(
     () => {
       const newOptions = clearOptions(method, { ...options });
@@ -253,6 +261,8 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
             <Col span={12}>
               <Options.Label>Value</Options.Label>
               <MathInput
+                symbols={item.symbols}
+                numberPad={item.numberPad}
                 value={value}
                 onInput={(val) => {
                   onChange('value', val);
@@ -537,6 +547,7 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
 MathFormulaAnswerMethod.propTypes = {
   onChange: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
+  item: PropTypes.object.isRequired,
   options: PropTypes.object,
   value: PropTypes.string,
   method: PropTypes.string,

@@ -63,22 +63,16 @@ export const getAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
   (assignmentsObj, reportsObj) => {
-    const assignmentIds = values(assignmentsObj)
+    // group reports by assignmentsID
+    let groupedReports = groupBy(values(reportsObj), 'assignmentId');
+
+    let assignments = values(assignmentsObj)
       .filter(({ endDate }) => new Date(endDate) > new Date())
-      .map(({ _id }) => _id);
-
-    const reportsGrouped = groupBy(
-      values(reportsObj).filter(({ assignmentId }) =>
-        assignmentIds.includes(assignmentId)
-      ),
-      'assignmentId'
-    );
-
-    return Object.keys(reportsGrouped)
-      .map(assignmentId => ({
-        ...assignmentsObj[assignmentId],
-        reports: reportsGrouped[assignmentId]
-      }))
-      .sort((a, b) => a.createdAt - b.createdAt);
+      .sort((a, b) => a.createdAt > b.createdAt)
+      .map(assignment => ({
+        ...assignment,
+        reports: groupedReports[assignment._id] || []
+      }));
+    return assignments;
   }
 );

@@ -58,6 +58,7 @@ const MathKeyboardStyles = styled.div`
     height: 100%;
     max-height: 325px;
     overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .num {

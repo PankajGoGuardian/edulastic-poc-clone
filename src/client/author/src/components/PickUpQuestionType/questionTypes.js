@@ -906,6 +906,28 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         ui_style: {
           type: 'floating-keyboard'
         },
+        numberPad: [
+          '7',
+          '8',
+          '9',
+          '\\div',
+          '4',
+          '5',
+          '6',
+          '\\times',
+          '1',
+          '2',
+          '3',
+          '-',
+          '0',
+          '.',
+          ',',
+          '+',
+          'left_move',
+          'right_move',
+          'Backspace',
+          '='
+        ],
         symbols: ['units_si', 'units_us', 'qwerty'],
         template: ''
       },
@@ -940,6 +962,28 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         ui_style: {
           type: 'floating-keyboard'
         },
+        numberPad: [
+          '7',
+          '8',
+          '9',
+          '\\div',
+          '4',
+          '5',
+          '6',
+          '\\times',
+          '1',
+          '2',
+          '3',
+          '-',
+          '0',
+          '.',
+          ',',
+          '+',
+          'left_move',
+          'right_move',
+          'Backspace',
+          '='
+        ],
         symbols: ['basic', 'qwerty']
       },
       onSelectQuestionType
@@ -973,6 +1017,28 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         ui_style: {
           type: 'floating-keyboard'
         },
+        numberPad: [
+          '7',
+          '8',
+          '9',
+          '\\div',
+          '4',
+          '5',
+          '6',
+          '\\times',
+          '1',
+          '2',
+          '3',
+          '-',
+          '0',
+          '.',
+          ',',
+          '+',
+          'left_move',
+          'right_move',
+          'Backspace',
+          '='
+        ],
         symbols: ['basic', 'qwerty']
       },
       onSelectQuestionType
@@ -1011,6 +1077,28 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         ui_style: {
           type: 'floating-keyboard'
         },
+        numberPad: [
+          '7',
+          '8',
+          '9',
+          '\\div',
+          '4',
+          '5',
+          '6',
+          '\\times',
+          '1',
+          '2',
+          '3',
+          '-',
+          '0',
+          '.',
+          ',',
+          '+',
+          'left_move',
+          'right_move',
+          'Backspace',
+          '='
+        ],
         symbols: ['basic', 'qwerty']
       },
       onSelectQuestionType
@@ -1120,6 +1208,28 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         ui_style: {
           type: 'floating-keyboard'
         },
+        numberPad: [
+          '7',
+          '8',
+          '9',
+          '\\div',
+          '4',
+          '5',
+          '6',
+          '\\times',
+          '1',
+          '2',
+          '3',
+          '-',
+          '0',
+          '.',
+          ',',
+          '+',
+          'left_move',
+          'right_move',
+          'Backspace',
+          '='
+        ],
         symbols: ['units_si', 'units_us', 'qwerty']
       },
       onSelectQuestionType
@@ -1137,6 +1247,28 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           fontsize: '',
           text_formatting_options: ['bold', 'italic', 'underline', 'unorderedList']
         },
+        numberPad: [
+          '7',
+          '8',
+          '9',
+          '\\div',
+          '4',
+          '5',
+          '6',
+          '\\times',
+          '1',
+          '2',
+          '3',
+          '-',
+          '0',
+          '.',
+          ',',
+          '+',
+          'left_move',
+          'right_move',
+          'Backspace',
+          '='
+        ],
         metadata: {},
         is_math: true,
         symbols: ['basic', 'qwerty']

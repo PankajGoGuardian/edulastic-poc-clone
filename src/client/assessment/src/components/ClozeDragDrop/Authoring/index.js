@@ -32,7 +32,7 @@ const SortableItem = React.memo(
           />
         </div>
       </div>
-      <DeleteButton onClick={onRemove} />
+      <DeleteButton onDelete={onRemove} />
     </SortableItemContainer>
   ))
 );

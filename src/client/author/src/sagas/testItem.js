@@ -17,6 +17,7 @@ import {
 } from '../constants/actions';
 import { history } from '../../../configureStore';
 import { getItemDetailValidationSelector } from '../selectors/itemDetail';
+import { getQuestionDataSelector } from '../selectors/question';
 
 function* createTestItemSaga({ payload }) {
   try {
@@ -55,10 +56,28 @@ function* updateTestItemSaga({ payload }) {
   }
 }
 
-function* evaluateAnswers() {
+function* getValidations(mode) {
+  let validations = {};
+
+  if (mode === 'edit') {
+    const question = yield select(getQuestionDataSelector);
+
+    if (question) {
+      validations = {
+        [question.id]: question
+      };
+    }
+  } else {
+    validations = yield select(getItemDetailValidationSelector);
+  }
+
+  return validations;
+}
+
+function* evaluateAnswers({ payload }) {
   try {
-    const validations = yield select(getItemDetailValidationSelector);
     const answers = yield select(state => state.answers);
+    const validations = yield* getValidations(payload);
     const { evaluation, score, maxScore } = evaluateItem(answers, validations);
     yield put({
       type: ADD_ITEM_EVALUATION,
@@ -77,10 +96,10 @@ function* evaluateAnswers() {
   }
 }
 
-function* showAnswers() {
+function* showAnswers({ payload }) {
   try {
-    const validations = yield select(getItemDetailValidationSelector);
     const answers = yield select(state => state.answers);
+    const validations = yield* getValidations(payload);
     const evaluation = createShowAnswerData(validations, answers);
     yield put({
       type: ADD_ITEM_EVALUATION,

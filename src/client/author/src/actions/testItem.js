@@ -15,10 +15,12 @@ export const updateTestItemByIdAction = (id, data) => ({
   payload: { id, data }
 });
 
-export const checkAnswerAction = () => ({
-  type: CHECK_ANSWER
+export const checkAnswerAction = mode => ({
+  type: CHECK_ANSWER,
+  payload: mode
 });
 
-export const showAnswerAction = () => ({
-  type: SHOW_ANSWER
+export const showAnswerAction = mode => ({
+  type: SHOW_ANSWER,
+  payload: mode
 });

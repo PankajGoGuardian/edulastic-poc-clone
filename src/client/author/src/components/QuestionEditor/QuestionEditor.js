@@ -97,10 +97,10 @@ class QuestionEditor extends Component {
     const { checkAnswer, showAnswer, changePreview } = this.props;
 
     if (previewTab === 'check') {
-      checkAnswer();
+      checkAnswer('edit');
     }
     if (previewTab === 'show') {
-      showAnswer();
+      showAnswer('edit');
     }
 
     changePreview(previewTab);
@@ -142,10 +142,7 @@ class QuestionEditor extends Component {
     return (
       <div>
         {showModal && (
-          <SourceModal
-            onClose={this.handleHideSource}
-            onApply={this.handleApplySource}
-          >
+          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
             {JSON.stringify(question.data, null, 4)}
           </SourceModal>
         )}

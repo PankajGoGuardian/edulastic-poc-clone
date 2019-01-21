@@ -31,6 +31,7 @@ class ClozeDropDownDisplay extends Component {
     if (this.state !== undefined) {
       const { templateParts, respLength } = this.getTemplateParts(nextProps);
       this.setState({
+        userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
         templateParts,
       });
     }

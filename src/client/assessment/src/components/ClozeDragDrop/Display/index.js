@@ -16,11 +16,10 @@ class ClozeDragDropDisplay extends Component {
     super(props);
     const { templateParts, respLength } = this.getTemplateParts(props);
     let userAnswers = new Array(respLength).fill(false);
-    userAnswers = props.userSelections;
     props.userSelections.map((userSelection, index) => {
       userAnswers[index] = userSelection;
     });
-    const possibleResponses = this.getInitialResponses(props.options);
+    const possibleResponses = this.getInitialResponses(props);
 
     this.state = {
       templateParts,
@@ -30,11 +29,11 @@ class ClozeDragDropDisplay extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { options } = nextProps;
     if (this.state !== undefined) {
-      const possibleResponses = this.getInitialResponses(options);
+      const possibleResponses = this.getInitialResponses(nextProps);
       const { templateParts, respLength } = this.getTemplateParts(nextProps);
       this.setState({
+        userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
         possibleResponses,
         templateParts,
       });
@@ -78,7 +77,7 @@ class ClozeDragDropDisplay extends Component {
         } else {
           for (let i = 0; i < newResponses[groupIndex].options.length; i++) {
             if (newResponses[groupIndex].options[i] === groupData) {
-              if (userSelections[index] !== null && typeof userSelections[index] === 'object') {
+              if (userSelections && userSelections[index] !== null && typeof userSelections[index] === 'object') {
                 newResponses[userSelections[index].group].options.push(userSelections[index].data);
               }
               newResponses[groupIndex].options.splice(i, 1);
@@ -155,20 +154,15 @@ class ClozeDragDropDisplay extends Component {
     });
   }
 
-  getInitialResponses = (options) => {
+  getInitialResponses = (props) => {
     const {
       hasGroupResponses,
       configureOptions,
       userSelections: userSelectionsProp,
-    } = this.props;
+      options
+    } = props;
     const { duplicatedResponses: isDuplicated } = configureOptions;
-    let userSelections = [];
-    if (this.state !== undefined) {
-      const { userAnswers } = this.state;
-      userSelections = userAnswers;
-    } else {
-      userSelections = userSelectionsProp;
-    }
+    let userSelections = userSelectionsProp || [];
 
     let possibleResps = [];
     possibleResps = cloneDeep(options);
@@ -429,9 +423,9 @@ ClozeDragDropDisplay.defaultProps = {
   onChange: () => {},
   preview: true,
   showAnswer: false,
+  userSelections: [],
   evaluation: [],
   checkAnswer: false,
-  userSelections: [],
   templateMarkUp: defaultTemplateMarkup,
   smallSize: false,
   hasGroupResponses: false,

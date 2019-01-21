@@ -13,8 +13,7 @@ class ClozeTextDisplay extends Component {
   constructor(props) {
     super(props);
     const { templateParts, respLength } = this.getTemplateParts(props);
-    let userAnswers = new Array(respLength).fill(false);
-    userAnswers = props.userSelections;
+    const userAnswers = new Array(respLength).fill('');
     props.userSelections.forEach((userSelection, index) => {
       userAnswers[index] = userSelection;
     });
@@ -29,6 +28,7 @@ class ClozeTextDisplay extends Component {
     if (this.state !== undefined) {
       const { templateParts } = this.getTemplateParts(nextProps);
       this.setState({
+        userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
         templateParts
       });
     }

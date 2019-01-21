@@ -14,8 +14,7 @@ const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 class ClozeImageTextDisplay extends Component {
   constructor(props) {
     super(props);
-    let userAnswers = new Array(props.responseContainers).fill(false);
-    userAnswers = props.userSelections;
+    let userAnswers = new Array(props.responseContainers.length).fill('');
     props.userSelections.map((userSelection, index) => {
       userAnswers[index] = userSelection;
     });
@@ -32,6 +31,7 @@ class ClozeImageTextDisplay extends Component {
     if (this.state !== undefined) {
       const possibleResponses = this.getInitialResponses(options);
       this.setState({
+        userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
         possibleResponses,
       });
     }

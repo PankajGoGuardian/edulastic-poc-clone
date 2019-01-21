@@ -6,6 +6,8 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import { arrayMove } from 'react-sortable-hoc';
+import { withRouter } from 'react-router-dom';
+import { withNamespaces } from '@edulastic/localization';
 
 import { QuestionTextArea, Subtitle, SortableList } from '../common';
 import withAddButton from '../HOC/withAddButton';
@@ -13,7 +15,6 @@ import { setQuestionDataAction } from '../../../../author/src/actions/question';
 import Options from './Options';
 import Answers from './Answers';
 import Preview from './Preview';
-import withAnswerSave from '../HOC/withAnswerSave';
 
 const EmptyWrapper = styled.div``;
 const List = withAddButton(SortableList);
@@ -206,7 +207,8 @@ MatrixChoice.defaultProps = {
 };
 
 const enhance = compose(
-  withAnswerSave,
+  withRouter,
+  withNamespaces('assessment'),
   connect(
     null,
     {

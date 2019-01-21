@@ -13,16 +13,9 @@ import AssessmentDetails from './AssessmentDetail';
 import Attempt from './Attempt';
 
 // actions
-import { initiateTestActivityAction } from '../actions/test';
+import { startAssignmentAction } from '../Assignments/ducks';
 
-const AssignmentCard = ({
-  initiateTestActivity,
-  data,
-  history,
-  theme,
-  t,
-  type
-}) => {
+const AssignmentCard = ({ startAssignment, data, theme, t, type }) => {
   const [showAttempts, setShowAttempts] = useState(false);
 
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
@@ -42,10 +35,7 @@ const AssignmentCard = ({
 
   const startTest = () => {
     if (attemptCount < test.maxAttempts) {
-      initiateTestActivity(testId, data._id);
-      history.push(`/student/test/${testId}`);
-    } else {
-      console.log('ran out of max attempts');
+      startAssignment({ testId, assignmentId: data._id });
     }
   };
 
@@ -106,7 +96,7 @@ const enhance = compose(
   connect(
     null,
     {
-      initiateTestActivity: initiateTestActivityAction
+      startAssignment: startAssignmentAction
     },
     (a, b, c) => ({ ...a, ...b, ...c }), // mergeProps
     { pure: false }
@@ -120,7 +110,8 @@ AssignmentCard.propTypes = {
   initiateTestActivity: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  startAssignment: PropTypes.func.isRequired
 };
 
 const CardWrapper = styled(Row)`

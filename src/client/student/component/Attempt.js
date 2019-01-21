@@ -13,7 +13,7 @@ const Attempt = ({ data }) => {
     <AttemptsData>
       <RowData>
         <AnswerAndScore>
-          <span>{formatTime(data.createdAt / 1000)}</span>
+          <span>{formatTime(data.createdAt)}</span>
         </AnswerAndScore>
         <AnswerAndScore>
           <span>

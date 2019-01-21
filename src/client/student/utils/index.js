@@ -13,6 +13,6 @@ export const loadJSON = async (assessmentId, dispatch) => {
 };
 
 export const formatTime = time =>
-  moment(time)
+  moment(Number(time))
     .local()
     .format('MMM, DD YYYY hh:MMA');

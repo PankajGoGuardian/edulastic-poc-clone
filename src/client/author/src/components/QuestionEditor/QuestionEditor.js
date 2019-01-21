@@ -21,7 +21,7 @@ import { saveQuestionAction, setQuestionDataAction } from '../../actions/questio
 import { checkAnswerAction, showAnswerAction } from '../../actions/testItem';
 
 const headerTitles = {
-  multipleChoice: 'MultipleChoice',
+  multipleChoice: 'Multiple Choice',
   orderList: 'Order List',
   sortList: 'Sort List',
   shortText: 'Short Text',
@@ -33,10 +33,17 @@ const headerTitles = {
   shading: 'Shading',
   classification: 'Classification',
   matchList: 'Match List',
-  clozeDragDrop: 'Cloze Drag & Drop',
+  choiceMatrix: 'Choice Matrix',
+  clozeDragDrop: 'Cloze with Drag & Drop',
+  clozeDropDown: 'Cloze with Drop Down',
+  clozeText: 'Cloze with Text',
   clozeImageDragDrop: 'Label Image with Drag & Drop',
   clozeImageDropDown: 'Label Image with DropDown',
-  clozeImageText: 'Label Image with Text'
+  clozeImageText: 'Label Image with Text',
+  graph: 'Graphing',
+  passage: 'passage',
+  math: 'Math',
+  formulaessay: 'Formula Essay'
 };
 
 class QuestionEditor extends Component {

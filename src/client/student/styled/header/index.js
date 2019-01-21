@@ -1,41 +1,20 @@
-import React, { memo } from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { withNamespaces } from '@edulastic/localization';
-import { compose } from 'redux';
-import { Select } from 'antd';
-import AssignmentSelectClass from '../../components/commonStyle/assignmentSelectClass';
-import AssignmentTitle from '../../components/assignments/common/assignmentTitle';
-import HeaderWrapper from './headerWrapper';
+import React, { memo } from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { withNamespaces } from "@edulastic/localization";
+import { compose } from "redux";
+import AssignmentTitle from "../../components/assignments/common/assignmentTitle";
+import HeaderWrapper from "./headerWrapper";
+import ClassSelect from "../../component/ClassSelector";
 
-const options = ['FFC1', 'FFC2', 'FFC3', 'FFC4', 'FFC5', 'FFC6'];
-const { Option } = Select;
-
-const AssignmentSelect = ({ t }) => (
-  <AssignmentSelectClass>
-    <ClassLabel>{t('common.classLabel')}</ClassLabel>
-    <Select defaultValue="FFC1">
-      {options.map((option, i) => (
-        <Option key={i} value={option}>
-          {option}
-        </Option>
-      ))}
-    </Select>
-  </AssignmentSelectClass>
-);
-
-const Header = ({ t, titleText }) => (
+const Header = ({ t, titleText, classSelect = true }) => (
   <HeaderWrapper>
     <Wrapper>
       <AssignmentTitle>{t(titleText)}</AssignmentTitle>
-      <AssignmentSelect t={t} />
+      {classSelect && <ClassSelect t={t} />}
     </Wrapper>
   </HeaderWrapper>
 );
-
-AssignmentSelect.propTypes = {
-  t: PropTypes.func.isRequired
-};
 
 Header.propTypes = {
   t: PropTypes.func.isRequired,
@@ -44,7 +23,7 @@ Header.propTypes = {
 
 const enhance = compose(
   memo,
-  withNamespaces('header')
+  withNamespaces("header")
 );
 
 export default enhance(Header);
@@ -55,24 +34,8 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 17px;
-  @media (max-width:768px){
+  @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
-  }
-`;
-
-const ClassLabel = styled.span`
-  display: flex;
-  font-size: ${props => props.theme.headerClassTitleFontSize};
-  color: ${props => props.theme.headerClassTitleColor};
-  font-weight: 600;
-  margin-right: 30px;
-  align-items: center;
-  letter-spacing: 0.2px;
-
-  @media (max-width: 768px) {
-    width: 65px;
-    width: auto;
-    margin-right: 10px;
   }
 `;

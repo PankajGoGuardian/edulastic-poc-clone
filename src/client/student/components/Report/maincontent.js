@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import styled, { withTheme } from 'styled-components';
-import { withNamespaces } from '@edulastic/localization';
-import { Icon, Row, Col } from 'antd';
-import PropTypes from 'prop-types';
-import { uniqBy } from 'lodash';
-import AssignmentsContent from '../../commonStyle/assignmentContent';
-import { fetchReportAction } from '../../../actions/report';
-import { loadAssignmentsAction } from '../../../actions/dashboard';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import styled, { withTheme } from "styled-components";
+import { withNamespaces } from "@edulastic/localization";
+import { Icon, Row, Col } from "antd";
+import PropTypes from "prop-types";
+import { uniqBy } from "lodash";
+import AssignmentsContent from "../commonStyle/assignmentContent";
+import { fetchReportAction } from "../../actions/report";
+import { loadAssignmentsAction } from "../../actions/dashboard";
 
-import AssignmentContentWrapper from '../../commonStyle/assignmentContentWrapper';
+import AssignmentContentWrapper from "../commonStyle/assignmentContentWrapper";
 
-const Report = ({ _id,
+const Report = ({
+  _id,
   score,
   totalQuestion,
   createdAt,
@@ -25,21 +26,37 @@ const Report = ({ _id,
   t
 }) => {
   const [isAttemptShow, setIsAttemptShow] = useState(false);
-  const timeConverter = (UNIX_timestamp) => {
+  const timeConverter = UNIX_timestamp => {
     const a = new Date(UNIX_timestamp * 1000);
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
     const year = a.getFullYear();
     const month = months[a.getMonth()];
     const date = a.getDate();
     const hour = a.getHours();
     const min = a.getMinutes();
-    const time = hour > 11 ? `${month} ${date}, ${year} ${hour - 12}:${min} PM` : `${month} ${date}, ${year} ${hour - 12}:${min} AM`;
+    const time =
+      hour > 11
+        ? `${month} ${date}, ${year} ${hour - 12}:${min} PM`
+        : `${month} ${date}, ${year} ${hour - 12}:${min} AM`;
     return time;
   };
 
   const getAttemptsData = (attempts, id) => {
     const data = [];
-    attempts.forEach((o) => {
+    attempts.forEach(o => {
       if (o.assignmentId === id) {
         data.push(o);
       }
@@ -53,7 +70,7 @@ const Report = ({ _id,
 
   let title;
   let thumbnail;
-  assignments.forEach((assignment) => {
+  assignments.forEach(assignment => {
     if (assignment._id === assignmentId) {
       title = assignment.test && assignment.test.title;
       thumbnail = assignment.test && assignment.test.thumbnail;
@@ -71,11 +88,9 @@ const Report = ({ _id,
         <CardDetails>
           <CardTitle>{title}</CardTitle>
           <CardDate>
-            <Icon
-              type={theme.assignment.cardTimeIconType}
-            />
+            <Icon type={theme.assignment.cardTimeIconType} />
             <span>
-              <StrongText>{t('common.finishedIn')} </StrongText>
+              <StrongText>{t("common.finishedIn")} </StrongText>
               {timeConverter(createdAt / 1000)}
             </span>
           </CardDate>
@@ -84,49 +99,44 @@ const Report = ({ _id,
       <ButtonAndDetail>
         <DetailContainer>
           <AttemptDetails>
-            {
-              getAttemptsData(reports, assignmentId).length > 1 && (
-                <Attempts>
-                  <span>
-                    {getAttemptsData(reports, assignmentId).length - 1}
-                    /{getAttemptsData(reports, assignmentId).length}
-                  </span>
-                  {
-                    isAttemptShow && (
-                      <AttemptsTitle onClick={attemptHandler}>
-                        &#x2193;&nbsp;&nbsp;{t('common.attemps')}
-                      </AttemptsTitle>
-                    )
-                  }
-                  {
-                    !isAttemptShow && (
-                      <AttemptsTitle onClick={attemptHandler}>
-                        &#x2191;&nbsp;&nbsp;{t('common.attemps')}
-                      </AttemptsTitle>
-                    )
-                  }
-                </Attempts>
-              )
-            }
+            {getAttemptsData(reports, assignmentId).length > 1 && (
+              <Attempts>
+                <span>
+                  {getAttemptsData(reports, assignmentId).length - 1}/
+                  {getAttemptsData(reports, assignmentId).length}
+                </span>
+                {isAttemptShow && (
+                  <AttemptsTitle onClick={attemptHandler}>
+                    &#x2193;&nbsp;&nbsp;{t("common.attemps")}
+                  </AttemptsTitle>
+                )}
+                {!isAttemptShow && (
+                  <AttemptsTitle onClick={attemptHandler}>
+                    &#x2191;&nbsp;&nbsp;{t("common.attemps")}
+                  </AttemptsTitle>
+                )}
+              </Attempts>
+            )}
             <AnswerAndScore>
               <span>
                 {correctAnswers}/{totalQuestion}
               </span>
-              <Title>{t('common.correctAnswer')}</Title>
+              <Title>{t("common.correctAnswer")}</Title>
             </AnswerAndScore>
             <AnswerAndScore>
               <span>{score}</span>
-              <Title>{t('common.score')}</Title>
+              <Title>{t("common.score")}</Title>
             </AnswerAndScore>
           </AttemptDetails>
-          <StartAssignButton to={{ pathname: '/home/report/list', testActivityId: _id, title }}>
-            <span>{t('common.review')}</span>
+          <StartAssignButton
+            to={{ pathname: "/home/report/list", testActivityId: _id, title }}
+          >
+            <span>{t("common.review")}</span>
           </StartAssignButton>
-
         </DetailContainer>
-        {
-          isAttemptShow && (
-            getAttemptsData(reports, assignmentId).map((report, index) => (
+        {isAttemptShow &&
+          getAttemptsData(reports, assignmentId).map(
+            (report, index) =>
               index !== 0 && (
                 <AttemptsData key={index}>
                   <RowData>
@@ -134,24 +144,29 @@ const Report = ({ _id,
                       <span>{timeConverter(report.createdAt / 1000)}</span>
                     </Attempts>
                     <AnswerAndScore>
-                      <span>{report.correctAnswers ? report.correctAnswers : 0}
-                        /{report.totalQuestion ? report.totalQuestion : 0}
+                      <span>
+                        {report.correctAnswers ? report.correctAnswers : 0}/
+                        {report.totalQuestion ? report.totalQuestion : 0}
                       </span>
                     </AnswerAndScore>
                     <AnswerAndScore>
                       <span>{report.score ? report.score : 0}</span>
                     </AnswerAndScore>
                     <AnswerAndScoreReviewBtn>
-                      <Link to={{ pathname: '/home/report/list', testActivityId: report._id, title }}>
-                        <div>{t('common.review')}</div>
+                      <Link
+                        to={{
+                          pathname: "/home/report/list",
+                          testActivityId: report._id,
+                          title
+                        }}
+                      >
+                        <div>{t("common.review")}</div>
                       </Link>
                     </AnswerAndScoreReviewBtn>
                   </RowData>
-                </AttemptsData>)
-            ))
-          )
-        }
-
+                </AttemptsData>
+              )
+          )}
       </ButtonAndDetail>
     </CardWrapper>
   );
@@ -171,7 +186,7 @@ Report.propTypes = {
 };
 
 Report.defaultProps = {
-  _id: '',
+  _id: "",
   score: 0,
   totalQuestion: 0,
   createdAt: Date.now(),
@@ -181,7 +196,15 @@ Report.defaultProps = {
   assignments: []
 };
 
-const ReportContent = ({ flag, fetchReports, reports, loadAssignments, assignments, theme, t }) => {
+const ReportContent = ({
+  flag,
+  fetchReports,
+  reports,
+  loadAssignments,
+  assignments,
+  theme,
+  t
+}) => {
   useEffect(() => {
     loadAssignments();
     fetchReports();
@@ -189,7 +212,7 @@ const ReportContent = ({ flag, fetchReports, reports, loadAssignments, assignmen
   return (
     <AssignmentsContent flag={flag}>
       <AssignmentContentWrapper>
-        {uniqBy(reports, 'assignmentId').map((report, index) => (
+        {uniqBy(reports, "assignmentId").map((report, index) => (
           <Report
             theme={theme}
             t={t}
@@ -207,9 +230,13 @@ const ReportContent = ({ flag, fetchReports, reports, loadAssignments, assignmen
 const enhance = compose(
   withTheme,
   React.memo,
-  withNamespaces('assignmentCard'),
+  withNamespaces("assignmentCard"),
   connect(
-    ({ ui, reports, assignments }) => ({ flag: ui.flag, reports: reports.reports, assignments }),
+    ({ ui, reports, assignments }) => ({
+      flag: ui.flag,
+      reports: reports.reports,
+      assignments
+    }),
     {
       fetchReports: fetchReportAction,
       loadAssignments: loadAssignmentsAction
@@ -228,7 +255,6 @@ ReportContent.propTypes = {
   theme: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired
 };
-
 
 const CardWrapper = styled(Row)`
   display: flex;
@@ -250,21 +276,21 @@ const CardWrapper = styled(Row)`
 const ButtonAndDetail = styled(Col)`
   display: flex;
   flex-direction: column;
-  width:62%;
+  width: 62%;
   @media screen and (min-width: 1025px) {
-    margin-left:auto;
-  }   
+    margin-left: auto;
+  }
   @media screen and (max-width: 767px) {
     width: 100%;
   }
 `;
 
 const AssessmentDetails = styled(Col)`
-    display: flex;
-    flex-direction: row;
-    @media screen and (max-width: 767px) {
-      flex-direction: column;
-    }
+  display: flex;
+  flex-direction: row;
+  @media screen and (max-width: 767px) {
+    flex-direction: column;
+  }
 `;
 
 const ImageWrapper = styled.div`
@@ -276,7 +302,7 @@ const ImageWrapper = styled.div`
   @media screen and (max-width: 767px) {
     max-width: 100%;
     margin: 0;
-    img{
+    img {
       max-width: 100%;
     }
   }
@@ -316,8 +342,8 @@ const CardDate = styled.div`
   text-align: left;
   color: ${props => props.theme.assignment.cardTimeTextColor};
   padding-bottom: 8px;
-  i { 
-    color: ${props => props.theme.assignment.cardTimeIconColor}; 
+  i {
+    color: ${props => props.theme.assignment.cardTimeIconColor};
   }
   .anticon-clock-circle {
     svg {
@@ -361,13 +387,14 @@ const StartAssignButton = styled(Link)`
     letter-spacing: 0.2px;
   }
   &:hover {
-    background-color: ${props => props.theme.assignment.cardRetakeBtnBgHoverColor};
+    background-color: ${props =>
+      props.theme.assignment.cardRetakeBtnBgHoverColor};
     span {
       color: ${props => props.theme.assignment.cardRetakeBtnTextHoverColor};
     }
   }
   @media screen and (min-width: 1025px) {
-    margin-right:0px;
+    margin-right: 0px;
   }
   @media screen and (max-width: 768px) {
     max-width: 80%;
@@ -389,7 +416,7 @@ const AnswerAndScore = styled.div`
     color: ${props => props.theme.assignment.cardAnswerAndScoreTextColor};
   }
   @media screen and (max-width: 767px) {
-    width:33%;
+    width: 33%;
   }
 `;
 
@@ -401,10 +428,9 @@ const AnswerAndScoreReviewBtn = styled(AnswerAndScore)`
     cursor: pointer;
   }
   @media screen and (min-width: 769px) {
-    width:200px;
+    width: 200px;
   }
 `;
-
 
 const Attempts = AnswerAndScore;
 
@@ -441,12 +467,13 @@ const RowData = styled.div`
   border-radius: 4px;
   height: 30px;
   div {
-    background-color: ${props => props.theme.assignment.attemptsReviewRowBgColor};
+    background-color: ${props =>
+      props.theme.assignment.attemptsReviewRowBgColor};
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    @media screen and (max-width: 767px){
+    @media screen and (max-width: 767px) {
       justify-content: flex-start;
     }
   }

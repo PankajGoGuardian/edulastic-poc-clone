@@ -1,14 +1,14 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import ProfileHeader from './header';
-import ProfileContent from './maincontent';
-import MainContainer from '../commonStyle/mainContainer';
+import React from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import Header from "../../styled/header";
+import ProfileContent from "./maincontent";
+import MainContainer from "../commonStyle/mainContainer";
 
 const ProfileContainer = ({ flag }) => (
   <React.Fragment>
     <MainContainer flag={flag}>
-      <ProfileHeader />
+      <Header titleText="common.profileTitle" classSelect={false} />
       <ProfileContent />
     </MainContainer>
   </React.Fragment>

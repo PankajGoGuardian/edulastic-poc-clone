@@ -1,14 +1,20 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Layout } from 'antd';
-import { loadAssignmentsAction } from '../../../actions/dashboard';
-import { fetchReportAction } from '../../../actions/report';
+import React, { useEffect } from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { Layout } from "antd";
+import { loadAssignmentsAction } from "../../../actions/dashboard";
+import { fetchReportAction } from "../../../actions/report";
 
-import AssignmentCard from '../common/assignmentCard';
+import AssignmentCard from "../common/assignmentCard";
 
-const Content = ({ flag, loadAssignments, assignments, fetchReports, reports }) => {
+const Content = ({
+  flag,
+  loadAssignments,
+  assignments,
+  fetchReports,
+  reports
+}) => {
   useEffect(() => {
     loadAssignments();
     fetchReports();
@@ -34,7 +40,11 @@ const Content = ({ flag, loadAssignments, assignments, fetchReports, reports }) 
 
 export default React.memo(
   connect(
-    ({ ui, assignments, reports }) => ({ flag: ui.flag, reports: reports.reports, assignments }),
+    ({ ui, assignments, reports }) => ({
+      flag: ui.flag,
+      reports: reports.reports,
+      assignments
+    }),
     {
       loadAssignments: loadAssignmentsAction,
       fetchReports: fetchReportAction

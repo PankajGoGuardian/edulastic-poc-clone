@@ -1,12 +1,12 @@
-import React from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { Form, Input, Button } from 'antd';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-import AssignmentsContent from '../../commonStyle/assignmentContent';
-import ProfileImage from '../../../assets/Profile.png';
-import AssignmentContentWrapper from '../../commonStyle/assignmentContentWrapper';
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { Form, Input, Button } from "antd";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
+import AssignmentsContent from "../commonStyle/assignmentContent";
+import ProfileImage from "../../assets/Profile.png";
+import AssignmentContentWrapper from "../commonStyle/assignmentContentWrapper";
 
 const FormItem = Form.Item;
 class ProfileContent extends React.Component {
@@ -14,7 +14,7 @@ class ProfileContent extends React.Component {
     confirmDirty: false
   };
 
-  handleSubmit = (e) => {
+  handleSubmit = e => {
     const { form, login } = this.props;
     e.preventDefault();
     form.validateFieldsAndScroll((err, { password, email }) => {
@@ -77,66 +77,59 @@ class ProfileContent extends React.Component {
               <ProfileImg src={ProfileImage} alt="" />
               <FormWrapper onSubmit={this.handleSubmit}>
                 <FormItemWrapper {...formItemLayout}>
-                  <label>{t('common.title.firstNameInputLabel')}</label>
-                  {getFieldDecorator('First Name', {
+                  <label>{t("common.title.firstNameInputLabel")}</label>
+                  {getFieldDecorator("First Name", {
                     rules: [
                       {
                         required: true,
-                        message: t('common.title.firstName')
+                        message: t("common.title.firstName")
                       }
                     ]
                   })(<Input />)}
                 </FormItemWrapper>
                 <FormItemWrapper {...formItemLayout}>
-                  <label>{t('common.title.lastNameInputLabel')}</label>
-                  {getFieldDecorator('Last Name', {
+                  <label>{t("common.title.lastNameInputLabel")}</label>
+                  {getFieldDecorator("Last Name", {
                     rules: [
                       {
                         required: true,
-                        message: t('common.title.lastName')
+                        message: t("common.title.lastName")
                       }
                     ]
                   })(<Input />)}
                 </FormItemWrapper>
                 <FormItemWrapper {...formItemLayout}>
-                  <label>{t('common.title.emailInputLabel')}</label>
-                  {getFieldDecorator('email', {
+                  <label>{t("common.title.emailInputLabel")}</label>
+                  {getFieldDecorator("email", {
                     rules: [
                       {
-                        type: 'email',
-                        message: t('common.title.validemail')
+                        type: "email",
+                        message: t("common.title.validemail")
                       },
                       {
                         required: true,
-                        message: t('common.title.email')
+                        message: t("common.title.email")
                       }
                     ]
                   })(<Input />)}
                 </FormItemWrapper>
                 <FormItemWrapper {...formItemLayout}>
-                  <label>{t('common.title.passwordInputLabel')}</label>
-                  {getFieldDecorator('password', {
+                  <label>{t("common.title.passwordInputLabel")}</label>
+                  {getFieldDecorator("password", {
                     rules: [
                       {
                         required: true,
-                        message: t('common.title.password')
+                        message: t("common.title.password")
                       }
                     ]
                   })(<Input type="password" />)}
-                </FormItemWrapper>{' '}
+                </FormItemWrapper>{" "}
                 <FormItem {...tailFormItemLayout}>
-                  <CancelButton
-                    type="primary"
-                    ghost
-                    htmlType="submit"
-                  >
-                    {t('common.title.cancel')}
+                  <CancelButton type="primary" ghost htmlType="submit">
+                    {t("common.title.cancel")}
                   </CancelButton>
-                  <SaveButton
-                    type="primary"
-                    htmlType="submit"
-                  >
-                    {t('common.title.save')}
+                  <SaveButton type="primary" htmlType="submit">
+                    {t("common.title.save")}
                   </SaveButton>
                 </FormItem>
               </FormWrapper>
@@ -150,7 +143,7 @@ class ProfileContent extends React.Component {
 
 const ProfileForm = Form.create()(ProfileContent);
 
-const enhance = compose(withNamespaces('profile'));
+const enhance = compose(withNamespaces("profile"));
 
 export default React.memo(enhance(ProfileForm));
 

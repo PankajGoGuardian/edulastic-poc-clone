@@ -1,13 +1,13 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { Layout } from 'antd';
-import Header from './header';
-import AssignmentsContent from './content';
+import React from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { Layout } from "antd";
+import Header from "../../../styled/header";
+import AssignmentsContent from "./content";
 
 const MainContent = ({ flag }) => (
-  <Layout flag={flag} style={{ width: '100%' }}>
-    <Header flag={flag} />
+  <Layout flag={flag} style={{ width: "100%" }}>
+    <Header flag={flag} titleText="common.dashboardTitle" />
     <AssignmentsContent />
   </Layout>
 );

@@ -1,14 +1,18 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import ManageClassHeader from './header';
-import ManageClassContent from './maincontent';
-import MainContainer from '../commonStyle/mainContainer';
+import React from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import Header from "../../styled/header";
+import ManageClassContent from "./maincontent";
+import MainContainer from "../commonStyle/mainContainer";
 
 const ManageClassContainer = ({ flag }) => (
   <React.Fragment>
     <MainContainer flag={flag}>
-      <ManageClassHeader flag={flag} />
+      <Header
+        flag={flag}
+        classSelect={false}
+        tittleText="common.manageClassTitle"
+      />
       <ManageClassContent />
     </MainContainer>
   </React.Fragment>

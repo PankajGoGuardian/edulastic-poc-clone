@@ -1,7 +1,6 @@
 {
   "common": {
     "title": {
-      "profile": "Profile",
       "firstNameInputLabel": "First Name",
       "lastNameInputLabel": "Last Name",
       "emailInputLabel": "Email",

@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Col, Icon } from 'antd';
-import { formatTime } from '../../utils';
+import { formatTime } from '../utils';
 
-const AssessmentDetails = ({ test, theme, t, started, dueDate }) => (
+const AssessmentDetails = ({ test, theme, t, started, dueDate, type }) => (
   <Wrapper>
     <Col>
       <ImageWrapper>
@@ -16,16 +16,22 @@ const AssessmentDetails = ({ test, theme, t, started, dueDate }) => (
       <CardDate>
         <Icon type={theme.assignment.cardTimeIconType} />
         <span>
-          <StrongText>{t('common.dueOn')} </StrongText>
+          <StrongText>
+            {type === 'assignment' ? t('common.dueOn') : t('common.finishedIn')}{' '}
+          </StrongText>
           {formatTime(dueDate)}
         </span>
       </CardDate>
       <div>
-        <StatusButton isSubmitted={started}>
-          <span>
-            {started ? t('common.submittedTag') : t('common.notStartedTag')}
-          </span>
-        </StatusButton>
+        {type === 'assignment' ? (
+          <StatusButton isSubmitted={started}>
+            <span>
+              {started ? t('common.submittedTag') : t('common.notStartedTag')}
+            </span>
+          </StatusButton>
+        ) : (
+          ''
+        )}
       </div>
     </CardDetails>
   </Wrapper>
@@ -126,9 +132,9 @@ const StatusButton = styled.div`
   height: 23.5px;
   border-radius: 5px;
   background-color: ${props =>
-    (props.isSubmitted
+    props.isSubmitted
       ? props.theme.assignment.cardSubmitLabelBgColor
-      : props.theme.assignment.cardNotStartedLabelBgColor)};
+      : props.theme.assignment.cardNotStartedLabelBgColor};
   font-size: ${props => props.theme.assignment.cardSubmitLabelFontSize};
   font-weight: bold;
   line-height: 1.38;
@@ -139,9 +145,9 @@ const StatusButton = styled.div`
     position: relative;
     top: -1px;
     color: ${props =>
-    (props.isSubmitted
-      ? props.theme.assignment.cardSubmitLabelTextColor
-      : props.theme.assignment.cardNotStartedLabelTextColor)};
+      props.isSubmitted
+        ? props.theme.assignment.cardSubmitLabelTextColor
+        : props.theme.assignment.cardNotStartedLabelTextColor};
   }
   @media screen and (max-width: 767px) {
     width: 100%;

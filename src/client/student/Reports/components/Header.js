@@ -11,7 +11,7 @@ import HeaderWrapper from '../../styled/header/headerWrapper';
 const Header = ({ t }) => (
   <HeaderWrapper>
     <Wrapper>
-      <AssignmentTitle>{t('common.assignmentsTitle')}</AssignmentTitle>
+      <AssignmentTitle>{t('common.reportsTitle')}</AssignmentTitle>
       <ClassSelector t={t} />
     </Wrapper>
   </HeaderWrapper>

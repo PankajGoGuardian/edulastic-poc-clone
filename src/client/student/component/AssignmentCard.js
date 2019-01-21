@@ -13,9 +13,16 @@ import AssessmentDetails from './AssessmentDetail';
 import Attempt from './Attempt';
 
 // actions
-import { initiateTestActivityAction } from '../../actions/test';
+import { initiateTestActivityAction } from '../actions/test';
 
-const AssignmentCard = ({ initiateTestActivity, data, history, theme, t }) => {
+const AssignmentCard = ({
+  initiateTestActivity,
+  data,
+  history,
+  theme,
+  t,
+  type
+}) => {
   const [showAttempts, setShowAttempts] = useState(false);
 
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
@@ -48,6 +55,7 @@ const AssignmentCard = ({ initiateTestActivity, data, history, theme, t }) => {
         test={test}
         theme={theme}
         t={t}
+        type={type}
         started={attempted}
         dueDate={endDate}
       />
@@ -81,7 +89,7 @@ const AssignmentCard = ({ initiateTestActivity, data, history, theme, t }) => {
           </AttemptDetails>
 
           <StartAssignButton onClick={startTest}>
-            <span> {startButtonText}</span>
+            <span> {type === 'assignment' ? startButtonText : 'REVIEW'}</span>
           </StartAssignButton>
         </DetailContainer>
         {showAttempts &&
@@ -175,7 +183,7 @@ const StartAssignButton = styled(Button)`
   }
   &:hover {
     background-color: ${props =>
-    props.theme.assignment.cardRetakeBtnBgHoverColor};
+      props.theme.assignment.cardRetakeBtnBgHoverColor};
     span {
       color: ${props => props.theme.assignment.cardRetakeBtnTextHoverColor};
     }

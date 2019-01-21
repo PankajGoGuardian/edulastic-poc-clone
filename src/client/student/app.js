@@ -9,6 +9,7 @@ import { themes } from './themes';
 import Sidebar from './Sidebar/SideMenu';
 import DashboardContainer from './components/dashboard';
 import { Assignment } from './Assignments';
+import { Report } from './Reports';
 import ReportContainer from './components/Report';
 import ManageClassContainer from './components/manageClass';
 import ReportListContainer from './components/ReportList';
@@ -27,7 +28,7 @@ const Dashboard = ({ match, isSidebarCollapsed }) => (
               component={DashboardContainer}
             />
             <Route path={`${match.url}/assignments`} component={Assignment} />
-            <Route path={`${match.url}/reports`} component={ReportContainer} />
+            <Route path={`${match.url}/reports`} component={Report} />
             <Route
               path={`${match.url}/skill-report`}
               component={SkillReportContainer}

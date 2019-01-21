@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { formatTime } from '../../utils';
+import { formatTime } from '../utils';
 
 const Attempt = ({ data }) => {
   const { correct = 0, wrong = 0 } = data;

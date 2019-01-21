@@ -65,12 +65,7 @@ class ClozeDragDropAuthoring extends Component {
 
   state = {
     hasGroupResponses: false,
-    groupResponses: [
-      {
-        title: '',
-        options: ['Choice A', 'Choice B']
-      }
-    ]
+    groupResponses: []
   };
 
   getNewItem() {
@@ -120,9 +115,16 @@ class ClozeDragDropAuthoring extends Component {
 
   groupResponsesHandler = (e) => {
     const { item, setQuestionData } = this.props;
+    const { groupResponses } = this.state;
     const hasGroupResponses = e.target.checked;
     if (e.target.checked) {
-      this.setState({ hasGroupResponses });
+      this.setState({
+        hasGroupResponses,
+        groupResponses: (groupResponses.length === 0 && item.options) ? [{
+          title: '',
+          options: [...item.options]
+        }] : groupResponses
+      });
     } else {
       this.setState({ hasGroupResponses });
     }

@@ -135,6 +135,10 @@ const MathFormulaAnswerMethod = ({
   useEffect(
     () => {
       const newOptions = clearOptions(method, { ...options });
+
+      if (method === methodsConst.IS_FACTORISED && !newOptions.field) {
+        newOptions.field = fieldsConst.INTEGER;
+      }
       onChange('options', newOptions);
     },
     [method]
@@ -228,8 +232,7 @@ const MathFormulaAnswerMethod = ({
         </Col>
       </StyledRow>
 
-      {/* TODO: API doesn’t support it. We will get back to it later */}
-      {false && (
+      {methodsConst.IS_FACTORISED === method && (
         <StyledRow gutter={32}>
           <Col span={12}>
             <Options.Label>Field</Options.Label>

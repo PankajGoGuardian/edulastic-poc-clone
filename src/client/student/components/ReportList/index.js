@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ReportListHeader from './header';
-import ReportListSecondHeader from '../../src/components/ReportList/SubHeader';
-import ReportListContent from './maincontent';
+import ReportListSecondHeader from './secondHeader';
+import ReportListContent from './mainContent';
 import MainContainer from '../commonStyle/mainContainer';
 import {
   fetchTestActivityDetailAction,
@@ -15,13 +15,11 @@ const ReportListContainer = ({ flag, location, loadReport }) => {
     loadReport(location.testActivityId);
   }, []);
   return (
-    <React.Fragment>
-      <MainContainer flag={flag}>
-        <ReportListHeader flag={flag} />
-        <ReportListSecondHeader title={location.title} />
-        <ReportListContent title={location.title} />
-      </MainContainer>
-    </React.Fragment>
+    <MainContainer flag={flag}>
+      <ReportListHeader flag={flag} />
+      <ReportListSecondHeader title={location.title} />
+      <ReportListContent title={location.title} />
+    </MainContainer>
   );
 };
 

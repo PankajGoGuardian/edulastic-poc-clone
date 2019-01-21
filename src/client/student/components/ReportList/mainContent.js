@@ -2,24 +2,21 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import AssignmentsContent from '../../commonStyle/assignmentContent';
-import AssignmentContentWrapper from '../../commonStyle/assignmentContentWrapper';
-import ItemReport from '../../../src/components/ReportList/ItemReport';
-import { getQuestionsSelector } from '../../../src/selectors/items';
+import AssignmentsContent from '../commonStyle/assignmentContent';
+import AssignmentContentWrapper from '../commonStyle/assignmentContentWrapper';
+import ItemReport from '../../src/components/ReportList/ItemReport';
+import { getQuestionsSelector } from '../../src/selectors/items';
 
 const ReportListContent = ({ questions, flag, title }) => (
-  // TODO: returnnn?
   <AssignmentsContent flag={flag}>
     <AssignmentContentWrapper>
       <Wrapper>
-        <Content>
-          <Header>
-            <Title>{title}</Title>
-          </Header>
-          {questions.map((question, index) => (
-            <ItemReport key={index} question={question} index={index} />
-          ))}
-        </Content>
+        <Header>
+          <Title>{title}</Title>
+        </Header>
+        {questions.map((question, index) => (
+          <ItemReport key={index} question={question} index={index} />
+        ))}
       </Wrapper>
     </AssignmentContentWrapper>
   </AssignmentsContent>
@@ -45,8 +42,6 @@ ReportListContent.defaultProps = {
 const Wrapper = styled.div`
   padding: 1rem 0rem;
 `;
-
-const Content = styled.div``;
 
 const Header = styled.div`
   display: flex;

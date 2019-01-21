@@ -7,22 +7,19 @@ import QuestionSelect from '../../../src/components/ReportList/QuestionSelect';
 
 const ReportListHeader = () => (
   <HeaderWrapper>
-    <Container>
-      <Title>Reports</Title>
-      <QuestionSelectMobile>
-        <QuestionSelect />
-      </QuestionSelectMobile>
-    </Container>
+    <Title>Reports</Title>
+    <QuestionSelectMobile>
+      <QuestionSelect />
+    </QuestionSelectMobile>
   </HeaderWrapper>
 );
 
 export default ReportListHeader;
 
-const Container = styled.div``;
 const QuestionSelectMobile = styled(Col)`
-  display:none;
-  @media (max-width:768px){
-    display:flex;
+  display: none;
+  @media (max-width: 768px) {
+    display: flex;
     margin-top: 12px;
   }
 `;
@@ -33,7 +30,7 @@ const Title = styled.h1`
   font-weight: bold;
   margin: 0;
   padding: 0;
-  @media (max-width:768px){
+  @media (max-width: 768px) {
     padding-left: 40px;
   }
 `;

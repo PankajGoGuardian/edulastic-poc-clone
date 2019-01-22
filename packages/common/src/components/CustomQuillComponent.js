@@ -131,7 +131,8 @@ CustomToolbar.defaultProps = {
  */
 class CustomQuillComponent extends Component {
   state = {
-    active: false
+    active: false,
+    firstFocus: true
   };
 
   static propTypes = {
@@ -140,12 +141,14 @@ class CustomQuillComponent extends Component {
     showResponseBtn: PropTypes.bool.isRequired,
     toolbarId: PropTypes.string.isRequired,
     onChange: PropTypes.func,
+    clearOnFirstFocus: PropTypes.bool,
     readOnly: PropTypes.bool,
     style: PropTypes.object
   };
 
   static defaultProps = {
     onChange: () => {},
+    clearOnFirstFocus: true,
     placeholder: '',
     readOnly: false,
     style: {
@@ -158,6 +161,17 @@ class CustomQuillComponent extends Component {
   showToolbar = () => {
     this.setState({ active: true });
   };
+
+  onFocus = () => {
+    const { clearOnFirstFocus } = this.props;
+    const { firstFocus } = this.state;
+    if (firstFocus && clearOnFirstFocus) {
+      this.handleChange('');
+      this.quillRef.getEditor().setText('');
+      this.setState({ firstFocus: false });
+    }
+    this.showToolbar();
+  }
 
   hideToolbar = () => {
     this.setState({ active: false });
@@ -196,7 +210,7 @@ class CustomQuillComponent extends Component {
           readOnly={readOnly}
           modules={CustomQuillComponent.modules(toolbarId)}
           onChange={this.handleChange}
-          onFocus={this.showToolbar}
+          onFocus={this.onFocus}
           onKeyDown={this.onKeyDownHandler}
           placeholder={placeholder}
           value={value}

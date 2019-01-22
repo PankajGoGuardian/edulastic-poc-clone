@@ -51,14 +51,16 @@ class AssessmentPlayerDefault extends React.Component {
     super(props);
     this.state = {
       currentColor: '#ff0000',
+      fillColor: '#ff0000',
       activeMode: '',
       lineWidth: 4,
       scratchPadMode: false,
+      deleteMode: false,
       testItemState: '',
       isToolbarModalVisible: false,
       isSubmitConfirmationVisible: false,
       isSavePauseModalVisible: false,
-      history: [{ points: [], pathes: [], figures: [] }],
+      history: [{ points: [], pathes: [], figures: [], texts: [] }],
       currentTab: 0
     };
   }
@@ -151,13 +153,20 @@ class AssessmentPlayerDefault extends React.Component {
     return `rgb(${r}, ${g}, ${b})`;
   };
 
+  onFillColorChange = (obj) => {
+    this.setState({ fillColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100) });
+  };
+
   handleModeChange = (flag) => {
     this.setState({ scratchPadMode: flag });
   };
 
   handleToolChange = value => () => {
     const { activeMode } = this.state;
-    if (activeMode === value) {
+
+    if (value === 'deleteMode') {
+      this.setState(prevState => ({ deleteMode: !prevState.deleteMode }));
+    } else if (activeMode === value) {
       this.setState({ activeMode: '' });
     } else {
       this.setState({ activeMode: value });
@@ -219,9 +228,11 @@ class AssessmentPlayerDefault extends React.Component {
       scratchPadMode,
       activeMode,
       currentColor,
+      deleteMode,
       history,
       currentTab,
-      lineWidth
+      lineWidth,
+      fillColor
     } = this.state;
 
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
@@ -237,12 +248,17 @@ class AssessmentPlayerDefault extends React.Component {
             activeMode={activeMode}
             scratchPadMode={scratchPadMode}
             lineColor={currentColor}
+            deleteMode={deleteMode}
             lineWidth={lineWidth}
+            fillColor={fillColor}
             saveHistory={this.saveHistory}
             history={history[currentTab]}
           />
           {scratchPadMode && (
             <Tools
+              onFillColorChange={this.onFillColorChange}
+              fillColor={fillColor}
+              deleteMode={deleteMode}
               currentColor={currentColor}
               onToolChange={this.handleToolChange}
               lineWidth={lineWidth}

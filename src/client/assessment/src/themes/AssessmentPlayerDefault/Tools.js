@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Button, Input } from 'antd';
 import PropTypes from 'prop-types';
 import ColorPicker from 'rc-color-picker';
@@ -6,8 +6,9 @@ import styled from 'styled-components';
 
 import { mainBlueColor, white, darkBlueSecondary, secondaryTextColor } from '@edulastic/colors';
 import { FlexContainer } from '@edulastic/common';
+import { withNamespaces } from '@edulastic/localization';
+import { drawTools } from '@edulastic/constants';
 import {
-  IconArrows,
   IconPencilEdit,
   IconTrash,
   IconRedo,
@@ -23,14 +24,66 @@ import {
   IconSelected
 } from '@edulastic/icons';
 
+const customizeIcon = icon => styled(icon)`
+  fill: ${white};
+  margin-left: -3px;
+  margin-top: 3px;
+  &:hover {
+    fill: ${white};
+  }
+`;
+
+const Trash = customizeIcon(IconTrash);
+
+const Redo = customizeIcon(IconRedo);
+
+const Undo = customizeIcon(IconUndo);
+
+const Pencil = customizeIcon(IconPencilEdit);
+
+const LineIcon = customizeIcon(IconLine);
+
+const BreakingLineIcon = customizeIcon(IconBreakingLine);
+
+const SquareIcon = customizeIcon(IconSquare);
+
+const TriangleIcon = customizeIcon(IconTriangle);
+
+const CircleWithPointsIcon = customizeIcon(IconCircleWithPoints);
+
+const LettersIcon = customizeIcon(IconLetters);
+
+const RootIcon = customizeIcon(IconRoot);
+
+const SquareTriangleIcon = customizeIcon(IconSquareTriangle);
+
+const SelectedIcon = customizeIcon(IconSelected);
+
+const buttonsList = [
+  { mode: drawTools.FREE_DRAW, icon: <Pencil /> },
+  { mode: drawTools.DRAW_SIMPLE_LINE, icon: <LineIcon /> },
+  { mode: drawTools.DRAW_BREAKING_LINE, icon: <BreakingLineIcon /> },
+  { mode: drawTools.DRAW_SQUARE, icon: <SquareIcon /> },
+  { mode: drawTools.DRAW_TRIANGLE, icon: <TriangleIcon /> },
+  { mode: drawTools.DRAW_CIRCLE, icon: <CircleWithPointsIcon /> },
+  { mode: drawTools.DRAW_TEXT, icon: <LettersIcon /> },
+  { mode: 'none', icon: <RootIcon /> },
+  { mode: 'none', icon: <SquareTriangleIcon /> },
+  { mode: 'none', icon: <SelectedIcon /> }
+];
+
 const Tools = ({
   onToolChange,
   activeMode,
+  onFillColorChange,
+  fillColor,
   currentColor,
+  deleteMode,
   onColorChange,
   undo,
   redo,
   lineWidth,
+  t,
   onLineWidthChange
 }) => {
   const getAlpha = (color) => {
@@ -40,49 +93,26 @@ const Tools = ({
       ? +color.match(regexValuesFromRgbaColor).slice(-1) * 100
       : 100;
   };
+
+  const showFillColorArray = [
+    drawTools.DRAW_SQUARE,
+    drawTools.DRAW_CIRCLE,
+    drawTools.DRAW_TRIANGLE
+  ];
+
   return (
     <ToolBox justifyContent="center">
       {activeMode === '' && (
         <FlexContainer justifyContent="flex-end" style={{ width: 1008 }}>
-          <StyledButton onClick={onToolChange('move')} enable={activeMode === 'move'}>
-            <Arrows />
-          </StyledButton>
-          <StyledButton onClick={onToolChange('freeDraw')} enable={activeMode === 'freeDraw'}>
-            <Pencil />
-          </StyledButton>
-          <StyledButton
-            onClick={onToolChange('drawSimpleLine')}
-            enable={activeMode === 'drawSimpleLine'}
-          >
-            <LineIcon />
-          </StyledButton>
-          <StyledButton
-            onClick={onToolChange('drawBreakingLine')}
-            enable={activeMode === 'drawBreakingLine'}
-          >
-            <BreakingLineIcon />
-          </StyledButton>
-          <StyledButton onClick={onToolChange('drawSquare')} enable={activeMode === 'drawSquare'}>
-            <SquareIcon />
-          </StyledButton>
-          <StyledButton>
-            <TriangleIcon />
-          </StyledButton>
-          <StyledButton>
-            <CircleWithPointsIcon />
-          </StyledButton>
-          <StyledButton>
-            <LettersIcon />
-          </StyledButton>
-          <StyledButton>
-            <RootIcon />
-          </StyledButton>
-          <StyledButton>
-            <SquareTriangleIcon />
-          </StyledButton>
-          <StyledButton>
-            <SelectedIcon />
-          </StyledButton>
+          {buttonsList.map((button, i) => (
+            <StyledButton
+              key={i}
+              onClick={onToolChange(button.mode)}
+              enable={activeMode === button.mode}
+            >
+              {button.icon}
+            </StyledButton>
+          ))}
         </FlexContainer>
       )}
       {activeMode !== '' && (
@@ -93,18 +123,43 @@ const Tools = ({
           <Separator />
           <FlexContainer style={{ flex: 0.64 }} justifyContent="space-between">
             <FlexContainer alignItems="flex-start" flexDirection="column">
-              <Text>FreeHand Draw Tool</Text>
-              <SecondaryText>Tap and drag to draw lines</SecondaryText>
+              <Text>{t(`common.activeModeTexts.${activeMode}.title`)}</Text>
+              <SecondaryText>{t(`common.activeModeTexts.${activeMode}.description`)}</SecondaryText>
             </FlexContainer>
             <FlexContainer childMarginRight={30} id="tool">
               <FlexContainer>
-                <Label>Line Color</Label>
-                <ColorPicker
-                  animation="slide-down"
-                  color={currentColor}
-                  alpha={getAlpha(currentColor)}
-                  onChange={onColorChange}
-                />
+                {showFillColorArray.includes(activeMode) && (
+                  <Fragment>
+                    <Label>Fill Color</Label>
+                    <ColorPicker
+                      animation="slide-down"
+                      color={fillColor}
+                      alpha={getAlpha(fillColor)}
+                      onChange={onFillColorChange}
+                    />
+                  </Fragment>
+                )}
+                {activeMode !== drawTools.DRAW_TEXT ? (
+                  <Fragment>
+                    <Label>Line Color</Label>
+                    <ColorPicker
+                      animation="slide-down"
+                      color={currentColor}
+                      alpha={getAlpha(currentColor)}
+                      onChange={onColorChange}
+                    />
+                  </Fragment>
+                ) : (
+                  <Fragment>
+                    <Label>Text Color</Label>
+                    <ColorPicker
+                      animation="slide-down"
+                      color={currentColor}
+                      alpha={getAlpha(currentColor)}
+                      onChange={onColorChange}
+                    />
+                  </Fragment>
+                )}
               </FlexContainer>
               <FlexContainer>
                 <Label>Size</Label>
@@ -125,7 +180,7 @@ const Tools = ({
             <StyledButton onClick={redo}>
               <Redo />
             </StyledButton>
-            <StyledButton onClick={onToolChange('deleteMode')} enable={activeMode === 'deleteMode'}>
+            <StyledButton onClick={onToolChange('deleteMode')} enable={deleteMode}>
               <Trash />
             </StyledButton>
           </FlexContainer>
@@ -143,14 +198,18 @@ Tools.propTypes = {
   lineWidth: PropTypes.number.isRequired,
   undo: PropTypes.func.isRequired,
   redo: PropTypes.func.isRequired,
+  onFillColorChange: PropTypes.func.isRequired,
+  fillColor: PropTypes.string.isRequired,
+  deleteMode: PropTypes.bool.isRequired,
+  t: PropTypes.func.isRequired,
   onLineWidthChange: PropTypes.func.isRequired
 };
 
-export default Tools;
+export default withNamespaces('student')(Tools);
 
 const ToolBox = styled(FlexContainer)`
   height: 50px;
-  position: absolute;
+  position: fixed;
   top: 62px;
   background: ${mainBlueColor};
   width: 100%;
@@ -206,40 +265,3 @@ const StyledButton = styled(Button)`
     background: ${props => (props.enable ? darkBlueSecondary : 'transparent')};
   }
 `;
-
-const customizeIcon = icon => styled(icon)`
-  fill: ${white};
-  margin-left: -3px;
-  margin-top: 3px;
-  &:hover {
-    fill: ${white};
-  }
-`;
-
-const Arrows = customizeIcon(IconArrows);
-
-const Trash = customizeIcon(IconTrash);
-
-const Redo = customizeIcon(IconRedo);
-
-const Undo = customizeIcon(IconUndo);
-
-const Pencil = customizeIcon(IconPencilEdit);
-
-const LineIcon = customizeIcon(IconLine);
-
-const BreakingLineIcon = customizeIcon(IconBreakingLine);
-
-const SquareIcon = customizeIcon(IconSquare);
-
-const TriangleIcon = customizeIcon(IconTriangle);
-
-const CircleWithPointsIcon = customizeIcon(IconCircleWithPoints);
-
-const LettersIcon = customizeIcon(IconLetters);
-
-const RootIcon = customizeIcon(IconRoot);
-
-const SquareTriangleIcon = customizeIcon(IconSquareTriangle);
-
-const SelectedIcon = customizeIcon(IconSelected);

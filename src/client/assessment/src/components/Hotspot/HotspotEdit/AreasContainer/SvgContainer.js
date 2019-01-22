@@ -396,7 +396,6 @@ SvgContainer.propTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
   imageSrc: PropTypes.string.isRequired,
-  itemData: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   changeHistory: PropTypes.func.isRequired
 };

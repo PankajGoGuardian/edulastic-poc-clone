@@ -7,6 +7,7 @@ const testActivityStatus = require('./const/testActivityStatus');
 const assignmentSortParams = require('./const/assignmentSortParams');
 const assignmentPolicyOptions = require('./const/assignmentPolicyOptions');
 const typedList = require('./const/typedList');
+const drawTools = require('./const/drawTools');
 
 module.exports = {
   questionType,
@@ -17,5 +18,6 @@ module.exports = {
   testActivityStatus,
   assignmentSortParams,
   assignmentPolicyOptions,
-  typedList
+  typedList,
+  drawTools
 };

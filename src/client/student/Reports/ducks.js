@@ -64,7 +64,7 @@ export const getAssignmentsSelector = createSelector(
   reportsSelector,
   (assignmentsObj, reportsObj) => {
     const assignmentIds = values(assignmentsObj)
-      .filter(({ endDate }) => new Date(endDate) < new Date())
+      .filter(({ endDate }) => new Date(endDate) > new Date())
       .map(({ _id }) => _id);
 
     const reportsGrouped = groupBy(

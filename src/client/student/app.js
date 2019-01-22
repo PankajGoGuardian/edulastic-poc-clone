@@ -10,7 +10,9 @@ import Sidebar from './Sidebar/SideMenu';
 import DashboardContainer from './components/dashboard';
 import { Assignment } from './Assignments';
 import { Report } from './Reports';
+import { ReportList } from './ReportList';
 import { Profile } from './Profile';
+
 import ManageClassContainer from './components/manageClass';
 import ReportListContainer from './components/ReportList';
 import SkillReportContainer from './components/skillReport';
@@ -38,8 +40,8 @@ const Dashboard = ({ match, isSidebarCollapsed }) => (
             />
             <Route path={`${match.url}/profile`} component={Profile} />
             <Route
-              path={`${match.url}/report/list`}
-              component={ReportListContainer}
+              path={`${match.url}/testActivityReport/:id`}
+              component={ReportList}
             />
           </Switch>
         </Wrapper>

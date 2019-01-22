@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
@@ -77,10 +77,23 @@ const AssignmentCard = ({ startAssignment, data, theme, t, type }) => {
               </React.Fragment>
             )}
           </AttemptDetails>
-
-          <StartAssignButton onClick={startTest}>
-            <span> {type === 'assignment' ? startButtonText : 'REVIEW'}</span>
-          </StartAssignButton>
+          {type === 'assignment' ? (
+            <StartAssignButton onClick={startTest}>
+              <span>{startButtonText}</span>
+            </StartAssignButton>
+          ) : (
+            <Link
+              to={{
+                pathname: `/home/testActivityReport/${lastAttempt._id}`,
+                testActivityId: lastAttempt && lastAttempt._id,
+                title: test.title
+              }}
+            >
+              <StartAssignButton>
+                <span>{t('common.review')}</span>
+              </StartAssignButton>
+            </Link>
+          )}
         </DetailContainer>
         {showAttempts &&
           reports.map(attempt => <Attempt key={attempt._id} data={attempt} />)}

@@ -13,7 +13,8 @@ import {
 
 import {
   GET_SKILL_REPORT_BY_CLASSID,
-  LOAD_SKILL_REPORT_BY_CLASSID } from '../components/skillReport/ducks';
+  LOAD_SKILL_REPORT_BY_CLASSID
+} from '../components/skillReport/ducks';
 
 function* fetchReports() {
   try {

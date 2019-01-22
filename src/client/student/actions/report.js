@@ -5,7 +5,7 @@ import {
   LOAD_TEST_REPORT
 } from '../constants/actions';
 
-import {GET_SKILL_REPORT_BY_CLASSID} from '../components/skillReport/ducks';
+import { GET_SKILL_REPORT_BY_CLASSID } from '../components/skillReport/ducks';
 
 export const fetchReportAction = () => ({
   type: FETCH_REPORTS
@@ -25,9 +25,12 @@ export const fetchSkillReportAction = classId => ({
  * load student test Activity
  * @params {string} testActivityId - id of a particular test Activty
  */
-export const loadReportAction = testActivityId => ({
-  type: LOAD_TEST_REPORT,
-  payload: {
-    testActivityId
-  }
-});
+export const loadReportAction = testActivityId => {
+  console.log('inside load report action', testActivityId);
+  return {
+    type: LOAD_TEST_REPORT,
+    payload: {
+      testActivityId
+    }
+  };
+};

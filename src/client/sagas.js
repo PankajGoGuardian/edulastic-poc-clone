@@ -7,12 +7,13 @@ import {
   reportSaga,
   skillReportSaga,
   authSaga,
-  studentAssignmentsSaga
+  studentAssignmentsSaga,
+  testActivityReportSaga
 } from './student/sagas';
 import authorSagas from './author/src/sagas';
 import assessmentSagas from './assessment/src/sagas';
 
-export default function* () {
+export default function*() {
   yield all([
     questionSaga(),
     answerSaga(),
@@ -20,6 +21,7 @@ export default function* () {
     reportSaga(),
     skillReportSaga(),
     assignmentSaga(),
+    testActivityReportSaga(),
     studentAssignmentsSaga(),
     ...authorSagas,
     ...assessmentSagas

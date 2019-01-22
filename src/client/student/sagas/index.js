@@ -7,4 +7,4 @@ export {
   watcherSaga as skillReportSaga
 } from '../skillReport/ducks';
 export { AssignmentSaga as studentAssignmentsSaga } from '../Assignments';
-export { testActivityReportSaga } from '../ReportList';
+//export { testActivityReportSaga } from '../ReportList';

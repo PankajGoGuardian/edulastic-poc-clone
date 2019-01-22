@@ -8,7 +8,7 @@ import {
   skillReportSaga,
   authSaga,
   studentAssignmentsSaga,
-  testActivityReportSaga
+  //testActivityReportSaga
 } from './student/sagas';
 import authorSagas from './author/src/sagas';
 import assessmentSagas from './assessment/src/sagas';
@@ -21,7 +21,7 @@ export default function*() {
    // reportSaga(),
     skillReportSaga(),
     //assignmentSaga(),
-    testActivityReportSaga(),
+    //testActivityReportSaga(),
     studentAssignmentsSaga(),
     ...authorSagas,
     ...assessmentSagas

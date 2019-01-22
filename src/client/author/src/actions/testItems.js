@@ -3,9 +3,13 @@ import {
   SET_TEST_ITEMS_REQUEST
 } from '../constants/actions';
 
-export const receiveTestItemsAction = payload => ({
+export const receiveTestItemsAction = (search, page, limit) => ({
   type: RECEIVE_TEST_ITEMS_REQUEST,
-  payload
+  payload: {
+    search,
+    page,
+    limit
+  }
 });
 
 export const setTestItemsAction = data => ({

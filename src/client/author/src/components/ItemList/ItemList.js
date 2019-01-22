@@ -15,31 +15,74 @@ import {
   tabletWidth
 } from '@edulastic/colors';
 
-import {
-  getItemsLimitSelector,
-  getItemsLoadingSelector
-} from '../../selectors/items';
-
 import Item from './Item';
 import ItemFilter from './ItemFilter';
+import ListHeader from '../common/ListHeader';
 import { receiveTestItemsAction } from '../../actions/testItems';
 import { createTestItemAction } from '../../actions/testItem';
 import {
+  getDictCurriculumsAction,
+  getDictStandardsForCurriculumAction,
+  clearDictStandardsAction
+} from '../../actions/dictionaries';
+import { getItemsLoadingSelector } from '../../selectors/items';
+import {
   getTestItemsSelector,
-  getItemsTypesSelector
+  getItemsTypesSelector,
+  getTestsItemsCountSelector,
+  getTestsItemsLimitSelector,
+  getTestsItemsPageSelector
 } from '../../selectors/testItems';
 import { getTestItemCreatingSelector } from '../../selectors/testItem';
-import ListHeader from '../common/ListHeader';
+import {
+  getCurriculumsListSelector,
+  getStandardsListSelector
+} from '../../selectors/dictionaries';
 
 class ItemList extends Component {
-  componentDidMount() {
-    const { receiveItems } = this.props;
-    receiveItems({});
-  }
+  state = {
+    search: {
+      subject: '',
+      curriculumId: '',
+      standardIds: [],
+      questionType: '',
+      depthOfKnowledge: '',
+      authorDifficulty: '',
+      grades: []
+    }
+  };
 
-  handleSearch = (value) => {
-    const { receiveItems } = this.props;
-    receiveItems({ page: 1, limit: 10, search: value });
+  handleSearch = () => {
+    const { search } = this.state;
+    const { limit, receiveItems } = this.props;
+    receiveItems(search, 1, limit);
+  };
+
+  handleSearchFieldChangeCurriculumId = (value) => {
+    const { search } = this.state;
+    const { clearDictStandards } = this.props;
+    clearDictStandards();
+    this.setState({
+      search: {
+        ...search,
+        curriculumId: value,
+        standardIds: []
+      }
+    }, this.handleSearch);
+  };
+
+  handleSearchFieldChange = fieldName => (value) => {
+    const { search } = this.state;
+    if (fieldName === 'curriculumId') {
+      this.handleSearchFieldChangeCurriculumId(value);
+    } else {
+      this.setState({
+        search: {
+          ...search,
+          [fieldName]: value
+        }
+      }, this.handleSearch);
+    }
   };
 
   handleCreate = async () => {
@@ -56,11 +99,42 @@ class ItemList extends Component {
   };
 
   handlePaginationChange = (page) => {
-    const { receiveItems } = this.props;
-    const { searchStr } = this.state;
-
-    receiveItems({ page, limit: 10, search: searchStr });
+    const { search } = this.state;
+    const { receiveItems, limit } = this.props;
+    receiveItems(search, page, limit);
   };
+
+  renderPagination = () => {
+    const {
+      windowWidth,
+      count,
+      page
+    } = this.props;
+    return (
+      <Pagination
+        simple={windowWidth <= 768 && true}
+        showTotal={(total, range) =>
+          `${range[0]} to ${range[1]} of ${total}`
+        }
+        onChange={this.handlePaginationChange}
+        defaultPageSize={10}
+        total={count}
+        current={page}
+      />
+    );
+  };
+
+  componentDidMount() {
+    const {
+      receiveItems,
+      curriculums,
+      getCurriculums
+    } = this.props;
+    receiveItems();
+    if (curriculums.length === 0) {
+      getCurriculums();
+    }
+  }
 
   render() {
     const {
@@ -68,11 +142,13 @@ class ItemList extends Component {
       windowWidth,
       history,
       creating,
-      count,
       t,
-      itemTypes
+      itemTypes,
+      curriculums,
+      getCurriculumStandards,
+      curriculumStandards
     } = this.props;
-
+    const { search } = this.state;
     return (
       <Container>
         <ListHeader
@@ -82,19 +158,17 @@ class ItemList extends Component {
           title={t('component.itemlist.header.itemlist')}
         />
         <MainList id="main-list">
-          <ItemFilter onSearch={this.handleSearch} windowWidth={windowWidth} />
+          <ItemFilter
+            onSearchFieldChange={this.handleSearchFieldChange}
+            onSearch={this.handleSearch}
+            windowWidth={windowWidth}
+            search={search}
+            curriculums={curriculums}
+            getCurriculumStandards={getCurriculumStandards}
+            curriculumStandards={curriculumStandards}
+          />
           <ListItems id="item-list">
-            {windowWidth > 468 && (
-              <Pagination
-                simple={windowWidth <= 768 && true}
-                showTotal={(total, range) =>
-                  `${range[0]} to ${range[1]} of ${total}`
-                }
-                onChange={this.handlePaginationChange}
-                defaultPageSize={10}
-                total={count}
-              />
-            )}
+            {windowWidth > 468 && this.renderPagination()}
             <Items>
               <Paper padding={windowWidth > 768 ? '25px 39px 0px 39px' : '0px'}>
                 {items.map(item => (
@@ -108,15 +182,7 @@ class ItemList extends Component {
                 ))}
               </Paper>
             </Items>
-            <Pagination
-              simple={windowWidth <= 768 && true}
-              showTotal={(total, range) =>
-                `${range[0]} to ${range[1]} of ${total}`
-              }
-              onChange={this.handlePaginationChange}
-              defaultPageSize={10}
-              total={count}
-            />
+            {this.renderPagination()}
           </ListItems>
         </MainList>
       </Container>
@@ -126,6 +192,8 @@ class ItemList extends Component {
 
 ItemList.propTypes = {
   items: PropTypes.array.isRequired,
+  limit: PropTypes.number.isRequired,
+  page: PropTypes.number.isRequired,
   count: PropTypes.number.isRequired,
   receiveItems: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
@@ -133,7 +201,17 @@ ItemList.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   creating: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
-  itemTypes: PropTypes.object.isRequired
+  itemTypes: PropTypes.object.isRequired,
+  curriculums: PropTypes.arrayOf(PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    curriculum: PropTypes.string.isRequired,
+    grades: PropTypes.array.isRequired,
+    subject: PropTypes.string.isRequired
+  })).isRequired,
+  getCurriculums: PropTypes.func.isRequired,
+  getCurriculumStandards: PropTypes.func.isRequired,
+  curriculumStandards: PropTypes.array.isRequired,
+  clearDictStandards: PropTypes.func.isRequired
 };
 
 const enhance = compose(
@@ -142,14 +220,21 @@ const enhance = compose(
   connect(
     state => ({
       items: getTestItemsSelector(state),
-      limit: getItemsLimitSelector(state),
+      limit: getTestsItemsLimitSelector(state),
+      page: getTestsItemsPageSelector(state),
+      count: getTestsItemsCountSelector(state),
       loading: getItemsLoadingSelector(state),
       creating: getTestItemCreatingSelector(state),
-      itemTypes: getItemsTypesSelector(state)
+      itemTypes: getItemsTypesSelector(state),
+      curriculums: getCurriculumsListSelector(state),
+      curriculumStandards: getStandardsListSelector(state)
     }),
     {
       receiveItems: receiveTestItemsAction,
-      createItem: createTestItemAction
+      createItem: createTestItemAction,
+      getCurriculums: getDictCurriculumsAction,
+      getCurriculumStandards: getDictStandardsForCurriculumAction,
+      clearDictStandards: clearDictStandardsAction
     }
   )
 );

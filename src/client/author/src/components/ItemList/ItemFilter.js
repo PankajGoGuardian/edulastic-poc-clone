@@ -7,38 +7,64 @@ import { TextField } from '@edulastic/common';
 import { desktopWidth, blue, greenDark, textColor } from '@edulastic/colors';
 import SearchModal from './SearchModal';
 import { SMALL_DESKTOP_WIDTH, MAX_MOBILE_WIDTH } from '../../constants/others';
+import selectsData from '../TestPage/common/selectsData';
 
 class ItemFilter extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      subjectItems: [],
-      isShowFilter: false
-    };
-  }
+  state = {
+    isShowFilter: false
+  };
 
   showFilterHandler = () => {
     this.setState({ isShowFilter: true });
-  }
+  };
 
   closeSearchModal = () => {
     this.setState({ isShowFilter: false });
-  }
+  };
+
+  handleStandardSearch = (searchStr) => {
+    const {
+      getCurriculumStandards,
+      search: {
+        grades,
+        curriculumId
+      }
+    } = this.props;
+    if (curriculumId && searchStr.length >= 2) {
+      getCurriculumStandards(curriculumId, grades, searchStr);
+    }
+  };
 
   renderMainFilter = () => {
-    const { subjectItems } = this.state;
+    const {
+      search: {
+        grades,
+        subject,
+        curriculumId,
+        standardIds,
+        questionType,
+        depthOfKnowledge,
+        authorDifficulty
+      },
+      curriculums,
+      onSearchFieldChange,
+      curriculumStandards
+    } = this.props;
     return (
       <MainFilterItems>
         <Item>
-          <ItemHeader>Subject</ItemHeader>
+          <ItemHeader>Grades</ItemHeader>
           <ItemBody>
             <Select
               mode="multiple"
               style={{ width: '100%' }}
-              placeholder="Please select"
-              defaultValue={['GRADE 5']}
+              placeholder="All Grades"
+              value={grades}
+              onChange={onSearchFieldChange('grades')}
             >
-              {subjectItems}
+              { selectsData.allGrades.map(el => (
+                <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
+              ))}
             </Select>
           </ItemBody>
         </Item>
@@ -46,69 +72,74 @@ class ItemFilter extends Component {
           <ItemHeader>Subject</ItemHeader>
           <ItemBody>
             <Select
-              defaultValue="All subject"
               style={{ width: '100%' }}
+              onSelect={onSearchFieldChange('subject')}
+              value={subject}
               suffixIcon={
                 <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
               }
             >
-              <Select.Option value="math">Math</Select.Option>
+              { selectsData.allSubjects.map(el => (
+                <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
+              )) }
             </Select>
           </ItemBody>
         </Item>
         <Item>
-          <ItemHeader>Standard Set</ItemHeader>
+          <ItemHeader>Curriculum</ItemHeader>
           <ItemBody>
             <Select
-              defaultValue="All standard set"
               style={{ width: '100%' }}
+              onSelect={onSearchFieldChange('curriculumId')}
+              value={curriculumId}
               suffixIcon={
                 <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
               }
             >
-              <Select.Option value="math">Math</Select.Option>
+              <Select.Option key="" value="">All Curriculums</Select.Option>
+              { curriculums.map(el => (
+                <Select.Option key={el._id} value={el._id}>{el.curriculum}</Select.Option>
+              )) }
             </Select>
           </ItemBody>
         </Item>
         <Item>
-          <ItemHeader>Select Standard</ItemHeader>
+          <ItemHeader>Standards</ItemHeader>
           <ItemBody>
             <Select
-              defaultValue="All standards"
               style={{ width: '100%' }}
+              onSearch={this.handleStandardSearch}
+              mode="multiple"
+              placeholder="All standards"
+              onChange={onSearchFieldChange('standardIds')}
+              filterOption={false}
+              value={standardIds}
               suffixIcon={
                 <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
               }
             >
-              <Select.Option value="math">Math</Select.Option>
+              { curriculumStandards.map(el => (
+                <Select.Option key={el.identifier} value={el.identifier}>
+                  {`${el.identifier}: ${el.description}`}
+                </Select.Option>
+              )) }
             </Select>
           </ItemBody>
         </Item>
         <Item>
-          <ItemHeader>Collection</ItemHeader>
+          <ItemHeader>Question Type</ItemHeader>
           <ItemBody>
             <Select
-              defaultValue="All collections"
               style={{ width: '100%' }}
+              onSelect={onSearchFieldChange('questionType')}
+              value={questionType}
               suffixIcon={
                 <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
               }
             >
-              <Select.Option value="math">Math</Select.Option>
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Question Types</ItemHeader>
-          <ItemBody>
-            <Select
-              defaultValue="All types"
-              style={{ width: '100%' }}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              <Select.Option value="math">Math</Select.Option>
+              { selectsData.allQuestionTypes.map(el => (
+                <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
+              )) }
             </Select>
           </ItemBody>
         </Item>
@@ -116,13 +147,16 @@ class ItemFilter extends Component {
           <ItemHeader>Depth of Knowledge</ItemHeader>
           <ItemBody>
             <Select
-              defaultValue="All depth of knowledge"
               style={{ width: '100%' }}
+              onSelect={onSearchFieldChange('depthOfKnowledge')}
+              value={depthOfKnowledge}
               suffixIcon={
                 <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
               }
             >
-              <Select.Option value="math">Math</Select.Option>
+              { selectsData.allDepthOfKnowledge.map(el => (
+                <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
+              )) }
             </Select>
           </ItemBody>
         </Item>
@@ -130,28 +164,63 @@ class ItemFilter extends Component {
           <ItemHeader>Difficulty</ItemHeader>
           <ItemBody>
             <Select
-              defaultValue="All levels"
               style={{ width: '100%' }}
+              onSelect={onSearchFieldChange('authorDifficulty')}
+              value={authorDifficulty}
               suffixIcon={
                 <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
               }
             >
-              <Select.Option value="math">Math</Select.Option>
+              { selectsData.allAuthorDifficulty.map(el => (
+                <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
+              )) }
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Author</ItemHeader>
+          <ItemBody>
+            <Select
+              style={{ width: '100%' }}
+              defaultValue="All Authors"
+              suffixIcon={
+                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              }
+            >
+              <Select.Option value="">All Authors</Select.Option>
+              <Select.Option value="author1">Author 1</Select.Option>
+              <Select.Option value="author2">Author 2</Select.Option>
+            </Select>
+          </ItemBody>
+        </Item>
+        <Item>
+          <ItemHeader>Owner</ItemHeader>
+          <ItemBody>
+            <Select
+              mode="multiple"
+              style={{ width: '100%' }}
+              placeholder="All Owners"
+              defaultValue={[]}
+            >
+              <Select.Option value="owner1">Owner 1</Select.Option>
+              <Select.Option value="owner2">Owner 2</Select.Option>
+              <Select.Option value="owner3">Owner 3</Select.Option>
             </Select>
           </ItemBody>
         </Item>
       </MainFilterItems>
     );
-  }
+  };
 
   render() {
     const { onSearch, windowWidth } = this.props;
-    const { isShowFilter, subjectItems } = this.state;
+    const { isShowFilter } = this.state;
 
+    // TODO: SearchModal
     return (
       <Container>
         <SearchModal
-          subjectItems={subjectItems}
+          subjectItems={[]}
           isVisible={isShowFilter}
           onClose={this.closeSearchModal}
         />
@@ -222,8 +291,18 @@ class ItemFilter extends Component {
 }
 
 ItemFilter.propTypes = {
+  search: PropTypes.object.isRequired,
+  curriculums: PropTypes.arrayOf(PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    curriculum: PropTypes.string.isRequired,
+    grades: PropTypes.array.isRequired,
+    subject: PropTypes.string.isRequired
+  })).isRequired,
+  onSearchFieldChange: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
-  windowWidth: PropTypes.number.isRequired
+  windowWidth: PropTypes.number.isRequired,
+  getCurriculumStandards: PropTypes.func.isRequired,
+  curriculumStandards: PropTypes.array.isRequired
 };
 
 export default ItemFilter;
@@ -260,7 +339,7 @@ const FilterButton = styled.div`
     height: 50px;
     border-radius: 10px;
     width: 100%;
-    
+
     span {
       font-size: 11px;
       font-weight: 600;
@@ -279,14 +358,13 @@ const MainFilter = styled.div`
   margin-top: 17px;
   padding: 0px 11px 0px 39px;
   zIndex: 0;
-  position: fixed;
 
   .scrollbar-container {
     overflow: auto !important;
     height: calc(100vh - 195px);
 
-    ::-webkit-scrollbar { 
-      display: none; 
+    ::-webkit-scrollbar {
+      display: none;
     }
   }
 

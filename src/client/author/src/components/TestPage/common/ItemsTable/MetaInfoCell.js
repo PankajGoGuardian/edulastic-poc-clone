@@ -60,13 +60,15 @@ class MetaInfoCell extends Component {
       setSelectedTests(keys);
       setTestItems(keys);
       message.info(`${row.id} was added`);
+      const testToAdd = tests.find(el => row.id === el._id);
+      newTest.testItems.push(testToAdd);
     } else {
       keys = keys.filter(item => item !== row.id);
       setSelectedTests(keys);
       setTestItems(keys);
       message.info(`${row.id} was removed`);
+      newTest.testItems = newTest.testItems.filter(el => row.id !== el._id);
     }
-    newTest.testItems = keys.map(key => tests.find(t => key === t._id));
     setTestData(newTest);
   };
 
@@ -161,7 +163,7 @@ class MetaInfoCell extends Component {
   };
 
   render() {
-    const { isShowPreviewModal } = this.state;
+    const { isShowPreviewModal = false } = this.state;
     const { data, windowWidth } = this.props;
 
     return (

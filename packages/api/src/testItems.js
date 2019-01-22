@@ -2,37 +2,25 @@ import API from './utils/API';
 
 const api = new API();
 const prefix = '/testitem';
+const prefixElasticSearch = '/search/items';
 
-const formatData = data => {
+const formatData = (data) => {
   const item = JSON.parse(JSON.stringify(data));
   delete item._id;
   return item;
 };
 
-const getAll = ({ limit = 100, page = 1, search, data, validation }) => {
-  let url = `${prefix}?limit=${limit}&skip=${limit * (page - 1)}`;
-
-  if (search) {
-    url += `&filter[where][title][like]=${search}`;
-  }
-
-  const params = { data, validation };
-  return api
-    .callApi({
-      url,
-      method: 'get',
-      params
-    })
-    .then(result => result.data.result);
-};
-
-const getCount = () =>
-  api
-    .callApi({
-      url: `${prefix}/count`,
-      method: 'get'
-    })
-    .then(result => result.data.result);
+const getAll = data => api
+  .callApi({
+    url: prefixElasticSearch,
+    method: 'post',
+    data
+  })
+  .then((result) => {
+    const items = result.data.result.hits.hits.map(el => ({ _id: el._id, ...el._source }));
+    const count = result.data.result.hits.total;
+    return { items, count };
+  });
 
 const getById = (id, params = {}) =>
   api
@@ -74,19 +62,16 @@ const update = ({ id, item }) => {
     .then(result => result.data.result);
 };
 
-const evaluation = (id, answers) => {
-  return api
-    .callApi({
-      url: `${prefix}/${id}/evaluation`,
-      method: 'post',
-      data: { answers }
-    })
-    .then(result => result.data.result);
-};
+const evaluation = (id, answers) => api
+  .callApi({
+    url: `${prefix}/${id}/evaluation`,
+    method: 'post',
+    data: { answers }
+  })
+  .then(result => result.data.result);
 
 export default {
   getAll,
-  getCount,
   getById,
   updateById,
   create,

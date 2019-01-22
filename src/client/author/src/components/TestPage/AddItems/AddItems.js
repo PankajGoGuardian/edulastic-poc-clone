@@ -1,32 +1,39 @@
 import React, { useState, useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
-import PerfectScrollbar from 'react-perfect-scrollbar';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import Modal from 'react-responsive-modal';
-import { Row, Col, Input, Spin, Select, Affix, Button } from 'antd';
+import { Select, Pagination, Spin } from 'antd';
 
 import { Paper, FlexContainer, EduButton, withWindowSizes } from '@edulastic/common';
-import { secondaryTextColor, textColor, desktopWidth } from '@edulastic/colors';
+import {
+  secondaryTextColor,
+  desktopWidth,
+  mobileWidth,
+  tabletWidth,
+  greenDark,
+  white
+} from '@edulastic/colors';
 
 import styled from 'styled-components';
-import TestFilters from '../../common/TestFilters';
 import {
-  getItemsLoadingSelector,
-  getTestItemsSelector
+  getCurriculumsListSelector,
+  getStandardsListSelector
+} from '../../../selectors/dictionaries';
+import {
+  clearDictStandardsAction,
+  getDictCurriculumsAction,
+  getDictStandardsForCurriculumAction
+} from '../../../actions/dictionaries';
+import {
+  getTestItemsLoadingSelector,
+  getTestItemsSelector,
+  getTestsItemsCountSelector, getTestsItemsLimitSelector,
+  getTestsItemsPageSelector
 } from '../../../selectors/testItems';
 import { receiveTestItemsAction } from '../../../actions/testItems';
-import TestFiltersNav from '../../common/TestFilters/TestFiltersNav';
 import ItemsTable from '../common/ItemsTable/ItemsTable';
-
-const filterItems = [
-  { icon: 'book', key: 'library', text: 'Entire Library' },
-  { icon: 'folder', key: 'byMe', text: 'Authored by me' },
-  { icon: 'copy', key: 'coAuthor', text: 'I am a Co-Author' },
-  { icon: 'reload', key: 'previously', text: 'Previously Used' },
-  { icon: 'heart', key: 'favorites', text: 'My Favorites' }
-];
+import ItemFilter from '../../ItemList/ItemFilter';
 
 const Items = ({
   items,
@@ -35,13 +42,29 @@ const Items = ({
   history,
   onAddItems,
   selectedItems,
-  windowWidth
+  windowWidth,
+  count,
+  page,
+  limit,
+  clearDictStandards,
+  curriculums,
+  getCurriculums,
+  getCurriculumStandards,
+  curriculumStandards
 }) => {
   useEffect(() => {
-    receiveTestItems({});
+    receiveTestItems();
+    getCurriculums();
   }, []);
-  const [searchStr, setSearchStr] = useState('');
-  const [isShowFilter, setIsShowFilter] = useState(false);
+  const [search, setSearch] = useState({
+    subject: '',
+    curriculumId: '',
+    standardIds: [],
+    questionType: '',
+    depthOfKnowledge: '',
+    authorDifficulty: '',
+    grades: []
+  });
   const [selectedTests, setSelectedTests] = useState([]);
 
   useEffect(
@@ -51,15 +74,16 @@ const Items = ({
     [selectedItems]
   );
 
-  if (loading) return <Spin size="large" />;
-
-  const handleSearch = (val) => {
-    console.log(val);
+  const handleSearch = () => {
+    receiveTestItems(search, 1, limit);
   };
 
-  const handleFiltersChange = (name, filterData) => {
-    console.log(name, filterData);
-  };
+  useEffect(
+    () => {
+      handleSearch();
+    },
+    [search]
+  );
 
   const handleSortChange = () => {};
 
@@ -67,112 +91,97 @@ const Items = ({
     history.push('/author/items');
   };
 
-  const showFilterHandler = () => {
-    setIsShowFilter(true);
+  const handleSearchFieldChangeCurriculumId = (value) => {
+    clearDictStandards();
+    setSearch({
+      ...search,
+      curriculumId: value,
+      standardIds: []
+    });
   };
 
-  const closeSearchModal = () => {
-    setIsShowFilter(false);
+  const handleSearchFieldChange = fieldName => (value) => {
+    if (fieldName === 'curriculumId') {
+      handleSearchFieldChangeCurriculumId(value);
+    } else {
+      setSearch({
+        ...search,
+        [fieldName]: value
+      });
+    }
   };
+
+  const handlePaginationChange = (newPage) => {
+    receiveTestItems(search, newPage, limit);
+  };
+
+  const renderPagination = () => (
+    <Pagination
+      simple={windowWidth <= 768 && true}
+      showTotal={(total, range) =>
+        `${range[0]} to ${range[1]} of ${total}`
+        }
+      onChange={handlePaginationChange}
+      defaultPageSize={10}
+      total={count}
+      current={page}
+    />
+  );
 
   return (
     <Container>
-      <MobileFilter>
-        <Input.Search
-          placeholder="Search by skills and keywords"
-          onSearch={handleSearch}
-          onChange={e => setSearchStr(e.target.value)}
-          style={{ width: '100%', marginRight: 10 }}
-          size="large"
-          value={searchStr}
-        />
-        <FilterButton>
-          <Button onClick={showFilterHandler}>
-            {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
-          </Button>
-        </FilterButton>
-        <Modal
-          open={isShowFilter}
-          onClose={closeSearchModal}
-        >
-          <SearchModalContainer>
-            <TestFilters onChange={handleFiltersChange}>
-              <TestFiltersNav
-                items={filterItems}
-              />
-            </TestFilters>
-          </SearchModalContainer>
-        </Modal>
-      </MobileFilter>
-      <Row
-        gutter={29}
-        style={{ paddingBottom: 15 }}
-        align="middle"
-      >
-        <Col span={windowWidth > 993 ? 5 : 0}>
-          <Filter>
-            <Input.Search
-              placeholder="Search by skills and keywords"
-              onSearch={handleSearch}
-              onChange={e => setSearchStr(e.target.value)}
-              style={{ width: '100%' }}
+      <TopMenu>
+        <FlexContainer justifyContent="space-between">
+          <FlexContainer alignItems="center" />
+          <FlexContainer alignItems="center">
+            <StyledButton
+              type="secondary"
               size="large"
-              value={searchStr}
-            />
-          </Filter>
-        </Col>
-        <Col span={windowWidth > 993 ? 19 : 24}>
-          <Row gutter={16}>
-            <Col span={24}>
-              <FlexContainer justifyContent="space-between">
-                <Question>{items.length} questions</Question>
-                <FlexContainer alignItems="center">
-                  <StyledButton
-                    type="secondary"
-                    size="large"
-                    onClick={handleCreateNewItem}
-                  >
-                    Create new Item
-                  </StyledButton>
-                  <StyledSelect
-                    size="large"
-                    defaultValue="popularity"
-                    style={{ width: 120 }}
-                    onChange={handleSortChange}
-                  >
-                    <Select.Option value="popularity">Popularity</Select.Option>
-                  </StyledSelect>
-                </FlexContainer>
-              </FlexContainer>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-      <Row gutter={29}>
-        <Col span={windowWidth > 993 ? 5 : 0} style={{ zIndex: 0 }}>
-          <Filter>
-            <Affix>
-              <PerfectScrollbar>
-                <TestFilters style={{ paddingTop: 13 }} onChange={handleFiltersChange}>
-                  <TestFiltersNav
-                    items={filterItems}
-                  />
-                </TestFilters>
-              </PerfectScrollbar>
-            </Affix>
-          </Filter>
-        </Col>
-        <Col span={windowWidth > 993 ? 19 : 24}>
-          <Paper>
-            <ItemsTable
-              items={items}
-              setSelectedTests={setSelectedTests}
-              selectedTests={selectedTests}
-              onAddItems={onAddItems}
-            />
-          </Paper>
-        </Col>
-      </Row>
+              onClick={handleCreateNewItem}
+            >
+              Create new Item
+            </StyledButton>
+            <StyledSelect
+              size="large"
+              defaultValue="popularity"
+              style={{ width: 120 }}
+              onChange={handleSortChange}
+            >
+              <Select.Option value="popularity">Popularity</Select.Option>
+            </StyledSelect>
+          </FlexContainer>
+        </FlexContainer>
+      </TopMenu>
+      <MainList id="main-list">
+        <ItemFilter
+          onSearchFieldChange={handleSearchFieldChange}
+          onSearch={handleSearch}
+          windowWidth={windowWidth}
+          search={search}
+          curriculums={curriculums}
+          getCurriculumStandards={getCurriculumStandards}
+          curriculumStandards={curriculumStandards}
+        />
+        <ListItems id="item-list">
+          {windowWidth > 468 && renderPagination()}
+          <ItemsTableContainer>
+            <Paper>
+              { loading &&
+              <Spin size="large" />
+              }
+              { !loading && (
+                <ItemsTable
+                  items={items}
+                  setSelectedTests={setSelectedTests}
+                  selectedTests={selectedTests}
+                  onAddItems={onAddItems}
+                />
+              )}
+            </Paper>
+          </ItemsTableContainer>
+          {renderPagination()}
+        </ListItems>
+      </MainList>
     </Container>
   );
 };
@@ -184,7 +193,20 @@ Items.propTypes = {
   onAddItems: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   selectedItems: PropTypes.array.isRequired,
-  windowWidth: PropTypes.number.isRequired
+  windowWidth: PropTypes.number.isRequired,
+  page: PropTypes.number.isRequired,
+  limit: PropTypes.number.isRequired,
+  count: PropTypes.number.isRequired,
+  curriculums: PropTypes.arrayOf(PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    curriculum: PropTypes.string.isRequired,
+    grades: PropTypes.array.isRequired,
+    subject: PropTypes.string.isRequired
+  })).isRequired,
+  getCurriculums: PropTypes.func.isRequired,
+  getCurriculumStandards: PropTypes.func.isRequired,
+  curriculumStandards: PropTypes.array.isRequired,
+  clearDictStandards: PropTypes.func.isRequired
 };
 
 const enhance = compose(
@@ -194,34 +216,91 @@ const enhance = compose(
   connect(
     state => ({
       items: getTestItemsSelector(state),
-      loading: getItemsLoadingSelector(state)
+      loading: getTestItemsLoadingSelector(state),
+      page: getTestsItemsPageSelector(state),
+      limit: getTestsItemsLimitSelector(state),
+      count: getTestsItemsCountSelector(state),
+      curriculums: getCurriculumsListSelector(state),
+      curriculumStandards: getStandardsListSelector(state)
     }),
-    { receiveTestItems: receiveTestItemsAction }
+    {
+      receiveTestItems: receiveTestItemsAction,
+      getCurriculums: getDictCurriculumsAction,
+      getCurriculumStandards: getDictStandardsForCurriculumAction,
+      clearDictStandards: clearDictStandardsAction
+    }
   )
 );
 
 export default enhance(Items);
 
 const Container = styled.div`
-  padding: 25px 30px 30px 30px;
+  width: 100%;
   height: 100%;
+  padding-bottom: 51px;
+  position: relative;
 
-  .ant-input {
+  @media (max-width: ${mobileWidth}) {
+    padding-bottom: 40px;
+  }
+`;
+
+const TopMenu = styled.div`
+  margin: 24px 45px 0px 45px;
+`;
+
+const MainList = styled.div`
+  display: flex;
+  height: 100%;
+  @media (max-width: ${desktopWidth}) {
+    display: block;
+  }
+`;
+
+const ListItems = styled.div`
+  flex: 1;
+  margin: 29px 40px 0px 29px;
+
+  @media (min-width: 993px) {
+    width: 200px;
+  }
+
+  .ant-pagination {
+    display: flex;
+
+    @media (max-width: ${tabletWidth}) {
+      justify-content: flex-end;
+      margin-left: 29px !important;
+      margin-top: 80px !important;
+    }
+  }
+
+  .ant-pagination-total-text {
+    flex: 1;
     font-size: 13px;
-    letter-spacing: 0.2px;
-    color: #b1b1b1;
-    ::placeholder {
-      font-style: italic;
-      color: #b1b1b1;
-    }
+    font-weight: 600;
+    font-family: 'Open Sans';
+    color: ${secondaryTextColor};
+    letter-spacing: normal;
   }
 
-  .ant-input-suffix {
-    font-size: 15px;
-    svg {
-      fill: #00b0ff;
-    }
+  .ant-pagination-item-active {
+    border: none;
+    opacity: 0.75;
+    background-color: ${greenDark};
   }
+
+  .ant-pagination-item-active a {
+    color: ${white};
+  }
+
+  @media (max-width: ${mobileWidth}) {
+    margin: 21px 26px 0px 26px;
+  }
+`;
+
+const ItemsTableContainer = styled.div`
+  margin: 14px 0px;
 `;
 
 const StyledButton = styled(EduButton)`
@@ -261,56 +340,4 @@ const StyledSelect = styled(Select)`
       fill: #00b0ff;
     }
   }
-`;
-
-const Question = styled.span`
-  font-size: 13px;
-  font-weight: 600;
-  color: ${secondaryTextColor};
-`;
-
-const Filter = styled.div`
-  @media (max-width: 993px) {
-    display: none;
-  }
-`;
-
-const MobileFilter = styled.div`
-  height: 50px;
-  margin-bottom: 15px;
-  @media (min-width: 993px) {
-    display: none;
-  }
-
-  @media (max-width: 993px) {
-    display: flex;
-  }
-`;
-
-const FilterButton = styled.div`
-  display: none;
-  flex: 1;
-  height: 50px;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  border-radius: 3px;
-
-  .ant-btn {
-    height: 50px;
-    border-radius: 3px;
-    width: 100%;
-    
-    span {
-      font-size: 11px;
-      font-weight: 600;
-      color: ${textColor};
-    }
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    display: block;
-  }
-`;
-
-const SearchModalContainer = styled.div`
-  width: calc(100vw - 80px);
 `;

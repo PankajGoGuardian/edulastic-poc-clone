@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Input, InputNumber } from 'antd';
-import { isEmpty, isUndefined/* , cloneDeep */ } from 'lodash';
+import { isUndefined/* , cloneDeep */ } from 'lodash';
 
 import QuestionHeader from '../common/QuestionHeader';
 import CheckboxTemplateBoxLayout from './CheckboxResponseBoxLayout';
@@ -35,14 +35,9 @@ class ClozeTextDisplay extends Component {
   }
 
   getTemplateParts = (props) => {
-    const { templateMarkUp, smallSize } = props;
-    let templateMarkUpStr = templateMarkUp;
-    if (isEmpty(templateMarkUpStr) || isUndefined(templateMarkUpStr)) {
-      templateMarkUpStr = defaultTemplateMarkup;
-    }
-    templateMarkUpStr = !smallSize ? templateMarkUpStr.replace('<br/>', '') : templateMarkUpStr;
-    const templateParts = templateMarkUpStr.match(/<p.*?<\/p>/g);
-    const responseParts = templateMarkUpStr.match(/<p class="response-btn.*?<\/p>/g);
+    const { templateMarkUp } = props;
+    const templateParts = templateMarkUp.match(/<p.*?<\/p>/g);
+    const responseParts = templateMarkUp.match(/<p class="response-btn.*?<\/p>/g);
     const respLength = responseParts !== null ? responseParts.length : 0;
     return { templateParts, respLength };
   }
@@ -223,7 +218,9 @@ ClozeTextDisplay.propTypes = {
   question: PropTypes.string.isRequired,
   validation: PropTypes.object,
   evaluation: PropTypes.object,
-  uiStyle: PropTypes.object
+  uiStyle: PropTypes.object,
+  /* eslint-disable react/no-unused-prop-types */
+  templateMarkUp: PropTypes.string
 };
 
 ClozeTextDisplay.defaultProps = {
@@ -243,7 +240,8 @@ ClozeTextDisplay.defaultProps = {
     placeholder: null,
     inputtype: 'text',
     responsecontainerindividuals: []
-  }
+  },
+  templateMarkUp: defaultTemplateMarkup
 };
 
 export default ClozeTextDisplay;

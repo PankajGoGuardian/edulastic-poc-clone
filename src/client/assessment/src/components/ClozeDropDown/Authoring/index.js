@@ -178,7 +178,6 @@ class ClozeDropDownAuthoring extends Component {
             placeholder={t('component.clozeDropDown.templatemarkupplaceholder')}
             onChange={this.onChangeMarkUp}
             showResponseBtn
-            key={item.templateMarkUp}
             value={item.templateMarkUp || defaultTemplateMarkup}
           />
           {responseContainers.map((resp, index) => (

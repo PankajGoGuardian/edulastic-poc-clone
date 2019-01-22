@@ -37,18 +37,6 @@ class ClozeTextAuthoring extends Component {
     setQuestionData({ ...item, templateMarkUp });
   }
 
-  getTemplateParts = (props) => {
-    const { templateMarkUp } = props;
-    let templateMarkUpStr = templateMarkUp;
-    if (!templateMarkUpStr) {
-      templateMarkUpStr = defaultTemplateMarkup;
-    }
-    const templateParts = templateMarkUpStr.match(/<p.*?<\/p>/g);
-    const responseParts = templateMarkUpStr.match(/<p class="response-btn.*?<\/p>/g);
-    const responseContainersCount = responseParts !== null ? responseParts.length : 0;
-    return { templateParts, responseContainersCount };
-  }
-
   render() {
     const { t, item } = this.props;
     return (
@@ -70,7 +58,6 @@ class ClozeTextAuthoring extends Component {
             placeholder={t('component.clozeText.templatemarkupplaceholder')}
             onChange={this.onChangeMarkUp}
             showResponseBtn
-            key={item.templateMarkUp}
             value={item.templateMarkUp || defaultTemplateMarkup}
           />
         </PaddingDiv>

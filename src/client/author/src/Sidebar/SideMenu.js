@@ -26,7 +26,14 @@ import {
 import { withWindowSizes } from '@edulastic/common';
 import { logoutAction } from '../actions/auth';
 import { toggleSideBarAction } from '../actions/togglemenu';
-
+import {
+  mobileWidth,
+  desktopWidth,
+  secondaryTextColor,
+  greenDark,
+  white,
+  tabletWidth
+} from '@edulastic/colors';
 import Profile from '../assets/Profile.png';
 
 const menuItems = [
@@ -36,7 +43,8 @@ const menuItems = [
   },
   {
     label: 'Assignments',
-    icon: IconAssignment
+    icon: IconAssignment,
+    path: 'author/assignments'
   },
   {
     label: 'Skill Report',
@@ -113,8 +121,10 @@ class SideMenu extends Component {
     const isPickQuestion = !!history.location.pathname.includes(
       'pickup-questiontype'
     );
+
     const isCollapsed = isPickQuestion || isSidebarCollapsed;
-    const isMobile = windowWidth < 480;
+    const isMobile = (windowWidth < 480) ? true : false;
+
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible}>
         <Menu>
@@ -269,7 +279,7 @@ const FixedSidebar = styled.div`
   top: 0px;
   bottom: 0px;
   @media (max-width: 768px) {
-    z-index: 2;
+    z-index: 999;
   }
 `;
 
@@ -333,9 +343,10 @@ const SideBar = styled(Layout.Sider)`
   }
   .ant-layout-sider-zero-width-trigger {
     top: 10px;
-    right: -33px;
+    right: -50px;
     color: #fff;
     background: transparent;
+    display: none;
   }
   .ant-select {
     width: 125px;

@@ -119,6 +119,9 @@ export const RECEIVE_DICT_STANDARDS_ERROR =
 export const CLEAR_DICT_STANDARDS = '[dictionaries] clear standards';
 
 // assignments
+export const RECEIVE_ASSIGNMENTS_REQUEST = '[assignments] receive list request';
+export const RECEIVE_ASSIGNMENTS_SUCCESS = '[assignments] receive list success';
+export const RECEIVE_ASSIGNMENTS_ERROR = '[assignments] receive list error';
 export const ADD_ASSIGNMENT = '[assignments] add assignment';
 export const SET_ASSIGNMENT = '[assignments] set assignment';
 export const UPDATE_ASSIGNMENT = '[assignments] update assignment';

@@ -149,6 +149,7 @@ class ItemList extends Component {
       curriculumStandards
     } = this.props;
     const { search } = this.state;
+    console.log("t-------<>",this.props)
     return (
       <Container>
         <ListHeader

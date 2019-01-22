@@ -9,6 +9,7 @@ import testItem from './testItem';
 import testItems from './testItems';
 import itemDetail from './itemDetail';
 import dictionaries from './dictionaries';
+import author_assignments from './assignments';
 
 const authorReducers = {
   authorUi,
@@ -21,7 +22,8 @@ const authorReducers = {
   testItem,
   testItems,
   itemDetail,
-  dictionaries
+  dictionaries,
+  author_assignments
 };
 
 export default authorReducers;

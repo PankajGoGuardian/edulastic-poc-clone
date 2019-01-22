@@ -4,7 +4,14 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { Button } from '@edulastic/common';
 import { IconPlus } from '@edulastic/icons';
+import { Icon } from 'antd';
+import { connect } from 'react-redux';
+import { FlexContainer } from '@edulastic/common';
+import { toggleSideBarAction } from '../../actions/togglemenu';
 import {
+  mobileWidth,
+  desktopWidth,
+  tabletWidth,
   greenDarkSecondary,
   darkBlueSecondary,
   white
@@ -12,15 +19,25 @@ import {
 import { withNamespaces } from '@edulastic/localization';
 import HeaderWrapper from '../../mainContent/headerWrapper';
 
-const ListHeader = ({ onCreate, t, windowWidth, title }) => (
+const toggleMenu = (toggle) => {
+  toggle()
+};
+
+const ListHeader = ({ onCreate, t, windowWidth, title, btnTitle, toggleSideBar }) =>  {
+  return(
   <Container>
-    <Title>{title}</Title>
+    <FlexContainer>
+      <MenuIcon type="bars" onClick={() => toggleMenu(toggleSideBar)}/>
+      <Title>{title}</Title>
+    </FlexContainer>
+
     <Button
       // disabled={creating}
       style={{
         height: windowWidth > 768 ? 50 : 40,
         minWidth: 151.9,
         color: '#fff',
+        borderRadius: 5,
         margin: 0
       }}
       onClick={onCreate}
@@ -29,30 +46,40 @@ const ListHeader = ({ onCreate, t, windowWidth, title }) => (
         <IconPlus
           color={greenDarkSecondary}
           style={{ position: 'relative' }}
-          left={-25}
-          width={14}
-          height={14}
+          left={-10}
+          width={13}
+          height={13}
           hoverColor={white}
         />
       }
     >
-      {t('component.itemlist.header.create')}
+      {btnTitle? btnTitle:t('component.itemlist.header.create')}
     </Button>
   </Container>
 );
-
+    }
 ListHeader.propTypes = {
   onCreate: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  toggleSideBar: PropTypes.func.isRequired,
 };
 
-const enhance = compose(withNamespaces('author'));
-
+const enhance = compose(
+  withNamespaces('author'),
+  connect(
+    ({ authorUi, user }) => ({
+      isSidebarCollapsed: authorUi.isSidebarCollapsed,
+      firstName: user.firstName || ''
+    }),
+    { toggleSideBar: toggleSideBarAction }
+  )
+);
 export default enhance(ListHeader);
 
 const Container = styled(HeaderWrapper)`
   display: flex;
+  border-radius: 5px;
   align-items: center;
   justify-content: space-between;
   background-color: ${darkBlueSecondary};
@@ -77,4 +104,12 @@ const Title = styled.h1`
   font-weight: bold;
   margin: 0;
   padding: 0;
+`;
+const MenuIcon = styled(Icon)`
+  display: none;
+  @media (max-width: ${tabletWidth}) {
+    display: block;
+    color: #fff;
+    font-size: 18px;
+  }
 `;

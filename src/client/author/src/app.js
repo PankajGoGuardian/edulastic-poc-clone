@@ -6,8 +6,16 @@ import { Layout } from 'antd';
 import { connect } from 'react-redux';
 import { Progress } from '@edulastic/common';
 import Sidebar from './Sidebar/SideMenu';
-
+import {
+  mobileWidth,
+  desktopWidth,
+  secondaryTextColor,
+  greenDark,
+  white,
+  tabletWidth
+} from '@edulastic/colors';
 /* lazy load routes */
+const Assignments = lazy(() => import('./Assignments/components/Assignments'));
 const TestList = lazy(() => import('./components/TestList'));
 const TestPage = lazy(() => import('./components/TestPage'));
 const QuestionEditor = lazy(() => import('./components/QuestionEditor'));
@@ -25,10 +33,11 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
   return (
     <Layout>
       <MainContainer isCollapsed={isCollapsed}>
-        <Sidebar />
+        <SidebarCompnent />
         <Wrapper>
           <Suspense fallback={<Progress />}>
             <Switch>
+              <Route exact path={`${match.url}/assignments`} component={Assignments} />
               <Route exact path={`${match.url}/items`} component={ItemList} />
               <Route
                 exact
@@ -104,16 +113,19 @@ const MainContainer = styled.div`
     left: ${props => (props.isCollapsed ? '100px' : '240px')};
     z-index: 1;
   }
-  @media (max-width: 768px) {
+  @media (max-width: ${tabletWidth}) {
     padding-left: 0px;
     .fixed-header {
       left: 0;
-      padding-left: 30px;
       background: #0188d2;
     }
   }
 `;
-
+const SidebarCompnent  = styled(Sidebar)`
+  @media(max-width: ${tabletWidth}) {
+    display: none;
+  }
+`;
 const Wrapper = styled.div`
   position: relative;
 `;

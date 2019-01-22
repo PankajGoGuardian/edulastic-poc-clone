@@ -983,6 +983,13 @@ span.token.active-word {
   box-shadow: none !important;
 }
 
+.ant-popover-content{
+  margin-top:-13px;
+}
+.ant-popover-arrow{
+  display: none;
+}
+
 #tool .rc-color-picker-wrap {
   width: 32px !important;
   height: 32px !important;

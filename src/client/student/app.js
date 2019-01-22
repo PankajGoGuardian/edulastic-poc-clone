@@ -10,12 +10,12 @@ import Sidebar from './Sidebar/SideMenu';
 import DashboardContainer from './components/dashboard';
 import { Assignment } from './Assignments';
 import { Report } from './Reports';
-import { ReportList } from './ReportList';
+//TODO
+//import { ReportList } from './ReportList';
 import { Profile } from './Profile';
 
 import ManageClassContainer from './components/manageClass';
-import ReportListContainer from './components/ReportList';
-import SkillReportContainer from './components/skillReport';
+import SkillReportContainer from './skillReport';
 
 const Dashboard = ({ match, isSidebarCollapsed }) => (
   <ThemeProvider theme={themes.default}>
@@ -34,15 +34,16 @@ const Dashboard = ({ match, isSidebarCollapsed }) => (
               path={`${match.url}/skill-report`}
               component={SkillReportContainer}
             />
-            <Route
+            {/* <Route
               path={`${match.url}/manage`}
               component={ManageClassContainer}
-            />
+            /> */}
             <Route path={`${match.url}/profile`} component={Profile} />
-            <Route
+            {/*TODO*/}
+            {/* <Route
               path={`${match.url}/testActivityReport/:id`}
               component={ReportList}
-            />
+            /> */}
           </Switch>
         </Wrapper>
       </MainContainer>

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
 import HeaderWrapper from '../../styled/header/headerWrapper';
-import QuestionSelect from '../../src/components/ReportList/QuestionSelect';
+import QuestionSelect from './QuestionSelect';
 
 const ReportListHeader = ({ t }) => (
   <HeaderWrapper>

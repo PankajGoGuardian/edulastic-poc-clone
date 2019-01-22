@@ -9,6 +9,7 @@ export const getItemsSelector = createSelector(
   state => state.items
 );
 
+
 export const getCurrentItemSelector = createSelector(
   stateSelector,
   state => state.current

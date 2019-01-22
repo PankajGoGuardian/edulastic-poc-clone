@@ -23,6 +23,7 @@ function* loadTestActivityReport({ payload }) {
     if (!testActivityId) {
       throw new Error('invalid data');
     }
+    
     const data = yield select(getReportByIdSelector(testActivityId));
     const [test, reports] = yield all([
       call(testsApi.getById, data.testId, { data: true }),

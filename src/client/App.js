@@ -34,7 +34,7 @@ class App extends Component {
       <div>
         <Suspense fallback={<Loading />}>
           <Switch>
-            <Redirect exact path="/" to="/home/dashboard" />
+            <Redirect exact path="/" to="/home/assignments" />
             <Route path="/author" component={Author} />
             <Route path="/home" component={Dashboard} />
             <Route path="/Signup" component={Signup} />

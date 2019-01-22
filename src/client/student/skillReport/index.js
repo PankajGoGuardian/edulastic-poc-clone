@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import Header from '../../styled/header';
+import Header from '../styled/header';
 import SkillReportMainContent from './WrapperAndSummary';
 
-import MainContainer from '../commonStyle/mainContainer';
+import MainContainer from '../component/mainContainer';
 import { fetchSkillReportByClassID as fetchSkillReportAction } from './ducks';
 
 const SkillReportContainer = ({ flag, skillReport, fetchSkillReport }) => {
@@ -23,7 +23,7 @@ const SkillReportContainer = ({ flag, skillReport, fetchSkillReport }) => {
 };
 
 export default React.memo(connect(
-  ({ ui, reports }) => ({ flag: ui.flag, skillReport: reports.skillReport }),
+  ({ ui, skillReport }) => ({ flag: ui.flag, skillReport: skillReport }),
   {
     fetchSkillReport: fetchSkillReportAction
   }

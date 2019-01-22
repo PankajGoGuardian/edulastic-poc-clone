@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Progress } from 'antd';
 import { IconPlus } from '@edulastic/icons';
-import AssignmentContentWrapper from '../commonStyle/assignmentContentWrapper';
+import AssignmentContentWrapper from '../component/assignmentContentWrapper';
 
 export const AssignmentContentWrap = styled(AssignmentContentWrapper)`
   padding-top: 32px;

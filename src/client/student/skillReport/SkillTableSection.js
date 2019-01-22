@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
 import { greenDark } from '@edulastic/colors';
-import StyledTable from '../../styled/Table';
+import StyledTable from '../styled/Table';
 import * as S from './styled';
 
 const computeColumns = t => [{

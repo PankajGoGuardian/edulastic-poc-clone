@@ -29,7 +29,7 @@ function* login({ payload }) {
         user
       }
     });
-    if (user.role === roleuser.STUDENT) yield put(push('/home/dashboard'));
+    if (user.role === roleuser.STUDENT) yield put(push('/home/assignments'));
     else if (user.role === roleuser.ADMIN) yield put(push('/author/items'));
     else if (user.role === roleuser.TEACHER) yield put(push('/author/items'));
   } catch (err) {

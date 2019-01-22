@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
 import * as S from './styled';
-import StyledTable from '../../styled/Table';
+import StyledTable from '../styled/Table';
 import TableSection from './SkillTableSection';
 
 const computeColumns = t => [
@@ -45,8 +45,8 @@ const computeColumns = t => [
 const SkillReportMainContent = ({ skillReport, t }) => {
   const summaryColumns = computeColumns(t);
   let sumData = [];
-  
-  if (skillReport) {
+  //console.log('skillReport',skillReport);
+  if (skillReport && skillReport.reports) {
     const { reportData } = skillReport.reports;
     sumData = skillReport.reports.curriculum.domains.map(domain => ({
       domain: domain.description,

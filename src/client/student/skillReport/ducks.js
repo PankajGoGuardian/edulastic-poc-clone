@@ -7,12 +7,10 @@ export const GET_SKILL_REPORT_BY_CLASSID = '[reports] get skill reports by class
 export const LOAD_SKILL_REPORT_BY_CLASSID = '[reports] load skill report by class id';
 
 
-const initialState = {
-  skillReport: {}
-};
+const initialState = null;
 
 const reducer = createReducer(initialState, {
-  [LOAD_SKILL_REPORT_BY_CLASSID]: (state, action) => { state.report = action.payload; }
+  [LOAD_SKILL_REPORT_BY_CLASSID]: (_, action) =>  action.payload 
 });
 
 export default reducer;
@@ -26,6 +24,7 @@ function* fetchSkillReport(action) {
   const classId = action.payload;
   try {
     const reports = yield call(skillReportApi.fetchSkillReport, classId);
+    console.log('reports',reports);
     yield put({ type: LOAD_SKILL_REPORT_BY_CLASSID, payload: { reports } });
   } catch (err) {
     console.error(err);

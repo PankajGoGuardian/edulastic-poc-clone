@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import AssignmentsContent from '../../components/commonStyle/assignmentContent';
 import AssignmentContentWrapper from '../../components/commonStyle/assignmentContentWrapper';
-import ItemReport from '../../src/components/ReportList/ItemReport';
-import { getQuestionsSelector } from '../../src/selectors/items';
+//TODO
+//import ItemReport from '../../src/components/ReportList/ItemReport';
+//import { getQuestionsSelector } from '../../src/selectors/items';
 
 const ReportListContent = ({ questions, flag, title }) => {
   return (
@@ -16,7 +17,8 @@ const ReportListContent = ({ questions, flag, title }) => {
             <Title>{title}</Title>
           </Header>
           {questions.map((question, index) => (
-            <ItemReport key={index} question={question} index={index} />
+            //TODO
+           {/* <ItemReport key={index} question={question} index={index} /> */}
           ))}
         </Wrapper>
       </AssignmentContentWrapper>

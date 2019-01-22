@@ -3,7 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
 import { compose } from "redux";
-import AssignmentTitle from "../../components/assignments/common/assignmentTitle";
+
 import HeaderWrapper from "./headerWrapper";
 import ClassSelect from "../../component/ClassSelector";
 
@@ -37,5 +37,20 @@ const Wrapper = styled.div`
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
+  }
+`;
+
+export const AssignmentTitle = styled.div`
+  font-family: Open Sans;
+  font-size: ${props => props.theme.headerTitleFontSize};
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.36;
+  letter-spacing: normal;
+  text-align: left;
+  color: ${props => props.theme.headerTitleTextColor};
+  @media screen and (max-width: 768px) {
+    padding-left: 40px;
   }
 `;

@@ -44,7 +44,6 @@ const menuItems = [
   {
     label: 'Dashboard',
     icon: IconClockDashboard,
-    path: 'home/dashboard'
   },
   {
     label: 'Assignments',

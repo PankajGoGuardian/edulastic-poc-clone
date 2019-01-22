@@ -49,11 +49,20 @@ class ClozeImageDragDropDisplay extends Component {
     const newResponses = cloneDeep(possibleResponses);
 
     // Remove duplicated responses if duplicated option is disable
-    if (newAnswers[index] && newAnswers[index].length < maxRespCount || isUndefined(newAnswers[index])) {
+    if (newAnswers[index] && newAnswers[index].length >= maxRespCount) {
+      const [sourceData, sourceIndex, fromResp] = data.metal.split('_');
+      if (!fromResp) return;
+      newAnswers[index] = [];
+      newAnswers[index].push(sourceData);
+      for (let i = 0; i < newAnswers[sourceIndex].length; i++) {
+        if (newAnswers[sourceIndex][i] === sourceData) {
+          newAnswers[sourceIndex].splice(i, 1);
+          break;
+        }
+      }
+    } else if (newAnswers[index] && newAnswers[index].length < maxRespCount || isUndefined(newAnswers[index])) {
       if (!isDuplicated) {
-        const sourceIndex = data.metal.split('_')[1];
-        const sourceData = data.metal.split('_')[0];
-        const fromResp = data.metal.split('_')[2];
+        const [sourceData, sourceIndex, fromResp] = data.metal.split('_');
         if (fromResp) {
           if (newAnswers[index] === undefined) newAnswers[index] = [];
           newAnswers[index].push(sourceData);
@@ -74,22 +83,20 @@ class ClozeImageDragDropDisplay extends Component {
           }
         }
       } else {
-      const value = data.metal.split('_')[0];
-      const sourceIndex = data.metal.split('_')[1];
-      const fromResp = data.metal.split('_')[2];
-      if (fromResp) {
-        if (newAnswers[index] === undefined) newAnswers[index] = [];
-        newAnswers[index].push(sourceData);
-        for (let i = 0; i < newAnswers[sourceIndex].length; i++) {
-          if (newAnswers[sourceIndex][i] === sourceData) {
-            newAnswers[sourceIndex].splice(i, 1);
-            break;
+        const [value, sourceIndex, fromResp] = data.metal.split('_');
+        if (fromResp) {
+          if (newAnswers[index] === undefined) newAnswers[index] = [];
+          newAnswers[index].push(sourceData);
+          for (let i = 0; i < newAnswers[sourceIndex].length; i++) {
+            if (newAnswers[sourceIndex][i] === sourceData) {
+              newAnswers[sourceIndex].splice(i, 1);
+              break;
+            }
           }
+        } else {
+          if (newAnswers[index] === undefined) newAnswers[index] = [];
+          newAnswers[index].push(value);
         }
-      } else {
-        if (newAnswers[index] === undefined) newAnswers[index] = [];
-        newAnswers[index].push(value);
-      }
       }
     }
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });

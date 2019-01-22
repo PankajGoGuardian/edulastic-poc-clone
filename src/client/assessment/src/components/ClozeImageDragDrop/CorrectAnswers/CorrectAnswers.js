@@ -199,7 +199,7 @@ CorrectAnswers.propTypes = {
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
   imageWidth: PropTypes.number,
-  maxRespCount: PropTypes.number,
+  maxRespCount: PropTypes.number
 };
 
 CorrectAnswers.defaultProps = {

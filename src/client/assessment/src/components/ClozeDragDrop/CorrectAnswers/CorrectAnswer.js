@@ -16,7 +16,7 @@ class CorrectAnswer extends Component {
     hasGroupResponses: PropTypes.bool.isRequired,
     templateMarkUp: PropTypes.string.isRequired,
     configureOptions: PropTypes.object.isRequired,
-    uiStyle: PropTypes.object.isRequired,
+    uiStyle: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -26,7 +26,7 @@ class CorrectAnswer extends Component {
       userSelections[answer] = true;
     });
     this.state = {
-      responseScore: props.response.score,
+      responseScore: props.response.score
     };
   }
 

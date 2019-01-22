@@ -31,7 +31,7 @@ class MultipleChoiceAuthoring extends Component {
   };
 
   onSortEnd = ({ oldIndex, newIndex }) => {
-    const { setQuestionData } = this.props;
+    const { item, setQuestionData } = this.props;
     const newItem = this.getNewItem();
     // reorder the options and sort the key based on index
     // editing is based on on index!
@@ -41,6 +41,31 @@ class MultipleChoiceAuthoring extends Component {
         label
       }));
 
+    let idx = item.validation.valid_response.value.findIndex(val => val === oldIndex);
+    if (idx !== -1) {
+      newItem.validation.valid_response.value[idx] = newIndex;
+    }
+
+    idx = item.validation.valid_response.value.findIndex(val => val === newIndex);
+    if (idx !== -1) {
+      newItem.validation.valid_response.value[idx] = oldIndex;
+    }
+
+    if (newItem.validation.alt_responses) {
+      for (let i = 0; i < item.validation.alt_responses; i++) {
+        const altResponse = newItem.validation.alt_responses[i];
+        idx = item.validation.alt_responses[i].value.findIndex(val => val === oldIndex);
+        if (idx !== -1) {
+          altResponse.value[idx] = newIndex;
+        }
+
+        idx = item.validation.alt_responses[i].value.findIndex(val => val === newIndex);
+        if (idx !== -1) {
+          altResponse.value[idx] = oldIndex;
+        }
+        return altResponse;
+      }
+    }
     setQuestionData(newItem);
   };
 

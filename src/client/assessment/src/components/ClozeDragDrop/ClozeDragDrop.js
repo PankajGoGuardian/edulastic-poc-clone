@@ -61,6 +61,16 @@ class ClozeDragDrop extends Component {
     setQuestionData(newItem);
   };
 
+  handleRemoveAltResponses = (index) => {
+    const { setQuestionData, item } = this.props;
+    const newItem = cloneDeep(item);
+
+    if (newItem.validation && newItem.validation.alt_responses && newItem.validation.alt_responses.length) {
+      newItem.validation.alt_responses.splice(index, 1);
+      setQuestionData(newItem);
+    }
+  }
+
   handleOptionsChange = (name, value) => {
     const { setQuestionData, item } = this.props;
     const newItem = cloneDeep(item);
@@ -107,6 +117,7 @@ class ClozeDragDrop extends Component {
                   uiStyle={uiStyle}
                   templateMarkUp={itemForEdit.templateMarkUp}
                   onAddAltResponses={this.handleAddAltResponses}
+                  onRemoveAltResponses={this.handleRemoveAltResponses}
                 />
                 <CorrectAnswerOptions>
                   <Checkbox

@@ -23,6 +23,18 @@ class CorrectAnswers extends Component {
     this.setState({ value });
   };
 
+  removeAltResponse = (evt, index) => {
+    evt.stopPropagation();
+    const { onRemoveAltResponses } = this.props;
+    const { value } = this.state;
+    if (value === index + 1) {
+      this.setState({
+        value: index
+      });
+    }
+    onRemoveAltResponses(index);
+  }
+
   renderAltResponses = () => {
     const { validation, t } = this.props;
 
@@ -31,6 +43,8 @@ class CorrectAnswers extends Component {
         <Tab
           key={i}
           label={`${t('component.correctanswers.alternate')} ${i + 1}`}
+          close
+          onClose={(evt) => { this.removeAltResponse(evt, i); }}
         />
       ));
     }
@@ -174,6 +188,7 @@ class CorrectAnswers extends Component {
 
 CorrectAnswers.propTypes = {
   onAddAltResponses: PropTypes.func.isRequired,
+  onRemoveAltResponses: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   validation: PropTypes.object,
   t: PropTypes.func.isRequired,

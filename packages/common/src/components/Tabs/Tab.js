@@ -2,18 +2,24 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { textColor, blue, mobileWidth, greenDark, mainBgColor } from '@edulastic/colors';
-import { IconPencilEdit } from '@edulastic/icons';
+import { IconPencilEdit, IconClose } from '@edulastic/icons';
 
-const Tab = ({ label, onClick, active, style, editable, onChange }) => {
+const Tab = ({ label, onClick, active, style, editable, close, onClose, onChange }) => {
   const inputTab = (
     <EditableTab>
       <Input type="text" value={label} onChange={onChange} />
       <IconPencilEdit color={greenDark} />
     </EditableTab>
   );
+  const closeButton = (
+    <CloseIcon>
+      <IconClose color={blue} width={10} height={10} onClick={onClose} />
+    </CloseIcon>
+  );
   return (
     <Container onClick={onClick} active={active} style={style}>
       {editable ? inputTab : label}
+      {close && closeButton}
     </Container>
   );
 };
@@ -24,7 +30,9 @@ Tab.propTypes = {
   active: PropTypes.bool,
   style: PropTypes.object,
   editable: PropTypes.bool,
-  onChange: PropTypes.func
+  close: PropTypes.bool,
+  onChange: PropTypes.func,
+  onClose: PropTypes.func
 };
 
 Tab.defaultProps = {
@@ -32,7 +40,11 @@ Tab.defaultProps = {
   active: false,
   style: {},
   editable: false,
-  onChange: () => {}
+  close: false,
+  onChange: () => {},
+  onClose: (evt) => {
+    evt.stopPropagation();
+  }
 };
 
 export default Tab;
@@ -60,4 +72,8 @@ const EditableTab = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const CloseIcon = styled.span`
+  margin-left: 10px;
 `;

@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { withNamespaces } from '@edulastic/localization';
 
 // components
-import Breadcrumb from '../../components/Breadcrumb';
+import Breadcrumb from '../../component/Breadcrumb';
 
 const breadcrumbData = [{ title: 'REPORTS', to: '' }];
 

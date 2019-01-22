@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Col } from 'antd';
 
-import Breadcrumb from '../../components/Breadcrumb';
+import Breadcrumb from '../../component/Breadcrumb';
 import QuestionSelect from './QuestionSelect.js';
 
 class ReportListSecondHeader extends Component {

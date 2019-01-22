@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { themes } from './themes';
 
 import Sidebar from './Sidebar/SideMenu';
-import DashboardContainer from './components/dashboard';
 import { Assignment } from './Assignments';
 import { Report } from './Reports';
 //TODO
@@ -24,10 +23,6 @@ const Dashboard = ({ match, isSidebarCollapsed }) => (
         <Sidebar />
         <Wrapper>
           <Switch>
-            <Route
-              path={`${match.url}/dashboard`}
-              component={DashboardContainer}
-            />
             <Route path={`${match.url}/assignments`} component={Assignment} />
             <Route path={`${match.url}/reports`} component={Report} />
             <Route

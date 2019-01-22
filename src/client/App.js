@@ -7,24 +7,33 @@ import { compose } from 'redux';
 
 // route wise splitting
 const Student = lazy(() =>
-  import(/* webpackChunkName: "assessmentPlayer" */ './student'));
+  import(/* webpackChunkName: "assessmentPlayer" */ './student')
+);
 const Signup = lazy(() =>
-  import(/* webpackChunkName: "teacherSignup" */ './student/components/authentication/signup'));
+  import(/* webpackChunkName: "teacherSignup" */ './student/components/authentication/signup')
+);
 const Login = lazy(() =>
-  import(/* webpackChunkName: "login" */ './student/components/authentication/login'));
+  import(/* webpackChunkName: "login" */ './student/components/authentication/login')
+);
 const GetStarted = lazy(() =>
-  import(/* webpackChunkName: "getStarted" */ './student/components/authentication/signup/getStarted'));
+  import(/* webpackChunkName: "getStarted" */ './student/components/authentication/signup/getStarted')
+);
 const StudentSignup = lazy(() =>
-  import(/* webpackChunkName: "studentSignup" */ './student/components/authentication/signup/studentSignup'));
+  import(/* webpackChunkName: "studentSignup" */ './student/components/authentication/signup/studentSignup')
+);
 const AdminSignup = lazy(() =>
-  import(/* webpackChunkName: "adminSignup" */ './student/components/authentication/signup/adminSignup'));
+  import(/* webpackChunkName: "adminSignup" */ './student/components/authentication/signup/adminSignup')
+);
 const Dashboard = lazy(() =>
-  import(/* webpackChunkName: "student" */ './student/app'));
+  import(/* webpackChunkName: "student" */ './student/app')
+);
 const SummaryTest = lazy(() =>
-  import(/* webpackChunkName: "student test summary" */ './student/components/Summary'));
+  import(/* webpackChunkName: "student test summary" */ './student/components/Summary')
+);
 
 const Author = lazy(() =>
-  import(/* webpackChunkName: "author" */ './author/src/app'));
+  import(/* webpackChunkName: "author" */ './author/src/app')
+);
 
 const Loading = () => <div> Loading ...</div>;
 

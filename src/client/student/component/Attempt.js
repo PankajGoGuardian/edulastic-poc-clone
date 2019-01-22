@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 
 import { formatTime } from '../utils';
 
-const Attempt = ({ data }) => {
+const Attempt = ({ data, type }) => {
+  console.log('type', type);
   const { correct = 0, wrong = 0 } = data;
   const total = correct + wrong;
   const percentage = (correct / total) * 100 || 0;
@@ -24,9 +25,13 @@ const Attempt = ({ data }) => {
           <span>{percentage}%</span>
         </AnswerAndScore>
         <SpaceBetween />
-        <AnswerAndScoreReview>
-          <span>REVIEW</span>
-        </AnswerAndScoreReview>
+        {type === 'reports' ? (
+          <AnswerAndScoreReview>
+            <span>REVIEW</span>
+          </AnswerAndScoreReview>
+        ) : (
+          ''
+        )}
       </RowData>
     </AttemptsData>
   );
@@ -76,7 +81,7 @@ const AnswerAndScoreReview = styled(AnswerAndScore)`
 
 const RowData = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
   border-radius: 4px;
   height: 30px;

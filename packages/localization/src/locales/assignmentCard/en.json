@@ -1,10 +1,13 @@
 {
   "common": {
     "dueOn": "Due on",
+    "opensIn": "Opens in",
     "submittedTag": "SUBMITTED",
     "notStartedTag": "NOT STARTED",
+    "inProgress": "IN PROGRESS",
     "startAssignment": "START ASSIGNMENT",
     "retake": "RETAKE",
+    "lockAssignment": "NOT AVAILABLE",
     "review": "REVIEW",
     "attemps": "Attempts",
     "correctAnswer": "Correct Answer",

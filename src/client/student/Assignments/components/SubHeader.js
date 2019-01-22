@@ -13,21 +13,13 @@ const breadcrumbData = [{ title: 'ASSIGNMENTS', to: '' }];
 const AssignmentSubHeader = ({ t }) => {
   const [btnIndex, setBtnIndex] = useState(0);
 
-  const filters = [
-    t('all'),
-    t('notStarted'),
-    t('inProgress'),
-    t('submitted'),
-    t('graded')
-  ];
+  const filters = [t('all'), t('notStarted'), t('inProgress')];
 
-  /* eslint-disable */
   const Filter = ({ index, value }) => (
     <FilterBtn onClick={() => setBtnIndex(index)} enabled={btnIndex === index}>
       {value}
     </FilterBtn>
   );
-  /* eslint-enable */
 
   return (
     <Wrapper>
@@ -87,9 +79,9 @@ const BreadcrumbWrapper = styled.div`
 const FilterBtn = styled(Button)`
   height: 24px;
   color: ${props =>
-    (props.enabled
+    props.enabled
       ? props.theme.headerFilters.headerSelectedFilterTextColor
-      : props.theme.headerFilters.headerFilterTextColor)};
+      : props.theme.headerFilters.headerFilterTextColor};
   border: 1px solid
     ${props => props.theme.headerFilters.headerFilterBgBorderColor};
   border-radius: 4px;
@@ -97,19 +89,19 @@ const FilterBtn = styled(Button)`
   min-width: 85px;
   font-size: ${props => props.theme.headerFilters.headerFilterTextSize};
   background: ${props =>
-    (props.enabled
+    props.enabled
       ? props.theme.headerFilters.headerSelectedFilterBgColor
-      : props.theme.headerFilters.headerFilterBgColor)};
+      : props.theme.headerFilters.headerFilterBgColor};
   &:focus,
   &:active {
     color: ${props =>
-    (props.enabled
-      ? props.theme.headerFilters.headerSelectedFilterTextColor
-      : props.theme.headerFilters.headerFilterTextColor)};
+      props.enabled
+        ? props.theme.headerFilters.headerSelectedFilterTextColor
+        : props.theme.headerFilters.headerFilterTextColor};
     background: ${props =>
-    (props.enabled
-      ? props.theme.headerFilters.headerSelectedFilterBgColor
-      : props.theme.headerFilters.headerFilterBgColor)};
+      props.enabled
+        ? props.theme.headerFilters.headerSelectedFilterBgColor
+        : props.theme.headerFilters.headerFilterBgColor};
   }
   span {
     font-size: ${props => props.theme.headerFilters.headerFilterTextSize};

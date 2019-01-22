@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import styled, { withTheme } from 'styled-components';
 import { last } from 'lodash';
 import { Row, Col, Button } from 'antd';
+import lockIcon from '../assets/lock-icon.svg';
 
 //  components
 import AssessmentDetails from './AssessmentDetail';
@@ -20,7 +21,7 @@ const AssignmentCard = ({ startAssignment, data, theme, t, type }) => {
 
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
 
-  const { test = {}, reports = [], endDate, testId } = data;
+  const { test = {}, reports = [], endDate, testId, startDate } = data;
   const attempted = !!(reports && reports.length);
   const attemptCount = reports && reports.length;
   const lastAttempt = last(reports) || {};
@@ -48,6 +49,7 @@ const AssignmentCard = ({ startAssignment, data, theme, t, type }) => {
         type={type}
         started={attempted}
         dueDate={endDate}
+        startDate={startDate}
       />
       <ButtonAndDetail>
         <DetailContainer>
@@ -78,9 +80,16 @@ const AssignmentCard = ({ startAssignment, data, theme, t, type }) => {
             )}
           </AttemptDetails>
           {type === 'assignment' ? (
-            <StartAssignButton onClick={startTest}>
-              <span>{startButtonText}</span>
-            </StartAssignButton>
+            new Date(startDate) > new Date() ? (
+              <NotAvailableButton disabled>
+                <img src={lockIcon} alt="" />
+                <span>{t('common.lockAssignment')}</span>
+              </NotAvailableButton>
+            ) : (
+              <StartAssignButton onClick={startTest}>
+                <span>{startButtonText}</span>
+              </StartAssignButton>
+            )
           ) : (
             <Link
               to={{
@@ -96,7 +105,9 @@ const AssignmentCard = ({ startAssignment, data, theme, t, type }) => {
           )}
         </DetailContainer>
         {showAttempts &&
-          reports.map(attempt => <Attempt key={attempt._id} data={attempt} />)}
+          reports.map(attempt => (
+            <Attempt key={attempt._id} data={attempt} type={type} />
+          ))}
       </ButtonAndDetail>
     </CardWrapper>
   );
@@ -201,6 +212,24 @@ const StartAssignButton = styled(Button)`
   }
   @media screen and (max-width: 767px) {
     max-width: 100%;
+  }
+`;
+
+const NotAvailableButton = styled(StartAssignButton)`
+  display: flex;
+  justify-content: space-evenly;
+  img {
+    width: 15px;
+    height: 15px;
+  }
+  span {
+    color: #dddddd;
+  }
+  &:hover {
+    background-color: #fff;
+    span {
+      color: #dddddd;
+    }
   }
 `;
 

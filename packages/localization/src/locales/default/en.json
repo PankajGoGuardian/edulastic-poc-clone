@@ -12,6 +12,7 @@
   "submitted": "SUBMITTED",
   "graded": "GRADED",
   "submit": "SUBMIT",
+  "missed": "MISSED",
   "flagged": "FLAGGED",
   "skipped": "SKIPPED"
 }

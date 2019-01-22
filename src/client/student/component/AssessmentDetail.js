@@ -4,7 +4,15 @@ import PropTypes from 'prop-types';
 import { Col, Icon } from 'antd';
 import { formatTime } from '../utils';
 
-const AssessmentDetails = ({ test, theme, t, started, dueDate, type }) => (
+const AssessmentDetails = ({
+  test,
+  theme,
+  t,
+  started,
+  dueDate,
+  type,
+  startDate
+}) => (
   <Wrapper>
     <Col>
       <ImageWrapper>
@@ -17,7 +25,13 @@ const AssessmentDetails = ({ test, theme, t, started, dueDate, type }) => (
         <Icon type={theme.assignment.cardTimeIconType} />
         <span>
           <StrongText>
-            {type === 'assignment' ? t('common.dueOn') : t('common.finishedIn')}{' '}
+            {type === 'assignment'
+              ? new Date(startDate) > new Date()
+                ? `${t('common.opensIn')} ${formatTime(startDate)} and ${t(
+                    'common.dueOn'
+                  )}`
+                : t('common.dueOn')
+              : t('common.finishedIn')}{' '}
           </StrongText>
           {formatTime(dueDate)}
         </span>
@@ -26,7 +40,7 @@ const AssessmentDetails = ({ test, theme, t, started, dueDate, type }) => (
         {type === 'assignment' ? (
           <StatusButton isSubmitted={started}>
             <span>
-              {started ? t('common.submittedTag') : t('common.notStartedTag')}
+              {started ? t('common.inProgress') : t('common.notStartedTag')}
             </span>
           </StatusButton>
         ) : (

@@ -77,7 +77,7 @@ class SideMenu extends Component {
     };
   }
 
-  handleMenu = (e) => {
+  handleMenu = e => {
     const { history, windowWidth } = this.props;
     if (menuItems[e.key].path !== undefined) {
       history.push(`/${menuItems[e.key].path}`);
@@ -92,9 +92,9 @@ class SideMenu extends Component {
     toggleSideBar();
   };
 
-  handleVisibleChange = (flag) => {
+  handleVisibleChange = flag => {
     this.setState({ isVisible: flag });
-  }
+  };
 
   toggleDropdown = () => {
     this.setState(prevState => ({ isVisible: !prevState.isVisible }));
@@ -109,21 +109,28 @@ class SideMenu extends Component {
   };
 
   renderIcon = (icon, isSidebarCollapsed) => styled(icon)`
-      width: 22px !important;
-      height: 22px !important;
-      fill: rgb(67, 75, 93);
-      margin-right: ${() => (isSidebarCollapsed ? '0rem' : '1rem')};
-      .ant-menu-item-active > & {
-        fill: #1890ff;
-      }
-      .ant-menu-item-selected > & {
-        fill: #4aac8b;
-      }
-    `
+    width: 22px !important;
+    height: 22px !important;
+    fill: rgb(67, 75, 93);
+    margin-right: ${() => (isSidebarCollapsed ? '0rem' : '1rem')};
+    .ant-menu-item-active > & {
+      fill: #1890ff;
+    }
+    .ant-menu-item-selected > & {
+      fill: #4aac8b;
+    }
+  `;
 
   render() {
     const { broken, isVisible } = this.state;
-    const { windowWidth, currentPath, firstName, logout, isSidebarCollapsed, t } = this.props;
+    const {
+      windowWidth,
+      currentPath,
+      firstName,
+      logout,
+      isSidebarCollapsed,
+      t
+    } = this.props;
     const page = currentPath.split('/').filter(item => !!item)[1];
     const menuIndex = getIndex(page, menuItems);
     const isMobile = windowWidth <= parseFloat(tabletWidth);
@@ -132,7 +139,8 @@ class SideMenu extends Component {
         <Menu>
           <Menu.Item key="0" className="removeSelectedBorder">
             <a onClick={logout}>
-              <LogoutIcon type="logout" /> {isSidebarCollapsed ? '' : t('common.signOutText')}
+              <LogoutIcon type="logout" />{' '}
+              {isSidebarCollapsed ? '' : t('common.signOutText')}
             </a>
           </Menu.Item>
           <Menu.Item key="1" className="removeSelectedBorder">
@@ -182,7 +190,9 @@ class SideMenu extends Component {
           </LogoWrapper>
           <LogoDash />
           <MenuWrapper>
-            {isMobile && isSidebarCollapsed ? <IconBars type="bars" onClick={this.toggleMenu} /> : null}
+            {isMobile && isSidebarCollapsed ? (
+              <IconBars type="bars" onClick={this.toggleMenu} />
+            ) : null}
             <Menu
               // theme="light"
               defaultSelectedKeys={[menuIndex.toString()]}
@@ -202,7 +212,9 @@ class SideMenu extends Component {
             <MenuFooter className="footerBottom">
               <QuestionButton className="questionBtn">
                 <HelpIcon />
-                {isSidebarCollapsed ? null : <span>{t('common.helpButtonText')}</span>}
+                {isSidebarCollapsed ? null : (
+                  <span>{t('common.helpButtonText')}</span>
+                )}
               </QuestionButton>
 
               <UserInfoButton
@@ -276,13 +288,13 @@ const enhance = compose(
 export default enhance(SideMenu);
 
 const FixedSidebar = styled.div`
-    position: fixed;
-    left: 0px;
-    top: 0px;
-    bottom: 0px;
-    @media (max-width: 768px) {
-      z-index: 2;
-    }
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+  @media (max-width: 768px) {
+    z-index: 2;
+  }
 `;
 
 const SideBar = styled(Layout.Sider)`
@@ -306,7 +318,7 @@ const SideBar = styled(Layout.Sider)`
     padding: 8px 8px 0px;
     width: 100px;
     @media (max-width: 768px) {
-     display:none;
+      display: none;
     }
   }
   &.ant-layout-sider-collapsed .questionBtn {
@@ -341,7 +353,7 @@ const SideBar = styled(Layout.Sider)`
     display: none !important;
   }
   .ant-layout-sider-zero-width-trigger {
-    display:none;
+    display: none;
   }
   &.ant-layout-sider-collapsed .ant-select {
     width: auto;
@@ -384,12 +396,13 @@ const Menu = styled(AntMenu)`
       &.ant-menu-item-selected {
         background-color: ${props => props.theme.menuSelectedItemBgColor};
         color: ${props => props.theme.menuSelectedItemLinkColor};
-        border-left: 3px solid ${props => props.theme.selectedMenuItemBorderLeft};
-        &.removeSelectedBorder{
-          border:none;
+        border-left: 3px solid
+          ${props => props.theme.selectedMenuItemBorderLeft};
+        &.removeSelectedBorder {
+          border: none;
         }
       }
-      &:hover {
+      &:not(.ant-menu-item-selected):hover {
         color: ${props => props.theme.menuItemLinkHoverColor};
       }
     }
@@ -499,8 +512,8 @@ const FooterDropDown = styled.div`
   position: relative;
   bottom: -4px;
   opacity: ${props => (props.isVisible ? '1' : '0')};
-  transition: .2s;
-  -webkit-transition: .2s;
+  transition: 0.2s;
+  -webkit-transition: 0.2s;
   ul {
     background: ${props => props.theme.userInfoDropdownBgColor};
     border-bottom: 1px solid #4fd08c;
@@ -511,38 +524,42 @@ const FooterDropDown = styled.div`
       height: auto;
       margin-top: 10px;
       margin-left: 8px;
-      li{
-        &.ant-menu-item{
+      li {
+        &.ant-menu-item {
           margin: 0px;
           height: 58px;
         }
       }
     }
-    li{
+    li {
       &.ant-menu-item {
-      background: ${props => props.theme.userInfoDropdownItemBgColor};
-      margin: 0px;
-      padding: 5px 16px;
-      height: 50px;
-      &:hover,
-      &:focus {
-        background: ${props => props.theme.userInfoDropdownItemBgHoverColor};
-        a { color: ${props => props.theme.userInfoDropdownItemTextHoverColor} }
-        i { color: ${props => props.theme.userInfoDropdownItemIconHoverColor} }
-      }
-      a {
-        color: ${props => props.theme.userInfoDropdownItemTextColor};
-        font-size: ${props => props.theme.userInfoDropdownItemFontSize};
-        font-weight: 600;
-        i {
-          color: ${props => props.theme.userInfoDropdownItemIconColor};
-          position: relative;
-          margin-right: 5px;
-          top: 2px;
-          font-size: ${props => props.theme.userInfoDropdownItemIconSize};
+        background: ${props => props.theme.userInfoDropdownItemBgColor};
+        margin: 0px;
+        padding: 5px 16px;
+        height: 50px;
+        &:hover,
+        &:focus {
+          background: ${props => props.theme.userInfoDropdownItemBgHoverColor};
+          a {
+            color: ${props => props.theme.userInfoDropdownItemTextHoverColor};
+          }
+          i {
+            color: ${props => props.theme.userInfoDropdownItemIconHoverColor};
+          }
+        }
+        a {
+          color: ${props => props.theme.userInfoDropdownItemTextColor};
+          font-size: ${props => props.theme.userInfoDropdownItemFontSize};
+          font-weight: 600;
+          i {
+            color: ${props => props.theme.userInfoDropdownItemIconColor};
+            position: relative;
+            margin-right: 5px;
+            top: 2px;
+            font-size: ${props => props.theme.userInfoDropdownItemIconSize};
+          }
         }
       }
-    }
     }
   }
 `;
@@ -560,8 +577,8 @@ const UserInfoButton = styled.div`
     margin: ${props => (props.isSidebarCollapsed ? 0 : '0 21px')};
     position: relative;
     font-weight: 600;
-    transition: .2s;
-    -webkit-transition: .2s;
+    transition: 0.2s;
+    -webkit-transition: 0.2s;
     .drop-caret {
       position: absolute;
       right: 10px;
@@ -603,14 +620,14 @@ const IconDropdown = styled(AntIcon)`
 `;
 
 const LogoutIcon = styled(IconDropdown)`
-  transform:rotate(180deg);
-  -webkit-transform:rotate(180deg);
+  transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
 `;
 
 const IconBars = styled(AntIcon)`
-  display:none;
+  display: none;
   @media (max-width: 768px) {
-    display:inline-block;
+    display: inline-block;
     padding-left: 17px;
     position: absolute;
     top: 18px;

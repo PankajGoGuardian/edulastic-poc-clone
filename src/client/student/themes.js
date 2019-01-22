@@ -32,7 +32,7 @@ export const themes = {
     menuSelectedItemBgColor: 'transparent',
     menuItemLinkColor: '#434b5d',
     menuSelectedItemLinkColor: '#4aac8b',
-    menuItemLinkHoverColor: '#4aac8b',
+    menuItemLinkHoverColor: '#1890ff',
     selectedMenuItemBorderLeft: 'rgb(74, 172, 139)',
     headerBgColor: '#0288d1',
     headerClassTitleColor: 'white',

@@ -7,11 +7,11 @@ import { message } from 'antd';
 import { roleuser } from '@edulastic/constants';
 
 //types
-const LOGIN = '[auth] login';
-const SET_USER = '[auth] set user';
-const SIGNUP = '[auth] signup';
-const FETCH_USER = '[auth] fetch user';
-const LOGOUT = '[auth] logout';
+export const LOGIN = '[auth] login';
+export const SET_USER = '[auth] set user';
+export const SIGNUP = '[auth] signup';
+export const FETCH_USER = '[auth] fetch user';
+export const LOGOUT = '[auth] logout';
 
 //actions
 export const loginAction = createAction(LOGIN);

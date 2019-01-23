@@ -23,7 +23,7 @@ import {
   getTestsCreatingSelector
 } from '../../selectors/tests';
 import { getSelectedItemSelector } from '../../selectors/testItems';
-import { getUserSelector } from '../../../../student/selectors/user';
+import { getUserSelector } from '../../selectors/user';
 import SourceModal from '../QuestionEditor/SourceModal';
 import ShareModal from '../common/ShareModal';
 import Review from './Review';
@@ -60,7 +60,7 @@ const TestPage = ({
   const [showModal, setShowModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
 
-  const handleNavChange = (value) => {
+  const handleNavChange = value => {
     if (value === 'source') {
       setShowModal(true);
       return;
@@ -68,11 +68,11 @@ const TestPage = ({
     setCurrent(value);
   };
 
-  const handleAddItems = (testItems) => {
+  const handleAddItems = testItems => {
     const newTest = cloneDeep(test);
 
     newTest.testItems = testItems;
-    newTest.scoring.testItems = testItems.map((item) => {
+    newTest.scoring.testItems = testItems.map(item => {
       const foundItem = newTest.scoring.testItems.find(
         ({ id }) => item && item._id === id
       );
@@ -87,11 +87,11 @@ const TestPage = ({
     setData(newTest);
   };
 
-  const handleChangeGrade = (grades) => {
+  const handleChangeGrade = grades => {
     setData({ ...test, grades });
   };
 
-  const handleChangeSubject = (subjects) => {
+  const handleChangeSubject = subjects => {
     setData({ ...test, subjects });
   };
 
@@ -152,7 +152,7 @@ const TestPage = ({
     };
 
     newTest.testItems = testItems;
-    newTest.scoring.testItems = testItems.map((item) => {
+    newTest.scoring.testItems = testItems.map(item => {
       const foundItem = newTest.scoring.testItems.find(
         ({ id }) => item && item._id === id
       );
@@ -179,7 +179,7 @@ const TestPage = ({
     setShowShareModal(false);
   };
 
-  const handleApplySource = (source) => {
+  const handleApplySource = source => {
     try {
       const data = JSON.parse(source);
       setData(data);

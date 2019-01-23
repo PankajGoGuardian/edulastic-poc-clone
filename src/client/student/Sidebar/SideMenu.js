@@ -26,7 +26,7 @@ import {
 import { withWindowSizes } from '@edulastic/common';
 import { tabletWidth } from '@edulastic/colors';
 import { toggleSideBarAction } from './ducks';
-import { logoutAction } from '../actions/auth';
+import { logoutAction } from '../Login/ducks';
 
 import Profile from '../assets/Profile.png';
 
@@ -43,7 +43,7 @@ const getIndex = (page, items) => {
 const menuItems = [
   {
     label: 'Dashboard',
-    icon: IconClockDashboard,
+    icon: IconClockDashboard
   },
   {
     label: 'Assignments',

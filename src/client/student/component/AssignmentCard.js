@@ -98,9 +98,13 @@ const AssignmentCard = ({ startAssignment, data, theme, t, type }) => {
                 title: test.title
               }}
             >
-              <StartAssignButton>
-                <span>{t('common.review')}</span>
-              </StartAssignButton>
+              {attempted ? (
+                <StartAssignButton>
+                  <span>{t('common.review')}</span>
+                </StartAssignButton>
+              ) : (
+                ''
+              )}
             </Link>
           )}
         </DetailContainer>

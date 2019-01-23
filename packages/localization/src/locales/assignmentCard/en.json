@@ -12,6 +12,7 @@
     "attemps": "Attempts",
     "correctAnswer": "Correct Answer",
     "score": "Score",
-    "finishedIn": "Finished in"
+    "finishedIn": "Finished in",
+    "missed": "MISSED"
   }
 }

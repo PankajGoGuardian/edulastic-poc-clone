@@ -44,7 +44,11 @@ const AssessmentDetails = ({
             </span>
           </StatusButton>
         ) : (
-          ''
+          <StatusButton isSubmitted={started}>
+            <span>
+              {started ? t('common.submittedTag') : t('common.missed')}
+            </span>
+          </StatusButton>
         )}
       </div>
     </CardDetails>

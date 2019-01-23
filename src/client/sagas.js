@@ -1,7 +1,7 @@
 import { all } from 'redux-saga/effects';
 
 import {
-  questionSaga,
+  //questionSaga,
   answerSaga,
   //assignmentSaga,
   //reportSaga,
@@ -15,7 +15,7 @@ import assessmentSagas from './assessment/src/sagas';
 
 export default function*() {
   yield all([
-    questionSaga(),
+  //questionSaga(),
     answerSaga(),
     authSaga(),
    // reportSaga(),

@@ -1,14 +1,9 @@
 import { createSelector } from 'reselect';
 
-export const stateSelector = state => state.test;
+// selectors
 export const answersSelector = state => state.answers;
+export const itemsSelector = state => state.test.items || [];
 
-export const itemsSelector = createSelector(
-  stateSelector,
-  state => state.items || []
-);
-
-// s
 export const attemptSummarySelector = createSelector(
   itemsSelector,
   answersSelector,
@@ -17,8 +12,8 @@ export const attemptSummarySelector = createSelector(
     // eslint-disable
     for (const item of items) {
       if (item && item.rows) {
-        item.rows.forEach((row) => {
-          row.widgets.forEach((widget) => {
+        item.rows.forEach(row => {
+          row.widgets.forEach(widget => {
             const qId = widget.entity && widget.entity.id;
             if (!qId) return;
 

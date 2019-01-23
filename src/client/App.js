@@ -5,6 +5,7 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { compose } from 'redux';
 
+import { TestAttemptReview } from './student/TestAttemptReview';
 // route wise splitting
 const Student = lazy(() =>
   import(/* webpackChunkName: "assessmentPlayer" */ './student')
@@ -26,9 +27,6 @@ const AdminSignup = lazy(() =>
 );
 const Dashboard = lazy(() =>
   import(/* webpackChunkName: "student" */ './student/app')
-);
-const SummaryTest = lazy(() =>
-  import(/* webpackChunkName: "student test summary" */ './student/components/Summary')
 );
 
 const Author = lazy(() =>
@@ -63,7 +61,7 @@ class App extends Component {
               path="/student/test"
               component={() => <Student defaultAP />}
             />
-            <Route path="/student/test-summary" component={SummaryTest} />
+            <Route path="/student/test-summary" component={TestAttemptReview} />
             <Route
               exact
               path="/student/practice/:id"

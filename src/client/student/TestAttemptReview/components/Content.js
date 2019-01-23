@@ -5,11 +5,11 @@ import styled, { ThemeProvider } from 'styled-components';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
 import { Row, Col, Button } from 'antd';
-import { themes } from '../../../themes';
+import { themes } from '../../themes';
 
-import Confirmation from './confirmation';
-import { attemptSummarySelector } from '../../../selectors/test';
-import AssignmentContentWrapper from '../../commonStyle/assignmentContentWrapper';
+import Confirmation from './Confirmation';
+import { attemptSummarySelector } from '../ducks';
+import AssignmentContentWrapper from '../../components/commonStyle/assignmentContentWrapper';
 
 class SummaryTest extends Component {
   constructor(props) {
@@ -20,7 +20,7 @@ class SummaryTest extends Component {
     };
   }
 
-  handlerButton = (buttonIdx) => {
+  handlerButton = buttonIdx => {
     this.setState({ buttonIdx });
   };
 
@@ -69,17 +69,13 @@ class SummaryTest extends Component {
                   <FlexCol lg={8} md={24}>
                     <GrayMark />
                     <SpaceLeft>
-                      <Description>
-                        {t('common.skippedQues')}
-                      </Description>
+                      <Description>{t('common.skippedQues')}</Description>
                     </SpaceLeft>
                   </FlexCol>
                   <FlexCol lg={8} md={24}>
                     <RedMark />
                     <SpaceLeft>
-                      <Description>
-                        {t('common.markedForReview')}
-                      </Description>
+                      <Description>{t('common.markedForReview')}</Description>
                       <Description style={{ marginTop: -2 }}>
                         {t('common.markedQuestionLineTwo')}
                       </Description>
@@ -119,18 +115,18 @@ class SummaryTest extends Component {
                   {questions.map((q, index) => (
                     <QuestionColorBlock
                       type={questionList[q]}
-                      isVisible={buttonIdx === null || buttonIdx === questionList[q]}
+                      isVisible={
+                        buttonIdx === null || buttonIdx === questionList[q]
+                      }
                     >
                       <span> {index + 1} </span>
-                    </QuestionColorBlock>))
-                  }
+                    </QuestionColorBlock>
+                  ))}
                 </QuestionBlock>
               </Questions>
             </MainContent>
             <Footer>
-              <ShortDescription>
-                {t('common.nextStep')}
-              </ShortDescription>
+              <ShortDescription>{t('common.nextStep')}</ShortDescription>
               <SubmitButton
                 type="primary"
                 onClick={this.handlerConfirmationModal}
@@ -320,7 +316,7 @@ const QuestionColorBlock = styled.div`
   height: 40px;
   border-radius: 4px;
   background-color: ${props =>
-    (props.type === 2 ? '#ee1658' : props.type === 1 ? '#1fe3a1' : '#b1b1b1')};
+    props.type === 2 ? '#ee1658' : props.type === 1 ? '#1fe3a1' : '#b1b1b1'};
   margin-right: 23px;
   display: ${props => (props.isVisible ? 'flex' : 'none')};
   align-items: center;

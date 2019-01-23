@@ -1,20 +1,20 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { withNamespaces } from "@edulastic/localization";
-import { IconManageClass } from "@edulastic/icons";
-import AssignmentsContent from "../commonStyle/assignmentContent";
-import AssignmentContentWrapper from "../commonStyle/assignmentContentWrapper";
+import React from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { withNamespaces } from '@edulastic/localization';
+import { IconManageClass } from '@edulastic/icons';
+import AssignmentsContent from '../../components/commonStyle/assignmentContent';
+import AssignmentContentWrapper from '../../components/commonStyle/assignmentContentWrapper';
 
-const ManageClassContent = ({ flag, t }) => (
+const ManageContainer = ({ flag, t }) => (
   <AssignmentsContent flag={flag}>
     <ManageWrapper>
       <Wrapper>
         <Content>
           <IconManage />
-          <ArchiveText>{t("common.noClassesTitle")}</ArchiveText>
-          <ArchiveSubText>{t("common.noClassesSubTitle")}</ArchiveSubText>
+          <ArchiveText>{t('common.noClassesTitle')}</ArchiveText>
+          <ArchiveSubText>{t('common.noClassesSubTitle')}</ArchiveSubText>
         </Content>
       </Wrapper>
     </ManageWrapper>
@@ -22,13 +22,13 @@ const ManageClassContent = ({ flag, t }) => (
 );
 
 const enhance = compose(
-  withNamespaces("manageClass"),
+  withNamespaces('manageClass'),
   React.memo
 );
 
-export default enhance(ManageClassContent);
+export default enhance(ManageContainer);
 
-ManageClassContent.propTypes = {
+ManageContainer.propTypes = {
   flag: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired
 };

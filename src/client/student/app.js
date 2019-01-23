@@ -13,7 +13,7 @@ import { Report } from './Reports';
 //import { ReportList } from './ReportList';
 import { Profile } from './Profile';
 
-import ManageClassContainer from './components/manageClass';
+import { ManageClass } from './ManageClass';
 import SkillReportContainer from './skillReport';
 
 const Dashboard = ({ match, isSidebarCollapsed }) => (
@@ -29,10 +29,7 @@ const Dashboard = ({ match, isSidebarCollapsed }) => (
               path={`${match.url}/skill-report`}
               component={SkillReportContainer}
             />
-            {/* <Route
-              path={`${match.url}/manage`}
-              component={ManageClassContainer}
-            /> */}
+            <Route path={`${match.url}/manage`} component={ManageClass} />
             <Route path={`${match.url}/profile`} component={Profile} />
             {/*TODO*/}
             {/* <Route

@@ -9,7 +9,7 @@ import { themes } from '../../themes';
 
 import Confirmation from './Confirmation';
 import { attemptSummarySelector } from '../ducks';
-import AssignmentContentWrapper from '../../components/commonStyle/assignmentContentWrapper';
+//import AssignmentContentWrapper from '../../components/commonStyle/assignmentContentWrapper';
 
 class SummaryTest extends Component {
   constructor(props) {
@@ -363,5 +363,16 @@ const SubmitButton = styled(Button)`
   }
   @media screen and (max-width: 768px) {
     margin: 20px 0px;
+  }
+`;
+
+const AssignmentContentWrapper = styled.div`
+  border-radius: 10px;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  padding: 5px 30px;
+  background: ${props => props.theme.assignment.cardContainerBgColor};
+  margin-bottom: 1rem;
+  @media screen and (max-width: 767px) {
+    padding: 0px 15px;
   }
 `;

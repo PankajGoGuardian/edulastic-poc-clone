@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import React, { useState } from "react";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import PropTypes from "prop-types";
 
-import SummaryHeader from './Header';
-import SummaryTest from './Content';
+import SummaryHeader from "./Header";
+import SummaryTest from "./Content";
 
-import MainContainer from '../../components/commonStyle/mainContainer';
-import { finishTestAcitivityAction } from '../../../assessment/src/actions/test';
-import SubmitConfirmation from '../../../assessment/src/themes/common/SubmitConfirmation';
+//import MainContainer from "../../components/commonStyle/mainContainer";
+import { finishTestAcitivityAction } from "../../../assessment/src/actions/test";
+import SubmitConfirmation from "../../../assessment/src/themes/common/SubmitConfirmation";
 
 const SummaryContainer = ({ finishTest, history }) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -22,7 +22,7 @@ const SummaryContainer = ({ finishTest, history }) => {
   };
 
   const closeTest = () => {
-    history.push('/home/assignments');
+    history.push("/home/assignments");
   };
 
   return (
@@ -54,3 +54,13 @@ SummaryContainer.propTypes = {
   finishTest: PropTypes.func.isRequired,
   history: PropTypes.func.isRequired
 };
+
+const MainContainer = styled.div`
+   {
+    width: 100%;
+    @media (min-width: 1200px) {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+`;

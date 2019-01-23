@@ -1,11 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-import { IconManageClass } from '@edulastic/icons';
-import AssignmentsContent from '../../components/commonStyle/assignmentContent';
-import AssignmentContentWrapper from '../../components/commonStyle/assignmentContentWrapper';
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
+import { IconManageClass } from "@edulastic/icons";
+//import AssignmentsContent from '../../components/commonStyle/assignmentContent';
+//import AssignmentContentWrapper from "../../components/commonStyle/assignmentContentWrapper";
 
 const ManageContainer = ({ flag, t }) => (
   <AssignmentsContent flag={flag}>
@@ -13,8 +13,8 @@ const ManageContainer = ({ flag, t }) => (
       <Wrapper>
         <Content>
           <IconManage />
-          <ArchiveText>{t('common.noClassesTitle')}</ArchiveText>
-          <ArchiveSubText>{t('common.noClassesSubTitle')}</ArchiveSubText>
+          <ArchiveText>{t("common.noClassesTitle")}</ArchiveText>
+          <ArchiveSubText>{t("common.noClassesSubTitle")}</ArchiveSubText>
         </Content>
       </Wrapper>
     </ManageWrapper>
@@ -22,7 +22,7 @@ const ManageContainer = ({ flag, t }) => (
 );
 
 const enhance = compose(
-  withNamespaces('manageClass'),
+  withNamespaces("manageClass"),
   React.memo
 );
 
@@ -63,4 +63,30 @@ const ArchiveText = styled.div`
 const ArchiveSubText = styled.div`
   font-size: ${props => props.theme.manageClass.NoDataArchiveSubTextSize};
   color: ${props => props.theme.manageClass.NoDataArchiveSubTextColor};
+`;
+
+const AssignmentsContent = styled.div`
+  border-radius: 10px;
+  z-index: 0;
+  position: relative;
+  @media (min-width: 1200px) {
+    margin: 30px 30px;
+  }
+  @media (max-width: 1060px) {
+    padding: 1.3rem 2rem 5rem 2rem;
+  }
+  @media (max-width: 480px) {
+    padding: 1rem 1rem 0rem 1rem;
+  }
+`;
+
+const AssignmentContentWrapper = styled.div`
+  border-radius: 10px;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  padding: 5px 30px;
+  background: ${props => props.theme.assignment.cardContainerBgColor};
+  margin-bottom: 1rem;
+  @media screen and (max-width: 767px) {
+    padding: 0px 15px;
+  }
 `;

@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { AUTHOR_LOGOUT } from '../constants/actions';
+import { LOGOUT } from '../constants/actions';
 
 export const logoutAction = () => ({
-  type: AUTHOR_LOGOUT
+  type: LOGOUT
 });

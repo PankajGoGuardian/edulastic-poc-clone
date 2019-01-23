@@ -25,7 +25,8 @@ class CorrectAnswers extends Component {
   };
 
   renderAltResponses = () => {
-    const { validation, t } = this.props;
+    const { graphData, t } = this.props;
+    const { validation } = graphData;
 
     if (validation.alt_responses && validation.alt_responses.length) {
       return validation.alt_responses.map((res, i) => (
@@ -36,7 +37,8 @@ class CorrectAnswers extends Component {
   };
 
   renderPlusButton = () => {
-    const { onAddAltResponses, validation } = this.props;
+    const { onAddAltResponses, graphData } = this.props;
+    const { validation } = graphData;
 
     return (
       <Button
@@ -86,15 +88,11 @@ class CorrectAnswers extends Component {
 
   render() {
     const {
-      validation,
-      stimulus,
-      tools,
       t,
-      uiStyle,
-      canvasConfig,
-      bgImgOptions,
-      backgroundShapes
+      graphData
     } = this.props;
+    const { validation } = graphData;
+
     const { value } = this.state;
 
     return (
@@ -108,15 +106,10 @@ class CorrectAnswers extends Component {
           {value === 0 && (
             <TabContainer>
               <CorrectAnswer
-                uiStyle={uiStyle}
-                canvasConfig={canvasConfig}
-                tools={tools}
+                graphData={graphData}
                 response={validation.valid_response}
-                stimulus={stimulus}
                 onUpdateValidationValue={this.updateValidationValue}
                 onUpdatePoints={this.handleUpdateCorrectScore}
-                bgImgOptions={bgImgOptions}
-                backgroundShapes={backgroundShapes}
               />
             </TabContainer>
           )}
@@ -127,17 +120,12 @@ class CorrectAnswers extends Component {
               return (
                 <TabContainer key={i}>
                   <CorrectAnswer
-                    uiStyle={uiStyle}
-                    canvasConfig={canvasConfig}
-                    tools={tools}
+                    graphData={graphData}
                     response={alter}
-                    stimulus={stimulus}
                     onUpdateValidationValue={val =>
                       this.updateAltValidationValue(val, i)
-                   }
+                    }
                     onUpdatePoints={this.handleUpdateAltValidationScore(i)}
-                    bgImgOptions={bgImgOptions}
-                    backgroundShapes={backgroundShapes}
                   />
                 </TabContainer>
               );
@@ -151,23 +139,12 @@ class CorrectAnswers extends Component {
 }
 
 CorrectAnswers.propTypes = {
+  graphData: PropTypes.object.isRequired,
   onAddAltResponses: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  validation: PropTypes.object,
   t: PropTypes.func.isRequired,
-  stimulus: PropTypes.string,
-  question: PropTypes.object.isRequired,
-  uiStyle: PropTypes.object.isRequired,
-  canvasConfig: PropTypes.object.isRequired,
-  tools: PropTypes.array.isRequired,
-  bgImgOptions: PropTypes.object.isRequired,
-  backgroundShapes: PropTypes.array
-};
+  question: PropTypes.object.isRequired
 
-CorrectAnswers.defaultProps = {
-  stimulus: '',
-  validation: {},
-  backgroundShapes: []
 };
 
 const enhance = compose(

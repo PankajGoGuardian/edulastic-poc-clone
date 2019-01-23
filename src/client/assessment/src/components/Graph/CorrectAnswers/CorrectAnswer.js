@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withNamespaces } from '@edulastic/localization';
 import { Header, PointField } from './styled_components';
-import { GraphQuadrantsDisplay } from '../Display';
+import { GraphDisplay } from '../Display';
 
 class CorrectAnswer extends Component {
   constructor(props) {
@@ -25,8 +25,20 @@ class CorrectAnswer extends Component {
     onUpdateValidationValue(val);
   };
 
+  renderGraphDisplay = (graphType) => {
+    switch (graphType) {
+      case 'firstQuadrant':
+      case 'quadrants':
+        return GraphQuadrantsDisplay;
+      case 'axisLabels':
+      case 'axisSegments':
+        return AxisLabelsDisplay;
+      default: return null;
+    }
+  }
+
   render() {
-    const { t, stimulus, response, uiStyle, canvasConfig, tools, bgImgOptions, backgroundShapes } = this.props;
+    const { t, response, graphData } = this.props;
     const { responseScore } = this.state;
     return (
       <div>
@@ -42,15 +54,10 @@ class CorrectAnswer extends Component {
           />
           <span>{t('component.correctanswers.points')}</span>
         </Header>
-        <GraphQuadrantsDisplay
-          question={stimulus}
-          uiStyle={uiStyle}
-          canvasConfig={canvasConfig}
-          tools={tools}
-          bgImgOptions={bgImgOptions}
+        <GraphDisplay
+          graphData={graphData}
           elements={response.value}
           onChange={this.setResponseValue}
-          backgroundShapes={backgroundShapes}
         />
       </div>
     );
@@ -58,21 +65,11 @@ class CorrectAnswer extends Component {
 }
 
 CorrectAnswer.propTypes = {
+  graphData: PropTypes.object.isRequired,
   onUpdatePoints: PropTypes.func.isRequired,
   onUpdateValidationValue: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  uiStyle: PropTypes.object.isRequired,
-  response: PropTypes.object.isRequired,
-  canvasConfig: PropTypes.object.isRequired,
-  tools: PropTypes.array.isRequired,
-  bgImgOptions: PropTypes.object.isRequired,
-  backgroundShapes: PropTypes.array,
-  stimulus: PropTypes.string
-};
-
-CorrectAnswer.defaultProps = {
-  backgroundShapes: [],
-  stimulus: ''
+  response: PropTypes.object.isRequired
 };
 
 export default withNamespaces('assessment')(CorrectAnswer);

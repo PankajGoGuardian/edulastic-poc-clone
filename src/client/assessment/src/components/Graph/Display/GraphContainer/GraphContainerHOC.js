@@ -162,10 +162,23 @@ class GraphContainerHOC extends Component {
     const { uiStyle, canvasConfig, bgImgOptions, backgroundShapes } = this.props;
     return {
       canvas: {
-        xMin: canvasConfig.x_min,
-        xMax: canvasConfig.x_max,
-        yMin: canvasConfig.y_min,
-        yMax: canvasConfig.y_max
+        xMin: parseFloat(canvasConfig.x_min),
+        xMax: parseFloat(canvasConfig.x_max),
+        yMin: parseFloat(canvasConfig.y_min),
+        yMax: parseFloat(canvasConfig.y_max),
+        numberline: canvasConfig.numberline ? canvasConfig.numberline : false,
+        margin: canvasConfig.margin ? parseFloat(canvasConfig.margin) : 0,
+        responsesAllowed: canvasConfig.responsesAllowed ? parseInt(canvasConfig.responsesAllowed, 10) : 0
+      },
+      numberlineAxis: {
+        leftArrow: numberlineAxis && numberlineAxis.leftArrow,
+        rightArrow: numberlineAxis && numberlineAxis.rightArrow,
+        showTicks: numberlineAxis && numberlineAxis.showTicks,
+        snapToTicks: numberlineAxis && numberlineAxis.snapToTicks,
+        showMin: numberlineAxis && numberlineAxis.showMin,
+        showMax: numberlineAxis && numberlineAxis.showMax,
+        ticksDistance: numberlineAxis && parseFloat(numberlineAxis.ticksDistance),
+        fontSize: numberlineAxis && parseInt(numberlineAxis.fontSize, 10)
       },
       layout: {
         width: uiStyle.layout_width,

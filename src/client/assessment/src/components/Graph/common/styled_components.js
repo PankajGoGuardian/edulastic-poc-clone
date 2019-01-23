@@ -13,11 +13,20 @@ export const StyledTextarea = styled(TextareaAutosize)`
   resize: none;
   width: 100%;
   min-height: 134px;
-  border-radius: 5px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
   padding: 10px 30px;
   box-sizing: border-box;
   border: 1px solid ${grey};
   outline: none;
+
+  &.small {
+    min-height: auto;
+  }
+
+  &.big {
+    min-height: 135px;
+  }
 `;
 
 export const Subtitle = styled.div`
@@ -95,7 +104,8 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 30px 0; 
+  padding: 15px 0;
+  width: 50%;
 
   @media (max-width: ${tabletWidth}) {
     flex-direction: column;
@@ -141,8 +151,14 @@ export const StyledDragHandle = styled.div`
   border-top: 1px solid ${grey};
   border-bottom: 1px solid ${grey};
   border-left: 1px solid ${grey};
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  padding: 6px;
+
+  svg {
+    height: 16px;
+    width: 16px
+  }
 `;
 
 export const Item = styled.div`

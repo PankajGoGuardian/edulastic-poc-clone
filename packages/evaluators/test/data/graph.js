@@ -1,9 +1,11 @@
 import { IgnoreRepeatedShapes } from '../../src/graphs-comparison/constants/ignoreRepeatedShapes';
 import { ShapeTypes } from '../../src/graphs-comparison/constants/shapeTypes';
+import { AxisSegmentsShapeTypes } from '../../src/graph/constants/axisSegmentsShapeTypes';
 
 // Point ===========================================================================================
 
 export const trueAnswerWith1Point = {
+  graphType: 'quadrants',
   scoring_type: 'exactMatch',
   valid_response: {
     score: 1,
@@ -18,6 +20,7 @@ export const trueAnswerWith1Point = {
 };
 
 export const trueAnswerWith2Points = {
+  graphType: 'quadrants',
   scoring_type: 'exactMatch',
   valid_response: {
     score: 1,
@@ -39,6 +42,7 @@ export const trueAnswerWith2Points = {
 // Line ============================================================================================
 
 export const trueAnswerWith1Line = {
+  graphType: 'quadrants',
   scoring_type: 'exactMatch',
   valid_response: {
     score: 1,
@@ -129,6 +133,7 @@ export const errorLine = [{
 }];
 
 export const EV315_trueAnswer = {
+  graphType: 'quadrants',
   scoring_type: 'exactMatch',
   valid_response: {
     score: 1,
@@ -198,6 +203,7 @@ export const EV315_testPoints = [{
 // Ray =============================================================================================
 
 export const trueAnswerWith1Ray = {
+  graphType: 'quadrants',
   scoring_type: 'exactMatch',
   valid_response: {
     score: 1,
@@ -284,6 +290,7 @@ export const errorRay = [{
 // Segment =========================================================================================
 
 export const trueAnswerWith1Segment = {
+  graphType: 'quadrants',
   scoring_type: 'exactMatch',
   valid_response: {
     score: 1,
@@ -365,6 +372,7 @@ export const errorSegment = [{
 // Vector ==========================================================================================
 
 export const trueAnswerWith1Vector = {
+  graphType: 'quadrants',
   scoring_type: 'exactMatch',
   valid_response: {
     score: 1,
@@ -445,6 +453,7 @@ export const errorVector = [{
 // Circle ==========================================================================================
 
 export const trueAnswerWith1Circle = {
+  graphType: 'quadrants',
   scoring_type: 'exactMatch',
   valid_response: {
     score: 1,
@@ -531,6 +540,7 @@ export const errorCircle = [{
 // Parabola ========================================================================================
 
 export const trueAnswerWith1Parabola = {
+  graphType: 'quadrants',
   scoring_type: 'exactMatch',
   valid_response: {
     score: 1,
@@ -617,6 +627,7 @@ export const errorParabola = [{
 // Sine ============================================================================================
 
 export const trueAnswerWith1Sine = {
+  graphType: 'quadrants',
   scoring_type: 'exactMatch',
   valid_response: {
     score: 1,
@@ -709,6 +720,7 @@ export const errorSine = [{
 // Polygon =========================================================================================
 
 export const trueAnswerWith1Polygon = {
+  graphType: 'quadrants',
   scoring_type: 'exactMatch',
   valid_response: {
     score: 1,
@@ -840,3 +852,353 @@ export const errorPolygon = [{
     5: 'lrn_7'
   }
 }];
+
+// Axis Labels =====================================================================================
+
+// all labels true
+export const axisLabelsObj1 = {
+  userResponse: [{
+    point: 'Choice A',
+    position: 1
+  }, {
+    point: 'Choice B',
+    position: 4
+  }],
+  validation: {
+    graphType: 'axisLabels',
+    scoring_type: 'exactMatch',
+    valid_response: {
+      score: 1,
+      value: [{
+        point: 'Choice A',
+        position: 1
+      }, {
+        point: 'Choice B',
+        position: 4
+      }]
+    },
+    alt_responses: []
+  }
+};
+
+// all labels false
+export const axisLabelsObj2 = {
+  userResponse: [{
+    point: 'Choice A',
+    position: 6
+  }, {
+    point: 'Choice B',
+    position: 1
+  }],
+  validation: {
+    graphType: 'axisLabels',
+    scoring_type: 'exactMatch',
+    valid_response: {
+      score: 1,
+      value: [{
+        point: 'Choice A',
+        position: 1
+      }, {
+        point: 'Choice B',
+        position: 4
+      }]
+    },
+    alt_responses: []
+  }
+};
+
+// only some labels true
+export const axisLabelsObj3 = {
+  userResponse: [{
+    point: 'Choice A',
+    position: 1
+  }],
+  validation: {
+    graphType: 'axisLabels',
+    scoring_type: 'exactMatch',
+    valid_response: {
+      score: 1,
+      value: [{
+        point: 'Choice A',
+        position: 1
+      }, {
+        point: 'Choice B',
+        position: 4
+      }]
+    },
+    alt_responses: []
+  }
+};
+
+// there are all true labels, but there is excess
+export const axisLabelsObj4 = {
+  userResponse: [{
+    point: 'Choice A',
+    position: 1
+  }, {
+    point: 'Choice B',
+    position: 4
+  }, {
+    point: 'Choice C',
+    position: 8
+  }],
+  validation: {
+    graphType: 'axisLabels',
+    scoring_type: 'exactMatch',
+    valid_response: {
+      score: 1,
+      value: [{
+        point: 'Choice A',
+        position: 1
+      }, {
+        point: 'Choice B',
+        position: 4
+      }]
+    },
+    alt_responses: []
+  }
+};
+
+// Axis Segments ===================================================================================
+
+// true userResponse
+export const axisSegmentsObj1 = {
+  userResponse: [{
+    type: AxisSegmentsShapeTypes.POINT,
+    point1: 1
+  }, {
+    type: AxisSegmentsShapeTypes.SEGMENT,
+    point1: 4,
+    point2: 5
+  }],
+  validation: {
+    graphType: 'axisSegments',
+    valid_response: {
+      score: 5,
+      value: [{
+        type: AxisSegmentsShapeTypes.POINT,
+        point1: 1
+      }, {
+        type: AxisSegmentsShapeTypes.SEGMENT,
+        point1: 4,
+        point2: 5
+      }]
+    },
+    alt_responses: []
+  }
+};
+
+// error userResponse
+export const axisSegmentsObj2 = {
+  userResponse: [{
+    type: AxisSegmentsShapeTypes.POINT,
+    point1: 2
+  }, {
+    type: AxisSegmentsShapeTypes.SEGMENT,
+    point1: 5,
+    point2: 6
+  }],
+  validation: {
+    graphType: 'axisSegments',
+    valid_response: {
+      score: 5,
+      value: [{
+        type: AxisSegmentsShapeTypes.POINT,
+        point1: 1
+      }, {
+        type: AxisSegmentsShapeTypes.SEGMENT,
+        point1: 4,
+        point2: 5
+      }]
+    },
+    alt_responses: []
+  }
+};
+
+// true userResponse with alt_responses and max score
+export const axisSegmentsObj3 = {
+  userResponse: [{
+    type: AxisSegmentsShapeTypes.RAY_RIGHT_DIRECTION_LEFT_HOLLOW,
+    point1: 10
+  }, {
+    type: AxisSegmentsShapeTypes.SEGMENT,
+    point1: -5,
+    point2: 0
+  }],
+  validation: {
+    graphType: 'axisSegments',
+    valid_response: {
+      score: 5,
+      value: [{
+        type: AxisSegmentsShapeTypes.POINT,
+        point1: 1
+      }, {
+        type: AxisSegmentsShapeTypes.SEGMENT,
+        point1: 4,
+        point2: 5
+      }]
+    },
+    alt_responses: [{
+      score: 7,
+      value: [{
+        type: AxisSegmentsShapeTypes.RAY_RIGHT_DIRECTION_LEFT_HOLLOW,
+        point1: 10
+      }, {
+        type: AxisSegmentsShapeTypes.SEGMENT,
+        point1: -5,
+        point2: 0
+      }]
+    }, {
+      score: 2,
+      value: [{
+        type: AxisSegmentsShapeTypes.POINT,
+        point1: -10
+      }, {
+        type: AxisSegmentsShapeTypes.SEGMENT,
+        point1: 4,
+        point2: 5
+      }]
+    }]
+  }
+};
+
+// true userResponse with alt_responses and not max score
+export const axisSegmentsObj4 = {
+  userResponse: [{
+    type: AxisSegmentsShapeTypes.POINT,
+    point1: -10
+  }, {
+    type: AxisSegmentsShapeTypes.SEGMENT,
+    point1: 4,
+    point2: 5
+  }],
+  validation: {
+    graphType: 'axisSegments',
+    valid_response: {
+      score: 5,
+      value: [{
+        type: AxisSegmentsShapeTypes.POINT,
+        point1: 1
+      }, {
+        type: AxisSegmentsShapeTypes.SEGMENT,
+        point1: 4,
+        point2: 5
+      }]
+    },
+    alt_responses: [{
+      score: 7,
+      value: [{
+        type: AxisSegmentsShapeTypes.RAY_RIGHT_DIRECTION_LEFT_HOLLOW,
+        point1: 10
+      }, {
+        type: AxisSegmentsShapeTypes.SEGMENT,
+        point1: -5,
+        point2: 0
+      }]
+    }, {
+      score: 2,
+      value: [{
+        type: AxisSegmentsShapeTypes.POINT,
+        point1: -10
+      }, {
+        type: AxisSegmentsShapeTypes.SEGMENT,
+        point1: 4,
+        point2: 5
+      }]
+    }]
+  }
+};
+
+// partially true userResponse with alt_responses
+export const axisSegmentsObj5 = {
+  userResponse: [{
+    type: AxisSegmentsShapeTypes.RAY_RIGHT_DIRECTION_LEFT_HOLLOW,
+    point1: 10
+  }, {
+    type: AxisSegmentsShapeTypes.SEGMENT,
+    point1: 4,
+    point2: 5
+  }],
+  validation: {
+    graphType: 'axisSegments',
+    valid_response: {
+      score: 5,
+      value: [{
+        type: AxisSegmentsShapeTypes.POINT,
+        point1: 1
+      }, {
+        type: AxisSegmentsShapeTypes.SEGMENT,
+        point1: 4,
+        point2: 5
+      }]
+    },
+    alt_responses: [{
+      score: 7,
+      value: [{
+        type: AxisSegmentsShapeTypes.RAY_RIGHT_DIRECTION_LEFT_HOLLOW,
+        point1: 10
+      }, {
+        type: AxisSegmentsShapeTypes.SEGMENT,
+        point1: -5,
+        point2: 0
+      }]
+    }, {
+      score: 2,
+      value: [{
+        type: AxisSegmentsShapeTypes.POINT,
+        point1: -10
+      }, {
+        type: AxisSegmentsShapeTypes.SEGMENT,
+        point1: 4,
+        point2: 5
+      }]
+    }]
+  }
+};
+
+// error userResponse with alt_responses
+export const axisSegmentsObj6 = {
+  userResponse: [{
+    type: AxisSegmentsShapeTypes.RAY_RIGHT_DIRECTION_LEFT_HOLLOW,
+    point1: 0
+  }, {
+    type: AxisSegmentsShapeTypes.SEGMENT,
+    point1: -10,
+    point2: -5
+  }],
+  validation: {
+    graphType: 'axisSegments',
+    valid_response: {
+      score: 5,
+      value: [{
+        type: AxisSegmentsShapeTypes.POINT,
+        point1: 1
+      }, {
+        type: AxisSegmentsShapeTypes.SEGMENT,
+        point1: 4,
+        point2: 5
+      }]
+    },
+    alt_responses: [{
+      score: 7,
+      value: [{
+        type: AxisSegmentsShapeTypes.RAY_RIGHT_DIRECTION_LEFT_HOLLOW,
+        point1: 10
+      }, {
+        type: AxisSegmentsShapeTypes.SEGMENT,
+        point1: -5,
+        point2: 0
+      }]
+    }, {
+      score: 2,
+      value: [{
+        type: AxisSegmentsShapeTypes.POINT,
+        point1: -10
+      }, {
+        type: AxisSegmentsShapeTypes.SEGMENT,
+        point1: 4,
+        point2: 5
+      }]
+    }]
+  }
+};

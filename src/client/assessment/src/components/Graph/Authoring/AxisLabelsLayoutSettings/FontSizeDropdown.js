@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
-import { SelectContainer, Select } from '../../common/styled_components';
+import { Select } from '@edulastic/common';
+// import { SelectContainer, Select } from '../../common/styled_components';
 
 class FontSizeDropdown extends Component {
   changeFontSize = (e) => {
@@ -11,21 +12,23 @@ class FontSizeDropdown extends Component {
   };
 
   render() {
-    const { t, fontSizeList, currentItem } = this.props;
+    const { fontSizeList, currentItem } = this.props;
 
     return (
-      <SelectContainer>
-        <Select
-          value={currentItem.value}
-          onChange={this.changeFontSize}
-        >
-          {fontSizeList.map(item => (
+    // <SelectContainer>
+      <Select
+        style={{ width: '77%' }}
+        value={currentItem.value}
+        onChange={this.changeFontSize}
+        options={fontSizeList}
+      >
+        {/* {fontSizeList.map(item => (
             <option key={item.id} value={item.value}>
-              {t(item.value)}
+              {t(item.label)}
             </option>
-          ))}
-        </Select>
-      </SelectContainer>
+          ))} */}
+      </Select>
+    // </SelectContainer>
     );
   }
 }

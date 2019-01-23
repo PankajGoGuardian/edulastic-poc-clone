@@ -18,6 +18,7 @@ export const getLineLabelParameters = () => ({
 
 let points = [];
 
+
 function onLineHandler(type) {
   return (board, event) => {
     const newPoint = Point.onHandler(board, event);

@@ -12,29 +12,61 @@ import {
   MoreOptionsSubHeading,
   Row, Col, MoreOptionsColumnContainer, MoreOptionsColumn
 } from '../../common/styled_components';
+import FontSizeDropdown from '../AxisLabelsLayoutSettings/FontSizeDropdown';
 
 class AxisSegmentsMoreOptions extends Component {
   state = {
     layout: 'horizontal',
-    left_arrow: true,
-    right_arrow: true,
-    width: '550px',
-    lineMargin: '5px',
     spacingBtwStackedResponses: '30px',
     stackResponses: false,
-    fontSize: 'normal',
     minWidth: '550px',
-    height: '500px',
-    showTicks: true,
     ticksShowMin: true,
     ticksShowMax: true,
-    tickDistance: 2,
     minorTicks: 1,
     renderingBase: 'lineMinValue',
     showLabels: true,
     labelShowMin: true,
     labelShowMax: true,
     labelDisplaySpecPoints: ''
+  };
+
+  handleNumberlineCheckboxChange = (name, checked) => {
+    const { numberlineAxis, setNumberline } = this.props;
+    setNumberline({ ...numberlineAxis, [name]: !checked });
+  }
+
+  handleNumberlineInputChange = (event) => {
+    const { target: { name, value } } = event;
+
+    const { numberlineAxis, setNumberline } = this.props;
+    setNumberline({ ...numberlineAxis, [name]: value });
+  }
+
+  handleCanvasInputChange = (event) => {
+    const { target: { name, value } } = event;
+
+    const { canvasConfig, setCanvas } = this.props;
+    setCanvas({ ...canvasConfig, [name]: value });
+  };
+
+  handleOptionsInputChange = (event) => {
+    const { target: { name, value } } = event;
+
+    const { options, setOptions } = this.props;
+    setOptions({ ...options, [name]: value });
+  }
+
+  getFontSizeItem = () => {
+    const { fontSizeList, numberlineAxis } = this.props;
+    const selectedItem = fontSizeList.find(item => item.value == numberlineAxis.fontSize);
+
+    return selectedItem;
+  };
+
+  changeFontSize = (event) => {
+    const { setNumberline, numberlineAxis } = this.props;
+
+    setNumberline({ ...numberlineAxis, fontSize: event });
   };
 
   handleSelect = (name, value) => {
@@ -59,23 +91,19 @@ class AxisSegmentsMoreOptions extends Component {
       t,
       orientationList,
       fontSizeList,
-      renderingBaseList
+      renderingBaseList,
+      canvasConfig,
+      options,
+      numberlineAxis
     } = this.props;
+
     const {
       layout,
-      left_arrow,
-      right_arrow,
-      width,
-      lineMargin,
       spacingBtwStackedResponses,
       stackResponses,
-      fontSize,
       minWidth,
-      height,
-      showTicks,
       ticksShowMin,
       ticksShowMax,
-      tickDistance,
       minorTicks,
       renderingBase,
       showLabels,
@@ -83,7 +111,6 @@ class AxisSegmentsMoreOptions extends Component {
       labelShowMax,
       labelDisplaySpecPoints
     } = this.state;
-
     return (
       <Fragment>
         <MoreOptionsContainer>
@@ -117,9 +144,9 @@ class AxisSegmentsMoreOptions extends Component {
                       <MoreOptionsInput
                         type="text"
                         defaultValue="600px"
-                        name="width"
-                        onChange={this.handleInputChange}
-                        value={width}
+                        name="layout_width"
+                        onChange={this.handleOptionsInputChange}
+                        value={options.layout_width}
                       />
                     </MoreOptionsRow>
                     )}
@@ -153,9 +180,9 @@ class AxisSegmentsMoreOptions extends Component {
                       <MoreOptionsInput
                         type="text"
                         defaultValue="600px"
-                        name="height"
-                        onChange={this.handleInputChange}
-                        value={height}
+                        name="layout_height"
+                        onChange={this.handleOptionsInputChange}
+                        value={options.layout_height}
                       />
                     </MoreOptionsRow>
                   </Col>
@@ -172,18 +199,18 @@ class AxisSegmentsMoreOptions extends Component {
                     </MoreOptionsLabel>
                     <MoreOptionsInput
                       type="text"
-                      defaultValue="600px"
-                      name="lineMargin"
-                      onChange={this.handleInputChange}
-                      value={lineMargin}
+                      name="margin"
+                      defaultValue="75"
+                      value={canvasConfig.margin}
+                      onChange={this.handleCanvasInputChange}
                     />
                   </MoreOptionsRow>
                   <MoreOptionsRow>
                     <Checkbox
                       label={t('component.graphing.layoutoptions.showMinArrow')}
-                      name="left_arrow"
-                      onChange={() => this.handleCheckbox('left_arrow', left_arrow)}
-                      checked={left_arrow}
+                      onChange={() => this.handleNumberlineCheckboxChange('leftArrow', numberlineAxis.leftArrow)}
+                      name="leftArrow"
+                      checked={numberlineAxis.leftArrow}
                     />
                   </MoreOptionsRow>
                   <MoreOptionsRow>
@@ -211,20 +238,20 @@ class AxisSegmentsMoreOptions extends Component {
                   <MoreOptionsRow>
                     <Checkbox
                       label={t('component.graphing.layoutoptions.showMaxArrow')}
-                      name="right_arrow"
-                      onChange={() => this.handleCheckbox('right_arrow', right_arrow)}
-                      checked={right_arrow}
+                      onChange={() => this.handleNumberlineCheckboxChange('rightArrow', numberlineAxis.rightArrow)}
+                      name="rightArrow"
+                      checked={numberlineAxis.rightArrow}
                     />
                   </MoreOptionsRow>
                   <MoreOptionsRow>
                     <MoreOptionsLabel>
                       {t('component.graphing.layoutoptions.fontSize')}
                     </MoreOptionsLabel>
-                    <Select
-                      style={{ width: '80%' }}
-                      onChange={val => this.handleSelect('fontSize', val)}
-                      options={fontSizeList}
-                      value={fontSize}
+                    <FontSizeDropdown
+                      t={t}
+                      fontSizeList={fontSizeList}
+                      currentItem={this.getFontSizeItem()}
+                      onChangeFontSize={this.changeFontSize}
                     />
                   </MoreOptionsRow>
                 </Col>
@@ -246,8 +273,8 @@ class AxisSegmentsMoreOptions extends Component {
                 <Checkbox
                   label={t('component.graphing.ticksoptions.showticks')}
                   name="showTicks"
-                  onChange={() => this.handleCheckbox('showTicks', showTicks)}
-                  checked={showTicks}
+                  onChange={() => this.handleNumberlineCheckboxChange('showTicks', numberlineAxis.showTicks)}
+                  checked={numberlineAxis.showTicks}
                 />
               </MoreOptionsRow>
               <MoreOptionsRow>
@@ -273,11 +300,11 @@ class AxisSegmentsMoreOptions extends Component {
                   {t('component.graphing.ticksoptions.tickdistance')}
                 </MoreOptionsLabel>
                 <MoreOptionsInput
-                  type="text"
-                  defaultValue="600px"
-                  name="tickDistance"
-                  onChange={this.handleInputChange}
-                  value={tickDistance}
+                  type="number"
+                  defaultValue="1"
+                  name="ticksDistance"
+                  onChange={this.handleNumberlineInputChange}
+                  value={numberlineAxis.ticksDistance}
                 />
               </MoreOptionsRow>
             </MoreOptionsColumn>

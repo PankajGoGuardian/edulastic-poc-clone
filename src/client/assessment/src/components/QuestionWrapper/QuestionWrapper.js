@@ -20,6 +20,7 @@ import { Hotspot } from '../Hotspot';
 import { HighlightImage } from '../HighlightImage';
 import { EssayPlainText } from '../EssayPlainText';
 import { EssayRichText } from '../EssayRichText';
+
 import withAnswerSave from '../HOC/withAnswerSave';
 import MatrixChoice from '../MatrixChoice/MatrixChoice';
 import Protractor from '../Protractor';

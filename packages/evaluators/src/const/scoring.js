@@ -4,5 +4,6 @@ export const ScoringType = {
   PARTIAL_MATCH: 'partialMatch',
   CONTAINS: 'contains',
   BY_LOCATION_METHOD: 'byLocation',
-  BY_COUNT_METHOD: 'byCount'
+  BY_COUNT_METHOD: 'byCount',
+  PARTIAL_MATCH_V2: 'partialMatchV2'
 };

@@ -7,6 +7,137 @@ import vectorConfig from './elements/Vector';
 import Polygon from './elements/Polygon';
 import { JXG } from './index';
 
+export const findSegmentPosition = (board, coords) => {
+  const position = board.getCoords(coords);
+  return Math.round(position.usrCoords[1]);
+};
+
+// Pass points of segment
+// Function placing smallest element to the first place
+export const orderPoints = (points) => {
+  if (points[0] === points[1]) {
+    return points;
+  } if (points[0] < points[1]) {
+    return points;
+  }
+  return [points[1], points[0]];
+};
+
+const lineLabelCoord = (firstPoint, secondPoint) => {
+  if (firstPoint === secondPoint) {
+    return firstPoint;
+  } if (firstPoint < secondPoint) {
+    const segmentLength = -(firstPoint) + secondPoint;
+    return secondPoint - segmentLength / 2;
+  }
+  const segmentLength = -(secondPoint) + firstPoint;
+  return firstPoint - segmentLength / 2;
+};
+
+// Calculate position between two points for line
+export const calcLineLabelPosition = (line) => {
+  const finalXCoord = lineLabelCoord(line.point1.coords.usrCoords[1], line.point2.coords.usrCoords[1]);
+  const finalYCoord = lineLabelCoord(line.point1.coords.usrCoords[2], line.point2.coords.usrCoords[2]);
+  return [finalXCoord, finalYCoord];
+};
+
+// Calculate point rounded to ticksDistance value
+export const calcRoundedToTicksDistance = (x, ticksDistance) => {
+  if (x % ticksDistance >= ticksDistance / 2) {
+    // closer to the biggest value
+    let distanceDiff = x;
+    do {
+      distanceDiff = Math.ceil(distanceDiff + 0.0001);
+    } while (distanceDiff % ticksDistance !== 0);
+
+    return (x + (distanceDiff - x));
+  }
+  // closer to the smallest value
+  return Math.round(x - x % ticksDistance);
+};
+
+// Calculate unitX
+export const calcUnitX = (xMin, xMax, layoutWidth) => {
+  const unitLength = -(xMin) + xMax;
+  return layoutWidth / unitLength;
+};
+
+// Return different element from new array
+export const findElementsDiff = (mainArray, secondaryArray) => {
+  let diffElement;
+
+  mainArray.forEach((mainElement, index) => {
+    let flag = false;
+
+    secondaryArray.forEach((secondaryElement) => {
+      if (mainElement.id === secondaryElement.id) {
+        flag = true;
+      }
+    });
+
+    if (!flag) {
+      diffElement = mainArray[index];
+    }
+  });
+
+  return diffElement;
+};
+
+// Calculate amount of units in chosen amount of pixels
+export const calcMeasure = (x, y, board) => {
+  if (board.$board === undefined) {
+    return [x / board.unitX, y / board.unitY];
+  }
+  return [x / board.$board.unitX, y / board.$board.unitY];
+};
+
+// Calculate first available space for render in marks container
+export const checkMarksRenderSpace = (board) => {
+  const filteredElements = board.elements.filter(element => element.elType === 'group');
+  const xMeasure = 52.5 / board.$board.unitX; // half of element's width in units
+  const xRenderPos = board.$board.plainBB[0] + xMeasure * 1.05; // start position for POINT
+
+  if (filteredElements.length === 0) {
+    // If it's first element
+    return [xRenderPos, -1.5];
+  }
+  for (let i = 0; i < filteredElements.length; i++) {
+    //  Compare each POSITION with each element
+    // Calculations of xStart and xEnd are wrong, need to be reworked
+    const xStart = i === 0 ? board.$board.plainBB[0] : xRenderPos + (xMeasure * 1.025 * i); // first point for comparison
+    const xEnd = i === 0 ? xRenderPos + xMeasure : xRenderPos + (xMeasure * 2.1 * i); // last point for comparison
+    // const xStart = i === 0 ? board.$board.plainBB[0] : xRenderPos * i - xMeasure// first point for comparison
+    // const xEnd = i === 0 ? xRenderPos + xMeasure : xRenderPos * i + xMeasure // last point for comparison
+    let isPositionAvailable = true;
+    // console.log("Position: ", xStart, xEnd)
+
+    for (let j = 0; j < filteredElements.length; j++) {
+      const groupXPos = filteredElements[j].translationPoints[0].coords.usrCoords[1];
+      const groupYPos = filteredElements[j].translationPoints[0].coords.usrCoords[2];
+      const markLeftSide = groupXPos - xMeasure;
+      const markRightSide = groupXPos + xMeasure;
+      // console.log(filteredElements[j].translationPoints[1].htmlStr, " element", "x: ", groupXPos, 'left side: ', markLeftSide, 'right side: ', markRightSide)
+
+      if (groupYPos < -1 && (markRightSide > xStart || xEnd > markLeftSide)) {
+        // If some element is on this place
+        // console.log("Element on this place: ", i + 1)
+        isPositionAvailable = false;
+      }
+    }
+
+
+    if (isPositionAvailable) {
+      // console.log("Final render pos: ", i === 0 ? xRenderPos : xRenderPos + (xMeasure * 2.1))
+      return [i === 0 ? xRenderPos : xRenderPos + (xMeasure * 2.1 * i), -1.5];
+    }
+  }
+
+
+  // If all elements at their start place
+  // console.log("All elements at their start place")
+  return [xRenderPos + (xMeasure * 2.1 * filteredElements.length), -1.5];
+};
+
 function compareKeys(config, props) {
   return Object.keys(config).every(k => !!props[k] === !!config[k]);
 }
@@ -104,7 +235,7 @@ export function updateAxe(line, parameters, axe) {
     line.ticks[0].setAttribute({ ticksDistance: parameters.ticksDistance });
   }
   if ('showTicks' in parameters) {
-    line.ticks[0].setAttribute({ majorHeight: parameters.showTicks ? 15 : 0 });
+    line.ticks[0].setAttribute({ majorHeight: parameters.showTicks ? 25 : 0 });
   }
   if ('drawLabels' in parameters) {
     line.ticks[0].setAttribute({ drawLabels: parameters.drawLabels });
@@ -128,7 +259,29 @@ export function updateAxe(line, parameters, axe) {
   if ('drawZero' in parameters) {
     line.ticks[0].setAttribute({ drawZero: parameters.drawZero });
   }
+  if ('visible' in parameters) {
+    line.setAttribute({ visible: parameters.visible });
+  }
 }
+
+// Update numberline axis settings
+export const updateNumberline = (numberline, settings) => {
+  if ('leftArrow' in settings || 'rightArrow' in settings) {
+    numberline[0].setArrow(
+      settings.leftArrow === true ? { size: 10 } : false,
+      settings.rightArrow === true ? { size: 10 } : false
+    );
+  }
+  if ('showTicks' in settings) {
+    numberline[0].ticks[0].setAttribute({ visible: settings.showTicks });
+  }
+  if ('ticksDistance' in settings) {
+    numberline[0].ticks[0].setAttribute({ ticksDistance: settings.ticksDistance });
+  }
+  if ('fontSize' in settings) {
+    numberline[0].ticks[0].labels.forEach(label => label.setAttribute({ fontSize: settings.fontSize }));
+  }
+};
 
 export function updateGrid(grids, parameters) {
   if (grids[0]) {
@@ -164,7 +317,7 @@ export function getImageCoordsByPercent(boardParameters, bgImageParameters) {
 export function flatConfig(config, accArg = {}, isSub = false) {
   return config.reduce((acc, element) => {
     const { id, type, points } = element;
-    if (type === CONSTANT.TOOLS.POINT) {
+    if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.MARK) {
       if (!acc[id]) {
         acc[id] = element;
       }
@@ -202,7 +355,7 @@ export function flat2nestedConfig(config) {
         colors: element.colors,
         label: element.label
       };
-      if (type === CONSTANT.TOOLS.POINT) {
+      if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.MARK) {
         acc[id].x = element.x;
         acc[id].y = element.y;
       } else {

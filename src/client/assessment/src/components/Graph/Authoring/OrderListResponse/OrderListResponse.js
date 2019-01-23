@@ -18,7 +18,6 @@ class OrderListResponse extends Component {
       style,
       windowWidth
     } = this.props;
-
     return (
       <div style={style}>
         {questions.map((q, i) => (
@@ -28,7 +27,7 @@ class OrderListResponse extends Component {
             onQuestionsChange={value => onQuestionsChange(value, i)}
             onDeleteQuestion={() => onDeleteQuestion(i)}
           >
-            {q}
+            {q.text}
           </OrderListResponseItem>
         ))}
         <Button

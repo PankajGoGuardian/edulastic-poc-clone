@@ -38,4 +38,9 @@ const Container = styled.div`
     color: ${red};
     background: ${lightGrey};
   }
+
+  svg {
+    height: 20px !important;
+    width: 20px !important;
+  }
 `;

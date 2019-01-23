@@ -110,7 +110,16 @@ const inputParameters = {
   highlightStrokeOpacity: 1
 };
 
+const textParameters = {
+  display: 'html',
+  fontSize: 12,
+  cssClass: 'mark',
+  highlightCssClass: 'mark'
+};
+
 export const defaultInputParameters = () => ({ ...inputParameters });
+
+export const defaultTextParameters = () => ({ ...textParameters });
 
 export const defaultBgImageParameters = () => ({ ...bgImageParameters });
 
@@ -119,6 +128,13 @@ export const graphParameters2Boundingbox = p => ([
   p.yMax,
   p.xMax,
   p.yMin
+]);
+
+export const numberlineGraphParametersToBoundingbox = (coords, margin) => ([
+  coords.xMin - margin,
+  coords.yMax,
+  coords.xMax + margin,
+  coords.yMin
 ]);
 
 export const defaultBgObjectParameters = () => ({ ...bgObjectParameters });

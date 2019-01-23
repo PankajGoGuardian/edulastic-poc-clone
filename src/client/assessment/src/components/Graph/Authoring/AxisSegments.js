@@ -10,7 +10,6 @@ import {
   Subtitle, TitleTextInput
 } from '../common/styled_components';
 import { setQuestionDataAction } from '../../../../../author/src/actions/question';
-import AxisSegmentsOptions from './AxisSegmentsOptions/index';
 
 class AxisSegments extends Component {
   constructor(props) {
@@ -19,15 +18,19 @@ class AxisSegments extends Component {
     this.state = {
       stimulus,
       title: '',
-      stacked_elements: 2,
-      line: {
-        max: 10,
-        min: -10,
-        right_arrow: true,
-        left_arrow: true
-      },
-      isMoreOptionsOpen: false
+      stacked_elements: 2
     };
+  }
+
+  updateTitle = e => this.setState({ title: e.target.value })
+
+  updateStimulus = e => this.setState({ stimulus: e.target.value })
+
+  handleCanvasChange = (event) => {
+    const { target: { name, value } } = event;
+
+    const { canvas, setCanvas } = this.props;
+    setCanvas({ ...canvas, [name]: value });
   }
 
   handleInputChange = (event) => {
@@ -37,62 +40,19 @@ class AxisSegments extends Component {
     this.setState({ [name]: value });
   };
 
-  handleLineChange = (event) => {
-    const { value, name } = event.target;
-    const { line } = this.state;
-
-    line[name] = value;
-    this.setState({ line });
-  };
-
-  onClickMoreOptions = (isClicked) => {
-    this.setState({
-      isMoreOptionsOpen: isClicked
-    });
-  };
-
-  getFontSizeList = () => (
-    [
-      { value: '', label: '' },
-      { value: 'small', label: 'Small' },
-      { value: 'normal', label: 'Normal' },
-      { value: 'large', label: 'Large' },
-      { value: 'extra_large', label: 'Extra large' },
-      { value: 'huge', label: 'Huge' }
-    ]
-  );
-
-  getOrientationList = () => (
-    [
-      { value: 'horizontal', label: 'Horizontal' },
-      { value: 'vertical', label: 'Vertical' }
-    ]
-  );
-
-  getRenderingBaseList = () => (
-    [
-      { value: '', label: '' },
-      { value: 'lineMinValue', label: 'Line minimum value' },
-      { value: 'zero', label: 'Zero' }
-    ]
-  );
-
   render() {
     const {
       stimulus,
-      line,
-      title,
-      stacked_elements,
-      isMoreOptionsOpen
+      title
     } = this.state;
-    const { t } = this.props;
+    const { t, canvas } = this.props;
     return (
       <div>
         <Subtitle>{t('component.graphing.question.composequestion')}</Subtitle>
         <StyledTextarea
           placeholder={t('component.graphing.question.enteryourquestion')}
           name="stimulus"
-          onChange={this.handleInputChange}
+          onChange={this.updateStimulus}
           value={stimulus}
         />
         <PaddingDiv top={30} bottom={30}>
@@ -102,20 +62,19 @@ class AxisSegments extends Component {
               <Label>{t('component.graphing.minVal')}</Label>
               <StyledTextField
                 type="number"
-                name="min"
-                value={line.min}
-                onChange={this.handleLineChange}
-                onBlur={this.handleLineChange}
+                name="x_min"
+                value={canvas.x_min}
+                onChange={this.handleCanvasChange}
                 disabled={false}
-                step={0.1}
+                step={1}
               />
               <Label>{t('component.graphing.title')}</Label>
               <TitleTextInput
                 type="text"
                 name="title"
                 value={title}
-                onChange={this.handleInputChange}
-                onBlur={this.handleInputChange}
+                onChange={this.updateTitle}
+                onBlur={this.updateTitle}
               />
             </Col>
             <Col md={6} style={{ paddingLeft: 30 }}>
@@ -123,37 +82,28 @@ class AxisSegments extends Component {
                 <Label>{t('component.graphing.maxVal')}</Label>
                 <StyledTextField
                   type="number"
-                  name="max"
-                  value={line.max}
-                  onChange={this.handleLineChange}
-                  onBlur={this.handleLineChange}
+                  name="x_max"
+                  value={canvas.x_max}
+                  onChange={this.handleCanvasChange}
                   disabled={false}
-                  step={0.1}
+                  step={1}
                 />
               </div>
               <div>
                 <Label>{t('component.graphing.responseNumAllowed')}</Label>
                 <StyledTextField
                   type="number"
-                  name="stacked_elements"
-                  value={stacked_elements}
-                  onChange={this.handleInputChange}
-                  onBlur={this.handleInputChange}
+                  name="responsesAllowed"
+                  value={canvas.responsesAllowed}
+                  onChange={this.handleCanvasChange}
                   disabled={false}
                   step={1}
+                  min={1}
                 />
               </div>
             </Col>
           </Row>
         </PaddingDiv>
-
-        <AxisSegmentsOptions
-          onClickMoreOptions={this.onClickMoreOptions}
-          isMoreOptionsOpen={isMoreOptionsOpen}
-          orientationList={this.getOrientationList()}
-          fontSizeList={this.getFontSizeList()}
-          renderingBaseList={this.getRenderingBaseList()}
-        />
       </div>
     );
   }

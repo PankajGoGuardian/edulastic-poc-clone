@@ -1,18 +1,18 @@
 import { ShapeTypes } from './constants/shapeTypes';
 import CompareShapes from './compareShapes';
 
-const checkAnswer = (trueAnswer, testAnswer) => {
+const checkAnswer = (answer, userResponse, ignoreRepeatedShapes) => {
   const result = {
     commonResult: false,
     details: []
   };
 
-  const trueAnswerValue = trueAnswer.valid_response.value;
+  const trueAnswerValue = answer.value;
   const trueShapes = trueAnswerValue.filter(item => !item.subElement);
 
-  const compareShapes = new CompareShapes(trueAnswerValue, testAnswer);
+  const compareShapes = new CompareShapes(trueAnswerValue, userResponse);
 
-  testAnswer.filter(elem => !elem.subElement).forEach((testShape) => {
+  userResponse.filter(elem => !elem.subElement).forEach((testShape) => {
     let compareResult = {
       id: testShape.id,
       result: false
@@ -47,29 +47,29 @@ const checkAnswer = (trueAnswer, testAnswer) => {
   }
 
   // compare by slope
-  if (trueAnswer.ignore_repeated_shapes &&
-    trueAnswer.ignore_repeated_shapes === 'yes') {
+  if (ignoreRepeatedShapes &&
+    ignoreRepeatedShapes === 'yes') {
     result.commonResult = true;
     return result;
   }
 
   // compare by points
-  if (trueAnswer.ignore_repeated_shapes &&
-    trueAnswer.ignore_repeated_shapes === 'strict') {
+  if (ignoreRepeatedShapes &&
+    ignoreRepeatedShapes === 'strict') {
     result.commonResult = true;
 
     for (let i = 0; i < relatedIds.length; i++) {
       const sameShapes = result.details.filter(item => item.relatedId === relatedIds[i]);
-      const sameShapesType = testAnswer.find(item => item.id === sameShapes[0].id).type;
+      const sameShapesType = userResponse.find(item => item.id === sameShapes[0].id).type;
 
       if (sameShapes.length > 1
         && sameShapesType !== ShapeTypes.POINT
         && sameShapesType !== ShapeTypes.SEGMENT
         && sameShapesType !== ShapeTypes.VECTOR
         && sameShapesType !== ShapeTypes.POLYGON) {
-        const allowedSubElementsIds = testAnswer.find(item => item.id === sameShapes[0].id).subElementsIds;
+        const allowedSubElementsIds = userResponse.find(item => item.id === sameShapes[0].id).subElementsIds;
         for (let j = 1; j < sameShapes.length; j++) {
-          const checkableShape = testAnswer.find(item => item.id === sameShapes[j].id);
+          const checkableShape = userResponse.find(item => item.id === sameShapes[j].id);
           switch (checkableShape.type) {
             case ShapeTypes.CIRCLE:
               if (checkableShape.subElementsIds.endPoint !== allowedSubElementsIds.endPoint) {
@@ -111,6 +111,35 @@ const checkAnswer = (trueAnswer, testAnswer) => {
   return result;
 };
 
-export default {
-  checkAnswer
+const evaluator = ({ userResponse, validation }) => {
+  const { valid_response, alt_responses, ignore_repeated_shapes } = validation;
+
+  let score = 0;
+  let maxScore = 0;
+
+  const evaluation = {};
+
+  let answers = [valid_response];
+  if (alt_responses) {
+    answers = answers.concat([...alt_responses]);
+  }
+
+  let result = {};
+
+  answers.forEach((answer, index) => {
+    result = checkAnswer(answer, userResponse, ignore_repeated_shapes);
+    if (result.commonResult) {
+      score = Math.max(answer.score, score);
+    }
+    maxScore = Math.max(answer.score, maxScore);
+    evaluation[index] = result;
+  });
+
+  return {
+    score,
+    maxScore,
+    evaluation
+  };
 };
+
+export default evaluator;

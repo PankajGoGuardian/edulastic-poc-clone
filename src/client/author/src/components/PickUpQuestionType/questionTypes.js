@@ -826,13 +826,79 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         type: 'graph',
         stimulus: '[This is the stem3.]',
         graphType: 'axisSegments',
+        canvas: {
+          x_max: 10,
+          x_min: 0,
+          y_max: 0.5,
+          y_min: -0.5,
+          numberline: true,
+          margin: 75,
+          responsesAllowed: 2
+        },
+        toolbar: {
+          tools: ['segmentsPoint'],
+          default_tool: 'segmentsPoint'
+        },
+        numberlineAxis: {
+          leftArrow: false,
+          rightArrow: false,
+          showTicks: true,
+          snapToTicks: true,
+          ticksDistance: 1,
+          showMin: true,
+          showMax: true,
+          fontSize: 12
+        },
+        ui_style: {
+          gridVisible: false,
+          drawLabelZero: false,
+          displayPositionOnHover: false,
+          currentStemNum: 'numerical',
+          currentFontSize: 'normal',
+          xShowAxisLabel: false,
+          xHideTicks: true,
+          xDrawLabel: false,
+          xMaxArrow: false,
+          xMinArrow: false,
+          xVisible: false,
+          xCommaInLabel: false,
+          yShowAxisLabel: false,
+          yHideTicks: true,
+          yDrawLabel: false,
+          yMaxArrow: false,
+          yMinArrow: false,
+          yCommaInLabel: false,
+          yVisible: false,
+          xDistance: 1,
+          yDistance: 0,
+          xTickDistance: 1,
+          yTickDistance: 0,
+          layout_width: 600,
+          layout_height: 200,
+          layout_margin: 0,
+          layout_snapto: 'grid',
+          xAxisLabel: 'X',
+          yAxisLabel: 'Y'
+        },
+        background_image: {
+          src: '',
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 100,
+          opacity: 100,
+          showShapePoints: false
+        },
+        background_shapes: [],
+        multiple_responses: false,
         validation: {
           valid_response: {
             score: 1,
             value: []
           }
         }
-      }
+      },
+      onSelectQuestionType
     },
     {
       title: 'Protractor',
@@ -856,14 +922,79 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       data: {
         type: 'graph',
         graphType: 'axisLabels',
+        list: [
+          { text: 'Option 1', id: `list-item-${Math.random().toString(36).substr(2, 9)}` },
+          { text: 'Option 2', id: `list-item-${Math.random().toString(36).substr(2, 9)}` }
+        ],
         stimulus: '[This is the stem. axisLabels]',
         validation: {
           valid_response: {
             score: 1,
             value: []
           }
-        }
-      }
+        },
+        canvas: {
+          x_max: 10,
+          x_min: 0,
+          y_max: 1,
+          y_min: -1.75,
+          numberline: true,
+          margin: 75
+        },
+        numberlineAxis: {
+          leftArrow: false,
+          rightArrow: false,
+          showTicks: true,
+          snapToTicks: true,
+          ticksDistance: 1,
+          showMin: true,
+          showMax: true,
+          fontSize: 12
+        },
+        ui_style: {
+          gridVisible: false,
+          drawLabelZero: false,
+          displayPositionOnHover: false,
+          currentStemNum: 'numerical',
+          currentFontSize: 'normal',
+          xShowAxisLabel: false,
+          xHideTicks: true,
+          xDrawLabel: false,
+          xMaxArrow: false,
+          xMinArrow: false,
+          xVisible: false,
+          xCommaInLabel: false,
+          yShowAxisLabel: false,
+          yHideTicks: true,
+          yDrawLabel: false,
+          yMaxArrow: false,
+          yMinArrow: false,
+          yCommaInLabel: false,
+          yVisible: false,
+          xDistance: 1,
+          yDistance: 0,
+          xTickDistance: 1,
+          yTickDistance: 0,
+          layout_width: 600,
+          layout_height: 250,
+          layout_margin: 0,
+          layout_snapto: 'grid',
+          xAxisLabel: 'X',
+          yAxisLabel: 'Y'
+        },
+        background_image: {
+          src: '',
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 100,
+          opacity: 100,
+          showShapePoints: false
+        },
+        background_shapes: [],
+        multiple_responses: false
+      },
+      onSelectQuestionType
     },
     {
       title: 'Passage',

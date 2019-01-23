@@ -21,7 +21,7 @@ const allowElements = [
  */
 function getElementUnderMouse(elements) {
   const filteredElements = elements
-    .filter(el => ~allowElements.indexOf(el.elType)) // eslint-disable-line
+    .filter(el => ~allowElements.indexOf(el.elType))
     .sort((a, b) => elWeight[a.elType] - elWeight[b.elType]);
   return filteredElements[0];
 }

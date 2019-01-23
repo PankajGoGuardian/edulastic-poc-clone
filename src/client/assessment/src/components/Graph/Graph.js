@@ -6,15 +6,15 @@ import { Paper, Select } from '@edulastic/common';
 import { compose } from 'redux';
 import styled from 'styled-components';
 import { withNamespaces } from '@edulastic/localization';
-import {
-  GraphAxisLabels, GraphQuadrants, AxisSegments,
-  GraphQuadrantsDisplay,
-  CorrectAnswers
-} from './index';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 import GraphQuadrantsOptions from './Authoring/GraphQuadrants/GraphQuadrantsOptions';
+import AxisSegmentsOptions from './Authoring/AxisSegmentsOptions';
+import AxisLabelsOptions from './Authoring/AxisLabelsLayoutSettings/AxisLabelsOptions';
 import QuadrantsSmallSize from './components/QuadrantsSmallSize';
 import AxisSmallSize from './components/AxisSmallSize';
+import { AxisSegments, GraphAxisLabels, GraphQuadrants } from './Authoring';
+import { CorrectAnswers } from './CorrectAnswers';
+import { GraphDisplay } from './Display';
 
 const EmptyWrapper = styled.div``;
 
@@ -43,43 +43,120 @@ const getIgnoreRepeatedShapesOptions = () => (
   ]
 );
 
-class Graph extends Component {
-  getRenderData = () => {
-    const { item } = this.props;
-    let previewTools = [];
-    let previewAnswer = [];
-    if (item) {
-      previewTools = item.toolbar ? item.toolbar.tools : [];
-      previewAnswer = item.validation ? item.validation.valid_response.value : [];
-    }
-    return {
-      previewStimulus: item.stimulus,
-      uiStyle: item.ui_style,
-      canvas: item.canvas,
-      bgImgOptions: item.background_image,
-      backgroundShapes: item.background_shapes,
-      previewTools,
-      previewAnswer
-    };
-  };
+const getFontSizeList = () => (
+  [
+    { value: '', label: '' },
+    { value: 'small', label: 'Small' },
+    { value: 'normal', label: 'Normal' },
+    { value: 'large', label: 'Large' },
+    { value: 'extra_large', label: 'Extra large' },
+    { value: 'huge', label: 'Huge' }
+  ]
+);
 
-  getComponentByGraphType = (graphType) => {
+const getStemNumerationList = () => (
+  [
+    { value: '', label: '' },
+    { value: 'numerical', label: 'Numerical' },
+    { value: 'uppercase_alphabet', label: 'Uppercase alphabet' },
+    { value: 'lowercase_alphabet', label: 'Lowercase alphabet' }
+  ]
+);
+
+class Graph extends Component {
+  getOptionsComponent = () => {
+    const { item } = this.props;
+    const { graphType } = item;
+
     switch (graphType) {
-      case 'firstQuadrant':
-        return GraphQuadrants;
       case 'axisSegments':
         return AxisSegments;
       case 'axisLabels':
         return GraphAxisLabels;
-      default:
       case 'quadrants':
+      case 'firstQuadrant':
+      default:
         return GraphQuadrants;
     }
+  };
+
+  getMoreOptionsComponent = () => {
+    const { item } = this.props;
+    const { graphType } = item;
+
+    switch (graphType) {
+      case 'axisSegments':
+        return AxisSegmentsOptions;
+      case 'axisLabels':
+        return AxisLabelsOptions;
+      case 'quadrants':
+      case 'firstQuadrant':
+      default:
+        return GraphQuadrantsOptions;
+    }
+  };
+
+  getMoreOptionsProps = () => {
+    const { item } = this.props;
+    const { graphType } = item;
+
+    switch (graphType) {
+      case 'axisSegments':
+        return this.getAxisLabelsOptionsProps();
+      case 'axisLabels':
+        return this.getAxisLabelsOptionsProps();
+      case 'quadrants':
+      case 'firstQuadrant':
+      default:
+        return this.getQuadrantsOptionsProps();
+    }
+  };
+
+  getQuadrantsOptionsProps = () => {
+    const { item } = this.props;
+
+    return {
+      stemNumerationList: getStemNumerationList(),
+      fontSizeList: getFontSizeList(),
+      setOptions: this.handleOptionsChange,
+      setBgImg: this.handleBgImgChange,
+      setBgShapes: this.handleBgShapesChange,
+      graphData: item
+    };
+  };
+
+  getAxisLabelsOptionsProps = () => {
+    const { item } = this.props;
+
+    return {
+      setOptions: this.handleOptionsChange,
+      setNumberline: this.handleNumberlineChange,
+      setCanvas: this.handleCanvasChange,
+      graphData: item
+    };
+  };
+
+  getAxisSegmentsOptionsProps = () => {
+    const { item } = this.props;
+
+    return {
+      graphData: item
+    };
+  };
+
+  handleNumberlineChange = (options) => {
+    const { setQuestionData, item } = this.props;
+    setQuestionData({ ...item, numberlineAxis: options });
   };
 
   handleOptionsChange = (options) => {
     const { setQuestionData, item } = this.props;
     setQuestionData({ ...item, ui_style: options });
+  };
+
+  handleCanvasChange = (options) => {
+    const { setQuestionData, item } = this.props;
+    setQuestionData({ ...item, canvas: options });
   };
 
   handleBgImgChange = (bgImgOptions) => {
@@ -91,26 +168,6 @@ class Graph extends Component {
     const { setQuestionData, item } = this.props;
     setQuestionData({ ...item, background_shapes: bgShapes });
   };
-
-  getFontSizeList = () => (
-    [
-      { value: '', label: '' },
-      { value: 'small', label: 'Small' },
-      { value: 'normal', label: 'Normal' },
-      { value: 'large', label: 'Large' },
-      { value: 'extra_large', label: 'Extra large' },
-      { value: 'huge', label: 'Huge' }
-    ]
-  );
-
-  getStemNumerationList = () => (
-    [
-      { value: '', label: '' },
-      { value: 'numerical', label: 'Numerical' },
-      { value: 'uppercase_alphabet', label: 'Uppercase alphabet' },
-      { value: 'lowercase_alphabet', label: 'Lowercase alphabet' }
-    ]
-  );
 
   handleAddAltResponses = () => {
     const { setQuestionData, item } = this.props;
@@ -139,22 +196,24 @@ class Graph extends Component {
     const { item, setQuestionData } = this.props;
     const newItem = cloneDeep(item);
     newItem.validation.ignore_repeated_shapes = value;
-    setQuestionData(newItem);
+    setQuestionData({ ...newItem });
   };
 
   render() {
-    const { view, item, smallSize, testItem, previewTab, userAnswer, changePreviewTab, evaluation } = this.props;
-    const ComponentByGraphType = this.getComponentByGraphType(item.graphType);
-
     const {
-      previewStimulus,
-      uiStyle,
-      canvas,
-      bgImgOptions,
-      backgroundShapes,
-      previewTools,
-      previewAnswer
-    } = this.getRenderData();
+      view,
+      item,
+      smallSize,
+      testItem,
+      previewTab,
+      userAnswer,
+      changePreviewTab,
+      evaluation
+    } = this.props;
+    const { graphType } = item;
+
+    const OptionsComponent = this.getOptionsComponent();
+    const MoreOptionsComponent = this.getMoreOptionsComponent();
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
@@ -163,92 +222,63 @@ class Graph extends Component {
         {view === 'edit' && (
           <React.Fragment>
             <Paper>
-              <ComponentByGraphType graphData={item} />
+              <OptionsComponent canvas={item.canvas} setCanvas={this.handleCanvasChange} graphData={item} />
               <CorrectAnswers
-                uiStyle={uiStyle}
-                canvasConfig={canvas}
+                graphData={item}
                 onAddAltResponses={this.handleAddAltResponses}
-                validation={item.validation}
-                tools={previewTools}
-                bgImgOptions={bgImgOptions}
-                backgroundShapes={backgroundShapes}
               />
-              <Select
-                key={Math.random().toString(36)}
-                style={{ width: 'auto', marginTop: '11px', marginRight: '10px', borderRadius: '10px' }}
-                onChange={val => this.handleSelectIgnoreRepeatedShapes(val)}
-                options={getIgnoreRepeatedShapesOptions()}
-                value={item.validation.ignore_repeated_shapes}
-              /> Ignore repeated shapes
+              {(graphType === 'quadrants' || graphType === 'firstQuadrant') && (
+                <React.Fragment>
+                  <Select
+                    key={Math.random().toString(36)}
+                    style={{ width: 'auto', marginTop: '11px', marginRight: '10px', borderRadius: '10px' }}
+                    onChange={val => this.handleSelectIgnoreRepeatedShapes(val)}
+                    options={getIgnoreRepeatedShapesOptions()}
+                    value={item.validation.ignore_repeated_shapes}
+                  /> Ignore repeated shapes
+                </React.Fragment>
+              )}
             </Paper>
             <Paper
               padding="30px 60px"
               style={{ marginTop: '30px' }}
             >
-              <GraphQuadrantsOptions
-                stemNumerationList={this.getStemNumerationList()}
-                fontSizeList={this.getFontSizeList()}
-                options={uiStyle}
-                canvasConfig={canvas}
-                setOptions={this.handleOptionsChange}
-                bgImgOptions={bgImgOptions}
-                setBgImg={this.handleBgImgChange}
-                backgroundShapes={backgroundShapes}
-                setBgShapes={this.handleBgShapesChange}
-                validation={item.validation}
-              />
+              <MoreOptionsComponent {...this.getMoreOptionsProps()} />
             </Paper>
           </React.Fragment>
         )}
         {view === 'preview' && smallSize === false && item && (
           <Wrapper>
             {previewTab === 'check' && (
-              <GraphQuadrantsDisplay
+              <GraphDisplay
                 checkAnswer
-                smallSize={smallSize}
-                question={previewStimulus}
-                uiStyle={uiStyle}
-                canvasConfig={canvas}
-                tools={previewTools}
-                bgImgOptions={bgImgOptions}
+                smallSize
+                graphData={item}
                 onChange={this.handleAddAnswer}
                 elements={userAnswer}
-                validation={item.validation}
-                answer={previewAnswer}
                 changePreviewTab={changePreviewTab}
-                backgroundShapes={backgroundShapes}
                 evaluation={evaluation}
               />
             )}
             {previewTab === 'show' && (
-              <GraphQuadrantsDisplay
+              <GraphDisplay
                 showAnswer
-                smallSize={smallSize}
-                question={previewStimulus}
-                uiStyle={uiStyle}
-                canvasConfig={canvas}
-                tools={previewTools}
-                bgImgOptions={bgImgOptions}
-                elements={userAnswer}
-                validation={item.validation}
-                answer={previewAnswer}
+                smallSize
+                graphData={item}
                 onChange={this.handleAddAnswer}
-                backgroundShapes={backgroundShapes}
+                elements={userAnswer}
+                changePreviewTab={changePreviewTab}
                 evaluation={evaluation}
               />
             )}
             {previewTab === 'clear' && (
-              <GraphQuadrantsDisplay
-                preview
-                smallSize={smallSize}
-                question={previewStimulus}
-                uiStyle={uiStyle}
-                canvasConfig={canvas}
-                tools={previewTools}
-                bgImgOptions={bgImgOptions}
+              <GraphDisplay
+                clearAnswer
+                smallSize
+                graphData={item}
                 onChange={this.handleAddAnswer}
                 elements={userAnswer}
-                backgroundShapes={backgroundShapes}
+                changePreviewTab={changePreviewTab}
               />
             )}
           </Wrapper>

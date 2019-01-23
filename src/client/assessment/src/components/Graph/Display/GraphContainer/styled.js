@@ -9,9 +9,9 @@ export const GraphToolbar = styled.div`
   flex-direction: row;
   align-items: flex-start;
   justify-content: flex-start;
-  min-height: 88px;
+  min-height: 65px;
   padding: 0;
-  background-color: rgba(230, 230, 230, 0.23);
+  background-color: #efefef;
   font-size: ${props => (props.fontSize ? props.fontSize : 14)}px;
   
   ul {
@@ -46,6 +46,15 @@ export const ToolbarRight = styled.ul`
    padding: 0;
 `;
 
+export const SegmentsToolbarItem = styled.div`
+  width: 100%;
+  height: 65px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const ToolbarItem = styled.div`
   width: 100%;
   height: 84px;
@@ -72,6 +81,55 @@ export const ToolbarItemIcon = styled.div`
   min-width: 23px;
   min-height: 24px;
   margin-bottom: 5px;
+`;
+
+export const SegmentsToolBtn = styled.li`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 89px;
+  height: 65px;
+  background-color: transparent;
+  color: ${secondaryTextColor};
+  cursor: pointer;
+  display: inline-block;
+  line-height: 1.5em;
+  transition: background-color 0.1s ease-in;
+  user-select: none;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0);
+
+  svg {
+    color: ${secondaryTextColor};
+    stroke: ${secondaryTextColor};
+    fill: ${secondaryTextColor};
+  }
+
+  &:hover {
+    background-color: ${white};
+  }
+
+  &:active {
+    background-color: ${white};
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  &.active {
+    background-color: ${white};
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
+    
+    .dd-header-title svg {
+      color: ${greenDark};
+      stroke: ${greenDark};
+      fill: ${greenDark};
+    }
+    
+    .tool-btn-icon svg {
+      color: ${greenDark};
+      stroke: ${greenDark};
+      fill: ${greenDark};
+    }
+
+  }
 `;
 
 export const ToolBtn = styled.li`

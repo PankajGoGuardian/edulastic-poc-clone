@@ -13,7 +13,8 @@ import {
   tokenhighlight,
   clozeDragDrop,
   choiceMatrix,
-  shading
+  shading,
+  graph
 } from '@edulastic/evaluators';
 
 // clozeDropDown and ClozeText shares same logic
@@ -34,7 +35,8 @@ const evaluators = {
   sortList,
   hotspot,
   tokenhighlight,
-  shading
+  shading,
+  graph
 };
 
 export default evaluators;

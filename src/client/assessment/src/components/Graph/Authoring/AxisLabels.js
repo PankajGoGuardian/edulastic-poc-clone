@@ -5,118 +5,16 @@ import { connect } from 'react-redux';
 import { PaddingDiv } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
 import { arrayMove } from 'react-sortable-hoc';
-import { cloneDeep } from 'lodash';
-import { StyledTextarea, Subtitle, Label, ContainerStart, LineParameter, LineInput, TitleTextInput } from '../common/styled_components';
+import { cloneDeep, clone } from 'lodash';
+import { Subtitle, Label, ContainerStart, LineParameter, LineInput, TitleTextInput } from '../common/styled_components';
 import OrderListResponse from './OrderListResponse/OrderListResponse';
-import AxisLabelsLayoutSettings from './AxisLabelsLayoutSettings/AxisLabelsLayoutSettings';
 import { setQuestionDataAction } from '../../../../../author/src/actions/question';
+import { QuestionTextArea } from '../../common';
 
 class GraphAxisLabels extends Component {
-  constructor(props) {
-    super(props);
-
-    const { stimulus } = props.graphData;
-
-    this.state = {
-      lineMinValue: 0,
-      lineMaxValue: 0,
-      title: '',
-      stimulus,
-      isMoreOptionsOpen: false,
-      fontSizeList: [
-        {
-          id: 'small',
-          value: 'Small',
-          selected: false
-        },
-        {
-          id: 'normal',
-          value: 'Normal',
-          selected: true
-        },
-        {
-          id: 'large',
-          value: 'Large',
-          selected: false
-        },
-        {
-          id: 'extra_large',
-          value: 'Extra large',
-          selected: false
-        },
-        {
-          id: 'huge',
-          value: 'Huge',
-          selected: false
-        }
-      ],
-      fractionsFormatList: [
-        {
-          id: 'not-normalized-fractions',
-          value: 'Not normalized and mixed fractions',
-          selected: true
-        },
-        {
-          id: 'normalized-fractions',
-          value: 'Normalized and mixed fractions',
-          selected: false
-        },
-        {
-          id: 'improper-fractions',
-          value: 'Improper fractions',
-          selected: false
-        }
-      ],
-      renderingBaseList: [
-        {
-          id: 'min-value-based',
-          value: 'Line minimum value',
-          selected: true
-        },
-        {
-          id: 'zero-based',
-          value: 'Zero',
-          selected: false
-        }
-
-      ]
-    };
-  }
-
-  updateTitle = (e) => {
-    if (e) {
-      this.setState(state => ({
-        ...state,
-        title: e.target.value
-      }));
-    }
-  };
-
-  updateStimulus = (e) => {
-    this.setState(state => ({
-      ...state,
-      stimulus: e.target.value
-    }));
-  };
-
-  updateValue = (e, lineType) => {
-    let { value } = e.target;
-
-    if (value < 0) {
-      value = 0;
-    }
-
-    if (lineType === 'min') {
-      return this.setState(state => ({
-        ...state,
-        lineMinValue: value
-      }));
-    }
-
-    return this.setState(state => ({
-      ...state,
-      lineMaxValue: value
-    }));
+  onChangeQuestion = (stimulus) => {
+    const { graphData, setQuestionData } = this.props;
+    setQuestionData({ ...graphData, stimulus });
   };
 
   onSortOrderListEnd = ({ oldIndex, newIndex }) => {
@@ -127,88 +25,52 @@ class GraphAxisLabels extends Component {
 
   handleQuestionsChange = (value, index) => {
     const { setQuestionData, graphData } = this.props;
+    const labels = clone(graphData.list);
 
-    setQuestionData({
-      ...graphData,
-      list: graphData.list.map((q, i) => {
-        if (i === index) {
-          return value;
-        }
-        return q;
-      })
-    });
+    labels[index].text = value;
+    setQuestionData({ ...graphData, list: labels });
   };
 
   handleDeleteQuestion = (index) => {
-    const { setQuestionData, graphData, saveAnswer } = this.props;
-    const newItem = cloneDeep(graphData);
+    const { setQuestionData, graphData } = this.props;
+    const filteredItems = clone(graphData.list).filter((q, i) => i !== index);
 
-    newItem.list = newItem.list.filter((q, i) => i !== index);
-
-    const indexList = newItem.list.map((val, i) => i);
-
-    // newItem.validation.valid_response.value = indexList;
-
-    // newItem.validation.alt_responses = newItem.validation.alt_responses.map((res) => {
-    //   res.value = indexList;
-    //   return res;
-    // });
-
-    saveAnswer(indexList);
-    setQuestionData(newItem);
+    setQuestionData({ ...graphData, list: filteredItems });
   };
 
   handleAddQuestion = () => {
-    const { setQuestionData, graphData, t, saveAnswer } = this.props;
+    const { setQuestionData, graphData } = this.props;
     const newItem = cloneDeep(graphData);
 
-    newItem.list = [
-      ...graphData.list,
-      `${t('common.initialoptionslist.itemprefix')} ${graphData.list.length}`
-    ];
-    // newItem.validation.valid_response.value = [
-    //   ...newItem.validation.valid_response.value,
-    //   newItem.validation.valid_response.value.length,
-    // ];
-    //
-    // if (newItem.validation.alt_responses.length) {
-    //   newItem.validation.alt_responses = newItem.validation.alt_responses.map((res) => {
-    //     res.value.push(res.value.length);
-    //     return res;
-    //   });
-    // }
+    newItem.list = newItem.list.concat(
+      {
+        text: 'New Option',
+        id: `list-item-${Math.random().toString(36).substr(2, 9)}`
+      }
+    );
 
-    saveAnswer(newItem.list.map((q, i) => i));
-    setQuestionData(newItem);
+    setQuestionData({ ...graphData, list: newItem.list });
   };
 
-  onClickMoreOptions = (isClicked) => {
-    this.setState(state => ({
-      ...state,
-      isMoreOptionsOpen: isClicked
-    }));
+  handleCanvasChange = (event) => {
+    const { value, name } = event.target;
+    const { graphData, setQuestionData } = this.props;
+    const { canvas } = graphData;
+
+    canvas[name] = value;
+    setQuestionData({ ...graphData, canvas });
   };
 
   render() {
-    const {
-      lineMinValue,
-      lineMaxValue,
-      title,
-      stimulus,
-      isMoreOptionsOpen,
-      fontSizeList,
-      fractionsFormatList,
-      renderingBaseList
-    } = this.state;
     const { t, graphData } = this.props;
+    const { canvas, stimulus } = graphData;
 
     return (
       <div>
         <Subtitle>{t('component.graphing.question.composequestion')}</Subtitle>
-        <StyledTextarea
+        <QuestionTextArea
           placeholder={t('component.graphing.question.enteryourquestion')}
-          onChange={this.updateStimulus}
-          onBlur={this.updateStimulus}
+          onChange={this.onChangeQuestion}
           value={stimulus}
         />
 
@@ -220,9 +82,9 @@ class GraphAxisLabels extends Component {
               <Label>Minimum value</Label>
               <LineInput
                 type="number"
-                value={lineMinValue}
-                onChange={e => this.updateValue(e, 'min')}
-                onBlur={e => this.updateValue(e, 'min')}
+                value={canvas.x_min}
+                name="x_min"
+                onChange={this.handleCanvasChange}
                 step={1}
                 disabled={false}
               />
@@ -231,9 +93,9 @@ class GraphAxisLabels extends Component {
               <Label>Maximum value</Label>
               <LineInput
                 type="number"
-                value={lineMaxValue}
-                onChange={e => this.updateValue(e, 'max')}
-                onBlur={e => this.updateValue(e, 'max')}
+                value={canvas.x_max}
+                name="x_max"
+                onChange={this.handleCanvasChange}
                 step={1}
                 disabled={false}
               />
@@ -245,9 +107,9 @@ class GraphAxisLabels extends Component {
           <Subtitle>{t('component.graphing.title')}</Subtitle>
           <TitleTextInput
             type="text"
-            value={title}
-            onChange={this.updateTitle}
-            onBlur={this.updateTitle}
+            name="title"
+            value={canvas.title}
+            onChange={this.handleCanvasChange}
           />
         </PaddingDiv>
 
@@ -265,15 +127,6 @@ class GraphAxisLabels extends Component {
           />
         </PaddingDiv>
 
-        <AxisLabelsLayoutSettings
-          t={t}
-          onClickMoreOptions={this.onClickMoreOptions}
-          isMoreOptionsOpen={isMoreOptionsOpen}
-          fontSizeList={fontSizeList}
-          fractionsFormatList={fractionsFormatList}
-          renderingBaseList={renderingBaseList}
-        />
-
       </div>
     );
   }
@@ -282,8 +135,7 @@ class GraphAxisLabels extends Component {
 GraphAxisLabels.propTypes = {
   t: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
-  setQuestionData: PropTypes.func.isRequired,
-  saveAnswer: PropTypes.func.isRequired
+  setQuestionData: PropTypes.func.isRequired
 };
 
 const enhance = compose(

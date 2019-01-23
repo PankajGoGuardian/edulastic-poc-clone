@@ -7,26 +7,40 @@ import {
   Polygon,
   Parabola,
   Label,
-  Input
+  Input,
+  Mark,
+  Numberline,
+  NumberlinePoint,
+  NumberlineVector,
+  NumberlineSegment,
+  NumberlineTrash
 } from './elements';
 import {
   mergeParams,
   graphParameters2Boundingbox,
   defaultBgObjectParameters,
-  fillConfigDefaultParameters
+  fillConfigDefaultParameters,
+  numberlineGraphParametersToBoundingbox
 } from './settings';
 import {
   updatePointParameters,
   updateAxe,
+  updateNumberline,
   updateGrid,
   getImageCoordsByPercent,
   flatConfig,
-  flat2nestedConfig
+  flat2nestedConfig,
+  checkMarksRenderSpace,
+  calcMeasure,
+  calcUnitX,
+  findElementsDiff
 } from './utils';
 import _events from './events';
-import '../common/MyLabelInput.css';
 
-export const { JXG } = window;
+import '../common/MyLabelInput.css';
+import '../common/Mark.css';
+
+export const JXG = window.JXG;
 
 /**
  * if the coords between mousedown and mouseup events are different - is it move
@@ -60,6 +74,10 @@ class Board {
      */
     this.bgElements = [];
     /**
+     * Static unitX
+    */
+    this.staticUnitX = null;
+    /**
      * Answers
      */
     this.answers = [];
@@ -92,15 +110,21 @@ class Board {
    * Constants/Tools
    * @param {string} tool
    */
-  setTool(tool) {
+  setTool(tool, graphType, responsesAllowed) {
+    if (graphType === 'axisLabels') {
+      return;
+    }
     if (this.currentTool !== tool) {
-      this.abortTool();
+      if (graphType === 'axisSegments') {
+      } else {
+        this.abortTool();
+      }
     }
     this.$board.off(CONSTANT.EVENT_NAMES.UP);
     this.currentTool = tool;
     switch (tool) {
       case CONSTANT.TOOLS.POINT:
-        this.setCreatingHandler(Point.onHandler);
+        this.setCreatingHandler(Point.onHandler, responsesAllowed);
         return;
       case CONSTANT.TOOLS.LINE:
       case CONSTANT.TOOLS.RAY:
@@ -122,6 +146,27 @@ class Board {
         return;
       case CONSTANT.TOOLS.LABEL:
         this.setCreatingHandler(Label.onHandler());
+        return;
+      case CONSTANT.TOOLS.MARK:
+        this.setCreatingHandler(Mark.onHandler());
+        return;
+      case CONSTANT.TOOLS.SEGMENTS_POINT:
+        this.setCreatingHandler(NumberlinePoint.onHandler, responsesAllowed);
+        return;
+      case CONSTANT.TOOLS.BOTH_INCLUDED_SEGMENT:
+      case CONSTANT.TOOLS.BOTH_NOT_INCLUDED_SEGMENT:
+      case CONSTANT.TOOLS.ONLY_RIGHT_INCLUDED_SEGMENT:
+      case CONSTANT.TOOLS.ONLY_LEFT_INCLUDED_SEGMENT:
+        this.setCreatingHandler(NumberlineSegment.onHandler(tool), responsesAllowed);
+        return;
+      case CONSTANT.TOOLS.INFINITY_TO_INCLUDED_SEGMENT:
+      case CONSTANT.TOOLS.INFINITY_TO_NOT_INCLUDED_SEGMENT:
+      case CONSTANT.TOOLS.INCLUDED_TO_INFINITY_SEGMENT:
+      case CONSTANT.TOOLS.NOT_INCLUDED_TO_INFINITY_SEGMENT:
+        this.setCreatingHandler(NumberlineVector.onHandler(tool), responsesAllowed);
+        return;
+      case CONSTANT.TOOLS.TRASH:
+        this.setCreatingHandler();
         return;
       default:
         throw new Error('Unknown tool:', tool);
@@ -159,18 +204,135 @@ class Board {
    * Add event 'Up'
    * @param {Function} handler
    */
-  setCreatingHandler(handler) {
+  setCreatingHandler(handler, responsesAllowed) {
     this.$board.on(CONSTANT.EVENT_NAMES.UP, (event) => {
       if (!this.dragDetector.isSame(this.$board.drag_position)) {
         this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
         return;
       }
-      const newElement = handler(this, event);
-      if (newElement) {
-        this.elements.push(newElement);
-        this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_NEW);
+      if (this.currentTool === CONSTANT.TOOLS.TRASH) {
+        NumberlineTrash.removeObject(this, this.$board.getAllObjectsUnderMouse(event));
+      } else {
+        let newElement;
+
+        if (responsesAllowed) {
+          const elementsLength = this.elements.filter(element => element.elType === 'segment' || element.elType === 'point').length;
+
+          if (elementsLength < responsesAllowed) {
+            newElement = handler(this, event);
+          }
+        } else {
+          newElement = handler(this, event);
+        }
+
+        if (newElement) {
+          this.elements.push(newElement);
+          this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_NEW);
+        }
       }
     });
+  }
+
+  // Set calculated bounding box (xMin - margin and xMax + margin), render numberline axis
+  makeNumberlineAxis(graphParameters, settings, layout, graphType) {
+    const xMargin = graphParameters.margin / calcUnitX(graphParameters.xMin, graphParameters.xMax, layout.width);
+
+    this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(graphParameters, xMargin));
+    this.elements.push(Numberline.onHandler(this, graphParameters.xMin, graphParameters.xMax, settings));
+
+    if (graphType === 'axisLabels') {
+      Mark.updateMarksContainer(this, graphParameters.xMin - xMargin, graphParameters.xMax + xMargin);
+    }
+  }
+
+  // Update bounding box, marks container, rerender numberline axis, update mark's snap handler
+  updateGraphParameters(graphParameters, settings, layout, graphType) {
+    const xMargin = graphParameters.margin / calcUnitX(graphParameters.xMin, graphParameters.xMax, layout.width);
+    this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(graphParameters, xMargin));
+
+    Numberline.updateCoords(this, graphParameters.xMin, graphParameters.xMax, settings);
+
+    if (graphType === 'axisLabels') {
+      Mark.updateMarksContainer(this, graphParameters.xMin - xMargin, graphParameters.xMax + xMargin);
+
+      const marks = this.elements.filter(element => element.elType === 'group');
+      this.elements = this.elements.filter(element => element.elType !== 'group');
+      marks.forEach(mark => Mark.removeMark(this, mark));
+      marks.forEach(mark => Mark.rerenderMark(mark, this, graphParameters, settings));
+    }
+
+    this.$board.fullUpdate();
+  }
+
+  // Update numberline axis settings (such as ticks visibility, font size and etc.)
+  updateGraphSettings(settings, graphType) {
+    const axis = this.elements.filter(element => element.elType === 'axis' || element.elType === 'arrow');
+    updateNumberline(axis, settings);
+
+    if (graphType === 'axisLabels') {
+      const marks = this.elements.filter(element => element.elType === 'group');
+      marks.forEach(mark => Mark.updateTextSize(mark, settings.fontSize));
+    }
+
+    this.$board.fullUpdate();
+  }
+
+  // Render marks
+  renderMarks(marks, xCoords, settings) {
+    marks.forEach((mark) => {
+      this.elements.push(
+        Mark.onHandler(
+          this,
+          checkMarksRenderSpace(this),
+          mark,
+          calcMeasure(51.5, 45, this),
+          xCoords,
+          settings.snapToTicks,
+          settings.ticksDistance
+        )
+      );
+    });
+  }
+
+  // Marks shuffled or text edited
+  updateMarks(marks, oldMarks) {
+    Mark.checkForUpdate(marks, this.elements.filter(element => element.elType === 'group'), this, oldMarks);
+  }
+
+  // Size of marks array have changed
+  marksSizeChanged(marks, xCoords, settings) {
+    const filteredElements = this.elements.filter(element => element.elType === 'group');
+
+    if (marks.length < filteredElements.length) {
+      this.removeMark(marks, filteredElements);
+    } else {
+      this.addMark(marks, filteredElements, xCoords, settings.snapToTicks, settings.ticksDistance);
+    }
+  }
+
+  // Add new mark
+  addMark(marks, elements, xCoords, snapToTicks, ticksDistance) {
+    const newMark = findElementsDiff(marks, elements);
+    this.elements.push(
+      Mark.onHandler(
+        this,
+        checkMarksRenderSpace(this),
+        newMark,
+        calcMeasure(51.5, 45, this),
+        xCoords,
+        snapToTicks,
+        ticksDistance
+      )
+    );
+    this.$board.fullUpdate();
+  }
+
+  // Remove mark
+  removeMark(marks, elements) {
+    const removedMark = findElementsDiff(elements, marks);
+    this.elements = this.elements.filter(element => element.elType !== 'group' || element.id !== removedMark.id);
+    Mark.removeMark(this, removedMark);
+    this.$board.fullUpdate();
   }
 
   getCoords(e) {
@@ -231,6 +393,8 @@ class Board {
           return Polygon.getConfig(e);
         case JXG.OBJECT_TYPE_CURVE:
           return Parabola.getConfig(e);
+        case JXG.OBJECT_TYPE_TEXT:
+          return Mark.getConfig(e);
         default:
           throw new Error('Unknown element type:', e.name, e.type);
       }
@@ -274,12 +438,14 @@ class Board {
    */
   setAxesParameters(axesParameters) {
     const axes = this.$board.defaultAxes;
+
     if (axesParameters.x) {
       updateAxe(axes.x, axesParameters.x, 'x');
     }
     if (axesParameters.y) {
       updateAxe(axes.y, axesParameters.y, 'y');
     }
+
     this.$board.fullUpdate();
   }
 
@@ -509,6 +675,17 @@ class Board {
             }),
           );
           break;
+        case JXG.OBJECT_TYPE_TEXT:
+          objects.push(
+            mixProps({
+              el,
+              objectCreator: (attrs) => {
+                const [name, points, props] = Mark.parseConfig(el, this.getParameters(CONSTANT.TOOLS.MARK));
+                console.log(name, points, props, attrs);
+                return this.createElement(name, points, { ...props, ...attrs });
+              }
+            })
+          );
         default:
           throw new Error('Unknown element:', el);
       }

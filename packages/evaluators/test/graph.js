@@ -1,6 +1,7 @@
 import test from 'ava';
 import { graph as evaluator } from '../src/index';
-import { IgnoreRepeatedShapes } from '../src/graphs-comparison/constants/ignoreRepeatedShapes';
+import { IgnoreRepeatedShapes } from '../src/graph/quadrants/constants/ignoreRepeatedShapes';
+import { ScoringType } from '../src/const/scoring';
 
 import {
   trueAnswerWith1Point, trueAnswerWith2Points,
@@ -12,7 +13,10 @@ import {
   trueAnswerWith1Circle, trueCircleWithOtherPoints, secondTrueCircle, errorCircle,
   trueAnswerWith1Parabola, trueParabolaWithOtherPoints, secondTrueParabola, errorParabola,
   trueAnswerWith1Sine, trueSineWithOtherPoints, secondTrueSine, errorSine,
-  trueAnswerWith1Polygon, truePolygonWithOtherOrderedPoints, secondTruePolygon, errorPolygon
+  trueAnswerWith1Polygon, truePolygonWithOtherOrderedPoints, secondTruePolygon, errorPolygon,
+  axisLabelsObj1, axisLabelsObj2, axisLabelsObj3, axisLabelsObj4,
+  axisSegmentsObj1, axisSegmentsObj2, axisSegmentsObj3,
+  axisSegmentsObj4, axisSegmentsObj5, axisSegmentsObj6
 } from './data/graph';
 
 function clone(object) {
@@ -30,8 +34,8 @@ test('#GraphPoint: check 1 true point', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_1').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_1').result, true);
 });
 
 test('#GraphPoint: check 1 error point', async (t) => {
@@ -44,8 +48,8 @@ test('#GraphPoint: check 1 error point', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_1').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_1').result, false);
 });
 
 test('#GraphPoint: check 2 true points', async (t) => {
@@ -57,9 +61,9 @@ test('#GraphPoint: check 2 true points', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_1').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_2').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_1').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_2').result, true);
 });
 
 test('#GraphPoint: check 2 points: 1 - error point, 2: true point', async (t) => {
@@ -72,9 +76,9 @@ test('#GraphPoint: check 2 points: 1 - error point, 2: true point', async (t) =>
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_1').result, false);
-  t.is(result.details.find(item => item.id === 'lrn_2').result, true);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_1').result, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_2').result, true);
 });
 
 test('#GraphPoint: check 2 error points', async (t) => {
@@ -88,9 +92,9 @@ test('#GraphPoint: check 2 error points', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_1').result, false);
-  t.is(result.details.find(item => item.id === 'lrn_2').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_1').result, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_2').result, false);
 });
 
 test('#GraphPoint: there are not all points', async (t) => {
@@ -102,8 +106,8 @@ test('#GraphPoint: there are not all points', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_1').result, true);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_1').result, true);
 });
 
 // Line ============================================================================================
@@ -118,8 +122,8 @@ test('#GraphLine: check 1 true line {ignoreRepeatedShapes = NO}', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphLine: check 1 true line {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -132,8 +136,8 @@ test('#GraphLine: check 1 true line {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', 
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphLine: check 1 true line {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -146,8 +150,8 @@ test('#GraphLine: check 1 true line {ignoreRepeatedShapes = COMPARE_BY_POINTS}',
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphLine: check 1 error line {ignoreRepeatedShapes = NO}', async (t) => {
@@ -160,8 +164,8 @@ test('#GraphLine: check 1 error line {ignoreRepeatedShapes = NO}', async (t) => 
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphLine: check 1 error line {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -174,8 +178,8 @@ test('#GraphLine: check 1 error line {ignoreRepeatedShapes = COMPARE_BY_SLOPE}',
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphLine: check 1 error line {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -188,8 +192,8 @@ test('#GraphLine: check 1 error line {ignoreRepeatedShapes = COMPARE_BY_POINTS}'
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphLine: check 1 true line, but in test answer 3 true lines {ignoreRepeatedShapes = NO}', async (t) => {
@@ -204,10 +208,10 @@ test('#GraphLine: check 1 true line, but in test answer 3 true lines {ignoreRepe
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, false);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, false);
 });
 
 test('#GraphLine: check 1 true line, but in test answer 3 true lines {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -222,10 +226,10 @@ test('#GraphLine: check 1 true line, but in test answer 3 true lines {ignoreRepe
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, true);
 });
 
 test('#GraphLine: check 1 true line, but in test answer 3 true lines {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -240,10 +244,10 @@ test('#GraphLine: check 1 true line, but in test answer 3 true lines {ignoreRepe
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, false);
 });
 
 test('#GraphLine: check 2 true lines {ignoreRepeatedShapes = NO}', async (t) => {
@@ -258,9 +262,9 @@ test('#GraphLine: check 2 true lines {ignoreRepeatedShapes = NO}', async (t) => 
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_13').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_13').result, true);
 });
 
 test('#GraphLine: check 2 lines: 1 - true line, 2 - error line {ignoreRepeatedShapes = NO}', async (t) => {
@@ -275,9 +279,9 @@ test('#GraphLine: check 2 lines: 1 - true line, 2 - error line {ignoreRepeatedSh
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphLine: there are not all lines', async (t) => {
@@ -291,8 +295,8 @@ test('#GraphLine: there are not all lines', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphLine: EV-315', async (t) => {
@@ -305,9 +309,9 @@ test('#GraphLine: EV-315', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, true);
 });
 
 // Ray =============================================================================================
@@ -322,8 +326,8 @@ test('#GraphRay: check 1 true ray {ignoreRepeatedShapes = NO}', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphRay: check 1 true ray {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -336,8 +340,8 @@ test('#GraphRay: check 1 true ray {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', as
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphRay: check 1 true ray {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -350,8 +354,8 @@ test('#GraphRay: check 1 true ray {ignoreRepeatedShapes = COMPARE_BY_POINTS}', a
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphRay: check 1 error ray {ignoreRepeatedShapes = NO}', async (t) => {
@@ -364,8 +368,8 @@ test('#GraphRay: check 1 error ray {ignoreRepeatedShapes = NO}', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphRay: check 1 error ray {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -378,8 +382,8 @@ test('#GraphRay: check 1 error ray {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', a
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphRay: check 1 error ray {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -392,8 +396,8 @@ test('#GraphRay: check 1 error ray {ignoreRepeatedShapes = COMPARE_BY_POINTS}', 
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphRay: check 1 true ray, but in test answer 3 true rays {ignoreRepeatedShapes = NO}', async (t) => {
@@ -408,10 +412,10 @@ test('#GraphRay: check 1 true ray, but in test answer 3 true rays {ignoreRepeate
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, false);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, false);
 });
 
 test('#GraphRay: check 1 true ray, but in test answer 3 true rays {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -426,10 +430,10 @@ test('#GraphRay: check 1 true ray, but in test answer 3 true rays {ignoreRepeate
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, true);
 });
 
 test('#GraphRay: check 1 true ray, but in test answer 3 true rays {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -444,10 +448,10 @@ test('#GraphRay: check 1 true ray, but in test answer 3 true rays {ignoreRepeate
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, false);
 });
 
 test('#GraphRay: check 2 true ray {ignoreRepeatedShapes = NO}', async (t) => {
@@ -462,9 +466,9 @@ test('#GraphRay: check 2 true ray {ignoreRepeatedShapes = NO}', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_13').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_13').result, true);
 });
 
 test('#GraphRay: check 2 ray: 1 - true ray, 2 - error ray {ignoreRepeatedShapes = NO}', async (t) => {
@@ -479,9 +483,9 @@ test('#GraphRay: check 2 ray: 1 - true ray, 2 - error ray {ignoreRepeatedShapes 
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphRay: there are not all rays', async (t) => {
@@ -495,8 +499,8 @@ test('#GraphRay: there are not all rays', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 // Segment =========================================================================================
@@ -511,8 +515,8 @@ test('#GraphSegment: check 1 true segment {ignoreRepeatedShapes = NO}', async (t
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphSegment: check 1 true segment {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -525,8 +529,8 @@ test('#GraphSegment: check 1 true segment {ignoreRepeatedShapes = COMPARE_BY_SLO
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphSegment: check 1 true segment {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -539,8 +543,8 @@ test('#GraphSegment: check 1 true segment {ignoreRepeatedShapes = COMPARE_BY_POI
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphSegment: check 1 error segment {ignoreRepeatedShapes = NO}', async (t) => {
@@ -553,8 +557,8 @@ test('#GraphSegment: check 1 error segment {ignoreRepeatedShapes = NO}', async (
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphSegment: check 1 error segment {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -567,8 +571,8 @@ test('#GraphSegment: check 1 error segment {ignoreRepeatedShapes = COMPARE_BY_SL
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphSegment: check 1 error segment {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -581,8 +585,8 @@ test('#GraphSegment: check 1 error segment {ignoreRepeatedShapes = COMPARE_BY_PO
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphSegment: check 1 true segment, but in test answer 3 true segments {ignoreRepeatedShapes = NO}', async (t) => {
@@ -597,10 +601,10 @@ test('#GraphSegment: check 1 true segment, but in test answer 3 true segments {i
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, false);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, false);
 });
 
 test('#GraphSegment: check 1 true segment, but in test answer 3 true segments {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -615,10 +619,10 @@ test('#GraphSegment: check 1 true segment, but in test answer 3 true segments {i
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, true);
 });
 
 test('#GraphSegment: check 1 true segment, but in test answer 3 true segments {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -633,10 +637,10 @@ test('#GraphSegment: check 1 true segment, but in test answer 3 true segments {i
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, true);
 });
 
 test('#GraphSegment: check 2 true segment {ignoreRepeatedShapes = NO}', async (t) => {
@@ -651,9 +655,9 @@ test('#GraphSegment: check 2 true segment {ignoreRepeatedShapes = NO}', async (t
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_13').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_13').result, true);
 });
 
 test('#GraphSegment: check 2 segment: 1 - true segment, 2 - error segment {ignoreRepeatedShapes = NO}', async (t) => {
@@ -668,9 +672,9 @@ test('#GraphSegment: check 2 segment: 1 - true segment, 2 - error segment {ignor
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphSegment: there are not all segments', async (t) => {
@@ -684,8 +688,8 @@ test('#GraphSegment: there are not all segments', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 // Vector ==========================================================================================
@@ -700,8 +704,8 @@ test('#GraphVector: check 1 true vector {ignoreRepeatedShapes = NO}', async (t) 
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphVector: check 1 true vector {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -714,8 +718,8 @@ test('#GraphVector: check 1 true vector {ignoreRepeatedShapes = COMPARE_BY_SLOPE
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphVector: check 1 true vector {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -728,8 +732,8 @@ test('#GraphVector: check 1 true vector {ignoreRepeatedShapes = COMPARE_BY_POINT
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphVector: check 1 error vector {ignoreRepeatedShapes = NO}', async (t) => {
@@ -742,8 +746,8 @@ test('#GraphVector: check 1 error vector {ignoreRepeatedShapes = NO}', async (t)
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphVector: check 1 error vector {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -756,8 +760,8 @@ test('#GraphVector: check 1 error vector {ignoreRepeatedShapes = COMPARE_BY_SLOP
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphVector: check 1 error vector {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -770,8 +774,8 @@ test('#GraphVector: check 1 error vector {ignoreRepeatedShapes = COMPARE_BY_POIN
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphVector: check 1 true vector, but in test answer 2 true vectors {ignoreRepeatedShapes = NO}', async (t) => {
@@ -785,9 +789,9 @@ test('#GraphVector: check 1 true vector, but in test answer 2 true vectors {igno
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, false);
 });
 
 test('#GraphVector: check 1 true vector, but in test answer 2 true vectors {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -801,9 +805,9 @@ test('#GraphVector: check 1 true vector, but in test answer 2 true vectors {igno
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, true);
 });
 
 test('#GraphVector: check 1 true vector, but in test answer 2 true vectors {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -817,9 +821,9 @@ test('#GraphVector: check 1 true vector, but in test answer 2 true vectors {igno
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, true);
 });
 
 test('#GraphVector: check 2 true vectors {ignoreRepeatedShapes = NO}', async (t) => {
@@ -834,9 +838,9 @@ test('#GraphVector: check 2 true vectors {ignoreRepeatedShapes = NO}', async (t)
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_13').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_13').result, true);
 });
 
 test('#GraphVector: check 2 vectors: 1 - true vector, 2 - error vector {ignoreRepeatedShapes = NO}', async (t) => {
@@ -851,9 +855,9 @@ test('#GraphVector: check 2 vectors: 1 - true vector, 2 - error vector {ignoreRe
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphVector: check 2 vectors: 1 - true vector, 2 - reversed vector {ignoreRepeatedShapes = NO}', async (t) => {
@@ -868,9 +872,9 @@ test('#GraphVector: check 2 vectors: 1 - true vector, 2 - reversed vector {ignor
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, false);
 });
 
 test('#GraphVector: there are not all vectors', async (t) => {
@@ -884,8 +888,8 @@ test('#GraphVector: there are not all vectors', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 // Circle ==========================================================================================
@@ -900,8 +904,8 @@ test('#GraphCircle: check 1 true circle {ignoreRepeatedShapes = NO}', async (t) 
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphCircle: check 1 true circle {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -914,8 +918,8 @@ test('#GraphCircle: check 1 true circle {ignoreRepeatedShapes = COMPARE_BY_SLOPE
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphCircle: check 1 true circle {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -928,8 +932,8 @@ test('#GraphCircle: check 1 true circle {ignoreRepeatedShapes = COMPARE_BY_POINT
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphCircle: check 1 error circle {ignoreRepeatedShapes = NO}', async (t) => {
@@ -942,8 +946,8 @@ test('#GraphCircle: check 1 error circle {ignoreRepeatedShapes = NO}', async (t)
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphCircle: check 1 error circle {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -956,8 +960,8 @@ test('#GraphCircle: check 1 error circle {ignoreRepeatedShapes = COMPARE_BY_SLOP
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphCircle: check 1 error circle {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -970,8 +974,8 @@ test('#GraphCircle: check 1 error circle {ignoreRepeatedShapes = COMPARE_BY_POIN
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphCircle: check 1 true circle, but in test answer 3 true circles {ignoreRepeatedShapes = NO}', async (t) => {
@@ -986,10 +990,10 @@ test('#GraphCircle: check 1 true circle, but in test answer 3 true circles {igno
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, false);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, false);
 });
 
 test('#GraphCircle: check 1 true circle, but in test answer 3 true circles {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -1004,10 +1008,10 @@ test('#GraphCircle: check 1 true circle, but in test answer 3 true circles {igno
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, true);
 });
 
 test('#GraphCircle: check 1 true circle, but in test answer 3 true circles {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -1022,10 +1026,10 @@ test('#GraphCircle: check 1 true circle, but in test answer 3 true circles {igno
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, false);
 });
 
 test('#GraphCircle: check 2 true circles {ignoreRepeatedShapes = NO}', async (t) => {
@@ -1040,9 +1044,9 @@ test('#GraphCircle: check 2 true circles {ignoreRepeatedShapes = NO}', async (t)
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_13').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_13').result, true);
 });
 
 test('#GraphCircle: check 2 circles: 1 - true circle, 2 - error circle {ignoreRepeatedShapes = NO}', async (t) => {
@@ -1057,9 +1061,9 @@ test('#GraphCircle: check 2 circles: 1 - true circle, 2 - error circle {ignoreRe
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphCircle: there are not all circles', async (t) => {
@@ -1073,8 +1077,8 @@ test('#GraphCircle: there are not all circles', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 // Parabola ========================================================================================
@@ -1089,8 +1093,8 @@ test('#GraphParabola: check 1 true parabola {ignoreRepeatedShapes = NO}', async 
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphParabola: check 1 true parabola {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -1103,8 +1107,8 @@ test('#GraphParabola: check 1 true parabola {ignoreRepeatedShapes = COMPARE_BY_S
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphParabola: check 1 true parabola {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -1117,8 +1121,8 @@ test('#GraphParabola: check 1 true parabola {ignoreRepeatedShapes = COMPARE_BY_P
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphParabola: check 1 error parabola {ignoreRepeatedShapes = NO}', async (t) => {
@@ -1131,8 +1135,8 @@ test('#GraphParabola: check 1 error parabola {ignoreRepeatedShapes = NO}', async
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphParabola: check 1 error parabola {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -1145,8 +1149,8 @@ test('#GraphParabola: check 1 error parabola {ignoreRepeatedShapes = COMPARE_BY_
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphParabola: check 1 error parabola {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -1159,8 +1163,8 @@ test('#GraphParabola: check 1 error parabola {ignoreRepeatedShapes = COMPARE_BY_
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphParabola: check 1 true parabola, but in test answer 3 true parabolas {ignoreRepeatedShapes = NO}', async (t) => {
@@ -1175,10 +1179,10 @@ test('#GraphParabola: check 1 true parabola, but in test answer 3 true parabolas
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, false);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, false);
 });
 
 test('#GraphParabola: check 1 true parabola, but in test answer 3 true parabolas {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -1193,10 +1197,10 @@ test('#GraphParabola: check 1 true parabola, but in test answer 3 true parabolas
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, true);
 });
 
 test('#GraphParabola: check 1 true parabola, but in test answer 3 true parabolas {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -1211,10 +1215,10 @@ test('#GraphParabola: check 1 true parabola, but in test answer 3 true parabolas
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, false);
 });
 
 test('#GraphParabola: check 2 true parabolas {ignoreRepeatedShapes = NO}', async (t) => {
@@ -1229,9 +1233,9 @@ test('#GraphParabola: check 2 true parabolas {ignoreRepeatedShapes = NO}', async
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_13').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_13').result, true);
 });
 
 test('#GraphParabola: check 2 parabolas: 1 - true parabola, 2 - error parabola {ignoreRepeatedShapes = NO}', async (t) => {
@@ -1246,9 +1250,9 @@ test('#GraphParabola: check 2 parabolas: 1 - true parabola, 2 - error parabola {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphParabola: there are not all parabolas', async (t) => {
@@ -1262,8 +1266,8 @@ test('#GraphParabola: there are not all parabolas', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 // Sine ============================================================================================
@@ -1278,8 +1282,8 @@ test('#GraphSine: check 1 true sine {ignoreRepeatedShapes = NO}', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphSine: check 1 true sine {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -1292,8 +1296,8 @@ test('#GraphSine: check 1 true sine {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', 
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphSine: check 1 true sine {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -1306,8 +1310,8 @@ test('#GraphSine: check 1 true sine {ignoreRepeatedShapes = COMPARE_BY_POINTS}',
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphSine: check 1 error sine {ignoreRepeatedShapes = NO}', async (t) => {
@@ -1320,8 +1324,8 @@ test('#GraphSine: check 1 error sine {ignoreRepeatedShapes = NO}', async (t) => 
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphSine: check 1 error sine {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -1334,8 +1338,8 @@ test('#GraphSine: check 1 error sine {ignoreRepeatedShapes = COMPARE_BY_SLOPE}',
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphSine: check 1 error sine {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -1348,8 +1352,8 @@ test('#GraphSine: check 1 error sine {ignoreRepeatedShapes = COMPARE_BY_POINTS}'
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphSine: check 1 true sine, but in test answer 3 true sines {ignoreRepeatedShapes = NO}', async (t) => {
@@ -1364,10 +1368,10 @@ test('#GraphSine: check 1 true sine, but in test answer 3 true sines {ignoreRepe
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, false);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, false);
 });
 
 test('#GraphSine: check 1 true sine, but in test answer 3 true sines {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -1382,10 +1386,10 @@ test('#GraphSine: check 1 true sine, but in test answer 3 true sines {ignoreRepe
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, true);
 });
 
 test('#GraphSine: check 1 true sine, but in test answer 3 true sines {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -1400,10 +1404,10 @@ test('#GraphSine: check 1 true sine, but in test answer 3 true sines {ignoreRepe
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, false);
 });
 
 test('#GraphSine: check 2 true sines {ignoreRepeatedShapes = NO}', async (t) => {
@@ -1418,9 +1422,9 @@ test('#GraphSine: check 2 true sines {ignoreRepeatedShapes = NO}', async (t) => 
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_13').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_13').result, true);
 });
 
 test('#GraphSine: check 2 sines: 1 - true sine, 2 - error sine {ignoreRepeatedShapes = NO}', async (t) => {
@@ -1435,9 +1439,9 @@ test('#GraphSine: check 2 sines: 1 - true sine, 2 - error sine {ignoreRepeatedSh
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphSine: there are not all sines', async (t) => {
@@ -1451,8 +1455,8 @@ test('#GraphSine: there are not all sines', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 // Polygon =========================================================================================
@@ -1467,8 +1471,8 @@ test('#GraphPolygon: check 1 true polygon {ignoreRepeatedShapes = NO}', async (t
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphPolygon: check 1 true polygon {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -1481,8 +1485,8 @@ test('#GraphPolygon: check 1 true polygon {ignoreRepeatedShapes = COMPARE_BY_SLO
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphPolygon: check 1 true polygon {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -1495,8 +1499,8 @@ test('#GraphPolygon: check 1 true polygon {ignoreRepeatedShapes = COMPARE_BY_POI
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
 });
 
 test('#GraphPolygon: check 1 error polygon {ignoreRepeatedShapes = NO}', async (t) => {
@@ -1509,8 +1513,8 @@ test('#GraphPolygon: check 1 error polygon {ignoreRepeatedShapes = NO}', async (
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphPolygon: check 1 error polygon {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -1523,8 +1527,8 @@ test('#GraphPolygon: check 1 error polygon {ignoreRepeatedShapes = COMPARE_BY_SL
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphPolygon: check 1 error polygon {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -1537,8 +1541,8 @@ test('#GraphPolygon: check 1 error polygon {ignoreRepeatedShapes = COMPARE_BY_PO
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphPolygon: check 1 true polygon, but in test answer 3 true polygons {ignoreRepeatedShapes = NO}', async (t) => {
@@ -1553,10 +1557,10 @@ test('#GraphPolygon: check 1 true polygon, but in test answer 3 true polygons {i
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, false);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, false);
 });
 
 test('#GraphPolygon: check 1 true polygon, but in test answer 3 true polygons {ignoreRepeatedShapes = COMPARE_BY_SLOPE}', async (t) => {
@@ -1571,10 +1575,10 @@ test('#GraphPolygon: check 1 true polygon, but in test answer 3 true polygons {i
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, true);
 });
 
 test('#GraphPolygon: check 1 true polygon, but in test answer 3 true polygons {ignoreRepeatedShapes = COMPARE_BY_POINTS}', async (t) => {
@@ -1589,10 +1593,10 @@ test('#GraphPolygon: check 1 true polygon, but in test answer 3 true polygons {i
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_10').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_6').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_10').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_6').result, true);
 });
 
 test('#GraphPolygon: check 2 true polygons {ignoreRepeatedShapes = NO}', async (t) => {
@@ -1607,9 +1611,9 @@ test('#GraphPolygon: check 2 true polygons {ignoreRepeatedShapes = NO}', async (
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, true);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_13').result, true);
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_13').result, true);
 });
 
 test('#GraphPolygon: check 2 polygons: 1 - true polygon, 2 - error polygon {ignoreRepeatedShapes = NO}', async (t) => {
@@ -1624,9 +1628,9 @@ test('#GraphPolygon: check 2 polygons: 1 - true polygon, 2 - error polygon {igno
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
-  t.is(result.details.find(item => item.id === 'lrn_9').result, false);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_9').result, false);
 });
 
 test('#GraphPolygon: there are not all polygons', async (t) => {
@@ -1640,6 +1644,539 @@ test('#GraphPolygon: there are not all polygons', async (t) => {
   // action
   const result = evaluator(eObj);
   // check
-  t.is(result.commonResult, false);
-  t.is(result.details.find(item => item.id === 'lrn_3').result, true);
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === 'lrn_3').result, true);
+});
+
+// Axis Labels =====================================================================================
+
+test('#AxisLabels: all labels true', async (t) => {
+  // action
+  const result = evaluator(axisLabelsObj1);
+  // check
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.point === 'Choice A').result, true);
+  t.is(result.evaluation[0].details.find(item => item.point === 'Choice B').result, true);
+});
+
+test('#AxisLabels: all labels false', async (t) => {
+  // action
+  const result = evaluator(axisLabelsObj2);
+  // check
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.point === 'Choice A').result, false);
+  t.is(result.evaluation[0].details.find(item => item.point === 'Choice B').result, false);
+});
+
+test('#AxisLabels: only some labels true', async (t) => {
+  // action
+  const result = evaluator(axisLabelsObj3);
+  // check
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.point === 'Choice A').result, true);
+});
+
+test('#AxisLabels: there are all true labels, but there is excess', async (t) => {
+  // action
+  const result = evaluator(axisLabelsObj4);
+  // check
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.point === 'Choice A').result, true);
+  t.is(result.evaluation[0].details.find(item => item.point === 'Choice B').result, true);
+  t.is(result.evaluation[0].details.find(item => item.point === 'Choice C').result, false);
+});
+
+
+// Axis Segments ===================================================================================
+
+test('#AxisSegments: true userResponse, EXACT_MATCH', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj1);
+  obj.validation.scoring_type = ScoringType.EXACT_MATCH;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 5);
+  t.is(result.maxScore, 5);
+  t.is(result.evaluation[0].score, 5);
+  t.is(result.evaluation[0].result, true);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.validation.valid_response.value[0]);
+  t.is(result.evaluation[0].details[0].result, true);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.validation.valid_response.value[1]);
+  t.is(result.evaluation[0].details[1].result, true);
+});
+
+test('#AxisSegments: true userResponse, PARTIAL_MATCH', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj1);
+  obj.validation.scoring_type = ScoringType.PARTIAL_MATCH;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 10);
+  t.is(result.maxScore, 10);
+  t.is(result.evaluation[0].score, 10);
+  t.is(result.evaluation[0].result, true);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.validation.valid_response.value[0]);
+  t.is(result.evaluation[0].details[0].result, true);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.validation.valid_response.value[1]);
+  t.is(result.evaluation[0].details[1].result, true);
+});
+
+test('#AxisSegments: true userResponse, PARTIAL_MATCH_V2', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj1);
+  obj.validation.scoring_type = ScoringType.PARTIAL_MATCH_V2;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 5);
+  t.is(result.maxScore, 5);
+  t.is(result.evaluation[0].score, 5);
+  t.is(result.evaluation[0].result, true);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.validation.valid_response.value[0]);
+  t.is(result.evaluation[0].details[0].result, true);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.validation.valid_response.value[1]);
+  t.is(result.evaluation[0].details[1].result, true);
+});
+
+test('#AxisSegments: error userResponse, EXACT_MATCH', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj2);
+  obj.validation.scoring_type = ScoringType.EXACT_MATCH;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 0);
+  t.is(result.maxScore, 5);
+  t.is(result.evaluation[0].score, 0);
+  t.is(result.evaluation[0].result, false);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[0].details[0].result, false);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[0].details[1].result, false);
+});
+
+test('#AxisSegments: error userResponse, PARTIAL_MATCH', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj2);
+  obj.validation.scoring_type = ScoringType.PARTIAL_MATCH;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 0);
+  t.is(result.maxScore, 10);
+  t.is(result.evaluation[0].score, 0);
+  t.is(result.evaluation[0].result, false);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[0].details[0].result, false);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[0].details[1].result, false);
+});
+
+test('#AxisSegments: error userResponse, PARTIAL_MATCH_V2', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj2);
+  obj.validation.scoring_type = ScoringType.PARTIAL_MATCH_V2;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 0);
+  t.is(result.maxScore, 5);
+  t.is(result.evaluation[0].score, 0);
+  t.is(result.evaluation[0].result, false);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[0].details[0].result, false);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[0].details[1].result, false);
+});
+
+test('#AxisSegments: true userResponse, alt_responses, max score, EXACT_MATCH', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj3);
+  obj.validation.scoring_type = ScoringType.EXACT_MATCH;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 7);
+  t.is(result.maxScore, 7);
+  t.is(result.evaluation[0].score, 0);
+  t.is(result.evaluation[0].result, false);
+  t.is(result.evaluation[1].score, 7);
+  t.is(result.evaluation[1].result, true);
+  t.is(result.evaluation[2].score, 0);
+  t.is(result.evaluation[2].result, false);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[0].details[0].result, false);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[0].details[1].result, false);
+
+  t.deepEqual(result.evaluation[1].details[0].shape, obj.validation.alt_responses[0].value[0]);
+  t.is(result.evaluation[1].details[0].result, true);
+  t.deepEqual(result.evaluation[1].details[1].shape, obj.validation.alt_responses[0].value[1]);
+  t.is(result.evaluation[1].details[1].result, true);
+
+  t.deepEqual(result.evaluation[2].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[2].details[0].result, false);
+  t.deepEqual(result.evaluation[2].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[2].details[1].result, false);
+});
+
+test('#AxisSegments: true userResponse, alt_responses, max score, PARTIAL_MATCH', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj3);
+  obj.validation.scoring_type = ScoringType.PARTIAL_MATCH;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 14);
+  t.is(result.maxScore, 14);
+  t.is(result.evaluation[0].score, 0);
+  t.is(result.evaluation[0].result, false);
+  t.is(result.evaluation[1].score, 14);
+  t.is(result.evaluation[1].result, true);
+  t.is(result.evaluation[2].score, 0);
+  t.is(result.evaluation[2].result, false);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[0].details[0].result, false);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[0].details[1].result, false);
+
+  t.deepEqual(result.evaluation[1].details[0].shape, obj.validation.alt_responses[0].value[0]);
+  t.is(result.evaluation[1].details[0].result, true);
+  t.deepEqual(result.evaluation[1].details[1].shape, obj.validation.alt_responses[0].value[1]);
+  t.is(result.evaluation[1].details[1].result, true);
+
+  t.deepEqual(result.evaluation[2].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[2].details[0].result, false);
+  t.deepEqual(result.evaluation[2].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[2].details[1].result, false);
+});
+
+test('#AxisSegments: true userResponse, alt_responses, max score, PARTIAL_MATCH_V2', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj3);
+  obj.validation.scoring_type = ScoringType.PARTIAL_MATCH_V2;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 7);
+  t.is(result.maxScore, 7);
+  t.is(result.evaluation[0].score, 0);
+  t.is(result.evaluation[0].result, false);
+  t.is(result.evaluation[1].score, 7);
+  t.is(result.evaluation[1].result, true);
+  t.is(result.evaluation[2].score, 0);
+  t.is(result.evaluation[2].result, false);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[0].details[0].result, false);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[0].details[1].result, false);
+
+  t.deepEqual(result.evaluation[1].details[0].shape, obj.validation.alt_responses[0].value[0]);
+  t.is(result.evaluation[1].details[0].result, true);
+  t.deepEqual(result.evaluation[1].details[1].shape, obj.validation.alt_responses[0].value[1]);
+  t.is(result.evaluation[1].details[1].result, true);
+
+  t.deepEqual(result.evaluation[2].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[2].details[0].result, false);
+  t.deepEqual(result.evaluation[2].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[2].details[1].result, false);
+});
+
+test('#AxisSegments: true userResponse, alt_responses, not max score, EXACT_MATCH', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj4);
+  obj.validation.scoring_type = ScoringType.EXACT_MATCH;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 2);
+  t.is(result.maxScore, 7);
+  t.is(result.evaluation[0].score, 0);
+  t.is(result.evaluation[0].result, false);
+  t.is(result.evaluation[1].score, 0);
+  t.is(result.evaluation[1].result, false);
+  t.is(result.evaluation[2].score, 2);
+  t.is(result.evaluation[2].result, true);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[0].details[0].result, false);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.validation.valid_response.value[1]);
+  t.is(result.evaluation[0].details[1].result, true);
+
+  t.deepEqual(result.evaluation[1].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[1].details[0].result, false);
+  t.deepEqual(result.evaluation[1].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[1].details[1].result, false);
+
+  t.deepEqual(result.evaluation[2].details[0].shape, obj.validation.alt_responses[1].value[0]);
+  t.is(result.evaluation[2].details[0].result, true);
+  t.deepEqual(result.evaluation[2].details[1].shape, obj.validation.alt_responses[1].value[1]);
+  t.is(result.evaluation[2].details[1].result, true);
+});
+
+test('#AxisSegments: true userResponse, alt_responses, not max score, PARTIAL_MATCH', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj4);
+  obj.validation.scoring_type = ScoringType.PARTIAL_MATCH;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 5);
+  t.is(result.maxScore, 14);
+  t.is(result.evaluation[0].score, 5);
+  t.is(result.evaluation[0].result, false);
+  t.is(result.evaluation[1].score, 0);
+  t.is(result.evaluation[1].result, false);
+  t.is(result.evaluation[2].score, 4);
+  t.is(result.evaluation[2].result, true);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[0].details[0].result, false);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.validation.valid_response.value[1]);
+  t.is(result.evaluation[0].details[1].result, true);
+
+  t.deepEqual(result.evaluation[1].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[1].details[0].result, false);
+  t.deepEqual(result.evaluation[1].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[1].details[1].result, false);
+
+  t.deepEqual(result.evaluation[2].details[0].shape, obj.validation.alt_responses[1].value[0]);
+  t.is(result.evaluation[2].details[0].result, true);
+  t.deepEqual(result.evaluation[2].details[1].shape, obj.validation.alt_responses[1].value[1]);
+  t.is(result.evaluation[2].details[1].result, true);
+});
+
+test('#AxisSegments: true userResponse, alt_responses, not max score, PARTIAL_MATCH_V2', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj4);
+  obj.validation.scoring_type = ScoringType.PARTIAL_MATCH_V2;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 2);
+  t.is(result.maxScore, 7);
+  t.is(result.evaluation[0].score, 2);
+  t.is(result.evaluation[0].result, false);
+  t.is(result.evaluation[1].score, 0);
+  t.is(result.evaluation[1].result, false);
+  t.is(result.evaluation[2].score, 2);
+  t.is(result.evaluation[2].result, true);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[0].details[0].result, false);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.validation.valid_response.value[1]);
+  t.is(result.evaluation[0].details[1].result, true);
+
+  t.deepEqual(result.evaluation[1].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[1].details[0].result, false);
+  t.deepEqual(result.evaluation[1].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[1].details[1].result, false);
+
+  t.deepEqual(result.evaluation[2].details[0].shape, obj.validation.alt_responses[1].value[0]);
+  t.is(result.evaluation[2].details[0].result, true);
+  t.deepEqual(result.evaluation[2].details[1].shape, obj.validation.alt_responses[1].value[1]);
+  t.is(result.evaluation[2].details[1].result, true);
+});
+
+test('#AxisSegments: partially true userResponse, alt_responses, EXACT_MATCH', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj5);
+  obj.validation.scoring_type = ScoringType.EXACT_MATCH;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 0);
+  t.is(result.maxScore, 7);
+  t.is(result.evaluation[0].score, 0);
+  t.is(result.evaluation[0].result, false);
+  t.is(result.evaluation[1].score, 0);
+  t.is(result.evaluation[1].result, false);
+  t.is(result.evaluation[2].score, 0);
+  t.is(result.evaluation[2].result, false);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[0].details[0].result, false);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.validation.valid_response.value[1]);
+  t.is(result.evaluation[0].details[1].result, true);
+
+  t.deepEqual(result.evaluation[1].details[0].shape, obj.validation.alt_responses[0].value[0]);
+  t.is(result.evaluation[1].details[0].result, true);
+  t.deepEqual(result.evaluation[1].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[1].details[1].result, false);
+
+  t.deepEqual(result.evaluation[2].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[2].details[0].result, false);
+  t.deepEqual(result.evaluation[2].details[1].shape, obj.validation.alt_responses[1].value[1]);
+  t.is(result.evaluation[2].details[1].result, true);
+});
+
+test('#AxisSegments: partially true userResponse, alt_responses, PARTIAL_MATCH', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj5);
+  obj.validation.scoring_type = ScoringType.PARTIAL_MATCH;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 7);
+  t.is(result.maxScore, 14);
+  t.is(result.evaluation[0].score, 5);
+  t.is(result.evaluation[0].result, false);
+  t.is(result.evaluation[1].score, 7);
+  t.is(result.evaluation[1].result, false);
+  t.is(result.evaluation[2].score, 2);
+  t.is(result.evaluation[2].result, false);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[0].details[0].result, false);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.validation.valid_response.value[1]);
+  t.is(result.evaluation[0].details[1].result, true);
+
+  t.deepEqual(result.evaluation[1].details[0].shape, obj.validation.alt_responses[0].value[0]);
+  t.is(result.evaluation[1].details[0].result, true);
+  t.deepEqual(result.evaluation[1].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[1].details[1].result, false);
+
+  t.deepEqual(result.evaluation[2].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[2].details[0].result, false);
+  t.deepEqual(result.evaluation[2].details[1].shape, obj.validation.alt_responses[1].value[1]);
+  t.is(result.evaluation[2].details[1].result, true);
+});
+
+test('#AxisSegments: partially true userResponse, alt_responses, PARTIAL_MATCH_V2', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj5);
+  obj.validation.scoring_type = ScoringType.PARTIAL_MATCH_V2;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 3);
+  t.is(result.maxScore, 7);
+  t.is(result.evaluation[0].score, 2);
+  t.is(result.evaluation[0].result, false);
+  t.is(result.evaluation[1].score, 3);
+  t.is(result.evaluation[1].result, false);
+  t.is(result.evaluation[2].score, 1);
+  t.is(result.evaluation[2].result, false);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[0].details[0].result, false);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.validation.valid_response.value[1]);
+  t.is(result.evaluation[0].details[1].result, true);
+
+  t.deepEqual(result.evaluation[1].details[0].shape, obj.validation.alt_responses[0].value[0]);
+  t.is(result.evaluation[1].details[0].result, true);
+  t.deepEqual(result.evaluation[1].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[1].details[1].result, false);
+
+  t.deepEqual(result.evaluation[2].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[2].details[0].result, false);
+  t.deepEqual(result.evaluation[2].details[1].shape, obj.validation.alt_responses[1].value[1]);
+  t.is(result.evaluation[2].details[1].result, true);
+});
+
+test('#AxisSegments: error userResponse, alt_responses, EXACT_MATCH', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj6);
+  obj.validation.scoring_type = ScoringType.EXACT_MATCH;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 0);
+  t.is(result.maxScore, 7);
+  t.is(result.evaluation[0].score, 0);
+  t.is(result.evaluation[0].result, false);
+  t.is(result.evaluation[1].score, 0);
+  t.is(result.evaluation[1].result, false);
+  t.is(result.evaluation[2].score, 0);
+  t.is(result.evaluation[2].result, false);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[0].details[0].result, false);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[0].details[1].result, false);
+
+  t.deepEqual(result.evaluation[1].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[1].details[0].result, false);
+  t.deepEqual(result.evaluation[1].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[1].details[1].result, false);
+
+  t.deepEqual(result.evaluation[2].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[2].details[0].result, false);
+  t.deepEqual(result.evaluation[2].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[2].details[1].result, false);
+});
+
+test('#AxisSegments: error userResponse, alt_responses, PARTIAL_MATCH', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj6);
+  obj.validation.scoring_type = ScoringType.PARTIAL_MATCH;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 0);
+  t.is(result.maxScore, 14);
+  t.is(result.evaluation[0].score, 0);
+  t.is(result.evaluation[0].result, false);
+  t.is(result.evaluation[1].score, 0);
+  t.is(result.evaluation[1].result, false);
+  t.is(result.evaluation[2].score, 0);
+  t.is(result.evaluation[2].result, false);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[0].details[0].result, false);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[0].details[1].result, false);
+
+  t.deepEqual(result.evaluation[1].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[1].details[0].result, false);
+  t.deepEqual(result.evaluation[1].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[1].details[1].result, false);
+
+  t.deepEqual(result.evaluation[2].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[2].details[0].result, false);
+  t.deepEqual(result.evaluation[2].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[2].details[1].result, false);
+});
+
+test('#AxisSegments: error userResponse, alt_responses, PARTIAL_MATCH_V2', async (t) => {
+  // prepare data
+  const obj = clone(axisSegmentsObj6);
+  obj.validation.scoring_type = ScoringType.PARTIAL_MATCH_V2;
+  // action
+  const result = evaluator(obj);
+  // check
+  t.is(result.score, 0);
+  t.is(result.maxScore, 7);
+  t.is(result.evaluation[0].score, 0);
+  t.is(result.evaluation[0].result, false);
+  t.is(result.evaluation[1].score, 0);
+  t.is(result.evaluation[1].result, false);
+  t.is(result.evaluation[2].score, 0);
+  t.is(result.evaluation[2].result, false);
+
+  t.deepEqual(result.evaluation[0].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[0].details[0].result, false);
+  t.deepEqual(result.evaluation[0].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[0].details[1].result, false);
+
+  t.deepEqual(result.evaluation[1].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[1].details[0].result, false);
+  t.deepEqual(result.evaluation[1].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[1].details[1].result, false);
+
+  t.deepEqual(result.evaluation[2].details[0].shape, obj.userResponse[0]);
+  t.is(result.evaluation[2].details[0].result, false);
+  t.deepEqual(result.evaluation[2].details[1].shape, obj.userResponse[1]);
+  t.is(result.evaluation[2].details[1].result, false);
 });

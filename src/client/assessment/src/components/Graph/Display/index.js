@@ -1,1 +1,1 @@
-export { default as GraphQuadrantsDisplay } from './GraphQuadrantsDisplay';
+export { default as GraphDisplay } from './GraphDisplay';

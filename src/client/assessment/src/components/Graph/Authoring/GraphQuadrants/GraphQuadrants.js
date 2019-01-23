@@ -52,6 +52,7 @@ class GraphQuadrants extends Component {
 
   render() {
     const { t, graphData } = this.props;
+    const { canvas } = graphData;
 
     return (
       <div>
@@ -70,7 +71,7 @@ class GraphQuadrants extends Component {
                 width="100%"
                 type="number"
                 name="x_min"
-                value={graphData.canvas.x_min}
+                value={canvas.x_min}
                 onChange={this.handleCanvasChange}
                 onBlur={this.handleCanvasChange}
                 disabled={false}
@@ -82,7 +83,7 @@ class GraphQuadrants extends Component {
                 width="100%"
                 type="number"
                 name="x_max"
-                value={graphData.canvas.x_max}
+                value={canvas.x_max}
                 onChange={this.handleCanvasChange}
                 onBlur={this.handleCanvasChange}
                 disabled={false}
@@ -96,7 +97,7 @@ class GraphQuadrants extends Component {
                   width="100%"
                   type="number"
                   name="y_min"
-                  value={graphData.canvas.y_min}
+                  value={canvas.y_min}
                   onChange={this.handleCanvasChange}
                   onBlur={this.handleCanvasChange}
                   disabled={false}
@@ -110,7 +111,7 @@ class GraphQuadrants extends Component {
                   width="100%"
                   type="number"
                   name="y_max"
-                  value={graphData.canvas.y_max}
+                  value={canvas.y_max}
                   onChange={this.handleCanvasChange}
                   onBlur={this.handleCanvasChange}
                   disabled={false}

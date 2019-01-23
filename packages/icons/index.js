@@ -7,7 +7,9 @@ export { default as IconMoveArrows } from './src/IconMoveArrows';
 export { default as IconEye } from './src/IconEye';
 export { default as IconPlus } from './src/IconPlus';
 export { default as IconSearch } from './src/IconSearch';
-export { default as IconClockCircularOutline } from './src/IconClockCircularOutline';
+export {
+  default as IconClockCircularOutline
+} from './src/IconClockCircularOutline';
 export { default as IconQuestion } from './src/IconQuestion';
 export { default as IconQuestionAlt } from './src/IconQuestionAlt';
 export { default as IconChevronLeft } from './src/IconChevronLeft';
@@ -61,14 +63,6 @@ export { default as IconFolder } from './src/IconFolder';
 export { default as IconBookInformation } from './src/IconBookInformation';
 export { default as IconManageClass } from './src/IconManageClass';
 export { default as IconMetadata } from './src/IconMetadata';
-export { default as IconLightBulb } from './src/IconLightBulb';
-export { default as IconBookmark } from './src/IconBookmark';
-export { default as IconCursor } from './src/IconCursor';
-export { default as IconPause } from './src/IconPause';
-export { default as IconLogout } from './src/IconLogout';
-export { default as IconInRuler } from './src/IconInRuler';
-export { default as IconCalculator } from './src/IconCalculator';
-export { default as IconProtactor } from './src/IconProtactor';
 export { default as IconGraphCircle } from './src/IconGraphCircle';
 export { default as IconGraphClear } from './src/IconGraphClear';
 export { default as IconGraphDoublePlus } from './src/IconGraphDoublePlus';
@@ -84,10 +78,26 @@ export { default as IconGraphRightArrow } from './src/IconGraphRightArrow';
 export { default as IconGraphSegment } from './src/IconGraphSegment';
 export { default as IconGraphSine } from './src/IconGraphSine';
 export { default as IconGraphVector } from './src/IconGraphVector';
+export { default as IconLightBulb } from './src/IconLightBulb';
+export { default as IconBookmark } from './src/IconBookmark';
+export { default as IconCursor } from './src/IconCursor';
+export { default as IconPause } from './src/IconPause';
+export { default as IconLogout } from './src/IconLogout';
+export { default as IconInRuler } from './src/IconInRuler';
+export { default as IconCalculator } from './src/IconCalculator';
+export { default as IconProtactor } from './src/IconProtactor';
 export { default as IconUndo } from './src/IconUndo';
 export { default as IconRedo } from './src/IconRedo';
 export { default as IconDraw } from './src/IconDraw';
 export { default as IconSend } from './src/IconSend';
+export { default as IconBothIncludedSegment } from './src/IconBothIncludedSegment'
+export { default as IconBothNotIncludedSegment } from './src/IconBothNotIncludedSegment'
+export { default as IconOnlyLeftIncludedSegment } from './src/IconOnlyLeftIncludedSegment'
+export { default as IconOnlyRightIncludedSegment } from './src/IconOnlyRightIncludedSegment'
+export { default as IconInfinityToIncludedSegment } from './src/IconInfinityToIncludedSegment'
+export { default as IconIncludedToInfinitySegment } from './src/IconIncludedToInfinitySegment'
+export { default as IconInfinityToNotIncludedSegment } from './src/IconInfinityToNotIncludedSegment'
+export { default as IconNotIncludedToInfinitySegment } from './src/IconNotIncludedToInfinitySegment'
 export { default as IconArrows } from './src/IconArrows';
 export { default as IconScratchPad } from './src/IconScratchPad';
 export { default as IconLine } from './src/IconLine';
@@ -100,3 +110,4 @@ export { default as IconLetters } from './src/IconLetters';
 export { default as IconRoot } from './src/IconRoot';
 export { default as IconSquareTriangle } from './src/IconSquareTriangle';
 export { default as IconSelected } from './src/IconSelected';
+

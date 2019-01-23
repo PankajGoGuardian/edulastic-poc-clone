@@ -1,1 +1,1 @@
-export { default } from './CorrectAnswers';
+export { default as CorrectAnswers } from './CorrectAnswers';

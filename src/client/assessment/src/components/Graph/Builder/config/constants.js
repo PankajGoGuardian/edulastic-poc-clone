@@ -11,6 +11,17 @@ export const TOOLS = {
   POLYGON: 'polygon',
   PARABOLA: 'parabola',
   LABEL: 'label',
+  MARK: 'mark',
+  BOTH_INCLUDED_SEGMENT: 'bothIncludedSegment',
+  BOTH_NOT_INCLUDED_SEGMENT: 'bothNotIncludedSegment',
+  ONLY_RIGHT_INCLUDED_SEGMENT: 'onlyRightIncludedSegment',
+  ONLY_LEFT_INCLUDED_SEGMENT: 'onlyLeftIncludedSegment',
+  INFINITY_TO_INCLUDED_SEGMENT: 'infinityToIncludedSegment',
+  INCLUDED_TO_INFINITY_SEGMENT: 'includedToInfinitySegment',
+  INFINITY_TO_NOT_INCLUDED_SEGMENT: 'infinityToNotIncludedSegment',
+  NOT_INCLUDED_TO_INFINITY_SEGMENT: 'notIncludedToInfinitySegment',
+  SEGMENTS_POINT: 'segmentsPoint',
+  TRASH: 'trash',
 
   // Default
   RESET: 'reset'

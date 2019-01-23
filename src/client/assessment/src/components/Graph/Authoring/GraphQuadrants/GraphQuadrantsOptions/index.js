@@ -23,14 +23,11 @@ class GraphQuadrantsOptions extends Component {
   render() {
     const {
       t,
+      graphData,
       fontSizeList,
       stemNumerationList,
-      options,
-      canvasConfig,
       setOptions,
-      bgImgOptions,
       setBgImg,
-      backgroundShapes,
       setBgShapes
     } = this.props;
     const { isMoreOptionsOpen } = this.state;
@@ -48,14 +45,15 @@ class GraphQuadrantsOptions extends Component {
           {
             isMoreOptionsOpen && (
             <QuadrantsMoreOptions
+              graphData={graphData}
               stemNumerationList={stemNumerationList}
               fontSizeList={fontSizeList}
-              options={options}
-              canvasConfig={canvasConfig}
+              // options={options}
+              // canvasConfig={canvasConfig}
               setOptions={setOptions}
-              bgImgOptions={bgImgOptions}
+              // bgImgOptions={bgImgOptions}
               setBgImg={setBgImg}
-              backgroundShapes={backgroundShapes}
+              // backgroundShapes={backgroundShapes}
               setBgShapes={setBgShapes}
             />
             )}
@@ -67,20 +65,12 @@ class GraphQuadrantsOptions extends Component {
 
 GraphQuadrantsOptions.propTypes = {
   t: PropTypes.func.isRequired,
+  graphData: PropTypes.object.isRequired,
   stemNumerationList: PropTypes.array.isRequired,
   fontSizeList: PropTypes.array.isRequired,
-  options: PropTypes.object.isRequired,
   setOptions: PropTypes.func.isRequired,
-  bgImgOptions: PropTypes.object.isRequired,
   setBgImg: PropTypes.func.isRequired,
-  canvasConfig: PropTypes.object.isRequired,
-  backgroundShapes: PropTypes.array,
-  setBgShapes: PropTypes.func
-};
-
-GraphQuadrantsOptions.defaultProps = {
-  backgroundShapes: [],
-  setBgShapes: () => {}
+  setBgShapes: PropTypes.func.isRequired
 };
 
 const enhance = compose(

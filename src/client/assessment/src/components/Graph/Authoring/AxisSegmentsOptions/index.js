@@ -5,38 +5,91 @@ import { withNamespaces } from '@edulastic/localization';
 import {
   MoreOptions, MoreOptionsHeading
 } from '../../common/styled_components';
+import { Toggler } from '../../../common/Options/styles';
 import AxisSegmentsMoreOptions from './AxisSegmentsMoreOptions';
 
 class AxisSegmentsOptions extends Component {
-  updateClickOnMoreOptions = () => {
-    const { onClickMoreOptions, isMoreOptionsOpen } = this.props;
+  state = {
+    isMoreOptionsOpen: false
+  }
 
-    onClickMoreOptions(!isMoreOptionsOpen);
-  };
+  updateClickOnMoreOptions = () => this.setState({ isMoreOptionsOpen: !this.state.isMoreOptionsOpen })
+
+  getFontSizeList = () => (
+    [
+      {
+        id: 'small',
+        label: 'Small',
+        value: 10,
+        selected: false
+      },
+      {
+        id: 'normal',
+        label: 'Normal',
+        value: 12,
+        selected: true
+      },
+      {
+        id: 'large',
+        label: 'Large',
+        value: 16,
+        selected: false
+      },
+      {
+        id: 'extra_large',
+        label: 'Extra large',
+        value: 20,
+        selected: false
+      },
+      {
+        id: 'huge',
+        label: 'Huge',
+        value: 24,
+        selected: false
+      }
+    ]
+  );
+
+  getOrientationList = () => (
+    [
+      { value: 'horizontal', label: 'Horizontal' },
+      { value: 'vertical', label: 'Vertical' }
+    ]
+  );
+
+  getRenderingBaseList = () => (
+    [
+      { value: '', label: '' },
+      { value: 'lineMinValue', label: 'Line minimum value' },
+      { value: 'zero', label: 'Zero' }
+    ]
+  );
 
   render() {
-    const {
-      isMoreOptionsOpen,
-      t,
-      orientationList,
-      fontSizeList,
-      renderingBaseList
-    } = this.props;
+    const { t, setCanvas, setOptions, setNumberline } = this.props;
+    const { canvas, ui_style, numberlineAxis } = this.props.graphData;
     return (
       <Fragment>
         <MoreOptions>
           <MoreOptionsHeading
             onClick={this.updateClickOnMoreOptions}
-            isOpen={isMoreOptionsOpen}
+            isOpen={this.state.isMoreOptionsOpen}
           >
-            {t('component.graphing.optionstitle')}
+            <span>{t('component.graphing.optionstitle')}</span>
+            <Toggler isOpen={this.state.isMoreOptionsOpen} />
           </MoreOptionsHeading>
           {
-            isMoreOptionsOpen && (
+            this.state.isMoreOptionsOpen && (
               <AxisSegmentsMoreOptions
-                orientationList={orientationList}
-                fontSizeList={fontSizeList}
-                renderingBaseList={renderingBaseList}
+                setNumberline={setNumberline}
+                setCanvas={setCanvas}
+                setOptions={setOptions}
+                numberlineAxis={numberlineAxis}
+                options={ui_style}
+                canvasConfig={canvas}
+                orientationList={this.getOrientationList()}
+                fontSizeList={this.getFontSizeList()}
+                renderingBaseList={this.getRenderingBaseList()}
               />
             )}
         </MoreOptions>

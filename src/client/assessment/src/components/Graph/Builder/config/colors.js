@@ -1,6 +1,15 @@
 import { TOOLS } from './constants';
 
 export default {
+  special: {
+    [TOOLS.POINT]: {
+      fillColor: '#ffffff',
+      strokeColor: '#00b2ff',
+      highlightStrokeColor: '#00b2ff',
+      highlightFillColor: '#ffffff',
+      highlightFillOpacity: 1
+    }
+  },
   default: {
     [TOOLS.POINT]: {
       fillColor: '#00b2ff',

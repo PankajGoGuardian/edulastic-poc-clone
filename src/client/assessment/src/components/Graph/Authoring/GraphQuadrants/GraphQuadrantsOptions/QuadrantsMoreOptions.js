@@ -15,63 +15,55 @@ import {
   MoreOptionsRowInline,
   MoreOptionsSubHeading
 } from '../../../common/styled_components';
-import GraphContainer from '../../../Display/GraphContainer';
-import { CONSTANT } from '../../../Builder/config';
+import { GraphDisplay } from '../../../Display';
 
 class QuadrantsMoreOptions extends Component {
   handleCheckbox = (name, checked) => {
-    const { options, setOptions } = this.props;
-    setOptions({ ...options, [name]: !checked });
+    const { graphData, setOptions } = this.props;
+    const { ui_style } = graphData;
+    setOptions({ ...ui_style, [name]: !checked });
   };
 
   handleInputChange = (event) => {
     const { target: { name, value } } = event;
-
-    const { options, setOptions } = this.props;
-    setOptions({ ...options, [name]: value });
+    const { graphData, setOptions } = this.props;
+    const { ui_style } = graphData;
+    setOptions({ ...ui_style, [name]: value });
   };
 
   handleSelect = (name, value) => {
-    const { options, setOptions } = this.props;
-    setOptions({ ...options, [name]: value });
+    const { graphData, setOptions } = this.props;
+    const { ui_style } = graphData;
+    setOptions({ ...ui_style, [name]: value });
   };
 
   handleBgImgCheckbox = (name, checked) => {
-    const { bgImgOptions, setBgImg } = this.props;
-    setBgImg({ ...bgImgOptions, [name]: !checked });
+    const { graphData, setBgImg } = this.props;
+    const { background_image } = graphData;
+    setBgImg({ ...background_image, [name]: !checked });
   };
 
   handleBgImgInputChange = (event) => {
     const { target: { name, value } } = event;
-
-    const { bgImgOptions, setBgImg } = this.props;
-    setBgImg({ ...bgImgOptions, [name]: value });
+    const { graphData, setBgImg } = this.props;
+    const { background_image } = graphData;
+    setBgImg({ ...background_image, [name]: value });
   };
-
-  getTools = () => [
-    CONSTANT.TOOLS.POINT,
-    CONSTANT.TOOLS.CIRCLE,
-    CONSTANT.TOOLS.PARABOLA,
-    CONSTANT.TOOLS.POLYGON,
-    CONSTANT.TOOLS.SIN,
-    CONSTANT.TOOLS.LINE,
-    CONSTANT.TOOLS.RAY,
-    CONSTANT.TOOLS.VECTOR,
-    CONSTANT.TOOLS.SEGMENT,
-    CONSTANT.TOOLS.LABEL
-  ];
 
   render() {
     const {
       t,
+      graphData,
       stemNumerationList,
       fontSizeList,
-      options,
-      canvasConfig,
-      bgImgOptions,
-      backgroundShapes,
       setBgShapes
     } = this.props;
+
+    const {
+      ui_style,
+      background_image
+    } = graphData;
+
     const {
       drawLabelZero,
       displayPositionOnHover,
@@ -99,7 +91,7 @@ class QuadrantsMoreOptions extends Component {
       layout_snapto,
       xAxisLabel,
       yAxisLabel
-    } = options;
+    } = ui_style;
 
     return (
       <Fragment>
@@ -417,7 +409,7 @@ class QuadrantsMoreOptions extends Component {
               type="text"
               defaultValue=""
               name="src"
-              value={bgImgOptions.src}
+              value={background_image.src}
               onChange={this.handleBgImgInputChange}
             />
           </MoreOptionsRow>
@@ -431,7 +423,7 @@ class QuadrantsMoreOptions extends Component {
                   type="text"
                   defaultValue=""
                   name="height"
-                  value={bgImgOptions.height}
+                  value={background_image.height}
                   onChange={this.handleBgImgInputChange}
                 />
               </MoreOptionsRow>
@@ -443,7 +435,7 @@ class QuadrantsMoreOptions extends Component {
                   type="text"
                   defaultValue=""
                   name="x"
-                  value={bgImgOptions.x}
+                  value={background_image.x}
                   onChange={this.handleBgImgInputChange}
                 />
               </MoreOptionsRow>
@@ -455,7 +447,7 @@ class QuadrantsMoreOptions extends Component {
                   type="text"
                   defaultValue=""
                   name="opacity"
-                  value={bgImgOptions.opacity}
+                  value={background_image.opacity}
                   onChange={this.handleBgImgInputChange}
                 />
               </MoreOptionsRow>
@@ -469,7 +461,7 @@ class QuadrantsMoreOptions extends Component {
                   type="text"
                   defaultValue=""
                   name="width"
-                  value={bgImgOptions.width}
+                  value={background_image.width}
                   onChange={this.handleBgImgInputChange}
                 />
               </MoreOptionsRow>
@@ -481,7 +473,7 @@ class QuadrantsMoreOptions extends Component {
                   type="text"
                   defaultValue=""
                   name="y"
-                  value={bgImgOptions.y}
+                  value={background_image.y}
                   onChange={this.handleBgImgInputChange}
                 />
               </MoreOptionsRow>
@@ -489,8 +481,8 @@ class QuadrantsMoreOptions extends Component {
                 <Checkbox
                   label={t('component.graphing.background_options.show_bg_shape_points')}
                   name="showShapePoints"
-                  onChange={() => this.handleBgImgCheckbox('showShapePoints', bgImgOptions.showShapePoints)}
-                  checked={bgImgOptions.showShapePoints}
+                  onChange={() => this.handleBgImgCheckbox('showShapePoints', background_image.showShapePoints)}
+                  checked={background_image.showShapePoints}
                 />
               </MoreOptionsRow>
             </MoreOptionsColumn>
@@ -504,13 +496,11 @@ class QuadrantsMoreOptions extends Component {
             {t('component.graphing.background_shapes')}
           </MoreOptionsSubHeading>
           <MoreOptionsRow>
-            <GraphContainer
-              uiStyle={options}
-              canvasConfig={canvasConfig}
-              tools={this.getTools()}
-              bgImgOptions={bgImgOptions}
-              elements={backgroundShapes}
+            <GraphDisplay
+              graphData={graphData}
               onChange={setBgShapes}
+              elements={graphData.background_shapes}
+              changePreviewTab={() => {}}
             />
           </MoreOptionsRow>
         </MoreOptionsContainer>
@@ -521,22 +511,12 @@ class QuadrantsMoreOptions extends Component {
 
 QuadrantsMoreOptions.propTypes = {
   t: PropTypes.func.isRequired,
-  stemNumerationList: PropTypes.array,
-  fontSizeList: PropTypes.array,
-  options: PropTypes.object.isRequired,
+  graphData: PropTypes.object.isRequired,
+  stemNumerationList: PropTypes.array.isRequired,
+  fontSizeList: PropTypes.array.isRequired,
   setOptions: PropTypes.func.isRequired,
-  bgImgOptions: PropTypes.object.isRequired,
   setBgImg: PropTypes.func.isRequired,
-  canvasConfig: PropTypes.object.isRequired,
-  backgroundShapes: PropTypes.array,
-  setBgShapes: PropTypes.func
-};
-
-QuadrantsMoreOptions.defaultProps = {
-  stemNumerationList: [],
-  fontSizeList: [],
-  backgroundShapes: [],
-  setBgShapes: () => {}
+  setBgShapes: PropTypes.func.isRequired
 };
 
 const enhance = compose(

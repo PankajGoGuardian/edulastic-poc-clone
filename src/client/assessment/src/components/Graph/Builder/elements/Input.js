@@ -1,4 +1,5 @@
 import { defaultInputParameters } from '../settings';
+import { calcMeasure, calcLineLabelPosition } from '../utils';
 
 function onBlur(element, input, cb) {
   return () => {
@@ -21,22 +22,37 @@ function onEnter(element, input, cb) {
         element.label.setText(input.Value());
         element.label.setAttribute({ visible: true });
       }
-
       cb();
     }
   };
 }
 
-function getInputCoords(element) {
+function getInputCoords(element, board) {
+  const [xMeasure, yMeasure] = calcMeasure(51.5, 9, board);
   switch (element.elType) {
     case 'point':
       return [
         element.coords.usrCoords[1],
-        element.coords.usrCoords[2]
+        element.coords.usrCoords[2] + yMeasure
+      ];
+    case 'line':
+      const [x, y] = calcLineLabelPosition(element);
+      if (element.hasLabel) {
+        return [
+          // element.label.coords.usrCoords[1],
+          // element.label.coords.usrCoords[2]
+          x, y
+        ];
+      }
+      element.setLabel('');
+      element.label.setAttribute({ visible: false });
+      return [
+        // element.label.coords.usrCoords[1],
+        // element.label.coords.usrCoords[2]
+        x, y
       ];
     case 'polygon':
     case 'circle':
-    case 'line':
     case 'curve':
       if (element.hasLabel) {
         return [
@@ -50,7 +66,6 @@ function getInputCoords(element) {
         element.label.coords.usrCoords[1],
         element.label.coords.usrCoords[2]
       ];
-
     default:
       throw new Error('Error getting label coords:', element.elType);
   }
@@ -83,7 +98,7 @@ export default (element) => {
     },
     create(value = '') {
       return board.create('input', [
-        ...getInputCoords(element),
+        ...getInputCoords(element, board),
         value,
         ''
       ], defaultInputParameters());

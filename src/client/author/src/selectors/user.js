@@ -6,3 +6,8 @@ export const getUserIdSelector = createSelector(
   stateSelector,
   state => state._id
 );
+
+export const getUserSelector = createSelector(
+  stateSelector,
+  state => state
+);

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Progress } from 'antd';
 import { IconPlus } from '@edulastic/icons';
-import AssignmentContentWrapper from '../component/assignmentContentWrapper';
+import AssignmentContentWrapper from '../styled/assignmentContentWrapper';
 
 export const AssignmentContentWrap = styled(AssignmentContentWrapper)`
   padding-top: 32px;
@@ -27,11 +27,10 @@ export const Circle = styled.div`
   width: 12px;
   height: 12px;
   border-radius: 6px;
-  background: ${props => (
-    props.percentage > 30 ?
-      props.theme.skillReport.yellowColor :
-      props.theme.skillReport.redColor
-  )};
+  background: ${props =>
+    props.percentage > 30
+      ? props.theme.skillReport.yellowColor
+      : props.theme.skillReport.redColor};
   margin-left: 18px;
 `;
 
@@ -40,10 +39,9 @@ export const Title = styled.div`
   cursor: pointer;
   @media screen and (max-width: 767px) {
     flex-direction: column;
-    position:relative;
+    position: relative;
   }
 `;
-
 
 export const RelationTitle = styled.div`
   flex: 1;
@@ -78,9 +76,9 @@ export const IconClose = styled.div`
   background-color: ${props => props.theme.skillReport.collapseIconColor};
   margin-top: 10px;
   @media screen and (max-width: 767px) {
-    position:absolute;
-    top:0px;
-    right:0px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
   }
 `;
 
@@ -88,9 +86,9 @@ export const IconOpen = styled(IconPlus)`
   margin-top: 5px;
   fill: ${props => props.theme.skillReport.expandIconColor};
   @media screen and (max-width: 767px) {
-    position:absolute;
-    top:0px;
-    right:0px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
   }
 `;
 
@@ -103,7 +101,12 @@ export const StyledScoreProgress = styled(Progress)`
   }
   .ant-progress-bg {
     height: 16px !important;
-    background: ${props => (props.percent >= 50 ? props.theme.skillReport.greenColor : props.percent >= 30 ? props.theme.skillReport.yellowColor : props.theme.skillReport.redColor)};
+    background: ${props =>
+      props.percent >= 50
+        ? props.theme.skillReport.greenColor
+        : props.percent >= 30
+        ? props.theme.skillReport.yellowColor
+        : props.theme.skillReport.redColor};
   }
 `;
 
@@ -114,6 +117,11 @@ export const StyledProgress = styled(Progress)`
   }
   .ant-progress-bg {
     height: 16px !important;
-    background: ${props => (props.percent >= 50 ? props.theme.skillReport.greenColor : props.percent >= 30 ? props.theme.skillReport.yellowColor : props.theme.skillReport.redColor)};
+    background: ${props =>
+      props.percent >= 50
+        ? props.theme.skillReport.greenColor
+        : props.percent >= 30
+        ? props.theme.skillReport.yellowColor
+        : props.theme.skillReport.redColor};
   }
 `;

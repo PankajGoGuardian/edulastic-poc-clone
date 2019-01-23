@@ -10,8 +10,11 @@ import {
   assignmentSchema,
   setAssignmentsAction,
   setAssignmentsLoadingAction
-} from '../AssignmentModule/ducks';
-import { setReportsAction, reportSchema } from '../ReportsModule/ducks';
+} from '../sharedDucks/AssignmentModule/ducks';
+import {
+  setReportsAction,
+  reportSchema
+} from '../sharedDucks/ReportsModule/ducks';
 
 // types
 export const FETCH_ASSIGNMENTS_DATA = '[studentAssignments] fetch assignments';

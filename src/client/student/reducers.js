@@ -1,8 +1,8 @@
-import ui from "./Sidebar/ducks";
-import skillReport from "./skillReport/ducks";
-import { studentAssignmentReducer } from "./AssignmentModule";
-import { studentReportReducer } from "./ReportsModule";
-import user from "./Login/ducks";
+import ui from './Sidebar/ducks';
+import skillReport from './SkillReport/ducks';
+import { studentAssignmentReducer } from './sharedDucks/AssignmentModule';
+import { studentReportReducer } from './sharedDucks/ReportsModule';
+import user from './Login/ducks';
 
 const studentReducer = {
   ui,

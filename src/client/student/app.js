@@ -14,9 +14,9 @@ import { Report } from './Reports';
 import { Profile } from './Profile';
 
 import { ManageClass } from './ManageClass';
-import SkillReportContainer from './skillReport';
+import SkillReportContainer from './SkillReport';
 
-const Dashboard = ({ match, isSidebarCollapsed }) => (
+const StudentApp = ({ match, isSidebarCollapsed }) => (
   <ThemeProvider theme={themes.default}>
     <Layout>
       <MainContainer isCollapsed={isSidebarCollapsed}>
@@ -45,9 +45,9 @@ const Dashboard = ({ match, isSidebarCollapsed }) => (
 
 export default connect(({ ui }) => ({
   isSidebarCollapsed: ui.isSidebarCollapsed
-}))(Dashboard);
+}))(StudentApp);
 
-Dashboard.propTypes = {
+StudentApp.propTypes = {
   match: PropTypes.object.isRequired,
   isSidebarCollapsed: PropTypes.object.isRequired
 };

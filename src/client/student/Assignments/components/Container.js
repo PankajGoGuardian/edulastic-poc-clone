@@ -8,7 +8,7 @@ import { Layout } from 'antd';
 import { fetchAssignmentsAction, getAssignmentsSelector } from '../ducks';
 
 // components
-import AssignmentCard from '../../component/AssignmentCard';
+import AssignmentCard from '../../sharedComponents/AssignmentCard';
 
 const Content = ({ flag, assignments, fetchAssignments }) => {
   useEffect(() => {

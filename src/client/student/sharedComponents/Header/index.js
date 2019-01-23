@@ -1,11 +1,11 @@
-import React, { memo } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { withNamespaces } from "@edulastic/localization";
-import { compose } from "redux";
+import React, { memo } from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { withNamespaces } from '@edulastic/localization';
+import { compose } from 'redux';
 
-import HeaderWrapper from "./headerWrapper";
-import ClassSelect from "../../component/ClassSelector";
+import HeaderWrapper from './headerWrapper';
+import ClassSelect from '../ClassSelector';
 
 const Header = ({ t, titleText, classSelect = true }) => (
   <HeaderWrapper>
@@ -23,7 +23,7 @@ Header.propTypes = {
 
 const enhance = compose(
   memo,
-  withNamespaces("header")
+  withNamespaces('header')
 );
 
 export default enhance(Header);

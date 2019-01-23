@@ -73,7 +73,7 @@ const AssignmentCard = ({ startAssignment, data, theme, t, type }) => {
                 </AnswerAndScore>
 
                 <AnswerAndScore>
-                  <span>{scorePercentage}%</span>
+                  <span>{Math.floor(scorePercentage * 100) / 100}%</span>
                   <Title>{t('common.score')}</Title>
                 </AnswerAndScore>
               </React.Fragment>

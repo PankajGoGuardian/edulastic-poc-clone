@@ -72,12 +72,7 @@ export const getAssignmentsSelector = createSelector(
       .map(assignment => ({
         ...assignment,
         reports: groupedReports[assignment._id] || []
-      }))
-      .filter(assignment => {
-        // allowed attempts should be greater
-        let maxAttempts = assignment.test && assignment.test.maxAttempts;
-        return maxAttempts > assignment.reports.length;
-      });
+      }));
     return assignments;
   }
 );

@@ -1,20 +1,28 @@
+import { createAction, createReducer } from 'redux-starter-kit';
 import { pick, last } from 'lodash';
 import { takeLatest, call, put } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 import { authApi, userApi } from '@edulastic/api';
 import { message } from 'antd';
 import { roleuser } from '@edulastic/constants';
-import {
-  SIGNUP,
-  LOGIN,
-  SET_USER,
-  FETCH_USER,
-  LOGOUT
-} from '../constants/actions';
+
+//types
+const LOGIN = '[auth] login';
+const SET_USER = '[auth] set user';
+const SIGNUP = '[auth] signup';
+const FETCH_USER = '[auth] fetch user';
+const LOGOUT = '[auth] logout';
+
+//actions
+export const loginAction = createAction(LOGIN);
+export const setUserAction = createAction(SET_USER);
+export const signupAction = createAction(SIGNUP);
+export const fetchUserAction = createAction(FETCH_USER);
+export const logoutAction = createAction(LOGOUT);
 
 function* login({ payload }) {
   try {
-    const result = yield call(authApi.login, payload.value);
+    const result = yield call(authApi.login, payload);
     localStorage.setItem('access_token', result.token);
     const user = pick(result, [
       '_id',
@@ -23,13 +31,9 @@ function* login({ payload }) {
       'email',
       'role'
     ]);
-    yield put({
-      type: SET_USER,
-      payload: {
-        user
-      }
-    });
-    if (user.role === roleuser.STUDENT) yield put(push('/home/assignments'));
+    yield put(setUserAction(user));
+
+    if (user.role === roleuser.STUDENT) yield put(push('/home/dashboard'));
     else if (user.role === roleuser.ADMIN) yield put(push('/author/items'));
     else if (user.role === roleuser.TEACHER) yield put(push('/author/items'));
   } catch (err) {
@@ -41,7 +45,7 @@ function* login({ payload }) {
 
 function* signup({ payload }) {
   try {
-    const { name, email, password, role } = payload.value;
+    const { name, email, password, role } = payload;
     const nameList = name.split(' ');
     let firstName;
     let lastName;
@@ -94,9 +98,22 @@ function* logout() {
     console.log(e);
   }
 }
-export default function* watcherSaga() {
+
+export function* watcherSaga() {
   yield takeLatest(LOGIN, login);
   yield takeLatest(SIGNUP, signup);
   yield takeLatest(LOGOUT, logout);
   yield takeLatest(FETCH_USER, fetchUser);
 }
+
+const initialState = {
+  isAuthenticated: false
+};
+
+const setUser = (state, { payload }) => {
+  state.user = payload;
+  state.isAuthenticated = true;
+};
+export default createReducer(initialState, {
+  [SET_USER]: setUser
+});

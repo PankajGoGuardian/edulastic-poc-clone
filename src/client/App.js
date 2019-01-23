@@ -10,20 +10,20 @@ import { TestAttemptReview } from './student/TestAttemptReview';
 const Student = lazy(() =>
   import(/* webpackChunkName: "assessmentPlayer" */ './student')
 );
-const Signup = lazy(() =>
-  import(/* webpackChunkName: "teacherSignup" */ './student/components/authentication/signup')
+const TeacherSignup = lazy(() =>
+  import(/* webpackChunkName: "teacherSignup" */ './student/Signup/components/TeacherContainer')
 );
 const Login = lazy(() =>
-  import(/* webpackChunkName: "login" */ './student/components/authentication/login')
+  import(/* webpackChunkName: "login" */ './student/Login/components')
 );
 const GetStarted = lazy(() =>
-  import(/* webpackChunkName: "getStarted" */ './student/components/authentication/signup/getStarted')
+  import(/* webpackChunkName: "getStarted" */ './student/Signup/components/GetStartedContainer')
 );
 const StudentSignup = lazy(() =>
-  import(/* webpackChunkName: "studentSignup" */ './student/components/authentication/signup/studentSignup')
+  import(/* webpackChunkName: "studentSignup" */ './student/Signup/components/StudentContainer')
 );
 const AdminSignup = lazy(() =>
-  import(/* webpackChunkName: "adminSignup" */ './student/components/authentication/signup/adminSignup')
+  import(/* webpackChunkName: "adminSignup" */ './student/Signup/components/AdminContainer')
 );
 const Dashboard = lazy(() =>
   import(/* webpackChunkName: "student" */ './student/app')
@@ -41,35 +41,35 @@ class App extends Component {
       <div>
         <Suspense fallback={<Loading />}>
           <Switch>
-            <Redirect exact path="/" to="/home/assignments" />
-            <Route path="/author" component={Author} />
-            <Route path="/home" component={Dashboard} />
-            <Route path="/Signup" component={Signup} />
-            <Route path="/Login" component={Login} />
-            <Route path="/GetStarted" component={GetStarted} />
-            <Route path="/AdminSignup" component={AdminSignup} />
-            <Route path="/StudentSignup" component={StudentSignup} />
+            <Redirect exact path='/' to='/home/assignments' />
+            <Route path='/author' component={Author} />
+            <Route path='/home' component={Dashboard} />
+            <Route path='/Signup' component={TeacherSignup} />
+            <Route path='/Login' component={Login} />
+            <Route path='/GetStarted' component={GetStarted} />
+            <Route path='/AdminSignup' component={AdminSignup} />
+            <Route path='/StudentSignup' component={StudentSignup} />
             <Route
-              path="/student/test/:id"
+              path='/student/test/:id'
               component={() => <Student defaultAP test />}
             />
             <Route
-              path="/student/test/:id"
+              path='/student/test/:id'
               component={() => <Student defaultAP test />}
             />
             <Route
-              path="/student/test"
+              path='/student/test'
               component={() => <Student defaultAP />}
             />
-            <Route path="/student/test-summary" component={TestAttemptReview} />
+            <Route path='/student/test-summary' component={TestAttemptReview} />
             <Route
               exact
-              path="/student/practice/:id"
+              path='/student/practice/:id'
               component={() => <Student defaultAP={false} test />}
             />
             <Route
               exact
-              path="/student/practice"
+              path='/student/practice'
               component={() => <Student defaultAP={false} />}
             />
           </Switch>

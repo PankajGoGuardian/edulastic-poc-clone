@@ -2,4 +2,6 @@
 
 - [Home](/)
 - [PR Guide](contributing.md)
-- [File Structure](projectStructure.md)
+- [Project Structure](projectStructure.md)
+- [JSX](JSX.md)
+- [Redux](redux.md)

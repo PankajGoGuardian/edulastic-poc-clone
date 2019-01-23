@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import styled, { ThemeProvider } from 'styled-components';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-import { Row, Col, Button } from 'antd';
-import { themes } from '../../themes';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import styled, { ThemeProvider } from "styled-components";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
+import { Row, Col, Button } from "antd";
+import { themes } from "../../themes";
 
-import Confirmation from './Confirmation';
-import { attemptSummarySelector } from '../ducks';
+import Confirmation from "./Confirmation";
+import { attemptSummarySelector } from "../ducks";
 //import AssignmentContentWrapper from '../../components/commonStyle/assignmentContentWrapper';
 
 class SummaryTest extends Component {
@@ -49,8 +49,8 @@ class SummaryTest extends Component {
           />
           <Container>
             <Header>
-              <Title>{t('common.headingText')}</Title>
-              <TitleDescription>{t('common.message')}</TitleDescription>
+              <Title>{t("common.headingText")}</Title>
+              <TitleDescription>{t("common.message")}</TitleDescription>
             </Header>
             <MainContent>
               <ColorDescription>
@@ -59,25 +59,25 @@ class SummaryTest extends Component {
                     <GreenMark />
                     <SpaceLeft>
                       <Description>
-                        {t('common.markedQuestionLineOne')}
+                        {t("common.markedQuestionLineOne")}
                       </Description>
                       <Description style={{ marginTop: -2 }}>
-                        {t('common.markedQuestionLineTwo')}
+                        {t("common.markedQuestionLineTwo")}
                       </Description>
                     </SpaceLeft>
                   </FlexCol>
                   <FlexCol lg={8} md={24}>
                     <GrayMark />
                     <SpaceLeft>
-                      <Description>{t('common.skippedQues')}</Description>
+                      <Description>{t("common.skippedQues")}</Description>
                     </SpaceLeft>
                   </FlexCol>
                   <FlexCol lg={8} md={24}>
                     <RedMark />
                     <SpaceLeft>
-                      <Description>{t('common.markedForReview')}</Description>
+                      <Description>{t("common.markedForReview")}</Description>
                       <Description style={{ marginTop: -2 }}>
-                        {t('common.markedQuestionLineTwo')}
+                        {t("common.markedQuestionLineTwo")}
                       </Description>
                     </SpaceLeft>
                   </FlexCol>
@@ -86,7 +86,7 @@ class SummaryTest extends Component {
               <Questions>
                 <Row>
                   <QuestionText lg={8} md={24}>
-                    {t('common.questionsLabel')}
+                    {t("common.questionsLabel")}
                   </QuestionText>
                   <Col lg={16} md={24}>
                     <AnsweredTypeButtonContainer>
@@ -94,19 +94,19 @@ class SummaryTest extends Component {
                         onClick={() => this.handlerButton(null)}
                         enabled={buttonIdx === null}
                       >
-                        {t('default:all')}
+                        {t("default:all")}
                       </StyledButton>
                       <StyledButton
                         onClick={() => this.handlerButton(2)}
                         enabled={buttonIdx === 2}
                       >
-                        {t('default:flagged')}
+                        {t("default:flagged")}
                       </StyledButton>
                       <StyledButton
                         onClick={() => this.handlerButton(0)}
                         enabled={buttonIdx === 0}
                       >
-                        {t('default:skipped')}
+                        {t("default:skipped")}
                       </StyledButton>
                     </AnsweredTypeButtonContainer>
                   </Col>
@@ -126,12 +126,12 @@ class SummaryTest extends Component {
               </Questions>
             </MainContent>
             <Footer>
-              <ShortDescription>{t('common.nextStep')}</ShortDescription>
+              <ShortDescription>{t("common.nextStep")}</ShortDescription>
               <SubmitButton
                 type="primary"
                 onClick={this.handlerConfirmationModal}
               >
-                {t('default:submit')}
+                {t("default:submit")}
               </SubmitButton>
             </Footer>
           </Container>
@@ -152,13 +152,24 @@ SummaryTest.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces(['summary', 'default']),
+  withNamespaces(["summary", "default"]),
   connect(state => ({
     questionList: attemptSummarySelector(state)
   }))
 );
 
 export default enhance(SummaryTest);
+
+const AssignmentContentWrapper = styled.div`
+  border-radius: 10px;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  padding: 5px 30px;
+  background: ${props => props.theme.assignment.cardContainerBgColor};
+  margin-bottom: 1rem;
+  @media screen and (max-width: 767px) {
+    padding: 0px 15px;
+  }
+`;
 
 const AssignmentContentWrapperSummary = styled(AssignmentContentWrapper)`
   margin: 24px 95px;
@@ -277,16 +288,16 @@ const AnsweredTypeButtonContainer = styled.div`
 const StyledButton = styled(Button)`
   height: 24px;
   float: left;
-  color: ${props => (props.enabled ? '#fff' : '#00b0ff')};
+  color: ${props => (props.enabled ? "#fff" : "#00b0ff")};
   border: 1px solid #00b0ff;
   border-radius: 4px;
   margin-right: 20px;
   min-width: 85px;
-  background: ${props => (props.enabled ? '#00b0ff' : 'transparent')};
+  background: ${props => (props.enabled ? "#00b0ff" : "transparent")};
   &:focus,
   &:active {
-    color: ${props => (props.enabled ? '#fff' : '#00b0ff')};
-    background: ${props => (props.enabled ? '#00b0ff' : 'transparent')};
+    color: ${props => (props.enabled ? "#fff" : "#00b0ff")};
+    background: ${props => (props.enabled ? "#00b0ff" : "transparent")};
   }
   span {
     font-size: 10px;
@@ -316,9 +327,9 @@ const QuestionColorBlock = styled.div`
   height: 40px;
   border-radius: 4px;
   background-color: ${props =>
-    props.type === 2 ? '#ee1658' : props.type === 1 ? '#1fe3a1' : '#b1b1b1'};
+    props.type === 2 ? "#ee1658" : props.type === 1 ? "#1fe3a1" : "#b1b1b1"};
   margin-right: 23px;
-  display: ${props => (props.isVisible ? 'flex' : 'none')};
+  display: ${props => (props.isVisible ? "flex" : "none")};
   align-items: center;
   justify-content: center;
   margin-top: 5px;
@@ -363,16 +374,5 @@ const SubmitButton = styled(Button)`
   }
   @media screen and (max-width: 768px) {
     margin: 20px 0px;
-  }
-`;
-
-const AssignmentContentWrapper = styled.div`
-  border-radius: 10px;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  padding: 5px 30px;
-  background: ${props => props.theme.assignment.cardContainerBgColor};
-  margin-bottom: 1rem;
-  @media screen and (max-width: 767px) {
-    padding: 0px 15px;
   }
 `;

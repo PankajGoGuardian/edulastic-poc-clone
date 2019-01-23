@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Layout } from "antd";
 
 // components
-import Header from "../../styled/header";
+import Header from "../../component/Header";
 import SubHeader from "./SubHeader";
 import AssignmentContainer from "./Container";
 

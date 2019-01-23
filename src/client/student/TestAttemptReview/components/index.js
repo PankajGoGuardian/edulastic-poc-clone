@@ -3,6 +3,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 
 import SummaryHeader from "./Header";
 import SummaryTest from "./Content";

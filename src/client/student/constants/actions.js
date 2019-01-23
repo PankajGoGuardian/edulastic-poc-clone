@@ -17,8 +17,8 @@ export const LOGIN = 'login user';
 export const SIGNUP = 'signup user';
 
 // ui
-export const TOGGLE_MENU = '[homeUI] toggle menu';
-export const RESPONSIVE_TOGGLE_MENU = '[homeUI] responsive toggle menu';
+// export const TOGGLE_MENU = '[homeUI] toggle menu';
+// export const RESPONSIVE_TOGGLE_MENU = '[homeUI] responsive toggle menu';
 
 // report
 export const FETCH_REPORTS = '[reports] fetch reports';

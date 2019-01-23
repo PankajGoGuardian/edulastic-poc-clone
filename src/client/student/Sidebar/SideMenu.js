@@ -25,7 +25,7 @@ import {
 } from '@edulastic/icons';
 import { withWindowSizes } from '@edulastic/common';
 import { tabletWidth } from '@edulastic/colors';
-import { toggleSideBarAction } from '../actions/togglemenu';
+import { toggleSideBarAction } from './ducks';
 import { logoutAction } from '../actions/auth';
 
 import Profile from '../assets/Profile.png';

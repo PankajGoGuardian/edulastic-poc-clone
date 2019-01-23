@@ -1,4 +1,4 @@
-import ui from './ui';
+import ui from '../Sidebar/ducks';
 //import assignments from './assignment';
 //import reports from './reports';
 import skillReport from '../skillReport/ducks';

@@ -97,7 +97,7 @@ class ClozeTextDisplay extends Component {
 
     const previewTemplateBoxLayout = (
       <div className={`template_box ${smallSize ? 'text-small' : ''}`} style={{ fontSize: smallSize ? 14 : fontSize, padding: smallSize ? 0 : 20 }}>
-        {templateParts.map((templatePart, index) => {
+        {templateParts && templateParts.map((templatePart, index) => {
           if (templatePart.indexOf('class="response-btn"') !== -1) {
             const dropTargetIndex = responseIndex;
             responseIndex++;

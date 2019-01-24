@@ -240,7 +240,7 @@ class SortListPreview extends PureComponent {
           </FlexCol>
         </FlexContainer>
 
-        {previewTab === SHOW && (
+        {previewTab === SHOW && inCorrectList.length > 0 && (
           <ShowCorrect source={item.source} list={inCorrectList} correctList={valid_response} />
         )}
       </Paper>

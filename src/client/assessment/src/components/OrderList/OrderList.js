@@ -27,8 +27,7 @@ const OrderList = (props) => {
 
   useEffect(() => {
     const { item, saveAnswer, userAnswer } = props;
-
-    if (!userAnswer.length) {
+    if (userAnswer.length === 0) {
       saveAnswer(item.list.map((q, i) => i));
     }
   });
@@ -148,14 +147,14 @@ const OrderList = (props) => {
     setQuestionData(newItem);
   };
 
-  const handleUpdatePoints = (points, index) => {
+  const handleUpdatePoints = (points) => {
     const { setQuestionData, item } = props;
     const newItem = cloneDeep(item);
 
-    if (index !== undefined && typeof index === 'number') {
-      newItem.validation.alt_responses[index].score = points;
-    } else {
+    if (correctTab === 0) {
       newItem.validation.valid_response.score = points;
+    } else {
+      newItem.validation.alt_responses[correctTab - 1].score = points;
     }
 
     setQuestionData(newItem);

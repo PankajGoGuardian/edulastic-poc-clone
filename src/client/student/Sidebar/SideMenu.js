@@ -277,7 +277,7 @@ const enhance = compose(
   connect(
     ({ router, user, ui }) => ({
       currentPath: router.location.pathname,
-      firstName: user.user.firstName || '',
+      firstName: (user.user &&  user.user.firstName )|| '',
       isSidebarCollapsed: ui.isSidebarCollapsed
     }),
     { logout: logoutAction, toggleSideBar: toggleSideBarAction }

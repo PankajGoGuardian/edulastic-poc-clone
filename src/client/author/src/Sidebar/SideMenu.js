@@ -252,7 +252,7 @@ const enhance = compose(
   connect(
     ({ authorUi, user }) => ({
       isSidebarCollapsed: authorUi.isSidebarCollapsed,
-      firstName: user.firstName || ''
+      firstName: user.user.firstName || ''
     }),
     { toggleSideBar: toggleSideBarAction, logout: logoutAction }
   )

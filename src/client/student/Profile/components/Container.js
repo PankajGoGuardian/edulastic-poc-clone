@@ -133,7 +133,7 @@ const enhance = compose(
   Form.create(),
   connect(state => ({
     flag: state.ui.flag,
-    user: state.user
+    user: state.user.user
   }))
 );
 

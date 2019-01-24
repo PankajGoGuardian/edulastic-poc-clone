@@ -1,6 +1,13 @@
 # Redux
 
-For managing the state of the application we are using [redux](https://redux.js.org/), and following the [ducks pattern](https://github.com/erikras/ducks-modular-redux) where all store/redux related stuffs are kept in a single file named `ducks`.
+For managing the state of the application we are using [redux](https://redux.js.org/), and following the [ducks pattern](https://github.com/erikras/ducks-modular-redux) where all store/redux related stuffs are kept in a single file named `ducks`. Follow the rules while creating ducks.
+
+- MUST export default a function called reducer()
+- MUST export its action creators as functions
+- MUST have action types in the form npm-module-or-app/reducer/ACTION_TYPE
+- MAY export its action types as UPPER_SNAKE_CASE, if an external reducer needs to listen for them, or if it is a published reusable library
+
+Check end of document for example.
 
 ## Store
 
@@ -56,9 +63,51 @@ let deleteAssignmentAction = createAction(DELETE_ASSIGNMENT);
 
 Alike actions, reducers are created with [`createReducer`](https://github.com/reduxjs/redux-starter-kit/blob/master/docs/api/createReducer.md) method from `redux-starter-kit` package. State can be directly mutate as createReducer internally using immer. Refer the [`createReducer`](https://github.com/reduxjs/redux-starter-kit/blob/master/docs/api/createReducer.md) doc.
 
+```js
+const counterReducer = createReducer(0, {
+  increment: (state, action) => state + action.payload,
+  decrement: (state, action) => state - action.payload
+});
+```
+
 ## Selectors
 
-We are using [`reselect`](https://github.com/reduxjs/reselect#readme) for writing selectors. Refer the docs.
+We are using [`reselect`](https://github.com/reduxjs/reselect#readme) for writing selectors.
+
+- Selectors can compute derived data, allowing Redux to store the minimal possible state.
+- Selectors are efficient. A selector is not recomputed unless one of its arguments changes.
+- Selectors are composable. They can be used as input to other selectors.
+
+```js
+import { createSelector } from 'reselect';
+
+const shopItemsSelector = state => state.shop.items;
+const taxPercentSelector = state => state.shop.taxPercent;
+
+const subtotalSelector = createSelector(
+  shopItemsSelector,
+  items => items.reduce((acc, item) => acc + item.value, 0)
+);
+
+const taxSelector = createSelector(
+  subtotalSelector,
+  taxPercentSelector,
+  (subtotal, taxPercent) => subtotal * (taxPercent / 100)
+);
+
+export const totalSelector = createSelector(
+  subtotalSelector,
+  taxSelector,
+  (subtotal, tax) => ({ total: subtotal + tax })
+);
+
+let exampleState = {
+  shop: {
+    taxPercent: 8,
+    items: [{ name: 'apple', value: 1.2 }, { name: 'orange', value: 0.95 }]
+  }
+};
+```
 
 ## Saga
 

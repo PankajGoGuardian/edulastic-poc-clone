@@ -7,6 +7,7 @@
     "inProgress": "IN PROGRESS",
     "startAssignment": "START ASSIGNMENT",
     "retake": "RETAKE",
+    "resume": "RESUME",
     "lockAssignment": "NOT AVAILABLE",
     "review": "REVIEW",
     "attemps": "Attempts",

@@ -21,12 +21,13 @@ import {
 export const FETCH_ASSIGNMENTS_DATA = '[studentAssignments] fetch assignments';
 export const START_ASSIGNMENT = '[studentAssignments] start assignments';
 export const SET_TEST_ACTIVITY_ID = '[test] add test activity id';
+export const RESUME_ASSIGNMENT = '[studentAssignments] resume assignments';
 
 // actions
 export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS_DATA);
 export const startAssignmentAction = createAction(START_ASSIGNMENT);
 export const setTestActivityAction = createAction(SET_TEST_ACTIVITY_ID);
-
+export const resumeAssignmentAction = createAction(RESUME_ASSIGNMENT);
 // sagas
 // fetch and load assignments and reports for the student
 function* fetchAssignments() {
@@ -64,7 +65,7 @@ function* startAssignment({ payload }) {
   try {
     const { assignmentId, testId } = payload;
     if (!assignmentId || !testId) {
-      throw new Error('invalid data');
+      throw new Error('insufficient data');
     }
 
     const { _id: testActivityId } = yield testActivityApi.create({
@@ -80,11 +81,29 @@ function* startAssignment({ payload }) {
   }
 }
 
+/*
+ * resume assignment
+ */
+function* resumeAssignment({ payload }) {
+  try {
+    const { assignmentId, testActivityId, testId } = payload;
+    if (!assignmentId || !testId || !testActivityId) {
+      throw new Error('insufficient data');
+    }
+
+    yield put(setTestActivityAction({ testActivityId }));
+    yield put(push(`/student/test/${testId}`));
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 // set actions watcherss
 export function* watcherSaga() {
   yield all([
     yield takeLatest(FETCH_ASSIGNMENTS_DATA, fetchAssignments),
-    yield takeLatest(START_ASSIGNMENT, startAssignment)
+    yield takeLatest(START_ASSIGNMENT, startAssignment),
+    yield takeLatest(RESUME_ASSIGNMENT, resumeAssignment)
   ]);
 }
 

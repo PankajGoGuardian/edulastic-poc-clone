@@ -7,36 +7,59 @@ import PropTypes from 'prop-types';
 import styled, { withTheme } from 'styled-components';
 import { last } from 'lodash';
 import { Row, Col, Button } from 'antd';
-import lockIcon from '../assets/lock-icon.svg';
 
 //  components
 import AssessmentDetails from './AssessmentDetail';
+import StartButton from '../Assignments/components/StartButton';
+import ReviewButton from '../Reports/components/ReviewButton';
 import Attempt from './Attempt';
 
 // actions
 import { startAssignmentAction } from '../Assignments/ducks';
+import { resumeAssignmentAction } from '../Assignments/ducks';
 
-const AssignmentCard = ({ startAssignment, data, theme, t, type }) => {
+const AssignmentCard = ({
+  startAssignment,
+  resumeAssignment,
+  data,
+  theme,
+  t,
+  type
+}) => {
   const [showAttempts, setShowAttempts] = useState(false);
 
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
 
-  const { test = {}, reports = [], endDate, testId, startDate } = data;
+  const {
+    test = {},
+    reports = [],
+    endDate,
+    testId,
+    startDate,
+    _id: assignmentId
+  } = data;
+
   const attempted = !!(reports && reports.length);
   const attemptCount = reports && reports.length;
   const lastAttempt = last(reports) || {};
   const { correct = 0, wrong = 0 } = lastAttempt;
   const totalQuestions = correct + wrong || 0;
   const scorePercentage = (correct / totalQuestions) * 100 || 0;
-  const startButtonText = attempted
-    ? t('common.retake')
-    : t('common.startAssignment');
 
   const arrow = showAttempts ? '\u2193' : '\u2191';
 
+  // if last test attempt was not *submitted*, user should be able to resume it.
+  let resume = lastAttempt.status == 0;
+
   const startTest = () => {
-    if (attemptCount < test.maxAttempts) {
-      startAssignment({ testId, assignmentId: data._id });
+    if (resume) {
+      resumeAssignment({
+        testId,
+        assignmentId,
+        testActivityId: lastAttempt._id
+      });
+    } else if (attemptCount < test.maxAttempts) {
+      startAssignment({ testId, assignmentId });
     }
   };
 
@@ -80,32 +103,20 @@ const AssignmentCard = ({ startAssignment, data, theme, t, type }) => {
             )}
           </AttemptDetails>
           {type === 'assignment' ? (
-            new Date(startDate) > new Date() ? (
-              <NotAvailableButton disabled>
-                <img src={lockIcon} alt="" />
-                <span>{t('common.lockAssignment')}</span>
-              </NotAvailableButton>
-            ) : (
-              <StartAssignButton onClick={startTest}>
-                <span>{startButtonText}</span>
-              </StartAssignButton>
-            )
+            <StartButton
+              startDate={startDate}
+              t={t}
+              startTest={startTest}
+              attempted={attempted}
+              resume={resume}
+            />
           ) : (
-            <Link
-              to={{
-                pathname: `/home/testActivityReport/${lastAttempt._id}`,
-                testActivityId: lastAttempt && lastAttempt._id,
-                title: test.title
-              }}
-            >
-              {attempted ? (
-                <StartAssignButton>
-                  <span>{t('common.review')}</span>
-                </StartAssignButton>
-              ) : (
-                ''
-              )}
-            </Link>
+            <ReviewButton
+              testActivityId={lastAttempt._id}
+              title={test.title}
+              t={t}
+              attempted={attempted}
+            />
           )}
         </DetailContainer>
         {showAttempts &&
@@ -124,7 +135,8 @@ const enhance = compose(
   connect(
     null,
     {
-      startAssignment: startAssignmentAction
+      startAssignment: startAssignmentAction,
+      resumeAssignment: resumeAssignmentAction
     },
     (a, b, c) => ({ ...a, ...b, ...c }), // mergeProps
     { pure: false }
@@ -176,64 +188,6 @@ const AttemptDetails = styled(Col)`
   display: flex;
   @media screen and (max-width: 768px) {
     width: 100%;
-  }
-`;
-
-const StartAssignButton = styled(Button)`
-  max-width: 200px;
-  height: 40px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-transform: uppercase;
-  background: ${props => props.theme.assignment.cardRetakeBtnBgColor};
-  border: solid 1px ${props => props.theme.assignment.cardRetakeBtnBgHoverColor};
-  width: 100%;
-  padding: 5px 20px;
-  cursor: pointer;
-  float: right;
-  margin: 10px 15px 0 10px;
-  span {
-    color: ${props => props.theme.assignment.cardRetakeBtnTextColor};
-    font-size: ${props => props.theme.assignment.cardRetakeBtnFontSize};
-    font-weight: 600;
-    letter-spacing: 0.2px;
-  }
-  &:hover {
-    background-color: ${props =>
-      props.theme.assignment.cardRetakeBtnBgHoverColor};
-    span {
-      color: ${props => props.theme.assignment.cardRetakeBtnTextHoverColor};
-    }
-  }
-  @media screen and (min-width: 1025px) {
-    margin-right: 0px;
-  }
-  @media screen and (max-width: 768px) {
-    max-width: 80%;
-    margin: 10px 0 0;
-  }
-  @media screen and (max-width: 767px) {
-    max-width: 100%;
-  }
-`;
-
-const NotAvailableButton = styled(StartAssignButton)`
-  display: flex;
-  justify-content: space-evenly;
-  img {
-    width: 15px;
-    height: 15px;
-  }
-  span {
-    color: #dddddd;
-  }
-  &:hover {
-    background-color: #fff;
-    span {
-      color: #dddddd;
-    }
   }
 `;
 

@@ -1,7 +1,9 @@
 <!--  docs/_Sidebar.md -->
-
 - [Home](/)
 - [PR Guide](contributing.md)
+- [Redux](redux.md)
 - [Project Structure](projectStructure.md)
 - [JSX](JSX.md)
-- [Redux](redux.md)
+- [Application FileStructure](ApplicationFileStructure.md)
+- [Routes](routes.md)
+- [Components](componentStructure.md)

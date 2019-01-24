@@ -2,7 +2,7 @@
 // import { assessmentApi } from '@edulastic/api';
 import moment from 'moment';
 // import { loadQuestions } from '../actions/questions';
-// import { loadAssessment } from '../actions/assessment';
+// import { loadAssessment } from  '../actions/assessment';
 
 // export const loadJSON = async (assessmentId, dispatch) => {
 //   const json = await assessmentApi.getAssessment(assessmentId);

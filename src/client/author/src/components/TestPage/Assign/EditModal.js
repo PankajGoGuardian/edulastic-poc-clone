@@ -44,7 +44,7 @@ const EditModal = ({
   };
 
   // FIXME: fix delete
-  const updateStudents = (students) => {
+  const updateStudents = students => {
     const modalDataCloned = _cloneDeep(modalData);
     const studentsGroup = _groupBy(students, 'class_id');
     for (const _class of modalDataCloned.class) {
@@ -76,7 +76,7 @@ const EditModal = ({
     setModalData(modalDataCloned);
   };
 
-  const disabledStartDate = (startDate) => {
+  const disabledStartDate = startDate => {
     const { endDate } = modalData;
     if (!startDate || !endDate) {
       return false;
@@ -84,7 +84,7 @@ const EditModal = ({
     return startDate.valueOf() > endDate.valueOf();
   };
 
-  const disabledEndDate = (endDate) => {
+  const disabledEndDate = endDate => {
     const { startDate } = modalData;
     if (!endDate || !startDate) {
       return false;
@@ -92,34 +92,35 @@ const EditModal = ({
     return endDate.valueOf() <= startDate.valueOf();
   };
 
-  const onStartChange = (value) => {
+  const onStartChange = value => {
     onChange('startDate', value);
   };
 
-  const onEndChange = (value) => {
+  const onEndChange = value => {
     onChange('endDate', value);
   };
 
-  const handleStartOpenChange = (open) => {
+  const handleStartOpenChange = open => {
     if (!open) {
       setEndOpen(true);
     }
   };
 
-  const handleEndOpenChange = (open) => {
+  const handleEndOpenChange = open => {
     setEndOpen(open);
   };
 
   const selectedGroups = modalData.class.map(x => x._id);
   const selectedStudents = _flatmap(modalData.class, _class =>
-    (_class.students ? _uniq(_class.students) : []));
+    _class.students ? _uniq(_class.students) : []
+  );
 
   let allStudents = [];
 
   group.forEach(({ _id, students }) => {
     if (selectedGroups.includes(_id)) {
       students = students || [];
-      students = students.map((s) => {
+      students = students.map(s => {
         s.class_id = _id;
         return s;
       });
@@ -129,7 +130,7 @@ const EditModal = ({
 
   const studentNames = [];
 
-  allStudents.forEach(({ _id, firstName, lastName }) => {
+  allStudents.forEach(({ _id, firstName, lastName = '' }) => {
     if (selectedStudents.includes(_id)) {
       studentNames.push(`${firstName} ${lastName}`);
     }
@@ -171,7 +172,7 @@ const EditModal = ({
             style={{ width: '100%' }}
             mode="multiple"
             cache="false"
-            onChange={(event) => {
+            onChange={event => {
               onChange(
                 'class',
                 event.map(_id => ({
@@ -182,7 +183,7 @@ const EditModal = ({
                 }))
               );
             }}
-            onSelect={(classId) => {
+            onSelect={classId => {
               fetchStudents({ classId });
             }}
             value={modalData.class.map(obj => obj._id)}
@@ -219,7 +220,7 @@ const EditModal = ({
               placeholder="Please select"
               style={{ width: '100%' }}
               mode="multiple"
-              onChange={(event) => {
+              onChange={event => {
                 updateStudents(event);
                 // onChange('students', event);
               }}

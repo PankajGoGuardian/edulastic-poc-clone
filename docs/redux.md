@@ -39,8 +39,8 @@ provided below
 Action types will be a string prefixed with the affecting storeSlice. i.e
 
 ```js
-const SET_ASSIGNMENT = "[studentAssignment] set student assignments";
-const DELETE_ASSIGNMENT = "[studentAssignment] delete student assignment";
+const SET_ASSIGNMENT = '[studentAssignment] set student assignments';
+const DELETE_ASSIGNMENT = '[studentAssignment] delete student assignment';
 ```
 
 ## Actions Creators
@@ -48,8 +48,8 @@ const DELETE_ASSIGNMENT = "[studentAssignment] delete student assignment";
 Action creators are created using [`createAction`](https://github.com/reduxjs/redux-starter-kit/blob/master/docs/api/createAction.md) from 'redux-starter-kit`package. Actions should be suffixed with`action`.
 
 ```js
- let setAssignmentAction = createAction(SET_ASSIGNMENT);
- let deleteAssignmentAction = createAction(DELETE_ASSIGNMENT);
+let setAssignmentAction = createAction(SET_ASSIGNMENT);
+let deleteAssignmentAction = createAction(DELETE_ASSIGNMENT);
 ```
 
 ## Reducers
@@ -71,12 +71,12 @@ import { createSelector } from 'reselect';
 import { createAction, createReducer } from 'redux-starter-kit';
 
 // action types
-const ADD_TODO = '[todo] add todo';
-const DELETE_TODO = '[todo] delete todo';
+export const ADD_TODO = '[todo] add todo';
+export const DELETE_TODO = '[todo] delete todo';
 
 // action creators
-const addTodoAction = createAction(ADD_TODO);
-const deleteTodoAction = createAction(DELETE_TODO);
+export const addTodoAction = createAction(ADD_TODO);
+export const deleteTodoAction = createAction(DELETE_TODO);
 
 //
 // intiial state
@@ -87,4 +87,15 @@ const initialState = {
   isLoading: false,
   current: 0
 };
+
+const addTodo = (state, { payload }) => {
+  state.allIds.push(payload._id);
+  state.byId[payload._id] = payload;
+};
+
+// reducer
+export default (reducer = createReducer(initialState, {
+  [ADD_TODO]: addTodo,
+  [DELETE_TODO]: deleteTodo
+}));
 ```

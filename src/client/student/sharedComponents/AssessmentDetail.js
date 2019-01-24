@@ -38,7 +38,10 @@ const AssessmentDetails = ({
       </CardDate>
       <div>
         {type === 'assignment' ? (
-          <StatusButton isSubmitted={started}>
+          <StatusButton
+            isSubmitted={started}
+            assignment={type === 'assignment'}
+          >
             <span>
               {started ? t('common.inProgress') : t('common.notStartedTag')}
             </span>
@@ -68,6 +71,21 @@ AssessmentDetails.defaultProps = {
 };
 
 export default AssessmentDetails;
+const getStatusBgColor = (props, type) => {
+  if (props.assignment) {
+    if (props.isSubmitted) {
+      return props.theme.assignment[`cardInProgressLabel${type}Color`];
+    } else {
+      return props.theme.assignment[`cardNotStartedLabel${type}Color`];
+    }
+  } else {
+    if (props.isSubmitted) {
+      return props.theme.assignment[`cardSubmitedLabel${type}Color`];
+    } else {
+      return props.theme.assignment[`cardMissedLabel${type}Color`];
+    }
+  }
+};
 
 const Wrapper = styled(Col)`
   display: flex;
@@ -149,10 +167,7 @@ const StatusButton = styled.div`
   width: 135px;
   height: 23.5px;
   border-radius: 5px;
-  background-color: ${props =>
-    props.isSubmitted
-      ? props.theme.assignment.cardSubmitLabelBgColor
-      : props.theme.assignment.cardNotStartedLabelBgColor};
+  background-color: ${props => getStatusBgColor(props, 'Bg')};
   font-size: ${props => props.theme.assignment.cardSubmitLabelFontSize};
   font-weight: bold;
   line-height: 1.38;
@@ -162,10 +177,7 @@ const StatusButton = styled.div`
   span {
     position: relative;
     top: -1px;
-    color: ${props =>
-      props.isSubmitted
-        ? props.theme.assignment.cardSubmitLabelTextColor
-        : props.theme.assignment.cardNotStartedLabelTextColor};
+    color: ${props => getStatusBgColor(props, 'Text')};
   }
   @media screen and (max-width: 767px) {
     width: 100%;

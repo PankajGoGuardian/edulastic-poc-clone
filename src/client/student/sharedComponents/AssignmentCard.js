@@ -156,7 +156,7 @@ AssignmentCard.propTypes = {
 
 const CardWrapper = styled(Row)`
   display: flex;
-  padding: 27.8px 0;
+  padding: 28px 0;
   border-bottom: 1px solid #f2f2f2;
   &:last-child {
     border-bottom: 0px;
@@ -169,6 +169,7 @@ const CardWrapper = styled(Row)`
   }
   @media screen and (max-width: 767px) {
     flex-direction: column;
+    padding: 10px 0;
   }
 `;
 
@@ -181,6 +182,7 @@ const ButtonAndDetail = styled(Col)`
   }
   @media screen and (max-width: 767px) {
     flex-direction: column;
+    width: 100%;
   }
 `;
 
@@ -188,6 +190,7 @@ const AttemptDetails = styled(Col)`
   display: flex;
   @media screen and (max-width: 768px) {
     width: 100%;
+    justify-content: center;
   }
 `;
 
@@ -212,7 +215,7 @@ const DetailContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  @media screen and(max-width: 1024px) {
+  @media screen and (max-width: 1024px) {
     flex-direction: column;
   }
 `;

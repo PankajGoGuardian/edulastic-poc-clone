@@ -266,7 +266,7 @@ SideMenu.propTypes = {
   firstName: PropTypes.string.isRequired,
   logout: PropTypes.func.isRequired,
   toggleSideBar: PropTypes.func.isRequired,
-  isSidebarCollapsed: PropTypes.object.isRequired,
+  isSidebarCollapsed: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired
 };
 
@@ -292,7 +292,7 @@ const FixedSidebar = styled.div`
   top: 0px;
   bottom: 0px;
   @media (max-width: 768px) {
-    z-index: 2;
+    z-index: 3;
   }
 `;
 

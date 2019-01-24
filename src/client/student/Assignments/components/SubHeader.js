@@ -49,13 +49,13 @@ const Wrapper = styled.div`
   justify-content: space-between;
   margin-left: 30px;
   margin-right: 40px;
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 992px) {
     flex-direction: column;
   }
 `;
 
 const StatusBtnsContainer = styled.div`
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 992px) {
     margin-top: 20px;
     position: relative;
     display: flex;
@@ -107,7 +107,7 @@ const FilterBtn = styled(Button)`
     font-size: ${props => props.theme.headerFilters.headerFilterTextSize};
     font-weight: 600;
   }
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 992px) {
     margin: 5px 10px 0px 0px;
     min-width: auto;
   }

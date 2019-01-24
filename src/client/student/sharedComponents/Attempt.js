@@ -5,14 +5,13 @@ import PropTypes from 'prop-types';
 import { formatTime } from '../utils';
 
 const Attempt = ({ data, type }) => {
-  console.log('type', type);
   const { correct = 0, wrong = 0 } = data;
   const total = correct + wrong;
   const percentage = (correct / total) * 100 || 0;
 
   return (
     <AttemptsData>
-      <RowData>
+      <RowData pagetype={type === 'reports'}>
         <AnswerAndScore>
           <span>{formatTime(data.createdAt)}</span>
         </AnswerAndScore>
@@ -24,13 +23,13 @@ const Attempt = ({ data, type }) => {
         <AnswerAndScore>
           <span>{percentage}%</span>
         </AnswerAndScore>
-        <SpaceBetween />
+        <SpaceBetween pagetype={type === 'reports'} />
         {type === 'reports' ? (
           <AnswerAndScoreReview>
             <span>REVIEW</span>
           </AnswerAndScoreReview>
         ) : (
-          ''
+          <EmptyScoreBox />
         )}
       </RowData>
     </AttemptsData>
@@ -64,6 +63,9 @@ const AnswerAndScore = styled.div`
 
 const SpaceBetween = styled.div`
   width: 10px;
+  @media screen and (max-width: 1024px) {
+    display: ${props => (props.pagetype ? 'initial' : 'none !important')};
+  }
 `;
 
 const AnswerAndScoreReview = styled(AnswerAndScore)`
@@ -79,12 +81,21 @@ const AnswerAndScoreReview = styled(AnswerAndScore)`
   }
 `;
 
+const EmptyScoreBox = styled(AnswerAndScoreReview)`
+  @media screen and (max-width: 1024px) {
+    display: none !important;
+  }
+`;
+
 const RowData = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   align-items: center;
   border-radius: 4px;
   height: 30px;
+  @media screen and (max-width: 767px) {
+    height: auto;
+  }
   div {
     background-color: #f8f8f8;
     height: 100%;

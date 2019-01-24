@@ -1,11 +1,12 @@
-import React, { memo } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Affix, Layout, Row, Col } from 'antd';
 
-const HeaderWrapper = ({ children }) => (
+const HeaderWrapper = ({ children, isSidebarCollapsed }) => (
   <HeaderContainer>
-    <Affix className="fixed-header" style={{ position: 'fixed', top: 0, right: 0 }}>
+    <FixedHeader iscollapsed={isSidebarCollapsed}>
       <AssignmentsHeader>
         <HeaderRow>
           <Col span={24}>
@@ -13,22 +14,37 @@ const HeaderWrapper = ({ children }) => (
           </Col>
         </HeaderRow>
       </AssignmentsHeader>
-    </Affix>
+    </FixedHeader>
   </HeaderContainer>
 );
 
 HeaderWrapper.propTypes = {
-  children: PropTypes.object.isRequired
+  children: PropTypes.object.isRequired,
+  iscollapsed: PropTypes.bool.isRequired
 };
 
-export default memo(HeaderWrapper);
+export default connect(({ ui }) => ({
+  isSidebarCollapsed: ui.isSidebarCollapsed
+}))(HeaderWrapper);
 
 const HeaderContainer = styled.div`
   padding-top: 62px;
   margin-bottom: 10px;
-  z-index: 1000;
   @media screen and (max-width: 768px) {
     padding-top: 95px;
+  }
+`;
+
+const FixedHeader = styled(Affix)`
+  top: 0;
+  right: 0;
+  position: fixed;
+  z-index: 2;
+  left: ${props => (props.iscollapsed ? '100px' : '240px')};
+  @media (max-width: 768px) {
+    left: 0;
+    padding-left: 30px;
+    background: #0188d2;
   }
 `;
 
@@ -40,7 +56,7 @@ const AssignmentsHeader = styled(Layout.Header)`
   padding: 0px 15px;
   color: #ffffff;
   @media screen and (max-width: 768px) {
-    height:104px;
+    height: 104px;
     padding: 0;
   }
   .ant-col-24 {
@@ -60,7 +76,7 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 17px;
-  @media (max-width:768px){
+  @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
   }

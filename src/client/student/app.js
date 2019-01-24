@@ -49,7 +49,7 @@ export default connect(({ ui }) => ({
 
 StudentApp.propTypes = {
   match: PropTypes.object.isRequired,
-  isSidebarCollapsed: PropTypes.object.isRequired
+  isSidebarCollapsed: PropTypes.bool.isRequired
 };
 
 const MainContainer = styled.div`

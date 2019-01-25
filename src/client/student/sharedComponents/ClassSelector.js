@@ -1,29 +1,42 @@
-import React from 'react';
-import { Select } from 'antd';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import React from "react";
+import { Select } from "antd";
+import { connect } from "react-redux";
+import { getClasses, getCurrentClass, changeClassAction } from "../Login/ducks";
+import PropTypes from "prop-types";
+import styled from "styled-components";
 
-// TODO: remove static data
-const options = ['FFC1', 'FFC2', 'FFC3', 'FFC4', 'FFC5', 'FFC6'];
-
-const ClassSelector = ({ t }) => (
-  <AssignmentSelectClass>
-    <ClassLabel>{t('common.classLabel')}</ClassLabel>
-    <Select defaultValue="FFC1">
-      {options.map((option, i) => (
-        <Select.Option key={i} value={option}>
-          {option}
-        </Select.Option>
-      ))}
-    </Select>
-  </AssignmentSelectClass>
-);
+const ClassSelector = ({ t, classes, currentClass,changeClass }) => {
+  if(! classes){
+    return null;
+  }
+  return (
+    <AssignmentSelectClass>
+      <ClassLabel>{t("common.classLabel")}</ClassLabel>
+      <Select value={currentClass} onChange={(value)=>{
+        changeClass(value);
+      }}>
+        {classes.map((cl, i) => (
+          <Select.Option key={cl._id} value={cl._id}>
+            {cl.name}
+          </Select.Option>
+        ))}
+      </Select>
+    </AssignmentSelectClass>
+  );
+};
 
 ClassSelector.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default React.memo(ClassSelector);
+const stateToProps = state => ({
+  classes: getClasses(state),
+  currentClass: getCurrentClass(state)
+});
+export default connect(
+  stateToProps,
+  { changeClass: changeClassAction }
+)(ClassSelector);
 
 const ClassLabel = styled.span`
   display: flex;

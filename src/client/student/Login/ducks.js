@@ -1,4 +1,4 @@
-import { createAction, createReducer } from "redux-starter-kit";
+import { createAction, createReducer,createSelector } from "redux-starter-kit";
 import { pick, last } from "lodash";
 import { takeLatest, call, put } from "redux-saga/effects";
 import { push } from "react-router-redux";
@@ -12,6 +12,7 @@ export const SET_USER = "[auth] set user";
 export const SIGNUP = "[auth] signup";
 export const FETCH_USER = "[auth] fetch user";
 export const LOGOUT = "[auth] logout";
+export const CHANGE_CLASS = "[student] change class";
 
 //actions
 export const loginAction = createAction(LOGIN);
@@ -19,6 +20,7 @@ export const setUserAction = createAction(SET_USER);
 export const signupAction = createAction(SIGNUP);
 export const fetchUserAction = createAction(FETCH_USER);
 export const logoutAction = createAction(LOGOUT);
+export const changeClassAction = createAction(CHANGE_CLASS);
 
 function* login({ payload }) {
   try {
@@ -29,7 +31,8 @@ function* login({ payload }) {
       "firstName",
       "lastName",
       "email",
-      "role"
+      "role",
+      "orgData",
     ]);
     yield put(setUserAction(user));
 
@@ -114,6 +117,18 @@ const setUser = (state, { payload }) => {
   state.user = payload;
   state.isAuthenticated = true;
 };
+
 export default createReducer(initialState, {
-  [SET_USER]: setUser
+  [SET_USER]: setUser,
+  [CHANGE_CLASS]: (state, {payload}) => {
+    if(!(state.user && state.user.orgData)){
+      return state;
+    }
+    state.user.orgData.defaultClass = payload;
+  }
 });
+
+export const getClasses = createSelector(['user.user.orgData.classList'],(classes)=> {
+  return classes;
+});
+export const getCurrentClass = createSelector(['user.user.orgData.defaultClass'],(r)=> r);

@@ -4,6 +4,7 @@ import { values, groupBy } from 'lodash';
 import { createSelector } from 'reselect';
 import { normalize } from 'normalizr';
 import { push } from 'react-router-redux';
+import { getCurrentClass } from '../Login/ducks';
 import { assignmentApi, reportsApi, testActivityApi } from '@edulastic/api';
 
 // external actions
@@ -22,7 +23,6 @@ import {
 export const FETCH_ASSIGNMENTS_DATA = '[studentAssignments] fetch assignments';
 export const START_ASSIGNMENT = '[studentAssignments] start assignments';
 export const SET_TEST_ACTIVITY_ID = '[test] add test activity id';
-
 export const RESUME_ASSIGNMENT = '[studentAssignments] resume assignments';
 
 // actions
@@ -71,8 +71,12 @@ function* startAssignment({ payload }) {
       throw new Error('insufficient data');
     }
     yield put(setActiveAssignmentAction(assignmentId));
+    const groupId = yield select(getCurrentClass);
+    const groupType = 'class';
     const { _id: testActivityId } = yield testActivityApi.create({
-      assignmentId
+      assignmentId,
+      groupId,
+      groupType
     });
     // set Activity id
     yield put(setTestActivityAction({ testActivityId }));

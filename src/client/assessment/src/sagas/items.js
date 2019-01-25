@@ -76,7 +76,6 @@ function* saveUserResponse({ payload }) {
     });
     const testItemId = currentItem._id;
     const assignmentId = yield select(state => state.studentAssignment && state.studentAssignment.current);
-    console.log('saving user response')
     yield call(testItemActivityApi.create, {
       answers: itemAnswers,
       testItemId,

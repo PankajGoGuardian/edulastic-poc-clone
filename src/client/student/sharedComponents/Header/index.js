@@ -6,19 +6,28 @@ import { compose } from 'redux';
 
 import HeaderWrapper from './headerWrapper';
 import ClassSelect from '../ClassSelector';
+import ShowActiveClass from '../ShowActiveClasses';
 
-const Header = ({ t, titleText, classSelect = true }) => (
+const Header = ({
+  t,
+  titleText,
+  classSelect = true,
+  showActiveClass = false
+}) => (
   <HeaderWrapper>
     <Wrapper>
       <AssignmentTitle>{t(titleText)}</AssignmentTitle>
       {classSelect && <ClassSelect t={t} />}
+      {showActiveClass && <ShowActiveClass t={t} />}
     </Wrapper>
   </HeaderWrapper>
 );
 
 Header.propTypes = {
   t: PropTypes.func.isRequired,
-  titleText: PropTypes.string.isRequired
+  titleText: PropTypes.string.isRequired,
+  classSelect: PropTypes.bool.isRequired,
+  showActiveClass: PropTypes.bool.isRequired
 };
 
 const enhance = compose(

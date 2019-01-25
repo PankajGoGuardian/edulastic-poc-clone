@@ -4,7 +4,8 @@ import { Layout } from 'antd';
 
 // components
 import ManageHeader from '../../sharedComponents/Header';
-import ManageContainer from './Container';
+import SubHeader from './SubHeader';
+import ManageClassContainer from './Container';
 
 const Wrapper = styled(Layout)`
   width: 100%;
@@ -12,8 +13,13 @@ const Wrapper = styled(Layout)`
 
 const ManageClass = () => (
   <Wrapper>
-    <ManageHeader titleText="common.manageClassTitle" classSelect={false} />
-    <ManageContainer />
+    <ManageHeader
+      titleText='common.manageClassTitle'
+      classSelect={false}
+      showActiveClass={true}
+    />
+    <SubHeader />
+    <ManageClassContainer />
   </Wrapper>
 );
 

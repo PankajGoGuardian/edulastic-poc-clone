@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 import { white } from '@edulastic/colors';
 import { IconSave, IconPause, IconLogout } from '@edulastic/icons';
@@ -10,9 +11,11 @@ const SaveAndExit = ({ finishTest }) => (
     <StyledButton>
       <SaveIcon />
     </StyledButton>
-    <StyledButton>
-      <PauseIcon />
-    </StyledButton>
+    <Link to="/home/assignments">
+      <StyledButton>
+        <PauseIcon />
+      </StyledButton>
+    </Link>
     <StyledButton onClick={finishTest}>
       <LogoutIcon />
     </StyledButton>
@@ -63,7 +66,8 @@ const StyledButton = styled(Button)`
   width: 45px;
   background: transparent;
   border: none;
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     background: transparent;
   }
 `;

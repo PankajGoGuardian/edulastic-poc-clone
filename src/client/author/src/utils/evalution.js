@@ -1,12 +1,13 @@
 import evaluators from './evaluators';
 
-export const evaluateItem = (answers, validations) => {
+export const evaluateItem = async (answers, validations) => {
   const answerIds = Object.keys(answers);
   const results = {};
   let totalScore = 0;
   let totalMaxScore = 0;
 
-  answerIds.forEach((id) => {
+  /* eslint-disable no-restricted-syntax */
+  for (const id of answerIds) {
     const answer = answers[id];
     if (validations && validations[id]) {
       const validation = validations[id];
@@ -15,7 +16,7 @@ export const evaluateItem = (answers, validations) => {
       if (!evaluator) {
         results[id] = [];
       } else {
-        const { evaluation, score, maxScore } = evaluator({
+        const { evaluation, score, maxScore } = await evaluator({
           userResponse: answer,
           hasGroupResponses: validation.hasGroupResponses,
           validation: validation.validation
@@ -28,7 +29,7 @@ export const evaluateItem = (answers, validations) => {
     } else {
       results[id] = [];
     }
-  });
+  }
 
   return { evaluation: results, maxScore: totalMaxScore, score: totalScore };
 };

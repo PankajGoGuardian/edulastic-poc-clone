@@ -114,6 +114,7 @@ class StaticMath extends PureComponent {
 
   onInput = (key) => {
     const { innerField } = this.state;
+    const { onInput } = this.props;
 
     if (!innerField) return;
 
@@ -137,6 +138,8 @@ class StaticMath extends PureComponent {
       innerField.cmd(key);
     }
     innerField.focus();
+
+    onInput(this.getLatex());
   };
 
   onFocus(innerField) {
@@ -185,6 +188,7 @@ class StaticMath extends PureComponent {
 StaticMath.propTypes = {
   type: PropTypes.oneOf([mathInputTypes.CLEAR, mathInputTypes.WRONG, mathInputTypes.SUCCESS]),
   onBlur: PropTypes.func.isRequired,
+  onInput: PropTypes.func.isRequired,
   symbols: PropTypes.array.isRequired,
   numberPad: PropTypes.array.isRequired
 };

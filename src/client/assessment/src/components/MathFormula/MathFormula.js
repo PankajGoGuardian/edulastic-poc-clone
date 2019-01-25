@@ -22,6 +22,7 @@ const MathFormula = ({
   testItem,
   previewTab,
   item,
+  evaluation,
   setQuestionData,
   saveAnswer,
   checkAnswer,
@@ -98,6 +99,7 @@ const MathFormula = ({
             item={item}
             saveAnswer={saveAnswer}
             check={checkAnswer}
+            evaluation={evaluation}
             smallSize={smallSize}
           />
         </Wrapper>
@@ -114,6 +116,7 @@ MathFormula.propTypes = {
   previewTab: PropTypes.string,
   testItem: PropTypes.bool,
   item: PropTypes.object,
+  evaluation: PropTypes.any.isRequired,
   smallSize: PropTypes.bool
 };
 

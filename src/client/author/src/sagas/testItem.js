@@ -78,7 +78,7 @@ function* evaluateAnswers({ payload }) {
   try {
     const answers = yield select(state => state.answers);
     const validations = yield* getValidations(payload);
-    const { evaluation, score, maxScore } = evaluateItem(answers, validations);
+    const { evaluation, score, maxScore } = yield evaluateItem(answers, validations);
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {

@@ -1,7 +1,68 @@
+import { evaluateApi } from '@edulastic/api';
+import { omitBy } from 'lodash';
 import { ScoringType } from './const/scoring';
 
+const getChecks = (validation) => {
+  const altResponses = validation.alt_responses || [];
+
+  const values = [
+    ...validation.valid_response.value,
+    ...altResponses.reduce((acc, res) => [...acc, ...res.value], [])
+  ];
+
+  return values.reduce((valAcc, val, valIndex) => {
+    let options = val.options || {};
+    options = omitBy(options, f => f === false);
+
+    let midRes = Object.keys(options).reduce((acc, key, i) => {
+      const fieldVal = options[key];
+
+      acc += i === 0 ? ':' : '';
+
+      if (key === 'argument') {
+        return acc;
+      }
+
+      if (fieldVal === false) {
+        return acc;
+      }
+
+      if (key === 'setThousandsSeparator') {
+        if (fieldVal.length) {
+          const stringArr = `[${fieldVal.map(f => `'${f}'`)}]`;
+          acc += `${key}=${stringArr}`;
+        } else {
+          return acc;
+        }
+      } else if (key === 'allowThousandsSeparator') {
+        return acc;
+      } else if (key === 'setDecimalSeparator') {
+        acc += `${key}='${fieldVal}'`;
+      } else if (key === 'allowedUnits') {
+        acc += `${key}=[${fieldVal}]`;
+      } else if (key === 'syntax') {
+        acc += options.argument === undefined ? fieldVal : `${fieldVal}=${options.argument}`;
+      } else {
+        acc += `${key}=${fieldVal}`;
+      }
+
+      return `${acc},`;
+    }, val.method);
+
+    if (midRes[midRes.length - 1] === ',') {
+      midRes = midRes.slice(0, midRes.length - 1);
+    }
+
+    valAcc += midRes;
+
+    valAcc += valIndex + 1 === values.length ? '' : ';';
+
+    return valAcc;
+  }, '');
+};
+
 // exact match evaluator
-const exactMatchEvaluator = (userResponse, answers) => {
+const exactMatchEvaluator = async (userResponse, answers, checks) => {
   let score = 0;
   let maxScore = 0;
   let evaluation = [];
@@ -10,18 +71,31 @@ const exactMatchEvaluator = (userResponse, answers) => {
     if (answer.value && answer.value.length) {
       return answer.value.map(val => val.value);
     }
-
     return [];
   };
 
-  answers.forEach((answer) => {
-    const correct = getAnswerCorrectMethods(answer);
-    if (correct.includes(userResponse)) {
+  /* eslint-disable */
+  for (let answer of answers) {
+    const corrects = getAnswerCorrectMethods(answer);
+    let valid = false;
+    for (let correct of corrects) {
+      const data = {
+        input: userResponse.replace(/\\ /g, ' '),
+        expected: correct ? correct.replace(/\\ /g, ' ') : ':',
+        checks
+      };
+      const { result } = await evaluateApi.evaluate(data);
+      if (result === 'true') {
+        valid = true;
+        break;
+      }
+    }
+    if (valid) {
       score = Math.max(answer.score, score);
-      evaluation = [...evaluation, ...correct];
     }
     maxScore = Math.max(answer.score, maxScore);
-  });
+    evaluation = [...evaluation, valid];
+  }
 
   return {
     score,
@@ -30,7 +104,7 @@ const exactMatchEvaluator = (userResponse, answers) => {
   };
 };
 
-const evaluator = ({ userResponse, validation }) => {
+const evaluator = async ({ userResponse, validation }) => {
   const {
     valid_response,
     alt_responses = [],
@@ -44,7 +118,8 @@ const evaluator = ({ userResponse, validation }) => {
   switch (scoring_type) {
     case ScoringType.EXACT_MATCH:
     default:
-      result = exactMatchEvaluator(userResponse, answers);
+      const checks = getChecks(validation);
+      result = await exactMatchEvaluator(userResponse, answers, checks);
   }
 
   // if score for attempting is greater than current score

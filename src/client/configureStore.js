@@ -20,7 +20,7 @@ const middleware = [sagaMiddleware, routerMiddleware(history)];
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['user', 'reports', 'router'] // store only user data for now
+  whitelist: ['user', 'reports', 'router', 'studentTestItems']
 };
 
 /* istanbul ignore next */
@@ -41,7 +41,7 @@ export default () => {
 
   if (process.env.NODE_ENV !== 'production') {
     if (module.hot) {
-      module.hot.accept('./reducers', (reducer) => {
+      module.hot.accept('./reducers', reducer => {
         store.replaceReducer(reducer);
       });
     }

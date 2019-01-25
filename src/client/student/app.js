@@ -10,7 +10,7 @@ import Sidebar from './Sidebar/SideMenu';
 import { Assignment } from './Assignments';
 import { Report } from './Reports';
 //TODO
-//import { ReportList } from './ReportList';
+import { ReportList } from './TestAcitivityReport';
 import { Profile } from './Profile';
 
 import { ManageClass } from './ManageClass';
@@ -32,10 +32,10 @@ const StudentApp = ({ match, isSidebarCollapsed }) => (
             <Route path={`${match.url}/manage`} component={ManageClass} />
             <Route path={`${match.url}/profile`} component={Profile} />
             {/*TODO*/}
-            {/* <Route
+            <Route
               path={`${match.url}/testActivityReport/:id`}
               component={ReportList}
-            /> */}
+            />
           </Switch>
         </Wrapper>
       </MainContainer>

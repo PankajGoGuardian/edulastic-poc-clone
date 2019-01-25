@@ -75,7 +75,7 @@ Group.propTypes = {
 
 const GroupPossibleResponses = ({ checkboxChange, checkboxVal, items, t, onAdd, ...restProps }) =>
   (checkboxVal ? (
-    <Fragment>
+    <div>
       <Checkbox style={{ marginTop: 29 }} defaultChecked={checkboxVal} onChange={checkboxChange}>
         {t('component.classification.groupPossibleRespTitle')}
       </Checkbox>
@@ -97,7 +97,7 @@ const GroupPossibleResponses = ({ checkboxChange, checkboxVal, items, t, onAdd, 
       <EduButton type="primary" onClick={onAdd}>
         ADD NEW GROUP
       </EduButton>
-    </Fragment>
+    </div>
   ) : (
     <Row gutter={70}>
       <Col span={12}>

@@ -44,12 +44,12 @@ const NotAvailableButton = styled(StartButton)`
     }
   }
   span {
-    color: #dddddd;
+    color: ${props => props.theme.assignment.cardNotAvailabelBtnTextColor};
   }
   &:hover {
-    background-color: #fff;
+    background-color: ${props => props.theme.assignment.cardNotAvailabelBtnBgColor};
     span {
-      color: #dddddd;
+      color: ${props => props.theme.assignment.cardNotAvailabelBtnTextColor};
     }
   }
 `;

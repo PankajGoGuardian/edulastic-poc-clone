@@ -6,8 +6,6 @@ import { withNamespaces } from '@edulastic/localization';
 import { compose } from 'redux';
 import { Button, Row, Col } from 'antd';
 
-import { secondaryTextColor } from '@edulastic/colors';
-
 class Confirmation extends Component {
   render() {
     const { isVisible, onClose, finishTest, t } = this.props;
@@ -28,7 +26,9 @@ class Confirmation extends Component {
       >
         <ModalContainer>
           <Title>{t('confirmation.submitAssignment')}</Title>
-          <TitleDescriptioin>{t('confirmation.confirmationMessage')}</TitleDescriptioin>
+          <TitleDescription>
+            {t('confirmation.confirmationMessage')}
+          </TitleDescription>
           <ButtonContainer>
             <ButtonRow gutter={20}>
               <Col md={12} sm={24}>
@@ -37,7 +37,7 @@ class Confirmation extends Component {
                 </StyledButton>
               </Col>
               <Col md={12} sm={24}>
-                <StyledButton type="primary" btnType={2} onClick={finishTest}>
+                <StyledButton type='primary' btnType={2} onClick={finishTest}>
                   {t('default:submit')}
                 </StyledButton>
               </Col>
@@ -56,12 +56,9 @@ Confirmation.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-const enhance = compose(
-  withNamespaces(['summary', 'default'])
-);
+const enhance = compose(withNamespaces(['summary', 'default']));
 
 export default enhance(Confirmation);
-
 
 const ModalContainer = styled.div`
   display: flex;
@@ -71,13 +68,14 @@ const ModalContainer = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 22px;
+  font-size: ${props => props.theme.confirmation.titleTextSize};
   font-weight: bold;
-  color: ${secondaryTextColor};
+  color: ${props => props.theme.confirmation.titleColor};
 `;
 
-const TitleDescriptioin = styled.div`
-  font-size: 13px;
+const TitleDescription = styled.div`
+  font-size: ${props => props.theme.confirmation.descriptionTextSize};
+  color: ${props => props.theme.confirmation.descriptionTextColor};
   font-weight: 600;
   margin-top: 12px;
 `;
@@ -95,15 +93,21 @@ const ButtonRow = styled(Row)`
 const StyledButton = styled(Button)`
   width: 100%;
   height: 40px;
-  background: ${props => (props.btnType === 1 ? '#fff' : '#00b0ff')};
-  border-color: #00b0ff;
+  background: ${props =>
+    props.btnType === 1
+      ? props.theme.confirmation.cancelButtonBgColor
+      : props.theme.confirmation.submitButtonBgColor};
+  border-color: ${props => props.theme.confirmation.buttonBorderColor};
   span {
     text-transform: uppercase;
-    font-size: 11px;
+    font-size: ${props => props.theme.confirmation.buttonTextSize};
     font-weight: 600;
-    color: ${props => (props.btnType === 1 ? '#00b0ff' : '#fff')};
+    color: ${props =>
+      props.btnType === 1
+        ? props.theme.confirmation.cancelButtonTextColor
+        : props.theme.confirmation.submitButtonTextColor};
   }
   @media screen and (max-width: 767px) {
-    margin-top:10px;
+    margin-top: 10px;
   }
 `;

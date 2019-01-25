@@ -43,12 +43,12 @@ const Container = styled.div`
 
   .ant-breadcrumb-link,
   .ant-breadcrumb-separator {
-    font-size: 11px;
+    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize};
     font-weight: 600;
-    color: #00b0ff;
+    color: ${props => props.theme.breadcrumbs.breadcrumbTextColor};
 
     a {
-      color: #00b0ff;
+      color: ${props => props.theme.breadcrumbs.breadcrumbLinkColor};
     }
   }
 

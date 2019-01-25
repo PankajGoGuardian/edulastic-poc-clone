@@ -44,13 +44,13 @@ class ProfileContainer extends React.Component {
       <LayoutContent flag={flag}>
         <Wrapper>
           <ProfileContentWrapper>
-            <AssignmentDetail>
-              <UserTitle>Welcome Zack</UserTitle>
+            <UserDetail>
+              <UserTitle>Welcome {user.firstName || 'Zack'}</UserTitle>
               <UserSubTitle>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
                 eget mauris nunc.
               </UserSubTitle>
-            </AssignmentDetail>
+            </UserDetail>
             <ProfileImgWrapper>
               <div />
               <span>
@@ -171,21 +171,21 @@ const ProfileContentWrapper = styled.div`
   text-align: center;
 `;
 
-const AssignmentDetail = styled.div`
+const UserDetail = styled.div`
   padding: 0.5rem 0rem 1.5rem;
   border-bottom: 1px solid #f2f2f2;
 `;
 
 const UserTitle = styled.h2`
-  color: #434b5d;
-  font-size: 22px;
-  font-weight: bold;
+  color: ${props => props.theme.profile.userHeadingTextColor};
+  font-size: ${props => props.theme.profile.userHeadingTextSize};
+  font-weight: ${props => props.theme.profile.userHeadingTextWeight};
   margin-bottom: 5px;
 `;
 
 const UserSubTitle = styled.p`
-  color: #434b5d;
-  font-size: 13px;
+  color: ${props => props.theme.profile.userSubTitleTextColor};
+  font-size: ${props => props.theme.profile.userSubTitleTextSize};
 `;
 
 const ProfileImgWrapper = styled.div`
@@ -209,7 +209,7 @@ const ProfileImgWrapper = styled.div`
     position: absolute;
     right: 5px;
     bottom: 5px;
-    background: #1fe3a1;
+    background: ${props => props.theme.profile.uploadIconBgColor};
     line-height: 30px;
     cursor: pointer;
     img {
@@ -236,7 +236,8 @@ const FormItemWrapper = styled(FormItem)`
     display: block;
   }
   label {
-    font-size: 13px;
+    font-size: ${props => props.theme.profile.formInputLabelSize};
+    color: ${props => props.theme.profile.formInputLabelColor};
     font-weight: 600;
   }
   .ant-form-explain {
@@ -252,13 +253,14 @@ const FormButtonWrapper = styled.div`
 const SaveButton = styled(Button)`
   width: 150px;
   margin: 0px 10px;
-  background: #12a6e8;
-  border-color: #12a6e8;
-  font-size: 11px;
+  background: ${props => props.theme.profile.saveButtonBgColor};
+  border-color: ${props => props.theme.profile.saveButtonBorderColor};
+  font-size: ${props => props.theme.profile.saveButtonTextSize};
+  color: ${props => props.theme.profile.saveButtonTextColor};
   text-transform: uppercase;
 `;
 
 const CancelButton = styled(SaveButton)`
-  background: white;
-  color: #12a6e8;
+  background: ${props => props.theme.profile.cancelButtonBgColor};
+  color: ${props => props.theme.profile.cancelButtonTextColor};
 `;

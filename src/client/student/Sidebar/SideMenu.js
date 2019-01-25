@@ -160,7 +160,6 @@ class SideMenu extends Component {
           onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
           width={isMobile ? windowWidth : '240'}
           collapsedWidth={broken ? '0' : '100'}
-          // theme={theme}
           className='sideBarwrapper'
         >
           <LogoWrapper className='logoWrapper'>
@@ -169,7 +168,6 @@ class SideMenu extends Component {
                 <AntIcon
                   className='mobileCloseIcon'
                   type='close'
-                  theme='outlined'
                   onClick={this.toggleMenu}
                 />
               </Col>
@@ -193,7 +191,6 @@ class SideMenu extends Component {
               <IconBars type='bars' onClick={this.toggleMenu} />
             ) : null}
             <Menu
-              // theme="light"
               defaultSelectedKeys={[menuIndex.toString()]}
               mode='inline'
               onClick={this.handleMenu}
@@ -277,7 +274,7 @@ const enhance = compose(
   connect(
     ({ router, user, ui }) => ({
       currentPath: router.location.pathname,
-      firstName: (user.user &&  user.user.firstName )|| '',
+      firstName: (user.user && user.user.firstName) || '',
       isSidebarCollapsed: ui.isSidebarCollapsed
     }),
     { logout: logoutAction, toggleSideBar: toggleSideBarAction }
@@ -302,7 +299,7 @@ const SideBar = styled(Layout.Sider)`
   max-width: 240px;
   min-width: 240px;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
-  background-color: ${props => props.theme.sidebarBgColor};
+  background-color: ${props => props.theme.sideMenu.sidebarBgColor};
   z-index: 22;
 
   &.ant-layout-sider-collapsed .logoWrapper {
@@ -325,20 +322,20 @@ const SideBar = styled(Layout.Sider)`
     height: 60px;
     border-radius: 65px;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-    background-color: ${props => props.theme.helpButtonBgColor};
+    background-color: ${props => props.theme.sideMenu.helpButtonBgColor};
     padding: 0px;
     margin: 0 auto;
     justify-content: center;
     margin-bottom: 15px;
 
     &:hover {
-      background: ${props => props.theme.helpButtonBgColor};
+      background: ${props => props.theme.sideMenu.helpButtonBgColor};
     }
   }
   &.ant-layout-sider-collapsed .userinfoBtn {
     border-radius: 10px;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-    background-color: ${props => props.theme.userInfoButtonBgColor};
+    background-color: ${props => props.theme.sideMenu.userInfoButtonBgColor};
     justify-content: space-between;
     padding: 10px;
     margin: 0px;
@@ -374,7 +371,8 @@ const LogoDash = styled.div`
   width: 90%;
   height: 0;
   opacity: 0.61;
-  border-bottom: solid 1px ${props => props.theme.logoBorderBottomColor};
+  border-bottom: solid 1px
+    ${props => props.theme.sideMenu.logoBorderBottomColor};
   margin: 0 auto;
 `;
 
@@ -387,22 +385,23 @@ const MenuWrapper = styled.div`
 `;
 
 const Menu = styled(AntMenu)`
-  background: ${props => props.theme.menuContainerBgColor};
+  background: ${props => props.theme.sideMenu.menuContainerBgColor};
   &:not(.ant-menu-horizontal) {
     .ant-menu-item {
-      background-color: ${props => props.theme.menuItemBgColor};
-      color: ${props => props.theme.menuItemLinkColor};
+      background-color: ${props => props.theme.sideMenu.menuItemBgColor};
+      color: ${props => props.theme.sideMenu.menuItemLinkColor};
       &.ant-menu-item-selected {
-        background-color: ${props => props.theme.menuSelectedItemBgColor};
-        color: ${props => props.theme.menuSelectedItemLinkColor};
+        background-color: ${props =>
+          props.theme.sideMenu.menuSelectedItemBgColor};
+        color: ${props => props.theme.sideMenu.menuSelectedItemLinkColor};
         border-left: 3px solid
-          ${props => props.theme.selectedMenuItemBorderLeft};
+          ${props => props.theme.sideMenu.selectedMenuItemBorderLeft};
         &.removeSelectedBorder {
           border: none;
         }
       }
       &:not(.ant-menu-item-selected):hover {
-        color: ${props => props.theme.menuItemLinkHoverColor};
+        color: ${props => props.theme.sideMenu.menuItemLinkHoverColor};
       }
     }
   }
@@ -456,14 +455,14 @@ const Menu = styled(AntMenu)`
 `;
 const MenuItem = styled(AntMenu.Item)`
   font-family: Open Sans;
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
   line-height: 1.36;
   letter-spacing: 0.3px;
   text-align: left;
-  color: #434b5d;
+  color: red;
   display: flex;
   align-items: center;
   margin-top: 16px;
@@ -474,9 +473,9 @@ const MenuFooter = styled.div``;
 const QuestionButton = styled.div`
   border-radius: 65px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  color: ${props => props.theme.helpButtonTextColor};
-  background-color: ${props => props.theme.helpButtonBgColor};
-  font-size: ${props => props.theme.helpButtonFontSize};
+  color: ${props => props.theme.sideMenu.helpButtonTextColor};
+  background-color: ${props => props.theme.sideMenu.helpButtonBgColor};
+  font-size: ${props => props.theme.sideMenu.helpButtonFontSize};
   font-weight: 600;
   height: 60px;
   padding-left: 23px;
@@ -487,24 +486,24 @@ const QuestionButton = styled.div`
     padding-left: 25px;
   }
   &:hover {
-    background: ${props => props.theme.helpButtonBgHoverColor};
+    background: ${props => props.theme.sideMenu.helpButtonBgHoverColor};
     svg {
-      fill: ${props => props.theme.helpButtonTextHoverColor};
+      fill: ${props => props.theme.sideMenu.helpButtonTextHoverColor};
     }
     span {
-      color: ${props => props.theme.helpButtonTextHoverColor};
+      color: ${props => props.theme.sideMenu.helpButtonTextHoverColor};
     }
   }
 `;
 
 const UserName = styled.div`
-  font-size: ${props => props.theme.userInfoNameFontSize};
-  color: ${props => props.theme.userInfoNameTextColor};
+  font-size: ${props => props.theme.sideMenu.userInfoNameFontSize};
+  color: ${props => props.theme.sideMenu.userInfoNameTextColor};
 `;
 
 const UserType = styled.div`
-  font-size: ${props => props.theme.userInfoRoleFontSize};
-  color: ${props => props.theme.userInfoRoleTextColor};
+  font-size: ${props => props.theme.sideMenu.userInfoRoleFontSize};
+  color: ${props => props.theme.sideMenu.userInfoRoleTextColor};
 `;
 
 const FooterDropDown = styled.div`
@@ -514,7 +513,7 @@ const FooterDropDown = styled.div`
   transition: 0.2s;
   -webkit-transition: 0.2s;
   ul {
-    background: ${props => props.theme.userInfoDropdownBgColor};
+    background: ${props => props.theme.sideMenu.userInfoDropdownBgColor};
     border-bottom: 1px solid #4fd08c;
     border-radius: 15px 15px 0px 0px;
     overflow: hidden;
@@ -532,30 +531,37 @@ const FooterDropDown = styled.div`
     }
     li {
       &.ant-menu-item {
-        background: ${props => props.theme.userInfoDropdownItemBgColor};
+        background: ${props =>
+          props.theme.sideMenu.userInfoDropdownItemBgColor};
         margin: 0px;
         padding: 5px 16px;
         height: 50px;
         &:hover,
         &:focus {
-          background: ${props => props.theme.userInfoDropdownItemBgHoverColor};
+          background: ${props =>
+            props.theme.sideMenu.userInfoDropdownItemBgHoverColor};
           a {
-            color: ${props => props.theme.userInfoDropdownItemTextHoverColor};
+            color: ${props =>
+              props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
           }
           i {
-            color: ${props => props.theme.userInfoDropdownItemIconHoverColor};
+            color: ${props =>
+              props.theme.sideMenu.userInfoDropdownItemIconHoverColor};
           }
         }
         a {
-          color: ${props => props.theme.userInfoDropdownItemTextColor};
-          font-size: ${props => props.theme.userInfoDropdownItemFontSize};
+          color: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
+          font-size: ${props =>
+            props.theme.sideMenu.userInfoDropdownItemFontSize};
           font-weight: 600;
           i {
-            color: ${props => props.theme.userInfoDropdownItemIconColor};
+            color: ${props =>
+              props.theme.sideMenu.userInfoDropdownItemIconColor};
             position: relative;
             margin-right: 5px;
             top: 2px;
-            font-size: ${props => props.theme.userInfoDropdownItemIconSize};
+            font-size: ${props =>
+              props.theme.sideMenu.userInfoDropdownItemIconSize};
           }
         }
       }
@@ -569,7 +575,7 @@ const UserInfoButton = styled.div`
     height: 60px;
     border-radius: ${props => (props.isVisible ? '0px 0px 30px 30px' : '65px')};
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-    background-color: ${props => props.theme.userInfoButtonBgColor};
+    background-color: ${props => props.theme.sideMenu.userInfoButtonBgColor};
     display: flex;
     align-items: center;
     padding: ${props => (props.isSidebarCollapsed ? 0 : '0px 25px 0px 55px')};
@@ -607,13 +613,13 @@ const LogoCompact = styled(IconLogoCompact)`
 `;
 
 const HelpIcon = styled(IconQuestion)`
-  fill: ${props => props.theme.helpIconColor};
+  fill: ${props => props.theme.sideMenu.helpIconColor};
   width: 25px !important;
   height: 22px !important;
 `;
 
 const IconDropdown = styled(AntIcon)`
-  color: ${props => props.theme.dropdownIconColor};
+  color: ${props => props.theme.sideMenu.dropdownIconColor};
   position: absolute;
   top: -10px;
 `;

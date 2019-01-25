@@ -30,9 +30,9 @@ export default memo(SummaryHeader);
 const AssignmentsHeader = styled(Layout.Header)`
   display: flex;
   align-items: center;
-  background-color: #0288d1;
+  background-color: ${props => props.theme.attemptReview.headerBgColor};
   height: 62px;
-  color: #ffffff;
+  color: ${props => props.theme.attemptReview.headerTextColor};
   padding: 0 40px;
 
   .ant-col-24 {
@@ -59,10 +59,10 @@ const HeaderCol = styled(Col)`
 `;
 
 const LogoutIcon = styled(IconLogout)`
-  fill: #fff;
+  fill: ${props => props.theme.attemptReview.logoutIconColor};
   width: 24px !important;
   height: 24px !important;
   &:hover {
-    fill: #23e7ab;
+    fill: ${props => props.theme.attemptReview.logoutIconHoverColor};
   }
 `;

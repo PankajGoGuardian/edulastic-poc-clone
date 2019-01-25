@@ -20,7 +20,7 @@ const HeaderWrapper = ({ children, isSidebarCollapsed }) => (
 
 HeaderWrapper.propTypes = {
   children: PropTypes.object.isRequired,
-  iscollapsed: PropTypes.bool.isRequired
+  isSidebarCollapsed: PropTypes.bool.isRequired
 };
 
 export default connect(({ ui }) => ({
@@ -44,17 +44,17 @@ const FixedHeader = styled(Affix)`
   @media (max-width: 768px) {
     left: 0;
     padding-left: 30px;
-    background: #0188d2;
+    background: ${props => props.theme.headerBgColor};
   }
 `;
 
 const AssignmentsHeader = styled(Layout.Header)`
+  background-color: ${props => props.theme.headerBgColor};
+  color: ${props => props.theme.headerTitleTextColor};
   display: flex;
   align-items: center;
-  background-color: ${props => props.theme.headerBgColor};
   height: 62px;
   padding: 0px 15px;
-  color: #ffffff;
   @media screen and (max-width: 768px) {
     height: 104px;
     padding: 0;

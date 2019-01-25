@@ -68,14 +68,22 @@ export const getAssignmentsSelector = createSelector(
   (assignmentsObj, reportsObj) => {
     // group reports by assignmentsID
     let groupedReports = groupBy(values(reportsObj), 'assignmentId');
-
     let assignments = values(assignmentsObj)
-      .filter(({ endDate }) => new Date(endDate) < new Date())
       .sort((a, b) => a.createdAt > b.createdAt)
       .map(assignment => ({
         ...assignment,
         reports: groupedReports[assignment._id] || []
-      }));
+      }))
+      .filter(assignment => {
+        // either user has ran out of attempts
+        // or assigments is past dueDate
+        let maxAttempts = (assignment.test && assignment.test.maxAttempt) || 5;
+        let attempts = (assignment.reports && assignment.reports.length) || 0;
+        return (
+          maxAttempts <= attempts || new Date(assignment.endDate) < new Date()
+        );
+      });
+
     return assignments;
   }
 );

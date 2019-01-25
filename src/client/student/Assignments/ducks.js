@@ -119,16 +119,19 @@ export const getAssignmentsSelector = createSelector(
     let groupedReports = groupBy(values(reportsObj), 'assignmentId');
 
     let assignments = values(assignmentsObj)
-      .filter(({ endDate }) => new Date(endDate) > new Date())
       .sort((a, b) => a.createdAt > b.createdAt)
       .map(assignment => ({
         ...assignment,
         reports: groupedReports[assignment._id] || []
       }))
       .filter(assignment => {
-        // allowed attempts should be greater
-        let maxAttempts = assignment.test && assignment.test.maxAttempts;
-        return maxAttempts > assignment.reports.length;
+        // max attempts should be less than total attempts made
+        // and end Dtae should be greateer than current one :)
+        let maxAttempts = (assignment.test && assignment.test.maxAttempts) || 5;
+        let attempts = (assignment.reports && assignment.reports.length) || 0;
+        return (
+          maxAttempts > attempts && new Date(assignment.endDate) > new Date()
+        );
       });
     return assignments;
   }

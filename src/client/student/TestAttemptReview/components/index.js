@@ -1,16 +1,16 @@
-import React, { useState } from "react";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import PropTypes from "prop-types";
-import styled from "styled-components";
+import React, { useState } from 'react';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import styled, { ThemeProvider } from 'styled-components';
+import { themes } from '../../themes';
 
-import SummaryHeader from "./Header";
-import SummaryTest from "./Content";
+import SummaryHeader from './Header';
+import SummaryTest from './Content';
 
-//import MainContainer from "../../components/commonStyle/mainContainer";
-import { finishTestAcitivityAction } from "../../../assessment/src/actions/test";
-import SubmitConfirmation from "../../../assessment/src/themes/common/SubmitConfirmation";
+import { finishTestAcitivityAction } from '../../../assessment/src/actions/test';
+import SubmitConfirmation from '../../../assessment/src/themes/common/SubmitConfirmation';
 
 const SummaryContainer = ({ finishTest, history }) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -23,19 +23,21 @@ const SummaryContainer = ({ finishTest, history }) => {
   };
 
   const closeTest = () => {
-    history.push("/home/assignments");
+    history.push('/home/assignments');
   };
 
   return (
-    <MainContainer>
-      <SubmitConfirmation
-        isVisible={showConfirmationModal}
-        onClose={closeConfirmationModal}
-        finishTest={closeTest}
-      />
-      <SummaryHeader showConfirmationModal={handlerConfirmationModal} />
-      <SummaryTest finishTest={finishTest} />
-    </MainContainer>
+    <ThemeProvider theme={themes.default}>
+      <MainContainer>
+        <SubmitConfirmation
+          isVisible={showConfirmationModal}
+          onClose={closeConfirmationModal}
+          finishTest={closeTest}
+        />
+        <SummaryHeader showConfirmationModal={handlerConfirmationModal} />
+        <SummaryTest finishTest={finishTest} />
+      </MainContainer>
+    </ThemeProvider>
   );
 };
 

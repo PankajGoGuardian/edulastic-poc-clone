@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
 import PropTypes from 'prop-types';
 import styled, { withTheme } from 'styled-components';
 import { last } from 'lodash';
-import { Row, Col, Button } from 'antd';
+import { Row, Col } from 'antd';
 
 //  components
 import AssessmentDetails from './AssessmentDetail';
@@ -15,8 +15,10 @@ import ReviewButton from '../Reports/components/ReviewButton';
 import Attempt from './Attempt';
 
 // actions
-import { startAssignmentAction } from '../Assignments/ducks';
-import { resumeAssignmentAction } from '../Assignments/ducks';
+import {
+  startAssignmentAction,
+  resumeAssignmentAction
+} from '../Assignments/ducks';
 
 const AssignmentCard = ({
   startAssignment,
@@ -146,11 +148,10 @@ export default enhance(AssignmentCard);
 
 AssignmentCard.propTypes = {
   data: PropTypes.object.isRequired,
-  initiateTestActivity: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired,
-  startAssignment: PropTypes.func.isRequired
+  startAssignment: PropTypes.func.isRequired,
+  resumeAssignment: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 const CardWrapper = styled(Row)`

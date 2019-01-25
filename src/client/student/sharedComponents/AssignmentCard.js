@@ -76,17 +76,16 @@ const AssignmentCard = ({
       />
       <ButtonAndDetail>
         <DetailContainer>
-          <AttemptDetails>
-            <Attempts onClick={toggleAttemptsView}>
-              <span>
-                {attemptCount}/{test.maxAttempts || attemptCount}
-              </span>
-              <AttemptsTitle>
-                {arrow} &nbsp;&nbsp;{t('common.attemps')}
-              </AttemptsTitle>
-            </Attempts>
-
-            {attempted && (
+          {attempted && (
+            <AttemptDetails>
+              <Attempts onClick={toggleAttemptsView}>
+                <span>
+                  {attemptCount}/{test.maxAttempts || attemptCount}
+                </span>
+                <AttemptsTitle>
+                  {arrow} &nbsp;&nbsp;{t('common.attemps')}
+                </AttemptsTitle>
+              </Attempts>
               <React.Fragment>
                 <AnswerAndScore>
                   <span>
@@ -100,8 +99,8 @@ const AssignmentCard = ({
                   <Title>{t('common.score')}</Title>
                 </AnswerAndScore>
               </React.Fragment>
-            )}
-          </AttemptDetails>
+            </AttemptDetails>
+          )}
           {type === 'assignment' ? (
             <StartButton
               startDate={startDate}

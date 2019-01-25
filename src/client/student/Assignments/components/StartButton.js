@@ -15,7 +15,9 @@ const AssignmentButton = ({ startDate, t, startTest, attempted, resume }) => {
 
   return new Date(startDate) > new Date() ? (
     <NotAvailableButton disabled>
-      <img src={lockIcon} alt="" />
+      <span>
+        <img src={lockIcon} alt="" />
+      </span>
       <span>{t('common.lockAssignment')}</span>
     </NotAvailableButton>
   ) : (
@@ -35,9 +37,11 @@ AssignmentButton.propTypes = {
 const NotAvailableButton = styled(StartButton)`
   display: flex;
   justify-content: space-evenly;
-  img {
-    width: 15px;
-    height: 15px;
+  span {
+    img {
+      width: 15px;
+      height: 15px;
+    }
   }
   span {
     color: #dddddd;

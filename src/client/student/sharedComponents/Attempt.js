@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { formatTime } from '../utils';
@@ -8,7 +9,6 @@ const Attempt = ({ data, type }) => {
   const { correct = 0, wrong = 0 } = data;
   const total = correct + wrong;
   const percentage = (correct / total) * 100 || 0;
-
   return (
     <AttemptsData>
       <RowData pagetype={type === 'reports'}>
@@ -26,7 +26,9 @@ const Attempt = ({ data, type }) => {
         <SpaceBetween pagetype={type === 'reports'} />
         {type === 'reports' ? (
           <AnswerAndScoreReview>
-            <span>REVIEW</span>
+            <Link to={`/home/testActivityReport/${data._id}`}>
+              <span>REVIEW</span>
+            </Link>
           </AnswerAndScoreReview>
         ) : (
           <EmptyScoreBox />

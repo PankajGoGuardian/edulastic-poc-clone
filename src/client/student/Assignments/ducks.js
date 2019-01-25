@@ -1,4 +1,4 @@
-import { createAction,createReducer } from 'redux-starter-kit';
+import { createAction, createReducer } from 'redux-starter-kit';
 import { takeEvery, takeLatest, put, call, all } from 'redux-saga/effects';
 import { values, groupBy } from 'lodash';
 import { createSelector } from 'reselect';
@@ -30,8 +30,6 @@ export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS_DATA);
 export const startAssignmentAction = createAction(START_ASSIGNMENT);
 export const setTestActivityAction = createAction(SET_TEST_ACTIVITY_ID);
 export const resumeAssignmentAction = createAction(RESUME_ASSIGNMENT);
-
-
 
 // sagas
 // fetch and load assignments and reports for the student
@@ -134,7 +132,7 @@ export const getAssignmentsSelector = createSelector(
         let maxAttempts = (assignment.test && assignment.test.maxAttempts) || 5;
         let attempts = (assignment.reports && assignment.reports.length) || 0;
         return (
-          maxAttempts > attempts && new Date(assignment.endDate) > new Date()
+          maxAttempts >= attempts && new Date(assignment.endDate) > new Date()
         );
       });
     return assignments;

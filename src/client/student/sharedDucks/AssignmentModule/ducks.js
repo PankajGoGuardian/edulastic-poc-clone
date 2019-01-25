@@ -14,13 +14,14 @@ export const assignmentSchema = new schema.Entity(
 // types
 export const SET_LOADING = '[studentAssignment] fetch assignments';
 export const SET_ASSIGNMENTS = '[studentAssignment] set assignments';
-
+export const SET_ACTIVE_ASSIGNMENT = '[studentAssignments] set active assignment';
 export const CHECK_ANSWER = 'check answer';
 export const ADD_EVALUATION = 'add evaluation';
 
 // action dispatchers
 export const setAssignmentsLoadingAction = createAction(SET_LOADING);
 export const setAssignmentsAction = createAction(SET_ASSIGNMENTS);
+export const setActiveAssignmentAction = createAction(SET_ACTIVE_ASSIGNMENT);
 
 // initial State
 const initialState = {
@@ -47,7 +48,10 @@ const setAssignments = (state, { payload }) => {
 
 export default createReducer(initialState, {
   [SET_LOADING]: setLoading,
-  [SET_ASSIGNMENTS]: setAssignments
+  [SET_ASSIGNMENTS]: setAssignments,
+  [SET_ACTIVE_ASSIGNMENT]: (state ,{payload}) => {
+    state.current = payload;
+  },
 });
 
 

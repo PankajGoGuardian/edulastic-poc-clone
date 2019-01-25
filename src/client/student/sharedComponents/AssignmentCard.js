@@ -60,7 +60,7 @@ const AssignmentCard = ({
         assignmentId,
         testActivityId: lastAttempt._id
       });
-    } else if (attemptCount < test.maxAttempts) {
+    } else if (attemptCount < test.maxAttempts) { 
       startAssignment({ testId, assignmentId });
     }
   };

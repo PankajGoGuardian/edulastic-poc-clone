@@ -1,4 +1,4 @@
-import { createAction } from 'redux-starter-kit';
+import { createAction,createReducer } from 'redux-starter-kit';
 import { takeEvery, takeLatest, put, call, all } from 'redux-saga/effects';
 import { values, groupBy } from 'lodash';
 import { createSelector } from 'reselect';
@@ -10,7 +10,8 @@ import { assignmentApi, reportsApi, testActivityApi } from '@edulastic/api';
 import {
   assignmentSchema,
   setAssignmentsAction,
-  setAssignmentsLoadingAction
+  setAssignmentsLoadingAction,
+  setActiveAssignmentAction
 } from '../sharedDucks/AssignmentModule/ducks';
 import {
   setReportsAction,
@@ -21,6 +22,7 @@ import {
 export const FETCH_ASSIGNMENTS_DATA = '[studentAssignments] fetch assignments';
 export const START_ASSIGNMENT = '[studentAssignments] start assignments';
 export const SET_TEST_ACTIVITY_ID = '[test] add test activity id';
+
 export const RESUME_ASSIGNMENT = '[studentAssignments] resume assignments';
 
 // actions
@@ -28,6 +30,9 @@ export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS_DATA);
 export const startAssignmentAction = createAction(START_ASSIGNMENT);
 export const setTestActivityAction = createAction(SET_TEST_ACTIVITY_ID);
 export const resumeAssignmentAction = createAction(RESUME_ASSIGNMENT);
+
+
+
 // sagas
 // fetch and load assignments and reports for the student
 function* fetchAssignments() {
@@ -67,7 +72,7 @@ function* startAssignment({ payload }) {
     if (!assignmentId || !testId) {
       throw new Error('insufficient data');
     }
-
+    yield put(setActiveAssignmentAction(assignmentId));
     const { _id: testActivityId } = yield testActivityApi.create({
       assignmentId
     });
@@ -90,6 +95,7 @@ function* resumeAssignment({ payload }) {
     if (!assignmentId || !testId || !testActivityId) {
       throw new Error('insufficient data');
     }
+    yield put(setActiveAssignmentAction(assignmentId));
 
     yield put(setTestActivityAction({ testActivityId }));
     yield put(push(`/student/test/${testId}`));
@@ -115,9 +121,7 @@ export const getAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
   (assignmentsObj, reportsObj) => {
-    // group reports by assignmentsID
     let groupedReports = groupBy(values(reportsObj), 'assignmentId');
-
     let assignments = values(assignmentsObj)
       .sort((a, b) => a.createdAt > b.createdAt)
       .map(assignment => ({

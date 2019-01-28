@@ -93,8 +93,7 @@ function* startAssignment({ payload }) {
       groupType
     });
     // set Activity id
-    yield put(setTestActivityAction({ testActivityId }));
-    yield put(push(`/student/test/${testId}`));
+    yield put(push(`/student/test/${testId}/uta/${testActivityId}`));
 
     // TODO:load previous responses if resume!!
   } catch (e) {
@@ -112,9 +111,7 @@ function* resumeAssignment({ payload }) {
       throw new Error('insufficient data');
     }
     yield put(setActiveAssignmentAction(assignmentId));
-
-    yield put(setTestActivityAction({ testActivityId }));
-    yield put(push(`/student/test/${testId}`));
+    yield put(push(`/student/test/${testId}/uta/${testActivityId}`));
   } catch (e) {
     console.log(e);
   }

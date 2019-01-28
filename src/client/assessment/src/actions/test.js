@@ -4,12 +4,9 @@ import {
   LOAD_PREVIOUS_RESPONSES
 } from '../constants/actions';
 
-export const loadTestAction = (test, testId) => ({
+export const loadTestAction = payload => ({
   type: LOAD_TEST,
-  payload: {
-    test,
-    testId
-  }
+  payload
 });
 
 export const finishTestAcitivityAction = () => ({

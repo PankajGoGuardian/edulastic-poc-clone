@@ -7,8 +7,8 @@ import { compose } from 'redux';
 
 import { TestAttemptReview } from './student/TestAttemptReview';
 // route wise splitting
-const Student = lazy(() =>
-  import(/* webpackChunkName: "assessmentPlayer" */ './student')
+const AssessmentPlayer = lazy(() =>
+  import(/* webpackChunkName: "assessmentPlayer" */ './assessment/src/index')
 );
 const TeacherSignup = lazy(() =>
   import(/* webpackChunkName: "teacherSignup" */ './student/Signup/components/TeacherContainer')
@@ -41,36 +41,28 @@ class App extends Component {
       <div>
         <Suspense fallback={<Loading />}>
           <Switch>
-            <Redirect exact path='/' to='/home/assignments' />
-            <Route path='/author' component={Author} />
-            <Route path='/home' component={Dashboard} />
-            <Route path='/Signup' component={TeacherSignup} />
-            <Route path='/Login' component={Login} />
-            <Route path='/GetStarted' component={GetStarted} />
-            <Route path='/AdminSignup' component={AdminSignup} />
-            <Route path='/StudentSignup' component={StudentSignup} />
+            <Redirect exact path="/" to="/home/assignments" />
+            <Route path="/author" component={Author} />
+            <Route path="/home" component={Dashboard} />
+            <Route path="/Signup" component={TeacherSignup} />
+            <Route path="/Login" component={Login} />
+            <Route path="/GetStarted" component={GetStarted} />
+            <Route path="/AdminSignup" component={AdminSignup} />
+            <Route path="/StudentSignup" component={StudentSignup} />
+
             <Route
-              path='/student/test/:id'
-              component={() => <Student defaultAP test />}
+              path="/student/test/:id/uta/:utaId"
+              component={() => <AssessmentPlayer defaultAP />}
             />
             <Route
-              path='/student/test/:id'
-              component={() => <Student defaultAP test />}
+              path="/student/test/:id"
+              component={() => <AssessmentPlayer defaultAP />}
             />
-            <Route
-              path='/student/test'
-              component={() => <Student defaultAP />}
-            />
-            <Route path='/student/test-summary' component={TestAttemptReview} />
+            <Route path="/student/test-summary" component={TestAttemptReview} />
             <Route
               exact
-              path='/student/practice/:id'
-              component={() => <Student defaultAP={false} test />}
-            />
-            <Route
-              exact
-              path='/student/practice'
-              component={() => <Student defaultAP={false} />}
+              path="/student/practice/:id"
+              component={() => <AssessmentPlayer defaultAP={false} />}
             />
           </Switch>
         </Suspense>

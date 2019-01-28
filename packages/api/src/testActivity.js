@@ -37,9 +37,18 @@ const previousResponses = testActivityId =>
     })
     .then(result => result.data.result);
 
+const getById = testActivityId =>
+  api
+    .callApi({
+      url: `${prefix}/${testActivityId}`,
+      method: 'get'
+    })
+    .then(result => result.data.result);
+
 export default {
   create,
   submit,
   fetchReports,
+  getById,
   previousResponses
 };

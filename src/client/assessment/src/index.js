@@ -1,25 +1,18 @@
 import React, { useEffect } from 'react';
+import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-import { testIdSelector } from './selectors/routes';
+import { withRouter } from 'react-router-dom';
 // themes
 import ThemeContainer from './themes/index';
-import {
-  loadTestAction
-} from './actions/test';
+import { loadTestAction } from './actions/test';
 
-const AssessmentPlayer = ({
-  defaultAP,
-  loadTest,
-  testId,
-  test
-
-}) => {
+const AssessmentPlayer = ({ defaultAP, loadTest, match }) => {
   useEffect(() => {
-    loadTest(test, testId);
-  }, []);
+    let { id: testId, utaId: testActivityId } = match.params;
 
+    loadTest({ testId, testActivityId });
+  }, []);
 
   return <ThemeContainer defaultAP={defaultAP} />;
 };
@@ -27,20 +20,19 @@ const AssessmentPlayer = ({
 AssessmentPlayer.propTypes = {
   defaultAP: PropTypes.any.isRequired,
   loadTest: PropTypes.func.isRequired,
-  testId: PropTypes.string,
-  test: PropTypes.bool
+  testId: PropTypes.string
 };
 
-AssessmentPlayer.defaultProps = {
-  testId: '',
-  test: false
-};
+AssessmentPlayer.defaultProps = {};
+
 // export component
-export default connect(
-  state => ({
-    testId: testIdSelector(state)
-  }),
-  {
-    loadTest: loadTestAction
-  }
-)(AssessmentPlayer);
+const enhance = compose(
+  withRouter,
+  connect(
+    null,
+    {
+      loadTest: loadTestAction
+    }
+  )
+);
+export default enhance(AssessmentPlayer);

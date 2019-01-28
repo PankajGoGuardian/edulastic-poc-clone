@@ -47,13 +47,6 @@ const allAuthorDifficulty = [
   { value: 'Hard', text: 'Hard' }
 ];
 
-const allQuestionTypes = [
-  { value: '', text: 'All Types' },
-  { value: 'multipleChoice', text: 'Multiple Choice' },
-  { value: 'trueOrFalse', text: 'True or False' },
-  { value: 'multipleSelection', text: 'Multiple Selection' }
-];
-
 const openPolicy = [
   { value: 'Automatically on Start Date', text: 'Automatically on Start Date' },
   { value: 'Open Manually by Admin', text: 'Open Manually by Admin' },
@@ -72,7 +65,6 @@ export default {
   allCollections,
   allDepthOfKnowledge,
   allAuthorDifficulty,
-  allQuestionTypes,
   openPolicy,
   closePolicy
 };

@@ -22,6 +22,33 @@ const HOTSPOT = 'hotspot';
 const SHADING = 'shading';
 const HIGHLIGHT_IMAGE = 'highlightImage';
 
+const selectsData = [
+  { value: '', text: 'All Types' },
+  { value: SHORT_TEXT, text: 'Short Text' },
+  { value: ESSAY_PLAIN_TEXT, text: 'Essay Plain Text' },
+  { value: ESSAY_RICH_TEXT, text: 'Essay Rich Text' },
+  { value: CHOICE_MATRIX, text: 'Choice Matrix' },
+  { value: SORT_LIST, text: 'Sort List' },
+  { value: MATCH_LIST, text: 'Match List' },
+  { value: CLASSIFICATION, text: 'Classification' },
+  { value: CLOZE_DRAG_DROP, text: 'Cloze Drag Drop' },
+  { value: CLOZE_IMAGE_DRAG_DROP, text: 'Cloze Image Drag Drop' },
+  { value: CLOZE_IMAGE_DROP_DOWN, text: 'Cloze Image Drop Down' },
+  { value: CLOZE_IMAGE_TEXT, text: 'Cloze Image Text' },
+  { value: PROTRACTOR, text: 'Protractor' },
+  { value: PASSAGE, text: 'Passage' },
+  { value: MATH, text: 'Math' },
+  { value: FORMULA_ESSAY, text: 'Formula Essay' },
+  { value: ORDER_LIST, text: 'Order List' },
+  { value: MULTIPLE_CHOICE, text: 'Multiple Choice' },
+  { value: CLOZE_TEXT, text: 'Cloze Text' },
+  { value: CLOZE_DROP_DOWN, text: 'Cloze Drop Down' },
+  { value: TOKEN_HIGHLIGHT, text: 'Token Highlight' },
+  { value: HOTSPOT, text: 'Hotspot' },
+  { value: SHADING, text: 'Shading' },
+  { value: HIGHLIGHT_IMAGE, text: 'Highlight Image' }
+];
+
 module.exports = {
   SHORT_TEXT,
   ESSAY_PLAIN_TEXT,
@@ -45,5 +72,6 @@ module.exports = {
   TOKEN_HIGHLIGHT,
   HOTSPOT,
   SHADING,
-  HIGHLIGHT_IMAGE
+  HIGHLIGHT_IMAGE,
+  selectsData
 };

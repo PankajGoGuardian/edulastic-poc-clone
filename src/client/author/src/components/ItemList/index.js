@@ -1,1 +1,1 @@
-export { default } from './ItemList';
+export { default, getClearSearchState } from './ItemList';

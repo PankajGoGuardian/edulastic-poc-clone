@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Pagination } from 'antd';
+import { Pagination, Spin } from 'antd';
 import { Paper, withWindowSizes } from '@edulastic/common';
 import { compose } from 'redux';
 import styled from 'styled-components';
@@ -25,13 +25,13 @@ import {
   getDictStandardsForCurriculumAction,
   clearDictStandardsAction
 } from '../../actions/dictionaries';
-import { getItemsLoadingSelector } from '../../selectors/items';
 import {
   getTestItemsSelector,
   getItemsTypesSelector,
   getTestsItemsCountSelector,
   getTestsItemsLimitSelector,
-  getTestsItemsPageSelector
+  getTestsItemsPageSelector,
+  getTestItemsLoadingSelector
 } from '../../selectors/testItems';
 import { getTestItemCreatingSelector } from '../../selectors/testItem';
 import {
@@ -39,23 +39,31 @@ import {
   getStandardsListSelector
 } from '../../selectors/dictionaries';
 
+export const getClearSearchState = () => ({
+  subject: '',
+  curriculumId: '',
+  standardIds: [],
+  questionType: '',
+  depthOfKnowledge: '',
+  authorDifficulty: '',
+  grades: []
+});
+
 class ItemList extends Component {
   state = {
-    search: {
-      subject: '',
-      curriculumId: '',
-      standardIds: [],
-      questionType: '',
-      depthOfKnowledge: '',
-      authorDifficulty: '',
-      grades: []
-    }
+    search: getClearSearchState()
   };
 
   handleSearch = () => {
     const { search } = this.state;
     const { limit, receiveItems } = this.props;
     receiveItems(search, 1, limit);
+  };
+
+  handleClearSearch = () => {
+    this.setState({
+      search: getClearSearchState()
+    }, this.handleSearch);
   };
 
   handleSearchFieldChangeCurriculumId = (value) => {
@@ -146,10 +154,10 @@ class ItemList extends Component {
       itemTypes,
       curriculums,
       getCurriculumStandards,
-      curriculumStandards
+      curriculumStandards,
+      loading
     } = this.props;
     const { search } = this.state;
-    console.log("t-------<>",this.props)
     return (
       <Container>
         <ListHeader
@@ -162,6 +170,7 @@ class ItemList extends Component {
           <ItemFilter
             onSearchFieldChange={this.handleSearchFieldChange}
             onSearch={this.handleSearch}
+            onClearSearch={this.handleClearSearch}
             windowWidth={windowWidth}
             search={search}
             curriculums={curriculums}
@@ -171,8 +180,11 @@ class ItemList extends Component {
           <ListItems id="item-list">
             {windowWidth > 468 && this.renderPagination()}
             <Items>
-              <Paper padding={windowWidth > 768 ? '25px 39px 0px 39px' : '0px'}>
-                {items.map(item => (
+              <Paper padding={windowWidth > 768 ? '25px 39px 25px 39px' : '0px'}>
+                { loading &&
+                <Spin size="large" />
+                }
+                { !loading && items.map(item => (
                   <Item
                     key={item._id}
                     item={item}
@@ -212,7 +224,8 @@ ItemList.propTypes = {
   getCurriculums: PropTypes.func.isRequired,
   getCurriculumStandards: PropTypes.func.isRequired,
   curriculumStandards: PropTypes.array.isRequired,
-  clearDictStandards: PropTypes.func.isRequired
+  clearDictStandards: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired
 };
 
 const enhance = compose(
@@ -224,7 +237,7 @@ const enhance = compose(
       limit: getTestsItemsLimitSelector(state),
       page: getTestsItemsPageSelector(state),
       count: getTestsItemsCountSelector(state),
-      loading: getItemsLoadingSelector(state),
+      loading: getTestItemsLoadingSelector(state),
       creating: getTestItemCreatingSelector(state),
       itemTypes: getItemsTypesSelector(state),
       curriculums: getCurriculumsListSelector(state),

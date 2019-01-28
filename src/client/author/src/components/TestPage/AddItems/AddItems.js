@@ -34,6 +34,7 @@ import {
 import { receiveTestItemsAction } from '../../../actions/testItems';
 import ItemsTable from '../common/ItemsTable/ItemsTable';
 import ItemFilter from '../../ItemList/ItemFilter';
+import { getClearSearchState } from '../../ItemList/ItemList';
 
 const Items = ({
   items,
@@ -56,15 +57,7 @@ const Items = ({
     receiveTestItems();
     getCurriculums();
   }, []);
-  const [search, setSearch] = useState({
-    subject: '',
-    curriculumId: '',
-    standardIds: [],
-    questionType: '',
-    depthOfKnowledge: '',
-    authorDifficulty: '',
-    grades: []
-  });
+  const [search, setSearch] = useState(getClearSearchState());
   const [selectedTests, setSelectedTests] = useState([]);
 
   useEffect(
@@ -84,6 +77,10 @@ const Items = ({
     },
     [search]
   );
+
+  const handleClearSearch = () => {
+    setSearch(getClearSearchState());
+  };
 
   const handleSortChange = () => {};
 
@@ -156,6 +153,7 @@ const Items = ({
         <ItemFilter
           onSearchFieldChange={handleSearchFieldChange}
           onSearch={handleSearch}
+          onClearSearch={handleClearSearch}
           windowWidth={windowWidth}
           search={search}
           curriculums={curriculums}

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Select, Icon, Button, Affix, Row, Col } from 'antd';
+import { Icon, Button, Affix, Row, Col } from 'antd';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import Modal from 'react-responsive-modal';
 import { TextField } from '@edulastic/common';
 import { desktopWidth, blue, greenDark, textColor } from '@edulastic/colors';
-import SearchModal from './SearchModal';
+import Search from './Search';
 import { SMALL_DESKTOP_WIDTH, MAX_MOBILE_WIDTH } from '../../constants/others';
-import selectsData from '../TestPage/common/selectsData';
 
 class ItemFilter extends Component {
   state = {
@@ -35,242 +35,92 @@ class ItemFilter extends Component {
     }
   };
 
-  renderMainFilter = () => {
+  renderFullTextSearch = () => {
+    const { onSearch, windowWidth } = this.props;
+    const { isShowFilter } = this.state;
+    const placeholder = 'Full-text search (TODO)';
+
+    const desktopSearch = (
+      <Header>
+        <Row style={{ width: '100%' }}>
+          <Col span={18}>
+            <SearchField>
+              <TextField
+                onChange={e => onSearch(e.target.value)}
+                height="50px"
+                type="search"
+                icon={<Icon type="search" style={{ color: blue, fontSize: '18px' }} />}
+                containerStyle={{ marginRight: 20 }}
+                style={{ padding: 16, paddingRight: 68, outline: 'none' }}
+                placeholder={placeholder}
+              />
+            </SearchField>
+          </Col>
+          <Col span={6}>
+            <FilterButton>
+              <Button onClick={() => this.showFilterHandler()}>
+                {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
+              </Button>
+            </FilterButton>
+          </Col>
+        </Row>
+      </Header>
+    );
+
+    const mobileSearch = (
+      <Header>
+        <SearchField>
+          <TextField
+            onChange={e => onSearch(e.target.value)}
+            height="50px"
+            type="search"
+            icon={<Icon type="search" style={{ color: blue, fontSize: '18px' }} />}
+            containerStyle={{ marginRight: 20 }}
+            style={{ padding: 16, paddingRight: 68, outline: 'none' }}
+            placeholder={placeholder}
+          />
+        </SearchField>
+        <FilterButton>
+          <Button onClick={() => this.showFilterHandler()}>
+            {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
+          </Button>
+        </FilterButton>
+      </Header>
+    );
+
+    return (windowWidth > MAX_MOBILE_WIDTH) ? desktopSearch : mobileSearch;
+  };
+
+  render() {
     const {
-      search: {
-        grades,
-        subject,
-        curriculumId,
-        standardIds,
-        questionType,
-        depthOfKnowledge,
-        authorDifficulty
-      },
+      windowWidth,
+      onClearSearch,
+      search,
       curriculums,
       onSearchFieldChange,
       curriculumStandards
     } = this.props;
-    return (
-      <MainFilterItems>
-        <Item>
-          <ItemHeader>Grades</ItemHeader>
-          <ItemBody>
-            <Select
-              mode="multiple"
-              style={{ width: '100%' }}
-              placeholder="All Grades"
-              value={grades}
-              onChange={onSearchFieldChange('grades')}
-            >
-              { selectsData.allGrades.map(el => (
-                <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
-              ))}
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Subject</ItemHeader>
-          <ItemBody>
-            <Select
-              style={{ width: '100%' }}
-              onSelect={onSearchFieldChange('subject')}
-              value={subject}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              { selectsData.allSubjects.map(el => (
-                <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
-              )) }
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Curriculum</ItemHeader>
-          <ItemBody>
-            <Select
-              style={{ width: '100%' }}
-              onSelect={onSearchFieldChange('curriculumId')}
-              value={curriculumId}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              <Select.Option key="" value="">All Curriculums</Select.Option>
-              { curriculums.map(el => (
-                <Select.Option key={el._id} value={el._id}>{el.curriculum}</Select.Option>
-              )) }
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Standards</ItemHeader>
-          <ItemBody>
-            <Select
-              style={{ width: '100%' }}
-              onSearch={this.handleStandardSearch}
-              mode="multiple"
-              placeholder="All standards"
-              onChange={onSearchFieldChange('standardIds')}
-              filterOption={false}
-              value={standardIds}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              { curriculumStandards.map(el => (
-                <Select.Option key={el.identifier} value={el.identifier}>
-                  {`${el.identifier}: ${el.description}`}
-                </Select.Option>
-              )) }
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Question Type</ItemHeader>
-          <ItemBody>
-            <Select
-              style={{ width: '100%' }}
-              onSelect={onSearchFieldChange('questionType')}
-              value={questionType}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              { selectsData.allQuestionTypes.map(el => (
-                <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
-              )) }
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Depth of Knowledge</ItemHeader>
-          <ItemBody>
-            <Select
-              style={{ width: '100%' }}
-              onSelect={onSearchFieldChange('depthOfKnowledge')}
-              value={depthOfKnowledge}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              { selectsData.allDepthOfKnowledge.map(el => (
-                <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
-              )) }
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Difficulty</ItemHeader>
-          <ItemBody>
-            <Select
-              style={{ width: '100%' }}
-              onSelect={onSearchFieldChange('authorDifficulty')}
-              value={authorDifficulty}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              { selectsData.allAuthorDifficulty.map(el => (
-                <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
-              )) }
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Author</ItemHeader>
-          <ItemBody>
-            <Select
-              style={{ width: '100%' }}
-              defaultValue="All Authors"
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
-            >
-              <Select.Option value="">All Authors</Select.Option>
-              <Select.Option value="author1">Author 1</Select.Option>
-              <Select.Option value="author2">Author 2</Select.Option>
-            </Select>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Owner</ItemHeader>
-          <ItemBody>
-            <Select
-              mode="multiple"
-              style={{ width: '100%' }}
-              placeholder="All Owners"
-              defaultValue={[]}
-            >
-              <Select.Option value="owner1">Owner 1</Select.Option>
-              <Select.Option value="owner2">Owner 2</Select.Option>
-              <Select.Option value="owner3">Owner 3</Select.Option>
-            </Select>
-          </ItemBody>
-        </Item>
-      </MainFilterItems>
-    );
-  };
-
-  render() {
-    const { onSearch, windowWidth } = this.props;
     const { isShowFilter } = this.state;
 
-    // TODO: SearchModal
     return (
       <Container>
-        <SearchModal
-          subjectItems={[]}
-          isVisible={isShowFilter}
+        <StyledModal
+          open={isShowFilter}
           onClose={this.closeSearchModal}
-        />
-        {
-          windowWidth > MAX_MOBILE_WIDTH ? (
-            <Header>
-              <Row style={{ width: '100%' }}>
-                <Col span={18}>
-                  <SearchField>
-                    <TextField
-                      onChange={e => onSearch(e.target.value)}
-                      height="50px"
-                      type="search"
-                      icon={<Icon type="search" style={{ color: blue, fontSize: '18px' }} />}
-                      containerStyle={{ marginRight: 20 }}
-                      style={{ padding: 16, paddingRight: 68, outline: 'none' }}
-                      placeholder="Search by skills and"
-                    />
-                  </SearchField>
-                </Col>
-                <Col span={6}>
-                  <FilterButton>
-                    <Button onClick={() => this.showFilterHandler()}>
-                      {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
-                    </Button>
-                  </FilterButton>
-                </Col>
-              </Row>
-            </Header>
-          ) : (
-            <Header>
-              <SearchField>
-                <TextField
-                  onChange={e => onSearch(e.target.value)}
-                  height="50px"
-                  type="search"
-                  icon={<Icon type="search" style={{ color: blue, fontSize: '18px' }} />}
-                  containerStyle={{ marginRight: 20 }}
-                  style={{ padding: 16, paddingRight: 68, outline: 'none' }}
-                  placeholder="Search by skills and"
-                />
-              </SearchField>
-              <FilterButton>
-                <Button onClick={() => this.showFilterHandler()}>
-                  {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
-                </Button>
-              </FilterButton>
-            </Header>
-          )
-        }
+          center
+        >
+          <StyledModalContainer>
+            <StyledModalTitle>Filters</StyledModalTitle>
+            <Search
+              search={search}
+              curriculums={curriculums}
+              onSearchFieldChange={onSearchFieldChange}
+              curriculumStandards={curriculumStandards}
+              onStandardSearch={this.handleStandardSearch}
+            />
+          </StyledModalContainer>
+        </StyledModal>
+        {this.renderFullTextSearch()}
         <MainFilter isVisible={isShowFilter}>
           {
             windowWidth > SMALL_DESKTOP_WIDTH && (
@@ -278,9 +128,19 @@ class ItemFilter extends Component {
                 <PerfectScrollbar>
                   <MainFilterHeader>
                     <Title>Filters</Title>
-                    <Clear>Clear all</Clear>
+                    <Clear>
+                      <div onClick={onClearSearch}>
+                        Clear all
+                      </div>
+                    </Clear>
                   </MainFilterHeader>
-                  {this.renderMainFilter()}
+                  <Search
+                    search={search}
+                    curriculums={curriculums}
+                    onSearchFieldChange={onSearchFieldChange}
+                    curriculumStandards={curriculumStandards}
+                    onStandardSearch={this.handleStandardSearch}
+                  />
                 </PerfectScrollbar>
               </Affix>)
           }
@@ -300,6 +160,7 @@ ItemFilter.propTypes = {
   })).isRequired,
   onSearchFieldChange: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
+  onClearSearch: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   getCurriculumStandards: PropTypes.func.isRequired,
   curriculumStandards: PropTypes.array.isRequired
@@ -454,4 +315,23 @@ const ItemBody = styled.div`
   .ant-select-arrow-icon {
     color: ${blue};
   }
+`;
+
+const StyledModal = styled(Modal)`
+  width: 100%;
+  height: 100%;
+
+  svg {
+    fill: red;
+  }
+`;
+
+const StyledModalContainer = styled.div`
+  width: calc(100vw - 80px);
+`;
+
+const StyledModalTitle = styled.div`
+  font-size: 22px;
+  color: #4aac8b;
+  font-weight: 600;
 `;

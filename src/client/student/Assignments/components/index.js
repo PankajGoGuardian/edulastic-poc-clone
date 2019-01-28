@@ -11,12 +11,14 @@ const Wrapper = styled(Layout)`
   width: 100%;
 `;
 
-const Assignments = () => (
-  <Wrapper>
-    <Header titleText="common.assignmentsTitle" />
-    <SubHeader />
-    <AssignmentContainer />
-  </Wrapper>
-);
+const Assignments = () => {
+  return (
+    <Wrapper>
+      <Header titleText="common.assignmentsTitle" />
+      <SubHeader />
+      <AssignmentContainer />
+    </Wrapper>
+  );
+};
 
 export default Assignments;

@@ -14,7 +14,10 @@ export const assignmentSchema = new schema.Entity(
 // types
 export const SET_LOADING = '[studentAssignment] fetch assignments';
 export const SET_ASSIGNMENTS = '[studentAssignment] set assignments';
-export const SET_ACTIVE_ASSIGNMENT = '[studentAssignments] set active assignment';
+export const SET_ACTIVE_ASSIGNMENT =
+  '[studentAssignments] set active assignment';
+export const SET_FILTER = '[studentAssignment] set filter';
+
 export const CHECK_ANSWER = 'check answer';
 export const ADD_EVALUATION = 'add evaluation';
 
@@ -22,6 +25,7 @@ export const ADD_EVALUATION = 'add evaluation';
 export const setAssignmentsLoadingAction = createAction(SET_LOADING);
 export const setAssignmentsAction = createAction(SET_ASSIGNMENTS);
 export const setActiveAssignmentAction = createAction(SET_ACTIVE_ASSIGNMENT);
+export const setFilterAction = createAction(SET_FILTER);
 
 // initial State
 const initialState = {
@@ -29,13 +33,14 @@ const initialState = {
   byId: [],
   allIds: [],
   error: {},
-  isStale: false
+  isStale: false,
+  filter: 'all'
 };
 
 // reducers
 
 // fetching assignments
-const setLoading = (state) => {
+const setLoading = state => {
   state.isLoading = true;
 };
 
@@ -46,14 +51,19 @@ const setAssignments = (state, { payload }) => {
   state.isLoading = false;
 };
 
+// filtering assignments
+const setFilter = (state, { payload }) => {
+  state.filter = payload;
+};
+
 export default createReducer(initialState, {
   [SET_LOADING]: setLoading,
   [SET_ASSIGNMENTS]: setAssignments,
-  [SET_ACTIVE_ASSIGNMENT]: (state ,{payload}) => {
+  [SET_ACTIVE_ASSIGNMENT]: (state, { payload }) => {
     state.current = payload;
   },
+  [SET_FILTER]: setFilter
 });
-
 
 function* addEvaluation(action) {
   try {

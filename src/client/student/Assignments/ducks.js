@@ -19,6 +19,13 @@ import {
   reportSchema
 } from '../sharedDucks/ReportsModule/ducks';
 
+// constants
+export const FILTERS = {
+  ALL: 'all',
+  NOT_STARTED: 'notStarted',
+  IN_PROGRESS: 'inProgress'
+};
+
 // types
 export const FETCH_ASSIGNMENTS_DATA = '[studentAssignments] fetch assignments';
 export const START_ASSIGNMENT = '[studentAssignments] start assignments';
@@ -119,10 +126,14 @@ export function* watcherSaga() {
 const assignmentsSelector = state => state.studentAssignment.byId;
 const reportsSelector = state => state.studentReport.byId;
 
+export const filterSelector = state => state.studentAssignment.filter;
+
 export const getAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
-  (assignmentsObj, reportsObj) => {
+  filterSelector,
+  (assignmentsObj, reportsObj, filter) => {
+    // group reports by assignmentsID
     let groupedReports = groupBy(values(reportsObj), 'assignmentId');
     let assignments = values(assignmentsObj)
       .sort((a, b) => a.createdAt > b.createdAt)
@@ -135,9 +146,17 @@ export const getAssignmentsSelector = createSelector(
         // and end Dtae should be greateer than current one :)
         let maxAttempts = (assignment.test && assignment.test.maxAttempts) || 5;
         let attempts = (assignment.reports && assignment.reports.length) || 0;
-        return (
-          maxAttempts >= attempts && new Date(assignment.endDate) > new Date()
-        );
+        const liveAssignments =
+          maxAttempts >= attempts && new Date(assignment.endDate) > new Date();
+        let filterType = true;
+        if (filter != FILTERS.ALL) {
+          if (filter == FILTERS.NOT_STARTED) {
+            filterType = attempts === 0;
+          } else if (filter == FILTERS.IN_PROGRESS) {
+            filterType = attempts > 0;
+          }
+        }
+        return liveAssignments && filterType;
       });
     return assignments;
   }

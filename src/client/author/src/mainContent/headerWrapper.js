@@ -13,7 +13,7 @@ const HeaderWrapper = ({ children }) => (
 );
 
 HeaderWrapper.propTypes = {
-  children: PropTypes.object.isRequired
+  children: PropTypes.array.isRequired
 };
 
 export default memo(HeaderWrapper);

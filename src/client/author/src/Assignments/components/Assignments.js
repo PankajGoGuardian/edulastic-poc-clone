@@ -88,7 +88,7 @@ class Assignments extends Component {
 
               </FlexContainer>
               <StyledCard>
-                <TableList assignments={assignments}/>
+                <TableList assignments={assignments} />
                 <MobileTableList assignments={assignments} windowWidth={windowWidth} windowHeight={windowHeight}/>
               </StyledCard>
             </Main>

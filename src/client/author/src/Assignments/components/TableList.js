@@ -18,6 +18,7 @@ import {
   white,
   tabletWidth
 } from '@edulastic/colors';
+import { Link } from 'react-router-dom';
 
 const convertTableData = (data) => {
   return {
@@ -29,7 +30,8 @@ const convertTableData = (data) => {
     status: '',
     submitted: `${data[0].submittedNumber} of ${data.length}`,
     graded: '1',
-    action: ''
+    action: '',
+    classId: data[0].classId
   }
 }
 const convertExpandTableData = (data, totalNumber) => {
@@ -42,7 +44,8 @@ const convertExpandTableData = (data, totalNumber) => {
     status: data.status,
     submitted: `${data.submittedNumber} of ${totalNumber}`,
     graded: '1',
-    action: ''
+    action: '',
+    classId: data.classId
   }
 }
 
@@ -63,6 +66,7 @@ class TableList extends Component {
 
   expandedRowRender = (parentData) => {
     const { t } = this.props;
+    var getInfo;
     const columns = [
       {
         dataIndex: 'name',
@@ -92,7 +96,7 @@ class TableList extends Component {
           <div>
             { text === 'IN PROGRESS' ? <BtnProgress size="small">{text}</BtnProgress> : (
               text === t('common.submittedTag') ? <BtnSubmitted size="small">{text}</BtnSubmitted> : (
-              text ===  t('common.notStartedTag') ? <BtnStarted size="small">{text}</BtnStarted> : '' ))
+                text === t('common.notStartedTag') ? <BtnStarted size="small">{text}</BtnStarted> : ''))
             }
           </div>
         ) },
@@ -112,8 +116,8 @@ class TableList extends Component {
         render: text => (
           <ActionDiv>
             <FlexContainer justifyContent="space-between" style={{ marginLeft: 20, marginRight: 20 }}>
-              <div><img src={presentationIcon} /></div>
-              <div><img src={additemsIcon} /></div>
+              <Link to={`/author/classboard/${getInfo.key}/${getInfo.classId}`}><img src={presentationIcon} /></Link>
+              <Link to="/author/expressgrader"><img src={additemsIcon} /></Link>
               <div><img src={piechartIcon} /></div>
             </FlexContainer>
           </ActionDiv>
@@ -125,7 +129,8 @@ class TableList extends Component {
     totalData.forEach(expandData => {
       if(parentData.key === expandData[0]._id) {
         expandData.forEach(data => {
-          expandTableList.push(convertExpandTableData(data, expandData.length))
+          getInfo =convertExpandTableData(data, expandData.length)
+          expandTableList.push(getInfo)
         })
       }
     });

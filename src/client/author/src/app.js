@@ -5,17 +5,15 @@ import styled from 'styled-components';
 import { Layout } from 'antd';
 import { connect } from 'react-redux';
 import { Progress } from '@edulastic/common';
-import Sidebar from './Sidebar/SideMenu';
 import {
-  mobileWidth,
-  desktopWidth,
-  secondaryTextColor,
-  greenDark,
-  white,
   tabletWidth
 } from '@edulastic/colors';
+import Sidebar from './Sidebar/SideMenu';
 /* lazy load routes */
 const Assignments = lazy(() => import('./Assignments/components/Assignments'));
+const ClassBoard = lazy(() => import('./ClassBoard/components'));
+const ClassResponses = lazy(() => import('./ClassResponses/components'));
+const ExpressGrader = lazy(() => import('./ExpressGrader/components'));
 const TestList = lazy(() => import('./components/TestList'));
 const TestPage = lazy(() => import('./components/TestPage'));
 const QuestionEditor = lazy(() => import('./components/QuestionEditor'));
@@ -25,6 +23,7 @@ const ItemAdd = lazy(() => import('./components/ItemAdd'));
 const PickUpQuestionType = lazy(() =>
   import('./components/PickUpQuestionType'));
 
+// eslint-disable-next-line react/prop-types
 const Author = ({ match, history, isSidebarCollapsed }) => {
   const isPickQuestion = !!history.location.pathname.includes(
     'pickup-questiontype'
@@ -38,6 +37,9 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
           <Suspense fallback={<Progress />}>
             <Switch>
               <Route exact path={`${match.url}/assignments`} component={Assignments} />
+              <Route exact path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />
+              <Route exact path={`${match.url}/classresponses/:assignmentId/:classId`} component={ClassResponses} />
+              <Route exact path={`${match.url}/expressgrader`} component={ExpressGrader} />
               <Route exact path={`${match.url}/items`} component={ItemList} />
               <Route
                 exact
@@ -55,7 +57,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                 )}
               />
               <Route
-                exact
+                exacts
                 path="/author/tests/create"
                 render={props => (
                   <Suspense fallback={<Progress />}>
@@ -111,7 +113,7 @@ const MainContainer = styled.div`
     top: 0;
     right: 0;
     left: ${props => (props.isCollapsed ? '100px' : '240px')};
-    z-index: 1;
+    z-index: 10;
   }
   @media (max-width: ${tabletWidth}) {
     padding-left: 0px;
@@ -121,7 +123,7 @@ const MainContainer = styled.div`
     }
   }
 `;
-const SidebarCompnent  = styled(Sidebar)`
+const SidebarCompnent = styled(Sidebar)`
   @media(max-width: ${tabletWidth}) {
     display: none;
   }

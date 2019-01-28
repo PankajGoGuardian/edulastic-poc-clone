@@ -6,6 +6,7 @@ import questionSaga from './question';
 import testsSaga from './tests';
 import dictionariesSaga from './dictionaries';
 import assignmentSaga from './assignment';
+import { classBoardSaga } from '../ClassBoard';
 import groupSaga from './group';
 import assignmentsSaga from './assignments';
 
@@ -18,6 +19,7 @@ const authorSagas = [
   testsSaga(),
   dictionariesSaga(),
   assignmentSaga(),
+  classBoardSaga(),
   groupSaga(),
   assignmentsSaga()
 ];

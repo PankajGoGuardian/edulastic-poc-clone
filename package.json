@@ -82,6 +82,7 @@
     "react-dom": "^16.7.0-alpha.0",
     "react-drag-and-drop": "^2.4.0",
     "react-dropzone": "^8.0.0",
+    "react-highcharts": "^16.0.2",
     "react-icons": "^3.1.0",
     "react-notifications": "^1.4.3",
     "react-perfect-scrollbar": "^1.4.2",

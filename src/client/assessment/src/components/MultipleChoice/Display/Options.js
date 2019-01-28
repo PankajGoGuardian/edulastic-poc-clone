@@ -14,7 +14,7 @@ const Options = ({ options, evaluation, uiStyle, onChange, validation, ...restPr
         item={option}
         validation={validation}
         onChange={() => onChange(option.value)}
-        correct={evaluation && evaluation[index]}
+        correct={evaluation && evaluation[option.value]}
         {...restProps}
       />
     ))}

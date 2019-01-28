@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-import { PaddingDiv, Paper, Checkbox } from '@edulastic/common';
-import { cloneDeep } from 'lodash';
+import { PaddingDiv, Paper } from '@edulastic/common';
+import { cloneDeep, shuffle } from 'lodash';
 import { withNamespaces } from '@edulastic/localization';
+import { Checkbox } from 'antd';
 
 import styled from 'styled-components';
 import { MultipleChoiceDisplay, CorrectAnswers } from './index';
@@ -16,6 +17,35 @@ import Authoring from './Authoring';
 const EmptyWrapper = styled.div``;
 
 class MultipleChoice extends Component {
+  state = {
+    shuffledOptions: []
+  };
+
+  componentWillReceiveProps(nextProps) {
+    const { item } = this.props;
+
+    if (!nextProps.item.shuffle_options) {
+      this.setState({
+        shuffledOptions: nextProps.item.options
+      });
+    } else if (
+      nextProps.item.shuffle_options !== item.shuffle_options &&
+      nextProps.item.shuffle_options
+    ) {
+      this.setState({
+        shuffledOptions: shuffle(nextProps.item.options)
+      });
+    }
+  }
+
+  componentDidMount() {
+    const { item } = this.props;
+
+    this.setState({
+      shuffledOptions: shuffle(item.options)
+    });
+  }
+
   getRenderData = () => {
     const { item, history } = this.props;
     const locationState = history.location.state;
@@ -42,7 +72,8 @@ class MultipleChoice extends Component {
       previewDisplayOptions,
       itemForEdit,
       uiStyle: item.ui_style,
-      multipleResponses: !!item.multiple_responses
+      multipleResponses: !!item.multiple_responses,
+      shuffleOptions: !!item.shuffle_options
     };
   };
 
@@ -110,12 +141,14 @@ class MultipleChoice extends Component {
 
   render() {
     const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation } = this.props;
+    const { shuffledOptions } = this.state;
     const {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
       uiStyle,
-      multipleResponses
+      multipleResponses,
+      shuffleOptions
     } = this.getRenderData();
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
@@ -139,9 +172,16 @@ class MultipleChoice extends Component {
                   onChange={() =>
                     this.handleOptionsChange('multiple_responses', !multipleResponses)
                   }
-                  label={t('component.multiplechoice.multipleResponses')}
                   checked={multipleResponses}
-                />
+                >
+                  {t('component.multiplechoice.multipleResponses')}
+                </Checkbox>
+                <Checkbox
+                  onChange={() => this.handleOptionsChange('shuffle_options', !shuffleOptions)}
+                  checked={shuffleOptions}
+                >
+                  {t('component.multiplechoice.shuffleOptions')}
+                </Checkbox>
               </Paper>
               <Options onChange={this.handleOptionsChange} uiStyle={uiStyle} />
             </React.Fragment>
@@ -155,7 +195,7 @@ class MultipleChoice extends Component {
                   onChange={this.handleAddAnswer}
                   smallSize={smallSize}
                   userSelections={userAnswer}
-                  options={previewDisplayOptions}
+                  options={shuffledOptions}
                   question={previewStimulus}
                   handleMultiSelect={this.handleMultiSelect}
                   uiStyle={uiStyle}
@@ -166,7 +206,7 @@ class MultipleChoice extends Component {
                 <MultipleChoiceDisplay
                   showAnswer
                   smallSize={smallSize}
-                  options={previewDisplayOptions}
+                  options={shuffledOptions}
                   question={previewStimulus}
                   userSelections={userAnswer}
                   handleMultiSelect={this.handleMultiSelect}
@@ -178,7 +218,7 @@ class MultipleChoice extends Component {
                 <MultipleChoiceDisplay
                   preview
                   smallSize={smallSize}
-                  options={previewDisplayOptions}
+                  options={shuffledOptions}
                   question={previewStimulus}
                   data={item}
                   validation={item.validation}

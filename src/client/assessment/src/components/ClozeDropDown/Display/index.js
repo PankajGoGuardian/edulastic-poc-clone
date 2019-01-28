@@ -50,7 +50,6 @@ class ClozeDropDownDisplay extends Component {
   }
 
   selectChange = (value, index) => {
-    console.log('handleResponseSelectChange');
     const { userAnswers: newAnswers } = this.state;
     const {
       onChange: changeAnswers,

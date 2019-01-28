@@ -17,6 +17,12 @@ var _scoring = require("./const/scoring");
 var exactMatchEvaluator = function exactMatchEvaluator() {
   var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var answers = arguments.length > 1 ? arguments[1] : undefined;
+
+  var _ref = arguments.length > 2 ? arguments[2] : undefined,
+      max_score = _ref.max_score,
+      automarkable = _ref.automarkable,
+      min_score_if_attempted = _ref.min_score_if_attempted;
+
   var score = 0;
   var maxScore = 0;
   var evaluation = {};
@@ -41,6 +47,15 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
     });
   }
 
+  if (automarkable) {
+    if (min_score_if_attempted) {
+      maxScore = Math.max(maxScore, min_score_if_attempted);
+      score = Math.max(min_score_if_attempted, score);
+    }
+  } else if (max_score) {
+    maxScore = Math.max(max_score, maxScore);
+  }
+
   return {
     score: score,
     maxScore: maxScore,
@@ -51,13 +66,19 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
 var partialMatchEvaluator = function partialMatchEvaluator() {
   var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var answers = arguments.length > 1 ? arguments[1] : undefined;
+
+  var _ref2 = arguments.length > 2 ? arguments[2] : undefined,
+      max_score = _ref2.max_score,
+      automarkable = _ref2.automarkable,
+      min_score_if_attempted = _ref2.min_score_if_attempted;
+
   var score = 0;
   var maxScore = 0;
   var evaluation = {};
   var isCorrect = false;
-  answers.forEach(function (_ref) {
-    var totalScore = _ref.score,
-        correctAnswers = _ref.value;
+  answers.forEach(function (_ref3) {
+    var totalScore = _ref3.score,
+        correctAnswers = _ref3.value;
 
     if (!correctAnswers || !correctAnswers.length) {
       return;
@@ -84,6 +105,15 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
     });
   }
 
+  if (automarkable) {
+    if (min_score_if_attempted) {
+      maxScore = Math.max(maxScore, min_score_if_attempted);
+      score = Math.max(min_score_if_attempted, score);
+    }
+  } else if (max_score) {
+    maxScore = Math.max(max_score, maxScore);
+  }
+
   return {
     score: score,
     maxScore: maxScore,
@@ -91,9 +121,9 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   };
 };
 
-var evaluator = function evaluator(_ref2) {
-  var userResponse = _ref2.userResponse,
-      validation = _ref2.validation;
+var evaluator = function evaluator(_ref4) {
+  var userResponse = _ref4.userResponse,
+      validation = _ref4.validation;
   var valid_response = validation.valid_response,
       alt_responses = validation.alt_responses,
       scoring_type = validation.scoring_type;
@@ -101,11 +131,11 @@ var evaluator = function evaluator(_ref2) {
 
   switch (scoring_type) {
     case _scoring.ScoringType.PARTIAL_MATCH:
-      return partialMatchEvaluator(userResponse, answers);
+      return partialMatchEvaluator(userResponse, answers, validation);
 
     case _scoring.ScoringType.EXACT_MATCH:
     default:
-      return exactMatchEvaluator(userResponse, answers);
+      return exactMatchEvaluator(userResponse, answers, validation);
   }
 };
 

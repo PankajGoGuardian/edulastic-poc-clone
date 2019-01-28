@@ -2,7 +2,11 @@ import { isEqual } from 'lodash';
 import { ScoringType } from './const/scoring';
 
 // exact match evaluator
-const exactMatchEvaluator = (userResponse = [], answers) => {
+const exactMatchEvaluator = (
+  userResponse = [],
+  answers,
+  { max_score, automarkable, min_score_if_attempted }
+) => {
   let score = 0;
   let maxScore = 0;
   const evaluation = {};
@@ -27,6 +31,15 @@ const exactMatchEvaluator = (userResponse = [], answers) => {
     });
   }
 
+  if (automarkable) {
+    if (min_score_if_attempted) {
+      maxScore = Math.max(maxScore, min_score_if_attempted);
+      score = Math.max(min_score_if_attempted, score);
+    }
+  } else if (max_score) {
+    maxScore = Math.max(max_score, maxScore);
+  }
+
   return {
     score,
     maxScore,
@@ -34,8 +47,11 @@ const exactMatchEvaluator = (userResponse = [], answers) => {
   };
 };
 
-
-const partialMatchEvaluator = (userResponse = [], answers) => {
+const partialMatchEvaluator = (
+  userResponse = [],
+  answers,
+  { max_score, automarkable, min_score_if_attempted }
+) => {
   let score = 0;
   let maxScore = 0;
   const evaluation = {};
@@ -46,10 +62,8 @@ const partialMatchEvaluator = (userResponse = [], answers) => {
       return;
     }
     const scorePerAnswer = totalScore / correctAnswers.length;
-    const matches = userResponse.filter(
-      (resp, index) => correctAnswers[index] === resp
-    ).length;
-    isCorrect = (matches === correctAnswers.length);
+    const matches = userResponse.filter((resp, index) => correctAnswers[index] === resp).length;
+    isCorrect = matches === correctAnswers.length;
     const currentScore = matches * scorePerAnswer;
     score = Math.max(currentScore, score);
     maxScore = Math.max(totalScore, maxScore);
@@ -65,7 +79,14 @@ const partialMatchEvaluator = (userResponse = [], answers) => {
       evaluation[index] = true;
     });
   }
-
+  if (automarkable) {
+    if (min_score_if_attempted) {
+      maxScore = Math.max(maxScore, min_score_if_attempted);
+      score = Math.max(min_score_if_attempted, score);
+    }
+  } else if (max_score) {
+    maxScore = Math.max(max_score, maxScore);
+  }
 
   return {
     score,
@@ -80,10 +101,10 @@ const evaluator = ({ userResponse, validation }) => {
 
   switch (scoring_type) {
     case ScoringType.PARTIAL_MATCH:
-      return partialMatchEvaluator(userResponse, answers);
+      return partialMatchEvaluator(userResponse, answers, validation);
     case ScoringType.EXACT_MATCH:
     default:
-      return exactMatchEvaluator(userResponse, answers);
+      return exactMatchEvaluator(userResponse, answers, validation);
   }
 };
 

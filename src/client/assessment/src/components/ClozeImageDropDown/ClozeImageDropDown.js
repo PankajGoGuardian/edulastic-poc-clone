@@ -8,14 +8,10 @@ import { cloneDeep } from 'lodash';
 import styled from 'styled-components';
 import { withNamespaces } from '@edulastic/localization';
 
-import {
-  ClozeImageDropDownAuthoring,
-  ClozeImageDropDownDisplay,
-  CorrectAnswers
-} from './index';
+import { ClozeImageDropDownAuthoring, ClozeImageDropDownDisplay, CorrectAnswers } from './index';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 import CorrectAnswerOptions from './common/CorrectAnswerOptions';
-import Options from './Options';
+import AdvancedOptions from '../SortList/EditSortList/AdvancedOptions';
 
 class ClozeImageDropDown extends Component {
   state = {
@@ -23,7 +19,7 @@ class ClozeImageDropDown extends Component {
     shuffleOptions: false,
     showDraghandle: false,
     transparentResponses: false
-  }
+  };
 
   getRenderData = () => {
     const { item, history } = this.props;
@@ -50,6 +46,30 @@ class ClozeImageDropDown extends Component {
       itemForEdit,
       uiStyle: item.ui_style
     };
+  };
+
+  handleItemChangeChange = (prop, uiStyle) => {
+    const { item, setQuestionData } = this.props;
+    const newItem = cloneDeep(item);
+
+    newItem[prop] = uiStyle;
+    setQuestionData(newItem);
+  };
+
+  handleValidationChange = (prop, uiStyle) => {
+    const { item, setQuestionData } = this.props;
+    const newItem = cloneDeep(item);
+
+    newItem.validation[prop] = uiStyle;
+    setQuestionData(newItem);
+  };
+
+  handleUiStyleChange = (prop, uiStyle) => {
+    const { item, setQuestionData } = this.props;
+    const newItem = cloneDeep(item);
+
+    newItem.ui_style[prop] = uiStyle;
+    setQuestionData(newItem);
   };
 
   handleAddAltResponses = () => {
@@ -105,20 +125,19 @@ class ClozeImageDropDown extends Component {
   render() {
     const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
-    const { duplicatedResponses, showDraghandle, shuffleOptions,
-      transparentResponses } = this.state;
+    const {
+      duplicatedResponses,
+      showDraghandle,
+      shuffleOptions,
+      transparentResponses
+    } = this.state;
 
     const Wrapper = testItem ? React.Fragment : Paper;
     return (
       <React.Fragment>
         {view === 'edit' && (
           <React.Fragment>
-            <EditorContainer
-              top={36}
-              bottom={36}
-              left={60}
-              right={60}
-            >
+            <EditorContainer top={36} bottom={36} left={60} right={60}>
               <div className="authoring">
                 <ClozeImageDropDownAuthoring item={itemForEdit} />
                 <CorrectAnswers
@@ -145,12 +164,7 @@ class ClozeImageDropDown extends Component {
                 <CorrectAnswerOptions>
                   <Checkbox
                     className="additional-options"
-                    onChange={() =>
-                      this.handleOptionsChange(
-                        'shuffle_options',
-                        !shuffleOptions
-                      )
-                  }
+                    onChange={() => this.handleOptionsChange('shuffle_options', !shuffleOptions)}
                     label={t('component.clozeDropDown.shuffleoptions')}
                     checked={shuffleOptions}
                   />
@@ -158,12 +172,10 @@ class ClozeImageDropDown extends Component {
               </div>
             </EditorContainer>
             <OptionsContainer>
-              <Options
-                onChange={this.handleOptionsChange}
-                uiStyle={uiStyle}
-                outerStyle={{
-                  padding: '16px 60px 7px 60px'
-                }}
+              <AdvancedOptions
+                onItemChange={this.handleItemChangeChange}
+                onValidationChange={this.handleValidationChange}
+                onUiChange={this.handleUiStyleChange}
               />
             </OptionsContainer>
           </React.Fragment>
@@ -281,8 +293,8 @@ const enhance = compose(
     null,
     {
       setQuestionData: setQuestionDataAction
-    },
-  ),
+    }
+  )
 );
 
 export default enhance(ClozeImageDropDown);

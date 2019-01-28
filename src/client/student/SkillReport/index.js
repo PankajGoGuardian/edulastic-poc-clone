@@ -15,7 +15,7 @@ const SkillReportContainer = ({ flag, skillReport, fetchSkillReport }) => {
   return (
     <React.Fragment>
       <MainContainer flag={flag}>
-        <Header flag={flag} titleText="common.skillReportTitle" />
+        <Header flag={flag} titleText='common.skillReportTitle' />
         <SkillReportMainContent skillReport={skillReport} />
       </MainContainer>
     </React.Fragment>

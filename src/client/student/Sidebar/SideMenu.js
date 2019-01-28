@@ -134,17 +134,17 @@ class SideMenu extends Component {
     const menuIndex = getIndex(page, menuItems);
     const isMobile = windowWidth <= parseFloat(tabletWidth);
     const footerDropdownMenu = (
-      <FooterDropDown isVisible={isVisible} className="footerDropWrap">
+      <FooterDropDown isVisible={isVisible} className='footerDropWrap'>
         <Menu>
-          <Menu.Item key="0" className="removeSelectedBorder">
+          <Menu.Item key='0' className='removeSelectedBorder'>
             <a onClick={logout}>
-              <LogoutIcon type="logout" />{' '}
+              <LogoutIcon type='logout' />{' '}
               {isSidebarCollapsed ? '' : t('common.signOutText')}
             </a>
           </Menu.Item>
-          <Menu.Item key="1" className="removeSelectedBorder">
-            <Link to="/home/profile" onClick={this.handleProfileClick}>
-              <IconDropdown type="user" />{' '}
+          <Menu.Item key='1' className='removeSelectedBorder'>
+            <Link to='/home/profile' onClick={this.handleProfileClick}>
+              <IconDropdown type='user' />{' '}
               {isSidebarCollapsed ? '' : t('common.myProfileText')}
             </Link>
           </Menu.Item>
@@ -156,18 +156,18 @@ class SideMenu extends Component {
         <SideBar
           collapsed={isSidebarCollapsed}
           collapsible
-          breakpoint="md"
+          breakpoint='md'
           onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
           width={isMobile ? windowWidth : '240'}
           collapsedWidth={broken ? '0' : '100'}
-          className="sideBarwrapper"
+          className='sideBarwrapper'
         >
-          <LogoWrapper className="logoWrapper">
+          <LogoWrapper className='logoWrapper'>
             {broken ? (
               <Col span={3}>
                 <AntIcon
-                  className="mobileCloseIcon"
-                  type="close"
+                  className='mobileCloseIcon'
+                  type='close'
                   onClick={this.toggleMenu}
                 />
               </Col>
@@ -178,7 +178,7 @@ class SideMenu extends Component {
             {broken ? null : (
               <Col span={6} style={{ textAlign: 'right', color: '#1fe3a1' }}>
                 <AntIcon
-                  className="trigger"
+                  className='trigger'
                   type={isSidebarCollapsed ? 'right' : 'left'}
                   onClick={this.toggleMenu}
                 />
@@ -188,11 +188,11 @@ class SideMenu extends Component {
           <LogoDash />
           <MenuWrapper>
             {isMobile && isSidebarCollapsed ? (
-              <IconBars type="bars" onClick={this.toggleMenu} />
+              <IconBars type='bars' onClick={this.toggleMenu} />
             ) : null}
             <Menu
               defaultSelectedKeys={[menuIndex.toString()]}
-              mode="inline"
+              mode='inline'
               onClick={this.handleMenu}
             >
               {menuItems.map((menu, index) => {
@@ -214,23 +214,23 @@ class SideMenu extends Component {
               </QuestionButton>
 
               <UserInfoButton
-                data-cy="userInfo"
+                data-cy='userInfo'
                 isVisible={isVisible}
                 isSidebarCollapsed={isSidebarCollapsed}
-                className="userinfoBtn"
+                className='userinfoBtn'
               >
                 <DropdownBtn
                   onClick={this.toggleDropdown}
                   overlayStyle={{ position: 'fixed', minWidth: '198px' }}
                   overlay={footerDropdownMenu}
                   trigger={['click']}
-                  placement="topCenter"
+                  placement='topCenter'
                   isVisible={isVisible}
                   isSidebarCollapsed={isSidebarCollapsed}
                   onVisibleChange={this.handleVisibleChange}
                 >
                   <div>
-                    <img src={Profile} alt="Profile" />
+                    <img src={Profile} alt='Profile' />
                     <div style={{ paddingLeft: 11 }}>
                       {!isSidebarCollapsed && (
                         <UserName>{firstName || 'Zack Oliver'}</UserName>
@@ -242,7 +242,7 @@ class SideMenu extends Component {
                     {!isSidebarCollapsed && (
                       <IconDropdown
                         style={{ fontSize: 20 }}
-                        className="drop-caret"
+                        className='drop-caret'
                         type={isVisible ? 'caret-up' : 'caret-down'}
                       />
                     )}

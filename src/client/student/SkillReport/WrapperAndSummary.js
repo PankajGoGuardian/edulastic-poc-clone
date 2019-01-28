@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
+import styled from 'styled-components';
 import * as S from './styled';
 import StyledTable from '../styled/Table';
 import TableSection from './SkillTableSection';
@@ -27,8 +28,10 @@ const computeColumns = t => [
     sorter: (a, b) => a.percentage - b.percentage,
     render: percentage => (
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        {(Math.round(percentage * 10) / 10).toFixed(1)}%
-        <S.Circle percentage={percentage} />
+        {percentage === null
+          ? '-'
+          : `${(Math.round(percentage * 10) / 10).toFixed(1)}%`}
+        {percentage !== null && <Circle percentage={percentage} />}
       </div>
     ),
     width: '20%'
@@ -45,17 +48,24 @@ const computeColumns = t => [
 const SkillReportMainContent = ({ skillReport, t }) => {
   const summaryColumns = computeColumns(t);
   let sumData = [];
-  //console.log('skillReport',skillReport);
-  if (skillReport && skillReport.reports) {
-    const { reportData } = skillReport.reports;
-    sumData = skillReport.reports.curriculum.domains.map(domain => ({
-      domain: domain.description,
-      standards: domain.standards,
-      total: reportData[domain.id].totalQuestions,
-      hints: reportData[domain.id].hints,
-      percentage:
-        (reportData[domain.id].score / reportData[domain.id].maxScore) * 100
-    }));
+  // console.log('skillReport',skillReport);
+  if (skillReport) {
+    const getDomainScoreDetails = id =>
+      skillReport.reports.reportData.domainLevel.filter(
+        item => item.domain_id === id
+      );
+    sumData = skillReport.reports.curriculum.domains.map(domain => {
+      const reportData = getDomainScoreDetails(domain._id)[0] || null;
+      return {
+        domain: domain.description || '-',
+        standards: domain.standards || '-',
+        total: reportData ? reportData.score || '-' : '-',
+        hints: reportData ? reportData.hints || '-' : '-',
+        percentage: reportData
+          ? (reportData.score / reportData.max_points) * 100
+          : null
+      };
+    });
   }
   return (
     <S.SkillReportContainer>
@@ -64,7 +74,12 @@ const SkillReportMainContent = ({ skillReport, t }) => {
         <StyledTable columns={summaryColumns} dataSource={sumData} />
       </S.AssignmentContentWrap>
       {sumData.map((summary, index) => (
-        <TableSection summary={summary} skillReport={skillReport} key={index} />
+        <TableSection
+          summary={summary}
+          dataSource={sumData}
+          skillReport={skillReport}
+          key={index}
+        />
       ))}
     </S.SkillReportContainer>
   );
@@ -78,3 +93,17 @@ SkillReportMainContent.propTypes = {
 const enhance = compose(withNamespaces('reports'));
 
 export default enhance(SkillReportMainContent);
+
+const Circle = styled.div`
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  background: ${props =>
+    props.percentage >= 50
+      ? props.theme.skillReport.greenColor
+      : props.percentage >= 30
+      ? props.theme.skillReport.yellowColor
+      : props.theme.skillReport.redColor};
+  }
+  margin-left: 18px;
+`;

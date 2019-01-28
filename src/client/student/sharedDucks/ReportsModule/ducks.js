@@ -13,7 +13,7 @@ export const reportSchema = new schema.Entity(
 export const SET_REPORTS = '[studentReport] fetch reports';
 export const UPDATE_TEST_ACTIVITY = '[studentReport] update reports';
 export const SET_CURRENT_REPORT = '[studentReport] set current testActivityId';
-export const SET_FILTER = '[studentAssignment] set filter';
+export const SET_FILTER = '[studentReport] set filter';
 
 // actions
 export const setReportsAction = createAction(SET_REPORTS);

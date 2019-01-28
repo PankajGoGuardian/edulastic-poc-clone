@@ -12,7 +12,7 @@ import {
   Icon as AntIcon,
   Dropdown
 } from 'antd';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import {
   IconAssignment,
   IconHeader,
@@ -134,17 +134,17 @@ class SideMenu extends Component {
     const menuIndex = getIndex(page, menuItems);
     const isMobile = windowWidth <= parseFloat(tabletWidth);
     const footerDropdownMenu = (
-      <FooterDropDown isVisible={isVisible} className='footerDropWrap'>
+      <FooterDropDown isVisible={isVisible} className="footerDropWrap">
         <Menu>
-          <Menu.Item key='0' className='removeSelectedBorder'>
+          <Menu.Item key="0" className="removeSelectedBorder">
             <a onClick={logout}>
-              <LogoutIcon type='logout' />{' '}
+              <LogoutIcon type="logout" />{' '}
               {isSidebarCollapsed ? '' : t('common.signOutText')}
             </a>
           </Menu.Item>
-          <Menu.Item key='1' className='removeSelectedBorder'>
-            <Link to='/home/profile' onClick={this.handleProfileClick}>
-              <IconDropdown type='user' />{' '}
+          <Menu.Item key="1" className="removeSelectedBorder">
+            <Link to="/home/profile" onClick={this.handleProfileClick}>
+              <IconDropdown type="user" />{' '}
               {isSidebarCollapsed ? '' : t('common.myProfileText')}
             </Link>
           </Menu.Item>
@@ -156,18 +156,18 @@ class SideMenu extends Component {
         <SideBar
           collapsed={isSidebarCollapsed}
           collapsible
-          breakpoint='md'
+          breakpoint="md"
           onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
           width={isMobile ? windowWidth : '240'}
           collapsedWidth={broken ? '0' : '100'}
-          className='sideBarwrapper'
+          className="sideBarwrapper"
         >
-          <LogoWrapper className='logoWrapper'>
+          <LogoWrapper className="logoWrapper">
             {broken ? (
               <Col span={3}>
                 <AntIcon
-                  className='mobileCloseIcon'
-                  type='close'
+                  className="mobileCloseIcon"
+                  type="close"
                   onClick={this.toggleMenu}
                 />
               </Col>
@@ -178,7 +178,7 @@ class SideMenu extends Component {
             {broken ? null : (
               <Col span={6} style={{ textAlign: 'right', color: '#1fe3a1' }}>
                 <AntIcon
-                  className='trigger'
+                  className="trigger"
                   type={isSidebarCollapsed ? 'right' : 'left'}
                   onClick={this.toggleMenu}
                 />
@@ -188,11 +188,11 @@ class SideMenu extends Component {
           <LogoDash />
           <MenuWrapper>
             {isMobile && isSidebarCollapsed ? (
-              <IconBars type='bars' onClick={this.toggleMenu} />
+              <IconBars type="bars" onClick={this.toggleMenu} />
             ) : null}
             <Menu
               defaultSelectedKeys={[menuIndex.toString()]}
-              mode='inline'
+              mode="inline"
               onClick={this.handleMenu}
             >
               {menuItems.map((menu, index) => {
@@ -205,8 +205,8 @@ class SideMenu extends Component {
                 );
               })}
             </Menu>
-            <MenuFooter className='footerBottom'>
-              <QuestionButton className='questionBtn'>
+            <MenuFooter isSidebarCollapsed={isSidebarCollapsed}>
+              <QuestionButton isSidebarCollapsed={isSidebarCollapsed}>
                 <HelpIcon />
                 {isSidebarCollapsed ? null : (
                   <span>{t('common.helpButtonText')}</span>
@@ -216,20 +216,20 @@ class SideMenu extends Component {
               <UserInfoButton
                 isVisible={isVisible}
                 isSidebarCollapsed={isSidebarCollapsed}
-                className='userinfoBtn'
+                className="userinfoBtn"
               >
-                <Dropdown
+                <DropdownBtn
                   onClick={this.toggleDropdown}
                   overlayStyle={{ position: 'fixed', minWidth: '198px' }}
-                  className='footerDropdown'
                   overlay={footerDropdownMenu}
                   trigger={['click']}
-                  placement='topCenter'
+                  placement="topCenter"
                   isVisible={isVisible}
+                  isSidebarCollapsed={isSidebarCollapsed}
                   onVisibleChange={this.handleVisibleChange}
                 >
                   <div>
-                    <img src={Profile} alt='Profile' />
+                    <img src={Profile} alt="Profile" />
                     <div style={{ paddingLeft: 11 }}>
                       {!isSidebarCollapsed && (
                         <UserName>{firstName || 'Zack Oliver'}</UserName>
@@ -241,12 +241,12 @@ class SideMenu extends Component {
                     {!isSidebarCollapsed && (
                       <IconDropdown
                         style={{ fontSize: 20 }}
-                        className='drop-caret'
+                        className="drop-caret"
                         type={isVisible ? 'caret-up' : 'caret-down'}
                       />
                     )}
                   </div>
-                </Dropdown>
+                </DropdownBtn>
               </UserInfoButton>
             </MenuFooter>
           </MenuWrapper>
@@ -468,8 +468,35 @@ const MenuItem = styled(AntMenu.Item)`
   margin-top: 16px;
 `;
 
-const MenuFooter = styled.div``;
+const footerOnCollapse = css`
+  padding: 8px 8px 0px;
+  width: 100px;
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+const MenuFooter = styled.div`
+  position: fixed;
+  bottom: 10px;
+  width: 240px;
+  ${props => props.isSidebarCollapsed && footerOnCollapse}
+`;
 
+const QuestionButtonOnCollpase = css`
+  width: 60px;
+  height: 60px;
+  border-radius: 65px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  background-color: ${props => props.theme.sideMenu.helpButtonBgColor};
+  padding: 0px;
+  margin: 0 auto;
+  justify-content: center;
+  margin-bottom: 15px;
+
+  &:hover {
+    background-color: ${props => props.theme.sideMenu.helpButtonBgHoverColor};
+  }
+`;
 const QuestionButton = styled.div`
   border-radius: 65px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
@@ -494,6 +521,7 @@ const QuestionButton = styled.div`
       color: ${props => props.theme.sideMenu.helpButtonTextHoverColor};
     }
   }
+  ${props => props.isSidebarCollapsed && QuestionButtonOnCollpase}
 `;
 
 const UserName = styled.div`
@@ -570,30 +598,31 @@ const FooterDropDown = styled.div`
 `;
 
 const UserInfoButton = styled.div`
-  .footerDropdown {
-    width: auto;
-    height: 60px;
-    border-radius: ${props => (props.isVisible ? '0px 0px 30px 30px' : '65px')};
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-    background-color: ${props => props.theme.sideMenu.userInfoButtonBgColor};
-    display: flex;
-    align-items: center;
-    padding: ${props => (props.isSidebarCollapsed ? 0 : '0px 25px 0px 55px')};
-    margin: ${props => (props.isSidebarCollapsed ? 0 : '0 21px')};
-    position: relative;
-    font-weight: 600;
-    transition: 0.2s;
-    -webkit-transition: 0.2s;
-    .drop-caret {
-      position: absolute;
-      right: 10px;
-      top: 20px;
-    }
-  }
   img {
     width: 44px;
     position: absolute;
     left: 10px;
+  }
+`;
+
+const DropdownBtn = styled(Dropdown)`
+  width: auto;
+  height: 60px;
+  border-radius: ${props => (props.isVisible ? '0px 0px 30px 30px' : '65px')};
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  background-color: ${props => props.theme.sideMenu.userInfoButtonBgColor};
+  display: flex;
+  align-items: center;
+  padding: ${props => (props.isSidebarCollapsed ? 0 : '0px 25px 0px 55px')};
+  margin: ${props => (props.isSidebarCollapsed ? 0 : '0 21px')};
+  position: relative;
+  font-weight: 600;
+  transition: 0.2s;
+  -webkit-transition: 0.2s;
+  .drop-caret {
+    position: absolute;
+    right: 10px;
+    top: 20px;
   }
 `;
 

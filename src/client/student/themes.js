@@ -16,7 +16,7 @@ export const themes = {
       sidebarBgColor: '#fbfafc',
       sidebarTextColor: '#434b5d',
       helpButtonBgColor: '#ffffff',
-      helpButtonBgHoverColor: '#1890ff',
+      helpButtonBgHoverColor: '#12a6e8',
       helpButtonFontSize: '14px',
       helpButtonTextColor: '#1fe3a1',
       helpButtonTextHoverColor: 'white',

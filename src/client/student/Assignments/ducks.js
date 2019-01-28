@@ -1,5 +1,12 @@
 import { createAction, createReducer } from 'redux-starter-kit';
-import { takeEvery, takeLatest, put, call, all,select } from 'redux-saga/effects';
+import {
+  takeEvery,
+  takeLatest,
+  put,
+  call,
+  all,
+  select
+} from 'redux-saga/effects';
 import { values, groupBy } from 'lodash';
 import { createSelector } from 'reselect';
 import { normalize } from 'normalizr';
@@ -149,10 +156,10 @@ export const getAssignmentsSelector = createSelector(
         const liveAssignments =
           maxAttempts >= attempts && new Date(assignment.endDate) > new Date();
         let filterType = true;
-        if (filter != FILTERS.ALL) {
-          if (filter == FILTERS.NOT_STARTED) {
+        if (filter !== FILTERS.ALL) {
+          if (filter === FILTERS.NOT_STARTED) {
             filterType = attempts === 0;
-          } else if (filter == FILTERS.IN_PROGRESS) {
+          } else if (filter === FILTERS.IN_PROGRESS) {
             filterType = attempts > 0;
           }
         }

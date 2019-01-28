@@ -20,7 +20,7 @@ const breadcrumbData = [{ title: 'ASSIGNMENTS', to: '' }];
 const AssignmentSubHeader = ({ t, setFilter, filter }) => {
   const filterItems = Object.keys(FILTERS);
 
-  const Filter = ({ index, value }) => (
+  const Filter = ({ value }) => (
     <FilterBtn
       onClick={() => setFilter(FILTERS[value])}
       enabled={FILTERS[value] == filter}
@@ -58,7 +58,9 @@ const enhance = compose(
 export default enhance(AssignmentSubHeader);
 
 AssignmentSubHeader.propTypes = {
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  filter: PropTypes.string.isRequired,
+  setFilter: PropTypes.func.isRequired
 };
 
 const Wrapper = styled.div`

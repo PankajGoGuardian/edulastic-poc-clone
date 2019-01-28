@@ -16,6 +16,14 @@ import {
   reportSchema
 } from '../sharedDucks/ReportsModule/ducks';
 
+// constants
+export const FILTERS = {
+  ALL: 'all',
+  SUBMITTED: 'submitted',
+  GRADED: 'graded',
+  MISSED: 'missed'
+};
+
 // types
 export const FETCH_ASSIGNMENTS_DATA = '[studentAssignments] fetch assignments';
 
@@ -61,11 +69,13 @@ export function* watcherSaga() {
 
 const assignmentsSelector = state => state.studentAssignment.byId;
 const reportsSelector = state => state.studentReport.byId;
+export const filterSelector = state => state.studentReport.filter;
 
 export const getAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
-  (assignmentsObj, reportsObj) => {
+  filterSelector,
+  (assignmentsObj, reportsObj, filter) => {
     // group reports by assignmentsID
     let groupedReports = groupBy(values(reportsObj), 'assignmentId');
     let assignments = values(assignmentsObj)
@@ -79,9 +89,21 @@ export const getAssignmentsSelector = createSelector(
         // or assigments is past dueDate
         let maxAttempts = (assignment.test && assignment.test.maxAttempt) || 5;
         let attempts = (assignment.reports && assignment.reports.length) || 0;
-        return (
-          maxAttempts <= attempts || new Date(assignment.endDate) < new Date()
-        );
+        const isExpired =
+          maxAttempts <= attempts || new Date(assignment.endDate) < new Date();
+        const attempted = !!(assignment.reports && assignment.reports.length);
+        const graded = false; // need to impliment graded status from API
+        let filterType = true;
+        if (filter !== FILTERS.ALL) {
+          if (filter === FILTERS.MISSED) {
+            filterType = !attempted;
+          } else if (filter === FILTERS.SUBMITTED) {
+            filterType = attempted;
+          } else if (filter === FILTERS.GRADED) {
+            filterType = graded;
+          }
+        }
+        return isExpired && filterType;
       });
 
     return assignments;

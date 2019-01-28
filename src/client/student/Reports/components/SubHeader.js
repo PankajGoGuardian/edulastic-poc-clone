@@ -1,23 +1,27 @@
 import { Button } from 'antd';
 import { compose } from 'redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import React, { useState } from 'react';
+import React from 'react';
 import { withNamespaces } from '@edulastic/localization';
-
+// actions
+import { setFilterAction } from '../../sharedDucks/ReportsModule/ducks';
+import { filterSelector, FILTERS } from '../ducks';
 // components
 import Breadcrumb from '../../sharedComponents/Breadcrumb';
 
 const breadcrumbData = [{ title: 'REPORTS', to: '' }];
 
-const AssignmentSubHeader = ({ t }) => {
-  const [btnIndex, setBtnIndex] = useState(0);
+const AssignmentSubHeader = ({ t, setFilter, filter }) => {
+  const filterItems = Object.keys(FILTERS);
 
-  const filters = [t('all'), t('submitted'), t('graded'), t('missed')];
-
-  const Filter = ({ index, value }) => (
-    <FilterBtn onClick={() => setBtnIndex(index)} enabled={btnIndex === index}>
-      {value}
+  const Filter = ({ value }) => (
+    <FilterBtn
+      onClick={() => setFilter(FILTERS[value])}
+      enabled={FILTERS[value] === filter}
+    >
+      {t(FILTERS[value])}
     </FilterBtn>
   );
 
@@ -27,7 +31,7 @@ const AssignmentSubHeader = ({ t }) => {
         <Breadcrumb data={breadcrumbData} />
       </BreadcrumbWrapper>
       <StatusBtnsContainer>
-        {filters.map((value, i) => (
+        {filterItems.map((value, i) => (
           <Filter key={i} index={i} value={value} />
         ))}
       </StatusBtnsContainer>
@@ -35,12 +39,24 @@ const AssignmentSubHeader = ({ t }) => {
   );
 };
 
-const enhance = compose(withNamespaces('default'));
+const enhance = compose(
+  withNamespaces('default'),
+  connect(
+    state => ({
+      filter: filterSelector(state)
+    }),
+    {
+      setFilter: setFilterAction
+    }
+  )
+);
 
 export default enhance(AssignmentSubHeader);
 
 AssignmentSubHeader.propTypes = {
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  filter: PropTypes.string.isRequired,
+  setFilter: PropTypes.func.isRequired
 };
 
 const Wrapper = styled.div`

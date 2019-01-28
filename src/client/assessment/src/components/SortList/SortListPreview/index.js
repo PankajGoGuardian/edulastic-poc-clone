@@ -50,13 +50,43 @@ class SortListPreview extends PureComponent {
       this.props.userAnswer.length > 0
         ? // eslint-disable-next-line react/destructuring-assignment
         this.props.userAnswer.map(index =>
-          // eslint-disable-next-line react/destructuring-assignment
+        // eslint-disable-next-line react/destructuring-assignment
           (index !== null ? this.props.item.source[index] : null))
         : // eslint-disable-next-line react/destructuring-assignment
         Array.from({ length: this.props.item.source.length }).fill(null),
 
     active: ''
   };
+
+  componentDidUpdate() {
+    // eslint-disable-next-line react/destructuring-assignment
+    const newItems = this.props.item.source.map((item, i) => {
+      // eslint-disable-next-line react/destructuring-assignment
+      if (!this.props.userAnswer.includes(i)) {
+        return item;
+      }
+      return null;
+    });
+
+    const newSelected = // eslint-disable-next-line react/destructuring-assignment
+      this.props.userAnswer.length > 0
+        ? // eslint-disable-next-line react/destructuring-assignment
+        this.props.userAnswer.map(index =>
+        // eslint-disable-next-line react/destructuring-assignment
+          (index !== null ? this.props.item.source[index] : null))
+        : // eslint-disable-next-line react/destructuring-assignment
+        Array.from({ length: this.props.item.source.length }).fill(null);
+    // eslint-disable-next-line react/destructuring-assignment
+    if (!isEqual(this.state.items, newItems)) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ items: newItems, active: '' });
+    }
+    // eslint-disable-next-line react/destructuring-assignment
+    if (!isEqual(this.state.selected, newSelected)) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ selected: newSelected, active: '' });
+    }
+  }
 
   onDrop = (itemCurrent, itemTo, flag) => {
     const data = cloneDeep(this.state);
@@ -97,9 +127,7 @@ class SortListPreview extends PureComponent {
         selected,
         active: ''
       });
-      saveAnswer(
-        selected.map(currentAns => (currentAns ? item.source.indexOf(currentAns) : null))
-      );
+      saveAnswer(selected.map(currentAns => (currentAns ? item.source.indexOf(currentAns) : null)));
     }
   };
 

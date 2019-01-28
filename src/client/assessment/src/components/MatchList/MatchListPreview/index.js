@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { cloneDeep, isEqual } from 'lodash';
 import styled from 'styled-components';
@@ -85,6 +85,22 @@ const MatchListPreview = ({
 
   const [dragItems, setDragItems] = useState(
     possible_responses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer))
+  );
+
+  useEffect(
+    () => {
+      setAns(
+        Array.isArray(userAnswer) && !userAnswer.every(answer => answer === null)
+          ? userAnswer
+          : Array.from({ length: list.length }).fill(null)
+      );
+      setDragItems(
+        possible_responses.filter(
+          answer => Array.isArray(userAnswer) && !userAnswer.includes(answer)
+        )
+      );
+    },
+    [userAnswer]
   );
 
   if (editCorrectAnswers.length > 0) {

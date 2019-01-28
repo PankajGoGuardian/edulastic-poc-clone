@@ -98,6 +98,16 @@ const ClassificationPreview = ({
     possible_responses.filter(resp => initialAnswers.every(arr => !arr.includes(resp)))
   );
 
+  useEffect(
+    () => {
+      setAnswers(initialAnswers);
+      setDragItems(
+        possible_responses.filter(resp => initialAnswers.every(arr => !arr.includes(resp)))
+      );
+    },
+    [userAnswer]
+  );
+
   useEffect(() => {
     if (
       answers.length !== createEmptyArrayOfArrays().length ||

@@ -13,24 +13,129 @@ import {
   IconNotIncludedToInfinitySegment,
   IconTrash
 } from '@edulastic/icons';
+import { cloneDeep } from 'lodash';
 import { GraphWrapper, JSXBox } from '../AxisLabelsContainer/styled';
 import {
   defaultAxesParameters, defaultGraphParameters, defaultGridParameters,
   defaultPointParameters
 } from '../../Builder/settings';
 import { makeBorder } from '../../Builder';
-import { CONSTANT } from '../../Builder/config';
+import { CONSTANT, Colors } from '../../Builder/config';
 import SegmentsTools from '../GraphContainer/SegmentsTools';
 
 const getColoredElems = (elements, compareResult) => {
-  // todo: need implementation
-  console.log(compareResult);
+  if (compareResult && compareResult.details && compareResult.details.length > 0) {
+    let newElems = cloneDeep(elements);
+    newElems = newElems.map((el) => {
+      const detail = compareResult.details.find(det => det.shape.id === el.id);
+
+      const red = Colors.red[CONSTANT.TOOLS.POINT];
+      const redHollow = Colors.red[CONSTANT.TOOLS.SEGMENTS_POINT];
+
+      const green = Colors.green[CONSTANT.TOOLS.POINT];
+      const greenHollow = Colors.green[CONSTANT.TOOLS.SEGMENTS_POINT];
+
+      switch (el.type) {
+        case CONSTANT.TOOLS.SEGMENTS_POINT:
+        case CONSTANT.TOOLS.INFINITY_TO_INCLUDED_SEGMENT:
+        case CONSTANT.TOOLS.INCLUDED_TO_INFINITY_SEGMENT:
+          return {
+            colors: detail && detail.result ? green : red,
+            pointColor: detail && detail.result ? green : red,
+            ...el
+          };
+        case CONSTANT.TOOLS.BOTH_INCLUDED_SEGMENT:
+          return {
+            lineColor: detail && detail.result ? green : red,
+            leftPointColor: detail && detail.result ? green : red,
+            rightPointColor: detail && detail.result ? green : red,
+            ...el
+          };
+        case CONSTANT.TOOLS.BOTH_NOT_INCLUDED_SEGMENT:
+          return {
+            lineColor: detail && detail.result ? green : red,
+            leftPointColor: detail && detail.result ? greenHollow : redHollow,
+            rightPointColor: detail && detail.result ? greenHollow : redHollow,
+            ...el
+          };
+        case CONSTANT.TOOLS.ONLY_RIGHT_INCLUDED_SEGMENT:
+          return {
+            lineColor: detail && detail.result ? green : red,
+            leftPointColor: detail && detail.result ? greenHollow : redHollow,
+            rightPointColor: detail && detail.result ? green : red,
+            ...el
+          };
+        case CONSTANT.TOOLS.ONLY_LEFT_INCLUDED_SEGMENT:
+          return {
+            lineColor: detail && detail.result ? green : red,
+            leftPointColor: detail && detail.result ? green : red,
+            rightPointColor: detail && detail.result ? greenHollow : redHollow,
+            ...el
+          };
+        case CONSTANT.TOOLS.INFINITY_TO_NOT_INCLUDED_SEGMENT:
+        case CONSTANT.TOOLS.NOT_INCLUDED_TO_INFINITY_SEGMENT:
+          return {
+            colors: detail && detail.result ? green : red,
+            pointColor: detail && detail.result ? greenHollow : redHollow,
+            ...el
+          };
+      }
+    });
+    return newElems;
+  }
   return elements;
 };
 
 const getColoredAnswer = (answerArr) => {
-  // todo: need implementation
-  console.log(answerArr);
+  if (Array.isArray(answerArr)) {
+    return answerArr.map((el) => {
+      switch (el.type) {
+        case CONSTANT.TOOLS.SEGMENTS_POINT:
+        case CONSTANT.TOOLS.INFINITY_TO_INCLUDED_SEGMENT:
+        case CONSTANT.TOOLS.INCLUDED_TO_INFINITY_SEGMENT:
+          return {
+            colors: Colors.yellow[CONSTANT.TOOLS.POINT],
+            pointColor: Colors.yellow[CONSTANT.TOOLS.POINT],
+            ...el
+          };
+        case CONSTANT.TOOLS.BOTH_INCLUDED_SEGMENT:
+          return {
+            lineColor: Colors.yellow[CONSTANT.TOOLS.POINT],
+            leftPointColor: Colors.yellow[CONSTANT.TOOLS.POINT],
+            rightPointColor: Colors.yellow[CONSTANT.TOOLS.POINT],
+            ...el
+          };
+        case CONSTANT.TOOLS.BOTH_NOT_INCLUDED_SEGMENT:
+          return {
+            lineColor: Colors.yellow[CONSTANT.TOOLS.POINT],
+            leftPointColor: Colors.yellow[CONSTANT.TOOLS.SEGMENTS_POINT],
+            rightPointColor: Colors.yellow[CONSTANT.TOOLS.SEGMENTS_POINT],
+            ...el
+          };
+        case CONSTANT.TOOLS.ONLY_RIGHT_INCLUDED_SEGMENT:
+          return {
+            lineColor: Colors.yellow[CONSTANT.TOOLS.POINT],
+            leftPointColor: Colors.yellow[CONSTANT.TOOLS.SEGMENTS_POINT],
+            rightPointColor: Colors.yellow[CONSTANT.TOOLS.POINT],
+            ...el
+          };
+        case CONSTANT.TOOLS.ONLY_LEFT_INCLUDED_SEGMENT:
+          return {
+            lineColor: Colors.yellow[CONSTANT.TOOLS.POINT],
+            leftPointColor: Colors.yellow[CONSTANT.TOOLS.POINT],
+            rightPointColor: Colors.yellow[CONSTANT.TOOLS.SEGMENTS_POINT],
+            ...el
+          };
+        case CONSTANT.TOOLS.INFINITY_TO_NOT_INCLUDED_SEGMENT:
+        case CONSTANT.TOOLS.NOT_INCLUDED_TO_INFINITY_SEGMENT:
+          return {
+            colors: Colors.yellow[CONSTANT.TOOLS.POINT],
+            pointColor: Colors.yellow[CONSTANT.TOOLS.SEGMENTS_POINT],
+            ...el
+          };
+      }
+    });
+  }
   return answerArr;
 };
 
@@ -97,6 +202,7 @@ class AxisSegmentsContainer extends Component {
       gridParams,
       graphType,
       showAnswer,
+      checkAnswer,
       validation
     } = this.props;
 
@@ -127,19 +233,45 @@ class AxisSegmentsContainer extends Component {
         ...gridParams
       });
 
-      this._graph.makeNumberlineAxis(canvas, numberlineAxis, layout);
+      this._graph.updateStackSettings(
+        numberlineAxis.stackResponses,
+        numberlineAxis.stackResponsesSpacing,
+        canvas.responsesAllowed
+      );
+
+      this._graph.setTool(CONSTANT.TOOLS.SEGMENTS_POINT, graphType, canvas.responsesAllowed);
+
+      this._graph.makeNumberlineAxis(
+        canvas,
+        numberlineAxis,
+        layout,
+        graphType,
+        { position: layout.linePosition, yMax: canvas.yMax, yMin: canvas.yMin },
+        { position: layout.pointBoxPosition, yMax: canvas.yMax, yMin: canvas.yMin }
+      );
       this._graph.setPointParameters({
         snapSizeX: numberlineAxis.ticksDistance
       });
 
       if (showAnswer) {
-        this._graph.setAnswer(getColoredAnswer(validation ? validation.valid_response.value : []));
+        this._graph.loadSegmentsAnswers(getColoredAnswer(validation ? validation.valid_response.value : []));
       } else {
         this._graph.removeAnswers();
       }
+
+      if (checkAnswer) {
+        this.mapElementsToGraph();
+      }
     }
 
-    this.mapElementsToGraph();
+    this._graph.renderTitle({
+      position: layout.titlePosition,
+      title: canvas.title,
+      xMin: canvas.xMin,
+      xMax: canvas.xMax,
+      yMax: canvas.yMax,
+      yMin: canvas.yMin
+    });
 
     this.setGraphUpdateEventHandler();
   }
@@ -154,9 +286,10 @@ class AxisSegmentsContainer extends Component {
       layout,
       gridParams,
       graphType,
-      tools,
-      elements
+      tools
     } = this.props;
+
+    const { selectedTool } = this.state
     if (JSON.stringify(tools) !== JSON.stringify(prevProps.tools)) {
       this.setDefaultToolState();
       this._graph.setTool(tools[0], graphType, canvas.responsesAllowed);
@@ -167,13 +300,40 @@ class AxisSegmentsContainer extends Component {
         || canvas.yMin !== prevProps.canvas.yMin
         || canvas.yMax !== prevProps.canvas.yMax
         || canvas.margin !== prevProps.canvas.margin
+        || canvas.title !== prevProps.canvas.title
       ) {
-        this._graph.updateGraphParameters(canvas, numberlineAxis, layout);
+        this._graph.updateGraphParameters(
+          canvas,
+          numberlineAxis,
+          layout,
+          graphType,
+          null,
+          { position: layout.linePosition, yMax: canvas.yMax, yMin: canvas.yMin },
+          { position: layout.pointBoxPosition, yMax: canvas.yMax, yMin: canvas.yMin }
+        );
+        this._graph.updateTitle({
+          position: layout.titlePosition,
+          title: canvas.title,
+          xMin: canvas.xMin,
+          xMax: canvas.xMax,
+          yMax: canvas.yMax,
+          yMin: canvas.yMin
+        });
       }
 
-      if (numberlineAxis.leftArrow !== prevProps.numberlineAxis.leftArrow
-        || numberlineAxis.rightArrow !== prevProps.numberlineAxis.rightArrow
-        || numberlineAxis.showTicks !== prevProps.numberlineAxis.showTicks
+      if (numberlineAxis.stackResponses !== prevProps.numberlineAxis.stackResponses
+        || numberlineAxis.stackResponsesSpacing !== prevProps.numberlineAxis.stackResponsesSpacing
+        || canvas.responsesAllowed !== prevProps.canvas.responsesAllowed
+      ) {
+        this._graph.updateStackSettings(
+          numberlineAxis.stackResponses,
+          numberlineAxis.stackResponsesSpacing,
+          canvas.responsesAllowed
+        );
+        this._graph.setTool(selectedTool.name, graphType, canvas.responsesAllowed);
+      }
+
+      if (numberlineAxis.showTicks !== prevProps.numberlineAxis.showTicks
         || numberlineAxis.fontSize !== prevProps.numberlineAxis.fontSize
       ) {
         this._graph.updateGraphSettings(numberlineAxis);
@@ -225,9 +385,26 @@ class AxisSegmentsContainer extends Component {
       if (
         layout.width !== prevProps.layout.width
         || layout.height !== prevProps.layout.height
+        || layout.titlePosition !== prevProps.layout.titlePosition
       ) {
         this._graph.resizeContainer(layout.width, layout.height);
-        this._graph.updateGraphParameters(canvas, numberlineAxis, layout);
+        this._graph.updateGraphParameters(
+          canvas,
+          numberlineAxis,
+          layout,
+          graphType,
+          null,
+          { position: layout.linePosition, yMax: canvas.yMax, yMin: canvas.yMin },
+          { position: layout.pointBoxPosition, yMax: canvas.yMax, yMin: canvas.yMin }
+        );
+        this._graph.updateTitle({
+          position: layout.titlePosition,
+          title: canvas.title,
+          xMin: canvas.xMin,
+          xMax: canvas.xMax,
+          yMax: canvas.yMax,
+          yMin: canvas.yMin
+        });
       }
 
       if (
@@ -240,16 +417,25 @@ class AxisSegmentsContainer extends Component {
         });
       }
 
-      if (JSON.stringify(elements) !== JSON.stringify(prevProps.elements)) {
-        this._graph.reset();
-        this.mapElementsToGraph();
-      }
-
       if (numberlineAxis.showMin !== prevProps.numberlineAxis.showMin
         || numberlineAxis.showMax !== prevProps.numberlineAxis.showMax
+        || numberlineAxis.rightArrow !== prevProps.numberlineAxis.rightArrow
+        || numberlineAxis.leftArrow !== prevProps.numberlineAxis.leftArrow
+        || numberlineAxis.stackResponses !== prevProps.numberlineAxis.stackResponses
         || numberlineAxis.ticksDistance !== prevProps.numberlineAxis.ticksDistance
-        || numberlineAxis.snapToTicks !== prevProps.numberlineAxis.snapToTicks) {
-        this._graph.updateGraphParameters(canvas, numberlineAxis, layout);
+        || numberlineAxis.snapToTicks !== prevProps.numberlineAxis.snapToTicks
+        || numberlineAxis.renderingBase !== prevProps.numberlineAxis.renderingBase
+        || numberlineAxis.specificPoints !== prevProps.numberlineAxis.specificPoints
+      ) {
+        this._graph.updateGraphParameters(
+          canvas,
+          numberlineAxis,
+          layout,
+          graphType,
+          null,
+          { position: layout.linePosition, yMax: canvas.yMax, yMin: canvas.yMin },
+          { position: layout.pointBoxPosition, yMax: canvas.yMax, yMin: canvas.yMin }
+        );
       }
     }
   }
@@ -272,7 +458,7 @@ class AxisSegmentsContainer extends Component {
   }
 
   getConfig() {
-    const conf = this._graph.getConfig();
+    const conf = this._graph.getSegments();
     const { setValue, changePreviewTab, checkAnswer } = this.props;
     setValue(conf);
 
@@ -282,9 +468,8 @@ class AxisSegmentsContainer extends Component {
   }
 
   setGraphUpdateEventHandler = () => {
-    // todo: need implementation
-    // this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, () => this.getConfig());
-    // this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, () => this.getConfig());
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, () => this.getConfig());
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, () => this.getConfig());
   };
 
   mapElementsToGraph = () => {
@@ -317,7 +502,7 @@ class AxisSegmentsContainer extends Component {
       newElems = getColoredElems(elements, compareResult);
     }
 
-    this._graph.loadFromConfig(newElems);
+    this._graph.loadSegmentsAnswers(newElems);
   };
 
   getIconByToolName = (toolName, options) => {

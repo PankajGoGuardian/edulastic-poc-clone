@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { PaddingDiv } from '@edulastic/common';
+import { PaddingDiv, Button } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
 import { arrayMove } from 'react-sortable-hoc';
 import { cloneDeep, clone } from 'lodash';
 import { Subtitle, Label, ContainerStart, LineParameter, LineInput, TitleTextInput } from '../common/styled_components';
-import OrderListResponse from './OrderListResponse/OrderListResponse';
 import { setQuestionDataAction } from '../../../../../author/src/actions/question';
-import { QuestionTextArea } from '../../common';
+import { QuestionTextArea, SortableList } from '../../common';
 
 class GraphAxisLabels extends Component {
   onChangeQuestion = (stimulus) => {
@@ -23,7 +22,7 @@ class GraphAxisLabels extends Component {
     setQuestionData({ ...graphData, list: arrayMove(graphData.list, oldIndex, newIndex) });
   };
 
-  handleQuestionsChange = (value, index) => {
+  handleQuestionsChange = (index, value) => {
     const { setQuestionData, graphData } = this.props;
     const labels = clone(graphData.list);
 
@@ -115,16 +114,23 @@ class GraphAxisLabels extends Component {
 
         <PaddingDiv bottom={30}>
           <Subtitle>{t('component.graphing.possibleresponses')}</Subtitle>
-
-          <OrderListResponse
-            style={{ marginBottom: 10 }}
-            questions={graphData.list}
+          <SortableList
+            items={graphData.list.map(o => o.text)}
             onSortEnd={this.onSortOrderListEnd}
-            onQuestionsChange={this.handleQuestionsChange}
-            onDeleteQuestion={this.handleDeleteQuestion}
-            onAddQuestion={this.handleAddQuestion}
             useDragHandle
+            onRemove={this.handleDeleteQuestion}
+            onChange={this.handleQuestionsChange}
           />
+          <Button
+            style={{ minWidth: 130, marginTop: 10 }}
+            onClick={this.handleAddQuestion}
+            variant="extendedFab"
+            outlined
+            type="button"
+            color="primary"
+          >
+            {t('component.graphing.addnewpossibleresponsebtn')}
+          </Button>
         </PaddingDiv>
 
       </div>

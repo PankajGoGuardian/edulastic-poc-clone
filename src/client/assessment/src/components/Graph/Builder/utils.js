@@ -7,6 +7,34 @@ import vectorConfig from './elements/Vector';
 import Polygon from './elements/Polygon';
 import { JXG } from './index';
 
+export const findAvailableStackedSegmentPosition = (board, segments, stackResponsesSpacing) => {
+  const [x, y] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
+  const [xMeasure, yMeasure] = calcMeasure(0, stackResponsesSpacing, board);
+  const lineY = 0.5 - (y / 100 * 75);
+  let calcedYPosition = lineY + yMeasure;
+
+  for (let i = 0; i <= segments.length; i++) {
+    const yPosition = Math.round((lineY + (yMeasure * (i + 1))) * 10) / 10;
+    let isPositionAvailable = true;
+
+    segments.forEach((segment) => {
+      if (segment.elType === 'point') {
+        if (segment.Y() === yPosition) {
+          isPositionAvailable = false;
+        }
+      } else if (segment.point2.coords.usrCoords[2] === yPosition) {
+        isPositionAvailable = false;
+      }
+    });
+
+    if (isPositionAvailable) {
+      return calcedYPosition = yPosition;
+    }
+  }
+
+  return calcedYPosition;
+};
+
 export const findSegmentPosition = (board, coords) => {
   const position = board.getCoords(coords);
   return Math.round(position.usrCoords[1]);
@@ -23,7 +51,7 @@ export const orderPoints = (points) => {
   return [points[1], points[0]];
 };
 
-const lineLabelCoord = (firstPoint, secondPoint) => {
+export const lineLabelCoord = (firstPoint, secondPoint) => {
   if (firstPoint === secondPoint) {
     return firstPoint;
   } if (firstPoint < secondPoint) {
@@ -41,19 +69,43 @@ export const calcLineLabelPosition = (line) => {
   return [finalXCoord, finalYCoord];
 };
 
+const fractionsNumber = number => (number.toString().includes('.') ? number.toString().split('.').pop().length : 0);
+
 // Calculate point rounded to ticksDistance value
 export const calcRoundedToTicksDistance = (x, ticksDistance) => {
-  if (x % ticksDistance >= ticksDistance / 2) {
-    // closer to the biggest value
-    let distanceDiff = x;
-    do {
-      distanceDiff = Math.ceil(distanceDiff + 0.0001);
-    } while (distanceDiff % ticksDistance !== 0);
+  if (fractionsNumber(ticksDistance) === 0) {
+    if (x % ticksDistance >= ticksDistance / 2) {
+      // closer to the biggest value
+      let distanceDiff = x;
+      do {
+        distanceDiff = Math.ceil(distanceDiff + 0.0001);
+      } while (distanceDiff % ticksDistance !== 0);
 
-    return (x + (distanceDiff - x));
+      return (x + (distanceDiff - x));
+    }
+    // closer to the smallest value
+    return Math.round(x - x % ticksDistance);
   }
-  // closer to the smallest value
-  return Math.round(x - x % ticksDistance);
+  let ticksRounded = ticksDistance;
+  let iterationsCount = 0;
+  let xRounded = x;
+
+  do {
+    xRounded *= 10;
+    ticksRounded *= 10;
+    iterationsCount += 1;
+  } while (fractionsNumber(ticksRounded) !== 0);
+
+  xRounded = Math.floor(xRounded);
+
+  let roundedCoord = calcRoundedToTicksDistance(xRounded, ticksRounded);
+
+  do {
+    roundedCoord /= 10;
+    iterationsCount -= 1;
+  } while (iterationsCount !== 0);
+
+  return roundedCoord;
 };
 
 // Calculate unitX
@@ -92,50 +144,56 @@ export const calcMeasure = (x, y, board) => {
 };
 
 // Calculate first available space for render in marks container
-export const checkMarksRenderSpace = (board) => {
+export const checkMarksRenderSpace = (board, settings, containerSettings) => {
+  const [xContainerMeasure, yContainerMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
+  const [xPadding, yPadding] = calcMeasure(
+    settings.separationDistanceX <= 0 ? 1 : settings.separationDistanceX,
+    settings.separationDistanceY <= 0 ? 1 : settings.separationDistanceY,
+    board
+  ); // Padding from settings
+  const [xMeasure, yMeasure] = calcMeasure(52.5, 65, board); // half of element's width and full height in units
+  const [markXMeasure, markYMeasure] = calcMeasure(51.5, 45, board);
+
   const filteredElements = board.elements.filter(element => element.elType === 'group');
-  const xMeasure = 52.5 / board.$board.unitX; // half of element's width in units
-  const xRenderPos = board.$board.plainBB[0] + xMeasure * 1.05; // start position for POINT
+  const containerY = containerSettings.yMax - (yContainerMeasure / 100 * containerSettings.position); // End of the mark's container
+
+  const xRenderPos = board.$board.plainBB[0] + xMeasure + xPadding; // X start position for marks' point
+  const yRenderPos = containerY - yMeasure - yPadding; // Y start position for mark's point
+  const elementSpace = (xMeasure + xPadding) * 2; // Full width of one mark
 
   if (filteredElements.length === 0) {
     // If it's first element
-    return [xRenderPos, -1.5];
+    return [xRenderPos, yRenderPos];
   }
   for (let i = 0; i < filteredElements.length; i++) {
     //  Compare each POSITION with each element
-    // Calculations of xStart and xEnd are wrong, need to be reworked
-    const xStart = i === 0 ? board.$board.plainBB[0] : xRenderPos + (xMeasure * 1.025 * i); // first point for comparison
-    const xEnd = i === 0 ? xRenderPos + xMeasure : xRenderPos + (xMeasure * 2.1 * i); // last point for comparison
-    // const xStart = i === 0 ? board.$board.plainBB[0] : xRenderPos * i - xMeasure// first point for comparison
-    // const xEnd = i === 0 ? xRenderPos + xMeasure : xRenderPos * i + xMeasure // last point for comparison
+    const xStart = board.$board.plainBB[0] + (elementSpace * i);
+    const xEnd = board.$board.plainBB[0] + (elementSpace * (i + 1));
     let isPositionAvailable = true;
-    // console.log("Position: ", xStart, xEnd)
 
     for (let j = 0; j < filteredElements.length; j++) {
-      const groupXPos = filteredElements[j].translationPoints[0].coords.usrCoords[1];
-      const groupYPos = filteredElements[j].translationPoints[0].coords.usrCoords[2];
+      const [groupZPos, groupXPos, groupYPos] = filteredElements[j].translationPoints[0].coords.usrCoords;
       const markLeftSide = groupXPos - xMeasure;
       const markRightSide = groupXPos + xMeasure;
-      // console.log(filteredElements[j].translationPoints[1].htmlStr, " element", "x: ", groupXPos, 'left side: ', markLeftSide, 'right side: ', markRightSide)
 
-      if (groupYPos < -1 && (markRightSide > xStart || xEnd > markLeftSide)) {
+      if (
+        groupYPos < containerY - (markYMeasure * 1.35)
+        && ((markRightSide > xStart && markRightSide < xEnd)
+          || (markLeftSide < xEnd && markLeftSide > xStart)
+        )
+      ) {
         // If some element is on this place
-        // console.log("Element on this place: ", i + 1)
         isPositionAvailable = false;
       }
     }
 
-
     if (isPositionAvailable) {
-      // console.log("Final render pos: ", i === 0 ? xRenderPos : xRenderPos + (xMeasure * 2.1))
-      return [i === 0 ? xRenderPos : xRenderPos + (xMeasure * 2.1 * i), -1.5];
+      return [xRenderPos + (elementSpace * i), yRenderPos];
     }
   }
 
-
   // If all elements at their start place
-  // console.log("All elements at their start place")
-  return [xRenderPos + (xMeasure * 2.1 * filteredElements.length), -1.5];
+  return [xRenderPos + (elementSpace * filteredElements.length), yRenderPos];
 };
 
 function compareKeys(config, props) {
@@ -266,12 +324,6 @@ export function updateAxe(line, parameters, axe) {
 
 // Update numberline axis settings
 export const updateNumberline = (numberline, settings) => {
-  if ('leftArrow' in settings || 'rightArrow' in settings) {
-    numberline[0].setArrow(
-      settings.leftArrow === true ? { size: 10 } : false,
-      settings.rightArrow === true ? { size: 10 } : false
-    );
-  }
   if ('showTicks' in settings) {
     numberline[0].ticks[0].setAttribute({ visible: settings.showTicks });
   }

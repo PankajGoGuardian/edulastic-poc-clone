@@ -1,10 +1,10 @@
-"use strict";
 
-Object.defineProperty(exports, "__esModule", {
+
+Object.defineProperty(exports, '__esModule', {
   value: true
 });
 exports.GraphTypes = void 0;
-var GraphTypes = {
+const GraphTypes = {
   QUADRANTS: 'quadrants',
   FIRST_QUADRANT: 'firstQuadrant',
   AXIS_SEGMENTS: 'axisSegments',

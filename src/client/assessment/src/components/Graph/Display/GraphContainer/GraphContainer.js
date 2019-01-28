@@ -151,6 +151,7 @@ class GraphContainer extends Component {
       gridParams,
       bgImgOptions,
       backgroundShapes,
+      numberlineAxis,
       tools,
       value,
       showAnswer,

@@ -13,7 +13,8 @@ import {
   NumberlinePoint,
   NumberlineVector,
   NumberlineSegment,
-  NumberlineTrash
+  NumberlineTrash,
+  Title
 } from './elements';
 import {
   mergeParams,
@@ -94,6 +95,12 @@ class Board {
      */
     this.currentTool = null;
 
+    this.stackResponses = false;
+
+    this.stackResponsesSpacing = 30;
+
+    this.responsesAllowed = 2;
+
     this.dragDetector = dragDetector();
 
     this.events = _events();
@@ -115,8 +122,7 @@ class Board {
       return;
     }
     if (this.currentTool !== tool) {
-      if (graphType === 'axisSegments') {
-      } else {
+      if (!graphType === 'axisSegments') {
         this.abortTool();
       }
     }
@@ -151,19 +157,19 @@ class Board {
         this.setCreatingHandler(Mark.onHandler());
         return;
       case CONSTANT.TOOLS.SEGMENTS_POINT:
-        this.setCreatingHandler(NumberlinePoint.onHandler, responsesAllowed);
+        this.setCreatingHandler(NumberlinePoint.onHandler(this.stackResponses, this.stackResponsesSpacing), responsesAllowed);
         return;
       case CONSTANT.TOOLS.BOTH_INCLUDED_SEGMENT:
       case CONSTANT.TOOLS.BOTH_NOT_INCLUDED_SEGMENT:
       case CONSTANT.TOOLS.ONLY_RIGHT_INCLUDED_SEGMENT:
       case CONSTANT.TOOLS.ONLY_LEFT_INCLUDED_SEGMENT:
-        this.setCreatingHandler(NumberlineSegment.onHandler(tool), responsesAllowed);
+        this.setCreatingHandler(NumberlineSegment.onHandler(tool, this.stackResponses, this.stackResponsesSpacing), responsesAllowed);
         return;
       case CONSTANT.TOOLS.INFINITY_TO_INCLUDED_SEGMENT:
       case CONSTANT.TOOLS.INFINITY_TO_NOT_INCLUDED_SEGMENT:
       case CONSTANT.TOOLS.INCLUDED_TO_INFINITY_SEGMENT:
       case CONSTANT.TOOLS.NOT_INCLUDED_TO_INFINITY_SEGMENT:
-        this.setCreatingHandler(NumberlineVector.onHandler(tool), responsesAllowed);
+        this.setCreatingHandler(NumberlineVector.onHandler(tool, this.stackResponses, this.stackResponsesSpacing), responsesAllowed);
         return;
       case CONSTANT.TOOLS.TRASH:
         this.setCreatingHandler();
@@ -217,7 +223,6 @@ class Board {
 
         if (responsesAllowed) {
           const elementsLength = this.elements.filter(element => element.elType === 'segment' || element.elType === 'point').length;
-
           if (elementsLength < responsesAllowed) {
             newElement = handler(this, event);
           }
@@ -233,32 +238,56 @@ class Board {
     });
   }
 
+  updateStackSettings(stackResponses, stackResponsesSpacing, responsesAllowed) {
+    if (
+      this.stackResponses !== stackResponses
+      || this.responsesAllowed !== responsesAllowed
+      || this.stackResponsesSpacing !== stackResponsesSpacing
+    ) {
+      NumberlineTrash.cleanBoard(this);
+    }
+
+    if (stackResponses && responsesAllowed > 0 && stackResponsesSpacing > 0) {
+      const newHeight = 150 + (responsesAllowed * stackResponsesSpacing);
+      this.resizeContainer(this.$board.canvasWidth, newHeight);
+    }
+
+    if (stackResponsesSpacing < 1 || !stackResponses) {
+      this.resizeContainer(this.$board.canvasWidth, 150);
+    }
+
+    this.stackResponses = stackResponses;
+    this.stackResponsesSpacing = stackResponsesSpacing;
+    this.responsesAllowed = responsesAllowed;
+  }
+
   // Set calculated bounding box (xMin - margin and xMax + margin), render numberline axis
-  makeNumberlineAxis(graphParameters, settings, layout, graphType) {
+  makeNumberlineAxis(graphParameters, settings, layout, graphType, lineSettings, containerSettings) {
+    Object.values(this.$board.defaultAxes).forEach(axis => this.$board.removeObject(axis));
     const xMargin = graphParameters.margin / calcUnitX(graphParameters.xMin, graphParameters.xMax, layout.width);
 
     this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(graphParameters, xMargin));
-    this.elements.push(Numberline.onHandler(this, graphParameters.xMin, graphParameters.xMax, settings));
+    this.elements.push(Numberline.onHandler(this, graphParameters.xMin, graphParameters.xMax, settings, lineSettings));
 
     if (graphType === 'axisLabels') {
-      Mark.updateMarksContainer(this, graphParameters.xMin - xMargin, graphParameters.xMax + xMargin);
+      Mark.updateMarksContainer(this, graphParameters.xMin - xMargin, graphParameters.xMax + xMargin, containerSettings);
     }
   }
 
   // Update bounding box, marks container, rerender numberline axis, update mark's snap handler
-  updateGraphParameters(graphParameters, settings, layout, graphType) {
+  updateGraphParameters(graphParameters, settings, layout, graphType, setValue, lineSettings, containerSettings) {
     const xMargin = graphParameters.margin / calcUnitX(graphParameters.xMin, graphParameters.xMax, layout.width);
     this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(graphParameters, xMargin));
 
-    Numberline.updateCoords(this, graphParameters.xMin, graphParameters.xMax, settings);
+    Numberline.updateCoords(this, graphParameters.xMin, graphParameters.xMax, settings, lineSettings);
 
     if (graphType === 'axisLabels') {
-      Mark.updateMarksContainer(this, graphParameters.xMin - xMargin, graphParameters.xMax + xMargin);
+      Mark.updateMarksContainer(this, graphParameters.xMin - xMargin, graphParameters.xMax + xMargin, containerSettings);
 
       const marks = this.elements.filter(element => element.elType === 'group');
       this.elements = this.elements.filter(element => element.elType !== 'group');
       marks.forEach(mark => Mark.removeMark(this, mark));
-      marks.forEach(mark => Mark.rerenderMark(mark, this, graphParameters, settings));
+      marks.forEach(mark => Mark.rerenderMark(mark, this, graphParameters, settings, setValue, lineSettings, containerSettings));
     }
 
     this.$board.fullUpdate();
@@ -278,50 +307,56 @@ class Board {
   }
 
   // Render marks
-  renderMarks(marks, xCoords, settings) {
+  renderMarks(marks, xCoords, settings, setValue, lineSettings, containerSettings) {
     marks.forEach((mark) => {
       this.elements.push(
         Mark.onHandler(
           this,
-          checkMarksRenderSpace(this),
+          checkMarksRenderSpace(this, settings, containerSettings),
           mark,
           calcMeasure(51.5, 45, this),
           xCoords,
           settings.snapToTicks,
-          settings.ticksDistance
+          settings.ticksDistance,
+          setValue,
+          lineSettings,
+          containerSettings
         )
       );
     });
   }
 
   // Marks shuffled or text edited
-  updateMarks(marks, oldMarks) {
-    Mark.checkForUpdate(marks, this.elements.filter(element => element.elType === 'group'), this, oldMarks);
+  updateMarks(marks, oldMarks, containerSettings) {
+    Mark.checkForUpdate(marks, this.elements.filter(element => element.elType === 'group'), this, oldMarks, containerSettings);
   }
 
   // Size of marks array have changed
-  marksSizeChanged(marks, xCoords, settings) {
+  marksSizeChanged(marks, xCoords, settings, setValue, lineSettings, containerSettings) {
     const filteredElements = this.elements.filter(element => element.elType === 'group');
 
     if (marks.length < filteredElements.length) {
       this.removeMark(marks, filteredElements);
     } else {
-      this.addMark(marks, filteredElements, xCoords, settings.snapToTicks, settings.ticksDistance);
+      this.addMark(marks, filteredElements, xCoords, setValue, lineSettings, containerSettings, settings);
     }
   }
 
   // Add new mark
-  addMark(marks, elements, xCoords, snapToTicks, ticksDistance) {
+  addMark(marks, elements, xCoords, setValue, lineSettings, containerSettings, settings) {
     const newMark = findElementsDiff(marks, elements);
     this.elements.push(
       Mark.onHandler(
         this,
-        checkMarksRenderSpace(this),
+        checkMarksRenderSpace(this, settings, containerSettings),
         newMark,
         calcMeasure(51.5, 45, this),
         xCoords,
-        snapToTicks,
-        ticksDistance
+        settings.snapToTicks,
+        settings.ticksDistance,
+        setValue,
+        lineSettings,
+        containerSettings
       )
     );
     this.$board.fullUpdate();
@@ -332,6 +367,16 @@ class Board {
     const removedMark = findElementsDiff(elements, marks);
     this.elements = this.elements.filter(element => element.elType !== 'group' || element.id !== removedMark.id);
     Mark.removeMark(this, removedMark);
+    this.$board.fullUpdate();
+  }
+
+  renderTitle(title) {
+    this.elements.push(Title.renderTitle(this, title));
+    this.$board.fullUpdate();
+  }
+
+  updateTitle(title) {
+    Title.updateTitle(this, title);
     this.$board.fullUpdate();
   }
 
@@ -354,6 +399,15 @@ class Board {
   /**
    * @see https://jsxgraph.org/docs/symbols/JXG.Board.html#removeObject
    */
+  segmentsReset() {
+    const elementsToDelete = this.elements.filter(element => element.elType !== 'axis' && 'arrow');
+    const numberlineAxis = this.elements.filter(element => element.elType === 'axis' || element.elType === 'arrow');
+
+    elementsToDelete.map(this.removeObject.bind(this));
+    this.elements = [];
+    this.elements.push(numberlineAxis[0]);
+  }
+
   reset() {
     this.abortTool();
     this.elements.map(this.removeObject.bind(this));
@@ -402,6 +456,30 @@ class Board {
     const flatCfg = Object.values(flatConfig(config));
     console.log(JSON.stringify(flatCfg, null, 2));
     return flatCfg;
+  }
+
+  getMarks() {
+    return this.elements.filter(element => element.elType === 'group').map(group => Mark.getConfig(group));
+  }
+
+  getSegments() {
+    return this.elements.filter(element => element.elType === 'segment' || element.elType === 'point').map((element) => {
+      switch (element.segmentType) {
+        case CONSTANT.TOOLS.SEGMENTS_POINT:
+          return NumberlinePoint.getConfig(element);
+        case CONSTANT.TOOLS.BOTH_INCLUDED_SEGMENT:
+        case CONSTANT.TOOLS.BOTH_NOT_INCLUDED_SEGMENT:
+        case CONSTANT.TOOLS.ONLY_RIGHT_INCLUDED_SEGMENT:
+        case CONSTANT.TOOLS.ONLY_LEFT_INCLUDED_SEGMENT:
+          return NumberlineSegment.getConfig(element);
+        case CONSTANT.TOOLS.INFINITY_TO_INCLUDED_SEGMENT:
+        case CONSTANT.TOOLS.INFINITY_TO_NOT_INCLUDED_SEGMENT:
+        case CONSTANT.TOOLS.INCLUDED_TO_INFINITY_SEGMENT:
+        case CONSTANT.TOOLS.NOT_INCLUDED_TO_INFINITY_SEGMENT:
+          return NumberlineVector.getConfig(element);
+        default: break;
+      }
+    });
   }
 
   // settings
@@ -530,6 +608,36 @@ class Board {
         ...colors
       });
     }));
+  }
+
+  loadMarksAnswers(marks) {
+    if (marks) {
+      this.answers.push(
+        marks.map(config => Mark.renderMarkAnswer(this, config, calcMeasure(51.5, 45, this)))
+      );
+    }
+  }
+
+  loadSegmentsAnswers(segments) {
+    this.answers.push(
+      segments.map((segment) => {
+        switch (segment.type) {
+          case CONSTANT.TOOLS.SEGMENTS_POINT:
+            return NumberlinePoint.renderAnswer(this, segment);
+          case CONSTANT.TOOLS.BOTH_INCLUDED_SEGMENT:
+          case CONSTANT.TOOLS.BOTH_NOT_INCLUDED_SEGMENT:
+          case CONSTANT.TOOLS.ONLY_RIGHT_INCLUDED_SEGMENT:
+          case CONSTANT.TOOLS.ONLY_LEFT_INCLUDED_SEGMENT:
+            return NumberlineSegment.determineAnswerType(this, segment);
+          case CONSTANT.TOOLS.INFINITY_TO_INCLUDED_SEGMENT:
+          case CONSTANT.TOOLS.INFINITY_TO_NOT_INCLUDED_SEGMENT:
+          case CONSTANT.TOOLS.INCLUDED_TO_INFINITY_SEGMENT:
+          case CONSTANT.TOOLS.NOT_INCLUDED_TO_INFINITY_SEGMENT:
+            return NumberlineVector.determineAnswerType(this, segment);
+          default: break;
+        }
+      })
+    );
   }
 
   loadFromConfig(flatCfg) {
@@ -696,7 +804,7 @@ class Board {
   /**
    * Find point
    * @param {Object} el Point::getConfig
-   * @param {object} attrs provided attributes
+   * @param {Object} attrs provided attributes
    * @see Point::getConfig
    */
   createPointFromConfig(el, attrs) {

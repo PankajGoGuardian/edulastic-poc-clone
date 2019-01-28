@@ -7,6 +7,7 @@ import {
 } from '../../common/styled_components';
 import { Toggler } from '../../../common/Options/styles';
 import AxisLabelsMoreOptions from './AxisLabelsMoreOptions';
+import { RENDERING_BASE } from '../../Builder/config/constants';
 
 class AxisLabelsOptions extends Component {
   state = {
@@ -62,12 +63,12 @@ class AxisLabelsOptions extends Component {
     ],
     renderingBaseList: [
       {
-        id: 'min-value-based',
+        id: RENDERING_BASE.LINE_MINIMUM_VALUE,
         value: 'Line minimum value',
         selected: true
       },
       {
-        id: 'zero-based',
+        id: RENDERING_BASE.ZERO_BASED,
         value: 'Zero',
         selected: false
       }

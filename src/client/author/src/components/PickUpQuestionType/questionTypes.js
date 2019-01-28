@@ -833,7 +833,8 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           y_min: -0.5,
           numberline: true,
           margin: 75,
-          responsesAllowed: 2
+          responsesAllowed: 2,
+          title: 'Text'
         },
         toolbar: {
           tools: ['segmentsPoint'],
@@ -847,7 +848,11 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           ticksDistance: 1,
           showMin: true,
           showMax: true,
-          fontSize: 12
+          fontSize: 12,
+          stackResponses: false,
+          stackResponsesSpacing: 30,
+          renderingBase: 'min-value-based',
+          specificPoints: ''
         },
         ui_style: {
           gridVisible: false,
@@ -863,7 +868,6 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           xVisible: false,
           xCommaInLabel: false,
           yShowAxisLabel: false,
-          yHideTicks: true,
           yDrawLabel: false,
           yMaxArrow: false,
           yMinArrow: false,
@@ -874,11 +878,14 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           xTickDistance: 1,
           yTickDistance: 0,
           layout_width: 600,
-          layout_height: 200,
+          layout_height: 150,
           layout_margin: 0,
           layout_snapto: 'grid',
           xAxisLabel: 'X',
-          yAxisLabel: 'Y'
+          yAxisLabel: 'Y',
+          title_position: 15,
+          line_position: 50,
+          point_box_position: 60
         },
         background_image: {
           src: '',
@@ -892,6 +899,8 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         background_shapes: [],
         multiple_responses: false,
         validation: {
+          graphType: 'axisSegments',
+          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: []
@@ -928,6 +937,8 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         ],
         stimulus: '[This is the stem. axisLabels]',
         validation: {
+          graphType: 'axisLabels',
+          scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
             value: []
@@ -939,7 +950,8 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           y_max: 1,
           y_min: -1.75,
           numberline: true,
-          margin: 75
+          margin: 75,
+          title: 'Text'
         },
         numberlineAxis: {
           leftArrow: false,
@@ -947,9 +959,14 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           showTicks: true,
           snapToTicks: true,
           ticksDistance: 1,
+          labelsFrequency: 1,
           showMin: true,
           showMax: true,
-          fontSize: 12
+          fontSize: 12,
+          separationDistanceX: 10,
+          separationDistanceY: 20,
+          renderingBase: 'min-value-based',
+          specificPoints: ''
         },
         ui_style: {
           gridVisible: false,
@@ -980,7 +997,10 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           layout_margin: 0,
           layout_snapto: 'grid',
           xAxisLabel: 'X',
-          yAxisLabel: 'Y'
+          yAxisLabel: 'Y',
+          title_position: 15,
+          line_position: 34,
+          point_box_position: 60
         },
         background_image: {
           src: '',

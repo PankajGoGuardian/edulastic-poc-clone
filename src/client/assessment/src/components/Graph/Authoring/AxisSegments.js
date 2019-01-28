@@ -6,32 +6,26 @@ import { withNamespaces } from '@edulastic/localization';
 import { PaddingDiv } from '@edulastic/common';
 import {
   Col, Label, Row,
-  StyledTextarea, StyledTextField,
+  StyledTextField,
   Subtitle, TitleTextInput
 } from '../common/styled_components';
 import { setQuestionDataAction } from '../../../../../author/src/actions/question';
+import { QuestionTextArea } from '../../common';
 
 class AxisSegments extends Component {
-  constructor(props) {
-    super(props);
-    const { stimulus } = props.graphData;
-    this.state = {
-      stimulus,
-      title: '',
-      stacked_elements: 2
-    };
-  }
-
-  updateTitle = e => this.setState({ title: e.target.value })
-
-  updateStimulus = e => this.setState({ stimulus: e.target.value })
+  onChangeQuestion = (stimulus) => {
+    const { graphData, setQuestionData } = this.props;
+    setQuestionData({ ...graphData, stimulus });
+  };
 
   handleCanvasChange = (event) => {
-    const { target: { name, value } } = event;
+    const { value, name } = event.target;
+    const { graphData, setQuestionData } = this.props;
+    const { canvas } = graphData;
 
-    const { canvas, setCanvas } = this.props;
-    setCanvas({ ...canvas, [name]: value });
-  }
+    canvas[name] = value;
+    setQuestionData({ ...graphData, canvas });
+  };
 
   handleInputChange = (event) => {
     const { target: { type, checked, value: targetValue, name } } = event;
@@ -41,18 +35,15 @@ class AxisSegments extends Component {
   };
 
   render() {
-    const {
-      stimulus,
-      title
-    } = this.state;
-    const { t, canvas } = this.props;
+    const { t, graphData } = this.props;
+    const { canvas, stimulus } = graphData;
+
     return (
       <div>
         <Subtitle>{t('component.graphing.question.composequestion')}</Subtitle>
-        <StyledTextarea
+        <QuestionTextArea
           placeholder={t('component.graphing.question.enteryourquestion')}
-          name="stimulus"
-          onChange={this.updateStimulus}
+          onChange={this.onChangeQuestion}
           value={stimulus}
         />
         <PaddingDiv top={30} bottom={30}>
@@ -72,9 +63,8 @@ class AxisSegments extends Component {
               <TitleTextInput
                 type="text"
                 name="title"
-                value={title}
-                onChange={this.updateTitle}
-                onBlur={this.updateTitle}
+                value={canvas.title}
+                onChange={this.handleCanvasChange}
               />
             </Col>
             <Col md={6} style={{ paddingLeft: 30 }}>
@@ -111,7 +101,8 @@ class AxisSegments extends Component {
 
 AxisSegments.propTypes = {
   t: PropTypes.func.isRequired,
-  graphData: PropTypes.object.isRequired
+  graphData: PropTypes.object.isRequired,
+  setQuestionData: PropTypes.func.isRequired
 };
 
 const enhance = compose(

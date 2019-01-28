@@ -41,3 +41,8 @@ export default {
   TOOLS,
   EVENT_NAMES
 };
+
+export const RENDERING_BASE = {
+  ZERO_BASED: 'zero-based',
+  LINE_MINIMUM_VALUE: 'min-value-based'
+};

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { graph as checkAnswerMethod } from '@edulastic/evaluators';
+import { cloneDeep } from 'lodash';
 import { GraphWrapper, JSXBox } from './styled';
 import {
   defaultAxesParameters, defaultGraphParameters, defaultGridParameters,
@@ -9,14 +10,37 @@ import {
 import { makeBorder } from '../../Builder';
 
 const getColoredElems = (elements, compareResult) => {
-  // todo: need implementation
-  console.log(compareResult);
-  return elements;
+  if (compareResult && compareResult.details && compareResult.details.length > 0) {
+    let newElems = cloneDeep(elements);
+
+    newElems = newElems.map((el) => {
+      const detail = compareResult.details.find(det => det.id === el.id);
+      let newEl = {};
+
+      if (detail && detail.result) {
+        newEl = {
+          className: 'correct',
+          ...el
+        };
+      } else {
+        newEl = {
+          className: 'incorrect',
+          ...el
+        };
+      }
+      return newEl;
+    });
+    return newElems;
+  }
 };
 
 const getColoredAnswer = (answerArr) => {
-  // todo: need implementation
-  console.log(answerArr);
+  if (Array.isArray(answerArr)) {
+    return answerArr.map(el => ({
+      className: 'show',
+      ...el
+    }));
+  }
   return answerArr;
 };
 
@@ -51,7 +75,6 @@ class AxisLabelsContainer extends Component {
     this._graph = null;
 
     this.onReset = this.onReset.bind(this);
-    this.getConfig = this.getConfig.bind(this);
   }
 
   componentDidMount() {
@@ -66,6 +89,7 @@ class AxisLabelsContainer extends Component {
       graphType,
       list,
       showAnswer,
+      checkAnswer,
       validation
     } = this.props;
 
@@ -95,19 +119,45 @@ class AxisLabelsContainer extends Component {
         ...gridParams
       });
 
-      this._graph.makeNumberlineAxis(canvas, numberlineAxis, layout, graphType);
-      this._graph.renderMarks(list, [canvas.xMin, canvas.xMax], numberlineAxis);
+      this._graph.renderTitle({
+        position: layout.titlePosition,
+        title: canvas.title,
+        xMin: canvas.xMin,
+        xMax: canvas.xMax,
+        yMax: canvas.yMax,
+        yMin: canvas.yMin
+      });
+
+      this._graph.makeNumberlineAxis(
+        canvas,
+        numberlineAxis,
+        layout,
+        graphType,
+        { position: layout.linePosition, yMax: canvas.yMax, yMin: canvas.yMin },
+        { position: layout.pointBoxPosition, yMax: canvas.yMax, yMin: canvas.yMin }
+      );
+
+      if (!checkAnswer) {
+        this._graph.renderMarks(
+          list,
+          [canvas.xMin, canvas.xMax],
+          numberlineAxis,
+          this.setMarks,
+          { position: layout.linePosition, yMax: canvas.yMax, yMin: canvas.yMin },
+          { position: layout.pointBoxPosition, yMax: canvas.yMax, yMin: canvas.yMin }
+        );
+      }
 
       if (showAnswer) {
-        this._graph.setAnswer(getColoredAnswer(validation ? validation.valid_response.value : []));
+        this._graph.loadMarksAnswers(getColoredAnswer(validation ? validation.valid_response.value : []));
       } else {
         this._graph.removeAnswers();
       }
+
+      if (checkAnswer) {
+        this.mapElementsToGraph();
+      }
     }
-
-    this.mapElementsToGraph();
-
-    this.setGraphUpdateEventHandler();
   }
 
   componentDidUpdate(prevProps) {
@@ -120,8 +170,7 @@ class AxisLabelsContainer extends Component {
       layout,
       graphType,
       gridParams,
-      list,
-      elements
+      list
     } = this.props;
 
     if (this._graph) {
@@ -130,13 +179,28 @@ class AxisLabelsContainer extends Component {
         || canvas.yMin !== prevProps.canvas.yMin
         || canvas.yMax !== prevProps.canvas.yMax
         || canvas.margin !== prevProps.canvas.margin
+        || canvas.title !== prevProps.canvas.title
       ) {
-        this._graph.updateGraphParameters(canvas, numberlineAxis, layout, graphType);
+        this._graph.updateGraphParameters(
+          canvas,
+          numberlineAxis,
+          layout,
+          graphType,
+          this.setMarks,
+          { position: layout.linePosition, yMax: canvas.yMax, yMin: canvas.yMin },
+          { position: layout.pointBoxPosition, yMax: canvas.yMax, yMin: canvas.yMin }
+        );
+        this._graph.updateTitle({
+          position: layout.titlePosition,
+          title: canvas.title,
+          xMin: canvas.xMin,
+          xMax: canvas.xMax,
+          yMax: canvas.yMax,
+          yMin: canvas.yMin
+        });
       }
 
-      if (numberlineAxis.leftArrow !== prevProps.numberlineAxis.leftArrow
-        || numberlineAxis.rightArrow !== prevProps.numberlineAxis.rightArrow
-        || numberlineAxis.showTicks !== prevProps.numberlineAxis.showTicks
+      if (numberlineAxis.showTicks !== prevProps.numberlineAxis.showTicks
         || numberlineAxis.fontSize !== prevProps.numberlineAxis.fontSize
       ) {
         this._graph.updateGraphSettings(numberlineAxis, graphType);
@@ -188,9 +252,28 @@ class AxisLabelsContainer extends Component {
       if (
         layout.width !== prevProps.layout.width
         || layout.height !== prevProps.layout.height
+        || layout.titlePosition !== prevProps.layout.titlePosition
+        || layout.linePosition !== prevProps.layout.linePosition
+        || layout.pointBoxPosition !== prevProps.layout.pointBoxPosition
       ) {
         this._graph.resizeContainer(layout.width, layout.height);
-        this._graph.updateGraphParameters(canvas, numberlineAxis, layout, graphType);
+        this._graph.updateGraphParameters(
+          canvas,
+          numberlineAxis,
+          layout,
+          graphType,
+          this.setMarks,
+          { position: layout.linePosition, yMax: canvas.yMax, yMin: canvas.yMin },
+          { position: layout.pointBoxPosition, yMax: canvas.yMax, yMin: canvas.yMin }
+        );
+        this._graph.updateTitle({
+          position: layout.titlePosition,
+          title: canvas.title,
+          xMin: canvas.xMin,
+          xMax: canvas.xMax,
+          yMax: canvas.yMax,
+          yMin: canvas.yMin
+        });
       }
 
       if (
@@ -203,29 +286,59 @@ class AxisLabelsContainer extends Component {
         });
       }
 
-      if (JSON.stringify(elements) !== JSON.stringify(prevProps.elements)) {
-        this._graph.reset();
-        this.mapElementsToGraph();
-      }
-
       if (numberlineAxis.showMin !== prevProps.numberlineAxis.showMin
         || numberlineAxis.showMax !== prevProps.numberlineAxis.showMax
         || numberlineAxis.ticksDistance !== prevProps.numberlineAxis.ticksDistance
-        || numberlineAxis.snapToTicks !== prevProps.numberlineAxis.snapToTicks) {
-        this._graph.updateGraphParameters(canvas, numberlineAxis, layout, graphType);
+        || numberlineAxis.labelsFrequency !== prevProps.numberlineAxis.labelsFrequency
+        || numberlineAxis.snapToTicks !== prevProps.numberlineAxis.snapToTicks
+        || numberlineAxis.leftArrow !== prevProps.numberlineAxis.leftArrow
+        || numberlineAxis.rightArrow !== prevProps.numberlineAxis.rightArrow
+        || numberlineAxis.separationDistanceX !== prevProps.numberlineAxis.separationDistanceX
+        || numberlineAxis.separationDistanceY !== prevProps.numberlineAxis.separationDistanceY
+        || numberlineAxis.renderingBase !== prevProps.numberlineAxis.renderingBase
+        || numberlineAxis.specificPoints !== prevProps.numberlineAxis.specificPoints
+      ) {
+        this._graph.updateGraphParameters(
+          canvas,
+          numberlineAxis,
+          layout,
+          graphType,
+          this.setMarks,
+          { position: layout.linePosition, yMax: canvas.yMax, yMin: canvas.yMin },
+          { position: layout.pointBoxPosition, yMax: canvas.yMax, yMin: canvas.yMin }
+        );
       }
 
       if (list && !prevProps.list) {
-        this._graph.renderMarks(list, [canvas.xMin, canvas.xMax], numberlineAxis);
+        this._graph.renderMarks(
+          list,
+          [canvas.xMin, canvas.xMax],
+          numberlineAxis,
+          this.setMarks,
+          { position: layout.linePosition, yMax: canvas.yMax, yMin: canvas.yMin },
+          { position: layout.pointBoxPosition, yMax: canvas.yMax, yMin: canvas.yMin }
+        );
       }
 
       if (list && list.length === prevProps.list.length && list !== prevProps.list) {
         // Shuffle or text edit
-        this._graph.updateMarks(list, prevProps.list);
+        this._graph.updateMarks(
+          list,
+          prevProps.list,
+          { position: layout.pointBoxPosition, yMax: canvas.yMax, yMin: canvas.yMin }
+        );
       }
+
       if (list && list.length !== prevProps.list.length) {
         // Mark added or removed
-        this._graph.marksSizeChanged(list, [canvas.xMin, canvas.xMax], numberlineAxis);
+        this._graph.marksSizeChanged(
+          list,
+          [canvas.xMin, canvas.xMax],
+          numberlineAxis,
+          this.setMarks,
+          { position: layout.linePosition, yMax: canvas.yMax, yMin: canvas.yMin },
+          { position: layout.pointBoxPosition, yMax: canvas.yMax, yMin: canvas.yMin }
+        );
       }
     }
   }
@@ -235,21 +348,10 @@ class AxisLabelsContainer extends Component {
     this.getConfig();
   }
 
-  getConfig() {
-    const conf = this._graph.getConfig();
-    const { setValue, changePreviewTab, checkAnswer } = this.props;
-    setValue(conf);
-
-    if (checkAnswer) {
-      changePreviewTab('clear');
-    }
+  setMarks = () => {
+    const { setValue } = this.props;
+    setValue(this._graph.getMarks());
   }
-
-  setGraphUpdateEventHandler = () => {
-    // todo: need implementation
-    // this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, () => this.getConfig());
-    // this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, () => this.getConfig());
-  };
 
   mapElementsToGraph = () => {
     const {
@@ -273,15 +375,17 @@ class AxisLabelsContainer extends Component {
         }));
         newElems = getColoredElems(elements, compareResult);
       }
+
+      this._graph.loadMarksAnswers(newElems);
     } else if (showAnswer) {
       const compareResult = getCompareResult(checkAnswerMethod({
         userResponse: elements,
         validation
       }));
       newElems = getColoredElems(elements, compareResult);
-    }
 
-    this._graph.loadFromConfig(newElems);
+      this._graph.loadMarksAnswers(newElems);
+    }
   };
 
   render() {
@@ -306,6 +410,7 @@ class AxisLabelsContainer extends Component {
 }
 
 AxisLabelsContainer.propTypes = {
+  graphType: PropTypes.string.isRequired,
   canvas: PropTypes.object.isRequired,
   numberlineAxis: PropTypes.object.isRequired,
   layout: PropTypes.object.isRequired,

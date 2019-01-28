@@ -1,10 +1,10 @@
-"use strict";
 
-Object.defineProperty(exports, "__esModule", {
+
+Object.defineProperty(exports, '__esModule', {
   value: true
 });
 exports.ShapeTypes = void 0;
-var ShapeTypes = {
+const ShapeTypes = {
   POINT: 'point',
   LINE: 'line',
   RAY: 'ray',

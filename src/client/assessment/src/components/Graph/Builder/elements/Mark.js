@@ -3,22 +3,48 @@ import { clone } from 'lodash';
 import { defaultTextParameters } from '../settings';
 import { calcMeasure, checkMarksRenderSpace, calcRoundedToTicksDistance } from '../utils';
 
-const snapMark = (mark, point, xCoords, snapToTicks, ticksDistance) => {
+function closestTick(pointX, ticks){
+  function dist(x, t){
+    return Math.abs(x-t);
+  }
+  let minDist = dist(pointX, ticks[0]);
+  let closestTick = ticks[0];
+  for (let i = 1; i < ticks.length; i++){
+    const tmpDist = dist(pointX, ticks[i]);
+    if (tmpDist < minDist) {
+      minDist = tmpDist;
+      closestTick = ticks[i];
+    }
+  }
+  return closestTick;
+}
+
+const snapMark = (mark, point, xCoords, snapToTicks, ticksDistance, setValue, lineSettings, containerSettings, board) => {
   mark.on('up', () => {
     const setCoords = JXG.COORDS_BY_USER;
     let x; let y;
 
-    if (point.Y() >= -1 && point.X() < xCoords[0]) {
-      y = 0;
-      x = xCoords[0];
-    } else if (point.Y() >= -1 && point.X() > xCoords[1]) {
-      y = 0;
-      x = xCoords[1];
-    } else if (point.Y() >= -1 && point.X() < xCoords[1] && point.X() > xCoords[0]) {
-      y = 0;
+    const axis = board.elements.filter(element => element.elType === 'axis')[0];
+    const ticks = axis.ticks.filter(t => t.fixedTicks !== null)[0];
+
+    const [ markXMeasure, markYMeasure ] = calcMeasure(51.5, 45, board)
+    const [ xMeasure, yMeasure ] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board)
+    const lineY = lineSettings.yMax - (yMeasure / 100 * lineSettings.position)
+    const containerY = containerSettings.yMax - (yMeasure / 100 * containerSettings.position)
+
+    if (point.Y() >= containerY - (markYMeasure * 1.35) && point.X() < xCoords[0]) {
+      y = lineY;
+      // x = calcRoundedToTicksDistance(xCoords[0], ticksDistance);
+      x = closestTick(point.X(), ticks.fixedTicks);
+    } else if (point.Y() >= containerY - (markYMeasure * 1.35) && point.X() > xCoords[1]) {
+      y = lineY;
+      // x = calcRoundedToTicksDistance(xCoords[1], ticksDistance);
+      x = closestTick(point.X(), ticks.fixedTicks);
+    } else if (point.Y() >= containerY - (markYMeasure * 1.35) && point.X() < xCoords[1] && point.X() > xCoords[0]) {
+      y = lineY;
       if (snapToTicks) {
-        point.setAttribute({ snapSizeX: ticksDistance });
         // x = calcRoundedToTicksDistance(point.X(), ticksDistance);
+        x = closestTick(point.X(), ticks.fixedTicks);
       } else {
         x = point.X();
       }
@@ -27,17 +53,18 @@ const snapMark = (mark, point, xCoords, snapToTicks, ticksDistance) => {
       x = point.X();
     }
 
-    if (point.Y() >= -1) {
+    if (point.Y() >= containerY - (markYMeasure * 1.35)) {
       mark.setAttribute({ cssClass: 'mark mounted', highlightCssClass: 'mark mounted' });
     } else {
       mark.setAttribute({ cssClass: 'mark', highlightCssClass: 'mark' });
     }
 
-    // point.setPosition(setCoords, [x, y]);
+    point.setPosition(setCoords, [x, y]);
+    setValue()
   });
 };
 
-const onHandler = (board, coords, data, measure, xCoords, snapToTicks, ticksDistance) => {
+const onHandler = (board, coords, data, measure, xCoords, snapToTicks, ticksDistance, setValue, lineSettings, containerSettings) => {
   const point = board.$board.create('point', coords, { name: '', visible: false });
   const mark = board.$board.create(
     'text',
@@ -45,9 +72,23 @@ const onHandler = (board, coords, data, measure, xCoords, snapToTicks, ticksDist
     defaultTextParameters(),
   );
   const group = board.$board.create('group', [point, mark], { id: data.id });
-  snapMark(mark, point, xCoords, snapToTicks, ticksDistance);
+  snapMark(mark, point, xCoords, snapToTicks, ticksDistance, setValue, lineSettings, containerSettings, board);
   return group;
 };
+
+const renderMarkAnswer = (board, config, measure) => {
+  const point = board.$board.create('point', [ config.position, config.y ], { name: '', visible: false, fixed: true, frozen: true });
+  point.setLabel(config.point)
+  point.label.setPosition(JXG.COORDS_BY_USER, [ config.position - measure[0], config.y + measure[1] ])
+  point.label.setText(config.point)
+  point.label.setAttribute({ 
+    ...defaultTextParameters(),
+    cssClass: 'mark ' + config.className + ' mounted',
+    highlightCssClass: 'mark ' + config.className + ' mounted',
+    visible: true
+  })
+  return point;
+}
 
 const findObjectInGroup = (group, type) => {
   for (const element in group.objects) {
@@ -57,20 +98,29 @@ const findObjectInGroup = (group, type) => {
   }
 };
 
-const rerenderMark = (mark, board, graphParameters, settings) => {
+const rerenderMark = (mark, board, graphParameters, settings, setValue, lineSettings, containerSettings) => {
   const oldPoint = findObjectInGroup(mark, 'point');
   const oldMark = findObjectInGroup(mark, 'text');
-  const data = { id: mark.id, text: clone(oldMark.htmlStr) };
+  const data = { id: mark.id, text: clone(oldMark.plaintext) };
   let oldCoords = [clone(oldPoint.coords.usrCoords[1]), clone(oldPoint.coords.usrCoords[2])];
 
-  if (oldCoords[1] >= -1) {
+  const [ markXMeasure, markYMeasure ] = calcMeasure(51.5, 45, board)
+  const [ xMeasure, yMeasure ] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board)
+  const containerY = containerSettings.yMax - (yMeasure / 100 * containerSettings.position)
+  const lineY = lineSettings.yMax - (yMeasure / 100 * lineSettings.position)
+
+  if (oldCoords[1] >= containerY - (markYMeasure * 1.35)) {
+    oldCoords[1] = lineY
+    
     if (oldCoords[0] < graphParameters.xMin) {
-      oldCoords[0] = graphParameters.xMin;
+      oldCoords[0] = calcRoundedToTicksDistance(graphParameters.xMin, settings.ticksDistance);
     } else if (oldCoords[0] > graphParameters.xMax) {
-      oldCoords[0] = graphParameters.xMax;
+      oldCoords[0] = calcRoundedToTicksDistance(graphParameters.xMax, settings.ticksDistance);
+    } else {
+      oldCoords[0] = calcRoundedToTicksDistance(oldCoords[0], settings.ticksDistance);
     }
   } else {
-    oldCoords = checkMarksRenderSpace(board);
+    oldCoords = checkMarksRenderSpace(board, settings, containerSettings);
   }
 
   const newMark = onHandler(
@@ -80,12 +130,17 @@ const rerenderMark = (mark, board, graphParameters, settings) => {
     calcMeasure(51.5, 45, board),
     [graphParameters.xMin, graphParameters.xMax],
     settings.snapToTicks,
-    settings.ticksDistance
+    settings.ticksDistance,
+    setValue,
+    lineSettings,
+    containerSettings
   );
   const newPoint = findObjectInGroup(newMark, 'point');
   const newLabel = findObjectInGroup(newMark, 'text');
 
-  if (newPoint.Y() >= -1) {
+
+
+  if (newPoint.Y() >= containerY - (markYMeasure * 1.35)) {
     newLabel.setAttribute({ cssClass: 'mark mounted', highlightCssClass: 'mark mounted' });
   } else {
     newLabel.setAttribute({ cssClass: 'mark', highlightCssClass: 'mark' });
@@ -106,18 +161,21 @@ const removeMark = (board, mark) => {
   board.$board.removeObject(point);
 };
 
-const renderMarksContainer = (board, xMin, xMax) => {
-  const polygonCoords = [[xMin, -0.5], [xMin, -1.75], [xMax, -1.75], [xMax, -0.5]];
+const renderMarksContainer = (board, xMin, xMax, containerSettings) => {
+  const [ xMeasure, yMeasure ] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board)
+  const containerY = containerSettings.yMax - (yMeasure / 100 * containerSettings.position)
+
+  const polygonCoords = [[xMin, containerY], [xMin, -1.75], [xMax, -1.75], [xMax, containerY]];
   const polygon = board.$board.create('polygon', polygonCoords, { fixed: true, withLines: false, fillOpacity: 1, fillColor: '#efefef' });
   polygon.vertices.forEach(ancestor => ancestor.setAttribute({ visible: false }));
   return polygon;
 };
 
-const updateMarksContainer = (board, xMin, xMax) => {
+const updateMarksContainer = (board, xMin, xMax, containerSettings) => {
   const oldBoard = board.elements.filter(element => element.elType === 'polygon');
   board.$board.removeObject(oldBoard);
   board.elements = board.elements.filter(element => element.elType !== 'polygon');
-  board.elements.push(renderMarksContainer(board, xMin, xMax));
+  board.elements.push(renderMarksContainer(board, xMin, xMax, containerSettings));
 };
 
 const updateText = (oldText, newText) => oldText.setText(newText);
@@ -137,7 +195,7 @@ const checkForTextUpdate = (marks, elements) => {
   });
 };
 
-const swapCoordinates = (swappedMarks, board) => {
+const swapCoordinates = (swappedMarks, board, containerSettings) => {
   const newPositions = swappedMarks.map((swappedMark) => {
     const oldObject = board.elements.find(element => element.id === swappedMark.itemToSwap);
     const oldPoint = findObjectInGroup(oldObject, 'point');
@@ -154,10 +212,14 @@ const swapCoordinates = (swappedMarks, board) => {
     };
   });
 
+  const [ markXMeasure, markYMeasure ] = calcMeasure(51.5, 45, board)
+  const [ xMeasure, yMeasure ] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board)
+  const containerY = containerSettings.yMax - (yMeasure / 100 * containerSettings.position)
+
   newPositions.forEach((group) => {
     group.point.setPositionDirectly(JXG.COORDS_BY_USER, group.newCoords, group.oldCoords);
 
-    if (group.point.Y() >= -1) {
+    if (group.point.Y() >= containerY - (markYMeasure * 1.35)) {
       group.mark.setAttribute({ cssClass: 'mark mounted', highlightCssClass: 'mark mounted' });
     } else {
       group.mark.setAttribute({ cssClass: 'mark', highlightCssClass: 'mark' });
@@ -165,7 +227,7 @@ const swapCoordinates = (swappedMarks, board) => {
   });
 };
 
-const checkForSwap = (marks, oldMarks, board) => {
+const checkForSwap = (marks, oldMarks, board, containerSettings) => {
   const swappedMarks = [];
 
   oldMarks.forEach((oldMark, index) => {
@@ -182,15 +244,27 @@ const checkForSwap = (marks, oldMarks, board) => {
   });
 
   if (swappedMarks.length > 0) {
-    swapCoordinates(swappedMarks, board);
+    swapCoordinates(swappedMarks, board, containerSettings);
   }
 };
 
-const checkForUpdate = (marks, elements, board, oldMarks) => {
+const checkForUpdate = (marks, elements, board, oldMarks, containerSettings) => {
   checkForTextUpdate(marks, elements);
-  checkForSwap(marks, oldMarks, board);
+  checkForSwap(marks, oldMarks, board, containerSettings);
   board.$board.fullUpdate();
 };
+
+const getConfig = group => {
+  const point = findObjectInGroup(group, "point")
+  const text = findObjectInGroup(group, "text")
+
+  return {
+    position: point.X(),
+    y: point.Y(),
+    point: text.htmlStr,
+    id: group.id
+  }
+}
 
 export default {
   onHandler,
@@ -204,5 +278,7 @@ export default {
   checkForSwap,
   checkForUpdate,
   removeMark,
-  rerenderMark
+  rerenderMark,
+  getConfig,
+  renderMarkAnswer
 };

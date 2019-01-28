@@ -61,12 +61,15 @@ SegmentsTools.propTypes = {
     PropTypes.string,
     PropTypes.object
   ]),
+  graphType: PropTypes.string.isRequired,
+  responsesAllowed: PropTypes.number.isRequired,
   getIconByToolName: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
   fontSize: PropTypes.number
 };
 
 SegmentsTools.defaultProps = {
+  graphType: 'axisSegments',
   fontSize: 14,
   tool: {
     toolIndex: 0,

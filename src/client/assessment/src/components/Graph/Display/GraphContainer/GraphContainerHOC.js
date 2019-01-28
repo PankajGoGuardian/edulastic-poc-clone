@@ -159,7 +159,7 @@ function evaluate(validation, userResponse) {
 
 class GraphContainerHOC extends Component {
   getMappedParameters = () => {
-    const { uiStyle, canvasConfig, bgImgOptions, backgroundShapes } = this.props;
+    const { uiStyle, canvasConfig, bgImgOptions, backgroundShapes, numberlineAxis } = this.props;
     return {
       canvas: {
         xMin: parseFloat(canvasConfig.x_min),

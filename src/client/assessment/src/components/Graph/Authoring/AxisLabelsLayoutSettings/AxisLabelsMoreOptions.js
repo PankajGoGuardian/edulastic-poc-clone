@@ -42,7 +42,7 @@ class AxisLabelsMoreOptions extends Component {
     const { target: { name, value } } = event;
     const { graphData, setOptions } = this.props;
     const { ui_style } = graphData;
-    setOptions({ ...ui_style, [name]: value });
+    setOptions({ ...ui_style, [name]: parseInt(value, 10) });
   };
 
   getFontSizeItem = () => {
@@ -73,6 +73,9 @@ class AxisLabelsMoreOptions extends Component {
   };
 
   changeRenderingBase = (e) => {
+    const { setNumberline, graphData } = this.props;
+    const { numberlineAxis } = graphData;
+
     const { renderingBaseList } = this.props;
     const { value } = e.target;
     const findItem = renderingBaseList.find(renderingItem =>
@@ -80,6 +83,8 @@ class AxisLabelsMoreOptions extends Component {
 
     if (findItem) {
       findItem.selected = true;
+
+      setNumberline({ ...numberlineAxis, renderingBase: findItem.id });
 
       this.setState(() => ({
         currentRenderingBaseItem: findItem
@@ -100,11 +105,8 @@ class AxisLabelsMoreOptions extends Component {
       renderingBaseList
     } = this.props;
 
-    const {
-      canvas,
-      ui_style,
-      numberlineAxis
-    } = this.props.graphData;
+    const { graphData: { canvas, ui_style, numberlineAxis } } = this.props;
+
     return (
       <Fragment>
         <MoreOptionsContainer>
@@ -146,7 +148,10 @@ class AxisLabelsMoreOptions extends Component {
                 </MoreOptionsLabel>
                 <MoreOptionsInput
                   type="text"
+                  name="title_position"
                   defaultValue="50"
+                  value={ui_style.title_position}
+                  onChange={this.handleOptionsInputChange}
                 />
               </MoreOptionsRow>
 
@@ -156,7 +161,10 @@ class AxisLabelsMoreOptions extends Component {
                 </MoreOptionsLabel>
                 <MoreOptionsInput
                   type="text"
-                  defaultValue="10px"
+                  name="separationDistanceX"
+                  defaultValue="10"
+                  value={numberlineAxis.separationDistanceX}
+                  onChange={this.handleNumberlineInputChange}
                 />
               </MoreOptionsRow>
 
@@ -200,6 +208,9 @@ class AxisLabelsMoreOptions extends Component {
                 <MoreOptionsInput
                   type="text"
                   defaultValue="35"
+                  name="line_position"
+                  value={ui_style.line_position ? ui_style.line_position : 0}
+                  onChange={this.handleOptionsInputChange}
                 />
               </MoreOptionsRow>
 
@@ -210,6 +221,9 @@ class AxisLabelsMoreOptions extends Component {
                 <MoreOptionsInput
                   type="text"
                   defaultValue="60"
+                  name="point_box_position"
+                  value={ui_style.point_box_position}
+                  onChange={this.handleOptionsInputChange}
                 />
               </MoreOptionsRow>
 
@@ -219,7 +233,10 @@ class AxisLabelsMoreOptions extends Component {
                 </MoreOptionsLabel>
                 <MoreOptionsInput
                   type="text"
-                  defaultValue="20px"
+                  defaultValue="20"
+                  name="separationDistanceY"
+                  value={numberlineAxis.separationDistanceY}
+                  onChange={this.handleNumberlineInputChange}
                 />
               </MoreOptionsRow>
 
@@ -343,6 +360,9 @@ class AxisLabelsMoreOptions extends Component {
                 <MoreOptionsInput
                   type="text"
                   defaultValue=""
+                  name="specificPoints"
+                  onChange={this.handleNumberlineInputChange}
+                  value={numberlineAxis.specificPoints}
                 />
               </MoreOptionsRow>
               <MoreOptionsRow>

@@ -7,13 +7,15 @@ import {
 } from '../../common/styled_components';
 import { Toggler } from '../../../common/Options/styles';
 import AxisSegmentsMoreOptions from './AxisSegmentsMoreOptions';
+import { RENDERING_BASE } from '../../Builder/config/constants';
 
 class AxisSegmentsOptions extends Component {
   state = {
     isMoreOptionsOpen: false
   }
 
-  updateClickOnMoreOptions = () => this.setState({ isMoreOptionsOpen: !this.state.isMoreOptionsOpen })
+  updateClickOnMoreOptions = () =>
+    this.setState({ isMoreOptionsOpen: !this.state.isMoreOptionsOpen })
 
   getFontSizeList = () => (
     [
@@ -59,9 +61,17 @@ class AxisSegmentsOptions extends Component {
 
   getRenderingBaseList = () => (
     [
-      { value: '', label: '' },
-      { value: 'lineMinValue', label: 'Line minimum value' },
-      { value: 'zero', label: 'Zero' }
+      {
+        id: RENDERING_BASE.LINE_MINIMUM_VALUE,
+        value: 'Line minimum value',
+        selected: true
+      },
+      {
+        id: RENDERING_BASE.ZERO_BASED,
+        value: 'Zero',
+        selected: false
+      }
+
     ]
   );
 
@@ -100,11 +110,10 @@ class AxisSegmentsOptions extends Component {
 
 AxisSegmentsOptions.propTypes = {
   t: PropTypes.func.isRequired,
-  onClickMoreOptions: PropTypes.func.isRequired,
-  isMoreOptionsOpen: PropTypes.bool.isRequired,
-  orientationList: PropTypes.array.isRequired,
-  fontSizeList: PropTypes.array.isRequired,
-  renderingBaseList: PropTypes.array.isRequired
+  setCanvas: PropTypes.func.isRequired,
+  setNumberline: PropTypes.func.isRequired,
+  setOptions: PropTypes.func.isRequired,
+  graphData: PropTypes.object.isRequired
 };
 
 const enhance = compose(

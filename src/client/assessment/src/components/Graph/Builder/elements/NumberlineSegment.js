@@ -1,26 +1,9 @@
 import { CONSTANT, Colors } from '../config';
-import { findSegmentPosition, orderPoints, calcRoundedToTicksDistance } from '../utils';
+import { findSegmentPosition, orderPoints, calcRoundedToTicksDistance, findAvailableStackedSegmentPosition } from '../utils';
 import { defaultPointParameters } from '../settings';
 import { JXG } from '../index';
 
 const previousPointsPositions = [];
-
-const onHandler = type => (board, coords) => determineSegmentType(type, board, findSegmentPosition(board, coords));
-
-const determineSegmentType = (type, board, coords) => {
-  switch (type) {
-    case CONSTANT.TOOLS.BOTH_INCLUDED_SEGMENT:
-      return drawSegment(board, coords, true, true);
-    case CONSTANT.TOOLS.BOTH_NOT_INCLUDED_SEGMENT:
-      return drawSegment(board, coords, false, false);
-    case CONSTANT.TOOLS.ONLY_RIGHT_INCLUDED_SEGMENT:
-      return drawSegment(board, coords, false, true);
-    case CONSTANT.TOOLS.ONLY_LEFT_INCLUDED_SEGMENT:
-      return drawSegment(board, coords, true, false);
-    default:
-      throw new Error('Unknown tool:', tool);
-  }
-};
 
 // Pass current segment coords, all segments except handling one, ticks distance of numerline axis,
 // drag direction (true = point with bigger coord is dragging now, false = point with smaller coord is dragging now)
@@ -57,7 +40,7 @@ const findAvailableSegmentPointDragPlace = (segmentCoords, segments, ticksDistan
   } while (segments);
 };
 
-const findAvailableSegmentDragPlace = (segmentCoords, segments, ticksDistance, direction, xMin, xMax) => {
+const findAvailableSegmentDragPlace = (segmentCoords, segments, ticksDistance, direction) => {
   const newSegmentCoords = [...segmentCoords];
 
   do {
@@ -170,6 +153,28 @@ const handleSegmentDrag = (board, segment, ticksDistance, axis) => {
   });
 };
 
+const handleStackedSegmentDrag = (segment, ticksDistance, axis, yPosition) => {
+  segment.on('up', () => {
+    const segmentPoints = orderPoints([segment.point1.X(), segment.point2.X()]);
+
+    const xMin = axis.point1.X();
+    const xMax = axis.point2.X();
+
+    let newCoords;
+
+    if (segmentPoints[0] <= xMin) {
+      newCoords = findAvailableSegmentDragPlace([Math.round(xMin - ticksDistance), Math.round(xMin)], [], ticksDistance, true);
+    } else if (segmentPoints[1] >= xMax) {
+      newCoords = findAvailableSegmentDragPlace([Math.round(xMax), Math.round(xMax + ticksDistance)], [], ticksDistance, false);
+    }
+
+    if (newCoords) {
+      segment.point1.setPosition(JXG.COORDS_BY_USER, [newCoords[0], yPosition]);
+      segment.point2.setPosition(JXG.COORDS_BY_USER, [newCoords[1], yPosition]);
+    }
+  });
+};
+
 // Pass point, board, ticks distance of numberline axis, parent segment of point, numberline axis
 // Function check if there an element inside of vector after dragging and if yes then find closest available space and put point there
 const handleSegmentPointDrag = (point, board, ticksDistance, segment, axis) => {
@@ -225,6 +230,22 @@ const handleSegmentPointDrag = (point, board, ticksDistance, segment, axis) => {
   });
 };
 
+const handleStackedSegmentPointDrag = (point, axis, yPosition) => {
+  point.on('drag', () => {
+    const currentPosition = point.X();
+
+    const xMin = axis.point1.X();
+    const xMax = axis.point2.X();
+
+
+    if (currentPosition > xMax) {
+      point.setPosition(JXG.COORDS_BY_USER, [xMax, yPosition]);
+    } else if (currentPosition < xMin) {
+      point.setPosition(JXG.COORDS_BY_USER, [xMin, yPosition]);
+    }
+  });
+};
+
 // Pass segments, click coordinate, ticks distance of numberline axis
 // Check if new segment is inside of existing segment
 const checkForElementsOnSegment = (segments, coord, ticksDistance) => {
@@ -269,22 +290,24 @@ const checkForSegmentRenderPosition = (axis, coord, ticksDistance) => {
 
 // Pass board, click coordinate, ticksDistance, point type (true = default point, false = unfilled point)
 // Draw segment point with proper settings
-const drawPoint = (board, coord, ticksDistance, point) => {
+const drawPoint = (board, coord, ticksDistance, point, fixed, colors, yPosition) => {
   const styles = point ? { ...Colors.default[CONSTANT.TOOLS.POINT] } : { ...Colors.special[CONSTANT.TOOLS.POINT] };
 
   return board.$board.create(
     'point',
-    [ticksDistance ? coord + ticksDistance : coord, 0],
+    [ticksDistance ? coord + ticksDistance : coord, yPosition || 0],
     {
       ...board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters(),
-      ...styles
+      ...styles,
+      ...colors,
+      fixed
     }
   );
 };
 
 // Pass board, first segment point, second segment point
 // Draw new segment line
-const drawLine = (board, firstPoint, secondPoint) => (
+const drawLine = (board, firstPoint, secondPoint, colors) => (
   board.$board.create(
     'segment',
     [firstPoint, secondPoint],
@@ -294,36 +317,123 @@ const drawLine = (board, firstPoint, secondPoint) => (
       straightfirst: false,
       straightlast: false,
       snapToGrid: true,
-      ...Colors.default[CONSTANT.TOOLS.LINE]
+      ...Colors.default[CONSTANT.TOOLS.LINE],
+      ...colors
     }
   )
 );
 
 // Pass board, coordinate (closest to ticksDistance click coordinate), left point type (true = filled point, false = unfilled point), right point type
 // Check if space is available for new segment, then draw new segment
-const drawSegment = (board, coord, leftIncluded, rightIncluded) => {
+const drawSegment = (board, coord, leftIncluded, rightIncluded, segmentType, stackResponses, stackResponsesSpacing) => {
   const numberlineAxis = board.elements.filter(element => element.elType === 'axis' || element.elType === 'arrow');
   const ticksDistance = numberlineAxis[0].ticks[0].getAttribute('ticksDistance');
   const segments = board.elements.filter(element => element.elType === 'segment' || element.elType === 'point');
 
-  if (checkForElementsOnSegment(segments, coord, ticksDistance) && checkForSegmentRenderPosition(numberlineAxis[0], coord, ticksDistance)) {
-    const firstPoint = drawPoint(board, coord, null, leftIncluded);
-    const secondPoint = drawPoint(board, coord, ticksDistance, rightIncluded);
+  if (!stackResponses) {
+    if (checkForElementsOnSegment(segments, coord, ticksDistance) && checkForSegmentRenderPosition(numberlineAxis[0], coord, ticksDistance)) {
+      const firstPoint = drawPoint(board, coord, null, leftIncluded, false);
+      const secondPoint = drawPoint(board, coord, ticksDistance, rightIncluded, false);
+      const segment = drawLine(board, firstPoint, secondPoint);
+      segment.segmentType = segmentType;
+
+      previousPointsPositions.push(
+        { id: firstPoint.id, position: firstPoint.X() },
+        { id: secondPoint.id, position: secondPoint.X() }
+      );
+
+      handleSegmentPointDrag(firstPoint, board, ticksDistance, segment, numberlineAxis[0]);
+      handleSegmentPointDrag(secondPoint, board, ticksDistance, segment, numberlineAxis[0]);
+      handleSegmentDrag(board, segment, ticksDistance, numberlineAxis[0]);
+
+      return segment;
+    }
+  } else if (checkForSegmentRenderPosition(numberlineAxis[0], coord, ticksDistance)) {
+    const calcedYPosition = findAvailableStackedSegmentPosition(board, segments, stackResponsesSpacing);
+
+    const firstPoint = drawPoint(board, coord, null, leftIncluded, false, calcedYPosition);
+    const secondPoint = drawPoint(board, coord, ticksDistance, rightIncluded, false, calcedYPosition);
+
+    firstPoint.setAttribute({ snapSizeY: 0.05 });
+    firstPoint.setPosition(JXG.COORDS_BY_USER, [firstPoint.X(), calcedYPosition]);
+    board.$board.on('move', () => firstPoint.moveTo([firstPoint.X(), calcedYPosition]));
+
+    secondPoint.setAttribute({ snapSizeY: 0.05 });
+    secondPoint.setPosition(JXG.COORDS_BY_USER, [secondPoint.X(), calcedYPosition]);
+    board.$board.on('move', () => secondPoint.moveTo([secondPoint.X(), calcedYPosition]));
+
+
     const segment = drawLine(board, firstPoint, secondPoint);
+    segment.segmentType = segmentType;
 
-    previousPointsPositions.push(
-      { id: firstPoint.id, position: firstPoint.X() },
-      { id: secondPoint.id, position: secondPoint.X() }
-    );
+    board.$board.on('drag', () => handleStackedSegmentDrag(segment, ticksDistance, numberlineAxis[0], calcedYPosition));
 
-    handleSegmentPointDrag(firstPoint, board, ticksDistance, segment, numberlineAxis[0]);
-    handleSegmentPointDrag(secondPoint, board, ticksDistance, segment, numberlineAxis[0]);
-    handleSegmentDrag(board, segment, ticksDistance, numberlineAxis[0]);
+    handleStackedSegmentPointDrag(firstPoint, numberlineAxis[0], calcedYPosition);
+    handleStackedSegmentPointDrag(secondPoint, numberlineAxis[0], calcedYPosition);
 
     return segment;
   }
 };
 
+const determineSegmentType = (type, board, coords, stackResponses, stackResponsesSpacing) => {
+  switch (type) {
+    case CONSTANT.TOOLS.BOTH_INCLUDED_SEGMENT:
+      return drawSegment(board, coords, true, true, CONSTANT.TOOLS.BOTH_INCLUDED_SEGMENT, stackResponses, stackResponsesSpacing);
+    case CONSTANT.TOOLS.BOTH_NOT_INCLUDED_SEGMENT:
+      return drawSegment(board, coords, false, false, CONSTANT.TOOLS.BOTH_NOT_INCLUDED_SEGMENT, stackResponses, stackResponsesSpacing);
+    case CONSTANT.TOOLS.ONLY_RIGHT_INCLUDED_SEGMENT:
+      return drawSegment(board, coords, false, true, CONSTANT.TOOLS.ONLY_RIGHT_INCLUDED_SEGMENT, stackResponses, stackResponsesSpacing);
+    case CONSTANT.TOOLS.ONLY_LEFT_INCLUDED_SEGMENT:
+      return drawSegment(board, coords, true, false, CONSTANT.TOOLS.ONLY_LEFT_INCLUDED_SEGMENT, stackResponses, stackResponsesSpacing);
+    default:
+      throw new Error('Unknown tool:');
+  }
+};
+
+const determineAnswerType = (board, config) => {
+  switch (config.type) {
+    case CONSTANT.TOOLS.BOTH_INCLUDED_SEGMENT:
+      return renderAnswer(board, config, true, true);
+    case CONSTANT.TOOLS.BOTH_NOT_INCLUDED_SEGMENT:
+      return renderAnswer(board, config, false, false);
+    case CONSTANT.TOOLS.ONLY_RIGHT_INCLUDED_SEGMENT:
+      return renderAnswer(board, config, false, true);
+    case CONSTANT.TOOLS.ONLY_LEFT_INCLUDED_SEGMENT:
+      return renderAnswer(board, config, true, false);
+    default:
+      throw new Error('Unknown tool:');
+  }
+};
+
+const onHandler = (type, stackResponses, stackResponsesSpacing) => (board, coords) =>
+  determineSegmentType(type, board, findSegmentPosition(board, coords), stackResponses, stackResponsesSpacing);
+
+const renderAnswer = (board, config, leftIncluded, rightIncluded) => {
+  const firstPoint = drawPoint(board, config.point1, null, leftIncluded, true, config.leftPointColor, config.y);
+  const secondPoint = drawPoint(board, config.point2, null, rightIncluded, true, config.rightPointColor, config.y);
+  const segment = drawLine(board, firstPoint, secondPoint, config.lineColor);
+
+  firstPoint.setAttribute({ snapSizeY: 0.05 });
+  firstPoint.setPosition(JXG.COORDS_BY_USER, [firstPoint.X(), config.y]);
+
+  secondPoint.setAttribute({ snapSizeY: 0.05 });
+  secondPoint.setPosition(JXG.COORDS_BY_USER, [secondPoint.X(), config.y]);
+
+  segment.answer = firstPoint.answer = secondPoint.answer = true;
+
+  return segment;
+};
+
+const getConfig = segment => ({
+  id: segment.id,
+  type: segment.segmentType,
+  point1: segment.point1.X(),
+  point2: segment.point2.X(),
+  y: segment.point1.Y()
+});
+
 export default {
-  onHandler
+  onHandler,
+  getConfig,
+  determineAnswerType
 };

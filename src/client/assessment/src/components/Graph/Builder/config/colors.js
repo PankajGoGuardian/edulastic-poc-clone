@@ -62,6 +62,12 @@ export default {
       highlightStrokeColor: '#ee1658',
       highlightFillColor: '#ee1658'
     },
+    [TOOLS.SEGMENTS_POINT]: {
+      fillColor: '#ffffff',
+      strokeColor: '#ee1658',
+      highlightStrokeColor: '#ee1658',
+      highlightFillColor: '#ffffff'
+    },
     [TOOLS.LINE]: {
       fillColor: '#ee1658',
       strokeColor: '#ee1658',
@@ -106,6 +112,12 @@ export default {
       strokeColor: '#1fe3a1',
       highlightStrokeColor: '#1fe3a1',
       highlightFillColor: '#1fe3a1'
+    },
+    [TOOLS.SEGMENTS_POINT]: {
+      fillColor: '#ffffff',
+      strokeColor: '#1fe3a1',
+      highlightStrokeColor: '#1fe3a1',
+      highlightFillColor: '#ffffff'
     },
     [TOOLS.LINE]: {
       fillColor: '#1fe3a1',
@@ -152,6 +164,12 @@ export default {
       highlightStrokeColor: '#ffcb00',
       highlightFillColor: '#ffcb00'
     },
+    [TOOLS.SEGMENTS_POINT]: {
+      fillColor: '#ffffff',
+      strokeColor: '#ffcb00',
+      highlightStrokeColor: '#ffcb00',
+      highlightFillColor: '#ffffff'
+    },
     [TOOLS.LINE]: {
       fillColor: '#ffcb00',
       strokeColor: '#ffcb00',
@@ -165,7 +183,7 @@ export default {
       highlightFillColor: '#ffcb00'
     },
     [TOOLS.CIRCLE]: {
-      fillColor: '#ffcb00',
+      fillColor: 'transparent',
       strokeColor: '#ffcb00',
       highlightStrokeColor: '#ffcb00',
       highlightFillColor: 'transparent'

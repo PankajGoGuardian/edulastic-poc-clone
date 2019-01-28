@@ -1,5 +1,5 @@
-import { IgnoreRepeatedShapes } from '../../src/graphs-comparison/constants/ignoreRepeatedShapes';
-import { ShapeTypes } from '../../src/graphs-comparison/constants/shapeTypes';
+import { IgnoreRepeatedShapes } from '../../src/graph/quadrants/constants/ignoreRepeatedShapes';
+import { ShapeTypes } from '../../src/graph/quadrants/constants/shapeTypes';
 import { AxisSegmentsShapeTypes } from '../../src/graph/constants/axisSegmentsShapeTypes';
 
 // Point ===========================================================================================

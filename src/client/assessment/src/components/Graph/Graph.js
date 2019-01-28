@@ -136,14 +136,6 @@ class Graph extends Component {
     };
   };
 
-  getAxisSegmentsOptionsProps = () => {
-    const { item } = this.props;
-
-    return {
-      graphData: item
-    };
-  };
-
   handleNumberlineChange = (options) => {
     const { setQuestionData, item } = this.props;
     setQuestionData({ ...item, numberlineAxis: options });

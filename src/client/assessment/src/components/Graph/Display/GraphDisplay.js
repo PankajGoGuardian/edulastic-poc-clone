@@ -177,7 +177,8 @@ class GraphDisplay extends Component {
         yMax: parseFloat(canvas.y_max),
         numberline: true,
         margin: parseFloat(canvas.margin),
-        responsesAllowed: parseInt(canvas.responsesAllowed, 10)
+        responsesAllowed: parseInt(canvas.responsesAllowed, 10),
+        title: canvas.title
       },
       numberlineAxis: {
         leftArrow: numberlineAxis && numberlineAxis.leftArrow,
@@ -187,14 +188,21 @@ class GraphDisplay extends Component {
         showMin: numberlineAxis && numberlineAxis.showMin,
         showMax: numberlineAxis && numberlineAxis.showMax,
         ticksDistance: numberlineAxis && parseFloat(numberlineAxis.ticksDistance),
-        fontSize: numberlineAxis && parseInt(numberlineAxis.fontSize, 10)
+        fontSize: numberlineAxis && parseInt(numberlineAxis.fontSize, 10),
+        stackResponses: numberlineAxis && numberlineAxis.stackResponses,
+        stackResponsesSpacing: numberlineAxis && parseInt(numberlineAxis.stackResponsesSpacing, 10),
+        renderingBase: numberlineAxis && numberlineAxis.renderingBase,
+        specificPoints: numberlineAxis && numberlineAxis.specificPoints
       },
       layout: {
         width: ui_style.layout_width,
         margin: ui_style.layout_margin,
         height: ui_style.layout_height,
         snapTo: ui_style.layout_snapto,
-        fontSize: getFontSizeVal(ui_style.currentFontSize)
+        fontSize: getFontSizeVal(ui_style.currentFontSize),
+        titlePosition: parseInt(ui_style.title_position, 10),
+        linePosition: numberlineAxis.stackResponses ? 75 : parseInt(ui_style.line_position, 10),
+        pointBoxPosition: parseInt(ui_style.point_box_position, 10)
       },
       pointParameters: {
         snapToGrid: true,
@@ -270,7 +278,8 @@ class GraphDisplay extends Component {
         yMin: parseFloat(canvas.y_min),
         yMax: parseFloat(canvas.y_max),
         numberline: true,
-        margin: parseFloat(canvas.margin)
+        margin: parseFloat(canvas.margin),
+        title: canvas.title
       },
       numberlineAxis: {
         leftArrow: numberlineAxis && numberlineAxis.leftArrow,
@@ -280,14 +289,22 @@ class GraphDisplay extends Component {
         showMin: numberlineAxis && numberlineAxis.showMin,
         showMax: numberlineAxis && numberlineAxis.showMax,
         ticksDistance: numberlineAxis && parseFloat(numberlineAxis.ticksDistance),
-        fontSize: numberlineAxis && parseInt(numberlineAxis.fontSize, 10)
+        fontSize: numberlineAxis && parseInt(numberlineAxis.fontSize, 10),
+        labelsFrequency: numberlineAxis && parseInt(numberlineAxis.labelsFrequency, 10),
+        separationDistanceX: numberlineAxis && parseInt(numberlineAxis.separationDistanceX, 10),
+        separationDistanceY: numberlineAxis && parseInt(numberlineAxis.separationDistanceY, 10),
+        renderingBase: numberlineAxis && numberlineAxis.renderingBase,
+        specificPoints: numberlineAxis && numberlineAxis.specificPoints
       },
       layout: {
         width: ui_style.layout_width,
         margin: ui_style.layout_margin,
         height: ui_style.layout_height,
         snapTo: ui_style.layout_snapto,
-        fontSize: getFontSizeVal(ui_style.currentFontSize)
+        fontSize: getFontSizeVal(ui_style.currentFontSize),
+        titlePosition: parseInt(ui_style.title_position, 10),
+        linePosition: parseInt(ui_style.line_position, 10),
+        pointBoxPosition: parseInt(ui_style.point_box_position, 10)
       },
       pointParameters: {
         snapToGrid: true,

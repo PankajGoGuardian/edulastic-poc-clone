@@ -15,3 +15,4 @@ export { default as NumberlineSegment } from './NumberlineSegment';
 export { default as NumberlineTrash } from './NumberlineTrash';
 export { default as NumberlinePoint } from './NumberlinePoint';
 export { default as NumberlineVector } from './NumberlineVector';
+export { default as Title } from './Title'

@@ -41,17 +41,21 @@ const AssignmentCard = ({
     _id: assignmentId
   } = data;
 
-  const attempted = !!(reports && reports.length);
-  const attemptCount = reports && reports.length;
   const lastAttempt = last(reports) || {};
-  const { correct = 0, wrong = 0 } = lastAttempt;
+  // if last test attempt was not *submitted*, user should be able to resume it.
+  const resume = lastAttempt.status == 0;
+  let newReports = resume
+    ? reports.slice(0, reports.length - 1)
+    : reports.slice(0);
+  newReports = newReports || [];
+  const { correct = 0, wrong = 0 } = last(newReports) || {};
+  const attempted = !!(newReports && newReports.length);
+  const attemptCount = newReports && newReports.length;
+
   const totalQuestions = correct + wrong || 0;
   const scorePercentage = (correct / totalQuestions) * 100 || 0;
 
   const arrow = showAttempts ? '\u2193' : '\u2191';
-
-  // if last test attempt was not *submitted*, user should be able to resume it.
-  let resume = lastAttempt.status == 0;
 
   const startTest = () => {
     if (resume) {
@@ -121,7 +125,7 @@ const AssignmentCard = ({
           )}
         </DetailContainer>
         {showAttempts &&
-          reports.map(attempt => (
+          newReports.map(attempt => (
             <Attempt key={attempt._id} data={attempt} type={type} />
           ))}
       </ButtonAndDetail>
@@ -139,7 +143,7 @@ const enhance = compose(
       startAssignment: startAssignmentAction,
       resumeAssignment: resumeAssignmentAction
     },
-    (a, b, c) => ({ ...a, ...b, ...c }), // mergeProps
+    undefined, // (a, b, c) => ({ ...a, ...b, ...c }), // mergeProps
     { pure: false }
   )
 );

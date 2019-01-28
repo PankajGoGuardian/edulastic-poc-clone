@@ -7,7 +7,7 @@ import {
   all,
   select
 } from 'redux-saga/effects';
-import { values, groupBy } from 'lodash';
+import { values, groupBy, last } from 'lodash';
 import { createSelector } from 'reselect';
 import { normalize } from 'normalizr';
 import { push } from 'react-router-redux';
@@ -54,15 +54,6 @@ function* fetchAssignments() {
       call(assignmentApi.fetchAssigned),
       call(reportsApi.fetchReports)
     ]);
-
-    // normalize assignments
-    const {
-      result: allAssignments,
-      entities: { assignments: assignmentObj }
-    } = normalize(assignments, [assignmentSchema]);
-
-    yield put(setAssignmentsAction({ allAssignments, assignmentObj }));
-
     // normalize reports
     const {
       result: allReports,
@@ -70,6 +61,13 @@ function* fetchAssignments() {
     } = normalize(reports, [reportSchema]);
 
     yield put(setReportsAction({ allReports, reportsObj }));
+    // normalize assignments
+    const {
+      result: allAssignments,
+      entities: { assignments: assignmentObj }
+    } = normalize(assignments, [assignmentSchema]);
+
+    yield put(setAssignmentsAction({ allAssignments, assignmentObj }));
   } catch (e) {
     console.log(e);
   }
@@ -150,8 +148,10 @@ export const getAssignmentsSelector = createSelector(
         // and end Dtae should be greateer than current one :)
         let maxAttempts = (assignment.test && assignment.test.maxAttempts) || 5;
         let attempts = (assignment.reports && assignment.reports.length) || 0;
+        let lastAttempt = last(assignment.reports) || [];
         const liveAssignments =
-          maxAttempts >= attempts && new Date(assignment.endDate) > new Date();
+          (maxAttempts > attempts || lastAttempt.status == '0') &&
+          new Date(assignment.endDate) > new Date();
         let filterType = true;
         if (filter !== FILTERS.ALL) {
           if (filter === FILTERS.NOT_STARTED) {
@@ -162,6 +162,7 @@ export const getAssignmentsSelector = createSelector(
         }
         return liveAssignments && filterType;
       });
+
     return assignments;
   }
 );

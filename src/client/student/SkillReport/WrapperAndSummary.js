@@ -54,7 +54,7 @@ const SkillReportMainContent = ({ skillReport, t }) => {
       total: reportData[domain.id].totalQuestions,
       hints: reportData[domain.id].hints,
       percentage:
-          (reportData[domain.id].score / reportData[domain.id].maxScore) * 100
+        (reportData[domain.id].score / reportData[domain.id].maxScore) * 100
     }));
   }
   return (
@@ -64,11 +64,7 @@ const SkillReportMainContent = ({ skillReport, t }) => {
         <StyledTable columns={summaryColumns} dataSource={sumData} />
       </S.AssignmentContentWrap>
       {sumData.map((summary, index) => (
-        <TableSection
-          summary={summary}
-          skillReport={skillReport}
-          key={index}
-        />
+        <TableSection summary={summary} skillReport={skillReport} key={index} />
       ))}
     </S.SkillReportContainer>
   );

@@ -320,6 +320,7 @@ class AssessmentPlayerDefault extends React.Component {
                     <ControlBtn
                       prev
                       skin
+                      data-cy="prev"
                       type="primary"
                       icon="left"
                       disabled={isFirst()}
@@ -329,6 +330,7 @@ class AssessmentPlayerDefault extends React.Component {
                       next
                       skin
                       type="primary"
+                      data-cy="next"
                       icon={!isLast() && 'right'}
                       onClick={moveToNext}
                     >
@@ -341,6 +343,7 @@ class AssessmentPlayerDefault extends React.Component {
                         size="large"
                         type="primary"
                         icon="tool"
+                        data-cy="setting"
                         onClick={() => {
                           this.setState({ isToolbarModalVisible: true });
                         }}

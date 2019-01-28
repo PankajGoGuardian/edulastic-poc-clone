@@ -12,7 +12,7 @@ import { checkAnswerEvaluation } from '../../actions/checkanswer';
 
 const TestButton = ({ t, checkAnswerEvaluation }) => (
   <Container>
-    <StyledButton onClick={checkAnswerEvaluation}>
+    <StyledButton onClick={checkAnswerEvaluation} data-cy="checkAnswer">
       <ButtonLink
         color="primary"
         icon={<IconCheck color={white} />}

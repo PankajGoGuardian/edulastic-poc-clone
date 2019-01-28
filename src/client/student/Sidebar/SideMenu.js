@@ -198,7 +198,7 @@ class SideMenu extends Component {
               {menuItems.map((menu, index) => {
                 const MenuIcon = this.renderIcon(menu.icon, isSidebarCollapsed);
                 return (
-                  <MenuItem key={index.toString()}>
+                  <MenuItem key={index.toString()} data-cy={`label${index}`}>
                     <MenuIcon />
                     {!isSidebarCollapsed && <span>{menu.label}</span>}
                   </MenuItem>
@@ -214,6 +214,7 @@ class SideMenu extends Component {
               </QuestionButton>
 
               <UserInfoButton
+                data-cy="userInfo"
                 isVisible={isVisible}
                 isSidebarCollapsed={isSidebarCollapsed}
                 className="userinfoBtn"

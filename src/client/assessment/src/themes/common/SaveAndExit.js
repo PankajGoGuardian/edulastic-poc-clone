@@ -16,7 +16,7 @@ const SaveAndExit = ({ finishTest }) => (
         <PauseIcon />
       </StyledButton>
     </Link>
-    <StyledButton onClick={finishTest}>
+    <StyledButton data-cy="finishTest" onClick={finishTest}>
       <LogoutIcon />
     </StyledButton>
   </Container>

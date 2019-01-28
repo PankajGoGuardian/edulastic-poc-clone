@@ -13,19 +13,19 @@ import adminBg from '../../assets/small-bg-adm.png';
 
 const GetStarted = ({ t }) => (
   <RegistrationWrapper>
-    <RegistrationHeader type='flex' align='middle'>
+    <RegistrationHeader type="flex" align="middle">
       <Col span={12}>
         <img
-          src='//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png'
-          alt='Edulastic'
+          src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png"
+          alt="Edulastic"
         />
       </Col>
-      <Col span={12} align='right'>
+      <Col span={12} align="right">
         <span>{t('component.signup.alreadyhaveanaccount')}</span>
-        <Link to='/login'>{t('common.signinbtn')}</Link>
+        <Link to="/login">{t('common.signinbtn')}</Link>
       </Col>
     </RegistrationHeader>
-    <RegistrationBody type='flex' align='middle'>
+    <RegistrationBody type="flex" align="middle">
       <Col
         xs={{ span: 22, offset: 1 }}
         sm={{ span: 20, offset: 2 }}
@@ -43,13 +43,18 @@ const GetStarted = ({ t }) => (
         </Row>
         <ChooseSignupBox>
           <h3>{t('component.signup.getstarted.createaccount')}</h3>
-          <StudentSignupBox to='/studentsignup' xs={24} sm={8}>
+          <StudentSignupBox
+            data-cy="student"
+            to="/studentsignup"
+            xs={24}
+            sm={8}
+          >
             <span>{t('component.signup.getstarted.imstudent')}</span>
           </StudentSignupBox>
-          <TeacherSignupBox to='/signup' xs={24} sm={8}>
+          <TeacherSignupBox to="/signup" xs={24} sm={8}>
             <span>{t('component.signup.getstarted.imteacher')}</span>
           </TeacherSignupBox>
-          <AdminSignupBox to='/adminsignup' xs={24} sm={8}>
+          <AdminSignupBox to="/adminsignup" xs={24} sm={8}>
             <span>{t('component.signup.getstarted.imadmin')}</span>
           </AdminSignupBox>
         </ChooseSignupBox>

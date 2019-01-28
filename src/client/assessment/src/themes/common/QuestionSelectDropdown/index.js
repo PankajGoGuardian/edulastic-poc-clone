@@ -9,13 +9,16 @@ const QuestionSelectDropdown = ({ gotoQuestion, options, currentItem, t }) => (
   <SelectContainer>
     <Select
       defaultValue={currentItem}
+      data-cy="options"
       onChange={(value) => {
         gotoQuestion(parseInt(value, 10));
       }}
     >
       {options.map((item, index) => (
         <Select.Option key={index} value={item}>
-          {`${t('common.layout.selectbox.question')} ${index + 1}/ ${options.length}`}
+          {`${t('common.layout.selectbox.question')} ${index + 1}/ ${
+            options.length
+          }`}
         </Select.Option>
       ))}
     </Select>

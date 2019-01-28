@@ -27,16 +27,23 @@ class SubmitConfirmation extends Component {
       >
         <ModalContainer>
           <Title>{t('exitConfirmation.title')}</Title>
-          <TitleDescription>
-            {t('exitConfirmation.body')}
-          </TitleDescription>
+          <TitleDescription>{t('exitConfirmation.body')}</TitleDescription>
           <ButtonContainer>
             <Row gutter={20} style={{ width: '100%' }}>
               <Col md={12} sm={24}>
-                <StyledButton btnType={1} onClick={onClose}>{t('exitConfirmation.buttonCancel')}</StyledButton>
+                <StyledButton data-cy="cancel" btnType={1} onClick={onClose}>
+                  {t('exitConfirmation.buttonCancel')}
+                </StyledButton>
               </Col>
               <Col md={12} sm={24}>
-                <StyledButton type="primary" btnType={2} onClick={finishTest}>{t('exitConfirmation.buttonProceed')}</StyledButton>
+                <StyledButton
+                  data-cy="proceed"
+                  type="primary"
+                  btnType={2}
+                  onClick={finishTest}
+                >
+                  {t('exitConfirmation.buttonProceed')}
+                </StyledButton>
               </Col>
             </Row>
           </ButtonContainer>
@@ -56,7 +63,7 @@ SubmitConfirmation.propTypes = {
 export default withNamespaces('common')(SubmitConfirmation);
 
 const ModalConfirmation = styled(Modal)`
-  border-radius: 5;  
+  border-radius: 5;
   @media screen and (min-width: 768px) {
     min-width: 630px;
   }
@@ -99,6 +106,6 @@ const StyledButton = styled(Button)`
     color: ${props => (props.btnType === 1 ? '#00b0ff' : '#fff')};
   }
   @media screen and (max-width: 767px) {
-    margin-top:10px;
+    margin-top: 10px;
   }
 `;

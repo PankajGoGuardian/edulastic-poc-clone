@@ -1,0 +1,22 @@
+{
+    "default" : {
+        "openPolicy": "Automatically on Start Date",
+        "closePolicy": "Automatically on Due Date",
+        "class": [
+          {
+            "_id": "5c3c8bc137f99475388d6be7",
+            "status": 3,
+            "totalNumber": 0,
+            "submittedNumber": 0,
+            "students": [
+              "5c3ecd43cf2a9b2bc31d64bf"
+            ]
+          }
+        ],
+        "specificStudents": true,
+        "testId": "5c3ef01f3c5ab6be0e9f65db",
+        "assignedBy": {
+          "id": "5c3c8b1d311b9c19eb11a05b"
+        }
+      }
+}

@@ -26,9 +26,9 @@ class Confirmation extends Component {
       >
         <ModalContainer>
           <Title>{t('confirmation.submitAssignment')}</Title>
-          <TitleDescription>
+          <TitleDescriptioin>
             {t('confirmation.confirmationMessage')}
-          </TitleDescription>
+          </TitleDescriptioin>
           <ButtonContainer>
             <ButtonRow gutter={20}>
               <Col md={12} sm={24}>
@@ -37,7 +37,12 @@ class Confirmation extends Component {
                 </StyledButton>
               </Col>
               <Col md={12} sm={24}>
-                <StyledButton type='primary' btnType={2} onClick={finishTest}>
+                <StyledButton
+                  data-cy="submit"
+                  type="primary"
+                  btnType={2}
+                  onClick={finishTest}
+                >
                   {t('default:submit')}
                 </StyledButton>
               </Col>

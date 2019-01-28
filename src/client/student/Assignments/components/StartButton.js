@@ -22,7 +22,7 @@ const AssignmentButton = ({ startDate, t, startTest, attempted, resume }) => {
     </NotAvailableButton>
   ) : (
     <StartButton onClick={startTest}>
-      <span>{startButtonText}</span>
+      <span data-cy="assignmentButton">{startButtonText}</span>
     </StartButton>
   );
 };
@@ -47,7 +47,8 @@ const NotAvailableButton = styled(StartButton)`
     color: ${props => props.theme.assignment.cardNotAvailabelBtnTextColor};
   }
   &:hover {
-    background-color: ${props => props.theme.assignment.cardNotAvailabelBtnBgColor};
+    background-color: ${props =>
+      props.theme.assignment.cardNotAvailabelBtnBgColor};
     span {
       color: ${props => props.theme.assignment.cardNotAvailabelBtnTextColor};
     }

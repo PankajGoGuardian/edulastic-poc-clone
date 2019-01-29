@@ -32,6 +32,9 @@ export const lightGreen = '#e1fbf2';
 export const greenDark = '#4aac8b';
 export const greenDarkSecondary = '#057750';
 
+// shadows
+export const boxShadowDefault = '0 2px 5px 0 rgba(0, 0, 0, 0.07)';
+
 // Sizes
 export const mobileWidth = '480px';
 export const tabletWidth = '768px';

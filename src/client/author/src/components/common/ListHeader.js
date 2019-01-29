@@ -9,8 +9,6 @@ import { connect } from 'react-redux';
 import { FlexContainer } from '@edulastic/common';
 import { toggleSideBarAction } from '../../actions/togglemenu';
 import {
-  mobileWidth,
-  desktopWidth,
   tabletWidth,
   greenDarkSecondary,
   darkBlueSecondary,
@@ -19,50 +17,42 @@ import {
 import { withNamespaces } from '@edulastic/localization';
 import HeaderWrapper from '../../mainContent/headerWrapper';
 
-const toggleMenu = (toggle) => {
-  toggle()
+const toggleMenu = toggle => {
+  toggle();
 };
 
-const ListHeader = ({ onCreate, t, windowWidth, title, btnTitle, toggleSideBar }) =>  {
-  return(
-  <Container>
-    <FlexContainer>
-      <MenuIcon type="bars" onClick={() => toggleMenu(toggleSideBar)}/>
-      <Title>{title}</Title>
-    </FlexContainer>
+const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar }) => {
+  return (
+    <Container>
+      <FlexContainer>
+        <MenuIcon type="bars" onClick={() => toggleMenu(toggleSideBar)} />
+        <Title>{title}</Title>
+      </FlexContainer>
 
-    <Button
-      // disabled={creating}
-      style={{
-        height: windowWidth > 768 ? 50 : 40,
-        minWidth: 151.9,
-        color: '#fff',
-        borderRadius: 5,
-        margin: 0
-      }}
-      onClick={onCreate}
-      color="success"
-      icon={
-        <IconPlus
-          color={greenDarkSecondary}
-          style={{ position: 'relative' }}
-          left={-10}
-          width={13}
-          height={13}
-          hoverColor={white}
-        />
-      }
-    >
-      {btnTitle? btnTitle:t('component.itemlist.header.create')}
-    </Button>
-  </Container>
-);
-    }
+      <CreateButton
+        // disabled={creating}
+        onClick={onCreate}
+        color="success"
+        icon={
+          <IconPlusStyled
+            color={greenDarkSecondary}
+            left={-10}
+            width={13}
+            height={13}
+            hoverColor={white}
+          />
+        }
+      >
+        {btnTitle ? btnTitle : t('component.itemlist.header.create')}
+      </CreateButton>
+    </Container>
+  );
+};
 ListHeader.propTypes = {
   onCreate: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-  toggleSideBar: PropTypes.func.isRequired,
+  toggleSideBar: PropTypes.func.isRequired
 };
 
 const enhance = compose(
@@ -89,9 +79,18 @@ const Container = styled(HeaderWrapper)`
 `;
 
 const CreateButton = styled(Button)`
-  height: 40px;
-  color: #fff;
+  height: 50px;
+  min-width: 151;
+  color: ${white};
+  border-radius: 5;
   margin: 0;
+  @media (max-width: ${tabletWidth}) {
+    height: 40px;
+  }
+`;
+
+const IconPlusStyled = styled(IconPlus)`
+  position: relative;
 `;
 
 // const HeaderWrapper = styled.div`

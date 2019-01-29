@@ -26,9 +26,9 @@ class Confirmation extends Component {
       >
         <ModalContainer>
           <Title>{t('confirmation.submitAssignment')}</Title>
-          <TitleDescriptioin>
+          <TitleDescription>
             {t('confirmation.confirmationMessage')}
-          </TitleDescriptioin>
+          </TitleDescription>
           <ButtonContainer>
             <ButtonRow gutter={20}>
               <Col md={12} sm={24}>

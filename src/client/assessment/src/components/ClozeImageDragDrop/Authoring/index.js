@@ -35,6 +35,7 @@ import { setQuestionDataAction } from '../../../../../author/src/actions/questio
 import DeleteButton from '../components/DeleteButton';
 import FlexView from '../components/FlexView';
 import DropArea from '../common/DropArea';
+import FocusInput from '../../common/FocusInput';
 
 const DragHandle = SortableHandle(() => <i className="fa fa-align-justify" />);
 
@@ -48,7 +49,7 @@ const SortableItem = React.memo(
       <div className="main">
         <DragHandle />
         <div>
-          <input
+          <FocusInput
             style={{ background: 'transparent' }}
             type="text"
             value={value}

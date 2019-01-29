@@ -48,9 +48,9 @@ import {
   PointerSelect,
   PreviewImage,
   SortableItems,
-  StyledCustomQuill,
-  TransparentBackInput
+  StyledCustomQuill
 } from './components';
+import FocusInput from '../../common/FocusInput';
 
 import AddNewChoiceBtn from '../common/AddNewChoiceBtn';
 import SortableItemContainer from '../common/SortableItemContainer';
@@ -67,11 +67,17 @@ const SortableItem = React.memo(
       <div className="main">
         <DragHandle />
         <div>
-          <TransparentBackInput
+          <FocusInput
+            style={{ background: 'transparent' }}
+            type="text"
+            value={value}
+            onChange={onChange}
+          />
+          {/* <TransparentBackInput
             type="text"
             defaultValue={value}
             onChange={onChange}
-          />
+          /> */}
         </div>
       </div>
       <DeleteButton onDelete={onRemove} />

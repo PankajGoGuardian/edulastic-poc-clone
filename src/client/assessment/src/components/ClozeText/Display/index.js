@@ -36,8 +36,8 @@ class ClozeTextDisplay extends Component {
 
   getTemplateParts = (props) => {
     const { templateMarkUp } = props;
-    const templateParts = templateMarkUp.match(/<p.*?<\/p>/g);
-    const responseParts = templateMarkUp.match(/<p class="response-btn.*?<\/p>/g);
+    const templateParts = templateMarkUp.match(/<span.*?<\/span>/g);
+    const responseParts = templateMarkUp.match(/<span class="response-btn.*?<\/span>/g);
     const respLength = responseParts !== null ? responseParts.length : 0;
     return { templateParts, respLength };
   }
@@ -94,7 +94,6 @@ class ClozeTextDisplay extends Component {
     };
 
     let maxLineHeight = smallSize ? 50 : 40;
-
     const previewTemplateBoxLayout = (
       <div className={`template_box ${smallSize ? 'text-small' : ''}`} style={{ fontSize: smallSize ? 14 : fontSize, padding: smallSize ? 0 : 20 }}>
         {templateParts && templateParts.map((templatePart, index) => {

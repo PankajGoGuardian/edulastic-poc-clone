@@ -14,6 +14,7 @@ import Subtitle from '../common/Sutitle';
 import AddNewChoiceBtn from './AddNewChoiceBtn';
 import { setQuestionDataAction } from '../../../../../author/src/actions/question';
 import DeleteButton from '../components/DeleteButton';
+import FocusInput from '../../common/FocusInput';
 
 const DragHandle = React.memo(SortableHandle(() => <i className="fa fa-align-justify" />));
 
@@ -22,7 +23,7 @@ const SortableItem = React.memo(SortableElement(({ value, onRemove, onChange }) 
     <div className="main">
       <DragHandle />
       <div>
-        <input style={{ background: 'transparent' }} type="text" value={value} onChange={onChange} />
+        <FocusInput style={{ background: 'transparent' }} type="text" value={value} onChange={onChange} />
       </div>
     </div>
     <DeleteButton onDelete={onRemove} />

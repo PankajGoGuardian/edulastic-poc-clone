@@ -18,6 +18,7 @@ import { TokenHighlight } from '../TokenHighlight';
 import { Shading } from '../Shading';
 import { Hotspot } from '../Hotspot';
 import { HighlightImage } from '../HighlightImage';
+import { Drawing } from '../Drawing';
 import { EssayPlainText } from '../EssayPlainText';
 import { EssayRichText } from '../EssayRichText';
 
@@ -30,6 +31,8 @@ import FormulaEssay from '../FormulaEssay';
 
 const getQuestion = (type) => {
   switch (type) {
+    case questionType.DRAWING:
+      return Drawing;
     case questionType.HIGHLIGHT_IMAGE:
       return HighlightImage;
     case questionType.SHADING:

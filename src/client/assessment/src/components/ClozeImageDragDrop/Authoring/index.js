@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  SortableContainer,
-  SortableElement,
-  SortableHandle,
-  arrayMove
-} from 'react-sortable-hoc';
+import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
 import { PaddingDiv, CustomQuillComponent } from '@edulastic/common';
 import { IconUpload, IconDrawResize, IconPin } from '@edulastic/icons';
 import { greenDark } from '@edulastic/colors';
@@ -15,15 +10,7 @@ import { withNamespaces } from '@edulastic/localization';
 import { connect } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import 'react-quill/dist/quill.snow.css';
-import {
-  Button,
-  Checkbox,
-  Input,
-  InputNumber,
-  Select,
-  Upload,
-  message
-} from 'antd';
+import { Button, Checkbox, Input, InputNumber, Select, Upload, message } from 'antd';
 import { ChromePicker } from 'react-color';
 import styled from 'styled-components';
 import { API_CONFIG } from '@edulastic/api';
@@ -173,6 +160,7 @@ class clozeImageDragDropAuthoring extends Component {
 
   handleImageUpload = (info) => {
     const { status, response } = info.file;
+    console.log(info);
     if (status === 'done') {
       message.success(`${info.file.name} file uploaded successfully.`);
       const imageUrl = response.result.fileUri;
@@ -195,24 +183,19 @@ class clozeImageDragDropAuthoring extends Component {
     } = item;
 
     const { isColorPickerVisible } = this.state;
-    const hasActive =
-      item.responses &&
-      item.responses.filter(it => it.active === true).length > 0;
+    const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
 
     const draggerProps = {
       name: 'file',
-      action: `${API_CONFIG.api}file/upload`,
+      action: `${API_CONFIG.api}/file/upload`,
       headers: {
-        authorization:
-          localStorage.getItem('access_token'),
+        authorization: localStorage.getItem('access_token')
       }
     };
     return (
       <div>
         <PaddingDiv bottom={20}>
-          <Subtitle>
-            {t('component.clozeImageDragDrop.composequestion')}
-          </Subtitle>
+          <Subtitle>{t('component.clozeImageDragDrop.composequestion')}</Subtitle>
           <CustomQuillComponent
             toolbarId="stimulus"
             wrappedRef={(instance) => {
@@ -224,28 +207,21 @@ class clozeImageDragDropAuthoring extends Component {
             value={item.stimulus}
           />
           <PaddingDiv top={30} />
-          <FlexContainer
-            style={{ background: '#efefefc2', height: 70, fontSize: 13 }}
-          >
+          <FlexContainer style={{ background: '#efefefc2', height: 70, fontSize: 13 }}>
             <div style={{ alignItems: 'center' }}>
               <InputNumber
                 defaultValue={imageWidth || 600}
                 onChange={val => this.onItemPropChange('imageWidth', val)}
               />
 
-              <PaddingDiv left={20}>
-                {t('component.clozeImageDragDrop.widthpx')}
-              </PaddingDiv>
-
+              <PaddingDiv left={20}>{t('component.clozeImageDragDrop.widthpx')}</PaddingDiv>
             </div>
             <div style={{ alignItems: 'center' }}>
               <Input
                 size="large"
                 style={{ width: 220 }}
                 defaultValue={imageAlterText}
-                onChange={val =>
-                  this.onItemPropChange('imageAlterText', val.target.value)
-                }
+                onChange={val => this.onItemPropChange('imageAlterText', val.target.value)}
               />
               <PaddingDiv left={20}>{t('component.clozeImageDragDrop.imagealtertext')}</PaddingDiv>
             </div>
@@ -256,14 +232,10 @@ class clozeImageDragDropAuthoring extends Component {
               />
               {isColorPickerVisible && (
                 <ColorPickerContainer>
-                  <ColorPickerWrapper
-                    onClick={() => this.showColorPicker(false)}
-                  />
+                  <ColorPickerWrapper onClick={() => this.showColorPicker(false)} />
                   <ChromePicker
                     color={background}
-                    onChangeComplete={color =>
-                      this.onItemPropChange('background', color.hex)
-                    }
+                    onChangeComplete={color => this.onItemPropChange('background', color.hex)}
                   />
                 </ColorPickerContainer>
               )}
@@ -307,7 +279,6 @@ class clozeImageDragDropAuthoring extends Component {
                   marginBottom: 10
                 }}
               >
-
                 <Button
                   disabled={!hasActive}
                   style={{
@@ -336,23 +307,11 @@ class clozeImageDragDropAuthoring extends Component {
                   }}
                   onChange={this.handlePointersChange}
                 >
-
-                  <Option value="none">
-                    {t('component.clozeImageDragDrop.none')}
-                  </Option>
-                  <Option value="top">
-                    {t('component.clozeImageDragDrop.top')}
-                  </Option>
-                  <Option value="bottom">
-                    {t('component.clozeImageDragDrop.bottom')}
-                  </Option>
-                  <Option value="left">
-                    {t('component.clozeImageDragDrop.left')}
-                  </Option>
-                  <Option value="right">
-                    {t('component.clozeImageDragDrop.right')}
-                  </Option>
-
+                  <Option value="none">{t('component.clozeImageDragDrop.none')}</Option>
+                  <Option value="top">{t('component.clozeImageDragDrop.top')}</Option>
+                  <Option value="bottom">{t('component.clozeImageDragDrop.bottom')}</Option>
+                  <Option value="left">{t('component.clozeImageDragDrop.left')}</Option>
+                  <Option value="right">{t('component.clozeImageDragDrop.right')}</Option>
                 </Select>
               </div>
             </div>
@@ -382,12 +341,7 @@ class clozeImageDragDropAuthoring extends Component {
                       alt="resp-preview"
                       style={{ userSelect: 'none', pointerEvents: 'none' }}
                     />
-                    <DropArea
-                      updateData={this.updateData}
-                      item={item}
-                      key={item}
-                    />
-
+                    <DropArea updateData={this.updateData} item={item} key={item} />
                   </React.Fragment>
                 )}
                 {!item.imageUrl && (
@@ -399,34 +353,22 @@ class clozeImageDragDropAuthoring extends Component {
                       <strong>Drag & Drop</strong>
                     </p>
                     <h2 className="ant-upload-text">YOUR OWN Image</h2>
-                    <p className="ant-upload-hint">
-                      OR BROWSE: PNG, JPG, GIF (1024KB MAX.)
-                    </p>
+                    <p className="ant-upload-hint">OR BROWSE: PNG, JPG, GIF (1024KB MAX.)</p>
                   </Dragger>
                 )}
               </div>
               <PaddingDiv top={30} style={{ alignSelf: 'flex-start' }}>
                 <Checkbox
-                  defaultChecked={
-                    responseLayout && responseLayout.showdashedborder
-                  }
+                  defaultChecked={responseLayout && responseLayout.showdashedborder}
                   onChange={val =>
-                    this.onResponsePropChange(
-                      'showdashedborder',
-                      val.target.checked
-                    )
+                    this.onResponsePropChange('showdashedborder', val.target.checked)
                   }
                 >
                   {t('component.clozeImageDragDrop.showdashedborder')}
                 </Checkbox>
                 <Checkbox
                   defaultChecked={isEditAriaLabels}
-                  onChange={val =>
-                    this.onItemPropChange(
-                      'isEditAriaLabels',
-                      val.target.checked
-                    )
-                  }
+                  onChange={val => this.onItemPropChange('isEditAriaLabels', val.target.checked)}
                 >
                   {t('component.clozeImageDragDrop.editAriaLabels')}
                 </Checkbox>
@@ -436,20 +378,13 @@ class clozeImageDragDropAuthoring extends Component {
           <PaddingDiv>
             {isEditAriaLabels && (
               <React.Fragment>
-                <Subtitle>
-                  {t('component.clozeImageDragDrop.editAriaLabels')}
-                </Subtitle>
+                <Subtitle>{t('component.clozeImageDragDrop.editAriaLabels')}</Subtitle>
                 {responses.map((responseContainer, index) => (
-                  <div
-                    className="imagelabeldragdrop-droppable iseditablearialabel"
-                    key={index}
-                  >
+                  <div className="imagelabeldragdrop-droppable iseditablearialabel" key={index}>
                     <span className="index-box">{index + 1}</span>
                     <Input
                       defaultValue={responseContainer.label}
-                      onChange={e =>
-                        this.onResponseLabelChange(index, e.target.value)
-                      }
+                      onChange={e => this.onResponseLabelChange(index, e.target.value)}
                     />
                   </div>
                 ))}
@@ -457,9 +392,7 @@ class clozeImageDragDropAuthoring extends Component {
             )}
           </PaddingDiv>
           <PaddingDiv>
-            <Subtitle>
-              {t('component.clozeImageDragDrop.possibleresponses')}
-            </Subtitle>
+            <Subtitle>{t('component.clozeImageDragDrop.possibleresponses')}</Subtitle>
             <SortableList
               items={item.options}
               onSortEnd={this.onSortEnd}

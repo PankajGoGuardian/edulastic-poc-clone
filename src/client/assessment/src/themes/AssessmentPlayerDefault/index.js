@@ -53,7 +53,7 @@ class AssessmentPlayerDefault extends React.Component {
       currentColor: '#ff0000',
       fillColor: '#ff0000',
       activeMode: '',
-      lineWidth: 4,
+      lineWidth: 6,
       scratchPadMode: false,
       deleteMode: false,
       testItemState: '',
@@ -177,10 +177,6 @@ class AssessmentPlayerDefault extends React.Component {
     this.setState({ currentColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100) });
   };
 
-  handleLineWidthChange = (value) => {
-    this.setState({ lineWidth: value });
-  };
-
   saveHistory = (data) => {
     const { history, currentTab } = this.state;
 
@@ -261,8 +257,6 @@ class AssessmentPlayerDefault extends React.Component {
               deleteMode={deleteMode}
               currentColor={currentColor}
               onToolChange={this.handleToolChange}
-              lineWidth={lineWidth}
-              onLineWidthChange={this.handleLineWidthChange}
               activeMode={activeMode}
               undo={this.handleUndo}
               redo={this.handleRedo}

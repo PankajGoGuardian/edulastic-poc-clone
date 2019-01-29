@@ -12,6 +12,7 @@ import { withNamespaces } from '@edulastic/localization';
 import { Paper, Tabs, Tab, Button, FlexContainer, Image } from '@edulastic/common';
 import { secondaryTextColor, white, red, blue } from '@edulastic/colors';
 import { IconPlus, IconClose } from '@edulastic/icons';
+import { fileApi } from '@edulastic/api';
 
 import {
   QuestionTextArea,
@@ -31,6 +32,8 @@ const OptionsList = withPoints(HotspotPreview);
 
 const HotspotEdit = ({ item, setQuestionData, t }) => {
   const { image, areas, area_attributes, multiple_responses } = item;
+
+  const [loading, setLoading] = useState(false);
 
   const width = image ? image.width : 900;
   const height = image ? image.height : 470;
@@ -63,14 +66,6 @@ const HotspotEdit = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-  const handleImageToolbarChange = prop => (val) => {
-    const newItem = cloneDeep(item);
-
-    newItem.image[prop] = val;
-
-    setQuestionData(newItem);
-  };
-
   const handleItemChangeChange = (prop, uiStyle) => {
     const newItem = cloneDeep(item);
 
@@ -78,8 +73,26 @@ const HotspotEdit = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
+  const handleImageToolbarChange = prop => (val) => {
+    const newItem = cloneDeep(item);
+
+    newItem.image[prop] = val;
+    setQuestionData(newItem);
+  };
+
   const onDrop = ([files]) => {
-    handleImageToolbarChange(SOURCE)(URL.createObjectURL(files));
+    if (files) {
+      setLoading(true);
+      fileApi
+        .upload({ file: files })
+        .then(({ fileUri }) => {
+          handleImageToolbarChange(SOURCE)(fileUri);
+          setLoading(false);
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
   };
 
   const thumb = file && <Image width={width} height={height} src={file} alt={altText} />;
@@ -281,7 +294,7 @@ const HotspotEdit = ({ item, setQuestionData, t }) => {
             >
               <input {...getInputProps()} />
 
-              <StyledDropZone isDragActive={isDragActive} thumb={thumb} />
+              <StyledDropZone loading={loading} isDragActive={isDragActive} thumb={thumb} />
             </div>
           )}
         </Dropzone>

@@ -21,6 +21,7 @@ const TOKEN_HIGHLIGHT = 'tokenhighlight';
 const HOTSPOT = 'hotspot';
 const SHADING = 'shading';
 const HIGHLIGHT_IMAGE = 'highlightImage';
+const DRAWING = 'drawing';
 
 const selectsData = [
   { value: '', text: 'All Types' },
@@ -51,6 +52,7 @@ const selectsData = [
 
 module.exports = {
   SHORT_TEXT,
+  DRAWING,
   ESSAY_PLAIN_TEXT,
   ESSAY_RICH_TEXT,
   CHOICE_MATRIX,

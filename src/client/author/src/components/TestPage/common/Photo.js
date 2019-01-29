@@ -29,13 +29,14 @@ function beforeUpload(file) {
 class Photo extends React.Component {
   state = {};
 
-  handleChange = info => {
+  handleChange = (info) => {
     if (info.file.status === 'uploading') {
       return;
     }
     if (info.file.status === 'done') {
-      getBase64(info.file.originFileObj, imageUrl => {
-        this.props.uploadTestImage(info.file.response.result.fileUri);
+      const { uploadTestImage } = this.props;
+      getBase64(info.file.originFileObj, (imageUrl) => {
+        uploadTestImage(info.file.response.result.fileUri);
         this.setState({
           imageUrl
         });
@@ -58,7 +59,7 @@ class Photo extends React.Component {
       listType: 'picture-card',
       className: 'avatar-uploader',
       showUploadList: false,
-      action: `${API_CONFIG.api}file/upload`,
+      action: `${API_CONFIG.api}/file/upload`,
       onChange: this.handleChange,
       beforeUpload,
       headers: {

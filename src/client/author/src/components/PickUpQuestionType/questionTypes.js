@@ -74,6 +74,23 @@ const { EMBED_RESPONSE } = math;
 const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
   const cards = [
     {
+      title: 'Drawing',
+      type: 'highlight',
+      cardImage: '',
+      data: {
+        image: {
+          source: '',
+          width: 900,
+          height: 470,
+          altText: ''
+        },
+        line_color: [mainBlueColor],
+        stimulus: '<p>[This is the stem.]</p>',
+        type: 'drawing'
+      },
+      onSelectQuestionType
+    },
+    {
       title: 'Highlight Image',
       type: 'highlight',
       cardImage: HLHightlight,

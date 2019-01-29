@@ -1,12 +1,11 @@
-import React, { Fragment } from 'react';
-import { Button, Input } from 'antd';
+import React from 'react';
+import { Button } from 'antd';
 import PropTypes from 'prop-types';
 import ColorPicker from 'rc-color-picker';
 import styled from 'styled-components';
 
 import { mainBlueColor, white, darkBlueSecondary, secondaryTextColor } from '@edulastic/colors';
 import { FlexContainer } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
 import { drawTools } from '@edulastic/constants';
 import {
   IconPencilEdit,
@@ -26,8 +25,10 @@ import {
 
 const customizeIcon = icon => styled(icon)`
   fill: ${white};
-  margin-left: -3px;
-  margin-top: 3px;
+  width: 20px !important;
+  height: 20px !important;
+  margin-left: -5px;
+  margin-top: 5px;
   &:hover {
     fill: ${white};
   }
@@ -81,10 +82,7 @@ const Tools = ({
   deleteMode,
   onColorChange,
   undo,
-  redo,
-  lineWidth,
-  t,
-  onLineWidthChange
+  redo
 }) => {
   const getAlpha = (color) => {
     const regexValuesFromRgbaColor = /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d*(?:\.\d+)?)\)$/;
@@ -100,10 +98,12 @@ const Tools = ({
     drawTools.DRAW_TRIANGLE
   ];
 
+  const activeTool = buttonsList.find(button => button.mode === activeMode);
+
   return (
-    <ToolBox justifyContent="center">
+    <ToolBox activeMode={activeMode} justifyContent="center">
       {activeMode === '' && (
-        <FlexContainer justifyContent="flex-end" style={{ width: 1008 }}>
+        <FlexContainer childMarginRight={0} justifyContent="flex-end" flexDirection="column">
           {buttonsList.map((button, i) => (
             <StyledButton
               key={i}
@@ -116,64 +116,17 @@ const Tools = ({
         </FlexContainer>
       )}
       {activeMode !== '' && (
-        <FlexContainer style={{ width: '100%' }} justifyContent="space-between">
-          <BackButton onClick={onToolChange('')} justifyContent="flex-end" style={{ flex: 0.18 }}>
-            <span style={{ fontSize: 18, marginRight: 10 }}>{'<'}</span> Back
+        <FlexContainer style={{ width: '50px' }} childMarginRight={0} flexDirection="column">
+          <BackButton onClick={onToolChange('')} justifyContent="center" style={{ flex: 0.18 }}>
+            Back
           </BackButton>
           <Separator />
-          <FlexContainer style={{ flex: 0.64 }} justifyContent="space-between">
-            <FlexContainer alignItems="flex-start" flexDirection="column">
-              <Text>{t(`common.activeModeTexts.${activeMode}.title`)}</Text>
-              <SecondaryText>{t(`common.activeModeTexts.${activeMode}.description`)}</SecondaryText>
-            </FlexContainer>
-            <FlexContainer childMarginRight={30} id="tool">
-              <FlexContainer>
-                {showFillColorArray.includes(activeMode) && (
-                  <Fragment>
-                    <Label>Fill Color</Label>
-                    <ColorPicker
-                      animation="slide-down"
-                      color={fillColor}
-                      alpha={getAlpha(fillColor)}
-                      onChange={onFillColorChange}
-                    />
-                  </Fragment>
-                )}
-                {activeMode !== drawTools.DRAW_TEXT ? (
-                  <Fragment>
-                    <Label>Line Color</Label>
-                    <ColorPicker
-                      animation="slide-down"
-                      color={currentColor}
-                      alpha={getAlpha(currentColor)}
-                      onChange={onColorChange}
-                    />
-                  </Fragment>
-                ) : (
-                  <Fragment>
-                    <Label>Text Color</Label>
-                    <ColorPicker
-                      animation="slide-down"
-                      color={currentColor}
-                      alpha={getAlpha(currentColor)}
-                      onChange={onColorChange}
-                    />
-                  </Fragment>
-                )}
-              </FlexContainer>
-              <FlexContainer>
-                <Label>Size</Label>
-                <Input
-                  style={{ width: 60 }}
-                  value={lineWidth}
-                  onChange={e => onLineWidthChange(+e.target.value)}
-                  type="number"
-                />
-              </FlexContainer>
-            </FlexContainer>
-          </FlexContainer>
-          <Separator />
-          <FlexContainer style={{ flex: 0.18 }}>
+          {activeTool && (
+            <StyledButton onClick={onToolChange('')} enable>
+              {activeTool.icon}
+            </StyledButton>
+          )}
+          <FlexContainer childMarginRight={0} flexDirection="column">
             <StyledButton onClick={undo}>
               <Undo />
             </StyledButton>
@@ -183,6 +136,48 @@ const Tools = ({
             <StyledButton onClick={onToolChange('deleteMode')} enable={deleteMode}>
               <Trash />
             </StyledButton>
+          </FlexContainer>
+          <Separator />
+          <FlexContainer childMarginRight={0} flexDirection="column" justifyContent="center">
+            <FlexContainer flexDirection="column" childMarginRight={0} id="tool">
+              <FlexContainer flexDirection="column" childMarginRight={0}>
+                {showFillColorArray.includes(activeMode) && (
+                  <Block>
+                    <Label>Fill</Label>
+                    <ColorPicker
+                      animation="slide-up"
+                      color={fillColor}
+                      style={{ zIndex: 100000 }}
+                      alpha={getAlpha(fillColor)}
+                      onChange={onFillColorChange}
+                    />
+                  </Block>
+                )}
+                {activeMode !== drawTools.DRAW_TEXT ? (
+                  <Block>
+                    <Label>Line</Label>
+                    <ColorPicker
+                      style={{ zIndex: 100000 }}
+                      animation="slide-up"
+                      color={currentColor}
+                      alpha={getAlpha(currentColor)}
+                      onChange={onColorChange}
+                    />
+                  </Block>
+                ) : (
+                  <Block>
+                    <Label>Text</Label>
+                    <ColorPicker
+                      style={{ zIndex: 100000 }}
+                      animation="slide-up"
+                      color={currentColor}
+                      alpha={getAlpha(currentColor)}
+                      onChange={onColorChange}
+                    />
+                  </Block>
+                )}
+              </FlexContainer>
+            </FlexContainer>
           </FlexContainer>
         </FlexContainer>
       )}
@@ -195,48 +190,43 @@ Tools.propTypes = {
   activeMode: PropTypes.string.isRequired,
   currentColor: PropTypes.string.isRequired,
   onColorChange: PropTypes.func.isRequired,
-  lineWidth: PropTypes.number.isRequired,
   undo: PropTypes.func.isRequired,
   redo: PropTypes.func.isRequired,
   onFillColorChange: PropTypes.func.isRequired,
   fillColor: PropTypes.string.isRequired,
-  deleteMode: PropTypes.bool.isRequired,
-  t: PropTypes.func.isRequired,
-  onLineWidthChange: PropTypes.func.isRequired
+  deleteMode: PropTypes.bool.isRequired
 };
 
-export default withNamespaces('student')(Tools);
+export default Tools;
 
 const ToolBox = styled(FlexContainer)`
-  height: 50px;
+  width: 50px;
   position: fixed;
-  top: 62px;
+  bottom: 20px;
+  left: 20px;
   background: ${mainBlueColor};
-  width: 100%;
   z-index: 10000;
+  border-radius: 4px;
+  padding: 10px 0;
+`;
+
+const Block = styled.div`
+  margin-bottom: 5px;
+  margin-top: 5px;
 `;
 
 const Label = styled.div`
   font-weight: 600;
-  font-size: 14;
-  color: ${white};
-  white-space: nowrap;
-`;
-
-const Text = styled.div`
-  text-transform: uppercase;
-  font-weight: 900;
   font-size: 12px;
   color: ${white};
-`;
-const SecondaryText = styled(Text)`
-  font-weight: 600;
-  font-size: 11px;
+  white-space: nowrap;
 `;
 
 const BackButton = styled(FlexContainer)`
   font-weight: 600;
   font-size: 12px;
+  height: 40px;
+  width: 40px;
   cursor: pointer;
   user-select: none;
   text-transform: uppercase;
@@ -245,21 +235,22 @@ const BackButton = styled(FlexContainer)`
 
 const Separator = styled.span`
   display: block;
-  width: 0;
-  margin-left: 35px;
-  margin-right: 35px;
-  height: 30px;
+  width: 70%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  height: 0;
   opacity: 0.4;
-  border-right: 1px solid ${secondaryTextColor};
+  border-bottom: 1px solid ${secondaryTextColor};
 `;
 
 const StyledButton = styled(Button)`
-  margin-right: 10px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  box-shadow: none !important;
   background: ${props => (props.enable ? darkBlueSecondary : 'transparent')};
   height: 40px;
   width: 40px;
-  border: none;
-
+  border: none !important;
   &:focus,
   &:hover {
     background: ${props => (props.enable ? darkBlueSecondary : 'transparent')};

@@ -687,7 +687,7 @@ const SvgDraw = ({
                   onDoubleClick={activeMode === drawTools.DRAW_TEXT ? editText(i) : undefined}
                   key={i}
                   color={text.color}
-                  fontSize={text.lineWidth}
+                  fontSize={text.lineWidth * 3}
                   x={text.x}
                   y={text.y}
                 >

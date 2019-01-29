@@ -220,7 +220,7 @@ class clozeImageDropDownAuthoring extends Component {
 
     const draggerProps = {
       name: 'file',
-      action: `${API_CONFIG.api}file/upload`,
+      action: `${API_CONFIG.api}/file/upload`,
       headers: {
         authorization:
           localStorage.getItem('access_token')

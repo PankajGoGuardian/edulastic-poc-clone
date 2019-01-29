@@ -30,6 +30,7 @@ const headerTitles = {
   tokenhighlight: 'Token Highlight',
   hotspot: 'Hotspot',
   highlightImage: 'Highlight Image',
+  drawing: 'Drawing',
   shading: 'Shading',
   classification: 'Classification',
   matchList: 'Match List',

@@ -1,20 +1,23 @@
-import React from "react";
-import { Select } from "antd";
-import { connect } from "react-redux";
-import { getClasses, getCurrentClass, changeClassAction } from "../Login/ducks";
-import PropTypes from "prop-types";
-import styled from "styled-components";
+import React from 'react';
+import { Select } from 'antd';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import { getClasses, getCurrentClass, changeClassAction } from '../Login/ducks';
 
-const ClassSelector = ({ t, classes, currentClass,changeClass }) => {
-  if(! classes){
+const ClassSelector = ({ t, classes, currentClass, changeClass }) => {
+  if (!classes) {
     return null;
   }
   return (
     <AssignmentSelectClass>
-      <ClassLabel>{t("common.classLabel")}</ClassLabel>
-      <Select value={currentClass} onChange={(value)=>{
-        changeClass(value);
-      }}>
+      <ClassLabel>{t('common.classLabel')}</ClassLabel>
+      <Select
+        value={currentClass}
+        onChange={value => {
+          changeClass(value);
+        }}
+      >
         {classes.map((cl, i) => (
           <Select.Option key={cl._id} value={cl._id}>
             {cl.name}

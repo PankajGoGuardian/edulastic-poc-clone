@@ -11,8 +11,8 @@ import { values, groupBy, last } from 'lodash';
 import { createSelector } from 'reselect';
 import { normalize } from 'normalizr';
 import { push } from 'react-router-redux';
-import { getCurrentClass } from '../Login/ducks';
 import { assignmentApi, reportsApi, testActivityApi } from '@edulastic/api';
+import { getCurrentClass } from '../Login/ducks';
 
 // external actions
 import {
@@ -134,7 +134,8 @@ export const getAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
   filterSelector,
-  (assignmentsObj, reportsObj, filter) => {
+  getCurrentClass,
+  (assignmentsObj, reportsObj, filter, currentClass) => {
     // group reports by assignmentsID
     let groupedReports = groupBy(values(reportsObj), 'assignmentId');
     let assignments = values(assignmentsObj)
@@ -149,6 +150,9 @@ export const getAssignmentsSelector = createSelector(
         let maxAttempts = (assignment.test && assignment.test.maxAttempts) || 5;
         let attempts = (assignment.reports && assignment.reports.length) || 0;
         let lastAttempt = last(assignment.reports) || [];
+        let classDetails = assignment.class.filter(
+          classDetail => currentClass === classDetail._id
+        );
         const liveAssignments =
           (maxAttempts > attempts || lastAttempt.status == '0') &&
           new Date(assignment.endDate) > new Date();
@@ -160,7 +164,8 @@ export const getAssignmentsSelector = createSelector(
             filterType = attempts > 0;
           }
         }
-        return liveAssignments && filterType;
+
+        return liveAssignments && filterType && classDetails.length > 0;
       });
 
     return assignments;

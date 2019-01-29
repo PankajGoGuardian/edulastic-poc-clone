@@ -6,11 +6,19 @@ import Header from '../sharedComponents/Header';
 import SkillReportMainContent from './WrapperAndSummary';
 
 import MainContainer from '../styled/mainContainer';
-import { fetchSkillReportByClassID as fetchSkillReportAction } from './ducks';
+import {
+  fetchSkillReportByClassID as fetchSkillReportAction,
+  classSelector
+} from './ducks';
 
-const SkillReportContainer = ({ flag, skillReport, fetchSkillReport }) => {
+const SkillReportContainer = ({
+  flag,
+  skillReport,
+  fetchSkillReport,
+  classId
+}) => {
   useEffect(() => {
-    fetchSkillReport('F1');
+    fetchSkillReport(classId);
   }, []);
   return (
     <React.Fragment>
@@ -24,7 +32,11 @@ const SkillReportContainer = ({ flag, skillReport, fetchSkillReport }) => {
 
 export default React.memo(
   connect(
-    ({ ui, skillReport }) => ({ flag: ui.flag, skillReport: skillReport }),
+    state => ({
+      flag: state.ui.flag,
+      skillReport: state.skillReport,
+      classId: classSelector(state)
+    }),
     {
       fetchSkillReport: fetchSkillReportAction
     }
@@ -34,5 +46,6 @@ export default React.memo(
 SkillReportContainer.propTypes = {
   flag: PropTypes.bool.isRequired,
   skillReport: PropTypes.object.isRequired,
-  fetchSkillReport: PropTypes.func.isRequired
+  fetchSkillReport: PropTypes.func.isRequired,
+  classId: PropTypes.node.isRequired
 };

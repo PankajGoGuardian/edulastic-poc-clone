@@ -20,7 +20,7 @@ const MathFormulaPreview = ({ item, studentTemplate, type: previewType, evaluati
 
   const onUserResponse = (latexv) => {
     setLatex(latexv);
-    saveAnswer(isStatic ? studentRef.current.getLatex() : latex);
+    saveAnswer(isStatic ? studentRef.current.getLatex() : latexv);
   };
 
   useEffect(

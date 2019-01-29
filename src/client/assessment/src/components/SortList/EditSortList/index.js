@@ -25,13 +25,6 @@ const EditSortList = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-  const handleValidationChange = (prop, uiStyle) => {
-    const newItem = cloneDeep(item);
-
-    newItem.validation[prop] = uiStyle;
-    setQuestionData(newItem);
-  };
-
   const handleUiStyleChange = (prop, uiStyle) => {
     const newItem = cloneDeep(item);
 
@@ -185,8 +178,6 @@ const EditSortList = ({ item, setQuestionData, t }) => {
         />
       </Paper>
       <AdvancedOptions
-        onItemChange={handleItemChangeChange}
-        onValidationChange={handleValidationChange}
         onUiChange={handleUiStyleChange}
       />
     </Fragment>

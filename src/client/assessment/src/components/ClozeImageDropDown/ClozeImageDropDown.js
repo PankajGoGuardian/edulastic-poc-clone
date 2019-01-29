@@ -173,8 +173,6 @@ class ClozeImageDropDown extends Component {
             </EditorContainer>
             <OptionsContainer>
               <AdvancedOptions
-                onItemChange={this.handleItemChangeChange}
-                onValidationChange={this.handleValidationChange}
                 onUiChange={this.handleUiStyleChange}
               />
             </OptionsContainer>

@@ -13,6 +13,15 @@ const AssignmentButton = ({ startDate, t, startTest, attempted, resume }) => {
     ? t('common.retake')
     : t('common.startAssignment');
 
+  console.log('start date', startDate);
+  console.log(
+    'rea:',
+    startDate,
+    'assignment date: ',
+    new Date(startDate),
+    'current:',
+    new Date()
+  );
   return new Date(startDate) > new Date() ? (
     <NotAvailableButton disabled>
       <span>

@@ -20,33 +20,6 @@ import { getItemIdSelector } from '../../selectors/itemDetail';
 import { saveQuestionAction, setQuestionDataAction } from '../../actions/question';
 import { checkAnswerAction, showAnswerAction } from '../../actions/testItem';
 
-const headerTitles = {
-  multipleChoice: 'Multiple Choice',
-  orderList: 'Order List',
-  sortList: 'Sort List',
-  shortText: 'Short Text',
-  essayPlainText: 'Essay with plain text',
-  essayRichText: 'Essay with rich text',
-  tokenhighlight: 'Token Highlight',
-  hotspot: 'Hotspot',
-  highlightImage: 'Highlight Image',
-  drawing: 'Drawing',
-  shading: 'Shading',
-  classification: 'Classification',
-  matchList: 'Match List',
-  choiceMatrix: 'Choice Matrix',
-  clozeDragDrop: 'Cloze with Drag & Drop',
-  clozeDropDown: 'Cloze with Drop Down',
-  clozeText: 'Cloze with Text',
-  clozeImageDragDrop: 'Label Image with Drag & Drop',
-  clozeImageDropDown: 'Label Image with DropDown',
-  clozeImageText: 'Label Image with Text',
-  graph: 'Graphing',
-  passage: 'passage',
-  math: 'Math',
-  formulaessay: 'Formula Essay'
-};
-
 class QuestionEditor extends Component {
   state = {
     showModal: false,
@@ -147,7 +120,7 @@ class QuestionEditor extends Component {
             {JSON.stringify(question.data, null, 4)}
           </SourceModal>
         )}
-        <ItemHeader title={headerTitles[questionType]} reference={itemId}>
+        <ItemHeader title={question.data.title} reference={itemId}>
           <ButtonBar
             onChangeView={this.handleChangeView}
             onShowSource={this.handleShowSource}
@@ -172,7 +145,7 @@ class QuestionEditor extends Component {
                 title: 'ITEM DETAIL',
                 to: `/author/items/${testItemId}/item-detail`
               },
-              { title: headerTitles[questionType], to: '' }
+              { title: question.data.title, to: '' }
             ]}
           />
         )}

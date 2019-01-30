@@ -10,10 +10,13 @@ const ClassSelector = ({ t, classes, currentClass, changeClass }) => {
     return null;
   }
   return (
-    <AssignmentSelectClass>
+    <AssignmentSelectClass id='class-dropdown-wrapper'>
       <ClassLabel>{t('common.classLabel')}</ClassLabel>
       <Select
         value={currentClass}
+        getPopupContainer={() =>
+          document.getElementById('class-dropdown-wrapper')
+        }
         onChange={value => {
           changeClass(value);
         }}

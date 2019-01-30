@@ -7,9 +7,12 @@ import styled from 'styled-components';
 const options = ['ARCHIVE (0)', 'ACTIVE (0)'];
 
 const ShowActiveClasses = ({ t }) => (
-  <ManageActiveClasses>
+  <ManageActiveClasses id='active-class-dropdown'>
     <ClassLabel>{t('common.showLabel')}</ClassLabel>
-    <Select defaultValue='ACTIVE (0)'>
+    <Select
+      getPopupContainer={() => document.getElementById('active-class-dropdown')}
+      defaultValue='ACTIVE (0)'
+    >
       {options.map((option, i) => (
         <Select.Option key={i} value={option}>
           {option}

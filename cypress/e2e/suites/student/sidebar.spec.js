@@ -2,7 +2,6 @@ import SidebarPage from '../../framework/student/sidebarPage';
 
 describe('Test Sidebar Page', () => {
   before(() => {
-    cy.setToken();
     cy.visit('/home/dashboard');
   });
   const sidebar = new SidebarPage();

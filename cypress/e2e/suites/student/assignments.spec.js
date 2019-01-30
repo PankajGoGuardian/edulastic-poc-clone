@@ -2,7 +2,7 @@ import AssignmentsPage from '../../framework/student/assignmentsPage';
 
 describe('Test Assignment Page', () => {
   before(() => {
-    cy.setToken();
+    // cy.setToken();
     cy.assignAssignment();
     cy.visit('/home/assignments');
     cy.wait(5000);
@@ -18,13 +18,6 @@ describe('Test Assignment Page', () => {
     const test = assignmentPage.onClickStartAssignment();
     test.onClickQuestion();
     test.onClickQuestion(); // dropdown question selction
-    cy.contains('Red')
-      .should('be.visible')
-      .click();
-    test.onClickWrongCheckAnswer();
-    cy.contains('Violet')
-      .should('be.visible')
-      .click();
     test.onClickRightCheckAnswer();
     test.onClickNext();
     cy.contains('TRUE')
@@ -59,13 +52,13 @@ describe('Test Assignment Page', () => {
     cy.wait(500);
     assignmentPage.validateAssignment('IN PROGRESS', 'RESUME');
     const test = assignmentPage.onClickRetake();
-    cy.contains('Red')
-      .should('be.visible')
-      .click();
-    test.onClickWrongCheckAnswer();
-    cy.contains('Violet')
-      .should('be.visible')
-      .click();
+    // cy.contains('Red')
+    //   .should('be.visible')
+    //   .click();
+    // test.onClickWrongCheckAnswer();
+    // cy.contains('Violet')
+    //   .should('be.visible')
+    //   .click();
     test.onClickRightCheckAnswer();
     test.onClickFinishTest();
     test.onClickCancel();
@@ -73,10 +66,10 @@ describe('Test Assignment Page', () => {
     test.onClickApply();
     cy.url().should('include', '/home/assignments');
     assignmentPage.validateAssignment('IN PROGRESS', 'RESUME');
-    cy.contains('1/3').should('be.visible');
-    cy.contains('Attempts')
-      .should('be.visible')
-      .click();
+    // cy.contains('1/3').should('be.visible');
+    // cy.contains('Attempts')
+    //   .should('be.visible')
+    //   .click();
     const test2 = assignmentPage.onClickRetake();
   });
 

@@ -71,7 +71,11 @@ const SkillReportMainContent = ({ skillReport, t }) => {
     <S.SkillReportContainer>
       <S.AssignmentContentWrap>
         <S.SummaryTitle>{t('common.skillSummary')}</S.SummaryTitle>
-        <StyledTable columns={summaryColumns} dataSource={sumData} />
+        <StyledTable
+          columns={summaryColumns}
+          dataSource={sumData}
+          pagination={false}
+        />
       </S.AssignmentContentWrap>
       {sumData.map((summary, index) => (
         <TableSection

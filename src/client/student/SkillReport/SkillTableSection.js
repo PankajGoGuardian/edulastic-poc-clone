@@ -79,7 +79,13 @@ class DomainDetail extends Component {
           <StyledScoreProgress percent={Math.round((score / maxScore) * 100)} />
           {isShow ? <S.IconClose /> : <S.IconOpen color={greenDark} />}
         </S.Title>
-        {isShow && <StyledTable columns={columns} dataSource={sumData} />}
+        {isShow && (
+          <StyledTable
+            columns={columns}
+            dataSource={sumData}
+            pagination={false}
+          />
+        )}
       </S.AssignmentContentWrap>
     );
   }

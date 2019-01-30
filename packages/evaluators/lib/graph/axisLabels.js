@@ -18,13 +18,11 @@ var checkAnswer = function checkAnswer(answer, userResponse) {
   userResponse.forEach(function (testItem) {
     var resultForItem = {
       point: testItem.point,
-      id: testItem.id,
-      y: testItem.y,
       result: false
     };
 
     if (trueAnswerValue.findIndex(function (item) {
-      return item.point === testItem.point && item.position === testItem.position && testItem.y === item.y;
+      return item.point === testItem.point && item.position === testItem.position;
     }) > -1) {
       resultForItem.result = true;
     }

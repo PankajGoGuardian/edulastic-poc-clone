@@ -32,7 +32,7 @@ const getById = (id, params = {}) =>
     .then(result => result.data.result);
 
 const updateById = (id, item) => {
-  const data = formatData(item);
+  const { updatedAt, createdAt, ...data } = formatData(item);
   return api
     .callApi({
       url: `${prefix}/${id}`,
@@ -52,7 +52,7 @@ const create = data =>
     .then(result => result.data.result);
 
 const update = ({ id, item }) => {
-  const data = formatData(item);
+  const { updatedAt, createdAt, ...data } = formatData(item);
   return api
     .callApi({
       url: `${prefix}/${id}`,

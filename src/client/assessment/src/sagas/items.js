@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all, select } from 'redux-saga/effects';
+import { takeLatest, call, put, all, select } from 'redux-saga/effects';
 import { itemsApi, testItemActivityApi } from '@edulastic/api';
 
 import {
@@ -48,9 +48,9 @@ function* receiveItemSaga({ payload }) {
 }
 
 // fetch all questionIds from item
-const getQuestionIds = (item) => {
+const getQuestionIds = item => {
   let questions = [];
-  item.rows.forEach((row) => {
+  item.rows.forEach(row => {
     questions = [
       ...questions,
       ...row.widgets.map(widget => widget.entity && widget.entity.id)
@@ -71,11 +71,13 @@ function* saveUserResponse({ payload }) {
     const currentItem = items.length && items[itemIndex];
     const questions = getQuestionIds(currentItem);
     const itemAnswers = {};
-    questions.forEach((question) => {
+    questions.forEach(question => {
       itemAnswers[question] = answers[question];
     });
     const testItemId = currentItem._id;
-    const assignmentId = yield select(state => state.studentAssignment && state.studentAssignment.current);
+    const assignmentId = yield select(
+      state => state.studentAssignment && state.studentAssignment.current
+    );
     yield call(testItemActivityApi.create, {
       answers: itemAnswers,
       testItemId,
@@ -105,9 +107,8 @@ function* loadUserResponse({ payload }) {
 }
 export default function* watcherSaga() {
   yield all([
-    yield takeEvery(RECEIVE_ITEM_REQUEST, receiveItemSaga),
-    yield takeEvery(RECEIVE_ITEMS_REQUEST, receiveItemsSaga),
-    yield takeEvery(SAVE_USER_RESPONSE, saveUserResponse),
-    yield takeEvery(LOAD_USER_RESPONSE, loadUserResponse)
+    yield takeLatest(RECEIVE_ITEM_REQUEST, receiveItemSaga),
+    yield takeLatest(SAVE_USER_RESPONSE, saveUserResponse),
+    yield takeLatest(LOAD_USER_RESPONSE, loadUserResponse)
   ]);
 }

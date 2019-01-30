@@ -38,7 +38,6 @@ import {
 } from '../../constants/others';
 import { checkAnswerAction } from '../../../../author/src/actions/testItem';
 import { changePreviewAction } from '../../../../author/src/actions/view';
-import { getItemDetailByIdAction } from '../../../../author/src/actions/itemDetail';
 import SvgDraw from './SvgDraw';
 import Tools from './Tools';
 
@@ -78,7 +77,6 @@ class AssessmentPlayerDefault extends React.Component {
     evaluation: PropTypes.any.isRequired,
     checkAnswer: PropTypes.func.isRequired,
     changePreview: PropTypes.func.isRequired,
-    getItemDetailById: PropTypes.func.isRequired,
     history: PropTypes.func.isRequired,
     windowWidth: PropTypes.number.isRequired
   };
@@ -87,27 +85,7 @@ class AssessmentPlayerDefault extends React.Component {
     theme: defaultTheme
   };
 
-  componentDidMount() {
-    const { getItemDetailById, items, currentItem } = this.props;
-    if (items[currentItem] !== undefined) {
-      getItemDetailById(items[currentItem]._id, {
-        data: true,
-        validation: true
-      });
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { currentItem, items, getItemDetailById } = this.props;
-    if (currentItem !== nextProps.currentItem) {
-      getItemDetailById(items[nextProps.currentItem]._id, {
-        data: true,
-        validation: true
-      });
-    }
-  }
-
-  changeTabItemState = (value) => {
+  changeTabItemState = value => {
     const { checkAnswer, changePreview } = this.props;
     checkAnswer();
 
@@ -153,11 +131,13 @@ class AssessmentPlayerDefault extends React.Component {
     return `rgb(${r}, ${g}, ${b})`;
   };
 
-  onFillColorChange = (obj) => {
-    this.setState({ fillColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100) });
+  onFillColorChange = obj => {
+    this.setState({
+      fillColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
+    });
   };
 
-  handleModeChange = (flag) => {
+  handleModeChange = flag => {
     this.setState({ scratchPadMode: flag });
   };
 
@@ -173,11 +153,13 @@ class AssessmentPlayerDefault extends React.Component {
     }
   };
 
-  handleColorChange = (obj) => {
-    this.setState({ currentColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100) });
+  handleColorChange = obj => {
+    this.setState({
+      currentColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
+    });
   };
 
-  saveHistory = (data) => {
+  saveHistory = data => {
     const { history, currentTab } = this.state;
 
     const newHist = history.slice(0, currentTab + 1);
@@ -231,7 +213,9 @@ class AssessmentPlayerDefault extends React.Component {
       fillColor
     } = this.state;
 
-    const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
+    const dropdownOptions = Array.isArray(items)
+      ? items.map((item, index) => index)
+      : [];
 
     const item = items[currentItem];
     if (!item) {
@@ -295,7 +279,8 @@ class AssessmentPlayerDefault extends React.Component {
               <HeaderMainMenu skin>
                 <FlexContainer
                   style={{
-                    justifyContent: windowWidth < IPAD_PORTRAIT_WIDTH && 'space-between'
+                    justifyContent:
+                      windowWidth < IPAD_PORTRAIT_WIDTH && 'space-between'
                   }}
                 >
                   <QuestionSelectDropdown
@@ -308,7 +293,8 @@ class AssessmentPlayerDefault extends React.Component {
                   <FlexContainer
                     style={{
                       flex: 1,
-                      justifyContent: windowWidth < IPAD_PORTRAIT_WIDTH && 'flex-end'
+                      justifyContent:
+                        windowWidth < IPAD_PORTRAIT_WIDTH && 'flex-end'
                     }}
                   >
                     <ControlBtn
@@ -344,14 +330,18 @@ class AssessmentPlayerDefault extends React.Component {
                       />
                     )}
                     {windowWidth >= MEDIUM_DESKTOP_WIDTH && (
-                      <TestButton checkAnwser={() => this.changeTabItemState('check')} />
+                      <TestButton
+                        checkAnwser={() => this.changeTabItemState('check')}
+                      />
                     )}
                     {windowWidth >= LARGE_DESKTOP_WIDTH && (
                       <ToolBar changeMode={this.handleModeChange} />
                     )}
                     {windowWidth >= MAX_MOBILE_WIDTH && <Clock />}
                     {windowWidth >= MAX_MOBILE_WIDTH && (
-                      <SaveAndExit finishTest={() => this.openSubmitConfirmation()} />
+                      <SaveAndExit
+                        finishTest={() => this.openSubmitConfirmation()}
+                      />
                     )}
                   </FlexContainer>
                 </FlexContainer>
@@ -390,8 +380,7 @@ const enhance = compose(
     }),
     {
       checkAnswer: checkAnswerAction,
-      changePreview: changePreviewAction,
-      getItemDetailById: getItemDetailByIdAction
+      changePreview: changePreviewAction
     }
   )
 );

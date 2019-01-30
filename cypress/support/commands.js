@@ -1,4 +1,5 @@
 import { userBuilder } from './generate';
+import LoginPage from '../e2e/framework/student/loginPage.js';
 
 Cypress.LocalStorage.clear = () => {};
 const BASE_URL =
@@ -32,26 +33,42 @@ Cypress.Commands.add('assertHome', () => {
   cy.url().should('eq', `${Cypress.config().baseUrl}/`);
 });
 
-Cypress.Commands.add('setToken', (role = 'student') => {
+Cypress.Commands.add('setToken', (role = 'teacher') => {
   const postData =
     role == 'teacher'
       ? {
-          email: 'charles@xmen.com',
+          email: 'auto.teacher1@snapwiz.com',
           password: 'snapwiz'
         }
       : {
           email: 'auto.student3@snapwiz.com',
           password: 'snapwiz'
         };
-  cy.request({
-    url: `${BASE_URL}/auth/login`,
-    method: 'POST',
-    body: postData
-  }).then(({ body }) => {
-    console.log('Result = ', body.result);
-    window.localStorage.setItem('access_token', body.result.token);
-    return true;
-  });
+        /* cy.request({
+          url: `${BASE_URL}/auth/login`,
+          method: 'POST',
+          body: postData
+        }).then(({ body }) => {
+          console.log('Result = ', body.result);
+          window.localStorage.setItem('access_token', body.result.token);
+          return true;
+        }); */
+        
+  cy.clearLocalStorage();
+  const login = new LoginPage();
+    cy.visit('/login');
+    cy.server();
+    cy.route('GET','**curriculum**').as('apiLoad');
+    cy.route('GET','**assignments**').as('assignment')
+    login.fillLoginForm(postData.email,postData.password);
+    login.onClickSignin().then(() => {
+      if(role=='teacher'){
+        cy.wait('@apiLoad');
+      }
+      else{
+        cy.wait('@assignment');
+      }
+    });
 });
 
 Cypress.Commands.add(
@@ -184,3 +201,10 @@ Cypress.Commands.add(
       .should('have.value', '1');
   }
 );
+
+Cypress.Commands.add('logOut', () => {
+    cy.clearLocalStorage();
+    cy.visit('/').then((win) => {
+      win.localStorage.clear();
+    });
+});

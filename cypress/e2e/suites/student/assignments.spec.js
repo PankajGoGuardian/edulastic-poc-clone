@@ -2,8 +2,8 @@ import AssignmentsPage from '../../framework/student/assignmentsPage';
 
 describe('Test Assignment Page', () => {
   before(() => {
-    // cy.setToken();
     cy.assignAssignment();
+    cy.setToken('student');
     cy.visit('/home/assignments');
     cy.wait(5000);
   });

@@ -152,7 +152,7 @@ class MCQStandardPage {
 
     getMultipleResponse() {
         return cy.get('[data-cy="multi"]')
-                    .should('be.visible');
+                    .closest('label');
         
     } 
 

@@ -169,6 +169,7 @@ class MultipleChoice extends Component {
                   validation={item.validation}
                 />
                 <Checkbox
+                  data-cy="multi"
                   onChange={() =>
                     this.handleOptionsChange('multiple_responses', !multipleResponses)
                   }

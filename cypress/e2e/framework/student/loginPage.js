@@ -9,7 +9,7 @@ class LoginPage {
   }
 
   onClickSignin() {
-    cy.get(`[data-cy=login]`)
+   return cy.get(`[data-cy=login]`)
       .should('be.visible')
       .click();
   }

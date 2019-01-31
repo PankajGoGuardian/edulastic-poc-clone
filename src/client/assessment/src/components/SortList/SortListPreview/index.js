@@ -35,54 +35,55 @@ class SortListPreview extends PureComponent {
     item: {}
   };
 
-  state = {
-    // eslint-disable-next-line react/destructuring-assignment
-    items: this.props.item.source.map((item, i) => {
-      // eslint-disable-next-line react/destructuring-assignment
-      if (!this.props.userAnswer.includes(i)) {
-        return item;
-      }
-      return null;
-    }),
+  get getInitialState() {
+    const {
+      item: { source },
+      userAnswer
+    } = this.props;
 
-    selected:
-      // eslint-disable-next-line react/destructuring-assignment
-      this.props.userAnswer.length > 0
-        ? // eslint-disable-next-line react/destructuring-assignment
-        this.props.userAnswer.map(index =>
-        // eslint-disable-next-line react/destructuring-assignment
-          (index !== null ? this.props.item.source[index] : null))
-        : // eslint-disable-next-line react/destructuring-assignment
-        Array.from({ length: this.props.item.source.length }).fill(null),
+    return {
+      items: source.map((item, i) => {
+        if (!userAnswer.includes(i)) {
+          return item;
+        }
+        return null;
+      }),
+      selected:
+        userAnswer.length > 0
+          ? userAnswer.map(index => (index !== null ? source[index] : null))
+          : Array.from({ length: source.length }).fill(null),
+      active: ''
+    };
+  }
 
-    active: ''
-  };
+  state = this.getInitialState;
 
   componentDidUpdate() {
-    // eslint-disable-next-line react/destructuring-assignment
-    const newItems = this.props.item.source.map((item, i) => {
-      // eslint-disable-next-line react/destructuring-assignment
-      if (!this.props.userAnswer.includes(i)) {
+    const {
+      item: { source },
+      userAnswer
+    } = this.props;
+
+    const { items, selected } = this.state;
+
+    const newItems = source.map((item, i) => {
+      if (!userAnswer.includes(i)) {
         return item;
       }
       return null;
     });
 
-    const newSelected = // eslint-disable-next-line react/destructuring-assignment
-      this.props.userAnswer.length > 0
-        ? // eslint-disable-next-line react/destructuring-assignment
-        this.props.userAnswer.map(index =>
-        // eslint-disable-next-line react/destructuring-assignment
-          (index !== null ? this.props.item.source[index] : null))
-        : // eslint-disable-next-line react/destructuring-assignment
-        Array.from({ length: this.props.item.source.length }).fill(null);
-    // eslint-disable-next-line react/destructuring-assignment
-    if (!isEqual(this.state.items, newItems)) {
+    const newSelected =
+      userAnswer.length > 0
+        ? userAnswer.map(index => (index !== null ? source[index] : null))
+        : Array.from({ length: source.length }).fill(null);
+
+    if (!isEqual(items, newItems)) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ items: newItems, active: '' });
     }
-    // eslint-disable-next-line react/destructuring-assignment
-    if (!isEqual(this.state.selected, newSelected)) {
+
+    if (!isEqual(selected, newSelected)) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ selected: newSelected, active: '' });
     }

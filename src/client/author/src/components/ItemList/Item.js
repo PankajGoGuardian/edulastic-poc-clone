@@ -31,10 +31,11 @@ class Item extends Component {
 
   get description() {
     const { item } = this.props;
-    const description = item.rows[0]
-      && item.rows[0].widgets[0]
-      && item.rows[0].widgets[0].entity
-      && item.rows[0].widgets[0].entity.stimulus;
+    const description =
+      item.rows[0] &&
+      item.rows[0].widgets[0] &&
+      item.rows[0].widgets[0].entity &&
+      item.rows[0].widgets[0].entity.stimulus;
     return description || '';
   }
 
@@ -50,12 +51,9 @@ class Item extends Component {
           </QuestionContent>
           {windowWidth > 768 && (
             <ViewButton>
-              <Button
-                style={{ width: 144, height: 50, borderRadius: 65 }}
-                onClick={this.moveToItem}
-              >
+              <ViewButtonStyled onClick={this.moveToItem}>
                 {t('component.item.view')}
-              </Button>
+              </ViewButtonStyled>
             </ViewButton>
           )}
         </Question>
@@ -103,12 +101,9 @@ class Item extends Component {
         </Detail>
         {windowWidth < 768 && (
           <ViewButton>
-            <Button
-              style={{ width: '100%', height: 50, borderRadius: 65 }}
-              onClick={this.moveToItem}
-            >
+            <ViewButtonStyled onClick={this.moveToItem}>
               {t('component.item.view')}
-            </Button>
+            </ViewButtonStyled>
           </ViewButton>
         )}
       </Container>
@@ -171,6 +166,12 @@ const ViewButton = styled.div`
   @media (max-width: ${tabletWidth}) {
     margin-top: 25px;
   }
+`;
+
+const ViewButtonStyled = styled(Button)`
+  width: 144px;
+  height: 50px;
+  border-radius: 65px;
 `;
 
 const Detail = styled.div`

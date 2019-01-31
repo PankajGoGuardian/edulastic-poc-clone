@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Select, Icon } from 'antd';
-import { blue } from '@edulastic/colors';
+import { blue, secondaryTextColor, mainTextColor } from '@edulastic/colors';
 import { questionType as questionTypes } from '@edulastic/constants';
 import selectsData from '../TestPage/common/selectsData';
 
@@ -24,66 +24,67 @@ class Search extends Component {
       onStandardSearch
     } = this.props;
     const isStandardsDisabled = !curriculumId;
-    const standardsPlaceholder = isStandardsDisabled ?
-      'Available with Curriculum' : 'Type to Search, for example "k.cc"';
+    const standardsPlaceholder = isStandardsDisabled
+      ? 'Available with Curriculum'
+      : 'Type to Search, for example "k.cc"';
     return (
       <MainFilterItems>
         <Item>
           <ItemHeader>Grades</ItemHeader>
           <ItemBody>
-            <Select
+            <DropDown
               mode="multiple"
-              style={{ width: '100%' }}
               placeholder="All Grades"
               value={grades}
               onChange={onSearchFieldChange('grades')}
             >
-              { selectsData.allGrades.map(el => (
-                <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
+              {selectsData.allGrades.map(el => (
+                <Select.Option key={el.value} value={el.value}>
+                  {el.text}
+                </Select.Option>
               ))}
-            </Select>
+            </DropDown>
           </ItemBody>
         </Item>
         <Item>
           <ItemHeader>Subject</ItemHeader>
           <ItemBody>
-            <Select
-              style={{ width: '100%' }}
+            <DropDown
               onSelect={onSearchFieldChange('subject')}
               value={subject}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
+              suffixIcon={<IconCaret type="caret-down" />}
             >
-              { selectsData.allSubjects.map(el => (
-                <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
-              )) }
-            </Select>
+              {selectsData.allSubjects.map(el => (
+                <Select.Option key={el.value} value={el.value}>
+                  {el.text}
+                </Select.Option>
+              ))}
+            </DropDown>
           </ItemBody>
         </Item>
         <Item>
           <ItemHeader>Curriculum</ItemHeader>
           <ItemBody>
-            <Select
-              style={{ width: '100%' }}
+            <DropDown
               onSelect={onSearchFieldChange('curriculumId')}
               value={curriculumId}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
+              suffixIcon={<IconCaret type="caret-down" />}
             >
-              <Select.Option key="" value="">All Curriculums</Select.Option>
-              { curriculums.map(el => (
-                <Select.Option key={el._id} value={el._id}>{el.curriculum}</Select.Option>
-              )) }
-            </Select>
+              <Select.Option key="" value="">
+                All Curriculums
+              </Select.Option>
+              {curriculums.map(el => (
+                <Select.Option key={el._id} value={el._id}>
+                  {el.curriculum}
+                </Select.Option>
+              ))}
+            </DropDown>
           </ItemBody>
         </Item>
         <Item>
           <ItemHeader>Standards</ItemHeader>
           <ItemBody>
-            <Select
-              style={{ width: '100%' }}
+            <DropDown
               onSearch={onStandardSearch}
               mode="multiple"
               placeholder={standardsPlaceholder}
@@ -91,98 +92,89 @@ class Search extends Component {
               filterOption={false}
               value={standardIds}
               disabled={isStandardsDisabled}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
+              suffixIcon={<IconCaret type="caret-down" />}
             >
-              { curriculumStandards.map(el => (
+              {curriculumStandards.map(el => (
                 <Select.Option key={el.identifier} value={el.identifier}>
                   {`${el.identifier}: ${el.description}`}
                 </Select.Option>
-              )) }
-            </Select>
+              ))}
+            </DropDown>
           </ItemBody>
         </Item>
         <Item>
           <ItemHeader>Question Type</ItemHeader>
           <ItemBody>
-            <Select
-              style={{ width: '100%' }}
+            <DropDown
               onSelect={onSearchFieldChange('questionType')}
               value={questionType}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
+              suffixIcon={<IconCaret type="caret-down" />}
             >
-              { questionTypes.selectsData.map(el => (
-                <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
-              )) }
-            </Select>
+              {questionTypes.selectsData.map(el => (
+                <Select.Option key={el.value} value={el.value}>
+                  {el.text}
+                </Select.Option>
+              ))}
+            </DropDown>
           </ItemBody>
         </Item>
         <Item>
           <ItemHeader>Depth of Knowledge</ItemHeader>
           <ItemBody>
-            <Select
-              style={{ width: '100%' }}
+            <DropDown
               onSelect={onSearchFieldChange('depthOfKnowledge')}
               value={depthOfKnowledge}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
+              suffixIcon={<IconCaret type="caret-down" />}
             >
-              { selectsData.allDepthOfKnowledge.map(el => (
-                <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
-              )) }
-            </Select>
+              {selectsData.allDepthOfKnowledge.map(el => (
+                <Select.Option key={el.value} value={el.value}>
+                  {el.text}
+                </Select.Option>
+              ))}
+            </DropDown>
           </ItemBody>
         </Item>
         <Item>
           <ItemHeader>Difficulty</ItemHeader>
           <ItemBody>
-            <Select
-              style={{ width: '100%' }}
+            <DropDown
               onSelect={onSearchFieldChange('authorDifficulty')}
               value={authorDifficulty}
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
+              suffixIcon={<IconCaret type="caret-down" />}
             >
-              { selectsData.allAuthorDifficulty.map(el => (
-                <Select.Option key={el.value} value={el.value}>{el.text}</Select.Option>
-              )) }
-            </Select>
+              {selectsData.allAuthorDifficulty.map(el => (
+                <Select.Option key={el.value} value={el.value}>
+                  {el.text}
+                </Select.Option>
+              ))}
+            </DropDown>
           </ItemBody>
         </Item>
         <Item>
           <ItemHeader>Author</ItemHeader>
           <ItemBody>
-            <Select
-              style={{ width: '100%' }}
+            <DropDown
               defaultValue="All Authors"
-              suffixIcon={
-                <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
-              }
+              suffixIcon={<IconCaret type="caret-down" />}
             >
               <Select.Option value="">All Authors</Select.Option>
               <Select.Option value="author1">Author 1</Select.Option>
               <Select.Option value="author2">Author 2</Select.Option>
-            </Select>
+            </DropDown>
           </ItemBody>
         </Item>
         <Item>
           <ItemHeader>Owner</ItemHeader>
           <ItemBody>
-            <Select
+            <DropDown
               mode="multiple"
-              style={{ width: '100%' }}
               placeholder="All Owners"
               defaultValue={[]}
             >
               <Select.Option value="owner1">Owner 1</Select.Option>
               <Select.Option value="owner2">Owner 2</Select.Option>
               <Select.Option value="owner3">Owner 3</Select.Option>
-            </Select>
+            </DropDown>
           </ItemBody>
         </Item>
       </MainFilterItems>
@@ -192,12 +184,14 @@ class Search extends Component {
 
 Search.propTypes = {
   search: PropTypes.object.isRequired,
-  curriculums: PropTypes.arrayOf(PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    curriculum: PropTypes.string.isRequired,
-    grades: PropTypes.array.isRequired,
-    subject: PropTypes.string.isRequired
-  })).isRequired,
+  curriculums: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      curriculum: PropTypes.string.isRequired,
+      grades: PropTypes.array.isRequired,
+      subject: PropTypes.string.isRequired
+    })
+  ).isRequired,
   onSearchFieldChange: PropTypes.func.isRequired,
   curriculumStandards: PropTypes.array.isRequired,
   onStandardSearch: PropTypes.func.isRequired
@@ -215,7 +209,7 @@ const Item = styled.div`
 
 const ItemHeader = styled.span`
   font-size: 13px;
-  color: #757d8e;
+  color: ${secondaryTextColor};
   font-weight: 600;
   letter-spacing: 0.2px;
 `;
@@ -232,20 +226,20 @@ const ItemBody = styled.div`
 
   .ant-select-selection__choice {
     border-radius: 5px;
-    border: solid 1px #444444;
+    border: solid 1px ${mainTextColor};
   }
 
   .ant-select-selection__choice__content {
     font-size: 9px;
     font-weight: bold;
-    color: #434b5d;
+    color: ${secondaryTextColor};
   }
 
   .ant-select-selection-selected-value {
     font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.2px;
-    color: #434b5d;
+    color: ${secondaryTextColor};
   }
 
   .ant-select-selection__rendered {
@@ -255,4 +249,14 @@ const ItemBody = styled.div`
   .ant-select-arrow-icon {
     color: ${blue};
   }
+`;
+
+const DropDown = styled(Select)`
+  width: 100%;
+`;
+
+const IconCaret = styled(Icon)`
+  color: ${blue};
+  font-size: 16px;
+  margin-right: 5px;
 `;

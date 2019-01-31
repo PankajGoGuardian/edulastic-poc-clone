@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { grey, greenDark } from '@edulastic/colors';
+import { grey, mainBlueColor } from '@edulastic/colors';
 
 class TextField extends Component {
   state = {
-    referenceEditable: false,
+    referenceEditable: false
   };
 
   onIconClick = () => {
@@ -14,7 +14,15 @@ class TextField extends Component {
   };
 
   render() {
-    const { icon, height, style, containerStyle, onChange, onBlur, ...restProps } = this.props;
+    const {
+      icon,
+      height,
+      style,
+      containerStyle,
+      onChange,
+      onBlur,
+      ...restProps
+    } = this.props;
     const { referenceEditable } = this.state;
     return (
       <Container height={height} style={containerStyle}>
@@ -25,7 +33,7 @@ class TextField extends Component {
           referenceEditable={referenceEditable}
           {...restProps}
           onChange={onChange}
-          onBlur={(e) => {
+          onBlur={e => {
             this.onIconClick();
             onBlur(e);
           }}
@@ -42,7 +50,7 @@ TextField.propTypes = {
   style: PropTypes.object,
   containerStyle: PropTypes.object,
   onChange: PropTypes.func.isRequired,
-  onBlur: PropTypes.func,
+  onBlur: PropTypes.func
 };
 
 TextField.defaultProps = {
@@ -50,7 +58,7 @@ TextField.defaultProps = {
   height: '45px',
   style: {},
   containerStyle: {},
-  onBlur: () => {},
+  onBlur: () => {}
 };
 
 export default TextField;
@@ -75,12 +83,13 @@ const Icon = styled.span`
 `;
 
 const Field = styled.input`
-  border: 1px solid ${props => (props.referenceEditable ? greenDark : grey)};
+  border: 1px solid ${props => (props.referenceEditable ? mainBlueColor : grey)};
   border-radius: 4px;
   min-height: 100%;
   width: 100%;
   padding: 10px 35px;
   color: #7a7a7a;
+  outline: none;
   font-size: 13px;
   letter-spacing: 0.2px;
   ::placeholder {

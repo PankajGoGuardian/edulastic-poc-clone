@@ -5,7 +5,14 @@ import { Icon, Button, Affix, Row, Col } from 'antd';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Modal from 'react-responsive-modal';
 import { TextField } from '@edulastic/common';
-import { desktopWidth, blue, greenDark, textColor } from '@edulastic/colors';
+import {
+  desktopWidth,
+  blue,
+  greenDark,
+  textColor,
+  mainBlueColor,
+  boxShadowDefault
+} from '@edulastic/colors';
 import Search from './Search';
 import { SMALL_DESKTOP_WIDTH, MAX_MOBILE_WIDTH } from '../../constants/others';
 
@@ -22,13 +29,10 @@ class ItemFilter extends Component {
     this.setState({ isShowFilter: false });
   };
 
-  handleStandardSearch = (searchStr) => {
+  handleStandardSearch = searchStr => {
     const {
       getCurriculumStandards,
-      search: {
-        grades,
-        curriculumId
-      }
+      search: { grades, curriculumId }
     } = this.props;
     if (curriculumId && searchStr.length >= 2) {
       getCurriculumStandards(curriculumId, grades, searchStr);
@@ -38,23 +42,19 @@ class ItemFilter extends Component {
   renderFullTextSearch = () => {
     const { onSearch, windowWidth } = this.props;
     const { isShowFilter } = this.state;
-    const placeholder = 'Full-text search (TODO)';
+    const placeholder = 'Search by skills and keywords';
 
     const desktopSearch = (
       <Header>
-        <Row style={{ width: '100%' }}>
-          <Col span={18}>
-            <SearchField>
-              <TextField
-                onChange={e => onSearch(e.target.value)}
-                height="50px"
-                type="search"
-                icon={<Icon type="search" style={{ color: blue, fontSize: '18px' }} />}
-                containerStyle={{ marginRight: 20 }}
-                style={{ padding: 16, paddingRight: 68, outline: 'none' }}
-                placeholder={placeholder}
-              />
-            </SearchField>
+        <HeaderRow>
+          <Col lg={24} md={18} xs={18}>
+            <TextFieldSearch
+              onChange={e => onSearch(e.target.value)}
+              type="search"
+              icon={<SearchIcon type="search" />}
+              containerStyle={{ marginRight: 20 }}
+              placeholder={placeholder}
+            />
           </Col>
           <Col span={6}>
             <FilterButton>
@@ -63,20 +63,19 @@ class ItemFilter extends Component {
               </Button>
             </FilterButton>
           </Col>
-        </Row>
+        </HeaderRow>
       </Header>
     );
 
     const mobileSearch = (
       <Header>
         <SearchField>
-          <TextField
+          <TextFieldStyled
             onChange={e => onSearch(e.target.value)}
             height="50px"
             type="search"
-            icon={<Icon type="search" style={{ color: blue, fontSize: '18px' }} />}
+            icon={<SearchIcon type="search" />}
             containerStyle={{ marginRight: 20 }}
-            style={{ padding: 16, paddingRight: 68, outline: 'none' }}
             placeholder={placeholder}
           />
         </SearchField>
@@ -88,7 +87,7 @@ class ItemFilter extends Component {
       </Header>
     );
 
-    return (windowWidth > MAX_MOBILE_WIDTH) ? desktopSearch : mobileSearch;
+    return windowWidth > MAX_MOBILE_WIDTH ? desktopSearch : mobileSearch;
   };
 
   render() {
@@ -104,35 +103,31 @@ class ItemFilter extends Component {
 
     return (
       <Container>
-        <StyledModal
-          open={isShowFilter}
-          onClose={this.closeSearchModal}
-          center
-        >
-          <StyledModalContainer>
-            <StyledModalTitle>Filters</StyledModalTitle>
-            <Search
-              search={search}
-              curriculums={curriculums}
-              onSearchFieldChange={onSearchFieldChange}
-              curriculumStandards={curriculumStandards}
-              onStandardSearch={this.handleStandardSearch}
-            />
-          </StyledModalContainer>
-        </StyledModal>
-        {this.renderFullTextSearch()}
-        <MainFilter isVisible={isShowFilter}>
-          {
-            windowWidth > SMALL_DESKTOP_WIDTH && (
-              <Affix style={{ width: 325 }}>
+        <FixedFilters>
+          <StyledModal
+            open={isShowFilter}
+            onClose={this.closeSearchModal}
+            center
+          >
+            <StyledModalContainer>
+              <StyledModalTitle>Filters</StyledModalTitle>
+              <Search
+                search={search}
+                curriculums={curriculums}
+                onSearchFieldChange={onSearchFieldChange}
+                curriculumStandards={curriculumStandards}
+                onStandardSearch={this.handleStandardSearch}
+              />
+            </StyledModalContainer>
+          </StyledModal>
+          {this.renderFullTextSearch()}
+          <MainFilter isVisible={isShowFilter}>
+            {windowWidth > SMALL_DESKTOP_WIDTH && (
+              <Affix>
                 <PerfectScrollbar>
                   <MainFilterHeader>
                     <Title>Filters</Title>
-                    <Clear>
-                      <div onClick={onClearSearch}>
-                        Clear all
-                      </div>
-                    </Clear>
+                    <Clear onClick={onClearSearch}>Clear all</Clear>
                   </MainFilterHeader>
                   <Search
                     search={search}
@@ -142,9 +137,10 @@ class ItemFilter extends Component {
                     onStandardSearch={this.handleStandardSearch}
                   />
                 </PerfectScrollbar>
-              </Affix>)
-          }
-        </MainFilter>
+              </Affix>
+            )}
+          </MainFilter>
+        </FixedFilters>
       </Container>
     );
   }
@@ -152,12 +148,14 @@ class ItemFilter extends Component {
 
 ItemFilter.propTypes = {
   search: PropTypes.object.isRequired,
-  curriculums: PropTypes.arrayOf(PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    curriculum: PropTypes.string.isRequired,
-    grades: PropTypes.array.isRequired,
-    subject: PropTypes.string.isRequired
-  })).isRequired,
+  curriculums: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      curriculum: PropTypes.string.isRequired,
+      grades: PropTypes.array.isRequired,
+      subject: PropTypes.string.isRequired
+    })
+  ).isRequired,
   onSearchFieldChange: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
   onClearSearch: PropTypes.func.isRequired,
@@ -168,36 +166,78 @@ ItemFilter.propTypes = {
 
 export default ItemFilter;
 
-
 const Container = styled.div`
-  min-width: 286px;
+  width: 250px;
+  @media (max-width: ${desktopWidth}) {
+    width: 100%;
+    padding-bottom: 20px;
+  }
+`;
+
+const FixedFilters = styled.div`
+  position: fixed;
+  width: 250px;
+  top: 85px;
+  padding-right: 15px;
+  @media (max-width: ${desktopWidth}) {
+    width: 100%;
+    position: relative;
+    top: auto;
+    padding-right: 0;
+  }
 `;
 
 const Header = styled.div`
   display: flex;
 `;
 
-const SearchField = styled.div`
-  margin: 24px 11px 0px 45px;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  border-radius: 10px;
-  height: 50px;
-  width: 280px;
+const HeaderRow = styled(Row)`
+  width: 100%;
+`;
 
-  @media (max-width: ${desktopWidth}) {
-    margin: 13px 8px 13px 26px;
+const SearchField = styled.div`
+  box-shadow: ${boxShadowDefault};
+  border-radius: 10px;
+`;
+
+const TextFieldStyled = styled(TextField)`
+  padding: 16px;
+  padding-right: 68px;
+  outline: none;
+`;
+
+const TextFieldSearch = styled(TextField)`
+  height: 40px;
+  padding: 10px 10px;
+  span {
+    right: 8px;
   }
+  .ant-input-search-icon {
+    color: ${mainBlueColor};
+    font-size: 15px;
+    &:hover {
+      color: ${mainBlueColor};
+    }
+  }
+  @media (max-width: ${desktopWidth}) {
+    height: 40px;
+  }
+`;
+
+const SearchIcon = styled(Icon)`
+  color: ${mainBlueColor};
+  fontsize: 15px;
 `;
 
 const FilterButton = styled.div`
   display: none;
   flex: 1;
-  height: 50px;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  height: 40px;
+  box-shadow: ${boxShadowDefault};
   border-radius: 10px;
 
   .ant-btn {
-    height: 50px;
+    height: 40px;
     border-radius: 10px;
     width: 100%;
 
@@ -209,16 +249,14 @@ const FilterButton = styled.div`
   }
 
   @media (max-width: ${desktopWidth}) {
-    margin-top: 13px;
-    margin-right: 26px;
     display: block;
+    margin-left: 10px;
   }
 `;
 
 const MainFilter = styled.div`
   margin-top: 17px;
-  padding: 0px 11px 0px 39px;
-  zIndex: 0;
+  zindex: 0;
 
   .scrollbar-container {
     overflow: auto !important;
@@ -229,7 +267,6 @@ const MainFilter = styled.div`
     }
   }
 
-
   @media (max-width: ${desktopWidth}) {
     position: relative;
     display: ${props => (props.isVisible ? 'block' : 'none')};
@@ -239,7 +276,6 @@ const MainFilter = styled.div`
 
 const MainFilterHeader = styled.div`
   display: flex;
-  width: 280px;
 
   @media (max-width: ${desktopWidth}) {
     display: none;
@@ -254,67 +290,13 @@ const Title = styled.span`
   flex: 1;
 `;
 
-const Clear = styled.button`
+const Clear = styled.div`
   font-size: 12px;
   font-weight: 600;
   color: ${blue};
   border: none;
   background: transparent;
   cursor: pointer;
-`;
-
-const MainFilterItems = styled.div`
-  margin-top: 4px;
-  padding-left: 6px;
-  width: 280px;
-`;
-
-const Item = styled.div`
-  margin-top: 13px;
-`;
-
-const ItemHeader = styled.span`
-  font-size: 13px;
-  color: #757d8e;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-`;
-
-const ItemBody = styled.div`
-  margin-top: 11px;
-  height: 40px;
-
-  .ant-select-selection {
-    height: 40px;
-    background: transparent;
-    padding-top: 4px;
-  }
-
-  .ant-select-selection__choice {
-    border-radius: 5px;
-    border: solid 1px #444444;
-  }
-
-  .ant-select-selection__choice__content {
-    font-size: 9px;
-    font-weight: bold;
-    color: #434b5d;
-  }
-
-  .ant-select-selection-selected-value {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
-    color: #434b5d;
-  }
-
-  .ant-select-selection__rendered {
-    margin-left: 22px;
-  }
-
-  .ant-select-arrow-icon {
-    color: ${blue};
-  }
 `;
 
 const StyledModal = styled(Modal)`
@@ -332,6 +314,6 @@ const StyledModalContainer = styled.div`
 
 const StyledModalTitle = styled.div`
   font-size: 22px;
-  color: #4aac8b;
+  color: ${greenDark};
   font-weight: 600;
 `;

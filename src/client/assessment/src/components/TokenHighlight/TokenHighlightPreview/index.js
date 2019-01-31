@@ -148,7 +148,11 @@ const TokenHighlightPreview = ({
   };
 
   return (
-    <Paper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
+    <Paper
+      style={{ wordBreak: 'break-word' }}
+      padding={smallSize}
+      boxShadow={smallSize ? 'none' : ''}
+    >
       {view === PREVIEW && !smallSize && (
         <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
       )}

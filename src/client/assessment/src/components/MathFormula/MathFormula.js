@@ -25,7 +25,6 @@ const MathFormula = ({
   evaluation,
   setQuestionData,
   saveAnswer,
-  checkAnswer,
   smallSize
 }) => {
   const Wrapper = testItem ? EmptyWrapper : Paper;
@@ -98,7 +97,6 @@ const MathFormula = ({
             studentTemplate={studentTemplate}
             item={item}
             saveAnswer={saveAnswer}
-            check={checkAnswer}
             evaluation={evaluation}
             smallSize={smallSize}
           />
@@ -112,7 +110,6 @@ MathFormula.propTypes = {
   view: PropTypes.string.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  checkAnswer: PropTypes.func.isRequired,
   previewTab: PropTypes.string,
   testItem: PropTypes.bool,
   item: PropTypes.object,

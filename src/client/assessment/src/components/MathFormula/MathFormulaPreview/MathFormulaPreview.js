@@ -23,6 +23,12 @@ const MathFormulaPreview = ({ item, studentTemplate, type: previewType, evaluati
     saveAnswer(isStatic ? studentRef.current.getLatex() : latexv);
   };
 
+  const onBlur = () => {
+    if (studentRef.current) {
+      saveAnswer(studentRef.current.getLatex());
+    }
+  };
+
   useEffect(
     () => {
       if (previewType === CLEAR) {
@@ -61,6 +67,7 @@ const MathFormulaPreview = ({ item, studentTemplate, type: previewType, evaluati
             numberPad={item.numberPad}
             ref={studentRef}
             onInput={onUserResponse}
+            onBlur={onBlur}
             type={type}
             style={{ background: statusColor }}
           />
@@ -71,6 +78,7 @@ const MathFormulaPreview = ({ item, studentTemplate, type: previewType, evaluati
             numberPad={item.numberPad}
             value={latex}
             onInput={onUserResponse}
+            onBlur={onBlur}
             type={type}
             disabled={evaluation && !evaluation[0]}
             style={{ background: statusColor }}

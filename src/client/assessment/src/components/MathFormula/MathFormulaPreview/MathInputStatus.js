@@ -27,7 +27,7 @@ class MathInputStatus extends React.PureComponent {
   render() {
     const { valid } = this.props;
     return (
-      <Wrapper onClick="">
+      <Wrapper>
         <Icon>
           {valid && <IconCheck color={green} width={16} height={16} />}
           {!valid && <IconClose color={red} width={16} height={16} />}

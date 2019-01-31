@@ -387,7 +387,7 @@ const enhance = compose(
       item: getItemDetailSelector(state),
       updating: getItemDetailUpdatingSelector(state),
       type: getItemDetailDimensionTypeSelector(state),
-      evaluation: state.evluation,
+      evaluation: state.evaluation,
       preview: state.view.preview
     }),
     {

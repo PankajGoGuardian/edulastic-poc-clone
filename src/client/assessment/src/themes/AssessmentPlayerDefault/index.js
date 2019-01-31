@@ -85,7 +85,7 @@ class AssessmentPlayerDefault extends React.Component {
     theme: defaultTheme
   };
 
-  changeTabItemState = value => {
+  changeTabItemState = (value) => {
     const { checkAnswer, changePreview } = this.props;
     checkAnswer();
 
@@ -131,13 +131,13 @@ class AssessmentPlayerDefault extends React.Component {
     return `rgb(${r}, ${g}, ${b})`;
   };
 
-  onFillColorChange = obj => {
+  onFillColorChange = (obj) => {
     this.setState({
       fillColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
     });
   };
 
-  handleModeChange = flag => {
+  handleModeChange = (flag) => {
     this.setState({ scratchPadMode: flag });
   };
 
@@ -153,13 +153,13 @@ class AssessmentPlayerDefault extends React.Component {
     }
   };
 
-  handleColorChange = obj => {
+  handleColorChange = (obj) => {
     this.setState({
       currentColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
     });
   };
 
-  saveHistory = data => {
+  saveHistory = (data) => {
     const { history, currentTab } = this.state;
 
     const newHist = history.slice(0, currentTab + 1);

@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import { Checkbox } from 'antd';
 import PropTypes from 'prop-types';
@@ -7,12 +6,7 @@ import { compose } from 'redux';
 import { cloneDeep } from 'lodash';
 import { TextField, PaddingDiv } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
-import {
-  SortableContainer,
-  SortableElement,
-  SortableHandle,
-  arrayMove
-} from 'react-sortable-hoc';
+import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
 import styled from 'styled-components';
 
 import SortableItemContainer from '../common/SortableItemContainer';
@@ -82,8 +76,11 @@ class AdditionalOptions extends Component {
   onSortEnd({ oldIndex, newIndex }) {
     const { questionData, setQuestionData } = this.props;
     const newItem = cloneDeep(questionData);
-    newItem.distractorRationaleOptions =
-      arrayMove(questionData.distractorRationaleOptions, oldIndex, newIndex);
+    newItem.distractorRationaleOptions = arrayMove(
+      questionData.distractorRationaleOptions,
+      oldIndex,
+      newIndex
+    );
     setQuestionData(newItem);
   }
 
@@ -174,7 +171,7 @@ class AdditionalOptions extends Component {
               size="large"
               style={{ width: '80%' }}
             >
-              {t('component.options.distractorrationaleperresponse')}
+              {t('component.options.distractorRationalePerResponse')}
             </Checkbox>
           </Col>
         </Row>
@@ -204,8 +201,7 @@ AdditionalOptions.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-AdditionalOptions.defaultProps = {
-};
+AdditionalOptions.defaultProps = {};
 
 const enhance = compose(
   withNamespaces('assessment'),

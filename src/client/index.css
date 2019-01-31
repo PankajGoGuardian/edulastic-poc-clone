@@ -434,6 +434,7 @@ template {
 
 .template_box div {
   display: inline-block;
+  overflow: auto;
 }
 
 .template_box div.content {
@@ -983,10 +984,10 @@ span.token.active-word {
   box-shadow: none !important;
 }
 
-.ant-popover-content{
-  margin-top:-13px;
+.ant-popover-content {
+  margin-top: -13px;
 }
-.ant-popover-arrow{
+.ant-popover-arrow {
   display: none;
 }
 

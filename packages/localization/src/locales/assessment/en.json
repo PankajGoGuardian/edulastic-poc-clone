@@ -93,7 +93,6 @@
       "rubricreference": "Rubric reference",
       "sampleanswer": "Sample answer",
       "distractorrationale": "Distractor rationale",
-      "distractorrationaleperresponse": "Distractor rationale per response",
       "extras": "Extras",
       "acknowledgements": "Acknowledgements",
       "containsMath": "Contains math",
@@ -102,7 +101,8 @@
       "maximumLines": "Maximum lines",
       "defaultMode": "Default mode",
       "numberPad": "Number Pad",
-      "symbols": "Symbols"
+      "symbols": "Symbols",
+      "distractor": "Distractor"
     },
     "highlightImage": {
       "lineColorOptionsSubtitle": "Line color options",

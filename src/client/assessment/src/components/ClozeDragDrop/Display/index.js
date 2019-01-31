@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import styled from 'styled-components';
 import { Draggable, Droppable } from 'react-drag-and-drop';
 import { cloneDeep } from 'lodash';
+import { InstructorStimulus } from '@edulastic/common';
+
 import QuestionHeader from '../common/QuestionHeader';
 import ResponseContainer from './ResponseContainer';
 import ResponseBoxLayout from './ResponseBoxLayout';
@@ -9,7 +12,8 @@ import CheckboxTemplateBoxLayout from './CheckboxResponseBoxLayout';
 import CorrectAnswerBoxLayout from './CorrectAnswerBoxLayout';
 
 /* eslint-disable */
-const defaultTemplateMarkup = '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags? <br /> Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
+const defaultTemplateMarkup =
+  '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags? <br /> Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
 
 class ClozeDragDropDisplay extends Component {
   constructor(props) {
@@ -35,12 +39,12 @@ class ClozeDragDropDisplay extends Component {
       this.setState({
         userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
         possibleResponses,
-        templateParts,
+        templateParts
       });
     }
   }
 
-  getTemplateParts = (props) => {
+  getTemplateParts = props => {
     const { templateMarkUp } = props;
     let templateMarkUpStr = templateMarkUp;
     if (!templateMarkUpStr) {
@@ -49,8 +53,8 @@ class ClozeDragDropDisplay extends Component {
     const templateParts = templateMarkUpStr.match(/<p.*?<\/p>/g);
     const responseParts = templateMarkUpStr.match(/<p class="response-btn.*?<\/p>/g);
     const respLength = responseParts !== null ? responseParts.length : 0;
-    return {templateParts, respLength}; 
-  }
+    return { templateParts, respLength };
+  };
 
   onDrop = (data, index) => {
     const { userAnswers: newAnswers, possibleResponses } = this.state;
@@ -58,7 +62,7 @@ class ClozeDragDropDisplay extends Component {
       onChange: changeAnswers,
       hasGroupResponses,
       userSelections,
-      configureOptions,
+      configureOptions
     } = this.props;
     const { duplicatedResponses: isDuplicated } = configureOptions;
     const newResponses = cloneDeep(possibleResponses);
@@ -77,7 +81,11 @@ class ClozeDragDropDisplay extends Component {
         } else {
           for (let i = 0; i < newResponses[groupIndex].options.length; i++) {
             if (newResponses[groupIndex].options[i] === groupData) {
-              if (userSelections && userSelections[index] !== null && typeof userSelections[index] === 'object') {
+              if (
+                userSelections &&
+                userSelections[index] !== null &&
+                typeof userSelections[index] === 'object'
+              ) {
                 newResponses[userSelections[index].group].options.push(userSelections[index].data);
               }
               newResponses[groupIndex].options.splice(i, 1);
@@ -137,24 +145,24 @@ class ClozeDragDropDisplay extends Component {
     }
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });
     changeAnswers(newAnswers);
-  }
+  };
 
-  shuffle = (arr) => {
+  shuffle = arr => {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
-  }
+  };
 
-  shuffleGroup = (data) => {
+  shuffleGroup = data => {
     return data.map(arr => {
       arr.options = this.shuffle(arr.options);
       return arr;
     });
-  }
+  };
 
-  getInitialResponses = (props) => {
+  getInitialResponses = props => {
     const {
       hasGroupResponses,
       configureOptions,
@@ -168,7 +176,7 @@ class ClozeDragDropDisplay extends Component {
     possibleResps = cloneDeep(options);
     if (!isDuplicated) {
       if (hasGroupResponses) {
-        userSelections.forEach((userSelection) => {
+        userSelections.forEach(userSelection => {
           if (userSelection !== null && typeof userSelection === 'object') {
             for (let i = 0; i < possibleResps[userSelection.group].options.length; i++) {
               if (possibleResps[userSelection.group].options[i] === userSelection.data) {
@@ -190,9 +198,9 @@ class ClozeDragDropDisplay extends Component {
       }
     }
     return possibleResps;
-  }
+  };
 
-  getFontSize = (size) => {
+  getFontSize = size => {
     switch (size) {
       case 'small':
         return '10px';
@@ -207,7 +215,7 @@ class ClozeDragDropDisplay extends Component {
       default:
         return '12px';
     }
-  }
+  };
 
   render() {
     const {
@@ -222,7 +230,8 @@ class ClozeDragDropDisplay extends Component {
       showAnswer,
       checkAnswer,
       validation,
-      evaluation
+      evaluation,
+      item
     } = this.props;
     const { templateParts, userAnswers, possibleResponses } = this.state;
     const { showDraghandle: dragHandler, shuffleOptions } = configureOptions;
@@ -238,83 +247,107 @@ class ClozeDragDropDisplay extends Component {
 
     // Layout Options
     const fontSize = this.getFontSize(uiStyle.fontsize);
-    const { widthpx, heightpx, wordwrap, responsecontainerposition, responsecontainerindividuals, stemnumeration } = uiStyle;
+    const {
+      widthpx,
+      heightpx,
+      wordwrap,
+      responsecontainerposition,
+      responsecontainerindividuals,
+      stemnumeration
+    } = uiStyle;
 
     const responseBtnStyle = {
       widthpx: widthpx !== 0 ? widthpx : 'auto',
       heightpx: heightpx !== 0 ? heightpx : 'auto',
-      whiteSpace: wordwrap ? 'inherit' : 'nowrap',
-    }
+      whiteSpace: wordwrap ? 'inherit' : 'nowrap'
+    };
     const previewTemplateBoxLayout = (
-      <div className={`template_box ${smallSize ? 'small' : ''}`} style={{ fontSize: smallSize ? 14 : fontSize }}>
-          {templateParts.map((templatePart, index) => {
-            if (templatePart.indexOf('class="response-btn"') !== -1) {
-              const dropTargetIndex = responseIndex;
-              responseIndex++;
-              let btnStyle = {
-                width: 0,
-                height: 0,
-                widthpx: 0,
-                heightpx: 0,
-                whiteSpace: undefined,
-                wordwrap: undefined,
-              }
-              if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-                const { widthpx, heightpx, wordwrap } = responsecontainerindividuals[dropTargetIndex];
-                btnStyle.width = widthpx;
-                btnStyle.height = heightpx;
-                btnStyle.whiteSpace = wordwrap;
-                btnStyle.widthpx = widthpx;
-                btnStyle.heightpx = heightpx;
-                btnStyle.wordwrap = wordwrap;
-              }
-              if (btnStyle && btnStyle.width === 0) {
-                btnStyle['width'] = responseBtnStyle.widthpx;
-              } else {
-                btnStyle.width = btnStyle.widthpx;
-              }
-              if (btnStyle && btnStyle.height === 0) {
-                btnStyle['height'] = responseBtnStyle.heightpx;
-              } else {
-                btnStyle['height'] = btnStyle.heightpx;
-              }
-              if (btnStyle && btnStyle.whiteSpace === undefined) {
-                btnStyle['whiteSpace'] = responseBtnStyle.whiteSpace;
-              } else {
-                btnStyle['whiteSpace'] = btnStyle.wordwrap;
-              }
-              return (
-                <Droppable
-                  key={index}
-                  types={['metal']} // <= allowed drop types
-                  style={{ top: -5 }}
-                  onDrop={data => this.onDrop(data, dropTargetIndex)}
-                >
-                  {!hasGroupResponses && (
-                    <ResponseContainer style={btnStyle} smallSize={smallSize}>
-                      <Draggable className="content" type="metal" data={`${userAnswers[dropTargetIndex]}_${dropTargetIndex}_fromResp`}>
-                        {userAnswers[dropTargetIndex]}
-                      </Draggable>&nbsp;
-                    </ResponseContainer>
-                  )}
-                  {hasGroupResponses && (
-                    <ResponseContainer style={btnStyle} smallSize={smallSize}>
-                      <Draggable className="content" type="metal" data={`${userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].data}_${userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}>
-                      {
-                        (userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].data)
-                      }
-                      </Draggable>&nbsp;
-                    </ResponseContainer>
-                  )}
-                </Droppable>
-              );
+      <div
+        className={`template_box ${smallSize ? 'small' : ''}`}
+        style={{ fontSize: smallSize ? 14 : fontSize }}
+      >
+        {templateParts.map((templatePart, index) => {
+          if (templatePart.indexOf('class="response-btn"') !== -1) {
+            const dropTargetIndex = responseIndex;
+            responseIndex++;
+            let btnStyle = {
+              width: 0,
+              height: 0,
+              widthpx: 0,
+              heightpx: 0,
+              whiteSpace: undefined,
+              wordwrap: undefined
+            };
+            if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
+              const { widthpx, heightpx, wordwrap } = responsecontainerindividuals[dropTargetIndex];
+              btnStyle.width = widthpx;
+              btnStyle.height = heightpx;
+              btnStyle.whiteSpace = wordwrap;
+              btnStyle.widthpx = widthpx;
+              btnStyle.heightpx = heightpx;
+              btnStyle.wordwrap = wordwrap;
+            }
+            if (btnStyle && btnStyle.width === 0) {
+              btnStyle['width'] = responseBtnStyle.widthpx;
+            } else {
+              btnStyle.width = btnStyle.widthpx;
+            }
+            if (btnStyle && btnStyle.height === 0) {
+              btnStyle['height'] = responseBtnStyle.heightpx;
+            } else {
+              btnStyle['height'] = btnStyle.heightpx;
+            }
+            if (btnStyle && btnStyle.whiteSpace === undefined) {
+              btnStyle['whiteSpace'] = responseBtnStyle.whiteSpace;
+            } else {
+              btnStyle['whiteSpace'] = btnStyle.wordwrap;
             }
             return (
-              <span style={{ userSelect: 'none' }} key={index} dangerouslySetInnerHTML={{ __html: templatePart }}></span>
+              <Droppable
+                key={index}
+                types={['metal']} // <= allowed drop types
+                style={{ top: -5 }}
+                onDrop={data => this.onDrop(data, dropTargetIndex)}
+              >
+                {!hasGroupResponses && (
+                  <ResponseContainer style={btnStyle} smallSize={smallSize}>
+                    <Draggable
+                      className="content"
+                      type="metal"
+                      data={`${userAnswers[dropTargetIndex]}_${dropTargetIndex}_fromResp`}
+                    >
+                      {userAnswers[dropTargetIndex]}
+                    </Draggable>
+                    &nbsp;
+                  </ResponseContainer>
+                )}
+                {hasGroupResponses && (
+                  <ResponseContainer style={btnStyle} smallSize={smallSize}>
+                    <Draggable
+                      className="content"
+                      type="metal"
+                      data={`${userAnswers[dropTargetIndex] &&
+                        userAnswers[dropTargetIndex].data}_${userAnswers[dropTargetIndex] &&
+                        userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
+                    >
+                      {userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].data}
+                    </Draggable>
+                    &nbsp;
+                  </ResponseContainer>
+                )}
+              </Droppable>
             );
-          })}
-        </div>
-    )
+          }
+          return (
+            <span
+              style={{ userSelect: 'none' }}
+              key={index}
+              dangerouslySetInnerHTML={{ __html: templatePart }}
+            />
+          );
+        })}
+      </div>
+    );
 
     const checkboxTemplateBoxLayout = (
       <CheckboxTemplateBoxLayout
@@ -329,8 +362,9 @@ class ClozeDragDropDisplay extends Component {
         evaluation={evaluation}
         onDropHandler={this.onDrop}
       />
-    )
-    const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
+    );
+    const templateBoxLayout =
+      showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
         smallSize={smallSize}
@@ -339,7 +373,7 @@ class ClozeDragDropDisplay extends Component {
         fontSize={fontSize}
         dragHandler={dragHandler}
       />
-    )
+    );
     const correctAnswerBoxLayout = showAnswer ? (
       <CorrectAnswerBoxLayout
         hasGroupResponses={hasGroupResponses}
@@ -347,52 +381,84 @@ class ClozeDragDropDisplay extends Component {
         groupResponses={options}
         userAnswers={validation.valid_response && validation.valid_response.value}
       />
-    ) : (<div/>);
-    const responseBoxLayout = showAnswer ? (<div/>) : previewResponseBoxLayout;
-    const answerBox = showAnswer ? correctAnswerBoxLayout : (<div/>);
+    ) : (
+      <div />
+    );
+    const responseBoxLayout = showAnswer ? <div /> : previewResponseBoxLayout;
+    const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
     return (
       <div style={{ fontSize: fontSize }}>
-        <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }}/>
+        <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         <div>
           {responsecontainerposition === 'top' && (
             <React.Fragment>
-              <div style={{ margin: 15, borderRadius: 10 }}>
-                {responseBoxLayout}
-              </div>
-              <div style={{ margin: 15, borderRadius: 10 }}>
-                {templateBoxLayout}
-              </div>
+              <div style={{ margin: 15, borderRadius: 10 }}>{responseBoxLayout}</div>
+              <div style={{ margin: 15, borderRadius: 10 }}>{templateBoxLayout}</div>
             </React.Fragment>
           )}
           {responsecontainerposition === 'bottom' && (
             <React.Fragment>
-              <div style={{ margin: smallSize ? '-18px -20px 10px' : 15, borderRadius: smallSize ? 0 : 10 }}>
+              <div
+                style={{
+                  margin: smallSize ? '-18px -20px 10px' : 15,
+                  borderRadius: smallSize ? 0 : 10
+                }}
+              >
+                {item.instructor_stimulus && (
+                  <InstructorStimulus
+                    dangerouslySetInnerHTML={{ __html: item.instructor_stimulus }}
+                  />
+                )}
+
                 {templateBoxLayout}
               </div>
-              <div style={{ margin: smallSize ? '0 -40px -20px' : 15, borderRadius: smallSize ? 0 : 10 }}>
+              <div
+                style={{
+                  margin: smallSize ? '0 -40px -20px' : 15,
+                  borderRadius: smallSize ? 0 : 10
+                }}
+              >
                 {responseBoxLayout}
               </div>
             </React.Fragment>
           )}
           {responsecontainerposition === 'left' && (
-            <div style={{ display: 'flex', width: '80vw' }}>
-              <div hidden={checkAnswer || showAnswer} style={{ height: '100%', width: '30%', margin: 15, borderRadius: 10, background: 'lightgray', display: 'flex', justifyContent: 'center' }}>
+            <AnswerContainer position={responsecontainerposition}>
+              <div
+                hidden={checkAnswer || showAnswer}
+                style={{
+                  height: '100%',
+                  maxWidth: '30%',
+                  margin: 15,
+                  borderRadius: 10,
+                  background: 'lightgray',
+                  display: 'flex',
+                  justifyContent: 'center'
+                }}
+              >
                 {responseBoxLayout}
               </div>
-              <div style={{ margin: 15, borderRadius: 10, flex: 1 }}>
-                {templateBoxLayout}
-              </div>
-            </div>
+              <div style={{ margin: 15, borderRadius: 10, flex: 1 }}>{templateBoxLayout}</div>
+            </AnswerContainer>
           )}
           {responsecontainerposition === 'right' && (
-            <div style={{ display: 'flex', width: '80vw' }}>
-              <div style={{ flex: 1, margin: 15, borderRadius: 10 }}>
-                {templateBoxLayout}
-              </div>
-              <div hidden={checkAnswer || showAnswer} style={{ height: '100%', width: '30%', margin: 15, borderRadius: 10, background: 'lightgray', display: 'flex', justifyContent: 'center' }}>
+            <AnswerContainer position={responsecontainerposition}>
+              <div style={{ flex: 1, margin: 15, borderRadius: 10 }}>{templateBoxLayout}</div>
+              <div
+                hidden={checkAnswer || showAnswer}
+                style={{
+                  height: '100%',
+                  maxWidth: '30%',
+                  margin: 15,
+                  borderRadius: 10,
+                  background: 'lightgray',
+                  display: 'flex',
+                  justifyContent: 'center'
+                }}
+              >
                 {responseBoxLayout}
               </div>
-            </div>
+            </AnswerContainer>
           )}
         </div>
         {answerBox}
@@ -403,6 +469,7 @@ class ClozeDragDropDisplay extends Component {
 
 ClozeDragDropDisplay.propTypes = {
   options: PropTypes.array,
+  item: PropTypes.object,
   onChange: PropTypes.func,
   preview: PropTypes.bool,
   showAnswer: PropTypes.bool,
@@ -415,13 +482,14 @@ ClozeDragDropDisplay.propTypes = {
   configureOptions: PropTypes.object,
   validation: PropTypes.object,
   evaluation: PropTypes.array,
-  uiStyle: PropTypes.object.isRequired,
+  uiStyle: PropTypes.object.isRequired
 };
 
 ClozeDragDropDisplay.defaultProps = {
   options: [],
   onChange: () => {},
   preview: true,
+  item: {},
   showAnswer: false,
   userSelections: [],
   evaluation: [],
@@ -433,7 +501,7 @@ ClozeDragDropDisplay.defaultProps = {
   configureOptions: {
     showDraghandle: false,
     duplicatedResponses: false,
-    shuffleOptions: false,
+    shuffleOptions: false
   },
   uiStyle: {
     responsecontainerposition: 'bottom',
@@ -447,3 +515,11 @@ ClozeDragDropDisplay.defaultProps = {
 };
 
 export default ClozeDragDropDisplay;
+
+const AnswerContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: ${props => (['left', 'right'].includes(props.position) ? 'nowrap' : 'wrap')};
+`;

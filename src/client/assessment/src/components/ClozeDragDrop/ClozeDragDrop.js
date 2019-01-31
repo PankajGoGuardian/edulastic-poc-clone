@@ -65,11 +65,15 @@ class ClozeDragDrop extends Component {
     const { setQuestionData, item } = this.props;
     const newItem = cloneDeep(item);
 
-    if (newItem.validation && newItem.validation.alt_responses && newItem.validation.alt_responses.length) {
+    if (
+      newItem.validation &&
+      newItem.validation.alt_responses &&
+      newItem.validation.alt_responses.length
+    ) {
       newItem.validation.alt_responses.splice(index, 1);
       setQuestionData(newItem);
     }
-  }
+  };
 
   handleOptionsChange = (name, value) => {
     const { setQuestionData, item } = this.props;
@@ -161,6 +165,7 @@ class ClozeDragDrop extends Component {
           <Wrapper>
             {previewTab === 'check' && (
               <ClozeDragDropDisplay
+                item={item}
                 checkAnswer
                 hasGroupResponses={item.hasGroupResponses}
                 configureOptions={{
@@ -181,6 +186,7 @@ class ClozeDragDrop extends Component {
             {previewTab === 'show' && (
               <ClozeDragDropDisplay
                 showAnswer
+                item={item}
                 hasGroupResponses={item.hasGroupResponses}
                 configureOptions={{
                   duplicatedResponses,
@@ -199,6 +205,7 @@ class ClozeDragDrop extends Component {
             )}
             {previewTab === 'clear' && (
               <ClozeDragDropDisplay
+                item={item}
                 preview
                 hasGroupResponses={item.hasGroupResponses}
                 configureOptions={{

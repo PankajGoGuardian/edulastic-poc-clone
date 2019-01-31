@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withNamespaces } from '@edulastic/localization';
 import styled from 'styled-components';
 
-import O, { Heading, Block, Label, Row, Col } from '../../common/Options';
+import O, { Heading, Block, Label, Row, Col, Extras } from '../../common/Options';
 import AddNewBtn from './AddNewChoiceBtn';
 
 const Options = ({ onChange, uiStyle, t, outerStyle }) => {
@@ -156,7 +156,9 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
             <Delete onClick={() => removeIndividual(index)}>X</Delete>
             <div>
               <Col md={12}>
-                <Label>{`${t('component.options.responsecontainerindividual')} ${index + 1}`}</Label>
+                <Label>
+                  {`${t('component.options.responsecontainerindividual')} ${index + 1}`}
+                </Label>
               </Col>
             </div>
             <Row>
@@ -184,7 +186,13 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
             <Row>
               <Col md={6}>
                 <Checkbox
-                  onChange={() => changeIndividualUiStyle('wordwrap', !responsecontainerindividual.wordwrap, index)}
+                  onChange={() =>
+                    changeIndividualUiStyle(
+                      'wordwrap',
+                      !responsecontainerindividual.wordwrap,
+                      index
+                    )
+                  }
                   label={t('component.options.wordwrap')}
                   checked={responsecontainerindividual.wordwrap}
                 />
@@ -198,6 +206,9 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
           </Col>
         </Row>
       </Block>
+      <Extras>
+        <Extras.Distractors />
+      </Extras>
     </O>
   );
 };

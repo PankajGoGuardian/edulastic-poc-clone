@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { greenDark, greenDarkSecondary } from '@edulastic/colors';
+import { Row as AntRow } from 'antd';
 
 export const Heading = styled.div`
   font-size: 14px;
@@ -14,18 +15,7 @@ export const Heading = styled.div`
   margin-bottom: 35px;
 `;
 
-// export const Block = styled.div`
-//   border-bottom: 1px solid #d9d6d6;
-//   padding-bottom: 20px;
-//   margin-bottom: 35px;
-
-//   :last-child {
-//     margin-bottom: 0;
-//   }
-// `;
-
 export const Block = styled.div`
-  
   border-top: 1px solid #d9d6d6;
   padding-top: 20px;
 `;
@@ -70,7 +60,7 @@ export const Toggler = styled.div`
   width: 18.9px;
   height: 18.9px;
   cursor: pointer;
-  
+
   ::before {
     content: '';
     background-color: ${greenDark};
@@ -80,7 +70,7 @@ export const Toggler = styled.div`
     top: calc(50% - 1.5px);
     left: 0;
   }
-  
+
   ::after {
     display: ${props => (props.isOpen ? 'none' : 'block')};
     content: '';
@@ -89,10 +79,10 @@ export const Toggler = styled.div`
     width: 3px;
     height: 100%;
     top: 0;
-    left: calc(50% - 1.5px);;
+    left: calc(50% - 1.5px);
   }
-  
-  :hover {  
+
+  :hover {
     ::before {
       background-color: ${greenDarkSecondary};
     }
@@ -106,4 +96,8 @@ export const FormGroup = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+`;
+
+export const StyledRow = styled(AntRow)`
+  margin-bottom: 25px;
 `;

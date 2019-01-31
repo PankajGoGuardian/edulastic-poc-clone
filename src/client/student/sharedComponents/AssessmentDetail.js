@@ -9,6 +9,7 @@ const AssessmentDetails = ({
   theme,
   t,
   started,
+  resume,
   dueDate,
   type,
   startDate
@@ -43,7 +44,9 @@ const AssessmentDetails = ({
             assignment={type === 'assignment'}
           >
             <span>
-              {started ? t('common.inProgress') : t('common.notStartedTag')}
+              {started || resume
+                ? t('common.inProgress')
+                : t('common.notStartedTag')}
             </span>
           </StatusButton>
         ) : (

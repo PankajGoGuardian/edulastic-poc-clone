@@ -77,6 +77,7 @@ const AssignmentCard = ({
         t={t}
         type={type}
         started={attempted}
+        resume={resume}
         dueDate={endDate}
         startDate={startDate}
       />

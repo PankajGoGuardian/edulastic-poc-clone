@@ -18,7 +18,6 @@ const exactMatchEvaluator = (
 
   altAnswers.forEach((answer) => {
     const { value: answerValue, score: answerScore } = answer;
-
     let all = userResponse.length !== 0;
     userResponse.forEach((shade, i) => {
       if (difference(answerValue[i], shade).length !== 0) {
@@ -41,6 +40,7 @@ const exactMatchEvaluator = (
         all = false;
       }
     });
+
     if (all) {
       evaluation = cloneDeep(validValue);
       score = validScore;

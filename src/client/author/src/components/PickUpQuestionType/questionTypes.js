@@ -470,7 +470,8 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           valid_response: {
             score: 1,
             value: [null, null, null, null]
-          }
+          },
+          alt_responses: []
         },
         multiple_responses: false
       },
@@ -494,7 +495,8 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           valid_response: {
             score: 1,
             value: [null, null, null, null]
-          }
+          },
+          alt_responses: []
         }
       },
       onSelectQuestionType
@@ -518,7 +520,8 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           valid_response: {
             score: 1,
             value: [null, null, null, null]
-          }
+          },
+          alt_responses: []
         }
       },
       onSelectQuestionType

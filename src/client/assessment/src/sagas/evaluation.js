@@ -1,25 +1,29 @@
 import { takeEvery, put, all, select, call } from 'redux-saga/effects';
 import { message } from 'antd';
 import { testItemsApi } from '@edulastic/api';
+import { isEmpty } from 'lodash';
+
 // actions
-import {
-  CHECK_ANSWER_EVALUATION,
-  ADD_ITEM_EVALUATION,
-  CHANGE_PREVIEW
-} from '../constants/actions';
-import { itemQuestionsSelector } from '../selectors/test';
+import { CHECK_ANSWER_EVALUATION, ADD_ITEM_EVALUATION, CHANGE_PREVIEW } from '../constants/actions';
+import { itemQuestionsSelector, answersForCheck } from '../selectors/test';
 
 function* evaluateAnswers() {
   try {
     const questionIds = yield select(itemQuestionsSelector);
-    const allAnswers = yield select(state => state.answers);
+    const allAnswers = yield select(answersForCheck);
     const answerIds = Object.keys(allAnswers);
     const userResponse = {};
-    for (const id of answerIds) {
+
+    answerIds.forEach((id) => {
       if (questionIds.includes(id)) {
         userResponse[id] = allAnswers[id];
       }
+    });
+
+    if (isEmpty(userResponse)) {
+      return;
     }
+
     const { items, currentItem } = yield select(state => state.test);
     const id = items[currentItem]._id;
     const result = yield call(testItemsApi.evaluation, id, userResponse);

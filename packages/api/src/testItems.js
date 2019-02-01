@@ -10,17 +10,18 @@ const formatData = (data) => {
   return item;
 };
 
-const getAll = data => api
-  .callApi({
-    url: prefixElasticSearch,
-    method: 'post',
-    data
-  })
-  .then((result) => {
-    const items = result.data.result.hits.hits.map(el => ({ _id: el._id, ...el._source }));
-    const count = result.data.result.hits.total;
-    return { items, count };
-  });
+const getAll = data =>
+  api
+    .callApi({
+      url: prefixElasticSearch,
+      method: 'post',
+      data
+    })
+    .then((result) => {
+      const items = result.data.result.hits.hits.map(el => ({ _id: el._id, ...el._source }));
+      const count = result.data.result.hits.total;
+      return { items, count };
+    });
 
 const getById = (id, params = {}) =>
   api

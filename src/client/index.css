@@ -433,7 +433,6 @@ template {
 }
 
 .template_box div {
-  display: inline-block;
   overflow: auto;
 }
 
@@ -663,6 +662,7 @@ input[type='checkbox'] {
 .Droppable {
   position: relative;
   top: -8px;
+  display: inline;
 }
 
 .response-btn.show-answer {
@@ -871,6 +871,11 @@ input[type='checkbox'] {
 
 .template_box.dropdown .response-btn.check-answer {
   top: -8px;
+}
+
+.template_box .ant-select {
+  display: inline-block;
+  top: 10px;
 }
 
 .imagelabeldragdrop-droppable.iseditablearialabel {

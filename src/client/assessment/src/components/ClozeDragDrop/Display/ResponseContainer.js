@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const ResponseContainer = styled.div`
+const ResponseContainer = styled.span`
   border: 2px dotted ${props => (props.smallSize ? '#e6e6e6' : 'black')};
   min-width: ${props => (props.smallSize ? 140 : 50)}px;
   /* min-height: 30px; */

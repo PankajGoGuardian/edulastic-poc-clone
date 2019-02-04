@@ -27,7 +27,7 @@ const AssignmentButton = ({ startDate, t, startTest, attempted, resume }) => {
       <span>
         <img src={lockIcon} alt="" />
       </span>
-      <span>{t('common.lockAssignment')}</span>
+      <span data-cy="lockAssignment">{t('common.lockAssignment')}</span>
     </NotAvailableButton>
   ) : (
     <StartButton onClick={startTest}>

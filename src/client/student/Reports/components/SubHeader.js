@@ -18,6 +18,7 @@ const AssignmentSubHeader = ({ t, setFilter, filter }) => {
 
   const Filter = ({ value }) => (
     <FilterBtn
+      data-cy={value}
       onClick={() => setFilter(FILTERS[value])}
       enabled={FILTERS[value] === filter}
     >

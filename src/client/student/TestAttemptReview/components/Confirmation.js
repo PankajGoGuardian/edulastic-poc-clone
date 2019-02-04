@@ -32,7 +32,7 @@ class Confirmation extends Component {
           <ButtonContainer>
             <ButtonRow gutter={20}>
               <Col md={12} sm={24}>
-                <StyledButton btnType={1} onClick={onClose}>
+                <StyledButton data-cy="cancel" btnType={1} onClick={onClose}>
                   {t('default:cancel')}
                 </StyledButton>
               </Col>

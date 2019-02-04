@@ -24,7 +24,7 @@ const AssessmentDetails = ({
       <CardTitle>{test && test.title}</CardTitle>
       <CardDate>
         <Icon type={theme.assignment.cardTimeIconType} />
-        <span>
+        <span data-cy="date">
           <StrongText>
             {type === 'assignment'
               ? new Date(startDate) > new Date()
@@ -43,7 +43,7 @@ const AssessmentDetails = ({
             isSubmitted={started}
             assignment={type === 'assignment'}
           >
-            <span>
+            <span data-cy="status">
               {started || resume
                 ? t('common.inProgress')
                 : t('common.notStartedTag')}
@@ -51,7 +51,7 @@ const AssessmentDetails = ({
           </StatusButton>
         ) : (
           <StatusButton isSubmitted={started}>
-            <span>
+            <span data-cy="status">
               {started ? t('common.submittedTag') : t('common.missed')}
             </span>
           </StatusButton>

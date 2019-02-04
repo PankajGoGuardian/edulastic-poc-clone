@@ -13,21 +13,21 @@ const Attempt = ({ data, type }) => {
     <AttemptsData>
       <RowData pagetype={type === 'reports'}>
         <AnswerAndScore>
-          <span>{formatTime(data.createdAt)}</span>
+          <span data-cy="date">{formatTime(data.createdAt)}</span>
         </AnswerAndScore>
         <AnswerAndScore>
-          <span>
+          <span data-cy="score">
             {correct}/{total}
           </span>
         </AnswerAndScore>
         <AnswerAndScore>
-          <span>{percentage}%</span>
+          <span data-cy="percentage">{percentage}%</span>
         </AnswerAndScore>
         <SpaceBetween pagetype={type === 'reports'} />
         {type === 'reports' ? (
           <AnswerAndScoreReview>
             <Link to={`/home/testActivityReport/${data._id}`}>
-              <span>REVIEW</span>
+              <span data-cy="review">REVIEW</span>
             </Link>
           </AnswerAndScoreReview>
         ) : (

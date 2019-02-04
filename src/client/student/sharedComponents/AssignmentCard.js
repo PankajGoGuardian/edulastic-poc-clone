@@ -86,23 +86,23 @@ const AssignmentCard = ({
           {attempted && (
             <AttemptDetails>
               <Attempts onClick={toggleAttemptsView}>
-                <span>
+                <span data-cy="attemptsCount">
                   {attemptCount}/{test.maxAttempts || attemptCount}
                 </span>
-                <AttemptsTitle>
+                <AttemptsTitle data-cy="attemptClick">
                   {arrow} &nbsp;&nbsp;{t('common.attemps')}
                 </AttemptsTitle>
               </Attempts>
               <React.Fragment>
                 <AnswerAndScore>
-                  <span>
+                  <span data-cy="score">
                     {correct}/{totalQuestions}
                   </span>
                   <Title>{t('common.correctAnswer')}</Title>
                 </AnswerAndScore>
 
                 <AnswerAndScore>
-                  <span>{Math.floor(scorePercentage * 100) / 100}%</span>
+                  <span data-cy="percent">{Math.floor(scorePercentage * 100) / 100}%</span>
                   <Title>{t('common.score')}</Title>
                 </AnswerAndScore>
               </React.Fragment>
@@ -110,6 +110,7 @@ const AssignmentCard = ({
           )}
           {type === 'assignment' ? (
             <StartButton
+              data-cy="start"
               startDate={startDate}
               t={t}
               startTest={startTest}
@@ -118,6 +119,7 @@ const AssignmentCard = ({
             />
           ) : (
             <ReviewButton
+              data-cy="review"
               testActivityId={lastAttempt._id}
               title={test.title}
               t={t}
@@ -127,7 +129,7 @@ const AssignmentCard = ({
         </DetailContainer>
         {showAttempts &&
           newReports.map(attempt => (
-            <Attempt key={attempt._id} data={attempt} type={type} />
+            <Attempt key={attempt._id} data={attempt} type={type}/>
           ))}
       </ButtonAndDetail>
     </CardWrapper>

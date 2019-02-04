@@ -1,69 +1,68 @@
 import ReportsPage from './reportsPage';
 class StudentTestPage {
-  //click check answer
-  onClickWrongCheckAnswer() {
+
+  checkAnsValidateAsWrong() {
     cy.get('[data-cy=checkAnswer]')
       .should('be.visible')
       .click();
-    // cy.contains('Score: 0/1').should('be.visible');
+    cy.get('body')
+      .contains('score: 0 / 1').should('be.visible');
   }
 
-  //click check answer
-  onClickRightCheckAnswer() {
+  checkAnsValidateAsRight() {
     cy.get('[data-cy=checkAnswer]')
       .should('be.visible')
       .click();
-    // cy.contains('Score: 1/1').should('be.visible');
+    cy.get('body')
+      .contains('score: 1 / 1').should('be.visible');
   }
 
-  //  next click
-  onClickNext() {
-    cy.wait(2000);
-    cy.get('[data-cy=next]')
+  getNext() {
+    return cy.get('[data-cy=next]');
+  }
+
+  clickOnNext() {
+    this.getNext()
       .should('be.visible')
       .click();
   }
 
-  // prev click
-  onClickPrev() {
-    cy.wait(2000);
-    cy.get('[data-cy=prev]')
+  getPrevious() {
+    return cy.get('[data-cy=prev]');
+  }
+
+  clickOnPrevious() {
+    this.getPrevious()
       .should('be.visible')
       .click();
   }
 
-  //  click on  finish test
-  onClickFinishTest() {
-    cy.wait(2000);
+  //  click on finish test
+  clickOnExitTest() {
     cy.get('[data-cy=finishTest]')
       .should('be.visible')
       .click();
   }
 
-  onClickCancel() {
-    cy.wait(2000);
+  clickOnCancel() {
     cy.get('[data-cy=cancel]')
       .should('be.visible')
       .click();
   }
 
-  onClickApply() {
-    cy.wait(2000);
+  clickOnProceed() {
     cy.get('[data-cy=proceed]')
       .should('be.visible')
       .click();
   }
 
-  onClickSubmit() {
-    cy.wait(2000);
-    cy.contains('SUBMIT')
+  submitTest() {
+    cy.contains('SUBMIT').as('submit')
       .should('be.visible')
       .click();
-    cy.contains('Cancel')
-      .should('be.visible')
-      .click();
-    cy.contains('SUBMIT')
-      .should('be.visible')
+    this.clickOnCancel();
+
+    cy.get('@submit')
       .click();
     cy.get('[data-cy=submit]')
       .should('be.visible')
@@ -72,18 +71,12 @@ class StudentTestPage {
     return new ReportsPage();
   }
 
-  //  ------------------------>
-
-  // select question
-  onClickQuestion() {
-    cy.get('[data-cy=options]')
-      .should('be.visible')
-      .click();
+  getQueDropDown() {
+    return cy.get('[data-cy=options]')
+          .should('be.visible');
   }
 
-  //setting
-  onClickSetting() {
-    cy.wait(2000);
+  clickOnMenuCheckAns() {
     cy.get('[data-cy=setting]')
       .should('be.visible')
       .click();
@@ -92,12 +85,12 @@ class StudentTestPage {
       .click();
   }
 
-  onClickHint() {
-    cy.contains('hint').should('be.visible');
+  getHint() {
+    return cy.contains('hint').should('be.visible');
   }
 
-  onClickBookmark() {
-    cy.contains('bookmark').should('be.visible');
+  getBookmark() {
+    return cy.contains('bookmark').should('be.visible');
   }
 }
 export default StudentTestPage;

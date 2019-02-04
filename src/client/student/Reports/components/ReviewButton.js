@@ -17,7 +17,7 @@ const ReviewButton = ({ testActivityId, title, t, attempted }) => (
   >
     {attempted ? (
       <Review>
-        <span>{t('common.review')}</span>
+        <span data-cy="reviewButton">{t('common.review')}</span>
       </Review>
     ) : (
       ''

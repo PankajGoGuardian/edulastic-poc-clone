@@ -1,3 +1,6 @@
+import AssignmentsPage from "./assignmentsPage";
+import ReportsPage from "./reportsPage";
+
 class SidebarPage {
   onClickMenuItems() {
     let menuItems = [
@@ -41,6 +44,38 @@ class SidebarPage {
     cy.contains('MY PROFILE').click();
     cy.get('[data-cy=userInfo]').click();
     cy.contains('SIGN OUT').click();
+  }
+
+  clickOnDashboard(){
+    cy.get('[data-cy="label0"]')
+            .should('be.visible')
+            .click();
+  }
+
+  clickOnAssignment(){
+    cy.get('[data-cy="label1"]')
+            .should('be.visible')
+            .click();
+    return new AssignmentsPage();
+  }
+
+  clickOnReport(){
+    cy.get('[data-cy="label2"]')
+            .should('be.visible')
+            .click();
+    return new ReportsPage();
+  }
+
+  clickOnskillReport(){
+    return cy.get('[data-cy="label3"]')
+            .should('be.visible')
+            .click();
+  }
+
+  clickOnManageClass(){
+    return cy.get('[data-cy="label4"]')
+            .should('be.visible')
+            .click();
   }
 }
 export default SidebarPage;

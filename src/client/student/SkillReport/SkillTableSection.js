@@ -28,7 +28,13 @@ const computeColumns = t => [
     dataIndex: 'percentage',
     sorter: (a, b) => a.percentage - b.percentage,
     render: percentage =>
-      percentage === null ? '-' : <StyledProgress percent={percentage} />,
+      percentage === null ? (
+        '-'
+      ) : (
+        <StyledProgress
+          percent={(Math.round(percentage * 10) / 10).toFixed(1)}
+        />
+      ),
     width: '20%'
   }
 ];

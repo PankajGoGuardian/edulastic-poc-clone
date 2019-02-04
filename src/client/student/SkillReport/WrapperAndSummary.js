@@ -55,15 +55,15 @@ const SkillReportMainContent = ({ skillReport, t }) => {
         item => item.domain_id === id
       );
     sumData = skillReport.reports.curriculum.domains.map(domain => {
-      const reportData = getDomainScoreDetails(domain._id)[0] || null;
+      const reportData = getDomainScoreDetails(domain._id)[0] || {};
+      const percentage =
+        (reportData.score / reportData.max_points) * 100 || null;
       return {
         domain: domain.description || '-',
         standards: domain.standards || '-',
-        total: reportData ? reportData.score || '-' : '-',
-        hints: reportData ? reportData.hints || '-' : '-',
-        percentage: reportData
-          ? (reportData.score / reportData.max_points) * 100
-          : null
+        total: reportData.total_questions || '-',
+        hints: reportData.hints || '-',
+        percentage
       };
     });
   }

@@ -139,7 +139,7 @@ export const getAssignmentsSelector = createSelector(
     // group reports by assignmentsID
     let groupedReports = groupBy(values(reportsObj), 'assignmentId');
     let assignments = values(assignmentsObj)
-      .sort((a, b) => a.createdAt > b.createdAt)
+      .sort((a, b) => b.createdAt - a.createdAt)
       .map(assignment => ({
         ...assignment,
         reports: groupedReports[assignment._id] || []

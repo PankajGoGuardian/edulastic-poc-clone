@@ -213,6 +213,7 @@ class ClozeDragDropAuthoring extends Component {
             }}
             placeholder={t('component.clozeDragDrop.templatemarkupplaceholder')}
             onChange={this.onChangeMarkUp}
+            firstFocus={!item.templateMarkUp}
             showResponseBtn
             clearOnFirstFocus
             value={item.templateMarkUp || defaultTemplateMarkup}

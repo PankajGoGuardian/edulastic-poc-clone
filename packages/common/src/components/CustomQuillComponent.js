@@ -132,12 +132,14 @@ CustomToolbar.defaultProps = {
 class CustomQuillComponent extends Component {
   state = {
     active: false,
-    firstFocus: true
+    // eslint-disable-next-line react/destructuring-assignment
+    firstFocus: this.props.firstFocus
   };
 
   static propTypes = {
     value: PropTypes.string.isRequired,
     placeholder: PropTypes.string,
+    firstFocus: PropTypes.bool,
     showResponseBtn: PropTypes.bool.isRequired,
     toolbarId: PropTypes.string.isRequired,
     onChange: PropTypes.func,
@@ -150,6 +152,7 @@ class CustomQuillComponent extends Component {
     onChange: () => {},
     clearOnFirstFocus: true,
     placeholder: '',
+    firstFocus: false,
     readOnly: false,
     style: {
       minHeight: 134,
@@ -171,7 +174,7 @@ class CustomQuillComponent extends Component {
       this.setState({ firstFocus: false });
     }
     this.showToolbar();
-  }
+  };
 
   hideToolbar = () => {
     this.setState({ active: false });

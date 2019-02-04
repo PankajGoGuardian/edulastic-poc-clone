@@ -11,13 +11,14 @@ import 'react-quill/dist/quill.snow.css';
 import Subtitle from '../common/Sutitle';
 import { setQuestionDataAction } from '../../../../../author/src/actions/question';
 
-const defaultTemplateMarkup = '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags? <br /> Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
+const defaultTemplateMarkup =
+  '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags? <br /> Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
 
 class ClozeTextAuthoring extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
-    setQuestionData: PropTypes.func.isRequired,
+    setQuestionData: PropTypes.func.isRequired
   };
 
   getNewItem() {
@@ -35,7 +36,7 @@ class ClozeTextAuthoring extends Component {
     const templateMarkUp = html;
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, templateMarkUp });
-  }
+  };
 
   render() {
     const { t, item } = this.props;
@@ -45,7 +46,9 @@ class ClozeTextAuthoring extends Component {
           <Subtitle>{t('component.clozeText.composequestion')}</Subtitle>
           <CustomQuillComponent
             toolbarId="stimulus"
-            wrappedRef={(instance) => { this.stimulus = instance; }}
+            wrappedRef={(instance) => {
+              this.stimulus = instance;
+            }}
             placeholder={t('component.clozeText.thisisstem')}
             onChange={this.onChangeQuesiton}
             showResponseBtn={false}
@@ -54,9 +57,12 @@ class ClozeTextAuthoring extends Component {
           <Subtitle>{t('component.clozeText.templatemarkup')}</Subtitle>
           <CustomQuillComponent
             toolbarId="templatemarkup"
-            wrappedRef={(instance) => { this.templatemarkup = instance; }}
+            wrappedRef={(instance) => {
+              this.templatemarkup = instance;
+            }}
             placeholder={t('component.clozeText.templatemarkupplaceholder')}
             onChange={this.onChangeMarkUp}
+            firstFocus={!item.templateMarkUp}
             showResponseBtn
             value={item.templateMarkUp || defaultTemplateMarkup}
           />
@@ -71,8 +77,8 @@ const enhance = compose(
   withNamespaces('assessment'),
   connect(
     null,
-    { setQuestionData: setQuestionDataAction },
-  ),
+    { setQuestionData: setQuestionDataAction }
+  )
 );
 
 export default enhance(ClozeTextAuthoring);

@@ -158,8 +158,6 @@ class ClozeDropDownAuthoring extends Component {
     const { responseContainersCount } = this.state;
     const responseContainers = new Array(responseContainersCount).fill(true);
 
-    console.log('responseContainersCount: ', responseContainersCount);
-
     return (
       <div>
         <PaddingDiv bottom={20}>
@@ -178,6 +176,7 @@ class ClozeDropDownAuthoring extends Component {
             wrappedRef={(instance) => { this.templatemarkup = instance; }}
             placeholder={t('component.clozeDropDown.templatemarkupplaceholder')}
             onChange={this.onChangeMarkUp}
+            firstFocus={!item.templateMarkUp}
             showResponseBtn
             value={item.templateMarkUp || defaultTemplateMarkup}
           />

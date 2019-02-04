@@ -1,12 +1,5 @@
 import { createAction, createReducer } from 'redux-starter-kit';
-import {
-  takeEvery,
-  takeLatest,
-  put,
-  call,
-  all,
-  select
-} from 'redux-saga/effects';
+import { takeLatest, put, call, all, select } from 'redux-saga/effects';
 import { values, groupBy, last } from 'lodash';
 import { createSelector } from 'reselect';
 import { normalize } from 'normalizr';
@@ -37,12 +30,14 @@ export const FILTERS = {
 export const FETCH_ASSIGNMENTS_DATA = '[studentAssignments] fetch assignments';
 export const START_ASSIGNMENT = '[studentAssignments] start assignments';
 export const SET_TEST_ACTIVITY_ID = '[test] add test activity id';
+export const SET_RESUME_STATUS = '[test] set resume status';
 export const RESUME_ASSIGNMENT = '[studentAssignments] resume assignments';
 
 // actions
 export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS_DATA);
 export const startAssignmentAction = createAction(START_ASSIGNMENT);
 export const setTestActivityAction = createAction(SET_TEST_ACTIVITY_ID);
+export const setResumeAssignment = createAction(SET_RESUME_STATUS);
 export const resumeAssignmentAction = createAction(RESUME_ASSIGNMENT);
 
 // sagas
@@ -91,7 +86,7 @@ function* startAssignment({ payload }) {
       groupType
     });
     // set Activity id
-    yield put(push(`/student/test/${testId}/uta/${testActivityId}`));
+    yield put(push(`/student/test/${testId}/uta/${testActivityId}/qid/0`));
 
     // TODO:load previous responses if resume!!
   } catch (e) {
@@ -109,7 +104,8 @@ function* resumeAssignment({ payload }) {
       throw new Error('insufficient data');
     }
     yield put(setActiveAssignmentAction(assignmentId));
-    yield put(push(`/student/test/${testId}/uta/${testActivityId}`));
+    yield put(setResumeAssignment(true));
+    yield put(push(`/student/test/${testId}/uta/${testActivityId}/qid/0`));
   } catch (e) {
     console.log(e);
   }

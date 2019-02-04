@@ -3,11 +3,13 @@ import {
   GOTO_ITEM,
   SET_TEST_ACTIVITY_ID,
   SET_TEST_ID,
-  RESET_CURRENT_TEST_ITEM
+  RESET_CURRENT_TEST_ITEM,
+  SET_RESUME_STATUS
 } from '../constants/actions';
 
 const initialState = {
   testActivityId: '',
+  resume: false, // resume from last attempted?
   items: [],
   currentItem: 0
 };
@@ -41,6 +43,11 @@ const test = (state = initialState, { payload, type }) => {
       return {
         ...state,
         testActivityId: payload.testActivityId
+      };
+    case SET_RESUME_STATUS:
+      return {
+        ...state,
+        resume: payload
       };
     default:
       return state;

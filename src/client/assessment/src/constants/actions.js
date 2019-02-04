@@ -16,6 +16,7 @@ export const SET_TEST_ID = '[test] set test id';
 export const LOAD_TEST = '[test] load test';
 export const LOAD_TEST_ITEMS = '[test] load test items';
 export const LOAD_PREVIOUS_RESPONSES = '[test] load previouls responses';
+export const SET_RESUME_STATUS = '[test] set resume status';
 
 // items
 export const RECEIVE_ITEMS_REQUEST = '[items] receive items request';

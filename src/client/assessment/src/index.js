@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { compose } from 'redux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { Switch, Route, withRouter } from 'react-router-dom';
 // themes
 import ThemeContainer from './themes/index';
 import { loadTestAction } from './actions/test';
@@ -10,11 +10,19 @@ import { loadTestAction } from './actions/test';
 const AssessmentPlayer = ({ defaultAP, loadTest, match }) => {
   useEffect(() => {
     let { id: testId, utaId: testActivityId } = match.params;
-
     loadTest({ testId, testActivityId });
   }, []);
 
-  return <ThemeContainer defaultAP={defaultAP} />;
+  return (
+    <Switch>
+      <Route
+        path={`${match.url}/qid/:qid`}
+        render={() => {
+          return <ThemeContainer defaultAP={defaultAP} url={match.url} />;
+        }}
+      />
+    </Switch>
+  );
 };
 
 AssessmentPlayer.propTypes = {

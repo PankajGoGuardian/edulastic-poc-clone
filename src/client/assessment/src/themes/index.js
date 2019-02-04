@@ -16,17 +16,18 @@ import { currentItemRowsSelector } from '../selectors/item';
 const AssessmentContainer = ({
   view,
   items,
-  itemRows,
   defaultAP,
-  currentItem,
   finishTest,
   history,
   changePreview,
   startAssessment,
-  gotoItem: gotoIt,
   saveUserResponse: saveUser,
-  evaluateAnswer: evaluate
+  evaluateAnswer: evaluate,
+  match,
+  url
 }) => {
+  let { qid = 0 } = match.params;
+  let currentItem = Number(qid);
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
 
@@ -35,15 +36,15 @@ const AssessmentContainer = ({
     startAssessment();
   }, []);
 
-  const gotoQuestion = (index) => {
-    gotoIt(index);
-    changePreview('clear');
+  const gotoQuestion = index => {
+    history.push(`${url}/qid/${index}`);
     saveUser(currentItem);
+    changePreview('clear');
   };
 
   const moveToNext = () => {
     if (!isLast()) {
-      gotoQuestion(currentItem + 1);
+      gotoQuestion(Number(currentItem) + 1);
     }
     if (isLast()) {
       saveUser(currentItem);
@@ -52,8 +53,10 @@ const AssessmentContainer = ({
   };
 
   const moveToPrev = () => {
-    if (!isFirst()) gotoQuestion(currentItem - 1);
+    if (!isFirst()) gotoQuestion(Number(currentItem) - 1);
   };
+
+  let itemRows = items[currentItem] && items[currentItem].rows;
 
   const props = {
     items,
@@ -79,7 +82,7 @@ const AssessmentContainer = ({
 AssessmentContainer.propTypes = {
   gotoItem: PropTypes.func.isRequired,
   items: PropTypes.array.isRequired,
-  currentItem: PropTypes.number.isRequired
+  url: PropTypes.string.isRequired
 };
 
 const enhance = compose(
@@ -88,11 +91,9 @@ const enhance = compose(
     state => ({
       view: state.view.preview,
       items: state.test.items,
-      currentItem: state.test.currentItem,
       itemRows: currentItemRowsSelector(state)
     }),
     {
-      gotoItem,
       saveUserResponse,
       evaluateAnswer,
       changePreview: changePreviewAction,

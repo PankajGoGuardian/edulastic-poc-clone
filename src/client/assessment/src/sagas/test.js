@@ -12,6 +12,7 @@ import {
   SET_TEST_ACTIVITY_ID,
   GOTO_ITEM
 } from '../constants/actions';
+import { SET_RESUME_STATUS } from '../../../student/Assignments/ducks';
 
 function* loadTest({ payload }) {
   try {
@@ -28,12 +29,13 @@ function* loadTest({ payload }) {
       ? call(testActivityApi.getById, testActivityId)
       : false;
     const [test, testActivity] = yield all([
-      call(testsApi.getById, payload.testId, {
+      call(testsApi.getById, testId, {
         validation: true,
         data: true
       }),
       getTestActivity
     ]);
+
     yield put({
       type: LOAD_TEST_ITEMS,
       payload: {
@@ -71,16 +73,23 @@ function* loadTest({ payload }) {
         }
       });
 
-      // move to that questions
-      yield put({
-        type: GOTO_ITEM,
-        payload: { item: lastAttendedQuestion }
-      });
       // load previous responses
       yield put({
         type: LOAD_ANSWERS,
         payload: allAnswers
       });
+
+      // only load from previous attempted if resuming from assignments page
+      let loadFromLast = yield select(state => state.test && state.test.resume);
+
+      // move to last attended question
+      if (loadFromLast) {
+        yield put(push(`${lastAttendedQuestion}`));
+        yield put({
+          type: SET_RESUME_STATUS,
+          payload: false
+        });
+      }
     }
   } catch (err) {
     console.error(err);

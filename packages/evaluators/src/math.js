@@ -1,8 +1,18 @@
-import { evaluateApi } from '@edulastic/api';
+import axios from 'axios';
 import { omitBy } from 'lodash';
 import { ScoringType } from './const/scoring';
 
-const getChecks = (validation) => {
+const url =
+  'https://9ehy0wtpo7.execute-api.us-east-1.amazonaws.com/dev/evaluate';
+
+const evaluate = data =>
+  axios
+    .post(url, {
+      ...data
+    })
+    .then(result => result.data);
+
+const getChecks = validation => {
   const altResponses = validation.alt_responses || [];
 
   const values = [
@@ -41,7 +51,10 @@ const getChecks = (validation) => {
       } else if (key === 'allowedUnits') {
         acc += `${key}=[${fieldVal}]`;
       } else if (key === 'syntax') {
-        acc += options.argument === undefined ? fieldVal : `${fieldVal}=${options.argument}`;
+        acc +=
+          options.argument === undefined
+            ? fieldVal
+            : `${fieldVal}=${options.argument}`;
       } else {
         acc += `${key}=${fieldVal}`;
       }
@@ -66,42 +79,45 @@ const exactMatchEvaluator = async (userResponse, answers, checks) => {
   let score = 0;
   let maxScore = 0;
   let evaluation = [];
-
-  const getAnswerCorrectMethods = (answer) => {
-    if (answer.value && answer.value.length) {
-      return answer.value.map(val => val.value);
-    }
-    return [];
-  };
-
-  /* eslint-disable */
-  for (let answer of answers) {
-    const corrects = getAnswerCorrectMethods(answer);
-    let valid = false;
-    for (let correct of corrects) {
-      const data = {
-        input: userResponse.replace(/\\ /g, ' '),
-        expected: correct ? correct.replace(/\\ /g, ' ') : ':',
-        checks
-      };
-      const { result } = await evaluateApi.evaluate(data);
-      if (result === 'true') {
-        valid = true;
-        break;
+  try {
+    const getAnswerCorrectMethods = answer => {
+      if (answer.value && answer.value.length) {
+        return answer.value.map(val => val.value);
       }
-    }
-    if (valid) {
-      score = Math.max(answer.score, score);
-    }
-    maxScore = Math.max(answer.score, maxScore);
-    evaluation = [...evaluation, valid];
-  }
+      return [];
+    };
 
-  return {
-    score,
-    maxScore,
-    evaluation
-  };
+    /* eslint-disable */
+    for (let answer of answers) {
+      const corrects = getAnswerCorrectMethods(answer);
+      let valid = false;
+      for (let correct of corrects) {
+        const data = {
+          input: userResponse.replace(/\\ /g, ' '),
+          expected: correct ? correct.replace(/\\ /g, ' ') : ':',
+          checks
+        };
+        const { result } = await evaluate(data);
+        if (result === 'true') {
+          valid = true;
+          break;
+        }
+      }
+      if (valid) {
+        score = Math.max(answer.score, score);
+      }
+      maxScore = Math.max(answer.score, maxScore);
+      evaluation = [...evaluation, valid];
+    }
+  } catch (e) {
+    console.log(e);
+  } finally {
+    return {
+      score,
+      maxScore,
+      evaluation
+    };
+  }
 };
 
 const evaluator = async ({ userResponse, validation }) => {

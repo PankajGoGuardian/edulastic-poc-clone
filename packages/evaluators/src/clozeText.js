@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash';
-import { rounding as roundingTypes } from '@edulastic/constants';
+import { rounding as roundingTypes } from './const/rounding';
 import { ScoringType } from './const/scoring';
 import getPartialPerResponse from './helpers/getPartialPerResponse';
 import getPenaltyScore from './helpers/getPenaltyScore';
@@ -15,7 +15,7 @@ const exactMatchEvaluator = (
   const evaluation = {};
   let isCorrect = false;
 
-  answers.forEach((answer) => {
+  answers.forEach(answer => {
     if (isEqual(userResponse, answer.value)) {
       isCorrect = true;
       score = Math.max(answer.score, score);
@@ -53,14 +53,22 @@ const exactMatchEvaluator = (
 const partialMatchEvaluator = (
   userResponse = [],
   answers,
-  { max_score, automarkable, min_score_if_attempted, rounding, scoring_type, penalty }
+  {
+    max_score,
+    automarkable,
+    min_score_if_attempted,
+    rounding,
+    scoring_type,
+    penalty
+  }
 ) => {
   let score = 0;
   let maxScore = 0;
   const evaluation = {};
   let isCorrect = false;
   const isRound =
-    rounding === roundingTypes.ROUND_DOWN || scoring_type === ScoringType.PARTIAL_MATCH;
+    rounding === roundingTypes.ROUND_DOWN ||
+    scoring_type === ScoringType.PARTIAL_MATCH;
 
   if (userResponse.length !== answers[0].value.length) {
     userResponse = [
@@ -76,7 +84,9 @@ const partialMatchEvaluator = (
 
     const scorePerAnswer = totalScore / correctAnswers.length;
 
-    const matches = userResponse.filter((resp, index) => correctAnswers[index] === resp).length;
+    const matches = userResponse.filter(
+      (resp, index) => correctAnswers[index] === resp
+    ).length;
     isCorrect = matches === correctAnswers.length;
     const currentScore = matches * scorePerAnswer;
     score = Math.max(currentScore, score);

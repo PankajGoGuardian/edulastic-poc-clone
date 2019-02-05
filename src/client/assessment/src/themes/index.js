@@ -11,8 +11,6 @@ import { startAssessmentAction } from '../actions/assessment';
 import AssesmentPlayerDefault from './AssessmentPlayerDefault';
 import AssesmentPlayerSimple from './AssessmentPlayerSimple';
 
-import { currentItemRowsSelector } from '../selectors/item';
-
 const AssessmentContainer = ({
   view,
   items,
@@ -90,8 +88,7 @@ const enhance = compose(
   connect(
     state => ({
       view: state.view.preview,
-      items: state.test.items,
-      itemRows: currentItemRowsSelector(state)
+      items: state.test.items
     }),
     {
       saveUserResponse,

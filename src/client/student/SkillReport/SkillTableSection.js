@@ -64,25 +64,30 @@ class DomainDetail extends Component {
           item => item.standard_id === id
         );
       sumData = summary.standards.map(standard => {
-        const standardsData = getStandardsScoreDetails(standard._id)[0] || null;
-        score += standardsData ? standardsData.score : 0;
-        maxScore += standardsData ? standardsData.max_points : 0;
+        const standardsData = getStandardsScoreDetails(standard._id)[0] || {};
+        const percentage =
+          (standardsData.score / standardsData.max_points) * 100 || null;
+        score += standardsData.score || 0;
+        maxScore += standardsData.max_points || 0;
         return {
           domain: standard.description || '-',
           grade: standard.identifier || '-',
-          total: standardsData ? standardsData.score : '-',
-          percentage: standardsData
-            ? (standardsData.score / standardsData.max_points) * 100
-            : null
+          total: standardsData.score || '-',
+          percentage
         };
       });
     }
+    const skillPercentage = (
+      Math.round((score / maxScore) * 100 * 10) / 10
+    ).toFixed(1);
 
     return (
       <S.AssignmentContentWrap>
         <S.Title onClick={this.handlerTable}>
           <S.RelationTitle>{summary.domain}</S.RelationTitle>
-          <StyledScoreProgress percent={Math.round((score / maxScore) * 100)} />
+          {!isNaN(skillPercentage) && (
+            <StyledScoreProgress percent={skillPercentage} />
+          )}
           {isShow ? <S.IconClose /> : <S.IconOpen color={greenDark} />}
         </S.Title>
         {isShow && (

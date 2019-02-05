@@ -1,13 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { IconClose, IconCheck } from '@edulastic/icons';
-import { math } from '@edulastic/constants';
-import { red, greenDark } from '@edulastic/colors';
 
 import MathKeyboard from '../MathKeyboard';
 import MathInputStyles from '../MathInputStyles';
-
-const { mathInputTypes } = math;
 
 class StaticMath extends PureComponent {
   state = {
@@ -104,6 +99,13 @@ class StaticMath extends PureComponent {
 
     this.setInnerFieldsFocuses();
   };
+
+  setInnerFieldValue = (latex, index) => {
+    const { mathField } = this.state;
+
+    if (!mathField || !mathField.innerFields[index]) return;
+    mathField.innerFields[index].write(latex);
+  }
 
   getLatex = () => {
     const { mathField } = this.state;

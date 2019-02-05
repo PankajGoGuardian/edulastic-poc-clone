@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { math } from '@edulastic/constants';
 
 import { SHOW, CHECK, CLEAR } from '../../../constants/constantsForQuestions';
 import CorrectAnswerBox from './CorrectAnswerBox';
@@ -9,10 +8,7 @@ import MathInput from '../common/MathInput';
 import MathInputWrapper from './MathInputWrapper';
 import MathInputStatus from './MathInputStatus';
 
-const { mathInputTypes } = math;
-
-const MathFormulaPreview = ({ item, studentTemplate, type: previewType, evaluation, saveAnswer }) => {
-  const [type, setType] = useState(mathInputTypes.CLEAR);
+const MathFormulaPreview = ({ item, studentTemplate, type: previewType, evaluation, saveAnswer, userAnswer }) => {
   const studentRef = useRef();
   const isStatic = studentTemplate.search(/\\MathQuillMathField\{(.*)\}/g) !== -1;
 
@@ -29,14 +25,31 @@ const MathFormulaPreview = ({ item, studentTemplate, type: previewType, evaluati
     }
   };
 
+  const escapeRegExp = string => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  const setUserResponse = () => {
+    studentRef.current.setLatex(studentTemplate);
+    if (!userAnswer) {
+      setLatex(studentTemplate);
+      return;
+    }
+
+    const regexTemplate = new RegExp(escapeRegExp(studentTemplate).replace(/\\\\MathQuillMathField\\\{\\\}/g, '(.*)'), 'g');
+    const innerValues = regexTemplate.exec(userAnswer);
+    for (let i = 1; i < innerValues.length; i++) {
+      studentRef.current.setInnerFieldValue(innerValues[i], i - 1);
+    }
+  };
+
   useEffect(
     () => {
       if (previewType === CLEAR) {
-        setType(mathInputTypes.CLEAR);
-        setLatex(studentTemplate);
-        if (studentRef.current) {
-          studentRef.current.setLatex(studentTemplate);
+        if (!isStatic) {
+          setLatex(userAnswer || studentTemplate);
+          return;
         }
+
+        setUserResponse();
       }
     },
     [studentTemplate, previewType]
@@ -45,8 +58,12 @@ const MathFormulaPreview = ({ item, studentTemplate, type: previewType, evaluati
   useEffect(
     () => {
       setTimeout(() => {
-        if (!studentRef.current) return;
-        studentRef.current.setLatex(studentTemplate);
+        if (!isStatic) {
+          setLatex(userAnswer || studentTemplate);
+          return;
+        }
+
+        setUserResponse();
       }, 0);
     },
     [studentTemplate]
@@ -68,7 +85,6 @@ const MathFormulaPreview = ({ item, studentTemplate, type: previewType, evaluati
             ref={studentRef}
             onInput={onUserResponse}
             onBlur={onBlur}
-            type={type}
             style={{ background: statusColor }}
           />
         )}
@@ -79,7 +95,6 @@ const MathFormulaPreview = ({ item, studentTemplate, type: previewType, evaluati
             value={latex}
             onInput={onUserResponse}
             onBlur={onBlur}
-            type={type}
             disabled={evaluation && !evaluation[0]}
             style={{ background: statusColor }}
           />
@@ -102,10 +117,12 @@ MathFormulaPreview.propTypes = {
   studentTemplate: PropTypes.string,
   type: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  evaluation: PropTypes.object.isRequired
+  evaluation: PropTypes.object.isRequired,
+  userAnswer: PropTypes.any
 };
 MathFormulaPreview.defaultProps = {
-  studentTemplate: ''
+  studentTemplate: '',
+  userAnswer: null
 };
 
 export default MathFormulaPreview;

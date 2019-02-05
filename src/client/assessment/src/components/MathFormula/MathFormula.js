@@ -25,7 +25,8 @@ const MathFormula = ({
   evaluation,
   setQuestionData,
   saveAnswer,
-  smallSize
+  smallSize,
+  userAnswer
 }) => {
   const Wrapper = testItem ? EmptyWrapper : Paper;
   const [studentTemplate, setStudentTemplate] = useState();
@@ -99,6 +100,7 @@ const MathFormula = ({
             saveAnswer={saveAnswer}
             evaluation={evaluation}
             smallSize={smallSize}
+            userAnswer={userAnswer}
           />
         </Wrapper>
       )}
@@ -114,6 +116,7 @@ MathFormula.propTypes = {
   testItem: PropTypes.bool,
   item: PropTypes.object,
   evaluation: PropTypes.any.isRequired,
+  userAnswer: PropTypes.any,
   smallSize: PropTypes.bool
 };
 
@@ -121,6 +124,7 @@ MathFormula.defaultProps = {
   previewTab: CLEAR,
   testItem: false,
   item: {},
+  userAnswer: null,
   smallSize: false
 };
 

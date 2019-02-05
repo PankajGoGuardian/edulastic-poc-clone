@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { cloneDeep, flattenDeep } from 'lodash';
+import { cloneDeep, flattenDeep, shuffle } from 'lodash';
 import AnswerDropdown from './AnswerDropdown';
 import QuestionHeader from '../common/QuestionHeader';
 import CheckboxTemplateBoxLayout from './CheckboxResponseBoxLayout';
@@ -49,18 +49,11 @@ class ClozeImageDropDownDisplay extends Component {
   }
 
   shuffle = (arr) => {
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-  }
+    const newArr = arr.map(item => 
+      shuffle(item)
+    );
 
-  shuffleGroup = (data) => {
-    return data.map(arr => {
-      arr.options = this.shuffle(arr.options);
-      return arr;
-    });
+    return newArr;
   }
 
   getInitialResponses = (options) => {
@@ -131,9 +124,13 @@ class ClozeImageDropDownDisplay extends Component {
     } = this.props;
     const { userAnswers, possibleResponses } = this.state;
     const { shuffleOptions } = configureOptions;
+    let newOptions;
     if (preview && shuffleOptions) {
-      responses = this.shuffle(possibleResponses);
+      newOptions = this.shuffle(options);
+    } else {
+      newOptions = options;
     }
+
     // Layout Options
     const fontSize = this.getFontSize(uiStyle.fontsize);
     const { widthpx, heightpx, wordwrap, responsecontainerindividuals, stemnumeration } = uiStyle;
@@ -208,7 +205,7 @@ class ClozeImageDropDownDisplay extends Component {
                     !smallSize &&
                     <AnswerDropdown
                       style={{ width: '100%', height: '100%' }}
-                      options={options[dropTargetIndex].map(op => ({value: op, label: op}))}
+                      options={newOptions[dropTargetIndex].map(op => ({value: op, label: op}))}
                       onChange={value => this.selectChange(value, dropTargetIndex)}
                       defaultValue={userAnswers[dropTargetIndex]}
                     />
@@ -232,7 +229,7 @@ class ClozeImageDropDownDisplay extends Component {
         stemnumeration={stemnumeration}
         fontSize={fontSize}
         showAnswer={showAnswer}
-        options={options}
+        options={newOptions}
         userSelections={userAnswers}
         evaluation={evaluation}
       />
@@ -241,7 +238,7 @@ class ClozeImageDropDownDisplay extends Component {
     const correctAnswerBoxLayout = showAnswer ? (
       <CorrectAnswerBoxLayout
         fontSize={fontSize}
-        groupResponses={options}
+        groupResponses={newOptions}
         userAnswers={validation.valid_response && validation.valid_response.value}
       />
     ) : (<div/>);
@@ -321,7 +318,7 @@ export default ClozeImageDropDownDisplay;
 const StyledPreviewTemplateBox = styled.div.attrs({
   className: props => `imagedropdown_template_box ${props.smallSize ? 'small' : ''}`
 })`
-  fontSize: ${props => props.smallSize ? 10 : props.fontSize}px;
+  font-size: ${props => props.smallSize ? 10 : props.fontSize}px;
   overflow-y: ${props => props.smallSize && 'hidden'};
 `;
 

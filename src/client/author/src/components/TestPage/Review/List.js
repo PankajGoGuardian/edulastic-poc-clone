@@ -12,7 +12,7 @@ import {
   SortableHandle
 } from 'react-sortable-hoc';
 
-import TestItemPreview from '../../../../../assessment/src/components/TestItemPreview';
+import TestItemPreview from '../../../../../assessment/components/TestItemPreview';
 import MetaInfoCell from './ItemsTable/MetaInfoCell';
 
 const DragHandle = SortableHandle(() => (

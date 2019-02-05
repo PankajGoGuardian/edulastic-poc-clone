@@ -8,7 +8,7 @@ import {
   testActivityReportSaga
 } from './student/sagas';
 import authorSagas from './author/src/sagas';
-import assessmentSagas from './assessment/src/sagas';
+import assessmentSagas from './assessment/sagas';
 
 export default function*() {
   yield all([

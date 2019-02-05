@@ -9,7 +9,7 @@ import { white, green, mobileWidth } from '@edulastic/colors';
 import { DragSource } from 'react-dnd';
 import { withNamespaces } from '@edulastic/localization';
 
-import QuestionWrapper from '../../../../../assessment/src/components/QuestionWrapper';
+import QuestionWrapper from '../../../../../assessment/components/QuestionWrapper';
 import { Types } from '../constants';
 import { setItemDetailDraggingAction } from '../../../actions/itemDetail';
 

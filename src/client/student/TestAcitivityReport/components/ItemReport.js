@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import QuestionWrapper from '../../../assessment/src/components/QuestionWrapper';
+import QuestionWrapper from '../../../assessment/components/QuestionWrapper';
 
 const itemReport = ({ question, index }) => (
   <ReportListWrapper>

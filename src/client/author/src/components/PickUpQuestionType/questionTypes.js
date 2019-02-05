@@ -66,7 +66,7 @@ import {
   templateWithTokens,
   BY_LOCATION_METHOD,
   SENTENCE_MODE
-} from '../../../../assessment/src/constants/constantsForQuestions';
+} from '../../../../assessment/constants/constantsForQuestions';
 import { Dump } from './components';
 
 const { EMBED_RESPONSE } = math;

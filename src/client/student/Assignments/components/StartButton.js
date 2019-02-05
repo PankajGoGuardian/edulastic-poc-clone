@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-//assets
+// assets
 import lockIcon from '../../assets/lock-icon.svg';
 // components
 import StartButton from '../../styled/AssignmentCardButton';
@@ -10,8 +10,8 @@ const AssignmentButton = ({ startDate, t, startTest, attempted, resume }) => {
   const startButtonText = resume
     ? t('common.resume')
     : attempted
-    ? t('common.retake')
-    : t('common.startAssignment');
+      ? t('common.retake')
+      : t('common.startAssignment');
 
   
   return new Date(startDate) > new Date() ? (

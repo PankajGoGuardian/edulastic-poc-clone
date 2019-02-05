@@ -6,7 +6,7 @@ import { Spin } from 'antd';
 import styled from 'styled-components';
 import Modal from 'react-responsive-modal';
 
-import TestItemPreview from '../../../../../assessment/src/components/TestItemPreview/TestItemPreview';
+import TestItemPreview from '../../../../../assessment/components/TestItemPreview';
 
 import { getItemDetailByIdAction } from '../../../actions/itemDetail';
 import {

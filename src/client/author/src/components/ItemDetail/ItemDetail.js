@@ -33,8 +33,8 @@ import { ButtonBar, SecondHeadBar } from '../common';
 import SourceModal from '../QuestionEditor/SourceModal';
 import ItemHeader from './ItemHeader';
 import SettingsBar from './SettingsBar/SettingsBar';
-import TestItemPreview from '../../../../assessment/src/components/TestItemPreview/TestItemPreview';
-import TestItemMetadata from '../../../../assessment/src/components/TestItemMetadata';
+import TestItemPreview from '../../../../assessment/components/TestItemPreview';
+import TestItemMetadata from '../../../../assessment/components/TestItemMetadata';
 
 class ItemDetail extends Component {
   state = {

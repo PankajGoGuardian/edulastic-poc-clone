@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 
-import assessmentReducers from "./assessment/src/reducers";
+import assessmentReducers from "./assessment/reducers";
 import authorReducers from "./author/src/reducers";
 import studentReducers from "./student/reducers";
 import { LOGOUT } from "./student/Login/ducks";

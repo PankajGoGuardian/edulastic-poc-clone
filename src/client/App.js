@@ -8,7 +8,7 @@ import { compose } from 'redux';
 import { TestAttemptReview } from './student/TestAttemptReview';
 // route wise splitting
 const AssessmentPlayer = lazy(() =>
-  import(/* webpackChunkName: "assessmentPlayer" */ './assessment/src/index')
+  import(/* webpackChunkName: "assessmentPlayer" */ './assessment/index')
 );
 const TeacherSignup = lazy(() =>
   import(/* webpackChunkName: "teacherSignup" */ './student/Signup/components/TeacherContainer')

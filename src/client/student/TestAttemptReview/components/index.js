@@ -9,8 +9,8 @@ import { themes } from '../../themes';
 import SummaryHeader from './Header';
 import SummaryTest from './Content';
 
-import { finishTestAcitivityAction } from '../../../assessment/src/actions/test';
-import SubmitConfirmation from '../../../assessment/src/themes/common/SubmitConfirmation';
+import { finishTestAcitivityAction } from '../../../assessment/actions/test';
+import SubmitConfirmation from '../../../assessment/themes/common/SubmitConfirmation';
 
 const SummaryContainer = ({ finishTest, history }) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);

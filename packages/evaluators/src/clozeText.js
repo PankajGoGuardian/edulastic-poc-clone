@@ -1,5 +1,8 @@
 import { isEqual } from 'lodash';
+import { rounding as roundingTypes } from '@edulastic/constants';
 import { ScoringType } from './const/scoring';
+import getPartialPerResponse from './helpers/getPartialPerResponse';
+import getPenaltyScore from './helpers/getPenaltyScore';
 
 // exact match evaluator
 const exactMatchEvaluator = (
@@ -50,18 +53,29 @@ const exactMatchEvaluator = (
 const partialMatchEvaluator = (
   userResponse = [],
   answers,
-  { max_score, automarkable, min_score_if_attempted }
+  { max_score, automarkable, min_score_if_attempted, rounding, scoring_type, penalty }
 ) => {
   let score = 0;
   let maxScore = 0;
   const evaluation = {};
   let isCorrect = false;
+  const isRound =
+    rounding === roundingTypes.ROUND_DOWN || scoring_type === ScoringType.PARTIAL_MATCH;
+
+  if (userResponse.length !== answers[0].value.length) {
+    userResponse = [
+      ...userResponse,
+      ...Array(answers[0].value.length - userResponse.length).fill(false)
+    ];
+  }
 
   answers.forEach(({ score: totalScore, value: correctAnswers }) => {
     if (!correctAnswers || !correctAnswers.length) {
       return;
     }
+
     const scorePerAnswer = totalScore / correctAnswers.length;
+
     const matches = userResponse.filter((resp, index) => correctAnswers[index] === resp).length;
     isCorrect = matches === correctAnswers.length;
     const currentScore = matches * scorePerAnswer;
@@ -88,8 +102,12 @@ const partialMatchEvaluator = (
     maxScore = Math.max(max_score, maxScore);
   }
 
+  if (penalty > 0) {
+    score = getPenaltyScore({ score, penalty, evaluation });
+  }
+
   return {
-    score,
+    score: isRound ? Math.floor(score) : +score.toFixed(4),
     maxScore,
     evaluation
   };
@@ -101,6 +119,10 @@ const evaluator = ({ userResponse, validation }) => {
 
   switch (scoring_type) {
     case ScoringType.PARTIAL_MATCH:
+      return getPartialPerResponse(userResponse.length)(
+        partialMatchEvaluator(userResponse, answers, validation)
+      );
+    case ScoringType.PARTIAL_MATCH_V2:
       return partialMatchEvaluator(userResponse, answers, validation);
     case ScoringType.EXACT_MATCH:
     default:

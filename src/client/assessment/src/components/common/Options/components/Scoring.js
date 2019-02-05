@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withNamespaces } from '@edulastic/localization';
+import { rounding } from '@edulastic/constants';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { cloneDeep } from 'lodash';
@@ -11,16 +12,7 @@ import { FormGroup } from '../styles';
 import { setQuestionDataAction } from '../../../../../../author/src/actions/question';
 import { getQuestionDataSelector } from '../../../../../../author/src/selectors/question';
 
-const roundingTypes = [
-  {
-    value: 'roundDown',
-    label: 'Round down'
-  },
-  {
-    value: 'none',
-    label: 'None'
-  }
-];
+const roundingTypes = [rounding.roundDown, rounding.none];
 
 const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
   const handleChangeValidation = (param, value) => {

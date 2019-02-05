@@ -8,18 +8,20 @@ import { cloneDeep } from 'lodash';
 import styled from 'styled-components';
 import { withNamespaces } from '@edulastic/localization';
 
-import {
-  ClozeDropDownAuthoring,
-  ClozeDropDownDisplay,
-  CorrectAnswers
-} from './index';
+import { ClozeDropDownAuthoring, ClozeDropDownDisplay, CorrectAnswers } from './index';
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 import CorrectAnswerOptions from './components/CorrectAnswerOptions';
 import Options from './Options';
+import { checkAnswerAction } from '../../../../author/src/actions/testItem';
 
 const EmptyWrapper = styled.div``;
 
 class ClozeDropDown extends Component {
+  state = {
+    // eslint-disable-next-line react/destructuring-assignment
+    feedbackAttempts: this.props.item.feedback_attempts || 0
+  };
+
   getRenderData = () => {
     const { item, history } = this.props;
     const locationState = history.location.state;
@@ -43,7 +45,9 @@ class ClozeDropDown extends Component {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
-      uiStyle: item.ui_style
+      uiStyle: item.ui_style,
+      instantFeedback: item.instant_feedback,
+      instructorStimulus: item.instructor_stimulus
     };
   };
 
@@ -78,9 +82,34 @@ class ClozeDropDown extends Component {
     saveAnswer(newAnswer);
   };
 
+  _checkAnswer = () => {
+    const { checkAnswer, userAnswer } = this.props;
+
+    if (!userAnswer || (Array.isArray(userAnswer) && !userAnswer.length)) {
+      return;
+    }
+
+    this.setState(
+      ({ feedbackAttempts }) => ({
+        feedbackAttempts: feedbackAttempts - 1
+      }),
+      () => {
+        checkAnswer();
+      }
+    );
+  };
+
   render() {
     const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation } = this.props;
-    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
+    const { feedbackAttempts } = this.state;
+    const {
+      previewStimulus,
+      previewDisplayOptions,
+      itemForEdit,
+      uiStyle,
+      instantFeedback,
+      instructorStimulus
+    } = this.getRenderData();
     const { shuffleOptions } = item;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
@@ -113,12 +142,7 @@ class ClozeDropDown extends Component {
                   <Checkbox
                     className="additional-options"
                     key={`shuffleOptions_${shuffleOptions}`}
-                    onChange={() =>
-                      this.handleOptionsChange(
-                        'shuffleOptions',
-                        !shuffleOptions,
-                      )
-                  }
+                    onChange={() => this.handleOptionsChange('shuffleOptions', !shuffleOptions)}
                     label={t('component.clozeDropDown.shuffleoptions')}
                     checked={shuffleOptions}
                   />
@@ -152,6 +176,10 @@ class ClozeDropDown extends Component {
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 evaluation={evaluation}
+                instantFeedback={instantFeedback}
+                feedbackAttempts={feedbackAttempts}
+                onCheckAnswer={this._checkAnswer}
+                instructorStimulus={instructorStimulus}
               />
             )}
             {previewTab === 'show' && (
@@ -168,6 +196,10 @@ class ClozeDropDown extends Component {
                 userSelections={userAnswer}
                 validation={item.validation}
                 evaluation={evaluation}
+                instantFeedback={instantFeedback}
+                feedbackAttempts={feedbackAttempts}
+                onCheckAnswer={this._checkAnswer}
+                instructorStimulus={instructorStimulus}
               />
             )}
             {previewTab === 'clear' && (
@@ -184,6 +216,10 @@ class ClozeDropDown extends Component {
                 templateMarkUp={item.templateMarkUp}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
+                instantFeedback={instantFeedback}
+                feedbackAttempts={feedbackAttempts}
+                onCheckAnswer={this._checkAnswer}
+                instructorStimulus={instructorStimulus}
               />
             )}
           </Wrapper>
@@ -203,8 +239,8 @@ ClozeDropDown.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   t: PropTypes.func.isRequired,
+  checkAnswer: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
-  // eslint-disable-next-line react/no-unused-prop-types
   evaluation: PropTypes.any.isRequired
 };
 
@@ -225,9 +261,10 @@ const enhance = compose(
   connect(
     null,
     {
-      setQuestionData: setQuestionDataAction
-    },
-  ),
+      setQuestionData: setQuestionDataAction,
+      checkAnswer: checkAnswerAction
+    }
+  )
 );
 
 export default enhance(ClozeDropDown);

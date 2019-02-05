@@ -9,10 +9,12 @@
   "dependencies": {},
   "scripts": {
     "test": "ava --watch",
-    "build": "rimraf ./lib && babel ./src --out-dir lib --copy-files"
+    "build": "rimraf ./lib && babel ./src --out-dir lib --copy-files",
+    "build:watch": "babel ./src --out-dir lib --copy-files -w"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.1.0",
+    "@edulastic/constants": "1.0.0",
     "ava": "1.0.0-rc.2",
     "@babel/cli": "^7.1.5",
     "@babel/register": "^7.0.0",

@@ -9,16 +9,7 @@ import { greenDark } from '@edulastic/colors';
 import { Header, Toggler, Heading, Block, Label, Row, Col } from './styles';
 import Scoring from './components/Scoring';
 
-const types = [
-  {
-    value: evaluationType.EXACT_MATCH,
-    label: 'Exact match'
-  },
-  {
-    value: evaluationType.PARTIAL_MATCH,
-    label: 'Partial match'
-  }
-];
+const types = [evaluationType.exactMatch, evaluationType.partialMatch];
 
 class Options extends Component {
   state = {

@@ -8,6 +8,7 @@ const assignmentSortParams = require('./const/assignmentSortParams');
 const assignmentPolicyOptions = require('./const/assignmentPolicyOptions');
 const typedList = require('./const/typedList');
 const drawTools = require('./const/drawTools');
+const rounding = require('./const/rounding');
 
 module.exports = {
   questionType,
@@ -19,5 +20,6 @@ module.exports = {
   assignmentSortParams,
   assignmentPolicyOptions,
   typedList,
-  drawTools
+  drawTools,
+  rounding
 };

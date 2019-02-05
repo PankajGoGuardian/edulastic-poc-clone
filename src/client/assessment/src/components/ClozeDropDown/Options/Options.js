@@ -3,15 +3,22 @@ import { Select, TextField } from '@edulastic/common';
 import PropTypes from 'prop-types';
 import { withNamespaces } from '@edulastic/localization';
 import styled from 'styled-components';
+import { evaluationType } from '@edulastic/constants';
 
-import O, { Heading, Block, Label, Row, Col } from '../../common/Options';
+import O, { Heading, Block, Label, Row, Col, Extras } from '../../common/Options';
 import AddNewBtn from './AddNewChoiceBtn';
+
+const scoringTypes = [
+  evaluationType.exactMatch,
+  evaluationType.partialMatch,
+  evaluationType.partialMatchV2
+];
 
 const Options = ({ onChange, uiStyle, t, outerStyle }) => {
   const changeUiStyle = (prop, value) => {
     onChange('ui_style', {
       ...uiStyle,
-      [prop]: value,
+      [prop]: value
     });
   };
 
@@ -21,22 +28,22 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
     Object.defineProperties(item, {
       widthpx: {
         value: responsecontainerindividuals[index].widthpx,
-        writable: true,
+        writable: true
       },
       heightpx: {
         value: responsecontainerindividuals[index].heightpx,
-        writable: true,
+        writable: true
       },
       placeholder: {
         value: responsecontainerindividuals[index].placeholder,
-        writable: true,
-      },
+        writable: true
+      }
     });
     item[prop] = value;
     responsecontainerindividuals[index] = item;
     onChange('ui_style', {
       ...uiStyle,
-      responsecontainerindividuals,
+      responsecontainerindividuals
     });
   };
 
@@ -45,11 +52,11 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
     responsecontainerindividuals.push({
       widthpx: 0,
       heightpx: 0,
-      placeholder: '',
+      placeholder: ''
     });
     onChange('ui_style', {
       ...uiStyle,
-      responsecontainerindividuals,
+      responsecontainerindividuals
     });
   };
 
@@ -58,12 +65,12 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
     responsecontainerindividuals.splice(index, 1);
     onChange('ui_style', {
       ...uiStyle,
-      responsecontainerindividuals,
+      responsecontainerindividuals
     });
   };
 
   return (
-    <O outerStyle={outerStyle}>
+    <O outerStyle={outerStyle} scoringTypes={scoringTypes}>
       <Block>
         <Heading>{t('component.options.layout')}</Heading>
         <Row>
@@ -75,7 +82,7 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
               options={[
                 { value: 'numerical', label: t('component.options.numerical') },
                 { value: 'uppercase', label: t('component.options.uppercasealphabet') },
-                { value: 'lowercase', label: t('component.options.lowercasealphabet') },
+                { value: 'lowercase', label: t('component.options.lowercasealphabet') }
               ]}
               value={uiStyle.stemnumeration}
             />
@@ -90,7 +97,7 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
                 { value: 'normal', label: t('component.options.normal') },
                 { value: 'large', label: t('component.options.large') },
                 { value: 'xlarge', label: t('component.options.extraLarge') },
-                { value: 'xxlarge', label: t('component.options.huge') },
+                { value: 'xxlarge', label: t('component.options.huge') }
               ]}
               value={uiStyle.fontsize}
             />
@@ -144,7 +151,9 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
             <Delete onClick={() => removeIndividual(index)}>X</Delete>
             <div>
               <Col md={12}>
-                <Label>{`${t('component.options.responsecontainerindividual')} ${index + 1}`}</Label>
+                <Label>
+                  {`${t('component.options.responsecontainerindividual')} ${index + 1}`}
+                </Label>
               </Col>
             </div>
             <Row>
@@ -188,6 +197,9 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
           </Col>
         </Row>
       </Block>
+      <Extras>
+        <Extras.Distractors />
+      </Extras>
     </O>
   );
 };
@@ -196,7 +208,7 @@ Options.propTypes = {
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
   t: PropTypes.func.isRequired,
-  outerStyle: PropTypes.object,
+  outerStyle: PropTypes.object
 };
 
 Options.defaultProps = {
@@ -208,8 +220,8 @@ Options.defaultProps = {
     widthpx: 0,
     heightpx: 0,
     placeholder: '',
-    responsecontainerindividuals: [],
-  },
+    responsecontainerindividuals: []
+  }
 };
 
 export default React.memo(withNamespaces('assessment')(Options));

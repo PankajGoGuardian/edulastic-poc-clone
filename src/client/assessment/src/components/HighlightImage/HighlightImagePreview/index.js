@@ -34,11 +34,24 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, userAnswer, 
   const file = image ? image.source : '';
 
   const drawImage = (context) => {
-    const img = new Image();
-    img.alt = altText;
-    img.onload = () => {
+    if (!Array.isArray(userAnswer)) {
+      const img = new Image();
+      img.alt = altText;
+      img.onload = () => {
+        context.clearRect(0, 0, width, height);
+        context.drawImage(img, 0, 0, width, height);
+        if (canvas.current) {
+          setHistory([canvas.current.toDataURL()]);
+        }
+        setHistoryTab(0);
+        if (canvas.current) {
+          saveAnswer(canvas.current.toDataURL());
+        }
+        setCtx(context);
+      };
+      img.src = userAnswer;
+    } else {
       context.clearRect(0, 0, width, height);
-      context.drawImage(img, 0, 0, width, height);
       if (canvas.current) {
         setHistory([canvas.current.toDataURL()]);
       }
@@ -46,10 +59,9 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, userAnswer, 
       if (canvas.current) {
         saveAnswer(canvas.current.toDataURL());
       }
-      setCtx(context);
-    };
 
-    img.src = Array.isArray(userAnswer) ? file : userAnswer;
+      setCtx(context);
+    }
   };
 
   useEffect(
@@ -62,12 +74,7 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, userAnswer, 
         context.lineJoin = 'round';
         context.lineCap = 'round';
 
-        if (file) {
-          drawImage(context);
-        } else {
-          setCtx(context);
-          setHistory([canvas.current.toDataURL()]);
-        }
+        drawImage(context);
       }
     },
     [file]
@@ -109,27 +116,11 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, userAnswer, 
   };
 
   const onClearClick = () => {
-    if (file) {
-      const img = new Image();
-      img.alt = altText;
-      img.onload = () => {
-        ctx.clearRect(0, 0, width, height);
-        ctx.drawImage(img, 0, 0, width, height);
-        const newHistory = [...history.slice(0, historyTab + 1), canvas.current.toDataURL()];
-        setHistory(newHistory);
-        setHistoryTab(newHistory.length - 1);
-        saveAnswer(canvas.current.toDataURL());
-        setCtx(ctx);
-      };
-
-      img.src = file;
-    } else {
-      ctx.clearRect(0, 0, width, height);
-      setCtx(ctx);
-      const newHistory = [...history.slice(0, historyTab + 1), canvas.current.toDataURL()];
-      setHistory(newHistory);
-      setHistoryTab(newHistory.length - 1);
-    }
+    ctx.clearRect(0, 0, width, height);
+    setCtx(ctx);
+    const newHistory = [...history.slice(0, historyTab + 1), canvas.current.toDataURL()];
+    setHistory(newHistory);
+    setHistoryTab(newHistory.length - 1);
   };
 
   const onUndoClick = () => {
@@ -194,13 +185,15 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, userAnswer, 
           </Button>
         </FlexContainer>
       </Container>
-      <canvas
-        onMouseDown={onCanvasMouseDown}
-        onMouseUp={onCanvasMouseUp}
-        onMouseMove={onCanvasMouseMove}
-        ref={canvas}
-        id="mycanvas"
-      />
+      <CanvasContainer>
+        <img src={file} alt={altText} width={width} height={height} />
+        <canvas
+          onMouseDown={onCanvasMouseDown}
+          onMouseUp={onCanvasMouseUp}
+          onMouseMove={onCanvasMouseMove}
+          ref={canvas}
+        />
+      </CanvasContainer>
     </Paper>
   );
 };
@@ -235,6 +228,18 @@ const StyledSelect = styled(Select)`
       outline: none;
       box-shadow: none !important;
     }
+  }
+`;
+
+const CanvasContainer = styled.div`
+  position: relative;
+  img {
+    user-select: none;
+  }
+  canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
   }
 `;
 

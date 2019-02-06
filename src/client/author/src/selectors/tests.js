@@ -31,10 +31,27 @@ export const getTestsLimitSelector = createSelector(
   stateSelector,
   state => state.limit
 );
-export const getMaxAttemptSelector = createSelector(
+
+export const getTestEntitySelector = createSelector(
   stateSelector,
-  state => state.entity.maxAttempts
+  state => state.entity || {}
 );
+
+export const getMaxAttemptSelector = createSelector(
+  getTestEntitySelector,
+  test => test.maxAttempts
+);
+
+export const getReleaseScoreSelector = createSelector(
+  getTestEntitySelector,
+  test => test.releaseScore || true
+);
+
+export const getActivityReview = createSelector(
+  getTestEntitySelector,
+  test => test.getActivityReview || true
+);
+
 export const getTestsCountSelector = createSelector(
   stateSelector,
   state => state.count
@@ -43,11 +60,11 @@ export const getTestsCountSelector = createSelector(
 export const getTestItemsRowsSelector = createSelector(
   getTestSelector,
   test =>
-    test.testItems.map((item) => {
+    test.testItems.map(item => {
       if (!item || !item.rows) return [];
       return item.rows.map(row => ({
         ...row,
-        widgets: row.widgets.map((widget) => {
+        widgets: row.widgets.map(widget => {
           let referencePopulate = {
             data: null
           };
@@ -84,7 +101,7 @@ export const getSummarySelector = createSelector(
   (state, scoring) => {
     const reduceTestItems = (acc, testItem) => {
       const questions = get(testItem, 'data.questions', []);
-      const res = questions.map((q) => {
+      const res = questions.map(q => {
         const item = scoring.testItems.find(({ id }) => testItem._id === id);
         const score = item && item.points ? item.points : 0;
 

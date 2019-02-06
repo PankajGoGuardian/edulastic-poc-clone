@@ -6,8 +6,15 @@ import { Anchor, Input, Row, Col, Radio, Switch, List, Button } from 'antd';
 import { Paper } from '@edulastic/common';
 import ListCard from './Card';
 import UiTime from './ui-time';
-import { setMaxAttemptsAction } from '../../../actions/tests';
-import { getMaxAttemptSelector } from '../../../selectors/tests';
+import {
+  setMaxAttemptsAction,
+  setTestDataAction
+} from '../../../actions/tests';
+import {
+  getMaxAttemptSelector,
+  getReleaseScoreSelector,
+  getActivityReview
+} from '../../../selectors/tests';
 
 const settingCategories = [
   { id: 'mark-as-done', title: 'MARK AS DONE' },
@@ -87,7 +94,7 @@ class MainSetting extends Component {
     this.inputRef = React.createRef();
   }
 
-  markHandler = (e) => {
+  markHandler = e => {
     this.setState({ markAsDoneValue: e.target.value });
   };
 
@@ -96,14 +103,27 @@ class MainSetting extends Component {
     this.setState({ showAdvancedOption: !showAdvancedOption });
   };
 
-  updateAttempt = (e) => {
+  updateAttempt = e => {
     const { setMaxAttempts } = this.props;
     setMaxAttempts(e.target.value);
   };
 
+  updateTestData = key => value => {
+    const { setTestData } = this.props;
+    setTestData({
+      [key]: value
+    });
+  };
+
   render() {
     const { markAsDoneValue, showAdvancedOption } = this.state;
-    const { history, windowWidth, maxAttempts } = this.props;
+    const {
+      history,
+      windowWidth,
+      maxAttempts,
+      activityReview,
+      releaseScore
+    } = this.props;
     const isSmallSize = windowWidth > 993 ? 1 : 0;
     return (
       <Paper style={{ marginTop: 27 }}>
@@ -143,7 +163,10 @@ class MainSetting extends Component {
             <Block id="release-scores">
               <Title>Release Scores</Title>
               <Body>
-                <Switch />
+                <Switch
+                  defaultChecked={releaseScore}
+                  onChange={this.updateTestData('releaseScore')}
+                />
               </Body>
               <Description>
                 {'Select '}
@@ -191,7 +214,10 @@ class MainSetting extends Component {
             <Block id="show-questions">
               <Title>Show Questions to Students after Submission</Title>
               <Body>
-                <Switch />
+                <Switch
+                  defaultChecked={activityReview}
+                  onChange={this.updateTestData('activityReview')}
+                />
               </Body>
               <Description>
                 {'Select '}
@@ -532,9 +558,11 @@ MainSetting.propTypes = {
 
 export default connect(
   state => ({
-    maxAttempts: getMaxAttemptSelector(state)
+    maxAttempts: getMaxAttemptSelector(state),
+    releaseScore: getReleaseScoreSelector(state),
+    activityReview: getActivityReview(state)
   }),
-  { setMaxAttempts: setMaxAttemptsAction }
+  { setMaxAttempts: setMaxAttemptsAction, setTestData: setTestDataAction }
 )(MainSetting);
 
 const StyledAnchor = styled(Anchor)`

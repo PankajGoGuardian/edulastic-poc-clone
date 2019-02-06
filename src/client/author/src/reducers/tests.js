@@ -25,6 +25,8 @@ const initialTestState = {
   title: 'New Test',
   description: '',
   maxAttempts: 3,
+  releaseScore: true,
+  activityReview: true,
   renderingType: 'assessment',
   status: 'draft',
   thumbnail: 'https://fakeimg.pl/500x135/',
@@ -123,7 +125,8 @@ const reducer = (state = initialState, { type, payload }) => {
         entity: {
           ...state.entity,
           assignments: state.entity.assignments.map(item =>
-            (payload.id === item._id ? payload.data : item))
+            payload.id === item._id ? payload.data : item
+          )
         }
       };
     case REMOVE_ASSIGNMENT:

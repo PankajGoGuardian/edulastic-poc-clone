@@ -45,16 +45,13 @@ const TestPage = ({
   selectedRows,
   windowWidth
 }) => {
-  useEffect(
-    () => {
-      if (match.params.id) {
-        receiveTestById(match.params.id);
-      } else {
-        setDefaultData();
-      }
-    },
-    [match]
-  );
+  useEffect(() => {
+    if (match.params.id) {
+      receiveTestById(match.params.id);
+    } else {
+      setDefaultData();
+    }
+  }, [match]);
 
   const [current, setCurrent] = useState('addItems');
   const [showModal, setShowModal] = useState(false);

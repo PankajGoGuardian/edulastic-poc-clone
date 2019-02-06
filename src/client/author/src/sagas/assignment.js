@@ -29,18 +29,14 @@ function* assignmentTestsSaga({ payload }) {
     const group = yield select(state => state.group);
     const students = obj.specificStudents && obj.students;
 
-    // if(students) {
-    //   group
-    // }
-
     if (obj.specificStudents === false) {
       obj.students = [];
     }
-    const data = yield call(assignmentApi.create, obj);
-
+    const data = yield call(assignmentApi.create, [obj]);
+    const assignment = data[0];
     yield put({
       type: SET_ASSIGNMENT,
-      payload: { obj: data }
+      payload: { obj: assignment }
     });
   } catch (err) {
     console.error(err);

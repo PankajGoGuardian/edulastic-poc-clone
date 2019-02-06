@@ -2,16 +2,37 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { cloneDeep, difference } from 'lodash';
 
-import { Paper, Stimulus, FlexContainer } from '@edulastic/common';
+import { Paper, Stimulus } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
 
-import { PREVIEW, CLEAR, CHECK, SHOW, EDIT } from '../../constants/constantsForQuestions';
+import {
+  PREVIEW,
+  CLEAR,
+  CHECK,
+  SHOW,
+  EDIT
+} from '../../constants/constantsForQuestions';
 
+import BlockContainer from './styled/BlockContainer';
 import { Svg } from './styled/Svg';
 import { Polygon } from './styled/Polygon';
 
-const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, previewTab }) => {
-  const { areas, area_attributes, image, validation, multiple_responses, previewAreas } = item;
+const HotspotPreview = ({
+  view,
+  item,
+  smallSize,
+  saveAnswer,
+  userAnswer,
+  previewTab
+}) => {
+  const {
+    areas,
+    area_attributes,
+    image,
+    validation,
+    multiple_responses,
+    previewAreas
+  } = item;
 
   const [isCheck, setIsCheck] = useState(false);
 
@@ -19,19 +40,16 @@ const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, preview
   const height = image ? image.height : 470;
   const source = image ? image.source : '';
 
-  useEffect(
-    () => {
-      if (previewTab === CLEAR && view !== EDIT && isCheck) {
-        saveAnswer([]);
-      }
-      if (previewTab === CHECK) {
-        setIsCheck(true);
-      } else {
-        setIsCheck(false);
-      }
-    },
-    [previewTab]
-  );
+  useEffect(() => {
+    if (previewTab === CLEAR && view !== EDIT && isCheck) {
+      saveAnswer([]);
+    }
+    if (previewTab === CHECK) {
+      setIsCheck(true);
+    } else {
+      setIsCheck(false);
+    }
+  }, [previewTab]);
 
   const handleClick = i => () => {
     const newAnswer = cloneDeep(userAnswer);
@@ -41,16 +59,19 @@ const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, preview
       newAnswer.push(i);
     }
 
-    saveAnswer(multiple_responses ? (newAnswer.length > 0 ? newAnswer : userAnswer) : [i]);
+    saveAnswer(
+      multiple_responses ? (newAnswer.length > 0 ? newAnswer : userAnswer) : [i]
+    );
   };
 
-  const validAnswer = validation && validation.valid_response && validation.valid_response.value;
+  const validAnswer =
+    validation && validation.valid_response && validation.valid_response.value;
   const altAnswers = validation && validation.alt_responses;
 
   const validate = () => {
     let collection = cloneDeep(validAnswer);
 
-    altAnswers.forEach((answer) => {
+    altAnswers.forEach(answer => {
       if (difference(answer.value, userAnswer).length === 0) {
         collection = cloneDeep(answer.value);
       }
@@ -70,7 +91,7 @@ const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, preview
       )}
 
       {!smallSize ? (
-        <FlexContainer justifyContent="center">
+        <BlockContainer justifyContent="center">
           <Svg width={+width} height={+height}>
             <image
               href={source}
@@ -101,22 +122,31 @@ const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, preview
               />
             ))}
           </Svg>
-        </FlexContainer>
+        </BlockContainer>
       ) : (
-        <FlexContainer justifyContent="center">
+        <BlockContainer justifyContent="center">
           <Svg width={320} height={170}>
-            <image href={source} width={320} height={170} preserveAspectRatio="none" x={0} y={0} />
+            <image
+              href={source}
+              width={320}
+              height={170}
+              preserveAspectRatio="none"
+              x={0}
+              y={0}
+            />
             {previewAreas.map((areaPreviewPoints, i) => (
               <Polygon
                 key={i}
                 onClick={handleClick(i)}
-                points={areaPreviewPoints.map(point => `${point.x},${point.y}`).join(' ')}
+                points={areaPreviewPoints
+                  .map(point => `${point.x},${point.y}`)
+                  .join(' ')}
                 fill={area_attributes.global.fill}
                 stroke={area_attributes.global.stroke}
               />
             ))}
           </Svg>
-        </FlexContainer>
+        </BlockContainer>
       )}
     </Paper>
   );

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const CanvasContainer = styled.div`
   position: relative;
+  overflow: auto;
   img {
     user-select: none;
   }

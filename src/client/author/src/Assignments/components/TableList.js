@@ -1,53 +1,47 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Table, Button, Icon, Menu, Dropdown } from 'antd';
+import { Link } from 'react-router-dom';
+import { Table, Button, Dropdown } from 'antd';
 import { withNamespaces } from '@edulastic/localization';
 import { FlexContainer } from '@edulastic/common';
+import {
+  mobileWidth,
+  tabletWidth
+} from '@edulastic/colors';
 import arrowUpIcon from '../../assets/assignments/arrow-up.svg';
 import assignedIcon from '../../assets/assignments/assigned.svg';
 import presentationIcon from '../../assets/assignments/presentation.svg';
 import additemsIcon from '../../assets/assignments/add-items.svg';
 import piechartIcon from '../../assets/assignments/pie-chart.svg';
 import ActionMenu from './ActionMenu';
-import {
-  mobileWidth,
-  desktopWidth,
-  secondaryTextColor,
-  greenDark,
-  white,
-  tabletWidth
-} from '@edulastic/colors';
-import { Link } from 'react-router-dom';
 
-const convertTableData = (data) => {
-  return {
-    name: data[0].testName,
-    key: data[0]._id,
-    class: data[0].className,
-    type: data[0].type,
-    assigned: 'Lorem Ipsum',
-    status: '',
-    submitted: `${data[0].submittedNumber} of ${data.length}`,
-    graded: '1',
-    action: '',
-    classId: data[0].classId
-  }
-}
-const convertExpandTableData = (data, totalNumber) => {
-  return {
-    name: '',
-    key: data._id,
-    class: data.className,
-    type: data.type,
-    assigned: 'Lorem Ipsum',
-    status: data.status,
-    submitted: `${data.submittedNumber} of ${totalNumber}`,
-    graded: '1',
-    action: '',
-    classId: data.classId
-  }
-}
+const convertTableData = data => ({
+  name: data[0].testName,
+  key: data[0]._id,
+  class: data[0].className,
+  type: data[0].type,
+  assigned: 'Lorem Ipsum',
+  status: '',
+  submitted: `${data[0].submittedNumber} of ${data.length}`,
+  graded: '1',
+  action: '',
+  classId: data[0].classId
+});
+const convertExpandTableData = (data, totalNumber) => ({
+  name: '',
+  key: data._id,
+  class: data.className,
+  type: data.type,
+  assigned: 'Lorem Ipsum',
+  status: data.status,
+  submitted: `${data.submittedNumber} of ${totalNumber}`,
+  graded: '1',
+  action: '',
+  classId: data.classId
+});
 
 class TableList extends Component {
   constructor(props) {
@@ -56,17 +50,19 @@ class TableList extends Component {
       details: false
     };
   }
+
   static propTypes = {
-    t: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired
   };
 
   onShowDetails = () => {
-    this.setState({ details: !this.state.details });
+    this.setState({ details: true });
   };
 
   expandedRowRender = (parentData) => {
+    console.log(parentData, 'PARENT DATA');
     const { t } = this.props;
-    var getInfo;
+    let getInfo;
     const columns = [
       {
         dataIndex: 'name',
@@ -82,7 +78,7 @@ class TableList extends Component {
       {
         dataIndex: 'type',
         width: '11%',
-        render: text => (<div><AssignedImg src={assignedIcon} /></div>)
+        render: () => (<div><AssignedImg src={assignedIcon} /></div>)
       },
       {
         dataIndex: 'assigned',
@@ -113,12 +109,12 @@ class TableList extends Component {
       {
         dataIndex: 'action',
         width: '14%',
-        render: text => (
+        render: () => (
           <ActionDiv>
             <FlexContainer justifyContent="space-between" style={{ marginLeft: 20, marginRight: 20 }}>
-              <Link to={`/author/classboard/${getInfo.key}/${getInfo.classId}`}><img src={presentationIcon} /></Link>
-              <Link to="/author/expressgrader"><img src={additemsIcon} /></Link>
-              <div><img src={piechartIcon} /></div>
+              <Link to={`/author/classboard/${getInfo.key}/${getInfo.classId}`}><img src={presentationIcon} alt="Images" /></Link>
+              <Link to="/author/expressgrader"><img src={additemsIcon} alt="Images" /></Link>
+              <div><img src={piechartIcon} alt="Images" /></div>
             </FlexContainer>
           </ActionDiv>
         ) }
@@ -126,12 +122,12 @@ class TableList extends Component {
 
     const totalData = this.props.assignments;
     const expandTableList = [];
-    totalData.forEach(expandData => {
-      if(parentData.key === expandData[0]._id) {
-        expandData.forEach(data => {
-          getInfo =convertExpandTableData(data, expandData.length)
-          expandTableList.push(getInfo)
-        })
+    totalData.forEach((expandData) => {
+      if (parentData.key === expandData[0]._id) {
+        expandData.forEach((data) => {
+          getInfo = convertExpandTableData(data, expandData.length);
+          expandTableList.push(getInfo);
+        });
       }
     });
 
@@ -145,7 +141,7 @@ class TableList extends Component {
   };
 
   render() {
-    const menu = ( <ActionMenu/> );
+    const menu = (<ActionMenu />);
     const columns = [
       {
         title: 'Assignment Name',
@@ -155,7 +151,7 @@ class TableList extends Component {
         width: '22%',
         render: text => (
           <FlexContainer style={{ marginLeft: 0 }}>
-            <div><BtnGreen type="primary" size="small"/></div>
+            <div><BtnGreen type="primary" size="small" /></div>
             <AssignmentTD>{text}</AssignmentTD>
           </FlexContainer>
         )
@@ -166,10 +162,10 @@ class TableList extends Component {
         sortDirections: ['descend', 'ascend'],
         sorter: true,
         width: '11%',
-        render: text => (
-          <div>
-            <IconArrowDown src={arrowUpIcon} onClick={this.onShowDetails} />1
-          </div>
+        render: () => (
+          <ExpandDivdier onMouseEnter={() => this.setState({ details: true })} onMouseLeave={() => this.setState({ details: false })}>
+            <IconArrowDown onclick={() => false} src={arrowUpIcon} />1
+          </ExpandDivdier>
         )
       },
       {
@@ -190,7 +186,7 @@ class TableList extends Component {
         sortDirections: ['descend', 'ascend'],
         sorter: true,
         width: '12%',
-       render: text => (<div> {text} </div>)
+        render: text => (<div> {text} </div>)
       },
       {
         title: 'Status',
@@ -219,7 +215,7 @@ class TableList extends Component {
       {
         dataIndex: 'action',
         width: '14%',
-        render: text => (
+        render: () => (
           <ActionDiv>
             <Dropdown overlay={menu} placement="bottomCenter" trigger={['click']}>
               <BtnAction>ACTIONS</BtnAction>
@@ -229,10 +225,15 @@ class TableList extends Component {
       }
     ];
 
-    const { assignments} = this.props;
+    const { assignments } = this.props;
     return (
       <Container>
-        <TableData columns={columns} expandedRowRender={this.expandedRowRender} dataSource={assignments.map(data => convertTableData(data))}/>
+        <TableData
+          columns={columns}
+          expandRowByClick={this.state.details}
+          expandedRowRender={this.expandedRowRender}
+          dataSource={assignments.map(data => convertTableData(data))}
+        />
       </Container>
     );
   }
@@ -254,9 +255,16 @@ const TableData = styled(Table)`
   .ant-table-tbody{
     text-align: center;
   }
+  .ant-table-tbody > tr > td{
+    border-bottom:none;
+  }
   @media (max-width: ${tabletWidth}) {
     display: none;
   }
+  .ant-table-row-expand-icon {
+    display: none;
+  }
+  
 `;
 const BtnGreen = styled(Button)`
   background-color: #1cd6dc !important;
@@ -269,11 +277,11 @@ const AssignmentTD = styled.div`
   padding-left: 0px !important;
   padding-right: 0px !important;
 `;
-const IconArrowUP = styled.img`
-  color: #12a6e8;
-  margin-right: 5px;
-  width: 17px;
-`;
+// const IconArrowUP = styled.img`
+//   color: #12a6e8;
+//   margin-right: 5px;
+//   width: 17px;
+// `;
 const IconArrowDown = styled.img`
   color: #12a6e8;
   margin-right: 5px;
@@ -282,7 +290,13 @@ const IconArrowDown = styled.img`
 const BtnAction = styled(Button)`
   color: #12a6e8;
   border-color: #12a6e8;
-  width: 100%;
+  max-width: 140px;
+  height:32px;
+  font-size:0.7em;
+  font-weight: bold;
+  width:100%;
+  padding:0px 20px;
+
   :active {
     background-color: #12a6e8;
     color: #fff;
@@ -295,30 +309,46 @@ const BtnAction = styled(Button)`
 const AssignedImg = styled.img`
   color: #12a6e8;
 `;
+const ExpandDivdier = styled.div`
+  color: #12a6e8;
+  cursor: pointer;
+`;
 
 const BtnProgress = styled(Button)`
   color: #d1a422;
   background-color: #deba5b;
   border: 0px;
-  width: 100%;
-  font-size:12px;
+  font-size:0.7em;
   font-weight: bold;
+  max-width: 145px;
+  width:100%;
+  padding:0px 20px;
+  height:26px;
+  border-radius:8px;
 `;
 const BtnSubmitted = styled(Button)`
   color: #8750ac;
   background-color: #e7c8fb;
   border: 0px;
-  width: 100%;
-  font-size:12px;
+  font-size:0.7em;
   font-weight: bold;
+  max-width: 145px;
+  width:100%;
+  padding:0px 20px;
+  height:26px;
+  border-radius:8px;
 `;
 const BtnStarted = styled(Button)`
   color: #0686c0;
   background-color: #c8ebfb;
-  border: 0px;
-  width: 100%;
-  font-size:12px;
+  border: 1px solid #eaf3f6;
+  font-size:0.7em;
+  width:100%;
   font-weight: bold;
+  max-width: 145px;
+  height:26px;
+  border-radius:8px;
+  padding:0px 20px;
 `;
 const ActionDiv = styled.div`
   text-align: center;
@@ -338,7 +368,7 @@ const ExpandedTable = styled(Table)`
     border-color: #ffffff;
   }
   .ant-table-tbody tr{
-    background-color: #f5f1f1;
+    background-color: #fbfbfb;
     border: 3px solid #ffffff;
     border-radius: 10px;
   }

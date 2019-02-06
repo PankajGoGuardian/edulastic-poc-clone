@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-pascal-case */
+/* eslint-disable react/no-unused-state */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable jsx-a11y/alt-text */
 import React, { Component } from 'react';
@@ -10,7 +12,7 @@ import {
   FlexContainer
 } from '@edulastic/common';
 import { Link } from 'react-router-dom';
-import { Card, Checkbox, Button } from 'antd';
+import { Card, Button } from 'antd';
 import { withNamespaces } from '@edulastic/localization';
 import { receiveGradeBookdAction, receiveTestActivitydAction } from '../../actions/classBoard';
 import {
@@ -20,23 +22,36 @@ import {
 import ListHeader from './ListHeader';
 import SortBar from './SortBar';
 import AnswerCard from './AnswerCard';
+import AnswerCard_Dup from './AnswerCard_Dup';
+import AnswerCard_Single_que from './AnswerCard_single_que';
 
-const Highcharts = require('react-highcharts');
+
+import { ComposedChart, Bar, XAxis, YAxis, Line, ResponsiveContainer } from 'recharts';
 
 class ClassResponses extends Component {
   constructor(props) {
     super(props);
+    this.component_One = this.component_One.bind(this);
+    this.component_Two = this.component_Two.bind(this);
+    this.component_Three = this.component_Three.bind(this);
+
     this.state = {
+      component_Changing: {
+        component_one: true,
+        component_two: false,
+        component_three: false
+      },
       searchStr: '',
       blockStyle: 'tile',
-      isShowFilter: false,
+      isShowFilter: false
     };
   }
+
   componentDidMount() {
-    const { loadGradebook, loadTestActivity , match} = this.props;
+    const { loadGradebook, loadTestActivity, match } = this.props;
     const { assignmentId, classId } = match.params;
-    loadGradebook(assignmentId,classId);
-    loadTestActivity(assignmentId,classId)
+    loadGradebook(assignmentId, classId);
+    loadTestActivity(assignmentId, classId);
   }
 
   handleCreate = () => {
@@ -45,84 +60,50 @@ class ClassResponses extends Component {
     history.push(`${match.url}/create`);
   };
 
+  component_One() {
+    this.setState({
+      component_Changing: {
+        component_one: true,
+        component_two: false,
+        component_three: false
+      }
+    });
+  }
+
+  component_Two() {
+    this.setState({
+      component_Changing: {
+        component_one: false,
+        component_two: true,
+        component_three: false
+      }
+    });
+  }
+
+  component_Three() {
+    this.setState({
+      component_Changing: {
+        component_one: false,
+        component_two: false,
+        component_three: true
+      }
+    });
+  }
+
   render() {
-    let itemsSum = this.props.gradebook.itemsSummary;
-    let categories = [];
-    let greenData = [];
-    let yellowData = [];
-    let redData = [];
-    if(itemsSum){
+    const itemsSum = this.props.gradebook.itemsSummary;
+    const data = [];
+    if (itemsSum) {
       itemsSum.map((item, index) => {
-        categories.push("Q"+index);
-        redData.push(item.wrongNum);
-        yellowData.push(item.correctNum);
-        greenData.push(item.partialNum);
+        data.push({
+          name: `Q${index}`,
+          red: item.wrongNum || 0,
+          yellow: item.correctNum || 0,
+          green: item.partialNum || 0,
+          all: (item.wrongNum || 0) + (item.correctNum || 0) + (item.partialNum || 0),
+        })
       });
     }
-    const config = {
-      chart: {
-        height: 240,
-        // width: 500
-      },
-      legend: {
-        enabled: false
-      },
-      xAxis: [{
-        categories: categories,
-        alignTicks: false,
-        allowDecimals: false
-      }],
-      yAxis: [{
-        allowDecimals: false,
-        alignTicks: false,
-        gridLineColor: 'white',
-        categories: ['0', '1', '2'],
-        title: {
-          text: 'ATTEMPTS'
-        },
-      }, {
-        title: {
-          text: 'AVG TIME (SECONDS)'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: true
-      }],
-      plotOptions: {
-        column: {
-          stacking: 'normal'
-        }
-      },
-      series: [{
-        type: 'column',
-        color: '#ee1b82',
-        data: []
-      }, {
-        type: 'column',
-        color: '#fdcc3a',
-        data: []
-      }, {
-        type: 'column',
-        color: '#1fe3a0',
-        data: greenData
-      }, {
-        type: 'line',
-        color: '#1baae9',
-        data: greenData,
-
-      }]
-    };
-
-
-
-    window.onresize = function(event) {
-      height = document.getElementsByClassName('ClassResponsesBarChart')[0].clientHeight
-       width = document.getElementsByClassName('ClassResponsesBarChart')[0].clientWidth
-
-      $("#container").highcharts().setSize(width, height, doAnimation = true);
-
-      };
     const {
       // eslint-disable-next-line react/prop-types
       creating
@@ -143,7 +124,36 @@ class ClassResponses extends Component {
         </StyledFlexContainer>
         <StyledCard bordered={false}>
           <StyledGraphDivOne className="ClassResponsesBarChart">
-            <StyledDiv config={config} />
+            <ResponsiveContainer width='100%' height={240} >
+              <ComposedChart barGap={1} barSize={36} data={data} margin={{ top: 20, right: 60, bottom: 0, left: 20 }}>
+                <XAxis dataKey="name" axisLine={false} tickSize={0}/>
+                <YAxis
+                  dataKey="all"
+                  yAxisId={0}
+                  tickCount={4}
+                  allowDecimals={false}
+                  tick={{strokeWidth: 0, fill: '#999'}}
+                  tickSize={6}
+                  label={{ value: 'ATTEMPTS', angle: -90, fill: '#999'}}
+                  stroke="#999"
+                />
+                <YAxis
+                  dataKey="all"
+                  yAxisId={1}
+                  tickCount={4}
+                  allowDecimals={false}
+                  tick={{strokeWidth: 0, fill: '#999'}}
+                  tickSize={6}
+                  label={{ value: 'AVG TIME (SECONDS)', angle: -90, fill: '#999'}}
+                  orientation="right"
+                  stroke="#999"
+                />
+                <Bar stackId="a" dataKey="green" fill="#1fe3a0" />
+                <Bar stackId="a" dataKey="yellow" fill="#fdcc3a" />
+                <Bar stackId="a" dataKey="red" fill="#ee1b82" />
+                <Line type='monotone' dataKey='green' stroke='#1baae9' dot={{ stroke: '#1baae9', strokeWidth: 2, fill: '#1baae9' }}/>
+              </ComposedChart>
+            </ResponsiveContainer>
           </StyledGraphDivOne>
           <StyledGraphDiv>
             <Paras>
@@ -165,9 +175,9 @@ class ClassResponses extends Component {
           justifyContent="space-between"
         >
           <PaginationInfoF>
-            <StyledButtonA>6 ALL</StyledButtonA>
-            <StyledButton>6 NOT STARTED</StyledButton>
-            <StyledButton>0 IN PROGRESS</StyledButton>
+            <StyledButtonA onClick={this.component_One}>6 ALL</StyledButtonA>
+            <StyledButton onClick={this.component_Two}>6 NOT STARTED</StyledButton>
+            <StyledButton onClick={this.component_Three}>0 IN PROGRESS</StyledButton>
             <StyledButton>0 SUBMITTED</StyledButton>
             <StyledButton>0 GRADED</StyledButton>
           </PaginationInfoF>
@@ -175,7 +185,9 @@ class ClassResponses extends Component {
             <StyledButtonW>OVERALL FEEDBACK</StyledButtonW>
           </PaginationInfoS>
         </StyledFlexContainer>
-        <AnswerCard />
+        {this.state.component_Changing.component_one ? <AnswerCard_Dup /> : ''}
+        {this.state.component_Changing.component_two ? <AnswerCard_Single_que /> : ''}
+        {this.state.component_Changing.component_three ? <AnswerCard /> : ''}
 
       </div>
     );
@@ -187,7 +199,7 @@ const enhance = compose(
   connect(
     state => ({
       gradebook: getGradeBookSelector(state),
-      testActivity: getTestActivitySelector(state),
+      testActivity: getTestActivitySelector(state)
     }),
     {
       loadGradebook: receiveGradeBookdAction,
@@ -314,7 +326,4 @@ const StyledButtonA = styled(Button)`
   color:white;
   background-color:#00b0ff;
   font-weight:bold;
-`;
-const StyledDiv = styled(Highcharts)`
-
 `;

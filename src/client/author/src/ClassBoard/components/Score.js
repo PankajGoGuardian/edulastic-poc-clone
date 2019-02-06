@@ -1,6 +1,13 @@
+/* eslint-disable no-mixed-operators */
+/* eslint-disable radix */
+/* eslint-disable array-callback-return */
+/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Card, Table, Progress } from 'antd';
+import { themes } from '../../../../student/themes';
+
+const classBoardTheme = themes.default.classboard;
 
 export default class Score extends Component {
   constructor() {
@@ -49,122 +56,93 @@ export default class Score extends Component {
   render() {
     let { sortedInfo } = this.state;
     sortedInfo = sortedInfo || {};
-    const dataSource = [{
-      key: '1',
-      Domain: '2-LS2',
-      Standard: '2.LS2.1',
-      Question: 'Q1',
-      Max: '1',
-      Average: '0.96',
-      Average_per: '00%'
+    const dataSource = [];
+    // eslint-disable-next-line react/destructuring-assignment
+    // eslint-disable-next-line react/prop-types
+    // eslint-disable-next-line react/destructuring-assignment
+    this.props.gradebook.itemsSummary.map((data, i) => {
+      let avg_per;
+      if (data.maxScore) {
+        if (data.avgScore) {
+          // eslint-disable-next-line radix
+          avg_per = (parseInt(data.avgScore) / parseInt(data.maxScore)) * 100;
+        } else {
+          avg_per = 0;
+        }
+      } else {
+        // eslint-disable-next-line radix
+        // eslint-disable-next-line no-lonely-if
+        if (data.avgScore) {
+          // eslint-disable-next-line radix
+          avg_per = ((parseInt(data.avgScore)) / 1) * 100;
+        } else {
+          avg_per = 0;
+        }
+      }
 
-    }, {
-      key: '2',
-      Domain: '2-LS2',
-      Standard: '2.LS2.1',
-      Question: 'Q1',
-      Max: '1',
-      Average: '0.96',
-      Average_per: '00%'
+      dataSource.push({
+        key: i,
+        Question: i,
+        Max: data.maxScore && data.maxScore || '-',
+        Correct: data.correctNum,
+        Partially: data.partialNum && data.partialNum || '-',
+        Wrong: data.wrongNum,
+        Average: data.avgScore && data.avgScore || '-',
+        Average_per: parseInt(avg_per),
 
-    }, {
-      key: '3',
-      Domain: '2-LS2',
-      Standard: '2.LS2.1',
-      Question: 'Q1',
-      Max: '1',
-      Average: '0.96',
-      Average_per: '00%'
-
-    }, {
-      key: '4',
-      Domain: '2-LS2',
-      Standard: '2.LS2.1',
-      Question: 'Q1',
-      Max: '1',
-      Average: '0.96',
-      Average_per: '00%'
-
-    }, {
-      key: '5',
-      Domain: '2-LS2',
-      Standard: '2.LS2.1',
-      Question: 'Q1',
-      Max: '1',
-      Average: '0.96',
-      Average_per: '00%'
-
-    }, {
-      key: '6',
-      Domain: '2-LS2',
-      Standard: '2.LS2.1',
-      Question: 'Q1',
-      Max: '1',
-      Average: '0.96',
-      Average_per: '00%'
-
-    }, {
-      key: '7',
-      Domain: '2-LS2',
-      Standard: '2.LS2.1',
-      Question: 'Q1',
-      Max: '1',
-      Average: '0.96',
-      Average_per: '00%'
-
-    }, {
-      key: '8',
-      Domain: '2-LS2',
-      Standard: '2.LS2.1',
-      Question: 'Q1',
-      Max: '1',
-      Average: '0.96',
-      Average_per: '00%'
-
-    }];
+      });
+    });
 
     const columns = [{
-      title: 'Domain',
-      dataIndex: 'Domain',
-      key: 'Domain',
-      width: '13.6%',
-      render: () => (<StyledDivF>2-LS2</StyledDivF>),
-      sorter: (a, b) => a.name.length - b.name.length,
-      sortOrder: sortedInfo.columnKey === 'Domain' && sortedInfo.order
-
-    }, {
-      title: 'Standard',
-      dataIndex: 'Standard',
-      key: 'Standard',
-      width: '13.6%',
-      render: () => (<StyledDivF>2.LS2.1</StyledDivF>),
-      sorter: (a, b) => a.name.length - b.name.length,
-      sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
-    },
-    {
       title: 'Question',
       dataIndex: 'Question',
       key: 'Question',
       width: '13.6%',
-      render: () => (<StyledParaF>Q1</StyledParaF>),
+      render: a => (<StyledParaF>Q{a + 1}</StyledParaF>),
       sorter: (a, b) => a.name.length - b.name.length,
-      sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
+      sortOrder: sortedInfo.columnKey === 'Question' && sortedInfo.order
     },
     {
       title: 'Max Possible Score',
       dataIndex: 'Max',
       key: 'Max',
-      width: '17.6%',
-      render: () => (<StyledParaS>1</StyledParaS>),
+      width: '13.6%',
+      render: a => (<StyledParaS>{a}</StyledParaS>),
+      sorter: (a, b) => a.name.length - b.name.length,
+      sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
+    },{
+      title: 'Correct',
+      dataIndex: 'Correct',
+      key: 'Correct',
+      width: '13.6%',
+      render: a => (<StyledParaS>{a}</StyledParaS>),
+      sorter: (a, b) => a.name.length - b.name.length,
+      sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
+    },
+    {
+      title: 'Partially Correct',
+      dataIndex: 'Partially',
+      key: 'Partially Correct',
+      width: '13.6%',
+      render: a => (<StyledParaS>{a}</StyledParaS>),
+      sorter: (a, b) => a.name.length - b.name.length,
+      sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
+    },
+    {
+      title: 'Wrong',
+      dataIndex: 'Wrong',
+      key: 'Wrong',
+      width: '13.6%',
+      render: a => (<StyledParaS>{a}</StyledParaS>),
       sorter: (a, b) => a.name.length - b.name.length,
       sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
     },
     {
       title: 'Average Score',
       dataIndex: 'Average',
-      key: 'Average',
+      key: 'Average Score',
       width: '17.6%',
-      render: () => (<StyledParaS>0.96</StyledParaS>),
+      render: a => (<StyledParaS>{a}</StyledParaS>),
       sorter: (a, b) => a.name.length - b.name.length,
       sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
     },
@@ -173,11 +151,10 @@ export default class Score extends Component {
       dataIndex: 'Average_per',
       key: 'Average_per',
       width: '21.6%',
-      render: () => (<div><StyledProgress percent={60} size="small" strokeWidth={15} strokeColor="#fdcc3a" showInfo={false} /> 00%</div>),
+      render: a => (<div><StyledProgress percent={a} size="small" strokeWidth={15} strokeColor="#fdcc3a" showInfo={false} /> {a}%</div>),
       sorter: (a, b) => a.name.length - b.name.length,
       sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
     }];
-
     return (
       <StyledCard bordered={false}>
         <TableData columns={columns} dataSource={dataSource} pagination={false} />
@@ -199,7 +176,7 @@ const TableData = styled(Table)`
     text-align: center;
     font-size:0.9em;
     font-weight:bold;
-    color:#565e6d;
+    color: ${classBoardTheme.ScoreCardColor};
   }
   .ant-table-tbody tr td{
    border:1px solid #f8f5f5;
@@ -207,26 +184,14 @@ const TableData = styled(Table)`
    border-radius:5px;
   }
 `;
-const StyledDivF = styled.div`
-  background-color:#d2f9eb;
-  color:#57b495;
-  width:72%;
-  padding:3px 0px;
-  border:0.1em solid #dcefe9;
-  border-radius:5px;
-  text-align:center;
-  font-size:0.8em;
-  font-weight:bold;
-  margin:auto;
-`;
 const StyledParaF = styled.div`
-  color:#57b495;
+  color:${classBoardTheme.ScoreCardParaColor};
   text-align:center;
 
 `;
 
 const StyledParaS = styled.div`
-  color:#565e6d;
+  color:${classBoardTheme.ScoreParaColor};
   text-align:center;
   font-size:0.9em;
 
@@ -235,6 +200,6 @@ const StyledProgress = styled(Progress)`
   width:80%;
   margin:0px auto;
   font-size:0.9em;
-  color:#565e6d;
+  color:${classBoardTheme.ScoreProgressColor};
 
 `;

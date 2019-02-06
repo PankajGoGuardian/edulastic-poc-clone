@@ -1,12 +1,12 @@
-/* eslint-disable react/jsx-closing-tag-location */
-/* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/no-unused-state */
 /* eslint-disable jsx-a11y/alt-text */
 import React, { Component } from 'react';
-import { Card, Button, Icon } from 'antd';
+import { Card, Avatar, Tabs, Button, Icon } from 'antd';
 import styled from 'styled-components';
 import Clock from '../../assets/assignments/clock-circular-outline.svg';
+
 
 export default class AnswerCard extends Component {
   constructor() {
@@ -82,127 +82,245 @@ export default class AnswerCard extends Component {
 
   render() {
     return (
-      <div>
-        {this.state.arr.map((value, i) => (<MainDiv>
-          <StyledCardOne bordered={false}>
-            <StyledDiv>
-              <StyledDivOne>
-                <img src={Clock} />
-                <StyledPara> 9 Seconds</StyledPara>
-              </StyledDivOne>
-              <StyledDivTwo>
-                <StyledButton><StyledIcon type="eye" /> <span>SHOW STUDENT ANSWER</span></StyledButton>
-              </StyledDivTwo>
-            </StyledDiv>
-            <StyledTextDiv>
-              <StyledQue>
-                <b>Q{i + 1}</b> {value.que}
-              </StyledQue>
-              <StyledAnswerOne>
-                <CircularDiv>A</CircularDiv>
-                {value.options.option_A}
-              </StyledAnswerOne>
-              <StyledAnswerOne>
-                <CircularDiv>B</CircularDiv>
-                {value.options.option_B}
-              </StyledAnswerOne>
-              <StyledAnswerOne>
-                <CircularDiv>C</CircularDiv>
-                {value.options.option_C}
-              </StyledAnswerOne>
-              <StyledAnswerOneA>
-                <CircularDiv>D</CircularDiv>
-                {value.options.option_D}
-                <CheckedIcon type="check" />
-              </StyledAnswerOneA>
-            </StyledTextDiv>
-          </StyledCardOne>
+      <MainDiv>
+        <StyledCardOne bordered={false}>
+          <StyledDivB>
+            <StyledDivOne>
+              <img src={Clock} />
+              <StyledPara> 9 Seconds</StyledPara>
+            </StyledDivOne>
+            <StyledDivTwo>
+              <StyledButton><StyledIcon type="eye" /> <span>SHOW STUDENT ANSWER</span></StyledButton>
+            </StyledDivTwo>
+          </StyledDivB>
+          <TabDiv>
+            <Tabss defaultActiveKey="1">
+              <TabPanes tab="TAB1" key="1" />
+              <TabPanes tab="TAB2" key="2" />
+            </Tabss>
+          </TabDiv>
+          {/* </StyledDiv> */}
+          <StyledDivS>
+            {this.state.arr.map((value, i) => (<div>
+              <PlainFlex>
+                <StyledTextDiv>
+                  <StyledQue>
+                    <b>Q{i + 1}</b> {value.que}
+                  </StyledQue>
+                  <StyledAnswerOne>
+                    <CircularDiv>A</CircularDiv>
+                    {value.options.option_A}
+                  </StyledAnswerOne>
+                  <StyledAnswerOne>
+                    <CircularDiv>B</CircularDiv>
+                    {value.options.option_B}
+                  </StyledAnswerOne>
+                  <StyledAnswerOne>
+                    <CircularDiv>C</CircularDiv>
+                    {value.options.option_C}
+                  </StyledAnswerOne>
+                  <StyledAnswerOneA>
+                    <CircularDiv>D</CircularDiv>
+                    {value.options.option_D}
+                  </StyledAnswerOneA>
+                </StyledTextDiv>
 
-          <StyledCardTwo bordered={false}>
-            <StyledDivSec>
-              <StyledBlankDiv /><TextPara> / 1</TextPara>
-            </StyledDivSec>
-            <LeaveDiv>
-              Leave a Feedback!
-            </LeaveDiv>
-            <StyledBlankDivsec />
-            <StyledButtonA>VIEW SOLUTION</StyledButtonA>
-          </StyledCardTwo>
-        </MainDiv>
-        ))
-        }
-      </div>
+                <StyledQuestionDiv>
+                  <TextParaTeacher>
+                    <DivOne>
+                      <Ptwo>
+                        Score:
+                      </Ptwo>
+                      <Pone>
+                        <Score>{value.score}</Score>
+                        <ScoreDiv />
+                        <Score>{value.totalScore}</Score>
+                      </Pone>
+                    </DivOne>
+                  </TextParaTeacher>
+                  <Pthree>
+                        Teacher Feedback: <Tfeedback>No feedback given</Tfeedback>
+                  </Pthree>
+                </StyledQuestionDiv>
+              </PlainFlex>
+            </div>
+            ))
+            }
+          </StyledDivS>
+        </StyledCardOne>
+      </MainDiv>
     );
   }
 }
+const Tfeedback = styled.p`
+  display:inline-block;
+  margin-left:20px;
+  color:gray;
+  font-size: 0.8em;
 
+`;
+const StyledIcon = styled(Icon)`
+  color:#00b0ff;
+  font-size:2.2em;
+  padding-right:7px;
+
+`;
+const StyledButton = styled(Button)`
+  font-size:0.66em;
+  background-color:transparent;
+  width:170px;
+  height:25px;
+  padding:0px 10px 5px;
+  color:#00b0ff;
+  border:1px solid #00b0ff;
+  font-weight:bold;
+`;
+const StyledDivTwo = styled.div`
+  display:inline-block;
+ 
+`;
+const StyledDivB = styled.div`
+  width:100%;
+  display:flex;
+  margin-bottom:30px;
+  height:50px;
+  justify-Content:space-between;
+  border-bottom:1.4px solid #f7f7f7;
+  `;
+const Score = styled.p`
+  font-size:2.5em;
+  font-weight:bold;
+  width:100%;
+  text-align:center;
+`;
+const StyledAvatar = styled(Avatar)`
+  margin-top:20px;
+  margin-right:25px;
+`;
+const StyledDivS = styled.div`
+  width:65%;
+  display:inline-block;
+  float:right;
+  box-shadow:0px 0px 3px 2px lightgray;
+  border-radius:10px;
+
+
+
+  `;
+const TabDiv = styled.div`
+  width:30%;
+  height:inherit;
+  border-radius:10px;
+  box-shadow:0px 0px 6px 2px lightgray;
+  float:left;
+`;
+const Tabss = styled(Tabs)`
+  height:700px;
+  .ant-tabs-nav-scroll {
+    width:100%;
+  }
+  .ant-tabs-nav-scroll > div{
+    width:100%;
+  }
+  .ant-tabs-nav .ant-tabs-tab-active {
+    
+  }
+  .ant-tabs-tab {
+    width: 46%;
+    text-align:center;
+    font-size:0.8em;
+    font-weight:bold;
+    color;#00b0ff;
+    padding:15px;
+  }
+  
+
+`;
+const TabPanes = styled(Tabs.TabPane)`
+
+
+`;
+const ScoreDiv = styled.div`
+  width:60%;
+  margin:auto;
+  height:4px;
+  background-color:#515151;
+`;
+
+const DivOne = styled.div`
+  width:90%;
+  display:flex;
+`;
+
+const Pone = styled.p`
+  width:20%;
+  padding:20px 20px;
+
+`;
+const Ptwo = styled.p`
+  font-size:1.5em;
+  font-weight:bold;
+  display:inline-block;
+  padding:56px 0px 56px 30px;
+`;
+
+const Pthree = styled.p`
+  font-size:1.4em;
+  font-weight:bold;
+  display:inline-block;
+  padding:36px 0px 36px 30px;
+  width:100%;
+`;
 const MainDiv = styled.div`
   margin:0px;
   display:flex;
   width:97.5%;
 `;
-const StyledIcon = styled(Icon)`
-color:#00b0ff;
-font-size:2.2em;
-padding-right:7px;
-
-
-
-`;
-const CheckedIcon = styled(Icon)`
-  color:#3fe6aa;
-  float: right;
-  font-size:1.5em;
-  padding-top:5px;
-`;
-const LeaveDiv = styled.div`
-  margin:30px 0px 20px 0px;
-  font-weight:bold;
-  color:#545b6b;
-  font-size:0.9em;
-`;
-const StyledButtonA = styled(Button)`
-  font-size:1em;
-  margin:10px 0px;
-  width:100%;
-  padding:13px 5px 20px;
-  color:white;
-  height:45px;
-  background-color:#00b0ff;
-  font-weight:bold;
-`;
-const StyledBlankDiv = styled.div`
-  width:130px;
-  height:40px;
-  border:1px solid #eaeaea;
-  border-radius:5px;
-  display:inline-block;
-`;
-const StyledBlankDivsec = styled.div`
-  width:100%;
-  height:320px;
-  border:1px solid #eaeaea;
-  border-radius:5px;
-  display:inline-block;
-`;
-const TextPara = styled.p`
-  font-size:1.8em;
-  font-weight:bold;
-  margin-left:10px;
-  display:inline-block;
-`;
-const StyledDivSec = styled.div`
-  
-  height:50px;
-  border-bottom:1.4px solid #f7f7f7;
-  margin:auto;
-  display: flex;
-  justify-content: center;
-  `;
 const StyledTextDiv = styled.div`
-  width:46%;
+  width:57%;
   padding-left:20px;  
-  height:350px;
+  height:auto;
+  @media (max-width: 1900px) {
+    width: 100%;
+    display: block;
+  }
+  
+`;
+const Color = styled.p`
+  color:#4aac8b;
+  display:inline;
+`;
+
+const PlainFlex = styled.div`
+  display:flex;
+  @media (max-width: 1900px) {
+    width: 100%;
+    display: block;
+  }
+`;
+
+const TextPara = styled.p`
+  padding:30px;
+  font-weight:5010;
+`;
+const TextParaTeacher = styled.p`
+  display:flex;
+  padding-top:10px;
+`;
+
+const StyledSolutionDiv = styled.div`
+  width:57%;
+  margin-top:30px;
+  margin-left:20px;
+`;
+const StyledQuestionDiv = styled.div`
+  width:40%;
+  margin-top:30px;
+  margin-left:20px;
+  @media (max-width: 1900px) {
+    width: 100%;
+    display: block;
+  }
 `;
 
 const CircularDiv = styled.div`
@@ -228,14 +346,13 @@ const StyledAnswerOne = styled.p`
 `;
 const StyledAnswerOneA = styled.p`
   font-size:1.2em;
-  padding:10px 20px;  
+  width:70%;
+  padding:10px 20px 0px ;  
   font-weight:600;
   background:#e1fbf2;
   border-left:3px solid #1fe3a0;
-  border-top-right-radius:10px;
-  border-bottom-right-radius:10px;
-
-  `;
+  height:55px;
+`;
 
 
 const StyledCardOne = styled(Card)`
@@ -244,46 +361,29 @@ const StyledCardOne = styled(Card)`
   box-shadow:3px 2px 7px lightgray;
   display:inline-block;
   margin:0px 0px 32px 32px;
-  width:73%;
+  width:100%;
   padding-bottom:100px;
-`;
-const StyledCardTwo = styled(Card)`
-  margin:auto;
-  width:22%;
-  border-radius:10px;
-  box-shadow:3px 2px 7px lightgray;
-  display:inline-block;
-  margin:0px 0px 32px 32px;
-  width:27%;
-
 `;
 const StyledDiv = styled.div`
   width:100%;
   display:flex;
   height:50px;
   justify-Content:space-between;
-  border-bottom:1.4px solid #f7f7f7;
+  border-bottom:2px solid #f7f7f7;
   `;
 const StyledDivOne = styled.div`
-  display:inline-block;
-`;
-const StyledDivTwo = styled.div`
-  display:inline-block;
- 
+  padding-left:10px;
+  padding-bottom:20px;
 `;
 const StyledPara = styled.p`
+display:inline-block;
+color:#a19c9c;
+font-weight:bold;
+margin-left:15px;
+`;
+const StyledParaa = styled.p`
   display:inline-block;
-  color:#a19c9c;
+  font-size:1.2em;
   font-weight:bold;
   margin-left:15px;
-`;
-const StyledButton = styled(Button)`
-  font-size:0.66em;
-  background-color:transparent;
-  width:170px;
-  height:25px;
-  padding:0px 10px 5px;
-  color:#00b0ff;
-  border:1px solid #00b0ff;
-  font-weight:bold;
 `;

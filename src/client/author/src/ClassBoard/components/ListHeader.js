@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/destructuring-assignment */
 /* eslint-disable jsx-a11y/alt-text */
 import React, { Component } from 'react';
 import styled from 'styled-components';
@@ -11,11 +13,13 @@ import { Popconfirm, Switch, message } from 'antd';
 import { Link } from 'react-router-dom';
 import HeaderWrapper from '../../mainContent/headerWrapper';
 import Assigned from '../../assets/assignments/assigned.svg';
+import { themes } from '../../../../student/themes';
 
+const classBoardTheme = themes.default.classboard;
 
 class ListHeader extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       visible: false,
       condition: true // Whether meet the condition, if not show popconfirm.
@@ -52,6 +56,9 @@ class ListHeader extends Component {
   }
 
   render() {
+    const {
+      t
+    } = this.props;
     return (
       <Container>
         <StyledTitle>
@@ -59,9 +66,9 @@ class ListHeader extends Component {
           <StyledParaSecond>Done (Due on 26 October, 2018)</StyledParaSecond>
         </StyledTitle>
         <StyledTabs>
-          <StyledAnchorA><StyledLink to="/author/classboard"><img src={Assigned} /><SpaceD />LIVE CLASS BOARD</StyledLink></StyledAnchorA>
-          <StyledAnchor><StyledLink to="/author/expressgrader"><img src={Assigned} /><SpaceD />EXPRESS GRADER</StyledLink></StyledAnchor>
-          <StyledAnchor><img src={Assigned} /><SpaceD />REPORTS</StyledAnchor>
+          <StyledAnchorA><StyledLink to={`/author/classboard/${this.props.assignmentId}/${this.props.classId}`}><img src={Assigned} /><SpaceD />{t('common.liveClassBoard')}</StyledLink></StyledAnchorA>
+          <StyledAnchor><StyledLink to={`/author/expressgrader/${this.props.assignmentId}/${this.props.classId}`}><img src={Assigned} /><SpaceD />{t('common.expressGrader')}</StyledLink></StyledAnchor>
+          <StyledAnchor><img src={Assigned} /><SpaceD />{t('common.reports')}</StyledAnchor>
         </StyledTabs>
         <StyledDiv>
           <StyledPopconfirm
@@ -83,7 +90,7 @@ class ListHeader extends Component {
 ListHeader.propTypes = {
 };
 
-const enhance = compose(withNamespaces('author'));
+const enhance = compose(withNamespaces('classBoard'));
 
 export default enhance(ListHeader);
 
@@ -139,13 +146,13 @@ const StyledPopconfirm = styled(Popconfirm)`
 
 `;
 const StyledSwitch = styled(Switch)`
-  background-color:#1fe3a0;
+  background-color:${classBoardTheme.SwitchColor};
   `;
 const StyledDiv = styled.div`
 margin-right:20px;
 `;
 const StyledTabs = styled.div`
-width:43%;
+width:37%;
 height:62px;
 display:flex;
 
@@ -153,20 +160,22 @@ display:flex;
 
 const StyledAnchorA = styled.a`
   display:inline-block;
-  font-size:0.7em;
-  color:white;
+  font-size:0.8em;
+  font-weight:600;
+  color:${white};
   padding:17px 12px 15px 12px;
   width:100%;
   text-align:center;
   border-bottom:4px solid lightgray;
-  background-color:#037fc2;
+  background-color: ${classBoardTheme.headerListColor};
   :hover{
     color:white;
   }
 `;
 const StyledAnchor = styled.a`
   display:inline-block;
-  font-size:0.7em;
+  font-size:0.8em;
+  font-weight:600;
   color:white;
   padding:19px 12px;
   width:100%;

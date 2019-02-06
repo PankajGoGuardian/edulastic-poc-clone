@@ -27,6 +27,8 @@ import More from '../../assets/assignments/more.svg';
 import Elinks from '../../assets/assignments/external-link.svg';
 import Graph from './ProgressGraph';
 import Score from './Score';
+import { themes } from '../../../../student/themes';
+const classBoardTheme = themes.default.classboard;
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -73,7 +75,9 @@ class ClassBoard extends Component {
       gradebook,
       testActivity,
       creating,
-      match
+      match,
+      // eslint-disable-next-line react/prop-types
+      t
     } = this.props;
     const { assignmentId, classId } = match.params;
     return (
@@ -81,12 +85,14 @@ class ClassBoard extends Component {
         <ListHeader
           onCreate={this.handleCreate}
           creating={creating}
+          assignmentId={assignmentId}
+          classId={classId}
         />
         <StyledFlexContainer
           justifyContent="space-between"
         >
           <PaginationInfo>
-            &lt; <Link to="/author/assignments">RECENTS ASSIGNMENTS</Link> / <a>CALIFORNIA VERSION 4</a> / <a>CLASS 1</a>
+            &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> / <Anchor>CALIFORNIA VERSION 4</Anchor> / <Anchor>CLASS 1</Anchor>
           </PaginationInfo>
           <SortBar />
         </StyledFlexContainer>
@@ -112,14 +118,14 @@ class ClassBoard extends Component {
             <StyledCheckbox checked>SELECT ALL</StyledCheckbox>
           </PaginationInfoF>
           <PaginationInfoS>
-            <StyledButton><img src={Ptools} /><SpaceDivF />PRINT</StyledButton>
-            <StyledButton><img src={Elinks} /><SpaceDivF />REDIRECT</StyledButton>
-            <StyledButton><img src={More} /><SpaceDivF />MORE</StyledButton>
+            <StyledButton><img src={Ptools} /><SpaceDivF />{t('common.print')}</StyledButton>
+            <StyledButton><img src={Elinks} /><SpaceDivF />{t('common.redirect')}</StyledButton>
+            <StyledButton><img src={More} /><SpaceDivF />{t('common.more')}</StyledButton>
           </PaginationInfoS>
         </StyledFlexContainer>
         {this.state.flag ?
           <DisneyCard testActivity={testActivity} assignmentId={assignmentId} classId={classId} /> :
-          <Score />
+          <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
         }
       </div>
     );
@@ -127,7 +133,7 @@ class ClassBoard extends Component {
 }
 const enhance = compose(
   withWindowSizes,
-  withNamespaces('header'),
+  withNamespaces('classBoard'),
   connect(
     state => ({
       gradebook: getGradeBookSelector(state),
@@ -158,7 +164,7 @@ const PaginationInfo = styled.span`
   word-spacing:5px;
   display:inline-block
   margin-left:30px;
-  color:#1890ffd9;
+  color: ${classBoardTheme.headerContainerColor}
 `;
 const PaginationInfoF = styled.span`
   font-weight: bold;
@@ -172,6 +178,12 @@ const PaginationInfoS = styled.span`
 const StyledFlexContainer = styled(FlexContainer)`
   margin:20px 10px;
 `;
+const AnchorLink = styled(Link)`
+  color:${classBoardTheme.headerAnchorLink};
+`;
+const Anchor = styled.a`
+  color:${classBoardTheme.headerAnchorLink};
+`;
 const StyledCard = styled(Card)`
   margin:auto;
   width:95%;
@@ -182,13 +194,13 @@ const StyledCard = styled(Card)`
 const BarDiv = styled.div`
   width:1px;
   height:30px;
-  background-color:lightgray;
+  background-color:${classBoardTheme.headerBarbgcolor};
   display:inline-block;
   margin-bottom:-6px;
 `;
 const StyledCheckbox = styled(Checkbox)`
  font-size:0.7em;
- color:#1890ffd9;
+ color:${classBoardTheme.headerCheckboxColor};
 `;
 const SpaceDiv = styled.div`
     display:inline-block
@@ -204,8 +216,8 @@ const StyledButton = styled(Button)`
   margin:0px 23px 0px -5px;
   width:100px;
   height:25px;
-  color:#1890ffd9;
-  border:1px solid #1890ffd9;
+  color:${classBoardTheme.headerButtonColor};
+  border:1px solid #00b0ff;
   font-weight:bold;
 `;
 const StyledAnc = styled(Button)`

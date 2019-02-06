@@ -3,15 +3,20 @@ import React, { Component } from 'react';
 import { Card } from 'antd';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { themes } from '../../../../student/themes';
+
+const classBoardTheme = themes.default.classboard;
 
 export default class DisneyCard extends Component {
 
   render() {
-    let {testActivity, assignmentId, classId} = this.props;
+    let { testActivity, assignmentId, classId } = this.props;
     let styledCard = [];
-    if(testActivity.length > 0){
-      console.log("TestActivity",this.props.testActivity)
-      testActivity.map(student => {
+    if (testActivity.length > 0) {
+      console.log("TestActivity", this.props.testActivity)
+      testActivity.map((student) => {
+        // eslint-disable-next-line radix
+        const stu_per = (parseInt(student.score) / parseInt(student.maxScore)) * 100;
         const studentData = (
           <StyledCard bordered={false}>
             <PaginationInfoF>
@@ -20,33 +25,33 @@ export default class DisneyCard extends Component {
                 <Space />
                 <SpaceDiv />
                 <StyledDiv>
-                  <StyledParaF>{student.studentId}</StyledParaF>
+                  <StyledParaF>{student.studentName?student.studentName:"-"}</StyledParaF>
                   {student.present ? <StyledParaS>GRADED</StyledParaS> : <StyledColorParaS>ABSENT</StyledColorParaS>}
                 </StyledDiv>
               </div>
-              <SquareDiv/>
+              <SquareDiv />
             </PaginationInfoF>
             <PaginationInfoS>
               <StyledDiv>
                 <StyledParaFF>Performance</StyledParaFF>
               </StyledDiv>
               <PerfomanceSection>
-                <StyledParaSS><ColorSpan>{student.score}</ColorSpan> / {student.maxScore}</StyledParaSS>
-                <StyledParaSSS>100%</StyledParaSSS>
+                <StyledParaSS><ColorSpan>{student.score?student.score:"-"}</ColorSpan> / {student.maxScore?student.maxScore:"-"}</StyledParaSS>
+                <StyledParaSSS>{stu_per?stu_per+"%":"-%"}</StyledParaSSS>
               </PerfomanceSection>
             </PaginationInfoS>
             <PaginationInfoT>
               <StyledDiv>
                 <StyledParaFF>Question Responses</StyledParaFF>
-                {student.testItems.map(testItem => {
-                  if(testItem.correct){
-                    return (<SquareColorDivGreen/> );
-                  }else if(testItem.skipped){
-                    return (<SquareColorDivGray/>);
-                  }else if(testItem.partialCorrect){
-                    return (<SquareColorDivYellow/>);
-                  }else if(!testItem.correct){
-                    return (<SquareColorDivPink/>);
+                {student.testItems.map((testItem) => {
+                  if (testItem.correct) {
+                    return (<SquareColorDivGreen />);
+                  } if (testItem.skipped) {
+                    return (<SquareColorDivGray />);
+                  } if (testItem.partialCorrect) {
+                    return (<SquareColorDivYellow />);
+                  } else if (!testItem.correct) {
+                    return (<SquareColorDivPink />);
                   }
                 })
                 }
@@ -96,7 +101,7 @@ const PagInfo = styled.span`
   font-weight: bold;
   font-size: 10px;
   display:block;
-  color:#1890ffd9;
+  color:${classBoardTheme.CardPageColor};
   text-align:center;
   padding-top:20px;
 `;
@@ -110,21 +115,18 @@ const PaginationInfoF = styled.span`
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-//   background:red;
 `;
 const PaginationInfoS = styled.span`
   display:inline-block;
   margin-left:-5px;
   margin-top:25px;
   width:100%;
-//   background:red;
   `;
 const PaginationInfoT = styled.span`
   display:inline-block;
   margin-left:-5px;
   margin-top:25px;
   width:100%;
-//   background:red;
   `;
 
 const CircularDiv = styled.div`
@@ -135,7 +137,7 @@ const CircularDiv = styled.div`
   border-radius: 128px;
   text-align: center;
   padding-top: 14px;
-  color: #5cb497;
+  color: ${classBoardTheme.CardCircularColor};
   padding-bottom: 28px;
   font-weight: bold;
 `;
@@ -155,7 +157,7 @@ const SquareColorDivGreen = styled.div`
   width:23px;
   height:23px;
   border-radius:3px;
-  background-color:#1fe3a0;
+  background-color:${classBoardTheme.CardSqurebgColor};
   margin:10px 8px 0px 0px;
 `;
 const SquareColorDivGray = styled.div`
@@ -163,7 +165,7 @@ const SquareColorDivGray = styled.div`
   width:23px;
   height:23px;
   border-radius:3px;
-  background-color:#e5e5e5;
+  background-color:${classBoardTheme.CardColor};
   margin:10px 8px 0px 0px;
 `;
 
@@ -172,7 +174,7 @@ const SquareColorDivPink = styled.div`
   width:23px;
   height:23px;
   border-radius:3px;
-  background-color:#ee1b82;
+  background-color:${classBoardTheme.CardSqare};
   margin:10px 8px 0px 0px;
 `;
 const SquareColorDivYellow = styled.div`
@@ -180,7 +182,7 @@ const SquareColorDivYellow = styled.div`
   width:23px;
   height:23px;
   border-radius:3px;
-  background-color: #fdcc3a;
+  background-color:${classBoardTheme.CardSquareDivColor};
   margin:10px 8px 0px 0px;
 
 `;
@@ -192,12 +194,12 @@ font-weight:bold;
 const StyledParaS = styled.p`
 font-size:0.6em;
 font-weight:bold;
-color:#5cb497;
+color:${classBoardTheme.CardCircularColor};
 `;
 const StyledColorParaS = styled.p`
 font-size:0.6em;
 font-weight:bold;
-color:#e1703e;
+color:${classBoardTheme.CardDisneyColor};
 `;
 const StyledParaFF = styled.p`
 font-size:0.9em;
@@ -205,7 +207,7 @@ font-weight:bold;
 
 `;
 const ColorSpan = styled.span`
-color:#5cb497;
+color:${classBoardTheme.CardCircularColor};
 `;
 
 const StyledParaSS = styled.p`
@@ -218,7 +220,7 @@ const StyledParaSSS = styled.p`
 font-size:1.12em;
 font-weight:bold;
 margin-top:5px;
-color:#5cb497;
+color:${classBoardTheme.CardCircularColor};
     display:inline-block
 
 `;
@@ -229,8 +231,8 @@ const SpaceDiv = styled.div`
 
 const StyledDivLine = styled.div`
     width:101%;
-    height:1px;
-    border:1px solid lightgray;
+    height:0.03em;
+    border:1px solid #f4f3f3;
     margin-top:20px;
 
 `;

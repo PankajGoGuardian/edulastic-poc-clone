@@ -58,7 +58,7 @@ export default class Score extends Component {
         Standard: '2.LS2.1',
         Question: 'Q1',
         Max: '1',
-        Average: '0.96',
+        Correct: '16',
         Average_per: '00%'
       });
     }

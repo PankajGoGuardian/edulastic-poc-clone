@@ -2,6 +2,9 @@ import React from 'react';
 import { Select } from 'antd';
 import { FlexContainer } from '@edulastic/common';
 import styled from 'styled-components';
+import { themes } from '../../../../student/themes';
+
+const classBoardTheme = themes.default.classboard;
 
 const SortBar = () => (
   <FlexContainer>
@@ -33,15 +36,10 @@ const Container = styled.div`
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.2px;
-    color: #434b5d;
+    color: ${classBoardTheme.SortBarSelectionColor};
   }
 
-  .ant-select-arrow-icon {
-    svg {
-      fill: #00b0ff;
-      margin-right: 0px;
-    }
-  }
+  
 `;
 const StyledSelect = styled(Select)`
   display:inline-block

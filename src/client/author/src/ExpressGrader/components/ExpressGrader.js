@@ -47,11 +47,15 @@ export default class ExpressGrader extends Component {
       // eslint-disable-next-line react/prop-types
       creating
     } = this.props;
+    const { assignmentId, classId } = this.props.match.params;
+
     return (
       <div>
         <ListHeader
           onCreate={this.handleCreate}
           creating={creating}
+          assignmentId={assignmentId}
+          classId={classId}
         />
         <StyledFlexContainer
           justifyContent="space-between"

@@ -43,7 +43,8 @@ i18n
         sidemenu: require('./locales/sidemenu/en'),
         reports: require('./locales/reports/en'),
         manageClass: require('./locales/manageClass/en'),
-        summary: require('./locales/summary/en')
+        summary: require('./locales/summary/en'),
+        classBoard: require('./locales/classboard/en'),
       }
     }
   });

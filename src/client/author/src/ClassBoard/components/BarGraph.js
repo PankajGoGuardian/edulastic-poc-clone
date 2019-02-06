@@ -1,96 +1,60 @@
-/* eslint-disable no-undef */
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-const Highcharts = require('react-highcharts');
+import { ComposedChart, Bar, XAxis, YAxis, Line, ResponsiveContainer } from 'recharts';
+
 
 export default class BarGraph extends Component {
   render() {
-    let itemsSum = this.props.gradebook.itemsSummary;
-    let categories = [];
-    let greenData = [];
-    let yellowData = [];
-    let redData = [];
-    if(itemsSum){
+    const itemsSum = this.props.gradebook.itemsSummary;
+    let data = [];
+    if (itemsSum) {
       itemsSum.map((item, index) => {
-        categories.push("Q"+index);
-        redData.push(item.wrongNum);
-        yellowData.push(item.correctNum);
-        greenData.push(item.partialNum);
+        data.push({
+          name: `Q${index}`,
+          red: item.wrongNum || 0,
+          yellow: item.correctNum || 0,
+          green: item.partialNum || 0,
+          all: (item.wrongNum || 0) + (item.correctNum || 0) + (item.partialNum || 0),
+        })
       });
     }
-
-    const config = {
-      chart: {
-        height: 240,
-        // width: 500
-      },
-      legend: {
-        enabled: false
-      },
-      xAxis: [{
-        categories: categories,
-        alignTicks: false,
-        allowDecimals: false
-      }],
-      yAxis: [{
-        allowDecimals: false,
-        alignTicks: false,
-        gridLineColor: 'white',
-        categories: ['0', '1', '2'],
-        title: {
-          text: 'ATTEMPTS'
-        },
-      }, {
-        title: {
-          text: 'AVG TIME (SECONDS)'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: true
-      }],
-      plotOptions: {
-        column: {
-          stacking: 'normal'
-        }
-      },
-      series: [{
-        type: 'column',
-        color: '#ee1b82',
-        data: redData
-      }, {
-        type: 'column',
-        color: '#fdcc3a',
-        data: yellowData
-      }, {
-        type: 'column',
-        color: '#1fe3a0',
-        data: greenData
-      }, {
-        type: 'line',
-        color: '#1baae9',
-        data: greenData,
-
-      }]
-    };
-
-    window.onresize = function(event) {
-      height = document.getElementsByClassName('studentBarChart')[0].clientHeight
-      width = document.getElementsByClassName('studentBarChart')[0].clientWidth
-      $("#container").highcharts().setSize(width, height, doAnimation = true);
-    };
     return (
-      <MainDiv className='studentBarChart'>
-        <StyledDiv config={config} />
+      <MainDiv className="studentBarChart">
+        <ResponsiveContainer width='100%' height={240} >
+          <ComposedChart barGap={1} barSize={36} data={data} margin={{ top: 20, right: 60, bottom: 0, left: 20 }}>
+            <XAxis dataKey="name" axisLine={false} tickSize={0}/>
+            <YAxis
+              dataKey="all"
+              yAxisId={0}
+              tickCount={4}
+              allowDecimals={false}
+              tick={{strokeWidth: 0, fill: '#999'}}
+              tickSize={6}
+              label={{ value: 'ATTEMPTS', angle: -90, fill: '#999'}}
+              stroke="#999"
+            />
+            <YAxis
+              dataKey="all"
+              yAxisId={1}
+              tickCount={4}
+              allowDecimals={false}
+              tick={{strokeWidth: 0, fill: '#999'}}
+              tickSize={6}
+              label={{ value: 'AVG TIME (SECONDS)', angle: -90, fill: '#999'}}
+              orientation="right"
+              stroke="#999"
+            />
+            <Bar stackId="a" dataKey="green" fill="#1fe3a0" />
+            <Bar stackId="a" dataKey="yellow" fill="#fdcc3a" />
+            <Bar stackId="a" dataKey="red" fill="#ee1b82" />
+            <Line type='monotone' dataKey='green' stroke='#1baae9' dot={{ stroke: '#1baae9', strokeWidth: 2, fill: '#1baae9' }}/>
+          </ComposedChart>
+        </ResponsiveContainer>
       </MainDiv>
     );
   }
 }
-
-const StyledDiv = styled(Highcharts)`
-
-`;
 
 const MainDiv = styled.div`
   width:100%;

@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 /* eslint-disable react/jsx-closing-tag-location */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/jsx-wrap-multilines */
@@ -8,7 +9,7 @@ import { Card, Button, Icon } from 'antd';
 import styled from 'styled-components';
 import Clock from '../../assets/assignments/clock-circular-outline.svg';
 
-export default class AnswerCard extends Component {
+export default class AnswerCard_Single_que extends Component {
   constructor() {
     super();
     this.state = {
@@ -24,58 +25,6 @@ export default class AnswerCard extends Component {
         feedback: 'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem',
         score: '2',
         totalScore: '2'
-      },
-      {
-        que: 'This is question 2?',
-        options: {
-          option_A: 'this is option A of question 2',
-          option_B: 'this is option B of question 2',
-          option_C: 'this is option C of question 2',
-          option_D: 'this is option D of question 2'
-        },
-        solution: 'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem',
-        feedback: 'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem',
-        score: '6',
-        totalScore: '10'
-      },
-      {
-        que: 'This is question 3?',
-        options: {
-          option_A: 'this is option A of question 3',
-          option_B: 'this is option B of question 3',
-          option_C: 'this is option C of question 3',
-          option_D: 'this is option D of question 3'
-        },
-        solution: 'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem',
-        feedback: 'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem',
-        score: '4',
-        totalScore: '5'
-      },
-      {
-        que: 'This is question 4?',
-        options: {
-          option_A: 'this is option A of question 4',
-          option_B: 'this is option B of question 4',
-          option_C: 'this is option C of question 4',
-          option_D: 'this is option D of question 4'
-        },
-        solution: 'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem',
-        feedback: 'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem',
-        score: '1',
-        totalScore: '2'
-      },
-      {
-        que: 'This is question 5?',
-        options: {
-          option_A: 'this is option A of question 5',
-          option_B: 'this is option B of question 5',
-          option_C: 'this is option C of question 5',
-          option_D: 'this is option D of question 5'
-        },
-        solution: 'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem',
-        feedback: 'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem',
-        score: '6',
-        totalScore: '10'
       }]
     };
   }
@@ -96,7 +45,7 @@ export default class AnswerCard extends Component {
             </StyledDiv>
             <StyledTextDiv>
               <StyledQue>
-                <b>Q{i + 1}</b> {value.que}
+                <b>Q{ i + 1}</b> {value.que}
               </StyledQue>
               <StyledAnswerOne>
                 <CircularDiv>A</CircularDiv>
@@ -129,8 +78,9 @@ export default class AnswerCard extends Component {
             <StyledButtonA>VIEW SOLUTION</StyledButtonA>
           </StyledCardTwo>
         </MainDiv>
-        ))
-        }
+            // eslint-disable-next-line indent
+            ))
+          }
       </div>
     );
   }

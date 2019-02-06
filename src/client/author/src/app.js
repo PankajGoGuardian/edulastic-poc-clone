@@ -39,7 +39,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               <Route exact path={`${match.url}/assignments`} component={Assignments} />
               <Route exact path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />
               <Route exact path={`${match.url}/classresponses/:assignmentId/:classId`} component={ClassResponses} />
-              <Route exact path={`${match.url}/expressgrader`} component={ExpressGrader} />
+              <Route exact path={`${match.url}/expressgrader/:assignmentId/:classId`} component={ExpressGrader} />
               <Route exact path={`${match.url}/items`} component={ItemList} />
               <Route
                 exact

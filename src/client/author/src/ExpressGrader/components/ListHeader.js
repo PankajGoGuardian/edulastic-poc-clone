@@ -1,3 +1,5 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/prop-types */
 /* eslint-disable jsx-a11y/alt-text */
 import React, { Component } from 'react';
 import styled from 'styled-components';
@@ -59,8 +61,8 @@ class ListHeader extends Component {
           <StyledParaSecond>Done (Due on 26 October, 2018)</StyledParaSecond>
         </StyledTitle>
         <StyledTabs>
-          <StyledAnchor><StyledLink to="/author/classboard"><img src={Assigned} /><SpaceD />LIVE CLASS BOARD</StyledLink></StyledAnchor>
-          <StyledAnchorA><StyledLink to="/author/expressgrader"><img src={Assigned} /><SpaceD />EXPRESS GRADER</StyledLink></StyledAnchorA>
+          <StyledAnchor><StyledLink to={`/author/classboard/${this.props.assignmentId}/${this.props.classId}`}><img src={Assigned} /><SpaceD />LIVE CLASS BOARD</StyledLink></StyledAnchor>
+          <StyledAnchorA><StyledLink to={`/author/expressgrader/${this.props.assignmentId}/${this.props.classId}`}><img src={Assigned} /><SpaceD />EXPRESS GRADER</StyledLink></StyledAnchorA>
           <StyledAnchor><img src={Assigned} /><SpaceD />REPORTS</StyledAnchor>
         </StyledTabs>
         <StyledDiv>

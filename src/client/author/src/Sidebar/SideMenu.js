@@ -115,7 +115,7 @@ class SideMenu extends Component {
     );
 
     const isCollapsed = isPickQuestion || isSidebarCollapsed;
-    const isMobile = windowWidth < 480 ? true : false;
+    const isMobile = windowWidth < 770 ? true : false;
 
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible}>
@@ -269,7 +269,6 @@ const FixedSidebar = styled.div`
     z-index: 999;
   }
 `;
-
 const SideBar = styled(Layout.Sider)`
   height: 100vh;
   width: 240px;
@@ -278,7 +277,6 @@ const SideBar = styled(Layout.Sider)`
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
   background-color: #fbfafc;
   z-index: 22;
-
   &.ant-layout-sider-collapsed .logoWrapper {
     padding: 5px 20px;
   }
@@ -337,6 +335,12 @@ const SideBar = styled(Layout.Sider)`
   }
   .ant-select {
     width: 125px;
+  }
+  @media (max-width: 768px) {
+    flex: 0 0 0px;
+    max-width: 0px;
+    min-width: 0px;
+    width: 0px;
   }
 `;
 

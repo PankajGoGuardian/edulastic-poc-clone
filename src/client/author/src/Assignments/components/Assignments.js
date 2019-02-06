@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
-import { Pagination, Radio } from 'antd';
+import { Radio } from 'antd';
 
 import {
   withWindowSizes,
@@ -15,8 +15,8 @@ import {
   tabletWidth
 } from '@edulastic/colors';
 import styled from 'styled-components';
-import { receiveAssignmentsAction } from '../../actions/assignments';
 import { withNamespaces } from '@edulastic/localization';
+import { receiveAssignmentsAction } from '../../actions/assignments';
 import {
   getAssignmentsSelector
 } from '../../selectors/assignments';
@@ -80,9 +80,9 @@ class Assignments extends Component {
                       onStyleChange={this.handleStyleChange}
                     />
                   <StyledFlexContainer>
-                    <FilterBar windowWidth={windowWidth} windowHeight={windowHeight}/>
-                    <Radio value={1}>Assigned</Radio>
-                    <Radio value={2}>Drafts</Radio>
+                    <FilterBar windowWidth={windowWidth} windowHeight={windowHeight} />
+                    <DRadio value={1}><span style={{ paddingLeft: '15px', display: 'inline-block' }}>Assigned</span></DRadio>
+                    <DRadio value={2}><span style={{ paddingLeft: '15px', display: 'inline-block' }}>Drafts</span></DRadio>
                   </StyledFlexContainer>
                 </FullFlexContainer>
 
@@ -140,17 +140,26 @@ const PaginationInfo = styled.span`
   @media (max-width: ${tabletWidth}) {
     display: none;
   }
+  @media (max-width: 77s0px) {
+    display: none;
+  }
 `;
 
 const Main = styled.div`
   flex: 1;
   width: 100%;
 `;
+const DRadio = styled(Radio)`
+`;
 const StyledCard = styled(Card)`
   border-radius: 5;
+  overflow-x: auto;
 `;
 const FullFlexContainer = styled(FlexContainer)`
+@media (max-width: 770px) {
+  width: 100%;
 
+}
   justify-content: flex-end;
 `;
 const StyledFlexContainer = styled(FlexContainer)`
@@ -163,5 +172,12 @@ const StyledFlexContainer = styled(FlexContainer)`
     width: 100%;
     display: flex;
     justify-content: space-around;
+  }
+  @media (max-width: 770px) {
+    display: flex;
+    justify-content: space-between;
+    flex-direction:row-reverse;
+    width: 100%;
+
   }
 `;

@@ -66,7 +66,7 @@ class TableList extends Component {
     const columns = [
       {
         dataIndex: 'name',
-        width: '22%',
+        width: '23%',
         render: text => (<div>{text}</div>)
       },
       {
@@ -78,12 +78,12 @@ class TableList extends Component {
       {
         dataIndex: 'type',
         width: '11%',
-        render: () => (<div><AssignedImg src={assignedIcon} /></div>)
+        render: () => (<div ><AssignedImg src={assignedIcon} /></div>)
       },
       {
         dataIndex: 'assigned',
-        width: '12%',
-        render: text => (<div><GreyFont>{text}</GreyFont></div>)
+        width: '15%',
+        render: text => (<div style={{ paddingLeft: '20px' }}><GreyFont>{text}</GreyFont></div>)
       },
       {
         dataIndex: 'status',
@@ -98,13 +98,13 @@ class TableList extends Component {
         ) },
       {
         dataIndex: 'submitted',
-        width: '9%',
+        width: '16%',
         render: text => (<div><GreyFont>{text}</GreyFont></div>)
       },
       {
         dataIndex: 'graded',
-        width: '9%',
-        render: text => (<div><GreyFont>{text}</GreyFont></div>)
+        width: '15%',
+        render: text => (<div style={{paddingLeft: '12px'}}><GreyFont>{text}</GreyFont></div>)
       },
       {
         dataIndex: 'action',
@@ -185,7 +185,7 @@ class TableList extends Component {
         dataIndex: 'assigned',
         sortDirections: ['descend', 'ascend'],
         sorter: true,
-        width: '12%',
+        width: '15%',
         render: text => (<div> {text} </div>)
       },
       {
@@ -201,7 +201,7 @@ class TableList extends Component {
         dataIndex: 'submitted',
         sortDirections: ['descend', 'ascend'],
         sorter: true,
-        width: '9%',
+        width: '16%',
         render: text => (<div> {text} </div>)
       },
       {
@@ -209,7 +209,7 @@ class TableList extends Component {
         dataIndex: 'graded',
         sortDirections: ['descend', 'ascend'],
         sorter: true,
-        width: '9%',
+        width: '14%',
         render: text => (<div> {text} </div>)
       },
       {
@@ -230,6 +230,8 @@ class TableList extends Component {
       <Container>
         <TableData
           columns={columns}
+          expandIconAsCell={false}
+          expandIconColumnIndex={-1}
           expandRowByClick={this.state.details}
           expandedRowRender={this.expandedRowRender}
           dataSource={assignments.map(data => convertTableData(data))}
@@ -249,6 +251,10 @@ const Container = styled.div`
 `;
 const TableData = styled(Table)`
   text-align: center;
+  width:100%;
+  @media (max-width: 1300px) {
+   width:1004px;
+  }
   .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters, .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-filters {
     text-align: center;
   }
@@ -373,7 +379,11 @@ const ExpandedTable = styled(Table)`
     border-radius: 10px;
   }
   .ant-table-tbody tr td{
-    padding: 9px 15px !important;
+    padding: 9px 0px 9px 25px !important;
+  }
+
+  @media (max-width: 1450px) {
+    padding: 9px 0px 9px 27px !important;    
   }
   @media (max-width: ${mobileWidth}) {
     display: none;

@@ -114,6 +114,10 @@ const StyledMenu = styled(Menu)`
     padding-left: 30px;
     padding-right: 30px;
   }
+  @media (max-width: ${tabletWidth}) {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
 `;
 const StyledLink = styled.a`
   margin-top: 2px;

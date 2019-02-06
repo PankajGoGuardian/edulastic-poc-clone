@@ -9,21 +9,22 @@ class FilterBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      modalshow: false,
+      modalshow: false
     };
   }
 
    showModal = () => {
-    this.setState({
-      modalshow: !this.state.modalshow
-    });
-  }
+     this.setState({
+       modalshow: !this.state.modalshow
+     });
+   }
 
   handleCancel = (e) => {
     this.setState({
       modalshow: false
     });
   }
+
   render() {
     const { windowWidth, windowHeight } = this.props;
     const Search = Input.Search;
@@ -51,13 +52,13 @@ class FilterBar extends Component {
         </StyledPopover>
         <ModalContent>
           <Container onClick={this.showModal}>
-            <FilterImg src={FilterIcon}/> Filter
+            <FilterImg src={FilterIcon} /> Filter
           </Container>
           <StyledModal
             footer={false}
             closable={false}
             visible={this.state.modalshow}
-            bodyStyle = {{height: windowHeight, width: windowWidth}}
+            bodyStyle= {{ height: windowHeight, width: windowWidth }}
           >
             <HeaderContent>
               <FilterHeader>Filters</FilterHeader>
@@ -75,13 +76,19 @@ class FilterBar extends Component {
 export default FilterBar;
 
 const Container = styled.div`
-  padding: 10px 15px 10px 15px;
+  padding: 10px 15px 14px 15px;
   display: flex;
   align-items: center;
   cursor: pointer;
   :hover{
     background-color: #fff;
     padding: 10px 15px 10px 15px;
+  }
+  @media (max-width: 770px) {
+    background-color: #fff;
+    border-radius:5px;
+    padding: 9px 25px 11px 25px;
+    
   }
 `;
 const FilterImg = styled.img`
@@ -95,9 +102,17 @@ const MainContainer = styled.div`
   @media (max-width: ${mobileWidth}) {
     width: 100%;
     padding: 30px;
+  }
+  @media (max-width: ${tabletWidth}) {
+    width: 100%;
+    padding: 30px;
+  }
 `;
 const StyledPopover = styled(Popover)`
   @media (max-width: ${mobileWidth}) {
+    display: none;
+  }
+  @media (max-width: ${tabletWidth}) {
     display: none;
   }
 `;
@@ -117,6 +132,9 @@ const ModalContent = styled.div`
   @media (max-width: ${mobileWidth}) {
     display: block;
   }
+  @media (max-width: ${tabletWidth}) {
+    display: block;
+  }
 `;
 
 const StyledModal = styled(Modal)`
@@ -128,10 +146,26 @@ const StyledModal = styled(Modal)`
       padding: 0px !important;
     }
   }
+  @media (max-width: ${tabletWidth}){
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    .ant-modal-body{
+      padding: 0px !important;
+    }
+  }
 `;
 const HeaderContent = styled.div`
   display: none;
   @media (max-width: ${mobileWidth}) {
+    width: 100%;
+    padding: 20px 10px 10px 24px;
+    display: inline-block;
+    flex-direction: row;
+    align-items: space-between;
+    background-color: #fafefd;
+  }
+  @media (max-width: ${tabletWidth}) {
     width: 100%;
     padding: 20px 10px 10px 24px;
     display: inline-block;

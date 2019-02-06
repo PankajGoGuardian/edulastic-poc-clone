@@ -138,7 +138,7 @@ class MobileTableList extends Component {
             </ClassHeaderCollapse>
           </div>
           <div style={{ height: 'auto', marginTop: '15px' }}>
-            { windowWidth < '480' ?
+            { windowWidth < '770' ?
               <div>
                 <BtnAction onClick={this.showModal}>ACTIONS</BtnAction>
                   <StyledModal
@@ -223,9 +223,6 @@ const BtnAction = styled(Button)`
     color: #fff;
   }
 `;
-const AssignedImg = styled.img`
-  color: #12a6e8;
-`;
 
 const BtnProgress = styled(Button)`
   color: #d1a422;
@@ -287,11 +284,22 @@ const StyledBox = styled.p`
   height:55px;
   background-color: rgb(0, 216, 218);
   border-radius:8px;
+  @media (max-width: 500px) {
+    width: 26%;
+  }
 `;
 
 const HeaderContent = styled.div`
   display: none;
   @media (max-width: ${mobileWidth}) {
+    width: 100%;
+    padding: 20px 10px 10px 24px;
+    display: inline-block;
+    flex-direction: row;
+    align-items: space-between;
+    background-color: #fafefd;
+  }
+  @media (max-width: ${tabletWidth}) {
     width: 100%;
     padding: 20px 10px 10px 24px;
     display: inline-block;
@@ -324,6 +332,14 @@ const StyledModal = styled(Modal)`
       padding: 0px !important;
     }
   }
+  @media (max-width: ${tabletWidth}) {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    .ant-modal-body{
+      padding: 0px !important;
+    }
+  }
 `;
 const StyledTextBox = styled.div`
   margin-left: 15px;
@@ -331,6 +347,9 @@ const StyledTextBox = styled.div`
 const StyledTextFirst = styled.div`
   font-size: 0.8em;
   padding-top: 10px;
+  @media (max-width: 500px) {
+    font-size: 0.7em;
+  }
 `;
 const StyledTextSecond = styled.div`
   font-size: 1.2em;

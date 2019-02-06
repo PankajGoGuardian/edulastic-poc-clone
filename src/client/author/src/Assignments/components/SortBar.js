@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Select } from 'antd';
 import { FlexContainer } from '@edulastic/common';
 import styled from 'styled-components';
@@ -13,14 +12,14 @@ import {
 } from '@edulastic/colors';
 
 const SortBar = ({ onSortChange, activeStyle, onStyleChange }) => (
-  <FlexContainer>
+  <DFlexContainer>
     <Container>
       <StyledSelect defaultValue="" onChange={onSortChange}>
         <Select.Option value="">Date</Select.Option>
         <Select.Option value="relevance">Name</Select.Option>
       </StyledSelect>
     </Container>
-  </FlexContainer>
+  </DFlexContainer>
 );
 
 
@@ -57,6 +56,12 @@ const Container = styled.div`
 const StyledSelect = styled(Select)`
   display:inline-block
   @media (max-width: ${tabletWidth}) {
+    display: none;
+  }
+`;
+const DFlexContainer = styled(FlexContainer)`
+  display:inline-block
+  @media (max-width: 770px) {
     display: none;
   }
 `;

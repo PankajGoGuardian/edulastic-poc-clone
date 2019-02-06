@@ -8,6 +8,7 @@ export const Container = styled.div`
   position: ${props => props.position};
   z-index: ${props => props.zIndex};
   right: 120px;
+  top: 0;
 `;
 
 export const PreviewBar = styled.div`

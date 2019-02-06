@@ -1,5 +1,6 @@
 import { cloneDeep, isEqual } from 'lodash';
 import { ScoringType } from './const/scoring';
+import getPenaltyScore from './helpers/getPenaltyScore';
 
 // exact-match evaluator
 const exactMatchEvaluator = (
@@ -9,6 +10,7 @@ const exactMatchEvaluator = (
     alt_responses: altAnswers,
     max_score,
     automarkable,
+    penalty,
     min_score_if_attempted
   }
 ) => {
@@ -44,6 +46,10 @@ const exactMatchEvaluator = (
     }
   } else if (max_score) {
     maxScore = Math.max(max_score, maxScore);
+  }
+
+  if (penalty > 0) {
+    score = getPenaltyScore({ score, penalty, evaluation });
   }
 
   return {

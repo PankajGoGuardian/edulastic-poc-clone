@@ -239,3 +239,54 @@ export const Icon = styled.div`
   margin-right: 19px;
   font-size: 16px;
 `;
+
+export const LabelTop = styled.div`
+  height: 20px;
+  line-height: 20px;
+  top: 0;
+  left: 0;
+  text-align: center;
+  position: absolute;
+  width: 100%;
+`;
+export const LabelBottom = styled.div`
+  height: 20px;
+  line-height: 20px;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  position: absolute;
+  width: 100%;
+`;
+export const LabelRight = styled.div`
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(90deg);
+  transform-origin: top right;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  position: absolute;
+  width: 100%;
+  padding-left: 40px;
+`;
+export const LabelLeft = styled.div`
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-90deg);
+  transform-origin: top left;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  position: absolute;
+  width: 100%;
+  padding-right: 40px;
+`;
+
+export const Title = styled.div`
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.5em;
+  display: block;
+  padding: 1em 0;
+`;

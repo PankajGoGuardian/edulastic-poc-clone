@@ -28,21 +28,34 @@ class AxisLabelsMoreOptions extends Component {
     const { target: { name, value } } = event;
     const { graphData, setNumberline } = this.props;
     const { numberlineAxis } = graphData;
-    setNumberline({ ...numberlineAxis, [name]: value });
+    if (name !== 'specificPoints' && !value) {
+      setNumberline({ ...numberlineAxis, [name]: 0 });
+    } else {
+      setNumberline({ ...numberlineAxis, [name]: value });
+    }
   };
 
   handleCanvasInputChange = (event) => {
     const { target: { name, value } } = event;
     const { graphData, setCanvas } = this.props;
     const { canvas } = graphData;
-    setCanvas({ ...canvas, [name]: value });
+    if (!value) {
+      setCanvas({ ...canvas, [name]: 0 });
+    } else {
+      setCanvas({ ...canvas, [name]: value });
+    }
   };
 
   handleOptionsInputChange = (event) => {
     const { target: { name, value } } = event;
     const { graphData, setOptions } = this.props;
     const { ui_style } = graphData;
-    setOptions({ ...ui_style, [name]: parseInt(value, 10) });
+
+    if (!value) {
+      setOptions({ ...ui_style, [name]: 0 });
+    } else {
+      setOptions({ ...ui_style, [name]: parseInt(value, 10) });
+    }
   };
 
   getFontSizeItem = () => {
@@ -209,7 +222,7 @@ class AxisLabelsMoreOptions extends Component {
                   type="text"
                   defaultValue="35"
                   name="line_position"
-                  value={ui_style.line_position ? ui_style.line_position : 0}
+                  value={ui_style.line_position}
                   onChange={this.handleOptionsInputChange}
                 />
               </MoreOptionsRow>
@@ -295,6 +308,7 @@ class AxisLabelsMoreOptions extends Component {
             </MoreOptionsColumn>
 
             <MoreOptionsColumn>
+
               <MoreOptionsRow>
                 <MoreOptionsLabel>
                   {t('component.graphing.ticksoptions.tickdistance')}
@@ -322,7 +336,9 @@ class AxisLabelsMoreOptions extends Component {
               </MoreOptionsRow>
 
             </MoreOptionsColumn>
+
           </MoreOptionsColumnContainer>
+        
         </MoreOptionsContainer>
 
         <MoreOptionsDivider />

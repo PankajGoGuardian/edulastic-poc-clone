@@ -21,3 +21,10 @@ export const PreviewBar = styled.div`
     margin-left: 17px;
   }
 `;
+
+export const Button = styled.button`
+  width: 136px;
+  height: 45px;
+  border-radius: 37px;
+  background-color: #f3f3f3;
+`

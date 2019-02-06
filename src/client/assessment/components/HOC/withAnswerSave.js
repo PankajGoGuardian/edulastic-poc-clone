@@ -8,14 +8,14 @@ import { setUserAnswerAction } from '../../actions/answers';
 import { getAnswerByQuestionIdSelector } from '../../selectors/answers';
 
 export default (WrappedComponent) => {
-  const hocComponent = ({ setUserAnswer, match, testItemId, ...props }) => {
+  const hocComponent = ({ setUserAnswer, match, ...props }) => {
     const { data: question } = props;
     return (
       <WrappedComponent
         saveAnswer={(data) => {
-          setUserAnswer(question.id || match.params.id || testItemId, data);
+          setUserAnswer(question.id || match.params.id, data);
         }}
-        questionId={question.id || testItemId}
+        questionId={question.id}
         {...props}
       />
     );
@@ -28,8 +28,8 @@ export default (WrappedComponent) => {
   const enhance = compose(
     withRouter,
     connect(
-      (state, { testItemId }) => ({
-        userAnswer: getAnswerByQuestionIdSelector(testItemId)(state)
+      (state, { data: { id } }) => ({
+        userAnswer: getAnswerByQuestionIdSelector(id)(state)
       }),
       { setUserAnswer: setUserAnswerAction }
     )

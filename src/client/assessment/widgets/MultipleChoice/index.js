@@ -99,6 +99,7 @@ class MultipleChoice extends Component {
   };
 
   handleAddAnswer = (qid) => {
+    console.log(qid)
     const { saveAnswer, userAnswer, item } = this.props;
     const newAnswer = cloneDeep(userAnswer);
 

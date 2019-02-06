@@ -119,9 +119,12 @@ class Graph extends Component {
       stemNumerationList: getStemNumerationList(),
       fontSizeList: getFontSizeList(),
       setOptions: this.handleOptionsChange,
+      setValidation: this.handleValidationChange,
+      setControls: this.handleControlbarChange,
       setBgImg: this.handleBgImgChange,
       setBgShapes: this.handleBgShapesChange,
-      graphData: item
+      graphData: item,
+      setAnnotation: this.handleAnnotationChange
     };
   };
 
@@ -136,6 +139,16 @@ class Graph extends Component {
     };
   };
 
+  handleControlbarChange = (options) => {
+    const { setQuestionData, item } = this.props;
+    setQuestionData({ ...item, controlbar: options });
+  }
+
+  handleValidationChange = (options) => {
+    const { setQuestionData, item } = this.props;
+    setQuestionData({ ...item, validation: options });
+  }
+
   handleNumberlineChange = (options) => {
     const { setQuestionData, item } = this.props;
     setQuestionData({ ...item, numberlineAxis: options });
@@ -144,6 +157,11 @@ class Graph extends Component {
   handleOptionsChange = (options) => {
     const { setQuestionData, item } = this.props;
     setQuestionData({ ...item, ui_style: options });
+  };
+
+  handleAnnotationChange = (options) => {
+    const { setQuestionData, item } = this.props;
+    setQuestionData({ ...item, annotation: options });
   };
 
   handleCanvasChange = (options) => {

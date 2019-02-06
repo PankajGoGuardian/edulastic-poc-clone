@@ -10,7 +10,8 @@ import {
   IconEye,
   IconCheck,
   IconEraseText,
-  IconMetadata
+  IconMetadata,
+  IconSelected
 } from '@edulastic/icons';
 import { white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
@@ -24,6 +25,7 @@ import {
   Container,
   RightSide,
   HeadIcon,
+  MenuItem,
   MobileContainer,
   MobileFirstContainer,
   MobileSecondContainer
@@ -37,11 +39,12 @@ class ButtonBar extends Component {
     };
   }
 
-  handleMenuClick = (e) => {
+  handleMenuClick = (view) => {
     const { onChangeView } = this.props;
-    onChangeView(e.key);
-    this.setState({ current: e.key });
+    onChangeView(view);
+    this.setState({ current: view });
   };
+
 
   optionHandler = (key) => {
     const { onChangeView } = this.props;
@@ -67,27 +70,26 @@ class ButtonBar extends Component {
             <Menu
               mode="horizontal"
               selectedKeys={[current]}
-              onClick={this.handleMenuClick}
               style={{ marginLeft: 80 }}
             >
-              <Menu.Item key="edit">
+              <MenuItem className={current === 'edit' && 'active'} onClick={ () => this.handleMenuClick('edit') }>
                 <HeadIcon>
-                  <IconPencilEdit color={white} width={18} />
+                  <IconSelected color={white} width={18} />
                 </HeadIcon>
                 EDIT
-              </Menu.Item>
-              <Menu.Item key="preview">
+              </MenuItem>
+              <MenuItem className={current === 'preview' && 'active'} onClick={ () => this.handleMenuClick('preview') }>
                 <HeadIcon>
-                  <IconPreview color={white} width={18} />
+                  <IconEye color={white} width={18} />
                 </HeadIcon>
                 PREVIEW
-              </Menu.Item>
-              <Menu.Item key="metadata">
+              </MenuItem>
+              <MenuItem className={current === 'metadata' && 'active'} onClick={ () => this.handleMenuClick('metadata') }>
                 <HeadIcon>
                   <IconMetadata color={white} width={18} />
                 </HeadIcon>
                 METADATA
-              </Menu.Item>
+              </MenuItem>
             </Menu>
             <RightSide>
               <Button onClick={onSave}>

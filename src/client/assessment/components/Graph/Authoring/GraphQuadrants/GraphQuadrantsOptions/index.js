@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
 import {
-  MoreOptions, MoreOptionsHeading
+  MoreOptionsHeading
 } from '../../../common/styled_components';
 import { Toggler } from '../../../../../styled/WidgetOptions/Toggler';
 import QuadrantsMoreOptions from './QuadrantsMoreOptions';
+import { ScoreSettings, ControlsSettings, AnnotationSettings } from '../../';
 
 class GraphQuadrantsOptions extends Component {
   state = {
@@ -28,36 +29,47 @@ class GraphQuadrantsOptions extends Component {
       stemNumerationList,
       setOptions,
       setBgImg,
-      setBgShapes
+      setBgShapes,
+      setValidation,
+      setControls,
+      setAnnotation
     } = this.props;
     const { isMoreOptionsOpen } = this.state;
 
     return (
       <Fragment>
-        <MoreOptions>
-          <MoreOptionsHeading
-            onClick={this.updateClickOnMoreOptions}
-            isOpen={isMoreOptionsOpen}
-          >
-            <span>{t('component.graphing.optionstitle')}</span>
-            <Toggler isOpen={isMoreOptionsOpen} />
-          </MoreOptionsHeading>
-          {
+        <MoreOptionsHeading
+          onClick={this.updateClickOnMoreOptions}
+          isOpen={isMoreOptionsOpen}
+        >
+          <span>{t('component.graphing.optionstitle')}</span>
+          <Toggler isOpen={isMoreOptionsOpen} />
+        </MoreOptionsHeading>
+        {
             isMoreOptionsOpen && (
-            <QuadrantsMoreOptions
-              graphData={graphData}
-              stemNumerationList={stemNumerationList}
-              fontSizeList={fontSizeList}
-              // options={options}
-              // canvasConfig={canvasConfig}
-              setOptions={setOptions}
-              // bgImgOptions={bgImgOptions}
-              setBgImg={setBgImg}
-              // backgroundShapes={backgroundShapes}
-              setBgShapes={setBgShapes}
-            />
-            )}
-        </MoreOptions>
+            <Fragment>
+              <QuadrantsMoreOptions
+                graphData={graphData}
+                stemNumerationList={stemNumerationList}
+                fontSizeList={fontSizeList}
+                setOptions={setOptions}
+                setBgImg={setBgImg}
+                setBgShapes={setBgShapes}
+              />
+              <ScoreSettings 
+                setValidation={setValidation} 
+                graphData={graphData} 
+              />
+              <ControlsSettings
+                onChange={setControls} 
+                controlbar={graphData.controlbar} 
+              />
+              <AnnotationSettings
+                annotation={graphData.annotation}
+                setAnnotation={setAnnotation}
+              />
+            </Fragment>            
+          )}
       </Fragment>
     );
   }
@@ -70,7 +82,8 @@ GraphQuadrantsOptions.propTypes = {
   fontSizeList: PropTypes.array.isRequired,
   setOptions: PropTypes.func.isRequired,
   setBgImg: PropTypes.func.isRequired,
-  setBgShapes: PropTypes.func.isRequired
+  setBgShapes: PropTypes.func.isRequired,
+  setAnnotation: PropTypes.func.isRequired
 };
 
 const enhance = compose(

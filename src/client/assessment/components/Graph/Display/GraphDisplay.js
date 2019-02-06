@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 import QuestionHeader from '../common/QuestionHeader';
@@ -73,7 +73,8 @@ class GraphDisplay extends Component {
       showAnswer,
       checkAnswer,
       changePreviewTab,
-      elements
+      elements,
+      shapes
     } = this.props;
 
     const {
@@ -82,7 +83,9 @@ class GraphDisplay extends Component {
       background_image,
       background_shapes,
       toolbar,
-      validation
+      controlbar,
+      validation,
+      annotation
     } = graphData;
 
     return {
@@ -140,12 +143,15 @@ class GraphDisplay extends Component {
       },
       evaluation,
       tools: toolbar ? toolbar.tools : [],
+      controls: controlbar ? controlbar.controls : [],
       setValue: onChange,
       validation,
       elements,
       showAnswer,
       checkAnswer,
-      changePreviewTab
+      changePreviewTab,
+      shapes: shapes,
+      annotation
     };
   };
 
@@ -368,7 +374,7 @@ class GraphDisplay extends Component {
     const GraphContainer = this.getGraphContainer();
 
     return (
-      <div>
+      <Fragment>
         <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: stimulus }} />
         {
           showAnswer ? 'showAnswer' : null
@@ -380,7 +386,7 @@ class GraphDisplay extends Component {
           clearAnswer ? 'clearAnswer' : null
         }
         <GraphContainer {...this.getGraphContainerProps()} />
-      </div>
+      </Fragment>
     );
   }
 }

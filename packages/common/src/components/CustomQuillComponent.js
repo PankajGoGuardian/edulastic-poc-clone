@@ -59,8 +59,8 @@ function insertStar() {
 
 function insertPara() {}
 
-const CustomToolbar = ({ showResponseBtn, active, id }) => (
-  <div id={id} style={{ display: active ? 'block' : 'none', width: 1100 }} className="toolbars">
+const CustomToolbar = ({ showResponseBtn, active, id, maxWidth, bottom }) => (
+  <div id={id} style={{ display: active ? 'block' : 'none', top: 'auto', maxWidth: maxWidth, bottom: bottom }} className="toolbars">
     <span className="ql-formats">
       <select className="ql-font" />
       <select className="ql-size" />
@@ -207,6 +207,8 @@ class CustomQuillComponent extends Component {
           active={active && !readOnly}
           showResponseBtn={showResponseBtn}
           id={toolbarId}
+          maxWidth={style.width}
+          bottom={style.minHeight}
         />
         <ReactQuill
           ref={el => (this.quillRef = el)}

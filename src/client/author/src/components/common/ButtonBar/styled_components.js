@@ -116,3 +116,37 @@ export const HeadIcon = styled.div`
 
 export const RightSide = styled.div`
 `;
+
+export const MenuItem = styled.li`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  width: 136px;
+  height: 45px;
+  border-radius: 37px;
+  border: none;
+  background-color: #0e93dc;
+  margin-right: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.36;
+  letter-spacing: 0.2px;
+  text-align: center;
+  color: #e5e5e5;
+  
+  &:last-of-type {
+    margin-right: 0;
+  }
+
+  &.active {
+    color: #434b5d;
+    background-color: #f3f3f3;
+
+    svg {
+      fill: #434b5d;
+    }
+  }
+`

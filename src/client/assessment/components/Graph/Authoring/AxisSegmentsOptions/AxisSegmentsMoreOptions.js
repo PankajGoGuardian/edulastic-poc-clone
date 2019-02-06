@@ -37,21 +37,34 @@ class AxisSegmentsMoreOptions extends Component {
     const { target: { name, value } } = event;
 
     const { numberlineAxis, setNumberline } = this.props;
-    setNumberline({ ...numberlineAxis, [name]: value });
+    if (name !== 'specificPoints' && !value) {
+      setNumberline({ ...numberlineAxis, [name]: 0 });
+    } else {
+      setNumberline({ ...numberlineAxis, [name]: value });
+    }
   }
 
   handleCanvasInputChange = (event) => {
     const { target: { name, value } } = event;
 
     const { canvasConfig, setCanvas } = this.props;
-    setCanvas({ ...canvasConfig, [name]: value });
+
+    if (!value) {
+      setCanvas({ ...canvasConfig, [name]: 0 });
+    } else {
+      setCanvas({ ...canvasConfig, [name]: value });
+    }
   };
 
   handleOptionsInputChange = (event) => {
     const { target: { name, value } } = event;
 
     const { options, setOptions } = this.props;
-    setOptions({ ...options, [name]: parseInt(value, 10) });
+    if (!value) {
+      setOptions({ ...options, [name]: 0 });
+    } else {
+      setOptions({ ...options, [name]: parseInt(value, 10) });
+    }
   }
 
   getFontSizeItem = () => {

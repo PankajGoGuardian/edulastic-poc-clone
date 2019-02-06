@@ -23,7 +23,7 @@ import {
   defaultAxesParameters,
   defaultGridParameters
 } from '../../Builder/settings';
-import { GraphWrapper, JSXBox } from './styled';
+import { GraphWrapper, JSXBox, LabelTop, LabelBottom, LabelLeft, LabelRight, Title } from './styled';
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -174,7 +174,9 @@ class GraphContainer extends Component {
     this._graph = null;
 
     this.state = {
-      selectedTool: this.getDefaultTool()
+      selectedTool: this.getDefaultTool(),
+      elementsStash: [],
+      currentStashIndex: 0
     };
 
     this.onSelectTool = this.onSelectTool.bind(this);
@@ -251,6 +253,10 @@ class GraphContainer extends Component {
     this.mapElementsToGraph();
 
     this.setGraphUpdateEventHandler();
+
+    const elementsStash = this.state.elementsStash.concat([this._graph.getConfig()])
+
+    this.setState({ elementsStash: elementsStash, currentStashIndex: elementsStash.length - 1 })
   }
 
   componentDidUpdate(prevProps) {
@@ -381,6 +387,42 @@ class GraphContainer extends Component {
     this._graph.setTool(tools[0]);
     this._graph.reset();
     this.getConfig();
+    const elementsStash = this.state.elementsStash.concat([this._graph.getConfig()])
+    this.setState({ elementsStash: elementsStash, currentStashIndex: elementsStash.length - 1 })
+  }
+
+  onUndo = () => {
+    const { currentStashIndex, elementsStash } = this.state
+    if (currentStashIndex > 0 && currentStashIndex <= elementsStash.length - 1) {
+      this.setState(state => ({ currentStashIndex: state.currentStashIndex - 1 }), () => {
+        this._graph.reset()
+        this._graph.loadFromConfig(elementsStash[this.state.currentStashIndex])
+        this.props.setValue(elementsStash[this.state.currentStashIndex])
+      })
+    }
+  }
+
+  onRedo() {
+    const { currentStashIndex, elementsStash } = this.state
+    if (currentStashIndex >= 0 && currentStashIndex < elementsStash.length - 1) {
+      this.setState(state => ({ currentStashIndex: state.currentStashIndex + 1 }), () => {
+        this._graph.reset()
+        this._graph.loadFromConfig(elementsStash[this.state.currentStashIndex])
+        this.props.setValue(elementsStash[this.state.currentStashIndex])
+      })
+    }
+  }
+
+  getHandlerByControlName = control => {
+    switch (control) {
+      case "undo":
+        return this.onUndo()
+      case "redo":
+        return this.onRedo()
+      case "reset":
+        return this.onReset()
+      default: return null
+    }
   }
 
   getConfig() {
@@ -394,8 +436,16 @@ class GraphContainer extends Component {
   }
 
   setGraphUpdateEventHandler = () => {
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, () => this.getConfig());
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, () => this.getConfig());
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, () => {
+      this.getConfig()
+      const elementsStash = this.state.elementsStash.concat([this._graph.getConfig()])
+      this.setState({ elementsStash: elementsStash, currentStashIndex: elementsStash.length - 1 })
+    });
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, () => {
+      this.getConfig()
+      const elementsStash = this.state.elementsStash.concat([this._graph.getConfig()])
+      this.setState({ elementsStash: elementsStash, currentStashIndex: elementsStash.length - 1 })
+    });
   };
 
   mapElementsToGraph = () => {
@@ -502,31 +552,92 @@ class GraphContainer extends Component {
     return iconsByToolName[toolName]();
   };
 
+  allTools = [
+    'point',
+    'line',
+    'ray',
+    'segment',
+    'vector',
+    'circle',
+    'sine',
+    'polygon',
+    'parabola',
+    'label'
+  ]
+
+  allControls = [
+    'undo',
+    'redo',
+    'reset'
+  ]
+
   render() {
     const {
       tools,
-      layout
+      layout,
+      annotation,
+      controls, 
+      shapes
     } = this.props;
     const {
       selectedTool
     } = this.state;
-
+    const hasAnnotation = annotation && (
+      annotation.labelTop
+      || annotation.labelLeft
+      || annotation.labelRight
+      || annotation.labelBottom
+    )
     return (
-      <div style={{ overflow: 'auto' }}>
+      <div style={{ overflow: 'auto', width: '100%' }}>
         <GraphWrapper>
+          {
+            annotation && annotation.title && (
+              <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />
+            )
+          }
           <Tools
-            tools={tools}
+            tools={shapes ? this.allTools : tools}
+            controls={shapes ? this.allControls :controls}
             tool={selectedTool}
+            shapes={shapes}
             getIconByToolName={this.getIconByToolName}
+            getHandlerByControlName={this.getHandlerByControlName}
             onSelect={this.onSelectTool}
             onReset={this.onReset}
-            fontSize={layout.fontSize}
+            fontSize={shapes ? 12 : layout.fontSize}
           />
-          <div>
+          <div
+            style={{
+              position: 'relative',
+              overflow: 'auto',
+              width: layout.width + 40 + 'px'
+            }}
+          >
+            {
+              annotation && annotation.labelTop && (
+                <LabelTop dangerouslySetInnerHTML={{ __html: annotation.labelTop }} />
+              )
+            }
+            {
+              annotation && annotation.labelRight && (
+                <LabelRight dangerouslySetInnerHTML={{ __html: annotation.labelRight }} />
+              )
+            }
+            {
+              annotation && annotation.labelLeft && (
+                <LabelLeft dangerouslySetInnerHTML={{ __html: annotation.labelLeft }} />
+              )
+            }
+            {
+              annotation && annotation.labelBottom && (
+                <LabelBottom dangerouslySetInnerHTML={{ __html: annotation.labelBottom }} />
+              )
+            }
             <JSXBox
               id={this._graphId}
               className="jxgbox"
-              margin={layout.margin}
+              margin={layout.margin ? layout.margin : hasAnnotation ? 20 : 0}
             />
           </div>
         </GraphWrapper>

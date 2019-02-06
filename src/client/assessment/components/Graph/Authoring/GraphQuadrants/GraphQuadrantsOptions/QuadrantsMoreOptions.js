@@ -501,6 +501,7 @@ class QuadrantsMoreOptions extends Component {
               onChange={setBgShapes}
               elements={graphData.background_shapes}
               changePreviewTab={() => {}}
+              shapes={true}
             />
           </MoreOptionsRow>
         </MoreOptionsContainer>

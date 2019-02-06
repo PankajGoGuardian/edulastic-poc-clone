@@ -699,6 +699,10 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           y_max: 10.4,
           y_min: -10.4
         },
+        controlbar: {
+          controls: ['undo', 'redo'],
+          default_control: 'undo'
+        },
         toolbar: {
           tools: ['point', 'line'],
           default_tool: 'point'
@@ -709,6 +713,11 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
             score: 1,
             value: []
           },
+          unscored: false,
+          penaltyPoints: 1,
+          checkAttempts: 2,
+          minScore: 1,
+          checkAnswerButton: true,
           alt_responses: []
         },
         ui_style: {
@@ -767,6 +776,10 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           y_max: 10.4,
           y_min: -0.8
         },
+        controlbar: {
+          controls: ['undo', 'redo'],
+          default_control: 'undo'
+        },
         toolbar: {
           tools: ['point', 'line'],
           default_tool: 'point'
@@ -777,6 +790,11 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
             score: 1,
             value: []
           },
+          unscored: false,
+          penaltyPoints: 1,
+          checkAttempts: 2,
+          minScore: 1,
+          checkAnswerButton: true,
           alt_responses: []
         },
         ui_style: {
@@ -838,6 +856,10 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           margin: 75,
           responsesAllowed: 2,
           title: 'Text'
+        },
+        controlbar: {
+          controls: ['undo', 'redo', 'reset'],
+          default_control: 'undo'
         },
         toolbar: {
           tools: ['segmentsPoint'],
@@ -904,6 +926,11 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         validation: {
           graphType: 'axisSegments',
           scoring_type: EXACT_MATCH,
+          unscored: false,
+          penaltyPoints: 1,
+          checkAttempts: 2,
+          minScore: 1,
+          checkAnswerButton: true,
           valid_response: {
             score: 1,
             value: []
@@ -938,10 +965,19 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           { text: 'Option 1', id: `list-item-${Math.random().toString(36).substr(2, 9)}` },
           { text: 'Option 2', id: `list-item-${Math.random().toString(36).substr(2, 9)}` }
         ],
+        controlbar: {
+          controls: ['undo', 'redo'],
+          default_control: 'undo'
+        },
         stimulus: '[This is the stem. axisLabels]',
         validation: {
           graphType: 'axisLabels',
           scoring_type: EXACT_MATCH,
+          unscored: false,
+          penaltyPoints: 1,
+          checkAttempts: 2,
+          minScore: 1,
+          checkAnswerButton: true,
           valid_response: {
             score: 1,
             value: []

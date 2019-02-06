@@ -91,9 +91,11 @@ export const getAssignmentsSelector = createSelector(
         // or assigments is past dueDate
         let maxAttempts = (assignment.test && assignment.test.maxAttempts) || 5;
         let attempts = (assignment.reports && assignment.reports.length) || 0;
-        let classDetails = assignment.class.filter(
-          classDetail => currentClass === classDetail._id
-        );
+        let classDetails =
+          assignment.class &&
+          assignment.class.filter(
+            classDetail => currentClass === classDetail._id
+          );
         const isExpired =
           maxAttempts <= attempts || new Date(assignment.endDate) < new Date();
         const attempted = !!(assignment.reports && assignment.reports.length);

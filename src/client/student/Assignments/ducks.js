@@ -146,9 +146,11 @@ export const getAssignmentsSelector = createSelector(
         let maxAttempts = (assignment.test && assignment.test.maxAttempts) || 5;
         let attempts = (assignment.reports && assignment.reports.length) || 0;
         let lastAttempt = last(assignment.reports) || [];
-        let classDetails = assignment.class.filter(
-          classDetail => currentClass === classDetail._id
-        );
+        let classDetails =
+          assignment.class &&
+          assignment.class.filter(
+            classDetail => currentClass === classDetail._id
+          );
         const liveAssignments =
           (maxAttempts > attempts || lastAttempt.status == '0') &&
           new Date(assignment.endDate) > new Date();

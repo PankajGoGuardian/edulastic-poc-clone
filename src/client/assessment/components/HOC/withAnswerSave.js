@@ -7,15 +7,19 @@ import { withRouter } from 'react-router-dom';
 import { setUserAnswerAction } from '../../actions/answers';
 import { getAnswerByQuestionIdSelector } from '../../selectors/answers';
 
+const getQuestionId = (testItemId, questionId) => testItemId || questionId || 'tmp';
+
 export default (WrappedComponent) => {
-  const hocComponent = ({ setUserAnswer, match, ...props }) => {
+  const hocComponent = ({ setUserAnswer, testItemId, ...props }) => {
     const { data: question } = props;
+    const questionId = getQuestionId(testItemId, question.id);
+
     return (
       <WrappedComponent
         saveAnswer={(data) => {
-          setUserAnswer(question.id || match.params.id, data);
+          setUserAnswer(questionId, data);
         }}
-        questionId={question.id}
+        questionId={questionId}
         {...props}
       />
     );
@@ -28,8 +32,8 @@ export default (WrappedComponent) => {
   const enhance = compose(
     withRouter,
     connect(
-      (state, { data: { id } }) => ({
-        userAnswer: getAnswerByQuestionIdSelector(id)(state)
+      (state, { testItemId, data: { id: questionId } }) => ({
+        userAnswer: getAnswerByQuestionIdSelector(getQuestionId(testItemId, questionId))(state)
       }),
       { setUserAnswer: setUserAnswerAction }
     )

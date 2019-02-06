@@ -61,10 +61,11 @@ function* getValidations(mode) {
 
   if (mode === 'edit') {
     const question = yield select(getQuestionDataSelector);
+    const questionId = question.id || 'tmp';
 
     if (question) {
       validations = {
-        [question.id]: question
+        [questionId]: question
       };
     }
   } else {

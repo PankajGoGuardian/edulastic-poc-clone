@@ -64,10 +64,30 @@ const AssignmentCard = ({
         assignmentId,
         testActivityId: lastAttempt._id
       });
-    } else if (attemptCount < test.maxAttempts) { 
+    } else if (attemptCount < test.maxAttempts) {
       startAssignment({ testId, assignmentId });
     }
   };
+
+  const { releaseScore = true, activityReview = true } = test;
+
+  const ScoreDetail = (
+    <React.Fragment>
+      <AnswerAndScore>
+        <span data-cy="score">
+          {correct}/{totalQuestions}
+        </span>
+        <Title>{t('common.correctAnswer')}</Title>
+      </AnswerAndScore>
+
+      <AnswerAndScore>
+        <span data-cy="percent">
+          {Math.floor(scorePercentage * 100) / 100}%
+        </span>
+        <Title>{t('common.score')}</Title>
+      </AnswerAndScore>
+    </React.Fragment>
+  );
 
   return (
     <CardWrapper>
@@ -93,19 +113,7 @@ const AssignmentCard = ({
                   {arrow} &nbsp;&nbsp;{t('common.attemps')}
                 </AttemptsTitle>
               </Attempts>
-              <React.Fragment>
-                <AnswerAndScore>
-                  <span data-cy="score">
-                    {correct}/{totalQuestions}
-                  </span>
-                  <Title>{t('common.correctAnswer')}</Title>
-                </AnswerAndScore>
-
-                <AnswerAndScore>
-                  <span data-cy="percent">{Math.floor(scorePercentage * 100) / 100}%</span>
-                  <Title>{t('common.score')}</Title>
-                </AnswerAndScore>
-              </React.Fragment>
+              {releaseScore && ScoreDetail}
             </AttemptDetails>
           )}
           {type === 'assignment' ? (
@@ -122,6 +130,7 @@ const AssignmentCard = ({
               data-cy="review"
               testActivityId={lastAttempt._id}
               title={test.title}
+              activityReview={activityReview}
               t={t}
               attempted={attempted}
             />
@@ -129,7 +138,12 @@ const AssignmentCard = ({
         </DetailContainer>
         {showAttempts &&
           newReports.map(attempt => (
-            <Attempt key={attempt._id} data={attempt} type={type}/>
+            <Attempt
+              key={attempt._id}
+              data={attempt}
+              activityReview={activityReview}
+              type={type}
+            />
           ))}
       </ButtonAndDetail>
     </CardWrapper>

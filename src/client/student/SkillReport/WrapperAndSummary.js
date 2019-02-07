@@ -28,10 +28,8 @@ const computeColumns = t => [
     sorter: (a, b) => a.percentage - b.percentage,
     render: percentage => (
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        {percentage === null
-          ? '-'
-          : `${(Math.round(percentage * 10) / 10).toFixed(1)}%`}
-        {percentage !== null && <Circle percentage={percentage} />}
+        {Number.isNaN(percentage) ? '-' : `${Number(percentage.toFixed(1))}%`}
+        {!Number.isNaN(percentage) && <Circle percentage={percentage} />}
       </div>
     ),
     width: '20%'
@@ -56,8 +54,7 @@ const SkillReportMainContent = ({ skillReport, t }) => {
       );
     sumData = skillReport.reports.curriculum.domains.map(domain => {
       const reportData = getDomainScoreDetails(domain._id)[0] || {};
-      const percentage =
-        (reportData.score / reportData.max_points) * 100 || null;
+      const percentage = (reportData.score / reportData.max_points) * 100;
       return {
         domain: domain.description || '-',
         standards: domain.standards || '-',

@@ -31,9 +31,7 @@ const computeColumns = t => [
       percentage === null ? (
         '-'
       ) : (
-        <StyledProgress
-          percent={(Math.round(percentage * 10) / 10).toFixed(1)}
-        />
+        <StyledProgress percent={Number(percentage.toFixed(1))} />
       ),
     width: '20%'
   }
@@ -66,7 +64,7 @@ class DomainDetail extends Component {
       sumData = summary.standards.map(standard => {
         const standardsData = getStandardsScoreDetails(standard._id)[0] || {};
         const percentage =
-          (standardsData.score / standardsData.max_points) * 100 || null;
+          (standardsData.score / standardsData.max_points) * 100;
         score += standardsData.score || 0;
         maxScore += standardsData.max_points || 0;
         return {
@@ -77,9 +75,7 @@ class DomainDetail extends Component {
         };
       });
     }
-    const skillPercentage = (
-      Math.round((score / maxScore) * 100 * 10) / 10
-    ).toFixed(1);
+    const skillPercentage = Number(((score / maxScore) * 100).toFixed(1));
 
     return (
       <S.AssignmentContentWrap>

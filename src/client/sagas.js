@@ -9,6 +9,7 @@ import {
 } from './student/sagas';
 import authorSagas from './author/src/sagas';
 import assessmentSagas from './assessment/sagas';
+import { CurriculumSequenceSaga } from './author/curriculumsequence';
 
 export default function*() {
   yield all([
@@ -18,6 +19,7 @@ export default function*() {
     authenticationSaga(),
     testActivityReportSaga(),
     ...authorSagas,
-    ...assessmentSagas
+    ...assessmentSagas,
+    CurriculumSequenceSaga()
   ]);
 }

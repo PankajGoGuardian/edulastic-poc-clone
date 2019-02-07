@@ -22,6 +22,7 @@ const ItemDetail = lazy(() => import('./components/ItemDetail'));
 const ItemAdd = lazy(() => import('./components/ItemAdd'));
 const PickUpQuestionType = lazy(() =>
   import('./components/PickUpQuestionType'));
+const CurriculumContainer = lazy(() => import('../curriculumsequence'));
 
 // eslint-disable-next-line react/prop-types
 const Author = ({ match, history, isSidebarCollapsed }) => {
@@ -46,6 +47,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                 path={`${match.url}/items/:id/item-detail`}
                 component={ItemDetail}
               />
+              <Route exact path="/author/curriculum-sequence" component={CurriculumContainer} />
               <Route exact path="/author/add-item" component={ItemAdd} />
               <Route
                 exact

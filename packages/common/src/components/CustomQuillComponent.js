@@ -60,7 +60,11 @@ function insertStar() {
 function insertPara() {}
 
 const CustomToolbar = ({ showResponseBtn, active, id, maxWidth, bottom }) => (
-  <div id={id} style={{ display: active ? 'block' : 'none', top: 'auto', maxWidth: maxWidth, bottom: bottom }} className="toolbars">
+  <div
+    id={id}
+    style={{ display: active ? 'block' : 'none', top: -140, maxWidth, bottom }}
+    className="toolbars"
+  >
     <span className="ql-formats">
       <select className="ql-font" />
       <select className="ql-size" />
@@ -115,6 +119,8 @@ const CustomToolbar = ({ showResponseBtn, active, id, maxWidth, bottom }) => (
 );
 
 CustomToolbar.propTypes = {
+  maxWidth: PropTypes.any.isRequired,
+  bottom: PropTypes.any.isRequired,
   showResponseBtn: PropTypes.bool,
   active: PropTypes.bool,
   id: PropTypes.string

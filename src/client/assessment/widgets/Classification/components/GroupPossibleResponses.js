@@ -7,11 +7,11 @@ import { FlexContainer, EduButton } from '@edulastic/common';
 import { IconTrash } from '@edulastic/icons';
 import { greenDark, red, secondaryTextColor } from '@edulastic/colors';
 
+import QuillSortableList from '../../../components/QuillSortableList/index';
 import { Subtitle } from '../../../styled/Subtitle';
 import withAddButton from '../../../components/HOC/withAddButton';
-import SortableList from '../../../components/SortableList/index';
 
-const List = withAddButton(SortableList);
+const List = withAddButton(QuillSortableList);
 
 const Group = ({
   item,

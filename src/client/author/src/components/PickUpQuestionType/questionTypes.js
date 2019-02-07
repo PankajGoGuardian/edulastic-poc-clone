@@ -997,7 +997,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           rightArrow: false,
           showTicks: true,
           snapToTicks: true,
-          ticksDistance: 1,
+          ticksDistance: '1',
           labelsFrequency: 1,
           showMin: true,
           showMax: true,
@@ -1005,7 +1005,8 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           separationDistanceX: 10,
           separationDistanceY: 20,
           renderingBase: 'min-value-based',
-          specificPoints: ''
+          specificPoints: '',
+          fractionsFormat: 'not-normalized-fractions'
         },
         ui_style: {
           gridVisible: false,

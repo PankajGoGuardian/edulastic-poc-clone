@@ -297,6 +297,7 @@ class AxisLabelsContainer extends Component {
         || numberlineAxis.separationDistanceY !== prevProps.numberlineAxis.separationDistanceY
         || numberlineAxis.renderingBase !== prevProps.numberlineAxis.renderingBase
         || numberlineAxis.specificPoints !== prevProps.numberlineAxis.specificPoints
+        || numberlineAxis.fractionsFormat !== prevProps.numberlineAxis.fractionsFormat
       ) {
         this._graph.updateGraphParameters(
           canvas,

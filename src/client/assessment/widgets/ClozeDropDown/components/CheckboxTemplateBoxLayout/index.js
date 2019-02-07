@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Draggable, Droppable } from 'react-drag-and-drop';
 
 import { IconCheck, IconClose } from '@edulastic/icons';
 import { green, red } from '@edulastic/colors';
@@ -18,8 +17,7 @@ const CheckboxTemplateBoxLayout = ({
   fontSize,
   userSelections,
   stemNumeration,
-  evaluation,
-  onDropHandler
+  evaluation
 }) => {
   let responseIndex = 0;
 
@@ -98,18 +96,14 @@ const CheckboxTemplateBoxLayout = ({
                   </IconWrapper>
                 </div>
               )}
-              <Droppable
-                key={index}
-                types={['metal']}
-                onDrop={data => onDropHandler(data, dropTargetIndex)}
+              <div
+                style={{
+                  top: -5,
+                  display: 'inline-flex'
+                }}
               >
                 {!showAnswer && hasGroupResponses && (
-                  <Draggable
-                    type="metal"
-                    data={`${userSelections[dropTargetIndex] &&
-                      userSelections[dropTargetIndex].data}_${userSelections[dropTargetIndex] &&
-                      userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
-                  >
+                  <div>
                     <div className={`response-btn check-answer ${className}`} style={btnStyle}>
                       &nbsp;<span className="index">{indexStr}</span>
                       <span className="text">
@@ -121,13 +115,10 @@ const CheckboxTemplateBoxLayout = ({
                         {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
                       </IconWrapper>
                     </div>
-                  </Draggable>
+                  </div>
                 )}
                 {!showAnswer && !hasGroupResponses && (
-                  <Draggable
-                    type="metal"
-                    data={`${userSelections[dropTargetIndex]}_${dropTargetIndex}_fromResp`}
-                  >
+                  <div>
                     <div className={`response-btn check-answer ${className}`} style={btnStyle}>
                       &nbsp;<span className="index">{indexStr}</span>
                       <span className="text">
@@ -139,9 +130,9 @@ const CheckboxTemplateBoxLayout = ({
                         {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
                       </IconWrapper>
                     </div>
-                  </Draggable>
+                  </div>
                 )}
-              </Droppable>
+              </div>
             </div>
           );
         }
@@ -166,8 +157,7 @@ CheckboxTemplateBoxLayout.propTypes = {
   userSelections: PropTypes.array,
   stemNumeration: PropTypes.string,
   evaluation: PropTypes.array,
-  showAnswer: PropTypes.bool,
-  onDropHandler: PropTypes.func
+  showAnswer: PropTypes.bool
 };
 
 CheckboxTemplateBoxLayout.defaultProps = {
@@ -179,8 +169,7 @@ CheckboxTemplateBoxLayout.defaultProps = {
   userSelections: [],
   stemNumeration: 'numerical',
   evaluation: [],
-  showAnswer: false,
-  onDropHandler: () => {}
+  showAnswer: false
 };
 
 export default React.memo(CheckboxTemplateBoxLayout);

@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Draggable, Droppable } from 'react-drag-and-drop';
 
 import { IconCheck, IconClose } from '@edulastic/icons';
 import { green, red } from '@edulastic/colors';
@@ -9,6 +8,8 @@ import { Pointer } from '../../../../styled/Pointer';
 import { Point } from '../../../../styled/Point';
 import { Triangle } from '../../../../styled/Triangle';
 
+import Draggable from '../Draggable';
+import Droppable from '../Droppable';
 import { IconWrapper } from './styled/IconWrapper';
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
@@ -85,18 +86,16 @@ const CheckboxTemplateBoxLayout = ({
           <React.Fragment key={index}>
             {!showAnswer && (
               <Droppable
-                types={['metal']} // <= allowed drop types
                 style={btnStyle}
                 className={`imagelabeldragdrop-droppable active check-answer ${className}`}
-                onDrop={data => onDropHandler(data, dropTargetIndex)}
+                drop={() => ({ dropTargetIndex })}
               >
                 <span className="index index-box">{indexStr}</span>
                 <div className="text container">
                   {userSelections[dropTargetIndex] &&
-                    userSelections[dropTargetIndex].map((answer, user_select_index) => (
+                    userSelections[dropTargetIndex].map(answer => (
                       <Draggable
-                        type="metal"
-                        key={user_select_index}
+                        onDrop={onDropHandler}
                         data={`${answer}_${dropTargetIndex}_fromResp`}
                         style={{
                           border: 'solid 1px lightgray',

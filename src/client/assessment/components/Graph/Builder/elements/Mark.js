@@ -34,16 +34,13 @@ const snapMark = (mark, point, xCoords, snapToTicks, ticksDistance, setValue, li
 
     if (point.Y() >= containerY - (markYMeasure * 1.35) && point.X() < xCoords[0]) {
       y = lineY;
-      // x = calcRoundedToTicksDistance(xCoords[0], ticksDistance);
       x = closestTick(point.X(), ticks.fixedTicks);
     } else if (point.Y() >= containerY - (markYMeasure * 1.35) && point.X() > xCoords[1]) {
       y = lineY;
-      // x = calcRoundedToTicksDistance(xCoords[1], ticksDistance);
       x = closestTick(point.X(), ticks.fixedTicks);
     } else if (point.Y() >= containerY - (markYMeasure * 1.35) && point.X() < xCoords[1] && point.X() > xCoords[0]) {
       y = lineY;
       if (snapToTicks) {
-        // x = calcRoundedToTicksDistance(point.X(), ticksDistance);
         x = closestTick(point.X(), ticks.fixedTicks);
       } else {
         x = point.X();
@@ -109,16 +106,14 @@ const rerenderMark = (mark, board, graphParameters, settings, setValue, lineSett
   const containerY = containerSettings.yMax - (yMeasure / 100 * containerSettings.position)
   const lineY = lineSettings.yMax - (yMeasure / 100 * lineSettings.position)
 
+  const axis = board.elements.filter(element => element.elType === 'axis')[0];
+  const ticks = axis.ticks.filter(t => t.fixedTicks !== null)[0];
+
   if (oldCoords[1] >= containerY - (markYMeasure * 1.35)) {
     oldCoords[1] = lineY
-    
-    if (oldCoords[0] < graphParameters.xMin) {
-      oldCoords[0] = calcRoundedToTicksDistance(graphParameters.xMin, settings.ticksDistance);
-    } else if (oldCoords[0] > graphParameters.xMax) {
-      oldCoords[0] = calcRoundedToTicksDistance(graphParameters.xMax, settings.ticksDistance);
-    } else {
-      oldCoords[0] = calcRoundedToTicksDistance(oldCoords[0], settings.ticksDistance);
-    }
+
+    oldCoords[0] = closestTick(oldCoords[0], ticks.fixedTicks);
+
   } else {
     oldCoords = checkMarksRenderSpace(board, settings, containerSettings);
   }

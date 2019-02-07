@@ -5,8 +5,9 @@ import { isUndefined, mapValues, cloneDeep } from 'lodash';
 import { EduButton, FlexContainer, InstructorStimulus } from '@edulastic/common';
 
 import { QuestionHeader } from '../../styled/QuestionHeader';
-import CheckboxTemplateBoxLayout from '../../components/CheckboxTemplateBoxLayout/index';
 import CorrectAnswerBoxLayout from '../../components/CorrectAnswerBoxLayout';
+
+import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout';
 
 const { Option } = Select;
 
@@ -59,7 +60,7 @@ class ClozeDropDownDisplay extends Component {
     changeAnswers(newAnswers);
   };
 
-  shuffle = arr => {
+  shuffle = (arr) => {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -75,7 +76,7 @@ class ClozeDropDownDisplay extends Component {
     return data[key];
   });
 
-  getFontSize = size => {
+  getFontSize = (size) => {
     switch (size) {
       case 'small':
         return '10px';

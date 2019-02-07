@@ -1,14 +1,15 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Draggable, Droppable } from 'react-drag-and-drop';
 import { cloneDeep } from 'lodash';
 
 import { InstructorStimulus } from '@edulastic/common';
 
-import CheckboxTemplateBoxLayout from '../../components/CheckboxTemplateBoxLayout/index';
 import CorrectAnswerBoxLayout from '../../components/CorrectAnswerBoxLayout';
 import { QuestionHeader } from '../../styled/QuestionHeader';
 
+import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout';
+import Droppable from './components/Droppable';
+import Draggable from './components/Draggable';
 import ResponseBoxLayout from './components/ResponseBoxLayout';
 import { ResponseContainer } from './styled/ResponseContainer';
 import { AnswerContainer } from './styled/AnswerContainer';
@@ -72,10 +73,10 @@ class ClozeDragDropDisplay extends Component {
     // Remove duplicated responses if duplicated option is disable
     if (!isDuplicated) {
       if (hasGroupResponses) {
-        const groupIndex = data.metal.split('_')[1];
-        const groupData = data.metal.split('_')[0];
-        const sourceIndex = data.metal.split('_')[2];
-        const fromResp = data.metal.split('_')[3];
+        const groupIndex = data.split('_')[1];
+        const groupData = data.split('_')[0];
+        const sourceIndex = data.split('_')[2];
+        const fromResp = data.split('_')[3];
         if (fromResp) {
           const temp = newAnswers[sourceIndex];
           newAnswers[sourceIndex] = newAnswers[index];
@@ -100,9 +101,9 @@ class ClozeDragDropDisplay extends Component {
           data: groupData
         };
       } else {
-        const sourceIndex = data.metal.split('_')[1];
-        const sourceData = data.metal.split('_')[0];
-        const fromResp = data.metal.split('_')[2];
+        const sourceIndex = data.split('_')[1];
+        const sourceData = data.split('_')[0];
+        const fromResp = data.split('_')[2];
         if (fromResp) {
           const temp = newAnswers[sourceIndex];
           newAnswers[sourceIndex] = newAnswers[index];
@@ -118,10 +119,10 @@ class ClozeDragDropDisplay extends Component {
         }
       }
     } else if (hasGroupResponses) {
-      const groupIndex = data.metal.split('_')[1];
-      const groupData = data.metal.split('_')[0];
-      const sourceIndex = data.metal.split('_')[2];
-      const fromResp = data.metal.split('_')[3];
+      const groupIndex = data.split('_')[1];
+      const groupData = data.split('_')[0];
+      const sourceIndex = data.split('_')[2];
+      const fromResp = data.split('_')[3];
 
       if (fromResp) {
         const temp = newAnswers[sourceIndex];
@@ -133,9 +134,9 @@ class ClozeDragDropDisplay extends Component {
         data: groupData
       };
     } else {
-      const value = data.metal.split('_')[0];
-      const sourceIndex = data.metal.split('_')[1];
-      const fromResp = data.metal.split('_')[2];
+      const value = data.split('_')[0];
+      const sourceIndex = data.split('_')[1];
+      const fromResp = data.split('_')[2];
       if (fromResp) {
         const temp = newAnswers[sourceIndex];
         newAnswers[sourceIndex] = newAnswers[index];
@@ -297,17 +298,12 @@ class ClozeDragDropDisplay extends Component {
               btnStyle.whiteSpace = btnStyle.wordwrap;
             }
             return (
-              <Droppable
-                key={index}
-                types={['metal']} // <= allowed drop types
-                style={{ top: -5 }}
-                onDrop={data => this.onDrop(data, dropTargetIndex)}
-              >
+              <Droppable drop={() => ({ dropTargetIndex })}>
                 {!hasGroupResponses && (
                 <ResponseContainer style={btnStyle} smallSize={smallSize}>
                   <Draggable
                     className="content"
-                    type="metal"
+                    onDrop={this.onDrop}
                     data={`${userAnswers[dropTargetIndex]}_${dropTargetIndex}_fromResp`}
                   >
                     {userAnswers[dropTargetIndex]}
@@ -319,7 +315,7 @@ class ClozeDragDropDisplay extends Component {
                 <ResponseContainer style={btnStyle} smallSize={smallSize}>
                   <Draggable
                     className="content"
-                    type="metal"
+                    onDrop={this.onDrop}
                     data={`${userAnswers[dropTargetIndex] &&
                       userAnswers[dropTargetIndex].data}_${userAnswers[dropTargetIndex] &&
                       userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
@@ -368,6 +364,7 @@ class ClozeDragDropDisplay extends Component {
         responses={responses}
         fontSize={fontSize}
         dragHandler={dragHandler}
+        onDrop={this.onDrop}
       />
     );
     const correctAnswerBoxLayout = showAnswer ? (

@@ -294,13 +294,14 @@ class GraphDisplay extends Component {
         snapToTicks: numberlineAxis && numberlineAxis.snapToTicks,
         showMin: numberlineAxis && numberlineAxis.showMin,
         showMax: numberlineAxis && numberlineAxis.showMax,
-        ticksDistance: numberlineAxis && parseFloat(numberlineAxis.ticksDistance),
+        ticksDistance: numberlineAxis && numberlineAxis.ticksDistance,
         fontSize: numberlineAxis && parseInt(numberlineAxis.fontSize, 10),
         labelsFrequency: numberlineAxis && parseInt(numberlineAxis.labelsFrequency, 10),
         separationDistanceX: numberlineAxis && parseInt(numberlineAxis.separationDistanceX, 10),
         separationDistanceY: numberlineAxis && parseInt(numberlineAxis.separationDistanceY, 10),
         renderingBase: numberlineAxis && numberlineAxis.renderingBase,
-        specificPoints: numberlineAxis && numberlineAxis.specificPoints
+        specificPoints: numberlineAxis && numberlineAxis.specificPoints,
+        fractionsFormat: numberlineAxis && numberlineAxis.fractionsFormat
       },
       layout: {
         width: ui_style.layout_width,

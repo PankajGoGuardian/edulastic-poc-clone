@@ -28,7 +28,7 @@ class AxisLabelsMoreOptions extends Component {
     const { target: { name, value } } = event;
     const { graphData, setNumberline } = this.props;
     const { numberlineAxis } = graphData;
-    if (name !== 'specificPoints' && !value) {
+    if (name !== 'specificPoints' && name !== 'ticksDistance' && !value) {
       setNumberline({ ...numberlineAxis, [name]: 0 });
     } else {
       setNumberline({ ...numberlineAxis, [name]: value });
@@ -71,6 +71,9 @@ class AxisLabelsMoreOptions extends Component {
   };
 
   changeFractionsFormat = (e) => {
+    const { setNumberline, graphData } = this.props;
+    const { numberlineAxis } = graphData;
+
     const { fractionsFormatList } = this.props;
     const { value } = e.target;
     const findItem = fractionsFormatList.find(fractionItem =>
@@ -78,6 +81,8 @@ class AxisLabelsMoreOptions extends Component {
 
     if (findItem) {
       findItem.selected = true;
+
+      setNumberline({ ...numberlineAxis, fractionsFormat: findItem.id });
 
       this.setState(() => ({
         currentFractionItem: findItem
@@ -314,7 +319,7 @@ class AxisLabelsMoreOptions extends Component {
                   {t('component.graphing.ticksoptions.tickdistance')}
                 </MoreOptionsLabel>
                 <MoreOptionsInput
-                  type="number"
+                  type="text"
                   defaultValue="1"
                   name="ticksDistance"
                   onChange={this.handleNumberlineInputChange}

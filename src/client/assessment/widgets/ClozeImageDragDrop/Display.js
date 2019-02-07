@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Draggable, Droppable } from 'react-drag-and-drop';
 import { cloneDeep, flattenDeep, isUndefined } from 'lodash';
 
 import { Pointer } from '../../styled/Pointer';
@@ -8,6 +7,8 @@ import { Point } from '../../styled/Point';
 import { Triangle } from '../../styled/Triangle';
 import { QuestionHeader } from '../../styled/QuestionHeader';
 
+import Droppable from './components/Droppable';
+import Draggable from './components/Draggable';
 import ResponseBoxLayout from './components/ResponseBoxLayout';
 import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout';
 import CorrectAnswerBoxLayout from './components/CorrectAnswerBoxLayout';
@@ -54,7 +55,7 @@ class Display extends Component {
 
     // Remove duplicated responses if duplicated option is disable
     if (newAnswers[index] && newAnswers[index].length >= maxRespCount) {
-      const [sourceData, sourceIndex, fromResp] = data.metal.split('_');
+      const [sourceData, sourceIndex, fromResp] = data.split('_');
       if (!fromResp) return;
       newAnswers[index] = [];
       newAnswers[index].push(sourceData);
@@ -66,7 +67,7 @@ class Display extends Component {
       }
     } else if ((newAnswers[index] && newAnswers[index].length < maxRespCount) || isUndefined(newAnswers[index])) {
       if (!isDuplicated) {
-        const [sourceData, sourceIndex, fromResp] = data.metal.split('_');
+        const [sourceData, sourceIndex, fromResp] = data.split('_');
         if (fromResp) {
           if (newAnswers[index] === undefined) newAnswers[index] = [];
           newAnswers[index].push(sourceData);
@@ -87,7 +88,7 @@ class Display extends Component {
           }
         }
       } else {
-        const [value, sourceIndex, fromResp] = data.metal.split('_');
+        const [value, sourceIndex, fromResp] = data.split('_');
         if (fromResp) {
           if (newAnswers[index] === undefined) newAnswers[index] = [];
           newAnswers[index].push(value);
@@ -250,23 +251,20 @@ class Display extends Component {
             }
             return (
               <Droppable
-                key={index}
-                types={['metal']} // <= allowed drop types
                 style={{
                   ...btnStyle,
                   borderStyle: smallSize ? 'dashed' : 'solid'
                 }}
                 className="imagelabeldragdrop-droppable active"
-                onDrop={data => this.onDrop(data, dropTargetIndex)}
+                drop={() => ({ dropTargetIndex })}
               >
                 <span className="index-box">{indexStr}</span>
                 <div className="container">
                   {userAnswers[dropTargetIndex] &&
-                   userAnswers[dropTargetIndex].map((answer, item_index) => (
+                   userAnswers[dropTargetIndex].map(answer => (
                      <Draggable
-                       type="metal"
-                       key={item_index}
                        data={`${answer}_${dropTargetIndex}_fromResp`}
+                       onDrop={this.onDrop}
                        style={{ border: 'solid 1px lightgray', margin: 5, padding: 5, display: 'inline-block' }}
                      >
                        { answer }
@@ -313,6 +311,7 @@ class Display extends Component {
         fontSize={fontSize}
         dragHandler={dragHandler}
         transparentResponses={transparentResponses}
+        onDrop={this.onDrop}
       />
     );
     const correctAnswerBoxLayout = showAnswer ? (

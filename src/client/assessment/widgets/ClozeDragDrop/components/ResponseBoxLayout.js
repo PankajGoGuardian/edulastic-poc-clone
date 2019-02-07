@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Draggable } from 'react-drag-and-drop';
 
-const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, dragHandler }) => {
+import Draggable from './Draggable';
+
+const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, dragHandler, onDrop }) => {
   const handleMove = (e) => {
     if (e.clientY < 100) {
       window.scrollTo(window.pageXOffset, window.pageYOffset - 10);
@@ -41,13 +42,19 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
                       style={{ fontSize: smallSize ? 10 : fontSize }}
                     >
                       {!dragHandler && (
-                        <Draggable type="metal" data={`${option}_${index}`}>
+                        <Draggable
+                          onDrop={onDrop}
+                          data={`${option}_${index}`}
+                        >
                           {option}
                         </Draggable>
                       )}
                       {dragHandler && (
                         <React.Fragment>
-                          <Draggable type="metal" data={`${option}_${index}`}>
+                          <Draggable
+                            onDrop={onDrop}
+                            data={`${option}_${index}`}
+                          >
                             <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
                             <span>{option}</span>
                           </Draggable>
@@ -68,13 +75,19 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
             style={{ fontSize: smallSize ? 11 : fontSize, fontWeight: smallSize ? 600 : 300 }}
           >
             {!dragHandler && (
-              <Draggable type="metal" data={option}>
+              <Draggable
+                onDrop={onDrop}
+                data={option}
+              >
                 {option}
               </Draggable>
             )}
             {dragHandler && (
               <React.Fragment>
-                <Draggable type="metal" data={option}>
+                <Draggable
+                  onDrop={onDrop}
+                  data={option}
+                >
                   <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
                   <span>{option}</span>
                 </Draggable>
@@ -91,7 +104,8 @@ ResponseBoxLayout.propTypes = {
   fontSize: PropTypes.string,
   hasGroupResponses: PropTypes.bool,
   smallSize: PropTypes.bool,
-  dragHandler: PropTypes.bool
+  dragHandler: PropTypes.bool,
+  onDrop: PropTypes.func.isRequired
 };
 
 ResponseBoxLayout.defaultProps = {

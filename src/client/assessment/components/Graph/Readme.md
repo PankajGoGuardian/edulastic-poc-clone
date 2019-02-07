@@ -25,7 +25,15 @@ Builder for AxisLabels
 - renderMarks()
 
 Builder for "Rendering Base" setting
-- Mark.onHandler()
 - Mark.snapMark()
 - NumberLine.onHandler()
 - utils.calcRoundedToTicksDistance()
+
+TicksDistance in Builder
+- Nummberline.onHandler()
+- Mark:
+  - rerenderMark()
+  - snapMark()
+- utils:
+  - calcRoundedToTicksDistance()
+  - updateNumberline()

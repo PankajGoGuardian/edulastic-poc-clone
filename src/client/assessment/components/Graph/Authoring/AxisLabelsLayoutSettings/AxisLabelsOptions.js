@@ -7,7 +7,7 @@ import {
 } from '../../common/styled_components';
 import { Toggler } from '../../../../styled/WidgetOptions/Toggler';
 import AxisLabelsMoreOptions from './AxisLabelsMoreOptions';
-import { RENDERING_BASE } from '../../Builder/config/constants';
+import { RENDERING_BASE, FRACTIONS_FORMAT } from '../../Builder/config/constants';
 
 class AxisLabelsOptions extends Component {
   state = {
@@ -46,17 +46,17 @@ class AxisLabelsOptions extends Component {
     ],
     fractionsFormatList: [
       {
-        id: 'not-normalized-fractions',
+        id: FRACTIONS_FORMAT.NOT_NORMALIZED,
         value: 'Not normalized and mixed fractions',
         selected: true
       },
       {
-        id: 'normalized-fractions',
+        id: FRACTIONS_FORMAT.NORMALIZED,
         value: 'Normalized and mixed fractions',
         selected: false
       },
       {
-        id: 'improper-fractions',
+        id: FRACTIONS_FORMAT.IMPROPER,
         value: 'Improper fractions',
         selected: false
       }

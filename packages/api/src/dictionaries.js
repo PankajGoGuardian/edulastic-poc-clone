@@ -5,7 +5,7 @@ const api = new API();
 const receiveCurriculums = () =>
   api.callApi({ url: '/curriculum' }).then(result => result.data.result);
 
-const receiveStandards = ({ curriculumId, grades, search }) => {
+const receiveStandards = ({ curriculumId, grades = [], search }) => {
   const data = { curriculumId, grades, search };
   return api
     .callApi({

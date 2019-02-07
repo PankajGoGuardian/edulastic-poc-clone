@@ -3,11 +3,11 @@ import { shallow, render } from 'enzyme';
 
 import configureStore from '../../../../../configureStore';
 
-import TestList from '../TestList';
+import TestList from '../Container';
 
 const { store } = configureStore();
 
-describe('<TestList />', () => {
+describe('<Container />', () => {
   it('should render properly', () => {
     const renderedComponent = shallow(<TestList />);
     expect(renderedComponent.length).toEqual(1);

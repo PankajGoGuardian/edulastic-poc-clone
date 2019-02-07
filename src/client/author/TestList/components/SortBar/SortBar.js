@@ -4,7 +4,7 @@ import { Select } from 'antd';
 import { IconList, IconTile } from '@edulastic/icons';
 import { FlexContainer } from '@edulastic/common';
 import { grey, blue } from '@edulastic/colors';
-import styled from 'styled-components';
+import { Container } from './styled';
 
 const SortBar = ({ onSortChange, activeStyle, onStyleChange }) => (
   <FlexContainer>
@@ -36,32 +36,3 @@ SortBar.propTypes = {
 };
 
 export default SortBar;
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-
-  .ant-select {
-    margin-right: 23px;
-    width: 128px;
-  }
-
-  svg {
-    margin-right: 23px;
-    width: 18px !important;
-  }
-
-  .ant-select-selection__rendered {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
-    color: #434b5d;
-  }
-
-  .ant-select-arrow-icon {
-    svg {
-      fill: #00b0ff;
-      margin-right: 0px;
-    }
-  }
-`;

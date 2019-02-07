@@ -1,5 +1,4 @@
 import {
-  RECEIVE_TESTS_REQUEST,
   CREATE_TEST_REQUEST,
   RECEIVE_TEST_BY_ID_REQUEST,
   SET_TEST_DATA,
@@ -7,11 +6,6 @@ import {
   SET_DEFAULT_TEST_DATA,
   SET_MAX_ATTEMPT
 } from '../constants/actions';
-
-export const receiveTestsAction = payload => ({
-  type: RECEIVE_TESTS_REQUEST,
-  payload
-});
 
 export const receiveTestByIdAction = id => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,

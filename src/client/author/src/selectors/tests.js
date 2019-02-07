@@ -3,33 +3,17 @@ import { get, groupBy, forEach } from 'lodash';
 
 export const stateSelector = state => state.tests;
 
-export const getTestsSelector = createSelector(
-  stateSelector,
-  state => state.entities
-);
 export const getTestSelector = createSelector(
   stateSelector,
   state => state.entity
-);
-export const getScoringSelector = createSelector(
-  getTestSelector,
-  state => state.scoring
-);
-export const getTestsLoadingSelector = createSelector(
-  stateSelector,
-  state => state.loading
 );
 export const getTestsCreatingSelector = createSelector(
   stateSelector,
   state => state.creating
 );
-export const getTestsPageSelector = createSelector(
-  stateSelector,
-  state => state.page
-);
-export const getTestsLimitSelector = createSelector(
-  stateSelector,
-  state => state.limit
+export const getScoringSelector = createSelector(
+  getTestSelector,
+  state => state.scoring
 );
 
 export const getTestEntitySelector = createSelector(

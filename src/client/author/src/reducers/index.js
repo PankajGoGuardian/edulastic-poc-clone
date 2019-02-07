@@ -12,6 +12,7 @@ import dictionaries from './dictionaries';
 import author_assignments from './assignments';
 import author_classboard_gradebook from './gradeBook';
 import author_classboard_testActivity from './testActivity';
+import { testList } from '../../TestList';
 
 const authorReducers = {
   authorUi,
@@ -27,7 +28,8 @@ const authorReducers = {
   dictionaries,
   author_assignments,
   author_classboard_gradebook,
-  author_classboard_testActivity
+  author_classboard_testActivity,
+  testList
 };
 
 export default authorReducers;

@@ -69,7 +69,7 @@ class ItemList extends Component {
     );
   };
 
-  handleSearchFieldChangeCurriculumId = value => {
+  handleSearchFieldChangeCurriculumId = (value) => {
     const { search } = this.state;
     const { clearDictStandards } = this.props;
     clearDictStandards();
@@ -85,7 +85,7 @@ class ItemList extends Component {
     );
   };
 
-  handleSearchFieldChange = fieldName => value => {
+  handleSearchFieldChange = fieldName => (value) => {
     const { search } = this.state;
     if (fieldName === 'curriculumId') {
       this.handleSearchFieldChangeCurriculumId(value);
@@ -115,7 +115,7 @@ class ItemList extends Component {
     });
   };
 
-  handlePaginationChange = page => {
+  handlePaginationChange = (page) => {
     const { search } = this.state;
     const { receiveItems, limit } = this.props;
     receiveItems(search, page, limit);
@@ -157,6 +157,7 @@ class ItemList extends Component {
       loading
     } = this.props;
     const { search } = this.state;
+
     return (
       <div>
         <ListHeader

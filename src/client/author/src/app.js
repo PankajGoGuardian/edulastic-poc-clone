@@ -14,15 +14,17 @@ const Assignments = lazy(() => import('./Assignments/components/Assignments'));
 const ClassBoard = lazy(() => import('./ClassBoard/components'));
 const ClassResponses = lazy(() => import('./ClassResponses/components'));
 const ExpressGrader = lazy(() => import('./ExpressGrader/components'));
-const TestList = lazy(() => import('./components/TestList'));
+const TestList = lazy(() => import('../TestList'));
 const TestPage = lazy(() => import('./components/TestPage'));
 const QuestionEditor = lazy(() => import('./components/QuestionEditor'));
 const ItemList = lazy(() => import('./components/ItemList'));
 const ItemDetail = lazy(() => import('./components/ItemDetail'));
 const ItemAdd = lazy(() => import('./components/ItemAdd'));
+
 const PickUpQuestionType = lazy(() =>
   import('./components/PickUpQuestionType'));
 const CurriculumContainer = lazy(() => import('../curriculumsequence'));
+
 
 // eslint-disable-next-line react/prop-types
 const Author = ({ match, history, isSidebarCollapsed }) => {
@@ -73,6 +75,15 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                 render={props => (
                   <Suspense fallback={<Progress />}>
                     <TestPage {...props} />
+                  </Suspense>
+                )}
+              />
+              <Route
+                exact
+                path="/author/tests/limit/:limit/page/:page/:filter?"
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <TestList {...props} />
                   </Suspense>
                 )}
               />

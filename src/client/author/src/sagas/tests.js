@@ -3,9 +3,6 @@ import { testsApi } from '@edulastic/api';
 import { message } from 'antd';
 
 import {
-  RECEIVE_TESTS_REQUEST,
-  RECEIVE_TESTS_SUCCESS,
-  RECEIVE_TESTS_ERROR,
   CREATE_TEST_REQUEST,
   CREATE_TEST_SUCCESS,
   CREATE_TEST_ERROR,
@@ -16,30 +13,6 @@ import {
   UPDATE_TEST_SUCCESS,
   UPDATE_TEST_ERROR
 } from '../constants/actions';
-
-function* receiveTestsSaga({ payload }) {
-  try {
-    const [entities, { count }] = yield all([
-      call(testsApi.getAll, payload),
-      call(testsApi.getCount)
-    ]);
-
-    yield put({
-      type: RECEIVE_TESTS_SUCCESS,
-      payload: { entities, count, page: payload.page, limit: payload.limit }
-    });
-
-    const { page, limit } = payload;
-    yield call(testsApi.getAll, { page: page + 1, limit });
-  } catch (err) {
-    const errorMessage = 'Receive tests is failing';
-    yield call(message.error, errorMessage);
-    yield put({
-      type: RECEIVE_TESTS_ERROR,
-      payload: { error: errorMessage }
-    });
-  }
-}
 
 function* receiveTestByIdSaga({ payload }) {
   try {
@@ -106,7 +79,6 @@ function* updateTestSaga({ payload }) {
 
 export default function* watcherSaga() {
   yield all([
-    yield takeEvery(RECEIVE_TESTS_REQUEST, receiveTestsSaga),
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
     yield takeEvery(CREATE_TEST_REQUEST, createTestSaga),
     yield takeEvery(UPDATE_TEST_REQUEST, updateTestSaga)

@@ -5,145 +5,53 @@ import PropTypes from 'prop-types';
 import { FlexContainer } from '@edulastic/common';
 import { Select } from 'antd';
 
-const subjects = [
-  { value: 'sub1', text: 'Sub1' },
-  { value: 'sub2', text: 'Sub2' }
-];
-const subjects2 = [
-  { value: 'all', text: 'All subjects' },
-  { value: 'sub1', text: 'Sub1' }
-];
-const standardSets = [
-  { value: 'all', text: 'All standard set' },
-  { value: 'sub1', text: 'Sub1' }
-];
-const collections = [
-  { value: 'all', text: 'All collections' },
-  { value: 'sub1', text: 'Sub1' }
-];
-const questionTypes = [
-  { value: 'all', text: 'All types' },
-  { value: 'sub1', text: 'Sub1' }
-];
-const knowledges = [
-  { value: 'all', text: 'All depth of knowledge' },
-  { value: 'sub1', text: 'Sub1' }
-];
-const difficulties = [
-  { value: 'all', text: 'All levels' },
-  { value: 'sub1', text: 'Sub1' }
-];
-
-const TestFilters = ({ children, onChange, style }) => (
+const TestFilters = ({ children, onChange, style, filterData, state, clearFilter }) => (
   <Container style={style}>
-    <FilerHeading className="aaaa" justifyContent="space-between">
+    <FilerHeading justifyContent="space-between">
       <Title>Filters</Title>
-      <ClearAll>Clear all</ClearAll>
+      <ClearAll onClick={clearFilter}>Clear all</ClearAll>
     </FilerHeading>
     {children}
-    <SubTitle>Subject</SubTitle>
-    <Select
-      mode="multiple"
-      size="large"
-      placeholder="Please select"
-      defaultValue={['sub1']}
-      onChange={value => onChange('subject', value)}
-    >
-      {subjects.map(({ value, text }) => (
-        <Select.Option value={value} key={value}>
-          {text}
-        </Select.Option>
-      ))}
-    </Select>
 
-    <SubTitle>Subject</SubTitle>
-    <Select
-      size="large"
-      defaultValue="all"
-      onChange={value => onChange('subject2', value)}
-    >
-      {subjects2.map(({ value, text }) => (
-        <Select.Option key={value} value={value}>
-          {text}
-        </Select.Option>
-      ))}
-    </Select>
-
-    <SubTitle>Standard Set</SubTitle>
-    <Select
-      size="large"
-      defaultValue="all"
-      onChange={value => onChange('standardSet', value)}
-    >
-      {standardSets.map(({ value, text }) => (
-        <Select.Option key={value} value={value}>
-          {text}
-        </Select.Option>
-      ))}
-    </Select>
-
-    <SubTitle>Collection</SubTitle>
-    <Select
-      size="large"
-      defaultValue="all"
-      onChange={value => onChange('collections', value)}
-    >
-      {collections.map(({ value, text }) => (
-        <Select.Option key={value} value={value}>
-          {text}
-        </Select.Option>
-      ))}
-    </Select>
-
-    <SubTitle>Question Types</SubTitle>
-    <Select
-      size="large"
-      defaultValue="all"
-      onChange={value => onChange('questionType', value)}
-    >
-      {questionTypes.map(({ value, text }) => (
-        <Select.Option key={value} value={value}>
-          {text}
-        </Select.Option>
-      ))}
-    </Select>
-
-    <SubTitle>Depth of Knowledge</SubTitle>
-    <Select
-      size="large"
-      defaultValue="all"
-      onChange={value => onChange('knowledge', value)}
-    >
-      {knowledges.map(({ value, text }) => (
-        <Select.Option key={value} value={value}>
-          {text}
-        </Select.Option>
-      ))}
-    </Select>
-
-    <SubTitle>Difficulty</SubTitle>
-    <Select
-      size="large"
-      defaultValue="all"
-      onChange={value => onChange('difficulty', value)}
-    >
-      {difficulties.map(({ value, text }) => (
-        <Select.Option key={value} value={value}>
-          {text}
-        </Select.Option>
-      ))}
-    </Select>
+    {filterData.map(filterItem => (
+        <>
+          <SubTitle>{filterItem.title}</SubTitle>
+          <Select
+            onSearch={filterItem.onSearch && filterItem.onSearch}
+            mode={filterItem.mode}
+            size={filterItem.size}
+            placeholder={filterItem.placeholder}
+            filterOption={filterItem.filterOption}
+            defaultValue={filterItem.mode === 'multiple' ? undefined : filterItem.data[0].text}
+            value={state[filterItem.onChange]}
+            onChange={value => onChange(filterItem.onChange, value)}
+            disabled={filterItem.disabled}
+          >
+            {filterItem.data.map(({ value, text }) => (
+              <Select.Option value={value} key={value}>
+                {text}
+              </Select.Option>
+            ))}
+          </Select>
+        </>
+    ))}
   </Container>
 );
 
 TestFilters.propTypes = {
   children: PropTypes.any,
   onChange: PropTypes.func.isRequired,
-  style: PropTypes.object
+  clearFilter: PropTypes.func.isRequired,
+  style: PropTypes.object,
+  state: PropTypes.object.isRequired,
+  filterOption: PropTypes.bool,
+  filterData: PropTypes.array
 };
 
 TestFilters.defaultProps = {
   children: null,
+  filterOption: true,
+  filterData: [],
   style: {}
 };
 

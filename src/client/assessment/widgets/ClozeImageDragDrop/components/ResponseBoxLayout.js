@@ -1,25 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import Draggable from './Draggable';
+import DragItem from './DragItem';
 
 const ResponseBoxLayout = ({
   smallSize,
   responses,
   fontSize,
   dragHandler,
-  transparentResponses,
-  onDrop
+  onDrop,
+  transparentResponses
 }) => (
   <div className="responses_box" style={{ padding: smallSize ? '5px 10px' : 16 }}>
     {responses.map((option, index) => (
-      <div key={index} className={transparentResponses ? 'draggable_box_transparent' : 'draggable_box'} style={{ fontSize: smallSize ? 10 : fontSize }}>
+      <div
+        key={index}
+        className={transparentResponses ? 'draggable_box_transparent' : 'draggable_box'}
+        style={{ fontSize: smallSize ? 10 : fontSize }}
+      >
         {!dragHandler && (
-          <Draggable onDrop={onDrop} data={option}>{option}</Draggable>
+          <DragItem index={index} onDrop={onDrop} item={option} data={option}>
+            {option}
+          </DragItem>
         )}
         {dragHandler && (
           <React.Fragment>
-            <Draggable onDrop={onDrop} data={option}><i className="fa fa-arrows-alt" style={{ fontSize: 12 }} /><span>{option}</span></Draggable>
+            <DragItem index={index} onDrop={onDrop} item={option} data={option}>
+              <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
+              <span>{option}</span>
+            </DragItem>
           </React.Fragment>
         )}
       </div>
@@ -30,10 +38,10 @@ const ResponseBoxLayout = ({
 ResponseBoxLayout.propTypes = {
   responses: PropTypes.array,
   fontSize: PropTypes.string,
+  onDrop: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
   dragHandler: PropTypes.bool,
-  transparentResponses: PropTypes.bool,
-  onDrop: PropTypes.func.isRequired
+  transparentResponses: PropTypes.bool
 };
 
 ResponseBoxLayout.defaultProps = {

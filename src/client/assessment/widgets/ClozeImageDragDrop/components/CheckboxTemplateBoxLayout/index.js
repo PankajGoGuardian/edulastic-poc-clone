@@ -4,12 +4,13 @@ import PropTypes from 'prop-types';
 import { IconCheck, IconClose } from '@edulastic/icons';
 import { green, red } from '@edulastic/colors';
 
+import DropContainer from '../DropContainer';
+import DragItem from '../DragItem';
+
 import { Pointer } from '../../../../styled/Pointer';
 import { Point } from '../../../../styled/Point';
 import { Triangle } from '../../../../styled/Triangle';
 
-import Draggable from '../Draggable';
-import Droppable from '../Droppable';
 import { IconWrapper } from './styled/IconWrapper';
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
@@ -26,6 +27,7 @@ const CheckboxTemplateBoxLayout = ({
   userSelections,
   stemnumeration,
   evaluation,
+  drop,
   onDropHandler
 }) => (
   <div className="imagedragdrop_template_box" style={{ fontSize, padding: 20 }}>
@@ -85,17 +87,19 @@ const CheckboxTemplateBoxLayout = ({
         return (
           <React.Fragment key={index}>
             {!showAnswer && (
-              <Droppable
+              <DropContainer
+                index={index}
                 style={btnStyle}
                 className={`imagelabeldragdrop-droppable active check-answer ${className}`}
-                drop={() => ({ dropTargetIndex })}
+                drop={drop}
               >
                 <span className="index index-box">{indexStr}</span>
                 <div className="text container">
                   {userSelections[dropTargetIndex] &&
-                    userSelections[dropTargetIndex].map(answer => (
-                      <Draggable
-                        onDrop={onDropHandler}
+                    userSelections[dropTargetIndex].map((answer, user_select_index) => (
+                      <DragItem
+                        key={user_select_index}
+                        index={user_select_index}
                         data={`${answer}_${dropTargetIndex}_fromResp`}
                         style={{
                           border: 'solid 1px lightgray',
@@ -103,9 +107,11 @@ const CheckboxTemplateBoxLayout = ({
                           padding: 5,
                           display: 'inline-block'
                         }}
+                        item={answer}
+                        onDrop={onDropHandler}
                       >
                         {answer}
-                      </Draggable>
+                      </DragItem>
                     ))}
                 </div>
                 <IconWrapper>
@@ -119,7 +125,7 @@ const CheckboxTemplateBoxLayout = ({
                   <Point />
                   <Triangle />
                 </Pointer>
-              </Droppable>
+              </DropContainer>
             )}
             {showAnswer && (
               <div
@@ -174,6 +180,7 @@ CheckboxTemplateBoxLayout.propTypes = {
   showAnswer: PropTypes.bool.isRequired,
   onDropHandler: PropTypes.func.isRequired,
   imageUrl: PropTypes.string.isRequired,
+  drop: PropTypes.func.isRequired,
   imageAlterText: PropTypes.string.isRequired,
   imageWidth: PropTypes.number.isRequired
 };

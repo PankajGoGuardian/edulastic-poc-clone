@@ -1,14 +1,15 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { cloneDeep, flattenDeep, isUndefined } from 'lodash';
+import { cloneDeep, flattenDeep } from 'lodash';
+
+import DropContainer from './components/DropContainer';
+import DragItem from './components/DragItem';
 
 import { Pointer } from '../../styled/Pointer';
 import { Point } from '../../styled/Point';
 import { Triangle } from '../../styled/Triangle';
 import { QuestionHeader } from '../../styled/QuestionHeader';
 
-import Droppable from './components/Droppable';
-import Draggable from './components/Draggable';
 import ResponseBoxLayout from './components/ResponseBoxLayout';
 import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout';
 import CorrectAnswerBoxLayout from './components/CorrectAnswerBoxLayout';
@@ -43,69 +44,40 @@ class Display extends Component {
     }
   }
 
-  onDrop = (data, index) => {
-    const { userAnswers: newAnswers, possibleResponses } = this.state;
-    const { maxRespCount } = this.props;
-    const {
-      onChange: changeAnswers,
-      configureOptions
-    } = this.props;
-    const { duplicatedResponses: isDuplicated } = configureOptions;
-    const newResponses = cloneDeep(possibleResponses);
-
-    // Remove duplicated responses if duplicated option is disable
-    if (newAnswers[index] && newAnswers[index].length >= maxRespCount) {
-      const [sourceData, sourceIndex, fromResp] = data.split('_');
-      if (!fromResp) return;
-      newAnswers[index] = [];
-      newAnswers[index].push(sourceData);
-      for (let i = 0; i < newAnswers[sourceIndex].length; i++) {
-        if (newAnswers[sourceIndex][i] === sourceData) {
-          newAnswers[sourceIndex].splice(i, 1);
-          break;
-        }
-      }
-    } else if ((newAnswers[index] && newAnswers[index].length < maxRespCount) || isUndefined(newAnswers[index])) {
-      if (!isDuplicated) {
-        const [sourceData, sourceIndex, fromResp] = data.split('_');
-        if (fromResp) {
-          if (newAnswers[index] === undefined) newAnswers[index] = [];
-          newAnswers[index].push(sourceData);
-          for (let i = 0; i < newAnswers[sourceIndex].length; i++) {
-            if (newAnswers[sourceIndex][i] === sourceData) {
-              newAnswers[sourceIndex].splice(i, 1);
-              break;
-            }
-          }
-        } else {
-          if (newAnswers[index] === undefined) newAnswers[index] = [];
-          newAnswers[index].push(sourceData);
-          for (let i = 0; i < newResponses.length; i++) {
-            if (newResponses[i] === sourceData) {
-              newResponses.splice(i, 1);
-              break;
-            }
-          }
-        }
-      } else {
-        const [value, sourceIndex, fromResp] = data.split('_');
-        if (fromResp) {
-          if (newAnswers[index] === undefined) newAnswers[index] = [];
-          newAnswers[index].push(value);
-          for (let i = 0; i < newAnswers[sourceIndex].length; i++) {
-            if (newAnswers[sourceIndex][i] === value) {
-              newAnswers[sourceIndex].splice(i, 1);
-              break;
-            }
-          }
-        } else {
-          if (newAnswers[index] === undefined) newAnswers[index] = [];
-          newAnswers[index].push(value);
-        }
-      }
+  onDrop = ({ item: sourceData, index: sourceIndex, fromResp }, index) => {
+    const { userAnswers, possibleResponses } = this.state;
+    const { onChange } = this.props;
+    let data;
+    if (Array.isArray(sourceData)) {
+      [data] = sourceData;
+    } else {
+      data = sourceData;
     }
+
+    let newAnswers = cloneDeep(userAnswers);
+    const newResponses = cloneDeep(possibleResponses);
+    if (!fromResp) {
+      const item = newResponses.splice(sourceIndex, 1);
+      if (!Array.isArray(newAnswers[index])) {
+        newAnswers[index] = [];
+      } else if (newAnswers[index][0]) {
+        newResponses.push(newAnswers[index][0]);
+        newAnswers[index] = [];
+      }
+      newAnswers[index] = item;
+    } else {
+      if (!Array.isArray(newAnswers[index])) {
+        newAnswers[index] = [];
+      } else if (newAnswers[index][0]) {
+        newResponses.push(newAnswers[index][0]);
+        newAnswers[index] = [];
+      }
+      newAnswers = newAnswers.map(ans => ans && ans.filter(item => item !== data));
+      newAnswers[index] = [data];
+    }
+
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });
-    changeAnswers(newAnswers);
+    onChange(newAnswers);
   };
 
   shuffle = (arr) => {
@@ -116,16 +88,14 @@ class Display extends Component {
     return arr;
   };
 
-  shuffleGroup = data => data.map((arr) => {
-    arr.options = this.shuffle(arr.options);
-    return arr;
-  });
+  shuffleGroup = data =>
+    data.map((arr) => {
+      arr.options = this.shuffle(arr.options);
+      return arr;
+    });
 
   getInitialResponses = (options) => {
-    const {
-      configureOptions,
-      userSelections: userSelectionsProp
-    } = this.props;
+    const { configureOptions, userSelections: userSelectionsProp } = this.props;
     const { duplicatedResponses: isDuplicated } = configureOptions;
     let userSelections = [];
     if (this.state !== undefined) {
@@ -209,10 +179,30 @@ class Display extends Component {
       whiteSpace: wordwrap ? 'inherit' : 'nowrap'
     };
 
+    const drop = data => data;
+
     const previewTemplateBoxLayout = (
-      <div className={`imagedragdrop_template_box ${smallSize ? 'small' : ''}`} style={{ fontSize: smallSize ? 10 : fontSize, overflowY: smallSize && 'hidden' }}>
-        <div style={{ position: 'relative', top: 0, left: 0, width: smallSize ? '100%' : imageWidth, margin: 'auto', minWidth: smallSize ? '100%' : 600, maxWidth: '100%' }}>
-          <img src={imageUrl || defaultImageURL} width="100%" style={{ userSelect: 'none', pointerEvents: 'none' }} alt={imageAlterText} />
+      <div
+        className={`imagedragdrop_template_box ${smallSize ? 'small' : ''}`}
+        style={{ fontSize: smallSize ? 10 : fontSize, overflowY: smallSize && 'hidden' }}
+      >
+        <div
+          style={{
+            position: 'relative',
+            top: 0,
+            left: 0,
+            width: smallSize ? '100%' : imageWidth,
+            margin: 'auto',
+            minWidth: smallSize ? '100%' : 600,
+            maxWidth: '100%'
+          }}
+        >
+          <img
+            src={imageUrl || defaultImageURL}
+            width="100%"
+            style={{ userSelect: 'none', pointerEvents: 'none' }}
+            alt={imageAlterText}
+          />
           {responseContainers.map((responseContainer, index) => {
             const dropTargetIndex = index;
             const btnStyle = {
@@ -250,26 +240,36 @@ class Display extends Component {
                 indexStr = dropTargetIndex + 1;
             }
             return (
-              <Droppable
+              <DropContainer
+                key={index}
+                index={index}
                 style={{
                   ...btnStyle,
                   borderStyle: smallSize ? 'dashed' : 'solid'
                 }}
                 className="imagelabeldragdrop-droppable active"
-                drop={() => ({ dropTargetIndex })}
+                drop={drop}
               >
                 <span className="index-box">{indexStr}</span>
                 <div className="container">
                   {userAnswers[dropTargetIndex] &&
-                   userAnswers[dropTargetIndex].map(answer => (
-                     <Draggable
-                       data={`${answer}_${dropTargetIndex}_fromResp`}
-                       onDrop={this.onDrop}
-                       style={{ border: 'solid 1px lightgray', margin: 5, padding: 5, display: 'inline-block' }}
-                     >
-                       { answer }
-                     </Draggable>
-                   ))}
+                    userAnswers[dropTargetIndex].map((answer, item_index) => (
+                      <DragItem
+                        key={item_index}
+                        index={item_index}
+                        item={answer}
+                        data={`${answer}_${dropTargetIndex}_fromResp`}
+                        style={{
+                          border: 'solid 1px lightgray',
+                          margin: 5,
+                          padding: 5,
+                          display: 'inline-block'
+                        }}
+                        onDrop={this.onDrop}
+                      >
+                        {answer}
+                      </DragItem>
+                    ))}
                 </div>
                 <Pointer
                   className={responseContainer.pointerPosition}
@@ -278,7 +278,7 @@ class Display extends Component {
                   <Point />
                   <Triangle />
                 </Pointer>
-              </Droppable>
+              </DropContainer>
             );
           })}
         </div>
@@ -298,20 +298,20 @@ class Display extends Component {
         showAnswer={showAnswer}
         userSelections={userAnswers}
         evaluation={evaluation}
+        drop={drop}
         onDropHandler={this.onDrop}
       />
     );
-    const templateBoxLayout = showAnswer || checkAnswer
-      ? checkboxTemplateBoxLayout
-      : previewTemplateBoxLayout;
+    const templateBoxLayout =
+      showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
         smallSize={smallSize}
+        onDrop={this.onDrop}
         responses={responses}
         fontSize={fontSize}
         dragHandler={dragHandler}
         transparentResponses={transparentResponses}
-        onDrop={this.onDrop}
       />
     );
     const correctAnswerBoxLayout = showAnswer ? (
@@ -320,9 +320,11 @@ class Display extends Component {
         groupResponses={options}
         userAnswers={validation.valid_response && validation.valid_response.value}
       />
-    ) : (<div />);
-    const responseBoxLayout = showAnswer ? (<div />) : previewResponseBoxLayout;
-    const answerBox = showAnswer ? correctAnswerBoxLayout : (<div />);
+    ) : (
+      <div />
+    );
+    const responseBoxLayout = showAnswer ? <div /> : previewResponseBoxLayout;
+    const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
 
     const responseposition = smallSize ? 'right' : responsecontainerposition;
 
@@ -332,22 +334,14 @@ class Display extends Component {
         <div>
           {responseposition === 'top' && (
             <React.Fragment>
-              <div style={{ margin: '15px 0', borderRadius: 10 }}>
-                {responseBoxLayout}
-              </div>
-              <div style={{ margin: '15px 0', borderRadius: 10 }}>
-                {templateBoxLayout}
-              </div>
+              <div style={{ margin: '15px 0', borderRadius: 10 }}>{responseBoxLayout}</div>
+              <div style={{ margin: '15px 0', borderRadius: 10 }}>{templateBoxLayout}</div>
             </React.Fragment>
           )}
           {responseposition === 'bottom' && (
             <React.Fragment>
-              <div style={{ margin: '15px 0', borderRadius: 10 }}>
-                {templateBoxLayout}
-              </div>
-              <div style={{ margin: '15px 0', borderRadius: 10 }}>
-                {responseBoxLayout}
-              </div>
+              <div style={{ margin: '15px 0', borderRadius: 10 }}>{templateBoxLayout}</div>
+              <div style={{ margin: '15px 0', borderRadius: 10 }}>{responseBoxLayout}</div>
             </React.Fragment>
           )}
           {responseposition === 'left' && (
@@ -373,12 +367,19 @@ class Display extends Component {
             </div>
           )}
           {responseposition === 'right' && (
-            <div style={{ display: 'flex', height: smallSize ? 190 : '100%', margin: smallSize ? '-30px -40px' : 0 }}>
-              <div style={{
-                flex: 1,
-                margin: smallSize ? 0 : '15px 15px 15px 0',
-                borderRadius: 10
+            <div
+              style={{
+                display: 'flex',
+                height: smallSize ? 190 : '100%',
+                margin: smallSize ? '-30px -40px' : 0
               }}
+            >
+              <div
+                style={{
+                  flex: 1,
+                  margin: smallSize ? 0 : '15px 15px 15px 0',
+                  borderRadius: 10
+                }}
               >
                 {templateBoxLayout}
               </div>
@@ -424,8 +425,7 @@ Display.propTypes = {
   uiStyle: PropTypes.object,
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
-  imageWidth: PropTypes.number,
-  maxRespCount: PropTypes.number
+  imageWidth: PropTypes.number
 };
 
 Display.defaultProps = {
@@ -444,7 +444,6 @@ Display.defaultProps = {
   imageUrl: undefined,
   imageAlterText: '',
   imageWidth: 600,
-  maxRespCount: 1,
   configureOptions: {
     showDraghandle: false,
     duplicatedResponses: false,

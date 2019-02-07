@@ -88,10 +88,15 @@ class Authoring extends Component {
     if (e.target.checked) {
       this.setState({
         hasGroupResponses,
-        groupResponses: (groupResponses.length === 0 && item.options) ? [{
-          title: '',
-          options: [...item.options]
-        }] : groupResponses
+        groupResponses:
+          groupResponses.length === 0 && item.options
+            ? [
+              {
+                title: '',
+                options: [...item.options]
+              }
+            ]
+            : groupResponses
       });
     } else {
       this.setState({ hasGroupResponses });
@@ -203,6 +208,7 @@ class Authoring extends Component {
               <div>{t('component.clozeDragDrop.choicesforresponse')}</div>
               <SortableList
                 items={item.options}
+                dirty={!!item.templateMarkUp}
                 onSortEnd={this.onSortEnd}
                 useDragHandle
                 onRemove={this.remove}
@@ -250,6 +256,7 @@ class Authoring extends Component {
                   <PaddingDiv top={20} bottom={10}>
                     <div>{t('component.clozeDragDrop.choicesforresponse')}</div>
                     <SortableList
+                      dirty={!!item.templateMarkUp}
                       items={group.options}
                       onSortEnd={params => this.onSortEndGroupOptions(index, ...params)}
                       useDragHandle

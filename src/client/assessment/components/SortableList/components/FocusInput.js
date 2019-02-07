@@ -1,15 +1,23 @@
-
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class FocusInput extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dirty: false,
+      dirty: props.dirty,
       value: props.value
     };
     this.inputRef = React.createRef();
   }
+
+  static propTypes = {
+    dirty: PropTypes.bool
+  };
+
+  static defaultProps = {
+    dirty: false
+  };
 
   componentWillReceiveProps(nextProps) {
     this.setState({
@@ -41,12 +49,7 @@ class FocusInput extends Component {
   render() {
     const { value } = this.state;
     return (
-      <input
-        ref={this.inputRef}
-        {...this.props}
-        value={value}
-        onFocus={evt => this.onFocus(evt)}
-      />
+      <input ref={this.inputRef} {...this.props} value={value} onFocus={evt => this.onFocus(evt)} />
     );
   }
 }

@@ -7,7 +7,7 @@ import DeleteButton from './DeleteButton';
 import FocusInput from './FocusInput';
 
 const SortableItem = React.memo(
-  SortableElement(({ value, onRemove, onChange }) => (
+  SortableElement(({ value, dirty, onRemove, onChange }) => (
     <SortableItemContainer>
       <div className="main">
         <DragHandle />
@@ -15,6 +15,7 @@ const SortableItem = React.memo(
           <FocusInput
             style={{ background: 'transparent' }}
             type="text"
+            dirty={dirty}
             value={value}
             onChange={onChange}
           />

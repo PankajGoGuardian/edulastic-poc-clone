@@ -157,6 +157,7 @@ class ClozeDropDownAuthoring extends Component {
               <Subtitle>{`${t('component.clozeDropDown.choicesforresponse')} ${index + 1}`}</Subtitle>
               <SortableList
                 items={item.options[index] || []}
+                dirty={item.templateMarkUp}
                 onSortEnd={params => this.onSortEnd(index, params)}
                 useDragHandle
                 onRemove={itemIndex => this.remove(index, itemIndex)}

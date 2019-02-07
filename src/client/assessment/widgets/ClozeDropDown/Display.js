@@ -68,13 +68,14 @@ class ClozeDropDownDisplay extends Component {
     return arr;
   };
 
-  shuffleGroup = data => mapValues(data, (value, key) => {
-    if (!isUndefined(value)) {
-      data[key] = this.shuffle(value);
-    }
-    data[key] = value;
-    return data[key];
-  });
+  shuffleGroup = data =>
+    mapValues(data, (value, key) => {
+      if (!isUndefined(value)) {
+        data[key] = this.shuffle(value);
+      }
+      data[key] = value;
+      return data[key];
+    });
 
   getFontSize = (size) => {
     switch (size) {
@@ -120,11 +121,7 @@ class ClozeDropDownDisplay extends Component {
 
     // Layout Options
     const fontSize = this.getFontSize(uiStyle.fontsize);
-    const {
-      placeholder,
-      responsecontainerindividuals,
-      stemnumeration
-    } = uiStyle;
+    const { placeholder, responsecontainerindividuals, stemnumeration } = uiStyle;
 
     const responseBtnStyle = {
       widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : 'auto',
@@ -134,7 +131,10 @@ class ClozeDropDownDisplay extends Component {
     let maxLineHeight = smallSize ? 50 : 40;
 
     const previewTemplateBoxLayout = (
-      <div className={`template_box ${smallSize ? 'dropdown-small' : ''}`} style={{ fontSize: smallSize ? 14 : fontSize, padding: smallSize ? 0 : 20 }}>
+      <div
+        className={`template_box ${smallSize ? 'dropdown-small' : ''}`}
+        style={{ fontSize: smallSize ? 14 : fontSize, padding: smallSize ? 0 : 20 }}
+      >
         {templateParts.map((templatePart, index) => {
           if (templatePart.indexOf('class="response-btn"') !== -1) {
             const dropTargetIndex = responseIndex;
@@ -169,17 +169,30 @@ class ClozeDropDownDisplay extends Component {
             }
             maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
             return (
-              <Select defaultValue={userAnswers[dropTargetIndex]} style={btnStyle} onChange={value => this.selectChange(value, dropTargetIndex)}>
-                <Option value="**default_value**" disabled>{placeholder}</Option>
-                {responses && responses[dropTargetIndex] &&
-                 responses[dropTargetIndex].map((response, respID) => (
-                   <Option value={response} key={respID}>{response}</Option>
-                 ))}
+              <Select
+                defaultValue={userAnswers[dropTargetIndex]}
+                style={btnStyle}
+                onChange={value => this.selectChange(value, dropTargetIndex)}
+              >
+                <Option value="**default_value**" disabled>
+                  {placeholder}
+                </Option>
+                {responses &&
+                  responses[dropTargetIndex] &&
+                  responses[dropTargetIndex].map((response, respID) => (
+                    <Option value={response} key={respID}>
+                      {response}
+                    </Option>
+                  ))}
               </Select>
             );
           }
           return (
-            <span style={{ userSelect: 'none', lineHeight: `${maxLineHeight}px` }} key={index} dangerouslySetInnerHTML={{ __html: templatePart }} />
+            <span
+              style={{ userSelect: 'none', lineHeight: `${maxLineHeight}px` }}
+              key={index}
+              dangerouslySetInnerHTML={{ __html: templatePart }}
+            />
           );
         })}
       </div>
@@ -197,9 +210,8 @@ class ClozeDropDownDisplay extends Component {
         evaluation={evaluation}
       />
     );
-    const templateBoxLayout = showAnswer || checkAnswer
-      ? checkboxTemplateBoxLayout
-      : previewTemplateBoxLayout;
+    const templateBoxLayout =
+      showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const correctAnswerBoxLayout = showAnswer ? (
       <CorrectAnswerBoxLayout
         fontSize={fontSize}

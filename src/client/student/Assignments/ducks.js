@@ -73,7 +73,7 @@ function* fetchAssignments() {
  */
 function* startAssignment({ payload }) {
   try {
-    const { assignmentId, testId } = payload;
+    const { assignmentId, testId, testType } = payload;
     if (!assignmentId || !testId) {
       throw new Error('insufficient data');
     }
@@ -86,7 +86,8 @@ function* startAssignment({ payload }) {
       groupType
     });
     // set Activity id
-    yield put(push(`/student/test/${testId}/uta/${testActivityId}/qid/0`));
+    const type = testType == 'assessment' ? 'test' : 'practice';
+    yield put(push(`/student/${type}/${testId}/uta/${testActivityId}/qid/0`));
 
     // TODO:load previous responses if resume!!
   } catch (e) {
@@ -99,13 +100,14 @@ function* startAssignment({ payload }) {
  */
 function* resumeAssignment({ payload }) {
   try {
-    const { assignmentId, testActivityId, testId } = payload;
+    const { assignmentId, testActivityId, testId, testType } = payload;
     if (!assignmentId || !testId || !testActivityId) {
       throw new Error('insufficient data');
     }
     yield put(setActiveAssignmentAction(assignmentId));
     yield put(setResumeAssignment(true));
-    yield put(push(`/student/test/${testId}/uta/${testActivityId}/qid/0`));
+    const type = testType == 'assessment' ? 'test' : 'practice';
+    yield put(push(`/student/${type}/${testId}/uta/${testActivityId}/qid/0`));
   } catch (e) {
     console.log(e);
   }

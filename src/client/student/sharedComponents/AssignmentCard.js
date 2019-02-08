@@ -54,18 +54,19 @@ const AssignmentCard = ({
 
   const totalQuestions = correct + wrong || 0;
   const scorePercentage = (correct / totalQuestions) * 100 || 0;
-
+  const testType = test.testType;
   const arrow = showAttempts ? '\u2193' : '\u2191';
 
   const startTest = () => {
     if (resume) {
       resumeAssignment({
         testId,
+        testType,
         assignmentId,
         testActivityId: lastAttempt._id
       });
     } else if (attemptCount < test.maxAttempts) {
-      startAssignment({ testId, assignmentId });
+      startAssignment({ testId, assignmentId, testType });
     }
   };
 

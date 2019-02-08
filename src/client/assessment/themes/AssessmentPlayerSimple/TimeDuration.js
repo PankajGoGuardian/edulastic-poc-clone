@@ -12,6 +12,7 @@ export default TimeDuration;
 
 const TimeContainer = styled.div`
   display: flex;
+  padding-top: 8px;
 `;
 const Time = styled.p`
   color: #756e6e;

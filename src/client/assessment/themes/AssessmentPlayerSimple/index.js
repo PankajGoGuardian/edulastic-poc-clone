@@ -3,7 +3,12 @@ import React from 'react';
 import { Line } from 'rc-progress';
 import styled, { ThemeProvider } from 'styled-components';
 import { withNamespaces } from '@edulastic/localization';
-import { IconClockCircularOutline, IconSave } from '@edulastic/icons';
+import {
+  IconClockCircularOutline,
+  IconSave,
+  IconPause
+} from '@edulastic/icons';
+import { mainBgColor, boxShadowDefault } from '@edulastic/colors';
 import MainWrapper from './MainWrapper';
 import MainContent from './MainContent';
 import MainFooter from './MainFooter';
@@ -93,12 +98,12 @@ class AssessmentPlayerSimple extends React.Component {
     }
 
     const percent = Math.round(
-      ((currentItem + 1) * 100) / dropdownOptions.length,
+      ((currentItem + 1) * 100) / dropdownOptions.length
     );
     return (
       <ThemeProvider theme={theme}>
         <Container>
-          <Header>
+          <HeaderPracticePlayer>
             <HeaderLeftMenu>
               <Logo src={LogoImage} alt="Logo" />
               <MobileMainMenu>
@@ -137,18 +142,22 @@ class AssessmentPlayerSimple extends React.Component {
                       total={items.length}
                     />
                   </Time>
-                  <Timer>
-                    <Icon color={theme.timerIconColor} />
-                    <TimeDurationText><TimeDuration /></TimeDurationText>
-                  </Timer>
-                  <Timer>
-                    <Save>
-                      <IconSave color={theme.saveIconColor} />
-                    </Save>
-                    <Save>
-                      <IconSave color={theme.submitIconColor} />
-                    </Save>
-                  </Timer>
+                  <ContainerRight>
+                    <Timer>
+                      <Icon color={theme.timerIconColor} />
+                      <TimeDurationText>
+                        <TimeDuration />
+                      </TimeDurationText>
+                    </Timer>
+                    <Timer>
+                      <Save>
+                        <IconSave color={theme.saveIconColor} />
+                      </Save>
+                      <Save>
+                        <IconPause color={theme.submitIconColor} />
+                      </Save>
+                    </Timer>
+                  </ContainerRight>
                 </FlexContainer>
               </DesktopMainMenu>
               <MobileMainMenu>
@@ -185,7 +194,7 @@ class AssessmentPlayerSimple extends React.Component {
             <HeaderRightMenu skinB>
               <DesktopMainMenu />
             </HeaderRightMenu>
-          </Header>
+          </HeaderPracticePlayer>
           <Main skinB>
             <Blank />
             <MainWrapper>
@@ -268,7 +277,7 @@ const NextPrevButton = styled(FlexContainer)`
 `;
 
 const TimeDurationText = styled.div`
-  p { 
+  p {
     color: ${props => props.theme.timeDurationTextColor};
   }
 `;
@@ -283,4 +292,14 @@ const Save = styled.div`
 
 const Timer = styled.div`
   display: flex;
+`;
+
+const ContainerRight = styled.div`
+  display: flex;
+  margin-left: auto;
+`;
+
+const HeaderPracticePlayer = styled(Header)`
+  background: ${mainBgColor};
+  box-shadow: ${boxShadowDefault};
 `;

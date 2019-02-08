@@ -2,8 +2,19 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Anchor, Input, Row, Col, Radio, Switch, List, Button } from 'antd';
+import {
+  Anchor,
+  Input,
+  Row,
+  Col,
+  Radio,
+  Switch,
+  List,
+  Button,
+  Select
+} from 'antd';
 import { Paper } from '@edulastic/common';
+import { test } from '@edulastic/constants';
 import ListCard from './Card';
 import UiTime from './ui-time';
 import {
@@ -13,6 +24,7 @@ import {
 import {
   getMaxAttemptSelector,
   getReleaseScoreSelector,
+  getTestTypeSelector,
   getActivityReview
 } from '../../../selectors/tests';
 
@@ -20,6 +32,7 @@ const settingCategories = [
   { id: 'mark-as-done', title: 'MARK AS DONE' },
   { id: 'release-scores', title: 'RELEASE SCORES' },
   { id: 'maximum-attempts-allowed', title: 'MAXIMUM ATTEMPTS ALLOWED' },
+  { id: 'test-type', title: 'TEST TYPE' },
   { id: 'require-safe-exame-browser', title: 'REQUIRE SAFE EXAME BROWSER' },
   { id: 'show-questions', title: 'SHOW QUESTIONS TO STUDENT' },
   { id: 'suffle-question', title: 'SUFFLE QUESTION' },
@@ -58,6 +71,10 @@ const data = [
     from: '100%'
   }
 ];
+
+const Option = Select.Option;
+let { ASSESSMENT, PRACTICE } = test.type;
+const testTypeData = [ASSESSMENT, PRACTICE];
 
 const navigations = [
   'Intro Item',
@@ -122,7 +139,8 @@ class MainSetting extends Component {
       windowWidth,
       maxAttempts,
       activityReview,
-      releaseScore
+      releaseScore,
+      testType
     } = this.props;
     const isSmallSize = windowWidth > 993 ? 1 : 0;
     return (
@@ -196,6 +214,21 @@ class MainSetting extends Component {
                   step={1}
                   style={{ width: '20%', marginRight: 30 }}
                 />
+              </Description>
+            </Block>
+            <Block id="test-type">
+              <Title>Test Type</Title>
+              <Body />
+              <Description>
+                <Select
+                  defaultValue={testType}
+                  style={{ width: '20%', height: 40, marginRight: 30 }}
+                  onChange={this.updateTestData('testType')}
+                >
+                  {testTypeData.map(data => (
+                    <Option key={data}>{data}</Option>
+                  ))}
+                </Select>
               </Description>
             </Block>
 
@@ -559,10 +592,14 @@ MainSetting.propTypes = {
 export default connect(
   state => ({
     maxAttempts: getMaxAttemptSelector(state),
+    testType: getTestTypeSelector(state),
     releaseScore: getReleaseScoreSelector(state),
     activityReview: getActivityReview(state)
   }),
-  { setMaxAttempts: setMaxAttemptsAction, setTestData: setTestDataAction }
+  {
+    setMaxAttempts: setMaxAttemptsAction,
+    setTestData: setTestDataAction
+  }
 )(MainSetting);
 
 const StyledAnchor = styled(Anchor)`

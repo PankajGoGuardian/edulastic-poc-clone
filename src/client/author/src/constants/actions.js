@@ -118,8 +118,10 @@ export const CLEAR_DICT_STANDARDS = '[dictionaries] clear standards';
 export const RECEIVE_GRADEBOOK_REQUEST = '[gradebook] receive list request';
 export const RECEIVE_GRADEBOOK_SUCCESS = '[gradebook] receive list success';
 export const RECEIVE_GRADEBOOK_ERROR = '[gradebook] receive list error';
-export const RECEIVE_TESTACTIVITY_REQUEST = '[testActivity] receive list request';
-export const RECEIVE_TESTACTIVITY_SUCCESS = '[testActivity] receive list success';
+export const RECEIVE_TESTACTIVITY_REQUEST =
+  '[testActivity] receive list request';
+export const RECEIVE_TESTACTIVITY_SUCCESS =
+  '[testActivity] receive list success';
 export const RECEIVE_TESTACTIVITY_ERROR = '[testActivity] receive list error';
 
 // assignments

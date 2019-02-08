@@ -9,7 +9,7 @@ const assignmentPolicyOptions = require('./const/assignmentPolicyOptions');
 const typedList = require('./const/typedList');
 const drawTools = require('./const/drawTools');
 const rounding = require('./const/rounding');
-
+const test = require('./const/test');
 module.exports = {
   questionType,
   evaluationType,
@@ -21,5 +21,6 @@ module.exports = {
   assignmentPolicyOptions,
   typedList,
   drawTools,
-  rounding
+  rounding,
+  test
 };

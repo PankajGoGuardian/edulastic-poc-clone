@@ -4,7 +4,8 @@ import {
   SET_TEST_DATA,
   UPDATE_TEST_REQUEST,
   SET_DEFAULT_TEST_DATA,
-  SET_MAX_ATTEMPT
+  SET_MAX_ATTEMPT,
+  SET_TEST_TYPE
 } from '../constants/actions';
 
 export const receiveTestByIdAction = id => ({

@@ -17,11 +17,13 @@ import {
   CREATE_TEST_SUCCESS,
   UPDATE_TEST_SUCCESS
 } from '../constants/actions';
+import { test } from '@edulastic/constants';
 
 const initialTestState = {
   title: 'New Test',
   description: '',
   maxAttempts: 3,
+  testType: test.type.ASSESSMENT,
   releaseScore: true,
   activityReview: true,
   renderingType: 'assessment',

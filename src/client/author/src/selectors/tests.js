@@ -26,6 +26,11 @@ export const getMaxAttemptSelector = createSelector(
   test => test.maxAttempts
 );
 
+export const getTestTypeSelector = createSelector(
+  getTestEntitySelector,
+  test => test.testType
+);
+
 export const getReleaseScoreSelector = createSelector(
   getTestEntitySelector,
   test => test.releaseScore || true

@@ -60,8 +60,11 @@ class App extends Component {
             />
             <Route path="/student/test-summary" component={TestAttemptReview} />
             <Route
-              exact
-              path="/student/practice/:id/"
+              path="/student/practice/:id/uta/:utaId"
+              render={() => <AssessmentPlayer defaultAP={false} />}
+            />
+            <Route
+              path="/student/practice/:id"
               render={() => <AssessmentPlayer defaultAP={false} />}
             />
           </Switch>

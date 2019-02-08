@@ -40,6 +40,7 @@ import { checkAnswerAction } from '../../../author/src/actions/testItem';
 import { changePreviewAction } from '../../../author/src/actions/view';
 import SvgDraw from './SvgDraw';
 import Tools from './Tools';
+import { saveScratchPadAction } from '../../actions/userWork';
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line
@@ -54,18 +55,22 @@ class AssessmentPlayerDefault extends React.Component {
       activeMode: '',
       lineWidth: 6,
       scratchPadMode: false,
+      cloneCurrentItem: props.currentItem,
       deleteMode: false,
       testItemState: '',
       isToolbarModalVisible: false,
       isSubmitConfirmationVisible: false,
       isSavePauseModalVisible: false,
-      history: [{ points: [], pathes: [], figures: [], texts: [] }],
+      history: props.scratchPad
+        ? [props.scratchPad]
+        : [{ points: [], pathes: [], figures: [], texts: [] }],
       currentTab: 0
     };
   }
 
   static propTypes = {
     theme: PropTypes.object,
+    scratchPad: PropTypes.any.isRequired,
     isFirst: PropTypes.func.isRequired,
     isLast: PropTypes.func.isRequired,
     moveToNext: PropTypes.func.isRequired,
@@ -85,7 +90,23 @@ class AssessmentPlayerDefault extends React.Component {
     theme: defaultTheme
   };
 
-  changeTabItemState = value => {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.currentItem !== prevState.cloneCurrentItem) {
+      nextProps.saveScratchPad({
+        [nextProps.items[prevState.cloneCurrentItem]._id]: prevState.history[prevState.currentTab]
+      });
+      return {
+        history: nextProps.scratchPad
+          ? [nextProps.scratchPad]
+          : [{ points: [], pathes: [], figures: [], texts: [] }],
+        currentTab: 0,
+        cloneCurrentItem: nextProps.currentItem
+      };
+    }
+    return null;
+  }
+
+  changeTabItemState = (value) => {
     const { checkAnswer, changePreview } = this.props;
     checkAnswer();
 
@@ -131,13 +152,13 @@ class AssessmentPlayerDefault extends React.Component {
     return `rgb(${r}, ${g}, ${b})`;
   };
 
-  onFillColorChange = obj => {
+  onFillColorChange = (obj) => {
     this.setState({
       fillColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
     });
   };
 
-  handleModeChange = flag => {
+  handleModeChange = (flag) => {
     this.setState({ scratchPadMode: flag });
   };
 
@@ -153,13 +174,13 @@ class AssessmentPlayerDefault extends React.Component {
     }
   };
 
-  handleColorChange = obj => {
+  handleColorChange = (obj) => {
     this.setState({
       currentColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
     });
   };
 
-  saveHistory = data => {
+  saveHistory = (data) => {
     const { history, currentTab } = this.state;
 
     const newHist = history.slice(0, currentTab + 1);
@@ -213,9 +234,7 @@ class AssessmentPlayerDefault extends React.Component {
       fillColor
     } = this.state;
 
-    const dropdownOptions = Array.isArray(items)
-      ? items.map((item, index) => index)
-      : [];
+    const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
     const item = items[currentItem];
     if (!item) {
@@ -279,8 +298,7 @@ class AssessmentPlayerDefault extends React.Component {
               <HeaderMainMenu skin>
                 <FlexContainer
                   style={{
-                    justifyContent:
-                      windowWidth < IPAD_PORTRAIT_WIDTH && 'space-between'
+                    justifyContent: windowWidth < IPAD_PORTRAIT_WIDTH && 'space-between'
                   }}
                 >
                   <QuestionSelectDropdown
@@ -293,8 +311,7 @@ class AssessmentPlayerDefault extends React.Component {
                   <FlexContainer
                     style={{
                       flex: 1,
-                      justifyContent:
-                        windowWidth < IPAD_PORTRAIT_WIDTH && 'flex-end'
+                      justifyContent: windowWidth < IPAD_PORTRAIT_WIDTH && 'flex-end'
                     }}
                   >
                     <ControlBtn
@@ -330,18 +347,14 @@ class AssessmentPlayerDefault extends React.Component {
                       />
                     )}
                     {windowWidth >= MEDIUM_DESKTOP_WIDTH && (
-                      <TestButton
-                        checkAnwser={() => this.changeTabItemState('check')}
-                      />
+                      <TestButton checkAnwser={() => this.changeTabItemState('check')} />
                     )}
                     {windowWidth >= LARGE_DESKTOP_WIDTH && (
                       <ToolBar changeMode={this.handleModeChange} />
                     )}
                     {windowWidth >= MAX_MOBILE_WIDTH && <Clock />}
                     {windowWidth >= MAX_MOBILE_WIDTH && (
-                      <SaveAndExit
-                        finishTest={() => this.openSubmitConfirmation()}
-                      />
+                      <SaveAndExit finishTest={() => this.openSubmitConfirmation()} />
                     )}
                   </FlexContainer>
                 </FlexContainer>
@@ -374,13 +387,17 @@ const enhance = compose(
   withRouter,
   withWindowSizes,
   connect(
-    state => ({
+    (state, ownProps) => ({
       evaluation: state.evluation,
-      preview: state.view.preview
+      preview: state.view.preview,
+      scratchPad: ownProps.items[ownProps.currentItem]
+        ? state.userWork[ownProps.items[ownProps.currentItem]._id] || null
+        : null
     }),
     {
       checkAnswer: checkAnswerAction,
-      changePreview: changePreviewAction
+      changePreview: changePreviewAction,
+      saveScratchPad: saveScratchPadAction
     }
   )
 );

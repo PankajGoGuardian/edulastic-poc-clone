@@ -34,15 +34,11 @@ export const GOTO_ITEM = '[items] goto a particular item';
 // QuestionCommon
 export const QUESTIONCOMMON_UPDATE_QUESTIONS_LIST =
   '[QuestionCommon] QUESTIONCOMMON_UPDATE_QUESTIONS_LIST';
-export const QUESTIONCOMMON_UPDATE_VALIDATION =
-  '[QuestionCommon] QUESTIONCOMMON_UPDATE_VALIDATION';
-export const QUESTIONCOMMON_UPDATE_STIMULUS =
-  '[QuestionCommon] QUESTIONCOMMON_UPDATE_STIMULUS';
-export const QUESTIONCOMMON_SET_STATE =
-  '[QuestionCommon] QUESTIONCOMMON_SET_STATE';
+export const QUESTIONCOMMON_UPDATE_VALIDATION = '[QuestionCommon] QUESTIONCOMMON_UPDATE_VALIDATION';
+export const QUESTIONCOMMON_UPDATE_STIMULUS = '[QuestionCommon] QUESTIONCOMMON_UPDATE_STIMULUS';
+export const QUESTIONCOMMON_SET_STATE = '[QuestionCommon] QUESTIONCOMMON_SET_STATE';
 export const QUESTIONCOMMON_CLEAR = '[QuestionCommon] QUESTIONCOMMON_CLEAR';
-export const QUESTIONCOMMON_ADD_ALT_RESPONSES =
-  '[QuestionCommon] QUESTIONCOMMON_ADD_ALT_RESPONSES';
+export const QUESTIONCOMMON_ADD_ALT_RESPONSES = '[QuestionCommon] QUESTIONCOMMON_ADD_ALT_RESPONSES';
 export const QUESTIONCOMMON_UPDATE_ALT_VALIDATION_SCORE =
   '[QuestionCommon] QUESTIONCOMMON_UPDATE_ALT_VALIDATION_SCORE';
 export const QUESTIONCOMMON_UPDATE_CORRECT_VALIDATION_SCORE =
@@ -70,3 +66,6 @@ export const RESET_CURRENT_TEST_ITEM = '[test] reset current item';
 export const FILE_UPLOAD_REQUEST = '[test] upload file request';
 export const FILE_UPLOAD_SUCCESS = '[test] upload file success';
 export const FILE_UPLOAD_ERROR = '[test] upload file error';
+
+// scratchPad
+export const SAVE_SCRATCH_PAD = '[userWork] save scratchPad draw';

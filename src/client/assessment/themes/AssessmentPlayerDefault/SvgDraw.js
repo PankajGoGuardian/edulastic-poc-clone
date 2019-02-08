@@ -33,7 +33,7 @@ const SvgDraw = ({
 
   useEffect(
     () => {
-      if (history.points && history.pathes && history.figures && history.texts) {
+      if (history && history.points && history.pathes && history.figures && history.texts) {
         setPoints(history.points);
         setPathes(history.pathes);
         setFigures(history.figures);

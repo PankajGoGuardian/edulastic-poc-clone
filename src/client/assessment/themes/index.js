@@ -22,10 +22,12 @@ const AssessmentContainer = ({
   saveUserResponse: saveUser,
   evaluateAnswer: evaluate,
   match,
-  url
+  url,
+  gotoItem
 }) => {
   let { qid = 0 } = match.params;
   let currentItem = Number(qid);
+  gotoItem(currentItem);
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
 
@@ -95,7 +97,8 @@ const enhance = compose(
       evaluateAnswer,
       changePreview: changePreviewAction,
       startAssessment: startAssessmentAction,
-      finishTest: finishTestAcitivityAction
+      finishTest: finishTestAcitivityAction,
+      gotoItem
     }
   )
 );

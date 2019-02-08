@@ -10,7 +10,8 @@ import {
   LOAD_PREVIOUS_RESPONSES,
   LOAD_ANSWERS,
   SET_TEST_ACTIVITY_ID,
-  GOTO_ITEM
+  GOTO_ITEM,
+  LOAD_SCRATCH_PAD
 } from '../constants/actions';
 import { SET_RESUME_STATUS } from '../../student/Assignments/ducks';
 
@@ -46,7 +47,7 @@ function* loadTest({ payload }) {
     // if testActivity is present.
     if (testActivity) {
       let allAnswers = {};
-
+      let userWork = {};
       yield put({
         type: SET_TEST_ACTIVITY_ID,
         payload: { testActivityId }
@@ -59,6 +60,11 @@ function* loadTest({ payload }) {
         allAnswers = {
           ...allAnswers,
           ...item.answers
+        };
+
+        userWork = {
+          ...userWork,
+          [item.testItemId]: item.userWork
         };
 
         currentTestItem =
@@ -77,6 +83,11 @@ function* loadTest({ payload }) {
       yield put({
         type: LOAD_ANSWERS,
         payload: allAnswers
+      });
+
+      yield put({
+        type: LOAD_SCRATCH_PAD,
+        payload: userWork
       });
 
       // only load from previous attempted if resuming from assignments page

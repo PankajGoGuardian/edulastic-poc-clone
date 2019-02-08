@@ -1,4 +1,4 @@
-import { SAVE_SCRATCH_PAD } from '../constants/actions';
+import { SAVE_SCRATCH_PAD, LOAD_SCRATCH_PAD } from '../constants/actions';
 
 const initialState = {};
 
@@ -7,6 +7,10 @@ const userWork = (state = initialState, { type, payload }) => {
     case SAVE_SCRATCH_PAD:
       return {
         ...state,
+        ...payload
+      };
+    case LOAD_SCRATCH_PAD:
+      return {
         ...payload
       };
     default:

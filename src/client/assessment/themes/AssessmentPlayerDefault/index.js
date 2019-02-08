@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { Affix } from 'antd';
+import { last } from 'lodash';
 import { withWindowSizes } from '@edulastic/common';
 import { IconSend } from '@edulastic/icons';
 import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
@@ -93,7 +94,8 @@ class AssessmentPlayerDefault extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.currentItem !== prevState.cloneCurrentItem) {
       nextProps.saveScratchPad({
-        [nextProps.items[prevState.cloneCurrentItem]._id]: prevState.history[prevState.currentTab]
+        [nextProps.items[prevState.cloneCurrentItem]._id]:
+          prevState.history[prevState.currentTab]
       });
       return {
         history: nextProps.scratchPad
@@ -106,7 +108,7 @@ class AssessmentPlayerDefault extends React.Component {
     return null;
   }
 
-  changeTabItemState = (value) => {
+  changeTabItemState = value => {
     const { checkAnswer, changePreview } = this.props;
     checkAnswer();
 
@@ -152,13 +154,13 @@ class AssessmentPlayerDefault extends React.Component {
     return `rgb(${r}, ${g}, ${b})`;
   };
 
-  onFillColorChange = (obj) => {
+  onFillColorChange = obj => {
     this.setState({
       fillColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
     });
   };
 
-  handleModeChange = (flag) => {
+  handleModeChange = flag => {
     this.setState({ scratchPadMode: flag });
   };
 
@@ -174,20 +176,23 @@ class AssessmentPlayerDefault extends React.Component {
     }
   };
 
-  handleColorChange = (obj) => {
+  handleColorChange = obj => {
     this.setState({
       currentColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
     });
   };
 
-  saveHistory = (data) => {
+  saveHistory = data => {
     const { history, currentTab } = this.state;
-
+    const { saveScratchPad, items, currentItem } = this.props;
     const newHist = history.slice(0, currentTab + 1);
 
     newHist.push(data);
 
     this.setState({ history: newHist, currentTab: currentTab + 1 });
+    saveScratchPad({
+      [items[currentItem]._id]: last(history)
+    });
   };
 
   handleUndo = () => {
@@ -234,7 +239,9 @@ class AssessmentPlayerDefault extends React.Component {
       fillColor
     } = this.state;
 
-    const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
+    const dropdownOptions = Array.isArray(items)
+      ? items.map((item, index) => index)
+      : [];
 
     const item = items[currentItem];
     if (!item) {
@@ -298,7 +305,8 @@ class AssessmentPlayerDefault extends React.Component {
               <HeaderMainMenu skin>
                 <FlexContainer
                   style={{
-                    justifyContent: windowWidth < IPAD_PORTRAIT_WIDTH && 'space-between'
+                    justifyContent:
+                      windowWidth < IPAD_PORTRAIT_WIDTH && 'space-between'
                   }}
                 >
                   <QuestionSelectDropdown
@@ -311,7 +319,8 @@ class AssessmentPlayerDefault extends React.Component {
                   <FlexContainer
                     style={{
                       flex: 1,
-                      justifyContent: windowWidth < IPAD_PORTRAIT_WIDTH && 'flex-end'
+                      justifyContent:
+                        windowWidth < IPAD_PORTRAIT_WIDTH && 'flex-end'
                     }}
                   >
                     <ControlBtn
@@ -347,14 +356,18 @@ class AssessmentPlayerDefault extends React.Component {
                       />
                     )}
                     {windowWidth >= MEDIUM_DESKTOP_WIDTH && (
-                      <TestButton checkAnwser={() => this.changeTabItemState('check')} />
+                      <TestButton
+                        checkAnwser={() => this.changeTabItemState('check')}
+                      />
                     )}
                     {windowWidth >= LARGE_DESKTOP_WIDTH && (
                       <ToolBar changeMode={this.handleModeChange} />
                     )}
                     {windowWidth >= MAX_MOBILE_WIDTH && <Clock />}
                     {windowWidth >= MAX_MOBILE_WIDTH && (
-                      <SaveAndExit finishTest={() => this.openSubmitConfirmation()} />
+                      <SaveAndExit
+                        finishTest={() => this.openSubmitConfirmation()}
+                      />
                     )}
                   </FlexContainer>
                 </FlexContainer>

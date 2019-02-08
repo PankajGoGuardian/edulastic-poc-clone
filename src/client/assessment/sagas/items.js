@@ -68,12 +68,15 @@ function* saveUserResponse({ payload }) {
     const userTestActivityId = yield select(
       state => state.test && state.test.testActivityId
     );
+
     const currentItem = items.length && items[itemIndex];
     const questions = getQuestionIds(currentItem);
     const itemAnswers = {};
     questions.forEach(question => {
       itemAnswers[question] = answers[question];
     });
+
+    const userWork = yield select(({ userWork }) => userWork[currentItem._id]);
     const testItemId = currentItem._id;
     const assignmentId = yield select(
       state => state.studentAssignment && state.studentAssignment.current
@@ -82,7 +85,8 @@ function* saveUserResponse({ payload }) {
       answers: itemAnswers,
       testItemId,
       assignmentId,
-      testActivityId: userTestActivityId
+      testActivityId: userTestActivityId,
+      userWork
     });
   } catch (err) {
     console.log(err);

@@ -59,68 +59,82 @@ function insertStar() {
 
 function insertPara() {}
 
-const CustomToolbar = ({ showResponseBtn, active, id, maxWidth, bottom }) => (
-  <div
-    id={id}
-    style={{ display: active ? 'block' : 'none', top: -140, maxWidth, bottom }}
-    className="toolbars"
-  >
-    <span className="ql-formats">
-      <select className="ql-font" />
-      <select className="ql-size" />
-    </span>
-    <span className="ql-formats">
-      <button className="ql-bold" type="button" />
-      <button className="ql-italic" type="button" />
-      <button className="ql-underline" type="button" />
-      <button className="ql-strike" type="button" />
-    </span>
-    <span className="ql-formats">
-      <select className="ql-color" />
-      <select className="ql-background" />
-    </span>
-    <span className="ql-formats">
-      <button className="ql-script" value="sub" type="button" />
-      <button className="ql-script" value="super" type="button" />
-    </span>
-    <span className="ql-formats">
-      <button className="ql-header" value="1" type="button" />
-      <button className="ql-header" value="2" type="button" />
-      <button className="ql-blockquote" type="button" />
-      <button className="ql-code-block" type="button" />
-    </span>
-    <span className="ql-formats">
-      <button className="ql-list" value="ordered" type="button" />
-      <button className="ql-list" value="bullet" type="button" />
-      <button className="ql-indent" value="-1" type="button" />
-      <button className="ql-indent" value="+1" type="button" />
-    </span>
-    <span className="ql-formats">
-      <button className="ql-direction" value="rtl" type="button" />
-      <select className="ql-align" />
-    </span>
-    <span className="ql-formats">
-      <button className="ql-link" type="button" />
-      <button className="ql-image" type="button" />
-      <button className="ql-video" type="button" />
-      <button className="ql-formula" type="button" />
-    </span>
-    <span className="ql-formats">
-      <button className="ql-clean" type="button" />
-    </span>
-    {showResponseBtn && (
+const CustomToolbar = ({ showResponseBtn, active, id, maxWidth }) => {
+  const getTopStyle = () =>
+    (document.getElementById(id)
+      ? document.getElementById(id).offsetHeight
+        ? -document.getElementById(id).offsetHeight - 15
+        : -76
+      : -76);
+
+  return (
+    <div
+      id={id}
+      style={{
+        display: 'block',
+        top: getTopStyle(),
+        opacity: active ? 1 : 0,
+        zIndex: active ? 1000 : -1,
+        maxWidth
+      }}
+      className="toolbars"
+    >
       <span className="ql-formats">
-        <button className="ql-insertStar" type="button">
-          <ResponseButton />
-        </button>
+        <select className="ql-font" />
+        <select className="ql-size" />
       </span>
-    )}
-  </div>
-);
+      <span className="ql-formats">
+        <button className="ql-bold" type="button" />
+        <button className="ql-italic" type="button" />
+        <button className="ql-underline" type="button" />
+        <button className="ql-strike" type="button" />
+      </span>
+      <span className="ql-formats">
+        <select className="ql-color" />
+        <select className="ql-background" />
+      </span>
+      <span className="ql-formats">
+        <button className="ql-script" value="sub" type="button" />
+        <button className="ql-script" value="super" type="button" />
+      </span>
+      <span className="ql-formats">
+        <button className="ql-header" value="1" type="button" />
+        <button className="ql-header" value="2" type="button" />
+        <button className="ql-blockquote" type="button" />
+        <button className="ql-code-block" type="button" />
+      </span>
+      <span className="ql-formats">
+        <button className="ql-list" value="ordered" type="button" />
+        <button className="ql-list" value="bullet" type="button" />
+        <button className="ql-indent" value="-1" type="button" />
+        <button className="ql-indent" value="+1" type="button" />
+      </span>
+      <span className="ql-formats">
+        <button className="ql-direction" value="rtl" type="button" />
+        <select className="ql-align" />
+      </span>
+      <span className="ql-formats">
+        <button className="ql-link" type="button" />
+        <button className="ql-image" type="button" />
+        <button className="ql-video" type="button" />
+        <button className="ql-formula" type="button" />
+      </span>
+      <span className="ql-formats">
+        <button className="ql-clean" type="button" />
+      </span>
+      {showResponseBtn && (
+        <span className="ql-formats">
+          <button className="ql-insertStar" type="button">
+            <ResponseButton />
+          </button>
+        </span>
+      )}
+    </div>
+  );
+};
 
 CustomToolbar.propTypes = {
   maxWidth: PropTypes.any.isRequired,
-  bottom: PropTypes.any.isRequired,
   showResponseBtn: PropTypes.bool,
   active: PropTypes.bool,
   id: PropTypes.string
@@ -214,7 +228,6 @@ class CustomQuillComponent extends Component {
           showResponseBtn={showResponseBtn}
           id={toolbarId}
           maxWidth={style.width}
-          bottom={style.minHeight}
         />
         <ReactQuill
           ref={el => (this.quillRef = el)}

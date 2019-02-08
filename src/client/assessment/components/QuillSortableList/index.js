@@ -6,7 +6,16 @@ import QuillSortableItem from './components/QuillSortableItem';
 
 // todo: union with SortableList
 const QuillSortableList = SortableContainer(
-  ({ items, readOnly, onRemove, onChange, prefix = 'prefix', columns = 1, label = '' }) => (
+  ({
+    items,
+    readOnly,
+    firstFocus,
+    onRemove,
+    onChange,
+    prefix = 'prefix',
+    columns = 1,
+    label = ''
+  }) => (
     <FlexContainer style={{ flexWrap: 'wrap' }} justifyContent="space-between">
       {items.map((value, index) => (
         <QuillSortableItem
@@ -15,6 +24,7 @@ const QuillSortableList = SortableContainer(
           label={label ? `${label} ${index + 1}` : ''}
           indx={prefix + index}
           value={value}
+          firstFocus={firstFocus}
           rOnly={readOnly}
           columns={columns}
           onRemove={() => onRemove(index)}

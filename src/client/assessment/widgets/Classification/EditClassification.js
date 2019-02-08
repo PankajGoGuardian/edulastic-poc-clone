@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { cloneDeep } from 'lodash';
 import { arrayMove } from 'react-sortable-hoc';
@@ -33,9 +33,13 @@ const actions = {
 };
 
 const EditClassification = ({ item, setQuestionData, t }) => {
-  const { stimulus, ui_style } = item;
+  const { stimulus, ui_style, firstMount } = item;
 
   const [correctTab, setCorrectTab] = useState(0);
+
+  useEffect(() => () => {
+    setQuestionData({ ...item, firstMount: false });
+  }, []);
 
   const handleItemChangeChange = (prop, uiStyle) => {
     const newItem = cloneDeep(item);
@@ -357,6 +361,7 @@ const EditClassification = ({ item, setQuestionData, t }) => {
               onSortEnd={handleMain(actions.SORTEND, 'column_titles')}
               onChange={handleChange('column_titles')}
               onRemove={handleMain(actions.REMOVE, 'column_titles')}
+              firstFocus={firstMount}
               useDragHandle
               columns={1}
             />
@@ -380,6 +385,7 @@ const EditClassification = ({ item, setQuestionData, t }) => {
 
             <List
               prefix="rows"
+              firstFocus={firstMount}
               buttonText={t('component.classification.addNewRow')}
               items={item.ui_style.row_titles.map(ite => ite)}
               onAdd={handleMain(actions.ADD, 'row_titles')}
@@ -406,6 +412,7 @@ const EditClassification = ({ item, setQuestionData, t }) => {
           onSortEnd={
             item.group_possible_responses ? handleGroupSortEnd : handleMainPossible(actions.SORTEND)
           }
+          firstFocus={firstMount}
           onChange={item.group_possible_responses ? handleGroupChange : handleChangePossible()}
           onRemoveInner={onRemoveInner}
           onRemove={

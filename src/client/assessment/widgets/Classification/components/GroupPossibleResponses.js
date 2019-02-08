@@ -24,6 +24,7 @@ const Group = ({
   headText,
   groupHeadText,
   onRemoveInner,
+  firstFocus,
   text,
   prefix
 }) => (
@@ -48,6 +49,7 @@ const Group = ({
       <List
         prefix={prefix}
         items={item.responses}
+        firstFocus={firstFocus}
         onAdd={onAddInner(index)}
         onSortEnd={onSortEnd(index)}
         onChange={onChange(index)}
@@ -66,6 +68,7 @@ Group.propTypes = {
   onRemove: PropTypes.func.isRequired,
   onSortEnd: PropTypes.func.isRequired,
   onTitleChange: PropTypes.func.isRequired,
+  firstFocus: PropTypes.bool.isRequired,
   index: PropTypes.number.isRequired,
   headText: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
@@ -74,7 +77,15 @@ Group.propTypes = {
   prefix: PropTypes.string.isRequired
 };
 
-const GroupPossibleResponses = ({ checkboxChange, checkboxVal, items, t, onAdd, ...restProps }) =>
+const GroupPossibleResponses = ({
+  checkboxChange,
+  checkboxVal,
+  items,
+  t,
+  firstFocus,
+  onAdd,
+  ...restProps
+}) =>
   (checkboxVal ? (
     <div>
       <Checkbox style={{ marginTop: 29 }} defaultChecked={checkboxVal} onChange={checkboxChange}>
@@ -86,6 +97,7 @@ const GroupPossibleResponses = ({ checkboxChange, checkboxVal, items, t, onAdd, 
             <Group
               prefix={`group${index}`}
               item={item}
+              firstFocus={firstFocus}
               index={index}
               groupHeadText={t('component.classification.titleOfGroupTitle')}
               headText={t('component.classification.titleOfGroupTitleLabel')}
@@ -109,6 +121,7 @@ const GroupPossibleResponses = ({ checkboxChange, checkboxVal, items, t, onAdd, 
         <List
           prefix="group"
           items={items}
+          firstFocus={firstFocus}
           onAdd={onAdd}
           onSortEnd={restProps.onSortEnd}
           onChange={restProps.onChange}
@@ -126,6 +139,7 @@ GroupPossibleResponses.propTypes = {
   onAdd: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
+  firstFocus: PropTypes.bool.isRequired,
   onSortEnd: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   checkboxVal: PropTypes.bool.isRequired,

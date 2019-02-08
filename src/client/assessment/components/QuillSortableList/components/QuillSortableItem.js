@@ -11,7 +11,7 @@ import { Label } from '../styled/Label';
 import DragHandle from './DragHandle';
 
 const QuillSortableItem = SortableElement(
-  ({ value, onRemove, rOnly, onChange, columns, indx, label }) => (
+  ({ value, onRemove, rOnly, onChange, firstFocus, columns, indx, label }) => (
     <SortableItemContainer columns={columns}>
       {label && <Label>{label}</Label>}
       <FlexContainer style={{ flex: 1 }}>
@@ -19,6 +19,7 @@ const QuillSortableItem = SortableElement(
           <DragHandle />
           <CustomQuillComponent
             readOnly={rOnly}
+            firstFocus={firstFocus}
             toolbarId={`id${indx}`}
             onChange={onChange}
             showResponseBtn={false}
@@ -45,11 +46,13 @@ const QuillSortableItem = SortableElement(
 QuillSortableItem.propTypes = {
   columns: PropTypes.number.isRequired,
   label: PropTypes.string.isRequired,
-  rOnly: PropTypes.bool
+  rOnly: PropTypes.bool,
+  firstFocus: PropTypes.bool
 };
 
 QuillSortableItem.defaultProps = {
-  rOnly: false
+  rOnly: false,
+  firstFocus: false
 };
 
 export default QuillSortableItem;

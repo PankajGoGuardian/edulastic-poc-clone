@@ -379,6 +379,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       cardImage: CMClassification,
       data: {
         title: 'Classification',
+        firstMount: true,
         group_possible_responses: false,
         possible_response_groups: [
           {

@@ -45,10 +45,10 @@ function* saveQuestionSaga() {
     // if id is already present, its an update
     // else a new question
     const isUpdate = !!id;
-
     const entity = {
       id: id || uuid(),
-      ...question
+      ...question,
+      firstMount: false
     };
 
     if (itemDetail && itemDetail.rows) {
@@ -77,12 +77,7 @@ function* saveQuestionSaga() {
     }
 
     delete itemDetail.data;
-    const item = yield call(
-      testItemsApi.updateById,
-      itemDetail._id,
-      itemDetail
-    );
-
+    const item = yield call(testItemsApi.updateById, itemDetail._id, itemDetail);
     yield put({
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
-import { Progress } from 'antd';
+import { Progress, Row, Col } from 'antd';
 import styled from 'styled-components';
 import { greenDark } from '@edulastic/colors';
 import StyledTable from '../styled/Table';
@@ -28,8 +28,10 @@ const computeColumns = t => [
     dataIndex: 'percentage',
     sorter: (a, b) => a.percentage - b.percentage,
     render: percentage =>
-      percentage === null ? (
-        '-'
+      isNaN(percentage) ? (
+        <Row type="flex" justify="center">
+          <Col>-</Col>
+        </Row>
       ) : (
         <StyledProgress percent={Number(percentage.toFixed(1))} />
       ),

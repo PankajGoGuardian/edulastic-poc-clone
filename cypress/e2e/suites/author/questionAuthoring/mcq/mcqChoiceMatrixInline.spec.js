@@ -1,12 +1,12 @@
-import ChoiceMatrixStandardPage from '../../../../framework/author/itemList/questionType/mcq/choiceMatrixStandardPage.js';
+import choiceMatrixInlinePage from '../../../../framework/author/itemList/questionType/mcq/choiceMatrixInlinePage';
 import EditItemPage from '../../../../framework/author/itemList/itemDetail/editPage.js';
 
-describe('Test Authoring - \"Choice matrix - standard\" Type Question', () => {
+describe('Test Authoring - \"Choice matrix - inline\" Type Question', () => {
   const editItem = new EditItemPage();
-  const question = new ChoiceMatrixStandardPage();
+  const question = new choiceMatrixInlinePage();
   const queData = {
 	  group: 'Multiple Choice',
-	  queType: 'Choice matrix - standard',
+	  queType: 'Choice matrix - inline',
 	  queText: 'Choose the correct number of days in following month',
 	  ansChoice:["JAN","APR","MAY","JUN"],
 	  steams: ['30','31'],
@@ -21,22 +21,23 @@ describe('Test Authoring - \"Choice matrix - standard\" Type Question', () => {
 
   context('sanity of all the option', () => {
     before('visit items list page and select question type', () => {
-      editItem.getItemWithId('5c358b480c8e6f22190d5ce0');
-      cy.get('#react-app').then(() => {
-        if (Cypress.$('button[title="Delete"]').length >= 1) {
-          editItem.getDelButton().each(() => {
-            editItem.getDelButton()
-              .eq(0)
-              .click();
-          });
-          editItem.header.save();
-        }
+        editItem.getItemWithId('5c358b480c8e6f22190d5ce0');
+        cy.get('#react-app').then(() => {
+          if (Cypress.$('button[title="Delete"]').length >= 1) {
+            editItem.getDelButton().each(() => {
+              editItem.getDelButton()
+                .eq(0)
+                .click();
+            });
+            editItem.header.save();
+          }
+        });
+  
+        // add new question
+        editItem.addNew()
+          .chooseQuestion(queData.group, queData.queType);
       });
 
-      // add new question
-      editItem.addNew()
-        .chooseQuestion(queData.group, queData.queType);
-    });
       
     it('test => edit question text', () => {
       question.getQuestionEditor()
@@ -108,7 +109,7 @@ describe('Test Authoring - \"Choice matrix - standard\" Type Question', () => {
       // points
 
       // add alternate
-      question.addAlternate()
+      question.addAlternate();
 
       question.getAlternates()
         .should('have.length',1);
@@ -126,6 +127,14 @@ describe('Test Authoring - \"Choice matrix - standard\" Type Question', () => {
                     .find('input')
                     .should('have.attr','type','checkbox');
                 });
+
+      // advanced option
+      question.clickOnAdvancedOptions();
+      
+      // verify default matrix style
+      cy.get('[data-cy="matrixStyle"]')
+            .find('.ant-select-selection-selected-value')
+            .should('contain','Inline');
 
     });
   });
@@ -147,10 +156,10 @@ describe('Test Authoring - \"Choice matrix - standard\" Type Question', () => {
       // add new question
       editItem.addNew()
         .chooseQuestion(queData.group, queData.queType);
+
     });
 
     it('test => create basic question and save', () => {
-
       // question
       question.getQuestionEditor()
         .clear()
@@ -186,7 +195,7 @@ describe('Test Authoring - \"Choice matrix - standard\" Type Question', () => {
           .type(ch)
           .should('contain', ch);
       });
-
+      
       // set correct ans
       question.getCorrectAnsTable()
         .each(($ele, index, $list)  => {
@@ -200,6 +209,7 @@ describe('Test Authoring - \"Choice matrix - standard\" Type Question', () => {
     });
 
     it('test => validate basic question with default setting', () => {
+
       // preview
       const preview = editItem.header.preview();
 
@@ -216,24 +226,22 @@ describe('Test Authoring - \"Choice matrix - standard\" Type Question', () => {
 
       preview.getAntMsg()
         .should('contain', 'score: 1/1');
-
+      
       preview.getClear()
-        .click();
-
+        .click(); 
       // give wrong ans and validate
       question.getCorrectAnsTable()
-        .each(($ele, index, $list)  => {
-        cy.wrap($ele).find('input')
-            .eq((index) % 2)
-            .click();
-        }); 
+      .each(($ele, index, $list)  => {
+      cy.wrap($ele).find('input')
+          .eq((index) % 2)
+          .click();
+      }); 
 
       preview.getCheckAnswer()
           .click({force:true});
 
       preview.getAntMsg()
           .should('contain', 'score: 0/1');
-      
     });
   });
 });

@@ -1,4 +1,22 @@
+import Header from "../../itemDetail/header";
+
 class ChoiceMatrixStandardPage {
+
+    constructor() {
+        this.header = new Header();
+
+        this.numerationOption = {   'Numerical': 'number',
+                                    'Uppercase alphabet' : 'upper-alpha',
+                                    'Lowercase alphabet' : 'lower-alpha'
+        };
+
+        this.fontSizeOption = {  'Small':'small',
+                                'Normal':'normal',
+                                'Large':'large',
+                                'Extra Large':'xlarge',
+                                'Huge':'xxlarge'
+        };
+    }
 
     // question content
     getQuestionEditor() {
@@ -29,9 +47,10 @@ class ChoiceMatrixStandardPage {
     addNewChoice() {
         cy.contains('div','Multiple Choice Options')
             .next()
+            .next()
             .contains('Add new choice')
             .should('be.visible')
-            .click();
+            .click({force:true});
         return this;
     }
                 
@@ -59,9 +78,10 @@ class ChoiceMatrixStandardPage {
     addNewSteam() {
         cy.contains('div','Steams')
             .next()
+            .next()
             .contains('Add new choice')
             .should('be.visible')
-            .click();
+            .click({force:true});
         return this;
     }
 
@@ -92,6 +112,10 @@ class ChoiceMatrixStandardPage {
             .click();
 
         cy.contains('div','Set Correct Answer(s)')
+            .next().contains('div','Alternate')
+            .should('not.be.visible');
+
+        cy.contains('div','Set Correct Answer(s)')
             .next().contains('div','Correct')
             .should('be.visible')
             .click();
@@ -110,6 +134,57 @@ class ChoiceMatrixStandardPage {
         cy.get('[data-cy=iconPlus]')
             .should('be.visible')
             .click();
+        return this;
+    }
+
+    selectMatrixStyle(option) {
+        const selectOp = `[data-cy="${this.fontSizeOption[option]}"]`;
+        cy.get('[data-cy="matrixStyle"]')
+            .should('be.visible')
+            .click()
+
+        cy.get(selectOp)
+            .should('be.visible')
+            .click()
+        
+        cy.get('[data-cy="matrixStyle"]')
+            .find('.ant-select-selection-selected-value')
+            .should('contain',option);
+
+        return this;
+    }
+
+    selectStemNumeration(option) {
+        const selectOp = `[data-cy="${this.fontSizeOption[option]}"]`;
+        cy.get('[data-cy="stemNum"]')
+            .should('be.visible')
+            .click()
+
+        cy.get(selectOp)
+            .should('be.visible')
+            .click()
+        
+        cy.get('[data-cy="stemNum"]')
+            .find('.ant-select-selection-selected-value')
+            .should('contain',option);
+
+        return this;
+    }
+
+    selectFontSize(option) {
+        const selectOp = `[data-cy="${this.fontSizeOption[option]}"]`;
+        cy.get('[data-cy="fontSizeSelect"]')
+            .should('be.visible')
+            .click()
+
+        cy.get(selectOp)
+            .should('be.visible')
+            .click()
+        
+        cy.get('[data-cy="fontSizeSelect"]')
+            .find('.ant-select-selection-selected-value')
+            .should('contain',option);
+
         return this;
     }
 }

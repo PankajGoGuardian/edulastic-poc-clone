@@ -96,7 +96,7 @@ Cypress.Commands.add(
         cy.request({
           url: `${BASE_URL}/assignments`,
           method: 'POST',
-          body: postData,
+          body: [postData],
           headers: {
             authorization: body.result.token,
             'Content-Type': 'application/json'

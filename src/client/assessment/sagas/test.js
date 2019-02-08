@@ -62,10 +62,12 @@ function* loadTest({ payload }) {
           ...item.answers
         };
 
-        userWork = {
-          ...userWork,
-          [item.testItemId]: item.userWork
-        };
+        if (typeof item.userWork === 'object') {
+          userWork = {
+            ...userWork,
+            [item.testItemId]: item.userWork
+          };
+        }
 
         currentTestItem =
           item.updatedAt > currentTestItem.updatedAt ? item : currentTestItem;

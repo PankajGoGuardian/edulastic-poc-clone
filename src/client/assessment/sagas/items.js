@@ -76,18 +76,21 @@ function* saveUserResponse({ payload }) {
       itemAnswers[question] = answers[question];
     });
 
-    const userWork = yield select(({ userWork }) => userWork[currentItem._id]);
     const testItemId = currentItem._id;
     const assignmentId = yield select(
       state => state.studentAssignment && state.studentAssignment.current
     );
-    yield call(testItemActivityApi.create, {
+    const userWork = yield select(({ userWork }) => userWork[testItemId]);
+
+    let activity = {
       answers: itemAnswers,
       testItemId,
       assignmentId,
-      testActivityId: userTestActivityId,
-      userWork
-    });
+      testActivityId: userTestActivityId
+    };
+    if (userWork) activity.userWork = userWork;
+
+    yield call(testItemActivityApi.create, activity);
   } catch (err) {
     console.log(err);
   }

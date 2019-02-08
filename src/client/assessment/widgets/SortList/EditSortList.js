@@ -9,15 +9,15 @@ import { withNamespaces } from '@edulastic/localization';
 import withAddButton from '../../components/HOC/withAddButton';
 import withPoints from '../../components/HOC/withPoints';
 import QuestionTextArea from '../../components/QuestionTextArea';
-import SortableList from '../../components/SortableList';
+import QuillSortableList from '../../components/QuillSortableList/index';
 import CorrectAnswers from '../../components/CorrectAnswers';
 import { Subtitle } from '../../styled/Subtitle';
 
 import AdvancedOptions from './components/AdvancedOptions';
 
-const List = withAddButton(SortableList);
+const List = withAddButton(QuillSortableList);
 
-const OptionsList = withPoints(SortableList);
+const OptionsList = withPoints(QuillSortableList);
 
 const EditSortList = ({ item, setQuestionData, t }) => {
   const [correctTab, setCorrectTab] = useState(0);

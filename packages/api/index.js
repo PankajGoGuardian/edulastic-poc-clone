@@ -18,3 +18,4 @@ export { default as enrollmentApi } from './src/enrollment';
 export { default as evaluateApi } from './src/evaluate';
 export { default as userApi } from './src/user';
 export { default as curriculumSequencesApi } from './src/curriculumSequence';
+export {default as API } from './src/utils/API';

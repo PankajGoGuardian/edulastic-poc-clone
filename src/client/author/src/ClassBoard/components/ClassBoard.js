@@ -17,6 +17,8 @@ import {
   getGradeBookSelector,
   getTestActivitySelector
 } from '../ducks';
+import HooksContainer from './HooksContainer';
+
 import ListHeader from './ListHeader';
 import SortBar from './SortBar';
 import DisneyCard from './DisneyCard';
@@ -28,7 +30,9 @@ import Elinks from '../../assets/assignments/external-link.svg';
 import Graph from './ProgressGraph';
 import Score from './Score';
 import { themes } from '../../../../student/themes';
+
 const classBoardTheme = themes.default.classboard;
+
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -82,6 +86,8 @@ class ClassBoard extends Component {
     const { assignmentId, classId } = match.params;
     return (
       <div>
+       <HooksContainer classId={classId} assignmentId={assignmentId} />
+     
         <ListHeader
           onCreate={this.handleCreate}
           creating={creating}
@@ -127,6 +133,7 @@ class ClassBoard extends Component {
           <DisneyCard testActivity={testActivity} assignmentId={assignmentId} classId={classId} /> :
           <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
         }
+           
       </div>
     );
   }

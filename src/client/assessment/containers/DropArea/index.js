@@ -30,8 +30,8 @@ class DropArea extends React.Component {
     const { list } = this.state;
     const index = obj.id;
     list[index].isDragging = false;
-    list[index].top = (e.clientY - obj.y);
-    list[index].left = (e.clientX - obj.x);
+    list[index].top = e.clientY - obj.y;
+    list[index].left = e.clientX - obj.x;
     updateData(list);
   };
 
@@ -56,8 +56,8 @@ class DropArea extends React.Component {
     const elemRect = this[`node_${id}`].getBoundingClientRect();
     const offsetTop = elemRect.top;
     const offsetLeft = elemRect.left;
-    list[index].width = clientX - offsetLeft + (16 / 2);
-    list[index].height = clientY - offsetTop + (16 / 2);
+    list[index].width = clientX - offsetLeft + 16 / 2;
+    list[index].height = clientY - offsetTop + 16 / 2;
     updateData(list);
   };
 
@@ -75,8 +75,8 @@ class DropArea extends React.Component {
     const elemRect = this.dropArea.getBoundingClientRect();
 
     newResponseContainer.isDragging = false;
-    newResponseContainer.top = (e.clientY - elemRect.top);
-    newResponseContainer.left = (e.clientX - elemRect.left);
+    newResponseContainer.top = e.clientY - elemRect.top;
+    newResponseContainer.left = e.clientX - elemRect.left;
     newResponseContainer.width = 150;
     newResponseContainer.height = 40;
     newResponseContainer.active = true;
@@ -103,11 +103,13 @@ class DropArea extends React.Component {
     const { list } = this.state;
     const { item } = this.props;
 
-    list.entries().forEach((responseContainer, index) => {
+    list.forEach((responseContainer, index) => {
       responseContainers.push(
         <div key={index}>
           <Draggable
-            ref={(c) => { this[`node_${index}`] = c; }}
+            ref={(c) => {
+              this[`node_${index}`] = c;
+            }}
             key={index}
             id={index}
             top={responseContainer.top}
@@ -136,7 +138,9 @@ class DropArea extends React.Component {
         className="drop-area"
         onDragOver={this.onDragOver}
         onDrop={this.onDrop}
-        ref={(c) => { this.dropArea = c; }}
+        ref={(c) => {
+          this.dropArea = c;
+        }}
         style={{
           height: '100%',
           position: 'absolute',

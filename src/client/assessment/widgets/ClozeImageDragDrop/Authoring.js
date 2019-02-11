@@ -6,15 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import 'react-quill/dist/quill.snow.css';
-import {
-  Button,
-  Checkbox,
-  Input,
-  InputNumber,
-  Select,
-  Upload,
-  message
-} from 'antd';
+import { Button, Checkbox, Input, InputNumber, Select, Upload, message } from 'antd';
 import { ChromePicker } from 'react-color';
 
 import { PaddingDiv, CustomQuillComponent } from '@edulastic/common';
@@ -136,7 +128,9 @@ class Authoring extends Component {
     const { status, response } = info.file;
     const { t } = this.props;
     if (status === 'done') {
-      message.success(`${info.file.name} ${t('component.clozeImageDragDrop.fileUploadedSuccessfully')}.`);
+      message.success(
+        `${info.file.name} ${t('component.clozeImageDragDrop.fileUploadedSuccessfully')}.`
+      );
       const imageUrl = response.result.fileUri;
       this.onItemPropChange('imageUrl', imageUrl);
     } else if (status === 'error') {
@@ -172,6 +166,7 @@ class Authoring extends Component {
           <Subtitle>{t('component.clozeImageDragDrop.composequestion')}</Subtitle>
           <CustomQuillComponent
             toolbarId="stimulus"
+            firstFocus={item.firstMount !== undefined}
             wrappedRef={(instance) => {
               this.stimulus = instance;
             }}
@@ -326,8 +321,12 @@ class Authoring extends Component {
                     <p className="ant-upload-hint">
                       <strong>{t('component.clozeImageDragDrop.draganddrop')}</strong>
                     </p>
-                    <h2 className="ant-upload-text">{t('component.clozeImageDragDrop.yourOwnImage')}</h2>
-                    <p className="ant-upload-hint">{t('component.clozeImageDragDrop.orBrowse')}: PNG, JPG, GIF (1024KB MAX.)</p>
+                    <h2 className="ant-upload-text">
+                      {t('component.clozeImageDragDrop.yourOwnImage')}
+                    </h2>
+                    <p className="ant-upload-hint">
+                      {t('component.clozeImageDragDrop.orBrowse')}: PNG, JPG, GIF (1024KB MAX.)
+                    </p>
                   </Dragger>
                 )}
               </div>
@@ -368,6 +367,7 @@ class Authoring extends Component {
           <PaddingDiv>
             <Subtitle>{t('component.clozeImageDragDrop.possibleresponses')}</Subtitle>
             <SortableList
+              dirty={item.firstMount !== undefined}
               items={item.options}
               onSortEnd={this.onSortEnd}
               useDragHandle

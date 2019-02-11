@@ -11,12 +11,12 @@ import { PaddingDiv } from '@edulastic/common';
 
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 
-import SortableList from '../../../components/SortableList';
 import QuestionTextArea from '../../../components/QuestionTextArea';
 import { Subtitle } from '../../../styled/Subtitle';
 import { AddNewChoiceBtn } from '../../../styled/AddNewChoiceBtn';
 
 import { ALPHABET } from '../constants/alphabet';
+import QuillSortableList from '../../../components/QuillSortableList';
 
 class Authoring extends Component {
   static propTypes = {
@@ -119,15 +119,17 @@ class Authoring extends Component {
           <QuestionTextArea
             onChange={this.onChangeQuestion}
             value={item.stimulus}
+            firstFocus={item.firstMount === undefined}
             placeholder={t('component.multiplechoice.thisisstem')}
           />
           <Subtitle>
             {t('component.multiplechoice.multiplechoiceoptions')}
           </Subtitle>
-          <SortableList
+          <QuillSortableList
             items={item.options.map(o => o.label)}
             onSortEnd={this.onSortEnd}
             useDragHandle
+            firstFocus={item.firstMount === undefined}
             onRemove={this.remove}
             onChange={this.editOptions}
           />

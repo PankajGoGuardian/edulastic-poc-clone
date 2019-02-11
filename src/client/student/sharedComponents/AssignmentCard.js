@@ -95,6 +95,7 @@ const AssignmentCard = ({
       <AssessmentDetails
         test={test}
         theme={theme}
+        testType={testType}
         t={t}
         type={type}
         started={attempted}

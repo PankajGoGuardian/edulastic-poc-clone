@@ -2,11 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Col, Icon } from 'antd';
+import { test } from '@edulastic/constants';
 import { formatTime } from '../utils';
+
+const { ASSESSMENT } = test.type;
 
 const AssessmentDetails = ({
   test,
   theme,
+  testType,
   t,
   started,
   resume,
@@ -21,7 +25,14 @@ const AssessmentDetails = ({
       </ImageWrapper>
     </Col>
     <CardDetails>
-      <CardTitle>{test && test.title}</CardTitle>
+      <CardTitle>
+        {test && test.title}
+        <TestType type={testType}>
+          {testType === ASSESSMENT
+            ? t('common.assessment')
+            : t('common.practice')}
+        </TestType>
+      </CardTitle>
       <CardDate>
         <Icon type={theme.assignment.cardTimeIconType} />
         <span data-cy="date">
@@ -185,4 +196,22 @@ const StatusButton = styled.div`
   @media screen and (max-width: 767px) {
     width: 100%;
   }
+`;
+
+const TestType = styled.span`
+  border: 1.5px solid
+    ${props =>
+      props.type === 'assessment'
+        ? props.theme.assignment.cardTimeIconColor
+        : props.theme.sideMenu.menuSelectedItemLinkColor};
+  border-radius: 50%;
+  color: ${props =>
+    props.type === 'assessment'
+      ? props.theme.assignment.cardTimeIconColor
+      : props.theme.sideMenu.menuSelectedItemLinkColor};
+  font-size: ${props => props.theme.assignment.cardSubmitLabelFontSize};
+  padding: 3px 6px;
+  margin: 0px 10px;
+  vertical-align: middle;
+  font-family: ${props => props.theme.assignment.cardTitleFontFamily};
 `;

@@ -30,11 +30,11 @@ import {
 
 const settingCategories = [
   { id: 'mark-as-done', title: 'MARK AS DONE' },
-  { id: 'release-scores', title: 'RELEASE SCORES' },
+  { id: 'release-scores', title: 'RELEASE SCORES AUTOMATICALLY' },
   { id: 'maximum-attempts-allowed', title: 'MAXIMUM ATTEMPTS ALLOWED' },
   { id: 'test-type', title: 'TEST TYPE' },
   { id: 'require-safe-exame-browser', title: 'REQUIRE SAFE EXAME BROWSER' },
-  { id: 'show-questions', title: 'SHOW QUESTIONS TO STUDENT' },
+  { id: 'show-questions', title: 'RELEASE ANSWERS WITH GRADES' },
   { id: 'suffle-question', title: 'SUFFLE QUESTION' },
   { id: 'show-answer-choice', title: 'SHOW ANSWER CHOICE' },
   { id: 'show-calculator', title: 'SHOW CALCULATOR' },
@@ -179,7 +179,7 @@ class MainSetting extends Component {
             </Block>
 
             <Block id="release-scores">
-              <Title>Release Scores</Title>
+              <Title>Release Scores Automatically</Title>
               <Body>
                 <Switch
                   defaultChecked={releaseScore}
@@ -245,7 +245,7 @@ class MainSetting extends Component {
             </Block>
 
             <Block id="show-questions">
-              <Title>Show Questions to Students after Submission</Title>
+              <Title>Release Answers With Grades</Title>
               <Body>
                 <Switch
                   defaultChecked={activityReview}

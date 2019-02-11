@@ -1,6 +1,8 @@
 {
   "common": {
     "dueOn": "Due on",
+    "assessment": "A",
+    "practice": "P",
     "opensIn": "Opens in",
     "submittedTag": "SUBMITTED",
     "notStartedTag": "NOT STARTED",

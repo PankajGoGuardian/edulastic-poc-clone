@@ -22,7 +22,7 @@ import { test } from '@edulastic/constants';
 const initialTestState = {
   title: 'New Test',
   description: '',
-  maxAttempts: 3,
+  maxAttempts: 1,
   testType: test.type.ASSESSMENT,
   releaseScore: true,
   activityReview: true,

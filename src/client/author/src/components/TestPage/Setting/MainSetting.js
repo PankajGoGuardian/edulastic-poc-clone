@@ -126,7 +126,10 @@ class MainSetting extends Component {
   };
 
   updateTestData = key => value => {
-    const { setTestData } = this.props;
+    const { setTestData, setMaxAttempts } = this.props;
+    key === 'testType' && value === ASSESSMENT
+      ? setMaxAttempts(1)
+      : setMaxAttempts(3);
     setTestData({
       [key]: value
     });
@@ -208,7 +211,7 @@ class MainSetting extends Component {
                 <Input
                   type="number"
                   size="large"
-                  defaultValue={maxAttempts}
+                  value={maxAttempts}
                   onChange={this.updateAttempt}
                   min={1}
                   step={1}

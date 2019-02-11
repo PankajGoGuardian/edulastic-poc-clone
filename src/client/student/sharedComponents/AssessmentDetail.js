@@ -201,12 +201,12 @@ const StatusButton = styled.div`
 const TestType = styled.span`
   border: 1.5px solid
     ${props =>
-      props.type === 'assessment'
+      props.type === ASSESSMENT
         ? props.theme.assignment.cardTimeIconColor
         : props.theme.sideMenu.menuSelectedItemLinkColor};
   border-radius: 50%;
   color: ${props =>
-    props.type === 'assessment'
+    props.type === ASSESSMENT
       ? props.theme.assignment.cardTimeIconColor
       : props.theme.sideMenu.menuSelectedItemLinkColor};
   font-size: ${props => props.theme.assignment.cardSubmitLabelFontSize};

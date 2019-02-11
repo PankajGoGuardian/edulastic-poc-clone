@@ -4,6 +4,7 @@ import { values, groupBy, last } from 'lodash';
 import { createSelector } from 'reselect';
 import { normalize } from 'normalizr';
 import { push } from 'react-router-redux';
+import { test } from '@edulastic/constants';
 import { assignmentApi, reportsApi, testActivityApi } from '@edulastic/api';
 import { getCurrentClass } from '../Login/ducks';
 
@@ -20,6 +21,7 @@ import {
 } from '../sharedDucks/ReportsModule/ducks';
 
 // constants
+const { ASSESSMENT } = test.type;
 export const FILTERS = {
   ALL: 'all',
   NOT_STARTED: 'notStarted',
@@ -86,7 +88,7 @@ function* startAssignment({ payload }) {
       groupType
     });
     // set Activity id
-    const type = testType == 'assessment' ? 'test' : 'practice';
+    const type = testType == ASSESSMENT ? 'test' : 'practice';
     yield put(push(`/student/${type}/${testId}/uta/${testActivityId}/qid/0`));
 
     // TODO:load previous responses if resume!!
@@ -106,7 +108,7 @@ function* resumeAssignment({ payload }) {
     }
     yield put(setActiveAssignmentAction(assignmentId));
     yield put(setResumeAssignment(true));
-    const type = testType == 'assessment' ? 'test' : 'practice';
+    const type = testType == ASSESSMENT ? 'test' : 'practice';
     yield put(push(`/student/${type}/${testId}/uta/${testActivityId}/qid/0`));
   } catch (e) {
     console.log(e);

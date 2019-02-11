@@ -74,7 +74,11 @@ const data = [
 
 const Option = Select.Option;
 let { ASSESSMENT, PRACTICE } = test.type;
-const testTypeData = [ASSESSMENT, PRACTICE];
+
+const testTypes = {
+  [ASSESSMENT]: 'Asessment',
+  [PRACTICE]: 'Practice'
+};
 
 const navigations = [
   'Intro Item',
@@ -224,12 +228,12 @@ class MainSetting extends Component {
               <Body />
               <Description>
                 <Select
-                  defaultValue={testType}
+                  defaultValue={testTypes[ASSESSMENT]}
                   style={{ width: '20%', height: 40, marginRight: 30 }}
                   onChange={this.updateTestData('testType')}
                 >
-                  {testTypeData.map(data => (
-                    <Option key={data}>{data}</Option>
+                  {Object.keys(testTypes).map(key => (
+                    <Option key={key}>{testTypes[key]}</Option>
                   ))}
                 </Select>
               </Description>

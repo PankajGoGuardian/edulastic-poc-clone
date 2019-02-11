@@ -6,13 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import 'react-quill/dist/quill.snow.css';
-import {
-  Checkbox,
-  Input,
-  Select,
-  Upload,
-  message
-} from 'antd';
+import { Checkbox, Input, Select, Upload, message } from 'antd';
 import { ChromePicker } from 'react-color';
 
 import { withNamespaces } from '@edulastic/localization';
@@ -27,7 +21,6 @@ import DropArea from '../../containers/DropArea';
 import { Subtitle } from '../../styled/Subtitle';
 import { AddNewChoiceBtn } from '../../styled/AddNewChoiceBtn';
 import SortableList from '../../components/SortableList/index';
-
 
 import { StyledCustomQuill } from './styled/StyledCustomQuill';
 import { FormContainer } from './styled/FormContainer';
@@ -139,7 +132,9 @@ class Authoring extends Component {
     const { status, response } = info.file;
     const { t } = this.props;
     if (status === 'done') {
-      message.success(`${info.file.name} ${t('component.clozeImageDropDown.fileUploadedSuccessfully')}.`);
+      message.success(
+        `${info.file.name} ${t('component.clozeImageDropDown.fileUploadedSuccessfully')}.`
+      );
       const imageUrl = response.result.fileUri;
       this.onItemPropChange('imageUrl', imageUrl);
     } else if (status === 'error') {
@@ -159,25 +154,20 @@ class Authoring extends Component {
     } = item;
 
     const { isColorPickerVisible } = this.state;
-    const hasActive =
-      item.responses &&
-      item.responses.filter(it => it.active === true).length > 0;
+    const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
 
     const draggerProps = {
       name: 'file',
       action: `${API_CONFIG.api}/file/upload`,
       headers: {
-        authorization:
-          localStorage.getItem('access_token')
+        authorization: localStorage.getItem('access_token')
       },
       className: 'drag-full-parent'
     };
     return (
       <div>
         <PaddingDiv>
-          <Subtitle>
-            {t('component.clozeImageDropDown.composequestion')}
-          </Subtitle>
+          <Subtitle>{t('component.clozeImageDropDown.composequestion')}</Subtitle>
           <StyledCustomQuill
             toolbarId="stimulus"
             wrappedRef={(instance) => {
@@ -196,36 +186,24 @@ class Authoring extends Component {
                 onChange={val => this.onItemPropChange('imageWidth', val)}
               />
 
-              <PaddingDiv left={20}>
-                {t('component.clozeImageDropDown.widthpx')}
-              </PaddingDiv>
-
+              <PaddingDiv left={20}>{t('component.clozeImageDropDown.widthpx')}</PaddingDiv>
             </div>
             <div style={{ alignItems: 'center' }}>
               <ImageAlterTextInput
                 size="large"
                 defaultValue={imageAlterText}
-                onChange={val =>
-                  this.onItemPropChange('imageAlterText', val.target.value)
-                }
+                onChange={val => this.onItemPropChange('imageAlterText', val.target.value)}
               />
               <PaddingDiv left={20}>{t('component.clozeImageDropDown.imagealtertext')}</PaddingDiv>
             </div>
             <div style={{ alignItems: 'center' }}>
-              <ColorBox
-                background={background}
-                onClick={() => this.showColorPicker(true)}
-              />
+              <ColorBox background={background} onClick={() => this.showColorPicker(true)} />
               {isColorPickerVisible && (
                 <ColorPickerContainer>
-                  <ColorPickerWrapper
-                    onClick={() => this.showColorPicker(false)}
-                  />
+                  <ColorPickerWrapper onClick={() => this.showColorPicker(false)} />
                   <ChromePicker
                     color={background}
-                    onChangeComplete={color =>
-                      this.onItemPropChange('background', color.hex)
-                    }
+                    onChangeComplete={color => this.onItemPropChange('background', color.hex)}
                   />
                 </ColorPickerContainer>
               )}
@@ -243,7 +221,14 @@ class Authoring extends Component {
               </PaddingDiv>
             </div>
           </FormContainer>
-          <FlexContainer style={{ padding: 0, background: '#fbfafc', borderRadius: '0px 0px 10px 10px', overflow: 'hidden' }}>
+          <FlexContainer
+            style={{
+              padding: 0,
+              background: '#fbfafc',
+              borderRadius: '0px 0px 10px 10px',
+              overflow: 'hidden'
+            }}
+          >
             <ControlBar>
               <ControlButton>
                 <IconDrawResize width={20} height={20} color={greenDark} />
@@ -260,21 +245,11 @@ class Authoring extends Component {
                   defaultValue="none"
                   onChange={this.handlePointersChange}
                 >
-                  <Option value="none">
-                    {t('component.clozeImageDropDown.none')}
-                  </Option>
-                  <Option value="top">
-                    {t('component.clozeImageDropDown.top')}
-                  </Option>
-                  <Option value="bottom">
-                    {t('component.clozeImageDropDown.bottom')}
-                  </Option>
-                  <Option value="left">
-                    {t('component.clozeImageDropDown.left')}
-                  </Option>
-                  <Option value="right">
-                    {t('component.clozeImageDropDown.right')}
-                  </Option>
+                  <Option value="none">{t('component.clozeImageDropDown.none')}</Option>
+                  <Option value="top">{t('component.clozeImageDropDown.top')}</Option>
+                  <Option value="bottom">{t('component.clozeImageDropDown.bottom')}</Option>
+                  <Option value="left">{t('component.clozeImageDropDown.left')}</Option>
+                  <Option value="right">{t('component.clozeImageDropDown.right')}</Option>
                 </PointerSelect>
               </PointerContainer>
             </ControlBar>
@@ -282,17 +257,8 @@ class Authoring extends Component {
               <ImageContainer width={imageWidth}>
                 {item.imageUrl && (
                   <React.Fragment>
-                    <PreviewImage
-                      src={item.imageUrl}
-                      width="100%"
-                      alt="resp-preview"
-                    />
-                    <DropArea
-                      updateData={this.updateData}
-                      item={item}
-                      key={item}
-                    />
-
+                    <PreviewImage src={item.imageUrl} width="100%" alt="resp-preview" />
+                    <DropArea updateData={this.updateData} item={item} key={item} />
                   </React.Fragment>
                 )}
                 {!item.imageUrl && (
@@ -303,7 +269,9 @@ class Authoring extends Component {
                     <p className="ant-upload-hint" style={{ color: 'rgb(230, 230, 230)' }}>
                       <strong>Drag & Drop</strong>
                     </p>
-                    <h2 className="ant-upload-text" style={{ color: 'rgb(177, 177, 177)' }}>{t('component.clozeImageDropDown.yourOwnImage')}</h2>
+                    <h2 className="ant-upload-text" style={{ color: 'rgb(177, 177, 177)' }}>
+                      {t('component.clozeImageDropDown.yourOwnImage')}
+                    </h2>
                     <p className="ant-upload-hint" style={{ color: 'rgb(230, 230, 230)' }}>
                       {t('component.clozeImageDropDown.orBrowse')}: PNG, JPG, GIF (1024KB MAX.)
                     </p>
@@ -313,12 +281,7 @@ class Authoring extends Component {
               <CheckContainer>
                 <Checkbox
                   defaultChecked={isEditAriaLabels}
-                  onChange={val =>
-                    this.onItemPropChange(
-                      'isEditAriaLabels',
-                      val.target.checked
-                    )
-                  }
+                  onChange={val => this.onItemPropChange('isEditAriaLabels', val.target.checked)}
                 >
                   {t('component.clozeImageDropDown.editAriaLabels')}
                 </Checkbox>
@@ -328,47 +291,39 @@ class Authoring extends Component {
           <PaddingDiv>
             {isEditAriaLabels && (
               <React.Fragment>
-                <Subtitle>
-                  {t('component.clozeImageDropDown.editAriaLabels')}
-                </Subtitle>
+                <Subtitle>{t('component.clozeImageDropDown.editAriaLabels')}</Subtitle>
                 {responses.map((responseContainer, index) => (
-                  <div
-                    className="imagelabelDropDown-droppable iseditablearialabel"
-                    key={index}
-                  >
+                  <div className="imagelabelDropDown-droppable iseditablearialabel" key={index}>
                     <span className="index-box">{index + 1}</span>
                     <Input
                       defaultValue={responseContainer.label}
-                      onChange={e =>
-                        this.onResponseLabelChange(index, e.target.value)
-                      }
+                      onChange={e => this.onResponseLabelChange(index, e.target.value)}
                     />
                   </div>
                 ))}
               </React.Fragment>
             )}
           </PaddingDiv>
-          {
-            item.options.map((option, index) => (
-              <PaddingDiv key={`${option}_${index}`} top={30}>
-                <Subtitle style={{ padding: '0px 0px 6px 0px' }}>
-                  {t('component.clozeImageDropDown.response')} {index + 1}
-                </Subtitle>
-                <SortableList
-                  items={item.options[index] || []}
-                  onSortEnd={params => this.onSortEnd(index, params)}
-                  useDragHandle
-                  onRemove={itemIndex => this.remove(index, itemIndex)}
-                  onChange={(itemIndex, e) => this.editOptions(index, itemIndex, e)}
-                />
-                <PaddingDiv top={6}>
-                  <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(index)}>
-                    {t('component.clozeImageDropDown.addnewchoice')}
-                  </AddNewChoiceBtn>
-                </PaddingDiv>
+          {item.options.map((option, index) => (
+            <PaddingDiv key={index} top={30}>
+              <Subtitle style={{ padding: '0px 0px 6px 0px' }}>
+                {t('component.clozeImageDropDown.response')} {index + 1}
+              </Subtitle>
+              <SortableList
+                items={option || []}
+                onSortEnd={params => this.onSortEnd(index, params)}
+                dirty={item.firstMount !== undefined}
+                useDragHandle
+                onRemove={itemIndex => this.remove(index, itemIndex)}
+                onChange={(itemIndex, e) => this.editOptions(index, itemIndex, e)}
+              />
+              <PaddingDiv top={6}>
+                <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(index)}>
+                  {t('component.clozeImageDropDown.addnewchoice')}
+                </AddNewChoiceBtn>
               </PaddingDiv>
-            ))
-          }
+            </PaddingDiv>
+          ))}
         </PaddingDiv>
       </div>
     );

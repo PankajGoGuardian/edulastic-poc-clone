@@ -88,8 +88,9 @@ function* startAssignment({ payload }) {
       groupType
     });
     // set Activity id
-    const type = testType == ASSESSMENT ? 'test' : 'practice';
-    yield put(push(`/student/${type}/${testId}/uta/${testActivityId}/qid/0`));
+    yield put(
+      push(`/student/${testType}/${testId}/uta/${testActivityId}/qid/0`)
+    );
 
     // TODO:load previous responses if resume!!
   } catch (e) {
@@ -108,8 +109,9 @@ function* resumeAssignment({ payload }) {
     }
     yield put(setActiveAssignmentAction(assignmentId));
     yield put(setResumeAssignment(true));
-    const type = testType == ASSESSMENT ? 'test' : 'practice';
-    yield put(push(`/student/${type}/${testId}/uta/${testActivityId}/qid/0`));
+    yield put(
+      push(`/student/${testType}/${testId}/uta/${testActivityId}/qid/0`)
+    );
   } catch (e) {
     console.log(e);
   }

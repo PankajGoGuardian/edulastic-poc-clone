@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { compose } from 'redux';
+import { test } from '@edulastic/constants';
+
+const { ASSESSMENT, PRACTICE } = test.type;
 
 import { TestAttemptReview } from './student/TestAttemptReview';
 // route wise splitting
@@ -51,20 +54,20 @@ class App extends Component {
             <Route path="/StudentSignup" component={StudentSignup} />
 
             <Route
-              path="/student/test/:id/uta/:utaId"
+              path={`/student/${ASSESSMENT}/:id/uta/:utaId`}
               render={() => <AssessmentPlayer defaultAP={true} />}
             />
             <Route
-              path="/student/test/:id"
+              path={`/student/${ASSESSMENT}/:id`}
               render={() => <AssessmentPlayer defaultAP={true} />}
             />
             <Route path="/student/test-summary" component={TestAttemptReview} />
             <Route
-              path="/student/practice/:id/uta/:utaId"
+              path={`/student/${PRACTICE}/:id/uta/:utaId`}
               render={() => <AssessmentPlayer defaultAP={false} />}
             />
             <Route
-              path="/student/practice/:id"
+              path={`/student/${PRACTICE}/:id`}
               render={() => <AssessmentPlayer defaultAP={false} />}
             />
           </Switch>

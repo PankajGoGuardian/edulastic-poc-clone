@@ -10,7 +10,6 @@ import { PaddingDiv, Checkbox, Paper } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
 
 import { setQuestionDataAction } from '../../../author/src/actions/question';
-import { checkAnswerAction } from '../../../author/src/actions/testItem';
 
 import { CorrectAnswerOptions } from '../../styled/CorrectAnswerOptions';
 
@@ -22,11 +21,6 @@ import Options from './components/Options';
 const EmptyWrapper = styled.div``;
 
 class ClozeDropDown extends Component {
-  state = {
-    // eslint-disable-next-line react/destructuring-assignment
-    feedbackAttempts: this.props.item.feedback_attempts || 0
-  };
-
   getRenderData = () => {
     const { item, history } = this.props;
     const locationState = history.location.state;
@@ -87,32 +81,13 @@ class ClozeDropDown extends Component {
     saveAnswer(newAnswer);
   };
 
-  _checkAnswer = () => {
-    const { checkAnswer, userAnswer } = this.props;
-
-    if (!userAnswer || (Array.isArray(userAnswer) && !userAnswer.length)) {
-      return;
-    }
-
-    this.setState(
-      ({ feedbackAttempts }) => ({
-        feedbackAttempts: feedbackAttempts - 1
-      }),
-      () => {
-        checkAnswer();
-      }
-    );
-  };
-
   render() {
     const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation } = this.props;
-    const { feedbackAttempts } = this.state;
     const {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
       uiStyle,
-      instantFeedback,
       instructorStimulus
     } = this.getRenderData();
     const { shuffleOptions } = item;
@@ -167,66 +142,25 @@ class ClozeDropDown extends Component {
         )}
         {view === 'preview' && (
           <Wrapper>
-            {previewTab === 'check' && (
-              <Display
-                checkAnswer
-                configureOptions={{
-                  shuffleOptions
-                }}
-                smallSize={smallSize}
-                options={previewDisplayOptions}
-                question={previewStimulus}
-                uiStyle={uiStyle}
-                templateMarkUp={item.templateMarkUp}
-                userSelections={userAnswer}
-                onChange={this.handleAddAnswer}
-                evaluation={evaluation}
-                instantFeedback={instantFeedback}
-                feedbackAttempts={feedbackAttempts}
-                onCheckAnswer={this._checkAnswer}
-                instructorStimulus={instructorStimulus}
-              />
-            )}
-            {previewTab === 'show' && (
-              <Display
-                showAnswer
-                configureOptions={{
-                  shuffleOptions
-                }}
-                smallSize={smallSize}
-                options={previewDisplayOptions}
-                question={previewStimulus}
-                uiStyle={uiStyle}
-                templateMarkUp={item.templateMarkUp}
-                userSelections={userAnswer}
-                validation={item.validation}
-                evaluation={evaluation}
-                instantFeedback={instantFeedback}
-                feedbackAttempts={feedbackAttempts}
-                onCheckAnswer={this._checkAnswer}
-                instructorStimulus={instructorStimulus}
-              />
-            )}
-            {previewTab === 'clear' && (
-              <Display
-                preview
-                configureOptions={{
-                  shuffleOptions
-                }}
-                key={previewDisplayOptions && previewStimulus && uiStyle}
-                smallSize={smallSize}
-                options={previewDisplayOptions}
-                question={previewStimulus}
-                uiStyle={uiStyle}
-                templateMarkUp={item.templateMarkUp}
-                userSelections={userAnswer}
-                onChange={this.handleAddAnswer}
-                instantFeedback={instantFeedback}
-                feedbackAttempts={feedbackAttempts}
-                onCheckAnswer={this._checkAnswer}
-                instructorStimulus={instructorStimulus}
-              />
-            )}
+            <Display
+              showAnswer={previewTab === 'show'}
+              preview={previewTab === 'clear'}
+              checkAnswer={previewTab === 'check'}
+              configureOptions={{
+                shuffleOptions
+              }}
+              item={item}
+              smallSize={smallSize}
+              options={previewDisplayOptions}
+              question={previewStimulus}
+              uiStyle={uiStyle}
+              templateMarkUp={item.templateMarkUp}
+              userAnswer={userAnswer}
+              userSelections={userAnswer}
+              onChange={this.handleAddAnswer}
+              evaluation={evaluation}
+              instructorStimulus={instructorStimulus}
+            />
           </Wrapper>
         )}
       </div>
@@ -244,7 +178,6 @@ ClozeDropDown.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   t: PropTypes.func.isRequired,
-  checkAnswer: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any.isRequired
 };
@@ -266,8 +199,7 @@ const enhance = compose(
   connect(
     null,
     {
-      setQuestionData: setQuestionDataAction,
-      checkAnswer: checkAnswerAction
+      setQuestionData: setQuestionDataAction
     }
   )
 );

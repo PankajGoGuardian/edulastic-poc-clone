@@ -16,6 +16,7 @@
     "checkAnswer": "Check answer",
     "options": {
       "instant_feedback": "Check answer button",
+      "check_answer": "Check answer",
       "feedback_attempts": "Check answer attempts",
       "min_score_if_attempted": "Minimum score if attempted",
       "style": "Style",

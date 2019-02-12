@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash';
-import { rounding as roundingTypes } from './const/rounding';
+import { ROUND_DOWN } from './const/rounding';
 import { ScoringType } from './const/scoring';
 import getPartialPerResponse from './helpers/getPartialPerResponse';
 import getPenaltyScore from './helpers/getPenaltyScore';
@@ -59,8 +59,7 @@ const partialMatchEvaluator = (
   let maxScore = 0;
   const evaluation = {};
   let isCorrect = false;
-  const isRound =
-    rounding === roundingTypes.ROUND_DOWN || scoring_type === ScoringType.PARTIAL_MATCH;
+  const isRound = rounding === ROUND_DOWN || scoring_type === ScoringType.PARTIAL_MATCH;
 
   if (userResponse.length !== answers[0].value.length) {
     userResponse = [

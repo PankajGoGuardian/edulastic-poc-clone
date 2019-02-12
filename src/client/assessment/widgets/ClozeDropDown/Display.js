@@ -9,7 +9,7 @@ import CorrectAnswerBoxLayout from '../../components/CorrectAnswerBoxLayout';
 import { getFontSize } from '../../utils/helpers';
 
 import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout';
-import CheckAnswerButton from '../../themes/common/CheckAnswerButton';
+import { withCheckAnswerButton } from '../../components/HOC/withCheckAnswerButton';
 
 const { Option } = Select;
 
@@ -91,10 +91,7 @@ class ClozeDropDownDisplay extends Component {
       checkAnswer,
       validation,
       evaluation,
-      instantFeedback,
-      feedbackAttempts,
-      instructorStimulus,
-      onCheckAnswer
+      instructorStimulus
     } = this.props;
     const { templateParts, userAnswers } = this.state;
     const { shuffleOptions } = configureOptions;
@@ -213,13 +210,8 @@ class ClozeDropDownDisplay extends Component {
           <InstructorStimulus dangerouslySetInnerHTML={{ __html: instructorStimulus }} />
         )}
         <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
-        <div>
-          <div style={{ margin: smallSize ? '-10px -20px' : 0, borderRadius: 0 }}>
-            {templateBoxLayout}
-          </div>
-          {instantFeedback && (
-            <CheckAnswerButton feedbackAttempts={feedbackAttempts} onCheck={onCheckAnswer} />
-          )}
+        <div style={{ margin: smallSize ? '-10px -20px' : 0, borderRadius: 0 }}>
+          {templateBoxLayout}
         </div>
         {answerBox}
       </div>
@@ -241,10 +233,7 @@ ClozeDropDownDisplay.propTypes = {
   validation: PropTypes.object,
   evaluation: PropTypes.object,
   uiStyle: PropTypes.object,
-  instantFeedback: PropTypes.bool.isRequired,
-  instructorStimulus: PropTypes.string.isRequired,
-  feedbackAttempts: PropTypes.number.isRequired,
-  onCheckAnswer: PropTypes.func
+  instructorStimulus: PropTypes.string.isRequired
 };
 
 ClozeDropDownDisplay.defaultProps = {
@@ -254,7 +243,6 @@ ClozeDropDownDisplay.defaultProps = {
   showAnswer: false,
   evaluation: {},
   checkAnswer: false,
-  onCheckAnswer: () => {},
   userSelections: [],
   templateMarkUp: defaultTemplateMarkup,
   smallSize: false,
@@ -272,4 +260,4 @@ ClozeDropDownDisplay.defaultProps = {
   }
 };
 
-export default ClozeDropDownDisplay;
+export default withCheckAnswerButton(ClozeDropDownDisplay);

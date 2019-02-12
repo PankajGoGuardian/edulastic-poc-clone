@@ -29,14 +29,24 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   var validValue = validAnswer.value,
       validScore = validAnswer.score;
   var maxScore = validScore;
-  var evaluation = (0, _lodash.cloneDeep)(validValue);
+  var evaluation = [];
   altAnswers.forEach(function (answer) {
     var answerValue = answer.value,
         answerScore = answer.score;
 
     if ((0, _lodash.isEqual)(answerValue, userResponse)) {
-      evaluation = (0, _lodash.cloneDeep)(answerValue);
+      answerValue.forEach(function (ans, i) {
+        evaluation[i] = true;
+      });
       score = answerScore;
+    } else {
+      answerValue.forEach(function (ans, i) {
+        if (ans === userResponse[i]) {
+          evaluation[i] = true;
+        } else {
+          evaluation[i] = false;
+        }
+      });
     }
 
     maxScore = Math.max(answerScore, maxScore);
@@ -44,7 +54,18 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
 
   if (score === 0) {
     if ((0, _lodash.isEqual)(validValue, userResponse)) {
+      validValue.forEach(function (ans, i) {
+        evaluation[i] = true;
+      });
       score = validScore;
+    } else {
+      validValue.forEach(function (ans, i) {
+        if (ans === userResponse[i]) {
+          evaluation[i] = true;
+        } else {
+          evaluation[i] = false;
+        }
+      });
     }
   }
 

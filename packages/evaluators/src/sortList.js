@@ -20,14 +20,24 @@ const exactMatchEvaluator = (
 
   let maxScore = validScore;
 
-  let evaluation = cloneDeep(validValue);
+  const evaluation = [];
 
   altAnswers.forEach((answer) => {
     const { value: answerValue, score: answerScore } = answer;
 
     if (isEqual(answerValue, userResponse)) {
-      evaluation = cloneDeep(answerValue);
+      answerValue.forEach((ans, i) => {
+        evaluation[i] = true;
+      });
       score = answerScore;
+    } else {
+      answerValue.forEach((ans, i) => {
+        if (ans === userResponse[i]) {
+          evaluation[i] = true;
+        } else {
+          evaluation[i] = false;
+        }
+      });
     }
 
     maxScore = Math.max(answerScore, maxScore);
@@ -35,7 +45,18 @@ const exactMatchEvaluator = (
 
   if (score === 0) {
     if (isEqual(validValue, userResponse)) {
+      validValue.forEach((ans, i) => {
+        evaluation[i] = true;
+      });
       score = validScore;
+    } else {
+      validValue.forEach((ans, i) => {
+        if (ans === userResponse[i]) {
+          evaluation[i] = true;
+        } else {
+          evaluation[i] = false;
+        }
+      });
     }
   }
 

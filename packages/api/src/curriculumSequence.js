@@ -21,10 +21,25 @@ const updateCurriculumSequence = (id, curriculumSequence) => {
 
   return api
     .callApi(options)
-    .then(result => result);
+    .then(res => res.data.result);
+};
+
+const searchCurriculumSequences = ({ publisher, type = 'guide' }) => {
+  const options = {
+    method: 'post',
+    url: '/curriculum-sequence/search/',
+    data: {
+      search: { publisher, type }
+    }
+  };
+  
+  return api
+    .callApi(options)
+    .then(res => res.data.result);
 };
 
 export default {
   getCurriculums: getCurriculumSequences,
-  updateCurriculumSequence
+  updateCurriculumSequence,
+  searchCurriculumSequences
 };

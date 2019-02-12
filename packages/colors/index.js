@@ -31,6 +31,7 @@ export const green = '#1fe3a1';
 export const lightGreen = '#e1fbf2';
 export const greenDark = '#4aac8b';
 export const greenDarkSecondary = '#057750';
+export const greenSecondary = '#4CD43B';
 
 // shadows
 export const boxShadowDefault = '0 2px 5px 0 rgba(0, 0, 0, 0.07)';

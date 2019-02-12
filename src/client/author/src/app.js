@@ -25,7 +25,6 @@ const PickUpQuestionType = lazy(() =>
   import('./components/PickUpQuestionType'));
 const CurriculumContainer = lazy(() => import('../curriculumsequence'));
 
-
 // eslint-disable-next-line react/prop-types
 const Author = ({ match, history, isSidebarCollapsed }) => {
   const isPickQuestion = !!history.location.pathname.includes(

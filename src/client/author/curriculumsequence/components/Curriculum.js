@@ -17,13 +17,15 @@ class Curriculum extends Component {
   }
 
   render() {
-    const { curriculum: { title, modules } } = this.props;
+    const { curriculum: { modules } } = this.props;
     const { expandedModules, onCollapseExpand, padding } = this.props;
+    const totalModules = modules.length;
+    const modulesCompleted = modules.filter(m => m.assigned === true).length;
 
     return (
       <ModuleWrapper>
-          {modules.map(moduleItem => (
-            <DropContainer key={`drop-${moduleItem.id}`} drop={() => this.onDrop(moduleItem)}>
+          {modules.map((moduleItem, index) => (
+            <DropContainer key={`drop-${moduleItem.data.length}-${index}-${moduleItem.id}`} drop={() => this.onDrop(moduleItem)}>
               <CurriculumModuleRow
                 collapsed={expandedModules.indexOf(moduleItem.id) === -1}
                 onCollapseExpand={onCollapseExpand}
@@ -41,6 +43,8 @@ class Curriculum extends Component {
 const ModuleWrapper = styled.div`
   flex-grow: 1;
   width: 60%;
+  z-index: 1;
 `;
+ModuleWrapper.displayName = 'ModuleWrapper';
 
 export default Curriculum;

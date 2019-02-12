@@ -28,7 +28,7 @@ const DropContainer = ({ connectDropTarget, isOver, style, children, noBorder, n
     !noBorder
       ? isOver
         ? `2px solid ${green}`
-        : `2px dashed ${dashBorderColor}`
+        : `0px dashed ${dashBorderColor}`
       : isOver
         ? `2px solid ${green}`
         : '2px solid transparent'
@@ -37,6 +37,7 @@ const DropContainer = ({ connectDropTarget, isOver, style, children, noBorder, n
   return connectDropTarget(
     <div
       style={{
+        zIndex: 1,
         ...style,
         border,
         borderTopColor: noTopBorder && !isOver ? 'transparent' : border

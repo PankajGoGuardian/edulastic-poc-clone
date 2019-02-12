@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 import styled from 'styled-components';
 import { Dropdown, Menu, Icon, Input } from 'antd';
 import { mainBlueColor } from '@edulastic/colors';
 import { FlexContainer, Paper } from '@edulastic/common';
+import { searchContentAction, setContentCurriculumAction } from '../ducks';
 import SelectContentRow from './SelectContentRow';
 import CloseButtonMobileIcon from '../assets/close-button.svg';
 
@@ -48,18 +51,25 @@ import CloseButtonMobileIcon from '../assets/close-button.svg';
  * @property {String} updatedDate
  */
 
+/**
+* @typedef {object} CurriculumSearchResult
+* @property {string} _id
+* @property {string} title
+*/
+
 
 /**
  * @typedef CurriculumProps
  * @property {CurriculumSequence} curriculum
- * @property {CurriculumSequence[]} curriculumList
  * @property {CurriculumSequence} destinationCurriculum
  * @property {function} addContentToCurriculumSequence
  * @property {function} onSelectContent
- * @property {function} onCurriculumSequnceChange
  * @property {number} windowWidth
  * @property {any} dropContent
  * @property {function} onBeginDrag
+ * @property {function} searchContentCurriculums
+ * @property {CurriculumSearchResult[]} contentCurriculums
+ * @property {function} setContentCurriculum
  */
 
 /** @extends Component<CurriculumProps> */
@@ -69,31 +79,28 @@ class SelectContent extends Component {
     onSelectContent();
   }
 
+  componentDidMount() {
+    const { searchContentCurriculums } = this.props;
+    searchContentCurriculums();
+  }
+
   render() {
     const {
       curriculum,
-      curriculumList,
       destinationCurriculum,
-      onCurriculumSequnceChange,
       addContentToCurriculumSequence,
       windowWidth,
       dropContent,
-      onBeginDrag
+      onBeginDrag,
+      contentCurriculums,
+      setContentCurriculum
     } = this.props;
     const { title, modules } = curriculum;
 
-    if (!destinationCurriculum) {
-      return (
-        <CurriculumWrapper>
-          <Message>Please provide destination curriculum sequence</Message>
-        </CurriculumWrapper>
-      );
-    }
-
     const menu = (
       <Menu>
-        {curriculumList.map(curriculumItem => (
-          <Menu.Item key={`menu-${curriculumItem.id}`} onClick={() => onCurriculumSequnceChange(curriculumItem)}>{curriculumItem.title}</Menu.Item>))}
+        {contentCurriculums.map(curriculumItem => (
+          <Menu.Item key={`menu-${curriculumItem._id}`} onClick={() => setContentCurriculum(curriculumItem._id)}>{curriculumItem.title}</Menu.Item>))}
       </Menu>
     );
 
@@ -140,20 +147,19 @@ SelectContent.propTypes = {
     title: PropTypes.string.isRequired,
     updatedDate: PropTypes.string.isRequired
   }),
-  curriculumList: PropTypes.array,
   onSelectContent: PropTypes.func.isRequired,
   destinationCurriculum: PropTypes.object.isRequired,
-  onCurriculumSequnceChange: PropTypes.func.isRequired,
   addContentToCurriculumSequence: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   dropContent: PropTypes.any.isRequired,
   onBeginDrag: PropTypes.any.isRequired,
-  
+  searchContentCurriculums: PropTypes.func.isRequired,
+  contentCurriculums: PropTypes.any.isRequired,
+  setContentCurriculum: PropTypes.func.isRequired
 };
 
 SelectContent.defaultProps = {
-  curriculum: null,
-  curriculumList: []
+  curriculum: null
 };
 
 const DropdownCloseWrapper = styled.div`
@@ -230,16 +236,35 @@ const CurriculumWrapper = styled(Paper)`
     padding: 0;
     margin-top: 20px;
     align-self: baseline;
+    z-index: 1;
     @media only screen and (max-width: 845px) {
-  position: fixed;
-  margin-top: 0px;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 0;
-}
+      position: fixed;
+      margin-top: 0px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+    }
   }
 `;
 
-export default SelectContent;
+const mapDispatchToProps = dispatch => ({
+  searchContentCurriculums() {
+    dispatch(searchContentAction());
+  },
+  setContentCurriculum(id) {
+    dispatch(setContentCurriculumAction(id));
+  }
+});
+
+const enhance = compose(
+  connect(
+    ({ curriculumSequence }) => ({
+      contentCurriculums: curriculumSequence.contentCurriculums
+    }),
+    mapDispatchToProps
+  )
+);
+
+export default enhance(SelectContent);

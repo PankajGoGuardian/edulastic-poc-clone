@@ -1,21 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Menu, Dropdown, Button } from 'antd';
-import {
-  Paper,
-  Checkbox
-} from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
-import { darkBlue, mobileWidth, lightBlue, mainBlueColor, lightGreen, green, white, darkBlueSecondary, svgMapFillColor } from '@edulastic/colors';
-import minusIcon from '../assets/minus.svg';
-import plusIcon from '../assets/plus.svg';
-import assignIcon from '../assets/assign.svg';
-import visualizationIcon from '../assets/visualization-show.svg';
-import triangleIcon from '../assets/triangle.svg';
-import infoIcon from '../assets/info.svg';
-import addUnit from '../assets/add-unit.svg';
+import { Menu } from 'antd';
+import { Paper } from '@edulastic/common';
+import { mobileWidth, lightBlue } from '@edulastic/colors';
 import AssignmentDragItem from './AssignmentDragItem';
+import triangleIcon from '../assets/triangle.svg';
 
 /**
  * @typedef {object} Props
@@ -60,7 +49,7 @@ class ModuleRow extends Component {
   render() {
     const { checked, unitExpanded } = this.state;
     const { collapsed, destinationCurriculum, dropContent, module } = this.props;
-    const { assigned, data, name, id } = module;
+    const { data, name } = module;
     
     const menu = (
       <Menu>
@@ -80,21 +69,22 @@ class ModuleRow extends Component {
               <span>{name}</span>
               <UnitIcon onClick={this.handleUnitExpandCollapse} rotated={unitExpanded}><img src={triangleIcon} alt="triangle icon " /></UnitIcon>
             </ModuleHeader>
-            {unitExpanded &&
+            {unitExpanded && (
               <div>
-                {data.map((moduleData) => (
-                    <AssignmentDragItem
-                      moduleData={moduleData}
-                      handleContentClicked={this.handleAddContentClick}
-                      onCheckbox={this.handleChecked}
-                      checked={checked}
-                      menu={menu}
-                      handleDrop={dropContent}
-                      onBeginDrag={this.props.onBeginDrag}
-                    />
+                {data.map((moduleData, index) => (
+                  <AssignmentDragItem
+                    key={`${index}-${moduleData.id}`}
+                    moduleData={moduleData}
+                    handleContentClicked={this.handleAddContentClick}
+                    onCheckbox={this.handleChecked}
+                    checked={checked}
+                    menu={menu}
+                    handleDrop={dropContent}
+                    onBeginDrag={this.props.onBeginDrag}
+                  />
                 ))}
               </div>
-            }
+            )}
           </Module>
         </Container>
       </ModuleWrapper>
@@ -160,7 +150,6 @@ const Module = styled.div`
   font-size: 13px;
   font-weight: 600;
   border-top: 1px solid ${lightBlue};
-}
 `;
 Module.displayName = 'SelectContentRowModule';
 
@@ -169,20 +158,6 @@ const ModuleHeader = styled(Row)`
   display: flex;
   padding-top: 10px;
   padding-bottom: 10px;
-`;
-
-const ModulesAssigned = styled.div`
-  font-size: 10px;
-  font-weight: 700;
-  background-color: ${lightBlue}
-  display: flex;
-  align-items: center;
-  padding-left: 20px;
-  padding-right: 20px;
-  color: ${darkBlue};
-  text-transform: uppercase;
-  margin-left: auto;
-  justify-self: flex-end;
 `;
 
 const ModuleWrapper = styled.div`

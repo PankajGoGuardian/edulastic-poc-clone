@@ -70,7 +70,7 @@ const enhance = compose(
 export default enhance(ItemDetailDropTarget);
 
 const Container = styled.div`
-  border: 2px dashed ${blue};
+  
   width: 100%;
   height: 80px;
   display: flex;

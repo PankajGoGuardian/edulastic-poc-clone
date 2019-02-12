@@ -1,5 +1,4 @@
 import React, { Component  } from 'react';
-import PropTypes from 'prop-types';
 import { Dropdown } from 'antd';
 import styled from 'styled-components';
 import { DragSource } from 'react-dnd';
@@ -33,8 +32,7 @@ function collect(connect, monitor) {
     connectDragSource: connect.dragSource(),
     connectDragPreview: connect.dragPreview(),
     isDragging: monitor.isDragging()
-
-  }
+  };
 }
 
 /** @extends Component<Props> */
@@ -113,16 +111,8 @@ const Module = styled.div`
   font-size: 13px;
   font-weight: 600;
   border-top: 1px solid ${lightBlue};
-}
 `;
 Module.displayName = 'SelectContentRowModule';
-
-const ModuleHeader = styled(Row)`
-  box-shadow: none;
-  display: flex;
-  padding-top: 10px;
-  padding-bottom: 10px;
-`;
 
 const Assignment = styled(Row)`
     display: flex;
@@ -137,7 +127,7 @@ const Assignment = styled(Row)`
 const ModulesAssigned = styled.div`
   font-size: 10px;
   font-weight: 700;
-  background-color: ${lightBlue}
+  background-color: ${lightBlue};
   display: flex;
   align-items: center;
   padding-left: 20px;
@@ -157,32 +147,7 @@ const AssignmentPrefix = styled(ModulesAssigned)`
   justify-self: flex-start;
   margin-left: 0;
   margin-right: 20px;
-  color: ${green}
+  color: ${green};
   border-radius: 4px;
   line-height: 2.4;
-`;
-
-const ModuleWrapper = styled.div`
-  & {
-    padding: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    padding-right: 20px;
-    padding-left: 20px;
-  }
-  .module-checkbox {
-    span {
-      margin-right: 23px;
-    }
-  }
-  .module-btn-assigned {
-    background-color: ${lightBlue};
-    margin-left: auto;
-    justifySelf: flex-end;
-  }
-  .module-btn-expand-collapse {
-    border: none;
-    box-shadow: none;
-
-  }
 `;

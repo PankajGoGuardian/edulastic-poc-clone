@@ -1,45 +1,47 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 import styled from 'styled-components';
-import { Button } from 'antd';
+import { Button, Icon } from 'antd';
 import {
   Paper,
   Checkbox
 } from '@edulastic/common';
 import { random } from 'lodash';
 import { withNamespaces } from '@edulastic/localization';
-import { darkBlue, mobileWidth, lightBlue, mainBlueColor, lightGreen, green, white, darkBlueSecondary } from '@edulastic/colors';
+import { darkBlue, mobileWidth, lightBlue, mainBlueColor, lightGreen, green, white, darkBlueSecondary, greenDarkSecondary } from '@edulastic/colors';
+import { toggleCheckedUnitItemAction } from '../ducks';
 import minusIcon from '../assets/minus.svg';
 import plusIcon from '../assets/plus.svg';
 import assignIcon from '../assets/assign.svg';
 import visualizationIcon from '../assets/visualization-show.svg';
-import triangleIcon from '../assets/triangle.svg';
-import infoIcon from '../assets/info.svg';
+import assessmentRed from '../assets/assessment.svg';
+import assessmentGreen from '../assets/concept-check.svg';
+import moduleCompletedIcon from '../assets/module-completed.svg';
+
 
 /**
  * @typedef {object} Props
  * @property {import('./CurriculumSequence').Module} module
  * @property {function} onCollapseExpand
+ * @property {function} toggleUnitItem
  * @property {boolean} collapsed
+ * @property {string[]} checkedUnitItems
+ * @property {boolean} isContentExpanded
  */
 
+ const IS_ASSIGNED = 'ASSIGNED';
+ const NOT_ASSIGNED = 'ASSIGN';
 
 /** @extends Component<Props> */
 class ModuleRow extends Component {
-  progressValue = random(0, 100);
-
-  state = {
-    checked: false
-  }
-
-  handleChecked = () => {
-    this.setState((prevState) => ({ checked: !prevState.checked }));
-  }
-
   render() {
-    const { checked } = this.state;
-    const { assigned, data, name, id } = this.props.module;
-    const { onCollapseExpand, collapsed, padding } = this.props;
+    const { completed, data, name, id } = this.props.module;
+    const { onCollapseExpand, collapsed, padding, checkedUnitItems, toggleUnitItem, isContentExpanded } = this.props;
+    const totalAssigned = data.length;
+    const numberOfAssigned = data.filter(item => item.assigned).length;
+    const [whichModule, moduleName ] = name.split(':');
 
     return (
       <ModuleWrapper padding={padding}>
@@ -47,42 +49,83 @@ class ModuleRow extends Component {
           <Module>
             <ModuleHeader collapsed={collapsed}>
               <ModuleInfo>
-                <Checkbox checked={checked} onChange={this.handleChecked} className="module-checkbox" />
-                <ModuleTitleAssignedWrapper>
-                  <ModuleTitle>{name}</ModuleTitle>
-                  <ModulesAssigned>Assigned 2 of 3</ModulesAssigned>
-                </ModuleTitleAssignedWrapper>
                 <Button type="primary" ghost className="module-btn-expand-collapse" onClick={() => onCollapseExpand(id)}>
                   {!collapsed
                     ? <img src={minusIcon} alt="collapse module " />
                     : <img src={plusIcon} alt="expand module " />
                   }
                 </Button>
+                <ModuleTitleAssignedWrapper>
+                  <ModuleTitleWrapper>
+                  <ModuleTitlePrefix>{whichModule}</ModuleTitlePrefix>
+                  <ModuleTitle>{moduleName}</ModuleTitle>
+                </ModuleTitleWrapper>
+
+                {completed && 
+                  <React.Fragment>
+                    <ModuleCompleted>
+                    <ModuleCompletedLabel> 
+                    MODULE COMPLETED 
+                    </ModuleCompletedLabel> 
+                    <ModuleCompletedIcon>
+                    <img src={moduleCompletedIcon} alt=""/>
+                    </ModuleCompletedIcon>
+                    </ModuleCompleted>
+                  </React.Fragment>
+                }
+                {!completed && 
+                  <React.Fragment>
+                    <ModulesAssigned>
+                      Assigned
+                      <NumberOfAssigned>{numberOfAssigned}</NumberOfAssigned>
+                      of
+                      <TotalAssigned>{totalAssigned}</TotalAssigned>
+                    </ModulesAssigned>
+                    <AssignModuleButton>
+                      <Button type="primary" ghost>ASSIGN MODULE</Button>
+                    </AssignModuleButton>
+                  </React.Fragment>
+                }
+                 
+
+                </ModuleTitleAssignedWrapper>
+
               </ModuleInfo>
-              <AssignmentProgress width={`${this.progressValue}%`} />
             </ModuleHeader>
             {!collapsed &&
+            // eslint-disable-next-line
               <div>
-                {data.map((moduleData) => {
+                {data.map((moduleData, index) => {
                   return (
-                    <Assignment key={module.id}>
-                      <Checkbox onChange={() => { }} className="module-checkbox" />
-                      <AssignmentContent>
-                        <AssignmentPrefix>{moduleData.standards}</AssignmentPrefix>
-                        <ModuleDataName>{moduleData.name}</ModuleDataName>
-                      </AssignmentContent>
-                      <AssignmentIconsWrapper>
-                        <AssignmentIcon><img src={assignIcon} alt="checkbox " /></AssignmentIcon>
-                        <AssignmentIcon><img src={visualizationIcon} alt="visualize " /></AssignmentIcon>
-                        <AssignmentIcon><img src={triangleIcon} alt="triangle icon " /></AssignmentIcon>
-                      </AssignmentIconsWrapper>
+                    <Assignment key={`${index}-${moduleData.id}`}>
+                      <AssignmentInnerWrapper>
+                        <ModuleFocused />
+                        <Checkbox
+                          onChange={() => toggleUnitItem(moduleData.id)}
+                          checked={checkedUnitItems.indexOf(moduleData.id) !== -1}
+                          className="module-checkbox"
+                        />
+                        <AssignmentContent expanded={isContentExpanded}>
+                          <ModuleDataName>{moduleData.name}</ModuleDataName>
+                        </AssignmentContent>
+                        <AssignmentIconsWrapper expanded={isContentExpanded}>
+                          <ModuleAssignedUnit>
+                            {moduleData.assigned && !moduleData.completed &&
+                              <img src={assessmentRed} alt="Module item is assigned" />
+                            }
+                            {moduleData.completed &&
+                              <img src={assessmentGreen} alt="Module item is completed" />
+                            }
+                          </ModuleAssignedUnit>
+                          <AssignmentIcon><img src={visualizationIcon} alt="visualize " /></AssignmentIcon>
+                          <AssignmentButton><Button onClick={this.handleAssigned} type="primary" icon={moduleData.assigned ? 'check' : 'arrow-right'} ghost={!moduleData.assigned}>{moduleData.assigned ? IS_ASSIGNED : NOT_ASSIGNED}</Button></AssignmentButton>
+                          <AssignmentIcon><Icon type="ellipsis" style={{ fontSize: '16px', color: '#08c' }} /></AssignmentIcon>
+                        </AssignmentIconsWrapper>
+                      </AssignmentInnerWrapper>
                     </Assignment>
                   )
                 })}
-                <ModuleFooter>
-                  <Icon><img src={infoIcon} alt="info " /></Icon>
-                  <p>UNIT ASSESSMENT (42 QUESTIONS): Unit 1: Understanding Equations & Inequalities</p>
-                </ModuleFooter>
+                <ModuleFooter />
               </div>
             }
           </Module>
@@ -94,14 +137,98 @@ class ModuleRow extends Component {
 
 ModuleRow.defaultProps = {
   module: null,
-  onCollapseExpand: () => {},
+  onCollapseExpand: () => { },
   collapsed: false,
-  padding: false
+  isContentExpanded: false,
+  padding: false,
+  checkedUnitItems: []
 };
+
+const ModuleFocused = styled.div`
+  border-left: 5px solid ${greenDarkSecondary};
+  width: 5px;
+  position: absolute;
+  height: 100%;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  opacity: 0;
+`;
+
+const ModuleAssignedUnit = styled.span`
+  justify-self: flex-start;
+  margin-right: auto;
+`;
+
+const ModuleTitleWrapper = styled.div`
+display: flex;
+flex-direction: column;
+`;
+
+const ModuleCompletedLabel = styled.div`
+color: #4aac8b;
+`;
+
+const ModuleCompletedIcon = styled.div`
+padding-left: 30px;
+padding-right: 30px;
+`;
+
+const ModuleCompleted = styled.div`
+display: flex;
+justify-content: flex-end;
+margin-left: auto;
+width: auto;
+align-items: center;
+`;
+
+const NumberOfAssigned = styled.strong`
+  padding-left: 4px;
+  padding-right: 4px;
+  font-weight: bolder;
+`;
+
+const TotalAssigned = styled.strong`
+  padding-left: 4px;
+  font-weight: bolder;
+`;
+
+const AssignmentButton = styled.div`
+  min-width: 121px;
+  .ant-btn {
+    min-width: 121px;
+    display: flex;
+    align-items: center;
+    i {
+      position: absolute;
+      position: absolute;
+      left: 6px;
+      display: flex;
+      align-items: center;
+    }
+    span {
+      margin-left: auto;
+      margin-right: auto;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  }
+`;
+
+const AssignModuleButton = styled.div`
+  align-self: center;
+  .ant-btn {
+    min-height: 30px;
+    font-size: 10px;
+    margin-right: 20px;
+  }
+`;
 
 const AssignmentContent = styled.div`
   flex-direction: row;
   display: flex;
+  min-width: ${(props) => !props.expanded ? '30%' : '45%'};
   @media only screen and (max-width: 845px) {
     flex-direction: column;
   }
@@ -110,18 +237,24 @@ const AssignmentContent = styled.div`
 const ModuleTitle = styled.div`
   display: flex;
   justify-self: flex-start;
+  align-items: center;
 `;
 
 const ModuleTitleAssignedWrapper = styled.div`
   display: flex;
-  /* justify-content: space-between; */
   flex-grow: 1;
   @media only screen and (max-width: 845px) {
     flex-direction: column;
   }
 `;
 
+const ModuleTitlePrefix = styled.div`
+    font-weight: 300;
+`;
+
 const ModuleDataName = styled.div`
+      min-width: 280px;
+      font-weight: 300;
   @media only screen and (max-width: 845px) {
     order: 2;
   }
@@ -130,31 +263,23 @@ const ModuleDataName = styled.div`
 const ModuleInfo = styled.div`
   display: flex;
   width: 100%;
-`;
-
-const AssignmentProgress = styled.div`
-  width: ${({ width }) => width};
-  height: 5px;
-  background-color: ${mainBlueColor};
-  margin-top: 10px;
-  display: flex;
-  align-self: flex-start;
-  margin-left: -20px;
-`;
-
-const Icon = styled.span`
-  margin-right: 50px;
+  align-items: center;
+  padding-bottom: 15px;
 `;
 
 const AssignmentIconsWrapper = styled.div`
   margin-left: auto;
-  justify-self: flex-end;
-  padding: 0 20px;
+  padding: 0px;
   display: inline-flex;
+  width: ${(props) => !props.expanded ? '70%' : '55%'};
+  display: flex;
+  justify-content: flex-end;
+
 `;
 
 const AssignmentIcon = styled.span`
-  margin-left: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
 `;
 
 const Row = styled(Paper)`
@@ -196,14 +321,36 @@ const ModuleHeader = styled(Row)`
     !collapsed ? "0px" : "10px"};
   padding-bottom: 0;
   overflow: hidden;
+  position: relative;
 `;
 
 const Assignment = styled(Row)`
-  display: flex;
   border-radius: 0;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 0;
+  &:active ${ModuleFocused},
+  &:focus ${ModuleFocused},
+  &:hover ${ModuleFocused} {
+    opacity: 1;
+  }
+`;
+Assignment.displayName = 'Assignment';
+
+const AssignmentInnerWrapper = styled.div`
+  display: flex;
   align-items: center;
+  padding: 16px 20px;
+  background-color: #FBFBFB;
+  border: 1px solid #F5F5F5;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
   .module-checkbox {
     align-self: center;
+  }
+  & div, & span {
+    align-items: center;
   }
   @media only screen and (max-width: 845px) {
     align-items: flex-start;
@@ -213,53 +360,36 @@ const Assignment = styled(Row)`
     }
   }
 `;
+AssignmentInnerWrapper.displayName = 'AssignmentInnerWrapper';
+
 
 const ModuleFooter = styled(Assignment)`
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
-  background-color: ${darkBlueSecondary};
   color: ${white};
   display: flex;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  font-size: 10px;
+  /* padding-bottom: 0; */
 `;
 
 const ModulesAssigned = styled.div`
-  font-size: 10px;
-  font-weight: 700;
-  border-radius: 4px;
-  background-color: ${lightBlue};
+  font-size: 12px;
   display: flex;
   align-items: center;
-  padding-left: 20px;
   padding-right: 20px;
-  color: ${darkBlue};
-  text-transform: uppercase;
+  padding-left: 20px;
+  font-weight: 100;
+  color: #000;
   margin-left: auto;
   justify-self: flex-end;
   line-height: 2.4;
+  min-width: 123px;
+  max-height: 30px;
+  margin-top: auto;
+  margin-bottom: auto;
   @media only screen and (max-width: 845px) {
     justify-self: flex-start;
     margin-left: 0;
     margin-right: auto;
-  }
-`;
-
-const AssignmentPrefix = styled(ModulesAssigned)`
-  background-color: ${lightGreen};
-  justify-self: flex-start;
-  margin-left: 0;
-  margin-right: 20px;
-  color: ${green};
-  min-width: 80px;
-  line-height: 2.4;
-  align-self: center;
-  justify-content: center;
-  @media only screen and (max-width: 845px) {
-    margin-bottom: 10px;
-    align-self: flex-start;
-    order: 1;
   }
 `;
 
@@ -272,6 +402,7 @@ const ModuleWrapper = styled.div`
     margin-bottom: 20px;
     margin-top: 20px;
   }
+
   .module-checkbox {
     span {
       margin-right: 23px;
@@ -288,12 +419,20 @@ const ModuleWrapper = styled.div`
   }
 `;
 
-const ButtonText = styled.div`
-  text-transform: uppercase;
-  padding-left: 20px;
-  padding-right: 20px;
-  font-size: 10px;
-  font-weight: 600;
-`;
+const mapDispatchToProps = dispatch => ({
+  toggleUnitItem(id) {
+    dispatch(toggleCheckedUnitItemAction(id));
+  }
+});
 
-export default ModuleRow;
+const enhance = compose(
+  connect(
+    ({ curriculumSequence }) => ({
+      checkedUnitItems: curriculumSequence.checkedGuideUnits,
+      isContentExpanded: curriculumSequence.isContentExpanded
+    }),
+    mapDispatchToProps
+  )
+);
+
+export default enhance(ModuleRow);

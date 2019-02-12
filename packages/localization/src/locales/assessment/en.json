@@ -13,6 +13,7 @@
     }
   },
   "component": {
+    "checkAnswer": "Check answer",
     "options": {
       "instant_feedback": "Check answer button",
       "feedback_attempts": "Check answer attempts",
@@ -126,7 +127,12 @@
       "selectDifficulty": "Select Difficulty",
       "associatedStandards": "Associated Standards",
       "inline": "Inline",
-      "table": "Table"
+      "table": "Table",
+      "stemColumnTitle": "Stem column title",
+      "optionRowTitle": "Option row title",
+      "stemWidth": "Stem width (px)",
+      "optionWidth": "Option width (px)",
+      "dividers": "Dividers"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",

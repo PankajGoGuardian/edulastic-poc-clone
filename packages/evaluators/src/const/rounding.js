@@ -1,7 +1,7 @@
 const ROUND_DOWN = 'roundDown';
 const NONE = 'none';
 
-module.exports = {
+export const rounding = {
   ROUND_DOWN,
   NONE,
   roundDown: {

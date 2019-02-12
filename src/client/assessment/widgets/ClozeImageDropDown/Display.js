@@ -16,6 +16,7 @@ import { StyledPreviewImage } from './styled/StyledPreviewImage';
 import { StyledDisplayContainer } from './styled/StyledDisplayContainer';
 import { TemplateBoxContainer } from './styled/TemplateBoxContainer';
 import { TemplateBoxLayoutContainer } from './styled/TemplateBoxLayoutContainer';
+import { getFontSize } from '../../utils/helpers';
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 
@@ -43,37 +44,16 @@ class Display extends Component {
 
   selectChange = (value, index) => {
     const { userAnswers: newAnswers } = this.state;
-    const {
-      onChange: changeAnswers
-    } = this.props;
+    const { onChange: changeAnswers } = this.props;
     newAnswers[index] = value;
     this.setState({ userAnswers: newAnswers });
     changeAnswers(newAnswers);
-  }
+  };
 
   shuffle = (arr) => {
-    const newArr = arr.map(item =>
-      shuffle(item)
-    );
+    const newArr = arr.map(item => shuffle(item));
 
     return newArr;
-  }
-
-  getFontSize = (size) => {
-    switch (size) {
-      case 'small':
-        return '10px';
-      case 'normal':
-        return '13px';
-      case 'large':
-        return '17px';
-      case 'xlarge':
-        return '20px';
-      case 'xxlarge':
-        return '24px';
-      default:
-        return '12px';
-    }
   };
 
   render() {
@@ -105,13 +85,8 @@ class Display extends Component {
     }
 
     // Layout Options
-    const fontSize = this.getFontSize(uiStyle.fontsize);
-    const {
-      heightpx,
-      wordwrap,
-      responsecontainerindividuals,
-      stemnumeration
-    } = uiStyle;
+    const fontSize = getFontSize(uiStyle.fontsize);
+    const { heightpx, wordwrap, responsecontainerindividuals, stemnumeration } = uiStyle;
 
     const responseBtnStyle = {
       widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : 'auto',
@@ -123,12 +98,11 @@ class Display extends Component {
       <StyledPreviewTemplateBox smallSize={smallSize} fontSize={fontSize}>
         <StyledPreviewContainer smallSize={smallSize} width={imageWidth}>
           <StyledPreviewImage
-            src={smallSize ? CardMapImage : (imageUrl || MapImage)}
+            src={smallSize ? CardMapImage : imageUrl || MapImage}
             smallSize={smallSize}
             alt={imageAlterText}
           />
-          {
-            !smallSize &&
+          {!smallSize &&
             responseContainers.map((responseContainer, index) => {
               const dropTargetIndex = index;
               const btnStyle = {
@@ -175,23 +149,18 @@ class Display extends Component {
                   }}
                   className="imagelabeldragdrop-droppable active"
                 >
-                  {
-                    !smallSize &&
-                    <span className="index-box">{indexStr}</span>
-                  }
-                  {
-                    !smallSize && (
+                  {!smallSize && <span className="index-box">{indexStr}</span>}
+                  {!smallSize && (
                     <AnswerDropdown
                       style={{ width: '100%', height: '100%' }}
                       options={newOptions[dropTargetIndex].map(op => ({ value: op, label: op }))}
                       onChange={value => this.selectChange(value, dropTargetIndex)}
                       defaultValue={userAnswers[dropTargetIndex]}
                     />
-                    )}
+                  )}
                 </div>
               );
-            })
-          }
+            })}
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>
     );
@@ -212,17 +181,18 @@ class Display extends Component {
         evaluation={evaluation}
       />
     );
-    const templateBoxLayout = showAnswer || checkAnswer
-      ? checkboxTemplateBoxLayout
-      : previewTemplateBoxLayout;
+    const templateBoxLayout =
+      showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const correctAnswerBoxLayout = showAnswer ? (
       <CorrectAnswerBoxLayout
         fontSize={fontSize}
         groupResponses={newOptions}
         userAnswers={validation.valid_response && validation.valid_response.value}
       />
-    ) : (<div />);
-    const answerBox = showAnswer ? correctAnswerBoxLayout : (<div />);
+    ) : (
+      <div />
+    );
+    const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
     return (
       <StyledDisplayContainer fontSize={fontSize} smallSize={smallSize}>
         <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />

@@ -1,5 +1,7 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -8,6 +10,8 @@ exports.default = void 0;
 var _lodash = require("lodash");
 
 var _scoring = require("./const/scoring");
+
+var _getPenaltyScore = _interopRequireDefault(require("./helpers/getPenaltyScore"));
 
 // exact-match evaluator
 var exactMatchEvaluator = function exactMatchEvaluator() {
@@ -18,6 +22,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
       altAnswers = _ref.alt_responses,
       max_score = _ref.max_score,
       automarkable = _ref.automarkable,
+      penalty = _ref.penalty,
       min_score_if_attempted = _ref.min_score_if_attempted;
 
   var score = 0;
@@ -50,6 +55,14 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
     }
   } else if (max_score) {
     maxScore = Math.max(max_score, maxScore);
+  }
+
+  if (penalty > 0) {
+    score = (0, _getPenaltyScore.default)({
+      score: score,
+      penalty: penalty,
+      evaluation: evaluation
+    });
   }
 
   return {

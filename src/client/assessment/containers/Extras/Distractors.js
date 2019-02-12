@@ -39,8 +39,8 @@ const Distractors = ({ item, setQuestionData, t }) => {
             prefix="distractors"
             onAdd={_add}
             onRemove={_remove}
-            onChange={(index, value) =>
-              _change(`metadata.distractor_rationale_response_level[${index}]`, value)
+            onChange={(index, e) =>
+              _change(`metadata.distractor_rationale_response_level[${index}]`, e.target.value)
             }
           />
         </Col>

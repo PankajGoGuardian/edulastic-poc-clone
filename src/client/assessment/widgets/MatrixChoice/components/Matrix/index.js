@@ -7,6 +7,8 @@ import { helpers } from '@edulastic/common';
 
 import MatrixCell from '../MatrixCell';
 import { StyledTable } from './styled/StyledTable';
+import { getFontSize, isEmpty } from '../../../../utils/helpers';
+import StyledHeader from './styled/StyledHeader';
 
 const getResponses = (validation) => {
   const altResponses =
@@ -122,32 +124,60 @@ const Matrix = ({
     );
   };
 
-  let columns = [
-    {
-      title: '',
-      dataIndex: 'stem',
-      key: 'stem',
-      render: stem => <span dangerouslySetInnerHTML={{ __html: stem }} />
-    },
-    ...options.map((option, i) => ({
-      title: <span style={{ color: greenDark }} dangerouslySetInnerHTML={{ __html: option }} />,
+  const getColumns = () => {
+    const isTable = uiStyle.type === 'table';
+
+    const optionsData = options.map((option, i) => ({
+      title: isTable ? (
+        <StyledHeader style={{ color: greenDark }} dangerouslySetInnerHTML={{ __html: option }} />
+      ) : (
+        ''
+      ),
       dataIndex: `${i}`,
       key: i,
       render: data => getCell(i, data)
-    }))
-  ];
+    }));
 
-  if (uiStyle.type === 'table' && uiStyle.stem_numeration) {
-    columns = [
+    const stemTitle = !isEmpty(uiStyle.stem_title) ? (
+      <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.stem_title }} />
+    ) : (
+      ''
+    );
+    const optionRowTitle = !isEmpty(uiStyle.option_row_title) ? (
+      <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.option_row_title }} />
+    ) : (
+      ''
+    );
+
+    let columns = [
       {
-        title: '',
-        dataIndex: 'numeration',
-        key: 'numeration',
+        title: stemTitle,
+        dataIndex: 'stem',
+        key: 'stem',
+        width: uiStyle.stem_width || null,
         render: stem => <span dangerouslySetInnerHTML={{ __html: stem }} />
       },
-      ...columns
+      {
+        title: optionRowTitle,
+        width: uiStyle.option_width || null,
+        children: [...optionsData]
+      }
     ];
-  }
+
+    if (uiStyle.type === 'table' && uiStyle.stem_numeration) {
+      columns = [
+        {
+          title: '',
+          dataIndex: 'numeration',
+          key: 'numeration',
+          render: stem => <span dangerouslySetInnerHTML={{ __html: stem }} />
+        },
+        ...columns
+      ];
+    }
+
+    return columns;
+  };
 
   const getData = (i) => {
     const result = {};
@@ -169,13 +199,15 @@ const Matrix = ({
     ...getData(i)
   }));
 
+  const fontSize = getFontSize(uiStyle.fontsize);
+
   return (
     <StyledTable
-      showHeader={uiStyle.type !== 'inline'}
-      columns={columns}
+      fontSize={fontSize}
+      horizontalLines={uiStyle.horizontal_lines}
+      columns={getColumns()}
       dataSource={data}
       pagination={false}
-      smallSize={smallSize}
     />
   );
 };

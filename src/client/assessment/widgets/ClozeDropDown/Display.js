@@ -2,12 +2,14 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Select } from 'antd';
 import { isUndefined, mapValues, cloneDeep } from 'lodash';
-import { EduButton, FlexContainer, InstructorStimulus } from '@edulastic/common';
+import { InstructorStimulus } from '@edulastic/common';
 
 import { QuestionHeader } from '../../styled/QuestionHeader';
 import CorrectAnswerBoxLayout from '../../components/CorrectAnswerBoxLayout';
+import { getFontSize } from '../../utils/helpers';
 
 import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout';
+import CheckAnswerButton from '../../themes/common/CheckAnswerButton';
 
 const { Option } = Select;
 
@@ -77,23 +79,6 @@ class ClozeDropDownDisplay extends Component {
       return data[key];
     });
 
-  getFontSize = (size) => {
-    switch (size) {
-      case 'small':
-        return '10px';
-      case 'normal':
-        return '13px';
-      case 'large':
-        return '17px';
-      case 'xlarge':
-        return '20px';
-      case 'xxlarge':
-        return '24px';
-      default:
-        return '12px';
-    }
-  };
-
   render() {
     const {
       smallSize,
@@ -120,7 +105,7 @@ class ClozeDropDownDisplay extends Component {
     }
 
     // Layout Options
-    const fontSize = this.getFontSize(uiStyle.fontsize);
+    const fontSize = getFontSize(uiStyle.fontsize);
     const { placeholder, responsecontainerindividuals, stemnumeration } = uiStyle;
 
     const responseBtnStyle = {
@@ -233,11 +218,7 @@ class ClozeDropDownDisplay extends Component {
             {templateBoxLayout}
           </div>
           {instantFeedback && (
-            <FlexContainer justifyContent="flex-end">
-              <EduButton disabled={feedbackAttempts === 0} onClick={onCheckAnswer}>
-                Check Answer
-              </EduButton>
-            </FlexContainer>
+            <CheckAnswerButton feedbackAttempts={feedbackAttempts} onCheck={onCheckAnswer} />
           )}
         </div>
         {answerBox}

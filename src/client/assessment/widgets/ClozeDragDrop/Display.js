@@ -13,6 +13,7 @@ import Draggable from './components/Draggable';
 import ResponseBoxLayout from './components/ResponseBoxLayout';
 import { ResponseContainer } from './styled/ResponseContainer';
 import { AnswerContainer } from './styled/AnswerContainer';
+import { getFontSize } from '../../utils/helpers';
 
 const defaultTemplateMarkup = '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags? <br /> Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
 
@@ -199,23 +200,6 @@ class ClozeDragDropDisplay extends Component {
     return possibleResps;
   };
 
-  getFontSize = (size) => {
-    switch (size) {
-      case 'small':
-        return '10px';
-      case 'normal':
-        return '13px';
-      case 'large':
-        return '17px';
-      case 'xlarge':
-        return '20px';
-      case 'xxlarge':
-        return '24px';
-      default:
-        return '12px';
-    }
-  };
-
   render() {
     const {
       smallSize,
@@ -244,7 +228,7 @@ class ClozeDragDropDisplay extends Component {
     }
 
     // Layout Options
-    const fontSize = this.getFontSize(uiStyle.fontsize);
+    const fontSize = getFontSize(uiStyle.fontsize);
     const {
       responsecontainerposition,
       responsecontainerindividuals,

@@ -1,16 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Select } from 'antd';
+import { Select, Col, Input, Checkbox } from 'antd';
 
 import { withNamespaces } from '@edulastic/localization';
+import { CustomQuillComponent } from '@edulastic/common';
+import { evaluationType } from '@edulastic/constants';
 
 import WidgetOptions from '../../../containers/WidgetOptions';
 import { Block } from '../../../styled/WidgetOptions/Block';
 import { Heading } from '../../../styled/WidgetOptions/Heading';
-import { Row } from '../../../styled/WidgetOptions/Row';
-import { Col } from '../../../styled/WidgetOptions/Col';
 import { Label } from '../../../styled/WidgetOptions/Label';
 import FontSizeSelect from '../../../components/FontSizeSelect';
+import Extras from '../../../containers/Extras';
+import { Row } from '../../../styled/WidgetOptions/Row';
+
+const inputStyle = {
+  minHeight: 35,
+  border: '1px solid rgb(223, 223, 223)',
+  padding: '5px 15px'
+};
+
+const scoringTypes = [
+  evaluationType.exactMatch,
+  evaluationType.partialMatch,
+  evaluationType.partialMatchV2
+];
 
 function Options({ onChange, uiStyle, t }) {
   const changeUiStyle = (prop, value) => {
@@ -32,45 +46,39 @@ function Options({ onChange, uiStyle, t }) {
   ];
 
   return (
-    <WidgetOptions>
+    <WidgetOptions scoringTypes={scoringTypes}>
       <Block>
         <Heading>{t('component.options.layout')}</Heading>
 
-        <Row>
-          <Col md={6}>
+        <Row gutter={36}>
+          <Col md={12}>
             <Label>{t('component.matrix.matrixStyle')}</Label>
             <Select
-              style={{ width: '80%' }}
               size="large"
+              style={{ width: '100%' }}
               onChange={val => changeUiStyle('type', val)}
               value={uiStyle.type}
               data-cy="matrixStyle"
             >
               {styleOptions.map(option => (
-                <Select.Option
-                  data-cy={option.value}
-                  key={option.value}
-                >
+                <Select.Option data-cy={option.value} key={option.value}>
                   {option.label}
                 </Select.Option>
               ))}
             </Select>
           </Col>
           {uiStyle.type === 'table' && (
-            <Col md={6}>
+            <Col md={12}>
               <Label>{t('component.options.stemNumeration')}</Label>
               <Select
-                style={{ width: '80%' }}
                 size="large"
+                style={{ width: '100%' }}
                 onChange={val => changeUiStyle('stem_numeration', val)}
                 value={uiStyle.stem_numeration}
                 data-cy="stemNum"
               >
                 {stemNumerationOptions.map(option => (
-                  <Select.Option
-                    data-cy={option.value}
-                    key={option.value}
-                  >
+                  <Select.Option data-cy={option.value} key={option.value}>
                     {option.label}
                   </Select.Option>
                 ))}
@@ -79,14 +87,73 @@ function Options({ onChange, uiStyle, t }) {
           )}
         </Row>
 
-        <Row>
-          <Col md={6}>
+        <Row gutter={36}>
+          <Col md={12}>
+            <Label>{t('component.options.stemColumnTitle')}</Label>
+            <CustomQuillComponent
+              toolbarId="stemColumnTitle"
+              style={inputStyle}
+              onChange={value => changeUiStyle('stem_title', value)}
+              showResponseBtn={false}
+              value={uiStyle.stem_title || ''}
+            />
+          </Col>
+          <Col md={12}>
+            <Label>{t('component.options.optionRowTitle')}</Label>
+            <CustomQuillComponent
+              toolbarId="optionRowTitle"
+              style={inputStyle}
+              onChange={value => changeUiStyle('option_row_title', value)}
+              showResponseBtn={false}
+              value={uiStyle.option_row_title || ''}
+            />
+          </Col>
+        </Row>
+
+        <Row gutter={36}>
+          <Col md={12}>
+            <Label>{t('component.options.stemWidth')}</Label>
+            <Input
+              size="large"
+              type="number"
+              onChange={e => changeUiStyle('stem_width', +e.target.value)}
+              showResponseBtn={false}
+              value={uiStyle.stem_width}
+            />
+          </Col>
+          <Col md={12}>
+            <Label>{t('component.options.optionWidth')}</Label>
+            <Input
+              size="large"
+              type="number"
+              onChange={e => changeUiStyle('option_width', +e.target.value)}
+              showResponseBtn={false}
+              value={uiStyle.option_width}
+            />
+          </Col>
+        </Row>
+
+        <Row gutter={36}>
+          <Col md={12}>
             <FontSizeSelect
               onChange={val => changeUiStyle('fontsize', val)}
               value={uiStyle.fontsize}
             />
           </Col>
+          <Col md={12}>
+            <Checkbox
+              size="large"
+              checked={uiStyle.horizontal_lines}
+              onChange={e => changeUiStyle('horizontal_lines', e.target.checked)}
+            >
+              {t('component.options.dividers')}
+            </Checkbox>
+          </Col>
         </Row>
+
+        <Extras>
+          <Extras.Distractors />
+        </Extras>
       </Block>
     </WidgetOptions>
   );

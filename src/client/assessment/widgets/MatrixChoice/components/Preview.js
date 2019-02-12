@@ -1,10 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { cloneDeep } from 'lodash';
+import { InstructorStimulus } from '@edulastic/common';
 
 import Matrix from './Matrix';
+import { isEmpty } from '../../../utils/helpers';
+import CheckAnswerButton from '../../../themes/common/CheckAnswerButton';
 
-const Preview = ({ type, saveAnswer, userAnswer, item, smallSize }) => {
+const Preview = ({
+  type,
+  saveAnswer,
+  userAnswer,
+  item,
+  smallSize,
+  onCheckAnswer,
+  feedbackAttempts
+}) => {
   const handleCheck = ({ columnIndex, rowIndex, checked }) => {
     const newAnswer = cloneDeep(userAnswer);
 
@@ -31,6 +42,9 @@ const Preview = ({ type, saveAnswer, userAnswer, item, smallSize }) => {
 
   return (
     <div>
+      {!isEmpty(item.instructor_stimulus) && (
+        <InstructorStimulus dangerouslySetInnerHTML={{ __html: item.instructor_stimulus }} />
+      )}
       <div style={{ marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
       <Matrix
         stems={item.stems}
@@ -43,6 +57,9 @@ const Preview = ({ type, saveAnswer, userAnswer, item, smallSize }) => {
         type={type}
         smallSize={smallSize}
       />
+      {item.instant_feedback && (
+        <CheckAnswerButton feedbackAttempts={feedbackAttempts} onCheck={onCheckAnswer} />
+      )}
     </div>
   );
 };
@@ -52,6 +69,8 @@ Preview.propTypes = {
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.object.isRequired,
+  onCheckAnswer: PropTypes.func.isRequired,
+  feedbackAttempts: PropTypes.number.isRequired,
   smallSize: PropTypes.bool
 };
 

@@ -7,8 +7,10 @@ import CorrectAnswerBoxLayout from '../../components/CorrectAnswerBoxLayout';
 import { QuestionHeader } from '../../styled/QuestionHeader';
 
 import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout';
+import { getFontSize } from '../../utils/helpers';
 
-const defaultTemplateMarkup = '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p><br/> Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags ? <br/>  Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
+const defaultTemplateMarkup =
+  '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p><br/> Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags ? <br/>  Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
 
 class Display extends Component {
   constructor(props) {
@@ -46,29 +48,10 @@ class Display extends Component {
 
   selectChange = (value, index) => {
     const { userAnswers: newAnswers } = this.state;
-    const {
-      onChange: changeAnswers
-    } = this.props;
+    const { onChange: changeAnswers } = this.props;
     newAnswers[index] = value;
     this.setState({ userAnswers: newAnswers });
     changeAnswers(newAnswers);
-  };
-
-  getFontSize = (size) => {
-    switch (size) {
-      case 'small':
-        return '10px';
-      case 'normal':
-        return '13px';
-      case 'large':
-        return '17px';
-      case 'xlarge':
-        return '20px';
-      case 'xxlarge':
-        return '24px';
-      default:
-        return '12px';
-    }
   };
 
   render() {
@@ -87,7 +70,7 @@ class Display extends Component {
     // const responses = cloneDeep(options);
 
     // Layout Options
-    const fontSize = this.getFontSize(uiStyle.fontsize);
+    const fontSize = getFontSize(uiStyle.fontsize);
     const {
       widthpx,
       heightpx,
@@ -104,74 +87,82 @@ class Display extends Component {
 
     let maxLineHeight = smallSize ? 50 : 40;
     const previewTemplateBoxLayout = (
-      <div className={`template_box ${smallSize ? 'text-small' : ''}`} style={{ fontSize: smallSize ? 14 : fontSize, padding: smallSize ? 0 : 20 }}>
-        {templateParts && templateParts.map((templatePart, index) => {
-          if (templatePart.indexOf('class="response-btn"') !== -1) {
-            const dropTargetIndex = responseIndex;
-            responseIndex++;
-            const btnStyle = {
-              width: 0,
-              height: 0,
-              widthpx: 0,
-              heightpx: 0,
-              placeholder,
-              inputtype
-            };
-            if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-              const {
-                widthpx: widthpx1,
-                heightpx: heightpx1,
-                placeholder: placeholder1,
-                inputtype: inputtype1
-              } = responsecontainerindividuals[dropTargetIndex];
-              btnStyle.width = widthpx1;
-              btnStyle.height = heightpx1;
-              btnStyle.widthpx = widthpx1;
-              btnStyle.heightpx = heightpx1;
-              btnStyle.placeholder = placeholder1;
-              btnStyle.inputtype = inputtype1;
-            }
-            if (btnStyle && btnStyle.width === 0) {
-              btnStyle.width = responseBtnStyle.widthpx;
-            } else {
-              btnStyle.width = btnStyle.widthpx;
-            }
-            if (btnStyle && btnStyle.height === 0) {
-              btnStyle.height = responseBtnStyle.heightpx;
-            } else {
-              btnStyle.height = btnStyle.heightpx;
-            }
-            if (btnStyle && btnStyle.placeholder === undefined) {
-              btnStyle.placeholder = responseBtnStyle.placeholder;
-            }
-            if (btnStyle && btnStyle.inputtype === undefined) {
-              btnStyle.inputtype = responseBtnStyle.inputtype;
-            }
-            maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
-            if (isUndefined(btnStyle.inputtype) || btnStyle.inputtype === 'text') {
+      <div
+        className={`template_box ${smallSize ? 'text-small' : ''}`}
+        style={{ fontSize: smallSize ? 14 : fontSize, padding: smallSize ? 0 : 20 }}
+      >
+        {templateParts &&
+          templateParts.map((templatePart, index) => {
+            if (templatePart.indexOf('class="response-btn"') !== -1) {
+              const dropTargetIndex = responseIndex;
+              responseIndex++;
+              const btnStyle = {
+                width: 0,
+                height: 0,
+                widthpx: 0,
+                heightpx: 0,
+                placeholder,
+                inputtype
+              };
+              if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
+                const {
+                  widthpx: widthpx1,
+                  heightpx: heightpx1,
+                  placeholder: placeholder1,
+                  inputtype: inputtype1
+                } = responsecontainerindividuals[dropTargetIndex];
+                btnStyle.width = widthpx1;
+                btnStyle.height = heightpx1;
+                btnStyle.widthpx = widthpx1;
+                btnStyle.heightpx = heightpx1;
+                btnStyle.placeholder = placeholder1;
+                btnStyle.inputtype = inputtype1;
+              }
+              if (btnStyle && btnStyle.width === 0) {
+                btnStyle.width = responseBtnStyle.widthpx;
+              } else {
+                btnStyle.width = btnStyle.widthpx;
+              }
+              if (btnStyle && btnStyle.height === 0) {
+                btnStyle.height = responseBtnStyle.heightpx;
+              } else {
+                btnStyle.height = btnStyle.heightpx;
+              }
+              if (btnStyle && btnStyle.placeholder === undefined) {
+                btnStyle.placeholder = responseBtnStyle.placeholder;
+              }
+              if (btnStyle && btnStyle.inputtype === undefined) {
+                btnStyle.inputtype = responseBtnStyle.inputtype;
+              }
+              maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
+              if (isUndefined(btnStyle.inputtype) || btnStyle.inputtype === 'text') {
+                return (
+                  <Input
+                    defaultValue={userAnswers[dropTargetIndex]}
+                    key={`input_${dropTargetIndex}`}
+                    style={btnStyle}
+                    placeholder={btnStyle.placeholder}
+                    onChange={e => this.selectChange(e.target.value, dropTargetIndex)}
+                  />
+                );
+              }
               return (
-                <Input
+                <InputNumber
                   defaultValue={userAnswers[dropTargetIndex]}
-                  key={`input_${dropTargetIndex}`}
+                  key={`inputnumber${dropTargetIndex}`}
                   style={btnStyle}
-                  placeholder={btnStyle.placeholder}
-                  onChange={e => this.selectChange(e.target.value, dropTargetIndex)}
+                  onChange={e => this.selectChange(e, dropTargetIndex)}
                 />
               );
             }
             return (
-              <InputNumber
-                defaultValue={userAnswers[dropTargetIndex]}
-                key={`inputnumber${dropTargetIndex}`}
-                style={btnStyle}
-                onChange={e => this.selectChange(e, dropTargetIndex)}
+              <span
+                style={{ userSelect: 'none', lineHeight: `${maxLineHeight}px` }}
+                key={index}
+                dangerouslySetInnerHTML={{ __html: templatePart }}
               />
             );
-          }
-          return (
-            <span style={{ userSelect: 'none', lineHeight: `${maxLineHeight}px` }} key={index} dangerouslySetInnerHTML={{ __html: templatePart }} />
-          );
-        })}
+          })}
       </div>
     );
 
@@ -187,17 +178,18 @@ class Display extends Component {
         evaluation={evaluation}
       />
     );
-    const templateBoxLayout = showAnswer || checkAnswer
-      ? checkboxTemplateBoxLayout
-      : previewTemplateBoxLayout;
+    const templateBoxLayout =
+      showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const correctAnswerBoxLayout = showAnswer ? (
       <CorrectAnswerBoxLayout
         fontSize={fontSize}
         groupResponses={options}
         userAnswers={validation.valid_response && validation.valid_response.value}
       />
-    ) : (<div />);
-    const answerBox = showAnswer ? correctAnswerBoxLayout : (<div />);
+    ) : (
+      <div />
+    );
+    const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
     return (
       <div style={{ fontSize }}>
         <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />

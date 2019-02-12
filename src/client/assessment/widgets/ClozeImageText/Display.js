@@ -15,6 +15,7 @@ import { StyledPreviewImage } from './styled/StyledPreviewImage';
 import { StyledDisplayContainer } from './styled/StyledDisplayContainer';
 import { TemplateBoxContainer } from './styled/TemplateBoxContainer';
 import { TemplateBoxLayoutContainer } from './styled/TemplateBoxLayoutContainer';
+import { getFontSize } from '../../utils/helpers';
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 
@@ -42,9 +43,7 @@ class Display extends Component {
 
   selectChange = (value, index) => {
     const { userAnswers: newAnswers } = this.state;
-    const {
-      onChange: changeAnswers
-    } = this.props;
+    const { onChange: changeAnswers } = this.props;
     newAnswers[index] = value;
     this.setState({ userAnswers: newAnswers });
     changeAnswers(newAnswers);
@@ -56,23 +55,6 @@ class Display extends Component {
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
-  };
-
-  getFontSize = (size) => {
-    switch (size) {
-      case 'small':
-        return '10px';
-      case 'normal':
-        return '13px';
-      case 'large':
-        return '17px';
-      case 'xlarge':
-        return '20px';
-      case 'xxlarge':
-        return '24px';
-      default:
-        return '12px';
-    }
   };
 
   render() {
@@ -94,7 +76,7 @@ class Display extends Component {
     const { userAnswers } = this.state;
 
     // Layout Options
-    const fontSize = this.getFontSize(uiStyle.fontsize);
+    const fontSize = getFontSize(uiStyle.fontsize);
     const { heightpx, wordwrap, responsecontainerindividuals, stemnumeration } = uiStyle;
 
     const responseBtnStyle = {
@@ -106,88 +88,81 @@ class Display extends Component {
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox fontSize={fontSize}>
         <StyledPreviewContainer width={imageWidth}>
-          <StyledPreviewImage
-            src={imageUrl || MapImage}
-            alt={imageAlterText}
-          />
-          {
-            responseContainers.map((responseContainer, index) => {
-              const dropTargetIndex = index;
-              const btnStyle = {
-                widthpx: responseContainer.width,
-                width: responseContainer.width,
-                top: responseContainer.top,
-                left: responseContainer.left,
-                height: responseContainer.height,
-                border: showDashedBorder ? 'dashed 2px rgba(0, 0, 0, 0.65)' : 'solid 1px lightgray',
-                position: 'absolute',
-                background: backgroundColor,
-                borderRadius: 5
-              };
-              if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-                const { widthpx } = responsecontainerindividuals[dropTargetIndex];
-                btnStyle.width = widthpx;
-                btnStyle.widthpx = widthpx;
+          <StyledPreviewImage src={imageUrl || MapImage} alt={imageAlterText} />
+          {responseContainers.map((responseContainer, index) => {
+            const dropTargetIndex = index;
+            const btnStyle = {
+              widthpx: responseContainer.width,
+              width: responseContainer.width,
+              top: responseContainer.top,
+              left: responseContainer.left,
+              height: responseContainer.height,
+              border: showDashedBorder ? 'dashed 2px rgba(0, 0, 0, 0.65)' : 'solid 1px lightgray',
+              position: 'absolute',
+              background: backgroundColor,
+              borderRadius: 5
+            };
+            if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
+              const { widthpx } = responsecontainerindividuals[dropTargetIndex];
+              btnStyle.width = widthpx;
+              btnStyle.widthpx = widthpx;
+            }
+            if (btnStyle && btnStyle.width === 0) {
+              btnStyle.width = responseBtnStyle.widthpx;
+            } else {
+              btnStyle.width = btnStyle.widthpx;
+            }
+            let indexStr = '';
+            switch (stemnumeration) {
+              case 'lowercase': {
+                indexStr = ALPHABET[dropTargetIndex];
+                break;
               }
-              if (btnStyle && btnStyle.width === 0) {
-                btnStyle.width = responseBtnStyle.widthpx;
-              } else {
-                btnStyle.width = btnStyle.widthpx;
+              case 'uppercase': {
+                indexStr = ALPHABET[dropTargetIndex].toUpperCase();
+                break;
               }
-              let indexStr = '';
-              switch (stemnumeration) {
-                case 'lowercase': {
-                  indexStr = ALPHABET[dropTargetIndex];
-                  break;
-                }
-                case 'uppercase': {
-                  indexStr = ALPHABET[dropTargetIndex].toUpperCase();
-                  break;
-                }
-                default:
-                  indexStr = dropTargetIndex + 1;
-              }
-              const inputStyle = {
-                borderRadius: 0,
-                border: 'none',
-                boxShadow: 'none',
-                height: '100%'
-              };
-              return (
-                <div
-                  key={index}
-                  style={{
-                    ...btnStyle,
-                    borderStyle: 'solid',
-                    overflow: 'hidden'
-                  }}
-                  className="imagelabeldragdrop-droppable active"
-                >
-                  <span className="index-box">{indexStr}</span>
-                  {
-                    (isUndefined(btnStyle.inputtype) || btnStyle.inputtype === 'text') && (
-                    <Input
-                      defaultValue={userAnswers[dropTargetIndex]}
-                      key={`input_${dropTargetIndex}`}
-                      style={inputStyle}
-                      placeholder={btnStyle.placeholder}
-                      onChange={e => this.selectChange(e.target.value, dropTargetIndex)}
-                    />
-                    )}
-                  {
-                    !(isUndefined(btnStyle.inputtype) || btnStyle.inputtype === 'text') && (
-                    <InputNumber
-                      defaultValue={userAnswers[dropTargetIndex]}
-                      key={`inputnumber_${dropTargetIndex}`}
-                      style={inputStyle}
-                      placeholder={btnStyle.placeholder}
-                      onChange={e => this.selectChange(e, dropTargetIndex)}
-                    />
-                    )}
-                </div>
-              );
-            })
-          }
+              default:
+                indexStr = dropTargetIndex + 1;
+            }
+            const inputStyle = {
+              borderRadius: 0,
+              border: 'none',
+              boxShadow: 'none',
+              height: '100%'
+            };
+            return (
+              <div
+                key={index}
+                style={{
+                  ...btnStyle,
+                  borderStyle: 'solid',
+                  overflow: 'hidden'
+                }}
+                className="imagelabeldragdrop-droppable active"
+              >
+                <span className="index-box">{indexStr}</span>
+                {(isUndefined(btnStyle.inputtype) || btnStyle.inputtype === 'text') && (
+                  <Input
+                    defaultValue={userAnswers[dropTargetIndex]}
+                    key={`input_${dropTargetIndex}`}
+                    style={inputStyle}
+                    placeholder={btnStyle.placeholder}
+                    onChange={e => this.selectChange(e.target.value, dropTargetIndex)}
+                  />
+                )}
+                {!(isUndefined(btnStyle.inputtype) || btnStyle.inputtype === 'text') && (
+                  <InputNumber
+                    defaultValue={userAnswers[dropTargetIndex]}
+                    key={`inputnumber_${dropTargetIndex}`}
+                    style={inputStyle}
+                    placeholder={btnStyle.placeholder}
+                    onChange={e => this.selectChange(e, dropTargetIndex)}
+                  />
+                )}
+              </div>
+            );
+          })}
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>
     );
@@ -209,22 +184,23 @@ class Display extends Component {
       />
     );
     console.log('Validation:', validation);
-    const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
+    const templateBoxLayout =
+      showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const correctAnswerBoxLayout = showAnswer ? (
       <CorrectAnswerBoxLayout
         fontSize={fontSize}
         groupResponses={options}
         userAnswers={validation.valid_response && validation.valid_response.value}
       />
-    ) : (<div />);
-    const answerBox = showAnswer ? correctAnswerBoxLayout : (<div />);
+    ) : (
+      <div />
+    );
+    const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
     return (
       <StyledDisplayContainer fontSize={fontSize}>
         <QuestionHeader dangerouslySetInnerHTML={{ __html: question }} />
         <TemplateBoxContainer>
-          <TemplateBoxLayoutContainer>
-            {templateBoxLayout}
-          </TemplateBoxLayoutContainer>
+          <TemplateBoxLayoutContainer>{templateBoxLayout}</TemplateBoxLayoutContainer>
         </TemplateBoxContainer>
         {answerBox}
       </StyledDisplayContainer>

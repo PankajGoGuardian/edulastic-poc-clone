@@ -13,6 +13,7 @@ import { QuestionHeader } from '../../styled/QuestionHeader';
 import ResponseBoxLayout from './components/ResponseBoxLayout';
 import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout';
 import CorrectAnswerBoxLayout from './components/CorrectAnswerBoxLayout';
+import { getFontSize } from '../../utils/helpers';
 
 const defaultImageURL = 'https://assets.learnosity.com/demos/docs/colored_world_map.png';
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
@@ -121,23 +122,6 @@ class Display extends Component {
     return possibleResps;
   };
 
-  getFontSize = (size) => {
-    switch (size) {
-      case 'small':
-        return '10px';
-      case 'normal':
-        return '13px';
-      case 'large':
-        return '17px';
-      case 'xlarge':
-        return '20px';
-      case 'xxlarge':
-        return '24px';
-      default:
-        return '12px';
-    }
-  };
-
   render() {
     const {
       smallSize,
@@ -164,7 +148,7 @@ class Display extends Component {
       responses = this.shuffle(possibleResponses);
     }
     // Layout Options
-    const fontSize = this.getFontSize(uiStyle.fontsize);
+    const fontSize = getFontSize(uiStyle.fontsize);
     const {
       heightpx,
       wordwrap,

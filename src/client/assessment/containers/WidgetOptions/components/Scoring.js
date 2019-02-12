@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { cloneDeep } from 'lodash';
-import { Input, Checkbox, Select } from 'antd';
+import { Input, Checkbox, Select, Col } from 'antd';
 
 import { withNamespaces } from '@edulastic/localization';
 import { rounding } from '@edulastic/constants';
@@ -14,7 +14,6 @@ import { getQuestionDataSelector } from '../../../../author/src/selectors/questi
 import { Block } from '../../../styled/WidgetOptions/Block';
 import { Heading } from '../../../styled/WidgetOptions/Heading';
 import { Row } from '../../../styled/WidgetOptions/Row';
-import { Col } from '../../../styled/WidgetOptions/Col';
 import { Label } from '../../../styled/WidgetOptions/Label';
 
 import { FormGroup } from '../styled/FormGroup';
@@ -40,7 +39,7 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
 
       {questionData.validation.automarkable && (
         <Row>
-          <Col md={6}>
+          <Col md={12}>
             <Checkbox
               data-cy="unscoredChk"
               checked={questionData.validation.unscored}
@@ -51,7 +50,7 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
               {t('component.options.unscored')}
             </Checkbox>
           </Col>
-          <Col md={6}>
+          <Col md={12}>
             <FormGroup>
               <Input
                 type="number"
@@ -68,7 +67,7 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
       )}
       {questionData.validation.automarkable && (
         <Row>
-          <Col md={6}>
+          <Col md={12}>
             <Checkbox
               data-cy="feedbackChk"
               checked={questionData.instant_feedback}
@@ -79,7 +78,7 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
               {t('component.options.checkAnswerButton')}
             </Checkbox>
           </Col>
-          <Col md={6}>
+          <Col md={12}>
             <FormGroup>
               <Input
                 data-cy="feedback"
@@ -96,7 +95,7 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
       )}
 
       <Row>
-        <Col md={6}>
+        <Col md={12}>
           <Checkbox
             data-cy="autoscoreChk"
             checked={questionData.validation.automarkable}
@@ -111,7 +110,7 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
 
       {questionData.validation.automarkable && (
         <Row>
-          <Col md={6}>
+          <Col md={12}>
             <Label>{t('component.options.scoringType')}</Label>
             <Select
               size="large"
@@ -128,7 +127,7 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
             </Select>
           </Col>
 
-          <Col md={6}>
+          <Col md={12}>
             <FormGroup>
               <Input
                 data-cy="minscore"
@@ -144,7 +143,7 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
           </Col>
 
           {questionData.validation.scoring_type === 'partialMatchV2' && (
-            <Col md={6}>
+            <Col md={12}>
               <Label>{t('component.options.rounding')}</Label>
               <Select
                 size="large"

@@ -11,7 +11,7 @@ var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers
 
 var _lodash = require("lodash");
 
-var _constants = require("@edulastic/constants");
+var _rounding = require("./const/rounding");
 
 var _scoring = require("./const/scoring");
 
@@ -85,7 +85,7 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   var maxScore = 0;
   var evaluation = {};
   var isCorrect = false;
-  var isRound = rounding === _constants.rounding.ROUND_DOWN || scoring_type === _scoring.ScoringType.PARTIAL_MATCH;
+  var isRound = rounding === _rounding.rounding.ROUND_DOWN || scoring_type === _scoring.ScoringType.PARTIAL_MATCH;
 
   if (userResponse.length !== answers[0].value.length) {
     userResponse = (0, _toConsumableArray2.default)(userResponse).concat((0, _toConsumableArray2.default)(Array(answers[0].value.length - userResponse.length).fill(false)));

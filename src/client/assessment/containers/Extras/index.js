@@ -16,9 +16,9 @@ import { Block } from '../../styled/WidgetOptions/Block';
 import { Heading } from '../../styled/WidgetOptions/Heading';
 import { Label } from '../../styled/WidgetOptions/Label';
 
-import { StyledRow } from './styled/StyledRow';
 import Distractors from './Distractors';
 import { change } from './helpers';
+import { Row } from '../../styled/WidgetOptions/Row';
 
 const inputStyle = {
   minHeight: 35,
@@ -33,7 +33,7 @@ const Extras = ({ item, setQuestionData, t, children }) => {
     <Block>
       <Heading>{t('component.options.extras')}</Heading>
 
-      <StyledRow gutter={36}>
+      <Row gutter={36}>
         <Col span={12}>
           <Label>{t('component.options.acknowledgements')}</Label>
           <CustomQuillComponent
@@ -55,9 +55,9 @@ const Extras = ({ item, setQuestionData, t, children }) => {
             value={get(item, 'metadata.distractor_rationale', '')}
           />
         </Col>
-      </StyledRow>
+      </Row>
 
-      <StyledRow gutter={36}>
+      <Row gutter={36}>
         <Col span={12}>
           <Label>{t('component.options.rubricreference')}</Label>
           <CustomQuillComponent
@@ -79,9 +79,9 @@ const Extras = ({ item, setQuestionData, t, children }) => {
             value={get(item, 'stimulus_review', '')}
           />
         </Col>
-      </StyledRow>
+      </Row>
 
-      <StyledRow gutter={36}>
+      <Row gutter={36}>
         <Col span={12}>
           <Label>{t('component.options.instructorStimulus')}</Label>
           <CustomQuillComponent
@@ -103,11 +103,11 @@ const Extras = ({ item, setQuestionData, t, children }) => {
             value={get(item, 'metadata.sample_answer', '')}
           />
         </Col>
-      </StyledRow>
+      </Row>
 
       {children}
 
-      <StyledRow gutter={36}>
+      <Row gutter={36}>
         <Col span={12}>
           <Checkbox checked={item.is_math} onChange={e => _change('is_math', e.target.checked)}>
             {t('component.options.containsMath')}
@@ -124,15 +124,15 @@ const Extras = ({ item, setQuestionData, t, children }) => {
               onChange={val => _change('math_renderer', val)}
             >
               {Array.isArray(math.mathRenderOptions) &&
-              math.mathRenderOptions.map(({ value: val, label }) => (
-                <Select.Option key={val} value={val}>
-                  {label}
-                </Select.Option>
-              ))}
+                math.mathRenderOptions.map(({ value: val, label }) => (
+                  <Select.Option key={val} value={val}>
+                    {label}
+                  </Select.Option>
+                ))}
             </Select>
           </Col>
         )}
-      </StyledRow>
+      </Row>
     </Block>
   );
 };

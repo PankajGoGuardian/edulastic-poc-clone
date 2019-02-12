@@ -14,3 +14,8 @@ export const getFontSize = (fontSize) => {
       return '14px';
   }
 };
+
+export const isEmpty = (str) => {
+  str = str.trim();
+  return str === '<p><br></p>' || str === '';
+};

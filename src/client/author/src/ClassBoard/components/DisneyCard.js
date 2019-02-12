@@ -46,10 +46,12 @@ export default class DisneyCard extends Component {
                 {student.testItems.map((testItem) => {
                   if (testItem.correct) {
                     return (<SquareColorDivGreen />);
-                  } if (testItem.skipped) {
+                  } else if (testItem.skipped) {
                     return (<SquareColorDivGray />);
-                  } if (testItem.partialCorrect) {
+                  }else if (testItem.partialCorrect) {
                     return (<SquareColorDivYellow />);
+                  } else if (testItem.notStarted){
+                    return (<SquareColorDisabled />)
                   } else if (!testItem.correct) {
                     return (<SquareColorDivPink />);
                   }
@@ -166,6 +168,16 @@ const SquareColorDivGray = styled.div`
   height:23px;
   border-radius:3px;
   background-color:${classBoardTheme.CardColor};
+  margin:10px 8px 0px 0px;
+`;
+
+const SquareColorDisabled = styled.div`
+  display:inline-block;
+  width:23px;
+  height:23px;
+  border-radius:3px;
+  background-color:${classBoardTheme.CardColor};
+  opacity: 0.6;
   margin:10px 8px 0px 0px;
 `;
 

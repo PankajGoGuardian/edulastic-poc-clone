@@ -34,9 +34,8 @@ const reducer = (state = initialState, { type, payload }) => {
       let entity = payload;
       entity.present = true;
       entity.graded = false;
-      entity.maxScore  = 0;
       entity.score = 0;
-      entity.testItems = [];
+      entity.maxScore = 0;
       nextState = produce(state, _st => {
         const index = _st.entities.findIndex(x => x.studentId === entity.studentId);
         console.log('taId student index',index);

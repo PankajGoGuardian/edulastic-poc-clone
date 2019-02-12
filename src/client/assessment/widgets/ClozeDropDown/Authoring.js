@@ -72,7 +72,7 @@ class ClozeDropDownAuthoring extends Component {
     const { setQuestionData, t } = this.props;
     const newItem = this.getNewItem();
     if (newItem.options[index] === undefined) newItem.options[index] = [];
-    newItem.options[index].push(t('component.clozeDropDown.newChoice'));
+    newItem.options[index].push(t('component.cloze.dropDown.newChoice'));
     setQuestionData(newItem);
   };
 
@@ -133,20 +133,20 @@ class ClozeDropDownAuthoring extends Component {
     return (
       <div>
         <PaddingDiv bottom={20}>
-          <Subtitle>{t('component.clozeDropDown.composequestion')}</Subtitle>
+          <Subtitle>{t('component.cloze.dropDown.composequestion')}</Subtitle>
           <CustomQuillComponent
             toolbarId="stimulus"
             wrappedRef={(instance) => { this.stimulus = instance; }}
-            placeholder={t('component.clozeDropDown.thisisstem')}
+            placeholder={t('component.cloze.dropDown.thisisstem')}
             onChange={this.onChangeQuesiton}
             showResponseBtn={false}
             value={item.stimulus}
           />
-          <Subtitle>{t('component.clozeDropDown.templatemarkup')}</Subtitle>
+          <Subtitle>{t('component.cloze.dropDown.templatemarkup')}</Subtitle>
           <CustomQuillComponent
             toolbarId="templatemarkup"
             wrappedRef={(instance) => { this.templatemarkup = instance; }}
-            placeholder={t('component.clozeDropDown.templatemarkupplaceholder')}
+            placeholder={t('component.cloze.dropDown.templatemarkupplaceholder')}
             onChange={this.onChangeMarkUp}
             firstFocus={!item.templateMarkUp}
             showResponseBtn
@@ -154,7 +154,7 @@ class ClozeDropDownAuthoring extends Component {
           />
           {responseContainers.map((resp, index) => (
             <PaddingDiv key={`${resp}_${index}`}>
-              <Subtitle>{`${t('component.clozeDropDown.choicesforresponse')} ${index + 1}`}</Subtitle>
+              <Subtitle>{`${t('component.cloze.dropDown.choicesforresponse')} ${index + 1}`}</Subtitle>
               <SortableList
                 items={item.options[index] || []}
                 dirty={item.templateMarkUp}
@@ -165,7 +165,7 @@ class ClozeDropDownAuthoring extends Component {
               />
               <div>
                 <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(index)}>
-                  {t('component.clozeDropDown.addnewchoice')}
+                  {t('component.cloze.dropDown.addnewchoice')}
                 </AddNewChoiceBtn>
               </div>
             </PaddingDiv>

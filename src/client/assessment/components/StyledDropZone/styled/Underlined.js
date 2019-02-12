@@ -1,8 +1,7 @@
 import styled from 'styled-components';
-import { mainBlueColor } from '@edulastic/colors';
 
 export const Underlined = styled.span`
-  color: ${mainBlueColor};
+  color: ${props => props.theme.styledDropZone.underlinedColor};
   cursor: pointer;
   text-decoration: underline;
 `;

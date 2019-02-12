@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import { IconTrashAlt } from '@edulastic/icons';
-import { greenDark, red } from '@edulastic/colors';
+import { withTheme } from 'styled-components';
 
 import { Pointer } from '../../../../styled/Pointer';
 import { Point } from '../../../../styled/Point';
@@ -10,6 +8,7 @@ import { Triangle } from '../../../../styled/Triangle';
 
 import Resizer from './components/Resizer';
 import { DeleteButton } from './styled/DeleteButton';
+import { IconTrash } from './styled/IconTrash';
 
 // draggable Component
 class Draggable extends React.Component {
@@ -68,14 +67,17 @@ class Draggable extends React.Component {
       updateStateResizing,
       funcResizing,
       onRemove,
-      showDashedBorder
+      showDashedBorder,
+      theme
     } = this.props;
     const styles = {
       top,
       left,
       width,
       height,
-      border: showDashedBorder ? 'dashed 2px rgba(0, 0, 0, 0.65)' : 'solid 1px lightgray'
+      border: showDashedBorder
+        ? `dashed 2px ${theme.dropArea.draggableDashedBorderColor}`
+        : `solid 1px ${theme.dropArea.draggableSolidBorderColor}`
     };
     return (
       <div
@@ -93,7 +95,7 @@ class Draggable extends React.Component {
         <span className="index-box">{id + 1}</span>
         <span className="label-box">&nbsp;</span>
         <DeleteButton onClick={() => onRemove(id)}>
-          <IconTrashAlt color={greenDark} hoverColor={red} />
+          <IconTrash />
         </DeleteButton>
         <Resizer
           id={id}
@@ -126,7 +128,8 @@ Draggable.propTypes = {
   responseContainerActivated: PropTypes.func.isRequired,
   active: PropTypes.bool,
   showDashedBorder: PropTypes.bool,
-  pointerPosition: PropTypes.string
+  pointerPosition: PropTypes.string,
+  theme: PropTypes.object.isRequired
 };
 
 Draggable.defaultProps = {
@@ -137,4 +140,4 @@ Draggable.defaultProps = {
   isDragging: false
 };
 
-export default Draggable;
+export default withTheme(Draggable);

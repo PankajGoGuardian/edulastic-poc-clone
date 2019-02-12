@@ -59,7 +59,7 @@ describe('Test Graphing - number line', () => {
       .type(3);
   });
 
-  it('set Advance Options', () => {
+  it('Set Advanced Options', () => {
     cy.contains('div', 'Advanced Options')
       .as('AdvancedButton')
       .click();

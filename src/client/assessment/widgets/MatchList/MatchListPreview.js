@@ -1,6 +1,8 @@
 import React, { useState, Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { cloneDeep, isEqual } from 'lodash';
+import { withTheme } from 'styled-components';
+import { compose } from 'redux';
 
 import {
   Paper,
@@ -17,7 +19,6 @@ import {
   lightGreen,
   lightRed,
   white,
-  greenDark,
   separatorColor
 } from '@edulastic/colors';
 
@@ -58,7 +59,8 @@ const MatchListPreview = ({
   t,
   previewTab,
   smallSize,
-  editCorrectAnswers
+  editCorrectAnswers,
+  theme
 }) => {
   const {
     possible_responses: posResponses,
@@ -241,7 +243,7 @@ const MatchListPreview = ({
                       alignItems="center"
                       justifyContent="flex-start"
                     >
-                      <Subtitle style={{ color: greenDark }}>{i.title}</Subtitle>
+                      <Subtitle style={{ color: theme.widgets.matchList.previewSubtitleColor }}>{i.title}</Subtitle>
                       <FlexContainer
                         justifyContent="center"
                         style={{ width: '100%', flexWrap: 'wrap' }}
@@ -331,7 +333,8 @@ MatchListPreview.propTypes = {
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
-  userAnswer: PropTypes.any.isRequired
+  userAnswer: PropTypes.any.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 MatchListPreview.defaultProps = {
@@ -340,4 +343,9 @@ MatchListPreview.defaultProps = {
   editCorrectAnswers: []
 };
 
-export default withNamespaces('assessment')(MatchListPreview);
+const enhance = compose(
+  withNamespaces('assessment'),
+  withTheme
+);
+
+export default enhance(MatchListPreview);

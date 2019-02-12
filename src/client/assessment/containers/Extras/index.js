@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { get } from 'lodash';
 import { Checkbox, Select, Col } from 'antd';
+import { withTheme } from 'styled-components';
 
 import { withNamespaces } from '@edulastic/localization';
 import { math } from '@edulastic/constants';
@@ -20,14 +21,14 @@ import Distractors from './Distractors';
 import { change } from './helpers';
 import { Row } from '../../styled/WidgetOptions/Row';
 
-const inputStyle = {
-  minHeight: 35,
-  border: '1px solid rgb(223, 223, 223)',
-  padding: '5px 15px'
-};
-
-const Extras = ({ item, setQuestionData, t, children }) => {
+const Extras = ({ item, setQuestionData, t, children, theme }) => {
   const _change = change({ item, setQuestionData });
+
+  const inputStyle = {
+    minHeight: 35,
+    border: `1px solid ${theme.extras.inputBorderColor}`,
+    padding: '5px 15px'
+  };
 
   return (
     <Block>
@@ -143,7 +144,8 @@ Extras.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   children: PropTypes.any,
   t: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 Extras.defaultProps = {
@@ -151,6 +153,7 @@ Extras.defaultProps = {
 };
 
 const enhance = compose(
+  withTheme,
   withNamespaces('assessment'),
   connect(
     state => ({

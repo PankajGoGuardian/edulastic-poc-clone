@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { cloneDeep, flattenDeep } from 'lodash';
+import { withTheme } from 'styled-components';
 
 import DropContainer from './components/DropContainer';
 import DragItem from './components/DragItem';
@@ -139,7 +140,8 @@ class Display extends Component {
       imageAlterText,
       imageWidth,
       showDashedBorder,
-      backgroundColor
+      backgroundColor,
+      theme
     } = this.props;
     const { userAnswers, possibleResponses } = this.state;
     const { showDraghandle: dragHandler, shuffleOptions, transparentResponses } = configureOptions;
@@ -168,7 +170,12 @@ class Display extends Component {
     const previewTemplateBoxLayout = (
       <div
         className={`imagedragdrop_template_box ${smallSize ? 'small' : ''}`}
-        style={{ fontSize: smallSize ? 10 : fontSize, overflowY: smallSize && 'hidden' }}
+        style={{
+          fontSize: smallSize
+            ? theme.widgets.clozeImageDragDrop.previewTemplateBoxSmallFontSize
+            : fontSize,
+          overflowY: smallSize && 'hidden'
+        }}
       >
         <div
           style={{
@@ -195,7 +202,9 @@ class Display extends Component {
               top: smallSize ? responseContainer.top / 2 : responseContainer.top,
               left: smallSize ? responseContainer.left / 2 : responseContainer.left,
               height: smallSize ? responseContainer.height / 2 : responseContainer.height,
-              border: showDashedBorder ? 'dashed 2px rgba(0, 0, 0, 0.65)' : 'solid 1px lightgray',
+              border: showDashedBorder
+                ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
+                : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`,
               position: 'absolute',
               background: backgroundColor,
               borderRadius: 5
@@ -244,7 +253,7 @@ class Display extends Component {
                         item={answer}
                         data={`${answer}_${dropTargetIndex}_fromResp`}
                         style={{
-                          border: 'solid 1px lightgray',
+                          border: `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}`,
                           margin: 5,
                           padding: 5,
                           display: 'inline-block'
@@ -338,7 +347,7 @@ class Display extends Component {
                   margin: 15,
                   height: 'auto',
                   borderRadius: 10,
-                  background: 'lightgray',
+                  background: theme.widgets.clozeImageDragDrop.responseBoxBgColor,
                   display: 'flex',
                   justifyContent: 'center'
                 }}
@@ -375,7 +384,7 @@ class Display extends Component {
                   width: smallSize ? '120px' : '20%',
                   margin: smallSize ? 0 : 15,
                   borderRadius: smallSize ? 0 : 10,
-                  background: 'lightgray',
+                  background: theme.widgets.clozeImageDragDrop.responseBoxBgColor,
                   display: 'flex',
                   justifyContent: 'center'
                 }}
@@ -409,7 +418,8 @@ Display.propTypes = {
   uiStyle: PropTypes.object,
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
-  imageWidth: PropTypes.number
+  imageWidth: PropTypes.number,
+  theme: PropTypes.object.isRequired
 };
 
 Display.defaultProps = {
@@ -445,4 +455,4 @@ Display.defaultProps = {
   }
 };
 
-export default Display;
+export default withTheme(Display);

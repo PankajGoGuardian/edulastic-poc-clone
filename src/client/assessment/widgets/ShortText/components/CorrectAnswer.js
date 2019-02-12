@@ -1,16 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Input, Select, Row, Col } from 'antd';
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 
-import { secondaryTextColor } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 
 import { Subtitle } from '../../../styled/Subtitle';
 
-const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inputValue }) => (
+const CorrectAnswer = ({
+  t,
+  onSelectChange,
+  onChange,
+  options,
+  selectValue,
+  inputValue,
+  theme
+}) => (
   <Row>
     <Col span={12}>
-      <Subtitle fontSize={13} padding="0 0 16px 0" color={secondaryTextColor}>
+      <Subtitle
+        fontSize={theme.widgets.shortText.subtitleFontSize}
+        color={theme.widgets.shortText.subtitleColor}
+        padding="0 0 16px 0"
+      >
         {t('component.shortText.selectLabel')}
       </Subtitle>
       <Select size="large" style={{ width: '100%' }} value={selectValue} onChange={onSelectChange}>
@@ -21,7 +34,11 @@ const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inpu
         ))}
       </Select>
 
-      <Subtitle fontSize={13} padding="20px 0 16px 0" color={secondaryTextColor}>
+      <Subtitle
+        fontSize={theme.widgets.shortText.subtitleFontSize}
+        color={theme.widgets.shortText.subtitleColor}
+        padding="20px 0 16px 0"
+      >
         {t('component.shortText.inputLabel')}
       </Subtitle>
       <Input size="large" value={inputValue} onChange={e => onChange(e.target.value)} />
@@ -35,7 +52,13 @@ CorrectAnswer.propTypes = {
   options: PropTypes.array.isRequired,
   selectValue: PropTypes.string.isRequired,
   inputValue: PropTypes.string.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
-export default withNamespaces('assessment')(CorrectAnswer);
+const enhance = compose(
+  withNamespaces('assessment'),
+  withTheme
+);
+
+export default enhance(CorrectAnswer);

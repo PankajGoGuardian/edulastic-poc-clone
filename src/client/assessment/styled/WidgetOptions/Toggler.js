@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { greenDark, greenDarkSecondary } from '@edulastic/colors';
 
 export const Toggler = styled.div`
   position: relative;
@@ -9,7 +8,7 @@ export const Toggler = styled.div`
   
   ::before {
     content: '';
-    background-color: ${greenDark};
+    background-color: ${props => props.theme.widgetOptions.togglerBgColor};
     position: absolute;
     width: 100%;
     height: 3px;
@@ -20,20 +19,20 @@ export const Toggler = styled.div`
   ::after {
     display: ${props => (props.isOpen ? 'none' : 'block')};
     content: '';
-    background-color: ${greenDark};
+    background-color: ${props => props.theme.widgetOptions.togglerBgColor};
     position: absolute;
     width: 3px;
     height: 100%;
     top: 0;
-    left: calc(50% - 1.5px);;
+    left: calc(50% - 1.5px);
   }
   
   :hover {  
     ::before {
-      background-color: ${greenDarkSecondary};
+      background-color: ${props => props.theme.widgetOptions.togglerBgHoverColor};
     }
     ::after {
-      background-color: ${greenDarkSecondary};
+      background-color: ${props => props.theme.widgetOptions.togglerBgHoverColor};
     }
   }
 `;

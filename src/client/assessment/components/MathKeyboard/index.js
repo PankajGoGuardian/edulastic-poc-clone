@@ -114,8 +114,8 @@ class MathKeyboard extends React.PureComponent {
                 }}
                 suffixIcon={(
                   <Icon
+                    className="keyboard__dropdown-icon"
                     type={dropdownOpened ? 'up' : 'down'}
-                    style={{ color: '#51aef8' }}
                     theme="outlined"
                   />
                 )}

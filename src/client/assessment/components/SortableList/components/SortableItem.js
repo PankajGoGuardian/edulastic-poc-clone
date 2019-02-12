@@ -1,7 +1,7 @@
 import React from 'react';
 import { SortableElement } from 'react-sortable-hoc';
 
-import SortableItemContainer from '../styled/SortableItemContainer';
+import { SortableItemContainer } from '../styled/SortableItemContainer';
 import DragHandle from './DragHandle';
 import DeleteButton from './DeleteButton';
 import FocusInput from './FocusInput';

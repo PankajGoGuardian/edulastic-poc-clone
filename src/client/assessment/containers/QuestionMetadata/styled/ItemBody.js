@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { blue } from '@edulastic/colors';
 
 export const ItemBody = styled.div`
   margin-top: 11px;
@@ -7,26 +6,26 @@ export const ItemBody = styled.div`
 
   .ant-select-selection {
     height: 40px;
-    background: transparent;
+    background: ${props => props.theme.questionMetadata.antSelectSelectionBgColor};
     padding-top: 4px;
   }
 
   .ant-select-selection__choice {
     border-radius: 5px;
-    border: solid 1px #444444;
+    border: solid 1px ${props => props.theme.questionMetadata.antSelectSelectionChoiceBorderColor};
   }
 
   .ant-select-selection__choice__content {
-    font-size: 9px;
-    font-weight: bold;
-    color: #434b5d;
+    font-size: ${props => props.theme.questionMetadata.antSelectSelectionChoiceContentFontSize};
+    font-weight: ${props => props.theme.questionMetadata.antSelectSelectionChoiceContentFontWeight};
+    color: ${props => props.theme.questionMetadata.antSelectSelectionChoiceContentColor};
   }
 
   .ant-select-selection-selected-value {
-    font-size: 13px;
-    font-weight: 600;
+    font-size: ${props => props.theme.questionMetadata.antSelectSelectionSelectedValueFontSize};
+    font-weight: ${props => props.theme.questionMetadata.antSelectSelectionSelectedValueFontWeight};
     letter-spacing: 0.2px;
-    color: #434b5d;
+    color: ${props => props.theme.questionMetadata.antSelectSelectionSelectedValueColor};
   }
 
   .ant-select-selection__rendered {
@@ -34,6 +33,6 @@ export const ItemBody = styled.div`
   }
 
   .ant-select-arrow-icon {
-    color: ${blue};
+    color: ${props => props.theme.questionMetadata.antSelectArrowIconColor};
   }
 `;

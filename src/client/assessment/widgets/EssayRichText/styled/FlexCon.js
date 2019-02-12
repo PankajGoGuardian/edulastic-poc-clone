@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { dashBorderColor } from '@edulastic/colors';
 import { FlexContainer } from '@edulastic/common';
 import { QlBlocks } from './QlBlocks';
 
@@ -10,11 +9,11 @@ export const FlexCon = styled(FlexContainer)`
     border-top-right-radius: 4px !important;
   }
   & > *:last-child {
-    border-top: 1px solid ${dashBorderColor}!important;
+    border-top: 1px solid ${props => props.theme.widgets.essayRichText.flexConBorderColor}!important;
     border-bottom-left-radius: 4px !important;
     border-bottom-right-radius: 4px !important;
   }
-  border: 1px solid ${dashBorderColor};
+  border: 1px solid ${props => props.theme.widgets.essayRichText.flexConBorderColor};
   & > ${QlBlocks} {
     padding: ${({ padding }) => (padding !== undefined ? '3px 5px' : padding)}!important;
   }

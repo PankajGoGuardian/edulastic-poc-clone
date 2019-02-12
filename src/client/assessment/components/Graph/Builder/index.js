@@ -809,7 +809,7 @@ class Board {
    */
   createPointFromConfig(el, attrs) {
     const point = Point.findPoint(this.$board.objectsList, [1, el.x, el.y]);
-    if (point) {
+    if (point && el.x !== 0 && el.y !== 0) {
       return point;
     }
     const [name, points, props] = Point.parseConfig(el, this.getParameters(CONSTANT.TOOLS.POINT));

@@ -1,20 +1,27 @@
 import styled from 'styled-components';
-import { blue, white, black } from '@edulastic/colors';
 
 export const QlBlocks = styled.button`
   display: block !important;
   width: 40px !important;
   height: 40px !important;
-  background: ${({ active }) => (active ? blue : white)}!important;
+  background: ${({ active, theme }) => (active
+    ? theme.widgets.essayRichText.qlBlocksBgActiveColor
+    : theme.widgets.essayRichText.qlBlocksBgColor)}!important;
   .ql-stroke.ql-fill,
   .ql-stroke.ql-thin,
   .ql-fill,
   .ql-thin {
-    fill: ${({ active }) => (active ? white : black)}!important;
+    fill: ${({ active, theme }) => (active
+    ? theme.widgets.essayRichText.qlBlocksActiveColor
+    : theme.widgets.essayRichText.qlBlocksColor)}!important;
   }
 
-  color: ${({ active }) => (active ? white : black)}!important;
+  color: ${({ active, theme }) => (active
+    ? theme.widgets.essayRichText.qlBlocksActiveColor
+    : theme.widgets.essayRichText.qlBlocksColor)}!important;
   .ql-stroke {
-    stroke: ${({ active }) => (active ? white : black)}!important;
+    stroke: ${({ active, theme }) => (active
+    ? theme.widgets.essayRichText.qlBlocksActiveColor
+    : theme.widgets.essayRichText.qlBlocksColor)}!important;
   }
 `;

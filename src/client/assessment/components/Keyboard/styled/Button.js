@@ -1,28 +1,27 @@
 import styled from 'styled-components';
-import { mainTextColor, grey, dashBorderColor, white } from '@edulastic/colors';
 
 export const Button = styled.button`
-  background: ${grey};
-  color: ${mainTextColor};
+  background: ${props => props.theme.keyboard.buttonBgColor};
+  color: ${props => props.theme.keyboard.buttonColor};
   border: 0;
   height: 50px;
   width: ${props => props.width || 50}px;
   cursor: pointer;
-  font-size: 16px;
-  font-weight: 700;
-  border: 1px solid ${white};
+  font-size: ${props => props.theme.keyboard.buttonFontSize};
+  font-weight: ${props => props.theme.keyboard.buttonFontWeight};
+  border: 1px solid ${props => props.theme.keyboard.buttonBorderColor};
   border-top: 0;
   border-left: 0;
 
   &.active {
-    background: #b6bac1;
+    background: ${props => props.theme.keyboard.buttonBgActiveClassColor};
   }
 
   :hover {
-    background: ${dashBorderColor};
+    background: ${props => props.theme.keyboard.buttonBgHoverColor};
   }
 
   :active {
-    background: ${white};
+    background: ${props => props.theme.keyboard.buttonBgActiveColor};
   }
 `;

@@ -14,8 +14,8 @@ import { Row } from '../../../../styled/WidgetOptions/Row';
 import { Col } from '../../../../styled/WidgetOptions/Col';
 import { Label } from '../../../../styled/WidgetOptions/Label';
 
-import Container from './styled/Container';
-import Delete from './styled/Delete';
+import { Container } from './styled/Container';
+import { Delete } from './styled/Delete';
 
 const scoringTypes = [
   evaluationType.exactMatch,

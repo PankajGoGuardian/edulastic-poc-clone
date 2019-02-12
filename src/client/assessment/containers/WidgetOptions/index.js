@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 
 import { Paper } from '@edulastic/common';
 import i18n from '@edulastic/localization';
-import { IconPlus } from '@edulastic/icons';
-import { greenDark } from '@edulastic/colors';
 import { evaluationType } from '@edulastic/constants';
 
 import { Header } from '../../styled/WidgetOptions/Header';
 import { Toggler } from '../../styled/WidgetOptions/Toggler';
 
 import Scoring from './components/Scoring';
+import { Title } from './styled/Title';
 
 const types = [evaluationType.exactMatch, evaluationType.partialMatch];
 
@@ -47,9 +46,8 @@ class WidgetOptions extends Component {
     return (
       <Paper style={outerStyle}>
         <Header onClick={this.handleToggle}>
-          <span style={{ fontWeight: 600 }}>{title}</span>
-          {show && <Toggler />}
-          {!show && <IconPlus data-cy="iconPlus" color={greenDark} />}
+          <Title>{title}</Title>
+          <Toggler isOpen={show} />
         </Header>
         {show && (
           <Fragment>

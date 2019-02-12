@@ -1,15 +1,13 @@
-import React, { Fragment } from 'react';
-import { Checkbox, Input, Row, Col } from 'antd';
+import React from 'react';
+import { Checkbox, Row, Col } from 'antd';
 import PropTypes from 'prop-types';
 
 import { withNamespaces } from '@edulastic/localization';
-import { FlexContainer, EduButton } from '@edulastic/common';
-import { IconTrash } from '@edulastic/icons';
-import { greenDark, red, secondaryTextColor } from '@edulastic/colors';
+import { EduButton } from '@edulastic/common';
 
-import QuillSortableList from '../../../components/QuillSortableList/index';
 import { Subtitle } from '../../../styled/Subtitle';
 import withAddButton from '../../../components/HOC/withAddButton';
+import QuillSortableList from '../../../components/QuillSortableList';
 
 const List = withAddButton(QuillSortableList);
 

@@ -1,11 +1,13 @@
 import React from 'react';
 import { DragSource } from 'react-dnd';
+import { withTheme } from 'styled-components';
 
-import { white, grey, lightGreen, lightRed, red, green } from '@edulastic/colors';
-import { IconCheck, IconClose } from '@edulastic/icons';
 import { FlexContainer } from '@edulastic/common';
 
-import { getStyles, IndexBox } from '../styled/IndexBox';
+import { IconCheck } from '../styled/IconCheck';
+import { IconClose } from '../styled/IconClose';
+import { IndexBox } from '../styled/IndexBox';
+import { getStyles } from '../utils';
 
 function collectSource(connector, monitor) {
   return {
@@ -32,7 +34,15 @@ const specSource = {
   }
 };
 
-const DragItem = ({ connectDragSource, item, isDragging, valid, preview, renderIndex }) =>
+const DragItem = ({
+  connectDragSource,
+  item,
+  isDragging,
+  valid,
+  preview,
+  renderIndex,
+  theme
+}) =>
   item &&
   connectDragSource(
     <div
@@ -51,8 +61,16 @@ const DragItem = ({ connectDragSource, item, isDragging, valid, preview, renderI
       <div
         style={getStyles(
           isDragging,
-          valid && preview ? lightGreen : preview && valid !== undefined ? lightRed : white,
-          valid && preview ? lightGreen : preview && valid !== undefined ? lightRed : grey,
+          valid && preview
+            ? theme.widgets.classification.dragItemValidBgColor
+            : preview && valid !== undefined
+              ? theme.widgets.classification.dragItemNotValidBgColor
+              : theme.widgets.classification.dragItemBgColor,
+          valid && preview
+            ? theme.widgets.classification.dragItemValidBorderColor
+            : preview && valid !== undefined
+              ? theme.widgets.classification.dragItemNotValidBorderColor
+              : theme.widgets.classification.dragItemBorderColor,
           preview && valid !== undefined
             ? {
               paddingRight: 15,
@@ -66,13 +84,13 @@ const DragItem = ({ connectDragSource, item, isDragging, valid, preview, renderI
         <FlexContainer
           alignItems="center"
           justifyContent="space-between"
-          style={{ width: '100%', fontWeight: 600 }}
+          style={{ width: '100%', fontWeight: theme.widgets.classification.dragItemFontWeight }}
         >
           <div dangerouslySetInnerHTML={{ __html: item }} />
           {preview && valid !== undefined && (
             <div>
-              {valid && <IconCheck color={green} width={12} height={10} />}
-              {!valid && <IconClose color={red} width={10} height={10} />}
+              {valid && <IconCheck />}
+              {!valid && <IconClose />}
             </div>
           )}
         </FlexContainer>
@@ -80,4 +98,4 @@ const DragItem = ({ connectDragSource, item, isDragging, valid, preview, renderI
     </div>
   );
 
-export default DragSource('item', specSource, collectSource)(DragItem);
+export default withTheme(DragSource('item', specSource, collectSource)(DragItem));

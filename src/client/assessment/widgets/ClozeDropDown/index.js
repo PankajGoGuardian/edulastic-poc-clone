@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { cloneDeep } from 'lodash';
-import styled from 'styled-components';
+import styled, { withTheme } from 'styled-components';
 
 import { PaddingDiv, Checkbox, Paper } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
@@ -82,7 +82,17 @@ class ClozeDropDown extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation } = this.props;
+    const {
+      view,
+      previewTab,
+      smallSize,
+      item,
+      userAnswer,
+      t,
+      testItem,
+      evaluation,
+      theme
+    } = this.props;
     const {
       previewStimulus,
       previewDisplayOptions,
@@ -98,7 +108,7 @@ class ClozeDropDown extends Component {
         {view === 'edit' && (
           <React.Fragment>
             <PaddingDiv
-              style={{ borderRadius: 5, background: 'white' }}
+              style={{ borderRadius: 5, background: theme.widgets.clozeDropDown.editViewBgColor }}
               top={30}
               bottom={30}
               left={120}
@@ -123,7 +133,7 @@ class ClozeDropDown extends Component {
                     className="additional-options"
                     key={`shuffleOptions_${shuffleOptions}`}
                     onChange={() => this.handleOptionsChange('shuffleOptions', !shuffleOptions)}
-                    label={t('component.clozeDropDown.shuffleoptions')}
+                    label={t('component.cloze.dropDown.shuffleoptions')}
                     checked={shuffleOptions}
                   />
                 </CorrectAnswerOptions>
@@ -179,7 +189,8 @@ ClozeDropDown.propTypes = {
   userAnswer: PropTypes.any,
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any.isRequired
+  evaluation: PropTypes.any.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 ClozeDropDown.defaultProps = {
@@ -196,6 +207,7 @@ ClozeDropDown.defaultProps = {
 const enhance = compose(
   withRouter,
   withNamespaces('assessment'),
+  withTheme,
   connect(
     null,
     {

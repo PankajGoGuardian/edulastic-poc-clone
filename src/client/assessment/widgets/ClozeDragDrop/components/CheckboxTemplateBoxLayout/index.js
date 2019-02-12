@@ -7,6 +7,8 @@ import { green, red } from '@edulastic/colors';
 import Draggable from '../Draggable';
 import Droppable from '../Droppable';
 import { IconWrapper } from './styled/IconWrapper';
+import { RightIcon } from './styled/RightIcon';
+import { WrongIcon } from './styled/WrongIcon';
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 
@@ -76,8 +78,8 @@ const CheckboxTemplateBoxLayout = ({
                   </span>
                   &nbsp;
                   <IconWrapper>
-                    {className === 'right' && <IconCheck color={green} width={8} height={8} />}
-                    {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
+                    {className === 'right' && <RightIcon />}
+                    {className === 'wrong' && <WrongIcon />}
                   </IconWrapper>
                 </div>
               )}
@@ -94,8 +96,8 @@ const CheckboxTemplateBoxLayout = ({
                   </span>
                   &nbsp;
                   <IconWrapper>
-                    {className === 'right' && <IconCheck color={green} width={8} height={8} />}
-                    {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
+                    {className === 'right' && <RightIcon />}
+                    {className === 'wrong' && <WrongIcon />}
                   </IconWrapper>
                 </div>
               )}
@@ -114,8 +116,8 @@ const CheckboxTemplateBoxLayout = ({
                       </span>
                       &nbsp;
                       <IconWrapper>
-                        {className === 'right' && <IconCheck color={green} width={8} height={8} />}
-                        {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
+                        {className === 'right' && <RightIcon />}
+                        {className === 'wrong' && <WrongIcon />}
                       </IconWrapper>
                     </div>
                   </Draggable>
@@ -132,8 +134,8 @@ const CheckboxTemplateBoxLayout = ({
                       </span>
                       &nbsp;
                       <IconWrapper>
-                        {className === 'right' && <IconCheck color={green} width={8} height={8} />}
-                        {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
+                        {className === 'right' && <RightIcon />}
+                        {className === 'wrong' && <WrongIcon />}
                       </IconWrapper>
                     </div>
                   </Draggable>

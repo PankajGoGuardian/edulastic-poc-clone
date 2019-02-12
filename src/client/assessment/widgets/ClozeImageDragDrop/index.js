@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { cloneDeep } from 'lodash';
-import styled from 'styled-components';
+import styled, { withTheme } from 'styled-components';
 import { Checkbox } from 'antd';
 
 import { withNamespaces } from '@edulastic/localization';
@@ -115,7 +115,8 @@ class ClozeImageDragDrop extends Component {
       userAnswer,
       t,
       testItem,
-      evaluation
+      evaluation,
+      theme
     } = this.props;
     const {
       previewStimulus,
@@ -136,7 +137,7 @@ class ClozeImageDragDrop extends Component {
         {view === 'edit' && (
           <React.Fragment>
             <PaddingDiv
-              style={{ borderRadius: 5, background: 'white' }}
+              style={{ borderRadius: 5, background: theme.widgets.clozeImageDragDrop.editViewBgColor }}
               top={30}
               bottom={30}
               left={120}
@@ -176,7 +177,7 @@ class ClozeImageDragDrop extends Component {
                     }
                     defaultChecked={duplicatedResponses}
                   >
-                    {t('component.clozeImageDragDrop.duplicatedresponses')}
+                    {t('component.cloze.imageDragDrop.duplicatedresponses')}
                   </Checkbox>
                   <Checkbox
                     className="additional-options"
@@ -188,7 +189,7 @@ class ClozeImageDragDrop extends Component {
                     }
                     defaultChecked={showDraghandle}
                   >
-                    {t('component.clozeImageDragDrop.showdraghandle')}
+                    {t('component.cloze.imageDragDrop.showdraghandle')}
                   </Checkbox>
                   <Checkbox
                     className="additional-options"
@@ -200,7 +201,7 @@ class ClozeImageDragDrop extends Component {
                     }
                     defaultChecked={shuffleOptions}
                   >
-                    {t('component.clozeImageDragDrop.shuffleoptions')}
+                    {t('component.cloze.imageDragDrop.shuffleoptions')}
                   </Checkbox>
                   <Checkbox
                     className="additional-options"
@@ -212,7 +213,7 @@ class ClozeImageDragDrop extends Component {
                     }
                     defaultChecked={transparentResponses}
                   >
-                    {t('component.clozeImageDragDrop.transparentpossibleresponses')}
+                    {t('component.cloze.imageDragDrop.transparentpossibleresponses')}
                   </Checkbox>
                 </CorrectAnswerOptions>
               </div>
@@ -319,7 +320,8 @@ ClozeImageDragDrop.propTypes = {
   userAnswer: PropTypes.array,
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any
+  evaluation: PropTypes.any,
+  theme: PropTypes.object.isRequired
 };
 
 ClozeImageDragDrop.defaultProps = {
@@ -337,6 +339,7 @@ ClozeImageDragDrop.defaultProps = {
 const enhance = compose(
   withRouter,
   withNamespaces('assessment'),
+  withTheme,
   connect(
     null,
     {

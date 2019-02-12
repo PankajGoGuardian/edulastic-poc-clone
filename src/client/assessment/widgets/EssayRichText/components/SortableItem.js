@@ -1,22 +1,28 @@
 import React from 'react';
 import { SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { FaBars } from 'react-icons/fa';
+import { withTheme } from 'styled-components';
 
-import { green } from '@edulastic/colors';
 import { FlexContainer } from '@edulastic/common';
 
 import { QlBlocks } from '../styled/QlBlocks';
 import { FlexCon } from '../styled/FlexCon';
 
-const DragHandle = SortableHandle(() => (
+const DragHandle = withTheme(SortableHandle(({ theme }) => (
   <QlBlocks>
-    <FlexContainer style={{ fontSize: 14, color: green }} justifyContent="center">
+    <FlexContainer
+      style={{
+        fontSize: theme.widgets.essayRichText.dragHandleFontSize,
+        color: theme.widgets.essayRichText.dragHandleColor
+      }}
+      justifyContent="center"
+    >
       <FaBars />
     </FlexContainer>
   </QlBlocks>
-));
+)));
 
-const SortableItem = SortableElement(({ item, i, handleActiveChange, validList }) => {
+const SortableItem = SortableElement(({ item, i, handleActiveChange, validList, theme }) => {
   const { value, param, active } = item;
 
   return (
@@ -44,7 +50,7 @@ const SortableItem = SortableElement(({ item, i, handleActiveChange, validList }
           type="button"
         >
           <div>
-            <b style={{ fontSize: 16 }}>{value}</b>DIV
+            <b style={{ fontSize: theme.widgets.essayRichText.sortableItemFontSize }}>{value}</b>DIV
           </div>
         </QlBlocks>
       )}
@@ -54,4 +60,4 @@ const SortableItem = SortableElement(({ item, i, handleActiveChange, validList }
   );
 });
 
-export default SortableItem;
+export default withTheme(SortableItem);

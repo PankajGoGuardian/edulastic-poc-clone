@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { cloneDeep } from 'lodash';
+import { withTheme } from 'styled-components';
 
 import { InstructorStimulus } from '@edulastic/common';
 
@@ -213,7 +214,8 @@ class ClozeDragDropDisplay extends Component {
       checkAnswer,
       validation,
       evaluation,
-      item
+      item,
+      theme
     } = this.props;
     const { templateParts, userAnswers, possibleResponses } = this.state;
     const { showDraghandle: dragHandler, shuffleOptions } = configureOptions;
@@ -243,7 +245,11 @@ class ClozeDragDropDisplay extends Component {
     const previewTemplateBoxLayout = (
       <div
         className={`template_box ${smallSize ? 'small' : ''}`}
-        style={{ fontSize: smallSize ? 14 : fontSize }}
+        style={{
+          fontSize: smallSize
+            ? theme.widgets.clozeDragDrop.previewTemplateBoxSmallFontSize
+            : fontSize
+        }}
       >
         {templateParts.map((templatePart, index) => {
           if (templatePart.indexOf('class="response-btn"') !== -1) {
@@ -408,7 +414,7 @@ class ClozeDragDropDisplay extends Component {
                   maxWidth: '30%',
                   margin: 15,
                   borderRadius: 10,
-                  background: 'lightgray',
+                  background: theme.widgets.clozeDragDrop.responseBoxBgColor,
                   display: 'flex',
                   justifyContent: 'center'
                 }}
@@ -428,7 +434,7 @@ class ClozeDragDropDisplay extends Component {
                   maxWidth: '30%',
                   margin: 15,
                   borderRadius: 10,
-                  background: 'lightgray',
+                  background: theme.widgets.clozeDragDrop.responseBoxBgColor,
                   display: 'flex',
                   justifyContent: 'center'
                 }}
@@ -459,7 +465,8 @@ ClozeDragDropDisplay.propTypes = {
   configureOptions: PropTypes.object,
   validation: PropTypes.object,
   evaluation: PropTypes.array,
-  uiStyle: PropTypes.object
+  uiStyle: PropTypes.object,
+  theme: PropTypes.object.isRequired
 };
 
 ClozeDragDropDisplay.defaultProps = {
@@ -491,4 +498,4 @@ ClozeDragDropDisplay.defaultProps = {
   }
 };
 
-export default ClozeDragDropDisplay;
+export default withTheme(ClozeDragDropDisplay);

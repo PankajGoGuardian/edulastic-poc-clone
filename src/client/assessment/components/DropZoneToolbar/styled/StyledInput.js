@@ -6,5 +6,5 @@ export const StyledInput = styled(Input)`
   width: ${({ width }) => width || 110}px;
   padding-right: 0;
   margin-right: ${({ marginRight }) => marginRight || 0}px;
-  font-weight: 400;
+  font-weight: ${props => props.theme.dropZoneToolbar.inputFontWeight};
 `;

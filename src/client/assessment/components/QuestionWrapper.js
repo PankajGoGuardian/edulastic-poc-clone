@@ -1,6 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { ThemeProvider } from 'styled-components';
+
 import { questionType } from '@edulastic/constants';
+
+import { themes } from '../themes';
+
 import { OrderList } from '../widgets/OrderList';
 import { SortList } from '../widgets/SortList';
 import { MatchList } from '../widgets/MatchList';
@@ -88,7 +93,11 @@ const getQuestion = (type) => {
 
 const QuestionWrapper = ({ type, data, ...restProps }) => {
   const Question = getQuestion(type);
-  return <Question item={data} {...restProps} />;
+  return (
+    <ThemeProvider theme={themes.default}>
+      <Question item={data} {...restProps} />
+    </ThemeProvider>
+  );
 };
 
 QuestionWrapper.propTypes = {

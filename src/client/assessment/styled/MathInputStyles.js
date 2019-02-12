@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import { grey, darkGrey, lightRed, lightGreen, white } from '@edulastic/colors';
 
-const MathInputStyles = styled.div`
+export const MathInputStyles = styled.div`
   .input {
     position: relative;
   }
@@ -13,17 +12,17 @@ const MathInputStyles = styled.div`
     padding-right: 40px;
     position: relative;
     border-radius: 5px;
-    border: 1px solid ${grey};
+    border: 1px solid ${props => props.theme.common.mathInputMathBorderColor};
     padding: 15px 25px;
 
     &.clear {
-      background: ${white};
+      background: ${props => props.theme.common.mathInputMathClearBgColor};
     }
     &.wrong {
-      background: ${lightRed};
+      background: ${props => props.theme.common.mathInputMathWrongBgColor};
     }
     &.success {
-      background: ${lightGreen};
+      background: ${props => props.theme.common.mathInputMathSuccessBgColor};
     }
   }
 
@@ -60,21 +59,21 @@ const MathInputStyles = styled.div`
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 10px;
+    font-size: ${props => props.theme.common.mathResponseEmbedFontSize};
     width: 100px;
     height: 25px;
     line-height: 25px;
 
     .response-embed__char {
       width: 30%;
-      background: ${darkGrey};
-      font-weight: 700;
-      color: ${white};
+      background: ${props => props.theme.common.mathResponseEmbedCharBgColor};
+      font-weight: ${props => props.theme.common.mathResponseEmbedCharFontWeight};
+      color: ${props => props.theme.common.mathResponseEmbedCharColor};
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid ${grey};
+      border: 1px solid ${props => props.theme.common.mathResponseEmbedCharBorderColor};
       border-right: none;
       border-radius: 5px;
       border-top-right-radius: 0;
@@ -83,14 +82,14 @@ const MathInputStyles = styled.div`
 
     .response-embed__text {
       width: 70%;
-      background: ${white};
+      background: ${props => props.theme.common.mathResponseEmbedTextBgColor};
       text-transform: uppercase;
-      font-weight: 900;
+      font-weight: ${props => props.theme.common.mathResponseEmbedTextFontWeight};
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid ${grey};
+      border: 1px solid ${props => props.theme.common.mathResponseEmbedTextBorderColor};
       border-left: none;
       border-radius: 5px;
       border-top-left-radius: 0;

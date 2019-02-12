@@ -171,7 +171,7 @@ class ClozeImageDropDown extends Component {
                   <Checkbox
                     className="additional-options"
                     onChange={() => this.handleOptionsChange('shuffle_options', !shuffleOptions)}
-                    label={t('component.clozeImageDropDown.shuffleoptions')}
+                    label={t('component.cloze.imageDropDown.shuffleoptions')}
                     checked={shuffleOptions}
                   />
                 </CorrectAnswerOptions>

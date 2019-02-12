@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Icon, Select, Button } from 'antd';
+import { Select, Button } from 'antd';
 import { compose } from 'redux';
 import { withNamespaces } from 'react-i18next';
 import connect from 'react-redux/es/connect/connect';
 import _ from 'lodash';
+import { ThemeProvider } from 'styled-components';
 
-import { blue, white } from '@edulastic/colors';
-import { IconPencilEdit, IconTrash } from '@edulastic/icons';
-
+import { themes } from '../../themes';
 import { Subtitle } from '../../styled/Subtitle';
 
 import {
@@ -40,6 +39,9 @@ import { SecondBlockContainer } from './styled/SecondBlockContainer';
 import { Container } from './styled/Container';
 import { ShowAlignmentRowsContainer } from './styled/ShowAlignmentRowsContainer';
 import { AddButtonContainer } from './styled/AddButtonContainer';
+import { IconTrash } from './styled/IconTrash';
+import { IconPencilEdit } from './styled/IconPencilEdit';
+import { SelectSuffixIcon } from './styled/SelectSuffixIcon';
 
 const handleFilter = (input, option) =>
   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -223,10 +225,10 @@ class QuestionMetadata extends Component {
         <ItemBody>
           <Buttons>
             <Button htmlType="button" onClick={this.handleEditRow(index, row)} shape="circle">
-              <IconPencilEdit color={white} />
+              <IconPencilEdit />
             </Button>
             <Button htmlType="button" onClick={this.handleDeleteRow(index)} shape="circle">
-              <IconTrash color={white} />
+              <IconTrash />
             </Button>
           </Buttons>
         </ItemBody>
@@ -264,7 +266,7 @@ class QuestionMetadata extends Component {
             filterOption={handleFilter}
             value={curriculumId}
             suffixIcon={
-              <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              <SelectSuffixIcon type="caret-down" />
             }
           >
             { availableCurriculums.map(el => (
@@ -281,7 +283,7 @@ class QuestionMetadata extends Component {
             filterOption={handleFilter}
             value={subject}
             suffixIcon={
-              <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              <SelectSuffixIcon type="caret-down" />
             }
           >
             { curriculumId
@@ -348,7 +350,7 @@ class QuestionMetadata extends Component {
             onSelect={this.handleQuestionDataSelect('depthOfKnowledge')}
             value={depthOfKnowledge}
             suffixIcon={
-              <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              <SelectSuffixIcon type="caret-down" />
             }
           >
             { selectsData.allDepthOfKnowledge.map(el => (
@@ -364,7 +366,7 @@ class QuestionMetadata extends Component {
             onSelect={this.handleQuestionDataSelect('authorDifficulty')}
             value={authorDifficulty}
             suffixIcon={
-              <Icon type="caret-down" style={{ color: blue, fontSize: 16, marginRight: 5 }} />
+              <SelectSuffixIcon type="caret-down" />
             }
           >
             { selectsData.allAuthorDifficulty.map(el => (
@@ -380,29 +382,31 @@ class QuestionMetadata extends Component {
     const { alignment, t } = this.props;
     const { isEditRow } = this.state;
     return (
-      <div>
-        <Container>
-          <Subtitle>{ t('component.options.associatedStandards') }</Subtitle>
-          <ShowAlignmentRowsContainer>
-            { alignment.map((el, index) => this.renderShowAlignmentRow(el, index))}
-          </ShowAlignmentRowsContainer>
-          { isEditRow && this.renderEditAlignmentRow() }
-          <AddButtonContainer>
-            <Button
-              htmlType="button"
-              icon="plus"
-              type="primary"
-              onClick={this.handleAdd}
-              disabled={isEditRow}
-            >
-              <span>{t('component.options.newcurriculum')}</span>
-            </Button>
-          </AddButtonContainer>
-        </Container>
-        <Container>
-          { this.renderEditSecondBlock() }
-        </Container>
-      </div>
+      <ThemeProvider theme={themes.default}>
+        <div>
+          <Container>
+            <Subtitle>{ t('component.options.associatedStandards') }</Subtitle>
+            <ShowAlignmentRowsContainer>
+              { alignment.map((el, index) => this.renderShowAlignmentRow(el, index))}
+            </ShowAlignmentRowsContainer>
+            { isEditRow && this.renderEditAlignmentRow() }
+            <AddButtonContainer>
+              <Button
+                htmlType="button"
+                icon="plus"
+                type="primary"
+                onClick={this.handleAdd}
+                disabled={isEditRow}
+              >
+                <span>{t('component.options.newcurriculum')}</span>
+              </Button>
+            </AddButtonContainer>
+          </Container>
+          <Container>
+            { this.renderEditSecondBlock() }
+          </Container>
+        </div>
+      </ThemeProvider>
     );
   }
 }

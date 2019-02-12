@@ -59,7 +59,7 @@ class AdditionalOptions extends Component {
     if (newItem.distractorRationaleOptions === undefined) {
       newItem.distractorRationaleOptions = [];
     }
-    newItem.distractorRationaleOptions.push(t('component.clozeImageDropDown.newChoice'));
+    newItem.distractorRationaleOptions.push(t('component.cloze.imageDropDown.newChoice'));
     setQuestionData(newItem);
   }
 
@@ -67,7 +67,7 @@ class AdditionalOptions extends Component {
     const { t, questionData } = this.props;
     return (
       <PaddingDiv bottom={30}>
-        <Heading>{t('component.clozeImageDropDown.additionaloptions')}</Heading>
+        <Heading>{t('component.cloze.imageDropDown.additionaloptions')}</Heading>
         <Row>
           <Col md={12}>
             <Label>{t('component.options.stimulusreviewonly')}</Label>
@@ -137,7 +137,7 @@ class AdditionalOptions extends Component {
           />
           <PaddingDiv top={6}>
             <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn()}>
-              {t('component.clozeImageDropDown.addnewchoice')}
+              {t('component.cloze.imageDropDown.addnewchoice')}
             </AddNewChoiceBtn>
           </PaddingDiv>
         </PaddingDiv>

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { cloneDeep } from 'lodash';
-import styled from 'styled-components';
+import styled, { withTheme } from 'styled-components';
 
 import { PaddingDiv, Paper } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
@@ -78,7 +78,16 @@ class ClozeText extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item, userAnswer, testItem, evaluation } = this.props;
+    const {
+      view,
+      previewTab,
+      smallSize,
+      item,
+      userAnswer,
+      testItem,
+      evaluation,
+      theme
+    } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
     const Wrapper = testItem ? EmptyWrapper : Paper;
@@ -87,7 +96,10 @@ class ClozeText extends Component {
         {view === 'edit' && (
           <React.Fragment>
             <PaddingDiv
-              style={{ borderRadius: 5, background: 'white' }}
+              style={{
+                borderRadius: 5,
+                background: theme.widgets.clozeText.editViewBgColor
+              }}
               top={30}
               bottom={30}
               left={120}
@@ -187,7 +199,8 @@ ClozeText.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any
+  evaluation: PropTypes.any,
+  theme: PropTypes.object.isRequired
 };
 
 ClozeText.defaultProps = {
@@ -205,6 +218,7 @@ ClozeText.defaultProps = {
 const enhance = compose(
   withRouter,
   withNamespaces('assessment'),
+  withTheme,
   connect(
     null,
     {

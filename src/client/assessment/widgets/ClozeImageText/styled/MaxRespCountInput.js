@@ -5,6 +5,6 @@ export const MaxRespCountInput = styled(InputNumber)`
   width: 100px;
   height: 40px;
   padding: 5px;
-  color: #434b5d;
-  font-weight: 600;
+  color: ${props => props.theme.widgets.clozeImageText.maxRespCountColor};
+  font-weight: ${props => props.theme.widgets.clozeImageText.maxRespCountFontWeight};
 `;

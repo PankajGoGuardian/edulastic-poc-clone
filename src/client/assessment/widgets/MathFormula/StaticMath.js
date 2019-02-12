@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-import MathInputStyles from '../../styled/MathInputStyles';
+import { MathInputStyles } from '../../styled/MathInputStyles';
 import MathKeyboard from '../../components/MathKeyboard';
 
 class StaticMath extends PureComponent {
@@ -105,7 +105,7 @@ class StaticMath extends PureComponent {
 
     if (!mathField || !mathField.innerFields[index]) return;
     mathField.innerFields[index].write(latex);
-  }
+  };
 
   getLatex = () => {
     const { mathField } = this.state;

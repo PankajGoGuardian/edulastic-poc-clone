@@ -9,7 +9,7 @@ export const getItemDetailSelector = createSelector(
 
 export const getItemIdSelector = createSelector(
   getItemDetailSelector,
-  item => item._id
+  item => item && item._id
 );
 
 export const getItemDetailRowsSelector = createSelector(

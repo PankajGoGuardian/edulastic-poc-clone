@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withTheme } from 'styled-components';
 
-import { white } from '@edulastic/colors';
 import { CenteredText } from '@edulastic/common';
 
 import DropContainer from '../../../components/DropContainer';
@@ -9,17 +9,6 @@ import DropContainer from '../../../components/DropContainer';
 import DragItem from './DragItem';
 import { Column } from '../styled/Column';
 import { RowTitleCol } from '../styled/RowTitleCol';
-
-const styles = {
-  columnContainerStyle: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    padding: '70px 50px',
-    height: '100%',
-    borderRadius: 4,
-    backgroundColor: white
-  }
-};
 
 const TableRow = ({
   startIndex,
@@ -31,8 +20,20 @@ const TableRow = ({
   preview,
   possible_responses,
   onDrop,
-  validArray
+  validArray,
+  theme
 }) => {
+  const styles = {
+    columnContainerStyle: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      padding: '70px 50px',
+      height: '100%',
+      borderRadius: 4,
+      backgroundColor: theme.widgets.classification.dropContainerBgColor
+    }
+  };
+
   const cols = [];
 
   for (let index = startIndex; index < startIndex + colCount; index++) {
@@ -88,7 +89,8 @@ TableRow.propTypes = {
   preview: PropTypes.bool.isRequired,
   possible_responses: PropTypes.array.isRequired,
   onDrop: PropTypes.func.isRequired,
-  validArray: PropTypes.array.isRequired
+  validArray: PropTypes.array.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
-export default TableRow;
+export default withTheme(TableRow);

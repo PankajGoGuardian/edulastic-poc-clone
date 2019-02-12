@@ -8,10 +8,12 @@ import { Row, Col } from 'antd';
 
 import { withNamespaces } from '@edulastic/localization';
 import { Paper, Tabs, Tab, Button, FlexContainer, Image } from '@edulastic/common';
-import { secondaryTextColor, white, red, blue } from '@edulastic/colors';
+import { white, red, blue } from '@edulastic/colors';
 import { IconPlus, IconClose } from '@edulastic/icons';
 import { fileApi } from '@edulastic/api';
 
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 import QuestionTextArea from '../../components/QuestionTextArea';
 import CorrectAnswers from '../../components/CorrectAnswers';
 import DropZoneToolbar from '../../components/DropZoneToolbar/index';
@@ -29,7 +31,7 @@ import { StyledCheckbox } from './styled/StyledCheckbox';
 
 const OptionsList = withPoints(HotspotPreview);
 
-const HotspotEdit = ({ item, setQuestionData, t }) => {
+const HotspotEdit = ({ item, setQuestionData, t, theme }) => {
   const { image, areas, area_attributes, multiple_responses } = item;
 
   const [loading, setLoading] = useState(false);
@@ -321,7 +323,10 @@ const HotspotEdit = ({ item, setQuestionData, t }) => {
         {customizeTab === 0 ? (
           <Row gutter={80}>
             <Col span={5}>
-              <Subtitle fontSize={13} color={secondaryTextColor}>
+              <Subtitle
+                fontSize={theme.widgets.hotspot.subtitleFontSize}
+                color={theme.widgets.hotspot.subtitleColor}
+              >
                 {t('component.hotspot.fillColorTitle')}
               </Subtitle>
               <ColorPicker
@@ -332,7 +337,10 @@ const HotspotEdit = ({ item, setQuestionData, t }) => {
               />
             </Col>
             <Col span={5}>
-              <Subtitle fontSize={13} color={secondaryTextColor}>
+              <Subtitle
+                fontSize={theme.widgets.hotspot.subtitleFontSize}
+                color={theme.widgets.hotspot.subtitleColor}
+              >
                 {t('component.hotspot.outlineColorTitle')}
               </Subtitle>
               <ColorPicker
@@ -378,7 +386,13 @@ const HotspotEdit = ({ item, setQuestionData, t }) => {
 HotspotEdit.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
-export default withNamespaces('assessment')(HotspotEdit);
+const enhance = compose(
+  withNamespaces('assessment'),
+  withTheme
+);
+
+export default enhance(HotspotEdit);

@@ -2,8 +2,9 @@ import React, { Fragment } from 'react';
 import { Row, Col, Select } from 'antd';
 import ColorPicker from 'rc-color-picker';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 
-import { secondaryTextColor } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 
 import { Subtitle } from '../../../styled/Subtitle';
@@ -17,7 +18,8 @@ const LocalColorPickers = ({
   attributes,
   onLocalColorChange,
   areaIndexes,
-  handleSelectChange
+  handleSelectChange,
+  theme
 }) => (
   <div>
     {areaIndexes.length > 0 && (
@@ -34,7 +36,10 @@ const LocalColorPickers = ({
     )}
     <Row gutter={80}>
       <Col span={5}>
-        <Subtitle fontSize={13} color={secondaryTextColor}>
+        <Subtitle
+          fontSize={theme.widgets.hotspot.subtitleFontSize}
+          color={theme.widgets.hotspot.subtitleColor}
+        >
           {t('component.hotspot.fillColorTitle')}
         </Subtitle>
         <ColorPicker
@@ -45,7 +50,10 @@ const LocalColorPickers = ({
         />
       </Col>
       <Col span={5}>
-        <Subtitle fontSize={13} color={secondaryTextColor}>
+        <Subtitle
+          fontSize={theme.widgets.hotspot.subtitleFontSize}
+          color={theme.widgets.hotspot.subtitleColor}
+        >
           {t('component.hotspot.outlineColorTitle')}
         </Subtitle>
         <ColorPicker
@@ -64,7 +72,13 @@ LocalColorPickers.propTypes = {
   attributes: PropTypes.object.isRequired,
   onLocalColorChange: PropTypes.func.isRequired,
   areaIndexes: PropTypes.array.isRequired,
-  handleSelectChange: PropTypes.func.isRequired
+  handleSelectChange: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
-export default withNamespaces('assessment')(LocalColorPickers);
+const enhance = compose(
+  withNamespaces('assessment'),
+  withTheme
+);
+
+export default enhance(LocalColorPickers);

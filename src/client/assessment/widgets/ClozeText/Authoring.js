@@ -39,24 +39,24 @@ class Authoring extends Component {
     return (
       <div>
         <PaddingDiv bottom={20}>
-          <Subtitle>{t('component.clozeText.composequestion')}</Subtitle>
+          <Subtitle>{t('component.cloze.text.composequestion')}</Subtitle>
           <CustomQuillComponent
             toolbarId="stimulus"
             wrappedRef={(instance) => {
               this.stimulus = instance;
             }}
-            placeholder={t('component.clozeText.thisisstem')}
+            placeholder={t('component.cloze.text.thisisstem')}
             onChange={this.onChangeQuesiton}
             showResponseBtn={false}
             value={item.stimulus}
           />
-          <Subtitle>{t('component.clozeText.templatemarkup')}</Subtitle>
+          <Subtitle>{t('component.cloze.text.templatemarkup')}</Subtitle>
           <CustomQuillComponent
             toolbarId="templatemarkup"
             wrappedRef={(instance) => {
               this.templatemarkup = instance;
             }}
-            placeholder={t('component.clozeText.templatemarkupplaceholder')}
+            placeholder={t('component.cloze.text.templatemarkupplaceholder')}
             onChange={this.onChangeMarkUp}
             firstFocus={!item.templateMarkUp}
             showResponseBtn

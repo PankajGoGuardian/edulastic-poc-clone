@@ -67,7 +67,7 @@ class AdditionalOptions extends Component {
     const { t, questionData } = this.props;
     return (
       <PaddingDiv bottom={30}>
-        <Heading>{t('component.clozeImageText.additionaloptions')}</Heading>
+        <Heading>{t('component.cloze.imageText.additionaloptions')}</Heading>
         <Row>
           <Col md={12}>
             <Label>{t('component.options.stimulusreviewonly')}</Label>
@@ -137,7 +137,7 @@ class AdditionalOptions extends Component {
           />
           <PaddingDiv top={6}>
             <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn()}>
-              {t('component.clozeImageText.addnewchoice')}
+              {t('component.cloze.imageText.addnewchoice')}
             </AddNewChoiceBtn>
           </PaddingDiv>
         </PaddingDiv>

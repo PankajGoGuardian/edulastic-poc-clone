@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { DropTarget } from 'react-dnd';
-
-import { dashBorderColor, green } from '@edulastic/colors';
+import { withTheme } from 'styled-components';
 
 const specTarget = {
   drop: (props, monitor) => {
@@ -23,15 +22,23 @@ function collectTarget(connector, monitor) {
   };
 }
 
-const DropContainer = ({ connectDropTarget, isOver, style, children, noBorder, noTopBorder }) => {
+const DropContainer = ({
+  connectDropTarget,
+  isOver,
+  style,
+  children,
+  noBorder,
+  noTopBorder,
+  theme
+}) => {
   const border = `${
     !noBorder
       ? isOver
-        ? `2px solid ${green}`
-        : `0px dashed ${dashBorderColor}`
+        ? `2px solid ${theme.dropContainer.isOverBorderColor}`
+        : `0px dashed ${theme.dropContainer.isNotOverBorderColor}`
       : isOver
-        ? `2px solid ${green}`
-        : '2px solid transparent'
+        ? `2px solid ${theme.dropContainer.isOverBorderColor}`
+        : `2px solid ${theme.dropContainer.noBorderColor}`
   }`;
 
   return connectDropTarget(
@@ -40,7 +47,7 @@ const DropContainer = ({ connectDropTarget, isOver, style, children, noBorder, n
         zIndex: 1,
         ...style,
         border,
-        borderTopColor: noTopBorder && !isOver ? 'transparent' : border
+        borderTopColor: noTopBorder && !isOver ? theme.dropContainer.noBorderColor : border
       }}
     >
       {children}
@@ -63,4 +70,4 @@ DropContainer.defaultProps = {
   noBorder: false
 };
 
-export default DropTarget('item', specTarget, collectTarget)(DropContainer);
+export default withTheme(DropTarget('item', specTarget, collectTarget)(DropContainer));

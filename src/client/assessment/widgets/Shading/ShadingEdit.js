@@ -5,8 +5,9 @@ import { Input, Row, Col } from 'antd';
 
 import { withNamespaces } from '@edulastic/localization';
 import { Paper } from '@edulastic/common';
-import { secondaryTextColor } from '@edulastic/colors';
 
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 import { EDIT } from '../../constants/constantsForQuestions';
 
 import withPoints from '../../components/HOC/withPoints';
@@ -20,7 +21,7 @@ import { StyledCheckbox } from './styled/StyledCheckbox';
 
 const OptionsList = withPoints(ShadingPreview);
 
-const ShadingEdit = ({ item, setQuestionData, t }) => {
+const ShadingEdit = ({ item, setQuestionData, t, theme }) => {
   const { canvas } = item;
 
   const cell_width = canvas ? canvas.cell_width : 1;
@@ -160,7 +161,11 @@ const ShadingEdit = ({ item, setQuestionData, t }) => {
 
         <Row gutter={70}>
           <Col span={12}>
-            <Subtitle fontSize={13} padding="0 0 16px 0" color={secondaryTextColor}>
+            <Subtitle
+              fontSize={theme.widgets.shading.subtitleFontSize}
+              color={theme.widgets.shading.subtitleColor}
+              padding="0 0 16px 0"
+            >
               {t('component.shading.rowsCountSubtitle')}
             </Subtitle>
 
@@ -171,7 +176,11 @@ const ShadingEdit = ({ item, setQuestionData, t }) => {
             />
           </Col>
           <Col span={12}>
-            <Subtitle fontSize={13} padding="0 0 16px 0" color={secondaryTextColor}>
+            <Subtitle
+              fontSize={theme.widgets.shading.subtitleFontSize}
+              color={theme.widgets.shading.subtitleColor}
+              padding="0 0 16px 0"
+            >
               {t('component.shading.colsCountSubtitle')}
             </Subtitle>
 
@@ -184,7 +193,10 @@ const ShadingEdit = ({ item, setQuestionData, t }) => {
         </Row>
         <Row gutter={70}>
           <Col span={12}>
-            <Subtitle fontSize={13} color={secondaryTextColor}>
+            <Subtitle
+              fontSize={theme.widgets.shading.subtitleFontSize}
+              color={theme.widgets.shading.subtitleColor}
+            >
               {t('component.shading.cellWidthSubtitle')}
             </Subtitle>
 
@@ -195,7 +207,10 @@ const ShadingEdit = ({ item, setQuestionData, t }) => {
             />
           </Col>
           <Col span={12}>
-            <Subtitle fontSize={13} color={secondaryTextColor}>
+            <Subtitle
+              fontSize={theme.widgets.shading.subtitleFontSize}
+              color={theme.widgets.shading.subtitleColor}
+            >
               {t('component.shading.cellHeightSubtitle')}
             </Subtitle>
 
@@ -243,7 +258,13 @@ const ShadingEdit = ({ item, setQuestionData, t }) => {
 ShadingEdit.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
-export default withNamespaces('assessment')(ShadingEdit);
+const enhance = compose(
+  withNamespaces('assessment'),
+  withTheme
+);
+
+export default enhance(ShadingEdit);

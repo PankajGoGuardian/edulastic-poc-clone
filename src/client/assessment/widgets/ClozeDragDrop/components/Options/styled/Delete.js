@@ -1,12 +1,10 @@
 import styled from 'styled-components';
 
-const Delete = styled.div`
+export const Delete = styled.div`
   padding: 3px 10px;
   border-radius: 3px;
-  background: lightgray;
+  background: ${props => props.theme.widgets.clozeDragDrop.deleteBgColor};
   position: absolute;
   right: 10px;
   top: 0;
 `;
-
-export default Delete;

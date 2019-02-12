@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { grey, textColor, lightGrey, white } from '@edulastic/colors';
 
 export const Item = styled.div`
   width: 25%;
@@ -7,18 +6,18 @@ export const Item = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid ${grey};
-  color: ${textColor};
-  font-weight: 700;
-  background: ${lightGrey};
+  border: 1px solid ${props => props.theme.numberPad.itemBorderColor};
+  color: ${props => props.theme.numberPad.itemColor};
+  font-weight: ${props => props.theme.numberPad.itemFontWeight};
+  background: ${props => props.theme.numberPad.itemBgColor};
   cursor: pointer;
   user-select: none;
 
   :hover {
-    background: ${grey};
+    background: ${props => props.theme.numberPad.itemBgHoverColor};
   }
 
   :active {
-    background: ${white};
+    background: ${props => props.theme.numberPad.itemBgActiveColor};
   }
 `;

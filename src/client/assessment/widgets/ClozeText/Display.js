@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Input, InputNumber } from 'antd';
 import { isUndefined } from 'lodash';
+import { withTheme } from 'styled-components';
 
 import CorrectAnswerBoxLayout from '../../components/CorrectAnswerBoxLayout';
 import { QuestionHeader } from '../../styled/QuestionHeader';
@@ -63,7 +64,8 @@ class Display extends Component {
       showAnswer,
       checkAnswer,
       validation,
-      evaluation
+      evaluation,
+      theme
     } = this.props;
     const { templateParts, userAnswers } = this.state;
     let responseIndex = 0;
@@ -89,80 +91,84 @@ class Display extends Component {
     const previewTemplateBoxLayout = (
       <div
         className={`template_box ${smallSize ? 'text-small' : ''}`}
-        style={{ fontSize: smallSize ? 14 : fontSize, padding: smallSize ? 0 : 20 }}
+        style={{
+          fontSize: smallSize
+            ? theme.widgets.clozeText.previewTemplateBoxSmallFontSize
+            : fontSize,
+          padding: smallSize ? 0 : 20
+        }}
       >
-        {templateParts &&
-          templateParts.map((templatePart, index) => {
-            if (templatePart.indexOf('class="response-btn"') !== -1) {
-              const dropTargetIndex = responseIndex;
-              responseIndex++;
-              const btnStyle = {
-                width: 0,
-                height: 0,
-                widthpx: 0,
-                heightpx: 0,
-                placeholder,
-                inputtype
-              };
-              if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-                const {
-                  widthpx: widthpx1,
-                  heightpx: heightpx1,
-                  placeholder: placeholder1,
-                  inputtype: inputtype1
-                } = responsecontainerindividuals[dropTargetIndex];
-                btnStyle.width = widthpx1;
-                btnStyle.height = heightpx1;
-                btnStyle.widthpx = widthpx1;
-                btnStyle.heightpx = heightpx1;
-                btnStyle.placeholder = placeholder1;
-                btnStyle.inputtype = inputtype1;
-              }
-              if (btnStyle && btnStyle.width === 0) {
-                btnStyle.width = responseBtnStyle.widthpx;
-              } else {
-                btnStyle.width = btnStyle.widthpx;
-              }
-              if (btnStyle && btnStyle.height === 0) {
-                btnStyle.height = responseBtnStyle.heightpx;
-              } else {
-                btnStyle.height = btnStyle.heightpx;
-              }
-              if (btnStyle && btnStyle.placeholder === undefined) {
-                btnStyle.placeholder = responseBtnStyle.placeholder;
-              }
-              if (btnStyle && btnStyle.inputtype === undefined) {
-                btnStyle.inputtype = responseBtnStyle.inputtype;
-              }
-              maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
-              if (isUndefined(btnStyle.inputtype) || btnStyle.inputtype === 'text') {
-                return (
-                  <Input
-                    defaultValue={userAnswers[dropTargetIndex]}
-                    key={`input_${dropTargetIndex}`}
-                    style={btnStyle}
-                    placeholder={btnStyle.placeholder}
-                    onChange={e => this.selectChange(e.target.value, dropTargetIndex)}
-                  />
-                );
-              }
+        {templateParts && templateParts.map((templatePart, index) => {
+          if (templatePart.indexOf('class="response-btn"') !== -1) {
+            const dropTargetIndex = responseIndex;
+            responseIndex++;
+            const btnStyle = {
+              width: 0,
+              height: 0,
+              widthpx: 0,
+              heightpx: 0,
+              placeholder,
+              inputtype
+            };
+            if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
+              const {
+                widthpx: widthpx1,
+                heightpx: heightpx1,
+                placeholder: placeholder1,
+                inputtype: inputtype1
+              } = responsecontainerindividuals[dropTargetIndex];
+              btnStyle.width = widthpx1;
+              btnStyle.height = heightpx1;
+              btnStyle.widthpx = widthpx1;
+              btnStyle.heightpx = heightpx1;
+              btnStyle.placeholder = placeholder1;
+              btnStyle.inputtype = inputtype1;
+            }
+            if (btnStyle && btnStyle.width === 0) {
+              btnStyle.width = responseBtnStyle.widthpx;
+            } else {
+              btnStyle.width = btnStyle.widthpx;
+            }
+            if (btnStyle && btnStyle.height === 0) {
+              btnStyle.height = responseBtnStyle.heightpx;
+            } else {
+              btnStyle.height = btnStyle.heightpx;
+            }
+            if (btnStyle && btnStyle.placeholder === undefined) {
+              btnStyle.placeholder = responseBtnStyle.placeholder;
+            }
+            if (btnStyle && btnStyle.inputtype === undefined) {
+              btnStyle.inputtype = responseBtnStyle.inputtype;
+            }
+            maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
+            if (isUndefined(btnStyle.inputtype) || btnStyle.inputtype === 'text') {
               return (
-                <InputNumber
+                <Input
                   defaultValue={userAnswers[dropTargetIndex]}
-                  key={`inputnumber${dropTargetIndex}`}
+                  key={`input_${dropTargetIndex}`}
                   style={btnStyle}
-                  onChange={e => this.selectChange(e, dropTargetIndex)}
+                  placeholder={btnStyle.placeholder}
+                  onChange={e => this.selectChange(e.target.value, dropTargetIndex)}
                 />
               );
             }
             return (
-              <span
-                style={{ userSelect: 'none', lineHeight: `${maxLineHeight}px` }}
-                key={index}
-                dangerouslySetInnerHTML={{ __html: templatePart }}
+              <InputNumber
+                defaultValue={userAnswers[dropTargetIndex]}
+                key={`inputnumber${dropTargetIndex}`}
+                style={btnStyle}
+                onChange={e => this.selectChange(e, dropTargetIndex)}
               />
             );
-          })}
+          }
+          return (
+            <span
+              style={{ userSelect: 'none', lineHeight: `${maxLineHeight}px` }}
+              key={index}
+              dangerouslySetInnerHTML={{ __html: templatePart }}
+            />
+          );
+        })}
       </div>
     );
 
@@ -217,7 +223,8 @@ Display.propTypes = {
   validation: PropTypes.object,
   evaluation: PropTypes.object,
   uiStyle: PropTypes.object,
-  templateMarkUp: PropTypes.string
+  templateMarkUp: PropTypes.string,
+  theme: PropTypes.object.isRequired
 };
 
 Display.defaultProps = {
@@ -241,4 +248,4 @@ Display.defaultProps = {
   templateMarkUp: defaultTemplateMarkup
 };
 
-export default Display;
+export default withTheme(Display);

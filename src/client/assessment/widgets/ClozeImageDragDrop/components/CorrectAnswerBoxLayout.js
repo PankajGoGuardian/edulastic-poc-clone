@@ -1,17 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withTheme } from 'styled-components';
+
 import { withNamespaces } from '@edulastic/localization';
 
-// eslint-disable-next-line max-len
-const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, t }) => {
+const CorrectAnswerBoxLayout = ({
+  fontSize,
+  userAnswers,
+  t,
+  theme
+}) => {
   const results = userAnswers;
   return (
     <div className="correctanswer-box" style={{ padding: 16, fontSize }}>
       <b style={{ fontSize }}>
-        <span style={{ color: '#444' }}>
-          {t('component.clozeImageDragDrop.draganddrop')}&nbsp;&nbsp;
+        <span style={{ color: theme.widgets.clozeImageDragDrop.correctAnswerBoxTitleColor }}>
+          {t('component.cloze.imageDragDrop.draganddrop')}&nbsp;&nbsp;
         </span>
-        <span style={{ color: '#878282' }}>{t('component.clozeImageDragDrop.theanswer')}</span>
+        <span style={{ color: theme.widgets.clozeImageDragDrop.correctAnswerBoxSubtitleColor }}>
+          {t('component.cloze.imageDragDrop.theanswer')}
+        </span>
       </b>
       <div style={{ marginTop: 10 }}>
         {results.map((result, index) => (
@@ -27,9 +35,9 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, t }) => {
               className="text container"
               style={{
                 padding: '8px 15px',
-                fontWeight: 'bold',
+                fontWeight: theme.widgets.clozeImageDragDrop.correctAnswerBoxTextContainerFontWeight,
                 width: 'auto',
-                background: 'white'
+                background: theme.widgets.clozeImageDragDrop.correctAnswerBoxTextContainerBgColor
               }}
             >
               {result && result.join(', ')}
@@ -44,7 +52,8 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, t }) => {
 CorrectAnswerBoxLayout.propTypes = {
   fontSize: PropTypes.string,
   userAnswers: PropTypes.array,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 CorrectAnswerBoxLayout.defaultProps = {
@@ -52,4 +61,4 @@ CorrectAnswerBoxLayout.defaultProps = {
   userAnswers: []
 };
 
-export default React.memo(withNamespaces('assessment')(CorrectAnswerBoxLayout));
+export default withTheme(React.memo(withNamespaces('assessment')(CorrectAnswerBoxLayout)));

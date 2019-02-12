@@ -9,7 +9,7 @@ export const SortableItemContainer = styled.div`
 
   & div.main {
     border-radius: 4px;
-    border: solid 1px #dfdfdf;
+    border: solid 1px ${props => props.theme.typedList.itemContainerBorderColor};
     margin-right: 10px;
     flex: 1;
     height: 100%;
@@ -17,14 +17,8 @@ export const SortableItemContainer = styled.div`
     align-items: center;
   }
   & div.main i.fa-align-justify {
-    color: #1fe3a1;
-    font-size: 16px;
+    color: ${props => props.theme.typedList.dragIconColor};
+    font-size: ${props => props.theme.typedList.dragIconFontSize};
     padding: 15px;
-  }
-  & i.fa-trash-o {
-    color: #ee1658;
-    font-size: 22px;
-    padding: 15px;
-    cursor: pointer;
   }
 `;

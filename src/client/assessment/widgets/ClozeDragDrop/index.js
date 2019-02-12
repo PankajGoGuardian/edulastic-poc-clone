@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { cloneDeep } from 'lodash';
-import styled from 'styled-components';
+import styled, { withTheme } from 'styled-components';
 
 import { PaddingDiv, Checkbox, Paper } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
@@ -94,9 +94,28 @@ class ClozeDragDrop extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation } = this.props;
-    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
-    const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
+    const {
+      view,
+      previewTab,
+      smallSize,
+      item,
+      userAnswer,
+      t,
+      testItem,
+      evaluation,
+      theme
+    } = this.props;
+    const {
+      previewStimulus,
+      previewDisplayOptions,
+      itemForEdit,
+      uiStyle
+    } = this.getRenderData();
+    const {
+      duplicatedResponses,
+      showDraghandle,
+      shuffleOptions
+    } = item;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
@@ -105,7 +124,7 @@ class ClozeDragDrop extends Component {
         {view === 'edit' && (
           <React.Fragment>
             <PaddingDiv
-              style={{ borderRadius: 5, background: 'white' }}
+              style={{ borderRadius: 5, background: theme.widgets.clozeDragDrop.editViewBgColor }}
               top={30}
               bottom={30}
               left={120}
@@ -136,21 +155,21 @@ class ClozeDragDrop extends Component {
                     onChange={() =>
                       this.handleOptionsChange('duplicatedResponses', !duplicatedResponses)
                     }
-                    label={t('component.clozeDragDrop.duplicatedresponses')}
+                    label={t('component.cloze.dragDrop.duplicatedresponses')}
                     checked={duplicatedResponses}
                   />
                   <Checkbox
                     className="additional-options"
                     key={`showDraghandle_${showDraghandle}`}
                     onChange={() => this.handleOptionsChange('showDraghandle', !showDraghandle)}
-                    label={t('component.clozeDragDrop.showdraghandle')}
+                    label={t('component.cloze.dragDrop.showdraghandle')}
                     checked={showDraghandle}
                   />
                   <Checkbox
                     className="additional-options"
                     key={`shuffleOptions_${shuffleOptions}`}
                     onChange={() => this.handleOptionsChange('shuffleOptions', !shuffleOptions)}
-                    label={t('component.clozeDragDrop.shuffleoptions')}
+                    label={t('component.cloze.dragDrop.shuffleoptions')}
                     checked={shuffleOptions}
                   />
                 </CorrectAnswerOptions>
@@ -247,7 +266,8 @@ ClozeDragDrop.propTypes = {
   userAnswer: PropTypes.any,
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any.isRequired
+  evaluation: PropTypes.any.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 ClozeDragDrop.defaultProps = {
@@ -264,6 +284,7 @@ ClozeDragDrop.defaultProps = {
 const enhance = compose(
   withRouter,
   withNamespaces('assessment'),
+  withTheme,
   connect(
     null,
     {

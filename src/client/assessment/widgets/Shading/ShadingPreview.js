@@ -2,10 +2,11 @@ import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { cloneDeep } from 'lodash';
 import { Select, Input } from 'antd';
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 
 import { Paper, Stimulus, FlexContainer } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
-import { secondaryTextColor } from '@edulastic/colors';
 
 import {
   PREVIEW,
@@ -31,7 +32,8 @@ const ShadingPreview = ({
   userAnswer,
   method,
   t,
-  previewTab
+  previewTab,
+  theme
 }) => {
   const { canvas, validation } = item;
 
@@ -130,7 +132,11 @@ const ShadingPreview = ({
       <FlexContainer alignItems="flex-start" flexDirection="column">
         {view === EDIT && (
           <Fragment>
-            <Subtitle padding="0 0 16px 0" fontSize={13} color={secondaryTextColor}>
+            <Subtitle
+              fontSize={theme.widgets.shading.subtitleFontSize}
+              color={theme.widgets.shading.subtitleColor}
+              padding="0 0 16px 0"
+            >
               {t('component.shading.methodSubtitle')}
             </Subtitle>
             <Select style={{ width: 320 }} value={method} onChange={handleSelectMethod}>
@@ -192,7 +198,8 @@ ShadingPreview.propTypes = {
   userAnswer: PropTypes.any,
   method: PropTypes.string,
   previewTab: PropTypes.string,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 ShadingPreview.defaultProps = {
@@ -202,4 +209,9 @@ ShadingPreview.defaultProps = {
   method: ''
 };
 
-export default withNamespaces('assessment')(ShadingPreview);
+const enhance = compose(
+  withNamespaces('assessment'),
+  withTheme
+);
+
+export default enhance(ShadingPreview);

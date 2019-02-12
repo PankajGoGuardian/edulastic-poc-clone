@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { Input } from 'antd';
 import { cloneDeep } from 'lodash';
 
-import { IconTrash } from '@edulastic/icons';
-import { greenDark, red } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 
 import { KEYBOARD_BUTTONS } from '../../../../constants/keyboardButtons';
 
 import NumberPad from '../../../NumberPad';
+
+import { IconTrash } from '../../styled/IconTrash';
 import { Row } from './styled/Row';
 import { Col } from './styled/Col';
 
@@ -72,11 +72,8 @@ const CustomGroup = ({ onChange, onRemove, value, t }) => {
         </Col>
         <IconTrash
           onClick={onRemove}
-          color={greenDark}
-          hoverColor={red}
           width={40}
           height={40}
-          style={{ cursor: 'pointer' }}
         />
       </Row>
       <Row>

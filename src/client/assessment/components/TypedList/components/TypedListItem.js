@@ -2,10 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Select, Input } from 'antd';
 
-import { IconTrash } from '@edulastic/icons';
-import { greenDark, red } from '@edulastic/colors';
 import { typedList as types } from '@edulastic/constants';
 
+import { IconTrash } from '../styled/IconTrash';
 import { SortableItemContainer } from '../styled/SortableItemContainer';
 
 const TypedListItem = ({ type, selectData, value, onRemove, onChange, columns, indx }) => (
@@ -28,11 +27,8 @@ const TypedListItem = ({ type, selectData, value, onRemove, onChange, columns, i
       <IconTrash
         data-cy={`delete${indx}`}
         onClick={onRemove}
-        color={greenDark}
-        hoverColor={red}
         width={20}
         height={20}
-        style={{ cursor: 'pointer' }}
       />
     )}
   </SortableItemContainer>

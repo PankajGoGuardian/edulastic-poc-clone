@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { shuffle } from 'lodash';
+import { withTheme } from 'styled-components';
 
 import MapImage from '../../assets/map.svg';
 import CardMapImage from '../../assets/map-card.svg';
 
 import { QuestionHeader } from '../../styled/QuestionHeader';
+import CorrectAnswerBoxLayout from '../../components/CorrectAnswerBoxLayout';
 
-import AnswerDropdown from './components/AnswerDropdown/index';
-import CorrectAnswerBoxLayout from './components/CorrectAnswerBoxLayout/index';
-import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout/index';
+import AnswerDropdown from './components/AnswerDropdown';
+import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout';
 import { StyledPreviewTemplateBox } from './styled/StyledPreviewTemplateBox';
 import { StyledPreviewContainer } from './styled/StyledPreviewContainer';
 import { StyledPreviewImage } from './styled/StyledPreviewImage';
@@ -73,7 +74,8 @@ class Display extends Component {
       imageAlterText,
       imageWidth,
       showDashedBorder,
-      backgroundColor
+      backgroundColor,
+      theme
     } = this.props;
     const { userAnswers } = this.state;
     const { shuffleOptions } = configureOptions;
@@ -111,7 +113,9 @@ class Display extends Component {
                 top: smallSize ? responseContainer.top / 2 : responseContainer.top,
                 left: smallSize ? responseContainer.left / 2 : responseContainer.left,
                 height: smallSize ? responseContainer.height / 2 : responseContainer.height,
-                border: showDashedBorder ? 'dashed 2px rgba(0, 0, 0, 0.65)' : 'solid 1px lightgray',
+                border: showDashedBorder
+                  ? `dashed 2px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
+                  : `solid 1px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`,
                 position: 'absolute',
                 background: backgroundColor,
                 borderRadius: 5
@@ -223,7 +227,8 @@ Display.propTypes = {
   uiStyle: PropTypes.object,
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
-  imageWidth: PropTypes.number
+  imageWidth: PropTypes.number,
+  theme: PropTypes.object.isRequired
 };
 
 Display.defaultProps = {
@@ -251,4 +256,4 @@ Display.defaultProps = {
   }
 };
 
-export default Display;
+export default withTheme(Display);

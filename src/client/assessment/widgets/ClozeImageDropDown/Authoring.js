@@ -8,12 +8,11 @@ import { cloneDeep } from 'lodash';
 import 'react-quill/dist/quill.snow.css';
 import { Checkbox, Input, Select, Upload, message } from 'antd';
 import { ChromePicker } from 'react-color';
+import { withTheme } from 'styled-components';
 
 import { withNamespaces } from '@edulastic/localization';
-import { greenDark } from '@edulastic/colors';
 import { API_CONFIG } from '@edulastic/api';
 import { PaddingDiv } from '@edulastic/common';
-import { IconUpload, IconDrawResize, IconPin } from '@edulastic/icons';
 
 import { setQuestionDataAction } from '../../../author/src/actions/question';
 
@@ -39,6 +38,9 @@ import { ImageFlexView } from './styled/ImageFlexView';
 import { ImageContainer } from './styled/ImageContainer';
 import { PreviewImage } from './styled/PreviewImage';
 import { CheckContainer } from './styled/CheckContainer';
+import { IconDrawResize } from './styled/IconDrawResize';
+import { IconPin } from './styled/IconPin';
+import { IconUpload } from './styled/IconUpload';
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -47,7 +49,8 @@ class Authoring extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
-    setQuestionData: PropTypes.func.isRequired
+    setQuestionData: PropTypes.func.isRequired,
+    theme: PropTypes.object.isRequired
   };
 
   state = {
@@ -91,7 +94,7 @@ class Authoring extends Component {
     const { setQuestionData, t } = this.props;
     const newItem = this.getNewItem();
     if (newItem.options[index] === undefined) newItem.options[index] = [];
-    newItem.options[index].push(t('component.clozeImageDropDown.newChoice'));
+    newItem.options[index].push(t('component.cloze.imageDropDown.newChoice'));
     setQuestionData(newItem);
   };
 
@@ -133,17 +136,17 @@ class Authoring extends Component {
     const { t } = this.props;
     if (status === 'done') {
       message.success(
-        `${info.file.name} ${t('component.clozeImageDropDown.fileUploadedSuccessfully')}.`
+        `${info.file.name} ${t('component.cloze.imageDropDown.fileUploadedSuccessfully')}.`
       );
       const imageUrl = response.result.fileUri;
       this.onItemPropChange('imageUrl', imageUrl);
     } else if (status === 'error') {
-      message.error(`${info.file.name} ${t('component.clozeImageDropDown.fileUploadFailed')}.`);
+      message.error(`${info.file.name} ${t('component.cloze.imageDropDown.fileUploadFailed')}.`);
     }
   };
 
   render() {
-    const { t, item } = this.props;
+    const { t, item, theme } = this.props;
     const {
       maxRespCount,
       background,
@@ -167,13 +170,13 @@ class Authoring extends Component {
     return (
       <div>
         <PaddingDiv>
-          <Subtitle>{t('component.clozeImageDropDown.composequestion')}</Subtitle>
+          <Subtitle>{t('component.cloze.imageDropDown.composequestion')}</Subtitle>
           <StyledCustomQuill
             toolbarId="stimulus"
             wrappedRef={(instance) => {
               this.stimulus = instance;
             }}
-            placeholder={t('component.clozeImageDropDown.thisisstem')}
+            placeholder={t('component.cloze.imageDropDown.thisisstem')}
             onChange={this.onChangeQuesiton}
             showResponseBtn={false}
             value={item.stimulus}
@@ -186,7 +189,7 @@ class Authoring extends Component {
                 onChange={val => this.onItemPropChange('imageWidth', val)}
               />
 
-              <PaddingDiv left={20}>{t('component.clozeImageDropDown.widthpx')}</PaddingDiv>
+              <PaddingDiv left={20}>{t('component.cloze.imageDropDown.widthpx')}</PaddingDiv>
             </div>
             <div style={{ alignItems: 'center' }}>
               <ImageAlterTextInput
@@ -194,7 +197,7 @@ class Authoring extends Component {
                 defaultValue={imageAlterText}
                 onChange={val => this.onItemPropChange('imageAlterText', val.target.value)}
               />
-              <PaddingDiv left={20}>{t('component.clozeImageDropDown.imagealtertext')}</PaddingDiv>
+              <PaddingDiv left={20}>{t('component.cloze.imageDropDown.imagealtertext')}</PaddingDiv>
             </div>
             <div style={{ alignItems: 'center' }}>
               <ColorBox background={background} onClick={() => this.showColorPicker(true)} />
@@ -207,7 +210,7 @@ class Authoring extends Component {
                   />
                 </ColorPickerContainer>
               )}
-              <PaddingDiv left={20}>{t('component.clozeImageDropDown.fillcolor')}</PaddingDiv>
+              <PaddingDiv left={20}>{t('component.cloze.imageDropDown.fillcolor')}</PaddingDiv>
             </div>
             <div style={{ alignItems: 'center' }}>
               <MaxRespCountInput
@@ -217,7 +220,7 @@ class Authoring extends Component {
                 onChange={val => this.onItemPropChange('maxRespCount', val)}
               />
               <PaddingDiv left={20} style={{ width: 160 }}>
-                {t('component.clozeImageDropDown.maximumresponses')}
+                {t('component.cloze.imageDropDown.maximumresponses')}
               </PaddingDiv>
             </div>
           </FormContainer>
@@ -231,25 +234,25 @@ class Authoring extends Component {
           >
             <ControlBar>
               <ControlButton>
-                <IconDrawResize width={20} height={20} color={greenDark} />
-                {t('component.clozeImageDropDown.drawresize')}
+                <IconDrawResize />
+                {t('component.cloze.imageDropDown.drawresize')}
               </ControlButton>
 
               <PointerContainer className="controls-bar">
                 <ControlButton disabled={!hasActive}>
-                  <IconPin width={20} height={20} />
-                  {t('component.clozeImageDropDown.pointers')}
+                  <IconPin />
+                  {t('component.cloze.imageDropDown.pointers')}
                 </ControlButton>
                 <PointerSelect
                   disabled={!hasActive}
                   defaultValue="none"
                   onChange={this.handlePointersChange}
                 >
-                  <Option value="none">{t('component.clozeImageDropDown.none')}</Option>
-                  <Option value="top">{t('component.clozeImageDropDown.top')}</Option>
-                  <Option value="bottom">{t('component.clozeImageDropDown.bottom')}</Option>
-                  <Option value="left">{t('component.clozeImageDropDown.left')}</Option>
-                  <Option value="right">{t('component.clozeImageDropDown.right')}</Option>
+                  <Option value="none">{t('component.cloze.imageDropDown.none')}</Option>
+                  <Option value="top">{t('component.cloze.imageDropDown.top')}</Option>
+                  <Option value="bottom">{t('component.cloze.imageDropDown.bottom')}</Option>
+                  <Option value="left">{t('component.cloze.imageDropDown.left')}</Option>
+                  <Option value="right">{t('component.cloze.imageDropDown.right')}</Option>
                 </PointerSelect>
               </PointerContainer>
             </ControlBar>
@@ -264,16 +267,16 @@ class Authoring extends Component {
                 {!item.imageUrl && (
                   <Dragger {...draggerProps} onChange={this.handleImageUpload}>
                     <p className="ant-upload-drag-icon">
-                      <IconUpload width={100} height={100} color="#e6e6e6" />
+                      <IconUpload />
                     </p>
-                    <p className="ant-upload-hint" style={{ color: 'rgb(230, 230, 230)' }}>
-                      <strong>Drag & Drop</strong>
+                    <p className="ant-upload-hint" style={{ color: theme.widgets.clozeImageDropDown.antUploadHintColor }}>
+                      <strong>{t('component.cloze.imageDropDown.dragAndDrop')}</strong>
                     </p>
                     <h2 className="ant-upload-text" style={{ color: 'rgb(177, 177, 177)' }}>
-                      {t('component.clozeImageDropDown.yourOwnImage')}
+                      {t('component.cloze.imageDropDown.yourOwnImage')}
                     </h2>
                     <p className="ant-upload-hint" style={{ color: 'rgb(230, 230, 230)' }}>
-                      {t('component.clozeImageDropDown.orBrowse')}: PNG, JPG, GIF (1024KB MAX.)
+                      {t('component.cloze.imageDropDown.orBrowse')}: PNG, JPG, GIF (1024KB MAX.)
                     </p>
                   </Dragger>
                 )}
@@ -283,7 +286,7 @@ class Authoring extends Component {
                   defaultChecked={isEditAriaLabels}
                   onChange={val => this.onItemPropChange('isEditAriaLabels', val.target.checked)}
                 >
-                  {t('component.clozeImageDropDown.editAriaLabels')}
+                  {t('component.cloze.imageDropDown.editAriaLabels')}
                 </Checkbox>
               </CheckContainer>
             </ImageFlexView>
@@ -291,7 +294,7 @@ class Authoring extends Component {
           <PaddingDiv>
             {isEditAriaLabels && (
               <React.Fragment>
-                <Subtitle>{t('component.clozeImageDropDown.editAriaLabels')}</Subtitle>
+                <Subtitle>{t('component.cloze.imageDropDown.editAriaLabels')}</Subtitle>
                 {responses.map((responseContainer, index) => (
                   <div className="imagelabelDropDown-droppable iseditablearialabel" key={index}>
                     <span className="index-box">{index + 1}</span>
@@ -307,7 +310,7 @@ class Authoring extends Component {
           {item.options.map((option, index) => (
             <PaddingDiv key={index} top={30}>
               <Subtitle style={{ padding: '0px 0px 6px 0px' }}>
-                {t('component.clozeImageDropDown.response')} {index + 1}
+                {t('component.cloze.imageDropDown.response')} {index + 1}
               </Subtitle>
               <SortableList
                 items={option || []}
@@ -319,7 +322,7 @@ class Authoring extends Component {
               />
               <PaddingDiv top={6}>
                 <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(index)}>
-                  {t('component.clozeImageDropDown.addnewchoice')}
+                  {t('component.cloze.imageDropDown.addnewchoice')}
                 </AddNewChoiceBtn>
               </PaddingDiv>
             </PaddingDiv>
@@ -333,6 +336,7 @@ class Authoring extends Component {
 const enhance = compose(
   withRouter,
   withNamespaces('assessment'),
+  withTheme,
   connect(
     null,
     { setQuestionData: setQuestionDataAction }

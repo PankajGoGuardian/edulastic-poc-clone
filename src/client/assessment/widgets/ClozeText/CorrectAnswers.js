@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { cloneDeep } from 'lodash';
 
-import { IconPlus } from '@edulastic/icons';
-import { white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { Button, Tab, Tabs, TabContainer } from '@edulastic/common';
 
@@ -15,6 +13,7 @@ import { getQuestionDataSelector } from '../../../author/src/selectors/question'
 import { Subtitle } from '../../styled/Subtitle';
 
 import CorrectAnswer from './CorrectAnswer';
+import { IconPlus } from './styled/IconPlus';
 
 class CorrectAnswers extends Component {
   state = {
@@ -42,7 +41,7 @@ class CorrectAnswers extends Component {
     return (
       <Button
         style={{ minWidth: 70, minHeight: 25 }}
-        icon={<IconPlus color={white} width={10} height={10} />}
+        icon={<IconPlus />}
         onClick={() => {
           this.handleTabChange(validation.alt_responses.length + 1);
           onAddAltResponses();

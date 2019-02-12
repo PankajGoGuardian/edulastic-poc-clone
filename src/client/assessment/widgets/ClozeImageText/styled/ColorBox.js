@@ -6,7 +6,7 @@ export const ColorBox = styled.div`
   padding: 5px;
   border-radius: 5px;
   margin: 5px 10px;
-  background: white;
-  border: '1px solid #e6e6e6';
+  background: ${props => props.theme.widgets.clozeImageText.colorBoxBgColor};
+  border: '1px solid ${props => props.theme.widgets.clozeImageText.colorBoxBorderColor}';
   background-color: ${props => props.background}
 `;

@@ -1,14 +1,13 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Icon } from 'antd';
 
 import { withNamespaces } from '@edulastic/localization';
-import { IconUpload } from '@edulastic/icons';
-import { dashBorderColor, mainBlueColor, dropZoneTitleColor } from '@edulastic/colors';
 
 import { Container } from './styled/Container';
 import { ZoneTitle } from './styled/ZoneTitle';
 import { Underlined } from './styled/Underlined';
+import { Loading } from './styled/Loading';
+import { IconUpload } from './styled/IconUpload';
 
 const StyledDropZone = ({ thumb, loading, isDragActive, t }) => (
   <Container
@@ -18,21 +17,16 @@ const StyledDropZone = ({ thumb, loading, isDragActive, t }) => (
     flexDirection="column"
   >
     {loading ? (
-      <Icon type="loading" style={{ fontSize: 100 }} />
+      <Loading type="loading" />
     ) : (
       thumb || (
         <Fragment>
-          <IconUpload
-            style={{ marginBottom: 20 }}
-            width={90}
-            color={isDragActive ? mainBlueColor : dashBorderColor}
-            height={75}
-          />
+          <IconUpload isDragActive={isDragActive} />
           <ZoneTitle>{t('component.dropZone.dragDrop')}</ZoneTitle>
-          <ZoneTitle color={dropZoneTitleColor}>
+          <ZoneTitle altColor>
             {t('component.dropZone.yourOwnImage')}
           </ZoneTitle>
-          <ZoneTitle style={{ marginTop: 12 }} fontSize={11}>
+          <ZoneTitle isComment>
             {t('component.dropZone.or')} <Underlined>{t('component.dropZone.browse')}</Underlined>: PNG, JPG, GIF (1024KB MAX.)
           </ZoneTitle>
         </Fragment>

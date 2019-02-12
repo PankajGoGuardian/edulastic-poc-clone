@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { compose } from 'redux';
 import PropTypes from 'prop-types';
+import { ThemeProvider } from 'styled-components';
+
 import { withWindowSizes } from '@edulastic/common';
-import { mainBgColor } from '@edulastic/colors';
+
+import { themes } from '../../themes';
 
 import TestItemCol from './containers/TestItemCol';
 import { Container } from './styled/Container';
@@ -29,7 +32,8 @@ class TestItemPreview extends Component {
     const style = {};
 
     if (first && verticalDivider) {
-      style.borderRight = `3px solid ${mainBgColor}`;
+      style.borderRightWidth = '3px';
+      style.borderRightStyle = 'solid';
     }
 
     if (scrolling) {
@@ -43,20 +47,22 @@ class TestItemPreview extends Component {
   render() {
     const { cols, previewTab, style, windowWidth } = this.props;
     return (
-      <Container width={windowWidth} style={style}>
-        {cols &&
-        cols.length &&
-        cols.map((col, i) => (
-          <TestItemCol
-            key={i}
-            col={col}
-            view="preview"
-            previewTab={previewTab}
-            style={this.getStyle(i !== cols.length - 1)}
-            windowWidth={windowWidth}
-          />
-        ))}
-      </Container>
+      <ThemeProvider theme={themes.default}>
+        <Container width={windowWidth} style={style}>
+          {cols &&
+          cols.length &&
+          cols.map((col, i) => (
+            <TestItemCol
+              key={i}
+              col={col}
+              view="preview"
+              previewTab={previewTab}
+              style={this.getStyle(i !== cols.length - 1)}
+              windowWidth={windowWidth}
+            />
+          ))}
+        </Container>
+      </ThemeProvider>
     );
   }
 }

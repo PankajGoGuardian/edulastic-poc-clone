@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Icon } from 'antd';
 import { Tabs } from '@edulastic/common';
-import { white } from '@edulastic/colors';
 
 import { SMALL_DESKTOP_WIDTH, MAX_MOBILE_WIDTH } from '../../../../constants/others';
+
 import QuestionWrapper from '../../../QuestionWrapper';
+
 import { Container } from './styled/Container';
 import { MobileRightSide } from './styled/MobileRightSide';
 import { MobileLeftSide } from './styled/MobileLeftSide';
+import { IconArrow } from './styled/IconArrow';
 
 class TestItemCol extends Component {
   state = {
@@ -82,12 +83,12 @@ class TestItemCol extends Component {
         )}
         {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 0 && (
           <MobileRightSide onClick={() => this.handleTabChange(1)}>
-            <Icon type="left" style={{ color: white }} />
+            <IconArrow type="left" />
           </MobileRightSide>
         )}
         {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 1 && (
           <MobileLeftSide onClick={() => this.handleTabChange(0)}>
-            <Icon type="right" style={{ color: white }} />
+            <IconArrow type="right" />
           </MobileLeftSide>
         )}
         {col.widgets.map((widget, i) => (

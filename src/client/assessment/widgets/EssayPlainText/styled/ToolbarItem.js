@@ -1,13 +1,12 @@
 import styled from 'styled-components';
-import { dashBorderColor, lightGrey } from '@edulastic/colors';
 import { Item } from '../../../styled/Item';
 
 export const ToolbarItem = styled(Item)`
   &:hover {
     cursor: pointer;
-    background: ${dashBorderColor};
+    background: ${props => props.theme.widgets.essayPlainText.toolbarItemBgHoverColor};
   }
   &:active {
-    background: ${lightGrey};
+    background: ${props => props.theme.widgets.essayPlainText.toolbarItemBgActiveColor};
   }
 `;

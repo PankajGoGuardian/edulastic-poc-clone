@@ -1,6 +1,8 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { cloneDeep, isEqual, difference } from 'lodash';
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 
 import {
   Paper,
@@ -11,35 +13,14 @@ import {
   CenteredText
 } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
-import { white, grey, greenDark, separatorColor } from '@edulastic/colors';
 
 import DropContainer from '../../components/DropContainer';
 import { PREVIEW, SHOW, CLEAR, CHECK } from '../../constants/constantsForQuestions';
 
 import DragItem from './components/DragItem';
-import { getStyles, IndexBox } from './styled/IndexBox';
+import { IndexBox } from './styled/IndexBox';
 import TableRow from './components/TableRow';
-
-const styles = {
-  itemContainerStyle: { display: 'flex', alignItems: 'center', margin: '10px 15px 10px 15px' },
-  previewItemStyle: {
-    paddingRight: 15,
-    paddingLeft: 15,
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
-    cursor: 'normal',
-    fontWeight: 600
-  },
-  noPreviewItemStyle: {},
-  dragItemsContainerStyle: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    flexWrap: 'wrap',
-    minHeight: 140,
-    borderRadius: 4
-  },
-  correctAnswersMargins: { marginBottom: 0, marginRight: 30 }
-};
+import { getStyles } from './utils';
 
 const ClassificationPreview = ({
   view,
@@ -49,8 +30,30 @@ const ClassificationPreview = ({
   userAnswer,
   previewTab,
   smallSize,
-  editCorrectAnswers
+  editCorrectAnswers,
+  theme
 }) => {
+  const styles = {
+    itemContainerStyle: { display: 'flex', alignItems: 'center', margin: '10px 15px 10px 15px' },
+    previewItemStyle: {
+      paddingRight: 15,
+      paddingLeft: 15,
+      borderTopLeftRadius: 0,
+      borderBottomLeftRadius: 0,
+      cursor: 'normal',
+      fontWeight: theme.widgets.classification.previewItemFontWeight
+    },
+    noPreviewItemStyle: {},
+    dragItemsContainerStyle: {
+      display: 'flex',
+      alignItems: 'flex-start',
+      flexWrap: 'wrap',
+      minHeight: 140,
+      borderRadius: 4
+    },
+    correctAnswersMargins: { marginBottom: 0, marginRight: 30 }
+  };
+
   const {
     possible_responses: posResponses,
     group_possible_responses,
@@ -266,7 +269,7 @@ const ClassificationPreview = ({
                       alignItems="center"
                       justifyContent="flex-start"
                     >
-                      <Subtitle style={{ color: greenDark }}>{i.title}</Subtitle>
+                      <Subtitle style={{ color: theme.widgets.classification.previewSubtitleColor }}>{i.title}</Subtitle>
                       <FlexContainer
                         justifyContent="center"
                         style={{ width: '100%', flexWrap: 'wrap' }}
@@ -291,7 +294,7 @@ const ClassificationPreview = ({
                           width: 0,
                           marginLeft: 35,
                           marginRight: 35,
-                          borderLeft: `1px solid ${separatorColor}`
+                          borderLeft: `1px solid ${theme.widgets.classification.separatorBorderColor}`
                         }}
                       />
                     )}
@@ -341,7 +344,7 @@ const ClassificationPreview = ({
                 <div style={styles.itemContainerStyle} key={index}>
                   <IndexBox preview={preview}>{index + 1}</IndexBox>
                   <div
-                    style={getStyles(false, white, grey, styles.previewItemStyle)}
+                    style={getStyles(false, theme.widgets.classification.boxBgColor, theme.widgets.classification.boxBorderColor, styles.previewItemStyle)}
                     dangerouslySetInnerHTML={{ __html: posResp[index] }}
                   />
                 </div>
@@ -362,7 +365,8 @@ ClassificationPreview.propTypes = {
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any.isRequired,
-  view: PropTypes.string.isRequired
+  view: PropTypes.string.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 ClassificationPreview.defaultProps = {
@@ -371,4 +375,9 @@ ClassificationPreview.defaultProps = {
   editCorrectAnswers: []
 };
 
-export default withNamespaces('assessment')(ClassificationPreview);
+const enhance = compose(
+  withNamespaces('assessment'),
+  withTheme
+);
+
+export default enhance(ClassificationPreview);

@@ -2,12 +2,12 @@ import styled from 'styled-components';
 import { FlexContainer } from './FlexContainer';
 
 export const FormContainer = styled(FlexContainer)`
-  background: #e6e6e63A;
+  background: ${props => props.theme.widgets.clozeImageDropDown.formContainerBgColor};
   height: 67px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #434b5d;
-  border-bottom: 1px solid #e6e6e6;
+  font-size: ${props => props.theme.widgets.clozeImageDropDown.formContainerFontSize};
+  font-weight: ${props => props.theme.widgets.clozeImageDropDown.formContainerFontWeight};
+  color: ${props => props.theme.widgets.clozeImageDropDown.formContainerColor};
+  border-bottom: 1px solid ${props => props.theme.widgets.clozeImageDropDown.formContainerBorderColor};
   border-radius: 10px 10px 0px 0px;
   overflow: hidden;
 `;

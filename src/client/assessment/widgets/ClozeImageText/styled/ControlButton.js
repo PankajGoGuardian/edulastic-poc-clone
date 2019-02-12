@@ -8,19 +8,19 @@ export const ControlButton = styled.button`
   border: none;
   outline: none;
   display: flex;
-  background: transparent;
+  background: ${props => props.theme.widgets.clozeImageText.controlButtonBgColor};
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-family: Open Sans;
-  font-size: 14px;
-  font-weight: 600;
+  font-family: '${props => props.theme.widgets.clozeImageText.controlButtonFontFamily}';
+  font-size: ${props => props.theme.widgets.clozeImageText.controlButtonFontSize};
+  font-weight: ${props => props.theme.widgets.clozeImageText.controlButtonFontWeight};
   line-height: 1.36;
-  color: #434b5d;
+  color: ${props => props.theme.widgets.clozeImageText.controlButtonColor};
   cursor: pointer;
 
   &:not([disabled]) {
-    background: white;
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
+    background: ${props => props.theme.widgets.clozeImageText.controlButtonNotDisabledBgColor};
+    box-shadow: 0 3px 6px 0 ${props => props.theme.widgets.clozeImageText.controlButtonNotDisabledShadowColor};
   }
 `;

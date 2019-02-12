@@ -4,10 +4,11 @@ import { cloneDeep } from 'lodash';
 import { arrayMove } from 'react-sortable-hoc';
 import { connect } from 'react-redux';
 import { Input, Row, Col } from 'antd';
+import { withTheme } from 'styled-components';
+import { compose } from 'redux';
 
 import { Paper } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
-import { secondaryTextColor } from '@edulastic/colors';
 
 import QuillSortableList from '../../components/QuillSortableList/index';
 import QuestionTextArea from '../../components/QuestionTextArea';
@@ -339,7 +340,11 @@ const EditClassification = ({ item, setQuestionData, t }) => {
           <Col span={12}>
             <Subtitle>{t('component.classification.columnsSubtitle')}</Subtitle>
 
-            <Subtitle fontSize={13} padding="0 0 16px 0" color={secondaryTextColor}>
+            <Subtitle
+              fontSize={theme.widgets.classification.subtitleFontSize}
+              color={theme.widgets.classification.subtitleColor}
+              padding="0 0 16px 0"
+            >
               {t('component.classification.columnsCountSubtitle')}
             </Subtitle>
 
@@ -349,7 +354,10 @@ const EditClassification = ({ item, setQuestionData, t }) => {
               onChange={e => onUiChange('column_count')(+e.target.value)}
             />
 
-            <Subtitle fontSize={13} color={secondaryTextColor}>
+            <Subtitle
+              fontSize={theme.widgets.classification.subtitleFontSize}
+              color={theme.widgets.classification.subtitleColor}
+            >
               {t('component.classification.editColListSubtitle')}
             </Subtitle>
 
@@ -369,7 +377,11 @@ const EditClassification = ({ item, setQuestionData, t }) => {
           <Col span={12}>
             <Subtitle>{t('component.classification.rowsSubtitle')}</Subtitle>
 
-            <Subtitle fontSize={13} padding="0 0 16px 0" color={secondaryTextColor}>
+            <Subtitle
+              fontSize={theme.widgets.classification.subtitleFontSize}
+              color={theme.widgets.classification.subtitleColor}
+              padding="0 0 16px 0"
+            >
               {t('component.classification.rowsCountSubtitle')}
             </Subtitle>
 
@@ -379,7 +391,10 @@ const EditClassification = ({ item, setQuestionData, t }) => {
               onChange={e => onUiChange('row_count')(+e.target.value)}
             />
 
-            <Subtitle fontSize={13} color={secondaryTextColor}>
+            <Subtitle
+              fontSize={theme.widgets.classification.subtitleFontSize}
+              color={theme.widgets.classification.subtitleColor}
+            >
               {t('component.classification.editRowListSubtitle')}
             </Subtitle>
 
@@ -436,12 +451,17 @@ const EditClassification = ({ item, setQuestionData, t }) => {
 EditClassification.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
-export default withNamespaces('assessment')(
+const enhance = compose(
+  withNamespaces('assessment'),
+  withTheme,
   connect(
     null,
     { setQuestionData: setQuestionDataAction }
-  )(EditClassification)
+  )
 );
+
+export default enhance(EditClassification);

@@ -23,7 +23,7 @@ const EditEssayPlainText = ({ item, setQuestionData, t }) => {
       <Paper style={{ marginBottom: 30 }}>
         <Subtitle>{t('component.essayText.composequestion')}</Subtitle>
         <QuestionTextArea
-          placeholder="Enter question"
+          placeholder={t('component.essayText.enterQuestion')}
           onChange={stimulus => handleItemChangeChange('stimulus', stimulus)}
           value={item.stimulus}
         />

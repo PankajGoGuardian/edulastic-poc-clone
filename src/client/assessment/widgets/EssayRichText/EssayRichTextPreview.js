@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactQuill from 'react-quill';
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 
 import { Paper, Stimulus, FlexContainer } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
-import { red, lightRed } from '@edulastic/colors';
 
 import { Toolbar } from '../../styled/Toolbar';
 import { Item } from '../../styled/Item';
@@ -12,7 +13,7 @@ import { PREVIEW, ON_LIMIT, ALWAYS } from '../../constants/constantsForQuestions
 
 import { ValidList } from './constants/validList';
 
-const EssayRichTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswer }) => {
+const EssayRichTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswer, theme }) => {
   const [wordCount, setWordCount] = useState(
     Array.isArray(userAnswer) ? 0 : userAnswer.split(' ').filter(i => !!i.trim()).length
   );
@@ -36,8 +37,9 @@ const EssayRichTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswer
       ? `${wordCount} / ${item.max_word} ${t('component.essayText.wordsLimitTitle')}`
       : `${wordCount} ${t('component.essayText.wordsTitle')}`;
 
-  const wordCountStyle =
-    (showLimitAlways || showOnLimit) && item.max_word < wordCount ? { color: red } : {};
+  const wordCountStyle = (showLimitAlways || showOnLimit) && item.max_word < wordCount
+    ? { color: theme.widgets.essayRichText.wordCountLimitedColor }
+    : {};
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
@@ -47,7 +49,11 @@ const EssayRichTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswer
 
       <ReactQuill
         id="mainQuill"
-        style={item.max_word < wordCount ? { background: lightRed } : { background: 'transparent' }}
+        style={{
+          background: item.max_word < wordCount
+            ? theme.widgets.essayRichText.quillLimitedBgColor
+            : theme.widgets.essayRichText.quillBgColor
+        }}
         defaultValue={
           smallSize
             ? t('component.essayText.rich.templateText')
@@ -75,7 +81,8 @@ EssayRichTextPreview.propTypes = {
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
-  userAnswer: PropTypes.any.isRequired
+  userAnswer: PropTypes.any.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 EssayRichTextPreview.defaultProps = {
@@ -127,4 +134,9 @@ EssayRichTextPreview.formats = [
   'align'
 ];
 
-export default withNamespaces('assessment')(EssayRichTextPreview);
+const enhance = compose(
+  withNamespaces('assessment'),
+  withTheme
+);
+
+export default enhance(EssayRichTextPreview);

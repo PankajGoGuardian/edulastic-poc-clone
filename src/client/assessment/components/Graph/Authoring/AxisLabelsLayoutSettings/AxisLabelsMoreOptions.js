@@ -343,7 +343,7 @@ class AxisLabelsMoreOptions extends Component {
             </MoreOptionsColumn>
 
           </MoreOptionsColumnContainer>
-        
+
         </MoreOptionsContainer>
 
         <MoreOptionsDivider />

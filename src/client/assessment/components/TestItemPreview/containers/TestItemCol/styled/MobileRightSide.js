@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { darkBlueSecondary } from '@edulastic/colors';
 
 export const MobileRightSide = styled.div`
   position: fixed;
@@ -8,7 +7,7 @@ export const MobileRightSide = styled.div`
   justify-content: center;
   height: calc(100vh - 220px);
   right: 0;
-  background: ${darkBlueSecondary};
+  background: ${props => props.theme.testItemPreview.mobileRightSideBgColor};
   width: 25px;
   bottom: 20px;
   border-top-left-radius: 10px;

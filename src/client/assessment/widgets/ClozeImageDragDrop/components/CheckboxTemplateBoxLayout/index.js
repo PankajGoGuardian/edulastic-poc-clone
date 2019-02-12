@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import { IconCheck, IconClose } from '@edulastic/icons';
-import { green, red } from '@edulastic/colors';
+import { withTheme } from 'styled-components';
 
 import DropContainer from '../DropContainer';
 import DragItem from '../DragItem';
@@ -12,6 +10,8 @@ import { Point } from '../../../../styled/Point';
 import { Triangle } from '../../../../styled/Triangle';
 
 import { IconWrapper } from './styled/IconWrapper';
+import { RightIcon } from './styled/RightIcon';
+import { WrongIcon } from './styled/WrongIcon';
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 
@@ -28,7 +28,8 @@ const CheckboxTemplateBoxLayout = ({
   stemnumeration,
   evaluation,
   drop,
-  onDropHandler
+  onDropHandler,
+  theme
 }) => (
   <div className="imagedragdrop_template_box" style={{ fontSize, padding: 20 }}>
     <div
@@ -102,7 +103,7 @@ const CheckboxTemplateBoxLayout = ({
                         index={user_select_index}
                         data={`${answer}_${dropTargetIndex}_fromResp`}
                         style={{
-                          border: 'solid 1px lightgray',
+                          border: `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}`,
                           margin: 5,
                           padding: 5,
                           display: 'inline-block'
@@ -115,8 +116,8 @@ const CheckboxTemplateBoxLayout = ({
                     ))}
                 </div>
                 <IconWrapper>
-                  {className === 'right' && <IconCheck color={green} width={8} height={8} />}
-                  {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
+                  {className === 'right' && <RightIcon />}
+                  {className === 'wrong' && <WrongIcon />}
                 </IconWrapper>
                 <Pointer
                   className={responseContainer.pointerPosition}
@@ -139,7 +140,7 @@ const CheckboxTemplateBoxLayout = ({
                       <div
                         key={user_select_index}
                         style={{
-                          border: 'solid 1px lightgray',
+                          border: `solid 1px ${theme.widgets.clozeImageDragDrop.answerBorderColor}`,
                           margin: 5,
                           padding: 5,
                           display: 'inline-block'
@@ -150,8 +151,8 @@ const CheckboxTemplateBoxLayout = ({
                     ))}
                 </div>
                 <IconWrapper>
-                  {className === 'right' && <IconCheck color={green} width={8} height={8} />}
-                  {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
+                  {className === 'right' && <RightIcon />}
+                  {className === 'wrong' && <WrongIcon />}
                 </IconWrapper>
                 <Pointer
                   className={responseContainer.pointerPosition}
@@ -182,7 +183,8 @@ CheckboxTemplateBoxLayout.propTypes = {
   imageUrl: PropTypes.string.isRequired,
   drop: PropTypes.func.isRequired,
   imageAlterText: PropTypes.string.isRequired,
-  imageWidth: PropTypes.number.isRequired
+  imageWidth: PropTypes.number.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
-export default React.memo(CheckboxTemplateBoxLayout);
+export default withTheme(React.memo(CheckboxTemplateBoxLayout));

@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { IconCheck, IconClose } from '@edulastic/icons';
-import { green, red } from '@edulastic/colors';
-
 import { IconWrapper } from './styled/IconWrapper';
+import { RightIcon } from './styled/RightIcon';
+import { WrongIcon } from './styled/WrongIcon';
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 
@@ -78,8 +77,8 @@ const CheckboxTemplateBoxLayout = ({
                 <div className={`response-btn check-answer ${className} ${showAnswer ? 'show-answer' : ''}`} style={btnStyle}>
                   &nbsp;<span className="index">{indexStr}</span><span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>&nbsp;
                   <IconWrapper>
-                    {className === 'right' && <IconCheck color={green} width={8} height={8} />}
-                    {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
+                    {className === 'right' && <RightIcon />}
+                    {className === 'wrong' && <WrongIcon />}
                   </IconWrapper>
                 </div>
               )}
@@ -87,8 +86,8 @@ const CheckboxTemplateBoxLayout = ({
                 <div className={`response-btn check-answer ${className}`} style={btnStyle}>
                   &nbsp;<span className="index">{indexStr}</span><span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>&nbsp;
                   <IconWrapper>
-                    {className === 'right' && <IconCheck color={green} width={8} height={8} />}
-                    {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
+                    {className === 'right' && <RightIcon />}
+                    {className === 'wrong' && <WrongIcon />}
                   </IconWrapper>
                 </div>
               )}

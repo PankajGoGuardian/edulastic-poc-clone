@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Input } from 'antd';
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 
 import { Paper, Stimulus, FlexContainer } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
-import { red, lightRed } from '@edulastic/colors';
 
 import {
   COPY,
@@ -20,7 +21,7 @@ import { Item } from '../../styled/Item';
 
 import { ToolbarItem } from './styled/ToolbarItem';
 
-const EssayPlainTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswer }) => {
+const EssayPlainTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswer, theme }) => {
   const [text, setText] = useState(Array.isArray(userAnswer) ? '' : userAnswer);
 
   const [wordCount, setWordCount] = useState(text.split(' ').filter(i => !!i).length);
@@ -87,8 +88,9 @@ const EssayPlainTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswe
       ? `${wordCount} / ${item.max_word} ${t('component.essayText.wordsLimitTitle')}`
       : `${wordCount} ${t('component.essayText.wordsTitle')}`;
 
-  const wordCountStyle =
-    (showLimitAlways || showOnLimit) && item.max_word < wordCount ? { color: red } : {};
+  const wordCountStyle = (showLimitAlways || showOnLimit) && item.max_word < wordCount
+    ? { color: theme.widgets.essayPlainText.wordCountLimitedColor }
+    : {};
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
@@ -122,7 +124,9 @@ const EssayPlainTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswe
         }}
         style={{
           borderRadius: 0,
-          background: item.max_word < wordCount ? lightRed : 'transparent'
+          background: item.max_word < wordCount
+            ? theme.widgets.essayPlainText.textInputLimitedBgColor
+            : theme.widgets.essayPlainText.textInputBgColor
         }}
         rows={4}
         onSelect={handleSelect}
@@ -148,11 +152,17 @@ EssayPlainTextPreview.propTypes = {
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
-  userAnswer: PropTypes.any.isRequired
+  userAnswer: PropTypes.any.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 EssayPlainTextPreview.defaultProps = {
   smallSize: false
 };
 
-export default withNamespaces('assessment')(EssayPlainTextPreview);
+const enhance = compose(
+  withNamespaces('assessment'),
+  withTheme
+);
+
+export default enhance(EssayPlainTextPreview);

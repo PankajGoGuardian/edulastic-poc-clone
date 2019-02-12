@@ -1,15 +1,14 @@
 import styled from 'styled-components';
-import { grey, white } from '@edulastic/colors';
 
 export const MathKeyboardStyles = styled.div`
   .keyboard {
     display: inline-block;
     padding: 10px;
-    border: 1px solid #b3b3b3;
-    background: #fefefe;
+    border: 1px solid ${props => props.theme.mathKeyboard.keyboardBorderColor};
+    background: ${props => props.theme.mathKeyboard.keyboardBgColor};
     border-radius: 5px;
   }
-
+s
   .keyboard__header {
     display: flex;
     justify-content: space-between;
@@ -18,17 +17,17 @@ export const MathKeyboardStyles = styled.div`
   .keyboard__header__select {
     width: 251.7px;
     border-radius: 5px;
-    box-shadow: 0 2px 6px 0 rgba(219, 219, 219, 0.55);
-    background-color: #ffffff;
-    font-family: Open Sans;
-    font-size: 13px;
-    font-weight: 600;
-    font-style: normal;
-    font-stretch: normal;
+    box-shadow: 0 2px 6px 0 ${props => props.theme.mathKeyboard.dropDownShadowColor};
+    background-color: ${props => props.theme.mathKeyboard.dropDownBgColor};
+    font-family: ${props => props.theme.mathKeyboard.dropDownFontFamily};
+    font-size: ${props => props.theme.mathKeyboard.dropDownFontSize};
+    font-weight: ${props => props.theme.mathKeyboard.dropDownFontWeight};
+    font-style: ${props => props.theme.mathKeyboard.dropDownFontStyle};
+    font-stretch: ${props => props.theme.mathKeyboard.dropDownFontStretch};
     line-height: 1.38;
     letter-spacing: 0.2px;
     text-align: left;
-    color: #434b5d;
+    color: ${props => props.theme.mathKeyboard.dropDownColor};
     border: none;
     outline: none;
     margin-right: 10px;
@@ -36,9 +35,13 @@ export const MathKeyboardStyles = styled.div`
   .keyboard__header__select .ant-select-selection--single {
     border: none;
   }
+  
+  .keyboard__dropdown-icon {
+    color: ${props => props.theme.mathKeyboard.dropDownIconColor}
+  }
 
   .keyboard__header__close {
-    border-color: #d9d9d9;
+    border-color: ${props => props.theme.mathKeyboard.closeButtonBorderColor};
   }
 
   .keyboard__types3 {
@@ -64,44 +67,44 @@ export const MathKeyboardStyles = styled.div`
   .num {
     width: 25%;
     height: 65px;
-    border-color: white;
+    border-color: ${props => props.theme.mathKeyboard.numBorderColor};
     border-radius: 0;
-    font-family: Open Sans;
-    font-size: 16px;
-    font-weight: 600;
-    font-style: normal;
-    font-stretch: normal;
+    font-family: ${props => props.theme.mathKeyboard.numFontFamily};
+    font-size: ${props => props.theme.mathKeyboard.numFontSize};
+    font-weight: ${props => props.theme.mathKeyboard.numFontWeight};
+    font-style: ${props => props.theme.mathKeyboard.numFontStyle};
+    font-stretch: ${props => props.theme.mathKeyboard.numFontStretch};
     line-height: 1.38;
     letter-spacing: normal;
     text-align: center;
-    color: #808080;
+    color: ${props => props.theme.mathKeyboard.numColor};
 
     :disabled,
     :disabled:hover {
-      background: ${white};
-      border-color: ${white};
+      background: ${props => props.theme.mathKeyboard.numBgDisabledColor};
+      border-color: ${props => props.theme.mathKeyboard.numBorderDisabledColor};
     }
 
     :active {
-      background-color: ${white};
+      background-color: ${props => props.theme.mathKeyboard.numBgActiveColor};
     }
 
     :hover {
-      background-color: ${grey};
+      background-color: ${props => props.theme.mathKeyboard.numBgHoverColor};
     }
   }
 
   .num--type-1 {
-    background-color: #e5e5e5;
+    background-color: ${props => props.theme.mathKeyboard.numType1BgColor};
   }
 
   .num--type-2 {
-    background-color: #d1d1d1;
+    background-color: ${props => props.theme.mathKeyboard.numType2BgColor};
   }
 
   .num--type-3 {
-    background-color: #d0edfd;
-    color: #808080;
+    background-color: ${props => props.theme.mathKeyboard.numType3BgColor};
+    color: ${props => props.theme.mathKeyboard.numType3Color};
   }
 
   .italic {
@@ -162,5 +165,3 @@ export const MathKeyboardStyles = styled.div`
     height: 17px;
   }
 `;
-
-export default MathKeyboardStyles;

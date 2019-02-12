@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { IconTrashAlt } from '@edulastic/icons';
-import { greenDark, red } from '@edulastic/colors';
+
 import { IconTrashWrapper } from '../styled/IconTrashWrapper';
+import { IconTrash } from '../styled/IconTrash';
 
 const DeleteButton = ({ onDelete }) => (
   <IconTrashWrapper onClick={onDelete}>
-    <IconTrashAlt color={greenDark} hoverColor={red} />
+    <IconTrash />
   </IconTrashWrapper>
 );
 

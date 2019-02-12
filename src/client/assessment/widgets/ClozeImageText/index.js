@@ -153,7 +153,7 @@ class ClozeImageText extends Component {
                         !shuffleOptions
                       )
                     }
-                    label={t('component.clozeImageText.shuffleoptions')}
+                    label={t('component.cloze.imageText.shuffleoptions')}
                     checked={shuffleOptions}
                   />
                 </CorrectAnswerOptions>

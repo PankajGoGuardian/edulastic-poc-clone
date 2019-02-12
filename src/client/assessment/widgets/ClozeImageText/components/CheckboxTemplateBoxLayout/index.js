@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { IconCheck, IconClose } from '@edulastic/icons';
-import { green, red } from '@edulastic/colors';
-
 import { Pointer } from '../../../../styled/Pointer';
 import { Point } from '../../../../styled/Point';
 import { Triangle } from '../../../../styled/Triangle';
@@ -11,6 +8,8 @@ import { Triangle } from '../../../../styled/Triangle';
 import { IconWrapper } from './styled/IconWrapper';
 import { StyledTemplateBox } from './styled/StyledTemplateBox';
 import { TemplateCover } from './styled/TemplateCover';
+import { RightIcon } from './styled/RightIcon';
+import { WrongIcon } from './styled/WrongIcon';
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 
@@ -82,8 +81,8 @@ const CheckboxTemplateBoxLayout = ({
                   {userSelections[dropTargetIndex]}
                 </div>
                 <IconWrapper>
-                  {className === 'right' && <IconCheck color={green} width={8} height={8} />}
-                  {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
+                  {className === 'right' && <RightIcon />}
+                  {className === 'wrong' && <WrongIcon />}
                 </IconWrapper>
                 <Pointer
                   className={responseContainer.pointerPosition}
@@ -104,8 +103,8 @@ const CheckboxTemplateBoxLayout = ({
                   {userSelections[dropTargetIndex]}
                 </div>
                 <IconWrapper>
-                  {className === 'right' && <IconCheck color={green} width={8} height={8} />}
-                  {className === 'wrong' && <IconClose color={red} width={8} height={8} />}
+                  {className === 'right' && <RightIcon />}
+                  {className === 'wrong' && <WrongIcon />}
                 </IconWrapper>
                 <Pointer
                   className={responseContainer.pointerPosition}

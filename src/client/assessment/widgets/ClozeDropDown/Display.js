@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Select } from 'antd';
 import { isUndefined, mapValues, cloneDeep } from 'lodash';
+import { withTheme } from 'styled-components';
+
 import { InstructorStimulus } from '@edulastic/common';
 
 import { QuestionHeader } from '../../styled/QuestionHeader';
@@ -91,7 +93,8 @@ class ClozeDropDownDisplay extends Component {
       checkAnswer,
       validation,
       evaluation,
-      instructorStimulus
+      instructorStimulus,
+      theme
     } = this.props;
     const { templateParts, userAnswers } = this.state;
     const { shuffleOptions } = configureOptions;
@@ -115,7 +118,11 @@ class ClozeDropDownDisplay extends Component {
     const previewTemplateBoxLayout = (
       <div
         className={`template_box ${smallSize ? 'dropdown-small' : ''}`}
-        style={{ fontSize: smallSize ? 14 : fontSize, padding: smallSize ? 0 : 20 }}
+        style={{
+          fontSize: smallSize
+            ? theme.widgets.clozeDropDown.previewTemplateBoxSmallFontSize
+            : fontSize,
+          padding: smallSize ? 0 : 20 }}
       >
         {templateParts.map((templatePart, index) => {
           if (templatePart.indexOf('class="response-btn"') !== -1) {
@@ -233,7 +240,8 @@ ClozeDropDownDisplay.propTypes = {
   validation: PropTypes.object,
   evaluation: PropTypes.object,
   uiStyle: PropTypes.object,
-  instructorStimulus: PropTypes.string.isRequired
+  instructorStimulus: PropTypes.string.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 ClozeDropDownDisplay.defaultProps = {
@@ -260,4 +268,4 @@ ClozeDropDownDisplay.defaultProps = {
   }
 };
 
-export default withCheckAnswerButton(ClozeDropDownDisplay);
+export default withTheme(withCheckAnswerButton(ClozeDropDownDisplay));

@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withTheme } from 'styled-components';
+
 import DragItem from './DragItem';
 
 const ResponseBoxLayout = ({
@@ -8,14 +10,19 @@ const ResponseBoxLayout = ({
   fontSize,
   dragHandler,
   onDrop,
-  transparentResponses
+  transparentResponses,
+  theme
 }) => (
   <div className="responses_box" style={{ padding: smallSize ? '5px 10px' : 16 }}>
     {responses.map((option, index) => (
       <div
         key={index}
         className={transparentResponses ? 'draggable_box_transparent' : 'draggable_box'}
-        style={{ fontSize: smallSize ? 10 : fontSize }}
+        style={{
+          fontSize: smallSize
+            ? theme.widgets.clozeImageDragDrop.draggableBoxSmallFontSize
+            : fontSize
+        }}
       >
         {!dragHandler && (
           <DragItem index={index} onDrop={onDrop} item={option} data={option}>
@@ -25,7 +32,7 @@ const ResponseBoxLayout = ({
         {dragHandler && (
           <React.Fragment>
             <DragItem index={index} onDrop={onDrop} item={option} data={option}>
-              <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
+              <i className="fa fa-arrows-alt" style={{ fontSize: theme.widgets.clozeImageDragDrop.dragItemIconFontSize }} />
               <span>{option}</span>
             </DragItem>
           </React.Fragment>
@@ -41,7 +48,8 @@ ResponseBoxLayout.propTypes = {
   onDrop: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
   dragHandler: PropTypes.bool,
-  transparentResponses: PropTypes.bool
+  transparentResponses: PropTypes.bool,
+  theme: PropTypes.object.isRequired
 };
 
 ResponseBoxLayout.defaultProps = {
@@ -52,4 +60,4 @@ ResponseBoxLayout.defaultProps = {
   transparentResponses: false
 };
 
-export default React.memo(ResponseBoxLayout);
+export default withTheme(React.memo(ResponseBoxLayout));

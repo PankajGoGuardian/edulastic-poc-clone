@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import MathEssayInput from '../../../components/MathEssayInput';
+import MathEssayInput from './MathEssayInput';
 
 import { InstructorStimulus } from '../styled/InstructorStimulus';
 

@@ -365,7 +365,7 @@ class GraphContainer extends Component {
         this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
       }
 
-      if (JSON.stringify(elements) !== JSON.stringify(prevProps.elements)) {
+      if (JSON.stringify(elements) !== JSON.stringify(this._graph.getConfig())) {
         this._graph.reset();
         this.mapElementsToGraph();
       }

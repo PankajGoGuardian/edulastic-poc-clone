@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { math } from '@edulastic/constants';
 
-import MathInputStyles from '../styled/MathInputStyles';
+import { MathInputStyles } from '../styled/MathInputStyles';
 import MathKeyboard from './MathKeyboard';
 
 const { EMBED_RESPONSE } = math;

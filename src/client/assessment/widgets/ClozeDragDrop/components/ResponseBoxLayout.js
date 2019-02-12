@@ -1,9 +1,18 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { withTheme } from 'styled-components';
 
 import Draggable from './Draggable';
 
-const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, dragHandler, onDrop }) => {
+const ResponseBoxLayout = ({
+  smallSize,
+  hasGroupResponses,
+  responses,
+  fontSize,
+  dragHandler,
+  onDrop,
+  theme
+}) => {
   const handleMove = (e) => {
     if (e.clientY < 100) {
       window.scrollTo(window.pageXOffset, window.pageYOffset - 10);
@@ -39,7 +48,11 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
                     <div
                       key={itemIndex}
                       className="draggable_box"
-                      style={{ fontSize: smallSize ? 10 : fontSize }}
+                      style={{
+                        fontSize: smallSize
+                          ? theme.widgets.clozeDragDrop.groupDraggableBoxSmallFontSize
+                          : fontSize
+                      }}
                     >
                       {!dragHandler && (
                         <Draggable
@@ -55,7 +68,7 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
                             onDrop={onDrop}
                             data={`${option}_${index}`}
                           >
-                            <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
+                            <i className="fa fa-arrows-alt" style={{ fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize }} />
                             <span>{option}</span>
                           </Draggable>
                         </React.Fragment>
@@ -72,7 +85,14 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
           <div
             key={index}
             className="draggable_box"
-            style={{ fontSize: smallSize ? 11 : fontSize, fontWeight: smallSize ? 600 : 300 }}
+            style={{
+              fontSize: smallSize
+                ? theme.widgets.clozeDragDrop.draggableBoxSmallFontSize
+                : fontSize,
+              fontWeight: smallSize
+                ? theme.widgets.clozeDragDrop.draggableBoxSmallFontWeight
+                : theme.widgets.clozeDragDrop.draggableBoxFontWeight
+            }}
           >
             {!dragHandler && (
               <Draggable
@@ -88,7 +108,7 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
                   onDrop={onDrop}
                   data={option}
                 >
-                  <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
+                  <i className="fa fa-arrows-alt" style={{ fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize }} />
                   <span>{option}</span>
                 </Draggable>
               </React.Fragment>
@@ -105,7 +125,8 @@ ResponseBoxLayout.propTypes = {
   hasGroupResponses: PropTypes.bool,
   smallSize: PropTypes.bool,
   dragHandler: PropTypes.bool,
-  onDrop: PropTypes.func.isRequired
+  onDrop: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 ResponseBoxLayout.defaultProps = {
@@ -116,4 +137,4 @@ ResponseBoxLayout.defaultProps = {
   dragHandler: false
 };
 
-export default React.memo(ResponseBoxLayout);
+export default withTheme(React.memo(ResponseBoxLayout));

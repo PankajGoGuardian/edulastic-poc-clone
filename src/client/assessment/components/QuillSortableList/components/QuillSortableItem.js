@@ -2,12 +2,11 @@ import React from 'react';
 import { SortableElement } from 'react-sortable-hoc';
 import PropTypes from 'prop-types';
 
-import { IconTrash } from '@edulastic/icons';
-import { greenDark, red } from '@edulastic/colors';
 import { CustomQuillComponent, FlexContainer } from '@edulastic/common';
 
 import { SortableItemContainer } from '../styled/SortableItemContainer';
 import { Label } from '../styled/Label';
+import { IconTrash } from '../styled/IconTrash';
 import DragHandle from './DragHandle';
 
 const QuillSortableItem = SortableElement(
@@ -31,11 +30,6 @@ const QuillSortableItem = SortableElement(
           <IconTrash
             data-cy={`delete${indx}`}
             onClick={onRemove}
-            color={greenDark}
-            hoverColor={red}
-            width={20}
-            height={20}
-            style={{ cursor: 'pointer' }}
           />
         )}
       </FlexContainer>

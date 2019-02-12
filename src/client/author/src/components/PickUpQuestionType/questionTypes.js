@@ -359,6 +359,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       cardImage: CMSortList,
       data: {
         title: 'Sort List',
+        firstMount: true,
         type: 'sortList',
         stimulus: 'Sort the sine and cosine values from lower to higher.',
         ui_style: {},

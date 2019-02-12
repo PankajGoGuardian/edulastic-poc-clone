@@ -164,6 +164,7 @@ const EditSortList = ({ item, setQuestionData, t }) => {
         <List
           items={item.source}
           onAdd={handleAdd}
+          firstFocus={item.firstMount}
           onSortEnd={handleSortEnd}
           onChange={handleChange}
           onRemove={handleRemove}
@@ -181,9 +182,7 @@ const EditSortList = ({ item, setQuestionData, t }) => {
           onCloseTab={handleCloseTab}
         />
       </Paper>
-      <AdvancedOptions
-        onUiChange={handleUiStyleChange}
-      />
+      <AdvancedOptions onUiChange={handleUiStyleChange} />
     </Fragment>
   );
 };

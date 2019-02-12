@@ -312,7 +312,7 @@ class Authoring extends Component {
               <SortableList
                 items={option || []}
                 onSortEnd={params => this.onSortEnd(index, params)}
-                dirty={item.firstMount !== undefined}
+                dirty={item.firstMount}
                 useDragHandle
                 onRemove={itemIndex => this.remove(index, itemIndex)}
                 onChange={(itemIndex, e) => this.editOptions(index, itemIndex, e)}

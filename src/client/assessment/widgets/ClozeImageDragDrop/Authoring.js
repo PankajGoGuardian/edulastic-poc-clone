@@ -166,7 +166,7 @@ class Authoring extends Component {
           <Subtitle>{t('component.clozeImageDragDrop.composequestion')}</Subtitle>
           <CustomQuillComponent
             toolbarId="stimulus"
-            firstFocus={item.firstMount !== undefined}
+            firstFocus={item.firstMount}
             wrappedRef={(instance) => {
               this.stimulus = instance;
             }}
@@ -367,7 +367,7 @@ class Authoring extends Component {
           <PaddingDiv>
             <Subtitle>{t('component.clozeImageDragDrop.possibleresponses')}</Subtitle>
             <SortableList
-              dirty={item.firstMount !== undefined}
+              dirty={item.firstMount}
               items={item.options}
               onSortEnd={this.onSortEnd}
               useDragHandle

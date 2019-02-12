@@ -281,6 +281,7 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
           buttonText={t('component.matchList.addNew')}
           items={item.list}
           onAdd={handleAdd}
+          firstFocus={item.firstMount}
           onSortEnd={handleSortEnd}
           onChange={handleChange}
           onRemove={handleRemove}
@@ -294,6 +295,7 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
           items={
             item.group_possible_responses ? item.possible_response_groups : item.possible_responses
           }
+          firstFocus={item.firstMount}
           onAddInner={onAddInner}
           onTitleChange={onGroupTitleChange}
           onAdd={item.group_possible_responses ? handleGroupAdd : handleAddResp}

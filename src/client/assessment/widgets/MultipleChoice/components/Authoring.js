@@ -40,11 +40,10 @@ class Authoring extends Component {
     const newItem = this.getNewItem();
     // reorder the options and sort the key based on index
     // editing is based on on index!
-    newItem.options = arrayMove(newItem.options, oldIndex, newIndex)
-      .map(({ label }, index) => ({
-        value: index,
-        label
-      }));
+    newItem.options = arrayMove(newItem.options, oldIndex, newIndex).map(({ label }, index) => ({
+      value: index,
+      label
+    }));
 
     let idx = item.validation.valid_response.value.findIndex(val => val === oldIndex);
     if (idx !== -1) {
@@ -119,17 +118,15 @@ class Authoring extends Component {
           <QuestionTextArea
             onChange={this.onChangeQuestion}
             value={item.stimulus}
-            firstFocus={item.firstMount === undefined}
+            firstFocus={item.firstMount}
             placeholder={t('component.multiplechoice.thisisstem')}
           />
-          <Subtitle>
-            {t('component.multiplechoice.multiplechoiceoptions')}
-          </Subtitle>
+          <Subtitle>{t('component.multiplechoice.multiplechoiceoptions')}</Subtitle>
           <QuillSortableList
             items={item.options.map(o => o.label)}
             onSortEnd={this.onSortEnd}
             useDragHandle
-            firstFocus={item.firstMount === undefined}
+            firstFocus={item.firstMount}
             onRemove={this.remove}
             onChange={this.editOptions}
           />

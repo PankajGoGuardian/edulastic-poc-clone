@@ -23,6 +23,7 @@ const Group = ({
   onTitleChange,
   headText,
   groupHeadText,
+  firstFocus,
   onRemoveInner,
   text,
   prefix
@@ -49,6 +50,7 @@ const Group = ({
         prefix={prefix}
         items={item.responses}
         onAdd={onAddInner(index)}
+        firstFocus={firstFocus}
         onSortEnd={onSortEnd(index)}
         onChange={onChange(index)}
         onRemove={onRemoveInner(index)}
@@ -65,6 +67,7 @@ Group.propTypes = {
   onChange: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
   onSortEnd: PropTypes.func.isRequired,
+  firstFocus: PropTypes.bool.isRequired,
   onTitleChange: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   headText: PropTypes.string.isRequired,
@@ -74,7 +77,15 @@ Group.propTypes = {
   prefix: PropTypes.string.isRequired
 };
 
-const GroupPossibleResponses = ({ checkboxChange, checkboxVal, items, t, onAdd, ...restProps }) =>
+const GroupPossibleResponses = ({
+  checkboxChange,
+  checkboxVal,
+  firstFocus,
+  items,
+  t,
+  onAdd,
+  ...restProps
+}) =>
   (checkboxVal ? (
     <div>
       <Checkbox style={{ marginTop: 29 }} defaultChecked={checkboxVal} onChange={checkboxChange}>
@@ -86,6 +97,7 @@ const GroupPossibleResponses = ({ checkboxChange, checkboxVal, items, t, onAdd, 
             <Group
               prefix={`group${index}`}
               item={item}
+              firstFocus={firstFocus}
               index={index}
               groupHeadText={t('component.matchList.titleOfGroupTitle')}
               headText={t('component.matchList.titleOfGroupTitleLabel')}
@@ -110,6 +122,7 @@ const GroupPossibleResponses = ({ checkboxChange, checkboxVal, items, t, onAdd, 
           prefix="group"
           items={items}
           onAdd={onAdd}
+          firstFocus={firstFocus}
           onSortEnd={restProps.onSortEnd}
           onChange={restProps.onChange}
           onRemove={restProps.onRemove}
@@ -125,6 +138,7 @@ GroupPossibleResponses.propTypes = {
   items: PropTypes.array.isRequired,
   onAdd: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
+  firstFocus: PropTypes.bool.isRequired,
   onRemove: PropTypes.func.isRequired,
   onSortEnd: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,

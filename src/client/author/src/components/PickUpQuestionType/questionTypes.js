@@ -412,6 +412,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       cardImage: CMMatch,
       data: {
         title: 'Match list',
+        firstMount: true,
         group_possible_responses: false,
         possible_response_groups: [
           {
@@ -458,6 +459,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       cardImage: MCMatrixStandard,
       data: {
         title: 'Choice matrix - standard',
+        firstMount: true,
         type: 'choiceMatrix',
         stimulus: 'This is the stem.',
         ui_style: {
@@ -483,6 +485,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       cardImage: MCMatrixInline,
       data: {
         title: 'Choice matrix - inline',
+        firstMount: true,
         options: ['True', 'False'],
         stems: ['[Stem 1]', '[Stem 2]', '[Stem 3]', '[Stem 4]'],
         stimulus: 'This is the stem.',
@@ -507,6 +510,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       cardImage: MCMatrixLabels,
       data: {
         title: 'Choice matrix - labels',
+        firstMount: true,
         options: ['True', 'False'],
         stems: ['[Stem 1]', '[Stem 2]', '[Stem 3]', '[Stem 4]'],
         stimulus: 'This is the stem.',
@@ -600,6 +604,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       data: {
         title: 'Label Image with Drag & Drop',
         type: 'clozeImageDragDrop',
+        firstMount: true,
         stimulus: '',
         options: ['Country A', 'Country B', 'Country C'],
         validation: {
@@ -628,6 +633,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
       data: {
         title: 'Label Image with Drop Down',
         type: 'clozeImageDropDown',
+        firstMount: true,
         stimulus: '',
         options: [['A', 'B'], ['Choice A', 'Choice B'], ['Select A', 'Select B']],
         validation: {

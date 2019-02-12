@@ -61,23 +61,22 @@ class StaticMath extends PureComponent {
       }
     };
 
-    mathField.innerFields.forEach((field, index) => {
-      const goToPrev = () => goTo(index - 1);
-      const goToNext = () => goTo(index + 1);
+    mathField.innerFields.forEach((field) => {
+      const getIndex = id => parseInt(id.replace('inner-', ''), 10);
 
       field.config({
         handlers: {
-          upOutOf() {
-            goToPrev();
+          upOutOf(innerField) {
+            goTo(getIndex(innerField.el().id) - 1);
           },
-          downOutOf() {
-            goToNext();
+          downOutOf(innerField) {
+            goTo(getIndex(innerField.el().id) + 1);
           },
-          moveOutOf: (dir) => {
+          moveOutOf: (dir, innerField) => {
             if (dir === MQ.L) {
-              goToPrev();
+              goTo(getIndex(innerField.el().id) - 1);
             } else if (dir === MQ.R) {
-              goToNext();
+              goTo(getIndex(innerField.el().id) + 1);
             }
           }
         }
@@ -92,6 +91,7 @@ class StaticMath extends PureComponent {
     mathField.latex(latex);
 
     for (let i = 0; i < mathField.innerFields.length; i++) {
+      mathField.innerFields[i].el().id = `inner-${i}`;
       mathField.innerFields[i].el().addEventListener('click', () => {
         this.onFocus(mathField.innerFields[i]);
       });
@@ -137,7 +137,7 @@ class StaticMath extends PureComponent {
     } else if (key === 'up_move') {
       innerField.keystroke('Up');
     } else {
-      innerField.cmd(key);
+      innerField.write(key);
     }
     innerField.focus();
 

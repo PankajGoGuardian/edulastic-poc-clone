@@ -24,30 +24,6 @@ import MathFormulaPreview from './MathFormulaPreview';
 const EmptyWrapper = styled.div``;
 
 class MathFormula extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      studentTemplate: ''
-    };
-    const { item } = props;
-    this.setTemplate(item.template);
-  }
-
-  setTemplate = (template) => {
-    this.setState({
-      studentTemplate: template.replace(/\\embed\{response\}/g, '\\MathQuillMathField{}')
-    });
-  };
-
-  componentDidUpdate(prevProps) {
-    const { item } = this.props;
-    if (prevProps.item.template === item.template) {
-      return;
-    }
-
-    this.setTemplate(item.template);
-  }
-
   render() {
     const {
       view,
@@ -63,7 +39,7 @@ class MathFormula extends Component {
     } = this.props;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
-    const { studentTemplate } = this.state;
+    const studentTemplate = item.template.replace(/\\embed\{response\}/g, '\\MathQuillMathField{}');
 
     const handleItemChangeChange = (prop, uiStyle) => {
       const newItem = cloneDeep(item);
@@ -97,7 +73,6 @@ class MathFormula extends Component {
                 value={item.template}
                 onInput={(latex) => {
                   handleUpdateTemplate(latex);
-                  this.setTemplate(latex);
                 }}
               />
               <MathFormulaAnswers item={item} setQuestionData={setQuestionData} />

@@ -37,15 +37,13 @@ const fetchAssignments = testId =>
     })
     .then(result => result.data.result);
 
-
-const fetchAssigned = () =>
+const fetchAssigned = groupId =>
   api
     .callApi({
-      url: `${prefix}`,
+      url: `${prefix}?groupId=${groupId}`,
       method: 'get'
     })
     .then(result => result.data.result);
-
 
 export default {
   create,

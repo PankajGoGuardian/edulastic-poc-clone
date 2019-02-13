@@ -15,7 +15,7 @@ import {
   setReportsAction,
   reportSchema
 } from '../sharedDucks/ReportsModule/ducks';
-import { getCurrentClass } from '../Login/ducks';
+import { getCurrentGroup } from '../Login/ducks';
 
 // constants
 export const FILTERS = {
@@ -33,11 +33,11 @@ export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS_DATA);
 
 // sagas
 // fetch and load assignments and reports for the student
-function* fetchAssignments() {
+function* fetchAssignments({ payload }) {
   try {
     yield put(setAssignmentsLoadingAction());
     const [assignments, reports] = yield all([
-      call(assignmentApi.fetchAssigned),
+      call(assignmentApi.fetchAssigned, payload),
       call(reportsApi.fetchReports)
     ]);
 
@@ -76,8 +76,8 @@ export const getAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
   filterSelector,
-  getCurrentClass,
-  (assignmentsObj, reportsObj, filter, currentClass) => {
+  getCurrentGroup,
+  (assignmentsObj, reportsObj, filter, currentGroup) => {
     // group reports by assignmentsID
     let groupedReports = groupBy(values(reportsObj), 'assignmentId');
     let assignments = values(assignmentsObj)
@@ -94,7 +94,7 @@ export const getAssignmentsSelector = createSelector(
         let classDetails =
           assignment.class &&
           assignment.class.filter(
-            classDetail => currentClass === classDetail._id
+            classDetail => currentGroup === classDetail._id
           );
         const isExpired =
           maxAttempts <= attempts || new Date(assignment.endDate) < new Date();

@@ -6,7 +6,7 @@ import { normalize } from 'normalizr';
 import { push } from 'react-router-redux';
 import { test } from '@edulastic/constants';
 import { assignmentApi, reportsApi, testActivityApi } from '@edulastic/api';
-import { getCurrentClass } from '../Login/ducks';
+import { getCurrentGroup } from '../Login/ducks';
 
 // external actions
 import {
@@ -44,11 +44,11 @@ export const resumeAssignmentAction = createAction(RESUME_ASSIGNMENT);
 
 // sagas
 // fetch and load assignments and reports for the student
-function* fetchAssignments() {
+function* fetchAssignments({ payload }) {
   try {
     yield put(setAssignmentsLoadingAction());
     const [assignments, reports] = yield all([
-      call(assignmentApi.fetchAssigned),
+      call(assignmentApi.fetchAssigned, payload),
       call(reportsApi.fetchReports)
     ]);
     // normalize reports
@@ -80,7 +80,7 @@ function* startAssignment({ payload }) {
       throw new Error('insufficient data');
     }
     yield put(setActiveAssignmentAction(assignmentId));
-    const groupId = yield select(getCurrentClass);
+    const groupId = yield select(getCurrentGroup);
     const groupType = 'class';
     const { _id: testActivityId } = yield testActivityApi.create({
       assignmentId,
@@ -136,8 +136,8 @@ export const getAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
   filterSelector,
-  getCurrentClass,
-  (assignmentsObj, reportsObj, filter, currentClass) => {
+  getCurrentGroup,
+  (assignmentsObj, reportsObj, filter, currentGroup) => {
     // group reports by assignmentsID
     let groupedReports = groupBy(values(reportsObj), 'assignmentId');
     let assignments = values(assignmentsObj)
@@ -154,7 +154,7 @@ export const getAssignmentsSelector = createSelector(
         let lastAttempt = last(assignment.reports) || [];
 
         let classDetails = (assignment.class || []).filter(
-          classDetail => currentClass === classDetail._id
+          classDetail => currentGroup === classDetail._id
         );
 
         const liveAssignments =

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const MainWrapper = styled.section`
   width: 1008px;
-  background-color:  ${props => props.theme.mainContentBgColor};
+  background-color: ${props => props.theme.mainContentBgColor};
   color: ${props => props.theme.mainContentTextColor};
   min-height: 100vh;
   margin: auto;
@@ -28,7 +28,7 @@ const MainWrapper = styled.section`
     padding: 60px 112px;
   }
 
-  @media (max-width: 760px) {
+  @media (max-width: 768px) {
     padding: 24px;
   }
 
@@ -36,7 +36,6 @@ const MainWrapper = styled.section`
     padding: 0px;
     border-radius: 10px;
   }
-
 `;
 
 export default MainWrapper;

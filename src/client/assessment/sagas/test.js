@@ -36,11 +36,11 @@ function* loadTest({ payload }) {
       }),
       getTestActivity
     ]);
-
     yield put({
       type: LOAD_TEST_ITEMS,
       payload: {
-        items: test.testItems
+        items: test.testItems,
+        title: test.title
       }
     });
 

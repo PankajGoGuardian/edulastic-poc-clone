@@ -14,7 +14,7 @@ const Header = styled.div`
   left: 0;
   background: ${darkBlueSecondary};
 
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
     flex-direction: column;
     padding: 10px 26px 5px 26px;
     height: 104px;

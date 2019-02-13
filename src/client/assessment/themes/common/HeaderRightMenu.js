@@ -4,7 +4,7 @@ const HeaderRightMenu = styled.div`
   flex: ${props => (props.skin ? 1 : 3)};
   text-align: right;
 
-  @media (max-width: 760px) {
+  @media (max-width: 768px) {
     float: right;
   }
 `;

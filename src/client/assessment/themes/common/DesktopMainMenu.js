@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const DesktopMainMenu = styled.div`
-  @media (max-width: 760px) {
+  @media (max-width: 768px) {
     display: none;
   }
 `;

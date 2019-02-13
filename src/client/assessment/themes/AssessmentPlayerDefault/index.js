@@ -292,7 +292,7 @@ class AssessmentPlayerDefault extends React.Component {
             <Header>
               <HeaderLeftMenu>
                 <LogoCompact />
-                {windowWidth < IPAD_PORTRAIT_WIDTH && (
+                {windowWidth <= IPAD_PORTRAIT_WIDTH && (
                   <Fragment>
                     <Clock />
                     <SavePauseMobile
@@ -306,7 +306,7 @@ class AssessmentPlayerDefault extends React.Component {
                 <FlexContainer
                   style={{
                     justifyContent:
-                      windowWidth < IPAD_PORTRAIT_WIDTH && 'space-between'
+                      windowWidth <= IPAD_PORTRAIT_WIDTH && 'space-between'
                   }}
                 >
                   <QuestionSelectDropdown
@@ -320,7 +320,7 @@ class AssessmentPlayerDefault extends React.Component {
                     style={{
                       flex: 1,
                       justifyContent:
-                        windowWidth < IPAD_PORTRAIT_WIDTH && 'flex-end'
+                        windowWidth <= IPAD_PORTRAIT_WIDTH && 'flex-end'
                     }}
                   >
                     <ControlBtn

@@ -11,7 +11,8 @@ const initialState = {
   testActivityId: '',
   resume: false, // resume from last attempted?
   items: [],
-  currentItem: 0
+  currentItem: 0,
+  title: ''
 };
 
 const test = (state = initialState, { payload, type }) => {
@@ -19,7 +20,8 @@ const test = (state = initialState, { payload, type }) => {
     case LOAD_TEST_ITEMS:
       return {
         ...state,
-        items: payload.items
+        items: payload.items,
+        title: payload.title
       };
 
     case GOTO_ITEM:

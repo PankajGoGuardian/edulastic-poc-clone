@@ -1,5 +1,14 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
+const MobileMenuStyle = css`
+  @media (max-width: 768px) {
+    position: absolute;
+    top: 120px;
+    left: 26px;
+    right: 26px;
+    width: auto;
+  }
+`;
 const SelectContainer = styled.div`
   position: relative;
   width: 200px;
@@ -26,10 +35,12 @@ const SelectContainer = styled.div`
       fill: #00b0ff;
     }
   }
-  @media (max-width: 760px) {
+  @media (max-width: 768px) {
     height: 52px;
     width: 188px;
   }
+
+  ${props => props.skinb === 'true' && MobileMenuStyle};
 `;
 
 export default SelectContainer;

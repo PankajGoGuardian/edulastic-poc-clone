@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
 const SVG = styled('svg')`
-  width: ${({ width }) => width}px !important;
-  height: ${({ height }) => height}px !important;
+  width: ${({ width }) => width}px;
+  height: ${({ height }) => height}px;
   fill: ${({ color }) => color};
-  left: ${({ left }) => left}px !important;
+  left: ${({ left }) => left}px;
   background: ${({ backgroundColor }) => backgroundColor};
 
   :hover {

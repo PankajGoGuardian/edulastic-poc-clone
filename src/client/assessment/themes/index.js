@@ -14,6 +14,7 @@ import AssesmentPlayerSimple from './AssessmentPlayerSimple';
 const AssessmentContainer = ({
   view,
   items,
+  title,
   defaultAP,
   finishTest,
   history,
@@ -65,11 +66,13 @@ const AssessmentContainer = ({
     moveToNext,
     moveToPrev,
     currentItem,
+    title,
     gotoQuestion,
     itemRows,
     evaluate,
     view,
-    finishTest
+    finishTest,
+    history
   };
 
   return defaultAP ? (
@@ -82,6 +85,7 @@ const AssessmentContainer = ({
 AssessmentContainer.propTypes = {
   gotoItem: PropTypes.func.isRequired,
   items: PropTypes.array.isRequired,
+  title: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired
 };
 
@@ -90,7 +94,8 @@ const enhance = compose(
   connect(
     state => ({
       view: state.view.preview,
-      items: state.test.items
+      items: state.test.items,
+      title: state.test.title
     }),
     {
       saveUserResponse,

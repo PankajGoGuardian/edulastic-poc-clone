@@ -5,12 +5,18 @@ import { withNamespaces } from '@edulastic/localization';
 
 import SelectContainer from './SelectContainer';
 
-const QuestionSelectDropdown = ({ gotoQuestion, options, currentItem, t }) => (
-  <SelectContainer>
+const QuestionSelectDropdown = ({
+  gotoQuestion,
+  options,
+  currentItem,
+  skinb,
+  t
+}) => (
+  <SelectContainer skinb={skinb}>
     <Select
       defaultValue={currentItem}
       data-cy="options"
-      onChange={(value) => {
+      onChange={value => {
         gotoQuestion(parseInt(value, 10));
       }}
     >

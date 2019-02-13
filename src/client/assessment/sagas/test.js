@@ -48,38 +48,34 @@ function* loadTest({ payload }) {
     if (testActivity) {
       let allAnswers = {};
       let userWork = {};
+
       yield put({
         type: SET_TEST_ACTIVITY_ID,
         payload: { testActivityId }
       });
 
-      let { testItemActivities } = testActivity;
-      let currentTestItem = testItemActivities[0];
+      let { questionActivities } = testActivity;
+      let lastAttemptedQuestion = questionActivities[0];
 
-      testItemActivities.forEach(item => {
+      questionActivities.forEach(item => {
         allAnswers = {
           ...allAnswers,
-          ...item.answers
+          [item.qid]: item.userResponse
         };
-
-        if (typeof item.userWork === 'object') {
-          userWork = {
-            ...userWork,
-            [item.testItemId]: item.userWork
-          };
+        if (item.updatedAt > lastAttemptedQuestion.updatedAt) {
+          lastAttemptedQuestion = item;
         }
-
-        currentTestItem =
-          item.updatedAt > currentTestItem.updatedAt ? item : currentTestItem;
       });
 
       // get currentItem index;
       let lastAttendedQuestion = 0;
-      test.testItems.forEach((item, index) => {
-        if (item._id === currentTestItem.testItemId) {
-          lastAttendedQuestion = index;
-        }
-      });
+      if (lastAttemptedQuestion.testItemId) {
+        test.testItems.forEach((item, index) => {
+          if (item._id === lastAttemptedQuestion.testItemId) {
+            lastAttendedQuestion = index;
+          }
+        });
+      }
 
       // load previous responses
       yield put({

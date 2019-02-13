@@ -110,6 +110,7 @@ class CorrectAnswers extends Component {
       templateMarkUp,
       backgroundColor,
       responses,
+      imagescale,
       configureOptions,
       uiStyle,
       maxRespCount,
@@ -130,6 +131,7 @@ class CorrectAnswers extends Component {
                 key={options}
                 response={validation.valid_response}
                 stimulus={stimulus}
+                imagescale={imagescale}
                 options={options}
                 uiStyle={uiStyle}
                 responses={responses}
@@ -154,6 +156,7 @@ class CorrectAnswers extends Component {
                     <CorrectAnswer
                       key={options}
                       response={alter}
+                      imagescale={imagescale}
                       stimulus={stimulus}
                       options={options}
                       configureOptions={configureOptions}
@@ -188,6 +191,7 @@ CorrectAnswers.propTypes = {
   validation: PropTypes.object,
   t: PropTypes.func.isRequired,
   stimulus: PropTypes.string,
+  imagescale: PropTypes.bool,
   options: PropTypes.array,
   responses: PropTypes.array,
   templateMarkUp: PropTypes.string,
@@ -206,6 +210,7 @@ CorrectAnswers.defaultProps = {
   stimulus: '',
   options: [],
   responses: [],
+  imagescale: false,
   validation: {},
   showDashedBorder: false,
   templateMarkUp: '',

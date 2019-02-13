@@ -8,8 +8,9 @@ import { Triangle } from '../../../../styled/Triangle';
 import { IconWrapper } from './styled/IconWrapper';
 import { StyledTemplateBox } from './styled/StyledTemplateBox';
 import { TemplateCover } from './styled/TemplateCover';
-import { RightIcon, } from './styled/RightIcon';
+import { RightIcon } from './styled/RightIcon';
 import { WrongIcon } from './styled/WrongIcon';
+import { calculateRatio } from '../../../../utils/helpers';
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 
@@ -24,10 +25,12 @@ const CheckboxTemplateBoxLayout = ({
   fontSize,
   userSelections,
   stemnumeration,
+  uiStyle,
+  imagescale,
   evaluation
 }) => (
   <StyledTemplateBox fontSize={fontSize}>
-    <TemplateCover width={imageWidth}>
+    <TemplateCover width={calculateRatio(imagescale, uiStyle.fontsize, imageWidth)}>
       <img
         src={imageUrl}
         width="100%"
@@ -77,9 +80,7 @@ const CheckboxTemplateBoxLayout = ({
                 className={`imagelabeldragdrop-droppable active check-answer ${className}`}
               >
                 <span className="index index-box">{indexStr}</span>
-                <div className="text container">
-                  {userSelections[dropTargetIndex]}
-                </div>
+                <div className="text container">{userSelections[dropTargetIndex]}</div>
                 <IconWrapper>
                   {className === 'right' && <RightIcon />}
                   {className === 'wrong' && <WrongIcon />}
@@ -99,9 +100,7 @@ const CheckboxTemplateBoxLayout = ({
                 className={`imagelabeldragdrop-droppable active check-answer ${className} show-answer`}
               >
                 <span className="index index-box">{indexStr}</span>
-                <div className="text container">
-                  {userSelections[dropTargetIndex]}
-                </div>
+                <div className="text container">{userSelections[dropTargetIndex]}</div>
                 <IconWrapper>
                   {className === 'right' && <RightIcon />}
                   {className === 'wrong' && <WrongIcon />}
@@ -130,10 +129,19 @@ CheckboxTemplateBoxLayout.propTypes = {
   userSelections: PropTypes.array.isRequired,
   stemnumeration: PropTypes.string.isRequired,
   evaluation: PropTypes.array.isRequired,
+  uiStyle: PropTypes.any,
+  imagescale: PropTypes.bool,
   showAnswer: PropTypes.bool.isRequired,
   imageUrl: PropTypes.string.isRequired,
   imageAlterText: PropTypes.string.isRequired,
   imageWidth: PropTypes.number.isRequired
+};
+
+CheckboxTemplateBoxLayout.defaultProps = {
+  uiStyle: {
+    fontsize: 'normal'
+  },
+  imagescale: false
 };
 
 export default React.memo(CheckboxTemplateBoxLayout);

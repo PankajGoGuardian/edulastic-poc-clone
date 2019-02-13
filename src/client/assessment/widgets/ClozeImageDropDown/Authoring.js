@@ -167,6 +167,7 @@ class Authoring extends Component {
       },
       className: 'drag-full-parent'
     };
+
     return (
       <div>
         <PaddingDiv>
@@ -269,7 +270,10 @@ class Authoring extends Component {
                     <p className="ant-upload-drag-icon">
                       <IconUpload />
                     </p>
-                    <p className="ant-upload-hint" style={{ color: theme.widgets.clozeImageDropDown.antUploadHintColor }}>
+                    <p
+                      className="ant-upload-hint"
+                      style={{ color: theme.widgets.clozeImageDropDown.antUploadHintColor }}
+                    >
                       <strong>{t('component.cloze.imageDropDown.dragAndDrop')}</strong>
                     </p>
                     <h2 className="ant-upload-text" style={{ color: 'rgb(177, 177, 177)' }}>

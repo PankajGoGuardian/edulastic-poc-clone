@@ -17,7 +17,7 @@ import { StyledPreviewImage } from './styled/StyledPreviewImage';
 import { StyledDisplayContainer } from './styled/StyledDisplayContainer';
 import { TemplateBoxContainer } from './styled/TemplateBoxContainer';
 import { TemplateBoxLayoutContainer } from './styled/TemplateBoxLayoutContainer';
-import { getFontSize } from '../../utils/helpers';
+import { getFontSize, topAndLeftRatio, calculateRatio } from '../../utils/helpers';
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 
@@ -73,6 +73,8 @@ class Display extends Component {
       responseContainers,
       imageAlterText,
       imageWidth,
+      imagescale,
+      uiStyle: { fontsize },
       showDashedBorder,
       backgroundColor,
       theme
@@ -98,7 +100,10 @@ class Display extends Component {
 
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox smallSize={smallSize} fontSize={fontSize}>
-        <StyledPreviewContainer smallSize={smallSize} width={imageWidth}>
+        <StyledPreviewContainer
+          smallSize={smallSize}
+          width={calculateRatio(imagescale, fontsize, imageWidth)}
+        >
           <StyledPreviewImage
             src={smallSize ? CardMapImage : imageUrl || MapImage}
             smallSize={smallSize}
@@ -108,14 +113,18 @@ class Display extends Component {
             responseContainers.map((responseContainer, index) => {
               const dropTargetIndex = index;
               const btnStyle = {
-                widthpx: smallSize ? responseContainer.width / 2 : responseContainer.width,
-                width: smallSize ? responseContainer.width / 2 : responseContainer.width,
-                top: smallSize ? responseContainer.top / 2 : responseContainer.top,
-                left: smallSize ? responseContainer.left / 2 : responseContainer.left,
-                height: smallSize ? responseContainer.height / 2 : responseContainer.height,
+                widthpx: topAndLeftRatio(responseContainer.width, imagescale, fontsize, smallSize),
+                width: topAndLeftRatio(responseContainer.width, imagescale, fontsize, smallSize),
+                top: topAndLeftRatio(responseContainer.top, imagescale, fontsize, smallSize),
+                left: topAndLeftRatio(responseContainer.left, imagescale, fontsize, smallSize),
+                height: topAndLeftRatio(responseContainer.height, imagescale, fontsize, smallSize),
                 border: showDashedBorder
-                  ? `dashed 2px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
-                  : `solid 1px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`,
+                  ? `dashed 2px ${
+                    theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor
+                  }`
+                  : `solid 1px ${
+                    theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor
+                  }`,
                 position: 'absolute',
                 background: backgroundColor,
                 borderRadius: 5
@@ -177,8 +186,10 @@ class Display extends Component {
         imageUrl={imageUrl || MapImage}
         imageWidth={imageWidth}
         imageAlterText={imageAlterText}
+        imagescale={imagescale}
         stemnumeration={stemnumeration}
         fontSize={fontSize}
+        uiStyle={uiStyle}
         showAnswer={showAnswer}
         options={newOptions}
         userSelections={userAnswers}
@@ -219,11 +230,14 @@ Display.propTypes = {
   userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool,
+  configureOptions: PropTypes.any.isRequired,
+  preview: PropTypes.bool.isRequired,
   showDashedBorder: PropTypes.bool,
   question: PropTypes.string.isRequired,
   validation: PropTypes.object,
   evaluation: PropTypes.array,
   backgroundColor: PropTypes.string,
+  imagescale: PropTypes.bool,
   uiStyle: PropTypes.object,
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
@@ -234,6 +248,7 @@ Display.propTypes = {
 Display.defaultProps = {
   options: [],
   onChange: () => {},
+  imagescale: false,
   showAnswer: false,
   evaluation: [],
   checkAnswer: false,

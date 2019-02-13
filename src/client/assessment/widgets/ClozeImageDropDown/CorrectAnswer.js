@@ -18,6 +18,7 @@ class CorrectAnswer extends Component {
     stimulus: PropTypes.string.isRequired,
     options: PropTypes.array.isRequired,
     maxRespCount: PropTypes.number.isRequired,
+    imagescale: PropTypes.bool,
     configureOptions: PropTypes.object.isRequired,
     uiStyle: PropTypes.object.isRequired,
     imageUrl: PropTypes.string.isRequired,
@@ -26,6 +27,10 @@ class CorrectAnswer extends Component {
     backgroundColor: PropTypes.string.isRequired,
     imageAlterText: PropTypes.string.isRequired,
     imageWidth: PropTypes.number.isRequired
+  };
+
+  static defaultProps = {
+    imagescale: false
   };
 
   constructor(props) {
@@ -62,6 +67,7 @@ class CorrectAnswer extends Component {
       configureOptions,
       imageAlterText,
       imageWidth,
+      imagescale,
       uiStyle,
       showDashedBorder,
       backgroundColor,
@@ -80,9 +86,7 @@ class CorrectAnswer extends Component {
             min={0}
             step={0.5}
           />
-          <Points>
-            {t('component.correctanswers.points')}
-          </Points>
+          <Points>{t('component.correctanswers.points')}</Points>
         </CorrectAnswerHeader>
         <Display
           preview
@@ -90,6 +94,7 @@ class CorrectAnswer extends Component {
           dragHandler
           options={options}
           uiStyle={uiStyle}
+          imagescale={imagescale}
           question={stimulus}
           showDashedBorder={showDashedBorder}
           responseContainers={responses}
@@ -106,6 +111,5 @@ class CorrectAnswer extends Component {
     );
   }
 }
-
 
 export default withNamespaces('assessment')(CorrectAnswer);

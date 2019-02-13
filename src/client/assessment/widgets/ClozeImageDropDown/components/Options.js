@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { Divider } from 'antd';
 
 import { withNamespaces } from '@edulastic/localization';
 
@@ -14,25 +13,15 @@ import { Block } from '../../../styled/WidgetOptions/Block';
 import { Heading } from '../../../styled/WidgetOptions/Heading';
 
 import Layout from './Layout';
-import AdditionalOptions from './AdditionalOptions';
 
 const Options = ({ questionData, onChange, uiStyle, t, outerStyle }) => (
   <WidgetOptions outerStyle={outerStyle}>
     <Block>
       <Heading>{t('component.options.layout')}</Heading>
-      <Layout
-        questionData={questionData}
-        onChange={onChange}
-        uiStyle={uiStyle}
-      />
-      <Divider />
-      <AdditionalOptions
-        questionData={questionData}
-        onChange={onChange}
-        uiStyle={uiStyle}
-      />
+      <Layout questionData={questionData} onChange={onChange} uiStyle={uiStyle} />
     </Block>
-  </WidgetOptions>);
+  </WidgetOptions>
+);
 
 Options.propTypes = {
   questionData: PropTypes.object.isRequired,

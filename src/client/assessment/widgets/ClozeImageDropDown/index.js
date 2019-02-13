@@ -12,7 +12,7 @@ import { setQuestionDataAction } from '../../../author/src/actions/question';
 
 import { CorrectAnswerOptions } from '../../styled/CorrectAnswerOptions';
 
-import AdvancedOptions from './components/AdvancedOptions';
+import Options from './components/Options';
 import Display from './Display';
 import CorrectAnswers from './CorrectAnswers';
 import Authoring from './Authoring';
@@ -139,13 +139,22 @@ class ClozeImageDropDown extends Component {
     } = this.state;
 
     const Wrapper = testItem ? React.Fragment : Paper;
+
+    const fontSize = item.ui_style
+      ? item.ui_style.fontsize
+        ? item.ui_style.fontsize
+        : 'lol'
+      : 'lol';
+
+    const { imagescale } = item;
+
     return (
       <React.Fragment>
         {view === 'edit' && (
           <React.Fragment>
             <EditorContainer top={36} bottom={36} left={60} right={60}>
               <div className="authoring">
-                <Authoring item={itemForEdit} />
+                <Authoring fontSize={fontSize} item={itemForEdit} />
                 <CorrectAnswers
                   key={duplicatedResponses || showDraghandle || shuffleOptions}
                   validation={item.validation}
@@ -155,6 +164,7 @@ class ClozeImageDropDown extends Component {
                     shuffleOptions,
                     transparentResponses
                   }}
+                  imagescale={imagescale}
                   options={previewDisplayOptions}
                   imageAlterText={item.imageAlterText}
                   responses={item.responses}
@@ -178,85 +188,41 @@ class ClozeImageDropDown extends Component {
               </div>
             </EditorContainer>
             <OptionsContainer>
-              <AdvancedOptions
-                onUiChange={this.handleUiStyleChange}
-              />
+              <Options questionData={item} uiStyle={uiStyle} onChange={this.handleOptionsChange} />
             </OptionsContainer>
           </React.Fragment>
         )}
         {view === 'preview' && (
           <Wrapper>
-            {previewTab === 'check' && (
-              <Display
-                checkAnswer
-                options={previewDisplayOptions}
-                question={previewStimulus}
-                uiStyle={uiStyle}
-                templateMarkUp={item.templateMarkUp}
-                userSelections={userAnswer}
-                onChange={this.handleAddAnswer}
-                configureOptions={{
-                  duplicatedResponses,
-                  showDraghandle,
-                  shuffleOptions,
-                  transparentResponses
-                }}
-                imageAlterText={item.imageAlterText}
-                responseContainers={item.responses}
-                imageUrl={item.imageUrl}
-                imageWidth={item.imageWidth}
-                evaluation={evaluation}
-              />
-            )}
-            {previewTab === 'show' && (
-              <Display
-                showAnswer
-                options={previewDisplayOptions}
-                question={previewStimulus}
-                uiStyle={uiStyle}
-                templateMarkUp={item.templateMarkUp}
-                userSelections={userAnswer}
-                validation={item.validation}
-                configureOptions={{
-                  duplicatedResponses,
-                  showDraghandle,
-                  shuffleOptions,
-                  transparentResponses
-                }}
-                imageAlterText={item.imageAlterText}
-                responseContainers={item.responses}
-                imageUrl={item.imageUrl}
-                imageWidth={item.imageWidth}
-                evaluation={evaluation}
-              />
-            )}
-            {previewTab === 'clear' && (
-              <Display
-                preview
-                validation={item.validation}
-                configureOptions={{
-                  duplicatedResponses,
-                  showDraghandle,
-                  shuffleOptions,
-                  transparentResponses
-                }}
-                options={previewDisplayOptions}
-                imageAlterText={item.imageAlterText}
-                responseContainers={item.responses}
-                imageUrl={item.imageUrl}
-                imageWidth={item.imageWidth}
-                question={previewStimulus}
-                showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
-                uiStyle={uiStyle}
-                backgroundColor={item.background}
-                key={previewDisplayOptions && previewStimulus && uiStyle}
-                smallSize={smallSize}
-                templateMarkUp={item.templateMarkUp}
-                userSelections={userAnswer}
-                maxRespCount={item.maxRespCount}
-                onChange={this.handleAddAnswer}
-              />
-            )}
+            <Display
+              preview={previewTab === 'clear'}
+              showAnswer={previewTab === 'show'}
+              checkAnswer={previewTab === 'check'}
+              validation={item.validation}
+              configureOptions={{
+                duplicatedResponses,
+                showDraghandle,
+                shuffleOptions,
+                transparentResponses
+              }}
+              options={previewDisplayOptions}
+              imageAlterText={item.imageAlterText}
+              imagescale={imagescale}
+              responseContainers={item.responses}
+              evaluation={evaluation}
+              imageUrl={item.imageUrl}
+              imageWidth={item.imageWidth}
+              question={previewStimulus}
+              showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+              uiStyle={uiStyle}
+              backgroundColor={item.background}
+              key={previewDisplayOptions && previewStimulus && uiStyle}
+              smallSize={smallSize}
+              templateMarkUp={item.templateMarkUp}
+              userSelections={userAnswer}
+              maxRespCount={item.maxRespCount}
+              onChange={this.handleAddAnswer}
+            />
           </Wrapper>
         )}
       </React.Fragment>

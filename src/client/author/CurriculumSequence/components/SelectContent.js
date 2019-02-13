@@ -4,52 +4,52 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import styled from 'styled-components';
 import { Dropdown, Menu, Icon, Input } from 'antd';
-import { mainBlueColor } from '@edulastic/colors';
+import { mainBlueColor, largeDesktopWidth, desktopWidth } from '@edulastic/colors';
 import { FlexContainer, Paper } from '@edulastic/common';
-import { searchContentAction, setContentCurriculumAction } from '../ducks';
+import { searchContentAction, setContentCurriculumAction, toggleCheckedUnitItemAction } from '../ducks';
 import SelectContentRow from './SelectContentRow';
 import CloseButtonMobileIcon from '../assets/close-button.svg';
 
 /** @typedef {object} ModuleData
- * @property {String} contentId
- * @property {String} createdDate
- * @property {Object} derivedFrom
- * @property {String} id
- * @property {Number} index
- * @property {String} name
- * @property {String} standards
- * @property {String} type
- */
+* @property {String} contentId
+* @property {String} createdDate
+* @property {Object} derivedFrom
+* @property {String} id
+* @property {Number} index
+* @property {String} name
+* @property {String} standards
+* @property {String} type
+*/
 
 /** @typedef {object} CreatedBy
- * @property {String} email
- * @property {String} firstName
- * @property {String} id
- * @property {String} lastName
- */
+* @property {String} email
+* @property {String} firstName
+* @property {String} id
+* @property {String} lastName
+*/
 
 /**
- * @typedef {object} Module
- * @property {String} assigned
- * @property {String} customized
- * @property {ModuleData[]} data
- * @property {String} id
- * @property {String} name
- */
+* @typedef {object} Module
+* @property {String} assigned
+* @property {String} customized
+* @property {ModuleData[]} data
+* @property {String} id
+* @property {String} name
+*/
 
 /**
- * @typedef {Object} CurriculumSequence
- * @property {CreatedBy} createdBy
- * @property {String} createdDate
- * @property {Object} derivedFrom
- * @property {String} description
- * @property {String} id
- * @property {Module[]} modules
- * @property {String} status
- * @property {String} thumbnail
- * @property {String} title
- * @property {String} updatedDate
- */
+* @typedef {Object} CurriculumSequence
+* @property {CreatedBy} createdBy
+* @property {String} createdDate
+* @property {Object} derivedFrom
+* @property {String} description
+* @property {String} id
+* @property {Module[]} modules
+* @property {String} status
+* @property {String} thumbnail
+* @property {String} title
+* @property {String} updatedDate
+*/
 
 /**
 * @typedef {object} CurriculumSearchResult
@@ -59,18 +59,20 @@ import CloseButtonMobileIcon from '../assets/close-button.svg';
 
 
 /**
- * @typedef CurriculumProps
- * @property {CurriculumSequence} curriculum
- * @property {CurriculumSequence} destinationCurriculum
- * @property {function} addContentToCurriculumSequence
- * @property {function} onSelectContent
- * @property {number} windowWidth
- * @property {any} dropContent
- * @property {function} onBeginDrag
- * @property {function} searchContentCurriculums
- * @property {CurriculumSearchResult[]} contentCurriculums
- * @property {function} setContentCurriculum
- */
+* @typedef CurriculumProps
+* @property {CurriculumSequence} curriculum
+* @property {CurriculumSequence} destinationCurriculum
+* @property {function} addContentToCurriculumSequence
+* @property {function} onSelectContent
+* @property {number} windowWidth
+* @property {any} dropContent
+* @property {function} onBeginDrag
+* @property {function} searchContentCurriculums
+* @property {CurriculumSearchResult[]} contentCurriculums
+* @property {function} setContentCurriculum
+* @property {function} toggleCheckedUnitItem
+* @property {string[]} checkedUnitItems
+*/
 
 /** @extends Component<CurriculumProps> */
 class SelectContent extends Component {
@@ -93,7 +95,9 @@ class SelectContent extends Component {
       dropContent,
       onBeginDrag,
       contentCurriculums,
-      setContentCurriculum
+      setContentCurriculum,
+      toggleCheckedUnitItem,
+      checkedUnitItems
     } = this.props;
     const { title, modules } = curriculum;
 
@@ -111,9 +115,9 @@ class SelectContent extends Component {
             <Dropdown overlay={menu} trigger={['click']}>
               <CurriculumTitle>{title} <Icon type="down" /></CurriculumTitle>
             </Dropdown>
-            {windowWidth < 600
-              ? <CloseButtonMobile onClick={this.handleSelectContent}><img src={CloseButtonMobileIcon} alt="" /></CloseButtonMobile>
-              : ''}
+            <CloseButtonMobile onClick={this.handleSelectContent}>
+              <img src={CloseButtonMobileIcon} alt="" />
+            </CloseButtonMobile>
           </DropdownCloseWrapper>
           <Input.Search
             placeholder={`Content in ${title}`}
@@ -127,6 +131,7 @@ class SelectContent extends Component {
             destinationCurriculum={destinationCurriculum}
             dropContent={dropContent}
             onBeginDrag={onBeginDrag}
+            onToggleCheck={toggleCheckedUnitItem}
           />
         ))}
       </CurriculumWrapper>
@@ -172,25 +177,26 @@ const CurriculumHeader = styled(FlexContainer)`
   display: flex;
   align-items: center;
   z-index: 1;
-  @media only screen and (max-width: 845px) {
-  flex-direction: column;
-}
+  @media only screen and (max-width: ${desktopWidth}) {
+    flex-direction: column;
+  }
 .ant-input:not(.anticon) {
-  @media only screen and (max-width: 845px) {
-  margin-left: 20px;
-  margin-right: 20px;
-  margin-bottom: 20px;
-}
+  @media only screen and (max-width: ${desktopWidth}) {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+  }
 }
   .anticon {
     color: ${mainBlueColor};
   }
 
   .ant-input-affix-wrapper .ant-input-suffix :not(.anticon) {
-    @media only screen and (max-width: 845px) {
-    margin-right: 20px;
-    margin-bottom: 20px; }
-}
+    @media only screen and (max-width: ${desktopWidth}) {
+      margin-right: 20px;
+      margin-bottom: 20px;
+    }
+  }
 
   .ant-input-search {
     margin-left: auto;
@@ -209,18 +215,18 @@ const CloseButtonMobile = styled.div`
   display: flex;
   transform: rotate(45deg);
   margin-right: 20px;
-  @media only screen and (min-width: 845px) {
-  display: none;
-}
+  @media only screen and (min-width: ${largeDesktopWidth}) {
+    display: none;
+  }
 `;
 
 const CurriculumTitle = styled.div`
   margin: 20px;
   font-size: 16px;
   font-weight: 700;
-  @media only screen and (max-width: 845px) {
-  margin-left: 30px;
-}
+  @media only screen and (max-width: ${desktopWidth}) {
+    margin-left: 30px;
+  }
   .anticon {
     margin-left: 10px;
     color: ${mainBlueColor};
@@ -237,7 +243,10 @@ const CurriculumWrapper = styled(Paper)`
     margin-top: 20px;
     align-self: baseline;
     z-index: 1;
-    @media only screen and (max-width: 845px) {
+    & ${CloseButtonMobile} {
+      visibility: hidden;
+    }
+    @media only screen and (max-width: ${desktopWidth}) {
       position: fixed;
       margin-top: 0px;
       top: 0;
@@ -245,6 +254,9 @@ const CurriculumWrapper = styled(Paper)`
       width: 100%;
       height: 100%;
       border-radius: 0;
+      & ${CloseButtonMobile} {
+        visibility: visible;
+      }
     }
   }
 `;
@@ -255,6 +267,9 @@ const mapDispatchToProps = dispatch => ({
   },
   setContentCurriculum(id) {
     dispatch(setContentCurriculumAction(id));
+  },
+  toggleCheckedUnitItem(id) {
+    dispatch(toggleCheckedUnitItemAction(id));
   }
 });
 

@@ -7,12 +7,12 @@ import {
   Paper
 } from '@edulastic/common';
 import { darkBlue, lightBlue, lightGreen, green } from '@edulastic/colors';
-import addUnit from '../assets/add-unit.svg';
+import assignContentIcon from '../assets/assign.svg';
 import visualizationIcon from '../assets/visualization-show.svg';
 
 /**
  * @typedef Props
- * @property {function} onCheckbox
+ * @property {function} onToggleCheck
  * @property {Object} moduleData
  * @property {boolean} checked
  * @property {function} handleContentClicked
@@ -38,20 +38,20 @@ function collect(connect, monitor) {
 /** @extends Component<Props> */
 class AssignmentDragItem extends Component {
   render() {
-    const { moduleData, checked, onCheckbox, handleContentClicked, menu } = this.props;
+    const { moduleData, checked, onToggleCheck, handleContentClicked, menu } = this.props;
     const { connectDragSource } = this.props;
     return (
       connectDragSource(
         <div className="item">
           <Assignment key={moduleData.id}>
-            <Checkbox checked={checked} onChange={onCheckbox} className="module-checkbox" />
+            <Checkbox checked={checked} onChange={onToggleCheck} className="module-checkbox" />
             <AssignmentPrefix>{moduleData.standards}</AssignmentPrefix>
             <span>{moduleData.name}</span>
             <AssignmentIconsWrapper>
               <Dropdown overlay={menu} placement="bottomCenter">
-                <AddContentIcon onMouseOver={() => handleContentClicked(moduleData)} onClick={() => this.handleAddContentClick(moduleData)}><img src={addUnit} alt="Add content " /></AddContentIcon>
+                <AssignContent onMouseOver={() => handleContentClicked(moduleData)} onClick={() => handleAddContentClick(moduleData)}><img src={assignContentIcon} alt="assign content" /></AssignContent>
               </Dropdown>
-              <AssignmentIcon><img src={visualizationIcon} alt="visualize " /></AssignmentIcon>
+              <Visualize><img src={visualizationIcon} alt="visualize " /></Visualize>
             </AssignmentIconsWrapper>
           </Assignment>
         </div>
@@ -62,7 +62,7 @@ class AssignmentDragItem extends Component {
 
 export default DragSource('item', itemSource, collect)(AssignmentDragItem);
 
-const AddContentIcon = styled.div`
+const AssignContent = styled.div`
   border-radius: 4px;
   margin-left: 20px;
   justify-self: flex-end;
@@ -78,14 +78,14 @@ const AssignmentIconsWrapper = styled.div`
   display: inline-flex;
 `;
 
-const AssignmentIcon = styled.span`
+const Visualize = styled.span`
   border-radius: 4px;
   margin-left: 20px;
   justify-self: flex-end;
   min-width: 19px;
   cursor: pointer;
 `;
-AssignmentIcon.displayName = 'AssignmentIcon';
+Visualize.displayName = 'Visualize';
 
 const UnitIcon = styled.span`
   border-radius: 4px;

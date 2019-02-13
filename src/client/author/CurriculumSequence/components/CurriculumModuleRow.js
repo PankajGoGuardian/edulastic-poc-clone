@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import styled from 'styled-components';
@@ -8,13 +7,10 @@ import {
   Paper,
   Checkbox
 } from '@edulastic/common';
-import { random } from 'lodash';
-import { withNamespaces } from '@edulastic/localization';
-import { darkBlue, mobileWidth, lightBlue, mainBlueColor, lightGreen, green, white, darkBlueSecondary, greenDarkSecondary } from '@edulastic/colors';
+import { mobileWidth, lightBlue, white, greenDarkSecondary, largeDesktopWidth, desktopWidth, tabletWidth } from '@edulastic/colors';
 import { toggleCheckedUnitItemAction } from '../ducks';
 import minusIcon from '../assets/minus.svg';
 import plusIcon from '../assets/plus.svg';
-import assignIcon from '../assets/assign.svg';
 import visualizationIcon from '../assets/visualization-show.svg';
 import assessmentRed from '../assets/assessment.svg';
 import assessmentGreen from '../assets/concept-check.svg';
@@ -22,17 +18,17 @@ import moduleCompletedIcon from '../assets/module-completed.svg';
 
 
 /**
- * @typedef {object} Props
- * @property {import('./CurriculumSequence').Module} module
- * @property {function} onCollapseExpand
- * @property {function} toggleUnitItem
- * @property {boolean} collapsed
- * @property {string[]} checkedUnitItems
- * @property {boolean} isContentExpanded
- */
+* @typedef {object} Props
+* @property {import('./CurriculumSequence').Module} module
+* @property {function} onCollapseExpand
+* @property {function} toggleUnitItem
+* @property {boolean} collapsed
+* @property {string[]} checkedUnitItems
+* @property {boolean} isContentExpanded
+*/
 
- const IS_ASSIGNED = 'ASSIGNED';
- const NOT_ASSIGNED = 'ASSIGN';
+const IS_ASSIGNED = 'ASSIGNED';
+const NOT_ASSIGNED = 'ASSIGN';
 
 /** @extends Component<Props> */
 class ModuleRow extends Component {
@@ -74,7 +70,7 @@ class ModuleRow extends Component {
                   </React.Fragment>
                 }
                 {!completed && 
-                  <React.Fragment>
+                  <ModulesWrapper>
                     <ModulesAssigned>
                       Assigned
                       <NumberOfAssigned>{numberOfAssigned}</NumberOfAssigned>
@@ -84,7 +80,7 @@ class ModuleRow extends Component {
                     <AssignModuleButton>
                       <Button type="primary" ghost>ASSIGN MODULE</Button>
                     </AssignModuleButton>
-                  </React.Fragment>
+                  </ModulesWrapper>
                 }
                  
 
@@ -100,16 +96,17 @@ class ModuleRow extends Component {
                     <Assignment key={`${index}-${moduleData.id}`}>
                       <AssignmentInnerWrapper>
                         <ModuleFocused />
+                      
+                        <AssignmentContent expanded={isContentExpanded}>
                         <Checkbox
                           onChange={() => toggleUnitItem(moduleData.id)}
                           checked={checkedUnitItems.indexOf(moduleData.id) !== -1}
                           className="module-checkbox"
                         />
-                        <AssignmentContent expanded={isContentExpanded}>
                           <ModuleDataName>{moduleData.name}</ModuleDataName>
                         </AssignmentContent>
                         <AssignmentIconsWrapper expanded={isContentExpanded}>
-                          <ModuleAssignedUnit>
+                        <ModuleAssignedUnit>
                             {moduleData.assigned && !moduleData.completed &&
                               <img src={assessmentRed} alt="Module item is assigned" />
                             }
@@ -117,9 +114,11 @@ class ModuleRow extends Component {
                               <img src={assessmentGreen} alt="Module item is completed" />
                             }
                           </ModuleAssignedUnit>
+                          <AssignmentIconsHolder>
                           <AssignmentIcon><img src={visualizationIcon} alt="visualize " /></AssignmentIcon>
                           <AssignmentButton><Button onClick={this.handleAssigned} type="primary" icon={moduleData.assigned ? 'check' : 'arrow-right'} ghost={!moduleData.assigned}>{moduleData.assigned ? IS_ASSIGNED : NOT_ASSIGNED}</Button></AssignmentButton>
                           <AssignmentIcon><Icon type="ellipsis" style={{ fontSize: '16px', color: '#08c' }} /></AssignmentIcon>
+                          </AssignmentIconsHolder>
                         </AssignmentIconsWrapper>
                       </AssignmentInnerWrapper>
                     </Assignment>
@@ -144,6 +143,19 @@ ModuleRow.defaultProps = {
   checkedUnitItems: []
 };
 
+const AssignmentIconsHolder = styled.div`
+display: flex;
+justify-items: flex-end;
+margin-left: auto;
+@media only screen and (max-width: ${desktopWidth}) {
+  margin-left: 0;
+  justify-items: flex-start;
+  margin-right: 100%; 
+  }
+`;
+
+/* NOTE: margin-right: 100%; - hack but works */
+
 const ModuleFocused = styled.div`
   border-left: 5px solid ${greenDarkSecondary};
   width: 5px;
@@ -159,11 +171,16 @@ const ModuleFocused = styled.div`
 const ModuleAssignedUnit = styled.span`
   justify-self: flex-start;
   margin-right: auto;
+  @media only screen and (max-width: ${tabletWidth}) {
+  margin-right: 0;
+  }
+
 `;
 
 const ModuleTitleWrapper = styled.div`
 display: flex;
 flex-direction: column;
+align-self: flex-start;
 `;
 
 const ModuleCompletedLabel = styled.div`
@@ -181,6 +198,10 @@ justify-content: flex-end;
 margin-left: auto;
 width: auto;
 align-items: center;
+@media only screen and (max-width: ${tabletWidth}) {
+    align-self: flex-start;
+    margin-left: 0;
+  }
 `;
 
 const NumberOfAssigned = styled.strong`
@@ -223,39 +244,48 @@ const AssignModuleButton = styled.div`
     font-size: 10px;
     margin-right: 20px;
   }
+  @media only screen and (max-width: ${desktopWidth}) {
+    align-self: flex-start;
+  }
+ 
 `;
 
 const AssignmentContent = styled.div`
   flex-direction: row;
   display: flex;
   min-width: ${(props) => !props.expanded ? '30%' : '45%'};
-  @media only screen and (max-width: 845px) {
-    flex-direction: column;
-  }
 `;
 
 const ModuleTitle = styled.div`
   display: flex;
   justify-self: flex-start;
   align-items: center;
+  @media only screen and (max-width: ${tabletWidth}) {
+    align-items: flex-start;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 10px;
+  }
 `;
 
 const ModuleTitleAssignedWrapper = styled.div`
   display: flex;
   flex-grow: 1;
-  @media only screen and (max-width: 845px) {
+  align-items: center;
+  @media only screen and (max-width: ${tabletWidth}) {
     flex-direction: column;
   }
 `;
 
 const ModuleTitlePrefix = styled.div`
-    font-weight: 300;
+  font-weight: 300;
 `;
 
 const ModuleDataName = styled.div`
-      min-width: 280px;
-      font-weight: 300;
-  @media only screen and (max-width: 845px) {
+  min-width: 360px;
+  font-weight: 300;
+  @media only screen and (max-width: ${desktopWidth}) {
+    min-width: auto;
     order: 2;
   }
 `;
@@ -274,6 +304,13 @@ const AssignmentIconsWrapper = styled.div`
   width: ${(props) => !props.expanded ? '70%' : '55%'};
   display: flex;
   justify-content: flex-end;
+
+  @media (max-width: ${desktopWidth}) {
+    padding-top: 10px;
+    justify-content: flex-start;
+    margin-right: auto;
+    margin-left: 0;
+  }
 
 `;
 
@@ -306,6 +343,25 @@ const Container = styled.div`
   }
 `;
 
+const ModulesWrapper = styled.div`
+display: flex;
+align-items: center;
+justify-content: flex-end;
+margin-left: auto;
+margin-bottom: auto;
+margin-top: auto;
+@media only screen and (max-width: ${tabletWidth}) {
+justify-content: flex-start;
+margin-right: auto;
+margin-bottom: 0;
+margin-top: 0;
+margin-left: 0;
+    }
+@media only screen and (max-width: 320px) {
+  flex-direction: column;
+}
+`;
+
 const Module = styled.div`
   font-size: 13px;
   font-weight: 600;
@@ -334,6 +390,9 @@ const Assignment = styled(Row)`
   &:hover ${ModuleFocused} {
     opacity: 1;
   }
+  @media only screen and (max-width: ${desktopWidth}) {
+    flex-direction: column;
+    }
 `;
 Assignment.displayName = 'Assignment';
 
@@ -352,12 +411,12 @@ const AssignmentInnerWrapper = styled.div`
   & div, & span {
     align-items: center;
   }
-  @media only screen and (max-width: 845px) {
+  @media only screen and (max-width: ${desktopWidth}) {
+    flex-direction: column;
+    justify-items: center;
+    margin-left: auto;
     align-items: flex-start;
-    justify-items: flex-start;
-    .module-checkbox {
-      align-self: flex-start;
-    }
+ 
   }
 `;
 AssignmentInnerWrapper.displayName = 'AssignmentInnerWrapper';
@@ -386,10 +445,11 @@ const ModulesAssigned = styled.div`
   max-height: 30px;
   margin-top: auto;
   margin-bottom: auto;
-  @media only screen and (max-width: 845px) {
-    justify-self: flex-start;
-    margin-left: 0;
+  @media only screen and (max-width: ${tabletWidth}) {
     margin-right: auto;
+    justify-self: flex-start;
+    padding: 0;
+    margin: 0;
   }
 `;
 
@@ -428,7 +488,7 @@ const mapDispatchToProps = dispatch => ({
 const enhance = compose(
   connect(
     ({ curriculumSequence }) => ({
-      checkedUnitItems: curriculumSequence.checkedGuideUnits,
+      checkedUnitItems: curriculumSequence.checkedUnitItems,
       isContentExpanded: curriculumSequence.isContentExpanded
     }),
     mapDispatchToProps

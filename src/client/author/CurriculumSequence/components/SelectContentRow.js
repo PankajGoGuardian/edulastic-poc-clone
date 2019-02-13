@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 import styled from 'styled-components';
 import { Menu } from 'antd';
 import { Paper } from '@edulastic/common';
+import { toggleCheckedUnitItemAction } from '../ducks';
 import { mobileWidth, lightBlue } from '@edulastic/colors';
 import AssignmentDragItem from './AssignmentDragItem';
 import triangleIcon from '../assets/triangle.svg';
@@ -13,6 +16,8 @@ import triangleIcon from '../assets/triangle.svg';
  * @property {function} onCollapseExpand
  * @property {boolean} collapsed
  * @property {function} addContentToCurriculumSequence
+ * @property {function} toggleCheckedUnitItem
+ * @property {string} checkedUnitItems Is the unit checked or not
  */
 
 /**
@@ -23,13 +28,12 @@ import triangleIcon from '../assets/triangle.svg';
 class ModuleRow extends Component {
   // NOTE: temporary
   state = {
-    checked: false,
     unitExpanded: false, 
     selectedContent: null
   }
 
-  handleChecked = () => {
-    this.setState((prevState) => ({ checked: !prevState.checked }));
+  handleChecked = (id) => {
+    console.log('handleChecked', id);
   }
 
   handleUnitExpandCollapse = () => {
@@ -47,8 +51,8 @@ class ModuleRow extends Component {
   }
 
   render() {
-    const { checked, unitExpanded } = this.state;
-    const { collapsed, destinationCurriculum, dropContent, module } = this.props;
+    const { unitExpanded } = this.state;
+    const { collapsed, destinationCurriculum, dropContent, module, toggleCheckedUnitItem, checkedUnitItems } = this.props;
     const { data, name } = module;
     
     const menu = (
@@ -76,8 +80,8 @@ class ModuleRow extends Component {
                     key={`${index}-${moduleData.id}`}
                     moduleData={moduleData}
                     handleContentClicked={this.handleAddContentClick}
-                    onCheckbox={this.handleChecked}
-                    checked={checked}
+                    onToggleCheck={() => toggleCheckedUnitItem(moduleData.id)}
+                    checked={checkedUnitItems.indexOf(moduleData.id) !== -1}
                     menu={menu}
                     handleDrop={dropContent}
                     onBeginDrag={this.props.onBeginDrag}
@@ -185,4 +189,19 @@ const ModuleWrapper = styled.div`
   }
 `;
 
-export default ModuleRow;
+const mapDispatchToProps = dispatch => ({
+  toggleCheckedUnitItem(id) {
+    dispatch(toggleCheckedUnitItemAction(id));
+  }
+});
+
+const enhance = compose(
+  connect(
+    ({ curriculumSequence }) => ({
+      checkedUnitItems: curriculumSequence.checkedUnitItems
+    }),
+    mapDispatchToProps
+  )
+);
+
+export default enhance(ModuleRow);

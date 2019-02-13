@@ -211,7 +211,7 @@ export function* watcherSaga() {
  * @property {import('./components/CurriculumSequence').CurriculumSearchResult} contentCurriculums
  * @property {string} selectedGuide
  * @property {string} selectedContent
- * @property {string[]} checkedGuideUnits
+ * @property {string[]} checkedUnitItems
  * @property {boolean} isContentExpanded
  */
 
@@ -243,7 +243,7 @@ const initialState = {
   selectedContent: '',
 
   /** ids of guides that are checkmarked */
-  checkedGuideUnits: [],
+  checkedUnitItems: [],
 
   isContentExpanded: false
 };
@@ -291,7 +291,7 @@ const setCurriculumSequencesReducer = (state, { payload }) => {
   state.byId = { ...state.byId, ...payload.curriculumSequenceListObject };
   state.selectedGuide = newGuideId;
   state.selectedContent = latestContentCurriculumId;
-  state.checkedGuideUnits = [];
+  state.checkedUnitItems = [];
 };
 
 const updateCurriculumSequenceReducer = (state, { payload }) => {
@@ -332,11 +332,11 @@ const searchContentReducer = (state, { payload }) => {
  */
 const toggleCheckedUnitItemReducer = (state, { payload }) => {
   const currentlyCheckedItemId = payload;
-  const existingItemIndex = state.checkedGuideUnits.indexOf(currentlyCheckedItemId);
+  const existingItemIndex = state.checkedUnitItems.indexOf(currentlyCheckedItemId);
   if (existingItemIndex === -1) {
-    state.checkedGuideUnits.push(currentlyCheckedItemId);
+    state.checkedUnitItems.push(currentlyCheckedItemId);
   } else {
-    state.checkedGuideUnits.splice(existingItemIndex, 1);
+    state.checkedUnitItems.splice(existingItemIndex, 1);
   }
 };
 

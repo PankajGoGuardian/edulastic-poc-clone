@@ -269,7 +269,11 @@ const ClassificationPreview = ({
                       alignItems="center"
                       justifyContent="flex-start"
                     >
-                      <Subtitle style={{ color: theme.widgets.classification.previewSubtitleColor }}>{i.title}</Subtitle>
+                      <Subtitle
+                        style={{ color: theme.widgets.classification.previewSubtitleColor }}
+                      >
+                        {i.title}
+                      </Subtitle>
                       <FlexContainer
                         justifyContent="center"
                         style={{ width: '100%', flexWrap: 'wrap' }}
@@ -294,7 +298,9 @@ const ClassificationPreview = ({
                           width: 0,
                           marginLeft: 35,
                           marginRight: 35,
-                          borderLeft: `1px solid ${theme.widgets.classification.separatorBorderColor}`
+                          borderLeft: `1px solid ${
+                            theme.widgets.classification.separatorBorderColor
+                          }`
                         }}
                       />
                     )}
@@ -344,7 +350,12 @@ const ClassificationPreview = ({
                 <div style={styles.itemContainerStyle} key={index}>
                   <IndexBox preview={preview}>{index + 1}</IndexBox>
                   <div
-                    style={getStyles(false, theme.widgets.classification.boxBgColor, theme.widgets.classification.boxBorderColor, styles.previewItemStyle)}
+                    style={getStyles(
+                      false,
+                      theme.widgets.classification.boxBgColor,
+                      theme.widgets.classification.boxBorderColor,
+                      styles.previewItemStyle
+                    )}
                     dangerouslySetInnerHTML={{ __html: posResp[index] }}
                   />
                 </div>

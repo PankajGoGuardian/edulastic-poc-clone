@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { cloneDeep } from 'lodash';
 import { arrayMove } from 'react-sortable-hoc';
 import { connect } from 'react-redux';
-import { Input, Row, Col } from 'antd';
+import { Row, Col, Select } from 'antd';
 import { withTheme } from 'styled-components';
 import { compose } from 'redux';
 
@@ -27,20 +27,25 @@ const List = withAddButton(QuillSortableList);
 
 const OptionsList = withPoints(ClassificationPreview);
 
+const { Option } = Select;
+
 const actions = {
   ADD: 'ADD',
   REMOVE: 'REMOVE',
   SORTEND: 'SORTEND'
 };
 
-const EditClassification = ({ item, setQuestionData, t }) => {
+const EditClassification = ({ item, setQuestionData, theme, t }) => {
   const { stimulus, ui_style, firstMount } = item;
 
   const [correctTab, setCorrectTab] = useState(0);
 
-  useEffect(() => () => {
-    setQuestionData({ ...item, firstMount: false });
-  }, []);
+  useEffect(
+    () => () => {
+      setQuestionData({ ...item, firstMount: false });
+    },
+    []
+  );
 
   const handleItemChangeChange = (prop, uiStyle) => {
     const newItem = cloneDeep(item);
@@ -191,9 +196,9 @@ const EditClassification = ({ item, setQuestionData, t }) => {
 
       case actions.REMOVE:
         newItem.ui_style[prop].splice(restProp, 1);
-        if (prop === 'column_titles') {
+        if (prop === 'column_titles' && newItem.ui_style.column_count !== 1) {
           newItem.ui_style.column_count -= 1;
-        } else if (prop === 'row_titles') {
+        } else if (prop === 'row_titles' && newItem.ui_style.row_count !== 1) {
           newItem.ui_style.row_count -= 1;
         }
         break;
@@ -348,11 +353,18 @@ const EditClassification = ({ item, setQuestionData, t }) => {
               {t('component.classification.columnsCountSubtitle')}
             </Subtitle>
 
-            <Input
+            <Select
               size="large"
+              style={{ width: 'calc(100% - 30px)' }}
               value={ui_style.column_count}
-              onChange={e => onUiChange('column_count')(+e.target.value)}
-            />
+              onChange={value => onUiChange('column_count')(+value)}
+            >
+              {Array.from({ length: 10 }).map((v, index) => (
+                <Option key={index} value={index + 1}>
+                  {index + 1}
+                </Option>
+              ))}
+            </Select>
 
             <Subtitle
               fontSize={theme.widgets.classification.subtitleFontSize}
@@ -385,11 +397,18 @@ const EditClassification = ({ item, setQuestionData, t }) => {
               {t('component.classification.rowsCountSubtitle')}
             </Subtitle>
 
-            <Input
+            <Select
               size="large"
+              style={{ width: 'calc(100% - 30px)' }}
               value={ui_style.row_count}
-              onChange={e => onUiChange('row_count')(+e.target.value)}
-            />
+              onChange={value => onUiChange('row_count')(+value)}
+            >
+              {Array.from({ length: 10 }).map((v, index) => (
+                <Option key={index} value={index + 1}>
+                  {index + 1}
+                </Option>
+              ))}
+            </Select>
 
             <Subtitle
               fontSize={theme.widgets.classification.subtitleFontSize}

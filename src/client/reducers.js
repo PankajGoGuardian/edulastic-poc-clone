@@ -1,10 +1,10 @@
-import { combineReducers } from "redux";
+import { combineReducers } from 'redux';
 
-import assessmentReducers from "./assessment/reducers";
-import authorReducers from "./author/src/reducers";
-import studentReducers from "./student/reducers";
-import curriculumSequenceReducers from './author/curriculumsequence/ducks';
-import { LOGOUT } from "./student/Login/ducks";
+import assessmentReducers from './assessment/reducers';
+import authorReducers from './author/src/reducers';
+import studentReducers from './student/reducers';
+import curriculumSequenceReducers from './author/CurriculumSequence/ducks';
+import { LOGOUT } from './student/Login/ducks';
 
 const rootReducer = combineReducers({
   ...assessmentReducers,

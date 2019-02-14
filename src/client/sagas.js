@@ -9,7 +9,7 @@ import {
 } from './student/sagas';
 import authorSagas from './author/src/sagas';
 import assessmentSagas from './assessment/sagas';
-import { CurriculumSequenceSaga } from './author/curriculumsequence';
+import { CurriculumSequenceSaga } from './author/CurriculumSequence';
 
 export default function*() {
   yield all([

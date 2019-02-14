@@ -91,11 +91,7 @@ export const getAssignmentsSelector = createSelector(
         // or assigments is past dueDate
         let maxAttempts = (assignment.test && assignment.test.maxAttempts) || 5;
         let attempts = (assignment.reports && assignment.reports.length) || 0;
-        let classDetails =
-          assignment.class &&
-          assignment.class.filter(
-            classDetail => currentGroup === classDetail._id
-          );
+
         const isExpired =
           maxAttempts <= attempts || new Date(assignment.endDate) < new Date();
         const attempted = !!(assignment.reports && assignment.reports.length);
@@ -110,7 +106,7 @@ export const getAssignmentsSelector = createSelector(
             filterType = graded;
           }
         }
-        return isExpired && filterType && classDetails.length > 0;
+        return isExpired && filterType > 0;
       });
 
     return assignments;

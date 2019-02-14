@@ -1,13 +1,11 @@
 import { createAction, createReducer, createSelector } from 'redux-starter-kit';
 import { pick, last } from 'lodash';
-import { takeLatest, call, put, select } from 'redux-saga/effects';
+import { takeLatest, call, put, select, all } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
-import {
-  authApi,
-  userApi,
-  assignmentApi,
-  skillReportApi
-} from '@edulastic/api';
+import { authApi, userApi } from '@edulastic/api';
+import { fetchAssignmentsAction } from '../Assignments/ducks';
+import { fetchSkillReportByClassID as fetchSkillReportAction } from '../SkillReport/ducks';
+
 import { message } from 'antd';
 import { roleuser } from '@edulastic/constants';
 
@@ -18,7 +16,8 @@ export const SIGNUP = '[auth] signup';
 export const FETCH_USER = '[auth] fetch user';
 export const LOGOUT = '[auth] logout';
 export const CHANGE_CLASS = '[student] change class';
-export const ASSIGNMENT_CLASS = '[student] assignment class';
+export const LOAD_SKILL_REPORT_BY_CLASSID =
+  '[reports] load skill report by class id';
 
 //actions
 export const loginAction = createAction(LOGIN);
@@ -27,7 +26,6 @@ export const signupAction = createAction(SIGNUP);
 export const fetchUserAction = createAction(FETCH_USER);
 export const logoutAction = createAction(LOGOUT);
 export const changeClassAction = createAction(CHANGE_CLASS);
-export const assignmentClassAction = createAction(ASSIGNMENT_CLASS);
 
 function* login({ payload }) {
   try {
@@ -109,12 +107,14 @@ function* logout() {
   }
 }
 
-function* fetchAssignmentClass({ payload }) {
+function* changeClass({ payload }) {
   try {
     const url = yield select(routeSelector);
-    if (url === '/home/skill-report')
-      yield call(skillReportApi.fetchSkillReport, payload);
-    else yield call(assignmentApi.fetchAssigned, payload);
+    if (url.includes('/home/skill-report')) {
+      yield put(fetchSkillReportAction(payload));
+    } else {
+      yield put(fetchAssignmentsAction(payload));
+    }
   } catch (e) {
     console.log(e);
   }
@@ -125,7 +125,7 @@ export function* watcherSaga() {
   yield takeLatest(SIGNUP, signup);
   yield takeLatest(LOGOUT, logout);
   yield takeLatest(FETCH_USER, fetchUser);
-  yield takeLatest(ASSIGNMENT_CLASS, fetchAssignmentClass);
+  yield takeLatest(CHANGE_CLASS, changeClass);
 }
 
 const initialState = {

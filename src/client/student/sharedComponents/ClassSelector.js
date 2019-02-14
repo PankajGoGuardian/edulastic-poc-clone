@@ -3,20 +3,9 @@ import { Select } from 'antd';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import {
-  getClasses,
-  getCurrentGroup,
-  changeClassAction,
-  assignmentClassAction
-} from '../Login/ducks';
+import { getClasses, getCurrentGroup, changeClassAction } from '../Login/ducks';
 
-const ClassSelector = ({
-  t,
-  classes,
-  currentGroup,
-  changeClass,
-  assignmentClass
-}) => {
+const ClassSelector = ({ t, classes, currentGroup, changeClass }) => {
   if (!classes) {
     return null;
   }
@@ -29,7 +18,6 @@ const ClassSelector = ({
           document.getElementById('class-dropdown-wrapper')
         }
         onChange={value => {
-          assignmentClass(value);
           changeClass(value);
         }}
       >
@@ -53,7 +41,7 @@ const stateToProps = state => ({
 });
 export default connect(
   stateToProps,
-  { changeClass: changeClassAction, assignmentClass: assignmentClassAction }
+  { changeClass: changeClassAction }
 )(ClassSelector);
 
 const ClassLabel = styled.span`

@@ -136,8 +136,7 @@ export const getAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
   filterSelector,
-  getCurrentGroup,
-  (assignmentsObj, reportsObj, filter, currentGroup) => {
+  (assignmentsObj, reportsObj, filter) => {
     // group reports by assignmentsID
     let groupedReports = groupBy(values(reportsObj), 'assignmentId');
     let assignments = values(assignmentsObj)
@@ -153,10 +152,6 @@ export const getAssignmentsSelector = createSelector(
         let attempts = (assignment.reports && assignment.reports.length) || 0;
         let lastAttempt = last(assignment.reports) || [];
 
-        let classDetails = (assignment.class || []).filter(
-          classDetail => currentGroup === classDetail._id
-        );
-
         const liveAssignments =
           (maxAttempts > attempts || lastAttempt.status == '0') &&
           new Date(assignment.endDate) > new Date();
@@ -169,7 +164,7 @@ export const getAssignmentsSelector = createSelector(
           }
         }
 
-        return liveAssignments && filterType && classDetails.length > 0;
+        return liveAssignments && filterType > 0;
       });
 
     return assignments;

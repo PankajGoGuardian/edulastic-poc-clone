@@ -9,7 +9,6 @@ import {
   RECEIVE_TESTACTIVITY_REQUEST,
   RECEIVE_TESTACTIVITY_SUCCESS,
   RECEIVE_TESTACTIVITY_ERROR
-
 } from '../constants/actions';
 
 function* receiveGradeBookSaga({ payload }) {

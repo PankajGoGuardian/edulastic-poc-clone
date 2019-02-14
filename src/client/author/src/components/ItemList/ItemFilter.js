@@ -13,8 +13,17 @@ import {
   mainBlueColor,
   boxShadowDefault
 } from '@edulastic/colors';
+import TestFiltersNav from '../common/TestFilters/TestFiltersNav';
 import Search from './Search';
 import { SMALL_DESKTOP_WIDTH, MAX_MOBILE_WIDTH } from '../../constants/others';
+
+const items = [
+  { icon: 'book', key: 'library', text: 'Entire Library' },
+  { icon: 'folder', key: 'byMe', text: 'Authored by me' },
+  { icon: 'copy', key: 'coAuthor', text: 'I am a Co-Author' },
+  { icon: 'reload', key: 'previously', text: 'Previously Used' },
+  { icon: 'heart', key: 'favorites', text: 'My Favorites' }
+];
 
 class ItemFilter extends Component {
   state = {
@@ -29,7 +38,7 @@ class ItemFilter extends Component {
     this.setState({ isShowFilter: false });
   };
 
-  handleStandardSearch = searchStr => {
+  handleStandardSearch = (searchStr) => {
     const {
       getCurriculumStandards,
       search: { grades, curriculumId }
@@ -58,7 +67,7 @@ class ItemFilter extends Component {
           </Col>
           <Col span={6}>
             <FilterButton>
-              <Button onClick={() => this.showFilterHandler()}>
+              <Button onClick={this.showFilterHandler}>
                 {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
               </Button>
             </FilterButton>
@@ -68,7 +77,7 @@ class ItemFilter extends Component {
     );
 
     const mobileSearch = (
-      <Header>
+      <Header style={{ padding: '0 25px' }}>
         <SearchField>
           <TextFieldStyled
             onChange={e => onSearch(e.target.value)}
@@ -80,7 +89,10 @@ class ItemFilter extends Component {
           />
         </SearchField>
         <FilterButton>
-          <Button onClick={() => this.showFilterHandler()}>
+          <Button
+            style={{ height: '50px', borderRadius: '4px' }}
+            onClick={() => this.showFilterHandler()}
+          >
             {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
           </Button>
         </FilterButton>
@@ -129,6 +141,9 @@ class ItemFilter extends Component {
                     <Title>Filters</Title>
                     <Clear onClick={onClearSearch}>Clear all</Clear>
                   </MainFilterHeader>
+                  <TestFiltersNav
+                    items={items}
+                  />
                   <Search
                     search={search}
                     curriculums={curriculums}
@@ -170,7 +185,6 @@ const Container = styled.div`
   width: 250px;
   @media (max-width: ${desktopWidth}) {
     width: 100%;
-    padding-bottom: 20px;
   }
 `;
 

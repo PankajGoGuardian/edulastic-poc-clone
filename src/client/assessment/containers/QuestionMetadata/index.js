@@ -28,7 +28,7 @@ import {
   getQuestionAlignmentSelector,
   getQuestionDataSelector
 } from '../../../author/src/selectors/question';
-import selectsData from '../../../author/src/components/TestPage/common/selectsData';
+import selectsData from '../../../author/TestPage/components/common/selectsData';
 
 import { RowContainer } from './styled/RowContainer';
 import { ItemBody } from './styled/ItemBody';

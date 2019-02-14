@@ -36,7 +36,7 @@ import {
   getTestsLimitSelector,
   getTestsPageSelector
 } from '../../ducks';
-import { getTestsCreatingSelector } from '../../../src/selectors/tests';
+import { getTestsCreatingSelector } from '../../../TestPage/ducks';
 import {
   getCurriculumsListSelector,
   getStandardsListSelector

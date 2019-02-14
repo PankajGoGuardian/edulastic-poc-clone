@@ -7,18 +7,6 @@ import {
   FlexContainer
 } from '@edulastic/common';
 import { Link } from 'react-router-dom';
-import {
-  // eslint-disable-next-line no-unused-vars
-  getTestItemsSelector,
-  // eslint-disable-next-line no-unused-vars
-  getItemsTypesSelector,
-  // eslint-disable-next-line no-unused-vars
-  getTestsItemsCountSelector,
-  // eslint-disable-next-line no-unused-vars
-  getTestsItemsLimitSelector,
-  // eslint-disable-next-line no-unused-vars
-  getTestsItemsPageSelector
-} from '../../selectors/testItems';
 import ListHeader from './ListHeader';
 import SortBar from './SortBar';
 import Score from './Score';

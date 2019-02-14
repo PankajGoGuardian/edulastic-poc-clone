@@ -18,7 +18,6 @@ import {
 import Item from './Item';
 import ItemFilter from './ItemFilter';
 import ListHeader from '../common/ListHeader';
-import { receiveTestItemsAction } from '../../actions/testItems';
 import { createTestItemAction } from '../../actions/testItem';
 import {
   getDictCurriculumsAction,
@@ -27,12 +26,13 @@ import {
 } from '../../actions/dictionaries';
 import {
   getTestItemsSelector,
-  getItemsTypesSelector,
   getTestsItemsCountSelector,
   getTestsItemsLimitSelector,
   getTestsItemsPageSelector,
-  getTestItemsLoadingSelector
-} from '../../selectors/testItems';
+  getTestItemsLoadingSelector,
+  receiveTestItemsAction
+} from '../../../TestPage/components/AddItems/ducks';
+import { getItemsTypesSelector } from '../../../TestPage/components/Review/ducks';
 import { getTestItemCreatingSelector } from '../../selectors/testItem';
 import {
   getCurriculumsListSelector,

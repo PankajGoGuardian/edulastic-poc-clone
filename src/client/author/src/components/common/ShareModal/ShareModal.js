@@ -12,12 +12,9 @@ import { mainBlueColor } from '@edulastic/colors';
 import { IconClose, IconCopy } from '@edulastic/icons';
 
 import {
-  updateTestAction
-} from '../../../actions/tests';
-
-import {
+  updateTestAction,
   getTestSelector
-} from '../../../selectors/tests';
+} from '../../../../TestPage/ducks';
 
 
 class ShareModal extends React.Component {

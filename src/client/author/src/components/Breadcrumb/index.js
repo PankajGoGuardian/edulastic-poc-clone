@@ -38,7 +38,7 @@ export default BreadCrumb;
 
 const Container = styled.div`
   position: fixed;
-  top: 88px;
+  top: 80px;
   text-transform: uppercase;
 
   .ant-breadcrumb-link,

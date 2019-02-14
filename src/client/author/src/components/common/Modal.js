@@ -118,6 +118,7 @@ const Close = styled.div`
 
 const Footer = styled.div`
   display: flex;
+  padding-top: 10px
   justify-content: space-around;
   align-items: center;
 `;

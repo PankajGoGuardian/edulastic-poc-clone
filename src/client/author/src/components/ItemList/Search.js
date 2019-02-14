@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Select, Icon } from 'antd';
 import { blue, secondaryTextColor, mainTextColor } from '@edulastic/colors';
 import { questionType as questionTypes } from '@edulastic/constants';
-import selectsData from '../TestPage/common/selectsData';
+import selectsData from '../../../TestPage/components/common/selectsData';
 
 class Search extends Component {
   render() {
@@ -29,154 +29,152 @@ class Search extends Component {
       : 'Type to Search, for example "k.cc"';
     return (
       <MainFilterItems>
-        <Item>
+        <Container>
           <ItemHeader>Grades</ItemHeader>
-          <ItemBody>
-            <DropDown
-              mode="multiple"
-              placeholder="All Grades"
-              value={grades}
-              onChange={onSearchFieldChange('grades')}
-            >
-              {selectsData.allGrades.map(el => (
-                <Select.Option key={el.value} value={el.value}>
-                  {el.text}
-                </Select.Option>
-              ))}
-            </DropDown>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Subject</ItemHeader>
-          <ItemBody>
-            <DropDown
-              onSelect={onSearchFieldChange('subject')}
-              value={subject}
-              suffixIcon={<IconCaret type="caret-down" />}
-            >
-              {selectsData.allSubjects.map(el => (
-                <Select.Option key={el.value} value={el.value}>
-                  {el.text}
-                </Select.Option>
-              ))}
-            </DropDown>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Curriculum</ItemHeader>
-          <ItemBody>
-            <DropDown
-              onSelect={onSearchFieldChange('curriculumId')}
-              value={curriculumId}
-              suffixIcon={<IconCaret type="caret-down" />}
-            >
-              <Select.Option key="" value="">
-                All Curriculums
+          <Select
+            mode="multiple"
+            size="large"
+            placeholder="All Grades"
+            value={grades}
+            onChange={onSearchFieldChange('grades')}
+          >
+            {selectsData.allGrades.map(el => (
+              <Select.Option key={el.value} value={el.value}>
+                {el.text}
               </Select.Option>
-              {curriculums.map(el => (
-                <Select.Option key={el._id} value={el._id}>
-                  {el.curriculum}
+            ))}
+          </Select>
+          <Item>
+            <ItemHeader>Subject</ItemHeader>
+            <ItemBody>
+              <DropDown
+                onSelect={onSearchFieldChange('subject')}
+                value={subject}
+                suffixIcon={<IconCaret type="caret-down" />}
+              >
+                {selectsData.allSubjects.map(el => (
+                  <Select.Option key={el.value} value={el.value}>
+                    {el.text}
+                  </Select.Option>
+                ))}
+              </DropDown>
+            </ItemBody>
+          </Item>
+          <Item>
+            <ItemHeader>Curriculum</ItemHeader>
+            <ItemBody>
+              <DropDown
+                onSelect={onSearchFieldChange('curriculumId')}
+                value={curriculumId}
+                suffixIcon={<IconCaret type="caret-down" />}
+              >
+                <Select.Option key="" value="">
+                All Curriculums
                 </Select.Option>
-              ))}
-            </DropDown>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Standards</ItemHeader>
-          <ItemBody>
-            <DropDown
-              onSearch={onStandardSearch}
-              mode="multiple"
-              placeholder={standardsPlaceholder}
-              onChange={onSearchFieldChange('standardIds')}
-              filterOption={false}
-              value={standardIds}
-              disabled={isStandardsDisabled}
-              suffixIcon={<IconCaret type="caret-down" />}
-            >
-              {curriculumStandards.map(el => (
-                <Select.Option key={el.identifier} value={el.identifier}>
-                  {`${el.identifier}: ${el.description}`}
-                </Select.Option>
-              ))}
-            </DropDown>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Question Type</ItemHeader>
-          <ItemBody>
-            <DropDown
-              onSelect={onSearchFieldChange('questionType')}
-              value={questionType}
-              suffixIcon={<IconCaret type="caret-down" />}
-            >
-              {questionTypes.selectsData.map(el => (
-                <Select.Option key={el.value} value={el.value}>
-                  {el.text}
-                </Select.Option>
-              ))}
-            </DropDown>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Depth of Knowledge</ItemHeader>
-          <ItemBody>
-            <DropDown
-              onSelect={onSearchFieldChange('depthOfKnowledge')}
-              value={depthOfKnowledge}
-              suffixIcon={<IconCaret type="caret-down" />}
-            >
-              {selectsData.allDepthOfKnowledge.map(el => (
-                <Select.Option key={el.value} value={el.value}>
-                  {el.text}
-                </Select.Option>
-              ))}
-            </DropDown>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Difficulty</ItemHeader>
-          <ItemBody>
-            <DropDown
-              onSelect={onSearchFieldChange('authorDifficulty')}
-              value={authorDifficulty}
-              suffixIcon={<IconCaret type="caret-down" />}
-            >
-              {selectsData.allAuthorDifficulty.map(el => (
-                <Select.Option key={el.value} value={el.value}>
-                  {el.text}
-                </Select.Option>
-              ))}
-            </DropDown>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Author</ItemHeader>
-          <ItemBody>
-            <DropDown
-              defaultValue="All Authors"
-              suffixIcon={<IconCaret type="caret-down" />}
-            >
-              <Select.Option value="">All Authors</Select.Option>
-              <Select.Option value="author1">Author 1</Select.Option>
-              <Select.Option value="author2">Author 2</Select.Option>
-            </DropDown>
-          </ItemBody>
-        </Item>
-        <Item>
-          <ItemHeader>Owner</ItemHeader>
-          <ItemBody>
-            <DropDown
-              mode="multiple"
-              placeholder="All Owners"
-              defaultValue={[]}
-            >
-              <Select.Option value="owner1">Owner 1</Select.Option>
-              <Select.Option value="owner2">Owner 2</Select.Option>
-              <Select.Option value="owner3">Owner 3</Select.Option>
-            </DropDown>
-          </ItemBody>
-        </Item>
+                {curriculums.map(el => (
+                  <Select.Option key={el._id} value={el._id}>
+                    {el.curriculum}
+                  </Select.Option>
+                ))}
+              </DropDown>
+            </ItemBody>
+          </Item>
+          <Item>
+            <ItemHeader>Standards</ItemHeader>
+            <ItemBody>
+              <DropDown
+                onSearch={onStandardSearch}
+                mode="multiple"
+                placeholder={standardsPlaceholder}
+                onChange={onSearchFieldChange('standardIds')}
+                filterOption={false}
+                value={standardIds}
+                disabled={isStandardsDisabled}
+                suffixIcon={<IconCaret type="caret-down" />}
+              >
+                {curriculumStandards.map(el => (
+                  <Select.Option key={el.identifier} value={el.identifier}>
+                    {`${el.identifier}: ${el.description}`}
+                  </Select.Option>
+                ))}
+              </DropDown>
+            </ItemBody>
+          </Item>
+          <Item>
+            <ItemHeader>Question Type</ItemHeader>
+            <ItemBody>
+              <DropDown
+                onSelect={onSearchFieldChange('questionType')}
+                value={questionType}
+                suffixIcon={<IconCaret type="caret-down" />}
+              >
+                {questionTypes.selectsData.map(el => (
+                  <Select.Option key={el.value} value={el.value}>
+                    {el.text}
+                  </Select.Option>
+                ))}
+              </DropDown>
+            </ItemBody>
+          </Item>
+          <Item>
+            <ItemHeader>Depth of Knowledge</ItemHeader>
+            <ItemBody>
+              <DropDown
+                onSelect={onSearchFieldChange('depthOfKnowledge')}
+                value={depthOfKnowledge}
+                suffixIcon={<IconCaret type="caret-down" />}
+              >
+                {selectsData.allDepthOfKnowledge.map(el => (
+                  <Select.Option key={el.value} value={el.value}>
+                    {el.text}
+                  </Select.Option>
+                ))}
+              </DropDown>
+            </ItemBody>
+          </Item>
+          <Item>
+            <ItemHeader>Difficulty</ItemHeader>
+            <ItemBody>
+              <DropDown
+                onSelect={onSearchFieldChange('authorDifficulty')}
+                value={authorDifficulty}
+                suffixIcon={<IconCaret type="caret-down" />}
+              >
+                {selectsData.allAuthorDifficulty.map(el => (
+                  <Select.Option key={el.value} value={el.value}>
+                    {el.text}
+                  </Select.Option>
+                ))}
+              </DropDown>
+            </ItemBody>
+          </Item>
+          <Item>
+            <ItemHeader>Author</ItemHeader>
+            <ItemBody>
+              <DropDown
+                defaultValue="All Authors"
+                suffixIcon={<IconCaret type="caret-down" />}
+              >
+                <Select.Option value="">All Authors</Select.Option>
+                <Select.Option value="author1">Author 1</Select.Option>
+                <Select.Option value="author2">Author 2</Select.Option>
+              </DropDown>
+            </ItemBody>
+          </Item>
+          <Item>
+            <ItemHeader>Owner</ItemHeader>
+              <Select
+                mode="multiple"
+                size="large"
+                placeholder="All Owners"
+                defaultValue={[]}
+              >
+                <Select.Option value="owner1">Owner 1</Select.Option>
+                <Select.Option value="owner2">Owner 2</Select.Option>
+                <Select.Option value="owner3">Owner 3</Select.Option>
+              </Select>
+          </Item>
+        </Container>
       </MainFilterItems>
     );
   }
@@ -198,6 +196,55 @@ Search.propTypes = {
 };
 
 export default Search;
+
+
+const Container = styled.div`
+  padding: 27px 0;
+
+  .ant-select {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .ant-select-selection {
+    background: transparent;
+  }
+
+  .ant-select-lg {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: #434b5d;
+  }
+  
+  .ant-select-selection__choice {
+    border-radius: 5px;
+    border: solid 1px #c8e8f6;
+    background-color: #c8e8f6;
+    height: 23.5px;
+  }
+
+  .ant-select-selection__choice__content {
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 0.2px;
+    color: #0083be;
+    opacity: 1;
+  }
+
+  .ant-select-remove-icon {
+    svg {
+      fill: #0083be;
+    }
+  }
+
+  .ant-select-arrow-icon {
+    font-size: 14px;
+    svg {
+      fill: #00b0ff;
+    }
+  }
+`;
 
 const MainFilterItems = styled.div`
   margin-top: 4px;

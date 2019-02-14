@@ -128,19 +128,6 @@ export const RECEIVE_TESTACTIVITY_ERROR = '[testActivity] receive list error';
 export const RECEIVE_ASSIGNMENTS_REQUEST = '[assignments] receive list request';
 export const RECEIVE_ASSIGNMENTS_SUCCESS = '[assignments] receive list success';
 export const RECEIVE_ASSIGNMENTS_ERROR = '[assignments] receive list error';
-export const ADD_ASSIGNMENT = '[assignments] add assignment';
-export const SET_ASSIGNMENT = '[assignments] set assignment';
-export const UPDATE_ASSIGNMENT = '[assignments] update assignment';
-export const UPDATE_SET_ASSIGNMENT = '[assignments] update set assingment';
-export const FETCH_ASSIGNMENTS = '[assignments] fetch assignments';
-export const LOAD_ASSIGNMENTS = '[assignments] load assignments';
-export const DELETE_ASSIGNMENT = '[assignments] delete assignment';
-export const REMOVE_ASSIGNMENT = '[assignments] remove assignment';
-// groups
-export const FETCH_GROUPS = '[group] fetch owner groups';
-export const SET_GROUPS = '[group] set owner groups';
-export const FETCH_GROUP_STUDENTS = '[group] fetch students of group';
-export const SET_GROUP_STUDENTS = '[group] set group students';
 
 // answers
 export const CLEAR_ANSWERS = '[answers] clear answers';

@@ -13,7 +13,7 @@ const ClassBoard = lazy(() => import('./ClassBoard/components'));
 const ClassResponses = lazy(() => import('./ClassResponses/components'));
 const ExpressGrader = lazy(() => import('./ExpressGrader/components'));
 const TestList = lazy(() => import('../TestList'));
-const TestPage = lazy(() => import('./components/TestPage'));
+const TestPage = lazy(() => import('../TestPage'));
 const QuestionEditor = lazy(() => import('./components/QuestionEditor'));
 const ItemList = lazy(() => import('./components/ItemList'));
 const ItemDetail = lazy(() => import('./components/ItemDetail'));

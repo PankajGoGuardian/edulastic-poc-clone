@@ -13,12 +13,16 @@ import { Block } from '../../../styled/WidgetOptions/Block';
 import { Heading } from '../../../styled/WidgetOptions/Heading';
 
 import Layout from './Layout';
+import Extras from '../../../containers/Extras';
 
 const Options = ({ questionData, onChange, uiStyle, t, outerStyle }) => (
   <WidgetOptions outerStyle={outerStyle}>
     <Block>
       <Heading>{t('component.options.layout')}</Heading>
       <Layout questionData={questionData} onChange={onChange} uiStyle={uiStyle} />
+      <Extras>
+        <Extras.Distractors />
+      </Extras>
     </Block>
   </WidgetOptions>
 );

@@ -5,9 +5,7 @@ import styled from 'styled-components';
 import { Layout } from 'antd';
 import { connect } from 'react-redux';
 import { Progress } from '@edulastic/common';
-import {
-  tabletWidth
-} from '@edulastic/colors';
+import { tabletWidth } from '@edulastic/colors';
 import Sidebar from './Sidebar/SideMenu';
 /* lazy load routes */
 const Assignments = lazy(() => import('./Assignments/components/Assignments'));
@@ -22,8 +20,9 @@ const ItemDetail = lazy(() => import('./components/ItemDetail'));
 const ItemAdd = lazy(() => import('./components/ItemAdd'));
 
 const PickUpQuestionType = lazy(() =>
-  import('./components/PickUpQuestionType'));
-const CurriculumContainer = lazy(() => import('../curriculumsequence'));
+  import('./components/PickUpQuestionType')
+);
+const CurriculumContainer = lazy(() => import('../CurriculumSequence'));
 
 // eslint-disable-next-line react/prop-types
 const Author = ({ match, history, isSidebarCollapsed }) => {
@@ -38,17 +37,37 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
         <Wrapper>
           <Suspense fallback={<Progress />}>
             <Switch>
-              <Route exact path={`${match.url}/assignments`} component={Assignments} />
-              <Route exact path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />
-              <Route exact path={`${match.url}/classresponses/:assignmentId/:classId`} component={ClassResponses} />
-              <Route exact path={`${match.url}/expressgrader/:assignmentId/:classId`} component={ExpressGrader} />
+              <Route
+                exact
+                path={`${match.url}/assignments`}
+                component={Assignments}
+              />
+              <Route
+                exact
+                path={`${match.url}/classboard/:assignmentId/:classId`}
+                component={ClassBoard}
+              />
+              <Route
+                exact
+                path={`${match.url}/classresponses/:assignmentId/:classId`}
+                component={ClassResponses}
+              />
+              <Route
+                exact
+                path={`${match.url}/expressgrader/:assignmentId/:classId`}
+                component={ExpressGrader}
+              />
               <Route exact path={`${match.url}/items`} component={ItemList} />
               <Route
                 exact
                 path={`${match.url}/items/:id/item-detail`}
                 component={ItemDetail}
               />
-              <Route exact path="/author/curriculum-sequence" component={CurriculumContainer} />
+              <Route
+                exact
+                path="/author/curriculum-sequence"
+                component={CurriculumContainer}
+              />
               <Route exact path="/author/add-item" component={ItemAdd} />
               <Route
                 exact
@@ -136,7 +155,7 @@ const MainContainer = styled.div`
   }
 `;
 const SidebarCompnent = styled(Sidebar)`
-  @media(max-width: ${tabletWidth}) {
+  @media (max-width: ${tabletWidth}) {
     display: none;
   }
 `;

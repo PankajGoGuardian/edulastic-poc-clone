@@ -23,8 +23,19 @@ const specSource = {
     const itemCurrent = monitor.getItem();
 
     const itemTo = monitor.getDropResult();
+    const data = props.data || '';
+    let [, fromContainerIndex, fromRespIndex] = data.split('_');
+
+    fromContainerIndex = parseInt(fromContainerIndex, 10);
+    fromRespIndex = parseInt(fromRespIndex, 10);
+
     props.onDrop(
-      { fromResp: props.data.split('_')[2], item: props.item, index: itemCurrent.index },
+      {
+        fromContainerIndex: Number.isNaN(fromContainerIndex) ? undefined : fromContainerIndex,
+        fromRespIndex: Number.isNaN(fromRespIndex) ? undefined : fromRespIndex,
+        item: props.item,
+        index: itemCurrent.index
+      },
       itemTo.index
     );
   }

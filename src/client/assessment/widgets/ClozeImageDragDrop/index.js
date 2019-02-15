@@ -118,12 +118,7 @@ class ClozeImageDragDrop extends Component {
       evaluation,
       theme
     } = this.props;
-    const {
-      previewStimulus,
-      previewDisplayOptions,
-      itemForEdit,
-      uiStyle
-    } = this.getRenderData();
+    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
     const {
       duplicatedResponses,
       showDraghandle,
@@ -137,7 +132,10 @@ class ClozeImageDragDrop extends Component {
         {view === 'edit' && (
           <React.Fragment>
             <PaddingDiv
-              style={{ borderRadius: 5, background: theme.widgets.clozeImageDragDrop.editViewBgColor }}
+              style={{
+                borderRadius: 5,
+                background: theme.widgets.clozeImageDragDrop.editViewBgColor
+              }}
               top={30}
               bottom={30}
               left={120}
@@ -170,10 +168,7 @@ class ClozeImageDragDrop extends Component {
                   <Checkbox
                     className="additional-options"
                     onChange={() =>
-                      this.handleOptionsChange(
-                        'duplicated_responses',
-                        !duplicatedResponses,
-                      )
+                      this.handleOptionsChange('duplicated_responses', !duplicatedResponses)
                     }
                     defaultChecked={duplicatedResponses}
                   >
@@ -181,24 +176,14 @@ class ClozeImageDragDrop extends Component {
                   </Checkbox>
                   <Checkbox
                     className="additional-options"
-                    onChange={() =>
-                      this.handleOptionsChange(
-                        'show_draghandle',
-                        !showDraghandle,
-                      )
-                    }
+                    onChange={() => this.handleOptionsChange('show_draghandle', !showDraghandle)}
                     defaultChecked={showDraghandle}
                   >
                     {t('component.cloze.imageDragDrop.showdraghandle')}
                   </Checkbox>
                   <Checkbox
                     className="additional-options"
-                    onChange={() =>
-                      this.handleOptionsChange(
-                        'shuffle_options',
-                        !shuffleOptions,
-                      )
-                    }
+                    onChange={() => this.handleOptionsChange('shuffle_options', !shuffleOptions)}
                     defaultChecked={shuffleOptions}
                   >
                     {t('component.cloze.imageDragDrop.shuffleoptions')}
@@ -206,10 +191,7 @@ class ClozeImageDragDrop extends Component {
                   <Checkbox
                     className="additional-options"
                     onChange={() =>
-                      this.handleOptionsChange(
-                        'transparent_responses',
-                        !transparentResponses,
-                      )
+                      this.handleOptionsChange('transparent_responses', !transparentResponses)
                     }
                     defaultChecked={transparentResponses}
                   >
@@ -240,6 +222,8 @@ class ClozeImageDragDrop extends Component {
                 templateMarkUp={item.templateMarkUp}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
+                maxRespCount={item.maxRespCount}
+                showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
                 configureOptions={{
                   duplicatedResponses,
                   showDraghandle,
@@ -247,6 +231,7 @@ class ClozeImageDragDrop extends Component {
                   transparentResponses
                 }}
                 imageAlterText={item.imageAlterText}
+                imageTitle={item.imageTitle}
                 responseContainers={item.responses}
                 imageUrl={item.imageUrl}
                 imageWidth={item.imageWidth}
@@ -260,8 +245,10 @@ class ClozeImageDragDrop extends Component {
                 question={previewStimulus}
                 uiStyle={uiStyle}
                 templateMarkUp={item.templateMarkUp}
+                maxRespCount={item.maxRespCount}
                 userSelections={userAnswer}
                 validation={item.validation}
+                showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
                 configureOptions={{
                   duplicatedResponses,
                   showDraghandle,
@@ -269,6 +256,7 @@ class ClozeImageDragDrop extends Component {
                   transparentResponses
                 }}
                 imageAlterText={item.imageAlterText}
+                imageTitle={item.imageTitle}
                 responseContainers={item.responses}
                 imageUrl={item.imageUrl}
                 imageWidth={item.imageWidth}
@@ -287,18 +275,18 @@ class ClozeImageDragDrop extends Component {
                 }}
                 options={previewDisplayOptions}
                 imageAlterText={item.imageAlterText}
+                imageTitle={item.imageTitle}
                 responseContainers={item.responses}
                 imageUrl={item.imageUrl}
                 imageWidth={item.imageWidth}
                 question={previewStimulus}
+                maxRespCount={item.maxRespCount}
                 showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
                 uiStyle={uiStyle}
                 backgroundColor={item.background}
-                key={previewDisplayOptions && previewStimulus && uiStyle}
                 smallSize={smallSize}
                 templateMarkUp={item.templateMarkUp}
                 userSelections={userAnswer}
-                maxRespCount={item.maxRespCount}
                 onChange={this.handleAddAnswer}
               />
             )}
@@ -344,8 +332,8 @@ const enhance = compose(
     null,
     {
       setQuestionData: setQuestionDataAction
-    },
-  ),
+    }
+  )
 );
 
 const ClozeImageDragDropContainer = enhance(ClozeImageDragDrop);

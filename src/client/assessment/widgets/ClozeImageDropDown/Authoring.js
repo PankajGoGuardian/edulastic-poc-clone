@@ -262,7 +262,7 @@ class Authoring extends Component {
                 {item.imageUrl && (
                   <React.Fragment>
                     <PreviewImage src={item.imageUrl} width="100%" alt="resp-preview" />
-                    <DropArea updateData={this.updateData} item={item} key={item} />
+                    <DropArea updateData={this.updateData} item={item} />
                   </React.Fragment>
                 )}
                 {!item.imageUrl && (

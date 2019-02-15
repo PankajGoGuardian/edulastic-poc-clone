@@ -46,36 +46,31 @@ class Display extends Component {
     }
   }
 
-  onDrop = ({ item: sourceData, index: sourceIndex, fromResp }, index) => {
+  onDrop = ({ item: sourceData, fromContainerIndex, fromRespIndex }, index) => {
     const { userAnswers, possibleResponses } = this.state;
+    const { maxRespCount } = this.props;
     const { onChange } = this.props;
-    let data;
-    if (Array.isArray(sourceData)) {
-      [data] = sourceData;
-    } else {
-      data = sourceData;
+
+    if (fromContainerIndex === index) {
+      return;
     }
 
-    let newAnswers = cloneDeep(userAnswers);
+    const newAnswers = cloneDeep(userAnswers);
     const newResponses = cloneDeep(possibleResponses);
-    if (!fromResp) {
-      const item = newResponses.splice(sourceIndex, 1);
-      if (!Array.isArray(newAnswers[index])) {
-        newAnswers[index] = [];
-      } else if (newAnswers[index][0]) {
-        newResponses.push(newAnswers[index][0]);
-        newAnswers[index] = [];
-      }
-      newAnswers[index] = item;
-    } else {
-      if (!Array.isArray(newAnswers[index])) {
-        newAnswers[index] = [];
-      } else if (newAnswers[index][0]) {
-        newResponses.push(newAnswers[index][0]);
-        newAnswers[index] = [];
-      }
-      newAnswers = newAnswers.map(ans => ans && ans.filter(item => item !== data));
-      newAnswers[index] = [data];
+
+    const data = Array.isArray(sourceData) ? sourceData : [sourceData];
+
+    newAnswers[index] = [...(newAnswers[index] || []), ...data];
+
+    if (maxRespCount && newAnswers[index].length > maxRespCount) {
+      const last = newAnswers[index].splice(newAnswers[index].length - 2, 1);
+      newResponses.push(last);
+    }
+
+    if (typeof fromContainerIndex === 'number') {
+      newAnswers[fromContainerIndex] = newAnswers[fromContainerIndex].filter(
+        (_, i) => i !== fromRespIndex
+      );
     }
 
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });
@@ -138,6 +133,7 @@ class Display extends Component {
       imageUrl,
       responseContainers,
       imageAlterText,
+      imageTitle,
       imageWidth,
       showDashedBorder,
       backgroundColor,
@@ -184,7 +180,6 @@ class Display extends Component {
             left: 0,
             width: smallSize ? '100%' : imageWidth,
             margin: 'auto',
-            minWidth: smallSize ? '100%' : 600,
             maxWidth: '100%'
           }}
         >
@@ -193,6 +188,7 @@ class Display extends Component {
             width="100%"
             style={{ userSelect: 'none', pointerEvents: 'none' }}
             alt={imageAlterText}
+            title={imageTitle}
           />
           {responseContainers.map((responseContainer, index) => {
             const dropTargetIndex = index;
@@ -243,17 +239,25 @@ class Display extends Component {
                 className="imagelabeldragdrop-droppable active"
                 drop={drop}
               >
+                {responseContainer.label && (
+                  <span className="sr-only" role="heading">
+                    Drop target {responseContainer.label}
+                  </span>
+                )}
                 <span className="index-box">{indexStr}</span>
                 <div className="container">
                   {userAnswers[dropTargetIndex] &&
                     userAnswers[dropTargetIndex].map((answer, item_index) => (
                       <DragItem
                         key={item_index}
+                        showDashedBorder={showDashedBorder}
                         index={item_index}
                         item={answer}
-                        data={`${answer}_${dropTargetIndex}_fromResp`}
+                        data={`${answer}_${dropTargetIndex}_${item_index}`}
                         style={{
-                          border: `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}`,
+                          border: `solid 1px ${
+                            theme.widgets.clozeImageDragDrop.dragItemBorderColor
+                          }`,
                           margin: 5,
                           padding: 5,
                           display: 'inline-block'
@@ -301,6 +305,7 @@ class Display extends Component {
       <ResponseBoxLayout
         smallSize={smallSize}
         onDrop={this.onDrop}
+        drop={drop}
         responses={responses}
         fontSize={fontSize}
         dragHandler={dragHandler}
@@ -418,8 +423,10 @@ Display.propTypes = {
   uiStyle: PropTypes.object,
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
+  theme: PropTypes.object.isRequired,
+  imageTitle: PropTypes.string,
   imageWidth: PropTypes.number,
-  theme: PropTypes.object.isRequired
+  maxRespCount: PropTypes.number
 };
 
 Display.defaultProps = {
@@ -437,6 +444,8 @@ Display.defaultProps = {
   validation: {},
   imageUrl: undefined,
   imageAlterText: '',
+  imageTitle: '',
+  maxRespCount: 1,
   imageWidth: 600,
   configureOptions: {
     showDraghandle: false,

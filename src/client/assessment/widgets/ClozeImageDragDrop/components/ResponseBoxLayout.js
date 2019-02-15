@@ -1,8 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTheme } from 'styled-components';
+import { DropTarget } from 'react-dnd';
+import { compose } from 'redux';
 
 import DragItem from './DragItem';
+
+const specTarget = {
+  drop: (props, monitor) => {
+    if (monitor.didDrop()) {
+      return;
+    }
+
+    return props.drop(props);
+  }
+};
+
+const collectTarget = (connector, monitor) => ({
+  connectDropTarget: connector.dropTarget(),
+  isOver: monitor.isOver(),
+  isOverCurrent: monitor.isOver({ shallow: true }),
+  canDrop: monitor.canDrop()
+});
 
 const ResponseBoxLayout = ({
   smallSize,
@@ -11,36 +30,33 @@ const ResponseBoxLayout = ({
   dragHandler,
   onDrop,
   transparentResponses,
-  theme
-}) => (
-  <div className="responses_box" style={{ padding: smallSize ? '5px 10px' : 16 }}>
-    {responses.map((option, index) => (
-      <div
-        key={index}
-        className={transparentResponses ? 'draggable_box_transparent' : 'draggable_box'}
-        style={{
-          fontSize: smallSize
-            ? theme.widgets.clozeImageDragDrop.draggableBoxSmallFontSize
-            : fontSize
-        }}
-      >
-        {!dragHandler && (
-          <DragItem index={index} onDrop={onDrop} item={option} data={option}>
-            {option}
-          </DragItem>
-        )}
-        {dragHandler && (
-          <React.Fragment>
+  connectDropTarget
+}) =>
+  connectDropTarget(
+    <div className="responses_box" style={{ padding: smallSize ? '5px 10px' : 16 }}>
+      {responses.map((option, index) => (
+        <div
+          key={index}
+          className={transparentResponses ? 'draggable_box_transparent' : 'draggable_box'}
+          style={{ fontSize: smallSize ? 10 : fontSize }}
+        >
+          {!dragHandler && (
             <DragItem index={index} onDrop={onDrop} item={option} data={option}>
-              <i className="fa fa-arrows-alt" style={{ fontSize: theme.widgets.clozeImageDragDrop.dragItemIconFontSize }} />
-              <span>{option}</span>
+              {option}
             </DragItem>
-          </React.Fragment>
-        )}
-      </div>
-    ))}
-  </div>
-);
+          )}
+          {dragHandler && (
+            <React.Fragment>
+              <DragItem index={index} onDrop={onDrop} item={option} data={option}>
+                <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
+                <span>{option}</span>
+              </DragItem>
+            </React.Fragment>
+          )}
+        </div>
+      ))}
+    </div>
+  );
 
 ResponseBoxLayout.propTypes = {
   responses: PropTypes.array,
@@ -60,4 +76,10 @@ ResponseBoxLayout.defaultProps = {
   transparentResponses: false
 };
 
-export default withTheme(React.memo(ResponseBoxLayout));
+const enhance = compose(
+  withTheme,
+  React.memo,
+  DropTarget('metal', specTarget, collectTarget)
+);
+
+export default enhance(ResponseBoxLayout);

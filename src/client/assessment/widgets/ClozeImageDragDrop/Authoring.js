@@ -29,6 +29,8 @@ import { FlexContainer } from './styled/FlexContainer';
 import { IconDrawResize } from './styled/IconDrawResize';
 import { IconPin } from './styled/IconPin';
 import { IconUpload } from './styled/IconUpload';
+import { PreviewImage } from '../ClozeImageDropDown/styled/PreviewImage';
+import { ImageContainer } from '../ClozeImageDropDown/styled/ImageContainer';
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -149,6 +151,7 @@ class Authoring extends Component {
       background,
       imageAlterText,
       isEditAriaLabels,
+      imageTitle,
       responses,
       imageWidth
     } = item;
@@ -218,6 +221,15 @@ class Authoring extends Component {
                 </ColorPickerContainer>
               )}
               <PaddingDiv left={20}>{t('component.cloze.imageDragDrop.fillcolor')}</PaddingDiv>
+            </div>
+            <div style={{ alignItems: 'center' }}>
+              <Input
+                size="large"
+                style={{ width: 220 }}
+                defaultValue={imageTitle}
+                onChange={val => this.onItemPropChange('imageTitle', val.target.value)}
+              />
+              <PaddingDiv left={20}>{t('component.clozeImageDragDrop.textonhover')}</PaddingDiv>
             </div>
             <div style={{ alignItems: 'center' }}>
               <InputNumber
@@ -301,25 +313,11 @@ class Authoring extends Component {
                 marginLeft: 20
               }}
             >
-              <div
-                style={{
-                  position: 'relative',
-                  top: 0,
-                  left: 0,
-                  minHeight: 400,
-                  padding: 0,
-                  width: imageWidth || 600
-                }}
-              >
+              <ImageContainer width={imageWidth}>
                 {item.imageUrl && (
                   <React.Fragment>
-                    <img
-                      src={item.imageUrl}
-                      width="100%"
-                      alt="resp-preview"
-                      style={{ userSelect: 'none', pointerEvents: 'none' }}
-                    />
-                    <DropArea updateData={this.updateData} item={item} key={item} />
+                    <PreviewImage src={item.imageUrl} width="100%" alt="resp-preview" />
+                    <DropArea updateData={this.updateData} item={item} />
                   </React.Fragment>
                 )}
                 {!item.imageUrl && (
@@ -338,7 +336,7 @@ class Authoring extends Component {
                     </p>
                   </Dragger>
                 )}
-              </div>
+              </ImageContainer>
               <PaddingDiv top={30} style={{ alignSelf: 'flex-start' }}>
                 <Checkbox
                   defaultChecked={responseLayout && responseLayout.showdashedborder}

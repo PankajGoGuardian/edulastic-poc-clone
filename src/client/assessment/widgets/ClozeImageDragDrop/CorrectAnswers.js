@@ -24,12 +24,27 @@ class CorrectAnswers extends Component {
     this.setState({ value });
   };
 
+  handleClose = index => () => {
+    const { question, setQuestionData } = this.props;
+    const newData = cloneDeep(question);
+    newData.validation.alt_responses.splice(index, 1);
+    setQuestionData(newData);
+    setTimeout(() => {
+      this.handleTabChange(index);
+    }, 0);
+  };
+
   renderAltResponses = () => {
     const { validation, t } = this.props;
 
     if (validation.alt_responses && validation.alt_responses.length) {
       return validation.alt_responses.map((res, i) => (
-        <Tab key={i} label={`${t('component.correctanswers.alternate')} ${i + 1}`} />
+        <Tab
+          key={i}
+          label={`${t('component.correctanswers.alternate')} ${i + 1}`}
+          close
+          onClose={this.handleClose(i)}
+        />
       ));
     }
     return null;

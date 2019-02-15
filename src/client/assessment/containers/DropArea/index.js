@@ -1,160 +1,101 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { cloneDeep, get } from 'lodash';
 import PropTypes from 'prop-types';
-
 import Draggable from './components/Draggable';
 
-class DropArea extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      list: props.item.responses
-    };
-    this.draggableRefs = [];
-  }
+const DropArea = ({ updateData, item }) => {
+  const dropAreaRef = useRef();
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      list: nextProps.item.responses
+  const _dragStop = index => (e, d) => {
+    const newItem = cloneDeep(item);
+    newItem.responses[index].top = d.y;
+    newItem.responses[index].left = d.x;
+    updateData(newItem.responses);
+  };
+
+  const _resize = index => (e, direction, ref) => {
+    const newItem = cloneDeep(item);
+    newItem.responses[index].width = ref.style.width;
+    newItem.responses[index].height = ref.style.height;
+    updateData(newItem.responses);
+  };
+
+  const _delete = index => (e) => {
+    e.stopPropagation();
+    const newItem = cloneDeep(item);
+    newItem.responses.splice(index, 1);
+    updateData(newItem.responses);
+  };
+
+  const _click = index => () => {
+    const newItem = cloneDeep(item);
+
+    newItem.responses = newItem.responses.map((res, i) => {
+      res.active = false;
+
+      if (i === index) {
+        res.active = true;
+      }
+
+      return res;
     });
-  }
 
-  onDragOver = (e) => {
-    e.preventDefault();
-    return false;
+    updateData(newItem.responses);
   };
 
-  onDrop = (e) => {
-    e.preventDefault();
-    const { updateData } = this.props;
-    const obj = JSON.parse(e.dataTransfer.getData('application/json'));
-    const { list } = this.state;
-    const index = obj.id;
-    list[index].isDragging = false;
-    list[index].top = e.clientY - obj.y;
-    list[index].left = e.clientX - obj.x;
-    updateData(list);
-  };
+  const _addNew = (e) => {
+    const isContainer = e.target === dropAreaRef.current;
 
-  updateStateDragging = (id, isDragging) => {
-    const { updateData } = this.props;
-    const { list } = this.state;
-    list[id].isDragging = isDragging;
-    updateData(list);
-  };
+    if (!isContainer) {
+      return;
+    }
 
-  updateStateResizing = (id, isResizing) => {
-    const { updateData } = this.props;
-    const { list } = this.state;
-    list[id].isResizing = isResizing;
-    updateData(list);
-  };
-
-  funcResizing = (id, clientX, clientY) => {
-    const { updateData } = this.props;
-    const { list } = this.state;
-    const index = id;
-    const elemRect = this[`node_${id}`].getBoundingClientRect();
-    const offsetTop = elemRect.top;
-    const offsetLeft = elemRect.left;
-    list[index].width = clientX - offsetLeft + 16 / 2;
-    list[index].height = clientY - offsetTop + 16 / 2;
-    updateData(list);
-  };
-
-  removeListResponseContainer = (id) => {
-    const { updateData } = this.props;
-    const { list } = this.state;
-    list.splice(id, 1);
-    updateData(list);
-  };
-
-  addNewResponseContainer = (e) => {
-    const { updateData } = this.props;
-    const { list } = this.state;
+    const newItem = cloneDeep(item);
     const newResponseContainer = {};
-    const elemRect = this.dropArea.getBoundingClientRect();
+    const elemRect = dropAreaRef.current.getBoundingClientRect();
 
-    newResponseContainer.isDragging = false;
     newResponseContainer.top = e.clientY - elemRect.top;
     newResponseContainer.left = e.clientX - elemRect.left;
     newResponseContainer.width = 150;
     newResponseContainer.height = 40;
     newResponseContainer.active = true;
-    list.forEach((responseContainer) => {
-      responseContainer.active = false;
+    newItem.responses = newItem.responses.map((res) => {
+      res.active = false;
+      return res;
     });
-    list.push(newResponseContainer);
-    updateData(list);
+    newItem.responses.push(newResponseContainer);
+    updateData(newItem.responses);
   };
 
-  responseContainerActivated = (id, e) => {
-    e.stopPropagation();
-    const { updateData } = this.props;
-    const { list } = this.state;
-    list.forEach((responseContainer) => {
-      responseContainer.active = false;
-    });
-    list[id].active = true;
-    updateData(list);
-  };
-
-  render() {
-    const responseContainers = [];
-    const { list } = this.state;
-    const { item } = this.props;
-
-    list.forEach((responseContainer, index) => {
-      responseContainers.push(
-        <div key={index}>
-          <Draggable
-            ref={(c) => {
-              this[`node_${index}`] = c;
-            }}
-            key={index}
-            id={index}
-            top={responseContainer.top}
-            left={responseContainer.left}
-            width={responseContainer.width}
-            height={responseContainer.height}
-            active={responseContainer.active}
-            isDragging={responseContainer.isDragging}
-            isResizing={responseContainer.isResizing}
-            showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
-            background={item.responseLayout && item.responseLayout.background}
-            updateStateDragging={this.updateStateDragging}
-            updateStateResizing={this.updateStateResizing}
-            funcResizing={this.funcResizing}
-            onRemove={this.removeListResponseContainer}
-            responseContainerActivated={e => this.responseContainerActivated(index, e)}
-            pointerPosition={responseContainer.pointerPosition}
-            label={responseContainer.label || ''}
-          />
-        </div>
-      );
-    });
-
-    return (
-      <div
-        className="drop-area"
-        onDragOver={this.onDragOver}
-        onDrop={this.onDrop}
-        ref={(c) => {
-          this.dropArea = c;
-        }}
-        style={{
-          height: '100%',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          minHeight: 400
-        }}
-        onClick={this.addNewResponseContainer}
-      >
-        {responseContainers}
-      </div>
-    );
-  }
-}
+  return (
+    <div
+      ref={dropAreaRef}
+      style={{
+        height: '100%',
+        position: 'absolute',
+        cursor: 'crosshair',
+        top: 0,
+        left: 0,
+        width: item.imageWidth
+      }}
+      onClick={_addNew}
+    >
+      {item.responses.map((response, i) => (
+        <Draggable
+          response={response}
+          key={i}
+          index={i}
+          background={item.background}
+          showDashedBorder={get(item, 'responseLayout.showdashedborder', false)}
+          onDragStop={_dragStop(i)}
+          onResize={_resize(i)}
+          onDelete={_delete(i)}
+          onClick={_click(i)}
+        />
+      ))}
+    </div>
+  );
+};
 
 DropArea.propTypes = {
   updateData: PropTypes.func.isRequired,

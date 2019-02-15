@@ -61,7 +61,8 @@ DropContainer.propTypes = {
   style: PropTypes.object,
   children: PropTypes.node,
   noBorder: PropTypes.bool,
-  drop: PropTypes.func.isRequired
+  drop: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 DropContainer.defaultProps = {

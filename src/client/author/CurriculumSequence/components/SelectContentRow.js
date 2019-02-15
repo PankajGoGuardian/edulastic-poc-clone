@@ -12,7 +12,7 @@ import triangleIcon from '../assets/triangle.svg';
 /**
  * @typedef {object} Props
  * @property {import('./CurriculumSequence').Module} module
- * @property {import('./CurriculumSequence').CurriculumSequence} destinationCurriculum
+ * @property {import('./CurriculumSequence').CurriculumSequenceType} destinationCurriculum
  * @property {function} onCollapseExpand
  * @property {boolean} collapsed
  * @property {function} addContentToCurriculumSequence

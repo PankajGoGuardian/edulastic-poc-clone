@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import DropContainer from '../../../assessment/components/DropContainer';
 import CurriculumModuleRow from './CurriculumModuleRow';
+import { theme } from '../theme';
 
 /**
  * @typedef CurriculumProps
@@ -25,7 +26,7 @@ class Curriculum extends Component {
     return (
       <ModuleWrapper>
           {modules.map((moduleItem, index) => (
-            <DropContainer key={`drop-${moduleItem.data.length}-${index}-${moduleItem.id}`} drop={() => this.onDrop(moduleItem)}>
+            <DropContainer theme={theme} key={`drop-${moduleItem.data.length}-${index}-${moduleItem.id}`} drop={() => this.onDrop(moduleItem)}>
               <CurriculumModuleRow
                 collapsed={expandedModules.indexOf(moduleItem.id) === -1}
                 onCollapseExpand={onCollapseExpand}

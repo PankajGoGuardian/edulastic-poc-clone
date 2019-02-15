@@ -4,10 +4,7 @@ import { call, put, all, takeEvery } from 'redux-saga/effects';
 import { message } from 'antd';
 import { testsApi } from '@edulastic/api';
 
-import {
-  SET_MAX_ATTEMPT,
-  UPDATE_TEST_IMAGE
-} from '../src/constants/actions';
+import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE } from '../src/constants/actions';
 import { SET_ASSIGNMENT } from './components/Assign/ducks';
 
 // constants
@@ -104,7 +101,6 @@ const initialTestState = {
     testItems: []
   },
   testItems: [],
-  assignments: [],
   standardsTag: {
     curriculum: '',
     standards: []
@@ -207,6 +203,7 @@ function* receiveTestByIdSaga({ payload }) {
 
 function* createTestSaga({ payload }) {
   try {
+    delete payload.data.assignments;
     const entity = yield call(testsApi.create, payload.data);
 
     yield put(createTestSuccessAction(entity));
@@ -223,6 +220,7 @@ function* updateTestSaga({ payload }) {
     // remove createdDate and updatedDate
     delete payload.data.updatedDate;
     delete payload.data.createdDate;
+    delete payload.data.assignments;
 
     const entity = yield call(testsApi.update, payload);
 
@@ -265,11 +263,11 @@ export const getTestsCreatingSelector = createSelector(
 export const getTestItemsRowsSelector = createSelector(
   getTestSelector,
   state =>
-    state.testItems.map((item) => {
+    state.testItems.map(item => {
       if (!item || !item.rows) return [];
       return item.rows.map(row => ({
         ...row,
-        widgets: row.widgets.map((widget) => {
+        widgets: row.widgets.map(widget => {
           let referencePopulate = {
             data: null
           };

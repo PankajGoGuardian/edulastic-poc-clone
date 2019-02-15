@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Modal, Col, DatePicker, Select, Radio } from 'antd';
+import { Modal, Col, DatePicker, Select, Radio, Icon } from 'antd';
 import { FlexContainer } from '@edulastic/common';
 import {
   findIndex as _findIndex,
@@ -14,12 +14,15 @@ import {
 
 import {
   Button,
+  SettingsBtn,
   StyledRow,
   StyledRowLabel,
   StudentWrapper
 } from './styled';
 import { selectsData } from '../../../common';
 import { fetchStudentsOfGroupAction } from '../../ducks';
+
+import Settings from './Settings';
 
 const RadioGroup = Radio.Group;
 const { Option } = Select;
@@ -40,7 +43,12 @@ const EditModal = ({
   fetchStudents
 }) => {
   const [endOpen, setEndOpen] = useState(false);
+  let [isVisible, openSettings] = useState(false);
 
+  const toggleSettings = () => {
+    isVisible = !isVisible;
+    openSettings(isVisible);
+  };
   const onChange = (field, value) => {
     setModalData({
       ...modalData,
@@ -49,7 +57,7 @@ const EditModal = ({
   };
 
   // FIXME: fix delete
-  const updateStudents = (students) => {
+  const updateStudents = students => {
     const modalDataCloned = _cloneDeep(modalData);
     const studentsGroup = _groupBy(students, 'class_id');
     for (const _class of modalDataCloned.class) {
@@ -81,7 +89,7 @@ const EditModal = ({
     setModalData(modalDataCloned);
   };
 
-  const disabledStartDate = (startDate) => {
+  const disabledStartDate = startDate => {
     const { endDate } = modalData;
     if (!startDate || !endDate) {
       return false;
@@ -89,7 +97,7 @@ const EditModal = ({
     return startDate.valueOf() > endDate.valueOf();
   };
 
-  const disabledEndDate = (endDate) => {
+  const disabledEndDate = endDate => {
     const { startDate } = modalData;
     if (!endDate || !startDate) {
       return false;
@@ -97,34 +105,35 @@ const EditModal = ({
     return endDate.valueOf() <= startDate.valueOf();
   };
 
-  const onStartChange = (value) => {
+  const onStartChange = value => {
     onChange('startDate', value);
   };
 
-  const onEndChange = (value) => {
+  const onEndChange = value => {
     onChange('endDate', value);
   };
 
-  const handleStartOpenChange = (open) => {
+  const handleStartOpenChange = open => {
     if (!open) {
       setEndOpen(true);
     }
   };
 
-  const handleEndOpenChange = (open) => {
+  const handleEndOpenChange = open => {
     setEndOpen(open);
   };
 
   const selectedGroups = modalData.class.map(x => x._id);
   const selectedStudents = _flatmap(modalData.class, _class =>
-    (_class.students ? _uniq(_class.students) : []));
+    _class.students ? _uniq(_class.students) : []
+  );
 
   let allStudents = [];
 
   group.forEach(({ _id, students }) => {
     if (selectedGroups.includes(_id)) {
       students = students || [];
-      students = students.map((s) => {
+      students = students.map(s => {
         s.class_id = _id;
         return s;
       });
@@ -165,6 +174,7 @@ const EditModal = ({
       footer={footer}
       onCancel={onCancel}
       width="50%"
+      onCancel={onCancel}
     >
       <StyledRowLabel gutter={16}>
         <Col span={12}>Class/Group Section</Col>
@@ -177,7 +187,7 @@ const EditModal = ({
             style={{ width: '100%' }}
             mode="multiple"
             cache="false"
-            onChange={(event) => {
+            onChange={event => {
               onChange(
                 'class',
                 event.map(_id => ({
@@ -188,7 +198,7 @@ const EditModal = ({
                 }))
               );
             }}
-            onSelect={(classId) => {
+            onSelect={classId => {
               fetchStudents({ classId });
             }}
             value={modalData.class.map(obj => obj._id)}
@@ -225,7 +235,7 @@ const EditModal = ({
               placeholder="Please select"
               style={{ width: '100%' }}
               mode="multiple"
-              onChange={(event) => {
+              onChange={event => {
                 updateStudents(event);
                 // onChange('students', event);
               }}
@@ -313,6 +323,21 @@ const EditModal = ({
           </Select>
         </Col>
       </StyledRow>
+      <StyledRowLabel gutter={16}>
+        <Col>
+          <SettingsBtn onClick={toggleSettings}>
+            OVERRIDE TEST SETTINGS{' '}
+            {isVisible ? <Icon type="up" /> : <Icon type="down" />}
+          </SettingsBtn>
+        </Col>
+      </StyledRowLabel>
+      {isVisible && (
+        <Settings
+          modalData={modalData}
+          onChange={onChange}
+          selectsData={selectsData}
+        />
+      )}
     </Modal>
   );
 };

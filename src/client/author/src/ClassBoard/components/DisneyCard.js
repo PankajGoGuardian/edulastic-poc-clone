@@ -7,6 +7,8 @@ import { themes } from '../../../../student/themes';
 
 const classBoardTheme = themes.default.classboard;
 
+const roundFraction = (n) => Math.floor(n*100)/100;
+
 export default class DisneyCard extends Component {
   render() {
     const { testActivity } = this.props;
@@ -14,7 +16,16 @@ export default class DisneyCard extends Component {
     if (testActivity.length > 0) {
       testActivity.forEach((student) => {
         // eslint-disable-next-line radix
-        const stu_per = (parseInt(student.score) / parseInt(student.maxScore)) * 100;
+        const stu_per = roundFraction((parseInt(student.score) / parseInt(student.maxScore)) * 100);
+        //TODO: use constants
+        let status = 'NOT STARTED';
+        if(student.status === 'notStarted'){
+
+        } else if(student.status === 'inProgress'){
+          status = 'IN PROGRESS';
+        } else if(student.status === 'submitted'){
+          status = 'SUBMITTED';
+        }
         const studentData = (
           <StyledCard bordered={false}>
             <PaginationInfoF>
@@ -23,11 +34,11 @@ export default class DisneyCard extends Component {
                 <Space />
                 <SpaceDiv />
                 <StyledDiv>
-                  <StyledParaF>{student.studentName ? student.studentName : '-'}</StyledParaF>
-                  {student.present ?
-                    <StyledParaS>GRADED</StyledParaS> :
-                    <StyledColorParaS>ABSENT</StyledColorParaS>
-                  }
+
+                  <StyledParaF>{student.studentName?student.studentName:"-"}</StyledParaF>
+                  {student.present ? <StyledParaS>{status}</StyledParaS> : <StyledColorParaS>ABSENT</StyledColorParaS>}
+
+                 
                 </StyledDiv>
               </div>
               <SquareDiv />
@@ -37,23 +48,26 @@ export default class DisneyCard extends Component {
                 <StyledParaFF>Performance</StyledParaFF>
               </StyledDiv>
               <PerfomanceSection>
-                <StyledParaSS><ColorSpan>{student.score || '-'}</ColorSpan> / {student.maxScore || '-'}</StyledParaSS>
-                <StyledParaSSS>{stu_per || '-'}%</StyledParaSSS>
+
+                <StyledParaSS><ColorSpan>{(student.score||student.score==0)?student.score:"-"}</ColorSpan> / {student.maxScore?student.maxScore:"-"}</StyledParaSS>
+                <StyledParaSSS>{(stu_per||stu_per==0)?stu_per+"%":"-%"}</StyledParaSSS>
               </PerfomanceSection>
             </PaginationInfoS>
             <PaginationInfoT>
               <StyledDiv>
                 <StyledParaFF>Question Responses</StyledParaFF>
-                {student.questionActivities.forEach((testItem) => {
-                  if (testItem.correct) {
+
+                {student.questionActivities.map((questionAct) => {
+                  if (questionAct.correct) {
                     return (<SquareColorDivGreen />);
-                  } if (testItem.skipped) {
+                  } else if (questionAct.skipped) {
                     return (<SquareColorDivGray />);
-                  } if (testItem.partialCorrect) {
+                  }else if (questionAct.partialCorrect) {
                     return (<SquareColorDivYellow />);
-                  } if (testItem.notStarted) {
-                    return (<SquareColorDisabled />);
-                  } if (!testItem.correct) {
+                  } else if (questionAct.notStarted){
+                    return (<SquareColorDisabled />)
+                  } else if (!questionAct.correct) {
+
                     return (<SquareColorDivPink />);
                   }
                 })

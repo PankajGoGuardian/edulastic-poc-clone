@@ -108,6 +108,7 @@ const initialTestState = {
   grades: [],
   subjects: [],
   courses: [],
+  assignments: [],
   collections: '',
   analytics: {
     usage: '0',

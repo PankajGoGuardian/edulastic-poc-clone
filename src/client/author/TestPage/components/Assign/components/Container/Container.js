@@ -177,7 +177,8 @@ class Assign extends PureComponent {
     const { test, group, current } = this.props;
     const { showModal, isAddAssignment, modalData } = this.state;
     // TODO Assigmnent  = []
-    const tableData = test.assignments.map((item, i) => ({
+    const assignments = test.assignments||[];
+    const tableData = assignments.map((item, i) => ({
       key: i,
       _id: item._id,
       class: item.class,

@@ -144,7 +144,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         loading: false,
-        entity: payload.entity
+        entity: {
+          // TODO: someone Fix this shit!!!
+          assignments: [],
+          ...payload.entity
+        }
       };
     case RECEIVE_TEST_BY_ID_ERROR:
       return { ...state, loading: false, error: payload.error };
@@ -165,6 +169,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entity: {
+          assignments: [],
           ...state.entity,
           ...payload.data
         }

@@ -197,49 +197,19 @@ class ItemDetail extends Component {
   };
 
   renderPreview = () => {
-    const { rows, item, evaluation, preview } = this.props;
-
-    switch (preview) {
-      case 'clear':
-        return (
-          <Content>
-            <TestItemPreview
-              cols={rows}
-              previewTab="clear"
-              verticalDivider={item.verticalDivider}
-              scrolling={item.scrolling}
-              style={{ width: '100%' }}
-            />
-          </Content>
-        );
-      case 'check':
-        return (
-          <Content>
-            <TestItemPreview
-              cols={rows}
-              previewTab="check"
-              verticalDivider={item.verticalDivider}
-              scrolling={item.scrolling}
-              evaluation={evaluation}
-              style={{ width: '100%' }}
-            />
-          </Content>
-        );
-      case 'show':
-        return (
-          <Content>
-            <TestItemPreview
-              cols={rows}
-              previewTab="show"
-              verticalDivider={item.verticalDivider}
-              scrolling={item.scrolling}
-              style={{ width: '100%' }}
-            />
-          </Content>
-        );
-      default:
-        return null;
-    }
+    const { rows, item, preview } = this.props;
+    return (
+      <Content>
+        <TestItemPreview
+          cols={rows}
+          previewTab={preview}
+          preview={preview}
+          verticalDivider={item.verticalDivider}
+          scrolling={item.scrolling}
+          style={{ width: '100%' }}
+        />
+      </Content>
+    );
   };
 
   renderMetadata = () => (
@@ -368,7 +338,6 @@ ItemDetail.propTypes = {
   showAnswer: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   changePreview: PropTypes.func.isRequired,
-  evaluation: PropTypes.isRequired,
   loadQuestion: PropTypes.func.isRequired
 };
 
@@ -387,7 +356,6 @@ const enhance = compose(
       item: getItemDetailSelector(state),
       updating: getItemDetailUpdatingSelector(state),
       type: getItemDetailDimensionTypeSelector(state),
-      evaluation: state.evaluation,
       preview: state.view.preview
     }),
     {

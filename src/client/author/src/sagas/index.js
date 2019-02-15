@@ -4,6 +4,7 @@ import testItemSaga from './testItem';
 import questionSaga from './question';
 import dictionariesSaga from './dictionaries';
 import { classBoardSaga } from '../ClassBoard';
+import { classResponsesSaga } from '../ClassResponses';
 import { testsListSaga } from '../../TestList';
 import { testPageSaga } from '../../TestPage';
 import { testsAddItemsSaga } from '../../TestPage/components/AddItems';
@@ -18,6 +19,7 @@ const authorSagas = [
   dictionariesSaga(),
   classBoardSaga(),
   assignmentsSaga(),
+  classResponsesSaga(),
   testsListSaga(),
   testPageSaga(),
   testsAddItemsSaga(),

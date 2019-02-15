@@ -85,8 +85,7 @@ class QuestionEditor extends Component {
   };
 
   renderQuestion = (questionType) => {
-    const { view, question, match, evaluation: evaluations } = this.props;
-    const evaluation = evaluations[question.data.id];
+    const { view, question, match } = this.props;
     const { previewTab, saveClicked } = this.state;
     if (view === 'metadata') {
       return <QuestionMetadata />;
@@ -96,7 +95,6 @@ class QuestionEditor extends Component {
         <QuestionWrapper
           type={questionType}
           view={view}
-          evaluation={evaluation}
           previewTab={previewTab}
           key={questionType && view && saveClicked}
           data={question.data}
@@ -165,7 +163,6 @@ class QuestionEditor extends Component {
 
 QuestionEditor.propTypes = {
   view: PropTypes.string.isRequired,
-  evaluation: PropTypes.any.isRequired,
   checkAnswer: PropTypes.func.isRequired,
   changePreview: PropTypes.func.isRequired,
   showAnswer: PropTypes.func.isRequired,
@@ -189,7 +186,6 @@ const enhance = compose(
   withNamespaces('author'),
   connect(
     state => ({
-      evaluation: state.evaluation,
       view: getViewSelector(state),
       question: getQuestionSelector(state),
       testItemId: getItemIdSelector(state)

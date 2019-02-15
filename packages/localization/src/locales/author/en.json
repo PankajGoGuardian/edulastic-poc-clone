@@ -113,6 +113,9 @@
       "headertitle": "Select a type of Question or Feature",
       "backToAddNew": "Back to Add New",
       "backToSelect": "Back to Select Question Type or Feature"
+    },
+    "feedback": {
+      "viewSolution": "VIEW SOLUTION"
     }
   }
 }

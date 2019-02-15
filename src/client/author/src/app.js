@@ -49,7 +49,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               />
               <Route
                 exact
-                path={`${match.url}/classresponses/:assignmentId/:classId`}
+                path={`${match.url}/classresponses/:testActivityId`}
                 component={ClassResponses}
               />
               <Route

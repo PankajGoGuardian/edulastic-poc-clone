@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 
 import { setUserAnswerAction } from '../../actions/answers';
 import { getAnswerByQuestionIdSelector } from '../../selectors/answers';
+import createShowAnswerData from '../../../author/src/utils/showAnswer';
 
 const getQuestionId = (testItemId, questionId) => testItemId || questionId || 'tmp';
 
@@ -32,9 +33,27 @@ export default (WrappedComponent) => {
   const enhance = compose(
     withRouter,
     connect(
-      (state, { testItemId, data: { id: questionId } }) => ({
-        userAnswer: getAnswerByQuestionIdSelector(getQuestionId(testItemId, questionId))(state)
-      }),
+      (state, { data, match }) => {
+        const { id: qId, activity } = data;
+        let userAnswer;
+        if (activity && activity.userResponse) {
+          userAnswer = activity.userResponse;
+        } else {
+          const { params: { id: testItemId } } = match;
+          userAnswer = getAnswerByQuestionIdSelector(getQuestionId(testItemId, qId))(state);
+        }
+        const validation = {
+          [qId]: data
+        };
+        let evaluations = [];
+        if (data.validation) {
+          evaluations = createShowAnswerData(validation, userAnswer || {});
+        }
+        return {
+          userAnswer,
+          evaluation: evaluations[[qId]] || []
+        };
+      },
       { setUserAnswer: setUserAnswerAction }
     )
   );

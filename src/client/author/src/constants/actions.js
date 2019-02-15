@@ -80,6 +80,10 @@ export const SHOW_ANSWER = '[testItem] show test item answer';
 export const ADD_ITEM_EVALUATION = '[evaluation] add evaluation';
 
 // Tests
+export const RECEIVE_TESTS_REQUEST = '[tests] receive list request';
+export const RECEIVE_TESTS_SUCCESS = '[tests] receive list success';
+export const RECEIVE_TESTS_ERROR = '[tests] receive list error';
+
 export const CREATE_TEST_REQUEST = '[tests] create test request';
 export const CREATE_TEST_SUCCESS = '[tests] create test success';
 export const CREATE_TEST_ERROR = '[tests] create test error';
@@ -114,14 +118,23 @@ export const RECEIVE_DICT_STANDARDS_ERROR =
   '[dictionaries] receive standards error';
 export const CLEAR_DICT_STANDARDS = '[dictionaries] clear standards';
 
+// ClassResponse
+export const RECEIVE_CLASS_RESPONSE_REQUEST = '[classresponses] receive list request';
+export const RECEIVE_CLASS_RESPONSE_SUCCESS = '[classresponses] receive list success';
+export const RECEIVE_CLASS_RESPONSE_ERROR = '[classresponses] receive list error';
+export const RECEIVE_STUDENT_RESPONSE_REQUEST = '[studentResponse] receive list request';
+export const RECEIVE_STUDENT_RESPONSE_SUCCESS = '[studentResponse] receive list success';
+export const RECEIVE_STUDENT_RESPONSE_ERROR = '[studentResponse] receive list error';
+export const RECEIVE_FEEDBACK_RESPONSE_REQUEST = '[feedbackResponse] receive list request';
+export const RECEIVE_FEEDBACK_RESPONSE_SUCCESS = '[feedbackResponse] receive list success';
+export const RECEIVE_FEEDBACK_RESPONSE_ERROR = '[feedbackResponse] receive list error';
+
 // Classboard
 export const RECEIVE_GRADEBOOK_REQUEST = '[gradebook] receive list request';
 export const RECEIVE_GRADEBOOK_SUCCESS = '[gradebook] receive list success';
 export const RECEIVE_GRADEBOOK_ERROR = '[gradebook] receive list error';
-export const RECEIVE_TESTACTIVITY_REQUEST =
-  '[testActivity] receive list request';
-export const RECEIVE_TESTACTIVITY_SUCCESS =
-  '[testActivity] receive list success';
+export const RECEIVE_TESTACTIVITY_REQUEST = '[testActivity] receive list request';
+export const RECEIVE_TESTACTIVITY_SUCCESS = '[testActivity] receive list success';
 export const RECEIVE_TESTACTIVITY_ERROR = '[testActivity] receive list error';
 
 // assignments

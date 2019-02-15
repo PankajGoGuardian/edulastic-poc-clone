@@ -12,11 +12,8 @@ import {
 import { Link } from 'react-router-dom';
 import { Card, Checkbox, Button } from 'antd';
 import { withNamespaces } from '@edulastic/localization';
-import { receiveGradeBookdAction, receiveTestActivitydAction } from '../../actions/classBoard';
-import {
-  getGradeBookSelector,
-  getTestActivitySelector
-} from '../ducks';
+import { receiveTestActivitydAction } from '../../actions/classBoard';
+import { getTestActivitySelector } from '../ducks';
 import HooksContainer from './HooksContainer';
 
 import ListHeader from './ListHeader';
@@ -51,9 +48,8 @@ class ClassBoard extends Component {
   }
 
   componentDidMount() {
-    const { loadGradebook, loadTestActivity, match } = this.props;
+    const { loadTestActivity, match } = this.props;
     const { assignmentId, classId } = match.params;
-    loadGradebook(assignmentId, classId);
     loadTestActivity(assignmentId, classId);
   }
 
@@ -76,47 +72,38 @@ class ClassBoard extends Component {
 
   render() {
     const {
-      gradebook,
       testActivity,
       creating,
       match,
-      // eslint-disable-next-line react/prop-types
       t
     } = this.props;
     const { assignmentId, classId } = match.params;
     return (
       <div>
-       <HooksContainer classId={classId} assignmentId={assignmentId} />
-     
+        <HooksContainer classId={classId} assignmentId={assignmentId} />
         <ListHeader
           onCreate={this.handleCreate}
           creating={creating}
           assignmentId={assignmentId}
           classId={classId}
         />
-        <StyledFlexContainer
-          justifyContent="space-between"
-        >
+        <StyledFlexContainer justifyContent="space-between">
           <PaginationInfo>
             &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> / <Anchor>CALIFORNIA VERSION 4</Anchor> / <Anchor>CLASS 1</Anchor>
           </PaginationInfo>
           <SortBar />
         </StyledFlexContainer>
         <StyledCard bordered={false}>
-          <Graph gradebook={gradebook} />
+          <Graph testActivity={testActivity} />
         </StyledCard>
-        <StyledFlexContainer
-          justifyContent="space-between"
-        >
+        <StyledFlexContainer justifyContent="space-between">
           <PaginationInfoF>
-            <StyledAnc
-              onClick={this.changeStateTrue}
-            ><img src={Ghat} />
+            <StyledAnc onClick={this.changeStateTrue}>
+              <img src={Ghat} />
             </StyledAnc>
             <SpaceDiv />
-            <StyledAnc
-              onClick={this.changeStateFalse}
-            ><img src={Stats} />
+            <StyledAnc onClick={this.changeStateFalse}>
+              <img src={Stats} />
             </StyledAnc>
             <SpaceDiv />
             <BarDiv />
@@ -131,9 +118,8 @@ class ClassBoard extends Component {
         </StyledFlexContainer>
         {this.state.flag ?
           <DisneyCard testActivity={testActivity} assignmentId={assignmentId} classId={classId} /> :
-          <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
+          <Score testActivity={testActivity} assignmentId={assignmentId} classId={classId} />
         }
-           
       </div>
     );
   }
@@ -143,11 +129,9 @@ const enhance = compose(
   withNamespaces('classBoard'),
   connect(
     state => ({
-      gradebook: getGradeBookSelector(state),
-      testActivity: getTestActivitySelector(state),
+      testActivity: getTestActivitySelector(state)
     }),
     {
-      loadGradebook: receiveGradeBookdAction,
       loadTestActivity: receiveTestActivitydAction
     }
   )
@@ -158,11 +142,10 @@ export default enhance(ClassBoard);
 ClassBoard.propTypes = {
   history: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
-  loadGradebook: PropTypes.func.isRequired,
   loadTestActivity: PropTypes.func.isRequired,
-  gradebook: PropTypes.func.isRequired,
   creating: PropTypes.object.isRequired,
-  testActivity: PropTypes.object.isRequired
+  testActivity: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 const PaginationInfo = styled.span`

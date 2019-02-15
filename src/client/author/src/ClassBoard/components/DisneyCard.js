@@ -8,13 +8,11 @@ import { themes } from '../../../../student/themes';
 const classBoardTheme = themes.default.classboard;
 
 export default class DisneyCard extends Component {
-
   render() {
-    let { testActivity, assignmentId, classId } = this.props;
-    let styledCard = [];
+    const { testActivity } = this.props;
+    const styledCard = [];
     if (testActivity.length > 0) {
-      console.log("TestActivity", this.props.testActivity)
-      testActivity.map((student) => {
+      testActivity.forEach((student) => {
         // eslint-disable-next-line radix
         const stu_per = (parseInt(student.score) / parseInt(student.maxScore)) * 100;
         const studentData = (
@@ -25,8 +23,11 @@ export default class DisneyCard extends Component {
                 <Space />
                 <SpaceDiv />
                 <StyledDiv>
-                  <StyledParaF>{student.studentName?student.studentName:"-"}</StyledParaF>
-                  {student.present ? <StyledParaS>GRADED</StyledParaS> : <StyledColorParaS>ABSENT</StyledColorParaS>}
+                  <StyledParaF>{student.studentName ? student.studentName : '-'}</StyledParaF>
+                  {student.present ?
+                    <StyledParaS>GRADED</StyledParaS> :
+                    <StyledColorParaS>ABSENT</StyledColorParaS>
+                  }
                 </StyledDiv>
               </div>
               <SquareDiv />
@@ -36,23 +37,23 @@ export default class DisneyCard extends Component {
                 <StyledParaFF>Performance</StyledParaFF>
               </StyledDiv>
               <PerfomanceSection>
-                <StyledParaSS><ColorSpan>{student.score?student.score:"-"}</ColorSpan> / {student.maxScore?student.maxScore:"-"}</StyledParaSS>
-                <StyledParaSSS>{stu_per?stu_per+"%":"-%"}</StyledParaSSS>
+                <StyledParaSS><ColorSpan>{student.score || '-'}</ColorSpan> / {student.maxScore || '-'}</StyledParaSS>
+                <StyledParaSSS>{stu_per || '-'}%</StyledParaSSS>
               </PerfomanceSection>
             </PaginationInfoS>
             <PaginationInfoT>
               <StyledDiv>
                 <StyledParaFF>Question Responses</StyledParaFF>
-                {student.testItems.map((testItem) => {
+                {student.questionActivities.forEach((testItem) => {
                   if (testItem.correct) {
                     return (<SquareColorDivGreen />);
-                  } else if (testItem.skipped) {
+                  } if (testItem.skipped) {
                     return (<SquareColorDivGray />);
-                  }else if (testItem.partialCorrect) {
+                  } if (testItem.partialCorrect) {
                     return (<SquareColorDivYellow />);
-                  } else if (testItem.notStarted){
-                    return (<SquareColorDisabled />)
-                  } else if (!testItem.correct) {
+                  } if (testItem.notStarted) {
+                    return (<SquareColorDisabled />);
+                  } if (!testItem.correct) {
                     return (<SquareColorDivPink />);
                   }
                 })
@@ -61,11 +62,13 @@ export default class DisneyCard extends Component {
             </PaginationInfoT>
             <StyledDivLine />
             <PagInfo>
-              <Link to={`/author/classresponses/${assignmentId}/${classId}`}>VIEW RESPONSES <GSpan>&gt;&gt;</GSpan></Link>
+              <Link to={`/author/classresponses/${student.testActivityId}`}>VIEW RESPONSES <GSpan>&gt;&gt;</GSpan></Link>
             </PagInfo>
           </StyledCard>
         );
-        styledCard.push(studentData);
+        if (student.testActivityId) {
+          styledCard.push(studentData);
+        }
       });
     }
 

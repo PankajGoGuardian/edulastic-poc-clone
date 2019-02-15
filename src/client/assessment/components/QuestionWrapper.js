@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { ThemeProvider } from 'styled-components';
 
@@ -33,6 +33,8 @@ import { Protractor } from '../widgets/Protractor';
 import { Passage } from '../widgets/Passage';
 import { MathFormula } from '../widgets/MathFormula';
 import { FormulaEssay } from '../widgets/FormulaEssay';
+import FeedbackBottom from './FeedbackBottom';
+import FeedbackRight from './FeedbackRight';
 
 const getQuestion = (type) => {
   switch (type) {
@@ -90,12 +92,20 @@ const getQuestion = (type) => {
       return null;
   }
 };
-
-const QuestionWrapper = ({ type, data, ...restProps }) => {
+const QuestionWrapper = ({ type, data, showFeedback, multiple, ...restProps }) => {
   const Question = getQuestion(type);
   return (
     <ThemeProvider theme={themes.default}>
-      <Question item={data} {...restProps} />
+      <Fragment>
+        <div style={{ flex: 'auto' }}>
+          <Question item={data} {...restProps} />
+        </div>
+        {showFeedback && (
+          multiple ?
+            <FeedbackBottom widget={data} /> :
+            <FeedbackRight widget={data} />
+        )}
+      </Fragment>
     </ThemeProvider>
   );
 };

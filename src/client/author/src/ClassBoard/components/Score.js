@@ -88,7 +88,7 @@ export default class Score extends Component {
         Partially: data.partialNum && data.partialNum || '-',
         Wrong: data.wrongNum,
         Average: data.avgScore && data.avgScore || '-',
-        Average_per: parseInt(avg_per),
+        Average_per: parseInt(avg_per)
 
       });
     });
@@ -110,7 +110,7 @@ export default class Score extends Component {
       render: a => (<StyledParaS>{a}</StyledParaS>),
       sorter: (a, b) => a.name.length - b.name.length,
       sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
-    },{
+    }, {
       title: 'Correct',
       dataIndex: 'Correct',
       key: 'Correct',

@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -60,7 +58,6 @@ class TableList extends Component {
   };
 
   expandedRowRender = (parentData) => {
-    console.log(parentData, 'PARENT DATA');
     const { t } = this.props;
     let getInfo;
     const columns = [
@@ -78,7 +75,7 @@ class TableList extends Component {
       {
         dataIndex: 'type',
         width: '11%',
-        render: () => (<div ><AssignedImg src={assignedIcon} /></div>)
+        render: () => (<div><AssignedImg src={assignedIcon} /></div>)
       },
       {
         dataIndex: 'assigned',
@@ -104,7 +101,7 @@ class TableList extends Component {
       {
         dataIndex: 'graded',
         width: '15%',
-        render: text => (<div style={{paddingLeft: '12px'}}><GreyFont>{text}</GreyFont></div>)
+        render: text => (<div style={{ paddingLeft: '12px' }}><GreyFont>{text}</GreyFont></div>)
       },
       {
         dataIndex: 'action',
@@ -112,17 +109,17 @@ class TableList extends Component {
         render: () => (
           <ActionDiv>
             <FlexContainer justifyContent="space-between" style={{ marginLeft: 20, marginRight: 20 }}>
-              <Link to={`/author/classboard/${getInfo.key}/${getInfo.classId}`}><img src={presentationIcon} alt="Images" /></Link>
-              <Link to="/author/expressgrader"><img src={additemsIcon} alt="Images" /></Link>
-              <div><img src={piechartIcon} alt="Images" /></div>
+              <Link to={`/author/classboard/${getInfo.key}/${getInfo.classId}`}><Icon src={presentationIcon} alt="Images" /></Link>
+              <Link to="/author/expressgrader"><Icon src={additemsIcon} alt="Images" /></Link>
+              <div><Icon src={piechartIcon} alt="Images" /></div>
             </FlexContainer>
           </ActionDiv>
         ) }
     ];
 
-    const totalData = this.props.assignments;
+    const { assignments } = this.props;
     const expandTableList = [];
-    totalData.forEach((expandData) => {
+    assignments.forEach((expandData) => {
       if (parentData.key === expandData[0]._id) {
         expandData.forEach((data) => {
           getInfo = convertExpandTableData(data, expandData.length);
@@ -136,6 +133,7 @@ class TableList extends Component {
         columns={columns}
         dataSource={expandTableList}
         pagination={false}
+        class="expandTable"
       />
     );
   };
@@ -163,7 +161,10 @@ class TableList extends Component {
         sorter: true,
         width: '11%',
         render: () => (
-          <ExpandDivdier onMouseEnter={() => this.setState({ details: true })} onMouseLeave={() => this.setState({ details: false })}>
+          <ExpandDivdier
+            onMouseEnter={() => this.setState({ details: true })}
+            onMouseLeave={() => this.setState({ details: false })}
+          >
             <IconArrowDown onclick={() => false} src={arrowUpIcon} />1
           </ExpandDivdier>
         )
@@ -226,13 +227,15 @@ class TableList extends Component {
     ];
 
     const { assignments } = this.props;
+    const { details } = this.state;
     return (
       <Container>
         <TableData
+          style={{ width: 'auto' }}
           columns={columns}
           expandIconAsCell={false}
           expandIconColumnIndex={-1}
-          expandRowByClick={this.state.details}
+          expandRowByClick={details}
           expandedRowRender={this.expandedRowRender}
           dataSource={assignments.map(data => convertTableData(data))}
         />
@@ -243,17 +246,56 @@ class TableList extends Component {
 
 export default withNamespaces('assignmentCard')(TableList);
 
+TableList.propTypes = {
+  assignments: PropTypes.array.isRequired
+};
 const Container = styled.div`
   padding: 30;
   left: 0;
   right: 0;
   height: 100%;
+  width:100%;
+`;
+
+const Icon = styled.img`
+  @media (max-width: 1300px) {
+    width:18px;
+    height:18px;
+  }
+  @media (max-width: 920px) {
+    width:15px;
+    height:15px;
+  }
+  @media (max-width: 920px) {
+    width:15px;
+    height:15px;
+  }
+  @media (max-width: 920px) {
+    width:15px;
+    height:15px;
+  }
 `;
 const TableData = styled(Table)`
   text-align: center;
-  width:100%;
-  @media (max-width: 1300px) {
-   width:1004px;
+  .ant-table-thead > tr > th .ant-table-column-sorters{
+    padding-left:20px;
+  }  
+  @media (max-width: 920px) {
+    .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+      padding: 20px 0px;
+    }
+    .ant-table-thead > tr > th .ant-table-column-sorters{
+      padding-left:2px;
+      padding-right:0px;
+    }
+  }
+  @media (max-width: 1000px) {
+    .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+      padding-left:2px;
+    }
+    .ant-table-thead > tr > th .ant-table-column-sorters{
+      padding-left:2px;
+    }
   }
   .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters, .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-filters {
     text-align: center;
@@ -270,7 +312,31 @@ const TableData = styled(Table)`
   .ant-table-row-expand-icon {
     display: none;
   }
-  
+  @media (max-width: 1300px) and (min-width: 980px) {
+    .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+      max-width: 100px;
+    }
+    .ant-table-thead > tr > th .ant-table-column-sorters{
+      padding-left:0px;
+      padding-right:0px;
+    }
+  }
+  @media (max-width: 1170px) {
+    .ant-table-thead > tr > th{
+      font-size:10px;
+    }
+    .ant-table-tbody > tr > td{
+      font-size:9px;
+    }
+  }
+  @media (max-width: 1170px) {
+    .ant-table-thead > tr > th{
+      font-size:9px;
+    }
+    .ant-table-tbody > tr > td{
+      font-size:9px;
+    }
+  }
 `;
 const BtnGreen = styled(Button)`
   background-color: #1cd6dc !important;
@@ -283,11 +349,6 @@ const AssignmentTD = styled.div`
   padding-left: 0px !important;
   padding-right: 0px !important;
 `;
-// const IconArrowUP = styled.img`
-//   color: #12a6e8;
-//   margin-right: 5px;
-//   width: 17px;
-// `;
 const IconArrowDown = styled.img`
   color: #12a6e8;
   margin-right: 5px;
@@ -302,7 +363,7 @@ const BtnAction = styled(Button)`
   font-weight: bold;
   width:100%;
   padding:0px 20px;
-
+  text-align:center;
   :active {
     background-color: #12a6e8;
     color: #fff;
@@ -310,6 +371,9 @@ const BtnAction = styled(Button)`
   :hover{
     background-color: #12a6e8;
     color: #fff;
+  }
+  @media (max-width: 1300px) {
+    padding: 10px;    
   }
 `;
 const AssignedImg = styled.img`
@@ -364,14 +428,23 @@ const ActionDiv = styled.div`
 const GreyFont = styled.div`
   color: grey;
   font-size: 12px;
+  @media (max-width: 1170px) {
+    font-size: 9px;
+  }
 `;
 
 const ExpandedTable = styled(Table)`
+   @media (max-width: 980px) {
+      margin-left:13px;
+      width: 97%;
+      float: right;
+      .ant-table-tbody tr td >div{
+        text-align:right;
+        width:90%;
+      }
+    }
   .ant-table-thead th{
-    height:0px;
-    margin: 0px;
-    padding: 0px;
-    border-color: #ffffff;
+    display:none;
   }
   .ant-table-tbody tr{
     background-color: #fbfbfb;
@@ -381,9 +454,16 @@ const ExpandedTable = styled(Table)`
   .ant-table-tbody tr td{
     padding: 9px 0px 9px 25px !important;
   }
-
-  @media (max-width: 1450px) {
-    padding: 9px 0px 9px 27px !important;    
+  @media (max-width: 1285px) {
+    .ant-table-tbody tr td{
+      padding:9px 0px !important;
+    }
+  }
+  @media (max-width: 1000px) {
+    .ant-table-tbody tr td{
+      padding:9px 0px !important;
+      margin-left: 13px;
+    }
   }
   @media (max-width: ${mobileWidth}) {
     display: none;

@@ -15,12 +15,14 @@ class TestItemPreview extends Component {
     cols: PropTypes.array.isRequired,
     verticalDivider: PropTypes.bool,
     scrolling: PropTypes.bool,
-    previewTab: PropTypes.string.isRequired,
+    preview: PropTypes.string.isRequired,
     windowWidth: PropTypes.number.isRequired,
+    showFeedback: PropTypes.bool,
     style: PropTypes.object
   };
 
   static defaultProps = {
+    showFeedback: false,
     verticalDivider: false,
     scrolling: false,
     style: { padding: 0, display: 'flex' }
@@ -45,7 +47,14 @@ class TestItemPreview extends Component {
   };
 
   render() {
-    const { cols, previewTab, style, windowWidth } = this.props;
+    const { cols, preview, style, windowWidth, showFeedback } = this.props;
+    let questionCount = 0;
+    cols.forEach(({ widgets }) => {
+      questionCount += widgets.length;
+    });
+    if (questionCount === 0) {
+      return null;
+    }
     return (
       <ThemeProvider theme={themes.default}>
         <Container width={windowWidth} style={style}>
@@ -56,9 +65,11 @@ class TestItemPreview extends Component {
               key={i}
               col={col}
               view="preview"
-              previewTab={previewTab}
+              preview={preview}
+              multiple={cols.length > 1}
               style={this.getStyle(i !== cols.length - 1)}
               windowWidth={windowWidth}
+              showFeedback={showFeedback}
             />
           ))}
         </Container>

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Tabs } from '@edulastic/common';
 
@@ -19,13 +18,16 @@ class TestItemCol extends Component {
 
   static propTypes = {
     col: PropTypes.object.isRequired,
-    style: PropTypes.object,
     preview: PropTypes.string.isRequired,
     windowWidth: PropTypes.number.isRequired,
-    evaluation: PropTypes.any.isRequired
+    showFeedback: PropTypes.bool,
+    multiple: PropTypes.bool,
+    style: PropTypes.object
   };
 
   static defaultProps = {
+    showFeedback: false,
+    multiple: false,
     style: {}
   };
 
@@ -36,15 +38,15 @@ class TestItemCol extends Component {
   };
 
   renderTabContent = (widget) => {
-    const { preview, evaluation: evaluations } = this.props;
-    const evaluation = evaluations[widget.entity.id];
+    const { preview, showFeedback, multiple } = this.props;
     return (
-      <Tabs.TabContainer style={{ padding: 20 }}>
+      <Tabs.TabContainer style={{ padding: 20, display: !multiple && showFeedback ? 'flex' : 'initial' }}>
         <QuestionWrapper
           testItem
+          showFeedback={showFeedback}
+          multiple={multiple}
           type={widget.type}
           view="preview"
-          evaluation={evaluation}
           previewTab={preview}
           questionId={widget.reference}
           data={{ ...widget.entity, smallSize: true }}
@@ -105,7 +107,4 @@ class TestItemCol extends Component {
   }
 }
 
-export default connect(state => ({
-  evaluation: state.evaluation,
-  preview: state.view.preview
-}))(TestItemCol);
+export default TestItemCol;

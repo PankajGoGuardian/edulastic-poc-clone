@@ -12,6 +12,7 @@ export { default as skillReportApi } from './src/skillReport';
 export { default as dictionariesApi } from './src/dictionaries';
 export { default as assignmentApi } from './src/assignment';
 export { default as classBoardApi } from './src/classBoard';
+export { default as classResponseApi } from './src/classResponse';
 export { default as API_CONFIG } from './src/config';
 export { default as groupApi } from './src/group';
 export { default as enrollmentApi } from './src/enrollment';

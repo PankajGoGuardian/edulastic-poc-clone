@@ -12,39 +12,37 @@ export const getItemIdSelector = createSelector(
   item => item && item._id
 );
 
+export const getRows = item => item.rows.map(row => ({
+  ...row,
+  widgets: row.widgets.map((widget) => {
+    let referencePopulate = {
+      data: null
+    };
+    if (item.data && item.data.questions && item.data.questions.length) {
+      referencePopulate = item.data.questions.find(
+        q => q._id === widget.reference
+      );
+    }
+
+    if (!referencePopulate &&
+      item.data && item.data.resources && item.data.resources.length) {
+      referencePopulate = item.data.resources.find(
+        r => r._id === widget.reference
+      );
+    }
+
+    return {
+      ...widget,
+      referencePopulate
+    };
+  })
+}));
+
 export const getItemDetailRowsSelector = createSelector(
   getItemDetailSelector,
   (item) => {
     if (!item) return [];
-    return item.rows.map(row => ({
-      ...row,
-      widgets: row.widgets.map((widget) => {
-        let referencePopulate = {
-          data: null
-        };
-
-        if (item.data.questions && item.data.questions.length) {
-          referencePopulate = item.data.questions.find(
-            q => q._id === widget.reference
-          );
-        }
-
-        if (
-          !referencePopulate &&
-          item.data.resources &&
-          item.data.resources.length
-        ) {
-          referencePopulate = item.data.resources.find(
-            r => r._id === widget.reference
-          );
-        }
-
-        return {
-          ...widget,
-          referencePopulate
-        };
-      })
-    }));
+    return getRows(item);
   }
 );
 

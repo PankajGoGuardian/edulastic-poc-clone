@@ -21,7 +21,6 @@ import {
 } from './styled';
 import { selectsData } from '../../../common';
 import { fetchStudentsOfGroupAction } from '../../ducks';
-
 import Settings from './Settings';
 
 const RadioGroup = Radio.Group;
@@ -174,7 +173,6 @@ const EditModal = ({
       footer={footer}
       onCancel={onCancel}
       width="50%"
-      onCancel={onCancel}
     >
       <StyledRowLabel gutter={16}>
         <Col span={12}>Class/Group Section</Col>

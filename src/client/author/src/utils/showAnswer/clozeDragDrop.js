@@ -1,4 +1,4 @@
-const createEvaluation = ({ hasGroupResponses, validation }, answer) => {
+const createEvaluation = ({ hasGroupResponses, validation }, answer = []) => {
   const correctAnswers = validation.valid_response.value;
   const evaluation = answer.map((option, index) => {
     if (hasGroupResponses) {

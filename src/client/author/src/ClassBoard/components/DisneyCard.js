@@ -78,7 +78,8 @@ export default class DisneyCard extends Component {
             </PaginationInfoT>
             <StyledDivLine />
             <PagInfo>
-              <Link to={`/author/classresponses/${assignmentId}/${classId}`}>VIEW RESPONSES <GSpan>&gt;&gt;</GSpan></Link>
+            <GSpan>&gt;&gt;</GSpan>
+              <Link to={`/author/classresponses/${student.testActivityId}`}>VIEW RESPONSES <GSpan>&gt;&gt;</GSpan></Link>
             </PagInfo>
           </StyledCard>
         );

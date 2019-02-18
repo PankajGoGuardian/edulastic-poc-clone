@@ -7,9 +7,8 @@ import { InstructorStimulus } from '../styled/InstructorStimulus';
 
 const FormulaEssayPreview = ({ item, lines, setLines }) => (
   <div>
-    {item.instructor_stimulus && (
-      <InstructorStimulus dangerouslySetInnerHTML={{ __html: item.instructor_stimulus }} />
-    )}
+    <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+
     <div style={{ marginBottom: 15 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
 
     <MathEssayInput

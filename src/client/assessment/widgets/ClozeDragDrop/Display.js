@@ -16,7 +16,8 @@ import { ResponseContainer } from './styled/ResponseContainer';
 import { AnswerContainer } from './styled/AnswerContainer';
 import { getFontSize } from '../../utils/helpers';
 
-const defaultTemplateMarkup = '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags? <br /> Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
+const defaultTemplateMarkup =
+  '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags? <br /> Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
 
 class ClozeDragDropDisplay extends Component {
   constructor(props) {
@@ -158,10 +159,11 @@ class ClozeDragDropDisplay extends Component {
     return arr;
   };
 
-  shuffleGroup = data => data.map((arr) => {
-    arr.options = this.shuffle(arr.options);
-    return arr;
-  });
+  shuffleGroup = data =>
+    data.map((arr) => {
+      arr.options = this.shuffle(arr.options);
+      return arr;
+    });
 
   getInitialResponses = (props) => {
     const {
@@ -231,11 +233,7 @@ class ClozeDragDropDisplay extends Component {
 
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const {
-      responsecontainerposition,
-      responsecontainerindividuals,
-      stemnumeration
-    } = uiStyle;
+    const { responsecontainerposition, responsecontainerindividuals, stemnumeration } = uiStyle;
 
     const responseBtnStyle = {
       widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : 'auto',
@@ -290,30 +288,30 @@ class ClozeDragDropDisplay extends Component {
             return (
               <Droppable drop={() => ({ dropTargetIndex })}>
                 {!hasGroupResponses && (
-                <ResponseContainer style={btnStyle} smallSize={smallSize}>
-                  <Draggable
-                    className="content"
-                    onDrop={this.onDrop}
-                    data={`${userAnswers[dropTargetIndex]}_${dropTargetIndex}_fromResp`}
-                  >
-                    {userAnswers[dropTargetIndex]}
-                  </Draggable>
-                  &nbsp;
-                </ResponseContainer>
+                  <ResponseContainer style={btnStyle} smallSize={smallSize}>
+                    <Draggable
+                      className="content"
+                      onDrop={this.onDrop}
+                      data={`${userAnswers[dropTargetIndex]}_${dropTargetIndex}_fromResp`}
+                    >
+                      {userAnswers[dropTargetIndex]}
+                    </Draggable>
+                    &nbsp;
+                  </ResponseContainer>
                 )}
                 {hasGroupResponses && (
-                <ResponseContainer style={btnStyle} smallSize={smallSize}>
-                  <Draggable
-                    className="content"
-                    onDrop={this.onDrop}
-                    data={`${userAnswers[dropTargetIndex] &&
-                      userAnswers[dropTargetIndex].data}_${userAnswers[dropTargetIndex] &&
-                      userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
-                  >
-                    {userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].data}
-                  </Draggable>
-                  &nbsp;
-                </ResponseContainer>
+                  <ResponseContainer style={btnStyle} smallSize={smallSize}>
+                    <Draggable
+                      className="content"
+                      onDrop={this.onDrop}
+                      data={`${userAnswers[dropTargetIndex] &&
+                        userAnswers[dropTargetIndex].data}_${userAnswers[dropTargetIndex] &&
+                        userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
+                    >
+                      {userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].data}
+                    </Draggable>
+                    &nbsp;
+                  </ResponseContainer>
                 )}
               </Droppable>
             );
@@ -343,9 +341,8 @@ class ClozeDragDropDisplay extends Component {
         onDropHandler={this.onDrop}
       />
     );
-    const templateBoxLayout = showAnswer || checkAnswer
-      ? checkboxTemplateBoxLayout
-      : previewTemplateBoxLayout;
+    const templateBoxLayout =
+      showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
 
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
@@ -387,11 +384,7 @@ class ClozeDragDropDisplay extends Component {
                   borderRadius: smallSize ? 0 : 10
                 }}
               >
-                {item.instructor_stimulus && (
-                  <InstructorStimulus
-                    dangerouslySetInnerHTML={{ __html: item.instructor_stimulus }}
-                  />
-                )}
+                <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
                 {templateBoxLayout}
               </div>

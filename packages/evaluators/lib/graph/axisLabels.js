@@ -18,7 +18,6 @@ var checkAnswer = function checkAnswer(answer, userResponse) {
   userResponse.forEach(function (testItem) {
     var resultForItem = {
       point: testItem.point,
-      id: testItem.id,
       result: false
     };
 

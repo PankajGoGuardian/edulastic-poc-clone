@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { Select } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
+import { evaluationType } from '@edulastic/constants';
 
 import WidgetOptions from '../../../containers/WidgetOptions';
 import { Block } from '../../../styled/WidgetOptions/Block';
@@ -10,6 +11,13 @@ import { Row } from '../../../styled/WidgetOptions/Row';
 import { Col } from '../../../styled/WidgetOptions/Col';
 import { Label } from '../../../styled/WidgetOptions/Label';
 import { Heading } from '../../../styled/WidgetOptions/Heading';
+import Extras from '../../../containers/Extras';
+
+const scoringTypes = [
+  evaluationType.exactMatch,
+  evaluationType.partialMatch,
+  evaluationType.partialMatchV2
+];
 
 const Options = ({ onChange, uiStyle, t, outerStyle }) => {
   const changeUiStyle = (prop, value) => {
@@ -20,7 +28,7 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
   };
 
   return (
-    <WidgetOptions outerStyle={outerStyle}>
+    <WidgetOptions outerStyle={outerStyle} scoringTypes={scoringTypes}>
       <Block>
         <Heading>{t('component.options.layout')}</Heading>
         <Row>
@@ -68,6 +76,9 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
           </Col>
         </Row>
       </Block>
+      <Extras>
+        <Extras.Distractors />
+      </Extras>
     </WidgetOptions>
   );
 };

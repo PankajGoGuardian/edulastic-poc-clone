@@ -1,4 +1,4 @@
-export const getFontSize = fontSize => {
+export const getFontSize = (fontSize) => {
   switch (fontSize) {
     case 'small':
       return '12px';
@@ -15,14 +15,8 @@ export const getFontSize = fontSize => {
   }
 };
 
-export const topAndLeftRatio = (
-  styleNumber,
-  imagescale,
-  fontsize,
-  smallSize
-) => {
-  const getValueWithRatio = newRatio =>
-    smallSize ? styleNumber / 2 : styleNumber * newRatio;
+export const topAndLeftRatio = (styleNumber, imagescale, fontsize, smallSize) => {
+  const getValueWithRatio = newRatio => (smallSize ? styleNumber / 2 : styleNumber * newRatio);
 
   if (!imagescale) {
     return getValueWithRatio(1);
@@ -59,9 +53,4 @@ export const calculateRatio = (imagescale, fontsize, imageWidth) => {
     default:
       return imageWidth * 1;
   }
-};
-
-export const isEmpty = str => {
-  str = typeof str === 'string' ? str.trim() : '';
-  return str === '<p><br></p>' || str === '';
 };

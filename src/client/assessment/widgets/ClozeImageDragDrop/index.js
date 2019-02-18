@@ -216,10 +216,13 @@ class ClozeImageDragDrop extends Component {
             {previewTab === 'check' && (
               <Display
                 checkAnswer
+                item={item}
                 options={previewDisplayOptions}
+                instructorStimulus={item.instructor_stimulus}
                 question={previewStimulus}
                 uiStyle={uiStyle}
                 templateMarkUp={item.templateMarkUp}
+                userAnswer={userAnswer}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 maxRespCount={item.maxRespCount}
@@ -241,11 +244,14 @@ class ClozeImageDragDrop extends Component {
             {previewTab === 'show' && (
               <Display
                 showAnswer
+                item={item}
+                instructorStimulus={item.instructor_stimulus}
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
                 templateMarkUp={item.templateMarkUp}
                 maxRespCount={item.maxRespCount}
+                userAnswer={userAnswer}
                 userSelections={userAnswer}
                 validation={item.validation}
                 showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
@@ -266,6 +272,8 @@ class ClozeImageDragDrop extends Component {
             {previewTab === 'clear' && (
               <Display
                 preview
+                item={item}
+                instructorStimulus={item.instructor_stimulus}
                 validation={item.validation}
                 configureOptions={{
                   duplicatedResponses,
@@ -287,6 +295,7 @@ class ClozeImageDragDrop extends Component {
                 smallSize={smallSize}
                 templateMarkUp={item.templateMarkUp}
                 userSelections={userAnswer}
+                userAnswer={userAnswer}
                 onChange={this.handleAddAnswer}
               />
             )}

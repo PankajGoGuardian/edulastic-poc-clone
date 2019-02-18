@@ -4,7 +4,6 @@ import { cloneDeep } from 'lodash';
 import { InstructorStimulus } from '@edulastic/common';
 
 import Matrix from './Matrix';
-import { isEmpty } from '../../../utils/helpers';
 import CheckAnswerButton from '../../../themes/common/CheckAnswerButton';
 
 const Preview = ({
@@ -42,9 +41,8 @@ const Preview = ({
 
   return (
     <div>
-      {!isEmpty(item.instructor_stimulus) && (
-        <InstructorStimulus dangerouslySetInnerHTML={{ __html: item.instructor_stimulus }} />
-      )}
+      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+
       <div style={{ marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
       <Matrix
         stems={item.stems}

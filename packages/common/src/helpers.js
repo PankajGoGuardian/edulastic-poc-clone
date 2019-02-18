@@ -24,7 +24,7 @@ export const ALPHABET = [
   'W',
   'X',
   'Y',
-  'Z',
+  'Z'
 ];
 
 const getDisplayName = WrappedComponent =>
@@ -32,7 +32,7 @@ const getDisplayName = WrappedComponent =>
 
 const getPaginationInfo = ({ page, limit, count }) => ({
   from: (page - 1) * limit + 1,
-  to: limit * page > count ? count : limit * page,
+  to: limit * page > count ? count : limit * page
 });
 
 const getNumeration = (index, type) => {
@@ -48,8 +48,14 @@ const getNumeration = (index, type) => {
   }
 };
 
+const isEmpty = (str) => {
+  str = typeof str === 'string' ? str.trim() : '';
+  return str === '<p><br></p>' || str === '';
+};
+
 export default {
   getDisplayName,
   getPaginationInfo,
   getNumeration,
+  isEmpty
 };

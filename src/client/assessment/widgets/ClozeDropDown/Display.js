@@ -122,7 +122,8 @@ class ClozeDropDownDisplay extends Component {
           fontSize: smallSize
             ? theme.widgets.clozeDropDown.previewTemplateBoxSmallFontSize
             : fontSize,
-          padding: smallSize ? 0 : 20 }}
+          padding: smallSize ? 0 : 20
+        }}
       >
         {templateParts.map((templatePart, index) => {
           if (templatePart.indexOf('class="response-btn"') !== -1) {
@@ -213,9 +214,7 @@ class ClozeDropDownDisplay extends Component {
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
     return (
       <div style={{ fontSize }}>
-        {instructorStimulus && (
-          <InstructorStimulus dangerouslySetInnerHTML={{ __html: instructorStimulus }} />
-        )}
+        <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         <div style={{ margin: smallSize ? '-10px -20px' : 0, borderRadius: 0 }}>
           {templateBoxLayout}

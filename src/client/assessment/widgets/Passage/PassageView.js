@@ -10,9 +10,8 @@ const PassageView = ({ item }) => {
 
   return (
     <div>
-      {item.instructor_stimulus && (
-        <InstructorStimulus dangerouslySetInnerHTML={{ __html: item.instructor_stimulus }} />
-      )}
+      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+
       <Heading>{item.heading}</Heading>
       {!item.paginated_content && item.content && (
         <div dangerouslySetInnerHTML={{ __html: item.content }} />

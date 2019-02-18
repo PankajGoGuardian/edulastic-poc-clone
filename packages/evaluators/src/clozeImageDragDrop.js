@@ -1,5 +1,20 @@
 import { isEqual } from 'lodash';
 import { ScoringType } from './const/scoring';
+import getPartialPerResponse from './helpers/getPartialPerResponse';
+
+const sort = item => (Array.isArray(item) ? item.slice().sort() : []);
+
+const getResponse = (sortedAnswer, userResponse) =>
+  sortedAnswer.reduce((acc, val, i) => {
+    const res = userResponse[i];
+
+    if (res) {
+      acc.push(res);
+      return acc;
+    }
+    acc.push([]);
+    return acc;
+  }, []);
 
 // partial match evaluation
 const partialMatchEvaluator = (
@@ -12,7 +27,7 @@ const partialMatchEvaluator = (
   let evaluation = {};
   let isCorrect = false;
 
-  const sortedUserResponse = userResponse.map(item => item.slice().sort());
+  let sortedUserResponse = userResponse.map(item => sort(item));
 
   answers.forEach(({ value: answer, score: totalScore }) => {
     if (!answer || !answer.length) {
@@ -20,7 +35,9 @@ const partialMatchEvaluator = (
     }
 
     const scorePerAnswer = totalScore / answer.length;
-    const sortedAnswer = answer.map(item => item.slice().sort());
+    const sortedAnswer = answer.map(item => sort(item));
+
+    sortedUserResponse = getResponse(sortedAnswer, sortedUserResponse);
 
     const matches = sortedUserResponse.filter((resp, index) => isEqual(resp, sortedAnswer[index]))
       .length;
@@ -33,9 +50,9 @@ const partialMatchEvaluator = (
   });
 
   if (isCorrect) {
-    evaluation = Array(userResponse.length).fill(true);
+    evaluation = Array(sortedUserResponse.length).fill(true);
   } else {
-    const solution = answers[0].value.map(item => item.slice().sort());
+    const solution = answers[0].value.map(item => sort(item));
     evaluation = userResponse.map((resp, index) => isEqual(sortedUserResponse, solution[index]));
   }
 
@@ -67,8 +84,11 @@ const exactMatchEvaluator = (
   let isCorrect = false;
 
   answers.forEach(({ value: answer, score: totalScore }) => {
-    const sortedAnswer = answer.map(item => item.slice().sort());
-    const sortedResponse = userResponse.map(item => item.slice().sort());
+    const sortedAnswer = answer.map(item => sort(item));
+
+    userResponse = getResponse(sortedAnswer, userResponse);
+
+    const sortedResponse = userResponse.map(item => sort(item));
 
     if (isEqual(sortedAnswer, sortedResponse)) {
       isCorrect = true;
@@ -80,9 +100,9 @@ const exactMatchEvaluator = (
   if (isCorrect) {
     evaluation = Array(userResponse.length).fill(true);
   } else {
-    const solution = answers[0].value.map(item => item.slice().sort());
+    const solution = answers[0].value.map(item => sort(item));
     evaluation = userResponse.map((resp, index) => {
-      const sortedResponse = resp.slice().sort();
+      const sortedResponse = sort(resp);
       return isEqual(sortedResponse, solution[index]);
     });
   }
@@ -109,6 +129,10 @@ const evaluator = ({ userResponse, validation }) => {
 
   switch (scoring_type) {
     case ScoringType.PARTIAL_MATCH:
+      return getPartialPerResponse(userResponse.length)(
+        partialMatchEvaluator(userResponse, answers, validation)
+      );
+    case ScoringType.PARTIAL_MATCH_V2:
       return partialMatchEvaluator(userResponse, answers, validation);
     case ScoringType.EXACT_MATCH:
     default:

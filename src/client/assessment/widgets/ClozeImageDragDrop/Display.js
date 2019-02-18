@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { cloneDeep, flattenDeep } from 'lodash';
 import { withTheme } from 'styled-components';
 
+import { InstructorStimulus } from '@edulastic/common';
 import DropContainer from './components/DropContainer';
 import DragItem from './components/DragItem';
 
@@ -15,6 +16,7 @@ import ResponseBoxLayout from './components/ResponseBoxLayout';
 import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout';
 import CorrectAnswerBoxLayout from './components/CorrectAnswerBoxLayout';
 import { getFontSize } from '../../utils/helpers';
+import { withCheckAnswerButton } from '../../components/HOC/withCheckAnswerButton';
 
 const defaultImageURL = 'https://assets.learnosity.com/demos/docs/colored_world_map.png';
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
@@ -137,6 +139,7 @@ class Display extends Component {
       imageWidth,
       showDashedBorder,
       backgroundColor,
+      instructorStimulus,
       theme
     } = this.props;
     const { userAnswers, possibleResponses } = this.state;
@@ -328,6 +331,7 @@ class Display extends Component {
 
     return (
       <div style={{ fontSize }}>
+        <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         <div>
           {responseposition === 'top' && (
@@ -426,7 +430,8 @@ Display.propTypes = {
   theme: PropTypes.object.isRequired,
   imageTitle: PropTypes.string,
   imageWidth: PropTypes.number,
-  maxRespCount: PropTypes.number
+  maxRespCount: PropTypes.number,
+  instructorStimulus: PropTypes.string
 };
 
 Display.defaultProps = {
@@ -461,7 +466,8 @@ Display.defaultProps = {
     heightpx: 0,
     wordwrap: false,
     responsecontainerindividuals: []
-  }
+  },
+  instructorStimulus: ''
 };
 
-export default withTheme(Display);
+export default withTheme(withCheckAnswerButton(Display));

@@ -7,7 +7,7 @@ import { helpers } from '@edulastic/common';
 
 import MatrixCell from '../MatrixCell';
 import { StyledTable } from './styled/StyledTable';
-import { getFontSize, isEmpty } from '../../../../utils/helpers';
+import { getFontSize } from '../../../../utils/helpers';
 import StyledHeader from './styled/StyledHeader';
 
 const getResponses = (validation) => {
@@ -138,12 +138,12 @@ const Matrix = ({
       render: data => getCell(i, data)
     }));
 
-    const stemTitle = !isEmpty(uiStyle.stem_title) ? (
+    const stemTitle = !helpers.isEmpty(uiStyle.stem_title) ? (
       <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.stem_title }} />
     ) : (
       ''
     );
-    const optionRowTitle = !isEmpty(uiStyle.option_row_title) ? (
+    const optionRowTitle = !helpers.isEmpty(uiStyle.option_row_title) ? (
       <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.option_row_title }} />
     ) : (
       ''

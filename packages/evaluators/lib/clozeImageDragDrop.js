@@ -13,7 +13,27 @@ var _lodash = require("lodash");
 
 var _scoring = require("./const/scoring");
 
-// partial match evaluation
+var _getPartialPerResponse = _interopRequireDefault(require("./helpers/getPartialPerResponse"));
+
+var sort = function sort(item) {
+  return Array.isArray(item) ? item.slice().sort() : [];
+};
+
+var getResponse = function getResponse(sortedAnswer, userResponse) {
+  return sortedAnswer.reduce(function (acc, val, i) {
+    var res = userResponse[i];
+
+    if (res) {
+      acc.push(res);
+      return acc;
+    }
+
+    acc.push([]);
+    return acc;
+  }, []);
+}; // partial match evaluation
+
+
 var partialMatchEvaluator = function partialMatchEvaluator() {
   var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var answers = arguments.length > 1 ? arguments[1] : undefined;
@@ -28,7 +48,7 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   var evaluation = {};
   var isCorrect = false;
   var sortedUserResponse = userResponse.map(function (item) {
-    return item.slice().sort();
+    return sort(item);
   });
   answers.forEach(function (_ref2) {
     var answer = _ref2.value,
@@ -40,8 +60,9 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
 
     var scorePerAnswer = totalScore / answer.length;
     var sortedAnswer = answer.map(function (item) {
-      return item.slice().sort();
+      return sort(item);
     });
+    sortedUserResponse = getResponse(sortedAnswer, sortedUserResponse);
     var matches = sortedUserResponse.filter(function (resp, index) {
       return (0, _lodash.isEqual)(resp, sortedAnswer[index]);
     }).length;
@@ -52,10 +73,10 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   });
 
   if (isCorrect) {
-    evaluation = Array(userResponse.length).fill(true);
+    evaluation = Array(sortedUserResponse.length).fill(true);
   } else {
     var solution = answers[0].value.map(function (item) {
-      return item.slice().sort();
+      return sort(item);
     });
     evaluation = userResponse.map(function (resp, index) {
       return (0, _lodash.isEqual)(sortedUserResponse, solution[index]);
@@ -96,10 +117,11 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
     var answer = _ref4.value,
         totalScore = _ref4.score;
     var sortedAnswer = answer.map(function (item) {
-      return item.slice().sort();
+      return sort(item);
     });
+    userResponse = getResponse(sortedAnswer, userResponse);
     var sortedResponse = userResponse.map(function (item) {
-      return item.slice().sort();
+      return sort(item);
     });
 
     if ((0, _lodash.isEqual)(sortedAnswer, sortedResponse)) {
@@ -114,10 +136,10 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
     evaluation = Array(userResponse.length).fill(true);
   } else {
     var solution = answers[0].value.map(function (item) {
-      return item.slice().sort();
+      return sort(item);
     });
     evaluation = userResponse.map(function (resp, index) {
-      var sortedResponse = resp.slice().sort();
+      var sortedResponse = sort(resp);
       return (0, _lodash.isEqual)(sortedResponse, solution[index]);
     });
   }
@@ -149,6 +171,9 @@ var evaluator = function evaluator(_ref5) {
 
   switch (scoring_type) {
     case _scoring.ScoringType.PARTIAL_MATCH:
+      return (0, _getPartialPerResponse.default)(userResponse.length)(partialMatchEvaluator(userResponse, answers, validation));
+
+    case _scoring.ScoringType.PARTIAL_MATCH_V2:
       return partialMatchEvaluator(userResponse, answers, validation);
 
     case _scoring.ScoringType.EXACT_MATCH:

@@ -131,7 +131,7 @@ class ChoiceMatrixStandardPage {
 
     // advance options
     clickOnAdvancedOptions() {
-        cy.get('[data-cy=iconPlus]')
+        cy.get('body').contains('span','Advanced Options')
             .should('be.visible')
             .click();
         return this;

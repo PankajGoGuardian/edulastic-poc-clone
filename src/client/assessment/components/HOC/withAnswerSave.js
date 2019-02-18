@@ -8,12 +8,12 @@ import { setUserAnswerAction } from '../../actions/answers';
 import { getAnswerByQuestionIdSelector } from '../../selectors/answers';
 import createShowAnswerData from '../../../author/src/utils/showAnswer';
 
-const getQuestionId = (testItemId, questionId) => testItemId || questionId || 'tmp';
+const getQuestionId = questionId => questionId || 'tmp';
 
 export default (WrappedComponent) => {
   const hocComponent = ({ setUserAnswer, testItemId, ...props }) => {
     const { data: question } = props;
-    const questionId = getQuestionId(testItemId, question.id);
+    const questionId = getQuestionId(question.id);
 
     return (
       <WrappedComponent
@@ -33,14 +33,13 @@ export default (WrappedComponent) => {
   const enhance = compose(
     withRouter,
     connect(
-      (state, { data, match }) => {
+      (state, { data }) => {
         const { id: qId, activity } = data;
         let userAnswer;
         if (activity && activity.userResponse) {
           userAnswer = activity.userResponse;
         } else {
-          const { params: { id: testItemId } } = match;
-          userAnswer = getAnswerByQuestionIdSelector(getQuestionId(testItemId, qId))(state);
+          userAnswer = getAnswerByQuestionIdSelector(getQuestionId(qId))(state);
         }
         const validation = {
           [qId]: data

@@ -7,3 +7,4 @@
 - [Application FileStructure](ApplicationFileStructure.md)
 - [Routes](routes.md)
 - [Components](componentStructure.md)
+- [Cypress Tests](cypress.md)

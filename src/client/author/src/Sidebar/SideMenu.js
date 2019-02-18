@@ -21,7 +21,8 @@ import {
   IconManage,
   IconQuestion,
   IconItemList,
-  IconTestList
+  IconTestList,
+  IconCurriculumSequence
 } from '@edulastic/icons';
 import { withWindowSizes } from '@edulastic/common';
 import { logoutAction } from '../actions/auth';
@@ -32,6 +33,11 @@ const menuItems = [
   {
     label: 'Dashboard',
     icon: IconClockDashboard
+  },
+  {
+    label: 'Curriculum Sequence',
+    icon: IconCurriculumSequence,
+    path: 'author/curriculum-sequence'
   },
   {
     label: 'Assignments',

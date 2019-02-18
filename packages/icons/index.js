@@ -110,4 +110,4 @@ export { default as IconLetters } from './src/IconLetters';
 export { default as IconRoot } from './src/IconRoot';
 export { default as IconSquareTriangle } from './src/IconSquareTriangle';
 export { default as IconSelected } from './src/IconSelected';
-
+export { default as IconCurriculumSequence } from './src/IconCurriculumSequence';

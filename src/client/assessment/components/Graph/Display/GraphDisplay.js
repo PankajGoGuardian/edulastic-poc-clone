@@ -150,7 +150,7 @@ class GraphDisplay extends Component {
       showAnswer,
       checkAnswer,
       changePreviewTab,
-      shapes: shapes,
+      shapes,
       annotation
     };
   };

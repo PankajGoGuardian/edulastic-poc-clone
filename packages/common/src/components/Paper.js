@@ -8,7 +8,7 @@ const Paper = styled.div`
   box-shadow: ${props => (props.boxShadow ? props.boxShadow : '0 3px 10px 0 rgba(0, 0, 0, 0.1)')};
 
   @media (max-width: 480px) {
-    padding: 0px;
+    padding: 28px;
   }
 `;
 

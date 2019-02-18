@@ -10,7 +10,6 @@ import { ContentWrapper, withWindowSizes } from '@edulastic/common';
 import SourceModal from './SourceModal';
 import { changeViewAction, changePreviewAction } from '../../actions/view';
 import { getViewSelector } from '../../selectors/view';
-import { MAX_MOBILE_WIDTH } from '../../constants/others';
 import { ButtonBar, SecondHeadBar } from '../common';
 import QuestionWrapper from '../../../../assessment/components/QuestionWrapper';
 import QuestionMetadata from '../../../../assessment/containers/QuestionMetadata';
@@ -106,7 +105,7 @@ class QuestionEditor extends Component {
   };
 
   render() {
-    const { view, question, windowWidth, testItemId } = this.props;
+    const { view, question, testItemId } = this.props;
     const { previewTab, showModal } = this.state;
     const itemId = question === null ? '' : question._id;
     const questionType = this.getQuestionType();
@@ -129,33 +128,25 @@ class QuestionEditor extends Component {
             previewTab={previewTab}
           />
         </ItemHeader>
-        {windowWidth > MAX_MOBILE_WIDTH && (
-          <SecondHeadBar
-            onShowSource={this.handleShowSource}
-            onShowSettings={this.handleShowSettings}
-            onChangeView={this.handleChangeView}
-            changePreviewTab={this.handleChangePreviewTab}
-            onSave={this.handleSave}
-            view={view}
-            previewTab={previewTab}
-            breadcrumb={[
-              {
-                title: 'ITEM DETAIL',
-                to: `/author/items/${testItemId}/item-detail`
-              },
-              { title: question.data.title, to: '' }
-            ]}
-          />
-        )}
-        <ContentWrapper
-          style={{
-            padding: '0px 45px',
-            overflow: 'visible'
-            // height: 'calc(100vh - 135px)'
-          }}
-        >
-          {this.renderQuestion(questionType)}
-        </ContentWrapper>
+
+        <SecondHeadBar
+          onShowSource={this.handleShowSource}
+          onShowSettings={this.handleShowSettings}
+          onChangeView={this.handleChangeView}
+          changePreviewTab={this.handleChangePreviewTab}
+          onSave={this.handleSave}
+          view={view}
+          previewTab={previewTab}
+          breadcrumb={[
+            {
+              title: 'ITEM DETAIL',
+              to: `/author/items/${testItemId}/item-detail`
+            },
+            { title: question.data.title, to: '' }
+          ]}
+        />
+
+        <ContentWrapper>{this.renderQuestion(questionType)}</ContentWrapper>
       </div>
     );
   }
@@ -171,7 +162,6 @@ QuestionEditor.propTypes = {
   match: PropTypes.object,
   saveQuestion: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  windowWidth: PropTypes.number.isRequired,
   testItemId: PropTypes.func.isRequired
 };
 

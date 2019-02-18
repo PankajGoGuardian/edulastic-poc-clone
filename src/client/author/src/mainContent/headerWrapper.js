@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { darkBlueSecondary } from '@edulastic/colors';
+import { darkBlueSecondary, mobileWidth } from '@edulastic/colors';
 import { Affix } from 'antd';
 
 const HeaderWrapper = ({ children }) => (
@@ -30,4 +30,8 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  @media (max-width: ${mobileWidth}) {
+    flex-direction: column;
+    height: 100px;
+  }
 `;

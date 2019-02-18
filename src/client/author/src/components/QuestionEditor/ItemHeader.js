@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { IconChevronLeft, IconPencilEdit } from '@edulastic/icons';
 import { FlexContainer, TextField } from '@edulastic/common';
 import {
   greenDark,
-  tabletWidth,
   mobileWidth,
   darkBlue,
   white,
@@ -14,6 +14,7 @@ import {
   darkBlueSecondary
 } from '@edulastic/colors';
 import HeaderWrapper from '../../mainContent/headerWrapper';
+import { toggleSideBarAction } from '../../actions/togglemenu';
 
 const ItemHeader = ({
   title,
@@ -22,11 +23,15 @@ const ItemHeader = ({
   reference,
   editReference,
   onChange,
-  hideIcon
+  hideIcon,
+  toggleSideBar
 }) => (
   <Container>
-    <FlexContainer alignItems="center" style={{ flex: 1 }}>
+    <ExtraFlex alignItems="center" style={{ flex: 1 }}>
       <LeftSide>
+        <ToggleButton onClick={toggleSideBar}>
+          <i className="fa fa-bars" />
+        </ToggleButton>
         <TitleNav>
           <Title>{title}</Title>
         </TitleNav>
@@ -46,7 +51,7 @@ const ItemHeader = ({
         )}
       </LeftSide>
       <RightSide>{children}</RightSide>
-    </FlexContainer>
+    </ExtraFlex>
     <LeftSide>
       {link && (
         <Back to={link.url}>
@@ -64,7 +69,8 @@ ItemHeader.propTypes = {
   reference: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   editReference: PropTypes.func,
   onChange: PropTypes.func,
-  hideIcon: PropTypes.bool
+  hideIcon: PropTypes.bool,
+  toggleSideBar: PropTypes.func.isRequired
 };
 
 ItemHeader.defaultProps = {
@@ -77,7 +83,10 @@ ItemHeader.defaultProps = {
   hideIcon: false
 };
 
-export default ItemHeader;
+export default connect(
+  () => {},
+  { toggleSideBar: toggleSideBarAction }
+)(ItemHeader);
 
 const Container = styled(HeaderWrapper)`
   background: ${darkBlue};
@@ -88,17 +97,25 @@ const Container = styled(HeaderWrapper)`
   background: ${darkBlueSecondary};
 
   @media (max-width: ${mobileWidth}) {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    height: 100px;
+  }
+`;
+
+const ExtraFlex = styled(FlexContainer)`
+  @media (max-width: ${mobileWidth}) {
+    flex-direction: column;
+    margin-top: 20px;
   }
 `;
 
 const LeftSide = styled.div`
   display: flex;
   align-items: center;
-
-  @media (max-width: ${tabletWidth}) {
-    display: none;
-    height: 0;
+  @media (max-width: ${mobileWidth}) {
+    padding-bottom: 15px;
+    padding-top: 8px;
   }
 `;
 
@@ -113,6 +130,16 @@ const Title = styled.div`
   font-weight: 700;
   line-height: 1.36;
   color: ${white};
+  @media (max-width: ${mobileWidth}) {
+    font-size: 18px;
+  }
+`;
+
+const ToggleButton = styled.div`
+  color: #fff;
+  font-size: 18px;
+  margin-right: 10px;
+  cursor: pointer;
 `;
 
 const Back = styled(Link)`
@@ -128,5 +155,6 @@ const Back = styled(Link)`
 `;
 
 const TitleNav = styled.div`
+  display: flex;
   width: 200px;
 `;

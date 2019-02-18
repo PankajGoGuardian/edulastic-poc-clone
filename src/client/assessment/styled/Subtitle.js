@@ -10,4 +10,7 @@ export const Subtitle = styled.div`
   text-align: left;
   color: ${({ color, theme }) => color || theme.common.subtitleColor};
   padding: ${({ padding }) => padding || '30px 0 16px 0'};
+  @media screen {
+    padding: 16px 0 16px 0;
+  }
 `;

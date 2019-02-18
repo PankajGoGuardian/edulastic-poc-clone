@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { mobileWidth } from '@edulastic/colors';
 
 export const Container = styled.div`
   display: flex;
@@ -9,6 +10,9 @@ export const Container = styled.div`
   z-index: ${props => props.zIndex};
   right: 120px;
   top: 0;
+  @media (max-width: ${mobileWidth}) {
+    margin-top: 32px;
+  }
 `;
 
 export const PreviewBar = styled.div`
@@ -28,4 +32,4 @@ export const Button = styled.button`
   height: 45px;
   border-radius: 37px;
   background-color: #f3f3f3;
-`
+`;

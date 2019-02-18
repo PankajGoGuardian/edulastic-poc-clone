@@ -36,7 +36,7 @@ const ItemHeader = ({ title, children, link, reference, windowWidth }) => {
       <Container>
         <FlexContainer
           alignItems="center"
-          style={{ flex: 1, paddingBottom: 20 }}
+          style={{ flex: 1, paddingBottom: 20, flexDirection: 'column' }}
         >
           <LeftSide>
             <Title>{title}</Title>
@@ -52,8 +52,7 @@ const ItemHeader = ({ title, children, link, reference, windowWidth }) => {
         <LeftSide>
           {link && (
             <Back to={link.url}>
-              <IconChevronLeft color={white} width={10} height={10} />{' '}
-              {link.text}
+              <IconChevronLeft color={white} width={10} height={10} /> {link.text}
             </Back>
           )}
         </LeftSide>
@@ -87,7 +86,10 @@ const Container = styled.div`
   height: 62px;
 
   @media (max-width: ${mobileWidth}) {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    flex-direction: column;
+    height: 135px;
   }
 `;
 
@@ -100,6 +102,9 @@ const MobileContainer = styled(HeaderWrapper)`
 const LeftSide = styled.div`
   display: flex;
   align-items: center;
+  @media (max-width: ${mobileWidth}) {
+    flex-direction: column;
+  }
 `;
 
 const RightSide = styled.div`
@@ -113,6 +118,9 @@ const Title = styled.div`
   font-weight: bold;
   line-height: 1.36;
   color: ${white};
+  @media (max-width: ${mobileWidth}) {
+    font-size: 16px !important;
+  }
 `;
 
 const Back = styled(Link)`

@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
 import { IconEye, IconCheck, IconSource, IconSettings, IconEraseText } from '@edulastic/icons';
-import { blue, darkBlue, white } from '@edulastic/colors';
+import { blue, darkBlue, white, mobileWidth } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { withWindowSizes } from '@edulastic/common';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
+import styled from 'styled-components';
 import { clearAnswersAction } from '../../../actions/answers';
 import { Container, PreviewBar } from './styled_components';
 import { ButtonLink } from '..';
@@ -65,75 +66,77 @@ class SecondHeadBar extends Component {
           <Breadcrumb data={breadcrumbData} style={{ position: 'unset', width: '100%' }} />
         )}
 
-        {view === 'edit' && (
-          <PreviewBar
-            style={{
-              width: '100%',
-              justifyContent: 'flex-end'
-            }}
-          >
-            <Button onClick={onShowSource} data-cy="source">
-              <ButtonLink
-                color="primary"
-                icon={<IconSource color={option ? white : blue} />}
-                style={{ color: option ? white : blue }}
-              >
-                {t('component.questioneditor.buttonbar.source')}
-              </ButtonLink>
-            </Button>
-            <Button onClick={onShowSettings}>
-              <ButtonLink
-                color="primary"
-                icon={<IconSettings color={option ? white : blue} />}
-                style={{ color: option ? white : blue }}
-              >
-                {t('component.questioneditor.buttonbar.layout')}
-              </ButtonLink>
-            </Button>
-          </PreviewBar>
-        )}
-        {view === 'preview' && (
-          <PreviewBar
-            style={{
-              width: '100%',
-              justifyContent: 'flex-end'
-            }}
-          >
-            <Button onClick={() => changePreviewTab('check')}>
-              <ButtonLink
-                color="primary"
-                icon={<IconCheck color={option ? white : blue} />}
-                style={{ color: option ? white : blue }}
-              >
-                {t('component.questioneditor.buttonbar.checkanswer')}
-              </ButtonLink>
-            </Button>
-            <Button onClick={() => changePreviewTab('show')}>
-              <ButtonLink
-                color="primary"
-                style={{ color: option ? white : blue }}
-                icon={<IconEye color={option ? white : blue} hoverColor={darkBlue} />}
-              >
-                {t('component.questioneditor.buttonbar.showanswers')}
-              </ButtonLink>
-            </Button>
-            <Button
-              onClick={() => {
-                clearAnswers();
-                changePreviewTab('clear');
+        <DisplayBlock>
+          {view === 'edit' && (
+            <PreviewBar
+              style={{
+                width: '100%',
+                justifyContent: 'flex-end'
               }}
             >
-              <ButtonLink
-                color="primary"
-                active={previewTab === 'clear'}
-                style={{ color: option ? white : blue }}
-                icon={<IconEraseText color={option ? white : blue} />}
+              <Button onClick={onShowSource} data-cy="source">
+                <ButtonLink
+                  color="primary"
+                  icon={<IconSource color={option ? white : blue} />}
+                  style={{ color: option ? white : blue }}
+                >
+                  {t('component.questioneditor.buttonbar.source')}
+                </ButtonLink>
+              </Button>
+              <Button onClick={onShowSettings}>
+                <ButtonLink
+                  color="primary"
+                  icon={<IconSettings color={option ? white : blue} />}
+                  style={{ color: option ? white : blue }}
+                >
+                  {t('component.questioneditor.buttonbar.layout')}
+                </ButtonLink>
+              </Button>
+            </PreviewBar>
+          )}
+          {view === 'preview' && (
+            <PreviewBar
+              style={{
+                width: '100%',
+                justifyContent: 'flex-end'
+              }}
+            >
+              <Button onClick={() => changePreviewTab('check')}>
+                <ButtonLink
+                  color="primary"
+                  icon={<IconCheck color={option ? white : blue} />}
+                  style={{ color: option ? white : blue }}
+                >
+                  {t('component.questioneditor.buttonbar.checkanswer')}
+                </ButtonLink>
+              </Button>
+              <Button onClick={() => changePreviewTab('show')}>
+                <ButtonLink
+                  color="primary"
+                  style={{ color: option ? white : blue }}
+                  icon={<IconEye color={option ? white : blue} hoverColor={darkBlue} />}
+                >
+                  {t('component.questioneditor.buttonbar.showanswers')}
+                </ButtonLink>
+              </Button>
+              <Button
+                onClick={() => {
+                  clearAnswers();
+                  changePreviewTab('clear');
+                }}
               >
-                {t('component.questioneditor.buttonbar.clear')}
-              </ButtonLink>
-            </Button>
-          </PreviewBar>
-        )}
+                <ButtonLink
+                  color="primary"
+                  active={previewTab === 'clear'}
+                  style={{ color: option ? white : blue }}
+                  icon={<IconEraseText color={option ? white : blue} />}
+                >
+                  {t('component.questioneditor.buttonbar.clear')}
+                </ButtonLink>
+              </Button>
+            </PreviewBar>
+          )}
+        </DisplayBlock>
       </Container>
     );
   }
@@ -169,3 +172,9 @@ const enhance = compose(
 );
 
 export default enhance(SecondHeadBar);
+
+const DisplayBlock = styled.div`
+  @media (max-width: ${mobileWidth}) {
+    display: none;
+  }
+`;

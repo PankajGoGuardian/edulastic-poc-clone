@@ -43,7 +43,9 @@ At root level we have following folders -
     - **suites**: constains all test spec files, organized seperately at author/student level in respective folders.
         
 - **fixtures**: contains the static test data.
-- **support**: contains the support and custom commands file.
+
+- **support**: contains all support files.Cypress includes the support file cypress/support/index.js by default and it runs before every single spec file,so here we can put all reusable Custom Commands (commands.js) or global overrides that we want use across the spec files.Just put the new support files(if any) into support folder and import into index.js.
+
 - **plugins**: contains plugins(if any).
 
 ## Rules:

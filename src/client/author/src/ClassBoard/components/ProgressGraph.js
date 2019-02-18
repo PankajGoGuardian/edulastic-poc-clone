@@ -9,20 +9,10 @@ import BarGraph from './BarGraph';
 // eslint-disable-next-line no-trailing-spaces
 export default class Graph extends Component {
   render() {
-    const { testActivity } = this.props;
-    const totalCount = testActivity.length;
-    let submittedCount = 0;
-    let presentCount = 0;
-    testActivity.forEach(({ status, present }) => {
-      if (status === 'submitted') {
-        submittedCount += 1;
-      }
-      if (present) {
-        presentCount += 1;
-      }
-    });
-    const percentage = Math.round((submittedCount / totalCount) * 100);
-    console.log(percentage);
+    const { gradebook } = this.props;
+    const submittedNum = gradebook.submittedNumber;
+    const totalNum = gradebook.total;
+    const percentage = Math.round((submittedNum / totalNum) * 100);
     return (
       <StyledDiv>
         <div>
@@ -37,11 +27,11 @@ export default class Graph extends Component {
             format={percent => `${percent}%`}
           />
           <GraphText>
-            <p>{submittedCount} out of {totalCount} Submitted</p>
-            <p>({(totalCount - presentCount) || 0} Absent)</p>
+            <p>{this.props.gradebook.submittedNumber} out of {this.props.gradebook.total} Submitted</p>
+            <p>({this.props.gradebook.absentNumber} Absent)</p>
           </GraphText>
         </div>
-        <BarGraph testActivity={testActivity} />
+        <BarGraph gradebook={gradebook} />
       </StyledDiv>
     );
   }

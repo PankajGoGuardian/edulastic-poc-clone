@@ -10,11 +10,13 @@ const classBoardTheme = themes.default.classboard;
 const roundFraction = (n) => Math.floor(n*100)/100;
 
 export default class DisneyCard extends Component {
+
   render() {
-    const { testActivity } = this.props;
-    const styledCard = [];
+    let { testActivity, assignmentId, classId } = this.props;
+    let styledCard = [];
     if (testActivity.length > 0) {
-      testActivity.forEach((student) => {
+      console.log("TestActivity", this.props.testActivity)
+      testActivity.map((student) => {
         // eslint-disable-next-line radix
         const stu_per = roundFraction((parseInt(student.score) / parseInt(student.maxScore)) * 100);
         //TODO: use constants
@@ -76,13 +78,11 @@ export default class DisneyCard extends Component {
             </PaginationInfoT>
             <StyledDivLine />
             <PagInfo>
-              <Link to={`/author/classresponses/${student.testActivityId}`}>VIEW RESPONSES <GSpan>&gt;&gt;</GSpan></Link>
+              <Link to={`/author/classresponses/${assignmentId}/${classId}`}>VIEW RESPONSES <GSpan>&gt;&gt;</GSpan></Link>
             </PagInfo>
           </StyledCard>
         );
-        if (student.testActivityId) {
-          styledCard.push(studentData);
-        }
+        styledCard.push(studentData);
       });
     }
 

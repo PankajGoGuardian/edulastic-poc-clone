@@ -96,7 +96,7 @@ class CurriculumContainer extends Component {
     // until what will call the component with specified curriculums
     this.props.getAllCurriculumSequences([
       '5c5ab082b10670586081c94f',
-      '5c5ad5894a1e7d960c092543'
+      '5c66e1fd00de7b7aa2c0c887'
     ]);
   }
 

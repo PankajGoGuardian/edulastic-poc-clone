@@ -240,7 +240,7 @@ const CurriculumWrapper = styled(Paper)`
   & {
     width: 40%;
     padding: 0;
-    margin-top: 20px;
+    margin-top: 13px;
     align-self: baseline;
     z-index: 1;
     & ${CloseButtonMobile} {

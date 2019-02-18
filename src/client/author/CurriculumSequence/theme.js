@@ -1,9 +1,7 @@
-import { green, dashBorderColor } from '@edulastic/colors';
-
 export const theme = {
   dropContainer: {
-    isOverBorderColor: green,
-    isNotOverBorderColor: dashBorderColor,
+    isOverBorderColor: 'transparent',
+    isNotOverBorderColor: 'transparent',
     noBorderColor: 'transparent'
   }
 };

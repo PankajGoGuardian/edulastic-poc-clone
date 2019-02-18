@@ -150,7 +150,7 @@ margin-left: auto;
 @media only screen and (max-width: ${desktopWidth}) {
   margin-left: 0;
   justify-items: flex-start;
-  margin-right: 100%; 
+  /* margin-right: 100%;  */
   }
 `;
 
@@ -282,7 +282,6 @@ const ModuleTitlePrefix = styled.div`
 `;
 
 const ModuleDataName = styled.div`
-  min-width: 360px;
   font-weight: 300;
   @media only screen and (max-width: ${desktopWidth}) {
     min-width: auto;
@@ -301,17 +300,15 @@ const AssignmentIconsWrapper = styled.div`
   margin-left: auto;
   padding: 0px;
   display: inline-flex;
-  width: ${(props) => !props.expanded ? '70%' : '55%'};
+  min-width: 55%;
   display: flex;
   justify-content: flex-end;
-
-  @media (max-width: ${desktopWidth}) {
+  @media only screen and (max-width: ${tabletWidth}) {
     padding-top: 10px;
     justify-content: flex-start;
     margin-right: auto;
     margin-left: 0;
   }
-
 `;
 
 const AssignmentIcon = styled.span`
@@ -357,7 +354,7 @@ margin-bottom: 0;
 margin-top: 0;
 margin-left: 0;
     }
-@media only screen and (max-width: 320px) {
+@media only screen and (max-width: ${mobileWidth}) {
   flex-direction: column;
 }
 `;
@@ -411,7 +408,7 @@ const AssignmentInnerWrapper = styled.div`
   & div, & span {
     align-items: center;
   }
-  @media only screen and (max-width: ${desktopWidth}) {
+  @media only screen and (max-width: ${tabletWidth}) {
     flex-direction: column;
     justify-items: center;
     margin-left: auto;
@@ -450,6 +447,7 @@ const ModulesAssigned = styled.div`
     justify-self: flex-start;
     padding: 0;
     margin: 0;
+    margin-bottom: 10px;
   }
 `;
 
@@ -459,8 +457,8 @@ const ModuleWrapper = styled.div`
     padding-bottom: 0;
     padding-left: 0px;
     padding-right: ${({ padding }) => (padding ? "20px" : "0px")};
-    margin-bottom: 20px;
-    margin-top: 20px;
+    margin-bottom: 10px;
+    margin-top: 10px;
   }
 
   .module-checkbox {

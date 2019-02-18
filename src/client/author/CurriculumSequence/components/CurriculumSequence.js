@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Button, Modal, Input, Cascader, Radio, Icon } from 'antd';
 import { FlexContainer } from '@edulastic/common';
-import { white, green, mainBlueColor, greenSecondary, largeDesktopWidth, desktopWidth } from '@edulastic/colors';
+import { white, green, mainBlueColor, greenSecondary, largeDesktopWidth, desktopWidth, mobileWidth } from '@edulastic/colors';
 import customContentIcon from '../assets/custom-content.svg';
 import addUnitIcon from '../assets/add-unit.svg';
 import selectContentIcon from '../assets/select-content.svg';
@@ -356,7 +356,7 @@ class CurriculumSequence extends Component {
             </ModuleProgressLabel>
             <ModuleProgress modules={destinationCurriculumSequence.modules} />
           </ModuleProgressWrapper>
-          <SubheaderActions>
+          <SubheaderActions active={isContentExpanded}>
             <AddUnitSubHeaderButtonStyle>
               <Button onClick={this.handleAddUnitOpen} type="primary">
                 <img src={addUnitIcon} alt="Add unit" />
@@ -378,7 +378,7 @@ class CurriculumSequence extends Component {
           </SubheaderActions>
         </CurriculumSubheader>
         </TopBar>
-        <Wrapper>
+        <Wrapper active={isContentExpanded}>
           {destinationCurriculumSequence && (
             <Curriculum
               padding={selectContent}
@@ -444,10 +444,15 @@ const TopBar = styled.div`
 
 const SubheaderActions = styled.div`
   display: flex;
-  @media only screen and (max-width: 1200px) {
+  @media only screen and (max-width: 1366px) {
     margin-top: 20px;
     justify-content: flex-start;
     margin-right: auto;
+  }
+  @media only screen and (max-width: 1750px) and (min-width: 1367px) {
+    margin-top: ${props => props.active ? '20px' : '' };
+    justify-content: ${props => props.active ? 'flex-start' : '' };
+    margin-right: ${props => props.active ? 'auto' : '' };
   }
 `;
 
@@ -684,9 +689,14 @@ const Wrapper = styled.div`
   padding-right: 40px;
   box-sizing: border-box;
   margin-top: -50px;
+  width: ${props => props.active ? '100%' : '80%' };
+  align-self: ${props => props.active ? 'flex-start' : 'center' };
+  margin-left: ${props => props.active ? '0px' : 'auto' };
+  margin-right: ${props => props.active ? '0px' : 'auto' };
   @media only screen and (max-width: ${desktopWidth}) {
     padding-left: 20px;
     padding-right: 20px;
+    width: 100%;
   }
 `;
 
@@ -699,7 +709,7 @@ z-index: 0;
   padding: 20px 40px 50px 30px;
   align-items: center;
 
-  @media only screen and (max-width: 320px) {
+  @media only screen and (max-width: ${mobileWidth}) {
     padding: 10px 20px;
   }
 
@@ -709,20 +719,29 @@ z-index: 0;
 `;
 
 const CurriculumSubheader = styled.div`
-  padding-left: 40px;
-  padding-right: 40px;
+  padding-left: 43px;
+  padding-right: ${props => props.active ? '30px' : '43px' };
   margin-bottom: 60px;
   z-index: 1;
   display: flex;
   align-items: center;
-  @media only screen and (max-width: 1200px) {
+  width: ${props => props.active ? '60%' : '80%' };
+  margin-left: ${props => props.active ? '' : 'auto' };
+  margin-right: ${props => props.active ? '' : 'auto' };
+  @media only screen and (max-width: 1366px) {
     flex-direction: column;
     justify-self: flex-start;
     margin-right: auto;
   }
+  @media only screen and (max-width: 1750px) and (min-width: 1367px) {
+    flex-direction: ${props => props.active ? 'column' : 'row' };
+    justify-self: ${props => props.active ? 'flex-start' : '' };
+    margin-right: ${props => props.active ? 'auto' : '' };
+  }
   @media only screen and (min-width: 1800px) {
-    width: ${props => props.active ? '60%' : '100%' };
-    padding-right: 30px;
+    width: ${props => props.active ? '60%' : '80%' };
+    margin-left: ${props => props.active ? '' : 'auto' };
+    margin-right: ${props => props.active ? '' : 'auto' };
   }
   @media only screen and (max-width: 480px) {
     padding-left: 20px;
@@ -737,7 +756,7 @@ const ButtonText = styled.div`
   font-size: 10px;
   font-weight: 600;
   display: flex;
-  @media only screen and (max-width: ${desktopWidth}) {
+  @media only screen and (max-width: 1250px) {
     display: none;
   }
 `;
@@ -804,5 +823,3 @@ const enhance = compose(
 );
 
 export default enhance(CurriculumSequence);
-
-// export default CurriculumSequence;

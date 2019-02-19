@@ -27,16 +27,7 @@ describe('Author - "Multiple choice - multiple response" type question', () => {
   context('User creates question.', () => {
     before('visit items page and select question type', () => {
       editItem.getItemWithId('5c358b480c8e6f22190d5ce0');
-      cy.get('#react-app').then(() => {
-        if (Cypress.$('button[title="Delete"]').length >= 1) {
-          editItem.getDelButton().each(() => {
-            editItem.getDelButton()
-              .eq(0)
-              .click();
-          });
-          editItem.header.save();
-        }
-      });
+      editItem.deleteAllQuestion();
       
       // create new que and select type
       editItem.addNew()
@@ -315,16 +306,7 @@ describe('Author - "Multiple choice - multiple response" type question', () => {
 
     before('delete old question and create dummy que to edit', () => {
       editItem.getItemWithId('5c358b480c8e6f22190d5ce0');
-      cy.get('#react-app').then(() => {
-        if (Cypress.$('button[title="Delete"]').length >= 1) {
-          editItem.getDelButton().each(() => {
-            editItem.getDelButton()
-              .eq(0)
-              .click();
-          });
-          editItem.header.save();
-        }
-      });
+      editItem.deleteAllQuestion();
       
       // create new que and select type
       editItem.addNew()
@@ -604,16 +586,7 @@ describe('Author - "Multiple choice - multiple response" type question', () => {
 
     before('visit items list page and select question type', () => {
       editItem.getItemWithId('5c358b480c8e6f22190d5ce0');
-      cy.get('#react-app').then(() => {
-        if (Cypress.$('button[title="Delete"]').length >= 1) {
-          editItem.getDelButton().each(() => {
-            editItem.getDelButton()
-              .eq(0)
-              .click();
-          });
-          editItem.header.save();
-        }
-      });
+      editItem.deleteAllQuestion();
 
       // add new question
       editItem.addNew()

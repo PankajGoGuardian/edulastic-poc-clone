@@ -22,17 +22,7 @@ describe('Author - "Essay with rich text" type question', () => {
   context('User creates question.', () => {
     before('visit items page and select question type', () => {
       editItem.getItemWithId('5c358b480c8e6f22190d5ce0');
-      cy.get('#react-app').then(() => {
-        if (Cypress.$('button[title="Delete"]').length >= 1) {
-          editItem.getDelButton().each(() => {
-            editItem.getDelButton()
-              .eq(0)
-              .click();
-          });
-          editItem.header.save();
-        }
-      });
-      
+      editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew()
         .chooseQuestion(queData.group, queData.queType);

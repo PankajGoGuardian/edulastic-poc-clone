@@ -22,16 +22,7 @@ describe('Test Authoring - \"Choice matrix - standard\" Type Question', () => {
   context('sanity of all the option', () => {
     before('visit items list page and select question type', () => {
       editItem.getItemWithId('5c358b480c8e6f22190d5ce0');
-      cy.get('#react-app').then(() => {
-        if (Cypress.$('button[title="Delete"]').length >= 1) {
-          editItem.getDelButton().each(() => {
-            editItem.getDelButton()
-              .eq(0)
-              .click();
-          });
-          editItem.header.save();
-        }
-      });
+      editItem.deleteAllQuestion();
 
       // add new question
       editItem.addNew()
@@ -133,16 +124,7 @@ describe('Test Authoring - \"Choice matrix - standard\" Type Question', () => {
   context('[sanity]:test => create question and validate', () =>{
     before('visit items list page and select question type', () => {
       editItem.getItemWithId('5c358b480c8e6f22190d5ce0');
-      cy.get('#react-app').then(() => {
-        if (Cypress.$('button[title="Delete"]').length >= 1) {
-          editItem.getDelButton().each(() => {
-            editItem.getDelButton()
-              .eq(0)
-              .click();
-          });
-          editItem.header.save();
-        }
-      });
+      editItem.deleteAllQuestion();
 
       // add new question
       editItem.addNew()

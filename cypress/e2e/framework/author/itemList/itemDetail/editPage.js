@@ -78,6 +78,19 @@ class EditItemPage {
         cy.visit(`/author/items/${itemUrl}/item-detail`);
         cy.wait('@getItem');
     }
+
+    deleteAllQuestion() {
+        cy.get('#react-app').then(() => {
+            if (Cypress.$('button[title="Delete"]').length >= 1) {
+              this.getDelButton().each(() => {
+                this.getDelButton()
+                  .eq(0)
+                  .click();
+              });
+              this.header.save();
+            }
+          });
+    }
 }
 
 export default EditItemPage;

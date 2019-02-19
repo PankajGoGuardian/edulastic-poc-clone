@@ -17,7 +17,7 @@ const testActivity = ({ assignmentId, classId }) =>
       url: `${prefix}/${assignmentId}/classes/${classId}/test-activity`,
       method: 'get'
     })
-    .then(result => result.data.result);
+    .then(result => result.data);
 
 export default {
   gradebook,

@@ -35,10 +35,10 @@ function* receiveGradeBookSaga({ payload }) {
 
 function* receiveTestActivitySaga({ payload }) {
   try {
-    const entities = yield call(classBoardApi.testActivity, payload);
+    const {result,additionalData} = yield call(classBoardApi.testActivity, payload);
     yield put({
       type: RECEIVE_TESTACTIVITY_SUCCESS,
-      payload: { entities }
+      payload: { entities:result,additionalData}
     });
   } catch (err) {
     const errorMessage = 'Receive tests is failing';
@@ -132,4 +132,10 @@ export const getGradeBookSelector = createSelector(
 export const getTestActivitySelector = createSelector(
   stateTestActivitySelector,
   state => state.entities
+);
+
+
+export const getAdditionalDataSelector = createSelector(
+  stateTestActivitySelector,
+  state => state.additionalData
 );

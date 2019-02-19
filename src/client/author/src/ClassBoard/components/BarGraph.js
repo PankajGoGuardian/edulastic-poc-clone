@@ -11,7 +11,7 @@ export default class BarGraph extends Component {
     if (itemsSum) {
       itemsSum.map((item, index) => {
         data.push({
-          name: `Q${index}`,
+          name: `Q${index+1}`,
           red: item.wrongNum || 0,
           yellow: item.correctNum || 0,
           green: item.partialNum || 0,

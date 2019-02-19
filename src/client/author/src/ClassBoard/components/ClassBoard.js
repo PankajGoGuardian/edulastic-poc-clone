@@ -15,7 +15,8 @@ import { withNamespaces } from '@edulastic/localization';
 import { receiveGradeBookdAction, receiveTestActivitydAction } from '../../actions/classBoard';
 import {
   getGradeBookSelector,
-  getTestActivitySelector
+  getTestActivitySelector,
+  getAdditionalDataSelector
 } from '../ducks';
 import HooksContainer from './HooksContainer';
 
@@ -80,9 +81,11 @@ class ClassBoard extends Component {
       testActivity,
       creating,
       match,
+      additionalData={classes:[]},
       // eslint-disable-next-line react/prop-types
       t
     } = this.props;
+    console
     const { assignmentId, classId } = match.params;
     return (
       <div>
@@ -92,15 +95,16 @@ class ClassBoard extends Component {
           onCreate={this.handleCreate}
           creating={creating}
           assignmentId={assignmentId}
+          additionalData={additionalData}
           classId={classId}
         />
         <StyledFlexContainer
           justifyContent="space-between"
         >
           <PaginationInfo>
-            &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> / <Anchor>CALIFORNIA VERSION 4</Anchor> / <Anchor>CLASS 1</Anchor>
+            &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> / <Anchor>{additionalData.testName}</Anchor> / <Anchor>{additionalData.className}</Anchor>
           </PaginationInfo>
-          <SortBar />
+          <SortBar additionalData={additionalData} history={history} />
         </StyledFlexContainer>
         <StyledCard bordered={false}>
           <Graph gradebook={gradebook} />
@@ -145,6 +149,7 @@ const enhance = compose(
     state => ({
       gradebook: getGradeBookSelector(state),
       testActivity: getTestActivitySelector(state),
+      additionalData: getAdditionalDataSelector(state)
     }),
     {
       loadGradebook: receiveGradeBookdAction,

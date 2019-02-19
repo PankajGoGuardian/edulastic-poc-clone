@@ -65,7 +65,7 @@ export default class Score extends Component {
       if (data.maxScore) {
         if (data.avgScore) {
           // eslint-disable-next-line radix
-          avg_per = (parseInt(data.avgScore) / parseInt(data.maxScore)) * 100;
+          avg_per = (parseFloat(data.avgScore) / parseFloat(data.maxScore)) * 100;
         } else {
           avg_per = 0;
         }
@@ -74,7 +74,7 @@ export default class Score extends Component {
         // eslint-disable-next-line no-lonely-if
         if (data.avgScore) {
           // eslint-disable-next-line radix
-          avg_per = ((parseInt(data.avgScore)) / 1) * 100;
+          avg_per = ((parseFloat(data.avgScore)) / 1) * 100;
         } else {
           avg_per = 0;
         }

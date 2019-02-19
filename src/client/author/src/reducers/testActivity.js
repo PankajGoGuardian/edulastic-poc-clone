@@ -31,7 +31,8 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         loading: false,
-        entities: payload.entities
+        entities: payload.entities,
+        additionalData: payload.additionalData
       };
     case REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD:
       let entity = payload;

@@ -6,11 +6,13 @@ import { themes } from '../../../../student/themes';
 
 const classBoardTheme = themes.default.classboard;
 
-const SortBar = () => (
+const SortBar = ({additionalData={classes:[]},assignmentId,history}) => (
   <FlexContainer>
     <Container>
-      <StyledSelect defaultValue="">
-        <Select.Option value="">Class 1</Select.Option>
+      <StyledSelect onChange={(v)=>{
+        history.push(`/author/classboard/${assignmentId}/${v}`)
+      }} value={additionalData.classId}>
+      {additionalData.classes.map(x =>  <Select.Option value={x._id}>{x.name}</Select.Option>)}
       </StyledSelect>
     </Container>
   </FlexContainer>

@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import HeaderWrapper from '../../mainContent/headerWrapper';
 import Assigned from '../../assets/assignments/assigned.svg';
 import { themes } from '../../../../student/themes';
+import moment from 'moment';
 
 const classBoardTheme = themes.default.classboard;
 
@@ -57,13 +58,17 @@ class ListHeader extends Component {
 
   render() {
     const {
-      t
+      t,
+      additionalData={}
     } = this.props;
+    const endDate = additionalData.endDate;
+    const dueDate = (isNaN(endDate))? new Date(endDate): new Date(parseInt(endDate));
+
     return (
       <Container>
         <StyledTitle>
-          <StyledParaFirst>Class 1</StyledParaFirst>
-          <StyledParaSecond>Done (Due on 26 October, 2018)</StyledParaSecond>
+          <StyledParaFirst>{additionalData.className||'loading...'}</StyledParaFirst>
+          <StyledParaSecond>(Due on {additionalData.endDate && moment(dueDate).format("MMMM Do YYYY")})</StyledParaSecond>
         </StyledTitle>
         <StyledTabs>
           <StyledAnchorA><StyledLink to={`/author/classboard/${this.props.assignmentId}/${this.props.classId}`}><img src={Assigned} /><SpaceD />{t('common.liveClassBoard')}</StyledLink></StyledAnchorA>

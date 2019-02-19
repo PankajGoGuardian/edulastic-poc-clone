@@ -15,7 +15,7 @@ const ExpressGrader = lazy(() => import('./ExpressGrader/components'));
 const TestList = lazy(() => import('../TestList'));
 const TestPage = lazy(() => import('../TestPage'));
 const QuestionEditor = lazy(() => import('./components/QuestionEditor'));
-const ItemList = lazy(() => import('./components/ItemList'));
+const ItemList = lazy(() => import('../ItemList'));
 const ItemDetail = lazy(() => import('./components/ItemDetail'));
 const ItemAdd = lazy(() => import('./components/ItemAdd'));
 

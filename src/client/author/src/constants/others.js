@@ -33,4 +33,5 @@ export const QUESTION_ANSWERS = 'QUESTION_ANSWERS';
 export const QUESTION_USERSELECTIONS = 'QUESTION_USERSELECTIONS';
 export const ASSESSMENTID = 'AssessmentId';
 export const SMALL_DESKTOP_WIDTH = 993;
+export const MAX_TAB_WIDTH = 768;
 export const MAX_MOBILE_WIDTH = 468;

@@ -4,26 +4,17 @@ import PropTypes from 'prop-types';
 import { Pagination, Spin } from 'antd';
 import { Paper, withWindowSizes } from '@edulastic/common';
 import { compose } from 'redux';
-import styled from 'styled-components';
 import { withNamespaces } from '@edulastic/localization';
-import {
-  mobileWidth,
-  desktopWidth,
-  secondaryTextColor,
-  greenDark,
-  white,
-  tabletWidth
-} from '@edulastic/colors';
-
-import Item from './Item';
-import ItemFilter from './ItemFilter';
-import ListHeader from '../common/ListHeader';
-import { createTestItemAction } from '../../actions/testItem';
+import { Container, Element, ListItems } from './styled';
+import Item from '../Item/Item';
+import ItemFilter from '../ItemFilter/ItemFilter';
+import ListHeader from '../../../src/components/common/ListHeader';
+import { createTestItemAction } from '../../../src/actions/testItem';
 import {
   getDictCurriculumsAction,
   getDictStandardsForCurriculumAction,
   clearDictStandardsAction
-} from '../../actions/dictionaries';
+} from '../../../src/actions/dictionaries';
 import {
   getTestItemsSelector,
   getTestsItemsCountSelector,
@@ -33,11 +24,11 @@ import {
   receiveTestItemsAction
 } from '../../../TestPage/components/AddItems/ducks';
 import { getItemsTypesSelector } from '../../../TestPage/components/Review/ducks';
-import { getTestItemCreatingSelector } from '../../selectors/testItem';
+import { getTestItemCreatingSelector } from '../../../src/selectors/testItem';
 import {
   getCurriculumsListSelector,
   getStandardsListSelector
-} from '../../selectors/dictionaries';
+} from '../../../src/selectors/dictionaries';
 
 export const getClearSearchState = () => ({
   subject: '',
@@ -49,10 +40,19 @@ export const getClearSearchState = () => ({
   grades: []
 });
 
-class ItemList extends Component {
+// container the main entry point to the component
+class Contaier extends Component {
   state = {
     search: getClearSearchState()
   };
+
+  componentDidMount() {
+    const { receiveItems, curriculums, getCurriculums } = this.props;
+    receiveItems();
+    if (curriculums.length === 0) {
+      getCurriculums();
+    }
+  }
 
   handleSearch = () => {
     const { search } = this.state;
@@ -135,26 +135,37 @@ class ItemList extends Component {
     );
   };
 
-  componentDidMount() {
-    const { receiveItems, curriculums, getCurriculums } = this.props;
-    receiveItems();
-    if (curriculums.length === 0) {
-      getCurriculums();
+  renderItems = () => {
+    const {
+      loading,
+      items,
+      itemTypes,
+      history,
+      windowWidth
+    } = this.props;
+
+    if (loading) {
+      return (<Spin size="large" />);
     }
-  }
+    return items.map(item => (
+      <Item
+        key={item._id}
+        item={item}
+        types={itemTypes[item._id]}
+        history={history}
+        windowWidth={windowWidth}
+      />
+    ));
+  };
 
   render() {
     const {
-      items,
       windowWidth,
-      history,
       creating,
       t,
-      itemTypes,
       curriculums,
       getCurriculumStandards,
-      curriculumStandards,
-      loading
+      curriculumStandards
     } = this.props;
     const { search } = this.state;
 
@@ -179,23 +190,13 @@ class ItemList extends Component {
           />
           <ListItems>
             {windowWidth > 468 && this.renderPagination()}
-            <Items>
+            <Element>
               <Paper
-                padding={windowWidth > 768 ? '25px 39px 25px 39px' : '0px'}
+                padding={windowWidth > 768 ? '25px 39px' : '0px'}
               >
-                {loading && <Spin size="large" />}
-                {!loading &&
-                  items.map(item => (
-                    <Item
-                      key={item._id}
-                      item={item}
-                      types={itemTypes[item._id]}
-                      history={history}
-                      windowWidth={windowWidth}
-                    />
-                  ))}
+                {this.renderItems()}
               </Paper>
-            </Items>
+            </Element>
             {this.renderPagination()}
           </ListItems>
         </Container>
@@ -204,7 +205,7 @@ class ItemList extends Component {
   }
 }
 
-ItemList.propTypes = {
+Contaier.propTypes = {
   items: PropTypes.array.isRequired,
   limit: PropTypes.number.isRequired,
   page: PropTypes.number.isRequired,
@@ -256,58 +257,4 @@ const enhance = compose(
   )
 );
 
-export default enhance(ItemList);
-
-const Container = styled.div`
-  padding: 20px;
-  left: 0;
-  right: 0;
-  height: 100%;
-  overflow: auto;
-  display: flex;
-  position: relative;
-  @media (max-width: ${desktopWidth}) {
-    flex-direction: column;
-  }
-  @media (max-width: ${mobileWidth}) {
-    padding-bottom: 40px;
-  }
-`;
-
-const ListItems = styled.div`
-  flex: 1;
-  .ant-pagination {
-    display: flex;
-    @media (max-width: ${tabletWidth}) {
-      justify-content: flex-end;
-      margin-left: 29px !important;
-    }
-  }
-
-  .ant-pagination-total-text {
-    flex: 1;
-    font-size: 13px;
-    font-weight: 600;
-    font-family: 'Open Sans';
-    color: ${secondaryTextColor};
-    letter-spacing: normal;
-  }
-
-  .ant-pagination-item-active {
-    border: none;
-    opacity: 0.75;
-    background-color: ${greenDark};
-  }
-
-  .ant-pagination-item-active a {
-    color: ${white};
-  }
-`;
-
-const Items = styled.div`
-  margin: 14px 0px;
-
-  @media (max-width: ${mobileWidth}) {
-    margin: 20px 0px;
-  }
-`;
+export default enhance(Contaier);

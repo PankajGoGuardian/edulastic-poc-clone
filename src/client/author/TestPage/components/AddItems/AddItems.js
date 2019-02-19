@@ -33,8 +33,8 @@ import {
   receiveTestItemsAction
 } from './ducks';
 import ItemsTable from '../common/ItemsTable/ItemsTable';
-import ItemFilter from '../../../src/components/ItemList/ItemFilter';
-import { getClearSearchState } from '../../../src/components/ItemList/ItemList';
+import ItemFilter from '../../../ItemList/components/ItemFilter/ItemFilter';
+import { getClearSearchState } from '../../../ItemList';
 
 class AddItems extends PureComponent {
   static propTypes = {

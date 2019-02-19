@@ -84,7 +84,7 @@ ItemHeader.defaultProps = {
 };
 
 export default connect(
-  () => {},
+  null,
   { toggleSideBar: toggleSideBarAction }
 )(ItemHeader);
 

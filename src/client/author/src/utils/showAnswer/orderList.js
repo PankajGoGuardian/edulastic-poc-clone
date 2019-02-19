@@ -1,4 +1,4 @@
-const createEvaluation = ({ validation }, answer) => {
+const createEvaluation = ({ validation }, answer = []) => {
   const correct = validation.valid_response.value;
   const result = {};
   answer.forEach((resp, index) => {

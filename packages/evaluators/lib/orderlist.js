@@ -16,7 +16,7 @@ var _scoring = require("./const/scoring");
 // exact-match evaluator
 var exactMatchEvaluator = function exactMatchEvaluator() {
   var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-  var answers = arguments.length > 1 ? arguments[1] : undefined;
+  var answers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
   var _ref = arguments.length > 2 ? arguments[2] : undefined,
       automarkable = _ref.automarkable,

@@ -217,6 +217,7 @@ class OrderList extends Component {
     if (!item) return null;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
+
     return (
       <Fragment>
         {view === EDIT && (

@@ -100,11 +100,8 @@ const QuestionWrapper = ({ type, data, showFeedback, multiple, ...restProps }) =
         <div style={{ flex: 'auto' }}>
           <Question item={data} {...restProps} />
         </div>
-        {showFeedback && (
-          multiple ?
-            <FeedbackBottom widget={data} /> :
-            <FeedbackRight widget={data} />
-        )}
+        {showFeedback &&
+          (multiple ? <FeedbackBottom widget={data} /> : <FeedbackRight widget={data} />)}
       </Fragment>
     </ThemeProvider>
   );

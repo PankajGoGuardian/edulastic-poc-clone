@@ -21,7 +21,8 @@ class StudentTestPage {
     return cy.get('[data-cy=next]');
   }
 
-  clickOnNext() {
+  clickOnNext() { 
+    cy.wait(500);
     this.getNext()
       .should('be.visible')
       .click();

@@ -18,7 +18,7 @@ export default class DisneyCard extends Component {
       console.log("TestActivity", this.props.testActivity)
       testActivity.map((student) => {
         // eslint-disable-next-line radix
-        const stu_per = roundFraction((parseInt(student.score) / parseInt(student.maxScore)) * 100);
+        const stu_per = roundFraction((parseFloat(student.score) / parseFloat(student.maxScore)) * 100);
         //TODO: use constants
         let status = 'NOT STARTED';
         if(student.status === 'notStarted'){

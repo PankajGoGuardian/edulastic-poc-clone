@@ -54,3 +54,7 @@ export const calculateRatio = (imagescale, fontsize, imageWidth) => {
       return imageWidth * 1;
   }
 };
+
+export const preventEvent = (e) => {
+  e.preventDefault();
+};

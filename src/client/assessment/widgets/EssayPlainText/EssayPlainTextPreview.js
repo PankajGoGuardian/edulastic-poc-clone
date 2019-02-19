@@ -20,6 +20,7 @@ import { Toolbar } from '../../styled/Toolbar';
 import { Item } from '../../styled/Item';
 
 import { ToolbarItem } from './styled/ToolbarItem';
+import { preventEvent } from '../../utils/helpers';
 
 const EssayPlainTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswer, theme }) => {
   const [text, setText] = useState(Array.isArray(userAnswer) ? '' : userAnswer);
@@ -133,6 +134,9 @@ const EssayPlainTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswe
         value={smallSize ? t('component.essayText.plain.templateText') : text}
         onChange={handleTextChange}
         size="large"
+        onPaste={preventEvent}
+        onCopy={preventEvent}
+        onCut={preventEvent}
       />
 
       {item.show_word_count && (

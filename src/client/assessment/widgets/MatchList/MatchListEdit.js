@@ -20,6 +20,7 @@ import { EDIT } from '../../constants/constantsForQuestions';
 
 import GroupPossibleResponses from './components/GroupPossibleResponses';
 import MatchListPreview from './MatchListPreview';
+import AdvancedOptions from '../SortList/components/AdvancedOptions';
 
 const OptionsList = withPoints(MatchListPreview);
 
@@ -259,6 +260,13 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
+  const handleUiStyleChange = (prop, uiStyle) => {
+    const newItem = cloneDeep(item);
+
+    newItem.ui_style[prop] = uiStyle;
+    setQuestionData(newItem);
+  };
+
   const handleGroupChange = ind => (index, value) => {
     const newItem = cloneDeep(item);
 
@@ -314,6 +322,7 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
           onCloseTab={handleCloseTab}
         />
       </Paper>
+      <AdvancedOptions onUiChange={handleUiStyleChange} />
     </Fragment>
   );
 };

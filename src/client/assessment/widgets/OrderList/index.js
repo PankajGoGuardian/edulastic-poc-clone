@@ -21,6 +21,7 @@ import withAddButton from '../../components/HOC/withAddButton';
 import withPoints from '../../components/HOC/withPoints';
 import OrderListPreview from './components/OrderListPreview';
 import OrderListReport from './components/OrderListReport';
+import AdvancedOptions from '../SortList/components/AdvancedOptions';
 
 const EmptyWrapper = styled.div``;
 
@@ -165,6 +166,14 @@ class OrderList extends Component {
       setQuestionData(newItem);
     };
 
+    const handleUiStyleChange = (prop, uiStyle) => {
+      const { setQuestionData, item } = this.props;
+      const newItem = cloneDeep(item);
+
+      newItem.ui_style[prop] = uiStyle;
+      setQuestionData(newItem);
+    };
+
     const handleUpdatePoints = (points) => {
       const { setQuestionData, item } = this.props;
       const newItem = cloneDeep(item);
@@ -221,33 +230,36 @@ class OrderList extends Component {
     return (
       <Fragment>
         {view === EDIT && (
-          <Paper>
-            <Subtitle>{t('component.orderlist.composeQuestion')}</Subtitle>
+          <Fragment>
+            <Paper>
+              <Subtitle>{t('component.orderlist.composeQuestion')}</Subtitle>
 
-            <QuestionTextArea
-              onChange={handleQuestionChange}
-              value={item.stimulus}
-              style={{ marginBottom: 30 }}
-            />
-            <Subtitle>{t('component.orderlist.list')}</Subtitle>
-            <List
-              onAdd={handleAddQuestion}
-              items={item.list}
-              onSortEnd={onSortOrderListEnd}
-              useDragHandle
-              onRemove={handleDeleteQuestion}
-              onChange={handleQuestionsChange}
-            />
+              <QuestionTextArea
+                onChange={handleQuestionChange}
+                value={item.stimulus}
+                style={{ marginBottom: 30 }}
+              />
+              <Subtitle>{t('component.orderlist.list')}</Subtitle>
+              <List
+                onAdd={handleAddQuestion}
+                items={item.list}
+                onSortEnd={onSortOrderListEnd}
+                useDragHandle
+                onRemove={handleDeleteQuestion}
+                onChange={handleQuestionsChange}
+              />
 
-            <CorrectAnswers
-              onTabChange={onTabChange}
-              correctTab={correctTab}
-              onAdd={handleAddAltResponse}
-              validation={item.validation}
-              options={renderOptions()}
-              onCloseTab={handleDeleteAltAnswers}
-            />
-          </Paper>
+              <CorrectAnswers
+                onTabChange={onTabChange}
+                correctTab={correctTab}
+                onAdd={handleAddAltResponse}
+                validation={item.validation}
+                options={renderOptions()}
+                onCloseTab={handleDeleteAltAnswers}
+              />
+            </Paper>
+            <AdvancedOptions onUiChange={handleUiStyleChange} />
+          </Fragment>
         )}
         {view === PREVIEW && (
           <Wrapper>

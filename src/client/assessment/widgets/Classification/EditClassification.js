@@ -22,6 +22,7 @@ import { setQuestionDataAction } from '../../../author/src/actions/question';
 
 import GroupPossibleResponses from './components/GroupPossibleResponses';
 import ClassificationPreview from './ClassificationPreview';
+import AdvancedOptions from '../SortList/components/AdvancedOptions';
 
 const List = withAddButton(QuillSortableList);
 
@@ -253,6 +254,13 @@ const EditClassification = ({ item, setQuestionData, theme, t }) => {
     setQuestionData(newItem);
   };
 
+  const handleUiStyleChange = (prop, uiStyle) => {
+    const newItem = cloneDeep(item);
+
+    newItem.ui_style[prop] = uiStyle;
+    setQuestionData(newItem);
+  };
+
   const handleAddAnswer = () => {
     const newItem = cloneDeep(item);
 
@@ -463,6 +471,7 @@ const EditClassification = ({ item, setQuestionData, theme, t }) => {
           onCloseTab={handleCloseTab}
         />
       </Paper>
+      <AdvancedOptions onUiChange={handleUiStyleChange} />
     </Fragment>
   );
 };

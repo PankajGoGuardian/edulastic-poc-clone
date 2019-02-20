@@ -18,6 +18,7 @@ import { Subtitle } from '../../styled/Subtitle';
 import ShadesView from './components/ShadesView';
 import ShadingPreview from './ShadingPreview';
 import { StyledCheckbox } from './styled/StyledCheckbox';
+import AdvancedOptions from '../SortList/components/AdvancedOptions';
 
 const OptionsList = withPoints(ShadingPreview);
 
@@ -120,6 +121,13 @@ const ShadingEdit = ({ item, setQuestionData, t, theme }) => {
       newItem.canvas.shaded.splice(indexOfSameShade, 1);
     }
 
+    setQuestionData(newItem);
+  };
+
+  const handleUiStyleChange = (prop, uiStyle) => {
+    const newItem = cloneDeep(item);
+
+    newItem.ui_style[prop] = uiStyle;
     setQuestionData(newItem);
   };
 
@@ -251,6 +259,8 @@ const ShadingEdit = ({ item, setQuestionData, t, theme }) => {
           onCloseTab={handleCloseTab}
         />
       </Paper>
+
+      <AdvancedOptions onUiChange={handleUiStyleChange} />
     </Fragment>
   );
 };

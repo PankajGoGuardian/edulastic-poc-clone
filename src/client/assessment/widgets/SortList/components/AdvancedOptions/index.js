@@ -3,25 +3,25 @@ import PropTypes from 'prop-types';
 
 import { withNamespaces } from '@edulastic/localization';
 
+import { Row, Col } from 'antd';
 import WidgetOptions from '../../../../containers/WidgetOptions';
 import FontSizeSelect from '../../../../components/FontSizeSelect';
 import OrientationSelect from '../../../../components/OrientationSelect';
 import { Subtitle } from '../../../../styled/Subtitle';
 
-import { FlexRow } from './styled/FlexRow';
-import { Flex } from './styled/Flex';
 import { Hr } from './styled/Hr';
+import Extras from '../../../../containers/Extras';
 
 const AdvancedOptions = ({ t, onUiChange }) => {
   const [fontsize, setFontsize] = useState('normal');
   const [orientation, setOrientation] = useState('horizontal');
 
   return (
-    <WidgetOptions title={t('common.options.title')}>
+    <WidgetOptions outerStyle={{ marginTop: 40 }} title={t('common.options.title')}>
       <Hr />
       <Subtitle style={{ padding: 0, marginBottom: 21 }}>{t('component.options.layout')}</Subtitle>
-      <FlexRow>
-        <Flex flexDir="column">
+      <Row style={{ marginBottom: 40 }} gutter={70}>
+        <Col md={12}>
           <FontSizeSelect
             data-cy="fontSize"
             value={fontsize}
@@ -30,8 +30,8 @@ const AdvancedOptions = ({ t, onUiChange }) => {
               setFontsize(val);
             }}
           />
-        </Flex>
-        <Flex flexDir="column">
+        </Col>
+        <Col md={12}>
           <OrientationSelect
             data-cy="orientation"
             value={orientation}
@@ -40,8 +40,11 @@ const AdvancedOptions = ({ t, onUiChange }) => {
               setOrientation(val);
             }}
           />
-        </Flex>
-      </FlexRow>
+        </Col>
+      </Row>
+      <Extras>
+        <Extras.Distractors />
+      </Extras>
     </WidgetOptions>
   );
 };

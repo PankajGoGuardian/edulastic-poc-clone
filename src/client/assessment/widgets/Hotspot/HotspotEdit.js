@@ -28,6 +28,7 @@ import LocalColorPickers from './components/LocalColorPickers';
 import AreasContainer from './AreasContainer';
 import HotspotPreview from './HotspotPreview';
 import { StyledCheckbox } from './styled/StyledCheckbox';
+import AdvancedOptions from '../SortList/components/AdvancedOptions';
 
 const OptionsList = withPoints(HotspotPreview);
 
@@ -243,6 +244,13 @@ const HotspotEdit = ({ item, setQuestionData, t, theme }) => {
     setQuestionData(newItem);
   };
 
+  const handleUiStyleChange = (prop, uiStyle) => {
+    const newItem = cloneDeep(item);
+
+    newItem.ui_style[prop] = uiStyle;
+    setQuestionData(newItem);
+  };
+
   const renderOptions = () => (
     <OptionsList
       item={item}
@@ -379,6 +387,8 @@ const HotspotEdit = ({ item, setQuestionData, t, theme }) => {
           {t('component.hotspot.multipleResponses')}
         </StyledCheckbox>
       </Paper>
+
+      <AdvancedOptions onUiChange={handleUiStyleChange} />
     </Fragment>
   );
 };

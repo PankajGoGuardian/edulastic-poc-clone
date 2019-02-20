@@ -20,6 +20,7 @@ import { Subtitle } from '../../styled/Subtitle';
 import TokenHighlightPreview from './TokenHighlightPreview';
 import { Container } from './styled/Container';
 import { ModeButton } from './styled/ModeButton';
+import AdvancedOptions from '../SortList/components/AdvancedOptions';
 
 const OptionsList = withPoints(TokenHighlightPreview);
 
@@ -104,6 +105,14 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
     setTemplate(newTemplate);
     setQuestionData(newItem);
   };
+
+  const handleUiStyleChange = (prop, uiStyle) => {
+    const newItem = cloneDeep(item);
+
+    newItem.ui_style[prop] = uiStyle;
+    setQuestionData(newItem);
+  };
+
 
   const handleAddAnswer = () => {
     const newItem = cloneDeep(item);
@@ -241,6 +250,8 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
           onCloseTab={handleCloseTab}
         />
       </Paper>
+
+      <AdvancedOptions onUiChange={handleUiStyleChange} />
     </Fragment>
   );
 };

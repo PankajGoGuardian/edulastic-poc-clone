@@ -1,9 +1,7 @@
 import { createSelector } from 'reselect';
-import { cloneDeep, get } from 'lodash';
-import { questionType } from '@edulastic/constants';
+import { cloneDeep } from 'lodash';
 import { getAnswersListSelector } from './answers';
 
-const { ESSAY_RICH_TEXT, ESSAY_PLAIN_TEXT, HIGHLIGHT_IMAGE } = questionType;
 const stateSelector = state => state.test;
 
 export const currentItemIndexSelector = createSelector(
@@ -36,18 +34,8 @@ export const currentQuestions = createSelector(
 export const answersForCheck = createSelector(
   getAnswersListSelector,
   currentQuestions,
-  (answers, questions) => {
+  (answers) => {
     const newAnswers = cloneDeep(answers);
-    const types = [ESSAY_RICH_TEXT, ESSAY_PLAIN_TEXT, HIGHLIGHT_IMAGE];
-
-    Object.keys(newAnswers).forEach((key) => {
-      const question = questions.find(({ entity }) => entity.id === key);
-      const type = get(question, 'entity.type');
-
-      if (question && types.includes(type)) {
-        delete newAnswers[key];
-      }
-    });
 
     return newAnswers;
   }

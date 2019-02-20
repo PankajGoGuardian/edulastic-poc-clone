@@ -1,4 +1,4 @@
-import { testItemsApi, testActivityApi, testsApi } from '@edulastic/api';
+import { testActivityApi, testsApi } from '@edulastic/api';
 import { takeEvery, call, all, put, select } from 'redux-saga/effects';
 import { push } from 'react-router-redux';
 
@@ -10,25 +10,22 @@ import {
   LOAD_PREVIOUS_RESPONSES,
   LOAD_ANSWERS,
   SET_TEST_ACTIVITY_ID,
-  GOTO_ITEM,
   LOAD_SCRATCH_PAD
 } from '../constants/actions';
 import { SET_RESUME_STATUS } from '../../student/Assignments/ducks';
 
 function* loadTest({ payload }) {
   try {
-    let { testActivityId, testId } = payload;
+    const { testActivityId, testId } = payload;
     yield put({
       type: SET_TEST_ID,
       payload: {
-        testId: testId
+        testId
       }
     });
 
     // if testActivityId is passed, need to load previous responses as well!
-    let getTestActivity = testActivityId
-      ? call(testActivityApi.getById, testActivityId)
-      : false;
+    const getTestActivity = testActivityId ? call(testActivityApi.getById, testActivityId) : false;
     const [test, testActivity] = yield all([
       call(testsApi.getById, testId, {
         validation: true,
@@ -47,17 +44,17 @@ function* loadTest({ payload }) {
     // if testActivity is present.
     if (testActivity) {
       let allAnswers = {};
-      let userWork = {};
+      const userWork = {};
 
       yield put({
         type: SET_TEST_ACTIVITY_ID,
         payload: { testActivityId }
       });
 
-      let { questionActivities } = testActivity;
+      const { questionActivities } = testActivity;
       let lastAttemptedQuestion = questionActivities[0];
 
-      questionActivities.forEach(item => {
+      questionActivities.forEach((item) => {
         allAnswers = {
           ...allAnswers,
           [item.qid]: item.userResponse
@@ -89,7 +86,7 @@ function* loadTest({ payload }) {
       });
 
       // only load from previous attempted if resuming from assignments page
-      let loadFromLast = yield select(state => state.test && state.test.resume);
+      const loadFromLast = yield select(state => state.test && state.test.resume);
 
       // move to last attended question
       if (loadFromLast) {
@@ -108,9 +105,7 @@ function* loadTest({ payload }) {
 // load users previous responses for a particular test
 function* loadPreviousResponses() {
   try {
-    const testActivityId = yield select(
-      state => state.test && state.test.testActivityId
-    );
+    const testActivityId = yield select(state => state.test && state.test.testActivityId);
     const answers = yield testActivityApi.previousResponses(testActivityId);
     yield put({
       type: LOAD_ANSWERS,
@@ -123,9 +118,7 @@ function* loadPreviousResponses() {
 
 function* submitTest() {
   try {
-    const testActivityId = yield select(
-      state => state.test && state.test.testActivityId
-    );
+    const testActivityId = yield select(state => state.test && state.test.testActivityId);
     if (testActivityId === 'test') {
       console.log('practice test');
       return;

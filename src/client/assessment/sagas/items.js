@@ -5,7 +5,6 @@ import {
   RECEIVE_ITEM_REQUEST,
   RECEIVE_ITEM_SUCCESS,
   RECEIVE_ITEM_ERROR,
-  RECEIVE_ITEMS_REQUEST,
   RECEIVE_ITEMS_SUCCESS,
   RECEIVE_ITEMS_ERROR,
   SAVE_USER_RESPONSE,
@@ -48,9 +47,9 @@ function* receiveItemSaga({ payload }) {
 }
 
 // fetch all questionIds from item
-const getQuestionIds = item => {
+const getQuestionIds = (item) => {
   let questions = [];
-  item.rows.forEach(row => {
+  item.rows.forEach((row) => {
     questions = [
       ...questions,
       ...row.widgets.map(widget => widget.entity && widget.entity.id)
@@ -65,14 +64,12 @@ function* saveUserResponse({ payload }) {
     const itemIndex = payload.itemId;
     const items = yield select(state => state.test && state.test.items);
     const answers = yield select(state => state.answers);
-    const userTestActivityId = yield select(
-      state => state.test && state.test.testActivityId
-    );
+    const userTestActivityId = yield select(state => state.test && state.test.testActivityId);
 
     const currentItem = items.length && items[itemIndex];
     const questions = getQuestionIds(currentItem);
     const itemAnswers = {};
-    questions.forEach(question => {
+    questions.forEach((question) => {
       itemAnswers[question] = answers[question];
     });
 
@@ -80,9 +77,9 @@ function* saveUserResponse({ payload }) {
     const assignmentId = yield select(
       state => state.studentAssignment && state.studentAssignment.current
     );
-    const userWork = yield select(({ userWork }) => userWork[testItemId]);
+    const userWork = yield select(({ newUserWork }) => newUserWork[testItemId]);
 
-    let activity = {
+    const activity = {
       answers: itemAnswers,
       testItemId,
       assignmentId,

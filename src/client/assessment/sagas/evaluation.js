@@ -21,6 +21,9 @@ function* evaluateAnswers() {
     });
 
     if (isEmpty(userResponse)) {
+      const msg = 'score: 0 / 0';
+      yield call(message.success, msg, 0.5);
+
       return;
     }
 

@@ -259,7 +259,8 @@ class ClozeDragDropDisplay extends Component {
               widthpx: 0,
               heightpx: 0,
               whiteSpace: undefined,
-              wordwrap: undefined
+              wordwrap: undefined,
+              textOverflow: undefined
             };
             if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
               const { widthpx, heightpx, wordwrap } = responsecontainerindividuals[dropTargetIndex];
@@ -268,7 +269,8 @@ class ClozeDragDropDisplay extends Component {
               btnStyle.whiteSpace = wordwrap;
               btnStyle.widthpx = widthpx;
               btnStyle.heightpx = heightpx;
-              btnStyle.wordwrap = wordwrap;
+              btnStyle.wordwrap = wordwrap ? 'wrap' : 'nowrap';
+              btnStyle.textOverflow = wordwrap ? undefined : 'ellipsis';
             }
             if (btnStyle && btnStyle.width === 0) {
               btnStyle.width = responseBtnStyle.widthpx;

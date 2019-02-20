@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { Select, TextField, Checkbox } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
+import { cloneDeep } from 'lodash';
 
 import Extras from '../../../../containers/Extras';
 import WidgetOptions from '../../../../containers/WidgetOptions';
@@ -25,28 +26,9 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
   };
 
   const changeIndividualUiStyle = (prop, value, index) => {
-    const { responsecontainerindividuals } = uiStyle;
-    const item = {};
-    Object.defineProperties(item, {
-      widthpx: {
-        value: responsecontainerindividuals[index].widthpx,
-        writable: true
-      },
-      heightpx: {
-        value: responsecontainerindividuals[index].heightpx,
-        writable: true
-      },
-      wordwrap: {
-        value: responsecontainerindividuals[index].wordwrap,
-        writable: true
-      }
-    });
-    item[prop] = value;
-    responsecontainerindividuals[index] = item;
-    onChange('ui_style', {
-      ...uiStyle,
-      responsecontainerindividuals
-    });
+    const newStyles = cloneDeep(uiStyle);
+    newStyles.responsecontainerindividuals[index][prop] = value;
+    onChange('ui_style', newStyles);
   };
 
   const addIndividual = () => {

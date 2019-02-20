@@ -441,6 +441,7 @@ template {
   white-space: inherit;
   text-overflow: ellipsis;
   overflow: hidden;
+  height: 100%;
 }
 
 .imagedragdrop_template_box {

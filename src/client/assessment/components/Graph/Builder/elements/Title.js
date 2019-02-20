@@ -1,6 +1,6 @@
 import { calcMeasure, lineLabelCoord } from '../utils';
 import { defaultTextParameters } from '../settings';
-import { JXG } from '..';
+// import { JXG } from '..';
 
 const renderTitle = (board, title) => {
   const [ x, y ] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board)

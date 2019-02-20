@@ -41,7 +41,7 @@ import _events from './events';
 import '../common/MyLabelInput.css';
 import '../common/Mark.css';
 
-export const JXG = window.JXG;
+// export const JXG = window.JXG;
 
 /**
  * if the coords between mousedown and mouseup events are different - is it move

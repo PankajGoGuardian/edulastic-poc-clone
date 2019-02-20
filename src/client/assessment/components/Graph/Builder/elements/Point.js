@@ -1,4 +1,4 @@
-import { JXG } from '..';
+// import { JXG } from '..';
 import { CONSTANT, Colors } from '../config';
 import { defaultPointParameters } from '../settings';
 

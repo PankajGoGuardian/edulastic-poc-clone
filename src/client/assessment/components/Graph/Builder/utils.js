@@ -5,7 +5,7 @@ import rayConfig from './elements/Ray';
 import segmentConfig from './elements/Segment';
 import vectorConfig from './elements/Vector';
 import Polygon from './elements/Polygon';
-import { JXG } from './index';
+// import { JXG } from './index';
 
 export const findAvailableStackedSegmentPosition = (board, segments, stackResponsesSpacing) => {
   const [x, y] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);

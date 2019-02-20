@@ -15,6 +15,7 @@ import AxisSmallSize from './components/AxisSmallSize';
 import { AxisSegments, GraphAxisLabels, GraphQuadrants } from './Authoring';
 import { CorrectAnswers } from './CorrectAnswers';
 import { GraphDisplay } from './Display';
+import {WithResourcesHOC,WithResources,useResources} from '../../../utils';
 
 const EmptyWrapper = styled.div``;
 
@@ -354,4 +355,13 @@ const enhance = compose(
   )
 );
 
-export default enhance(Graph);
+const GraphComponent =  enhance(Graph);
+
+const GraphWithResources = ({...props}) => (
+    <WithResources resources={["http://jsxgraph.uni-bayreuth.de/distrib/jsxgraphcore.js","http://jsxgraph.uni-bayreuth.de/distrib/jsxgraph.css"]} fallBack={<h2>Loading...</h2>}>
+       <GraphComponent {...props} />
+    </WithResources>
+);
+
+export default GraphWithResources;
+

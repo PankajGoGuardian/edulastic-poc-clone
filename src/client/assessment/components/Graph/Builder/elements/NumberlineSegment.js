@@ -1,7 +1,7 @@
 import { CONSTANT, Colors } from '../config';
 import { findSegmentPosition, orderPoints, calcRoundedToTicksDistance, findAvailableStackedSegmentPosition } from '../utils';
 import { defaultPointParameters } from '../settings';
-import { JXG } from '../index';
+//import { JXG } from '../index';
 
 const previousPointsPositions = [];
 

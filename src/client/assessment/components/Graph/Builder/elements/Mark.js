@@ -1,4 +1,4 @@
-import { JXG } from '..';
+
 import { clone } from 'lodash';
 import { defaultTextParameters } from '../settings';
 import { calcMeasure, checkMarksRenderSpace, calcRoundedToTicksDistance } from '../utils';

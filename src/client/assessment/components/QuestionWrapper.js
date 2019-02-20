@@ -35,6 +35,7 @@ import { MathFormula } from '../widgets/MathFormula';
 import { FormulaEssay } from '../widgets/FormulaEssay';
 import FeedbackBottom from './FeedbackBottom';
 import FeedbackRight from './FeedbackRight';
+import Timespent from './Timespent'
 
 const getQuestion = (type) => {
   switch (type) {
@@ -92,13 +93,15 @@ const getQuestion = (type) => {
       return null;
   }
 };
-const QuestionWrapper = ({ type, data, showFeedback, multiple, ...restProps }) => {
+const QuestionWrapper = ({ type, timespent, data, view, showFeedback, multiple, ...restProps }) => {
   const Question = getQuestion(type);
+
   return (
     <ThemeProvider theme={themes.default}>
       <Fragment>
         <div style={{ flex: 'auto' }}>
-          <Question item={data} {...restProps} />
+          <Timespent timespent={timespent} view={view} />
+          <Question item={data} view={view} {...restProps} />
         </div>
         {showFeedback &&
           (multiple ? <FeedbackBottom widget={data} /> : <FeedbackRight widget={data} />)}

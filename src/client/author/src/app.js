@@ -8,9 +8,9 @@ import { Progress } from '@edulastic/common';
 import { tabletWidth } from '@edulastic/colors';
 import Sidebar from './Sidebar/SideMenu';
 /* lazy load routes */
-const Assignments = lazy(() => import('./Assignments/components/Assignments'));
-const ClassBoard = lazy(() => import('./ClassBoard/components'));
-const ClassResponses = lazy(() => import('./ClassResponses/components'));
+const Assignments = lazy(() => import('../Assignments'));
+const ClassBoard = lazy(() => import('../ClassBoard'));
+const ClassResponses = lazy(() => import('../ClassResponses'));
 const ExpressGrader = lazy(() => import('./ExpressGrader/components'));
 const TestList = lazy(() => import('../TestList'));
 const TestPage = lazy(() => import('../TestPage'));

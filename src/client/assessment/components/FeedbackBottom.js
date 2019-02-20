@@ -40,11 +40,11 @@ class FeedbackBottom extends Component {
 
   onSaveFeedback = () => {
     const { score, feedback } = this.state;
-    const { user, loadFeedbackResponses, testItemId, widget: { id } } = this.props;
-    if (!id || !user || !user.user) {
+    const { user, loadFeedbackResponses, widget: { id, activity } } = this.props;
+    const { testActivityId } = activity;
+    if (!id || !user || !user.user || !testActivityId) {
       return;
     }
-
     loadFeedbackResponses({
       body: {
         score,
@@ -54,7 +54,7 @@ class FeedbackBottom extends Component {
           text: feedback
         }
       },
-      testActivityId: testItemId,
+      testActivityId,
       questionId: id
     });
   }
@@ -71,7 +71,7 @@ class FeedbackBottom extends Component {
             <ScoreContent>
               <InputScore
                 defaultValue={score}
-                onChange={this.onChangeFeedback}
+                onChange={this.onChangeScore}
                 onBlur={this.onSaveFeedback}
               />
               <ScoreLine />
@@ -183,6 +183,7 @@ const MaxScore = styled.p`
 const InputFeedback = styled(TextArea)`
   flex: auto;
   width: auto;
+  height: 77px!important;
   display:inline-block;
   margin-left:20px;
   color:gray;

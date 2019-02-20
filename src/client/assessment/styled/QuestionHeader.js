@@ -5,4 +5,9 @@ export const QuestionHeader = styled.div`
   color: ${props => props.theme.common.questionHeaderColor};
   line-height: 1.63;
   margin-bottom: ${({ smallSize }) => (smallSize ? '10px' : '25px')};
+  &:before {
+    content: 'Q:';
+    font-weight: bold;
+    margin-right: 5px
+  }
 `;

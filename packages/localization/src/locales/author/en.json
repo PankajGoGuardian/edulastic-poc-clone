@@ -115,7 +115,8 @@
       "backToSelect": "Back to Select Question Type or Feature"
     },
     "feedback": {
-      "viewSolution": "VIEW SOLUTION"
+      "viewSolution": "VIEW SOLUTION",
+      "save": "SAVE"
     }
   }
 }

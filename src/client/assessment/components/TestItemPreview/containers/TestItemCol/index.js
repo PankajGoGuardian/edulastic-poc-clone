@@ -39,6 +39,7 @@ class TestItemCol extends Component {
 
   renderTabContent = (widget) => {
     const { preview, showFeedback, multiple } = this.props;
+    const timespent = widget.timespent !== undefined ? widget.timespent : null 
     return (
       <Tabs.TabContainer style={{ padding: 20, display: !multiple && showFeedback ? 'flex' : 'initial' }}>
         <QuestionWrapper
@@ -48,6 +49,7 @@ class TestItemCol extends Component {
           type={widget.type}
           view="preview"
           previewTab={preview}
+          timespent={timespent}
           questionId={widget.reference}
           data={{ ...widget.entity, smallSize: true }}
         />

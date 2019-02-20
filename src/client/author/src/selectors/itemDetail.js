@@ -18,10 +18,19 @@ export const getRows = item => item.rows.map(row => ({
     let referencePopulate = {
       data: null
     };
+    let activity = {
+      timespent: null
+    }
+    
     if (item.data && item.data.questions && item.data.questions.length) {
       referencePopulate = item.data.questions.find(
         q => q._id === widget.reference
       );
+    }
+
+    if(widget && widget.entity && widget.entity.activity) {
+      const timespent = widget.entity.activity.timespent
+      activity = { timespent }
     }
 
     if (!referencePopulate &&
@@ -33,6 +42,7 @@ export const getRows = item => item.rows.map(row => ({
 
     return {
       ...widget,
+      activity,
       referencePopulate
     };
   })

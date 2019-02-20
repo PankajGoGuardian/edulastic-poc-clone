@@ -13,6 +13,8 @@ var _scoring = require("./const/scoring");
 
 var _getPenaltyScore = _interopRequireDefault(require("./helpers/getPenaltyScore"));
 
+var _getDifferenceCount = _interopRequireDefault(require("./helpers/getDifferenceCount"));
+
 // exact-match evaluator
 var exactMatchEvaluator = function exactMatchEvaluator() {
   var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
@@ -93,16 +95,6 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   };
 };
 
-var getDifferenceCount = function getDifferenceCount(answerArray, validationArray) {
-  var count = 0;
-  answerArray.forEach(function (answer, i) {
-    if (answer !== validationArray[i]) {
-      count++;
-    }
-  });
-  return count;
-};
-
 var partialMatchEvaluator = function partialMatchEvaluator() {
   var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
@@ -111,7 +103,8 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
       altAnswers = _ref2.alt_responses,
       max_score = _ref2.max_score,
       automarkable = _ref2.automarkable,
-      min_score_if_attempted = _ref2.min_score_if_attempted;
+      min_score_if_attempted = _ref2.min_score_if_attempted,
+      penalty = _ref2.penalty;
 
   var score = 0;
   var countOfCorrectAnswers = 0;
@@ -127,12 +120,25 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
       evaluation = (0, _lodash.cloneDeep)(answerValue);
       score = Math.max(answerScore, score);
     } else {
-      countOfCorrectAnswers = Math.max(getDifferenceCount(answerValue, userResponse), countOfCorrectAnswers);
+      countOfCorrectAnswers = Math.max((0, _getDifferenceCount.default)(answerValue, userResponse), countOfCorrectAnswers);
       score = Math.max(Math.floor(Math.max(answerScore, maxScore) / countOfCorrectAnswers), score);
     }
 
     maxScore = Math.max(answerScore, maxScore);
   });
+
+  if ((0, _lodash.isEqual)(validValue, userResponse)) {
+    score = validScore;
+  } else if (countOfCorrectAnswers) {
+    countOfCorrectAnswers = Math.max((0, _getDifferenceCount.default)(validValue, userResponse), countOfCorrectAnswers);
+    score = Math.max(Math.floor(maxScore / countOfCorrectAnswers), score);
+  } else {
+    countOfCorrectAnswers = (0, _getDifferenceCount.default)(validValue, userResponse);
+
+    if (countOfCorrectAnswers !== 0) {
+      score = Math.max(Math.floor(maxScore / countOfCorrectAnswers), score);
+    }
+  }
 
   if (automarkable) {
     if (min_score_if_attempted) {
@@ -143,17 +149,12 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
     maxScore = Math.max(max_score, maxScore);
   }
 
-  if ((0, _lodash.isEqual)(validValue, userResponse)) {
-    score = validScore;
-  } else if (countOfCorrectAnswers) {
-    countOfCorrectAnswers = Math.max(getDifferenceCount(validValue, userResponse), countOfCorrectAnswers);
-    score = Math.max(Math.floor(maxScore / countOfCorrectAnswers), score);
-  } else {
-    countOfCorrectAnswers = getDifferenceCount(validValue, userResponse);
-
-    if (countOfCorrectAnswers !== 0) {
-      score = Math.max(Math.floor(maxScore / countOfCorrectAnswers), score);
-    }
+  if (penalty > 0) {
+    score = (0, _getPenaltyScore.default)({
+      score: score,
+      penalty: penalty,
+      evaluation: evaluation
+    });
   }
 
   return {

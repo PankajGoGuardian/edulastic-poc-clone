@@ -1,6 +1,7 @@
 import { cloneDeep, isEqual } from 'lodash';
 import { ScoringType } from './const/scoring';
 import getPenaltyScore from './helpers/getPenaltyScore';
+import getDifferenceCount from './helpers/getDifferenceCount';
 
 // exact-match evaluator
 const exactMatchEvaluator = (
@@ -80,18 +81,6 @@ const exactMatchEvaluator = (
   };
 };
 
-const getDifferenceCount = (answerArray, validationArray) => {
-  let count = 0;
-
-  answerArray.forEach((answer, i) => {
-    if (answer !== validationArray[i]) {
-      count++;
-    }
-  });
-
-  return count;
-};
-
 const partialMatchEvaluator = (
   userResponse = [],
   {
@@ -99,7 +88,8 @@ const partialMatchEvaluator = (
     alt_responses: altAnswers,
     max_score,
     automarkable,
-    min_score_if_attempted
+    min_score_if_attempted,
+    penalty
   }
 ) => {
   let score = 0;
@@ -129,15 +119,6 @@ const partialMatchEvaluator = (
     maxScore = Math.max(answerScore, maxScore);
   });
 
-  if (automarkable) {
-    if (min_score_if_attempted) {
-      maxScore = Math.max(maxScore, min_score_if_attempted);
-      score = Math.max(min_score_if_attempted, score);
-    }
-  } else if (max_score) {
-    maxScore = Math.max(max_score, maxScore);
-  }
-
   if (isEqual(validValue, userResponse)) {
     score = validScore;
   } else if (countOfCorrectAnswers) {
@@ -151,6 +132,19 @@ const partialMatchEvaluator = (
     if (countOfCorrectAnswers !== 0) {
       score = Math.max(Math.floor(maxScore / countOfCorrectAnswers), score);
     }
+  }
+
+  if (automarkable) {
+    if (min_score_if_attempted) {
+      maxScore = Math.max(maxScore, min_score_if_attempted);
+      score = Math.max(min_score_if_attempted, score);
+    }
+  } else if (max_score) {
+    maxScore = Math.max(max_score, maxScore);
+  }
+
+  if (penalty > 0) {
+    score = getPenaltyScore({ score, penalty, evaluation });
   }
 
   return {

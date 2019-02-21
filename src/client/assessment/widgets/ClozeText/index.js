@@ -148,6 +148,7 @@ class ClozeText extends Component {
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 evaluation={evaluation}
+                instructorStimulus={item.instructor_stimulus}
               />
             )}
             {previewTab === 'show' && (
@@ -164,6 +165,7 @@ class ClozeText extends Component {
                 userSelections={userAnswer}
                 validation={item.validation}
                 evaluation={evaluation}
+                instructorStimulus={item.instructor_stimulus}
               />
             )}
             {previewTab === 'clear' && (
@@ -180,6 +182,7 @@ class ClozeText extends Component {
                 templateMarkUp={item.templateMarkUp}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
+                instructorStimulus={item.instructor_stimulus}
               />
             )}
           </Wrapper>

@@ -11,6 +11,7 @@ import { Row } from '../../../../styled/WidgetOptions/Row';
 import { Col } from '../../../../styled/WidgetOptions/Col';
 import { Label } from '../../../../styled/WidgetOptions/Label';
 import { AddNewChoiceBtn } from '../../../../styled/AddNewChoiceBtn';
+import Extras from '../../../../containers/Extras';
 
 import { Container } from './styled/Container';
 import { Delete } from './styled/Delete';
@@ -205,6 +206,9 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
           </Col>
         </Row>
       </Block>
+      <Extras>
+        <Extras.Distractors />
+      </Extras>
     </WidgetOptions>
   );
 };

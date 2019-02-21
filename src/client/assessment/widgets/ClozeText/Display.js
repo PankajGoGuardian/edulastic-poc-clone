@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Input, InputNumber } from 'antd';
 import { isUndefined } from 'lodash';
 import { withTheme } from 'styled-components';
+import { InstructorStimulus } from '@edulastic/common';
 
 import CorrectAnswerBoxLayout from '../../components/CorrectAnswerBoxLayout';
 import { QuestionHeader } from '../../styled/QuestionHeader';
@@ -65,7 +66,8 @@ class Display extends Component {
       checkAnswer,
       validation,
       evaluation,
-      theme
+      theme,
+      instructorStimulus
     } = this.props;
     const { templateParts, userAnswers } = this.state;
     let responseIndex = 0;
@@ -198,6 +200,7 @@ class Display extends Component {
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
     return (
       <div style={{ fontSize }}>
+        <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         <div>
           <React.Fragment>
@@ -224,7 +227,8 @@ Display.propTypes = {
   evaluation: PropTypes.object,
   uiStyle: PropTypes.object,
   templateMarkUp: PropTypes.string,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  instructorStimulus: PropTypes.string
 };
 
 Display.defaultProps = {
@@ -236,6 +240,7 @@ Display.defaultProps = {
   userSelections: [],
   smallSize: false,
   validation: {},
+  instructorStimulus: '',
   uiStyle: {
     fontsize: 'normal',
     stemnumeration: 'numerical',

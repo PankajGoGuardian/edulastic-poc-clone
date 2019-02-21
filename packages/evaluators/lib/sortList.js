@@ -11,6 +11,8 @@ var _lodash = require("lodash");
 
 var _scoring = require("./const/scoring");
 
+var _rounding = require("./const/rounding");
+
 var _getPenaltyScore = _interopRequireDefault(require("./helpers/getPenaltyScore"));
 
 var _getDifferenceCount = _interopRequireDefault(require("./helpers/getDifferenceCount"));
@@ -104,6 +106,7 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
       max_score = _ref2.max_score,
       automarkable = _ref2.automarkable,
       min_score_if_attempted = _ref2.min_score_if_attempted,
+      rounding = _ref2.rounding,
       penalty = _ref2.penalty;
 
   var score = 0;
@@ -111,13 +114,15 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   var validValue = validAnswer.value,
       validScore = validAnswer.score;
   var maxScore = validScore;
-  var evaluation = (0, _lodash.cloneDeep)(validValue);
+  var evaluation = validValue.map(function (ans, index) {
+    return ans === userResponse[index];
+  });
+  var isRound = rounding === _rounding.rounding.ROUND_DOWN;
   altAnswers.forEach(function (answer) {
     var answerValue = answer.value,
         answerScore = answer.score;
 
     if ((0, _lodash.isEqual)(answerValue, userResponse)) {
-      evaluation = (0, _lodash.cloneDeep)(answerValue);
       score = Math.max(answerScore, score);
     } else {
       countOfCorrectAnswers = Math.max((0, _getDifferenceCount.default)(answerValue, userResponse), countOfCorrectAnswers);
@@ -158,7 +163,7 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   }
 
   return {
-    score: score,
+    score: isRound ? Math.floor(score) : +score.toFixed(4),
     maxScore: maxScore,
     evaluation: evaluation
   };

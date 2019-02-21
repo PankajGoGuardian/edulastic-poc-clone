@@ -1,5 +1,6 @@
-import { cloneDeep, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import { ScoringType } from './const/scoring';
+import { rounding as myRounding } from './const/rounding';
 import getPenaltyScore from './helpers/getPenaltyScore';
 import getDifferenceCount from './helpers/getDifferenceCount';
 
@@ -89,6 +90,7 @@ const partialMatchEvaluator = (
     max_score,
     automarkable,
     min_score_if_attempted,
+    rounding,
     penalty
   }
 ) => {
@@ -100,13 +102,13 @@ const partialMatchEvaluator = (
 
   let maxScore = validScore;
 
-  let evaluation = cloneDeep(validValue);
+  const evaluation = validValue.map((ans, index) => ans === userResponse[index]);
+  const isRound = rounding === myRounding.ROUND_DOWN;
 
   altAnswers.forEach((answer) => {
     const { value: answerValue, score: answerScore } = answer;
 
     if (isEqual(answerValue, userResponse)) {
-      evaluation = cloneDeep(answerValue);
       score = Math.max(answerScore, score);
     } else {
       countOfCorrectAnswers = Math.max(
@@ -148,7 +150,7 @@ const partialMatchEvaluator = (
   }
 
   return {
-    score,
+    score: isRound ? Math.floor(score) : +score.toFixed(4),
     maxScore,
     evaluation
   };

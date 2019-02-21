@@ -11,6 +11,18 @@ const fetch = classId =>
     })
     .then(result => result.data.result);
 
+// fetch multiple classes by Ids
+const fetchByIds = classIds => {
+  let ids = classIds.join(',');
+  return api
+    .callApi({
+      url: `${prefix}/class`,
+      method: 'get',
+      params: { ids }
+    })
+    .then(result => result.data.result);
+};
+
 const create = data =>
   api
     .callApi({
@@ -21,5 +33,6 @@ const create = data =>
     .then(result => result.data.result);
 export default {
   fetch,
-  create
+  create,
+  fetchByIds
 };

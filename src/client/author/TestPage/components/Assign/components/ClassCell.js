@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FlexContainer } from '@edulastic/common';
-import Tags from '../../../../../src/components/common/Tags';
+import Tags from '../../../../src/components/common/Tags';
 
 const ClassCell = ({ group, data }) => {
   let students;
@@ -10,18 +10,23 @@ const ClassCell = ({ group, data }) => {
     students = ['All students'];
   }
 
-  const classNames = group.map(({ _id, name }) => {
-    if (Array.isArray(data) && data.includes(_id)) {
-      return name;
-    }
-    return null;
-  }).filter(Boolean).join(' ');
+  const classNames = group
+    .map(({ _id, name }) => {
+      if (Array.isArray(data) && data.includes(_id)) {
+        return name;
+      }
+      return null;
+    })
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <FlexContainer>
       <span>{classNames}</span>
       <TagsContainer>
-        {students && !!students.length && <Tags tags={students} type="secondary" />}
+        {students && !!students.length && (
+          <Tags tags={students} type="secondary" />
+        )}
       </TagsContainer>
     </FlexContainer>
   );
@@ -36,7 +41,6 @@ ClassCell.defaultProps = {
   group: [],
   data: []
 };
-
 
 export default ClassCell;
 

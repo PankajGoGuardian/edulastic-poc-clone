@@ -194,6 +194,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return state;
   }
 };
+
 // saga
 function* receiveTestByIdSaga({ payload }) {
   try {
@@ -259,6 +260,11 @@ export const getTestSelector = createSelector(
 export const getTestEntitySelector = createSelector(
   stateSelector,
   state => state.entity
+);
+
+export const getTestIdSelector = createSelector(
+  stateSelector,
+  state => state.entity && state.entity._id
 );
 
 export const getTestsCreatingSelector = createSelector(

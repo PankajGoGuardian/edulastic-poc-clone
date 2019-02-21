@@ -1,7 +1,8 @@
 /* eslint-disable no-return-assign */
 import 'react-quill/dist/quill.snow.css';
+import React from 'react';
 import ReactQuill, { Quill } from 'react-quill';
-import React, { Component } from 'react';
+
 import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import enhanceWithClickOutside from 'react-click-outside';
@@ -149,7 +150,7 @@ CustomToolbar.defaultProps = {
 /*
  * Editor component with custom toolbar and content containers
  */
-class CustomQuillComponent extends Component {
+class CustomQuillComponent extends React.Component {
   state = {
     active: false,
     // eslint-disable-next-line react/destructuring-assignment

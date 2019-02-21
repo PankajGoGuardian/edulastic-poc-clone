@@ -68,6 +68,7 @@ import {
   SENTENCE_MODE
 } from '../../../../assessment/constants/constantsForQuestions';
 import { Dump } from './components';
+import { rounding } from '../../../../../../packages/evaluators/src/const/rounding';
 
 const { EMBED_RESPONSE } = math;
 
@@ -143,6 +144,7 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           local: []
         },
         validation: {
+          rounding: rounding.ROUND_DOWN,
           scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,

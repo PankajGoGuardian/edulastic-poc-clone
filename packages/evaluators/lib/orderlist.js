@@ -13,6 +13,8 @@ var _lodash = require("lodash");
 
 var _scoring = require("./const/scoring");
 
+var _getPenaltyScore = _interopRequireDefault(require("./helpers/getPenaltyScore"));
+
 // exact-match evaluator
 var exactMatchEvaluator = function exactMatchEvaluator() {
   var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
@@ -71,7 +73,8 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   var _ref2 = arguments.length > 2 ? arguments[2] : undefined,
       automarkable = _ref2.automarkable,
       min_score_if_attempted = _ref2.min_score_if_attempted,
-      max_score = _ref2.max_score;
+      max_score = _ref2.max_score,
+      penalty = _ref2.penalty;
 
   var score = 0;
   var maxScore = 0;
@@ -117,6 +120,14 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
     }
   } else if (max_score) {
     maxScore = Math.max(max_score, maxScore);
+  }
+
+  if (penalty > 0) {
+    score = (0, _getPenaltyScore.default)({
+      score: score,
+      penalty: penalty,
+      evaluation: evaluation
+    });
   }
 
   return {

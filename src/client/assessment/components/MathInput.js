@@ -5,6 +5,7 @@ import { math } from '@edulastic/constants';
 
 import { MathInputStyles } from '../styled/MathInputStyles';
 import MathKeyboard from './MathKeyboard';
+import { WithResources } from '../../utils';
 
 const { EMBED_RESPONSE } = math;
 
@@ -25,13 +26,19 @@ class MathInput extends React.PureComponent {
     this.setState({ mathFieldFocus: false });
   }
 
-  handleClick = (e) => {
+  handleClick = e => {
     const { onFocus } = this.props;
 
-    if (e.target.nodeName === 'LI' && e.target.attributes[0].nodeValue === 'option') {
+    if (
+      e.target.nodeName === 'LI' &&
+      e.target.attributes[0].nodeValue === 'option'
+    ) {
       return;
     }
-    if (this.containerRef.current && !this.containerRef.current.contains(e.target)) {
+    if (
+      this.containerRef.current &&
+      !this.containerRef.current.contains(e.target)
+    ) {
       onFocus(false);
       this.setState({ mathFieldFocus: false });
     }
@@ -125,7 +132,14 @@ class MathInput extends React.PureComponent {
 
   render() {
     const { mathFieldFocus } = this.state;
-    const { showResponse, style, onFocus, onKeyDown, symbols, numberPad } = this.props;
+    const {
+      showResponse,
+      style,
+      onFocus,
+      onKeyDown,
+      symbols,
+      numberPad
+    } = this.props;
 
     return (
       <MathInputStyles>
@@ -180,4 +194,20 @@ MathInput.defaultProps = {
   onKeyDown: () => {}
 };
 
-export default MathInput;
+const MathInputWithResources = ({ ...props }) => (
+  <WithResources
+    resources={[
+      'https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css',
+      'https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js',
+      'https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js',
+      'https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js',
+      'assets/public/vendors/mathquill-matrix/build/mathquill.js',
+      'assets/public/vendors/mathquill-matrix/build/mathquill.css'
+    ]}
+    fallBack={<h2>Loading...</h2>}
+  >
+    <MathInput {...props} />
+  </WithResources>
+);
+
+export default MathInputWithResources;

@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-
+import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
 
 import { Wrapper } from './styled/Wrapper';
 import { Answer } from './styled/Answer';
+import { WithResources } from '../../../../../utils';
 
 const CorrectAnswerBox = ({ children, t }) => {
   const answerRef = useRef();
@@ -28,4 +29,25 @@ CorrectAnswerBox.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default withNamespaces('assessment')(CorrectAnswerBox);
+const enhance = compose(withNamespaces('assessment'));
+
+const CorrectAnswerBoxComponent = enhance(CorrectAnswerBox);
+
+const CorrectAnswerBoxWithResources = ({ ...props }) => (
+  <WithResources
+    resources={[
+      'https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css',
+      'https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js',
+      'https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js',
+      'https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/auto-render.min.js',
+      'https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js',
+      'assets/public/vendors/mathquill-matrix/build/mathquill.js',
+      'assets/public/vendors/mathquill-matrix/build/mathquill.css'
+    ]}
+    fallBack={<h2>Loading...</h2>}
+  >
+    <CorrectAnswerBoxComponent {...props} />
+  </WithResources>
+);
+
+export default CorrectAnswerBoxWithResources;

@@ -1,4 +1,4 @@
-import React from 'React';
+import React from 'react';
 import { IconPlus } from '@edulastic/icons';
 import { white } from '@edulastic/colors';
 import { EduButton, FlexContainer } from '@edulastic/common';

@@ -310,10 +310,12 @@ class Authoring extends Component {
               style={{
                 flexDirection: 'column',
                 alignItems: 'center',
-                marginLeft: 20
+                marginLeft: 20,
+                overflowX: 'auto',
+                overflowY: 'hidden'
               }}
             >
-              <ImageContainer width={imageWidth}>
+              <ImageContainer width={imageWidth || 600}>
                 {item.imageUrl && (
                   <React.Fragment>
                     <PreviewImage src={item.imageUrl} width="100%" alt="resp-preview" />

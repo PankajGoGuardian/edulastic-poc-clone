@@ -182,8 +182,7 @@ class Display extends Component {
             top: 0,
             left: 0,
             width: smallSize ? '100%' : imageWidth,
-            margin: 'auto',
-            maxWidth: '100%'
+            margin: 'auto'
           }}
         >
           <img

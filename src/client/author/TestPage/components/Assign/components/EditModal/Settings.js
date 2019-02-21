@@ -1,45 +1,20 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Select, Radio, List } from 'antd';
+import { Row, Col, Select, Radio } from 'antd';
 
 //components
-import ListCard from '../../../Setting/components/Card/Card';
 import {
   AlignRight,
   AlignSwitchRight,
   StyledRowSettings,
   StyledRowLabel,
-  FlexItem,
-  TbleHeader
+  SettingsWrapper
 } from './styled';
 //selectors
 import {
   getReleaseScoreSelector,
   getActivityReview
 } from '../../../Setting/ducks';
-
-const data = [
-  {
-    bands: 'Advanced',
-    from: '100%'
-  },
-  {
-    bands: 'Mastery',
-    from: '100%'
-  },
-  {
-    bands: 'Basic',
-    from: '100%'
-  },
-  {
-    bands: 'Approaching Basic',
-    from: '100%'
-  },
-  {
-    bands: 'Unsatisfactory',
-    from: '100%'
-  }
-];
 
 const calculators = ['None', 'Scientific', 'Basic', 'Graphing'];
 const evaluationtypes = [
@@ -112,7 +87,7 @@ const Settings = ({
   };
 
   return (
-    <Fragment>
+    <SettingsWrapper>
       <StyledRowLabel gutter={16}>
         <Col span={12}>Open Policy</Col>
         <Col span={12}>Close Policy</Col>
@@ -217,7 +192,7 @@ const Settings = ({
       {/* Require Password */}
 
       {/* Evaluation Method */}
-      <StyledRowSettings gutter={16}>
+      <StyledRowSettings gutter={16} islast={true}>
         <Col span={6}>EVALUATION METHOD</Col>
         <Col span={18}>
           <AlignRight onChange={evalMethod} value={type}>
@@ -230,33 +205,7 @@ const Settings = ({
         </Col>
       </StyledRowSettings>
       {/*Evaluation Method */}
-
-      {/*Performance Bands */}
-      <TbleHeader>
-        <Col span={6}>
-          <span>PERFORMANCE BANDS</span>
-        </Col>
-        <FlexItem span={6}>
-          <span>Above or at Standard</span>
-        </FlexItem>
-        <FlexItem span={6}>
-          <span>From</span>
-        </FlexItem>
-        <FlexItem span={6}>
-          <span>To</span>
-        </FlexItem>
-      </TbleHeader>
-      <List
-        grid={{ column: 1 }}
-        dataSource={data}
-        renderItem={item => (
-          <List.Item>
-            <ListCard item={item} />
-          </List.Item>
-        )}
-      />
-      {/*Performance Bands */}
-    </Fragment>
+    </SettingsWrapper>
   );
 };
 

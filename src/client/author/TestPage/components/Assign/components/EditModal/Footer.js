@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FlexContainer } from '@edulastic/common';
-import { Button } from './styled';
+import { Button, FooterWrapper } from './styled';
 
 const Footer = ({ onCancel, onOk, disabled }) => (
-  <FlexContainer justifyContent="space-around" style={{ padding: '20px 0' }}>
+  <FooterWrapper justifyContent="space-around">
     <Button key="back" size="large" onClick={onCancel}>
       Cancel
     </Button>
@@ -18,7 +17,7 @@ const Footer = ({ onCancel, onOk, disabled }) => (
     >
       Apply
     </Button>
-  </FlexContainer>
+  </FooterWrapper>
 );
 
 Footer.PropTypes = {

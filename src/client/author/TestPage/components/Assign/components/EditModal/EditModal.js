@@ -2,13 +2,18 @@ import React, { useState } from 'react';
 import produce from 'immer';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Modal, Col, Icon } from 'antd';
+import { Col, Icon } from 'antd';
 import {
   cloneDeep as _cloneDeep,
   uniq as _uniq,
   curry as _curry
 } from 'lodash';
-import { SettingsBtn, StyledRowLabel } from './styled';
+import {
+  SettingsBtn,
+  StyledRowLabel,
+  ModalWrapper,
+  InitOptions
+} from './styled';
 import ClassSelector from './ClassSelector';
 import StudentSelector from './StudentSelector';
 import DateSelector from './DateSelector';
@@ -72,7 +77,7 @@ const EditModal = ({
     : !assignment.class.length;
 
   return (
-    <Modal
+    <ModalWrapper
       data-cy="title"
       title={title}
       visible={visible}
@@ -82,40 +87,42 @@ const EditModal = ({
       onCancel={onCancel}
       width="50%"
     >
-      <ClassSelector
-        onChange={changeField('class')}
-        fetchStudents={fetchStudents}
-        selectedGroups={assignment.class}
-        group={group}
-      />
-      <StudentSelector
-        studentNames={selectedStudents}
-        students={studentOfSelectedClass}
-        updateStudents={updateStudents}
-        onChange={onChange}
-        specificStudents={assignment.specificStudents}
-      />
+      <InitOptions>
+        <ClassSelector
+          onChange={changeField('class')}
+          fetchStudents={fetchStudents}
+          selectedGroups={assignment.class}
+          group={group}
+        />
+        <StudentSelector
+          studentNames={selectedStudents}
+          students={studentOfSelectedClass}
+          updateStudents={updateStudents}
+          onChange={onChange}
+          specificStudents={assignment.specificStudents}
+        />
 
-      <DateSelector
-        startDate={assignment.startDate}
-        endDate={assignment.endDate}
-        changeField={changeField}
-      />
+        <DateSelector
+          startDate={assignment.startDate}
+          endDate={assignment.endDate}
+          changeField={changeField}
+        />
 
-      <PolicySelector
-        openPolicy={assignment.openPolicy}
-        closePolicy={assignment.closePolicy}
-        changeField={changeField}
-      />
-
+        <PolicySelector
+          openPolicy={assignment.openPolicy}
+          closePolicy={assignment.closePolicy}
+          changeField={changeField}
+        />
+      </InitOptions>
       <StyledRowLabel gutter={16}>
         <Col>
-          <SettingsBtn onClick={toggleSettings}>
-            OVERRIDE TEST SETTINGS
+          <SettingsBtn onClick={toggleSettings} isVisible={showSettings}>
+            OVERRIDE TEST SETTINGS{' '}
             {showSettings ? <Icon type="up" /> : <Icon type="down" />}
           </SettingsBtn>
         </Col>
       </StyledRowLabel>
+
       {showSettings && (
         <Settings
           modalData={modalData}
@@ -123,7 +130,7 @@ const EditModal = ({
           selectsData={selectsData}
         />
       )}
-    </Modal>
+    </ModalWrapper>
   );
 };
 

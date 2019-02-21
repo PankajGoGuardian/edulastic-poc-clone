@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Col, Select, Radio } from 'antd';
-import { StyledRowLabel, StyledRow } from './styled';
+import { StyledRowLabel, StyledRow, StudentWrapper } from './styled';
 
 const RadioGroup = Radio.Group;
 
@@ -14,18 +14,20 @@ const StudentsSelector = ({
 }) => (
   <React.Fragment>
     <StyledRow gutter={16}>
-      <RadioGroup value={specificStudents ? 2 : 1}>
-        <Radio value={1} onClick={() => onChange('specificStudents', false)}>
-          Entire Class
-        </Radio>
-        <Radio
-          value={2}
-          data-cy="specificStudent"
-          onClick={() => onChange('specificStudents', true)}
-        >
-          Specific Student
-        </Radio>
-      </RadioGroup>
+      <Col span={24}>
+        <RadioGroup value={specificStudents ? 2 : 1}>
+          <Radio value={1} onClick={() => onChange('specificStudents', false)}>
+            Entire Class
+          </Radio>
+          <Radio
+            value={2}
+            data-cy="specificStudent"
+            onClick={() => onChange('specificStudents', true)}
+          >
+            Specific Student
+          </Radio>
+        </RadioGroup>
+      </Col>
     </StyledRow>
     {specificStudents && (
       <React.Fragment>

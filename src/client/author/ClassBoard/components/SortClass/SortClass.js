@@ -6,15 +6,15 @@ import {
   StyledSelect
 } from './styled'
 
-const SortBar = () => (
+const SortClass = ({ classname }) => (
   <FlexContainer>
     <Container>
       <StyledSelect defaultValue="">
-        <Select.Option value="">Class 1</Select.Option>
+        <Select.Option value="">{classname}</Select.Option>
       </StyledSelect>
     </Container>
   </FlexContainer>
 );
 
-export default SortBar;
+export default SortClass;
 

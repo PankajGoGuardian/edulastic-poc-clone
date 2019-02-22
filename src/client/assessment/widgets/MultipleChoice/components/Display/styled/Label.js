@@ -15,25 +15,33 @@ export const Label = styled.label`
     border-left: solid 3px lightgrey;
     cursor: pointer;
   }
-
   &.checked {
     background-color: #fcfbd4;
     border-left: solid 3px #c3c055;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
   }
-
   &.right {
     background-color: #1fe3a11e;
     border-left: solid 3px ${green};
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
   }
+  &.right:hover {
+    border-color: transparent;
+  }
   &.wrong {
     background-color: #ee16581e;
     border-left: solid 3px #ee1658;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
+  }
+  &.preview {
+    cursor: initial;
+    border-color: transparent;
+  }
+  &.preview:hover {
+    border-color: transparent;
   }
   & i {
     font-size: 18px;

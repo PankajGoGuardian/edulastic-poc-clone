@@ -48,10 +48,12 @@ class ClassQuestions extends Component {
       rows.forEach(({ widgets }) => {
         widgets.forEach(({ entity }) => {
           const { id } = entity;
+          let qIndex = 0;
           let qActivities = questionActivities.filter(({ qid }) => qid === id);
           qActivities.map(q => {
             const userQuestion = userQActivities.find(question => question._id === q.qid)
             if(userQuestion) {
+              q.qIndex = ++qIndex;
               q.timespent = userQuestion.timespent
             }
           })
@@ -84,6 +86,7 @@ class ClassQuestions extends Component {
 
   render() {
     const testItems = this.getTestItems();
+
     return testItems.map(item => (
       this.renderPreview(item)
     ));

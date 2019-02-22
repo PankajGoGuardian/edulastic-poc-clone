@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
 import { message } from 'antd';
+import moment from 'moment';
 import Assigned from '../../assets/assigned.svg';
 
 import {
@@ -61,13 +62,15 @@ class ListHeader extends Component {
   }
 
   render() {
-    const { classname } = this.props;
+    const { additionalData } = this.props;
+    const endDate = additionalData.endDate;
+    const dueDate = (isNaN(endDate))? new Date(endDate): new Date(parseInt(endDate));
 
     return (
       <Container>
         <StyledTitle>
-          <StyledParaFirst>{classname}</StyledParaFirst>
-          <StyledParaSecond>Done (Due on 26 October, 2018)</StyledParaSecond>
+          <StyledParaFirst>{additionalData.className||'loading...'}</StyledParaFirst>
+          <StyledParaSecond>(Due on {additionalData.endDate && moment(dueDate).format("MMMM Do YYYY")})</StyledParaSecond>
         </StyledTitle>
         <StyledTabs>
           <StyledAnchorA><StyledLink to="/author/classboard"><img src={Assigned} /><SpaceD />LIVE CLASS BOARD</StyledLink></StyledAnchorA>

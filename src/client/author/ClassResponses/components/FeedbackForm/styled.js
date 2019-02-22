@@ -55,8 +55,12 @@ export const SolutionButton = styled(Button)`
   margin:10px 0px;
   width:100%;
   padding:13px 5px 20px;
-  color:white;
+  color:#00b0ff;
+  border-color: #00b0ff;
   height:45px;
-  background-color:#00b0ff;
   font-weight:bold;
+  &:hover {
+    color: #fff;
+    background-color:#00b0ff;
+  }
 `;

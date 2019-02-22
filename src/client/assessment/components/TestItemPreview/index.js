@@ -55,6 +55,7 @@ class TestItemPreview extends Component {
     if (questionCount === 0) {
       return null;
     }
+
     return (
       <ThemeProvider theme={themes.default}>
         <Container width={windowWidth} style={style}>

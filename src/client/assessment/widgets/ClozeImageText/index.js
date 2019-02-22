@@ -105,7 +105,7 @@ class ClozeImageText extends Component {
   };
 
   render() {
-    const { view, previewTab, item, userAnswer, t, testItem, evaluation } = this.props;
+    const { qIndex, view, previewTab, item, userAnswer, t, testItem, evaluation } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions,
       transparentResponses } = this.state;
@@ -192,6 +192,7 @@ class ClozeImageText extends Component {
                 imageUrl={item.imageUrl}
                 imageWidth={item.imageWidth}
                 evaluation={evaluation}
+                qIndex={qIndex}
               />
             )}
             {previewTab === 'show' && (
@@ -214,6 +215,7 @@ class ClozeImageText extends Component {
                 imageUrl={item.imageUrl}
                 imageWidth={item.imageWidth}
                 evaluation={evaluation}
+                qIndex={qIndex}
               />
             )}
             {previewTab === 'clear' && (
@@ -240,6 +242,7 @@ class ClozeImageText extends Component {
                 userSelections={userAnswer}
                 maxRespCount={item.maxRespCount}
                 onChange={this.handleAddAnswer}
+                qIndex={qIndex}
               />
             )}
           </Wrapper>

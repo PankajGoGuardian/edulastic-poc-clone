@@ -21,7 +21,9 @@ class FeedbackBottom extends Component {
     let feedback = ''; let score = 0; let maxScore = 0;
     if (activity) {
       const { feedback: { text: _feedback }, score: _score, maxScore: _maxScore } = activity;
-      feedback = _feedback; score = _score; maxScore = _maxScore;
+      feedback = _feedback ? _feedback : '';
+      score = _score ? _score : 0;
+      maxScore = _maxScore ? _maxScore : 1;
     }
     this.state = {
       score,
@@ -61,6 +63,8 @@ class FeedbackBottom extends Component {
 
   render() {
     const { score, maxScore, feedback } = this.state;
+    const isError = maxScore < score
+
     return (
       <StyledQuestionDiv>
         <TextParaTeacher>
@@ -79,15 +83,21 @@ class FeedbackBottom extends Component {
             </ScoreContent>
           </ScoreContainer>
         </TextParaTeacher>
-        <FeedbackText>
-          Teacher Feedback:
-          <InputFeedback
-            placeholder="No Feedback given"
-            defaultValue={feedback}
-            onChange={this.onChangeFeedback}
-            onBlur={this.onSaveFeedback}
-          />
-        </FeedbackText>
+        {!isError ? (
+          <FeedbackText>
+            Teacher Feedback:
+            <InputFeedback
+              placeholder="No Feedback given"
+              defaultValue={feedback}
+              onChange={this.onChangeFeedback}
+              onBlur={this.onSaveFeedback}
+            />
+          </FeedbackText>
+        ) : (
+          <TextParaTeacher>
+             Score is to large
+          </TextParaTeacher>
+        )}
       </StyledQuestionDiv>
     );
   }

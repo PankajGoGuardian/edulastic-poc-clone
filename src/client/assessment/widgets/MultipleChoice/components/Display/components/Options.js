@@ -4,11 +4,12 @@ import PropTypes from 'prop-types';
 import { OptionsList } from '../styled/OptionsList';
 import Option from './Option';
 
-const Options = ({ options, evaluation, uiStyle, onChange, validation, ...restProps }) => (
+const Options = ({ view, options, evaluation, uiStyle, onChange, validation, ...restProps }) => (
   <OptionsList>
     {options.map((option, index) => (
       <Option
         key={index}
+        view={view}
         index={index}
         uiStyle={uiStyle}
         item={option}

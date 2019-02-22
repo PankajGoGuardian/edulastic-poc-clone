@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import QuestionHeader from '../common/QuestionHeader';
 import GraphContainer from './GraphContainer';
 
-const GraphQuadrantsDisplay = ({ smallSize, question, uiStyle, elements, showAnswer, checkAnswer, preview, ...restProps }) => (
+const GraphQuadrantsDisplay = ({ qIndex, smallSize, question, uiStyle, elements, showAnswer, checkAnswer, preview, ...restProps }) => (
   <div>
-    <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+    <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
     {
       showAnswer ? 'showAnswer' : null
     }

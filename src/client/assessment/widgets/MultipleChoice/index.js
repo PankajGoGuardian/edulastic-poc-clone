@@ -144,7 +144,7 @@ class MultipleChoice extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation } = this.props;
+    const { qIndex, view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation } = this.props;
     const { shuffledOptions } = this.state;
     const {
       previewStimulus,
@@ -197,6 +197,7 @@ class MultipleChoice extends Component {
                 <Display
                   checkAnswer
                   data={item}
+                  view={view}
                   onChange={this.handleAddAnswer}
                   smallSize={smallSize}
                   userSelections={userAnswer}
@@ -205,11 +206,13 @@ class MultipleChoice extends Component {
                   handleMultiSelect={this.handleMultiSelect}
                   uiStyle={uiStyle}
                   evaluation={evaluation}
+                  qIndex={qIndex}
                 />
               )}
               {previewTab === 'show' && (
                 <Display
                   showAnswer
+                  view={view}
                   smallSize={smallSize}
                   options={shuffledOptions}
                   question={previewStimulus}
@@ -217,11 +220,13 @@ class MultipleChoice extends Component {
                   handleMultiSelect={this.handleMultiSelect}
                   uiStyle={uiStyle}
                   evaluation={evaluation}
+                  qIndex={qIndex}
                 />
               )}
               {previewTab === 'clear' && (
                 <Display
                   preview
+                  view={view}
                   smallSize={smallSize}
                   options={shuffledOptions}
                   question={previewStimulus}
@@ -230,6 +235,7 @@ class MultipleChoice extends Component {
                   userSelections={userAnswer}
                   onChange={this.handleAddAnswer}
                   uiStyle={uiStyle}
+                  qIndex={qIndex}
                 />
               )}
             </Wrapper>

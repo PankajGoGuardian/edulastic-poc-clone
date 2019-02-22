@@ -7,18 +7,24 @@ import { MainDiv } from './styled'
 export default class BarGraph extends Component {
   render() {
     const itemsSum = this.props.gradebook.itemsSummary;
+    console.log(this.props)
+
     let data = [];
     if (itemsSum) {
       itemsSum.map((item, index) => {
         data.push({
           name: `Q${index+1}`,
-          red: item.wrongNum || 0,
-          yellow: item.correctNum || 0,
-          green: item.partialNum || 0,
+          green: item.correctNum || 0,
+          yellow: item.partialNum || 0,
+          darkGrey: item.skippedNum || 0,
+          lightGrey: !item.wrongNum && !item.correctNum && !item.partialNum,
+          red: (item.wrongNum && !item.skippedNum) || 0,
           all: (item.wrongNum || 0) + (item.correctNum || 0) + (item.partialNum || 0),
         })
       });
     }
+    // darkGrey: item.
+    // console.log(itemsSum, data)
     return (
       <MainDiv className="studentBarChart">
         <ResponsiveContainer width='100%' height={240} >
@@ -48,6 +54,8 @@ export default class BarGraph extends Component {
             <Bar stackId="a" dataKey="green" fill="#1fe3a0" />
             <Bar stackId="a" dataKey="yellow" fill="#fdcc3a" />
             <Bar stackId="a" dataKey="red" fill="#ee1b82" />
+            <Bar stackId="a" dataKey="lightGrey" fill="#f5f5f5" />
+            <Bar stackId="a" dataKey="darkGrey" fill="#e5e5e5" />
             <Line type='monotone' dataKey='green' stroke='#1baae9' dot={{ stroke: '#1baae9', strokeWidth: 2, fill: '#1baae9' }}/>
           </ComposedChart>
         </ResponsiveContainer>

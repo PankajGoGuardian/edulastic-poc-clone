@@ -83,7 +83,7 @@ class FeedbackRight extends Component {
               value={feedback}
               style={{ height: 240 }}
             />
-            <SolutionButton onClick={this.onFeedbackSubmit}>{t('author:component.feedback.viewSolution')}</SolutionButton>
+            <SolutionButton onClick={this.onFeedbackSubmit}>UPDATE</SolutionButton>
           </Fragment>
         }
       </StyledCardTwo>

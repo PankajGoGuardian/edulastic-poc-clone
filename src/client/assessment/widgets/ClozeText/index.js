@@ -86,7 +86,8 @@ class ClozeText extends Component {
       userAnswer,
       testItem,
       evaluation,
-      theme
+      theme,
+      qIndex
     } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
@@ -149,6 +150,7 @@ class ClozeText extends Component {
                 onChange={this.handleAddAnswer}
                 evaluation={evaluation}
                 instructorStimulus={item.instructor_stimulus}
+                qIndex={qIndex}
               />
             )}
             {previewTab === 'show' && (

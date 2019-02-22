@@ -29,16 +29,18 @@ const getFontSize = (size) => {
   }
 };
 
-const Option = ({
-  index,
-  item,
-  showAnswer,
-  userSelections,
-  onChange,
-  smallSize,
-  uiStyle,
-  correct
-}) => {
+const Option = (props) => {
+  const {
+    index,
+    item,
+    showAnswer,
+    userSelections,
+    onChange,
+    smallSize,
+    uiStyle,
+    correct,
+    view
+  } = props
   const isSelected = userSelections.includes(item.value);
 
   let className = '';
@@ -127,18 +129,23 @@ const Option = ({
     }
   };
 
+  const isChecked = isSelected && !className && uiStyle.type === 'block' && !showAnswer
   const width = uiStyle.columns ? `${100 / uiStyle.columns - 1}%` : '100%';
-  const labelClassName =
-    isSelected && !className && uiStyle.type === 'block' && !showAnswer ? 'checked' : className;
+  let labelClassName = isChecked ? 'checked' : className;
+  const isPreview = view === "preview" && !isSelected;
+
+  if(isPreview) {
+    labelClassName = 'preview'
+  }
 
   return (
-    <Label width={width} smallSize={smallSize} showAnswer className={labelClassName}>
+    <Label width={width} smallSize={smallSize} className={labelClassName} showAnswer>
       <PaddingDiv top={smallSize ? 0 : 10} bottom={smallSize ? 0 : 10}>
         <FlexContainer justifyContent={uiStyle.type === 'radioBelow' ? 'center' : 'space-between'}>
           {renderCheckbox()}
           <IconWrapper>
-            {className === 'right' && <IconCheck color={green} width={20} height={20} />}
-            {className === 'wrong' && <IconClose color={red} />}
+            {(!isPreview && className === 'right') && <IconCheck color={green} width={20} height={20} />}
+            {(!isPreview && className === 'wrong') && <IconClose color={red} />}
           </IconWrapper>
         </FlexContainer>
       </PaddingDiv>

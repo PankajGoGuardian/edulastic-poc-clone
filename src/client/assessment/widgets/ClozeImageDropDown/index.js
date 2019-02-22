@@ -129,7 +129,7 @@ class ClozeImageDropDown extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation } = this.props;
+    const { qIndex, view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
     const {
       duplicatedResponses,
@@ -222,6 +222,7 @@ class ClozeImageDropDown extends Component {
               userSelections={userAnswer}
               maxRespCount={item.maxRespCount}
               onChange={this.handleAddAnswer}
+              qIndex={qIndex}
             />
           </Wrapper>
         )}

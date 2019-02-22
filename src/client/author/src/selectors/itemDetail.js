@@ -19,7 +19,8 @@ export const getRows = item => item.rows.map(row => ({
       data: null
     };
     let activity = {
-      timespent: null
+      timespent: null,
+      qIndex: null
     }
     
     if (item.data && item.data.questions && item.data.questions.length) {
@@ -30,7 +31,8 @@ export const getRows = item => item.rows.map(row => ({
 
     if(widget && widget.entity && widget.entity.activity) {
       const timespent = widget.entity.activity.timespent
-      activity = { timespent }
+      const qIndex = widget.entity.activity.qIndex
+      activity = { timespent, qIndex }
     }
 
     if (!referencePopulate &&

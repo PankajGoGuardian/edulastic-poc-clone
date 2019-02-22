@@ -17,6 +17,10 @@ import {
   getTestActivitySelector
 } from '../../../src/selectors/classBoard';
 
+import {
+  getAdditionalDataSelector
+} from '../../../ClassBoard/ducks';
+
 import ListHeader from '../ListHeader/ListHeader';
 import SortClass from '../SortClass/SortClass';
 import SortStudent from '../SortStudent/SortStudent';
@@ -74,6 +78,7 @@ class ClassResponses extends Component {
     const studentItems = this.props.testActivity;
     const { 
       classResponse,
+      additionalData,
       loadStudentResponses,
       studentResponse: { questionActivities, testActivity }
     } = this.props;
@@ -98,7 +103,8 @@ class ClassResponses extends Component {
     const groupId = testActivity ? testActivity.groupId : '';
     const classId = testActivity ? testActivity._id : '';
     const userId = testActivity ? testActivity.userId : '';
-    const classname = classResponse ? classResponse.title : '';
+    const classassignment = classResponse ? classResponse.title : ''
+    const classname = additionalData ? additionalData.className : '';
     const currentStudent = studentItems.find(student => student.studentId === userId)
     const studentName = currentStudent ? currentStudent.studentName : '';
     const linkToClass = `/author/classboard/${assignmentId}/${groupId}`
@@ -107,21 +113,22 @@ class ClassResponses extends Component {
     return (
       <div>
         <ListHeader
-          classname={classname || ''}
+          additionalData={additionalData || {}}
           onCreate={this.handleCreate}
         />
         <StyledFlexContainer justifyContent="space-between">
           <PaginationInfo>
             <a>&lt; <Link to="/author/assignments">RECENTS ASSIGNMENTS</Link></a> / 
+            <a>&nbsp; <Link to="/author/assignments">{classassignment}</Link></a> /
             <a>&nbsp; <Link to={linkToClass}>{classname}</Link></a> / 
             <a>&nbsp; <Link to={linkToResponses}>{studentName}</Link></a>
           </PaginationInfo>
           <StyledFlexContainer justifyContent="space-between">
-            <SortClass classname={classname}/>
             <SortStudent
               students={studentItems}
               loadStudentResponses={loadStudentResponses}
             />
+            <SortClass classname={classname} />
           </StyledFlexContainer>
         </StyledFlexContainer>
         <StyledCard bordered={false}>
@@ -184,7 +191,7 @@ class ClassResponses extends Component {
             <FeedbackButton>0 GRADED</FeedbackButton>
           </PaginationButtonGroup>
           <PaginationButtonGroup>
-            <OverallButton onClick={this.toggleFeedback}>OVERALL FEEDBACK</OverallButton>
+            <OverallButton type="primary" onClick={this.toggleFeedback}>GIVE OVERALL FEEDBACK</OverallButton>
           </PaginationButtonGroup>
         </StyledFlexContainer>
           {showClassQuestions &&
@@ -210,7 +217,8 @@ const enhance = compose(
     state => ({
       classResponse: getClassResponseSelector(state),
       studentResponse: getStudentResponseSelector(state),
-      testActivity: getTestActivitySelector(state)
+      testActivity: getTestActivitySelector(state),
+      additionalData: getAdditionalDataSelector(state)
     }),
     {
       loadStudentResponses: receiveStudentResponseAction

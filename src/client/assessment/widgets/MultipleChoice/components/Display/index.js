@@ -5,10 +5,10 @@ import { QuestionHeader } from '../../../../styled/QuestionHeader';
 
 import Options from './components/Options';
 
-const Display = ({ smallSize, question, uiStyle, ...restProps }) => (
+const Display = ({ qIndex, view, smallSize, question, uiStyle, ...restProps }) => (
   <div>
-    <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
-    <Options smallSize={smallSize} question={question} uiStyle={uiStyle} {...restProps} />
+    <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+    <Options view={view} smallSize={smallSize} question={question} uiStyle={uiStyle} {...restProps} />
   </div>
 );
 

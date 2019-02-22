@@ -205,6 +205,7 @@ class ClozeDragDropDisplay extends Component {
 
   render() {
     const {
+      qIndex,
       smallSize,
       question,
       configureOptions,
@@ -259,8 +260,7 @@ class ClozeDragDropDisplay extends Component {
               widthpx: 0,
               heightpx: 0,
               whiteSpace: undefined,
-              wordwrap: undefined,
-              textOverflow: undefined
+              wordwrap: undefined
             };
             if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
               const { widthpx, heightpx, wordwrap } = responsecontainerindividuals[dropTargetIndex];
@@ -269,8 +269,7 @@ class ClozeDragDropDisplay extends Component {
               btnStyle.whiteSpace = wordwrap;
               btnStyle.widthpx = widthpx;
               btnStyle.heightpx = heightpx;
-              btnStyle.wordwrap = wordwrap ? 'wrap' : 'nowrap';
-              btnStyle.textOverflow = wordwrap ? undefined : 'ellipsis';
+              btnStyle.wordwrap = wordwrap;
             }
             if (btnStyle && btnStyle.width === 0) {
               btnStyle.width = responseBtnStyle.widthpx;
@@ -370,7 +369,7 @@ class ClozeDragDropDisplay extends Component {
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
     return (
       <div style={{ fontSize }}>
-        <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+        <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         <div>
           {responsecontainerposition === 'top' && (
             <React.Fragment>

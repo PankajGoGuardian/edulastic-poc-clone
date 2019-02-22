@@ -18,7 +18,7 @@ import {
 } from '../../ducks';
 
 import ListHeader from '../ListHeader/ListHeader';
-import SortBar from '../SortBar/SortBar';
+import SortClass from '../SortClass/SortClass';
 import DisneyCard from '../DisneyCard/DisneyCard';
 import Graph from '../ProgressGraph/ProgressGraph';
 import Score from '../Score/Score';
@@ -95,12 +95,13 @@ class ClassBoard extends Component {
       // eslint-disable-next-line react/prop-types
       t
     } = this.props;
-    console
+
     const { assignmentId, classId } = match.params;
+    const classname = additionalData ? additionalData.className : '';
+  
     return (
       <div>
        <HooksContainer classId={classId} assignmentId={assignmentId} />
-     
         <ListHeader
           onCreate={this.handleCreate}
           creating={creating}
@@ -114,7 +115,7 @@ class ClassBoard extends Component {
           <PaginationInfo>
             &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> / <Anchor>{additionalData.testName}</Anchor> / <Anchor>{additionalData.className}</Anchor>
           </PaginationInfo>
-          <SortBar additionalData={additionalData} history={history} />
+          <SortClass classname={classname} />
         </StyledFlexContainer>
         <StyledCard bordered={false}>
           <Graph gradebook={gradebook} />

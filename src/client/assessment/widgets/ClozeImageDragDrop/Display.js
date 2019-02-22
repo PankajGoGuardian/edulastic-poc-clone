@@ -122,6 +122,7 @@ class Display extends Component {
 
   render() {
     const {
+      qIndex,
       smallSize,
       question,
       configureOptions,
@@ -327,11 +328,11 @@ class Display extends Component {
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
 
     const responseposition = smallSize ? 'right' : responsecontainerposition;
-
+ 
     return (
       <div style={{ fontSize }}>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
-        <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+        <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         <div>
           {responseposition === 'top' && (
             <React.Fragment>

@@ -94,10 +94,14 @@ export const FeedbackButton = styled(Button)`
 
 export const OverallButton = styled(FeedbackButton)`
   font-size:0.8em;
-  background-color:white;
+  color: white;
+  background-color:#00b0ff;
   width:170px;
   height:40px;
-  border:1px solid white;
+  &:hover {
+    color: #00b0ff;
+    background: white;
+  }
 `;
 
 export const FeedbackActiveButton = styled(FeedbackButton)`

@@ -67,7 +67,8 @@ class Display extends Component {
       validation,
       evaluation,
       theme,
-      instructorStimulus
+      instructorStimulus,
+      qIndex
     } = this.props;
     const { templateParts, userAnswers } = this.state;
     let responseIndex = 0;
@@ -198,10 +199,11 @@ class Display extends Component {
       <div />
     );
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
+
     return (
       <div style={{ fontSize }}>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
-        <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+        <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         <div>
           <React.Fragment>
             <div style={{ margin: smallSize ? '-10px -20px' : 0, borderRadius: 0 }}>

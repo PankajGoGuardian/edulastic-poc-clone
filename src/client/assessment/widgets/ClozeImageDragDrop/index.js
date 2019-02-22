@@ -108,6 +108,7 @@ class ClozeImageDragDrop extends Component {
 
   render() {
     const {
+      qIndex,
       view,
       previewTab,
       smallSize,
@@ -239,6 +240,7 @@ class ClozeImageDragDrop extends Component {
                 imageUrl={item.imageUrl}
                 imageWidth={item.imageWidth}
                 evaluation={evaluation}
+                qIndex={qIndex}
               />
             )}
             {previewTab === 'show' && (
@@ -267,6 +269,7 @@ class ClozeImageDragDrop extends Component {
                 imageUrl={item.imageUrl}
                 imageWidth={item.imageWidth}
                 evaluation={evaluation}
+                qIndex={qIndex}
               />
             )}
             {previewTab === 'clear' && (
@@ -297,6 +300,7 @@ class ClozeImageDragDrop extends Component {
                 userSelections={userAnswer}
                 userAnswer={userAnswer}
                 onChange={this.handleAddAnswer}
+                qIndex={qIndex}
               />
             )}
           </Wrapper>

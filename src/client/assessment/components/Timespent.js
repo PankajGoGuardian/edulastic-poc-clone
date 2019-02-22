@@ -5,14 +5,15 @@ import styled from 'styled-components';
 import clockIcon from '../assets/clock-circular-outline.svg';
 
 const Timespent = ({ timespent, view  }) => {
-  const showTimespent = view === "preview" && timespent
+  const showTimespent = view === "preview"
+  const time = timespent ? timespen : '-'
 
   return (
       <Fragment>
           {showTimespent &&
             <StyledDivSec>
               <img alt="icon" src={clockIcon} />
-              <TextPara>{timespent}</TextPara>
+              <TextPara>{time}</TextPara>
             </StyledDivSec>
           }
       </Fragment>

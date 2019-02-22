@@ -37,9 +37,9 @@ class TestItemCol extends Component {
     });
   };
 
-  renderTabContent = (widget) => {
+  renderTabContent = (widget, qIndex) => {
     const { preview, showFeedback, multiple } = this.props;
-    const timespent = widget.timespent !== undefined ? widget.timespent : null 
+    const timespent = widget.timespent !== undefined ? widget.timespent : null
     return (
       <Tabs.TabContainer style={{ padding: 20, display: !multiple && showFeedback ? 'flex' : 'initial' }}>
         <QuestionWrapper
@@ -48,6 +48,7 @@ class TestItemCol extends Component {
           multiple={multiple}
           type={widget.type}
           view="preview"
+          qIndex={++qIndex}
           previewTab={preview}
           timespent={timespent}
           questionId={widget.reference}
@@ -60,7 +61,6 @@ class TestItemCol extends Component {
   render() {
     const { col, style, windowWidth } = this.props;
     const { value } = this.state;
-
     return (
       <Container
         value={value}
@@ -100,8 +100,8 @@ class TestItemCol extends Component {
             {col.tabs &&
               !!col.tabs.length &&
               value === widget.tabIndex &&
-              this.renderTabContent(widget)}
-            {col.tabs && !col.tabs.length && this.renderTabContent(widget)}
+              this.renderTabContent(widget, i)}
+            {col.tabs && !col.tabs.length && this.renderTabContent(widget, i)}
           </React.Fragment>
         ))}
       </Container>

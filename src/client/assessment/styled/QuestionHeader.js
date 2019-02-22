@@ -6,7 +6,7 @@ export const QuestionHeader = styled.div`
   line-height: 1.63;
   margin-bottom: ${({ smallSize }) => (smallSize ? '10px' : '25px')};
   &:before {
-    content: 'Q:';
+    content: 'Q ${props => props.qIndex}';
     font-weight: bold;
     margin-right: 5px
   }

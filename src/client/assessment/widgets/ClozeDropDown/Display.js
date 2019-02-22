@@ -83,6 +83,7 @@ class ClozeDropDownDisplay extends Component {
 
   render() {
     const {
+      qIndex,
       smallSize,
       question,
       configureOptions,
@@ -215,7 +216,7 @@ class ClozeDropDownDisplay extends Component {
     return (
       <div style={{ fontSize }}>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
-        <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+        <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         <div style={{ margin: smallSize ? '-10px -20px' : 0, borderRadius: 0 }}>
           {templateBoxLayout}
         </div>

@@ -366,7 +366,8 @@ class GraphDisplay extends Component {
       smallSize,
       showAnswer,
       checkAnswer,
-      clearAnswer
+      clearAnswer,
+      qIndex
     } = this.props;
     const {
       stimulus
@@ -376,7 +377,7 @@ class GraphDisplay extends Component {
 
     return (
       <Fragment>
-        <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: stimulus }} />
+        <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: stimulus }} />
         {
           showAnswer ? 'showAnswer' : null
         }

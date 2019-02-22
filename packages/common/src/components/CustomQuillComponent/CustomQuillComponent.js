@@ -6,6 +6,7 @@ import ReactQuill, { Quill } from 'react-quill';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import enhanceWithClickOutside from 'react-click-outside';
+import CustomToolbar from './components/CustomToolbar';
 
 const Embed = Quill.import('blots/block/embed');
 
@@ -37,18 +38,6 @@ NewPara.className = 'newline_section';
 Quill.register(NewPara, true);
 
 /*
- * Custom "star" icon for the toolbar using an Octicon
- * https://octicons.github.io
- */
-const ResponseButton = () => (
-  <div
-    style={{ border: 'dotted 2px #000', padding: '2px 0px 4px', lineHeight: '0.5em', width: 18 }}
-  >
-    r
-  </div>
-);
-
-/*
  * Event handler to be attached using Quill toolbar module
  * http://quilljs.com/docs/modules/toolbar/
  */
@@ -59,93 +48,6 @@ function insertStar() {
 }
 
 function insertPara() {}
-
-const CustomToolbar = ({ showResponseBtn, active, id, maxWidth }) => {
-  const getTopStyle = () =>
-    (document.getElementById(id)
-      ? document.getElementById(id).offsetHeight
-        ? -document.getElementById(id).offsetHeight - 15
-        : -76
-      : -76);
-
-  return (
-    <div
-      id={id}
-      style={{
-        display: 'block',
-        top: getTopStyle(),
-        opacity: active ? 1 : 0,
-        zIndex: active ? 1000 : -1,
-        maxWidth
-      }}
-      className="toolbars"
-    >
-      <span className="ql-formats">
-        <select className="ql-font" />
-        <select className="ql-size" />
-      </span>
-      <span className="ql-formats">
-        <button className="ql-bold" type="button" />
-        <button className="ql-italic" type="button" />
-        <button className="ql-underline" type="button" />
-        <button className="ql-strike" type="button" />
-      </span>
-      <span className="ql-formats">
-        <select className="ql-color" />
-        <select className="ql-background" />
-      </span>
-      <span className="ql-formats">
-        <button className="ql-script" value="sub" type="button" />
-        <button className="ql-script" value="super" type="button" />
-      </span>
-      <span className="ql-formats">
-        <button className="ql-header" value="1" type="button" />
-        <button className="ql-header" value="2" type="button" />
-        <button className="ql-blockquote" type="button" />
-        <button className="ql-code-block" type="button" />
-      </span>
-      <span className="ql-formats">
-        <button className="ql-list" value="ordered" type="button" />
-        <button className="ql-list" value="bullet" type="button" />
-        <button className="ql-indent" value="-1" type="button" />
-        <button className="ql-indent" value="+1" type="button" />
-      </span>
-      <span className="ql-formats">
-        <button className="ql-direction" value="rtl" type="button" />
-        <select className="ql-align" />
-      </span>
-      <span className="ql-formats">
-        <button className="ql-link" type="button" />
-        <button className="ql-image" type="button" />
-        <button className="ql-video" type="button" />
-        <button className="ql-formula" type="button" />
-      </span>
-      <span className="ql-formats">
-        <button className="ql-clean" type="button" />
-      </span>
-      {showResponseBtn && (
-        <span className="ql-formats">
-          <button className="ql-insertStar" type="button">
-            <ResponseButton />
-          </button>
-        </span>
-      )}
-    </div>
-  );
-};
-
-CustomToolbar.propTypes = {
-  maxWidth: PropTypes.any.isRequired,
-  showResponseBtn: PropTypes.bool,
-  active: PropTypes.bool,
-  id: PropTypes.string
-};
-
-CustomToolbar.defaultProps = {
-  showResponseBtn: true,
-  active: false,
-  id: 'toolbar'
-};
 
 /*
  * Editor component with custom toolbar and content containers

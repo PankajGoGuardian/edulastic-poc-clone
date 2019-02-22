@@ -122,7 +122,7 @@ function* saveAssignment({ payload }) {
         endDate,
         testId
       },
-      ["_id", "__v", "createdAt", "updatedAt"]
+      ["_id", "__v", "createdAt", "updatedAt", "students"]
     );
     let isUpdate = !!payload._id;
 

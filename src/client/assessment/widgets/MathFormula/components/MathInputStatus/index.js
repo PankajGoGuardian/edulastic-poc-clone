@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { IconCheck, IconClose } from '@edulastic/icons';
-import { green, red } from '@edulastic/colors';
-
 import { Wrapper } from './styled/Wrapper';
 import { Icon } from './styled/Icon';
+import { IconCheck } from './styled/IconCheck';
+import { IconClose } from './styled/IconClose';
 
 class MathInputStatus extends React.PureComponent {
   render() {
@@ -13,8 +12,8 @@ class MathInputStatus extends React.PureComponent {
     return (
       <Wrapper>
         <Icon>
-          {valid && <IconCheck color={green} width={16} height={16} />}
-          {!valid && <IconClose color={red} width={16} height={16} />}
+          {valid && <IconCheck />}
+          {!valid && <IconClose />}
         </Icon>
       </Wrapper>
     );

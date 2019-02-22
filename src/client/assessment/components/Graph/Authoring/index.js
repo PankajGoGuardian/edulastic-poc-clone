@@ -4,3 +4,4 @@ export { default as AxisSegments } from './AxisSegments';
 export { default as ScoreSettings } from './ScoreSettings';
 export { default as ControlsSettings } from './ControlsSettings';
 export { default as AnnotationSettings } from './AnnotationSettings';
+export { default as QuestionSection } from './QuestionSection';

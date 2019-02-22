@@ -6,7 +6,7 @@ import { green, greenDark, red, lightGrey } from '@edulastic/colors';
 
 const DeleteButton = ({ onDelete, deleteToolStyles }) => (
   <Container style={deleteToolStyles} onClick={onDelete}>
-    <IconTrashAlt color={greenDark} hoverColor={red} />
+    <IconTrashAlt color={greenDark} hoverColor={red} width={16} height={16} />
   </Container>
 );
 

@@ -25,8 +25,8 @@ import {
 
 const customizeIcon = icon => styled(icon)`
   fill: ${white};
-  width: 20px !important;
-  height: 20px !important;
+  width: 20px;
+  height: 20px;
   margin-left: -5px;
   margin-top: 5px;
   &:hover {

@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { cloneDeep } from 'lodash';
 
-import { IconPlus } from '@edulastic/icons';
-import { white } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { Button, Tab, TabContainer, Tabs } from '@edulastic/common';
 
@@ -15,6 +13,7 @@ import { getQuestionDataSelector } from '../../../author/src/selectors/question'
 import { Subtitle } from '../../styled/Subtitle';
 
 import CorrectAnswer from './CorrectAnswer';
+import { IconPlus } from './styled/IconPlus';
 
 class CorrectAnswers extends Component {
   constructor(props) {
@@ -29,12 +28,13 @@ class CorrectAnswers extends Component {
   };
 
   renderAltResponses = () => {
-    const { validation, t } = this.props;
+    const { validation, t, onRemoveAltResponses } = this.props;
 
     if (validation.alt_responses && validation.alt_responses.length) {
       return validation.alt_responses.map((res, i) => (
         <Tab
           key={i}
+          onClose={() => onRemoveAltResponses(i)}
           label={`${t('component.correctanswers.alternate')} ${i + 1}`}
         />
       ));
@@ -49,7 +49,7 @@ class CorrectAnswers extends Component {
       <Button
         style={{ minWidth: 70, minHeight: 25 }}
         icon={
-          <IconPlus data-cy="alternate" color={white} width={10} height={10} />
+          <IconPlus data-cy="alternate" />
         }
         onClick={() => {
           this.handleTabChange(validation.alt_responses.length + 1);

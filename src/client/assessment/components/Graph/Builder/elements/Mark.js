@@ -1,23 +1,7 @@
 
 import { clone } from 'lodash';
 import { defaultTextParameters } from '../settings';
-import { calcMeasure, checkMarksRenderSpace, calcRoundedToTicksDistance } from '../utils';
-
-function closestTick(pointX, ticks){
-  function dist(x, t){
-    return Math.abs(x-t);
-  }
-  let minDist = dist(pointX, ticks[0]);
-  let closestTick = ticks[0];
-  for (let i = 1; i < ticks.length; i++){
-    const tmpDist = dist(pointX, ticks[i]);
-    if (tmpDist < minDist) {
-      minDist = tmpDist;
-      closestTick = ticks[i];
-    }
-  }
-  return closestTick;
-}
+import { calcMeasure, checkMarksRenderSpace, calcRoundedToTicksDistance, getClosestTick } from '../utils';
 
 const snapMark = (mark, point, xCoords, snapToTicks, ticksDistance, setValue, lineSettings, containerSettings, board) => {
   mark.on('up', () => {
@@ -34,14 +18,14 @@ const snapMark = (mark, point, xCoords, snapToTicks, ticksDistance, setValue, li
 
     if (point.Y() >= containerY - (markYMeasure * 1.35) && point.X() < xCoords[0]) {
       y = lineY;
-      x = closestTick(point.X(), ticks.fixedTicks);
+      x = getClosestTick(point.X(), ticks.fixedTicks);
     } else if (point.Y() >= containerY - (markYMeasure * 1.35) && point.X() > xCoords[1]) {
       y = lineY;
-      x = closestTick(point.X(), ticks.fixedTicks);
+      x = getClosestTick(point.X(), ticks.fixedTicks);
     } else if (point.Y() >= containerY - (markYMeasure * 1.35) && point.X() < xCoords[1] && point.X() > xCoords[0]) {
       y = lineY;
       if (snapToTicks) {
-        x = closestTick(point.X(), ticks.fixedTicks);
+        x = getClosestTick(point.X(), ticks.fixedTicks);
       } else {
         x = point.X();
       }
@@ -112,7 +96,7 @@ const rerenderMark = (mark, board, graphParameters, settings, setValue, lineSett
   if (oldCoords[1] >= containerY - (markYMeasure * 1.35)) {
     oldCoords[1] = lineY
 
-    oldCoords[0] = closestTick(oldCoords[0], ticks.fixedTicks);
+    oldCoords[0] = getClosestTick(oldCoords[0], ticks.fixedTicks);
 
   } else {
     oldCoords = checkMarksRenderSpace(board, settings, containerSettings);

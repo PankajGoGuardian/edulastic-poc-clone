@@ -8,9 +8,10 @@ import { compose } from 'redux';
 import { greenDark, red } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 import { FlexContainer, Paper } from '@edulastic/common';
-import { IconTrash } from '@edulastic/icons';
 
 import { Subtitle } from '../../../styled/Subtitle';
+
+import { IconTrash } from '../styled/IconTrash';
 
 const ColorPikers = ({ onRemove, colors, changeHandler, t, theme }) => {
   const getAlpha = (color) => {
@@ -41,14 +42,7 @@ const ColorPikers = ({ onRemove, colors, changeHandler, t, theme }) => {
                 onChange={changeHandler(i)}
               />
               {onRemove && (
-                <IconTrash
-                  onClick={onRemove(i)}
-                  color={greenDark}
-                  hoverColor={red}
-                  width={20}
-                  height={20}
-                  style={{ cursor: 'pointer' }}
-                />
+                <IconTrash onClick={onRemove(i)} />
               )}
             </FlexContainer>
           </Paper>

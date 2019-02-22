@@ -43,15 +43,15 @@ const ItemDetailWidget = ({
           {connectDragSource(
             <div>
               <Button title={t('move')} move shape="circle">
-                <IconMoveArrows color={white} style={{ fontSize: 11 }} />
+                <IconMoveArrows color={white} style={{ fontSize: 11 }} width={16} height={16} />
               </Button>
             </div>
           )}
           <Button title={t('edit')} onClick={onEdit} shape="circle">
-            <IconPencilEdit color={white} />
+            <IconPencilEdit color={white} width={16} height={16} />
           </Button>
           <Button title={t('delete')} onClick={onDelete} shape="circle">
-            <IconTrash color={white} />
+            <IconTrash color={white} width={16} height={16} />
           </Button>
         </Buttons>
       </Container>

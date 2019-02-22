@@ -6,4 +6,6 @@ export const IconTrash = styled(Icon)`
   :hover {
     fill: ${props => props.theme.questionMetadata.iconTrashColor};
   }
+  width: 16px;
+  height: 16px;
 `;

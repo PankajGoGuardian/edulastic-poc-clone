@@ -4,9 +4,7 @@ import { connect } from 'react-redux';
 import { cloneDeep, isEqual } from 'lodash';
 
 import { FlexContainer } from '@edulastic/common';
-import { IconEraseText, IconRedo, IconUndo, IconDraw, IconTrash } from '@edulastic/icons';
 import { withNamespaces } from '@edulastic/localization';
-import { greenDark } from '@edulastic/colors';
 
 import { setQuestionDataAction } from '../../../author/src/actions/question';
 
@@ -19,6 +17,11 @@ import { Button } from './styled/Button';
 import { SideBar } from './styled/SideBar';
 import { ButtonWithShadow } from './styled/ButtonWithShadow';
 import { AreaText } from './styled/AreaText';
+import { IconDraw } from './styled/IconDraw';
+import { IconTrash } from './styled/IconTrash';
+import { IconUndo } from './styled/IconUndo';
+import { IconRedo } from './styled/IconRedo';
+import { IconEraseText } from './styled/IconEraseText';
 
 const AreasContainer = ({ itemData, areas, width, imageSrc, height, t, setQuestionData }) => {
   const [history, setHistory] = useState([{ areas: [], points: [] }]);
@@ -92,29 +95,29 @@ const AreasContainer = ({ itemData, areas, width, imageSrc, height, t, setQuesti
       <div style={{ width: width + 117 }}>
         <Container justifyContent="flex-end" childMarginRight={45}>
           <Button disabled={historyTab === 0} onClick={handleUndoClick}>
-            <IconUndo style={{ marginRight: 25 }} width={18} height={18} />
+            <IconUndo />
             <AreaText>{t('component.hotspot.undo')}</AreaText>
           </Button>
           <Button
             disabled={history.length === 0 || historyTab === history.length - 1}
             onClick={handleRedoClick}
           >
-            <IconRedo style={{ marginRight: 25 }} width={18} height={18} />
+            <IconRedo />
             <AreaText>{t('component.hotspot.redo')}</AreaText>
           </Button>
           <Button onClick={handleClearClick}>
-            <IconEraseText style={{ marginRight: 25 }} width={18} height={18} />
+            <IconEraseText />
             <AreaText>{t('component.hotspot.clear')}</AreaText>
           </Button>
         </Container>
         <FlexContainer childMarginRight={0} alignItems="stretch">
           <SideBar>
             <ButtonWithShadow onClick={handleModeChange(DRAW_MODE)} active={mode === DRAW_MODE}>
-              <IconDraw style={{ marginBottom: 10 }} color={greenDark} width={42} height={42} />
+              <IconDraw />
               <AreaText>{t('component.hotspot.draw')}</AreaText>
             </ButtonWithShadow>
             <ButtonWithShadow onClick={handleModeChange(DELETE_MODE)} active={mode === DELETE_MODE}>
-              <IconTrash style={{ marginBottom: 10 }} color={greenDark} width={42} height={42} />
+              <IconTrash />
               <AreaText>{t('component.hotspot.delete')}</AreaText>
             </ButtonWithShadow>
           </SideBar>

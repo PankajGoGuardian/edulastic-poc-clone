@@ -11,5 +11,8 @@ export const TextEmpty = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: ${({ smallSize }) => (smallSize ? '13px' : '16px')};
+  font-size: ${({ smallSize, theme }) => (smallSize
+    ? theme.widgets.sortList.dragItemTextEmptySmallFontSize
+    : theme.widgets.sortList.dragItemTextEmptyFontSize
+  )};
 `;

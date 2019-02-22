@@ -68,6 +68,17 @@ class ClozeDropDown extends Component {
     setQuestionData(newItem);
   };
 
+  handleRemoveAltResponses = index => {
+    const { setQuestionData, item } = this.props;
+    const newItem = cloneDeep(item);
+
+    if (newItem.validation.alt_responses && newItem.validation.alt_responses.length) {
+      newItem.validation.alt_responses = newItem.validation.alt_responses.filter((response, i) => i !== index);
+    }
+
+    setQuestionData(newItem);    
+  }
+
   handleOptionsChange = (name, value) => {
     const { setQuestionData, item } = this.props;
     const newItem = cloneDeep(item);
@@ -127,6 +138,7 @@ class ClozeDropDown extends Component {
                   uiStyle={uiStyle}
                   templateMarkUp={itemForEdit.templateMarkUp}
                   onAddAltResponses={this.handleAddAltResponses}
+                  onRemoveAltResponses={this.handleRemoveAltResponses}
                 />
                 <CorrectAnswerOptions>
                   <Checkbox

@@ -31,6 +31,8 @@ export const Title = styled.div`
 `;
 
 export const ShareIcon = styled(IconShare)`
+  width: 16px;
+  height: 16px;
   fill: ${mainBlueColor};
 `;
 

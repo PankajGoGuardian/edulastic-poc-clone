@@ -1,12 +1,11 @@
 import styled from 'styled-components';
-import { secondaryTextColor } from '@edulastic/colors';
 
 export const Title = styled.p`
   text-align: center;
   width: 100%;
-  font-weight: 600;
+  font-weight: ${props => props.theme.widgets.sortList.titleFontWeight};
   margin-bottom: ${({ smallSize }) => (smallSize ? 5 : 15)}px;
-  font-size: 13px;
-  color: ${secondaryTextColor};
+  font-size: ${props => props.theme.widgets.sortList.titleFontSize};
+  color: ${props => props.theme.widgets.sortList.titleColor};
   text-transform: uppercase;
 `;

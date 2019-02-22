@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Input } from 'antd';
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 
 import { Paper, Stimulus, CorrectAnswersContainer } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
-import { lightGreen, lightRed } from '@edulastic/colors';
 
 import { CHECK, SHOW, PREVIEW, CLEAR, CONTAINS } from '../../constants/constantsForQuestions';
 
 import { SmallContainer } from './styled/SmallContainer';
 import { SmallStim } from './styled/SmallStim';
 
-const ShortTextPreview = ({ view, saveAnswer, t, item, previewTab, smallSize, userAnswer }) => {
+const ShortTextPreview = ({
+  view,
+  saveAnswer,
+  t,
+  item,
+  previewTab,
+  smallSize,
+  userAnswer,
+  theme
+}) => {
   const [text, setText] = useState(Array.isArray(userAnswer) ? '' : userAnswer);
 
   const handleTextChange = (e) => {
@@ -69,7 +79,11 @@ const ShortTextPreview = ({ view, saveAnswer, t, item, previewTab, smallSize, us
       )}
 
       <Input
-        style={preview ? (validate() ? { background: lightGreen } : { background: lightRed }) : {}}
+        style={preview
+          ? (validate()
+            ? { background: theme.widgets.shortText.correctInputBgColor }
+            : { background: theme.widgets.shortText.incorrectInputBgColor })
+          : {}}
         value={text}
         onChange={handleTextChange}
         size="large"
@@ -91,7 +105,8 @@ ShortTextPreview.propTypes = {
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
-  userAnswer: PropTypes.any.isRequired
+  userAnswer: PropTypes.any.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 ShortTextPreview.defaultProps = {
@@ -99,4 +114,9 @@ ShortTextPreview.defaultProps = {
   smallSize: false
 };
 
-export default withNamespaces('assessment')(ShortTextPreview);
+const enhance = compose(
+  withNamespaces('assessment'),
+  withTheme
+);
+
+export default enhance(ShortTextPreview);

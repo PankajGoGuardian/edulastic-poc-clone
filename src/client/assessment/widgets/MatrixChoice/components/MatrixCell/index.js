@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox, Radio } from 'antd';
 
-import { greenDark } from '@edulastic/colors';
-
 import { Wrapper } from './styled/Wrapper';
+import { InlineLabel } from './styled/InlineLabel';
 
 const MatrixCell = ({ label, type, correct, isMultiple, checked, onChange, smallSize }) => {
   let input;
@@ -19,7 +18,7 @@ const MatrixCell = ({ label, type, correct, isMultiple, checked, onChange, small
     <Wrapper smallSize={smallSize} correct={correct}>
       {input}
       {type === 'inline' && (
-        <div style={{ color: greenDark }} dangerouslySetInnerHTML={{ __html: label }} />
+        <InlineLabel dangerouslySetInnerHTML={{ __html: label }} />
       )}
     </Wrapper>
   );

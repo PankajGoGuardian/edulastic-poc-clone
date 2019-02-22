@@ -11,7 +11,7 @@ export const ResponseContainer = styled.span`
   padding: 5px 10px;
   margin: 0 10px 5px;
   min-height: ${props => (props.smallSize ? 40 : 30)}px;
-  display: inline-flex !important;
+  display: inline-flex;
   align-items: center;
   border-radius: 10px;
   overflow: hidden;

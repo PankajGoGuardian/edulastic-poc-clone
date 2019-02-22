@@ -72,21 +72,21 @@ class ButtonBar extends Component {
               selectedKeys={[current]}
               style={{ marginLeft: 80 }}
             >
-              <MenuItem className={current === 'edit' && 'active'} onClick={ () => this.handleMenuClick('edit') }>
+              <MenuItem className={current === 'edit' && 'active'} onClick={() => this.handleMenuClick('edit')}>
                 <HeadIcon>
-                  <IconSelected color={white} width={18} />
+                  <IconSelected color={white} width={18} height={16} />
                 </HeadIcon>
                 EDIT
               </MenuItem>
-              <MenuItem className={current === 'preview' && 'active'} onClick={ () => this.handleMenuClick('preview') }>
+              <MenuItem className={current === 'preview' && 'active'} onClick={() => this.handleMenuClick('preview')}>
                 <HeadIcon>
-                  <IconEye color={white} width={18} />
+                  <IconEye color={white} width={18} height={16} />
                 </HeadIcon>
                 PREVIEW
               </MenuItem>
-              <MenuItem className={current === 'metadata' && 'active'} onClick={ () => this.handleMenuClick('metadata') }>
+              <MenuItem className={current === 'metadata' && 'active'} onClick={() => this.handleMenuClick('metadata')}>
                 <HeadIcon>
-                  <IconMetadata color={white} width={18} />
+                  <IconMetadata color={white} width={18} height={16} />
                 </HeadIcon>
                 METADATA
               </MenuItem>
@@ -94,7 +94,7 @@ class ButtonBar extends Component {
             <RightSide>
               <Button onClick={onSave}>
                 <HeadIcon>
-                  <IconSave color={white} width={18} />
+                  <IconSave color={white} width={18} height={16} />
                 </HeadIcon>
                 SAVE
               </Button>
@@ -105,27 +105,27 @@ class ButtonBar extends Component {
             <MobileFirstContainer>
               <Button onClick={() => this.optionHandler('edit')}>
                 <HeadIcon>
-                  <IconPencilEdit color={white} width={18} />
+                  <IconPencilEdit color={white} width={18} height={16} />
                 </HeadIcon>
               </Button>
               <Button onClick={() => this.optionHandler('preview')}>
                 <HeadIcon>
-                  <IconPreview color={white} width={18} />
+                  <IconPreview color={white} width={18} height={16} />
                 </HeadIcon>
               </Button>
               <Button onClick={onSave}>
                 <HeadIcon>
-                  <IconSave color={white} width={18} />
+                  <IconSave color={white} width={18} height={16} />
                 </HeadIcon>
               </Button>
               <Button onClick={onShowSource}>
                 <HeadIcon>
-                  <IconSource color={white} width={18} />
+                  <IconSource color={white} width={18} height={16} />
                 </HeadIcon>
               </Button>
               <Button onClick={onShowSettings}>
                 <HeadIcon>
-                  <IconSettings color={white} width={24} />
+                  <IconSettings color={white} width={24} height={16} />
                 </HeadIcon>
               </Button>
             </MobileFirstContainer>
@@ -137,7 +137,7 @@ class ButtonBar extends Component {
                 >
                   <ButtonLink
                     color="primary"
-                    icon={<IconCheck color={white} />}
+                    icon={<IconCheck color={white} width={16} height={16} />}
                     style={{ color: white }}
                   >
                     {t('component.questioneditor.buttonbar.checkanswer')}
@@ -150,7 +150,7 @@ class ButtonBar extends Component {
                   <ButtonLink
                     color="primary"
                     style={{ color: white }}
-                    icon={<IconEye color={white} />}
+                    icon={<IconEye color={white} width={16} height={16} />}
                   >
                     {t('component.questioneditor.buttonbar.showanswers')}
                   </ButtonLink>
@@ -165,7 +165,7 @@ class ButtonBar extends Component {
                   <ButtonLink
                     color="primary"
                     style={{ color: white }}
-                    icon={<IconEraseText color={white} />}
+                    icon={<IconEraseText color={white} width={16} height={16} />}
                   >
                     {t('component.questioneditor.buttonbar.clear')}
                   </ButtonLink>

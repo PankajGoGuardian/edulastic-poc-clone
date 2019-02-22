@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { Col, Select, Input, Checkbox } from 'antd';
 import { pick } from 'lodash';
 
-import { IconTrash } from '@edulastic/icons';
-import { greenDark, red } from '@edulastic/colors';
 import { FlexContainer } from '@edulastic/common';
 import { math } from '@edulastic/constants';
 import { withNamespaces } from '@edulastic/localization';
@@ -12,6 +10,7 @@ import { withNamespaces } from '@edulastic/localization';
 import { Label } from '../../../../styled/WidgetOptions/Label';
 import MathInput from '../../../../components/MathInput';
 
+import { IconTrash } from '../../styled/IconTrash';
 import ThousandsSeparators from '../ThousandsSeparators';
 import { Container } from './styled/Container';
 import { StyledRow } from './styled/StyledRow';
@@ -226,14 +225,7 @@ const MathFormulaAnswerMethod = ({
           </Select>
         </Col>
         <Col span={2} push={10}>
-          <IconTrash
-            style={{ cursor: 'pointer' }}
-            width={22}
-            height={22}
-            color={greenDark}
-            hoverColor={red}
-            onClick={onDelete}
-          />
+          <IconTrash onClick={onDelete} width={22} height={22} />
         </Col>
       </StyledRow>
 

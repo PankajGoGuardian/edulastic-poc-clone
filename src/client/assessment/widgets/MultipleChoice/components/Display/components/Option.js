@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { PaddingDiv, FlexContainer } from '@edulastic/common';
-import { IconCheck, IconClose } from '@edulastic/icons';
-import { green, red } from '@edulastic/colors';
 
 import { ALPHABET } from '../../../constants/alphabet';
 
@@ -11,6 +9,8 @@ import { CheckboxContainer } from '../styled/CheckboxContainer';
 import { MultiChoiceContent } from '../styled/MultiChoiceContent';
 import { Label } from '../styled/Label';
 import { IconWrapper } from '../styled/IconWrapper';
+import { IconCheck } from '../styled/IconCheck';
+import { IconClose } from '../styled/IconClose';
 
 const getFontSize = (size) => {
   switch (size) {
@@ -144,8 +144,8 @@ const Option = (props) => {
         <FlexContainer justifyContent={uiStyle.type === 'radioBelow' ? 'center' : 'space-between'}>
           {renderCheckbox()}
           <IconWrapper>
-            {(!isPreview && className === 'right') && <IconCheck color={green} width={20} height={20} />}
-            {(!isPreview && className === 'wrong') && <IconClose color={red} />}
+            {className === 'right' && <IconCheck />}
+            {className === 'wrong' && <IconClose />}
           </IconWrapper>
         </FlexContainer>
       </PaddingDiv>

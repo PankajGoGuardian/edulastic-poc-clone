@@ -1,79 +1,57 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
-import {
-  MoreOptionsHeading
-} from '../../../common/styled_components';
-import { Toggler } from '../../../../../styled/WidgetOptions/Toggler';
 import QuadrantsMoreOptions from './QuadrantsMoreOptions';
-import { ScoreSettings, ControlsSettings, AnnotationSettings } from '../../';
+import { ScoreSettings, ControlsSettings, AnnotationSettings, QuestionSection } from '../..';
 
-class GraphQuadrantsOptions extends Component {
-  state = {
-    isMoreOptionsOpen: false
-  };
-
-  updateClickOnMoreOptions = () => {
-    const { isMoreOptionsOpen } = this.state;
-    this.setState({
-      isMoreOptionsOpen: !isMoreOptionsOpen
-    });
-  };
-
-  render() {
-    const {
-      t,
-      graphData,
-      fontSizeList,
-      stemNumerationList,
-      setOptions,
-      setBgImg,
-      setBgShapes,
-      setValidation,
-      setControls,
-      setAnnotation
-    } = this.props;
-    const { isMoreOptionsOpen } = this.state;
-
+const GraphQuadrantsOptions = ({
+  t,
+  graphData,
+  fontSizeList,
+  stemNumerationList,
+  setOptions,
+  setBgImg,
+  setBgShapes,
+  setControls,
+  setAnnotation,
+  setValidation,
+  fillSections,
+  cleanSections
+}) => {
     return (
       <Fragment>
-        <MoreOptionsHeading
-          onClick={this.updateClickOnMoreOptions}
-          isOpen={isMoreOptionsOpen}
-        >
-          <span>{t('component.graphing.optionstitle')}</span>
-          <Toggler isOpen={isMoreOptionsOpen} />
-        </MoreOptionsHeading>
-        {
-            isMoreOptionsOpen && (
-            <Fragment>
-              <QuadrantsMoreOptions
-                graphData={graphData}
-                stemNumerationList={stemNumerationList}
-                fontSizeList={fontSizeList}
-                setOptions={setOptions}
-                setBgImg={setBgImg}
-                setBgShapes={setBgShapes}
-              />
-              <ScoreSettings 
-                setValidation={setValidation} 
-                graphData={graphData} 
-              />
-              <ControlsSettings
-                onChange={setControls} 
-                controlbar={graphData.controlbar} 
-              />
-              <AnnotationSettings
-                annotation={graphData.annotation}
-                setAnnotation={setAnnotation}
-              />
-            </Fragment>            
-          )}
+        <QuadrantsMoreOptions
+          graphData={graphData}
+          stemNumerationList={stemNumerationList}
+          fontSizeList={fontSizeList}
+          setOptions={setOptions}
+          setBgImg={setBgImg}
+          setBgShapes={setBgShapes}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+        />
+        <QuestionSection section="advanced" label="SCORING" cleanSections={cleanSections} fillSections={fillSections}>
+          <ScoreSettings
+            setValidation={setValidation} 
+            graphData={graphData} 
+          />
+        </QuestionSection>
+        <QuestionSection section="advanced" label="CONTROLS" cleanSections={cleanSections} fillSections={fillSections}>
+          <ControlsSettings
+            onChange={setControls}
+            controlbar={graphData.controlbar}
+          />
+        </QuestionSection>
+        <QuestionSection section="advanced" label="ANNOTATION" cleanSections={cleanSections} fillSections={fillSections} marginLast="0">
+          <AnnotationSettings
+            annotation={graphData.annotation}
+            setAnnotation={setAnnotation}
+          />
+        </QuestionSection>
       </Fragment>
     );
   }
-}
 
 GraphQuadrantsOptions.propTypes = {
   t: PropTypes.func.isRequired,

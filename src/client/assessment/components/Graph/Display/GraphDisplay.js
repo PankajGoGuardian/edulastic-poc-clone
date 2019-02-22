@@ -172,7 +172,8 @@ class GraphDisplay extends Component {
       toolbar,
       numberlineAxis,
       validation,
-      list
+      list,
+      graphType
     } = graphData;
 
     return {
@@ -198,7 +199,11 @@ class GraphDisplay extends Component {
         stackResponses: numberlineAxis && numberlineAxis.stackResponses,
         stackResponsesSpacing: numberlineAxis && parseInt(numberlineAxis.stackResponsesSpacing, 10),
         renderingBase: numberlineAxis && numberlineAxis.renderingBase,
-        specificPoints: numberlineAxis && numberlineAxis.specificPoints
+        specificPoints: numberlineAxis && numberlineAxis.specificPoints,
+        minorTicks: numberlineAxis && parseFloat(numberlineAxis.minorTicks),
+        showLabels: numberlineAxis && numberlineAxis.showLabels,
+        labelShowMax: numberlineAxis && numberlineAxis.labelShowMax,
+        labelShowMin: numberlineAxis && numberlineAxis.labelShowMin
       },
       layout: {
         width: ui_style.layout_width,
@@ -253,7 +258,8 @@ class GraphDisplay extends Component {
       elements,
       showAnswer,
       checkAnswer,
-      changePreviewTab
+      changePreviewTab,
+      graphType
     };
   };
 

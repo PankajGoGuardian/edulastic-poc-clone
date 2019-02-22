@@ -4,13 +4,18 @@ import { compose } from 'redux';
 import { Checkbox } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
 import {
-  MoreOptionsContainer, MoreOptionsColumn, MoreOptionsRow,
-  MoreOptionsLabel, MoreOptionsInput, MoreOptionsDivider,
-  MoreOptionsSubHeading, MoreOptionsColumnContainer
+  MoreOptionsContainer, 
+  MoreOptionsColumn, 
+  MoreOptionsRow,
+  MoreOptionsLabel, 
+  MoreOptionsInput,
+  MoreOptionsSubHeading, 
+  MoreOptionsColumnContainer
 } from '../../common/styled_components';
 import FontSizeDropdown from './FontSizeDropdown';
 import FractionsFormatDropdown from './FractionsFormatDropdown';
 import RenderingBaseDropdown from './RenderingBaseDropdown';
+import { QuestionSection } from '../';
 
 class AxisLabelsMoreOptions extends Component {
   state = {
@@ -120,284 +125,286 @@ class AxisLabelsMoreOptions extends Component {
       t,
       fontSizeList,
       fractionsFormatList,
-      renderingBaseList
+      renderingBaseList,
+      fillSections,
+      cleanSections
     } = this.props;
 
     const { graphData: { canvas, ui_style, numberlineAxis } } = this.props;
 
     return (
       <Fragment>
-        <MoreOptionsContainer>
-          <MoreOptionsSubHeading>
-            {t('component.graphing.layoutoptionstitle')}
-          </MoreOptionsSubHeading>
+        <QuestionSection section="advanced" label="LAYOUT OPTIONS" cleanSections={cleanSections} fillSections={fillSections}>
+          <MoreOptionsContainer>
+            <MoreOptionsSubHeading>
+              {t('component.graphing.layoutoptionstitle')}
+            </MoreOptionsSubHeading>
 
-          <MoreOptionsColumnContainer>
-            <MoreOptionsColumn>
-              <MoreOptionsRow>
-                <MoreOptionsLabel>
-                  {t('component.graphing.layoutoptions.width')}
-                </MoreOptionsLabel>
-                <MoreOptionsInput
-                  type="text"
-                  name="layout_width"
-                  defaultValue="550"
-                  value={ui_style.layout_width}
-                  onChange={this.handleOptionsInputChange}
-                />
-              </MoreOptionsRow>
+            <MoreOptionsColumnContainer>
+              <MoreOptionsColumn>
+                <MoreOptionsRow>
+                  <MoreOptionsLabel>
+                    {t('component.graphing.layoutoptions.width')}
+                  </MoreOptionsLabel>
+                  <MoreOptionsInput
+                    type="text"
+                    name="layout_width"
+                    defaultValue="550"
+                    value={ui_style.layout_width}
+                    onChange={this.handleOptionsInputChange}
+                  />
+                </MoreOptionsRow>
 
-              <MoreOptionsRow>
-                <MoreOptionsLabel>
-                  {t('component.graphing.layoutoptions.linemargin')}
-                </MoreOptionsLabel>
-                <MoreOptionsInput
-                  type="text"
-                  name="margin"
-                  defaultValue="15"
-                  value={canvas.margin}
-                  onChange={this.handleCanvasInputChange}
-                />
-              </MoreOptionsRow>
+                <MoreOptionsRow>
+                  <MoreOptionsLabel>
+                    {t('component.graphing.layoutoptions.linemargin')}
+                  </MoreOptionsLabel>
+                  <MoreOptionsInput
+                    type="text"
+                    name="margin"
+                    defaultValue="15"
+                    value={canvas.margin}
+                    onChange={this.handleCanvasInputChange}
+                  />
+                </MoreOptionsRow>
 
-              <MoreOptionsRow>
-                <MoreOptionsLabel>
-                  {t('component.graphing.layoutoptions.titleposition')}
-                </MoreOptionsLabel>
-                <MoreOptionsInput
-                  type="text"
-                  name="title_position"
-                  defaultValue="50"
-                  value={ui_style.title_position}
-                  onChange={this.handleOptionsInputChange}
-                />
-              </MoreOptionsRow>
+                <MoreOptionsRow>
+                  <MoreOptionsLabel>
+                    {t('component.graphing.layoutoptions.titleposition')}
+                  </MoreOptionsLabel>
+                  <MoreOptionsInput
+                    type="text"
+                    name="title_position"
+                    defaultValue="50"
+                    value={ui_style.title_position}
+                    onChange={this.handleOptionsInputChange}
+                  />
+                </MoreOptionsRow>
 
-              <MoreOptionsRow>
-                <MoreOptionsLabel>
-                  {t('component.graphing.layoutoptions.separationdistancex')}
-                </MoreOptionsLabel>
-                <MoreOptionsInput
-                  type="text"
-                  name="separationDistanceX"
-                  defaultValue="10"
-                  value={numberlineAxis.separationDistanceX}
-                  onChange={this.handleNumberlineInputChange}
-                />
-              </MoreOptionsRow>
+                <MoreOptionsRow>
+                  <MoreOptionsLabel>
+                    {t('component.graphing.layoutoptions.separationdistancex')}
+                  </MoreOptionsLabel>
+                  <MoreOptionsInput
+                    type="text"
+                    name="separationDistanceX"
+                    defaultValue="10"
+                    value={numberlineAxis.separationDistanceX}
+                    onChange={this.handleNumberlineInputChange}
+                  />
+                </MoreOptionsRow>
 
-              <MoreOptionsRow>
-                <Checkbox
-                  label={t('component.graphing.layoutoptions.showleftarrow')}
-                  onChange={() => this.handleNumberlineCheckboxChange('leftArrow', numberlineAxis.leftArrow)}
-                  name="leftArrow"
-                  checked={numberlineAxis.leftArrow}
-                />
-              </MoreOptionsRow>
+                <MoreOptionsRow>
+                  <Checkbox
+                    label={t('component.graphing.layoutoptions.showleftarrow')}
+                    onChange={() => this.handleNumberlineCheckboxChange('leftArrow', numberlineAxis.leftArrow)}
+                    name="leftArrow"
+                    checked={numberlineAxis.leftArrow}
+                  />
+                </MoreOptionsRow>
 
-              <MoreOptionsRow>
-                <FontSizeDropdown
-                  t={t}
-                  fontSizeList={fontSizeList}
-                  currentItem={this.getFontSizeItem()}
-                  onChangeFontSize={this.changeFontSize}
-                />
-              </MoreOptionsRow>
-            </MoreOptionsColumn>
+                <MoreOptionsRow>
+                  <FontSizeDropdown
+                    t={t}
+                    fontSizeList={fontSizeList}
+                    currentItem={this.getFontSizeItem()}
+                    onChangeFontSize={this.changeFontSize}
+                  />
+                </MoreOptionsRow>
+              </MoreOptionsColumn>
 
-            <MoreOptionsColumn>
-              <MoreOptionsRow>
-                <MoreOptionsLabel>
-                  {t('component.graphing.layoutoptions.height')}
-                </MoreOptionsLabel>
-                <MoreOptionsInput
-                  type="text"
-                  name="layout_height"
-                  defaultValue="auto"
-                  value={ui_style.layout_height}
-                  onChange={this.handleOptionsInputChange}
-                />
-              </MoreOptionsRow>
+              <MoreOptionsColumn>
+                <MoreOptionsRow>
+                  <MoreOptionsLabel>
+                    {t('component.graphing.layoutoptions.height')}
+                  </MoreOptionsLabel>
+                  <MoreOptionsInput
+                    type="text"
+                    name="layout_height"
+                    defaultValue="auto"
+                    value={ui_style.layout_height}
+                    onChange={this.handleOptionsInputChange}
+                  />
+                </MoreOptionsRow>
 
-              <MoreOptionsRow>
-                <MoreOptionsLabel>
-                  {t('component.graphing.layoutoptions.lineposition')}
-                </MoreOptionsLabel>
-                <MoreOptionsInput
-                  type="text"
-                  defaultValue="35"
-                  name="line_position"
-                  value={ui_style.line_position}
-                  onChange={this.handleOptionsInputChange}
-                />
-              </MoreOptionsRow>
+                <MoreOptionsRow>
+                  <MoreOptionsLabel>
+                    {t('component.graphing.layoutoptions.lineposition')}
+                  </MoreOptionsLabel>
+                  <MoreOptionsInput
+                    type="text"
+                    defaultValue="35"
+                    name="line_position"
+                    value={ui_style.line_position}
+                    onChange={this.handleOptionsInputChange}
+                  />
+                </MoreOptionsRow>
 
-              <MoreOptionsRow>
-                <MoreOptionsLabel>
-                  {t('component.graphing.layoutoptions.pointboxposition')}
-                </MoreOptionsLabel>
-                <MoreOptionsInput
-                  type="text"
-                  defaultValue="60"
-                  name="point_box_position"
-                  value={ui_style.point_box_position}
-                  onChange={this.handleOptionsInputChange}
-                />
-              </MoreOptionsRow>
+                <MoreOptionsRow>
+                  <MoreOptionsLabel>
+                    {t('component.graphing.layoutoptions.pointboxposition')}
+                  </MoreOptionsLabel>
+                  <MoreOptionsInput
+                    type="text"
+                    defaultValue="60"
+                    name="point_box_position"
+                    value={ui_style.point_box_position}
+                    onChange={this.handleOptionsInputChange}
+                  />
+                </MoreOptionsRow>
 
-              <MoreOptionsRow>
-                <MoreOptionsLabel>
-                  {t('component.graphing.layoutoptions.separationdistancey')}
-                </MoreOptionsLabel>
-                <MoreOptionsInput
-                  type="text"
-                  defaultValue="20"
-                  name="separationDistanceY"
-                  value={numberlineAxis.separationDistanceY}
-                  onChange={this.handleNumberlineInputChange}
-                />
-              </MoreOptionsRow>
+                <MoreOptionsRow>
+                  <MoreOptionsLabel>
+                    {t('component.graphing.layoutoptions.separationdistancey')}
+                  </MoreOptionsLabel>
+                  <MoreOptionsInput
+                    type="text"
+                    defaultValue="20"
+                    name="separationDistanceY"
+                    value={numberlineAxis.separationDistanceY}
+                    onChange={this.handleNumberlineInputChange}
+                  />
+                </MoreOptionsRow>
 
-              <MoreOptionsRow>
-                <Checkbox
-                  label={t('component.graphing.layoutoptions.showrightarrow')}
-                  name="rightArrow"
-                  onChange={() => this.handleNumberlineCheckboxChange('rightArrow', numberlineAxis.rightArrow)}
-                  checked={numberlineAxis.rightArrow}
-                />
-              </MoreOptionsRow>
+                <MoreOptionsRow>
+                  <Checkbox
+                    label={t('component.graphing.layoutoptions.showrightarrow')}
+                    name="rightArrow"
+                    onChange={() => this.handleNumberlineCheckboxChange('rightArrow', numberlineAxis.rightArrow)}
+                    checked={numberlineAxis.rightArrow}
+                  />
+                </MoreOptionsRow>
 
-            </MoreOptionsColumn>
-          </MoreOptionsColumnContainer>
-        </MoreOptionsContainer>
+              </MoreOptionsColumn>
+            </MoreOptionsColumnContainer>
+          </MoreOptionsContainer>
+        </QuestionSection>
 
-        <MoreOptionsDivider />
+        <QuestionSection  section="advanced" label="TICKS OPTIONS" cleanSections={cleanSections} fillSections={fillSections}>
+          <MoreOptionsContainer>
+            <MoreOptionsSubHeading>
+              {t('component.graphing.ticksoptionstitle')}
+            </MoreOptionsSubHeading>
 
-        <MoreOptionsContainer>
-          <MoreOptionsSubHeading>
-            {t('component.graphing.ticksoptionstitle')}
-          </MoreOptionsSubHeading>
+            <MoreOptionsColumnContainer>
+              <MoreOptionsColumn>
 
-          <MoreOptionsColumnContainer>
-            <MoreOptionsColumn>
+                <MoreOptionsRow>
+                  <Checkbox
+                    label={t('component.graphing.ticksoptions.showticks')}
+                    name="showTicks"
+                    onChange={() => this.handleNumberlineCheckboxChange('showTicks', numberlineAxis.showTicks)}
+                    checked={numberlineAxis.showTicks}
+                  />
+                </MoreOptionsRow>
+                <MoreOptionsRow>
+                  <Checkbox
+                    label={t('component.graphing.ticksoptions.snaptoticks')}
+                    name="snapToTicks"
+                    onChange={() => this.handleNumberlineCheckboxChange('snapToTicks', numberlineAxis.snapToTicks)}
+                    checked={numberlineAxis.snapToTicks}
+                  />
+                </MoreOptionsRow>
+                <MoreOptionsRow>
+                  <MoreOptionsLabel>
+                    {t('component.graphing.ticksoptions.fractionsformat')}
+                  </MoreOptionsLabel>
 
-              <MoreOptionsRow>
-                <Checkbox
-                  label={t('component.graphing.ticksoptions.showticks')}
-                  name="showTicks"
-                  onChange={() => this.handleNumberlineCheckboxChange('showTicks', numberlineAxis.showTicks)}
-                  checked={numberlineAxis.showTicks}
-                />
-              </MoreOptionsRow>
-              <MoreOptionsRow>
-                <Checkbox
-                  label={t('component.graphing.ticksoptions.snaptoticks')}
-                  name="snapToTicks"
-                  onChange={() => this.handleNumberlineCheckboxChange('snapToTicks', numberlineAxis.snapToTicks)}
-                  checked={numberlineAxis.snapToTicks}
-                />
-              </MoreOptionsRow>
-              <MoreOptionsRow>
-                <MoreOptionsLabel>
-                  {t('component.graphing.ticksoptions.fractionsformat')}
-                </MoreOptionsLabel>
+                  <FractionsFormatDropdown
+                    t={t}
+                    fractionsFormatList={fractionsFormatList}
+                    currentItem={currentFractionItem}
+                    onChangeFractionsFormat={this.changeFractionsFormat}
+                  />
+                </MoreOptionsRow>
 
-                <FractionsFormatDropdown
-                  t={t}
-                  fractionsFormatList={fractionsFormatList}
-                  currentItem={currentFractionItem}
-                  onChangeFractionsFormat={this.changeFractionsFormat}
-                />
-              </MoreOptionsRow>
+              </MoreOptionsColumn>
 
-            </MoreOptionsColumn>
+              <MoreOptionsColumn>
 
-            <MoreOptionsColumn>
+                <MoreOptionsRow>
+                  <MoreOptionsLabel>
+                    {t('component.graphing.ticksoptions.tickdistance')}
+                  </MoreOptionsLabel>
+                  <MoreOptionsInput
+                    type="number"
+                    defaultValue="1"
+                    name="ticksDistance"
+                    onChange={this.handleNumberlineInputChange}
+                    value={numberlineAxis.ticksDistance}
+                  />
+                </MoreOptionsRow>
 
-              <MoreOptionsRow>
-                <MoreOptionsLabel>
-                  {t('component.graphing.ticksoptions.tickdistance')}
-                </MoreOptionsLabel>
-                <MoreOptionsInput
-                  type="text"
-                  defaultValue="1"
-                  name="ticksDistance"
-                  onChange={this.handleNumberlineInputChange}
-                  value={numberlineAxis.ticksDistance}
-                />
-              </MoreOptionsRow>
+                <MoreOptionsRow>
+                  <MoreOptionsLabel>
+                    {t('component.graphing.ticksoptions.renderingbase')}
+                  </MoreOptionsLabel>
 
-              <MoreOptionsRow>
-                <MoreOptionsLabel>
-                  {t('component.graphing.ticksoptions.renderingbase')}
-                </MoreOptionsLabel>
+                  <RenderingBaseDropdown
+                    t={t}
+                    renderingBaseList={renderingBaseList}
+                    currentItem={currentRenderingBaseItem}
+                    onChangeRenderingBase={this.changeRenderingBase}
+                  />
+                </MoreOptionsRow>
 
-                <RenderingBaseDropdown
-                  t={t}
-                  renderingBaseList={renderingBaseList}
-                  currentItem={currentRenderingBaseItem}
-                  onChangeRenderingBase={this.changeRenderingBase}
-                />
-              </MoreOptionsRow>
+              </MoreOptionsColumn>
 
-            </MoreOptionsColumn>
+            </MoreOptionsColumnContainer>
+          
+          </MoreOptionsContainer>
+        </QuestionSection>
 
-          </MoreOptionsColumnContainer>
+        <QuestionSection section="advanced" label="LABELS" cleanSections={cleanSections} fillSections={fillSections}>
+          <MoreOptionsContainer>
+            <MoreOptionsSubHeading>
+              {t('component.graphing.labelstitle')}
+            </MoreOptionsSubHeading>
 
-        </MoreOptionsContainer>
+            <MoreOptionsColumnContainer>
+              <MoreOptionsColumn>
+                <MoreOptionsRow>
+                  <MoreOptionsLabel>
+                    {t('component.graphing.labelsoptions.frequency')}
+                  </MoreOptionsLabel>
+                  <MoreOptionsInput
+                    type="number"
+                    defaultValue="1"
+                  />
+                </MoreOptionsRow>
+                <MoreOptionsRow>
+                  <Checkbox
+                    label={t('component.graphing.labelsoptions.showmin')}
+                    onChange={() => this.handleNumberlineCheckboxChange('showMin', numberlineAxis.showMin)}
+                    checked={numberlineAxis.showMin}
+                  />
+                </MoreOptionsRow>
+              </MoreOptionsColumn>
 
-        <MoreOptionsDivider />
-
-        <MoreOptionsContainer>
-          <MoreOptionsSubHeading>
-            {t('component.graphing.labelstitle')}
-          </MoreOptionsSubHeading>
-
-          <MoreOptionsColumnContainer>
-            <MoreOptionsColumn>
-              <MoreOptionsRow>
-                <MoreOptionsLabel>
-                  {t('component.graphing.labelsoptions.frequency')}
-                </MoreOptionsLabel>
-                <MoreOptionsInput
-                  type="number"
-                  defaultValue="1"
-                />
-              </MoreOptionsRow>
-              <MoreOptionsRow>
-                <Checkbox
-                  label={t('component.graphing.labelsoptions.showmin')}
-                  onChange={() => this.handleNumberlineCheckboxChange('showMin', numberlineAxis.showMin)}
-                  checked={numberlineAxis.showMin}
-                />
-              </MoreOptionsRow>
-            </MoreOptionsColumn>
-
-            <MoreOptionsColumn>
-              <MoreOptionsRow>
-                <MoreOptionsLabel>
-                  {t('component.graphing.labelsoptions.displayspecificpoints')}
-                </MoreOptionsLabel>
-                <MoreOptionsInput
-                  type="text"
-                  defaultValue=""
-                  name="specificPoints"
-                  onChange={this.handleNumberlineInputChange}
-                  value={numberlineAxis.specificPoints}
-                />
-              </MoreOptionsRow>
-              <MoreOptionsRow>
-                <Checkbox
-                  label={t('component.graphing.labelsoptions.showmax')}
-                  onChange={() => this.handleNumberlineCheckboxChange('showMax', numberlineAxis.showMax)}
-                  checked={numberlineAxis.showMax}
-                />
-              </MoreOptionsRow>
-            </MoreOptionsColumn>
-          </MoreOptionsColumnContainer>
-        </MoreOptionsContainer>
-
-        <MoreOptionsDivider />
+              <MoreOptionsColumn>
+                <MoreOptionsRow>
+                  <MoreOptionsLabel>
+                    {t('component.graphing.labelsoptions.displayspecificpoints')}
+                  </MoreOptionsLabel>
+                  <MoreOptionsInput
+                    type="text"
+                    defaultValue=""
+                    name="specificPoints"
+                    onChange={this.handleNumberlineInputChange}
+                    value={numberlineAxis.specificPoints}
+                  />
+                </MoreOptionsRow>
+                <MoreOptionsRow>
+                  <Checkbox
+                    label={t('component.graphing.labelsoptions.showmax')}
+                    onChange={() => this.handleNumberlineCheckboxChange('showMax', numberlineAxis.showMax)}
+                    checked={numberlineAxis.showMax}
+                  />
+                </MoreOptionsRow>
+              </MoreOptionsColumn>
+            </MoreOptionsColumnContainer>
+          </MoreOptionsContainer>
+        </QuestionSection>
       </Fragment>
     );
   }

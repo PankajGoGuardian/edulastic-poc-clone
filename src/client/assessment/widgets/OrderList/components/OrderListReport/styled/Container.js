@@ -1,18 +1,18 @@
 import styled from 'styled-components';
-import {
-  red,
-  green,
-  lightGreen,
-  lightRed
-} from '@edulastic/colors';
 
 export const Container = styled.div`
   width: 100%;
   display: flex;
   align-items: stretch;
   margin-bottom: 10px;
-  background: ${({ correct }) => (correct ? lightGreen : lightRed)};
+  background: ${({ correct, theme }) => (correct
+    ? theme.widgets.orderList.correctContainerBgColor
+    : theme.widgets.orderList.incorrectContainerBgColor
+  )};
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-  border-left: 2px solid ${({ correct }) => (correct ? green : red)};
+  border-left: 2px solid ${({ correct, theme }) => (correct
+    ? theme.widgets.orderList.correctContainerBorderColor
+    : theme.widgets.orderList.incorrectContainerBorderColor
+  )};
 `;

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { grey } from '@edulastic/colors';
 
 export const Container = styled.div`
   width: 100%;
@@ -8,5 +7,8 @@ export const Container = styled.div`
   cursor: pointer;
   border-radius: 4px;
   border: ${props =>
-    (props.style && props.style.border ? props.style.border : `1px solid ${grey}`)};
+    (props.style && props.style.border
+      ? props.style.border
+      : `1px solid ${props.theme.widgets.sortList.dragItemContainerBorderColor}`
+    )};
 `;

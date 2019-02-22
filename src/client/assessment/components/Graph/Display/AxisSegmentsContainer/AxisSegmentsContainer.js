@@ -426,6 +426,10 @@ class AxisSegmentsContainer extends Component {
         || numberlineAxis.snapToTicks !== prevProps.numberlineAxis.snapToTicks
         || numberlineAxis.renderingBase !== prevProps.numberlineAxis.renderingBase
         || numberlineAxis.specificPoints !== prevProps.numberlineAxis.specificPoints
+        || numberlineAxis.minorTicks !== prevProps.numberlineAxis.minorTicks
+        || numberlineAxis.showLabels !== prevProps.numberlineAxis.showLabels
+        || numberlineAxis.labelShowMax !== prevProps.numberlineAxis.labelShowMax
+        || numberlineAxis.labelShowMin !== prevProps.numberlineAxis.labelShowMin
       ) {
         this._graph.updateGraphParameters(
           canvas,

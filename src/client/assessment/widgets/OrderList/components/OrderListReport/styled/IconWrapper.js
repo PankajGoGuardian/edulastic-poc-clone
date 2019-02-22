@@ -5,6 +5,6 @@ export const IconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  font-size: 24px;
+  font-size: ${props => props.theme.widgets.orderList.iconWrapperFontSize};
   color: ${({ color }) => color};
 `;

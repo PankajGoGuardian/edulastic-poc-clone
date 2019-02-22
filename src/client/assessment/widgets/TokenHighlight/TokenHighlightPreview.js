@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { cloneDeep } from 'lodash';
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 
 import { Paper, Stimulus } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
-import { lightGreen, green, lightRed, red } from '@edulastic/colors';
 
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from '../../constants/constantsForQuestions';
 
@@ -15,7 +16,8 @@ const TokenHighlightPreview = ({
   saveAnswer,
   editCorrectAnswers,
   userAnswer,
-  previewTab
+  previewTab,
+  theme
 }) => {
   const initialArray = item.templeWithTokens.map((el, i) => ({
     value: el.value,
@@ -112,7 +114,9 @@ const TokenHighlightPreview = ({
   };
 
   const smallSizeStyles = {
-    fontSize: smallSize ? 11 : 14,
+    fontSize: smallSize
+      ? theme.widgets.tokenHighlight.previewSmallFontSize
+      : theme.widgets.tokenHighlight.previewFontSize,
     lineHeight: smallSize ? '18px' : '28px'
   };
 
@@ -134,11 +138,14 @@ const TokenHighlightPreview = ({
     let resultStyle;
 
     if (condition && !!rightAnswers.find(el => el.index === index && el.selected)) {
-      resultStyle = { background: lightGreen, borderColor: green };
+      resultStyle = {
+        background: theme.widgets.tokenHighlight.correctResultBgColor,
+        borderColor: theme.widgets.tokenHighlight.correctResultBorderColor
+      };
     } else if (condition) {
       resultStyle = {
-        background: lightRed,
-        borderColor: red
+        background: theme.widgets.tokenHighlight.incorrectResultBgColor,
+        borderColor: theme.widgets.tokenHighlight.incorrectResultBorderColor
       };
     } else {
       resultStyle = {};
@@ -184,7 +191,8 @@ TokenHighlightPreview.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   editCorrectAnswers: PropTypes.array,
   previewTab: PropTypes.string,
-  userAnswer: PropTypes.any
+  userAnswer: PropTypes.any,
+  theme: PropTypes.object.isRequired
 };
 
 TokenHighlightPreview.defaultProps = {
@@ -194,4 +202,9 @@ TokenHighlightPreview.defaultProps = {
   editCorrectAnswers: []
 };
 
-export default withNamespaces('assessment')(TokenHighlightPreview);
+const enhance = compose(
+  withNamespaces('assessment'),
+  withTheme
+);
+
+export default enhance(TokenHighlightPreview);

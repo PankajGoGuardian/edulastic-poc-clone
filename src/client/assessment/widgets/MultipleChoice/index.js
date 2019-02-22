@@ -98,6 +98,17 @@ class MultipleChoice extends Component {
     setQuestionData(newItem);
   };
 
+  handleRemoveAltResponses = index => {
+    const { setQuestionData, item } = this.props;
+    const newItem = cloneDeep(item);
+
+    if (newItem.validation.alt_responses && newItem.validation.alt_responses.length) {
+      newItem.validation.alt_responses = newItem.validation.alt_responses.filter((response, i) => i !== index);
+    }
+
+    setQuestionData(newItem);    
+  }
+
   handleAddAnswer = (qid) => {
     console.log(qid)
     const { saveAnswer, userAnswer, item } = this.props;
@@ -170,6 +181,7 @@ class MultipleChoice extends Component {
                   question={previewStimulus}
                   multipleResponses={multipleResponses}
                   onAddAltResponses={this.handleAddAltResponses}
+                  onRemoveAltResponses={this.handleRemoveAltResponses}
                   validation={item.validation}
                 />
                 <Checkbox

@@ -42,8 +42,8 @@ const LinkNavigation = styled(Link)`
 `;
 
 const renderIcon = icon => styled(icon)`
-  width: 22px !important;
-  height: 22px !important;
+  width: 22px;
+  height: 22px;
   fill: rgb(67, 75, 93);
   margin-right: ${props => (props.flag ? '0rem' : '1rem')};
 `;

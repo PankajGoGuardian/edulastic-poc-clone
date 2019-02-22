@@ -26,12 +26,12 @@ import { toggleSideBarAction } from '../../../src/actions/togglemenu';
 
 export const navButtons = [
   {
-    icon: <IconSummary color={white} />,
+    icon: <IconSummary color={white} width={16} height={16} />,
     value: 'summary',
     text: 'Summary'
   },
   {
-    icon: <IconAddItems color={white} />,
+    icon: <IconAddItems color={white} width={16} height={16} />,
     value: 'addItems',
     text: 'Add Items'
   },
@@ -46,11 +46,11 @@ export const navButtons = [
     text: 'Review'
   },
   {
-    icon: <IconSettings color={white} />,
+    icon: <IconSettings color={white} width={16} height={16} />,
     value: 'settings',
     text: 'Settings'
   },
-  { icon: <IconAssign color={white} />,
+  { icon: <IconAssign color={white} width={16} height={16} />,
     value: 'assign',
     text: 'ASSIGN'
   }

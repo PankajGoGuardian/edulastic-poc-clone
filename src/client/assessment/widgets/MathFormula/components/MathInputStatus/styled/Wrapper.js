@@ -7,7 +7,7 @@ export const Wrapper = styled.div`
   bottom: 0;
   left: 0;
   z-index: 100;
-  background: transparent;
+  background: ${props => props.theme.widgets.mathFormula.iconWrapperBgColor};
   display: flex;
   align-items: center;
 `;

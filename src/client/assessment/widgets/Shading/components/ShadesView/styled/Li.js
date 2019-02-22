@@ -1,20 +1,13 @@
 import styled from 'styled-components';
 import Color from 'color';
-import {
-  svgMapFillColor,
-  svgMapStrokeColor,
-  secondaryTextColor,
-  red,
-  green,
-  white
-} from '@edulastic/colors';
 
-const getItemBackground = (alpha, defaultColor) => ({
+const getItemBackground = (alpha, hoverBg = false) => ({
   active,
   showAnswers,
   checkAnswers,
   correct,
-  locked
+  locked,
+  theme
 }) => {
   const isCheckGreen = checkAnswers && active && !locked && correct;
   const isCheckRed = checkAnswers && active && !locked && !correct;
@@ -26,17 +19,19 @@ const getItemBackground = (alpha, defaultColor) => ({
   const isSimplyActive = !checkAnswers && !showAnswers && active;
 
   if (isCheckGreen || isShowGreen) {
-    return green;
+    return theme.widgets.shading.correctLiBgColor;
   }
   if (isCheckRed || isShowRed) {
-    return red;
+    return theme.widgets.shading.incorrectLiBgColor;
   }
   if (isCheckLocked || isShowLocked || isSimplyActive) {
-    return Color(svgMapFillColor)
+    return Color(theme.widgets.shading.lockedLiBgColor)
       .alpha(alpha)
       .string();
   }
-  return defaultColor;
+  return hoverBg
+    ? theme.widgets.shading.liBgHoverColor
+    : theme.widgets.shading.liBgColor;
 };
 
 const getIcon = ({ showAnswers, correct, locked, checkAnswers, active }) => {
@@ -57,9 +52,9 @@ const getIcon = ({ showAnswers, correct, locked, checkAnswers, active }) => {
 export const Li = styled.li`
   width: ${({ width }) => width * 40}px;
   height: ${({ height }) => height * 40}px;
-  background: ${getItemBackground(0.8, svgMapFillColor)};
+  background: ${getItemBackground(0.8)};
   cursor: ${({ locked }) => (locked ? 'not-allowed' : 'pointer')};
-  border: 2px solid ${svgMapStrokeColor};
+  border: 2px solid ${props => props.theme.widgets.shading.liBorderColor};
   display: inline-block;
   margin-left: -2px;
   position: relative;
@@ -69,20 +64,20 @@ export const Li = styled.li`
     margin-left: 0;
   }
   &:hover {
-    background: ${getItemBackground(0.6, 'transparent')};
+    background: ${getItemBackground(0.6, true)};
     z-index: 11;
-    border: 3px solid ${secondaryTextColor};
+    border: 3px solid ${props => props.theme.widgets.shading.liBorderHoverColor};
   }
   &::before {
-    font-family: FontAwesome;
+    font-family: ${props => props.theme.widgets.shading.liIconFontFamily};
     content: "${getIcon}";
     display: block;
     position: absolute;
     top: 50%;
     left: 50%;
     z-index: 20;
-    font-size: 20px;
+    font-size: ${props => props.theme.widgets.shading.liIconFontSize};
     transform: translate(-50%, -50%);
-    color: ${white};
+    color: ${props => props.theme.widgets.shading.liIconColor};
   }
 `;

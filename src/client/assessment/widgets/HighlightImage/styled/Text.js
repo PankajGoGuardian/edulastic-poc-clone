@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
 export const Text = styled.div`
-  font-size: 14px;
-  font-weight: 600;
+  font-size: ${props => props.theme.widgets.highlightImage.textFontSize};
+  font-weight: ${props => props.theme.widgets.highlightImage.textFontWeight};
 `;

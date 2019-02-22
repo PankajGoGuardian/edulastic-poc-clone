@@ -1,9 +1,8 @@
 import styled from 'styled-components';
-import { mainTextColor } from '@edulastic/colors';
 
 export const Index = styled.span`
-  font-size: 26px;
+  font-size: ${props => props.theme.widgets.orderList.indexFontSize};
   margin-right: 50px;
-  font-weight: 600;
-  color: ${({ color }) => color || mainTextColor};
+  font-weight: ${props => props.theme.widgets.orderList.indexFontWeight};
+  color: ${({ color, theme }) => color || theme.widgets.orderList.indexColor};
 `;

@@ -68,12 +68,12 @@ class Item extends Component {
           </Author>
           <Icons>
             <IconWrapper>
-              <IconHeart color={greenDark} />
+              <IconHeart color={greenDark} width={16} height={16} />
               &nbsp;
               { analytics && <IconText>{analytics.likes}</IconText> }
             </IconWrapper>
             <IconWrapper>
-              <IconShare color={greenDark} />
+              <IconShare color={greenDark} width={16} height={16} />
               &nbsp;
               { analytics && <IconText>{analytics.usage}</IconText> }
             </IconWrapper>

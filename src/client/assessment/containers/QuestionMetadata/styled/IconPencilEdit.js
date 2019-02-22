@@ -6,4 +6,6 @@ export const IconPencilEdit = styled(Icon)`
   :hover {
     fill: ${props => props.theme.questionMetadata.iconPencilEditColor};
   }
+  width: 16px;
+  height: 16px;
 `;

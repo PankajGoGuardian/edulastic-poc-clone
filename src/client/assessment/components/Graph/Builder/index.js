@@ -276,6 +276,8 @@ class Board {
 
   // Update bounding box, marks container, rerender numberline axis, update mark's snap handler
   updateGraphParameters(graphParameters, settings, layout, graphType, setValue, lineSettings, containerSettings) {
+    console.log('updateGraphParameters this.elements ', this.elements);
+    console.log('graphType', graphType);
     const xMargin = graphParameters.margin / calcUnitX(graphParameters.xMin, graphParameters.xMax, layout.width);
     this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(graphParameters, xMargin));
 
@@ -288,6 +290,24 @@ class Board {
       this.elements = this.elements.filter(element => element.elType !== 'group');
       marks.forEach(mark => Mark.removeMark(this, mark));
       marks.forEach(mark => Mark.rerenderMark(mark, this, graphParameters, settings, setValue, lineSettings, containerSettings));
+    }
+
+    if (graphType === 'axisSegments') {
+      const points = this.elements.filter(element => element.elType === 'point');
+      console.log('graphType === axisSegments points', points);
+      this.elements = this.elements.filter(element => element.elType !== 'point');
+
+
+      points.forEach(p => this.removeObject(p));
+      // const numberlineAxis = this.elements.filter(element => element.elType === 'axis' || element.elType === 'arrow');
+      // points.forEach(p => NumberlinePoint.handlePointDrag(p, this, null, numberlineAxis[0]));
+      points.forEach((p) => {
+        console.log('p', p);
+        const newPoint = NumberlinePoint.onHandler(this.stackResponses, this.stackResponsesSpacing)(this, p.X());
+        console.log('newPoint', newPoint);
+        this.elements.push(newPoint);
+      });
+      console.log('graphType === axisSegments this.elements', this.elements);
     }
 
     this.$board.fullUpdate();

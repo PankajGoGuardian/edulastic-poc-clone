@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { secondaryTextColor } from '@edulastic/colors';
 
 export const Separator = styled.div`
   max-width: ${({ smallSize }) => (smallSize ? 22 : 47)}px;
@@ -7,7 +6,7 @@ export const Separator = styled.div`
   height: 0;
   position: relative;
   display: block;
-  border: 1px solid ${secondaryTextColor};
+  border: 1px solid ${props => props.theme.widgets.matchList.separatorBorderColor};
 
   &:after {
     content: '';
@@ -16,7 +15,7 @@ export const Separator = styled.div`
     top: ${({ smallSize }) => (smallSize ? -4.5 : -7)}px;
     width: ${({ smallSize }) => (smallSize ? 9 : 14)}px;
     height: ${({ smallSize }) => (smallSize ? 9 : 14)}px;
-    background: ${secondaryTextColor};
+    background: ${props => props.theme.widgets.matchList.separatorBgColor};
     display: block;
     border-radius: 50%;
   }
@@ -28,7 +27,7 @@ export const Separator = styled.div`
     top: ${({ smallSize }) => (smallSize ? -4.5 : -7)}px;
     width: ${({ smallSize }) => (smallSize ? 9 : 14)}px;
     height: ${({ smallSize }) => (smallSize ? 9 : 14)}px;
-    background: ${secondaryTextColor};
+    background: ${props => props.theme.widgets.matchList.separatorBgColor};
     display: block;
     border-radius: 50%;
   }

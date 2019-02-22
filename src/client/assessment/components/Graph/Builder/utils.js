@@ -419,3 +419,38 @@ export function flat2nestedConfig(config) {
 }
 
 export default getLineTypeByProp;
+
+/**
+ * Returns closest number from array "ticks" to given number "pointX"
+ * @param {number} pointX - any number
+ * @param {array} ticks - array of numbers
+ * */
+export function getClosestTick(pointX, ticks) {
+  function dist(x, t) {
+    return Math.abs(x - t);
+  }
+  let minDist = dist(pointX, ticks[0]);
+  let closestTick = ticks[0];
+  for (let i = 1; i < ticks.length; i++) {
+    const tmpDist = dist(pointX, ticks[i]);
+    if (tmpDist < minDist) {
+      minDist = tmpDist;
+      closestTick = ticks[i];
+    }
+  }
+  return closestTick;
+}
+
+/**
+ * Returns array of ticks
+ * @param {object} axis - jsxgraph axis object with special ticks
+ * @return {array} array of number(s)
+ * */
+export function getSpecialTicks(axis) {
+  const ticks = axis.ticks.filter(t => t.fixedTicks !== null);
+  let fixedTicks = [];
+  ticks.forEach((t) => {
+    fixedTicks = fixedTicks.concat(t.fixedTicks);
+  });
+  return fixedTicks;
+}

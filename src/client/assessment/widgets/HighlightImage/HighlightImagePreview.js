@@ -4,7 +4,6 @@ import { Select } from 'antd';
 
 import { Paper, Stimulus, FlexContainer } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
-import { IconUndo, IconRedo, IconEraseText } from '@edulastic/icons';
 
 import { PREVIEW } from '../../constants/constantsForQuestions';
 
@@ -13,6 +12,9 @@ import { StyledSelect } from './styled/StyledSelect';
 import { Button } from './styled/Button';
 import { Text } from './styled/Text';
 import { CanvasContainer } from './styled/CanvasContainer';
+import { IconUndo } from './styled/IconUndo';
+import { IconRedo } from './styled/IconRedo';
+import { IconEraseText } from './styled/IconEraseText';
 
 const { Option } = Select;
 
@@ -168,18 +170,18 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, userAnswer, 
         )}
         <FlexContainer childMarginRight={45}>
           <Button disabled={historyTab === 0} onClick={onUndoClick}>
-            <IconUndo style={{ marginRight: 25 }} width={18} height={18} />
+            <IconUndo />
             <Text>{t('component.highlightImage.undo')}</Text>
           </Button>
           <Button
             disabled={historyTab === history.length - 1 || history.length === 0}
             onClick={onRedoClick}
           >
-            <IconRedo style={{ marginRight: 25 }} width={18} height={18} />
+            <IconRedo />
             <Text>{t('component.highlightImage.redo')}</Text>
           </Button>
           <Button onClick={onClearClick}>
-            <IconEraseText style={{ marginRight: 25 }} width={18} height={18} />
+            <IconEraseText />
             <Text>{t('component.highlightImage.clear')}</Text>
           </Button>
         </FlexContainer>

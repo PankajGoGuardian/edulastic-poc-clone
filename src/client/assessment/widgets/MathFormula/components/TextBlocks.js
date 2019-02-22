@@ -4,12 +4,11 @@ import { Input, Row, Col } from 'antd';
 
 import { withNamespaces } from '@edulastic/localization';
 import { EduButton, FlexContainer } from '@edulastic/common';
-import { IconTrash } from '@edulastic/icons';
-import { greenDark, red } from '@edulastic/colors';
 
 import { Block } from '../../../styled/WidgetOptions/Block';
 import { Heading } from '../../../styled/WidgetOptions/Heading';
 
+import { IconTrash } from '../styled/IconTrash';
 
 const TextBlocks = ({ blocks, onChange, onAdd, onDelete, t }) => (
   <Block>
@@ -25,12 +24,7 @@ const TextBlocks = ({ blocks, onChange, onAdd, onDelete, t }) => (
               value={block}
               onChange={e => onChange({ index, value: e.target.value })}
             />
-            <IconTrash
-              onClick={() => onDelete(index)}
-              color={greenDark}
-              hoverColor={red}
-              style={{ cursor: 'pointer' }}
-            />
+            <IconTrash onClick={() => onDelete(index)} />
           </FlexContainer>
         </Col>
       ))}

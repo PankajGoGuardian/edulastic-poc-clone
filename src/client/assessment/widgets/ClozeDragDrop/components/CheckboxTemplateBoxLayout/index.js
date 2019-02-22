@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { IconCheck, IconClose } from '@edulastic/icons';
-import { green, red } from '@edulastic/colors';
-
 import Draggable from '../Draggable';
 import Droppable from '../Droppable';
 import { IconWrapper } from './styled/IconWrapper';

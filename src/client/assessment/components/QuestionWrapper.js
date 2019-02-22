@@ -1,10 +1,10 @@
-import React, { Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { ThemeProvider } from 'styled-components';
-
+import { Paper } from '@edulastic/common';
 import { questionType } from '@edulastic/constants';
-
 import { themes } from '../themes';
+import QuestionMenu from './Graph/common/QuestionMenu';
 
 import { OrderList } from '../widgets/OrderList';
 import { SortList } from '../widgets/SortList';
@@ -94,34 +94,109 @@ const getQuestion = type => {
   }
 };
 
-const QuestionWrapper = ({
-  type,
-  timespent,
-  data,
-  view,
-  showFeedback,
-  multiple,
-  ...restProps
-}) => {
-  const Question = getQuestion(type);
+class QuestionWrapper extends Component {
+  state = {
+    main: [],
+    advanced: [],
+    activeTab: 0
+  };
 
-  return (
-    <ThemeProvider theme={themes.default}>
-      <Fragment>
-        <div style={{ flex: 'auto' }}>
-          <Timespent timespent={timespent} view={view} />
-          <Question item={data} view={view} {...restProps} />
-        </div>
-        {showFeedback &&
-          (multiple ? (
-            <FeedbackBottom widget={data} />
-          ) : (
-            <FeedbackRight widget={data} />
-          ))}
-      </Fragment>
-    </ThemeProvider>
-  );
-};
+  componentDidMount() {
+    window.addEventListener('scroll', this.findActiveTab);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.findActiveTab);
+  }
+
+  calcScrollPosition = (index, offset) => {
+    const scrollYMax = Math.max(
+      document.body.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.clientHeight,
+      document.documentElement.scrollHeight,
+      document.documentElement.offsetHeight
+    ) - window.innerHeight;
+
+    if (index === 0) {
+      return window.scrollY + 90;
+    } if (index !== 0 && offset < scrollYMax) {
+      return window.scrollY + 250;
+    } if (index !== 0 && offset >= scrollYMax) {
+      return window.scrollY + 650;
+      // return window.scrollY + (offset - scrollYMax + 200)
+    }
+  };
+
+  isActive = (index, options) => {
+    const scrollPosition = this.calcScrollPosition(index, options[index].offset);
+
+    if (index === 0) {
+      if (scrollPosition <= options[index].offset) {
+        return true;
+      }
+    } else if (index === options.length - 1) {
+      if (scrollPosition <= document.documentElement.scrollHeight &&
+          scrollPosition >= options[index].offset) {
+        return true;
+      }
+    } else if (scrollPosition >= options[index].offset &&
+               scrollPosition <= options[index + 1].offset) {
+      return true;
+    }
+    return false;
+  };
+
+  findActiveTab = () => {
+    const { main, advanced, activeTab } = this.state;
+    const allOptions = main.concat(advanced);
+
+    if (allOptions) {
+      allOptions.forEach((option, index) => {
+        if (this.isActive(index, allOptions)) {
+          if (index !== activeTab) {
+            return this.setState({ activeTab: index });
+          }
+        }
+      });
+    }
+  };
+
+  fillSections = (section, label, offset) => {
+    this.setState(state => ({ [section]: state[section].concat({ label, offset }) }));
+  };
+
+  cleanSections = () => {
+    this.setState({ main: [], advanced: [], activeTab: 0 });
+  };
+
+  render() {
+    const { type, timespent, data, showFeedback, multiple, view, ...restProps } = this.props;
+    const { main, advanced, activeTab } = this.state;
+    const Question = getQuestion(type);
+    return (
+      <ThemeProvider theme={themes.default}>
+        <Paper>
+          { type === 'graph' && view === 'edit' && <QuestionMenu activeTab={activeTab} main={main} advanced={advanced} /> }
+          <Fragment>
+            <div style={{ flex: 'auto' }}>
+              <Timespent timespent={timespent} view={view} />
+              <Question
+                {...restProps}
+                item={data}
+                view={view}
+                cleanSections={this.cleanSections}
+                fillSections={this.fillSections}
+              />
+            </div>
+            {showFeedback &&
+              (multiple ? <FeedbackBottom widget={data} /> : <FeedbackRight widget={data} />)}
+          </Fragment>
+        </Paper>
+      </ThemeProvider>
+    );
+  }
+}
 
 QuestionWrapper.propTypes = {
   type: PropTypes.any,

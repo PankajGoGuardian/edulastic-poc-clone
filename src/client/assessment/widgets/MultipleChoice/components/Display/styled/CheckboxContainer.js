@@ -5,7 +5,7 @@ export const CheckboxContainer = styled.div`
   width: ${props => (props.smallSize ? 22 : 36)}px;
   height: ${props => (props.smallSize ? 22 : 36)}px;
   padding: ${props => (props.smallSize ? 0 : 0)}px;
-  border: solid 2px ${green};
+  border: solid 2px ${props => props.theme.widgets.multipleChoice.checkboxContainerBorderColor};
   border-radius: 50%;
   box-sizing: border-box;
   margin-right: 10px;
@@ -29,13 +29,15 @@ export const CheckboxContainer = styled.div`
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background-color: transparent;
+    background-color: ${props => props.theme.widgets.multipleChoice.checkboxContainerBgColor};
     -webkit-transition: backgroundColor 0.6s;
     transition: backgroundColor 0.6s;
     text-align: center;
-    font-size: ${props => (props.smallSize ? '15px' : '20px')};
-    font-weight: 700;
-    color: #444444;
+    font-size: ${props => (props.smallSize
+    ? props.theme.widgets.multipleChoice.checkboxContainerSmallFontSize
+    : props.theme.widgets.multipleChoice.checkboxContainerFontSize)};
+    font-weight: ${props => props.theme.widgets.multipleChoice.checkboxContainerFontWeight};
+    color: ${props => props.theme.widgets.multipleChoice.checkboxContainerColor};
   }
 
   & div {
@@ -43,18 +45,18 @@ export const CheckboxContainer = styled.div`
     height: 100%;
     border-radius: 50%;
     display: ${props => (props.smallSize ? 'block' : 'none')};
-    background-color: 'transparent';
+    background-color: ${props => props.theme.widgets.multipleChoice.checkboxContainerBgColor};
   }
 
   & input:checked + span {
-    color: white;
-    background-color: ${green};
+    color: ${props => props.theme.widgets.multipleChoice.checkboxContainerCheckedColor};
+    background-color: ${props => props.theme.widgets.multipleChoice.checkboxContainerCheckedBgColor};
     -webkit-transition: backgroundColor 0.6s;
     transition: backgroundColor 0.6s;
   }
 
   & input:checked + span + div {
-    background-color: ${green};
+    background-color: ${props => props.theme.widgets.multipleChoice.checkboxContainerCheckedBgColor};
     -webkit-transition: backgroundColor 0.6s;
     transition: backgroundColor 0.6s;
     display: none;

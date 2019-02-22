@@ -7,8 +7,8 @@ import { withNamespaces } from '@edulastic/localization';
 import { withWindowSizes } from '@edulastic/common';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-
 import styled from 'styled-components';
+
 import { clearAnswersAction } from '../../../actions/answers';
 import { Container, PreviewBar } from './styled_components';
 import { ButtonLink } from '..';
@@ -77,7 +77,7 @@ class SecondHeadBar extends Component {
               <Button onClick={onShowSource} data-cy="source">
                 <ButtonLink
                   color="primary"
-                  icon={<IconSource color={option ? white : blue} />}
+                  icon={<IconSource color={option ? white : blue} width={16} height={16} />}
                   style={{ color: option ? white : blue }}
                 >
                   {t('component.questioneditor.buttonbar.source')}
@@ -86,7 +86,7 @@ class SecondHeadBar extends Component {
               <Button onClick={onShowSettings}>
                 <ButtonLink
                   color="primary"
-                  icon={<IconSettings color={option ? white : blue} />}
+                  icon={<IconSettings color={option ? white : blue} width={16} height={16} />}
                   style={{ color: option ? white : blue }}
                 >
                   {t('component.questioneditor.buttonbar.layout')}
@@ -104,7 +104,7 @@ class SecondHeadBar extends Component {
               <Button onClick={() => changePreviewTab('check')}>
                 <ButtonLink
                   color="primary"
-                  icon={<IconCheck color={option ? white : blue} />}
+                  icon={<IconCheck color={option ? white : blue} width={16} height={16} />}
                   style={{ color: option ? white : blue }}
                 >
                   {t('component.questioneditor.buttonbar.checkanswer')}
@@ -114,7 +114,7 @@ class SecondHeadBar extends Component {
                 <ButtonLink
                   color="primary"
                   style={{ color: option ? white : blue }}
-                  icon={<IconEye color={option ? white : blue} hoverColor={darkBlue} />}
+                  icon={<IconEye color={option ? white : blue} hoverColor={darkBlue} width={16} height={16} />}
                 >
                   {t('component.questioneditor.buttonbar.showanswers')}
                 </ButtonLink>
@@ -129,7 +129,7 @@ class SecondHeadBar extends Component {
                   color="primary"
                   active={previewTab === 'clear'}
                   style={{ color: option ? white : blue }}
-                  icon={<IconEraseText color={option ? white : blue} />}
+                  icon={<IconEraseText color={option ? white : blue} width={16} height={16} />}
                 >
                   {t('component.questioneditor.buttonbar.clear')}
                 </ButtonLink>

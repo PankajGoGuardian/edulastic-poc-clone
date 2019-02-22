@@ -887,7 +887,11 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           stackResponses: false,
           stackResponsesSpacing: 30,
           renderingBase: 'min-value-based',
-          specificPoints: ''
+          specificPoints: '',
+          minorTicks: 1,
+          labelShowMin: true,
+          labelShowMax: true,
+          showLabels: true
         },
         ui_style: {
           gridVisible: false,

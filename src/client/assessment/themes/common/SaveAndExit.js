@@ -37,8 +37,8 @@ const Container = styled.div`
 
 const SaveIcon = styled(IconSave)`
   fill: ${white};
-  width: 24px !important;
-  height: 24px !important;
+  width: 24px;
+  height: 24px;
   &:hover {
     fill: #23e7ab;
   }
@@ -46,8 +46,8 @@ const SaveIcon = styled(IconSave)`
 
 const PauseIcon = styled(IconPause)`
   fill: ${white};
-  width: 24px !important;
-  height: 24px !important;
+  width: 24px;
+  height: 24px;
   &:hover {
     fill: #23e7ab;
   }
@@ -55,8 +55,8 @@ const PauseIcon = styled(IconPause)`
 
 const LogoutIcon = styled(IconLogout)`
   fill: ${white};
-  width: 24px !important;
-  height: 24px !important;
+  width: 24px;
+  height: 24px;
   &:hover {
     fill: #23e7ab;
   }

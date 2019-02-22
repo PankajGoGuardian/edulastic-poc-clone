@@ -26,7 +26,7 @@ const SortableItem = SortableElement(({ item, i, handleActiveChange, validList, 
   const { value, param, active } = item;
 
   return (
-    <FlexCon padding={0} childMarginRight={0} flexDirection="column">
+    <FlexCon childMarginRight={0} flexDirection="column">
       {value !== '|' ? (
         <QlBlocks
           active={active}

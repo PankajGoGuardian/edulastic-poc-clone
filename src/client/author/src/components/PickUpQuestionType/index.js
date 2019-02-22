@@ -263,70 +263,70 @@ const RightSide = styled.div`
 
 const NewListIcon = styled(IconNewList)`
   fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
+  width: 21px;
+  height: 21px;
   margin-right: 13px;
 `;
 
 const SelectionIcon = styled(IconSelection)`
   fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
+  width: 21px;
+  height: 21px;
   margin-right: 13px;
 `;
 
 const LayoutIcon = styled(IconLayout)`
   fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
+  width: 21px;
+  height: 21px;
   margin-right: 13px;
 `;
 
 const EditIcon = styled(IconEdit)`
   fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
+  width: 21px;
+  height: 21px;
   margin-right: 13px;
 `;
 
 const MathIcon = styled(IconMath)`
   fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
+  width: 21px;
+  height: 21px;
   margin-right: 13px;
 `;
 
 const MoleculeIcon = styled(IconMolecule)`
   fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
+  width: 21px;
+  height: 21px;
   margin-right: 13px;
 `;
 
 const TargetIcon = styled(IconTarget)`
   fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
+  width: 21px;
+  height: 21px;
   margin-right: 13px;
 `;
 
 const MoreIcon = styled(IconMore)`
   fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
+  width: 21px;
+  height: 21px;
   margin-right: 13px;
 `;
 
 const LineChartIcon = styled(IconLineChart)`
   fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
+  width: 21px;
+  height: 21px;
   margin-right: 13px;
 `;
 
 const BarChartIcon = styled(IconBarChart)`
   fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
+  width: 21px;
+  height: 21px;
   margin-right: 13px;
 `;

@@ -60,8 +60,8 @@ const HeaderCol = styled(Col)`
 
 const LogoutIcon = styled(IconLogout)`
   fill: ${props => props.theme.attemptReview.logoutIconColor};
-  width: 24px !important;
-  height: 24px !important;
+  width: 24px;
+  height: 24px;
   &:hover {
     fill: ${props => props.theme.attemptReview.logoutIconHoverColor};
   }

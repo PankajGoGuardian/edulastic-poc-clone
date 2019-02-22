@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { withTheme } from 'styled-components';
 
 import { SHOW, CHECK, CLEAR } from '../../constants/constantsForQuestions';
 
 import MathInput from '../../components/MathInput';
 
-import CorrectAnswerBox from './components/CorrectAnswerBox/index';
-import MathInputStatus from './components/MathInputStatus/index';
+import CorrectAnswerBox from './components/CorrectAnswerBox';
+import MathInputStatus from './components/MathInputStatus';
 import MathInputWrapper from './styled/MathInputWrapper';
 import StaticMath from './StaticMath';
 
@@ -16,7 +17,8 @@ const MathFormulaPreview = ({
   type: previewType,
   evaluation,
   saveAnswer,
-  userAnswer
+  userAnswer,
+  theme
 }) => {
   const studentRef = useRef();
   const isStatic = studentTemplate.search(/\\MathQuillMathField\{(.*)\}/g) !== -1;
@@ -78,9 +80,13 @@ const MathFormulaPreview = ({
     [studentTemplate]
   );
 
-  let statusColor = '#fff';
+  let statusColor = theme.widgets.mathFormula.inputColor;
   if (previewType === SHOW || previewType === CHECK) {
-    statusColor = evaluation ? (evaluation[0] ? '#e1fbf2' : '#fce0e8') : '#fce0e8';
+    statusColor = evaluation
+      ? (evaluation[0]
+        ? theme.widgets.mathFormula.inputCorrectColor
+        : theme.widgets.mathFormula.inputIncorrectColor)
+      : theme.widgets.mathFormula.inputIncorrectColor;
   }
   return (
     <div>
@@ -127,11 +133,12 @@ MathFormulaPreview.propTypes = {
   type: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   evaluation: PropTypes.object.isRequired,
-  userAnswer: PropTypes.any
+  userAnswer: PropTypes.any,
+  theme: PropTypes.object.isRequired
 };
 MathFormulaPreview.defaultProps = {
   studentTemplate: '',
   userAnswer: null
 };
 
-export default MathFormulaPreview;
+export default withTheme(MathFormulaPreview);

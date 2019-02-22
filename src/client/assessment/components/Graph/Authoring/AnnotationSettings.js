@@ -38,8 +38,6 @@ class AnnotationSettings extends Component {
     return (
       <Fragment>
 
-        <MoreOptionsDivider />
-
         <MoreOptionsContainer>
 
           <MoreOptionsSubHeading>

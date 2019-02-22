@@ -55,8 +55,8 @@ const Container = styled.div`
 
 const ClockCircularOutlineIcon = styled(IconClockCircularOutline)`
   fill: ${white};
-  width: 22px !important;
-  height: 22px !important;
+  width: 22px;
+  height: 22px;
   &:hover {
     fill: ${white};
   }

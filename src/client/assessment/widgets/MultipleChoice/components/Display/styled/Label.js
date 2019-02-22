@@ -5,25 +5,25 @@ export const Label = styled.label`
   position: relative;
   display: inline-block;
   padding-left: ${props => (props.smallSize ? 5 : 20)}px;
-  border: dotted 1px transparent;
-  border-left: solid 3px transparent;
+  border: dotted 1px ${props => props.theme.widgets.multipleChoice.labelBorderColor};
+  border-left: solid 3px ${props => props.theme.widgets.multipleChoice.labelBorderColor};
   margin: ${props => (props.setAnswers ? '5px 0' : '10px 0')};
   width: ${props => props.width || '100%'};
 
   &:hover {
-    border: dotted 1px lightgrey;
-    border-left: solid 3px lightgrey;
+    border: dotted 1px ${props => props.theme.widgets.multipleChoice.labelBorderHoverColor};
+    border-left: solid 3px ${props => props.theme.widgets.multipleChoice.labelBorderHoverColor};
     cursor: pointer;
   }
   &.checked {
-    background-color: #fcfbd4;
-    border-left: solid 3px #c3c055;
+    background-color: ${props => props.theme.widgets.multipleChoice.labelCheckedBgColor};
+    border-left: solid 3px ${props => props.theme.widgets.multipleChoice.labelCheckedBorderColor};
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
   }
   &.right {
-    background-color: #1fe3a11e;
-    border-left: solid 3px ${green};
+    background-color: ${props => props.theme.widgets.multipleChoice.labelRightBgColor};
+    border-left: solid 3px ${props => props.theme.widgets.multipleChoice.labelRightBorderColor};
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
   }
@@ -31,8 +31,8 @@ export const Label = styled.label`
     border-color: transparent;
   }
   &.wrong {
-    background-color: #ee16581e;
-    border-left: solid 3px #ee1658;
+    background-color: ${props => props.theme.widgets.multipleChoice.labelWrongBgColor};
+    border-left: solid 3px ${props => props.theme.widgets.multipleChoice.labelWrongBorderColor};
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
   }
@@ -44,13 +44,13 @@ export const Label = styled.label`
     border-color: transparent;
   }
   & i {
-    font-size: 18px;
+    font-size: ${props => props.theme.widgets.multipleChoice.labelIconFontSize};
     line-height: 1;
   }
   & .fa-check {
-    color: ${green};
+    color: ${props => props.theme.widgets.multipleChoice.labelIconCheckColor};
   }
   & .fa-times {
-    color: #ee1658;
+    color: ${props => props.theme.widgets.multipleChoice.labelIconTimesColor};
   }
 `;

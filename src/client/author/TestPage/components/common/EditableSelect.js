@@ -26,6 +26,8 @@ const EditableSelect = ({ placeholder, onChange, defaultValue, options, title })
               hoverColor={green}
               style={{ cursor: 'pointer' }}
               onClick={handleToggle}
+              width={16}
+              height={16}
             />
           </Fragment>
         )}
@@ -49,6 +51,8 @@ const EditableSelect = ({ placeholder, onChange, defaultValue, options, title })
             hoverColor={green}
             style={{ cursor: 'pointer' }}
             onClick={handleToggle}
+            width={16}
+            height={16}
           />
         </Fragment>
       )}
@@ -61,7 +65,7 @@ EditableSelect.propTypes = {
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.array.isRequired,
   options: PropTypes.array.isRequired,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired
 };
 
 export default EditableSelect;

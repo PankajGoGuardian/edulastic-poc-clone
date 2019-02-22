@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Select, Checkbox, Input } from 'antd';
 import { cloneDeep } from 'lodash';
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 
 import { withNamespaces } from '@edulastic/localization';
-import { grey } from '@edulastic/colors';
 import { evaluationType, math } from '@edulastic/constants';
 import { FlexContainer, CustomQuillComponent } from '@edulastic/common';
 
@@ -21,14 +22,6 @@ import FontSizeSelect from '../../../components/FontSizeSelect';
 import ResponseContainers from './ResponseContainers';
 import TextBlocks from './TextBlocks';
 
-const quillStyle = {
-  minHeight: 40,
-  borderRadius: 5,
-  padding: '0 10px',
-  border: `1px solid ${grey}`,
-  width: '80%'
-};
-
 function MathFormulaOptions({
   onChange,
   uiStyle,
@@ -38,8 +31,17 @@ function MathFormulaOptions({
   stimulusReview,
   instructorStimulus,
   metadata,
-  item
+  item,
+  theme
 }) {
+  const quillStyle = {
+    minHeight: 40,
+    borderRadius: 5,
+    padding: '0 10px',
+    border: `1px solid ${theme.widgets.mathFormula.quillBorderColor}`,
+    width: '80%'
+  };
+
   const changeUiStyle = (prop, value) => {
     onChange('ui_style', {
       ...uiStyle,
@@ -251,7 +253,8 @@ MathFormulaOptions.propTypes = {
   responseContainers: PropTypes.array,
   t: PropTypes.func.isRequired,
   textBlocks: PropTypes.array,
-  uiStyle: PropTypes.object
+  uiStyle: PropTypes.object,
+  theme: PropTypes.object.isRequired
 };
 
 MathFormulaOptions.defaultProps = {
@@ -274,4 +277,9 @@ MathFormulaOptions.defaultProps = {
   }
 };
 
-export default withNamespaces('assessment')(MathFormulaOptions);
+const enhance = compose(
+  withNamespaces('assessment'),
+  withTheme
+);
+
+export default enhance(MathFormulaOptions);

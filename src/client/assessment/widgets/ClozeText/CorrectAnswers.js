@@ -25,11 +25,15 @@ class CorrectAnswers extends Component {
   };
 
   renderAltResponses = () => {
-    const { validation, t } = this.props;
+    const { validation, t, onRemoveAltResponses } = this.props;
 
     if (validation.alt_responses && validation.alt_responses.length) {
       return validation.alt_responses.map((res, i) => (
-        <Tab key={i} label={`${t('component.correctanswers.alternate')} ${i + 1}`} />
+        <Tab
+          close 
+          key={i} 
+          onClose={() => onRemoveAltResponses(i)}
+          label={`${t('component.correctanswers.alternate')} ${i + 1}`} />
       ));
     }
     return null;

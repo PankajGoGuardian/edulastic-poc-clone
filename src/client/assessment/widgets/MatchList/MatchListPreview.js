@@ -158,14 +158,18 @@ const MatchListPreview = ({
     alignItems: 'center',
     justifyContent: preview ? 'space-between' : 'center',
     margin: flag === 'dragItems' ? '10px 15px 10px 15px' : '10px 0px 10px 0',
-    background: preview ? (correct ? lightGreen : lightRed) : white,
-    border: `1px solid ${dashBorderColor}`,
+    background: preview
+      ? (correct
+        ? theme.widgets.matchList.dragItemCorrectBgColor
+        : theme.widgets.matchList.dragItemIncorrectBgColor)
+      : theme.widgets.matchList.dragItemBgColor,
+    border: `1px solid ${theme.widgets.matchList.dragItemBorderColor}`,
     height: 40,
     padding: preview ? 0 : '0 40px',
     cursor: 'pointer',
     borderRadius: 4,
-    fontWeight: 600,
-    color: mainTextColor,
+    fontWeight: theme.widgets.matchList.dragItemFontWeight,
+    color: theme.widgets.matchList.dragItemColor,
     opacity: isDragging ? 0.5 : 1
   });
 
@@ -268,7 +272,7 @@ const MatchListPreview = ({
                           width: 0,
                           marginLeft: 35,
                           marginRight: 35,
-                          borderLeft: `1px solid ${separatorColor}`
+                          borderLeft: `1px solid ${theme.widgets.matchList.groupSeparatorBorderColor}`
                         }}
                       />
                     )}

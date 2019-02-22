@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { mainBlueColor, white } from '@edulastic/colors';
 import { FlexRow } from './FlexRow';
 
 export const Index = styled(FlexRow)`
@@ -9,6 +8,6 @@ export const Index = styled(FlexRow)`
   border-bottom-left-radius: 4px;
   width: 40px;
   height: 40px;
-  color: ${white};
-  background-color: ${mainBlueColor};
+  color: ${props => props.theme.widgets.sortList.correctAnswersIndexColor};
+  background-color: ${props => props.theme.widgets.sortList.correctAnswersIndexBgColor};
 `;

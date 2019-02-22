@@ -30,7 +30,7 @@ const Setting = ({ t, current, history, onShowSource, windowWidth }) => {
       <SecondHeader>
         <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
         <Button onClick={onShowSource}>
-          <ButtonLink color="primary" icon={<IconSource color={blue} />}>
+          <ButtonLink color="primary" icon={<IconSource color={blue} width={16} height={16} />}>
             {t('component.questioneditor.buttonbar.source')}
           </ButtonLink>
         </Button>

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { dashBorderColor, mainTextColor } from '@edulastic/colors';
 
 export const ListItem = styled.div`
   display: flex;
@@ -7,8 +6,8 @@ export const ListItem = styled.div`
   justify-content: center;
   align-items: center;
   height: ${({ smallSize }) => (smallSize ? 26 : 40)}px;
-  border-radius: 4px;
-  font-weight: 600;
-  color: ${mainTextColor};
-  border: 1px solid ${dashBorderColor};
+  border-radius: 4px;s
+  font-weight: ${props => props.theme.widgets.matchList.listItemFontWeight};
+  color: ${props => props.theme.widgets.matchList.listItemColor};
+  border: 1px solid ${props => props.theme.widgets.matchList.listItemBorderColor};
 `;

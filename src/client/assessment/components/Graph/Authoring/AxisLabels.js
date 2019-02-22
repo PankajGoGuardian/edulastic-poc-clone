@@ -7,6 +7,7 @@ import { withNamespaces } from '@edulastic/localization';
 import { arrayMove } from 'react-sortable-hoc';
 import { cloneDeep, clone } from 'lodash';
 import { Subtitle, Label, ContainerStart, LineParameter, LineInput, TitleTextInput } from '../common/styled_components';
+import { QuestionSection } from './'
 import { setQuestionDataAction } from '../../../../author/src/actions/question';
 import QuestionTextArea from '../../QuestionTextArea';
 import QuillSortableList from '../../QuillSortableList';
@@ -62,77 +63,84 @@ class GraphAxisLabels extends Component {
   };
 
   render() {
-    const { t, graphData } = this.props;
+    const { t, graphData, cleanSections, fillSections } = this.props;
     const { canvas, stimulus } = graphData;
 
     return (
       <div>
-        <Subtitle>{t('component.graphing.question.composequestion')}</Subtitle>
-        <QuestionTextArea
-          placeholder={t('component.graphing.question.enteryourquestion')}
-          onChange={this.onChangeQuestion}
-          value={stimulus}
-        />
-
-        <PaddingDiv top={30} bottom={30}>
-          <Subtitle>{t('component.graphing.graphline')}</Subtitle>
-
-          <ContainerStart>
-            <LineParameter>
-              <Label>Minimum value</Label>
-              <LineInput
-                type="number"
-                value={canvas.x_min}
-                name="x_min"
-                onChange={this.handleCanvasChange}
-                step={1}
-                disabled={false}
-              />
-            </LineParameter>
-            <LineParameter>
-              <Label>Maximum value</Label>
-              <LineInput
-                type="number"
-                value={canvas.x_max}
-                name="x_max"
-                onChange={this.handleCanvasChange}
-                step={1}
-                disabled={false}
-              />
-            </LineParameter>
-          </ContainerStart>
-        </PaddingDiv>
-
-        <PaddingDiv bottom={30}>
-          <Subtitle>{t('component.graphing.title')}</Subtitle>
-          <TitleTextInput
-            type="text"
-            name="title"
-            value={canvas.title}
-            onChange={this.handleCanvasChange}
+        <QuestionSection section="main" label="COMPOSE QUESTION" cleanSections={cleanSections} fillSections={fillSections}>
+          <Subtitle>{t('component.graphing.question.composequestion')}</Subtitle>
+          <QuestionTextArea
+            placeholder={t('component.graphing.question.enteryourquestion')}
+            onChange={this.onChangeQuestion}
+            value={stimulus}
           />
-        </PaddingDiv>
+        </QuestionSection>
 
-        <PaddingDiv bottom={30}>
-          <Subtitle>{t('component.graphing.possibleresponses')}</Subtitle>
-          <QuillSortableList
-            items={graphData.list.map(o => o.text)}
-            onSortEnd={this.onSortOrderListEnd}
-            useDragHandle
-            onRemove={this.handleDeleteQuestion}
-            onChange={this.handleQuestionsChange}
-          />
-          <Button
-            style={{ minWidth: 130, marginTop: 10 }}
-            onClick={this.handleAddQuestion}
-            variant="extendedFab"
-            outlined
-            type="button"
-            color="primary"
-          >
-            {t('component.graphing.addnewpossibleresponsebtn')}
-          </Button>
-        </PaddingDiv>
+        <QuestionSection section="main" label="GRAPH LINE" cleanSections={cleanSections} fillSections={fillSections}>
+          <PaddingDiv top={30} bottom={30}>
+            <Subtitle>{t('component.graphing.graphline')}</Subtitle>
+            <ContainerStart>
+              <LineParameter>
+                <Label>Minimum value</Label>
+                <LineInput
+                  type="number"
+                  value={canvas.x_min}
+                  name="x_min"
+                  onChange={this.handleCanvasChange}
+                  step={1}
+                  disabled={false}
+                />
+              </LineParameter>
+              <LineParameter>
+                <Label>Maximum value</Label>
+                <LineInput
+                  type="number"
+                  value={canvas.x_max}
+                  name="x_max"
+                  onChange={this.handleCanvasChange}
+                  step={1}
+                  disabled={false}
+                />
+              </LineParameter>
+            </ContainerStart>
+          </PaddingDiv>
+        </QuestionSection>
+
+        <QuestionSection section="main" label="TITLE" cleanSections={cleanSections} fillSections={fillSections}>
+          <PaddingDiv bottom={30}>
+            <Subtitle>{t('component.graphing.title')}</Subtitle>
+            <TitleTextInput
+              type="text"
+              name="title"
+              value={canvas.title}
+              onChange={this.handleCanvasChange}
+            />
+          </PaddingDiv>
+        </QuestionSection>
+
+        <QuestionSection section="main" label="POSSIBLE RESPONSES" cleanSections={cleanSections} fillSections={fillSections}>
+          <PaddingDiv bottom={30}>
+            <Subtitle>{t('component.graphing.possibleresponses')}</Subtitle>
+            <QuillSortableList
+              items={graphData.list.map(o => o.text)}
+              onSortEnd={this.onSortOrderListEnd}
+              useDragHandle
+              onRemove={this.handleDeleteQuestion}
+              onChange={this.handleQuestionsChange}
+            />
+            <Button
+              style={{ minWidth: 130, marginTop: 10 }}
+              onClick={this.handleAddQuestion}
+              variant="extendedFab"
+              outlined
+              type="button"
+              color="primary"
+            >
+              {t('component.graphing.addnewpossibleresponsebtn')}
+            </Button>
+          </PaddingDiv>
+        </QuestionSection>
 
       </div>
     );

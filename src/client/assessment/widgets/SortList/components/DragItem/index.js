@@ -1,9 +1,9 @@
 import React from 'react';
 import { DragSource } from 'react-dnd';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 
-import { green, grey, red } from '@edulastic/colors';
-import { IconCheck, IconClose } from '@edulastic/icons';
 
 import { CHECK, SHOW, CLEAR } from '../../../../constants/constantsForQuestions';
 
@@ -14,6 +14,8 @@ import { Text } from './styled/Text';
 import { FlexCenter } from './styled/FlexCenter';
 import { WithIndex } from './styled/WithIndex';
 import { TextEmpty } from './styled/TextEmpty';
+import { IconCheck } from './styled/IconCheck';
+import { IconClose } from './styled/IconClose';
 
 function collectSource(connector, monitor) {
   return {
@@ -51,7 +53,8 @@ const DragItem = ({
   smallSize,
   correct,
   previewTab,
-  index
+  index,
+  theme
 }) => {
   const showPreview = previewTab === CHECK || previewTab === SHOW;
 
@@ -61,7 +64,9 @@ const DragItem = ({
         onClick={() => (active ? onClick('') : onClick(obj))}
         style={{
           opacity: isDragging ? 0 : 1,
-          background: active ? grey : 'transparent',
+          background: active
+            ? theme.widgets.sortList.dragItemActiveBgColor
+            : theme.widgets.sortList.dragItemBgColor,
           borderRadius: 4
         }}
       >
@@ -79,8 +84,8 @@ const DragItem = ({
             </FlexCenter>
             {showPreview && (
               <div>
-                {correct && <IconCheck color={green} width={22} height={16} />}
-                {!correct && <IconClose color={red} width={16} height={16} />}
+                {correct && <IconCheck />}
+                {!correct && <IconClose />}
               </div>
             )}
           </Text>
@@ -103,7 +108,8 @@ DragItem.propTypes = {
   smallSize: PropTypes.bool.isRequired,
   correct: PropTypes.bool,
   previewTab: PropTypes.string,
-  index: PropTypes.number.isRequired
+  index: PropTypes.number.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 DragItem.defaultProps = {
@@ -112,4 +118,9 @@ DragItem.defaultProps = {
   previewTab: CLEAR
 };
 
-export default DragSource('item', specSource, collectSource)(DragItem);
+const enhance = compose(
+  DragSource('item', specSource, collectSource),
+  withTheme
+);
+
+export default enhance(DragItem);

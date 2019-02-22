@@ -11,17 +11,13 @@ export default (WrappedComponent) => {
   };
 
   hocComponent.propTypes = {
-    height: PropTypes.number,
-    width: PropTypes.number,
     color: PropTypes.string,
-    hoverColor: PropTypes.any,
+    hoverColor: PropTypes.any
   };
 
   hocComponent.defaultProps = {
-    height: 16,
-    width: 16,
     color: black,
-    hoverColor: null,
+    hoverColor: null
   };
 
   return hocComponent;

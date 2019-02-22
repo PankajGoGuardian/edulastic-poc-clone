@@ -1,25 +1,20 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
-import {
-  MoreOptions, MoreOptionsHeading
-} from '../../common/styled_components';
-import { Toggler } from '../../../../styled/WidgetOptions/Toggler';
 import AxisSegmentsMoreOptions from './AxisSegmentsMoreOptions';
 import { RENDERING_BASE } from '../../Builder/config/constants';
 
-class AxisSegmentsOptions extends Component {
-  state = {
-    isMoreOptionsOpen: false
-  };
-
-  updateClickOnMoreOptions = () => {
-    const { isMoreOptionsOpen } = this.state;
-    this.setState({ isMoreOptionsOpen: !isMoreOptionsOpen });
-  };
-
-  getFontSizeList = () => (
+const AxisSegmentsOptions = ({
+  t, 
+  setCanvas, 
+  setOptions, 
+  setNumberline, 
+  fillSections, 
+  cleanSections,
+  graphData
+}) => {
+  const getFontSizeList = () => (
     [
       {
         id: 'small',
@@ -54,14 +49,14 @@ class AxisSegmentsOptions extends Component {
     ]
   );
 
-  getOrientationList = () => (
+  const getOrientationList = () => (
     [
       { value: 'horizontal', label: 'Horizontal' },
       { value: 'vertical', label: 'Vertical' }
     ]
   );
 
-  getRenderingBaseList = () => (
+  const getRenderingBaseList = () => (
     [
       {
         id: RENDERING_BASE.LINE_MINIMUM_VALUE,
@@ -77,38 +72,25 @@ class AxisSegmentsOptions extends Component {
     ]
   );
 
-  render() {
-    const { t, setCanvas, setOptions, setNumberline, graphData } = this.props;
-    const { canvas, ui_style, numberlineAxis } = graphData;
-    const { isMoreOptionsOpen } = this.state;
-    return (
-      <Fragment>
-        <MoreOptions>
-          <MoreOptionsHeading
-            onClick={this.updateClickOnMoreOptions}
-            isOpen={isMoreOptionsOpen}
-          >
-            <span>{t('component.graphing.optionstitle')}</span>
-            <Toggler isOpen={isMoreOptionsOpen} />
-          </MoreOptionsHeading>
-          {
-            isMoreOptionsOpen && (
-              <AxisSegmentsMoreOptions
-                setNumberline={setNumberline}
-                setCanvas={setCanvas}
-                setOptions={setOptions}
-                numberlineAxis={numberlineAxis}
-                options={ui_style}
-                canvasConfig={canvas}
-                orientationList={this.getOrientationList()}
-                fontSizeList={this.getFontSizeList()}
-                renderingBaseList={this.getRenderingBaseList()}
-              />
-            )}
-        </MoreOptions>
-      </Fragment>
-    );
-  }
+  const { canvas, ui_style, numberlineAxis } = graphData;
+
+  return (
+    <Fragment>
+      <AxisSegmentsMoreOptions
+        options={ui_style}
+        setCanvas={setCanvas}
+        canvasConfig={canvas}
+        setOptions={setOptions}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        setNumberline={setNumberline}
+        numberlineAxis={numberlineAxis}
+        fontSizeList={getFontSizeList()}
+        orientationList={getOrientationList()}
+        renderingBaseList={getRenderingBaseList()}
+      />
+    </Fragment>
+  );
 }
 
 AxisSegmentsOptions.propTypes = {

@@ -39,7 +39,7 @@ const ItemHeader = ({
           <FlexContainer>
             <span style={{ color: white }}>Reference</span>
             <TextField
-              icon={!hideIcon && <IconPencilEdit color={greenDark} />}
+              icon={!hideIcon && <IconPencilEdit color={greenDark} width={16} height={16} />}
               type="text"
               height="40px"
               value={reference}

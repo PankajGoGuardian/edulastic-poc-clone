@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { Select, Row, Col } from 'antd';
 
 import { EduButton, FlexContainer } from '@edulastic/common';
-import { IconTrash } from '@edulastic/icons';
-import { greenDark, red } from '@edulastic/colors';
 import { withNamespaces } from '@edulastic/localization';
 
 import { Label } from '../../../styled/WidgetOptions/Label';
+
+import { IconTrash } from '../styled/IconTrash';
 
 const ThousandsSeparators = ({ separators, onChange, onAdd, onDelete, t }) => {
   const thousandsSeparators = [
@@ -18,7 +18,7 @@ const ThousandsSeparators = ({ separators, onChange, onAdd, onDelete, t }) => {
 
   return (
     <Col span={12}>
-      <Label>Thousands separator</Label>
+      <Label>{t('component.math.thousandsSeparator')}</Label>
       {separators &&
       !!separators.length &&
       separators.map((separator, i) => (
@@ -37,14 +37,7 @@ const ThousandsSeparators = ({ separators, onChange, onAdd, onDelete, t }) => {
                   </Select.Option>
                 ))}
               </Select>
-              <IconTrash
-                style={{ cursor: 'pointer' }}
-                width={22}
-                height={22}
-                color={greenDark}
-                hoverColor={red}
-                onClick={() => onDelete(i)}
-              />
+              <IconTrash onClick={() => onDelete(i)} width={22} height={22} />
             </FlexContainer>
           </Col>
         </Row>

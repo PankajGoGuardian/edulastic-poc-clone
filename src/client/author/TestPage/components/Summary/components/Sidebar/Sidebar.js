@@ -82,14 +82,14 @@ const Sidebar = ({
         style={{ flexDirection: windowWidth < 468 ? 'column' : 'row' }}
       >
         <FlexContainer style={{ marginBottom: 15 }}>
-          <IconHeart color={greenDark} />
+          <IconHeart color={greenDark} width={16} height={16} />
           <FlexContainer>
             <Title>Liked:</Title>
             <TitleContent>{analytics && analytics.likes} times</TitleContent>
           </FlexContainer>
         </FlexContainer>
         <FlexContainer style={{ marginBottom: 15 }}>
-          <IconShare color={greenDark} />
+          <IconShare color={greenDark} width={16} height={16} />
           <FlexContainer>
             <Title>Shared:</Title>
             <TitleContent>
@@ -99,7 +99,7 @@ const Sidebar = ({
         </FlexContainer>
       </FlexContainer>
       <FlexContainer>
-        <IconHeart color={greenDark} />
+        <IconHeart color={greenDark} width={16} height={16} />
         <FlexContainer>
           <Title>Collection:</Title>
           <TitleContent>Public Library</TitleContent>

@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { cloneDeep } from 'lodash';
 import { arrayMove } from 'react-sortable-hoc';
 import { Col, Checkbox, Select } from 'antd';
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 
 import { CustomQuillComponent } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
@@ -16,7 +18,7 @@ import { StyledInput } from '../styled/StyledInput';
 
 const List = withAddButton(QuillSortableList);
 
-const Opt = ({ setQuestionData, item, t }) => {
+const Opt = ({ setQuestionData, item, t, theme }) => {
   const handleChange = (prop, value) => {
     const newItem = cloneDeep(item);
 
@@ -136,7 +138,7 @@ const Opt = ({ setQuestionData, item, t }) => {
             showResponseBtn={false}
             value={item.instructor_stimulus || ''}
             style={{
-              border: '1px solid #d9d9d9',
+              border: `1px solid ${theme.widgets.passage.quillBorderColor}`,
               height: 'auto',
               padding: '6px 11px',
               borderRadius: 5
@@ -190,7 +192,13 @@ const Opt = ({ setQuestionData, item, t }) => {
 Opt.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
-export default withNamespaces('assessment')(Opt);
+const enhance = compose(
+  withNamespaces('assessment'),
+  withTheme
+);
+
+export default enhance(Opt);

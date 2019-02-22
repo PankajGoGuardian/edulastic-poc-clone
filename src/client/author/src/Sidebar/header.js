@@ -83,13 +83,13 @@ const HeaderWrapper = styled.div`
 `;
 
 const Icon = styled(IconHeader)`
-  width: 119px !important;
-  height: 20px !important;
+  width: 119px;
+  height: 20px;
 `;
 
 const IconCompact = styled(IconLogoCompact)`
-  width: 25px !important;
-  height: 25px !important;
+  width: 25px;
+  height: 25px;
   fill: #0eb08d;
   &:hover {
     fill: #0eb08d;
@@ -97,6 +97,8 @@ const IconCompact = styled(IconLogoCompact)`
 `;
 
 const ArrowBtn = styled(IconChevronLeft)`
+  width: 16px;
+  height: 16px;
   fill: #1fe3a1;
   float: left;
   cursor: pointer;
@@ -114,12 +116,14 @@ const ArrowBtn = styled(IconChevronLeft)`
 `;
 
 const ResponsiveToggleMenu = styled(IconClose)`
+  width: 16px;
+  height: 16px;
   @media (min-width: 1200px) {
     display: none;
     @media (max-width: 1060px) {
       fill: #4aac8b;
-      width: 15px !important;
-      height: 15px !important;
+      width: 15px;
+      height: 15px;
       float: left;
       cursor: pointer;
       display: block;

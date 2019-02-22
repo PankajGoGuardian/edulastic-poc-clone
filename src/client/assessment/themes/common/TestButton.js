@@ -34,7 +34,7 @@ const TestButton = ({ t, checkAnswerEvaluation }) => (
       <ButtonLink
         color="primary"
         icon={
-          <IconBookmark style={{ width: '10px !important' }} color={white} />
+          <IconBookmark color={white} width={10} height={16} />
         }
         style={{ color: white }}
       >

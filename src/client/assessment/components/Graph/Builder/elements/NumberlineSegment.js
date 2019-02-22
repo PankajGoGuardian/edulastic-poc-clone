@@ -1,9 +1,59 @@
 import { CONSTANT, Colors } from '../config';
-import { findSegmentPosition, orderPoints, calcRoundedToTicksDistance, findAvailableStackedSegmentPosition } from '../utils';
+import {
+  findSegmentPosition,
+  orderPoints,
+  calcRoundedToTicksDistance,
+  findAvailableStackedSegmentPosition,
+  getClosestTick,
+  getSpecialTicks
+} from '../utils';
 import { defaultPointParameters } from '../settings';
 //import { JXG } from '../index';
 
 const previousPointsPositions = [];
+
+function removeProhibitedTicks(segmentCoords, segments, ticks, currentPointX) {
+  segments.forEach((segment) => {
+    if (segment.elType === 'segment') {
+      let points = [];
+      Object.keys(segment.ancestors).forEach((key) => {
+        points.push(segment.ancestors[key].X());
+      });
+      points = orderPoints(points);
+
+      if (segmentCoords[0] === currentPointX) {
+        if (segmentCoords[1] < points[0]) {
+          ticks = ticks.filter(t => t < points[0] && t !== segmentCoords[1]);
+        } else if (segmentCoords[1] > points[1]) {
+          ticks = ticks.filter(t => t > points[1] && t !== segmentCoords[1]);
+        }
+      } else if (segmentCoords[1] === currentPointX) {
+        if (segmentCoords[0] < points[0]) {
+          ticks = ticks.filter(t => t < points[0] && t !== segmentCoords[0]);
+        } else if (segmentCoords[0] > points[1]) {
+          ticks = ticks.filter(t => t > points[1] && t !== segmentCoords[0]);
+        }
+      }
+    } else {
+      const point = segment.coords.usrCoords[1];
+
+      if (segmentCoords[0] === currentPointX) {
+        if (segmentCoords[1] < point) {
+          ticks = ticks.filter(t => t < point && t !== segmentCoords[1]);
+        } else if (segmentCoords[1] > point) {
+          ticks = ticks.filter(t => t > point && t !== segmentCoords[1]);
+        }
+      } else if (segmentCoords[1] === currentPointX) {
+        if (segmentCoords[0] < point) {
+          ticks = ticks.filter(t => t < point && t !== segmentCoords[0]);
+        } else if (segmentCoords[0] > point) {
+          ticks = ticks.filter(t => t > point && t !== segmentCoords[0]);
+        }
+      }
+    }
+  });
+  return ticks;
+}
 
 // Pass current segment coords, all segments except handling one, ticks distance of numerline axis,
 // drag direction (true = point with bigger coord is dragging now, false = point with smaller coord is dragging now)
@@ -81,6 +131,21 @@ const findAvailableSegmentDragPlace = (segmentCoords, segments, ticksDistance, d
   } while (segments);
 };
 
+function findSimilarLength(ticks, segmentLength) {
+  const firstPointTicks = [];
+  const secondPointTicks = [];
+  console.log('segmentLength', segmentLength, segmentLength.toFixed(5));
+  for (let i = 0; i < ticks.length - 1; i++) {
+    const len = Math.abs(ticks[i] - ticks[i + 1]);
+    console.log('len', len, len.toFixed(5));
+    if (len.toFixed(5) === segmentLength.toFixed(5)) {
+      firstPointTicks.push(ticks[i]);
+      secondPointTicks.push(ticks[i + 1]);
+    }
+  }
+  return [firstPointTicks, secondPointTicks];
+}
+
 // Pass board, handling segment, ticksDistance, numberlineAxis
 // Check if there an element inside after segment dragging, then find closest available space and put segment there
 const handleSegmentDrag = (board, segment, ticksDistance, axis) => {
@@ -97,44 +162,22 @@ const handleSegmentDrag = (board, segment, ticksDistance, axis) => {
     let prevPosIndex;
     let newCoords;
 
-    segments.forEach((segment) => {
-      if (segment.elType === 'segment') {
-        let points = [];
-
-        Object.keys(segment.ancestors).forEach((key) => {
-          points.push(segment.ancestors[key].X());
-        });
-
-        points = orderPoints(points);
-
-        if (
-          (roundedPoints[0] >= points[0] && roundedPoints[0] <= points[1])
-          || (roundedPoints[1] >= points[0] && roundedPoints[1] <= points[1])
-        ) {
-          isSpaceAvailable = false;
-        }
-      } else if (segment.coords.usrCoords[1] >= roundedPoints[0] && segment.coords.usrCoords[1] <= roundedPoints[1]) {
-        isSpaceAvailable = false;
-      }
-    });
-
     previousPointsPositions.forEach((element, index) => {
       if (element.id === segment.point1.id) {
         prevPosIndex = index;
       }
     });
 
-    if (!isSpaceAvailable) {
-      if (roundedPoints[0] < previousPointsPositions[prevPosIndex].position) {
-        newCoords = findAvailableSegmentDragPlace(roundedPoints, segments, ticksDistance, true, xMin, xMax);
-      } else if (roundedPoints[0] > previousPointsPositions[prevPosIndex].position) {
-        newCoords = findAvailableSegmentDragPlace(roundedPoints, segments, ticksDistance, false, xMin, xMax);
-      }
-    } else if (segmentPoints[0] <= xMin) {
-      newCoords = findAvailableSegmentDragPlace([Math.round(xMin - ticksDistance), Math.round(xMin)], segments, ticksDistance, true);
-    } else if (segmentPoints[1] >= xMax) {
-      newCoords = findAvailableSegmentDragPlace([Math.round(xMax), Math.round(xMax + ticksDistance)], segments, ticksDistance, false);
+    let ticks = getSpecialTicks(axis);
+    if (segmentPoints[0] < previousPointsPositions[prevPosIndex].position) {
+      ticks = removeProhibitedTicks(segmentPoints, segments, ticks, segmentPoints[0]);
+    } else if (segmentPoints[0] > previousPointsPositions[prevPosIndex].position) {
+      ticks = removeProhibitedTicks(segmentPoints, segments, ticks, segmentPoints[1]);
     }
+    newCoords = [];
+    newCoords[0] = getClosestTick(segmentPoints[0], ticks);
+    newCoords[1] = getClosestTick(segmentPoints[1], ticks);
+
 
     if (newCoords) {
       segment.point1.setPosition(JXG.COORDS_BY_USER, [newCoords[0], 0]);
@@ -177,32 +220,14 @@ const handleStackedSegmentDrag = (segment, ticksDistance, axis, yPosition) => {
 
 // Pass point, board, ticks distance of numberline axis, parent segment of point, numberline axis
 // Function check if there an element inside of vector after dragging and if yes then find closest available space and put point there
-const handleSegmentPointDrag = (point, board, ticksDistance, segment, axis) => {
+const handleSegmentPointDrag = (point, board, ticksDistance, segment, axis, ticks) => {
   point.on('drag', () => {
     const currentPosition = point.X();
 
     const segments = board.elements.filter(element => element.elType === 'segment' || element.elType === 'point').filter(element => element.id !== segment.id);
     const segmentCoords = orderPoints([segment.point1.X(), segment.point2.X()]);
 
-    const xMin = axis.point1.X();
-    const xMax = axis.point2.X();
-
-    let isPointInside = false;
     let prevPosIndex;
-
-    segments.forEach((segment) => {
-      if (segment.elType === 'segment') {
-        Object.keys(segment.ancestors).forEach((key) => {
-          const point = segment.ancestors[key].X();
-
-          if (point >= segmentCoords[0] && point <= segmentCoords[1]) {
-            isPointInside = true;
-          }
-        });
-      } else if (segment.coords.usrCoords[1] >= segmentCoords[0] && segment.coords.usrCoords[1] <= segmentCoords[1]) {
-        isPointInside = true;
-      }
-    });
 
     previousPointsPositions.forEach((element, index) => {
       if (element.id === point.id) {
@@ -210,23 +235,11 @@ const handleSegmentPointDrag = (point, board, ticksDistance, segment, axis) => {
       }
     });
 
-    if (isPointInside) {
-      if (currentPosition < previousPointsPositions[prevPosIndex].position) {
-        // moving to the smaller coords
-        const newXCoord = findAvailableSegmentPointDragPlace(segmentCoords, segments, ticksDistance, false);
-        point.setPosition(JXG.COORDS_BY_USER, [newXCoord, 0]);
-        previousPointsPositions[prevPosIndex].position = newXCoord;
-      } else if (currentPosition > previousPointsPositions[prevPosIndex].position) {
-        // moving to the bigger coords
-        const newXCoord = findAvailableSegmentPointDragPlace(segmentCoords, segments, ticksDistance, true);
-        point.setPosition(JXG.COORDS_BY_USER, [newXCoord, 0]);
-        previousPointsPositions[prevPosIndex].position = newXCoord;
-      }
-    } else if (currentPosition > xMax) {
-      point.setPosition(JXG.COORDS_BY_USER, [xMax, 0]);
-    } else if (currentPosition < xMin) {
-      point.setPosition(JXG.COORDS_BY_USER, [xMin, 0]);
-    }
+    ticks = getSpecialTicks(axis);
+    ticks = removeProhibitedTicks(segmentCoords, segments, ticks, currentPosition);
+    const newXCoord = getClosestTick(currentPosition, ticks);
+    point.setPosition(JXG.COORDS_BY_USER, [newXCoord, 0]);
+    previousPointsPositions[prevPosIndex].position = newXCoord;
   });
 };
 
@@ -248,7 +261,7 @@ const handleStackedSegmentPointDrag = (point, axis, yPosition) => {
 
 // Pass segments, click coordinate, ticks distance of numberline axis
 // Check if new segment is inside of existing segment
-const checkForElementsOnSegment = (segments, coord, ticksDistance) => {
+const checkForElementsOnSegment = (segments, coord, nextTick) => {
   let isSpaceAvailable = true;
 
   segments.forEach((segment) => {
@@ -263,11 +276,11 @@ const checkForElementsOnSegment = (segments, coord, ticksDistance) => {
 
       if (
         (coord >= points[0] && coord <= points[1])
-        || (coord + ticksDistance >= points[0] && coord + ticksDistance <= points[1])
+        || (nextTick >= points[0] && nextTick <= points[1])
       ) {
         isSpaceAvailable = false;
       }
-    } else if (segment.coords.usrCoords[1] >= coord && segment.coords.usrCoords[1] <= coord + ticksDistance) {
+    } else if (segment.coords.usrCoords[1] >= coord && segment.coords.usrCoords[1] <= nextTick) {
       isSpaceAvailable = false;
     }
   });
@@ -278,11 +291,11 @@ const checkForElementsOnSegment = (segments, coord, ticksDistance) => {
 
 // Pass numberlineAxis, click coordinate, ticksDistance
 // Check if new segment is not falling outside of numberlineAxis
-const checkForSegmentRenderPosition = (axis, coord, ticksDistance) => {
+const checkForSegmentRenderPosition = (axis, coord, nextTick) => {
   const xMin = axis.point1.X();
   const xMax = axis.point2.X();
 
-  if (coord < xMin || coord + ticksDistance > xMax) {
+  if (coord < xMin || nextTick > xMax) {
     return false;
   }
   return true;
@@ -290,17 +303,18 @@ const checkForSegmentRenderPosition = (axis, coord, ticksDistance) => {
 
 // Pass board, click coordinate, ticksDistance, point type (true = default point, false = unfilled point)
 // Draw segment point with proper settings
-const drawPoint = (board, coord, ticksDistance, point, fixed, colors, yPosition) => {
+const drawPoint = (board, coord, nextTick, point, fixed, colors, yPosition) => {
   const styles = point ? { ...Colors.default[CONSTANT.TOOLS.POINT] } : { ...Colors.special[CONSTANT.TOOLS.POINT] };
 
   return board.$board.create(
     'point',
-    [ticksDistance ? coord + ticksDistance : coord, yPosition || 0],
+    [nextTick || coord, yPosition || 0],
     {
       ...board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters(),
       ...styles,
       ...colors,
-      fixed
+      fixed,
+      snapToGrid: false
     }
   );
 };
@@ -316,7 +330,7 @@ const drawLine = (board, firstPoint, secondPoint, colors) => (
       lastArrow: false,
       straightfirst: false,
       straightlast: false,
-      snapToGrid: true,
+      snapToGrid: false,
       ...Colors.default[CONSTANT.TOOLS.LINE],
       ...colors
     }
@@ -330,10 +344,22 @@ const drawSegment = (board, coord, leftIncluded, rightIncluded, segmentType, sta
   const ticksDistance = numberlineAxis[0].ticks[0].getAttribute('ticksDistance');
   const segments = board.elements.filter(element => element.elType === 'segment' || element.elType === 'point');
 
+  let ticks = getSpecialTicks(numberlineAxis[0]);
+
+  if (typeof coord !== 'number') {
+    const x = board.getCoords(coord).usrCoords[1];
+    coord = getClosestTick(x, ticks);
+  }
+
+  ticks = ticks.sort((a, b) => a - b);
+  const nextTick = ticks[ticks.indexOf(coord) + 1];
+  console.log('coord', coord);
+  console.log('nextTick', nextTick);
+
   if (!stackResponses) {
-    if (checkForElementsOnSegment(segments, coord, ticksDistance) && checkForSegmentRenderPosition(numberlineAxis[0], coord, ticksDistance)) {
+    if (checkForElementsOnSegment(segments, coord, nextTick) && checkForSegmentRenderPosition(numberlineAxis[0], coord, nextTick)) {
       const firstPoint = drawPoint(board, coord, null, leftIncluded, false);
-      const secondPoint = drawPoint(board, coord, ticksDistance, rightIncluded, false);
+      const secondPoint = drawPoint(board, coord, nextTick, rightIncluded, false);
       const segment = drawLine(board, firstPoint, secondPoint);
       segment.segmentType = segmentType;
 
@@ -342,8 +368,8 @@ const drawSegment = (board, coord, leftIncluded, rightIncluded, segmentType, sta
         { id: secondPoint.id, position: secondPoint.X() }
       );
 
-      handleSegmentPointDrag(firstPoint, board, ticksDistance, segment, numberlineAxis[0]);
-      handleSegmentPointDrag(secondPoint, board, ticksDistance, segment, numberlineAxis[0]);
+      handleSegmentPointDrag(firstPoint, board, ticksDistance, segment, numberlineAxis[0], ticks);
+      handleSegmentPointDrag(secondPoint, board, ticksDistance, segment, numberlineAxis[0], ticks);
       handleSegmentDrag(board, segment, ticksDistance, numberlineAxis[0]);
 
       return segment;
@@ -406,7 +432,7 @@ const determineAnswerType = (board, config) => {
 };
 
 const onHandler = (type, stackResponses, stackResponsesSpacing) => (board, coords) =>
-  determineSegmentType(type, board, findSegmentPosition(board, coords), stackResponses, stackResponsesSpacing);
+  determineSegmentType(type, board, coords, stackResponses, stackResponsesSpacing);
 
 const renderAnswer = (board, config, leftIncluded, rightIncluded) => {
   const firstPoint = drawPoint(board, config.point1, null, leftIncluded, true, config.leftPointColor, config.y);

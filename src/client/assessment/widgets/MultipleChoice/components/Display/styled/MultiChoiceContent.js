@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 
 export const MultiChoiceContent = styled.div`
-  font-size: ${props => props.fontSize || '13px'};
-  color: ${props => props.theme.mainContentTextColor};
+  font-size: ${props => props.fontSize || props.theme.widgets.multipleChoice.multiChoiceContentFontSize};
   display: flex;
   flex: 1;
   align-items: center;
-  font-weight: 600;
+  font-weight: ${props => props.theme.widgets.multipleChoice.multiChoiceContentFontWeight};
 `;

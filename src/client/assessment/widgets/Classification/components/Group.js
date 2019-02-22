@@ -24,6 +24,7 @@ const Group = ({
   headText,
   groupHeadText,
   onRemoveInner,
+  firstFocus,
   text,
   prefix,
   theme
@@ -46,6 +47,7 @@ const Group = ({
       <List
         prefix={prefix}
         items={item.responses}
+        firstFocus={firstFocus}
         onAdd={onAddInner(index)}
         onSortEnd={onSortEnd(index)}
         onChange={onChange(index)}
@@ -64,6 +66,7 @@ Group.propTypes = {
   onRemove: PropTypes.func.isRequired,
   onSortEnd: PropTypes.func.isRequired,
   onTitleChange: PropTypes.func.isRequired,
+  firstFocus: PropTypes.bool.isRequired,
   index: PropTypes.number.isRequired,
   headText: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,

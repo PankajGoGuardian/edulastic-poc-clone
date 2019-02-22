@@ -32,7 +32,7 @@ const Help = ({ flag }) => (
 export default React.memo(Help);
 
 Help.propTypes = {
-  flag: PropTypes.bool.isRequired,
+  flag: PropTypes.bool.isRequired
 };
 
 const ProfileWrapper = styled.div`
@@ -45,7 +45,8 @@ const ProfileImg = styled.img`
 const SelectIcon = styled(IconCaretDown)`
   margin-left: auto;
   fill: #fff;
-  width: 11px !important;
+  width: 11px;
+  height: 16px;
   display: ${props => (props.flag ? 'none' : 'block')};
 `;
 const ProfileDetail = styled.div`
@@ -100,8 +101,8 @@ const HelpIconWrapper = styled.span`
 
 const HelpIcon = styled(IconQuestion)`
   fill: #1fe3a1;
-  width: 25px !important;
-  height: 22px !important;
+  width: 25px;
+  height: 22px;
 `;
 
 const HelpText = styled.span`

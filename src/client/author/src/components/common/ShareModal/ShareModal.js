@@ -278,7 +278,8 @@ const DoneButton = styled(Button)`
 `;
 
 const CloseIcon = styled(IconClose)`
-  width: 11px !important;
+  width: 11px;
+  height: 16px;
   margin-top: 4px;
   fill: #4aac8b;
 `;
@@ -294,6 +295,8 @@ const TitleCopy = styled.div`
 `;
 
 const CopyIcon = styled(IconCopy)`
+  width: 16px;
+  height: 16px;
   fill: ${mainBlueColor};
   margin-right: 8px;
   &:hover {

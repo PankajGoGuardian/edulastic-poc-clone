@@ -63,8 +63,8 @@ const NoDataWrapper = styled.div`
 
 const IconManage = styled(IconManageClass)`
   fill: #0eb08d !important;
-  width: 60px !important;
-  height: 80px !important;
+  width: 60px;
+  height: 80px;
 `;
 
 const NoDataHeading = styled.div`

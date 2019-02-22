@@ -1,11 +1,8 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { compose } from 'redux';
 import { withNamespaces } from '@edulastic/localization';
 import PropTypes from 'prop-types';
 import Scoring from '../../../containers/WidgetOptions/components/Scoring';
-import {
-  MoreOptionsDivider
-} from '../common/styled_components';
 
 const types = [
   { label: 'Exact match', value: 'exactMatch' },
@@ -20,10 +17,7 @@ class ScoreSettings extends Component {
   render() {
     const { scoringTypes } = this.props;
     return (
-      <Fragment>
-        <MoreOptionsDivider />
-        <Scoring scoringTypes={scoringTypes} />
-      </Fragment>
+      <Scoring scoringTypes={scoringTypes} />
     );
   }
 }

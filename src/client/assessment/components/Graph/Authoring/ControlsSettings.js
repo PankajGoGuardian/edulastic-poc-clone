@@ -130,8 +130,6 @@ class ControlsSettings extends Component {
     return (
       <Fragment>
 
-        <MoreOptionsDivider />
-
         <MoreOptionsContainer>
 
           <MoreOptionsSubHeading>

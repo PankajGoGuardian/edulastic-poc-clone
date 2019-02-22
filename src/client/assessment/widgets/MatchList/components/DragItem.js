@@ -1,10 +1,9 @@
 import React from 'react';
 import { DragSource } from 'react-dnd';
 
-import { green, red } from '@edulastic/colors';
-import { IconCheck, IconClose } from '@edulastic/icons';
-
 import { Index } from '../styled/Index';
+import { IconClose } from '../styled/IconClose';
+import { IconCheck } from '../styled/IconCheck';
 
 function collectSource(connector, monitor) {
   return {
@@ -48,8 +47,8 @@ const DragItem = ({
       <div dangerouslySetInnerHTML={{ __html: item }} />
       {preview && (
         <div style={{ marginRight: 15 }}>
-          {correct && <IconCheck color={green} width={12} height={10} />}
-          {!correct && <IconClose color={red} width={10} height={10} />}
+          {correct && <IconCheck />}
+          {!correct && <IconClose />}
         </div>
       )}
     </div>

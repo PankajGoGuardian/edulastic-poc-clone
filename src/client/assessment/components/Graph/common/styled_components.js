@@ -30,10 +30,15 @@ export const StyledTextarea = styled(TextareaAutosize)`
 `;
 
 export const Subtitle = styled.div`
-  font-size: 14px;
-  color: ${greenDark};
-  padding: 15px 0;
-  font-weight: 600;
+  color: ${secondaryTextColor};
+  margin-bottom: 35px;
+  font-size: 20px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.35;
+  letter-spacing: normal;
+  text-align: left;
 `;
 
 export const StyledTextField = styled(TextField)`
@@ -230,12 +235,21 @@ export const MoreOptionsRowInline = styled.div`
 `;
 
 export const MoreOptionsSubHeading = styled.div`
-  width: 100%;
-  color: ${greenDark};
-  font-size: 14px;
-  margin: 2px 0;
-  font-weight: 600;
-  line-height: 1.36;
+  color: ${secondaryTextColor};
+  margin-bottom: 35px;
+  font-size: 20px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.35;
+  letter-spacing: normal;
+  text-align: left;
+  // width: 100%;
+  // color: ${greenDark};
+  // font-size: 14px;
+  // margin: 2px 0;
+  // font-weight: 600;
+  // line-height: 1.36;
 `;
 
 

@@ -6,7 +6,7 @@ export const IconTrash = styled(Icon)`
   :hover {
     fill: ${props => props.theme.sortableList.iconTrashHoverColor};
   }
-  width: 20px !important;
-  height: 20px !important;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
 `;

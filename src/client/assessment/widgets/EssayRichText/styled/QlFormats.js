@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 export const QlFormats = styled.span`
-  display: flex !important;
-  flex-wrap: wrap !important;
+  display: flex;
+  flex-wrap: wrap;
 
   & > * {
     margin-top: 10px;

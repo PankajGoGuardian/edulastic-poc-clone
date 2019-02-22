@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { textColor, grey } from '@edulastic/colors';
 
 export const CorrectAnswerItem = styled.div`
   width: calc(100% - 40px);
@@ -7,9 +6,9 @@ export const CorrectAnswerItem = styled.div`
   align-items: stretch;
   margin-bottom: 10px;
   cursor: pointer;
-  background: ${grey};
+  background: ${props => props.theme.widgets.orderList.correctAnswerItemBgColor};
   margin-left: 40px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-  border-left: 2px solid ${textColor};
+  border-left: 2px solid ${props => props.theme.widgets.orderList.correctAnswerItemBorderColor};
 `;

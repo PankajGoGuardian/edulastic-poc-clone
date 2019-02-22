@@ -12,7 +12,7 @@ import AxisSegmentsOptions from './Authoring/AxisSegmentsOptions';
 import AxisLabelsOptions from './Authoring/AxisLabelsLayoutSettings/AxisLabelsOptions';
 import QuadrantsSmallSize from './components/QuadrantsSmallSize';
 import AxisSmallSize from './components/AxisSmallSize';
-import { AxisSegments, GraphAxisLabels, GraphQuadrants } from './Authoring';
+import { AxisSegments, GraphAxisLabels, GraphQuadrants, QuestionSection } from './Authoring';
 import { CorrectAnswers } from './CorrectAnswers';
 import { GraphDisplay } from './Display';
 import {WithResourcesHOC,WithResources,useResources} from '../../../utils';
@@ -114,7 +114,7 @@ class Graph extends Component {
   };
 
   getQuadrantsOptionsProps = () => {
-    const { item } = this.props;
+    const { item, fillSections, cleanSections } = this.props;
 
     return {
       stemNumerationList: getStemNumerationList(),
@@ -125,18 +125,22 @@ class Graph extends Component {
       setBgImg: this.handleBgImgChange,
       setBgShapes: this.handleBgShapesChange,
       graphData: item,
-      setAnnotation: this.handleAnnotationChange
+      setAnnotation: this.handleAnnotationChange,
+      fillSections,
+      cleanSections
     };
   };
 
   getAxisLabelsOptionsProps = () => {
-    const { item } = this.props;
+    const { item, fillSections, cleanSections } = this.props;
 
     return {
       setOptions: this.handleOptionsChange,
       setNumberline: this.handleNumberlineChange,
       setCanvas: this.handleCanvasChange,
-      graphData: item
+      graphData: item,
+      fillSections,
+      cleanSections
     };
   };
 
@@ -198,6 +202,17 @@ class Graph extends Component {
     setQuestionData(newItem);
   };
 
+  handleRemoveAltResponses = index => {
+    const { setQuestionData, item } = this.props;
+    const newItem = cloneDeep(item);
+
+    if (newItem.validation.alt_responses && newItem.validation.alt_responses.length) {
+      newItem.validation.alt_responses = newItem.validation.alt_responses.filter((response, i) => i !== index);
+    }
+
+    setQuestionData(newItem);    
+  }
+
   handleAddAnswer = (qid) => {
     const { saveAnswer } = this.props;
     saveAnswer(qid);
@@ -219,7 +234,9 @@ class Graph extends Component {
       previewTab,
       userAnswer,
       changePreviewTab,
-      evaluation
+      evaluation,
+      fillSections,
+      cleanSections
     } = this.props;
     const { graphType } = item;
 
@@ -232,30 +249,33 @@ class Graph extends Component {
       <React.Fragment>
         {view === 'edit' && (
           <React.Fragment>
-            <Paper>
-              <OptionsComponent canvas={item.canvas} setCanvas={this.handleCanvasChange} graphData={item} />
-              <CorrectAnswers
-                graphData={item}
-                onAddAltResponses={this.handleAddAltResponses}
+            <div style={{ paddingLeft: '280px' }}>
+              <OptionsComponent 
+                graphData={item} 
+                canvas={item.canvas} 
+                fillSections={fillSections} 
+                cleanSections={cleanSections} 
+                setCanvas={this.handleCanvasChange} 
               />
-              {(graphType === 'quadrants' || graphType === 'firstQuadrant') && (
-                <React.Fragment>
-                  <Select
-                    key={Math.random().toString(36)}
-                    style={{ width: 'auto', marginTop: '11px', marginRight: '10px', borderRadius: '10px' }}
-                    onChange={val => this.handleSelectIgnoreRepeatedShapes(val)}
-                    options={getIgnoreRepeatedShapesOptions()}
-                    value={item.validation.ignore_repeated_shapes}
-                  /> Ignore repeated shapes
-                </React.Fragment>
-              )}
-            </Paper>
-            <Paper
-              padding="30px 60px"
-              style={{ marginTop: '30px' }}
-            >
+              <QuestionSection section="main" label="SET CORRECT ANSWER" cleanSections={cleanSections} fillSections={fillSections}>
+                <CorrectAnswers
+                  graphData={item}
+                  onRemoveAltResponses={this.handleRemoveAltResponses}
+                  onAddAltResponses={this.handleAddAltResponses}
+                />
+                {(graphType === 'quadrants' || graphType === 'firstQuadrant') && (
+                  <React.Fragment>
+                    <Select
+                      style={{ width: 'auto', marginTop: '11px', marginRight: '10px', borderRadius: '10px' }}
+                      onChange={val => this.handleSelectIgnoreRepeatedShapes(val)}
+                      options={getIgnoreRepeatedShapesOptions()}
+                      value={item.validation.ignore_repeated_shapes}
+                    /> Ignore repeated shapes
+                  </React.Fragment>
+                )}
+              </QuestionSection>
               <MoreOptionsComponent {...this.getMoreOptionsProps()} />
-            </Paper>
+            </div>
           </React.Fragment>
         )}
         {view === 'preview' && smallSize === false && item && (

@@ -88,7 +88,7 @@ class SettingsBar extends Component {
       <Container>
         <SettingsButtonWrapper justifyContent="flex-end">
           <Button color="primary" onClick={onCancel} style={{ minWidth: 85 }}>
-            <IconSettings color={white} />
+            <IconSettings color={white} width={16} height={16} />
           </Button>
         </SettingsButtonWrapper>
         <Heading>{t('author:component.settingsBar.layout')}</Heading>

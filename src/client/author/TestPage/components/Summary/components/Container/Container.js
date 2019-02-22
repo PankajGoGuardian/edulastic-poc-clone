@@ -63,7 +63,7 @@ const Summary = ({
           <ButtonLink
             onClick={onShowSource}
             color="primary"
-            icon={<IconSource color={blue} />}
+            icon={<IconSource color={blue} width={16} height={16} />}
           >
             {t('component.questioneditor.buttonbar.source')}
           </ButtonLink>

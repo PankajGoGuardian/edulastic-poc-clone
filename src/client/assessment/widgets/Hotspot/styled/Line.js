@@ -1,8 +1,7 @@
 import styled from 'styled-components';
-import { red } from '@edulastic/colors';
 
 export const Line = styled.line`
-  stroke: ${({ stroke, intersect }) => (stroke ? (intersect ? red : stroke) : stroke)};
+  stroke: ${({ theme, intersect }) => (intersect ? theme.widgets.hotspot.intersectStrokeColor : theme.widgets.hotspot.svgMapStrokeColor)};
   stroke-width: 2px;
   stroke-opacity: 1;
   stroke-dasharray: 6, 8;

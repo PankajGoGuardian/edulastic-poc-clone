@@ -2,12 +2,12 @@ import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { cloneDeep } from 'lodash';
 import { Input, Row, Col } from 'antd';
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 
 import { withNamespaces } from '@edulastic/localization';
 import { Paper } from '@edulastic/common';
 
-import { compose } from 'redux';
-import { withTheme } from 'styled-components';
 import { EDIT } from '../../constants/constantsForQuestions';
 
 import withPoints from '../../components/HOC/withPoints';

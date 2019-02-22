@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Select, Col, Input, Checkbox } from 'antd';
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 
 import { withNamespaces } from '@edulastic/localization';
 import { CustomQuillComponent } from '@edulastic/common';
@@ -14,19 +16,19 @@ import FontSizeSelect from '../../../components/FontSizeSelect';
 import Extras from '../../../containers/Extras';
 import { Row } from '../../../styled/WidgetOptions/Row';
 
-const inputStyle = {
-  minHeight: 35,
-  border: '1px solid rgb(223, 223, 223)',
-  padding: '5px 15px'
-};
-
 const scoringTypes = [
   evaluationType.exactMatch,
   evaluationType.partialMatch,
   evaluationType.partialMatchV2
 ];
 
-function Options({ onChange, uiStyle, t }) {
+function Options({ onChange, uiStyle, t, theme }) {
+  const inputStyle = {
+    minHeight: 35,
+    border: `1px solid ${theme.widgets.matrixChoice.quillBorderColor}`,
+    padding: '5px 15px'
+  };
+
   const changeUiStyle = (prop, value) => {
     console.log(prop, value);
     onChange('ui_style', {
@@ -162,7 +164,8 @@ function Options({ onChange, uiStyle, t }) {
 Options.propTypes = {
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 Options.defaultProps = {
@@ -175,4 +178,9 @@ Options.defaultProps = {
   }
 };
 
-export default withNamespaces('assessment')(Options);
+const enhance = compose(
+  withNamespaces('assessment'),
+  withTheme
+);
+
+export default enhance(Options);

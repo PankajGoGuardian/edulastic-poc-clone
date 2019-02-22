@@ -573,7 +573,8 @@
       "decimalSeparator": "Decimal separator",
       "addNewMethod": "Add new method",
       "exactMatch": "Exact match",
-      "template": "Template"
+      "template": "Template",
+      "thousandsSeparator": "Thousands separator"
     },
     "matrix": {
       "matrixStyle": "Matrix style",

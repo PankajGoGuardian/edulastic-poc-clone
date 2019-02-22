@@ -49,7 +49,7 @@ class Photo extends React.Component {
       <Container>
         <Image src="https://fakeimg.pl/500x135/" alt="Test" />
         <Camera>
-          <IconPhotoCamera color={white} />
+          <IconPhotoCamera color={white} width={16} height={16} />
         </Camera>
       </Container>
     );

@@ -8,7 +8,7 @@ export const Container = styled.div`
 
   @media (max-width: 468px) {
     padding-left: 10px;
-    margin-right: ${props => !props.value && '20px !important'};
-    margin-left: ${props => props.value && '20px !important'};
+    margin-right: ${props => !props.value && '20px'};
+    margin-left: ${props => props.value && '20px'};
   }
 `;

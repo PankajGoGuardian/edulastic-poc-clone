@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { cloneDeep } from 'lodash';
+import { withTheme } from 'styled-components';
 
-import { greenDark } from '@edulastic/colors';
 import { helpers } from '@edulastic/common';
 
 import MatrixCell from '../MatrixCell';
@@ -70,7 +70,8 @@ const Matrix = ({
   uiStyle,
   validation,
   type,
-  smallSize
+  smallSize,
+  theme
 }) => {
   let correctAnswersMatrix;
 
@@ -129,7 +130,10 @@ const Matrix = ({
 
     const optionsData = options.map((option, i) => ({
       title: isTable ? (
-        <StyledHeader style={{ color: greenDark }} dangerouslySetInnerHTML={{ __html: option }} />
+        <StyledHeader
+          style={{ color: theme.widgets.matrixChoice.tableStyledHeaderColor }}
+          dangerouslySetInnerHTML={{ __html: option }}
+        />
       ) : (
         ''
       ),
@@ -221,7 +225,8 @@ Matrix.propTypes = {
   smallSize: PropTypes.bool,
   isMultiple: PropTypes.bool,
   validation: PropTypes.object,
-  type: PropTypes.string
+  type: PropTypes.string,
+  theme: PropTypes.object.isRequired
 };
 
 Matrix.defaultProps = {
@@ -231,4 +236,4 @@ Matrix.defaultProps = {
   smallSize: false
 };
 
-export default Matrix;
+export default withTheme(Matrix);

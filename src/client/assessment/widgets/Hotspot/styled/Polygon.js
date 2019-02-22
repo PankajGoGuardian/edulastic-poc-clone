@@ -1,24 +1,22 @@
 import styled from 'styled-components';
 import Color from 'color';
 
-import { red, svgMapFillColor, svgMapStrokeColor, lightRed } from '@edulastic/colors';
-
-const getStroke = ({ stroke, selected, showAnswer, correct }) =>
+const getStroke = ({ stroke, selected, showAnswer, correct, theme }) =>
   (showAnswer
     ? correct
-      ? svgMapStrokeColor
-      : red
+      ? theme.widgets.hotspot.svgMapStrokeColor
+      : theme.widgets.hotspot.intersectStrokeColor
     : selected
       ? Color(stroke)
         .darken(0.3)
         .string()
       : stroke);
 
-const getFill = ({ fill, selected, showAnswer, correct }) =>
+const getFill = ({ fill, selected, showAnswer, correct, theme }) =>
   (showAnswer
     ? correct
-      ? svgMapFillColor
-      : `${lightRed}50`
+      ? theme.widgets.hotspot.svgMapFillColor
+      : theme.widgets.hotspot.intersectFillColor
     : selected
       ? Color(fill)
         .darken(0.3)

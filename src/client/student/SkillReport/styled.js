@@ -28,9 +28,9 @@ export const Circle = styled.div`
   height: 12px;
   border-radius: 6px;
   background: ${props =>
-    props.percentage > 30
+    (props.percentage > 30
       ? props.theme.skillReport.yellowColor
-      : props.theme.skillReport.redColor};
+      : props.theme.skillReport.redColor)};
   margin-left: 18px;
 `;
 
@@ -83,6 +83,8 @@ export const IconClose = styled.div`
 `;
 
 export const IconOpen = styled(IconPlus)`
+  width: 16px;
+  height: 16px;
   margin-top: 5px;
   fill: ${props => props.theme.skillReport.expandIconColor};
   @media screen and (max-width: 767px) {
@@ -102,11 +104,11 @@ export const StyledScoreProgress = styled(Progress)`
   .ant-progress-bg {
     height: 16px !important;
     background: ${props =>
-      props.percent >= 50
-        ? props.theme.skillReport.greenColor
-        : props.percent >= 30
+    (props.percent >= 50
+      ? props.theme.skillReport.greenColor
+      : props.percent >= 30
         ? props.theme.skillReport.yellowColor
-        : props.theme.skillReport.redColor};
+        : props.theme.skillReport.redColor)};
   }
 `;
 
@@ -118,10 +120,10 @@ export const StyledProgress = styled(Progress)`
   .ant-progress-bg {
     height: 16px !important;
     background: ${props =>
-      props.percent >= 50
-        ? props.theme.skillReport.greenColor
-        : props.percent >= 30
+    (props.percent >= 50
+      ? props.theme.skillReport.greenColor
+      : props.percent >= 30
         ? props.theme.skillReport.yellowColor
-        : props.theme.skillReport.redColor};
+        : props.theme.skillReport.redColor)};
   }
 `;

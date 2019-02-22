@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import { withTheme } from 'styled-components';
 
 import { FlexContainer } from '@edulastic/common';
-import { IconTrash } from '@edulastic/icons';
-import { greenDark, red } from '@edulastic/colors';
 
 import { Subtitle } from '../../../styled/Subtitle';
 import withAddButton from '../../../components/HOC/withAddButton';
 import QuillSortableList from '../../../components/QuillSortableList';
+
+import { IconTrash } from '../styled/IconTrash';
 
 const List = withAddButton(QuillSortableList);
 
@@ -32,14 +32,7 @@ const Group = ({
   <Fragment>
     <FlexContainer alignItems="baseline" justifyContent="space-between" style={{ width: '100%' }}>
       <Subtitle>{`${groupHeadText}${index + 1}`}</Subtitle>
-      <IconTrash
-        onClick={onRemove(index)}
-        color={greenDark}
-        hoverColor={red}
-        width={20}
-        height={20}
-        style={{ cursor: 'pointer' }}
-      />
+      <IconTrash onClick={onRemove(index)} />
     </FlexContainer>
     <Subtitle
       fontSize={theme.widgets.matchList.subtitleFontSize}

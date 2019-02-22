@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { FlexContainer } from '@edulastic/common';
-import { greenDark } from '@edulastic/colors';
 import { IconLeft } from './IconLeft';
 import { IconRight } from './IconRight';
 import { IconUp } from './IconUp';
@@ -12,7 +11,7 @@ export const FlexWithMargins = styled(FlexContainer)`
   margin-left: ${({ smallSize }) => (smallSize ? 5 : 30)}px;
   align-self: center;
   & ${IconLeft}:hover, ${IconRight}:hover, ${IconUp}:hover, ${IconDown}:hover {
-    color: ${greenDark};
+    color: ${props => props.theme.widgets.sortList.iconArrowHoverColor};
     cursor: pointer;
   }
 `;

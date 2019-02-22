@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { SortableElement } from 'react-sortable-hoc';
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 
-import { IconCheck, IconClose } from '@edulastic/icons';
-import { green, red, textColor } from '@edulastic/colors';
 import { FlexContainer } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
 
@@ -13,9 +13,11 @@ import { Index } from '../styled/Index';
 import { CorrectAnswerItem } from '../styled/CorrectAnswerItem';
 import { QuestionText } from '../styled/QuestionText';
 import { IconWrapper } from '../styled/IconWrapper';
+import { IconCheck } from '../styled/IconCheck';
+import { IconClose } from '../styled/IconClose';
 
 const OrderListReportItem = SortableElement(
-  ({ children, correctText, correct, showAnswers, ind, t }) => (
+  ({ children, correctText, correct, showAnswers, ind, t, theme }) => (
     <div>
       <Container correct={correct}>
         <Text>
@@ -24,13 +26,13 @@ const OrderListReportItem = SortableElement(
             <div dangerouslySetInnerHTML={{ __html: children }} />
           </FlexContainer>
           {correct && (
-            <IconWrapper color={green}>
-              <IconCheck color={green} width={22} height={16} />
+            <IconWrapper color={theme.widgets.orderList.correctIconWrapperColor}>
+              <IconCheck />
             </IconWrapper>
           )}
           {!correct && (
-            <IconWrapper color={red}>
-              <IconClose color={red} width={16} height={16} />
+            <IconWrapper color={theme.widgets.orderList.incorrectIconWrapperColor}>
+              <IconClose />
             </IconWrapper>
           )}
         </Text>
@@ -39,8 +41,8 @@ const OrderListReportItem = SortableElement(
         <CorrectAnswerItem>
           <Text>
             <FlexContainer>
-              <Index color={textColor}>{ind}</Index>
-              <QuestionText style={{ color: textColor }}>
+              <Index color={theme.widgets.orderList.incorrectIndexColor}>{ind}</Index>
+              <QuestionText>
                 <span>{t('component.orderlist.correctanswer')}</span>{' '}
                 <div dangerouslySetInnerHTML={{ __html: correctText }} />
               </QuestionText>
@@ -58,11 +60,18 @@ OrderListReportItem.propTypes = {
   showAnswers: PropTypes.bool,
   correctText: PropTypes.string,
   ind: PropTypes.number.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired
 };
+
 OrderListReportItem.defaultProps = {
   showAnswers: false,
   correctText: ''
 };
 
-export default withNamespaces('assessment')(OrderListReportItem);
+const enhance = compose(
+  withNamespaces('assessment'),
+  withTheme
+);
+
+export default enhance(OrderListReportItem);

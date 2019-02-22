@@ -49,7 +49,7 @@ class SecondLevel extends Component {
             <Button onClick={onShowSource}>
               <ButtonLink
                 color="primary"
-                icon={<IconSource color={option ? white : blue} />}
+                icon={<IconSource color={option ? white : blue} width={16} height={16} />}
                 style={{ color: option ? white : blue }}
               >
                 {t('component.questioneditor.buttonbar.source')}
@@ -58,7 +58,7 @@ class SecondLevel extends Component {
             <Button onClick={onShowSettings}>
               <ButtonLink
                 color="primary"
-                icon={<IconSettings color={option ? white : blue} />}
+                icon={<IconSettings color={option ? white : blue} width={16} height={16} />}
                 style={{ color: option ? white : blue }}
               >
                 {t('component.questioneditor.buttonbar.layout')}
@@ -76,7 +76,7 @@ class SecondLevel extends Component {
             <Button onClick={() => changePreviewTab('check')}>
               <ButtonLink
                 color="primary"
-                icon={<IconCheck color={option ? white : blue} />}
+                icon={<IconCheck color={option ? white : blue} width={16} height={16} />}
                 style={{ color: option ? white : blue }}
               >
                 {t('component.questioneditor.buttonbar.checkanswer')}
@@ -90,6 +90,8 @@ class SecondLevel extends Component {
                   <IconEye
                     color={option ? white : blue}
                     hoverColor={darkBlue}
+                    width={16}
+                    height={16}
                   />
                 )}
               >
@@ -101,7 +103,7 @@ class SecondLevel extends Component {
                 color="primary"
                 active={previewTab === 'clear'}
                 style={{ color: option ? white : blue }}
-                icon={<IconEraseText color={option ? white : blue} />}
+                icon={<IconEraseText color={option ? white : blue} width={16} height={16} />}
               >
                 {t('component.questioneditor.buttonbar.clear')}
               </ButtonLink>

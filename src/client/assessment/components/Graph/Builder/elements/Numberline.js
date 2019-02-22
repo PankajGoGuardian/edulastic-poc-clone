@@ -5,6 +5,22 @@ import { getFraction, toFractionHTML, roundFracIfPossible } from '../fraction';
 
 import '../../common/Fraction.css';
 
+function createMinorTicks(minorCount, majorTicksSorted){
+  const minorTicks = [];
+  const segmentsCount = majorTicksSorted.length - 1;
+  for (let i = 0; i < segmentsCount; i++) {
+    let a = majorTicksSorted[i];
+    const b = majorTicksSorted[i + 1];
+    const seg = Math.abs(a - b);
+    const dist = seg / (minorCount + 1);
+    for (let j = 0; j < minorCount; j++) {
+      a += dist;
+      minorTicks.push(a);
+    }
+  }
+  return minorTicks;
+}
+
 const onHandler = (board, xMin, xMax, settings, lineSettings) => {
   const [x, y] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
   const calcY = lineSettings.yMax - (y / 100 * lineSettings.position);
@@ -19,11 +35,13 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
       firstArrow: settings.leftArrow === true ? { size: 10 } : false,
       lastArrow: settings.rightArrow === true ? { size: 10 } : false,
       strokeColor: '#d6d6d6',
-      highlightStrokeColor: '#d6d6d6'
+      highlightStrokeColor: '#d6d6d6',
+      drawZero: false,
     }
   );
 
-  let { ticksDistance, fractionsFormat } = settings;
+  let { ticksDistance } = settings;
+  const { fractionsFormat, showLabels, labelShowMax, labelShowMin, minorTicks } = settings;
   let fracTicksDistance = null;
   if (isString(ticksDistance) && ticksDistance.indexOf('/') !== -1) {
     fracTicksDistance = getFraction(ticksDistance);
@@ -34,11 +52,15 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
 
 
   newAxis.removeAllTicks();
+  /**
+   * Major ticks
+   * */
   let ticks = [];
   if (ticksDistance === 0) {
     ticks.push(xMin);
     ticks.push(xMax);
   } else if (settings.renderingBase === RENDERING_BASE.ZERO_BASED) {
+    ticks.push(xMin);
     let startPoint = 0;
     if (xMin > 0) {
       startPoint = xMin;
@@ -70,7 +92,6 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
         i -= ticksDistance;
       }
     }
-    ticks.push(xMin);
     ticks.push(xMax);
   } else if (settings.renderingBase === RENDERING_BASE.LINE_MINIMUM_VALUE) {
     let i = xMin;
@@ -81,6 +102,22 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
     ticks.push(xMax);
   }
 
+  /**
+   * Minor ticks
+   * */
+  if (minorTicks) {
+    console.log('ticks', ticks);
+    const minors = createMinorTicks(minorTicks, ticks.sort((a, b) => a - b));
+    console.log('minors', minors);
+    board.$board.create('ticks', [newAxis, minors], {
+      strokeColor: '#d6d6d6',
+      highlightStrokeColor: '#d6d6d6',
+      majorHeight: 10
+    });
+  }
+  /**
+   * Specific points
+   * */
   if (isString(settings.specificPoints)) {
     const tickArr = settings.specificPoints.split(',')
       .map(s => parseFloat(s))
@@ -88,6 +125,9 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
     ticks = union(ticks, tickArr);
   }
 
+  /**
+   * Ticks labels
+   * */
   let labels = ticks.map((t) => {
     let res = null;
     if (Number.isInteger(t)) {
@@ -99,6 +139,7 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
     }
     return res;
   });
+
   if (fracTicksDistance) {
     // round nums to remove dublicates
     ticks = ticks.map(t => roundFracIfPossible(t, fracTicksDistance.denominator));
@@ -106,6 +147,20 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
 
     labels = labels.map(t => toFractionHTML(t, fracTicksDistance.denominator, fractionsFormat));
   }
+
+  // todo: clear the code
+  console.log('labelShowMin', labelShowMin);
+  console.log('labelShowMax', labelShowMax);
+  console.log('labels', labels);
+  if (!labelShowMin) {
+    if (labels[0] !== 0) {
+      labels[0] = ''; // todo: clear the code
+    }
+  }
+  if (!labelShowMax) {
+    labels[labels.length - 1] = '';
+  }
+  console.log('labels', labels);
 
   board.$board.create('ticks', [newAxis, ticks],
     {
@@ -121,8 +176,8 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
       drawZero: false,
       tickEndings: [1, 1],
       majorHeight: 25,
-      minorHeight: 0,
-      drawLabels: true,
+      minorHeight: 15,
+      drawLabels: showLabels,
       ticksDistance,
       label: {
         offset: [0, -15],
@@ -135,6 +190,13 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
       },
       labels
     });
+
+    if (!labelShowMin) {
+      if (labels[0] === 0) {
+        board.$board.removeObject(newAxis.ticks[1].labels[0])
+      }
+    }
+
 
   return newAxis;
 };

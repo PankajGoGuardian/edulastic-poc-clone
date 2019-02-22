@@ -1,23 +1,22 @@
 import styled from 'styled-components';
-import { greenDark, secondaryTextColor } from '@edulastic/colors';
 
 export const Button = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  background: transparent;
-  color: ${secondaryTextColor};
+  background: ${props => props.theme.widgets.hotspot.buttonBgColor};
+  color: ${props => props.theme.widgets.hotspot.buttonColor};
   cursor: pointer;
   user-select: none;
   opacity: ${({ disabled }) => (disabled ? 0.3 : 1)};
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'all')};
   svg {
-    fill: ${secondaryTextColor};
+    fill: ${props => props.theme.widgets.hotspot.buttonSvgColor};
   }
   &:hover {
-    color: ${greenDark};
+    color: ${props => props.theme.widgets.hotspot.buttonHoverColor};
     svg {
-      fill: ${greenDark};
+      fill: ${props => props.theme.widgets.hotspot.buttonHoverSvgColor};
     }
   }
 `;

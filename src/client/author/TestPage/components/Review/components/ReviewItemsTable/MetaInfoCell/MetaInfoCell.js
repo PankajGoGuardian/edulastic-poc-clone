@@ -42,10 +42,10 @@ const MetaInfoCell = ({ data }) => (
           <CategoryTitle>ID:</CategoryTitle> <FirstText>{data._id}</FirstText>
         </div>
         <FlexContainer style={{ marginTop: 2 }}>
-          <IconShare color={greenDark} /> <SecondText>{data.shared}</SecondText>
+          <IconShare color={greenDark} width={16} height={16} /> <SecondText>{data.shared}</SecondText>
         </FlexContainer>
         <FlexContainer style={{ marginTop: 2 }}>
-          <IconHeart color={greenDark} /> <SecondText>{data.likes}</SecondText>
+          <IconHeart color={greenDark} width={16} height={16} /> <SecondText>{data.likes}</SecondText>
         </FlexContainer>
       </FlexContainer>
     </div>

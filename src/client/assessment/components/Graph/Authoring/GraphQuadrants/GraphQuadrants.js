@@ -11,6 +11,7 @@ import {
   Row,
   Col
 } from '../../common/styled_components';
+import { QuestionSection } from '../'
 import GraphToolsParams from '../../components/GraphToolsParams';
 import { setQuestionDataAction } from '../../../../../author/src/actions/question';
 import QuestionTextArea from '../../../QuestionTextArea';
@@ -51,84 +52,90 @@ class GraphQuadrants extends Component {
   );
 
   render() {
-    const { t, graphData } = this.props;
+    const { t, graphData, fillSections, cleanSections } = this.props;
     const { canvas } = graphData;
 
     return (
       <div>
-        <Subtitle>{t('component.graphing.question.composequestion')}</Subtitle>
-        <QuestionTextArea
-          onChange={this.onChangeQuestion}
-          value={graphData.stimulus}
-          placeholder={t('component.graphing.question.enteryourquestion')}
-        />
-        <PaddingDiv top={4} bottom={8}>
-          <Subtitle>{t('component.graphing.graphparameters')}</Subtitle>
-          <Row>
-            <Col paddingRight="2.5em" md={6}>
-              <Label>X min</Label>
-              <StyledTextField
-                width="100%"
-                type="number"
-                name="x_min"
-                value={canvas.x_min}
-                onChange={this.handleCanvasChange}
-                onBlur={this.handleCanvasChange}
-                disabled={false}
-                step={0.1}
-              />
-              <Label>X max</Label>
-              <StyledTextField
-                marginBottom="0"
-                width="100%"
-                type="number"
-                name="x_max"
-                value={canvas.x_max}
-                onChange={this.handleCanvasChange}
-                onBlur={this.handleCanvasChange}
-                disabled={false}
-                step={0.1}
-              />
-            </Col>
-            <Col paddingLeft="2.5em" md={6}>
-              <div>
-                <Label>Y min</Label>
+        <QuestionSection section="main" label="COMPOSE QUESTION" cleanSections={cleanSections} fillSections={fillSections}>
+          <Subtitle>{t('component.graphing.question.composequestion')}</Subtitle>
+          <QuestionTextArea
+            onChange={this.onChangeQuestion}
+            value={graphData.stimulus}
+            placeholder={t('component.graphing.question.enteryourquestion')}
+          />
+        </QuestionSection>
+        <QuestionSection section="main" label="GRAPH PARAMETERS" cleanSections={cleanSections} fillSections={fillSections}>
+          <PaddingDiv top={4} bottom={8}>
+            <Subtitle>{t('component.graphing.graphparameters')}</Subtitle>
+            <Row>
+              <Col paddingRight="2.5em" md={6}>
+                <Label>X min</Label>
                 <StyledTextField
                   width="100%"
                   type="number"
-                  name="y_min"
-                  value={canvas.y_min}
+                  name="x_min"
+                  value={canvas.x_min}
                   onChange={this.handleCanvasChange}
                   onBlur={this.handleCanvasChange}
                   disabled={false}
                   step={0.1}
                 />
-              </div>
-              <div>
-                <Label>Y max</Label>
+                <Label>X max</Label>
                 <StyledTextField
                   marginBottom="0"
                   width="100%"
                   type="number"
-                  name="y_max"
-                  value={canvas.y_max}
+                  name="x_max"
+                  value={canvas.x_max}
                   onChange={this.handleCanvasChange}
                   onBlur={this.handleCanvasChange}
                   disabled={false}
                   step={0.1}
                 />
-              </div>
-            </Col>
-          </Row>
-        </PaddingDiv>
-        <PaddingDiv bottom={4}>
-          <Subtitle>{t('component.graphing.tools')}</Subtitle>
-          <GraphToolsParams
-            options={this.getToolOptions()}
-            toolbar={graphData.toolbar}
-            onChange={this.handleToolsChange}
-          />
-        </PaddingDiv>
+              </Col>
+              <Col paddingLeft="2.5em" md={6}>
+                <div>
+                  <Label>Y min</Label>
+                  <StyledTextField
+                    width="100%"
+                    type="number"
+                    name="y_min"
+                    value={canvas.y_min}
+                    onChange={this.handleCanvasChange}
+                    onBlur={this.handleCanvasChange}
+                    disabled={false}
+                    step={0.1}
+                  />
+                </div>
+                <div>
+                  <Label>Y max</Label>
+                  <StyledTextField
+                    marginBottom="0"
+                    width="100%"
+                    type="number"
+                    name="y_max"
+                    value={canvas.y_max}
+                    onChange={this.handleCanvasChange}
+                    onBlur={this.handleCanvasChange}
+                    disabled={false}
+                    step={0.1}
+                  />
+                </div>
+              </Col>
+            </Row>
+          </PaddingDiv>
+        </QuestionSection>
+        <QuestionSection section="main" label="TOOLS" cleanSections={cleanSections} fillSections={fillSections}>
+          <PaddingDiv bottom={4}>
+            <Subtitle>{t('component.graphing.tools')}</Subtitle>
+            <GraphToolsParams
+              options={this.getToolOptions()}
+              toolbar={graphData.toolbar}
+              onChange={this.handleToolsChange}
+            />
+          </PaddingDiv>
+        </QuestionSection>
       </div>
     );
   }

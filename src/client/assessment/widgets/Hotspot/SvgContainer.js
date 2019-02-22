@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { cloneDeep, isEqual } from 'lodash';
-
-import { lightRed, red, svgMapStrokeColor, svgMapFillColor } from '@edulastic/colors';
+import { withTheme } from 'styled-components';
 
 import {
   genarateEdgesAndAreaArrays,
@@ -23,7 +22,7 @@ import { Text } from './styled/Text';
 
 const circleRadius = 6;
 
-const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHistory }) => {
+const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHistory, theme }) => {
   const [points, setPoints] = useState([]);
   const [areas, setAreas] = useState([]);
   const [cursor, setCursor] = useState({});
@@ -267,9 +266,15 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
     (intersectionState || polygonIntersect) && (selectedPolygon === i || draggingPolygon === i);
 
   const getPolygonFill = i =>
-    (isIntersectedAndActivePolygon(i) ? `${lightRed}50` : svgMapFillColor);
+    (isIntersectedAndActivePolygon(i)
+      ? theme.widgets.hotspot.intersectFillColor
+      : theme.widgets.hotspot.svgMapFillColor
+    );
 
-  const getPolygonStroke = i => (isIntersectedAndActivePolygon(i) ? red : svgMapStrokeColor);
+  const getPolygonStroke = i => (isIntersectedAndActivePolygon(i)
+    ? theme.widgets.hotspot.intersectStrokeColor
+    : theme.widgets.hotspot.svgMapStrokeColor
+  );
 
   return (
     <div
@@ -302,21 +307,15 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
             cx={point.x}
             cy={point.y}
             r={circleRadius}
-            fill={svgMapStrokeColor}
-            stroke={svgMapStrokeColor}
           />
         ))}
 
-        <Polyline
-          stroke={svgMapStrokeColor}
-          points={points.map(point => `${point.x},${point.y}`).join(' ')}
-        />
+        <Polyline points={points.map(point => `${point.x},${point.y}`).join(' ')} />
 
         {points[0] && mouseOn && (
           <Line
             onClick={handleLineClick}
             intersect={intersectionState || polygonIntersect}
-            stroke={svgMapStrokeColor}
             x1={points[points.length - 1].x}
             y1={points[points.length - 1].y}
             x2={cursor.x}
@@ -361,8 +360,6 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
               (selectedPolygon !== i || activeCircle === null) && (
                 <G key={i} transform={`translate(${area[0].x},${area[0].y})`}>
                   <Rect
-                    fill={svgMapStrokeColor}
-                    stroke={svgMapStrokeColor}
                     x={0}
                     y={0}
                     rx={4}
@@ -392,8 +389,6 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
               onMouseUp={handleCircleMouseUp}
               cy={point.y}
               r={circleRadius}
-              fill={svgMapStrokeColor}
-              stroke={svgMapStrokeColor}
             />
           ))}
       </Svg>
@@ -406,7 +401,8 @@ SvgContainer.propTypes = {
   height: PropTypes.number.isRequired,
   imageSrc: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
-  changeHistory: PropTypes.func.isRequired
+  changeHistory: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
-export default SvgContainer;
+export default withTheme(SvgContainer);

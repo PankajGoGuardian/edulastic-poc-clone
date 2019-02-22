@@ -74,8 +74,8 @@ class SideMenu extends Component {
   }
 
   renderIcon = (icon, isSidebarCollapsed) => styled(icon)`
-    width: 22px !important;
-    height: 22px !important;
+    width: 22px;
+    height: 22px;
     fill: rgb(67, 75, 93);
     margin-right: ${() => (isSidebarCollapsed ? '0rem' : '1rem')};
 
@@ -87,7 +87,7 @@ class SideMenu extends Component {
     }
   `;
 
-  handleMenu = item => {
+  handleMenu = (item) => {
     const { history } = this.props;
     if (menuItems[item.key].path !== undefined) {
       history.push(`/${menuItems[item.key].path}`);
@@ -99,7 +99,7 @@ class SideMenu extends Component {
     toggleSideBar();
   };
 
-  handleVisibleChange = flag => {
+  handleVisibleChange = (flag) => {
     this.setState({ isVisible: flag });
   };
 
@@ -121,19 +121,19 @@ class SideMenu extends Component {
     );
 
     const isCollapsed = isPickQuestion || isSidebarCollapsed;
-    const isMobile = windowWidth < 770 ? true : false;
+    const isMobile = windowWidth < 770;
 
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible}>
         <Menu>
-          <Menu.Item key='0' className='removeSelectedBorder'>
+          <Menu.Item key="0" className="removeSelectedBorder">
             <a onClick={logout}>
-              <LogoutIcon type='logout' /> {isCollapsed ? '' : 'SIGN OUT'}
+              <LogoutIcon type="logout" /> {isCollapsed ? '' : 'SIGN OUT'}
             </a>
           </Menu.Item>
-          <Menu.Item key='1' className='removeSelectedBorder'>
-            <Link to='/home/profile'>
-              <IconDropdown type='user' /> {isCollapsed ? '' : 'MY PROFILE'}
+          <Menu.Item key="1" className="removeSelectedBorder">
+            <Link to="/home/profile">
+              <IconDropdown type="user" /> {isCollapsed ? '' : 'MY PROFILE'}
             </Link>
           </Menu.Item>
         </Menu>
@@ -144,20 +144,20 @@ class SideMenu extends Component {
         <SideBar
           collapsed={isCollapsed}
           collapsible
-          breakpoint='md'
+          breakpoint="md"
           onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
           width={isMobile ? windowWidth : '240'}
           collapsedWidth={broken ? '0' : '100'}
-          theme='light'
-          className='sideBarwrapper'
+          theme="light"
+          className="sideBarwrapper"
         >
-          <LogoWrapper className='logoWrapper'>
+          <LogoWrapper className="logoWrapper">
             {broken ? (
               <Col span={3}>
                 <AntIcon
-                  className='mobileCloseIcon'
-                  type='close'
-                  theme='outlined'
+                  className="mobileCloseIcon"
+                  type="close"
+                  theme="outlined"
                   onClick={this.toggleMenu}
                 />
               </Col>
@@ -169,7 +169,7 @@ class SideMenu extends Component {
               <Col span={6} style={{ textAlign: 'right', color: '#1fe3a1' }}>
                 {!isPickQuestion && (
                   <AntIcon
-                    className='trigger'
+                    className="trigger"
                     type={isCollapsed ? 'right' : 'left'}
                     onClick={this.toggleMenu}
                   />
@@ -180,9 +180,9 @@ class SideMenu extends Component {
           <LogoDash />
           <MenuWrapper>
             <Menu
-              theme='light'
+              theme="light"
               defaultSelectedKeys={['1']}
-              mode='inline'
+              mode="inline"
               onClick={item => this.handleMenu(item)}
             >
               {menuItems.map((menu, index) => {
@@ -195,28 +195,28 @@ class SideMenu extends Component {
                 );
               })}
             </Menu>
-            <MenuFooter className='footerBottom'>
-              <QuestionButton className='questionBtn'>
+            <MenuFooter className="footerBottom">
+              <QuestionButton className="questionBtn">
                 <HelpIcon />
                 {isCollapsed ? null : <span>Help Center</span>}
               </QuestionButton>
               <UserInfoButton
                 isVisible={isVisible}
                 isCollapsed={isCollapsed}
-                className='userinfoBtn'
+                className="userinfoBtn"
               >
                 <Dropdown
                   onClick={this.toggleDropdown}
                   overlayStyle={{ position: 'fixed', minWidth: '198px' }}
-                  className='footerDropdown'
+                  className="footerDropdown"
                   overlay={footerDropdownMenu}
                   trigger={['click']}
-                  placement='topCenter'
+                  placement="topCenter"
                   isVisible={isVisible}
                   onVisibleChange={this.handleVisibleChange}
                 >
                   <div>
-                    <img src={Profile} alt='Profile' />
+                    <img src={Profile} alt="Profile" />
                     <div style={{ paddingLeft: 11 }}>
                       {!isCollapsed && (
                         <UserName>{firstName || 'Zack Oliver'}</UserName>
@@ -228,7 +228,7 @@ class SideMenu extends Component {
                     {!isCollapsed && (
                       <IconDropdown
                         style={{ fontSize: 20 }}
-                        className='drop-caret'
+                        className="drop-caret"
                         type={isVisible ? 'caret-up' : 'caret-down'}
                       />
                     )}
@@ -573,13 +573,13 @@ const UserInfoButton = styled.div`
 `;
 
 const Logo = styled(IconHeader)`
-  width: 119px !important;
-  height: 20px !important;
+  width: 119px;
+  height: 20px;
 `;
 
 const LogoCompact = styled(IconLogoCompact)`
-  width: 25px !important;
-  height: 25px !important;
+  width: 25px;
+  height: 25px;
   margin: 10px;
   fill: #0eb08d;
   &:hover {
@@ -589,8 +589,8 @@ const LogoCompact = styled(IconLogoCompact)`
 
 const HelpIcon = styled(IconQuestion)`
   fill: #1fe3a1;
-  width: 25px !important;
-  height: 22px !important;
+  width: 25px;
+  height: 22px;
 `;
 
 const IconDropdown = styled(AntIcon)`

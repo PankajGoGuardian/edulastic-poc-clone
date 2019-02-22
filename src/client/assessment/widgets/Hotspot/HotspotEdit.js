@@ -5,15 +5,13 @@ import { cloneDeep } from 'lodash';
 import Dropzone from 'react-dropzone';
 import ColorPicker from 'rc-color-picker';
 import { Row, Col } from 'antd';
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 
 import { withNamespaces } from '@edulastic/localization';
 import { Paper, Tabs, Tab, Button, FlexContainer, Image } from '@edulastic/common';
-import { white, red, blue } from '@edulastic/colors';
-import { IconPlus, IconClose } from '@edulastic/icons';
 import { fileApi } from '@edulastic/api';
 
-import { compose } from 'redux';
-import { withTheme } from 'styled-components';
 import QuestionTextArea from '../../components/QuestionTextArea';
 import CorrectAnswers from '../../components/CorrectAnswers';
 import DropZoneToolbar from '../../components/DropZoneToolbar/index';
@@ -28,6 +26,8 @@ import LocalColorPickers from './components/LocalColorPickers';
 import AreasContainer from './AreasContainer';
 import HotspotPreview from './HotspotPreview';
 import { StyledCheckbox } from './styled/StyledCheckbox';
+import { IconPlus } from './styled/IconPlus';
+import { IconClose } from './styled/IconClose';
 import AdvancedOptions from '../SortList/components/AdvancedOptions';
 
 const OptionsList = withPoints(HotspotPreview);
@@ -190,7 +190,7 @@ const HotspotEdit = ({ item, setQuestionData, t, theme }) => {
         minWidth: 70,
         minHeight: 25
       }}
-      icon={<IconPlus color={white} width={10} height={10} />}
+      icon={<IconPlus />}
       onClick={handleAddAttr}
       color="primary"
       variant="extendedFab"
@@ -202,13 +202,7 @@ const HotspotEdit = ({ item, setQuestionData, t, theme }) => {
       <span>
         {t('component.hotspot.local')} {index + 1}
       </span>
-      <IconClose
-        color={blue}
-        hoverColor={red}
-        width={10}
-        height={10}
-        onClick={onCloseAttrTab(index)}
-      />
+      <IconClose onClick={onCloseAttrTab(index)} />
     </FlexContainer>
   );
 

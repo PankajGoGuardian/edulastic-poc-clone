@@ -137,13 +137,13 @@ class MetaInfoCell extends Component {
           </CategoryDiv>
           <CategoryDiv>
             <FlexContainer>
-              <IconShare color={greenDark} />{' '}
+              <IconShare color={greenDark} width={16} height={16} />{' '}
               <SecondText>{data.shared}</SecondText>
             </FlexContainer>
           </CategoryDiv>
           <CategoryDiv style={{ marginRight: 10 }}>
             <FlexContainer>
-              <IconHeart color={greenDark} />{' '}
+              <IconHeart color={greenDark} width={16} height={16} />{' '}
               <SecondText>{data.likes}</SecondText>
             </FlexContainer>
           </CategoryDiv>
@@ -202,11 +202,11 @@ class MetaInfoCell extends Component {
                   <FirstText>{data._id}</FirstText>
                 </div>
                 <FlexContainer>
-                  <IconShare color={greenDark} />{' '}
+                  <IconShare color={greenDark} width={16} height={16} />{' '}
                   <SecondText>{data.shared}</SecondText>
                 </FlexContainer>
                 <FlexContainer>
-                  <IconHeart color={greenDark} />{' '}
+                  <IconHeart color={greenDark} width={16} height={16} />{' '}
                   <SecondText>{data.likes}</SecondText>
                 </FlexContainer>
               </FlexContainer>

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-import { lightRed, red, svgMapFillColor, svgMapStrokeColor } from '@edulastic/colors';
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
 
 import { setQuestionDataAction } from '../../../author/src/actions/question';
 
@@ -13,7 +13,7 @@ import { Rect } from './styled/Rect';
 import { Text } from './styled/Text';
 
 const SvgDeleteContainer = React.memo(
-  ({ itemData, width, height, imageSrc, setQuestionData, history }) => {
+  ({ itemData, width, height, imageSrc, setQuestionData, history, theme }) => {
     const [areas, setAreas] = useState([]);
 
     const [overPolygon, setOverPolygon] = useState(null);
@@ -58,8 +58,12 @@ const SvgDeleteContainer = React.memo(
                 onClick={handleDelete(i)}
                 onMouseEnter={handleMouseOn(i)}
                 onMouseLeave={handleMouseLeave}
-                fill={i === overPolygon ? `${lightRed}50` : svgMapFillColor}
-                stroke={i === overPolygon ? red : svgMapStrokeColor}
+                fill={i === overPolygon
+                  ? theme.widgets.hotspot.intersectFillColor
+                  : theme.widgets.hotspot.svgMapFillColor}
+                stroke={i === overPolygon
+                  ? theme.widgets.hotspot.intersectStrokeColor
+                  : theme.widgets.hotspot.svgMapStrokeColor}
                 points={area.map(point => `${point.x},${point.y}`).join(' ')}
               />
             ))}
@@ -69,8 +73,6 @@ const SvgDeleteContainer = React.memo(
             areas.map((area, i) => (
               <G transform={`translate(${area[0].x},${area[0].y})`}>
                 <Rect
-                  fill={svgMapStrokeColor}
-                  stroke={svgMapStrokeColor}
                   x={0}
                   y={0}
                   rx={4}
@@ -95,10 +97,16 @@ SvgDeleteContainer.propTypes = {
   imageSrc: PropTypes.string.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   itemData: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
-export default connect(
-  null,
-  { setQuestionData: setQuestionDataAction }
-)(SvgDeleteContainer);
+const enhance = compose(
+  withTheme,
+  connect(
+    null,
+    { setQuestionData: setQuestionDataAction }
+  )
+);
+
+export default enhance(SvgDeleteContainer);

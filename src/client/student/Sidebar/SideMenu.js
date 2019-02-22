@@ -76,7 +76,7 @@ class SideMenu extends Component {
     };
   }
 
-  handleMenu = e => {
+  handleMenu = (e) => {
     const { history, windowWidth } = this.props;
     if (menuItems[e.key].path !== undefined) {
       history.push(`/${menuItems[e.key].path}`);
@@ -91,7 +91,7 @@ class SideMenu extends Component {
     toggleSideBar();
   };
 
-  handleVisibleChange = flag => {
+  handleVisibleChange = (flag) => {
     this.setState({ isVisible: flag });
   };
 
@@ -108,8 +108,8 @@ class SideMenu extends Component {
   };
 
   renderIcon = (icon, isSidebarCollapsed) => styled(icon)`
-    width: 22px !important;
-    height: 22px !important;
+    width: 22px;
+    height: 22px;
     fill: rgb(67, 75, 93);
     margin-right: ${() => (isSidebarCollapsed ? '0rem' : '1rem')};
     .ant-menu-item-active > & {
@@ -214,7 +214,7 @@ class SideMenu extends Component {
               </QuestionButton>
 
               <UserInfoButton
-                data-cy='userInfo'
+                data-cy="userInfo"
                 isVisible={isVisible}
                 isSidebarCollapsed={isSidebarCollapsed}
                 className="userinfoBtn"
@@ -393,7 +393,7 @@ const Menu = styled(AntMenu)`
       color: ${props => props.theme.sideMenu.menuItemLinkColor};
       &.ant-menu-item-selected {
         background-color: ${props =>
-          props.theme.sideMenu.menuSelectedItemBgColor};
+    props.theme.sideMenu.menuSelectedItemBgColor};
         color: ${props => props.theme.sideMenu.menuSelectedItemLinkColor};
         border-left: 3px solid
           ${props => props.theme.sideMenu.selectedMenuItemBorderLeft};
@@ -628,13 +628,13 @@ const DropdownBtn = styled(Dropdown)`
 `;
 
 const Logo = styled(IconHeader)`
-  width: 119px !important;
-  height: 20px !important;
+  width: 119px;
+  height: 20px;
 `;
 
 const LogoCompact = styled(IconLogoCompact)`
-  width: 25px !important;
-  height: 25px !important;
+  width: 25px;
+  height: 25px;
   margin: 10px;
   fill: #0eb08d;
   &:hover {
@@ -644,8 +644,8 @@ const LogoCompact = styled(IconLogoCompact)`
 
 const HelpIcon = styled(IconQuestion)`
   fill: ${props => props.theme.sideMenu.helpIconColor};
-  width: 25px !important;
-  height: 22px !important;
+  width: 25px;
+  height: 22px;
 `;
 
 const IconDropdown = styled(AntIcon)`

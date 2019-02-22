@@ -17,7 +17,7 @@ import TestItemPreview from '../../../../../../assessment/components/TestItemPre
 import MetaInfoCell from '../ReviewItemsTable/MetaInfoCell/MetaInfoCell';
 
 const DragHandle = SortableHandle(() => (
-  <IconList color={greenDark} style={{ cursor: 'grab' }} />
+  <IconList color={greenDark} style={{ cursor: 'grab' }} width={16} height={16} />
 ));
 
 const SortableItem = SortableElement(
@@ -45,7 +45,7 @@ const SortableItem = SortableElement(
 
         <FlexContainer>
           <PreviewContainer onClick={() => onPreview(metaInfoData.id)}>
-            <IconPreview color={blue} />{' '}
+            <IconPreview color={blue} width={16} height={16} />{' '}
             <span
               style={{
                 textTransform: 'uppercase',

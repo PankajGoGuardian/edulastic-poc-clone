@@ -8,7 +8,7 @@ const Tab = ({ label, onClick, active, style, editable, close, onClose, onChange
   const inputTab = (
     <EditableTab>
       <Input type="text" value={label} onChange={onChange} />
-      <IconPencilEdit color={greenDark} />
+      <IconPencilEdit color={greenDark} width={16} height={16} />
     </EditableTab>
   );
   const closeButton = (

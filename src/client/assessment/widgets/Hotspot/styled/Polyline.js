@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Polyline = styled.polyline`
   fill: none;
-  stroke: ${({ stroke }) => stroke};
+  stroke: ${({ theme }) => theme.widgets.hotspot.svgMapStrokeColor};
   stroke-width: 2px;
   stroke-opacity: 1;
   stroke-dasharray: none;

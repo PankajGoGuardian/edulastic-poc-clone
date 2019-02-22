@@ -1,5 +1,3 @@
-import { separatorColor } from '@edulastic/colors';
-
 export const themes = {
   default: {
     common: {
@@ -402,6 +400,7 @@ export const themes = {
         wordCountLimitedColor: '#ee1658', // red
         quillBgColor: 'transparent',
         quillLimitedBgColor: '#fbdfe7', // lightRed
+        qlBlocksFontFamily: 'Arial',
         qlBlocksBgColor: '#fff', // white
         qlBlocksBgActiveColor: '#12a6e8', // blue
         qlBlocksColor: '#000', // black
@@ -411,26 +410,235 @@ export const themes = {
         dragHandleColor: '#1fe3a1', // green
         sortableItemFontSize: '16px'
       },
-      matchList: {
+      shortText: {
         subtitleFontSize: '13px',
         subtitleColor: '#434b5d', // secondaryTextColor
-        previewSubtitleColor: '#4aac8b' // greenDark
+        correctInputBgColor: '#e1fbf2', // lightGreen
+        incorrectInputBgColor: '#fbdfe7', // lightRed
+        smallStimFontSize: '14px',
+        smallStimFontWeight: '400',
+        smallStimBoldFontWeight: '600'
+      },
+      formulaEssay: {
+        instructorStimulusBgColor: '#93d8f7' // lightBlue
+      },
+      mathFormula: {
+        inputColor: '#fff',
+        inputCorrectColor: '#e1fbf2',
+        inputIncorrectColor: '#fce0e8',
+        iconTrashColor: '#4aac8b', // greenDark
+        iconTrashHoverColor: '#ee1658', // red
+        quillBorderColor: '#dfdfdf', // grey
+        iconCheckColor: '#1fe3a1', // green
+        iconCloseColor: '#ee1658', // red
+        iconWrapperBgColor: 'transparent',
+        answerMethodContainerBorderColor: '#dfdfdf', // grey
+        answerWrapperBgColor: '#93d8f7', // lightBlue
+        answerBgColor: '#f9f9f9' // lightGrey
       },
       highlightImage: {
         subtitleFontSize: '13px',
-        subtitleColor: '#434b5d' // secondaryTextColor
-      },
-      shortText: {
-        subtitleFontSize: '13px',
-        subtitleColor: '#434b5d' // secondaryTextColor
+        subtitleColor: '#434b5d', // secondaryTextColor
+        textFontSize: '14px',
+        textFontWeight: '600',
+        styledSelectBgColor: 'transparent',
+        containerBgColor: '#e6e6e633', // dashBorderColorOpacity
+        containerBorderColor: '#e6e6e6', // dashBorderColor
+        buttonBgColor: 'transparent',
+        buttonColor: '#434b5d', // secondaryTextColor
+        buttonHoverColor: '#4aac8b', // greenDark
+        buttonSvgColor: '#434b5d', // secondaryTextColor
+        buttonHoverSvgColor: '#4aac8b', // greenDark
+        iconTrashColor: '#4aac8b', // greenDark
+        iconTrashHoverColor: '#ee1658' // red
       },
       shading: {
         subtitleFontSize: '13px',
-        subtitleColor: '#434b5d' // secondaryTextColor
+        subtitleColor: '#434b5d', // secondaryTextColor
+        liIconFontSize: '20px',
+        liIconFontFamily: 'FontAwesome',
+        liIconColor: '#fff', // white
+        liBorderColor: 'rgba(0, 176, 255, 1)', // svgMapStrokeColor
+        liBorderHoverColor: '#434b5d', // secondaryTextColor
+        correctLiBgColor: '#1fe3a1', // green
+        incorrectLiBgColor: '#ee1658', // red
+        lockedLiBgColor: 'rgba(0, 176, 255, 0.19)', // svgMapFillColor
+        liBgColor: 'rgba(0, 176, 255, 0.19)', // svgMapFillColor
+        liBgHoverColor: 'transparent'
       },
       hotspot: {
         subtitleFontSize: '13px',
-        subtitleColor: '#434b5d' // secondaryTextColor
+        subtitleColor: '#434b5d', // secondaryTextColor
+        svgMapFillColor: 'rgba(0, 176, 255, 0.19)', // svgMapFillColor
+        svgMapStrokeColor: 'rgba(0, 176, 255, 1)', // svgMapStrokeColor
+        intersectStrokeColor: '#ee1658', // red
+        intersectFillColor: '#fbdfe750',
+        iconPlusColor: '#fff', // white
+        iconCloseColor: '#12a6e8', // blue
+        iconCloseHoverColor: '#ee1658', // red
+        iconDrawColor: '#4aac8b', // greenDark
+        iconTrashColor: '#4aac8b', // greenDark
+        textFontFamily: 'sans-serif',
+        textFontWeight: '600',
+        textFontSize: '14px',
+        textFillColor: '#fff', // white
+        sideBarBgColor: '#e6e6e633', // dashBorderColorOpacity
+        containerBgColor: '#e6e6e633', // dashBorderColorOpacity
+        containerBorderColor: '#e6e6e6', // dashBorderColor
+        withShadowButtonActiveBgColor: '#fff', // white
+        withShadowButtonBgColor: 'transparent',
+        withShadowButtonShadowColor: 'rgba(0, 0, 0, 0.06)',
+        buttonBgColor: 'transparent',
+        buttonColor: '#434b5d', // secondaryTextColor
+        buttonHoverColor: '#4aac8b', // greenDark
+        buttonSvgColor: '#434b5d', // secondaryTextColor
+        buttonHoverSvgColor: '#4aac8b', // greenDark
+        areaTextFontWeight: '600',
+        areaTextFontSize: '14px'
+      },
+      tokenHighlight: {
+        previewSmallFontSize: '11px',
+        previewFontSize: '14px',
+        correctResultBgColor: '#e1fbf2', // lightGreen
+        incorrectResultBgColor: '#fbdfe7', // lightRed
+        correctResultBorderColor: '#1fe3a1', // green
+        incorrectResultBorderColor: '#ee1658', // red
+        modeButtonColor: '#fff', // white
+        modeButtonBorderColor: '#12a6e8', // blue
+        modeButtonActiveBorderColor: '#1fe3a1', // green
+        modeButtonBgColor: '#12a6e8', // blue
+        modeButtonActiveBgColor: '#1fe3a1', // green
+        containerBgColor: '#f9f9f9' // lightGrey
+      },
+      matchList: {
+        subtitleFontSize: '13px',
+        subtitleColor: '#434b5d', // secondaryTextColor
+        previewSubtitleColor: '#4aac8b', // greenDark
+        dragItemBgColor: '#fff', // white
+        dragItemCorrectBgColor: '#e1fbf2', // lightGreen
+        dragItemIncorrectBgColor: '#fbdfe7', // lightRed
+        dragItemBorderColor: '#e6e6e6', // dashBorderColor
+        dragItemColor: '#444444', // mainTextColor
+        dragItemFontWeight: '600',
+        groupSeparatorBorderColor: '#d6d0d0', // separatorColor
+        separatorBorderColor: '#434b5d', // secondaryTextColor
+        separatorBgColor: '#434b5d', // secondaryTextColor
+        listItemFontWeight: '600',
+        listItemColor: '#444444', // mainTextColor
+        listItemBorderColor: '#e6e6e6', // dashBorderColor
+        indexCorrectBgColor: '#1fe3a1', // green
+        indexIncorrectBgColor: '#ee1658', // red
+        indexColor: '#fff', // white
+        indexFontWeight: '600',
+        indexFontSize: '14px',
+        corTitleFontWeight: '600',
+        iconTrashColor: '#4aac8b', // greenDark
+        iconTrashHoverColor: '#ee1658', // red
+        iconCheckColor: '#1fe3a1', // green
+        iconCloseColor: '#ee1658' // red
+      },
+      matrixChoice: {
+        quillBorderColor: 'rgb(223, 223, 223)',
+        inlineLabelColor: '#4aac8b', // greenDark
+        correctCellInputWrapperBgColor: '#e1fbf2', // lightGreen
+        incorrectCellInputWrapperBgColor: '#fbdfe7', // lightRed
+        tableStyledHeaderColor: '#4aac8b', // greenDark
+        styledTableBorderColor: '#e8e8e8',
+        styledTableThBgColor: '#fff' // white
+      },
+      multipleChoice: {
+        iconPlusColor: '#fff', // white
+        multiChoiceContentFontSize: '13px',
+        multiChoiceContentFontWeight: '600',
+        labelBorderColor: 'transparent',
+        labelBorderHoverColor: 'lightgrey',
+        labelCheckedBorderColor: '#c3c055',
+        labelCheckedBgColor: '#fcfbd4',
+        labelRightBorderColor: '#1fe3a1', // green
+        labelRightBgColor: '#1fe3a11e',
+        labelWrongBorderColor: '#ee1658',
+        labelWrongBgColor: '#ee16581e',
+        labelIconFontSize: '18px',
+        labelIconCheckColor: '#1fe3a1', // green
+        labelIconTimesColor: '#ee1658',
+        checkboxContainerBorderColor: '#1fe3a1', // green
+        checkboxContainerBgColor: 'transparent',
+        checkboxContainerSmallFontSize: '15px',
+        checkboxContainerFontSize: '20px',
+        checkboxContainerFontWeight: '700',
+        checkboxContainerColor: '#444444',
+        checkboxContainerCheckedColor: 'white',
+        checkboxContainerCheckedBgColor: '#1fe3a1', // green
+        iconCheckColor: '#1fe3a1', // green
+        iconCloseColor: '#ee1658' // red
+      },
+      orderList: {
+        textBorderColor: '#dfdfdf', // grey
+        textSmallFontSize: '13px',
+        textFontSize: '16px',
+        questionTextFontSize: '16px',
+        questionTextColor: '#878282', // textColor
+        indexFontSize: '26px',
+        indexFontWeight: '600',
+        indexColor: '#444444', // mainTextColor
+        incorrectIndexColor: '#878282', // textColor
+        iconWrapperFontSize: '24px',
+        correctAnswerItemBgColor: '#dfdfdf', // grey
+        correctAnswerItemBorderColor: '#878282', // textColor
+        correctContainerBgColor: '#e1fbf2', // lightGreen
+        incorrectContainerBgColor: '#fbdfe7', // lightRed
+        correctContainerBorderColor: '#1fe3a1', // green
+        incorrectContainerBorderColor: '#ee1658', // red
+        correctIconWrapperColor: '#1fe3a1', // green
+        incorrectIconWrapperColor: '#ee1658', // red
+        iconCheckColor: '#1fe3a1', // green
+        iconCloseColor: '#ee1658', // red
+        dragHandleBorderColor: '#dfdfdf', // grey
+        dragHandleIconContainerColor: '#1fe3a1', // green
+        dragHandleIconContainerHoverColor: '#4aac8b', // greenDark
+        dragHandleIconContainerSmallFontSize: '14px',
+        dragHandleIconContainerFontSize: '25px'
+      },
+      sortList: {
+        titleFontWeight: '600',
+        titleFontSize: '13px',
+        titleColor: '#434b5d', // secondaryTextColor
+        iconArrowColor: '#1fe3a1', // green
+        iconArrowHoverColor: '#4aac8b', // greenDark
+        iconArrowSmallFontSize: '10px',
+        iconArrowFontSize: '20px',
+        correctAnswersItemBgColor: '#fff', // white
+        correctAnswersItemFontWeight: '600',
+        correctAnswersIndexBgColor: '#00b0ff', // mainBlueColor
+        correctAnswersIndexColor: '#fff', // white
+        dragItemActiveBgColor: '#dfdfdf', // grey
+        dragItemBgColor: 'transparent',
+        dragItemWithIndexFontSize: '26px',
+        dragItemWithIndexFontWeight: '600',
+        dragItemTextEmptyFontSize: '16px',
+        dragItemTextEmptySmallFontSize: '13px',
+        dragItemCorrectTextBorderColor: '#1fe3a1', // green
+        dragItemIncorrectTextBorderColor: '#ee1658', // red
+        dragItemCorrectTextBgColor: '#e1fbf2', // lightGreen
+        dragItemIncorrectTextBgColor: '#fbdfe7', // lightRed
+        dragItemTextFontSize: '16px',
+        dragItemTextSmallFontSize: '13px',
+        dragItemContainerBorderColor: '#dfdfdf', // grey
+        iconCheckColor: '#1fe3a1', // green
+        iconCloseColor: '#ee1658', // red
+        styledDragHandleBorderColor: '#dfdfdf', // grey
+        flexCenterFontWeight: '600',
+        dragHandleContainerColor: '#1fe3a1', // green
+        dragHandleContainerHoverColor: '#4aac8b', // greenDark
+        dragHandleContainerSmallFontSize: '14px',
+        dragHandleContainerFontSize: '25px',
+        hrBorderColor: '#dfdfdf' // grey
+      },
+      passage: {
+        quillBorderColor: '#d9d9d9',
+        instructorStimulusBgColor: '#93d8f7', // lightBlue
+        headingFontSize: '22px',
+        headingFontWeight: '700'
       }
     }
   }

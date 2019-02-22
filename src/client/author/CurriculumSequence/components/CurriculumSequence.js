@@ -4,6 +4,7 @@ import { compose } from 'redux';
 import { uniqueId } from 'lodash';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import * as moment from 'moment';
 import { Button, Modal, Input, Cascader, Radio, Icon } from 'antd';
 import { FlexContainer } from '@edulastic/common';
 import { white, green, mainBlueColor, greenSecondary, largeDesktopWidth, desktopWidth, mobileWidth } from '@edulastic/colors';
@@ -13,12 +14,25 @@ import selectContentIcon from '../assets/select-content.svg';
 import Curriculum from './Curriculum';
 import ShareIcon from '../assets/share-button.svg';
 import SelectContent from './SelectContent';
+import Assign from '../../TestPage/components/Assign';
 import {
   changeGuideAction,
   setGuideAction,
   setPublisherAction,
-  saveGuideAlignmentAction
+  saveGuideAlignmentAction,
+  setSelectedItemsForAssignAction,
+  setDataForAssignAction,
+  createAssignmentAction,
+  saveCurriculumSequenceAction,
+  addNewUnitToDestinationAction
 } from '../ducks';
+import EditModal from '../../TestPage/components/Assign/components/EditModal/EditModal';
+// import { fetchGroupsAction } from '../../TestPage/components/Assign/ducks';
+import {
+  fetchGroupsAction,
+  getGroupsSelector,
+  fetchMultipleGroupMembersAction
+} from '../../sharedDucks/groups';
 
 
 /** @typedef {object} ModuleData
@@ -31,6 +45,7 @@ import {
 * @property {String} standards
 * @property {String} type
 * @property {boolean} assigned
+* @property {String} testId
 */
 
 /** @typedef {object} CreatedBy
@@ -61,6 +76,7 @@ import {
 * @property {String} status
 * @property {String} thumbnail
 * @property {String} title
+* @property {String} type
 * @property {String} updatedDate
 */
 
@@ -79,7 +95,7 @@ import {
 * @property {CurriculumSequenceType} destinationCurriculumSequence
 * @property {CurriculumSequenceType} sourceCurriculumSequence
 * @property {CurriculumSequenceType[]} curriculumList
-* @property {function} onSave
+* @property {function} saveCurriculumSequence
 * @property {function} addNewUnitToDestination
 * @property {function} onDrop
 * @property {function} onBeginDrag
@@ -92,9 +108,12 @@ import {
 * @property {function} setGuide
 * @property {function} saveGuideAlignment
 * @property {boolean} isContentExpanded
+* @property {function} setSelectedItemsForAssign
+* @property {any[]} selectedItemsForAssign
+* @property {function} createAssignment
+* @property {function} fetchGroups
+* @property {import('./ducks').AssignData} dataForAssign
 */
-
-// NOTE: primary theme color is different than in the screen design
 
 const EUREKA_PUBLISHER = 'Eureka Math';
 const TENMARKS_PUBLISHER = 'TenMarks';
@@ -110,11 +129,21 @@ class CurriculumSequence extends Component {
     value: EUREKA_PUBLISHER,
     /** @type {Module | {}} */
     newUnit: {},
-    selectedGuide: ''
+    selectedGuide: '',
+    assignModal: false,
+    assignModalData: {
+      startDate: moment(),
+      endDate: moment(),
+      openPolicy: 'Automatically on Start Date',
+      closePolicy: 'Automatically on Due Date',
+      class: [],
+      specificStudents: false
+    }
   }
 
   componentDidMount() {
-    const { setPublisher, publisher } = this.props;
+    const { setPublisher, publisher, fetchGroups } = this.props;
+    fetchGroups();
     setPublisher(publisher);
   }
 
@@ -126,8 +155,9 @@ class CurriculumSequence extends Component {
 
 
   handleSaveClick = (evt) => {
+    const { saveCurriculumSequence } = this.props;
     evt.preventDefault();
-    this.props.onSave();
+    saveCurriculumSequence();
   }
 
   handleAddUnitOpen = () => {
@@ -177,8 +207,6 @@ class CurriculumSequence extends Component {
     const afterUnitId = newUnit.afterUnitId;
     delete newUnit.afterUnitId;
 
-    newUnit.id = uniqueId(afterUnitId.substr(0, afterUnitId.length - 2));
-
     addNewUnitToDestination(afterUnitId, newUnit);
 
     this.setState({ newUnit: {}, addUnit: false });
@@ -208,12 +236,40 @@ class CurriculumSequence extends Component {
   render() {
     const largeDesktopWidthValue = Number(largeDesktopWidth.split('px')[0]);
     const desktopWidthValue = Number(desktopWidth.split('px')[0]);
-    const { onNewUnitNameChange, onUnitAfterIdChange, onGuideChange } = this;
+    const { onNewUnitNameChange, onUnitAfterIdChange, onGuideChange, updateAssignData } = this;
     const { addUnit, addCustomContent, newUnit, curriculumGuide } = this.state;
-    const { expandedModules, onCollapseExpand, curriculumList, destinationCurriculumSequence, sourceCurriculumSequence, addContentToCurriculumSequence, onSelectContent, windowWidth, onSourceCurriculumSequenceChange, selectContent, onDrop, onBeginDrag, curriculumGuides, publisher, guide, isContentExpanded } = this.props;
+    const {
+      expandedModules,
+      onCollapseExpand,
+      curriculumList,
+      destinationCurriculumSequence,
+      sourceCurriculumSequence,
+      onSelectContent,
+      windowWidth,
+      onSourceCurriculumSequenceChange,
+      selectContent,
+      onDrop,
+      onBeginDrag,
+      curriculumGuides,
+      publisher,
+      guide,
+      isContentExpanded,
+      assignModal,
+      setSelectedItemsForAssign,
+      group,
+      createAssignment,
+      selectedItemsForAssign,
+      dataForAssign,
+      setDataForAssign,
+      saveCurriculumSequence
+    } = this.props;
+
+    const {
+      handleSaveClick
+    } = this;
 
     // Options for add unit
-    const options1 = destinationCurriculumSequence.modules.map((module) => ({ value: module.id, label: module.name }))
+    const options1 = destinationCurriculumSequence.modules.map((module) => ({ value: module.id, label: module.name }));
 
     // TODO: change options2 to something more meaningful
     const options2 = [{ value: 'Lesson', label: 'Lesson' }, { value: 'Lesson 2', label: 'Lesson 2' }];
@@ -228,9 +284,20 @@ class CurriculumSequence extends Component {
     // Module progress
     const totalModules = destinationCurriculumSequence.modules.length;
     const modulesCompleted = destinationCurriculumSequence.modules.filter(m => m.completed === true).length;
+    const isAssignModalVisible = selectedItemsForAssign && selectedItemsForAssign.length > 0;
 
     return (
       <CurriculumSequenceWrapper>
+        <EditModal
+          visible={isAssignModalVisible}
+          title="New Assignment"
+          onOk={() => createAssignment(dataForAssign)}
+          onCancel={() => setSelectedItemsForAssign(null)}
+          onClose={() => setSelectedItemsForAssign(null)}
+          modalData={dataForAssign}
+          setModalData={setDataForAssign}
+          group={group}
+        />
         <Modal
           visible={addUnit}
           title="Add Unit"
@@ -340,7 +407,7 @@ class CurriculumSequence extends Component {
           </ShareButtonStyle>
           <SaveButtonStyle windowWidth={windowWidth}>
             <Button type="primary">
-              <SaveButtonText onClick={this.handleSaveClick}>{windowWidth > desktopWidthValue ? 'Save Changes' : 'Save'}</SaveButtonText>
+              <SaveButtonText onClick={handleSaveClick}>{windowWidth > desktopWidthValue ? 'Save Changes' : 'Save'}</SaveButtonText>
             </Button>
           </SaveButtonStyle>
         </CurriculumHeader>
@@ -381,6 +448,7 @@ class CurriculumSequence extends Component {
         <Wrapper active={isContentExpanded}>
           {destinationCurriculumSequence && (
             <Curriculum
+              key={destinationCurriculumSequence._id}
               padding={selectContent}
               curriculum={destinationCurriculumSequence}
               expandedModules={expandedModules}
@@ -390,9 +458,9 @@ class CurriculumSequence extends Component {
           )}
           {isSelectContent && (
             <SelectContent
+              key={sourceCurriculumSequence._id}
               destinationCurriculum={destinationCurriculumSequence}
               curriculumList={curriculumList}
-              addContentToCurriculumSequence={addContentToCurriculumSequence}
               curriculum={sourceCurriculumSequence}
               onCurriculumSequnceChange={onSourceCurriculumSequenceChange}
               windowWidth={windowWidth}
@@ -401,6 +469,7 @@ class CurriculumSequence extends Component {
             />
           )}
         </Wrapper>
+        <Assign />
       </CurriculumSequenceWrapper>
     );
   }
@@ -417,7 +486,8 @@ CurriculumSequence.propTypes = {
   curriculumGuides: PropTypes.array,
   setPublisher: PropTypes.func.isRequired,
   setGuide: PropTypes.func.isRequired,
-  saveGuideAlignment: PropTypes.func.isRequired
+  saveGuideAlignment: PropTypes.func.isRequired,
+  fetchGroups: PropTypes.func.isRequired
 };
 
 CurriculumSequence.defaultProps = {
@@ -795,30 +865,30 @@ const HeaderTitle = styled.div`
   color: ${white}
 `;
 
-const mapDispatchToProps = dispatch => ({
-  onGuideChange(id) {
-    dispatch(changeGuideAction(id));
-  },
-  setPublisher(name) {
-    dispatch(setPublisherAction(name));
-  },
-  setGuide(id) {
-    dispatch(setGuideAction(id));
-  },
-  saveGuideAlignment() {
-    dispatch(saveGuideAlignmentAction());
-  }
-});
-
 const enhance = compose(
   connect(
-    ({ curriculumSequence }) => ({
-      curriculumGuides: curriculumSequence.guides,
-      publisher: curriculumSequence.selectedPublisher,
-      guide: curriculumSequence.selectedGuide,
-      isContentExpanded: curriculumSequence.isContentExpanded
+    state => ({
+      curriculumGuides: state.curriculumSequence.guides,
+      publisher: state.curriculumSequence.selectedPublisher,
+      guide: state.curriculumSequence.selectedGuide,
+      isContentExpanded: state.curriculumSequence.isContentExpanded,
+      selectedItemsForAssign: state.curriculumSequence.selectedItemsForAssign,
+      dataForAssign: state.curriculumSequence.dataForAssign,
+      group: getGroupsSelector(state)
     }),
-    mapDispatchToProps
+    {
+      onGuideChange: changeGuideAction,
+      setPublisher: setPublisherAction,
+      setGuide: setGuideAction,
+      saveGuideAlignment: saveGuideAlignmentAction,
+      setSelectedItemsForAssign: setSelectedItemsForAssignAction,
+      fetchGroups: fetchGroupsAction,
+      fetchMultipleGroupMembers: fetchMultipleGroupMembersAction,
+      setDataForAssign: setDataForAssignAction,
+      createAssignment: createAssignmentAction,
+      saveCurriculumSequence: saveCurriculumSequenceAction,
+      addNewUnitToDestination: addNewUnitToDestinationAction
+    }
   )
 );
 

@@ -5,14 +5,14 @@ import { compose } from 'redux';
 import { message } from 'antd';
 import { withWindowSizes } from '@edulastic/common';
 import { withNamespaces } from '@edulastic/localization';
-import { cloneDeep } from 'lodash';
 import CurriculumSequence from './CurriculumSequence';
 import {
   getAllCurriculumSequences,
   putCurriculumSequenceAction,
   searchCurriculumSequences,
   searchGuidesAction,
-  toggleAddContentAction
+  toggleAddContentAction,
+  addContentToCurriculumSequenceAction
 } from '../ducks';
 
 /**
@@ -58,12 +58,15 @@ import {
 * @property {String} title
 * @property {String} updatedDate
 * @property {function} toggleAddContent
+* @property {function} addNewUnitToDestination
 * @property {boolean} isContentExpanded
 */
 
 /**
  * @typedef CurriculumProps
  * @property {CurriculumSequenceType} curriculum
+ * @property {function} addContentToCurriculumSequence
+ * @property {CurriculumSequenceType} destinationCurriculumSequence
  */
 
 /** @extends Component<CurriculumProps> */
@@ -95,8 +98,8 @@ class CurriculumContainer extends Component {
     // NOTE: temporary here,
     // until what will call the component with specified curriculums
     this.props.getAllCurriculumSequences([
-      '5c5ab082b10670586081c94f',
-      '5c66e1fd00de7b7aa2c0c887'
+      '5c6cb72feb85b4b4180e1544',
+      '5c6cc156dac4871b3b76fad0'
     ]);
   }
 
@@ -112,9 +115,10 @@ class CurriculumContainer extends Component {
 
   onDrop = (toUnit) => {
     const { contentToBeAdded } = this.state;
+    const { addContentToCurriculumSequence } = this.props;
 
     if (contentToBeAdded) {
-      this.addContentToCurriculumSequence(contentToBeAdded, toUnit);
+      addContentToCurriculumSequence(contentToBeAdded, toUnit);
     }
   }
 
@@ -122,52 +126,8 @@ class CurriculumContainer extends Component {
     this.setState({ contentToBeAdded });
   }
 
-  saveCurriculumSequence = () => {
-    // call api and update curriculum
-    const { putCurriculumSequence } = this.props;
-    const { destinationCurriculumSequence: destinationCurriculumSequenceOld } = this.getSourceDestinationCurriculum();
-    const destinationCurriculumSequenceNew = cloneDeep(destinationCurriculumSequenceOld);
-    
-    const id = destinationCurriculumSequenceNew._id;
-    delete destinationCurriculumSequenceNew._id;
-
-    putCurriculumSequence(id, destinationCurriculumSequenceNew);
-    this.setState({ destinationCurriculumSequence: null });
-  }
-
-  /**
-   * @param {ModuleData} contentToAdd
-   * @param {Module} toUnit
-   */
-  addContentToCurriculumSequence = (contentToAdd, toUnit) => {
-    if (!contentToAdd || !toUnit) return;
-
-    toUnit.data.push(contentToAdd);
-    const { destinationCurriculumSequence } = { ...this.getSourceDestinationCurriculum() };
-
-    const updatedModules = destinationCurriculumSequence.modules.map((module) => {
-      if (module.id === toUnit.id) {
-        return toUnit;
-      }
-      return module;
-    });
-    destinationCurriculumSequence.modules = updatedModules;
-    this.setState({ destinationCurriculumSequence });
-  }
-
-  addNewUnitToDestination = (afterUnitId, newUnit) => {
-    const { destinationCurriculumSequence } = { ...this.state };
-
-    const { modules } = destinationCurriculumSequence;
-    const moduleIds = destinationCurriculumSequence.modules.map(module => module.id);
-    const insertIndex = moduleIds.indexOf(afterUnitId);
-    modules.splice(insertIndex + 1, 0, newUnit);
-    destinationCurriculumSequence.modules = modules;
-    this.setState({ destinationCurriculumSequence });
-  }
-
   collapseExpandModule = (moduleId) => {
-    const { destinationCurriculumSequence } = { ...this.getSourceDestinationCurriculum() };
+    const { destinationCurriculumSequence } = this.props;
   
     if (!destinationCurriculumSequence) return null;
 
@@ -196,11 +156,6 @@ class CurriculumContainer extends Component {
   }
 
   /** @param {CurriculumSequence} curriculumSequence */
-  setDestinationCurriculumSequence = (curriculumSequence) => {
-    this.setState({ destinationCurriculumSequence: curriculumSequence });
-  }
-
-  /** @param {CurriculumSequence} curriculumSequence */
   setSourceCurriculumSequence = (curriculumSequence) => {
     this.setState({ sourceCurriculumSequence: curriculumSequence });
   }
@@ -218,20 +173,17 @@ class CurriculumContainer extends Component {
       }
     });
 
-    // When destination exists on state, it means user changed something, return that
-    if(this.state.destinationCurriculumSequence) {
-      destinationCurriculumSequence = this.state.destinationCurriculumSequence;
-    }
-
     return { sourceCurriculumSequence, destinationCurriculumSequence };
   }
 
   render() {
     const { windowWidth, curriculumSequences, isContentExpanded } = this.props;
     const { expandedModules } = this.state;
-    const { handleSelectContent, setSourceCurriculumSequence, addContentToCurriculumSequence, saveCurriculumSequence, addNewUnitToDestination, onDrop, onBeginDrag, savePublisher, changePublisher } = this;
+    const { handleSelectContent, setSourceCurriculumSequence, onDrop, onBeginDrag, savePublisher, changePublisher, collapseExpandModule } = this;
 
-    const { sourceCurriculumSequence, destinationCurriculumSequence } = this.getSourceDestinationCurriculum();
+    const { sourceCurriculumSequence } = this.getSourceDestinationCurriculum();
+
+    const { destinationCurriculumSequence } = this.props;
 
     if (!sourceCurriculumSequence || !destinationCurriculumSequence) return null;
 
@@ -246,12 +198,9 @@ class CurriculumContainer extends Component {
         destinationCurriculumSequence={destinationCurriculumSequence}
         sourceCurriculumSequence={sourceCurriculumSequence}
         expandedModules={expandedModules}
-        onCollapseExpand={this.collapseExpandModule}
+        onCollapseExpand={collapseExpandModule}
         curriculumList={curriculumList}
         onSourceCurriculumSequenceChange={setSourceCurriculumSequence}
-        addContentToCurriculumSequence={addContentToCurriculumSequence}
-        onSave={saveCurriculumSequence}
-        addNewUnitToDestination={addNewUnitToDestination}
         windowWidth={windowWidth}
         onDrop={onDrop}
         onBeginDrag={onBeginDrag}
@@ -276,7 +225,8 @@ CurriculumContainer.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   curriculumSequences: PropTypes.object.isRequired,
   putCurriculumSequence: PropTypes.func.isRequired,
-  isContentExpanded: PropTypes.bool.isRequired
+  isContentExpanded: PropTypes.bool.isRequired,
+  destinationCurriculumSequence: PropTypes.object.isRequired
 
 };
 
@@ -299,6 +249,9 @@ const mapDispatchToProps = dispatch => ({
   },
   toggleAddContent() {
     dispatch(toggleAddContentAction());
+  },
+  addContentToCurriculumSequence(contentToAdd, toUnit) {
+    dispatch(addContentToCurriculumSequenceAction({ contentToAdd, toUnit }));
   }
 });
 
@@ -309,7 +262,8 @@ const enhance = compose(
   connect(
     ({ curriculumSequence }) => ({
       curriculumSequences: curriculumSequence,
-      isContentExpanded: curriculumSequence.isContentExpanded
+      isContentExpanded: curriculumSequence.isContentExpanded,
+      destinationCurriculumSequence: curriculumSequence.destinationCurriculumSequence
     }),
     mapDispatchToProps
   )

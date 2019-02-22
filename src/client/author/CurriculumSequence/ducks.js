@@ -7,9 +7,12 @@ import {
   all,
   select
 } from 'redux-saga/effects';
-import { flatten } from 'lodash';
+import { flatten, cloneDeep } from 'lodash';
+import { v4 } from 'uuid';
 import { normalize, schema } from 'normalizr';
-import { curriculumSequencesApi } from '@edulastic/api';
+import { curriculumSequencesApi, assignmentApi } from '@edulastic/api';
+import { setCurrentAssignmentAction } from '../TestPage/components/Assign/ducks';
+import * as moment from 'moment';
 
 // Constants
 export const CURRICULUM_TYPE_GUIDE = 'guide';
@@ -33,10 +36,22 @@ export const SAVE_GUIDE_ALIGNMENT = '[curriculum-sequence] save guide alignment'
 export const SET_CONTENT_CURRICULUM = '[curriculum-sequence] set selected content';
 export const TOGGLE_CHECKED_UNIT_ITEM = '[curriculum-sequence] toggle checked unit item';
 export const TOGGLE_ADD_CONTENT = '[curriculum-sequence-ui] toggle add content';
+export const CREATE_ASSIGNMENT = '[curriculum-sequence] create assignment';
+export const CREATE_ASSIGNMENT_OK = '[curriculum-sequence] create assignment ok';
+export const SET_SELECTED_ITEMS_FOR_ASSIGN = '[curriculum-sequence] set selected items for assign';
+export const SET_SELECTED_ITEMS_FOR_ASSIGN_INIT = '[curriculum-sequence] set selected items for assign init';
+export const SET_DATA_FOR_ASSIGN_INIT = '[curriculum-sequence] set data for assign init';
+export const SET_DATA_FOR_ASSIGN = '[curriculum-sequence] set data for assign';
+export const ADD_CONTENT_TO_CURRICULUM = '[curriculum-sequence] add content to curriculum';
+export const ADD_CONTENT_TO_CURRICULUM_RESULT = '[curriculum-sequence] add content to curriculum result';
+export const REMOVE_ITEM_FROM_UNIT = '[curriculum-sequence] remove item from unit';
+export const SAVE_CURRICULUM_SEQUENCE = '[curriculum-sequence] save curriculum sequence';
+export const ADD_NEW_UNIT_TO_DESTINATION = '[curriculum-sequence] add new unit to destination';
+
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
-export const updateCurriculumSequenceAction = createAction(UPDATE_CURRICULUM_SEQUENCE)
+export const updateCurriculumSequenceAction = createAction(UPDATE_CURRICULUM_SEQUENCE);
 export const searchCurriculumSequences = createAction(SEARCH_CURRICULUM_SEQUENCES);
 export const searchGuidesAction = createAction(SEARCH_GUIDES);
 export const searchGuideResultAction = createAction(SEARCH_GUIDES_RESULT);
@@ -49,6 +64,15 @@ export const setContentCurriculumAction = createAction(SET_CONTENT_CURRICULUM);
 export const saveGuideAlignmentAction = createAction(SAVE_GUIDE_ALIGNMENT);
 export const toggleCheckedUnitItemAction = createAction(TOGGLE_CHECKED_UNIT_ITEM);
 export const toggleAddContentAction = createAction(TOGGLE_ADD_CONTENT);
+export const createAssignmentAction = createAction(CREATE_ASSIGNMENT);
+export const setSelectedItemsForAssignAction = createAction(SET_SELECTED_ITEMS_FOR_ASSIGN_INIT);
+export const setDataForAssignAction = createAction(SET_DATA_FOR_ASSIGN_INIT);
+export const addContentToCurriculumSequenceAction = createAction(ADD_CONTENT_TO_CURRICULUM);
+export const saveCurriculumSequenceAction = createAction(SAVE_CURRICULUM_SEQUENCE);
+export const addNewUnitToDestinationAction = createAction(ADD_NEW_UNIT_TO_DESTINATION);
+export const removeItemFromUnitAction = createAction(REMOVE_ITEM_FROM_UNIT);
+export const putCurriculumSequenceAction = createAction(PUT_CURRICULUM_SEQUENCE);
+
 
 export const getAllCurriculumSequences = (ids) => {
   if (!ids) {
@@ -59,13 +83,6 @@ export const getAllCurriculumSequences = (ids) => {
   return {
     type: FETCH_CURRICULUM_SEQUENCES,
     payload: ids
-  };
-};
-
-export const putCurriculumSequenceAction = (id, curriculumSequence) => {
-  return {
-    type: PUT_CURRICULUM_SEQUENCE,
-    payload: { id, curriculumSequence }
   };
 };
 
@@ -81,8 +98,20 @@ const getSelectedContent = (state) => {
 
   return state.curriculumSequence.selectedContent;
 };
+const getSelectedItemsForAssign = (state) => {
+  if (
+    !state.curriculumSequence.selectedItemsForAssign ||
+    state.curriculumSequence.selectedItemsForAssign.length === 0
+  ) {
+    return [];
+  }
+  return state.curriculumSequence.selectedItemsForAssign;
+};
 
-// Sagas
+const getDestinationCurriculumSequence = (state) => {
+  return state.curriculumSequence.destinationCurriculumSequence;
+};
+
 function* makeApiRequest(idsForFetch = []) {
   try {
     const unflattenedItems = yield all(
@@ -112,15 +141,28 @@ function* fetchItemsFromApi({ payload: ids }) {
   yield call(makeApiRequest, ids);
 }
 
+/**
+ * @typedef {Object} PutCurriculumSequencePayload
+ * @property {string} id
+ * @property {import('./components/CurriculumSequence').CurriculumSequenceType} curriculumSequence
+ */
+
+/**
+ * @param {Object<String, String>} args
+ * @param {PutCurriculumSequencePayload} [args.payload]
+ */
 function* putCurriculumSequence({ payload }) {
   const { id, curriculumSequence } = payload;
-  const response = yield curriculumSequencesApi
-    .updateCurriculumSequence(id, curriculumSequence)
-    .catch(() => message.error('Something went wrong, please try again'));
 
-  message.success(`Successfully saved ${response.title}`);
+  try {
+    const response = yield curriculumSequencesApi
+      .updateCurriculumSequence(id, curriculumSequence);
 
-  put(updateCurriculumSequenceAction(response));
+    message.success(`Successfully saved ${response.title}`);
+    yield put(updateCurriculumSequenceAction(response));
+  } catch (error) {
+    message.error('There was an error updating the curriculum sequence');
+  }
 }
 
 function* postSearchCurriculumSequence({ payload }) {
@@ -188,6 +230,130 @@ function* saveGuideAlignment({ payload }) {
   yield call(makeApiRequest, ids);
 }
 
+function* createAssignment({ payload }) {
+  const assignment = payload;
+
+  /** @type {String[]} */
+  const selectedItemsForAssign = yield select(getSelectedItemsForAssign);
+  const assignments = selectedItemsForAssign
+    .filter(testId => testId)
+    .map(testId => ({ ...assignment, testId }));
+
+  /** @type {State} */
+  const curriculumSequenceState = yield select(getCurriculumSequenceState);
+  const nextCurriculumSequenceState = cloneDeep(curriculumSequenceState);
+
+  /** @type {AssignData[]} */
+  const assignmentApiResponse = yield call(assignmentApi.create, assignments);
+  const testIdsFromResponse = assignmentApiResponse.map(item => item.testId);
+
+  /** @type {import('./components/CurriculumSequence').CurriculumSequenceType} */
+  let updatedCurriculumSequence;
+  curriculumSequenceState.allCurriculumSequences.forEach((curriculumId) => {
+    updatedCurriculumSequence = curriculumSequenceState.byId[curriculumId];
+    if (updatedCurriculumSequence.type !== 'guide') {
+      return;
+    }
+
+    if (curriculumSequenceState.byId) {
+      updatedCurriculumSequence.modules = [...curriculumSequenceState.byId[curriculumId].modules.map((moduleItem) => {
+        const updatedModule = { ...moduleItem };
+        const updatedModuleData = moduleItem.data.map((dataItem) => {
+          const updatedDataItem = { ...dataItem };
+          if (testIdsFromResponse.indexOf(dataItem.testId) !== -1) {
+            updatedDataItem.assigned = true;
+          }
+          return updatedDataItem;
+        });
+
+        updatedModule.data = updatedModuleData;
+        return updatedModule;
+      })];
+
+      nextCurriculumSequenceState.byId[curriculumId] = updatedCurriculumSequence;
+    }
+  });
+
+  if (!updatedCurriculumSequence) {
+    // NOTE: Should we notify the user about this? This shouldn' happen.
+    console.warn(`You wanted to updated curriculum sequence but it's missing from state`);
+    return;
+  }
+
+  try {
+    // Persist on server
+    yield curriculumSequencesApi
+      .updateCurriculumSequence(updatedCurriculumSequence._id, updatedCurriculumSequence)
+
+    message.success('Successfully assigned');
+  } catch (error) {
+    message.error('There was an error updating the curriculum sequence');
+    console.warn('There was an error updating the curriculum sequence', error);
+    return;
+  }
+
+  try {
+    yield put({ type: CREATE_ASSIGNMENT_OK, payload: assignmentApiResponse });
+  } catch (error) {
+    message.error('Assign was not successful, please try again');
+    console.warn('createAssignment error', error);
+  }
+}
+
+/**
+* @param {Object<String, String>} args
+* @param {import('./components/CurriculumSequence').ModuleData} [args.contentToAdd]
+* @param {import('./components/CurriculumSequence').Module} [args.toUnit]
+
+*/
+function* addContentToCurriculumSequence({ payload }) {
+  // TODO: change unit to module to stay consistent
+  const { contentToAdd, toUnit } = payload;
+
+  if (!contentToAdd || !toUnit) return;
+
+  // Prevent duplicated items to be added
+  if (toUnit.data.map(item => item.id).indexOf(contentToAdd.id) !== -1) {
+    message.warning('Assignment already exists.');
+    return;
+  }
+
+  const updatedUnit = { ...toUnit };
+  updatedUnit.data.push(contentToAdd);
+
+  yield put({
+    type: ADD_CONTENT_TO_CURRICULUM_RESULT,
+    payload: updatedUnit
+  });
+}
+
+function* saveCurriculumSequence() {
+  // call api and update curriculum
+  const destinationCurriculumSequence = yield select(getDestinationCurriculumSequence);
+
+  const id = destinationCurriculumSequence._id;
+  delete destinationCurriculumSequence._id;
+
+  yield putCurriculumSequence({
+    payload: { id, curriculumSequence: destinationCurriculumSequence }
+  });
+}
+
+function* setDataForAssign(payload) {
+  yield put({
+    type: SET_DATA_FOR_ASSIGN,
+    payload
+  });
+}
+
+function* setSelectedItemsForAssign({ payload }) {
+  yield put(setCurrentAssignmentAction(payload));
+  yield put({
+    type: SET_SELECTED_ITEMS_FOR_ASSIGN,
+    payload
+  });
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeLatest(FETCH_CURRICULUM_SEQUENCES, fetchItemsFromApi),
@@ -199,21 +365,69 @@ export function* watcherSaga() {
     yield takeLatest(SET_PUBLISHER, setPublisher),
     yield takeLatest(SET_GUIDE, setGuide),
     yield takeLatest(SET_CONTENT_CURRICULUM, setContentCurriculum),
-    yield takeLatest(SAVE_GUIDE_ALIGNMENT, saveGuideAlignment)
+    yield takeLatest(SAVE_GUIDE_ALIGNMENT, saveGuideAlignment),
+    yield takeLatest(CREATE_ASSIGNMENT, createAssignment),
+    yield takeLatest(ADD_CONTENT_TO_CURRICULUM, addContentToCurriculumSequence),
+    yield takeLatest(SAVE_CURRICULUM_SEQUENCE, saveCurriculumSequence),
+    yield takeLatest(SET_DATA_FOR_ASSIGN_INIT, setDataForAssign),
+    yield takeLatest(SET_SELECTED_ITEMS_FOR_ASSIGN_INIT, setSelectedItemsForAssign)
   ]);
 }
 
 /**
+ * @typedef {object} Class
+ * @property {String=} _id
+ * @property {Number} status
+ * @property {Number} totalNumber
+ * @property {submittedNumber} number
+ */
+
+/**
+ * @typedef {object} AssignData
+ * @property {Date} startDate
+ * @property {Date} endDate
+ * @property {String} openPolicy
+ * @property {String} closePolicy
+ * @property {Class[]} class
+ * @property {Boolean} specificStudents
+ * @property {string} testId
+ */
+
+/**
  * @typedef {object} State
  * @property {string[]} allCurriculumSequences
- * @property {object} byId
+ * @property {Object<string, import('./components/CurriculumSequence').CurriculumSequenceType>} byId
  * @property {import('./components/CurriculumSequence').CurriculumSearchResult} guides
  * @property {import('./components/CurriculumSequence').CurriculumSearchResult} contentCurriculums
  * @property {string} selectedGuide
  * @property {string} selectedContent
+ * @property {import('./components/CurriculumSequence').CurriculumSequenceType} destinationCurriculumSequence
  * @property {string[]} checkedUnitItems
  * @property {boolean} isContentExpanded
+ * @property {any[]} selectedItemsForAssign
+ * @property {AssignData} dataForAssign
  */
+
+/**
+ *       class: item.class,
+students: item.students,
+specificStudents: item.specificStudents || false,
+openPolicy: item.openPolicy || '',
+closePolicy: item.closePolicy || '',
+openDate: item.startDate,
+closeDate: item.endDate,
+ */
+
+
+const getDefaultAssignData = () => ({
+  startDate: moment(),
+  endDate: moment(),
+  openPolicy: 'Automatically on Start Date',
+  closePolicy: 'Automatically on Due Date',
+  class: [],
+  specificStudents: false,
+  students: []
+});
 
 // Reducers
 const initialState = {
@@ -245,7 +459,13 @@ const initialState = {
   /** ids of guides that are checkmarked */
   checkedUnitItems: [],
 
-  isContentExpanded: false
+  isContentExpanded: false,
+
+  selectedItemsForAssign: [],
+
+  destinationCurriculumSequence: {},
+
+  dataForAssign: getDefaultAssignData()
 };
 
 /**
@@ -289,6 +509,7 @@ const setCurriculumSequencesReducer = (state, { payload }) => {
 
   state.allCurriculumSequences = [...state.allCurriculumSequences, ...payload.allCurriculumSequences];
   state.byId = { ...state.byId, ...payload.curriculumSequenceListObject };
+  state.destinationCurriculumSequence = { ...state.byId[newGuideId] };
   state.selectedGuide = newGuideId;
   state.selectedContent = latestContentCurriculumId;
   state.checkedUnitItems = [];
@@ -300,11 +521,16 @@ const updateCurriculumSequenceReducer = (state, { payload }) => {
 };
 
 const searchGuidesReducer = (state, { payload }) => {
-  const defaultSelectedGuide = payload[0]._id;
   state.guides = payload;
 
   // When publisher is changed and new guides are available - set them to first one
-  if (payload.map(guides => guides._id).indexOf(state.selectedGuide) === -1) {
+  if (
+    payload &&
+    payload[0] &&
+    payload[0]._id &&
+    payload.map(guides => guides._id).indexOf(state.selectedGuide) === -1
+  ) {
+    const defaultSelectedGuide = payload[0]._id;
     state.selectedGuide = defaultSelectedGuide;
   }
 };
@@ -326,7 +552,6 @@ const searchContentReducer = (state, { payload }) => {
 };
 
 /**
- *
  * @param {State} state
  * @param {any} param1
  */
@@ -344,6 +569,172 @@ const toggleAddContentReducer = (state) => {
   state.isContentExpanded = !state.isContentExpanded;
 };
 
+/**
+* @param {State} state
+* @param {any} param1
+*/
+const createAssignmentReducer = (state, { payload }) => {
+  const assignmentApiResponse = payload;
+  const curriculumSequenceState = { ...state };
+  const testIdsFromResponse = assignmentApiResponse.map(item => item.testId);
+  const destinationCurriculumSequence = { ...state.destinationCurriculumSequence };
+
+  let updatedCurriculumSequence;
+  curriculumSequenceState.allCurriculumSequences.forEach((curriculumId) => {
+    updatedCurriculumSequence = curriculumSequenceState.byId[curriculumId];
+    if (updatedCurriculumSequence.type !== 'guide') {
+      return;
+    }
+
+    if (curriculumSequenceState.byId) {
+      updatedCurriculumSequence.modules = [...curriculumSequenceState.byId[curriculumId].modules.map((moduleItem) => {
+        const updatedModule = { ...moduleItem };
+        const updatedModuleData = moduleItem.data.map((dataItem) => {
+          const updatedDataItem = { ...dataItem };
+          if (testIdsFromResponse.indexOf(dataItem.testId) !== -1) {
+            updatedDataItem.assigned = true;
+          }
+          return updatedDataItem;
+        });
+
+        updatedModule.data = updatedModuleData;
+        return updatedModule;
+      })];
+    }
+  });
+
+  if (!updatedCurriculumSequence) {
+    return { ...state };
+  }
+
+  state.selectedItemsForAssign = [];
+  state.destinationCurriculumSequence = {
+    ...destinationCurriculumSequence,
+    modules: updatedCurriculumSequence.modules
+  };
+};
+
+/**
+* @param {State} state
+* @param {Object<String, String>} args
+* @param {String|null} [args.payload]
+* we pass null when we deliberatly cancel the selected item without any user feedback
+* otherwise we pass *testId*
+*/
+const setSelectedItemsForAssignReducer = (state, { payload }) => {
+  // we pass null when we deliberatly cancel the selected item without any user feedback
+  if (!payload && payload !== null) {
+    message.info('No testId for this item');
+    state.selectedItemsForAssign.pop();
+  } else if (payload === null) {
+    state.selectedItemsForAssign = [];
+    state.dataForAssign = getDefaultAssignData();
+  } else if (typeof payload === 'string') {
+    state.selectedItemsForAssign.push(payload);
+  } else if (Array.isArray(payload)) {
+    state.selectedItemsForAssign = payload;
+  }
+};
+
+/**
+* @param {State} state
+* @param {any} param1
+*/
+const setDataForAssignReducer = (state, { payload }) => {
+  if (!payload) {
+    state.dataForAssign = getDefaultAssignData();
+    return;
+  }
+  state.dataForAssign = payload;
+};
+
+/**
+* @param {State} state
+* @param {Object<String, String>} args
+* @param {import('./components/CurriculumSequence').CurriculumSequenceType} [args.payload]
+*/
+const addContentToCurriculumSequenceReducer = (state, { payload }) => {
+  const updatedModule = payload;
+  const destinationCurriculumSequence = { ...state.destinationCurriculumSequence };
+  const updatedModules = [...destinationCurriculumSequence
+    .modules.map((module) => {
+      if (module.id === updatedModule.id) {
+        return updatedModule;
+      }
+      return module;
+    })];
+
+  return {
+    ...state,
+    destinationCurriculumSequence: {
+      ...destinationCurriculumSequence,
+      modules: updatedModules
+    }
+  };
+};
+
+/**
+ * @param {State} state
+ * @param {Object<String, Object>} param2
+ * @param {Object<String, Object>} [param2.payload]
+ * @param {String} [param2.payload.moduleId]
+ * @param {String} [param2.payload.itemId]
+ */
+const removeItemFromUnitReducer = (state, { payload }) => {
+  const { moduleId, itemId } = payload;
+  const destinationCurriculumSequence = cloneDeep(state.destinationCurriculumSequence);
+  const modules = [...destinationCurriculumSequence.modules];
+
+  const moduleIndex = destinationCurriculumSequence
+    .modules
+    .map(m => m.id)
+    .indexOf(moduleId);
+
+  const itemIndex = destinationCurriculumSequence
+    .modules[moduleIndex]
+    .data
+    .map(d => d.id).indexOf(itemId);
+
+  modules[moduleIndex].data.splice(itemIndex, 1);
+
+  destinationCurriculumSequence.modules = modules;
+
+  return {
+    ...state,
+    destinationCurriculumSequence: {
+      ...destinationCurriculumSequence,
+      modules
+    }
+  };
+};
+
+/**
+* @param {State} state
+* @param {Object<String, Object>} param2
+* @param {Object<String, Object>} [param2.payload]
+* @param {String} [param2.payload.afterUnitId]
+* @param {import('./components/CurriculumSequence').Module} [param2.payload.newUnit]
+*/
+const addNewUnitToDestinationReducer = (state, { payload }) => {
+  // { afterUnitId, newUnit }
+  const { afterUnitId, newUnit } = payload;
+  const destinationCurriculumSequence = { ...state.destinationCurriculumSequence };
+  newUnit.id = v4();
+
+  const modules = cloneDeep(destinationCurriculumSequence.modules);
+  const moduleIds = destinationCurriculumSequence.modules.map(module => module.id);
+  const insertIndex = moduleIds.indexOf(afterUnitId);
+  modules.splice(insertIndex + 1, 0, newUnit);
+
+  return {
+    ...state,
+    destinationCurriculumSequence: {
+      ...destinationCurriculumSequence,
+      modules
+    }
+  };
+};
+
 export default createReducer(initialState, {
   [UPDATE_CURRICULUM_SEQUENCE_LIST]: setCurriculumSequencesReducer,
   [UPDATE_CURRICULUM_SEQUENCE]: updateCurriculumSequenceReducer,
@@ -353,5 +744,11 @@ export default createReducer(initialState, {
   [SET_GUIDE]: setGuideReducer,
   [SET_CONTENT_CURRICULUM]: setContentCurriculumReducer,
   [TOGGLE_CHECKED_UNIT_ITEM]: toggleCheckedUnitItemReducer,
-  [TOGGLE_ADD_CONTENT]: toggleAddContentReducer
+  [TOGGLE_ADD_CONTENT]: toggleAddContentReducer,
+  [CREATE_ASSIGNMENT_OK]: createAssignmentReducer,
+  [SET_SELECTED_ITEMS_FOR_ASSIGN]: setSelectedItemsForAssignReducer,
+  [SET_DATA_FOR_ASSIGN]: setDataForAssignReducer,
+  [ADD_CONTENT_TO_CURRICULUM_RESULT]: addContentToCurriculumSequenceReducer,
+  [REMOVE_ITEM_FROM_UNIT]: removeItemFromUnitReducer,
+  [ADD_NEW_UNIT_TO_DESTINATION]: addNewUnitToDestinationReducer
 });

@@ -4,7 +4,10 @@ import { compose } from 'redux';
 import styled from 'styled-components';
 import { Menu } from 'antd';
 import { Paper } from '@edulastic/common';
-import { toggleCheckedUnitItemAction } from '../ducks';
+import {
+  toggleCheckedUnitItemAction,
+  addContentToCurriculumSequenceAction
+} from '../ducks';
 import { mobileWidth, lightBlue } from '@edulastic/colors';
 import AssignmentDragItem from './AssignmentDragItem';
 import triangleIcon from '../assets/triangle.svg';
@@ -40,25 +43,33 @@ class ModuleRow extends Component {
     this.setState((prevState) => ({ unitExpanded: !prevState.unitExpanded }));
   }
 
-  handleAddContentClick = (moduleData) => {
+  handleAddContentMouseOver = (moduleData) => {
     this.setState({ selectedContent: moduleData });
   }
 
-  addContentToCurriculumSequence = (toUnit) => {
+  handleAddContentClick = (toUnit) => {
     const { addContentToCurriculumSequence } = this.props;
     const { selectedContent } = { ...this.state };
     addContentToCurriculumSequence(selectedContent, toUnit);
   }
 
   render() {
+    const { handleAddContentClick, handleAddContentMouseOver } = this;
     const { unitExpanded } = this.state;
-    const { collapsed, destinationCurriculum, dropContent, module, toggleCheckedUnitItem, checkedUnitItems } = this.props;
+    const {
+      collapsed,
+      destinationCurriculum,
+      dropContent,
+      module,
+      toggleCheckedUnitItem,
+      checkedUnitItems
+    } = this.props;
     const { data, name } = module;
     
     const menu = (
       <Menu>
         {destinationCurriculum.modules.map(moduleItem => (
-          <Menu.Item key={`menu-${moduleItem.id}`} onClick={() => this.addContentToCurriculumSequence(moduleItem)}>
+          <Menu.Item onClick={() => handleAddContentClick(moduleItem)} >
             <span>{moduleItem.name}</span>
           </Menu.Item>
         ))}
@@ -66,7 +77,7 @@ class ModuleRow extends Component {
     );
 
     return (
-      <ModuleWrapper>
+      <ModuleWrapper key={`sc-${module.id}`}>
         <Container>
           <Module>
             <ModuleHeader collapsed={collapsed}>
@@ -81,6 +92,7 @@ class ModuleRow extends Component {
                     moduleData={moduleData}
                     handleContentClicked={this.handleAddContentClick}
                     onToggleCheck={() => toggleCheckedUnitItem(moduleData.id)}
+                    handleAddContentMouseOver={handleAddContentMouseOver}
                     checked={checkedUnitItems.indexOf(moduleData.id) !== -1}
                     menu={menu}
                     handleDrop={dropContent}
@@ -192,6 +204,9 @@ const ModuleWrapper = styled.div`
 const mapDispatchToProps = dispatch => ({
   toggleCheckedUnitItem(id) {
     dispatch(toggleCheckedUnitItemAction(id));
+  },
+  addContentToCurriculumSequence(contentToAdd, toUnit) {
+    dispatch(addContentToCurriculumSequenceAction({ contentToAdd, toUnit }));
   }
 });
 

@@ -2,10 +2,7 @@ import React, { Component  } from 'react';
 import { Dropdown } from 'antd';
 import styled from 'styled-components';
 import { DragSource } from 'react-dnd';
-import {
-  Checkbox,
-  Paper
-} from '@edulastic/common';
+import { Paper } from '@edulastic/common';
 import { darkBlue, lightBlue, lightGreen, green } from '@edulastic/colors';
 import assignContentIcon from '../assets/assign.svg';
 import visualizationIcon from '../assets/visualization-show.svg';
@@ -38,18 +35,22 @@ function collect(connect, monitor) {
 /** @extends Component<Props> */
 class AssignmentDragItem extends Component {
   render() {
-    const { moduleData, checked, onToggleCheck, handleContentClicked, menu } = this.props;
+    const { moduleData, handleAddContentMouseOver, menu } = this.props;
     const { connectDragSource } = this.props;
     return (
       connectDragSource(
         <div className="item">
           <Assignment key={moduleData.id}>
-            <Checkbox checked={checked} onChange={onToggleCheck} className="module-checkbox" />
             <AssignmentPrefix>{moduleData.standards}</AssignmentPrefix>
             <span>{moduleData.name}</span>
             <AssignmentIconsWrapper>
               <Dropdown overlay={menu} placement="bottomCenter">
-                <AssignContent onMouseOver={() => handleContentClicked(moduleData)} onClick={() => handleAddContentClick(moduleData)}><img src={assignContentIcon} alt="assign content" /></AssignContent>
+                <AssignContent
+                  onMouseOver={() => handleAddContentMouseOver(moduleData)}
+                  onFocus={() => handleAddContentMouseOver(moduleData)}
+                >
+                  <img src={assignContentIcon} alt="assign content" />
+                </AssignContent>
               </Dropdown>
               <Visualize><img src={visualizationIcon} alt="visualize " /></Visualize>
             </AssignmentIconsWrapper>

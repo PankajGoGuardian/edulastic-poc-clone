@@ -1,46 +1,81 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Button, Icon } from 'antd';
+import { Button, Menu, Dropdown } from 'antd';
 import {
   Paper,
   Checkbox
 } from '@edulastic/common';
-import { mobileWidth, lightBlue, white, greenDarkSecondary, largeDesktopWidth, desktopWidth, tabletWidth } from '@edulastic/colors';
-import { toggleCheckedUnitItemAction } from '../ducks';
+import { random } from 'lodash';
+import { withNamespaces } from '@edulastic/localization';
+import { darkBlue, mobileWidth, lightBlue, mainBlueColor, lightGreen, green, white, darkBlueSecondary, greenDarkSecondary, desktopWidth, tabletWidth } from '@edulastic/colors';
+import {
+  toggleCheckedUnitItemAction,
+  setSelectedItemsForAssignAction,
+  removeItemFromUnitAction
+} from '../ducks';
 import minusIcon from '../assets/minus.svg';
 import plusIcon from '../assets/plus.svg';
 import visualizationIcon from '../assets/visualization-show.svg';
 import assessmentRed from '../assets/assessment.svg';
 import assessmentGreen from '../assets/concept-check.svg';
 import moduleCompletedIcon from '../assets/module-completed.svg';
+import moreIcon from '../assets/more.svg';
 
 
 /**
-* @typedef {object} Props
-* @property {import('./CurriculumSequence').Module} module
-* @property {function} onCollapseExpand
-* @property {function} toggleUnitItem
-* @property {boolean} collapsed
-* @property {string[]} checkedUnitItems
-* @property {boolean} isContentExpanded
-*/
+ * @typedef {object} Props
+ * @property {import('./CurriculumSequence').Module} module
+ * @property {function} onCollapseExpand
+ * @property {function} toggleUnitItem
+ * @property {boolean} collapsed
+ * @property {string[]} checkedUnitItems
+ * @property {boolean} isContentExpanded
+ * @property {function} setSelectedItemsForAssign
+ * set module item that will be assigned, also
+ * when there's more than 0 elements set, modal for assignment will be shown
+ * when empty array is set, modal is hidden
+ */
 
 const IS_ASSIGNED = 'ASSIGNED';
 const NOT_ASSIGNED = 'ASSIGN';
 
 /** @extends Component<Props> */
 class ModuleRow extends Component {
+
+  /**
+   * @param {import('./CurriculumSequence').Module} module
+   */
+  assignModule = (module) => {
+    const { setSelectedItemsForAssign } = this.props;
+    const moduleItemsIds = module.data.map(item => item.testId);
+    setSelectedItemsForAssign(moduleItemsIds);
+  }
+  
+
   render() {
     const { completed, data, name, id } = this.props.module;
-    const { onCollapseExpand, collapsed, padding, checkedUnitItems, toggleUnitItem, isContentExpanded } = this.props;
+    const {
+      onCollapseExpand,
+      collapsed,
+      padding,
+      checkedUnitItems,
+      toggleUnitItem,
+      isContentExpanded,
+      setSelectedItemsForAssign,
+      module,
+      removeItemFromUnit
+    } = this.props;
+    const { assignModule } = this;
+
     const totalAssigned = data.length;
     const numberOfAssigned = data.filter(item => item.assigned).length;
-    const [whichModule, moduleName ] = name.split(':');
+    const [whichModule, moduleName] = name.split(':');
 
     return (
-      <ModuleWrapper padding={padding}>
+      <ModuleWrapper key={`${module.data.length}-${module.id}`} padding={padding}>
         <Container>
           <Module>
             <ModuleHeader collapsed={collapsed}>
@@ -53,36 +88,36 @@ class ModuleRow extends Component {
                 </Button>
                 <ModuleTitleAssignedWrapper>
                   <ModuleTitleWrapper>
-                  <ModuleTitlePrefix>{whichModule}</ModuleTitlePrefix>
-                  <ModuleTitle>{moduleName}</ModuleTitle>
-                </ModuleTitleWrapper>
+                    <ModuleTitlePrefix>{whichModule}</ModuleTitlePrefix>
+                    <ModuleTitle>{moduleName}</ModuleTitle>
+                  </ModuleTitleWrapper>
 
-                {completed && 
-                  <React.Fragment>
-                    <ModuleCompleted>
-                    <ModuleCompletedLabel> 
-                    MODULE COMPLETED 
-                    </ModuleCompletedLabel> 
-                    <ModuleCompletedIcon>
-                    <img src={moduleCompletedIcon} alt=""/>
-                    </ModuleCompletedIcon>
-                    </ModuleCompleted>
-                  </React.Fragment>
-                }
-                {!completed && 
-                  <ModulesWrapper>
-                    <ModulesAssigned>
-                      Assigned
-                      <NumberOfAssigned>{numberOfAssigned}</NumberOfAssigned>
-                      of
-                      <TotalAssigned>{totalAssigned}</TotalAssigned>
-                    </ModulesAssigned>
-                    <AssignModuleButton>
-                      <Button type="primary" ghost>ASSIGN MODULE</Button>
-                    </AssignModuleButton>
-                  </ModulesWrapper>
-                }
-                 
+                  {completed && (
+                    <React.Fragment>
+                      <ModuleCompleted>
+                        <ModuleCompletedLabel>MODULE COMPLETED</ModuleCompletedLabel>
+                        <ModuleCompletedIcon>
+                          <CustomIcon>
+                            <img src={moduleCompletedIcon} alt="module completed icon" />
+                          </CustomIcon>
+                        </ModuleCompletedIcon>
+                      </ModuleCompleted>
+                    </React.Fragment>
+                  )}
+                  {!completed && (
+                    <ModulesWrapper>
+                      <ModulesAssigned>
+                        Assigned
+                        <NumberOfAssigned>{numberOfAssigned}</NumberOfAssigned>
+                        of
+                        <TotalAssigned>{totalAssigned}</TotalAssigned>
+                      </ModulesAssigned>
+                      <AssignModuleButton>
+                        <Button type="primary" onClick={() => assignModule(module)} ghost>ASSIGN MODULE</Button>
+                      </AssignModuleButton>
+                    </ModulesWrapper>
+                  )}
+
 
                 </ModuleTitleAssignedWrapper>
 
@@ -91,33 +126,59 @@ class ModuleRow extends Component {
             {!collapsed &&
             // eslint-disable-next-line
               <div>
-                {data.map((moduleData, index) => {
+                {data.map((moduleData) => {
+                  const moreMenu = (
+                    <Menu>
+                      <Menu.Item
+                        onClick={() => removeItemFromUnit({ moduleId: module.id, itemId: moduleData.id })}
+                      >
+                        Remove</Menu.Item>
+                    </Menu>
+                  );
+                  
                   return (
-                    <Assignment key={`${index}-${moduleData.id}`}>
+                    <Assignment key={`${moduleData.id}-${moduleData.assigned}`}>
                       <AssignmentInnerWrapper>
                         <ModuleFocused />
-                      
+
                         <AssignmentContent expanded={isContentExpanded}>
-                        <Checkbox
-                          onChange={() => toggleUnitItem(moduleData.id)}
-                          checked={checkedUnitItems.indexOf(moduleData.id) !== -1}
-                          className="module-checkbox"
-                        />
+                          <Checkbox
+                            onChange={() => toggleUnitItem(moduleData.id)}
+                            checked={checkedUnitItems.indexOf(moduleData.id) !== -1}
+                            className="module-checkbox"
+                          />
                           <ModuleDataName>{moduleData.name}</ModuleDataName>
                         </AssignmentContent>
                         <AssignmentIconsWrapper expanded={isContentExpanded}>
-                        <ModuleAssignedUnit>
-                            {moduleData.assigned && !moduleData.completed &&
-                              <img src={assessmentRed} alt="Module item is assigned" />
-                            }
-                            {moduleData.completed &&
-                              <img src={assessmentGreen} alt="Module item is completed" />
-                            }
+                          <ModuleAssignedUnit>
+                            {moduleData.assigned && !moduleData.completed && (
+                              <CustomIcon>
+                                <img src={assessmentRed} alt="Module item is assigned" />
+                              </CustomIcon>
+                            )}
+                            {moduleData.completed && (
+                              <CustomIcon>
+                                <img src={assessmentGreen} alt="Module item is completed" />
+                              </CustomIcon>
+                            )}
                           </ModuleAssignedUnit>
                           <AssignmentIconsHolder>
-                          <AssignmentIcon><img src={visualizationIcon} alt="visualize " /></AssignmentIcon>
-                          <AssignmentButton><Button onClick={this.handleAssigned} type="primary" icon={moduleData.assigned ? 'check' : 'arrow-right'} ghost={!moduleData.assigned}>{moduleData.assigned ? IS_ASSIGNED : NOT_ASSIGNED}</Button></AssignmentButton>
-                          <AssignmentIcon><Icon type="ellipsis" style={{ fontSize: '16px', color: '#08c' }} /></AssignmentIcon>
+                            <AssignmentIcon>
+                              <CustomIcon>
+                                <img src={visualizationIcon} alt="visualize " />
+                              </CustomIcon>
+                            </AssignmentIcon>
+                            <AssignmentButton>
+                              <Button onClick={() => setSelectedItemsForAssign(moduleData.testId)} type="primary" icon={moduleData.assigned ? 'check' : 'arrow-right'} ghost={!moduleData.assigned}>{moduleData.assigned ? IS_ASSIGNED : NOT_ASSIGNED}
+                              </Button>
+                            </AssignmentButton>
+                            <AssignmentIcon>
+                              <Dropdown overlay={moreMenu} trigger={['click']}>
+                                <CustomIcon>
+                                  <img style={{ width: '16px' }} src={moreIcon} alt="more options" />
+                                </CustomIcon>
+                              </Dropdown>
+                            </AssignmentIcon>
                           </AssignmentIconsHolder>
                         </AssignmentIconsWrapper>
                       </AssignmentInnerWrapper>
@@ -140,8 +201,13 @@ ModuleRow.defaultProps = {
   collapsed: false,
   isContentExpanded: false,
   padding: false,
-  checkedUnitItems: []
+  checkedUnitItems: [],
+  removeItemFromUnit: () => {}
 };
+
+const CustomIcon = styled.span`
+  cursor: pointer;
+`;
 
 const AssignmentIconsHolder = styled.div`
 display: flex;
@@ -178,30 +244,29 @@ const ModuleAssignedUnit = styled.span`
 `;
 
 const ModuleTitleWrapper = styled.div`
-display: flex;
-flex-direction: column;
-align-self: flex-start;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ModuleCompletedLabel = styled.div`
-color: #4aac8b;
+  color: #4aac8b;
 `;
 
 const ModuleCompletedIcon = styled.div`
-padding-left: 30px;
-padding-right: 30px;
+  padding-left: 30px;
+  padding-right: 30px;
 `;
 
 const ModuleCompleted = styled.div`
-display: flex;
-justify-content: flex-end;
-margin-left: auto;
-width: auto;
-align-items: center;
-@media only screen and (max-width: ${tabletWidth}) {
-    align-self: flex-start;
-    margin-left: 0;
-  }
+  display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
+  width: auto;
+  align-items: center;
+  @media only screen and (max-width: ${tabletWidth}) {
+      align-self: flex-start;
+      margin-left: 0;
+    }
 `;
 
 const NumberOfAssigned = styled.strong`
@@ -247,7 +312,7 @@ const AssignModuleButton = styled.div`
   @media only screen and (max-width: ${desktopWidth}) {
     align-self: flex-start;
   }
- 
+
 `;
 
 const AssignmentContent = styled.div`
@@ -335,8 +400,8 @@ const Container = styled.div`
 
   @media (max-width: ${mobileWidth}) {
     padding-left: 10px;
-    margin-right: ${props => !props.value && "20px !important"};
-    margin-left: ${props => props.value && "20px !important"};
+    margin-right: ${props => !props.value && '20px !important'};
+    margin-left: ${props => props.value && '20px !important'};
   }
 `;
 
@@ -369,9 +434,9 @@ const ModuleHeader = styled(Row)`
   display: flex;
   flex-direction: column;
   border-bottom-left-radius: ${({ collapsed }) =>
-    !collapsed ? "0px" : "10px"};
+    !collapsed ? '0px' : '10px'};
   border-bottom-right-radius: ${({ collapsed }) =>
-    !collapsed ? "0px" : "10px"};
+    !collapsed ? '0px' : '10px'};
   padding-bottom: 0;
   overflow: hidden;
   position: relative;
@@ -413,7 +478,7 @@ const AssignmentInnerWrapper = styled.div`
     justify-items: center;
     margin-left: auto;
     align-items: flex-start;
- 
+
   }
 `;
 AssignmentInnerWrapper.displayName = 'AssignmentInnerWrapper';
@@ -456,7 +521,7 @@ const ModuleWrapper = styled.div`
     padding-top: 0;
     padding-bottom: 0;
     padding-left: 0px;
-    padding-right: ${({ padding }) => (padding ? "20px" : "0px")};
+    padding-right: ${({ padding }) => (padding ? '20px' : '0px')};
     margin-bottom: 10px;
     margin-top: 10px;
   }
@@ -477,19 +542,17 @@ const ModuleWrapper = styled.div`
   }
 `;
 
-const mapDispatchToProps = dispatch => ({
-  toggleUnitItem(id) {
-    dispatch(toggleCheckedUnitItemAction(id));
-  }
-});
-
 const enhance = compose(
   connect(
     ({ curriculumSequence }) => ({
       checkedUnitItems: curriculumSequence.checkedUnitItems,
       isContentExpanded: curriculumSequence.isContentExpanded
     }),
-    mapDispatchToProps
+    {
+      toggleUnitItem: toggleCheckedUnitItemAction,
+      setSelectedItemsForAssign: setSelectedItemsForAssignAction,
+      removeItemFromUnit: removeItemFromUnitAction
+    }
   )
 );
 

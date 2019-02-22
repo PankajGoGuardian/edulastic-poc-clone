@@ -13,10 +13,15 @@ const getCurriculumSequences = (id) => {
 };
 
 const updateCurriculumSequence = (id, curriculumSequence) => {
+  const _curriculumSequence = { ...curriculumSequence };
+  if (_curriculumSequence._id) {
+    delete _curriculumSequence._id;
+  }
+
   const options = {
     method: 'put',
     url: `/curriculum-sequence/${id}`,
-    data: curriculumSequence
+    data: _curriculumSequence
   };
 
   return api

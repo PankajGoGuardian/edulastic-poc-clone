@@ -20,22 +20,24 @@ class Curriculum extends Component {
   render() {
     const { curriculum: { modules } } = this.props;
     const { expandedModules, onCollapseExpand, padding } = this.props;
-    const totalModules = modules.length;
-    const modulesCompleted = modules.filter(m => m.assigned === true).length;
 
     return (
       <ModuleWrapper>
-          {modules.map((moduleItem, index) => (
-            <DropContainer theme={theme} key={`drop-${moduleItem.data.length}-${index}-${moduleItem.id}`} drop={() => this.onDrop(moduleItem)}>
-              <CurriculumModuleRow
-                collapsed={expandedModules.indexOf(moduleItem.id) === -1}
-                onCollapseExpand={onCollapseExpand}
-                key={moduleItem.id}
-                module={moduleItem}
-                padding={padding}
-              />
-            </DropContainer>
-          ))}
+        {modules.map((moduleItem, index) => (
+          <DropContainer
+            theme={theme}
+            key={`drop-${index}-${moduleItem.id}`}
+            drop={() => this.onDrop(moduleItem)}
+          >
+            <CurriculumModuleRow
+              collapsed={expandedModules.indexOf(moduleItem.id) === -1}
+              onCollapseExpand={onCollapseExpand}
+              key={moduleItem.id}
+              module={moduleItem}
+              padding={padding}
+            />
+          </DropContainer>
+        ))}
       </ModuleWrapper>
     );
   }
@@ -45,6 +47,7 @@ const ModuleWrapper = styled.div`
   flex-grow: 1;
   width: 60%;
   z-index: 1;
+  margin-top: -1px;
 `;
 ModuleWrapper.displayName = 'ModuleWrapper';
 

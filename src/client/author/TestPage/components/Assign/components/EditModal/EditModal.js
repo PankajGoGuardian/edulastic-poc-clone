@@ -35,6 +35,7 @@ const EditModal = ({
   title,
   visible,
   onCancel,
+  onOk,
   modalData,
   group,
   students,
@@ -62,6 +63,14 @@ const EditModal = ({
 
   // save the assingment and close the modal
   const addAssignment = () => {
+    // We want the ability to override onOk logic of the component so
+    // if we supply the component onOK callback prop,
+    // use that instead of the components handlers
+    if (onOk) {
+      onOk();
+      return;
+    }
+
     saveAssignment(assignment);
     onCancel();
   };
@@ -138,11 +147,15 @@ EditModal.propTypes = {
   students: PropTypes.array.isRequired,
   title: PropTypes.string.isRequired,
   visible: PropTypes.bool.isRequired,
-  onOk: PropTypes.func.isRequired,
+  onOk: PropTypes.func,
   onCancel: PropTypes.func.isRequired,
   modalData: PropTypes.object.isRequired,
   group: PropTypes.array.isRequired,
   fetchStudents: PropTypes.func.isRequired
+};
+
+EditModal.defaultProps = {
+  onOk: null
 };
 
 export default connect(

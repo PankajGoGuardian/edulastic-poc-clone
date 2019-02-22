@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { DropTarget } from 'react-dnd';
 import { withTheme } from 'styled-components';
+import { dashBorderColor, green } from '@edulastic/colors';
+
 
 const specTarget = {
   drop: (props, monitor) => {
@@ -37,8 +39,8 @@ const DropContainer = ({
         ? `2px solid ${theme.dropContainer.isOverBorderColor}`
         : `2px dashed ${theme.dropContainer.isNotOverBorderColor}`
       : isOver
-        ? `2px solid ${theme.dropContainer.isOverBorderColor}`
-        : `2px solid ${theme.dropContainer.noBorderColor}`
+        ? `2px solid ${green}`
+        : `2px solid ${dashBorderColor}`
   }`;
 
   return connectDropTarget(

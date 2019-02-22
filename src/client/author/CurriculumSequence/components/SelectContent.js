@@ -90,7 +90,6 @@ class SelectContent extends Component {
     const {
       curriculum,
       destinationCurriculum,
-      addContentToCurriculumSequence,
       windowWidth,
       dropContent,
       onBeginDrag,
@@ -127,7 +126,6 @@ class SelectContent extends Component {
           <SelectContentRow
             key={moduleItem.id}
             module={moduleItem}
-            addContentToCurriculumSequence={addContentToCurriculumSequence}
             destinationCurriculum={destinationCurriculum}
             dropContent={dropContent}
             onBeginDrag={onBeginDrag}
@@ -240,7 +238,7 @@ const CurriculumWrapper = styled(Paper)`
   & {
     width: 40%;
     padding: 0;
-    margin-top: 13px;
+    margin-top: 11px;
     align-self: baseline;
     z-index: 1;
     & ${CloseButtonMobile} {

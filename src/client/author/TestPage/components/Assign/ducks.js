@@ -118,10 +118,15 @@ function* saveAssignment({ payload }) {
       return;
     }
 
+    let startDate = payload.startDate && moment(payload.startDate).valueOf();
+    let endDate = payload.endDate && moment(payload.endDate).valueOf();
+
     let data = omit(
       {
         ...payload,
         class: classData,
+        startDate,
+        endDate,
         testId
       },
       ['_id', '__v', 'createdAt', 'updatedAt']

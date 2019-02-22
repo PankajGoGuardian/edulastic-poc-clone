@@ -1,11 +1,6 @@
 {
-  "plugins": [
-    "cypress"
-  ],
-  "extends": [
-    "airbnb",
-    "plugin:cypress/recommended"
-  ],
+  "plugins": ["cypress"],
+  "extends": ["airbnb", "plugin:cypress/recommended", "prettier"],
   "parser": "babel-eslint",
   "env": {
     "browser": true,
@@ -17,10 +12,7 @@
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [
-          ".js",
-          ".jsx"
-        ]
+        "extensions": [".js", ".jsx"]
       }
     ],
     "no-plusplus": 0,

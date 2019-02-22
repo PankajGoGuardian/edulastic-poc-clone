@@ -82,45 +82,10 @@ export const setDefaultTestDataAction = () => ({
 const initialTestState = {
   title: "New Test",
   description: "",
-  markAsDoneValue: test.completionTypes.AUTOMATICALLY,
   releaseScore: true,
   maxAttempts: 1,
   testType: test.type.ASSESSMENT,
-  requireSafeExamBrowser: true,
   activityReview: true,
-  shuffleQ: true,
-  shuffleAns: true,
-  calcType: test.calculators.NONE,
-  answerOnPaper: true,
-  requirePassword: true,
-  evalType: test.evalTypes.ALL_OR_NOTHING,
-  performanceBands: {
-    ADVANCED: {
-      limitFrom: 90,
-      limitTo: 100,
-      isAbove: false
-    },
-    MASTERY: {
-      limitFrom: 80,
-      limitTo: 90,
-      isAbove: false
-    },
-    BASIC: {
-      limitFrom: 70,
-      limitTo: 80,
-      isAbove: false
-    },
-    APPROACHING_BASIC: {
-      limitFrom: 70,
-      limitTo: 80,
-      isAbove: false
-    },
-    UNSATISFACTORY: {
-      limitFrom: 60,
-      limitTo: 70,
-      isAbove: false
-    }
-  },
   renderingType: "assessment",
   status: "draft",
   thumbnail: "https://fakeimg.pl/500x135/",

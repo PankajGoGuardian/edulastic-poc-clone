@@ -1,33 +1,27 @@
-import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
+import React, { Fragment } from "react";
+import PropTypes from "prop-types";
 
-import { withNamespaces } from '@edulastic/localization';
+import { withNamespaces } from "@edulastic/localization";
 
-import { Container } from './styled/Container';
-import { ZoneTitle } from './styled/ZoneTitle';
-import { Underlined } from './styled/Underlined';
-import { Loading } from './styled/Loading';
-import { IconUpload } from './styled/IconUpload';
+import { Container } from "./styled/Container";
+import { ZoneTitle } from "./styled/ZoneTitle";
+import { Underlined } from "./styled/Underlined";
+import { Loading } from "./styled/Loading";
+import { IconUpload } from "./styled/IconUpload";
 
 const StyledDropZone = ({ thumb, loading, isDragActive, t }) => (
-  <Container
-    isDragActive={isDragActive}
-    childMarginRight={0}
-    justifyContent="center"
-    flexDirection="column"
-  >
+  <Container isDragActive={isDragActive} childMarginRight={0} justifyContent="center" flexDirection="column">
     {loading ? (
       <Loading type="loading" />
     ) : (
       thumb || (
         <Fragment>
           <IconUpload isDragActive={isDragActive} />
-          <ZoneTitle>{t('component.dropZone.dragDrop')}</ZoneTitle>
-          <ZoneTitle altColor>
-            {t('component.dropZone.yourOwnImage')}
-          </ZoneTitle>
+          <ZoneTitle>{t("component.dropZone.dragDrop")}</ZoneTitle>
+          <ZoneTitle altColor>{t("component.dropZone.yourOwnImage")}</ZoneTitle>
           <ZoneTitle isComment>
-            {t('component.dropZone.or')} <Underlined>{t('component.dropZone.browse')}</Underlined>: PNG, JPG, GIF (1024KB MAX.)
+            {t("component.dropZone.or")} <Underlined>{t("component.dropZone.browse")}</Underlined>: PNG, JPG, GIF
+            (1024KB MAX.)
           </ZoneTitle>
         </Fragment>
       )
@@ -47,4 +41,4 @@ StyledDropZone.defaultProps = {
   isDragActive: false
 };
 
-export default withNamespaces('assessment')(StyledDropZone);
+export default withNamespaces("assessment")(StyledDropZone);

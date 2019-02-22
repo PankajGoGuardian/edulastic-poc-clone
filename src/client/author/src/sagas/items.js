@@ -1,6 +1,6 @@
-import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects';
-import { itemsApi } from '@edulastic/api';
-import { message } from 'antd';
+import { takeEvery, takeLatest, call, put, all } from "redux-saga/effects";
+import { itemsApi } from "@edulastic/api";
+import { message } from "antd";
 
 import {
   RECEIVE_ITEM_REQUEST,
@@ -11,7 +11,7 @@ import {
   RECEIVE_ITEMS_ERROR,
   CREATE_ITEM_REQUEST,
   UPDATE_ITEM_REQUEST
-} from '../constants/actions';
+} from "../constants/actions";
 
 export function* receiveItemsSaga({ payload }) {
   try {
@@ -23,7 +23,7 @@ export function* receiveItemsSaga({ payload }) {
     });
   } catch (err) {
     console.error(err);
-    const errorMessage = 'Receive items is failing';
+    const errorMessage = "Receive items is failing";
     yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_ITEMS_ERROR,
@@ -42,7 +42,7 @@ export function* receiveItemSaga({ payload }) {
     });
   } catch (err) {
     console.error(err);
-    const errorMessage = 'Receive item by id is failing';
+    const errorMessage = "Receive item by id is failing";
     yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_ITEM_ERROR,
@@ -60,7 +60,7 @@ export function* createItemSaga({ payload }) {
     });
   } catch (err) {
     console.error(err);
-    const errorMessage = 'Create item is failed';
+    const errorMessage = "Create item is failed";
     yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_ITEM_ERROR,
@@ -78,7 +78,7 @@ export function* updateItemSaga({ payload }) {
     });
   } catch (err) {
     console.error(err);
-    const errorMessage = 'Update item is failed';
+    const errorMessage = "Update item is failed";
     yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_ITEM_ERROR,

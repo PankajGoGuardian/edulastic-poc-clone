@@ -1,43 +1,43 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { PaddingDiv } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { PaddingDiv } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { changePreviewTabAction } from '../../actions/preview';
-import { getPreivewTabSelector } from '../../selectors/preview';
-import { changeViewAction } from '../../actions/view';
-import { getViewSelector } from '../../selectors/view';
-import { updateItemByIdAction } from '../../actions/items';
-import { ButtonBar, Container } from '../common';
-import AddNew from './AddNew';
-import { getItemSelector } from '../../selectors/items';
-import SourceModal from '../QuestionEditor/SourceModal';
-import ItemHeader from '../QuestionEditor/ItemHeader';
+import { changePreviewTabAction } from "../../actions/preview";
+import { getPreivewTabSelector } from "../../selectors/preview";
+import { changeViewAction } from "../../actions/view";
+import { getViewSelector } from "../../selectors/view";
+import { updateItemByIdAction } from "../../actions/items";
+import { ButtonBar, Container } from "../common";
+import AddNew from "./AddNew";
+import { getItemSelector } from "../../selectors/items";
+import SourceModal from "../QuestionEditor/SourceModal";
+import ItemHeader from "../QuestionEditor/ItemHeader";
 
 class ItemAdd extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      reference: '',
-      showModal: false,
+      reference: "",
+      showModal: false
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('props changed', nextProps);
+    console.log("props changed", nextProps);
     if (nextProps.item !== null) {
       this.setState({ reference: nextProps.item._id });
     }
   }
 
-  handleChangeView = (view) => {
+  handleChangeView = view => {
     const { changeView } = this.props;
     changeView(view);
   };
 
-  handleChangeView = (view) => {
+  handleChangeView = view => {
     const { changeView } = this.props;
     changeView(view);
   };
@@ -48,14 +48,14 @@ class ItemAdd extends Component {
     this.setState({ showModal: true });
   };
 
-  editReference = (e) => {
+  editReference = e => {
     const { item, updateItemById } = this.props;
     if (item._id !== e.target.value) {
       updateItemById({ id: item._id, reference: e.target.value });
     }
   };
 
-  onInputReference = (e) => {
+  onInputReference = e => {
     this.setState({ reference: e.target.value });
   };
 
@@ -68,7 +68,7 @@ class ItemAdd extends Component {
     this.setState({ showModal: false });
   };
 
-  handleApplySource = (json) => {
+  handleApplySource = json => {
     const { setQuestionsState } = this.props;
     try {
       const state = JSON.parse(json);
@@ -92,8 +92,11 @@ class ItemAdd extends Component {
         )}
         <ItemHeader
           showIcon
-          title={t('component.itemAdd.itemlist')}
-          link={{ url: '/author/items', text: t('component.itemAdd.backToItemList') }}
+          title={t("component.itemAdd.itemlist")}
+          link={{
+            url: "/author/items",
+            text: t("component.itemAdd.backToItemList")
+          }}
           reference={reference}
           editReference={this.editReference}
           onChange={this.onInputReference}
@@ -125,27 +128,27 @@ ItemAdd.propTypes = {
   previewTab: PropTypes.string.isRequired,
   setQuestionsState: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 ItemAdd.defaultProps = {
-  item: {},
+  item: {}
 };
 
 const enhance = compose(
-  withNamespaces('author'),
+  withNamespaces("author"),
   connect(
     state => ({
       view: getViewSelector(state),
       item: getItemSelector(state),
-      previewTab: getPreivewTabSelector(state),
+      previewTab: getPreivewTabSelector(state)
     }),
     {
       changeView: changeViewAction,
       changePreviewTab: changePreviewTabAction,
-      updateItemById: updateItemByIdAction,
-    },
-  ),
+      updateItemById: updateItemByIdAction
+    }
+  )
 );
 
 export default enhance(ItemAdd);

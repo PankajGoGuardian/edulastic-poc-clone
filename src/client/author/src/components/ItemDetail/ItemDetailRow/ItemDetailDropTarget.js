@@ -1,17 +1,14 @@
-import React from 'react';
-import { DropTarget } from 'react-dnd';
-import styled from 'styled-components';
-import { blue, white } from '@edulastic/colors';
-import { FaArrowDown } from 'react-icons/fa';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React from "react";
+import { DropTarget } from "react-dnd";
+import styled from "styled-components";
+import { blue, white } from "@edulastic/colors";
+import { FaArrowDown } from "react-icons/fa";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-import { Types } from '../constants';
-import {
-  moveItemDetailWidgetAction,
-  setItemDetailDraggingAction
-} from '../../../actions/itemDetail';
+import { Types } from "../constants";
+import { moveItemDetailWidgetAction, setItemDetailDraggingAction } from "../../../actions/itemDetail";
 
 const ItemDetailDropTarget = ({ connectDropTarget, isOver, canDrop }) =>
   connectDropTarget(
@@ -70,7 +67,6 @@ const enhance = compose(
 export default enhance(ItemDetailDropTarget);
 
 const Container = styled.div`
-  
   width: 100%;
   height: 80px;
   display: flex;

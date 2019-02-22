@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep, isEqual } from 'lodash';
-import { withTheme } from 'styled-components';
+import React, { useState, useRef, useEffect } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep, isEqual } from "lodash";
+import { withTheme } from "styled-components";
 
 import {
   genarateEdgesAndAreaArrays,
@@ -9,16 +9,16 @@ import {
   testOnIntersection,
   testOnInnerIntersection,
   isPolygonsIntersects
-} from './helpers';
+} from "./helpers";
 
-import { Svg } from './styled/Svg';
-import { Circle } from './styled/Circle';
-import { Polyline } from './styled/Polyline';
-import { Line } from './styled/Line';
-import { Polygon } from './styled/Polygon';
-import { G } from './styled/G';
-import { Rect } from './styled/Rect';
-import { Text } from './styled/Text';
+import { Svg } from "./styled/Svg";
+import { Circle } from "./styled/Circle";
+import { Polyline } from "./styled/Polyline";
+import { Line } from "./styled/Line";
+import { Polygon } from "./styled/Polygon";
+import { G } from "./styled/G";
+import { Rect } from "./styled/Rect";
+import { Text } from "./styled/Text";
 
 const circleRadius = 6;
 
@@ -35,22 +35,19 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
   const [draggingPolygon, setDraggingPolygon] = useState(null);
   const [dragPolygon, setDragPolygon] = useState(null);
 
-  useEffect(
-    () => {
-      setPoints(history ? history.points : []);
-      setAreas(history ? history.areas : []);
-      if (history && history.areas && history.areas.length === 0) {
-        setSelectedPolygon(null);
-        setPolygonPoints(null);
-      } else if (history && history.areas && history.areas[selectedPolygon]) {
-        setPolygonPoints(history.areas[selectedPolygon]);
-      } else {
-        setSelectedPolygon(null);
-        setPolygonPoints(null);
-      }
-    },
-    [history]
-  );
+  useEffect(() => {
+    setPoints(history ? history.points : []);
+    setAreas(history ? history.areas : []);
+    if (history && history.areas && history.areas.length === 0) {
+      setSelectedPolygon(null);
+      setPolygonPoints(null);
+    } else if (history && history.areas && history.areas[selectedPolygon]) {
+      setPolygonPoints(history.areas[selectedPolygon]);
+    } else {
+      setSelectedPolygon(null);
+      setPolygonPoints(null);
+    }
+  }, [history]);
 
   const image = useRef(null);
 
@@ -69,7 +66,7 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
     }
   };
 
-  const handleCursor = (e) => {
+  const handleCursor = e => {
     const position = image.current.getBoundingClientRect();
 
     const point = {
@@ -117,7 +114,7 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
       const diff = { x: point.x - cursor.x, y: point.y - cursor.y };
       const newPoints = cloneDeep(dragPolygon);
 
-      newPoints.forEach((oldPoint) => {
+      newPoints.forEach(oldPoint => {
         oldPoint.x += diff.x;
         oldPoint.y += diff.y;
       });
@@ -155,7 +152,7 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
     }
   };
 
-  const handleClick = (e) => {
+  const handleClick = e => {
     if (selectedPolygon === null) {
       const newPoints = cloneDeep(points);
 
@@ -170,9 +167,7 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
         if (newPoints[0]) {
           if (
             newPoints.every(
-              p =>
-                Math.abs(point.x - p.x) > circleRadius * 2 ||
-                Math.abs(point.y - p.y) > circleRadius * 2
+              p => Math.abs(point.x - p.x) > circleRadius * 2 || Math.abs(point.y - p.y) > circleRadius * 2
             )
           ) {
             if (!intersectionState) newPoints.push(point);
@@ -190,7 +185,7 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
     }
   };
 
-  const handleLineClick = (e) => {
+  const handleLineClick = e => {
     e.target = image.current;
     handleClick(e);
   };
@@ -258,23 +253,20 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
   };
 
   const calculatePolygonPoints = (area, i) =>
-    (selectedPolygon === i && Array.isArray(polygonPoints)
-      ? polygonPoints.map(point => `${point.x},${point.y}`).join(' ')
-      : area.map(point => `${point.x},${point.y}`).join(' '));
+    selectedPolygon === i && Array.isArray(polygonPoints)
+      ? polygonPoints.map(point => `${point.x},${point.y}`).join(" ")
+      : area.map(point => `${point.x},${point.y}`).join(" ");
 
   const isIntersectedAndActivePolygon = i =>
     (intersectionState || polygonIntersect) && (selectedPolygon === i || draggingPolygon === i);
 
   const getPolygonFill = i =>
-    (isIntersectedAndActivePolygon(i)
-      ? theme.widgets.hotspot.intersectFillColor
-      : theme.widgets.hotspot.svgMapFillColor
-    );
+    isIntersectedAndActivePolygon(i) ? theme.widgets.hotspot.intersectFillColor : theme.widgets.hotspot.svgMapFillColor;
 
-  const getPolygonStroke = i => (isIntersectedAndActivePolygon(i)
-    ? theme.widgets.hotspot.intersectStrokeColor
-    : theme.widgets.hotspot.svgMapStrokeColor
-  );
+  const getPolygonStroke = i =>
+    isIntersectedAndActivePolygon(i)
+      ? theme.widgets.hotspot.intersectStrokeColor
+      : theme.widgets.hotspot.svgMapStrokeColor;
 
   return (
     <div
@@ -290,15 +282,7 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
         onMouseUp={handleCircleMouseUp}
         onClick={handleClick}
       >
-        <image
-          ref={image}
-          href={imageSrc}
-          width={width}
-          height={height}
-          preserveAspectRatio="none"
-          x={0}
-          y={0}
-        />
+        <image ref={image} href={imageSrc} width={width} height={height} preserveAspectRatio="none" x={0} y={0} />
 
         {points.map((point, i) => (
           <Circle
@@ -310,7 +294,7 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
           />
         ))}
 
-        <Polyline points={points.map(point => `${point.x},${point.y}`).join(' ')} />
+        <Polyline points={points.map(point => `${point.x},${point.y}`).join(" ")} />
 
         {points[0] && mouseOn && (
           <Line
@@ -348,7 +332,7 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
             onMouseUp={points[0] ? undefined : removePolygonToDrag}
             fill={getPolygonFill(draggingPolygon)}
             stroke={getPolygonStroke(draggingPolygon)}
-            points={dragPolygon.map(point => `${point.x},${point.y}`).join(' ')}
+            points={dragPolygon.map(point => `${point.x},${point.y}`).join(" ")}
           />
         )}
 
@@ -359,14 +343,7 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
             (area, i) =>
               (selectedPolygon !== i || activeCircle === null) && (
                 <G key={i} transform={`translate(${area[0].x},${area[0].y})`}>
-                  <Rect
-                    x={0}
-                    y={0}
-                    rx={4}
-                    ry={4}
-                    width={40}
-                    height={40}
-                  />
+                  <Rect x={0} y={0} rx={4} ry={4} width={40} height={40} />
                   <Text x={8} y={12} dx={7} dy={11}>
                     {i + 1}
                   </Text>
@@ -378,7 +355,7 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
           polygonPoints.map((point, i) => (
             <Circle
               key={i}
-              onClick={(e) => {
+              onClick={e => {
                 e.preventDefault();
                 e.stopPropagation();
               }}

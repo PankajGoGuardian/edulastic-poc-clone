@@ -1,8 +1,8 @@
-import { takeEvery, call, put, all, select } from 'redux-saga/effects';
-import { questionsApi, testItemsApi } from '@edulastic/api';
-import { message } from 'antd';
-import uuid from 'uuid/v4';
-import { history } from '../../../configureStore';
+import { takeEvery, call, put, all, select } from "redux-saga/effects";
+import { questionsApi, testItemsApi } from "@edulastic/api";
+import { message } from "antd";
+import uuid from "uuid/v4";
+import { history } from "../../../configureStore";
 import {
   RECEIVE_QUESTION_REQUEST,
   RECEIVE_QUESTION_SUCCESS,
@@ -12,9 +12,9 @@ import {
   LOAD_QUESTION,
   SET_QUESTION_DATA,
   UPDATE_ITEM_DETAIL_SUCCESS
-} from '../constants/actions';
-import { getQuestionSelector } from '../selectors/question';
-import { getItemDetailSelector } from '../selectors/itemDetail';
+} from "../constants/actions";
+import { getQuestionSelector } from "../selectors/question";
+import { getItemDetailSelector } from "../selectors/itemDetail";
 
 function* receiveQuestionSaga({ payload }) {
   try {
@@ -26,7 +26,7 @@ function* receiveQuestionSaga({ payload }) {
     });
   } catch (err) {
     console.error(err);
-    const errorMessage = 'Receive question is failing';
+    const errorMessage = "Receive question is failing";
     yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_QUESTION_ERROR,
@@ -55,7 +55,7 @@ function* saveQuestionSaga() {
       // if update
       if (isUpdate) {
         let { widgets } = itemDetail.rows[rowIndex];
-        widgets = widgets.map((widget) => {
+        widgets = widgets.map(widget => {
           if (widget.entity.id === entity.id) {
             widget.entity = entity;
             return widget;
@@ -67,9 +67,9 @@ function* saveQuestionSaga() {
       } else {
         // if new entity
         itemDetail.rows[rowIndex].widgets.push({
-          widgetType: 'question',
+          widgetType: "question",
           type: entity.type,
-          title: 'Multiple choice',
+          title: "Multiple choice",
           entity,
           tabIndex
         });
@@ -83,21 +83,21 @@ function* saveQuestionSaga() {
       payload: { item }
     });
 
-    yield call(message.success, 'Update item by id is success', 'Success');
+    yield call(message.success, "Update item by id is success", "Success");
 
     if (itemDetail) {
       yield call(history.push, {
         pathname: `/author/items/${itemDetail._id}/item-detail`,
         state: {
-          backText: 'Back to item list',
-          backUrl: '/author/items',
+          backText: "Back to item list",
+          backUrl: "/author/items",
           itemDetail: false
         }
       });
     }
   } catch (err) {
     console.error(err);
-    const errorMessage = 'Save question is failing';
+    const errorMessage = "Save question is failing";
     yield call(message.error, errorMessage);
     yield put({
       type: SAVE_QUESTION_ERROR,
@@ -119,16 +119,16 @@ function* loadQuestionSaga({ payload }) {
     const { pathname } = history.location.pathname;
 
     yield call(history.push, {
-      pathname: '/author/questions/edit',
+      pathname: "/author/questions/edit",
       state: {
-        backText: 'question edit  ',
+        backText: "question edit  ",
         backUrl: pathname,
         rowIndex
       }
     });
   } catch (e) {
     console.error(e);
-    const errorMessage = 'Loading Question is failing';
+    const errorMessage = "Loading Question is failing";
     yield call(message.error, errorMessage);
   }
 }

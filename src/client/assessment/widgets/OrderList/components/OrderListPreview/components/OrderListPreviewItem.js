@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { SortableElement } from 'react-sortable-hoc';
+import React from "react";
+import PropTypes from "prop-types";
+import { SortableElement } from "react-sortable-hoc";
 
-import { Container } from '../styled/Container';
-import { StyledDragHandle } from '../styled/StyledDragHandle';
-import { Text } from '../styled/Text';
-import DragHandle from './DragHandle';
+import { Container } from "../styled/Container";
+import { StyledDragHandle } from "../styled/StyledDragHandle";
+import { Text } from "../styled/Text";
+import DragHandle from "./DragHandle";
 
 const OrderListPreviewItem = SortableElement(({ children, showDragHandle, smallSize }) => (
   <Container>

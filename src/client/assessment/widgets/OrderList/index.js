@@ -1,26 +1,26 @@
-import React, { Fragment, Component } from 'react';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { arrayMove } from 'react-sortable-hoc';
-import { cloneDeep } from 'lodash';
-import styled from 'styled-components';
+import React, { Fragment, Component } from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { arrayMove } from "react-sortable-hoc";
+import { cloneDeep } from "lodash";
+import styled from "styled-components";
 
-import { withNamespaces } from '@edulastic/localization';
-import { Paper } from '@edulastic/common';
+import { withNamespaces } from "@edulastic/localization";
+import { Paper } from "@edulastic/common";
 
-import CorrectAnswers from '../../components/CorrectAnswers';
-import QuestionTextArea from '../../components/QuestionTextArea';
-import QuillSortableList from '../../components/QuillSortableList';
-import { Subtitle } from '../../styled/Subtitle';
-import { QuestionHeader } from '../../styled/QuestionHeader';
+import CorrectAnswers from "../../components/CorrectAnswers";
+import QuestionTextArea from "../../components/QuestionTextArea";
+import QuillSortableList from "../../components/QuillSortableList";
+import { Subtitle } from "../../styled/Subtitle";
+import { QuestionHeader } from "../../styled/QuestionHeader";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
-import { EDIT, PREVIEW, CHECK, SHOW, CLEAR } from '../../constants/constantsForQuestions';
-import withAddButton from '../../components/HOC/withAddButton';
-import withPoints from '../../components/HOC/withPoints';
-import OrderListPreview from './components/OrderListPreview';
-import OrderListReport from './components/OrderListReport';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { EDIT, PREVIEW, CHECK, SHOW, CLEAR } from "../../constants/constantsForQuestions";
+import withAddButton from "../../components/HOC/withAddButton";
+import withPoints from "../../components/HOC/withPoints";
+import OrderListPreview from "./components/OrderListPreview";
+import OrderListReport from "./components/OrderListReport";
 
 const EmptyWrapper = styled.div``;
 
@@ -44,7 +44,7 @@ class OrderList extends Component {
   }
 
   render() {
-    const handleQuestionChange = (value) => {
+    const handleQuestionChange = value => {
       const { setQuestionData, item } = this.props;
       setQuestionData({ ...item, stimulus: value });
     };
@@ -67,7 +67,7 @@ class OrderList extends Component {
       setQuestionData(newData);
     };
 
-    const handleDeleteQuestion = (index) => {
+    const handleDeleteQuestion = index => {
       const { setQuestionData, item, saveAnswer } = this.props;
       const newItem = cloneDeep(item);
 
@@ -77,7 +77,7 @@ class OrderList extends Component {
 
       newItem.validation.valid_response.value = indexList;
 
-      newItem.validation.alt_responses = newItem.validation.alt_responses.map((res) => {
+      newItem.validation.alt_responses = newItem.validation.alt_responses.map(res => {
         res.value = indexList;
         return res;
       });
@@ -90,14 +90,14 @@ class OrderList extends Component {
       const { setQuestionData, item, saveAnswer } = this.props;
       const newItem = cloneDeep(item);
 
-      newItem.list = [...item.list, ''];
+      newItem.list = [...item.list, ""];
       newItem.validation.valid_response.value = [
         ...newItem.validation.valid_response.value,
         newItem.validation.valid_response.value.length
       ];
 
       if (newItem.validation.alt_responses.length) {
-        newItem.validation.alt_responses = newItem.validation.alt_responses.map((res) => {
+        newItem.validation.alt_responses = newItem.validation.alt_responses.map(res => {
           res.value.push(res.value.length);
           return res;
         });
@@ -153,7 +153,7 @@ class OrderList extends Component {
       setQuestionData(newItem);
     };
 
-    const handleDeleteAltAnswers = (index) => {
+    const handleDeleteAltAnswers = index => {
       const { setQuestionData, item } = this.props;
       const newItem = cloneDeep(item);
 
@@ -165,7 +165,7 @@ class OrderList extends Component {
       setQuestionData(newItem);
     };
 
-    const handleUpdatePoints = (points) => {
+    const handleUpdatePoints = points => {
       const { setQuestionData, item } = this.props;
       const newItem = cloneDeep(item);
       const { correctTab } = this.state;
@@ -221,14 +221,10 @@ class OrderList extends Component {
       <Fragment>
         {view === EDIT && (
           <Paper>
-            <Subtitle>{t('component.orderlist.composeQuestion')}</Subtitle>
+            <Subtitle>{t("component.orderlist.composeQuestion")}</Subtitle>
 
-            <QuestionTextArea
-              onChange={handleQuestionChange}
-              value={item.stimulus}
-              style={{ marginBottom: 30 }}
-            />
-            <Subtitle>{t('component.orderlist.list')}</Subtitle>
+            <QuestionTextArea onChange={handleQuestionChange} value={item.stimulus} style={{ marginBottom: 30 }} />
+            <Subtitle>{t("component.orderlist.list")}</Subtitle>
             <List
               onAdd={handleAddQuestion}
               items={item.list}
@@ -250,11 +246,7 @@ class OrderList extends Component {
         )}
         {view === PREVIEW && (
           <Wrapper>
-            <QuestionHeader
-              qIndex={qIndex}
-              smallSize={smallSize}
-              dangerouslySetInnerHTML={{ __html: item.stimulus }}
-            />
+            <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
 
             {previewTab === CHECK && (
               <OrderListReport
@@ -310,11 +302,11 @@ OrderList.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: ''
+  evaluation: ""
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     null,
     {

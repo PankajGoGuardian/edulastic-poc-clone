@@ -1,8 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { IconQuestion, IconCaretDown } from '@edulastic/icons';
-import Profile from '../assets/Profile.png';
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { IconQuestion, IconCaretDown } from "@edulastic/icons";
+import Profile from "../assets/Profile.png";
 
 const Help = ({ flag }) => (
   <HelpWrapper>
@@ -47,11 +47,11 @@ const SelectIcon = styled(IconCaretDown)`
   fill: #fff;
   width: 11px;
   height: 16px;
-  display: ${props => (props.flag ? 'none' : 'block')};
+  display: ${props => (props.flag ? "none" : "block")};
 `;
 const ProfileDetail = styled.div`
   padding-left: 0.5rem;
-  display: ${props => (props.flag ? 'none' : 'block')};
+  display: ${props => (props.flag ? "none" : "block")};
   & p {
     margin: 0rem;
     padding-bottom: 0.2rem;
@@ -109,5 +109,5 @@ const HelpText = styled.span`
   color: #7a7a7a;
   font-size: 0.9rem;
   font-weight: 600;
-  display: ${props => (props.flag ? 'none' : 'block')};
+  display: ${props => (props.flag ? "none" : "block")};
 `;

@@ -1,13 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { FlexContainer } from '@edulastic/common';
-import Tags from '../../../../src/components/common/Tags';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { FlexContainer } from "@edulastic/common";
+import Tags from "../../../../src/components/common/Tags";
 
 const ClassCell = ({ group, data }) => {
   let students;
   if (!students || !students.length) {
-    students = ['All students'];
+    students = ["All students"];
   }
 
   const classNames = group
@@ -18,16 +18,12 @@ const ClassCell = ({ group, data }) => {
       return null;
     })
     .filter(Boolean)
-    .join(' ');
+    .join(" ");
 
   return (
     <FlexContainer>
       <span>{classNames}</span>
-      <TagsContainer>
-        {students && !!students.length && (
-          <Tags tags={students} type="secondary" />
-        )}
-      </TagsContainer>
+      <TagsContainer>{students && !!students.length && <Tags tags={students} type="secondary" />}</TagsContainer>
     </FlexContainer>
   );
 };

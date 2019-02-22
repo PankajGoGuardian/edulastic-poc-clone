@@ -1,1 +1,1 @@
-export { default as ManageClass } from './components';
+export { default as ManageClass } from "./components";

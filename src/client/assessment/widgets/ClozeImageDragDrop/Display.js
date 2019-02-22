@@ -1,25 +1,25 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { cloneDeep, flattenDeep } from 'lodash';
-import { withTheme } from 'styled-components';
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { cloneDeep, flattenDeep } from "lodash";
+import { withTheme } from "styled-components";
 
-import { InstructorStimulus } from '@edulastic/common';
-import DropContainer from './components/DropContainer';
-import DragItem from './components/DragItem';
+import { InstructorStimulus } from "@edulastic/common";
+import DropContainer from "./components/DropContainer";
+import DragItem from "./components/DragItem";
 
-import { Pointer } from '../../styled/Pointer';
-import { Point } from '../../styled/Point';
-import { Triangle } from '../../styled/Triangle';
-import { QuestionHeader } from '../../styled/QuestionHeader';
+import { Pointer } from "../../styled/Pointer";
+import { Point } from "../../styled/Point";
+import { Triangle } from "../../styled/Triangle";
+import { QuestionHeader } from "../../styled/QuestionHeader";
 
-import ResponseBoxLayout from './components/ResponseBoxLayout';
-import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout';
-import CorrectAnswerBoxLayout from './components/CorrectAnswerBoxLayout';
-import { getFontSize } from '../../utils/helpers';
-import { withCheckAnswerButton } from '../../components/HOC/withCheckAnswerButton';
+import ResponseBoxLayout from "./components/ResponseBoxLayout";
+import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
+import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
+import { getFontSize } from "../../utils/helpers";
+import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
 
-const defaultImageURL = 'https://assets.learnosity.com/demos/docs/colored_world_map.png';
-const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
+const defaultImageURL = "https://assets.learnosity.com/demos/docs/colored_world_map.png";
+const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 class Display extends Component {
   constructor(props) {
@@ -69,17 +69,15 @@ class Display extends Component {
       newResponses.push(last);
     }
 
-    if (typeof fromContainerIndex === 'number') {
-      newAnswers[fromContainerIndex] = newAnswers[fromContainerIndex].filter(
-        (_, i) => i !== fromRespIndex
-      );
+    if (typeof fromContainerIndex === "number") {
+      newAnswers[fromContainerIndex] = newAnswers[fromContainerIndex].filter((_, i) => i !== fromRespIndex);
     }
 
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });
     onChange(newAnswers);
   };
 
-  shuffle = (arr) => {
+  shuffle = arr => {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -88,12 +86,12 @@ class Display extends Component {
   };
 
   shuffleGroup = data =>
-    data.map((arr) => {
+    data.map(arr => {
       arr.options = this.shuffle(arr.options);
       return arr;
     });
 
-  getInitialResponses = (options) => {
+  getInitialResponses = options => {
     const { configureOptions, userSelections: userSelectionsProp } = this.props;
     const { duplicatedResponses: isDuplicated } = configureOptions;
     let userSelections = [];
@@ -151,45 +149,37 @@ class Display extends Component {
     }
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const {
-      heightpx,
-      wordwrap,
-      responsecontainerposition,
-      responsecontainerindividuals,
-      stemnumeration
-    } = uiStyle;
+    const { heightpx, wordwrap, responsecontainerposition, responsecontainerindividuals, stemnumeration } = uiStyle;
 
     const responseBtnStyle = {
-      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : 'auto',
-      heightpx: heightpx !== 0 ? heightpx : 'auto',
-      whiteSpace: wordwrap ? 'inherit' : 'nowrap'
+      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
+      heightpx: heightpx !== 0 ? heightpx : "auto",
+      whiteSpace: wordwrap ? "inherit" : "nowrap"
     };
 
     const drop = data => data;
 
     const previewTemplateBoxLayout = (
       <div
-        className={`imagedragdrop_template_box ${smallSize ? 'small' : ''}`}
+        className={`imagedragdrop_template_box ${smallSize ? "small" : ""}`}
         style={{
-          fontSize: smallSize
-            ? theme.widgets.clozeImageDragDrop.previewTemplateBoxSmallFontSize
-            : fontSize,
-          overflowY: smallSize && 'hidden'
+          fontSize: smallSize ? theme.widgets.clozeImageDragDrop.previewTemplateBoxSmallFontSize : fontSize,
+          overflowY: smallSize && "hidden"
         }}
       >
         <div
           style={{
-            position: 'relative',
+            position: "relative",
             top: 0,
             left: 0,
-            width: smallSize ? '100%' : imageWidth,
-            margin: 'auto'
+            width: smallSize ? "100%" : imageWidth,
+            margin: "auto"
           }}
         >
           <img
             src={imageUrl || defaultImageURL}
             width="100%"
-            style={{ userSelect: 'none', pointerEvents: 'none' }}
+            style={{ userSelect: "none", pointerEvents: "none" }}
             alt={imageAlterText}
             title={imageTitle}
           />
@@ -204,7 +194,7 @@ class Display extends Component {
               border: showDashedBorder
                 ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
                 : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`,
-              position: 'absolute',
+              position: "absolute",
               background: backgroundColor,
               borderRadius: 5
             };
@@ -218,13 +208,13 @@ class Display extends Component {
             } else {
               btnStyle.width = btnStyle.widthpx;
             }
-            let indexStr = '';
+            let indexStr = "";
             switch (stemnumeration) {
-              case 'lowercase': {
+              case "lowercase": {
                 indexStr = ALPHABET[dropTargetIndex];
                 break;
               }
-              case 'uppercase': {
+              case "uppercase": {
                 indexStr = ALPHABET[dropTargetIndex].toUpperCase();
                 break;
               }
@@ -237,7 +227,7 @@ class Display extends Component {
                 index={index}
                 style={{
                   ...btnStyle,
-                  borderStyle: smallSize ? 'dashed' : 'solid'
+                  borderStyle: smallSize ? "dashed" : "solid"
                 }}
                 className="imagelabeldragdrop-droppable active"
                 drop={drop}
@@ -258,12 +248,10 @@ class Display extends Component {
                         item={answer}
                         data={`${answer}_${dropTargetIndex}_${item_index}`}
                         style={{
-                          border: `solid 1px ${
-                            theme.widgets.clozeImageDragDrop.dragItemBorderColor
-                          }`,
+                          border: `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}`,
                           margin: 5,
                           padding: 5,
-                          display: 'inline-block'
+                          display: "inline-block"
                         }}
                         onDrop={this.onDrop}
                       >
@@ -271,10 +259,7 @@ class Display extends Component {
                       </DragItem>
                     ))}
                 </div>
-                <Pointer
-                  className={responseContainer.pointerPosition}
-                  width={responseContainer.width}
-                >
+                <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />
                   <Triangle />
                 </Pointer>
@@ -302,8 +287,7 @@ class Display extends Component {
         onDropHandler={this.onDrop}
       />
     );
-    const templateBoxLayout =
-      showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
+    const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
         smallSize={smallSize}
@@ -327,59 +311,65 @@ class Display extends Component {
     const responseBoxLayout = showAnswer ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
 
-    const responseposition = smallSize ? 'right' : responsecontainerposition;
- 
+    const responseposition = smallSize ? "right" : responsecontainerposition;
+
     return (
       <div style={{ fontSize }}>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         <div>
-          {responseposition === 'top' && (
+          {responseposition === "top" && (
             <React.Fragment>
-              <div style={{ margin: '15px 0', borderRadius: 10 }}>{responseBoxLayout}</div>
-              <div style={{ margin: '15px 0', borderRadius: 10 }}>{templateBoxLayout}</div>
+              <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
+              <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
             </React.Fragment>
           )}
-          {responseposition === 'bottom' && (
+          {responseposition === "bottom" && (
             <React.Fragment>
-              <div style={{ margin: '15px 0', borderRadius: 10 }}>{templateBoxLayout}</div>
-              <div style={{ margin: '15px 0', borderRadius: 10 }}>{responseBoxLayout}</div>
+              <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
+              <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
             </React.Fragment>
           )}
-          {responseposition === 'left' && (
-            <div style={{ display: 'flex' }}>
+          {responseposition === "left" && (
+            <div style={{ display: "flex" }}>
               <div
                 hidden={checkAnswer || showAnswer}
                 className="left responseboxContainer"
                 style={{
-                  width: '20%',
+                  width: "20%",
                   margin: 15,
-                  height: 'auto',
+                  height: "auto",
                   borderRadius: 10,
                   background: theme.widgets.clozeImageDragDrop.responseBoxBgColor,
-                  display: 'flex',
-                  justifyContent: 'center'
+                  display: "flex",
+                  justifyContent: "center"
                 }}
               >
                 {responseBoxLayout}
               </div>
-              <div style={{ margin: '15px 0 15px 15px', borderRadius: 10, flex: 1 }}>
+              <div
+                style={{
+                  margin: "15px 0 15px 15px",
+                  borderRadius: 10,
+                  flex: 1
+                }}
+              >
                 {templateBoxLayout}
               </div>
             </div>
           )}
-          {responseposition === 'right' && (
+          {responseposition === "right" && (
             <div
               style={{
-                display: 'flex',
-                height: smallSize ? 190 : '100%',
-                margin: smallSize ? '-30px -40px' : 0
+                display: "flex",
+                height: smallSize ? 190 : "100%",
+                margin: smallSize ? "-30px -40px" : 0
               }}
             >
               <div
                 style={{
                   flex: 1,
-                  margin: smallSize ? 0 : '15px 15px 15px 0',
+                  margin: smallSize ? 0 : "15px 15px 15px 0",
                   borderRadius: 10
                 }}
               >
@@ -387,15 +377,15 @@ class Display extends Component {
               </div>
               <div
                 hidden={checkAnswer || showAnswer}
-                className={`right responseboxContainer ${smallSize ? 'small' : ''}`}
+                className={`right responseboxContainer ${smallSize ? "small" : ""}`}
                 style={{
-                  height: 'auto',
-                  width: smallSize ? '120px' : '20%',
+                  height: "auto",
+                  width: smallSize ? "120px" : "20%",
                   margin: smallSize ? 0 : 15,
                   borderRadius: smallSize ? 0 : 10,
                   background: theme.widgets.clozeImageDragDrop.responseBoxBgColor,
-                  display: 'flex',
-                  justifyContent: 'center'
+                  display: "flex",
+                  justifyContent: "center"
                 }}
               >
                 {responseBoxLayout}
@@ -445,11 +435,11 @@ Display.defaultProps = {
   responseContainers: [],
   showDashedBorder: false,
   smallSize: false,
-  backgroundColor: '#fff',
+  backgroundColor: "#fff",
   validation: {},
   imageUrl: undefined,
-  imageAlterText: '',
-  imageTitle: '',
+  imageAlterText: "",
+  imageTitle: "",
   maxRespCount: 1,
   imageWidth: 600,
   configureOptions: {
@@ -459,15 +449,15 @@ Display.defaultProps = {
     transparentResponses: false
   },
   uiStyle: {
-    responsecontainerposition: 'bottom',
-    fontsize: 'normal',
-    stemnumeration: 'numerical',
+    responsecontainerposition: "bottom",
+    fontsize: "normal",
+    stemnumeration: "numerical",
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,
     responsecontainerindividuals: []
   },
-  instructorStimulus: ''
+  instructorStimulus: ""
 };
 
 export default withTheme(withCheckAnswerButton(Display));

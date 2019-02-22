@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { white, green } from '@edulastic/colors';
+import styled from "styled-components";
+import { white, green } from "@edulastic/colors";
 
 export const Container = styled.div`
   display: flex;
@@ -29,7 +29,7 @@ export const Container = styled.div`
       letter-spacing: 0.2px;
     }
   }
-  
+
   .ant-menu-horizontal {
     background: transparent;
     border-bottom: none;
@@ -71,7 +71,7 @@ export const MobileFirstContainer = styled.div`
   align-items: center;
   justify-content: space-around;
   padding-bottom: 17px;
-  
+
   .ant-btn {
     background: transparent;
     border: none;
@@ -114,8 +114,7 @@ export const HeadIcon = styled.div`
   margin-right: 10px;
 `;
 
-export const RightSide = styled.div`
-`;
+export const RightSide = styled.div``;
 
 export const MenuItem = styled.li`
   display: flex;
@@ -136,7 +135,7 @@ export const MenuItem = styled.li`
   letter-spacing: 0.2px;
   text-align: center;
   color: #e5e5e5;
-  
+
   &:last-of-type {
     margin-right: 0;
   }
@@ -149,4 +148,4 @@ export const MenuItem = styled.li`
       fill: #434b5d;
     }
   }
-`
+`;

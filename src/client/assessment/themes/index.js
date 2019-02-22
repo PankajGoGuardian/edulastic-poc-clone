@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';
-import { compose } from 'redux';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { gotoItem, saveUserResponse } from '../actions/items';
-import { finishTestAcitivityAction } from '../actions/test';
-import { evaluateAnswer } from '../actions/evaluation';
-import { changePreview as changePreviewAction } from '../actions/view';
-import { startAssessmentAction } from '../actions/assessment';
-import AssesmentPlayerDefault from './AssessmentPlayerDefault';
-import AssesmentPlayerSimple from './AssessmentPlayerSimple';
+import React, { useEffect } from "react";
+import { compose } from "redux";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { gotoItem, saveUserResponse } from "../actions/items";
+import { finishTestAcitivityAction } from "../actions/test";
+import { evaluateAnswer } from "../actions/evaluation";
+import { changePreview as changePreviewAction } from "../actions/view";
+import { startAssessmentAction } from "../actions/assessment";
+import AssesmentPlayerDefault from "./AssessmentPlayerDefault";
+import AssesmentPlayerSimple from "./AssessmentPlayerSimple";
 
 const AssessmentContainer = ({
   view,
@@ -40,7 +40,7 @@ const AssessmentContainer = ({
   const gotoQuestion = index => {
     history.push(`${url}/qid/${index}`);
     saveUser(currentItem);
-    changePreview('clear');
+    changePreview("clear");
   };
 
   const moveToNext = () => {
@@ -49,7 +49,7 @@ const AssessmentContainer = ({
     }
     if (isLast()) {
       saveUser(currentItem);
-      history.push('/student/test-summary');
+      history.push("/student/test-summary");
     }
   };
 
@@ -75,11 +75,7 @@ const AssessmentContainer = ({
     history
   };
 
-  return defaultAP ? (
-    <AssesmentPlayerDefault {...props} />
-  ) : (
-    <AssesmentPlayerSimple {...props} />
-  );
+  return defaultAP ? <AssesmentPlayerDefault {...props} /> : <AssesmentPlayerSimple {...props} />;
 };
 
 AssessmentContainer.propTypes = {

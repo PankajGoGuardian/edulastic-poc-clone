@@ -1,6 +1,6 @@
-import { createSelector } from 'reselect';
-import { get, groupBy, forEach } from 'lodash';
-import { getTestSelector } from '../../ducks';
+import { createSelector } from "reselect";
+import { get, groupBy, forEach } from "lodash";
+import { getTestSelector } from "../../ducks";
 
 // selector
 
@@ -14,18 +14,15 @@ export const getSummarySelector = createSelector(
   getScoringSelector,
   (state, scoring) => {
     const reduceTestItems = (acc, testItem) => {
-      const questions = get(testItem, 'data.questions', []);
-      const res = questions.map((q) => {
+      const questions = get(testItem, "data.questions", []);
+      const res = questions.map(q => {
         const item = scoring.testItems.find(({ id }) => testItem._id === id);
         const score = item && item.points ? item.points : 0;
 
         return {
           id: q._id,
           score,
-          standards: get(q, 'standardsMap.domains', []).reduce(
-            (st, domain) => [...st, ...domain.standards],
-            []
-          )
+          standards: get(q, "standardsMap.domains", []).reduce((st, domain) => [...st, ...domain.standards], [])
         };
       });
 
@@ -47,10 +44,7 @@ export const getSummarySelector = createSelector(
     const testItems = state.testItems.reduce(reduceTestItems, []);
     const questions = testItems.reduce(toQuestions, []);
 
-    const groupedResult = groupBy(
-      questions.reduce(toResult, []),
-      item => item.standard.name
-    );
+    const groupedResult = groupBy(questions.reduce(toResult, []), item => item.standard.name);
 
     const result = [];
 

@@ -1,25 +1,21 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { withNamespaces } from '@edulastic/localization';
-import { PaddingDiv } from '@edulastic/common';
-import {
-  Col, Label, Row,
-  StyledTextField,
-  Subtitle, TitleTextInput
-} from '../common/styled_components';
-import { QuestionSection } from './'
-import { setQuestionDataAction } from '../../../../author/src/actions/question';
-import QuestionTextArea from '../../QuestionTextArea';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { withNamespaces } from "@edulastic/localization";
+import { PaddingDiv } from "@edulastic/common";
+import { Col, Label, Row, StyledTextField, Subtitle, TitleTextInput } from "../common/styled_components";
+import { QuestionSection } from "./";
+import { setQuestionDataAction } from "../../../../author/src/actions/question";
+import QuestionTextArea from "../../QuestionTextArea";
 
 class AxisSegments extends Component {
-  onChangeQuestion = (stimulus) => {
+  onChangeQuestion = stimulus => {
     const { graphData, setQuestionData } = this.props;
     setQuestionData({ ...graphData, stimulus });
   };
 
-  handleCanvasChange = (event) => {
+  handleCanvasChange = event => {
     const { value, name } = event.target;
     const { graphData, setQuestionData } = this.props;
     const { canvas } = graphData;
@@ -28,9 +24,11 @@ class AxisSegments extends Component {
     setQuestionData({ ...graphData, canvas });
   };
 
-  handleInputChange = (event) => {
-    const { target: { type, checked, value: targetValue, name } } = event;
-    const value = type === 'checkbox' ? checked : targetValue;
+  handleInputChange = event => {
+    const {
+      target: { type, checked, value: targetValue, name }
+    } = event;
+    const value = type === "checkbox" ? checked : targetValue;
 
     this.setState({ [name]: value });
   };
@@ -41,20 +39,30 @@ class AxisSegments extends Component {
 
     return (
       <div>
-        <QuestionSection section="main" label="COMPOSE QUESTION" cleanSections={cleanSections} fillSections={fillSections}>
-          <Subtitle>{t('component.graphing.question.composequestion')}</Subtitle>
+        <QuestionSection
+          section="main"
+          label="COMPOSE QUESTION"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+        >
+          <Subtitle>{t("component.graphing.question.composequestion")}</Subtitle>
           <QuestionTextArea
-            placeholder={t('component.graphing.question.enteryourquestion')}
+            placeholder={t("component.graphing.question.enteryourquestion")}
             onChange={this.onChangeQuestion}
             value={stimulus}
           />
         </QuestionSection>
-        <QuestionSection  section="main" label="GRAPH PARAMETERS" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="main"
+          label="GRAPH PARAMETERS"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+        >
           <PaddingDiv top={30} bottom={30}>
-            <Subtitle>{t('component.graphing.graphline')}</Subtitle>
+            <Subtitle>{t("component.graphing.graphline")}</Subtitle>
             <Row>
               <Col md={6}>
-                <Label>{t('component.graphing.minVal')}</Label>
+                <Label>{t("component.graphing.minVal")}</Label>
                 <StyledTextField
                   type="number"
                   name="x_min"
@@ -63,17 +71,12 @@ class AxisSegments extends Component {
                   disabled={false}
                   step={1}
                 />
-                <Label>{t('component.graphing.title')}</Label>
-                <TitleTextInput
-                  type="text"
-                  name="title"
-                  value={canvas.title}
-                  onChange={this.handleCanvasChange}
-                />
+                <Label>{t("component.graphing.title")}</Label>
+                <TitleTextInput type="text" name="title" value={canvas.title} onChange={this.handleCanvasChange} />
               </Col>
               <Col md={6} style={{ paddingLeft: 30 }}>
                 <div>
-                  <Label>{t('component.graphing.maxVal')}</Label>
+                  <Label>{t("component.graphing.maxVal")}</Label>
                   <StyledTextField
                     type="number"
                     name="x_max"
@@ -84,7 +87,7 @@ class AxisSegments extends Component {
                   />
                 </div>
                 <div>
-                  <Label>{t('component.graphing.responseNumAllowed')}</Label>
+                  <Label>{t("component.graphing.responseNumAllowed")}</Label>
                   <StyledTextField
                     type="number"
                     name="responsesAllowed"
@@ -111,13 +114,13 @@ AxisSegments.propTypes = {
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     null,
     {
       setQuestionData: setQuestionDataAction
-    },
-  ),
+    }
+  )
 );
 
 export default enhance(AxisSegments);

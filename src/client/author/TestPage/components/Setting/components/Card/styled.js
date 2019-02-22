@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Card, Col } from 'antd';
+import styled from "styled-components";
+import { Card, Col } from "antd";
 
 export const StyledCard = styled(Card)`
   font-size: 13px;

@@ -1,24 +1,24 @@
-import React, { Fragment, useState } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
-import { Input, Row, Col } from 'antd';
-import { compose } from 'redux';
-import { withTheme } from 'styled-components';
+import React, { Fragment, useState } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep } from "lodash";
+import { Input, Row, Col } from "antd";
+import { compose } from "redux";
+import { withTheme } from "styled-components";
 
-import { withNamespaces } from '@edulastic/localization';
-import { Paper } from '@edulastic/common';
+import { withNamespaces } from "@edulastic/localization";
+import { Paper } from "@edulastic/common";
 
-import { EDIT } from '../../constants/constantsForQuestions';
+import { EDIT } from "../../constants/constantsForQuestions";
 
-import withPoints from '../../components/HOC/withPoints';
-import QuestionTextArea from '../../components/QuestionTextArea';
-import CorrectAnswers from '../../components/CorrectAnswers';
-import { Subtitle } from '../../styled/Subtitle';
+import withPoints from "../../components/HOC/withPoints";
+import QuestionTextArea from "../../components/QuestionTextArea";
+import CorrectAnswers from "../../components/CorrectAnswers";
+import { Subtitle } from "../../styled/Subtitle";
 
-import ShadesView from './components/ShadesView';
-import ShadingPreview from './ShadingPreview';
-import { StyledCheckbox } from './styled/StyledCheckbox';
-import AdvancedOptions from '../SortList/components/AdvancedOptions';
+import ShadesView from "./components/ShadesView";
+import ShadingPreview from "./ShadingPreview";
+import { StyledCheckbox } from "./styled/StyledCheckbox";
+import AdvancedOptions from "../SortList/components/AdvancedOptions";
 
 const OptionsList = withPoints(ShadingPreview);
 
@@ -46,7 +46,7 @@ const ShadingEdit = ({ item, setQuestionData, t, theme }) => {
 
     newItem.canvas[prop] = val;
 
-    if (prop === 'column_count' || prop === 'row_count') {
+    if (prop === "column_count" || prop === "row_count") {
       newItem.canvas.shaded = [];
     }
 
@@ -68,7 +68,7 @@ const ShadingEdit = ({ item, setQuestionData, t, theme }) => {
     setCorrectTab(newItem.validation.alt_responses.length);
   };
 
-  const handlePointsChange = (val) => {
+  const handlePointsChange = val => {
     const newItem = cloneDeep(item);
 
     if (correctTab === 0) {
@@ -100,7 +100,7 @@ const ShadingEdit = ({ item, setQuestionData, t, theme }) => {
     setQuestionData(newItem);
   };
 
-  const handleCloseTab = (tabIndex) => {
+  const handleCloseTab = tabIndex => {
     const newItem = cloneDeep(item);
     newItem.validation.alt_responses.splice(tabIndex, 1);
 
@@ -111,9 +111,7 @@ const ShadingEdit = ({ item, setQuestionData, t, theme }) => {
   const handleOnCellClick = (rowNumber, colNumber) => () => {
     const newItem = cloneDeep(item);
 
-    const indexOfSameShade = newItem.canvas.shaded.findIndex(
-      shade => shade[0] === rowNumber && shade[1] === colNumber
-    );
+    const indexOfSameShade = newItem.canvas.shaded.findIndex(shade => shade[0] === rowNumber && shade[1] === colNumber);
 
     if (indexOfSameShade === -1) {
       newItem.canvas.shaded.push([rowNumber, colNumber]);
@@ -135,9 +133,7 @@ const ShadingEdit = ({ item, setQuestionData, t, theme }) => {
     <OptionsList
       item={item}
       points={
-        correctTab === 0
-          ? item.validation.valid_response.score
-          : item.validation.alt_responses[correctTab - 1].score
+        correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
       }
       onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
@@ -158,14 +154,14 @@ const ShadingEdit = ({ item, setQuestionData, t, theme }) => {
   return (
     <Fragment>
       <Paper style={{ marginBottom: 30 }}>
-        <Subtitle>{t('component.shading.composeQuestion')}</Subtitle>
+        <Subtitle>{t("component.shading.composeQuestion")}</Subtitle>
         <QuestionTextArea
-          placeholder={t('component.shading.enterQuestion')}
-          onChange={stimulus => handleItemChangeChange('stimulus', stimulus)}
+          placeholder={t("component.shading.enterQuestion")}
+          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
         />
 
-        <Subtitle>{t('component.shading.canvasSubtitle')}</Subtitle>
+        <Subtitle>{t("component.shading.canvasSubtitle")}</Subtitle>
 
         <Row gutter={70}>
           <Col span={12}>
@@ -174,13 +170,13 @@ const ShadingEdit = ({ item, setQuestionData, t, theme }) => {
               color={theme.widgets.shading.subtitleColor}
               padding="0 0 16px 0"
             >
-              {t('component.shading.rowsCountSubtitle')}
+              {t("component.shading.rowsCountSubtitle")}
             </Subtitle>
 
             <Input
               size="large"
               value={row_count}
-              onChange={e => handleCanvasOptionsChange('row_count', +e.target.value)}
+              onChange={e => handleCanvasOptionsChange("row_count", +e.target.value)}
             />
           </Col>
           <Col span={12}>
@@ -189,48 +185,42 @@ const ShadingEdit = ({ item, setQuestionData, t, theme }) => {
               color={theme.widgets.shading.subtitleColor}
               padding="0 0 16px 0"
             >
-              {t('component.shading.colsCountSubtitle')}
+              {t("component.shading.colsCountSubtitle")}
             </Subtitle>
 
             <Input
               size="large"
               value={column_count}
-              onChange={e => handleCanvasOptionsChange('column_count', +e.target.value)}
+              onChange={e => handleCanvasOptionsChange("column_count", +e.target.value)}
             />
           </Col>
         </Row>
         <Row gutter={70}>
           <Col span={12}>
-            <Subtitle
-              fontSize={theme.widgets.shading.subtitleFontSize}
-              color={theme.widgets.shading.subtitleColor}
-            >
-              {t('component.shading.cellWidthSubtitle')}
+            <Subtitle fontSize={theme.widgets.shading.subtitleFontSize} color={theme.widgets.shading.subtitleColor}>
+              {t("component.shading.cellWidthSubtitle")}
             </Subtitle>
 
             <Input
               size="large"
               value={cell_width}
-              onChange={e => handleCanvasOptionsChange('cell_width', +e.target.value)}
+              onChange={e => handleCanvasOptionsChange("cell_width", +e.target.value)}
             />
           </Col>
           <Col span={12}>
-            <Subtitle
-              fontSize={theme.widgets.shading.subtitleFontSize}
-              color={theme.widgets.shading.subtitleColor}
-            >
-              {t('component.shading.cellHeightSubtitle')}
+            <Subtitle fontSize={theme.widgets.shading.subtitleFontSize} color={theme.widgets.shading.subtitleColor}>
+              {t("component.shading.cellHeightSubtitle")}
             </Subtitle>
 
             <Input
               size="large"
               value={cell_height}
-              onChange={e => handleCanvasOptionsChange('cell_height', +e.target.value)}
+              onChange={e => handleCanvasOptionsChange("cell_height", +e.target.value)}
             />
           </Col>
         </Row>
 
-        <Subtitle>{t('component.shading.shadesSubtitle')}</Subtitle>
+        <Subtitle>{t("component.shading.shadesSubtitle")}</Subtitle>
 
         <ShadesView
           colCount={column_count || 1}
@@ -242,12 +232,10 @@ const ShadingEdit = ({ item, setQuestionData, t, theme }) => {
         />
 
         <StyledCheckbox
-          onChange={() =>
-            handleCanvasOptionsChange('read_only_author_cells', !read_only_author_cells)
-          }
+          onChange={() => handleCanvasOptionsChange("read_only_author_cells", !read_only_author_cells)}
           defaultChecked={read_only_author_cells}
         >
-          {t('component.shading.lockShadedCells')}
+          {t("component.shading.lockShadedCells")}
         </StyledCheckbox>
 
         <CorrectAnswers
@@ -273,7 +261,7 @@ ShadingEdit.propTypes = {
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   withTheme
 );
 

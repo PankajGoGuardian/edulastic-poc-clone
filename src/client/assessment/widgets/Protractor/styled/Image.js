@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import ProtractorImg from '../assets/protractor.svg';
+import styled from "styled-components";
+import ProtractorImg from "../assets/protractor.svg";
 
 export const Image = styled.div`
   background: url(${ProtractorImg}) no-repeat;

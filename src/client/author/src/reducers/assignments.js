@@ -2,8 +2,7 @@ import {
   RECEIVE_ASSIGNMENTS_REQUEST,
   RECEIVE_ASSIGNMENTS_SUCCESS,
   RECEIVE_ASSIGNMENTS_ERROR
-} from '../constants/actions';
-
+} from "../constants/actions";
 
 const initialState = {
   entities: [],

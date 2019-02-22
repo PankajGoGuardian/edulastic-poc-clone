@@ -1,19 +1,19 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { cloneDeep } from 'lodash';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { cloneDeep } from "lodash";
 
-import { withNamespaces } from '@edulastic/localization';
-import { Button, Tab, TabContainer, Tabs } from '@edulastic/common';
+import { withNamespaces } from "@edulastic/localization";
+import { Button, Tab, TabContainer, Tabs } from "@edulastic/common";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
-import { getQuestionDataSelector } from '../../../author/src/selectors/question';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { getQuestionDataSelector } from "../../../author/src/selectors/question";
 
-import { Subtitle } from '../../styled/Subtitle';
+import { Subtitle } from "../../styled/Subtitle";
 
-import CorrectAnswer from './CorrectAnswer';
-import { IconPlus } from './styled/IconPlus';
+import CorrectAnswer from "./CorrectAnswer";
+import { IconPlus } from "./styled/IconPlus";
 
 class CorrectAnswers extends Component {
   constructor(props) {
@@ -23,7 +23,7 @@ class CorrectAnswers extends Component {
     };
   }
 
-  handleTabChange = (value) => {
+  handleTabChange = value => {
     this.setState({ value });
   };
 
@@ -35,7 +35,7 @@ class CorrectAnswers extends Component {
         <Tab
           key={i}
           onClose={() => onRemoveAltResponses(i)}
-          label={`${t('component.correctanswers.alternate')} ${i + 1}`}
+          label={`${t("component.correctanswers.alternate")} ${i + 1}`}
         />
       ));
     }
@@ -48,9 +48,7 @@ class CorrectAnswers extends Component {
     return (
       <Button
         style={{ minWidth: 70, minHeight: 25 }}
-        icon={
-          <IconPlus data-cy="alternate" />
-        }
+        icon={<IconPlus data-cy="alternate" />}
         onClick={() => {
           this.handleTabChange(validation.alt_responses.length + 1);
           onAddAltResponses();
@@ -61,7 +59,7 @@ class CorrectAnswers extends Component {
     );
   };
 
-  updateCorrectValidationAnswers = (answers) => {
+  updateCorrectValidationAnswers = answers => {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
 
@@ -103,7 +101,7 @@ class CorrectAnswers extends Component {
     setQuestionData(newData);
   };
 
-  handleUpdateCorrectScore = (points) => {
+  handleUpdateCorrectScore = points => {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
 
@@ -112,7 +110,7 @@ class CorrectAnswers extends Component {
     setQuestionData(newData);
   };
 
-  handleUpdateAltValidationScore = i => (points) => {
+  handleUpdateAltValidationScore = i => points => {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
 
@@ -122,26 +120,15 @@ class CorrectAnswers extends Component {
   };
 
   render() {
-    const {
-      validation,
-      stimulus,
-      options,
-      t,
-      multipleResponses,
-      uiStyle
-    } = this.props;
+    const { validation, stimulus, options, t, multipleResponses, uiStyle } = this.props;
     const { value } = this.state;
 
     return (
       <div>
-        <Subtitle>{t('component.correctanswers.setcorrectanswers')}</Subtitle>
+        <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
         <div>
-          <Tabs
-            value={value}
-            onChange={this.handleTabChange}
-            extra={this.renderPlusButton()}
-          >
-            <Tab label={t('component.correctanswers.correct')} />
+          <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
+            <Tab label={t("component.correctanswers.correct")} />
             {this.renderAltResponses()}
           </Tabs>
           {value === 0 && (
@@ -169,9 +156,7 @@ class CorrectAnswers extends Component {
                       multipleResponses={multipleResponses}
                       stimulus={stimulus}
                       options={options}
-                      onUpdateValidationValue={answers =>
-                        this.updateAltCorrectValidationAnswers(answers, i)
-                      }
+                      onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                     />
                   </TabContainer>
@@ -198,13 +183,13 @@ CorrectAnswers.propTypes = {
 };
 
 CorrectAnswers.defaultProps = {
-  stimulus: '',
+  stimulus: "",
   options: [],
   validation: {}
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     state => ({
       question: getQuestionDataSelector(state)

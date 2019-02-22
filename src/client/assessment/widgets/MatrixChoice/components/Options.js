@@ -1,64 +1,60 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Select, Col, Input, Checkbox } from 'antd';
-import { compose } from 'redux';
-import { withTheme } from 'styled-components';
+import React from "react";
+import PropTypes from "prop-types";
+import { Select, Col, Input, Checkbox } from "antd";
+import { compose } from "redux";
+import { withTheme } from "styled-components";
 
-import { withNamespaces } from '@edulastic/localization';
-import { CustomQuillComponent } from '@edulastic/common';
-import { evaluationType } from '@edulastic/constants';
+import { withNamespaces } from "@edulastic/localization";
+import { CustomQuillComponent } from "@edulastic/common";
+import { evaluationType } from "@edulastic/constants";
 
-import WidgetOptions from '../../../containers/WidgetOptions';
-import { Block } from '../../../styled/WidgetOptions/Block';
-import { Heading } from '../../../styled/WidgetOptions/Heading';
-import { Label } from '../../../styled/WidgetOptions/Label';
-import FontSizeSelect from '../../../components/FontSizeSelect';
-import Extras from '../../../containers/Extras';
-import { Row } from '../../../styled/WidgetOptions/Row';
+import WidgetOptions from "../../../containers/WidgetOptions";
+import { Block } from "../../../styled/WidgetOptions/Block";
+import { Heading } from "../../../styled/WidgetOptions/Heading";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import FontSizeSelect from "../../../components/FontSizeSelect";
+import Extras from "../../../containers/Extras";
+import { Row } from "../../../styled/WidgetOptions/Row";
 
-const scoringTypes = [
-  evaluationType.exactMatch,
-  evaluationType.partialMatch,
-  evaluationType.partialMatchV2
-];
+const scoringTypes = [evaluationType.exactMatch, evaluationType.partialMatch, evaluationType.partialMatchV2];
 
 function Options({ onChange, uiStyle, t, theme }) {
   const inputStyle = {
     minHeight: 35,
     border: `1px solid ${theme.widgets.matrixChoice.quillBorderColor}`,
-    padding: '5px 15px'
+    padding: "5px 15px"
   };
 
   const changeUiStyle = (prop, value) => {
     console.log(prop, value);
-    onChange('ui_style', {
+    onChange("ui_style", {
       ...uiStyle,
       [prop]: value
     });
   };
 
   const styleOptions = [
-    { value: 'inline', label: t('component.options.inline') },
-    { value: 'table', label: t('component.options.table') }
+    { value: "inline", label: t("component.options.inline") },
+    { value: "table", label: t("component.options.table") }
   ];
   const stemNumerationOptions = [
-    { value: 'number', label: t('component.options.numerical') },
-    { value: 'upper-alpha', label: t('component.options.uppercase') },
-    { value: 'lower-alpha', label: t('component.options.lowercase') }
+    { value: "number", label: t("component.options.numerical") },
+    { value: "upper-alpha", label: t("component.options.uppercase") },
+    { value: "lower-alpha", label: t("component.options.lowercase") }
   ];
 
   return (
     <WidgetOptions scoringTypes={scoringTypes}>
       <Block>
-        <Heading>{t('component.options.layout')}</Heading>
+        <Heading>{t("component.options.layout")}</Heading>
 
         <Row gutter={36}>
           <Col md={12}>
-            <Label>{t('component.matrix.matrixStyle')}</Label>
+            <Label>{t("component.matrix.matrixStyle")}</Label>
             <Select
               size="large"
-              style={{ width: '100%' }}
-              onChange={val => changeUiStyle('type', val)}
+              style={{ width: "100%" }}
+              onChange={val => changeUiStyle("type", val)}
               value={uiStyle.type}
               data-cy="matrixStyle"
             >
@@ -69,13 +65,13 @@ function Options({ onChange, uiStyle, t, theme }) {
               ))}
             </Select>
           </Col>
-          {uiStyle.type === 'table' && (
+          {uiStyle.type === "table" && (
             <Col md={12}>
-              <Label>{t('component.options.stemNumeration')}</Label>
+              <Label>{t("component.options.stemNumeration")}</Label>
               <Select
                 size="large"
-                style={{ width: '100%' }}
-                onChange={val => changeUiStyle('stem_numeration', val)}
+                style={{ width: "100%" }}
+                onChange={val => changeUiStyle("stem_numeration", val)}
                 value={uiStyle.stem_numeration}
                 data-cy="stemNum"
               >
@@ -91,44 +87,44 @@ function Options({ onChange, uiStyle, t, theme }) {
 
         <Row gutter={36}>
           <Col md={12}>
-            <Label>{t('component.options.stemColumnTitle')}</Label>
+            <Label>{t("component.options.stemColumnTitle")}</Label>
             <CustomQuillComponent
               toolbarId="stemColumnTitle"
               style={inputStyle}
-              onChange={value => changeUiStyle('stem_title', value)}
+              onChange={value => changeUiStyle("stem_title", value)}
               showResponseBtn={false}
-              value={uiStyle.stem_title || ''}
+              value={uiStyle.stem_title || ""}
             />
           </Col>
           <Col md={12}>
-            <Label>{t('component.options.optionRowTitle')}</Label>
+            <Label>{t("component.options.optionRowTitle")}</Label>
             <CustomQuillComponent
               toolbarId="optionRowTitle"
               style={inputStyle}
-              onChange={value => changeUiStyle('option_row_title', value)}
+              onChange={value => changeUiStyle("option_row_title", value)}
               showResponseBtn={false}
-              value={uiStyle.option_row_title || ''}
+              value={uiStyle.option_row_title || ""}
             />
           </Col>
         </Row>
 
         <Row gutter={36}>
           <Col md={12}>
-            <Label>{t('component.options.stemWidth')}</Label>
+            <Label>{t("component.options.stemWidth")}</Label>
             <Input
               size="large"
               type="number"
-              onChange={e => changeUiStyle('stem_width', +e.target.value)}
+              onChange={e => changeUiStyle("stem_width", +e.target.value)}
               showResponseBtn={false}
               value={uiStyle.stem_width}
             />
           </Col>
           <Col md={12}>
-            <Label>{t('component.options.optionWidth')}</Label>
+            <Label>{t("component.options.optionWidth")}</Label>
             <Input
               size="large"
               type="number"
-              onChange={e => changeUiStyle('option_width', +e.target.value)}
+              onChange={e => changeUiStyle("option_width", +e.target.value)}
               showResponseBtn={false}
               value={uiStyle.option_width}
             />
@@ -137,18 +133,15 @@ function Options({ onChange, uiStyle, t, theme }) {
 
         <Row gutter={36}>
           <Col md={12}>
-            <FontSizeSelect
-              onChange={val => changeUiStyle('fontsize', val)}
-              value={uiStyle.fontsize}
-            />
+            <FontSizeSelect onChange={val => changeUiStyle("fontsize", val)} value={uiStyle.fontsize} />
           </Col>
           <Col md={12}>
             <Checkbox
               size="large"
               checked={uiStyle.horizontal_lines}
-              onChange={e => changeUiStyle('horizontal_lines', e.target.checked)}
+              onChange={e => changeUiStyle("horizontal_lines", e.target.checked)}
             >
-              {t('component.options.dividers')}
+              {t("component.options.dividers")}
             </Checkbox>
           </Col>
         </Row>
@@ -170,16 +163,16 @@ Options.propTypes = {
 
 Options.defaultProps = {
   uiStyle: {
-    type: 'standard',
-    fontsize: 'normal',
+    type: "standard",
+    fontsize: "normal",
     columns: 0,
-    orientation: 'horizontal',
-    choice_label: 'number'
+    orientation: "horizontal",
+    choice_label: "number"
   }
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   withTheme
 );
 

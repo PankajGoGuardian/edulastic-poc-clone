@@ -1,8 +1,8 @@
-import React, { Component, Fragment } from 'react'
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-import { Button, Select } from '@edulastic/common';
+import React, { Component, Fragment } from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
+import { Button, Select } from "@edulastic/common";
 import {
   MoreOptionsContainer,
   MoreOptionsRow,
@@ -14,22 +14,17 @@ import {
   GraphToolsParamsWrapper,
   AddToolBtnWrapper,
   ToolSelect
-} from '../common/styled_components';
-import DeleteButton from '../common/DeleteButton';
+} from "../common/styled_components";
+import DeleteButton from "../common/DeleteButton";
 
 class ControlsSettings extends Component {
+  controls = [{ label: "Undo", value: "undo" }, { label: "Redo", value: "redo" }, { label: "Reset", value: "reset" }];
 
-  controls = [
-    { label: 'Undo',  value: 'undo' },
-    { label: 'Redo', value: 'redo' },
-    { label: 'Reset', value: 'reset' }
-  ]
-
-  addTool = (groupIndex) => {
+  addTool = groupIndex => {
     const { controlbar, onChange } = this.props;
     const newTools = [...controlbar.controls];
     const areToolsArray = Array.isArray(controlbar.controls[groupIndex]);
-    const defaultOption = this.controls && this.controls[0] ? this.controls[0].value : '';
+    const defaultOption = this.controls && this.controls[0] ? this.controls[0].value : "";
 
     if (controlbar.controls.length <= 3) {
       if (groupIndex !== undefined && areToolsArray) {
@@ -83,7 +78,12 @@ class ControlsSettings extends Component {
   renderAddToolBtn = groupIndex => (
     <Row>
       <Button
-        style={{ minWidth: 227, minHeight: 40, marginRight: '0.7em', borderRadius: '4px' }}
+        style={{
+          minWidth: 227,
+          minHeight: 40,
+          marginRight: "0.7em",
+          borderRadius: "4px"
+        }}
         onClick={() => this.addTool(groupIndex)}
         color="primary"
         outlined
@@ -99,7 +99,7 @@ class ControlsSettings extends Component {
 
     return (
       <Col paddingRight="2.5em" md={6} marginBottom={20}>
-        {controlbar.controls.map((tool, i) => (
+        {controlbar.controls.map((tool, i) =>
           !Array.isArray(tool) ? (
             <React.Fragment key={`${i}-${Math.random().toString(36)}`}>
               <ToolSelect>
@@ -115,11 +115,9 @@ class ControlsSettings extends Component {
               </ToolSelect>
             </React.Fragment>
           ) : null
-        ))}
+        )}
 
-        <AddToolBtnWrapper>
-          { this.renderAddToolBtn() }
-        </AddToolBtnWrapper>
+        <AddToolBtnWrapper>{this.renderAddToolBtn()}</AddToolBtnWrapper>
       </Col>
     );
   };
@@ -129,41 +127,29 @@ class ControlsSettings extends Component {
 
     return (
       <Fragment>
-
         <MoreOptionsContainer>
+          <MoreOptionsSubHeading>{t("Controls")}</MoreOptionsSubHeading>
 
-          <MoreOptionsSubHeading>
-            { t('Controls') }
-          </MoreOptionsSubHeading>
-
-            <MoreOptionsRow>
-
-              <GraphToolsParamsWrapper>
-                { this.renderSingleToolsInDefaultGroup() }
-              </GraphToolsParamsWrapper>
-
-            </MoreOptionsRow>
-
+          <MoreOptionsRow>
+            <GraphToolsParamsWrapper>{this.renderSingleToolsInDefaultGroup()}</GraphToolsParamsWrapper>
+          </MoreOptionsRow>
         </MoreOptionsContainer>
-
       </Fragment>
-    )
+    );
   }
 }
 
 ControlsSettings.propTypes = {
   t: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  controlbar: PropTypes.object.isRequired,
+  controlbar: PropTypes.object.isRequired
 };
 
-const enhance = compose(
-  withNamespaces('assessment'),
-);
+const enhance = compose(withNamespaces("assessment"));
 
-export default enhance(ControlsSettings)
+export default enhance(ControlsSettings);
 
-const Tool = (props) => {
+const Tool = props => {
   const {
     countOfSingleTools,
     options,
@@ -179,26 +165,23 @@ const Tool = (props) => {
 
   const isNeedToShowDeleteButton = () => countOfSingleTools > 1 || isGroup;
 
-  const onSelectChange = (val) => {
+  const onSelectChange = val => {
     onChange(index, val, groupIndex);
   };
 
   return (
     <React.Fragment>
       <SelectWrapper>
-        <Select
-          style={{ width: selectWidth || '70%' }}
-          onChange={onSelectChange}
-          options={options}
-          value={value}
-        />
+        <Select style={{ width: selectWidth || "70%" }} onChange={onSelectChange} options={options} value={value} />
 
         {isNeedToShowDeleteButton() && (
           <DeleteButton
-            onDelete={() => { onDelete(index, groupIndex); }}
+            onDelete={() => {
+              onDelete(index, groupIndex);
+            }}
             deleteToolStyles={deleteToolStyles}
-          />)
-        }
+          />
+        )}
       </SelectWrapper>
     </React.Fragment>
   );

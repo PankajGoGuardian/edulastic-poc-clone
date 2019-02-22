@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { tabletWidth } from '@edulastic/colors';
+import styled from "styled-components";
+import { tabletWidth } from "@edulastic/colors";
 
 export const CorrectAnswerHeader = styled.div`
   width: 100%;

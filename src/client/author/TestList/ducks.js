@@ -1,17 +1,14 @@
-import { createSelector } from 'reselect';
-import { createAction } from 'redux-starter-kit';
-import { call, put, all, takeEvery } from 'redux-saga/effects';
-import { message } from 'antd';
-import { testsApi } from '@edulastic/api';
-import {
-  CREATE_TEST_SUCCESS,
-  UPDATE_TEST_SUCCESS
-} from '../src/constants/actions';
+import { createSelector } from "reselect";
+import { createAction } from "redux-starter-kit";
+import { call, put, all, takeEvery } from "redux-saga/effects";
+import { message } from "antd";
+import { testsApi } from "@edulastic/api";
+import { CREATE_TEST_SUCCESS, UPDATE_TEST_SUCCESS } from "../src/constants/actions";
 
 // types
-export const RECEIVE_TESTS_REQUEST = '[tests] receive list request';
-export const RECEIVE_TESTS_SUCCESS = '[tests] receive list success';
-export const RECEIVE_TESTS_ERROR = '[tests] receive list error';
+export const RECEIVE_TESTS_REQUEST = "[tests] receive list request";
+export const RECEIVE_TESTS_SUCCESS = "[tests] receive list success";
+export const RECEIVE_TESTS_ERROR = "[tests] receive list error";
 
 // actions
 export const receiveTestsAction = createAction(RECEIVE_TESTS_REQUEST);
@@ -26,23 +23,23 @@ function* receiveTestsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
       limit
     });
 
-    yield put(receiveTestSuccessAction({
-      entities: items,
-      count,
-      page,
-      limit
-    }));
+    yield put(
+      receiveTestSuccessAction({
+        entities: items,
+        count,
+        page,
+        limit
+      })
+    );
   } catch (err) {
-    const errorMessage = 'Receive tests is failing';
+    const errorMessage = "Receive tests is failing";
     yield call(message.error, errorMessage);
     yield put(receiveTestErrorAction({ error: errorMessage }));
   }
 }
 
 export function* watcherSaga() {
-  yield all([
-    yield takeEvery(RECEIVE_TESTS_REQUEST, receiveTestsSaga)
-  ]);
+  yield all([yield takeEvery(RECEIVE_TESTS_REQUEST, receiveTestsSaga)]);
 }
 
 // reducer

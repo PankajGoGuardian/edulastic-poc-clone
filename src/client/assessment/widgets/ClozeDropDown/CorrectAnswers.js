@@ -1,26 +1,26 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { cloneDeep } from 'lodash';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { cloneDeep } from "lodash";
 
-import { withNamespaces } from '@edulastic/localization';
-import { Button, Tab, Tabs, TabContainer } from '@edulastic/common';
+import { withNamespaces } from "@edulastic/localization";
+import { Button, Tab, Tabs, TabContainer } from "@edulastic/common";
 
-import { Subtitle } from '../../styled/Subtitle';
+import { Subtitle } from "../../styled/Subtitle";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
-import { getQuestionDataSelector } from '../../../author/src/selectors/question';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { getQuestionDataSelector } from "../../../author/src/selectors/question";
 
-import CorrectAnswer from './CorrectAnswer';
-import { IconPlus } from './styled/IconPlus';
+import CorrectAnswer from "./CorrectAnswer";
+import { IconPlus } from "./styled/IconPlus";
 
 class CorrectAnswers extends Component {
   state = {
     value: 0
   };
 
-  handleTabChange = (value) => {
+  handleTabChange = value => {
     this.setState({ value });
   };
 
@@ -33,7 +33,7 @@ class CorrectAnswers extends Component {
           close
           key={i}
           onClose={() => onRemoveAltResponses(i)}
-          label={`${t('component.correctanswers.alternate')} ${i + 1}`}
+          label={`${t("component.correctanswers.alternate")} ${i + 1}`}
         />
       ));
     }
@@ -57,7 +57,7 @@ class CorrectAnswers extends Component {
     );
   };
 
-  updateCorrectValidationAnswers = (answers) => {
+  updateCorrectValidationAnswers = answers => {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
     const updatedValidation = {
@@ -85,7 +85,7 @@ class CorrectAnswers extends Component {
     setQuestionData(newData);
   };
 
-  handleUpdateCorrectScore = (points) => {
+  handleUpdateCorrectScore = points => {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
 
@@ -94,7 +94,7 @@ class CorrectAnswers extends Component {
     setQuestionData(newData);
   };
 
-  handleUpdateAltValidationScore = i => (points) => {
+  handleUpdateAltValidationScore = i => points => {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
 
@@ -117,14 +117,10 @@ class CorrectAnswers extends Component {
     const { value } = this.state;
     return (
       <div>
-        <Subtitle>{t('component.correctanswers.setcorrectanswers')}</Subtitle>
+        <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
         <div>
-          <Tabs
-            value={value}
-            onChange={this.handleTabChange}
-            extra={this.renderPlusButton()}
-          >
-            <Tab label={t('component.correctanswers.correct')} />
+          <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
+            <Tab label={t("component.correctanswers.correct")} />
             {this.renderAltResponses()}
           </Tabs>
           {value === 0 && (
@@ -158,9 +154,7 @@ class CorrectAnswers extends Component {
                       hasGroupResponses={hasGroupResponses}
                       templateMarkUp={templateMarkUp}
                       uiStyle={uiStyle}
-                      onUpdateValidationValue={answers =>
-                        this.updateAltCorrectValidationAnswers(answers, i)
-                      }
+                      onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                     />
                   </TabContainer>
@@ -189,23 +183,23 @@ CorrectAnswers.propTypes = {
 };
 
 CorrectAnswers.defaultProps = {
-  stimulus: '',
+  stimulus: "",
   options: [],
   validation: {},
   hasGroupResponses: false,
-  templateMarkUp: '',
+  templateMarkUp: "",
   uiStyle: {
-    responsecontainerposition: 'bottom',
-    fontsize: 'normal',
-    stemnumeration: '',
+    responsecontainerposition: "bottom",
+    fontsize: "normal",
+    stemnumeration: "",
     widthpx: 0,
     heightpx: 0,
-    placeholder: ''
+    placeholder: ""
   }
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     state => ({
       question: getQuestionDataSelector(state)

@@ -1,16 +1,16 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import i18n, { I18nextProvider } from '@edulastic/localization';
-import { ConnectedRouter } from 'connected-react-router';
-import { PersistGate } from 'redux-persist/integration/react';
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import i18n, { I18nextProvider } from "@edulastic/localization";
+import { ConnectedRouter } from "connected-react-router";
+import { PersistGate } from "redux-persist/integration/react";
 
-import 'font-awesome/css/font-awesome.css';
-import 'antd/dist/antd.css';
-import 'react-perfect-scrollbar/dist/css/styles.css';
-import './index.css';
-import App from './App';
-import configureStore, { history } from './configureStore';
+import "font-awesome/css/font-awesome.css";
+import "antd/dist/antd.css";
+import "react-perfect-scrollbar/dist/css/styles.css";
+import "./index.css";
+import App from "./App";
+import configureStore, { history } from "./configureStore";
 
 // redux store
 const { store, persistor } = configureStore();
@@ -26,12 +26,12 @@ const RootComp = () => (
     </Provider>
   </I18nextProvider>
 );
-ReactDOM.render(<RootComp />, document.getElementById('react-app'));
+ReactDOM.render(<RootComp />, document.getElementById("react-app"));
 
 // hmr
 if (module.hot) {
-  module.hot.accept('./App', () => {
-    const NextApp = require('./App').default;
+  module.hot.accept("./App", () => {
+    const NextApp = require("./App").default;
     ReactDOM.render(
       <I18nextProvider i18n={i18n}>
         <Provider store={store}>
@@ -42,7 +42,7 @@ if (module.hot) {
           </PersistGate>
         </Provider>
       </I18nextProvider>,
-      document.getElementById('react-app')
+      document.getElementById("react-app")
     );
   });
 }

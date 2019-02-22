@@ -1,28 +1,28 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import ReactQuill from 'react-quill';
-import { compose } from 'redux';
-import { withTheme } from 'styled-components';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import ReactQuill from "react-quill";
+import { compose } from "redux";
+import { withTheme } from "styled-components";
 
-import { Paper, Stimulus, FlexContainer } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { Paper, Stimulus, FlexContainer } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { Toolbar } from '../../styled/Toolbar';
-import { Item } from '../../styled/Item';
-import { PREVIEW, ON_LIMIT, ALWAYS } from '../../constants/constantsForQuestions';
+import { Toolbar } from "../../styled/Toolbar";
+import { Item } from "../../styled/Item";
+import { PREVIEW, ON_LIMIT, ALWAYS } from "../../constants/constantsForQuestions";
 
-import { ValidList } from './constants/validList';
+import { ValidList } from "./constants/validList";
 
 const EssayRichTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswer, theme }) => {
   const [wordCount, setWordCount] = useState(
-    Array.isArray(userAnswer) ? 0 : userAnswer.split(' ').filter(i => !!i.trim()).length
+    Array.isArray(userAnswer) ? 0 : userAnswer.split(" ").filter(i => !!i.trim()).length
   );
 
   const handleTextChange = (val, a, b, editor) => {
     setWordCount(
       editor
         .getText()
-        .split(' ')
+        .split(" ")
         .filter(i => !!i.trim()).length
     );
     saveAnswer(val);
@@ -34,32 +34,28 @@ const EssayRichTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswer
 
   const displayWordCount =
     (showOnLimit && item.max_word < wordCount) || showLimitAlways
-      ? `${wordCount} / ${item.max_word} ${t('component.essayText.wordsLimitTitle')}`
-      : `${wordCount} ${t('component.essayText.wordsTitle')}`;
+      ? `${wordCount} / ${item.max_word} ${t("component.essayText.wordsLimitTitle")}`
+      : `${wordCount} ${t("component.essayText.wordsTitle")}`;
 
-  const wordCountStyle = (showLimitAlways || showOnLimit) && item.max_word < wordCount
-    ? { color: theme.widgets.essayRichText.wordCountLimitedColor }
-    : {};
+  const wordCountStyle =
+    (showLimitAlways || showOnLimit) && item.max_word < wordCount
+      ? { color: theme.widgets.essayRichText.wordCountLimitedColor }
+      : {};
 
   return (
-    <Paper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
-      {view === PREVIEW && !smallSize && (
-        <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-      )}
+    <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+      {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
 
       <ReactQuill
         id="mainQuill"
         style={{
-          background: item.max_word < wordCount
-            ? theme.widgets.essayRichText.quillLimitedBgColor
-            : theme.widgets.essayRichText.quillBgColor
+          background:
+            item.max_word < wordCount
+              ? theme.widgets.essayRichText.quillLimitedBgColor
+              : theme.widgets.essayRichText.quillBgColor
         }}
         defaultValue={
-          smallSize
-            ? t('component.essayText.rich.templateText')
-            : Array.isArray(userAnswer)
-              ? ''
-              : userAnswer
+          smallSize ? t("component.essayText.rich.templateText") : Array.isArray(userAnswer) ? "" : userAnswer
         }
         onChange={handleTextChange}
         modules={EssayRichTextPreview.modules(item.formatting_options)}
@@ -89,10 +85,10 @@ EssayRichTextPreview.defaultProps = {
   smallSize: false
 };
 
-const toolbarOptions = (options) => {
+const toolbarOptions = options => {
   const arrSorted = options
     .filter(ite => ite.active)
-    .map((item) => {
+    .map(item => {
       const { value, param } = item;
       return ValidList.includes(value) ? { [value]: param } : value;
     });
@@ -101,14 +97,14 @@ const toolbarOptions = (options) => {
   let ind = 0;
 
   arrSorted.forEach((item, i) => {
-    if (item === '|') {
-      if (arrSorted[i + 1] === '|') {
+    if (item === "|") {
+      if (arrSorted[i + 1] === "|") {
         arrSorted.splice(i + 1, 1);
       }
       arr.push(arrSorted.slice(ind, i));
       ind = i + 1;
     }
-    if (i === arrSorted.length - 1 && item !== '|') {
+    if (i === arrSorted.length - 1 && item !== "|") {
       arr.push(arrSorted.slice(ind));
     }
   });
@@ -121,21 +117,21 @@ EssayRichTextPreview.modules = options => ({
 });
 
 EssayRichTextPreview.formats = [
-  'header',
-  'script',
-  'bold',
-  'italic',
-  'underline',
-  'strike',
-  'blockquote',
-  'list',
-  'bullet',
-  'indent',
-  'align'
+  "header",
+  "script",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "list",
+  "bullet",
+  "indent",
+  "align"
 ];
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   withTheme
 );
 

@@ -1,4 +1,4 @@
-import { isEqual } from 'lodash';
+import { isEqual } from "lodash";
 
 const createEvaluation = ({ validation }, answer = []) => {
   const correctAnswers = validation.valid_response.value;

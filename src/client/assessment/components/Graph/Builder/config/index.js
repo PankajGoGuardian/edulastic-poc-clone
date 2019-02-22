@@ -1,5 +1,5 @@
-export { default as CONSTANT } from './constants';
-export { default as Colors } from './colors';
+export { default as CONSTANT } from "./constants";
+export { default as Colors } from "./colors";
 
 const quadrantsDefaultConfig = {
   // X min, X max, Y min, Y max
@@ -16,15 +16,15 @@ const quadrantsDefaultConfig = {
   },
   defaultaxes: {
     x: {
-      name: '',
+      name: "",
       withLabel: false,
-      strokeColor: '#00b0ff',
-      highlightStrokeColor: '#00b0ff',
+      strokeColor: "#00b0ff",
+      highlightStrokeColor: "#00b0ff",
       strokeWidth: 2,
       label: {
-        position: 'rt',
-        anchorX: 'right',
-        anchorY: 'bottom'
+        position: "rt",
+        anchorX: "right",
+        anchorY: "bottom"
       },
       ticks: {
         drawLabels: true,
@@ -44,15 +44,15 @@ const quadrantsDefaultConfig = {
       }
     },
     y: {
-      name: '',
+      name: "",
       withLabel: false,
-      strokeColor: '#00b0ff',
-      highlightStrokeColor: '#00b0ff',
+      strokeColor: "#00b0ff",
+      highlightStrokeColor: "#00b0ff",
       strokeWidth: 2,
       label: {
-        position: 'rt',
-        anchorX: 'left',
-        anchorY: 'top'
+        position: "rt",
+        anchorX: "left",
+        anchorY: "top"
       },
       ticks: {
         drawLabels: true,

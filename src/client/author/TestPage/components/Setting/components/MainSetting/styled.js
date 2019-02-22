@@ -1,6 +1,6 @@
-import { Anchor, Radio } from 'antd';
-import styled from 'styled-components';
-import { mobileWidth } from '@edulastic/colors';
+import { Anchor, Radio } from "antd";
+import styled from "styled-components";
+import { mobileWidth } from "@edulastic/colors";
 
 export const StyledAnchor = styled(Anchor)`
   .ant-anchor-link {
@@ -158,11 +158,11 @@ export const RadioWrapper = styled(Block)`
       align-items: center;
       border: 1px solid #e8e8e8;
       padding-top: 20px;
-      
+
       &:first-child {
         margin-top: 20px;
       }
-     
+
       .ant-col-8 {
         text-align: center;
         margin-bottom: 20px;

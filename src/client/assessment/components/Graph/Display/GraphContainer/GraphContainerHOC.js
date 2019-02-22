@@ -1,30 +1,36 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
-import { graph as checkAnswerMethod } from '@edulastic/evaluators';
-import GraphContainer from './GraphContainer';
-import { CONSTANT, Colors } from '../../Builder/config';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep } from "lodash";
+import { graph as checkAnswerMethod } from "@edulastic/evaluators";
+import GraphContainer from "./GraphContainer";
+import { CONSTANT, Colors } from "../../Builder/config";
 
-const getFontSizeVal = (name) => {
+const getFontSizeVal = name => {
   switch (name) {
-    case 'small': return 12;
-    case 'normal': return 14;
-    case 'large': return 17;
-    case 'extra_large': return 20;
-    case 'huge': return 24;
-    default: return 14;
+    case "small":
+      return 12;
+    case "normal":
+      return 14;
+    case "large":
+      return 17;
+    case "extra_large":
+      return 20;
+    case "huge":
+      return 24;
+    default:
+      return 14;
   }
 };
 
 const getSnapSize = (snapTo, axisDistance) => {
-  if (snapTo === 'grid' || Number.isNaN(parseInt(snapTo, 10))) {
+  if (snapTo === "grid" || Number.isNaN(parseInt(snapTo, 10))) {
     if (axisDistance) return axisDistance;
     return 1; // default
   }
   return snapTo;
 };
 
-const safeParseFloat = (val) => {
+const safeParseFloat = val => {
   if (val) {
     return parseFloat(val);
   }
@@ -35,10 +41,10 @@ const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
     let newElems = cloneDeep(elements);
     const subElems = [];
-    const red = '#ee1658';
-    const green = '#1fe3a1';
+    const red = "#ee1658";
+    const green = "#1fe3a1";
 
-    newElems = newElems.map((el) => {
+    newElems = newElems.map(el => {
       if (!el.subElement) {
         const detail = compareResult.details.find(det => det.id === el.id);
         let newEl = {};
@@ -60,10 +66,10 @@ const getColoredElems = (elements, compareResult) => {
             ...el
           };
         }
-        if (newEl.type === 'point') newEl.colors.fillColor = result ? green : red;
+        if (newEl.type === "point") newEl.colors.fillColor = result ? green : red;
 
         if (el.subElementsIds) {
-          Object.values(el.subElementsIds).forEach((val) => {
+          Object.values(el.subElementsIds).forEach(val => {
             subElems.push({
               id: val,
               result
@@ -75,7 +81,7 @@ const getColoredElems = (elements, compareResult) => {
       return el;
     });
 
-    newElems = newElems.map((el) => {
+    newElems = newElems.map(el => {
       if (el.subElement) {
         const detail = subElems.find(det => det.id === el.id);
         let newEl = {};
@@ -105,9 +111,9 @@ const getColoredElems = (elements, compareResult) => {
   return elements;
 };
 
-const getColoredAnswer = (answerArr) => {
+const getColoredAnswer = answerArr => {
   if (Array.isArray(answerArr)) {
-    return answerArr.map((el) => {
+    return answerArr.map(el => {
       let colors = {};
       switch (el.type) {
         case CONSTANT.TOOLS.POINT:
@@ -156,7 +162,6 @@ function evaluate(validation, userResponse) {
   });
 }
 
-
 class GraphContainerHOC extends Component {
   getMappedParameters = () => {
     const { uiStyle, canvasConfig, bgImgOptions, backgroundShapes, numberlineAxis } = this.props;
@@ -196,7 +201,7 @@ class GraphContainerHOC extends Component {
       },
       xAxesParameters: {
         ticksDistance: safeParseFloat(uiStyle.xTickDistance),
-        name: uiStyle.xShowAxisLabel ? uiStyle.xAxisLabel : '',
+        name: uiStyle.xShowAxisLabel ? uiStyle.xAxisLabel : "",
         showTicks: !uiStyle.xHideTicks,
         drawLabels: uiStyle.xDrawLabel,
         maxArrow: uiStyle.xMaxArrow,
@@ -205,7 +210,7 @@ class GraphContainerHOC extends Component {
       },
       yAxesParameters: {
         ticksDistance: safeParseFloat(uiStyle.yTickDistance),
-        name: uiStyle.yShowAxisLabel ? uiStyle.yAxisLabel : '',
+        name: uiStyle.yShowAxisLabel ? uiStyle.yAxisLabel : "",
         showTicks: !uiStyle.yHideTicks,
         drawLabels: uiStyle.yDrawLabel,
         maxArrow: uiStyle.yMaxArrow,

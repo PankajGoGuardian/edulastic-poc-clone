@@ -1,4 +1,4 @@
-import { CHANGE_VIEW, CHANGE_PREVIEW } from '../constants/actions';
+import { CHANGE_VIEW, CHANGE_PREVIEW } from "../constants/actions";
 
 export const changeViewAction = view => ({
   type: CHANGE_VIEW,

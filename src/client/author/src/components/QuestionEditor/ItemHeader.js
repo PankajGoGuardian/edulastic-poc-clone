@@ -1,31 +1,15 @@
-import React from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { IconChevronLeft, IconPencilEdit } from '@edulastic/icons';
-import { FlexContainer, TextField } from '@edulastic/common';
-import {
-  greenDark,
-  mobileWidth,
-  darkBlue,
-  white,
-  blue,
-  darkBlueSecondary
-} from '@edulastic/colors';
-import HeaderWrapper from '../../mainContent/headerWrapper';
-import { toggleSideBarAction } from '../../actions/togglemenu';
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { IconChevronLeft, IconPencilEdit } from "@edulastic/icons";
+import { FlexContainer, TextField } from "@edulastic/common";
+import { greenDark, mobileWidth, darkBlue, white, blue, darkBlueSecondary } from "@edulastic/colors";
+import HeaderWrapper from "../../mainContent/headerWrapper";
+import { toggleSideBarAction } from "../../actions/togglemenu";
 
-const ItemHeader = ({
-  title,
-  children,
-  link,
-  reference,
-  editReference,
-  onChange,
-  hideIcon,
-  toggleSideBar
-}) => (
+const ItemHeader = ({ title, children, link, reference, editReference, onChange, hideIcon, toggleSideBar }) => (
   <Container>
     <ExtraFlex alignItems="center" style={{ flex: 1 }}>
       <LeftSide>
@@ -45,7 +29,7 @@ const ItemHeader = ({
               value={reference}
               onChange={onChange}
               onBlur={editReference}
-              style={{ background: '#f3f3f3', marginLeft: 10, width: 290 }}
+              style={{ background: "#f3f3f3", marginLeft: 10, width: 290 }}
             />
           </FlexContainer>
         )}
@@ -75,7 +59,7 @@ ItemHeader.propTypes = {
 
 ItemHeader.defaultProps = {
   children: null,
-  title: '',
+  title: "",
   link: null,
   reference: null,
   editReference: () => {},

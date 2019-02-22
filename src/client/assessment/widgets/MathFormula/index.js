@@ -1,25 +1,25 @@
-import React, { Fragment, Component } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { cloneDeep } from 'lodash';
+import React, { Fragment, Component } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { cloneDeep } from "lodash";
 
-import { Paper } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { Paper } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
-import { checkAnswerAction } from '../../../author/src/actions/testItem';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { checkAnswerAction } from "../../../author/src/actions/testItem";
 
-import QuestionTextArea from '../../components/QuestionTextArea';
-import MathInput from '../../components/MathInput';
-import { Subtitle } from '../../styled/Subtitle';
+import QuestionTextArea from "../../components/QuestionTextArea";
+import MathInput from "../../components/MathInput";
+import { Subtitle } from "../../styled/Subtitle";
 
-import { CLEAR, PREVIEW, EDIT } from '../../constants/constantsForQuestions';
+import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
 
-import MathFormulaAnswers from './MathFormulaAnswers';
-import MathFormulaOptions from './components/MathFormulaOptions';
-import MathFormulaPreview from './MathFormulaPreview';
+import MathFormulaAnswers from "./MathFormulaAnswers";
+import MathFormulaOptions from "./components/MathFormulaOptions";
+import MathFormulaPreview from "./MathFormulaPreview";
 
 const EmptyWrapper = styled.div``;
 
@@ -39,7 +39,7 @@ class MathFormula extends Component {
     } = this.props;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
-    const studentTemplate = item.template.replace(/\\embed\{response\}/g, '\\MathQuillMathField{}');
+    const studentTemplate = item.template.replace(/\\embed\{response\}/g, "\\MathQuillMathField{}");
 
     const handleItemChangeChange = (prop, uiStyle) => {
       const newItem = cloneDeep(item);
@@ -48,7 +48,7 @@ class MathFormula extends Component {
       setQuestionData(newItem);
     };
 
-    const handleUpdateTemplate = (val) => {
+    const handleUpdateTemplate = val => {
       const newItem = cloneDeep(item);
       newItem.template = val;
       setQuestionData(newItem);
@@ -59,19 +59,19 @@ class MathFormula extends Component {
         {view === EDIT && (
           <Fragment>
             <Paper style={{ marginBottom: 30 }}>
-              <Subtitle>{t('component.math.composeQuestion')}</Subtitle>
+              <Subtitle>{t("component.math.composeQuestion")}</Subtitle>
               <QuestionTextArea
-                placeholder={t('component.math.enterQuestion')}
-                onChange={stimulus => handleItemChangeChange('stimulus', stimulus)}
+                placeholder={t("component.math.enterQuestion")}
+                onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
                 value={item.stimulus}
               />
-              <Subtitle>{t('component.math.template')}</Subtitle>
+              <Subtitle>{t("component.math.template")}</Subtitle>
               <MathInput
                 showResponse
                 symbols={item.symbols}
                 numberPad={item.numberPad}
                 value={item.template}
-                onInput={(latex) => {
+                onInput={latex => {
                   handleUpdateTemplate(latex);
                 }}
               />
@@ -90,7 +90,7 @@ class MathFormula extends Component {
           </Fragment>
         )}
         {view === PREVIEW && (
-          <Wrapper style={{ height: '100%', overflow: 'visible' }}>
+          <Wrapper style={{ height: "100%", overflow: "visible" }}>
             <MathFormulaPreview
               type={previewTab}
               studentTemplate={studentTemplate}
@@ -129,7 +129,7 @@ MathFormula.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     null,
     {

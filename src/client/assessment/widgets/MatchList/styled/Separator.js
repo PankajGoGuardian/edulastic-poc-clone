@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Separator = styled.div`
   max-width: ${({ smallSize }) => (smallSize ? 22 : 47)}px;
@@ -9,7 +9,7 @@ export const Separator = styled.div`
   border: 1px solid ${props => props.theme.widgets.matchList.separatorBorderColor};
 
   &:after {
-    content: '';
+    content: "";
     position: absolute;
     right: ${({ smallSize }) => (smallSize ? -4.5 : -7)}px;
     top: ${({ smallSize }) => (smallSize ? -4.5 : -7)}px;
@@ -21,7 +21,7 @@ export const Separator = styled.div`
   }
 
   &:before {
-    content: '';
+    content: "";
     position: absolute;
     left: ${({ smallSize }) => (smallSize ? -4.5 : -7)}px;
     top: ${({ smallSize }) => (smallSize ? -4.5 : -7)}px;

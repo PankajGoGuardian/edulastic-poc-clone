@@ -1,26 +1,36 @@
-import React, { Fragment, Component } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { Card, Button, Input } from 'antd';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
+import React, { Fragment, Component } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { Card, Button, Input } from "antd";
+import { connect } from "react-redux";
+import { compose } from "redux";
 
-import { withWindowSizes } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { withWindowSizes } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { getUserSelector } from '../../author/src/selectors/user';
-import { receiveFeedbackResponseAction } from '../../author/src/actions/classBoard';
+import { getUserSelector } from "../../author/src/selectors/user";
+import { receiveFeedbackResponseAction } from "../../author/src/actions/classBoard";
 
 const { TextArea } = Input;
 
 class FeedbackRight extends Component {
   constructor(props) {
     super(props);
-    const { widget: { activity } } = this.props;
-    let feedback = ''; let score = 0; let maxScore = 0;
+    const {
+      widget: { activity }
+    } = this.props;
+    let feedback = "";
+    let score = 0;
+    let maxScore = 0;
     if (activity) {
-      const { feedback: { text: _feedback }, score: _score, maxScore: _maxScore } = activity;
-      feedback = _feedback; score = _score; maxScore = _maxScore;
+      const {
+        feedback: { text: _feedback },
+        score: _score,
+        maxScore: _maxScore
+      } = activity;
+      feedback = _feedback;
+      score = _score;
+      maxScore = _maxScore;
     }
     this.state = {
       score,
@@ -31,7 +41,11 @@ class FeedbackRight extends Component {
 
   onFeedbackSubmit = () => {
     const { score, feedback } = this.state;
-    const { user, loadFeedbackResponses, widget: { id, activity } } = this.props;
+    const {
+      user,
+      loadFeedbackResponses,
+      widget: { id, activity }
+    } = this.props;
     const { testActivityId } = activity;
     if (!id || !user || !user.user || !testActivityId) {
       return;
@@ -48,34 +62,28 @@ class FeedbackRight extends Component {
       testActivityId,
       questionId: id
     });
-  }
+  };
 
-  onChangeScore = (e) => {
+  onChangeScore = e => {
     this.setState({ score: e.target.value });
-  }
+  };
 
-  onChangeFeedback = (e) => {
+  onChangeFeedback = e => {
     this.setState({ feedback: e.target.value });
-  }
+  };
 
   render() {
     const { score, maxScore, feedback } = this.state;
     const { t } = this.props;
-    const isError = maxScore < score
+    const isError = maxScore < score;
     return (
       <StyledCardTwo bordered={false}>
         <StyledDivSec>
-          <ScoreInput
-            onChange={this.onChangeScore}
-            onBlur={this.onFeedbackSubmit}
-            value={score}
-          />
+          <ScoreInput onChange={this.onChangeScore} onBlur={this.onFeedbackSubmit} value={score} />
           <TextPara> / {maxScore}</TextPara>
         </StyledDivSec>
-        <LeaveDiv>
-          {isError ? 'Score is to large' : 'Leave a Feedback!'}
-        </LeaveDiv>
-        {!isError &&
+        <LeaveDiv>{isError ? "Score is to large" : "Leave a Feedback!"}</LeaveDiv>
+        {!isError && (
           <Fragment>
             <FeedbackInput
               onChange={this.onChangeFeedback}
@@ -83,9 +91,11 @@ class FeedbackRight extends Component {
               value={feedback}
               style={{ height: 240 }}
             />
-            <SolutionButton onClick={this.onFeedbackSubmit}>{t('author:component.feedback.viewSolution')}</SolutionButton>
+            <SolutionButton onClick={this.onFeedbackSubmit}>
+              {t("author:component.feedback.viewSolution")}
+            </SolutionButton>
           </Fragment>
-        }
+        )}
       </StyledCardTwo>
     );
   }
@@ -103,7 +113,7 @@ FeedbackRight.propTypes = {
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces('header'),
+  withNamespaces("header"),
   connect(
     state => ({
       user: getUserSelector(state)
@@ -124,52 +134,52 @@ const StyledCardTwo = styled(Card)`
 `;
 
 const StyledDivSec = styled.div`
-  height:50px;
-  border-bottom:1.4px solid #f7f7f7;
-  margin:auto;
+  height: 50px;
+  border-bottom: 1.4px solid #f7f7f7;
+  margin: auto;
   display: flex;
   justify-content: center;
 `;
 
 const ScoreInput = styled(Input)`
-  width:130px;
-  height:40px;
-  border:1px solid #eaeaea;
-  border-radius:5px;
-  font-size:1.8em;
-  font-weight:bold;
-  display:inline-block;
+  width: 130px;
+  height: 40px;
+  border: 1px solid #eaeaea;
+  border-radius: 5px;
+  font-size: 1.8em;
+  font-weight: bold;
+  display: inline-block;
 `;
 
 const TextPara = styled.p`
-  margin-left:10px;
-  font-size:1.8em;
-  font-weight:bold;
-  display:inline-block;
+  margin-left: 10px;
+  font-size: 1.8em;
+  font-weight: bold;
+  display: inline-block;
 `;
 
 const LeaveDiv = styled.div`
-  margin:30px 0px 20px 0px;
-  font-weight:bold;
-  color:#545b6b;
-  font-size:0.9em;
+  margin: 30px 0px 20px 0px;
+  font-weight: bold;
+  color: #545b6b;
+  font-size: 0.9em;
 `;
 
 const FeedbackInput = styled(TextArea)`
-  width:100%;
-  height:160px;
-  border:1px solid #eaeaea;
-  border-radius:5px;
-  display:inline-block;
+  width: 100%;
+  height: 160px;
+  border: 1px solid #eaeaea;
+  border-radius: 5px;
+  display: inline-block;
 `;
 
 const SolutionButton = styled(Button)`
-  font-size:1em;
-  margin:10px 0px;
-  width:100%;
-  padding:13px 5px 20px;
-  color:white;
-  height:45px;
-  background-color:#00b0ff;
-  font-weight:bold;
+  font-size: 1em;
+  margin: 10px 0px;
+  width: 100%;
+  padding: 13px 5px 20px;
+  color: white;
+  height: 45px;
+  background-color: #00b0ff;
+  font-weight: bold;
 `;

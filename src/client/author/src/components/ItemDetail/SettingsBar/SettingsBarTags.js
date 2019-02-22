@@ -1,14 +1,14 @@
-import React from 'react';
-import styled from 'styled-components';
-import { grey, textColor, red } from '@edulastic/colors';
-import { IconClose } from '@edulastic/icons';
-import PropTypes from 'prop-types';
+import React from "react";
+import styled from "styled-components";
+import { grey, textColor, red } from "@edulastic/colors";
+import { IconClose } from "@edulastic/icons";
+import PropTypes from "prop-types";
 
 const SettingsBarTags = ({ tags, onRemove }) => (
   <Container>
     {tags.map((tag, i) => (
       <Tag key={i}>
-        <span>{tag}</span>{' '}
+        <span>{tag}</span>{" "}
         <Icon onClick={onRemove}>
           <IconClose width={8} height={8} color={textColor} hoverColor={red} />
         </Icon>
@@ -19,7 +19,7 @@ const SettingsBarTags = ({ tags, onRemove }) => (
 
 SettingsBarTags.propTypes = {
   tags: PropTypes.array.isRequired,
-  onRemove: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired
 };
 
 export default SettingsBarTags;

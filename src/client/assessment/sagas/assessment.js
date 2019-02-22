@@ -1,10 +1,6 @@
-import { takeLatest, put, all } from 'redux-saga/effects';
+import { takeLatest, put, all } from "redux-saga/effects";
 
-import {
-  START_ASSESSMENT,
-  RESET_CURRENT_TEST_ITEM,
-  REMOVE_ANSWERS
-} from '../constants/actions';
+import { START_ASSESSMENT, RESET_CURRENT_TEST_ITEM, REMOVE_ANSWERS } from "../constants/actions";
 
 function* startAssessment() {
   try {
@@ -15,7 +11,7 @@ function* startAssessment() {
       type: REMOVE_ANSWERS
     });
   } catch (e) {
-    console.log('error', e);
+    console.log("error", e);
   }
 }
 export default function* watcherSaga() {

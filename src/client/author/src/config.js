@@ -1,4 +1,4 @@
 export default {
-  appName: 'learnosity',
-  baseAPIUrl: 'http://localhost:9020',
+  appName: "learnosity",
+  baseAPIUrl: "http://localhost:9020"
 };

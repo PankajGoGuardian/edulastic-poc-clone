@@ -1,22 +1,22 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { arrayMove } from 'react-sortable-hoc';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { cloneDeep } from 'lodash';
-import { Button, Icon, Input } from 'antd';
-import 'react-quill/dist/quill.snow.css';
-import { withTheme } from 'styled-components';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { arrayMove } from "react-sortable-hoc";
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { cloneDeep } from "lodash";
+import { Button, Icon, Input } from "antd";
+import "react-quill/dist/quill.snow.css";
+import { withTheme } from "styled-components";
 
-import { withNamespaces } from '@edulastic/localization';
-import { PaddingDiv, CustomQuillComponent } from '@edulastic/common';
+import { withNamespaces } from "@edulastic/localization";
+import { PaddingDiv, CustomQuillComponent } from "@edulastic/common";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
 
-import SortableList from '../../components/SortableList/index';
-import { Subtitle } from '../../styled/Subtitle';
-import { AddNewChoiceBtn } from '../../styled/AddNewChoiceBtn';
+import SortableList from "../../components/SortableList/index";
+import { Subtitle } from "../../styled/Subtitle";
+import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 
 const defaultTemplateMarkup =
   '<p>Risus </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>';
@@ -43,7 +43,7 @@ class Authoring extends Component {
     return cloneDeep(item);
   }
 
-  onChangeQuesiton = (html) => {
+  onChangeQuesiton = html => {
     const stimulus = html;
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, stimulus });
@@ -56,7 +56,7 @@ class Authoring extends Component {
     setQuestionData(newItem);
   };
 
-  remove = (index) => {
+  remove = index => {
     const { setQuestionData } = this.props;
     const newItem = this.getNewItem();
     newItem.options.splice(index, 1);
@@ -73,17 +73,17 @@ class Authoring extends Component {
   addNewChoiceBtn = () => {
     const { setQuestionData, t } = this.props;
     const newItem = this.getNewItem();
-    newItem.options.push(t('component.cloze.dragDrop.newChoice'));
+    newItem.options.push(t("component.cloze.dragDrop.newChoice"));
     setQuestionData(newItem);
   };
 
-  onChangeMarkUp = (html) => {
+  onChangeMarkUp = html => {
     const templateMarkUp = html;
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, templateMarkUp });
   };
 
-  groupResponsesHandler = (e) => {
+  groupResponsesHandler = e => {
     const { item, setQuestionData } = this.props;
     const { groupResponses } = this.state;
     const hasGroupResponses = e.target.checked;
@@ -93,11 +93,11 @@ class Authoring extends Component {
         groupResponses:
           groupResponses.length === 0 && item.options
             ? [
-              {
-                title: '',
-                options: [...item.options]
-              }
-            ]
+                {
+                  title: "",
+                  options: [...item.options]
+                }
+              ]
             : groupResponses
       });
     } else {
@@ -108,14 +108,14 @@ class Authoring extends Component {
 
   addGroup = () => {
     const { groupResponses } = this.state;
-    groupResponses.push({ title: '', options: [] });
+    groupResponses.push({ title: "", options: [] });
     const newGroupResponses = groupResponses.slice();
     this.setState({ groupResponses: newGroupResponses });
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, groupResponses: newGroupResponses });
   };
 
-  removeGroup = (index) => {
+  removeGroup = index => {
     const { groupResponses } = this.state;
     groupResponses.splice(index, 1);
     const newGroupResponses = groupResponses.slice();
@@ -133,11 +133,11 @@ class Authoring extends Component {
     setQuestionData({ ...item, groupResponses: newGroupResponses });
   };
 
-  addNewGroupOption = (index) => {
+  addNewGroupOption = index => {
     const { groupResponses } = this.state;
     const { t } = this.props;
     const newGroupResponses = groupResponses.slice();
-    newGroupResponses[index].options.push(t('component.cloze.dragDrop.newChoice'));
+    newGroupResponses[index].options.push(t("component.cloze.dragDrop.newChoice"));
     this.setState({ groupResponses: newGroupResponses });
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, groupResponses: newGroupResponses });
@@ -169,24 +169,24 @@ class Authoring extends Component {
     return (
       <div>
         <PaddingDiv bottom={20}>
-          <Subtitle>{t('component.cloze.dragDrop.composequestion')}</Subtitle>
+          <Subtitle>{t("component.cloze.dragDrop.composequestion")}</Subtitle>
           <CustomQuillComponent
             toolbarId="stimulus"
-            wrappedRef={(instance) => {
+            wrappedRef={instance => {
               this.stimulus = instance;
             }}
-            placeholder={t('component.cloze.dragDrop.thisisstem')}
+            placeholder={t("component.cloze.dragDrop.thisisstem")}
             onChange={this.onChangeQuesiton}
             showResponseBtn={false}
             value={item.stimulus}
           />
-          <Subtitle>{t('component.cloze.dragDrop.templatemarkup')}</Subtitle>
+          <Subtitle>{t("component.cloze.dragDrop.templatemarkup")}</Subtitle>
           <CustomQuillComponent
             toolbarId="templatemarkup"
-            wrappedRef={(instance) => {
+            wrappedRef={instance => {
               this.templatemarkup = instance;
             }}
-            placeholder={t('component.cloze.dragDrop.templatemarkupplaceholder')}
+            placeholder={t("component.cloze.dragDrop.templatemarkupplaceholder")}
             onChange={this.onChangeMarkUp}
             firstFocus={!item.templateMarkUp}
             showResponseBtn
@@ -195,19 +195,13 @@ class Authoring extends Component {
           />
           <PaddingDiv>
             <Subtitle>
-              <input
-                id="groupResponseCheckbox"
-                type="checkbox"
-                onChange={e => this.groupResponsesHandler(e)}
-              />
-              <label htmlFor="groupResponseCheckbox">
-                {t('component.cloze.dragDrop.grouppossibleresponses')}
-              </label>
+              <input id="groupResponseCheckbox" type="checkbox" onChange={e => this.groupResponsesHandler(e)} />
+              <label htmlFor="groupResponseCheckbox">{t("component.cloze.dragDrop.grouppossibleresponses")}</label>
             </Subtitle>
           </PaddingDiv>
           {!hasGroupResponses && (
             <PaddingDiv>
-              <div>{t('component.cloze.dragDrop.choicesforresponse')}</div>
+              <div>{t("component.cloze.dragDrop.choicesforresponse")}</div>
               <SortableList
                 items={item.options}
                 dirty={!!item.templateMarkUp}
@@ -218,7 +212,7 @@ class Authoring extends Component {
               />
               <div>
                 <AddNewChoiceBtn onClick={this.addNewChoiceBtn}>
-                  {t('component.cloze.dragDrop.addnewchoice')}
+                  {t("component.cloze.dragDrop.addnewchoice")}
                 </AddNewChoiceBtn>
               </div>
             </PaddingDiv>
@@ -231,32 +225,32 @@ class Authoring extends Component {
                   style={{
                     borderColor: theme.widgets.clozeDragDrop.groupResponseFieldsetBorderColor,
                     borderRadius: 2,
-                    padding: '0 20px',
+                    padding: "0 20px",
                     marginBottom: 15,
-                    border: 'solid 1px'
+                    border: "solid 1px"
                   }}
                 >
-                  <legend style={{ padding: '0 20px', width: 'auto' }}>
-                    {t('component.cloze.dragDrop.group')} {index + 1}
+                  <legend style={{ padding: "0 20px", width: "auto" }}>
+                    {t("component.cloze.dragDrop.group")} {index + 1}
                   </legend>
-                  <div style={{ float: 'right' }}>
+                  <div style={{ float: "right" }}>
                     <Button onClick={() => this.removeGroup(index)} size="small" type="button">
                       <Icon type="close" />
                     </Button>
                   </div>
                   <PaddingDiv top={10} bottom={10}>
-                    <div>{t('component.cloze.dragDrop.title')}</div>
+                    <div>{t("component.cloze.dragDrop.title")}</div>
                   </PaddingDiv>
                   <div>
                     <Input
                       size="large"
-                      style={{ width: '100%' }}
+                      style={{ width: "100%" }}
                       onChange={e => this.changeGroupRespTitle(index, e)}
                       value={group.title}
                     />
                   </div>
                   <PaddingDiv top={20} bottom={10}>
-                    <div>{t('component.cloze.dragDrop.choicesforresponse')}</div>
+                    <div>{t("component.cloze.dragDrop.choicesforresponse")}</div>
                     <SortableList
                       dirty={!!item.templateMarkUp}
                       items={group.options}
@@ -267,7 +261,7 @@ class Authoring extends Component {
                     />
                     <PaddingDiv top={10} bottom={10}>
                       <AddNewChoiceBtn onClick={() => this.addNewGroupOption(index)}>
-                        {t('component.cloze.dragDrop.addnewchoice')}
+                        {t("component.cloze.dragDrop.addnewchoice")}
                       </AddNewChoiceBtn>
                     </PaddingDiv>
                   </PaddingDiv>
@@ -275,8 +269,14 @@ class Authoring extends Component {
               </div>
             ))}
           {hasGroupResponses && (
-            <Button type="primary" onClick={this.addGroup} style={{ background: theme.widgets.clozeDragDrop.addGroupButtonBgColor }}>
-              {t('component.cloze.dragDrop.addgroup')}
+            <Button
+              type="primary"
+              onClick={this.addGroup}
+              style={{
+                background: theme.widgets.clozeDragDrop.addGroupButtonBgColor
+              }}
+            >
+              {t("component.cloze.dragDrop.addgroup")}
             </Button>
           )}
         </PaddingDiv>
@@ -287,7 +287,7 @@ class Authoring extends Component {
 
 const enhance = compose(
   withRouter,
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   withTheme,
   connect(
     null,

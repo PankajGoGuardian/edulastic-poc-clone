@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
-import { compose } from 'redux';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Switch, Route, withRouter } from 'react-router-dom';
+import React, { useEffect } from "react";
+import { compose } from "redux";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { Switch, Route, withRouter } from "react-router-dom";
 // themes
-import ThemeContainer from './themes/index';
-import { loadTestAction } from './actions/test';
+import ThemeContainer from "./themes/index";
+import { loadTestAction } from "./actions/test";
 
 const AssessmentPlayer = ({ defaultAP, loadTest, match }) => {
   useEffect(() => {

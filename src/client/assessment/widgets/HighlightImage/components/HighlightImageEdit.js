@@ -1,20 +1,20 @@
-import React, { Fragment, useState } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
-import Dropzone from 'react-dropzone';
+import React, { Fragment, useState } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep } from "lodash";
+import Dropzone from "react-dropzone";
 
-import { withNamespaces } from '@edulastic/localization';
-import { Paper, Image } from '@edulastic/common';
-import { fileApi } from '@edulastic/api';
+import { withNamespaces } from "@edulastic/localization";
+import { Paper, Image } from "@edulastic/common";
+import { fileApi } from "@edulastic/api";
 
-import QuestionTextArea from '../../../components/QuestionTextArea';
-import DropZoneToolbar from '../../../components/DropZoneToolbar';
-import StyledDropZone from '../../../components/StyledDropZone';
-import { Subtitle } from '../../../styled/Subtitle';
-import withAddButton from '../../../components/HOC/withAddButton';
-import { SOURCE } from '../../../constants/constantsForQuestions';
+import QuestionTextArea from "../../../components/QuestionTextArea";
+import DropZoneToolbar from "../../../components/DropZoneToolbar";
+import StyledDropZone from "../../../components/StyledDropZone";
+import { Subtitle } from "../../../styled/Subtitle";
+import withAddButton from "../../../components/HOC/withAddButton";
+import { SOURCE } from "../../../constants/constantsForQuestions";
 
-import ColorPickers from './ColorPickers';
+import ColorPickers from "./ColorPickers";
 
 const LineColors = withAddButton(ColorPickers);
 
@@ -25,8 +25,8 @@ const HighlightImageEdit = ({ item, setQuestionData, t }) => {
 
   const width = image ? image.width : 900;
   const height = image ? image.height : 470;
-  const altText = image ? image.altText : '';
-  const file = image ? image.source : '';
+  const altText = image ? image.altText : "";
+  const file = image ? image.source : "";
 
   const handleItemChangeChange = (prop, uiStyle) => {
     const newItem = cloneDeep(item);
@@ -35,7 +35,7 @@ const HighlightImageEdit = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-  const handleImageToolbarChange = prop => (val) => {
+  const handleImageToolbarChange = prop => val => {
     const newItem = cloneDeep(item);
 
     newItem.image[prop] = val;
@@ -70,7 +70,7 @@ const HighlightImageEdit = ({ item, setQuestionData, t }) => {
     return `rgb(${r}, ${g}, ${b})`;
   };
 
-  const colorChange = i => (obj) => {
+  const colorChange = i => obj => {
     const newItem = cloneDeep(item);
     newItem.line_color[i] = hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100);
     setQuestionData(newItem);
@@ -79,7 +79,7 @@ const HighlightImageEdit = ({ item, setQuestionData, t }) => {
   const handleAddLineColor = () => {
     const newItem = cloneDeep(item);
 
-    newItem.line_color.push('#000000');
+    newItem.line_color.push("#000000");
     setQuestionData(newItem);
   };
 
@@ -96,10 +96,10 @@ const HighlightImageEdit = ({ item, setQuestionData, t }) => {
   return (
     <Fragment>
       <Paper style={{ marginBottom: 30 }}>
-        <Subtitle>{t('component.highlightImage.composeQuestion')}</Subtitle>
+        <Subtitle>{t("component.highlightImage.composeQuestion")}</Subtitle>
         <QuestionTextArea
-          placeholder={t('component.highlightImage.enterQuestion')}
-          onChange={stimulus => handleItemChangeChange('stimulus', stimulus)}
+          placeholder={t("component.highlightImage.enterQuestion")}
+          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
         />
 
@@ -120,10 +120,7 @@ const HighlightImageEdit = ({ item, setQuestionData, t }) => {
           multiple={false}
         >
           {({ getRootProps, getInputProps, isDragActive }) => (
-            <div
-              {...getRootProps()}
-              className={`dropzone ${isDragActive ? 'dropzone--isActive' : ''}`}
-            >
+            <div {...getRootProps()} className={`dropzone ${isDragActive ? "dropzone--isActive" : ""}`}>
               <input {...getInputProps()} />
 
               <StyledDropZone loading={loading} isDragActive={isDragActive} thumb={thumb} />
@@ -131,13 +128,13 @@ const HighlightImageEdit = ({ item, setQuestionData, t }) => {
           )}
         </Dropzone>
 
-        <Subtitle>{t('component.highlightImage.lineColorOptionsSubtitle')}</Subtitle>
+        <Subtitle>{t("component.highlightImage.lineColorOptionsSubtitle")}</Subtitle>
 
         <LineColors
           onRemove={line_color.length > 1 ? handleRemove : undefined}
           changeHandler={colorChange}
           colors={line_color}
-          buttonText={t('component.highlightImage.addButtonText')}
+          buttonText={t("component.highlightImage.addButtonText")}
           onAdd={handleAddLineColor}
         />
       </Paper>
@@ -151,4 +148,4 @@ HighlightImageEdit.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default withNamespaces('assessment')(HighlightImageEdit);
+export default withNamespaces("assessment")(HighlightImageEdit);

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const LabelText = styled.span`
   font-size: ${props => props.theme.wordLimitAndCount.labelFontSize};

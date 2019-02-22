@@ -1,23 +1,20 @@
-import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
-import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { Paper, withWindowSizes } from '@edulastic/common';
-import PreviewModal from '../../../../../src/components/common/PreviewModal';
-import HeaderBar from '../HeaderBar/HeaderBar';
-import List from '../List/List';
-import ItemsTable from '../ReviewItemsTable/ReviewItemsTable';
-import {
-  getItemsTypesSelector,
-  getStandardsSelector
-} from '../../ducks';
-import { setTestDataAction } from '../../../../ducks';
-import { getSummarySelector } from '../../../Summary/ducks';
-import { Calculator, Photo } from '../../../common';
-import Breadcrumb from '../../../../../src/components/Breadcrumb';
-import { SecondHeader } from './styled';
+import React, { PureComponent } from "react";
+import { Row, Col } from "antd";
+import PropTypes from "prop-types";
+import { cloneDeep } from "lodash";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { Paper, withWindowSizes } from "@edulastic/common";
+import PreviewModal from "../../../../../src/components/common/PreviewModal";
+import HeaderBar from "../HeaderBar/HeaderBar";
+import List from "../List/List";
+import ItemsTable from "../ReviewItemsTable/ReviewItemsTable";
+import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
+import { setTestDataAction } from "../../../../ducks";
+import { getSummarySelector } from "../../../Summary/ducks";
+import { Calculator, Photo } from "../../../common";
+import Breadcrumb from "../../../../../src/components/Breadcrumb";
+import { SecondHeader } from "./styled";
 // TODO rewrite into  class component and mobile view
 class Review extends PureComponent {
   static propTypes = {
@@ -31,15 +28,15 @@ class Review extends PureComponent {
     summary: PropTypes.array.isRequired,
     current: PropTypes.string.isRequired,
     windowWidth: PropTypes.number.isRequired
-  }
+  };
 
   state = {
     isCollapse: false,
     isModalVisible: false,
     item: []
-  }
+  };
 
-  setSelected = (values) => {
+  setSelected = values => {
     const { test, setData } = this.props;
     const newData = cloneDeep(test);
 
@@ -55,7 +52,7 @@ class Review extends PureComponent {
     setData(newData);
   };
 
-  handleSelectAll = (e) => {
+  handleSelectAll = e => {
     const { rows } = this.props;
     const { checked } = e.target;
 
@@ -72,7 +69,7 @@ class Review extends PureComponent {
 
     newData.testItems = test.testItems.filter(item => !item.selected);
 
-    newData.scoring.testItems = test.scoring.testItems.filter((item) => {
+    newData.scoring.testItems = test.scoring.testItems.filter(item => {
       const foundItem = test.testItems.find(({ id }) => id === item._id);
       return !(foundItem && foundItem.selected);
     });
@@ -97,7 +94,7 @@ class Review extends PureComponent {
     setData(newData);
   };
 
-  handleMoveTo = (newIndex) => {
+  handleMoveTo = newIndex => {
     const { test } = this.props;
     const oldIndex = test.testItems.findIndex(item => item.selected);
     this.moveTestItems({ oldIndex, newIndex });
@@ -107,26 +104,21 @@ class Review extends PureComponent {
     const { test, setData } = this.props;
     const newData = cloneDeep(test);
 
-    const itemIndex = newData.scoring.testItems.findIndex(
-      ({ id }) => testItemId === id
-    );
+    const itemIndex = newData.scoring.testItems.findIndex(({ id }) => testItemId === id);
 
     newData.scoring.testItems[itemIndex].points = value;
-    newData.scoring.total = newData.scoring.testItems.reduce(
-      (acc, item) => acc + item.points,
-      0
-    );
+    newData.scoring.total = newData.scoring.testItems.reduce((acc, item) => acc + item.points, 0);
 
     setData(newData);
   };
 
-  setModalVisibility = (value) => {
+  setModalVisibility = value => {
     this.setState({
       isModalVisible: value
     });
-  }
+  };
 
-  handlePreview = (data) => {
+  handlePreview = data => {
     this.setState({
       item: { id: data }
     });
@@ -137,10 +129,9 @@ class Review extends PureComponent {
     this.setModalVisibility(false);
   };
 
-  handleSelectedTest = (items) => {
+  handleSelectedTest = items => {
     const { test } = this.props;
-    const result = items.map(item =>
-      test.testItems.findIndex(i => item === i._id));
+    const result = items.map(item => test.testItems.findIndex(i => item === i._id));
     this.setSelected(result);
   };
 
@@ -154,18 +145,8 @@ class Review extends PureComponent {
     }));
   }
 
-
   render() {
-    const {
-      test,
-      current,
-      windowWidth,
-      rows,
-      standards,
-      types,
-      onChangeGrade,
-      onChangeSubjects
-    } = this.props;
+    const { test, current, windowWidth, rows, standards, types, onChangeGrade, onChangeSubjects } = this.props;
     const { isCollapse, isModalVisible, item } = this.state;
 
     const totalPoints = test.scoring.total;
@@ -180,12 +161,12 @@ class Review extends PureComponent {
 
     const breadcrumbData = [
       {
-        title: 'TESTS LIST',
-        to: '/author/tests'
+        title: "TESTS LIST",
+        to: "/author/tests"
       },
       {
         title: current,
-        to: ''
+        to: ""
       }
     ];
 
@@ -195,12 +176,9 @@ class Review extends PureComponent {
     return (
       <div style={{ paddingTop: 10 }}>
         <Row>
-          <Col
-            span={isSmallSize ? 19 : 24}
-            style={{ padding: isMobileSize ? '0 45px' : '0 25px' }}
-          >
+          <Col span={isSmallSize ? 19 : 24} style={{ padding: isMobileSize ? "0 45px" : "0 25px" }}>
             <SecondHeader isMobileSize={isMobileSize}>
-              <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
+              <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
               <HeaderBar
                 onSelectAll={this.handleSelectAll}
                 selectedItems={selected}
@@ -238,11 +216,7 @@ class Review extends PureComponent {
           <Col
             span={isSmallSize ? 5 : 24}
             style={{
-              padding: isSmallSize
-                ? '0px'
-                : isMobileSize
-                  ? '10px 45px'
-                  : '10px 25px'
+              padding: isSmallSize ? "0px" : isMobileSize ? "10px 45px" : "10px 25px"
             }}
           >
             <Calculator
@@ -258,11 +232,7 @@ class Review extends PureComponent {
             </Calculator>
           </Col>
         </Row>
-        <PreviewModal
-          isVisible={isModalVisible}
-          onClose={this.closeModal}
-          data={item}
-        />
+        <PreviewModal isVisible={isModalVisible} onClose={this.closeModal} data={item} />
       </div>
     );
   }

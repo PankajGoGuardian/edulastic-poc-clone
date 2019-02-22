@@ -1,22 +1,22 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import { connect } from 'react-redux';
-import { ThemeProvider } from 'styled-components';
-import { withNamespaces } from '@edulastic/localization';
+import PropTypes from "prop-types";
+import React from "react";
+import { connect } from "react-redux";
+import { ThemeProvider } from "styled-components";
+import { withNamespaces } from "@edulastic/localization";
 
 //actions
-import { checkAnswerEvaluation } from '../../actions/checkanswer';
+import { checkAnswerEvaluation } from "../../actions/checkanswer";
 
 //components
 
-import { Container } from '../common';
-import PlayerHeader from './PlayerHeader';
-import PlayerMainContentArea from './PlayerMainContentArea';
+import { Container } from "../common";
+import PlayerHeader from "./PlayerHeader";
+import PlayerMainContentArea from "./PlayerMainContentArea";
 
-import SubmitConfirmation from '../common/SubmitConfirmation';
+import SubmitConfirmation from "../common/SubmitConfirmation";
 
-import defaultTheme from '../defaultThemeStyle';
-import assessmentPlayerTheme from './themeStyle';
+import defaultTheme from "../defaultThemeStyle";
+import assessmentPlayerTheme from "./themeStyle";
 
 const Theme = {
   ...defaultTheme,
@@ -66,15 +66,13 @@ class AssessmentPlayerSimple extends React.Component {
 
   finishTest = () => {
     const { history } = this.props;
-    history.push('/home/assignments');
+    history.push("/home/assignments");
   };
 
   render() {
     const { theme, t, items, currentItem, view: previewTab } = this.props;
 
-    const dropdownOptions = Array.isArray(items)
-      ? items.map((item, index) => index)
-      : [];
+    const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
     const item = items[currentItem];
     if (!item) {
@@ -83,12 +81,7 @@ class AssessmentPlayerSimple extends React.Component {
     return (
       <ThemeProvider theme={theme}>
         <Container>
-          <PlayerHeader
-            {...this.props}
-            dropdownOptions={dropdownOptions}
-            onOpenExitPopup={this.openExitPopup}
-            t={t}
-          />
+          <PlayerHeader {...this.props} dropdownOptions={dropdownOptions} onOpenExitPopup={this.openExitPopup} t={t} />
           <PlayerMainContentArea
             {...this.props}
             previewTab={previewTab}
@@ -115,4 +108,4 @@ export default connect(
   {
     checkAnswer: checkAnswerEvaluation
   }
-)(withNamespaces('common')(AssessmentPlayerSimple));
+)(withNamespaces("common")(AssessmentPlayerSimple));

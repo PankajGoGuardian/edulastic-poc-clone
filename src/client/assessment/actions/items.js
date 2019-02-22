@@ -6,7 +6,7 @@ import {
   GOTO_ITEM,
   SAVE_USER_RESPONSE,
   LOAD_USER_RESPONSE
-} from '../constants/actions';
+} from "../constants/actions";
 
 export const receiveItemsAction = ({ page, limit, search }) => ({
   type: RECEIVE_ITEMS_REQUEST,

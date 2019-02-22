@@ -1,26 +1,21 @@
-import React, { Fragment, useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
+import React, { Fragment, useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep } from "lodash";
 
-import { withNamespaces } from '@edulastic/localization';
-import { Paper, Tabs, Tab, CustomQuillComponent } from '@edulastic/common';
+import { withNamespaces } from "@edulastic/localization";
+import { Paper, Tabs, Tab, CustomQuillComponent } from "@edulastic/common";
 
-import {
-  WORD_MODE,
-  PARAGRAPH_MODE,
-  SENTENCE_MODE,
-  EDIT
-} from '../../constants/constantsForQuestions';
+import { WORD_MODE, PARAGRAPH_MODE, SENTENCE_MODE, EDIT } from "../../constants/constantsForQuestions";
 
-import withPoints from '../../components/HOC/withPoints';
-import QuestionTextArea from '../../components/QuestionTextArea';
-import CorrectAnswers from '../../components/CorrectAnswers';
-import { Subtitle } from '../../styled/Subtitle';
+import withPoints from "../../components/HOC/withPoints";
+import QuestionTextArea from "../../components/QuestionTextArea";
+import CorrectAnswers from "../../components/CorrectAnswers";
+import { Subtitle } from "../../styled/Subtitle";
 
-import TokenHighlightPreview from './TokenHighlightPreview';
-import { Container } from './styled/Container';
-import { ModeButton } from './styled/ModeButton';
-import AdvancedOptions from '../SortList/components/AdvancedOptions';
+import TokenHighlightPreview from "./TokenHighlightPreview";
+import { Container } from "./styled/Container";
+import { ModeButton } from "./styled/ModeButton";
+import AdvancedOptions from "../SortList/components/AdvancedOptions";
 
 const OptionsList = withPoints(TokenHighlightPreview);
 
@@ -31,55 +26,53 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
 
   const mode = item.tokenization;
 
-  const initialArray = item.template
-    .replace(/(<p>|<\/p>)*/g, '')
-    .split('<p class="newline_section"><br>');
+  const initialArray = item.template.replace(/(<p>|<\/p>)*/g, "").split('<p class="newline_section"><br>');
 
-  const paragraphsArray = initialArray.map(el => ({ value: `${el}<br/>`, active: true }));
+  const paragraphsArray = initialArray.map(el => ({
+    value: `${el}<br/>`,
+    active: true
+  }));
 
   const sentencesArray = initialArray
-    .join('<br/>')
-    .split('.')
+    .join("<br/>")
+    .split(".")
     .map(el => ({ value: `${el}.`, active: true }))
-    .filter(el => el.value !== '.' && el.value.trim() && el.value !== '<br/>.');
+    .filter(el => el.value !== "." && el.value.trim() && el.value !== "<br/>.");
 
   const wordsArray = initialArray
-    .join('<br/> ')
-    .split(' ')
+    .join("<br/> ")
+    .split(" ")
     .map(el => ({ value: `${el}`, active: true }));
 
   const [template, setTemplate] = useState();
 
-  useEffect(
-    () => {
-      const newItem = cloneDeep(item);
-      if (template || newItem.templeWithTokens.length === 0) {
-        let resultArray = '';
-        if (mode === WORD_MODE) {
-          resultArray = wordsArray;
-        } else if (mode === PARAGRAPH_MODE) {
-          resultArray = paragraphsArray;
-        } else {
-          resultArray = sentencesArray;
-        }
-
-        newItem.templeWithTokens = resultArray;
-
-        setTemplate(resultArray);
+  useEffect(() => {
+    const newItem = cloneDeep(item);
+    if (template || newItem.templeWithTokens.length === 0) {
+      let resultArray = "";
+      if (mode === WORD_MODE) {
+        resultArray = wordsArray;
+      } else if (mode === PARAGRAPH_MODE) {
+        resultArray = paragraphsArray;
       } else {
-        newItem.templeWithTokens = item.templeWithTokens;
-        setTemplate(item.templeWithTokens);
+        resultArray = sentencesArray;
       }
-      setQuestionData(newItem);
-    },
-    [mode]
-  );
+
+      newItem.templeWithTokens = resultArray;
+
+      setTemplate(resultArray);
+    } else {
+      newItem.templeWithTokens = item.templeWithTokens;
+      setTemplate(item.templeWithTokens);
+    }
+    setQuestionData(newItem);
+  }, [mode]);
 
   const handleItemChangeChange = (prop, uiStyle) => {
     const newItem = cloneDeep(item);
 
-    if (prop === 'template') {
-      let resultArray = '';
+    if (prop === "template") {
+      let resultArray = "";
       if (mode === WORD_MODE) {
         resultArray = wordsArray;
       } else if (mode === PARAGRAPH_MODE) {
@@ -113,7 +106,6 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-
   const handleAddAnswer = () => {
     const newItem = cloneDeep(item);
 
@@ -129,7 +121,7 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
     setCorrectTab(correctTab + 1);
   };
 
-  const handlePointsChange = (val) => {
+  const handlePointsChange = val => {
     const newItem = cloneDeep(item);
 
     if (correctTab === 0) {
@@ -141,7 +133,7 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-  const handleAnswerChange = (ans) => {
+  const handleAnswerChange = ans => {
     const newItem = cloneDeep(item);
 
     if (correctTab === 0) {
@@ -153,7 +145,7 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-  const handleCloseTab = (tabIndex) => {
+  const handleCloseTab = tabIndex => {
     const newItem = cloneDeep(item);
     newItem.validation.alt_responses.splice(tabIndex, 1);
 
@@ -165,16 +157,12 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
     <OptionsList
       item={item}
       points={
-        correctTab === 0
-          ? item.validation.valid_response.score
-          : item.validation.alt_responses[correctTab - 1].score
+        correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
       }
       onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
       editCorrectAnswers={
-        correctTab === 0
-          ? item.validation.valid_response.value
-          : item.validation.alt_responses[correctTab - 1].value
+        correctTab === 0 ? item.validation.valid_response.value : item.validation.alt_responses[correctTab - 1].value
       }
       view={EDIT}
     />
@@ -183,23 +171,23 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
   return (
     <Fragment>
       <Paper style={{ marginBottom: 30 }}>
-        <Subtitle>{t('component.tokenHighlight.composeQuestion')}</Subtitle>
+        <Subtitle>{t("component.tokenHighlight.composeQuestion")}</Subtitle>
         <QuestionTextArea
-          placeholder={t('component.tokenHighlight.enterQuestion')}
-          onChange={stimulus => handleItemChangeChange('stimulus', stimulus)}
+          placeholder={t("component.tokenHighlight.enterQuestion")}
+          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
         />
 
-        <Subtitle>{t('component.tokenHighlight.templateTitle')}</Subtitle>
+        <Subtitle>{t("component.tokenHighlight.templateTitle")}</Subtitle>
         <Tabs style={{ marginBottom: 15 }} value={templateTab} onChange={setTemplateTab}>
-          <Tab label={t('component.tokenHighlight.editTemplateTab')} />
-          <Tab label={t('component.tokenHighlight.editTokenTab')} />
+          <Tab label={t("component.tokenHighlight.editTemplateTab")} />
+          <Tab label={t("component.tokenHighlight.editTokenTab")} />
         </Tabs>
 
         {templateTab === 0 && (
           <CustomQuillComponent
             toolbarId="template"
-            onChange={val => handleItemChangeChange('template', val)}
+            onChange={val => handleItemChangeChange("template", val)}
             showResponseBtn={false}
             value={item.template}
           />
@@ -210,24 +198,24 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
             <Container>
               <ModeButton
                 active={mode === PARAGRAPH_MODE}
-                onClick={() => handleItemChangeChange('tokenization', PARAGRAPH_MODE)}
+                onClick={() => handleItemChangeChange("tokenization", PARAGRAPH_MODE)}
                 type="button"
               >
-                {t('component.tokenHighlight.paragraph')}
+                {t("component.tokenHighlight.paragraph")}
               </ModeButton>
               <ModeButton
                 active={mode === SENTENCE_MODE}
-                onClick={() => handleItemChangeChange('tokenization', SENTENCE_MODE)}
+                onClick={() => handleItemChangeChange("tokenization", SENTENCE_MODE)}
                 type="button"
               >
-                {t('component.tokenHighlight.sentence')}
+                {t("component.tokenHighlight.sentence")}
               </ModeButton>
               <ModeButton
                 active={mode === WORD_MODE}
-                onClick={() => handleItemChangeChange('tokenization', WORD_MODE)}
+                onClick={() => handleItemChangeChange("tokenization", WORD_MODE)}
                 type="button"
               >
-                {t('component.tokenHighlight.word')}
+                {t("component.tokenHighlight.word")}
               </ModeButton>
             </Container>
             {template.map((el, i) => (
@@ -235,7 +223,7 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
                 onClick={handleTemplateClick(i)}
                 dangerouslySetInnerHTML={{ __html: el.value }}
                 key={i}
-                className={el.active ? 'active-word token' : 'token'}
+                className={el.active ? "active-word token" : "token"}
               />
             ))}
           </Fragment>
@@ -262,4 +250,4 @@ TokenHighlightEdit.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default withNamespaces('assessment')(TokenHighlightEdit);
+export default withNamespaces("assessment")(TokenHighlightEdit);

@@ -1,47 +1,22 @@
-import React, { useState } from 'react';
-import produce from 'immer';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Col, Icon } from 'antd';
-import {
-  cloneDeep as _cloneDeep,
-  uniq as _uniq,
-  curry as _curry
-} from 'lodash';
-import {
-  SettingsBtn,
-  StyledRowLabel,
-  ModalWrapper,
-  InitOptions
-} from './styled';
-import ClassSelector from './ClassSelector';
-import StudentSelector from './StudentSelector';
-import DateSelector from './DateSelector';
-import PolicySelector from './PolicySelector';
-import Footer from './Footer';
-import { selectsData } from '../../../common';
-import {
-  fetchGroupMembersAction,
-  getStudentsSelector
-} from '../../../../../sharedDucks/groups';
-import {
-  getCurrentAssignmentSelector,
-  saveAssignmentAction
-} from '../../ducks';
-import Settings from './Settings';
-import { getListOfStudents } from '../../utils';
+import React, { useState } from "react";
+import produce from "immer";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { Col, Icon } from "antd";
+import { cloneDeep as _cloneDeep, uniq as _uniq, curry as _curry } from "lodash";
+import { SettingsBtn, StyledRowLabel, ModalWrapper, InitOptions } from "./styled";
+import ClassSelector from "./ClassSelector";
+import StudentSelector from "./StudentSelector";
+import DateSelector from "./DateSelector";
+import PolicySelector from "./PolicySelector";
+import Footer from "./Footer";
+import { selectsData } from "../../../common";
+import { fetchGroupMembersAction, getStudentsSelector } from "../../../../../sharedDucks/groups";
+import { getCurrentAssignmentSelector, saveAssignmentAction } from "../../ducks";
+import Settings from "./Settings";
+import { getListOfStudents } from "../../utils";
 
-const EditModal = ({
-  title,
-  visible,
-  onCancel,
-  onOk,
-  modalData,
-  group,
-  students,
-  fetchStudents,
-  saveAssignment
-}) => {
+const EditModal = ({ title, visible, onCancel, onOk, modalData, group, students, fetchStudents, saveAssignment }) => {
   let [showSettings, setSettings] = useState(false);
   let [assignment, updateAssignment] = useState(modalData);
 
@@ -58,7 +33,7 @@ const EditModal = ({
   const changeField = _curry(onChange);
 
   const updateStudents = studentList => {
-    onChange('students', studentList);
+    onChange("students", studentList);
   };
 
   // save the assingment and close the modal
@@ -77,9 +52,7 @@ const EditModal = ({
 
   const studentOfSelectedClass = getListOfStudents(students, assignment.class);
   const setList = studentOfSelectedClass.map(item => item._id);
-  const selectedStudents =
-    assignment.students &&
-    assignment.students.filter(id => setList.includes(id));
+  const selectedStudents = assignment.students && assignment.students.filter(id => setList.includes(id));
 
   const disabled = assignment.specificStudents
     ? !selectedStudents || selectedStudents.length == 0
@@ -90,15 +63,13 @@ const EditModal = ({
       data-cy="title"
       title={title}
       visible={visible}
-      footer={
-        <Footer onOk={addAssignment} onCancel={onCancel} disabled={disabled} />
-      }
+      footer={<Footer onOk={addAssignment} onCancel={onCancel} disabled={disabled} />}
       onCancel={onCancel}
       width="50%"
     >
       <InitOptions>
         <ClassSelector
-          onChange={changeField('class')}
+          onChange={changeField("class")}
           fetchStudents={fetchStudents}
           selectedGroups={assignment.class}
           group={group}
@@ -111,11 +82,7 @@ const EditModal = ({
           specificStudents={assignment.specificStudents}
         />
 
-        <DateSelector
-          startDate={assignment.startDate}
-          endDate={assignment.endDate}
-          changeField={changeField}
-        />
+        <DateSelector startDate={assignment.startDate} endDate={assignment.endDate} changeField={changeField} />
 
         <PolicySelector
           openPolicy={assignment.openPolicy}
@@ -126,19 +93,12 @@ const EditModal = ({
       <StyledRowLabel gutter={16}>
         <Col>
           <SettingsBtn onClick={toggleSettings} isVisible={showSettings}>
-            OVERRIDE TEST SETTINGS{' '}
-            {showSettings ? <Icon type="up" /> : <Icon type="down" />}
+            OVERRIDE TEST SETTINGS {showSettings ? <Icon type="up" /> : <Icon type="down" />}
           </SettingsBtn>
         </Col>
       </StyledRowLabel>
 
-      {showSettings && (
-        <Settings
-          modalData={modalData}
-          onChange={onChange}
-          selectsData={selectsData}
-        />
-      )}
+      {showSettings && <Settings modalData={modalData} onChange={onChange} selectsData={selectsData} />}
     </ModalWrapper>
   );
 };

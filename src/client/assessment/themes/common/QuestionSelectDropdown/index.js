@@ -1,17 +1,11 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import { Select } from 'antd';
-import { withNamespaces } from '@edulastic/localization';
+import PropTypes from "prop-types";
+import React from "react";
+import { Select } from "antd";
+import { withNamespaces } from "@edulastic/localization";
 
-import SelectContainer from './SelectContainer';
+import SelectContainer from "./SelectContainer";
 
-const QuestionSelectDropdown = ({
-  gotoQuestion,
-  options,
-  currentItem,
-  skinb,
-  t
-}) => (
+const QuestionSelectDropdown = ({ gotoQuestion, options, currentItem, skinb, t }) => (
   <SelectContainer skinb={skinb}>
     <Select
       defaultValue={currentItem}
@@ -22,9 +16,7 @@ const QuestionSelectDropdown = ({
     >
       {options.map((item, index) => (
         <Select.Option key={index} value={item}>
-          {`${t('common.layout.selectbox.question')} ${index + 1}/ ${
-            options.length
-          }`}
+          {`${t("common.layout.selectbox.question")} ${index + 1}/ ${options.length}`}
         </Select.Option>
       ))}
     </Select>
@@ -38,4 +30,4 @@ QuestionSelectDropdown.propTypes = {
   currentItem: PropTypes.number.isRequired
 };
 
-export default withNamespaces('student')(QuestionSelectDropdown);
+export default withNamespaces("student")(QuestionSelectDropdown);

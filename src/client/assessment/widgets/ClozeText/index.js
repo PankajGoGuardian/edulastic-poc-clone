@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
-import { cloneDeep } from 'lodash';
-import styled, { withTheme } from 'styled-components';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
+import { cloneDeep } from "lodash";
+import styled, { withTheme } from "styled-components";
 
-import { PaddingDiv, Paper } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { PaddingDiv, Paper } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
 
-import Options from './components/Options';
-import CorrectAnswers from './CorrectAnswers';
-import Authoring from './Authoring';
-import Display from './Display';
+import Options from "./components/Options";
+import CorrectAnswers from "./CorrectAnswers";
+import Authoring from "./Authoring";
+import Display from "./Display";
 
 const EmptyWrapper = styled.div``;
 
@@ -72,8 +72,8 @@ class ClozeText extends Component {
       newItem.validation.alt_responses = newItem.validation.alt_responses.filter((response, i) => i !== index);
     }
 
-    setQuestionData(newItem);    
-  }
+    setQuestionData(newItem);
+  };
 
   handleOptionsChange = (name, value) => {
     const { setQuestionData, item } = this.props;
@@ -82,30 +82,20 @@ class ClozeText extends Component {
     setQuestionData(newItem);
   };
 
-  handleAddAnswer = (userAnswer) => {
+  handleAddAnswer = userAnswer => {
     const { saveAnswer } = this.props;
     const newAnswer = cloneDeep(userAnswer);
     saveAnswer(newAnswer);
   };
 
   render() {
-    const {
-      view,
-      previewTab,
-      smallSize,
-      item,
-      userAnswer,
-      testItem,
-      evaluation,
-      theme,
-      qIndex
-    } = this.props;
+    const { view, previewTab, smallSize, item, userAnswer, testItem, evaluation, theme, qIndex } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
     const Wrapper = testItem ? EmptyWrapper : Paper;
     return (
       <div>
-        {view === 'edit' && (
+        {view === "edit" && (
           <React.Fragment>
             <PaddingDiv
               style={{
@@ -139,15 +129,15 @@ class ClozeText extends Component {
                 onChange={this.handleOptionsChange}
                 uiStyle={uiStyle}
                 outerStyle={{
-                  padding: '30px 120px'
+                  padding: "30px 120px"
                 }}
               />
             </div>
           </React.Fragment>
         )}
-        {view === 'preview' && (
+        {view === "preview" && (
           <Wrapper>
-            {previewTab === 'check' && (
+            {previewTab === "check" && (
               <Display
                 checkAnswer
                 configureOptions={{
@@ -165,7 +155,7 @@ class ClozeText extends Component {
                 qIndex={qIndex}
               />
             )}
-            {previewTab === 'show' && (
+            {previewTab === "show" && (
               <Display
                 showAnswer
                 configureOptions={{
@@ -182,7 +172,7 @@ class ClozeText extends Component {
                 instructorStimulus={item.instructor_stimulus}
               />
             )}
-            {previewTab === 'clear' && (
+            {previewTab === "clear" && (
               <Display
                 preview
                 configureOptions={{
@@ -221,7 +211,7 @@ ClozeText.propTypes = {
 };
 
 ClozeText.defaultProps = {
-  previewTab: 'clear',
+  previewTab: "clear",
   item: {
     options: []
   },
@@ -234,14 +224,14 @@ ClozeText.defaultProps = {
 
 const enhance = compose(
   withRouter,
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   withTheme,
   connect(
     null,
     {
       setQuestionData: setQuestionDataAction
-    },
-  ),
+    }
+  )
 );
 
 const ClozeTextContainer = enhance(ClozeText);

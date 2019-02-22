@@ -1,13 +1,13 @@
-import React from 'react';
-import { DragSource } from 'react-dnd';
-import { withTheme } from 'styled-components';
+import React from "react";
+import { DragSource } from "react-dnd";
+import { withTheme } from "styled-components";
 
-import { FlexContainer } from '@edulastic/common';
+import { FlexContainer } from "@edulastic/common";
 
-import { IconCheck } from '../styled/IconCheck';
-import { IconClose } from '../styled/IconClose';
-import { IndexBox } from '../styled/IndexBox';
-import { getStyles } from '../utils';
+import { IconCheck } from "../styled/IconCheck";
+import { IconClose } from "../styled/IconClose";
+import { IndexBox } from "../styled/IndexBox";
+import { getStyles } from "../utils";
 
 function collectSource(connector, monitor) {
   return {
@@ -34,22 +34,14 @@ const specSource = {
   }
 };
 
-const DragItem = ({
-  connectDragSource,
-  item,
-  isDragging,
-  valid,
-  preview,
-  renderIndex,
-  theme
-}) =>
+const DragItem = ({ connectDragSource, item, isDragging, valid, preview, renderIndex, theme }) =>
   item &&
   connectDragSource(
     <div
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        margin: '10px 15px 10px 15px',
+        display: "flex",
+        alignItems: "center",
+        margin: "10px 15px 10px 15px",
         opacity: isDragging ? 0 : 1
       }}
     >
@@ -64,27 +56,30 @@ const DragItem = ({
           valid && preview
             ? theme.widgets.classification.dragItemValidBgColor
             : preview && valid !== undefined
-              ? theme.widgets.classification.dragItemNotValidBgColor
-              : theme.widgets.classification.dragItemBgColor,
+            ? theme.widgets.classification.dragItemNotValidBgColor
+            : theme.widgets.classification.dragItemBgColor,
           valid && preview
             ? theme.widgets.classification.dragItemValidBorderColor
             : preview && valid !== undefined
-              ? theme.widgets.classification.dragItemNotValidBorderColor
-              : theme.widgets.classification.dragItemBorderColor,
+            ? theme.widgets.classification.dragItemNotValidBorderColor
+            : theme.widgets.classification.dragItemBorderColor,
           preview && valid !== undefined
             ? {
-              paddingRight: 15,
-              paddingLeft: 15,
-              borderTopLeftRadius: 0,
-              borderBottomLeftRadius: 0
-            }
+                paddingRight: 15,
+                paddingLeft: 15,
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0
+              }
             : { borderTopLeftRadius: 5, borderBottomLeftRadius: 5 }
         )}
       >
         <FlexContainer
           alignItems="center"
           justifyContent="space-between"
-          style={{ width: '100%', fontWeight: theme.widgets.classification.dragItemFontWeight }}
+          style={{
+            width: "100%",
+            fontWeight: theme.widgets.classification.dragItemFontWeight
+          }}
         >
           <div dangerouslySetInnerHTML={{ __html: item }} />
           {preview && valid !== undefined && (
@@ -98,4 +93,4 @@ const DragItem = ({
     </div>
   );
 
-export default withTheme(DragSource('item', specSource, collectSource)(DragItem));
+export default withTheme(DragSource("item", specSource, collectSource)(DragItem));

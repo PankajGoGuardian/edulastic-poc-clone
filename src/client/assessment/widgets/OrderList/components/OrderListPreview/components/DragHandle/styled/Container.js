@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Container = styled.div`
   width: 100%;
@@ -7,10 +7,10 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   color: ${props => props.theme.widgets.orderList.dragHandleIconContainerColor};
-  font-size: ${props => (props.smallSize
-    ? props.theme.widgets.orderList.dragHandleIconContainerSmallFontSize
-    : props.theme.widgets.orderList.dragHandleIconContainerFontSize
-  )};
+  font-size: ${props =>
+    props.smallSize
+      ? props.theme.widgets.orderList.dragHandleIconContainerSmallFontSize
+      : props.theme.widgets.orderList.dragHandleIconContainerFontSize};
 
   :hover {
     cursor: pointer;

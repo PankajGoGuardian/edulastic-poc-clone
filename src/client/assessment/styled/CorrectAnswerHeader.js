@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { lightGrey, tabletWidth } from '@edulastic/colors';
+import styled from "styled-components";
+import { lightGrey, tabletWidth } from "@edulastic/colors";
 
 export const CorrectAnswerHeader = styled.div`
   padding: 10px;

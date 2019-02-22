@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { SortableContainer } from 'react-sortable-hoc';
-import { compose } from 'redux';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { SortableContainer } from "react-sortable-hoc";
+import { compose } from "redux";
 
-import OrderListPreviewItem from './components/OrderListPreviewItem';
+import OrderListPreviewItem from "./components/OrderListPreviewItem";
 
 class OrderListPreview extends Component {
   render() {
@@ -32,7 +32,6 @@ OrderListPreview.defaultProps = {
   questions: [],
   smallSize: false
 };
-
 
 const enhance = compose(SortableContainer);
 

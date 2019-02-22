@@ -1,39 +1,31 @@
-import React, { memo } from 'react';
-import PropTypes from 'prop-types';
-import { Row, Col, Button } from 'antd';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
+import React, { memo } from "react";
+import PropTypes from "prop-types";
+import { Row, Col, Button } from "antd";
+import { connect } from "react-redux";
+import { compose } from "redux";
 
-import { IconSource } from '@edulastic/icons';
-import { blue } from '@edulastic/colors';
-import { Paper, withWindowSizes } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { IconSource } from "@edulastic/icons";
+import { blue } from "@edulastic/colors";
+import { Paper, withWindowSizes } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { Container, ButtonLink } from '../../../../../src/components/common';
-import Sidebar from '../Sidebar/Sidebar';
-import { Calculator } from '../../../common';
-import Breadcrumb from '../../../../../src/components/Breadcrumb';
-import { SecondHeader } from './styled';
-import { getSummarySelector } from '../../ducks';
+import { Container, ButtonLink } from "../../../../../src/components/common";
+import Sidebar from "../Sidebar/Sidebar";
+import { Calculator } from "../../../common";
+import Breadcrumb from "../../../../../src/components/Breadcrumb";
+import { SecondHeader } from "./styled";
+import { getSummarySelector } from "../../ducks";
 
-const Summary = ({
-  setData,
-  test,
-  summary,
-  current,
-  t,
-  onShowSource,
-  windowWidth
-}) => {
+const Summary = ({ setData, test, summary, current, t, onShowSource, windowWidth }) => {
   const handleChangeField = (field, value) => {
     setData({ ...test, [field]: value });
   };
 
-  const handleChangeGrade = (grades) => {
+  const handleChangeGrade = grades => {
     setData({ ...test, grades });
   };
 
-  const handleChangeSubjects = (subjects) => {
+  const handleChangeSubjects = subjects => {
     setData({ ...test, subjects });
   };
 
@@ -46,36 +38,32 @@ const Summary = ({
 
   const breadcrumbData = [
     {
-      title: 'TESTS LIST',
-      to: '/author/tests'
+      title: "TESTS LIST",
+      to: "/author/tests"
     },
     {
       title: current,
-      to: ''
+      to: ""
     }
   ];
 
   return (
     <Container>
       <SecondHeader>
-        <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
+        <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
         <Button>
-          <ButtonLink
-            onClick={onShowSource}
-            color="primary"
-            icon={<IconSource color={blue} width={16} height={16} />}
-          >
-            {t('component.questioneditor.buttonbar.source')}
+          <ButtonLink onClick={onShowSource} color="primary" icon={<IconSource color={blue} width={16} height={16} />}>
+            {t("component.questioneditor.buttonbar.source")}
           </ButtonLink>
         </Button>
       </SecondHeader>
       <Paper style={{ marginTop: 25 }}>
-        <Row style={{ display: 'flex', justifyContent: 'center' }}>
+        <Row style={{ display: "flex", justifyContent: "center" }}>
           <Col span={windowWidth > 993 ? 16 : 24}>
             <Row
               gutter={32}
               style={{
-                padding: windowWidth < 468 ? '20px 15px 20px 25px' : '0px'
+                padding: windowWidth < 468 ? "20px 15px 20px 25px" : "0px"
               }}
             >
               <Col span={windowWidth > 993 ? 12 : 24}>
@@ -123,7 +111,7 @@ Summary.propTypes = {
 const enhance = compose(
   memo,
   withWindowSizes,
-  withNamespaces('author'),
+  withNamespaces("author"),
   connect(state => ({
     summary: getSummarySelector(state)
   }))

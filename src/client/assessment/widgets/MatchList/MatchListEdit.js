@@ -1,26 +1,26 @@
-import React, { Fragment, useState } from 'react';
-import { cloneDeep } from 'lodash';
-import { connect } from 'react-redux';
-import { arrayMove } from 'react-sortable-hoc';
-import PropTypes from 'prop-types';
+import React, { Fragment, useState } from "react";
+import { cloneDeep } from "lodash";
+import { connect } from "react-redux";
+import { arrayMove } from "react-sortable-hoc";
+import PropTypes from "prop-types";
 
-import { Paper } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { Paper } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
 
-import withAddButton from '../../components/HOC/withAddButton';
-import withPoints from '../../components/HOC/withPoints';
-import QuillSortableList from '../../components/QuillSortableList';
-import QuestionTextArea from '../../components/QuestionTextArea';
-import CorrectAnswers from '../../components/CorrectAnswers';
-import { Subtitle } from '../../styled/Subtitle';
+import withAddButton from "../../components/HOC/withAddButton";
+import withPoints from "../../components/HOC/withPoints";
+import QuillSortableList from "../../components/QuillSortableList";
+import QuestionTextArea from "../../components/QuestionTextArea";
+import CorrectAnswers from "../../components/CorrectAnswers";
+import { Subtitle } from "../../styled/Subtitle";
 
-import { EDIT } from '../../constants/constantsForQuestions';
+import { EDIT } from "../../constants/constantsForQuestions";
 
-import GroupPossibleResponses from './components/GroupPossibleResponses';
-import MatchListPreview from './MatchListPreview';
-import AdvancedOptions from '../SortList/components/AdvancedOptions';
+import GroupPossibleResponses from "./components/GroupPossibleResponses";
+import MatchListPreview from "./MatchListPreview";
+import AdvancedOptions from "../SortList/components/AdvancedOptions";
 
 const OptionsList = withPoints(MatchListPreview);
 
@@ -39,11 +39,11 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
   const handleAdd = () => {
     const newItem = cloneDeep(item);
 
-    newItem.list.push('');
+    newItem.list.push("");
 
-    newItem.validation.valid_response.value.push('');
-    newItem.validation.alt_responses.forEach((ite) => {
-      ite.value.push('');
+    newItem.validation.valid_response.value.push("");
+    newItem.validation.alt_responses.forEach(ite => {
+      ite.value.push("");
     });
 
     setQuestionData(newItem);
@@ -52,12 +52,12 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
   const handleAddResp = () => {
     const newItem = cloneDeep(item);
 
-    newItem.possible_responses.push('');
+    newItem.possible_responses.push("");
 
     setQuestionData(newItem);
   };
 
-  const handleRemove = (index) => {
+  const handleRemove = index => {
     const newItem = cloneDeep(item);
 
     newItem.list.splice(index, 1);
@@ -65,17 +65,14 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-  const handleRemoveResp = (index) => {
+  const handleRemoveResp = index => {
     const newItem = cloneDeep(item);
 
     const spliceRes = newItem.possible_responses.splice(index, 1);
 
-    newItem.validation.valid_response.value.splice(
-      newItem.validation.valid_response.value.indexOf(spliceRes),
-      1
-    );
+    newItem.validation.valid_response.value.splice(newItem.validation.valid_response.value.indexOf(spliceRes), 1);
 
-    newItem.validation.alt_responses.forEach((ite) => {
+    newItem.validation.alt_responses.forEach(ite => {
       ite.value.splice(ite.value.indexOf(spliceRes), 1);
     });
 
@@ -109,7 +106,7 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
     newItem.validation.valid_response.value[
       newItem.validation.valid_response.value.indexOf(newItem.possible_responses[index])
     ] = value;
-    newItem.validation.alt_responses.forEach((ite) => {
+    newItem.validation.alt_responses.forEach(ite => {
       ite.value[ite.value.indexOf(newItem.possible_responses[index])] = value;
     });
 
@@ -126,14 +123,16 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
     }
     newItem.validation.alt_responses.push({
       score: 1,
-      value: Array.from({ length: item.validation.valid_response.value.length }).fill(null)
+      value: Array.from({
+        length: item.validation.valid_response.value.length
+      }).fill(null)
     });
 
     setQuestionData(newItem);
     setCorrectTab(correctTab + 1);
   };
 
-  const handleCloseTab = (tabIndex) => {
+  const handleCloseTab = tabIndex => {
     const newItem = cloneDeep(item);
     newItem.validation.alt_responses.splice(tabIndex, 1);
 
@@ -141,7 +140,7 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-  const handlePointsChange = (val) => {
+  const handlePointsChange = val => {
     const newItem = cloneDeep(item);
 
     if (correctTab === 0) {
@@ -153,7 +152,7 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-  const handleAnswerChange = (ans) => {
+  const handleAnswerChange = ans => {
     const newItem = cloneDeep(item);
 
     if (correctTab === 0) {
@@ -165,7 +164,7 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-  const onGroupPossibleResp = (e) => {
+  const onGroupPossibleResp = e => {
     const newItem = cloneDeep(item);
 
     newItem.group_possible_responses = e.target.checked;
@@ -185,16 +184,12 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
     <OptionsList
       item={item}
       points={
-        correctTab === 0
-          ? item.validation.valid_response.score
-          : item.validation.alt_responses[correctTab - 1].score
+        correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
       }
       onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
       editCorrectAnswers={
-        correctTab === 0
-          ? item.validation.valid_response.value
-          : item.validation.alt_responses[correctTab - 1].value
+        correctTab === 0 ? item.validation.valid_response.value : item.validation.alt_responses[correctTab - 1].value
       }
       view={EDIT}
     />
@@ -203,20 +198,22 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
   const onAddInner = index => () => {
     const newItem = cloneDeep(item);
 
-    newItem.possible_response_groups[index].responses.push('');
+    newItem.possible_response_groups[index].responses.push("");
 
     setQuestionData(newItem);
   };
 
-  const onRemoveInner = ind => (index) => {
+  const onRemoveInner = ind => index => {
     const newItem = cloneDeep(item);
 
     newItem.validation.valid_response.value = Array.from({
       length: item.validation.valid_response.value.length
     }).fill(null);
 
-    newItem.validation.alt_responses.forEach((ite) => {
-      ite.value = Array.from({ length: item.validation.valid_response.value.length }).fill(null);
+    newItem.validation.alt_responses.forEach(ite => {
+      ite.value = Array.from({
+        length: item.validation.valid_response.value.length
+      }).fill(null);
     });
 
     newItem.possible_response_groups[ind].responses.splice(index, 1);
@@ -227,7 +224,7 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
   const handleGroupAdd = () => {
     const newItem = cloneDeep(item);
 
-    newItem.possible_response_groups.push({ title: '', responses: [] });
+    newItem.possible_response_groups.push({ title: "", responses: [] });
 
     setQuestionData(newItem);
   };
@@ -239,8 +236,10 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
       length: item.validation.valid_response.value.length
     }).fill(null);
 
-    newItem.validation.alt_responses.forEach((ite) => {
-      ite.value = Array.from({ length: item.validation.valid_response.value.length }).fill(null);
+    newItem.validation.alt_responses.forEach(ite => {
+      ite.value = Array.from({
+        length: item.validation.valid_response.value.length
+      }).fill(null);
     });
 
     newItem.possible_response_groups.splice(index, 1);
@@ -278,15 +277,15 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
   return (
     <Fragment>
       <Paper style={{ marginBottom: 30 }}>
-        <Subtitle>{t('component.matchList.composeQuestion')}</Subtitle>
+        <Subtitle>{t("component.matchList.composeQuestion")}</Subtitle>
         <QuestionTextArea
-          placeholder={t('component.matchList.enterQuestion')}
-          onChange={stimulus => handleItemChangeChange('stimulus', stimulus)}
+          placeholder={t("component.matchList.enterQuestion")}
+          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
         />
-        <Subtitle>{t('component.matchList.list')}</Subtitle>
+        <Subtitle>{t("component.matchList.list")}</Subtitle>
         <List
-          buttonText={t('component.matchList.addNew')}
+          buttonText={t("component.matchList.addNew")}
           items={item.list}
           onAdd={handleAdd}
           firstFocus={item.firstMount}
@@ -300,9 +299,7 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
         <GroupPossibleResponses
           checkboxChange={onGroupPossibleResp}
           checkboxVal={item.group_possible_responses}
-          items={
-            item.group_possible_responses ? item.possible_response_groups : item.possible_responses
-          }
+          items={item.group_possible_responses ? item.possible_response_groups : item.possible_responses}
           firstFocus={item.firstMount}
           onAddInner={onAddInner}
           onTitleChange={onGroupTitleChange}
@@ -333,7 +330,7 @@ MatchListEdit.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default withNamespaces('assessment')(
+export default withNamespaces("assessment")(
   connect(
     null,
     { setQuestionData: setQuestionDataAction }

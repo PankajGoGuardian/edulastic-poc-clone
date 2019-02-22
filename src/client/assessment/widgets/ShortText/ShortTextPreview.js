@@ -1,30 +1,21 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { Input } from 'antd';
-import { compose } from 'redux';
-import { withTheme } from 'styled-components';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import { Input } from "antd";
+import { compose } from "redux";
+import { withTheme } from "styled-components";
 
-import { Paper, Stimulus, CorrectAnswersContainer } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { Paper, Stimulus, CorrectAnswersContainer } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { CHECK, SHOW, PREVIEW, CLEAR, CONTAINS } from '../../constants/constantsForQuestions';
+import { CHECK, SHOW, PREVIEW, CLEAR, CONTAINS } from "../../constants/constantsForQuestions";
 
-import { SmallContainer } from './styled/SmallContainer';
-import { SmallStim } from './styled/SmallStim';
+import { SmallContainer } from "./styled/SmallContainer";
+import { SmallStim } from "./styled/SmallStim";
 
-const ShortTextPreview = ({
-  view,
-  saveAnswer,
-  t,
-  item,
-  previewTab,
-  smallSize,
-  userAnswer,
-  theme
-}) => {
-  const [text, setText] = useState(Array.isArray(userAnswer) ? '' : userAnswer);
+const ShortTextPreview = ({ view, saveAnswer, t, item, previewTab, smallSize, userAnswer, theme }) => {
+  const [text, setText] = useState(Array.isArray(userAnswer) ? "" : userAnswer);
 
-  const handleTextChange = (e) => {
+  const handleTextChange = e => {
     const val = e.target.value;
     setText(val);
     saveAnswer(val);
@@ -45,16 +36,12 @@ const ShortTextPreview = ({
       return true;
     }
 
-    item.validation.alt_responses.forEach((ite) => {
+    item.validation.alt_responses.forEach(ite => {
       if (ite.value === text) {
         flag = true;
       }
 
-      if (
-        ite.matching_rule === CONTAINS &&
-        text &&
-        text.toLowerCase().includes(ite.value.toLowerCase())
-      ) {
+      if (ite.matching_rule === CONTAINS && text && text.toLowerCase().includes(ite.value.toLowerCase())) {
         flag = true;
       }
     });
@@ -65,32 +52,32 @@ const ShortTextPreview = ({
   const preview = previewTab === CHECK || previewTab === SHOW;
 
   return (
-    <Paper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
-      {view === PREVIEW && !smallSize && (
-        <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-      )}
+    <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+      {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
 
       {smallSize && (
         <SmallContainer>
-          <SmallStim bold>{t('component.shortText.smallSizeTitle')}</SmallStim>
+          <SmallStim bold>{t("component.shortText.smallSizeTitle")}</SmallStim>
 
-          <SmallStim>{t('component.shortText.smallSizePar')}</SmallStim>
+          <SmallStim>{t("component.shortText.smallSizePar")}</SmallStim>
         </SmallContainer>
       )}
 
       <Input
-        style={preview
-          ? (validate()
-            ? { background: theme.widgets.shortText.correctInputBgColor }
-            : { background: theme.widgets.shortText.incorrectInputBgColor })
-          : {}}
+        style={
+          preview
+            ? validate()
+              ? { background: theme.widgets.shortText.correctInputBgColor }
+              : { background: theme.widgets.shortText.incorrectInputBgColor }
+            : {}
+        }
         value={text}
         onChange={handleTextChange}
         size="large"
       />
 
       {previewTab === SHOW && (
-        <CorrectAnswersContainer title={t('component.shortText.correctAnswers')}>
+        <CorrectAnswersContainer title={t("component.shortText.correctAnswers")}>
           {item.validation.valid_response.value}
         </CorrectAnswersContainer>
       )}
@@ -115,7 +102,7 @@ ShortTextPreview.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   withTheme
 );
 

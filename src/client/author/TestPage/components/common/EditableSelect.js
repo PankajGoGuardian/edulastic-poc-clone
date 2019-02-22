@@ -1,11 +1,11 @@
-import React, { Fragment, useState } from 'react';
-import PropTypes from 'prop-types';
-import { Select } from 'antd';
-import { IconCheck, IconPencilEdit } from '@edulastic/icons';
-import { greenDark, green } from '@edulastic/colors';
-import { FlexContainer } from '@edulastic/common';
-import styled from 'styled-components';
-import Title from './Title';
+import React, { Fragment, useState } from "react";
+import PropTypes from "prop-types";
+import { Select } from "antd";
+import { IconCheck, IconPencilEdit } from "@edulastic/icons";
+import { greenDark, green } from "@edulastic/colors";
+import { FlexContainer } from "@edulastic/common";
+import styled from "styled-components";
+import Title from "./Title";
 
 const EditableSelect = ({ placeholder, onChange, defaultValue, options, title }) => {
   const [show, setShow] = useState(false);
@@ -20,11 +20,11 @@ const EditableSelect = ({ placeholder, onChange, defaultValue, options, title })
         <Title>{title}:</Title>
         {!show && (
           <Fragment>
-            <span>{defaultValue.join(', ')}</span>
+            <span>{defaultValue.join(", ")}</span>
             <IconPencilEdit
               color={greenDark}
               hoverColor={green}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: "pointer" }}
               onClick={handleToggle}
               width={16}
               height={16}
@@ -37,7 +37,7 @@ const EditableSelect = ({ placeholder, onChange, defaultValue, options, title })
         <Fragment>
           <Select
             mode="multiple"
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             placeholder={placeholder}
             onChange={onChange}
             defaultValue={defaultValue}
@@ -49,7 +49,7 @@ const EditableSelect = ({ placeholder, onChange, defaultValue, options, title })
           <IconCheck
             color={greenDark}
             hoverColor={green}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: "pointer" }}
             onClick={handleToggle}
             width={16}
             height={16}

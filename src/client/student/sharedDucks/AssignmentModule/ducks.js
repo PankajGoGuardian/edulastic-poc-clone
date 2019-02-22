@@ -1,25 +1,20 @@
-import { createAction, createReducer } from 'redux-starter-kit';
-import { schema } from 'normalizr';
+import { createAction, createReducer } from "redux-starter-kit";
+import { schema } from "normalizr";
 
-import { takeLatest, put, call } from 'redux-saga/effects';
-import { questionsApi } from '@edulastic/api';
+import { takeLatest, put, call } from "redux-saga/effects";
+import { questionsApi } from "@edulastic/api";
 
 // assignments schema
-export const assignmentSchema = new schema.Entity(
-  'assignments',
-  {},
-  { idAttribute: '_id' }
-);
+export const assignmentSchema = new schema.Entity("assignments", {}, { idAttribute: "_id" });
 
 // types
-export const SET_LOADING = '[studentAssignment] fetch assignments';
-export const SET_ASSIGNMENTS = '[studentAssignment] set assignments';
-export const SET_ACTIVE_ASSIGNMENT =
-  '[studentAssignments] set active assignment';
-export const SET_FILTER = '[studentAssignment] set filter';
+export const SET_LOADING = "[studentAssignment] fetch assignments";
+export const SET_ASSIGNMENTS = "[studentAssignment] set assignments";
+export const SET_ACTIVE_ASSIGNMENT = "[studentAssignments] set active assignment";
+export const SET_FILTER = "[studentAssignment] set filter";
 
-export const CHECK_ANSWER = 'check answer';
-export const ADD_EVALUATION = 'add evaluation';
+export const CHECK_ANSWER = "check answer";
+export const ADD_EVALUATION = "add evaluation";
 
 // action dispatchers
 export const setAssignmentsLoadingAction = createAction(SET_LOADING);
@@ -34,7 +29,7 @@ const initialState = {
   allIds: [],
   error: {},
   isStale: false,
-  filter: 'all'
+  filter: "all"
 };
 
 // reducers
@@ -77,7 +72,7 @@ function* addEvaluation(action) {
       }
     });
   } catch (e) {
-    console.log('error: ', e);
+    console.log("error: ", e);
   }
 }
 

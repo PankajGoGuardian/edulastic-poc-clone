@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import SmallSizeQuadrantsImage from '../../../assets/small-size-quadrants.png';
-import SmallSizeQuadrantsFirstImage from '../../../assets/small-size-quadrants-first.png';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import SmallSizeQuadrantsImage from "../../../assets/small-size-quadrants.png";
+import SmallSizeQuadrantsFirstImage from "../../../assets/small-size-quadrants-first.png";
 
 const Container = styled.div`
   width: 100%;

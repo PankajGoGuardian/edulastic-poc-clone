@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 class FocusInput extends Component {
   constructor(props) {
@@ -30,9 +30,9 @@ class FocusInput extends Component {
     const { onChange, onFocus } = this.props;
     if (!dirty) {
       this.setState({
-        value: ''
+        value: ""
       });
-      this.inputRef.current.value = '';
+      this.inputRef.current.value = "";
       onChange({
         target: this.inputRef.current
       });
@@ -48,9 +48,7 @@ class FocusInput extends Component {
 
   render() {
     const { value } = this.state;
-    return (
-      <input ref={this.inputRef} {...this.props} value={value} onFocus={evt => this.onFocus(evt)} />
-    );
+    return <input ref={this.inputRef} {...this.props} value={value} onFocus={evt => this.onFocus(evt)} />;
   }
 }
 

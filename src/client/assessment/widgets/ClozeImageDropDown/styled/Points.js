@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Points = styled.span`
   font-family: '${props => props.theme.widgets.clozeImageDropDown.pointsFontFamily}';

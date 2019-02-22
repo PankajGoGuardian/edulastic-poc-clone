@@ -1,4 +1,4 @@
-import { createSelector } from 'reselect';
+import { createSelector } from "reselect";
 
 export const stateGradeBookSelector = state => state.author_classboard_gradebook;
 export const stateTestActivitySelector = state => state.author_classboard_testActivity;

@@ -1,47 +1,25 @@
-import React, { Fragment } from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import {
-  Header,
-  FlexContainer,
-  HeaderLeftMenu,
-  MobileMainMenu as Mobile,
-  HeaderMainMenu
-} from '../common';
-import {
-  IconLogoCompact,
-  IconSave,
-  IconPause,
-  IconLogout
-} from '@edulastic/icons';
-import { IPAD_PORTRAIT_WIDTH } from '../../constants/others';
-import { boxShadowDefault } from '@edulastic/colors';
-import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
+import React, { Fragment } from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+import { Header, FlexContainer, HeaderLeftMenu, MobileMainMenu as Mobile, HeaderMainMenu } from "../common";
+import { IconLogoCompact, IconSave, IconPause, IconLogout } from "@edulastic/icons";
+import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
+import { boxShadowDefault } from "@edulastic/colors";
+import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 
-import ProgressContainer from './ProgressContainer';
+import ProgressContainer from "./ProgressContainer";
 
-const PlayerHeader = ({
-  title,
-  dropdownOptions,
-  currentItem,
-  onOpenExitPopup,
-  theme,
-  gotoQuestion
-}) => {
+const PlayerHeader = ({ title, dropdownOptions, currentItem, onOpenExitPopup, theme, gotoQuestion }) => {
   return (
     <Fragment>
       <HeaderPracticePlayer>
-        <HeaderLeftMenu skinb={'true'}>
+        <HeaderLeftMenu skinb={"true"}>
           <LogoCompact />
         </HeaderLeftMenu>
-        <HeaderMainMenu skinb={'true'}>
+        <HeaderMainMenu skinb={"true"}>
           <FlexContainer>
             <PlayerTitle>{title}</PlayerTitle>
-            <ProgressContainer
-              questions={dropdownOptions}
-              current={currentItem + 1}
-              desktop={'true'}
-            />
+            <ProgressContainer questions={dropdownOptions} current={currentItem + 1} desktop={"true"} />
             <ContainerRight>
               <FlexDisplay>
                 <Save>
@@ -57,10 +35,7 @@ const PlayerHeader = ({
             </ContainerRight>
           </FlexContainer>
           <Mobile>
-            <ProgressContainer
-              questions={dropdownOptions}
-              current={currentItem + 1}
-            />
+            <ProgressContainer questions={dropdownOptions} current={currentItem + 1} />
           </Mobile>
         </HeaderMainMenu>
       </HeaderPracticePlayer>
@@ -70,7 +45,7 @@ const PlayerHeader = ({
           currentItem={currentItem}
           gotoQuestion={gotoQuestion}
           options={dropdownOptions}
-          skinb={'true'}
+          skinb={"true"}
         />
       </Mobile>
     </Fragment>

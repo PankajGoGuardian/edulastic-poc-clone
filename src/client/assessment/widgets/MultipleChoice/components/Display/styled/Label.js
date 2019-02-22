@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { green } from '@edulastic/colors';
+import styled from "styled-components";
+import { green } from "@edulastic/colors";
 
 export const Label = styled.label`
   position: relative;
@@ -7,8 +7,8 @@ export const Label = styled.label`
   padding-left: ${props => (props.smallSize ? 5 : 20)}px;
   border: dotted 1px ${props => props.theme.widgets.multipleChoice.labelBorderColor};
   border-left: solid 3px ${props => props.theme.widgets.multipleChoice.labelBorderColor};
-  margin: ${props => (props.setAnswers ? '5px 0' : '10px 0')};
-  width: ${props => props.width || '100%'};
+  margin: ${props => (props.setAnswers ? "5px 0" : "10px 0")};
+  width: ${props => props.width || "100%"};
 
   &:hover {
     border: dotted 1px ${props => props.theme.widgets.multipleChoice.labelBorderHoverColor};

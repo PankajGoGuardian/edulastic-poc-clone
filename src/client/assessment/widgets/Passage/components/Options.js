@@ -1,20 +1,20 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
-import { arrayMove } from 'react-sortable-hoc';
-import { Col, Checkbox, Select } from 'antd';
-import { compose } from 'redux';
-import { withTheme } from 'styled-components';
+import React from "react";
+import PropTypes from "prop-types";
+import { cloneDeep } from "lodash";
+import { arrayMove } from "react-sortable-hoc";
+import { Col, Checkbox, Select } from "antd";
+import { compose } from "redux";
+import { withTheme } from "styled-components";
 
-import { CustomQuillComponent } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { CustomQuillComponent } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import withAddButton from '../../../components/HOC/withAddButton';
-import QuillSortableList from '../../../components/QuillSortableList';
-import { Label } from '../../../styled/WidgetOptions/Label';
+import withAddButton from "../../../components/HOC/withAddButton";
+import QuillSortableList from "../../../components/QuillSortableList";
+import { Label } from "../../../styled/WidgetOptions/Label";
 
-import { StyledRow } from '../styled/StyledRow';
-import { StyledInput } from '../styled/StyledInput';
+import { StyledRow } from "../styled/StyledRow";
+import { StyledInput } from "../styled/StyledInput";
 
 const List = withAddButton(QuillSortableList);
 
@@ -22,14 +22,14 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
   const handleChange = (prop, value) => {
     const newItem = cloneDeep(item);
 
-    if (prop === 'paginated_content' && value) {
+    if (prop === "paginated_content" && value) {
       newItem.pages = [newItem.content];
       delete newItem.content;
     }
 
-    if (prop === 'paginated_content' && !value) {
+    if (prop === "paginated_content" && !value) {
       if (newItem.pages && newItem.pages.length) {
-        newItem.content = newItem.pages.join('');
+        newItem.content = newItem.pages.join("");
       }
 
       delete newItem.pages;
@@ -45,7 +45,7 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
     setQuestionData(newItem);
   };
 
-  const handleRemovePage = (index) => {
+  const handleRemovePage = index => {
     const newItem = cloneDeep(item);
     newItem.pages.splice(index, 1);
     setQuestionData(newItem);
@@ -59,36 +59,32 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
 
   const handleAddPage = () => {
     const newItem = cloneDeep(item);
-    newItem.pages.push('');
+    newItem.pages.push("");
     setQuestionData(newItem);
   };
 
   const rendererOptions = [
-    { value: '', label: t('component.passage.mathJax') },
-    { value: 'mathquill', label: t('component.passage.mathQuill') }
+    { value: "", label: t("component.passage.mathJax") },
+    { value: "mathquill", label: t("component.passage.mathQuill") }
   ];
 
   return (
     <div>
       <StyledRow gutter={32}>
         <Col span={24}>
-          <Label>{t('component.passage.heading')}</Label>
-          <StyledInput
-            size="large"
-            value={item.heading}
-            onChange={e => handleChange('heading', e.target.value)}
-          />
+          <Label>{t("component.passage.heading")}</Label>
+          <StyledInput size="large" value={item.heading} onChange={e => handleChange("heading", e.target.value)} />
         </Col>
       </StyledRow>
 
       <StyledRow gutter={32}>
         {!item.paginated_content && (
           <Col span={24}>
-            <Label>{t('component.passage.contents')}</Label>
+            <Label>{t("component.passage.contents")}</Label>
             <CustomQuillComponent
               toolbarId="contents"
-              placeholder={t('component.passage.enterPassageContentHere')}
-              onChange={value => handleChange('content', value)}
+              placeholder={t("component.passage.enterPassageContentHere")}
+              onChange={value => handleChange("content", value)}
               showResponseBtn={false}
               value={item.content}
             />
@@ -96,10 +92,10 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
         )}
         {item.paginated_content && item.pages && !!item.pages.length && (
           <Col span={24}>
-            <Label>{t('component.passage.contentPages')}</Label>
+            <Label>{t("component.passage.contentPages")}</Label>
             <List
               items={item.pages}
-              buttonText={t('component.passage.add')}
+              buttonText={t("component.passage.add")}
               onAdd={handleAddPage}
               onSortEnd={handleSortPagesEnd}
               useDragHandle
@@ -112,35 +108,31 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
 
       <StyledRow gutter={32}>
         <Col span={12}>
-          <Label>{t('component.passage.fleschKincaid')}</Label>
+          <Label>{t("component.passage.fleschKincaid")}</Label>
           <StyledInput
             size="large"
-            value={item.flesch_kincaid || ''}
-            onChange={e => handleChange('flesch_kincaid', e.target.value)}
+            value={item.flesch_kincaid || ""}
+            onChange={e => handleChange("flesch_kincaid", e.target.value)}
           />
         </Col>
         <Col span={12}>
-          <Label>{t('component.passage.lexile')}</Label>
-          <StyledInput
-            size="large"
-            value={item.lexile || ''}
-            onChange={e => handleChange('lexile', e.target.value)}
-          />
+          <Label>{t("component.passage.lexile")}</Label>
+          <StyledInput size="large" value={item.lexile || ""} onChange={e => handleChange("lexile", e.target.value)} />
         </Col>
       </StyledRow>
 
       <StyledRow gutter={32}>
         <Col span={12}>
-          <Label>{t('component.passage.instructorStimulus')}</Label>
+          <Label>{t("component.passage.instructorStimulus")}</Label>
           <CustomQuillComponent
             toolbarId="instructorStimulus"
-            onChange={value => handleChange('instructor_stimulus', value)}
+            onChange={value => handleChange("instructor_stimulus", value)}
             showResponseBtn={false}
-            value={item.instructor_stimulus || ''}
+            value={item.instructor_stimulus || ""}
             style={{
               border: `1px solid ${theme.widgets.passage.quillBorderColor}`,
-              height: 'auto',
-              padding: '6px 11px',
+              height: "auto",
+              padding: "6px 11px",
               borderRadius: 5
             }}
           />
@@ -149,19 +141,16 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
 
       <StyledRow gutter={32}>
         <Col span={12}>
-          <Checkbox
-            checked={item.is_math}
-            onChange={e => handleChange('is_math', e.target.checked)}
-          >
-            <b>{t('component.passage.containsMathematics')}</b>
+          <Checkbox checked={item.is_math} onChange={e => handleChange("is_math", e.target.checked)}>
+            <b>{t("component.passage.containsMathematics")}</b>
           </Checkbox>
         </Col>
         <Col span={12}>
           <Checkbox
             checked={item.paginated_content}
-            onChange={e => handleChange('paginated_content', e.target.checked)}
+            onChange={e => handleChange("paginated_content", e.target.checked)}
           >
-            <b>{t('component.passage.enablePaginatedContent')}</b>
+            <b>{t("component.passage.enablePaginatedContent")}</b>
           </Checkbox>
         </Col>
       </StyledRow>
@@ -169,12 +158,12 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
       <StyledRow gutter={32}>
         {item.is_math && (
           <Col span={12}>
-            <Label>{t('component.passage.mathRenderer')}</Label>
+            <Label>{t("component.passage.mathRenderer")}</Label>
             <Select
               size="large"
               value={item.math_renderer}
-              style={{ width: '100%' }}
-              onChange={value => handleChange('math_renderer', value)}
+              style={{ width: "100%" }}
+              onChange={value => handleChange("math_renderer", value)}
             >
               {rendererOptions.map(({ value: val, label }) => (
                 <Select.Option key={val} value={val}>
@@ -197,7 +186,7 @@ Opt.propTypes = {
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   withTheme
 );
 

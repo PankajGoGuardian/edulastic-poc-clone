@@ -1,12 +1,12 @@
-import React, { Fragment, Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React, { Fragment, Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import { PREVIEW, EDIT, CLEAR } from '../../constants/constantsForQuestions';
-import { setQuestionDataAction } from '../../../author/src/actions/question';
+import { PREVIEW, EDIT, CLEAR } from "../../constants/constantsForQuestions";
+import { setQuestionDataAction } from "../../../author/src/actions/question";
 
-import ShadingPreview from './ShadingPreview';
-import ShadingEdit from './ShadingEdit';
+import ShadingPreview from "./ShadingPreview";
+import ShadingEdit from "./ShadingEdit";
 
 class Shading extends Component {
   render() {
@@ -37,7 +37,7 @@ Shading.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: ''
+  evaluation: ""
 };
 
 const ShadingContainer = connect(

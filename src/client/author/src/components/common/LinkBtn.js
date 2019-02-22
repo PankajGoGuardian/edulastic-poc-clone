@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-const LinkBtn = styled.a` 
+const LinkBtn = styled.a`
   font-size: 12px;
   font-weight: 600;
   font-style: normal;

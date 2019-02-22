@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { FlexContainer } from '@edulastic/common';
+import styled from "styled-components";
+import { FlexContainer } from "@edulastic/common";
 
 export const FlexCon = styled(FlexContainer)`
   border-radius: 4px;

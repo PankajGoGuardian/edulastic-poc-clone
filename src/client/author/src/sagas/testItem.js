@@ -1,8 +1,8 @@
-import { takeEvery, call, put, all, select } from 'redux-saga/effects';
-import { message } from 'antd';
-import { testItemsApi } from '@edulastic/api';
-import { evaluateItem } from '../utils/evalution';
-import createShowAnswerData from '../utils/showAnswer';
+import { takeEvery, call, put, all, select } from "redux-saga/effects";
+import { message } from "antd";
+import { testItemsApi } from "@edulastic/api";
+import { evaluateItem } from "../utils/evalution";
+import createShowAnswerData from "../utils/showAnswer";
 
 import {
   CREATE_TEST_ITEM_REQUEST,
@@ -14,10 +14,10 @@ import {
   SHOW_ANSWER,
   CHECK_ANSWER,
   ADD_ITEM_EVALUATION
-} from '../constants/actions';
-import { history } from '../../../configureStore';
-import { getItemDetailValidationSelector } from '../selectors/itemDetail';
-import { getQuestionDataSelector } from '../selectors/question';
+} from "../constants/actions";
+import { history } from "../../../configureStore";
+import { getItemDetailValidationSelector } from "../selectors/itemDetail";
+import { getQuestionDataSelector } from "../selectors/question";
 
 function* createTestItemSaga({ payload }) {
   try {
@@ -29,7 +29,7 @@ function* createTestItemSaga({ payload }) {
     yield call(history.push, `/author/items/${item._id}/item-detail`);
   } catch (err) {
     console.error(err);
-    const errorMessage = 'Create item is failed';
+    const errorMessage = "Create item is failed";
     yield call(message.error, errorMessage);
     yield put({
       type: CREATE_TEST_ITEM_ERROR,
@@ -47,7 +47,7 @@ function* updateTestItemSaga({ payload }) {
     });
   } catch (err) {
     console.error(err);
-    const errorMessage = 'Update item is failed';
+    const errorMessage = "Update item is failed";
     yield call(message.error, errorMessage);
     yield put({
       type: UPDATE_TEST_ITEM_ERROR,
@@ -59,9 +59,9 @@ function* updateTestItemSaga({ payload }) {
 function* getValidations(mode) {
   let validations = {};
 
-  if (mode === 'edit') {
+  if (mode === "edit") {
     const question = yield select(getQuestionDataSelector);
-    const questionId = question.id || 'tmp';
+    const questionId = question.id || "tmp";
 
     if (question) {
       validations = {
@@ -92,7 +92,7 @@ function* evaluateAnswers({ payload }) {
     message.success(`score: ${score}/${maxScore}`);
   } catch (err) {
     console.error(err);
-    const errorMessage = 'Answer Evaluation Failed';
+    const errorMessage = "Answer Evaluation Failed";
     yield call(message.error, errorMessage);
   }
 }
@@ -110,7 +110,7 @@ function* showAnswers({ payload }) {
     });
   } catch (err) {
     console.error(err);
-    const errorMessage = 'Show Answer Failed';
+    const errorMessage = "Show Answer Failed";
     yield call(message.error, errorMessage);
   }
 }

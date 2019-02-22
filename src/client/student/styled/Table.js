@@ -1,12 +1,12 @@
-import { Table } from 'antd';
-import styled from 'styled-components';
+import { Table } from "antd";
+import styled from "styled-components";
 
 const StyledTable = styled(Table)`
   .ant-table table {
     border-collapse: separate;
     border-spacing: 0px 10px;
     @media screen and (max-width: 767px) {
-      display:block;
+      display: block;
       overflow-x: auto;
       margin-top: 10px;
     }
@@ -22,8 +22,8 @@ const StyledTable = styled(Table)`
       color: ${props => props.theme.skillReport.tableHeaderHoverTextColor} !important;
     }
     @media screen and (max-width: 767px) {
-      word-break:unset;
-    }    
+      word-break: unset;
+    }
   }
 
   .ant-table-row {
@@ -35,8 +35,8 @@ const StyledTable = styled(Table)`
       border-bottom: 1px solid ${props => props.theme.skillReport.tableDataBgBorderColor};
       color: ${props => props.theme.skillReport.tableDataTextColor};
       @media screen and (max-width: 767px) {
-        word-break:unset;
-      }   
+        word-break: unset;
+      }
     }
 
     td:first-child {

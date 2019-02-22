@@ -1,27 +1,30 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep, isEqual } from 'lodash';
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep, isEqual } from "lodash";
 
-import { Paper, FlexContainer, Stimulus } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { Paper, FlexContainer, Stimulus } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { SHOW, CLEAR } from '../../constants/constantsForQuestions';
+import { SHOW, CLEAR } from "../../constants/constantsForQuestions";
 
-import DropContainer from '../../components/DropContainer';
+import DropContainer from "../../components/DropContainer";
 
-import ShowCorrect from './components/ShowCorrect';
-import DragItem from './components/DragItem';
-import { FullWidthContainer } from './styled/FullWidthContainer';
-import { Title } from './styled/Title';
-import { FlexWithMargins } from './styled/FlexWithMargins';
-import { IconLeft } from './styled/IconLeft';
-import { IconRight } from './styled/IconRight';
-import { FlexCol } from './styled/FlexCol';
-import { IconUp } from './styled/IconUp';
-import { IconDown } from './styled/IconDown';
+import ShowCorrect from "./components/ShowCorrect";
+import DragItem from "./components/DragItem";
+import { FullWidthContainer } from "./styled/FullWidthContainer";
+import { Title } from "./styled/Title";
+import { FlexWithMargins } from "./styled/FlexWithMargins";
+import { IconLeft } from "./styled/IconLeft";
+import { IconRight } from "./styled/IconRight";
+import { FlexCol } from "./styled/FlexCol";
+import { IconUp } from "./styled/IconUp";
+import { IconDown } from "./styled/IconDown";
 
 const styles = {
-  dropContainerStyles: smallSize => ({ marginBottom: smallSize ? 6 : 20, borderRadius: 4 }),
+  dropContainerStyles: smallSize => ({
+    marginBottom: smallSize ? 6 : 20,
+    borderRadius: 4
+  }),
   wrapperStyles: smallSize => ({ marginTop: smallSize ? 0 : 40 })
 };
 class SortListPreview extends PureComponent {
@@ -57,7 +60,7 @@ class SortListPreview extends PureComponent {
         userAnswer.length > 0
           ? userAnswer.map(index => (index !== null ? source[index] : null))
           : Array.from({ length: source.length }).fill(null),
-      active: ''
+      active: ""
     };
   }
 
@@ -85,12 +88,12 @@ class SortListPreview extends PureComponent {
 
     if (!isEqual(items, newItems)) {
       // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ items: newItems, active: '' });
+      this.setState({ items: newItems, active: "" });
     }
 
     if (!isEqual(selected, newSelected)) {
       // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ selected: newSelected, active: '' });
+      this.setState({ selected: newSelected, active: "" });
     }
   }
 
@@ -106,13 +109,11 @@ class SortListPreview extends PureComponent {
 
     this.setState(data);
 
-    saveAnswer(
-      data.selected.map(currentAns => (currentAns ? item.source.indexOf(currentAns) : null))
-    );
+    saveAnswer(data.selected.map(currentAns => (currentAns ? item.source.indexOf(currentAns) : null)));
   };
 
-  setActive = (item) => {
-    this.setState({ active: typeof item === 'string' ? item : '' });
+  setActive = item => {
+    this.setState({ active: typeof item === "string" ? item : "" });
   };
 
   onRightLeftClick = () => {
@@ -131,7 +132,7 @@ class SortListPreview extends PureComponent {
       this.setState({
         items,
         selected,
-        active: ''
+        active: ""
       });
       saveAnswer(selected.map(currentAns => (currentAns ? item.source.indexOf(currentAns) : null)));
     }
@@ -145,12 +146,12 @@ class SortListPreview extends PureComponent {
 
     if (selected.includes(active)) {
       const activeIndex = selected.indexOf(active);
-      if (indicator === 'Up' && activeIndex !== 0) {
+      if (indicator === "Up" && activeIndex !== 0) {
         tmp = selected[activeIndex - 1];
         selected[activeIndex - 1] = selected[activeIndex];
         selected[activeIndex] = tmp;
       }
-      if (indicator === 'Down' && activeIndex !== selected.length - 1) {
+      if (indicator === "Down" && activeIndex !== selected.length - 1) {
         tmp = selected[activeIndex + 1];
         selected[activeIndex + 1] = selected[activeIndex];
         selected[activeIndex] = tmp;
@@ -190,17 +191,15 @@ class SortListPreview extends PureComponent {
 
     let altRespCorrect = [...validRespCorrect];
 
-    alt_responses.forEach((ob) => {
-      const alt = selected.filter(
-        (selectedItem, i) => selectedItem && selectedItem === item.source[ob.value[i]]
-      );
+    alt_responses.forEach(ob => {
+      const alt = selected.filter((selectedItem, i) => selectedItem && selectedItem === item.source[ob.value[i]]);
       if (alt.length > altRespCorrect.length) {
         altRespCorrect = [...alt];
       }
     });
 
     return (
-      <Paper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
+      <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
         {!smallSize && (
           <Stimulus>
             <div dangerouslySetInnerHTML={{ __html: item.stimulus }} />
@@ -208,9 +207,7 @@ class SortListPreview extends PureComponent {
         )}
         <FlexContainer alignItems="flex-start" style={styles.wrapperStyles(smallSize)}>
           <FullWidthContainer>
-            {!smallSize && (
-              <Title smallSize={smallSize}>{t('component.sortList.containerSourcePreview')}</Title>
-            )}
+            {!smallSize && <Title smallSize={smallSize}>{t("component.sortList.containerSourcePreview")}</Title>}
             {items.map((draggableItem, i) => (
               <DropContainer
                 key={i}
@@ -240,9 +237,7 @@ class SortListPreview extends PureComponent {
           </FlexWithMargins>
 
           <FullWidthContainer>
-            {!smallSize && (
-              <Title smallSize={smallSize}>{t('component.sortList.containerTargetPreview')}</Title>
-            )}
+            {!smallSize && <Title smallSize={smallSize}>{t("component.sortList.containerTargetPreview")}</Title>}
             {selected.map((selectedItem, i) => (
               <DropContainer
                 key={i}
@@ -269,8 +264,8 @@ class SortListPreview extends PureComponent {
           </FullWidthContainer>
 
           <FlexCol smallSize={smallSize}>
-            <IconUp smallSize={smallSize} onClick={this.onUpDownClick('Up')} />
-            <IconDown smallSize={smallSize} onClick={this.onUpDownClick('Down')} />
+            <IconUp smallSize={smallSize} onClick={this.onUpDownClick("Up")} />
+            <IconDown smallSize={smallSize} onClick={this.onUpDownClick("Down")} />
           </FlexCol>
         </FlexContainer>
 
@@ -282,4 +277,4 @@ class SortListPreview extends PureComponent {
   }
 }
 
-export default withNamespaces('assessment')(SortListPreview);
+export default withNamespaces("assessment")(SortListPreview);

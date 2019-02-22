@@ -1,24 +1,24 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Select, Input, Col, Checkbox } from 'antd';
+import React from "react";
+import PropTypes from "prop-types";
+import { Select, Input, Col, Checkbox } from "antd";
 
-import { withNamespaces } from '@edulastic/localization';
-import { math } from '@edulastic/constants';
+import { withNamespaces } from "@edulastic/localization";
+import { math } from "@edulastic/constants";
 
-import { Block } from '../../../styled/WidgetOptions/Block';
-import { Heading } from '../../../styled/WidgetOptions/Heading';
-import { Label } from '../../../styled/WidgetOptions/Label';
-import FontSizeSelect from '../../../components/FontSizeSelect';
-import KeyPadOptions from '../../../components/KeyPadOptions';
-import TypedList from '../../../components/TypedList';
-import Extras from '../../../containers/Extras';
-import WidgetOptions from '../../../containers/WidgetOptions';
+import { Block } from "../../../styled/WidgetOptions/Block";
+import { Heading } from "../../../styled/WidgetOptions/Heading";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import FontSizeSelect from "../../../components/FontSizeSelect";
+import KeyPadOptions from "../../../components/KeyPadOptions";
+import TypedList from "../../../components/TypedList";
+import Extras from "../../../containers/Extras";
+import WidgetOptions from "../../../containers/WidgetOptions";
 
-import { StyledRow } from '../styled/StyledRow';
+import { StyledRow } from "../styled/StyledRow";
 
 const FormulaEssayOptions = ({ onChange, item, t }) => {
   const changeUiStyle = (prop, value) => {
-    onChange('ui_style', {
+    onChange("ui_style", {
       ...item.ui_style,
       [prop]: value
     });
@@ -36,45 +36,44 @@ const FormulaEssayOptions = ({ onChange, item, t }) => {
     if (item.text_blocks && item.text_blocks.length) {
       textBlocks = [...item.text_blocks];
     }
-    onChange('text_blocks', [...textBlocks, '']);
+    onChange("text_blocks", [...textBlocks, ""]);
   };
 
-  const handleDeleteBlock = (index) => {
+  const handleDeleteBlock = index => {
     const textBlocks = [...item.text_blocks];
     textBlocks.splice(index, 1);
-    onChange('text_blocks', textBlocks);
+    onChange("text_blocks", textBlocks);
   };
 
   const handleBlockChange = (index, value) => {
     const textBlocks = [...item.text_blocks];
     textBlocks[index] = value;
-    onChange('text_blocks', textBlocks);
+    onChange("text_blocks", textBlocks);
   };
 
   return (
     <WidgetOptions showScoring={false}>
       <Block>
-        <Heading>{t('component.options.scoring')}</Heading>
+        <Heading>{t("component.options.scoring")}</Heading>
 
         <StyledRow gutter={36}>
           <Col span={12}>
-            <Label>{t('component.options.maxScore')}</Label>
+            <Label>{t("component.options.maxScore")}</Label>
             <Input
               size="large"
               type="number"
-              style={{ width: '30%' }}
+              style={{ width: "30%" }}
               onChange={e =>
-                onChange('validation', { ...item.validation, max_score: +e.target.value })
+                onChange("validation", {
+                  ...item.validation,
+                  max_score: +e.target.value
+                })
               }
             />
           </Col>
           <Col span={12}>
-            <Label>{t('component.options.browserspellcheck')}</Label>
-            <Checkbox
-              checked={item.spellcheck}
-              size="large"
-              onChange={e => onChange('spellcheck', e.target.checked)}
-            >
+            <Label>{t("component.options.browserspellcheck")}</Label>
+            <Checkbox checked={item.spellcheck} size="large" onChange={e => onChange("spellcheck", e.target.checked)}>
               Browser spellcheck
             </Checkbox>
           </Col>
@@ -82,16 +81,16 @@ const FormulaEssayOptions = ({ onChange, item, t }) => {
       </Block>
 
       <Block>
-        <Heading>{t('component.options.layout')}</Heading>
+        <Heading>{t("component.options.layout")}</Heading>
 
         <StyledRow gutter={36}>
           <Col span={12}>
-            <Label>{t('component.options.templateFontScale')}</Label>
+            <Label>{t("component.options.templateFontScale")}</Label>
             <Select
               size="large"
               value={item.ui_style.response_font_scale}
-              style={{ width: '100%' }}
-              onChange={val => changeUiStyle('response_font_scale', val)}
+              style={{ width: "100%" }}
+              onChange={val => changeUiStyle("response_font_scale", val)}
             >
               {math.templateFontScaleOption.map(({ value: val, label }) => (
                 <Select.Option key={val} value={val}>
@@ -101,10 +100,7 @@ const FormulaEssayOptions = ({ onChange, item, t }) => {
             </Select>
           </Col>
           <Col span={12}>
-            <FontSizeSelect
-              onChange={val => changeUiStyle('fontsize', val)}
-              value={item.ui_style.fontsize}
-            />
+            <FontSizeSelect onChange={val => changeUiStyle("fontsize", val)} value={item.ui_style.fontsize} />
           </Col>
         </StyledRow>
       </Block>
@@ -112,7 +108,7 @@ const FormulaEssayOptions = ({ onChange, item, t }) => {
       <KeyPadOptions onChange={onChange} item={item} />
 
       <Block>
-        <Heading>{t('component.options.textBlocks')}</Heading>
+        <Heading>{t("component.options.textBlocks")}</Heading>
 
         <StyledRow gutter={36}>
           <Col span={24}>
@@ -139,4 +135,4 @@ FormulaEssayOptions.propTypes = {
   item: PropTypes.object.isRequired
 };
 
-export default withNamespaces('assessment')(FormulaEssayOptions);
+export default withNamespaces("assessment")(FormulaEssayOptions);

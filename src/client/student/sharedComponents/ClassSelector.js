@@ -1,9 +1,9 @@
-import React from 'react';
-import { Select } from 'antd';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { getClasses, getCurrentGroup, changeClassAction } from '../Login/ducks';
+import React from "react";
+import { Select } from "antd";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { getClasses, getCurrentGroup, changeClassAction } from "../Login/ducks";
 
 const ClassSelector = ({ t, classes, currentGroup, changeClass }) => {
   if (!classes) {
@@ -11,12 +11,10 @@ const ClassSelector = ({ t, classes, currentGroup, changeClass }) => {
   }
   return (
     <AssignmentSelectClass id="class-dropdown-wrapper">
-      <ClassLabel>{t('common.classLabel')}</ClassLabel>
+      <ClassLabel>{t("common.classLabel")}</ClassLabel>
       <Select
         value={currentGroup}
-        getPopupContainer={() =>
-          document.getElementById('class-dropdown-wrapper')
-        }
+        getPopupContainer={() => document.getElementById("class-dropdown-wrapper")}
         onChange={value => {
           changeClass(value);
         }}

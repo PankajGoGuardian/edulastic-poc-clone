@@ -1,14 +1,8 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import {
-  IconClockDashboard,
-  IconAssignment,
-  IconBarChart,
-  IconReport,
-  IconManage
-} from '@edulastic/icons';
+import React from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { IconClockDashboard, IconAssignment, IconBarChart, IconReport, IconManage } from "@edulastic/icons";
 
 const NavLink = styled.ul`
   list-style: none;
@@ -26,7 +20,7 @@ const TextWrapper = styled.span`
   color: #434b5d;
   font-weight: 600;
   font-size: 0.9rem;
-  display: ${props => (props.flag ? 'none' : 'inline-block')};
+  display: ${props => (props.flag ? "none" : "inline-block")};
   @media (max-width: 1024px) {
     display: inline-block;
   }
@@ -45,7 +39,7 @@ const renderIcon = icon => styled(icon)`
   width: 22px;
   height: 22px;
   fill: rgb(67, 75, 93);
-  margin-right: ${props => (props.flag ? '0rem' : '1rem')};
+  margin-right: ${props => (props.flag ? "0rem" : "1rem")};
 `;
 
 const NavButton = ({ icon, label, flag }) => {

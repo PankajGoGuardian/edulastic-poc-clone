@@ -1,7 +1,4 @@
-import {
-  PREVIEW_UPDATE_LIST,
-  CHANGE_PREVIEW_TAB
-} from '../constants/actions';
+import { PREVIEW_UPDATE_LIST, CHANGE_PREVIEW_TAB } from "../constants/actions";
 
 export const updatePreviewListAction = list => ({
   type: PREVIEW_UPDATE_LIST,

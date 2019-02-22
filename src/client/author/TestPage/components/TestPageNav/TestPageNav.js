@@ -1,17 +1,13 @@
-import React, { memo } from 'react';
-import PropTypes from 'prop-types';
-import { FlexContainer } from '@edulastic/common';
-import { Container, Link } from './styled';
+import React, { memo } from "react";
+import PropTypes from "prop-types";
+import { FlexContainer } from "@edulastic/common";
+import { Container, Link } from "./styled";
 
 function TestPageNav({ onChange, current, buttons }) {
   return (
     <Container>
       {buttons.map(({ value, text, icon }) => (
-        <Link
-          key={value}
-          active={(current === value).toString()}
-          onClick={onChange(value)}
-        >
+        <Link key={value} active={(current === value).toString()} onClick={onChange(value)}>
           <FlexContainer>
             {icon}
             <div>{text}</div>

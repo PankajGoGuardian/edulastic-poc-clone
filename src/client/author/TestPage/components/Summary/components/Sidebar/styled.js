@@ -1,5 +1,5 @@
-import styled from 'styled-components/';
-import { greenDark, secondaryTextColor, white } from '@edulastic/colors';
+import styled from "styled-components/";
+import { greenDark, secondaryTextColor, white } from "@edulastic/colors";
 
 export const Block = styled.div`
   display: flex;

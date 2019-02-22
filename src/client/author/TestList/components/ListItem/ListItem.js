@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { FaAngleDoubleRight } from 'react-icons/fa';
-import { greenDark } from '@edulastic/colors';
-import { withNamespaces } from '@edulastic/localization';
-import { IconHeart, IconShare } from '@edulastic/icons';
-import { Col } from 'antd';
-import Tags from '../../../src/components/common/Tags';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { FaAngleDoubleRight } from "react-icons/fa";
+import { greenDark } from "@edulastic/colors";
+import { withNamespaces } from "@edulastic/localization";
+import { IconHeart, IconShare } from "@edulastic/icons";
+import { Col } from "antd";
+import Tags from "../../../src/components/common/Tags";
 import {
   Container,
   ListCard,
@@ -22,7 +22,7 @@ import {
   IconText,
   AuthorWrapper,
   ContentWrapper
-} from './styled';
+} from "./styled";
 
 class ListItem extends Component {
   static propTypes = {
@@ -52,15 +52,18 @@ class ListItem extends Component {
   }
 
   render() {
-    const { item: { title, analytics, tags }, t } = this.props;
+    const {
+      item: { title, analytics, tags },
+      t
+    } = this.props;
     return (
       <Container>
         <ListCard
-          title={(
+          title={
             <Header>
               <Stars size="small" />
             </Header>
-          )}
+          }
         />
         <ContentWrapper gutter={32}>
           <Col span={12}>
@@ -71,17 +74,19 @@ class ListItem extends Component {
                 </StyledLink>
               </div>
               <Description>
-                {'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum metus et luctus lacinia. Nullam vel tincidunt nibh. Duis ac eros nunc.'}
+                {
+                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum metus et luctus lacinia. Nullam vel tincidunt nibh. Duis ac eros nunc."
+                }
               </Description>
             </Inner>
           </Col>
           <AuthorWrapper span={12}>
             <ItemInformation>
-              <ContentWrapper style={{ paddingTop: '15px' }}>
+              <ContentWrapper style={{ paddingTop: "15px" }}>
                 <Col span={8}>
                   <Author>
                     <span>
-                      {t('component.item.by')}
+                      {t("component.item.by")}
                       :&nbsp;
                     </span>
                     <AuthorName>{this.name}</AuthorName>
@@ -97,20 +102,21 @@ class ListItem extends Component {
                   <IconWrapper>
                     <IconShare color={greenDark} width={16} height={16} />
                     &nbsp;
-                    { analytics && <IconText>{analytics.usage}</IconText> }
+                    {analytics && <IconText>{analytics.usage}</IconText>}
                   </IconWrapper>
                 </Col>
                 <Col span={4}>
                   <IconWrapper>
                     <IconHeart color={greenDark} width={16} height={16} />
                     &nbsp;
-                    { analytics && <IconText>{analytics.likes}</IconText> }
+                    {analytics && <IconText>{analytics.likes}</IconText>}
                   </IconWrapper>
                 </Col>
               </ContentWrapper>
             </ItemInformation>
             <TypeContainer>
-              {'Type: '}<Tags tags={tags} />
+              {"Type: "}
+              <Tags tags={tags} />
             </TypeContainer>
           </AuthorWrapper>
         </ContentWrapper>
@@ -119,4 +125,4 @@ class ListItem extends Component {
   }
 }
 
-export default withNamespaces('author')(ListItem);
+export default withNamespaces("author")(ListItem);

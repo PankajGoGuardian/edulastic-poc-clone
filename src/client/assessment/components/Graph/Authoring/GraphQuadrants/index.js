@@ -1,1 +1,1 @@
-export { default } from './GraphQuadrants';
+export { default } from "./GraphQuadrants";

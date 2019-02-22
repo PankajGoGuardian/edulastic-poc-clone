@@ -1,41 +1,41 @@
-import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { ThemeProvider } from 'styled-components';
-import { Paper } from '@edulastic/common';
-import { questionType } from '@edulastic/constants';
-import { themes } from '../themes';
-import QuestionMenu from './Graph/common/QuestionMenu';
+import React, { Component, Fragment } from "react";
+import PropTypes from "prop-types";
+import { ThemeProvider } from "styled-components";
+import { Paper } from "@edulastic/common";
+import { questionType } from "@edulastic/constants";
+import { themes } from "../themes";
+import QuestionMenu from "./Graph/common/QuestionMenu";
 
-import { OrderList } from '../widgets/OrderList';
-import { SortList } from '../widgets/SortList';
-import { MatchList } from '../widgets/MatchList';
-import { Classification } from '../widgets/Classification';
-import { MultipleChoice } from '../widgets/MultipleChoice';
-import { ClozeDragDrop } from '../widgets/ClozeDragDrop';
-import { ClozeImageDragDrop } from '../widgets/ClozeImageDragDrop';
-import { ClozeImageDropDown } from '../widgets/ClozeImageDropDown';
-import { ClozeImageText } from '../widgets/ClozeImageText';
-import { Graph } from './Graph';
-import { ClozeDropDown } from '../widgets/ClozeDropDown';
-import { ClozeText } from '../widgets/ClozeText';
-import { ShortText } from '../widgets/ShortText';
-import { TokenHighlight } from '../widgets/TokenHighlight';
-import { Shading } from '../widgets/Shading';
-import { Hotspot } from '../widgets/Hotspot';
-import { HighlightImage } from '../widgets/HighlightImage';
-import { Drawing } from './Drawing';
-import { EssayPlainText } from '../widgets/EssayPlainText';
-import { EssayRichText } from '../widgets/EssayRichText';
+import { OrderList } from "../widgets/OrderList";
+import { SortList } from "../widgets/SortList";
+import { MatchList } from "../widgets/MatchList";
+import { Classification } from "../widgets/Classification";
+import { MultipleChoice } from "../widgets/MultipleChoice";
+import { ClozeDragDrop } from "../widgets/ClozeDragDrop";
+import { ClozeImageDragDrop } from "../widgets/ClozeImageDragDrop";
+import { ClozeImageDropDown } from "../widgets/ClozeImageDropDown";
+import { ClozeImageText } from "../widgets/ClozeImageText";
+import { Graph } from "./Graph";
+import { ClozeDropDown } from "../widgets/ClozeDropDown";
+import { ClozeText } from "../widgets/ClozeText";
+import { ShortText } from "../widgets/ShortText";
+import { TokenHighlight } from "../widgets/TokenHighlight";
+import { Shading } from "../widgets/Shading";
+import { Hotspot } from "../widgets/Hotspot";
+import { HighlightImage } from "../widgets/HighlightImage";
+import { Drawing } from "./Drawing";
+import { EssayPlainText } from "../widgets/EssayPlainText";
+import { EssayRichText } from "../widgets/EssayRichText";
 
-import withAnswerSave from './HOC/withAnswerSave';
-import { MatrixChoice } from '../widgets/MatrixChoice';
-import { Protractor } from '../widgets/Protractor';
-import { Passage } from '../widgets/Passage';
-import { MathFormula } from '../widgets/MathFormula';
-import { FormulaEssay } from '../widgets/FormulaEssay';
-import FeedbackBottom from './FeedbackBottom';
-import FeedbackRight from './FeedbackRight';
-import Timespent from './Timespent';
+import withAnswerSave from "./HOC/withAnswerSave";
+import { MatrixChoice } from "../widgets/MatrixChoice";
+import { Protractor } from "../widgets/Protractor";
+import { Passage } from "../widgets/Passage";
+import { MathFormula } from "../widgets/MathFormula";
+import { FormulaEssay } from "../widgets/FormulaEssay";
+import FeedbackBottom from "./FeedbackBottom";
+import FeedbackRight from "./FeedbackRight";
+import Timespent from "./Timespent";
 
 const getQuestion = type => {
   switch (type) {
@@ -87,7 +87,7 @@ const getQuestion = type => {
       return MathFormula;
     case questionType.FORMULA_ESSAY:
       return FormulaEssay;
-    case 'graph':
+    case "graph":
       return Graph;
     default:
       return null;
@@ -102,27 +102,30 @@ class QuestionWrapper extends Component {
   };
 
   componentDidMount() {
-    window.addEventListener('scroll', this.findActiveTab);
+    window.addEventListener("scroll", this.findActiveTab);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.findActiveTab);
+    window.removeEventListener("scroll", this.findActiveTab);
   }
 
   calcScrollPosition = (index, offset) => {
-    const scrollYMax = Math.max(
-      document.body.scrollHeight,
-      document.body.offsetHeight,
-      document.documentElement.clientHeight,
-      document.documentElement.scrollHeight,
-      document.documentElement.offsetHeight
-    ) - window.innerHeight;
+    const scrollYMax =
+      Math.max(
+        document.body.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.clientHeight,
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight
+      ) - window.innerHeight;
 
     if (index === 0) {
       return window.scrollY + 90;
-    } if (index !== 0 && offset < scrollYMax) {
+    }
+    if (index !== 0 && offset < scrollYMax) {
       return window.scrollY + 250;
-    } if (index !== 0 && offset >= scrollYMax) {
+    }
+    if (index !== 0 && offset >= scrollYMax) {
       return window.scrollY + 650;
       // return window.scrollY + (offset - scrollYMax + 200)
     }
@@ -136,12 +139,10 @@ class QuestionWrapper extends Component {
         return true;
       }
     } else if (index === options.length - 1) {
-      if (scrollPosition <= document.documentElement.scrollHeight &&
-          scrollPosition >= options[index].offset) {
+      if (scrollPosition <= document.documentElement.scrollHeight && scrollPosition >= options[index].offset) {
         return true;
       }
-    } else if (scrollPosition >= options[index].offset &&
-               scrollPosition <= options[index + 1].offset) {
+    } else if (scrollPosition >= options[index].offset && scrollPosition <= options[index + 1].offset) {
       return true;
     }
     return false;
@@ -163,7 +164,9 @@ class QuestionWrapper extends Component {
   };
 
   fillSections = (section, label, offset) => {
-    this.setState(state => ({ [section]: state[section].concat({ label, offset }) }));
+    this.setState(state => ({
+      [section]: state[section].concat({ label, offset })
+    }));
   };
 
   cleanSections = () => {
@@ -177,9 +180,11 @@ class QuestionWrapper extends Component {
     return (
       <ThemeProvider theme={themes.default}>
         <Paper>
-          { type === 'graph' && view === 'edit' && <QuestionMenu activeTab={activeTab} main={main} advanced={advanced} /> }
+          {type === "graph" && view === "edit" && (
+            <QuestionMenu activeTab={activeTab} main={main} advanced={advanced} />
+          )}
           <Fragment>
-            <div style={{ flex: 'auto' }}>
+            <div style={{ flex: "auto" }}>
               <Timespent timespent={timespent} view={view} />
               <Question
                 {...restProps}
@@ -189,8 +194,7 @@ class QuestionWrapper extends Component {
                 fillSections={this.fillSections}
               />
             </div>
-            {showFeedback &&
-              (multiple ? <FeedbackBottom widget={data} /> : <FeedbackRight widget={data} />)}
+            {showFeedback && (multiple ? <FeedbackBottom widget={data} /> : <FeedbackRight widget={data} />)}
           </Fragment>
         </Paper>
       </ThemeProvider>

@@ -1,22 +1,22 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { cloneDeep } from 'lodash';
-import { Input, Checkbox, Select, Col } from 'antd';
+import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { cloneDeep } from "lodash";
+import { Input, Checkbox, Select, Col } from "antd";
 
-import { withNamespaces } from '@edulastic/localization';
-import { rounding } from '@edulastic/constants';
+import { withNamespaces } from "@edulastic/localization";
+import { rounding } from "@edulastic/constants";
 
-import { setQuestionDataAction } from '../../../../author/src/actions/question';
-import { getQuestionDataSelector } from '../../../../author/src/selectors/question';
+import { setQuestionDataAction } from "../../../../author/src/actions/question";
+import { getQuestionDataSelector } from "../../../../author/src/selectors/question";
 
-import { Block } from '../../../styled/WidgetOptions/Block';
-import { Heading } from '../../../styled/WidgetOptions/Heading';
-import { Row } from '../../../styled/WidgetOptions/Row';
-import { Label } from '../../../styled/WidgetOptions/Label';
+import { Block } from "../../../styled/WidgetOptions/Block";
+import { Heading } from "../../../styled/WidgetOptions/Heading";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Label } from "../../../styled/WidgetOptions/Label";
 
-import { FormGroup } from '../styled/FormGroup';
+import { FormGroup } from "../styled/FormGroup";
 
 const roundingTypes = [rounding.roundDown, rounding.none];
 
@@ -35,7 +35,7 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
 
   return (
     <Block>
-      <Heading>{t('component.options.scoring')}</Heading>
+      <Heading>{t("component.options.scoring")}</Heading>
 
       {questionData.validation.automarkable && (
         <Row>
@@ -43,11 +43,11 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
             <Checkbox
               data-cy="unscoredChk"
               checked={questionData.validation.unscored}
-              onChange={e => handleChangeValidation('unscored', e.target.checked)}
+              onChange={e => handleChangeValidation("unscored", e.target.checked)}
               size="large"
-              style={{ width: '80%' }}
+              style={{ width: "80%" }}
             >
-              {t('component.options.unscored')}
+              {t("component.options.unscored")}
             </Checkbox>
           </Col>
           <Col md={12}>
@@ -56,11 +56,11 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
                 type="number"
                 data-cy="penalty"
                 value={questionData.validation.penalty}
-                onChange={e => handleChangeValidation('penalty', +e.target.value)}
+                onChange={e => handleChangeValidation("penalty", +e.target.value)}
                 size="large"
-                style={{ width: '20%', marginRight: 30 }}
+                style={{ width: "20%", marginRight: 30 }}
               />
-              <Label>{t('component.options.penalty')}</Label>
+              <Label>{t("component.options.penalty")}</Label>
             </FormGroup>
           </Col>
         </Row>
@@ -71,11 +71,11 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
             <Checkbox
               data-cy="feedbackChk"
               checked={questionData.instant_feedback}
-              onChange={e => handleChangeData('instant_feedback', e.target.checked)}
+              onChange={e => handleChangeData("instant_feedback", e.target.checked)}
               size="large"
-              style={{ width: '80%' }}
+              style={{ width: "80%" }}
             >
-              {t('component.options.checkAnswerButton')}
+              {t("component.options.checkAnswerButton")}
             </Checkbox>
           </Col>
           <Col md={12}>
@@ -84,11 +84,11 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
                 data-cy="feedback"
                 type="number"
                 value={questionData.feedback_attempts}
-                onChange={e => handleChangeData('feedback_attempts', +e.target.value)}
+                onChange={e => handleChangeData("feedback_attempts", +e.target.value)}
                 size="large"
-                style={{ width: '20%', marginRight: 30 }}
+                style={{ width: "20%", marginRight: 30 }}
               />
-              <Label>{t('component.options.attempts')}</Label>
+              <Label>{t("component.options.attempts")}</Label>
             </FormGroup>
           </Col>
         </Row>
@@ -99,11 +99,11 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
           <Checkbox
             data-cy="autoscoreChk"
             checked={questionData.validation.automarkable}
-            onChange={e => handleChangeValidation('automarkable', e.target.checked)}
+            onChange={e => handleChangeValidation("automarkable", e.target.checked)}
             size="large"
-            style={{ width: '80%' }}
+            style={{ width: "80%" }}
           >
-            {t('component.options.automarkable')}
+            {t("component.options.automarkable")}
           </Checkbox>
         </Col>
       </Row>
@@ -111,13 +111,13 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
       {questionData.validation.automarkable && (
         <Row>
           <Col md={12}>
-            <Label>{t('component.options.scoringType')}</Label>
+            <Label>{t("component.options.scoringType")}</Label>
             <Select
               size="large"
               data-cy="scoringType"
               value={questionData.validation.scoring_type}
-              style={{ width: '80%' }}
-              onChange={value => handleChangeValidation('scoring_type', value)}
+              style={{ width: "80%" }}
+              onChange={value => handleChangeValidation("scoring_type", value)}
             >
               {scoringTypes.map(({ value: val, label }) => (
                 <Select.Option data-cy={val} key={val} value={val}>
@@ -134,22 +134,22 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
                 type="number"
                 disabled={questionData.validation.unscored}
                 value={questionData.validation.min_score_if_attempted}
-                onChange={e => handleChangeValidation('min_score_if_attempted', +e.target.value)}
+                onChange={e => handleChangeValidation("min_score_if_attempted", +e.target.value)}
                 size="large"
-                style={{ width: '20%', marginRight: 30 }}
+                style={{ width: "20%", marginRight: 30 }}
               />
-              <Label>{t('component.options.minScore')}</Label>
+              <Label>{t("component.options.minScore")}</Label>
             </FormGroup>
           </Col>
 
-          {questionData.validation.scoring_type === 'partialMatchV2' && (
+          {questionData.validation.scoring_type === "partialMatchV2" && (
             <Col md={12}>
-              <Label>{t('component.options.rounding')}</Label>
+              <Label>{t("component.options.rounding")}</Label>
               <Select
                 size="large"
                 value={questionData.validation.rounding}
-                style={{ width: '80%' }}
-                onChange={value => handleChangeValidation('rounding', value)}
+                style={{ width: "80%" }}
+                onChange={value => handleChangeValidation("rounding", value)}
               >
                 {roundingTypes.map(({ value: val, label }) => (
                   <Select.Option key={val} value={val}>
@@ -170,11 +170,11 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
                 data-cy="maxscore"
                 type="number"
                 value={questionData.validation.max_score}
-                onChange={e => handleChangeValidation('max_score', +e.target.value)}
+                onChange={e => handleChangeValidation("max_score", +e.target.value)}
                 size="large"
-                style={{ width: '20%', marginRight: 30 }}
+                style={{ width: "20%", marginRight: 30 }}
               />
-              <Label>{t('component.options.maxScore')}</Label>
+              <Label>{t("component.options.maxScore")}</Label>
             </FormGroup>
           </Col>
         </Row>
@@ -191,7 +191,7 @@ Scoring.propTypes = {
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     state => ({
       questionData: getQuestionDataSelector(state)

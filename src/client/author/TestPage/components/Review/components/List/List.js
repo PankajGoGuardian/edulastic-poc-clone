@@ -1,54 +1,38 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { FlexContainer } from '@edulastic/common';
-import { Checkbox, Input } from 'antd';
-import { greenDark, blue } from '@edulastic/colors';
-import { IconList, IconPreview } from '@edulastic/icons';
+import React from "react";
+import PropTypes from "prop-types";
+import { FlexContainer } from "@edulastic/common";
+import { Checkbox, Input } from "antd";
+import { greenDark, blue } from "@edulastic/colors";
+import { IconList, IconPreview } from "@edulastic/icons";
 
-import {
-  SortableContainer,
-  SortableElement,
-  SortableHandle
-} from 'react-sortable-hoc';
+import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
 
-import { TestItemWrapper, PreviewContainer } from './styled';
+import { TestItemWrapper, PreviewContainer } from "./styled";
 
-import TestItemPreview from '../../../../../../assessment/components/TestItemPreview';
-import MetaInfoCell from '../ReviewItemsTable/MetaInfoCell/MetaInfoCell';
+import TestItemPreview from "../../../../../../assessment/components/TestItemPreview";
+import MetaInfoCell from "../ReviewItemsTable/MetaInfoCell/MetaInfoCell";
 
 const DragHandle = SortableHandle(() => (
-  <IconList color={greenDark} style={{ cursor: 'grab' }} width={16} height={16} />
+  <IconList color={greenDark} style={{ cursor: "grab" }} width={16} height={16} />
 ));
 
 const SortableItem = SortableElement(
-  ({
-    indx,
-    selected,
-    item,
-    onCheck,
-    points,
-    onChangePoints,
-    metaInfoData,
-    onPreview
-  }) => (
+  ({ indx, selected, item, onCheck, points, onChangePoints, metaInfoData, onPreview }) => (
     <TestItemWrapper>
       <FlexContainer justifyContent="space-between">
         <FlexContainer>
           <DragHandle />
-          <Checkbox
-            checked={selected.includes(indx)}
-            onChange={e => onCheck(indx, e.target.checked)}
-          >
+          <Checkbox checked={selected.includes(indx)} onChange={e => onCheck(indx, e.target.checked)}>
             Q{indx + 1}
           </Checkbox>
         </FlexContainer>
 
         <FlexContainer>
           <PreviewContainer onClick={() => onPreview(metaInfoData.id)}>
-            <IconPreview color={blue} width={16} height={16} />{' '}
+            <IconPreview color={blue} width={16} height={16} />{" "}
             <span
               style={{
-                textTransform: 'uppercase',
+                textTransform: "uppercase",
                 fontSize: 11,
                 fontWeight: 600
               }}
@@ -56,7 +40,7 @@ const SortableItem = SortableElement(
               Preview
             </span>
           </PreviewContainer>
-          <span style={{ fontWeight: 600, fontSize: 14 }}>Points</span>{' '}
+          <span style={{ fontWeight: 600, fontSize: 14 }}>Points</span>{" "}
           <Input
             size="large"
             type="number"
@@ -67,13 +51,13 @@ const SortableItem = SortableElement(
         </FlexContainer>
       </FlexContainer>
       <TestItemPreview
-        style={{ padding: 0, boxShadow: 'none', display: 'flex' }}
+        style={{ padding: 0, boxShadow: "none", display: "flex" }}
         cols={item}
         previewTab="clear"
         verticalDivider={item.verticalDivider}
         scrolling={item.scrolling}
       />
-      <FlexContainer style={{ margin: '20px 0' }}>
+      <FlexContainer style={{ margin: "20px 0" }}>
         <MetaInfoCell data={metaInfoData} />
       </FlexContainer>
     </TestItemWrapper>
@@ -81,17 +65,7 @@ const SortableItem = SortableElement(
 );
 
 const List = SortableContainer(
-  ({
-    rows,
-    selected,
-    setSelected,
-    testItems,
-    onChangePoints,
-    types,
-    standards,
-    scoring,
-    onPreview
-  }) => {
+  ({ rows, selected, setSelected, testItems, onChangePoints, types, standards, scoring, onPreview }) => {
     const handleCheckboxChange = (index, checked) => {
       if (checked) {
         setSelected([...selected, index]);
@@ -104,7 +78,7 @@ const List = SortableContainer(
       }
     };
 
-    const getPoints = (i) => {
+    const getPoints = i => {
       let item = null;
       if (scoring.testItems && scoring.testItems.length) {
         item = scoring.testItems.find(({ id }) => id === testItems[i]._id);
@@ -120,8 +94,8 @@ const List = SortableContainer(
             key={i}
             metaInfoData={{
               id: testItems[i]._id,
-              by: 'Kevin Hart',
-              shared: '9578 (1)',
+              by: "Kevin Hart",
+              shared: "9578 (1)",
               likes: 9,
               types: types[testItems[i]._id],
               standards: standards[testItems[i]._id]

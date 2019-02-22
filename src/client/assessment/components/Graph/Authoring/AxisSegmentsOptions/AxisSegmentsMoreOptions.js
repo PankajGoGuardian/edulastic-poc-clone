@@ -1,8 +1,8 @@
-import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-import { Checkbox, Select } from '@edulastic/common';
+import React, { Component, Fragment } from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
+import { Checkbox, Select } from "@edulastic/common";
 import {
   MoreOptionsContainer,
   MoreOptionsDivider,
@@ -10,39 +10,46 @@ import {
   MoreOptionsLabel,
   MoreOptionsRow,
   MoreOptionsSubHeading,
-  Row, Col, MoreOptionsColumnContainer, MoreOptionsColumn
-} from '../../common/styled_components';
-import FontSizeDropdown from '../AxisLabelsLayoutSettings/FontSizeDropdown';
-import RenderingBaseDropdown from '../AxisLabelsLayoutSettings/RenderingBaseDropdown';
-import { QuestionSection } from '../'
+  Row,
+  Col,
+  MoreOptionsColumnContainer,
+  MoreOptionsColumn
+} from "../../common/styled_components";
+import FontSizeDropdown from "../AxisLabelsLayoutSettings/FontSizeDropdown";
+import RenderingBaseDropdown from "../AxisLabelsLayoutSettings/RenderingBaseDropdown";
+import { QuestionSection } from "../";
 
 class AxisSegmentsMoreOptions extends Component {
   state = {
-    layout: 'horizontal',
-    minWidth: '550px',
-    renderingBase: 'lineMinValue',
-    labelDisplaySpecPoints: '',
+    layout: "horizontal",
+    minWidth: "550px",
+    renderingBase: "lineMinValue",
+    labelDisplaySpecPoints: "",
     currentRenderingBaseItem: {}
   };
 
   handleNumberlineCheckboxChange = (name, checked) => {
     const { numberlineAxis, setNumberline } = this.props;
     setNumberline({ ...numberlineAxis, [name]: !checked });
-  }
+  };
 
-  handleNumberlineInputChange = (event) => {
-    const { target: { name, value } } = event;
+  handleNumberlineInputChange = event => {
+    const {
+      target: { name, value }
+    } = event;
 
     const { numberlineAxis, setNumberline } = this.props;
-    if (name !== 'specificPoints' && !value) {
+    if (name !== "specificPoints" && !value) {
       setNumberline({ ...numberlineAxis, [name]: 0 });
     } else {
       setNumberline({ ...numberlineAxis, [name]: value });
     }
-  }
+  };
 
-  handleCanvasInputChange = (event) => {
-    const { target: { name, value } } = event;
+  handleCanvasInputChange = event => {
+    const {
+      target: { name, value }
+    } = event;
 
     const { canvasConfig, setCanvas } = this.props;
 
@@ -53,8 +60,10 @@ class AxisSegmentsMoreOptions extends Component {
     }
   };
 
-  handleOptionsInputChange = (event) => {
-    const { target: { name, value } } = event;
+  handleOptionsInputChange = event => {
+    const {
+      target: { name, value }
+    } = event;
 
     const { options, setOptions } = this.props;
     if (!value) {
@@ -62,7 +71,7 @@ class AxisSegmentsMoreOptions extends Component {
     } else {
       setOptions({ ...options, [name]: parseInt(value, 10) });
     }
-  }
+  };
 
   getFontSizeItem = () => {
     const { fontSizeList, numberlineAxis } = this.props;
@@ -71,7 +80,7 @@ class AxisSegmentsMoreOptions extends Component {
     return selectedItem;
   };
 
-  changeFontSize = (event) => {
+  changeFontSize = event => {
     const { setNumberline, numberlineAxis } = this.props;
 
     setNumberline({ ...numberlineAxis, fontSize: event });
@@ -89,18 +98,19 @@ class AxisSegmentsMoreOptions extends Component {
     });
   };
 
-  handleInputChange = (event) => {
-    const { target: { name, value } } = event;
+  handleInputChange = event => {
+    const {
+      target: { name, value }
+    } = event;
     this.setState({ [name]: value });
   };
 
-  changeRenderingBase = (e) => {
+  changeRenderingBase = e => {
     const { setNumberline, numberlineAxis } = this.props;
 
     const { renderingBaseList } = this.props;
     const { value } = e.target;
-    const findItem = renderingBaseList.find(renderingItem =>
-      renderingItem.value.toLowerCase() === value.toLowerCase());
+    const findItem = renderingBaseList.find(renderingItem => renderingItem.value.toLowerCase() === value.toLowerCase());
 
     if (findItem) {
       findItem.selected = true;
@@ -125,44 +135,37 @@ class AxisSegmentsMoreOptions extends Component {
       fillSections,
       cleanSections
     } = this.props;
-    console.log(this.props)
-    const {
-      layout,
-      minWidth,
-      currentRenderingBaseItem,
-      labelDisplaySpecPoints
-    } = this.state;
+    console.log(this.props);
+    const { layout, minWidth, currentRenderingBaseItem, labelDisplaySpecPoints } = this.state;
     return (
       <Fragment>
-        <QuestionSection section="advanced" label="LAYOUT OPTIONS" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="advanced"
+          label="LAYOUT OPTIONS"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+        >
           <MoreOptionsContainer>
-            <MoreOptionsSubHeading>
-              {t('component.graphing.layoutoptionstitle')}
-            </MoreOptionsSubHeading>
+            <MoreOptionsSubHeading>{t("component.graphing.layoutoptionstitle")}</MoreOptionsSubHeading>
 
             <Row>
               <Col md={12}>
                 <Row>
                   <Col md={6} style={{ paddingRight: 20 }}>
                     <MoreOptionsRow>
-                      <MoreOptionsLabel>
-                        {t('component.options.orientation')}
-                      </MoreOptionsLabel>
+                      <MoreOptionsLabel>{t("component.options.orientation")}</MoreOptionsLabel>
                       <Select
-                        style={{ width: '80%' }}
-                        onChange={val => this.handleSelect('layout', val)}
+                        style={{ width: "80%" }}
+                        onChange={val => this.handleSelect("layout", val)}
                         options={orientationList}
                         value={layout}
                       />
                     </MoreOptionsRow>
                   </Col>
                   <Col md={6} style={{ paddingLeft: 20 }}>
-                    {
-                      layout === 'horizontal' && (
+                    {layout === "horizontal" && (
                       <MoreOptionsRow>
-                        <MoreOptionsLabel>
-                          {t('component.graphing.layoutoptions.width')}
-                        </MoreOptionsLabel>
+                        <MoreOptionsLabel>{t("component.graphing.layoutoptions.width")}</MoreOptionsLabel>
                         <MoreOptionsInput
                           type="text"
                           defaultValue="600px"
@@ -171,20 +174,17 @@ class AxisSegmentsMoreOptions extends Component {
                           value={options.layout_width}
                         />
                       </MoreOptionsRow>
-                      )}
+                    )}
                   </Col>
                 </Row>
               </Col>
 
-              {
-                layout === 'vertical' && (
+              {layout === "vertical" && (
                 <Col md={12}>
                   <Row>
                     <Col md={6} style={{ paddingRight: 20 }}>
                       <MoreOptionsRow>
-                        <MoreOptionsLabel>
-                          {t('component.graphing.layoutoptions.minWidth')}
-                        </MoreOptionsLabel>
+                        <MoreOptionsLabel>{t("component.graphing.layoutoptions.minWidth")}</MoreOptionsLabel>
                         <MoreOptionsInput
                           type="text"
                           defaultValue="600px"
@@ -196,9 +196,7 @@ class AxisSegmentsMoreOptions extends Component {
                     </Col>
                     <Col md={6} style={{ paddingLeft: 20 }}>
                       <MoreOptionsRow>
-                        <MoreOptionsLabel>
-                          {t('component.graphing.layoutoptions.height')}
-                        </MoreOptionsLabel>
+                        <MoreOptionsLabel>{t("component.graphing.layoutoptions.height")}</MoreOptionsLabel>
                         <MoreOptionsInput
                           type="text"
                           defaultValue="600px"
@@ -210,15 +208,13 @@ class AxisSegmentsMoreOptions extends Component {
                     </Col>
                   </Row>
                 </Col>
-                )}
+              )}
 
               <Col md={12}>
                 <Row>
                   <Col md={6} style={{ paddingRight: 20 }}>
                     <MoreOptionsRow>
-                      <MoreOptionsLabel>
-                        {t('component.graphing.layoutoptions.linemargin')}
-                      </MoreOptionsLabel>
+                      <MoreOptionsLabel>{t("component.graphing.layoutoptions.linemargin")}</MoreOptionsLabel>
                       <MoreOptionsInput
                         type="text"
                         name="margin"
@@ -229,26 +225,26 @@ class AxisSegmentsMoreOptions extends Component {
                     </MoreOptionsRow>
                     <MoreOptionsRow>
                       <Checkbox
-                        label={t('component.graphing.layoutoptions.showMinArrow')}
-                        onChange={() => this.handleNumberlineCheckboxChange('leftArrow', numberlineAxis.leftArrow)}
+                        label={t("component.graphing.layoutoptions.showMinArrow")}
+                        onChange={() => this.handleNumberlineCheckboxChange("leftArrow", numberlineAxis.leftArrow)}
                         name="leftArrow"
                         checked={numberlineAxis.leftArrow}
                       />
                     </MoreOptionsRow>
                     <MoreOptionsRow>
                       <Checkbox
-                        label={t('component.graphing.layoutoptions.stackResponses')}
+                        label={t("component.graphing.layoutoptions.stackResponses")}
                         name="stackResponses"
-                        onChange={() => this.handleNumberlineCheckboxChange('stackResponses', numberlineAxis.stackResponses)}
+                        onChange={() =>
+                          this.handleNumberlineCheckboxChange("stackResponses", numberlineAxis.stackResponses)
+                        }
                         checked={numberlineAxis.stackResponses}
                       />
                     </MoreOptionsRow>
                   </Col>
                   <Col md={6} style={{ paddingLeft: 20 }}>
                     <MoreOptionsRow>
-                      <MoreOptionsLabel>
-                        {t('component.graphing.layoutoptions.spacingBtwStacked')}
-                      </MoreOptionsLabel>
+                      <MoreOptionsLabel>{t("component.graphing.layoutoptions.spacingBtwStacked")}</MoreOptionsLabel>
                       <MoreOptionsInput
                         type="text"
                         defaultValue="30"
@@ -259,16 +255,14 @@ class AxisSegmentsMoreOptions extends Component {
                     </MoreOptionsRow>
                     <MoreOptionsRow>
                       <Checkbox
-                        label={t('component.graphing.layoutoptions.showMaxArrow')}
-                        onChange={() => this.handleNumberlineCheckboxChange('rightArrow', numberlineAxis.rightArrow)}
+                        label={t("component.graphing.layoutoptions.showMaxArrow")}
+                        onChange={() => this.handleNumberlineCheckboxChange("rightArrow", numberlineAxis.rightArrow)}
                         name="rightArrow"
                         checked={numberlineAxis.rightArrow}
                       />
                     </MoreOptionsRow>
                     <MoreOptionsRow>
-                      <MoreOptionsLabel>
-                        {t('component.graphing.layoutoptions.fontSize')}
-                      </MoreOptionsLabel>
+                      <MoreOptionsLabel>{t("component.graphing.layoutoptions.fontSize")}</MoreOptionsLabel>
                       <FontSizeDropdown
                         t={t}
                         fontSizeList={fontSizeList}
@@ -283,27 +277,30 @@ class AxisSegmentsMoreOptions extends Component {
           </MoreOptionsContainer>
         </QuestionSection>
 
-        <QuestionSection section="advanced" label="TICKS OPTIONS" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="advanced"
+          label="TICKS OPTIONS"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+        >
           <MoreOptionsContainer>
-            <MoreOptionsSubHeading>
-              {t('component.graphing.ticksoptionstitle')}
-            </MoreOptionsSubHeading>
+            <MoreOptionsSubHeading>{t("component.graphing.ticksoptionstitle")}</MoreOptionsSubHeading>
 
             <MoreOptionsColumnContainer>
               <MoreOptionsColumn>
                 <MoreOptionsRow>
                   <Checkbox
-                    label={t('component.graphing.ticksoptions.showticks')}
+                    label={t("component.graphing.ticksoptions.showticks")}
                     name="showTicks"
-                    onChange={() => this.handleNumberlineCheckboxChange('showTicks', numberlineAxis.showTicks)}
+                    onChange={() => this.handleNumberlineCheckboxChange("showTicks", numberlineAxis.showTicks)}
                     checked={numberlineAxis.showTicks}
                   />
                 </MoreOptionsRow>
                 <MoreOptionsRow>
                   <Checkbox
-                    label={t('component.graphing.labelsoptions.showmax')}
+                    label={t("component.graphing.labelsoptions.showmax")}
                     name="showMax"
-                    onChange={() => this.handleNumberlineCheckboxChange('showMax', numberlineAxis.showMax)}
+                    onChange={() => this.handleNumberlineCheckboxChange("showMax", numberlineAxis.showMax)}
                     checked={numberlineAxis.showMax}
                   />
                 </MoreOptionsRow>
@@ -311,16 +308,14 @@ class AxisSegmentsMoreOptions extends Component {
               <MoreOptionsColumn>
                 <MoreOptionsRow>
                   <Checkbox
-                    label={t('component.graphing.labelsoptions.showmin')}
+                    label={t("component.graphing.labelsoptions.showmin")}
                     name="showMin"
-                    onChange={() => this.handleNumberlineCheckboxChange('showMin', numberlineAxis.showMin)}
+                    onChange={() => this.handleNumberlineCheckboxChange("showMin", numberlineAxis.showMin)}
                     checked={numberlineAxis.showMin}
                   />
                 </MoreOptionsRow>
                 <MoreOptionsRow>
-                  <MoreOptionsLabel>
-                    {t('component.graphing.ticksoptions.tickdistance')}
-                  </MoreOptionsLabel>
+                  <MoreOptionsLabel>{t("component.graphing.ticksoptions.tickdistance")}</MoreOptionsLabel>
                   <MoreOptionsInput
                     type="number"
                     defaultValue="1"
@@ -334,9 +329,7 @@ class AxisSegmentsMoreOptions extends Component {
             <MoreOptionsColumnContainer style={{ marginTop: 20 }}>
               <MoreOptionsColumn>
                 <MoreOptionsRow>
-                  <MoreOptionsLabel>
-                    {t('component.graphing.ticksoptions.minorTicks')}
-                  </MoreOptionsLabel>
+                  <MoreOptionsLabel>{t("component.graphing.ticksoptions.minorTicks")}</MoreOptionsLabel>
                   <MoreOptionsInput
                     type="text"
                     defaultValue="600px"
@@ -349,9 +342,7 @@ class AxisSegmentsMoreOptions extends Component {
 
               <MoreOptionsColumn>
                 <MoreOptionsRow>
-                  <MoreOptionsLabel>
-                    {t('component.graphing.ticksoptions.renderingbase')}
-                  </MoreOptionsLabel>
+                  <MoreOptionsLabel>{t("component.graphing.ticksoptions.renderingbase")}</MoreOptionsLabel>
                   <RenderingBaseDropdown
                     t={t}
                     renderingBaseList={renderingBaseList}
@@ -368,29 +359,27 @@ class AxisSegmentsMoreOptions extends Component {
               </MoreOptionsColumn>
             </MoreOptionsColumnContainer>
           </MoreOptionsContainer>
-        </QuestionSection>  
+        </QuestionSection>
 
         <QuestionSection section="advanced" label="LABELS" cleanSections={cleanSections} fillSections={fillSections}>
           <MoreOptionsContainer>
-            <MoreOptionsSubHeading>
-              {t('component.graphing.labelstitle')}
-            </MoreOptionsSubHeading>
+            <MoreOptionsSubHeading>{t("component.graphing.labelstitle")}</MoreOptionsSubHeading>
 
             <MoreOptionsColumnContainer>
               <MoreOptionsColumn>
                 <MoreOptionsRow>
                   <Checkbox
-                    label={t('component.graphing.labelsoptions.showLabels')}
+                    label={t("component.graphing.labelsoptions.showLabels")}
                     name="showLabels"
-                    onChange={() => this.handleNumberlineCheckboxChange('showLabels', numberlineAxis.showLabels)}
+                    onChange={() => this.handleNumberlineCheckboxChange("showLabels", numberlineAxis.showLabels)}
                     checked={numberlineAxis.showLabels}
                   />
                 </MoreOptionsRow>
                 <MoreOptionsRow>
                   <Checkbox
-                    label={t('component.graphing.labelsoptions.showmax')}
+                    label={t("component.graphing.labelsoptions.showmax")}
                     name="labelShowMax"
-                    onChange={() => this.handleNumberlineCheckboxChange('labelShowMax', numberlineAxis.labelShowMax)}
+                    onChange={() => this.handleNumberlineCheckboxChange("labelShowMax", numberlineAxis.labelShowMax)}
                     checked={numberlineAxis.labelShowMax}
                   />
                 </MoreOptionsRow>
@@ -399,16 +388,14 @@ class AxisSegmentsMoreOptions extends Component {
               <MoreOptionsColumn>
                 <MoreOptionsRow>
                   <Checkbox
-                    label={t('component.graphing.labelsoptions.showmin')}
+                    label={t("component.graphing.labelsoptions.showmin")}
                     name="labelShowMin"
-                    onChange={() => this.handleNumberlineCheckboxChange('labelShowMin', numberlineAxis.labelShowMin)}
+                    onChange={() => this.handleNumberlineCheckboxChange("labelShowMin", numberlineAxis.labelShowMin)}
                     checked={numberlineAxis.labelShowMin}
                   />
                 </MoreOptionsRow>
                 <MoreOptionsRow>
-                  <MoreOptionsLabel>
-                    {t('component.graphing.labelsoptions.displayspecificpoints')}
-                  </MoreOptionsLabel>
+                  <MoreOptionsLabel>{t("component.graphing.labelsoptions.displayspecificpoints")}</MoreOptionsLabel>
                   <MoreOptionsInput
                     type="text"
                     defaultValue=""
@@ -445,8 +432,6 @@ AxisSegmentsMoreOptions.defaultProps = {
   renderingBaseList: []
 };
 
-const enhance = compose(
-  withNamespaces('assessment'),
-);
+const enhance = compose(withNamespaces("assessment"));
 
 export default enhance(AxisSegmentsMoreOptions);

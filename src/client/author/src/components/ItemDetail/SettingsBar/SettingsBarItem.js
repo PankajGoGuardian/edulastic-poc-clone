@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { white, blue, textColor } from '@edulastic/colors';
-import SettingsBarIcon from './SettingsBarIcon';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { white, blue, textColor } from "@edulastic/colors";
+import SettingsBarIcon from "./SettingsBarIcon";
 
 const SettingsBarItem = ({ item, onSelect, selected }) => (
   <Container selected={selected} onClick={onSelect}>

@@ -1,27 +1,23 @@
-import { Button } from 'antd';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import React from 'react';
-import { withNamespaces } from '@edulastic/localization';
+import { Button } from "antd";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import React from "react";
+import { withNamespaces } from "@edulastic/localization";
 // actions
-import { setFilterAction } from '../../sharedDucks/ReportsModule/ducks';
-import { filterSelector, FILTERS } from '../ducks';
+import { setFilterAction } from "../../sharedDucks/ReportsModule/ducks";
+import { filterSelector, FILTERS } from "../ducks";
 // components
-import Breadcrumb from '../../sharedComponents/Breadcrumb';
+import Breadcrumb from "../../sharedComponents/Breadcrumb";
 
-const breadcrumbData = [{ title: 'REPORTS', to: '' }];
+const breadcrumbData = [{ title: "REPORTS", to: "" }];
 
 const AssignmentSubHeader = ({ t, setFilter, filter }) => {
   const filterItems = Object.keys(FILTERS);
 
   const Filter = ({ value }) => (
-    <FilterBtn
-      data-cy={value}
-      onClick={() => setFilter(FILTERS[value])}
-      enabled={FILTERS[value] === filter}
-    >
+    <FilterBtn data-cy={value} onClick={() => setFilter(FILTERS[value])} enabled={FILTERS[value] === filter}>
       {t(FILTERS[value])}
     </FilterBtn>
   );
@@ -41,7 +37,7 @@ const AssignmentSubHeader = ({ t, setFilter, filter }) => {
 };
 
 const enhance = compose(
-  withNamespaces('default'),
+  withNamespaces("default"),
   connect(
     state => ({
       filter: filterSelector(state)
@@ -99,8 +95,7 @@ const FilterBtn = styled(Button)`
     props.enabled
       ? props.theme.headerFilters.headerSelectedFilterTextColor
       : props.theme.headerFilters.headerFilterTextColor};
-  border: 1px solid
-    ${props => props.theme.headerFilters.headerFilterBgBorderColor};
+  border: 1px solid ${props => props.theme.headerFilters.headerFilterBgBorderColor};
   border-radius: 4px;
   margin-left: 20px;
   min-width: 85px;

@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { IconRedo as Icon } from '@edulastic/icons';
+import styled from "styled-components";
+import { IconRedo as Icon } from "@edulastic/icons";
 
 export const IconRedo = styled(Icon)`
   width: 18px;

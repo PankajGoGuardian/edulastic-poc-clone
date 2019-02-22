@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { green } from '@edulastic/colors';
+import styled from "styled-components";
+import { green } from "@edulastic/colors";
 
 export const CheckboxContainer = styled.div`
   width: ${props => (props.smallSize ? 22 : 36)}px;
@@ -25,7 +25,7 @@ export const CheckboxContainer = styled.div`
   & span {
     width: 100%;
     height: 100%;
-    display: ${props => (props.smallSize ? 'block' : 'flex')};
+    display: ${props => (props.smallSize ? "block" : "flex")};
     align-items: center;
     justify-content: center;
     border-radius: 50%;
@@ -33,9 +33,10 @@ export const CheckboxContainer = styled.div`
     -webkit-transition: backgroundColor 0.6s;
     transition: backgroundColor 0.6s;
     text-align: center;
-    font-size: ${props => (props.smallSize
-    ? props.theme.widgets.multipleChoice.checkboxContainerSmallFontSize
-    : props.theme.widgets.multipleChoice.checkboxContainerFontSize)};
+    font-size: ${props =>
+      props.smallSize
+        ? props.theme.widgets.multipleChoice.checkboxContainerSmallFontSize
+        : props.theme.widgets.multipleChoice.checkboxContainerFontSize};
     font-weight: ${props => props.theme.widgets.multipleChoice.checkboxContainerFontWeight};
     color: ${props => props.theme.widgets.multipleChoice.checkboxContainerColor};
   }
@@ -44,7 +45,7 @@ export const CheckboxContainer = styled.div`
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    display: ${props => (props.smallSize ? 'block' : 'none')};
+    display: ${props => (props.smallSize ? "block" : "none")};
     background-color: ${props => props.theme.widgets.multipleChoice.checkboxContainerBgColor};
   }
 

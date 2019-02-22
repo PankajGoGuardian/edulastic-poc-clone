@@ -1,20 +1,17 @@
-import { createAction, createReducer } from 'redux-starter-kit';
-import { takeEvery, put, call, all, select } from 'redux-saga/effects';
-import { reportsApi, testsApi } from '@edulastic/api';
-import { setTestItemsAction } from '../sharedDucks/TestItem';
-import { getReportByIdSelector } from '../sharedDucks/ReportsModule/ducks';
-import { push } from 'react-router-redux';
+import { createAction, createReducer } from "redux-starter-kit";
+import { takeEvery, put, call, all, select } from "redux-saga/effects";
+import { reportsApi, testsApi } from "@edulastic/api";
+import { setTestItemsAction } from "../sharedDucks/TestItem";
+import { getReportByIdSelector } from "../sharedDucks/ReportsModule/ducks";
+import { push } from "react-router-redux";
 // types
-export const LOAD_TEST_ACTIVITY_REPORT =
-  '[studentReports] load testActivity  report';
+export const LOAD_TEST_ACTIVITY_REPORT = "[studentReports] load testActivity  report";
 
-export const SET_STUDENT_ITEMS = '[studentItems] set Student items';
-export const SET_FEEDBACK = '[studentItems] set feedback';
+export const SET_STUDENT_ITEMS = "[studentItems] set Student items";
+export const SET_FEEDBACK = "[studentItems] set feedback";
 
 // actions
-export const loadTestActivityReportAction = createAction(
-  LOAD_TEST_ACTIVITY_REPORT
-);
+export const loadTestActivityReportAction = createAction(LOAD_TEST_ACTIVITY_REPORT);
 export const setFeedbackReportAction = createAction(SET_FEEDBACK);
 
 function* loadTestActivityReport({ payload }) {
@@ -22,11 +19,11 @@ function* loadTestActivityReport({ payload }) {
     const { testActivityId } = payload;
 
     if (!testActivityId) {
-      throw new Error('invalid data');
+      throw new Error("invalid data");
     }
     const data = yield select(getReportByIdSelector(testActivityId));
     if (!data || !data.testId) {
-      yield put(push('/home/reports'));
+      yield put(push("/home/reports"));
       return;
     }
 
@@ -44,9 +41,7 @@ function* loadTestActivityReport({ payload }) {
 
 // set actions watcherss
 export function* watcherSaga() {
-  yield all([
-    yield takeEvery(LOAD_TEST_ACTIVITY_REPORT, loadTestActivityReport)
-  ]);
+  yield all([yield takeEvery(LOAD_TEST_ACTIVITY_REPORT, loadTestActivityReport)]);
 }
 
 //reducer

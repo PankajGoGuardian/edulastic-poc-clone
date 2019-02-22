@@ -1,20 +1,14 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Button } from 'antd';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import {
-  IconEye,
-  IconCheck,
-  IconSource,
-  IconSettings,
-  IconEraseText
-} from '@edulastic/icons';
-import { blue, darkBlue, white } from '@edulastic/colors';
-import { withNamespaces } from '@edulastic/localization';
-import { clearAnswersAction } from '../../../../actions/answers';
-import { Container, PreviewBar } from './styled_components';
-import { ButtonLink } from '../../../common';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Button } from "antd";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { IconEye, IconCheck, IconSource, IconSettings, IconEraseText } from "@edulastic/icons";
+import { blue, darkBlue, white } from "@edulastic/colors";
+import { withNamespaces } from "@edulastic/localization";
+import { clearAnswersAction } from "../../../../actions/answers";
+import { Container, PreviewBar } from "./styled_components";
+import { ButtonLink } from "../../../common";
 
 class SecondLevel extends Component {
   constructor(props) {
@@ -27,23 +21,15 @@ class SecondLevel extends Component {
 
   render() {
     const { option } = this.state;
-    const {
-      t,
-      view,
-      previewTab,
-      onShowSource,
-      onShowSettings,
-      changePreviewTab,
-      clearAnswers
-    } = this.props;
+    const { t, view, previewTab, onShowSource, onShowSettings, changePreviewTab, clearAnswers } = this.props;
 
     return (
       <Container type={option}>
-        {view === 'edit' && (
+        {view === "edit" && (
           <PreviewBar
             style={{
-              width: '100%',
-              justifyContent: 'flex-end'
+              width: "100%",
+              justifyContent: "flex-end"
             }}
           >
             <Button onClick={onShowSource}>
@@ -52,7 +38,7 @@ class SecondLevel extends Component {
                 icon={<IconSource color={option ? white : blue} width={16} height={16} />}
                 style={{ color: option ? white : blue }}
               >
-                {t('component.questioneditor.buttonbar.source')}
+                {t("component.questioneditor.buttonbar.source")}
               </ButtonLink>
             </Button>
             <Button onClick={onShowSettings}>
@@ -61,51 +47,44 @@ class SecondLevel extends Component {
                 icon={<IconSettings color={option ? white : blue} width={16} height={16} />}
                 style={{ color: option ? white : blue }}
               >
-                {t('component.questioneditor.buttonbar.layout')}
+                {t("component.questioneditor.buttonbar.layout")}
               </ButtonLink>
             </Button>
           </PreviewBar>
         )}
-        {view === 'preview' && (
+        {view === "preview" && (
           <PreviewBar
             style={{
-              width: '100%',
-              justifyContent: 'flex-end'
+              width: "100%",
+              justifyContent: "flex-end"
             }}
           >
-            <Button onClick={() => changePreviewTab('check')}>
+            <Button onClick={() => changePreviewTab("check")}>
               <ButtonLink
                 color="primary"
                 icon={<IconCheck color={option ? white : blue} width={16} height={16} />}
                 style={{ color: option ? white : blue }}
               >
-                {t('component.questioneditor.buttonbar.checkanswer')}
+                {t("component.questioneditor.buttonbar.checkanswer")}
               </ButtonLink>
             </Button>
-            <Button onClick={() => changePreviewTab('show')}>
+            <Button onClick={() => changePreviewTab("show")}>
               <ButtonLink
                 color="primary"
                 style={{ color: option ? white : blue }}
-                icon={(
-                  <IconEye
-                    color={option ? white : blue}
-                    hoverColor={darkBlue}
-                    width={16}
-                    height={16}
-                  />
-                )}
+                icon={<IconEye color={option ? white : blue} hoverColor={darkBlue} width={16} height={16} />}
               >
-                {t('component.questioneditor.buttonbar.showanswers')}
+                {t("component.questioneditor.buttonbar.showanswers")}
               </ButtonLink>
             </Button>
             <Button onClick={() => clearAnswers()}>
               <ButtonLink
                 color="primary"
-                active={previewTab === 'clear'}
+                active={previewTab === "clear"}
                 style={{ color: option ? white : blue }}
                 icon={<IconEraseText color={option ? white : blue} width={16} height={16} />}
               >
-                {t('component.questioneditor.buttonbar.clear')}
+                {t("component.questioneditor.buttonbar.clear")}
               </ButtonLink>
             </Button>
           </PreviewBar>
@@ -126,7 +105,7 @@ SecondLevel.propTypes = {
 };
 
 const enhance = compose(
-  withNamespaces('author'),
+  withNamespaces("author"),
   connect(
     null,
     { clearAnswers: clearAnswersAction }

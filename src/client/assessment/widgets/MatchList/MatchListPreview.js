@@ -1,51 +1,37 @@
-import React, { useState, Fragment, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep, isEqual } from 'lodash';
-import { withTheme } from 'styled-components';
-import { compose } from 'redux';
+import React, { useState, Fragment, useEffect } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep, isEqual } from "lodash";
+import { withTheme } from "styled-components";
+import { compose } from "redux";
 
-import {
-  Paper,
-  FlexContainer,
-  CorrectAnswersContainer,
-  Stimulus,
-  Subtitle,
-  CorItem
-} from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
-import {
-  dashBorderColor,
-  mainTextColor,
-  lightGreen,
-  lightRed,
-  white,
-  separatorColor
-} from '@edulastic/colors';
+import { Paper, FlexContainer, CorrectAnswersContainer, Stimulus, Subtitle, CorItem } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
+import { dashBorderColor, mainTextColor, lightGreen, lightRed, white, separatorColor } from "@edulastic/colors";
 
-import DropContainer from '../../components/DropContainer';
+import DropContainer from "../../components/DropContainer";
 
-import { CHECK, SHOW, PREVIEW, CLEAR } from '../../constants/constantsForQuestions';
+import { CHECK, SHOW, PREVIEW, CLEAR } from "../../constants/constantsForQuestions";
 
-import DragItem from './components/DragItem';
-import { ListItem } from './styled/ListItem';
-import { Separator } from './styled/Separator';
-import { CorTitle } from './styled/CorTitle';
+import DragItem from "./components/DragItem";
+import { ListItem } from "./styled/ListItem";
+import { Separator } from "./styled/Separator";
+import { CorTitle } from "./styled/CorTitle";
 
 const styles = {
   dropContainerStyle: smallSize => ({
-    width: '100%',
+    width: "100%",
     borderRadius: 4,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     height: smallSize ? 26 : 44,
     padding: 0
   }),
-  listItemContainerStyle: { width: '100%', marginBottom: 6, marginTop: 6 },
+  listItemContainerStyle: { width: "100%", marginBottom: 6, marginTop: 6 },
   dragItemsContainerStyle: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    flexWrap: 'wrap',
+    display: "flex",
+    alignItems: "flex-start",
+    flexWrap: "wrap",
     minHeight: 140,
     borderRadius: 4
   }
@@ -62,13 +48,7 @@ const MatchListPreview = ({
   editCorrectAnswers,
   theme
 }) => {
-  const {
-    possible_responses: posResponses,
-    possible_response_groups,
-    group_possible_responses,
-    stimulus,
-    list
-  } = item;
+  const { possible_responses: posResponses, possible_response_groups, group_possible_responses, stimulus, list } = item;
 
   const itemValidation = item.validation || {};
   let validArray = itemValidation.valid_response && itemValidation.valid_response.value;
@@ -76,7 +56,7 @@ const MatchListPreview = ({
   const altArray = itemValidation.alt_responses || [];
   let groupArrays = [];
 
-  possible_response_groups.forEach((o) => {
+  possible_response_groups.forEach(o => {
     groupArrays = [...groupArrays, ...o.responses];
   });
 
@@ -92,21 +72,14 @@ const MatchListPreview = ({
     possible_responses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer))
   );
 
-  useEffect(
-    () => {
-      setAns(
-        Array.isArray(userAnswer) && !userAnswer.every(answer => answer === null)
-          ? userAnswer
-          : Array.from({ length: list.length }).fill(null)
-      );
-      setDragItems(
-        possible_responses.filter(
-          answer => Array.isArray(userAnswer) && !userAnswer.includes(answer)
-        )
-      );
-    },
-    [userAnswer]
-  );
+  useEffect(() => {
+    setAns(
+      Array.isArray(userAnswer) && !userAnswer.every(answer => answer === null)
+        ? userAnswer
+        : Array.from({ length: list.length }).fill(null)
+    );
+    setDragItems(possible_responses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer)));
+  }, [userAnswer]);
 
   if (editCorrectAnswers.length > 0) {
     if (
@@ -124,7 +97,7 @@ const MatchListPreview = ({
     const answers = cloneDeep(ans);
     const dItems = cloneDeep(dragItems);
 
-    if (itemTo.flag === 'ans') {
+    if (itemTo.flag === "ans") {
       if (dItems.includes(itemCurrent.item)) {
         dItems.splice(dItems.indexOf(itemCurrent.item), 1);
       }
@@ -153,20 +126,20 @@ const MatchListPreview = ({
   };
 
   const getStyles = ({ flag, preview, correct, isDragging }) => ({
-    display: 'flex',
-    width: flag === 'dragItems' ? 'auto' : '100%',
-    alignItems: 'center',
-    justifyContent: preview ? 'space-between' : 'center',
-    margin: flag === 'dragItems' ? '10px 15px 10px 15px' : '10px 0px 10px 0',
+    display: "flex",
+    width: flag === "dragItems" ? "auto" : "100%",
+    alignItems: "center",
+    justifyContent: preview ? "space-between" : "center",
+    margin: flag === "dragItems" ? "10px 15px 10px 15px" : "10px 0px 10px 0",
     background: preview
-      ? (correct
+      ? correct
         ? theme.widgets.matchList.dragItemCorrectBgColor
-        : theme.widgets.matchList.dragItemIncorrectBgColor)
+        : theme.widgets.matchList.dragItemIncorrectBgColor
       : theme.widgets.matchList.dragItemBgColor,
     border: `1px solid ${theme.widgets.matchList.dragItemBorderColor}`,
     height: 40,
-    padding: preview ? 0 : '0 40px',
-    cursor: 'pointer',
+    padding: preview ? 0 : "0 40px",
+    cursor: "pointer",
     borderRadius: 4,
     fontWeight: theme.widgets.matchList.dragItemFontWeight,
     color: theme.widgets.matchList.dragItemColor,
@@ -179,7 +152,7 @@ const MatchListPreview = ({
 
   let altAnswers = [...validAnswers];
 
-  altArray.forEach((ite) => {
+  altArray.forEach(ite => {
     let res = [];
 
     res = ans.filter((an, i) => ite.value[i] === an);
@@ -190,7 +163,7 @@ const MatchListPreview = ({
   });
 
   return (
-    <Paper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
+    <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       {!smallSize && view === PREVIEW && (
         <Stimulus>
           <div dangerouslySetInnerHTML={{ __html: stimulus }} />
@@ -230,14 +203,9 @@ const MatchListPreview = ({
         ))}
       </FlexContainer>
       {dragItems.length > 0 && (
-        <CorrectAnswersContainer title={t('component.matchList.dragItemsTitle')}>
-          <DropContainer
-            drop={drop}
-            flag="dragItems"
-            style={styles.dragItemsContainerStyle}
-            noBorder
-          >
-            <FlexContainer style={{ width: '100%' }} alignItems="stretch" justifyContent="center">
+        <CorrectAnswersContainer title={t("component.matchList.dragItemsTitle")}>
+          <DropContainer drop={drop} flag="dragItems" style={styles.dragItemsContainerStyle} noBorder>
+            <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
               {group_possible_responses ? (
                 possible_response_groups.map((i, index) => (
                   <Fragment key={index}>
@@ -247,21 +215,18 @@ const MatchListPreview = ({
                       alignItems="center"
                       justifyContent="flex-start"
                     >
-                      <Subtitle style={{ color: theme.widgets.matchList.previewSubtitleColor }}>{i.title}</Subtitle>
-                      <FlexContainer
-                        justifyContent="center"
-                        style={{ width: '100%', flexWrap: 'wrap' }}
+                      <Subtitle
+                        style={{
+                          color: theme.widgets.matchList.previewSubtitleColor
+                        }}
                       >
+                        {i.title}
+                      </Subtitle>
+                      <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
                         {i.responses.map(
                           (ite, ind) =>
                             dragItems.includes(ite) && (
-                              <DragItem
-                                flag="dragItems"
-                                onDrop={onDrop}
-                                key={ind}
-                                item={ite}
-                                getStyles={getStyles}
-                              />
+                              <DragItem flag="dragItems" onDrop={onDrop} key={ind} item={ite} getStyles={getStyles} />
                             )
                         )}
                       </FlexContainer>
@@ -286,20 +251,11 @@ const MatchListPreview = ({
                     alignItems="center"
                     justifyContent="flex-start"
                   >
-                    <FlexContainer
-                      justifyContent="center"
-                      style={{ width: '100%', flexWrap: 'wrap' }}
-                    >
+                    <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
                       {dragItems.map(
                         (ite, ind) =>
                           dragItems.includes(ite) && (
-                            <DragItem
-                              flag="dragItems"
-                              onDrop={onDrop}
-                              key={ind}
-                              item={ite}
-                              getStyles={getStyles}
-                            />
+                            <DragItem flag="dragItems" onDrop={onDrop} key={ind} item={ite} getStyles={getStyles} />
                           )
                       )}
                     </FlexContainer>
@@ -312,7 +268,7 @@ const MatchListPreview = ({
       )}
 
       {previewTab === SHOW && (
-        <CorrectAnswersContainer title={t('component.matchList.correctAnswers')}>
+        <CorrectAnswersContainer title={t("component.matchList.correctAnswers")}>
           {list.map((ite, i) => (
             <FlexContainer key={i} alignItems="center">
               <CorTitle>
@@ -348,7 +304,7 @@ MatchListPreview.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   withTheme
 );
 

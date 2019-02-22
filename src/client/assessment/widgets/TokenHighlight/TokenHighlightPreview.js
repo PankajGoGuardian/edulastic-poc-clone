@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
-import { compose } from 'redux';
-import { withTheme } from 'styled-components';
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep } from "lodash";
+import { compose } from "redux";
+import { withTheme } from "styled-components";
 
-import { Paper, Stimulus } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { Paper, Stimulus } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from '../../constants/constantsForQuestions';
+import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
 
 const TokenHighlightPreview = ({
   view,
@@ -26,11 +26,7 @@ const TokenHighlightPreview = ({
   }));
 
   const validArray =
-    (item &&
-      item.validation &&
-      item.validation.valid_response &&
-      item.validation.valid_response.value) ||
-    [];
+    (item && item.validation && item.validation.valid_response && item.validation.valid_response.value) || [];
 
   const altArray = (item && item.validation && item.validation.alt_responses) || [];
 
@@ -38,58 +34,47 @@ const TokenHighlightPreview = ({
 
   const [isCheck, setIsCheck] = useState(false);
 
-  useEffect(
-    () => {
-      if (view === EDIT) {
-        if (item.templeWithTokens.length === editCorrectAnswers.length) {
-          setAnswers(editCorrectAnswers);
-        } else {
-          saveAnswer(initialArray);
-        }
-      }
-    },
-    [item.templeWithTokens, editCorrectAnswers]
-  );
-
-  useEffect(
-    () => {
-      if (previewTab === SHOW) {
-        if (answers.filter(answer => answer.selected).length !== 0) {
-          setAnswers([
-            ...validArray.filter((answer, i) => answers[i].selected === answer.selected),
-            ...answers.filter(
-              (answer, i) => answer.selected && validArray[i].selected !== answer.selected
-            )
-          ]);
-        } else {
-          setAnswers(validArray);
-        }
-      } else if (previewTab === CLEAR && !isCheck) {
-        if (!userAnswer.some(ans => ans.selected)) {
-          saveAnswer(initialArray);
-          setAnswers(initialArray);
-        }
-      } else if (previewTab === CLEAR && isCheck) {
-        saveAnswer(userAnswer);
-      }
-      if (previewTab === CHECK) {
-        setIsCheck(true);
+  useEffect(() => {
+    if (view === EDIT) {
+      if (item.templeWithTokens.length === editCorrectAnswers.length) {
+        setAnswers(editCorrectAnswers);
       } else {
-        setIsCheck(false);
+        saveAnswer(initialArray);
       }
-    },
-    [previewTab]
-  );
+    }
+  }, [item.templeWithTokens, editCorrectAnswers]);
 
-  useEffect(
-    () => {
-      if (userAnswer.length === 0) {
+  useEffect(() => {
+    if (previewTab === SHOW) {
+      if (answers.filter(answer => answer.selected).length !== 0) {
+        setAnswers([
+          ...validArray.filter((answer, i) => answers[i].selected === answer.selected),
+          ...answers.filter((answer, i) => answer.selected && validArray[i].selected !== answer.selected)
+        ]);
+      } else {
+        setAnswers(validArray);
+      }
+    } else if (previewTab === CLEAR && !isCheck) {
+      if (!userAnswer.some(ans => ans.selected)) {
         saveAnswer(initialArray);
         setAnswers(initialArray);
       }
-    },
-    [userAnswer]
-  );
+    } else if (previewTab === CLEAR && isCheck) {
+      saveAnswer(userAnswer);
+    }
+    if (previewTab === CHECK) {
+      setIsCheck(true);
+    } else {
+      setIsCheck(false);
+    }
+  }, [previewTab]);
+
+  useEffect(() => {
+    if (userAnswer.length === 0) {
+      saveAnswer(initialArray);
+      setAnswers(initialArray);
+    }
+  }, [userAnswer]);
 
   const handleSelect = i => () => {
     const newAnswers = cloneDeep(answers);
@@ -104,8 +89,8 @@ const TokenHighlightPreview = ({
   const validate = () => {
     const resultArray = new Set(validArray);
 
-    altArray.forEach((el) => {
-      el.value.forEach((ans) => {
+    altArray.forEach(el => {
+      el.value.forEach(ans => {
         resultArray.add(ans);
       });
     });
@@ -117,23 +102,20 @@ const TokenHighlightPreview = ({
     fontSize: smallSize
       ? theme.widgets.tokenHighlight.previewSmallFontSize
       : theme.widgets.tokenHighlight.previewFontSize,
-    lineHeight: smallSize ? '18px' : '28px'
+    lineHeight: smallSize ? "18px" : "28px"
   };
 
   const getClass = index =>
-    (answers.find(elem => elem.index === index) &&
-    answers.find(elem => elem.index === index).selected
-      ? 'active-word token answer'
-      : 'token answer');
+    answers.find(elem => elem.index === index) && answers.find(elem => elem.index === index).selected
+      ? "active-word token answer"
+      : "token answer";
 
   const preview = previewTab === CHECK || previewTab === SHOW || smallSize;
 
   const rightAnswers = validate();
 
-  const getStyles = (index) => {
-    const condition =
-      answers.find(elem => elem.index === index) &&
-      answers.find(elem => elem.index === index).selected;
+  const getStyles = index => {
+    const condition = answers.find(elem => elem.index === index) && answers.find(elem => elem.index === index).selected;
 
     let resultStyle;
 
@@ -155,16 +137,10 @@ const TokenHighlightPreview = ({
   };
 
   return (
-    <Paper
-      style={{ wordBreak: 'break-word' }}
-      padding={smallSize}
-      boxShadow={smallSize ? 'none' : ''}
-    >
-      {view === PREVIEW && !smallSize && (
-        <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-      )}
+    <Paper style={{ wordBreak: "break-word" }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+      {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
       {item.templeWithTokens.map((el, i) =>
-        (el.active ? (
+        el.active ? (
           <span
             onClick={handleSelect(i)}
             dangerouslySetInnerHTML={{ __html: el.value }}
@@ -179,7 +155,8 @@ const TokenHighlightPreview = ({
             dangerouslySetInnerHTML={{ __html: el.value }}
             key={i}
           />
-        )))}
+        )
+      )}
     </Paper>
   );
 };
@@ -203,7 +180,7 @@ TokenHighlightPreview.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   withTheme
 );
 

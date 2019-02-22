@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import Modal from 'react-responsive-modal';
-import PropTypes from 'prop-types';
-import { withNamespaces } from '@edulastic/localization';
-import { compose } from 'redux';
-import { Button, Row, Col } from 'antd';
+import React, { Component } from "react";
+import styled from "styled-components";
+import Modal from "react-responsive-modal";
+import PropTypes from "prop-types";
+import { withNamespaces } from "@edulastic/localization";
+import { compose } from "redux";
+import { Button, Row, Col } from "antd";
 
 class Confirmation extends Component {
   render() {
@@ -16,34 +16,27 @@ class Confirmation extends Component {
         showCloseIcon={false}
         styles={{
           modal: {
-            maxWidth: '640px',
+            maxWidth: "640px",
             borderRadius: 5,
-            textAlign: 'center',
-            padding: '20px 30px'
+            textAlign: "center",
+            padding: "20px 30px"
           }
         }}
         center
       >
         <ModalContainer>
-          <Title>{t('confirmation.submitAssignment')}</Title>
-          <TitleDescription>
-            {t('confirmation.confirmationMessage')}
-          </TitleDescription>
+          <Title>{t("confirmation.submitAssignment")}</Title>
+          <TitleDescription>{t("confirmation.confirmationMessage")}</TitleDescription>
           <ButtonContainer>
             <ButtonRow gutter={20}>
               <Col md={12} sm={24}>
                 <StyledButton data-cy="cancel" btnType={1} onClick={onClose}>
-                  {t('default:cancel')}
+                  {t("default:cancel")}
                 </StyledButton>
               </Col>
               <Col md={12} sm={24}>
-                <StyledButton
-                  data-cy="submit"
-                  type="primary"
-                  btnType={2}
-                  onClick={finishTest}
-                >
-                  {t('default:submit')}
+                <StyledButton data-cy="submit" type="primary" btnType={2} onClick={finishTest}>
+                  {t("default:submit")}
                 </StyledButton>
               </Col>
             </ButtonRow>
@@ -61,7 +54,7 @@ Confirmation.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-const enhance = compose(withNamespaces(['summary', 'default']));
+const enhance = compose(withNamespaces(["summary", "default"]));
 
 export default enhance(Confirmation);
 
@@ -99,9 +92,7 @@ const StyledButton = styled(Button)`
   width: 100%;
   height: 40px;
   background: ${props =>
-    props.btnType === 1
-      ? props.theme.confirmation.cancelButtonBgColor
-      : props.theme.confirmation.submitButtonBgColor};
+    props.btnType === 1 ? props.theme.confirmation.cancelButtonBgColor : props.theme.confirmation.submitButtonBgColor};
   border-color: ${props => props.theme.confirmation.buttonBorderColor};
   span {
     text-transform: uppercase;

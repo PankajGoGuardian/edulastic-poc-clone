@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { SortableContainer } from 'react-sortable-hoc';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { SortableContainer } from "react-sortable-hoc";
 
-import OrderListReportItem from './components/OrderListReportItem';
+import OrderListReportItem from "./components/OrderListReportItem";
 
 class OrderListReport extends Component {
   get rendererQuestions() {
@@ -19,9 +19,7 @@ class OrderListReport extends Component {
           <OrderListReportItem
             key={i}
             correct={evaluation && evaluation[i]}
-            correctText={
-              showAnswers && list[validation.valid_response.value[i]]
-            }
+            correctText={showAnswers && list[validation.valid_response.value[i]]}
             showAnswers={showAnswers}
             index={i}
             ind={i + 1}

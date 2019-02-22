@@ -1,13 +1,13 @@
-import React, { PureComponent, Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React, { PureComponent, Fragment } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
 
-import { CLEAR, EDIT, PREVIEW } from '../../constants/constantsForQuestions';
+import { CLEAR, EDIT, PREVIEW } from "../../constants/constantsForQuestions";
 
-import EditEssayPlainText from './components/EditEssayPlainText';
-import EssayPlainTextPreview from './EssayPlainTextPreview';
+import EditEssayPlainText from "./components/EditEssayPlainText";
+import EssayPlainTextPreview from "./EssayPlainTextPreview";
 
 class EssayPlainText extends PureComponent {
   static propTypes = {
@@ -28,7 +28,7 @@ class EssayPlainText extends PureComponent {
     item: {},
     userAnswer: [],
     testItem: false,
-    evaluation: ''
+    evaluation: ""
   };
 
   render() {

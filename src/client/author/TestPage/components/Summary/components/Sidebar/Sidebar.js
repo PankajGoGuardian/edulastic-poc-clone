@@ -1,39 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { FlexContainer } from '@edulastic/common';
-import { greenDark } from '@edulastic/colors';
-import { Input, Select } from 'antd';
-import { IconHeart, IconShare } from '@edulastic/icons';
-import {
-  Block,
-  Avatar,
-  MainTitle,
-  Title,
-  TitleContent
-} from './styled';
-import { Photo, selectsData } from '../../../common';
+import React from "react";
+import PropTypes from "prop-types";
+import { FlexContainer } from "@edulastic/common";
+import { greenDark } from "@edulastic/colors";
+import { Input, Select } from "antd";
+import { IconHeart, IconShare } from "@edulastic/icons";
+import { Block, Avatar, MainTitle, Title, TitleContent } from "./styled";
+import { Photo, selectsData } from "../../../common";
 
-const Sidebar = ({
-  title,
-  description,
-  onChangeField,
-  tags,
-  analytics,
-  createdBy,
-  windowWidth
-}) => (
+const Sidebar = ({ title, description, onChangeField, tags, analytics, createdBy, windowWidth }) => (
   <FlexContainer flexDirection="column">
     <Block>
       <Photo />
       <FlexContainer>
-        <Avatar>
-          {createdBy && createdBy.firstName ? createdBy.firstName[0] : 'E'}
-        </Avatar>
-        <FlexContainer
-          flexDirection="column"
-          alignItems="flex-start"
-          style={{ marginLeft: 20 }}
-        >
+        <Avatar>{createdBy && createdBy.firstName ? createdBy.firstName[0] : "E"}</Avatar>
+        <FlexContainer flexDirection="column" alignItems="flex-start" style={{ marginLeft: 20 }}>
           <Title>Created by:</Title>
           <TitleContent>
             {createdBy && createdBy.firstName} {createdBy && createdBy.lastName}
@@ -46,7 +26,7 @@ const Sidebar = ({
       <Input
         value={title}
         data-cy="inputTest"
-        onChange={e => onChangeField('title', e.target.value)}
+        onChange={e => onChangeField("title", e.target.value)}
         size="large"
         placeholder="Enter an assessment name"
         style={{ marginBottom: 25 }}
@@ -54,7 +34,7 @@ const Sidebar = ({
       <MainTitle>Description</MainTitle>
       <Input.TextArea
         value={description}
-        onChange={e => onChangeField('description', e.target.value)}
+        onChange={e => onChangeField("description", e.target.value)}
         size="large"
         placeholder="Enter a description"
         style={{ marginBottom: 25 }}
@@ -63,10 +43,10 @@ const Sidebar = ({
       <Select
         mode="multiple"
         size="large"
-        style={{ width: '100%' }}
+        style={{ width: "100%" }}
         placeholder="Please select"
         defaultValue={tags}
-        onChange={value => onChangeField('tags', value)}
+        onChange={value => onChangeField("tags", value)}
       >
         {selectsData.allTags.map(({ value, text }) => (
           <Select.Option key={value} value={value}>
@@ -78,8 +58,8 @@ const Sidebar = ({
     <Block>
       <FlexContainer
         justifyContent="space-between"
-        alignItems={windowWidth < 468 && 'self-start'}
-        style={{ flexDirection: windowWidth < 468 ? 'column' : 'row' }}
+        alignItems={windowWidth < 468 && "self-start"}
+        style={{ flexDirection: windowWidth < 468 ? "column" : "row" }}
       >
         <FlexContainer style={{ marginBottom: 15 }}>
           <IconHeart color={greenDark} width={16} height={16} />
@@ -92,9 +72,7 @@ const Sidebar = ({
           <IconShare color={greenDark} width={16} height={16} />
           <FlexContainer>
             <Title>Shared:</Title>
-            <TitleContent>
-              {analytics && analytics.usage} times, since July 5, 2016
-            </TitleContent>
+            <TitleContent>{analytics && analytics.usage} times, since July 5, 2016</TitleContent>
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>

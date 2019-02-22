@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import { white } from '@edulastic/colors';
-import { IconClockCircularOutline } from '@edulastic/icons';
+import React, { Component } from "react";
+import styled from "styled-components";
+import { white } from "@edulastic/colors";
+import { IconClockCircularOutline } from "@edulastic/icons";
 
 class Clock extends Component {
   constructor(props) {
@@ -29,7 +29,7 @@ class Clock extends Component {
     if (minute + 1 === 60) {
       this.setState({ hour: hour + 1, minute: 0 });
     }
-  }
+  };
 
   formatNum = num => (num > 9 ? num : `0${num}`);
 
@@ -38,9 +38,7 @@ class Clock extends Component {
     return (
       <Container>
         <ClockCircularOutlineIcon />
-        <MainClock>
-          {`${this.formatNum(hour)}:${this.formatNum(minute)}:${this.formatNum(second)}`}
-        </MainClock>
+        <MainClock>{`${this.formatNum(hour)}:${this.formatNum(minute)}:${this.formatNum(second)}`}</MainClock>
       </Container>
     );
   }

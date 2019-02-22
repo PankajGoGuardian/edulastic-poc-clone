@@ -1,13 +1,9 @@
-import {
-  CREATE_TEST_ITEM_REQUEST,
-  CREATE_TEST_ITEM_SUCCESS,
-  CREATE_TEST_ITEM_ERROR,
-} from '../constants/actions';
+import { CREATE_TEST_ITEM_REQUEST, CREATE_TEST_ITEM_SUCCESS, CREATE_TEST_ITEM_ERROR } from "../constants/actions";
 
 const initialState = {
   item: [],
   createError: null,
-  creating: false,
+  creating: false
 };
 
 export default (state = initialState, { type, payload }) => {
@@ -18,7 +14,7 @@ export default (state = initialState, { type, payload }) => {
       return {
         ...state,
         creating: false,
-        item: payload.item,
+        item: payload.item
       };
     case CREATE_TEST_ITEM_ERROR:
       return { ...state, creating: false, createError: payload.error };

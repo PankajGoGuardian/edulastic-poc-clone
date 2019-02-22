@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const SortableItemContainer = styled.div`
   width: ${props => (props.columns === 1 ? 100 / props.columns : 100 / props.columns - 2)}%;

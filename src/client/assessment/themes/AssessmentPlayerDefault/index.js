@@ -1,21 +1,21 @@
-import PropTypes from 'prop-types';
-import React, { Fragment } from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { ThemeProvider } from 'styled-components';
-import { Affix } from 'antd';
-import { last } from 'lodash';
-import { withWindowSizes } from '@edulastic/common';
-import { IconSend } from '@edulastic/icons';
-import QuestionSelectDropdown from '../common/QuestionSelectDropdown';
-import MainWrapper from './MainWrapper';
-import HeaderLeftMenu from '../common/HeaderLeftMenu';
-import HeaderMainMenu from '../common/HeaderMainMenu';
-import HeaderRightMenu from '../common/HeaderRightMenu';
-import ToolbarModal from '../common/ToolbarModal';
-import SavePauseModalMobile from '../common/SavePauseModalMobile';
-import SubmitConfirmation from '../common/SubmitConfirmation';
+import PropTypes from "prop-types";
+import React, { Fragment } from "react";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { ThemeProvider } from "styled-components";
+import { Affix } from "antd";
+import { last } from "lodash";
+import { withWindowSizes } from "@edulastic/common";
+import { IconSend } from "@edulastic/icons";
+import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
+import MainWrapper from "./MainWrapper";
+import HeaderLeftMenu from "../common/HeaderLeftMenu";
+import HeaderMainMenu from "../common/HeaderMainMenu";
+import HeaderRightMenu from "../common/HeaderRightMenu";
+import ToolbarModal from "../common/ToolbarModal";
+import SavePauseModalMobile from "../common/SavePauseModalMobile";
+import SubmitConfirmation from "../common/SubmitConfirmation";
 import {
   ControlBtn,
   ToolButton,
@@ -29,19 +29,19 @@ import {
   Clock,
   SaveAndExit,
   SavePauseMobile
-} from '../common';
-import TestItemPreview from '../../components/TestItemPreview';
+} from "../common";
+import TestItemPreview from "../../components/TestItemPreview";
 import {
   LARGE_DESKTOP_WIDTH,
   MEDIUM_DESKTOP_WIDTH,
   IPAD_PORTRAIT_WIDTH,
   MAX_MOBILE_WIDTH
-} from '../../constants/others';
-import { checkAnswerAction } from '../../../author/src/actions/testItem';
-import { changePreviewAction } from '../../../author/src/actions/view';
-import SvgDraw from './SvgDraw';
-import Tools from './Tools';
-import { saveScratchPadAction } from '../../actions/userWork';
+} from "../../constants/others";
+import { checkAnswerAction } from "../../../author/src/actions/testItem";
+import { changePreviewAction } from "../../../author/src/actions/view";
+import SvgDraw from "./SvgDraw";
+import Tools from "./Tools";
+import { saveScratchPadAction } from "../../actions/userWork";
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line
@@ -51,20 +51,18 @@ class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentColor: '#ff0000',
-      fillColor: '#ff0000',
-      activeMode: '',
+      currentColor: "#ff0000",
+      fillColor: "#ff0000",
+      activeMode: "",
       lineWidth: 6,
       scratchPadMode: false,
       cloneCurrentItem: props.currentItem,
       deleteMode: false,
-      testItemState: '',
+      testItemState: "",
       isToolbarModalVisible: false,
       isSubmitConfirmationVisible: false,
       isSavePauseModalVisible: false,
-      history: props.scratchPad
-        ? [props.scratchPad]
-        : [{ points: [], pathes: [], figures: [], texts: [] }],
+      history: props.scratchPad ? [props.scratchPad] : [{ points: [], pathes: [], figures: [], texts: [] }],
       currentTab: 0
     };
   }
@@ -94,13 +92,10 @@ class AssessmentPlayerDefault extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.currentItem !== prevState.cloneCurrentItem) {
       nextProps.saveScratchPad({
-        [nextProps.items[prevState.cloneCurrentItem]._id]:
-          prevState.history[prevState.currentTab]
+        [nextProps.items[prevState.cloneCurrentItem]._id]: prevState.history[prevState.currentTab]
       });
       return {
-        history: nextProps.scratchPad
-          ? [nextProps.scratchPad]
-          : [{ points: [], pathes: [], figures: [], texts: [] }],
+        history: nextProps.scratchPad ? [nextProps.scratchPad] : [{ points: [], pathes: [], figures: [], texts: [] }],
         currentTab: 0,
         cloneCurrentItem: nextProps.currentItem
       };
@@ -138,7 +133,7 @@ class AssessmentPlayerDefault extends React.Component {
 
   finishTest = () => {
     const { history } = this.props;
-    history.push('/home/assignments');
+    history.push("/home/assignments");
   };
 
   hexToRGB = (hex, alpha) => {
@@ -167,10 +162,10 @@ class AssessmentPlayerDefault extends React.Component {
   handleToolChange = value => () => {
     const { activeMode } = this.state;
 
-    if (value === 'deleteMode') {
+    if (value === "deleteMode") {
       this.setState(prevState => ({ deleteMode: !prevState.deleteMode }));
     } else if (activeMode === value) {
-      this.setState({ activeMode: '' });
+      this.setState({ activeMode: "" });
     } else {
       this.setState({ activeMode: value });
     }
@@ -239,9 +234,7 @@ class AssessmentPlayerDefault extends React.Component {
       fillColor
     } = this.state;
 
-    const dropdownOptions = Array.isArray(items)
-      ? items.map((item, index) => index)
-      : [];
+    const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
     const item = items[currentItem];
     if (!item) {
@@ -276,7 +269,7 @@ class AssessmentPlayerDefault extends React.Component {
           <ToolbarModal
             isVisible={isToolbarModalVisible}
             onClose={() => this.closeToolbarModal()}
-            checkanswer={() => this.changeTabItemState('check')}
+            checkanswer={() => this.changeTabItemState("check")}
           />
           <SavePauseModalMobile
             isVisible={isSavePauseModalVisible}
@@ -295,18 +288,14 @@ class AssessmentPlayerDefault extends React.Component {
                 {windowWidth <= IPAD_PORTRAIT_WIDTH && (
                   <Fragment>
                     <Clock />
-                    <SavePauseMobile
-                      openSavePauseModal={this.openSavePauseModal}
-                      isVisible={isSavePauseModalVisible}
-                    />
+                    <SavePauseMobile openSavePauseModal={this.openSavePauseModal} isVisible={isSavePauseModalVisible} />
                   </Fragment>
                 )}
               </HeaderLeftMenu>
               <HeaderMainMenu skin>
                 <FlexContainer
                   style={{
-                    justifyContent:
-                      windowWidth <= IPAD_PORTRAIT_WIDTH && 'space-between'
+                    justifyContent: windowWidth <= IPAD_PORTRAIT_WIDTH && "space-between"
                   }}
                 >
                   <QuestionSelectDropdown
@@ -319,8 +308,7 @@ class AssessmentPlayerDefault extends React.Component {
                   <FlexContainer
                     style={{
                       flex: 1,
-                      justifyContent:
-                        windowWidth <= IPAD_PORTRAIT_WIDTH && 'flex-end'
+                      justifyContent: windowWidth <= IPAD_PORTRAIT_WIDTH && "flex-end"
                     }}
                   >
                     <ControlBtn
@@ -337,7 +325,7 @@ class AssessmentPlayerDefault extends React.Component {
                       skin
                       type="primary"
                       data-cy="next"
-                      icon={!isLast() && 'right'}
+                      icon={!isLast() && "right"}
                       onClick={moveToNext}
                     >
                       {isLast() && <IconSend />}
@@ -356,18 +344,12 @@ class AssessmentPlayerDefault extends React.Component {
                       />
                     )}
                     {windowWidth >= MEDIUM_DESKTOP_WIDTH && (
-                      <TestButton
-                        checkAnwser={() => this.changeTabItemState('check')}
-                      />
+                      <TestButton checkAnwser={() => this.changeTabItemState("check")} />
                     )}
-                    {windowWidth >= LARGE_DESKTOP_WIDTH && (
-                      <ToolBar changeMode={this.handleModeChange} />
-                    )}
+                    {windowWidth >= LARGE_DESKTOP_WIDTH && <ToolBar changeMode={this.handleModeChange} />}
                     {windowWidth >= MAX_MOBILE_WIDTH && <Clock />}
                     {windowWidth >= MAX_MOBILE_WIDTH && (
-                      <SaveAndExit
-                        finishTest={() => this.openSubmitConfirmation()}
-                      />
+                      <SaveAndExit finishTest={() => this.openSubmitConfirmation()} />
                     )}
                   </FlexContainer>
                 </FlexContainer>
@@ -378,8 +360,8 @@ class AssessmentPlayerDefault extends React.Component {
           </Affix>
           <Main skin>
             <MainWrapper>
-              {testItemState === '' && <TestItemPreview cols={itemRows} />}
-              {testItemState === 'check' && (
+              {testItemState === "" && <TestItemPreview cols={itemRows} />}
+              {testItemState === "check" && (
                 <TestItemPreview
                   cols={itemRows}
                   previewTab="check"

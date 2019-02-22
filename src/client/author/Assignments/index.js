@@ -1,1 +1,1 @@
-export { default } from './components/Container/Assignments';
+export { default } from "./components/Container/Assignments";

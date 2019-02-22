@@ -1,29 +1,18 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { Select, Pagination, Spin } from 'antd';
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { Select, Pagination, Spin } from "antd";
 
-import { Paper, FlexContainer, withWindowSizes } from '@edulastic/common';
-import {
-  Container,
-  TopMenu,
-  MainList,
-  ListItems,
-  ItemsTableContainer,
-  StyledButton,
-  StyledSelect
-} from './styled';
-import {
-  getCurriculumsListSelector,
-  getStandardsListSelector
-} from '../../../src/selectors/dictionaries';
+import { Paper, FlexContainer, withWindowSizes } from "@edulastic/common";
+import { Container, TopMenu, MainList, ListItems, ItemsTableContainer, StyledButton, StyledSelect } from "./styled";
+import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import {
   clearDictStandardsAction,
   getDictCurriculumsAction,
   getDictStandardsForCurriculumAction
-} from '../../../src/actions/dictionaries';
+} from "../../../src/actions/dictionaries";
 import {
   getTestItemsLoadingSelector,
   getTestItemsSelector,
@@ -31,10 +20,10 @@ import {
   getTestsItemsLimitSelector,
   getTestsItemsPageSelector,
   receiveTestItemsAction
-} from './ducks';
-import ItemsTable from '../common/ItemsTable/ItemsTable';
-import ItemFilter from '../../../ItemList/components/ItemFilter/ItemFilter';
-import { getClearSearchState } from '../../../ItemList';
+} from "./ducks";
+import ItemsTable from "../common/ItemsTable/ItemsTable";
+import ItemFilter from "../../../ItemList/components/ItemFilter/ItemFilter";
+import { getClearSearchState } from "../../../ItemList";
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -48,22 +37,24 @@ class AddItems extends PureComponent {
     page: PropTypes.number.isRequired,
     limit: PropTypes.number.isRequired,
     count: PropTypes.number.isRequired,
-    curriculums: PropTypes.arrayOf(PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      curriculum: PropTypes.string.isRequired,
-      grades: PropTypes.array.isRequired,
-      subject: PropTypes.string.isRequired
-    })).isRequired,
+    curriculums: PropTypes.arrayOf(
+      PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        curriculum: PropTypes.string.isRequired,
+        grades: PropTypes.array.isRequired,
+        subject: PropTypes.string.isRequired
+      })
+    ).isRequired,
     getCurriculums: PropTypes.func.isRequired,
     getCurriculumStandards: PropTypes.func.isRequired,
     curriculumStandards: PropTypes.array.isRequired,
     clearDictStandards: PropTypes.func.isRequired
-  }
+  };
 
   state = {
     search: getClearSearchState(),
     selectedTests: []
-  }
+  };
 
   componentDidMount() {
     const { selectedItems, getCurriculums } = this.props;
@@ -89,40 +80,47 @@ class AddItems extends PureComponent {
 
   handleCreateNewItem = () => {
     const { history } = this.props;
-    history.push('/author/items');
+    history.push("/author/items");
   };
 
-  handleSearchFieldChangeCurriculumId = (value) => {
+  handleSearchFieldChangeCurriculumId = value => {
     const { clearDictStandards } = this.props;
     const { search } = this.state;
     clearDictStandards();
-    this.setState({
-      search: {
-        ...search,
-        curriculumId: value,
-        standardIds: []
-      } },
-    () => {
-      this.handleSearch();
-    });
-  };
-
-  handleSearchFieldChange = fieldName => (value) => {
-    const { search } = this.state;
-    if (fieldName === 'curriculumId') {
-      this.handleSearchFieldChangeCurriculumId(value);
-    } else {
-      this.setState({
+    this.setState(
+      {
         search: {
           ...search,
-          [fieldName]: value
-        } }, () => {
+          curriculumId: value,
+          standardIds: []
+        }
+      },
+      () => {
         this.handleSearch();
-      });
+      }
+    );
+  };
+
+  handleSearchFieldChange = fieldName => value => {
+    const { search } = this.state;
+    if (fieldName === "curriculumId") {
+      this.handleSearchFieldChangeCurriculumId(value);
+    } else {
+      this.setState(
+        {
+          search: {
+            ...search,
+            [fieldName]: value
+          }
+        },
+        () => {
+          this.handleSearch();
+        }
+      );
     }
   };
 
-  handlePaginationChange = (newPage) => {
+  handlePaginationChange = newPage => {
     const { receiveTestItems, limit } = this.props;
     const { search } = this.state;
     receiveTestItems(search, newPage, limit);
@@ -133,9 +131,7 @@ class AddItems extends PureComponent {
     return (
       <Pagination
         simple={windowWidth <= 768 && true}
-        showTotal={(total, range) =>
-          `${range[0]} to ${range[1]} of ${total}`
-      }
+        showTotal={(total, range) => `${range[0]} to ${range[1]} of ${total}`}
         onChange={this.handlePaginationChange}
         defaultPageSize={10}
         total={count}
@@ -144,11 +140,11 @@ class AddItems extends PureComponent {
     );
   };
 
-  setSelectedTests = (value) => {
+  setSelectedTests = value => {
     this.setState({
       selectedTests: value
     });
-  }
+  };
 
   render() {
     const {
@@ -170,18 +166,10 @@ class AddItems extends PureComponent {
             <FlexContainer alignItems="center">
               {windowWidth > 468 && (
                 <>
-                  <StyledButton
-                    type="secondary"
-                    size="large"
-                    onClick={this.handleCreateNewItem}
-                  >
-                  Create new Item
+                  <StyledButton type="secondary" size="large" onClick={this.handleCreateNewItem}>
+                    Create new Item
                   </StyledButton>
-                  <StyledSelect
-                    size="large"
-                    defaultValue="popularity"
-                    style={{ width: 120 }}
-                  >
+                  <StyledSelect size="large" defaultValue="popularity" style={{ width: 120 }}>
                     <Select.Option value="popularity">Popularity</Select.Option>
                   </StyledSelect>
                 </>
@@ -204,10 +192,8 @@ class AddItems extends PureComponent {
             {windowWidth > 992 && this.renderPagination()}
             <ItemsTableContainer>
               <Paper padding="0">
-                { loading &&
-                <Spin size="large" />
-                }
-                { !loading && (
+                {loading && <Spin size="large" />}
+                {!loading && (
                   <ItemsTable
                     items={items}
                     setSelectedTests={this.setSelectedTests}
@@ -218,12 +204,7 @@ class AddItems extends PureComponent {
               </Paper>
             </ItemsTableContainer>
             {windowWidth < 992 && (
-              <StyledButton
-                style={{ width: '100%' }}
-                type="secondary"
-                size="large"
-                onClick={this.handleCreateNewItem}
-              >
+              <StyledButton style={{ width: "100%" }} type="secondary" size="large" onClick={this.handleCreateNewItem}>
                 Create new Item
               </StyledButton>
             )}

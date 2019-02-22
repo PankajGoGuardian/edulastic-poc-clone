@@ -1,31 +1,37 @@
-import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, Fragment } from "react";
+import PropTypes from "prop-types";
 
-import QuestionHeader from '../common/QuestionHeader';
-import { QuadrantsContainer } from './QuadrantsContainer';
-import { AxisLabelsContainer } from './AxisLabelsContainer';
-import { AxisSegmentsContainer } from './AxisSegmentsContainer';
+import QuestionHeader from "../common/QuestionHeader";
+import { QuadrantsContainer } from "./QuadrantsContainer";
+import { AxisLabelsContainer } from "./AxisLabelsContainer";
+import { AxisSegmentsContainer } from "./AxisSegmentsContainer";
 
-const safeParseFloat = (val) => {
+const safeParseFloat = val => {
   if (val) {
     return parseFloat(val);
   }
   return 1;
 };
 
-const getFontSizeVal = (name) => {
+const getFontSizeVal = name => {
   switch (name) {
-    case 'small': return 12;
-    case 'normal': return 14;
-    case 'large': return 17;
-    case 'extra_large': return 20;
-    case 'huge': return 24;
-    default: return 14;
+    case "small":
+      return 12;
+    case "normal":
+      return 14;
+    case "large":
+      return 17;
+    case "extra_large":
+      return 20;
+    case "huge":
+      return 24;
+    default:
+      return 14;
   }
 };
 
 const getSnapSize = (snapTo, axisDistance) => {
-  if (snapTo === 'grid' || Number.isNaN(parseInt(snapTo, 10))) {
+  if (snapTo === "grid" || Number.isNaN(parseInt(snapTo, 10))) {
     if (axisDistance) return axisDistance;
     return 1; // default
   }
@@ -38,12 +44,12 @@ class GraphDisplay extends Component {
     const { graphType } = graphData;
 
     switch (graphType) {
-      case 'axisSegments':
+      case "axisSegments":
         return AxisSegmentsContainer;
-      case 'axisLabels':
+      case "axisLabels":
         return AxisLabelsContainer;
-      case 'quadrants':
-      case 'firstQuadrant':
+      case "quadrants":
+      case "firstQuadrant":
       default:
         return QuadrantsContainer;
     }
@@ -54,28 +60,19 @@ class GraphDisplay extends Component {
     const { graphType } = graphData;
 
     switch (graphType) {
-      case 'axisSegments':
+      case "axisSegments":
         return this.getAxisSegmentsProps();
-      case 'axisLabels':
+      case "axisLabels":
         return this.getAxisLabelsProps();
-      case 'quadrants':
-      case 'firstQuadrant':
+      case "quadrants":
+      case "firstQuadrant":
       default:
         return this.getQuadrantsProps();
     }
   };
 
   getQuadrantsProps = () => {
-    const {
-      graphData,
-      evaluation,
-      onChange,
-      showAnswer,
-      checkAnswer,
-      changePreviewTab,
-      elements,
-      shapes
-    } = this.props;
+    const { graphData, evaluation, onChange, showAnswer, checkAnswer, changePreviewTab, elements, shapes } = this.props;
 
     const {
       ui_style,
@@ -111,7 +108,7 @@ class GraphDisplay extends Component {
       },
       xAxesParameters: {
         ticksDistance: safeParseFloat(ui_style.xTickDistance),
-        name: ui_style.xShowAxisLabel ? ui_style.xAxisLabel : '',
+        name: ui_style.xShowAxisLabel ? ui_style.xAxisLabel : "",
         showTicks: !ui_style.xHideTicks,
         drawLabels: ui_style.xDrawLabel,
         maxArrow: ui_style.xMaxArrow,
@@ -120,7 +117,7 @@ class GraphDisplay extends Component {
       },
       yAxesParameters: {
         ticksDistance: safeParseFloat(ui_style.yTickDistance),
-        name: ui_style.yShowAxisLabel ? ui_style.yAxisLabel : '',
+        name: ui_style.yShowAxisLabel ? ui_style.yAxisLabel : "",
         showTicks: !ui_style.yHideTicks,
         drawLabels: ui_style.yDrawLabel,
         maxArrow: ui_style.yMaxArrow,
@@ -156,25 +153,9 @@ class GraphDisplay extends Component {
   };
 
   getAxisSegmentsProps = () => {
-    const {
-      graphData,
-      evaluation,
-      onChange,
-      showAnswer,
-      checkAnswer,
-      changePreviewTab,
-      elements
-    } = this.props;
+    const { graphData, evaluation, onChange, showAnswer, checkAnswer, changePreviewTab, elements } = this.props;
 
-    const {
-      ui_style,
-      canvas,
-      toolbar,
-      numberlineAxis,
-      validation,
-      list,
-      graphType
-    } = graphData;
+    const { ui_style, canvas, toolbar, numberlineAxis, validation, list, graphType } = graphData;
 
     return {
       canvas: {
@@ -224,19 +205,19 @@ class GraphDisplay extends Component {
       },
       xAxesParameters: {
         ticksDistance: safeParseFloat(ui_style.xTickDistance),
-        name: ui_style.xShowAxisLabel ? ui_style.xAxisLabel : '',
+        name: ui_style.xShowAxisLabel ? ui_style.xAxisLabel : "",
         showTicks: !ui_style.xHideTicks,
         drawLabels: ui_style.xDrawLabel,
         maxArrow: ui_style.xMaxArrow,
         minArrow: ui_style.xMinArrow,
         commaInLabel: ui_style.xCommaInLabel,
-        strokeColor: ui_style.xStrokeColor ? ui_style.xStrokeColor : '#00b0ff',
+        strokeColor: ui_style.xStrokeColor ? ui_style.xStrokeColor : "#00b0ff",
         tickEndings: ui_style.xTickEndings ? ui_style.xTickEndings : false,
         visible: ui_style.xVisible === undefined ? true : ui_style.xVisible
       },
       yAxesParameters: {
         ticksDistance: safeParseFloat(ui_style.yTickDistance),
-        name: ui_style.yShowAxisLabel ? ui_style.yAxisLabel : '',
+        name: ui_style.yShowAxisLabel ? ui_style.yAxisLabel : "",
         showTicks: !ui_style.yHideTicks,
         drawLabels: ui_style.yDrawLabel,
         maxArrow: ui_style.yMaxArrow,
@@ -264,24 +245,9 @@ class GraphDisplay extends Component {
   };
 
   getAxisLabelsProps = () => {
-    const {
-      graphData,
-      evaluation,
-      onChange,
-      showAnswer,
-      checkAnswer,
-      changePreviewTab,
-      elements
-    } = this.props;
+    const { graphData, evaluation, onChange, showAnswer, checkAnswer, changePreviewTab, elements } = this.props;
 
-    const {
-      ui_style,
-      canvas,
-      numberlineAxis,
-      validation,
-      list,
-      graphType
-    } = graphData;
+    const { ui_style, canvas, numberlineAxis, validation, list, graphType } = graphData;
 
     return {
       canvas: {
@@ -328,19 +294,19 @@ class GraphDisplay extends Component {
       },
       xAxesParameters: {
         ticksDistance: safeParseFloat(ui_style.xTickDistance),
-        name: ui_style.xShowAxisLabel ? ui_style.xAxisLabel : '',
+        name: ui_style.xShowAxisLabel ? ui_style.xAxisLabel : "",
         showTicks: !ui_style.xHideTicks,
         drawLabels: ui_style.xDrawLabel,
         maxArrow: ui_style.xMaxArrow,
         minArrow: ui_style.xMinArrow,
         commaInLabel: ui_style.xCommaInLabel,
-        strokeColor: ui_style.xStrokeColor ? ui_style.xStrokeColor : '#00b0ff',
+        strokeColor: ui_style.xStrokeColor ? ui_style.xStrokeColor : "#00b0ff",
         tickEndings: ui_style.xTickEndings ? ui_style.xTickEndings : false,
         visible: ui_style.xVisible === undefined ? true : ui_style.xVisible
       },
       yAxesParameters: {
         ticksDistance: safeParseFloat(ui_style.yTickDistance),
-        name: ui_style.yShowAxisLabel ? ui_style.yAxisLabel : '',
+        name: ui_style.yShowAxisLabel ? ui_style.yAxisLabel : "",
         showTicks: !ui_style.yHideTicks,
         drawLabels: ui_style.yDrawLabel,
         maxArrow: ui_style.yMaxArrow,
@@ -367,32 +333,17 @@ class GraphDisplay extends Component {
   };
 
   render() {
-    const {
-      graphData,
-      smallSize,
-      showAnswer,
-      checkAnswer,
-      clearAnswer,
-      qIndex
-    } = this.props;
-    const {
-      stimulus
-    } = graphData;
+    const { graphData, smallSize, showAnswer, checkAnswer, clearAnswer, qIndex } = this.props;
+    const { stimulus } = graphData;
 
     const GraphContainer = this.getGraphContainer();
 
     return (
       <Fragment>
         <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: stimulus }} />
-        {
-          showAnswer ? 'showAnswer' : null
-        }
-        {
-          checkAnswer ? 'checkAnswer' : null
-        }
-        {
-          clearAnswer ? 'clearAnswer' : null
-        }
+        {showAnswer ? "showAnswer" : null}
+        {checkAnswer ? "checkAnswer" : null}
+        {clearAnswer ? "clearAnswer" : null}
         <GraphContainer {...this.getGraphContainerProps()} />
       </Fragment>
     );
@@ -421,6 +372,5 @@ GraphDisplay.defaultProps = {
   checkAnswer: false,
   clearAnswer: false
 };
-
 
 export default GraphDisplay;

@@ -1,15 +1,21 @@
-import { CONSTANT, Colors } from '../config';
-import { findSegmentPosition, orderPoints, findAvailableStackedSegmentPosition, getSpecialTicks, getClosestTick } from '../utils';
-import { defaultPointParameters } from '../settings';
+import { CONSTANT, Colors } from "../config";
+import {
+  findSegmentPosition,
+  orderPoints,
+  findAvailableStackedSegmentPosition,
+  getSpecialTicks,
+  getClosestTick
+} from "../utils";
+import { defaultPointParameters } from "../settings";
 //import { JXG } from '../index';
 
 const previousPointsPositions = [];
 
 function removeProhibitedTicks(segmentCoords, segments, ticks, currentPointX) {
-  segments.forEach((segment) => {
-    if (segment.elType === 'segment') {
+  segments.forEach(segment => {
+    if (segment.elType === "segment") {
       let points = [];
-      Object.keys(segment.ancestors).forEach((key) => {
+      Object.keys(segment.ancestors).forEach(key => {
         points.push(segment.ancestors[key].X());
       });
       points = orderPoints(points);
@@ -60,16 +66,19 @@ const findAvailableSegmentPointDragPlace = (segmentCoords, segments, ticksDistan
 
     let isPointInside = false;
 
-    segments.forEach((segment) => {
-      if (segment.elType === 'segment') {
-        Object.keys(segment.ancestors).forEach((key) => {
+    segments.forEach(segment => {
+      if (segment.elType === "segment") {
+        Object.keys(segment.ancestors).forEach(key => {
           const point = segment.ancestors[key].X();
 
           if (point >= newSegmentCoords[0] && point <= newSegmentCoords[1]) {
             isPointInside = true;
           }
         });
-      } else if (segment.coords.usrCoords[1] >= newSegmentCoords[0] && segment.coords.usrCoords[1] <= newSegmentCoords[1]) {
+      } else if (
+        segment.coords.usrCoords[1] >= newSegmentCoords[0] &&
+        segment.coords.usrCoords[1] <= newSegmentCoords[1]
+      ) {
         isPointInside = true;
       }
     });
@@ -81,10 +90,12 @@ const findAvailableSegmentPointDragPlace = (segmentCoords, segments, ticksDistan
 };
 
 const handleSegmentPointDrag = (point, board, segment, axis, ticks) => {
-  point.on('drag', () => {
+  point.on("drag", () => {
     const currentPosition = point.X();
 
-    const segments = board.elements.filter(element => element.elType === 'segment' || element.elType === 'point').filter(element => element.id !== segment.id);
+    const segments = board.elements
+      .filter(element => element.elType === "segment" || element.elType === "point")
+      .filter(element => element.id !== segment.id);
     const segmentCoords = orderPoints([segment.point1.X(), segment.point2.X()]);
 
     let prevPosIndex;
@@ -104,7 +115,7 @@ const handleSegmentPointDrag = (point, board, segment, axis, ticks) => {
 };
 
 const handleStackedSegmentPointDrag = (point, axis, yPosition) => {
-  point.on('drag', () => {
+  point.on("drag", () => {
     const currentPosition = point.X();
 
     const xMin = axis.point1.X();
@@ -125,9 +136,9 @@ const checkForElementsOnVector = (segments, coord, xMin, xMax, vectorDirection) 
 
   const vector = orderPoints([coord, vectorPoint]);
 
-  segments.forEach((segment) => {
-    if (segment.elType === 'segment') {
-      Object.keys(segment.ancestors).forEach((key) => {
+  segments.forEach(segment => {
+    if (segment.elType === "segment") {
+      Object.keys(segment.ancestors).forEach(key => {
         const point = segment.ancestors[key].X();
 
         if (point >= vector[0] && point <= vector[1]) {
@@ -147,34 +158,26 @@ const checkForElementsOnVector = (segments, coord, xMin, xMax, vectorDirection) 
 const drawPoint = (board, coord, ticksDistance, point, fixed, colors, yPosition) => {
   const styles = point ? { ...Colors.default[CONSTANT.TOOLS.POINT] } : { ...Colors.special[CONSTANT.TOOLS.POINT] };
 
-  return board.$board.create(
-    'point',
-    [ticksDistance ? coord + ticksDistance : coord, yPosition || 0],
-    {
-      ...board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters(),
-      ...styles,
-      ...colors,
-      fixed,
-      snapToGrid: false
-    }
-  );
+  return board.$board.create("point", [ticksDistance ? coord + ticksDistance : coord, yPosition || 0], {
+    ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
+    ...styles,
+    ...colors,
+    fixed,
+    snapToGrid: false
+  });
 };
 
 // Pass board, xMin and xMax of numberlineAxis, vector direction
 // Draw invisible point of vector on proper place
 const drawVectorPoint = (board, xMin, xMax, vectorDirection, yPosition) => {
-  const axisPadding = (-(xMin) + xMax) / 100 * 3.5;
+  const axisPadding = ((-xMin + xMax) / 100) * 3.5;
 
-  return board.$board.create(
-    'point',
-    [vectorDirection ? xMax + axisPadding : xMin - axisPadding, yPosition || 0],
-    {
-      ...board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters(),
-      snapToGrid: false,
-      visible: false,
-      fixed: true
-    }
-  );
+  return board.$board.create("point", [vectorDirection ? xMax + axisPadding : xMin - axisPadding, yPosition || 0], {
+    ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
+    snapToGrid: false,
+    visible: false,
+    fixed: true
+  });
 };
 
 // Pass board, point that will be visible, invisible point that will be beginning or ending of vector(depending on direction),
@@ -183,31 +186,35 @@ const drawVectorPoint = (board, xMin, xMax, vectorDirection, yPosition) => {
 const drawVectorLine = (board, visiblePoint, invisiblePoint, vectorDirection, colors) => {
   const points = vectorDirection ? [visiblePoint, invisiblePoint] : [invisiblePoint, visiblePoint];
 
-  return board.$board.create(
-    'segment',
-    points,
-    {
-      firstarrow: vectorDirection ? false : { size: 5 },
-      lastarrow: vectorDirection ? { size: 5 } : false,
-      straightfirst: false,
-      straightlast: false,
-      fixed: true,
-      ...Colors.default[CONSTANT.TOOLS.LINE],
-      ...colors
-    }
-  );
+  return board.$board.create("segment", points, {
+    firstarrow: vectorDirection ? false : { size: 5 },
+    lastarrow: vectorDirection ? { size: 5 } : false,
+    straightfirst: false,
+    straightlast: false,
+    fixed: true,
+    ...Colors.default[CONSTANT.TOOLS.LINE],
+    ...colors
+  });
 };
 
-const drawVector = (board, coord, pointIncluded, vectorDirection, segmentType, stackResponses, stackResponsesSpacing) => {
-  const numberlineAxis = board.elements.filter(element => element.elType === 'axis' || element.elType === 'arrow');
-  const ticksDistance = numberlineAxis[0].ticks[0].getAttribute('ticksDistance');
-  const segments = board.elements.filter(element => element.elType === 'segment' || element.elType === 'point');
+const drawVector = (
+  board,
+  coord,
+  pointIncluded,
+  vectorDirection,
+  segmentType,
+  stackResponses,
+  stackResponsesSpacing
+) => {
+  const numberlineAxis = board.elements.filter(element => element.elType === "axis" || element.elType === "arrow");
+  const ticksDistance = numberlineAxis[0].ticks[0].getAttribute("ticksDistance");
+  const segments = board.elements.filter(element => element.elType === "segment" || element.elType === "point");
   const xMin = numberlineAxis[0].point1.X();
   const xMax = numberlineAxis[0].point2.X();
 
   let ticks = getSpecialTicks(numberlineAxis[0]);
 
-  if (typeof coord !== 'number') {
+  if (typeof coord !== "number") {
     const x = board.getCoords(coord).usrCoords[1];
     coord = getClosestTick(x, ticks);
   }
@@ -243,7 +250,7 @@ const drawVector = (board, coord, pointIncluded, vectorDirection, segmentType, s
 
     visiblePoint.setAttribute({ snapSizeY: 0.05 });
     visiblePoint.setPosition(JXG.COORDS_BY_USER, [visiblePoint.X(), calcedYPosition]);
-    board.$board.on('move', () => visiblePoint.moveTo([visiblePoint.X(), calcedYPosition]));
+    board.$board.on("move", () => visiblePoint.moveTo([visiblePoint.X(), calcedYPosition]));
 
     invisiblePoint.setAttribute({ snapSizeY: 0.05 });
     invisiblePoint.setPosition(JXG.COORDS_BY_USER, [invisiblePoint.X(), calcedYPosition]);
@@ -260,15 +267,47 @@ const onHandler = (type, stackResponses, stackResponsesSpacing) => (board, coord
 const determineVectorType = (type, board, coords, stackResponses, stackResponsesSpacing) => {
   switch (type) {
     case CONSTANT.TOOLS.INFINITY_TO_INCLUDED_SEGMENT:
-      return drawVector(board, coords, true, false, CONSTANT.TOOLS.INFINITY_TO_INCLUDED_SEGMENT, stackResponses, stackResponsesSpacing);
+      return drawVector(
+        board,
+        coords,
+        true,
+        false,
+        CONSTANT.TOOLS.INFINITY_TO_INCLUDED_SEGMENT,
+        stackResponses,
+        stackResponsesSpacing
+      );
     case CONSTANT.TOOLS.INFINITY_TO_NOT_INCLUDED_SEGMENT:
-      return drawVector(board, coords, false, false, CONSTANT.TOOLS.INFINITY_TO_NOT_INCLUDED_SEGMENT, stackResponses, stackResponsesSpacing);
+      return drawVector(
+        board,
+        coords,
+        false,
+        false,
+        CONSTANT.TOOLS.INFINITY_TO_NOT_INCLUDED_SEGMENT,
+        stackResponses,
+        stackResponsesSpacing
+      );
     case CONSTANT.TOOLS.INCLUDED_TO_INFINITY_SEGMENT:
-      return drawVector(board, coords, true, true, CONSTANT.TOOLS.INCLUDED_TO_INFINITY_SEGMENT, stackResponses, stackResponsesSpacing);
+      return drawVector(
+        board,
+        coords,
+        true,
+        true,
+        CONSTANT.TOOLS.INCLUDED_TO_INFINITY_SEGMENT,
+        stackResponses,
+        stackResponsesSpacing
+      );
     case CONSTANT.TOOLS.NOT_INCLUDED_TO_INFINITY_SEGMENT:
-      return drawVector(board, coords, false, true, CONSTANT.TOOLS.NOT_INCLUDED_TO_INFINITY_SEGMENT, stackResponses, stackResponsesSpacing);
+      return drawVector(
+        board,
+        coords,
+        false,
+        true,
+        CONSTANT.TOOLS.NOT_INCLUDED_TO_INFINITY_SEGMENT,
+        stackResponses,
+        stackResponsesSpacing
+      );
     default:
-      throw new Error('Unknown tool:');
+      throw new Error("Unknown tool:");
   }
 };
 
@@ -283,16 +322,24 @@ const determineAnswerType = (board, config) => {
     case CONSTANT.TOOLS.NOT_INCLUDED_TO_INFINITY_SEGMENT:
       return renderAnswer(board, config, false, true);
     default:
-      throw new Error('Unknown tool:');
+      throw new Error("Unknown tool:");
   }
 };
 
 const renderAnswer = (board, config, pointIncluded, vectorDirection) => {
-  const numberlineAxis = board.elements.filter(element => element.elType === 'axis' || element.elType === 'arrow');
+  const numberlineAxis = board.elements.filter(element => element.elType === "axis" || element.elType === "arrow");
   const xMin = numberlineAxis[0].point1.X();
   const xMax = numberlineAxis[0].point2.X();
 
-  const visiblePoint = drawPoint(board, vectorDirection ? config.point1 : config.point2, null, pointIncluded, true, config.pointColor, config.y);
+  const visiblePoint = drawPoint(
+    board,
+    vectorDirection ? config.point1 : config.point2,
+    null,
+    pointIncluded,
+    true,
+    config.pointColor,
+    config.y
+  );
   const invisiblePoint = drawVectorPoint(board, xMin, xMax, vectorDirection, config.y);
   const vector = drawVectorLine(board, visiblePoint, invisiblePoint, vectorDirection, config.colors);
 

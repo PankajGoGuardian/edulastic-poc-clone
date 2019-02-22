@@ -1,34 +1,26 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { Button } from 'antd';
-import { IconMoveArrows, IconPencilEdit, IconTrash } from '@edulastic/icons';
-import { white, green, mobileWidth } from '@edulastic/colors';
-import { DragSource } from 'react-dnd';
-import { withNamespaces } from '@edulastic/localization';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { Button } from "antd";
+import { IconMoveArrows, IconPencilEdit, IconTrash } from "@edulastic/icons";
+import { white, green, mobileWidth } from "@edulastic/colors";
+import { DragSource } from "react-dnd";
+import { withNamespaces } from "@edulastic/localization";
 
-import QuestionWrapper from '../../../../../assessment/components/QuestionWrapper';
-import { Types } from '../constants';
-import { setItemDetailDraggingAction } from '../../../actions/itemDetail';
+import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
+import { Types } from "../constants";
+import { setItemDetailDraggingAction } from "../../../actions/itemDetail";
 
-const ItemDetailWidget = ({
-  widget,
-  onEdit,
-  onDelete,
-  isDragging,
-  connectDragSource,
-  connectDragPreview,
-  t
-}) =>
+const ItemDetailWidget = ({ widget, onEdit, onDelete, isDragging, connectDragSource, connectDragPreview, t }) =>
   connectDragPreview &&
   connectDragSource &&
   connectDragPreview(
     <div>
       <Container isDragging={isDragging}>
         <div>
-          {widget.widgetType === 'question' && (
+          {widget.widgetType === "question" && (
             <QuestionWrapper
               testItem
               type={widget.type}
@@ -42,15 +34,15 @@ const ItemDetailWidget = ({
         <Buttons>
           {connectDragSource(
             <div>
-              <Button title={t('move')} move shape="circle">
+              <Button title={t("move")} move shape="circle">
                 <IconMoveArrows color={white} style={{ fontSize: 11 }} width={16} height={16} />
               </Button>
             </div>
           )}
-          <Button title={t('edit')} onClick={onEdit} shape="circle">
+          <Button title={t("edit")} onClick={onEdit} shape="circle">
             <IconPencilEdit color={white} width={16} height={16} />
           </Button>
-          <Button title={t('delete')} onClick={onDelete} shape="circle">
+          <Button title={t("delete")} onClick={onDelete} shape="circle">
             <IconTrash color={white} width={16} height={16} />
           </Button>
         </Buttons>
@@ -95,7 +87,7 @@ function collect(c, monitor) {
 }
 
 const enhance = compose(
-  withNamespaces('default'),
+  withNamespaces("default"),
   connect(
     null,
     { setItemDetailDragging: setItemDetailDraggingAction }
@@ -111,7 +103,7 @@ const Container = styled.div`
   padding: 40px 20px;
   min-height: 200px;
   flex-direction: column;
-  opacity: ${({ isDragging }) => (isDragging ? '0.4' : '1')};
+  opacity: ${({ isDragging }) => (isDragging ? "0.4" : "1")};
 
   @media (max-width: ${mobileWidth}) {
     padding: 20px;

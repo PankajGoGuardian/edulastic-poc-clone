@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { withNamespaces } from '@edulastic/localization';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { mobileWidth } from '@edulastic/colors';
-import { Progress, Paper, withWindowSizes } from '@edulastic/common';
-import { cloneDeep } from 'lodash';
-import { Layout } from 'antd';
-import { changeViewAction, changePreviewAction } from '../../actions/view';
-import { checkAnswerAction, showAnswerAction } from '../../actions/testItem';
+import React, { Component } from "react";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { withNamespaces } from "@edulastic/localization";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { mobileWidth } from "@edulastic/colors";
+import { Progress, Paper, withWindowSizes } from "@edulastic/common";
+import { cloneDeep } from "lodash";
+import { Layout } from "antd";
+import { changeViewAction, changePreviewAction } from "../../actions/view";
+import { checkAnswerAction, showAnswerAction } from "../../actions/testItem";
 import {
   getItemDetailByIdAction,
   updateItemDetailByIdAction,
@@ -18,8 +18,8 @@ import {
   deleteWidgetAction,
   updateTabTitleAction,
   useTabsAction
-} from '../../actions/itemDetail';
-import { loadQuestionAction } from '../../actions/question';
+} from "../../actions/itemDetail";
+import { loadQuestionAction } from "../../actions/question";
 
 import {
   getItemDetailLoadingSelector,
@@ -27,21 +27,21 @@ import {
   getItemDetailSelector,
   getItemDetailUpdatingSelector,
   getItemDetailDimensionTypeSelector
-} from '../../selectors/itemDetail';
-import ItemDetailRow from './ItemDetailRow';
-import { ButtonBar, SecondHeadBar } from '../common';
-import SourceModal from '../QuestionEditor/SourceModal';
-import ItemHeader from './ItemHeader';
-import SettingsBar from './SettingsBar/SettingsBar';
-import TestItemPreview from '../../../../assessment/components/TestItemPreview';
-import TestItemMetadata from '../../../../assessment/components/TestItemMetadata';
+} from "../../selectors/itemDetail";
+import ItemDetailRow from "./ItemDetailRow";
+import { ButtonBar, SecondHeadBar } from "../common";
+import SourceModal from "../QuestionEditor/SourceModal";
+import ItemHeader from "./ItemHeader";
+import SettingsBar from "./SettingsBar/SettingsBar";
+import TestItemPreview from "../../../../assessment/components/TestItemPreview";
+import TestItemMetadata from "../../../../assessment/components/TestItemMetadata";
 
 class ItemDetail extends Component {
   state = {
     showModal: false,
     showSettings: false,
-    view: 'edit',
-    previewTab: 'clear'
+    view: "edit",
+    previewTab: "clear"
   };
 
   componentDidMount() {
@@ -49,47 +49,47 @@ class ItemDetail extends Component {
     getItemDetailById(match.params.id, { data: true, validation: true });
   }
 
-  getSizes = (type) => {
+  getSizes = type => {
     switch (type) {
-      case '100-100':
+      case "100-100":
         return {
-          left: '100%',
-          right: '100%'
+          left: "100%",
+          right: "100%"
         };
-      case '30-70':
+      case "30-70":
         return {
-          left: '30%',
-          right: '70%'
+          left: "30%",
+          right: "70%"
         };
-      case '70-30':
+      case "70-30":
         return {
-          left: '70%',
-          right: '30%'
+          left: "70%",
+          right: "30%"
         };
-      case '50-50':
+      case "50-50":
         return {
-          left: '50%',
-          right: '50%'
+          left: "50%",
+          right: "50%"
         };
-      case '40-60':
+      case "40-60":
         return {
-          left: '40%',
-          right: '60%'
+          left: "40%",
+          right: "60%"
         };
-      case '60-40':
+      case "60-40":
         return {
-          left: '60%',
-          right: '40%'
+          left: "60%",
+          right: "40%"
         };
       default:
         return {
-          left: '100%',
-          right: '100%'
+          left: "100%",
+          right: "100%"
         };
     }
   };
 
-  handleChangeView = (view) => {
+  handleChangeView = view => {
     this.setState({
       view
     });
@@ -110,7 +110,7 @@ class ItemDetail extends Component {
     history.push({
       pathname: `/author/items/${match.params.id}/pickup-questiontype`,
       state: {
-        backText: t('component.itemDetail.backText'),
+        backText: t("component.itemDetail.backText"),
         backUrl: match.url,
         rowIndex,
         tabIndex,
@@ -131,7 +131,7 @@ class ItemDetail extends Component {
     updateDimension(left, right);
   };
 
-  handleApplySource = (data) => {
+  handleApplySource = data => {
     const { setItemDetailData } = this.props;
 
     try {
@@ -158,7 +158,7 @@ class ItemDetail extends Component {
     loadQuestion(widget, rowIndex);
   };
 
-  handleDeleteWidget = i => (widgetIndex) => {
+  handleDeleteWidget = i => widgetIndex => {
     const { deleteWidget } = this.props;
     deleteWidget(i, widgetIndex);
   };
@@ -179,13 +179,13 @@ class ItemDetail extends Component {
     setItemDetailData(newItem);
   };
 
-  handleChangePreviewTab = (previewTab) => {
+  handleChangePreviewTab = previewTab => {
     const { checkAnswer, showAnswer, changePreview } = this.props;
 
-    if (previewTab === 'check') {
+    if (previewTab === "check") {
       checkAnswer();
     }
-    if (previewTab === 'show') {
+    if (previewTab === "show") {
       showAnswer();
     }
 
@@ -206,7 +206,7 @@ class ItemDetail extends Component {
           preview={preview}
           verticalDivider={item.verticalDivider}
           scrolling={item.scrolling}
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
         />
       </Content>
     );
@@ -259,7 +259,7 @@ class ItemDetail extends Component {
         )}
         <ItemHeader
           showIcon
-          title={t('component.itemDetail.itemDetail')}
+          title={t("component.itemDetail.itemDetail")}
           reference={match.params._id}
           windowWidth={windowWidth}
         >
@@ -288,7 +288,7 @@ class ItemDetail extends Component {
             previewTab={previewTab}
           />
         )}
-        {view === 'edit' && (
+        {view === "edit" && (
           <ItemDetailWrapper>
             {loading && <Progress />}
             {rows &&
@@ -303,15 +303,13 @@ class ItemDetail extends Component {
                   windowWidth={windowWidth}
                   onDeleteWidget={this.handleDeleteWidget(i)}
                   onEditWidget={this.handleEditWidget}
-                  onEditTabTitle={(tabIndex, value) =>
-                    updateTabTitle({ rowIndex: i, tabIndex, value })
-                  }
+                  onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
                 />
               ))}
           </ItemDetailWrapper>
         )}
-        {view === 'preview' && this.renderPreview()}
-        {view === 'metadata' && this.renderMetadata()}
+        {view === "preview" && this.renderPreview()}
+        {view === "metadata" && this.renderMetadata()}
       </Layout>
     );
   }
@@ -348,7 +346,7 @@ ItemDetail.defaultProps = {
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces('author'),
+  withNamespaces("author"),
   connect(
     state => ({
       rows: getItemDetailRowsSelector(state),

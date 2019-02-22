@@ -1,15 +1,21 @@
-import { orderPoints, findSegmentPosition, findAvailableStackedSegmentPosition, getClosestTick, getSpecialTicks } from '../utils';
-import { CONSTANT, Colors } from '../config';
-import { defaultPointParameters } from '../settings';
+import {
+  orderPoints,
+  findSegmentPosition,
+  findAvailableStackedSegmentPosition,
+  getClosestTick,
+  getSpecialTicks
+} from "../utils";
+import { CONSTANT, Colors } from "../config";
+import { defaultPointParameters } from "../settings";
 //import { JXG } from '../index';
 
 const previousPointsPositions = [];
 
 export function removeBusyTicks(segments, ticks) {
-  segments.forEach((segment) => {
-    if (segment.elType === 'segment') {
+  segments.forEach(segment => {
+    if (segment.elType === "segment") {
       let points = [];
-      Object.keys(segment.ancestors).forEach((key) => {
+      Object.keys(segment.ancestors).forEach(key => {
         points.push(segment.ancestors[key].X());
       });
 
@@ -43,10 +49,12 @@ const findAvailablePointDragPlace = (pointCoord, segments, ticksDistance, direct
 };
 
 const handlePointDrag = (point, board, ticksDistance, axis) => {
-  point.on('drag', () => {
+  point.on("drag", () => {
     const currentPosition = point.X();
 
-    const segments = board.elements.filter(element => element.elType === 'segment' || element.elType === 'point').filter(element => element.id !== point.id);
+    const segments = board.elements
+      .filter(element => element.elType === "segment" || element.elType === "point")
+      .filter(element => element.id !== point.id);
 
     const xMin = axis.point1.X();
     const xMax = axis.point2.X();
@@ -69,7 +77,7 @@ const handlePointDrag = (point, board, ticksDistance, axis) => {
 };
 
 const handleStackedPointDrag = (point, axis, yPosition) => {
-  point.on('drag', () => {
+  point.on("drag", () => {
     const currentPosition = point.X();
 
     const xMin = axis.point1.X();
@@ -96,11 +104,11 @@ const checkForPointRenderPosition = (axis, coord) => {
 const checkForElementsOnPoint = (segments, coord) => {
   let isSpaceAvailable = true;
 
-  segments.forEach((segment) => {
-    if (segment.elType === 'segment') {
+  segments.forEach(segment => {
+    if (segment.elType === "segment") {
       let points = [];
 
-      Object.keys(segment.ancestors).forEach((key) => {
+      Object.keys(segment.ancestors).forEach(key => {
         points.push(segment.ancestors[key].X());
       });
 
@@ -117,38 +125,35 @@ const checkForElementsOnPoint = (segments, coord) => {
   return isSpaceAvailable;
 };
 
-const drawPoint = (board, coord, fixed, colors, yPosition) => (
-  board.$board.create(
-    'point',
-    [coord, yPosition || 0],
-    {
-      ...board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters(),
-      ...Colors.default[CONSTANT.TOOLS.POINT],
-      ...colors,
-      fixed,
-      snapSizeX: null,
-      snapToGrid: false
-    }
-  )
-);
-
+const drawPoint = (board, coord, fixed, colors, yPosition) =>
+  board.$board.create("point", [coord, yPosition || 0], {
+    ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
+    ...Colors.default[CONSTANT.TOOLS.POINT],
+    ...colors,
+    fixed,
+    snapSizeX: null,
+    snapToGrid: false
+  });
 
 const onHandler = (stackResponses, stackResponsesSpacing) => (board, coord) => {
-  const numberlineAxis = board.elements.filter(element => element.elType === 'axis' || element.elType === 'arrow');
-  const ticksDistance = numberlineAxis[0].ticks[0].getAttribute('ticksDistance');
-  const segments = board.elements.filter(element => element.elType === 'segment' || element.elType === 'point');
+  const numberlineAxis = board.elements.filter(element => element.elType === "axis" || element.elType === "arrow");
+  const ticksDistance = numberlineAxis[0].ticks[0].getAttribute("ticksDistance");
+  const segments = board.elements.filter(element => element.elType === "segment" || element.elType === "point");
 
   const ticks = getSpecialTicks(numberlineAxis[0]);
   let roundedCoord = coord;
-  if (typeof coord !== 'number') {
+  if (typeof coord !== "number") {
     const x = board.getCoords(coord).usrCoords[1];
     roundedCoord = getClosestTick(x, ticks);
   }
 
   if (!stackResponses) {
-    if (checkForPointRenderPosition(numberlineAxis[0], roundedCoord) && checkForElementsOnPoint(segments, roundedCoord)) {
+    if (
+      checkForPointRenderPosition(numberlineAxis[0], roundedCoord) &&
+      checkForElementsOnPoint(segments, roundedCoord)
+    ) {
       const point = drawPoint(board, roundedCoord, false, null);
-      point.segmentType = 'segmentsPoint';
+      point.segmentType = "segmentsPoint";
       previousPointsPositions.push({ id: point.id, position: point.X() });
       handlePointDrag(point, board, ticksDistance, numberlineAxis[0]);
 
@@ -160,11 +165,11 @@ const onHandler = (stackResponses, stackResponsesSpacing) => (board, coord) => {
     const calcedYPosition = findAvailableStackedSegmentPosition(board, segments, stackResponsesSpacing);
 
     const point = drawPoint(board, roundedCoord, false, null, calcedYPosition);
-    point.segmentType = 'segmentsPoint';
+    point.segmentType = "segmentsPoint";
 
     point.setAttribute({ snapSizeY: 0.05 });
     point.setPosition(JXG.COORDS_BY_USER, [point.X(), calcedYPosition]);
-    board.$board.on('move', () => point.moveTo([point.X(), calcedYPosition]));
+    board.$board.on("move", () => point.moveTo([point.X(), calcedYPosition]));
 
     handleStackedPointDrag(point, numberlineAxis[0], calcedYPosition);
 

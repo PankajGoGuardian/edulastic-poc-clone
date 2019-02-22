@@ -1,13 +1,7 @@
-import styled from 'styled-components';
-import {
-  mainBlueColor,
-  white,
-  darkBlueSecondary,
-  tabletWidth
-} from '@edulastic/colors';
-import { IconShare } from '@edulastic/icons';
-import { Icon } from 'antd';
-
+import styled from "styled-components";
+import { mainBlueColor, white, darkBlueSecondary, tabletWidth } from "@edulastic/colors";
+import { IconShare } from "@edulastic/icons";
+import { Icon } from "antd";
 
 export const Container = styled.div`
   height: 104px;

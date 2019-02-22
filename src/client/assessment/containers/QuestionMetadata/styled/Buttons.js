@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Buttons = styled.div`
   margin-top: 2px;

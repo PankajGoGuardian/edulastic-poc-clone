@@ -1,23 +1,13 @@
-import React from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { Col, Icon } from 'antd';
-import { test } from '@edulastic/constants';
-import { formatTime } from '../utils';
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { Col, Icon } from "antd";
+import { test } from "@edulastic/constants";
+import { formatTime } from "../utils";
 
 const { ASSESSMENT } = test.type;
 
-const AssessmentDetails = ({
-  test,
-  theme,
-  testType,
-  t,
-  started,
-  resume,
-  dueDate,
-  type,
-  startDate
-}) => (
+const AssessmentDetails = ({ test, theme, testType, t, started, resume, dueDate, type, startDate }) => (
   <Wrapper>
     <Col>
       <ImageWrapper>
@@ -27,44 +17,29 @@ const AssessmentDetails = ({
     <CardDetails>
       <CardTitle>
         {test && test.title}
-        <TestType type={testType}>
-          {testType === ASSESSMENT
-            ? t('common.assessment')
-            : t('common.practice')}
-        </TestType>
+        <TestType type={testType}>{testType === ASSESSMENT ? t("common.assessment") : t("common.practice")}</TestType>
       </CardTitle>
       <CardDate>
         <Icon type={theme.assignment.cardTimeIconType} />
         <span data-cy="date">
           <StrongText>
-            {type === 'assignment'
+            {type === "assignment"
               ? new Date(startDate) > new Date()
-                ? `${t('common.opensIn')} ${formatTime(startDate)} and ${t(
-                    'common.dueOn'
-                  )}`
-                : t('common.dueOn')
-              : t('common.finishedIn')}{' '}
+                ? `${t("common.opensIn")} ${formatTime(startDate)} and ${t("common.dueOn")}`
+                : t("common.dueOn")
+              : t("common.finishedIn")}{" "}
           </StrongText>
           {formatTime(dueDate)}
         </span>
       </CardDate>
       <div>
-        {type === 'assignment' ? (
-          <StatusButton
-            isSubmitted={started}
-            assignment={type === 'assignment'}
-          >
-            <span data-cy="status">
-              {started || resume
-                ? t('common.inProgress')
-                : t('common.notStartedTag')}
-            </span>
+        {type === "assignment" ? (
+          <StatusButton isSubmitted={started} assignment={type === "assignment"}>
+            <span data-cy="status">{started || resume ? t("common.inProgress") : t("common.notStartedTag")}</span>
           </StatusButton>
         ) : (
           <StatusButton isSubmitted={started}>
-            <span data-cy="status">
-              {started ? t('common.submittedTag') : t('common.missed')}
-            </span>
+            <span data-cy="status">{started ? t("common.submittedTag") : t("common.missed")}</span>
           </StatusButton>
         )}
       </div>
@@ -181,7 +156,7 @@ const StatusButton = styled.div`
   width: 135px;
   height: 23.5px;
   border-radius: 5px;
-  background-color: ${props => getStatusBgColor(props, 'Bg')};
+  background-color: ${props => getStatusBgColor(props, "Bg")};
   font-size: ${props => props.theme.assignment.cardSubmitLabelFontSize};
   font-weight: bold;
   line-height: 1.38;
@@ -191,7 +166,7 @@ const StatusButton = styled.div`
   span {
     position: relative;
     top: -1px;
-    color: ${props => getStatusBgColor(props, 'Text')};
+    color: ${props => getStatusBgColor(props, "Text")};
   }
   @media screen and (max-width: 767px) {
     width: 100%;

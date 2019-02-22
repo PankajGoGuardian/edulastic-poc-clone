@@ -1,91 +1,81 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import { PaddingDiv, FlexContainer } from '@edulastic/common';
+import { PaddingDiv, FlexContainer } from "@edulastic/common";
 
-import { ALPHABET } from '../../../constants/alphabet';
+import { ALPHABET } from "../../../constants/alphabet";
 
-import { CheckboxContainer } from '../styled/CheckboxContainer';
-import { MultiChoiceContent } from '../styled/MultiChoiceContent';
-import { Label } from '../styled/Label';
-import { IconWrapper } from '../styled/IconWrapper';
-import { IconCheck } from '../styled/IconCheck';
-import { IconClose } from '../styled/IconClose';
+import { CheckboxContainer } from "../styled/CheckboxContainer";
+import { MultiChoiceContent } from "../styled/MultiChoiceContent";
+import { Label } from "../styled/Label";
+import { IconWrapper } from "../styled/IconWrapper";
+import { IconCheck } from "../styled/IconCheck";
+import { IconClose } from "../styled/IconClose";
 
-const getFontSize = (size) => {
+const getFontSize = size => {
   switch (size) {
-    case 'small':
-      return '10px';
-    case 'normal':
-      return '13px';
-    case 'large':
-      return '17px';
-    case 'xlarge':
-      return '20px';
-    case 'xxlarge':
-      return '24px';
+    case "small":
+      return "10px";
+    case "normal":
+      return "13px";
+    case "large":
+      return "17px";
+    case "xlarge":
+      return "20px";
+    case "xxlarge":
+      return "24px";
     default:
-      return '12px';
+      return "12px";
   }
 };
 
-const Option = (props) => {
-  const {
-    index,
-    item,
-    showAnswer,
-    userSelections,
-    onChange,
-    smallSize,
-    uiStyle,
-    correct,
-    view
-  } = props
+const Option = props => {
+  const { index, item, showAnswer, userSelections, onChange, smallSize, uiStyle, correct, view } = props;
   const isSelected = userSelections.includes(item.value);
 
-  let className = '';
+  let className = "";
 
   if (showAnswer) {
-    className = 'right';
+    className = "right";
   }
 
   if (correct) {
-    className = 'right';
+    className = "right";
   }
 
   if (correct === false) {
-    className = 'wrong';
+    className = "wrong";
   }
 
   const fontSize = getFontSize(uiStyle.fontsize);
 
-  const getLabel = (inx) => {
-    if (uiStyle.type === 'block') {
+  const getLabel = inx => {
+    if (uiStyle.type === "block") {
       switch (uiStyle.choice_label) {
-        case 'number':
+        case "number":
           return inx + 1;
-        case 'upper-alpha':
+        case "upper-alpha":
           return ALPHABET[inx].toUpperCase();
-        case 'lower-alpha':
+        case "lower-alpha":
           return ALPHABET[inx].toLowerCase();
         default:
           return inx + 1;
       }
     } else {
-      return '';
+      return "";
     }
   };
 
   const container = (
     <CheckboxContainer smallSize={smallSize}>
-      <input
-        type="checkbox"
-        name="mcq_group"
-        value={index}
-        checked={isSelected}
-        onChange={onChange}
-      />
-      <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <input type="checkbox" name="mcq_group" value={index} checked={isSelected} onChange={onChange} />
+      <span
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }}
+      >
         {getLabel(index)}
       </span>
       <div />
@@ -94,20 +84,16 @@ const Option = (props) => {
 
   const renderCheckbox = () => {
     switch (uiStyle.type) {
-      case 'radioBelow':
+      case "radioBelow":
         return (
           <FlexContainer flexDirection="column" justifyContent="center">
-            <MultiChoiceContent
-              fontSize={fontSize}
-              smallSize={smallSize}
-              style={{ marginBottom: 10 }}
-            >
+            <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} style={{ marginBottom: 10 }}>
               <div dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
             {container}
           </FlexContainer>
         );
-      case 'block':
+      case "block":
         return (
           <FlexContainer alignItems="center">
             {container}
@@ -116,7 +102,7 @@ const Option = (props) => {
             </MultiChoiceContent>
           </FlexContainer>
         );
-      case 'standard':
+      case "standard":
       default:
         return (
           <React.Fragment>
@@ -129,23 +115,23 @@ const Option = (props) => {
     }
   };
 
-  const isChecked = isSelected && !className && uiStyle.type === 'block' && !showAnswer
-  const width = uiStyle.columns ? `${100 / uiStyle.columns - 1}%` : '100%';
-  let labelClassName = isChecked ? 'checked' : className;
+  const isChecked = isSelected && !className && uiStyle.type === "block" && !showAnswer;
+  const width = uiStyle.columns ? `${100 / uiStyle.columns - 1}%` : "100%";
+  let labelClassName = isChecked ? "checked" : className;
   const isPreview = view === "preview" && !isSelected;
 
-  if(isPreview) {
-    labelClassName = 'preview'
+  if (isPreview) {
+    labelClassName = "preview";
   }
 
   return (
     <Label width={width} smallSize={smallSize} className={labelClassName} showAnswer>
       <PaddingDiv top={smallSize ? 0 : 10} bottom={smallSize ? 0 : 10}>
-        <FlexContainer justifyContent={uiStyle.type === 'radioBelow' ? 'center' : 'space-between'}>
+        <FlexContainer justifyContent={uiStyle.type === "radioBelow" ? "center" : "space-between"}>
           {renderCheckbox()}
           <IconWrapper>
-            {className === 'right' && <IconCheck />}
-            {className === 'wrong' && <IconClose />}
+            {className === "right" && <IconCheck />}
+            {className === "wrong" && <IconClose />}
           </IconWrapper>
         </FlexContainer>
       </PaddingDiv>

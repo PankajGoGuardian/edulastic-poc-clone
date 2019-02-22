@@ -1,20 +1,28 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { uniqueId } from 'lodash';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import * as moment from 'moment';
-import { Button, Modal, Input, Cascader, Radio, Icon } from 'antd';
-import { FlexContainer } from '@edulastic/common';
-import { white, green, mainBlueColor, greenSecondary, largeDesktopWidth, desktopWidth, mobileWidth } from '@edulastic/colors';
-import customContentIcon from '../assets/custom-content.svg';
-import addUnitIcon from '../assets/add-unit.svg';
-import selectContentIcon from '../assets/select-content.svg';
-import Curriculum from './Curriculum';
-import ShareIcon from '../assets/share-button.svg';
-import SelectContent from './SelectContent';
-import Assign from '../../TestPage/components/Assign';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { uniqueId } from "lodash";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import * as moment from "moment";
+import { Button, Modal, Input, Cascader, Radio, Icon } from "antd";
+import { FlexContainer } from "@edulastic/common";
+import {
+  white,
+  green,
+  mainBlueColor,
+  greenSecondary,
+  largeDesktopWidth,
+  desktopWidth,
+  mobileWidth
+} from "@edulastic/colors";
+import customContentIcon from "../assets/custom-content.svg";
+import addUnitIcon from "../assets/add-unit.svg";
+import selectContentIcon from "../assets/select-content.svg";
+import Curriculum from "./Curriculum";
+import ShareIcon from "../assets/share-button.svg";
+import SelectContent from "./SelectContent";
+import Assign from "../../TestPage/components/Assign";
 import {
   changeGuideAction,
   setGuideAction,
@@ -25,103 +33,97 @@ import {
   createAssignmentAction,
   saveCurriculumSequenceAction,
   addNewUnitToDestinationAction
-} from '../ducks';
-import EditModal from '../../TestPage/components/Assign/components/EditModal/EditModal';
+} from "../ducks";
+import EditModal from "../../TestPage/components/Assign/components/EditModal/EditModal";
 // import { fetchGroupsAction } from '../../TestPage/components/Assign/ducks';
-import {
-  fetchGroupsAction,
-  getGroupsSelector,
-  fetchMultipleGroupMembersAction
-} from '../../sharedDucks/groups';
-
+import { fetchGroupsAction, getGroupsSelector, fetchMultipleGroupMembersAction } from "../../sharedDucks/groups";
 
 /** @typedef {object} ModuleData
-* @property {String} contentId
-* @property {String} createdDate
-* @property {Object} derivedFrom
-* @property {String} id
-* @property {Number} index
-* @property {String} name
-* @property {String} standards
-* @property {String} type
-* @property {boolean} assigned
-* @property {String} testId
-*/
+ * @property {String} contentId
+ * @property {String} createdDate
+ * @property {Object} derivedFrom
+ * @property {String} id
+ * @property {Number} index
+ * @property {String} name
+ * @property {String} standards
+ * @property {String} type
+ * @property {boolean} assigned
+ * @property {String} testId
+ */
 
 /** @typedef {object} CreatedBy
-* @property {String} email
-* @property {String} firstName
-* @property {String} id
-* @property {String} lastName
-*/
+ * @property {String} email
+ * @property {String} firstName
+ * @property {String} id
+ * @property {String} lastName
+ */
 
 /**
-* @typedef {object} Module
-* @property {String} customized
-* @property {ModuleData[]} data
-* @property {String} id
-* @property {String} name
-* @property {boolean} assigned
-* @property {boolean=} completed
-*/
+ * @typedef {object} Module
+ * @property {String} customized
+ * @property {ModuleData[]} data
+ * @property {String} id
+ * @property {String} name
+ * @property {boolean} assigned
+ * @property {boolean=} completed
+ */
 
 /**
-* @typedef {object} CurriculumSequenceType
-* @property {CreatedBy} createdBy
-* @property {String} createdDate
-* @property {Object} derivedFrom
-* @property {String} description
-* @property {String} id
-* @property {Module[]} modules
-* @property {String} status
-* @property {String} thumbnail
-* @property {String} title
-* @property {String} type
-* @property {String} updatedDate
-*/
+ * @typedef {object} CurriculumSequenceType
+ * @property {CreatedBy} createdBy
+ * @property {String} createdDate
+ * @property {Object} derivedFrom
+ * @property {String} description
+ * @property {String} id
+ * @property {Module[]} modules
+ * @property {String} status
+ * @property {String} thumbnail
+ * @property {String} title
+ * @property {String} type
+ * @property {String} updatedDate
+ */
 
 /**
-* @typedef {object} CurriculumSearchResult
-* @property {string} _id
-* @property {string} title
-*/
+ * @typedef {object} CurriculumSearchResult
+ * @property {string} _id
+ * @property {string} title
+ */
 
 /**
-* @typedef {object} CurriculumSequenceProps
-* @property {function} onCollapseExpand
-* @property {string[]} expandedModules
-* @property {boolean} selectContent
-* @property {function} onSelectContent
-* @property {CurriculumSequenceType} destinationCurriculumSequence
-* @property {CurriculumSequenceType} sourceCurriculumSequence
-* @property {CurriculumSequenceType[]} curriculumList
-* @property {function} saveCurriculumSequence
-* @property {function} addNewUnitToDestination
-* @property {function} onDrop
-* @property {function} onBeginDrag
-* @property {function} onPublisherChange
-* @property {function} onPublisherSave
-* @property {CurriculumSearchResult[]} curriculumGuides
-* @property {string} publisher
-* @property {string} guide
-* @property {function} setPublisher
-* @property {function} setGuide
-* @property {function} saveGuideAlignment
-* @property {boolean} isContentExpanded
-* @property {function} setSelectedItemsForAssign
-* @property {any[]} selectedItemsForAssign
-* @property {function} createAssignment
-* @property {function} fetchGroups
-* @property {import('./ducks').AssignData} dataForAssign
-*/
+ * @typedef {object} CurriculumSequenceProps
+ * @property {function} onCollapseExpand
+ * @property {string[]} expandedModules
+ * @property {boolean} selectContent
+ * @property {function} onSelectContent
+ * @property {CurriculumSequenceType} destinationCurriculumSequence
+ * @property {CurriculumSequenceType} sourceCurriculumSequence
+ * @property {CurriculumSequenceType[]} curriculumList
+ * @property {function} saveCurriculumSequence
+ * @property {function} addNewUnitToDestination
+ * @property {function} onDrop
+ * @property {function} onBeginDrag
+ * @property {function} onPublisherChange
+ * @property {function} onPublisherSave
+ * @property {CurriculumSearchResult[]} curriculumGuides
+ * @property {string} publisher
+ * @property {string} guide
+ * @property {function} setPublisher
+ * @property {function} setGuide
+ * @property {function} saveGuideAlignment
+ * @property {boolean} isContentExpanded
+ * @property {function} setSelectedItemsForAssign
+ * @property {any[]} selectedItemsForAssign
+ * @property {function} createAssignment
+ * @property {function} fetchGroups
+ * @property {import('./ducks').AssignData} dataForAssign
+ */
 
-const EUREKA_PUBLISHER = 'Eureka Math';
-const TENMARKS_PUBLISHER = 'TenMarks';
-const GOMATH_PUBLISHER = 'Go Math!';
+const EUREKA_PUBLISHER = "Eureka Math";
+const TENMARKS_PUBLISHER = "TenMarks";
+const GOMATH_PUBLISHER = "Go Math!";
 
 /** @extends Component<CurriculumSequenceProps> */
 class CurriculumSequence extends Component {
-
   state = {
     addUnit: false,
     addCustomContent: false,
@@ -129,17 +131,17 @@ class CurriculumSequence extends Component {
     value: EUREKA_PUBLISHER,
     /** @type {Module | {}} */
     newUnit: {},
-    selectedGuide: '',
+    selectedGuide: "",
     assignModal: false,
     assignModalData: {
       startDate: moment(),
       endDate: moment(),
-      openPolicy: 'Automatically on Start Date',
-      closePolicy: 'Automatically on Due Date',
+      openPolicy: "Automatically on Start Date",
+      closePolicy: "Automatically on Due Date",
       class: [],
       specificStudents: false
     }
-  }
+  };
 
   componentDidMount() {
     const { setPublisher, publisher, fetchGroups } = this.props;
@@ -147,18 +149,17 @@ class CurriculumSequence extends Component {
     setPublisher(publisher);
   }
 
-  onChange = (evt) => {
+  onChange = evt => {
     const publisher = evt.target.value;
     const { setPublisher } = this.props;
     setPublisher(publisher);
-  }
+  };
 
-
-  handleSaveClick = (evt) => {
+  handleSaveClick = evt => {
     const { saveCurriculumSequence } = this.props;
     evt.preventDefault();
     saveCurriculumSequence();
-  }
+  };
 
   handleAddUnitOpen = () => {
     const { newUnit } = { ...this.state };
@@ -166,38 +167,41 @@ class CurriculumSequence extends Component {
 
     newUnit.id = uniqueId();
     newUnit.data = [];
-    newUnit.afterUnitId = destinationCurriculumSequence.modules.map((module => module.id))[0];
+    newUnit.afterUnitId = destinationCurriculumSequence.modules.map(module => module.id)[0];
 
-
-    this.setState((prevState) => ({ addUnit: !prevState.addUnit, newUnit }));
-  }
+    this.setState(prevState => ({ addUnit: !prevState.addUnit, newUnit }));
+  };
 
   handleAddCustomContent = () => {
-    this.setState((prevState) => ({ addCustomContent: !prevState.addCustomContent }));
-  }
+    this.setState(prevState => ({
+      addCustomContent: !prevState.addCustomContent
+    }));
+  };
 
   handleSelectContent = () => {
     const { onSelectContent } = this.props;
     onSelectContent();
-  }
+  };
 
   handleAddUnit = () => {
-    this.setState((prevState) => ({ addUnit: !prevState.addUnit }));
-  }
+    this.setState(prevState => ({ addUnit: !prevState.addUnit }));
+  };
 
   handleGuideSave = () => {
     const { saveGuideAlignment } = this.props;
     this.setState({ curriculumGuide: false });
     saveGuideAlignment();
-  }
+  };
 
   handleGuidePopup = () => {
-    this.setState(prevState => ({ curriculumGuide: !prevState.curriculumGuide }));
-  }
+    this.setState(prevState => ({
+      curriculumGuide: !prevState.curriculumGuide
+    }));
+  };
 
   handleGuideCancel = () => {
     this.setState({ curriculumGuide: false });
-  }
+  };
 
   addNewUnitToDestination = () => {
     const { addNewUnitToDestination } = this.props;
@@ -210,32 +214,32 @@ class CurriculumSequence extends Component {
     addNewUnitToDestination(afterUnitId, newUnit);
 
     this.setState({ newUnit: {}, addUnit: false });
-  }
+  };
 
-  onNewUnitNameChange = (evt) => {
+  onNewUnitNameChange = evt => {
     evt.preventDefault();
 
     const { newUnit } = { ...this.state };
     newUnit.name = evt.target.value;
     this.setState({ newUnit });
-  }
+  };
 
-  onUnitAfterIdChange = (id) => {
+  onUnitAfterIdChange = id => {
     const { newUnit } = { ...this.state };
     const [afterUnitId] = id;
     newUnit.afterUnitId = afterUnitId;
     this.setState({ newUnit });
-  }
+  };
 
-  onGuideChange = (wrappedId) => {
+  onGuideChange = wrappedId => {
     const { setGuide } = this.props;
     const id = wrappedId[0];
     setGuide(id);
-  }
+  };
 
   render() {
-    const largeDesktopWidthValue = Number(largeDesktopWidth.split('px')[0]);
-    const desktopWidthValue = Number(desktopWidth.split('px')[0]);
+    const largeDesktopWidthValue = Number(largeDesktopWidth.split("px")[0]);
+    const desktopWidthValue = Number(desktopWidth.split("px")[0]);
     const { onNewUnitNameChange, onUnitAfterIdChange, onGuideChange, updateAssignData } = this;
     const { addUnit, addCustomContent, newUnit, curriculumGuide } = this.state;
     const {
@@ -264,18 +268,22 @@ class CurriculumSequence extends Component {
       saveCurriculumSequence
     } = this.props;
 
-    const {
-      handleSaveClick
-    } = this;
+    const { handleSaveClick } = this;
 
     // Options for add unit
-    const options1 = destinationCurriculumSequence.modules.map((module) => ({ value: module.id, label: module.name }));
+    const options1 = destinationCurriculumSequence.modules.map(module => ({
+      value: module.id,
+      label: module.name
+    }));
 
     // TODO: change options2 to something more meaningful
-    const options2 = [{ value: 'Lesson', label: 'Lesson' }, { value: 'Lesson 2', label: 'Lesson 2' }];
+    const options2 = [{ value: "Lesson", label: "Lesson" }, { value: "Lesson 2", label: "Lesson 2" }];
 
     // Dropdown options for guides
-    const guidesDropdownOptions = curriculumGuides.map(item => ({ value: item._id, label: item.title }));
+    const guidesDropdownOptions = curriculumGuides.map(item => ({
+      value: item._id,
+      label: item.title
+    }));
 
     const { title } = destinationCurriculumSequence;
 
@@ -304,18 +312,26 @@ class CurriculumSequence extends Component {
           onOk={this.handleAddUnit}
           onCancel={this.handleAddUnit}
           footer={null}
-          style={windowWidth > desktopWidthValue ? { minWidth: '640px', padding: '20px' } : { padding: '20px' }}
+          style={windowWidth > desktopWidthValue ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
         >
           <AddUnitModalBody>
             <label>Unit Name</label>
-            <Input value={newUnit.name || ''} onChange={onNewUnitNameChange} />
+            <Input value={newUnit.name || ""} onChange={onNewUnitNameChange} />
             <label>Add After</label>
             <Input.Group compact>
-              <Cascader onChange={onUnitAfterIdChange} defaultValue={[options1[0].value]} style={{ width: '100%' }} options={options1} />
+              <Cascader
+                onChange={onUnitAfterIdChange}
+                defaultValue={[options1[0].value]}
+                style={{ width: "100%" }}
+                options={options1}
+              />
             </Input.Group>
           </AddUnitModalBody>
           <ModalFooter>
-            <Button type="primary" ghost key="back" onClick={this.handleAddUnit}>CANCEL</Button>,
+            <Button type="primary" ghost key="back" onClick={this.handleAddUnit}>
+              CANCEL
+            </Button>
+            ,
             <Button key="submit" type="primary" onClick={this.addNewUnitToDestination}>
               SAVE
             </Button>
@@ -328,7 +344,7 @@ class CurriculumSequence extends Component {
           onOk={this.handleAddCustomContent}
           onCancel={this.handleAddCustomContent}
           footer={null}
-          style={windowWidth > desktopWidthValue ? { minWidth: '640px', padding: '20px' } : { padding: '20px' }}
+          style={windowWidth > desktopWidthValue ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
         >
           <ModalBody>
             <ModalLabelWrapper>
@@ -337,10 +353,10 @@ class CurriculumSequence extends Component {
             </ModalLabelWrapper>
             <ModalInputWrapper>
               <Input.Group compact>
-                <Cascader defaultValue={['Lesson']} options={options2} />
+                <Cascader defaultValue={["Lesson"]} options={options2} />
               </Input.Group>
               <Input.Group compact>
-                <Cascader defaultValue={['Unit Name']} options={options1} />
+                <Cascader defaultValue={["Unit Name"]} options={options1} />
               </Input.Group>
             </ModalInputWrapper>
             <label>Reference #</label>
@@ -361,7 +377,7 @@ class CurriculumSequence extends Component {
           onOk={this.handleGuideSave}
           onCancel={this.handleGuideCancel}
           footer={null}
-          style={windowWidth > desktopWidthValue ? { minWidth: '640px', padding: '20px' } : { padding: '20px' }}
+          style={windowWidth > desktopWidthValue ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
         >
           <ModalHeader>
             <span>Curriculum Alignments in Two Clicks</span>
@@ -373,15 +389,27 @@ class CurriculumSequence extends Component {
             </ModalSubtitleWrapper>
             <RadioGroupWrapper>
               <Radio.Group onChange={this.onChange} value={publisher}>
-                <Radio checked={publisher === EUREKA_PUBLISHER} value={EUREKA_PUBLISHER}>Eureka/EngageNY</Radio>
-                <Radio checked={publisher === TENMARKS_PUBLISHER} value={TENMARKS_PUBLISHER}>TenMarks</Radio>
-                <Radio checked={publisher === GOMATH_PUBLISHER} value={GOMATH_PUBLISHER}>GoMath!</Radio>
+                <Radio checked={publisher === EUREKA_PUBLISHER} value={EUREKA_PUBLISHER}>
+                  Eureka/EngageNY
+                </Radio>
+                <Radio checked={publisher === TENMARKS_PUBLISHER} value={TENMARKS_PUBLISHER}>
+                  TenMarks
+                </Radio>
+                <Radio checked={publisher === GOMATH_PUBLISHER} value={GOMATH_PUBLISHER}>
+                  GoMath!
+                </Radio>
               </Radio.Group>
             </RadioGroupWrapper>
             <GuidesDropdownWrapper>
               {guidesDropdownOptions.length > 0 && (
                 <Input.Group compact>
-                  <Cascader key={guide} onChange={onGuideChange} defaultValue={[guide]} style={{ width: '100%' }} options={guidesDropdownOptions} />
+                  <Cascader
+                    key={guide}
+                    onChange={onGuideChange}
+                    defaultValue={[guide]}
+                    style={{ width: "100%" }}
+                    options={guidesDropdownOptions}
+                  />
                 </Input.Group>
               )}
             </GuidesDropdownWrapper>
@@ -396,54 +424,69 @@ class CurriculumSequence extends Component {
           </ModalFooter>
         </Modal>
         <TopBar>
-        <CurriculumHeader>
-          <HeaderTitle>{title}
-            <Icon style={{ fontSize: '16px', cursor: 'pointer', marginLeft: '10px' }} type={curriculumGuide ? "up" : "down"} onClick={this.handleGuidePopup} />
-          </HeaderTitle>
-          <ShareButtonStyle>
-            <Button type="default">
-              <ShareButtonText>{windowWidth > desktopWidthValue ? 'SHARE' : <img src={ShareIcon} alt="SHARE" style={{ width: '100%' }} />}</ShareButtonText>
-            </Button>
-          </ShareButtonStyle>
-          <SaveButtonStyle windowWidth={windowWidth}>
-            <Button type="primary">
-              <SaveButtonText onClick={handleSaveClick}>{windowWidth > desktopWidthValue ? 'Save Changes' : 'Save'}</SaveButtonText>
-            </Button>
-          </SaveButtonStyle>
-        </CurriculumHeader>
-        <CurriculumSubheader active={isContentExpanded}>
-          <ModuleProgressWrapper>
-            <ModuleProgressLabel>
-              <ModuleProgressText>
-                Module Progress
-              </ModuleProgressText>
-              <ModuleProgressValues>
-                {modulesCompleted} / {totalModules} Completed
-              </ModuleProgressValues>
-            </ModuleProgressLabel>
-            <ModuleProgress modules={destinationCurriculumSequence.modules} />
-          </ModuleProgressWrapper>
-          <SubheaderActions active={isContentExpanded}>
-            <AddUnitSubHeaderButtonStyle>
-              <Button onClick={this.handleAddUnitOpen} type="primary">
-                <img src={addUnitIcon} alt="Add unit" />
-                <ButtonText>Add Unit</ButtonText>
+          <CurriculumHeader>
+            <HeaderTitle>
+              {title}
+              <Icon
+                style={{
+                  fontSize: "16px",
+                  cursor: "pointer",
+                  marginLeft: "10px"
+                }}
+                type={curriculumGuide ? "up" : "down"}
+                onClick={this.handleGuidePopup}
+              />
+            </HeaderTitle>
+            <ShareButtonStyle>
+              <Button type="default">
+                <ShareButtonText>
+                  {windowWidth > desktopWidthValue ? (
+                    "SHARE"
+                  ) : (
+                    <img src={ShareIcon} alt="SHARE" style={{ width: "100%" }} />
+                  )}
+                </ShareButtonText>
               </Button>
-            </AddUnitSubHeaderButtonStyle>
-            <SelectContentSubHeaderButtonStyle active={isContentExpanded}>
-              <Button onClick={this.handleSelectContent} type="primary">
-                <img src={selectContentIcon} alt="Select content" />
-                <ButtonText>Select Content</ButtonText>
+            </ShareButtonStyle>
+            <SaveButtonStyle windowWidth={windowWidth}>
+              <Button type="primary">
+                <SaveButtonText onClick={handleSaveClick}>
+                  {windowWidth > desktopWidthValue ? "Save Changes" : "Save"}
+                </SaveButtonText>
               </Button>
-            </SelectContentSubHeaderButtonStyle>
-            <AddCustomContentSubHeaderButtonStyle>
-              <Button onClick={this.handleAddCustomContent} type="primary">
-                <img src={customContentIcon} alt="Custom content" />
-                <ButtonText>Add Custom Content</ButtonText>
-              </Button>
-            </AddCustomContentSubHeaderButtonStyle>
-          </SubheaderActions>
-        </CurriculumSubheader>
+            </SaveButtonStyle>
+          </CurriculumHeader>
+          <CurriculumSubheader active={isContentExpanded}>
+            <ModuleProgressWrapper>
+              <ModuleProgressLabel>
+                <ModuleProgressText>Module Progress</ModuleProgressText>
+                <ModuleProgressValues>
+                  {modulesCompleted} / {totalModules} Completed
+                </ModuleProgressValues>
+              </ModuleProgressLabel>
+              <ModuleProgress modules={destinationCurriculumSequence.modules} />
+            </ModuleProgressWrapper>
+            <SubheaderActions active={isContentExpanded}>
+              <AddUnitSubHeaderButtonStyle>
+                <Button onClick={this.handleAddUnitOpen} type="primary">
+                  <img src={addUnitIcon} alt="Add unit" />
+                  <ButtonText>Add Unit</ButtonText>
+                </Button>
+              </AddUnitSubHeaderButtonStyle>
+              <SelectContentSubHeaderButtonStyle active={isContentExpanded}>
+                <Button onClick={this.handleSelectContent} type="primary">
+                  <img src={selectContentIcon} alt="Select content" />
+                  <ButtonText>Select Content</ButtonText>
+                </Button>
+              </SelectContentSubHeaderButtonStyle>
+              <AddCustomContentSubHeaderButtonStyle>
+                <Button onClick={this.handleAddCustomContent} type="primary">
+                  <img src={customContentIcon} alt="Custom content" />
+                  <ButtonText>Add Custom Content</ButtonText>
+                </Button>
+              </AddCustomContentSubHeaderButtonStyle>
+            </SubheaderActions>
+          </CurriculumSubheader>
         </TopBar>
         <Wrapper active={isContentExpanded}>
           {destinationCurriculumSequence && (
@@ -492,7 +535,7 @@ CurriculumSequence.propTypes = {
 
 CurriculumSequence.defaultProps = {
   publisher: EUREKA_PUBLISHER,
-  guide: '',
+  guide: "",
   curriculumList: [],
   expandedModules: [],
   curriculumGuides: []
@@ -520,9 +563,9 @@ const SubheaderActions = styled.div`
     margin-right: auto;
   }
   @media only screen and (max-width: 1750px) and (min-width: 1367px) {
-    margin-top: ${props => props.active ? '20px' : '' };
-    justify-content: ${props => props.active ? 'flex-start' : '' };
-    margin-right: ${props => props.active ? 'auto' : '' };
+    margin-top: ${props => (props.active ? "20px" : "")};
+    justify-content: ${props => (props.active ? "flex-start" : "")};
+    margin-right: ${props => (props.active ? "auto" : "")};
   }
 `;
 
@@ -531,7 +574,7 @@ const ModuleProgressBar = styled.div`
   width: 40px;
   height: 6px;
   margin-right: 6px;
-  background: ${(props) => props.completed ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.6)'};
+  background: ${props => (props.completed ? "rgba(255, 255, 255, 1)" : "rgba(255, 255, 255, 0.6)")};
 `;
 
 const ModuleProgressLabel = styled.div`
@@ -551,10 +594,10 @@ const ModuleProgressWrapper = styled.div`
   width: 100%;
   align-items: center;
 `;
-ModuleProgressWrapper.displayName = 'ModuleProgressWrapper';
+ModuleProgressWrapper.displayName = "ModuleProgressWrapper";
 
 const ModuleProgressText = styled.div`
-  color: rgba(255,255,255, 1);
+  color: rgba(255, 255, 255, 1);
   padding-right: 8px;
   font-weight: 600;
 `;
@@ -649,8 +692,8 @@ const SelectContentSubHeaderButtonStyle = styled.div`
   /* TODO: responsive paddings - negative margin on the parent */
   .ant-btn {
     color: ${white};
-    border-color: ${props => props.active ? mainBlueColor : white };
-    background-color: ${props => props.active ? mainBlueColor : 'transparent' };
+    border-color: ${props => (props.active ? mainBlueColor : white)};
+    background-color: ${props => (props.active ? mainBlueColor : "transparent")};
     display: flex;
     align-items: center;
   }
@@ -662,27 +705,27 @@ const SelectContentSubHeaderButtonStyle = styled.div`
 `;
 
 const ShareButtonStyle = styled.div`
-.ant-btn {
-  padding: 10px;
-  min-height: 40px;
-  min-width: 120px;
-  color: ${mainBlueColor};
-  @media only screen and (max-width: ${largeDesktopWidth}) {
-    min-width: 40px;
-    max-width: auto;
-    padding: 0px;
+  .ant-btn {
+    padding: 10px;
+    min-height: 40px;
+    min-width: 120px;
+    color: ${mainBlueColor};
+    @media only screen and (max-width: ${largeDesktopWidth}) {
+      min-width: 40px;
+      max-width: auto;
+      padding: 0px;
+    }
   }
-}
 `;
 
 const SaveButtonStyle = styled.div`
-.ant-btn {
-  padding: 10px;
-  min-height: 40px;
-  min-width: 120px;
-  background-color: ${green};
-  border-color: ${green};
-}
+  .ant-btn {
+    padding: 10px;
+    min-height: 40px;
+    min-width: 120px;
+    background-color: ${green};
+    border-color: ${green};
+  }
 `;
 
 const ModalInputWrapper = styled.div`
@@ -759,10 +802,10 @@ const Wrapper = styled.div`
   padding-right: 40px;
   box-sizing: border-box;
   margin-top: -50px;
-  width: ${props => props.active ? '100%' : '80%' };
-  align-self: ${props => props.active ? 'flex-start' : 'center' };
-  margin-left: ${props => props.active ? '0px' : 'auto' };
-  margin-right: ${props => props.active ? '0px' : 'auto' };
+  width: ${props => (props.active ? "100%" : "80%")};
+  align-self: ${props => (props.active ? "flex-start" : "center")};
+  margin-left: ${props => (props.active ? "0px" : "auto")};
+  margin-right: ${props => (props.active ? "0px" : "auto")};
   @media only screen and (max-width: ${desktopWidth}) {
     padding-left: 20px;
     padding-right: 20px;
@@ -771,8 +814,8 @@ const Wrapper = styled.div`
 `;
 
 const CurriculumHeader = styled(FlexContainer)`
-width: 100%;
-z-index: 0;
+  width: 100%;
+  z-index: 0;
   display: flex;
   align-items: baseline;
   justify-content: flex-end;
@@ -783,41 +826,41 @@ z-index: 0;
     padding: 10px 20px;
   }
 
-@media only screen and (min-width: 846px) {
+  @media only screen and (min-width: 846px) {
     padding: 20px 40px 50px 40px;
   }
 `;
 
 const CurriculumSubheader = styled.div`
   padding-left: 43px;
-  padding-right: ${props => props.active ? '30px' : '43px' };
+  padding-right: ${props => (props.active ? "30px" : "43px")};
   margin-bottom: 60px;
   z-index: 1;
   display: flex;
   align-items: center;
-  width: ${props => props.active ? '60%' : '80%' };
-  margin-left: ${props => props.active ? '' : 'auto' };
-  margin-right: ${props => props.active ? '' : 'auto' };
+  width: ${props => (props.active ? "60%" : "80%")};
+  margin-left: ${props => (props.active ? "" : "auto")};
+  margin-right: ${props => (props.active ? "" : "auto")};
   @media only screen and (max-width: 1366px) {
     flex-direction: column;
     justify-self: flex-start;
     margin-right: auto;
   }
   @media only screen and (max-width: 1750px) and (min-width: 1367px) {
-    flex-direction: ${props => props.active ? 'column' : 'row' };
-    justify-self: ${props => props.active ? 'flex-start' : '' };
-    margin-right: ${props => props.active ? 'auto' : '' };
+    flex-direction: ${props => (props.active ? "column" : "row")};
+    justify-self: ${props => (props.active ? "flex-start" : "")};
+    margin-right: ${props => (props.active ? "auto" : "")};
   }
   @media only screen and (min-width: 1800px) {
-    width: ${props => props.active ? '60%' : '80%' };
-    margin-left: ${props => props.active ? '' : 'auto' };
-    margin-right: ${props => props.active ? '' : 'auto' };
+    width: ${props => (props.active ? "60%" : "80%")};
+    margin-left: ${props => (props.active ? "" : "auto")};
+    margin-right: ${props => (props.active ? "" : "auto")};
   }
   @media only screen and (max-width: 480px) {
     padding-left: 20px;
   }
 `;
-CurriculumSubheader.displayName = 'CurriculumSubheader';
+CurriculumSubheader.displayName = "CurriculumSubheader";
 
 const ButtonText = styled.div`
   text-transform: uppercase;
@@ -862,7 +905,7 @@ const HeaderTitle = styled.div`
   margin-right: auto;
   font-size: 20px;
   font-weight: 700;
-  color: ${white}
+  color: ${white};
 `;
 
 const enhance = compose(

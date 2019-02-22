@@ -1,19 +1,16 @@
-import { createSelector } from 'reselect';
-import { get } from 'lodash';
-import { getTestItemsSelector } from '../AddItems/ducks';
+import { createSelector } from "reselect";
+import { get } from "lodash";
+import { getTestItemsSelector } from "../AddItems/ducks";
 
 // selectors
 
 export const getItemsTypesSelector = createSelector(
   getTestItemsSelector,
-  (state) => {
+  state => {
     const result = {};
 
-    state.forEach((item) => {
-      const types = item.rows.reduce(
-        (acc, row) => [...acc, ...row.widgets.map(({ type }) => type)],
-        []
-      );
+    state.forEach(item => {
+      const types = item.rows.reduce((acc, row) => [...acc, ...row.widgets.map(({ type }) => type)], []);
 
       result[item._id] = [...new Set(types)];
     });
@@ -24,12 +21,12 @@ export const getItemsTypesSelector = createSelector(
 
 export const getStandardsSelector = createSelector(
   getTestItemsSelector,
-  (state) => {
+  state => {
     const result = {};
 
-    state.forEach((item) => {
-      const tags = get(item, 'data.questions', []).reduce((acc, question) => {
-        const t = get(question, 'standardsMap.domains', []).reduce(
+    state.forEach(item => {
+      const tags = get(item, "data.questions", []).reduce((acc, question) => {
+        const t = get(question, "standardsMap.domains", []).reduce(
           (r, { standards }) => [...r, ...standards.map(s => s.name)],
           []
         );

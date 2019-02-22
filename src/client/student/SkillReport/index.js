@@ -1,29 +1,21 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-import Header from '../sharedComponents/Header';
-import SkillReportMainContent from './WrapperAndSummary';
+import Header from "../sharedComponents/Header";
+import SkillReportMainContent from "./WrapperAndSummary";
 
-import MainContainer from '../styled/mainContainer';
-import {
-  fetchSkillReportByClassID as fetchSkillReportAction,
-  classSelector
-} from './ducks';
+import MainContainer from "../styled/mainContainer";
+import { fetchSkillReportByClassID as fetchSkillReportAction, classSelector } from "./ducks";
 
-const SkillReportContainer = ({
-  flag,
-  skillReport,
-  fetchSkillReport,
-  classId
-}) => {
+const SkillReportContainer = ({ flag, skillReport, fetchSkillReport, classId }) => {
   useEffect(() => {
     fetchSkillReport(classId);
   }, []);
   return (
     <React.Fragment>
       <MainContainer flag={flag}>
-        <Header flag={flag} titleText='common.skillReportTitle' />
+        <Header flag={flag} titleText="common.skillReportTitle" />
         <SkillReportMainContent skillReport={skillReport} />
       </MainContainer>
     </React.Fragment>

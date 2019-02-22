@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Select } from 'antd';
+import { Select } from "antd";
 import { themes } from "../../../../student/themes";
 const classBoardTheme = themes.default.classboard;
 

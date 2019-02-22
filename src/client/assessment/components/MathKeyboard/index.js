@@ -1,16 +1,16 @@
-import * as React from 'react';
-import { Button, Icon, Select } from 'antd';
-import PropTypes from 'prop-types';
-import { isObject } from 'lodash';
+import * as React from "react";
+import { Button, Icon, Select } from "antd";
+import PropTypes from "prop-types";
+import { isObject } from "lodash";
 
-import { math } from '@edulastic/constants';
+import { math } from "@edulastic/constants";
 
-import { KEYBOARD_BUTTONS } from '../../constants/keyboardButtons';
-import { NUMBER_PAD_ITEMS } from '../../constants/numberPadItems';
+import { KEYBOARD_BUTTONS } from "../../constants/keyboardButtons";
+import { NUMBER_PAD_ITEMS } from "../../constants/numberPadItems";
 
-import Keyboard from '../Keyboard';
+import Keyboard from "../Keyboard";
 
-import { MathKeyboardStyles } from './styled/MathKeyboardStyles';
+import { MathKeyboardStyles } from "./styled/MathKeyboardStyles";
 
 const { EMBED_RESPONSE } = math;
 
@@ -26,7 +26,7 @@ class MathKeyboard extends React.PureComponent {
     onClose();
   };
 
-  handleGroupSelect = (value) => {
+  handleGroupSelect = value => {
     this.setState({
       type: value
     });
@@ -36,7 +36,7 @@ class MathKeyboard extends React.PureComponent {
     const { onInput } = this.props;
     const { type } = this.state;
 
-    return this.keyboardButtons.map(({ label, handler, command = 'cmd', types }, i) => {
+    return this.keyboardButtons.map(({ label, handler, command = "cmd", types }, i) => {
       if (types.includes(type)) {
         return (
           <Button key={i} className="num num--type-3" onClick={() => onInput(handler, command)}>
@@ -52,8 +52,8 @@ class MathKeyboard extends React.PureComponent {
   get keyboardButtons() {
     const { symbols } = this.props;
 
-    return KEYBOARD_BUTTONS.map((btn) => {
-      symbols.forEach((symbol) => {
+    return KEYBOARD_BUTTONS.map(btn => {
+      symbols.forEach(symbol => {
         if (isObject(symbol) && symbol.value.includes(btn.handler)) {
           btn.types.push(symbol.label);
         }
@@ -66,8 +66,8 @@ class MathKeyboard extends React.PureComponent {
   get selectOptions() {
     const { symbols } = this.props;
 
-    return symbols.map((symbol) => {
-      if (typeof symbol === 'string') {
+    return symbols.map(symbol => {
+      if (typeof symbol === "string") {
         return math.symbols.find(opt => opt.value === symbol);
       }
 
@@ -89,9 +89,9 @@ class MathKeyboard extends React.PureComponent {
       return [];
     }
 
-    return numberPad.map((num) => {
+    return numberPad.map(num => {
       const res = NUMBER_PAD_ITEMS.find(({ value }) => num === value);
-      return res || { value: '', label: '' };
+      return res || { value: "", label: "" };
     });
   }
 
@@ -109,16 +109,12 @@ class MathKeyboard extends React.PureComponent {
                 className="keyboard__header__select"
                 size="large"
                 onSelect={this.handleGroupSelect}
-                onDropdownVisibleChange={(open) => {
+                onDropdownVisibleChange={open => {
                   this.setState({ dropdownOpened: open });
                 }}
-                suffixIcon={(
-                  <Icon
-                    className="keyboard__dropdown-icon"
-                    type={dropdownOpened ? 'up' : 'down'}
-                    theme="outlined"
-                  />
-                )}
+                suffixIcon={
+                  <Icon className="keyboard__dropdown-icon" type={dropdownOpened ? "up" : "down"} theme="outlined" />
+                }
               >
                 {this.selectOptions.map(({ value, label }, index) => (
                   <Select.Option value={value} key={index}>
@@ -127,11 +123,7 @@ class MathKeyboard extends React.PureComponent {
                 ))}
               </Select>
               {showResponse && (
-                <span
-                  className="response-embed"
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => onInput(EMBED_RESPONSE)}
-                >
+                <span className="response-embed" style={{ cursor: "pointer" }} onClick={() => onInput(EMBED_RESPONSE)}>
                   <span className="response-embed__char">R</span>
                   <span className="response-embed__text">Response</span>
                 </span>
@@ -139,12 +131,17 @@ class MathKeyboard extends React.PureComponent {
             </div>
           </div>
           <br />
-          {type === 'qwerty' && <Keyboard onInput={onInput} />}
-          {type !== 'qwerty' && (
+          {type === "qwerty" && <Keyboard onInput={onInput} />}
+          {type !== "qwerty" && (
             <div className="keyboard__main">
               <div className="half-box">
                 {this.numberPadItems.map((item, index) => (
-                  <Button disabled={!item.value} key={index} className="num num--type-1" onClick={() => onInput(item.value)}>
+                  <Button
+                    disabled={!item.value}
+                    key={index}
+                    className="num num--type-1"
+                    onClick={() => onInput(item.value)}
+                  >
                     {item.label}
                   </Button>
                 ))}

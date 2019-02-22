@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { greenDark, secondaryTextColor, white, green } from '@edulastic/colors';
+import styled from "styled-components";
+import { greenDark, secondaryTextColor, white, green } from "@edulastic/colors";
 
 export const GraphToolbar = styled.div`
   box-sizing: border-box;
@@ -13,11 +13,11 @@ export const GraphToolbar = styled.div`
   padding: 0;
   background-color: rgba(230, 230, 230, 0.23);
   font-size: ${props => (props.fontSize ? props.fontSize : 14)}px;
-  
+
   ul {
     list-style: none;
   }
-  
+
   ul li {
     margin: 2px 1px 0 0;
   }
@@ -37,13 +37,13 @@ export const ToolbarLeft = styled.ul`
 `;
 
 export const ToolbarRight = styled.ul`
-   display: flex;
-   align-items: center;
-   min-width: 93px;
-   height: 100%;
-   margin: 0;
-   margin-left: auto;
-   padding: 0;
+  display: flex;
+  align-items: center;
+  min-width: 93px;
+  height: 100%;
+  margin: 0;
+  margin-left: auto;
+  padding: 0;
 `;
 
 export const ToolbarItem = styled.div`
@@ -88,13 +88,13 @@ export const ToolBtn = styled.li`
   transition: background-color 0.1s ease-in;
   user-select: none;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0);
-  
+
   svg {
     color: ${secondaryTextColor};
     stroke: ${secondaryTextColor};
     fill: ${secondaryTextColor};
   }
-  
+
   &:hover {
     background-color: ${white};
   }
@@ -103,28 +103,27 @@ export const ToolBtn = styled.li`
     background-color: ${white};
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
   }
-  
+
   &.active {
     background-color: ${white};
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
-    
+
     .dd-header-title svg {
       color: ${greenDark};
       stroke: ${greenDark};
       fill: ${greenDark};
     }
-    
+
     .tool-btn-icon svg {
       color: ${greenDark};
       stroke: ${greenDark};
       fill: ${greenDark};
     }
-  
   }
 `;
 
 export const GraphWrapper = styled.div`
-  width: ${props => (props.width ? `${props.width}px` : '100%')};
+  width: ${props => (props.width ? `${props.width}px` : "100%")};
   border-radius: 4px;
   border: ${props => (props.border ? 1 : 0)}px solid ${props => props.borderColor};
 `;
@@ -133,7 +132,7 @@ export const JSXBox = styled.div`
   background-color: ${white};
   position: relative;
   overflow: hidden;
-  
+
   border: 1px solid #e8e8e8;
   border-radius: 0;
   margin: ${props => (props.margin ? props.margin : 0)}px;
@@ -158,12 +157,12 @@ export const DropdownMenu = styled.ul`
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
   z-index: 10;
-  
+
   &:before {
     position: absolute;
     top: -10px;
     left: 50%;
-    content: '';
+    content: "";
     transform: translateX(-50%);
     z-index: 11;
     width: 12px;
@@ -175,42 +174,42 @@ export const DropdownMenu = styled.ul`
 `;
 
 export const GroupToolBtn = styled.li`
-  padding: .6em 1.6em;
+  padding: 0.6em 1.6em;
   background-color: ${white};
   width: 100%;
   line-height: 1.5em;
-  transition: background-color .1s ease-in;
+  transition: background-color 0.1s ease-in;
   user-select: none;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start; 
+  justify-content: flex-start;
   position: relative;
   cursor: pointer;
   color: ${secondaryTextColor};
   box-shadow: none;
-  
+
   svg {
     color: ${secondaryTextColor};
     stroke: ${secondaryTextColor};
     fill: ${secondaryTextColor};
   }
-  
+
   &:hover {
     background-color: ${green};
     color: ${white};
-    
+
     svg {
       color: ${white};
       stroke: ${white};
       fill: ${white};
     }
   }
-  
+
   &.active {
     background-color: ${green};
     color: ${white};
-    
+
     svg {
       color: ${white};
       stroke: ${white};
@@ -220,17 +219,17 @@ export const GroupToolBtn = styled.li`
 `;
 
 export const DropdownArrowWrapper = styled.div`
-   position: absolute;
-   bottom: 2px;
-   left: 50%;
-   transform: translateX(-50%) rotate(90deg);
-   display: flex;
-   left: 50%;
-   align-items: center;
-   justify-content: center;
-   max-width: 12px;
-   max-height: 12px;
-   z-index: 11;
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%) rotate(90deg);
+  display: flex;
+  left: 50%;
+  align-items: center;
+  justify-content: center;
+  max-width: 12px;
+  max-height: 12px;
+  z-index: 11;
 `;
 
 export const Icon = styled.div`

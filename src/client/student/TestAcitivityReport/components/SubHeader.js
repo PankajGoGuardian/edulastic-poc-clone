@@ -1,13 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { Col } from 'antd';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { Col } from "antd";
 
-import Breadcrumb from '../../sharedComponents/Breadcrumb';
-import QuestionSelect from './QuestionSelect.js';
+import Breadcrumb from "../../sharedComponents/Breadcrumb";
+import QuestionSelect from "./QuestionSelect.js";
 
 const TestActivitySubHeader = ({ title }) => {
-  const breadcrumbData = [{ title: 'REPORTS', to: '' }, { title: title }];
+  const breadcrumbData = [{ title: "REPORTS", to: "" }, { title: title }];
   return (
     <Container>
       <BreadcrumbContainer>
@@ -27,7 +27,7 @@ TestActivitySubHeader.propTypes = {
 };
 
 TestActivitySubHeader.defaultProps = {
-  title: 'Test'
+  title: "Test"
 };
 
 const Container = styled.div`

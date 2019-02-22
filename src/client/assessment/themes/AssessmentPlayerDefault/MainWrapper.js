@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const MainWrapper = styled.section`
   width: 1008px;

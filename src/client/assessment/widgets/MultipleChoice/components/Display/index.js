@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import { QuestionHeader } from '../../../../styled/QuestionHeader';
+import { QuestionHeader } from "../../../../styled/QuestionHeader";
 
-import Options from './components/Options';
+import Options from "./components/Options";
 
 const Display = ({ qIndex, view, smallSize, question, uiStyle, ...restProps }) => (
   <div>
@@ -33,11 +33,11 @@ Display.defaultProps = {
   userSelections: [],
   smallSize: false,
   uiStyle: {
-    type: 'standard',
-    fontsize: 'normal',
+    type: "standard",
+    fontsize: "normal",
     columns: 1,
-    orientation: 'horizontal',
-    choice_label: 'number'
+    orientation: "horizontal",
+    choice_label: "number"
   }
 };
 

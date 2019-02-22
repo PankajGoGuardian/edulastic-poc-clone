@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { FaAngleDoubleRight } from 'react-icons/fa';
-import { greenDark } from '@edulastic/colors';
-import { withNamespaces } from '@edulastic/localization';
-import { IconHeart, IconShare } from '@edulastic/icons';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { FaAngleDoubleRight } from "react-icons/fa";
+import { greenDark } from "@edulastic/colors";
+import { withNamespaces } from "@edulastic/localization";
+import { IconHeart, IconShare } from "@edulastic/icons";
 import {
   Container,
   Inner,
@@ -17,8 +17,8 @@ import {
   Question,
   IconWrapper,
   IconText
-} from './styled';
-import Tags from '../../../src/components/common/Tags';
+} from "./styled";
+import Tags from "../../../src/components/common/Tags";
 
 class Item extends Component {
   static propTypes = {
@@ -41,14 +41,17 @@ class Item extends Component {
   }
 
   render() {
-    const { item: { title, tags, analytics }, t } = this.props;
+    const {
+      item: { title, tags, analytics },
+      t
+    } = this.props;
     return (
       <Container
-        title={(
+        title={
           <Header>
             <Stars />
           </Header>
-        )}
+        }
       >
         <Inner>
           <Question>
@@ -61,7 +64,7 @@ class Item extends Component {
         <Footer>
           <Author>
             <span>
-              {t('component.item.by')}
+              {t("component.item.by")}
               :&nbsp;
             </span>
             <AuthorName>{this.name}</AuthorName>
@@ -70,12 +73,12 @@ class Item extends Component {
             <IconWrapper>
               <IconHeart color={greenDark} width={16} height={16} />
               &nbsp;
-              { analytics && <IconText>{analytics.likes}</IconText> }
+              {analytics && <IconText>{analytics.likes}</IconText>}
             </IconWrapper>
             <IconWrapper>
               <IconShare color={greenDark} width={16} height={16} />
               &nbsp;
-              { analytics && <IconText>{analytics.usage}</IconText> }
+              {analytics && <IconText>{analytics.usage}</IconText>}
             </IconWrapper>
           </Icons>
         </Footer>
@@ -84,4 +87,4 @@ class Item extends Component {
   }
 }
 
-export default withNamespaces('author')(Item);
+export default withNamespaces("author")(Item);

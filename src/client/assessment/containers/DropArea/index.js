@@ -1,7 +1,7 @@
-import React, { useRef } from 'react';
-import { cloneDeep, get } from 'lodash';
-import PropTypes from 'prop-types';
-import Draggable from './components/Draggable';
+import React, { useRef } from "react";
+import { cloneDeep, get } from "lodash";
+import PropTypes from "prop-types";
+import Draggable from "./components/Draggable";
 
 const DropArea = ({ updateData, item }) => {
   const dropAreaRef = useRef();
@@ -20,7 +20,7 @@ const DropArea = ({ updateData, item }) => {
     updateData(newItem.responses);
   };
 
-  const _delete = index => (e) => {
+  const _delete = index => e => {
     e.stopPropagation();
     const newItem = cloneDeep(item);
     newItem.responses.splice(index, 1);
@@ -43,7 +43,7 @@ const DropArea = ({ updateData, item }) => {
     updateData(newItem.responses);
   };
 
-  const _addNew = (e) => {
+  const _addNew = e => {
     const isContainer = e.target === dropAreaRef.current;
 
     if (!isContainer) {
@@ -59,7 +59,7 @@ const DropArea = ({ updateData, item }) => {
     newResponseContainer.width = 150;
     newResponseContainer.height = 40;
     newResponseContainer.active = true;
-    newItem.responses = newItem.responses.map((res) => {
+    newItem.responses = newItem.responses.map(res => {
       res.active = false;
       return res;
     });
@@ -71,9 +71,9 @@ const DropArea = ({ updateData, item }) => {
     <div
       ref={dropAreaRef}
       style={{
-        height: '100%',
-        position: 'absolute',
-        cursor: 'crosshair',
+        height: "100%",
+        position: "absolute",
+        cursor: "crosshair",
         top: 0,
         left: 0,
         width: item.imageWidth || 600
@@ -86,7 +86,7 @@ const DropArea = ({ updateData, item }) => {
           key={i}
           index={i}
           background={item.background}
-          showDashedBorder={get(item, 'responseLayout.showdashedborder', false)}
+          showDashedBorder={get(item, "responseLayout.showdashedborder", false)}
           onDragStop={_dragStop(i)}
           onResize={_resize(i)}
           onDelete={_delete(i)}

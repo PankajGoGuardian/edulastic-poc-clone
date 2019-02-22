@@ -1,11 +1,8 @@
-import {
-  PREVIEW_UPDATE_LIST,
-  CHANGE_PREVIEW_TAB
-} from '../constants/actions';
+import { PREVIEW_UPDATE_LIST, CHANGE_PREVIEW_TAB } from "../constants/actions";
 
 const initialState = {
   list: [], // array of indexes,
-  previewTab: 'clear'
+  previewTab: "clear"
 };
 
 export default function reducer(state = initialState, { type, payload }) {

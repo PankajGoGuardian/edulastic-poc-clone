@@ -1,14 +1,14 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Button } from 'antd';
-import { white } from '@edulastic/colors';
-import PropTypes from 'prop-types';
-import { withNamespaces } from '@edulastic/localization';
+import React from "react";
+import styled from "styled-components";
+import { Button } from "antd";
+import { white } from "@edulastic/colors";
+import PropTypes from "prop-types";
+import { withNamespaces } from "@edulastic/localization";
 
 const AddNew = ({ onClick, t }) => (
   <Container>
     <Button icon="plus" type="primary" onClick={onClick}>
-      <span>{t('component.itemDetail.addNew')}</span>
+      <span>{t("component.itemDetail.addNew")}</span>
     </Button>
   </Container>
 );
@@ -18,7 +18,7 @@ AddNew.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default withNamespaces('author')(AddNew);
+export default withNamespaces("author")(AddNew);
 
 const Container = styled.div`
   .ant-btn-primary {

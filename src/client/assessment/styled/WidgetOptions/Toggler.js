@@ -1,13 +1,13 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Toggler = styled.div`
   position: relative;
   width: 18.9px;
   height: 18.9px;
   cursor: pointer;
-  
+
   ::before {
-    content: '';
+    content: "";
     background-color: ${props => props.theme.widgetOptions.togglerBgColor};
     position: absolute;
     width: 100%;
@@ -15,10 +15,10 @@ export const Toggler = styled.div`
     top: calc(50% - 1.5px);
     left: 0;
   }
-  
+
   ::after {
-    display: ${props => (props.isOpen ? 'none' : 'block')};
-    content: '';
+    display: ${props => (props.isOpen ? "none" : "block")};
+    content: "";
     background-color: ${props => props.theme.widgetOptions.togglerBgColor};
     position: absolute;
     width: 3px;
@@ -26,8 +26,8 @@ export const Toggler = styled.div`
     top: 0;
     left: calc(50% - 1.5px);
   }
-  
-  :hover {  
+
+  :hover {
     ::before {
       background-color: ${props => props.theme.widgetOptions.togglerBgHoverColor};
     }

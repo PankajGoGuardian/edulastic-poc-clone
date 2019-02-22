@@ -1,10 +1,10 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 // components
-import Breadcrumb from '../../sharedComponents/Breadcrumb';
+import Breadcrumb from "../../sharedComponents/Breadcrumb";
 
-const breadcrumbData = [{ title: 'MANAGE CLASS', to: '' }];
+const breadcrumbData = [{ title: "MANAGE CLASS", to: "" }];
 
 const ManageClassSubHeader = () => {
   return (

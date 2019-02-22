@@ -1,5 +1,5 @@
-import { createSelector } from 'reselect';
-import { get, groupBy, forEach } from 'lodash';
+import { createSelector } from "reselect";
+import { get, groupBy, forEach } from "lodash";
 
 export const stateSelector = state => state.author_assignments;
 

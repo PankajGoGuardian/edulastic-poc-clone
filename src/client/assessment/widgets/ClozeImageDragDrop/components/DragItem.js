@@ -1,6 +1,6 @@
-import React from 'react';
-import { DragSource } from 'react-dnd';
-import PropTypes from 'prop-types';
+import React from "react";
+import { DragSource } from "react-dnd";
+import PropTypes from "prop-types";
 
 function collectSource(connector, monitor) {
   return {
@@ -23,8 +23,8 @@ const specSource = {
     const itemCurrent = monitor.getItem();
 
     const itemTo = monitor.getDropResult();
-    const data = props.data || '';
-    let [, fromContainerIndex, fromRespIndex] = data.split('_');
+    const data = props.data || "";
+    let [, fromContainerIndex, fromRespIndex] = data.split("_");
 
     fromContainerIndex = parseInt(fromContainerIndex, 10);
     fromRespIndex = parseInt(fromRespIndex, 10);
@@ -67,4 +67,4 @@ DragItem.defaultProps = {
   data: null
 };
 
-export default DragSource('metal', specSource, collectSource)(DragItem);
+export default DragSource("metal", specSource, collectSource)(DragItem);

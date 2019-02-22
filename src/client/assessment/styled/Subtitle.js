@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Subtitle = styled.div`
   font-size: ${({ fontSize, theme }) => fontSize || theme.common.subtitleFontSize};
@@ -9,7 +9,7 @@ export const Subtitle = styled.div`
   letter-spacing: 0.3px;
   text-align: left;
   color: ${({ color, theme }) => color || theme.common.subtitleColor};
-  padding: ${({ padding }) => padding || '30px 0 16px 0'};
+  padding: ${({ padding }) => padding || "30px 0 16px 0"};
   @media screen {
     padding: 16px 0 16px 0;
   }

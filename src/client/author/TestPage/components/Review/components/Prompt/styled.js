@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { white } from '@edulastic/colors';
+import styled from "styled-components";
+import { white } from "@edulastic/colors";
 
 export const Container = styled.div`
   padding: 20px;

@@ -1,24 +1,23 @@
-import * as moment from 'moment';
-import { omit } from 'lodash';
-import { createReducer, createAction } from 'redux-starter-kit';
-import { assignmentApi } from '@edulastic/api';
-import { all, call, put, takeEvery, select } from 'redux-saga/effects';
-import { getTestSelector, getTestIdSelector } from '../../ducks';
-import { createSelector } from 'reselect';
-import { generateClassData, formatAssignment } from './utils';
-import { getStudentsSelector } from '../../../sharedDucks/groups';
+import * as moment from "moment";
+import { omit } from "lodash";
+import { createReducer, createAction } from "redux-starter-kit";
+import { assignmentApi } from "@edulastic/api";
+import { all, call, put, takeEvery, select } from "redux-saga/effects";
+import { getTestSelector, getTestIdSelector } from "../../ducks";
+import { createSelector } from "reselect";
+import { generateClassData, formatAssignment } from "./utils";
+import { getStudentsSelector } from "../../../sharedDucks/groups";
 // constants
 
-export const SAVE_ASSIGNMENT = '[assignments] save assignment';
-export const SET_ASSIGNMENT = '[assignments] set assignment';
-export const UPDATE_ASSIGNMENT = '[assignments] update assignment';
-export const UPDATE_SET_ASSIGNMENT = '[assignments] update set assingment';
-export const FETCH_ASSIGNMENTS = '[assignments] fetch assignments';
-export const LOAD_ASSIGNMENTS = '[assignments] load assignments';
-export const DELETE_ASSIGNMENT = '[assignments] delete assignment';
-export const REMOVE_ASSIGNMENT = '[assignments] remove assignment';
-export const SET_CURRENT_ASSIGNMENT =
-  '[assignments] set current editing assignment';
+export const SAVE_ASSIGNMENT = "[assignments] save assignment";
+export const SET_ASSIGNMENT = "[assignments] set assignment";
+export const UPDATE_ASSIGNMENT = "[assignments] update assignment";
+export const UPDATE_SET_ASSIGNMENT = "[assignments] update set assingment";
+export const FETCH_ASSIGNMENTS = "[assignments] fetch assignments";
+export const LOAD_ASSIGNMENTS = "[assignments] load assignments";
+export const DELETE_ASSIGNMENT = "[assignments] delete assignment";
+export const REMOVE_ASSIGNMENT = "[assignments] remove assignment";
+export const SET_CURRENT_ASSIGNMENT = "[assignments] set current editing assignment";
 
 // actions
 export const setAssignmentAction = createAction(SET_ASSIGNMENT);
@@ -32,7 +31,7 @@ export const removeAssignmentsAction = createAction(REMOVE_ASSIGNMENT);
 const initialState = {
   isLoading: false,
   assignments: [],
-  current: '' // id of the current one being edited
+  current: "" // id of the current one being edited
 };
 
 const setAssignment = (state, { payload }) => {
@@ -74,26 +73,25 @@ export const reducer = createReducer(initialState, {
 });
 
 // selectors
-const module = 'authorTestAssignments';
+const module = "authorTestAssignments";
 const currentSelector = state => state[module].current;
 
-export const getAssignmentsSelector = state =>
-  state[module].isLoading ? [] : state[module].assignments;
+export const getAssignmentsSelector = state => (state[module].isLoading ? [] : state[module].assignments);
 
 export const getCurrentAssignmentSelector = createSelector(
   currentSelector,
   getAssignmentsSelector,
 
   (current, assignments) => {
-    if (current && current !== 'new') {
+    if (current && current !== "new") {
       let assignment = assignments.filter(item => item._id == current)[0];
       return assignment;
     }
     return {
       startDate: moment(),
       endDate: moment(),
-      openPolicy: 'Automatically on Start Date',
-      closePolicy: 'Automatically on Due Date',
+      openPolicy: "Automatically on Start Date",
+      closePolicy: "Automatically on Due Date",
       class: [],
       specificStudents: false
     };
@@ -106,12 +104,7 @@ function* saveAssignment({ payload }) {
     let classData;
     const studentsList = yield select(getStudentsSelector);
     const testId = yield select(getTestIdSelector);
-    classData = generateClassData(
-      payload.class,
-      payload.students,
-      studentsList,
-      payload.specificStudents
-    );
+    classData = generateClassData(payload.class, payload.students, studentsList, payload.specificStudents);
 
     // if no class is selected dont bother sending a request.
     if (!classData.length) {
@@ -129,16 +122,14 @@ function* saveAssignment({ payload }) {
         endDate,
         testId
       },
-      ['_id', '__v', 'createdAt', 'updatedAt']
+      ["_id", "__v", "createdAt", "updatedAt"]
     );
     let isUpdate = !!payload._id;
 
     const result = isUpdate
       ? yield call(assignmentApi.update, payload._id, data)
       : yield call(assignmentApi.create, [data]);
-    const assignment = isUpdate
-      ? formatAssignment(result)
-      : formatAssignment(result[0]);
+    const assignment = isUpdate ? formatAssignment(result) : formatAssignment(result[0]);
 
     yield put(setAssignmentAction(assignment));
   } catch (err) {

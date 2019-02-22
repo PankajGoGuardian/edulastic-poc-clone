@@ -1,8 +1,8 @@
-import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-import { Checkbox, Select } from '@edulastic/common';
+import React, { Component, Fragment } from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
+import { Checkbox, Select } from "@edulastic/common";
 import {
   MoreOptionsContainer,
   MoreOptionsColumn,
@@ -13,10 +13,9 @@ import {
   MoreOptionsRow,
   MoreOptionsRowInline,
   MoreOptionsSubHeading
-} from '../../../common/styled_components';
-import { GraphDisplay } from '../../../Display';
-import { QuestionSection } from '../../';
-
+} from "../../../common/styled_components";
+import { GraphDisplay } from "../../../Display";
+import { QuestionSection } from "../../";
 
 class QuadrantsMoreOptions extends Component {
   handleCheckbox = (name, checked) => {
@@ -25,8 +24,10 @@ class QuadrantsMoreOptions extends Component {
     setOptions({ ...ui_style, [name]: !checked });
   };
 
-  handleInputChange = (event) => {
-    const { target: { name, value } } = event;
+  handleInputChange = event => {
+    const {
+      target: { name, value }
+    } = event;
     const { graphData, setOptions } = this.props;
     const { ui_style } = graphData;
     setOptions({ ...ui_style, [name]: value });
@@ -44,28 +45,19 @@ class QuadrantsMoreOptions extends Component {
     setBgImg({ ...background_image, [name]: !checked });
   };
 
-  handleBgImgInputChange = (event) => {
-    const { target: { name, value } } = event;
+  handleBgImgInputChange = event => {
+    const {
+      target: { name, value }
+    } = event;
     const { graphData, setBgImg } = this.props;
     const { background_image } = graphData;
     setBgImg({ ...background_image, [name]: value });
   };
 
   render() {
-    const {
-      t,
-      graphData,
-      stemNumerationList,
-      fontSizeList,
-      setBgShapes,
-      fillSections,
-      cleanSections
-    } = this.props;
+    const { t, graphData, stemNumerationList, fontSizeList, setBgShapes, fillSections, cleanSections } = this.props;
 
-    const {
-      ui_style,
-      background_image
-    } = graphData;
+    const { ui_style, background_image } = graphData;
 
     const {
       drawLabelZero,
@@ -100,16 +92,12 @@ class QuadrantsMoreOptions extends Component {
       <Fragment>
         <QuestionSection section="advanced" label="LAYOUT" cleanSections={cleanSections} fillSections={fillSections}>
           <MoreOptionsContainer>
-            <MoreOptionsSubHeading>
-              {t('component.graphing.layoutoptionstitle')}
-            </MoreOptionsSubHeading>
+            <MoreOptionsSubHeading>{t("component.graphing.layoutoptionstitle")}</MoreOptionsSubHeading>
 
             <MoreOptionsColumnContainer>
               <MoreOptionsColumn>
                 <MoreOptionsRow>
-                  <MoreOptionsLabel>
-                    {t('component.graphing.layoutoptions.width')}
-                  </MoreOptionsLabel>
+                  <MoreOptionsLabel>{t("component.graphing.layoutoptions.width")}</MoreOptionsLabel>
                   <MoreOptionsInput
                     type="text"
                     defaultValue="600"
@@ -119,9 +107,7 @@ class QuadrantsMoreOptions extends Component {
                   />
                 </MoreOptionsRow>
                 <MoreOptionsRow>
-                  <MoreOptionsLabel>
-                    {t('component.graphing.layoutoptions.margin')}
-                  </MoreOptionsLabel>
+                  <MoreOptionsLabel>{t("component.graphing.layoutoptions.margin")}</MoreOptionsLabel>
                   <MoreOptionsInput
                     type="text"
                     defaultValue="0"
@@ -130,21 +116,19 @@ class QuadrantsMoreOptions extends Component {
                     onChange={this.handleInputChange}
                   />
                 </MoreOptionsRow>
-                <MoreOptionsRow style={{ marginTop: '16px' }}>
+                <MoreOptionsRow style={{ marginTop: "16px" }}>
                   <Checkbox
-                    label={t('component.graphing.layoutoptions.drawLabelzero')}
+                    label={t("component.graphing.layoutoptions.drawLabelzero")}
                     name="drawLabelZero"
-                    onChange={() => this.handleCheckbox('drawLabelZero', drawLabelZero)}
+                    onChange={() => this.handleCheckbox("drawLabelZero", drawLabelZero)}
                     checked={drawLabelZero}
                   />
                 </MoreOptionsRow>
                 <MoreOptionsRow>
-                  <MoreOptionsLabel>
-                    {t('component.graphing.layoutoptions.stemNumeration')}
-                  </MoreOptionsLabel>
+                  <MoreOptionsLabel>{t("component.graphing.layoutoptions.stemNumeration")}</MoreOptionsLabel>
                   <Select
-                    style={{ width: '77%', marginTop: '11px' }}
-                    onChange={val => this.handleSelect('currentStemNum', val)}
+                    style={{ width: "77%", marginTop: "11px" }}
+                    onChange={val => this.handleSelect("currentStemNum", val)}
                     options={stemNumerationList}
                     value={currentStemNum}
                   />
@@ -153,9 +137,7 @@ class QuadrantsMoreOptions extends Component {
 
               <MoreOptionsColumn>
                 <MoreOptionsRow>
-                  <MoreOptionsLabel>
-                    {t('component.graphing.layoutoptions.height')}
-                  </MoreOptionsLabel>
+                  <MoreOptionsLabel>{t("component.graphing.layoutoptions.height")}</MoreOptionsLabel>
                   <MoreOptionsInput
                     type="text"
                     defaultValue="600"
@@ -165,9 +147,7 @@ class QuadrantsMoreOptions extends Component {
                   />
                 </MoreOptionsRow>
                 <MoreOptionsRow>
-                  <MoreOptionsLabel>
-                    {t('component.graphing.layoutoptions.snapTo')}
-                  </MoreOptionsLabel>
+                  <MoreOptionsLabel>{t("component.graphing.layoutoptions.snapTo")}</MoreOptionsLabel>
                   <MoreOptionsInput
                     type="text"
                     defaultValue="grid"
@@ -176,21 +156,19 @@ class QuadrantsMoreOptions extends Component {
                     onChange={this.handleInputChange}
                   />
                 </MoreOptionsRow>
-                <MoreOptionsRow style={{ marginTop: '16px' }}>
+                <MoreOptionsRow style={{ marginTop: "16px" }}>
                   <Checkbox
-                    label={t('component.graphing.layoutoptions.displayPositionOnHover')}
+                    label={t("component.graphing.layoutoptions.displayPositionOnHover")}
                     name="displayPositionOnHover"
-                    onChange={() => this.handleCheckbox('displayPositionOnHover', displayPositionOnHover)}
+                    onChange={() => this.handleCheckbox("displayPositionOnHover", displayPositionOnHover)}
                     checked={displayPositionOnHover}
                   />
                 </MoreOptionsRow>
                 <MoreOptionsRow>
-                  <MoreOptionsLabel>
-                    {t('component.graphing.layoutoptions.fontSize')}
-                  </MoreOptionsLabel>
+                  <MoreOptionsLabel>{t("component.graphing.layoutoptions.fontSize")}</MoreOptionsLabel>
                   <Select
-                    style={{ width: '77%', marginTop: '11px' }}
-                    onChange={val => this.handleSelect('currentFontSize', val)}
+                    style={{ width: "77%", marginTop: "11px" }}
+                    onChange={val => this.handleSelect("currentFontSize", val)}
                     options={fontSizeList}
                     value={currentFontSize}
                   />
@@ -202,16 +180,12 @@ class QuadrantsMoreOptions extends Component {
 
         <QuestionSection section="advanced" label="GRID" cleanSections={cleanSections} fillSections={fillSections}>
           <MoreOptionsContainer>
-            <MoreOptionsSubHeading>
-              {t('component.graphing.grid_options.grid')}
-            </MoreOptionsSubHeading>
+            <MoreOptionsSubHeading>{t("component.graphing.grid_options.grid")}</MoreOptionsSubHeading>
 
             <MoreOptionsColumnContainer>
               <MoreOptionsColumn>
                 <MoreOptionsRow>
-                  <MoreOptionsLabel>
-                    {t('component.graphing.grid_options.axis_x')}
-                  </MoreOptionsLabel>
+                  <MoreOptionsLabel>{t("component.graphing.grid_options.axis_x")}</MoreOptionsLabel>
                 </MoreOptionsRow>
                 <MoreOptionsRowInline>
                   <MoreOptionsInputSmall
@@ -221,8 +195,8 @@ class QuadrantsMoreOptions extends Component {
                     value={xDistance}
                     onChange={this.handleInputChange}
                   />
-                  <MoreOptionsLabel style={{ marginLeft: '29px' }}>
-                    {t('component.graphing.grid_options.x_distance')}
+                  <MoreOptionsLabel style={{ marginLeft: "29px" }}>
+                    {t("component.graphing.grid_options.x_distance")}
                   </MoreOptionsLabel>
                 </MoreOptionsRowInline>
                 <MoreOptionsRowInline>
@@ -232,70 +206,68 @@ class QuadrantsMoreOptions extends Component {
                     value={xTickDistance}
                     onChange={this.handleInputChange}
                   />
-                  <MoreOptionsLabel style={{ marginLeft: '29px' }}>
-                    {t('component.graphing.grid_options.tick_distance')}
+                  <MoreOptionsLabel style={{ marginLeft: "29px" }}>
+                    {t("component.graphing.grid_options.tick_distance")}
                   </MoreOptionsLabel>
                 </MoreOptionsRowInline>
 
-                <MoreOptionsRow style={{ marginTop: '40px' }}>
+                <MoreOptionsRow style={{ marginTop: "40px" }}>
                   <Checkbox
-                    label={t('component.graphing.grid_options.show_axis_label')}
+                    label={t("component.graphing.grid_options.show_axis_label")}
                     name="drawLabelZero"
-                    onChange={() => this.handleCheckbox('xShowAxisLabel', xShowAxisLabel)}
+                    onChange={() => this.handleCheckbox("xShowAxisLabel", xShowAxisLabel)}
                     checked={xShowAxisLabel}
                   />
                 </MoreOptionsRow>
-                {
-                  xShowAxisLabel && (
-                    <MoreOptionsRow style={{ marginTop: '16px' }}>
-                      <MoreOptionsInput
-                        type="text"
-                        defaultValue="X"
-                        style={{ width: '7em', marginTop: 0 }}
-                        name="xAxisLabel"
-                        value={xAxisLabel}
-                        onChange={this.handleInputChange}
-                      />
-                    </MoreOptionsRow>
-                  )
-                }
-                <MoreOptionsRow style={{ marginTop: '40px' }}>
+                {xShowAxisLabel && (
+                  <MoreOptionsRow style={{ marginTop: "16px" }}>
+                    <MoreOptionsInput
+                      type="text"
+                      defaultValue="X"
+                      style={{ width: "7em", marginTop: 0 }}
+                      name="xAxisLabel"
+                      value={xAxisLabel}
+                      onChange={this.handleInputChange}
+                    />
+                  </MoreOptionsRow>
+                )}
+                <MoreOptionsRow style={{ marginTop: "40px" }}>
                   <Checkbox
-                    label={t('component.graphing.grid_options.hide_ticks')}
+                    label={t("component.graphing.grid_options.hide_ticks")}
                     name="drawLabelZero"
-                    onChange={() => this.handleCheckbox('xHideTicks', xHideTicks)}
+                    onChange={() => this.handleCheckbox("xHideTicks", xHideTicks)}
                     checked={xHideTicks}
                   />
                 </MoreOptionsRow>
-                <MoreOptionsRow style={{ marginTop: '40px' }}>
+                <MoreOptionsRow style={{ marginTop: "40px" }}>
                   <Checkbox
-                    label={t('component.graphing.grid_options.draw_label')}
+                    label={t("component.graphing.grid_options.draw_label")}
                     name="drawLabelZero"
-                    onChange={() => this.handleCheckbox('xDrawLabel', xDrawLabel)}
+                    onChange={() => this.handleCheckbox("xDrawLabel", xDrawLabel)}
                     checked={xDrawLabel}
                   />
                 </MoreOptionsRow>
-                <MoreOptionsRow style={{ marginTop: '40px' }}>
+                <MoreOptionsRow style={{ marginTop: "40px" }}>
                   <Checkbox
-                    label={t('component.graphing.grid_options.min_arrow')}
+                    label={t("component.graphing.grid_options.min_arrow")}
                     name="drawLabelZero"
-                    onChange={() => this.handleCheckbox('xMinArrow', xMinArrow)}
+                    onChange={() => this.handleCheckbox("xMinArrow", xMinArrow)}
                     checked={xMinArrow}
                   />
                 </MoreOptionsRow>
-                <MoreOptionsRow style={{ marginTop: '40px' }}>
+                <MoreOptionsRow style={{ marginTop: "40px" }}>
                   <Checkbox
-                    label={t('component.graphing.grid_options.max_arrow')}
+                    label={t("component.graphing.grid_options.max_arrow")}
                     name="drawLabelZero"
-                    onChange={() => this.handleCheckbox('xMaxArrow', xMaxArrow)}
+                    onChange={() => this.handleCheckbox("xMaxArrow", xMaxArrow)}
                     checked={xMaxArrow}
                   />
                 </MoreOptionsRow>
-                <MoreOptionsRow style={{ marginTop: '40px' }}>
+                <MoreOptionsRow style={{ marginTop: "40px" }}>
                   <Checkbox
-                    label={t('component.graphing.grid_options.comma_in_label')}
+                    label={t("component.graphing.grid_options.comma_in_label")}
                     name="drawLabelZero"
-                    onChange={() => this.handleCheckbox('xCommaInLabel', xCommaInLabel)}
+                    onChange={() => this.handleCheckbox("xCommaInLabel", xCommaInLabel)}
                     checked={xCommaInLabel}
                   />
                 </MoreOptionsRow>
@@ -303,94 +275,90 @@ class QuadrantsMoreOptions extends Component {
 
               <MoreOptionsColumn>
                 <MoreOptionsRow>
-                  <MoreOptionsLabel>
-                    {t('component.graphing.grid_options.axis_y')}
-                  </MoreOptionsLabel>
+                  <MoreOptionsLabel>{t("component.graphing.grid_options.axis_y")}</MoreOptionsLabel>
                 </MoreOptionsRow>
                 <MoreOptionsRowInline>
                   <MoreOptionsInputSmall
                     type="number"
                     defaultValue="1"
-                    style={{ width: '7em', marginTop: 0 }}
+                    style={{ width: "7em", marginTop: 0 }}
                     name="yDistance"
                     value={yDistance}
                     onChange={this.handleInputChange}
                   />
-                  <MoreOptionsLabel style={{ marginLeft: '29px' }}>
-                    {t('component.graphing.grid_options.y_distance')}
+                  <MoreOptionsLabel style={{ marginLeft: "29px" }}>
+                    {t("component.graphing.grid_options.y_distance")}
                   </MoreOptionsLabel>
                 </MoreOptionsRowInline>
                 <MoreOptionsRowInline>
                   <MoreOptionsInputSmall
                     type="number"
-                    style={{ width: '7em', marginTop: 0 }}
+                    style={{ width: "7em", marginTop: 0 }}
                     name="yTickDistance"
                     value={yTickDistance}
                     onChange={this.handleInputChange}
                   />
-                  <MoreOptionsLabel style={{ marginLeft: '29px' }}>
-                    {t('component.graphing.grid_options.tick_distance')}
+                  <MoreOptionsLabel style={{ marginLeft: "29px" }}>
+                    {t("component.graphing.grid_options.tick_distance")}
                   </MoreOptionsLabel>
                 </MoreOptionsRowInline>
-                <MoreOptionsRow style={{ marginTop: '40px' }}>
+                <MoreOptionsRow style={{ marginTop: "40px" }}>
                   <Checkbox
-                    label={t('component.graphing.grid_options.show_axis_label')}
+                    label={t("component.graphing.grid_options.show_axis_label")}
                     name="drawLabelZero"
-                    onChange={() => this.handleCheckbox('yShowAxisLabel', yShowAxisLabel)}
+                    onChange={() => this.handleCheckbox("yShowAxisLabel", yShowAxisLabel)}
                     checked={yShowAxisLabel}
                   />
                 </MoreOptionsRow>
-                {
-                  yShowAxisLabel && (
-                    <MoreOptionsRow style={{ marginTop: '16px' }}>
-                      <MoreOptionsInput
-                        type="text"
-                        defaultValue="X"
-                        style={{ width: '7em', marginTop: 0 }}
-                        name="yAxisLabel"
-                        value={yAxisLabel}
-                        onChange={this.handleInputChange}
-                      />
-                    </MoreOptionsRow>
-                  )
-                }
-                <MoreOptionsRow style={{ marginTop: '40px' }}>
+                {yShowAxisLabel && (
+                  <MoreOptionsRow style={{ marginTop: "16px" }}>
+                    <MoreOptionsInput
+                      type="text"
+                      defaultValue="X"
+                      style={{ width: "7em", marginTop: 0 }}
+                      name="yAxisLabel"
+                      value={yAxisLabel}
+                      onChange={this.handleInputChange}
+                    />
+                  </MoreOptionsRow>
+                )}
+                <MoreOptionsRow style={{ marginTop: "40px" }}>
                   <Checkbox
-                    label={t('component.graphing.grid_options.hide_ticks')}
+                    label={t("component.graphing.grid_options.hide_ticks")}
                     name="drawLabelZero"
-                    onChange={() => this.handleCheckbox('yHideTicks', yHideTicks)}
+                    onChange={() => this.handleCheckbox("yHideTicks", yHideTicks)}
                     checked={yHideTicks}
                   />
                 </MoreOptionsRow>
-                <MoreOptionsRow style={{ marginTop: '40px' }}>
+                <MoreOptionsRow style={{ marginTop: "40px" }}>
                   <Checkbox
-                    label={t('component.graphing.grid_options.draw_label')}
+                    label={t("component.graphing.grid_options.draw_label")}
                     name="drawLabelZero"
-                    onChange={() => this.handleCheckbox('yDrawLabel', yDrawLabel)}
+                    onChange={() => this.handleCheckbox("yDrawLabel", yDrawLabel)}
                     checked={yDrawLabel}
                   />
                 </MoreOptionsRow>
-                <MoreOptionsRow style={{ marginTop: '40px' }}>
+                <MoreOptionsRow style={{ marginTop: "40px" }}>
                   <Checkbox
-                    label={t('component.graphing.grid_options.min_arrow')}
+                    label={t("component.graphing.grid_options.min_arrow")}
                     name="drawLabelZero"
-                    onChange={() => this.handleCheckbox('yMinArrow', yMinArrow)}
+                    onChange={() => this.handleCheckbox("yMinArrow", yMinArrow)}
                     checked={yMinArrow}
                   />
                 </MoreOptionsRow>
-                <MoreOptionsRow style={{ marginTop: '40px' }}>
+                <MoreOptionsRow style={{ marginTop: "40px" }}>
                   <Checkbox
-                    label={t('component.graphing.grid_options.max_arrow')}
+                    label={t("component.graphing.grid_options.max_arrow")}
                     name="drawLabelZero"
-                    onChange={() => this.handleCheckbox('yMaxArrow', yMaxArrow)}
+                    onChange={() => this.handleCheckbox("yMaxArrow", yMaxArrow)}
                     checked={yMaxArrow}
                   />
                 </MoreOptionsRow>
-                <MoreOptionsRow style={{ marginTop: '40px' }}>
+                <MoreOptionsRow style={{ marginTop: "40px" }}>
                   <Checkbox
-                    label={t('component.graphing.grid_options.comma_in_label')}
+                    label={t("component.graphing.grid_options.comma_in_label")}
                     name="drawLabelZero"
-                    onChange={() => this.handleCheckbox('yCommaInLabel', yCommaInLabel)}
+                    onChange={() => this.handleCheckbox("yCommaInLabel", yCommaInLabel)}
                     checked={yCommaInLabel}
                   />
                 </MoreOptionsRow>
@@ -399,17 +367,18 @@ class QuadrantsMoreOptions extends Component {
           </MoreOptionsContainer>
         </QuestionSection>
 
-        <QuestionSection  section="advanced" label="BACKGROUND IMAGE" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="advanced"
+          label="BACKGROUND IMAGE"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+        >
           <MoreOptionsContainer>
-            <MoreOptionsSubHeading>
-              {t('component.graphing.background_options.background_image')}
-            </MoreOptionsSubHeading>
+            <MoreOptionsSubHeading>{t("component.graphing.background_options.background_image")}</MoreOptionsSubHeading>
             <MoreOptionsRow>
-              <MoreOptionsLabel>
-                {t('component.graphing.background_options.image_url')}
-              </MoreOptionsLabel>
+              <MoreOptionsLabel>{t("component.graphing.background_options.image_url")}</MoreOptionsLabel>
               <MoreOptionsInput
-                style={{ width: '88.5%' }}
+                style={{ width: "88.5%" }}
                 type="text"
                 defaultValue=""
                 name="src"
@@ -420,9 +389,7 @@ class QuadrantsMoreOptions extends Component {
             <MoreOptionsColumnContainer>
               <MoreOptionsColumn>
                 <MoreOptionsRow>
-                  <MoreOptionsLabel>
-                    {t('component.graphing.background_options.height')}
-                  </MoreOptionsLabel>
+                  <MoreOptionsLabel>{t("component.graphing.background_options.height")}</MoreOptionsLabel>
                   <MoreOptionsInput
                     type="text"
                     defaultValue=""
@@ -433,7 +400,7 @@ class QuadrantsMoreOptions extends Component {
                 </MoreOptionsRow>
                 <MoreOptionsRow>
                   <MoreOptionsLabel>
-                    {t('component.graphing.background_options.x_axis_image_position')}
+                    {t("component.graphing.background_options.x_axis_image_position")}
                   </MoreOptionsLabel>
                   <MoreOptionsInput
                     type="text"
@@ -444,9 +411,7 @@ class QuadrantsMoreOptions extends Component {
                   />
                 </MoreOptionsRow>
                 <MoreOptionsRow>
-                  <MoreOptionsLabel>
-                    {t('component.graphing.background_options.opacity')}
-                  </MoreOptionsLabel>
+                  <MoreOptionsLabel>{t("component.graphing.background_options.opacity")}</MoreOptionsLabel>
                   <MoreOptionsInput
                     type="text"
                     defaultValue=""
@@ -458,9 +423,7 @@ class QuadrantsMoreOptions extends Component {
               </MoreOptionsColumn>
               <MoreOptionsColumn>
                 <MoreOptionsRow>
-                  <MoreOptionsLabel>
-                    {t('component.graphing.background_options.width')}
-                  </MoreOptionsLabel>
+                  <MoreOptionsLabel>{t("component.graphing.background_options.width")}</MoreOptionsLabel>
                   <MoreOptionsInput
                     type="text"
                     defaultValue=""
@@ -471,7 +434,7 @@ class QuadrantsMoreOptions extends Component {
                 </MoreOptionsRow>
                 <MoreOptionsRow>
                   <MoreOptionsLabel>
-                    {t('component.graphing.background_options.y_axis_image_position')}
+                    {t("component.graphing.background_options.y_axis_image_position")}
                   </MoreOptionsLabel>
                   <MoreOptionsInput
                     type="text"
@@ -481,11 +444,11 @@ class QuadrantsMoreOptions extends Component {
                     onChange={this.handleBgImgInputChange}
                   />
                 </MoreOptionsRow>
-                <MoreOptionsRow style={{ marginTop: '58px' }}>
+                <MoreOptionsRow style={{ marginTop: "58px" }}>
                   <Checkbox
-                    label={t('component.graphing.background_options.show_bg_shape_points')}
+                    label={t("component.graphing.background_options.show_bg_shape_points")}
                     name="showShapePoints"
-                    onChange={() => this.handleBgImgCheckbox('showShapePoints', background_image.showShapePoints)}
+                    onChange={() => this.handleBgImgCheckbox("showShapePoints", background_image.showShapePoints)}
                     checked={background_image.showShapePoints}
                   />
                 </MoreOptionsRow>
@@ -494,11 +457,14 @@ class QuadrantsMoreOptions extends Component {
           </MoreOptionsContainer>
         </QuestionSection>
 
-        <QuestionSection  section="advanced" label="BACKGROUND SHAPES" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="advanced"
+          label="BACKGROUND SHAPES"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+        >
           <MoreOptionsContainer>
-            <MoreOptionsSubHeading>
-              {t('component.graphing.background_shapes')}
-            </MoreOptionsSubHeading>
+            <MoreOptionsSubHeading>{t("component.graphing.background_shapes")}</MoreOptionsSubHeading>
             <MoreOptionsRow>
               <GraphDisplay
                 graphData={graphData}
@@ -525,8 +491,6 @@ QuadrantsMoreOptions.propTypes = {
   setBgShapes: PropTypes.func.isRequired
 };
 
-const enhance = compose(
-  withNamespaces('assessment'),
-);
+const enhance = compose(withNamespaces("assessment"));
 
 export default enhance(QuadrantsMoreOptions);

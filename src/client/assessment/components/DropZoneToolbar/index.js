@@ -1,35 +1,35 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import { withNamespaces } from '@edulastic/localization';
+import { withNamespaces } from "@edulastic/localization";
 
-import { Container } from './styled/Container';
-import LargeInput from './components/LargeInput';
+import { Container } from "./styled/Container";
+import LargeInput from "./components/LargeInput";
 
 const DropZoneToolbar = ({ width, height, altText, handleChange, t }) => (
   <Container childMarginRight={40}>
     <LargeInput
       type="number"
-      label={t('component.hotspot.widthLabel')}
+      label={t("component.hotspot.widthLabel")}
       value={width}
       marginRight={15}
-      onChange={handleChange('width')}
+      onChange={handleChange("width")}
     />
     <LargeInput
       type="number"
-      label={t('component.hotspot.heightLabel')}
+      label={t("component.hotspot.heightLabel")}
       value={height}
       marginRight={15}
-      onChange={handleChange('height')}
+      onChange={handleChange("height")}
     />
     <LargeInput
       type="text"
       textAlign="left"
       marginRight={15}
       width={245}
-      label={t('component.hotspot.altTextLabel')}
+      label={t("component.hotspot.altTextLabel")}
       value={altText}
-      onChange={handleChange('altText')}
+      onChange={handleChange("altText")}
     />
   </Container>
 );
@@ -42,4 +42,4 @@ DropZoneToolbar.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default withNamespaces('assessment')(DropZoneToolbar);
+export default withNamespaces("assessment")(DropZoneToolbar);

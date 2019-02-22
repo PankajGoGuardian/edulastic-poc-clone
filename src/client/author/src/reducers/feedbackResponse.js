@@ -2,8 +2,7 @@ import {
   RECEIVE_FEEDBACK_RESPONSE_REQUEST,
   RECEIVE_FEEDBACK_RESPONSE_SUCCESS,
   RECEIVE_FEEDBACK_RESPONSE_ERROR
-} from '../constants/actions';
-
+} from "../constants/actions";
 
 const initialState = {
   data: {},

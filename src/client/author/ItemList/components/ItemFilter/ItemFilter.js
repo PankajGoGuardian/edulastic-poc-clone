@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Button, Affix, Col } from 'antd';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Button, Affix, Col } from "antd";
+import PerfectScrollbar from "react-perfect-scrollbar";
 import {
   Container,
   Title,
@@ -19,17 +19,17 @@ import {
   StyledModalTitle,
   TextFieldSearch,
   TextFieldStyled
-} from './styled';
-import TestFiltersNav from '../../../src/components/common/TestFilters/TestFiltersNav';
-import Search from '../Search/Search';
-import { SMALL_DESKTOP_WIDTH, MAX_MOBILE_WIDTH } from '../../../src/constants/others';
+} from "./styled";
+import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
+import Search from "../Search/Search";
+import { SMALL_DESKTOP_WIDTH, MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 
 const items = [
-  { icon: 'book', key: 'library', text: 'Entire Library' },
-  { icon: 'folder', key: 'byMe', text: 'Authored by me' },
-  { icon: 'copy', key: 'coAuthor', text: 'I am a Co-Author' },
-  { icon: 'reload', key: 'previously', text: 'Previously Used' },
-  { icon: 'heart', key: 'favorites', text: 'My Favorites' }
+  { icon: "book", key: "library", text: "Entire Library" },
+  { icon: "folder", key: "byMe", text: "Authored by me" },
+  { icon: "copy", key: "coAuthor", text: "I am a Co-Author" },
+  { icon: "reload", key: "previously", text: "Previously Used" },
+  { icon: "heart", key: "favorites", text: "My Favorites" }
 ];
 
 class ItemFilter extends Component {
@@ -45,7 +45,7 @@ class ItemFilter extends Component {
     this.setState({ isShowFilter: false });
   };
 
-  handleStandardSearch = (searchStr) => {
+  handleStandardSearch = searchStr => {
     const {
       getCurriculumStandards,
       search: { grades, curriculumId }
@@ -58,7 +58,7 @@ class ItemFilter extends Component {
   renderFullTextSearch = () => {
     const { onSearch, windowWidth } = this.props;
     const { isShowFilter } = this.state;
-    const placeholder = 'Search by skills and keywords';
+    const placeholder = "Search by skills and keywords";
 
     const desktopSearch = (
       <Header>
@@ -74,9 +74,7 @@ class ItemFilter extends Component {
           </Col>
           <Col span={6}>
             <FilterButton>
-              <Button onClick={this.showFilterHandler}>
-                {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
-              </Button>
+              <Button onClick={this.showFilterHandler}>{!isShowFilter ? "SHOW FILTERS" : "HIDE FILTERS"}</Button>
             </FilterButton>
           </Col>
         </HeaderRow>
@@ -84,7 +82,7 @@ class ItemFilter extends Component {
     );
 
     const mobileSearch = (
-      <Header style={{ padding: '0 25px' }}>
+      <Header style={{ padding: "0 25px" }}>
         <SearchField>
           <TextFieldStyled
             onChange={e => onSearch(e.target.value)}
@@ -96,11 +94,8 @@ class ItemFilter extends Component {
           />
         </SearchField>
         <FilterButton>
-          <Button
-            style={{ height: '50px', borderRadius: '4px' }}
-            onClick={() => this.showFilterHandler()}
-          >
-            {!isShowFilter ? 'SHOW FILTERS' : 'HIDE FILTERS'}
+          <Button style={{ height: "50px", borderRadius: "4px" }} onClick={() => this.showFilterHandler()}>
+            {!isShowFilter ? "SHOW FILTERS" : "HIDE FILTERS"}
           </Button>
         </FilterButton>
       </Header>
@@ -110,24 +105,13 @@ class ItemFilter extends Component {
   };
 
   render() {
-    const {
-      windowWidth,
-      onClearSearch,
-      search,
-      curriculums,
-      onSearchFieldChange,
-      curriculumStandards
-    } = this.props;
+    const { windowWidth, onClearSearch, search, curriculums, onSearchFieldChange, curriculumStandards } = this.props;
     const { isShowFilter } = this.state;
 
     return (
       <Container>
         <FixedFilters>
-          <StyledModal
-            open={isShowFilter}
-            onClose={this.closeSearchModal}
-            center
-          >
+          <StyledModal open={isShowFilter} onClose={this.closeSearchModal} center>
             <StyledModalContainer>
               <StyledModalTitle>Filters</StyledModalTitle>
               <Search
@@ -148,9 +132,7 @@ class ItemFilter extends Component {
                     <Title>Filters</Title>
                     <Clear onClick={onClearSearch}>Clear all</Clear>
                   </MainFilterHeader>
-                  <TestFiltersNav
-                    items={items}
-                  />
+                  <TestFiltersNav items={items} />
                   <Search
                     search={search}
                     curriculums={curriculums}

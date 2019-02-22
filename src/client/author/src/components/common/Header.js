@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const Header = styled.header`
   width: 100%;
@@ -11,7 +11,7 @@ const Header = styled.header`
   position: absolute;
   top: 0;
   left: 0;
-  background-color:  ${props => props.theme.headerBgColor};
+  background-color: ${props => props.theme.headerBgColor};
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.17);
 
   @media (max-width: 760px) {

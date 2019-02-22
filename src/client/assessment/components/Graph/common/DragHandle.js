@@ -1,8 +1,8 @@
-import React from 'react';
-import { SortableHandle } from 'react-sortable-hoc';
-import { FaBars } from 'react-icons/fa';
-import styled from 'styled-components';
-import { greenDark, green } from '@edulastic/colors';
+import React from "react";
+import { SortableHandle } from "react-sortable-hoc";
+import { FaBars } from "react-icons/fa";
+import styled from "styled-components";
+import { greenDark, green } from "@edulastic/colors";
 
 const DragHandle = SortableHandle(({ smallSize }) => (
   <Container smallSize={smallSize}>

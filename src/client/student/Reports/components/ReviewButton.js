@@ -1,19 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import React from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 //components
-import styled from 'styled-components';
-import Review from '../../styled/AssignmentCardButton';
+import styled from "styled-components";
+import Review from "../../styled/AssignmentCardButton";
 
 // show review button
-const ReviewButton = ({
-  testActivityId,
-  title,
-  t,
-  attempted,
-  activityReview
-}) => (
+const ReviewButton = ({ testActivityId, title, t, attempted, activityReview }) => (
   <ReviewButtonLink
     to={{
       pathname: `/home/testActivityReport/${testActivityId}`,
@@ -23,10 +17,10 @@ const ReviewButton = ({
   >
     {attempted && activityReview ? (
       <Review>
-        <span data-cy="reviewButton">{t('common.review')}</span>
+        <span data-cy="reviewButton">{t("common.review")}</span>
       </Review>
     ) : (
-      ''
+      ""
     )}
   </ReviewButtonLink>
 );

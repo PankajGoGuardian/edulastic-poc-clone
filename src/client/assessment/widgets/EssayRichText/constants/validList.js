@@ -1,1 +1,1 @@
-export const ValidList = ['list', 'align', 'script', 'indent', 'header', 'direction'];
+export const ValidList = ["list", "align", "script", "indent", "header", "direction"];

@@ -1,14 +1,10 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Select, Button, Icon } from 'antd';
+import React from "react";
+import styled from "styled-components";
+import { Select, Button, Icon } from "antd";
 
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import {
-  getCurrentItemSelector,
-  getItemCountSelector,
-  setCurrentItemAction
-} from '../../sharedDucks/TestItem';
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { getCurrentItemSelector, getItemCountSelector, setCurrentItemAction } from "../../sharedDucks/TestItem";
 
 const { Option } = Select;
 
@@ -40,10 +36,7 @@ const QuestionSelect = ({ count, current, setCurrentItem }) => {
           <Icon type="left" />
         </StyledButton>
         {options.map((_, index) => (
-          <StyledNumberButton
-            enabled={current === index}
-            onClick={() => setCurrentItem(index)}
-          >
+          <StyledNumberButton enabled={current === index} onClick={() => setCurrentItem(index)}>
             {index + 1}
           </StyledNumberButton>
         ))}
@@ -124,8 +117,8 @@ const StyledNumberButton = styled(Button)`
   justify-content: center;
   align-items: center;
   margin-left: 8px;
-  background: ${props => (props.enabled ? '#00b0ff' : '#fff')};
-  color: ${props => (props.enabled ? '#fff' : '#4d4f5c')};
+  background: ${props => (props.enabled ? "#00b0ff" : "#fff")};
+  color: ${props => (props.enabled ? "#fff" : "#4d4f5c")};
   &:hover,
   &:focus {
     background: #00b0ff;

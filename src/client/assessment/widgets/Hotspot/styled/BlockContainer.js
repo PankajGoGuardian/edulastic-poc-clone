@@ -1,11 +1,10 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const BlockContainer = styled.div`
   display: block;
   overflow: auto;
   & > * {
-    margin-right: ${({ childMarginRight }) =>
-      childMarginRight !== undefined ? childMarginRight : 10}px;
+    margin-right: ${({ childMarginRight }) => (childMarginRight !== undefined ? childMarginRight : 10)}px;
   }
   & > *:last-child {
     margin-right: 0;

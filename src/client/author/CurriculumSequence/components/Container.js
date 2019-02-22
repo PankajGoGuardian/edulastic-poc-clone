@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { message } from 'antd';
-import { withWindowSizes } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
-import CurriculumSequence from './CurriculumSequence';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { message } from "antd";
+import { withWindowSizes } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
+import CurriculumSequence from "./CurriculumSequence";
 import {
   getAllCurriculumSequences,
   putCurriculumSequenceAction,
@@ -13,54 +13,54 @@ import {
   searchGuidesAction,
   toggleAddContentAction,
   addContentToCurriculumSequenceAction
-} from '../ducks';
+} from "../ducks";
 
 /**
-* @typedef {object} ModuleData
-* @property {String} contentId
-* @property {String} createdDate
-* @property {Object} derivedFrom
-* @property {String} id
-* @property {Number} index
-* @property {String} name
-* @property {String} standards
-* @property {String} type
-*/
+ * @typedef {object} ModuleData
+ * @property {String} contentId
+ * @property {String} createdDate
+ * @property {Object} derivedFrom
+ * @property {String} id
+ * @property {Number} index
+ * @property {String} name
+ * @property {String} standards
+ * @property {String} type
+ */
 
 /**
-*  @typedef {object} CreatedBy
-* @property {String} email
-* @property {String} firstName
-* @property {String} id
-* @property {String} lastName
-*/
+ *  @typedef {object} CreatedBy
+ * @property {String} email
+ * @property {String} firstName
+ * @property {String} id
+ * @property {String} lastName
+ */
 
 /**
-* @typedef {object} Module
-* @property {String} assigned
-* @property {String} customized
-* @property {ModuleData[]} data
-* @property {String} id
-* @property {String} name
-*/
+ * @typedef {object} Module
+ * @property {String} assigned
+ * @property {String} customized
+ * @property {ModuleData[]} data
+ * @property {String} id
+ * @property {String} name
+ */
 
 /**
-* @typedef {Object} CurriculumSequenceType
-* @property {string} id
-* @property {CreatedBy} createdBy
-* @property {String} createdDate
-* @property {Object} derivedFrom
-* @property {String} description
-* @property {String} _id
-* @property {Module[]} modules
-* @property {String} status
-* @property {String} thumbnail
-* @property {String} title
-* @property {String} updatedDate
-* @property {function} toggleAddContent
-* @property {function} addNewUnitToDestination
-* @property {boolean} isContentExpanded
-*/
+ * @typedef {Object} CurriculumSequenceType
+ * @property {string} id
+ * @property {CreatedBy} createdBy
+ * @property {String} createdDate
+ * @property {Object} derivedFrom
+ * @property {String} description
+ * @property {String} _id
+ * @property {Module[]} modules
+ * @property {String} status
+ * @property {String} thumbnail
+ * @property {String} title
+ * @property {String} updatedDate
+ * @property {function} toggleAddContent
+ * @property {function} addNewUnitToDestination
+ * @property {boolean} isContentExpanded
+ */
 
 /**
  * @typedef CurriculumProps
@@ -86,7 +86,7 @@ class CurriculumContainer extends Component {
     /**
      * Selected publisher
      */
-    publisher: '',
+    publisher: "",
 
     /**
      * state for handling drag and drop
@@ -97,10 +97,7 @@ class CurriculumContainer extends Component {
   componentDidMount() {
     // NOTE: temporary here,
     // until what will call the component with specified curriculums
-    this.props.getAllCurriculumSequences([
-      '5c6cb72feb85b4b4180e1544',
-      '5c6cc156dac4871b3b76fad0'
-    ]);
+    this.props.getAllCurriculumSequences(["5c6cb72feb85b4b4180e1544", "5c6cc156dac4871b3b76fad0"]);
   }
 
   /** @param {String} publisher */
@@ -113,52 +110,53 @@ class CurriculumContainer extends Component {
     this.props.searchCurriculumSequences(publisher);
   };
 
-  onDrop = (toUnit) => {
+  onDrop = toUnit => {
     const { contentToBeAdded } = this.state;
     const { addContentToCurriculumSequence } = this.props;
 
     if (contentToBeAdded) {
       addContentToCurriculumSequence(contentToBeAdded, toUnit);
     }
-  }
+  };
 
-  onBeginDrag = (contentToBeAdded) => {
+  onBeginDrag = contentToBeAdded => {
     this.setState({ contentToBeAdded });
-  }
+  };
 
-  collapseExpandModule = (moduleId) => {
+  collapseExpandModule = moduleId => {
     const { destinationCurriculumSequence } = this.props;
-  
+
     if (!destinationCurriculumSequence) return null;
 
-    const hasContent = destinationCurriculumSequence.modules.filter((module) => {
-      if (module.id === moduleId && module.data && module.data.length > 0) {
-        return true;
-      }
-    }).length > 0;
+    const hasContent =
+      destinationCurriculumSequence.modules.filter(module => {
+        if (module.id === moduleId && module.data && module.data.length > 0) {
+          return true;
+        }
+      }).length > 0;
 
-    if (!hasContent) return message.error('Please add some content to this unit.');
+    if (!hasContent) return message.error("Please add some content to this unit.");
 
     const { expandedModules } = this.state;
     if (expandedModules.indexOf(moduleId) === -1) {
       this.setState({ expandedModules: [...expandedModules, moduleId] });
     } else {
-      const newExpandedModules = expandedModules.filter(id => id !== moduleId)
+      const newExpandedModules = expandedModules.filter(id => id !== moduleId);
       this.setState({
         expandedModules: newExpandedModules
       });
     }
-  }
+  };
 
   handleSelectContent = () => {
     const { toggleAddContent } = this.props;
     toggleAddContent();
-  }
+  };
 
   /** @param {CurriculumSequence} curriculumSequence */
-  setSourceCurriculumSequence = (curriculumSequence) => {
+  setSourceCurriculumSequence = curriculumSequence => {
     this.setState({ sourceCurriculumSequence: curriculumSequence });
-  }
+  };
 
   getSourceDestinationCurriculum = () => {
     let sourceCurriculumSequence;
@@ -166,20 +164,28 @@ class CurriculumContainer extends Component {
     const { curriculumSequences } = this.props;
 
     curriculumSequences.allCurriculumSequences.forEach((id, index) => {
-      if (curriculumSequences.byId[id].type === 'content') {
+      if (curriculumSequences.byId[id].type === "content") {
         sourceCurriculumSequence = curriculumSequences.byId[id];
-      } else if (curriculumSequences.byId[id].type === 'guide') {
+      } else if (curriculumSequences.byId[id].type === "guide") {
         destinationCurriculumSequence = curriculumSequences.byId[id];
       }
     });
 
     return { sourceCurriculumSequence, destinationCurriculumSequence };
-  }
+  };
 
   render() {
     const { windowWidth, curriculumSequences, isContentExpanded } = this.props;
     const { expandedModules } = this.state;
-    const { handleSelectContent, setSourceCurriculumSequence, onDrop, onBeginDrag, savePublisher, changePublisher, collapseExpandModule } = this;
+    const {
+      handleSelectContent,
+      setSourceCurriculumSequence,
+      onDrop,
+      onBeginDrag,
+      savePublisher,
+      changePublisher,
+      collapseExpandModule
+    } = this;
 
     const { sourceCurriculumSequence } = this.getSourceDestinationCurriculum();
 
@@ -188,7 +194,7 @@ class CurriculumContainer extends Component {
     if (!sourceCurriculumSequence || !destinationCurriculumSequence) return null;
 
     const curriculumList = Object.keys(curriculumSequences.byId).map(key => curriculumSequences.byId[key]);
-    
+
     return (
       <CurriculumSequence
         onPublisherSave={savePublisher}
@@ -227,7 +233,6 @@ CurriculumContainer.propTypes = {
   putCurriculumSequence: PropTypes.func.isRequired,
   isContentExpanded: PropTypes.bool.isRequired,
   destinationCurriculumSequence: PropTypes.object.isRequired
-
 };
 
 CurriculumContainer.defaultProps = {
@@ -255,10 +260,9 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 
-
 const enhance = compose(
   withWindowSizes,
-  withNamespaces('author'),
+  withNamespaces("author"),
   connect(
     ({ curriculumSequence }) => ({
       curriculumSequences: curriculumSequence,

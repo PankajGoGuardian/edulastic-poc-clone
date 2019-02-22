@@ -1,4 +1,4 @@
-import Input from './Input';
+import Input from "./Input";
 
 const elWeight = {
   point: 1,
@@ -8,13 +8,7 @@ const elWeight = {
   curve: 5
 };
 
-const allowElements = [
-  'polygon',
-  'point',
-  'circle',
-  'line',
-  'curve'
-];
+const allowElements = ["polygon", "point", "circle", "line", "curve"];
 
 /**
  * @param {array} elements
@@ -27,9 +21,9 @@ function getElementUnderMouse(elements) {
 }
 
 function onHandler() {
-  return (board) => {
+  return board => {
     const currentElement = getElementUnderMouse(board.$board.downObjects);
-    if (!currentElement || currentElement.getAttribute('fixed') === true) {
+    if (!currentElement || currentElement.getAttribute("fixed") === true) {
       return;
     }
     const hasLabel = currentElement.label && currentElement.label.plaintext;

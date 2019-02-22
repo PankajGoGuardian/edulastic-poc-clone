@@ -1,19 +1,19 @@
-import React from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { Spin } from 'antd';
-import styled from 'styled-components';
-import Modal from 'react-responsive-modal';
+import React from "react";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { Spin } from "antd";
+import styled from "styled-components";
+import Modal from "react-responsive-modal";
 
-import TestItemPreview from '../../../../../assessment/components/TestItemPreview';
+import TestItemPreview from "../../../../../assessment/components/TestItemPreview";
 
-import { getItemDetailByIdAction } from '../../../actions/itemDetail';
+import { getItemDetailByIdAction } from "../../../actions/itemDetail";
 import {
   getItemDetailLoadingSelector,
   getItemDetailRowsSelector,
   getItemDetailSelector
-} from '../../../selectors/itemDetail';
+} from "../../../selectors/itemDetail";
 
 class PreviewModal extends React.Component {
   constructor(props) {
@@ -43,7 +43,7 @@ class PreviewModal extends React.Component {
     const { isVisible, loading, item, rows } = this.props;
     return (
       <Modal styles={{ minWidth: 200 }} open={isVisible} onClose={this.closeModal} center>
-        <h2 style={{ fontWeight: 'bold', fontSize: 20 }}>Preview</h2>
+        <h2 style={{ fontWeight: "bold", fontSize: 20 }}>Preview</h2>
         {loading || item === null ? (
           <ProgressContainer>
             <Spin tip="Loading..." />
@@ -54,7 +54,7 @@ class PreviewModal extends React.Component {
             previewTab="clear"
             verticalDivider={item.verticalDivider}
             scrolling={item.scrolling}
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
           />
         )}
       </Modal>

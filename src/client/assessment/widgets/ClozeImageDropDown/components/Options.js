@@ -1,24 +1,24 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
+import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { compose } from "redux";
 
-import { withNamespaces } from '@edulastic/localization';
+import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from '../../../../author/src/actions/question';
-import { getQuestionDataSelector } from '../../../../author/src/selectors/question';
+import { setQuestionDataAction } from "../../../../author/src/actions/question";
+import { getQuestionDataSelector } from "../../../../author/src/selectors/question";
 
-import WidgetOptions from '../../../containers/WidgetOptions';
-import { Block } from '../../../styled/WidgetOptions/Block';
-import { Heading } from '../../../styled/WidgetOptions/Heading';
+import WidgetOptions from "../../../containers/WidgetOptions";
+import { Block } from "../../../styled/WidgetOptions/Block";
+import { Heading } from "../../../styled/WidgetOptions/Heading";
 
-import Layout from './Layout';
-import Extras from '../../../containers/Extras';
+import Layout from "./Layout";
+import Extras from "../../../containers/Extras";
 
 const Options = ({ questionData, onChange, uiStyle, t, outerStyle }) => (
   <WidgetOptions outerStyle={outerStyle}>
     <Block>
-      <Heading>{t('component.options.layout')}</Heading>
+      <Heading>{t("component.options.layout")}</Heading>
       <Layout questionData={questionData} onChange={onChange} uiStyle={uiStyle} />
       <Extras>
         <Extras.Distractors />
@@ -38,9 +38,9 @@ Options.propTypes = {
 Options.defaultProps = {
   outerStyle: {},
   uiStyle: {
-    responsecontainerposition: 'bottom',
-    fontsize: 'normal',
-    stemnumeration: '',
+    responsecontainerposition: "bottom",
+    fontsize: "normal",
+    stemnumeration: "",
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,
@@ -49,7 +49,7 @@ Options.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     state => ({
       questionData: getQuestionDataSelector(state)

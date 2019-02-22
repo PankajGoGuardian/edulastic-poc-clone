@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { DropTarget } from 'react-dnd';
+import React from "react";
+import PropTypes from "prop-types";
+import { DropTarget } from "react-dnd";
 
 const specTarget = {
   drop: (props, monitor) => {
@@ -46,4 +46,4 @@ DropContainer.defaultProps = {
   children: undefined
 };
 
-export default DropTarget('metal', specTarget, collectTarget)(DropContainer);
+export default DropTarget("metal", specTarget, collectTarget)(DropContainer);

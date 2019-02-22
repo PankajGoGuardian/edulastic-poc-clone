@@ -1,18 +1,15 @@
-import React from 'react';
-import { Select } from 'antd';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import React from "react";
+import { Select } from "antd";
+import PropTypes from "prop-types";
+import styled from "styled-components";
 
 // TODO: remove static data
-const options = ['ARCHIVE (0)', 'ACTIVE (0)'];
+const options = ["ARCHIVE (0)", "ACTIVE (0)"];
 
 const ShowActiveClasses = ({ t }) => (
-  <ManageActiveClasses id='active-class-dropdown'>
-    <ClassLabel>{t('common.showLabel')}</ClassLabel>
-    <Select
-      getPopupContainer={() => document.getElementById('active-class-dropdown')}
-      defaultValue='ACTIVE (0)'
-    >
+  <ManageActiveClasses id="active-class-dropdown">
+    <ClassLabel>{t("common.showLabel")}</ClassLabel>
+    <Select getPopupContainer={() => document.getElementById("active-class-dropdown")} defaultValue="ACTIVE (0)">
       {options.map((option, i) => (
         <Select.Option key={i} value={option}>
           {option}

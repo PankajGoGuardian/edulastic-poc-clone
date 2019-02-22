@@ -2,28 +2,27 @@
  * Input box to type backslash commands
  ***************************************/
 
-var LatexCommandInput =
-CharCmds['\\'] = P(MathCommand, function(_, super_) {
-  _.ctrlSeq = '\\';
+var LatexCommandInput = (CharCmds["\\"] = P(MathCommand, function(_, super_) {
+  _.ctrlSeq = "\\";
   _.replaces = function(replacedFragment) {
     this._replacedFragment = replacedFragment.disown();
-    this.isEmpty = function() { return false; };
+    this.isEmpty = function() {
+      return false;
+    };
   };
   _.htmlTemplate = '<span class="mq-latex-command-input mq-non-leaf">\\<span>&0</span></span>';
-  _.textTemplate = ['\\'];
+  _.textTemplate = ["\\"];
   _.createBlocks = function() {
     super_.createBlocks.call(this);
     this.ends[L].focus = function() {
-      this.parent.jQ.addClass('mq-hasCursor');
-      if (this.isEmpty())
-        this.parent.jQ.removeClass('mq-empty');
+      this.parent.jQ.addClass("mq-hasCursor");
+      if (this.isEmpty()) this.parent.jQ.removeClass("mq-empty");
 
       return this;
     };
     this.ends[L].blur = function() {
-      this.parent.jQ.removeClass('mq-hasCursor');
-      if (this.isEmpty())
-        this.parent.jQ.addClass('mq-empty');
+      this.parent.jQ.removeClass("mq-hasCursor");
+      if (this.isEmpty()) this.parent.jQ.addClass("mq-empty");
 
       return this;
     };
@@ -33,11 +32,11 @@ CharCmds['\\'] = P(MathCommand, function(_, super_) {
       if (ch.match(/[a-z]/i)) VanillaSymbol(ch).createLeftOf(cursor);
       else {
         this.parent.renderCommand(cursor);
-        if (ch !== '\\' || !this.isEmpty()) this.parent.parent.write(cursor, ch);
+        if (ch !== "\\" || !this.isEmpty()) this.parent.parent.write(cursor, ch);
       }
     };
     this.ends[L].keystroke = function(key, e, ctrlr) {
-      if (key === 'Tab' || key === 'Enter' || key === 'Spacebar') {
+      if (key === "Tab" || key === "Enter" || key === "Spacebar") {
         this.parent.renderCommand(ctrlr.cursor);
         e.preventDefault();
         return;
@@ -50,18 +49,21 @@ CharCmds['\\'] = P(MathCommand, function(_, super_) {
 
     if (this._replacedFragment) {
       var el = this.jQ[0];
-      this.jQ =
-        this._replacedFragment.jQ.addClass('mq-blur').bind(
-          'mousedown mousemove', //FIXME: is monkey-patching the mousedown and mousemove handlers the right way to do this?
+      this.jQ = this._replacedFragment.jQ
+        .addClass("mq-blur")
+        .bind(
+          "mousedown mousemove", //FIXME: is monkey-patching the mousedown and mousemove handlers the right way to do this?
           function(e) {
-            $(e.target = el).trigger(e);
+            $((e.target = el)).trigger(e);
             return false;
           }
-        ).insertBefore(this.jQ).add(this.jQ);
+        )
+        .insertBefore(this.jQ)
+        .add(this.jQ);
     }
   };
   _.latex = function() {
-    return '\\' + this.ends[L].latex() + ' ';
+    return "\\" + this.ends[L].latex() + " ";
   };
   _.renderCommand = function(cursor) {
     this.jQ = this.jQ.last();
@@ -73,21 +75,18 @@ CharCmds['\\'] = P(MathCommand, function(_, super_) {
     }
 
     var latex = this.ends[L].latex();
-    if (!latex) latex = ' ';
+    if (!latex) latex = " ";
     var cmd = LatexCmds[latex] || Environments[latex];
     if (cmd) {
       cmd = cmd(latex);
       if (this._replacedFragment) cmd.replaces(this._replacedFragment);
       cmd.createLeftOf(cursor);
-    }
-    else {
+    } else {
       cmd = TextBlock();
       cmd.replaces(latex);
       cmd.createLeftOf(cursor);
       cursor.insRightOf(cmd);
-      if (this._replacedFragment)
-        this._replacedFragment.remove();
+      if (this._replacedFragment) this._replacedFragment.remove();
     }
   };
-});
-
+}));

@@ -1,44 +1,30 @@
-import React from 'react';
-import { compose } from 'redux';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
-import { Button } from 'antd';
-import { white } from '@edulastic/colors';
-import { withNamespaces } from '@edulastic/localization';
-import { IconCheck, IconLightBulb, IconBookmark } from '@edulastic/icons';
-import ButtonLink from './ButtonLink';
-import { checkAnswerEvaluation } from '../../actions/checkanswer';
+import React from "react";
+import { compose } from "redux";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import styled from "styled-components";
+import { Button } from "antd";
+import { white } from "@edulastic/colors";
+import { withNamespaces } from "@edulastic/localization";
+import { IconCheck, IconLightBulb, IconBookmark } from "@edulastic/icons";
+import ButtonLink from "./ButtonLink";
+import { checkAnswerEvaluation } from "../../actions/checkanswer";
 
 const TestButton = ({ t, checkAnswerEvaluation }) => (
   <Container>
     <StyledButton onClick={checkAnswerEvaluation} data-cy="checkAnswer">
-      <ButtonLink
-        color="primary"
-        icon={<IconCheck color={white} />}
-        style={{ color: white }}
-      >
-        {t('common.test.checkanswer')}
+      <ButtonLink color="primary" icon={<IconCheck color={white} />} style={{ color: white }}>
+        {t("common.test.checkanswer")}
       </ButtonLink>
     </StyledButton>
     <StyledButton>
-      <ButtonLink
-        color="primary"
-        icon={<IconLightBulb color={white} />}
-        style={{ color: white }}
-      >
-        {t('common.test.hint')}
+      <ButtonLink color="primary" icon={<IconLightBulb color={white} />} style={{ color: white }}>
+        {t("common.test.hint")}
       </ButtonLink>
     </StyledButton>
     <StyledButton>
-      <ButtonLink
-        color="primary"
-        icon={
-          <IconBookmark color={white} width={10} height={16} />
-        }
-        style={{ color: white }}
-      >
-        {t('common.test.bookmark')}
+      <ButtonLink color="primary" icon={<IconBookmark color={white} width={10} height={16} />} style={{ color: white }}>
+        {t("common.test.bookmark")}
       </ButtonLink>
     </StyledButton>
   </Container>
@@ -50,7 +36,7 @@ TestButton.propTypes = {
 };
 
 const enhance = compose(
-  withNamespaces('student'),
+  withNamespaces("student"),
   connect(
     null,
     { checkAnswerEvaluation }

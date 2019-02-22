@@ -1,14 +1,7 @@
-import styled from 'styled-components';
-import {
-  desktopWidth,
-  greenDark,
-  mobileWidth,
-  secondaryTextColor,
-  tabletWidth,
-  white
-} from '@edulastic/colors';
-import { Select } from 'antd/lib/index';
-import { EduButton } from '../../../../../../packages/common';
+import styled from "styled-components";
+import { desktopWidth, greenDark, mobileWidth, secondaryTextColor, tabletWidth, white } from "@edulastic/colors";
+import { Select } from "antd/lib/index";
+import { EduButton } from "../../../../../../packages/common";
 
 export const Container = styled.div`
   width: 100%;
@@ -57,7 +50,7 @@ export const ListItems = styled.div`
     flex: 1;
     font-size: 13px;
     font-weight: 600;
-    font-family: 'Open Sans';
+    font-family: "Open Sans";
     color: ${secondaryTextColor};
     letter-spacing: normal;
   }

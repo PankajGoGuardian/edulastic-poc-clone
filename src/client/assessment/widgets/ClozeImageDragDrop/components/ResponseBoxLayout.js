@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withTheme } from 'styled-components';
-import { DropTarget } from 'react-dnd';
-import { compose } from 'redux';
+import React from "react";
+import PropTypes from "prop-types";
+import { withTheme } from "styled-components";
+import { DropTarget } from "react-dnd";
+import { compose } from "redux";
 
-import DragItem from './DragItem';
+import DragItem from "./DragItem";
 
 const specTarget = {
   drop: (props, monitor) => {
@@ -33,11 +33,11 @@ const ResponseBoxLayout = ({
   connectDropTarget
 }) =>
   connectDropTarget(
-    <div className="responses_box" style={{ padding: smallSize ? '5px 10px' : 16 }}>
+    <div className="responses_box" style={{ padding: smallSize ? "5px 10px" : 16 }}>
       {responses.map((option, index) => (
         <div
           key={index}
-          className={transparentResponses ? 'draggable_box_transparent' : 'draggable_box'}
+          className={transparentResponses ? "draggable_box_transparent" : "draggable_box"}
           style={{ fontSize: smallSize ? 10 : fontSize }}
         >
           {!dragHandler && (
@@ -70,7 +70,7 @@ ResponseBoxLayout.propTypes = {
 
 ResponseBoxLayout.defaultProps = {
   responses: [],
-  fontSize: '13px',
+  fontSize: "13px",
   smallSize: false,
   dragHandler: false,
   transparentResponses: false
@@ -79,7 +79,7 @@ ResponseBoxLayout.defaultProps = {
 const enhance = compose(
   withTheme,
   React.memo,
-  DropTarget('metal', specTarget, collectTarget)
+  DropTarget("metal", specTarget, collectTarget)
 );
 
 export default enhance(ResponseBoxLayout);

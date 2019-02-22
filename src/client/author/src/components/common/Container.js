@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { mobileWidth, mainBgColor } from '@edulastic/colors';
+import styled from "styled-components";
+import { mobileWidth, mainBgColor } from "@edulastic/colors";
 
 export const Container = styled.div`
   padding: 25px 40px;

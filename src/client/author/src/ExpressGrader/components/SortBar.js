@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Radio } from 'antd';
-import { FlexContainer } from '@edulastic/common';
-import styled from 'styled-components';
+import React from "react";
+import PropTypes from "prop-types";
+import { Radio } from "antd";
+import { FlexContainer } from "@edulastic/common";
+import styled from "styled-components";
 
 const SortBar = () => (
   <FlexContainer>
@@ -54,7 +54,6 @@ const Container = styled.div`
   }
 `;
 const StyledFlexContainer = styled(FlexContainer)`
-
   @media (max-width: 768p) {
     width: 100%;
     display: flex;
@@ -67,7 +66,7 @@ const StyledFlexContainer = styled(FlexContainer)`
   }
 `;
 const StyledRadio = styled(Radio)`
-  font-weight:bold;
-  color:#6b7280;
-  font-size:0.9em;
+  font-weight: bold;
+  color: #6b7280;
+  font-size: 0.9em;
 `;

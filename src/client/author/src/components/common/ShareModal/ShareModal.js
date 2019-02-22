@@ -1,59 +1,55 @@
-import React from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import Modal from 'react-responsive-modal';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { Radio, Input, Button, Row, Col, Select } from 'antd';
-import { cloneDeep } from 'lodash';
+import React from "react";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import Modal from "react-responsive-modal";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { Radio, Input, Button, Row, Col, Select } from "antd";
+import { cloneDeep } from "lodash";
 
-import { FlexContainer } from '@edulastic/common';
-import { mainBlueColor } from '@edulastic/colors';
-import { IconClose, IconCopy } from '@edulastic/icons';
+import { FlexContainer } from "@edulastic/common";
+import { mainBlueColor } from "@edulastic/colors";
+import { IconClose, IconCopy } from "@edulastic/icons";
 
-import {
-  updateTestAction,
-  getTestSelector
-} from '../../../../TestPage/ducks';
-
+import { updateTestAction, getTestSelector } from "../../../../TestPage/ducks";
 
 class ShareModal extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      address: '',
-      shareType: 'everyone',
+      address: "",
+      shareType: "everyone",
       peopleArray: [],
-      permission: 'rwx'
+      permission: "rwx"
     };
   }
 
-  addressHandler = (e) => {
+  addressHandler = e => {
     this.setState({ address: e.target.value });
-  }
+  };
 
-  radioHandler = (e) => {
+  radioHandler = e => {
     this.setState({ shareType: e.target.value });
-  }
+  };
 
-  removeHandler = (index) => {
+  removeHandler = index => {
     const { peopleArray } = this.state;
     const temp = peopleArray.slice();
     temp.splice(index, 1);
     this.setState({ peopleArray: temp });
-  }
+  };
 
   onShare = () => {
     const { address, shareType, peopleArray, permission } = this.state;
     const temp = peopleArray.slice();
     temp.push({ address, type: shareType, permission });
-    this.setState({ peopleArray: temp, address: '' });
-  }
+    this.setState({ peopleArray: temp, address: "" });
+  };
 
-  permissionHandler = (value) => {
+  permissionHandler = value => {
     this.setState({ permission: value });
-  }
+  };
 
   doneHandler = () => {
     const { peopleArray } = this.state;
@@ -66,7 +62,8 @@ class ShareModal extends React.Component {
         permission: data.permission,
         type: data.type,
         name: data.address
-      }));
+      })
+    );
 
     updatedTest.sharing = sharing;
     delete updatedTest.createdDate;
@@ -74,22 +71,18 @@ class ShareModal extends React.Component {
 
     updateTest(test._id, updatedTest);
     onClose();
-  }
+  };
 
   render() {
     const { shareType, peopleArray } = this.state;
     const { isVisible, onClose } = this.props;
     return (
-      <Modal
-        open={isVisible}
-        onClose={onClose}
-        center
-      >
+      <Modal open={isVisible} onClose={onClose} center>
         <ModalContainer>
-          <h2 style={{ fontWeight: 'bold', fontSize: 20 }}>Share with others</h2>
+          <h2 style={{ fontWeight: "bold", fontSize: 20 }}>Share with others</h2>
           <ShareBlock>
-            <span style={{ fontSize: 13, fontWeight: '600' }}>Share</span>
-            <FlexContainer style={{ cursor: 'pointer' }}>
+            <span style={{ fontSize: 13, fontWeight: "600" }}>Share</span>
+            <FlexContainer style={{ cursor: "pointer" }}>
               <ShareTitle>
                 <span>https://edulastic.com/assessment/76y8gyug-b8ug-8</span>
               </ShareTitle>
@@ -97,34 +90,36 @@ class ShareModal extends React.Component {
                 <CopyIcon /> COPY
               </TitleCopy>
             </FlexContainer>
-            {
-              peopleArray.length !== 0 && (
+            {peopleArray.length !== 0 && (
               <ShareList>
-                {
-                  peopleArray.map((data, index) => (
-                    <Row key={index} style={{ paddingBottom: 5, display: 'flex', alignItems: 'center' }}>
-                      <Col span={12}>
-                        {data.address}
-                      </Col>
-                      <Col span={11}>
-                        <span>{data.permission === 'rwx' && 'Can Edit, Assign & See Results'}</span>
-                        <span>{data.permission === 'rw' && 'Can Edit, Add/Remove Items'}</span>
-                        <span>{data.permission === 'r' && 'Can View & Duplicate'}</span>
-                      </Col>
-                      <Col span={1}>
-                        <a onClick={() => this.removeHandler(index)}>
-                          <CloseIcon />
-                        </a>
-                      </Col>
-                    </Row>
-                  ))
-                }
-              </ShareList>)
-            }
+                {peopleArray.map((data, index) => (
+                  <Row
+                    key={index}
+                    style={{
+                      paddingBottom: 5,
+                      display: "flex",
+                      alignItems: "center"
+                    }}
+                  >
+                    <Col span={12}>{data.address}</Col>
+                    <Col span={11}>
+                      <span>{data.permission === "rwx" && "Can Edit, Assign & See Results"}</span>
+                      <span>{data.permission === "rw" && "Can Edit, Add/Remove Items"}</span>
+                      <span>{data.permission === "r" && "Can View & Duplicate"}</span>
+                    </Col>
+                    <Col span={1}>
+                      <a onClick={() => this.removeHandler(index)}>
+                        <CloseIcon />
+                      </a>
+                    </Col>
+                  </Row>
+                ))}
+              </ShareList>
+            )}
           </ShareBlock>
           <PeopleBlock>
-            <span style={{ fontSize: 13, fontWeight: '600' }}>People</span>
-            <div style={{ margin: '10px 0px' }}>
+            <span style={{ fontSize: 13, fontWeight: "600" }}>People</span>
+            <div style={{ margin: "10px 0px" }}>
               <Radio.Group value={shareType} onChange={e => this.radioHandler(e)}>
                 <Radio value="everyone">Everyone</Radio>
                 <Radio value="district">District</Radio>
@@ -133,20 +128,11 @@ class ShareModal extends React.Component {
               </Radio.Group>
             </div>
             <FlexContainer style={{ marginTop: 5 }}>
-              <Address
-                placeholder="Enter names or email addresses"
-                onChange={e => this.addressHandler(e)}
-              />
+              <Address placeholder="Enter names or email addresses" onChange={e => this.addressHandler(e)} />
               <Select defaultValue="rwx" style={{ width: 650 }} onChange={e => this.permissionHandler(e)}>
-                <Select.Option value="rwx">
-                  Can Edit, Assign & See Results
-                </Select.Option>
-                <Select.Option value="rw">
-                  Can Edit, Add/Remove Items
-                </Select.Option>
-                <Select.Option value="r">
-                  Can View & Duplicate
-                </Select.Option>
+                <Select.Option value="rwx">Can Edit, Assign & See Results</Select.Option>
+                <Select.Option value="rw">Can Edit, Add/Remove Items</Select.Option>
+                <Select.Option value="r">Can View & Duplicate</Select.Option>
               </Select>
               <ShareButton type="primary" onClick={() => this.onShare()}>
                 SHARE
@@ -174,7 +160,6 @@ ShareModal.propTypes = {
 ShareModal.defaultProps = {
   test: null
 };
-
 
 const enhance = compose(
   connect(

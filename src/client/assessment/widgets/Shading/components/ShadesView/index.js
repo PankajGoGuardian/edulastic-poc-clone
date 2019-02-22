@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import { Wrapper } from './styled/Wrapper';
-import { Ul } from './styled/Ul';
-import { Li } from './styled/Li';
+import { Wrapper } from "./styled/Wrapper";
+import { Ul } from "./styled/Ul";
+import { Li } from "./styled/Li";
 
 const ShadesView = ({
   cellWidth,
@@ -23,11 +23,9 @@ const ShadesView = ({
   const columnsArray = Array(colCount).fill(null);
 
   const isLockedIndexExists = (i, j) =>
-    Array.isArray(lockedCells) &&
-    lockedCells.findIndex(shade => shade[0] === i && shade[1] === j) !== -1;
+    Array.isArray(lockedCells) && lockedCells.findIndex(shade => shade[0] === i && shade[1] === j) !== -1;
 
-  const isShadeActive = (i, j) =>
-    shaded.findIndex(shade => shade[0] === i && shade[1] === j) !== -1;
+  const isShadeActive = (i, j) => shaded.findIndex(shade => shade[0] === i && shade[1] === j) !== -1;
 
   const getActiveShadesCount = () => {
     let count = 0;
@@ -45,9 +43,8 @@ const ShadesView = ({
 
   const isCorrectAnswer = (i, j) =>
     correctAnswers.findIndex(shade =>
-      (Array.isArray(shade)
-        ? shade[0] === i && shade[1] === j
-        : shade === getActiveShadesCount())) !== -1;
+      Array.isArray(shade) ? shade[0] === i && shade[1] === j : shade === getActiveShadesCount()
+    ) !== -1;
   return (
     <Wrapper marginTop={marginTop}>
       {rowsArray.map((row, i) => (

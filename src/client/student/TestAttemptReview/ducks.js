@@ -1,4 +1,4 @@
-import { createSelector } from 'reselect';
+import { createSelector } from "reselect";
 
 // selectors
 export const answersSelector = state => state.answers;

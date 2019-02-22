@@ -1,15 +1,15 @@
-import React, { useEffect, useState, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { withTheme } from 'styled-components';
+import React, { useEffect, useState, useRef } from "react";
+import PropTypes from "prop-types";
+import { withTheme } from "styled-components";
 
-import { SHOW, CHECK, CLEAR } from '../../constants/constantsForQuestions';
+import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
 
-import MathInput from '../../components/MathInput';
+import MathInput from "../../components/MathInput";
 
-import CorrectAnswerBox from './components/CorrectAnswerBox';
-import MathInputStatus from './components/MathInputStatus';
-import MathInputWrapper from './styled/MathInputWrapper';
-import StaticMath from './StaticMath';
+import CorrectAnswerBox from "./components/CorrectAnswerBox";
+import MathInputStatus from "./components/MathInputStatus";
+import MathInputWrapper from "./styled/MathInputWrapper";
+import StaticMath from "./StaticMath";
 
 const MathFormulaPreview = ({
   item,
@@ -25,7 +25,7 @@ const MathFormulaPreview = ({
 
   const [latex, setLatex] = useState(studentTemplate);
 
-  const onUserResponse = (latexv) => {
+  const onUserResponse = latexv => {
     setLatex(latexv);
     saveAnswer(isStatic ? studentRef.current.getLatex() : latexv);
   };
@@ -36,7 +36,7 @@ const MathFormulaPreview = ({
     }
   };
 
-  const escapeRegExp = string => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const escapeRegExp = string => string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
   const setUserResponse = () => {
     studentRef.current.setLatex(studentTemplate);
@@ -45,47 +45,44 @@ const MathFormulaPreview = ({
       return;
     }
 
-    const regexTemplate = new RegExp(escapeRegExp(studentTemplate).replace(/\\\\MathQuillMathField\\\{\\\}/g, '(.*)'), 'g');
+    const regexTemplate = new RegExp(
+      escapeRegExp(studentTemplate).replace(/\\\\MathQuillMathField\\\{\\\}/g, "(.*)"),
+      "g"
+    );
     const innerValues = regexTemplate.exec(userAnswer);
     for (let i = 1; i < innerValues.length; i++) {
       studentRef.current.setInnerFieldValue(innerValues[i], i - 1);
     }
   };
 
-  useEffect(
-    () => {
-      if (previewType === CLEAR) {
-        if (!isStatic) {
-          setLatex(userAnswer || studentTemplate);
-          return;
-        }
-
-        setUserResponse();
+  useEffect(() => {
+    if (previewType === CLEAR) {
+      if (!isStatic) {
+        setLatex(userAnswer || studentTemplate);
+        return;
       }
-    },
-    [studentTemplate, previewType]
-  );
 
-  useEffect(
-    () => {
-      setTimeout(() => {
-        if (!isStatic) {
-          setLatex(userAnswer || studentTemplate);
-          return;
-        }
+      setUserResponse();
+    }
+  }, [studentTemplate, previewType]);
 
-        setUserResponse();
-      }, 0);
-    },
-    [studentTemplate]
-  );
+  useEffect(() => {
+    setTimeout(() => {
+      if (!isStatic) {
+        setLatex(userAnswer || studentTemplate);
+        return;
+      }
+
+      setUserResponse();
+    }, 0);
+  }, [studentTemplate]);
 
   let statusColor = theme.widgets.mathFormula.inputColor;
   if (previewType === SHOW || previewType === CHECK) {
     statusColor = evaluation
-      ? (evaluation[0]
+      ? evaluation[0]
         ? theme.widgets.mathFormula.inputCorrectColor
-        : theme.widgets.mathFormula.inputIncorrectColor)
+        : theme.widgets.mathFormula.inputIncorrectColor
       : theme.widgets.mathFormula.inputIncorrectColor;
   }
   return (
@@ -114,11 +111,7 @@ const MathFormulaPreview = ({
             style={{ background: statusColor }}
           />
         )}
-        {
-          (previewType === SHOW || previewType === CHECK) && (
-            <MathInputStatus valid={!!evaluation && !!evaluation[0]} />
-          )
-        }
+        {(previewType === SHOW || previewType === CHECK) && <MathInputStatus valid={!!evaluation && !!evaluation[0]} />}
       </MathInputWrapper>
 
       {previewType === SHOW && item.validation.valid_response.value[0].value !== undefined && (
@@ -137,7 +130,7 @@ MathFormulaPreview.propTypes = {
   theme: PropTypes.object.isRequired
 };
 MathFormulaPreview.defaultProps = {
-  studentTemplate: '',
+  studentTemplate: "",
   userAnswer: null
 };
 

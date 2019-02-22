@@ -1,6 +1,6 @@
-import { createSelector } from 'reselect';
-import { SET_MAX_ATTEMPT } from '../../../src/constants/actions';
-import { getTestEntitySelector } from '../../ducks';
+import { createSelector } from "reselect";
+import { SET_MAX_ATTEMPT } from "../../../src/constants/actions";
+import { getTestEntitySelector } from "../../ducks";
 
 // actions
 

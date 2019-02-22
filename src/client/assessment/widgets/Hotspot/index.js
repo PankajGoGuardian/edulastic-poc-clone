@@ -1,13 +1,13 @@
-import React, { Fragment, Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React, { Fragment, Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
 
-import { PREVIEW, EDIT, CLEAR } from '../../constants/constantsForQuestions';
+import { PREVIEW, EDIT, CLEAR } from "../../constants/constantsForQuestions";
 
-import HotspotPreview from './HotspotPreview';
-import HotspotEdit from './HotspotEdit';
+import HotspotPreview from "./HotspotPreview";
+import HotspotEdit from "./HotspotEdit";
 
 class Hotspot extends Component {
   render() {
@@ -38,7 +38,7 @@ Hotspot.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: ''
+  evaluation: ""
 };
 
 const HotspotContainer = connect(

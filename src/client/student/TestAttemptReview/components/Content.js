@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import styled, { ThemeProvider } from 'styled-components';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-import { Row, Col, Button } from 'antd';
-import { themes } from '../../themes';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import styled, { ThemeProvider } from "styled-components";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
+import { Row, Col, Button } from "antd";
+import { themes } from "../../themes";
 
-import Confirmation from './Confirmation';
-import { attemptSummarySelector } from '../ducks';
+import Confirmation from "./Confirmation";
+import { attemptSummarySelector } from "../ducks";
 
 class SummaryTest extends Component {
   constructor(props) {
@@ -48,8 +48,8 @@ class SummaryTest extends Component {
           />
           <Container>
             <Header>
-              <Title>{t('common.headingText')}</Title>
-              <TitleDescription>{t('common.message')}</TitleDescription>
+              <Title>{t("common.headingText")}</Title>
+              <TitleDescription>{t("common.message")}</TitleDescription>
             </Header>
             <MainContent>
               <ColorDescription>
@@ -57,27 +57,21 @@ class SummaryTest extends Component {
                   <FlexCol lg={8} md={24}>
                     <GreenMark />
                     <SpaceLeft>
-                      <Description>
-                        {t('common.markedQuestionLineOne')}
-                      </Description>
-                      <Description style={{ marginTop: -2 }}>
-                        {t('common.markedQuestionLineTwo')}
-                      </Description>
+                      <Description>{t("common.markedQuestionLineOne")}</Description>
+                      <Description style={{ marginTop: -2 }}>{t("common.markedQuestionLineTwo")}</Description>
                     </SpaceLeft>
                   </FlexCol>
                   <FlexCol lg={8} md={24}>
                     <GrayMark />
                     <SpaceLeft>
-                      <Description>{t('common.skippedQues')}</Description>
+                      <Description>{t("common.skippedQues")}</Description>
                     </SpaceLeft>
                   </FlexCol>
                   <FlexCol lg={8} md={24}>
                     <RedMark />
                     <SpaceLeft>
-                      <Description>{t('common.markedForReview')}</Description>
-                      <Description style={{ marginTop: -2 }}>
-                        {t('common.markedQuestionLineTwo')}
-                      </Description>
+                      <Description>{t("common.markedForReview")}</Description>
+                      <Description style={{ marginTop: -2 }}>{t("common.markedQuestionLineTwo")}</Description>
                     </SpaceLeft>
                   </FlexCol>
                 </ColorDescriptionRow>
@@ -85,27 +79,18 @@ class SummaryTest extends Component {
               <Questions>
                 <Row>
                   <QuestionText lg={8} md={24}>
-                    {t('common.questionsLabel')}
+                    {t("common.questionsLabel")}
                   </QuestionText>
                   <Col lg={16} md={24}>
                     <AnsweredTypeButtonContainer>
-                      <StyledButton
-                        onClick={() => this.handlerButton(null)}
-                        enabled={buttonIdx === null}
-                      >
-                        {t('default:all')}
+                      <StyledButton onClick={() => this.handlerButton(null)} enabled={buttonIdx === null}>
+                        {t("default:all")}
                       </StyledButton>
-                      <StyledButton
-                        onClick={() => this.handlerButton(2)}
-                        enabled={buttonIdx === 2}
-                      >
-                        {t('default:flagged')}
+                      <StyledButton onClick={() => this.handlerButton(2)} enabled={buttonIdx === 2}>
+                        {t("default:flagged")}
                       </StyledButton>
-                      <StyledButton
-                        onClick={() => this.handlerButton(0)}
-                        enabled={buttonIdx === 0}
-                      >
-                        {t('default:skipped')}
+                      <StyledButton onClick={() => this.handlerButton(0)} enabled={buttonIdx === 0}>
+                        {t("default:skipped")}
                       </StyledButton>
                     </AnsweredTypeButtonContainer>
                   </Col>
@@ -114,9 +99,7 @@ class SummaryTest extends Component {
                   {questions.map((q, index) => (
                     <QuestionColorBlock
                       type={questionList[q]}
-                      isVisible={
-                        buttonIdx === null || buttonIdx === questionList[q]
-                      }
+                      isVisible={buttonIdx === null || buttonIdx === questionList[q]}
                     >
                       <span> {index + 1} </span>
                     </QuestionColorBlock>
@@ -125,12 +108,9 @@ class SummaryTest extends Component {
               </Questions>
             </MainContent>
             <Footer>
-              <ShortDescription>{t('common.nextStep')}</ShortDescription>
-              <SubmitButton
-                type='primary'
-                onClick={this.handlerConfirmationModal}
-              >
-                {t('default:submit')}
+              <ShortDescription>{t("common.nextStep")}</ShortDescription>
+              <SubmitButton type="primary" onClick={this.handlerConfirmationModal}>
+                {t("default:submit")}
               </SubmitButton>
             </Footer>
           </Container>
@@ -151,7 +131,7 @@ SummaryTest.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces(['summary', 'default']),
+  withNamespaces(["summary", "default"]),
   connect(state => ({
     questionList: attemptSummarySelector(state)
   }))
@@ -287,16 +267,16 @@ const AnsweredTypeButtonContainer = styled.div`
 const StyledButton = styled(Button)`
   height: 24px;
   float: left;
-  color: ${props => (props.enabled ? '#fff' : '#00b0ff')};
+  color: ${props => (props.enabled ? "#fff" : "#00b0ff")};
   border: 1px solid #00b0ff;
   border-radius: 4px;
   margin-right: 20px;
   min-width: 85px;
-  background: ${props => (props.enabled ? '#00b0ff' : 'transparent')};
+  background: ${props => (props.enabled ? "#00b0ff" : "transparent")};
   &:focus,
   &:active {
-    color: ${props => (props.enabled ? '#fff' : '#00b0ff')};
-    background: ${props => (props.enabled ? '#00b0ff' : 'transparent')};
+    color: ${props => (props.enabled ? "#fff" : "#00b0ff")};
+    background: ${props => (props.enabled ? "#00b0ff" : "transparent")};
   }
   span {
     font-size: 10px;
@@ -325,10 +305,9 @@ const QuestionColorBlock = styled.div`
   width: 60px;
   height: 40px;
   border-radius: 4px;
-  background-color: ${props =>
-    props.type === 2 ? '#ee1658' : props.type === 1 ? '#1fe3a1' : '#b1b1b1'};
+  background-color: ${props => (props.type === 2 ? "#ee1658" : props.type === 1 ? "#1fe3a1" : "#b1b1b1")};
   margin-right: 23px;
-  display: ${props => (props.isVisible ? 'flex' : 'none')};
+  display: ${props => (props.isVisible ? "flex" : "none")};
   align-items: center;
   justify-content: center;
   margin-top: 5px;

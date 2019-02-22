@@ -1,19 +1,19 @@
-import React, { Component } from 'react';
-import AceEditor from 'react-ace';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import AceEditor from "react-ace";
+import PropTypes from "prop-types";
 
-import 'brace/mode/json';
-import 'brace/theme/github';
-import { Modal } from '../../common';
+import "brace/mode/json";
+import "brace/theme/github";
+import { Modal } from "../../common";
 
 class SourceModal extends Component {
   state = {
-    json: '',
+    json: ""
   };
 
-  handleChange = (json) => {
+  handleChange = json => {
     this.setState({
-      json,
+      json
     });
   };
 
@@ -21,7 +21,7 @@ class SourceModal extends Component {
     const { children } = this.props;
 
     this.setState({
-      json: children,
+      json: children
     });
   }
 
@@ -46,7 +46,7 @@ class SourceModal extends Component {
 SourceModal.propTypes = {
   children: PropTypes.any.isRequired,
   onApply: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired
 };
 
 export default SourceModal;

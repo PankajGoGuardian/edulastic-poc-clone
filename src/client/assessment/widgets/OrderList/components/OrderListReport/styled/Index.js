@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Index = styled.span`
   font-size: ${props => props.theme.widgets.orderList.indexFontSize};

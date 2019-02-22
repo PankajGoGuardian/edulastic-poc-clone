@@ -1,11 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { IconChevronLeft } from '@edulastic/icons';
-import { FlexContainer } from '@edulastic/common';
-import { mobileWidth, darkBlueSecondary, white, blue } from '@edulastic/colors';
-import HeaderWrapper from '../../mainContent/headerWrapper';
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import { IconChevronLeft } from "@edulastic/icons";
+import { FlexContainer } from "@edulastic/common";
+import { mobileWidth, darkBlueSecondary, white, blue } from "@edulastic/colors";
+import HeaderWrapper from "../../mainContent/headerWrapper";
 
 const ItemHeader = ({ title, children, link, reference, windowWidth }) => {
   const width = windowWidth;
@@ -34,10 +34,7 @@ const ItemHeader = ({ title, children, link, reference, windowWidth }) => {
   ) : (
     <MobileContainer>
       <Container>
-        <FlexContainer
-          alignItems="center"
-          style={{ flex: 1, paddingBottom: 20, flexDirection: 'column' }}
-        >
+        <FlexContainer alignItems="center" style={{ flex: 1, paddingBottom: 20, flexDirection: "column" }}>
           <LeftSide>
             <Title>{title}</Title>
             {reference !== null && (
@@ -71,7 +68,7 @@ ItemHeader.propTypes = {
 
 ItemHeader.defaultProps = {
   children: null,
-  title: '',
+  title: "",
   link: null,
   reference: null
 };

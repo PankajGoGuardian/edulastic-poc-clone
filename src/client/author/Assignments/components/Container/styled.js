@@ -1,5 +1,5 @@
 import { Radio } from "antd";
-import { FlexContainer } from '@edulastic/common';
+import { FlexContainer } from "@edulastic/common";
 import { mobileWidth, tabletWidth } from "@edulastic/colors";
 import styled from "styled-components";
 import { Card } from "@edulastic/common";

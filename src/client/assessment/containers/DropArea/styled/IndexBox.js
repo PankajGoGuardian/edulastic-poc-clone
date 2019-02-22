@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { blue, darkGrey } from '@edulastic/colors';
+import styled from "styled-components";
+import { blue, darkGrey } from "@edulastic/colors";
 
 const IndexBox = styled.span`
   background: ${props => (props.isActive ? blue : darkGrey)};

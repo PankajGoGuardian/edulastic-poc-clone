@@ -2,8 +2,7 @@ import {
   RECEIVE_CLASS_RESPONSE_REQUEST,
   RECEIVE_CLASS_RESPONSE_SUCCESS,
   RECEIVE_CLASS_RESPONSE_ERROR
-} from '../constants/actions';
-
+} from "../constants/actions";
 
 const initialState = {
   data: {},
@@ -16,7 +15,7 @@ const reducer = (state = initialState, { type, payload }) => {
     case RECEIVE_CLASS_RESPONSE_REQUEST:
       return { ...state, loading: true };
     case RECEIVE_CLASS_RESPONSE_SUCCESS:
-    return {
+      return {
         ...state,
         loading: false,
         data: payload

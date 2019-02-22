@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import {
   IconGraphRay as IconRay,
   IconGraphLine as IconLine,
@@ -20,21 +20,20 @@ import {
   IconInfinityToNotIncludedSegment,
   IconNotIncludedToInfinitySegment,
   IconTrash
-} from '@edulastic/icons';
+} from "@edulastic/icons";
 // import { graph } from '@edulastic/evaluators';
-import Tools from './Tools';
-import SegmentsTools from './SegmentsTools';
-import { makeBorder } from '../../Builder/index';
-import { CONSTANT } from '../../Builder/config/index';
+import Tools from "./Tools";
+import SegmentsTools from "./SegmentsTools";
+import { makeBorder } from "../../Builder/index";
+import { CONSTANT } from "../../Builder/config/index";
 import {
   defaultGraphParameters,
   defaultPointParameters,
   defaultAxesParameters,
   defaultGridParameters
-} from '../../Builder/settings';
-import { GraphWrapper, JSXBox } from './styled';
+} from "../../Builder/settings";
+import { GraphWrapper, JSXBox } from "./styled";
 // import { Segment } from '../../Builder/elements';
-
 
 class GraphContainer extends Component {
   constructor(props) {
@@ -84,7 +83,7 @@ class GraphContainer extends Component {
 
     this._graph = makeBorder(this._graphId);
 
-    if (graphType === 'axisSegments') {
+    if (graphType === "axisSegments") {
       this._graph.setTool(CONSTANT.TOOLS.SEGMENTS_POINT, graphType, canvas.responsesAllowed);
     } else {
       this._graph.setTool(CONSTANT.TOOLS.POINT, graphType, canvas.responsesAllowed);
@@ -136,7 +135,7 @@ class GraphContainer extends Component {
 
     this.mapElementsToGraph();
 
-    if (graphType !== 'axisSegments' && graphType !== 'axisLabels') {
+    if (graphType !== "axisSegments" && graphType !== "axisLabels") {
       this.setGraphUpdateEventHandler();
     }
   }
@@ -163,10 +162,11 @@ class GraphContainer extends Component {
       this._graph.setTool(tools[0], graphType, canvas.responsesAllowed);
     }
     if (this._graph) {
-      if (canvas.xMin !== prevProps.canvas.xMin
-        || canvas.xMax !== prevProps.canvas.xMax
-        || canvas.yMin !== prevProps.canvas.yMin
-        || canvas.yMax !== prevProps.canvas.yMax
+      if (
+        canvas.xMin !== prevProps.canvas.xMin ||
+        canvas.xMax !== prevProps.canvas.xMax ||
+        canvas.yMin !== prevProps.canvas.yMin ||
+        canvas.yMax !== prevProps.canvas.yMax
       ) {
         if (canvas.numberline) {
           this._graph.updateGraphParameters(canvas, numberlineAxis, layout, graphType);
@@ -177,18 +177,20 @@ class GraphContainer extends Component {
           });
         }
       }
-      if (numberlineAxis.leftArrow !== prevProps.numberlineAxis.leftArrow
-        || numberlineAxis.rightArrow !== prevProps.numberlineAxis.rightArrow
-        || numberlineAxis.showTicks !== prevProps.numberlineAxis.showTicks
-        || numberlineAxis.fontSize !== prevProps.numberlineAxis.fontSize
+      if (
+        numberlineAxis.leftArrow !== prevProps.numberlineAxis.leftArrow ||
+        numberlineAxis.rightArrow !== prevProps.numberlineAxis.rightArrow ||
+        numberlineAxis.showTicks !== prevProps.numberlineAxis.showTicks ||
+        numberlineAxis.fontSize !== prevProps.numberlineAxis.fontSize
       ) {
         this._graph.updateGraphSettings(numberlineAxis, graphType);
       }
-      if (pointParameters.snapToGrid !== prevProps.pointParameters.snapToGrid
-        || pointParameters.snapSizeX !== prevProps.pointParameters.snapSizeX
-        || pointParameters.snapSizeY !== prevProps.pointParameters.snapSizeY
-        || pointParameters.showInfoBox !== prevProps.pointParameters.showInfoBox
-        || pointParameters.withLabel !== prevProps.pointParameters.withLabel
+      if (
+        pointParameters.snapToGrid !== prevProps.pointParameters.snapToGrid ||
+        pointParameters.snapSizeX !== prevProps.pointParameters.snapSizeX ||
+        pointParameters.snapSizeY !== prevProps.pointParameters.snapSizeY ||
+        pointParameters.showInfoBox !== prevProps.pointParameters.showInfoBox ||
+        pointParameters.withLabel !== prevProps.pointParameters.withLabel
       ) {
         this._graph.setPointParameters({
           ...defaultPointParameters(),
@@ -196,20 +198,20 @@ class GraphContainer extends Component {
         });
       }
       if (
-        xAxesParameters.ticksDistance !== prevProps.xAxesParameters.ticksDistance
-        || xAxesParameters.name !== prevProps.xAxesParameters.name
-        || xAxesParameters.showTicks !== prevProps.xAxesParameters.showTicks
-        || xAxesParameters.drawLabels !== prevProps.xAxesParameters.drawLabels
-        || xAxesParameters.maxArrow !== prevProps.xAxesParameters.maxArrow
-        || xAxesParameters.minArrow !== prevProps.xAxesParameters.minArrow
-        || xAxesParameters.commaInLabel !== prevProps.xAxesParameters.commaInLabel
-        || yAxesParameters.ticksDistance !== prevProps.yAxesParameters.ticksDistance
-        || yAxesParameters.name !== prevProps.yAxesParameters.name
-        || yAxesParameters.showTicks !== prevProps.yAxesParameters.showTicks
-        || yAxesParameters.drawLabels !== prevProps.yAxesParameters.drawLabels
-        || yAxesParameters.maxArrow !== prevProps.yAxesParameters.maxArrow
-        || yAxesParameters.minArrow !== prevProps.yAxesParameters.minArrow
-        || yAxesParameters.commaInLabel !== prevProps.yAxesParameters.commaInLabel
+        xAxesParameters.ticksDistance !== prevProps.xAxesParameters.ticksDistance ||
+        xAxesParameters.name !== prevProps.xAxesParameters.name ||
+        xAxesParameters.showTicks !== prevProps.xAxesParameters.showTicks ||
+        xAxesParameters.drawLabels !== prevProps.xAxesParameters.drawLabels ||
+        xAxesParameters.maxArrow !== prevProps.xAxesParameters.maxArrow ||
+        xAxesParameters.minArrow !== prevProps.xAxesParameters.minArrow ||
+        xAxesParameters.commaInLabel !== prevProps.xAxesParameters.commaInLabel ||
+        yAxesParameters.ticksDistance !== prevProps.yAxesParameters.ticksDistance ||
+        yAxesParameters.name !== prevProps.yAxesParameters.name ||
+        yAxesParameters.showTicks !== prevProps.yAxesParameters.showTicks ||
+        yAxesParameters.drawLabels !== prevProps.yAxesParameters.drawLabels ||
+        yAxesParameters.maxArrow !== prevProps.yAxesParameters.maxArrow ||
+        yAxesParameters.minArrow !== prevProps.yAxesParameters.minArrow ||
+        yAxesParameters.commaInLabel !== prevProps.yAxesParameters.commaInLabel
       ) {
         this._graph.setAxesParameters({
           x: {
@@ -222,38 +224,34 @@ class GraphContainer extends Component {
           }
         });
       }
-      if (
-        layout.width !== prevProps.layout.width
-        || layout.height !== prevProps.layout.height
-      ) {
+      if (layout.width !== prevProps.layout.width || layout.height !== prevProps.layout.height) {
         this._graph.resizeContainer(layout.width, layout.height);
         if (canvas.numberline) {
           this._graph.updateGraphParameters(canvas, numberlineAxis, layout, graphType);
         }
       }
-      if (
-        gridParams.gridY !== prevProps.gridParams.gridY
-        || gridParams.gridX !== prevProps.gridParams.gridX
-      ) {
+      if (gridParams.gridY !== prevProps.gridParams.gridY || gridParams.gridX !== prevProps.gridParams.gridX) {
         this._graph.setGridParameters({
           ...defaultGridParameters(),
           ...gridParams
         });
       }
       if (
-        bgImgOptions.urlImg !== prevProps.bgImgOptions.urlImg
-        || bgImgOptions.opacity !== prevProps.bgImgOptions.opacity
-        || bgImgOptions.coords[0] !== prevProps.bgImgOptions.coords[0]
-        || bgImgOptions.coords[1] !== prevProps.bgImgOptions.coords[1]
-        || bgImgOptions.size[0] !== prevProps.bgImgOptions.size[0]
-        || bgImgOptions.size[1] !== prevProps.bgImgOptions.size[1]
+        bgImgOptions.urlImg !== prevProps.bgImgOptions.urlImg ||
+        bgImgOptions.opacity !== prevProps.bgImgOptions.opacity ||
+        bgImgOptions.coords[0] !== prevProps.bgImgOptions.coords[0] ||
+        bgImgOptions.coords[1] !== prevProps.bgImgOptions.coords[1] ||
+        bgImgOptions.size[0] !== prevProps.bgImgOptions.size[0] ||
+        bgImgOptions.size[1] !== prevProps.bgImgOptions.size[1]
       ) {
         this._graph.removeBgImage();
         this._graph.setBgImage(bgImgOptions);
       }
 
-      if (JSON.stringify(backgroundShapes.values) !== JSON.stringify(prevProps.backgroundShapes.values)
-        || backgroundShapes.showPoints !== prevProps.backgroundShapes.showPoints) {
+      if (
+        JSON.stringify(backgroundShapes.values) !== JSON.stringify(prevProps.backgroundShapes.values) ||
+        backgroundShapes.showPoints !== prevProps.backgroundShapes.showPoints
+      ) {
         this._graph.resetBg();
         this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
       }
@@ -263,9 +261,11 @@ class GraphContainer extends Component {
       }
 
       if (canvas.numberline) {
-        if (numberlineAxis.showMin !== prevProps.numberlineAxis.showMin
-          || numberlineAxis.showMax !== prevProps.numberlineAxis.showMax
-          || numberlineAxis.snapToTicks !== prevProps.numberlineAxis.snapToTicks) {
+        if (
+          numberlineAxis.showMin !== prevProps.numberlineAxis.showMin ||
+          numberlineAxis.showMax !== prevProps.numberlineAxis.showMax ||
+          numberlineAxis.snapToTicks !== prevProps.numberlineAxis.snapToTicks
+        ) {
           this._graph.updateGraphParameters(canvas, numberlineAxis, layout, graphType);
         }
         if (numberlineAxis.ticksDistance !== prevProps.numberlineAxis.ticksDistance) {
@@ -314,7 +314,7 @@ class GraphContainer extends Component {
     setValue(conf);
 
     if (checkAnswer) {
-      changePreviewTab('clear');
+      changePreviewTab("clear");
     }
   }
 
@@ -330,7 +330,7 @@ class GraphContainer extends Component {
 
   getIconByToolName = (toolName, options) => {
     if (!toolName) {
-      return '';
+      return "";
     }
 
     const { width, height } = options;
@@ -471,20 +471,12 @@ class GraphContainer extends Component {
   };
 
   render() {
-    const {
-      tools,
-      layout,
-      graphType,
-      canvas
-    } = this.props;
-    const {
-      selectedTool
-    } = this.state;
+    const { tools, layout, graphType, canvas } = this.props;
+    const { selectedTool } = this.state;
     return (
-      <div style={{ overflow: 'auto' }}>
+      <div style={{ overflow: "auto" }}>
         <GraphWrapper>
-          {
-            graphType !== 'axisLabels' && graphType !== 'axisSegments' && (
+          {graphType !== "axisLabels" && graphType !== "axisSegments" && (
             <Tools
               tools={tools}
               tool={selectedTool}
@@ -493,16 +485,11 @@ class GraphContainer extends Component {
               onReset={this.onReset}
               fontSize={layout.fontSize}
             />
-            )}
+          )}
           <div>
-            <JSXBox
-              id={this._graphId}
-              className="jxgbox"
-              margin={layout.margin}
-            />
+            <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
           </div>
-          {
-            graphType === 'axisSegments' && (
+          {graphType === "axisSegments" && (
             <SegmentsTools
               tool={selectedTool}
               getIconByToolName={this.getIconByToolName}
@@ -511,7 +498,7 @@ class GraphContainer extends Component {
               graphType={graphType}
               responsesAllowed={canvas.responsesAllowed}
             />
-            )}
+          )}
         </GraphWrapper>
       </div>
     );

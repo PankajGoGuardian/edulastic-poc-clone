@@ -9,7 +9,7 @@ import {
   SET_QUESTION,
   SET_QUESTION_ALIGNMENT_ADD_ROW,
   SET_QUESTION_ALIGNMENT_REMOVE_ROW
-} from '../constants/actions';
+} from "../constants/actions";
 
 const initialState = {
   entity: null,

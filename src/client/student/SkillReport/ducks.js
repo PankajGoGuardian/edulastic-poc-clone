@@ -1,12 +1,10 @@
-import { createAction, createReducer } from 'redux-starter-kit';
-import { skillReportApi } from '@edulastic/api';
-import { takeEvery, call, all, put } from 'redux-saga/effects';
+import { createAction, createReducer } from "redux-starter-kit";
+import { skillReportApi } from "@edulastic/api";
+import { takeEvery, call, all, put } from "redux-saga/effects";
 
 // actions
-export const GET_SKILL_REPORT_BY_CLASSID =
-  '[reports] get skill reports by class id';
-export const LOAD_SKILL_REPORT_BY_CLASSID =
-  '[reports] load skill report by class id';
+export const GET_SKILL_REPORT_BY_CLASSID = "[reports] get skill reports by class id";
+export const LOAD_SKILL_REPORT_BY_CLASSID = "[reports] load skill report by class id";
 
 const initialState = null;
 
@@ -17,9 +15,7 @@ const reducer = createReducer(initialState, {
 export default reducer;
 
 // action creators
-export const fetchSkillReportByClassID = createAction(
-  GET_SKILL_REPORT_BY_CLASSID
-);
+export const fetchSkillReportByClassID = createAction(GET_SKILL_REPORT_BY_CLASSID);
 
 // sagas
 function* fetchSkillReport(action) {

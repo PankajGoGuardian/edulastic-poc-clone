@@ -1,5 +1,5 @@
-import { takeLatest, call, put, all, select } from 'redux-saga/effects';
-import { itemsApi, testItemActivityApi } from '@edulastic/api';
+import { takeLatest, call, put, all, select } from "redux-saga/effects";
+import { itemsApi, testItemActivityApi } from "@edulastic/api";
 
 import {
   RECEIVE_ITEM_REQUEST,
@@ -10,7 +10,7 @@ import {
   SAVE_USER_RESPONSE,
   LOAD_USER_RESPONSE,
   LOAD_ANSWERS
-} from '../constants/actions';
+} from "../constants/actions";
 
 function* receiveItemsSaga() {
   try {
@@ -24,7 +24,7 @@ function* receiveItemsSaga() {
     console.error(err);
     yield put({
       type: RECEIVE_ITEMS_ERROR,
-      payload: { error: 'Receive items is failing' }
+      payload: { error: "Receive items is failing" }
     });
   }
 }
@@ -41,19 +41,16 @@ function* receiveItemSaga({ payload }) {
     console.error(err);
     yield put({
       type: RECEIVE_ITEM_ERROR,
-      payload: { error: 'Receive item by id is failing' }
+      payload: { error: "Receive item by id is failing" }
     });
   }
 }
 
 // fetch all questionIds from item
-const getQuestionIds = (item) => {
+const getQuestionIds = item => {
   let questions = [];
-  item.rows.forEach((row) => {
-    questions = [
-      ...questions,
-      ...row.widgets.map(widget => widget.entity && widget.entity.id)
-    ].filter(q => !!q);
+  item.rows.forEach(row => {
+    questions = [...questions, ...row.widgets.map(widget => widget.entity && widget.entity.id)].filter(q => !!q);
   });
 
   return questions;
@@ -69,14 +66,12 @@ function* saveUserResponse({ payload }) {
     const currentItem = items.length && items[itemIndex];
     const questions = getQuestionIds(currentItem);
     const itemAnswers = {};
-    questions.forEach((question) => {
+    questions.forEach(question => {
       itemAnswers[question] = answers[question];
     });
 
     const testItemId = currentItem._id;
-    const assignmentId = yield select(
-      state => state.studentAssignment && state.studentAssignment.current
-    );
+    const assignmentId = yield select(state => state.studentAssignment && state.studentAssignment.current);
     const userWork = yield select(({ newUserWork }) => newUserWork[testItemId]);
 
     const activity = {

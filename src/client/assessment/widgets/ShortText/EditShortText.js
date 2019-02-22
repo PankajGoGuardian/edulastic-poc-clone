@@ -1,18 +1,18 @@
-import React, { Fragment, useState } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
+import React, { Fragment, useState } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep } from "lodash";
 
-import { withNamespaces } from '@edulastic/localization';
-import { Paper } from '@edulastic/common';
+import { withNamespaces } from "@edulastic/localization";
+import { Paper } from "@edulastic/common";
 
-import { EXACT_MATCH, CONTAINS } from '../../constants/constantsForQuestions';
+import { EXACT_MATCH, CONTAINS } from "../../constants/constantsForQuestions";
 
-import withPoints from '../../components/HOC/withPoints';
-import QuestionTextArea from '../../components/QuestionTextArea';
-import CorrectAnswers from '../../components/CorrectAnswers';
-import { Subtitle } from '../../styled/Subtitle';
+import withPoints from "../../components/HOC/withPoints";
+import QuestionTextArea from "../../components/QuestionTextArea";
+import CorrectAnswers from "../../components/CorrectAnswers";
+import { Subtitle } from "../../styled/Subtitle";
 
-import CorrectAnswer from './components/CorrectAnswer';
+import CorrectAnswer from "./components/CorrectAnswer";
 
 const OptionsList = withPoints(CorrectAnswer);
 
@@ -35,14 +35,14 @@ const EditShortText = ({ item, setQuestionData, t }) => {
     newItem.validation.alt_responses.push({
       score: 1,
       matching_rule: EXACT_MATCH,
-      value: ''
+      value: ""
     });
 
     setQuestionData(newItem);
     setCorrectTab(correctTab + 1);
   };
 
-  const handleCloseTab = (tabIndex) => {
+  const handleCloseTab = tabIndex => {
     const newItem = cloneDeep(item);
     newItem.validation.alt_responses.splice(tabIndex, 1);
 
@@ -50,7 +50,7 @@ const EditShortText = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-  const handlePointsChange = (val) => {
+  const handlePointsChange = val => {
     const newItem = cloneDeep(item);
 
     if (correctTab === 0) {
@@ -62,7 +62,7 @@ const EditShortText = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-  const handleScoringTypeChange = (value) => {
+  const handleScoringTypeChange = value => {
     const newItem = cloneDeep(item);
 
     if (correctTab === 0) {
@@ -74,7 +74,7 @@ const EditShortText = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-  const handleValueChange = (value) => {
+  const handleValueChange = value => {
     const newItem = cloneDeep(item);
 
     if (correctTab === 0) {
@@ -89,15 +89,13 @@ const EditShortText = ({ item, setQuestionData, t }) => {
   const renderOptions = () => (
     <OptionsList
       points={
-        correctTab === 0
-          ? item.validation.valid_response.score
-          : item.validation.alt_responses[correctTab - 1].score
+        correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
       }
       onSelectChange={handleScoringTypeChange}
       onChange={handleValueChange}
       options={[
-        { value: EXACT_MATCH, label: t('component.shortText.exactMatch') },
-        { value: CONTAINS, label: t('component.shortText.anyTextContaining') }
+        { value: EXACT_MATCH, label: t("component.shortText.exactMatch") },
+        { value: CONTAINS, label: t("component.shortText.anyTextContaining") }
       ]}
       selectValue={
         correctTab === 0
@@ -105,9 +103,7 @@ const EditShortText = ({ item, setQuestionData, t }) => {
           : item.validation.alt_responses[correctTab - 1].matching_rule
       }
       inputValue={
-        correctTab === 0
-          ? item.validation.valid_response.value
-          : item.validation.alt_responses[correctTab - 1].value
+        correctTab === 0 ? item.validation.valid_response.value : item.validation.alt_responses[correctTab - 1].value
       }
       onChangePoints={handlePointsChange}
     />
@@ -116,10 +112,10 @@ const EditShortText = ({ item, setQuestionData, t }) => {
   return (
     <Fragment>
       <Paper style={{ marginBottom: 30 }}>
-        <Subtitle>{t('component.shortText.composeQuestion')}</Subtitle>
+        <Subtitle>{t("component.shortText.composeQuestion")}</Subtitle>
         <QuestionTextArea
-          placeholder={t('component.shortText.enterQuestion')}
-          onChange={stimulus => handleItemChangeChange('stimulus', stimulus)}
+          placeholder={t("component.shortText.enterQuestion")}
+          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
         />
 
@@ -142,4 +138,4 @@ EditShortText.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default withNamespaces('assessment')(EditShortText);
+export default withNamespaces("assessment")(EditShortText);

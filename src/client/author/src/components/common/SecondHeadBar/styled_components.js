@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { mobileWidth } from '@edulastic/colors';
+import styled from "styled-components";
+import { mobileWidth } from "@edulastic/colors";
 
 export const Container = styled.div`
   display: flex;

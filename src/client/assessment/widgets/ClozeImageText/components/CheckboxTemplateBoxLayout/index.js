@@ -1,17 +1,17 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import { Pointer } from '../../../../styled/Pointer';
-import { Point } from '../../../../styled/Point';
-import { Triangle } from '../../../../styled/Triangle';
+import { Pointer } from "../../../../styled/Pointer";
+import { Point } from "../../../../styled/Point";
+import { Triangle } from "../../../../styled/Triangle";
 
-import { IconWrapper } from './styled/IconWrapper';
-import { StyledTemplateBox } from './styled/StyledTemplateBox';
-import { TemplateCover } from './styled/TemplateCover';
-import { RightIcon } from './styled/RightIcon';
-import { WrongIcon } from './styled/WrongIcon';
+import { IconWrapper } from "./styled/IconWrapper";
+import { StyledTemplateBox } from "./styled/StyledTemplateBox";
+import { TemplateCover } from "./styled/TemplateCover";
+import { RightIcon } from "./styled/RightIcon";
+import { WrongIcon } from "./styled/WrongIcon";
 
-const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
+const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 const CheckboxTemplateBoxLayout = ({
   showAnswer,
@@ -28,12 +28,7 @@ const CheckboxTemplateBoxLayout = ({
 }) => (
   <StyledTemplateBox fontSize={fontSize}>
     <TemplateCover width={imageWidth}>
-      <img
-        src={imageUrl}
-        width="100%"
-        style={{ userSelect: 'none', pointerEvents: 'none' }}
-        alt={imageAlterText}
-      />
+      <img src={imageUrl} width="100%" style={{ userSelect: "none", pointerEvents: "none" }} alt={imageAlterText} />
       {responseContainers.map((responseContainer, index) => {
         const dropTargetIndex = index;
         const btnStyle = {
@@ -42,7 +37,7 @@ const CheckboxTemplateBoxLayout = ({
           top: responseContainer.top,
           left: responseContainer.left,
           height: responseContainer.height,
-          position: 'absolute',
+          position: "absolute",
           borderRadius: 5
         };
         if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
@@ -55,39 +50,31 @@ const CheckboxTemplateBoxLayout = ({
         } else {
           btnStyle.width = btnStyle.widthpx;
         }
-        let indexStr = '';
+        let indexStr = "";
         switch (stemnumeration) {
-          case 'lowercase': {
+          case "lowercase": {
             indexStr = ALPHABET[dropTargetIndex];
             break;
           }
-          case 'uppercase': {
+          case "uppercase": {
             indexStr = ALPHABET[dropTargetIndex].toUpperCase();
             break;
           }
           default:
             indexStr = dropTargetIndex + 1;
         }
-        const className = evaluation[dropTargetIndex] ? 'right' : 'wrong';
+        const className = evaluation[dropTargetIndex] ? "right" : "wrong";
         return (
           <React.Fragment key={index}>
             {!showAnswer && (
-              <div
-                style={btnStyle}
-                className={`imagelabeldragdrop-droppable active check-answer ${className}`}
-              >
+              <div style={btnStyle} className={`imagelabeldragdrop-droppable active check-answer ${className}`}>
                 <span className="index index-box">{indexStr}</span>
-                <div className="text container">
-                  {userSelections[dropTargetIndex]}
-                </div>
+                <div className="text container">{userSelections[dropTargetIndex]}</div>
                 <IconWrapper>
-                  {className === 'right' && <RightIcon />}
-                  {className === 'wrong' && <WrongIcon />}
+                  {className === "right" && <RightIcon />}
+                  {className === "wrong" && <WrongIcon />}
                 </IconWrapper>
-                <Pointer
-                  className={responseContainer.pointerPosition}
-                  width={responseContainer.width}
-                >
+                <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />
                   <Triangle />
                 </Pointer>
@@ -99,17 +86,12 @@ const CheckboxTemplateBoxLayout = ({
                 className={`imagelabeldragdrop-droppable active check-answer ${className} show-answer`}
               >
                 <span className="index index-box">{indexStr}</span>
-                <div className="text container">
-                  {userSelections[dropTargetIndex]}
-                </div>
+                <div className="text container">{userSelections[dropTargetIndex]}</div>
                 <IconWrapper>
-                  {className === 'right' && <RightIcon />}
-                  {className === 'wrong' && <WrongIcon />}
+                  {className === "right" && <RightIcon />}
+                  {className === "wrong" && <WrongIcon />}
                 </IconWrapper>
-                <Pointer
-                  className={responseContainer.pointerPosition}
-                  width={responseContainer.width}
-                >
+                <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />
                   <Triangle />
                 </Pointer>

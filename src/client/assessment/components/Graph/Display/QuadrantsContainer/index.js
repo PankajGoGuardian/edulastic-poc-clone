@@ -1,1 +1,1 @@
-export { default as QuadrantsContainer } from './QuadrantsContainer';
+export { default as QuadrantsContainer } from "./QuadrantsContainer";

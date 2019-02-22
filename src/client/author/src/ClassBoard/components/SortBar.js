@@ -1,18 +1,23 @@
-import React from 'react';
-import { Select } from 'antd';
-import { FlexContainer } from '@edulastic/common';
-import styled from 'styled-components';
-import { themes } from '../../../../student/themes';
+import React from "react";
+import { Select } from "antd";
+import { FlexContainer } from "@edulastic/common";
+import styled from "styled-components";
+import { themes } from "../../../../student/themes";
 
 const classBoardTheme = themes.default.classboard;
 
-const SortBar = ({additionalData={classes:[]},assignmentId,history}) => (
+const SortBar = ({ additionalData = { classes: [] }, assignmentId, history }) => (
   <FlexContainer>
     <Container>
-      <StyledSelect onChange={(v)=>{
-        history.push(`/author/classboard/${assignmentId}/${v}`)
-      }} value={additionalData.classId}>
-      {additionalData.classes.map(x =>  <Select.Option value={x._id}>{x.name}</Select.Option>)}
+      <StyledSelect
+        onChange={v => {
+          history.push(`/author/classboard/${assignmentId}/${v}`);
+        }}
+        value={additionalData.classId}
+      >
+        {additionalData.classes.map(x => (
+          <Select.Option value={x._id}>{x.name}</Select.Option>
+        ))}
       </StyledSelect>
     </Container>
   </FlexContainer>
@@ -40,15 +45,12 @@ const Container = styled.div`
     letter-spacing: 0.2px;
     color: ${classBoardTheme.SortBarSelectionColor};
   }
-
-  
 `;
 const StyledSelect = styled(Select)`
-  display:inline-block
-@media (max-width: 550px) {
-  display: none;
-}
-@media (max-width: 1000px) {
-  display: none;
-}
+  display:inline-block @media (max-width: 550px) {
+    display: none;
+  }
+  @media (max-width: 1000px) {
+    display: none;
+  }
 `;

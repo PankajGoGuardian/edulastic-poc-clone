@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { IconCaretDown } from '@edulastic/icons';
-import { textColor, white, blue } from '@edulastic/colors';
-import SelectButtonItem from './SelectButtonItem';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { IconCaretDown } from "@edulastic/icons";
+import { textColor, white, blue } from "@edulastic/colors";
+import SelectButtonItem from "./SelectButtonItem";
 
 export default class SelectButton extends Component {
   state = {
-    open: false,
+    open: false
   };
 
   toggleList = () => {
     this.setState(({ open }) => ({
-      open: !open,
+      open: !open
     }));
   };
 
@@ -52,12 +52,12 @@ SelectButton.propTypes = {
   onSelect: PropTypes.func.isRequired,
   options: PropTypes.array.isRequired,
   icon: PropTypes.any,
-  style: PropTypes.object,
+  style: PropTypes.object
 };
 
 SelectButton.defaultProps = {
   icon: null,
-  style: {},
+  style: {}
 };
 
 const SelectContainer = styled.div`

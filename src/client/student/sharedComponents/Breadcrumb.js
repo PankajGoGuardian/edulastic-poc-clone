@@ -1,10 +1,10 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { Breadcrumb, Icon } from 'antd';
-import styled from 'styled-components';
+import React from "react";
+import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import { Breadcrumb, Icon } from "antd";
+import styled from "styled-components";
 
-const BreadCrumb = (props) => {
+const BreadCrumb = props => {
   const { data, style } = props;
   return (
     <Container style={style}>
@@ -13,11 +13,7 @@ const BreadCrumb = (props) => {
           data.map((breadCrumb, index) => (
             <Breadcrumb.Item key={`bread${index}`}>
               {index === 0 && <Icon key={index} type="left" style={{ fontSize: 11 }} />}
-              {index !== data.length - 1 ? (
-                <Link to={breadCrumb.to}>{breadCrumb.title}</Link>
-              ) : (
-                breadCrumb.title
-              )}
+              {index !== data.length - 1 ? <Link to={breadCrumb.to}>{breadCrumb.title}</Link> : breadCrumb.title}
             </Breadcrumb.Item>
           ))}
       </Breadcrumb>

@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { DropTarget } from 'react-dnd';
+import React from "react";
+import PropTypes from "prop-types";
+import { DropTarget } from "react-dnd";
 
 const specTarget = {
   drop: (props, monitor) => {
@@ -26,7 +26,7 @@ const Droppable = ({ connectDropTarget, children }) =>
     <div
       style={{
         top: -5,
-        display: 'inline-flex'
+        display: "inline-flex"
       }}
     >
       {children}
@@ -42,4 +42,4 @@ Droppable.defaultProps = {
   children: undefined
 };
 
-export default DropTarget('item', specTarget, collectTarget)(Droppable);
+export default DropTarget("item", specTarget, collectTarget)(Droppable);

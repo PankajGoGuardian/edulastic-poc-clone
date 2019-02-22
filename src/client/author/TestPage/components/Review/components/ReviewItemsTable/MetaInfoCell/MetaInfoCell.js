@@ -1,38 +1,38 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Tag } from 'antd';
-import { FlexContainer } from '@edulastic/common';
-import { IconShare, IconHeart } from '@edulastic/icons';
-import { greenDark, textColor, grey, white } from '@edulastic/colors';
-import {
-  FirstText,
-  CategoryTitle,
-  SecondText,
-  TypeContainer
-} from './styled';
-import Tags from '../../../../../../src/components/common/Tags';
+import React from "react";
+import PropTypes from "prop-types";
+import { Tag } from "antd";
+import { FlexContainer } from "@edulastic/common";
+import { IconShare, IconHeart } from "@edulastic/icons";
+import { greenDark, textColor, grey, white } from "@edulastic/colors";
+import { FirstText, CategoryTitle, SecondText, TypeContainer } from "./styled";
+import Tags from "../../../../../../src/components/common/Tags";
 
 const MetaInfoCell = ({ data }) => (
-  <FlexContainer justifyContent="space-between" style={{ fontWeight: 600, color: textColor, flexWrap: 'wrap' }}>
+  <FlexContainer justifyContent="space-between" style={{ fontWeight: 600, color: textColor, flexWrap: "wrap" }}>
     <div>
       <FlexContainer>
         <TypeContainer>
-          {data.standards &&
-            !!data.standards.length && (
-              <FlexContainer>
-                <Tags tags={data.standards} labelStyle={{ color: greenDark, background: white, border: `1px solid ${grey}` }} />
-              </FlexContainer>
+          {data.standards && !!data.standards.length && (
+            <FlexContainer>
+              <Tags
+                tags={data.standards}
+                labelStyle={{
+                  color: greenDark,
+                  background: white,
+                  border: `1px solid ${grey}`
+                }}
+              />
+            </FlexContainer>
           )}
-          {data.types &&
-            !!data.types.length && (
-              <FlexContainer>
-                <CategoryTitle>Type: </CategoryTitle>
-                {
-                  data.types.map(type => (
-                    <Tag color="cyan" key={type} style={{ marginTop: 3 }}>{type}</Tag>
-                  ))
-                }
-              </FlexContainer>
+          {data.types && !!data.types.length && (
+            <FlexContainer>
+              <CategoryTitle>Type: </CategoryTitle>
+              {data.types.map(type => (
+                <Tag color="cyan" key={type} style={{ marginTop: 3 }}>
+                  {type}
+                </Tag>
+              ))}
+            </FlexContainer>
           )}
         </TypeContainer>
         <div>

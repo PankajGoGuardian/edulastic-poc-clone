@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
 
-import { IPAD_PORTRAIT_WIDTH } from '../../constants/others';
+import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
 
 const ProgressContainer = ({ questions, current, desktop }) => {
   return (
@@ -35,13 +35,12 @@ const Container = styled.div`
     width: 100%;
     margin-left: 0;
     max-width: initial;
-    ${props => props.desktop === 'true' && 'display:none;'}
+    ${props => props.desktop === "true" && "display:none;"}
   }
 `;
 
 const Items = styled.div`
-  background: ${props =>
-    props.fillColor ? props.theme.progressFill : props.theme.headerIconBgColor};
+  background: ${props => (props.fillColor ? props.theme.progressFill : props.theme.headerIconBgColor)};
   height: 8px;
   margin-right: 5px;
   width: 50px;

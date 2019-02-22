@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { TextField } from '@edulastic/common';
+import styled from "styled-components";
+import { TextField } from "@edulastic/common";
 
 export const CorrectAnswerPointField = styled(TextField)`
   width: 100px;

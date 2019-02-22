@@ -1,25 +1,25 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { shuffle } from 'lodash';
-import { withTheme } from 'styled-components';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { shuffle } from "lodash";
+import { withTheme } from "styled-components";
 
-import MapImage from '../../assets/map.svg';
-import CardMapImage from '../../assets/map-card.svg';
+import MapImage from "../../assets/map.svg";
+import CardMapImage from "../../assets/map-card.svg";
 
-import { QuestionHeader } from '../../styled/QuestionHeader';
-import CorrectAnswerBoxLayout from '../../components/CorrectAnswerBoxLayout';
+import { QuestionHeader } from "../../styled/QuestionHeader";
+import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 
-import AnswerDropdown from './components/AnswerDropdown';
-import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout';
-import { StyledPreviewTemplateBox } from './styled/StyledPreviewTemplateBox';
-import { StyledPreviewContainer } from './styled/StyledPreviewContainer';
-import { StyledPreviewImage } from './styled/StyledPreviewImage';
-import { StyledDisplayContainer } from './styled/StyledDisplayContainer';
-import { TemplateBoxContainer } from './styled/TemplateBoxContainer';
-import { TemplateBoxLayoutContainer } from './styled/TemplateBoxLayoutContainer';
-import { getFontSize, topAndLeftRatio, calculateRatio } from '../../utils/helpers';
+import AnswerDropdown from "./components/AnswerDropdown";
+import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
+import { StyledPreviewTemplateBox } from "./styled/StyledPreviewTemplateBox";
+import { StyledPreviewContainer } from "./styled/StyledPreviewContainer";
+import { StyledPreviewImage } from "./styled/StyledPreviewImage";
+import { StyledDisplayContainer } from "./styled/StyledDisplayContainer";
+import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
+import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
+import { getFontSize, topAndLeftRatio, calculateRatio } from "../../utils/helpers";
 
-const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
+const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 class Display extends Component {
   constructor(props) {
@@ -51,7 +51,7 @@ class Display extends Component {
     changeAnswers(newAnswers);
   };
 
-  shuffle = (arr) => {
+  shuffle = arr => {
     const newArr = arr.map(item => shuffle(item));
 
     return newArr;
@@ -94,17 +94,14 @@ class Display extends Component {
     const { heightpx, wordwrap, responsecontainerindividuals, stemnumeration } = uiStyle;
 
     const responseBtnStyle = {
-      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : 'auto',
-      heightpx: heightpx !== 0 ? heightpx : 'auto',
-      whiteSpace: wordwrap ? 'inherit' : 'nowrap'
+      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
+      heightpx: heightpx !== 0 ? heightpx : "auto",
+      whiteSpace: wordwrap ? "inherit" : "nowrap"
     };
 
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox smallSize={smallSize} fontSize={fontSize}>
-        <StyledPreviewContainer
-          smallSize={smallSize}
-          width={calculateRatio(imagescale, fontsize, imageWidth)}
-        >
+        <StyledPreviewContainer smallSize={smallSize} width={calculateRatio(imagescale, fontsize, imageWidth)}>
           <StyledPreviewImage
             src={smallSize ? CardMapImage : imageUrl || MapImage}
             smallSize={smallSize}
@@ -120,13 +117,9 @@ class Display extends Component {
                 left: topAndLeftRatio(responseContainer.left, imagescale, fontsize, smallSize),
                 height: topAndLeftRatio(responseContainer.height, imagescale, fontsize, smallSize),
                 border: showDashedBorder
-                  ? `dashed 2px ${
-                    theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor
-                  }`
-                  : `solid 1px ${
-                    theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor
-                  }`,
-                position: 'absolute',
+                  ? `dashed 2px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
+                  : `solid 1px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`,
+                position: "absolute",
                 background: backgroundColor,
                 borderRadius: 5
               };
@@ -140,13 +133,13 @@ class Display extends Component {
               } else {
                 btnStyle.width = btnStyle.widthpx;
               }
-              let indexStr = '';
+              let indexStr = "";
               switch (stemnumeration) {
-                case 'lowercase': {
+                case "lowercase": {
                   indexStr = ALPHABET[dropTargetIndex];
                   break;
                 }
-                case 'uppercase': {
+                case "uppercase": {
                   indexStr = ALPHABET[dropTargetIndex].toUpperCase();
                   break;
                 }
@@ -158,16 +151,19 @@ class Display extends Component {
                   key={index}
                   style={{
                     ...btnStyle,
-                    borderStyle: smallSize ? 'dashed' : 'solid',
-                    overflow: 'hidden'
+                    borderStyle: smallSize ? "dashed" : "solid",
+                    overflow: "hidden"
                   }}
                   className="imagelabeldragdrop-droppable active"
                 >
                   {!smallSize && <span className="index-box">{indexStr}</span>}
                   {!smallSize && (
                     <AnswerDropdown
-                      style={{ width: '100%', height: '100%' }}
-                      options={newOptions[dropTargetIndex].map(op => ({ value: op, label: op }))}
+                      style={{ width: "100%", height: "100%" }}
+                      options={newOptions[dropTargetIndex].map(op => ({
+                        value: op,
+                        label: op
+                      }))}
                       onChange={value => this.selectChange(value, dropTargetIndex)}
                       defaultValue={userAnswers[dropTargetIndex]}
                     />
@@ -197,8 +193,7 @@ class Display extends Component {
         evaluation={evaluation}
       />
     );
-    const templateBoxLayout =
-      showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
+    const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const correctAnswerBoxLayout = showAnswer ? (
       <CorrectAnswerBoxLayout
         fontSize={fontSize}
@@ -213,9 +208,7 @@ class Display extends Component {
       <StyledDisplayContainer fontSize={fontSize} smallSize={smallSize}>
         <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         <TemplateBoxContainer smallSize={smallSize}>
-          <TemplateBoxLayoutContainer smallSize={smallSize}>
-            {templateBoxLayout}
-          </TemplateBoxLayoutContainer>
+          <TemplateBoxLayoutContainer smallSize={smallSize}>{templateBoxLayout}</TemplateBoxLayoutContainer>
         </TemplateBoxContainer>
         {answerBox}
       </StyledDisplayContainer>
@@ -257,14 +250,14 @@ Display.defaultProps = {
   responseContainers: [],
   showDashedBorder: false,
   smallSize: false,
-  backgroundColor: '#0288d1',
+  backgroundColor: "#0288d1",
   validation: {},
   imageUrl: undefined,
-  imageAlterText: '',
+  imageAlterText: "",
   imageWidth: 600,
   uiStyle: {
-    fontsize: 'normal',
-    stemnumeration: 'numerical',
+    fontsize: "normal",
+    stemnumeration: "numerical",
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,

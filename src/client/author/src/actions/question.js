@@ -6,7 +6,7 @@ import {
   SET_QUESTION_ALIGNMENT_REMOVE_ROW,
   SET_QUESTION,
   LOAD_QUESTION
-} from '../constants/actions';
+} from "../constants/actions";
 
 export const receiveQuestionByIdAction = id => ({
   type: RECEIVE_QUESTION_REQUEST,

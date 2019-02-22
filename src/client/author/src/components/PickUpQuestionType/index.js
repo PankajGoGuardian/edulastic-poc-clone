@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { Menu } from 'antd';
-import { PaddingDiv } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { Menu } from "antd";
+import { PaddingDiv } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 import {
   IconMath,
   IconEdit,
@@ -17,37 +17,37 @@ import {
   IconTarget,
   IconMore,
   IconBarChart
-} from '@edulastic/icons';
+} from "@edulastic/icons";
 
-import QuestionTypes from './questionTypes';
-import { getItemSelector } from '../../selectors/items';
-import Header from './Header';
-import { setQuestionAction } from '../../actions/question';
+import QuestionTypes from "./questionTypes";
+import { getItemSelector } from "../../selectors/items";
+import Header from "./Header";
+import { setQuestionAction } from "../../actions/question";
 
 const makeQuestion = data => ({
-  regionId: '1',
-  widgetType: 'question',
+  regionId: "1",
+  widgetType: "question",
   data
 });
 
 class PickUpQuestionType extends Component {
   state = {
-    currentQuestion: 'multiple-choice',
-    currentTab: 'question-tab'
+    currentQuestion: "multiple-choice",
+    currentTab: "question-tab"
   };
 
-  selectQuestionType = (data) => {
+  selectQuestionType = data => {
     const { setQuestion, history, match, t } = this.props;
     const question = makeQuestion(data);
 
     setQuestion(question.data);
 
     history.push({
-      pathname: '/author/questions/create',
+      pathname: "/author/questions/create",
       state: {
         ...history.location.state,
         backUrl: match.url,
-        backText: t('component.pickupcomponent.headertitle')
+        backText: t("component.pickupcomponent.headertitle")
       }
     });
   };
@@ -63,8 +63,8 @@ class PickUpQuestionType extends Component {
     }
 
     return {
-      url: '/author/items',
-      text: t('component.itemDetail.backToItemList')
+      url: "/author/items",
+      text: t("component.itemDetail.backToItemList")
     };
   }
 
@@ -75,11 +75,11 @@ class PickUpQuestionType extends Component {
   handleChangeTab = ({ key }) => {
     this.setState({ currentTab: key });
 
-    if (key === 'feature-tab') {
-      this.setState({ currentQuestion: 'feature' });
+    if (key === "feature-tab") {
+      this.setState({ currentQuestion: "feature" });
     }
-    if (key === 'question-tab') {
-      this.setState({ currentQuestion: 'multiple-choice' });
+    if (key === "question-tab") {
+      this.setState({ currentQuestion: "multiple-choice" });
     }
   };
 
@@ -90,83 +90,73 @@ class PickUpQuestionType extends Component {
     return (
       <Container>
         <LeftSide>
-          <Menu
-            mode="horizontal"
-            selectedKeys={[currentTab]}
-            onClick={this.handleChangeTab}
-          >
+          <Menu mode="horizontal" selectedKeys={[currentTab]} onClick={this.handleChangeTab}>
             <Menu.Item key="question-tab">Question</Menu.Item>
             <Menu.Item key="feature-tab">Feature</Menu.Item>
           </Menu>
           <Menu
             mode="inline"
-            style={{ background: '#fbfafc' }}
+            style={{ background: "#fbfafc" }}
             selectedKeys={[currentQuestion]}
             onClick={this.handleCategory}
           >
             <Menu.Item key="multiple-choice">
               <NewListIcon />
-              {'Multiple Choice'}
+              {"Multiple Choice"}
             </Menu.Item>
             <Menu.Item key="fill-blanks">
               <SelectionIcon />
-              {'Fill in the Blanks'}
+              {"Fill in the Blanks"}
             </Menu.Item>
             <Menu.Item key="classify">
               <LayoutIcon />
-              {'Classify, Match & Order'}
+              {"Classify, Match & Order"}
             </Menu.Item>
             <Menu.Item key="edit">
               <EditIcon />
-              {'Written & Spoken'}
+              {"Written & Spoken"}
             </Menu.Item>
             <Menu.Item key="highlight">
               <TargetIcon />
-              {'Highlight'}
+              {"Highlight"}
             </Menu.Item>
             <Menu.Item key="math">
               <MathIcon />
-              {'Math'}
+              {"Math"}
             </Menu.Item>
             <Menu.Item key="graphing">
               <LineChartIcon />
-              {'Graphing'}
+              {"Graphing"}
             </Menu.Item>
             <Menu.Item key="charts">
               <BarChartIcon />
-              {'Charts'}
+              {"Charts"}
             </Menu.Item>
             <Menu.Item key="chemistry">
               <MoleculeIcon />
-              {'Chemistry'}
+              {"Chemistry"}
             </Menu.Item>
             <Menu.Item key="other">
               <MoreIcon />
-              {'Other'}
+              {"Other"}
             </Menu.Item>
           </Menu>
         </LeftSide>
         <RightSide>
-          <Header
-            title={t('component.pickupcomponent.headertitle')}
-            link={this.link}
-          />
+          <Header title={t("component.pickupcomponent.headertitle")} link={this.link} />
           <PaddingDiv
             left={30}
             right={30}
             style={{
-              position: 'absolute',
+              position: "absolute",
               left: 0,
               right: 0,
               top: 140,
-              overflow: 'auto',
-              height: 'calc(100% - 140px)'
+              overflow: "auto",
+              height: "calc(100% - 140px)"
             }}
           >
-            <QuestionTypes
-              onSelectQuestionType={this.selectQuestionType}
-              questionType={currentQuestion}
-            />
+            <QuestionTypes onSelectQuestionType={this.selectQuestionType} questionType={currentQuestion} />
           </PaddingDiv>
         </RightSide>
       </Container>
@@ -175,7 +165,7 @@ class PickUpQuestionType extends Component {
 }
 
 const enhance = compose(
-  withNamespaces('author'),
+  withNamespaces("author"),
   connect(
     state => ({
       item: getItemSelector(state)

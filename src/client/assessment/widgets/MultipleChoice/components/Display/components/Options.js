@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import { OptionsList } from '../styled/OptionsList';
-import Option from './Option';
+import { OptionsList } from "../styled/OptionsList";
+import Option from "./Option";
 
 const Options = ({ view, options, evaluation, uiStyle, onChange, validation, ...restProps }) => (
   <OptionsList>

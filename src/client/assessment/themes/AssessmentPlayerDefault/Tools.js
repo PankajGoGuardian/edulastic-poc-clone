@@ -1,12 +1,12 @@
-import React from 'react';
-import { Button } from 'antd';
-import PropTypes from 'prop-types';
-import ColorPicker from 'rc-color-picker';
-import styled from 'styled-components';
+import React from "react";
+import { Button } from "antd";
+import PropTypes from "prop-types";
+import ColorPicker from "rc-color-picker";
+import styled from "styled-components";
 
-import { mainBlueColor, white, darkBlueSecondary, secondaryTextColor } from '@edulastic/colors';
-import { FlexContainer } from '@edulastic/common';
-import { drawTools } from '@edulastic/constants';
+import { mainBlueColor, white, darkBlueSecondary, secondaryTextColor } from "@edulastic/colors";
+import { FlexContainer } from "@edulastic/common";
+import { drawTools } from "@edulastic/constants";
 import {
   IconPencilEdit,
   IconTrash,
@@ -21,7 +21,7 @@ import {
   IconRoot,
   IconSquareTriangle,
   IconSelected
-} from '@edulastic/icons';
+} from "@edulastic/icons";
 
 const customizeIcon = icon => styled(icon)`
   fill: ${white};
@@ -68,9 +68,9 @@ const buttonsList = [
   { mode: drawTools.DRAW_TRIANGLE, icon: <TriangleIcon /> },
   { mode: drawTools.DRAW_CIRCLE, icon: <CircleWithPointsIcon /> },
   { mode: drawTools.DRAW_TEXT, icon: <LettersIcon /> },
-  { mode: 'none', icon: <RootIcon /> },
-  { mode: 'none', icon: <SquareTriangleIcon /> },
-  { mode: 'none', icon: <SelectedIcon /> }
+  { mode: "none", icon: <RootIcon /> },
+  { mode: "none", icon: <SquareTriangleIcon /> },
+  { mode: "none", icon: <SelectedIcon /> }
 ];
 
 const Tools = ({
@@ -84,7 +84,7 @@ const Tools = ({
   undo,
   redo
 }) => {
-  const getAlpha = (color) => {
+  const getAlpha = color => {
     const regexValuesFromRgbaColor = /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d*(?:\.\d+)?)\)$/;
 
     return color.match(regexValuesFromRgbaColor) !== null
@@ -92,37 +92,29 @@ const Tools = ({
       : 100;
   };
 
-  const showFillColorArray = [
-    drawTools.DRAW_SQUARE,
-    drawTools.DRAW_CIRCLE,
-    drawTools.DRAW_TRIANGLE
-  ];
+  const showFillColorArray = [drawTools.DRAW_SQUARE, drawTools.DRAW_CIRCLE, drawTools.DRAW_TRIANGLE];
 
   const activeTool = buttonsList.find(button => button.mode === activeMode);
 
   return (
     <ToolBox activeMode={activeMode} justifyContent="center">
-      {activeMode === '' && (
+      {activeMode === "" && (
         <FlexContainer childMarginRight={0} justifyContent="flex-end" flexDirection="column">
           {buttonsList.map((button, i) => (
-            <StyledButton
-              key={i}
-              onClick={onToolChange(button.mode)}
-              enable={activeMode === button.mode}
-            >
+            <StyledButton key={i} onClick={onToolChange(button.mode)} enable={activeMode === button.mode}>
               {button.icon}
             </StyledButton>
           ))}
         </FlexContainer>
       )}
-      {activeMode !== '' && (
-        <FlexContainer style={{ width: '50px' }} childMarginRight={0} flexDirection="column">
-          <BackButton onClick={onToolChange('')} justifyContent="center" style={{ flex: 0.18 }}>
+      {activeMode !== "" && (
+        <FlexContainer style={{ width: "50px" }} childMarginRight={0} flexDirection="column">
+          <BackButton onClick={onToolChange("")} justifyContent="center" style={{ flex: 0.18 }}>
             Back
           </BackButton>
           <Separator />
           {activeTool && (
-            <StyledButton onClick={onToolChange('')} enable>
+            <StyledButton onClick={onToolChange("")} enable>
               {activeTool.icon}
             </StyledButton>
           )}
@@ -133,7 +125,7 @@ const Tools = ({
             <StyledButton onClick={redo}>
               <Redo />
             </StyledButton>
-            <StyledButton onClick={onToolChange('deleteMode')} enable={deleteMode}>
+            <StyledButton onClick={onToolChange("deleteMode")} enable={deleteMode}>
               <Trash />
             </StyledButton>
           </FlexContainer>
@@ -247,12 +239,12 @@ const StyledButton = styled(Button)`
   margin-bottom: 5px;
   margin-top: 5px;
   box-shadow: none !important;
-  background: ${props => (props.enable ? darkBlueSecondary : 'transparent')};
+  background: ${props => (props.enable ? darkBlueSecondary : "transparent")};
   height: 40px;
   width: 40px;
   border: none !important;
   &:focus,
   &:hover {
-    background: ${props => (props.enable ? darkBlueSecondary : 'transparent')};
+    background: ${props => (props.enable ? darkBlueSecondary : "transparent")};
   }
 `;

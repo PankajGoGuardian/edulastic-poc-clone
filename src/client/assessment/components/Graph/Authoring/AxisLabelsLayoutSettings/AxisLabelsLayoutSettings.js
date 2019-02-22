@@ -1,11 +1,9 @@
-import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-import {
-  MoreOptions, MoreOptionsHeading
-} from '../../common/styled_components';
-import MoreOptionsSettings from './MoreOptionsSettings';
+import React, { Component, Fragment } from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
+import { MoreOptions, MoreOptionsHeading } from "../../common/styled_components";
+import MoreOptionsSettings from "./MoreOptionsSettings";
 
 class AxisLabelsLayoutSettings extends Component {
   updateClickOnMoreOptions = () => {
@@ -15,35 +13,23 @@ class AxisLabelsLayoutSettings extends Component {
   };
 
   render() {
-    const {
-      isMoreOptionsOpen,
-      fontSizeList,
-      fractionsFormatList,
-      renderingBaseList,
-      t
-    } = this.props;
+    const { isMoreOptionsOpen, fontSizeList, fractionsFormatList, renderingBaseList, t } = this.props;
 
     return (
       <Fragment>
         <MoreOptions>
-          <MoreOptionsHeading
-            onClick={this.updateClickOnMoreOptions}
-            isOpen={isMoreOptionsOpen}
-          >
-            {t('component.graphing.optionstitle')}
+          <MoreOptionsHeading onClick={this.updateClickOnMoreOptions} isOpen={isMoreOptionsOpen}>
+            {t("component.graphing.optionstitle")}
           </MoreOptionsHeading>
 
-          {isMoreOptionsOpen
-            ? (
-              <MoreOptionsSettings
-                t={t}
-                fontSizeList={fontSizeList}
-                fractionsFormatList={fractionsFormatList}
-                renderingBaseList={renderingBaseList}
-              />
-            )
-            : null
-          }
+          {isMoreOptionsOpen ? (
+            <MoreOptionsSettings
+              t={t}
+              fontSizeList={fontSizeList}
+              fractionsFormatList={fractionsFormatList}
+              renderingBaseList={renderingBaseList}
+            />
+          ) : null}
         </MoreOptions>
       </Fragment>
     );
@@ -59,8 +45,6 @@ AxisLabelsLayoutSettings.propTypes = {
   renderingBaseList: PropTypes.array.isRequired
 };
 
-const enhance = compose(
-  withNamespaces('assessment'),
-);
+const enhance = compose(withNamespaces("assessment"));
 
 export default enhance(AxisLabelsLayoutSettings);

@@ -1,7 +1,7 @@
-import styled from 'styled-components';
-import React from 'react';
-import { textColor, greenDark, mainBgColor } from '@edulastic/colors';
-import PropTypes from 'prop-types';
+import styled from "styled-components";
+import React from "react";
+import { textColor, greenDark, mainBgColor } from "@edulastic/colors";
+import PropTypes from "prop-types";
 
 const InfoBlock = ({ count, children }) => (
   <Block>
@@ -12,7 +12,7 @@ const InfoBlock = ({ count, children }) => (
 
 InfoBlock.propTypes = {
   count: PropTypes.number.isRequired,
-  children: PropTypes.string.isRequired,
+  children: PropTypes.string.isRequired
 };
 
 const Block = styled.div`

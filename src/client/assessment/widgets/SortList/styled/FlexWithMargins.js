@@ -1,9 +1,9 @@
-import styled from 'styled-components';
-import { FlexContainer } from '@edulastic/common';
-import { IconLeft } from './IconLeft';
-import { IconRight } from './IconRight';
-import { IconUp } from './IconUp';
-import { IconDown } from './IconDown';
+import styled from "styled-components";
+import { FlexContainer } from "@edulastic/common";
+import { IconLeft } from "./IconLeft";
+import { IconRight } from "./IconRight";
+import { IconUp } from "./IconUp";
+import { IconDown } from "./IconDown";
 
 export const FlexWithMargins = styled(FlexContainer)`
   margin-top: ${({ smallSize }) => (smallSize ? -10 : 10)}px;

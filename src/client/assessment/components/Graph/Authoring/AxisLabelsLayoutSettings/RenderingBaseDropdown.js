@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-import { SelectContainer, Select } from '../../common/styled_components';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
+import { SelectContainer, Select } from "../../common/styled_components";
 
 class RenderingBaseDropdown extends Component {
-  changeFractionsFormat = (e) => {
+  changeFractionsFormat = e => {
     const { onChangeRenderingBase } = this.props;
     onChangeRenderingBase(e);
   };
@@ -15,10 +15,7 @@ class RenderingBaseDropdown extends Component {
 
     return (
       <SelectContainer>
-        <Select
-          value={currentItem.value}
-          onChange={this.changeFractionsFormat}
-        >
+        <Select value={currentItem.value} onChange={this.changeFractionsFormat}>
           {renderingBaseList.map(item => (
             <option key={item.id} value={item.value}>
               {t(item.value)}
@@ -37,8 +34,6 @@ RenderingBaseDropdown.propTypes = {
   onChangeRenderingBase: PropTypes.func.isRequired
 };
 
-const enhance = compose(
-  withNamespaces('assessment'),
-);
+const enhance = compose(withNamespaces("assessment"));
 
 export default enhance(RenderingBaseDropdown);

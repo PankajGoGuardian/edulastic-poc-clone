@@ -1,6 +1,6 @@
-import styled from 'styled-components';
-import { FlexContainer } from '@edulastic/common';
-import { blue, grey } from '@edulastic/colors';
+import styled from "styled-components";
+import { FlexContainer } from "@edulastic/common";
+import { blue, grey } from "@edulastic/colors";
 
 export const TestItemWrapper = styled.div`
   border-bottom: 1px solid ${grey};

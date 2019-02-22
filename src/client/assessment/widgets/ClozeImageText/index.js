@@ -1,23 +1,23 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
-import { cloneDeep } from 'lodash';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
+import { cloneDeep } from "lodash";
 
-import { Checkbox, Paper } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { Checkbox, Paper } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
 
-import { CorrectAnswerOptions } from '../../styled/CorrectAnswerOptions';
+import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
 
-import { EditorContainer } from './styled/EditorContainer';
-import { OptionsContainer } from './styled/OptionsContainer';
-import Options from './components/Options';
-import Display from './Display';
-import Authoring from './Authoring';
-import CorrectAnswers from './CorrectAnswers';
+import { EditorContainer } from "./styled/EditorContainer";
+import { OptionsContainer } from "./styled/OptionsContainer";
+import Options from "./components/Options";
+import Display from "./Display";
+import Authoring from "./Authoring";
+import CorrectAnswers from "./CorrectAnswers";
 
 class ClozeImageText extends Component {
   state = {
@@ -80,8 +80,8 @@ class ClozeImageText extends Component {
       newItem.validation.alt_responses = newItem.validation.alt_responses.filter((response, i) => i !== index);
     }
 
-    setQuestionData(newItem);    
-  }
+    setQuestionData(newItem);
+  };
 
   handleOptionsChange = (name, value) => {
     const { setQuestionData, item } = this.props;
@@ -89,19 +89,19 @@ class ClozeImageText extends Component {
     newItem[name] = value;
     setQuestionData(newItem);
     switch (name) {
-      case 'duplicated_responses': {
+      case "duplicated_responses": {
         this.setState({ duplicatedResponses: value });
         break;
       }
-      case 'shuffle_options': {
+      case "shuffle_options": {
         this.setState({ shuffleOptions: value });
         break;
       }
-      case 'show_draghandle': {
+      case "show_draghandle": {
         this.setState({ showDraghandle: value });
         break;
       }
-      case 'transparent_responses': {
+      case "transparent_responses": {
         this.setState({ transparentResponses: value });
         break;
       }
@@ -109,7 +109,7 @@ class ClozeImageText extends Component {
     }
   };
 
-  handleAddAnswer = (userAnswer) => {
+  handleAddAnswer = userAnswer => {
     const { saveAnswer } = this.props;
     const newAnswer = cloneDeep(userAnswer);
     saveAnswer(newAnswer);
@@ -118,20 +118,14 @@ class ClozeImageText extends Component {
   render() {
     const { qIndex, view, previewTab, item, userAnswer, t, testItem, evaluation } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
-    const { duplicatedResponses, showDraghandle, shuffleOptions,
-      transparentResponses } = this.state;
+    const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
 
     const Wrapper = testItem ? React.Fragment : Paper;
     return (
       <React.Fragment>
-        {view === 'edit' && (
+        {view === "edit" && (
           <React.Fragment>
-            <EditorContainer
-              top={36}
-              bottom={36}
-              left={60}
-              right={60}
-            >
+            <EditorContainer top={36} bottom={36} left={60} right={60}>
               <div className="authoring">
                 <Authoring item={itemForEdit} />
                 <CorrectAnswers
@@ -159,13 +153,8 @@ class ClozeImageText extends Component {
                 <CorrectAnswerOptions>
                   <Checkbox
                     className="additional-options"
-                    onChange={() =>
-                      this.handleOptionsChange(
-                        'shuffle_options',
-                        !shuffleOptions
-                      )
-                    }
-                    label={t('component.cloze.imageText.shuffleoptions')}
+                    onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
+                    label={t("component.cloze.imageText.shuffleoptions")}
                     checked={shuffleOptions}
                   />
                 </CorrectAnswerOptions>
@@ -176,15 +165,15 @@ class ClozeImageText extends Component {
                 onChange={this.handleOptionsChange}
                 uiStyle={uiStyle}
                 outerStyle={{
-                  padding: '16px 60px 7px 60px'
+                  padding: "16px 60px 7px 60px"
                 }}
               />
             </OptionsContainer>
           </React.Fragment>
         )}
-        {view === 'preview' && (
+        {view === "preview" && (
           <Wrapper>
-            {previewTab === 'check' && (
+            {previewTab === "check" && (
               <Display
                 checkAnswer
                 options={previewDisplayOptions}
@@ -207,7 +196,7 @@ class ClozeImageText extends Component {
                 qIndex={qIndex}
               />
             )}
-            {previewTab === 'show' && (
+            {previewTab === "show" && (
               <Display
                 showAnswer
                 options={previewDisplayOptions}
@@ -230,7 +219,7 @@ class ClozeImageText extends Component {
                 qIndex={qIndex}
               />
             )}
-            {previewTab === 'clear' && (
+            {previewTab === "clear" && (
               <Display
                 preview
                 validation={item.validation}
@@ -278,7 +267,7 @@ ClozeImageText.propTypes = {
 };
 
 ClozeImageText.defaultProps = {
-  previewTab: 'clear',
+  previewTab: "clear",
   item: {
     options: []
   },
@@ -290,13 +279,13 @@ ClozeImageText.defaultProps = {
 
 const enhance = compose(
   withRouter,
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     null,
     {
       setQuestionData: setQuestionDataAction
-    },
-  ),
+    }
+  )
 );
 
 const ClozeImageTextContainer = enhance(ClozeImageText);

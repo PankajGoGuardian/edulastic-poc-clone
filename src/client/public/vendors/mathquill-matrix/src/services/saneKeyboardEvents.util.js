@@ -32,37 +32,37 @@ var saneKeyboardEvents = (function() {
   // [2]: http://www.w3.org/TR/2012/WD-DOM-Level-3-Events-20120614/#fixed-virtual-key-codes
   // [3]: http://unixpapa.com/js/key.html
   var KEY_VALUES = {
-    8: 'Backspace',
-    9: 'Tab',
+    8: "Backspace",
+    9: "Tab",
 
-    10: 'Enter', // for Safari on iOS
+    10: "Enter", // for Safari on iOS
 
-    13: 'Enter',
+    13: "Enter",
 
-    16: 'Shift',
-    17: 'Control',
-    18: 'Alt',
-    20: 'CapsLock',
+    16: "Shift",
+    17: "Control",
+    18: "Alt",
+    20: "CapsLock",
 
-    27: 'Esc',
+    27: "Esc",
 
-    32: 'Spacebar',
+    32: "Spacebar",
 
-    33: 'PageUp',
-    34: 'PageDown',
-    35: 'End',
-    36: 'Home',
+    33: "PageUp",
+    34: "PageDown",
+    35: "End",
+    36: "Home",
 
-    37: 'Left',
-    38: 'Up',
-    39: 'Right',
-    40: 'Down',
+    37: "Left",
+    38: "Up",
+    39: "Right",
+    40: "Down",
 
-    45: 'Insert',
+    45: "Insert",
 
-    46: 'Del',
+    46: "Del",
 
-    144: 'NumLock'
+    144: "NumLock"
   };
 
   // To the extent possible, create a normalized string representation
@@ -73,17 +73,17 @@ var saneKeyboardEvents = (function() {
     var key;
     var modifiers = [];
 
-    if (evt.ctrlKey) modifiers.push('Ctrl');
-    if (evt.originalEvent && evt.originalEvent.metaKey) modifiers.push('Meta');
-    if (evt.altKey) modifiers.push('Alt');
-    if (evt.shiftKey) modifiers.push('Shift');
+    if (evt.ctrlKey) modifiers.push("Ctrl");
+    if (evt.originalEvent && evt.originalEvent.metaKey) modifiers.push("Meta");
+    if (evt.altKey) modifiers.push("Alt");
+    if (evt.shiftKey) modifiers.push("Shift");
 
     key = keyVal || String.fromCharCode(which);
 
     if (!modifiers.length && !keyVal) return key;
 
     modifiers.push(key);
-    return modifiers.join('-');
+    return modifiers.join("-");
   }
 
   // create a keyboard events shim that calls callbacks at useful times
@@ -103,7 +103,8 @@ var saneKeyboardEvents = (function() {
     // after selecting something and then typing, the textarea is
     // incorrectly reported as selected during the input event (but not
     // subsequently).
-    var checkTextarea = noop, timeoutId;
+    var checkTextarea = noop,
+      timeoutId;
     function checkTextareaFor(checker) {
       checkTextarea = checker;
       clearTimeout(timeoutId);
@@ -116,8 +117,9 @@ var saneKeyboardEvents = (function() {
         checker(e);
       });
     }
-    target.bind('keydown keypress input keyup focusout paste', function(e) { checkTextarea(e); });
-
+    target.bind("keydown keypress input keyup focusout paste", function(e) {
+      checkTextarea(e);
+    });
 
     // -*- public methods -*- //
     function select(text) {
@@ -142,7 +144,7 @@ var saneKeyboardEvents = (function() {
     function hasSelection() {
       var dom = textarea[0];
 
-      if (!('selectionStart' in dom)) return false;
+      if (!("selectionStart" in dom)) return false;
       return dom.selectionStart !== dom.selectionEnd;
     }
 
@@ -155,13 +157,14 @@ var saneKeyboardEvents = (function() {
       keydown = e;
       keypress = null;
 
-      if (shouldBeSelected) checkTextareaOnce(function(e) {
-        if (!(e && e.type === 'focusout') && textarea[0].select) {
-          // re-select textarea in case it's an unrecognized key that clears
-          // the selection, then never again, 'cos next thing might be blur
-          textarea[0].select();
-        }
-      });
+      if (shouldBeSelected)
+        checkTextareaOnce(function(e) {
+          if (!(e && e.type === "focusout") && textarea[0].select) {
+            // re-select textarea in case it's an unrecognized key that clears
+            // the selection, then never again, 'cos next thing might be blur
+            textarea[0].select();
+          }
+        });
 
       handleKey();
     }
@@ -203,14 +206,16 @@ var saneKeyboardEvents = (function() {
 
       var text = textarea.val();
       if (text.length === 1) {
-        textarea.val('');
+        textarea.val("");
         handlers.typedText(text);
       } // in Firefox, keys that don't type text, just clear seln, fire keypress
       // https://github.com/mathquill/mathquill/issues/293#issuecomment-40997668
       else if (text && textarea[0].select) textarea[0].select(); // re-select if that's why we're here
     }
 
-    function onBlur() { keydown = keypress = null; }
+    function onBlur() {
+      keydown = keypress = null;
+    }
 
     function onPaste(e) {
       // browsers are dumb.
@@ -231,7 +236,7 @@ var saneKeyboardEvents = (function() {
     }
     function pastedText() {
       var text = textarea.val();
-      textarea.val('');
+      textarea.val("");
       if (text) handlers.paste(text);
     }
 
@@ -241,8 +246,16 @@ var saneKeyboardEvents = (function() {
       keypress: onKeypress,
       keyup: onKeyup,
       focusout: onBlur,
-      cut: function() { checkTextareaOnce(function() { handlers.cut(); }); },
-      copy: function() { checkTextareaOnce(function() { handlers.copy(); }); },
+      cut: function() {
+        checkTextareaOnce(function() {
+          handlers.cut();
+        });
+      },
+      copy: function() {
+        checkTextareaOnce(function() {
+          handlers.copy();
+        });
+      },
       paste: onPaste
     });
 
@@ -251,4 +264,4 @@ var saneKeyboardEvents = (function() {
       select: select
     };
   };
-}());
+})();

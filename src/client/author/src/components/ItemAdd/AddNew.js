@@ -1,34 +1,28 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { IconPlus } from '@edulastic/icons';
-import { greenDark, secondaryTextColor, green } from '@edulastic/colors';
-import { withNamespaces } from '@edulastic/localization';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { IconPlus } from "@edulastic/icons";
+import { greenDark, secondaryTextColor, green } from "@edulastic/colors";
+import { withNamespaces } from "@edulastic/localization";
 
 const AddNew = ({ moveNew, t, style }) => (
   <PlusWrapper onClick={moveNew} style={style}>
-    <IconPlus
-      color={greenDark}
-      width={60}
-      height={60}
-      style={{ marginBottom: 35 }}
-      hoverColor={green}
-    />{' '}
-    <Text>{t('component.itemdetail.addnew.addnew')}</Text>
+    <IconPlus color={greenDark} width={60} height={60} style={{ marginBottom: 35 }} hoverColor={green} />{" "}
+    <Text>{t("component.itemdetail.addnew.addnew")}</Text>
   </PlusWrapper>
 );
 
 AddNew.propTypes = {
   moveNew: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  style: PropTypes.object,
+  style: PropTypes.object
 };
 
 AddNew.defaultProps = {
-  style: {},
+  style: {}
 };
 
-export default withNamespaces('author')(AddNew);
+export default withNamespaces("author")(AddNew);
 
 const PlusWrapper = styled.div`
   width: 50%;

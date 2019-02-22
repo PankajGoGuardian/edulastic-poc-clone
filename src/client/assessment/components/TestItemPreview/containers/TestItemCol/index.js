@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Tabs } from '@edulastic/common';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Tabs } from "@edulastic/common";
 
-import { SMALL_DESKTOP_WIDTH, MAX_MOBILE_WIDTH } from '../../../../constants/others';
+import { SMALL_DESKTOP_WIDTH, MAX_MOBILE_WIDTH } from "../../../../constants/others";
 
-import QuestionWrapper from '../../../QuestionWrapper';
+import QuestionWrapper from "../../../QuestionWrapper";
 
-import { Container } from './styled/Container';
-import { MobileRightSide } from './styled/MobileRightSide';
-import { MobileLeftSide } from './styled/MobileLeftSide';
-import { IconArrow } from './styled/IconArrow';
+import { Container } from "./styled/Container";
+import { MobileRightSide } from "./styled/MobileRightSide";
+import { MobileLeftSide } from "./styled/MobileLeftSide";
+import { IconArrow } from "./styled/IconArrow";
 
 class TestItemCol extends Component {
   state = {
@@ -31,7 +31,7 @@ class TestItemCol extends Component {
     style: {}
   };
 
-  handleTabChange = (value) => {
+  handleTabChange = value => {
     this.setState({
       value
     });
@@ -39,9 +39,14 @@ class TestItemCol extends Component {
 
   renderTabContent = (widget, qIndex) => {
     const { preview, showFeedback, multiple } = this.props;
-    const timespent = widget.timespent !== undefined ? widget.timespent : null
+    const timespent = widget.timespent !== undefined ? widget.timespent : null;
     return (
-      <Tabs.TabContainer style={{ padding: 20, display: !multiple && showFeedback ? 'flex' : 'initial' }}>
+      <Tabs.TabContainer
+        style={{
+          padding: 20,
+          display: !multiple && showFeedback ? "flex" : "initial"
+        }}
+      >
         <QuestionWrapper
           testItem
           showFeedback={showFeedback}
@@ -66,7 +71,7 @@ class TestItemCol extends Component {
         value={value}
         style={{
           ...style,
-          width: windowWidth < SMALL_DESKTOP_WIDTH ? '100%' : '100%'
+          width: windowWidth < SMALL_DESKTOP_WIDTH ? "100%" : "100%"
         }}
         width={col.dimension}
       >
@@ -77,9 +82,9 @@ class TestItemCol extends Component {
                 key={tabIndex}
                 label={tab}
                 style={{
-                  width: '50%',
-                  textAlign: 'center',
-                  padding: '30px 20px 15px'
+                  width: "50%",
+                  textAlign: "center",
+                  padding: "30px 20px 15px"
                 }}
               />
             ))}
@@ -97,10 +102,7 @@ class TestItemCol extends Component {
         )}
         {col.widgets.map((widget, i) => (
           <React.Fragment key={i}>
-            {col.tabs &&
-              !!col.tabs.length &&
-              value === widget.tabIndex &&
-              this.renderTabContent(widget, i)}
+            {col.tabs && !!col.tabs.length && value === widget.tabIndex && this.renderTabContent(widget, i)}
             {col.tabs && !col.tabs.length && this.renderTabContent(widget, i)}
           </React.Fragment>
         ))}

@@ -1,12 +1,12 @@
-import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
+import React, { Fragment } from "react";
+import PropTypes from "prop-types";
 
-import { EDIT, PREVIEW, CLEAR } from '../../constants/constantsForQuestions';
+import { EDIT, PREVIEW, CLEAR } from "../../constants/constantsForQuestions";
 
-import EditClassification from './EditClassification';
-import ClassificationPreview from './ClassificationPreview';
+import EditClassification from "./EditClassification";
+import ClassificationPreview from "./ClassificationPreview";
 
-const Classification = (props) => {
+const Classification = props => {
   const { view } = props;
 
   return (
@@ -34,7 +34,7 @@ Classification.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: ''
+  evaluation: ""
 };
 
 export { Classification };

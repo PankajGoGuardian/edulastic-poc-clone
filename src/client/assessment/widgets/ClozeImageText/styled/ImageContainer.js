@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 // This is reported by `no-useless-concat`.
 export const ImageContainer = styled.div`
@@ -6,8 +6,6 @@ export const ImageContainer = styled.div`
   top: 0px; left: 0px;
   min-height: 400px;
   padding: 0px;
-  width: ${props => (
-    props.width ? `${props.width}px` : '100%'
-  )}
+  width: ${props => (props.width ? `${props.width}px` : "100%")}
   height: 100%;
 `;

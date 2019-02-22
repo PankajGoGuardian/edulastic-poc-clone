@@ -7,11 +7,14 @@ Controller.open(function(_) {
   _.delegateMouseEvents = function() {
     var ultimateRootjQ = this.root.jQ;
     //drag-to-select event handling
-    this.container.bind('mousedown.mathquill', function(e) {
-      var rootjQ = $(e.target).closest('.mq-root-block');
+    this.container.bind("mousedown.mathquill", function(e) {
+      var rootjQ = $(e.target).closest(".mq-root-block");
       var root = Node.byId[rootjQ.attr(mqBlockId) || ultimateRootjQ.attr(mqBlockId)];
-      var ctrlr = root.controller, cursor = ctrlr.cursor, blink = cursor.blink;
-      var textareaSpan = ctrlr.textareaSpan, textarea = ctrlr.textarea;
+      var ctrlr = root.controller,
+        cursor = ctrlr.cursor,
+        blink = cursor.blink;
+      var textareaSpan = ctrlr.textareaSpan,
+        textarea = ctrlr.textarea;
 
       e.preventDefault(); // doesn't work in IE≤8, but it's a one-line fix:
       e.target.unselectable = true; // http://jsbin.com/yagekiji/1
@@ -20,7 +23,9 @@ Controller.open(function(_) {
       else cursor.options.ignoreNextMousedown = noop;
 
       var target;
-      function mousemove(e) { target = $(e.target); }
+      function mousemove(e) {
+        target = $(e.target);
+      }
       function docmousemove(e) {
         if (!cursor.anticursor) cursor.startSelection();
         ctrlr.seek(target, e.pageX, e.pageY).cursor.select();
@@ -34,15 +39,16 @@ Controller.open(function(_) {
         if (!cursor.selection) {
           if (ctrlr.editable) {
             cursor.show();
-          }
-          else {
+          } else {
             textareaSpan.detach();
           }
         }
 
         // delete the mouse handlers now that we're not dragging anymore
-        rootjQ.unbind('mousemove', mousemove);
-        $(e.target.ownerDocument).unbind('mousemove', docmousemove).unbind('mouseup', mouseup);
+        rootjQ.unbind("mousemove", mousemove);
+        $(e.target.ownerDocument)
+          .unbind("mousemove", docmousemove)
+          .unbind("mouseup", mouseup);
       }
 
       if (ctrlr.blurred) {
@@ -54,16 +60,18 @@ Controller.open(function(_) {
       ctrlr.seek($(e.target), e.pageX, e.pageY).cursor.startSelection();
 
       rootjQ.mousemove(mousemove);
-      $(e.target.ownerDocument).mousemove(docmousemove).mouseup(mouseup);
+      $(e.target.ownerDocument)
+        .mousemove(docmousemove)
+        .mouseup(mouseup);
       // listen on document not just body to not only hear about mousemove and
       // mouseup on page outside field, but even outside page, except iframes: https://github.com/mathquill/mathquill/commit/8c50028afcffcace655d8ae2049f6e02482346c5#commitcomment-6175800
     });
-  }
+  };
 });
 
 Controller.open(function(_) {
   _.seek = function(target, pageX, pageY) {
-    var cursor = this.notify('select').cursor;
+    var cursor = this.notify("select").cursor;
 
     if (target) {
       var nodeId = target.attr(mqBlockId) || target.attr(mqCmdId);
@@ -73,7 +81,7 @@ Controller.open(function(_) {
       }
     }
     var node = nodeId ? Node.byId[nodeId] : this.root;
-    pray('nodeId is the id of some Node that exists', node);
+    pray("nodeId is the id of some Node that exists", node);
 
     // don't clear selection until after getting node from target, in case
     // target was selection span, otherwise target will have no parent and will
@@ -82,7 +90,7 @@ Controller.open(function(_) {
 
     node.seek(pageX, cursor);
     this.scrollHoriz(); // before .selectFrom when mouse-selecting, so
-                        // always hits no-selection case in scrollHoriz and scrolls slower
+    // always hits no-selection case in scrollHoriz and scrolls slower
     return this;
   };
 });

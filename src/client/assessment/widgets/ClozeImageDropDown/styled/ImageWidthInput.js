@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { InputNumber } from 'antd';
+import styled from "styled-components";
+import { InputNumber } from "antd";
 
 export const ImageWidthInput = styled(InputNumber)`
   height: 40px;

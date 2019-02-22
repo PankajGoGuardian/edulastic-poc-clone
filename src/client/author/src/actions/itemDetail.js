@@ -8,7 +8,7 @@ import {
   UPDATE_TAB_TITLE,
   USE_TABS,
   MOVE_WIDGET
-} from '../constants/actions';
+} from "../constants/actions";
 
 export const getItemDetailByIdAction = (id, params) => ({
   type: RECEIVE_ITEM_DETAIL_REQUEST,

@@ -1,19 +1,15 @@
-import { createAction, createReducer } from 'redux-starter-kit';
-import { schema } from 'normalizr';
-import { createSelector } from 'reselect';
+import { createAction, createReducer } from "redux-starter-kit";
+import { schema } from "normalizr";
+import { createSelector } from "reselect";
 
 // reports schema
-export const reportSchema = new schema.Entity(
-  'reports',
-  {},
-  { idAttribute: '_id' }
-);
+export const reportSchema = new schema.Entity("reports", {}, { idAttribute: "_id" });
 
 // types
-export const SET_REPORTS = '[studentReport] fetch reports';
-export const UPDATE_TEST_ACTIVITY = '[studentReport] update reports';
-export const SET_CURRENT_REPORT = '[studentReport] set current testActivityId';
-export const SET_FILTER = '[studentReport] set filter';
+export const SET_REPORTS = "[studentReport] fetch reports";
+export const UPDATE_TEST_ACTIVITY = "[studentReport] update reports";
+export const SET_CURRENT_REPORT = "[studentReport] set current testActivityId";
+export const SET_FILTER = "[studentReport] set filter";
 
 // actions
 export const setReportsAction = createAction(SET_REPORTS);
@@ -24,8 +20,8 @@ export const setFilterAction = createAction(SET_FILTER);
 const initialState = {
   byId: {},
   allIds: [],
-  current: '',
-  filter: 'all'
+  current: "",
+  filter: "all"
 };
 
 // reducers

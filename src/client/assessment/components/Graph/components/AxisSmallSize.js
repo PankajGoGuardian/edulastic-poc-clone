@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import AxisImage from '../../../assets/axis.png';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import AxisImage from "../../../assets/axis.png";
 
 const Container = styled.div`
   width: 100%;
@@ -27,7 +27,7 @@ const Bottom = styled.div`
   background-color: #efefef;
   display: flex;
   flex-direction: row;
-  justify-content: ${props => (props.justifyContent ? props.justifyContent : 'space-between')} ;
+  justify-content: ${props => (props.justifyContent ? props.justifyContent : "space-between")};
   align-items: center;
   padding: 0 24px;
 `;
@@ -50,7 +50,7 @@ const Segment = styled.div`
 const Circle = styled.div`
   width: ${props => props.diameter}px;
   height: ${props => props.diameter}px;
-  background: ${props => (props.bgColor ? props.bgColor : 'transparent')};
+  background: ${props => (props.bgColor ? props.bgColor : "transparent")};
   border: 2px solid ${props => props.color};
   border-radius: 50%;
 `;
@@ -98,12 +98,8 @@ class AxisSmallSize extends Component {
           )}
           {labels && (
             <UnderAxis>
-              <Label padding="8px 21px 7px 20px">
-                OPTION A
-              </Label>
-              <Label padding="8px 21px 7px 20px">
-                OPTION C
-              </Label>
+              <Label padding="8px 21px 7px 20px">OPTION A</Label>
+              <Label padding="8px 21px 7px 20px">OPTION C</Label>
             </UnderAxis>
           )}
           <img src={AxisImage} alt="axis" width="100%" height="auto" />
@@ -137,9 +133,7 @@ class AxisSmallSize extends Component {
         )}
         {labels && (
           <Bottom justifyContent="center">
-            <Label padding="13px 21px 12px 23px">
-              OPTION B
-            </Label>
+            <Label padding="13px 21px 12px 23px">OPTION B</Label>
           </Bottom>
         )}
       </Container>

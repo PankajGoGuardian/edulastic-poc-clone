@@ -1,15 +1,15 @@
-import React, { useState, Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
-import { Checkbox } from 'antd';
+import React, { useState, Fragment } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep } from "lodash";
+import { Checkbox } from "antd";
 
-import { FlexContainer } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { FlexContainer } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import CorrectAnswers from '../../components/CorrectAnswers';
-import withPoints from '../../components/HOC/withPoints';
+import CorrectAnswers from "../../components/CorrectAnswers";
+import withPoints from "../../components/HOC/withPoints";
 
-import Matrix from './components/Matrix';
+import Matrix from "./components/Matrix";
 
 const MatrixWithPoints = withPoints(Matrix);
 
@@ -36,11 +36,11 @@ const Answers = ({ item, setQuestionData, t }) => {
     let findIndex;
     let value;
 
-    if (field === 'valid_response') {
+    if (field === "valid_response") {
       value = newItem.validation.valid_response.value[rowIndex];
     }
 
-    if (field === 'alt_responses') {
+    if (field === "alt_responses") {
       value = newItem.validation.alt_responses[altIndex].value[rowIndex];
     }
 
@@ -57,18 +57,18 @@ const Answers = ({ item, setQuestionData, t }) => {
       value.push(columnIndex);
     }
 
-    if (field === 'valid_response') {
+    if (field === "valid_response") {
       newItem.validation.valid_response.value[rowIndex] = value;
     }
 
-    if (field === 'alt_responses') {
+    if (field === "alt_responses") {
       newItem.validation.alt_responses[altIndex].value[rowIndex] = value;
     }
 
     setQuestionData(newItem);
   };
 
-  const handleChangeValidPoints = (points) => {
+  const handleChangeValidPoints = points => {
     const newItem = cloneDeep(item);
     newItem.validation.valid_response.score = points;
     setQuestionData(newItem);
@@ -81,7 +81,7 @@ const Answers = ({ item, setQuestionData, t }) => {
   };
 
   const reduceResponse = value =>
-    value.map((val) => {
+    value.map(val => {
       if (!val) return val;
       if (val.length) {
         val = [val[val.length - 1]];
@@ -89,19 +89,17 @@ const Answers = ({ item, setQuestionData, t }) => {
       return val;
     });
 
-  const handleChangeMultiple = (e) => {
+  const handleChangeMultiple = e => {
     const { checked } = e.target;
     const newItem = cloneDeep(item);
 
     newItem.multiple_responses = checked;
 
     if (!checked) {
-      newItem.validation.valid_response.value = reduceResponse(
-        newItem.validation.valid_response.value,
-      );
+      newItem.validation.valid_response.value = reduceResponse(newItem.validation.valid_response.value);
 
       if (newItem.validation.alt_responses && newItem.validation.alt_responses.length) {
-        newItem.validation.alt_responses.map((res) => {
+        newItem.validation.alt_responses.map(res => {
           res.value = reduceResponse(res.value);
           return res;
         });
@@ -111,7 +109,7 @@ const Answers = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-  const handleCloseTab = (tabIndex) => {
+  const handleCloseTab = tabIndex => {
     const newItem = cloneDeep(item);
     newItem.validation.alt_responses.splice(tabIndex, 1);
     setQuestionData(newItem);
@@ -120,7 +118,7 @@ const Answers = ({ item, setQuestionData, t }) => {
   const renderOptions = () => (
     <FlexContainer style={{ marginTop: 20 }}>
       <Checkbox data-cy="multi" onChange={handleChangeMultiple} checked={item.multiple_responses}>
-        {t('component.matrix.multipleResponses')}
+        {t("component.matrix.multipleResponses")}
       </Checkbox>
     </FlexContainer>
   );
@@ -143,7 +141,7 @@ const Answers = ({ item, setQuestionData, t }) => {
               uiStyle={item.ui_style}
               response={item.validation.valid_response}
               isMultiple={item.multiple_responses}
-              onCheck={handleCheck('valid_response')}
+              onCheck={handleCheck("valid_response")}
               points={item.validation.valid_response.score}
               onChangePoints={points => handleChangeValidPoints(points)}
               data-cy="points"
@@ -162,7 +160,7 @@ const Answers = ({ item, setQuestionData, t }) => {
                   uiStyle={item.ui_style}
                   response={item.validation.alt_responses[i]}
                   isMultiple={item.multiple_responses}
-                  onCheck={handleCheck('alt_responses', i)}
+                  onCheck={handleCheck("alt_responses", i)}
                   points={item.validation.alt_responses[i].score}
                   onChangePoints={points => handleChangeAltPoints(points, i)}
                 />
@@ -181,4 +179,4 @@ Answers.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default withNamespaces('assessment')(Answers);
+export default withNamespaces("assessment")(Answers);

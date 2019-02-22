@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 
-import DeleteIco from './assets/delete.svg';
-import UpIco from './assets/up.svg';
-import ShiftIco from './assets/shift.svg';
-import LeftIco from './assets/left.svg';
-import DownIco from './assets/down.svg';
-import RightIco from './assets/right.svg';
-import { Wrapper } from './styled/Wrapper';
-import { Row } from './styled/Row';
-import { Button } from './styled/Button';
+import DeleteIco from "./assets/delete.svg";
+import UpIco from "./assets/up.svg";
+import ShiftIco from "./assets/shift.svg";
+import LeftIco from "./assets/left.svg";
+import DownIco from "./assets/down.svg";
+import RightIco from "./assets/right.svg";
+import { Wrapper } from "./styled/Wrapper";
+import { Row } from "./styled/Row";
+import { Button } from "./styled/Button";
 
 const Keyboard = ({ onInput }) => {
   const [isUpper, setIsUpper] = useState(false);
 
-  const buttonClickHandler = (e) => {
+  const buttonClickHandler = e => {
     const { key } = e.target.dataset;
 
-    if (key === 'shift') {
+    if (key === "shift") {
       setIsUpper(!isUpper);
       return;
     }
@@ -45,37 +45,37 @@ const Keyboard = ({ onInput }) => {
         </Button>
       </Row>
       <Row>
-        <Button data-key={getChar('q')}>{getChar('q')}</Button>
-        <Button data-key={getChar('w')}>{getChar('w')}</Button>
-        <Button data-key={getChar('e')}>{getChar('e')}</Button>
-        <Button data-key={getChar('r')}>{getChar('r')}</Button>
-        <Button data-key={getChar('t')}>{getChar('t')}</Button>
-        <Button data-key={getChar('y')}>{getChar('y')}</Button>
-        <Button data-key={getChar('u')}>{getChar('u')}</Button>
-        <Button data-key={getChar('i')}>{getChar('i')}</Button>
-        <Button data-key={getChar('o')}>{getChar('o')}</Button>
-        <Button data-key={getChar('p')}>{getChar('p')}</Button>
+        <Button data-key={getChar("q")}>{getChar("q")}</Button>
+        <Button data-key={getChar("w")}>{getChar("w")}</Button>
+        <Button data-key={getChar("e")}>{getChar("e")}</Button>
+        <Button data-key={getChar("r")}>{getChar("r")}</Button>
+        <Button data-key={getChar("t")}>{getChar("t")}</Button>
+        <Button data-key={getChar("y")}>{getChar("y")}</Button>
+        <Button data-key={getChar("u")}>{getChar("u")}</Button>
+        <Button data-key={getChar("i")}>{getChar("i")}</Button>
+        <Button data-key={getChar("o")}>{getChar("o")}</Button>
+        <Button data-key={getChar("p")}>{getChar("p")}</Button>
       </Row>
       <Row>
-        <Button data-key={getChar('a')}>{getChar('a')}</Button>
-        <Button data-key={getChar('s')}>{getChar('s')}</Button>
-        <Button data-key={getChar('d')}>{getChar('d')}</Button>
-        <Button data-key={getChar('f')}>{getChar('f')}</Button>
-        <Button data-key={getChar('g')}>{getChar('g')}</Button>
-        <Button data-key={getChar('h')}>{getChar('h')}</Button>
-        <Button data-key={getChar('j')}>{getChar('j')}</Button>
-        <Button data-key={getChar('k')}>{getChar('k')}</Button>
-        <Button data-key={getChar('l')}>{getChar('l')}</Button>
+        <Button data-key={getChar("a")}>{getChar("a")}</Button>
+        <Button data-key={getChar("s")}>{getChar("s")}</Button>
+        <Button data-key={getChar("d")}>{getChar("d")}</Button>
+        <Button data-key={getChar("f")}>{getChar("f")}</Button>
+        <Button data-key={getChar("g")}>{getChar("g")}</Button>
+        <Button data-key={getChar("h")}>{getChar("h")}</Button>
+        <Button data-key={getChar("j")}>{getChar("j")}</Button>
+        <Button data-key={getChar("k")}>{getChar("k")}</Button>
+        <Button data-key={getChar("l")}>{getChar("l")}</Button>
         <Button data-key=":">:</Button>
       </Row>
       <Row>
-        <Button data-key={getChar('z')}>{getChar('z')}</Button>
-        <Button data-key={getChar('x')}>{getChar('x')}</Button>
-        <Button data-key={getChar('c')}>{getChar('c')}</Button>
-        <Button data-key={getChar('v')}>{getChar('v')}</Button>
-        <Button data-key={getChar('b')}>{getChar('b')}</Button>
-        <Button data-key={getChar('n')}>{getChar('n')}</Button>
-        <Button data-key={getChar('m')}>{getChar('m')}</Button>
+        <Button data-key={getChar("z")}>{getChar("z")}</Button>
+        <Button data-key={getChar("x")}>{getChar("x")}</Button>
+        <Button data-key={getChar("c")}>{getChar("c")}</Button>
+        <Button data-key={getChar("v")}>{getChar("v")}</Button>
+        <Button data-key={getChar("b")}>{getChar("b")}</Button>
+        <Button data-key={getChar("n")}>{getChar("n")}</Button>
+        <Button data-key={getChar("m")}>{getChar("m")}</Button>
         <Button data-key=",">,</Button>
         <Button data-key=".">.</Button>
         <Button data-key="up_move">
@@ -83,7 +83,7 @@ const Keyboard = ({ onInput }) => {
         </Button>
       </Row>
       <Row>
-        <Button data-key="shift" className={isUpper ? 'active' : ''} width={100}>
+        <Button data-key="shift" className={isUpper ? "active" : ""} width={100}>
           <img data-key="shift" src={ShiftIco} alt="shift" />
         </Button>
         <Button data-key=" " width={300}>

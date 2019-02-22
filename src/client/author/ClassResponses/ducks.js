@@ -1,6 +1,6 @@
-import { takeEvery, call, put, all } from 'redux-saga/effects';
-import { classResponseApi } from '@edulastic/api';
-import { message } from 'antd';
+import { takeEvery, call, put, all } from "redux-saga/effects";
+import { classResponseApi } from "@edulastic/api";
+import { message } from "antd";
 
 import {
   RECEIVE_CLASS_RESPONSE_REQUEST,
@@ -12,8 +12,7 @@ import {
   RECEIVE_FEEDBACK_RESPONSE_REQUEST,
   RECEIVE_FEEDBACK_RESPONSE_SUCCESS,
   RECEIVE_FEEDBACK_RESPONSE_ERROR
-
-} from '../src/constants/actions';
+} from "../src/constants/actions";
 
 function* receiveClassResponseSaga({ payload }) {
   try {
@@ -24,7 +23,7 @@ function* receiveClassResponseSaga({ payload }) {
       payload: classResponse
     });
   } catch (err) {
-    const errorMessage = 'Receive tests is failing';
+    const errorMessage = "Receive tests is failing";
     yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_CLASS_RESPONSE_ERROR,
@@ -32,7 +31,6 @@ function* receiveClassResponseSaga({ payload }) {
     });
   }
 }
-
 
 function* receiveStudentResponseSaga({ payload }) {
   try {
@@ -43,7 +41,7 @@ function* receiveStudentResponseSaga({ payload }) {
       payload: studentResponse
     });
   } catch (err) {
-    const errorMessage = 'Receive tests is failing';
+    const errorMessage = "Receive tests is failing";
     yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_STUDENT_RESPONSE_ERROR,
@@ -51,7 +49,6 @@ function* receiveStudentResponseSaga({ payload }) {
     });
   }
 }
-
 
 function* receiveFeedbackResponseSaga({ payload }) {
   try {
@@ -62,7 +59,7 @@ function* receiveFeedbackResponseSaga({ payload }) {
       payload: feedbackResponse
     });
   } catch (err) {
-    const errorMessage = 'Receive tests is failing';
+    const errorMessage = "Receive tests is failing";
     yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_FEEDBACK_RESPONSE_ERROR,

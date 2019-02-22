@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { css } from "styled-components";
 
 const MobileMenuStyle = css`
   @media (max-width: 768px) {
@@ -40,7 +40,7 @@ const SelectContainer = styled.div`
     width: 188px;
   }
 
-  ${props => props.skinb === 'true' && MobileMenuStyle};
+  ${props => props.skinb === "true" && MobileMenuStyle};
 `;
 
 export default SelectContainer;

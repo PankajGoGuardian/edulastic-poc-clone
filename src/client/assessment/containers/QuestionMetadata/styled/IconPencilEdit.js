@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { IconPencilEdit as Icon } from '@edulastic/icons';
+import styled from "styled-components";
+import { IconPencilEdit as Icon } from "@edulastic/icons";
 
 export const IconPencilEdit = styled(Icon)`
   fill: ${props => props.theme.questionMetadata.iconPencilEditColor};

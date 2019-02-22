@@ -1,30 +1,28 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withWindowSizes } from '@edulastic/common';
-import { Link } from 'react-router-dom';
-import { withNamespaces } from '@edulastic/localization';
-import { ComposedChart, Bar, XAxis, YAxis, ResponsiveContainer } from 'recharts';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { withWindowSizes } from "@edulastic/common";
+import { Link } from "react-router-dom";
+import { withNamespaces } from "@edulastic/localization";
+import { ComposedChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 
-import ClassQuestions from './ClassQuestions';
+import ClassQuestions from "./ClassQuestions";
 
-import { receiveStudentResponseAction } from '../../../src/actions/classBoard';
+import { receiveStudentResponseAction } from "../../../src/actions/classBoard";
 
 import {
   getClassResponseSelector,
   getStudentResponseSelector,
   getTestActivitySelector
-} from '../../../src/selectors/classBoard';
+} from "../../../src/selectors/classBoard";
 
-import {
-  getAdditionalDataSelector
-} from '../../../ClassBoard/ducks';
+import { getAdditionalDataSelector } from "../../../ClassBoard/ducks";
 
-import ListHeader from '../ListHeader/ListHeader';
-import SortClass from '../SortClass/SortClass';
-import SortStudent from '../SortStudent/SortStudent';
-import FeedbackForm from '../FeedbackForm/FeedbackForm';
+import ListHeader from "../ListHeader/ListHeader";
+import SortClass from "../SortClass/SortClass";
+import SortStudent from "../SortStudent/SortStudent";
+import FeedbackForm from "../FeedbackForm/FeedbackForm";
 
 import {
   PaginationInfo,
@@ -43,12 +41,12 @@ import {
   FeedbackButton,
   OverallButton,
   FeedbackActiveButton
-} from './styled'
+} from "./styled";
 
 class ClassResponses extends Component {
   state = {
     showFeedbackForm: false
-  }
+  };
 
   componentDidMount() {
     const { loadStudentResponses, match } = this.props;
@@ -63,32 +61,32 @@ class ClassResponses extends Component {
 
   onClickChart = ({ name, id }) => {
     console.log(name, id);
-  }
+  };
 
   toggleFeedback = () => {
-    const { showFeedbackForm } = this.state
+    const { showFeedbackForm } = this.state;
     this.setState({
       showFeedbackForm: !showFeedbackForm
     });
-  }
+  };
 
   render() {
     const data = [];
     const { showFeedbackForm } = this.state;
     const studentItems = this.props.testActivity;
-    const { 
+    const {
       classResponse,
       additionalData,
       loadStudentResponses,
       studentResponse: { questionActivities, testActivity }
     } = this.props;
-    const showClassQuestions = testActivity && !showFeedbackForm
+    const showClassQuestions = testActivity && !showFeedbackForm;
     let totalScore = 0;
     let totalMaxScore = 0;
     if (questionActivities) {
       questionActivities.forEach((item, i) => {
-        totalScore += (item.score || 0);
-        totalMaxScore += (item.maxScore || 0);
+        totalScore += item.score || 0;
+        totalMaxScore += item.maxScore || 0;
         data.push({
           id: item._id,
           name: `Q${i + 1}`,
@@ -99,56 +97,56 @@ class ClassResponses extends Component {
       });
     }
 
-    const assignmentId = testActivity ? testActivity.assignmentId : ''
-    const groupId = testActivity ? testActivity.groupId : '';
-    const classId = testActivity ? testActivity._id : '';
-    const userId = testActivity ? testActivity.userId : '';
-    const classassignment = classResponse ? classResponse.title : ''
-    const classname = additionalData ? additionalData.className : '';
-    const currentStudent = studentItems.find(student => student.studentId === userId)
-    const studentName = currentStudent ? currentStudent.studentName : '';
-    const linkToClass = `/author/classboard/${assignmentId}/${groupId}`
-    const linkToResponses = `/author/classresponses/${classId}`
+    const assignmentId = testActivity ? testActivity.assignmentId : "";
+    const groupId = testActivity ? testActivity.groupId : "";
+    const classId = testActivity ? testActivity._id : "";
+    const userId = testActivity ? testActivity.userId : "";
+    const classassignment = classResponse ? classResponse.title : "";
+    const classname = additionalData ? additionalData.className : "";
+    const currentStudent = studentItems.find(student => student.studentId === userId);
+    const studentName = currentStudent ? currentStudent.studentName : "";
+    const linkToClass = `/author/classboard/${assignmentId}/${groupId}`;
+    const linkToResponses = `/author/classresponses/${classId}`;
 
     return (
       <div>
-        <ListHeader
-          additionalData={additionalData || {}}
-          onCreate={this.handleCreate}
-        />
+        <ListHeader additionalData={additionalData || {}} onCreate={this.handleCreate} />
         <StyledFlexContainer justifyContent="space-between">
           <PaginationInfo>
-            <a>&lt; <Link to="/author/assignments">RECENTS ASSIGNMENTS</Link></a> / 
-            <a>&nbsp; <Link to="/author/assignments">{classassignment}</Link></a> /
-            <a>&nbsp; <Link to={linkToClass}>{classname}</Link></a> / 
-            <a>&nbsp; <Link to={linkToResponses}>{studentName}</Link></a>
+            <a>
+              &lt; <Link to="/author/assignments">RECENTS ASSIGNMENTS</Link>
+            </a>{" "}
+            /
+            <a>
+              &nbsp; <Link to="/author/assignments">{classassignment}</Link>
+            </a>{" "}
+            /
+            <a>
+              &nbsp; <Link to={linkToClass}>{classname}</Link>
+            </a>{" "}
+            /
+            <a>
+              &nbsp; <Link to={linkToResponses}>{studentName}</Link>
+            </a>
           </PaginationInfo>
           <StyledFlexContainer justifyContent="space-between">
-            <SortStudent
-              students={studentItems}
-              loadStudentResponses={loadStudentResponses}
-            />
+            <SortStudent students={studentItems} loadStudentResponses={loadStudentResponses} />
             <SortClass classname={classname} />
           </StyledFlexContainer>
         </StyledFlexContainer>
         <StyledCard bordered={false}>
           <GraphContainer>
             <ResponsiveContainer width="100%" height={240}>
-              <ComposedChart
-                barGap={1}
-                barSize={36}
-                data={data}
-                margin={{ top: 20, right: 60, bottom: 0, left: 20 }}
-              >
+              <ComposedChart barGap={1} barSize={36} data={data} margin={{ top: 20, right: 60, bottom: 0, left: 20 }}>
                 <XAxis dataKey="name" axisLine={false} tickSize={0} />
                 <YAxis
                   dataKey="all"
                   yAxisId={0}
                   tickCount={4}
                   allowDecimals={false}
-                  tick={{ strokeWidth: 0, fill: '#999' }}
+                  tick={{ strokeWidth: 0, fill: "#999" }}
                   tickSize={6}
-                  label={{ value: 'ATTEMPTS', angle: -90, fill: '#999' }}
+                  label={{ value: "ATTEMPTS", angle: -90, fill: "#999" }}
                   stroke="#999"
                 />
                 <YAxis
@@ -156,9 +154,13 @@ class ClassResponses extends Component {
                   yAxisId={1}
                   tickCount={4}
                   allowDecimals={false}
-                  tick={{ strokeWidth: 0, fill: '#999' }}
+                  tick={{ strokeWidth: 0, fill: "#999" }}
                   tickSize={6}
-                  label={{ value: 'AVG TIME (SECONDS)', angle: -90, fill: '#999' }}
+                  label={{
+                    value: "AVG TIME (SECONDS)",
+                    angle: -90,
+                    fill: "#999"
+                  }}
                   orientation="right"
                   stroke="#999"
                 />
@@ -175,10 +177,18 @@ class ClassResponses extends Component {
               <TotalScore>{totalMaxScore}</TotalScore>
             </ScoreContainer>
             <TimeContainer>
-              <TimeItem><Color>Time:</Color> 1:54</TimeItem>
-              <TimeItem><Color>Status:</Color> Graded</TimeItem>
-              <TimeItem><Color>Submitted on:</Color> 19 October,2018</TimeItem>
-              <TimeItem><Color>Hour:</Color> 03:13</TimeItem>
+              <TimeItem>
+                <Color>Time:</Color> 1:54
+              </TimeItem>
+              <TimeItem>
+                <Color>Status:</Color> Graded
+              </TimeItem>
+              <TimeItem>
+                <Color>Submitted on:</Color> 19 October,2018
+              </TimeItem>
+              <TimeItem>
+                <Color>Hour:</Color> 03:13
+              </TimeItem>
             </TimeContainer>
           </GraphInfo>
         </StyledCard>
@@ -191,20 +201,17 @@ class ClassResponses extends Component {
             <FeedbackButton>0 GRADED</FeedbackButton>
           </PaginationButtonGroup>
           <PaginationButtonGroup>
-            <OverallButton type="primary" onClick={this.toggleFeedback}>GIVE OVERALL FEEDBACK</OverallButton>
+            <OverallButton type="primary" onClick={this.toggleFeedback}>
+              GIVE OVERALL FEEDBACK
+            </OverallButton>
           </PaginationButtonGroup>
         </StyledFlexContainer>
-          {showClassQuestions &&
-            <ClassQuestions
-              testActivity={testActivity}
-              currentStudent={currentStudent || []}
-            />
-          }
-          {showFeedbackForm &&
-            <StyledFlexContainer justifyContent="flex-end">
-              <FeedbackForm />
-            </StyledFlexContainer>
-          }
+        {showClassQuestions && <ClassQuestions testActivity={testActivity} currentStudent={currentStudent || []} />}
+        {showFeedbackForm && (
+          <StyledFlexContainer justifyContent="flex-end">
+            <FeedbackForm />
+          </StyledFlexContainer>
+        )}
       </div>
     );
   }
@@ -212,7 +219,7 @@ class ClassResponses extends Component {
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces('header'),
+  withNamespaces("header"),
   connect(
     state => ({
       classResponse: getClassResponseSelector(state),
@@ -235,4 +242,3 @@ ClassResponses.propTypes = {
   studentResponse: PropTypes.shape({}).isRequired,
   loadStudentResponses: PropTypes.func.isRequired
 };
-

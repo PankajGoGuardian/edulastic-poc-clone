@@ -1,1 +1,1 @@
-export { default as AxisSegmentsContainer } from './AxisSegmentsContainer';
+export { default as AxisSegmentsContainer } from "./AxisSegmentsContainer";

@@ -1,6 +1,6 @@
-import { testActivityApi, testsApi } from '@edulastic/api';
-import { takeEvery, call, all, put, select } from 'redux-saga/effects';
-import { push } from 'react-router-redux';
+import { testActivityApi, testsApi } from "@edulastic/api";
+import { takeEvery, call, all, put, select } from "redux-saga/effects";
+import { push } from "react-router-redux";
 
 import {
   LOAD_TEST,
@@ -11,8 +11,8 @@ import {
   LOAD_ANSWERS,
   SET_TEST_ACTIVITY_ID,
   LOAD_SCRATCH_PAD
-} from '../constants/actions';
-import { SET_RESUME_STATUS } from '../../student/Assignments/ducks';
+} from "../constants/actions";
+import { SET_RESUME_STATUS } from "../../student/Assignments/ducks";
 
 function* loadTest({ payload }) {
   try {
@@ -54,7 +54,7 @@ function* loadTest({ payload }) {
       const { questionActivities } = testActivity;
       let lastAttemptedQuestion = questionActivities[0];
 
-      questionActivities.forEach((item) => {
+      questionActivities.forEach(item => {
         allAnswers = {
           ...allAnswers,
           [item.qid]: item.userResponse
@@ -119,12 +119,12 @@ function* loadPreviousResponses() {
 function* submitTest() {
   try {
     const testActivityId = yield select(state => state.test && state.test.testActivityId);
-    if (testActivityId === 'test') {
-      console.log('practice test');
+    if (testActivityId === "test") {
+      console.log("practice test");
       return;
     }
     yield testActivityApi.submit(testActivityId);
-    yield put(push('/home/reports'));
+    yield put(push("/home/reports"));
   } catch (err) {
     console.log(err);
   }

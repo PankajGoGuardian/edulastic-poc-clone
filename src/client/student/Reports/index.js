@@ -1,2 +1,2 @@
-export { watcherSaga as AssignmentSaga } from './ducks';
-export { default as Report } from './components';
+export { watcherSaga as AssignmentSaga } from "./ducks";
+export { default as Report } from "./components";

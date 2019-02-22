@@ -1,6 +1,6 @@
-import React from 'react';
-import { SortableContainer } from 'react-sortable-hoc';
-import SortableItem from './components/SortableItem';
+import React from "react";
+import { SortableContainer } from "react-sortable-hoc";
+import SortableItem from "./components/SortableItem";
 
 const SortableList = React.memo(
   SortableContainer(({ items, dirty, onRemove, onChange }) => (

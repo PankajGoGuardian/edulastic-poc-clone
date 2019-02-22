@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const RowTitleCol = styled.td`
   padding: 0 16px 0 16px;

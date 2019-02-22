@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Input } from 'antd';
+import React from "react";
+import PropTypes from "prop-types";
+import { Input } from "antd";
 
-import { withNamespaces } from '@edulastic/localization';
+import { withNamespaces } from "@edulastic/localization";
 
-import { Container } from './styled/Container';
+import { Container } from "./styled/Container";
 
-export default (WrappedComponent) => {
+export default WrappedComponent => {
   const hocComponent = ({ points, onChangePoints, t, ...props }) => (
     <div>
       <Container>
@@ -18,9 +18,7 @@ export default (WrappedComponent) => {
           style={{ width: 105 }}
           size="large"
         />
-        <span style={{ textTransform: 'uppercase', marginLeft: 25 }}>
-          { t('component.correctanswers.points') }
-        </span>
+        <span style={{ textTransform: "uppercase", marginLeft: 25 }}>{t("component.correctanswers.points")}</span>
       </Container>
       <WrappedComponent {...props} />
     </div>
@@ -32,5 +30,5 @@ export default (WrappedComponent) => {
     t: PropTypes.func.isRequired
   };
 
-  return withNamespaces('assessment')(hocComponent);
+  return withNamespaces("assessment")(hocComponent);
 };

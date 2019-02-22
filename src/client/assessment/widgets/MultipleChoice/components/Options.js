@@ -1,21 +1,21 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import { Select, TextField } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { Select, TextField } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import WidgetOptions from '../../../containers/WidgetOptions';
-import { Block } from '../../../styled/WidgetOptions/Block';
-import { Heading } from '../../../styled/WidgetOptions/Heading';
-import { Row } from '../../../styled/WidgetOptions/Row';
-import { Col } from '../../../styled/WidgetOptions/Col';
-import { Label } from '../../../styled/WidgetOptions/Label';
-import OrientationSelect from '../../../components/OrientationSelect';
-import FontSizeSelect from '../../../components/FontSizeSelect';
+import WidgetOptions from "../../../containers/WidgetOptions";
+import { Block } from "../../../styled/WidgetOptions/Block";
+import { Heading } from "../../../styled/WidgetOptions/Heading";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import OrientationSelect from "../../../components/OrientationSelect";
+import FontSizeSelect from "../../../components/FontSizeSelect";
 
 function Options({ onChange, uiStyle, t }) {
   const changeUiStyle = (prop, value) => {
-    onChange('ui_style', {
+    onChange("ui_style", {
       ...uiStyle,
       [prop]: value
     });
@@ -24,34 +24,34 @@ function Options({ onChange, uiStyle, t }) {
   return (
     <WidgetOptions>
       <Block>
-        <Heading>{t('component.options.layout')}</Heading>
+        <Heading>{t("component.options.layout")}</Heading>
 
         <Row>
           <Col md={6}>
-            <Label>{t('component.options.style')}</Label>
+            <Label>{t("component.options.style")}</Label>
             <Select
               id="select"
-              style={{ width: '80%' }}
-              onChange={val => changeUiStyle('type', val)}
+              style={{ width: "80%" }}
+              onChange={val => changeUiStyle("type", val)}
               options={[
-                { value: 'standard', label: t('component.options.standard') },
-                { value: 'block', label: t('component.options.block') },
+                { value: "standard", label: t("component.options.standard") },
+                { value: "block", label: t("component.options.block") },
                 {
-                  value: 'radioBelow',
-                  label: t('component.options.radioButtonBelow')
+                  value: "radioBelow",
+                  label: t("component.options.radioButtonBelow")
                 }
               ]}
               value={uiStyle.type}
             />
           </Col>
           <Col md={6}>
-            <Label>{t('component.options.columns')}</Label>
+            <Label>{t("component.options.columns")}</Label>
             <TextField
               type="number"
               data-cy="columns"
               disabled={false}
               containerStyle={{ width: 120 }}
-              onChange={e => changeUiStyle('columns', +e.target.value)}
+              onChange={e => changeUiStyle("columns", +e.target.value)}
               value={uiStyle.columns}
             />
           </Col>
@@ -59,35 +59,29 @@ function Options({ onChange, uiStyle, t }) {
 
         <Row>
           <Col md={6}>
-            <OrientationSelect
-              onChange={val => changeUiStyle('orientation', val)}
-              value={uiStyle.orientation}
-            />
+            <OrientationSelect onChange={val => changeUiStyle("orientation", val)} value={uiStyle.orientation} />
           </Col>
           <Col md={6}>
-            <FontSizeSelect
-              onChange={fontsize => changeUiStyle('fontsize', fontsize)}
-              value={uiStyle.fontsize}
-            />
+            <FontSizeSelect onChange={fontsize => changeUiStyle("fontsize", fontsize)} value={uiStyle.fontsize} />
           </Col>
         </Row>
 
-        {uiStyle.type === 'block' && (
+        {uiStyle.type === "block" && (
           <Row>
             <Col md={6}>
-              <Label>{t('component.options.labelType')}</Label>
+              <Label>{t("component.options.labelType")}</Label>
               <Select
-                style={{ width: '80%' }}
-                onChange={val => changeUiStyle('choice_label', val)}
+                style={{ width: "80%" }}
+                onChange={val => changeUiStyle("choice_label", val)}
                 options={[
-                  { value: 'number', label: t('component.options.numerical') },
+                  { value: "number", label: t("component.options.numerical") },
                   {
-                    value: 'upper-alpha',
-                    label: t('component.options.uppercase')
+                    value: "upper-alpha",
+                    label: t("component.options.uppercase")
                   },
                   {
-                    value: 'lower-alpha',
-                    label: t('component.options.lowercase')
+                    value: "lower-alpha",
+                    label: t("component.options.lowercase")
                   }
                 ]}
                 value={uiStyle.choice_label}
@@ -108,12 +102,12 @@ Options.propTypes = {
 
 Options.defaultProps = {
   uiStyle: {
-    type: 'standard',
-    fontsize: 'normal',
+    type: "standard",
+    fontsize: "normal",
     columns: 0,
-    orientation: 'horizontal',
-    choice_label: 'number'
+    orientation: "horizontal",
+    choice_label: "number"
   }
 };
 
-export default withNamespaces('assessment')(Options);
+export default withNamespaces("assessment")(Options);

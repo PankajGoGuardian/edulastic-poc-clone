@@ -1,23 +1,23 @@
-import React, { Component } from 'react';
-import { Checkbox } from 'antd';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { cloneDeep } from 'lodash';
-import { arrayMove } from 'react-sortable-hoc';
+import React, { Component } from "react";
+import { Checkbox } from "antd";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { cloneDeep } from "lodash";
+import { arrayMove } from "react-sortable-hoc";
 
-import { TextField, PaddingDiv } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { TextField, PaddingDiv } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from '../../../../author/src/actions/question';
-import { getQuestionDataSelector } from '../../../../author/src/selectors/question';
+import { setQuestionDataAction } from "../../../../author/src/actions/question";
+import { getQuestionDataSelector } from "../../../../author/src/selectors/question";
 
-import SortableList from '../../../components/SortableList';
-import { AddNewChoiceBtn } from '../../../styled/AddNewChoiceBtn';
-import { Heading } from '../../../styled/WidgetOptions/Heading';
-import { Row } from '../../../styled/WidgetOptions/Row';
-import { Col } from '../../../styled/WidgetOptions/Col';
-import { Label } from '../../../styled/WidgetOptions/Label';
+import SortableList from "../../../components/SortableList";
+import { AddNewChoiceBtn } from "../../../styled/AddNewChoiceBtn";
+import { Heading } from "../../../styled/WidgetOptions/Heading";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
+import { Label } from "../../../styled/WidgetOptions/Label";
 
 class AdditionalOptions extends Component {
   changeOption(prop, value) {
@@ -28,11 +28,7 @@ class AdditionalOptions extends Component {
   onSortEnd({ oldIndex, newIndex }) {
     const { questionData, setQuestionData } = this.props;
     const newItem = cloneDeep(questionData);
-    newItem.distractorRationaleOptions = arrayMove(
-      questionData.distractorRationaleOptions,
-      oldIndex,
-      newIndex
-    );
+    newItem.distractorRationaleOptions = arrayMove(questionData.distractorRationaleOptions, oldIndex, newIndex);
     setQuestionData(newItem);
   }
 
@@ -59,7 +55,7 @@ class AdditionalOptions extends Component {
     if (newItem.distractorRationaleOptions === undefined) {
       newItem.distractorRationaleOptions = [];
     }
-    newItem.distractorRationaleOptions.push(t('component.cloze.imageDropDown.newChoice'));
+    newItem.distractorRationaleOptions.push(t("component.cloze.imageDropDown.newChoice"));
     setQuestionData(newItem);
   }
 
@@ -67,63 +63,63 @@ class AdditionalOptions extends Component {
     const { t, questionData } = this.props;
     return (
       <PaddingDiv bottom={30}>
-        <Heading>{t('component.cloze.imageDropDown.additionaloptions')}</Heading>
+        <Heading>{t("component.cloze.imageDropDown.additionaloptions")}</Heading>
         <Row>
           <Col md={12}>
-            <Label>{t('component.options.stimulusreviewonly')}</Label>
+            <Label>{t("component.options.stimulusreviewonly")}</Label>
             <TextField
               disabled={false}
-              containerStyle={{ width: '80%' }}
-              onChange={e => this.changeStimulus('stimulusReviewonly', e.target.value)}
+              containerStyle={{ width: "80%" }}
+              onChange={e => this.changeStimulus("stimulusReviewonly", e.target.value)}
               value={questionData.stimulusReviewonly}
             />
           </Col>
           <Col md={12}>
-            <Label>{t('component.options.instructorstimulus')}</Label>
+            <Label>{t("component.options.instructorstimulus")}</Label>
             <TextField
               disabled={false}
-              containerStyle={{ width: '80%' }}
-              onChange={e => this.changeStimulus('instructorStimulus', e.target.value)}
+              containerStyle={{ width: "80%" }}
+              onChange={e => this.changeStimulus("instructorStimulus", e.target.value)}
               value={questionData.instructorStimulus}
             />
           </Col>
         </Row>
         <Row>
           <Col md={6}>
-            <Label>{t('component.options.rubricreference')}</Label>
+            <Label>{t("component.options.rubricreference")}</Label>
             <TextField
               disabled={false}
-              containerStyle={{ width: '80%' }}
-              onChange={e => this.changeStimulus('rubricReference', e.target.value)}
+              containerStyle={{ width: "80%" }}
+              onChange={e => this.changeStimulus("rubricReference", e.target.value)}
               value={questionData.rubricReference}
             />
           </Col>
         </Row>
         <Row>
           <Col md={12}>
-            <Label>{t('component.options.sampleanswer')}</Label>
+            <Label>{t("component.options.sampleanswer")}</Label>
             <TextField
               disabled={false}
-              onChange={e => this.changeStimulus('sampleAnswer', e.target.value)}
+              onChange={e => this.changeStimulus("sampleAnswer", e.target.value)}
               value={questionData.sampleAnswer}
             />
           </Col>
         </Row>
         <Row>
           <Col md={12}>
-            <Label>{t('component.options.distractorrationale')}</Label>
+            <Label>{t("component.options.distractorrationale")}</Label>
             <TextField
               disabled={false}
-              onChange={e => this.changeStimulus('distractorRationale', e.target.value)}
+              onChange={e => this.changeStimulus("distractorRationale", e.target.value)}
               value={questionData.distractorRationale}
             />
             <Checkbox
               checked={questionData.distractorRationalePerResponse}
-              onChange={e => this.onChange('distractorRationalePerResponse', e.target.checked)}
+              onChange={e => this.onChange("distractorRationalePerResponse", e.target.checked)}
               size="large"
-              style={{ width: '80%' }}
+              style={{ width: "80%" }}
             >
-              {t('component.options.distractorRationalePerResponse')}
+              {t("component.options.distractorRationalePerResponse")}
             </Checkbox>
           </Col>
         </Row>
@@ -137,7 +133,7 @@ class AdditionalOptions extends Component {
           />
           <PaddingDiv top={6}>
             <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn()}>
-              {t('component.cloze.imageDropDown.addnewchoice')}
+              {t("component.cloze.imageDropDown.addnewchoice")}
             </AddNewChoiceBtn>
           </PaddingDiv>
         </PaddingDiv>
@@ -156,7 +152,7 @@ AdditionalOptions.propTypes = {
 AdditionalOptions.defaultProps = {};
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     state => ({
       questionData: getQuestionDataSelector(state)

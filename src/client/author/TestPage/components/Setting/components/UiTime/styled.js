@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Radio, Row } from 'antd';
+import styled from "styled-components";
+import { Radio, Row } from "antd";
 
 export const Block = styled.div`
   margin-bottom: 30px;

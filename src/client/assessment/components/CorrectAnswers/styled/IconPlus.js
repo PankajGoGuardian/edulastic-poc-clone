@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { IconPlus as Icon } from '@edulastic/icons';
+import styled from "styled-components";
+import { IconPlus as Icon } from "@edulastic/icons";
 
 export const IconPlus = styled(Icon)`
   width: 10px;

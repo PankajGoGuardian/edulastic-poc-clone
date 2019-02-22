@@ -1,4 +1,4 @@
-import { isEqual } from 'lodash';
+import { isEqual } from "lodash";
 
 const clozeImageDragDropEvaluation = ({ userResponse, validation }) => {
   const { valid_response, alt_responses } = validation;

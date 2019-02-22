@@ -1,4 +1,4 @@
-import { ADD_ITEM_EVALUATION } from '../constants/actions';
+import { ADD_ITEM_EVALUATION } from "../constants/actions";
 
 const initialState = {};
 
@@ -6,7 +6,7 @@ const evaluation = (state = initialState, { type, payload }) => {
   switch (type) {
     case ADD_ITEM_EVALUATION:
       return {
-        ...payload,
+        ...payload
       };
     default:
       return state;

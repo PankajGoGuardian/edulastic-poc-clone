@@ -1,9 +1,4 @@
-import {
-  RECEIVE_GRADEBOOK_REQUEST,
-  RECEIVE_GRADEBOOK_SUCCESS,
-  RECEIVE_GRADEBOOK_ERROR
-} from '../constants/actions';
-
+import { RECEIVE_GRADEBOOK_REQUEST, RECEIVE_GRADEBOOK_SUCCESS, RECEIVE_GRADEBOOK_ERROR } from "../constants/actions";
 
 const initialState = {
   entities: {},

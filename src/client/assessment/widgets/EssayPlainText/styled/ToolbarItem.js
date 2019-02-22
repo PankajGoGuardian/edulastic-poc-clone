@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Item } from '../../../styled/Item';
+import styled from "styled-components";
+import { Item } from "../../../styled/Item";
 
 export const ToolbarItem = styled(Item)`
   &:hover {

@@ -1,23 +1,23 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { FlexContainer } from '@edulastic/common';
-import { mobileWidth, darkBlueSecondary, white } from '@edulastic/colors';
-import Breadcrumb from '../Breadcrumb';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { FlexContainer } from "@edulastic/common";
+import { mobileWidth, darkBlueSecondary, white } from "@edulastic/colors";
+import Breadcrumb from "../Breadcrumb";
 
 const Header = ({ title }) => {
   const breadcrumbData = [
     {
-      title: 'ITEM LIST',
-      to: '/author/items'
+      title: "ITEM LIST",
+      to: "/author/items"
     },
     {
-      title: 'ITEM DETAIL',
-      to: `/author/items/${window.location.pathname.split('/')[3]}/item-detail`
+      title: "ITEM DETAIL",
+      to: `/author/items/${window.location.pathname.split("/")[3]}/item-detail`
     },
     {
-      title: 'SELECT A QUESTION TYPE',
-      to: ''
+      title: "SELECT A QUESTION TYPE",
+      to: ""
     }
   ];
   return (

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const MathKeyboardStyles = styled.div`
   .keyboard {
@@ -8,8 +8,7 @@ export const MathKeyboardStyles = styled.div`
     background: ${props => props.theme.mathKeyboard.keyboardBgColor};
     border-radius: 5px;
   }
-s
-  .keyboard__header {
+  s .keyboard__header {
     display: flex;
     justify-content: space-between;
   }
@@ -35,9 +34,9 @@ s
   .keyboard__header__select .ant-select-selection--single {
     border: none;
   }
-  
+
   .keyboard__dropdown-icon {
-    color: ${props => props.theme.mathKeyboard.dropDownIconColor}
+    color: ${props => props.theme.mathKeyboard.dropDownIconColor};
   }
 
   .keyboard__header__close {

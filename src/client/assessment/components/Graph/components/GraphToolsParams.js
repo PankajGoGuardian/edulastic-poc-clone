@@ -1,19 +1,23 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Button, Select } from '@edulastic/common';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Button, Select } from "@edulastic/common";
 import {
-  Row, Col, ToolSubTitle, SelectWrapper,
-  GraphToolsParamsWrapper, AddToolBtnWrapper,
+  Row,
+  Col,
+  ToolSubTitle,
+  SelectWrapper,
+  GraphToolsParamsWrapper,
+  AddToolBtnWrapper,
   ToolSelect
-} from '../common/styled_components';
-import DeleteButton from '../common/DeleteButton';
+} from "../common/styled_components";
+import DeleteButton from "../common/DeleteButton";
 
 class GraphToolsParams extends Component {
-  addTool = (groupIndex) => {
+  addTool = groupIndex => {
     const { toolbar, onChange, options } = this.props;
     const newTools = [...toolbar.tools];
     const areToolsArray = Array.isArray(toolbar.tools[groupIndex]);
-    const defaultOption = options && options[0] ? options[0].value : '';
+    const defaultOption = options && options[0] ? options[0].value : "";
 
     if (groupIndex !== undefined && areToolsArray) {
       newTools[groupIndex].push(defaultOption);
@@ -53,7 +57,7 @@ class GraphToolsParams extends Component {
     });
   };
 
-  deleteGroup = (groupIndex) => {
+  deleteGroup = groupIndex => {
     const { toolbar, onChange } = this.props;
 
     const newTools = [...toolbar.tools];
@@ -85,7 +89,12 @@ class GraphToolsParams extends Component {
   renderAddToolBtn = groupIndex => (
     <Row>
       <Button
-        style={{ minWidth: 227, minHeight: 40, marginRight: '0.7em', borderRadius: '4px' }}
+        style={{
+          minWidth: 227,
+          minHeight: 40,
+          marginRight: "0.7em",
+          borderRadius: "4px"
+        }}
         onClick={() => this.addTool(groupIndex)}
         color="primary"
         outlined
@@ -101,10 +110,8 @@ class GraphToolsParams extends Component {
 
     return (
       <Col paddingRight="2.5em" md={6} marginBottom={20}>
-        <ToolSubTitle>
-          Default Group
-        </ToolSubTitle>
-        {toolbar.tools.map((tool, i) => (
+        <ToolSubTitle>Default Group</ToolSubTitle>
+        {toolbar.tools.map((tool, i) =>
           !Array.isArray(tool) ? (
             <React.Fragment key={`${i}-${Math.random().toString(36)}`}>
               <ToolSelect>
@@ -120,11 +127,9 @@ class GraphToolsParams extends Component {
               </ToolSelect>
             </React.Fragment>
           ) : null
-        ))}
+        )}
 
-        <AddToolBtnWrapper>
-          { this.renderAddToolBtn() }
-        </AddToolBtnWrapper>
+        <AddToolBtnWrapper>{this.renderAddToolBtn()}</AddToolBtnWrapper>
       </Col>
     );
   };
@@ -132,7 +137,12 @@ class GraphToolsParams extends Component {
   renderAddGroupBtn = () => (
     <Row>
       <Button
-        style={{ minWidth: 227, minHeight: 40, marginRight: '0.7em', borderRadius: '4px' }}
+        style={{
+          minWidth: 227,
+          minHeight: 40,
+          marginRight: "0.7em",
+          borderRadius: "4px"
+        }}
         onClick={this.addGroup}
         color="primary"
         variant="extendedFab"
@@ -143,17 +153,23 @@ class GraphToolsParams extends Component {
   );
 
   getToolGroups = () => {
-    const { toolbar: { tools } } = this.props;
+    const {
+      toolbar: { tools }
+    } = this.props;
     const areToolsExist = tools && tools.length;
-    const toolGroups = areToolsExist && tools.map((tool, i) => {
-      if (Array.isArray(tool)) {
-        return {
-          tools: [...tool],
-          id: i
-        };
-      }
-      return null;
-    }).filter(tool => tool !== null);
+    const toolGroups =
+      areToolsExist &&
+      tools
+        .map((tool, i) => {
+          if (Array.isArray(tool)) {
+            return {
+              tools: [...tool],
+              id: i
+            };
+          }
+          return null;
+        })
+        .filter(tool => tool !== null);
 
     return toolGroups && toolGroups.length > 0 ? toolGroups : [];
   };
@@ -166,20 +182,22 @@ class GraphToolsParams extends Component {
       <React.Fragment>
         {toolGroups.map((toolGroup, i) => (
           <Col
-            paddingRight={i % 2 === 1 ? '2.5em' : '0'}
-            paddingLeft={i % 2 === 0 ? '2.5em' : '0'}
+            paddingRight={i % 2 === 1 ? "2.5em" : "0"}
+            paddingLeft={i % 2 === 0 ? "2.5em" : "0"}
             md={6}
             key={`${i}-${Math.random().toString(36)}`}
             marginBottom={20}
           >
             <ToolSubTitle>
-              { `Group ${i + 1}` }
+              {`Group ${i + 1}`}
               <DeleteButton
                 width="18px"
                 height="18px"
                 marginLeft="10px"
                 deleteToolStyles={{ width: 18, height: 18, marginLeft: 10 }}
-                onDelete={() => { this.deleteGroup(toolGroup.id); }}
+                onDelete={() => {
+                  this.deleteGroup(toolGroup.id);
+                }}
               />
             </ToolSubTitle>
 
@@ -201,9 +219,7 @@ class GraphToolsParams extends Component {
               </React.Fragment>
             ))}
 
-            <AddToolBtnWrapper>
-              { this.renderAddToolBtn(toolGroup.id) }
-            </AddToolBtnWrapper>
+            <AddToolBtnWrapper>{this.renderAddToolBtn(toolGroup.id)}</AddToolBtnWrapper>
           </Col>
         ))}
       </React.Fragment>
@@ -215,20 +231,17 @@ class GraphToolsParams extends Component {
       <React.Fragment>
         <Row marginBottom="10px">
           <GraphToolsParamsWrapper>
-            { this.renderSingleToolsInDefaultGroup() }
+            {this.renderSingleToolsInDefaultGroup()}
 
-            { this.renderGroupTools() }
+            {this.renderGroupTools()}
           </GraphToolsParamsWrapper>
         </Row>
 
         <Row>
           <GraphToolsParamsWrapper>
-            <Col md={12}>
-              { this.renderAddGroupBtn() }
-            </Col>
+            <Col md={12}>{this.renderAddGroupBtn()}</Col>
           </GraphToolsParamsWrapper>
         </Row>
-
       </React.Fragment>
     );
   }
@@ -242,13 +255,13 @@ GraphToolsParams.propTypes = {
 
 GraphToolsParams.defaultProps = {
   toolbar: {
-    default_tool: '',
+    default_tool: "",
     tools: [],
     options: []
   }
 };
 
-const Tool = (props) => {
+const Tool = props => {
   const {
     countOfSingleTools,
     options,
@@ -265,26 +278,23 @@ const Tool = (props) => {
 
   const isNeedToShowDeleteButton = () => countOfSingleTools > 1 || isGroup;
 
-  const onSelectChange = (val) => {
+  const onSelectChange = val => {
     onChange(index, val, groupIndex);
   };
 
   return (
     <React.Fragment>
       <SelectWrapper>
-        <Select
-          style={{ width: selectWidth || '70%' }}
-          onChange={onSelectChange}
-          options={options}
-          value={value}
-        />
+        <Select style={{ width: selectWidth || "70%" }} onChange={onSelectChange} options={options} value={value} />
 
         {isNeedToShowDeleteButton() && (
           <DeleteButton
-            onDelete={() => { onDelete(index, groupIndex); }}
+            onDelete={() => {
+              onDelete(index, groupIndex);
+            }}
             deleteToolStyles={deleteToolStyles}
-          />)
-        }
+          />
+        )}
       </SelectWrapper>
     </React.Fragment>
   );

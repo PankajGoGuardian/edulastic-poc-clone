@@ -1,8 +1,8 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { Affix, Layout, Row, Col } from 'antd';
+import React from "react";
+import { connect } from "react-redux";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { Affix, Layout, Row, Col } from "antd";
 
 const HeaderWrapper = ({ children, isSidebarCollapsed }) => (
   <HeaderContainer>
@@ -40,7 +40,7 @@ const FixedHeader = styled(Affix)`
   right: 0;
   position: fixed;
   z-index: 2;
-  left: ${props => (props.iscollapsed ? '100px' : '240px')};
+  left: ${props => (props.iscollapsed ? "100px" : "240px")};
   @media (max-width: 768px) {
     left: 0;
     padding-left: 30px;

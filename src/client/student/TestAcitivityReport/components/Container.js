@@ -1,10 +1,10 @@
-import React from 'react';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import AssignmentContentWrapper from '../../styled/assignmentContentWrapper';
-import ItemReport from './ItemReport';
-import { getQuestionsSelector } from '../../sharedDucks/TestItem';
+import React from "react";
+import styled from "styled-components";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import AssignmentContentWrapper from "../../styled/assignmentContentWrapper";
+import ItemReport from "./ItemReport";
+import { getQuestionsSelector } from "../../sharedDucks/TestItem";
 
 const ReportListContent = ({ questions, flag, title }) => {
   return (
@@ -34,7 +34,7 @@ ReportListContent.propTypes = {
 
 ReportListContent.defaultProps = {
   questions: [],
-  title: 'Test'
+  title: "Test"
 };
 
 const Wrapper = styled.div`

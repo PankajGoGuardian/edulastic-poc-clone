@@ -1,14 +1,14 @@
-import React, { PureComponent } from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
-import { cloneDeep } from 'lodash';
-import uuidv4 from 'uuid/v4';
-import { withWindowSizes } from '@edulastic/common';
-import { Content } from './styled';
+import React, { PureComponent } from "react";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
+import { cloneDeep } from "lodash";
+import uuidv4 from "uuid/v4";
+import { withWindowSizes } from "@edulastic/common";
+import { Content } from "./styled";
 
-import TestPageHeader from '../TestPageHeader/TestPageHeader';
+import TestPageHeader from "../TestPageHeader/TestPageHeader";
 import {
   createTestAction,
   receiveTestByIdAction,
@@ -18,17 +18,17 @@ import {
   getTestSelector,
   getTestItemsRowsSelector,
   getTestsCreatingSelector
-} from '../../ducks';
-import { getSelectedItemSelector } from '../AddItems/ducks';
-import { getUserSelector } from '../../../src/selectors/user';
-import SourceModal from '../../../src/components/QuestionEditor/SourceModal';
-import ShareModal from '../../../src/components/common/ShareModal';
+} from "../../ducks";
+import { getSelectedItemSelector } from "../AddItems/ducks";
+import { getUserSelector } from "../../../src/selectors/user";
+import SourceModal from "../../../src/components/QuestionEditor/SourceModal";
+import ShareModal from "../../../src/components/common/ShareModal";
 
-import AddItems from '../AddItems';
-import Review from '../Review';
-import Summary from '../Summary';
-import Assign from '../Assign';
-import Setting from '../Setting';
+import AddItems from "../AddItems";
+import Review from "../Review";
+import Summary from "../Summary";
+import Assign from "../Assign";
+import Setting from "../Setting";
 
 class Container extends PureComponent {
   propTypes = {
@@ -44,19 +44,19 @@ class Container extends PureComponent {
     selectedRows: PropTypes.object,
     test: PropTypes.object,
     user: PropTypes.object
-  }
+  };
 
   static defaultProps = {
     test: null,
     selectedRows: {},
     user: {}
-  }
+  };
 
   state = {
-    current: 'addItems',
+    current: "addItems",
     showModal: false,
     showShareModal: false
-  }
+  };
 
   componentDidMount() {
     const { match, receiveTestById, setDefaultData } = this.props;
@@ -68,7 +68,7 @@ class Container extends PureComponent {
   }
 
   handleNavChange = value => () => {
-    if (value === 'source') {
+    if (value === "source") {
       this.setState({
         showModal: true
       });
@@ -79,15 +79,13 @@ class Container extends PureComponent {
     });
   };
 
-  handleAddItems = (testItems) => {
+  handleAddItems = testItems => {
     const { test, setData } = this.props;
     const newTest = cloneDeep(test);
 
     newTest.testItems = testItems;
-    newTest.scoring.testItems = testItems.map((item) => {
-      const foundItem = newTest.scoring.testItems.find(
-        ({ id }) => item && item._id === id
-      );
+    newTest.scoring.testItems = testItems.map(item => {
+      const foundItem = newTest.scoring.testItems.find(({ id }) => item && item._id === id);
       if (!foundItem) {
         return {
           id: item ? item._id : uuidv4(),
@@ -99,12 +97,12 @@ class Container extends PureComponent {
     setData(newTest);
   };
 
-  handleChangeGrade = (grades) => {
+  handleChangeGrade = grades => {
     const { setData, test } = this.props;
     setData({ ...test, grades });
   };
 
-  handleChangeSubject = (subjects) => {
+  handleChangeSubject = subjects => {
     const { setData, test } = this.props;
     setData({ ...test, subjects });
   };
@@ -114,24 +112,13 @@ class Container extends PureComponent {
     const { current } = this.state;
     const selectedItems = test.testItems.map(({ _id = uuidv4() }) => _id);
     switch (current) {
-      case 'addItems':
+      case "addItems":
+        return <AddItems onAddItems={this.handleAddItems} selectedItems={selectedItems} current={current} />;
+      case "summary":
         return (
-          <AddItems
-            onAddItems={this.handleAddItems}
-            selectedItems={selectedItems}
-            current={current}
-          />
+          <Summary onShowSource={this.handleNavChange("source")} setData={setData} test={test} current={current} />
         );
-      case 'summary':
-        return (
-          <Summary
-            onShowSource={this.handleNavChange('source')}
-            setData={setData}
-            test={test}
-            current={current}
-          />
-        );
-      case 'review':
+      case "review":
         return (
           <Review
             test={test}
@@ -141,14 +128,9 @@ class Container extends PureComponent {
             current={current}
           />
         );
-      case 'settings':
-        return (
-          <Setting
-            current={current}
-            onShowSource={this.handleNavChange('source')}
-          />
-        );
-      case 'assign':
+      case "settings":
+        return <Setting current={current} onShowSource={this.handleNavChange("source")} />;
+      case "assign":
         return <Assign test={test} setData={setData} current={current} />;
       default:
         return null;
@@ -168,10 +150,8 @@ class Container extends PureComponent {
     };
 
     newTest.testItems = testItems;
-    newTest.scoring.testItems = testItems.map((item) => {
-      const foundItem = newTest.scoring.testItems.find(
-        ({ id }) => item && item._id === id
-      );
+    newTest.scoring.testItems = testItems.map(item => {
+      const foundItem = newTest.scoring.testItems.find(({ id }) => item && item._id === id);
       if (!foundItem) {
         return {
           id: item ? item._id : uuidv4(),
@@ -191,10 +171,9 @@ class Container extends PureComponent {
     this.setState({
       showShareModal: !this.state.showShareModal
     });
-  }
+  };
 
-
-  handleApplySource = (source) => {
+  handleApplySource = source => {
     const { setData } = this.props;
     try {
       const data = JSON.parse(source);
@@ -219,16 +198,12 @@ class Container extends PureComponent {
 
     if (showModal) {
       return (
-        <SourceModal
-          onClose={this.setShowModal(false)}
-          onApply={this.handleApplySource}
-        >
+        <SourceModal onClose={this.setShowModal(false)} onApply={this.handleApplySource}>
           {JSON.stringify(test, null, 4)}
         </SourceModal>
       );
     }
   };
-
 
   render() {
     const { creating, windowWidth, test } = this.props;

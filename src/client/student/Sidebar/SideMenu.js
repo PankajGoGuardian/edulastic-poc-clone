@@ -1,18 +1,11 @@
-import React, { Component } from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { withNamespaces } from '@edulastic/localization';
-import { Link, withRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import {
-  Layout,
-  Menu as AntMenu,
-  Row,
-  Col,
-  Icon as AntIcon,
-  Dropdown
-} from 'antd';
-import styled, { css } from 'styled-components';
+import React, { Component } from "react";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { withNamespaces } from "@edulastic/localization";
+import { Link, withRouter } from "react-router-dom";
+import PropTypes from "prop-types";
+import { Layout, Menu as AntMenu, Row, Col, Icon as AntIcon, Dropdown } from "antd";
+import styled, { css } from "styled-components";
 import {
   IconAssignment,
   IconHeader,
@@ -22,13 +15,13 @@ import {
   IconReport,
   IconManage,
   IconQuestion
-} from '@edulastic/icons';
-import { withWindowSizes } from '@edulastic/common';
-import { tabletWidth } from '@edulastic/colors';
-import { toggleSideBarAction } from './ducks';
-import { logoutAction } from '../Login/ducks';
+} from "@edulastic/icons";
+import { withWindowSizes } from "@edulastic/common";
+import { tabletWidth } from "@edulastic/colors";
+import { toggleSideBarAction } from "./ducks";
+import { logoutAction } from "../Login/ducks";
 
-import Profile from '../assets/Profile.png';
+import Profile from "../assets/Profile.png";
 
 const getIndex = (page, items) => {
   let index;
@@ -42,28 +35,28 @@ const getIndex = (page, items) => {
 
 const menuItems = [
   {
-    label: 'Dashboard',
+    label: "Dashboard",
     icon: IconClockDashboard
   },
   {
-    label: 'Assignments',
+    label: "Assignments",
     icon: IconAssignment,
-    path: 'home/assignments'
+    path: "home/assignments"
   },
   {
-    label: 'Reports',
+    label: "Reports",
     icon: IconReport,
-    path: 'home/reports'
+    path: "home/reports"
   },
   {
-    label: 'Skill Report',
+    label: "Skill Report",
     icon: IconBarChart,
-    path: 'home/skill-report'
+    path: "home/skill-report"
   },
   {
-    label: 'Manage Class',
+    label: "Manage Class",
     icon: IconManage,
-    path: 'home/manage'
+    path: "home/manage"
   }
 ];
 
@@ -76,7 +69,7 @@ class SideMenu extends Component {
     };
   }
 
-  handleMenu = (e) => {
+  handleMenu = e => {
     const { history, windowWidth } = this.props;
     if (menuItems[e.key].path !== undefined) {
       history.push(`/${menuItems[e.key].path}`);
@@ -91,7 +84,7 @@ class SideMenu extends Component {
     toggleSideBar();
   };
 
-  handleVisibleChange = (flag) => {
+  handleVisibleChange = flag => {
     this.setState({ isVisible: flag });
   };
 
@@ -111,7 +104,7 @@ class SideMenu extends Component {
     width: 22px;
     height: 22px;
     fill: rgb(67, 75, 93);
-    margin-right: ${() => (isSidebarCollapsed ? '0rem' : '1rem')};
+    margin-right: ${() => (isSidebarCollapsed ? "0rem" : "1rem")};
     .ant-menu-item-active > & {
       fill: #1890ff;
     }
@@ -122,15 +115,8 @@ class SideMenu extends Component {
 
   render() {
     const { broken, isVisible } = this.state;
-    const {
-      windowWidth,
-      currentPath,
-      firstName,
-      logout,
-      isSidebarCollapsed,
-      t
-    } = this.props;
-    const page = currentPath.split('/').filter(item => !!item)[1];
+    const { windowWidth, currentPath, firstName, logout, isSidebarCollapsed, t } = this.props;
+    const page = currentPath.split("/").filter(item => !!item)[1];
     const menuIndex = getIndex(page, menuItems);
     const isMobile = windowWidth <= parseFloat(tabletWidth);
     const footerDropdownMenu = (
@@ -138,14 +124,12 @@ class SideMenu extends Component {
         <Menu>
           <Menu.Item key="0" className="removeSelectedBorder">
             <a onClick={logout}>
-              <LogoutIcon type="logout" />{' '}
-              {isSidebarCollapsed ? '' : t('common.signOutText')}
+              <LogoutIcon type="logout" /> {isSidebarCollapsed ? "" : t("common.signOutText")}
             </a>
           </Menu.Item>
           <Menu.Item key="1" className="removeSelectedBorder">
             <Link to="/home/profile" onClick={this.handleProfileClick}>
-              <IconDropdown type="user" />{' '}
-              {isSidebarCollapsed ? '' : t('common.myProfileText')}
+              <IconDropdown type="user" /> {isSidebarCollapsed ? "" : t("common.myProfileText")}
             </Link>
           </Menu.Item>
         </Menu>
@@ -158,43 +142,29 @@ class SideMenu extends Component {
           collapsible
           breakpoint="md"
           onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
-          width={isMobile ? windowWidth : '240'}
-          collapsedWidth={broken ? '0' : '100'}
+          width={isMobile ? windowWidth : "240"}
+          collapsedWidth={broken ? "0" : "100"}
           className="sideBarwrapper"
         >
           <LogoWrapper className="logoWrapper">
             {broken ? (
               <Col span={3}>
-                <AntIcon
-                  className="mobileCloseIcon"
-                  type="close"
-                  onClick={this.toggleMenu}
-                />
+                <AntIcon className="mobileCloseIcon" type="close" onClick={this.toggleMenu} />
               </Col>
             ) : null}
-            <Col span={18} style={{ textAlign: 'left' }}>
+            <Col span={18} style={{ textAlign: "left" }}>
               {isSidebarCollapsed ? <LogoCompact /> : <Logo />}
             </Col>
             {broken ? null : (
-              <Col span={6} style={{ textAlign: 'right', color: '#1fe3a1' }}>
-                <AntIcon
-                  className="trigger"
-                  type={isSidebarCollapsed ? 'right' : 'left'}
-                  onClick={this.toggleMenu}
-                />
+              <Col span={6} style={{ textAlign: "right", color: "#1fe3a1" }}>
+                <AntIcon className="trigger" type={isSidebarCollapsed ? "right" : "left"} onClick={this.toggleMenu} />
               </Col>
             )}
           </LogoWrapper>
           <LogoDash />
           <MenuWrapper>
-            {isMobile && isSidebarCollapsed ? (
-              <IconBars type="bars" onClick={this.toggleMenu} />
-            ) : null}
-            <Menu
-              defaultSelectedKeys={[menuIndex.toString()]}
-              mode="inline"
-              onClick={this.handleMenu}
-            >
+            {isMobile && isSidebarCollapsed ? <IconBars type="bars" onClick={this.toggleMenu} /> : null}
+            <Menu defaultSelectedKeys={[menuIndex.toString()]} mode="inline" onClick={this.handleMenu}>
               {menuItems.map((menu, index) => {
                 const MenuIcon = this.renderIcon(menu.icon, isSidebarCollapsed);
                 return (
@@ -208,9 +178,7 @@ class SideMenu extends Component {
             <MenuFooter isSidebarCollapsed={isSidebarCollapsed}>
               <QuestionButton isSidebarCollapsed={isSidebarCollapsed}>
                 <HelpIcon />
-                {isSidebarCollapsed ? null : (
-                  <span>{t('common.helpButtonText')}</span>
-                )}
+                {isSidebarCollapsed ? null : <span>{t("common.helpButtonText")}</span>}
               </QuestionButton>
 
               <UserInfoButton
@@ -221,9 +189,9 @@ class SideMenu extends Component {
               >
                 <DropdownBtn
                   onClick={this.toggleDropdown}
-                  overlayStyle={{ position: 'fixed', minWidth: '198px' }}
+                  overlayStyle={{ position: "fixed", minWidth: "198px" }}
                   overlay={footerDropdownMenu}
-                  trigger={['click']}
+                  trigger={["click"]}
                   placement="topCenter"
                   isVisible={isVisible}
                   isSidebarCollapsed={isSidebarCollapsed}
@@ -232,18 +200,14 @@ class SideMenu extends Component {
                   <div>
                     <img src={Profile} alt="Profile" />
                     <div style={{ paddingLeft: 11 }}>
-                      {!isSidebarCollapsed && (
-                        <UserName>{firstName || 'Zack Oliver'}</UserName>
-                      )}
-                      {!isSidebarCollapsed && (
-                        <UserType>{t('common.userRoleStudent')}</UserType>
-                      )}
+                      {!isSidebarCollapsed && <UserName>{firstName || "Zack Oliver"}</UserName>}
+                      {!isSidebarCollapsed && <UserType>{t("common.userRoleStudent")}</UserType>}
                     </div>
                     {!isSidebarCollapsed && (
                       <IconDropdown
                         style={{ fontSize: 20 }}
                         className="drop-caret"
-                        type={isVisible ? 'caret-up' : 'caret-down'}
+                        type={isVisible ? "caret-up" : "caret-down"}
                       />
                     )}
                   </div>
@@ -271,11 +235,11 @@ SideMenu.propTypes = {
 const enhance = compose(
   withRouter,
   withWindowSizes,
-  withNamespaces('sidemenu'),
+  withNamespaces("sidemenu"),
   connect(
     ({ router, user, ui }) => ({
       currentPath: router.location.pathname,
-      firstName: (user.user && user.user.firstName) || '',
+      firstName: (user.user && user.user.firstName) || "",
       isSidebarCollapsed: ui.isSidebarCollapsed
     }),
     { logout: logoutAction, toggleSideBar: toggleSideBarAction }
@@ -372,8 +336,7 @@ const LogoDash = styled.div`
   width: 90%;
   height: 0;
   opacity: 0.61;
-  border-bottom: solid 1px
-    ${props => props.theme.sideMenu.logoBorderBottomColor};
+  border-bottom: solid 1px ${props => props.theme.sideMenu.logoBorderBottomColor};
   margin: 0 auto;
 `;
 
@@ -392,11 +355,9 @@ const Menu = styled(AntMenu)`
       background-color: ${props => props.theme.sideMenu.menuItemBgColor};
       color: ${props => props.theme.sideMenu.menuItemLinkColor};
       &.ant-menu-item-selected {
-        background-color: ${props =>
-    props.theme.sideMenu.menuSelectedItemBgColor};
+        background-color: ${props => props.theme.sideMenu.menuSelectedItemBgColor};
         color: ${props => props.theme.sideMenu.menuSelectedItemLinkColor};
-        border-left: 3px solid
-          ${props => props.theme.sideMenu.selectedMenuItemBorderLeft};
+        border-left: 3px solid ${props => props.theme.sideMenu.selectedMenuItemBorderLeft};
         &.removeSelectedBorder {
           border: none;
         }
@@ -538,7 +499,7 @@ const UserType = styled.div`
 const FooterDropDown = styled.div`
   position: relative;
   bottom: -4px;
-  opacity: ${props => (props.isVisible ? '1' : '0')};
+  opacity: ${props => (props.isVisible ? "1" : "0")};
   transition: 0.2s;
   -webkit-transition: 0.2s;
   ul {
@@ -560,37 +521,30 @@ const FooterDropDown = styled.div`
     }
     li {
       &.ant-menu-item {
-        background: ${props =>
-          props.theme.sideMenu.userInfoDropdownItemBgColor};
+        background: ${props => props.theme.sideMenu.userInfoDropdownItemBgColor};
         margin: 0px;
         padding: 5px 16px;
         height: 50px;
         &:hover,
         &:focus {
-          background: ${props =>
-            props.theme.sideMenu.userInfoDropdownItemBgHoverColor};
+          background: ${props => props.theme.sideMenu.userInfoDropdownItemBgHoverColor};
           a {
-            color: ${props =>
-              props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+            color: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
           }
           i {
-            color: ${props =>
-              props.theme.sideMenu.userInfoDropdownItemIconHoverColor};
+            color: ${props => props.theme.sideMenu.userInfoDropdownItemIconHoverColor};
           }
         }
         a {
           color: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
-          font-size: ${props =>
-            props.theme.sideMenu.userInfoDropdownItemFontSize};
+          font-size: ${props => props.theme.sideMenu.userInfoDropdownItemFontSize};
           font-weight: 600;
           i {
-            color: ${props =>
-              props.theme.sideMenu.userInfoDropdownItemIconColor};
+            color: ${props => props.theme.sideMenu.userInfoDropdownItemIconColor};
             position: relative;
             margin-right: 5px;
             top: 2px;
-            font-size: ${props =>
-              props.theme.sideMenu.userInfoDropdownItemIconSize};
+            font-size: ${props => props.theme.sideMenu.userInfoDropdownItemIconSize};
           }
         }
       }
@@ -609,13 +563,13 @@ const UserInfoButton = styled.div`
 const DropdownBtn = styled(Dropdown)`
   width: auto;
   height: 60px;
-  border-radius: ${props => (props.isVisible ? '0px 0px 30px 30px' : '65px')};
+  border-radius: ${props => (props.isVisible ? "0px 0px 30px 30px" : "65px")};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   background-color: ${props => props.theme.sideMenu.userInfoButtonBgColor};
   display: flex;
   align-items: center;
-  padding: ${props => (props.isSidebarCollapsed ? 0 : '0px 25px 0px 55px')};
-  margin: ${props => (props.isSidebarCollapsed ? 0 : '0 21px')};
+  padding: ${props => (props.isSidebarCollapsed ? 0 : "0px 25px 0px 55px")};
+  margin: ${props => (props.isSidebarCollapsed ? 0 : "0 21px")};
   position: relative;
   font-weight: 600;
   transition: 0.2s;

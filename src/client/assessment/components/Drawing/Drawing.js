@@ -1,13 +1,13 @@
-import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React, { Fragment } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import DrawingPreview from './DrawingPreview';
-import DrawingEdit from './DrawingEdit';
-import { PREVIEW, EDIT, CLEAR } from '../../constants/constantsForQuestions';
-import { setQuestionDataAction } from '../../../author/src/actions/question';
+import DrawingPreview from "./DrawingPreview";
+import DrawingEdit from "./DrawingEdit";
+import { PREVIEW, EDIT, CLEAR } from "../../constants/constantsForQuestions";
+import { setQuestionDataAction } from "../../../author/src/actions/question";
 
-const Drawing = (props) => {
+const Drawing = props => {
   const { view } = props;
   return (
     <Fragment>
@@ -34,7 +34,7 @@ Drawing.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: ''
+  evaluation: ""
 };
 
 export default connect(

@@ -1,21 +1,20 @@
-import React from 'react';
-import { DragSource } from 'react-dnd';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { withTheme } from 'styled-components';
+import React from "react";
+import { DragSource } from "react-dnd";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { withTheme } from "styled-components";
 
+import { CHECK, SHOW, CLEAR } from "../../../../constants/constantsForQuestions";
 
-import { CHECK, SHOW, CLEAR } from '../../../../constants/constantsForQuestions';
-
-import DragHandle from '../DragHandle';
-import { Container } from './styled/Container';
-import { StyledDragHandle } from './styled/StyledDragHandle';
-import { Text } from './styled/Text';
-import { FlexCenter } from './styled/FlexCenter';
-import { WithIndex } from './styled/WithIndex';
-import { TextEmpty } from './styled/TextEmpty';
-import { IconCheck } from './styled/IconCheck';
-import { IconClose } from './styled/IconClose';
+import DragHandle from "../DragHandle";
+import { Container } from "./styled/Container";
+import { StyledDragHandle } from "./styled/StyledDragHandle";
+import { Text } from "./styled/Text";
+import { FlexCenter } from "./styled/FlexCenter";
+import { WithIndex } from "./styled/WithIndex";
+import { TextEmpty } from "./styled/TextEmpty";
+import { IconCheck } from "./styled/IconCheck";
+import { IconClose } from "./styled/IconClose";
 
 function collectSource(connector, monitor) {
   return {
@@ -61,12 +60,10 @@ const DragItem = ({
   return obj ? (
     connectDragSource(
       <div
-        onClick={() => (active ? onClick('') : onClick(obj))}
+        onClick={() => (active ? onClick("") : onClick(obj))}
         style={{
           opacity: isDragging ? 0 : 1,
-          background: active
-            ? theme.widgets.sortList.dragItemActiveBgColor
-            : theme.widgets.sortList.dragItemBgColor,
+          background: active ? theme.widgets.sortList.dragItemActiveBgColor : theme.widgets.sortList.dragItemBgColor,
           borderRadius: 4
         }}
       >
@@ -79,7 +76,7 @@ const DragItem = ({
 
           <Text checkStyle={!active && showPreview} correct={correct} smallSize={smallSize}>
             <FlexCenter>
-              {showPreview ? <WithIndex>{index + 1}</WithIndex> : ''}
+              {showPreview ? <WithIndex>{index + 1}</WithIndex> : ""}
               <div dangerouslySetInnerHTML={{ __html: obj }} />
             </FlexCenter>
             {showPreview && (
@@ -119,7 +116,7 @@ DragItem.defaultProps = {
 };
 
 const enhance = compose(
-  DragSource('item', specSource, collectSource),
+  DragSource("item", specSource, collectSource),
   withTheme
 );
 

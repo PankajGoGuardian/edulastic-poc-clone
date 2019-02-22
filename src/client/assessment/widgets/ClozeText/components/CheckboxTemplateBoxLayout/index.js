@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import { IconWrapper } from './styled/IconWrapper';
-import { RightIcon } from './styled/RightIcon';
-import { WrongIcon } from './styled/WrongIcon';
+import { IconWrapper } from "./styled/IconWrapper";
+import { RightIcon } from "./styled/RightIcon";
+import { WrongIcon } from "./styled/WrongIcon";
 
-const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
+const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 let maxLineHeight = 40;
 
@@ -28,17 +28,17 @@ const CheckboxTemplateBoxLayout = ({
           const dropTargetIndex = responseIndex;
           responseIndex++;
           let indexStr;
-          const className = evaluation[dropTargetIndex] ? 'right' : 'wrong';
+          const className = evaluation[dropTargetIndex] ? "right" : "wrong";
           switch (stemNumeration) {
-            case 'lowercase': {
+            case "lowercase": {
               indexStr = ALPHABET[dropTargetIndex];
               break;
             }
-            case 'uppercase': {
+            case "uppercase": {
               indexStr = ALPHABET[dropTargetIndex].toUpperCase();
               break;
             }
-            case 'numerical': {
+            case "numerical": {
               indexStr = dropTargetIndex + 1;
               break;
             }
@@ -51,10 +51,7 @@ const CheckboxTemplateBoxLayout = ({
             heightpx: 0
           };
           if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-            const {
-              widthpx: widthpx1,
-              heightpx: heightpx1
-            } = responsecontainerindividuals[dropTargetIndex];
+            const { widthpx: widthpx1, heightpx: heightpx1 } = responsecontainerindividuals[dropTargetIndex];
             btnStyle.width = widthpx1;
             btnStyle.height = heightpx1;
             btnStyle.widthpx = widthpx1;
@@ -74,20 +71,27 @@ const CheckboxTemplateBoxLayout = ({
           return (
             <div key={index}>
               {showAnswer && (
-                <div className={`response-btn check-answer ${className} ${showAnswer ? 'show-answer' : ''}`} style={btnStyle}>
-                  &nbsp;<span className="index">{indexStr}</span><span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>&nbsp;
+                <div
+                  className={`response-btn check-answer ${className} ${showAnswer ? "show-answer" : ""}`}
+                  style={btnStyle}
+                >
+                  &nbsp;<span className="index">{indexStr}</span>
+                  <span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>
+                  &nbsp;
                   <IconWrapper>
-                    {className === 'right' && <RightIcon />}
-                    {className === 'wrong' && <WrongIcon />}
+                    {className === "right" && <RightIcon />}
+                    {className === "wrong" && <WrongIcon />}
                   </IconWrapper>
                 </div>
               )}
               {!showAnswer && (
                 <div className={`response-btn check-answer ${className}`} style={btnStyle}>
-                  &nbsp;<span className="index">{indexStr}</span><span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>&nbsp;
+                  &nbsp;<span className="index">{indexStr}</span>
+                  <span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>
+                  &nbsp;
                   <IconWrapper>
-                    {className === 'right' && <RightIcon />}
-                    {className === 'wrong' && <WrongIcon />}
+                    {className === "right" && <RightIcon />}
+                    {className === "wrong" && <WrongIcon />}
                   </IconWrapper>
                 </div>
               )}
@@ -95,7 +99,11 @@ const CheckboxTemplateBoxLayout = ({
           );
         }
         return (
-          <span style={{ userSelect: 'none', lineHeight: `${maxLineHeight}px` }} key={index} dangerouslySetInnerHTML={{ __html: templatePart }} />
+          <span
+            style={{ userSelect: "none", lineHeight: `${maxLineHeight}px` }}
+            key={index}
+            dangerouslySetInnerHTML={{ __html: templatePart }}
+          />
         );
       })}
     </div>
@@ -115,11 +123,11 @@ CheckboxTemplateBoxLayout.propTypes = {
 
 CheckboxTemplateBoxLayout.defaultProps = {
   responsecontainerindividuals: [],
-  fontSize: '13px',
+  fontSize: "13px",
   templateParts: [],
   responseBtnStyle: {},
   userSelections: [],
-  stemNumeration: 'numerical',
+  stemNumeration: "numerical",
   evaluation: [],
   showAnswer: false
 };

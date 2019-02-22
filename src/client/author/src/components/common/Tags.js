@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { darkBlue, lightBlue, greenDark, lightGreen, white, grey } from '@edulastic/colors';
-import { Dropdown } from 'antd';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { darkBlue, lightBlue, greenDark, lightGreen, white, grey } from "@edulastic/colors";
+import { Dropdown } from "antd";
 
 const Tags = ({ tags, labelStyle, type, show }) => {
   if (!tags.length) return null;
@@ -27,13 +27,12 @@ const Tags = ({ tags, labelStyle, type, show }) => {
           {tag}
         </Label>
       ))}
-      {hiddenTags &&
-        !!hiddenTags.length && (
-          <Dropdown overlay={popup}>
-            <Label style={labelStyle} type={type}>
-              <span>{hiddenTags.length} +</span>
-            </Label>
-          </Dropdown>
+      {hiddenTags && !!hiddenTags.length && (
+        <Dropdown overlay={popup}>
+          <Label style={labelStyle} type={type}>
+            <span>{hiddenTags.length} +</span>
+          </Label>
+        </Dropdown>
       )}
     </Labels>
   );
@@ -43,25 +42,25 @@ Tags.propTypes = {
   tags: PropTypes.array.isRequired,
   labelStyle: PropTypes.object,
   type: PropTypes.string,
-  show: PropTypes.number,
+  show: PropTypes.number
 };
 
 Tags.defaultProps = {
   labelStyle: {},
-  type: 'primary', // primary, secondary
-  show: 2,
+  type: "primary", // primary, secondary
+  show: 2
 };
 
 export default Tags;
 
-const getLabelStyle = (type) => {
+const getLabelStyle = type => {
   switch (type) {
-    case 'secondary':
+    case "secondary":
       return `
         color: ${greenDark};
         background: ${lightGreen};
       `;
-    case 'primary':
+    case "primary":
       return `
       color: #4aac8b;
       background: #d7faee;

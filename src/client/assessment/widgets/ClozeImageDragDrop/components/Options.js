@@ -1,27 +1,23 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import { Select } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
-import { evaluationType } from '@edulastic/constants';
+import { Select } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
+import { evaluationType } from "@edulastic/constants";
 
-import WidgetOptions from '../../../containers/WidgetOptions';
-import { Block } from '../../../styled/WidgetOptions/Block';
-import { Row } from '../../../styled/WidgetOptions/Row';
-import { Col } from '../../../styled/WidgetOptions/Col';
-import { Label } from '../../../styled/WidgetOptions/Label';
-import { Heading } from '../../../styled/WidgetOptions/Heading';
-import Extras from '../../../containers/Extras';
+import WidgetOptions from "../../../containers/WidgetOptions";
+import { Block } from "../../../styled/WidgetOptions/Block";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import { Heading } from "../../../styled/WidgetOptions/Heading";
+import Extras from "../../../containers/Extras";
 
-const scoringTypes = [
-  evaluationType.exactMatch,
-  evaluationType.partialMatch,
-  evaluationType.partialMatchV2
-];
+const scoringTypes = [evaluationType.exactMatch, evaluationType.partialMatch, evaluationType.partialMatchV2];
 
 const Options = ({ onChange, uiStyle, t, outerStyle }) => {
   const changeUiStyle = (prop, value) => {
-    onChange('ui_style', {
+    onChange("ui_style", {
       ...uiStyle,
       [prop]: value
     });
@@ -30,46 +26,52 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
   return (
     <WidgetOptions outerStyle={outerStyle} scoringTypes={scoringTypes}>
       <Block>
-        <Heading>{t('component.options.layout')}</Heading>
+        <Heading>{t("component.options.layout")}</Heading>
         <Row>
           <Col md={6}>
-            <Label>{t('component.options.responsecontainerposition')}</Label>
+            <Label>{t("component.options.responsecontainerposition")}</Label>
             <Select
-              style={{ width: '80%' }}
-              onChange={val => changeUiStyle('responsecontainerposition', val)}
+              style={{ width: "80%" }}
+              onChange={val => changeUiStyle("responsecontainerposition", val)}
               options={[
-                { value: 'top', label: t('component.options.top') },
-                { value: 'bottom', label: t('component.options.bottom') },
-                { value: 'right', label: t('component.options.right') },
-                { value: 'left', label: t('component.options.left') }
+                { value: "top", label: t("component.options.top") },
+                { value: "bottom", label: t("component.options.bottom") },
+                { value: "right", label: t("component.options.right") },
+                { value: "left", label: t("component.options.left") }
               ]}
               value={uiStyle.responsecontainerposition}
             />
           </Col>
           <Col md={6}>
-            <Label>{t('component.options.stemNumerationReviewOnly')}</Label>
+            <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
             <Select
-              style={{ width: '80%' }}
-              onChange={val => changeUiStyle('stemnumeration', val)}
+              style={{ width: "80%" }}
+              onChange={val => changeUiStyle("stemnumeration", val)}
               options={[
-                { value: 'numerical', label: t('component.options.numerical') },
-                { value: 'uppercase', label: t('component.options.uppercasealphabet') },
-                { value: 'lowercase', label: t('component.options.lowercasealphabet') }
+                { value: "numerical", label: t("component.options.numerical") },
+                {
+                  value: "uppercase",
+                  label: t("component.options.uppercasealphabet")
+                },
+                {
+                  value: "lowercase",
+                  label: t("component.options.lowercasealphabet")
+                }
               ]}
               value={uiStyle.stemnumeration}
             />
           </Col>
           <Col md={6}>
-            <Label>{t('component.options.fontSize')}</Label>
+            <Label>{t("component.options.fontSize")}</Label>
             <Select
-              style={{ width: '80%' }}
-              onChange={fontsize => changeUiStyle('fontsize', fontsize)}
+              style={{ width: "80%" }}
+              onChange={fontsize => changeUiStyle("fontsize", fontsize)}
               options={[
-                { value: 'small', label: t('component.options.small') },
-                { value: 'normal', label: t('component.options.normal') },
-                { value: 'large', label: t('component.options.large') },
-                { value: 'xlarge', label: t('component.options.extraLarge') },
-                { value: 'xxlarge', label: t('component.options.huge') }
+                { value: "small", label: t("component.options.small") },
+                { value: "normal", label: t("component.options.normal") },
+                { value: "large", label: t("component.options.large") },
+                { value: "xlarge", label: t("component.options.extraLarge") },
+                { value: "xxlarge", label: t("component.options.huge") }
               ]}
               value={uiStyle.fontsize}
             />
@@ -93,9 +95,9 @@ Options.propTypes = {
 Options.defaultProps = {
   outerStyle: {},
   uiStyle: {
-    responsecontainerposition: 'bottom',
-    fontsize: 'normal',
-    stemnumeration: '',
+    responsecontainerposition: "bottom",
+    fontsize: "normal",
+    stemnumeration: "",
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,
@@ -103,4 +105,4 @@ Options.defaultProps = {
   }
 };
 
-export default React.memo(withNamespaces('assessment')(Options));
+export default React.memo(withNamespaces("assessment")(Options));

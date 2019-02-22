@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { CustomQuillComponent } from '@edulastic/common';
+import styled from "styled-components";
+import { CustomQuillComponent } from "@edulastic/common";
 
 export const StyledCustomQuill = styled(CustomQuillComponent)`
   min-height: 134px;

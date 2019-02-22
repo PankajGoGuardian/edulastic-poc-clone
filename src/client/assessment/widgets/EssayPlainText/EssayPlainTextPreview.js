@@ -1,55 +1,54 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { Input } from 'antd';
-import { compose } from 'redux';
-import { withTheme } from 'styled-components';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import { Input } from "antd";
+import { compose } from "redux";
+import { withTheme } from "styled-components";
 
-import { Paper, Stimulus, FlexContainer } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { Paper, Stimulus, FlexContainer } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import {
-  COPY,
-  CUT,
-  PASTE,
-  ON_LIMIT,
-  ALWAYS,
-  PREVIEW
-} from '../../constants/constantsForQuestions';
+import { COPY, CUT, PASTE, ON_LIMIT, ALWAYS, PREVIEW } from "../../constants/constantsForQuestions";
 
-import { Toolbar } from '../../styled/Toolbar';
-import { Item } from '../../styled/Item';
+import { Toolbar } from "../../styled/Toolbar";
+import { Item } from "../../styled/Item";
 
-import { ToolbarItem } from './styled/ToolbarItem';
-import { preventEvent } from '../../utils/helpers';
+import { ToolbarItem } from "./styled/ToolbarItem";
+import { preventEvent } from "../../utils/helpers";
 
 const EssayPlainTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswer, theme }) => {
-  const [text, setText] = useState(Array.isArray(userAnswer) ? '' : userAnswer);
+  const [text, setText] = useState(Array.isArray(userAnswer) ? "" : userAnswer);
 
-  const [wordCount, setWordCount] = useState(text.split(' ').filter(i => !!i).length);
+  const [wordCount, setWordCount] = useState(text.split(" ").filter(i => !!i).length);
 
   const [selection, setSelection] = useState(null);
 
-  const [buffer, setBuffer] = useState('');
+  const [buffer, setBuffer] = useState("");
 
   const [cursor, setCursor] = useState(null);
 
   let node;
 
-  const handleTextChange = (e) => {
+  const handleTextChange = e => {
     const val = e.target.value;
     setText(val);
-    setWordCount(val.split(' ').filter(i => !!i).length);
+    setWordCount(val.split(" ").filter(i => !!i).length);
     saveAnswer(val);
   };
 
   const handleSelect = () => {
     if (node.textAreaRef.selectionStart !== node.textAreaRef.selectionEnd) {
-      setSelection({ start: node.textAreaRef.selectionStart, end: node.textAreaRef.selectionEnd });
+      setSelection({
+        start: node.textAreaRef.selectionStart,
+        end: node.textAreaRef.selectionEnd
+      });
     } else {
       setSelection(null);
     }
 
-    setCursor({ start: node.textAreaRef.selectionStart, end: node.textAreaRef.selectionEnd });
+    setCursor({
+      start: node.textAreaRef.selectionStart,
+      end: node.textAreaRef.selectionEnd
+    });
   };
 
   const handleAction = action => () => {
@@ -86,52 +85,40 @@ const EssayPlainTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswe
 
   const displayWordCount =
     (showOnLimit && item.max_word < wordCount) || showLimitAlways
-      ? `${wordCount} / ${item.max_word} ${t('component.essayText.wordsLimitTitle')}`
-      : `${wordCount} ${t('component.essayText.wordsTitle')}`;
+      ? `${wordCount} / ${item.max_word} ${t("component.essayText.wordsLimitTitle")}`
+      : `${wordCount} ${t("component.essayText.wordsTitle")}`;
 
-  const wordCountStyle = (showLimitAlways || showOnLimit) && item.max_word < wordCount
-    ? { color: theme.widgets.essayPlainText.wordCountLimitedColor }
-    : {};
+  const wordCountStyle =
+    (showLimitAlways || showOnLimit) && item.max_word < wordCount
+      ? { color: theme.widgets.essayPlainText.wordCountLimitedColor }
+      : {};
 
   return (
-    <Paper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
-      {view === PREVIEW && !smallSize && (
-        <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-      )}
+    <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+      {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
 
       <Toolbar borderRadiusOnlyTop style={{ borderBottom: 0 }}>
         <FlexContainer childMarginRight={0} alignItems="stretch" justifyContent="space-between">
-          {item.show_copy && (
-            <ToolbarItem onClick={handleAction(COPY)}>
-              {t('component.essayText.copy')}
-            </ToolbarItem>
-          )}
-          {item.show_cut && (
-            <ToolbarItem onClick={handleAction(CUT)}>
-              {t('component.essayText.cut')}
-            </ToolbarItem>
-          )}
-          {item.show_paste && (
-            <ToolbarItem onClick={handleAction(PASTE)}>
-              {t('component.essayText.paste')}
-            </ToolbarItem>
-          )}
+          {item.show_copy && <ToolbarItem onClick={handleAction(COPY)}>{t("component.essayText.copy")}</ToolbarItem>}
+          {item.show_cut && <ToolbarItem onClick={handleAction(CUT)}>{t("component.essayText.cut")}</ToolbarItem>}
+          {item.show_paste && <ToolbarItem onClick={handleAction(PASTE)}>{t("component.essayText.paste")}</ToolbarItem>}
         </FlexContainer>
       </Toolbar>
 
       <Input.TextArea
-        ref={(ref) => {
+        ref={ref => {
           node = ref;
         }}
         style={{
           borderRadius: 0,
-          background: item.max_word < wordCount
-            ? theme.widgets.essayPlainText.textInputLimitedBgColor
-            : theme.widgets.essayPlainText.textInputBgColor
+          background:
+            item.max_word < wordCount
+              ? theme.widgets.essayPlainText.textInputLimitedBgColor
+              : theme.widgets.essayPlainText.textInputBgColor
         }}
         rows={4}
         onSelect={handleSelect}
-        value={smallSize ? t('component.essayText.plain.templateText') : text}
+        value={smallSize ? t("component.essayText.plain.templateText") : text}
         onChange={handleTextChange}
         size="large"
         onPaste={preventEvent}
@@ -165,7 +152,7 @@ EssayPlainTextPreview.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   withTheme
 );
 

@@ -1,7 +1,7 @@
 export const getStyles = (isDragging, backgroundColor, borderColor, styles = {}) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
   opacity: isDragging ? 0 : 1,
   minWidth: 136,
   minHeight: 40,
@@ -9,7 +9,7 @@ export const getStyles = (isDragging, backgroundColor, borderColor, styles = {})
   border: `1px solid ${borderColor}`,
   backgroundColor,
   paddingRight: 40,
-  cursor: 'pointer',
+  cursor: "pointer",
   paddingLeft: 40,
   ...styles
 });

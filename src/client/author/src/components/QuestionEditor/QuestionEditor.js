@@ -1,32 +1,32 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
-import { withNamespaces } from '@edulastic/localization';
-import { ContentWrapper, withWindowSizes } from '@edulastic/common';
+import { withNamespaces } from "@edulastic/localization";
+import { ContentWrapper, withWindowSizes } from "@edulastic/common";
 
-import SourceModal from './SourceModal';
-import { changeViewAction, changePreviewAction } from '../../actions/view';
-import { getViewSelector } from '../../selectors/view';
-import { ButtonBar, SecondHeadBar } from '../common';
-import QuestionWrapper from '../../../../assessment/components/QuestionWrapper';
-import QuestionMetadata from '../../../../assessment/containers/QuestionMetadata';
-import ItemHeader from './ItemHeader';
-import { getQuestionSelector } from '../../selectors/question';
-import { getItemIdSelector } from '../../selectors/itemDetail';
-import { saveQuestionAction, setQuestionDataAction } from '../../actions/question';
-import { checkAnswerAction, showAnswerAction } from '../../actions/testItem';
+import SourceModal from "./SourceModal";
+import { changeViewAction, changePreviewAction } from "../../actions/view";
+import { getViewSelector } from "../../selectors/view";
+import { ButtonBar, SecondHeadBar } from "../common";
+import QuestionWrapper from "../../../../assessment/components/QuestionWrapper";
+import QuestionMetadata from "../../../../assessment/containers/QuestionMetadata";
+import ItemHeader from "./ItemHeader";
+import { getQuestionSelector } from "../../selectors/question";
+import { getItemIdSelector } from "../../selectors/itemDetail";
+import { saveQuestionAction, setQuestionDataAction } from "../../actions/question";
+import { checkAnswerAction, showAnswerAction } from "../../actions/testItem";
 
 class QuestionEditor extends Component {
   state = {
     showModal: false,
     saveClicked: false,
-    previewTab: 'clear'
+    previewTab: "clear"
   };
 
-  handleChangeView = (view) => {
+  handleChangeView = view => {
     const { changeView } = this.props;
     changeView(view);
   };
@@ -41,7 +41,7 @@ class QuestionEditor extends Component {
     this.setState({ showModal: false });
   };
 
-  handleApplySource = (json) => {
+  handleApplySource = json => {
     try {
       const state = JSON.parse(json);
       const { setQuestionData } = this.props;
@@ -66,14 +66,14 @@ class QuestionEditor extends Component {
     }
   };
 
-  handleChangePreviewTab = (previewTab) => {
+  handleChangePreviewTab = previewTab => {
     const { checkAnswer, showAnswer, changePreview } = this.props;
 
-    if (previewTab === 'check') {
-      checkAnswer('edit');
+    if (previewTab === "check") {
+      checkAnswer("edit");
     }
-    if (previewTab === 'show') {
-      showAnswer('edit');
+    if (previewTab === "show") {
+      showAnswer("edit");
     }
 
     changePreview(previewTab);
@@ -83,10 +83,10 @@ class QuestionEditor extends Component {
     });
   };
 
-  renderQuestion = (questionType) => {
+  renderQuestion = questionType => {
     const { view, question, match } = this.props;
     const { previewTab, saveClicked } = this.state;
-    if (view === 'metadata') {
+    if (view === "metadata") {
       return <QuestionMetadata />;
     }
     if (question) {
@@ -107,7 +107,7 @@ class QuestionEditor extends Component {
   render() {
     const { view, question, testItemId } = this.props;
     const { previewTab, showModal } = this.state;
-    const itemId = question === null ? '' : question._id;
+    const itemId = question === null ? "" : question._id;
     const questionType = this.getQuestionType();
 
     return (
@@ -139,10 +139,10 @@ class QuestionEditor extends Component {
           previewTab={previewTab}
           breadcrumb={[
             {
-              title: 'ITEM DETAIL',
+              title: "ITEM DETAIL",
               to: `/author/items/${testItemId}/item-detail`
             },
-            { title: question.data.title, to: '' }
+            { title: question.data.title, to: "" }
           ]}
         />
 
@@ -173,7 +173,7 @@ QuestionEditor.defaultProps = {
 const enhance = compose(
   withRouter,
   withWindowSizes,
-  withNamespaces('author'),
+  withNamespaces("author"),
   connect(
     state => ({
       view: getViewSelector(state),

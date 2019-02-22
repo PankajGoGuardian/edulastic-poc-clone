@@ -1,33 +1,33 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import React from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
 
-import { blue, darkBlue } from '@edulastic/colors';
-import { navButtons } from '../TestPageHeader/TestPageHeader';
+import { blue, darkBlue } from "@edulastic/colors";
+import { navButtons } from "../TestPageHeader/TestPageHeader";
 
-const getCurrentText = (current) => {
+const getCurrentText = current => {
   const currentItem = navButtons.find(btn => btn.value === current);
   if (currentItem) {
     return currentItem.text;
   }
 
-  return '';
+  return "";
 };
 
 const Breadcrumbs = ({ current, style }) => (
   <Title style={style}>
-    {'<'} <BackLink to="/author/tests">Test List</BackLink> / {getCurrentText(current)}
+    {"<"} <BackLink to="/author/tests">Test List</BackLink> / {getCurrentText(current)}
   </Title>
 );
 
 Breadcrumbs.propTypes = {
   current: PropTypes.string.isRequired,
-  style: PropTypes.object,
+  style: PropTypes.object
 };
 
 Breadcrumbs.defaultProps = {
-  style: {},
+  style: {}
 };
 
 export default Breadcrumbs;

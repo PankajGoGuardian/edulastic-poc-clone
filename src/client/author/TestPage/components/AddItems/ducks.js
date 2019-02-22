@@ -1,14 +1,14 @@
-import { createSelector } from 'reselect';
-import { message } from 'antd';
-import { call, put, all, takeEvery } from 'redux-saga/effects';
-import { testItemsApi } from '@edulastic/api';
+import { createSelector } from "reselect";
+import { message } from "antd";
+import { call, put, all, takeEvery } from "redux-saga/effects";
+import { testItemsApi } from "@edulastic/api";
 
 // constants
 
-export const RECEIVE_TEST_ITEMS_REQUEST = '[addItems] receive items request';
-export const RECEIVE_TEST_ITEMS_SUCCESS = '[addItems] receive items success';
-export const RECEIVE_TEST_ITEMS_ERROR = '[addItems] receive items error';
-export const SET_TEST_ITEMS_REQUEST = '[addItems] set items request';
+export const RECEIVE_TEST_ITEMS_REQUEST = "[addItems] receive items request";
+export const RECEIVE_TEST_ITEMS_SUCCESS = "[addItems] receive items success";
+export const RECEIVE_TEST_ITEMS_ERROR = "[addItems] receive items error";
+export const SET_TEST_ITEMS_REQUEST = "[addItems] set items request";
 
 // actions
 
@@ -88,23 +88,16 @@ function* receiveTestItemsSaga({ payload: { search = {}, page = 1, limit = 10 } 
       page,
       limit
     });
-    yield put(receiveTestItemsSuccess(
-      items,
-      count,
-      page,
-      limit
-    ));
+    yield put(receiveTestItemsSuccess(items, count, page, limit));
   } catch (err) {
-    const errorMessage = 'Receive items is failing';
+    const errorMessage = "Receive items is failing";
     yield call(message.error, errorMessage);
     yield put(receiveTestItemsError(errorMessage));
   }
 }
 
 export function* watcherSaga() {
-  yield all([
-    yield takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga)
-  ]);
+  yield all([yield takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga)]);
 }
 
 // selectors

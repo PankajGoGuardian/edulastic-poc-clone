@@ -1,6 +1,6 @@
-import { Point } from '.';
-import { CONSTANT, Colors } from '../config';
-import { handleSnap } from '../utils';
+import { Point } from ".";
+import { CONSTANT, Colors } from "../config";
+import { handleSnap } from "../utils";
 
 export const defaultConfig = {
   type: CONSTANT.TOOLS.SIN,
@@ -9,18 +9,18 @@ export const defaultConfig = {
 
 export const getSinLabelParameters = () => ({
   offset: [0, 10],
-  position: 'mdl',
-  anchorX: 'middle',
-  anchorY: 'middle',
-  cssClass: 'myLabel',
-  highlightCssClass: 'myLabel'
+  position: "mdl",
+  anchorX: "middle",
+  anchorY: "middle",
+  cssClass: "myLabel",
+  highlightCssClass: "myLabel"
 });
 
-const makeCallback = (p1, p2) => (x) => {
+const makeCallback = (p1, p2) => x => {
   const a = p1.Y();
   const b = p2.Y() - p1.Y();
   const c = 1 / ((p2.X() - p1.X()) / (Math.PI / 2));
-  const d = 0 - p1.X() * Math.PI / (2 * (p2.X() - p1.X()));
+  const d = 0 - (p1.X() * Math.PI) / (2 * (p2.X() - p1.X()));
   return a + b * Math.sin(x * c + d);
 };
 
@@ -33,12 +33,11 @@ function onHandler() {
       points.push(newPoint);
     }
     if (points.length === 2) {
-      const newLine = board.$board.create('functiongraph',
-        [makeCallback(...points)], {
-          ...defaultConfig,
-          ...Colors.default[CONSTANT.TOOLS.SIN],
-          label: getSinLabelParameters()
-        });
+      const newLine = board.$board.create("functiongraph", [makeCallback(...points)], {
+        ...defaultConfig,
+        ...Colors.default[CONSTANT.TOOLS.SIN],
+        label: getSinLabelParameters()
+      });
 
       handleSnap(newLine, points);
 
@@ -57,11 +56,11 @@ function onHandler() {
 
 function parseConfig(pointsConfig) {
   return [
-    'functiongraph',
+    "functiongraph",
     [pointsArgument => makeCallback(...pointsArgument), pointsConfig],
     {
       ...defaultConfig,
-      fillColor: 'transparent',
+      fillColor: "transparent",
       label: getSinLabelParameters()
     }
   ];

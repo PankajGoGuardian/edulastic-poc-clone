@@ -1,40 +1,32 @@
-import React, { Component, Suspense, lazy } from 'react';
-import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
-import { compose } from 'redux';
-import { test } from '@edulastic/constants';
+import React, { Component, Suspense, lazy } from "react";
+import { Switch, Route, Redirect, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { DragDropContext } from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
+import { compose } from "redux";
+import { test } from "@edulastic/constants";
 
 const { ASSESSMENT, PRACTICE } = test.type;
 
-import { TestAttemptReview } from './student/TestAttemptReview';
+import { TestAttemptReview } from "./student/TestAttemptReview";
 // route wise splitting
-const AssessmentPlayer = lazy(() =>
-  import(/* webpackChunkName: "assessmentPlayer" */ './assessment/index')
-);
+const AssessmentPlayer = lazy(() => import(/* webpackChunkName: "assessmentPlayer" */ "./assessment/index"));
 const TeacherSignup = lazy(() =>
-  import(/* webpackChunkName: "teacherSignup" */ './student/Signup/components/TeacherContainer')
+  import(/* webpackChunkName: "teacherSignup" */ "./student/Signup/components/TeacherContainer")
 );
-const Login = lazy(() =>
-  import(/* webpackChunkName: "login" */ './student/Login/components')
-);
+const Login = lazy(() => import(/* webpackChunkName: "login" */ "./student/Login/components"));
 const GetStarted = lazy(() =>
-  import(/* webpackChunkName: "getStarted" */ './student/Signup/components/GetStartedContainer')
+  import(/* webpackChunkName: "getStarted" */ "./student/Signup/components/GetStartedContainer")
 );
 const StudentSignup = lazy(() =>
-  import(/* webpackChunkName: "studentSignup" */ './student/Signup/components/StudentContainer')
+  import(/* webpackChunkName: "studentSignup" */ "./student/Signup/components/StudentContainer")
 );
 const AdminSignup = lazy(() =>
-  import(/* webpackChunkName: "adminSignup" */ './student/Signup/components/AdminContainer')
+  import(/* webpackChunkName: "adminSignup" */ "./student/Signup/components/AdminContainer")
 );
-const Dashboard = lazy(() =>
-  import(/* webpackChunkName: "student" */ './student/app')
-);
+const Dashboard = lazy(() => import(/* webpackChunkName: "student" */ "./student/app"));
 
-const Author = lazy(() =>
-  import(/* webpackChunkName: "author" */ './author/src/app')
-);
+const Author = lazy(() => import(/* webpackChunkName: "author" */ "./author/src/app"));
 
 const Loading = () => <div> Loading ...</div>;
 
@@ -57,19 +49,10 @@ class App extends Component {
               path={`/student/${ASSESSMENT}/:id/uta/:utaId`}
               render={() => <AssessmentPlayer defaultAP={true} />}
             />
-            <Route
-              path={`/student/${ASSESSMENT}/:id`}
-              render={() => <AssessmentPlayer defaultAP={true} />}
-            />
+            <Route path={`/student/${ASSESSMENT}/:id`} render={() => <AssessmentPlayer defaultAP={true} />} />
             <Route path="/student/test-summary" component={TestAttemptReview} />
-            <Route
-              path={`/student/${PRACTICE}/:id/uta/:utaId`}
-              render={() => <AssessmentPlayer defaultAP={false} />}
-            />
-            <Route
-              path={`/student/${PRACTICE}/:id`}
-              render={() => <AssessmentPlayer defaultAP={false} />}
-            />
+            <Route path={`/student/${PRACTICE}/:id/uta/:utaId`} render={() => <AssessmentPlayer defaultAP={false} />} />
+            <Route path={`/student/${PRACTICE}/:id`} render={() => <AssessmentPlayer defaultAP={false} />} />
           </Switch>
         </Suspense>
       </div>

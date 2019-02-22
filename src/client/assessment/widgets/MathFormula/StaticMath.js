@@ -1,8 +1,8 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
 
-import { MathInputStyles } from '../../styled/MathInputStyles';
-import MathKeyboard from '../../components/MathKeyboard';
+import { MathInputStyles } from "../../styled/MathInputStyles";
+import MathKeyboard from "../../components/MathKeyboard";
 
 class StaticMath extends PureComponent {
   state = {
@@ -18,14 +18,14 @@ class StaticMath extends PureComponent {
 
   componentWillUnmount() {
     // make sure you remove the listener when the component is destroyed
-    document.removeEventListener('click', this.handleClick, false);
+    document.removeEventListener("click", this.handleClick, false);
   }
 
   handleClick(e) {
     if (
-      e.target.nodeName === 'svg' ||
-      e.target.nodeName === 'path' ||
-      (e.target.nodeName === 'LI' && e.target.attributes[0].nodeValue === 'option')
+      e.target.nodeName === "svg" ||
+      e.target.nodeName === "path" ||
+      (e.target.nodeName === "LI" && e.target.attributes[0].nodeValue === "option")
     ) {
       return;
     }
@@ -41,7 +41,7 @@ class StaticMath extends PureComponent {
 
     this.setState({ mathField, MQ });
 
-    document.addEventListener('click', this.handleClick.bind(this), false);
+    document.addEventListener("click", this.handleClick.bind(this), false);
   }
 
   setInnerFieldsFocuses = () => {
@@ -51,7 +51,7 @@ class StaticMath extends PureComponent {
       return;
     }
 
-    const goTo = (fieldIndex) => {
+    const goTo = fieldIndex => {
       const nextField = mathField.innerFields[fieldIndex];
       if (nextField) {
         nextField
@@ -61,8 +61,8 @@ class StaticMath extends PureComponent {
       }
     };
 
-    mathField.innerFields.forEach((field) => {
-      const getIndex = id => parseInt(id.replace('inner-', ''), 10);
+    mathField.innerFields.forEach(field => {
+      const getIndex = id => parseInt(id.replace("inner-", ""), 10);
 
       field.config({
         handlers: {
@@ -84,7 +84,7 @@ class StaticMath extends PureComponent {
     });
   };
 
-  setLatex = (latex) => {
+  setLatex = latex => {
     const { mathField } = this.state;
 
     if (!mathField) return;
@@ -92,7 +92,7 @@ class StaticMath extends PureComponent {
 
     for (let i = 0; i < mathField.innerFields.length; i++) {
       mathField.innerFields[i].el().id = `inner-${i}`;
-      mathField.innerFields[i].el().addEventListener('click', () => {
+      mathField.innerFields[i].el().addEventListener("click", () => {
         this.onFocus(mathField.innerFields[i]);
       });
     }
@@ -114,28 +114,28 @@ class StaticMath extends PureComponent {
     return mathField.latex();
   };
 
-  onInput = (key) => {
+  onInput = key => {
     const { innerField } = this.state;
     const { onInput } = this.props;
 
     if (!innerField) return;
 
-    if (key === 'left_move') {
-      innerField.keystroke('Left');
-    } else if (key === 'right_move') {
-      innerField.keystroke('Right');
-    } else if (key === 'ln--') {
-      innerField.write('ln\\left(\\right)');
-    } else if (key === 'leftright3') {
-      innerField.write('\\sqrt[3]{}');
-    } else if (key === 'Backspace') {
-      innerField.keystroke('Backspace');
-    } else if (key === 'leftright2') {
-      innerField.write('^2');
-    } else if (key === 'down_move') {
-      innerField.keystroke('Down');
-    } else if (key === 'up_move') {
-      innerField.keystroke('Up');
+    if (key === "left_move") {
+      innerField.keystroke("Left");
+    } else if (key === "right_move") {
+      innerField.keystroke("Right");
+    } else if (key === "ln--") {
+      innerField.write("ln\\left(\\right)");
+    } else if (key === "leftright3") {
+      innerField.write("\\sqrt[3]{}");
+    } else if (key === "Backspace") {
+      innerField.keystroke("Backspace");
+    } else if (key === "leftright2") {
+      innerField.write("^2");
+    } else if (key === "down_move") {
+      innerField.keystroke("Down");
+    } else if (key === "up_move") {
+      innerField.keystroke("Up");
     } else {
       innerField.write(key);
     }

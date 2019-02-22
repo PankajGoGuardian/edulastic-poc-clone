@@ -1,9 +1,9 @@
 // @ts-check
-import React, { useState, useEffect } from 'react';
-import { load } from 'loaderjs';
+import React, { useState, useEffect } from "react";
+import { load } from "loaderjs";
 
-const getExtension = (url) => {
-  const parts = url.split('.');
+const getExtension = url => {
+  const parts = url.split(".");
   return parts[parts.length - 1];
 };
 
@@ -11,13 +11,13 @@ const getExtension = (url) => {
  * cleaning up during unmounting
  * @param {string|string[]} resources
  */
-const cleanupResources = (resources) => {
+const cleanupResources = resources => {
   const resourcesArray = Array.isArray(resources) ? resources : [resources];
   for (const res of resourcesArray) {
     let entries = null;
-    if (getExtension(res) === 'js') {
+    if (getExtension(res) === "js") {
       entries = document.body.querySelectorAll(`script[src="${res}"]`).entries();
-    } else if (getExtension(res) === 'css') {
+    } else if (getExtension(res) === "css") {
       entries = document.head.querySelectorAll(`link[href="${res}"]`).entries();
     }
     if (!entries) {
@@ -33,7 +33,7 @@ const cleanupResources = (resources) => {
  *
  * @param {string|string[]} resources
  */
-export const useResources = (resources) => {
+export const useResources = resources => {
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     load(resources).then(() => {
@@ -46,7 +46,6 @@ export const useResources = (resources) => {
   return loaded;
 };
 
-
 export function WithResources({ resources, fallBack, children }) {
   const loaded = useResources(resources);
   if (!loaded) {
@@ -55,10 +54,9 @@ export function WithResources({ resources, fallBack, children }) {
   return children;
 }
 
-
 export function WithResourcesHOC({ resources, fallBack }) {
   return function resourceLoaded(WrappedComponent) {
-    return (props) => {
+    return props => {
       const loaded = useResources(resources);
 
       if (!loaded) {

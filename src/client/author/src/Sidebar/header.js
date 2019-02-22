@@ -1,13 +1,13 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { IconHeader, IconClose, IconChevronLeft, IconLogoCompact } from '@edulastic/icons';
+import React from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { IconHeader, IconClose, IconChevronLeft, IconLogoCompact } from "@edulastic/icons";
 
-import Help from './help';
-import Navigation from './navigation';
-import { desktopSideBar } from '../actions/togglemenu';
-import { responsiveSideBar } from '../actions/responsivetogglemenu';
+import Help from "./help";
+import Navigation from "./navigation";
+import { desktopSideBar } from "../actions/togglemenu";
+import { responsiveSideBar } from "../actions/responsivetogglemenu";
 
 const Header = ({ flag, desktopSideBar: desktop, sidebar, responsiveSideBar: responsive }) => (
   <Sidebar flag={flag} sidebar={sidebar}>
@@ -44,7 +44,7 @@ const Sidebar = styled.div`
     bottom: 0;
     left: 0;
     z-index: 100;
-    width: ${props => (props.flag ? '7rem' : '16.3rem')};
+    width: ${props => (props.flag ? "7rem" : "16.3rem")};
     background-color: #fbfafc;
     box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.16);
   }
@@ -59,7 +59,7 @@ const Sidebar = styled.div`
   }
   @media (max-width: 1060px) {
     width: 16rem;
-    display: ${props => (props.sidebar ? 'block' : 'none')};
+    display: ${props => (props.sidebar ? "block" : "none")};
   }
   @media (max-width: 425px) {
     width: 100%;
@@ -69,8 +69,8 @@ const Sidebar = styled.div`
 // empty component???
 const SidebarWrapper = styled.div``;
 const HeaderWrapper = styled.div`
-  padding: ${props => (props.flag ? ' 1.7rem 1rem 1.7rem 2.5rem' : '1.8rem 1rem')};
-  margin: ${props => (props.flag ? '0rem' : '0rem 2rem')};
+  padding: ${props => (props.flag ? " 1.7rem 1rem 1.7rem 2.5rem" : "1.8rem 1rem")};
+  margin: ${props => (props.flag ? "0rem" : "0rem 2rem")};
   border-bottom: 1px solid #d9d6d6;
   text-align: center;
   align-items: center;

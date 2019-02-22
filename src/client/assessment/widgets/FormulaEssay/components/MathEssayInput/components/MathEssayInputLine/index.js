@@ -1,21 +1,21 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import enhanceWithClickOutside from 'react-click-outside';
-import { Icon } from 'antd';
-import { compose } from 'redux';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import enhanceWithClickOutside from "react-click-outside";
+import { Icon } from "antd";
+import { compose } from "redux";
 
-import { withNamespaces } from '@edulastic/localization';
+import { withNamespaces } from "@edulastic/localization";
 
-import { getFontSize } from '../../../../../../utils/helpers';
+import { getFontSize } from "../../../../../../utils/helpers";
 
-import MathInput from '../../../../../../components/MathInput';
-import CustomTextInput from './components/CustomTextInput/index';
+import MathInput from "../../../../../../components/MathInput";
+import CustomTextInput from "./components/CustomTextInput/index";
 
-import { Wrapper } from './styled/Wrapper';
-import { Button } from './styled/Button';
-import { Buttons } from './styled/Buttons';
-import { Label } from './styled/Label';
-import { WrapperIn } from './styled/WrapperIn';
+import { Wrapper } from "./styled/Wrapper";
+import { Button } from "./styled/Button";
+import { Buttons } from "./styled/Buttons";
+import { Label } from "./styled/Label";
+import { WrapperIn } from "./styled/WrapperIn";
 
 class MathEssayInputLine extends Component {
   state = {
@@ -24,7 +24,7 @@ class MathEssayInputLine extends Component {
 
   inputRef = React.createRef();
 
-  handleFocus = (val) => {
+  handleFocus = val => {
     const { setActive } = this.props;
 
     if (val) {
@@ -33,7 +33,7 @@ class MathEssayInputLine extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    const empty = nextProps.line.text === '<p><br></p>' || nextProps.line.text === '';
+    const empty = nextProps.line.text === "<p><br></p>" || nextProps.line.text === "";
 
     if (!empty) {
       this.setState({
@@ -72,7 +72,7 @@ class MathEssayInputLine extends Component {
     return (
       <Wrapper active={active}>
         <WrapperIn>
-          {line.type === 'text' && (
+          {line.type === "text" && (
             <CustomTextInput
               ref={this.inputRef}
               toolbarId={`toolbarId${id}`}
@@ -82,7 +82,7 @@ class MathEssayInputLine extends Component {
               fontSize={this.fontSize}
             />
           )}
-          {line.type === 'math' && (
+          {line.type === "math" && (
             <MathInput
               ref={this.inputRef}
               symbols={item.symbols}
@@ -92,8 +92,8 @@ class MathEssayInputLine extends Component {
               onFocus={this.handleFocus}
               style={{
                 border: 0,
-                height: 'auto',
-                minHeight: 'auto',
+                height: "auto",
+                minHeight: "auto",
                 fontSize: this.fontSize
               }}
             />
@@ -101,15 +101,15 @@ class MathEssayInputLine extends Component {
           {active && isEmpty && (
             <Buttons>
               <Button
-                className={line.type === 'math' ? 'active' : ''}
-                onClick={() => onChangeType('math')}
+                className={line.type === "math" ? "active" : ""}
+                onClick={() => onChangeType("math")}
                 title="Math"
               >
                 M
               </Button>
               <Button
-                className={line.type === 'text' ? 'active' : ''}
-                onClick={() => onChangeType('text')}
+                className={line.type === "text" ? "active" : ""}
+                onClick={() => onChangeType("text")}
                 title="Text"
               >
                 T
@@ -118,7 +118,7 @@ class MathEssayInputLine extends Component {
           )}
           {active && !isEmpty && (
             <Buttons>
-              <Button onClick={onAddNewLine} title={t('component.options.createNewLine')}>
+              <Button onClick={onAddNewLine} title={t("component.options.createNewLine")}>
                 <Icon type="enter" />
               </Button>
             </Buttons>
@@ -144,14 +144,14 @@ MathEssayInputLine.propTypes = {
 
 MathEssayInputLine.defaultProps = {
   line: {
-    text: '',
-    type: 'text'
+    text: "",
+    type: "text"
   }
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
-  enhanceWithClickOutside,
+  withNamespaces("assessment"),
+  enhanceWithClickOutside
 );
 
 export default enhance(MathEssayInputLine);

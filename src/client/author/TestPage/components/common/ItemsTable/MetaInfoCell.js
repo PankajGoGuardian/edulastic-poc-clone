@@ -1,27 +1,20 @@
-import React, { Component } from 'react';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { Button, Tag, message } from 'antd';
-import { withNamespaces } from '@edulastic/localization';
-import { FlexContainer, MoveLink } from '@edulastic/common';
-import { IconShare, IconHeart } from '@edulastic/icons';
-import { greenDark, textColor, grey, white } from '@edulastic/colors';
-import styled from 'styled-components';
-import { cloneDeep } from 'lodash';
+import React, { Component } from "react";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { Button, Tag, message } from "antd";
+import { withNamespaces } from "@edulastic/localization";
+import { FlexContainer, MoveLink } from "@edulastic/common";
+import { IconShare, IconHeart } from "@edulastic/icons";
+import { greenDark, textColor, grey, white } from "@edulastic/colors";
+import styled from "styled-components";
+import { cloneDeep } from "lodash";
 
-import Tags from '../../../../src/components/common/Tags';
-import PreviewModal from '../../../../src/components/common/PreviewModal';
-import {
-  setTestDataAction,
-  getTestSelector
-} from '../../../ducks';
+import Tags from "../../../../src/components/common/Tags";
+import PreviewModal from "../../../../src/components/common/PreviewModal";
+import { setTestDataAction, getTestSelector } from "../../../ducks";
 
-import {
-  setTestItemsAction,
-  getSelectedItemSelector,
-  getTestItemsSelector
-} from '../../AddItems/ducks';
+import { setTestItemsAction, getSelectedItemSelector, getTestItemsSelector } from "../../AddItems/ducks";
 
 class MetaInfoCell extends Component {
   constructor(props) {
@@ -42,15 +35,8 @@ class MetaInfoCell extends Component {
     setTestItems(selectedRowKeys);
   }
 
-  handleSelection = (row) => {
-    const {
-      setSelectedTests,
-      setTestItems,
-      selectedRows,
-      setTestData,
-      test,
-      tests
-    } = this.props;
+  handleSelection = row => {
+    const { setSelectedTests, setTestItems, selectedRows, setTestData, test, tests } = this.props;
     const newTest = cloneDeep(test);
     let keys = [];
     if (selectedRows !== undefined) {
@@ -94,7 +80,7 @@ class MetaInfoCell extends Component {
   mobileRender = () => {
     const { data } = this.props;
     return (
-      <div style={{ padding: '5px 10px' }}>
+      <div style={{ padding: "5px 10px" }}>
         <div style={{ marginBottom: 15 }}>
           <MoveLink onClick={() => this.previewItem()}>{data.title}</MoveLink>
           <STIMULUS dangerouslySetInnerHTML={{ __html: data.stimulus }} />
@@ -115,7 +101,7 @@ class MetaInfoCell extends Component {
           {data.types && !!data.types.length && (
             <FlexContainer flexDirection="column" alignItems="self-start">
               <CategoryTitle style={{ marginBottom: 5 }}>Type: </CategoryTitle>
-              <FlexContainer style={{ width: '100%', flexWrap: 'wrap' }}>
+              <FlexContainer style={{ width: "100%", flexWrap: "wrap" }}>
                 {data.types.map(type => (
                   <Tag color="cyan" key={type} style={{ marginTop: 7 }}>
                     {type}
@@ -125,10 +111,7 @@ class MetaInfoCell extends Component {
             </FlexContainer>
           )}
         </TypeContainer>
-        <FlexContainer
-          style={{ flexWrap: 'wrap' }}
-          justifyContent="space-between"
-        >
+        <FlexContainer style={{ flexWrap: "wrap" }} justifyContent="space-between">
           <CategoryDiv>
             <CategoryTitle>By:</CategoryTitle> <FirstText>{data.by}</FirstText>
           </CategoryDiv>
@@ -137,29 +120,25 @@ class MetaInfoCell extends Component {
           </CategoryDiv>
           <CategoryDiv>
             <FlexContainer>
-              <IconShare color={greenDark} width={16} height={16} />{' '}
-              <SecondText>{data.shared}</SecondText>
+              <IconShare color={greenDark} width={16} height={16} /> <SecondText>{data.shared}</SecondText>
             </FlexContainer>
           </CategoryDiv>
           <CategoryDiv style={{ marginRight: 10 }}>
             <FlexContainer>
-              <IconHeart color={greenDark} width={16} height={16} />{' '}
-              <SecondText>{data.likes}</SecondText>
+              <IconHeart color={greenDark} width={16} height={16} /> <SecondText>{data.likes}</SecondText>
             </FlexContainer>
           </CategoryDiv>
         </FlexContainer>
         <StyledButton
           onClick={() => this.handleSelection(data)}
           style={{
-            border: this.isAddOrRemove
-              ? '1px solid #00b0ff'
-              : '1px solid #ee1658',
-            color: this.isAddOrRemove ? '#00b0ff' : '#ee1658',
+            border: this.isAddOrRemove ? "1px solid #00b0ff" : "1px solid #ee1658",
+            color: this.isAddOrRemove ? "#00b0ff" : "#ee1658",
             marginTop: 15,
-            width: '100%'
+            width: "100%"
           }}
         >
-          {this.isAddOrRemove ? 'ADD' : 'REMOVE'}
+          {this.isAddOrRemove ? "ADD" : "REMOVE"}
         </StyledButton>
       </div>
     );
@@ -171,43 +150,28 @@ class MetaInfoCell extends Component {
 
     return (
       <Container>
-        <PreviewModal
-          isVisible={isShowPreviewModal}
-          onClose={this.closeModal}
-          data={data}
-        />
+        <PreviewModal isVisible={isShowPreviewModal} onClose={this.closeModal} data={data} />
         {windowWidth > 468 ? (
-          <FlexContainer
-            justifyContent="space-between"
-            style={{ fontWeight: 600, color: textColor, flexWrap: 'wrap' }}
-          >
-            <div style={{ width: '70%' }}>
+          <FlexContainer justifyContent="space-between" style={{ fontWeight: 600, color: textColor, flexWrap: "wrap" }}>
+            <div style={{ width: "70%" }}>
               {windowWidth < 993 && (
                 <div style={{ marginBottom: 15 }}>
-                  <MoveLink onClick={() => this.previewItem()}>
-                    {data.title}
-                  </MoveLink>
-                  <STIMULUS
-                    dangerouslySetInnerHTML={{ __html: data.stimulus }}
-                  />
+                  <MoveLink onClick={() => this.previewItem()}>{data.title}</MoveLink>
+                  <STIMULUS dangerouslySetInnerHTML={{ __html: data.stimulus }} />
                 </div>
               )}
               <FlexContainer>
                 <div>
-                  <CategoryTitle>By:</CategoryTitle>{' '}
-                  <FirstText>{data.by}</FirstText>
+                  <CategoryTitle>By:</CategoryTitle> <FirstText>{data.by}</FirstText>
                 </div>
                 <div>
-                  <CategoryTitle>ID:</CategoryTitle>{' '}
-                  <FirstText>{data._id}</FirstText>
+                  <CategoryTitle>ID:</CategoryTitle> <FirstText>{data._id}</FirstText>
                 </div>
                 <FlexContainer>
-                  <IconShare color={greenDark} width={16} height={16} />{' '}
-                  <SecondText>{data.shared}</SecondText>
+                  <IconShare color={greenDark} width={16} height={16} /> <SecondText>{data.shared}</SecondText>
                 </FlexContainer>
                 <FlexContainer>
-                  <IconHeart color={greenDark} width={16} height={16} />{' '}
-                  <SecondText>{data.likes}</SecondText>
+                  <IconHeart color={greenDark} width={16} height={16} /> <SecondText>{data.likes}</SecondText>
                 </FlexContainer>
               </FlexContainer>
               <TypeContainer>
@@ -226,7 +190,7 @@ class MetaInfoCell extends Component {
                 {data.types && !!data.types.length && (
                   <FlexContainer>
                     <CategoryTitle>Type: </CategoryTitle>
-                    <FlexContainer style={{ width: '100%', flexWrap: 'wrap' }}>
+                    <FlexContainer style={{ width: "100%", flexWrap: "wrap" }}>
                       {data.types.map(type => (
                         <Tag color="cyan" key={type} style={{ marginTop: 3 }}>
                           {type}
@@ -240,13 +204,11 @@ class MetaInfoCell extends Component {
             <StyledButton
               onClick={() => this.handleSelection(data)}
               style={{
-                border: this.isAddOrRemove
-                  ? '1px solid #00b0ff'
-                  : '1px solid #ee1658',
-                color: this.isAddOrRemove ? '#00b0ff' : '#ee1658'
+                border: this.isAddOrRemove ? "1px solid #00b0ff" : "1px solid #ee1658",
+                color: this.isAddOrRemove ? "#00b0ff" : "#ee1658"
               }}
             >
-              {this.isAddOrRemove ? 'ADD' : 'REMOVE'}
+              {this.isAddOrRemove ? "ADD" : "REMOVE"}
             </StyledButton>
           </FlexContainer>
         ) : (
@@ -274,7 +236,7 @@ MetaInfoCell.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces('MetaInfoCell'),
+  withNamespaces("MetaInfoCell"),
   connect(
     state => ({
       selectedRows: getSelectedItemSelector(state),

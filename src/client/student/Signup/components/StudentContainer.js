@@ -1,20 +1,20 @@
-import React from 'react';
-import { Row, Col, Form, Input, Button } from 'antd';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-import { connect } from 'react-redux';
-import { signupAction } from '../../Login/ducks';
+import React from "react";
+import { Row, Col, Form, Input, Button } from "antd";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
+import { connect } from "react-redux";
+import { signupAction } from "../../Login/ducks";
 
-import studentBg from '../../assets/bg-student.png';
-import hashIcon from '../../assets/hashtag-icon.svg';
-import userIcon from '../../assets/user-icon.svg';
-import mailIcon from '../../assets/mail-icon.svg';
-import keyIcon from '../../assets/key-icon.svg';
-import lockIcon from '../../assets/lock-icon.svg';
-import googleIcon from '../../assets/google-btn.svg';
-import icon365 from '../../assets/icons8-office-365.svg';
+import studentBg from "../../assets/bg-student.png";
+import hashIcon from "../../assets/hashtag-icon.svg";
+import userIcon from "../../assets/user-icon.svg";
+import mailIcon from "../../assets/mail-icon.svg";
+import keyIcon from "../../assets/key-icon.svg";
+import lockIcon from "../../assets/lock-icon.svg";
+import googleIcon from "../../assets/google-btn.svg";
+import icon365 from "../../assets/icons8-office-365.svg";
 
 const FormItem = Form.Item;
 
@@ -32,7 +32,7 @@ class StudentSignup extends React.Component {
           password,
           email,
           name,
-          role: 'student'
+          role: "student"
         });
       }
     });
@@ -64,14 +64,11 @@ class StudentSignup extends React.Component {
         <RegistrationWrapper>
           <RegistrationHeader type="flex" align="middle">
             <Col span={12}>
-              <img
-                src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png"
-                alt="Edulastic"
-              />
+              <img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
             </Col>
             <Col span={12} align="right">
-              <span>{t('component.signup.alreadyhaveanaccount')}</span>
-              <Link to="/login">{t('common.signinbtn')}</Link>
+              <span>{t("component.signup.alreadyhaveanaccount")}</span>
+              <Link to="/login">{t("common.signinbtn")}</Link>
             </Col>
           </RegistrationHeader>
           <RegistrationBody>
@@ -79,135 +76,87 @@ class StudentSignup extends React.Component {
               <Row type="flex" align="middle">
                 <BannerText xs={24} sm={10} md={11} lg={12} xl={14}>
                   <h1>
-                    {t('common.edulastictext')} <br />{' '}
-                    {t('component.signup.student.forstudent')}
+                    {t("common.edulastictext")} <br /> {t("component.signup.student.forstudent")}
                   </h1>
-                  <div>{t('component.signup.iamteacher')}</div>
-                  <a href="/signup">{t('component.signup.signupasteacher')}</a>
+                  <div>{t("component.signup.iamteacher")}</div>
+                  <a href="/signup">{t("component.signup.signupasteacher")}</a>
                 </BannerText>
                 <Col xs={24} sm={14} md={13} lg={12} xl={10}>
                   <FormWrapper>
                     <FormHead>
                       <h3 align="center">
-                        <b>{t('component.signup.signupboxheading')}</b>
+                        <b>{t("component.signup.signupboxheading")}</b>
                       </h3>
                       <ThirdPartyLoginBtn span={20} offset={2}>
-                        <img src={googleIcon} alt="" />{' '}
-                        {t('component.signup.googlesignupbtn')}
+                        <img src={googleIcon} alt="" /> {t("component.signup.googlesignupbtn")}
                       </ThirdPartyLoginBtn>
                       <ThirdPartyLoginBtn span={20} offset={2}>
-                        <img src={icon365} alt="" />{' '}
-                        {t('component.signup.office365signupbtn')}
+                        <img src={icon365} alt="" /> {t("component.signup.office365signupbtn")}
                       </ThirdPartyLoginBtn>
                       <InfoBox span={20} offset={2}>
                         <InfoIcon span={3}>
                           <img src={lockIcon} alt="" />
                         </InfoIcon>
-                        <Col span={21}>{t('component.signup.infotext')}</Col>
+                        <Col span={21}>{t("component.signup.infotext")}</Col>
                       </InfoBox>
                     </FormHead>
                     <FormBody>
                       <Col span={20} offset={2}>
-                        <h5 align="center">
-                          {t('component.signup.formboxheading')}
-                        </h5>
+                        <h5 align="center">{t("component.signup.formboxheading")}</h5>
                         <Form onSubmit={this.handleSubmit}>
                           <Row gutter={10}>
                             <Col sm={24} md={12} lg={12}>
-                              <FormItem
-                                {...formItemLayout}
-                                label={t(
-                                  'component.signup.student.signupclasslabel'
-                                )}
-                              >
-                                {getFieldDecorator('classCode', {
+                              <FormItem {...formItemLayout} label={t("component.signup.student.signupclasslabel")}>
+                                {getFieldDecorator("classCode", {
                                   rules: [
                                     {
                                       required: true,
-                                      message: t(
-                                        'component.signup.student.validclasscode'
-                                      )
+                                      message: t("component.signup.student.validclasscode")
                                     }
                                   ]
-                                })(
-                                  <Input
-                                    prefix={<img src={hashIcon} alt="" />}
-                                    data-cy="classCode"
-                                  />
-                                )}
+                                })(<Input prefix={<img src={hashIcon} alt="" />} data-cy="classCode" />)}
                               </FormItem>
                             </Col>
                             <Col sm={24} md={12} lg={12}>
-                              <FormItem
-                                {...formItemLayout}
-                                label={t('component.signup.signupnamelabel')}
-                              >
-                                {getFieldDecorator('name', {
+                              <FormItem {...formItemLayout} label={t("component.signup.signupnamelabel")}>
+                                {getFieldDecorator("name", {
                                   rules: [
                                     {
                                       required: true,
-                                      message: t(
-                                        'component.signup.student.validinputname'
-                                      )
+                                      message: t("component.signup.student.validinputname")
                                     }
                                   ]
-                                })(
-                                  <Input
-                                    data-cy="name"
-                                    prefix={<img src={userIcon} alt="" />}
-                                  />
-                                )}
+                                })(<Input data-cy="name" prefix={<img src={userIcon} alt="" />} />)}
                               </FormItem>
                             </Col>
                           </Row>
-                          <FormItem
-                            {...formItemLayout}
-                            label={t('component.signup.student.signupidlabel')}
-                          >
-                            {getFieldDecorator('email', {
+                          <FormItem {...formItemLayout} label={t("component.signup.student.signupidlabel")}>
+                            {getFieldDecorator("email", {
                               rules: [
                                 {
-                                  type: 'email',
-                                  message: t('common.validation.validemail')
+                                  type: "email",
+                                  message: t("common.validation.validemail")
                                 },
                                 {
                                   required: true,
-                                  message: t('common.validation.emptyemailid')
+                                  message: t("common.validation.emptyemailid")
                                 }
                               ]
-                            })(
-                              <Input
-                                data-cy="email"
-                                prefix={<img src={mailIcon} alt="" />}
-                              />
-                            )}
+                            })(<Input data-cy="email" prefix={<img src={mailIcon} alt="" />} />)}
                           </FormItem>
-                          <FormItem
-                            {...formItemLayout}
-                            label={t('component.signup.signuppasswordlabel')}
-                          >
-                            {getFieldDecorator('password', {
+                          <FormItem {...formItemLayout} label={t("component.signup.signuppasswordlabel")}>
+                            {getFieldDecorator("password", {
                               rules: [
                                 {
                                   required: true,
-                                  message: t('common.validation.emptypassword')
+                                  message: t("common.validation.emptypassword")
                                 }
                               ]
-                            })(
-                              <Input
-                                data-cy="password"
-                                prefix={<img src={keyIcon} alt="" />}
-                                type="password"
-                              />
-                            )}
+                            })(<Input data-cy="password" prefix={<img src={keyIcon} alt="" />} type="password" />)}
                           </FormItem>
                           <FormItem>
-                            <RegisterButton
-                              data-cy="signup"
-                              type="primary"
-                              htmlType="submit"
-                            >
-                              {t('component.signup.student.signupstudentbtn')}
+                            <RegisterButton data-cy="signup" type="primary" htmlType="submit">
+                              {t("component.signup.student.signupstudentbtn")}
                             </RegisterButton>
                           </FormItem>
                         </Form>
@@ -219,7 +168,7 @@ class StudentSignup extends React.Component {
             </Col>
           </RegistrationBody>
           <Copyright>
-            <Col span={24}>{t('common.copyright')}</Col>
+            <Col span={24}>{t("common.copyright")}</Col>
           </Copyright>
         </RegistrationWrapper>
       </div>
@@ -230,7 +179,7 @@ class StudentSignup extends React.Component {
 const SignupForm = Form.create()(StudentSignup);
 
 const enhance = compose(
-  withNamespaces('login'),
+  withNamespaces("login"),
   connect(
     null,
     { signup: signupAction }
@@ -310,27 +259,9 @@ const FormWrapper = styled.div`
 
 const FormHead = styled(Row)`
   background: #157ad8;
-  background: -moz-linear-gradient(
-    left,
-    #157ad8 0%,
-    #157ad8 19%,
-    #36a0e2 54%,
-    #36a0e2 100%
-  );
-  background: -webkit-linear-gradient(
-    left,
-    #157ad8 0%,
-    #157ad8 19%,
-    #36a0e2 54%,
-    #36a0e2 100%
-  );
-  background: linear-gradient(
-    to right,
-    #157ad8 0%,
-    #157ad8 19%,
-    #36a0e2 54%,
-    #36a0e2 100%
-  );
+  background: -moz-linear-gradient(left, #157ad8 0%, #157ad8 19%, #36a0e2 54%, #36a0e2 100%);
+  background: -webkit-linear-gradient(left, #157ad8 0%, #157ad8 19%, #36a0e2 54%, #36a0e2 100%);
+  background: linear-gradient(to right, #157ad8 0%, #157ad8 19%, #36a0e2 54%, #36a0e2 100%);
   padding: 15px;
   h3 {
     color: white;
@@ -387,7 +318,7 @@ const FormBody = styled(Row)`
         &.ant-form-item-required {
           &:before,
           &:after {
-            content: '';
+            content: "";
           }
         }
       }

@@ -1,4 +1,4 @@
-import { groupBy as _groupBy, uniq } from 'lodash';
+import { groupBy as _groupBy, uniq } from "lodash";
 
 export const getListOfStudents = (students, classes) => {
   let idList = [];
@@ -15,30 +15,21 @@ export const getListOfStudents = (students, classes) => {
   return selected;
 };
 
-export const generateClassData = (
-  classes = [],
-  selectedStudents = [],
-  studentList = [],
-  specificStudents
-) => {
+export const generateClassData = (classes = [], selectedStudents = [], studentList = [], specificStudents) => {
   if (!specificStudents) {
     return classes.map(_id => ({
       _id
     }));
   }
 
-  selectedStudents = studentList.filter(({ _id }) =>
-    selectedStudents.includes(_id)
-  );
+  selectedStudents = studentList.filter(({ _id }) => selectedStudents.includes(_id));
 
-  let groupedByClass = _groupBy(selectedStudents, 'groupId');
+  let groupedByClass = _groupBy(selectedStudents, "groupId");
 
   return (
     classes
       .map(classId => {
-        let tempStudents = (groupedByClass[classId] || []).map(
-          item => item._id
-        );
+        let tempStudents = (groupedByClass[classId] || []).map(item => item._id);
         return {
           _id: classId,
           students: uniq(tempStudents)

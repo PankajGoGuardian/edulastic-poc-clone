@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const WithIndex = styled.div`
   font-size: ${props => props.theme.widgets.sortList.dragItemWithIndexFontSize};

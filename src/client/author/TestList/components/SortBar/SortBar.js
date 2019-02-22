@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Select } from 'antd';
-import { IconList, IconTile } from '@edulastic/icons';
-import { FlexContainer } from '@edulastic/common';
-import { grey, blue } from '@edulastic/colors';
-import { Container } from './styled';
+import React from "react";
+import PropTypes from "prop-types";
+import { Select } from "antd";
+import { IconList, IconTile } from "@edulastic/icons";
+import { FlexContainer } from "@edulastic/common";
+import { grey, blue } from "@edulastic/colors";
+import { Container } from "./styled";
 
 const SortBar = ({ onSortChange, activeStyle, onStyleChange }) => (
   <FlexContainer>
@@ -14,16 +14,16 @@ const SortBar = ({ onSortChange, activeStyle, onStyleChange }) => (
         <Select.Option value="relevance">Relevance</Select.Option>
       </Select>
       <IconTile
-        onClick={() => onStyleChange('tile')}
+        onClick={() => onStyleChange("tile")}
         width={24}
         height={24}
-        color={activeStyle === 'tile' ? blue : grey}
+        color={activeStyle === "tile" ? blue : grey}
       />
       <IconList
-        onClick={() => onStyleChange('horizontal')}
+        onClick={() => onStyleChange("horizontal")}
         width={24}
         height={24}
-        color={activeStyle === 'horizontal' ? blue : grey}
+        color={activeStyle === "horizontal" ? blue : grey}
       />
     </Container>
   </FlexContainer>

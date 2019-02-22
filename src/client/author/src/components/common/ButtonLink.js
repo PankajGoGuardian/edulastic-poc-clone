@@ -1,29 +1,23 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import {
-  blue,
-  textColor,
-  green,
-  greenDark,
-  darkGrey
-} from '@edulastic/colors';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { blue, textColor, green, greenDark, darkGrey } from "@edulastic/colors";
 
 const getColors = ({ color, active }) => {
   const colors = {};
 
   switch (color) {
-    case 'primary':
+    case "primary":
       colors.color = blue;
       colors.hoverColor = blue;
       if (active) colors.color = blue;
       break;
-    case 'default':
+    case "default":
       colors.color = textColor;
       colors.hoverColor = darkGrey;
       if (active) colors.color = darkGrey;
       break;
-    case 'success':
+    case "success":
       colors.color = green;
       colors.hoverColor = greenDark;
       if (active) colors.color = greenDark;
@@ -37,22 +31,8 @@ const getColors = ({ color, active }) => {
   return colors;
 };
 
-const ButtonLink = ({
-  onClick,
-  color,
-  icon,
-  children,
-  uppercase,
-  style,
-  active
-}) => (
-  <Container
-    onClick={onClick}
-    type="button"
-    uppercase={uppercase}
-    style={style}
-    {...getColors({ color, active })}
-  >
+const ButtonLink = ({ onClick, color, icon, children, uppercase, style, active }) => (
+  <Container onClick={onClick} type="button" uppercase={uppercase} style={style} {...getColors({ color, active })}>
     {icon && children && <Icon>{icon}</Icon>}
     {icon && !children && icon}
     <span style={{ marginTop: 1 }}>{children}</span>
@@ -71,7 +51,7 @@ ButtonLink.propTypes = {
 
 ButtonLink.defaultProps = {
   onClick: () => {},
-  color: 'default',
+  color: "default",
   icon: null,
   children: null,
   uppercase: true,
@@ -97,7 +77,7 @@ const Container = styled.button`
   font-size: 10px;
   letter-spacing: 0.2px;
   border: none;
-  text-transform: ${({ uppercase }) => (uppercase ? 'uppercase' : '')};
+  text-transform: ${({ uppercase }) => (uppercase ? "uppercase" : "")};
   color: ${({ color }) => color};
   background: transparent;
 

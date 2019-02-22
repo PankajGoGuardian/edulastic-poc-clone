@@ -1,23 +1,16 @@
-import React from 'react';
-import styled from 'styled-components';
-import { FlexContainer } from '../common';
+import React from "react";
+import styled from "styled-components";
+import { FlexContainer } from "../common";
 
-import { IPAD_PORTRAIT_WIDTH } from '../../constants/others';
+import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
 
-const PlayerFooter = ({
-  onCheckAnswer,
-  isFirst,
-  isLast,
-  moveToPrev,
-  moveToNext,
-  t
-}) => {
+const PlayerFooter = ({ onCheckAnswer, isFirst, isLast, moveToPrev, moveToNext, t }) => {
   return (
     <MainFooter>
       <FlexContainer>
         <CheckAnswerBtn onClick={onCheckAnswer}>
           <CounterCircle>5</CounterCircle>
-          <span>{t('pagination.checkanswer')} </span>
+          <span>{t("pagination.checkanswer")} </span>
         </CheckAnswerBtn>
       </FlexContainer>
       <FlexContainer>
@@ -26,7 +19,7 @@ const PlayerFooter = ({
         </PrevButton>
         <ControlBtn disabled={isLast()} onClick={moveToNext}>
           <i className="fa fa-angle-right" />
-          <span>{t('pagination.next')}</span>
+          <span>{t("pagination.next")}</span>
         </ControlBtn>
       </FlexContainer>
     </MainFooter>

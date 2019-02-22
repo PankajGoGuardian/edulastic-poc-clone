@@ -1,17 +1,12 @@
-import React from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import QuestionWrapper from '../../../assessment/components/QuestionWrapper';
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import QuestionWrapper from "../../../assessment/components/QuestionWrapper";
 
 const itemReport = ({ question, index }) => (
   <ReportListWrapper>
-    <div style={{ width: '100%' }}>
-      <QuestionWrapper
-        testItem
-        type={question.type}
-        view="preview"
-        data={question}
-      />
+    <div style={{ width: "100%" }}>
+      <QuestionWrapper testItem type={question.type} view="preview" data={question} />
       <FeedbackWrapper>
         <FeedbackText>
           <QuestionText>Q{index + 1}</QuestionText> - Teacher Feedback
@@ -22,9 +17,7 @@ const itemReport = ({ question, index }) => (
             <Total>{question.feedback && question.feedback.maxScore}</Total>
           </ScoreWrapper>
           <Feedback>
-            <FeedbackGiven>
-              {question.feedback && question.feedback.feedback.text}
-            </FeedbackGiven>
+            <FeedbackGiven>{question.feedback && question.feedback.feedback.text}</FeedbackGiven>
           </Feedback>
         </FeedbackContainer>
       </FeedbackWrapper>

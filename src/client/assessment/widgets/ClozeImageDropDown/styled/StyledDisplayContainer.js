@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const StyledDisplayContainer = styled.div`
   font-size: ${props => props.fontSize}px;

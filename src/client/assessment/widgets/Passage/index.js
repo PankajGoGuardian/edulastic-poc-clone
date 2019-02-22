@@ -1,18 +1,18 @@
-import React, { memo, Component } from 'react';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
+import React, { memo, Component } from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import styled from "styled-components";
 
-import { Paper } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { Paper } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
 
-import { Subtitle } from '../../styled/Subtitle';
+import { Subtitle } from "../../styled/Subtitle";
 
-import Options from './components/Options';
-import PassageView from './PassageView';
+import Options from "./components/Options";
+import PassageView from "./PassageView";
 
 const EmptyWrapper = styled.div``;
 
@@ -22,10 +22,10 @@ class Passage extends Component {
 
     const Wrapper = smallSize ? EmptyWrapper : Paper;
 
-    if (view === 'edit') {
+    if (view === "edit") {
       return (
         <Paper style={{ marginBottom: 30 }}>
-          <Subtitle>{t('component.passage.details')}</Subtitle>
+          <Subtitle>{t("component.passage.details")}</Subtitle>
           <Options setQuestionData={setQuestionData} item={item} />
           <Paper>
             <PassageView item={item} />
@@ -34,7 +34,7 @@ class Passage extends Component {
       );
     }
 
-    if (view === 'preview') {
+    if (view === "preview") {
       return (
         <Wrapper>
           <PassageView item={item} />
@@ -57,7 +57,7 @@ Passage.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   memo,
   connect(
     null,

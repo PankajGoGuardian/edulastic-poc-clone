@@ -1,9 +1,9 @@
-import React from 'react';
-import { DragSource } from 'react-dnd';
+import React from "react";
+import { DragSource } from "react-dnd";
 
-import { Index } from '../styled/Index';
-import { IconClose } from '../styled/IconClose';
-import { IconCheck } from '../styled/IconCheck';
+import { Index } from "../styled/Index";
+import { IconClose } from "../styled/IconClose";
+import { IconCheck } from "../styled/IconCheck";
 
 function collectSource(connector, monitor) {
   return {
@@ -30,16 +30,7 @@ const specSource = {
   }
 };
 
-const DragItem = ({
-  connectDragSource,
-  item,
-  isDragging,
-  flag,
-  correct,
-  preview,
-  renderIndex,
-  getStyles
-}) =>
+const DragItem = ({ connectDragSource, item, isDragging, flag, correct, preview, renderIndex, getStyles }) =>
   item &&
   connectDragSource(
     <div style={getStyles({ isDragging, flag, preview, correct })}>
@@ -54,4 +45,4 @@ const DragItem = ({
     </div>
   );
 
-export default DragSource('item', specSource, collectSource)(DragItem);
+export default DragSource("item", specSource, collectSource)(DragItem);

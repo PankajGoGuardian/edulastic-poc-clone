@@ -1,9 +1,9 @@
-import React, { memo, useState } from 'react';
-import PropTypes from 'prop-types';
-import Rnd from 'react-rnd-rotate';
+import React, { memo, useState } from "react";
+import PropTypes from "prop-types";
+import Rnd from "react-rnd-rotate";
 
-import RotateProtractorImg from './assets/rotate.svg';
-import { Image } from './styled/Image';
+import RotateProtractorImg from "./assets/rotate.svg";
+import { Image } from "./styled/Image";
 
 const Rule = ({ width, height, showRotate, smallSize }) => {
   const [position, setPosition] = useState({
@@ -14,16 +14,16 @@ const Rule = ({ width, height, showRotate, smallSize }) => {
   const size = smallSize ? { width: 350, height: 160 } : { width, height };
 
   const handleRotateStyles = {
-    display: showRotate ? 'block' : 'none',
+    display: showRotate ? "block" : "none",
     width: 25,
     height: 47,
     left: -30,
     bottom: 0,
-    top: 'none',
+    top: "none",
     marginLeft: 0,
-    border: 'none',
+    border: "none",
     backgroundImage: `url(${RotateProtractorImg})`,
-    backgroundSize: 'contain'
+    backgroundSize: "contain"
   };
 
   return (

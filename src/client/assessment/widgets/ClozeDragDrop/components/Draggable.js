@@ -1,6 +1,6 @@
-import React from 'react';
-import { DragSource } from 'react-dnd';
-import PropTypes from 'prop-types';
+import React from "react";
+import { DragSource } from "react-dnd";
+import PropTypes from "prop-types";
 
 function collectSource(connector, monitor) {
   return {
@@ -26,12 +26,7 @@ const specSource = {
 };
 
 const Draggable = ({ connectDragSource, data, children, className }) =>
-  data &&
-  connectDragSource(
-    <div className={className}>
-      {children}
-    </div>
-  );
+  data && connectDragSource(<div className={className}>{children}</div>);
 
 Draggable.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
@@ -42,7 +37,7 @@ Draggable.propTypes = {
 
 Draggable.defaultProps = {
   children: undefined,
-  className: ''
+  className: ""
 };
 
-export default DragSource('item', specSource, collectSource)(Draggable);
+export default DragSource("item", specSource, collectSource)(Draggable);

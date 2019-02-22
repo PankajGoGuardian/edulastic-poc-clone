@@ -1,31 +1,31 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-import { Progress, Row, Col } from 'antd';
-import styled from 'styled-components';
-import { greenDark } from '@edulastic/colors';
-import StyledTable from '../styled/Table';
-import * as S from './styled';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
+import { Progress, Row, Col } from "antd";
+import styled from "styled-components";
+import { greenDark } from "@edulastic/colors";
+import StyledTable from "../styled/Table";
+import * as S from "./styled";
 
 const computeColumns = t => [
   {
-    title: t('common.tableHeaderTitleGrade'),
-    dataIndex: 'grade',
+    title: t("common.tableHeaderTitleGrade"),
+    dataIndex: "grade",
     sorter: (a, b) => a.grade - b.grade,
     render: grade => <S.GradeTag>{grade}</S.GradeTag>,
-    width: '15%'
+    width: "15%"
   },
   {
-    title: t('common.tableHeaderTitleTopicName'),
-    dataIndex: 'domain',
+    title: t("common.tableHeaderTitleTopicName"),
+    dataIndex: "domain",
     sorter: (a, b) => a.domain.length - b.domain.length,
     render: domain => `${domain}`,
-    width: '45%'
+    width: "45%"
   },
   {
-    title: t('common.tableHeaderTitlePercentScore'),
-    dataIndex: 'percentage',
+    title: t("common.tableHeaderTitlePercentScore"),
+    dataIndex: "percentage",
     sorter: (a, b) => a.percentage - b.percentage,
     render: percentage =>
       isNaN(percentage) ? (
@@ -35,7 +35,7 @@ const computeColumns = t => [
       ) : (
         <StyledProgress percent={Number(percentage.toFixed(1))} />
       ),
-    width: '20%'
+    width: "20%"
   }
 ];
 
@@ -60,19 +60,16 @@ class DomainDetail extends Component {
     let maxScore = 0;
     if (summary) {
       const getStandardsScoreDetails = id =>
-        skillReport.reports.reportData.standardLevel.filter(
-          item => item.standard_id === id
-        );
+        skillReport.reports.reportData.standardLevel.filter(item => item.standard_id === id);
       sumData = summary.standards.map(standard => {
         const standardsData = getStandardsScoreDetails(standard._id)[0] || {};
-        const percentage =
-          (standardsData.score / standardsData.max_points) * 100;
+        const percentage = (standardsData.score / standardsData.max_points) * 100;
         score += standardsData.score || 0;
         maxScore += standardsData.max_points || 0;
         return {
-          domain: standard.description || '-',
-          grade: standard.identifier || '-',
-          total: standardsData.score || '-',
+          domain: standard.description || "-",
+          grade: standard.identifier || "-",
+          total: standardsData.score || "-",
           percentage
         };
       });
@@ -83,18 +80,10 @@ class DomainDetail extends Component {
       <S.AssignmentContentWrap>
         <S.Title onClick={this.handlerTable}>
           <S.RelationTitle>{summary.domain}</S.RelationTitle>
-          {!isNaN(skillPercentage) && (
-            <StyledScoreProgress percent={skillPercentage} />
-          )}
+          {!isNaN(skillPercentage) && <StyledScoreProgress percent={skillPercentage} />}
           {isShow ? <S.IconClose /> : <S.IconOpen color={greenDark} />}
         </S.Title>
-        {isShow && (
-          <StyledTable
-            columns={columns}
-            dataSource={sumData}
-            pagination={false}
-          />
-        )}
+        {isShow && <StyledTable columns={columns} dataSource={sumData} pagination={false} />}
       </S.AssignmentContentWrap>
     );
   }
@@ -106,7 +95,7 @@ DomainDetail.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-const enhance = compose(withNamespaces('reports'));
+const enhance = compose(withNamespaces("reports"));
 
 export default enhance(DomainDetail);
 

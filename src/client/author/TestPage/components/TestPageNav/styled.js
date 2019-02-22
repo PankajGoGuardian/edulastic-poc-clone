@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { white, desktopWidth } from '@edulastic/colors';
+import styled from "styled-components";
+import { white, desktopWidth } from "@edulastic/colors";
 
 export const Container = styled.div`
   display: flex;
@@ -35,8 +35,8 @@ export const Link = styled.div`
   height: 40px;
   border-radius: 0;
   background: #0288d1;
-  background: ${props => (props.active === 'true' ? '#057fc1' : 'transparent')};
-  border-bottom: ${props => (props.active === 'true' ? '4px solid #c9c9c9' : 'none')};
+  background: ${props => (props.active === "true" ? "#057fc1" : "transparent")};
+  border-bottom: ${props => (props.active === "true" ? "4px solid #c9c9c9" : "none")};
   white-space: nowrap;
 
   :hover {
@@ -51,19 +51,19 @@ export const Link = styled.div`
     width: 136px;
     height: 45px;
     border-radius: 37px;
-    background: ${props => (props.active === 'true' ? '#f3f3f3' : '#0e93dc')};
-    color: ${props => (props.active === 'true' ? '#434b5d' : '#e5e5e5')};
+    background: ${props => (props.active === "true" ? "#f3f3f3" : "#0e93dc")};
+    color: ${props => (props.active === "true" ? "#434b5d" : "#e5e5e5")};
     border-bottom: none;
     
     svg {
-      fill: ${props => (props.active === 'true' ? '#434b5d' : white)}
+      fill: ${props => (props.active === "true" ? "#434b5d" : white)}
     }
       
     :hover {
       border-bottom: none;
       
        svg {
-        fill: ${props => (props.active === 'true' ? '#434b5d' : white)}
+        fill: ${props => (props.active === "true" ? "#434b5d" : white)}
       }
     }
     

@@ -1,9 +1,4 @@
-import {
-  LOAD_QUESTIONS,
-  GOTO_QUESTION,
-  AUTHOR_QUESTION,
-  ADD_ANSWER
-} from '../constants/actions';
+import { LOAD_QUESTIONS, GOTO_QUESTION, AUTHOR_QUESTION, ADD_ANSWER } from "../constants/actions";
 
 export const loadQuestions = questions => ({
   type: LOAD_QUESTIONS,

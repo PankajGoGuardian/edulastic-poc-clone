@@ -1,29 +1,23 @@
-import React, { Fragment, Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Fragment, Component } from "react";
+import PropTypes from "prop-types";
 
-import { connect } from 'react-redux';
-import { compose } from 'redux';
+import { connect } from "react-redux";
+import { compose } from "redux";
 
-import { withWindowSizes } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { withWindowSizes } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { getUserSelector } from '../../../src/selectors/user';
-import { receiveFeedbackResponseAction } from '../../../src/actions/classBoard';
+import { getUserSelector } from "../../../src/selectors/user";
+import { receiveFeedbackResponseAction } from "../../../src/actions/classBoard";
 
-import {
-  SolutionButton,
-  StyledCardTwo,
-  FeedbackInput,
-  StyledDivSec,
-  ScoreInput,
-  TextPara,
-  LeaveDiv,
-} from './styled';
+import { SolutionButton, StyledCardTwo, FeedbackInput, StyledDivSec, ScoreInput, TextPara, LeaveDiv } from "./styled";
 
 class FeedbackRight extends Component {
   constructor(props) {
     super(props);
-    let feedback = ''; let score = 0; let maxScore = 1;
+    let feedback = "";
+    let score = 0;
+    let maxScore = 1;
 
     this.state = {
       score,
@@ -48,34 +42,28 @@ class FeedbackRight extends Component {
       testActivityId,
       questionId: id
     });
-  }
+  };
 
-  onChangeScore = (e) => {
+  onChangeScore = e => {
     this.setState({ score: e.target.value });
-  }
+  };
 
-  onChangeFeedback = (e) => {
+  onChangeFeedback = e => {
     this.setState({ feedback: e.target.value });
-  }
+  };
 
   render() {
     const { score, maxScore, feedback } = this.state;
-    const isError = maxScore < score
+    const isError = maxScore < score;
     const { t } = this.props;
     return (
       <StyledCardTwo bordered={false}>
         <StyledDivSec>
-          <ScoreInput
-            onChange={this.onChangeScore}
-            onBlur={this.onFeedbackSubmit}
-            value={score}
-          />
+          <ScoreInput onChange={this.onChangeScore} onBlur={this.onFeedbackSubmit} value={score} />
           <TextPara> / {maxScore}</TextPara>
         </StyledDivSec>
-        <LeaveDiv>
-          {isError ? 'Score is to large' : 'Leave a Feedback!'}
-        </LeaveDiv>
-        {!isError &&
+        <LeaveDiv>{isError ? "Score is to large" : "Leave a Feedback!"}</LeaveDiv>
+        {!isError && (
           <Fragment>
             <FeedbackInput
               onChange={this.onChangeFeedback}
@@ -85,7 +73,7 @@ class FeedbackRight extends Component {
             />
             <SolutionButton onClick={this.onFeedbackSubmit}>UPDATE</SolutionButton>
           </Fragment>
-        }
+        )}
       </StyledCardTwo>
     );
   }
@@ -100,7 +88,7 @@ FeedbackRight.propTypes = {
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces('header'),
+  withNamespaces("header"),
   connect(
     state => ({
       user: getUserSelector(state)

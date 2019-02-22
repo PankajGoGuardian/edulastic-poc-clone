@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Layout } from 'antd';
-import { getCurrentGroup } from '../../Login/ducks';
+import React, { useEffect } from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { Layout } from "antd";
+import { getCurrentGroup } from "../../Login/ducks";
 
 // actions
-import { fetchAssignmentsAction, getAssignmentsSelector } from '../ducks';
+import { fetchAssignmentsAction, getAssignmentsSelector } from "../ducks";
 
 // components
-import AssignmentCard from '../../sharedComponents/AssignmentCard';
+import AssignmentCard from "../../sharedComponents/AssignmentCard";
 
 const Content = ({ flag, assignments, fetchAssignments, currentGroup }) => {
   useEffect(() => {

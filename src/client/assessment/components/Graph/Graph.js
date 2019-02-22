@@ -1,21 +1,21 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { cloneDeep } from 'lodash';
-import { Paper, Select } from '@edulastic/common';
-import { compose } from 'redux';
-import styled from 'styled-components';
-import { withNamespaces } from '@edulastic/localization';
-import { setQuestionDataAction } from '../../../author/src/actions/question';
-import GraphQuadrantsOptions from './Authoring/GraphQuadrants/GraphQuadrantsOptions';
-import AxisSegmentsOptions from './Authoring/AxisSegmentsOptions';
-import AxisLabelsOptions from './Authoring/AxisLabelsLayoutSettings/AxisLabelsOptions';
-import QuadrantsSmallSize from './components/QuadrantsSmallSize';
-import AxisSmallSize from './components/AxisSmallSize';
-import { AxisSegments, GraphAxisLabels, GraphQuadrants, QuestionSection } from './Authoring';
-import { CorrectAnswers } from './CorrectAnswers';
-import { GraphDisplay } from './Display';
-import {WithResourcesHOC,WithResources,useResources} from '../../../utils';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { cloneDeep } from "lodash";
+import { Paper, Select } from "@edulastic/common";
+import { compose } from "redux";
+import styled from "styled-components";
+import { withNamespaces } from "@edulastic/localization";
+import { setQuestionDataAction } from "../../../author/src/actions/question";
+import GraphQuadrantsOptions from "./Authoring/GraphQuadrants/GraphQuadrantsOptions";
+import AxisSegmentsOptions from "./Authoring/AxisSegmentsOptions";
+import AxisLabelsOptions from "./Authoring/AxisLabelsLayoutSettings/AxisLabelsOptions";
+import QuadrantsSmallSize from "./components/QuadrantsSmallSize";
+import AxisSmallSize from "./components/AxisSmallSize";
+import { AxisSegments, GraphAxisLabels, GraphQuadrants, QuestionSection } from "./Authoring";
+import { CorrectAnswers } from "./CorrectAnswers";
+import { GraphDisplay } from "./Display";
+import { WithResourcesHOC, WithResources, useResources } from "../../../utils";
 
 const EmptyWrapper = styled.div``;
 
@@ -36,33 +36,27 @@ const SmallSizeAxisWrapper = styled.div`
   right: 0;
 `;
 
-const getIgnoreRepeatedShapesOptions = () => (
-  [
-    { value: 'no', label: 'No' },
-    { value: 'yes', label: 'Compare by slope' },
-    { value: 'strict', label: 'Compare by points' }
-  ]
-);
+const getIgnoreRepeatedShapesOptions = () => [
+  { value: "no", label: "No" },
+  { value: "yes", label: "Compare by slope" },
+  { value: "strict", label: "Compare by points" }
+];
 
-const getFontSizeList = () => (
-  [
-    { value: '', label: '' },
-    { value: 'small', label: 'Small' },
-    { value: 'normal', label: 'Normal' },
-    { value: 'large', label: 'Large' },
-    { value: 'extra_large', label: 'Extra large' },
-    { value: 'huge', label: 'Huge' }
-  ]
-);
+const getFontSizeList = () => [
+  { value: "", label: "" },
+  { value: "small", label: "Small" },
+  { value: "normal", label: "Normal" },
+  { value: "large", label: "Large" },
+  { value: "extra_large", label: "Extra large" },
+  { value: "huge", label: "Huge" }
+];
 
-const getStemNumerationList = () => (
-  [
-    { value: '', label: '' },
-    { value: 'numerical', label: 'Numerical' },
-    { value: 'uppercase_alphabet', label: 'Uppercase alphabet' },
-    { value: 'lowercase_alphabet', label: 'Lowercase alphabet' }
-  ]
-);
+const getStemNumerationList = () => [
+  { value: "", label: "" },
+  { value: "numerical", label: "Numerical" },
+  { value: "uppercase_alphabet", label: "Uppercase alphabet" },
+  { value: "lowercase_alphabet", label: "Lowercase alphabet" }
+];
 
 class Graph extends Component {
   getOptionsComponent = () => {
@@ -70,12 +64,12 @@ class Graph extends Component {
     const { graphType } = item;
 
     switch (graphType) {
-      case 'axisSegments':
+      case "axisSegments":
         return AxisSegments;
-      case 'axisLabels':
+      case "axisLabels":
         return GraphAxisLabels;
-      case 'quadrants':
-      case 'firstQuadrant':
+      case "quadrants":
+      case "firstQuadrant":
       default:
         return GraphQuadrants;
     }
@@ -86,12 +80,12 @@ class Graph extends Component {
     const { graphType } = item;
 
     switch (graphType) {
-      case 'axisSegments':
+      case "axisSegments":
         return AxisSegmentsOptions;
-      case 'axisLabels':
+      case "axisLabels":
         return AxisLabelsOptions;
-      case 'quadrants':
-      case 'firstQuadrant':
+      case "quadrants":
+      case "firstQuadrant":
       default:
         return GraphQuadrantsOptions;
     }
@@ -102,12 +96,12 @@ class Graph extends Component {
     const { graphType } = item;
 
     switch (graphType) {
-      case 'axisSegments':
+      case "axisSegments":
         return this.getAxisLabelsOptionsProps();
-      case 'axisLabels':
+      case "axisLabels":
         return this.getAxisLabelsOptionsProps();
-      case 'quadrants':
-      case 'firstQuadrant':
+      case "quadrants":
+      case "firstQuadrant":
       default:
         return this.getQuadrantsOptionsProps();
     }
@@ -144,42 +138,42 @@ class Graph extends Component {
     };
   };
 
-  handleControlbarChange = (options) => {
+  handleControlbarChange = options => {
     const { setQuestionData, item } = this.props;
     setQuestionData({ ...item, controlbar: options });
-  }
+  };
 
-  handleValidationChange = (options) => {
+  handleValidationChange = options => {
     const { setQuestionData, item } = this.props;
     setQuestionData({ ...item, validation: options });
-  }
+  };
 
-  handleNumberlineChange = (options) => {
+  handleNumberlineChange = options => {
     const { setQuestionData, item } = this.props;
     setQuestionData({ ...item, numberlineAxis: options });
   };
 
-  handleOptionsChange = (options) => {
+  handleOptionsChange = options => {
     const { setQuestionData, item } = this.props;
     setQuestionData({ ...item, ui_style: options });
   };
 
-  handleAnnotationChange = (options) => {
+  handleAnnotationChange = options => {
     const { setQuestionData, item } = this.props;
     setQuestionData({ ...item, annotation: options });
   };
 
-  handleCanvasChange = (options) => {
+  handleCanvasChange = options => {
     const { setQuestionData, item } = this.props;
     setQuestionData({ ...item, canvas: options });
   };
 
-  handleBgImgChange = (bgImgOptions) => {
+  handleBgImgChange = bgImgOptions => {
     const { setQuestionData, item } = this.props;
     setQuestionData({ ...item, background_image: bgImgOptions });
   };
 
-  handleBgShapesChange = (bgShapes) => {
+  handleBgShapesChange = bgShapes => {
     const { setQuestionData, item } = this.props;
     setQuestionData({ ...item, background_shapes: bgShapes });
   };
@@ -210,15 +204,15 @@ class Graph extends Component {
       newItem.validation.alt_responses = newItem.validation.alt_responses.filter((response, i) => i !== index);
     }
 
-    setQuestionData(newItem);    
-  }
+    setQuestionData(newItem);
+  };
 
-  handleAddAnswer = (qid) => {
+  handleAddAnswer = qid => {
     const { saveAnswer } = this.props;
     saveAnswer(qid);
   };
 
-  handleSelectIgnoreRepeatedShapes = (value) => {
+  handleSelectIgnoreRepeatedShapes = value => {
     const { item, setQuestionData } = this.props;
     const newItem = cloneDeep(item);
     newItem.validation.ignore_repeated_shapes = value;
@@ -247,30 +241,41 @@ class Graph extends Component {
 
     return (
       <React.Fragment>
-        {view === 'edit' && (
+        {view === "edit" && (
           <React.Fragment>
-            <div style={{ paddingLeft: '280px' }}>
-              <OptionsComponent 
-                graphData={item} 
-                canvas={item.canvas} 
-                fillSections={fillSections} 
-                cleanSections={cleanSections} 
-                setCanvas={this.handleCanvasChange} 
+            <div style={{ paddingLeft: "280px" }}>
+              <OptionsComponent
+                graphData={item}
+                canvas={item.canvas}
+                fillSections={fillSections}
+                cleanSections={cleanSections}
+                setCanvas={this.handleCanvasChange}
               />
-              <QuestionSection section="main" label="SET CORRECT ANSWER" cleanSections={cleanSections} fillSections={fillSections}>
+              <QuestionSection
+                section="main"
+                label="SET CORRECT ANSWER"
+                cleanSections={cleanSections}
+                fillSections={fillSections}
+              >
                 <CorrectAnswers
                   graphData={item}
                   onRemoveAltResponses={this.handleRemoveAltResponses}
                   onAddAltResponses={this.handleAddAltResponses}
                 />
-                {(graphType === 'quadrants' || graphType === 'firstQuadrant') && (
+                {(graphType === "quadrants" || graphType === "firstQuadrant") && (
                   <React.Fragment>
                     <Select
-                      style={{ width: 'auto', marginTop: '11px', marginRight: '10px', borderRadius: '10px' }}
+                      style={{
+                        width: "auto",
+                        marginTop: "11px",
+                        marginRight: "10px",
+                        borderRadius: "10px"
+                      }}
                       onChange={val => this.handleSelectIgnoreRepeatedShapes(val)}
                       options={getIgnoreRepeatedShapesOptions()}
                       value={item.validation.ignore_repeated_shapes}
-                    /> Ignore repeated shapes
+                    />{" "}
+                    Ignore repeated shapes
                   </React.Fragment>
                 )}
               </QuestionSection>
@@ -278,9 +283,9 @@ class Graph extends Component {
             </div>
           </React.Fragment>
         )}
-        {view === 'preview' && smallSize === false && item && (
+        {view === "preview" && smallSize === false && item && (
           <Wrapper>
-            {previewTab === 'check' && (
+            {previewTab === "check" && (
               <GraphDisplay
                 checkAnswer
                 smallSize
@@ -291,7 +296,7 @@ class Graph extends Component {
                 evaluation={evaluation}
               />
             )}
-            {previewTab === 'show' && (
+            {previewTab === "show" && (
               <GraphDisplay
                 showAnswer
                 smallSize
@@ -302,7 +307,7 @@ class Graph extends Component {
                 evaluation={evaluation}
               />
             )}
-            {previewTab === 'clear' && (
+            {previewTab === "clear" && (
               <GraphDisplay
                 clearAnswer
                 smallSize
@@ -314,24 +319,24 @@ class Graph extends Component {
             )}
           </Wrapper>
         )}
-        {view === 'preview' && smallSize && (
+        {view === "preview" && smallSize && (
           <React.Fragment>
-            {item.graphType === 'firstQuadrant' && (
+            {item.graphType === "firstQuadrant" && (
               <SmallSizeQuadrantsWrapper>
                 <QuadrantsSmallSize first />
               </SmallSizeQuadrantsWrapper>
             )}
-            {item.graphType === 'axisSegments' && (
+            {item.graphType === "axisSegments" && (
               <SmallSizeAxisWrapper>
                 <AxisSmallSize segments />
               </SmallSizeAxisWrapper>
             )}
-            {item.graphType === 'axisLabels' && (
+            {item.graphType === "axisLabels" && (
               <SmallSizeAxisWrapper>
                 <AxisSmallSize labels />
               </SmallSizeAxisWrapper>
             )}
-            {item.graphType === 'quadrants' && (
+            {item.graphType === "quadrants" && (
               <SmallSizeQuadrantsWrapper>
                 <QuadrantsSmallSize />
               </SmallSizeQuadrantsWrapper>
@@ -358,7 +363,7 @@ Graph.propTypes = {
 
 Graph.defaultProps = {
   smallSize: false,
-  previewTab: 'clear',
+  previewTab: "clear",
   testItem: false,
   userAnswer: [],
   changePreviewTab: () => {},
@@ -366,22 +371,27 @@ Graph.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     null,
     {
       setQuestionData: setQuestionDataAction
-    },
+    }
   )
 );
 
-const GraphComponent =  enhance(Graph);
+const GraphComponent = enhance(Graph);
 
-const GraphWithResources = ({...props}) => (
-    <WithResources resources={["http://jsxgraph.uni-bayreuth.de/distrib/jsxgraphcore.js","http://jsxgraph.uni-bayreuth.de/distrib/jsxgraph.css"]} fallBack={<h2>Loading...</h2>}>
-       <GraphComponent {...props} />
-    </WithResources>
+const GraphWithResources = ({ ...props }) => (
+  <WithResources
+    resources={[
+      "http://jsxgraph.uni-bayreuth.de/distrib/jsxgraphcore.js",
+      "http://jsxgraph.uni-bayreuth.de/distrib/jsxgraph.css"
+    ]}
+    fallBack={<h2>Loading...</h2>}
+  >
+    <GraphComponent {...props} />
+  </WithResources>
 );
 
 export default GraphWithResources;
-

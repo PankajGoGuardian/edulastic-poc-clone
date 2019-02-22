@@ -1,32 +1,29 @@
-import { createAction } from 'redux-starter-kit';
-import { takeEvery, put, call, all } from 'redux-saga/effects';
-import { values, groupBy } from 'lodash';
-import { createSelector } from 'reselect';
-import { normalize } from 'normalizr';
-import { assignmentApi, reportsApi } from '@edulastic/api';
+import { createAction } from "redux-starter-kit";
+import { takeEvery, put, call, all } from "redux-saga/effects";
+import { values, groupBy } from "lodash";
+import { createSelector } from "reselect";
+import { normalize } from "normalizr";
+import { assignmentApi, reportsApi } from "@edulastic/api";
 
 // external actions
 import {
   assignmentSchema,
   setAssignmentsAction,
   setAssignmentsLoadingAction
-} from '../sharedDucks/AssignmentModule/ducks';
-import {
-  setReportsAction,
-  reportSchema
-} from '../sharedDucks/ReportsModule/ducks';
-import { getCurrentGroup } from '../Login/ducks';
+} from "../sharedDucks/AssignmentModule/ducks";
+import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
+import { getCurrentGroup } from "../Login/ducks";
 
 // constants
 export const FILTERS = {
-  ALL: 'all',
-  SUBMITTED: 'submitted',
-  GRADED: 'graded',
-  MISSED: 'missed'
+  ALL: "all",
+  SUBMITTED: "submitted",
+  GRADED: "graded",
+  MISSED: "missed"
 };
 
 // types
-export const FETCH_ASSIGNMENTS_DATA = '[studentAssignments] fetch assignments';
+export const FETCH_ASSIGNMENTS_DATA = "[studentAssignments] fetch assignments";
 
 // actions
 export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS_DATA);
@@ -79,7 +76,7 @@ export const getAssignmentsSelector = createSelector(
   getCurrentGroup,
   (assignmentsObj, reportsObj, filter, currentGroup) => {
     // group reports by assignmentsID
-    let groupedReports = groupBy(values(reportsObj), 'assignmentId');
+    let groupedReports = groupBy(values(reportsObj), "assignmentId");
     let assignments = values(assignmentsObj)
       .sort((a, b) => a.createdAt > b.createdAt)
       .map(assignment => ({
@@ -92,8 +89,7 @@ export const getAssignmentsSelector = createSelector(
         let maxAttempts = (assignment.test && assignment.test.maxAttempts) || 5;
         let attempts = (assignment.reports && assignment.reports.length) || 0;
 
-        const isExpired =
-          maxAttempts <= attempts || new Date(assignment.endDate) < new Date();
+        const isExpired = maxAttempts <= attempts || new Date(assignment.endDate) < new Date();
         const attempted = !!(assignment.reports && assignment.reports.length);
         const graded = false; // need to impliment graded status from API
         let filterType = true;

@@ -8,26 +8,29 @@ var Parser = P(function(_, super_, Parser) {
 
   function parseError(stream, message) {
     if (stream) {
-      stream = "'"+stream+"'";
-    }
-    else {
-      stream = 'EOF';
+      stream = "'" + stream + "'";
+    } else {
+      stream = "EOF";
     }
 
-    throw 'Parse Error: '+message+' at '+stream;
+    throw "Parse Error: " + message + " at " + stream;
   }
 
-  _.init = function(body) { this._ = body; };
+  _.init = function(body) {
+    this._ = body;
+  };
 
   _.parse = function(stream) {
-    return this.skip(eof)._(''+stream, success, parseError);
+    return this.skip(eof)._("" + stream, success, parseError);
 
-    function success(stream, result) { return result; }
+    function success(stream, result) {
+      return result;
+    }
   };
 
   // -*- primitive combinators -*- //
   _.or = function(alternative) {
-    pray('or is passed a parser', alternative instanceof Parser);
+    pray("or is passed a parser", alternative instanceof Parser);
 
     var self = this;
 
@@ -47,8 +50,8 @@ var Parser = P(function(_, super_, Parser) {
       return self._(stream, success, onFailure);
 
       function success(newStream, result) {
-        var nextParser = (next instanceof Parser ? next : next(result));
-        pray('a parser is returned', nextParser instanceof Parser);
+        var nextParser = next instanceof Parser ? next : next(result);
+        pray("a parser is returned", nextParser instanceof Parser);
         return nextParser._(newStream, onSuccess, onFailure);
       }
     });
@@ -114,8 +117,12 @@ var Parser = P(function(_, super_, Parser) {
   };
 
   // -*- higher-level combinators -*- //
-  _.result = function(res) { return this.then(succeed(res)); };
-  _.atMost = function(n) { return this.times(0, n); };
+  _.result = function(res) {
+    return this.then(succeed(res));
+  };
+  _.atMost = function(n) {
+    return this.times(0, n);
+  };
   _.atLeast = function(n) {
     var self = this;
     return self.times(n).then(function(start) {
@@ -126,34 +133,37 @@ var Parser = P(function(_, super_, Parser) {
   };
 
   _.map = function(fn) {
-    return this.then(function(result) { return succeed(fn(result)); });
+    return this.then(function(result) {
+      return succeed(fn(result));
+    });
   };
 
   _.skip = function(two) {
-    return this.then(function(result) { return two.result(result); });
+    return this.then(function(result) {
+      return two.result(result);
+    });
   };
 
   // -*- primitive parsers -*- //
-  var string = this.string = function(str) {
+  var string = (this.string = function(str) {
     var len = str.length;
-    var expected = "expected '"+str+"'";
+    var expected = "expected '" + str + "'";
 
     return Parser(function(stream, onSuccess, onFailure) {
       var head = stream.slice(0, len);
 
       if (head === str) {
         return onSuccess(stream.slice(len), head);
-      }
-      else {
+      } else {
         return onFailure(stream, expected);
       }
     });
-  };
+  });
 
-  var regex = this.regex = function(re) {
-    pray('regexp parser is anchored', re.toString().charAt(1) === '^');
+  var regex = (this.regex = function(re) {
+    pray("regexp parser is anchored", re.toString().charAt(1) === "^");
 
-    var expected = 'expected '+re;
+    var expected = "expected " + re;
 
     return Parser(function(stream, onSuccess, onFailure) {
       var match = re.exec(stream);
@@ -161,45 +171,44 @@ var Parser = P(function(_, super_, Parser) {
       if (match) {
         var result = match[0];
         return onSuccess(stream.slice(result.length), result);
-      }
-      else {
+      } else {
         return onFailure(stream, expected);
       }
     });
-  };
+  });
 
-  var succeed = Parser.succeed = function(result) {
+  var succeed = (Parser.succeed = function(result) {
     return Parser(function(stream, onSuccess) {
       return onSuccess(stream, result);
     });
-  };
+  });
 
-  var fail = Parser.fail = function(msg) {
+  var fail = (Parser.fail = function(msg) {
     return Parser(function(stream, _, onFailure) {
       return onFailure(stream, msg);
     });
-  };
+  });
 
-  var letter = Parser.letter = regex(/^[a-z]/i);
-  var letters = Parser.letters = regex(/^[a-z]*/i);
-  var digit = Parser.digit = regex(/^[0-9]/);
-  var digits = Parser.digits = regex(/^[0-9]*/);
-  var whitespace = Parser.whitespace = regex(/^\s+/);
-  var optWhitespace = Parser.optWhitespace = regex(/^\s*/);
+  var letter = (Parser.letter = regex(/^[a-z]/i));
+  var letters = (Parser.letters = regex(/^[a-z]*/i));
+  var digit = (Parser.digit = regex(/^[0-9]/));
+  var digits = (Parser.digits = regex(/^[0-9]*/));
+  var whitespace = (Parser.whitespace = regex(/^\s+/));
+  var optWhitespace = (Parser.optWhitespace = regex(/^\s*/));
 
-  var any = Parser.any = Parser(function(stream, onSuccess, onFailure) {
-    if (!stream) return onFailure(stream, 'expected any character');
+  var any = (Parser.any = Parser(function(stream, onSuccess, onFailure) {
+    if (!stream) return onFailure(stream, "expected any character");
 
     return onSuccess(stream.slice(1), stream.charAt(0));
-  });
+  }));
 
-  var all = Parser.all = Parser(function(stream, onSuccess, onFailure) {
-    return onSuccess('', stream);
-  });
+  var all = (Parser.all = Parser(function(stream, onSuccess, onFailure) {
+    return onSuccess("", stream);
+  }));
 
-  var eof = Parser.eof = Parser(function(stream, onSuccess, onFailure) {
-    if (stream) return onFailure(stream, 'expected EOF');
+  var eof = (Parser.eof = Parser(function(stream, onSuccess, onFailure) {
+    if (stream) return onFailure(stream, "expected EOF");
 
     return onSuccess(stream, stream);
-  });
+  }));
 });

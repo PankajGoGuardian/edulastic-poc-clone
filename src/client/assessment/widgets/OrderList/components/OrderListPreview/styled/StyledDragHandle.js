@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const StyledDragHandle = styled.div`
   width: ${props => (props.smallSize ? 30 : 50)}px;

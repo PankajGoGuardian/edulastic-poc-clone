@@ -1,17 +1,17 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable jsx-a11y/alt-text */
-import React, { Component } from 'react';
-import { compose } from 'redux';
+import React, { Component } from "react";
+import { compose } from "redux";
 
-import { withNamespaces } from '@edulastic/localization';
-import { Popconfirm, Switch, message } from 'antd';
-import { Link } from 'react-router-dom';
-import HeaderWrapper from '../../../src/mainContent/headerWrapper';
-import { themes } from '../../../../student/themes';
-import moment from 'moment';
+import { withNamespaces } from "@edulastic/localization";
+import { Popconfirm, Switch, message } from "antd";
+import { Link } from "react-router-dom";
+import HeaderWrapper from "../../../src/mainContent/headerWrapper";
+import { themes } from "../../../../student/themes";
+import moment from "moment";
 
-import Assigned from '../../assets/assigned.svg';
+import Assigned from "../../assets/assigned.svg";
 
 import {
   Container,
@@ -27,7 +27,7 @@ import {
   StyledTabs,
   StyledAnchorA,
   StyledAnchor
-} from './styled';
+} from "./styled";
 
 class ListHeader extends Component {
   constructor(props) {
@@ -38,21 +38,21 @@ class ListHeader extends Component {
     };
   }
 
-  changeCondition = (value) => {
+  changeCondition = value => {
     this.setState({ condition: value });
-  }
+  };
 
   confirm = () => {
     this.setState({ visible: false });
-    message.success('Next step.');
-  }
+    message.success("Next step.");
+  };
 
   cancel = () => {
     this.setState({ visible: false });
-    message.error('Click on cancel.');
-  }
+    message.error("Click on cancel.");
+  };
 
-  handleVisibleChange = (visible) => {
+  handleVisibleChange = visible => {
     if (!visible) {
       this.setState({ visible });
       return;
@@ -65,26 +65,41 @@ class ListHeader extends Component {
     } else {
       this.setState({ visible }); // show the popconfirm
     }
-  }
+  };
 
   render() {
-    const {
-      t,
-      additionalData={}
-    } = this.props;
+    const { t, additionalData = {} } = this.props;
     const endDate = additionalData.endDate;
-    const dueDate = (isNaN(endDate))? new Date(endDate): new Date(parseInt(endDate));
+    const dueDate = isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate));
 
     return (
       <Container>
         <StyledTitle>
-          <StyledParaFirst>{additionalData.className||'loading...'}</StyledParaFirst>
-          <StyledParaSecond>(Due on {additionalData.endDate && moment(dueDate).format("MMMM Do YYYY")})</StyledParaSecond>
+          <StyledParaFirst>{additionalData.className || "loading..."}</StyledParaFirst>
+          <StyledParaSecond>
+            (Due on {additionalData.endDate && moment(dueDate).format("MMMM Do YYYY")})
+          </StyledParaSecond>
         </StyledTitle>
         <StyledTabs>
-          <StyledAnchorA><StyledLink to={`/author/classboard/${this.props.assignmentId}/${this.props.classId}`}><img src={Assigned} /><SpaceD />{t('common.liveClassBoard')}</StyledLink></StyledAnchorA>
-          <StyledAnchor><StyledLink to={`/author/expressgrader/${this.props.assignmentId}/${this.props.classId}`}><img src={Assigned} /><SpaceD />{t('common.expressGrader')}</StyledLink></StyledAnchor>
-          <StyledAnchor><img src={Assigned} /><SpaceD />{t('common.reports')}</StyledAnchor>
+          <StyledAnchorA>
+            <StyledLink to={`/author/classboard/${this.props.assignmentId}/${this.props.classId}`}>
+              <img src={Assigned} />
+              <SpaceD />
+              {t("common.liveClassBoard")}
+            </StyledLink>
+          </StyledAnchorA>
+          <StyledAnchor>
+            <StyledLink to={`/author/expressgrader/${this.props.assignmentId}/${this.props.classId}`}>
+              <img src={Assigned} />
+              <SpaceD />
+              {t("common.expressGrader")}
+            </StyledLink>
+          </StyledAnchor>
+          <StyledAnchor>
+            <img src={Assigned} />
+            <SpaceD />
+            {t("common.reports")}
+          </StyledAnchor>
         </StyledTabs>
         <StyledDiv>
           <StyledPopconfirm
@@ -96,16 +111,16 @@ class ListHeader extends Component {
             okText="Yes"
             cancelText="No"
           />
-          <StyledParaThird>Release Scores</StyledParaThird><StyledSwitch defaultChecked onChange={this.changeCondition} />
+          <StyledParaThird>Release Scores</StyledParaThird>
+          <StyledSwitch defaultChecked onChange={this.changeCondition} />
         </StyledDiv>
       </Container>
     );
   }
 }
 
-ListHeader.propTypes = {
-};
+ListHeader.propTypes = {};
 
-const enhance = compose(withNamespaces('classBoard'));
+const enhance = compose(withNamespaces("classBoard"));
 
 export default enhance(ListHeader);

@@ -1,24 +1,24 @@
-import { CONSTANT } from './config';
-import Point from './elements/Point';
-import { defaultConfig as lineConfig } from './elements/Line';
-import rayConfig from './elements/Ray';
-import segmentConfig from './elements/Segment';
-import vectorConfig from './elements/Vector';
-import Polygon from './elements/Polygon';
+import { CONSTANT } from "./config";
+import Point from "./elements/Point";
+import { defaultConfig as lineConfig } from "./elements/Line";
+import rayConfig from "./elements/Ray";
+import segmentConfig from "./elements/Segment";
+import vectorConfig from "./elements/Vector";
+import Polygon from "./elements/Polygon";
 // import { JXG } from './index';
 
 export const findAvailableStackedSegmentPosition = (board, segments, stackResponsesSpacing) => {
   const [x, y] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
   const [xMeasure, yMeasure] = calcMeasure(0, stackResponsesSpacing, board);
-  const lineY = 0.5 - (y / 100 * 75);
+  const lineY = 0.5 - (y / 100) * 75;
   let calcedYPosition = lineY + yMeasure;
 
   for (let i = 0; i <= segments.length; i++) {
-    const yPosition = Math.round((lineY + (yMeasure * (i + 1))) * 10) / 10;
+    const yPosition = Math.round((lineY + yMeasure * (i + 1)) * 10) / 10;
     let isPositionAvailable = true;
 
-    segments.forEach((segment) => {
-      if (segment.elType === 'point') {
+    segments.forEach(segment => {
+      if (segment.elType === "point") {
         if (segment.Y() === yPosition) {
           isPositionAvailable = false;
         }
@@ -28,7 +28,7 @@ export const findAvailableStackedSegmentPosition = (board, segments, stackRespon
     });
 
     if (isPositionAvailable) {
-      return calcedYPosition = yPosition;
+      return (calcedYPosition = yPosition);
     }
   }
 
@@ -42,10 +42,11 @@ export const findSegmentPosition = (board, coords) => {
 
 // Pass points of segment
 // Function placing smallest element to the first place
-export const orderPoints = (points) => {
+export const orderPoints = points => {
   if (points[0] === points[1]) {
     return points;
-  } if (points[0] < points[1]) {
+  }
+  if (points[0] < points[1]) {
     return points;
   }
   return [points[1], points[0]];
@@ -54,22 +55,29 @@ export const orderPoints = (points) => {
 export const lineLabelCoord = (firstPoint, secondPoint) => {
   if (firstPoint === secondPoint) {
     return firstPoint;
-  } if (firstPoint < secondPoint) {
-    const segmentLength = -(firstPoint) + secondPoint;
+  }
+  if (firstPoint < secondPoint) {
+    const segmentLength = -firstPoint + secondPoint;
     return secondPoint - segmentLength / 2;
   }
-  const segmentLength = -(secondPoint) + firstPoint;
+  const segmentLength = -secondPoint + firstPoint;
   return firstPoint - segmentLength / 2;
 };
 
 // Calculate position between two points for line
-export const calcLineLabelPosition = (line) => {
+export const calcLineLabelPosition = line => {
   const finalXCoord = lineLabelCoord(line.point1.coords.usrCoords[1], line.point2.coords.usrCoords[1]);
   const finalYCoord = lineLabelCoord(line.point1.coords.usrCoords[2], line.point2.coords.usrCoords[2]);
   return [finalXCoord, finalYCoord];
 };
 
-const fractionsNumber = number => (number.toString().includes('.') ? number.toString().split('.').pop().length : 0);
+const fractionsNumber = number =>
+  number.toString().includes(".")
+    ? number
+        .toString()
+        .split(".")
+        .pop().length
+    : 0;
 
 // Calculate point rounded to ticksDistance value
 export const calcRoundedToTicksDistance = (x, ticksDistance) => {
@@ -81,10 +89,10 @@ export const calcRoundedToTicksDistance = (x, ticksDistance) => {
         distanceDiff = Math.ceil(distanceDiff + 0.0001);
       } while (distanceDiff % ticksDistance !== 0);
 
-      return (x + (distanceDiff - x));
+      return x + (distanceDiff - x);
     }
     // closer to the smallest value
-    return Math.round(x - x % ticksDistance);
+    return Math.round(x - (x % ticksDistance));
   }
   let ticksRounded = ticksDistance;
   let iterationsCount = 0;
@@ -110,7 +118,7 @@ export const calcRoundedToTicksDistance = (x, ticksDistance) => {
 
 // Calculate unitX
 export const calcUnitX = (xMin, xMax, layoutWidth) => {
-  const unitLength = -(xMin) + xMax;
+  const unitLength = -xMin + xMax;
   return layoutWidth / unitLength;
 };
 
@@ -121,7 +129,7 @@ export const findElementsDiff = (mainArray, secondaryArray) => {
   mainArray.forEach((mainElement, index) => {
     let flag = false;
 
-    secondaryArray.forEach((secondaryElement) => {
+    secondaryArray.forEach(secondaryElement => {
       if (mainElement.id === secondaryElement.id) {
         flag = true;
       }
@@ -145,7 +153,11 @@ export const calcMeasure = (x, y, board) => {
 
 // Calculate first available space for render in marks container
 export const checkMarksRenderSpace = (board, settings, containerSettings) => {
-  const [xContainerMeasure, yContainerMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
+  const [xContainerMeasure, yContainerMeasure] = calcMeasure(
+    board.$board.canvasWidth,
+    board.$board.canvasHeight,
+    board
+  );
   const [xPadding, yPadding] = calcMeasure(
     settings.separationDistanceX <= 0 ? 1 : settings.separationDistanceX,
     settings.separationDistanceY <= 0 ? 1 : settings.separationDistanceY,
@@ -154,8 +166,8 @@ export const checkMarksRenderSpace = (board, settings, containerSettings) => {
   const [xMeasure, yMeasure] = calcMeasure(52.5, 65, board); // half of element's width and full height in units
   const [markXMeasure, markYMeasure] = calcMeasure(51.5, 45, board);
 
-  const filteredElements = board.elements.filter(element => element.elType === 'group');
-  const containerY = containerSettings.yMax - (yContainerMeasure / 100 * containerSettings.position); // End of the mark's container
+  const filteredElements = board.elements.filter(element => element.elType === "group");
+  const containerY = containerSettings.yMax - (yContainerMeasure / 100) * containerSettings.position; // End of the mark's container
 
   const xRenderPos = board.$board.plainBB[0] + xMeasure + xPadding; // X start position for marks' point
   const yRenderPos = containerY - yMeasure - yPadding; // Y start position for mark's point
@@ -167,8 +179,8 @@ export const checkMarksRenderSpace = (board, settings, containerSettings) => {
   }
   for (let i = 0; i < filteredElements.length; i++) {
     //  Compare each POSITION with each element
-    const xStart = board.$board.plainBB[0] + (elementSpace * i);
-    const xEnd = board.$board.plainBB[0] + (elementSpace * (i + 1));
+    const xStart = board.$board.plainBB[0] + elementSpace * i;
+    const xEnd = board.$board.plainBB[0] + elementSpace * (i + 1);
     let isPositionAvailable = true;
 
     for (let j = 0; j < filteredElements.length; j++) {
@@ -177,10 +189,8 @@ export const checkMarksRenderSpace = (board, settings, containerSettings) => {
       const markRightSide = groupXPos + xMeasure;
 
       if (
-        groupYPos < containerY - (markYMeasure * 1.35)
-        && ((markRightSide > xStart && markRightSide < xEnd)
-          || (markLeftSide < xEnd && markLeftSide > xStart)
-        )
+        groupYPos < containerY - markYMeasure * 1.35 &&
+        ((markRightSide > xStart && markRightSide < xEnd) || (markLeftSide < xEnd && markLeftSide > xStart))
       ) {
         // If some element is on this place
         isPositionAvailable = false;
@@ -188,12 +198,12 @@ export const checkMarksRenderSpace = (board, settings, containerSettings) => {
     }
 
     if (isPositionAvailable) {
-      return [xRenderPos + (elementSpace * i), yRenderPos];
+      return [xRenderPos + elementSpace * i, yRenderPos];
     }
   }
 
   // If all elements at their start place
-  return [xRenderPos + (elementSpace * filteredElements.length), yRenderPos];
+  return [xRenderPos + elementSpace * filteredElements.length, yRenderPos];
 };
 
 function compareKeys(config, props) {
@@ -203,14 +213,16 @@ function compareKeys(config, props) {
 function numberWithCommas(x) {
   x = x.toString();
   const pattern = /(-?\d+)(\d{3})/;
-  while (pattern.test(x)) { x = x.replace(pattern, '$1,$2'); }
+  while (pattern.test(x)) {
+    x = x.replace(pattern, "$1,$2");
+  }
   return x;
 }
 
 function getPointsFromFlatConfig(type, pointIds, config) {
   switch (type) {
     case CONSTANT.TOOLS.POLYGON:
-      return (Object.keys(pointIds))
+      return Object.keys(pointIds)
         .sort()
         .map(k => config.find(element => element.id === pointIds[k]));
     default:
@@ -222,7 +234,7 @@ function getPointsFromFlatConfig(type, pointIds, config) {
 }
 
 export const handleSnap = (line, points) => {
-  line.on('up', () => {
+  line.on("up", () => {
     const setCoords = window.JXG.COORDS_BY_USER;
     points.forEach(point => point.setPositionDirectly(setCoords, [Math.round(point.X()), Math.round(point.Y())]));
   });
@@ -241,30 +253,30 @@ export function getLineTypeByProp(props) {
   if (compareKeys(vectorConfig, props)) {
     return CONSTANT.TOOLS.VECTOR;
   }
-  throw new Error('Unknown line', props);
+  throw new Error("Unknown line", props);
 }
 
 export function getPropsByLineType(type) {
   switch (type) {
-    case 'line':
+    case "line":
       return lineConfig;
-    case 'ray':
+    case "ray":
       return rayConfig;
-    case 'segment':
+    case "segment":
       return segmentConfig;
-    case 'vector':
+    case "vector":
       return vectorConfig;
     default:
-      throw new Error('Unknown line type:', type);
+      throw new Error("Unknown line type:", type);
   }
 }
 
 export function tickLabel(axe, withComma = true, distance = 0) {
-  return (coords) => {
-    const label = axe === 'x' ? coords.usrCoords[1] : coords.usrCoords[2];
-    if (axe === 'x' && label === 0) {
+  return coords => {
+    const label = axe === "x" ? coords.usrCoords[1] : coords.usrCoords[2];
+    if (axe === "x" && label === 0) {
       // offset fix for zero label
-      return '0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;';
+      return "0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;";
     }
     return withComma ? numberWithCommas(label.toFixed(distance)) : label;
   };
@@ -275,7 +287,7 @@ export function updatePointParameters(elements, attr, isSwitchToGrid) {
     return;
   }
 
-  Object.keys(elements).forEach((key) => {
+  Object.keys(elements).forEach(key => {
     const el = elements[key];
     if (el.type === JXG.OBJECT_TYPE_POINT) {
       el.setAttribute(attr);
@@ -289,48 +301,50 @@ export function updatePointParameters(elements, attr, isSwitchToGrid) {
 }
 
 export function updateAxe(line, parameters, axe) {
-  if ('ticksDistance' in parameters) {
+  if ("ticksDistance" in parameters) {
     line.ticks[0].setAttribute({ ticksDistance: parameters.ticksDistance });
   }
-  if ('showTicks' in parameters) {
+  if ("showTicks" in parameters) {
     line.ticks[0].setAttribute({ majorHeight: parameters.showTicks ? 25 : 0 });
   }
-  if ('drawLabels' in parameters) {
+  if ("drawLabels" in parameters) {
     line.ticks[0].setAttribute({ drawLabels: parameters.drawLabels });
   }
-  if ('name' in parameters && line.name !== parameters.name) {
+  if ("name" in parameters && line.name !== parameters.name) {
     if (!parameters.name) {
-      line.setAttribute({ withLabel: false, name: '' });
+      line.setAttribute({ withLabel: false, name: "" });
     } else {
       line.setAttribute({ withLabel: true, name: parameters.name });
     }
   }
-  if ('minArrow' in parameters || 'maxArrow' in parameters) {
+  if ("minArrow" in parameters || "maxArrow" in parameters) {
     line.setArrow(
       parameters.minArrow === true ? { size: 8 } : false,
-      parameters.maxArrow === true ? { size: 8 } : false,
+      parameters.maxArrow === true ? { size: 8 } : false
     );
   }
-  if ('commaInLabel' in parameters) {
+  if ("commaInLabel" in parameters) {
     line.ticks[0].generateLabelText = tickLabel(axe, parameters.commaInLabel);
   }
-  if ('drawZero' in parameters) {
+  if ("drawZero" in parameters) {
     line.ticks[0].setAttribute({ drawZero: parameters.drawZero });
   }
-  if ('visible' in parameters) {
+  if ("visible" in parameters) {
     line.setAttribute({ visible: parameters.visible });
   }
 }
 
 // Update numberline axis settings
 export const updateNumberline = (numberline, settings) => {
-  if ('showTicks' in settings) {
+  if ("showTicks" in settings) {
     numberline[0].ticks[0].setAttribute({ visible: settings.showTicks });
   }
-  if ('ticksDistance' in settings) {
-    numberline[0].ticks[0].setAttribute({ ticksDistance: settings.ticksDistance });
+  if ("ticksDistance" in settings) {
+    numberline[0].ticks[0].setAttribute({
+      ticksDistance: settings.ticksDistance
+    });
   }
-  if ('fontSize' in settings) {
+  if ("fontSize" in settings) {
     numberline[0].ticks[0].labels.forEach(label => label.setAttribute({ fontSize: settings.fontSize }));
   }
 };
@@ -352,18 +366,9 @@ export function getImageCoordsByPercent(boardParameters, bgImageParameters) {
   const { size, coords } = bgImageParameters;
   const xSize = Math.abs(graphParameters.xMin) + Math.abs(graphParameters.xMax);
   const ySize = Math.abs(graphParameters.yMin) + Math.abs(graphParameters.yMax);
-  const imageSize = [
-    Math.round(xSize / 100 * size[0]),
-    Math.round(ySize / 100 * size[1])
-  ];
-  const leftCorner = [
-    coords[0] - (imageSize[0] / 2),
-    coords[1] - (imageSize[1] / 2)
-  ];
-  return [
-    leftCorner,
-    imageSize
-  ];
+  const imageSize = [Math.round((xSize / 100) * size[0]), Math.round((ySize / 100) * size[1])];
+  const leftCorner = [coords[0] - imageSize[0] / 2, coords[1] - imageSize[1] / 2];
+  return [leftCorner, imageSize];
 }
 
 export function flatConfig(config, accArg = {}, isSub = false) {
@@ -397,25 +402,27 @@ export function flatConfig(config, accArg = {}, isSub = false) {
 }
 
 export function flat2nestedConfig(config) {
-  return Object.values(config.reduce((acc, element) => {
-    const { id, type, subElement = false } = element;
-    if (!acc[id] && !subElement) {
-      acc[id] = {
-        id,
-        type,
-        _type: element._type,
-        colors: element.colors,
-        label: element.label
-      };
-      if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.MARK) {
-        acc[id].x = element.x;
-        acc[id].y = element.y;
-      } else {
-        acc[id].points = getPointsFromFlatConfig(type, element.subElementsIds, config);
+  return Object.values(
+    config.reduce((acc, element) => {
+      const { id, type, subElement = false } = element;
+      if (!acc[id] && !subElement) {
+        acc[id] = {
+          id,
+          type,
+          _type: element._type,
+          colors: element.colors,
+          label: element.label
+        };
+        if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.MARK) {
+          acc[id].x = element.x;
+          acc[id].y = element.y;
+        } else {
+          acc[id].points = getPointsFromFlatConfig(type, element.subElementsIds, config);
+        }
       }
-    }
-    return acc;
-  }, {}));
+      return acc;
+    }, {})
+  );
 }
 
 export default getLineTypeByProp;
@@ -449,7 +456,7 @@ export function getClosestTick(pointX, ticks) {
 export function getSpecialTicks(axis) {
   const ticks = axis.ticks.filter(t => t.fixedTicks !== null);
   let fixedTicks = [];
-  ticks.forEach((t) => {
+  ticks.forEach(t => {
     fixedTicks = fixedTicks.concat(t.fixedTicks);
   });
   return fixedTicks;

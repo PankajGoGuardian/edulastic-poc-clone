@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import Color from 'color';
+import styled from "styled-components";
+import Color from "color";
 
 const getItemBackground = (alpha, hoverBg = false) => ({
   active,
@@ -13,8 +13,7 @@ const getItemBackground = (alpha, hoverBg = false) => ({
   const isCheckRed = checkAnswers && active && !locked && !correct;
   const isCheckLocked = (checkAnswers && active && locked) || (checkAnswers && !active && locked);
   const isShowGreen = showAnswers && correct && !locked;
-  const isShowLocked =
-    (showAnswers && correct && locked) || (showAnswers && !correct && active && locked);
+  const isShowLocked = (showAnswers && correct && locked) || (showAnswers && !correct && active && locked);
   const isShowRed = showAnswers && !correct && active && !locked;
   const isSimplyActive = !checkAnswers && !showAnswers && active;
 
@@ -29,9 +28,7 @@ const getItemBackground = (alpha, hoverBg = false) => ({
       .alpha(alpha)
       .string();
   }
-  return hoverBg
-    ? theme.widgets.shading.liBgHoverColor
-    : theme.widgets.shading.liBgColor;
+  return hoverBg ? theme.widgets.shading.liBgHoverColor : theme.widgets.shading.liBgColor;
 };
 
 const getIcon = ({ showAnswers, correct, locked, checkAnswers, active }) => {
@@ -41,19 +38,19 @@ const getIcon = ({ showAnswers, correct, locked, checkAnswers, active }) => {
   const isShowCross = showAnswers && !correct && active && !locked;
 
   if (isCheckTick || isShowTick) {
-    return '\\f00c';
+    return "\\f00c";
   }
   if (isCheckCross || isShowCross) {
-    return '\\f00d';
+    return "\\f00d";
   }
-  return '';
+  return "";
 };
 
 export const Li = styled.li`
   width: ${({ width }) => width * 40}px;
   height: ${({ height }) => height * 40}px;
   background: ${getItemBackground(0.8)};
-  cursor: ${({ locked }) => (locked ? 'not-allowed' : 'pointer')};
+  cursor: ${({ locked }) => (locked ? "not-allowed" : "pointer")};
   border: 2px solid ${props => props.theme.widgets.shading.liBorderColor};
   display: inline-block;
   margin-left: -2px;

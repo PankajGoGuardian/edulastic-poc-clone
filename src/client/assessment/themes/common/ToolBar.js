@@ -1,16 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { Button } from 'antd';
-import { white } from '@edulastic/colors';
-import {
-  IconCursor,
-  IconInRuler,
-  IconCalculator,
-  IconClose,
-  IconProtactor,
-  IconScratchPad
-} from '@edulastic/icons';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { Button } from "antd";
+import { white } from "@edulastic/colors";
+import { IconCursor, IconInRuler, IconCalculator, IconClose, IconProtactor, IconScratchPad } from "@edulastic/icons";
 
 class ToolBar extends Component {
   constructor(props) {
@@ -20,7 +13,7 @@ class ToolBar extends Component {
     };
   }
 
-  toolbarHandler = (value) => {
+  toolbarHandler = value => {
     const { changeMode } = this.props;
 
     this.setState({ select: value });
@@ -83,13 +76,13 @@ const customizeIcon = icon => styled(icon)`
 
 const StyledButton = styled(Button)`
   margin-right: 10px;
-  background: ${props => (props.enable ? '#00b0ff' : 'transparent')};
+  background: ${props => (props.enable ? "#00b0ff" : "transparent")};
   height: 40px;
   width: 40px;
 
   &:focus,
   &:hover {
-    background: ${props => (props.enable ? '#00b0ff' : 'transparent')};
+    background: ${props => (props.enable ? "#00b0ff" : "transparent")};
   }
 `;
 

@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { withNamespaces } from '@edulastic/localization';
-import { Header, PointField } from './styled_components';
-import { GraphDisplay } from '../Display';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { withNamespaces } from "@edulastic/localization";
+import { Header, PointField } from "./styled_components";
+import { GraphDisplay } from "../Display";
 
 class CorrectAnswer extends Component {
   constructor(props) {
@@ -13,29 +13,30 @@ class CorrectAnswer extends Component {
     };
   }
 
-  updateScore = (e) => {
+  updateScore = e => {
     const { onUpdatePoints } = this.props;
     if (e.target.value < 0) e.target.value = 0;
     this.setState({ responseScore: e.target.value });
     onUpdatePoints(parseFloat(e.target.value, 10));
   };
 
-  setResponseValue = (val) => {
+  setResponseValue = val => {
     const { onUpdateValidationValue } = this.props;
     onUpdateValidationValue(val);
   };
 
-  renderGraphDisplay = (graphType) => {
+  renderGraphDisplay = graphType => {
     switch (graphType) {
-      case 'firstQuadrant':
-      case 'quadrants':
+      case "firstQuadrant":
+      case "quadrants":
         return GraphQuadrantsDisplay;
-      case 'axisLabels':
-      case 'axisSegments':
+      case "axisLabels":
+      case "axisSegments":
         return AxisLabelsDisplay;
-      default: return null;
+      default:
+        return null;
     }
-  }
+  };
 
   render() {
     const { t, response, graphData } = this.props;
@@ -52,13 +53,9 @@ class CorrectAnswer extends Component {
             min={0}
             step={0.5}
           />
-          <span>{t('component.correctanswers.points')}</span>
+          <span>{t("component.correctanswers.points")}</span>
         </Header>
-        <GraphDisplay
-          graphData={graphData}
-          elements={response.value}
-          onChange={this.setResponseValue}
-        />
+        <GraphDisplay graphData={graphData} elements={response.value} onChange={this.setResponseValue} />
       </div>
     );
   }
@@ -72,4 +69,4 @@ CorrectAnswer.propTypes = {
   response: PropTypes.object.isRequired
 };
 
-export default withNamespaces('assessment')(CorrectAnswer);
+export default withNamespaces("assessment")(CorrectAnswer);

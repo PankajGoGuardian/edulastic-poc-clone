@@ -1,11 +1,11 @@
-import { takeEvery, put, all, select, call } from 'redux-saga/effects';
-import { message } from 'antd';
-import { testItemsApi } from '@edulastic/api';
-import { isEmpty } from 'lodash';
+import { takeEvery, put, all, select, call } from "redux-saga/effects";
+import { message } from "antd";
+import { testItemsApi } from "@edulastic/api";
+import { isEmpty } from "lodash";
 
 // actions
-import { CHECK_ANSWER_EVALUATION, ADD_ITEM_EVALUATION, CHANGE_PREVIEW } from '../constants/actions';
-import { itemQuestionsSelector, answersForCheck } from '../selectors/test';
+import { CHECK_ANSWER_EVALUATION, ADD_ITEM_EVALUATION, CHANGE_PREVIEW } from "../constants/actions";
+import { itemQuestionsSelector, answersForCheck } from "../selectors/test";
 
 function* evaluateAnswers() {
   try {
@@ -14,14 +14,14 @@ function* evaluateAnswers() {
     const answerIds = Object.keys(allAnswers);
     const userResponse = {};
 
-    answerIds.forEach((id) => {
+    answerIds.forEach(id => {
       if (questionIds.includes(id)) {
         userResponse[id] = allAnswers[id];
       }
     });
 
     if (isEmpty(userResponse)) {
-      const msg = 'score: 0 / 0';
+      const msg = "score: 0 / 0";
       yield call(message.success, msg, 0.5);
 
       return;
@@ -34,7 +34,7 @@ function* evaluateAnswers() {
     yield put({
       type: CHANGE_PREVIEW,
       payload: {
-        view: 'check'
+        view: "check"
       }
     });
 

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const CorrectAnswerItem = styled.div`
   width: calc(100% - 40px);

@@ -1,21 +1,12 @@
-import React, { useRef, useState, useEffect, Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
+import React, { useRef, useState, useEffect, Fragment } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep } from "lodash";
 
-import { drawTools } from '@edulastic/constants';
-import styled from 'styled-components';
-import { Input } from 'antd';
+import { drawTools } from "@edulastic/constants";
+import styled from "styled-components";
+import { Input } from "antd";
 
-const SvgDraw = ({
-  lineColor,
-  lineWidth,
-  activeMode,
-  scratchPadMode,
-  history,
-  saveHistory,
-  fillColor,
-  deleteMode
-}) => {
+const SvgDraw = ({ lineColor, lineWidth, activeMode, scratchPadMode, history, saveHistory, fillColor, deleteMode }) => {
   const svg = useRef(null);
 
   const [points, setPoints] = useState([]);
@@ -28,33 +19,27 @@ const SvgDraw = ({
   const [mouseClicked, setMouseClicked] = useState(false);
   const [inputIsVisible, setInputIsVisible] = useState(false);
   const [currentPosition, setCurrentPosition] = useState({ x: 0, y: 0 });
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [texts, setTexts] = useState([]);
 
-  useEffect(
-    () => {
-      if (history && history.points && history.pathes && history.figures && history.texts) {
-        setPoints(history.points);
-        setPathes(history.pathes);
-        setFigures(history.figures);
-        setTexts(history.texts);
+  useEffect(() => {
+    if (history && history.points && history.pathes && history.figures && history.texts) {
+      setPoints(history.points);
+      setPathes(history.pathes);
+      setFigures(history.figures);
+      setTexts(history.texts);
 
-        if (active && !history.figures[active]) {
-          setActive(null);
-        }
+      if (active && !history.figures[active]) {
+        setActive(null);
       }
-    },
-    [history]
-  );
+    }
+  }, [history]);
 
-  useEffect(
-    () => {
-      setActive(null);
-    },
-    [activeMode]
-  );
+  useEffect(() => {
+    setActive(null);
+  }, [activeMode]);
 
-  const handleMove = (e) => {
+  const handleMove = e => {
     if (mouseClicked) {
       const newPoints = cloneDeep(points);
       const bounded = svg.current.getBoundingClientRect();
@@ -69,7 +54,7 @@ const SvgDraw = ({
     }
   };
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = e => {
     setMouseClicked(true);
     const newPoints = cloneDeep(points);
     const bounded = svg.current.getBoundingClientRect();
@@ -87,10 +72,15 @@ const SvgDraw = ({
     setMouseClicked(false);
     setPathes([...pathes, cloneDeep(points)]);
     setPoints([]);
-    saveHistory({ pathes: [...pathes, cloneDeep(points)], points: [], texts, figures });
+    saveHistory({
+      pathes: [...pathes, cloneDeep(points)],
+      points: [],
+      texts,
+      figures
+    });
   };
 
-  const handlePoint = (modifier = '') => (e) => {
+  const handlePoint = (modifier = "") => e => {
     const newPoints = cloneDeep(points);
     const bounded = svg.current.getBoundingClientRect();
     if (newPoints.length === 0) {
@@ -114,7 +104,7 @@ const SvgDraw = ({
     saveHistory({ pathes, points: newPoints, texts, figures });
   };
 
-  const handleLineSecondPoint = (e) => {
+  const handleLineSecondPoint = e => {
     if (mouseClicked) {
       const newPoints = cloneDeep(points);
       const bounded = svg.current.getBoundingClientRect();
@@ -149,7 +139,7 @@ const SvgDraw = ({
     saveHistory({ pathes, points: [], texts, figures });
   };
 
-  const drawSquare = (e) => {
+  const drawSquare = e => {
     if (active === null) {
       const newFigures = cloneDeep(figures);
       const bounded = svg.current.getBoundingClientRect();
@@ -169,7 +159,7 @@ const SvgDraw = ({
     }
   };
 
-  const drawСircle = (e) => {
+  const drawСircle = e => {
     if (active === null) {
       const newFigures = cloneDeep(figures);
       const bounded = svg.current.getBoundingClientRect();
@@ -189,7 +179,7 @@ const SvgDraw = ({
     }
   };
 
-  const drawTriangle = (e) => {
+  const drawTriangle = e => {
     if (active === null) {
       const newFigures = cloneDeep(figures);
       const bounded = svg.current.getBoundingClientRect();
@@ -207,7 +197,7 @@ const SvgDraw = ({
     }
   };
 
-  const drawText = (e) => {
+  const drawText = e => {
     if (currentPosition.index === undefined) {
       const newTexts = cloneDeep(texts);
       const bounded = svg.current.getBoundingClientRect();
@@ -215,12 +205,16 @@ const SvgDraw = ({
       newTexts.push({
         color: lineColor,
         lineWidth,
-        value: '',
+        value: "",
         x: point.x,
         y: point.y
       });
       setInputIsVisible(true);
-      setCurrentPosition({ x: point.x, y: point.y + 40, index: newTexts.length - 1 });
+      setCurrentPosition({
+        x: point.x,
+        y: point.y + 40,
+        index: newTexts.length - 1
+      });
       setTexts(newTexts);
       saveHistory({ pathes, points: [], figures, texts: newTexts });
     } else {
@@ -229,7 +223,7 @@ const SvgDraw = ({
     }
   };
 
-  const handleCurveMove = (e) => {
+  const handleCurveMove = e => {
     const newPoints = cloneDeep(points);
     if (newPoints.length > 1) {
       const bounded = svg.current.getBoundingClientRect();
@@ -245,7 +239,7 @@ const SvgDraw = ({
     }
   };
 
-  const handleResizeRect = (e) => {
+  const handleResizeRect = e => {
     if (mouseClicked && activeIndex !== null) {
       const newFigures = cloneDeep(figures);
       if (activeIndex === 1 || activeIndex === 2) {
@@ -300,7 +294,7 @@ const SvgDraw = ({
     }
   };
 
-  const handleResizeCircle = (e) => {
+  const handleResizeCircle = e => {
     if (mouseClicked && activeIndex !== null) {
       const newFigures = cloneDeep(figures);
       if (activeIndex === 1 || activeIndex === 2) {
@@ -353,11 +347,11 @@ const SvgDraw = ({
     }
   };
 
-  const handleResizeTriangle = (e) => {
+  const handleResizeTriangle = e => {
     if (mouseClicked && activeIndex !== null) {
       const newFigures = cloneDeep(figures);
-      const currentPoints = newFigures[active].points.split(' ').map((item) => {
-        const point = item.split(',');
+      const currentPoints = newFigures[active].points.split(" ").map(item => {
+        const point = item.split(",");
         return { x: Number(point[0]), y: Number(point[1]) };
       });
 
@@ -365,25 +359,25 @@ const SvgDraw = ({
 
       currentPoints[activeIndex].y -= cursor.y - e.clientY;
 
-      newFigures[active].points = currentPoints.map(point => `${point.x},${point.y}`).join(' ');
+      newFigures[active].points = currentPoints.map(point => `${point.x},${point.y}`).join(" ");
 
       setCursor({ x: e.clientX, y: e.clientY });
       setFigures(newFigures);
     }
     if (dragStart) {
       const newFigures = cloneDeep(figures);
-      const currentPoints = newFigures[active].points.split(' ').map((item) => {
-        const point = item.split(',');
+      const currentPoints = newFigures[active].points.split(" ").map(item => {
+        const point = item.split(",");
         return { x: Number(point[0]), y: Number(point[1]) };
       });
 
       newFigures[active].points = currentPoints
-        .map((point) => {
+        .map(point => {
           const xPoint = point.x - (cursor.x - e.clientX);
           const yPoint = point.y - (cursor.y - e.clientY);
           return `${xPoint},${yPoint}`;
         })
-        .join(' ');
+        .join(" ");
 
       setCursor({ x: e.clientX, y: e.clientY });
 
@@ -391,7 +385,7 @@ const SvgDraw = ({
     }
   };
 
-  const handleActive = index => (e) => {
+  const handleActive = index => e => {
     e.preventDefault();
     e.stopPropagation();
     if (!mouseClicked) {
@@ -402,11 +396,9 @@ const SvgDraw = ({
   };
 
   const getPointsForDrawingPath = path =>
-    `M ${path[0].x},${path[0].y} ${path
-      .map((point, i) => (i !== 0 ? `L ${point.x},${point.y}` : ''))
-      .join(' ')}`;
+    `M ${path[0].x},${path[0].y} ${path.map((point, i) => (i !== 0 ? `L ${point.x},${point.y}` : "")).join(" ")}`;
 
-  const mouseUpAndDownControl = (flag, index) => (e) => {
+  const mouseUpAndDownControl = (flag, index) => e => {
     e.preventDefault();
     e.stopPropagation();
     setMouseClicked(flag);
@@ -425,12 +417,18 @@ const SvgDraw = ({
     if (!figures[active].cx && !figures[active].points) {
       rects = [
         { x: figures[active].x - 10, y: figures[active].y - 10 },
-        { x: figures[active].x + figures[active].width - 10, y: figures[active].y - 10 },
+        {
+          x: figures[active].x + figures[active].width - 10,
+          y: figures[active].y - 10
+        },
         {
           x: figures[active].x + figures[active].width - 10,
           y: figures[active].y + figures[active].height - 10
         },
-        { x: figures[active].x - 10, y: figures[active].y + figures[active].height - 10 }
+        {
+          x: figures[active].x - 10,
+          y: figures[active].y + figures[active].height - 10
+        }
       ];
     } else if (figures[active].cx !== undefined) {
       rects = [
@@ -452,8 +450,8 @@ const SvgDraw = ({
         }
       ];
     } else {
-      const trianglePoints = figures[active].points.split(' ').map((item) => {
-        const point = item.split(',');
+      const trianglePoints = figures[active].points.split(" ").map(item => {
+        const point = item.split(",");
         return { x: point[0] - 10, y: point[1] - 10 };
       });
 
@@ -472,7 +470,7 @@ const SvgDraw = ({
     return (
       <Fragment>
         <polygon
-          points={rects.map(point => `${point.x + 10},${point.y + 10}`).join(' ')}
+          points={rects.map(point => `${point.x + 10},${point.y + 10}`).join(" ")}
           fill="none"
           stroke="black"
           style={{ strokDashoffset: 0, strokeDasharray: 5 }}
@@ -492,7 +490,7 @@ const SvgDraw = ({
     );
   };
 
-  const handleDragStart = i => (e) => {
+  const handleDragStart = i => e => {
     e.preventDefault();
     e.stopPropagation();
     setActive(i);
@@ -500,7 +498,7 @@ const SvgDraw = ({
     setDragStart(true);
   };
 
-  const handleDragEnd = i => (e) => {
+  const handleDragEnd = i => e => {
     e.preventDefault();
     e.stopPropagation();
     setActive(i);
@@ -525,17 +523,17 @@ const SvgDraw = ({
         y: currentPosition.y - 40
       };
     }
-    setInputValue('');
+    setInputValue("");
     setInputIsVisible(false);
     setTexts(newTexts);
     saveHistory({ pathes, points: [], figures, texts: newTexts });
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     setInputValue(e.target.value);
   };
 
-  const handleTextMove = (e) => {
+  const handleTextMove = e => {
     if (dragStart) {
       const newTexts = cloneDeep(texts);
       const xPoint = newTexts[active].x - (cursor.x - e.clientX);
@@ -561,7 +559,7 @@ const SvgDraw = ({
         case drawTools.DRAW_BREAKING_LINE:
           return {
             onDoubleClick: handleSavePath,
-            onClick: handlePoint('L'),
+            onClick: handlePoint("L"),
             onMouseMove: handleCurveMove
           };
 
@@ -611,16 +609,15 @@ const SvgDraw = ({
   };
 
   const getMouseDownHandler = (mode, index) =>
-    (activeMode === mode && !deleteMode ? handleDragStart(index) : undefined);
+    activeMode === mode && !deleteMode ? handleDragStart(index) : undefined;
 
-  const getMouseUpHandler = (mode, index) =>
-    (activeMode === mode && !deleteMode ? handleDragEnd(index) : undefined);
+  const getMouseUpHandler = (mode, index) => (activeMode === mode && !deleteMode ? handleDragEnd(index) : undefined);
 
   const getOnClickHandler = (mode, index) =>
-    (deleteMode ? handleDeleteFigure(index) : activeMode === mode ? handleActive(index) : undefined);
+    deleteMode ? handleDeleteFigure(index) : activeMode === mode ? handleActive(index) : undefined;
 
   const getDeleteTextHandler = index =>
-    (deleteMode ? handleDeleteText(index) : activeMode ? handleActive(index) : undefined);
+    deleteMode ? handleDeleteText(index) : activeMode ? handleActive(index) : undefined;
 
   return (
     <Fragment>
@@ -639,17 +636,17 @@ const SvgDraw = ({
         width="100%"
         height={document.body.scrollHeight + 28}
         style={{
-          background: 'transparent',
-          position: 'absolute',
+          background: "transparent",
+          position: "absolute",
           top: 62,
           left: 0,
-          display: scratchPadMode ? 'block' : 'none',
-          zIndex: mouseClicked || dragStart || activeMode !== '' ? 1000 : 0
+          display: scratchPadMode ? "block" : "none",
+          zIndex: mouseClicked || dragStart || activeMode !== "" ? 1000 : 0
         }}
       >
         {figures.length > 0 &&
           figures.map((path, i) =>
-            (path.x ? (
+            path.x ? (
               <Rect
                 key={i}
                 onMouseDown={getMouseDownHandler(drawTools.DRAW_SQUARE, i)}
@@ -673,7 +670,8 @@ const SvgDraw = ({
                 onClick={getOnClickHandler(drawTools.DRAW_CIRCLE, i)}
                 {...path}
               />
-            )))}
+            )
+          )}
 
         {texts.length > 0 &&
           texts.map(
@@ -716,10 +714,9 @@ const SvgDraw = ({
           />
         )}
 
-        {active !== null &&
-          figures[active] &&
-          !deleteMode &&
-          activeMode !== drawTools.DRAW_TEXT && <Fragment>{renderActiveFigure()}</Fragment>}
+        {active !== null && figures[active] && !deleteMode && activeMode !== drawTools.DRAW_TEXT && (
+          <Fragment>{renderActiveFigure()}</Fragment>
+        )}
       </svg>
     </Fragment>
   );
@@ -767,7 +764,7 @@ const Text = styled.text`
 
 const ControlInput = styled(Input)`
   position: relative;
-  display: ${({ inputIsVisible }) => (inputIsVisible ? 'block' : 'none')};
+  display: ${({ inputIsVisible }) => (inputIsVisible ? "block" : "none")};
   top: ${({ y }) => y}px;
   left: ${({ x }) => x}px;
   width: auto;

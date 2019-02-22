@@ -1,4 +1,4 @@
-import { SET_ANSWER, LOAD_ANSWERS, REMOVE_ANSWERS } from '../constants/actions';
+import { SET_ANSWER, LOAD_ANSWERS, REMOVE_ANSWERS } from "../constants/actions";
 
 const initialState = {};
 

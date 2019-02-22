@@ -1,22 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Input, Select, Row, Col } from 'antd';
-import { compose } from 'redux';
-import { withTheme } from 'styled-components';
+import React from "react";
+import PropTypes from "prop-types";
+import { Input, Select, Row, Col } from "antd";
+import { compose } from "redux";
+import { withTheme } from "styled-components";
 
-import { withNamespaces } from '@edulastic/localization';
+import { withNamespaces } from "@edulastic/localization";
 
-import { Subtitle } from '../../../styled/Subtitle';
+import { Subtitle } from "../../../styled/Subtitle";
 
-const CorrectAnswer = ({
-  t,
-  onSelectChange,
-  onChange,
-  options,
-  selectValue,
-  inputValue,
-  theme
-}) => (
+const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inputValue, theme }) => (
   <Row>
     <Col span={12}>
       <Subtitle
@@ -24,9 +16,9 @@ const CorrectAnswer = ({
         color={theme.widgets.shortText.subtitleColor}
         padding="0 0 16px 0"
       >
-        {t('component.shortText.selectLabel')}
+        {t("component.shortText.selectLabel")}
       </Subtitle>
-      <Select size="large" style={{ width: '100%' }} value={selectValue} onChange={onSelectChange}>
+      <Select size="large" style={{ width: "100%" }} value={selectValue} onChange={onSelectChange}>
         {options.map((item, i) => (
           <Select.Option key={i} value={item.value}>
             {item.label}
@@ -39,7 +31,7 @@ const CorrectAnswer = ({
         color={theme.widgets.shortText.subtitleColor}
         padding="20px 0 16px 0"
       >
-        {t('component.shortText.inputLabel')}
+        {t("component.shortText.inputLabel")}
       </Subtitle>
       <Input size="large" value={inputValue} onChange={e => onChange(e.target.value)} />
     </Col>
@@ -57,7 +49,7 @@ CorrectAnswer.propTypes = {
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   withTheme
 );
 

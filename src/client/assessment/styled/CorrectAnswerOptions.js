@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const CorrectAnswerOptions = styled.div`
   display: flex;
@@ -12,6 +12,5 @@ export const CorrectAnswerOptions = styled.div`
   }
 
   & input {
-    
   }
 `;

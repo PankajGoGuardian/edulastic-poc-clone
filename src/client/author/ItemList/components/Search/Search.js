@@ -1,28 +1,14 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Select } from 'antd';
-import { questionType as questionTypes } from '@edulastic/constants';
-import {
-  Container,
-  Item,
-  ItemBody,
-  ItemHeader,
-  MainFilterItems
-} from './styled';
-import selectsData from '../../../TestPage/components/common/selectsData';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Select } from "antd";
+import { questionType as questionTypes } from "@edulastic/constants";
+import { Container, Item, ItemBody, ItemHeader, MainFilterItems } from "./styled";
+import selectsData from "../../../TestPage/components/common/selectsData";
 
 class Search extends Component {
   render() {
     const {
-      search: {
-        grades,
-        subject,
-        curriculumId,
-        standardIds,
-        questionType,
-        depthOfKnowledge,
-        authorDifficulty
-      },
+      search: { grades, subject, curriculumId, standardIds, questionType, depthOfKnowledge, authorDifficulty },
       curriculums,
       onSearchFieldChange,
       curriculumStandards,
@@ -30,7 +16,7 @@ class Search extends Component {
     } = this.props;
     const isStandardsDisabled = !curriculumId;
     const standardsPlaceholder = isStandardsDisabled
-      ? 'Available with Curriculum'
+      ? "Available with Curriculum"
       : 'Type to Search, for example "k.cc"';
 
     return (
@@ -43,7 +29,7 @@ class Search extends Component {
               size="large"
               placeholder="All Grades"
               value={grades}
-              onChange={onSearchFieldChange('grades')}
+              onChange={onSearchFieldChange("grades")}
             >
               {selectsData.allGrades.map(el => (
                 <Select.Option key={el.value} value={el.value}>
@@ -55,11 +41,7 @@ class Search extends Component {
           <Item>
             <ItemHeader>Subject</ItemHeader>
             <ItemBody>
-              <Select
-                onSelect={onSearchFieldChange('subject')}
-                value={subject}
-                size="large"
-              >
+              <Select onSelect={onSearchFieldChange("subject")} value={subject} size="large">
                 {selectsData.allSubjects.map(el => (
                   <Select.Option key={el.value} value={el.value}>
                     {el.text}
@@ -71,13 +53,9 @@ class Search extends Component {
           <Item>
             <ItemHeader>Curriculum</ItemHeader>
             <ItemBody>
-              <Select
-                size="large"
-                onSelect={onSearchFieldChange('curriculumId')}
-                value={curriculumId}
-              >
+              <Select size="large" onSelect={onSearchFieldChange("curriculumId")} value={curriculumId}>
                 <Select.Option key="" value="">
-                All Curriculums
+                  All Curriculums
                 </Select.Option>
                 {curriculums.map(el => (
                   <Select.Option key={el._id} value={el._id}>
@@ -89,31 +67,27 @@ class Search extends Component {
           </Item>
           <Item>
             <ItemHeader>Standards</ItemHeader>
-              <Select
-                mode="multiple"
-                size="large"
-                onSearch={onStandardSearch}
-                filterOption={false}
-                placeholder={standardsPlaceholder}
-                onChange={onSearchFieldChange('standardIds')}
-                value={standardIds}
-                disabled={isStandardsDisabled}
-              >
-                {curriculumStandards.map(el => (
-                  <Select.Option key={el.identifier} value={el.identifier}>
-                    {`${el.identifier}: ${el.description}`}
-                  </Select.Option>
-                ))}
-              </Select>
+            <Select
+              mode="multiple"
+              size="large"
+              onSearch={onStandardSearch}
+              filterOption={false}
+              placeholder={standardsPlaceholder}
+              onChange={onSearchFieldChange("standardIds")}
+              value={standardIds}
+              disabled={isStandardsDisabled}
+            >
+              {curriculumStandards.map(el => (
+                <Select.Option key={el.identifier} value={el.identifier}>
+                  {`${el.identifier}: ${el.description}`}
+                </Select.Option>
+              ))}
+            </Select>
           </Item>
           <Item>
             <ItemHeader>Question Type</ItemHeader>
             <ItemBody>
-              <Select
-                size="large"
-                onSelect={onSearchFieldChange('questionType')}
-                value={questionType}
-              >
+              <Select size="large" onSelect={onSearchFieldChange("questionType")} value={questionType}>
                 {questionTypes.selectsData.map(el => (
                   <Select.Option key={el.value} value={el.value}>
                     {el.text}
@@ -125,11 +99,7 @@ class Search extends Component {
           <Item>
             <ItemHeader>Depth of Knowledge</ItemHeader>
             <ItemBody>
-              <Select
-                size="large"
-                onSelect={onSearchFieldChange('depthOfKnowledge')}
-                value={depthOfKnowledge}
-              >
+              <Select size="large" onSelect={onSearchFieldChange("depthOfKnowledge")} value={depthOfKnowledge}>
                 {selectsData.allDepthOfKnowledge.map(el => (
                   <Select.Option key={el.value} value={el.value}>
                     {el.text}
@@ -141,11 +111,7 @@ class Search extends Component {
           <Item>
             <ItemHeader>Difficulty</ItemHeader>
             <ItemBody>
-              <Select
-                size="large"
-                onSelect={onSearchFieldChange('authorDifficulty')}
-                value={authorDifficulty}
-              >
+              <Select size="large" onSelect={onSearchFieldChange("authorDifficulty")} value={authorDifficulty}>
                 {selectsData.allAuthorDifficulty.map(el => (
                   <Select.Option key={el.value} value={el.value}>
                     {el.text}
@@ -157,10 +123,7 @@ class Search extends Component {
           <Item>
             <ItemHeader>Author</ItemHeader>
             <ItemBody>
-              <Select
-                size="large"
-                defaultValue="All Authors"
-              >
+              <Select size="large" defaultValue="All Authors">
                 <Select.Option value="">All Authors</Select.Option>
                 <Select.Option value="author1">Author 1</Select.Option>
                 <Select.Option value="author2">Author 2</Select.Option>
@@ -169,12 +132,7 @@ class Search extends Component {
           </Item>
           <Item>
             <ItemHeader>Owner</ItemHeader>
-            <Select
-              mode="multiple"
-              size="large"
-              placeholder="All Owners"
-              defaultValue={[]}
-            >
+            <Select mode="multiple" size="large" placeholder="All Owners" defaultValue={[]}>
               <Select.Option value="owner1">Owner 1</Select.Option>
               <Select.Option value="owner2">Owner 2</Select.Option>
               <Select.Option value="owner3">Owner 3</Select.Option>

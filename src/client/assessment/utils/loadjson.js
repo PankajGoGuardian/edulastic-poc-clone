@@ -1,6 +1,6 @@
-import { assessmentApi } from '@edulastic/api';
-import { loadAssessment } from '../actions/assessment';
-import { loadQuestions } from '../actions/questions';
+import { assessmentApi } from "@edulastic/api";
+import { loadAssessment } from "../actions/assessment";
+import { loadQuestions } from "../actions/questions";
 
 // fetch and load the assessment from backend api
 export const loadJSON = async (assessmentId, dispatch) => {

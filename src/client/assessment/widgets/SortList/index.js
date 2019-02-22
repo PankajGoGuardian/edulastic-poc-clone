@@ -1,13 +1,13 @@
-import React, { PureComponent, Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React, { PureComponent, Fragment } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
 
-import { CLEAR, EDIT, PREVIEW } from '../../constants/constantsForQuestions';
+import { CLEAR, EDIT, PREVIEW } from "../../constants/constantsForQuestions";
 
-import SortListPreview from './SortListPreview';
-import EditSortList from './EditSortList';
+import SortListPreview from "./SortListPreview";
+import EditSortList from "./EditSortList";
 
 class SortList extends PureComponent {
   static propTypes = {
@@ -28,7 +28,7 @@ class SortList extends PureComponent {
     item: {},
     userAnswer: [],
     testItem: false,
-    evaluation: ''
+    evaluation: ""
   };
 
   render() {

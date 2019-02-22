@@ -1,27 +1,27 @@
-import { createSelector } from 'reselect';
-import { test } from '@edulastic/constants';
-import { call, put, all, takeEvery } from 'redux-saga/effects';
-import { message } from 'antd';
-import { testsApi } from '@edulastic/api';
+import { createSelector } from "reselect";
+import { test } from "@edulastic/constants";
+import { call, put, all, takeEvery } from "redux-saga/effects";
+import { message } from "antd";
+import { testsApi } from "@edulastic/api";
 
-import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE } from '../src/constants/actions';
-import { SET_ASSIGNMENT } from './components/Assign/ducks';
+import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE } from "../src/constants/actions";
+import { SET_ASSIGNMENT } from "./components/Assign/ducks";
 
 // constants
-export const CREATE_TEST_REQUEST = '[tests] create test request';
-export const CREATE_TEST_SUCCESS = '[tests] create test success';
-export const CREATE_TEST_ERROR = '[tests] create test error';
+export const CREATE_TEST_REQUEST = "[tests] create test request";
+export const CREATE_TEST_SUCCESS = "[tests] create test success";
+export const CREATE_TEST_ERROR = "[tests] create test error";
 
-export const UPDATE_TEST_REQUEST = '[tests] update test request';
-export const UPDATE_TEST_SUCCESS = '[tests] update test success';
-export const UPDATE_TEST_ERROR = '[tests] update test error';
+export const UPDATE_TEST_REQUEST = "[tests] update test request";
+export const UPDATE_TEST_SUCCESS = "[tests] update test success";
+export const UPDATE_TEST_ERROR = "[tests] update test error";
 
-export const RECEIVE_TEST_BY_ID_REQUEST = '[tests] receive test by id request';
-export const RECEIVE_TEST_BY_ID_SUCCESS = '[tests] receive test by id success';
-export const RECEIVE_TEST_BY_ID_ERROR = '[tests] receive test by id error';
+export const RECEIVE_TEST_BY_ID_REQUEST = "[tests] receive test by id request";
+export const RECEIVE_TEST_BY_ID_SUCCESS = "[tests] receive test by id success";
+export const RECEIVE_TEST_BY_ID_ERROR = "[tests] receive test by id error";
 
-export const SET_TEST_DATA = '[tests] set test data';
-export const SET_DEFAULT_TEST_DATA = '[tests] set default test data';
+export const SET_TEST_DATA = "[tests] set test data";
+export const SET_DEFAULT_TEST_DATA = "[tests] set default test data";
 
 // actions
 
@@ -80,8 +80,8 @@ export const setDefaultTestDataAction = () => ({
 });
 
 const initialTestState = {
-  title: 'New Test',
-  description: '',
+  title: "New Test",
+  description: "",
   markAsDoneValue: test.completionTypes.AUTOMATICALLY,
   releaseScore: true,
   maxAttempts: 1,
@@ -121,14 +121,14 @@ const initialTestState = {
       isAbove: false
     }
   },
-  renderingType: 'assessment',
-  status: 'draft',
-  thumbnail: 'https://fakeimg.pl/500x135/',
+  renderingType: "assessment",
+  status: "draft",
+  thumbnail: "https://fakeimg.pl/500x135/",
   createdBy: {
-    id: '',
-    firstName: '',
-    lastName: '',
-    email: ''
+    id: "",
+    firstName: "",
+    lastName: "",
+    email: ""
   },
   tags: [],
   scoring: {
@@ -137,17 +137,17 @@ const initialTestState = {
   },
   testItems: [],
   standardsTag: {
-    curriculum: '',
+    curriculum: "",
     standards: []
   },
   grades: [],
   subjects: [],
   courses: [],
   assignments: [],
-  collections: '',
+  collections: "",
   analytics: {
-    usage: '0',
-    likes: '0'
+    usage: "0",
+    likes: "0"
   }
 };
 
@@ -237,7 +237,7 @@ function* receiveTestByIdSaga({ payload }) {
 
     yield put(receiveTestByIdSuccess(entity));
   } catch (err) {
-    const errorMessage = 'Receive test by id is failing';
+    const errorMessage = "Receive test by id is failing";
     yield call(message.error, errorMessage);
     yield put(receiveTestByIdError(errorMessage));
   }
@@ -249,9 +249,9 @@ function* createTestSaga({ payload }) {
     const entity = yield call(testsApi.create, payload.data);
 
     yield put(createTestSuccessAction(entity));
-    yield call(message.success, 'Success create');
+    yield call(message.success, "Success create");
   } catch (err) {
-    const errorMessage = 'Create test is failing';
+    const errorMessage = "Create test is failing";
     yield call(message.error, errorMessage);
     yield put(createTestErrorAction(errorMessage));
   }
@@ -267,9 +267,9 @@ function* updateTestSaga({ payload }) {
     const entity = yield call(testsApi.update, payload);
 
     yield put(updateTestSuccessAction(entity));
-    yield call(message.success, 'Success update');
+    yield call(message.success, "Success update");
   } catch (err) {
-    const errorMessage = 'Update test is failing';
+    const errorMessage = "Update test is failing";
     yield call(message.error, errorMessage);
     yield put(updateTestErrorAction(errorMessage));
   }
@@ -320,20 +320,11 @@ export const getTestItemsRowsSelector = createSelector(
           };
 
           if (item.data && item.data.questions && item.data.questions.length) {
-            referencePopulate = item.data.questions.find(
-              q => q._id === widget.reference
-            );
+            referencePopulate = item.data.questions.find(q => q._id === widget.reference);
           }
 
-          if (
-            !referencePopulate &&
-            item.data &&
-            item.data.resources &&
-            item.data.resources.length
-          ) {
-            referencePopulate = item.data.resources.find(
-              r => r._id === widget.reference
-            );
+          if (!referencePopulate && item.data && item.data.resources && item.data.resources.length) {
+            referencePopulate = item.data.resources.find(r => r._id === widget.reference);
           }
 
           return {

@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { darkBlueSecondary } from '@edulastic/colors';
+import styled from "styled-components";
+import { darkBlueSecondary } from "@edulastic/colors";
 
 const Header = styled.div`
   width: 100%;

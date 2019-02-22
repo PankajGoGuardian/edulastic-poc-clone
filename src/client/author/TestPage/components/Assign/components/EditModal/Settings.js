@@ -1,35 +1,16 @@
-import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import { Row, Col, Select, Radio } from 'antd';
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { Row, Col, Select, Radio } from "antd";
 
 //components
-import {
-  AlignRight,
-  AlignSwitchRight,
-  StyledRowSettings,
-  StyledRowLabel,
-  SettingsWrapper
-} from './styled';
+import { AlignRight, AlignSwitchRight, StyledRowSettings, StyledRowLabel, SettingsWrapper } from "./styled";
 //selectors
-import {
-  getReleaseScoreSelector,
-  getActivityReview
-} from '../../../Setting/ducks';
+import { getReleaseScoreSelector, getActivityReview } from "../../../Setting/ducks";
 
-const calculators = ['None', 'Scientific', 'Basic', 'Graphing'];
-const evaluationtypes = [
-  'All or Nothing',
-  'Partial Credit',
-  'Dont penalize for incorrect selection'
-];
+const calculators = ["None", "Scientific", "Basic", "Graphing"];
+const evaluationtypes = ["All or Nothing", "Partial Credit", "Dont penalize for incorrect selection"];
 
-const Settings = ({
-  modalData,
-  selectsData,
-  onChange,
-  activityReview,
-  releaseScore
-}) => {
+const Settings = ({ modalData, selectsData, onChange, activityReview, releaseScore }) => {
   const [isAutomatic, setAssignmentCompletionType] = useState(0);
   const [calcType, setCalcType] = useState(0);
   const [type, setEvaluationType] = useState(0);
@@ -53,9 +34,9 @@ const Settings = ({
         data-cy="closePolicy"
         defaultValue="Automatically on Due Date"
         size="large"
-        style={{ width: '100%' }}
+        style={{ width: "100%" }}
         value={modalData.closePolicy}
-        onChange={value => onChange('closePolicy', value)}
+        onChange={value => onChange("closePolicy", value)}
       >
         {policy.map(({ value, text }) => (
           <Select.Option key={value} value={value} data-cy="close">
@@ -73,9 +54,9 @@ const Settings = ({
         data-cy="openPolicy"
         defaultValue="Automatically on Start Date"
         size="large"
-        style={{ width: '100%' }}
+        style={{ width: "100%" }}
         value={modalData.openPolicy}
-        onChange={value => onChange('openPolicy', value)}
+        onChange={value => onChange("openPolicy", value)}
       >
         {policy.map(({ value, text }) => (
           <Select.Option key={value} value={value} data-cy="open">

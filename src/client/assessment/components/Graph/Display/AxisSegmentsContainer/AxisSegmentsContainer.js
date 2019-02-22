@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { graph as checkAnswerMethod } from '@edulastic/evaluators';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { graph as checkAnswerMethod } from "@edulastic/evaluators";
 import {
   IconGraphPoint as IconPoint,
   IconBothIncludedSegment,
@@ -12,21 +12,23 @@ import {
   IconInfinityToNotIncludedSegment,
   IconNotIncludedToInfinitySegment,
   IconTrash
-} from '@edulastic/icons';
-import { cloneDeep } from 'lodash';
-import { GraphWrapper, JSXBox } from '../AxisLabelsContainer/styled';
+} from "@edulastic/icons";
+import { cloneDeep } from "lodash";
+import { GraphWrapper, JSXBox } from "../AxisLabelsContainer/styled";
 import {
-  defaultAxesParameters, defaultGraphParameters, defaultGridParameters,
+  defaultAxesParameters,
+  defaultGraphParameters,
+  defaultGridParameters,
   defaultPointParameters
-} from '../../Builder/settings';
-import { makeBorder } from '../../Builder';
-import { CONSTANT, Colors } from '../../Builder/config';
-import SegmentsTools from '../GraphContainer/SegmentsTools';
+} from "../../Builder/settings";
+import { makeBorder } from "../../Builder";
+import { CONSTANT, Colors } from "../../Builder/config";
+import SegmentsTools from "../GraphContainer/SegmentsTools";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
     let newElems = cloneDeep(elements);
-    newElems = newElems.map((el) => {
+    newElems = newElems.map(el => {
       const detail = compareResult.details.find(det => det.shape.id === el.id);
 
       const red = Colors.red[CONSTANT.TOOLS.POINT];
@@ -86,9 +88,9 @@ const getColoredElems = (elements, compareResult) => {
   return elements;
 };
 
-const getColoredAnswer = (answerArr) => {
+const getColoredAnswer = answerArr => {
   if (Array.isArray(answerArr)) {
-    return answerArr.map((el) => {
+    return answerArr.map(el => {
       switch (el.type) {
         case CONSTANT.TOOLS.SEGMENTS_POINT:
         case CONSTANT.TOOLS.INFINITY_TO_INCLUDED_SEGMENT:
@@ -139,14 +141,14 @@ const getColoredAnswer = (answerArr) => {
   return answerArr;
 };
 
-const getCompareResult = (evaluation) => {
+const getCompareResult = evaluation => {
   if (!evaluation && !evaluation.evaluation) {
     return null;
   }
 
   let compareResult = null;
 
-  Object.keys(evaluation.evaluation).forEach((key) => {
+  Object.keys(evaluation.evaluation).forEach(key => {
     if (compareResult) {
       return;
     }
@@ -247,7 +249,11 @@ class AxisSegmentsContainer extends Component {
         layout,
         graphType,
         { position: layout.linePosition, yMax: canvas.yMax, yMin: canvas.yMin },
-        { position: layout.pointBoxPosition, yMax: canvas.yMax, yMin: canvas.yMin }
+        {
+          position: layout.pointBoxPosition,
+          yMax: canvas.yMax,
+          yMin: canvas.yMin
+        }
       );
       this._graph.setPointParameters({
         snapSizeX: numberlineAxis.ticksDistance
@@ -289,18 +295,19 @@ class AxisSegmentsContainer extends Component {
       tools
     } = this.props;
 
-    const { selectedTool } = this.state
+    const { selectedTool } = this.state;
     if (JSON.stringify(tools) !== JSON.stringify(prevProps.tools)) {
       this.setDefaultToolState();
       this._graph.setTool(tools[0], graphType, canvas.responsesAllowed);
     }
     if (this._graph) {
-      if (canvas.xMin !== prevProps.canvas.xMin
-        || canvas.xMax !== prevProps.canvas.xMax
-        || canvas.yMin !== prevProps.canvas.yMin
-        || canvas.yMax !== prevProps.canvas.yMax
-        || canvas.margin !== prevProps.canvas.margin
-        || canvas.title !== prevProps.canvas.title
+      if (
+        canvas.xMin !== prevProps.canvas.xMin ||
+        canvas.xMax !== prevProps.canvas.xMax ||
+        canvas.yMin !== prevProps.canvas.yMin ||
+        canvas.yMax !== prevProps.canvas.yMax ||
+        canvas.margin !== prevProps.canvas.margin ||
+        canvas.title !== prevProps.canvas.title
       ) {
         this._graph.updateGraphParameters(
           canvas,
@@ -308,8 +315,16 @@ class AxisSegmentsContainer extends Component {
           layout,
           graphType,
           null,
-          { position: layout.linePosition, yMax: canvas.yMax, yMin: canvas.yMin },
-          { position: layout.pointBoxPosition, yMax: canvas.yMax, yMin: canvas.yMin }
+          {
+            position: layout.linePosition,
+            yMax: canvas.yMax,
+            yMin: canvas.yMin
+          },
+          {
+            position: layout.pointBoxPosition,
+            yMax: canvas.yMax,
+            yMin: canvas.yMin
+          }
         );
         this._graph.updateTitle({
           position: layout.titlePosition,
@@ -321,9 +336,10 @@ class AxisSegmentsContainer extends Component {
         });
       }
 
-      if (numberlineAxis.stackResponses !== prevProps.numberlineAxis.stackResponses
-        || numberlineAxis.stackResponsesSpacing !== prevProps.numberlineAxis.stackResponsesSpacing
-        || canvas.responsesAllowed !== prevProps.canvas.responsesAllowed
+      if (
+        numberlineAxis.stackResponses !== prevProps.numberlineAxis.stackResponses ||
+        numberlineAxis.stackResponsesSpacing !== prevProps.numberlineAxis.stackResponsesSpacing ||
+        canvas.responsesAllowed !== prevProps.canvas.responsesAllowed
       ) {
         this._graph.updateStackSettings(
           numberlineAxis.stackResponses,
@@ -333,17 +349,19 @@ class AxisSegmentsContainer extends Component {
         this._graph.setTool(selectedTool.name, graphType, canvas.responsesAllowed);
       }
 
-      if (numberlineAxis.showTicks !== prevProps.numberlineAxis.showTicks
-        || numberlineAxis.fontSize !== prevProps.numberlineAxis.fontSize
+      if (
+        numberlineAxis.showTicks !== prevProps.numberlineAxis.showTicks ||
+        numberlineAxis.fontSize !== prevProps.numberlineAxis.fontSize
       ) {
         this._graph.updateGraphSettings(numberlineAxis);
       }
 
-      if (pointParameters.snapToGrid !== prevProps.pointParameters.snapToGrid
-        || pointParameters.snapSizeX !== prevProps.pointParameters.snapSizeX
-        || pointParameters.snapSizeY !== prevProps.pointParameters.snapSizeY
-        || pointParameters.showInfoBox !== prevProps.pointParameters.showInfoBox
-        || pointParameters.withLabel !== prevProps.pointParameters.withLabel
+      if (
+        pointParameters.snapToGrid !== prevProps.pointParameters.snapToGrid ||
+        pointParameters.snapSizeX !== prevProps.pointParameters.snapSizeX ||
+        pointParameters.snapSizeY !== prevProps.pointParameters.snapSizeY ||
+        pointParameters.showInfoBox !== prevProps.pointParameters.showInfoBox ||
+        pointParameters.withLabel !== prevProps.pointParameters.withLabel
       ) {
         this._graph.setPointParameters({
           ...defaultPointParameters(),
@@ -352,23 +370,23 @@ class AxisSegmentsContainer extends Component {
       }
 
       if (
-        xAxesParameters.ticksDistance !== prevProps.xAxesParameters.ticksDistance
-        || xAxesParameters.name !== prevProps.xAxesParameters.name
-        || xAxesParameters.showTicks !== prevProps.xAxesParameters.showTicks
-        || xAxesParameters.drawLabels !== prevProps.xAxesParameters.drawLabels
-        || xAxesParameters.maxArrow !== prevProps.xAxesParameters.maxArrow
-        || xAxesParameters.minArrow !== prevProps.xAxesParameters.minArrow
-        || xAxesParameters.commaInLabel !== prevProps.xAxesParameters.commaInLabel
-        || xAxesParameters.strokeColor !== prevProps.xAxesParameters.strokeColor
-        || xAxesParameters.tickEndings !== prevProps.xAxesParameters.tickEndings
-        || yAxesParameters.ticksDistance !== prevProps.yAxesParameters.ticksDistance
-        || yAxesParameters.name !== prevProps.yAxesParameters.name
-        || yAxesParameters.showTicks !== prevProps.yAxesParameters.showTicks
-        || yAxesParameters.drawLabels !== prevProps.yAxesParameters.drawLabels
-        || yAxesParameters.maxArrow !== prevProps.yAxesParameters.maxArrow
-        || yAxesParameters.minArrow !== prevProps.yAxesParameters.minArrow
-        || yAxesParameters.commaInLabel !== prevProps.yAxesParameters.commaInLabel
-        || yAxesParameters.visible !== prevProps.yAxesParameters.visible
+        xAxesParameters.ticksDistance !== prevProps.xAxesParameters.ticksDistance ||
+        xAxesParameters.name !== prevProps.xAxesParameters.name ||
+        xAxesParameters.showTicks !== prevProps.xAxesParameters.showTicks ||
+        xAxesParameters.drawLabels !== prevProps.xAxesParameters.drawLabels ||
+        xAxesParameters.maxArrow !== prevProps.xAxesParameters.maxArrow ||
+        xAxesParameters.minArrow !== prevProps.xAxesParameters.minArrow ||
+        xAxesParameters.commaInLabel !== prevProps.xAxesParameters.commaInLabel ||
+        xAxesParameters.strokeColor !== prevProps.xAxesParameters.strokeColor ||
+        xAxesParameters.tickEndings !== prevProps.xAxesParameters.tickEndings ||
+        yAxesParameters.ticksDistance !== prevProps.yAxesParameters.ticksDistance ||
+        yAxesParameters.name !== prevProps.yAxesParameters.name ||
+        yAxesParameters.showTicks !== prevProps.yAxesParameters.showTicks ||
+        yAxesParameters.drawLabels !== prevProps.yAxesParameters.drawLabels ||
+        yAxesParameters.maxArrow !== prevProps.yAxesParameters.maxArrow ||
+        yAxesParameters.minArrow !== prevProps.yAxesParameters.minArrow ||
+        yAxesParameters.commaInLabel !== prevProps.yAxesParameters.commaInLabel ||
+        yAxesParameters.visible !== prevProps.yAxesParameters.visible
       ) {
         this._graph.setAxesParameters({
           x: {
@@ -383,9 +401,9 @@ class AxisSegmentsContainer extends Component {
       }
 
       if (
-        layout.width !== prevProps.layout.width
-        || layout.height !== prevProps.layout.height
-        || layout.titlePosition !== prevProps.layout.titlePosition
+        layout.width !== prevProps.layout.width ||
+        layout.height !== prevProps.layout.height ||
+        layout.titlePosition !== prevProps.layout.titlePosition
       ) {
         this._graph.resizeContainer(layout.width, layout.height);
         this._graph.updateGraphParameters(
@@ -394,8 +412,16 @@ class AxisSegmentsContainer extends Component {
           layout,
           graphType,
           null,
-          { position: layout.linePosition, yMax: canvas.yMax, yMin: canvas.yMin },
-          { position: layout.pointBoxPosition, yMax: canvas.yMax, yMin: canvas.yMin }
+          {
+            position: layout.linePosition,
+            yMax: canvas.yMax,
+            yMin: canvas.yMin
+          },
+          {
+            position: layout.pointBoxPosition,
+            yMax: canvas.yMax,
+            yMin: canvas.yMin
+          }
         );
         this._graph.updateTitle({
           position: layout.titlePosition,
@@ -407,29 +433,27 @@ class AxisSegmentsContainer extends Component {
         });
       }
 
-      if (
-        gridParams.gridY !== prevProps.gridParams.gridY
-        || gridParams.gridX !== prevProps.gridParams.gridX
-      ) {
+      if (gridParams.gridY !== prevProps.gridParams.gridY || gridParams.gridX !== prevProps.gridParams.gridX) {
         this._graph.setGridParameters({
           ...defaultGridParameters(),
           ...gridParams
         });
       }
 
-      if (numberlineAxis.showMin !== prevProps.numberlineAxis.showMin
-        || numberlineAxis.showMax !== prevProps.numberlineAxis.showMax
-        || numberlineAxis.rightArrow !== prevProps.numberlineAxis.rightArrow
-        || numberlineAxis.leftArrow !== prevProps.numberlineAxis.leftArrow
-        || numberlineAxis.stackResponses !== prevProps.numberlineAxis.stackResponses
-        || numberlineAxis.ticksDistance !== prevProps.numberlineAxis.ticksDistance
-        || numberlineAxis.snapToTicks !== prevProps.numberlineAxis.snapToTicks
-        || numberlineAxis.renderingBase !== prevProps.numberlineAxis.renderingBase
-        || numberlineAxis.specificPoints !== prevProps.numberlineAxis.specificPoints
-        || numberlineAxis.minorTicks !== prevProps.numberlineAxis.minorTicks
-        || numberlineAxis.showLabels !== prevProps.numberlineAxis.showLabels
-        || numberlineAxis.labelShowMax !== prevProps.numberlineAxis.labelShowMax
-        || numberlineAxis.labelShowMin !== prevProps.numberlineAxis.labelShowMin
+      if (
+        numberlineAxis.showMin !== prevProps.numberlineAxis.showMin ||
+        numberlineAxis.showMax !== prevProps.numberlineAxis.showMax ||
+        numberlineAxis.rightArrow !== prevProps.numberlineAxis.rightArrow ||
+        numberlineAxis.leftArrow !== prevProps.numberlineAxis.leftArrow ||
+        numberlineAxis.stackResponses !== prevProps.numberlineAxis.stackResponses ||
+        numberlineAxis.ticksDistance !== prevProps.numberlineAxis.ticksDistance ||
+        numberlineAxis.snapToTicks !== prevProps.numberlineAxis.snapToTicks ||
+        numberlineAxis.renderingBase !== prevProps.numberlineAxis.renderingBase ||
+        numberlineAxis.specificPoints !== prevProps.numberlineAxis.specificPoints ||
+        numberlineAxis.minorTicks !== prevProps.numberlineAxis.minorTicks ||
+        numberlineAxis.showLabels !== prevProps.numberlineAxis.showLabels ||
+        numberlineAxis.labelShowMax !== prevProps.numberlineAxis.labelShowMax ||
+        numberlineAxis.labelShowMin !== prevProps.numberlineAxis.labelShowMin
       ) {
         this._graph.updateGraphParameters(
           canvas,
@@ -437,8 +461,16 @@ class AxisSegmentsContainer extends Component {
           layout,
           graphType,
           null,
-          { position: layout.linePosition, yMax: canvas.yMax, yMin: canvas.yMin },
-          { position: layout.pointBoxPosition, yMax: canvas.yMax, yMin: canvas.yMin }
+          {
+            position: layout.linePosition,
+            yMax: canvas.yMax,
+            yMin: canvas.yMin
+          },
+          {
+            position: layout.pointBoxPosition,
+            yMax: canvas.yMax,
+            yMin: canvas.yMin
+          }
         );
       }
     }
@@ -447,7 +479,7 @@ class AxisSegmentsContainer extends Component {
   onSelectTool = ({ name, index, groupIndex }, graphType, responsesAllowed) => {
     this.setState({ selectedTool: { name, index, groupIndex } });
     this._graph.setTool(name, graphType, responsesAllowed);
-  }
+  };
 
   onReset() {
     const { tools } = this.props;
@@ -467,7 +499,7 @@ class AxisSegmentsContainer extends Component {
     setValue(conf);
 
     if (checkAnswer) {
-      changePreviewTab('clear');
+      changePreviewTab("clear");
     }
   }
 
@@ -477,13 +509,7 @@ class AxisSegmentsContainer extends Component {
   };
 
   mapElementsToGraph = () => {
-    const {
-      elements,
-      checkAnswer,
-      showAnswer,
-      evaluation,
-      validation
-    } = this.props;
+    const { elements, checkAnswer, showAnswer, evaluation, validation } = this.props;
 
     let newElems = elements;
 
@@ -492,17 +518,21 @@ class AxisSegmentsContainer extends Component {
         const compareResult = getCompareResult(evaluation);
         newElems = getColoredElems(elements, compareResult);
       } else {
-        const compareResult = getCompareResult(checkAnswerMethod({
-          userResponse: elements,
-          validation
-        }));
+        const compareResult = getCompareResult(
+          checkAnswerMethod({
+            userResponse: elements,
+            validation
+          })
+        );
         newElems = getColoredElems(elements, compareResult);
       }
     } else if (showAnswer) {
-      const compareResult = getCompareResult(checkAnswerMethod({
-        userResponse: elements,
-        validation
-      }));
+      const compareResult = getCompareResult(
+        checkAnswerMethod({
+          userResponse: elements,
+          validation
+        })
+      );
       newElems = getColoredElems(elements, compareResult);
     }
 
@@ -511,7 +541,7 @@ class AxisSegmentsContainer extends Component {
 
   getIconByToolName = (toolName, options) => {
     if (!toolName) {
-      return '';
+      return "";
     }
 
     const { width } = options;
@@ -595,21 +625,13 @@ class AxisSegmentsContainer extends Component {
   };
 
   render() {
-    const {
-      layout,
-      graphType,
-      canvas
-    } = this.props;
+    const { layout, graphType, canvas } = this.props;
     const { selectedTool } = this.state;
     return (
-      <div style={{ overflow: 'auto' }}>
+      <div style={{ overflow: "auto" }}>
         <GraphWrapper>
           <div>
-            <JSXBox
-              id={this._graphId}
-              className="jxgbox"
-              margin={layout.margin}
-            />
+            <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
           </div>
           <SegmentsTools
             tool={selectedTool}

@@ -1,6 +1,6 @@
-import React, { memo } from 'react';
-import PropTypes from 'prop-types';
-import { CustomQuillComponent } from '@edulastic/common';
+import React, { memo } from "react";
+import PropTypes from "prop-types";
+import { CustomQuillComponent } from "@edulastic/common";
 
 const QuestionTextArea = ({ onChange, value, style, firstFocus, placeholder }) => (
   <div style={style}>
@@ -26,7 +26,7 @@ QuestionTextArea.propTypes = {
 QuestionTextArea.defaultProps = {
   style: {},
   firstFocus: false,
-  placeholder: 'Enter a question'
+  placeholder: "Enter a question"
 };
 
 export default memo(QuestionTextArea);

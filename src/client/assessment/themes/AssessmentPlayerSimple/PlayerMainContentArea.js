@@ -1,11 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import TestItemPreview from '../../components/TestItemPreview';
-import SidebarQuestionList from './PlayerSideBar';
-import PlayerFooter from './PlayerFooter';
+import TestItemPreview from "../../components/TestItemPreview";
+import SidebarQuestionList from "./PlayerSideBar";
+import PlayerFooter from "./PlayerFooter";
 
-import { IPAD_PORTRAIT_WIDTH } from '../../constants/others';
+import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
 
 const PlayerContentArea = ({
   itemRows,
@@ -21,7 +21,7 @@ const PlayerContentArea = ({
   t
 }) => {
   return (
-    <Main skinB={'true'}>
+    <Main skinB={"true"}>
       <MainWrapper>
         <MainContent>
           <TestItemPreview cols={itemRows} previewTab={previewTab} />
@@ -36,11 +36,7 @@ const PlayerContentArea = ({
         />
       </MainWrapper>
       <Sidebar>
-        <SidebarQuestionList
-          questions={dropdownOptions}
-          selectedQuestion={currentItem}
-          gotoQuestion={gotoQuestion}
-        />
+        <SidebarQuestionList questions={dropdownOptions} selectedQuestion={currentItem} gotoQuestion={gotoQuestion} />
       </Sidebar>
     </Main>
   );

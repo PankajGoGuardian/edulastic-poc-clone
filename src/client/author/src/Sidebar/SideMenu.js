@@ -1,17 +1,10 @@
-import React, { Component } from 'react';
-import { compose } from 'redux';
-import { Link, withRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import {
-  Layout,
-  Menu as AntMenu,
-  Row,
-  Col,
-  Dropdown,
-  Icon as AntIcon
-} from 'antd';
-import styled from 'styled-components';
+import React, { Component } from "react";
+import { compose } from "redux";
+import { Link, withRouter } from "react-router-dom";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon } from "antd";
+import styled from "styled-components";
 import {
   IconHeader,
   IconLogoCompact,
@@ -23,44 +16,44 @@ import {
   IconItemList,
   IconTestList,
   IconCurriculumSequence
-} from '@edulastic/icons';
-import { withWindowSizes } from '@edulastic/common';
-import { logoutAction } from '../actions/auth';
-import { toggleSideBarAction } from '../actions/togglemenu';
-import Profile from '../assets/Profile.png';
+} from "@edulastic/icons";
+import { withWindowSizes } from "@edulastic/common";
+import { logoutAction } from "../actions/auth";
+import { toggleSideBarAction } from "../actions/togglemenu";
+import Profile from "../assets/Profile.png";
 
 const menuItems = [
   {
-    label: 'Dashboard',
+    label: "Dashboard",
     icon: IconClockDashboard
   },
   {
-    label: 'Curriculum Sequence',
+    label: "Curriculum Sequence",
     icon: IconCurriculumSequence,
-    path: 'author/curriculum-sequence'
+    path: "author/curriculum-sequence"
   },
   {
-    label: 'Assignments',
+    label: "Assignments",
     icon: IconAssignment,
-    path: 'author/assignments'
+    path: "author/assignments"
   },
   {
-    label: 'Skill Report',
+    label: "Skill Report",
     icon: IconBarChart
   },
   {
-    label: 'Manage Class',
+    label: "Manage Class",
     icon: IconManage
   },
   {
-    label: 'Item List',
+    label: "Item List",
     icon: IconItemList,
-    path: 'author/items'
+    path: "author/items"
   },
   {
-    label: 'Test List',
+    label: "Test List",
     icon: IconTestList,
-    path: 'author/tests'
+    path: "author/tests"
   }
 ];
 
@@ -77,7 +70,7 @@ class SideMenu extends Component {
     width: 22px;
     height: 22px;
     fill: rgb(67, 75, 93);
-    margin-right: ${() => (isSidebarCollapsed ? '0rem' : '1rem')};
+    margin-right: ${() => (isSidebarCollapsed ? "0rem" : "1rem")};
 
     .ant-menu-item-active > & {
       fill: #1890ff;
@@ -87,7 +80,7 @@ class SideMenu extends Component {
     }
   `;
 
-  handleMenu = (item) => {
+  handleMenu = item => {
     const { history } = this.props;
     if (menuItems[item.key].path !== undefined) {
       history.push(`/${menuItems[item.key].path}`);
@@ -99,7 +92,7 @@ class SideMenu extends Component {
     toggleSideBar();
   };
 
-  handleVisibleChange = (flag) => {
+  handleVisibleChange = flag => {
     this.setState({ isVisible: flag });
   };
 
@@ -109,16 +102,8 @@ class SideMenu extends Component {
 
   render() {
     const { broken, isVisible } = this.state;
-    const {
-      windowWidth,
-      history,
-      isSidebarCollapsed,
-      firstName,
-      logout
-    } = this.props;
-    const isPickQuestion = !!history.location.pathname.includes(
-      'pickup-questiontype'
-    );
+    const { windowWidth, history, isSidebarCollapsed, firstName, logout } = this.props;
+    const isPickQuestion = !!history.location.pathname.includes("pickup-questiontype");
 
     const isCollapsed = isPickQuestion || isSidebarCollapsed;
     const isMobile = windowWidth < 770;
@@ -128,12 +113,12 @@ class SideMenu extends Component {
         <Menu>
           <Menu.Item key="0" className="removeSelectedBorder">
             <a onClick={logout}>
-              <LogoutIcon type="logout" /> {isCollapsed ? '' : 'SIGN OUT'}
+              <LogoutIcon type="logout" /> {isCollapsed ? "" : "SIGN OUT"}
             </a>
           </Menu.Item>
           <Menu.Item key="1" className="removeSelectedBorder">
             <Link to="/home/profile">
-              <IconDropdown type="user" /> {isCollapsed ? '' : 'MY PROFILE'}
+              <IconDropdown type="user" /> {isCollapsed ? "" : "MY PROFILE"}
             </Link>
           </Menu.Item>
         </Menu>
@@ -146,45 +131,31 @@ class SideMenu extends Component {
           collapsible
           breakpoint="md"
           onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
-          width={isMobile ? windowWidth : '240'}
-          collapsedWidth={broken ? '0' : '100'}
+          width={isMobile ? windowWidth : "240"}
+          collapsedWidth={broken ? "0" : "100"}
           theme="light"
           className="sideBarwrapper"
         >
           <LogoWrapper className="logoWrapper">
             {broken ? (
               <Col span={3}>
-                <AntIcon
-                  className="mobileCloseIcon"
-                  type="close"
-                  theme="outlined"
-                  onClick={this.toggleMenu}
-                />
+                <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
               </Col>
             ) : null}
-            <Col span={18} style={{ textAlign: 'left' }}>
+            <Col span={18} style={{ textAlign: "left" }}>
               {isCollapsed ? <LogoCompact /> : <Logo />}
             </Col>
             {broken ? null : (
-              <Col span={6} style={{ textAlign: 'right', color: '#1fe3a1' }}>
+              <Col span={6} style={{ textAlign: "right", color: "#1fe3a1" }}>
                 {!isPickQuestion && (
-                  <AntIcon
-                    className="trigger"
-                    type={isCollapsed ? 'right' : 'left'}
-                    onClick={this.toggleMenu}
-                  />
+                  <AntIcon className="trigger" type={isCollapsed ? "right" : "left"} onClick={this.toggleMenu} />
                 )}
               </Col>
             )}
           </LogoWrapper>
           <LogoDash />
           <MenuWrapper>
-            <Menu
-              theme="light"
-              defaultSelectedKeys={['1']}
-              mode="inline"
-              onClick={item => this.handleMenu(item)}
-            >
+            <Menu theme="light" defaultSelectedKeys={["1"]} mode="inline" onClick={item => this.handleMenu(item)}>
               {menuItems.map((menu, index) => {
                 const MenuIcon = this.renderIcon(menu.icon, isCollapsed);
                 return (
@@ -200,17 +171,13 @@ class SideMenu extends Component {
                 <HelpIcon />
                 {isCollapsed ? null : <span>Help Center</span>}
               </QuestionButton>
-              <UserInfoButton
-                isVisible={isVisible}
-                isCollapsed={isCollapsed}
-                className="userinfoBtn"
-              >
+              <UserInfoButton isVisible={isVisible} isCollapsed={isCollapsed} className="userinfoBtn">
                 <Dropdown
                   onClick={this.toggleDropdown}
-                  overlayStyle={{ position: 'fixed', minWidth: '198px' }}
+                  overlayStyle={{ position: "fixed", minWidth: "198px" }}
                   className="footerDropdown"
                   overlay={footerDropdownMenu}
-                  trigger={['click']}
+                  trigger={["click"]}
                   placement="topCenter"
                   isVisible={isVisible}
                   onVisibleChange={this.handleVisibleChange}
@@ -218,18 +185,14 @@ class SideMenu extends Component {
                   <div>
                     <img src={Profile} alt="Profile" />
                     <div style={{ paddingLeft: 11 }}>
-                      {!isCollapsed && (
-                        <UserName>{firstName || 'Zack Oliver'}</UserName>
-                      )}
-                      {!isCollapsed && (
-                        <UserType>Teacher</UserType>
-                      )}
+                      {!isCollapsed && <UserName>{firstName || "Zack Oliver"}</UserName>}
+                      {!isCollapsed && <UserType>Teacher</UserType>}
                     </div>
                     {!isCollapsed && (
                       <IconDropdown
                         style={{ fontSize: 20 }}
                         className="drop-caret"
-                        type={isVisible ? 'caret-up' : 'caret-down'}
+                        type={isVisible ? "caret-up" : "caret-down"}
                       />
                     )}
                   </div>
@@ -258,7 +221,7 @@ const enhance = compose(
   connect(
     ({ authorUi, user }) => ({
       isSidebarCollapsed: authorUi.isSidebarCollapsed,
-      firstName: user.user.firstName || ''
+      firstName: user.user.firstName || ""
     }),
     { toggleSideBar: toggleSideBarAction, logout: logoutAction }
   )
@@ -462,7 +425,7 @@ const UserType = styled.div`
 const FooterDropDown = styled.div`
   position: relative;
   bottom: -4px;
-  opacity: ${props => (props.isVisible ? '1' : '0')};
+  opacity: ${props => (props.isVisible ? "1" : "0")};
   transition: 0.2s;
   -webkit-transition: 0.2s;
   ul {
@@ -543,13 +506,13 @@ const UserInfoButton = styled.div`
   .footerDropdown {
     width: auto;
     height: 60px;
-    border-radius: ${props => (props.isVisible ? '0px 0px 30px 30px' : '65px')};
+    border-radius: ${props => (props.isVisible ? "0px 0px 30px 30px" : "65px")};
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
     background-color: #1fe3a1;
     display: flex;
     align-items: center;
-    padding: ${props => (props.isCollapsed ? 0 : '0px 25px 0px 55px')};
-    margin: ${props => (props.isCollapsed ? 0 : '0 21px')};
+    padding: ${props => (props.isCollapsed ? 0 : "0px 25px 0px 55px")};
+    margin: ${props => (props.isCollapsed ? 0 : "0 21px")};
     position: relative;
     font-weight: 600;
     transition: 0.2s;

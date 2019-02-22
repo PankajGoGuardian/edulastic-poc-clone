@@ -1,85 +1,84 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import styled from 'styled-components';
-import { Dropdown, Menu, Icon, Input } from 'antd';
-import { mainBlueColor, largeDesktopWidth, desktopWidth } from '@edulastic/colors';
-import { FlexContainer, Paper } from '@edulastic/common';
-import { searchContentAction, setContentCurriculumAction, toggleCheckedUnitItemAction } from '../ducks';
-import SelectContentRow from './SelectContentRow';
-import CloseButtonMobileIcon from '../assets/close-button.svg';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import styled from "styled-components";
+import { Dropdown, Menu, Icon, Input } from "antd";
+import { mainBlueColor, largeDesktopWidth, desktopWidth } from "@edulastic/colors";
+import { FlexContainer, Paper } from "@edulastic/common";
+import { searchContentAction, setContentCurriculumAction, toggleCheckedUnitItemAction } from "../ducks";
+import SelectContentRow from "./SelectContentRow";
+import CloseButtonMobileIcon from "../assets/close-button.svg";
 
 /** @typedef {object} ModuleData
-* @property {String} contentId
-* @property {String} createdDate
-* @property {Object} derivedFrom
-* @property {String} id
-* @property {Number} index
-* @property {String} name
-* @property {String} standards
-* @property {String} type
-*/
+ * @property {String} contentId
+ * @property {String} createdDate
+ * @property {Object} derivedFrom
+ * @property {String} id
+ * @property {Number} index
+ * @property {String} name
+ * @property {String} standards
+ * @property {String} type
+ */
 
 /** @typedef {object} CreatedBy
-* @property {String} email
-* @property {String} firstName
-* @property {String} id
-* @property {String} lastName
-*/
+ * @property {String} email
+ * @property {String} firstName
+ * @property {String} id
+ * @property {String} lastName
+ */
 
 /**
-* @typedef {object} Module
-* @property {String} assigned
-* @property {String} customized
-* @property {ModuleData[]} data
-* @property {String} id
-* @property {String} name
-*/
+ * @typedef {object} Module
+ * @property {String} assigned
+ * @property {String} customized
+ * @property {ModuleData[]} data
+ * @property {String} id
+ * @property {String} name
+ */
 
 /**
-* @typedef {Object} CurriculumSequence
-* @property {CreatedBy} createdBy
-* @property {String} createdDate
-* @property {Object} derivedFrom
-* @property {String} description
-* @property {String} id
-* @property {Module[]} modules
-* @property {String} status
-* @property {String} thumbnail
-* @property {String} title
-* @property {String} updatedDate
-*/
+ * @typedef {Object} CurriculumSequence
+ * @property {CreatedBy} createdBy
+ * @property {String} createdDate
+ * @property {Object} derivedFrom
+ * @property {String} description
+ * @property {String} id
+ * @property {Module[]} modules
+ * @property {String} status
+ * @property {String} thumbnail
+ * @property {String} title
+ * @property {String} updatedDate
+ */
 
 /**
-* @typedef {object} CurriculumSearchResult
-* @property {string} _id
-* @property {string} title
-*/
-
+ * @typedef {object} CurriculumSearchResult
+ * @property {string} _id
+ * @property {string} title
+ */
 
 /**
-* @typedef CurriculumProps
-* @property {CurriculumSequence} curriculum
-* @property {CurriculumSequence} destinationCurriculum
-* @property {function} addContentToCurriculumSequence
-* @property {function} onSelectContent
-* @property {number} windowWidth
-* @property {any} dropContent
-* @property {function} onBeginDrag
-* @property {function} searchContentCurriculums
-* @property {CurriculumSearchResult[]} contentCurriculums
-* @property {function} setContentCurriculum
-* @property {function} toggleCheckedUnitItem
-* @property {string[]} checkedUnitItems
-*/
+ * @typedef CurriculumProps
+ * @property {CurriculumSequence} curriculum
+ * @property {CurriculumSequence} destinationCurriculum
+ * @property {function} addContentToCurriculumSequence
+ * @property {function} onSelectContent
+ * @property {number} windowWidth
+ * @property {any} dropContent
+ * @property {function} onBeginDrag
+ * @property {function} searchContentCurriculums
+ * @property {CurriculumSearchResult[]} contentCurriculums
+ * @property {function} setContentCurriculum
+ * @property {function} toggleCheckedUnitItem
+ * @property {string[]} checkedUnitItems
+ */
 
 /** @extends Component<CurriculumProps> */
 class SelectContent extends Component {
   handleSelectContent = () => {
     const { onSelectContent } = this.props;
     onSelectContent();
-  }
+  };
 
   componentDidMount() {
     const { searchContentCurriculums } = this.props;
@@ -103,7 +102,10 @@ class SelectContent extends Component {
     const menu = (
       <Menu>
         {contentCurriculums.map(curriculumItem => (
-          <Menu.Item key={`menu-${curriculumItem._id}`} onClick={() => setContentCurriculum(curriculumItem._id)}>{curriculumItem.title}</Menu.Item>))}
+          <Menu.Item key={`menu-${curriculumItem._id}`} onClick={() => setContentCurriculum(curriculumItem._id)}>
+            {curriculumItem.title}
+          </Menu.Item>
+        ))}
       </Menu>
     );
 
@@ -111,16 +113,16 @@ class SelectContent extends Component {
       <CurriculumWrapper>
         <CurriculumHeader>
           <DropdownCloseWrapper>
-            <Dropdown overlay={menu} trigger={['click']}>
-              <CurriculumTitle>{title} <Icon type="down" /></CurriculumTitle>
+            <Dropdown overlay={menu} trigger={["click"]}>
+              <CurriculumTitle>
+                {title} <Icon type="down" />
+              </CurriculumTitle>
             </Dropdown>
             <CloseButtonMobile onClick={this.handleSelectContent}>
               <img src={CloseButtonMobileIcon} alt="" />
             </CloseButtonMobile>
           </DropdownCloseWrapper>
-          <Input.Search
-            placeholder={`Content in ${title}`}
-          />
+          <Input.Search placeholder={`Content in ${title}`} />
         </CurriculumHeader>
         {modules.map(moduleItem => (
           <SelectContentRow
@@ -178,13 +180,13 @@ const CurriculumHeader = styled(FlexContainer)`
   @media only screen and (max-width: ${desktopWidth}) {
     flex-direction: column;
   }
-.ant-input:not(.anticon) {
-  @media only screen and (max-width: ${desktopWidth}) {
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 20px;
+  .ant-input:not(.anticon) {
+    @media only screen and (max-width: ${desktopWidth}) {
+      margin-left: 20px;
+      margin-right: 20px;
+      margin-bottom: 20px;
+    }
   }
-}
   .anticon {
     color: ${mainBlueColor};
   }
@@ -206,8 +208,8 @@ const CurriculumHeader = styled(FlexContainer)`
     align-items: center;
     cursor: pointer;
   }
-  `;
-CurriculumHeader.displayName = 'CurriculumHeader';
+`;
+CurriculumHeader.displayName = "CurriculumHeader";
 
 const CloseButtonMobile = styled.div`
   display: flex;

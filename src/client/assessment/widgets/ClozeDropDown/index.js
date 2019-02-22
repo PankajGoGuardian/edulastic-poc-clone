@@ -1,22 +1,22 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
-import { cloneDeep } from 'lodash';
-import styled, { withTheme } from 'styled-components';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
+import { cloneDeep } from "lodash";
+import styled, { withTheme } from "styled-components";
 
-import { PaddingDiv, Checkbox, Paper } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { PaddingDiv, Checkbox, Paper } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
 
-import { CorrectAnswerOptions } from '../../styled/CorrectAnswerOptions';
+import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
 
-import Authoring from './Authoring';
-import CorrectAnswers from './CorrectAnswers';
-import Display from './Display';
-import Options from './components/Options';
+import Authoring from "./Authoring";
+import CorrectAnswers from "./CorrectAnswers";
+import Display from "./Display";
+import Options from "./components/Options";
 
 const EmptyWrapper = styled.div``;
 
@@ -76,8 +76,8 @@ class ClozeDropDown extends Component {
       newItem.validation.alt_responses = newItem.validation.alt_responses.filter((response, i) => i !== index);
     }
 
-    setQuestionData(newItem);    
-  }
+    setQuestionData(newItem);
+  };
 
   handleOptionsChange = (name, value) => {
     const { setQuestionData, item } = this.props;
@@ -86,40 +86,27 @@ class ClozeDropDown extends Component {
     setQuestionData(newItem);
   };
 
-  handleAddAnswer = (userAnswer) => {
+  handleAddAnswer = userAnswer => {
     const { saveAnswer } = this.props;
     const newAnswer = cloneDeep(userAnswer);
     saveAnswer(newAnswer);
   };
 
   render() {
-    const {
-      view,
-      previewTab,
-      smallSize,
-      item,
-      userAnswer,
-      t,
-      testItem,
-      evaluation,
-      theme
-    } = this.props;
-    const {
-      previewStimulus,
-      previewDisplayOptions,
-      itemForEdit,
-      uiStyle,
-      instructorStimulus
-    } = this.getRenderData();
+    const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation, theme } = this.props;
+    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle, instructorStimulus } = this.getRenderData();
     const { shuffleOptions } = item;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
     return (
       <div>
-        {view === 'edit' && (
+        {view === "edit" && (
           <React.Fragment>
             <PaddingDiv
-              style={{ borderRadius: 5, background: theme.widgets.clozeDropDown.editViewBgColor }}
+              style={{
+                borderRadius: 5,
+                background: theme.widgets.clozeDropDown.editViewBgColor
+              }}
               top={30}
               bottom={30}
               left={120}
@@ -144,8 +131,8 @@ class ClozeDropDown extends Component {
                   <Checkbox
                     className="additional-options"
                     key={`shuffleOptions_${shuffleOptions}`}
-                    onChange={() => this.handleOptionsChange('shuffleOptions', !shuffleOptions)}
-                    label={t('component.cloze.dropDown.shuffleoptions')}
+                    onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
+                    label={t("component.cloze.dropDown.shuffleoptions")}
                     checked={shuffleOptions}
                   />
                 </CorrectAnswerOptions>
@@ -156,18 +143,18 @@ class ClozeDropDown extends Component {
                 onChange={this.handleOptionsChange}
                 uiStyle={uiStyle}
                 outerStyle={{
-                  padding: '30px 120px'
+                  padding: "30px 120px"
                 }}
               />
             </div>
           </React.Fragment>
         )}
-        {view === 'preview' && (
+        {view === "preview" && (
           <Wrapper>
             <Display
-              showAnswer={previewTab === 'show'}
-              preview={previewTab === 'clear'}
-              checkAnswer={previewTab === 'check'}
+              showAnswer={previewTab === "show"}
+              preview={previewTab === "clear"}
+              checkAnswer={previewTab === "check"}
               configureOptions={{
                 shuffleOptions
               }}
@@ -206,7 +193,7 @@ ClozeDropDown.propTypes = {
 };
 
 ClozeDropDown.defaultProps = {
-  previewTab: 'clear',
+  previewTab: "clear",
   item: {
     options: []
   },
@@ -218,7 +205,7 @@ ClozeDropDown.defaultProps = {
 
 const enhance = compose(
   withRouter,
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   withTheme,
   connect(
     null,

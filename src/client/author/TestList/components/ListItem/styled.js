@@ -1,7 +1,7 @@
-import styled from 'styled-components';
-import { blue, darkBlue, greenDark, grey } from '@edulastic/colors';
-import { Card } from '@edulastic/common';
-import { Col, Rate, Row } from 'antd';
+import styled from "styled-components";
+import { blue, darkBlue, greenDark, grey } from "@edulastic/colors";
+import { Card } from "@edulastic/common";
+import { Col, Rate, Row } from "antd";
 
 export const Container = styled.div`
   display: flex;
@@ -51,7 +51,7 @@ export const Header = styled.div`
   min-height: 106px;
   min-width: 190px;
   position: relative;
-  background: url('https://fakeimg.pl/250x100/');
+  background: url("https://fakeimg.pl/250x100/");
   background-repeat: no-repeat;
   background-size: cover;
 `;
@@ -86,15 +86,15 @@ export const TypeContainer = styled.div`
   font-size: 13px;
   font-weight: 600;
   color: #444444;
-  
+
   div:first-child {
     width: 250px;
     margin-left: 10px;
-    
-    &>span {
+
+    & > span {
       width: 114.5px;
       height: 23.5px;
-      
+
       &:nth-child(3) {
         margin-top: 6px;
       }

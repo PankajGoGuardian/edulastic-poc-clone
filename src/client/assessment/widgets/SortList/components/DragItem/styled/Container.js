@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Container = styled.div`
   width: 100%;
@@ -7,8 +7,7 @@ export const Container = styled.div`
   cursor: pointer;
   border-radius: 4px;
   border: ${props =>
-    (props.style && props.style.border
+    props.style && props.style.border
       ? props.style.border
-      : `1px solid ${props.theme.widgets.sortList.dragItemContainerBorderColor}`
-    )};
+      : `1px solid ${props.theme.widgets.sortList.dragItemContainerBorderColor}`};
 `;

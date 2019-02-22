@@ -1,52 +1,33 @@
-import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-import PropTypes from 'prop-types';
-import styled, { withTheme } from 'styled-components';
-import { last } from 'lodash';
-import { Row, Col } from 'antd';
+import React, { useState } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
+import PropTypes from "prop-types";
+import styled, { withTheme } from "styled-components";
+import { last } from "lodash";
+import { Row, Col } from "antd";
 
 //  components
-import AssessmentDetails from './AssessmentDetail';
-import StartButton from '../Assignments/components/StartButton';
-import ReviewButton from '../Reports/components/ReviewButton';
-import Attempt from './Attempt';
+import AssessmentDetails from "./AssessmentDetail";
+import StartButton from "../Assignments/components/StartButton";
+import ReviewButton from "../Reports/components/ReviewButton";
+import Attempt from "./Attempt";
 
 // actions
-import {
-  startAssignmentAction,
-  resumeAssignmentAction
-} from '../Assignments/ducks';
+import { startAssignmentAction, resumeAssignmentAction } from "../Assignments/ducks";
 
-const AssignmentCard = ({
-  startAssignment,
-  resumeAssignment,
-  data,
-  theme,
-  t,
-  type
-}) => {
+const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, type }) => {
   const [showAttempts, setShowAttempts] = useState(false);
 
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
 
-  const {
-    test = {},
-    reports = [],
-    endDate,
-    testId,
-    startDate,
-    _id: assignmentId
-  } = data;
+  const { test = {}, reports = [], endDate, testId, startDate, _id: assignmentId } = data;
 
   const lastAttempt = last(reports) || {};
   // if last test attempt was not *submitted*, user should be able to resume it.
   const resume = lastAttempt.status == 0;
-  let newReports = resume
-    ? reports.slice(0, reports.length - 1)
-    : reports.slice(0);
+  let newReports = resume ? reports.slice(0, reports.length - 1) : reports.slice(0);
   newReports = newReports || [];
   const { correct = 0, wrong = 0 } = last(newReports) || {};
   const attempted = !!(newReports && newReports.length);
@@ -55,7 +36,7 @@ const AssignmentCard = ({
   const totalQuestions = correct + wrong || 0;
   const scorePercentage = (correct / totalQuestions) * 100 || 0;
   const testType = test.testType;
-  const arrow = showAttempts ? '\u2193' : '\u2191';
+  const arrow = showAttempts ? "\u2193" : "\u2191";
 
   const startTest = () => {
     if (resume) {
@@ -78,14 +59,12 @@ const AssignmentCard = ({
         <span data-cy="score">
           {correct}/{totalQuestions}
         </span>
-        <Title>{t('common.correctAnswer')}</Title>
+        <Title>{t("common.correctAnswer")}</Title>
       </AnswerAndScore>
 
       <AnswerAndScore>
-        <span data-cy="percent">
-          {Math.floor(scorePercentage * 100) / 100}%
-        </span>
-        <Title>{t('common.score')}</Title>
+        <span data-cy="percent">{Math.floor(scorePercentage * 100) / 100}%</span>
+        <Title>{t("common.score")}</Title>
       </AnswerAndScore>
     </React.Fragment>
   );
@@ -112,13 +91,13 @@ const AssignmentCard = ({
                   {attemptCount}/{test.maxAttempts || attemptCount}
                 </span>
                 <AttemptsTitle data-cy="attemptClick">
-                  {arrow} &nbsp;&nbsp;{t('common.attemps')}
+                  {arrow} &nbsp;&nbsp;{t("common.attemps")}
                 </AttemptsTitle>
               </Attempts>
               {releaseScore && ScoreDetail}
             </AttemptDetails>
           )}
-          {type === 'assignment' ? (
+          {type === "assignment" ? (
             <StartButton
               data-cy="start"
               startDate={startDate}
@@ -140,12 +119,7 @@ const AssignmentCard = ({
         </DetailContainer>
         {showAttempts &&
           newReports.map(attempt => (
-            <Attempt
-              key={attempt._id}
-              data={attempt}
-              activityReview={activityReview}
-              type={type}
-            />
+            <Attempt key={attempt._id} data={attempt} activityReview={activityReview} type={type} />
           ))}
       </ButtonAndDetail>
     </CardWrapper>
@@ -155,7 +129,7 @@ const AssignmentCard = ({
 const enhance = compose(
   withTheme,
   withRouter,
-  withNamespaces('assignmentCard'),
+  withNamespaces("assignmentCard"),
   connect(
     null,
     {

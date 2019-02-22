@@ -1,27 +1,27 @@
-import React, { Fragment, Component } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { arrayMove } from 'react-sortable-hoc';
-import uuidv4 from 'uuid/v4';
-import styled from 'styled-components';
+import React, { Fragment, Component } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep } from "lodash";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { arrayMove } from "react-sortable-hoc";
+import uuidv4 from "uuid/v4";
+import styled from "styled-components";
 
-import { Paper } from '@edulastic/common';
-import { typedList as typedListTypes } from '@edulastic/constants';
-import { withNamespaces } from '@edulastic/localization';
+import { Paper } from "@edulastic/common";
+import { typedList as typedListTypes } from "@edulastic/constants";
+import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
-import { checkAnswerAction } from '../../../author/src/actions/testItem';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { checkAnswerAction } from "../../../author/src/actions/testItem";
 
-import { CLEAR, PREVIEW, EDIT } from '../../constants/constantsForQuestions';
+import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
 
-import TypedList from '../../components/TypedList';
-import QuestionTextArea from '../../components/QuestionTextArea';
-import { Subtitle } from '../../styled/Subtitle';
+import TypedList from "../../components/TypedList";
+import QuestionTextArea from "../../components/QuestionTextArea";
+import { Subtitle } from "../../styled/Subtitle";
 
-import FormulaEssayPreview from './components/FormulaEssayPreview';
-import FormulaEssayOptions from './components/FormulaEssayOptions';
+import FormulaEssayPreview from "./components/FormulaEssayPreview";
+import FormulaEssayOptions from "./components/FormulaEssayOptions";
 
 const EmptyWrapper = styled.div``;
 
@@ -30,9 +30,7 @@ class FormulaEssay extends Component {
     super(props);
     const { item } = props;
     this.state = {
-      lines: [
-        { text: '', type: item.ui_style.default_mode, index: uuidv4() }
-      ]
+      lines: [{ text: "", type: item.ui_style.default_mode, index: uuidv4() }]
     };
   }
 
@@ -50,7 +48,7 @@ class FormulaEssay extends Component {
 
     const handleAddOption = () => {
       const newItem = cloneDeep(item);
-      newItem.ui_style.text_formatting_options.push('');
+      newItem.ui_style.text_formatting_options.push("");
       setQuestionData(newItem);
     };
 
@@ -64,7 +62,7 @@ class FormulaEssay extends Component {
       setQuestionData(newData);
     };
 
-    const handleDeleteQuestion = (index) => {
+    const handleDeleteQuestion = index => {
       const newItem = cloneDeep(item);
       newItem.ui_style.text_formatting_options.splice(index, 1);
       setQuestionData(newItem);
@@ -77,7 +75,7 @@ class FormulaEssay extends Component {
       setQuestionData(newData);
     };
 
-    const handleSetLines = (lines) => {
+    const handleSetLines = lines => {
       this.setState({
         lines
       });
@@ -86,15 +84,15 @@ class FormulaEssay extends Component {
     const { lines } = this.state;
 
     const selectData = [
-      { value: '', label: '' },
-      { value: 'bold', label: t('component.math.bold') },
-      { value: 'italic', label: t('component.math.italic') },
-      { value: 'underline', label: t('component.math.underline') },
-      { value: 'removeFormat', label: t('component.math.clearFormatting') },
-      { value: 'unorderedList', label: t('component.math.bulletList') },
-      { value: 'orderedList', label: t('component.math.numberedList') },
-      { value: 'superscript', label: t('component.math.superscript') },
-      { value: 'subscript', label: t('component.math.subscript') }
+      { value: "", label: "" },
+      { value: "bold", label: t("component.math.bold") },
+      { value: "italic", label: t("component.math.italic") },
+      { value: "underline", label: t("component.math.underline") },
+      { value: "removeFormat", label: t("component.math.clearFormatting") },
+      { value: "unorderedList", label: t("component.math.bulletList") },
+      { value: "orderedList", label: t("component.math.numberedList") },
+      { value: "superscript", label: t("component.math.superscript") },
+      { value: "subscript", label: t("component.math.subscript") }
     ];
 
     return (
@@ -102,16 +100,16 @@ class FormulaEssay extends Component {
         {view === EDIT && (
           <Fragment>
             <Paper style={{ marginBottom: 30 }}>
-              <Subtitle>{t('component.math.composeQuestion')}</Subtitle>
+              <Subtitle>{t("component.math.composeQuestion")}</Subtitle>
               <QuestionTextArea
-                placeholder={t('component.math.enterQuestion')}
-                onChange={stimulus => handleItemChange('stimulus', stimulus)}
+                placeholder={t("component.math.enterQuestion")}
+                onChange={stimulus => handleItemChange("stimulus", stimulus)}
                 value={item.stimulus}
               />
-              <Subtitle>{t('component.math.textFormattingOptions')}</Subtitle>
+              <Subtitle>{t("component.math.textFormattingOptions")}</Subtitle>
               <TypedList
                 columns={2}
-                buttonText={t('component.math.add')}
+                buttonText={t("component.math.add")}
                 selectData={selectData}
                 type={typedListTypes.SELECT}
                 onAdd={handleAddOption}
@@ -125,7 +123,7 @@ class FormulaEssay extends Component {
           </Fragment>
         )}
         {view === PREVIEW && (
-          <Wrapper style={{ height: '100%' }}>
+          <Wrapper style={{ height: "100%" }}>
             <FormulaEssayPreview
               lines={lines}
               setLines={handleSetLines}
@@ -158,7 +156,7 @@ FormulaEssay.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     null,
     {

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { FlexContainer } from '@edulastic/common';
+import { FlexContainer } from "@edulastic/common";
 import { mobileWidth, tabletWidth } from "@edulastic/colors";
 import { Button, Icon, Collapse, Modal, Row } from "antd";
 

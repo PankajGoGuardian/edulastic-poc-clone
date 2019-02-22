@@ -1,12 +1,5 @@
-import {
-  desktopWidth,
-  greenDark,
-  mobileWidth,
-  secondaryTextColor,
-  tabletWidth,
-  white
-} from '@edulastic/colors';
-import styled from 'styled-components';
+import { desktopWidth, greenDark, mobileWidth, secondaryTextColor, tabletWidth, white } from "@edulastic/colors";
+import styled from "styled-components";
 
 export const Container = styled.div`
   padding: 20px;
@@ -16,11 +9,11 @@ export const Container = styled.div`
   overflow: auto;
   display: flex;
   position: relative;
-  
+
   @media (max-width: ${desktopWidth}) {
     flex-direction: column;
   }
-  
+
   @media (max-width: ${mobileWidth}) {
     padding: 0 0 40px 0;
   }
@@ -28,11 +21,11 @@ export const Container = styled.div`
 
 export const ListItems = styled.div`
   flex: 1;
-  
+
   @media (max-width: ${mobileWidth}) {
     padding: 20px;
   }
-  
+
   .ant-pagination {
     display: flex;
     @media (max-width: ${tabletWidth}) {
@@ -45,7 +38,7 @@ export const ListItems = styled.div`
     flex: 1;
     font-size: 13px;
     font-weight: 600;
-    font-family: 'Open Sans';
+    font-family: "Open Sans";
     color: ${secondaryTextColor};
     letter-spacing: normal;
   }

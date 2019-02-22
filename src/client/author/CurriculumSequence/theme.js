@@ -1,7 +1,7 @@
 export const theme = {
   dropContainer: {
-    isOverBorderColor: 'transparent',
-    isNotOverBorderColor: 'transparent',
-    noBorderColor: 'transparent'
+    isOverBorderColor: "transparent",
+    isNotOverBorderColor: "transparent",
+    noBorderColor: "transparent"
   }
 };

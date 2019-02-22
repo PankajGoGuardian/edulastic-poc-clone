@@ -1,20 +1,20 @@
-import React, { useState, Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
+import React, { useState, Fragment } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep } from "lodash";
 
-import { math } from '@edulastic/constants';
+import { math } from "@edulastic/constants";
 
-import withPoints from '../../components/HOC/withPoints';
-import CorrectAnswers from '../../components/CorrectAnswers';
+import withPoints from "../../components/HOC/withPoints";
+import CorrectAnswers from "../../components/CorrectAnswers";
 
-import MathFormulaAnswer from './components/MathFormulaAnswer';
+import MathFormulaAnswer from "./components/MathFormulaAnswer";
 
 const { methods } = math;
 
 const MathFormulaWithPoints = withPoints(MathFormulaAnswer);
 const initialMethod = {
   method: methods.EQUIV_SYMBOLIC,
-  value: '',
+  value: "",
   options: {
     significantDecimalPlaces: 10
   }
@@ -38,7 +38,7 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
     setCorrectTab(correctTab + 1);
   };
 
-  const handleChangeCorrectPoints = (points) => {
+  const handleChangeCorrectPoints = points => {
     const newItem = cloneDeep(item);
     newItem.validation.valid_response.score = points;
     setQuestionData(newItem);
@@ -50,7 +50,7 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
     setQuestionData(newItem);
   };
 
-  const handleCloseTab = (tabIndex) => {
+  const handleCloseTab = tabIndex => {
     const newItem = cloneDeep(item);
     newItem.validation.alt_responses.splice(tabIndex, 1);
     setQuestionData(newItem);
@@ -93,13 +93,13 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
     setQuestionData(newItem);
   };
 
-  const handleDeleteCorrectMethod = (index) => {
+  const handleDeleteCorrectMethod = index => {
     const newItem = cloneDeep(item);
     newItem.validation.valid_response.value.splice(index, 1);
     setQuestionData(newItem);
   };
 
-  const handleDeleteAltMethod = answerIndex => (index) => {
+  const handleDeleteAltMethod = answerIndex => index => {
     const newItem = cloneDeep(item);
     newItem.validation.alt_responses[answerIndex].value.splice(index, 1);
     setQuestionData(newItem);

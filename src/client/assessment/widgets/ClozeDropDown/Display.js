@@ -1,17 +1,17 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { Select } from 'antd';
-import { isUndefined, mapValues, cloneDeep } from 'lodash';
-import { withTheme } from 'styled-components';
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { Select } from "antd";
+import { isUndefined, mapValues, cloneDeep } from "lodash";
+import { withTheme } from "styled-components";
 
-import { InstructorStimulus } from '@edulastic/common';
+import { InstructorStimulus } from "@edulastic/common";
 
-import { QuestionHeader } from '../../styled/QuestionHeader';
-import CorrectAnswerBoxLayout from '../../components/CorrectAnswerBoxLayout';
-import { getFontSize } from '../../utils/helpers';
+import { QuestionHeader } from "../../styled/QuestionHeader";
+import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
+import { getFontSize } from "../../utils/helpers";
 
-import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout';
-import { withCheckAnswerButton } from '../../components/HOC/withCheckAnswerButton';
+import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
+import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
 
 const { Option } = Select;
 
@@ -45,7 +45,7 @@ class ClozeDropDownDisplay extends Component {
     }
   }
 
-  getTemplateParts = (templateMarkUp) => {
+  getTemplateParts = templateMarkUp => {
     let templateMarkUpStr = templateMarkUp;
     if (!templateMarkUpStr) {
       templateMarkUpStr = defaultTemplateMarkup;
@@ -64,7 +64,7 @@ class ClozeDropDownDisplay extends Component {
     changeAnswers(newAnswers);
   };
 
-  shuffle = (arr) => {
+  shuffle = arr => {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -110,19 +110,17 @@ class ClozeDropDownDisplay extends Component {
     const { placeholder, responsecontainerindividuals, stemnumeration } = uiStyle;
 
     const responseBtnStyle = {
-      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : 'auto',
-      heightpx: uiStyle.heightpx !== 0 ? uiStyle.heightpx : 'auto'
+      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
+      heightpx: uiStyle.heightpx !== 0 ? uiStyle.heightpx : "auto"
     };
 
     let maxLineHeight = smallSize ? 50 : 40;
 
     const previewTemplateBoxLayout = (
       <div
-        className={`template_box ${smallSize ? 'dropdown-small' : ''}`}
+        className={`template_box ${smallSize ? "dropdown-small" : ""}`}
         style={{
-          fontSize: smallSize
-            ? theme.widgets.clozeDropDown.previewTemplateBoxSmallFontSize
-            : fontSize,
+          fontSize: smallSize ? theme.widgets.clozeDropDown.previewTemplateBoxSmallFontSize : fontSize,
           padding: smallSize ? 0 : 20
         }}
       >
@@ -180,7 +178,7 @@ class ClozeDropDownDisplay extends Component {
           }
           return (
             <span
-              style={{ userSelect: 'none', lineHeight: `${maxLineHeight}px` }}
+              style={{ userSelect: "none", lineHeight: `${maxLineHeight}px` }}
               key={index}
               dangerouslySetInnerHTML={{ __html: templatePart }}
             />
@@ -201,8 +199,7 @@ class ClozeDropDownDisplay extends Component {
         evaluation={evaluation}
       />
     );
-    const templateBoxLayout =
-      showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
+    const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const correctAnswerBoxLayout = showAnswer ? (
       <CorrectAnswerBoxLayout
         fontSize={fontSize}
@@ -217,9 +214,7 @@ class ClozeDropDownDisplay extends Component {
       <div style={{ fontSize }}>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
-        <div style={{ margin: smallSize ? '-10px -20px' : 0, borderRadius: 0 }}>
-          {templateBoxLayout}
-        </div>
+        <div style={{ margin: smallSize ? "-10px -20px" : 0, borderRadius: 0 }}>{templateBoxLayout}</div>
         {answerBox}
       </div>
     );
@@ -259,8 +254,8 @@ ClozeDropDownDisplay.defaultProps = {
     shuffleOptions: false
   },
   uiStyle: {
-    fontsize: 'normal',
-    stemnumeration: 'numerical',
+    fontsize: "normal",
+    stemnumeration: "numerical",
     widthpx: 0,
     heightpx: 0,
     placeholder: null,

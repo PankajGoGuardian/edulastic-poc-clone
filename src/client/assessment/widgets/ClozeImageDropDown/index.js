@@ -1,23 +1,23 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
-import { cloneDeep } from 'lodash';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
+import { cloneDeep } from "lodash";
 
-import { Checkbox, Paper } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { Checkbox, Paper } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
 
-import { CorrectAnswerOptions } from '../../styled/CorrectAnswerOptions';
+import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
 
-import Options from './components/Options';
-import Display from './Display';
-import CorrectAnswers from './CorrectAnswers';
-import Authoring from './Authoring';
-import { OptionsContainer } from './styled/OptionsContainer';
-import { EditorContainer } from './styled/EditorContainer';
+import Options from "./components/Options";
+import Display from "./Display";
+import CorrectAnswers from "./CorrectAnswers";
+import Authoring from "./Authoring";
+import { OptionsContainer } from "./styled/OptionsContainer";
+import { EditorContainer } from "./styled/EditorContainer";
 
 class ClozeImageDropDown extends Component {
   state = {
@@ -104,8 +104,8 @@ class ClozeImageDropDown extends Component {
       newItem.validation.alt_responses = newItem.validation.alt_responses.filter((response, i) => i !== index);
     }
 
-    setQuestionData(newItem);    
-  }
+    setQuestionData(newItem);
+  };
 
   handleOptionsChange = (name, value) => {
     const { setQuestionData, item } = this.props;
@@ -113,19 +113,19 @@ class ClozeImageDropDown extends Component {
     newItem[name] = value;
     setQuestionData(newItem);
     switch (name) {
-      case 'duplicated_responses': {
+      case "duplicated_responses": {
         this.setState({ duplicatedResponses: value });
         break;
       }
-      case 'shuffle_options': {
+      case "shuffle_options": {
         this.setState({ shuffleOptions: value });
         break;
       }
-      case 'show_draghandle': {
+      case "show_draghandle": {
         this.setState({ showDraghandle: value });
         break;
       }
-      case 'transparent_responses': {
+      case "transparent_responses": {
         this.setState({ transparentResponses: value });
         break;
       }
@@ -133,7 +133,7 @@ class ClozeImageDropDown extends Component {
     }
   };
 
-  handleAddAnswer = (userAnswer) => {
+  handleAddAnswer = userAnswer => {
     const { saveAnswer } = this.props;
     const newAnswer = cloneDeep(userAnswer);
     saveAnswer(newAnswer);
@@ -142,26 +142,17 @@ class ClozeImageDropDown extends Component {
   render() {
     const { qIndex, view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
-    const {
-      duplicatedResponses,
-      showDraghandle,
-      shuffleOptions,
-      transparentResponses
-    } = this.state;
+    const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
 
     const Wrapper = testItem ? React.Fragment : Paper;
 
-    const fontSize = item.ui_style
-      ? item.ui_style.fontsize
-        ? item.ui_style.fontsize
-        : 'lol'
-      : 'lol';
+    const fontSize = item.ui_style ? (item.ui_style.fontsize ? item.ui_style.fontsize : "lol") : "lol";
 
     const { imagescale } = item;
 
     return (
       <React.Fragment>
-        {view === 'edit' && (
+        {view === "edit" && (
           <React.Fragment>
             <EditorContainer top={36} bottom={36} left={60} right={60}>
               <div className="authoring">
@@ -192,8 +183,8 @@ class ClozeImageDropDown extends Component {
                 <CorrectAnswerOptions>
                   <Checkbox
                     className="additional-options"
-                    onChange={() => this.handleOptionsChange('shuffle_options', !shuffleOptions)}
-                    label={t('component.cloze.imageDropDown.shuffleoptions')}
+                    onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
+                    label={t("component.cloze.imageDropDown.shuffleoptions")}
                     checked={shuffleOptions}
                   />
                 </CorrectAnswerOptions>
@@ -204,12 +195,12 @@ class ClozeImageDropDown extends Component {
             </OptionsContainer>
           </React.Fragment>
         )}
-        {view === 'preview' && (
+        {view === "preview" && (
           <Wrapper>
             <Display
-              preview={previewTab === 'clear'}
-              showAnswer={previewTab === 'show'}
-              checkAnswer={previewTab === 'check'}
+              preview={previewTab === "clear"}
+              showAnswer={previewTab === "show"}
+              checkAnswer={previewTab === "check"}
               validation={item.validation}
               configureOptions={{
                 duplicatedResponses,
@@ -258,7 +249,7 @@ ClozeImageDropDown.propTypes = {
 };
 
 ClozeImageDropDown.defaultProps = {
-  previewTab: 'clear',
+  previewTab: "clear",
   item: {
     options: []
   },
@@ -271,7 +262,7 @@ ClozeImageDropDown.defaultProps = {
 
 const enhance = compose(
   withRouter,
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     null,
     {

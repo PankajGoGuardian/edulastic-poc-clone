@@ -1,10 +1,6 @@
-import { Icon, Select } from 'antd/lib/index';
-import styled from 'styled-components';
-import {
-  blue,
-  mainTextColor,
-  secondaryTextColor
-} from '@edulastic/colors';
+import { Icon, Select } from "antd/lib/index";
+import styled from "styled-components";
+import { blue, mainTextColor, secondaryTextColor } from "@edulastic/colors";
 
 export const Container = styled.div`
   padding: 27px 0;
@@ -24,7 +20,7 @@ export const Container = styled.div`
     letter-spacing: 0.2px;
     color: #434b5d;
   }
-  
+
   .ant-select-selection__choice {
     border-radius: 5px;
     border: solid 1px #c8e8f6;

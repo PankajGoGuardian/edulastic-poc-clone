@@ -1,23 +1,17 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 //components
-import TestAcivityHeader from '../../sharedComponents/Header';
-import TestActivitySubHeader from './SubHeader';
-import ReportListContent from './Container';
-import MainContainer from '../../styled/mainContainer';
+import TestAcivityHeader from "../../sharedComponents/Header";
+import TestActivitySubHeader from "./SubHeader";
+import ReportListContent from "./Container";
+import MainContainer from "../../styled/mainContainer";
 //actions
-import { loadTestActivityReportAction } from '../ducks';
+import { loadTestActivityReportAction } from "../ducks";
 
-const ReportListContainer = ({
-  flag,
-  match,
-  location,
-  loadReport,
-  loadTestActivityReport
-}) => {
+const ReportListContainer = ({ flag, match, location, loadReport, loadTestActivityReport }) => {
   useEffect(() => {
     loadTestActivityReport({ testActivityId: match.params.id });
   }, []);

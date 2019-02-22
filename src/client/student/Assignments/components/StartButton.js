@@ -1,25 +1,20 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
 // assets
-import lockIcon from '../../assets/lock-icon.svg';
+import lockIcon from "../../assets/lock-icon.svg";
 // components
-import StartButton from '../../styled/AssignmentCardButton';
+import StartButton from "../../styled/AssignmentCardButton";
 
 const AssignmentButton = ({ startDate, t, startTest, attempted, resume }) => {
-  const startButtonText = resume
-    ? t('common.resume')
-    : attempted
-      ? t('common.retake')
-      : t('common.startAssignment');
+  const startButtonText = resume ? t("common.resume") : attempted ? t("common.retake") : t("common.startAssignment");
 
-  
   return new Date(startDate) > new Date() ? (
     <NotAvailableButton disabled>
       <span>
         <img src={lockIcon} alt="" />
       </span>
-      <span data-cy="lockAssignment">{t('common.lockAssignment')}</span>
+      <span data-cy="lockAssignment">{t("common.lockAssignment")}</span>
     </NotAvailableButton>
   ) : (
     <StartButton onClick={startTest}>
@@ -48,8 +43,7 @@ const NotAvailableButton = styled(StartButton)`
     color: ${props => props.theme.assignment.cardNotAvailabelBtnTextColor};
   }
   &:hover {
-    background-color: ${props =>
-      props.theme.assignment.cardNotAvailabelBtnBgColor};
+    background-color: ${props => props.theme.assignment.cardNotAvailabelBtnBgColor};
     span {
       color: ${props => props.theme.assignment.cardNotAvailabelBtnTextColor};
     }

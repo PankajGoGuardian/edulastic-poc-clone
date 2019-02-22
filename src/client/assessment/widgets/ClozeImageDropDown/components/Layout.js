@@ -1,32 +1,31 @@
-import React from 'react';
-import { Select, Row, Col, Input } from 'antd';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
+import React from "react";
+import { Select, Row, Col, Input } from "antd";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { compose } from "redux";
 
-import { withNamespaces } from '@edulastic/localization';
+import { withNamespaces } from "@edulastic/localization";
 
-import styled from 'styled-components';
-import { setQuestionDataAction } from '../../../../author/src/actions/question';
-import { getQuestionDataSelector } from '../../../../author/src/selectors/question';
+import styled from "styled-components";
+import { setQuestionDataAction } from "../../../../author/src/actions/question";
+import { getQuestionDataSelector } from "../../../../author/src/selectors/question";
 
-import { AddNewChoiceBtn } from '../../../styled/AddNewChoiceBtn';
-import { Label } from '../../../styled/WidgetOptions/Label';
+import { AddNewChoiceBtn } from "../../../styled/AddNewChoiceBtn";
+import { Label } from "../../../styled/WidgetOptions/Label";
 
-import { OptionSelect } from '../styled/OptionSelect';
-import { OptionCheckbox } from '../styled/OptionCheckbox';
+import { OptionSelect } from "../styled/OptionSelect";
+import { OptionCheckbox } from "../styled/OptionCheckbox";
 
-import Container from './styled/Container';
-import Delete from './styled/Delete';
+import Container from "./styled/Container";
+import Delete from "./styled/Delete";
 
 const Layout = ({ questionData, onChange, uiStyle, t }) => {
   const changeUiStyle = (prop, value) => {
-    onChange('ui_style', {
+    onChange("ui_style", {
       ...uiStyle,
       [prop]: value
     });
   };
-
 
   const changeIndividualUiStyle = (prop, value, index) => {
     const { responsecontainerindividuals } = uiStyle;
@@ -47,16 +46,16 @@ const Layout = ({ questionData, onChange, uiStyle, t }) => {
     });
     item[prop] = value;
     responsecontainerindividuals[index] = item;
-    onChange('ui_style', {
+    onChange("ui_style", {
       ...uiStyle,
       responsecontainerindividuals
     });
   };
 
-  const removeIndividual = (index) => {
+  const removeIndividual = index => {
     const { responsecontainerindividuals } = uiStyle;
     responsecontainerindividuals.splice(index, 1);
-    onChange('ui_style', {
+    onChange("ui_style", {
       ...uiStyle,
       responsecontainerindividuals
     });
@@ -67,38 +66,38 @@ const Layout = ({ questionData, onChange, uiStyle, t }) => {
     responsecontainerindividuals.push({
       widthpx: 0,
       heightpx: 0,
-      placeholder: ''
+      placeholder: ""
     });
-    onChange('ui_style', {
+    onChange("ui_style", {
       ...uiStyle,
       responsecontainerindividuals
     });
   };
 
   const stemnumerationOptions = [
-    { value: 'numerical', label: t('component.options.numerical') },
-    { value: 'uppercase', label: t('component.options.uppercasealphabet') },
-    { value: 'lowercase', label: t('component.options.lowercasealphabet') }
+    { value: "numerical", label: t("component.options.numerical") },
+    { value: "uppercase", label: t("component.options.uppercasealphabet") },
+    { value: "lowercase", label: t("component.options.lowercasealphabet") }
   ];
 
   const fontsizeOptions = [
-    { value: 'small', label: t('component.options.small') },
-    { value: 'normal', label: t('component.options.normal') },
-    { value: 'large', label: t('component.options.large') },
-    { value: 'xlarge', label: t('component.options.extraLarge') },
-    { value: 'xxlarge', label: t('component.options.huge') }
+    { value: "small", label: t("component.options.small") },
+    { value: "normal", label: t("component.options.normal") },
+    { value: "large", label: t("component.options.large") },
+    { value: "xlarge", label: t("component.options.extraLarge") },
+    { value: "xxlarge", label: t("component.options.huge") }
   ];
 
   const inputtypeOptions = [
-    { value: 'text', label: t('component.options.text') },
-    { value: 'number', label: t('component.options.number') }
+    { value: "text", label: t("component.options.text") },
+    { value: "number", label: t("component.options.number") }
   ];
 
   const pointerOptions = [
-    { value: 'right', label: t('component.options.right') },
-    { value: 'left', label: t('component.options.left') },
-    { value: 'top', label: t('component.options.top') },
-    { value: 'bottom', label: t('component.options.bottom') }
+    { value: "right", label: t("component.options.right") },
+    { value: "left", label: t("component.options.left") },
+    { value: "top", label: t("component.options.top") },
+    { value: "bottom", label: t("component.options.bottom") }
   ];
 
   return (
@@ -107,28 +106,28 @@ const Layout = ({ questionData, onChange, uiStyle, t }) => {
         <Col md={12}>
           <OptionCheckbox
             checked={questionData.imagescale}
-            onChange={e => onChange('imagescale', e.target.checked)}
+            onChange={e => onChange("imagescale", e.target.checked)}
             size="large"
           >
-            {t('component.options.imagescale')}
+            {t("component.options.imagescale")}
           </OptionCheckbox>
         </Col>
         <Col md={12}>
           <OptionCheckbox
             checked={questionData.verticaltop}
-            onChange={e => onChange('verticaltop', e.target.checked)}
+            onChange={e => onChange("verticaltop", e.target.checked)}
             size="large"
           >
-            {t('component.options.verticaltop')}
+            {t("component.options.verticaltop")}
           </OptionCheckbox>
         </Col>
       </MarginRow>
       <MarginRow>
         <Col md={12}>
-          <Label>{t('component.options.stemNumerationReviewOnly')}</Label>
+          <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
           <OptionSelect
             size="large"
-            onChange={val => changeUiStyle('stemnumeration', val)}
+            onChange={val => changeUiStyle("stemnumeration", val)}
             value={uiStyle.stemnumeration}
           >
             {stemnumerationOptions.map(({ value: val, label }) => (
@@ -139,10 +138,10 @@ const Layout = ({ questionData, onChange, uiStyle, t }) => {
           </OptionSelect>
         </Col>
         <Col md={12}>
-          <Label>{t('component.options.fontSize')}</Label>
+          <Label>{t("component.options.fontSize")}</Label>
           <OptionSelect
             size="large"
-            onChange={fontsize => changeUiStyle('fontsize', fontsize)}
+            onChange={fontsize => changeUiStyle("fontsize", fontsize)}
             value={uiStyle.fontsize}
           >
             {fontsizeOptions.map(({ value: val, label }) => (
@@ -155,10 +154,10 @@ const Layout = ({ questionData, onChange, uiStyle, t }) => {
       </MarginRow>
       <MarginRow>
         <Col md={12}>
-          <Label>{t('component.options.inputtype')}</Label>
+          <Label>{t("component.options.inputtype")}</Label>
           <OptionSelect
             size="large"
-            onChange={inputtype => changeUiStyle('inputtype', inputtype)}
+            onChange={inputtype => changeUiStyle("inputtype", inputtype)}
             value={uiStyle.inputtype}
           >
             {inputtypeOptions.map(({ value: val, label }) => (
@@ -169,46 +168,46 @@ const Layout = ({ questionData, onChange, uiStyle, t }) => {
           </OptionSelect>
         </Col>
         <Col md={12}>
-          <Label>{t('component.options.placeholder')}</Label>
+          <Label>{t("component.options.placeholder")}</Label>
           <Input
             disabled={false}
             size="large"
-            style={{ width: '80%' }}
-            onChange={e => changeUiStyle('placeholder', e.target.value)}
+            style={{ width: "80%" }}
+            onChange={e => changeUiStyle("placeholder", e.target.value)}
             value={uiStyle.placeholder}
           />
         </Col>
       </MarginRow>
       <MarginRow>
         <Col md={12}>
-          <Label>{t('component.options.widthpx')}</Label>
+          <Label>{t("component.options.widthpx")}</Label>
           <Input
             type="number"
-            style={{ width: '80%' }}
+            style={{ width: "80%" }}
             size="large"
             disabled={false}
-            onChange={e => changeUiStyle('widthpx', e.target.value)}
+            onChange={e => changeUiStyle("widthpx", e.target.value)}
             value={uiStyle.widthpx}
           />
         </Col>
         <Col md={12}>
-          <Label>{t('component.options.heightpx')}</Label>
+          <Label>{t("component.options.heightpx")}</Label>
           <Input
             type="number"
-            style={{ width: '80%' }}
+            style={{ width: "80%" }}
             size="large"
             disabled={false}
-            onChange={e => changeUiStyle('heightpx', e.target.value)}
+            onChange={e => changeUiStyle("heightpx", e.target.value)}
             value={uiStyle.heightpx}
           />
         </Col>
       </MarginRow>
       <MarginRow>
         <Col md={6}>
-          <Label>{t('component.options.pointers')}</Label>
+          <Label>{t("component.options.pointers")}</Label>
           <OptionSelect
             size="large"
-            onChange={inputtype => changeUiStyle('pointers', inputtype)}
+            onChange={inputtype => changeUiStyle("pointers", inputtype)}
             value={uiStyle.pointers}
           >
             {pointerOptions.map(({ value: val, label }) => (
@@ -223,7 +222,7 @@ const Layout = ({ questionData, onChange, uiStyle, t }) => {
         <Container key={index}>
           <MarginRow>
             <Col md={12}>
-              <Label>{`${t('component.options.responsecontainerindividual')} ${index + 1}`}</Label>
+              <Label>{`${t("component.options.responsecontainerindividual")} ${index + 1}`}</Label>
             </Col>
             <Col md={12}>
               <Delete onClick={() => removeIndividual(index)}>X</Delete>
@@ -231,39 +230,39 @@ const Layout = ({ questionData, onChange, uiStyle, t }) => {
           </MarginRow>
           <MarginRow>
             <Col md={12}>
-              <Label>{t('component.options.widthpx')}</Label>
+              <Label>{t("component.options.widthpx")}</Label>
               <Input
                 type="number"
                 size="large"
-                style={{ width: '80%' }}
+                style={{ width: "80%" }}
                 disabled={false}
                 containerStyle={{ width: 350 }}
-                onChange={e => changeIndividualUiStyle('widthpx', +e.target.value, index)}
+                onChange={e => changeIndividualUiStyle("widthpx", +e.target.value, index)}
                 value={responsecontainerindividual.widthpx}
               />
             </Col>
             <Col md={12}>
-              <Label>{t('component.options.heightpx')}</Label>
+              <Label>{t("component.options.heightpx")}</Label>
               <Input
                 type="number"
                 size="large"
-                style={{ width: '80%' }}
+                style={{ width: "80%" }}
                 disabled={false}
                 containerStyle={{ width: 350 }}
-                onChange={e => changeIndividualUiStyle('heightpx', +e.target.value, index)}
+                onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, index)}
                 value={responsecontainerindividual.heightpx}
               />
             </Col>
           </MarginRow>
           <MarginRow>
             <Col md={12}>
-              <Label>{t('component.options.placeholder')}</Label>
+              <Label>{t("component.options.placeholder")}</Label>
               <Input
                 size="large"
-                style={{ width: '80%' }}
+                style={{ width: "80%" }}
                 disabled={false}
                 containerStyle={{ width: 350 }}
-                onChange={e => changeIndividualUiStyle('placeholder', e.target.value, index)}
+                onChange={e => changeIndividualUiStyle("placeholder", e.target.value, index)}
                 value={uiStyle.placeholder}
               />
             </Col>
@@ -272,9 +271,9 @@ const Layout = ({ questionData, onChange, uiStyle, t }) => {
       ))}
       <MarginRow>
         <Col md={6}>
-          <Label>{t('component.options.responsecontainerindividual')}</Label>
+          <Label>{t("component.options.responsecontainerindividual")}</Label>
           <AddNewChoiceBtn onClick={() => addNewResponseContainer()}>
-            {t('component.options.addnewresponsecontainer')}
+            {t("component.options.addnewresponsecontainer")}
           </AddNewChoiceBtn>
         </Col>
       </MarginRow>
@@ -291,9 +290,9 @@ Layout.propTypes = {
 
 Layout.defaultProps = {
   uiStyle: {
-    responsecontainerposition: 'bottom',
-    fontsize: 'normal',
-    stemnumeration: '',
+    responsecontainerposition: "bottom",
+    fontsize: "normal",
+    stemnumeration: "",
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,
@@ -302,7 +301,7 @@ Layout.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     state => ({
       questionData: getQuestionDataSelector(state)

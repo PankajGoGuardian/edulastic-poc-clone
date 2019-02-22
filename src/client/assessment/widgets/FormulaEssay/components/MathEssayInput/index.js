@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
-import uuidv4 from 'uuid/v4';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep } from "lodash";
+import uuidv4 from "uuid/v4";
 
-import MathEssayInputLine from './components/MathEssayInputLine/index';
-import { Wrapper } from './styled/Wrapper';
+import MathEssayInputLine from "./components/MathEssayInputLine/index";
+import { Wrapper } from "./styled/Wrapper";
 
 export const MathEssayInputContext = React.createContext({});
 
@@ -14,7 +14,7 @@ const MathEssayInput = ({ textFormattingOptions, uiStyle, lines, setLines, item 
   const handleChange = (index, value) => {
     const newLines = cloneDeep(lines);
 
-    if ((!value || value === '<p><br></p>') && newLines.length > 1) {
+    if ((!value || value === "<p><br></p>") && newLines.length > 1) {
       newLines.splice(index, 1);
       setCurrentLineIndex(index - 1);
     } else {
@@ -24,14 +24,18 @@ const MathEssayInput = ({ textFormattingOptions, uiStyle, lines, setLines, item 
     setLines(newLines);
   };
 
-  const onAddNewLine = (index) => {
+  const onAddNewLine = index => {
     const newLines = cloneDeep(lines);
 
     if (item.ui_style.max_lines && newLines.length === item.ui_style.max_lines) {
       return;
     }
 
-    newLines.splice(index + 1, 0, { text: '', type: uiStyle.default_mode, index: uuidv4() });
+    newLines.splice(index + 1, 0, {
+      text: "",
+      type: uiStyle.default_mode,
+      index: uuidv4()
+    });
     setLines(newLines);
     setCurrentLineIndex(index + 1);
   };
@@ -55,7 +59,7 @@ const MathEssayInput = ({ textFormattingOptions, uiStyle, lines, setLines, item 
               onChange={val => handleChange(i, val)}
               line={line}
               active={currentLineIndex === i}
-              setActive={(outside) => {
+              setActive={outside => {
                 if (outside) {
                   setCurrentLineIndex();
                 } else {

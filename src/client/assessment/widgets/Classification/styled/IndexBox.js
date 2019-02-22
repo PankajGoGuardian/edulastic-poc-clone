@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const IndexBox = styled.div`
   font-size: ${props => props.theme.widgets.classification.indexBoxFontSize};
@@ -12,10 +12,9 @@ export const IndexBox = styled.div`
   border-top-left-radius: 4px;
   color: ${props => props.theme.widgets.classification.indexBoxColor};
   background: ${({ preview, valid, theme }) =>
-    (valid && preview
+    valid && preview
       ? theme.widgets.classification.indexBoxValidBgColor
       : preview && valid !== undefined
-        ? theme.widgets.classification.indexBoxNotValidBgColor
-        : theme.widgets.classification.indexBoxBgColor
-    )};
+      ? theme.widgets.classification.indexBoxNotValidBgColor
+      : theme.widgets.classification.indexBoxBgColor};
 `;

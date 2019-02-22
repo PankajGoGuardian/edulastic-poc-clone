@@ -1,27 +1,25 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
-import { withTheme } from 'styled-components';
+import React from "react";
+import PropTypes from "prop-types";
+import { cloneDeep } from "lodash";
+import { withTheme } from "styled-components";
 
-import { helpers } from '@edulastic/common';
+import { helpers } from "@edulastic/common";
 
-import MatrixCell from '../MatrixCell';
-import { StyledTable } from './styled/StyledTable';
-import { getFontSize } from '../../../../utils/helpers';
-import StyledHeader from './styled/StyledHeader';
+import MatrixCell from "../MatrixCell";
+import { StyledTable } from "./styled/StyledTable";
+import { getFontSize } from "../../../../utils/helpers";
+import StyledHeader from "./styled/StyledHeader";
 
-const getResponses = (validation) => {
+const getResponses = validation => {
   const altResponses =
-    validation.alt_responses && validation.alt_responses.length
-      ? validation.alt_responses.map(res => res.value)
-      : [];
+    validation.alt_responses && validation.alt_responses.length ? validation.alt_responses.map(res => res.value) : [];
   return [validation.valid_response.value, ...altResponses];
 };
 
 const validatedAnswers = (answers, responses, matrix, type) => {
   let result = [];
 
-  if (type === 'show') {
+  if (type === "show") {
     const newMatrix = cloneDeep(matrix);
 
     result = [
@@ -31,10 +29,11 @@ const validatedAnswers = (answers, responses, matrix, type) => {
             return false;
           }
           return responses[0][matIndex].includes(rowIndex);
-        }))
+        })
+      )
     ];
   } else {
-    result = responses.map((res) => {
+    result = responses.map(res => {
       let newMatrix = cloneDeep(matrix);
 
       newMatrix = newMatrix.map((mat, matIndex) =>
@@ -48,11 +47,12 @@ const validatedAnswers = (answers, responses, matrix, type) => {
           }
 
           if (!res[matIndex].includes(rowIndex) && answers[matIndex].includes(rowIndex)) {
-            return 'incorrect';
+            return "incorrect";
           }
 
           return res[matIndex].includes(rowIndex) && answers[matIndex].includes(rowIndex);
-        }));
+        })
+      );
 
       return newMatrix;
     });
@@ -61,21 +61,10 @@ const validatedAnswers = (answers, responses, matrix, type) => {
   return result;
 };
 
-const Matrix = ({
-  stems,
-  options,
-  response,
-  isMultiple,
-  onCheck,
-  uiStyle,
-  validation,
-  type,
-  smallSize,
-  theme
-}) => {
+const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, validation, type, smallSize, theme }) => {
   let correctAnswersMatrix;
 
-  if (response && validation && type !== 'clear') {
+  if (response && validation && type !== "clear") {
     const responses = getResponses(validation);
     const matrix = stems.map(() => options.map(() => false));
     correctAnswersMatrix = validatedAnswers(response.value, responses, matrix, type);
@@ -89,12 +78,12 @@ const Matrix = ({
       const answers = correctAnswersMatrix.map(mat => mat[data.index][columnIndex]);
 
       const isTrue = el => el === true;
-      const isIncorrect = el => el === 'incorrect';
+      const isIncorrect = el => el === "incorrect";
 
       if (answers.some(isTrue)) {
         correct = true;
       } else if (answers.some(isIncorrect)) {
-        correct = 'incorrect';
+        correct = "incorrect";
       }
     }
 
@@ -102,7 +91,7 @@ const Matrix = ({
       checked = data.value.includes(columnIndex);
     }
 
-    const handleChange = (e) => {
+    const handleChange = e => {
       const checkData = {
         columnIndex,
         rowIndex: data.index,
@@ -126,7 +115,7 @@ const Matrix = ({
   };
 
   const getColumns = () => {
-    const isTable = uiStyle.type === 'table';
+    const isTable = uiStyle.type === "table";
 
     const optionsData = options.map((option, i) => ({
       title: isTable ? (
@@ -135,7 +124,7 @@ const Matrix = ({
           dangerouslySetInnerHTML={{ __html: option }}
         />
       ) : (
-        ''
+        ""
       ),
       dataIndex: `${i}`,
       key: i,
@@ -145,19 +134,19 @@ const Matrix = ({
     const stemTitle = !helpers.isEmpty(uiStyle.stem_title) ? (
       <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.stem_title }} />
     ) : (
-      ''
+      ""
     );
     const optionRowTitle = !helpers.isEmpty(uiStyle.option_row_title) ? (
       <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.option_row_title }} />
     ) : (
-      ''
+      ""
     );
 
     let columns = [
       {
         title: stemTitle,
-        dataIndex: 'stem',
-        key: 'stem',
+        dataIndex: "stem",
+        key: "stem",
         width: uiStyle.stem_width || null,
         render: stem => <span dangerouslySetInnerHTML={{ __html: stem }} />
       },
@@ -168,12 +157,12 @@ const Matrix = ({
       }
     ];
 
-    if (uiStyle.type === 'table' && uiStyle.stem_numeration) {
+    if (uiStyle.type === "table" && uiStyle.stem_numeration) {
       columns = [
         {
-          title: '',
-          dataIndex: 'numeration',
-          key: 'numeration',
+          title: "",
+          dataIndex: "numeration",
+          key: "numeration",
           render: stem => <span dangerouslySetInnerHTML={{ __html: stem }} />
         },
         ...columns
@@ -183,7 +172,7 @@ const Matrix = ({
     return columns;
   };
 
-  const getData = (i) => {
+  const getData = i => {
     const result = {};
 
     options.forEach((o, index) => {
@@ -232,7 +221,7 @@ Matrix.propTypes = {
 Matrix.defaultProps = {
   isMultiple: false,
   validation: null,
-  type: 'clear',
+  type: "clear",
   smallSize: false
 };
 

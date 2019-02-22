@@ -1,25 +1,21 @@
-import { createAction, createReducer } from 'redux-starter-kit';
-import { takeLatest, put, call, all, select } from 'redux-saga/effects';
-import { groupApi, enrollmentApi } from '@edulastic/api';
+import { createAction, createReducer } from "redux-starter-kit";
+import { takeLatest, put, call, all, select } from "redux-saga/effects";
+import { groupApi, enrollmentApi } from "@edulastic/api";
 
 // actions
-export const FETCH_GROUPS = '[author groups] fetch owned groups';
-export const FETCH_GROUP_MEMBERS =
-  '[author groups] fetch students of the group';
-export const SET_GROUPS = '[author groups] set groups';
-export const SET_GROUP_MEMBERS = '[author groups] add students to groups';
-export const SET_MULTIPLE_GROUP_MEMBERS =
-  '[author groups] set multiple group members';
-export const SET_LOADED_GROUPS = '[author groups] set loaded groups';
+export const FETCH_GROUPS = "[author groups] fetch owned groups";
+export const FETCH_GROUP_MEMBERS = "[author groups] fetch students of the group";
+export const SET_GROUPS = "[author groups] set groups";
+export const SET_GROUP_MEMBERS = "[author groups] add students to groups";
+export const SET_MULTIPLE_GROUP_MEMBERS = "[author groups] set multiple group members";
+export const SET_LOADED_GROUPS = "[author groups] set loaded groups";
 
 // actions
 export const fetchGroupsAction = createAction(FETCH_GROUPS);
 export const fetchGroupMembersAction = createAction(FETCH_GROUP_MEMBERS);
 export const setGroupsAction = createAction(SET_GROUPS);
 export const setGroupMemebersAction = createAction(SET_GROUP_MEMBERS);
-export const fetchMultipleGroupMembersAction = createAction(
-  SET_MULTIPLE_GROUP_MEMBERS
-);
+export const fetchMultipleGroupMembersAction = createAction(SET_MULTIPLE_GROUP_MEMBERS);
 export const setLoadedGroupsAction = createAction(SET_LOADED_GROUPS);
 
 // initial state
@@ -59,12 +55,10 @@ export default createReducer(initialState, {
 });
 
 // selectors
-const module = 'authorGroups';
-export const getGroupsSelector = state =>
-  state[module].isLoading ? [] : state[module].groups;
+const module = "authorGroups";
+export const getGroupsSelector = state => (state[module].isLoading ? [] : state[module].groups);
 
-export const getStudentsSelector = state =>
-  state[module].isLoading ? [] : state[module].students;
+export const getStudentsSelector = state => (state[module].isLoading ? [] : state[module].students);
 
 export const getLoadedGroupsSelector = state => state[module].loadedGroups;
 

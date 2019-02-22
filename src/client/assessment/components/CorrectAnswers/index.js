@@ -1,32 +1,23 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
+import React from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
 
-import { withNamespaces } from '@edulastic/localization';
-import { Button, Tabs, Tab, FlexContainer } from '@edulastic/common';
+import { withNamespaces } from "@edulastic/localization";
+import { Button, Tabs, Tab, FlexContainer } from "@edulastic/common";
 
-import { Subtitle } from '../../styled/Subtitle';
+import { Subtitle } from "../../styled/Subtitle";
 
-import { IconClose } from './styled/IconClose';
-import { IconPlus } from './styled/IconPlus';
+import { IconClose } from "./styled/IconClose";
+import { IconPlus } from "./styled/IconPlus";
 
-const CorrectAnswers = ({
-  t,
-  onTabChange,
-  children,
-  correctTab,
-  onAdd,
-  validation,
-  options,
-  onCloseTab
-}) => {
+const CorrectAnswers = ({ t, onTabChange, children, correctTab, onAdd, validation, options, onCloseTab }) => {
   const renderLabel = index => (
     <FlexContainer>
       <span>
-        {t('component.correctanswers.alternate')} {index + 1}
+        {t("component.correctanswers.alternate")} {index + 1}
       </span>
       <IconClose
-        onClick={(e) => {
+        onClick={e => {
           e.stopPropagation();
           onCloseTab(index);
         }}
@@ -61,11 +52,11 @@ const CorrectAnswers = ({
 
   return (
     <div>
-      <Subtitle>{t('component.correctanswers.setcorrectanswers')}</Subtitle>
+      <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
 
       <div>
         <Tabs value={correctTab} onChange={onTabChange} extra={renderPlusButton()}>
-          <Tab label={t('component.correctanswers.correct')} />
+          <Tab label={t("component.correctanswers.correct")} />
           {renderAltResponses()}
         </Tabs>
         {children}
@@ -91,6 +82,6 @@ CorrectAnswers.defaultProps = {
   children: undefined
 };
 
-const enhance = compose(withNamespaces('assessment'));
+const enhance = compose(withNamespaces("assessment"));
 
 export default enhance(CorrectAnswers);

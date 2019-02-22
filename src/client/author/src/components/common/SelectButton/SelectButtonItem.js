@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { textColor, blue, white } from '@edulastic/colors';
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { textColor, blue, white } from "@edulastic/colors";
 
 const SelectButtonItem = ({ icon, children, onClick }) => (
   <Container onClick={onClick}>
@@ -13,11 +13,11 @@ const SelectButtonItem = ({ icon, children, onClick }) => (
 SelectButtonItem.propTypes = {
   icon: PropTypes.any,
   children: PropTypes.any.isRequired,
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired
 };
 
 SelectButtonItem.defaultProps = {
-  icon: null,
+  icon: null
 };
 
 export default SelectButtonItem;

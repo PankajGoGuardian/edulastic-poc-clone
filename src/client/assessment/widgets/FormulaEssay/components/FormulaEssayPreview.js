@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import MathEssayInput from './MathEssayInput';
+import MathEssayInput from "./MathEssayInput";
 
-import { InstructorStimulus } from '../styled/InstructorStimulus';
+import { InstructorStimulus } from "../styled/InstructorStimulus";
 
 const FormulaEssayPreview = ({ item, lines, setLines }) => (
   <div>

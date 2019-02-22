@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { InputNumber } from 'antd';
+import styled from "styled-components";
+import { InputNumber } from "antd";
 
 export const MaxRespCountInput = styled(InputNumber)`
   width: 100px;

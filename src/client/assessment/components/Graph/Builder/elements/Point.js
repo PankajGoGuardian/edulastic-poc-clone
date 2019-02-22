@@ -1,13 +1,13 @@
 // import { JXG } from '..';
-import { CONSTANT, Colors } from '../config';
-import { defaultPointParameters } from '../settings';
+import { CONSTANT, Colors } from "../config";
+import { defaultPointParameters } from "../settings";
 
 export const getPointLabelParameters = () => ({
   offset: [0, 10],
-  anchorX: 'middle',
-  anchorY: 'bottom',
-  cssClass: 'myLabel',
-  highlightCssClass: 'myLabel'
+  anchorX: "middle",
+  anchorY: "bottom",
+  cssClass: "myLabel",
+  highlightCssClass: "myLabel"
 });
 
 function roundCoords(coords) {
@@ -23,7 +23,7 @@ export function findPoint(elements, coords) {
     return null;
   }
 
-  Object.keys(elements).forEach((key) => {
+  Object.keys(elements).forEach(key => {
     if (found) {
       return;
     }
@@ -49,15 +49,11 @@ function onHandler(board, event) {
   const coords = board.getCoords(event);
   const point = findPoint(board.elements, coords.usrCoords);
   if (!point) {
-    return board.$board.create(
-      'point',
-      coords.usrCoords,
-      {
-        ...board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters(),
-        ...Colors.default[CONSTANT.TOOLS.POINT],
-        label: getPointLabelParameters()
-      },
-    );
+    return board.$board.create("point", coords.usrCoords, {
+      ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
+      ...Colors.default[CONSTANT.TOOLS.POINT],
+      label: getPointLabelParameters()
+    });
   }
   return point;
 }
@@ -75,7 +71,7 @@ function getConfig(point) {
 
 function parseConfig(config, pointParameters) {
   return [
-    'point',
+    "point",
     [config.x, config.y],
     {
       ...(pointParameters || defaultPointParameters()),

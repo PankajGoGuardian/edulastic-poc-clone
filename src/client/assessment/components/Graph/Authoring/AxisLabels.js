@@ -1,19 +1,19 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { PaddingDiv, Button } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
-import { arrayMove } from 'react-sortable-hoc';
-import { cloneDeep, clone } from 'lodash';
-import { Subtitle, Label, ContainerStart, LineParameter, LineInput, TitleTextInput } from '../common/styled_components';
-import { QuestionSection } from './'
-import { setQuestionDataAction } from '../../../../author/src/actions/question';
-import QuestionTextArea from '../../QuestionTextArea';
-import QuillSortableList from '../../QuillSortableList';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { PaddingDiv, Button } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
+import { arrayMove } from "react-sortable-hoc";
+import { cloneDeep, clone } from "lodash";
+import { Subtitle, Label, ContainerStart, LineParameter, LineInput, TitleTextInput } from "../common/styled_components";
+import { QuestionSection } from "./";
+import { setQuestionDataAction } from "../../../../author/src/actions/question";
+import QuestionTextArea from "../../QuestionTextArea";
+import QuillSortableList from "../../QuillSortableList";
 
 class GraphAxisLabels extends Component {
-  onChangeQuestion = (stimulus) => {
+  onChangeQuestion = stimulus => {
     const { graphData, setQuestionData } = this.props;
     setQuestionData({ ...graphData, stimulus });
   };
@@ -21,7 +21,10 @@ class GraphAxisLabels extends Component {
   onSortOrderListEnd = ({ oldIndex, newIndex }) => {
     const { graphData, setQuestionData } = this.props;
 
-    setQuestionData({ ...graphData, list: arrayMove(graphData.list, oldIndex, newIndex) });
+    setQuestionData({
+      ...graphData,
+      list: arrayMove(graphData.list, oldIndex, newIndex)
+    });
   };
 
   handleQuestionsChange = (index, value) => {
@@ -32,7 +35,7 @@ class GraphAxisLabels extends Component {
     setQuestionData({ ...graphData, list: labels });
   };
 
-  handleDeleteQuestion = (index) => {
+  handleDeleteQuestion = index => {
     const { setQuestionData, graphData } = this.props;
     const filteredItems = clone(graphData.list).filter((q, i) => i !== index);
 
@@ -43,17 +46,17 @@ class GraphAxisLabels extends Component {
     const { setQuestionData, graphData } = this.props;
     const newItem = cloneDeep(graphData);
 
-    newItem.list = newItem.list.concat(
-      {
-        text: 'New Option',
-        id: `list-item-${Math.random().toString(36).substr(2, 9)}`
-      }
-    );
+    newItem.list = newItem.list.concat({
+      text: "New Option",
+      id: `list-item-${Math.random()
+        .toString(36)
+        .substr(2, 9)}`
+    });
 
     setQuestionData({ ...graphData, list: newItem.list });
   };
 
-  handleCanvasChange = (event) => {
+  handleCanvasChange = event => {
     const { value, name } = event.target;
     const { graphData, setQuestionData } = this.props;
     const { canvas } = graphData;
@@ -68,10 +71,15 @@ class GraphAxisLabels extends Component {
 
     return (
       <div>
-        <QuestionSection section="main" label="COMPOSE QUESTION" cleanSections={cleanSections} fillSections={fillSections}>
-          <Subtitle>{t('component.graphing.question.composequestion')}</Subtitle>
+        <QuestionSection
+          section="main"
+          label="COMPOSE QUESTION"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+        >
+          <Subtitle>{t("component.graphing.question.composequestion")}</Subtitle>
           <QuestionTextArea
-            placeholder={t('component.graphing.question.enteryourquestion')}
+            placeholder={t("component.graphing.question.enteryourquestion")}
             onChange={this.onChangeQuestion}
             value={stimulus}
           />
@@ -79,7 +87,7 @@ class GraphAxisLabels extends Component {
 
         <QuestionSection section="main" label="GRAPH LINE" cleanSections={cleanSections} fillSections={fillSections}>
           <PaddingDiv top={30} bottom={30}>
-            <Subtitle>{t('component.graphing.graphline')}</Subtitle>
+            <Subtitle>{t("component.graphing.graphline")}</Subtitle>
             <ContainerStart>
               <LineParameter>
                 <Label>Minimum value</Label>
@@ -109,19 +117,19 @@ class GraphAxisLabels extends Component {
 
         <QuestionSection section="main" label="TITLE" cleanSections={cleanSections} fillSections={fillSections}>
           <PaddingDiv bottom={30}>
-            <Subtitle>{t('component.graphing.title')}</Subtitle>
-            <TitleTextInput
-              type="text"
-              name="title"
-              value={canvas.title}
-              onChange={this.handleCanvasChange}
-            />
+            <Subtitle>{t("component.graphing.title")}</Subtitle>
+            <TitleTextInput type="text" name="title" value={canvas.title} onChange={this.handleCanvasChange} />
           </PaddingDiv>
         </QuestionSection>
 
-        <QuestionSection section="main" label="POSSIBLE RESPONSES" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="main"
+          label="POSSIBLE RESPONSES"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+        >
           <PaddingDiv bottom={30}>
-            <Subtitle>{t('component.graphing.possibleresponses')}</Subtitle>
+            <Subtitle>{t("component.graphing.possibleresponses")}</Subtitle>
             <QuillSortableList
               items={graphData.list.map(o => o.text)}
               onSortEnd={this.onSortOrderListEnd}
@@ -137,11 +145,10 @@ class GraphAxisLabels extends Component {
               type="button"
               color="primary"
             >
-              {t('component.graphing.addnewpossibleresponsebtn')}
+              {t("component.graphing.addnewpossibleresponsebtn")}
             </Button>
           </PaddingDiv>
         </QuestionSection>
-
       </div>
     );
   }
@@ -154,13 +161,13 @@ GraphAxisLabels.propTypes = {
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     null,
     {
       setQuestionData: setQuestionDataAction
-    },
-  ),
+    }
+  )
 );
 
 export default enhance(GraphAxisLabels);

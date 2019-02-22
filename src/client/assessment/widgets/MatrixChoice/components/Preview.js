@@ -1,20 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
-import { InstructorStimulus } from '@edulastic/common';
+import React from "react";
+import PropTypes from "prop-types";
+import { cloneDeep } from "lodash";
+import { InstructorStimulus } from "@edulastic/common";
 
-import Matrix from './Matrix';
-import CheckAnswerButton from '../../../themes/common/CheckAnswerButton';
+import Matrix from "./Matrix";
+import CheckAnswerButton from "../../../themes/common/CheckAnswerButton";
 
-const Preview = ({
-  type,
-  saveAnswer,
-  userAnswer,
-  item,
-  smallSize,
-  onCheckAnswer,
-  feedbackAttempts
-}) => {
+const Preview = ({ type, saveAnswer, userAnswer, item, smallSize, onCheckAnswer, feedbackAttempts }) => {
   const handleCheck = ({ columnIndex, rowIndex, checked }) => {
     const newAnswer = cloneDeep(userAnswer);
 
@@ -55,9 +47,7 @@ const Preview = ({
         type={type}
         smallSize={smallSize}
       />
-      {item.instant_feedback && (
-        <CheckAnswerButton feedbackAttempts={feedbackAttempts} onCheck={onCheckAnswer} />
-      )}
+      {item.instant_feedback && <CheckAnswerButton feedbackAttempts={feedbackAttempts} onCheck={onCheckAnswer} />}
     </div>
   );
 };

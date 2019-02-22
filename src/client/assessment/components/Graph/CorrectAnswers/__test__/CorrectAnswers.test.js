@@ -1,16 +1,16 @@
-import React from 'react';
+import React from "react";
 import {
   shallow
   // mount
-} from 'enzyme';
+} from "enzyme";
 
-import CorrectAnswers from '../CorrectAnswers';
+import CorrectAnswers from "../CorrectAnswers";
 
-import configureStore from '../../../../../configureStore';
+import configureStore from "../../../../../configureStore";
 
 // const { store } = configureStore();
 
-describe('<CorrectAnswers />', () => {
+describe("<CorrectAnswers />", () => {
   const renderedComponent = shallow(<CorrectAnswers />);
   expect(renderedComponent.length).toEqual(1);
 });

@@ -1,13 +1,13 @@
-import React, { memo } from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { withNamespaces } from '@edulastic/localization';
-import { compose } from 'redux';
-import HeaderWrapper from '../../sharedComponents/Header/headerWrapper';
+import React, { memo } from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { withNamespaces } from "@edulastic/localization";
+import { compose } from "redux";
+import HeaderWrapper from "../../sharedComponents/Header/headerWrapper";
 
 const ProfileHeader = ({ t }) => (
   <HeaderWrapper>
-    <Title>{t('common.profileTitle')}</Title>
+    <Title>{t("common.profileTitle")}</Title>
   </HeaderWrapper>
 );
 
@@ -17,7 +17,7 @@ ProfileHeader.propTypes = {
 
 const enhance = compose(
   memo,
-  withNamespaces('header')
+  withNamespaces("header")
 );
 
 export default enhance(ProfileHeader);

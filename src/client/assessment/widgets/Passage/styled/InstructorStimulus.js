@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const InstructorStimulus = styled.div`
   background: ${props => props.theme.widgets.passage.instructorStimulusBgColor};

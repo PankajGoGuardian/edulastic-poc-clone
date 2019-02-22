@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Button } from 'antd';
+import styled from "styled-components";
+import { Button } from "antd";
 
 const StartAssignButton = styled(Button)`
   max-width: 200px;
@@ -23,8 +23,7 @@ const StartAssignButton = styled(Button)`
     letter-spacing: 0.2px;
   }
   &:hover {
-    background-color: ${props =>
-      props.theme.assignment.cardRetakeBtnBgHoverColor};
+    background-color: ${props => props.theme.assignment.cardRetakeBtnBgHoverColor};
     span {
       color: ${props => props.theme.assignment.cardRetakeBtnTextHoverColor};
     }

@@ -1,8 +1,8 @@
-import styled from 'styled-components';
-import { mobileWidth } from '@edulastic/colors';
-import { FlexContainer } from '@edulastic/common';
-import { Card, Button } from 'antd';
-import { Paper } from '@edulastic/common';
+import styled from "styled-components";
+import { mobileWidth } from "@edulastic/colors";
+import { FlexContainer } from "@edulastic/common";
+import { Card, Button } from "antd";
+import { Paper } from "@edulastic/common";
 
 export const PaginationInfo = styled.div`
   font-weight: bold;
@@ -14,60 +14,60 @@ export const PaginationInfo = styled.div`
 `;
 
 export const TimeContainer = styled.div`
-  margin-top:20px;
+  margin-top: 20px;
 `;
 
 export const Color = styled.span`
- color:#58b294;
+  color: #58b294;
 `;
 
 export const TimeItem = styled.p`
-  font-size:0.9em;
-  font-weight:bold;
-  padding-left:20px;
+  font-size: 0.9em;
+  font-weight: bold;
+  padding-left: 20px;
 `;
 
 export const ScoreContainer = styled.div`
-  text-align:center;
-  margin-top:20px;
+  text-align: center;
+  margin-top: 20px;
 `;
 
 export const ScoreLabel = styled.p`
-  color:#C0C0C0;
-  font-size:0.8em;
+  color: #c0c0c0;
+  font-size: 0.8em;
 `;
 
 export const TotalScore = styled.p`
-  font-weight:bold;
-  font-size:2em;
+  font-weight: bold;
+  font-size: 2em;
 `;
 
 export const FractionLine = styled.p`
-  width:40px;
-  height:2px;
-  background-color:#59595a;
-  margin:auto;
+  width: 40px;
+  height: 2px;
+  background-color: #59595a;
+  margin: auto;
 `;
 
 export const PaginationButtonGroup = styled.span`
-  display:inline-block;
+  display: inline-block;
   margin-left: 25px;
 `;
 
 export const GraphInfo = styled.div`
-  display:inline-block;
-  width:20%;
-  height:200px;
-  position:absolute;
+  display: inline-block;
+  width: 20%;
+  height: 200px;
+  position: absolute;
 `;
 
 export const GraphContainer = styled.div`
-  display:inline-block;
-  width:75%;
+  display: inline-block;
+  width: 75%;
 `;
 
 export const StyledFlexContainer = styled(FlexContainer)`
-  margin:20px 13px;
+  margin: 20px 13px;
 `;
 
 export const StyledCard = styled(Card)`
@@ -81,23 +81,23 @@ export const StyledCard = styled(Card)`
 `;
 
 export const FeedbackButton = styled(Button)`
-  font-size:0.64em;
-  background-color:transparent;
-  margin:0px 23px 0px -5px;
-  width:100px;
-  padding:2px 5px;
-  height:25px;
-  color:#00b0ff;
-  border:1px solid #00b0ff;
-  font-weight:bold;
+  font-size: 0.64em;
+  background-color: transparent;
+  margin: 0px 23px 0px -5px;
+  width: 100px;
+  padding: 2px 5px;
+  height: 25px;
+  color: #00b0ff;
+  border: 1px solid #00b0ff;
+  font-weight: bold;
 `;
 
 export const OverallButton = styled(FeedbackButton)`
-  font-size:0.8em;
+  font-size: 0.8em;
   color: white;
-  background-color:#00b0ff;
-  width:170px;
-  height:40px;
+  background-color: #00b0ff;
+  width: 170px;
+  height: 40px;
   &:hover {
     color: #00b0ff;
     background: white;
@@ -105,9 +105,9 @@ export const OverallButton = styled(FeedbackButton)`
 `;
 
 export const FeedbackActiveButton = styled(FeedbackButton)`
-  color:white;
-  background-color:#00b0ff;
-  border:0px solid transparent;
+  color: white;
+  background-color: #00b0ff;
+  border: 0px solid transparent;
 `;
 
 export const Content = styled(Paper)`

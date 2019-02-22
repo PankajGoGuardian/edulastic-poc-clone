@@ -1,27 +1,27 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { IconPhotoCamera } from '@edulastic/icons';
-import { Upload, message } from 'antd';
-import { blue, white } from '@edulastic/colors';
-import { API_CONFIG } from '@edulastic/api';
-import { uploadTestImageAction } from '../../../src/actions/uploadTestImage';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { connect } from "react-redux";
+import { IconPhotoCamera } from "@edulastic/icons";
+import { Upload, message } from "antd";
+import { blue, white } from "@edulastic/colors";
+import { API_CONFIG } from "@edulastic/api";
+import { uploadTestImageAction } from "../../../src/actions/uploadTestImage";
 
 function getBase64(img, callback) {
   const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
+  reader.addEventListener("load", () => callback(reader.result));
   reader.readAsDataURL(img);
 }
 
 function beforeUpload(file) {
-  const isJPG = file.type === 'image/jpeg';
+  const isJPG = file.type === "image/jpeg";
   if (!isJPG) {
-    message.error('You can only upload JPG file!');
+    message.error("You can only upload JPG file!");
   }
   const isLt2M = file.size / 1024 / 1024 < 2;
   if (!isLt2M) {
-    message.error('Image must smaller than 2MB!');
+    message.error("Image must smaller than 2MB!");
   }
   return isJPG && isLt2M;
 }
@@ -29,13 +29,13 @@ function beforeUpload(file) {
 class Photo extends React.Component {
   state = {};
 
-  handleChange = (info) => {
-    if (info.file.status === 'uploading') {
+  handleChange = info => {
+    if (info.file.status === "uploading") {
       return;
     }
-    if (info.file.status === 'done') {
+    if (info.file.status === "done") {
       const { uploadTestImage } = this.props;
-      getBase64(info.file.originFileObj, (imageUrl) => {
+      getBase64(info.file.originFileObj, imageUrl => {
         uploadTestImage(info.file.response.result.fileUri);
         this.setState({
           imageUrl
@@ -55,15 +55,15 @@ class Photo extends React.Component {
     );
     const { imageUrl } = this.state;
     const uploadProps = {
-      name: 'file',
-      listType: 'picture-card',
-      className: 'avatar-uploader',
+      name: "file",
+      listType: "picture-card",
+      className: "avatar-uploader",
       showUploadList: false,
       action: `${API_CONFIG.api}/file/upload`,
       onChange: this.handleChange,
       beforeUpload,
       headers: {
-        authorization: localStorage.getItem('access_token')
+        authorization: localStorage.getItem("access_token")
       }
     };
     return (
@@ -86,7 +86,7 @@ Photo.propTypes = {
 };
 
 Photo.defaultProps = {
-  url: 'https://fakeimg.pl/500x135/'
+  url: "https://fakeimg.pl/500x135/"
 };
 
 export default connect(

@@ -1,44 +1,44 @@
-import React from 'react';
-import { IconTrash, IconPencilEdit } from '@edulastic/icons';
-import { FlexContainer } from '@edulastic/common';
-import { greenDark, green } from '@edulastic/colors';
-import * as moment from 'moment';
-import ClassCell from './ClassCell';
-import { generate } from 'mqtt-packet';
+import React from "react";
+import { IconTrash, IconPencilEdit } from "@edulastic/icons";
+import { FlexContainer } from "@edulastic/common";
+import { greenDark, green } from "@edulastic/colors";
+import * as moment from "moment";
+import ClassCell from "./ClassCell";
+import { generate } from "mqtt-packet";
 
-const formatDate = date => moment(date).format('MM-DD-YYYY');
+const formatDate = date => moment(date).format("MM-DD-YYYY");
 const generateAssignmentColumns = group => [
   {
-    title: 'Class Name',
-    dataIndex: 'class',
+    title: "Class Name",
+    dataIndex: "class",
     sorter: (a, b) => a.class._id.localeCompare(b.class._id),
     render: data => <ClassCell data={data} group={group} />
   },
   {
-    title: 'Open Policy',
-    dataIndex: 'openPolicy',
+    title: "Open Policy",
+    dataIndex: "openPolicy",
     sorter: (a, b) => a.openPolicy.localeCompare(b.openPolicy)
   },
   {
-    title: 'Close Policy',
-    dataIndex: 'closePolicy',
+    title: "Close Policy",
+    dataIndex: "closePolicy",
     sorter: (a, b) => a.closePolicy.localeCompare(b.closePolicy)
   },
   {
-    title: 'Open Date',
-    dataIndex: 'openDate',
+    title: "Open Date",
+    dataIndex: "openDate",
     sorter: (a, b) => moment(a.openDate).unix() - moment(b.openDate).unix(),
     render: formatDate
   },
   {
-    title: 'Close Date',
-    dataIndex: 'closeDate',
+    title: "Close Date",
+    dataIndex: "closeDate",
     sorter: (a, b) => moment(a.closeDate).unix() - moment(b.closeDate).unix(),
     render: formatDate
   },
   {
-    title: '',
-    dataIndex: 'buttons',
+    title: "",
+    dataIndex: "buttons",
     sorter: false,
     // eslint-disable-next-line react/prop-types
     render: ({ remove, edit }, record) => {
@@ -60,13 +60,13 @@ const generateAssignmentColumns = group => [
             onClick={handleClick}
             color={greenDark}
             hoverColor={green}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: "pointer" }}
           />
           <IconTrash
             onClick={() => remove(record)}
             color={greenDark}
             hoverColor={green}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: "pointer" }}
           />
         </FlexContainer>
       );

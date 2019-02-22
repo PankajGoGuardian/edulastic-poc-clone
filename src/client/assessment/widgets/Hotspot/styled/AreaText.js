@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const AreaText = styled.div`
   font-size: ${props => props.theme.widgets.hotspot.areaTextFontSize};

@@ -1,57 +1,57 @@
-export const ALWAYS = 'always';
-export const ON_LIMIT = 'on-limit';
-export const COPY = 'copy';
-export const CUT = 'cut';
-export const PASTE = 'paste';
-export const OFF = 'off';
-export const PREVIEW = 'preview';
-export const EDIT = 'edit';
-export const CLEAR = 'clear';
-export const SHOW = 'show';
-export const CHECK = 'check';
-export const CONTAINS = 'contains';
-export const EXACT_MATCH = 'exactMatch';
-export const PARAGRAPH_MODE = 'paragraph';
-export const SENTENCE_MODE = 'sentence';
-export const WORD_MODE = 'word';
-export const DRAW_MODE = 'draw_mode';
-export const DELETE_MODE = 'delete_mode';
+export const ALWAYS = "always";
+export const ON_LIMIT = "on-limit";
+export const COPY = "copy";
+export const CUT = "cut";
+export const PASTE = "paste";
+export const OFF = "off";
+export const PREVIEW = "preview";
+export const EDIT = "edit";
+export const CLEAR = "clear";
+export const SHOW = "show";
+export const CHECK = "check";
+export const CONTAINS = "contains";
+export const EXACT_MATCH = "exactMatch";
+export const PARAGRAPH_MODE = "paragraph";
+export const SENTENCE_MODE = "sentence";
+export const WORD_MODE = "word";
+export const DRAW_MODE = "draw_mode";
+export const DELETE_MODE = "delete_mode";
 
-export const BY_LOCATION_METHOD = 'byLocation';
-export const BY_COUNT_METHOD = 'byCount';
+export const BY_LOCATION_METHOD = "byLocation";
+export const BY_COUNT_METHOD = "byCount";
 
-export const WIDTH = 'width';
-export const HEIGHT = 'height';
-export const ALT_TEXT = 'altText';
-export const SOURCE = 'source';
+export const WIDTH = "width";
+export const HEIGHT = "height";
+export const ALT_TEXT = "altText";
+export const SOURCE = "source";
 
 export const templateWithTokens = [
   {
-    value: 'Risus et tincidunt turpis facilisis.',
+    value: "Risus et tincidunt turpis facilisis.",
     active: true
   },
   {
-    value: '<br/>Curabitur eu nulla justo.',
+    value: "<br/>Curabitur eu nulla justo.",
     active: false
   },
   {
-    value: ' Curabitur vulputate ut nisl et bibendum.',
+    value: " Curabitur vulputate ut nisl et bibendum.",
     active: false
   },
   {
-    value: ' Nunc diam enim, porta sed eros vitae.',
+    value: " Nunc diam enim, porta sed eros vitae.",
     active: true
   },
   {
-    value: ' dignissim, et tincidunt turpis facilisis.',
+    value: " dignissim, et tincidunt turpis facilisis.",
     active: false
   },
   {
-    value: '<br/>Curabitur eu nulla justo.',
+    value: "<br/>Curabitur eu nulla justo.",
     active: false
   },
   {
-    value: ' Curabitur vulputate ut nisl et bibendum.',
+    value: " Curabitur vulputate ut nisl et bibendum.",
     active: true
   }
 ];

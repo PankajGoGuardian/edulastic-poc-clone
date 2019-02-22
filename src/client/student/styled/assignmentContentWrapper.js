@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const AssignmentContentWrapper = styled.div`
   border-radius: 10px;

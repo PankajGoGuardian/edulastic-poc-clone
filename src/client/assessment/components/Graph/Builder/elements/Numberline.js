@@ -1,11 +1,11 @@
-import { union, isString, uniq } from 'lodash';
-import { calcMeasure } from '../utils';
-import { RENDERING_BASE } from '../config/constants';
-import { getFraction, toFractionHTML, roundFracIfPossible } from '../fraction';
+import { union, isString, uniq } from "lodash";
+import { calcMeasure } from "../utils";
+import { RENDERING_BASE } from "../config/constants";
+import { getFraction, toFractionHTML, roundFracIfPossible } from "../fraction";
 
-import '../../common/Fraction.css';
+import "../../common/Fraction.css";
 
-function createMinorTicks(minorCount, majorTicksSorted){
+function createMinorTicks(minorCount, majorTicksSorted) {
   const minorTicks = [];
   const segmentsCount = majorTicksSorted.length - 1;
   for (let i = 0; i < segmentsCount; i++) {
@@ -23,33 +23,35 @@ function createMinorTicks(minorCount, majorTicksSorted){
 
 const onHandler = (board, xMin, xMax, settings, lineSettings) => {
   const [x, y] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
-  const calcY = lineSettings.yMax - (y / 100 * lineSettings.position);
-  const axisPadding = (-(xMin) + xMax) / 100 * 3.5;
+  const calcY = lineSettings.yMax - (y / 100) * lineSettings.position;
+  const axisPadding = ((-xMin + xMax) / 100) * 3.5;
 
   const newAxis = board.$board.create(
-    'axis',
-    [[settings.showMin ? xMin - axisPadding : xMin + axisPadding, calcY], [settings.showMax ? xMax + axisPadding : xMax - axisPadding, calcY]],
+    "axis",
+    [
+      [settings.showMin ? xMin - axisPadding : xMin + axisPadding, calcY],
+      [settings.showMax ? xMax + axisPadding : xMax - axisPadding, calcY]
+    ],
     {
       straightFirst: false,
       straightLast: false,
       firstArrow: settings.leftArrow === true ? { size: 10 } : false,
       lastArrow: settings.rightArrow === true ? { size: 10 } : false,
-      strokeColor: '#d6d6d6',
-      highlightStrokeColor: '#d6d6d6',
-      drawZero: false,
+      strokeColor: "#d6d6d6",
+      highlightStrokeColor: "#d6d6d6",
+      drawZero: false
     }
   );
 
   let { ticksDistance } = settings;
   const { fractionsFormat, showLabels, labelShowMax, labelShowMin, minorTicks } = settings;
   let fracTicksDistance = null;
-  if (isString(ticksDistance) && ticksDistance.indexOf('/') !== -1) {
+  if (isString(ticksDistance) && ticksDistance.indexOf("/") !== -1) {
     fracTicksDistance = getFraction(ticksDistance);
     ticksDistance = fracTicksDistance ? fracTicksDistance.decim : NaN;
   } else {
     ticksDistance = parseFloat(ticksDistance);
   }
-
 
   newAxis.removeAllTicks();
   /**
@@ -79,7 +81,8 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
         ticks.push(i);
         i -= ticksDistance;
       }
-    } else { // startPoint === 0
+    } else {
+      // startPoint === 0
       let i = startPoint;
       while (i < xMax) {
         ticks.push(i);
@@ -106,12 +109,12 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
    * Minor ticks
    * */
   if (minorTicks) {
-    console.log('ticks', ticks);
+    console.log("ticks", ticks);
     const minors = createMinorTicks(minorTicks, ticks.sort((a, b) => a - b));
-    console.log('minors', minors);
-    board.$board.create('ticks', [newAxis, minors], {
-      strokeColor: '#d6d6d6',
-      highlightStrokeColor: '#d6d6d6',
+    console.log("minors", minors);
+    board.$board.create("ticks", [newAxis, minors], {
+      strokeColor: "#d6d6d6",
+      highlightStrokeColor: "#d6d6d6",
       majorHeight: 10
     });
   }
@@ -119,7 +122,8 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
    * Specific points
    * */
   if (isString(settings.specificPoints)) {
-    const tickArr = settings.specificPoints.split(',')
+    const tickArr = settings.specificPoints
+      .split(",")
       .map(s => parseFloat(s))
       .filter(num => isNaN(num) === false);
     ticks = union(ticks, tickArr);
@@ -128,7 +132,7 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
   /**
    * Ticks labels
    * */
-  let labels = ticks.map((t) => {
+  let labels = ticks.map(t => {
     let res = null;
     if (Number.isInteger(t)) {
       res = t;
@@ -149,62 +153,62 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
   }
 
   // todo: clear the code
-  console.log('labelShowMin', labelShowMin);
-  console.log('labelShowMax', labelShowMax);
-  console.log('labels', labels);
+  console.log("labelShowMin", labelShowMin);
+  console.log("labelShowMax", labelShowMax);
+  console.log("labels", labels);
   if (!labelShowMin) {
     if (labels[0] !== 0) {
-      labels[0] = ''; // todo: clear the code
+      labels[0] = ""; // todo: clear the code
     }
   }
   if (!labelShowMax) {
-    labels[labels.length - 1] = '';
+    labels[labels.length - 1] = "";
   }
-  console.log('labels', labels);
+  console.log("labels", labels);
 
-  board.$board.create('ticks', [newAxis, ticks],
-    {
-      straightFirst: false,
-      straightLast: false,
-      firstArrow: settings.leftArrow === true ? { size: 10 } : false,
-      lastArrow: settings.rightArrow === true ? { size: 10 } : false,
-      strokeColor: '#d6d6d6',
-      highlightStrokeColor: '#d6d6d6',
-      visible: settings.showTicks,
-      anchor: 'middle',
-      insertTicks: false,
-      drawZero: false,
-      tickEndings: [1, 1],
-      majorHeight: 25,
-      minorHeight: 15,
-      drawLabels: showLabels,
-      ticksDistance,
-      label: {
-        offset: [0, -15],
-        anchorX: 'middle',
-        anchorY: 'top',
-        fontSize: settings.fontSize,
-        display: 'html',
-        cssClass: 'numberline-fraction',
-        highlightCssClass: 'numberline-fraction'
-      },
-      labels
-    });
+  board.$board.create("ticks", [newAxis, ticks], {
+    straightFirst: false,
+    straightLast: false,
+    firstArrow: settings.leftArrow === true ? { size: 10 } : false,
+    lastArrow: settings.rightArrow === true ? { size: 10 } : false,
+    strokeColor: "#d6d6d6",
+    highlightStrokeColor: "#d6d6d6",
+    visible: settings.showTicks,
+    anchor: "middle",
+    insertTicks: false,
+    drawZero: false,
+    tickEndings: [1, 1],
+    majorHeight: 25,
+    minorHeight: 15,
+    drawLabels: showLabels,
+    ticksDistance,
+    label: {
+      offset: [0, -15],
+      anchorX: "middle",
+      anchorY: "top",
+      fontSize: settings.fontSize,
+      display: "html",
+      cssClass: "numberline-fraction",
+      highlightCssClass: "numberline-fraction"
+    },
+    labels
+  });
 
-    if (!labelShowMin) {
-      if (labels[0] === 0) {
-        board.$board.removeObject(newAxis.ticks[1].labels[0])
-      }
+  if (!labelShowMin) {
+    if (labels[0] === 0) {
+      board.$board.removeObject(newAxis.ticks[1].labels[0]);
     }
-
+  }
 
   return newAxis;
 };
 
 const updateCoords = (board, xMin, xMax, settings, lineSettings) => {
-  const oldAxis = board.elements.filter(element => element.elType === 'axis' || element.elType === 'arrow');
+  const oldAxis = board.elements.filter(element => element.elType === "axis" || element.elType === "arrow");
   board.$board.removeObject(oldAxis);
-  board.elements = board.elements.filter(element => element.elType !== 'axis').filter(element => element.elType !== 'arrow');
+  board.elements = board.elements
+    .filter(element => element.elType !== "axis")
+    .filter(element => element.elType !== "arrow");
   const newAxis = onHandler(board, xMin, xMax, settings, lineSettings);
   board.elements.push(newAxis);
   board.$board.fullUpdate();

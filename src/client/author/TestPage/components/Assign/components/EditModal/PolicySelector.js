@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Col, Select } from 'antd';
-import { StyledRow, StyledRowLabel } from './styled';
-import { selectsData } from '../../../common';
+import React from "react";
+import PropTypes from "prop-types";
+import { Col, Select } from "antd";
+import { StyledRow, StyledRowLabel } from "./styled";
+import { selectsData } from "../../../common";
 
 const PolicySelector = ({ openPolicy, closePolicy, changeField }) => (
   <React.Fragment>
@@ -16,9 +16,9 @@ const PolicySelector = ({ openPolicy, closePolicy, changeField }) => (
           data-cy="openPolicy"
           defaultValue="Automatically on Start Date"
           size="large"
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
           value={openPolicy}
-          onChange={changeField('openPolicy')}
+          onChange={changeField("openPolicy")}
         >
           {selectsData.openPolicy.map(({ value, text }) => (
             <Select.Option key={value} value={value} data-cy="open">
@@ -32,9 +32,9 @@ const PolicySelector = ({ openPolicy, closePolicy, changeField }) => (
           data-cy="closePolicy"
           defaultValue="Automatically on Due Date"
           size="large"
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
           value={closePolicy}
-          onChange={changeField('closePolicy')}
+          onChange={changeField("closePolicy")}
         >
           {selectsData.closePolicy.map(({ value, text }) => (
             <Select.Option key={value} value={value} data-cy="close">

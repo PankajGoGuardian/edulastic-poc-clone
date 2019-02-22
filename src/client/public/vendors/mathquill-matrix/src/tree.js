@@ -15,7 +15,7 @@ var L = -1;
 var R = 1;
 
 function prayDirection(dir) {
-  pray('a direction was passed', dir === L || dir === R);
+  pray("a direction was passed", dir === L || dir === R);
 }
 
 /**
@@ -50,8 +50,7 @@ function prayDirection(dir) {
  */
 var $ = P(jQuery, function(_) {
   _.insDirOf = function(dir, el) {
-    return dir === L ?
-      this.insertBefore(el.first()) : this.insertAfter(el.last());
+    return dir === L ? this.insertBefore(el.first()) : this.insertAfter(el.last());
   };
   _.insAtDirEnd = function(dir, el) {
     return dir === L ? this.prependTo(el) : this.appendTo(el);
@@ -79,11 +78,13 @@ var Point = P(function(_) {
  */
 var Node = P(function(_) {
   _[L] = 0;
-  _[R] = 0
+  _[R] = 0;
   _.parent = 0;
 
   var id = 0;
-  function uniqueNodeId() { return id += 1; }
+  function uniqueNodeId() {
+    return (id += 1);
+  }
   this.byId = {};
 
   _.init = function() {
@@ -95,20 +96,26 @@ var Node = P(function(_) {
     this.ends[R] = 0;
   };
 
-  _.dispose = function() { delete Node.byId[this.id]; };
+  _.dispose = function() {
+    delete Node.byId[this.id];
+  };
 
-  _.toString = function() { return '{{ MathQuill Node #'+this.id+' }}'; };
+  _.toString = function() {
+    return "{{ MathQuill Node #" + this.id + " }}";
+  };
 
   _.jQ = $();
-  _.jQadd = function(jQ) { return this.jQ = this.jQ.add(jQ); };
+  _.jQadd = function(jQ) {
+    return (this.jQ = this.jQ.add(jQ));
+  };
   _.jQize = function(jQ) {
     // jQuery-ifies this.html() and links up the .jQ of all corresponding Nodes
     var jQ = $(jQ || this.html());
 
     function jQadd(el) {
       if (el.getAttribute) {
-        var cmdId = el.getAttribute('mathquill-command-id');
-        var blockId = el.getAttribute('mathquill-block-id');
+        var cmdId = el.getAttribute("mathquill-command-id");
+        var blockId = el.getAttribute("mathquill-block-id");
         if (cmdId) Node.byId[cmdId].jQadd(el);
         if (blockId) Node.byId[blockId].jQadd(el);
       }
@@ -129,7 +136,9 @@ var Node = P(function(_) {
     cursor[dir] = node.adopt(cursor.parent, cursor[L], cursor[R]);
     return node;
   };
-  _.createLeftOf = function(el) { return this.createDir(L, el); };
+  _.createLeftOf = function(el) {
+    return this.createDir(L, el);
+  };
 
   _.selectChildren = function(leftEnd, rightEnd) {
     return Selection(leftEnd, rightEnd);
@@ -156,7 +165,7 @@ var Node = P(function(_) {
   _.isEmpty = function() {
     return this.ends[L] === 0 && this.ends[R] === 0;
   };
-  
+
   _.isStyleBlock = function() {
     return false;
   };
@@ -192,30 +201,35 @@ var Node = P(function(_) {
 
   _.remove = function() {
     this.jQ.remove();
-    this.postOrder('dispose');
+    this.postOrder("dispose");
     return this.disown();
   };
 });
 
 function prayWellFormed(parent, leftward, rightward) {
-  pray('a parent is always present', parent);
-  pray('leftward is properly set up', (function() {
-    // either it's empty and `rightward` is the left end child (possibly empty)
-    if (!leftward) return parent.ends[L] === rightward;
+  pray("a parent is always present", parent);
+  pray(
+    "leftward is properly set up",
+    (function() {
+      // either it's empty and `rightward` is the left end child (possibly empty)
+      if (!leftward) return parent.ends[L] === rightward;
 
-    // or it's there and its [R] and .parent are properly set up
-    return leftward[R] === rightward && leftward.parent === parent;
-  })());
+      // or it's there and its [R] and .parent are properly set up
+      return leftward[R] === rightward && leftward.parent === parent;
+    })()
+  );
 
-  pray('rightward is properly set up', (function() {
-    // either it's empty and `leftward` is the right end child (possibly empty)
-    if (!rightward) return parent.ends[R] === leftward;
+  pray(
+    "rightward is properly set up",
+    (function() {
+      // either it's empty and `leftward` is the right end child (possibly empty)
+      if (!rightward) return parent.ends[R] === leftward;
 
-    // or it's there and its [L] and .parent are properly set up
-    return rightward[L] === leftward && rightward.parent === parent;
-  })());
+      // or it's there and its [L] and .parent are properly set up
+      return rightward[L] === leftward && rightward.parent === parent;
+    })()
+  );
 }
-
 
 /**
  * An entity outside the virtual tree with one-way pointers (so it's only a
@@ -234,16 +248,15 @@ var Fragment = P(function(_) {
     if (dir === undefined) dir = L;
     prayDirection(dir);
 
-    pray('no half-empty fragments', !withDir === !oppDir);
+    pray("no half-empty fragments", !withDir === !oppDir);
 
     this.ends = {};
 
     if (!withDir) return;
 
-    pray('withDir is passed to Fragment', withDir instanceof Node);
-    pray('oppDir is passed to Fragment', oppDir instanceof Node);
-    pray('withDir and oppDir have the same parent',
-         withDir.parent === oppDir.parent);
+    pray("withDir is passed to Fragment", withDir instanceof Node);
+    pray("oppDir is passed to Fragment", oppDir instanceof Node);
+    pray("withDir and oppDir have the same parent", withDir.parent === oppDir.parent);
 
     this.ends[dir] = withDir;
     this.ends[-dir] = oppDir;
@@ -255,7 +268,7 @@ var Fragment = P(function(_) {
     // quadratic time in the number of elements.
     //
     // https://github.com/jquery/jquery/blob/2.1.4/src/traversing.js#L112
-    var accum = this.fold([], function (accum, el) {
+    var accum = this.fold([], function(accum, el) {
       accum.push.apply(accum, el.jQ.get());
       return accum;
     });
@@ -266,8 +279,7 @@ var Fragment = P(function(_) {
 
   // like Cursor::withDirInsertAt(dir, parent, withDir, oppDir)
   _.withDirAdopt = function(dir, parent, withDir, oppDir) {
-    return (dir === L ? this.adopt(parent, withDir, oppDir)
-                      : this.adopt(parent, oppDir, withDir));
+    return dir === L ? this.adopt(parent, withDir, oppDir) : this.adopt(parent, oppDir, withDir);
   };
   _.adopt = function(parent, leftward, rightward) {
     prayWellFormed(parent, leftward, rightward);
@@ -315,7 +327,7 @@ var Fragment = P(function(_) {
 
     self.disowned = true;
 
-    var rightEnd = self.ends[R]
+    var rightEnd = self.ends[R];
     var parent = leftEnd.parent;
 
     prayWellFormed(parent, leftEnd[L], leftEnd);
@@ -338,7 +350,7 @@ var Fragment = P(function(_) {
 
   _.remove = function() {
     this.jQ.remove();
-    this.each('postOrder', 'dispose');
+    this.each("postOrder", "dispose");
     return this.disown();
   };
 
@@ -364,11 +376,11 @@ var Fragment = P(function(_) {
   };
 });
 
-
 /**
  * Registry of LaTeX commands and commands created when typing
  * a single character.
  *
  * (Commands are all subclasses of Node.)
  */
-var LatexCmds = {}, CharCmds = {};
+var LatexCmds = {},
+  CharCmds = {};

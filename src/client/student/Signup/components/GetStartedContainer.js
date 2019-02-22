@@ -1,28 +1,25 @@
-import React from 'react';
-import { Row, Col, Form } from 'antd';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
+import React from "react";
+import { Row, Col, Form } from "antd";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
 
-import loginBg from '../../assets/bg-login.png';
-import studentBg from '../../assets/small-bg-student.png';
-import teacherBg from '../../assets/small-bg-teacher.png';
-import adminBg from '../../assets/small-bg-adm.png';
+import loginBg from "../../assets/bg-login.png";
+import studentBg from "../../assets/small-bg-student.png";
+import teacherBg from "../../assets/small-bg-teacher.png";
+import adminBg from "../../assets/small-bg-adm.png";
 
 const GetStarted = ({ t }) => (
   <RegistrationWrapper>
     <RegistrationHeader type="flex" align="middle">
       <Col span={12}>
-        <img
-          src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png"
-          alt="Edulastic"
-        />
+        <img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
       </Col>
       <Col span={12} align="right">
-        <span>{t('component.signup.alreadyhaveanaccount')}</span>
-        <Link to="/login">{t('common.signinbtn')}</Link>
+        <span>{t("component.signup.alreadyhaveanaccount")}</span>
+        <Link to="/login">{t("common.signinbtn")}</Link>
       </Col>
     </RegistrationHeader>
     <RegistrationBody type="flex" align="middle">
@@ -34,34 +31,28 @@ const GetStarted = ({ t }) => (
       >
         <Row>
           <BannerText xs={24}>
-            <h1>{t('component.signup.getstarted.getstartedtext')}</h1>
+            <h1>{t("component.signup.getstarted.getstartedtext")}</h1>
             <h4>
-              {t('component.signup.getstarted.subtext')} <br />{' '}
-              {t('component.signup.getstarted.subtext2')}
+              {t("component.signup.getstarted.subtext")} <br /> {t("component.signup.getstarted.subtext2")}
             </h4>
           </BannerText>
         </Row>
         <ChooseSignupBox>
-          <h3>{t('component.signup.getstarted.createaccount')}</h3>
-          <StudentSignupBox
-            data-cy="student"
-            to="/studentsignup"
-            xs={24}
-            sm={8}
-          >
-            <span>{t('component.signup.getstarted.imstudent')}</span>
+          <h3>{t("component.signup.getstarted.createaccount")}</h3>
+          <StudentSignupBox data-cy="student" to="/studentsignup" xs={24} sm={8}>
+            <span>{t("component.signup.getstarted.imstudent")}</span>
           </StudentSignupBox>
           <TeacherSignupBox to="/signup" xs={24} sm={8}>
-            <span>{t('component.signup.getstarted.imteacher')}</span>
+            <span>{t("component.signup.getstarted.imteacher")}</span>
           </TeacherSignupBox>
           <AdminSignupBox to="/adminsignup" xs={24} sm={8}>
-            <span>{t('component.signup.getstarted.imadmin')}</span>
+            <span>{t("component.signup.getstarted.imadmin")}</span>
           </AdminSignupBox>
         </ChooseSignupBox>
       </Col>
     </RegistrationBody>
     <Copyright>
-      <Col span={24}>{t('common.copyright')}</Col>
+      <Col span={24}>{t("common.copyright")}</Col>
     </Copyright>
   </RegistrationWrapper>
 );
@@ -72,7 +63,7 @@ GetStarted.propTypes = {
 
 const ChooseSignup = Form.create()(GetStarted);
 
-const enhance = compose(withNamespaces('login'));
+const enhance = compose(withNamespaces("login"));
 
 export default enhance(ChooseSignup);
 

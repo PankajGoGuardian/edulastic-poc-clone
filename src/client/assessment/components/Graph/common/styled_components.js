@@ -1,13 +1,7 @@
-import styled from 'styled-components';
-import TextareaAutosize from 'react-autosize-textarea';
-import {
-  greenDark,
-  grey,
-  tabletWidth,
-  greenDarkSecondary,
-  secondaryTextColor
-} from '@edulastic/colors';
-import { TextField } from '@edulastic/common';
+import styled from "styled-components";
+import TextareaAutosize from "react-autosize-textarea";
+import { greenDark, grey, tabletWidth, greenDarkSecondary, secondaryTextColor } from "@edulastic/colors";
+import { TextField } from "@edulastic/common";
 
 export const StyledTextarea = styled(TextareaAutosize)`
   resize: none;
@@ -42,11 +36,11 @@ export const Subtitle = styled.div`
 `;
 
 export const StyledTextField = styled(TextField)`
-  width: ${props => (props.width ? `${props.width}` : '100px')}
+  width: ${props => (props.width ? `${props.width}` : "100px")}
   padding: 0 0 0 40px;
   margin-right: 3em;
   height: 40px;
-  margin-bottom: ${props => (props.marginBottom ? props.marginBottom : '1em')};
+  margin-bottom: ${props => (props.marginBottom ? props.marginBottom : "1em")};
   border-radius: 4px;
 `;
 
@@ -59,8 +53,8 @@ export const LineInput = styled(TextField)`
 
 export const Label = styled.label`
   display: block;
-  margin-right: .7em;
-  margin-bottom: .7em;
+  margin-right: 0.7em;
+  margin-bottom: 0.7em;
   font-weight: 600;
 `;
 
@@ -162,7 +156,7 @@ export const StyledDragHandle = styled.div`
 
   svg {
     height: 16px;
-    width: 16px
+    width: 16px;
   }
 `;
 
@@ -179,7 +173,6 @@ export const MoreOptions = styled.div`
   align-items: center;
   flex-direction: column;
 `;
-
 
 export const MoreOptionsHeading = styled.div`
   width: 100%;
@@ -252,7 +245,6 @@ export const MoreOptionsSubHeading = styled.div`
   // line-height: 1.36;
 `;
 
-
 export const MoreOptionsLabel = styled.div`
   color: ${secondaryTextColor};
   font-size: 13px;
@@ -288,12 +280,12 @@ export const MoreOptionsInputSmall = styled(MoreOptionsInput)`
 
 export const SelectContainer = styled.div`
   position: relative;
-  width: ${props => (props.width ? `${props.width}px` : '100%')};
-  height: ${props => (props.height ? `${props.height}px` : '58px')};
-  
+  width: ${props => (props.width ? `${props.width}px` : "100%")};
+  height: ${props => (props.height ? `${props.height}px` : "58px")};
+
   &:before {
     position: absolute;
-    font-family: 'FontAwesome';
+    font-family: "FontAwesome";
     top: 0;
     right: 25px;
     display: flex;
@@ -302,7 +294,7 @@ export const SelectContainer = styled.div`
     color: blue;
     content: "\f0d7";
   }
-  
+
   @media (max-width: 760px) {
     height: 52px;
     width: 188px;
@@ -335,9 +327,9 @@ export const MoreOptionsDivider = styled.div`
 export const Row = styled.div`
   display: flex;
   align-items: flex-start;
-  margin-bottom: ${props => (props.marginBottom ? props.marginBottom : '15px')};
+  margin-bottom: ${props => (props.marginBottom ? props.marginBottom : "15px")};
   flex-wrap: wrap;
-  
+
   &:last-child {
     margin-bottom: 0;
   }
@@ -346,9 +338,9 @@ export const Row = styled.div`
 export const Col = styled.div`
   display: flex;
   flex-direction: column;
-  padding-right: ${props => (props.paddingRight ? props.paddingRight : '0')}
-  padding-left: ${props => (props.paddingLeft ? props.paddingLeft : '0')}
-  margin-bottom: ${props => (props.marginBottom ? props.marginBottom : '0')}px;
+  padding-right: ${props => (props.paddingRight ? props.paddingRight : "0")}
+  padding-left: ${props => (props.paddingLeft ? props.paddingLeft : "0")}
+  margin-bottom: ${props => (props.marginBottom ? props.marginBottom : "0")}px;
   width: ${({ md }) => (100 / 12) * md}%;
   display: block; 
 `;

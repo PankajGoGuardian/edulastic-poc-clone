@@ -1,13 +1,13 @@
-import React, { Fragment, Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React, { Fragment, Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
 
-import { PREVIEW, EDIT, CLEAR } from '../../constants/constantsForQuestions';
+import { PREVIEW, EDIT, CLEAR } from "../../constants/constantsForQuestions";
 
-import HighlightImagePreview from './HighlightImagePreview';
-import HighlightImageEdit from './components/HighlightImageEdit';
+import HighlightImagePreview from "./HighlightImagePreview";
+import HighlightImageEdit from "./components/HighlightImageEdit";
 
 class HighlightImage extends Component {
   render() {
@@ -38,7 +38,7 @@ HighlightImage.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: ''
+  evaluation: ""
 };
 
 const HighlightImageContainer = connect(

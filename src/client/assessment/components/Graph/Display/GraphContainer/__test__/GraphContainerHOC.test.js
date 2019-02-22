@@ -1,9 +1,9 @@
-import React from 'react';
-import { shallow } from 'enzyme';
+import React from "react";
+import { shallow } from "enzyme";
 
-import GraphContainerHOC from '../GraphContainerHOC';
+import GraphContainerHOC from "../GraphContainerHOC";
 
-describe('<GraphContainerHOC />', () => {
+describe("<GraphContainerHOC />", () => {
   const canvasConfig = {
     x_min: -9,
     x_max: 9,
@@ -20,26 +20,26 @@ describe('<GraphContainerHOC />', () => {
     xDistance: 10,
     yDistance: 10,
     xTickDistance: 10,
-    xShowAxisLabel: 'XLabel',
+    xShowAxisLabel: "XLabel",
     xHideTicks: true,
     xDrawLabel: true,
     xMaxArrow: 5,
     xMinArrow: 1,
-    xCommaInLabel: 'XArrow',
+    xCommaInLabel: "XArrow",
     displayPositionOnHover: true,
     yTickDistance: 10,
-    yShowAxisLabel: 'YLabel',
+    yShowAxisLabel: "YLabel",
     yHideTicks: true,
     yDrawLabel: true,
     yMaxArrow: 10,
     yMinArrow: 1,
-    yCommaInLabel: 'YLabel'
+    yCommaInLabel: "YLabel"
   };
 
   const backgroundShapes = [];
 
   const bgImgOptions = {
-    src: '',
+    src: "",
     opacity: 90,
     x: 0,
     y: 0,
@@ -47,7 +47,7 @@ describe('<GraphContainerHOC />', () => {
     height: 100
   };
 
-  it('should render properly', () => {
+  it("should render properly", () => {
     const renderedComponent = shallow(
       <GraphContainerHOC
         canvasConfig={canvasConfig}

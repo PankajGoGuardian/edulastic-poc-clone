@@ -1,6 +1,6 @@
-import { createSelector } from 'reselect';
-import { cloneDeep } from 'lodash';
-import { getAnswersListSelector } from './answers';
+import { createSelector } from "reselect";
+import { cloneDeep } from "lodash";
+import { getAnswersListSelector } from "./answers";
 
 const stateSelector = state => state.test;
 
@@ -22,7 +22,7 @@ export const currentItemSelector = createSelector(
 
 export const currentQuestions = createSelector(
   currentItemSelector,
-  (item) => {
+  item => {
     const rows = Array.isArray(item.rows) ? item.rows : [];
     return rows.reduce((acc, row) => {
       const widgets = Array.isArray(row.widgets) ? row.widgets : [];
@@ -34,7 +34,7 @@ export const currentQuestions = createSelector(
 export const answersForCheck = createSelector(
   getAnswersListSelector,
   currentQuestions,
-  (answers) => {
+  answers => {
     const newAnswers = cloneDeep(answers);
 
     return newAnswers;
@@ -43,10 +43,10 @@ export const answersForCheck = createSelector(
 
 export const itemQuestionsSelector = createSelector(
   currentItemSelector,
-  (item) => {
+  item => {
     const questions = [];
-    item.rows.forEach((row) => {
-      row.widgets.forEach((widget) => {
+    item.rows.forEach(row => {
+      row.widgets.forEach(widget => {
         const qid = widget.entity && widget.entity.id;
         questions.push(qid);
       });

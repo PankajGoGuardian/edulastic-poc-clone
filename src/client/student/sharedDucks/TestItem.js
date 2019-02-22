@@ -1,10 +1,10 @@
-import { createAction, createReducer } from 'redux-starter-kit';
-import { createSelector } from 'reselect';
-import { keyBy } from 'lodash';
+import { createAction, createReducer } from "redux-starter-kit";
+import { createSelector } from "reselect";
+import { keyBy } from "lodash";
 
 // types
-export const SET_TEST_ITEM = '[studentTestItem] set test item';
-export const SET_CURRENT_ITEM = '[studentTestItem] set current item';
+export const SET_TEST_ITEM = "[studentTestItem] set test item";
+export const SET_CURRENT_ITEM = "[studentTestItem] set current item";
 
 // actions
 export const setTestItemsAction = createAction(SET_TEST_ITEM);
@@ -48,11 +48,11 @@ export const getTestItemQuestions = item => {
   return questionList;
 };
 // selectors
-const module = 'studentTestItems';
+const module = "studentTestItems";
 export const getCurrentItemSelector = state => state[module].current;
 export const getItemCountSelector = state => state[module].items.length;
 export const getItemsSelector = state => state[module].items;
-export const getTestFeedbackSelector = state => state['testFeedback'];
+export const getTestFeedbackSelector = state => state["testFeedback"];
 
 export const getItemSelector = createSelector(
   getItemsSelector,
@@ -64,7 +64,7 @@ export const getQuestionsSelector = createSelector(
   getItemSelector,
   getTestFeedbackSelector,
   (item, testFeedback) => {
-    const feedbackIndex = keyBy(testFeedback, 'qid');
+    const feedbackIndex = keyBy(testFeedback, "qid");
     const questions = getTestItemQuestions(item);
     const questionsWithFeedback = questions.map(data => ({
       ...data,

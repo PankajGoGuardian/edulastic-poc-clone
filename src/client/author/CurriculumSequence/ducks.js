@@ -1,53 +1,46 @@
-import { createAction, createReducer } from 'redux-starter-kit';
-import { message } from 'antd';
-import {
-  takeLatest,
-  put,
-  call,
-  all,
-  select
-} from 'redux-saga/effects';
-import { flatten, cloneDeep } from 'lodash';
-import { v4 } from 'uuid';
-import { normalize, schema } from 'normalizr';
-import { curriculumSequencesApi, assignmentApi } from '@edulastic/api';
-import { setCurrentAssignmentAction } from '../TestPage/components/Assign/ducks';
-import * as moment from 'moment';
+import { createAction, createReducer } from "redux-starter-kit";
+import { message } from "antd";
+import { takeLatest, put, call, all, select } from "redux-saga/effects";
+import { flatten, cloneDeep } from "lodash";
+import { v4 } from "uuid";
+import { normalize, schema } from "normalizr";
+import { curriculumSequencesApi, assignmentApi } from "@edulastic/api";
+import { setCurrentAssignmentAction } from "../TestPage/components/Assign/ducks";
+import * as moment from "moment";
 
 // Constants
-export const CURRICULUM_TYPE_GUIDE = 'guide';
-export const CURRICULUM_TYPE_CONTENT = 'content';
+export const CURRICULUM_TYPE_GUIDE = "guide";
+export const CURRICULUM_TYPE_CONTENT = "content";
 
 // Types
-export const FETCH_CURRICULUM_SEQUENCES = '[curriculum-sequence] fetch list of curriculum sequences';
-export const UPDATE_CURRICULUM_SEQUENCE = '[curriculum-sequence-ui] update curriculum sequence';
-export const UPDATE_CURRICULUM_SEQUENCE_LIST = '[curriculum-sequence-ui] update curriculum sequence list';
-export const FETCH_CURRICULUM_SEQUENCES_ERROR = '[curriculum-sequence-ui] error no ids provided';
-export const PUT_CURRICULUM_SEQUENCE = '[curriculum-sequence] put curriculum sequence';
-export const SEARCH_CURRICULUM_SEQUENCES = '[curriculum-sequence] search curriculum sequences';
-export const SEARCH_GUIDES = '[curriculum-sequence] search curriculum sequences - guides';
-export const SEARCH_GUIDES_RESULT = '[curriculum-sequence] search curriculum sequences - guides - result';
-export const SEARCH_CONTENT_CURRICULUMS = '[curriculum-sequence] search curriculum sequences - content';
-export const SEARCH_CONTENT_CURRICULUMS_RESULT = '[curriculum-sequence] search curriculum sequences - content - result';
-export const CHANGE_GUIDE = '[curriculum-sequence] change curriculum sequence (guide)';
-export const SET_PUBLISHER = '[curriculum-sequence] set selected publisher';
-export const SET_GUIDE = '[curriculum-sequence] set selected guide';
-export const SAVE_GUIDE_ALIGNMENT = '[curriculum-sequence] save guide alignment';
-export const SET_CONTENT_CURRICULUM = '[curriculum-sequence] set selected content';
-export const TOGGLE_CHECKED_UNIT_ITEM = '[curriculum-sequence] toggle checked unit item';
-export const TOGGLE_ADD_CONTENT = '[curriculum-sequence-ui] toggle add content';
-export const CREATE_ASSIGNMENT = '[curriculum-sequence] create assignment';
-export const CREATE_ASSIGNMENT_OK = '[curriculum-sequence] create assignment ok';
-export const SET_SELECTED_ITEMS_FOR_ASSIGN = '[curriculum-sequence] set selected items for assign';
-export const SET_SELECTED_ITEMS_FOR_ASSIGN_INIT = '[curriculum-sequence] set selected items for assign init';
-export const SET_DATA_FOR_ASSIGN_INIT = '[curriculum-sequence] set data for assign init';
-export const SET_DATA_FOR_ASSIGN = '[curriculum-sequence] set data for assign';
-export const ADD_CONTENT_TO_CURRICULUM = '[curriculum-sequence] add content to curriculum';
-export const ADD_CONTENT_TO_CURRICULUM_RESULT = '[curriculum-sequence] add content to curriculum result';
-export const REMOVE_ITEM_FROM_UNIT = '[curriculum-sequence] remove item from unit';
-export const SAVE_CURRICULUM_SEQUENCE = '[curriculum-sequence] save curriculum sequence';
-export const ADD_NEW_UNIT_TO_DESTINATION = '[curriculum-sequence] add new unit to destination';
-
+export const FETCH_CURRICULUM_SEQUENCES = "[curriculum-sequence] fetch list of curriculum sequences";
+export const UPDATE_CURRICULUM_SEQUENCE = "[curriculum-sequence-ui] update curriculum sequence";
+export const UPDATE_CURRICULUM_SEQUENCE_LIST = "[curriculum-sequence-ui] update curriculum sequence list";
+export const FETCH_CURRICULUM_SEQUENCES_ERROR = "[curriculum-sequence-ui] error no ids provided";
+export const PUT_CURRICULUM_SEQUENCE = "[curriculum-sequence] put curriculum sequence";
+export const SEARCH_CURRICULUM_SEQUENCES = "[curriculum-sequence] search curriculum sequences";
+export const SEARCH_GUIDES = "[curriculum-sequence] search curriculum sequences - guides";
+export const SEARCH_GUIDES_RESULT = "[curriculum-sequence] search curriculum sequences - guides - result";
+export const SEARCH_CONTENT_CURRICULUMS = "[curriculum-sequence] search curriculum sequences - content";
+export const SEARCH_CONTENT_CURRICULUMS_RESULT = "[curriculum-sequence] search curriculum sequences - content - result";
+export const CHANGE_GUIDE = "[curriculum-sequence] change curriculum sequence (guide)";
+export const SET_PUBLISHER = "[curriculum-sequence] set selected publisher";
+export const SET_GUIDE = "[curriculum-sequence] set selected guide";
+export const SAVE_GUIDE_ALIGNMENT = "[curriculum-sequence] save guide alignment";
+export const SET_CONTENT_CURRICULUM = "[curriculum-sequence] set selected content";
+export const TOGGLE_CHECKED_UNIT_ITEM = "[curriculum-sequence] toggle checked unit item";
+export const TOGGLE_ADD_CONTENT = "[curriculum-sequence-ui] toggle add content";
+export const CREATE_ASSIGNMENT = "[curriculum-sequence] create assignment";
+export const CREATE_ASSIGNMENT_OK = "[curriculum-sequence] create assignment ok";
+export const SET_SELECTED_ITEMS_FOR_ASSIGN = "[curriculum-sequence] set selected items for assign";
+export const SET_SELECTED_ITEMS_FOR_ASSIGN_INIT = "[curriculum-sequence] set selected items for assign init";
+export const SET_DATA_FOR_ASSIGN_INIT = "[curriculum-sequence] set data for assign init";
+export const SET_DATA_FOR_ASSIGN = "[curriculum-sequence] set data for assign";
+export const ADD_CONTENT_TO_CURRICULUM = "[curriculum-sequence] add content to curriculum";
+export const ADD_CONTENT_TO_CURRICULUM_RESULT = "[curriculum-sequence] add content to curriculum result";
+export const REMOVE_ITEM_FROM_UNIT = "[curriculum-sequence] remove item from unit";
+export const SAVE_CURRICULUM_SEQUENCE = "[curriculum-sequence] save curriculum sequence";
+export const ADD_NEW_UNIT_TO_DESTINATION = "[curriculum-sequence] add new unit to destination";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -73,8 +66,7 @@ export const addNewUnitToDestinationAction = createAction(ADD_NEW_UNIT_TO_DESTIN
 export const removeItemFromUnitAction = createAction(REMOVE_ITEM_FROM_UNIT);
 export const putCurriculumSequenceAction = createAction(PUT_CURRICULUM_SEQUENCE);
 
-
-export const getAllCurriculumSequences = (ids) => {
+export const getAllCurriculumSequences = ids => {
   if (!ids) {
     return {
       type: FETCH_CURRICULUM_SEQUENCES_ERROR
@@ -88,17 +80,17 @@ export const getAllCurriculumSequences = (ids) => {
 
 // State getters
 const getCurriculumSequenceState = state => state.curriculumSequence;
-const getPublisher = (state) => {
-  if (!state.curriculumSequence) return '';
+const getPublisher = state => {
+  if (!state.curriculumSequence) return "";
 
   return state.curriculumSequence.selectedPublisher;
 };
-const getSelectedContent = (state) => {
-  if (!state.selectedContent) return '';
+const getSelectedContent = state => {
+  if (!state.selectedContent) return "";
 
   return state.curriculumSequence.selectedContent;
 };
-const getSelectedItemsForAssign = (state) => {
+const getSelectedItemsForAssign = state => {
   if (
     !state.curriculumSequence.selectedItemsForAssign ||
     state.curriculumSequence.selectedItemsForAssign.length === 0
@@ -108,22 +100,20 @@ const getSelectedItemsForAssign = (state) => {
   return state.curriculumSequence.selectedItemsForAssign;
 };
 
-const getDestinationCurriculumSequence = (state) => {
+const getDestinationCurriculumSequence = state => {
   return state.curriculumSequence.destinationCurriculumSequence;
 };
 
 function* makeApiRequest(idsForFetch = []) {
   try {
-    const unflattenedItems = yield all(
-      idsForFetch.map(id => call(curriculumSequencesApi.getCurriculums, id))
-    );
+    const unflattenedItems = yield all(idsForFetch.map(id => call(curriculumSequencesApi.getCurriculums, id)));
 
     // We're using flatten because return from the server
     // is array even if it's one item, so we flatten it
     const items = flatten(unflattenedItems);
 
     // Normalize data
-    const curriculumSequenceSchema = new schema.Entity('curriculumSequenceList', {}, { idAttribute: '_id' });
+    const curriculumSequenceSchema = new schema.Entity("curriculumSequenceList", {}, { idAttribute: "_id" });
     const userListSchema = [curriculumSequenceSchema];
 
     const {
@@ -131,7 +121,12 @@ function* makeApiRequest(idsForFetch = []) {
       entities: { curriculumSequenceList: curriculumSequenceListObject }
     } = normalize(items, userListSchema);
 
-    yield put(updateCurriculumSequenceList({ allCurriculumSequences, curriculumSequenceListObject }));
+    yield put(
+      updateCurriculumSequenceList({
+        allCurriculumSequences,
+        curriculumSequenceListObject
+      })
+    );
   } catch (error) {
     message.warning(`We're sorry, seems to be a problem contacting the server, try again in a few minutes`);
   }
@@ -155,13 +150,12 @@ function* putCurriculumSequence({ payload }) {
   const { id, curriculumSequence } = payload;
 
   try {
-    const response = yield curriculumSequencesApi
-      .updateCurriculumSequence(id, curriculumSequence);
+    const response = yield curriculumSequencesApi.updateCurriculumSequence(id, curriculumSequence);
 
     message.success(`Successfully saved ${response.title}`);
     yield put(updateCurriculumSequenceAction(response));
   } catch (error) {
-    message.error('There was an error updating the curriculum sequence');
+    message.error("There was an error updating the curriculum sequence");
   }
 }
 
@@ -172,7 +166,7 @@ function* postSearchCurriculumSequence({ payload }) {
     const ids = response.map(curriculum => curriculum._id);
     yield call(makeApiRequest, ids);
   } catch (error) {
-    message.error('Something went wrong, please try again');
+    message.error("Something went wrong, please try again");
   }
 }
 
@@ -182,7 +176,7 @@ function* searchGuides({ payload }) {
     const response = yield call(curriculumSequencesApi.searchCurriculumSequences, { publisher, type });
     yield put(searchGuideResultAction(response));
   } catch (error) {
-    message.error('Something went wrong, please try again');
+    message.error("Something went wrong, please try again");
   }
 }
 
@@ -193,7 +187,7 @@ function* searchContent() {
     const response = yield call(curriculumSequencesApi.searchCurriculumSequences, { publisher, type });
     yield put(searchContentResultAction(response));
   } catch (error) {
-    message.error('Something went wrong, please try again');
+    message.error("Something went wrong, please try again");
   }
 }
 
@@ -201,16 +195,19 @@ function* changeGuide({ ids }) {
   try {
     yield call(makeApiRequest, ids);
   } catch (error) {
-    message.error('Something went wrong, please try again');
+    message.error("Something went wrong, please try again");
   }
 }
 
 function* setPublisher({ payload }) {
   try {
-    const response = yield call(curriculumSequencesApi.searchCurriculumSequences, { publisher: payload, type: 'guide' });
+    const response = yield call(curriculumSequencesApi.searchCurriculumSequences, {
+      publisher: payload,
+      type: "guide"
+    });
     yield put(searchGuideResultAction(response));
   } catch (error) {
-    message.error('Something went wrong, please try again');
+    message.error("Something went wrong, please try again");
     yield searchGuideResultAction([]);
   }
 }
@@ -235,9 +232,7 @@ function* createAssignment({ payload }) {
 
   /** @type {String[]} */
   const selectedItemsForAssign = yield select(getSelectedItemsForAssign);
-  const assignments = selectedItemsForAssign
-    .filter(testId => testId)
-    .map(testId => ({ ...assignment, testId }));
+  const assignments = selectedItemsForAssign.filter(testId => testId).map(testId => ({ ...assignment, testId }));
 
   /** @type {State} */
   const curriculumSequenceState = yield select(getCurriculumSequenceState);
@@ -249,26 +244,28 @@ function* createAssignment({ payload }) {
 
   /** @type {import('./components/CurriculumSequence').CurriculumSequenceType} */
   let updatedCurriculumSequence;
-  curriculumSequenceState.allCurriculumSequences.forEach((curriculumId) => {
+  curriculumSequenceState.allCurriculumSequences.forEach(curriculumId => {
     updatedCurriculumSequence = curriculumSequenceState.byId[curriculumId];
-    if (updatedCurriculumSequence.type !== 'guide') {
+    if (updatedCurriculumSequence.type !== "guide") {
       return;
     }
 
     if (curriculumSequenceState.byId) {
-      updatedCurriculumSequence.modules = [...curriculumSequenceState.byId[curriculumId].modules.map((moduleItem) => {
-        const updatedModule = { ...moduleItem };
-        const updatedModuleData = moduleItem.data.map((dataItem) => {
-          const updatedDataItem = { ...dataItem };
-          if (testIdsFromResponse.indexOf(dataItem.testId) !== -1) {
-            updatedDataItem.assigned = true;
-          }
-          return updatedDataItem;
-        });
+      updatedCurriculumSequence.modules = [
+        ...curriculumSequenceState.byId[curriculumId].modules.map(moduleItem => {
+          const updatedModule = { ...moduleItem };
+          const updatedModuleData = moduleItem.data.map(dataItem => {
+            const updatedDataItem = { ...dataItem };
+            if (testIdsFromResponse.indexOf(dataItem.testId) !== -1) {
+              updatedDataItem.assigned = true;
+            }
+            return updatedDataItem;
+          });
 
-        updatedModule.data = updatedModuleData;
-        return updatedModule;
-      })];
+          updatedModule.data = updatedModuleData;
+          return updatedModule;
+        })
+      ];
 
       nextCurriculumSequenceState.byId[curriculumId] = updatedCurriculumSequence;
     }
@@ -282,21 +279,20 @@ function* createAssignment({ payload }) {
 
   try {
     // Persist on server
-    yield curriculumSequencesApi
-      .updateCurriculumSequence(updatedCurriculumSequence._id, updatedCurriculumSequence)
+    yield curriculumSequencesApi.updateCurriculumSequence(updatedCurriculumSequence._id, updatedCurriculumSequence);
 
-    message.success('Successfully assigned');
+    message.success("Successfully assigned");
   } catch (error) {
-    message.error('There was an error updating the curriculum sequence');
-    console.warn('There was an error updating the curriculum sequence', error);
+    message.error("There was an error updating the curriculum sequence");
+    console.warn("There was an error updating the curriculum sequence", error);
     return;
   }
 
   try {
     yield put({ type: CREATE_ASSIGNMENT_OK, payload: assignmentApiResponse });
   } catch (error) {
-    message.error('Assign was not successful, please try again');
-    console.warn('createAssignment error', error);
+    message.error("Assign was not successful, please try again");
+    console.warn("createAssignment error", error);
   }
 }
 
@@ -314,7 +310,7 @@ function* addContentToCurriculumSequence({ payload }) {
 
   // Prevent duplicated items to be added
   if (toUnit.data.map(item => item.id).indexOf(contentToAdd.id) !== -1) {
-    message.warning('Assignment already exists.');
+    message.warning("Assignment already exists.");
     return;
   }
 
@@ -418,12 +414,11 @@ openDate: item.startDate,
 closeDate: item.endDate,
  */
 
-
 const getDefaultAssignData = () => ({
   startDate: moment(),
   endDate: moment(),
-  openPolicy: 'Automatically on Start Date',
-  closePolicy: 'Automatically on Due Date',
+  openPolicy: "Automatically on Start Date",
+  closePolicy: "Automatically on Due Date",
   class: [],
   specificStudents: false,
   students: []
@@ -439,9 +434,9 @@ const initialState = {
   byId: {},
 
   /**
-  * search result of type = "guide"
-  * @type {{id: string, titile: string}[]}
-  */
+   * search result of type = "guide"
+   * @type {{id: string, titile: string}[]}
+   */
   guides: [],
 
   /**
@@ -451,10 +446,10 @@ const initialState = {
   contentCurriculums: [],
 
   /** Selected guide that will appear on the left side */
-  selectedGuide: '',
+  selectedGuide: "",
 
   /** Selected content that will appear on the right side */
-  selectedContent: '',
+  selectedContent: "",
 
   /** ids of guides that are checkmarked */
   checkedUnitItems: [],
@@ -474,22 +469,19 @@ const initialState = {
  */
 const setCurriculumSequencesReducer = (state, { payload }) => {
   // Go trough all sequences and if type is guide, replace current guide
-  const idForRemoval = Object
-    .keys(state.byId)
+  const idForRemoval = Object.keys(state.byId)
     .map(key => state.byId[key])
-    .filter(item => item.type === 'guide')
+    .filter(item => item.type === "guide")
     .map(item => item._id)[0];
 
-  const newGuideId = Object
-    .keys(payload.curriculumSequenceListObject)
+  const newGuideId = Object.keys(payload.curriculumSequenceListObject)
     .map(key => payload.curriculumSequenceListObject[key])
-    .filter(item => item.type === 'guide')
+    .filter(item => item.type === "guide")
     .map(item => item._id)[0];
 
-  const contentIds = Object
-    .keys(payload.curriculumSequenceListObject)
+  const contentIds = Object.keys(payload.curriculumSequenceListObject)
     .map(key => payload.curriculumSequenceListObject[key])
-    .filter(item => item.type === 'content')
+    .filter(item => item.type === "content")
     .map(item => item._id);
   // Set to latest content Id
   let latestContentCurriculumId;
@@ -498,7 +490,7 @@ const setCurriculumSequencesReducer = (state, { payload }) => {
   } else if (state.selectedContent) {
     latestContentCurriculumId = state.selectedContent;
   } else {
-    latestContentCurriculumId = '';
+    latestContentCurriculumId = "";
   }
 
   if (newGuideId && idForRemoval) {
@@ -565,41 +557,45 @@ const toggleCheckedUnitItemReducer = (state, { payload }) => {
   }
 };
 
-const toggleAddContentReducer = (state) => {
+const toggleAddContentReducer = state => {
   state.isContentExpanded = !state.isContentExpanded;
 };
 
 /**
-* @param {State} state
-* @param {any} param1
-*/
+ * @param {State} state
+ * @param {any} param1
+ */
 const createAssignmentReducer = (state, { payload }) => {
   const assignmentApiResponse = payload;
   const curriculumSequenceState = { ...state };
   const testIdsFromResponse = assignmentApiResponse.map(item => item.testId);
-  const destinationCurriculumSequence = { ...state.destinationCurriculumSequence };
+  const destinationCurriculumSequence = {
+    ...state.destinationCurriculumSequence
+  };
 
   let updatedCurriculumSequence;
-  curriculumSequenceState.allCurriculumSequences.forEach((curriculumId) => {
+  curriculumSequenceState.allCurriculumSequences.forEach(curriculumId => {
     updatedCurriculumSequence = curriculumSequenceState.byId[curriculumId];
-    if (updatedCurriculumSequence.type !== 'guide') {
+    if (updatedCurriculumSequence.type !== "guide") {
       return;
     }
 
     if (curriculumSequenceState.byId) {
-      updatedCurriculumSequence.modules = [...curriculumSequenceState.byId[curriculumId].modules.map((moduleItem) => {
-        const updatedModule = { ...moduleItem };
-        const updatedModuleData = moduleItem.data.map((dataItem) => {
-          const updatedDataItem = { ...dataItem };
-          if (testIdsFromResponse.indexOf(dataItem.testId) !== -1) {
-            updatedDataItem.assigned = true;
-          }
-          return updatedDataItem;
-        });
+      updatedCurriculumSequence.modules = [
+        ...curriculumSequenceState.byId[curriculumId].modules.map(moduleItem => {
+          const updatedModule = { ...moduleItem };
+          const updatedModuleData = moduleItem.data.map(dataItem => {
+            const updatedDataItem = { ...dataItem };
+            if (testIdsFromResponse.indexOf(dataItem.testId) !== -1) {
+              updatedDataItem.assigned = true;
+            }
+            return updatedDataItem;
+          });
 
-        updatedModule.data = updatedModuleData;
-        return updatedModule;
-      })];
+          updatedModule.data = updatedModuleData;
+          return updatedModule;
+        })
+      ];
     }
   });
 
@@ -615,21 +611,21 @@ const createAssignmentReducer = (state, { payload }) => {
 };
 
 /**
-* @param {State} state
-* @param {Object<String, String>} args
-* @param {String|null} [args.payload]
-* we pass null when we deliberatly cancel the selected item without any user feedback
-* otherwise we pass *testId*
-*/
+ * @param {State} state
+ * @param {Object<String, String>} args
+ * @param {String|null} [args.payload]
+ * we pass null when we deliberatly cancel the selected item without any user feedback
+ * otherwise we pass *testId*
+ */
 const setSelectedItemsForAssignReducer = (state, { payload }) => {
   // we pass null when we deliberatly cancel the selected item without any user feedback
   if (!payload && payload !== null) {
-    message.info('No testId for this item');
+    message.info("No testId for this item");
     state.selectedItemsForAssign.pop();
   } else if (payload === null) {
     state.selectedItemsForAssign = [];
     state.dataForAssign = getDefaultAssignData();
-  } else if (typeof payload === 'string') {
+  } else if (typeof payload === "string") {
     state.selectedItemsForAssign.push(payload);
   } else if (Array.isArray(payload)) {
     state.selectedItemsForAssign = payload;
@@ -637,9 +633,9 @@ const setSelectedItemsForAssignReducer = (state, { payload }) => {
 };
 
 /**
-* @param {State} state
-* @param {any} param1
-*/
+ * @param {State} state
+ * @param {any} param1
+ */
 const setDataForAssignReducer = (state, { payload }) => {
   if (!payload) {
     state.dataForAssign = getDefaultAssignData();
@@ -649,20 +645,23 @@ const setDataForAssignReducer = (state, { payload }) => {
 };
 
 /**
-* @param {State} state
-* @param {Object<String, String>} args
-* @param {import('./components/CurriculumSequence').CurriculumSequenceType} [args.payload]
-*/
+ * @param {State} state
+ * @param {Object<String, String>} args
+ * @param {import('./components/CurriculumSequence').CurriculumSequenceType} [args.payload]
+ */
 const addContentToCurriculumSequenceReducer = (state, { payload }) => {
   const updatedModule = payload;
-  const destinationCurriculumSequence = { ...state.destinationCurriculumSequence };
-  const updatedModules = [...destinationCurriculumSequence
-    .modules.map((module) => {
+  const destinationCurriculumSequence = {
+    ...state.destinationCurriculumSequence
+  };
+  const updatedModules = [
+    ...destinationCurriculumSequence.modules.map(module => {
       if (module.id === updatedModule.id) {
         return updatedModule;
       }
       return module;
-    })];
+    })
+  ];
 
   return {
     ...state,
@@ -685,15 +684,9 @@ const removeItemFromUnitReducer = (state, { payload }) => {
   const destinationCurriculumSequence = cloneDeep(state.destinationCurriculumSequence);
   const modules = [...destinationCurriculumSequence.modules];
 
-  const moduleIndex = destinationCurriculumSequence
-    .modules
-    .map(m => m.id)
-    .indexOf(moduleId);
+  const moduleIndex = destinationCurriculumSequence.modules.map(m => m.id).indexOf(moduleId);
 
-  const itemIndex = destinationCurriculumSequence
-    .modules[moduleIndex]
-    .data
-    .map(d => d.id).indexOf(itemId);
+  const itemIndex = destinationCurriculumSequence.modules[moduleIndex].data.map(d => d.id).indexOf(itemId);
 
   modules[moduleIndex].data.splice(itemIndex, 1);
 
@@ -709,16 +702,18 @@ const removeItemFromUnitReducer = (state, { payload }) => {
 };
 
 /**
-* @param {State} state
-* @param {Object<String, Object>} param2
-* @param {Object<String, Object>} [param2.payload]
-* @param {String} [param2.payload.afterUnitId]
-* @param {import('./components/CurriculumSequence').Module} [param2.payload.newUnit]
-*/
+ * @param {State} state
+ * @param {Object<String, Object>} param2
+ * @param {Object<String, Object>} [param2.payload]
+ * @param {String} [param2.payload.afterUnitId]
+ * @param {import('./components/CurriculumSequence').Module} [param2.payload.newUnit]
+ */
 const addNewUnitToDestinationReducer = (state, { payload }) => {
   // { afterUnitId, newUnit }
   const { afterUnitId, newUnit } = payload;
-  const destinationCurriculumSequence = { ...state.destinationCurriculumSequence };
+  const destinationCurriculumSequence = {
+    ...state.destinationCurriculumSequence
+  };
   newUnit.id = v4();
 
   const modules = cloneDeep(destinationCurriculumSequence.modules);

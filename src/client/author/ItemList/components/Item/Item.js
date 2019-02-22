@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { get } from 'lodash';
-import { withNamespaces } from '@edulastic/localization';
-import { MoveLink } from '@edulastic/common';
-import { MAX_TAB_WIDTH } from '../../../src/constants/others';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { get } from "lodash";
+import { withNamespaces } from "@edulastic/localization";
+import { MoveLink } from "@edulastic/common";
+import { MAX_TAB_WIDTH } from "../../../src/constants/others";
 import {
   Container,
   Categories,
@@ -22,26 +22,26 @@ import {
   ViewButtonStyled,
   HeartIcon,
   ShareIcon
-} from './styled';
+} from "./styled";
 
 const details = [
   {
-    name: 'By:',
-    text: 'Kevin Hart'
+    name: "By:",
+    text: "Kevin Hart"
   },
   {
-    name: 'ID:',
-    text: '123456'
+    name: "ID:",
+    text: "123456"
   },
   {
     name: <ShareIcon />,
-    text: '9578 (1)',
-    textType: 'grey'
+    text: "9578 (1)",
+    textType: "grey"
   },
   {
     name: <HeartIcon />,
-    text: '9',
-    textType: 'grey'
+    text: "9",
+    textType: "grey"
   }
 ];
 // render single item
@@ -59,8 +59,8 @@ class Item extends Component {
     history.push({
       pathname: `/author/items/${item._id}/item-detail`,
       state: {
-        backText: t('component.itemAdd.backToItemList'),
-        backUrl: '/author/items',
+        backText: t("component.itemAdd.backToItemList"),
+        backUrl: "/author/items",
         itemDetail: true
       }
     });
@@ -68,7 +68,7 @@ class Item extends Component {
 
   get description() {
     const { item } = this.props;
-    return get(item, 'rows[0].widgets[0].entity.stimulus', '');
+    return get(item, "rows[0].widgets[0].entity.stimulus", "");
   }
 
   renderTypes = () => {
@@ -79,21 +79,17 @@ class Item extends Component {
         <LabelText>{type}</LabelText>
       </Label>
     ));
-  }
+  };
 
-  renderDetails = () => details.map(detail => (
-    <DetailCategory>
-      <CategoryName>{detail.name}</CategoryName>
-      <CategoryContent>
-        {
-          detail.textType === 'grey'
-            ? <GreyText>{detail.text}</GreyText>
-            : <GreenText>{detail.text}</GreenText>
-        }
-      </CategoryContent>
-    </DetailCategory>
-  ))
-
+  renderDetails = () =>
+    details.map(detail => (
+      <DetailCategory>
+        <CategoryName>{detail.name}</CategoryName>
+        <CategoryContent>
+          {detail.textType === "grey" ? <GreyText>{detail.text}</GreyText> : <GreenText>{detail.text}</GreenText>}
+        </CategoryContent>
+      </DetailCategory>
+    ));
 
   render() {
     const { item, t, windowWidth } = this.props;
@@ -107,28 +103,20 @@ class Item extends Component {
           </QuestionContent>
           {windowWidth > MAX_TAB_WIDTH && (
             <ViewButton>
-              <ViewButtonStyled onClick={this.moveToItem}>
-                {t('component.item.view')}
-              </ViewButtonStyled>
+              <ViewButtonStyled onClick={this.moveToItem}>{t("component.item.view")}</ViewButtonStyled>
             </ViewButton>
           )}
         </Question>
         <Detail>
           <TypeCategory>
             <CategoryName>Type:</CategoryName>
-            <CategoryContent>
-              {this.renderTypes()}
-            </CategoryContent>
+            <CategoryContent>{this.renderTypes()}</CategoryContent>
           </TypeCategory>
-          <Categories>
-            {this.renderDetails()}
-          </Categories>
+          <Categories>{this.renderDetails()}</Categories>
         </Detail>
         {windowWidth < MAX_TAB_WIDTH && (
           <ViewButton>
-            <ViewButtonStyled onClick={this.moveToItem}>
-              {t('component.item.view')}
-            </ViewButtonStyled>
+            <ViewButtonStyled onClick={this.moveToItem}>{t("component.item.view")}</ViewButtonStyled>
           </ViewButton>
         )}
       </Container>
@@ -136,4 +124,4 @@ class Item extends Component {
   }
 }
 
-export default withNamespaces('author')(Item);
+export default withNamespaces("author")(Item);

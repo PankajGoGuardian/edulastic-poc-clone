@@ -1,20 +1,20 @@
-import React, { Fragment, useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep, isEqual } from 'lodash';
-import ReactQuill from 'react-quill';
-import { Checkbox } from 'antd';
-import { arrayMove } from 'react-sortable-hoc';
+import React, { Fragment, useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep, isEqual } from "lodash";
+import ReactQuill from "react-quill";
+import { Checkbox } from "antd";
+import { arrayMove } from "react-sortable-hoc";
 
-import { withNamespaces } from '@edulastic/localization';
-import { Paper } from '@edulastic/common';
+import { withNamespaces } from "@edulastic/localization";
+import { Paper } from "@edulastic/common";
 
-import WordLimitAndCount from '../../components/WordLimitAndCount';
-import QuestionTextArea from '../../components/QuestionTextArea';
-import { Subtitle } from '../../styled/Subtitle';
+import WordLimitAndCount from "../../components/WordLimitAndCount";
+import QuestionTextArea from "../../components/QuestionTextArea";
+import { Subtitle } from "../../styled/Subtitle";
 
-import SortableList from './components/SortableList';
-import { ValidList } from './constants/validList';
-import { QlToolbar } from './styled/QlToolbar';
+import SortableList from "./components/SortableList";
+import { ValidList } from "./constants/validList";
+import { QlToolbar } from "./styled/QlToolbar";
 
 const EditEssayRichText = ({ item, setQuestionData, t }) => {
   const [act, setAct] = useState(item.formatting_options || []);
@@ -32,7 +32,7 @@ const EditEssayRichText = ({ item, setQuestionData, t }) => {
     setQuestionData(newItem);
   };
 
-  const handleActiveChange = (index) => {
+  const handleActiveChange = index => {
     const newItem = cloneDeep(item);
 
     newItem.formatting_options[index].active = !newItem.formatting_options[index].active;
@@ -53,14 +53,14 @@ const EditEssayRichText = ({ item, setQuestionData, t }) => {
   return (
     <Fragment>
       <Paper style={{ marginBottom: 30 }}>
-        <Subtitle>{t('component.essayText.composequestion')}</Subtitle>
+        <Subtitle>{t("component.essayText.composequestion")}</Subtitle>
         <QuestionTextArea
-          placeholder={t('component.essayText.enterQuestion')}
-          onChange={stimulus => handleItemChangeChange('stimulus', stimulus)}
+          placeholder={t("component.essayText.enterQuestion")}
+          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
         />
 
-        <Subtitle>{t('component.essayText.rich.formattingOptions')}</Subtitle>
+        <Subtitle>{t("component.essayText.rich.formattingOptions")}</Subtitle>
         <QlToolbar id="toolbar">
           <SortableList
             axis="xy"
@@ -83,9 +83,9 @@ const EditEssayRichText = ({ item, setQuestionData, t }) => {
         <Checkbox
           style={{ marginTop: 32 }}
           defaultChecked={item.show_word_count}
-          onChange={e => handleItemChangeChange('show_word_count', e.target.checked)}
+          onChange={e => handleItemChangeChange("show_word_count", e.target.checked)}
         >
-          {t('component.essayText.showWordCheckbox')}
+          {t("component.essayText.showWordCheckbox")}
         </Checkbox>
       </Paper>
     </Fragment>
@@ -100,8 +100,8 @@ EditEssayRichText.propTypes = {
 
 EditEssayRichText.modules = {
   toolbar: {
-    container: '#toolbar'
+    container: "#toolbar"
   }
 };
 
-export default withNamespaces('assessment')(EditEssayRichText);
+export default withNamespaces("assessment")(EditEssayRichText);

@@ -1,16 +1,13 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import styled from 'styled-components';
-import { Menu } from 'antd';
-import { Paper } from '@edulastic/common';
-import {
-  toggleCheckedUnitItemAction,
-  addContentToCurriculumSequenceAction
-} from '../ducks';
-import { mobileWidth, lightBlue } from '@edulastic/colors';
-import AssignmentDragItem from './AssignmentDragItem';
-import triangleIcon from '../assets/triangle.svg';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import styled from "styled-components";
+import { Menu } from "antd";
+import { Paper } from "@edulastic/common";
+import { toggleCheckedUnitItemAction, addContentToCurriculumSequenceAction } from "../ducks";
+import { mobileWidth, lightBlue } from "@edulastic/colors";
+import AssignmentDragItem from "./AssignmentDragItem";
+import triangleIcon from "../assets/triangle.svg";
 
 /**
  * @typedef {object} Props
@@ -31,27 +28,27 @@ import triangleIcon from '../assets/triangle.svg';
 class ModuleRow extends Component {
   // NOTE: temporary
   state = {
-    unitExpanded: false, 
+    unitExpanded: false,
     selectedContent: null
-  }
+  };
 
-  handleChecked = (id) => {
-    console.log('handleChecked', id);
-  }
+  handleChecked = id => {
+    console.log("handleChecked", id);
+  };
 
   handleUnitExpandCollapse = () => {
-    this.setState((prevState) => ({ unitExpanded: !prevState.unitExpanded }));
-  }
+    this.setState(prevState => ({ unitExpanded: !prevState.unitExpanded }));
+  };
 
-  handleAddContentMouseOver = (moduleData) => {
+  handleAddContentMouseOver = moduleData => {
     this.setState({ selectedContent: moduleData });
-  }
+  };
 
-  handleAddContentClick = (toUnit) => {
+  handleAddContentClick = toUnit => {
     const { addContentToCurriculumSequence } = this.props;
     const { selectedContent } = { ...this.state };
     addContentToCurriculumSequence(selectedContent, toUnit);
-  }
+  };
 
   render() {
     const { handleAddContentClick, handleAddContentMouseOver } = this;
@@ -65,11 +62,11 @@ class ModuleRow extends Component {
       checkedUnitItems
     } = this.props;
     const { data, name } = module;
-    
+
     const menu = (
       <Menu>
         {destinationCurriculum.modules.map(moduleItem => (
-          <Menu.Item onClick={() => handleAddContentClick(moduleItem)} >
+          <Menu.Item onClick={() => handleAddContentClick(moduleItem)}>
             <span>{moduleItem.name}</span>
           </Menu.Item>
         ))}
@@ -82,7 +79,9 @@ class ModuleRow extends Component {
           <Module>
             <ModuleHeader collapsed={collapsed}>
               <span>{name}</span>
-              <UnitIcon onClick={this.handleUnitExpandCollapse} rotated={unitExpanded}><img src={triangleIcon} alt="triangle icon " /></UnitIcon>
+              <UnitIcon onClick={this.handleUnitExpandCollapse} rotated={unitExpanded}>
+                <img src={triangleIcon} alt="triangle icon " />
+              </UnitIcon>
             </ModuleHeader>
             {unitExpanded && (
               <div>
@@ -108,7 +107,6 @@ class ModuleRow extends Component {
   }
 }
 
-
 ModuleRow.defaultProps = {
   module: null,
   onCollapseExpand: () => {},
@@ -125,7 +123,7 @@ const AssignmentIcon = styled.span`
   min-width: 19px;
   cursor: pointer;
 `;
-AssignmentIcon.displayName = 'AssignmentIcon';
+AssignmentIcon.displayName = "AssignmentIcon";
 
 const UnitIcon = styled.span`
   border-radius: 4px;
@@ -134,10 +132,10 @@ const UnitIcon = styled.span`
   display: flex;
   justify-content: center;
   transition: 0.3s transform;
-  transform: ${({ rotated }) => (rotated ? 'rotate(-90deg)' : 'rotate(0deg)')};
-  cursor: pointer
+  transform: ${({ rotated }) => (rotated ? "rotate(-90deg)" : "rotate(0deg)")};
+  cursor: pointer;
 `;
-UnitIcon.displayName = 'UnitIcon';
+UnitIcon.displayName = "UnitIcon";
 
 const Row = styled(Paper)`
   padding-top: 0px;
@@ -156,18 +154,18 @@ const Container = styled.div`
   height: 100%;
 
   @media (max-width: ${mobileWidth}) {
-    margin-right: ${props => !props.value && '20px !important'};
-    margin-left: ${props => props.value && '20px !important'};
+    margin-right: ${props => !props.value && "20px !important"};
+    margin-left: ${props => props.value && "20px !important"};
   }
 `;
-Container.displayName = 'SelectContentRowModuleContainer';
+Container.displayName = "SelectContentRowModuleContainer";
 
 const Module = styled.div`
   font-size: 13px;
   font-weight: 600;
   border-top: 1px solid ${lightBlue};
 `;
-Module.displayName = 'SelectContentRowModule';
+Module.displayName = "SelectContentRowModule";
 
 const ModuleHeader = styled(Row)`
   box-shadow: none;
@@ -192,12 +190,11 @@ const ModuleWrapper = styled.div`
   .module-btn-assigned {
     background-color: ${lightBlue};
     margin-left: auto;
-    justifySelf: flex-end;
+    justifyself: flex-end;
   }
   .module-btn-expand-collapse {
     border: none;
     box-shadow: none;
-
   }
 `;
 

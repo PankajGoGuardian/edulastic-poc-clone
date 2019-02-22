@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
 
 import {
   RECEIVE_ITEMS_REQUEST,
@@ -6,8 +6,8 @@ import {
   RECEIVE_ITEMS_ERROR,
   RECEIVE_ITEM_REQUEST,
   RECEIVE_ITEM_SUCCESS,
-  RECEIVE_ITEM_ERROR,
-} from '../constants/actions';
+  RECEIVE_ITEM_ERROR
+} from "../constants/actions";
 
 const initialItemsState = {
   items: [],
@@ -15,7 +15,7 @@ const initialItemsState = {
   loading: false,
   page: 1,
   limit: 5,
-  count: 0,
+  count: 0
 };
 
 const itemsReducer = (state = initialItemsState, { type, payload }) => {
@@ -29,7 +29,7 @@ const itemsReducer = (state = initialItemsState, { type, payload }) => {
         items: payload.items,
         page: payload.page,
         limit: payload.limit,
-        count: payload.count,
+        count: payload.count
       };
     case RECEIVE_ITEMS_ERROR:
       return { ...state, loading: false, error: payload.error };
@@ -41,7 +41,7 @@ const itemsReducer = (state = initialItemsState, { type, payload }) => {
 const initialItemState = {
   item: null,
   error: null,
-  loading: false,
+  loading: false
 };
 
 const itemReducer = (state = initialItemState, { type, payload }) => {
@@ -59,5 +59,5 @@ const itemReducer = (state = initialItemState, { type, payload }) => {
 
 export default combineReducers({
   list: itemsReducer,
-  item: itemReducer,
+  item: itemReducer
 });

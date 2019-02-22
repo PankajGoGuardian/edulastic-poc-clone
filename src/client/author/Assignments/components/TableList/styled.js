@@ -53,12 +53,8 @@ export const TableData = styled(Table)`
       padding-left: 2px;
     }
   }
-  .ant-table-thead
-    > tr
-    > th.ant-table-column-has-actions.ant-table-column-has-sorters,
-  .ant-table-thead
-    > tr
-    > th.ant-table-column-has-actions.ant-table-column-has-filters {
+  .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters,
+  .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-filters {
     text-align: center;
   }
   .ant-table-tbody {

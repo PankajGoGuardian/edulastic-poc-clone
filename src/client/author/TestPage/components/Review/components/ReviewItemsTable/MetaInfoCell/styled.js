@@ -1,5 +1,5 @@
-import { greenDark } from '@edulastic/colors';
-import styled from 'styled-components';
+import { greenDark } from "@edulastic/colors";
+import styled from "styled-components";
 
 export const FirstText = styled.span`
   font-size: 13px;

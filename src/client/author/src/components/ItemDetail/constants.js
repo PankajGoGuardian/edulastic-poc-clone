@@ -1,3 +1,3 @@
 export const Types = {
-  WIDGET: 'widget',
+  WIDGET: "widget"
 };

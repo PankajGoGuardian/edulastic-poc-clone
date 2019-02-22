@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Col } from 'antd';
-import Item from '../Item/Item';
-import ListItem from '../ListItem/ListItem';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Col } from "antd";
+import Item from "../Item/Item";
+import ListItem from "../ListItem/ListItem";
 
 class CardWrapper extends Component {
   static propTypes = {
@@ -14,21 +14,11 @@ class CardWrapper extends Component {
   };
 
   render() {
-    const {
-      blockStyle,
-      item,
-      windowWidth,
-      history,
-      match
-    } = this.props;
+    const { blockStyle, item, windowWidth, history, match } = this.props;
 
-    if (blockStyle === 'tile') {
+    if (blockStyle === "tile") {
       return (
-        <Col
-          key={item._id}
-          span={windowWidth > 468 ? 8 : 24}
-          style={{ marginBottom: 15 }}
-        >
+        <Col key={item._id} span={windowWidth > 468 ? 8 : 24} style={{ marginBottom: 15 }}>
           <Item item={item} history={history} match={match} />
         </Col>
       );
@@ -41,6 +31,5 @@ class CardWrapper extends Component {
     );
   }
 }
-
 
 export default CardWrapper;

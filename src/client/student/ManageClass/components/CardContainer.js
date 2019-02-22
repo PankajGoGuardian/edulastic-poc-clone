@@ -1,44 +1,44 @@
-import React from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { Row, Col, Button } from 'antd';
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { Row, Col, Button } from "antd";
 
 const ClassCard = ({ t }) => (
   <Col xs={24} md={12} lg={8} xxl={6}>
     <ManageClassCardContent>
-      <CardHeader type='flex' justify='space-between' align='middle'>
-        <CardTitle title='Class Name'>Class Name</CardTitle>
-        <VisitClassButton>{t('common.visitClass')}</VisitClassButton>
+      <CardHeader type="flex" justify="space-between" align="middle">
+        <CardTitle title="Class Name">Class Name</CardTitle>
+        <VisitClassButton>{t("common.visitClass")}</VisitClassButton>
       </CardHeader>
       <CardBody>
         <Col span={24}>
           <InfoLabel span={8}>Status</InfoLabel>
           <InfoContent span={16}>
-            <span>{t('common.active')}</span>
+            <span>{t("common.active")}</span>
           </InfoContent>
         </Col>
         <Col span={24}>
-          <InfoLabel span={8}>{t('common.instructor')}</InfoLabel>
+          <InfoLabel span={8}>{t("common.instructor")}</InfoLabel>
           <InfoContent span={16}>Brenda Hill</InfoContent>
         </Col>
         <Col span={24}>
-          <InfoLabel span={8}>{t('common.grade')}</InfoLabel>
+          <InfoLabel span={8}>{t("common.grade")}</InfoLabel>
           <InfoContent span={16}>Grade 6</InfoContent>
         </Col>
         <Col span={24}>
-          <InfoLabel span={8}>{t('common.subject')}</InfoLabel>
+          <InfoLabel span={8}>{t("common.subject")}</InfoLabel>
           <InfoContent span={16}>Mathematics</InfoContent>
         </Col>
         <Col span={24}>
-          <InfoLabel span={8}>{t('common.standard')}</InfoLabel>
+          <InfoLabel span={8}>{t("common.standard")}</InfoLabel>
           <InfoContent span={16}>Math - Common Core</InfoContent>
         </Col>
         <Col span={24}>
-          <InfoLabel span={8}>{t('common.startDate')}</InfoLabel>
+          <InfoLabel span={8}>{t("common.startDate")}</InfoLabel>
           <InfoContent span={16}>Aug 29, 2018</InfoContent>
         </Col>
         <Col span={24}>
-          <InfoLabel span={8}>{t('common.endDate')}</InfoLabel>
+          <InfoLabel span={8}>{t("common.endDate")}</InfoLabel>
           <InfoContent span={16}>Sep 17, 2018</InfoContent>
         </Col>
       </CardBody>
@@ -62,8 +62,7 @@ const ManageClassCardContent = styled.div`
 
 const CardHeader = styled(Row)`
   padding: 15px;
-  border-bottom: 1px solid
-    ${props => props.theme.classCard.cardHeaderBorderColor};
+  border-bottom: 1px solid ${props => props.theme.classCard.cardHeaderBorderColor};
 `;
 
 const CardTitle = styled.h3`
@@ -85,12 +84,10 @@ const VisitClassButton = styled(Button)`
   padding: 0px 20px;
   font-size: ${props => props.theme.classCard.cardVisitClassBtnTextSize};
   color: ${props => props.theme.classCard.cardVisitClassBtnTextColor};
-  border: 1px solid
-    ${props => props.theme.classCard.cardVisitClassBtnBorderColor};
+  border: 1px solid ${props => props.theme.classCard.cardVisitClassBtnBorderColor};
   font-weight: bold;
   &:hover {
-    background-color: ${props =>
-      props.theme.classCard.cardVisitClassBtnBgHoverColor};
+    background-color: ${props => props.theme.classCard.cardVisitClassBtnBgHoverColor};
     color: ${props => props.theme.classCard.cardVisitClassBtnTextHoverColor};
   }
 `;

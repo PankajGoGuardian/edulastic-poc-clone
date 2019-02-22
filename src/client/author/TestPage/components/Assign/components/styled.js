@@ -1,6 +1,6 @@
-import { Table } from 'antd';
-import styled from 'styled-components';
-import { secondaryTextColor, white } from '@edulastic/colors';
+import { Table } from "antd";
+import styled from "styled-components";
+import { secondaryTextColor, white } from "@edulastic/colors";
 
 export const StyledTable = styled(Table)`
   .ant-table table {

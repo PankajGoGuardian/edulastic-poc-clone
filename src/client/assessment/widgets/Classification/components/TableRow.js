@@ -1,14 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withTheme } from 'styled-components';
+import React from "react";
+import PropTypes from "prop-types";
+import { withTheme } from "styled-components";
 
-import { CenteredText } from '@edulastic/common';
+import { CenteredText } from "@edulastic/common";
 
-import DropContainer from '../../../components/DropContainer';
+import DropContainer from "../../../components/DropContainer";
 
-import DragItem from './DragItem';
-import { Column } from '../styled/Column';
-import { RowTitleCol } from '../styled/RowTitleCol';
+import DragItem from "./DragItem";
+import { Column } from "../styled/Column";
+import { RowTitleCol } from "../styled/RowTitleCol";
 
 const TableRow = ({
   startIndex,
@@ -25,10 +25,10 @@ const TableRow = ({
 }) => {
   const styles = {
     columnContainerStyle: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      padding: '70px 50px',
-      height: '100%',
+      display: "flex",
+      flexWrap: "wrap",
+      padding: "70px 50px",
+      height: "100%",
       borderRadius: 4,
       backgroundColor: theme.widgets.classification.dropContainerBgColor
     }
@@ -40,7 +40,7 @@ const TableRow = ({
     if (arrayOfRows.has(index) && rowTitles.length > 0) {
       cols.push(
         <RowTitleCol key={index} colCount={colCount}>
-          <CenteredText style={{ wordWrap: 'break-word', textAlign: 'left' }}>
+          <CenteredText style={{ wordWrap: "break-word", textAlign: "left" }}>
             <div dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] }} />
           </CenteredText>
         </RowTitleCol>
@@ -51,7 +51,7 @@ const TableRow = ({
         <DropContainer
           style={{
             ...styles.columnContainerStyle,
-            justifyContent: 'center'
+            justifyContent: "center"
           }}
           noTopBorder={index / colCount >= 1}
           drop={drop}

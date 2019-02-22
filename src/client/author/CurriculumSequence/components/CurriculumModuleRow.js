@@ -1,29 +1,33 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { Button, Menu, Dropdown } from 'antd';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { Button, Menu, Dropdown } from "antd";
+import { Paper, Checkbox } from "@edulastic/common";
+import { random } from "lodash";
+import { withNamespaces } from "@edulastic/localization";
 import {
-  Paper,
-  Checkbox
-} from '@edulastic/common';
-import { random } from 'lodash';
-import { withNamespaces } from '@edulastic/localization';
-import { darkBlue, mobileWidth, lightBlue, mainBlueColor, lightGreen, green, white, darkBlueSecondary, greenDarkSecondary, desktopWidth, tabletWidth } from '@edulastic/colors';
-import {
-  toggleCheckedUnitItemAction,
-  setSelectedItemsForAssignAction,
-  removeItemFromUnitAction
-} from '../ducks';
-import minusIcon from '../assets/minus.svg';
-import plusIcon from '../assets/plus.svg';
-import visualizationIcon from '../assets/visualization-show.svg';
-import assessmentRed from '../assets/assessment.svg';
-import assessmentGreen from '../assets/concept-check.svg';
-import moduleCompletedIcon from '../assets/module-completed.svg';
-import moreIcon from '../assets/more.svg';
-
+  darkBlue,
+  mobileWidth,
+  lightBlue,
+  mainBlueColor,
+  lightGreen,
+  green,
+  white,
+  darkBlueSecondary,
+  greenDarkSecondary,
+  desktopWidth,
+  tabletWidth
+} from "@edulastic/colors";
+import { toggleCheckedUnitItemAction, setSelectedItemsForAssignAction, removeItemFromUnitAction } from "../ducks";
+import minusIcon from "../assets/minus.svg";
+import plusIcon from "../assets/plus.svg";
+import visualizationIcon from "../assets/visualization-show.svg";
+import assessmentRed from "../assets/assessment.svg";
+import assessmentGreen from "../assets/concept-check.svg";
+import moduleCompletedIcon from "../assets/module-completed.svg";
+import moreIcon from "../assets/more.svg";
 
 /**
  * @typedef {object} Props
@@ -39,21 +43,19 @@ import moreIcon from '../assets/more.svg';
  * when empty array is set, modal is hidden
  */
 
-const IS_ASSIGNED = 'ASSIGNED';
-const NOT_ASSIGNED = 'ASSIGN';
+const IS_ASSIGNED = "ASSIGNED";
+const NOT_ASSIGNED = "ASSIGN";
 
 /** @extends Component<Props> */
 class ModuleRow extends Component {
-
   /**
    * @param {import('./CurriculumSequence').Module} module
    */
-  assignModule = (module) => {
+  assignModule = module => {
     const { setSelectedItemsForAssign } = this.props;
     const moduleItemsIds = module.data.map(item => item.testId);
     setSelectedItemsForAssign(moduleItemsIds);
-  }
-  
+  };
 
   render() {
     const { completed, data, name, id } = this.props.module;
@@ -72,7 +74,7 @@ class ModuleRow extends Component {
 
     const totalAssigned = data.length;
     const numberOfAssigned = data.filter(item => item.assigned).length;
-    const [whichModule, moduleName] = name.split(':');
+    const [whichModule, moduleName] = name.split(":");
 
     return (
       <ModuleWrapper key={`${module.data.length}-${module.id}`} padding={padding}>
@@ -80,11 +82,17 @@ class ModuleRow extends Component {
           <Module>
             <ModuleHeader collapsed={collapsed}>
               <ModuleInfo>
-                <Button type="primary" ghost className="module-btn-expand-collapse" onClick={() => onCollapseExpand(id)}>
-                  {!collapsed
-                    ? <img src={minusIcon} alt="collapse module " />
-                    : <img src={plusIcon} alt="expand module " />
-                  }
+                <Button
+                  type="primary"
+                  ghost
+                  className="module-btn-expand-collapse"
+                  onClick={() => onCollapseExpand(id)}
+                >
+                  {!collapsed ? (
+                    <img src={minusIcon} alt="collapse module " />
+                  ) : (
+                    <img src={plusIcon} alt="expand module " />
+                  )}
                 </Button>
                 <ModuleTitleAssignedWrapper>
                   <ModuleTitleWrapper>
@@ -113,29 +121,34 @@ class ModuleRow extends Component {
                         <TotalAssigned>{totalAssigned}</TotalAssigned>
                       </ModulesAssigned>
                       <AssignModuleButton>
-                        <Button type="primary" onClick={() => assignModule(module)} ghost>ASSIGN MODULE</Button>
+                        <Button type="primary" onClick={() => assignModule(module)} ghost>
+                          ASSIGN MODULE
+                        </Button>
                       </AssignModuleButton>
                     </ModulesWrapper>
                   )}
-
-
                 </ModuleTitleAssignedWrapper>
-
               </ModuleInfo>
             </ModuleHeader>
-            {!collapsed &&
-            // eslint-disable-next-line
+            {!collapsed && (
+              // eslint-disable-next-line
               <div>
-                {data.map((moduleData) => {
+                {data.map(moduleData => {
                   const moreMenu = (
                     <Menu>
                       <Menu.Item
-                        onClick={() => removeItemFromUnit({ moduleId: module.id, itemId: moduleData.id })}
+                        onClick={() =>
+                          removeItemFromUnit({
+                            moduleId: module.id,
+                            itemId: moduleData.id
+                          })
+                        }
                       >
-                        Remove</Menu.Item>
+                        Remove
+                      </Menu.Item>
                     </Menu>
                   );
-                  
+
                   return (
                     <Assignment key={`${moduleData.id}-${moduleData.assigned}`}>
                       <AssignmentInnerWrapper>
@@ -169,13 +182,19 @@ class ModuleRow extends Component {
                               </CustomIcon>
                             </AssignmentIcon>
                             <AssignmentButton>
-                              <Button onClick={() => setSelectedItemsForAssign(moduleData.testId)} type="primary" icon={moduleData.assigned ? 'check' : 'arrow-right'} ghost={!moduleData.assigned}>{moduleData.assigned ? IS_ASSIGNED : NOT_ASSIGNED}
+                              <Button
+                                onClick={() => setSelectedItemsForAssign(moduleData.testId)}
+                                type="primary"
+                                icon={moduleData.assigned ? "check" : "arrow-right"}
+                                ghost={!moduleData.assigned}
+                              >
+                                {moduleData.assigned ? IS_ASSIGNED : NOT_ASSIGNED}
                               </Button>
                             </AssignmentButton>
                             <AssignmentIcon>
-                              <Dropdown overlay={moreMenu} trigger={['click']}>
+                              <Dropdown overlay={moreMenu} trigger={["click"]}>
                                 <CustomIcon>
-                                  <img style={{ width: '16px' }} src={moreIcon} alt="more options" />
+                                  <img style={{ width: "16px" }} src={moreIcon} alt="more options" />
                                 </CustomIcon>
                               </Dropdown>
                             </AssignmentIcon>
@@ -183,21 +202,21 @@ class ModuleRow extends Component {
                         </AssignmentIconsWrapper>
                       </AssignmentInnerWrapper>
                     </Assignment>
-                  )
+                  );
                 })}
                 <ModuleFooter />
               </div>
-            }
+            )}
           </Module>
         </Container>
       </ModuleWrapper>
     );
   }
-};
+}
 
 ModuleRow.defaultProps = {
   module: null,
-  onCollapseExpand: () => { },
+  onCollapseExpand: () => {},
   collapsed: false,
   isContentExpanded: false,
   padding: false,
@@ -210,13 +229,13 @@ const CustomIcon = styled.span`
 `;
 
 const AssignmentIconsHolder = styled.div`
-display: flex;
-justify-items: flex-end;
-margin-left: auto;
-@media only screen and (max-width: ${desktopWidth}) {
-  margin-left: 0;
-  justify-items: flex-start;
-  /* margin-right: 100%;  */
+  display: flex;
+  justify-items: flex-end;
+  margin-left: auto;
+  @media only screen and (max-width: ${desktopWidth}) {
+    margin-left: 0;
+    justify-items: flex-start;
+    /* margin-right: 100%;  */
   }
 `;
 
@@ -238,9 +257,8 @@ const ModuleAssignedUnit = styled.span`
   justify-self: flex-start;
   margin-right: auto;
   @media only screen and (max-width: ${tabletWidth}) {
-  margin-right: 0;
+    margin-right: 0;
   }
-
 `;
 
 const ModuleTitleWrapper = styled.div`
@@ -264,9 +282,9 @@ const ModuleCompleted = styled.div`
   width: auto;
   align-items: center;
   @media only screen and (max-width: ${tabletWidth}) {
-      align-self: flex-start;
-      margin-left: 0;
-    }
+    align-self: flex-start;
+    margin-left: 0;
+  }
 `;
 
 const NumberOfAssigned = styled.strong`
@@ -312,13 +330,12 @@ const AssignModuleButton = styled.div`
   @media only screen and (max-width: ${desktopWidth}) {
     align-self: flex-start;
   }
-
 `;
 
 const AssignmentContent = styled.div`
   flex-direction: row;
   display: flex;
-  min-width: ${(props) => !props.expanded ? '30%' : '45%'};
+  min-width: ${props => (!props.expanded ? "30%" : "45%")};
 `;
 
 const ModuleTitle = styled.div`
@@ -327,9 +344,9 @@ const ModuleTitle = styled.div`
   align-items: center;
   @media only screen and (max-width: ${tabletWidth}) {
     align-items: flex-start;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 10px;
   }
 `;
 
@@ -400,28 +417,28 @@ const Container = styled.div`
 
   @media (max-width: ${mobileWidth}) {
     padding-left: 10px;
-    margin-right: ${props => !props.value && '20px !important'};
-    margin-left: ${props => props.value && '20px !important'};
+    margin-right: ${props => !props.value && "20px !important"};
+    margin-left: ${props => props.value && "20px !important"};
   }
 `;
 
 const ModulesWrapper = styled.div`
-display: flex;
-align-items: center;
-justify-content: flex-end;
-margin-left: auto;
-margin-bottom: auto;
-margin-top: auto;
-@media only screen and (max-width: ${tabletWidth}) {
-justify-content: flex-start;
-margin-right: auto;
-margin-bottom: 0;
-margin-top: 0;
-margin-left: 0;
-    }
-@media only screen and (max-width: ${mobileWidth}) {
-  flex-direction: column;
-}
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-left: auto;
+  margin-bottom: auto;
+  margin-top: auto;
+  @media only screen and (max-width: ${tabletWidth}) {
+    justify-content: flex-start;
+    margin-right: auto;
+    margin-bottom: 0;
+    margin-top: 0;
+    margin-left: 0;
+  }
+  @media only screen and (max-width: ${mobileWidth}) {
+    flex-direction: column;
+  }
 `;
 
 const Module = styled.div`
@@ -433,10 +450,8 @@ const ModuleHeader = styled(Row)`
   box-shadow: none;
   display: flex;
   flex-direction: column;
-  border-bottom-left-radius: ${({ collapsed }) =>
-    !collapsed ? '0px' : '10px'};
-  border-bottom-right-radius: ${({ collapsed }) =>
-    !collapsed ? '0px' : '10px'};
+  border-bottom-left-radius: ${({ collapsed }) => (!collapsed ? "0px" : "10px")};
+  border-bottom-right-radius: ${({ collapsed }) => (!collapsed ? "0px" : "10px")};
   padding-bottom: 0;
   overflow: hidden;
   position: relative;
@@ -447,30 +462,29 @@ const Assignment = styled(Row)`
   padding-left: 30px;
   padding-right: 30px;
   padding-top: 0;
-  &:active ${ModuleFocused},
-  &:focus ${ModuleFocused},
-  &:hover ${ModuleFocused} {
+  &:active ${ModuleFocused}, &:focus ${ModuleFocused}, &:hover ${ModuleFocused} {
     opacity: 1;
   }
   @media only screen and (max-width: ${desktopWidth}) {
     flex-direction: column;
-    }
+  }
 `;
-Assignment.displayName = 'Assignment';
+Assignment.displayName = "Assignment";
 
 const AssignmentInnerWrapper = styled.div`
   display: flex;
   align-items: center;
   padding: 16px 20px;
-  background-color: #FBFBFB;
-  border: 1px solid #F5F5F5;
+  background-color: #fbfbfb;
+  border: 1px solid #f5f5f5;
   border-radius: 4px;
   position: relative;
   overflow: hidden;
   .module-checkbox {
     align-self: center;
   }
-  & div, & span {
+  & div,
+  & span {
     align-items: center;
   }
   @media only screen and (max-width: ${tabletWidth}) {
@@ -478,11 +492,9 @@ const AssignmentInnerWrapper = styled.div`
     justify-items: center;
     margin-left: auto;
     align-items: flex-start;
-
   }
 `;
-AssignmentInnerWrapper.displayName = 'AssignmentInnerWrapper';
-
+AssignmentInnerWrapper.displayName = "AssignmentInnerWrapper";
 
 const ModuleFooter = styled(Assignment)`
   border-bottom-left-radius: 10px;
@@ -521,7 +533,7 @@ const ModuleWrapper = styled.div`
     padding-top: 0;
     padding-bottom: 0;
     padding-left: 0px;
-    padding-right: ${({ padding }) => (padding ? '20px' : '0px')};
+    padding-right: ${({ padding }) => (padding ? "20px" : "0px")};
     margin-bottom: 10px;
     margin-top: 10px;
   }

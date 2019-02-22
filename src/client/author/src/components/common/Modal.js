@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { FaTimes } from 'react-icons/fa';
-import { white, blue, mobileWidth } from '@edulastic/colors';
-import { withNamespaces } from '@edulastic/localization';
-import { Button } from '@edulastic/common';
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { FaTimes } from "react-icons/fa";
+import { white, blue, mobileWidth } from "@edulastic/colors";
+import { withNamespaces } from "@edulastic/localization";
+import { Button } from "@edulastic/common";
 
-const modalRoot = document.getElementById('modal-root');
+const modalRoot = document.getElementById("modal-root");
 
 class Modal extends Component {
   render() {
@@ -25,20 +25,11 @@ class Modal extends Component {
           </Header>
           {children}
           <Footer>
-            <Button
-              onClick={onClose}
-              variant="extendedFab"
-              style={{ width: '40%' }}
-            >
-              {t('component.common.modal.cancel')}
+            <Button onClick={onClose} variant="extendedFab" style={{ width: "40%" }}>
+              {t("component.common.modal.cancel")}
             </Button>
-            <Button
-              onClick={onApply}
-              variant="extendedFab"
-              color="primary"
-              style={{ width: '40%' }}
-            >
-              {t('component.common.modal.apply')}
+            <Button onClick={onApply} variant="extendedFab" color="primary" style={{ width: "40%" }}>
+              {t("component.common.modal.apply")}
             </Button>
           </Footer>
         </Content>
@@ -56,7 +47,7 @@ Modal.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default withNamespaces('author')(Modal);
+export default withNamespaces("author")(Modal);
 
 const Container = styled.div`
   position: fixed;

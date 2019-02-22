@@ -1,4 +1,4 @@
-import getDefaultConfig, { CONSTANT, Colors } from './config';
+import getDefaultConfig, { CONSTANT, Colors } from "./config";
 import {
   Point,
   Line,
@@ -15,14 +15,14 @@ import {
   NumberlineSegment,
   NumberlineTrash,
   Title
-} from './elements';
+} from "./elements";
 import {
   mergeParams,
   graphParameters2Boundingbox,
   defaultBgObjectParameters,
   fillConfigDefaultParameters,
   numberlineGraphParametersToBoundingbox
-} from './settings';
+} from "./settings";
 import {
   updatePointParameters,
   updateAxe,
@@ -35,11 +35,11 @@ import {
   calcMeasure,
   calcUnitX,
   findElementsDiff
-} from './utils';
-import _events from './events';
+} from "./utils";
+import _events from "./events";
 
-import '../common/MyLabelInput.css';
-import '../common/Mark.css';
+import "../common/MyLabelInput.css";
+import "../common/Mark.css";
 
 // export const JXG = window.JXG;
 
@@ -76,7 +76,7 @@ class Board {
     this.bgElements = [];
     /**
      * Static unitX
-    */
+     */
     this.staticUnitX = null;
     /**
      * Answers
@@ -118,11 +118,11 @@ class Board {
    * @param {string} tool
    */
   setTool(tool, graphType, responsesAllowed) {
-    if (graphType === 'axisLabels') {
+    if (graphType === "axisLabels") {
       return;
     }
     if (this.currentTool !== tool) {
-      if (!graphType === 'axisSegments') {
+      if (!graphType === "axisSegments") {
         this.abortTool();
       }
     }
@@ -157,25 +157,34 @@ class Board {
         this.setCreatingHandler(Mark.onHandler());
         return;
       case CONSTANT.TOOLS.SEGMENTS_POINT:
-        this.setCreatingHandler(NumberlinePoint.onHandler(this.stackResponses, this.stackResponsesSpacing), responsesAllowed);
+        this.setCreatingHandler(
+          NumberlinePoint.onHandler(this.stackResponses, this.stackResponsesSpacing),
+          responsesAllowed
+        );
         return;
       case CONSTANT.TOOLS.BOTH_INCLUDED_SEGMENT:
       case CONSTANT.TOOLS.BOTH_NOT_INCLUDED_SEGMENT:
       case CONSTANT.TOOLS.ONLY_RIGHT_INCLUDED_SEGMENT:
       case CONSTANT.TOOLS.ONLY_LEFT_INCLUDED_SEGMENT:
-        this.setCreatingHandler(NumberlineSegment.onHandler(tool, this.stackResponses, this.stackResponsesSpacing), responsesAllowed);
+        this.setCreatingHandler(
+          NumberlineSegment.onHandler(tool, this.stackResponses, this.stackResponsesSpacing),
+          responsesAllowed
+        );
         return;
       case CONSTANT.TOOLS.INFINITY_TO_INCLUDED_SEGMENT:
       case CONSTANT.TOOLS.INFINITY_TO_NOT_INCLUDED_SEGMENT:
       case CONSTANT.TOOLS.INCLUDED_TO_INFINITY_SEGMENT:
       case CONSTANT.TOOLS.NOT_INCLUDED_TO_INFINITY_SEGMENT:
-        this.setCreatingHandler(NumberlineVector.onHandler(tool, this.stackResponses, this.stackResponsesSpacing), responsesAllowed);
+        this.setCreatingHandler(
+          NumberlineVector.onHandler(tool, this.stackResponses, this.stackResponsesSpacing),
+          responsesAllowed
+        );
         return;
       case CONSTANT.TOOLS.TRASH:
         this.setCreatingHandler();
         return;
       default:
-        throw new Error('Unknown tool:', tool);
+        throw new Error("Unknown tool:", tool);
     }
   }
 
@@ -211,7 +220,7 @@ class Board {
    * @param {Function} handler
    */
   setCreatingHandler(handler, responsesAllowed) {
-    this.$board.on(CONSTANT.EVENT_NAMES.UP, (event) => {
+    this.$board.on(CONSTANT.EVENT_NAMES.UP, event => {
       if (!this.dragDetector.isSame(this.$board.drag_position)) {
         this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
         return;
@@ -222,7 +231,9 @@ class Board {
         let newElement;
 
         if (responsesAllowed) {
-          const elementsLength = this.elements.filter(element => element.elType === 'segment' || element.elType === 'point').length;
+          const elementsLength = this.elements.filter(
+            element => element.elType === "segment" || element.elType === "point"
+          ).length;
           if (elementsLength < responsesAllowed) {
             newElement = handler(this, event);
           }
@@ -240,15 +251,15 @@ class Board {
 
   updateStackSettings(stackResponses, stackResponsesSpacing, responsesAllowed) {
     if (
-      this.stackResponses !== stackResponses
-      || this.responsesAllowed !== responsesAllowed
-      || this.stackResponsesSpacing !== stackResponsesSpacing
+      this.stackResponses !== stackResponses ||
+      this.responsesAllowed !== responsesAllowed ||
+      this.stackResponsesSpacing !== stackResponsesSpacing
     ) {
       NumberlineTrash.cleanBoard(this);
     }
 
     if (stackResponses && responsesAllowed > 0 && stackResponsesSpacing > 0) {
-      const newHeight = 150 + (responsesAllowed * stackResponsesSpacing);
+      const newHeight = 150 + responsesAllowed * stackResponsesSpacing;
       this.resizeContainer(this.$board.canvasWidth, newHeight);
     }
 
@@ -269,45 +280,56 @@ class Board {
     this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(graphParameters, xMargin));
     this.elements.push(Numberline.onHandler(this, graphParameters.xMin, graphParameters.xMax, settings, lineSettings));
 
-    if (graphType === 'axisLabels') {
-      Mark.updateMarksContainer(this, graphParameters.xMin - xMargin, graphParameters.xMax + xMargin, containerSettings);
+    if (graphType === "axisLabels") {
+      Mark.updateMarksContainer(
+        this,
+        graphParameters.xMin - xMargin,
+        graphParameters.xMax + xMargin,
+        containerSettings
+      );
     }
   }
 
   // Update bounding box, marks container, rerender numberline axis, update mark's snap handler
   updateGraphParameters(graphParameters, settings, layout, graphType, setValue, lineSettings, containerSettings) {
-    console.log('updateGraphParameters this.elements ', this.elements);
-    console.log('graphType', graphType);
+    console.log("updateGraphParameters this.elements ", this.elements);
+    console.log("graphType", graphType);
     const xMargin = graphParameters.margin / calcUnitX(graphParameters.xMin, graphParameters.xMax, layout.width);
     this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(graphParameters, xMargin));
 
     Numberline.updateCoords(this, graphParameters.xMin, graphParameters.xMax, settings, lineSettings);
 
-    if (graphType === 'axisLabels') {
-      Mark.updateMarksContainer(this, graphParameters.xMin - xMargin, graphParameters.xMax + xMargin, containerSettings);
+    if (graphType === "axisLabels") {
+      Mark.updateMarksContainer(
+        this,
+        graphParameters.xMin - xMargin,
+        graphParameters.xMax + xMargin,
+        containerSettings
+      );
 
-      const marks = this.elements.filter(element => element.elType === 'group');
-      this.elements = this.elements.filter(element => element.elType !== 'group');
+      const marks = this.elements.filter(element => element.elType === "group");
+      this.elements = this.elements.filter(element => element.elType !== "group");
       marks.forEach(mark => Mark.removeMark(this, mark));
-      marks.forEach(mark => Mark.rerenderMark(mark, this, graphParameters, settings, setValue, lineSettings, containerSettings));
+      marks.forEach(mark =>
+        Mark.rerenderMark(mark, this, graphParameters, settings, setValue, lineSettings, containerSettings)
+      );
     }
 
-    if (graphType === 'axisSegments') {
-      const points = this.elements.filter(element => element.elType === 'point');
-      console.log('graphType === axisSegments points', points);
-      this.elements = this.elements.filter(element => element.elType !== 'point');
-
+    if (graphType === "axisSegments") {
+      const points = this.elements.filter(element => element.elType === "point");
+      console.log("graphType === axisSegments points", points);
+      this.elements = this.elements.filter(element => element.elType !== "point");
 
       points.forEach(p => this.removeObject(p));
       // const numberlineAxis = this.elements.filter(element => element.elType === 'axis' || element.elType === 'arrow');
       // points.forEach(p => NumberlinePoint.handlePointDrag(p, this, null, numberlineAxis[0]));
-      points.forEach((p) => {
-        console.log('p', p);
+      points.forEach(p => {
+        console.log("p", p);
         const newPoint = NumberlinePoint.onHandler(this.stackResponses, this.stackResponsesSpacing)(this, p.X());
-        console.log('newPoint', newPoint);
+        console.log("newPoint", newPoint);
         this.elements.push(newPoint);
       });
-      console.log('graphType === axisSegments this.elements', this.elements);
+      console.log("graphType === axisSegments this.elements", this.elements);
     }
 
     this.$board.fullUpdate();
@@ -315,11 +337,11 @@ class Board {
 
   // Update numberline axis settings (such as ticks visibility, font size and etc.)
   updateGraphSettings(settings, graphType) {
-    const axis = this.elements.filter(element => element.elType === 'axis' || element.elType === 'arrow');
+    const axis = this.elements.filter(element => element.elType === "axis" || element.elType === "arrow");
     updateNumberline(axis, settings);
 
-    if (graphType === 'axisLabels') {
-      const marks = this.elements.filter(element => element.elType === 'group');
+    if (graphType === "axisLabels") {
+      const marks = this.elements.filter(element => element.elType === "group");
       marks.forEach(mark => Mark.updateTextSize(mark, settings.fontSize));
     }
 
@@ -328,7 +350,7 @@ class Board {
 
   // Render marks
   renderMarks(marks, xCoords, settings, setValue, lineSettings, containerSettings) {
-    marks.forEach((mark) => {
+    marks.forEach(mark => {
       this.elements.push(
         Mark.onHandler(
           this,
@@ -348,12 +370,18 @@ class Board {
 
   // Marks shuffled or text edited
   updateMarks(marks, oldMarks, containerSettings) {
-    Mark.checkForUpdate(marks, this.elements.filter(element => element.elType === 'group'), this, oldMarks, containerSettings);
+    Mark.checkForUpdate(
+      marks,
+      this.elements.filter(element => element.elType === "group"),
+      this,
+      oldMarks,
+      containerSettings
+    );
   }
 
   // Size of marks array have changed
   marksSizeChanged(marks, xCoords, settings, setValue, lineSettings, containerSettings) {
-    const filteredElements = this.elements.filter(element => element.elType === 'group');
+    const filteredElements = this.elements.filter(element => element.elType === "group");
 
     if (marks.length < filteredElements.length) {
       this.removeMark(marks, filteredElements);
@@ -385,7 +413,7 @@ class Board {
   // Remove mark
   removeMark(marks, elements) {
     const removedMark = findElementsDiff(elements, marks);
-    this.elements = this.elements.filter(element => element.elType !== 'group' || element.id !== removedMark.id);
+    this.elements = this.elements.filter(element => element.elType !== "group" || element.id !== removedMark.id);
     Mark.removeMark(this, removedMark);
     this.$board.fullUpdate();
   }
@@ -420,8 +448,8 @@ class Board {
    * @see https://jsxgraph.org/docs/symbols/JXG.Board.html#removeObject
    */
   segmentsReset() {
-    const elementsToDelete = this.elements.filter(element => element.elType !== 'axis' && 'arrow');
-    const numberlineAxis = this.elements.filter(element => element.elType === 'axis' || element.elType === 'arrow');
+    const elementsToDelete = this.elements.filter(element => element.elType !== "axis" && "arrow");
+    const numberlineAxis = this.elements.filter(element => element.elType === "axis" || element.elType === "arrow");
 
     elementsToDelete.map(this.removeObject.bind(this));
     this.elements = [];
@@ -440,11 +468,11 @@ class Board {
   }
 
   removeObject(obj) {
-    if (typeof obj === 'string') {
+    if (typeof obj === "string") {
       this.$board.removeObject(obj);
-    } else if (obj.elType !== 'point') {
+    } else if (obj.elType !== "point") {
       obj.getParents().map(this.removeObject.bind(this));
-      if (obj.elType === 'curve') this.$board.removeObject(obj);
+      if (obj.elType === "curve") this.$board.removeObject(obj);
     } else {
       this.$board.removeObject(obj);
     }
@@ -455,7 +483,7 @@ class Board {
    */
   getConfig() {
     this.abortTool();
-    const config = this.elements.map((e) => {
+    const config = this.elements.map(e => {
       switch (e.type) {
         case JXG.OBJECT_TYPE_POINT:
           return Point.getConfig(e);
@@ -470,7 +498,7 @@ class Board {
         case JXG.OBJECT_TYPE_TEXT:
           return Mark.getConfig(e);
         default:
-          throw new Error('Unknown element type:', e.name, e.type);
+          throw new Error("Unknown element type:", e.name, e.type);
       }
     });
     const flatCfg = Object.values(flatConfig(config));
@@ -479,27 +507,30 @@ class Board {
   }
 
   getMarks() {
-    return this.elements.filter(element => element.elType === 'group').map(group => Mark.getConfig(group));
+    return this.elements.filter(element => element.elType === "group").map(group => Mark.getConfig(group));
   }
 
   getSegments() {
-    return this.elements.filter(element => element.elType === 'segment' || element.elType === 'point').map((element) => {
-      switch (element.segmentType) {
-        case CONSTANT.TOOLS.SEGMENTS_POINT:
-          return NumberlinePoint.getConfig(element);
-        case CONSTANT.TOOLS.BOTH_INCLUDED_SEGMENT:
-        case CONSTANT.TOOLS.BOTH_NOT_INCLUDED_SEGMENT:
-        case CONSTANT.TOOLS.ONLY_RIGHT_INCLUDED_SEGMENT:
-        case CONSTANT.TOOLS.ONLY_LEFT_INCLUDED_SEGMENT:
-          return NumberlineSegment.getConfig(element);
-        case CONSTANT.TOOLS.INFINITY_TO_INCLUDED_SEGMENT:
-        case CONSTANT.TOOLS.INFINITY_TO_NOT_INCLUDED_SEGMENT:
-        case CONSTANT.TOOLS.INCLUDED_TO_INFINITY_SEGMENT:
-        case CONSTANT.TOOLS.NOT_INCLUDED_TO_INFINITY_SEGMENT:
-          return NumberlineVector.getConfig(element);
-        default: break;
-      }
-    });
+    return this.elements
+      .filter(element => element.elType === "segment" || element.elType === "point")
+      .map(element => {
+        switch (element.segmentType) {
+          case CONSTANT.TOOLS.SEGMENTS_POINT:
+            return NumberlinePoint.getConfig(element);
+          case CONSTANT.TOOLS.BOTH_INCLUDED_SEGMENT:
+          case CONSTANT.TOOLS.BOTH_NOT_INCLUDED_SEGMENT:
+          case CONSTANT.TOOLS.ONLY_RIGHT_INCLUDED_SEGMENT:
+          case CONSTANT.TOOLS.ONLY_LEFT_INCLUDED_SEGMENT:
+            return NumberlineSegment.getConfig(element);
+          case CONSTANT.TOOLS.INFINITY_TO_INCLUDED_SEGMENT:
+          case CONSTANT.TOOLS.INFINITY_TO_NOT_INCLUDED_SEGMENT:
+          case CONSTANT.TOOLS.INCLUDED_TO_INFINITY_SEGMENT:
+          case CONSTANT.TOOLS.NOT_INCLUDED_TO_INFINITY_SEGMENT:
+            return NumberlineVector.getConfig(element);
+          default:
+            break;
+        }
+      });
   }
 
   // settings
@@ -516,14 +547,9 @@ class Board {
    * settings::pointParameters
    */
   setPointParameters(pointParameters) {
-    const isSwitchToGrid = this.parameters.pointParameters
-      && !this.parameters.pointParameters.snapToGrid
-      && pointParameters.snapToGrid;
-    updatePointParameters(
-      this.elements,
-      pointParameters,
-      isSwitchToGrid,
-    );
+    const isSwitchToGrid =
+      this.parameters.pointParameters && !this.parameters.pointParameters.snapToGrid && pointParameters.snapToGrid;
+    updatePointParameters(this.elements, pointParameters, isSwitchToGrid);
     this.parameters.pointParameters = {
       ...this.parameters.pointParameters,
       ...pointParameters
@@ -538,10 +564,10 @@ class Board {
     const axes = this.$board.defaultAxes;
 
     if (axesParameters.x) {
-      updateAxe(axes.x, axesParameters.x, 'x');
+      updateAxe(axes.x, axesParameters.x, "x");
     }
     if (axesParameters.y) {
-      updateAxe(axes.y, axesParameters.y, 'y');
+      updateAxe(axes.y, axesParameters.y, "y");
     }
 
     this.$board.fullUpdate();
@@ -604,43 +630,43 @@ class Board {
       },
       [CONSTANT.TOOLS.PARABOLA]: {
         ...defaultBgObjectParameters(),
-        fillColor: 'transparent',
-        highlightFillColor: 'transparent',
+        fillColor: "transparent",
+        highlightFillColor: "transparent",
         highlightStrokeWidth: 1
       },
       [CONSTANT.TOOLS.SIN]: {
         ...defaultBgObjectParameters(),
-        fillColor: 'transparent',
-        highlightFillColor: 'transparent',
+        fillColor: "transparent",
+        highlightFillColor: "transparent",
         highlightStrokeWidth: 1
       }
     };
-    this.bgElements.push(...this.loadObjects(config, ({ objectCreator, el }) => {
-      const { _type, colors = {} } = el;
-      let type;
-      if (_type === JXG.OBJECT_TYPE_CURVE) {
-        type = el.type === CONSTANT.TOOLS.PARABOLA ? CONSTANT.TOOLS.PARABOLA : CONSTANT.TOOLS.SIN;
-      } else {
-        ({ type } = el);
-      }
-      return objectCreator({
-        ...objectOptions[type],
-        ...colors
-      });
-    }));
+    this.bgElements.push(
+      ...this.loadObjects(config, ({ objectCreator, el }) => {
+        const { _type, colors = {} } = el;
+        let type;
+        if (_type === JXG.OBJECT_TYPE_CURVE) {
+          type = el.type === CONSTANT.TOOLS.PARABOLA ? CONSTANT.TOOLS.PARABOLA : CONSTANT.TOOLS.SIN;
+        } else {
+          ({ type } = el);
+        }
+        return objectCreator({
+          ...objectOptions[type],
+          ...colors
+        });
+      })
+    );
   }
 
   loadMarksAnswers(marks) {
     if (marks) {
-      this.answers.push(
-        marks.map(config => Mark.renderMarkAnswer(this, config, calcMeasure(51.5, 45, this)))
-      );
+      this.answers.push(marks.map(config => Mark.renderMarkAnswer(this, config, calcMeasure(51.5, 45, this))));
     }
   }
 
   loadSegmentsAnswers(segments) {
     this.answers.push(
-      segments.map((segment) => {
+      segments.map(segment => {
         switch (segment.type) {
           case CONSTANT.TOOLS.SEGMENTS_POINT:
             return NumberlinePoint.renderAnswer(this, segment);
@@ -654,7 +680,8 @@ class Board {
           case CONSTANT.TOOLS.INCLUDED_TO_INFINITY_SEGMENT:
           case CONSTANT.TOOLS.NOT_INCLUDED_TO_INFINITY_SEGMENT:
             return NumberlineVector.determineAnswerType(this, segment);
-          default: break;
+          default:
+            break;
         }
       })
     );
@@ -662,34 +689,43 @@ class Board {
 
   loadFromConfig(flatCfg) {
     const config = flat2nestedConfig(flatCfg);
-    this.elements.push(...this.loadObjects(config, ({ objectCreator, el }) => {
-      const newElement = objectCreator({
-        ...Colors.default[((type) => {
-          if (type === CONSTANT.TOOLS.LINE
-            || type === CONSTANT.TOOLS.RAY
-            || type === CONSTANT.TOOLS.SEGMENT
-            || type === CONSTANT.TOOLS.VECTOR
-          ) {
-            return CONSTANT.TOOLS.LINE;
-          }
-          return type;
-        })(el.type)],
-        ...el.colors
-      });
-      if (el.label) {
-        newElement.setLabel(el.label);
-        Input(newElement).sub();
-      }
-      return newElement;
-    }));
+    this.elements.push(
+      ...this.loadObjects(config, ({ objectCreator, el }) => {
+        const newElement = objectCreator({
+          ...Colors.default[
+            (type => {
+              if (
+                type === CONSTANT.TOOLS.LINE ||
+                type === CONSTANT.TOOLS.RAY ||
+                type === CONSTANT.TOOLS.SEGMENT ||
+                type === CONSTANT.TOOLS.VECTOR
+              ) {
+                return CONSTANT.TOOLS.LINE;
+              }
+              return type;
+            })(el.type)
+          ],
+          ...el.colors
+        });
+        if (el.label) {
+          newElement.setLabel(el.label);
+          Input(newElement).sub();
+        }
+        return newElement;
+      })
+    );
   }
 
   setAnswer(flatCfg) {
     const config = flat2nestedConfig(flatCfg);
-    this.answers.push(...this.loadObjects(config, ({ objectCreator, el }) => objectCreator({
-      ...el.colors,
-      fixed: true
-    })));
+    this.answers.push(
+      ...this.loadObjects(config, ({ objectCreator, el }) =>
+        objectCreator({
+          ...el.colors,
+          fixed: true
+        })
+      )
+    );
   }
 
   /**
@@ -699,15 +735,19 @@ class Board {
    */
   loadObjects(objectArray, mixProps) {
     const objects = [];
-    objectArray.forEach((el) => {
+    objectArray.forEach(el => {
       switch (el._type) {
         case JXG.OBJECT_TYPE_POINT:
           objects.push(
             mixProps({
               el,
-              objectCreator: (attrs) => {
+              objectCreator: attrs => {
                 const [name, points, props] = Point.parseConfig(el, this.getParameters(CONSTANT.TOOLS.POINT));
-                return this.createElement(name, points, { ...props, ...attrs, visible: true });
+                return this.createElement(name, points, {
+                  ...props,
+                  ...attrs,
+                  visible: true
+                });
               }
             })
           );
@@ -716,23 +756,24 @@ class Board {
           objects.push(
             mixProps({
               el,
-              objectCreator: attrs => this.createElement(
-                'line',
-                [
-                  mixProps({
-                    el: el.points[0],
-                    objectCreator: attributes => this.createPointFromConfig(el.points[0], attributes)
-                  }),
-                  mixProps({
-                    el: el.points[1],
-                    objectCreator: attributes => this.createPointFromConfig(el.points[1], attributes)
-                  })
-                ],
-                {
-                  ...Line.parseConfig(el.type),
-                  ...attrs
-                }
-              )
+              objectCreator: attrs =>
+                this.createElement(
+                  "line",
+                  [
+                    mixProps({
+                      el: el.points[0],
+                      objectCreator: attributes => this.createPointFromConfig(el.points[0], attributes)
+                    }),
+                    mixProps({
+                      el: el.points[1],
+                      objectCreator: attributes => this.createPointFromConfig(el.points[1], attributes)
+                    })
+                  ],
+                  {
+                    ...Line.parseConfig(el.type),
+                    ...attrs
+                  }
+                )
             })
           );
           break;
@@ -740,23 +781,24 @@ class Board {
           objects.push(
             mixProps({
               el,
-              objectCreator: attrs => this.createElement(
-                'circle',
-                [
-                  mixProps({
-                    el: el.points[0],
-                    objectCreator: attributes => this.createPointFromConfig(el.points[0], attributes)
-                  }),
-                  mixProps({
-                    el: el.points[1],
-                    objectCreator: attributes => this.createPointFromConfig(el.points[1], attributes)
-                  })
-                ],
-                {
-                  ...Circle.parseConfig(),
-                  ...attrs
-                }
-              )
+              objectCreator: attrs =>
+                this.createElement(
+                  "circle",
+                  [
+                    mixProps({
+                      el: el.points[0],
+                      objectCreator: attributes => this.createPointFromConfig(el.points[0], attributes)
+                    }),
+                    mixProps({
+                      el: el.points[1],
+                      objectCreator: attributes => this.createPointFromConfig(el.points[1], attributes)
+                    })
+                  ],
+                  {
+                    ...Circle.parseConfig(),
+                    ...attrs
+                  }
+                )
             })
           );
           break;
@@ -764,17 +806,20 @@ class Board {
           objects.push(
             mixProps({
               el,
-              objectCreator: attrs => this.createElement(
-                'polygon',
-                el.points.map(pointEl => mixProps({
-                  el: pointEl,
-                  objectCreator: attributes => this.createPointFromConfig(pointEl, attributes)
-                })),
-                {
-                  ...Polygon.parseConfig(),
-                  ...attrs
-                },
-              )
+              objectCreator: attrs =>
+                this.createElement(
+                  "polygon",
+                  el.points.map(pointEl =>
+                    mixProps({
+                      el: pointEl,
+                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes)
+                    })
+                  ),
+                  {
+                    ...Polygon.parseConfig(),
+                    ...attrs
+                  }
+                )
             })
           );
           break;
@@ -782,12 +827,16 @@ class Board {
           objects.push(
             mixProps({
               el,
-              objectCreator: (attrs) => {
-                const [name, [makeFn, points], props] = [Parabola, Sin][el.type === CONSTANT.TOOLS.PARABOLA ? 0 : 1].parseConfig(
-                  el.points.map(pointEl => mixProps({
-                    el: pointEl,
-                    objectCreator: attributes => this.createPointFromConfig(pointEl, attributes)
-                  })),
+              objectCreator: attrs => {
+                const [name, [makeFn, points], props] = [Parabola, Sin][
+                  el.type === CONSTANT.TOOLS.PARABOLA ? 0 : 1
+                ].parseConfig(
+                  el.points.map(pointEl =>
+                    mixProps({
+                      el: pointEl,
+                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes)
+                    })
+                  )
                 );
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
@@ -800,14 +849,14 @@ class Board {
                 newElem.addParents(points);
                 return newElem;
               }
-            }),
+            })
           );
           break;
         case JXG.OBJECT_TYPE_TEXT:
           objects.push(
             mixProps({
               el,
-              objectCreator: (attrs) => {
+              objectCreator: attrs => {
                 const [name, points, props] = Mark.parseConfig(el, this.getParameters(CONSTANT.TOOLS.MARK));
                 console.log(name, points, props, attrs);
                 return this.createElement(name, points, { ...props, ...attrs });
@@ -815,7 +864,7 @@ class Board {
             })
           );
         default:
-          throw new Error('Unknown element:', el);
+          throw new Error("Unknown element:", el);
       }
     });
     return objects;
@@ -841,7 +890,7 @@ class Board {
    * @see https://jsxgraph.org/docs/symbols/Image.html
    */
   setBgImage(bgImageParameters) {
-    const bgImage = this.createElement('image', [
+    const bgImage = this.createElement("image", [
       bgImageParameters.urlImg,
       ...getImageCoordsByPercent(this.parameters, bgImageParameters)
     ]);

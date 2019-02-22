@@ -8,23 +8,24 @@
  * Both MathBlock's and MathCommand's descend from it.
  */
 var MathElement = P(Node, function(_, super_) {
-  _.finalizeInsert = function(options, cursor) { // `cursor` param is only for
-      // SupSub::contactWeld, and is deliberately only passed in by writeLatex,
-      // see ea7307eb4fac77c149a11ffdf9a831df85247693
+  _.finalizeInsert = function(options, cursor) {
+    // `cursor` param is only for
+    // SupSub::contactWeld, and is deliberately only passed in by writeLatex,
+    // see ea7307eb4fac77c149a11ffdf9a831df85247693
     var self = this;
-    self.postOrder('finalizeTree', options);
-    self.postOrder('contactWeld', cursor);
+    self.postOrder("finalizeTree", options);
+    self.postOrder("contactWeld", cursor);
 
     // note: this order is important.
     // empty elements need the empty box provided by blur to
     // be present in order for their dimensions to be measured
     // correctly by 'reflow' handlers.
-    self.postOrder('blur');
+    self.postOrder("blur");
 
-    self.postOrder('reflow');
+    self.postOrder("reflow");
     if (self[R].siblingCreated) self[R].siblingCreated(options, L);
     if (self[L].siblingCreated) self[L].siblingCreated(options, R);
-    self.bubble('reflow');
+    self.bubble("reflow");
   };
 });
 
@@ -85,26 +86,28 @@ var MathCommand = P(MathElement, function(_, super_) {
   _.createBlocks = function() {
     var cmd = this,
       numBlocks = cmd.numBlocks(),
-      blocks = cmd.blocks = Array(numBlocks);
+      blocks = (cmd.blocks = Array(numBlocks));
 
     for (var i = 0; i < numBlocks; i += 1) {
-      var newBlock = blocks[i] = MathBlock();
+      var newBlock = (blocks[i] = MathBlock());
       newBlock.adopt(cmd, cmd.ends[R], 0);
     }
   };
   _.placeCursor = function(cursor) {
     //insert the cursor at the right end of the first empty child, searching
     //left-to-right, or if none empty, the right end child
-    cursor.insAtRightEnd(this.foldChildren(this.ends[L], function(leftward, child) {
-      return leftward.isEmpty() ? leftward : child;
-    }));
+    cursor.insAtRightEnd(
+      this.foldChildren(this.ends[L], function(leftward, child) {
+        return leftward.isEmpty() ? leftward : child;
+      })
+    );
   };
 
   // editability methods: called by the cursor for editing, cursor movements,
   // and selection of the MathQuill tree, these all take in a direction and
   // the cursor
   _.moveTowards = function(dir, cursor, updown) {
-    var updownInto = updown && this[updown+'Into'];
+    var updownInto = updown && this[updown + "Into"];
     cursor.insAtDirEnd(-dir, updownInto || this.ends[-dir]);
   };
   _.deleteTowards = function(dir, cursor) {
@@ -123,7 +126,7 @@ var MathCommand = P(MathElement, function(_, super_) {
   };
   _.seek = function(pageX, cursor) {
     function getBounds(node) {
-      var bounds = {}
+      var bounds = {};
       bounds[L] = node.jQ.offset().left;
       bounds[R] = bounds[L] + node.jQ.outerWidth();
       return bounds;
@@ -143,26 +146,24 @@ var MathCommand = P(MathElement, function(_, super_) {
         if (pageX - leftLeftBound < blockBounds[L] - pageX) {
           if (block[L]) cursor.insAtRightEnd(block[L]);
           else cursor.insLeftOf(cmd);
-        }
-        else cursor.insAtLeftEnd(block);
+        } else cursor.insAtLeftEnd(block);
         return false;
-      }
-      else if (pageX > blockBounds[R]) {
-        if (block[R]) leftLeftBound = blockBounds[R]; // continue to next block
-        else { // last (rightmost) block
+      } else if (pageX > blockBounds[R]) {
+        if (block[R]) leftLeftBound = blockBounds[R];
+        // continue to next block
+        else {
+          // last (rightmost) block
           // closer to this block's right bound, or the cmd's right bound?
           if (cmdBounds[R] - pageX < pageX - blockBounds[R]) {
             cursor.insRightOf(cmd);
-          }
-          else cursor.insAtRightEnd(block);
+          } else cursor.insAtRightEnd(block);
         }
-      }
-      else {
+      } else {
         block.seek(pageX, cursor);
         return false;
       }
     });
-  }
+  };
 
   // methods involved in creating and cross-linking with HTML DOM nodes
   /*
@@ -232,60 +233,60 @@ var MathCommand = P(MathElement, function(_, super_) {
 
     var cmd = this;
     var blocks = cmd.blocks;
-    var cmdId = ' mathquill-command-id=' + cmd.id;
+    var cmdId = " mathquill-command-id=" + cmd.id;
     var tokens = cmd.htmlTemplate.match(/<[^<>]+>|[^<>]+/g);
 
-    pray('no unmatched angle brackets', tokens.join('') === this.htmlTemplate);
+    pray("no unmatched angle brackets", tokens.join("") === this.htmlTemplate);
 
     // add cmdId to all top-level tags
     for (var i = 0, token = tokens[0]; token; i += 1, token = tokens[i]) {
       // top-level self-closing tags
-      if (token.slice(-2) === '/>') {
-        tokens[i] = token.slice(0,-2) + cmdId + '/>';
+      if (token.slice(-2) === "/>") {
+        tokens[i] = token.slice(0, -2) + cmdId + "/>";
       }
       // top-level open tags
-      else if (token.charAt(0) === '<') {
-        pray('not an unmatched top-level close tag', token.charAt(1) !== '/');
+      else if (token.charAt(0) === "<") {
+        pray("not an unmatched top-level close tag", token.charAt(1) !== "/");
 
-        tokens[i] = token.slice(0,-1) + cmdId + '>';
+        tokens[i] = token.slice(0, -1) + cmdId + ">";
 
         // skip matching top-level close tag and all tag pairs in between
         var nesting = 1;
         do {
-          i += 1, token = tokens[i];
-          pray('no missing close tags', token);
+          (i += 1), (token = tokens[i]);
+          pray("no missing close tags", token);
           // close tags
-          if (token.slice(0,2) === '</') {
+          if (token.slice(0, 2) === "</") {
             nesting -= 1;
           }
           // non-self-closing open tags
-          else if (token.charAt(0) === '<' && token.slice(-2) !== '/>') {
+          else if (token.charAt(0) === "<" && token.slice(-2) !== "/>") {
             nesting += 1;
           }
         } while (nesting > 0);
       }
     }
-    return tokens.join('').replace(/>&(\d+)/g, function($0, $1) {
-      return ' mathquill-block-id=' + blocks[$1].id + '>' + blocks[$1].join('html');
+    return tokens.join("").replace(/>&(\d+)/g, function($0, $1) {
+      return " mathquill-block-id=" + blocks[$1].id + ">" + blocks[$1].join("html");
     });
   };
 
   // methods to export a string representation of the math tree
   _.latex = function() {
     return this.foldChildren(this.ctrlSeq, function(latex, child) {
-      return latex + '{' + (child.latex() || ' ') + '}';
+      return latex + "{" + (child.latex() || " ") + "}";
     });
   };
-  _.textTemplate = [''];
+  _.textTemplate = [""];
   _.text = function() {
-    var cmd = this, i = 0;
+    var cmd = this,
+      i = 0;
     return cmd.foldChildren(cmd.textTemplate[i], function(text, child) {
       i += 1;
       var child_text = child.text();
-      if (text && cmd.textTemplate[i] === '('
-          && child_text[0] === '(' && child_text.slice(-1) === ')')
+      if (text && cmd.textTemplate[i] === "(" && child_text[0] === "(" && child_text.slice(-1) === ")")
         return text + child_text.slice(1, -1) + cmd.textTemplate[i];
-      return text + child.text() + (cmd.textTemplate[i] || '');
+      return text + child.text() + (cmd.textTemplate[i] || "");
     });
   };
 });
@@ -297,11 +298,15 @@ var Symbol = P(MathCommand, function(_, super_) {
   _.init = function(ctrlSeq, html, text) {
     if (!text) text = ctrlSeq && ctrlSeq.length > 1 ? ctrlSeq.slice(1) : ctrlSeq;
 
-    super_.init.call(this, ctrlSeq, html, [ text ]);
+    super_.init.call(this, ctrlSeq, html, [text]);
   };
 
-  _.parser = function() { return Parser.succeed(this); };
-  _.numBlocks = function() { return 0; };
+  _.parser = function() {
+    return Parser.succeed(this);
+  };
+  _.numBlocks = function() {
+    return 0;
+  };
 
   _.replaces = function(replacedFragment) {
     replacedFragment.remove();
@@ -318,27 +323,29 @@ var Symbol = P(MathCommand, function(_, super_) {
   };
   _.seek = function(pageX, cursor) {
     // insert at whichever side the click was closer to
-    if (pageX - this.jQ.offset().left < this.jQ.outerWidth()/2)
-      cursor.insLeftOf(this);
-    else
-      cursor.insRightOf(this);
+    if (pageX - this.jQ.offset().left < this.jQ.outerWidth() / 2) cursor.insLeftOf(this);
+    else cursor.insRightOf(this);
   };
 
-  _.latex = function(){ return this.ctrlSeq; };
-  _.text = function(){ return this.textTemplate; };
+  _.latex = function() {
+    return this.ctrlSeq;
+  };
+  _.text = function() {
+    return this.textTemplate;
+  };
   _.placeCursor = noop;
-  _.isEmpty = function(){ return true; };
+  _.isEmpty = function() {
+    return true;
+  };
 });
 var VanillaSymbol = P(Symbol, function(_, super_) {
   _.init = function(ch, html) {
-    super_.init.call(this, ch, '<span>'+(html || ch)+'</span>');
+    super_.init.call(this, ch, "<span>" + (html || ch) + "</span>");
   };
 });
 var BinaryOperator = P(Symbol, function(_, super_) {
   _.init = function(ctrlSeq, html, text) {
-    super_.init.call(this,
-      ctrlSeq, '<span class="mq-binary-operator">'+html+'</span>', text
-    );
+    super_.init.call(this, ctrlSeq, '<span class="mq-binary-operator">' + html + "</span>", text);
   };
 });
 
@@ -349,24 +356,24 @@ var BinaryOperator = P(Symbol, function(_, super_) {
  */
 var MathBlock = P(MathElement, function(_, super_) {
   _.join = function(methodName) {
-    return this.foldChildren('', function(fold, child) {
+    return this.foldChildren("", function(fold, child) {
       return fold + child[methodName]();
     });
   };
-  _.html = function() { return this.join('html'); };
-  _.latex = function() { return this.join('latex'); };
+  _.html = function() {
+    return this.join("html");
+  };
+  _.latex = function() {
+    return this.join("latex");
+  };
   _.text = function() {
-    return (this.ends[L] === this.ends[R] && this.ends[L] !== 0) ?
-      this.ends[L].text() :
-      this.join('text')
-    ;
+    return this.ends[L] === this.ends[R] && this.ends[L] !== 0 ? this.ends[L].text() : this.join("text");
   };
 
   _.keystroke = function(key, e, ctrlr) {
-    if (ctrlr.options.spaceBehavesLikeTab
-        && (key === 'Spacebar' || key === 'Shift-Spacebar')) {
+    if (ctrlr.options.spaceBehavesLikeTab && (key === "Spacebar" || key === "Shift-Spacebar")) {
       e.preventDefault();
-      ctrlr.escapeDir(key === 'Shift-Spacebar' ? L : R, key, e);
+      ctrlr.escapeDir(key === "Shift-Spacebar" ? L : R, key, e);
       return;
     }
     return super_.keystroke.apply(this, arguments);
@@ -376,7 +383,7 @@ var MathBlock = P(MathElement, function(_, super_) {
   // and selection of the MathQuill tree, these all take in a direction and
   // the cursor
   _.moveOutOf = function(dir, cursor, updown) {
-    var updownInto = updown && this.parent[updown+'Into'];
+    var updownInto = updown && this.parent[updown + "Into"];
     if (!updownInto && this[dir]) cursor.insAtDirEnd(-dir, this[dir]);
     else cursor.insDirOf(dir, this.parent);
   };
@@ -398,18 +405,12 @@ var MathBlock = P(MathElement, function(_, super_) {
   _.chToCmd = function(ch, options) {
     var cons;
     // exclude f because it gets a dedicated command with more spacing
-    if (ch.match(/^[a-eg-zA-Z]$/))
-      return Letter(ch);
-    else if (/^\d$/.test(ch))
-      return Digit(ch);
-    else if (options && options.typingSlashWritesDivisionSymbol && ch === '/')
-      return LatexCmds['÷'](ch);
-    else if (options && options.typingAsteriskWritesTimesSymbol && ch === '*')
-      return LatexCmds['×'](ch);
-    else if (cons = CharCmds[ch] || LatexCmds[ch])
-      return cons(ch);
-    else
-      return VanillaSymbol(ch);
+    if (ch.match(/^[a-eg-zA-Z]$/)) return Letter(ch);
+    else if (/^\d$/.test(ch)) return Digit(ch);
+    else if (options && options.typingSlashWritesDivisionSymbol && ch === "/") return LatexCmds["÷"](ch);
+    else if (options && options.typingAsteriskWritesTimesSymbol && ch === "*") return LatexCmds["×"](ch);
+    else if ((cons = CharCmds[ch] || LatexCmds[ch])) return cons(ch);
+    else return VanillaSymbol(ch);
   };
   _.write = function(cursor, ch) {
     var cmd = this.chToCmd(ch, cursor.options);
@@ -418,15 +419,14 @@ var MathBlock = P(MathElement, function(_, super_) {
   };
 
   _.focus = function() {
-    this.jQ.addClass('mq-hasCursor');
-    this.jQ.removeClass('mq-empty');
+    this.jQ.addClass("mq-hasCursor");
+    this.jQ.removeClass("mq-empty");
 
     return this;
   };
   _.blur = function() {
-    this.jQ.removeClass('mq-hasCursor');
-    if (this.isEmpty())
-      this.jQ.addClass('mq-empty');
+    this.jQ.removeClass("mq-hasCursor");
+    if (this.isEmpty()) this.jQ.addClass("mq-empty");
 
     return this;
   };
@@ -437,21 +437,19 @@ API.StaticMath = function(APIClasses) {
     this.RootBlock = MathBlock;
     _.__mathquillify = function(opts, interfaceVersion) {
       this.config(opts);
-      super_.__mathquillify.call(this, 'mq-math-mode');
+      super_.__mathquillify.call(this, "mq-math-mode");
       this.__controller.delegateMouseEvents();
       this.__controller.staticMathTextareaEvents();
       return this;
     };
     _.init = function() {
       super_.init.apply(this, arguments);
-      this.__controller.root.postOrder(
-        'registerInnerField', this.innerFields = [], APIClasses.MathField);
+      this.__controller.root.postOrder("registerInnerField", (this.innerFields = []), APIClasses.MathField);
     };
     _.latex = function() {
       var returned = super_.latex.apply(this, arguments);
       if (arguments.length > 0) {
-        this.__controller.root.postOrder(
-          'registerInnerField', this.innerFields = [], APIClasses.MathField);
+        this.__controller.root.postOrder("registerInnerField", (this.innerFields = []), APIClasses.MathField);
       }
       return returned;
     };
@@ -465,7 +463,7 @@ API.MathField = function(APIClasses) {
     _.__mathquillify = function(opts, interfaceVersion) {
       this.config(opts);
       if (interfaceVersion > 1) this.__controller.root.reflow = noop;
-      super_.__mathquillify.call(this, 'mq-editable-field mq-math-mode');
+      super_.__mathquillify.call(this, "mq-editable-field mq-math-mode");
       delete this.__controller.root.reflow;
       return this;
     };

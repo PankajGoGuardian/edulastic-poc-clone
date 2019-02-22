@@ -1,1 +1,1 @@
-export { default as GraphDisplay } from './GraphDisplay';
+export { default as GraphDisplay } from "./GraphDisplay";

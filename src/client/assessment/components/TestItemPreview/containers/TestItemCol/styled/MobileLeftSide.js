@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const MobileLeftSide = styled.div`
   position: fixed;

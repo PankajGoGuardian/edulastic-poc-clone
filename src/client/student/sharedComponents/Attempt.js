@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import React from "react";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
-import { formatTime } from '../utils';
+import { formatTime } from "../utils";
 
 const Attempt = ({ data, type, activityReview }) => {
   const { correct = 0, wrong = 0 } = data;
@@ -11,7 +11,7 @@ const Attempt = ({ data, type, activityReview }) => {
   const percentage = (correct / total) * 100 || 0;
   return (
     <AttemptsData>
-      <RowData pagetype={type === 'reports'}>
+      <RowData pagetype={type === "reports"}>
         <AnswerAndScore>
           <span data-cy="date">{formatTime(data.createdAt)}</span>
         </AnswerAndScore>
@@ -23,8 +23,8 @@ const Attempt = ({ data, type, activityReview }) => {
         <AnswerAndScore>
           <span data-cy="percentage">{percentage}%</span>
         </AnswerAndScore>
-        <SpaceBetween pagetype={type === 'reports'} />
-        {type === 'reports' && activityReview ? (
+        <SpaceBetween pagetype={type === "reports"} />
+        {type === "reports" && activityReview ? (
           <AnswerAndScoreReview>
             <Link to={`/home/testActivityReport/${data._id}`}>
               <span data-cy="review">REVIEW</span>
@@ -66,7 +66,7 @@ const AnswerAndScore = styled.div`
 const SpaceBetween = styled.div`
   width: 10px;
   @media screen and (max-width: 1024px) {
-    display: ${props => (props.pagetype ? 'initial' : 'none !important')};
+    display: ${props => (props.pagetype ? "initial" : "none !important")};
   }
 `;
 

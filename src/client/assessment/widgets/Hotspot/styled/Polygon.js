@@ -1,27 +1,27 @@
-import styled from 'styled-components';
-import Color from 'color';
+import styled from "styled-components";
+import Color from "color";
 
 const getStroke = ({ stroke, selected, showAnswer, correct, theme }) =>
-  (showAnswer
+  showAnswer
     ? correct
       ? theme.widgets.hotspot.svgMapStrokeColor
       : theme.widgets.hotspot.intersectStrokeColor
     : selected
-      ? Color(stroke)
+    ? Color(stroke)
         .darken(0.3)
         .string()
-      : stroke);
+    : stroke;
 
 const getFill = ({ fill, selected, showAnswer, correct, theme }) =>
-  (showAnswer
+  showAnswer
     ? correct
       ? theme.widgets.hotspot.svgMapFillColor
       : theme.widgets.hotspot.intersectFillColor
     : selected
-      ? Color(fill)
+    ? Color(fill)
         .darken(0.3)
         .string()
-      : fill);
+    : fill;
 
 export const Polygon = styled.polygon`
   fill: ${getFill};
@@ -32,5 +32,5 @@ export const Polygon = styled.polygon`
   stroke-linecap: round;
   stroke-linejoin: round;
   z-index: ${({ active }) => (active ? 11 : 0)};
-  cursor: ${({ intersect }) => (intersect ? 'not-allowed' : 'pointer')};
+  cursor: ${({ intersect }) => (intersect ? "not-allowed" : "pointer")};
 `;

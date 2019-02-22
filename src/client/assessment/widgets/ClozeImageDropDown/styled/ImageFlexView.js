@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { FlexView } from '../../../styled/FlexView';
+import styled from "styled-components";
+import { FlexView } from "../../../styled/FlexView";
 
 export const ImageFlexView = styled(FlexView)`
   flex-direction: column;

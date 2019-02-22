@@ -1,41 +1,41 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import { white, greenDark } from '@edulastic/colors';
-import { Button, FlexContainer, Checkbox } from '@edulastic/common';
-import { IconSettings } from '@edulastic/icons';
-import PropTypes from 'prop-types';
-import { withNamespaces } from '@edulastic/localization';
+import React, { Component } from "react";
+import styled from "styled-components";
+import { white, greenDark } from "@edulastic/colors";
+import { Button, FlexContainer, Checkbox } from "@edulastic/common";
+import { IconSettings } from "@edulastic/icons";
+import PropTypes from "prop-types";
+import { withNamespaces } from "@edulastic/localization";
 
-import SettingsBarItem from './SettingsBarItem';
-import SettingsBarTags from './SettingsBarTags';
-import SettingsBarUseTabs from './SettingsBarUseTabs';
+import SettingsBarItem from "./SettingsBarItem";
+import SettingsBarTags from "./SettingsBarTags";
+import SettingsBarUseTabs from "./SettingsBarUseTabs";
 
 class SettingsBar extends Component {
   layouts = [
     {
-      value: '100-100',
-      text: 'Single column',
+      value: "100-100",
+      text: "Single column"
     },
     {
-      value: '30-70',
-      text: '30 | 70',
+      value: "30-70",
+      text: "30 | 70"
     },
     {
-      value: '70-30',
-      text: '70 | 30',
+      value: "70-30",
+      text: "70 | 30"
     },
     {
-      value: '50-50',
-      text: '50 | 50',
+      value: "50-50",
+      text: "50 | 50"
     },
     {
-      value: '40-60',
-      text: '40 | 60',
+      value: "40-60",
+      text: "40 | 60"
     },
     {
-      value: '60-40',
-      text: '60 | 40',
-    },
+      value: "60-40",
+      text: "60 | 40"
+    }
   ];
 
   static propTypes = {
@@ -49,12 +49,12 @@ class SettingsBar extends Component {
     verticalDivider: PropTypes.bool.isRequired,
     scrolling: PropTypes.bool.isRequired,
     onVerticalDividerChange: PropTypes.func.isRequired,
-    onScrollingChange: PropTypes.func.isRequired,
+    onScrollingChange: PropTypes.func.isRequired
   };
 
   handleCheckboxChange = name => () => {
     this.setState(state => ({
-      [name]: !state[name],
+      [name]: !state[name]
     }));
   };
 
@@ -81,7 +81,7 @@ class SettingsBar extends Component {
       verticalDivider,
       scrolling,
       onVerticalDividerChange,
-      onScrollingChange,
+      onScrollingChange
     } = this.props;
 
     return (
@@ -91,7 +91,7 @@ class SettingsBar extends Component {
             <IconSettings color={white} width={16} height={16} />
           </Button>
         </SettingsButtonWrapper>
-        <Heading>{t('author:component.settingsBar.layout')}</Heading>
+        <Heading>{t("author:component.settingsBar.layout")}</Heading>
         <Items>
           {this.layouts.map(item => (
             <SettingsBarItem
@@ -111,27 +111,24 @@ class SettingsBar extends Component {
         <Checkboxes>
           <Checkbox
             style={{ marginBottom: 20 }}
-            label={t('author:component.settingsBar.showVerticalDivider')}
+            label={t("author:component.settingsBar.showVerticalDivider")}
             checked={verticalDivider}
             onChange={onVerticalDividerChange}
           />
           <Checkbox
-            label={t('author:component.settingsBar.enableScrolling')}
+            label={t("author:component.settingsBar.enableScrolling")}
             checked={scrolling}
             onChange={onScrollingChange}
           />
         </Checkboxes>
-        <Heading>{t('author:component.settingsBar.tags')}</Heading>
-        <SettingsBarTags
-          tags={['equations', 'algebra']}
-          onRemove={this.handleRemoveTag}
-        />
+        <Heading>{t("author:component.settingsBar.tags")}</Heading>
+        <SettingsBarTags tags={["equations", "algebra"]} onRemove={this.handleRemoveTag} />
       </Container>
     );
   }
 }
 
-export default withNamespaces(['default', 'author'])(SettingsBar);
+export default withNamespaces(["default", "author"])(SettingsBar);
 
 const Container = styled.div`
   width: 25vw;

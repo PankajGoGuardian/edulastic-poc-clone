@@ -1,14 +1,14 @@
-import { Point } from '.';
-import { CONSTANT, Colors } from '../config';
+import { Point } from ".";
+import { CONSTANT, Colors } from "../config";
 
 export const defaultConfig = {};
 
 export const getCircleLabelParameters = () => ({
   offset: [0, 10],
-  anchorX: 'middle',
-  anchorY: 'bottom',
-  cssClass: 'myLabel',
-  highlightCssClass: 'myLabel'
+  anchorX: "middle",
+  anchorY: "bottom",
+  cssClass: "myLabel",
+  highlightCssClass: "myLabel"
 });
 
 let points = [];
@@ -20,7 +20,7 @@ function onHandler() {
       points.push(newPoint);
     }
     if (points.length === 2) {
-      const newLine = board.$board.create('circle', points, {
+      const newLine = board.$board.create("circle", points, {
         ...defaultConfig,
         ...Colors.default[CONSTANT.TOOLS.CIRCLE],
         label: getCircleLabelParameters()
@@ -40,14 +40,15 @@ function getConfig(circle) {
     id: circle.id,
     label: circle.hasLabel ? circle.label.plaintext : false,
     points: Object.keys(circle.ancestors)
-      .sort().map(n => Point.getConfig(circle.ancestors[n]))
+      .sort()
+      .map(n => Point.getConfig(circle.ancestors[n]))
   };
 }
 
 function parseConfig() {
   return {
-    fillColor: 'transparent',
-    highlightFillColor: 'transparent',
+    fillColor: "transparent",
+    highlightFillColor: "transparent",
     label: getCircleLabelParameters()
   };
 }

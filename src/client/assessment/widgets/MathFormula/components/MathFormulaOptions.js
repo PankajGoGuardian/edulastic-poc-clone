@@ -1,26 +1,26 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Select, Checkbox, Input } from 'antd';
-import { cloneDeep } from 'lodash';
-import { compose } from 'redux';
-import { withTheme } from 'styled-components';
+import React from "react";
+import PropTypes from "prop-types";
+import { Select, Checkbox, Input } from "antd";
+import { cloneDeep } from "lodash";
+import { compose } from "redux";
+import { withTheme } from "styled-components";
 
-import { withNamespaces } from '@edulastic/localization';
-import { evaluationType, math } from '@edulastic/constants';
-import { FlexContainer, CustomQuillComponent } from '@edulastic/common';
+import { withNamespaces } from "@edulastic/localization";
+import { evaluationType, math } from "@edulastic/constants";
+import { FlexContainer, CustomQuillComponent } from "@edulastic/common";
 
-import KeyPadOptions from '../../../components/KeyPadOptions';
+import KeyPadOptions from "../../../components/KeyPadOptions";
 
-import WidgetOptions from '../../../containers/WidgetOptions';
-import { Block } from '../../../styled/WidgetOptions/Block';
-import { Heading } from '../../../styled/WidgetOptions/Heading';
-import { Row } from '../../../styled/WidgetOptions/Row';
-import { Col } from '../../../styled/WidgetOptions/Col';
-import { Label } from '../../../styled/WidgetOptions/Label';
-import FontSizeSelect from '../../../components/FontSizeSelect';
+import WidgetOptions from "../../../containers/WidgetOptions";
+import { Block } from "../../../styled/WidgetOptions/Block";
+import { Heading } from "../../../styled/WidgetOptions/Heading";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import FontSizeSelect from "../../../components/FontSizeSelect";
 
-import ResponseContainers from './ResponseContainers';
-import TextBlocks from './TextBlocks';
+import ResponseContainers from "./ResponseContainers";
+import TextBlocks from "./TextBlocks";
 
 function MathFormulaOptions({
   onChange,
@@ -37,20 +37,20 @@ function MathFormulaOptions({
   const quillStyle = {
     minHeight: 40,
     borderRadius: 5,
-    padding: '0 10px',
+    padding: "0 10px",
     border: `1px solid ${theme.widgets.mathFormula.quillBorderColor}`,
-    width: '80%'
+    width: "80%"
   };
 
   const changeUiStyle = (prop, value) => {
-    onChange('ui_style', {
+    onChange("ui_style", {
       ...uiStyle,
       [prop]: value
     });
   };
 
   const changeMetadata = (prop, value) => {
-    onChange('metadata', {
+    onChange("metadata", {
       ...metadata,
       [prop]: value
     });
@@ -59,55 +59,55 @@ function MathFormulaOptions({
   const changeResponseContainers = ({ index, prop, value }) => {
     const newContainers = cloneDeep(responseContainers);
     newContainers[index][prop] = value;
-    onChange('response_containers', newContainers);
+    onChange("response_containers", newContainers);
   };
 
   const addResponseContainer = () => {
-    onChange('response_containers', [...responseContainers, {}]);
+    onChange("response_containers", [...responseContainers, {}]);
   };
 
-  const deleteResponseContainer = (index) => {
+  const deleteResponseContainer = index => {
     const newContainers = cloneDeep(responseContainers);
     newContainers.splice(index, 1);
-    onChange('response_containers', newContainers);
+    onChange("response_containers", newContainers);
   };
 
   const changeTextBlock = ({ index, value }) => {
     const newBlocks = cloneDeep(textBlocks);
     newBlocks[index] = value;
-    onChange('text_blocks', newBlocks);
+    onChange("text_blocks", newBlocks);
   };
 
   const addTextBlock = () => {
-    onChange('text_blocks', [...textBlocks, '']);
+    onChange("text_blocks", [...textBlocks, ""]);
   };
 
-  const deleteTextBlock = (index) => {
+  const deleteTextBlock = index => {
     const newBlocks = cloneDeep(textBlocks);
     newBlocks.splice(index, 1);
-    onChange('text_blocks', newBlocks);
+    onChange("text_blocks", newBlocks);
   };
 
   const scoringTypes = [
     {
       value: evaluationType.EXACT_MATCH,
-      label: t('component.math.exactMatch')
+      label: t("component.math.exactMatch")
     }
   ];
 
   return (
     <WidgetOptions scoringTypes={scoringTypes}>
       <Block>
-        <Heading>{t('component.options.layout')}</Heading>
+        <Heading>{t("component.options.layout")}</Heading>
 
         <Row>
           <Col md={6}>
-            <Label>{t('component.options.templateFontScale')}</Label>
+            <Label>{t("component.options.templateFontScale")}</Label>
             <Select
               size="large"
               value={uiStyle.response_font_scale}
-              style={{ width: '80%' }}
-              onChange={val => changeUiStyle('response_font_scale', val)}
+              style={{ width: "80%" }}
+              onChange={val => changeUiStyle("response_font_scale", val)}
             >
               {math.templateFontScaleOption.map(({ value: val, label }) => (
                 <Select.Option key={val} value={val}>
@@ -122,29 +122,24 @@ function MathFormulaOptions({
                 type="number"
                 style={{ width: 110 }}
                 value={uiStyle.min_width}
-                onChange={e => changeUiStyle('min_width', +e.target.value)}
+                onChange={e => changeUiStyle("min_width", +e.target.value)}
               />
-              <Label style={{ marginBottom: 0 }}>
-                {t('component.options.responseMinimumWidth')}
-              </Label>
+              <Label style={{ marginBottom: 0 }}>{t("component.options.responseMinimumWidth")}</Label>
             </FlexContainer>
           </Col>
         </Row>
 
         <Row>
           <Col md={6}>
-            <FontSizeSelect
-              onChange={val => changeUiStyle('fontsize', val)}
-              value={uiStyle.fontsize}
-            />
+            <FontSizeSelect onChange={val => changeUiStyle("fontsize", val)} value={uiStyle.fontsize} />
           </Col>
 
           <Col md={6}>
             <Checkbox
               checked={uiStyle.transparent_background}
-              onChange={e => changeUiStyle('transparent_background', e.target.checked)}
+              onChange={e => changeUiStyle("transparent_background", e.target.checked)}
             >
-              {t('component.options.transparentBackground')}
+              {t("component.options.transparentBackground")}
             </Checkbox>
           </Col>
         </Row>
@@ -159,33 +154,28 @@ function MathFormulaOptions({
         onDelete={deleteResponseContainer}
       />
 
-      <TextBlocks
-        blocks={textBlocks}
-        onChange={changeTextBlock}
-        onAdd={addTextBlock}
-        onDelete={deleteTextBlock}
-      />
+      <TextBlocks blocks={textBlocks} onChange={changeTextBlock} onAdd={addTextBlock} onDelete={deleteTextBlock} />
 
       <Block>
-        <Heading>{t('component.options.additionalOptions')}</Heading>
+        <Heading>{t("component.options.additionalOptions")}</Heading>
 
         <Row>
           <Col md={6}>
-            <Label>{t('component.options.stimulusReviewOnly')}</Label>
+            <Label>{t("component.options.stimulusReviewOnly")}</Label>
             <CustomQuillComponent
               style={quillStyle}
               toolbarId="stimulus_review"
-              onChange={value => onChange('stimulus_review', value)}
+              onChange={value => onChange("stimulus_review", value)}
               showResponseBtn={false}
               value={stimulusReview}
             />
           </Col>
           <Col md={6}>
-            <Label>{t('component.options.instructorStimulus')}</Label>
+            <Label>{t("component.options.instructorStimulus")}</Label>
             <CustomQuillComponent
               style={quillStyle}
               toolbarId="instructor_stimulus"
-              onChange={value => onChange('instructor_stimulus', value)}
+              onChange={value => onChange("instructor_stimulus", value)}
               showResponseBtn={false}
               value={instructorStimulus}
             />
@@ -194,22 +184,22 @@ function MathFormulaOptions({
 
         <Row>
           <Col md={6}>
-            <Label>{t('component.options.rubricReference')}</Label>
+            <Label>{t("component.options.rubricReference")}</Label>
             <Input
               value={metadata.rubric_reference}
               size="large"
-              style={{ width: '80%' }}
-              onChange={e => changeMetadata('rubric_reference', e.target.value)}
+              style={{ width: "80%" }}
+              onChange={e => changeMetadata("rubric_reference", e.target.value)}
             />
           </Col>
         </Row>
 
         <Row>
           <Col md={12}>
-            <Label>{t('component.options.sampleAnswer')}</Label>
+            <Label>{t("component.options.sampleAnswer")}</Label>
             <CustomQuillComponent
               toolbarId="sample_answer"
-              onChange={value => changeMetadata('sample_answer', value)}
+              onChange={value => changeMetadata("sample_answer", value)}
               showResponseBtn={false}
               value={metadata.sample_answer}
             />
@@ -218,11 +208,11 @@ function MathFormulaOptions({
 
         <Row>
           <Col md={12}>
-            <Label>{t('component.options.distractorRationale')}</Label>
+            <Label>{t("component.options.distractorRationale")}</Label>
             <CustomQuillComponent
-              style={{ ...quillStyle, width: '100%' }}
+              style={{ ...quillStyle, width: "100%" }}
               toolbarId="distractor_rationale"
-              onChange={value => changeMetadata('distractor_rationale', value)}
+              onChange={value => changeMetadata("distractor_rationale", value)}
               showResponseBtn={false}
               value={metadata.distractor_rationale}
             />
@@ -233,9 +223,9 @@ function MathFormulaOptions({
           <Col md={6}>
             <Checkbox
               checked={metadata.distractor_rationale_per_response}
-              onChange={e => changeMetadata('distractor_rationale_per_response', e.target.checked)}
+              onChange={e => changeMetadata("distractor_rationale_per_response", e.target.checked)}
             >
-              {t('component.options.distractorRationalePerResponse')}
+              {t("component.options.distractorRationalePerResponse")}
             </Checkbox>
           </Col>
         </Row>
@@ -260,25 +250,25 @@ MathFormulaOptions.propTypes = {
 MathFormulaOptions.defaultProps = {
   responseContainers: [],
   textBlocks: [],
-  stimulusReview: '',
-  instructorStimulus: '',
+  stimulusReview: "",
+  instructorStimulus: "",
   metadata: {
-    rubric_reference: '',
-    sample_answer: '',
-    distractor_rationale: '',
+    rubric_reference: "",
+    sample_answer: "",
+    distractor_rationale: "",
     distractor_rationale_per_response: false
   },
   uiStyle: {
-    type: 'standard',
-    fontsize: 'normal',
+    type: "standard",
+    fontsize: "normal",
     columns: 0,
-    orientation: 'horizontal',
-    choice_label: 'number'
+    orientation: "horizontal",
+    choice_label: "number"
   }
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   withTheme
 );
 

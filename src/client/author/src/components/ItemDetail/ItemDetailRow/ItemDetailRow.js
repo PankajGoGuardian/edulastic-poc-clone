@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { Icon } from 'antd';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { Icon } from "antd";
 
-import { mobileWidth, darkBlueSecondary, white } from '@edulastic/colors';
-import { FlexContainer, Tabs, Paper } from '@edulastic/common';
-import ItemDetailWidget from './ItemDetailWidget';
-import ItemDetailDropTarget from './ItemDetailDropTarget';
-import { getItemDetailDraggingSelector } from '../../../selectors/itemDetail';
-import { MAX_MOBILE_WIDTH } from '../../../constants/others';
-import AddNew from './AddNew';
+import { mobileWidth, darkBlueSecondary, white } from "@edulastic/colors";
+import { FlexContainer, Tabs, Paper } from "@edulastic/common";
+import ItemDetailWidget from "./ItemDetailWidget";
+import ItemDetailDropTarget from "./ItemDetailDropTarget";
+import { getItemDetailDraggingSelector } from "../../../selectors/itemDetail";
+import { MAX_MOBILE_WIDTH } from "../../../constants/others";
+import AddNew from "./AddNew";
 
 class ItemDetailRow extends Component {
   state = {
@@ -30,7 +30,7 @@ class ItemDetailRow extends Component {
     windowWidth: PropTypes.number.isRequired
   };
 
-  handleTabChange = (value) => {
+  handleTabChange = value => {
     this.setState({
       value
     });
@@ -50,22 +50,14 @@ class ItemDetailRow extends Component {
   };
 
   render() {
-    const {
-      row,
-      onAdd,
-      onEditTabTitle,
-      rowIndex,
-      dragging,
-      count,
-      windowWidth
-    } = this.props;
+    const { row, onAdd, onEditTabTitle, rowIndex, dragging, count, windowWidth } = this.props;
     const { value } = this.state;
     return (
       <Container
         value={value}
         style={{
           width: row.dimension,
-          marginRight: count - 1 === rowIndex ? '0px' : '30px'
+          marginRight: count - 1 === rowIndex ? "0px" : "30px"
         }}
       >
         {row.tabs && windowWidth > MAX_MOBILE_WIDTH && !!row.tabs.length && (
@@ -76,9 +68,9 @@ class ItemDetailRow extends Component {
                   key={tabIndex}
                   label={tab}
                   style={{
-                    width: '50%',
-                    textAlign: 'center',
-                    padding: '30px 20px 15px'
+                    width: "50%",
+                    textAlign: "center",
+                    padding: "30px 20px 15px"
                   }}
                   onChange={e => onEditTabTitle(tabIndex, e.target.value)}
                   editable
@@ -87,51 +79,29 @@ class ItemDetailRow extends Component {
             </Tabs>
           </TabContainer>
         )}
-        {row.tabs &&
-          windowWidth < MAX_MOBILE_WIDTH &&
-          !!row.tabs.length &&
-          value === 0 && (
-            <MobileRightSide onClick={() => this.handleTabChange(1)}>
-              <Icon type="left" style={{ color: white }} />
-            </MobileRightSide>
+        {row.tabs && windowWidth < MAX_MOBILE_WIDTH && !!row.tabs.length && value === 0 && (
+          <MobileRightSide onClick={() => this.handleTabChange(1)}>
+            <Icon type="left" style={{ color: white }} />
+          </MobileRightSide>
         )}
-        {row.tabs &&
-          windowWidth < MAX_MOBILE_WIDTH &&
-          !!row.tabs.length &&
-          value === 1 && (
-            <MobileLeftSide onClick={() => this.handleTabChange(0)}>
-              <Icon type="right" style={{ color: white }} />
-            </MobileLeftSide>
+        {row.tabs && windowWidth < MAX_MOBILE_WIDTH && !!row.tabs.length && value === 1 && (
+          <MobileLeftSide onClick={() => this.handleTabChange(0)}>
+            <Icon type="right" style={{ color: white }} />
+          </MobileLeftSide>
         )}
-        {!row.widgets.length && dragging && (
-          <ItemDetailDropTarget
-            widgetIndex={0}
-            rowIndex={rowIndex}
-            tabIndex={0}
-          />
-        )}
-        {dragging &&
-          row.widgets.filter(w => w.tabIndex === value).length === 0 && (
-            <ItemDetailDropTarget
-              widgetIndex={0}
-              rowIndex={rowIndex}
-              tabIndex={value}
-            />
+        {!row.widgets.length && dragging && <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={0} />}
+        {dragging && row.widgets.filter(w => w.tabIndex === value).length === 0 && (
+          <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={value} />
         )}
         {row.widgets.map((widget, i) => (
           <React.Fragment key={i}>
             {dragging && widget.tabIndex === value && (
-              <ItemDetailDropTarget
-                widgetIndex={i}
-                rowIndex={rowIndex}
-                tabIndex={value}
-              />
+              <ItemDetailDropTarget widgetIndex={i} rowIndex={rowIndex} tabIndex={value} />
             )}
             {!!row.tabs.length &&
               value === widget.tabIndex &&
               this.renderTabContent({ widgetIndex: i, widget, rowIndex })}
-            {!row.tabs.length &&
-              this.renderTabContent({ widgetIndex: i, widget, rowIndex })}
+            {!row.tabs.length && this.renderTabContent({ widgetIndex: i, widget, rowIndex })}
           </React.Fragment>
         ))}
         <AddButtonContainer justifyContent="center">
@@ -162,8 +132,8 @@ const Container = styled(Paper)`
 
   @media (max-width: ${mobileWidth}) {
     padding-left: 10px;
-    margin-right: ${props => !props.value && '20px !important'};
-    margin-left: ${props => props.value && '20px !important'};
+    margin-right: ${props => !props.value && "20px !important"};
+    margin-left: ${props => props.value && "20px !important"};
   }
 `;
 

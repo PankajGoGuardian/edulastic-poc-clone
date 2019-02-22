@@ -1,10 +1,6 @@
-import React from 'react';
-import { Select } from 'antd';
-import {
-  Container,
-  StyledSelect,
-  DFlexContainer
-} from './styled';
+import React from "react";
+import { Select } from "antd";
+import { Container, StyledSelect, DFlexContainer } from "./styled";
 
 const SortBar = ({ onSortChange, activeStyle, onStyleChange }) => (
   <DFlexContainer>

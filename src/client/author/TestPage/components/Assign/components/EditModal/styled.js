@@ -1,7 +1,7 @@
-import styled, { css } from 'styled-components';
-import { Row, Switch, Radio, Col, Modal } from 'antd';
-import { EduButton, FlexContainer } from '@edulastic/common';
-import { white, blue, lightGrey, mainTextColor } from '@edulastic/colors';
+import styled, { css } from "styled-components";
+import { Row, Switch, Radio, Col, Modal } from "antd";
+import { EduButton, FlexContainer } from "@edulastic/common";
+import { white, blue, lightGrey, mainTextColor } from "@edulastic/colors";
 const RadioGroup = Radio.Group;
 
 // Edit Modal styled
@@ -101,8 +101,7 @@ export const AlignSwitchRight = styled(Switch)`
 `;
 
 export const StyledRowSettings = styled.div`
-  ${props =>
-    !props.islast && 'border-bottom: 1px solid rgba(128, 128, 128, 0.25);'}
+  ${props => !props.islast && "border-bottom: 1px solid rgba(128, 128, 128, 0.25);"}
   padding: 15px 0px;
   font-size: 10px;
   display: flex;

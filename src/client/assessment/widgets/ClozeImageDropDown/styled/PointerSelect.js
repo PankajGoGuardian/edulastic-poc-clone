@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Select } from 'antd';
+import styled from "styled-components";
+import { Select } from "antd";
 
 export const PointerSelect = styled(Select)`
   width: 100px;

@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import DropContainer from '../../../assessment/components/DropContainer';
-import CurriculumModuleRow from './CurriculumModuleRow';
-import { theme } from '../theme';
+import React, { Component } from "react";
+import styled from "styled-components";
+import DropContainer from "../../../assessment/components/DropContainer";
+import CurriculumModuleRow from "./CurriculumModuleRow";
+import { theme } from "../theme";
 
 /**
  * @typedef CurriculumProps
@@ -13,22 +13,20 @@ import { theme } from '../theme';
 
 /** @extends Component<CurriculumProps> */
 class Curriculum extends Component {
-  onDrop = (toModule) => {
+  onDrop = toModule => {
     this.props.onDrop(toModule);
-  }
+  };
 
   render() {
-    const { curriculum: { modules } } = this.props;
+    const {
+      curriculum: { modules }
+    } = this.props;
     const { expandedModules, onCollapseExpand, padding } = this.props;
 
     return (
       <ModuleWrapper>
         {modules.map((moduleItem, index) => (
-          <DropContainer
-            theme={theme}
-            key={`drop-${index}-${moduleItem.id}`}
-            drop={() => this.onDrop(moduleItem)}
-          >
+          <DropContainer theme={theme} key={`drop-${index}-${moduleItem.id}`} drop={() => this.onDrop(moduleItem)}>
             <CurriculumModuleRow
               collapsed={expandedModules.indexOf(moduleItem.id) === -1}
               onCollapseExpand={onCollapseExpand}
@@ -49,6 +47,6 @@ const ModuleWrapper = styled.div`
   z-index: 1;
   margin-top: -1px;
 `;
-ModuleWrapper.displayName = 'ModuleWrapper';
+ModuleWrapper.displayName = "ModuleWrapper";
 
 export default Curriculum;

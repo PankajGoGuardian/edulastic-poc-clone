@@ -1,21 +1,15 @@
-import React from 'react';
-import Modal from 'react-responsive-modal';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { Button } from 'antd';
+import React from "react";
+import Modal from "react-responsive-modal";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { Button } from "antd";
 
 const SavePauseModalMobile = ({ isVisible, onClose, onExitClick }) => (
-  <Modal
-    open={isVisible}
-    onClose={onClose}
-    showCloseIcon={false}
-    styles={{ modal: { borderRadius: 4 } }}
-    center
-  >
+  <Modal open={isVisible} onClose={onClose} showCloseIcon={false} styles={{ modal: { borderRadius: 4 } }} center>
     <Container>
       <StyledButton>Save</StyledButton>
       <StyledButton>Pause</StyledButton>
-      <StyledButton onClick={onExitClick}>Qui                                                                                                     t</StyledButton>
+      <StyledButton onClick={onExitClick}>Qui t</StyledButton>
     </Container>
   </Modal>
 );
@@ -46,7 +40,8 @@ const StyledButton = styled(Button)`
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.3px;
-  &:active, &:focus {
+  &:active,
+  &:focus {
     border-color: #f3f3f3;
   }
 `;

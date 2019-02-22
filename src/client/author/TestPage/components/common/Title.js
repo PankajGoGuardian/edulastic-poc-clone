@@ -1,5 +1,5 @@
-import { greenDark } from '@edulastic/colors';
-import styled from 'styled-components';
+import { greenDark } from "@edulastic/colors";
+import styled from "styled-components";
 
 const Title = styled.div`
   color: ${greenDark};

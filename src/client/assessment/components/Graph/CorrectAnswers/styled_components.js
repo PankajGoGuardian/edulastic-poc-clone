@@ -1,7 +1,7 @@
-import styled from 'styled-components';
-import { lightGrey, tabletWidth } from '@edulastic/colors';
+import styled from "styled-components";
+import { lightGrey, tabletWidth } from "@edulastic/colors";
 
-import { TextField } from '@edulastic/common';
+import { TextField } from "@edulastic/common";
 
 export const Header = styled.div`
   padding: 10px;

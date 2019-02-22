@@ -1,22 +1,22 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { arrayMove } from 'react-sortable-hoc';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { cloneDeep } from 'lodash';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { arrayMove } from "react-sortable-hoc";
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { cloneDeep } from "lodash";
 
-import { withNamespaces } from '@edulastic/localization';
-import { PaddingDiv } from '@edulastic/common';
+import { withNamespaces } from "@edulastic/localization";
+import { PaddingDiv } from "@edulastic/common";
 
-import { setQuestionDataAction } from '../../../../author/src/actions/question';
+import { setQuestionDataAction } from "../../../../author/src/actions/question";
 
-import QuestionTextArea from '../../../components/QuestionTextArea';
-import { Subtitle } from '../../../styled/Subtitle';
-import { AddNewChoiceBtn } from '../../../styled/AddNewChoiceBtn';
+import QuestionTextArea from "../../../components/QuestionTextArea";
+import { Subtitle } from "../../../styled/Subtitle";
+import { AddNewChoiceBtn } from "../../../styled/AddNewChoiceBtn";
 
-import { ALPHABET } from '../constants/alphabet';
-import QuillSortableList from '../../../components/QuillSortableList';
+import { ALPHABET } from "../constants/alphabet";
+import QuillSortableList from "../../../components/QuillSortableList";
 
 class Authoring extends Component {
   static propTypes = {
@@ -30,7 +30,7 @@ class Authoring extends Component {
     return cloneDeep(item);
   }
 
-  onChangeQuestion = (stimulus) => {
+  onChangeQuestion = stimulus => {
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, stimulus });
   };
@@ -73,7 +73,7 @@ class Authoring extends Component {
     setQuestionData(newItem);
   };
 
-  remove = (index) => {
+  remove = index => {
     const { setQuestionData } = this.props;
     const newItem = this.getNewItem();
 
@@ -87,7 +87,7 @@ class Authoring extends Component {
 
     newItem.options.push({
       value: newItem.options.length,
-      label: `${t('component.multiplechoice.choice')} ${ALPHABET[newItem.options.length]}`
+      label: `${t("component.multiplechoice.choice")} ${ALPHABET[newItem.options.length]}`
     });
 
     setQuestionData(newItem);
@@ -114,14 +114,14 @@ class Authoring extends Component {
     return (
       <div>
         <PaddingDiv bottom={20}>
-          <Subtitle>{t('component.multiplechoice.composequestion')}</Subtitle>
+          <Subtitle>{t("component.multiplechoice.composequestion")}</Subtitle>
           <QuestionTextArea
             onChange={this.onChangeQuestion}
             value={item.stimulus}
             firstFocus={item.firstMount}
-            placeholder={t('component.multiplechoice.thisisstem')}
+            placeholder={t("component.multiplechoice.thisisstem")}
           />
-          <Subtitle>{t('component.multiplechoice.multiplechoiceoptions')}</Subtitle>
+          <Subtitle>{t("component.multiplechoice.multiplechoiceoptions")}</Subtitle>
           <QuillSortableList
             items={item.options.map(o => o.label)}
             onSortEnd={this.onSortEnd}
@@ -132,7 +132,7 @@ class Authoring extends Component {
           />
           <div>
             <AddNewChoiceBtn data-cy="add-new-ch" onClick={this.addNewChoiceBtn}>
-              {t('component.multiplechoice.addnewchoice')}
+              {t("component.multiplechoice.addnewchoice")}
             </AddNewChoiceBtn>
           </div>
         </PaddingDiv>
@@ -143,7 +143,7 @@ class Authoring extends Component {
 
 const enhance = compose(
   withRouter,
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     null,
     { setQuestionData: setQuestionDataAction }

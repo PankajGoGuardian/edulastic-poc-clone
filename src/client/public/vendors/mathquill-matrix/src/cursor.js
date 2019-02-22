@@ -15,34 +15,33 @@ var Cursor = P(Point, function(_) {
     this.parent = initParent;
     this.options = options;
 
-    var jQ = this.jQ = this._jQ = $('<span class="mq-cursor">&#8203;</span>');
+    var jQ = (this.jQ = this._jQ = $('<span class="mq-cursor">&#8203;</span>'));
     //closured for setInterval
-    this.blink = function(){ jQ.toggleClass('mq-blink'); };
+    this.blink = function() {
+      jQ.toggleClass("mq-blink");
+    };
 
     this.upDownCache = {};
   };
 
   _.show = function() {
-    this.jQ = this._jQ.removeClass('mq-blink');
-    if ('intervalId' in this) //already was shown, just restart interval
+    this.jQ = this._jQ.removeClass("mq-blink");
+    if ("intervalId" in this)
+      //already was shown, just restart interval
       clearInterval(this.intervalId);
-    else { //was hidden and detached, insert this.jQ back into HTML DOM
+    else {
+      //was hidden and detached, insert this.jQ back into HTML DOM
       if (this[R]) {
-        if (this.selection && this.selection.ends[L][L] === this[L])
-          this.jQ.insertBefore(this.selection.jQ);
-        else
-          this.jQ.insertBefore(this[R].jQ.first());
-      }
-      else
-        this.jQ.appendTo(this.parent.jQ);
+        if (this.selection && this.selection.ends[L][L] === this[L]) this.jQ.insertBefore(this.selection.jQ);
+        else this.jQ.insertBefore(this[R].jQ.first());
+      } else this.jQ.appendTo(this.parent.jQ);
       this.parent.focus();
     }
     this.intervalId = setInterval(this.blink, 500);
     return this;
   };
   _.hide = function() {
-    if ('intervalId' in this)
-      clearInterval(this.intervalId);
+    if ("intervalId" in this) clearInterval(this.intervalId);
     delete this.intervalId;
     this.jQ.detach();
     this.jQ = $();
@@ -63,11 +62,15 @@ var Cursor = P(Point, function(_) {
     prayDirection(dir);
     this.jQ.insDirOf(dir, el.jQ);
     this.withDirInsertAt(dir, el.parent, el[dir], el);
-    this.parent.jQ.addClass('mq-hasCursor');
+    this.parent.jQ.addClass("mq-hasCursor");
     return this;
   };
-  _.insLeftOf = function(el) { return this.insDirOf(L, el); };
-  _.insRightOf = function(el) { return this.insDirOf(R, el); };
+  _.insLeftOf = function(el) {
+    return this.insDirOf(L, el);
+  };
+  _.insRightOf = function(el) {
+    return this.insDirOf(R, el);
+  };
 
   _.insAtDirEnd = function(dir, el) {
     prayDirection(dir);
@@ -76,8 +79,12 @@ var Cursor = P(Point, function(_) {
     el.focus();
     return this;
   };
-  _.insAtLeftEnd = function(el) { return this.insAtDirEnd(L, el); };
-  _.insAtRightEnd = function(el) { return this.insAtDirEnd(R, el); };
+  _.insAtLeftEnd = function(el) {
+    return this.insAtDirEnd(L, el);
+  };
+  _.insAtRightEnd = function(el) {
+    return this.insAtDirEnd(R, el);
+  };
 
   /**
    * jump up or down from one block Node to another:
@@ -93,8 +100,7 @@ var Cursor = P(Point, function(_) {
     var cached = self.upDownCache[to.id];
     if (cached) {
       cached[R] ? self.insLeftOf(cached[R]) : self.insAtRightEnd(cached.parent);
-    }
-    else {
+    } else {
       var pageX = self.offset().left;
       to.seek(pageX, self);
     }
@@ -107,10 +113,11 @@ var Cursor = P(Point, function(_) {
     //Opera bug DSK-360043
     //http://bugs.jquery.com/ticket/11523
     //https://github.com/jquery/jquery/pull/717
-    var self = this, offset = self.jQ.removeClass('mq-cursor').offset();
-    self.jQ.addClass('mq-cursor');
+    var self = this,
+      offset = self.jQ.removeClass("mq-cursor").offset();
+    self.jQ.addClass("mq-cursor");
     return offset;
-  }
+  };
   _.unwrapGramp = function() {
     var gramp = this.parent.parent;
     var greatgramp = gramp.parent;
@@ -121,24 +128,23 @@ var Cursor = P(Point, function(_) {
     gramp.disown().eachChild(function(uncle) {
       if (uncle.isEmpty()) return;
 
-      uncle.children()
+      uncle
+        .children()
         .adopt(greatgramp, leftward, rightward)
         .each(function(cousin) {
           cousin.jQ.insertBefore(gramp.jQ.first());
-        })
-      ;
+        });
 
       leftward = uncle.ends[R];
     });
 
-    if (!this[R]) { //then find something to be rightward to insLeftOf
-      if (this[L])
-        this[R] = this[L][R];
+    if (!this[R]) {
+      //then find something to be rightward to insLeftOf
+      if (this[L]) this[R] = this[L][R];
       else {
         while (!this[R]) {
           this.parent = this.parent[R];
-          if (this.parent)
-            this[R] = this.parent.ends[L];
+          if (this.parent) this[R] = this.parent.ends[L];
           else {
             this[R] = gramp[R];
             this.parent = greatgramp;
@@ -147,10 +153,8 @@ var Cursor = P(Point, function(_) {
         }
       }
     }
-    if (this[R])
-      this.insLeftOf(this[R]);
-    else
-      this.insAtRightEnd(greatgramp);
+    if (this[R]) this.insLeftOf(this[R]);
+    else this.insAtRightEnd(greatgramp);
 
     gramp.jQ.remove();
 
@@ -158,10 +162,10 @@ var Cursor = P(Point, function(_) {
     if (gramp[R].siblingDeleted) gramp[R].siblingDeleted(cursor.options, L);
   };
   _.startSelection = function() {
-    var anticursor = this.anticursor = Point.copy(this);
-    var ancestors = anticursor.ancestors = {}; // a map from each ancestor of
-      // the anticursor, to its child that is also an ancestor; in other words,
-      // the anticursor's ancestor chain in reverse order
+    var anticursor = (this.anticursor = Point.copy(this));
+    var ancestors = (anticursor.ancestors = {}); // a map from each ancestor of
+    // the anticursor, to its child that is also an ancestor; in other words,
+    // the anticursor's ancestor chain in reverse order
     for (var ancestor = anticursor; ancestor.parent; ancestor = ancestor.parent) {
       ancestors[ancestor.parent.id] = ancestor;
     }
@@ -181,7 +185,7 @@ var Cursor = P(Point, function(_) {
         break;
       }
     }
-    pray('cursor and anticursor in the same tree', lca);
+    pray("cursor and anticursor in the same tree", lca);
     // The cursor and the anticursor should be in the same tree, because the
     // mousemove handler attached to the document, unlike the one attached to
     // the root HTML DOM element, doesn't try to get the math tree node of the
@@ -196,7 +200,9 @@ var Cursor = P(Point, function(_) {
     // parent and guaranteed that if both are Points, they are not the same,
     // and we have to figure out which is the left end and which the right end
     // of the selection.
-    var leftEnd, rightEnd, dir = R;
+    var leftEnd,
+      rightEnd,
+      dir = R;
 
     // This is an extremely subtle algorithm.
     // As a special case, `ancestor` could be a Point and `antiAncestor` a Node
@@ -265,10 +271,10 @@ var Selection = P(Fragment, function(_, super_) {
   _.init = function() {
     super_.init.apply(this, arguments);
     this.jQ = this.jQ.wrapAll('<span class="mq-selection"></span>').parent();
-      //can't do wrapAll(this.jQ = $(...)) because wrapAll will clone it
+    //can't do wrapAll(this.jQ = $(...)) because wrapAll will clone it
   };
   _.adopt = function() {
-    this.jQ.replaceWith(this.jQ = this.jQ.children());
+    this.jQ.replaceWith((this.jQ = this.jQ.children()));
     return super_.adopt.apply(this, arguments);
   };
   _.clear = function() {
@@ -278,7 +284,7 @@ var Selection = P(Fragment, function(_, super_) {
     return this;
   };
   _.join = function(methodName) {
-    return this.fold('', function(fold, child) {
+    return this.fold("", function(fold, child) {
       return fold + child[methodName]();
     });
   };

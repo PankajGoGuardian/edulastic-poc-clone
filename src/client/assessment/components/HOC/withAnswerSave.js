@@ -1,23 +1,23 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
+import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
 
-import { setUserAnswerAction } from '../../actions/answers';
-import { getAnswerByQuestionIdSelector } from '../../selectors/answers';
-import createShowAnswerData from '../../../author/src/utils/showAnswer';
+import { setUserAnswerAction } from "../../actions/answers";
+import { getAnswerByQuestionIdSelector } from "../../selectors/answers";
+import createShowAnswerData from "../../../author/src/utils/showAnswer";
 
-const getQuestionId = questionId => questionId || 'tmp';
+const getQuestionId = questionId => questionId || "tmp";
 
-export default (WrappedComponent) => {
+export default WrappedComponent => {
   const hocComponent = ({ setUserAnswer, testItemId, ...props }) => {
     const { data: question } = props;
     const questionId = getQuestionId(question.id);
 
     return (
       <WrappedComponent
-        saveAnswer={(data) => {
+        saveAnswer={data => {
           setUserAnswer(questionId, data);
         }}
         questionId={questionId}

@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { css } from "styled-components";
 
 const HeaderMenuMobile = css`
   padding-left: 30px;
@@ -10,7 +10,7 @@ const HeaderMainMenu = styled.div`
     margin-top: 7px;
   }
   @media (max-width: 768px) {
-    ${props => props.skinb === 'true' && HeaderMenuMobile}
+    ${props => props.skinb === "true" && HeaderMenuMobile}
   }
 `;
 

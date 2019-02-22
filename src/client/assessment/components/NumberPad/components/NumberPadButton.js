@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import { Item } from '../styled/Item';
+import { Item } from "../styled/Item";
 
 const NumberPadButton = ({ children, onClick }) => <Item onClick={onClick}>{children}</Item>;
 

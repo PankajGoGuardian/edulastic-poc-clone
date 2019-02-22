@@ -1,22 +1,23 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { arrayMove } from 'react-sortable-hoc';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { cloneDeep } from 'lodash';
-import 'react-quill/dist/quill.snow.css';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { arrayMove } from "react-sortable-hoc";
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { cloneDeep } from "lodash";
+import "react-quill/dist/quill.snow.css";
 
-import { withNamespaces } from '@edulastic/localization';
-import { PaddingDiv, CustomQuillComponent } from '@edulastic/common';
+import { withNamespaces } from "@edulastic/localization";
+import { PaddingDiv, CustomQuillComponent } from "@edulastic/common";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
 
-import SortableList from '../../components/SortableList/index';
-import { Subtitle } from '../../styled/Subtitle';
-import { AddNewChoiceBtn } from '../../styled/AddNewChoiceBtn';
+import SortableList from "../../components/SortableList/index";
+import { Subtitle } from "../../styled/Subtitle";
+import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 
-const defaultTemplateMarkup = '<p>Risus </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>';
+const defaultTemplateMarkup =
+  '<p>Risus </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>';
 
 class ClozeDropDownAuthoring extends Component {
   static propTypes = {
@@ -40,7 +41,7 @@ class ClozeDropDownAuthoring extends Component {
     return cloneDeep(item);
   }
 
-  onChangeQuesiton = (html) => {
+  onChangeQuesiton = html => {
     const stimulus = html;
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, stimulus });
@@ -68,15 +69,15 @@ class ClozeDropDownAuthoring extends Component {
     setQuestionData(newItem);
   };
 
-  addNewChoiceBtn = (index) => {
+  addNewChoiceBtn = index => {
     const { setQuestionData, t } = this.props;
     const newItem = this.getNewItem();
     if (newItem.options[index] === undefined) newItem.options[index] = [];
-    newItem.options[index].push(t('component.cloze.dropDown.newChoice'));
+    newItem.options[index].push(t("component.cloze.dropDown.newChoice"));
     setQuestionData(newItem);
   };
 
-  onChangeMarkUp = (html) => {
+  onChangeMarkUp = html => {
     const templateMarkUp = html;
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, templateMarkUp });
@@ -84,14 +85,14 @@ class ClozeDropDownAuthoring extends Component {
 
   addGroup = () => {
     const { groupResponses } = this.state;
-    groupResponses.push({ title: '', options: [] });
+    groupResponses.push({ title: "", options: [] });
     const newGroupResponses = groupResponses.slice();
     this.setState({ groupResponses: newGroupResponses });
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, groupResponses: newGroupResponses });
   };
 
-  removeGroup = (index) => {
+  removeGroup = index => {
     const { groupResponses } = this.state;
     groupResponses.splice(index, 1);
     const newGroupResponses = groupResponses.slice();
@@ -109,11 +110,9 @@ class ClozeDropDownAuthoring extends Component {
     setQuestionData({ ...item, groupResponses: newGroupResponses });
   };
 
-  onSortEndGroupOptions = () => {
+  onSortEndGroupOptions = () => {};
 
-  };
-
-  getTemplateParts = (props) => {
+  getTemplateParts = props => {
     const { templateMarkUp } = props;
     let templateMarkUpStr = templateMarkUp;
     if (!templateMarkUpStr) {
@@ -133,20 +132,24 @@ class ClozeDropDownAuthoring extends Component {
     return (
       <div>
         <PaddingDiv bottom={20}>
-          <Subtitle>{t('component.cloze.dropDown.composequestion')}</Subtitle>
+          <Subtitle>{t("component.cloze.dropDown.composequestion")}</Subtitle>
           <CustomQuillComponent
             toolbarId="stimulus"
-            wrappedRef={(instance) => { this.stimulus = instance; }}
-            placeholder={t('component.cloze.dropDown.thisisstem')}
+            wrappedRef={instance => {
+              this.stimulus = instance;
+            }}
+            placeholder={t("component.cloze.dropDown.thisisstem")}
             onChange={this.onChangeQuesiton}
             showResponseBtn={false}
             value={item.stimulus}
           />
-          <Subtitle>{t('component.cloze.dropDown.templatemarkup')}</Subtitle>
+          <Subtitle>{t("component.cloze.dropDown.templatemarkup")}</Subtitle>
           <CustomQuillComponent
             toolbarId="templatemarkup"
-            wrappedRef={(instance) => { this.templatemarkup = instance; }}
-            placeholder={t('component.cloze.dropDown.templatemarkupplaceholder')}
+            wrappedRef={instance => {
+              this.templatemarkup = instance;
+            }}
+            placeholder={t("component.cloze.dropDown.templatemarkupplaceholder")}
             onChange={this.onChangeMarkUp}
             firstFocus={!item.templateMarkUp}
             showResponseBtn
@@ -154,7 +157,7 @@ class ClozeDropDownAuthoring extends Component {
           />
           {responseContainers.map((resp, index) => (
             <PaddingDiv key={`${resp}_${index}`}>
-              <Subtitle>{`${t('component.cloze.dropDown.choicesforresponse')} ${index + 1}`}</Subtitle>
+              <Subtitle>{`${t("component.cloze.dropDown.choicesforresponse")} ${index + 1}`}</Subtitle>
               <SortableList
                 items={item.options[index] || []}
                 dirty={item.templateMarkUp}
@@ -165,7 +168,7 @@ class ClozeDropDownAuthoring extends Component {
               />
               <div>
                 <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(index)}>
-                  {t('component.cloze.dropDown.addnewchoice')}
+                  {t("component.cloze.dropDown.addnewchoice")}
                 </AddNewChoiceBtn>
               </div>
             </PaddingDiv>
@@ -178,11 +181,11 @@ class ClozeDropDownAuthoring extends Component {
 
 const enhance = compose(
   withRouter,
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     null,
-    { setQuestionData: setQuestionDataAction },
-  ),
+    { setQuestionData: setQuestionDataAction }
+  )
 );
 
 export default enhance(ClozeDropDownAuthoring);

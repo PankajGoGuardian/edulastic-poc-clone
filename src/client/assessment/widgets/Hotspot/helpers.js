@@ -1,6 +1,6 @@
-import overlay from 'overlay-pslg';
+import overlay from "overlay-pslg";
 
-export const genarateEdgesAndAreaArrays = (Area) => {
+export const genarateEdgesAndAreaArrays = Area => {
   const newArea = Area.map(point => [point.x, point.y]);
 
   const newEdges = [];
@@ -18,9 +18,9 @@ export const genarateEdgesAndAreaArrays = (Area) => {
 export const isFiguresIntersects = (newPoints, newAreas) => {
   const [newArea, newEdges] = newPoints;
 
-  return newAreas.every((item) => {
+  return newAreas.every(item => {
     const [area, edges] = item;
-    return overlay(newArea, newEdges, area, edges, 'and').blue.length === 0;
+    return overlay(newArea, newEdges, area, edges, "and").blue.length === 0;
   });
 };
 
@@ -30,10 +30,10 @@ export const isPolygonsIntersects = (newPoints, newAreas) => {
   const [newArea, newEdges] = newPoints;
 
   return isFiguresIntersects(newPoints, newAreas)
-    ? !!newAreas.every((item) => {
-      const [area, edges] = item;
-      return overlay(area, edges, newArea, newEdges, 'and').blue.length === 0;
-    })
+    ? !!newAreas.every(item => {
+        const [area, edges] = item;
+        return overlay(area, edges, newArea, newEdges, "and").blue.length === 0;
+      })
     : false;
 };
 
@@ -44,24 +44,18 @@ export const isIntersects = (
   endPointOfTargetLine
 ) => {
   const det =
-    (endPointOfCurrentLine.x - startPointOfCurrentLine.x) *
-      (endPointOfTargetLine.y - startPointOfTargetLine.y) -
-    (endPointOfTargetLine.x - startPointOfTargetLine.x) *
-      (endPointOfCurrentLine.y - startPointOfCurrentLine.y);
+    (endPointOfCurrentLine.x - startPointOfCurrentLine.x) * (endPointOfTargetLine.y - startPointOfTargetLine.y) -
+    (endPointOfTargetLine.x - startPointOfTargetLine.x) * (endPointOfCurrentLine.y - startPointOfCurrentLine.y);
   if (det === 0) {
     return false;
   }
   const lambda =
-    ((endPointOfTargetLine.y - startPointOfTargetLine.y) *
-      (endPointOfTargetLine.x - startPointOfCurrentLine.x) +
-      (startPointOfTargetLine.x - endPointOfTargetLine.x) *
-        (endPointOfTargetLine.y - startPointOfCurrentLine.y)) /
+    ((endPointOfTargetLine.y - startPointOfTargetLine.y) * (endPointOfTargetLine.x - startPointOfCurrentLine.x) +
+      (startPointOfTargetLine.x - endPointOfTargetLine.x) * (endPointOfTargetLine.y - startPointOfCurrentLine.y)) /
     det;
   const gamma =
-    ((startPointOfCurrentLine.y - endPointOfCurrentLine.y) *
-      (endPointOfTargetLine.x - startPointOfCurrentLine.x) +
-      (endPointOfCurrentLine.x - startPointOfCurrentLine.x) *
-        (endPointOfTargetLine.y - startPointOfCurrentLine.y)) /
+    ((startPointOfCurrentLine.y - endPointOfCurrentLine.y) * (endPointOfTargetLine.x - startPointOfCurrentLine.x) +
+      (endPointOfCurrentLine.x - startPointOfCurrentLine.x) * (endPointOfTargetLine.y - startPointOfCurrentLine.y)) /
     det;
   return lambda > 0 && lambda < 1 && (gamma > 0 && gamma < 1);
 };
@@ -70,9 +64,7 @@ export const isIntersects = (
 export const testOnIntersection = (points, cursor) =>
   points
     .slice(0, -1)
-    .some(
-      (point, i) => i !== 0 && isIntersects(points[points.length - 1], cursor, points[i - 1], point)
-    );
+    .some((point, i) => i !== 0 && isIntersects(points[points.length - 1], cursor, points[i - 1], point));
 
 // test on intersection lines of current polygon between other lines in this polygon
 export const testOnInnerIntersection = (points, activePoint) => {
@@ -91,9 +83,7 @@ export const testOnInnerIntersection = (points, activePoint) => {
 
   const easyIntersection = points.some(
     (point, i) =>
-      i !== 0 &&
-      indexOfActivePoint !== i &&
-      isIntersects(previousToActivePoint, activePoint, points[i - 1], point)
+      i !== 0 && indexOfActivePoint !== i && isIntersects(previousToActivePoint, activePoint, points[i - 1], point)
   );
 
   const intersectionOfPreviosLine = isIntersects(
@@ -103,12 +93,7 @@ export const testOnInnerIntersection = (points, activePoint) => {
     points[0]
   );
 
-  const intersectionOfNextLine = isIntersects(
-    activePoint,
-    nextToActivePoint,
-    points[points.length - 1],
-    points[0]
-  );
+  const intersectionOfNextLine = isIntersects(activePoint, nextToActivePoint, points[points.length - 1], points[0]);
 
   const intersectionOfLastLine = points.some(
     (point, i) =>
@@ -117,12 +102,7 @@ export const testOnInnerIntersection = (points, activePoint) => {
       isIntersects(activePoint, nextToActivePoint, points[i + 1], point)
   );
 
-  return (
-    easyIntersection ||
-    intersectionOfPreviosLine ||
-    intersectionOfNextLine ||
-    intersectionOfLastLine
-  );
+  return easyIntersection || intersectionOfPreviosLine || intersectionOfNextLine || intersectionOfLastLine;
 };
 
 export const hexToRGB = (hex, alpha) => {

@@ -1,19 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withTheme } from 'styled-components';
+import React from "react";
+import PropTypes from "prop-types";
+import { withTheme } from "styled-components";
 
-import DropContainer from '../DropContainer';
-import DragItem from '../DragItem';
+import DropContainer from "../DropContainer";
+import DragItem from "../DragItem";
 
-import { Pointer } from '../../../../styled/Pointer';
-import { Point } from '../../../../styled/Point';
-import { Triangle } from '../../../../styled/Triangle';
+import { Pointer } from "../../../../styled/Pointer";
+import { Point } from "../../../../styled/Point";
+import { Triangle } from "../../../../styled/Triangle";
 
-import { IconWrapper } from './styled/IconWrapper';
-import { RightIcon } from './styled/RightIcon';
-import { WrongIcon } from './styled/WrongIcon';
+import { IconWrapper } from "./styled/IconWrapper";
+import { RightIcon } from "./styled/RightIcon";
+import { WrongIcon } from "./styled/WrongIcon";
 
-const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
+const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 const CheckboxTemplateBoxLayout = ({
   showAnswer,
@@ -34,21 +34,16 @@ const CheckboxTemplateBoxLayout = ({
   <div className="imagedragdrop_template_box" style={{ fontSize, padding: 20 }}>
     <div
       style={{
-        position: 'relative',
+        position: "relative",
         top: 0,
         left: 0,
         width: imageWidth,
-        margin: 'auto',
+        margin: "auto",
         minWidth: 600,
-        maxWidth: '100%'
+        maxWidth: "100%"
       }}
     >
-      <img
-        src={imageUrl}
-        width="100%"
-        style={{ userSelect: 'none', pointerEvents: 'none' }}
-        alt={imageAlterText}
-      />
+      <img src={imageUrl} width="100%" style={{ userSelect: "none", pointerEvents: "none" }} alt={imageAlterText} />
       {responseContainers.map((responseContainer, index) => {
         const dropTargetIndex = index;
         const btnStyle = {
@@ -57,7 +52,7 @@ const CheckboxTemplateBoxLayout = ({
           top: responseContainer.top,
           left: responseContainer.left,
           height: responseContainer.height,
-          position: 'absolute',
+          position: "absolute",
           borderRadius: 5
         };
         if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
@@ -70,20 +65,20 @@ const CheckboxTemplateBoxLayout = ({
         } else {
           btnStyle.width = btnStyle.widthpx;
         }
-        let indexStr = '';
+        let indexStr = "";
         switch (stemnumeration) {
-          case 'lowercase': {
+          case "lowercase": {
             indexStr = ALPHABET[dropTargetIndex];
             break;
           }
-          case 'uppercase': {
+          case "uppercase": {
             indexStr = ALPHABET[dropTargetIndex].toUpperCase();
             break;
           }
           default:
             indexStr = dropTargetIndex + 1;
         }
-        const className = evaluation[dropTargetIndex] ? 'right' : 'wrong';
+        const className = evaluation[dropTargetIndex] ? "right" : "wrong";
 
         return (
           <React.Fragment key={index}>
@@ -106,7 +101,7 @@ const CheckboxTemplateBoxLayout = ({
                           border: `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}`,
                           margin: 5,
                           padding: 5,
-                          display: 'inline-block'
+                          display: "inline-block"
                         }}
                         item={answer}
                         onDrop={onDropHandler}
@@ -116,13 +111,10 @@ const CheckboxTemplateBoxLayout = ({
                     ))}
                 </div>
                 <IconWrapper>
-                  {className === 'right' && <RightIcon />}
-                  {className === 'wrong' && <WrongIcon />}
+                  {className === "right" && <RightIcon />}
+                  {className === "wrong" && <WrongIcon />}
                 </IconWrapper>
-                <Pointer
-                  className={responseContainer.pointerPosition}
-                  width={responseContainer.width}
-                >
+                <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />
                   <Triangle />
                 </Pointer>
@@ -143,7 +135,7 @@ const CheckboxTemplateBoxLayout = ({
                           border: `solid 1px ${theme.widgets.clozeImageDragDrop.answerBorderColor}`,
                           margin: 5,
                           padding: 5,
-                          display: 'inline-block'
+                          display: "inline-block"
                         }}
                       >
                         {answer}
@@ -151,13 +143,10 @@ const CheckboxTemplateBoxLayout = ({
                     ))}
                 </div>
                 <IconWrapper>
-                  {className === 'right' && <RightIcon />}
-                  {className === 'wrong' && <WrongIcon />}
+                  {className === "right" && <RightIcon />}
+                  {className === "wrong" && <WrongIcon />}
                 </IconWrapper>
-                <Pointer
-                  className={responseContainer.pointerPosition}
-                  width={responseContainer.width}
-                >
+                <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />
                   <Triangle />
                 </Pointer>

@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
-import { blue, secondaryTextColor } from '@edulastic/colors';
-import PropTypes from 'prop-types';
-import { FlexContainer } from '@edulastic/common';
-import { Select } from 'antd';
+import React from "react";
+import styled from "styled-components";
+import { blue, secondaryTextColor } from "@edulastic/colors";
+import PropTypes from "prop-types";
+import { FlexContainer } from "@edulastic/common";
+import { Select } from "antd";
 
 const TestFilters = ({ children, onChange, style, filterData, state, clearFilter }) => (
   <Container style={style}>
@@ -14,26 +14,26 @@ const TestFilters = ({ children, onChange, style, filterData, state, clearFilter
     {children}
 
     {filterData.map(filterItem => (
-        <>
-          <SubTitle>{filterItem.title}</SubTitle>
-          <Select
-            onSearch={filterItem.onSearch && filterItem.onSearch}
-            mode={filterItem.mode}
-            size={filterItem.size}
-            placeholder={filterItem.placeholder}
-            filterOption={filterItem.filterOption}
-            defaultValue={filterItem.mode === 'multiple' ? undefined : filterItem.data[0].text}
-            value={state[filterItem.onChange]}
-            onChange={value => onChange(filterItem.onChange, value)}
-            disabled={filterItem.disabled}
-          >
-            {filterItem.data.map(({ value, text }) => (
-              <Select.Option value={value} key={value}>
-                {text}
-              </Select.Option>
-            ))}
-          </Select>
-        </>
+      <>
+        <SubTitle>{filterItem.title}</SubTitle>
+        <Select
+          onSearch={filterItem.onSearch && filterItem.onSearch}
+          mode={filterItem.mode}
+          size={filterItem.size}
+          placeholder={filterItem.placeholder}
+          filterOption={filterItem.filterOption}
+          defaultValue={filterItem.mode === "multiple" ? undefined : filterItem.data[0].text}
+          value={state[filterItem.onChange]}
+          onChange={value => onChange(filterItem.onChange, value)}
+          disabled={filterItem.disabled}
+        >
+          {filterItem.data.map(({ value, text }) => (
+            <Select.Option value={value} key={value}>
+              {text}
+            </Select.Option>
+          ))}
+        </Select>
+      </>
     ))}
   </Container>
 );
@@ -75,7 +75,7 @@ const Container = styled.div`
     letter-spacing: 0.2px;
     color: #434b5d;
   }
-  
+
   .ant-select-selection__choice {
     border-radius: 5px;
     border: solid 1px #c8e8f6;

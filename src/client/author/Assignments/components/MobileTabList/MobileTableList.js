@@ -1,13 +1,13 @@
 /* eslint-disable jsx-a11y/alt-text */
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Icon, Collapse, Col, Dropdown } from 'antd';
-import { FlexContainer } from '@edulastic/common';
-import presentationIcon from '../../assets/presentation.svg';
-import additemsIcon from '../../assets/add-items.svg';
-import piechartIcon from '../../assets/pie-chart.svg';
-import ActionMenu from '../ActionMenu/ActionMenu';
-import { withNamespaces } from '@edulastic/localization';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Icon, Collapse, Col, Dropdown } from "antd";
+import { FlexContainer } from "@edulastic/common";
+import presentationIcon from "../../assets/presentation.svg";
+import additemsIcon from "../../assets/add-items.svg";
+import piechartIcon from "../../assets/pie-chart.svg";
+import ActionMenu from "../ActionMenu/ActionMenu";
+import { withNamespaces } from "@edulastic/localization";
 
 import {
   Container,
@@ -33,42 +33,42 @@ import {
   PanelTableName,
   PanelTableValue,
   PanelClass,
-  FullRow 
-} from './styled'
+  FullRow
+} from "./styled";
 
 class MobileTableList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       visible: false,
-      classSort : false,
-      modalshow: false,
+      classSort: false,
+      modalshow: false
     };
   }
 
-   showModal = () => {
+  showModal = () => {
     this.setState({
       modalshow: !this.state.modalshow
     });
-  }
+  };
 
-  handleClass = (e) => {
+  handleClass = e => {
     this.setState({
       classSort: !this.state.classSort
     });
-  }
-  handleCancel = (e) => {
+  };
+  handleCancel = e => {
     this.setState({
       modalshow: false
     });
-  }
+  };
 
-  handleOk = (e) => {
+  handleOk = e => {
     this.setState({
       visible: false
     });
-  }
-  classCollapsePanel = (classData) =>{
+  };
+  classCollapsePanel = classData => {
     const { t } = this.props;
     const classPanel = [];
     classData.forEach(data => {
@@ -77,10 +77,12 @@ class MobileTableList extends Component {
           <PanelClass>
             <FlexContainer>
               <FullRow>
-                <Col span={16}><GrayFont>{data.className}</GrayFont></Col>
+                <Col span={16}>
+                  <GrayFont>{data.className}</GrayFont>
+                </Col>
                 <Col span={8}>
                   <SortClassContainer>
-                    <img src={presentationIcon}/>
+                    <img src={presentationIcon} />
                     <img src={additemsIcon} />
                     <img src={piechartIcon} />
                   </SortClassContainer>
@@ -89,26 +91,31 @@ class MobileTableList extends Component {
             </FlexContainer>
           </PanelClass>
           <div>
-            { data.status === 'IN PROGRESS' ? <BtnProgress size="small">{data.status}</BtnProgress> : (
-              data.status === t('common.submittedTag') ? <BtnSubmitted size="small">{data.status}</BtnSubmitted> : (
-              data.status ===  t('common.notStartedTag') ? <BtnStarted size="small">{data.status}</BtnStarted> : '' ))
-            }
+            {data.status === "IN PROGRESS" ? (
+              <BtnProgress size="small">{data.status}</BtnProgress>
+            ) : data.status === t("common.submittedTag") ? (
+              <BtnSubmitted size="small">{data.status}</BtnSubmitted>
+            ) : data.status === t("common.notStartedTag") ? (
+              <BtnStarted size="small">{data.status}</BtnStarted>
+            ) : (
+              ""
+            )}
           </div>
         </div>
       );
-      classPanel.push(CollapsePanel)
+      classPanel.push(CollapsePanel);
     });
     return classPanel;
-  }
-  CollapsePanel = (AssignmentData) => {
+  };
+  CollapsePanel = AssignmentData => {
     const { t, windowWidth, windowHeight } = this.props;
-    const menu = ( <ActionMenu/>);
+    const menu = <ActionMenu />;
     var i = 0;
     const Panel = [];
     AssignmentData.forEach(assignment => {
       const panaelHeader = (
         <HeaderDiv>
-          <StyledBox/>
+          <StyledBox />
           <StyledTextBox>
             <StyledTextFirst>ASSESSMENT NAME</StyledTextFirst>
             <StyledTextSecond>{assignment[0].testName}</StyledTextSecond>
@@ -116,12 +123,14 @@ class MobileTableList extends Component {
         </HeaderDiv>
       );
       const classHeader = (
-        <div style={{ textAlign: 'center', cursor: 'pointer' }} onClick={this.handleClass}>
-          <p style={{ color: '#00b0ff', fontSize: '1.2em' }}>Class</p>
+        <div style={{ textAlign: "center", cursor: "pointer" }} onClick={this.handleClass}>
+          <p style={{ color: "#00b0ff", fontSize: "1.2em" }}>Class</p>
           <p>
-            {this.state.classSort ?
-               <Icon type="down" style={{ color: '#00b0ff' }}/>:<Icon type="up" style={{ color: '#00b0ff' }}/>
-            }
+            {this.state.classSort ? (
+              <Icon type="down" style={{ color: "#00b0ff" }} />
+            ) : (
+              <Icon type="up" style={{ color: "#00b0ff" }} />
+            )}
           </p>
         </div>
       );
@@ -140,7 +149,9 @@ class MobileTableList extends Component {
           <PanelDiv>
             <PanelTableTitle>
               <PanelTableName>SUBMITTED</PanelTableName>
-              <PanelTableValue>{assignment.length} of {assignment.length}</PanelTableValue>
+              <PanelTableValue>
+                {assignment.length} of {assignment.length}
+              </PanelTableValue>
             </PanelTableTitle>
             <PanelTableTitle>
               <PanelTableName>GRADED</PanelTableName>
@@ -148,36 +159,37 @@ class MobileTableList extends Component {
             </PanelTableTitle>
           </PanelDiv>
 
-          <div style={{ height: 'auto' }}>
-            <ClassHeaderCollapse accordion >
+          <div style={{ height: "auto" }}>
+            <ClassHeaderCollapse accordion>
               <Collapse.Panel header={classHeader} showArrow={false}>
                 {this.classCollapsePanel(assignment)}
               </Collapse.Panel>
             </ClassHeaderCollapse>
           </div>
-          <div style={{ height: 'auto', marginTop: '15px' }}>
-            { windowWidth < '770' ?
+          <div style={{ height: "auto", marginTop: "15px" }}>
+            {windowWidth < "770" ? (
               <div>
                 <BtnAction onClick={this.showModal}>ACTIONS</BtnAction>
-                  <StyledModal
-                    footer={false}
-                    closable={false}
-                    visible={this.state.modalshow}
-                    bodyStyle = {{height:windowHeight, width: windowWidth}}
-                  >
-                    <HeaderContent>
-                      <FilterHeader>Actions</FilterHeader>
-                      <StyledCloseIcon onClick={this.handleCancel} type="close" />
-                    </HeaderContent>
-                    {menu}
-                  </StyledModal>
-                </div>:
-                <div>
-                  <Dropdown overlay={menu} placement="bottomCenter" trigger={['click']}>
-                    <BtnAction>ACTIONS</BtnAction>
-                  </Dropdown>
-                </div>
-              }
+                <StyledModal
+                  footer={false}
+                  closable={false}
+                  visible={this.state.modalshow}
+                  bodyStyle={{ height: windowHeight, width: windowWidth }}
+                >
+                  <HeaderContent>
+                    <FilterHeader>Actions</FilterHeader>
+                    <StyledCloseIcon onClick={this.handleCancel} type="close" />
+                  </HeaderContent>
+                  {menu}
+                </StyledModal>
+              </div>
+            ) : (
+              <div>
+                <Dropdown overlay={menu} placement="bottomCenter" trigger={["click"]}>
+                  <BtnAction>ACTIONS</BtnAction>
+                </Dropdown>
+              </div>
+            )}
           </div>
         </div>
       );
@@ -190,15 +202,13 @@ class MobileTableList extends Component {
       Panel.push(CollapsePanel);
     });
     return Panel;
-  }
+  };
 
   render() {
-    const { assignments, windowWidth, windowHeight} = this.props;
+    const { assignments, windowWidth, windowHeight } = this.props;
     return (
       <Container>
-        <StyledCollapse accordion>
-          {this.CollapsePanel(assignments)}
-        </StyledCollapse>
+        <StyledCollapse accordion>{this.CollapsePanel(assignments)}</StyledCollapse>
       </Container>
     );
   }
@@ -208,4 +218,4 @@ MobileTableList.propTypes = {
   windowHeight: PropTypes.number.isRequired,
   t: PropTypes.func.isRequired
 };
-export default withNamespaces('assignmentCard')(MobileTableList);
+export default withNamespaces("assignmentCard")(MobileTableList);

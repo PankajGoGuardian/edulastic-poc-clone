@@ -1,27 +1,27 @@
-import React from 'react';
-import { FlexContainer } from '@edulastic/common';
-import { Table } from 'antd';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import InfoBlock from './InfoBlock';
+import React from "react";
+import { FlexContainer } from "@edulastic/common";
+import { Table } from "antd";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import InfoBlock from "./InfoBlock";
 
 const columns = [
   {
-    title: 'Standard',
-    dataIndex: 'standard',
-    key: 'standard',
+    title: "Standard",
+    dataIndex: "standard",
+    key: "standard",
     render: data => <div>{data}</div>
   },
   {
     title: "Q's",
-    dataIndex: 'qs',
-    key: 'qs',
+    dataIndex: "qs",
+    key: "qs",
     render: data => <div>{data}</div>
   },
   {
-    title: 'Points',
-    dataIndex: 'points',
-    key: 'points',
+    title: "Points",
+    dataIndex: "points",
+    key: "points",
     render: data => <div>{data}</div>
   }
 ];
@@ -45,7 +45,7 @@ Summary.propTypes = {
 export default Summary;
 
 export const TableWrapper = styled(Table)`
- .ant-table-placeholder {
-   z-index: 0   
- }
+  .ant-table-placeholder {
+    z-index: 0;
+  }
 `;

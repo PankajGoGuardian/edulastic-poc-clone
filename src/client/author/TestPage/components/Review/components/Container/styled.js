@@ -1,8 +1,8 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const SecondHeader = styled.div`
   display: flex;
-  flex-direction: ${props => (props.isMobileSize ? 'row' : 'column')}
+  flex-direction: ${props => (props.isMobileSize ? "row" : "column")}
   justify-content: space-between;
 
   .ant-btn {

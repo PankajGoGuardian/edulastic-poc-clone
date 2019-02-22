@@ -1,13 +1,13 @@
-import React from 'react';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { Layout, Form, Input, Button } from 'antd';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
+import React from "react";
+import styled from "styled-components";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { Layout, Form, Input, Button } from "antd";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
 
-import ProfileImage from '../../assets/Profile.png';
-import cameraIcon from '../../assets/photo-camera.svg';
+import ProfileImage from "../../assets/Profile.png";
+import cameraIcon from "../../assets/photo-camera.svg";
 
 const FormItem = Form.Item;
 class ProfileContainer extends React.Component {
@@ -45,77 +45,76 @@ class ProfileContainer extends React.Component {
         <Wrapper>
           <ProfileContentWrapper>
             <UserDetail>
-              <UserTitle>Welcome {user.firstName || 'Zack'}</UserTitle>
+              <UserTitle>Welcome {user.firstName || "Zack"}</UserTitle>
               <UserSubTitle>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-                eget mauris nunc.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mauris nunc.
               </UserSubTitle>
             </UserDetail>
             <ProfileImgWrapper>
               <div />
               <span>
-                <img src={cameraIcon} alt='' />
+                <img src={cameraIcon} alt="" />
               </span>
             </ProfileImgWrapper>
             <FormWrapper onSubmit={this.handleSubmit}>
               <FormItemWrapper>
-                <label>{t('common.title.firstNameInputLabel')}</label>
-                {getFieldDecorator('First Name', {
+                <label>{t("common.title.firstNameInputLabel")}</label>
+                {getFieldDecorator("First Name", {
                   rules: [
                     {
                       required: true,
-                      message: t('common.title.firstName')
+                      message: t("common.title.firstName")
                     }
                   ],
                   initialValue: `${user.firstName}`
                 })(<Input readOnly />)}
               </FormItemWrapper>
               <FormItemWrapper>
-                <label>{t('common.title.lastNameInputLabel')}</label>
-                {getFieldDecorator('Last Name', {
+                <label>{t("common.title.lastNameInputLabel")}</label>
+                {getFieldDecorator("Last Name", {
                   rules: [
                     {
                       required: true,
-                      message: t('common.title.lastName')
+                      message: t("common.title.lastName")
                     }
                   ],
-                  initialValue: `${user.lastName || ''}`
+                  initialValue: `${user.lastName || ""}`
                 })(<Input readOnly />)}
               </FormItemWrapper>
               <FormItemWrapper>
-                <label>{t('common.title.emailInputLabel')}</label>
-                {getFieldDecorator('email', {
+                <label>{t("common.title.emailInputLabel")}</label>
+                {getFieldDecorator("email", {
                   rules: [
                     {
-                      type: 'email',
-                      message: t('common.title.validemail')
+                      type: "email",
+                      message: t("common.title.validemail")
                     },
                     {
                       required: true,
-                      message: t('common.title.email')
+                      message: t("common.title.email")
                     }
                   ],
                   initialValue: `${user.email}`
-                })(<Input type='email' readOnly />)}
+                })(<Input type="email" readOnly />)}
               </FormItemWrapper>
               <FormItemWrapper>
-                <label>{t('common.title.passwordInputLabel')}</label>
-                {getFieldDecorator('password', {
+                <label>{t("common.title.passwordInputLabel")}</label>
+                {getFieldDecorator("password", {
                   rules: [
                     {
                       required: true,
-                      message: t('common.title.password')
+                      message: t("common.title.password")
                     }
                   ]
-                })(<Input type='password' readOnly />)}
-              </FormItemWrapper>{' '}
+                })(<Input type="password" readOnly />)}
+              </FormItemWrapper>{" "}
               <FormButtonWrapper>
                 <FormItem>
-                  <CancelButton disabled type='primary' ghost htmlType='submit'>
-                    {t('common.title.cancel')}
+                  <CancelButton disabled type="primary" ghost htmlType="submit">
+                    {t("common.title.cancel")}
                   </CancelButton>
-                  <SaveButton disabled type='primary' htmlType='submit'>
-                    {t('common.title.save')}
+                  <SaveButton disabled type="primary" htmlType="submit">
+                    {t("common.title.save")}
                   </SaveButton>
                 </FormItem>
               </FormButtonWrapper>
@@ -129,7 +128,7 @@ class ProfileContainer extends React.Component {
 
 const enhance = compose(
   React.memo,
-  withNamespaces('profile'),
+  withNamespaces("profile"),
   Form.create(),
   connect(state => ({
     flag: state.ui.flag,

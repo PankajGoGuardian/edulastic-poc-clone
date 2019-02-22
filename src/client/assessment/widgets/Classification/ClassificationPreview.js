@@ -1,26 +1,19 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep, isEqual, difference } from 'lodash';
-import { compose } from 'redux';
-import { withTheme } from 'styled-components';
+import React, { useState, useEffect, Fragment } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep, isEqual, difference } from "lodash";
+import { compose } from "redux";
+import { withTheme } from "styled-components";
 
-import {
-  Paper,
-  FlexContainer,
-  CorrectAnswersContainer,
-  Stimulus,
-  Subtitle,
-  CenteredText
-} from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { Paper, FlexContainer, CorrectAnswersContainer, Stimulus, Subtitle, CenteredText } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import DropContainer from '../../components/DropContainer';
-import { PREVIEW, SHOW, CLEAR, CHECK } from '../../constants/constantsForQuestions';
+import DropContainer from "../../components/DropContainer";
+import { PREVIEW, SHOW, CLEAR, CHECK } from "../../constants/constantsForQuestions";
 
-import DragItem from './components/DragItem';
-import { IndexBox } from './styled/IndexBox';
-import TableRow from './components/TableRow';
-import { getStyles } from './utils';
+import DragItem from "./components/DragItem";
+import { IndexBox } from "./styled/IndexBox";
+import TableRow from "./components/TableRow";
+import { getStyles } from "./utils";
 
 const ClassificationPreview = ({
   view,
@@ -34,20 +27,24 @@ const ClassificationPreview = ({
   theme
 }) => {
   const styles = {
-    itemContainerStyle: { display: 'flex', alignItems: 'center', margin: '10px 15px 10px 15px' },
+    itemContainerStyle: {
+      display: "flex",
+      alignItems: "center",
+      margin: "10px 15px 10px 15px"
+    },
     previewItemStyle: {
       paddingRight: 15,
       paddingLeft: 15,
       borderTopLeftRadius: 0,
       borderBottomLeftRadius: 0,
-      cursor: 'normal',
+      cursor: "normal",
       fontWeight: theme.widgets.classification.previewItemFontWeight
     },
     noPreviewItemStyle: {},
     dragItemsContainerStyle: {
-      display: 'flex',
-      alignItems: 'flex-start',
-      flexWrap: 'wrap',
+      display: "flex",
+      alignItems: "flex-start",
+      flexWrap: "wrap",
       minHeight: 140,
       borderRadius: 4
     },
@@ -59,22 +56,16 @@ const ClassificationPreview = ({
     group_possible_responses,
     possible_response_groups,
     stimulus,
-    ui_style: {
-      column_count: colCount,
-      column_titles: colTitles,
-      row_count: rowCount,
-      row_titles: rowTitles
-    }
+    ui_style: { column_count: colCount, column_titles: colTitles, row_count: rowCount, row_titles: rowTitles }
   } = item;
 
   const itemValidation = item.validation || {};
-  let validArray =
-    itemValidation && itemValidation.valid_response && itemValidation.valid_response.value;
+  let validArray = itemValidation && itemValidation.valid_response && itemValidation.valid_response.value;
   validArray = validArray || [];
   const altArray = itemValidation.alt_responses || [];
   let groupArrays = [];
 
-  possible_response_groups.forEach((o) => {
+  possible_response_groups.forEach(o => {
     groupArrays = [...groupArrays, ...o.responses];
   });
 
@@ -93,8 +84,8 @@ const ClassificationPreview = ({
     editCorrectAnswers.length > 0
       ? editCorrectAnswers.map(ite => ite.map(an => posResp[an]))
       : userAnswer.some(arr => arr.length !== 0)
-        ? userAnswer.map(arr => arr.map(ans => possible_responses[ans]))
-        : createEmptyArrayOfArrays();
+      ? userAnswer.map(arr => arr.map(ans => possible_responses[ans]))
+      : createEmptyArrayOfArrays();
 
   const [answers, setAnswers] = useState(initialAnswers);
 
@@ -102,15 +93,10 @@ const ClassificationPreview = ({
     possible_responses.filter(resp => initialAnswers.every(arr => !arr.includes(resp)))
   );
 
-  useEffect(
-    () => {
-      setAnswers(initialAnswers);
-      setDragItems(
-        possible_responses.filter(resp => initialAnswers.every(arr => !arr.includes(resp)))
-      );
-    },
-    [userAnswer]
-  );
+  useEffect(() => {
+    setAnswers(initialAnswers);
+    setDragItems(possible_responses.filter(resp => initialAnswers.every(arr => !arr.includes(resp))));
+  }, [userAnswer]);
 
   useEffect(() => {
     if (
@@ -130,8 +116,8 @@ const ClassificationPreview = ({
     const dItems = cloneDeep(dragItems);
     const ansArrays = cloneDeep(answers);
 
-    if (itemTo.flag === 'dragItems') {
-      ansArrays.forEach((arr) => {
+    if (itemTo.flag === "dragItems") {
+      ansArrays.forEach(arr => {
         if (arr.includes(itemCurrent.item)) {
           arr.splice(arr.indexOf(itemCurrent.item), 1);
         }
@@ -146,7 +132,7 @@ const ClassificationPreview = ({
       setDragItems(dItems);
     }
 
-    if (itemTo.flag === 'column') {
+    if (itemTo.flag === "column") {
       ansArrays.forEach((arr, i) => {
         if (arr.includes(itemCurrent.item)) {
           arr.splice(arr.indexOf(itemCurrent.item), 1);
@@ -173,7 +159,7 @@ const ClassificationPreview = ({
 
     let flag = true;
 
-    altArray.forEach((altItem) => {
+    altArray.forEach(altItem => {
       flag = true;
       altItem.value.forEach((answer, i) => {
         if (difference(testArr[i], answer).length !== 0) {
@@ -188,7 +174,7 @@ const ClassificationPreview = ({
     return valid;
   };
 
-  const transformArray = (Arr) => {
+  const transformArray = Arr => {
     const len = colCount || 2;
 
     const res = Array(...Array(len)).map(() => []);
@@ -211,14 +197,14 @@ const ClassificationPreview = ({
   const arrayOfCols = transformArray(validArray);
 
   return (
-    <Paper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
+    <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       {!smallSize && view === PREVIEW && (
         <Stimulus>
           <div dangerouslySetInnerHTML={{ __html: stimulus }} />
         </Stimulus>
       )}
 
-      <table style={{ width: '100%' }}>
+      <table style={{ width: "100%" }}>
         <thead>
           <tr>
             {rowTitles.length > 0 && <th />}
@@ -252,14 +238,9 @@ const ClassificationPreview = ({
       </table>
 
       {dragItems.length > 0 && (
-        <CorrectAnswersContainer title={t('component.classification.dragItemsTitle')}>
-          <DropContainer
-            flag="dragItems"
-            drop={drop}
-            style={styles.dragItemsContainerStyle}
-            noBorder
-          >
-            <FlexContainer style={{ width: '100%' }} alignItems="stretch" justifyContent="center">
+        <CorrectAnswersContainer title={t("component.classification.dragItemsTitle")}>
+          <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>
+            <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
               {group_possible_responses ? (
                 possible_response_groups.map((i, index) => (
                   <Fragment key={index}>
@@ -270,14 +251,13 @@ const ClassificationPreview = ({
                       justifyContent="flex-start"
                     >
                       <Subtitle
-                        style={{ color: theme.widgets.classification.previewSubtitleColor }}
+                        style={{
+                          color: theme.widgets.classification.previewSubtitleColor
+                        }}
                       >
                         {i.title}
                       </Subtitle>
-                      <FlexContainer
-                        justifyContent="center"
-                        style={{ width: '100%', flexWrap: 'wrap' }}
-                      >
+                      <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
                         {i.responses.map(
                           (ite, ind) =>
                             dragItems.includes(ite) && (
@@ -298,9 +278,7 @@ const ClassificationPreview = ({
                           width: 0,
                           marginLeft: 35,
                           marginRight: 35,
-                          borderLeft: `1px solid ${
-                            theme.widgets.classification.separatorBorderColor
-                          }`
+                          borderLeft: `1px solid ${theme.widgets.classification.separatorBorderColor}`
                         }}
                       />
                     )}
@@ -314,10 +292,7 @@ const ClassificationPreview = ({
                     alignItems="center"
                     justifyContent="flex-start"
                   >
-                    <FlexContainer
-                      justifyContent="center"
-                      style={{ width: '100%', flexWrap: 'wrap' }}
-                    >
+                    <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
                       {dragItems.map(
                         (ite, ind) =>
                           dragItems.includes(ite) && (
@@ -340,7 +315,7 @@ const ClassificationPreview = ({
       )}
 
       {previewTab === SHOW && (
-        <CorrectAnswersContainer title={t('component.classification.correctAnswers')}>
+        <CorrectAnswersContainer title={t("component.classification.correctAnswers")}>
           {arrayOfCols.map((arr, i) => (
             <FlexContainer>
               <Subtitle style={styles.correctAnswersMargins}>
@@ -387,7 +362,7 @@ ClassificationPreview.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   withTheme
 );
 

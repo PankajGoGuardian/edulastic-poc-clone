@@ -1,5 +1,5 @@
-import { Select } from 'antd';
-import styled from 'styled-components';
+import { Select } from "antd";
+import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
@@ -31,8 +31,7 @@ export const Container = styled.div`
 `;
 
 export const StyledSelect = styled(Select)`
-  display:inline-block
-  @media (max-width: 550px) {
+  display:inline-block @media (max-width: 550px) {
     display: none;
   }
   @media (max-width: 1000px) {

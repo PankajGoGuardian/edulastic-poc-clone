@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Menu, Button } from 'antd';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Menu, Button } from "antd";
 import {
   IconSave,
   IconSource,
@@ -12,15 +12,15 @@ import {
   IconEraseText,
   IconMetadata,
   IconSelected
-} from '@edulastic/icons';
-import { white } from '@edulastic/colors';
-import { withNamespaces } from '@edulastic/localization';
-import { withWindowSizes } from '@edulastic/common';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
+} from "@edulastic/icons";
+import { white } from "@edulastic/colors";
+import { withNamespaces } from "@edulastic/localization";
+import { withWindowSizes } from "@edulastic/common";
+import { connect } from "react-redux";
+import { compose } from "redux";
 
-import { clearAnswersAction } from '../../../actions/answers';
-import { ButtonLink } from '..';
+import { clearAnswersAction } from "../../../actions/answers";
+import { ButtonLink } from "..";
 import {
   Container,
   RightSide,
@@ -29,24 +29,23 @@ import {
   MobileContainer,
   MobileFirstContainer,
   MobileSecondContainer
-} from './styled_components';
+} from "./styled_components";
 
 class ButtonBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      current: 'edit'
+      current: "edit"
     };
   }
 
-  handleMenuClick = (view) => {
+  handleMenuClick = view => {
     const { onChangeView } = this.props;
     onChangeView(view);
     this.setState({ current: view });
   };
 
-
-  optionHandler = (key) => {
+  optionHandler = key => {
     const { onChangeView } = this.props;
     onChangeView(key);
     this.setState({ current: key });
@@ -54,37 +53,25 @@ class ButtonBar extends Component {
 
   render() {
     const { current } = this.state;
-    const {
-      t,
-      onSave,
-      onShowSource,
-      onShowSettings,
-      windowWidth,
-      changePreviewTab,
-      clearAnswers
-    } = this.props;
+    const { t, onSave, onShowSource, onShowSettings, windowWidth, changePreviewTab, clearAnswers } = this.props;
     return (
       <React.Fragment>
         {windowWidth > 468 ? (
           <Container>
-            <Menu
-              mode="horizontal"
-              selectedKeys={[current]}
-              style={{ marginLeft: 80 }}
-            >
-              <MenuItem className={current === 'edit' && 'active'} onClick={() => this.handleMenuClick('edit')}>
+            <Menu mode="horizontal" selectedKeys={[current]} style={{ marginLeft: 80 }}>
+              <MenuItem className={current === "edit" && "active"} onClick={() => this.handleMenuClick("edit")}>
                 <HeadIcon>
                   <IconSelected color={white} width={18} height={16} />
                 </HeadIcon>
                 EDIT
               </MenuItem>
-              <MenuItem className={current === 'preview' && 'active'} onClick={() => this.handleMenuClick('preview')}>
+              <MenuItem className={current === "preview" && "active"} onClick={() => this.handleMenuClick("preview")}>
                 <HeadIcon>
                   <IconEye color={white} width={18} height={16} />
                 </HeadIcon>
                 PREVIEW
               </MenuItem>
-              <MenuItem className={current === 'metadata' && 'active'} onClick={() => this.handleMenuClick('metadata')}>
+              <MenuItem className={current === "metadata" && "active"} onClick={() => this.handleMenuClick("metadata")}>
                 <HeadIcon>
                   <IconMetadata color={white} width={18} height={16} />
                 </HeadIcon>
@@ -103,12 +90,12 @@ class ButtonBar extends Component {
         ) : (
           <MobileContainer>
             <MobileFirstContainer>
-              <Button onClick={() => this.optionHandler('edit')}>
+              <Button onClick={() => this.optionHandler("edit")}>
                 <HeadIcon>
                   <IconPencilEdit color={white} width={18} height={16} />
                 </HeadIcon>
               </Button>
-              <Button onClick={() => this.optionHandler('preview')}>
+              <Button onClick={() => this.optionHandler("preview")}>
                 <HeadIcon>
                   <IconPreview color={white} width={18} height={16} />
                 </HeadIcon>
@@ -129,37 +116,49 @@ class ButtonBar extends Component {
                 </HeadIcon>
               </Button>
             </MobileFirstContainer>
-            {current === 'preview' && (
+            {current === "preview" && (
               <MobileSecondContainer>
                 <Button
-                  style={{ background: 'transparent', border: 'none', padding: 0 }}
-                  onClick={() => changePreviewTab('check')}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: 0
+                  }}
+                  onClick={() => changePreviewTab("check")}
                 >
                   <ButtonLink
                     color="primary"
                     icon={<IconCheck color={white} width={16} height={16} />}
                     style={{ color: white }}
                   >
-                    {t('component.questioneditor.buttonbar.checkanswer')}
+                    {t("component.questioneditor.buttonbar.checkanswer")}
                   </ButtonLink>
                 </Button>
                 <Button
-                  style={{ background: 'transparent', border: 'none', padding: 0 }}
-                  onClick={() => changePreviewTab('show')}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: 0
+                  }}
+                  onClick={() => changePreviewTab("show")}
                 >
                   <ButtonLink
                     color="primary"
                     style={{ color: white }}
                     icon={<IconEye color={white} width={16} height={16} />}
                   >
-                    {t('component.questioneditor.buttonbar.showanswers')}
+                    {t("component.questioneditor.buttonbar.showanswers")}
                   </ButtonLink>
                 </Button>
                 <Button
-                  style={{ background: 'transparent', border: 'none', padding: 0 }}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: 0
+                  }}
                   onClick={() => {
                     clearAnswers();
-                    changePreviewTab('clear');
+                    changePreviewTab("clear");
                   }}
                 >
                   <ButtonLink
@@ -167,7 +166,7 @@ class ButtonBar extends Component {
                     style={{ color: white }}
                     icon={<IconEraseText color={white} width={16} height={16} />}
                   >
-                    {t('component.questioneditor.buttonbar.clear')}
+                    {t("component.questioneditor.buttonbar.clear")}
                   </ButtonLink>
                 </Button>
               </MobileSecondContainer>
@@ -196,7 +195,7 @@ ButtonBar.defaultProps = {
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces('author'),
+  withNamespaces("author"),
   connect(
     null,
     { clearAnswers: clearAnswersAction }

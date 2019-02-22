@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
-import { graph as checkAnswerMethod } from '@edulastic/evaluators';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep } from "lodash";
+import { graph as checkAnswerMethod } from "@edulastic/evaluators";
 import {
   IconGraphRay as IconRay,
   IconGraphLine as IconLine,
@@ -13,26 +13,26 @@ import {
   IconGraphVector as IconVector,
   IconGraphSegment as IconSegment,
   IconGraphPolygon as IconPolygon
-} from '@edulastic/icons';
-import Tools from './Tools';
-import { makeBorder } from '../../Builder/index';
-import { CONSTANT, Colors } from '../../Builder/config';
+} from "@edulastic/icons";
+import Tools from "./Tools";
+import { makeBorder } from "../../Builder/index";
+import { CONSTANT, Colors } from "../../Builder/config";
 import {
   defaultGraphParameters,
   defaultPointParameters,
   defaultAxesParameters,
   defaultGridParameters
-} from '../../Builder/settings';
-import { GraphWrapper, JSXBox, LabelTop, LabelBottom, LabelLeft, LabelRight, Title } from './styled';
+} from "../../Builder/settings";
+import { GraphWrapper, JSXBox, LabelTop, LabelBottom, LabelLeft, LabelRight, Title } from "./styled";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
     let newElems = cloneDeep(elements);
     const subElems = [];
-    const red = '#ee1658';
-    const green = '#1fe3a1';
+    const red = "#ee1658";
+    const green = "#1fe3a1";
 
-    newElems = newElems.map((el) => {
+    newElems = newElems.map(el => {
       if (!el.subElement) {
         const detail = compareResult.details.find(det => det.id === el.id);
         let newEl = {};
@@ -54,10 +54,10 @@ const getColoredElems = (elements, compareResult) => {
             ...el
           };
         }
-        if (newEl.type === 'point') newEl.colors.fillColor = result ? green : red;
+        if (newEl.type === "point") newEl.colors.fillColor = result ? green : red;
 
         if (el.subElementsIds) {
-          Object.values(el.subElementsIds).forEach((val) => {
+          Object.values(el.subElementsIds).forEach(val => {
             subElems.push({
               id: val,
               result
@@ -69,7 +69,7 @@ const getColoredElems = (elements, compareResult) => {
       return el;
     });
 
-    newElems = newElems.map((el) => {
+    newElems = newElems.map(el => {
       if (el.subElement) {
         const detail = subElems.find(det => det.id === el.id);
         let newEl = {};
@@ -99,9 +99,9 @@ const getColoredElems = (elements, compareResult) => {
   return elements;
 };
 
-const getColoredAnswer = (answerArr) => {
+const getColoredAnswer = answerArr => {
   if (Array.isArray(answerArr)) {
-    return answerArr.map((el) => {
+    return answerArr.map(el => {
       let colors = {};
       switch (el.type) {
         case CONSTANT.TOOLS.POINT:
@@ -143,14 +143,14 @@ const getColoredAnswer = (answerArr) => {
   return answerArr;
 };
 
-const getCompareResult = (evaluation) => {
+const getCompareResult = evaluation => {
   if (!evaluation || !evaluation.evaluation) {
     return null;
   }
 
   let compareResult = null;
 
-  Object.keys(evaluation.evaluation).forEach((key) => {
+  Object.keys(evaluation.evaluation).forEach(key => {
     if (compareResult) {
       return;
     }
@@ -254,9 +254,12 @@ class GraphContainer extends Component {
 
     this.setGraphUpdateEventHandler();
 
-    const elementsStash = this.state.elementsStash.concat([this._graph.getConfig()])
+    const elementsStash = this.state.elementsStash.concat([this._graph.getConfig()]);
 
-    this.setState({ elementsStash: elementsStash, currentStashIndex: elementsStash.length - 1 })
+    this.setState({
+      elementsStash: elementsStash,
+      currentStashIndex: elementsStash.length - 1
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -279,10 +282,11 @@ class GraphContainer extends Component {
     }
 
     if (this._graph) {
-      if (canvas.xMin !== prevProps.canvas.xMin
-        || canvas.xMax !== prevProps.canvas.xMax
-        || canvas.yMin !== prevProps.canvas.yMin
-        || canvas.yMax !== prevProps.canvas.yMax
+      if (
+        canvas.xMin !== prevProps.canvas.xMin ||
+        canvas.xMax !== prevProps.canvas.xMax ||
+        canvas.yMin !== prevProps.canvas.yMin ||
+        canvas.yMax !== prevProps.canvas.yMax
       ) {
         this._graph.setGraphParameters({
           ...defaultGraphParameters(),
@@ -290,11 +294,12 @@ class GraphContainer extends Component {
         });
       }
 
-      if (pointParameters.snapToGrid !== prevProps.pointParameters.snapToGrid
-        || pointParameters.snapSizeX !== prevProps.pointParameters.snapSizeX
-        || pointParameters.snapSizeY !== prevProps.pointParameters.snapSizeY
-        || pointParameters.showInfoBox !== prevProps.pointParameters.showInfoBox
-        || pointParameters.withLabel !== prevProps.pointParameters.withLabel
+      if (
+        pointParameters.snapToGrid !== prevProps.pointParameters.snapToGrid ||
+        pointParameters.snapSizeX !== prevProps.pointParameters.snapSizeX ||
+        pointParameters.snapSizeY !== prevProps.pointParameters.snapSizeY ||
+        pointParameters.showInfoBox !== prevProps.pointParameters.showInfoBox ||
+        pointParameters.withLabel !== prevProps.pointParameters.withLabel
       ) {
         this._graph.setPointParameters({
           ...defaultPointParameters(),
@@ -303,20 +308,20 @@ class GraphContainer extends Component {
       }
 
       if (
-        xAxesParameters.ticksDistance !== prevProps.xAxesParameters.ticksDistance
-        || xAxesParameters.name !== prevProps.xAxesParameters.name
-        || xAxesParameters.showTicks !== prevProps.xAxesParameters.showTicks
-        || xAxesParameters.drawLabels !== prevProps.xAxesParameters.drawLabels
-        || xAxesParameters.maxArrow !== prevProps.xAxesParameters.maxArrow
-        || xAxesParameters.minArrow !== prevProps.xAxesParameters.minArrow
-        || xAxesParameters.commaInLabel !== prevProps.xAxesParameters.commaInLabel
-        || yAxesParameters.ticksDistance !== prevProps.yAxesParameters.ticksDistance
-        || yAxesParameters.name !== prevProps.yAxesParameters.name
-        || yAxesParameters.showTicks !== prevProps.yAxesParameters.showTicks
-        || yAxesParameters.drawLabels !== prevProps.yAxesParameters.drawLabels
-        || yAxesParameters.maxArrow !== prevProps.yAxesParameters.maxArrow
-        || yAxesParameters.minArrow !== prevProps.yAxesParameters.minArrow
-        || yAxesParameters.commaInLabel !== prevProps.yAxesParameters.commaInLabel
+        xAxesParameters.ticksDistance !== prevProps.xAxesParameters.ticksDistance ||
+        xAxesParameters.name !== prevProps.xAxesParameters.name ||
+        xAxesParameters.showTicks !== prevProps.xAxesParameters.showTicks ||
+        xAxesParameters.drawLabels !== prevProps.xAxesParameters.drawLabels ||
+        xAxesParameters.maxArrow !== prevProps.xAxesParameters.maxArrow ||
+        xAxesParameters.minArrow !== prevProps.xAxesParameters.minArrow ||
+        xAxesParameters.commaInLabel !== prevProps.xAxesParameters.commaInLabel ||
+        yAxesParameters.ticksDistance !== prevProps.yAxesParameters.ticksDistance ||
+        yAxesParameters.name !== prevProps.yAxesParameters.name ||
+        yAxesParameters.showTicks !== prevProps.yAxesParameters.showTicks ||
+        yAxesParameters.drawLabels !== prevProps.yAxesParameters.drawLabels ||
+        yAxesParameters.maxArrow !== prevProps.yAxesParameters.maxArrow ||
+        yAxesParameters.minArrow !== prevProps.yAxesParameters.minArrow ||
+        yAxesParameters.commaInLabel !== prevProps.yAxesParameters.commaInLabel
       ) {
         this._graph.setAxesParameters({
           x: {
@@ -330,17 +335,11 @@ class GraphContainer extends Component {
         });
       }
 
-      if (
-        layout.width !== prevProps.layout.width
-        || layout.height !== prevProps.layout.height
-      ) {
+      if (layout.width !== prevProps.layout.width || layout.height !== prevProps.layout.height) {
         this._graph.resizeContainer(layout.width, layout.height);
       }
 
-      if (
-        gridParams.gridY !== prevProps.gridParams.gridY
-        || gridParams.gridX !== prevProps.gridParams.gridX
-      ) {
+      if (gridParams.gridY !== prevProps.gridParams.gridY || gridParams.gridX !== prevProps.gridParams.gridX) {
         this._graph.setGridParameters({
           ...defaultGridParameters(),
           ...gridParams
@@ -348,19 +347,21 @@ class GraphContainer extends Component {
       }
 
       if (
-        bgImgOptions.urlImg !== prevProps.bgImgOptions.urlImg
-        || bgImgOptions.opacity !== prevProps.bgImgOptions.opacity
-        || bgImgOptions.coords[0] !== prevProps.bgImgOptions.coords[0]
-        || bgImgOptions.coords[1] !== prevProps.bgImgOptions.coords[1]
-        || bgImgOptions.size[0] !== prevProps.bgImgOptions.size[0]
-        || bgImgOptions.size[1] !== prevProps.bgImgOptions.size[1]
+        bgImgOptions.urlImg !== prevProps.bgImgOptions.urlImg ||
+        bgImgOptions.opacity !== prevProps.bgImgOptions.opacity ||
+        bgImgOptions.coords[0] !== prevProps.bgImgOptions.coords[0] ||
+        bgImgOptions.coords[1] !== prevProps.bgImgOptions.coords[1] ||
+        bgImgOptions.size[0] !== prevProps.bgImgOptions.size[0] ||
+        bgImgOptions.size[1] !== prevProps.bgImgOptions.size[1]
       ) {
         this._graph.removeBgImage();
         this._graph.setBgImage(bgImgOptions);
       }
 
-      if (JSON.stringify(backgroundShapes.values) !== JSON.stringify(prevProps.backgroundShapes.values)
-        || backgroundShapes.showPoints !== prevProps.backgroundShapes.showPoints) {
+      if (
+        JSON.stringify(backgroundShapes.values) !== JSON.stringify(prevProps.backgroundShapes.values) ||
+        backgroundShapes.showPoints !== prevProps.backgroundShapes.showPoints
+      ) {
         this._graph.resetBg();
         this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
       }
@@ -387,43 +388,53 @@ class GraphContainer extends Component {
     this._graph.setTool(tools[0]);
     this._graph.reset();
     this.getConfig();
-    const elementsStash = this.state.elementsStash.concat([this._graph.getConfig()])
-    this.setState({ elementsStash: elementsStash, currentStashIndex: elementsStash.length - 1 })
+    const elementsStash = this.state.elementsStash.concat([this._graph.getConfig()]);
+    this.setState({
+      elementsStash: elementsStash,
+      currentStashIndex: elementsStash.length - 1
+    });
   }
 
   onUndo = () => {
-    const { currentStashIndex, elementsStash } = this.state
+    const { currentStashIndex, elementsStash } = this.state;
     if (currentStashIndex > 0 && currentStashIndex <= elementsStash.length - 1) {
-      this.setState(state => ({ currentStashIndex: state.currentStashIndex - 1 }), () => {
-        this._graph.reset()
-        this._graph.loadFromConfig(elementsStash[this.state.currentStashIndex])
-        this.props.setValue(elementsStash[this.state.currentStashIndex])
-      })
+      this.setState(
+        state => ({ currentStashIndex: state.currentStashIndex - 1 }),
+        () => {
+          this._graph.reset();
+          this._graph.loadFromConfig(elementsStash[this.state.currentStashIndex]);
+          this.props.setValue(elementsStash[this.state.currentStashIndex]);
+        }
+      );
     }
-  }
+  };
 
   onRedo() {
-    const { currentStashIndex, elementsStash } = this.state
+    const { currentStashIndex, elementsStash } = this.state;
     if (currentStashIndex >= 0 && currentStashIndex < elementsStash.length - 1) {
-      this.setState(state => ({ currentStashIndex: state.currentStashIndex + 1 }), () => {
-        this._graph.reset()
-        this._graph.loadFromConfig(elementsStash[this.state.currentStashIndex])
-        this.props.setValue(elementsStash[this.state.currentStashIndex])
-      })
+      this.setState(
+        state => ({ currentStashIndex: state.currentStashIndex + 1 }),
+        () => {
+          this._graph.reset();
+          this._graph.loadFromConfig(elementsStash[this.state.currentStashIndex]);
+          this.props.setValue(elementsStash[this.state.currentStashIndex]);
+        }
+      );
     }
   }
 
   getHandlerByControlName = control => {
     switch (control) {
       case "undo":
-        return this.onUndo()
+        return this.onUndo();
       case "redo":
-        return this.onRedo()
+        return this.onRedo();
       case "reset":
-        return this.onReset()
-      default: return null
+        return this.onReset();
+      default:
+        return null;
     }
-  }
+  };
 
   getConfig() {
     const conf = this._graph.getConfig();
@@ -431,31 +442,31 @@ class GraphContainer extends Component {
     setValue(conf);
 
     if (checkAnswer) {
-      changePreviewTab('clear');
+      changePreviewTab("clear");
     }
   }
 
   setGraphUpdateEventHandler = () => {
     this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, () => {
-      this.getConfig()
-      const elementsStash = this.state.elementsStash.concat([this._graph.getConfig()])
-      this.setState({ elementsStash: elementsStash, currentStashIndex: elementsStash.length - 1 })
+      this.getConfig();
+      const elementsStash = this.state.elementsStash.concat([this._graph.getConfig()]);
+      this.setState({
+        elementsStash: elementsStash,
+        currentStashIndex: elementsStash.length - 1
+      });
     });
     this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, () => {
-      this.getConfig()
-      const elementsStash = this.state.elementsStash.concat([this._graph.getConfig()])
-      this.setState({ elementsStash: elementsStash, currentStashIndex: elementsStash.length - 1 })
+      this.getConfig();
+      const elementsStash = this.state.elementsStash.concat([this._graph.getConfig()]);
+      this.setState({
+        elementsStash: elementsStash,
+        currentStashIndex: elementsStash.length - 1
+      });
     });
   };
 
   mapElementsToGraph = () => {
-    const {
-      elements,
-      checkAnswer,
-      showAnswer,
-      evaluation,
-      validation
-    } = this.props;
+    const { elements, checkAnswer, showAnswer, evaluation, validation } = this.props;
 
     let newElems = elements;
 
@@ -464,17 +475,21 @@ class GraphContainer extends Component {
         const compareResult = getCompareResult(evaluation);
         newElems = getColoredElems(elements, compareResult);
       } else {
-        const compareResult = getCompareResult(checkAnswerMethod({
-          userResponse: elements,
-          validation
-        }));
+        const compareResult = getCompareResult(
+          checkAnswerMethod({
+            userResponse: elements,
+            validation
+          })
+        );
         newElems = getColoredElems(elements, compareResult);
       }
     } else if (showAnswer) {
-      const compareResult = getCompareResult(checkAnswerMethod({
-        userResponse: elements,
-        validation
-      }));
+      const compareResult = getCompareResult(
+        checkAnswerMethod({
+          userResponse: elements,
+          validation
+        })
+      );
       newElems = getColoredElems(elements, compareResult);
     }
 
@@ -483,7 +498,7 @@ class GraphContainer extends Component {
 
   getIconByToolName = (toolName, options) => {
     if (!toolName) {
-      return '';
+      return "";
     }
 
     const { width, height } = options;
@@ -552,53 +567,22 @@ class GraphContainer extends Component {
     return iconsByToolName[toolName]();
   };
 
-  allTools = [
-    'point',
-    'line',
-    'ray',
-    'segment',
-    'vector',
-    'circle',
-    'sine',
-    'polygon',
-    'parabola',
-    'label'
-  ]
+  allTools = ["point", "line", "ray", "segment", "vector", "circle", "sine", "polygon", "parabola", "label"];
 
-  allControls = [
-    'undo',
-    'redo',
-    'reset'
-  ]
+  allControls = ["undo", "redo", "reset"];
 
   render() {
-    const {
-      tools,
-      layout,
-      annotation,
-      controls, 
-      shapes
-    } = this.props;
-    const {
-      selectedTool
-    } = this.state;
-    const hasAnnotation = annotation && (
-      annotation.labelTop
-      || annotation.labelLeft
-      || annotation.labelRight
-      || annotation.labelBottom
-    )
+    const { tools, layout, annotation, controls, shapes } = this.props;
+    const { selectedTool } = this.state;
+    const hasAnnotation =
+      annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
     return (
-      <div style={{ overflow: 'auto', width: '100%' }}>
+      <div style={{ overflow: "auto", width: "100%" }}>
         <GraphWrapper>
-          {
-            annotation && annotation.title && (
-              <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />
-            )
-          }
+          {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
           <Tools
             tools={shapes ? this.allTools : tools}
-            controls={shapes ? this.allControls :controls}
+            controls={shapes ? this.allControls : controls}
             tool={selectedTool}
             shapes={shapes}
             getIconByToolName={this.getIconByToolName}
@@ -609,31 +593,23 @@ class GraphContainer extends Component {
           />
           <div
             style={{
-              position: 'relative',
-              overflow: 'auto',
-              width: layout.width + 40 + 'px'
+              position: "relative",
+              overflow: "auto",
+              width: layout.width + 40 + "px"
             }}
           >
-            {
-              annotation && annotation.labelTop && (
-                <LabelTop dangerouslySetInnerHTML={{ __html: annotation.labelTop }} />
-              )
-            }
-            {
-              annotation && annotation.labelRight && (
-                <LabelRight dangerouslySetInnerHTML={{ __html: annotation.labelRight }} />
-              )
-            }
-            {
-              annotation && annotation.labelLeft && (
-                <LabelLeft dangerouslySetInnerHTML={{ __html: annotation.labelLeft }} />
-              )
-            }
-            {
-              annotation && annotation.labelBottom && (
-                <LabelBottom dangerouslySetInnerHTML={{ __html: annotation.labelBottom }} />
-              )
-            }
+            {annotation && annotation.labelTop && (
+              <LabelTop dangerouslySetInnerHTML={{ __html: annotation.labelTop }} />
+            )}
+            {annotation && annotation.labelRight && (
+              <LabelRight dangerouslySetInnerHTML={{ __html: annotation.labelRight }} />
+            )}
+            {annotation && annotation.labelLeft && (
+              <LabelLeft dangerouslySetInnerHTML={{ __html: annotation.labelLeft }} />
+            )}
+            {annotation && annotation.labelBottom && (
+              <LabelBottom dangerouslySetInnerHTML={{ __html: annotation.labelBottom }} />
+            )}
             <JSXBox
               id={this._graphId}
               className="jxgbox"

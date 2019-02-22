@@ -1,12 +1,12 @@
-import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
+import React, { Fragment } from "react";
+import PropTypes from "prop-types";
 
-import { PREVIEW, EDIT, CLEAR } from '../../constants/constantsForQuestions';
+import { PREVIEW, EDIT, CLEAR } from "../../constants/constantsForQuestions";
 
-import MatchListPreview from './MatchListPreview';
-import MatchListEdit from './MatchListEdit';
+import MatchListPreview from "./MatchListPreview";
+import MatchListEdit from "./MatchListEdit";
 
-const MatchList = (props) => {
+const MatchList = props => {
   const { view } = props;
   return (
     <Fragment>
@@ -33,7 +33,7 @@ MatchList.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: ''
+  evaluation: ""
 };
 
 export { MatchList };

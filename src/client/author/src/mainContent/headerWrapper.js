@@ -1,12 +1,12 @@
-import React, { memo } from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { darkBlueSecondary, mobileWidth } from '@edulastic/colors';
-import { Affix } from 'antd';
+import React, { memo } from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { darkBlueSecondary, mobileWidth } from "@edulastic/colors";
+import { Affix } from "antd";
 
 const HeaderWrapper = ({ children }) => (
   <HeaderContainer>
-    <Affix className="fixed-header" style={{ position: 'fixed', top: 0, right: 0 }}>
+    <Affix className="fixed-header" style={{ position: "fixed", top: 0, right: 0 }}>
       <Container>{children}</Container>
     </Affix>
   </HeaderContainer>

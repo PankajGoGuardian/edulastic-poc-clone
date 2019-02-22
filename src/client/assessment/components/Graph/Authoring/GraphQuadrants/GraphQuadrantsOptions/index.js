@@ -1,9 +1,9 @@
-import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-import QuadrantsMoreOptions from './QuadrantsMoreOptions';
-import { ScoreSettings, ControlsSettings, AnnotationSettings, QuestionSection } from '../..';
+import React, { Fragment } from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
+import QuadrantsMoreOptions from "./QuadrantsMoreOptions";
+import { ScoreSettings, ControlsSettings, AnnotationSettings, QuestionSection } from "../..";
 
 const GraphQuadrantsOptions = ({
   t,
@@ -19,39 +19,36 @@ const GraphQuadrantsOptions = ({
   fillSections,
   cleanSections
 }) => {
-    return (
-      <Fragment>
-        <QuadrantsMoreOptions
-          graphData={graphData}
-          stemNumerationList={stemNumerationList}
-          fontSizeList={fontSizeList}
-          setOptions={setOptions}
-          setBgImg={setBgImg}
-          setBgShapes={setBgShapes}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-        />
-        <QuestionSection section="advanced" label="SCORING" cleanSections={cleanSections} fillSections={fillSections}>
-          <ScoreSettings
-            setValidation={setValidation} 
-            graphData={graphData} 
-          />
-        </QuestionSection>
-        <QuestionSection section="advanced" label="CONTROLS" cleanSections={cleanSections} fillSections={fillSections}>
-          <ControlsSettings
-            onChange={setControls}
-            controlbar={graphData.controlbar}
-          />
-        </QuestionSection>
-        <QuestionSection section="advanced" label="ANNOTATION" cleanSections={cleanSections} fillSections={fillSections} marginLast="0">
-          <AnnotationSettings
-            annotation={graphData.annotation}
-            setAnnotation={setAnnotation}
-          />
-        </QuestionSection>
-      </Fragment>
-    );
-  }
+  return (
+    <Fragment>
+      <QuadrantsMoreOptions
+        graphData={graphData}
+        stemNumerationList={stemNumerationList}
+        fontSizeList={fontSizeList}
+        setOptions={setOptions}
+        setBgImg={setBgImg}
+        setBgShapes={setBgShapes}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
+      <QuestionSection section="advanced" label="SCORING" cleanSections={cleanSections} fillSections={fillSections}>
+        <ScoreSettings setValidation={setValidation} graphData={graphData} />
+      </QuestionSection>
+      <QuestionSection section="advanced" label="CONTROLS" cleanSections={cleanSections} fillSections={fillSections}>
+        <ControlsSettings onChange={setControls} controlbar={graphData.controlbar} />
+      </QuestionSection>
+      <QuestionSection
+        section="advanced"
+        label="ANNOTATION"
+        cleanSections={cleanSections}
+        fillSections={fillSections}
+        marginLast="0"
+      >
+        <AnnotationSettings annotation={graphData.annotation} setAnnotation={setAnnotation} />
+      </QuestionSection>
+    </Fragment>
+  );
+};
 
 GraphQuadrantsOptions.propTypes = {
   t: PropTypes.func.isRequired,
@@ -64,8 +61,6 @@ GraphQuadrantsOptions.propTypes = {
   setAnnotation: PropTypes.func.isRequired
 };
 
-const enhance = compose(
-  withNamespaces('assessment'),
-);
+const enhance = compose(withNamespaces("assessment"));
 
 export default enhance(GraphQuadrantsOptions);

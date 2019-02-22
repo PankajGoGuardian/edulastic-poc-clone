@@ -15,35 +15,33 @@ export const getSignedUrl = async () => {
 
 /**
  * @param {string} topic Topic to be listening
- * @param {{ [eventType: string]: Function }} actionMap A map of action to be performed by the action types 
+ * @param {{ [eventType: string]: Function }} actionMap A map of action to be performed by the action types
  * @param {Object} options
  * @returns {mqtt.MqttClient} Client which can be used to publish messages or check connected status
  */
 const useRealtime = (topic, actionMap, options = {}) => {
-  const [mqttUrl,setMqttUrl] = useState("");
-  const [retClient,setClient] = useState(null);
+  const [mqttUrl, setMqttUrl] = useState("");
+  const [retClient, setClient] = useState(null);
   useEffect(() => {
-    getSignedUrl().then((url)=> {
+    getSignedUrl().then(url => {
       setMqttUrl(url);
     });
-  },[]);
+  }, []);
 
   useEffect(() => {
-    if(mqttUrl === ""){
-      return () =>{
-     
-        console.log('connecting...');
+    if (mqttUrl === "") {
+      return () => {
+        console.log("connecting...");
       };
     }
     const client = mqtt.connect(mqttUrl, options);
-    client.on("connect", ()=> {
+    client.on("connect", () => {
       setClient(client);
       client.subscribe(topic, err => {
         if (err) {
           console.error(`error subscribing to topic ${topic} `, err);
         } else {
           console.log("connected ", topic);
-         
         }
       });
     });
@@ -53,13 +51,13 @@ const useRealtime = (topic, actionMap, options = {}) => {
 
       try {
         const msgObj = JSON.parse(msg);
-        console.log('got',msgObj);
+        console.log("got", msgObj);
         const type = msgObj.type || "unknown";
         if (actionMap[type]) {
           actionMap[type](msgObj.data);
         }
       } catch (err) {
-        console.log('err',err);
+        console.log("err", err);
       }
     });
 

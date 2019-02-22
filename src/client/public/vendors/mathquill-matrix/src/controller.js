@@ -31,7 +31,9 @@ var Controller = P(function(_) {
   };
 
   var notifyees = [];
-  this.onNotify = function(f) { notifyees.push(f); };
+  this.onNotify = function(f) {
+    notifyees.push(f);
+  };
   _.notify = function() {
     for (var i = 0; i < notifyees.length; i += 1) {
       notifyees[i].apply(this.cursor, arguments);

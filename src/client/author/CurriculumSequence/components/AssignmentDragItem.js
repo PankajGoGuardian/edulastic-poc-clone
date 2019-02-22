@@ -1,11 +1,11 @@
-import React, { Component  } from 'react';
-import { Dropdown } from 'antd';
-import styled from 'styled-components';
-import { DragSource } from 'react-dnd';
-import { Paper } from '@edulastic/common';
-import { darkBlue, lightBlue, lightGreen, green } from '@edulastic/colors';
-import assignContentIcon from '../assets/assign.svg';
-import visualizationIcon from '../assets/visualization-show.svg';
+import React, { Component } from "react";
+import { Dropdown } from "antd";
+import styled from "styled-components";
+import { DragSource } from "react-dnd";
+import { Paper } from "@edulastic/common";
+import { darkBlue, lightBlue, lightGreen, green } from "@edulastic/colors";
+import assignContentIcon from "../assets/assign.svg";
+import visualizationIcon from "../assets/visualization-show.svg";
 
 /**
  * @typedef Props
@@ -37,31 +37,31 @@ class AssignmentDragItem extends Component {
   render() {
     const { moduleData, handleAddContentMouseOver, menu } = this.props;
     const { connectDragSource } = this.props;
-    return (
-      connectDragSource(
-        <div className="item">
-          <Assignment key={moduleData.id}>
-            <AssignmentPrefix>{moduleData.standards}</AssignmentPrefix>
-            <span>{moduleData.name}</span>
-            <AssignmentIconsWrapper>
-              <Dropdown overlay={menu} placement="bottomCenter">
-                <AssignContent
-                  onMouseOver={() => handleAddContentMouseOver(moduleData)}
-                  onFocus={() => handleAddContentMouseOver(moduleData)}
-                >
-                  <img src={assignContentIcon} alt="assign content" />
-                </AssignContent>
-              </Dropdown>
-              <Visualize><img src={visualizationIcon} alt="visualize " /></Visualize>
-            </AssignmentIconsWrapper>
-          </Assignment>
-        </div>
-      )
+    return connectDragSource(
+      <div className="item">
+        <Assignment key={moduleData.id}>
+          <AssignmentPrefix>{moduleData.standards}</AssignmentPrefix>
+          <span>{moduleData.name}</span>
+          <AssignmentIconsWrapper>
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <AssignContent
+                onMouseOver={() => handleAddContentMouseOver(moduleData)}
+                onFocus={() => handleAddContentMouseOver(moduleData)}
+              >
+                <img src={assignContentIcon} alt="assign content" />
+              </AssignContent>
+            </Dropdown>
+            <Visualize>
+              <img src={visualizationIcon} alt="visualize " />
+            </Visualize>
+          </AssignmentIconsWrapper>
+        </Assignment>
+      </div>
     );
   }
 }
 
-export default DragSource('item', itemSource, collect)(AssignmentDragItem);
+export default DragSource("item", itemSource, collect)(AssignmentDragItem);
 
 const AssignContent = styled.div`
   border-radius: 4px;
@@ -70,7 +70,6 @@ const AssignContent = styled.div`
   min-width: 19px;
   cursor: pointer;
 `;
-
 
 const AssignmentIconsWrapper = styled.div`
   margin-left: auto;
@@ -86,7 +85,7 @@ const Visualize = styled.span`
   min-width: 19px;
   cursor: pointer;
 `;
-Visualize.displayName = 'Visualize';
+Visualize.displayName = "Visualize";
 
 const UnitIcon = styled.span`
   border-radius: 4px;
@@ -95,10 +94,10 @@ const UnitIcon = styled.span`
   display: flex;
   justify-content: center;
   transition: 0.3s transform;
-  transform: ${({ rotated }) => (rotated ? 'rotate(-90deg)' : 'rotate(0deg)')};
-  cursor: pointer
+  transform: ${({ rotated }) => (rotated ? "rotate(-90deg)" : "rotate(0deg)")};
+  cursor: pointer;
 `;
-UnitIcon.displayName = 'UnitIcon';
+UnitIcon.displayName = "UnitIcon";
 
 const Row = styled(Paper)`
   padding-top: 0px;
@@ -113,17 +112,16 @@ const Module = styled.div`
   font-weight: 600;
   border-top: 1px solid ${lightBlue};
 `;
-Module.displayName = 'SelectContentRowModule';
+Module.displayName = "SelectContentRowModule";
 
 const Assignment = styled(Row)`
-    display: flex;
-    align-items: center;
-    border: 0;
-    border-radius: 0;
-    padding-top: 10px;
-    padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  border: 0;
+  border-radius: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
 `;
-
 
 const ModulesAssigned = styled.div`
   font-size: 10px;

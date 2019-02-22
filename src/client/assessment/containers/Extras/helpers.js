@@ -1,5 +1,5 @@
-import { cloneDeep, set } from 'lodash';
-import { arrayMove } from 'react-sortable-hoc';
+import { cloneDeep, set } from "lodash";
+import { arrayMove } from "react-sortable-hoc";
 
 export const change = ({ item, setQuestionData }) => (path, value) => {
   const newData = cloneDeep(item);
@@ -7,7 +7,7 @@ export const change = ({ item, setQuestionData }) => (path, value) => {
   setQuestionData(newData);
 };
 
-export const removeDistractor = ({ item, setQuestionData }) => (index) => {
+export const removeDistractor = ({ item, setQuestionData }) => index => {
   if (item.metadata && Array.isArray(item.metadata.distractor_rationale_response_level)) {
     const newData = cloneDeep(item);
     newData.metadata.distractor_rationale_response_level.splice(index, 1);
@@ -41,6 +41,6 @@ export const addDistractor = ({ item, setQuestionData }) => () => {
     newData.metadata.distractor_rationale_response_level = [];
   }
 
-  newData.metadata.distractor_rationale_response_level.push('');
+  newData.metadata.distractor_rationale_response_level.push("");
   setQuestionData(newData);
 };

@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { IconDraw as Icon } from '@edulastic/icons';
+import styled from "styled-components";
+import { IconDraw as Icon } from "@edulastic/icons";
 
 export const IconDraw = styled(Icon)`
   width: 42px;

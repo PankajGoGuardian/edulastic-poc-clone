@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
 
 import {
   RECEIVE_ITEMS_REQUEST,
@@ -7,7 +7,7 @@ import {
   RECEIVE_ITEM_REQUEST,
   RECEIVE_ITEM_SUCCESS,
   RECEIVE_ITEM_ERROR
-} from '../constants/actions';
+} from "../constants/actions";
 
 const initialItemsState = {
   items: [],

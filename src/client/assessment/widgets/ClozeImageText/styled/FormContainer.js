@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { FlexContainer } from './FlexContainer';
+import styled from "styled-components";
+import { FlexContainer } from "./FlexContainer";
 
 export const FormContainer = styled(FlexContainer)`
   background: ${props => props.theme.widgets.clozeImageText.formContainerBgColor};

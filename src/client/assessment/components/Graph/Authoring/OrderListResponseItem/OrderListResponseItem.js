@@ -1,12 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { SortableElement } from 'react-sortable-hoc';
+import React from "react";
+import PropTypes from "prop-types";
+import { SortableElement } from "react-sortable-hoc";
 
-import DeleteButton from '../../common/DeleteButton';
-import DragHandle from '../../common/DragHandle';
-import {
-  Container, Item, StyledDragHandle, StyledTextarea
-} from '../../common/styled_components';
+import DeleteButton from "../../common/DeleteButton";
+import DragHandle from "../../common/DragHandle";
+import { Container, Item, StyledDragHandle, StyledTextarea } from "../../common/styled_components";
 // import { CustomQuillComponent } from '@edulastic/common';
 
 const OrderListItem = SortableElement(({ children, onQuestionsChange, onDeleteQuestion }) => (

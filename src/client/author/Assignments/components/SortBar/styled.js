@@ -1,7 +1,7 @@
 import { FlexContainer } from "@edulastic/common";
 import styled from "styled-components";
 import { tabletWidth } from "@edulastic/colors";
-import { Select } from 'antd';
+import { Select } from "antd";
 
 export const Container = styled.div`
   display: flex;

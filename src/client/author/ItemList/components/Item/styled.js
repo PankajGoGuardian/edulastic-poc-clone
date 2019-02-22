@@ -1,7 +1,7 @@
-import { greenDark, tabletWidth, textColor } from '@edulastic/colors';
-import styled from 'styled-components';
-import { Button } from 'antd';
-import { IconHeart, IconShare } from '@edulastic/icons';
+import { greenDark, tabletWidth, textColor } from "@edulastic/colors";
+import styled from "styled-components";
+import { Button } from "antd";
+import { IconHeart, IconShare } from "@edulastic/icons";
 
 export const Container = styled.div`
   border-bottom: 1px solid #f2f2f2;
@@ -70,7 +70,7 @@ export const TypeCategory = styled.div`
   @media (max-width: ${tabletWidth}) {
     display: block;
     margin-right: 0px;
-    width: 100%
+    width: 100%;
   }
 `;
 
@@ -122,7 +122,7 @@ export const Label = styled.div`
   border-radius: 5px;
   border: solid 1px #c8e8f6;
   background-color: #c8e8f6;
-  
+
   span {
     font-size: 10px;
     font-weight: bold;

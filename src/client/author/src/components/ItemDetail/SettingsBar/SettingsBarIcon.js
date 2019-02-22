@@ -1,20 +1,20 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { white, textColor } from '@edulastic/colors';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { white, textColor } from "@edulastic/colors";
 
-const getMarginLeft = (type) => {
+const getMarginLeft = type => {
   switch (type) {
-    case '30-70':
-      return '30%';
-    case '70-30':
-      return '70%';
-    case '50-50':
-      return '50%';
-    case '40-60':
-      return '40%';
-    case '60-40':
-      return '60%';
+    case "30-70":
+      return "30%";
+    case "70-30":
+      return "70%";
+    case "50-50":
+      return "50%";
+    case "40-60":
+      return "40%";
+    case "60-40":
+      return "60%";
     default:
       return 0;
   }
@@ -28,7 +28,7 @@ const SettingsBarIcon = ({ active, type }) => (
 
 SettingsBarIcon.propTypes = {
   active: PropTypes.bool.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired
 };
 
 export default SettingsBarIcon;
@@ -43,6 +43,6 @@ const Divider = styled.div`
   width: 1px;
   background: ${({ active }) => (active ? white : textColor)};
   height: 100%;
-  display: ${({ type }) => (type === '100-100' ? 'none' : 'block')};
+  display: ${({ type }) => (type === "100-100" ? "none" : "block")};
   margin-left: ${({ type }) => getMarginLeft(type)};
 `;

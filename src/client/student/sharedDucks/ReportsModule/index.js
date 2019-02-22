@@ -1,1 +1,1 @@
-export { default as studentReportReducer } from './ducks';
+export { default as studentReportReducer } from "./ducks";

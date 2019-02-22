@@ -1,4 +1,4 @@
-import { tickLabel } from './utils';
+import { tickLabel } from "./utils";
 
 /**
  * Graph parameters
@@ -41,7 +41,7 @@ const axesParameters = {
    * @see https://jsxgraph.org/docs/symbols/Ticks.html#ticksDistance
    */
   ticksDistance: 1,
-  name: '',
+  name: "",
   /**
    * @see https://jsxgraph.org/docs/symbols/Ticks.html#majorHeight
    */
@@ -84,16 +84,16 @@ const gridParameters = {
 };
 
 const bgObjectParameters = {
-  fillColor: '#ccc',
-  strokeColor: '#ccc',
+  fillColor: "#ccc",
+  strokeColor: "#ccc",
   fixed: true,
   highlightFillOpacity: 1,
-  highlightStrokeColor: '#ccc',
-  highlightFillColor: '#ccc'
+  highlightStrokeColor: "#ccc",
+  highlightFillColor: "#ccc"
 };
 
 const bgImageParameters = {
-  urlImg: '',
+  urlImg: "",
   coords: [0, 0],
   size: [100, 100],
   opacity: 0.5
@@ -101,20 +101,20 @@ const bgImageParameters = {
 
 const inputParameters = {
   offset: [0, 10],
-  anchorX: 'middle',
-  anchorY: 'bottom',
-  cssClass: 'myLabelInput',
-  highlightCssClass: 'myLabelInput',
+  anchorX: "middle",
+  anchorY: "bottom",
+  cssClass: "myLabelInput",
+  highlightCssClass: "myLabelInput",
   fixed: true,
   highlightFillOpacity: 1,
   highlightStrokeOpacity: 1
 };
 
 const textParameters = {
-  display: 'html',
+  display: "html",
   fontSize: 12,
-  cssClass: 'mark',
-  highlightCssClass: 'mark'
+  cssClass: "mark",
+  highlightCssClass: "mark"
 };
 
 export const defaultInputParameters = () => ({ ...inputParameters });
@@ -123,19 +123,14 @@ export const defaultTextParameters = () => ({ ...textParameters });
 
 export const defaultBgImageParameters = () => ({ ...bgImageParameters });
 
-export const graphParameters2Boundingbox = p => ([
-  p.xMin,
-  p.yMax,
-  p.xMax,
-  p.yMin
-]);
+export const graphParameters2Boundingbox = p => [p.xMin, p.yMax, p.xMax, p.yMin];
 
-export const numberlineGraphParametersToBoundingbox = (coords, margin) => ([
+export const numberlineGraphParametersToBoundingbox = (coords, margin) => [
   coords.xMin - margin,
   coords.yMax,
   coords.xMax + margin,
   coords.yMin
-]);
+];
 
 export const defaultBgObjectParameters = () => ({ ...bgObjectParameters });
 
@@ -162,43 +157,43 @@ function mergeAxesParameters(target, parameters) {
     target.y.withLabel = true;
     target.y.name = parameters.y.name;
   }
-  if ('showTicks' in parameters.x && parameters.x.showTicks === false) {
+  if ("showTicks" in parameters.x && parameters.x.showTicks === false) {
     target.x.ticks.majorHeight = 0;
   }
-  if ('showTicks' in parameters.y && parameters.y.showTicks === false) {
+  if ("showTicks" in parameters.y && parameters.y.showTicks === false) {
     target.y.ticks.majorHeight = 0;
   }
-  if ('drawLabels' in parameters.x) {
+  if ("drawLabels" in parameters.x) {
     target.x.ticks.drawLabels = parameters.x.drawLabels;
   }
-  if ('drawLabels' in parameters.y) {
+  if ("drawLabels" in parameters.y) {
     target.y.ticks.drawLabels = parameters.x.drawLabels;
   }
-  if ('minArrow' in parameters.x && parameters.x.minArrow === false) {
+  if ("minArrow" in parameters.x && parameters.x.minArrow === false) {
     target.x.firstArrow = false;
   }
-  if ('minArrow' in parameters.y && parameters.y.minArrow === false) {
+  if ("minArrow" in parameters.y && parameters.y.minArrow === false) {
     target.y.firstArrow = false;
   }
-  if ('maxArrow' in parameters.x && parameters.x.maxArrow === false) {
+  if ("maxArrow" in parameters.x && parameters.x.maxArrow === false) {
     target.x.lastArrow = false;
   }
-  if ('maxArrow' in parameters.y && parameters.y.maxArrow === false) {
+  if ("maxArrow" in parameters.y && parameters.y.maxArrow === false) {
     target.y.lastArrow = false;
   }
-  if ('gridX' in parameters) {
+  if ("gridX" in parameters) {
     target.grid.gridX = parameters.gridX;
   }
-  if ('gridY' in parameters) {
+  if ("gridY" in parameters) {
     target.grid.gridY = parameters.gridY;
   }
-  if ('commaInLabel' in parameters.x) {
-    target.x.ticks.generateLabelText = tickLabel('x', parameters.x.commaInLabel);
+  if ("commaInLabel" in parameters.x) {
+    target.x.ticks.generateLabelText = tickLabel("x", parameters.x.commaInLabel);
   }
-  if ('commaInLabel' in parameters.y) {
-    target.y.ticks.generateLabelText = tickLabel('y', parameters.y.commaInLabel);
+  if ("commaInLabel" in parameters.y) {
+    target.y.ticks.generateLabelText = tickLabel("y", parameters.y.commaInLabel);
   }
-  if ('drawZero' in parameters.x && parameters.x.drawZero === false) {
+  if ("drawZero" in parameters.x && parameters.x.drawZero === false) {
     target.x.ticks.drawZero = false;
   }
 }
@@ -210,7 +205,7 @@ export function mergeParams(defaultConfig, userConfig) {
   if (userConfig.axesParameters) {
     mergeAxesParameters(defaultConfig.defaultaxes, userConfig.axesParameters);
   }
-  if ('gridParameters' in userConfig) {
+  if ("gridParameters" in userConfig) {
     defaultConfig.grid = {
       ...defaultConfig.grid,
       ...userConfig.gridParameters

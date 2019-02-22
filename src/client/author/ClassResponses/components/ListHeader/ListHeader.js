@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/alt-text */
-import React, { Component } from 'react';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-import { message } from 'antd';
-import moment from 'moment';
-import Assigned from '../../assets/assigned.svg';
+import React, { Component } from "react";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
+import { message } from "antd";
+import moment from "moment";
+import Assigned from "../../assets/assigned.svg";
 
 import {
   Container,
@@ -20,7 +20,7 @@ import {
   StyledTabs,
   StyledAnchorA,
   StyledAnchor
-} from './styled'
+} from "./styled";
 
 class ListHeader extends Component {
   constructor() {
@@ -31,21 +31,21 @@ class ListHeader extends Component {
     };
   }
 
-  changeCondition = (value) => {
+  changeCondition = value => {
     this.setState({ condition: value });
-  }
+  };
 
   confirm = () => {
     this.setState({ visible: false });
-    message.success('Next step.');
-  }
+    message.success("Next step.");
+  };
 
   cancel = () => {
     this.setState({ visible: false });
-    message.error('Click on cancel.');
-  }
+    message.error("Click on cancel.");
+  };
 
-  handleVisibleChange = (visible) => {
+  handleVisibleChange = visible => {
     if (!visible) {
       this.setState({ visible });
       return;
@@ -59,23 +59,41 @@ class ListHeader extends Component {
     } else {
       this.setState({ visible }); // show the popconfirm
     }
-  }
+  };
 
   render() {
     const { additionalData } = this.props;
     const endDate = additionalData.endDate;
-    const dueDate = (isNaN(endDate))? new Date(endDate): new Date(parseInt(endDate));
+    const dueDate = isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate));
 
     return (
       <Container>
         <StyledTitle>
-          <StyledParaFirst>{additionalData.className||'loading...'}</StyledParaFirst>
-          <StyledParaSecond>(Due on {additionalData.endDate && moment(dueDate).format("MMMM Do YYYY")})</StyledParaSecond>
+          <StyledParaFirst>{additionalData.className || "loading..."}</StyledParaFirst>
+          <StyledParaSecond>
+            (Due on {additionalData.endDate && moment(dueDate).format("MMMM Do YYYY")})
+          </StyledParaSecond>
         </StyledTitle>
         <StyledTabs>
-          <StyledAnchorA><StyledLink to="/author/classboard"><img src={Assigned} /><SpaceD />LIVE CLASS BOARD</StyledLink></StyledAnchorA>
-          <StyledAnchor><StyledLink to="/author/expressgrader"><img src={Assigned} /><SpaceD />EXPRESS GRADER</StyledLink></StyledAnchor>
-          <StyledAnchor><img src={Assigned} /><SpaceD />REPORTS</StyledAnchor>
+          <StyledAnchorA>
+            <StyledLink to="/author/classboard">
+              <img src={Assigned} />
+              <SpaceD />
+              LIVE CLASS BOARD
+            </StyledLink>
+          </StyledAnchorA>
+          <StyledAnchor>
+            <StyledLink to="/author/expressgrader">
+              <img src={Assigned} />
+              <SpaceD />
+              EXPRESS GRADER
+            </StyledLink>
+          </StyledAnchor>
+          <StyledAnchor>
+            <img src={Assigned} />
+            <SpaceD />
+            REPORTS
+          </StyledAnchor>
         </StyledTabs>
         <StyledDiv>
           <StyledPopconfirm
@@ -87,16 +105,16 @@ class ListHeader extends Component {
             okText="Yes"
             cancelText="No"
           />
-          <StyledParaThird>Release Scores</StyledParaThird><StyledSwitch defaultChecked onChange={this.changeCondition} />
+          <StyledParaThird>Release Scores</StyledParaThird>
+          <StyledSwitch defaultChecked onChange={this.changeCondition} />
         </StyledDiv>
       </Container>
     );
   }
 }
 
-ListHeader.propTypes = {
-};
+ListHeader.propTypes = {};
 
-const enhance = compose(withNamespaces('author'));
+const enhance = compose(withNamespaces("author"));
 
 export default enhance(ListHeader);

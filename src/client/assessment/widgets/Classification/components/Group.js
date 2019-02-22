@@ -1,15 +1,15 @@
-import React, { Fragment } from 'react';
-import { Input } from 'antd';
-import PropTypes from 'prop-types';
-import { withTheme } from 'styled-components';
+import React, { Fragment } from "react";
+import { Input } from "antd";
+import PropTypes from "prop-types";
+import { withTheme } from "styled-components";
 
-import { FlexContainer } from '@edulastic/common';
+import { FlexContainer } from "@edulastic/common";
 
-import { Subtitle } from '../../../styled/Subtitle';
-import withAddButton from '../../../components/HOC/withAddButton';
-import QuillSortableList from '../../../components/QuillSortableList';
+import { Subtitle } from "../../../styled/Subtitle";
+import withAddButton from "../../../components/HOC/withAddButton";
+import QuillSortableList from "../../../components/QuillSortableList";
 
-import { IconTrash } from '../styled/IconTrash';
+import { IconTrash } from "../styled/IconTrash";
 
 const List = withAddButton(QuillSortableList);
 
@@ -30,7 +30,7 @@ const Group = ({
   theme
 }) => (
   <Fragment>
-    <FlexContainer alignItems="baseline" justifyContent="space-between" style={{ width: '100%' }}>
+    <FlexContainer alignItems="baseline" justifyContent="space-between" style={{ width: "100%" }}>
       <Subtitle>{`${groupHeadText}${index + 1}`}</Subtitle>
       <IconTrash onClick={onRemove(index)} />
     </FlexContainer>

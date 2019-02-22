@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import 'react-quill/dist/quill.snow.css';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import "react-quill/dist/quill.snow.css";
 
-import { PaddingDiv, CustomQuillComponent } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { PaddingDiv, CustomQuillComponent } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
 
-import { Subtitle } from '../../styled/Subtitle';
+import { Subtitle } from "../../styled/Subtitle";
 
 const defaultTemplateMarkup =
   '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags? <br /> Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
@@ -22,13 +22,13 @@ class Authoring extends Component {
     setQuestionData: PropTypes.func.isRequired
   };
 
-  onChangeQuesiton = (html) => {
+  onChangeQuesiton = html => {
     const stimulus = html;
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, stimulus });
   };
 
-  onChangeMarkUp = (html) => {
+  onChangeMarkUp = html => {
     const templateMarkUp = html;
     const { item, setQuestionData } = this.props;
     setQuestionData({ ...item, templateMarkUp });
@@ -39,24 +39,24 @@ class Authoring extends Component {
     return (
       <div>
         <PaddingDiv bottom={20}>
-          <Subtitle>{t('component.cloze.text.composequestion')}</Subtitle>
+          <Subtitle>{t("component.cloze.text.composequestion")}</Subtitle>
           <CustomQuillComponent
             toolbarId="stimulus"
-            wrappedRef={(instance) => {
+            wrappedRef={instance => {
               this.stimulus = instance;
             }}
-            placeholder={t('component.cloze.text.thisisstem')}
+            placeholder={t("component.cloze.text.thisisstem")}
             onChange={this.onChangeQuesiton}
             showResponseBtn={false}
             value={item.stimulus}
           />
-          <Subtitle>{t('component.cloze.text.templatemarkup')}</Subtitle>
+          <Subtitle>{t("component.cloze.text.templatemarkup")}</Subtitle>
           <CustomQuillComponent
             toolbarId="templatemarkup"
-            wrappedRef={(instance) => {
+            wrappedRef={instance => {
               this.templatemarkup = instance;
             }}
-            placeholder={t('component.cloze.text.templatemarkupplaceholder')}
+            placeholder={t("component.cloze.text.templatemarkupplaceholder")}
             onChange={this.onChangeMarkUp}
             firstFocus={!item.templateMarkUp}
             showResponseBtn
@@ -70,7 +70,7 @@ class Authoring extends Component {
 
 const enhance = compose(
   withRouter,
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     null,
     { setQuestionData: setQuestionDataAction }

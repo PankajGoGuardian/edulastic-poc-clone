@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import { math } from '@edulastic/constants';
+import { math } from "@edulastic/constants";
 
-import { MathInputStyles } from '../styled/MathInputStyles';
-import MathKeyboard from './MathKeyboard';
-import { WithResources } from '../../utils';
+import { MathInputStyles } from "../styled/MathInputStyles";
+import MathKeyboard from "./MathKeyboard";
+import { WithResources } from "../../utils";
 
 const { EMBED_RESPONSE } = math;
 
@@ -21,24 +21,18 @@ class MathInput extends React.PureComponent {
 
   componentWillUnmount() {
     // make sure you remove the listener when the component is destroyed
-    document.removeEventListener('click', this.handleClick, false);
-    document.removeEventListener('click', this.handleChangeField, false);
+    document.removeEventListener("click", this.handleClick, false);
+    document.removeEventListener("click", this.handleChangeField, false);
     this.setState({ mathFieldFocus: false });
   }
 
   handleClick = e => {
     const { onFocus } = this.props;
 
-    if (
-      e.target.nodeName === 'LI' &&
-      e.target.attributes[0].nodeValue === 'option'
-    ) {
+    if (e.target.nodeName === "LI" && e.target.attributes[0].nodeValue === "option") {
       return;
     }
-    if (
-      this.containerRef.current &&
-      !this.containerRef.current.contains(e.target)
-    ) {
+    if (this.containerRef.current && !this.containerRef.current.contains(e.target)) {
       onFocus(false);
       this.setState({ mathFieldFocus: false });
     }
@@ -57,13 +51,13 @@ class MathInput extends React.PureComponent {
 
     const MQ = window.MathQuill.getInterface(2);
 
-    MQ.registerEmbed('response', () => ({
+    MQ.registerEmbed("response", () => ({
       htmlString: `<span class="response-embed">
         <span class="response-embed__char">R</span>
         <span class="response-embed__text">Response</span>
       </span>`,
       text() {
-        return 'custom_embed';
+        return "custom_embed";
       },
       latex() {
         return EMBED_RESPONSE;
@@ -76,9 +70,9 @@ class MathInput extends React.PureComponent {
     this.setState(
       () => ({ mathField }),
       () => {
-        const textarea = mathField.el().querySelector('.mq-textarea textarea');
-        textarea.addEventListener('keyup', this.handleChangeField);
-        document.addEventListener('click', this.handleClick, false);
+        const textarea = mathField.el().querySelector(".mq-textarea textarea");
+        textarea.addEventListener("keyup", this.handleChangeField);
+        document.addEventListener("click", this.handleClick, false);
       }
     );
   }
@@ -91,28 +85,28 @@ class MathInput extends React.PureComponent {
     onInput(text);
   };
 
-  onInput = (key, command = 'cmd') => {
+  onInput = (key, command = "cmd") => {
     const { mathField } = this.state;
 
     if (!mathField) return;
 
-    if (key === 'left_move') {
-      mathField.keystroke('Left');
-    } else if (key === 'right_move') {
-      mathField.keystroke('Right');
-    } else if (key === 'ln--') {
-      mathField.write('ln\\left(\\right)');
-    } else if (key === 'leftright3') {
-      mathField.write('\\sqrt[3]{}');
-    } else if (key === 'Backspace') {
-      mathField.keystroke('Backspace');
-    } else if (key === 'leftright2') {
-      mathField.write('^2');
-    } else if (key === 'down_move') {
-      mathField.keystroke('Down');
-    } else if (key === 'up_move') {
-      mathField.keystroke('Up');
-    } else if (key === '\\embed{response}') {
+    if (key === "left_move") {
+      mathField.keystroke("Left");
+    } else if (key === "right_move") {
+      mathField.keystroke("Right");
+    } else if (key === "ln--") {
+      mathField.write("ln\\left(\\right)");
+    } else if (key === "leftright3") {
+      mathField.write("\\sqrt[3]{}");
+    } else if (key === "Backspace") {
+      mathField.keystroke("Backspace");
+    } else if (key === "leftright2") {
+      mathField.write("^2");
+    } else if (key === "down_move") {
+      mathField.keystroke("Down");
+    } else if (key === "up_move") {
+      mathField.keystroke("Up");
+    } else if (key === "\\embed{response}") {
       mathField.write(key);
     } else {
       mathField[command](key);
@@ -132,14 +126,7 @@ class MathInput extends React.PureComponent {
 
   render() {
     const { mathFieldFocus } = this.state;
-    const {
-      showResponse,
-      style,
-      onFocus,
-      onKeyDown,
-      symbols,
-      numberPad
-    } = this.props;
+    const { showResponse, style, onFocus, onKeyDown, symbols, numberPad } = this.props;
 
     return (
       <MathInputStyles>
@@ -187,7 +174,7 @@ MathInput.propTypes = {
 };
 
 MathInput.defaultProps = {
-  value: '',
+  value: "",
   showResponse: false,
   style: {},
   onFocus: () => {},
@@ -197,12 +184,12 @@ MathInput.defaultProps = {
 const MathInputWithResources = ({ ...props }) => (
   <WithResources
     resources={[
-      'https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css',
-      'https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js',
-      'https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js',
-      'https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js',
-      'assets/public/vendors/mathquill-matrix/build/mathquill.js',
-      'assets/public/vendors/mathquill-matrix/build/mathquill.css'
+      "https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css",
+      "https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js",
+      "https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js",
+      "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
+      "assets/public/vendors/mathquill-matrix/build/mathquill.js",
+      "assets/public/vendors/mathquill-matrix/build/mathquill.css"
     ]}
     fallBack={<h2>Loading...</h2>}
   >

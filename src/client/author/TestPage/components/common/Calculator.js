@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { white } from '@edulastic/colors';
-import { FlexContainer } from '@edulastic/common';
-import { Select } from 'antd';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { white } from "@edulastic/colors";
+import { FlexContainer } from "@edulastic/common";
+import { Select } from "antd";
 
-import Summary from './Summary';
-import selectsData from './selectsData';
+import Summary from "./Summary";
+import selectsData from "./selectsData";
 
 const Calculator = ({
   totalPoints,
@@ -28,7 +28,7 @@ const Calculator = ({
         <Select
           mode="multiple"
           size="large"
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
           placeholder="Please select"
           defaultValue={grades}
           onChange={onChangeGrade}
@@ -46,7 +46,7 @@ const Calculator = ({
         <Select
           mode="multiple"
           size="large"
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
           placeholder="Please select"
           defaultValue={subjects}
           onChange={onChangeSubjects}
@@ -84,7 +84,7 @@ Calculator.defaultProps = {
 export default Calculator;
 
 const Container = styled.div`
-  padding: ${props => (props.windowWidth < 468 ? '15px 5px 15px 0px' : '15px')};
+  padding: ${props => (props.windowWidth < 468 ? "15px 5px 15px 0px" : "15px")};
   background: ${white};
 
   .ant-table-body {

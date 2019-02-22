@@ -1,11 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-import { IconManageClass } from '@edulastic/icons';
-import { Row } from 'antd';
-import ClassCard from './CardContainer';
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
+import { IconManageClass } from "@edulastic/icons";
+import { Row } from "antd";
+import ClassCard from "./CardContainer";
 
 const ManageClassContainer = ({ flag, t }) => (
   <ManageClassContentWrapper flag={flag}>
@@ -14,14 +14,14 @@ const ManageClassContainer = ({ flag, t }) => (
     </Row>
     <NoDataWrapper>
       <IconManage />
-      <NoDataHeading>{t('common.noClassesTitle')}</NoDataHeading>
-      <NoDataSubText>{t('common.noClassesSubTitle')}</NoDataSubText>
+      <NoDataHeading>{t("common.noClassesTitle")}</NoDataHeading>
+      <NoDataSubText>{t("common.noClassesSubTitle")}</NoDataSubText>
     </NoDataWrapper>
   </ManageClassContentWrapper>
 );
 
 const enhance = compose(
-  withNamespaces('manageClass'),
+  withNamespaces("manageClass"),
   React.memo
 );
 

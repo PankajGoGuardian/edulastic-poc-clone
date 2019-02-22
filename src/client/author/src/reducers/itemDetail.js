@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from "lodash";
 import {
   RECEIVE_ITEM_DETAIL_REQUEST,
   RECEIVE_ITEM_DETAIL_SUCCESS,
@@ -13,7 +13,7 @@ import {
   UPDATE_TAB_TITLE,
   USE_TABS,
   MOVE_WIDGET
-} from '../constants/actions';
+} from "../constants/actions";
 
 const initialState = {
   item: null,
@@ -26,9 +26,7 @@ const initialState = {
 
 const deleteWidget = (state, { rowIndex, widgetIndex }) => {
   const newState = cloneDeep(state);
-  newState.item.rows[rowIndex].widgets = newState.item.rows[
-    rowIndex
-  ].widgets.filter((w, i) => i !== widgetIndex);
+  newState.item.rows[rowIndex].widgets = newState.item.rows[rowIndex].widgets.filter((w, i) => i !== widgetIndex);
 
   return newState;
 };
@@ -37,15 +35,12 @@ const updateDimension = (state, { left, right }) => {
   const newState = cloneDeep(state);
   newState.item.rows[0].dimension = left;
 
-  if (left === '100%') {
-    newState.item.rows[0].widgets = [
-      ...newState.item.rows[0].widgets,
-      ...newState.item.rows[1].widgets
-    ];
+  if (left === "100%") {
+    newState.item.rows[0].widgets = [...newState.item.rows[0].widgets, ...newState.item.rows[1].widgets];
     newState.item.rows.length = 1;
   } else if (!newState.item.rows[1]) {
     newState.item.rows[1] = {
-      tabs: ['Tab 1', 'Tab 2'],
+      tabs: ["Tab 1", "Tab 2"],
       dimension: right,
       widgets: []
     };
@@ -64,7 +59,7 @@ const updateTabTitle = (state, { rowIndex, tabIndex, value }) => {
 const useTabs = (state, { rowIndex, isUseTabs }) => {
   const newState = cloneDeep(state);
   if (isUseTabs) {
-    newState.item.rows[rowIndex].tabs = ['Tab 1', 'Tab 2'];
+    newState.item.rows[rowIndex].tabs = ["Tab 1", "Tab 2"];
   }
   if (!isUseTabs) {
     newState.item.rows[rowIndex].tabs = [];
@@ -74,16 +69,9 @@ const useTabs = (state, { rowIndex, isUseTabs }) => {
 
 const moveWidget = (state, { from, to }) => {
   const newState = cloneDeep(state);
-  const [movedWidget] = newState.item.rows[from.rowIndex].widgets.splice(
-    from.widgetIndex,
-    1
-  );
+  const [movedWidget] = newState.item.rows[from.rowIndex].widgets.splice(from.widgetIndex, 1);
   movedWidget.tabIndex = to.tabIndex || 0;
-  newState.item.rows[to.rowIndex].widgets.splice(
-    to.widgetIndex,
-    0,
-    movedWidget
-  );
+  newState.item.rows[to.rowIndex].widgets.splice(to.widgetIndex, 0, movedWidget);
   return newState;
 };
 

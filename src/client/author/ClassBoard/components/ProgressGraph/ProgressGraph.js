@@ -1,14 +1,10 @@
 /* eslint-disable max-len */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-undef */
-import React, { Component } from 'react';
-import BarGraph from '../BarGraph/BarGraph';
+import React, { Component } from "react";
+import BarGraph from "../BarGraph/BarGraph";
 
-import {
-  StyledProgress,
-  StyledDiv,
-  GraphText
-} from './styled'
+import { StyledProgress, StyledDiv, GraphText } from "./styled";
 
 // eslint-disable-next-line no-trailing-spaces
 export default class Graph extends Component {
@@ -31,7 +27,9 @@ export default class Graph extends Component {
             format={percent => `${percent}%`}
           />
           <GraphText>
-            <p>{this.props.gradebook.submittedNumber} out of {this.props.gradebook.total} Submitted</p>
+            <p>
+              {this.props.gradebook.submittedNumber} out of {this.props.gradebook.total} Submitted
+            </p>
             <p>({this.props.gradebook.absentNumber} Absent)</p>
           </GraphText>
         </div>

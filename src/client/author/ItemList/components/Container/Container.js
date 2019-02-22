@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { Pagination, Spin } from 'antd';
-import { Paper, withWindowSizes } from '@edulastic/common';
-import { compose } from 'redux';
-import { withNamespaces } from '@edulastic/localization';
-import { Container, Element, ListItems } from './styled';
-import Item from '../Item/Item';
-import ItemFilter from '../ItemFilter/ItemFilter';
-import ListHeader from '../../../src/components/common/ListHeader';
-import { createTestItemAction } from '../../../src/actions/testItem';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { Pagination, Spin } from "antd";
+import { Paper, withWindowSizes } from "@edulastic/common";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
+import { Container, Element, ListItems } from "./styled";
+import Item from "../Item/Item";
+import ItemFilter from "../ItemFilter/ItemFilter";
+import ListHeader from "../../../src/components/common/ListHeader";
+import { createTestItemAction } from "../../../src/actions/testItem";
 import {
   getDictCurriculumsAction,
   getDictStandardsForCurriculumAction,
   clearDictStandardsAction
-} from '../../../src/actions/dictionaries';
+} from "../../../src/actions/dictionaries";
 import {
   getTestItemsSelector,
   getTestsItemsCountSelector,
@@ -22,21 +22,18 @@ import {
   getTestsItemsPageSelector,
   getTestItemsLoadingSelector,
   receiveTestItemsAction
-} from '../../../TestPage/components/AddItems/ducks';
-import { getItemsTypesSelector } from '../../../TestPage/components/Review/ducks';
-import { getTestItemCreatingSelector } from '../../../src/selectors/testItem';
-import {
-  getCurriculumsListSelector,
-  getStandardsListSelector
-} from '../../../src/selectors/dictionaries';
+} from "../../../TestPage/components/AddItems/ducks";
+import { getItemsTypesSelector } from "../../../TestPage/components/Review/ducks";
+import { getTestItemCreatingSelector } from "../../../src/selectors/testItem";
+import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 
 export const getClearSearchState = () => ({
-  subject: '',
-  curriculumId: '',
+  subject: "",
+  curriculumId: "",
   standardIds: [],
-  questionType: '',
-  depthOfKnowledge: '',
-  authorDifficulty: '',
+  questionType: "",
+  depthOfKnowledge: "",
+  authorDifficulty: "",
   grades: []
 });
 
@@ -69,7 +66,7 @@ class Contaier extends Component {
     );
   };
 
-  handleSearchFieldChangeCurriculumId = (value) => {
+  handleSearchFieldChangeCurriculumId = value => {
     const { search } = this.state;
     const { clearDictStandards } = this.props;
     clearDictStandards();
@@ -85,9 +82,9 @@ class Contaier extends Component {
     );
   };
 
-  handleSearchFieldChange = fieldName => (value) => {
+  handleSearchFieldChange = fieldName => value => {
     const { search } = this.state;
-    if (fieldName === 'curriculumId') {
+    if (fieldName === "curriculumId") {
       this.handleSearchFieldChangeCurriculumId(value);
     } else {
       this.setState(
@@ -108,14 +105,14 @@ class Contaier extends Component {
       rows: [
         {
           tabs: [],
-          dimension: '100%',
+          dimension: "100%",
           widgets: []
         }
       ]
     });
   };
 
-  handlePaginationChange = (page) => {
+  handlePaginationChange = page => {
     const { search } = this.state;
     const { receiveItems, limit } = this.props;
     receiveItems(search, page, limit);
@@ -136,37 +133,18 @@ class Contaier extends Component {
   };
 
   renderItems = () => {
-    const {
-      loading,
-      items,
-      itemTypes,
-      history,
-      windowWidth
-    } = this.props;
+    const { loading, items, itemTypes, history, windowWidth } = this.props;
 
     if (loading) {
-      return (<Spin size="large" />);
+      return <Spin size="large" />;
     }
     return items.map(item => (
-      <Item
-        key={item._id}
-        item={item}
-        types={itemTypes[item._id]}
-        history={history}
-        windowWidth={windowWidth}
-      />
+      <Item key={item._id} item={item} types={itemTypes[item._id]} history={history} windowWidth={windowWidth} />
     ));
   };
 
   render() {
-    const {
-      windowWidth,
-      creating,
-      t,
-      curriculums,
-      getCurriculumStandards,
-      curriculumStandards
-    } = this.props;
+    const { windowWidth, creating, t, curriculums, getCurriculumStandards, curriculumStandards } = this.props;
     const { search } = this.state;
 
     return (
@@ -175,7 +153,7 @@ class Contaier extends Component {
           onCreate={this.handleCreate}
           creating={creating}
           windowWidth={windowWidth}
-          title={t('component.itemlist.header.itemlist')}
+          title={t("component.itemlist.header.itemlist")}
         />
         <Container>
           <ItemFilter
@@ -191,11 +169,7 @@ class Contaier extends Component {
           <ListItems>
             {windowWidth > 468 && this.renderPagination()}
             <Element>
-              <Paper
-                padding={windowWidth > 768 ? '25px 39px' : '0px'}
-              >
-                {this.renderItems()}
-              </Paper>
+              <Paper padding={windowWidth > 768 ? "25px 39px" : "0px"}>{this.renderItems()}</Paper>
             </Element>
             {this.renderPagination()}
           </ListItems>
@@ -234,7 +208,7 @@ Contaier.propTypes = {
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces('author'),
+  withNamespaces("author"),
   connect(
     state => ({
       items: getTestItemsSelector(state),

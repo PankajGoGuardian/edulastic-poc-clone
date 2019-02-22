@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Checkbox, Radio } from 'antd';
+import React from "react";
+import PropTypes from "prop-types";
+import { Checkbox, Radio } from "antd";
 
-import { Wrapper } from './styled/Wrapper';
-import { InlineLabel } from './styled/InlineLabel';
+import { Wrapper } from "./styled/Wrapper";
+import { InlineLabel } from "./styled/InlineLabel";
 
 const MatrixCell = ({ label, type, correct, isMultiple, checked, onChange, smallSize }) => {
   let input;
@@ -17,9 +17,7 @@ const MatrixCell = ({ label, type, correct, isMultiple, checked, onChange, small
   return (
     <Wrapper smallSize={smallSize} correct={correct}>
       {input}
-      {type === 'inline' && (
-        <InlineLabel dangerouslySetInnerHTML={{ __html: label }} />
-      )}
+      {type === "inline" && <InlineLabel dangerouslySetInnerHTML={{ __html: label }} />}
     </Wrapper>
   );
 };

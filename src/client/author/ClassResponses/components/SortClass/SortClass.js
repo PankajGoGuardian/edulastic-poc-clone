@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Select } from 'antd';
-import { FlexContainer } from '@edulastic/common';
-import { Container, StyledSelect } from './styled'
+import React from "react";
+import PropTypes from "prop-types";
+import { Select } from "antd";
+import { FlexContainer } from "@edulastic/common";
+import { Container, StyledSelect } from "./styled";
 
 const SortBar = ({ classname }) => (
   <FlexContainer>

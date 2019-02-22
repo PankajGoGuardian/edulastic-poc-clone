@@ -1,15 +1,15 @@
-import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
+import React, { Fragment } from "react";
+import PropTypes from "prop-types";
 
-import { EduButton } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { EduButton } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-const withAddButton = (WrappedComponent) => {
+const withAddButton = WrappedComponent => {
   const withAddButtonHocComponent = ({ buttonText, onAdd, t, ...props }) => (
     <Fragment>
       <WrappedComponent {...props} />
       <EduButton onClick={onAdd} type="primary">
-        {buttonText || t('component.options.addNewChoice')}
+        {buttonText || t("component.options.addNewChoice")}
       </EduButton>
     </Fragment>
   );
@@ -21,11 +21,11 @@ const withAddButton = (WrappedComponent) => {
   };
 
   withAddButtonHocComponent.defaultProps = {
-    buttonText: '',
+    buttonText: "",
     onAdd: () => {}
   };
 
-  return withNamespaces('assessment')(withAddButtonHocComponent);
+  return withNamespaces("assessment")(withAddButtonHocComponent);
 };
 
 export default withAddButton;

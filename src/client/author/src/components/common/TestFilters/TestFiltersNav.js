@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Menu, Icon } from 'antd';
-import styled from 'styled-components';
+import React from "react";
+import PropTypes from "prop-types";
+import { Menu, Icon } from "antd";
+import styled from "styled-components";
 
-import { greenDark, white, mainTextColor } from '@edulastic/colors';
+import { greenDark, white, mainTextColor } from "@edulastic/colors";
 
 const TestFiltersNav = ({ items, onSelect }) => (
-  <Container onSelect={onSelect} defaultSelectedKeys={['library']}>
+  <Container onSelect={onSelect} defaultSelectedKeys={["library"]}>
     {items.map(item => (
       <Item key={item.key}>
         <Icon type={item.icon} /> {item.text}

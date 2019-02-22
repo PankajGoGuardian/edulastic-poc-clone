@@ -1,15 +1,15 @@
-import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, Fragment } from "react";
+import PropTypes from "prop-types";
 
-import { Paper } from '@edulastic/common';
-import i18n from '@edulastic/localization';
-import { evaluationType } from '@edulastic/constants';
+import { Paper } from "@edulastic/common";
+import i18n from "@edulastic/localization";
+import { evaluationType } from "@edulastic/constants";
 
-import { Header } from '../../styled/WidgetOptions/Header';
-import { Toggler } from '../../styled/WidgetOptions/Toggler';
+import { Header } from "../../styled/WidgetOptions/Header";
+import { Toggler } from "../../styled/WidgetOptions/Toggler";
 
-import Scoring from './components/Scoring';
-import { Title } from './styled/Title';
+import Scoring from "./components/Scoring";
+import { Title } from "./styled/Title";
 
 const types = [evaluationType.exactMatch, evaluationType.partialMatch];
 
@@ -27,7 +27,7 @@ class WidgetOptions extends Component {
   };
 
   static defaultProps = {
-    title: i18n.t('assessment:common.options.title'),
+    title: i18n.t("assessment:common.options.title"),
     outerStyle: {},
     scoringTypes: types,
     showScoring: true

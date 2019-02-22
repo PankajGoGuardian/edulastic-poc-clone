@@ -1,49 +1,48 @@
-import React from 'react';
+import React from "react";
 import {
   shallow,
   mount
   // render
-} from 'enzyme';
+} from "enzyme";
 
-import Graph from '../Graph';
+import Graph from "../Graph";
 
-import configureStore from '../../../../configureStore';
+import configureStore from "../../../../configureStore";
 
 const { store } = configureStore();
 
+describe("<Graph />", () => {
+  const component = mount(<Graph store={store} item={{ graphType: "" }} />);
 
-describe('<Graph />', () => {
-  const component = mount(<Graph store={store} item={{ graphType: '' }} />);
-
-  it('should render properly', () => {
+  it("should render properly", () => {
     const renderedComponent = shallow(<Graph />);
     expect(renderedComponent.length).toEqual(1);
   });
 
-  it('ignore repeated shapes - No', () => {
+  it("ignore repeated shapes - No", () => {
     const event = {
       preventDefault() {},
-      target: { value: 'no' }
+      target: { value: "no" }
     };
-    const select = component.find('Select').first();
-    select.simulate('onChange', event);
+    const select = component.find("Select").first();
+    select.simulate("onChange", event);
   });
 
-  it('ignore repeated shapes - slop', () => {
+  it("ignore repeated shapes - slop", () => {
     const event = {
       preventDefault() {},
-      target: { value: 'yes' }
+      target: { value: "yes" }
     };
-    const select = component.find('Select').first();
-    select.simulate('onChange', event);
+    const select = component.find("Select").first();
+    select.simulate("onChange", event);
   });
 
-  it('ignore repeated shapes - points', () => {
+  it("ignore repeated shapes - points", () => {
     const event = {
       preventDefault() {},
-      target: { value: 'strict' }
+      target: { value: "strict" }
     };
-    const select = component.find('Select').first();
-    select.simulate('onChange', event);
+    const select = component.find("Select").first();
+    select.simulate("onChange", event);
   });
 });

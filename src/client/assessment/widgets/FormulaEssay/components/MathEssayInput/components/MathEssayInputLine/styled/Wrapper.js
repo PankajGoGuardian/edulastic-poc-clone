@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { css } from "styled-components";
 
 export const Wrapper = styled.div`
   border: 1px solid ${props => props.theme.mathEssayInput.inputWrapperBorderColor};
@@ -6,7 +6,7 @@ export const Wrapper = styled.div`
 
   ${props =>
     props.active &&
-  css`
+    css`
       border-color: ${props.theme.mathEssayInput.inputWrapperActiveClassBorderColor};
       border-left-color: ${props.theme.mathEssayInput.inputWrapperActiveClassBorderLeftColor};
       border-right-color: ${props.theme.mathEssayInput.inputWrapperActiveClassBorderRightColor};

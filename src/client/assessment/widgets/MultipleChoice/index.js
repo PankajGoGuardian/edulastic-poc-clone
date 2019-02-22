@@ -1,21 +1,21 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
-import { cloneDeep, shuffle } from 'lodash';
-import styled from 'styled-components';
-import { Checkbox } from 'antd';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
+import { cloneDeep, shuffle } from "lodash";
+import styled from "styled-components";
+import { Checkbox } from "antd";
 
-import { PaddingDiv, Paper } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { PaddingDiv, Paper } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
 
-import Options from './components/Options';
-import Authoring from './components/Authoring';
-import Display from './components/Display';
-import CorrectAnswers from './CorrectAnswers';
+import Options from "./components/Options";
+import Authoring from "./components/Authoring";
+import Display from "./components/Display";
+import CorrectAnswers from "./CorrectAnswers";
 
 const EmptyWrapper = styled.div``;
 
@@ -31,10 +31,7 @@ class MultipleChoice extends Component {
       this.setState({
         shuffledOptions: nextProps.item.options
       });
-    } else if (
-      nextProps.item.shuffle_options !== item.shuffle_options &&
-      nextProps.item.shuffle_options
-    ) {
+    } else if (nextProps.item.shuffle_options !== item.shuffle_options && nextProps.item.shuffle_options) {
       this.setState({
         shuffledOptions: shuffle(nextProps.item.options)
       });
@@ -106,11 +103,11 @@ class MultipleChoice extends Component {
       newItem.validation.alt_responses = newItem.validation.alt_responses.filter((response, i) => i !== index);
     }
 
-    setQuestionData(newItem);    
-  }
+    setQuestionData(newItem);
+  };
 
-  handleAddAnswer = (qid) => {
-    console.log(qid)
+  handleAddAnswer = qid => {
+    console.log(qid);
     const { saveAnswer, userAnswer, item } = this.props;
     const newAnswer = cloneDeep(userAnswer);
 
@@ -137,12 +134,9 @@ class MultipleChoice extends Component {
       return acc;
     };
 
-    if (name === 'multiple_responses' && value === false) {
-      newItem.validation.valid_response.value = newItem.validation.valid_response.value.reduce(
-        reduceResponses,
-        []
-      );
-      newItem.validation.alt_responses = newItem.validation.alt_responses.map((res) => {
+    if (name === "multiple_responses" && value === false) {
+      newItem.validation.valid_response.value = newItem.validation.valid_response.value.reduce(reduceResponses, []);
+      newItem.validation.alt_responses = newItem.validation.alt_responses.map(res => {
         res.value = res.value.reduce(reduceResponses, []);
         return res;
       });
@@ -171,7 +165,7 @@ class MultipleChoice extends Component {
     return (
       <React.Fragment>
         <PaddingDiv>
-          {view === 'edit' && (
+          {view === "edit" && (
             <React.Fragment>
               <Paper style={{ marginBottom: 25 }}>
                 <Authoring item={itemForEdit} />
@@ -186,26 +180,24 @@ class MultipleChoice extends Component {
                 />
                 <Checkbox
                   data-cy="multi"
-                  onChange={() =>
-                    this.handleOptionsChange('multiple_responses', !multipleResponses)
-                  }
+                  onChange={() => this.handleOptionsChange("multiple_responses", !multipleResponses)}
                   checked={multipleResponses}
                 >
-                  {t('component.multiplechoice.multipleResponses')}
+                  {t("component.multiplechoice.multipleResponses")}
                 </Checkbox>
                 <Checkbox
-                  onChange={() => this.handleOptionsChange('shuffle_options', !shuffleOptions)}
+                  onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
                   checked={shuffleOptions}
                 >
-                  {t('component.multiplechoice.shuffleOptions')}
+                  {t("component.multiplechoice.shuffleOptions")}
                 </Checkbox>
               </Paper>
               <Options onChange={this.handleOptionsChange} uiStyle={uiStyle} />
             </React.Fragment>
           )}
-          {view === 'preview' && (
+          {view === "preview" && (
             <Wrapper>
-              {previewTab === 'check' && (
+              {previewTab === "check" && (
                 <Display
                   checkAnswer
                   data={item}
@@ -221,7 +213,7 @@ class MultipleChoice extends Component {
                   qIndex={qIndex}
                 />
               )}
-              {previewTab === 'show' && (
+              {previewTab === "show" && (
                 <Display
                   showAnswer
                   view={view}
@@ -235,7 +227,7 @@ class MultipleChoice extends Component {
                   qIndex={qIndex}
                 />
               )}
-              {previewTab === 'clear' && (
+              {previewTab === "clear" && (
                 <Display
                   preview
                   view={view}
@@ -273,7 +265,7 @@ MultipleChoice.propTypes = {
 };
 
 MultipleChoice.defaultProps = {
-  previewTab: 'clear',
+  previewTab: "clear",
   item: {
     options: []
   },
@@ -281,12 +273,12 @@ MultipleChoice.defaultProps = {
   history: {},
   userAnswer: [],
   testItem: false,
-  evaluation: ''
+  evaluation: ""
 };
 
 const enhance = compose(
   withRouter,
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     null,
     {

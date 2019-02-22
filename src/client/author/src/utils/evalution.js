@@ -1,4 +1,4 @@
-import evaluators from './evaluators';
+import evaluators from "./evaluators";
 
 export const evaluateItem = async (answers, validations) => {
   const answerIds = Object.keys(answers);

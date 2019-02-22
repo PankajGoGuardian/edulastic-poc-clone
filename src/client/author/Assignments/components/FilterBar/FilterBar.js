@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { Input, Checkbox } from 'antd';
-import { FlexContainer } from '@edulastic/common';
-import FilterIcon from '../../assets/filter.svg';
+import React, { Component } from "react";
+import { Input, Checkbox } from "antd";
+import { FlexContainer } from "@edulastic/common";
+import FilterIcon from "../../assets/filter.svg";
 import {
   Container,
   FilterImg,
@@ -14,7 +14,7 @@ import {
   HeaderContent,
   FilterHeader,
   StyledCloseIcon
-} from './styled'
+} from "./styled";
 
 class FilterBar extends Component {
   constructor(props) {
@@ -24,17 +24,17 @@ class FilterBar extends Component {
     };
   }
 
-   showModal = () => {
-     this.setState({
-       modalshow: !this.state.modalshow
-     });
-   }
+  showModal = () => {
+    this.setState({
+      modalshow: !this.state.modalshow
+    });
+  };
 
-  handleCancel = (e) => {
+  handleCancel = e => {
     this.setState({
       modalshow: false
     });
-  }
+  };
 
   render() {
     const { windowWidth, windowHeight } = this.props;
@@ -43,9 +43,15 @@ class FilterBar extends Component {
       <MainContainer>
         <StyledBoldText>Grade</StyledBoldText>
         <Input.Search size="large" />
-        <StyledParagraph><Checkbox>All</Checkbox></StyledParagraph>
-        <StyledParagraph><Checkbox>Lorem Ispum</Checkbox> </StyledParagraph>
-        <StyledParagraph><Checkbox>Lorem Ispum</Checkbox> </StyledParagraph>
+        <StyledParagraph>
+          <Checkbox>All</Checkbox>
+        </StyledParagraph>
+        <StyledParagraph>
+          <Checkbox>Lorem Ispum</Checkbox>{" "}
+        </StyledParagraph>
+        <StyledParagraph>
+          <Checkbox>Lorem Ispum</Checkbox>{" "}
+        </StyledParagraph>
         <br />
         <hr />
         <StyledBoldText>Subject</StyledBoldText>
@@ -69,7 +75,7 @@ class FilterBar extends Component {
             footer={false}
             closable={false}
             visible={this.state.modalshow}
-            bodyStyle= {{ height: windowHeight, width: windowWidth }}
+            bodyStyle={{ height: windowHeight, width: windowWidth }}
           >
             <HeaderContent>
               <FilterHeader>Filters</FilterHeader>
@@ -78,11 +84,9 @@ class FilterBar extends Component {
             {FilterElement}
           </StyledModal>
         </ModalContent>
-
       </FlexContainer>
     );
   }
 }
 
 export default FilterBar;
-

@@ -5,14 +5,14 @@ import {
   SET_TEST_ID,
   RESET_CURRENT_TEST_ITEM,
   SET_RESUME_STATUS
-} from '../constants/actions';
+} from "../constants/actions";
 
 const initialState = {
-  testActivityId: '',
+  testActivityId: "",
   resume: false, // resume from last attempted?
   items: [],
   currentItem: 0,
-  title: ''
+  title: ""
 };
 
 const test = (state = initialState, { payload, type }) => {

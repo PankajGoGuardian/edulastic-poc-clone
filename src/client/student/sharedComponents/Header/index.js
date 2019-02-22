@@ -1,19 +1,14 @@
-import React, { memo } from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { withNamespaces } from '@edulastic/localization';
-import { compose } from 'redux';
+import React, { memo } from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { withNamespaces } from "@edulastic/localization";
+import { compose } from "redux";
 
-import HeaderWrapper from './headerWrapper';
-import ClassSelect from '../ClassSelector';
-import ShowActiveClass from '../ShowActiveClasses';
+import HeaderWrapper from "./headerWrapper";
+import ClassSelect from "../ClassSelector";
+import ShowActiveClass from "../ShowActiveClasses";
 
-const Header = ({
-  t,
-  titleText,
-  classSelect = true,
-  showActiveClass = false
-}) => (
+const Header = ({ t, titleText, classSelect = true, showActiveClass = false }) => (
   <HeaderWrapper>
     <Wrapper>
       <AssignmentTitle>{t(titleText)}</AssignmentTitle>
@@ -32,7 +27,7 @@ Header.propTypes = {
 
 const enhance = compose(
   memo,
-  withNamespaces('header')
+  withNamespaces("header")
 );
 
 export default enhance(Header);

@@ -1,10 +1,9 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const FlexContainer = styled.div`
   display: flex;
-  align-items: ${props => (props.alignItems ? props.alignItems : 'center')};
-  justify-content: ${props =>
-    props.justifyContent ? props.justifyContent : 'flex-start'};
+  align-items: ${props => (props.alignItems ? props.alignItems : "center")};
+  justify-content: ${props => (props.justifyContent ? props.justifyContent : "flex-start")};
 
   & > * {
     margin-left: 10px;

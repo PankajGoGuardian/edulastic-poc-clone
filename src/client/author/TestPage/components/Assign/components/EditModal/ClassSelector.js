@@ -1,7 +1,7 @@
-import React from 'react';
-import { Select } from 'antd';
-import { Col } from 'antd';
-import { StyledRow, StyledRowLabel } from './styled';
+import React from "react";
+import { Select } from "antd";
+import { Col } from "antd";
+import { StyledRow, StyledRowLabel } from "./styled";
 
 const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
   <React.Fragment>
@@ -13,7 +13,7 @@ const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
         <Select
           data-cy="selectClass"
           placeholder="Please select"
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
           mode="multiple"
           cache="false"
           onChange={onChange}

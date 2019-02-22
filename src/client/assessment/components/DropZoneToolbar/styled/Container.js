@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { FlexContainer } from '@edulastic/common';
+import styled from "styled-components";
+import { FlexContainer } from "@edulastic/common";
 
 export const Container = styled(FlexContainer)`
   min-height: 67px;

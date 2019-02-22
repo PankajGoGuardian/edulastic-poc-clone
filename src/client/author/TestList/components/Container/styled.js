@@ -1,7 +1,7 @@
-import styled from 'styled-components';
-import { desktopWidth, textColor } from '@edulastic/colors';
-import { Pagination, Affix } from 'antd';
-import { Card } from '@edulastic/common';
+import styled from "styled-components";
+import { desktopWidth, textColor } from "@edulastic/colors";
+import { Pagination, Affix } from "antd";
+import { Card } from "@edulastic/common";
 
 export const ScrollBox = styled.div`
   & > div {
@@ -65,10 +65,9 @@ export const Filter = styled.div`
 
 export const CardContainer = styled(Card)`
   .ant-card-body {
-    padding: ${props => (props.type !== 'tile' ? '0' : 'auto')};
+    padding: ${props => (props.type !== "tile" ? "0" : "auto")};
   }
 `;
-
 
 export const MobileFilter = styled.div`
   height: 50px;
@@ -118,12 +117,12 @@ export const SearchModalContainer = styled.div`
 `;
 
 export const AffixWrapper = styled(Affix)`
- position: fixed;
- width: 250px;
- top: 85px;
- padding-right: 15px;
+  position: fixed;
+  width: 250px;
+  top: 85px;
+  padding-right: 15px;
 `;
 
 export const PaginationWrapper = styled(Pagination)`
- padding: ${props => (props.type === 'tile' ? '20px 0' : '24px 32px')};
+  padding: ${props => (props.type === "tile" ? "20px 0" : "24px 32px")};
 `;

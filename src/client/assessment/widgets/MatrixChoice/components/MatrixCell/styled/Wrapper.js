@@ -1,13 +1,13 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const getCellColor = (correct, theme) => {
   switch (correct) {
     case true:
       return theme.widgets.matrixChoice.correctCellInputWrapperBgColor;
-    case 'incorrect':
+    case "incorrect":
       return theme.widgets.matrixChoice.incorrectCellInputWrapperBgColor;
     default:
-      return '';
+      return "";
   }
 };
 

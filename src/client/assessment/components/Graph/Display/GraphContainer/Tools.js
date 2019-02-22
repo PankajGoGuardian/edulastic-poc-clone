@@ -1,23 +1,20 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { IconGraphClear as IconClear } from '@edulastic/icons';
+import React from "react";
+import PropTypes from "prop-types";
+import { IconGraphClear as IconClear } from "@edulastic/icons";
 import {
-  GraphToolbar, ToolbarLeft, ToolbarRight,
-  ToolBtn, ToolbarItem, ToolbarItemLabel,
+  GraphToolbar,
+  ToolbarLeft,
+  ToolbarRight,
+  ToolBtn,
+  ToolbarItem,
+  ToolbarItemLabel,
   ToolbarItemIcon
-} from './styled';
-import Dropdown from './Dropdown';
-import utils from './utils';
+} from "./styled";
+import Dropdown from "./Dropdown";
+import utils from "./utils";
 
 export default function Tools(props) {
-  const {
-    tools,
-    tool,
-    onSelect,
-    onReset,
-    fontSize,
-    getIconByToolName
-  } = props;
+  const { tools, tool, onSelect, onReset, fontSize, getIconByToolName } = props;
 
   const uiTools = tools.map((_tool, index) => {
     if (Array.isArray(_tool)) {
@@ -39,40 +36,39 @@ export default function Tools(props) {
 
   const isActive = uiTool => uiTool.index === tool.index && uiTool.groupIndex === tool.groupIndex;
 
-  const resetThenSet = (newTool) => {
+  const resetThenSet = newTool => {
     onSelect(newTool);
   };
 
-  const getIconTemplate = (toolName = 'point', options) => (
-    getIconByToolName(toolName.toLowerCase(), options)
-  );
+  const getIconTemplate = (toolName = "point", options) => getIconByToolName(toolName.toLowerCase(), options);
   return (
     <GraphToolbar fontSize={fontSize}>
       <ToolbarLeft>
-        {
-          uiTools.map(uiTool => (
+        {uiTools.map(
+          uiTool =>
             !uiTool.group && (
               <ToolBtn
                 style={{ width: fontSize > 20 ? 105 : 93 }}
-                className={isActive(uiTool) ? 'active' : ''}
+                className={isActive(uiTool) ? "active" : ""}
                 onClick={() => onSelect(uiTool)}
                 key={Math.random().toString(36)}
               >
                 <ToolbarItem>
                   <ToolbarItemIcon className="tool-btn-icon" style={{ marginBottom: fontSize / 2 }}>
-                    { getIconTemplate(uiTool.name, { width: fontSize + 2, height: fontSize + 2, color: '' }) }
+                    {getIconTemplate(uiTool.name, {
+                      width: fontSize + 2,
+                      height: fontSize + 2,
+                      color: ""
+                    })}
                   </ToolbarItemIcon>
-                  <ToolbarItemLabel style={{ fontSize }}>
-                    { utils.capitalizeFirstLetter(uiTool.name) }
-                  </ToolbarItemLabel>
+                  <ToolbarItemLabel style={{ fontSize }}>{utils.capitalizeFirstLetter(uiTool.name)}</ToolbarItemLabel>
                 </ToolbarItem>
               </ToolBtn>
-            )))
-        }
-        {
-          uiTools.map(uiTool => (
-            uiTool.group ? (
-              uiTool.group[0] && (
+            )
+        )}
+        {uiTools.map(uiTool =>
+          uiTool.group
+            ? uiTool.group[0] && (
                 <Dropdown
                   key={Math.random().toString(36)}
                   list={uiTool.group}
@@ -81,9 +77,9 @@ export default function Tools(props) {
                   fontSize={fontSize}
                   getIconTemplate={getIconTemplate}
                 />
-              )) : null
-          ))
-        }
+              )
+            : null
+        )}
       </ToolbarLeft>
 
       <ToolbarRight>
@@ -94,7 +90,11 @@ export default function Tools(props) {
                 <IconClear
                   width={fontSize + 2}
                   height={fontSize}
-                  style={{ color: '#4aac8b', fill: '#4aac8b', stroke: '#4aac8b' }}
+                  style={{
+                    color: "#4aac8b",
+                    fill: "#4aac8b",
+                    stroke: "#4aac8b"
+                  }}
                 />
               </ToolbarItemIcon>
               <ToolbarItemLabel style={{ fontSize }} color="#4aac8b">
@@ -109,10 +109,7 @@ export default function Tools(props) {
 }
 
 Tools.propTypes = {
-  tool: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object
-  ]),
+  tool: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   tools: PropTypes.array,
   getIconByToolName: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
@@ -126,6 +123,6 @@ Tools.defaultProps = {
   tool: {
     toolIndex: 0,
     innerIndex: 0,
-    toolName: 'point'
+    toolName: "point"
   }
 };

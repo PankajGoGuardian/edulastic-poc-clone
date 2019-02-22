@@ -1,21 +1,16 @@
-import React from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { Button } from '@edulastic/common';
-import { IconPlus } from '@edulastic/icons';
-import { Icon } from 'antd';
-import { connect } from 'react-redux';
-import { FlexContainer } from '@edulastic/common';
-import { toggleSideBarAction } from '../../actions/togglemenu';
-import {
-  tabletWidth,
-  greenDarkSecondary,
-  darkBlueSecondary,
-  white
-} from '@edulastic/colors';
-import { withNamespaces } from '@edulastic/localization';
-import HeaderWrapper from '../../mainContent/headerWrapper';
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { Button } from "@edulastic/common";
+import { IconPlus } from "@edulastic/icons";
+import { Icon } from "antd";
+import { connect } from "react-redux";
+import { FlexContainer } from "@edulastic/common";
+import { toggleSideBarAction } from "../../actions/togglemenu";
+import { tabletWidth, greenDarkSecondary, darkBlueSecondary, white } from "@edulastic/colors";
+import { withNamespaces } from "@edulastic/localization";
+import HeaderWrapper from "../../mainContent/headerWrapper";
 
 const toggleMenu = toggle => {
   toggle();
@@ -33,17 +28,9 @@ const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar }) => {
         // disabled={creating}
         onClick={onCreate}
         color="success"
-        icon={
-          <IconPlusStyled
-            color={greenDarkSecondary}
-            left={-10}
-            width={13}
-            height={13}
-            hoverColor={white}
-          />
-        }
+        icon={<IconPlusStyled color={greenDarkSecondary} left={-10} width={13} height={13} hoverColor={white} />}
       >
-        {btnTitle ? btnTitle : t('component.itemlist.header.create')}
+        {btnTitle ? btnTitle : t("component.itemlist.header.create")}
       </CreateButton>
     </Container>
   );
@@ -56,11 +43,11 @@ ListHeader.propTypes = {
 };
 
 const enhance = compose(
-  withNamespaces('author'),
+  withNamespaces("author"),
   connect(
     ({ authorUi, user }) => ({
       isSidebarCollapsed: authorUi.isSidebarCollapsed,
-      firstName: user.firstName || ''
+      firstName: user.firstName || ""
     }),
     { toggleSideBar: toggleSideBarAction }
   )

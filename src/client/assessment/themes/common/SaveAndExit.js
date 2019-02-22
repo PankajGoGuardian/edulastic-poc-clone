@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { Button } from 'antd';
-import { white } from '@edulastic/colors';
-import { IconSave, IconPause, IconLogout } from '@edulastic/icons';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { Button } from "antd";
+import { white } from "@edulastic/colors";
+import { IconSave, IconPause, IconLogout } from "@edulastic/icons";
 
 const SaveAndExit = ({ finishTest }) => (
   <Container>

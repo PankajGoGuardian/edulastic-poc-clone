@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { IconCheck } from '@edulastic/icons';
+import styled from "styled-components";
+import { IconCheck } from "@edulastic/icons";
 
 export const RightIcon = styled(IconCheck)`
   width: 8px;

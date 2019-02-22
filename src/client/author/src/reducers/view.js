@@ -1,8 +1,8 @@
-import { CHANGE_VIEW, CHANGE_PREVIEW } from '../constants/actions';
+import { CHANGE_VIEW, CHANGE_PREVIEW } from "../constants/actions";
 
 const initialState = {
-  view: 'edit',
-  preview: 'clear',
+  view: "edit",
+  preview: "clear",
   showAnswers: false
 };
 

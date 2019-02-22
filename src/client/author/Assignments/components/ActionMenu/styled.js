@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { tabletWidth, mobileWidth } from "@edulastic/colors";
-import {  Menu } from 'antd';
+import { Menu } from "antd";
 
 export const Container = styled.div`
   padding: 30;

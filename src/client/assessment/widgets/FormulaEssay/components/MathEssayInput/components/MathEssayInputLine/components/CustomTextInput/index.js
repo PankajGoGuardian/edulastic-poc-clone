@@ -1,10 +1,10 @@
-import React, { useContext, Component, forwardRef } from 'react';
-import PropTypes from 'prop-types';
-import ReactQuill from 'react-quill';
-import enhanceWithClickOutside from 'react-click-outside';
+import React, { useContext, Component, forwardRef } from "react";
+import PropTypes from "prop-types";
+import ReactQuill from "react-quill";
+import enhanceWithClickOutside from "react-click-outside";
 
-import { MathEssayInputContext } from '../../../../index';
-import { Wrapper } from './styled/Wrapper';
+import { MathEssayInputContext } from "../../../../index";
+import { Wrapper } from "./styled/Wrapper";
 
 /*
  * Event handler to be attached using Quill toolbar module
@@ -12,7 +12,7 @@ import { Wrapper } from './styled/Wrapper';
  */
 function insertStar() {
   const cursorPosition = this.quill.getSelection().index;
-  this.quill.insertText(cursorPosition, '★');
+  this.quill.insertText(cursorPosition, "★");
   this.quill.setSelection(cursorPosition + 1);
 }
 
@@ -22,32 +22,26 @@ const CustomToolbar = ({ active, toolbarId }) => {
   const getButtons = () => {
     const result = [];
 
-    textFormattingOptions.forEach((opt) => {
+    textFormattingOptions.forEach(opt => {
       switch (opt) {
-        case 'bold':
-        case 'italic':
-        case 'underline':
+        case "bold":
+        case "italic":
+        case "underline":
           result.push(<button key={opt} type="button" className={`ql-${opt}`} />);
           break;
-        case 'unorderedList':
-          result.push(
-            <button key="unorderedList" type="button" className="ql-list" value="bullet" />
-          );
+        case "unorderedList":
+          result.push(<button key="unorderedList" type="button" className="ql-list" value="bullet" />);
           break;
-        case 'orderedList':
-          result.push(
-            <button key="orderedList" type="button" className="ql-list" value="ordered" />
-          );
+        case "orderedList":
+          result.push(<button key="orderedList" type="button" className="ql-list" value="ordered" />);
           break;
-        case 'removeFormat':
+        case "removeFormat":
           result.push(<button key="removeFormat" type="button" className="ql-clean" />);
           break;
-        case 'superscript':
-          result.push(
-            <button key="superscript" type="button" className="ql-script" value="super" />
-          );
+        case "superscript":
+          result.push(<button key="superscript" type="button" className="ql-script" value="super" />);
           break;
-        case 'subscript':
+        case "subscript":
           result.push(<button key="subscript" type="button" className="ql-script" value="sub" />);
           break;
         default:
@@ -61,7 +55,11 @@ const CustomToolbar = ({ active, toolbarId }) => {
   return (
     <div
       id={toolbarId}
-      style={{ display: active ? 'block' : 'none', position: 'absolute', top: -48 }}
+      style={{
+        display: active ? "block" : "none",
+        position: "absolute",
+        top: -48
+      }}
     >
       {getButtons()}
     </div>
@@ -103,16 +101,7 @@ class CustomTextInput extends Component {
   };
 
   render() {
-    const {
-      style,
-      onChange,
-      placeholder,
-      value,
-      onKeyDown,
-      toolbarId,
-      innerRef,
-      fontSize
-    } = this.props;
+    const { style, onChange, placeholder, value, onKeyDown, toolbarId, innerRef, fontSize } = this.props;
     const { active } = this.state;
 
     return (
@@ -151,7 +140,7 @@ CustomTextInput.modules = toolbarId => ({
  * Quill editor formats
  * See http://quilljs.com/docs/formats/
  */
-CustomTextInput.formats = ['bold', 'italic', 'underline', 'list', 'bullet', 'script', 'clean'];
+CustomTextInput.formats = ["bold", "italic", "underline", "list", "bullet", "script", "clean"];
 
 CustomTextInput.propTypes = {
   placeholder: PropTypes.string,
@@ -166,11 +155,11 @@ CustomTextInput.propTypes = {
 };
 
 CustomTextInput.defaultProps = {
-  placeholder: '',
+  placeholder: "",
   style: {},
   onFocus: () => {},
   onKeyDown: () => {},
-  value: ''
+  value: ""
 };
 
 const Com = enhanceWithClickOutside(CustomTextInput);

@@ -15,7 +15,7 @@ import {
   choiceMatrix,
   shading,
   graph
-} from '@edulastic/evaluators';
+} from "@edulastic/evaluators";
 
 // clozeDropDown and ClozeText shares same logic
 const evaluators = {

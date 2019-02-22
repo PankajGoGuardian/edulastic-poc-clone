@@ -1,10 +1,7 @@
-import React from 'react';
-import { Select } from 'antd';
-import { FlexContainer } from '@edulastic/common';
-import {
-  Container,
-  StyledSelect
-} from './styled'
+import React from "react";
+import { Select } from "antd";
+import { FlexContainer } from "@edulastic/common";
+import { Container, StyledSelect } from "./styled";
 
 const SortClass = ({ classname }) => (
   <FlexContainer>
@@ -17,4 +14,3 @@ const SortClass = ({ classname }) => (
 );
 
 export default SortClass;
-

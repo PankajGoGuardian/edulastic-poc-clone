@@ -1,26 +1,26 @@
-import React, { Fragment, useState } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { cloneDeep } from 'lodash';
-import { arrayMove } from 'react-sortable-hoc';
-import { withRouter } from 'react-router-dom';
+import React, { Fragment, useState } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { cloneDeep } from "lodash";
+import { arrayMove } from "react-sortable-hoc";
+import { withRouter } from "react-router-dom";
 
-import { Paper } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { Paper } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from '../../../author/src/actions/question';
+import { setQuestionDataAction } from "../../../author/src/actions/question";
 
-import withAddButton from '../../components/HOC/withAddButton';
-import QuestionTextArea from '../../components/QuestionTextArea';
-import QuillSortableList from '../../components/QuillSortableList';
-import { Subtitle } from '../../styled/Subtitle';
+import withAddButton from "../../components/HOC/withAddButton";
+import QuestionTextArea from "../../components/QuestionTextArea";
+import QuillSortableList from "../../components/QuillSortableList";
+import { Subtitle } from "../../styled/Subtitle";
 
-import Options from './components/Options';
-import Answers from './Answers';
-import Preview from './components/Preview';
-import { checkAnswerAction } from '../../../author/src/actions/testItem';
+import Options from "./components/Options";
+import Answers from "./Answers";
+import Preview from "./components/Preview";
+import { checkAnswerAction } from "../../../author/src/actions/testItem";
 
 const EmptyWrapper = styled.div``;
 const List = withAddButton(QuillSortableList);
@@ -47,7 +47,7 @@ const MatrixChoice = ({
     setQuestionData(newItem);
   };
 
-  const handleRemoveStem = (index) => {
+  const handleRemoveStem = index => {
     const newItem = cloneDeep(item);
     newItem.stems.splice(index, 1);
     setQuestionData(newItem);
@@ -56,7 +56,7 @@ const MatrixChoice = ({
   const handleAddStem = () => {
     const newItem = cloneDeep(item);
 
-    newItem.stems.push('');
+    newItem.stems.push("");
     setQuestionData(newItem);
   };
 
@@ -85,15 +85,16 @@ const MatrixChoice = ({
     return val;
   };
 
-  const handleRemoveOption = (index) => {
+  const handleRemoveOption = index => {
     const newItem = cloneDeep(item);
 
     newItem.options.splice(index, 1);
     newItem.validation.valid_response.value = newItem.validation.valid_response.value.map(val =>
-      reduceResponseValue(val, index));
+      reduceResponseValue(val, index)
+    );
 
     if (newItem.validation.alt_responses && newItem.validation.alt_responses.length) {
-      newItem.validation.alt_responses.map((res) => {
+      newItem.validation.alt_responses.map(res => {
         res.value = res.value.map(val => reduceResponseValue(val, index));
         return res;
       });
@@ -105,7 +106,7 @@ const MatrixChoice = ({
   const handleAddOption = () => {
     const newItem = cloneDeep(item);
 
-    newItem.options.push('');
+    newItem.options.push("");
     setQuestionData(newItem);
   };
   const handleSortEndOptions = ({ oldIndex, newIndex }) => {
@@ -144,15 +145,15 @@ const MatrixChoice = ({
 
   return (
     <Fragment>
-      {view === 'edit' && (
+      {view === "edit" && (
         <Fragment>
           <Paper style={{ marginBottom: 30 }}>
             <QuestionTextArea
-              placeholder={t('component.matrix.enterQuestion')}
-              onChange={stimulus => handleItemChangeChange('stimulus', stimulus)}
+              placeholder={t("component.matrix.enterQuestion")}
+              onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
               value={item.stimulus}
             />
-            <Subtitle>{t('component.matrix.multipleChoiceOptions')}</Subtitle>
+            <Subtitle>{t("component.matrix.multipleChoiceOptions")}</Subtitle>
             <List
               items={item.stems}
               onSortEnd={handleSortEndStems}
@@ -163,7 +164,7 @@ const MatrixChoice = ({
               columns={2}
               prefix="list1"
             />
-            <Subtitle>{t('component.matrix.steams')}</Subtitle>
+            <Subtitle>{t("component.matrix.steams")}</Subtitle>
             <List
               items={item.options}
               onSortEnd={handleSortEndOptions}
@@ -179,9 +180,9 @@ const MatrixChoice = ({
           <Options onChange={handleItemChangeChange} uiStyle={item.ui_style} />
         </Fragment>
       )}
-      {view === 'preview' && (
+      {view === "preview" && (
         <Wrapper>
-          {previewTab === 'check' && (
+          {previewTab === "check" && (
             <Preview
               type="check"
               saveAnswer={saveAnswer}
@@ -192,7 +193,7 @@ const MatrixChoice = ({
             />
           )}
 
-          {previewTab === 'show' && (
+          {previewTab === "show" && (
             <Preview
               type="show"
               saveAnswer={saveAnswer}
@@ -203,7 +204,7 @@ const MatrixChoice = ({
             />
           )}
 
-          {previewTab === 'clear' && (
+          {previewTab === "clear" && (
             <Preview
               smallSize={smallSize}
               type="clear"
@@ -234,7 +235,7 @@ MatrixChoice.propTypes = {
 };
 
 MatrixChoice.defaultProps = {
-  previewTab: 'clear',
+  previewTab: "clear",
   testItem: false,
   item: {},
   userAnswer: null,
@@ -243,7 +244,7 @@ MatrixChoice.defaultProps = {
 
 const enhance = compose(
   withRouter,
-  withNamespaces('assessment'),
+  withNamespaces("assessment"),
   connect(
     null,
     {

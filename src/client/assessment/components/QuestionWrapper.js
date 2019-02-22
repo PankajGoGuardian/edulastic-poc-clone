@@ -35,9 +35,9 @@ import { MathFormula } from '../widgets/MathFormula';
 import { FormulaEssay } from '../widgets/FormulaEssay';
 import FeedbackBottom from './FeedbackBottom';
 import FeedbackRight from './FeedbackRight';
-import Timespent from './Timespent'
+import Timespent from './Timespent';
 
-const getQuestion = (type) => {
+const getQuestion = type => {
   switch (type) {
     case questionType.DRAWING:
       return Drawing;
@@ -93,7 +93,16 @@ const getQuestion = (type) => {
       return null;
   }
 };
-const QuestionWrapper = ({ type, timespent, data, view, showFeedback, multiple, ...restProps }) => {
+
+const QuestionWrapper = ({
+  type,
+  timespent,
+  data,
+  view,
+  showFeedback,
+  multiple,
+  ...restProps
+}) => {
   const Question = getQuestion(type);
 
   return (
@@ -104,7 +113,11 @@ const QuestionWrapper = ({ type, timespent, data, view, showFeedback, multiple, 
           <Question item={data} view={view} {...restProps} />
         </div>
         {showFeedback &&
-          (multiple ? <FeedbackBottom widget={data} /> : <FeedbackRight widget={data} />)}
+          (multiple ? (
+            <FeedbackBottom widget={data} />
+          ) : (
+            <FeedbackRight widget={data} />
+          ))}
       </Fragment>
     </ThemeProvider>
   );

@@ -18,20 +18,12 @@ const itemReport = ({ question, index }) => (
         </FeedbackText>
         <FeedbackContainer>
           <ScoreWrapper>
-            <Score>0</Score>
-            <Total>2</Total>
+            <Score>{question.feedback && question.feedback.score}</Score>
+            <Total>{question.feedback && question.feedback.maxScore}</Total>
           </ScoreWrapper>
           <Feedback>
             <FeedbackGiven>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ac
-              ex magna. Etiam viverra dui tellus, vel auctor urna cursus eget.
-              Donec tristique pharetra nisl at fringilla. Vivamus faucibus vitae
-              tellus eget pellentesque. Praesent in turpis in ex sodales
-              dignissim. Vestibulum ante ipsum primis in faucibus orci luctus et
-              ultrices posuere cubilia Curae; Sed vel mauris tellus.
-              Pellentesque eget vestibulum quam. Nullam ac tortor luctus,
-              consequat velit sit amet, consequat ligula. Etiam dolor lacus,
-              tristique ut tincidunt sed, ornare nec magna.
+              {question.feedback && question.feedback.feedback.text}
             </FeedbackGiven>
           </Feedback>
         </FeedbackContainer>
@@ -40,14 +32,7 @@ const itemReport = ({ question, index }) => (
         <FeedbackText>
           <QuestionText>Q{index + 1}</QuestionText> - Solution
         </FeedbackText>
-        <Answer>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin commodo
-          nec est sed placerat. Donec accumsan mauris sem, eu sollicitudin nulla
-          pharetra nec. Quisque vel nunc quis nunc rhoncus feugiat dapibus eu
-          nisi. Phasellus maximus orci nunc. Integer feugiat odio vitae auctor
-          placerat. Mauris lobortis tortor sed felis convallis mattis. Nulla
-          facilisi. Donec cursus ultricies fringilla.
-        </Answer>
+        <Answer>{question.feedback && question.feedback.userResponse}</Answer>
       </SolutionWrapper>
     </div>
   </ReportListWrapper>
@@ -109,6 +94,8 @@ const QuestionText = styled.span`
 `;
 
 const FeedbackGiven = styled.div`
+  max-height: 150px;
+  overflow-y: scroll;
   line-height: 2.5;
   padding: 0px 0px 0px 28px;
   color: #878282;

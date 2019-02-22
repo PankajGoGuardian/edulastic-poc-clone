@@ -6,9 +6,8 @@ import { Col } from 'antd';
 import Breadcrumb from '../../sharedComponents/Breadcrumb';
 import QuestionSelect from './QuestionSelect.js';
 
-const breadcrumbData = [{ title: 'REPORTS', to: '' }];
-
-const TestActivitySubHeader = () => {
+const TestActivitySubHeader = ({ title }) => {
+  const breadcrumbData = [{ title: 'REPORTS', to: '' }, { title: title }];
   return (
     <Container>
       <BreadcrumbContainer>

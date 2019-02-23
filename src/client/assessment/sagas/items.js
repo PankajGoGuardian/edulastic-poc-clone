@@ -72,7 +72,7 @@ function* saveUserResponse({ payload }) {
 
     const testItemId = currentItem._id;
     const assignmentId = yield select(state => state.studentAssignment && state.studentAssignment.current);
-    const userWork = yield select(({ newUserWork }) => newUserWork[testItemId]);
+    const userWork = yield select(({ userWork }) => userWork[testItemId]);
 
     const activity = {
       answers: itemAnswers,

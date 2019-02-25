@@ -34,7 +34,7 @@ const AssessmentDetails = ({ test, theme, testType, t, started, resume, dueDate,
       </CardDate>
       <div>
         {type === "assignment" ? (
-          <StatusButton isSubmitted={started} assignment={type === "assignment"}>
+          <StatusButton isSubmitted={started || resume} assignment={type === "assignment"}>
             <span data-cy="status">{started || resume ? t("common.inProgress") : t("common.notStartedTag")}</span>
           </StatusButton>
         ) : (
@@ -157,6 +157,7 @@ const StatusButton = styled.div`
   height: 23.5px;
   border-radius: 5px;
   background-color: ${props => getStatusBgColor(props, "Bg")};
+  border: 1px solid ${props => getStatusBgColor(props, "Border")};
   font-size: ${props => props.theme.assignment.cardSubmitLabelFontSize};
   font-weight: bold;
   line-height: 1.38;

@@ -21,7 +21,7 @@ const Attempt = ({ data, type, activityReview }) => {
           </span>
         </AnswerAndScore>
         <AnswerAndScore>
-          <span data-cy="percentage">{percentage}%</span>
+          <span data-cy="percentage">{Math.floor(percentage * 100) / 100}%</span>
         </AnswerAndScore>
         <SpaceBetween pagetype={type === "reports"} />
         {type === "reports" && activityReview ? (

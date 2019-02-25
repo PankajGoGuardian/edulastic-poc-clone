@@ -1,9 +1,9 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-const SVG = styled('svg')`
-  width: ${({ width }) => width}px;
-  height: ${({ height }) => height}px;
-  fill: ${({ color }) => color};
+const SVG = styled("svg")`
+  width: ${({ width = 15 }) => width}px;
+  height: ${({ height = 15 }) => height}px;
+  fill: ${({ color = "#000" }) => color};
   left: ${({ left }) => left}px;
   background: ${({ backgroundColor }) => backgroundColor};
 

@@ -28,14 +28,16 @@ const ControlBtn = styled(Button)`
     background: transparent;
     cursor: not-allowed;
     border: 1px solid ${white};
+    &:hover {
+      background: transparent;
+    }
   }
-  &:focus {
-    background: transparent;
-  }
+  &:focus,
   &:active {
-    color: #fff;
-    background-color: #40a9ff;
-    border-color: #40a9ff;
+    color: ${props => props.theme.controlBtnTextColor};
+    background-color: ${props =>
+      props.skin ? props.theme.controlBtnPrimaryColor : props.theme.controlBtnSecondaryColor};
+    border: none;
   }
 
   & > span {

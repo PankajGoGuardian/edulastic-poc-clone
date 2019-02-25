@@ -133,7 +133,8 @@
       "optionRowTitle": "Option row title",
       "stemWidth": "Stem width (px)",
       "optionWidth": "Option width (px)",
-      "dividers": "Dividers"
+      "dividers": "Dividers",
+      "charactersToDisplay": "Characters to display"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",

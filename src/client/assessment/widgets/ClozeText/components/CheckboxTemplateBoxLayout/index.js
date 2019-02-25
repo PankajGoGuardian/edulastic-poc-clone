@@ -22,7 +22,7 @@ const CheckboxTemplateBoxLayout = ({
   let responseIndex = 0;
 
   return (
-    <div className="template_box dropdown" style={{ fontSize, padding: 20 }}>
+    <span className="template_box dropdown" style={{ fontSize, padding: 20 }}>
       {templateParts.map((templatePart, index) => {
         if (templatePart.indexOf('class="response-btn"') !== -1) {
           const dropTargetIndex = responseIndex;
@@ -69,9 +69,9 @@ const CheckboxTemplateBoxLayout = ({
           }
           maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
           return (
-            <div key={index}>
+            <span key={index}>
               {showAnswer && (
-                <div
+                <span
                   className={`response-btn check-answer ${className} ${showAnswer ? "show-answer" : ""}`}
                   style={btnStyle}
                 >
@@ -82,7 +82,7 @@ const CheckboxTemplateBoxLayout = ({
                     {className === "right" && <RightIcon />}
                     {className === "wrong" && <WrongIcon />}
                   </IconWrapper>
-                </div>
+                </span>
               )}
               {!showAnswer && (
                 <div className={`response-btn check-answer ${className}`} style={btnStyle}>
@@ -95,7 +95,7 @@ const CheckboxTemplateBoxLayout = ({
                   </IconWrapper>
                 </div>
               )}
-            </div>
+            </span>
           );
         }
         return (
@@ -106,7 +106,7 @@ const CheckboxTemplateBoxLayout = ({
           />
         );
       })}
-    </div>
+    </span>
   );
 };
 

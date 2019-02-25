@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Select, TextField } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
+import { Select, TextField } from '@edulastic/common';
+import { withNamespaces } from '@edulastic/localization';
+import { Checkbox, Input } from 'antd';
 
 import WidgetOptions from "../../../../containers/WidgetOptions";
 import { Block } from "../../../../styled/WidgetOptions/Block";
@@ -16,7 +17,7 @@ import Extras from "../../../../containers/Extras";
 import { Container } from "./styled/Container";
 import { Delete } from "./styled/Delete";
 
-const Options = ({ onChange, uiStyle, t, outerStyle }) => {
+const Options = ({ onChange, uiStyle, characterMap, multipleLine, t, outerStyle }) => {
   const changeUiStyle = (prop, value) => {
     onChange("ui_style", {
       ...uiStyle,
@@ -54,6 +55,11 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
       ...uiStyle,
       responsecontainerindividuals
     });
+  };
+
+  const _characterMapChange = (e) => {
+    const { value } = e.target;
+    onChange('character_map', value.split(''));
   };
 
   return (
@@ -97,8 +103,38 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
           </Col>
         </Row>
         <Row>
+          <Col md={6}>
+            <Checkbox
+              checked={!!characterMap}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  onChange('character_map', []);
+                } else {
+                  onChange('character_map', undefined);
+                }
+              }}
+            >{t('component.options.specialcharacters')}
+            </Checkbox>
+          </Col>
+          {characterMap && (
+          <Col md={6}>
+            <Label>{t('component.options.charactersToDisplay')}</Label>
+            <Input value={characterMap.join('')} onChange={_characterMapChange} />
+          </Col>
+          )}
+        </Row>
+        <Row>
           <Col md={12}>
             <Label>{t("component.options.responsecontainerglobal")}</Label>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <Checkbox
+              checked={!!multipleLine}
+              onChange={e => onChange('multiple_line', e.target.checked)}
+            >{t('component.options.multiline')}
+            </Checkbox>
           </Col>
         </Row>
         <Row>
@@ -223,7 +259,9 @@ Options.propTypes = {
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
   t: PropTypes.func.isRequired,
-  outerStyle: PropTypes.object
+  outerStyle: PropTypes.object,
+  characterMap: PropTypes.array,
+  multipleLine: PropTypes.bool
 };
 
 Options.defaultProps = {
@@ -236,7 +274,9 @@ Options.defaultProps = {
     heightpx: 0,
     placeholder: "",
     responsecontainerindividuals: []
-  }
+  },
+  characterMap: undefined,
+  multipleLine: false
 };
 
 export default React.memo(withNamespaces("assessment")(Options));

@@ -1,24 +1,19 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { Input, InputNumber } from "antd";
-import { isUndefined } from "lodash";
-import { withTheme } from "styled-components";
+
 import { InstructorStimulus } from "@edulastic/common";
-
-import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 import { QuestionHeader } from "../../styled/QuestionHeader";
-
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
-import { getFontSize } from "../../utils/helpers";
+import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
+import ClozeTextInput from "./components/ClozeTextInput";
 
 const defaultTemplateMarkup =
   '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p><br/> Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags ? <br/>  Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
 
-class Display extends Component {
+class ClozeTextDisplay extends Component {
   constructor(props) {
     super(props);
-    const { templateMarkUp } = props;
-    const { templateParts, respLength } = this.getTemplateParts(templateMarkUp);
+    const { templateParts, respLength } = this.getTemplateParts(props);
     const userAnswers = new Array(respLength).fill("");
     props.userSelections.forEach((userSelection, index) => {
       userAnswers[index] = userSelection;
@@ -31,9 +26,8 @@ class Display extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { templateMarkUp } = nextProps;
     if (this.state !== undefined) {
-      const { templateParts } = this.getTemplateParts(templateMarkUp);
+      const { templateParts } = this.getTemplateParts(nextProps);
       this.setState({
         userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
         templateParts
@@ -41,7 +35,8 @@ class Display extends Component {
     }
   }
 
-  getTemplateParts = templateMarkUp => {
+  getTemplateParts = props => {
+    const { templateMarkUp } = props;
     const templateParts = templateMarkUp.match(/<p.*?<\/p>/g);
     const responseParts = templateMarkUp.match(/<p class="response-btn.*?<\/p>/g);
     const respLength = responseParts !== null ? responseParts.length : 0;
@@ -56,6 +51,35 @@ class Display extends Component {
     changeAnswers(newAnswers);
   };
 
+  getFontSize = size => {
+    switch (size) {
+      case "small":
+        return "11px";
+      case "normal":
+        return "14px";
+      case "large":
+        return "17px";
+      case "xlarge":
+        return "20px";
+      case "xxlarge":
+        return "24px";
+      default:
+        return "14px";
+    }
+  };
+
+  _changeInput = ({ value, dropTargetIndex, type }) => {
+    if (type === "number") {
+      value = +value;
+      if (typeof value === "number" && !Number.isNaN(value)) {
+        this.selectChange(value, dropTargetIndex);
+      }
+      return;
+    }
+
+    this.selectChange(value, dropTargetIndex);
+  };
+
   render() {
     const {
       smallSize,
@@ -66,16 +90,14 @@ class Display extends Component {
       checkAnswer,
       validation,
       evaluation,
-      theme,
-      instructorStimulus,
-      qIndex
+      instructorStimulus
     } = this.props;
     const { templateParts, userAnswers } = this.state;
     let responseIndex = 0;
     // const responses = cloneDeep(options);
 
     // Layout Options
-    const fontSize = getFontSize(uiStyle.fontsize);
+    const fontSize = this.getFontSize(uiStyle.fontsize);
     const { widthpx, heightpx, placeholder, inputtype, responsecontainerindividuals, stemnumeration } = uiStyle;
 
     const responseBtnStyle = {
@@ -87,12 +109,9 @@ class Display extends Component {
     const previewTemplateBoxLayout = (
       <div
         className={`template_box ${smallSize ? "text-small" : ""}`}
-        style={{
-          fontSize: smallSize ? theme.widgets.clozeText.previewTemplateBoxSmallFontSize : fontSize,
-          padding: smallSize ? 0 : 20
-        }}
+        style={{ fontSize: smallSize ? 14 : fontSize, padding: smallSize ? 0 : 20 }}
       >
-        {templateParts &&
+        {Array.isArray(templateParts) &&
           templateParts.map((templatePart, index) => {
             if (templatePart.indexOf('class="response-btn"') !== -1) {
               const dropTargetIndex = responseIndex;
@@ -131,28 +150,21 @@ class Display extends Component {
               }
               if (btnStyle && btnStyle.placeholder === undefined) {
                 btnStyle.placeholder = responseBtnStyle.placeholder;
+              } else {
+                btnStyle.placeholder = btnStyle.placeholder;
               }
               if (btnStyle && btnStyle.inputtype === undefined) {
                 btnStyle.inputtype = responseBtnStyle.inputtype;
+              } else {
+                btnStyle.inputtype = btnStyle.inputtype;
               }
               maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
-              if (isUndefined(btnStyle.inputtype) || btnStyle.inputtype === "text") {
-                return (
-                  <Input
-                    defaultValue={userAnswers[dropTargetIndex]}
-                    key={`input_${dropTargetIndex}`}
-                    style={btnStyle}
-                    placeholder={btnStyle.placeholder}
-                    onChange={e => this.selectChange(e.target.value, dropTargetIndex)}
-                  />
-                );
-              }
               return (
-                <InputNumber
-                  defaultValue={userAnswers[dropTargetIndex]}
-                  key={`inputnumber${dropTargetIndex}`}
-                  style={btnStyle}
-                  onChange={e => this.selectChange(e, dropTargetIndex)}
+                <ClozeTextInput
+                  value={userAnswers[dropTargetIndex]}
+                  btnStyle={btnStyle}
+                  dropTargetIndex={dropTargetIndex}
+                  onChange={this._changeInput}
                 />
               );
             }
@@ -190,11 +202,13 @@ class Display extends Component {
       <div />
     );
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
-
     return (
       <div style={{ fontSize }}>
-        <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
-        <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+        {instructorStimulus && instructorStimulus !== "<p><br></p>" && (
+          <InstructorStimulus dangerouslySetInnerHTML={{ __html: instructorStimulus }} />
+        )}
+
+        <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         <div>
           <React.Fragment>
             <div style={{ margin: smallSize ? "-10px -20px" : 0, borderRadius: 0 }}>{templateBoxLayout}</div>
@@ -206,7 +220,7 @@ class Display extends Component {
   }
 }
 
-Display.propTypes = {
+ClozeTextDisplay.propTypes = {
   options: PropTypes.object,
   onChange: PropTypes.func,
   showAnswer: PropTypes.bool,
@@ -217,21 +231,21 @@ Display.propTypes = {
   validation: PropTypes.object,
   evaluation: PropTypes.object,
   uiStyle: PropTypes.object,
-  templateMarkUp: PropTypes.string,
-  theme: PropTypes.object.isRequired,
-  instructorStimulus: PropTypes.string
+  instructorStimulus: PropTypes.string,
+  /* eslint-disable react/no-unused-prop-types */
+  templateMarkUp: PropTypes.string
 };
 
-Display.defaultProps = {
+ClozeTextDisplay.defaultProps = {
   options: {},
   onChange: () => {},
   showAnswer: false,
+  instructorStimulus: "",
   evaluation: {},
   checkAnswer: false,
   userSelections: [],
   smallSize: false,
   validation: {},
-  instructorStimulus: "",
   uiStyle: {
     fontsize: "normal",
     stemnumeration: "numerical",
@@ -244,4 +258,4 @@ Display.defaultProps = {
   templateMarkUp: defaultTemplateMarkup
 };
 
-export default withTheme(Display);
+export default ClozeTextDisplay;

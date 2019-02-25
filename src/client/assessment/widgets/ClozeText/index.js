@@ -18,12 +18,17 @@ import Display from "./Display";
 
 const EmptyWrapper = styled.div``;
 
+export const ClozeTextContext = React.createContext({});
+
 class ClozeText extends Component {
   getRenderData = () => {
     const { item, history } = this.props;
     const locationState = history.location.state;
-    const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
-    const previewDisplayOptions = item.hasGroupResponses ? item.groupResponses : item.options;
+    const isDetailPage =
+      locationState !== undefined ? locationState.itemDetail : false;
+    const previewDisplayOptions = item.hasGroupResponses
+      ? item.groupResponses
+      : item.options;
     let previewStimulus;
     let itemForEdit;
     if (item.smallSize || isDetailPage) {
@@ -55,7 +60,10 @@ class ClozeText extends Component {
       value: []
     };
 
-    if (newItem.validation.alt_responses && newItem.validation.alt_responses.length) {
+    if (
+      newItem.validation.alt_responses &&
+      newItem.validation.alt_responses.length
+    ) {
       newItem.validation.alt_responses.push(response);
     } else {
       newItem.validation.alt_responses = [response];
@@ -89,13 +97,29 @@ class ClozeText extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item, userAnswer, testItem, evaluation, theme, qIndex } = this.props;
-    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
+    const {
+      view,
+      previewTab,
+      qIndex,
+      smallSize,
+      item,
+      userAnswer,
+      testItem,
+      evaluation,
+      theme
+    } = this.props;
+    const {
+      previewStimulus,
+      previewDisplayOptions,
+      itemForEdit,
+      uiStyle
+    } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
     const Wrapper = testItem ? EmptyWrapper : Paper;
     return (
-      <div>
-        {view === "edit" && (
+      <ClozeTextContext.Provider value={{ item }}>
+        <div>
+          {view === 'edit' && (
           <React.Fragment>
             <PaddingDiv
               style={{
@@ -128,14 +152,16 @@ class ClozeText extends Component {
               <Options
                 onChange={this.handleOptionsChange}
                 uiStyle={uiStyle}
+                characterMap={item.character_map}
+                multipleLine={item.multiple_line}
                 outerStyle={{
                   padding: "30px 120px"
                 }}
               />
             </div>
           </React.Fragment>
-        )}
-        {view === "preview" && (
+          )}
+          {view === 'preview' && (
           <Wrapper>
             {previewTab === "check" && (
               <Display
@@ -190,8 +216,10 @@ class ClozeText extends Component {
               />
             )}
           </Wrapper>
-        )}
-      </div>
+          )}
+        </div>
+      </ClozeTextContext.Provider>
+
     );
   }
 }
@@ -207,7 +235,8 @@ ClozeText.propTypes = {
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  qIndex: PropTypes.object.isRequired
 };
 
 ClozeText.defaultProps = {

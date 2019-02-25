@@ -7,7 +7,7 @@ import { withNamespaces } from "@edulastic/localization";
 import CharacterMap from "./CharacterMap";
 import NumberPadButton from "./NumberPadButton";
 
-const NumberPadItem = ({ item, onSelect, t }) => {
+const NumberPadItem = ({ item, onSelect, t, buttonStyle }) => {
   const [visible, setVisible] = useState(false);
 
   return (
@@ -19,7 +19,11 @@ const NumberPadItem = ({ item, onSelect, t }) => {
       visible={visible}
       onVisibleChange={() => setVisible(!visible)}
     >
-      <NumberPadButton onClick={() => setVisible(!visible)}>{item.label}</NumberPadButton>
+      <NumberPadButton
+        buttonStyle={buttonStyle}
+        onClick={() => setVisible(!visible)}
+      >{item.label}
+      </NumberPadButton>
     </Popover>
   );
 };
@@ -27,6 +31,7 @@ const NumberPadItem = ({ item, onSelect, t }) => {
 NumberPadItem.propTypes = {
   item: PropTypes.object.isRequired,
   onSelect: PropTypes.func.isRequired,
+  buttonStyle: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired
 };
 

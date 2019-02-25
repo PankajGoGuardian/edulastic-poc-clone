@@ -187,6 +187,11 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         show_word_count: true,
         max_word: 5,
         show_word_limit: ON_LIMIT,
+        validation: {
+          max_score: 0,
+          min_score_if_attempted: 0,
+          submit_over_limit: false
+        },
         formatting_options: [
           { id: "test1", value: "bold", active: true },
           { id: "test2", value: "italic", active: true },

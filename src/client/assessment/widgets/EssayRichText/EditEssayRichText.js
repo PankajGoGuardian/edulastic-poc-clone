@@ -2,7 +2,8 @@ import React, { Fragment, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
 import ReactQuill from "react-quill";
-import { Checkbox } from "antd";
+import { Checkbox, Row, Col, Input } from "antd";
+
 import { arrayMove } from "react-sortable-hoc";
 
 import { withNamespaces } from "@edulastic/localization";
@@ -11,6 +12,10 @@ import { Paper } from "@edulastic/common";
 import WordLimitAndCount from "../../components/WordLimitAndCount";
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
+import WidgetOptions from "../../containers/WidgetOptions";
+import { Label } from "../../styled/WidgetOptions/Label";
+import { FormGroup } from "../../containers/WidgetOptions/styled/FormGroup";
+import { Heading } from "../../styled/WidgetOptions/Heading";
 
 import SortableList from "./components/SortableList";
 import { ValidList } from "./constants/validList";
@@ -29,6 +34,13 @@ const EditEssayRichText = ({ item, setQuestionData, t }) => {
     const newItem = cloneDeep(item);
 
     newItem[prop] = uiStyle;
+    setQuestionData(newItem);
+  };
+
+  const handleValidationChange = (prop, uiStyle) => {
+    const newItem = cloneDeep(item);
+
+    newItem.validation[prop] = uiStyle;
     setQuestionData(newItem);
   };
 
@@ -88,6 +100,44 @@ const EditEssayRichText = ({ item, setQuestionData, t }) => {
           {t("component.essayText.showWordCheckbox")}
         </Checkbox>
       </Paper>
+      <WidgetOptions showScoring={false} outerStyle={{ marginTop: 40 }} title={t("common.options.title")}>
+        <Heading>{t("component.options.scoring")}</Heading>
+        <Row>
+          <Col md={12}>
+            <FormGroup>
+              <Input
+                type="number"
+                data-cy="max_score"
+                value={item && item.validation && item.validation.max_score}
+                onChange={e => handleValidationChange("max_score", +e.target.value)}
+                size="large"
+                style={{ width: "20%", marginRight: 30 }}
+              />
+              <Label>{t("component.options.maxScore")}</Label>
+            </FormGroup>
+          </Col>
+          <Col md={12}>
+            <FormGroup>
+              <Input
+                data-cy="minscore"
+                type="number"
+                value={item && item.validation && item.validation.min_score_if_attempted}
+                onChange={e => handleValidationChange("min_score_if_attempted", +e.target.value)}
+                size="large"
+                style={{ width: "20%", marginRight: 30 }}
+              />
+              <Label>{t("component.options.minScore")}</Label>
+            </FormGroup>
+          </Col>
+        </Row>
+        <Checkbox
+          style={{ marginTop: 32 }}
+          defaultChecked={item && item.validation && item.validation.submit_over_limit}
+          onChange={e => handleValidationChange("submit_over_limit", e.target.checked)}
+        >
+          {t("component.essayText.submitOverLimit")}
+        </Checkbox>
+      </WidgetOptions>
     </Fragment>
   );
 };

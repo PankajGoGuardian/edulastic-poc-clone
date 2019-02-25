@@ -13,6 +13,7 @@ import {
   tokenhighlight,
   clozeDragDrop,
   choiceMatrix,
+  essayRichText,
   shading,
   graph
 } from "@edulastic/evaluators";
@@ -29,6 +30,7 @@ const evaluators = {
   math,
   clozeDragDrop,
   shortText,
+  essayRichText,
   classification,
   choiceMatrix,
   matchList: sortList,

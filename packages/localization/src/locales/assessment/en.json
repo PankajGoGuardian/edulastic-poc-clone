@@ -239,6 +239,7 @@
       "copy": "Copy",
       "paste": "Paste",
       "cut": "Cut",
+      "submitOverLimit": "Submit over limit",
       "composequestion": "Compose Question",
       "enterQuestion": "Enter question",
       "plain": {
@@ -467,11 +468,7 @@
         "margin": "Margin (px)",
         "snapTo": "Snap to",
         "stemNumeration": "Stem numeration (review only)",
-        "stemNumerationList": [
-          "Numerical",
-          "Uppercase alphabet",
-          "Lowercase alphabet"
-        ],
+        "stemNumerationList": ["Numerical", "Uppercase alphabet", "Lowercase alphabet"],
         "fontSize": "Font Size",
         "drawLabelzero": "Draw label zero",
         "displayPositionOnHover": "Display position on hover",

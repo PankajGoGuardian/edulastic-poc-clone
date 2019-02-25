@@ -101,6 +101,12 @@ Object.defineProperty(exports, "clozeDragDrop", {
     return _clozeDragDrop.default;
   }
 });
+Object.defineProperty(exports, "essayRichText", {
+  enumerable: true,
+  get: function get() {
+    return _essayRichText.default;
+  }
+});
 
 var _mcq = _interopRequireDefault(require("./mcq"));
 
@@ -133,3 +139,5 @@ var _shading = _interopRequireDefault(require("./shading"));
 var _choiceMatrix = _interopRequireDefault(require("./choiceMatrix"));
 
 var _clozeDragDrop = _interopRequireDefault(require("./clozeDragDrop"));
+
+var _essayRichText = _interopRequireDefault(require("./essayRichText"));

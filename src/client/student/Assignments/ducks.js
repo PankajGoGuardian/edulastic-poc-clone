@@ -125,6 +125,29 @@ const reportsSelector = state => state.studentReport.byId;
 
 export const filterSelector = state => state.studentAssignment.filter;
 
+const isLiveAssignment = assignment => {
+  // max attempts should be less than total attempts made
+  // and end Dtae should be greateer than current one :)
+  let maxAttempts = (assignment.test && assignment.test.maxAttempts) || 5;
+  let attempts = (assignment.reports && assignment.reports.length) || 0;
+  let lastAttempt = last(assignment.reports) || [];
+
+  const isLive = (maxAttempts > attempts || lastAttempt.status == "0") && new Date(assignment.endDate) > new Date();
+  return isLive;
+};
+
+const statusFilter = filterType => assignment => {
+  let attempts = (assignment.reports && assignment.reports.length) || 0;
+  switch (filterType) {
+    case FILTERS.NOT_STARTED:
+      return attempts === 0;
+    case FILTERS.IN_PROGRESS:
+      return attempts > 0;
+    default:
+      return true;
+  }
+};
+
 export const getAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
@@ -138,27 +161,8 @@ export const getAssignmentsSelector = createSelector(
         ...assignment,
         reports: groupedReports[assignment._id] || []
       }))
-      .filter(assignment => {
-        // max attempts should be less than total attempts made
-        // and end Dtae should be greateer than current one :)
-        let maxAttempts = (assignment.test && assignment.test.maxAttempts) || 5;
-        let attempts = (assignment.reports && assignment.reports.length) || 0;
-        let lastAttempt = last(assignment.reports) || [];
-
-        const liveAssignments =
-          (maxAttempts > attempts || lastAttempt.status == "0") && new Date(assignment.endDate) > new Date();
-        let filterType = true;
-        if (filter !== FILTERS.ALL) {
-          if (filter === FILTERS.NOT_STARTED) {
-            filterType = attempts === 0;
-          } else if (filter === FILTERS.IN_PROGRESS) {
-            filterType = attempts > 0;
-          }
-        }
-
-        return liveAssignments && filterType > 0;
-      });
-
+      .filter(isLiveAssignment)
+      .filter(statusFilter(filter));
     return assignments;
   }
 );

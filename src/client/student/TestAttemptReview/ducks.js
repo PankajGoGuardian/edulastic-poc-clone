@@ -11,19 +11,14 @@ export const attemptSummarySelector = createSelector(
     const questions = {};
     // eslint-disable
     for (const item of items) {
-      if (item && item.rows) {
-        item.rows.forEach(row => {
-          row.widgets.forEach(widget => {
-            const qId = widget.entity && widget.entity.id;
-            if (!qId) return;
-
-            if (item.reviewLater) {
-              questions[qId] = 2;
-            } else {
-              questions[qId] = answers[qId] ? 1 : 0;
-            }
-          });
-        });
+      if (item && item.data && item.data.questions) {
+        for (const { id: qId } of item.data.questions) {
+          if (item.reviewLater) {
+            questions[qId] = 2;
+          } else {
+            questions[qId] = answers[qId] ? 1 : 0;
+          }
+        }
       }
     }
     // eslint-enable

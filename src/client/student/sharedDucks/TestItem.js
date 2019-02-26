@@ -35,17 +35,11 @@ export default createReducer(initialState, {
 
 // get testITem questions
 export const getTestItemQuestions = item => {
-  let widgets = [];
-  let questionList = [];
-  if (item && item.rows) {
-    item.rows.forEach(row => {
-      widgets = [...widgets, ...row.widgets];
-    });
-    widgets.forEach(widget => {
-      questionList = [...questionList, widget.entity];
-    });
+  if (item.data && item.data.questions) {
+    return item.data.questions;
+  } else {
+    return [];
   }
-  return questionList;
 };
 // selectors
 const module = "studentTestItems";

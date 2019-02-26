@@ -47,8 +47,8 @@ export const itemQuestionsSelector = createSelector(
     const questions = [];
     item.rows.forEach(row => {
       row.widgets.forEach(widget => {
-        const qid = widget.entity && widget.entity.id;
-        questions.push(qid);
+        const qid = widget.reference;
+        if (qid) questions.push(qid);
       });
     });
     return questions;

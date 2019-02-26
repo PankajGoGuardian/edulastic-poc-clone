@@ -16,7 +16,8 @@ import { loadQuestionsAction } from "../../sharedDucks/questions";
 function* receiveItemSaga({ payload }) {
   try {
     const data = yield call(testItemsApi.getById, payload.id, payload.params);
-    const questions = _keyBy(data.data.questions, "id");
+    let questions = (data.data && data.data.questions) || [];
+    questions = _keyBy(questions, "id");
     const item = _omit(data, "data");
     yield put({
       type: RECEIVE_ITEM_DETAIL_SUCCESS,
@@ -24,6 +25,7 @@ function* receiveItemSaga({ payload }) {
     });
     yield put(loadQuestionsAction(questions));
   } catch (err) {
+    console.log("err is", err);
     const errorMessage = "Receive item by id is failing";
     yield call(message.error, errorMessage);
     yield put({

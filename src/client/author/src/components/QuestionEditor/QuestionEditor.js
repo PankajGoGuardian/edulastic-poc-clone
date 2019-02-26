@@ -15,7 +15,6 @@ import QuestionWrapper from "../../../../assessment/components/QuestionWrapper";
 import QuestionMetadata from "../../../../assessment/containers/QuestionMetadata";
 import ItemHeader from "./ItemHeader";
 import { getCurrentQuestionSelector } from "../../../sharedDucks/questions";
-import { getQuestionSelector } from "../../selectors/question";
 import { getItemIdSelector } from "../../selectors/itemDetail";
 import { saveQuestionAction, setQuestionDataAction } from "../../actions/question";
 import { checkAnswerAction, showAnswerAction } from "../../actions/testItem";

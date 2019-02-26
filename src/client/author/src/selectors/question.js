@@ -1,4 +1,5 @@
 import { createSelector } from "reselect";
+import { getCurrentQuestionSelector } from "../../sharedDucks/questions";
 
 export const stateSelector = state => state.question;
 export const getQuestionSelector = createSelector(
@@ -6,15 +7,15 @@ export const getQuestionSelector = createSelector(
   state => state.entity
 );
 export const getQuestionDataSelector = createSelector(
-  getQuestionSelector,
-  state => state.data
+  getCurrentQuestionSelector,
+  state => state
 );
 export const getQuestionAlignmentSelector = createSelector(
-  getQuestionDataSelector,
+  getCurrentQuestionSelector,
   state => state.alignment
 );
 
 export const getValidationSelector = createSelector(
-  getQuestionDataSelector,
+  getCurrentQuestionSelector,
   state => state.validation
 );

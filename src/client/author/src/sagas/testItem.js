@@ -16,8 +16,7 @@ import {
   ADD_ITEM_EVALUATION
 } from "../constants/actions";
 import { history } from "../../../configureStore";
-import { getItemDetailValidationSelector } from "../selectors/itemDetail";
-import { getQuestionDataSelector } from "../selectors/question";
+import { getQuestionsSelector } from "../../sharedDucks/questions";
 
 function* createTestItemSaga({ payload }) {
   try {
@@ -56,29 +55,10 @@ function* updateTestItemSaga({ payload }) {
   }
 }
 
-function* getValidations(mode) {
-  let validations = {};
-
-  if (mode === "edit") {
-    const question = yield select(getQuestionDataSelector);
-    const questionId = question.id || "tmp";
-
-    if (question) {
-      validations = {
-        [questionId]: question
-      };
-    }
-  } else {
-    validations = yield select(getItemDetailValidationSelector);
-  }
-
-  return validations;
-}
-
-function* evaluateAnswers({ payload }) {
+function* evaluateAnswers() {
   try {
     const answers = yield select(state => state.answers);
-    const validations = yield* getValidations(payload);
+    const validations = yield select(getQuestionsSelector);
     const { evaluation, score, maxScore } = yield evaluateItem(answers, validations);
     yield put({
       type: ADD_ITEM_EVALUATION,
@@ -97,10 +77,10 @@ function* evaluateAnswers({ payload }) {
   }
 }
 
-function* showAnswers({ payload }) {
+function* showAnswers() {
   try {
     const answers = yield select(state => state.answers);
-    const validations = yield* getValidations(payload);
+    const validations = yield select(getQuestionsSelector);
     const evaluation = createShowAnswerData(validations, answers);
     yield put({
       type: ADD_ITEM_EVALUATION,

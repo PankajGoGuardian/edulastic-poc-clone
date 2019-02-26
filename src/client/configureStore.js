@@ -20,7 +20,7 @@ const middleware = [sagaMiddleware, routerMiddleware(history)];
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["user", "reports", "router", "studentTestItems", "question", "authorQuestions"]
+  whitelist: ["user", "reports", "router", "studentTestItems", "question", "authorQuestions", "itemDetail"]
 };
 
 /* istanbul ignore next */

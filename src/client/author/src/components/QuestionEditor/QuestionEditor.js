@@ -76,7 +76,7 @@ class QuestionEditor extends Component {
   };
 
   renderQuestion = () => {
-    const { view, question, match } = this.props;
+    const { view, question } = this.props;
     const { previewTab, saveClicked } = this.state;
     const questionType = question && question.type;
     if (view === "metadata") {
@@ -90,7 +90,7 @@ class QuestionEditor extends Component {
           previewTab={previewTab}
           key={questionType && view && saveClicked}
           data={question}
-          questionId={match.params._id}
+          questionId={question.id}
           saveClicked={saveClicked}
         />
       );

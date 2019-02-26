@@ -1,6 +1,6 @@
 import { createAction } from "redux-starter-kit";
 import { takeEvery, put, call, all } from "redux-saga/effects";
-import { values, groupBy } from "lodash";
+import { values, groupBy, last } from "lodash";
 import { createSelector } from "reselect";
 import { normalize } from "normalizr";
 import { assignmentApi, reportsApi } from "@edulastic/api";
@@ -12,7 +12,6 @@ import {
   setAssignmentsLoadingAction
 } from "../sharedDucks/AssignmentModule/ducks";
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
-import { getCurrentGroup } from "../Login/ducks";
 
 // constants
 export const FILTERS = {
@@ -69,42 +68,46 @@ const assignmentsSelector = state => state.studentAssignment.byId;
 const reportsSelector = state => state.studentReport.byId;
 export const filterSelector = state => state.studentReport.filter;
 
+const isReport = assignment => {
+  // either user has ran out of attempts
+  // or assigments is past dueDate
+  let maxAttempts = (assignment.test && assignment.test.maxAttempts) || 5;
+  let attempts = (assignment.reports && assignment.reports.length) || 0;
+  const isExpired = maxAttempts <= attempts || new Date(assignment.endDate) < new Date();
+  return isExpired;
+};
+
+const statusFilter = filterType => assignment => {
+  const lastAttempt = last(assignment.reports) || {};
+  const isSubmitted = (assignment.reports.length === 1 && lastAttempt.status != 0) || assignment.reports.length > 1;
+  const isGraded = false; // need to impliment graded status from API
+  switch (filterType) {
+    case FILTERS.MISSED:
+      return !isSubmitted;
+    case FILTERS.SUBMITTED:
+      return isSubmitted;
+    case FILTERS.GRADED:
+      return isGraded;
+    default:
+      return true;
+  }
+};
+
 export const getAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
   filterSelector,
-  getCurrentGroup,
-  (assignmentsObj, reportsObj, filter, currentGroup) => {
+  (assignmentsObj, reportsObj, filter) => {
     // group reports by assignmentsID
-    let groupedReports = groupBy(values(reportsObj), "assignmentId");
-    let assignments = values(assignmentsObj)
+    const groupedReports = groupBy(values(reportsObj), "assignmentId");
+    const assignments = values(assignmentsObj)
       .sort((a, b) => a.createdAt > b.createdAt)
       .map(assignment => ({
         ...assignment,
         reports: groupedReports[assignment._id] || []
       }))
-      .filter(assignment => {
-        // either user has ran out of attempts
-        // or assigments is past dueDate
-        let maxAttempts = (assignment.test && assignment.test.maxAttempts) || 5;
-        let attempts = (assignment.reports && assignment.reports.length) || 0;
-
-        const isExpired = maxAttempts <= attempts || new Date(assignment.endDate) < new Date();
-        const attempted = !!(assignment.reports && assignment.reports.length);
-        const graded = false; // need to impliment graded status from API
-        let filterType = true;
-        if (filter !== FILTERS.ALL) {
-          if (filter === FILTERS.MISSED) {
-            filterType = !attempted;
-          } else if (filter === FILTERS.SUBMITTED) {
-            filterType = attempted;
-          } else if (filter === FILTERS.GRADED) {
-            filterType = graded;
-          }
-        }
-        return isExpired && filterType > 0;
-      });
-
+      .filter(isReport)
+      .filter(statusFilter(filter));
     return assignments;
   }
 );

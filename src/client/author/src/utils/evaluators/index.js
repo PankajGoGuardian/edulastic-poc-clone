@@ -31,6 +31,7 @@ const evaluators = {
   clozeDragDrop,
   shortText,
   essayRichText,
+  essayPlainText: essayRichText,
   classification,
   choiceMatrix,
   matchList: sortList,

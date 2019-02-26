@@ -232,7 +232,12 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
         show_paste: true,
         max_word: 5,
         show_word_limit: ON_LIMIT,
-        show_word_count: true
+        show_word_count: true,
+        validation: {
+          max_score: 0,
+          min_score_if_attempted: 0,
+          submit_over_limit: false
+        }
       },
       onSelectQuestionType
     },

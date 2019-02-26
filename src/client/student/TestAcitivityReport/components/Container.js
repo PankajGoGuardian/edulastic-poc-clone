@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import AssignmentContentWrapper from "../../styled/assignmentContentWrapper";
 import ItemReport from "./ItemReport";
-import { getQuestionsSelector } from "../../sharedDucks/TestItem";
+import { getQuestionWithFeedbackSelector } from "../../sharedDucks/TestItem";
 
 const ReportListContent = ({ questions, flag }) => {
   return (
@@ -21,7 +21,7 @@ const ReportListContent = ({ questions, flag }) => {
 };
 export default connect(
   state => ({
-    questions: getQuestionsSelector(state)
+    questions: getQuestionWithFeedbackSelector(state)
   }),
   null
 )(ReportListContent);

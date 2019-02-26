@@ -54,7 +54,7 @@ export const getItemSelector = createSelector(
   (items, current) => items[current]
 );
 
-export const getQuestionsSelector = createSelector(
+export const getQuestionWithFeedbackSelector = createSelector(
   getItemSelector,
   getTestFeedbackSelector,
   (item, testFeedback) => {

@@ -90,8 +90,8 @@ Cypress.Commands.add(
       console.log('Result = ', body.result);
       cy.fixture('assignments').then(asgns => {
         const postData = asgns['default'];
-        postData['startDate'] = startDt;
-        postData['endDate'] = dueDt;
+        postData['startDate'] = startDt.valueOf();
+        postData['endDate'] = dueDt.valueOf();
         console.log('asdnDO - ', postData);
         cy.request({
           url: `${BASE_URL}/assignments`,

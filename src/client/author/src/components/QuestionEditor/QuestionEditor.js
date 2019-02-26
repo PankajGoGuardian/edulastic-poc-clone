@@ -14,6 +14,7 @@ import { ButtonBar, SecondHeadBar } from "../common";
 import QuestionWrapper from "../../../../assessment/components/QuestionWrapper";
 import QuestionMetadata from "../../../../assessment/containers/QuestionMetadata";
 import ItemHeader from "./ItemHeader";
+import { getCurrentQuestionSelector } from "../../../sharedDucks/questions";
 import { getQuestionSelector } from "../../selectors/question";
 import { getItemIdSelector } from "../../selectors/itemDetail";
 import { saveQuestionAction, setQuestionDataAction } from "../../actions/question";
@@ -58,14 +59,6 @@ class QuestionEditor extends Component {
     saveQuestion();
   };
 
-  getQuestionType = () => {
-    const { question } = this.props;
-    if (question !== null) {
-      const questionType = question.data.type;
-      return questionType;
-    }
-  };
-
   handleChangePreviewTab = previewTab => {
     const { checkAnswer, showAnswer, changePreview } = this.props;
 
@@ -83,20 +76,21 @@ class QuestionEditor extends Component {
     });
   };
 
-  renderQuestion = questionType => {
+  renderQuestion = () => {
     const { view, question, match } = this.props;
     const { previewTab, saveClicked } = this.state;
+    const questionType = question && question.type;
     if (view === "metadata") {
       return <QuestionMetadata />;
     }
-    if (question) {
+    if (questionType) {
       return (
         <QuestionWrapper
           type={questionType}
           view={view}
           previewTab={previewTab}
           key={questionType && view && saveClicked}
-          data={question.data}
+          data={question}
           questionId={match.params._id}
           saveClicked={saveClicked}
         />
@@ -108,16 +102,15 @@ class QuestionEditor extends Component {
     const { view, question, testItemId } = this.props;
     const { previewTab, showModal } = this.state;
     const itemId = question === null ? "" : question._id;
-    const questionType = this.getQuestionType();
 
     return (
       <div>
         {showModal && (
           <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
-            {JSON.stringify(question.data, null, 4)}
+            {JSON.stringify(question, null, 4)}
           </SourceModal>
         )}
-        <ItemHeader title={question.data.title} reference={itemId}>
+        <ItemHeader title={question.title} reference={itemId}>
           <ButtonBar
             onChangeView={this.handleChangeView}
             onShowSource={this.handleShowSource}
@@ -142,11 +135,11 @@ class QuestionEditor extends Component {
               title: "ITEM DETAIL",
               to: `/author/items/${testItemId}/item-detail`
             },
-            { title: question.data.title, to: "" }
+            { title: question.title, to: "" }
           ]}
         />
 
-        <ContentWrapper>{this.renderQuestion(questionType)}</ContentWrapper>
+        <ContentWrapper>{this.renderQuestion()}</ContentWrapper>
       </div>
     );
   }
@@ -159,6 +152,7 @@ QuestionEditor.propTypes = {
   showAnswer: PropTypes.func.isRequired,
   changeView: PropTypes.func.isRequired,
   question: PropTypes.object,
+
   match: PropTypes.object,
   saveQuestion: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
@@ -177,7 +171,7 @@ const enhance = compose(
   connect(
     state => ({
       view: getViewSelector(state),
-      question: getQuestionSelector(state),
+      question: getCurrentQuestionSelector(state),
       testItemId: getItemIdSelector(state)
     }),
     {

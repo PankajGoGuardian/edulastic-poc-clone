@@ -1,6 +1,7 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { testItemsApi } from "@edulastic/api";
 import { message } from "antd";
+import { keyBy as _keyBy, omit as _omit } from "lodash";
 
 import {
   RECEIVE_ITEM_DETAIL_REQUEST,
@@ -10,14 +11,18 @@ import {
   UPDATE_ITEM_DETAIL_SUCCESS,
   UPDATE_ITEM_DETAIL_ERROR
 } from "../constants/actions";
+import { loadQuestionsAction } from "../../sharedDucks/questions";
 
 function* receiveItemSaga({ payload }) {
   try {
-    const item = yield call(testItemsApi.getById, payload.id, payload.params);
+    const data = yield call(testItemsApi.getById, payload.id, payload.params);
+    const questions = _keyBy(data.data.questions, "id");
+    const item = _omit(data, "data");
     yield put({
       type: RECEIVE_ITEM_DETAIL_SUCCESS,
-      payload: { item }
+      payload: item
     });
+    yield put(loadQuestionsAction(questions));
   } catch (err) {
     const errorMessage = "Receive item by id is failing";
     yield call(message.error, errorMessage);

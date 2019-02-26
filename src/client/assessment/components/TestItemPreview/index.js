@@ -6,7 +6,6 @@ import { ThemeProvider } from "styled-components";
 import { withWindowSizes } from "@edulastic/common";
 
 import { themes } from "../../themes";
-
 import TestItemCol from "./containers/TestItemCol";
 import { Container } from "./styled/Container";
 
@@ -18,7 +17,8 @@ class TestItemPreview extends Component {
     preview: PropTypes.string.isRequired,
     windowWidth: PropTypes.number.isRequired,
     showFeedback: PropTypes.bool,
-    style: PropTypes.object
+    style: PropTypes.object,
+    questions: PropTypes.object.isRequired
   };
 
   static defaultProps = {
@@ -47,7 +47,7 @@ class TestItemPreview extends Component {
   };
 
   render() {
-    const { cols, preview, style, windowWidth, showFeedback } = this.props;
+    const { cols, preview, style, windowWidth, showFeedback, questions } = this.props;
     let questionCount = 0;
     cols.forEach(({ widgets }) => {
       questionCount += widgets.length;
@@ -71,6 +71,7 @@ class TestItemPreview extends Component {
                 style={this.getStyle(i !== cols.length - 1)}
                 windowWidth={windowWidth}
                 showFeedback={showFeedback}
+                questions={questions}
               />
             ))}
         </Container>

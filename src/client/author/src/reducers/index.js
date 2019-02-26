@@ -10,6 +10,7 @@ import author_assignments from "./assignments";
 import author_classboard_gradebook from "./gradeBook";
 import author_classboard_testActivity from "./testActivity";
 import authorGroups from "../../sharedDucks/groups";
+import authorQuestions from "../../sharedDucks/questions";
 import classResponse from "./classResponse";
 import studentResponse from "./studentResponse";
 import feedbackResponse from "./feedbackResponse";
@@ -29,6 +30,7 @@ const authorReducers = {
   testItem,
   itemDetail,
   dictionaries,
+  authorQuestions,
   author_assignments,
   authorTestAssignments: testAssignmentsReducer,
   author_classboard_gradebook,

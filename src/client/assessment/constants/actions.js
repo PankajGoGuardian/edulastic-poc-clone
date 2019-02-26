@@ -2,7 +2,7 @@
 export const LOAD_THEME = "[theme] load theme";
 
 // questions
-export const LOAD_QUESTIONS = "[questions] load questions";
+export const LOAD_QUESTIONS = "[assessmentplayer questions] load questions";
 export const GOTO_QUESTION = "[questions] goto question";
 export const AUTHOR_QUESTION = "author question";
 export const ADD_ANSWER = "[questions] add answer";

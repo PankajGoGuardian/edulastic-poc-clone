@@ -1,7 +1,6 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { questionsApi, testItemsApi } from "@edulastic/api";
 import { message } from "antd";
-import uuid from "uuid/v4";
 import { history } from "../../../configureStore";
 import {
   RECEIVE_QUESTION_REQUEST,
@@ -10,10 +9,13 @@ import {
   SAVE_QUESTION_REQUEST,
   SAVE_QUESTION_ERROR,
   LOAD_QUESTION,
-  SET_QUESTION_DATA,
   UPDATE_ITEM_DETAIL_SUCCESS
 } from "../constants/actions";
-import { getQuestionSelector } from "../selectors/question";
+import {
+  getCurrentQuestionSelector,
+  getQuestionsArraySelector,
+  changeCurrentQuestionAction
+} from "../../sharedDucks/questions";
 import { getItemDetailSelector } from "../selectors/itemDetail";
 
 function* receiveQuestionSaga({ payload }) {
@@ -35,49 +37,57 @@ function* receiveQuestionSaga({ payload }) {
   }
 }
 
+export const getQuestionIds = item => {
+  const { rows = [] } = item;
+  let questionIds = [];
+  rows.forEach(entry => {
+    const qIds = (entry.widgets || []).map(w => w.reference);
+    questionIds = [...questionIds, ...qIds];
+  });
+
+  return questionIds;
+};
+
 function* saveQuestionSaga() {
   try {
-    const { data: question } = yield select(getQuestionSelector);
+    const question = yield select(getCurrentQuestionSelector);
     const itemDetail = yield select(getItemDetailSelector);
-    const { rowIndex, tabIndex } = history.location.state || {};
 
+    let currentQuestionIds = getQuestionIds(itemDetail);
+    const { rowIndex, tabIndex } = history.location.state || {};
     const { id } = question;
-    // if id is already present, its an update
-    // else a new question
-    const isUpdate = !!id;
+
     const entity = {
-      id: id || uuid(),
       ...question,
       firstMount: false
     };
 
     if (itemDetail && itemDetail.rows) {
-      // if update
-      if (isUpdate) {
-        let { widgets } = itemDetail.rows[rowIndex];
-        widgets = widgets.map(widget => {
-          if (widget.entity.id === entity.id) {
-            widget.entity = entity;
-            return widget;
-          }
-          return widget;
-        });
+      const isNew = currentQuestionIds.filter(item => item === id).length === 0;
 
-        itemDetail.rows[rowIndex].widgets = widgets;
-      } else {
-        // if new entity
+      // if a new question add question
+      if (isNew) {
         itemDetail.rows[rowIndex].widgets.push({
           widgetType: "question",
           type: entity.type,
           title: "Multiple choice",
-          entity,
+          reference: id,
           tabIndex
         });
       }
     }
 
-    delete itemDetail.data;
-    const item = yield call(testItemsApi.updateById, itemDetail._id, itemDetail);
+    currentQuestionIds = getQuestionIds(itemDetail);
+    const allQuestions = yield select(getQuestionsArraySelector);
+    const currentQuestions = allQuestions.filter(q => currentQuestionIds.includes(q.id));
+    const data = {
+      ...itemDetail,
+      data: {
+        questions: currentQuestions
+      }
+    };
+
+    const item = yield call(testItemsApi.updateById, itemDetail._id, data);
     yield put({
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item }
@@ -109,19 +119,13 @@ function* saveQuestionSaga() {
 function* loadQuestionSaga({ payload }) {
   try {
     const { data, rowIndex } = payload;
-    yield put({
-      type: SET_QUESTION_DATA,
-      payload: {
-        data: data.entity
-      }
-    });
-
     const { pathname } = history.location.pathname;
 
+    yield put(changeCurrentQuestionAction(data.reference));
     yield call(history.push, {
       pathname: "/author/questions/edit",
       state: {
-        backText: "question edit  ",
+        backText: "question edit",
         backUrl: pathname,
         rowIndex
       }

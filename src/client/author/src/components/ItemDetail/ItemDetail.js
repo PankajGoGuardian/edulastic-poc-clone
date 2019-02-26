@@ -35,6 +35,7 @@ import ItemHeader from "./ItemHeader";
 import SettingsBar from "./SettingsBar/SettingsBar";
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import TestItemMetadata from "../../../../assessment/components/TestItemMetadata";
+import { getQuestionsSelector } from "../../../sharedDucks/questions";
 
 class ItemDetail extends Component {
   state = {
@@ -197,7 +198,7 @@ class ItemDetail extends Component {
   };
 
   renderPreview = () => {
-    const { rows, item, preview } = this.props;
+    const { rows, item, preview, questions } = this.props;
     return (
       <Content>
         <TestItemPreview
@@ -207,6 +208,7 @@ class ItemDetail extends Component {
           verticalDivider={item.verticalDivider}
           scrolling={item.scrolling}
           style={{ width: "100%" }}
+          questions={questions}
         />
       </Content>
     );
@@ -336,7 +338,8 @@ ItemDetail.propTypes = {
   showAnswer: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   changePreview: PropTypes.func.isRequired,
-  loadQuestion: PropTypes.func.isRequired
+  loadQuestion: PropTypes.func.isRequired,
+  questions: PropTypes.func.isRequired
 };
 
 ItemDetail.defaultProps = {
@@ -354,6 +357,7 @@ const enhance = compose(
       item: getItemDetailSelector(state),
       updating: getItemDetailUpdatingSelector(state),
       type: getItemDetailDimensionTypeSelector(state),
+      questions: getQuestionsSelector(state),
       preview: state.view.preview
     }),
     {

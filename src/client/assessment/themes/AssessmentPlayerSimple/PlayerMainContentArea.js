@@ -18,13 +18,14 @@ const PlayerContentArea = ({
   isLast,
   moveToPrev,
   moveToNext,
+  questions,
   t
 }) => {
   return (
-    <Main skinB={"true"}>
+    <Main skinB="true">
       <MainWrapper>
         <MainContent>
-          <TestItemPreview cols={itemRows} previewTab={previewTab} />
+          <TestItemPreview cols={itemRows} previewTab={previewTab} questions={questions} />
         </MainContent>
         <PlayerFooter
           isLast={isLast}

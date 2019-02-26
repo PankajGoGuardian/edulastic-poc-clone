@@ -1,6 +1,7 @@
 import { testActivityApi, testsApi } from "@edulastic/api";
 import { takeEvery, call, all, put, select } from "redux-saga/effects";
 import { push } from "react-router-redux";
+import { keyBy as _keyBy } from "lodash";
 
 import {
   LOAD_TEST,
@@ -12,7 +13,19 @@ import {
   SET_TEST_ACTIVITY_ID,
   LOAD_SCRATCH_PAD
 } from "../constants/actions";
+import { loadQuestionsAction } from "../actions/questions";
 import { SET_RESUME_STATUS } from "../../student/Assignments/ducks";
+
+const getQuestions = (testItems = []) => {
+  const allQuestions = [];
+
+  testItems.forEach(item => {
+    const { questions = [] } = item.data;
+    allQuestions.push(...questions);
+  });
+
+  return allQuestions;
+};
 
 function* loadTest({ payload }) {
   try {
@@ -33,6 +46,9 @@ function* loadTest({ payload }) {
       }),
       getTestActivity
     ]);
+
+    const questions = getQuestions(test.testItems);
+    yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put({
       type: LOAD_TEST_ITEMS,
       payload: {

@@ -1,11 +1,7 @@
+import { createAction } from "redux-starter-kit";
 import { LOAD_QUESTIONS, GOTO_QUESTION, AUTHOR_QUESTION, ADD_ANSWER } from "../constants/actions";
 
-export const loadQuestions = questions => ({
-  type: LOAD_QUESTIONS,
-  payload: {
-    questions
-  }
-});
+export const loadQuestionsAction = createAction(LOAD_QUESTIONS);
 
 export const gotoQuestion = question => ({
   type: GOTO_QUESTION,

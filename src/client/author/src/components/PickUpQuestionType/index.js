@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import uuid from "uuid/v4";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -23,12 +24,7 @@ import QuestionTypes from "./questionTypes";
 import { getItemSelector } from "../../selectors/items";
 import Header from "./Header";
 import { setQuestionAction } from "../../actions/question";
-
-const makeQuestion = data => ({
-  regionId: "1",
-  widgetType: "question",
-  data
-});
+import { addQuestionAction } from "../../../sharedDucks/questions";
 
 class PickUpQuestionType extends Component {
   state = {
@@ -36,11 +32,17 @@ class PickUpQuestionType extends Component {
     currentTab: "question-tab"
   };
 
+  // when a particular question type is picked, populate the 'authorQuestions' collection
   selectQuestionType = data => {
-    const { setQuestion, history, match, t } = this.props;
-    const question = makeQuestion(data);
+    const { setQuestion, addQuestion, history, match, t } = this.props;
+    const question = {
+      id: uuid(),
+      ...data
+    };
 
-    setQuestion(question.data);
+    setQuestion(question);
+    // add question to the questions store.
+    addQuestion(question);
 
     history.push({
       pathname: "/author/questions/create",
@@ -171,7 +173,8 @@ const enhance = compose(
       item: getItemSelector(state)
     }),
     {
-      setQuestion: setQuestionAction
+      setQuestion: setQuestionAction,
+      addQuestion: addQuestionAction
     }
   )
 );
@@ -180,6 +183,7 @@ PickUpQuestionType.propTypes = {
   history: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   setQuestion: PropTypes.func.isRequired,
+  addQuestion: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired
 };
 

@@ -33,8 +33,9 @@ export default WrappedComponent => {
   const enhance = compose(
     withRouter,
     connect(
-      (state, { data }) => {
-        const { id: qId, activity } = data;
+      (state, data) => {
+        const { questionId: qId, activity } = data;
+        if (!qId) return {};
         let userAnswer;
         if (activity && activity.userResponse) {
           userAnswer = activity.userResponse;

@@ -82,7 +82,8 @@ class AssessmentPlayerDefault extends React.Component {
     checkAnswer: PropTypes.func.isRequired,
     changePreview: PropTypes.func.isRequired,
     history: PropTypes.func.isRequired,
-    windowWidth: PropTypes.number.isRequired
+    windowWidth: PropTypes.number.isRequired,
+    questions: PropTypes.object.isRequired
   };
 
   static defaultProps = {
@@ -216,7 +217,8 @@ class AssessmentPlayerDefault extends React.Component {
       currentItem,
       itemRows,
       evaluation,
-      windowWidth
+      windowWidth,
+      questions
     } = this.props;
 
     const {
@@ -360,7 +362,7 @@ class AssessmentPlayerDefault extends React.Component {
           </Affix>
           <Main skin>
             <MainWrapper>
-              {testItemState === "" && <TestItemPreview cols={itemRows} />}
+              {testItemState === "" && <TestItemPreview cols={itemRows} questions={questions} />}
               {testItemState === "check" && (
                 <TestItemPreview
                   cols={itemRows}
@@ -368,6 +370,7 @@ class AssessmentPlayerDefault extends React.Component {
                   evaluation={evaluation}
                   verticalDivider={item.verticalDivider}
                   scrolling={item.scrolling}
+                  questions={questions}
                 />
               )}
             </MainWrapper>
@@ -385,6 +388,7 @@ const enhance = compose(
     (state, ownProps) => ({
       evaluation: state.evluation,
       preview: state.view.preview,
+      questions: state.assessmentplayerQuestions.byId,
       scratchPad: ownProps.items[ownProps.currentItem]
         ? state.userWork[ownProps.items[ownProps.currentItem]._id] || null
         : null

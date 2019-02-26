@@ -6,7 +6,7 @@ import AssignmentContentWrapper from "../../styled/assignmentContentWrapper";
 import ItemReport from "./ItemReport";
 import { getQuestionsSelector } from "../../sharedDucks/TestItem";
 
-const ReportListContent = ({ questions, flag, title }) => {
+const ReportListContent = ({ questions, flag }) => {
   return (
     <AssignmentsContent flag={flag}>
       <AssignmentContentWrapper>
@@ -28,13 +28,11 @@ export default connect(
 
 ReportListContent.propTypes = {
   flag: PropTypes.bool.isRequired,
-  questions: PropTypes.array,
-  title: PropTypes.string
+  questions: PropTypes.array
 };
 
 ReportListContent.defaultProps = {
-  questions: [],
-  title: "Test"
+  questions: []
 };
 
 const Wrapper = styled.div`

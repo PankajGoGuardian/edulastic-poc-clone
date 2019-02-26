@@ -12,8 +12,18 @@ import { withNamespaces } from "@edulastic/localization";
 import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
 import { Types } from "../constants";
 import { setItemDetailDraggingAction } from "../../../actions/itemDetail";
+import { getQuestionByIdSelector } from "../../../../sharedDucks/questions";
 
-const ItemDetailWidget = ({ widget, onEdit, onDelete, isDragging, connectDragSource, connectDragPreview, t }) =>
+const ItemDetailWidget = ({
+  widget,
+  onEdit,
+  onDelete,
+  isDragging,
+  connectDragSource,
+  connectDragPreview,
+  t,
+  question
+}) =>
   connectDragPreview &&
   connectDragSource &&
   connectDragPreview(
@@ -26,7 +36,7 @@ const ItemDetailWidget = ({ widget, onEdit, onDelete, isDragging, connectDragSou
               type={widget.type}
               view="preview"
               questionId={widget.reference}
-              data={{ ...widget.entity, smallSize: true }}
+              data={{ ...question, smallSize: true }}
             />
           )}
         </div>
@@ -58,6 +68,7 @@ ItemDetailWidget.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   connectDragPreview: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
+  question: PropTypes.object.isRequired,
   rowIndex: PropTypes.number.isRequired,
   widgetIndex: PropTypes.number.isRequired
 };
@@ -89,7 +100,7 @@ function collect(c, monitor) {
 const enhance = compose(
   withNamespaces("default"),
   connect(
-    null,
+    (state, { widget }) => ({ question: getQuestionByIdSelector(state, widget.reference) }),
     { setItemDetailDragging: setItemDetailDraggingAction }
   ),
   DragSource(Types.WIDGET, itemSource, collect)

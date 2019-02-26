@@ -57,7 +57,7 @@ const AssessmentContainer = ({
     if (!isFirst()) gotoQuestion(Number(currentItem) - 1);
   };
 
-  let itemRows = items[currentItem] && items[currentItem].rows;
+  const itemRows = items[currentItem] && items[currentItem].rows;
 
   const props = {
     items,

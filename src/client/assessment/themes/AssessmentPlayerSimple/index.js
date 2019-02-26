@@ -70,8 +70,8 @@ class AssessmentPlayerSimple extends React.Component {
   };
 
   render() {
-    const { theme, t, items, currentItem, view: previewTab } = this.props;
-
+    const { theme, t, items, currentItem, view: previewTab, questions } = this.props;
+    const { showExitPopup } = this.state;
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
     const item = items[currentItem];
@@ -88,12 +88,9 @@ class AssessmentPlayerSimple extends React.Component {
             dropdownOptions={dropdownOptions}
             onCheckAnswer={this.onCheckAnswer}
             t={t}
+            questions={questions}
           />
-          <SubmitConfirmation
-            isVisible={this.state.showExitPopup}
-            onClose={this.hideExitPopup}
-            finishTest={this.finishTest}
-          />
+          <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
         </Container>
       </ThemeProvider>
     );
@@ -103,7 +100,8 @@ class AssessmentPlayerSimple extends React.Component {
 export default connect(
   state => ({
     evaluation: state.evluation,
-    preview: state.view.preview
+    preview: state.view.preview,
+    questions: state.assessmentplayerQuestions.byId
   }),
   {
     checkAnswer: checkAnswerEvaluation

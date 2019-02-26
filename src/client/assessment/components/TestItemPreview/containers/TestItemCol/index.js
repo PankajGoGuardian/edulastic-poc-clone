@@ -22,7 +22,8 @@ class TestItemCol extends Component {
     windowWidth: PropTypes.number.isRequired,
     showFeedback: PropTypes.bool,
     multiple: PropTypes.bool,
-    style: PropTypes.object
+    style: PropTypes.object,
+    questions: PropTypes.object.isRequired
   };
 
   static defaultProps = {
@@ -38,8 +39,10 @@ class TestItemCol extends Component {
   };
 
   renderTabContent = (widget, qIndex) => {
-    const { preview, showFeedback, multiple } = this.props;
+    const { preview, showFeedback, multiple, questions } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
+
+    const question = questions[widget.reference];
     return (
       <Tabs.TabContainer
         style={{
@@ -57,7 +60,7 @@ class TestItemCol extends Component {
           previewTab={preview}
           timespent={timespent}
           questionId={widget.reference}
-          data={{ ...widget.entity, smallSize: true }}
+          data={{ ...question, smallSize: true }}
         />
       </Tabs.TabContainer>
     );

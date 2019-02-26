@@ -129,6 +129,15 @@ const TokenHighlightPreview = ({
         background: theme.widgets.tokenHighlight.incorrectResultBgColor,
         borderColor: theme.widgets.tokenHighlight.incorrectResultBorderColor
       };
+    } else if (previewTab === SHOW) {
+      if (rightAnswers.find(el => el.index === index && el.selected)) {
+        resultStyle = {
+          background: theme.widgets.tokenHighlight.correctResultBgColor,
+          borderColor: theme.widgets.tokenHighlight.correctResultBorderColor
+        };
+      } else {
+        resultStyle = {};
+      }
     } else {
       resultStyle = {};
     }

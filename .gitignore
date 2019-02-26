@@ -18,3 +18,4 @@ cypress/screenshots/
 # vi swap files
 *.sw*
 
+dist/

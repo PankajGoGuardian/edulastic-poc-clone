@@ -14,6 +14,7 @@ import { getClassResponseSelector, getStudentResponseSelector } from "../../../s
 import { getRows } from "../../../src/selectors/itemDetail";
 
 import { Content } from "./styled";
+import { keyBy as _keyBy } from "lodash";
 
 class ClassQuestions extends Component {
   componentDidMount() {
@@ -41,23 +42,24 @@ class ClassQuestions extends Component {
     if (!testItems || !questionActivities) {
       return [];
     }
-    testItems.forEach(({ rows }) => {
-      rows.forEach(({ widgets }) => {
-        widgets.forEach(({ entity }) => {
-          const { id } = entity;
-          let qIndex = 0;
-          let qActivities = questionActivities.filter(({ qid }) => qid === id);
-          qActivities.map(q => {
-            const userQuestion = userQActivities.find(question => question._id === q.qid);
-            if (userQuestion) {
-              q.qIndex = ++qIndex;
-              q.timespent = userQuestion.timespent;
-            }
-          });
-          if (qActivities.length > 0) {
-            [entity.activity] = qActivities;
+    testItems.forEach(({ data }) => {
+      if (!(data && data.questions)) {
+        return;
+      }
+      data.questions.forEach(question => {
+        const { id } = question;
+        let qIndex = 0;
+        let qActivities = questionActivities.filter(({ qid }) => qid === id);
+        qActivities.map(q => {
+          const userQuestion = userQActivities.find(question => question._id === q.qid);
+          if (userQuestion) {
+            q.qIndex = ++qIndex;
+            q.timespent = userQuestion.timespent;
           }
         });
+        if (qActivities.length > 0) {
+          [question.activity] = qActivities;
+        }
       });
     });
     return testItems;
@@ -65,12 +67,15 @@ class ClassQuestions extends Component {
 
   renderPreview = item => {
     const rows = getRows(item);
-
+    //console.log('class question rows',rows,item);
+    const questions = (item.data && item.data.questions) || [];
+    const questionsKeyed = _keyBy(questions, "id");
     return (
       <Content key={item._id}>
         <TestItemPreview
           showFeedback
           cols={rows}
+          questions={questionsKeyed}
           preview="show"
           previewTab="show"
           verticalDivider={item.verticalDivider}

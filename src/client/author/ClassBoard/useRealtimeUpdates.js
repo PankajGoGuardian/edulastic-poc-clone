@@ -67,8 +67,12 @@ const useRealtime = (topic, actionMap, options = {}) => {
 
     return () => {
       console.warn("destroying client");
-      if (client && client.connected) {
-        client.end();
+      if (client) {
+        try {
+          client.end();
+        } catch (e) {
+          console.warn("error ending realtime connection", e.message, e.stack);
+        }
       }
     };
   }, [mqttUrl]);

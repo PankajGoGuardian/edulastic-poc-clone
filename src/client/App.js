@@ -5,10 +5,9 @@ import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 import { compose } from "redux";
 import { test } from "@edulastic/constants";
+import { TestAttemptReview } from "./student/TestAttemptReview";
 
 const { ASSESSMENT, PRACTICE } = test.type;
-
-import { TestAttemptReview } from "./student/TestAttemptReview";
 // route wise splitting
 const AssessmentPlayer = lazy(() => import(/* webpackChunkName: "assessmentPlayer" */ "./assessment/index"));
 const TeacherSignup = lazy(() =>
@@ -45,11 +44,8 @@ class App extends Component {
             <Route path="/AdminSignup" component={AdminSignup} />
             <Route path="/StudentSignup" component={StudentSignup} />
 
-            <Route
-              path={`/student/${ASSESSMENT}/:id/uta/:utaId`}
-              render={() => <AssessmentPlayer defaultAP={true} />}
-            />
-            <Route path={`/student/${ASSESSMENT}/:id`} render={() => <AssessmentPlayer defaultAP={true} />} />
+            <Route path={`/student/${ASSESSMENT}/:id/uta/:utaId`} render={() => <AssessmentPlayer defaultAP />} />
+            <Route path={`/student/${ASSESSMENT}/:id`} render={() => <AssessmentPlayer defaultAP />} />
             <Route path="/student/test-summary" component={TestAttemptReview} />
             <Route path={`/student/${PRACTICE}/:id/uta/:utaId`} render={() => <AssessmentPlayer defaultAP={false} />} />
             <Route path={`/student/${PRACTICE}/:id`} render={() => <AssessmentPlayer defaultAP={false} />} />

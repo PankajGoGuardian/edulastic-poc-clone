@@ -31,7 +31,7 @@ ReactDOM.render(<RootComp />, document.getElementById("react-app"));
 // hmr
 if (module.hot) {
   module.hot.accept("./App", () => {
-    const NextApp = require("./App").default;
+    const NextApp = require("./App").default; // eslint-disable-line global-require
     ReactDOM.render(
       <I18nextProvider i18n={i18n}>
         <Provider store={store}>

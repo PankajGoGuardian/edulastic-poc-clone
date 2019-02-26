@@ -21,7 +21,8 @@ class ClozeWithTextPage {
 
     // correct ans response box
     getResponseBoxByIndex(index) {
-        return cy.get('.template_box > input')
+        return cy.get('.template_box')
+            .find('input')
             .eq(index);
     }
 

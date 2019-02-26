@@ -54,41 +54,6 @@ function removeProhibitedTicks(segmentCoords, segments, ticks, currentPointX) {
   return ticks;
 }
 
-const findAvailableSegmentPointDragPlace = (segmentCoords, segments, ticksDistance, direction) => {
-  const newSegmentCoords = [...segmentCoords];
-
-  do {
-    if (direction) {
-      newSegmentCoords[1] -= ticksDistance;
-    } else {
-      newSegmentCoords[0] += ticksDistance;
-    }
-
-    let isPointInside = false;
-
-    segments.forEach(segment => {
-      if (segment.elType === "segment") {
-        Object.keys(segment.ancestors).forEach(key => {
-          const point = segment.ancestors[key].X();
-
-          if (point >= newSegmentCoords[0] && point <= newSegmentCoords[1]) {
-            isPointInside = true;
-          }
-        });
-      } else if (
-        segment.coords.usrCoords[1] >= newSegmentCoords[0] &&
-        segment.coords.usrCoords[1] <= newSegmentCoords[1]
-      ) {
-        isPointInside = true;
-      }
-    });
-
-    if (!isPointInside) {
-      return direction ? newSegmentCoords[1] : newSegmentCoords[0];
-    }
-  } while (segments);
-};
-
 const handleSegmentPointDrag = (point, board, segment, axis, ticks) => {
   point.on("drag", () => {
     const currentPosition = point.X();
@@ -109,7 +74,7 @@ const handleSegmentPointDrag = (point, board, segment, axis, ticks) => {
     ticks = getSpecialTicks(axis);
     ticks = removeProhibitedTicks(segmentCoords, segments, ticks, currentPosition);
     const newXCoord = getClosestTick(currentPosition, ticks);
-    point.setPosition(JXG.COORDS_BY_USER, [newXCoord, 0]);
+    point.setPosition(window.JXG.COORDS_BY_USER, [newXCoord, 0]);
     previousPointsPositions[prevPosIndex].position = newXCoord;
   });
 };
@@ -122,9 +87,9 @@ const handleStackedSegmentPointDrag = (point, axis, yPosition) => {
     const xMax = axis.point2.X();
 
     if (currentPosition > xMax) {
-      point.setPosition(JXG.COORDS_BY_USER, [xMax, yPosition]);
+      point.setPosition(window.JXG.COORDS_BY_USER, [xMax, yPosition]);
     } else if (currentPosition < xMin) {
-      point.setPosition(JXG.COORDS_BY_USER, [xMin, yPosition]);
+      point.setPosition(window.JXG.COORDS_BY_USER, [xMin, yPosition]);
     }
   });
 };
@@ -207,7 +172,7 @@ const drawVector = (
   stackResponsesSpacing
 ) => {
   const numberlineAxis = board.elements.filter(element => element.elType === "axis" || element.elType === "arrow");
-  const ticksDistance = numberlineAxis[0].ticks[0].getAttribute("ticksDistance");
+  // const ticksDistance = numberlineAxis[0].ticks[0].getAttribute("ticksDistance");
   const segments = board.elements.filter(element => element.elType === "segment" || element.elType === "point");
   const xMin = numberlineAxis[0].point1.X();
   const xMax = numberlineAxis[0].point2.X();
@@ -220,7 +185,7 @@ const drawVector = (
   }
 
   ticks = ticks.sort((a, b) => a - b);
-  const nextTick = ticks[ticks.indexOf(coord) + 1];
+  // const nextTick = ticks[ticks.indexOf(coord) + 1];
 
   if (!stackResponses) {
     if (checkForElementsOnVector(segments, coord, xMin, xMax, vectorDirection)) {
@@ -249,11 +214,11 @@ const drawVector = (
     vector.segmentType = segmentType;
 
     visiblePoint.setAttribute({ snapSizeY: 0.05 });
-    visiblePoint.setPosition(JXG.COORDS_BY_USER, [visiblePoint.X(), calcedYPosition]);
+    visiblePoint.setPosition(window.JXG.COORDS_BY_USER, [visiblePoint.X(), calcedYPosition]);
     board.$board.on("move", () => visiblePoint.moveTo([visiblePoint.X(), calcedYPosition]));
 
     invisiblePoint.setAttribute({ snapSizeY: 0.05 });
-    invisiblePoint.setPosition(JXG.COORDS_BY_USER, [invisiblePoint.X(), calcedYPosition]);
+    invisiblePoint.setPosition(window.JXG.COORDS_BY_USER, [invisiblePoint.X(), calcedYPosition]);
 
     handleStackedSegmentPointDrag(visiblePoint, numberlineAxis[0], calcedYPosition);
 
@@ -344,10 +309,10 @@ const renderAnswer = (board, config, pointIncluded, vectorDirection) => {
   const vector = drawVectorLine(board, visiblePoint, invisiblePoint, vectorDirection, config.colors);
 
   visiblePoint.setAttribute({ snapSizeY: 0.05 });
-  visiblePoint.setPosition(JXG.COORDS_BY_USER, [visiblePoint.X(), config.y]);
+  visiblePoint.setPosition(window.JXG.COORDS_BY_USER, [visiblePoint.X(), config.y]);
 
   invisiblePoint.setAttribute({ snapSizeY: 0.05 });
-  invisiblePoint.setPosition(JXG.COORDS_BY_USER, [invisiblePoint.X(), config.y]);
+  invisiblePoint.setPosition(window.JXG.COORDS_BY_USER, [invisiblePoint.X(), config.y]);
 
   vector.answer = visiblePoint.answer = invisiblePoint.answer = true;
 

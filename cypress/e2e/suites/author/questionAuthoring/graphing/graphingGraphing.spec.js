@@ -1,4 +1,4 @@
-describe('Test Graphing - 1st quadrant', () => {
+describe('Test Graphing - simple', () => {
   before(() => {
     cy.setToken();
   });
@@ -44,6 +44,14 @@ describe('Test Graphing - 1st quadrant', () => {
       .clear()
       .type('Draw a point');
 
+    cy.get('#stimulus')
+      .as('ContextMenu')
+      .should('be.visible');
+
+    cy.get('@ContextMenu')
+      .find('button.ql-formula')
+      .click();
+
     cy.get('input[name="x_min"]')
       .clear()
       .type(-5);
@@ -61,7 +69,6 @@ describe('Test Graphing - 1st quadrant', () => {
       .type(15);
 
     // Tools container
-
     cy.get('div')
       .contains('Tools')
       .parent()
@@ -100,125 +107,39 @@ describe('Test Graphing - 1st quadrant', () => {
       .select('Compare by points');
   });
 
-  const svgWidth = 600;
-  const svgHeight = 600;
+  it('Set Advanced Options', () => {
+    // Layout settings
+    cy.get('input[name="layout_width"]')
+      .clear()
+      .type('600');
 
-  function CreateEvent(eventName, pos, offset) {
-    const ev = new Event(eventName);
-    ev.clientX = pos[0] * svgWidth + offset[0];
-    ev.clientY = pos[1] * svgHeight + offset[1];
+    cy.get('input[name="layout_height"]')
+      .clear()
+      .type('600');
 
-    return ev;
-  }
+    cy.get('input[name="layout_margin"]')
+      .clear()
+      .type('100');
 
-  function CreatePointerDown(xPer, yPer, offsetX, offsetY) {
-    return CreateEvent('pointerdown', [xPer, yPer], [offsetX, offsetY]);
-  }
+    cy.get('input[name="layout_snapto"]')
+      .clear()
+      .type('grid');
 
-  function CreatePointerUp(xPer, yPer, offsetX, offsetY) {
-    return CreateEvent('pointerup', [xPer, yPer], [offsetX, offsetY]);
-  }
-
-
-  // xK - percentage of graph width
-  // yK - percentage of graph height
-  function InvokeBoardTrigger(xK, yK) {
-    cy.get('@Board')
-      .then((board) => {
-        cy.window()
-          .then((window) => {
-            console.log(board);
-
-            const boardRect = board[0].getBoundingClientRect();
-
-            const left = boardRect.left + window.pageXOffset;
-            const { top } = boardRect;
-            const downEvent = CreatePointerDown(xK, yK, left, top);
-            const upEvent = CreatePointerUp(xK, yK, left, top);
-
-            let result = true;
-            console.log(downEvent);
-            console.log(upEvent);
-            try {
-              board[0].dispatchEvent(downEvent);
-              window.document.dispatchEvent(upEvent);
-            } catch (e) {
-              result = false;
-            }
-
-            assert.isTrue(result, 'invoke board trigger');
-          });
-      });
-  }
-
-  // Needed variables - CurrentTool, Board, ClearBtn
-  function TestDraw(tool, points, selector, save = false) {
-    cy.get('@CurrentTool')
-      .select(tool);
-
-    for (let i = 0; i < points.length; i++) {
-      InvokeBoardTrigger(points[i][0], points[i][1]);
-    }
-
-    cy.get('@Board')
-      .find(selector)
-      .should('exist');
-
-    if (!save) {
-      cy.get('@ClearBtn').click();
-
-      cy.get('@Board')
-        .find(selector)
-        .should('not.exist');
-    }
-  }
-
-  it('Set Advance Options', () => {
-    cy.contains('div', 'Advanced Options')
-      .as('AdvancedButton')
+    // Draw label zero
+    cy.contains('Draw label zero')
       .click();
 
-    // Layout settings
-    cy.get('@AdvancedButton')
-      .next()
-      .should('be.visible')
-      .within(() => {
-        cy.get('input[name="layout_width"]')
-          .clear()
-          .type('600');
+    // Display position on hover checkbox
+    cy.contains('Display position on hover')
+      .click();
 
-        cy.get('input[name="layout_height"]')
-          .clear()
-          .type('600');
+    cy.get('[data-cy="numerical"]')
+      .parent()
+      .select('uppercase_alphabet');
 
-        cy.get('input[name="layout_margin"]')
-          .clear()
-          .type('100');
-
-        cy.get('input[name="layout_margin"]')
-          .clear()
-          .type('100');
-
-        cy.get('input[name="layout_snapto"]')
-          .clear()
-          .type('grid');
-
-        // Draw label zero
-        cy.contains('Draw label zero')
-          .click();
-
-        // Display position on hover checkbox
-        cy.contains('Display position on hover')
-          .click();
-
-        cy.get('select')
-          .eq(0)
-          .select('uppercase_alphabet');
-
-        cy.get('select')
-          .eq(1)
-          .select('large');
-      });
+    cy.get('[data-cy="small"]')
+      .parent()
+      .select('large');
 
     // Grid
     cy.contains('Axis X')
@@ -277,6 +198,7 @@ describe('Test Graphing - 1st quadrant', () => {
           .clear()
           .type('ordinate');
 
+
         cy.contains('Hide ticks')
           .click();
 
@@ -294,7 +216,7 @@ describe('Test Graphing - 1st quadrant', () => {
       });
 
 
-    // Background image
+    /* Background image */
     cy.get('input[name="src"]')
       .type('https://www.cypress.io/img/logo-dark.36f3e062.png');
 
@@ -328,21 +250,106 @@ describe('Test Graphing - 1st quadrant', () => {
       .find('svg image')
       .should('exist');
 
-    cy.get('@AdvancedButton').click();
+    // Controls
+    cy.contains('Controls')
+      .parent()
+      .should('be.visible')
+      .within(() => {
+        cy.contains('ADD TOOL')
+          .click();
+
+        cy.get('[data-cy="selectStyle"]')
+          .last()
+          .select('Reset');
+      });
   });
+
+  const svgWidth = 600;
+  const svgHeight = 600;
+
+  function CreateEvent(eventName, pos, offset) {
+    const ev = new Event(eventName);
+    ev.clientX = pos[0] * svgWidth + offset[0];
+    ev.clientY = pos[1] * svgHeight + offset[1];
+
+    return ev;
+  }
+
+  function CreatePointerDown(xPer, yPer, offsetX, offsetY) {
+    return CreateEvent('pointerdown', [xPer, yPer], [offsetX, offsetY]);
+  }
+
+  function CreatePointerUp(xPer, yPer, offsetX, offsetY) {
+    return CreateEvent('pointerup', [xPer, yPer], [offsetX, offsetY]);
+  }
+
+  // xK - percentage of graph width
+  // yK - percentage of graph height
+  function InvokeBoardTrigger(xK, yK) {
+    cy.get('@Board')
+      .then((board) => {
+        cy.window()
+          .then((window) => {
+            console.log(board);
+
+            const boardRect = board[0].getBoundingClientRect();
+
+            const left = boardRect.left + window.pageXOffset;
+            const { top } = boardRect;
+            const downEvent = CreatePointerDown(xK, yK, left, top);
+            const upEvent = CreatePointerUp(xK, yK, left, top);
+
+            let result = true;
+            console.log(downEvent);
+            console.log(upEvent);
+            try {
+              board[0].dispatchEvent(downEvent);
+              window.document.dispatchEvent(upEvent);
+            } catch (e) {
+              result = false;
+            }
+
+            assert.isTrue(result, 'invoke board trigger');
+          });
+      });
+  }
+
+  // Needed variables - CurrentTool, Board, ResetBtn
+  function TestDraw(tool, points, selector, save = false) {
+    cy.get('@CurrentTool')
+      .select(tool);
+
+    for (let i = 0; i < points.length; i++) {
+      InvokeBoardTrigger(points[i][0], points[i][1]);
+    }
+
+    cy.get('@Board')
+      .find(selector)
+      .should('exist');
+
+    if (!save) {
+      cy.get('@ResetBtn').click();
+
+      cy.get('@Board')
+        .find(selector)
+        .should('not.exist');
+    }
+  }
 
   it('Set Correct Answer', () => {
     cy.get('select[data-cy="selectStyle"]')
       .eq(0)
       .as('CurrentTool');
 
-    cy.get('svg[width="600"]')
+    cy.get('[data-cy="axis-quadrants-container"] svg')
+      .last()
       .parent()
       .as('Board');
 
     // Clear button
-    cy.contains('Clear')
-      .as('ClearBtn');
+    cy.contains('Reset')
+      .eq(0)
+      .as('ResetBtn');
 
     TestDraw('Point', [[0.6, 0.6]], 'ellipse[fill="#00b2ff"]');
     TestDraw('Line', [[0.6, 0.6], [0.3, 0.3]], 'line[stroke="#00b2ff"]');
@@ -365,6 +372,7 @@ describe('Test Graphing - 1st quadrant', () => {
     cy.route('PUT', '**/testitem/**').as('saveItem');
     cy.route('GET', '**/testitem/**').as('reload');
 
+
     cy.contains('div', 'SAVE')
       .should('be.visible')
       .click();
@@ -373,18 +381,22 @@ describe('Test Graphing - 1st quadrant', () => {
     cy.wait('@reload');
 
     cy.contains('PREVIEW').should('be.visible');
+
     cy.contains('PREVIEW').click();
   });
 
   it('Check Answers', () => {
+    cy.contains('clearAnswer');
+
     // Set board variable for InvokeBoardTrigger function
-    cy.get('svg[width=600]')
+    cy.get('[data-cy="axis-quadrants-container"] svg')
+      .last()
       .parent()
       .as('Board');
 
     // Clear button
-    cy.contains('Clear')
-      .as('ClearBtn');
+    cy.contains('Reset')
+      .as('ResetBtn');
 
     cy.contains('Show Answers')
       .click();
@@ -394,14 +406,15 @@ describe('Test Graphing - 1st quadrant', () => {
       .find('ellipse[fill="#ffcb00"]')
       .should('exist');
 
-    cy.get('@ClearBtn')
+    cy.get('@ResetBtn')
       .click();
 
     /* Draw red point */
-    InvokeBoardTrigger(0.6, 0.7);
+    InvokeBoardTrigger(0.2, 0.4);
 
     cy.get('button')
       .contains('Check Answer')
+      .parent()
       .as('CheckAnswer')
       .click();
 
@@ -410,11 +423,11 @@ describe('Test Graphing - 1st quadrant', () => {
       .find('ellipse[fill="#ee1658"]')
       .should('exist');
 
-    cy.get('@ClearBtn')
+    cy.get('@ResetBtn')
       .click();
 
     /* Draw correct answer */
-    InvokeBoardTrigger(0.5, 0.5);
+    InvokeBoardTrigger(0.6, 0.6);
 
     cy.get('@CheckAnswer')
       .click();

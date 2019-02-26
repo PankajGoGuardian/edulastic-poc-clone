@@ -423,7 +423,7 @@ class GraphContainer extends Component {
     }
   }
 
-  getHandlerByControlName = control => {
+  getHandlerByControlName = (control) => {
     switch (control) {
       case "undo":
         return this.onUndo();
@@ -577,7 +577,7 @@ class GraphContainer extends Component {
     const hasAnnotation =
       annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
     return (
-      <div style={{ overflow: "auto", width: "100%" }}>
+      <div data-cy="axis-quadrants-container" style={{ overflow: "auto", width: "100%" }}>
         <GraphWrapper>
           {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
           <Tools

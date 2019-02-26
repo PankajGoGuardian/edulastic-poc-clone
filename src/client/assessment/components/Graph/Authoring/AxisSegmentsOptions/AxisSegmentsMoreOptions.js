@@ -5,7 +5,6 @@ import { withNamespaces } from "@edulastic/localization";
 import { Checkbox, Select } from "@edulastic/common";
 import {
   MoreOptionsContainer,
-  MoreOptionsDivider,
   MoreOptionsInput,
   MoreOptionsLabel,
   MoreOptionsRow,
@@ -135,8 +134,7 @@ class AxisSegmentsMoreOptions extends Component {
       fillSections,
       cleanSections
     } = this.props;
-    console.log(this.props);
-    const { layout, minWidth, currentRenderingBaseItem, labelDisplaySpecPoints } = this.state;
+    const { layout, minWidth, currentRenderingBaseItem } = this.state;
     return (
       <Fragment>
         <QuestionSection
@@ -332,9 +330,9 @@ class AxisSegmentsMoreOptions extends Component {
                   <MoreOptionsLabel>{t("component.graphing.ticksoptions.minorTicks")}</MoreOptionsLabel>
                   <MoreOptionsInput
                     type="text"
-                    defaultValue="600px"
+                    defaultValue="1"
                     name="minorTicks"
-                    onChange={this.handleInputChange}
+                    onChange={this.handleNumberlineInputChange}
                     value={numberlineAxis.minorTicks}
                   />
                 </MoreOptionsRow>
@@ -349,12 +347,6 @@ class AxisSegmentsMoreOptions extends Component {
                     currentItem={currentRenderingBaseItem}
                     onChangeRenderingBase={this.changeRenderingBase}
                   />
-                  {/* <Select
-                    style={{ width: '80%' }}
-                    onChange={val => this.handleSelect('renderingBase', val)}
-                    options={renderingBaseList}
-                    value={renderingBase}
-                  /> */}
                 </MoreOptionsRow>
               </MoreOptionsColumn>
             </MoreOptionsColumnContainer>
@@ -415,6 +407,8 @@ class AxisSegmentsMoreOptions extends Component {
 
 AxisSegmentsMoreOptions.propTypes = {
   t: PropTypes.func.isRequired,
+  cleanSections: PropTypes.func.isRequired,
+  fillSections: PropTypes.func.isRequired,
   numberlineAxis: PropTypes.object.isRequired,
   canvasConfig: PropTypes.object.isRequired,
   options: PropTypes.object.isRequired,

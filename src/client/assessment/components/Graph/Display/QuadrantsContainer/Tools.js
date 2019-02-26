@@ -112,9 +112,11 @@ export default function Tools(props) {
 Tools.propTypes = {
   tool: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   tools: PropTypes.array,
+  shapes: PropTypes.bool,
+  controls: PropTypes.shape.isRequired,
   getIconByToolName: PropTypes.func.isRequired,
+  getHandlerByControlName: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
-  onReset: PropTypes.func.isRequired,
   fontSize: PropTypes.number
 };
 

@@ -28,7 +28,7 @@ export function findPoint(elements, coords) {
       return;
     }
 
-    if (JXG.isPoint(elements[key])) {
+    if (window.JXG.isPoint(elements[key])) {
       if (elements[key].coords.usrCoords[1] === x && elements[key].coords.usrCoords[2] === y) {
         result = elements[key];
         found = true;

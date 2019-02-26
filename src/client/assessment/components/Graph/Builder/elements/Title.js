@@ -1,6 +1,5 @@
 import { calcMeasure, lineLabelCoord } from "../utils";
 import { defaultTextParameters } from "../settings";
-// import { JXG } from '..';
 
 const renderTitle = (board, title) => {
   const [x, y] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
@@ -17,7 +16,7 @@ const renderTitle = (board, title) => {
     highlightCssClass: "title",
     visible: true
   });
-  point.label.setPosition(JXG.COORDS_BY_USER, [board.$board.plainBB[0], calcY]);
+  point.label.setPosition(window.JXG.COORDS_BY_USER, [board.$board.plainBB[0], calcY]);
   return point;
 };
 

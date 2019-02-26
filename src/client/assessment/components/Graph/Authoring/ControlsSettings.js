@@ -6,7 +6,6 @@ import { Button, Select } from "@edulastic/common";
 import {
   MoreOptionsContainer,
   MoreOptionsRow,
-  MoreOptionsDivider,
   MoreOptionsSubHeading,
   Row,
   Col,

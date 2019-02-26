@@ -273,7 +273,11 @@ class GraphDisplay extends Component {
         separationDistanceY: numberlineAxis && parseInt(numberlineAxis.separationDistanceY, 10),
         renderingBase: numberlineAxis && numberlineAxis.renderingBase,
         specificPoints: numberlineAxis && numberlineAxis.specificPoints,
-        fractionsFormat: numberlineAxis && numberlineAxis.fractionsFormat
+        fractionsFormat: numberlineAxis && numberlineAxis.fractionsFormat,
+        minorTicks: numberlineAxis && parseFloat(numberlineAxis.minorTicks),
+        showLabels: numberlineAxis && numberlineAxis.showLabels,
+        labelShowMax: numberlineAxis && numberlineAxis.labelShowMax,
+        labelShowMin: numberlineAxis && numberlineAxis.labelShowMin
       },
       layout: {
         width: ui_style.layout_width,

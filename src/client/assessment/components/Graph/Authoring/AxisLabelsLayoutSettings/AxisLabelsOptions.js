@@ -90,6 +90,8 @@ const AxisLabelsOptions = ({ t, graphData, setOptions, setNumberline, setCanvas,
 
 AxisLabelsOptions.propTypes = {
   t: PropTypes.func.isRequired,
+  cleanSections: PropTypes.func.isRequired,
+  fillSections: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
   setOptions: PropTypes.func.isRequired,
   setNumberline: PropTypes.func.isRequired,

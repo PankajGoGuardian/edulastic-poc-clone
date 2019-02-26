@@ -69,7 +69,7 @@ class SideMenu extends Component {
     };
   }
 
-  handleMenu = e => {
+  handleMenu = (e) => {
     const { history, windowWidth } = this.props;
     if (menuItems[e.key].path !== undefined) {
       history.push(`/${menuItems[e.key].path}`);
@@ -84,7 +84,7 @@ class SideMenu extends Component {
     toggleSideBar();
   };
 
-  handleVisibleChange = flag => {
+  handleVisibleChange = (flag) => {
     this.setState({ isVisible: flag });
   };
 

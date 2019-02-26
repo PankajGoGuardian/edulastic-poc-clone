@@ -1,13 +1,11 @@
 import {
   orderPoints,
-  findSegmentPosition,
   findAvailableStackedSegmentPosition,
   getClosestTick,
   getSpecialTicks
 } from "../utils";
 import { CONSTANT, Colors } from "../config";
 import { defaultPointParameters } from "../settings";
-//import { JXG } from '../index';
 
 const previousPointsPositions = [];
 
@@ -29,25 +27,6 @@ export function removeBusyTicks(segments, ticks) {
   return ticks;
 }
 
-const findAvailablePointDragPlace = (pointCoord, segments, ticksDistance, direction) => {
-  do {
-    if (direction) {
-      pointCoord -= ticksDistance;
-    } else {
-      pointCoord += ticksDistance;
-    }
-
-    let isPointInside = false;
-
-    let isSpaceAvailable = checkForElementsOnPoint(segments, currentPosition);
-    isPointInside = !isSpaceAvailable;
-
-    if (!isPointInside) {
-      return pointCoord;
-    }
-  } while (segments);
-};
-
 const handlePointDrag = (point, board, ticksDistance, axis) => {
   point.on("drag", () => {
     const currentPosition = point.X();
@@ -56,10 +35,6 @@ const handlePointDrag = (point, board, ticksDistance, axis) => {
       .filter(element => element.elType === "segment" || element.elType === "point")
       .filter(element => element.id !== point.id);
 
-    const xMin = axis.point1.X();
-    const xMax = axis.point2.X();
-
-    let isSpaceAvailable = checkForElementsOnPoint(segments, currentPosition);
     let prevPosIndex;
 
     previousPointsPositions.forEach((element, index) => {
@@ -71,7 +46,7 @@ const handlePointDrag = (point, board, ticksDistance, axis) => {
     let ticks = getSpecialTicks(axis);
     ticks = removeBusyTicks(segments, ticks);
     let newXCoord = getClosestTick(currentPosition, ticks);
-    point.setPosition(JXG.COORDS_BY_USER, [newXCoord, 0]);
+    point.setPosition(window.JXG.COORDS_BY_USER, [newXCoord, 0]);
     previousPointsPositions[prevPosIndex].position = newXCoord;
   });
 };
@@ -84,9 +59,9 @@ const handleStackedPointDrag = (point, axis, yPosition) => {
     const xMax = axis.point2.X();
 
     if (currentPosition > xMax) {
-      point.setPosition(JXG.COORDS_BY_USER, [xMax, yPosition]);
+      point.setPosition(window.JXG.COORDS_BY_USER, [xMax, yPosition]);
     } else if (currentPosition < xMin) {
-      point.setPosition(JXG.COORDS_BY_USER, [xMin, yPosition]);
+      point.setPosition(window.JXG.COORDS_BY_USER, [xMin, yPosition]);
     }
   });
 };
@@ -168,7 +143,7 @@ const onHandler = (stackResponses, stackResponsesSpacing) => (board, coord) => {
     point.segmentType = "segmentsPoint";
 
     point.setAttribute({ snapSizeY: 0.05 });
-    point.setPosition(JXG.COORDS_BY_USER, [point.X(), calcedYPosition]);
+    point.setPosition(window.JXG.COORDS_BY_USER, [point.X(), calcedYPosition]);
     board.$board.on("move", () => point.moveTo([point.X(), calcedYPosition]));
 
     handleStackedPointDrag(point, numberlineAxis[0], calcedYPosition);
@@ -182,7 +157,7 @@ const renderAnswer = (board, config) => {
   point.answer = true;
 
   point.setAttribute({ snapSizeY: 0.05 });
-  point.setPosition(JXG.COORDS_BY_USER, [point.X(), config.y]);
+  point.setPosition(window.JXG.COORDS_BY_USER, [point.X(), config.y]);
 
   return point;
 };

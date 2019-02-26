@@ -105,7 +105,7 @@ class Board {
 
     this.events = _events();
 
-    this.$board = JXG.JSXGraph.initBoard(id, mergeParams(getDefaultConfig(), this.parameters));
+    this.$board = window.JXG.JSXGraph.initBoard(id, mergeParams(getDefaultConfig(), this.parameters));
     this.$board.setZoom(1, 1);
     this.$board.on(CONSTANT.EVENT_NAMES.DOWN, () => {
       this.dragDetector.start(this.$board.drag_position);
@@ -321,8 +321,6 @@ class Board {
       this.elements = this.elements.filter(element => element.elType !== "point");
 
       points.forEach(p => this.removeObject(p));
-      // const numberlineAxis = this.elements.filter(element => element.elType === 'axis' || element.elType === 'arrow');
-      // points.forEach(p => NumberlinePoint.handlePointDrag(p, this, null, numberlineAxis[0]));
       points.forEach(p => {
         console.log("p", p);
         const newPoint = NumberlinePoint.onHandler(this.stackResponses, this.stackResponsesSpacing)(this, p.X());
@@ -330,6 +328,21 @@ class Board {
         this.elements.push(newPoint);
       });
       console.log("graphType === axisSegments this.elements", this.elements);
+    }
+
+    if (graphType === 'axisSegments') {
+      const points = this.elements.filter(element => element.elType === 'point');
+      console.log('graphType === axisSegments points', points);
+      this.elements = this.elements.filter(element => element.elType !== 'point');
+
+      points.forEach(p => this.removeObject(p));
+      points.forEach((p) => {
+        console.log('p', p);
+        const newPoint = NumberlinePoint.onHandler(this.stackResponses, this.stackResponsesSpacing)(this, p.X());
+        console.log('newPoint', newPoint);
+        this.elements.push(newPoint);
+      });
+      console.log('graphType === axisSegments this.elements', this.elements);
     }
 
     this.$board.fullUpdate();
@@ -430,10 +443,10 @@ class Board {
 
   getCoords(e) {
     // index of the finger that is used to extract the coordinates
-    const i = e[JXG.touchProperty] ? 1 : 0;
+    const i = e[window.JXG.touchProperty] ? 1 : 0;
     const pos = i ? this.$board.getMousePosition(e) : this.$board.getMousePosition(e, 0);
 
-    return new JXG.Coords(JXG.COORDS_BY_SCREEN, [pos[0], pos[1]], this.$board);
+    return new window.JXG.Coords(window.JXG.COORDS_BY_SCREEN, [pos[0], pos[1]], this.$board);
   }
 
   /**
@@ -485,17 +498,17 @@ class Board {
     this.abortTool();
     const config = this.elements.map(e => {
       switch (e.type) {
-        case JXG.OBJECT_TYPE_POINT:
+        case window.JXG.OBJECT_TYPE_POINT:
           return Point.getConfig(e);
-        case JXG.OBJECT_TYPE_LINE:
+        case window.JXG.OBJECT_TYPE_LINE:
           return Line.getConfig(e);
-        case JXG.OBJECT_TYPE_CIRCLE:
+        case window.JXG.OBJECT_TYPE_CIRCLE:
           return Circle.getConfig(e);
-        case JXG.OBJECT_TYPE_POLYGON:
+        case window.JXG.OBJECT_TYPE_POLYGON:
           return Polygon.getConfig(e);
-        case JXG.OBJECT_TYPE_CURVE:
+        case window.JXG.OBJECT_TYPE_CURVE:
           return Parabola.getConfig(e);
-        case JXG.OBJECT_TYPE_TEXT:
+        case window.JXG.OBJECT_TYPE_TEXT:
           return Mark.getConfig(e);
         default:
           throw new Error("Unknown element type:", e.name, e.type);
@@ -645,7 +658,7 @@ class Board {
       ...this.loadObjects(config, ({ objectCreator, el }) => {
         const { _type, colors = {} } = el;
         let type;
-        if (_type === JXG.OBJECT_TYPE_CURVE) {
+        if (_type === window.JXG.OBJECT_TYPE_CURVE) {
           type = el.type === CONSTANT.TOOLS.PARABOLA ? CONSTANT.TOOLS.PARABOLA : CONSTANT.TOOLS.SIN;
         } else {
           ({ type } = el);
@@ -737,7 +750,7 @@ class Board {
     const objects = [];
     objectArray.forEach(el => {
       switch (el._type) {
-        case JXG.OBJECT_TYPE_POINT:
+        case window.JXG.OBJECT_TYPE_POINT:
           objects.push(
             mixProps({
               el,
@@ -752,7 +765,7 @@ class Board {
             })
           );
           break;
-        case JXG.OBJECT_TYPE_LINE:
+        case window.JXG.OBJECT_TYPE_LINE:
           objects.push(
             mixProps({
               el,
@@ -777,7 +790,7 @@ class Board {
             })
           );
           break;
-        case JXG.OBJECT_TYPE_CIRCLE:
+        case window.JXG.OBJECT_TYPE_CIRCLE:
           objects.push(
             mixProps({
               el,
@@ -802,7 +815,7 @@ class Board {
             })
           );
           break;
-        case JXG.OBJECT_TYPE_POLYGON:
+        case window.JXG.OBJECT_TYPE_POLYGON:
           objects.push(
             mixProps({
               el,
@@ -823,7 +836,7 @@ class Board {
             })
           );
           break;
-        case JXG.OBJECT_TYPE_CURVE:
+        case window.JXG.OBJECT_TYPE_CURVE:
           objects.push(
             mixProps({
               el,
@@ -852,7 +865,7 @@ class Board {
             })
           );
           break;
-        case JXG.OBJECT_TYPE_TEXT:
+        case window.JXG.OBJECT_TYPE_TEXT:
           objects.push(
             mixProps({
               el,

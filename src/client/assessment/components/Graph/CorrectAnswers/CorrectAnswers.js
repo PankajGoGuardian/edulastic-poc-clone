@@ -106,14 +106,14 @@ class CorrectAnswers extends Component {
             {this.renderAltResponses()}
           </Tabs>
           {value === 0 && (
-            <TabContainer>
-              <CorrectAnswer
-                graphData={graphData}
-                response={validation.valid_response}
-                onUpdateValidationValue={this.updateValidationValue}
-                onUpdatePoints={this.handleUpdateCorrectScore}
-              />
-            </TabContainer>
+          <TabContainer>
+            <CorrectAnswer
+              graphData={graphData}
+              response={validation.valid_response}
+              onUpdateValidationValue={this.updateValidationValue}
+              onUpdatePoints={this.handleUpdateCorrectScore}
+            />
+          </TabContainer>
           )}
           {validation.alt_responses &&
             !!validation.alt_responses.length &&
@@ -143,6 +143,7 @@ CorrectAnswers.propTypes = {
   onAddAltResponses: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
+  onRemoveAltResponses: PropTypes.func.isRequired,
   question: PropTypes.object.isRequired
 };
 

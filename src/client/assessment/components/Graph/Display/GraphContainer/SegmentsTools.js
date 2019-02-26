@@ -63,7 +63,6 @@ SegmentsTools.propTypes = {
 };
 
 SegmentsTools.defaultProps = {
-  graphType: "axisSegments",
   fontSize: 14,
   tool: {
     toolIndex: 0,

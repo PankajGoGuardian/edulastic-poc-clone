@@ -36,8 +36,6 @@ function getInputCoords(element, board) {
       const [x, y] = calcLineLabelPosition(element);
       if (element.hasLabel) {
         return [
-          // element.label.coords.usrCoords[1],
-          // element.label.coords.usrCoords[2]
           x,
           y
         ];
@@ -45,8 +43,6 @@ function getInputCoords(element, board) {
       element.setLabel("");
       element.label.setAttribute({ visible: false });
       return [
-        // element.label.coords.usrCoords[1],
-        // element.label.coords.usrCoords[2]
         x,
         y
       ];

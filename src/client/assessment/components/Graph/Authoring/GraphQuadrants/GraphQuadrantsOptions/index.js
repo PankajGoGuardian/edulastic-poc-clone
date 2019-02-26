@@ -6,7 +6,6 @@ import QuadrantsMoreOptions from "./QuadrantsMoreOptions";
 import { ScoreSettings, ControlsSettings, AnnotationSettings, QuestionSection } from "../..";
 
 const GraphQuadrantsOptions = ({
-  t,
   graphData,
   fontSizeList,
   stemNumerationList,
@@ -52,6 +51,10 @@ const GraphQuadrantsOptions = ({
 
 GraphQuadrantsOptions.propTypes = {
   t: PropTypes.func.isRequired,
+  cleanSections: PropTypes.func.isRequired,
+  fillSections: PropTypes.func.isRequired,
+  setControls: PropTypes.func.isRequired,
+  setValidation: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
   stemNumerationList: PropTypes.array.isRequired,
   fontSizeList: PropTypes.array.isRequired,

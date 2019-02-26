@@ -6,7 +6,6 @@ import {
   MoreOptionsContainer,
   MoreOptionsColumn,
   MoreOptionsColumnContainer,
-  MoreOptionsDivider,
   MoreOptionsLabel,
   MoreOptionsRow,
   MoreOptionsSubHeading

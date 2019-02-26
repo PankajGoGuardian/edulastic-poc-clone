@@ -102,11 +102,11 @@ export const StyledScoreProgress = styled(Progress)`
   .ant-progress-bg {
     height: 16px !important;
     background: ${props =>
-      props.percent >= 50
-        ? props.theme.skillReport.greenColor
-        : props.percent >= 30
+    (props.percent >= 50
+      ? props.theme.skillReport.greenColor
+      : props.percent >= 30
         ? props.theme.skillReport.yellowColor
-        : props.theme.skillReport.redColor};
+        : props.theme.skillReport.redColor)};
   }
 `;
 
@@ -118,10 +118,10 @@ export const StyledProgress = styled(Progress)`
   .ant-progress-bg {
     height: 16px !important;
     background: ${props =>
-      props.percent >= 50
-        ? props.theme.skillReport.greenColor
-        : props.percent >= 30
+    (props.percent >= 50
+      ? props.theme.skillReport.greenColor
+      : props.percent >= 30
         ? props.theme.skillReport.yellowColor
-        : props.theme.skillReport.redColor};
+        : props.theme.skillReport.redColor)};
   }
 `;

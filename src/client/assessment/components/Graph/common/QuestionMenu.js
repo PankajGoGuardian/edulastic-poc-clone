@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import styled from "styled-components";
 
@@ -56,6 +57,13 @@ class QuestionMenu extends Component {
     );
   }
 }
+
+QuestionMenu.propTypes = {
+  activeTab: PropTypes.number.isRequired,
+  main: PropTypes.shape.isRequired,
+  advanced: PropTypes.shape.isRequired,
+  isSidebarCollapsed: PropTypes.bool.isRequired
+};
 
 export default connect(({ authorUi }) => ({
   isSidebarCollapsed: authorUi.isSidebarCollapsed

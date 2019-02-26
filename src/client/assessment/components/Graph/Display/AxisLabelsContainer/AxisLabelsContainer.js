@@ -446,7 +446,7 @@ class AxisLabelsContainer extends Component {
     const { layout } = this.props;
 
     return (
-      <div style={{ overflow: "auto" }}>
+      <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
         <GraphWrapper>
           <div>
             <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
@@ -472,16 +472,14 @@ AxisLabelsContainer.propTypes = {
   validation: PropTypes.object.isRequired,
   elements: PropTypes.array.isRequired,
   showAnswer: PropTypes.bool,
-  checkAnswer: PropTypes.bool,
-  changePreviewTab: PropTypes.func
+  checkAnswer: PropTypes.bool
 };
 
 AxisLabelsContainer.defaultProps = {
   list: [],
   evaluation: null,
   showAnswer: false,
-  checkAnswer: false,
-  changePreviewTab: () => {}
+  checkAnswer: false
 };
 
 export default AxisLabelsContainer;

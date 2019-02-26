@@ -21,7 +21,6 @@ import {
   IconNotIncludedToInfinitySegment,
   IconTrash
 } from "@edulastic/icons";
-// import { graph } from '@edulastic/evaluators';
 import Tools from "./Tools";
 import SegmentsTools from "./SegmentsTools";
 import { makeBorder } from "../../Builder/index";
@@ -33,7 +32,6 @@ import {
   defaultGridParameters
 } from "../../Builder/settings";
 import { GraphWrapper, JSXBox } from "./styled";
-// import { Segment } from '../../Builder/elements';
 
 class GraphContainer extends Component {
   constructor(props) {
@@ -78,7 +76,8 @@ class GraphContainer extends Component {
       showAnswer,
       answer,
       list,
-      graphType
+      graphType,
+      numberlineAxis
     } = this.props;
 
     this._graph = makeBorder(this._graphId);

@@ -60,40 +60,31 @@ describe('Test Graphing - number line', () => {
   });
 
   it('Set Advanced Options', () => {
-    cy.contains('div', 'Advanced Options')
-      .as('AdvancedButton')
+    // Layout settings
+    // cy.get('input[name="layout_width"]')
+    //   .clear()
+    //   .type('1100');
+
+    cy.get('input[name="margin"]')
+      .clear()
+      .type('30');
+
+    cy.get('input[name="stackResponsesSpacing"]')
+      .clear()
+      .type('50');
+
+    cy.contains('Show max arrow')
       .click();
 
-    // Layout settings
-    cy.get('@AdvancedButton')
-      .next()
-      .should('be.visible')
-      .within(() => {
-        // cy.get('input[name="layout_width"]')
-        //   .clear()
-        //   .type('1100');
+    cy.contains('Show min arrow')
+      .click();
 
-        cy.get('input[name="margin"]')
-          .clear()
-          .type('30');
+    // cy.contains('Stack responses')
+    //   .click();
 
-        cy.get('input[name="stackResponsesSpacing"]')
-          .clear()
-          .type('50');
-
-        cy.contains('Show max arrow')
-          .click();
-
-        cy.contains('Show min arrow')
-          .click();
-
-        cy.contains('Stack responses')
-          .click();
-
-        cy.get('select')
-          .eq(1)
-          .select('Large');
-      });
+    cy.get('[data-cy="10"]')
+      .parent()
+      .select('Large');
 
     // Grid
     cy.contains('Ticks')
@@ -122,12 +113,10 @@ describe('Test Graphing - number line', () => {
       .within(() => {
 
       });
-
-    cy.get('@AdvancedButton').click();
   });
 
   const svgWidth = 600;
-  const svgHeight = 300;
+  const svgHeight = 150;
 
   function CreateEvent(eventName, pos, offset) {
     const ev = new Event(eventName);
@@ -199,81 +188,6 @@ describe('Test Graphing - number line', () => {
     }
   }
 
-  it('Select Correct Answer', () => {
-    cy.get('.tool-btn-icon')
-      .eq(9)
-      .as('ClearTool');
-
-    cy.get(`svg[height="${svgHeight}"]`)
-      .as('Board');
-
-    /* Draw Point */
-    TestDraw([[0.5, 0.3]], 'ellipse[fill="#00b2ff"]');
-
-    /* Draw line 1 */
-    cy.get('.tool-btn-icon')
-      .eq(1)
-      .click();
-
-    TestDraw([[0.5, 0.5]], 'line[fill="#00b2ff"]');
-
-    /* Draw line 2 */
-    cy.get('.tool-btn-icon')
-      .eq(2)
-      .click();
-
-    TestDraw([[0.5, 0.5]], 'line[fill="#00b2ff"]');
-
-    /* Draw line 3 */
-    cy.get('.tool-btn-icon')
-      .eq(3)
-      .click();
-
-    TestDraw([[0.5, 0.5]], 'line[fill="#00b2ff"]');
-
-    /* Draw line 4 */
-    cy.get('.tool-btn-icon')
-      .eq(4)
-      .click();
-
-    TestDraw([[0.5, 0.5]], 'line[fill="#00b2ff"]');
-
-    /* Draw line 5 */
-    cy.get('.tool-btn-icon')
-      .eq(5)
-      .click();
-
-    TestDraw([[0.5, 0.5]], 'line[fill="#00b2ff"]');
-
-    /* Draw line 6 */
-    cy.get('.tool-btn-icon')
-      .eq(6)
-      .click();
-
-    TestDraw([[0.5, 0.5]], 'line[fill="#00b2ff"]');
-
-    /* Draw line 7 */
-    cy.get('.tool-btn-icon')
-      .eq(7)
-      .click();
-
-    TestDraw([[0.5, 0.5]], 'line[fill="#00b2ff"]');
-
-    /* Draw line 8 */
-    cy.get('.tool-btn-icon')
-      .eq(8)
-      .click();
-
-    TestDraw([[0.5, 0.5]], 'line[fill="#00b2ff"]');
-
-    /* Draw line 8 */
-    cy.get('.tool-btn-icon')
-      .eq(8)
-      .click();
-
-    TestDraw([[0.5, 0.5]], 'line[fill="#00b2ff"]', true);
-  });
-
   it('Visit Preview Page', () => {
     cy.server();
     cy.route('PUT', '**/testitem/**').as('saveItem');
@@ -290,60 +204,4 @@ describe('Test Graphing - number line', () => {
     cy.contains('PREVIEW').click();
   });
 
-  it('Check Answers', () => {
-    // Set board variable for InvokeBoardTrigger function
-    cy.get('svg')
-      .should('have.id')
-      .and('match', /jxgbox/)
-      .as('Board');
-
-    // Clear button
-    cy.contains('Clear')
-      .as('ClearBtn');
-
-    cy.contains('Show Answers')
-      .click();
-
-    // Yellow point (correct answer)
-    cy.get('@Board')
-      .find('ellipse[fill="#ffcb00"]')
-      .should('exist');
-
-    cy.get('@ClearBtn')
-      .click();
-
-    /* Draw red point */
-    cy.get('.tool-btn-icon')
-      .eq(8)
-      .click();
-
-    InvokeBoardTrigger(0.3, 0.5);
-
-    cy.get('button')
-      .contains('Check Answer')
-      .as('CheckAnswer')
-      .click();
-
-    // Red point
-    cy.get('@Board')
-      .find('ellipse[fill="#ee1658"]')
-      .should('exist');
-
-    cy.get('@ClearBtn')
-      .click();
-
-    /* Draw correct answer */
-    cy.get('.tool-btn-icon')
-      .eq(8)
-      .click();
-
-    InvokeBoardTrigger(0.5, 0.5);
-
-    cy.get('@CheckAnswer')
-      .click();
-
-    cy.get('@Board')
-      .find('ellipse[fill="#1fe3a1"]')
-      .should('exist');
-  });
 });

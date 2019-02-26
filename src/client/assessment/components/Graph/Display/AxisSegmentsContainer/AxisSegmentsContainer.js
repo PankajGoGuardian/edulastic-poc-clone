@@ -628,7 +628,7 @@ class AxisSegmentsContainer extends Component {
     const { layout, graphType, canvas } = this.props;
     const { selectedTool } = this.state;
     return (
-      <div style={{ overflow: "auto" }}>
+      <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
         <GraphWrapper>
           <div>
             <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />

@@ -1,6 +1,6 @@
 import { clone } from "lodash";
 import { defaultTextParameters } from "../settings";
-import { calcMeasure, checkMarksRenderSpace, calcRoundedToTicksDistance, getClosestTick } from "../utils";
+import { calcMeasure, checkMarksRenderSpace, getClosestTick } from "../utils";
 
 const snapMark = (
   mark,
@@ -14,7 +14,7 @@ const snapMark = (
   board
 ) => {
   mark.on("up", () => {
-    const setCoords = JXG.COORDS_BY_USER;
+    const setCoords = window.JXG.COORDS_BY_USER;
     let x;
     let y;
 
@@ -92,7 +92,7 @@ const renderMarkAnswer = (board, config, measure) => {
     frozen: true
   });
   point.setLabel(config.point);
-  point.label.setPosition(JXG.COORDS_BY_USER, [config.position - measure[0], config.y + measure[1]]);
+  point.label.setPosition(window.JXG.COORDS_BY_USER, [config.position - measure[0], config.y + measure[1]]);
   point.label.setText(config.point);
   point.label.setAttribute({
     ...defaultTextParameters(),
@@ -197,7 +197,6 @@ const updateMarksContainer = (board, xMin, xMax, containerSettings) => {
 const updateText = (oldText, newText) => oldText.setText(newText);
 
 const checkForTextUpdate = (marks, elements) => {
-  // Try to rewrite with lodash differenceBy
   marks.forEach(mark => {
     elements.forEach(element => {
       if (element.id === mark.id) {
@@ -233,7 +232,7 @@ const swapCoordinates = (swappedMarks, board, containerSettings) => {
   const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
 
   newPositions.forEach(group => {
-    group.point.setPositionDirectly(JXG.COORDS_BY_USER, group.newCoords, group.oldCoords);
+    group.point.setPositionDirectly(window.JXG.COORDS_BY_USER, group.newCoords, group.oldCoords);
 
     if (group.point.Y() >= containerY - markYMeasure * 1.35) {
       group.mark.setAttribute({

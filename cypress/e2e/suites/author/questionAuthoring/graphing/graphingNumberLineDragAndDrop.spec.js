@@ -35,7 +35,7 @@ describe('Test Graphing - number line with drag and drop', () => {
       .contains('Number line with drag & drop')
       .click();
 
-    cy.get('div')
+    cy.get('[data-placeholder="Enter your question"]')
       .find('[contenteditable]')
       .eq(0)
       .focus()
@@ -146,59 +146,5 @@ describe('Test Graphing - number line with drag and drop', () => {
 
     cy.contains('PREVIEW').click();
   });
-
-  it('Check Answers', () => {
-    // Set board variable for InvokeBoardTrigger function
-    cy.get(`svg[width=${svgWidth}]`)
-      .as('Board');
-
-    // Clear button
-    cy.contains('Clear')
-      .as('ClearBtn');
-
-    cy.contains('Show Answers')
-      .click();
-
-    // Yellow point (correct answer)
-    cy.get('@Board')
-      .find('ellipse[fill="#ffcb00"]')
-      .should('exist');
-
-    cy.get('@ClearBtn')
-      .click();
-
-    /* Draw red point */
-    cy.get('.tool-btn-icon')
-      .eq(8)
-      .click();
-
-    InvokeBoardTrigger(0.3, 0.5);
-
-    cy.get('button')
-      .contains('Check Answer')
-      .as('CheckAnswer')
-      .click();
-
-    // Red point
-    cy.get('@Board')
-      .find('ellipse[fill="#ee1658"]')
-      .should('exist');
-
-    cy.get('@ClearBtn')
-      .click();
-
-    /* Draw correct answer */
-    cy.get('.tool-btn-icon')
-      .eq(8)
-      .click();
-
-    InvokeBoardTrigger(0.5, 0.5);
-
-    cy.get('@CheckAnswer')
-      .click();
-
-    cy.get('@Board')
-      .find('ellipse[fill="#1fe3a1"]')
-      .should('exist');
-  });
+  
 });

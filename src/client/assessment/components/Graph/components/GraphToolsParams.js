@@ -272,7 +272,6 @@ const Tool = props => {
     selectWidth,
     index,
     onDelete,
-    // default_tool,
     deleteToolStyles
   } = props;
 

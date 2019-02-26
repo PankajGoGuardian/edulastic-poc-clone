@@ -109,6 +109,8 @@ class AxisSegments extends Component {
 
 AxisSegments.propTypes = {
   t: PropTypes.func.isRequired,
+  cleanSections: PropTypes.func.isRequired,
+  fillSections: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired
 };

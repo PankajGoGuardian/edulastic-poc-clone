@@ -376,6 +376,8 @@ class AxisLabelsMoreOptions extends Component {
 
 AxisLabelsMoreOptions.propTypes = {
   t: PropTypes.func.isRequired,
+  cleanSections: PropTypes.func.isRequired,
+  fillSections: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
   fontSizeList: PropTypes.array.isRequired,
   fractionsFormatList: PropTypes.array.isRequired,

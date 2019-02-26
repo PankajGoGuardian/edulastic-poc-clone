@@ -1,14 +1,11 @@
 import { CONSTANT, Colors } from "../config";
 import {
-  findSegmentPosition,
   orderPoints,
-  calcRoundedToTicksDistance,
   findAvailableStackedSegmentPosition,
   getClosestTick,
   getSpecialTicks
 } from "../utils";
 import { defaultPointParameters } from "../settings";
-//import { JXG } from '../index';
 
 const previousPointsPositions = [];
 
@@ -55,44 +52,6 @@ function removeProhibitedTicks(segmentCoords, segments, ticks, currentPointX) {
   return ticks;
 }
 
-// Pass current segment coords, all segments except handling one, ticks distance of numerline axis,
-// drag direction (true = point with bigger coord is dragging now, false = point with smaller coord is dragging now)
-// Function return first available place for coordinate (depends on direction)
-const findAvailableSegmentPointDragPlace = (segmentCoords, segments, ticksDistance, direction) => {
-  const newSegmentCoords = [...segmentCoords];
-
-  do {
-    if (direction) {
-      newSegmentCoords[1] -= ticksDistance;
-    } else {
-      newSegmentCoords[0] += ticksDistance;
-    }
-
-    let isPointInside = false;
-
-    segments.forEach(segment => {
-      if (segment.elType === "segment") {
-        Object.keys(segment.ancestors).forEach(key => {
-          const point = segment.ancestors[key].X();
-
-          if (point >= newSegmentCoords[0] && point <= newSegmentCoords[1]) {
-            isPointInside = true;
-          }
-        });
-      } else if (
-        segment.coords.usrCoords[1] >= newSegmentCoords[0] &&
-        segment.coords.usrCoords[1] <= newSegmentCoords[1]
-      ) {
-        isPointInside = true;
-      }
-    });
-
-    if (!isPointInside) {
-      return direction ? newSegmentCoords[1] : newSegmentCoords[0];
-    }
-  } while (segments);
-};
-
 const findAvailableSegmentDragPlace = (segmentCoords, segments, ticksDistance, direction) => {
   const newSegmentCoords = [...segmentCoords];
 
@@ -137,21 +96,6 @@ const findAvailableSegmentDragPlace = (segmentCoords, segments, ticksDistance, d
   } while (segments);
 };
 
-function findSimilarLength(ticks, segmentLength) {
-  const firstPointTicks = [];
-  const secondPointTicks = [];
-  console.log("segmentLength", segmentLength, segmentLength.toFixed(5));
-  for (let i = 0; i < ticks.length - 1; i++) {
-    const len = Math.abs(ticks[i] - ticks[i + 1]);
-    console.log("len", len, len.toFixed(5));
-    if (len.toFixed(5) === segmentLength.toFixed(5)) {
-      firstPointTicks.push(ticks[i]);
-      secondPointTicks.push(ticks[i + 1]);
-    }
-  }
-  return [firstPointTicks, secondPointTicks];
-}
-
 // Pass board, handling segment, ticksDistance, numberlineAxis
 // Check if there an element inside after segment dragging, then find closest available space and put segment there
 const handleSegmentDrag = (board, segment, ticksDistance, axis) => {
@@ -161,15 +105,7 @@ const handleSegmentDrag = (board, segment, ticksDistance, axis) => {
       .filter(element => element.id !== segment.id);
 
     const segmentPoints = orderPoints([segment.point1.X(), segment.point2.X()]);
-    const roundedPoints = [
-      calcRoundedToTicksDistance(segmentPoints[0], ticksDistance),
-      calcRoundedToTicksDistance(segmentPoints[1], ticksDistance)
-    ];
 
-    const xMin = axis.point1.X();
-    const xMax = axis.point2.X();
-
-    let isSpaceAvailable = true;
     let prevPosIndex;
     let newCoords;
 
@@ -190,8 +126,8 @@ const handleSegmentDrag = (board, segment, ticksDistance, axis) => {
     newCoords[1] = getClosestTick(segmentPoints[1], ticks);
 
     if (newCoords) {
-      segment.point1.setPosition(JXG.COORDS_BY_USER, [newCoords[0], 0]);
-      segment.point2.setPosition(JXG.COORDS_BY_USER, [newCoords[1], 0]);
+      segment.point1.setPosition(window.JXG.COORDS_BY_USER, [newCoords[0], 0]);
+      segment.point2.setPosition(window.JXG.COORDS_BY_USER, [newCoords[1], 0]);
     }
 
     previousPointsPositions.forEach((element, index) => {
@@ -232,8 +168,8 @@ const handleStackedSegmentDrag = (segment, ticksDistance, axis, yPosition) => {
     }
 
     if (newCoords) {
-      segment.point1.setPosition(JXG.COORDS_BY_USER, [newCoords[0], yPosition]);
-      segment.point2.setPosition(JXG.COORDS_BY_USER, [newCoords[1], yPosition]);
+      segment.point1.setPosition(window.JXG.COORDS_BY_USER, [newCoords[0], yPosition]);
+      segment.point2.setPosition(window.JXG.COORDS_BY_USER, [newCoords[1], yPosition]);
     }
   });
 };
@@ -260,7 +196,7 @@ const handleSegmentPointDrag = (point, board, ticksDistance, segment, axis, tick
     ticks = getSpecialTicks(axis);
     ticks = removeProhibitedTicks(segmentCoords, segments, ticks, currentPosition);
     const newXCoord = getClosestTick(currentPosition, ticks);
-    point.setPosition(JXG.COORDS_BY_USER, [newXCoord, 0]);
+    point.setPosition(window.JXG.COORDS_BY_USER, [newXCoord, 0]);
     previousPointsPositions[prevPosIndex].position = newXCoord;
   });
 };
@@ -273,9 +209,9 @@ const handleStackedSegmentPointDrag = (point, axis, yPosition) => {
     const xMax = axis.point2.X();
 
     if (currentPosition > xMax) {
-      point.setPosition(JXG.COORDS_BY_USER, [xMax, yPosition]);
+      point.setPosition(window.JXG.COORDS_BY_USER, [xMax, yPosition]);
     } else if (currentPosition < xMin) {
-      point.setPosition(JXG.COORDS_BY_USER, [xMin, yPosition]);
+      point.setPosition(window.JXG.COORDS_BY_USER, [xMin, yPosition]);
     }
   });
 };
@@ -392,11 +328,11 @@ const drawSegment = (board, coord, leftIncluded, rightIncluded, segmentType, sta
     const secondPoint = drawPoint(board, coord, ticksDistance, rightIncluded, false, calcedYPosition);
 
     firstPoint.setAttribute({ snapSizeY: 0.05 });
-    firstPoint.setPosition(JXG.COORDS_BY_USER, [firstPoint.X(), calcedYPosition]);
+    firstPoint.setPosition(window.JXG.COORDS_BY_USER, [firstPoint.X(), calcedYPosition]);
     board.$board.on("move", () => firstPoint.moveTo([firstPoint.X(), calcedYPosition]));
 
     secondPoint.setAttribute({ snapSizeY: 0.05 });
-    secondPoint.setPosition(JXG.COORDS_BY_USER, [secondPoint.X(), calcedYPosition]);
+    secondPoint.setPosition(window.JXG.COORDS_BY_USER, [secondPoint.X(), calcedYPosition]);
     board.$board.on("move", () => secondPoint.moveTo([secondPoint.X(), calcedYPosition]));
 
     const segment = drawLine(board, firstPoint, secondPoint);
@@ -482,10 +418,10 @@ const renderAnswer = (board, config, leftIncluded, rightIncluded) => {
   const segment = drawLine(board, firstPoint, secondPoint, config.lineColor);
 
   firstPoint.setAttribute({ snapSizeY: 0.05 });
-  firstPoint.setPosition(JXG.COORDS_BY_USER, [firstPoint.X(), config.y]);
+  firstPoint.setPosition(window.JXG.COORDS_BY_USER, [firstPoint.X(), config.y]);
 
   secondPoint.setAttribute({ snapSizeY: 0.05 });
-  secondPoint.setPosition(JXG.COORDS_BY_USER, [secondPoint.X(), config.y]);
+  secondPoint.setPosition(window.JXG.COORDS_BY_USER, [secondPoint.X(), config.y]);
 
   segment.answer = firstPoint.answer = secondPoint.answer = true;
 

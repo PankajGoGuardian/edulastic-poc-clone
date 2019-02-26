@@ -289,10 +289,10 @@ export function updatePointParameters(elements, attr, isSwitchToGrid) {
 
   Object.keys(elements).forEach(key => {
     const el = elements[key];
-    if (el.type === JXG.OBJECT_TYPE_POINT) {
+    if (el.type === window.JXG.OBJECT_TYPE_POINT) {
       el.setAttribute(attr);
       if (isSwitchToGrid) {
-        el.setPositionDirectly(JXG.COORDS_BY_USER, Point.roundCoords(el.coords.usrCoords));
+        el.setPositionDirectly(window.JXG.COORDS_BY_USER, Point.roundCoords(el.coords.usrCoords));
       }
     } else {
       updatePointParameters(Object.values(el.ancestors), attr, isSwitchToGrid);

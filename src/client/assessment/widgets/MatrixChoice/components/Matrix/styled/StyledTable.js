@@ -5,7 +5,6 @@ export const StyledTable = styled(Table)`
   table {
     font-size: ${props => props.fontSize};
     border: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
-
     tbody {
       border-collapse: collapse;
     }

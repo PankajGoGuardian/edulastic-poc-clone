@@ -945,7 +945,8 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           valid_response: {
             score: 1,
             value: []
-          }
+          },
+          alt_responses: []
         }
       },
       onSelectQuestionType
@@ -1002,7 +1003,8 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           valid_response: {
             score: 1,
             value: []
-          }
+          },
+          alt_responses: []
         },
         canvas: {
           x_max: 10,
@@ -1027,7 +1029,11 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => {
           separationDistanceY: 20,
           renderingBase: "min-value-based",
           specificPoints: "",
-          fractionsFormat: "not-normalized-fractions"
+          fractionsFormat: "not-normalized-fractions",
+          minorTicks: 1,
+          labelShowMin: true,
+          labelShowMax: true,
+          showLabels: true
         },
         ui_style: {
           gridVisible: false,

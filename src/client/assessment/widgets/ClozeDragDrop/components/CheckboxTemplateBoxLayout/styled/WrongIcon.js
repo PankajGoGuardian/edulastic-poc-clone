@@ -4,7 +4,6 @@ import { IconClose } from "@edulastic/icons";
 export const WrongIcon = styled(IconClose)`
   width: 8px;
   height: 8px;
-
   fill: ${props => props.theme.widgets.clozeDragDrop.wrongIconColor};
   &:hover {
     fill: ${props => props.theme.widgets.clozeDragDrop.wrongIconColor};

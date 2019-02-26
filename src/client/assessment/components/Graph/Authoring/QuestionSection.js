@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
 
@@ -15,9 +16,17 @@ class QuestionSection extends Component {
 
   render() {
     const { children, marginLast } = this.props;
-    return <Section marginLast={marginLast}>{children}</Section>;
+    return <Section marginLast={marginLast}>{children}</Section>
   }
 }
+
+QuestionSection.propTypes = {
+  section: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  marginLast: PropTypes.number,
+  cleanSections: PropTypes.func.isRequired,
+  fillSections: PropTypes.func.isRequired
+};
 
 const Section = styled.section`
   padding: 20px 35px;

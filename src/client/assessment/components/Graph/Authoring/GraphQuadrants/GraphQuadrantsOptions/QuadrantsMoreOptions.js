@@ -483,6 +483,8 @@ class QuadrantsMoreOptions extends Component {
 
 QuadrantsMoreOptions.propTypes = {
   t: PropTypes.func.isRequired,
+  cleanSections: PropTypes.func.isRequired,
+  fillSections: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
   stemNumerationList: PropTypes.array.isRequired,
   fontSizeList: PropTypes.array.isRequired,

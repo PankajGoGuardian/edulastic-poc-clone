@@ -15,7 +15,7 @@ import AxisSmallSize from "./components/AxisSmallSize";
 import { AxisSegments, GraphAxisLabels, GraphQuadrants, QuestionSection } from "./Authoring";
 import { CorrectAnswers } from "./CorrectAnswers";
 import { GraphDisplay } from "./Display";
-import { WithResourcesHOC, WithResources, useResources } from "../../../utils";
+import { WithResources } from "../../../utils";
 
 const EmptyWrapper = styled.div``;
 

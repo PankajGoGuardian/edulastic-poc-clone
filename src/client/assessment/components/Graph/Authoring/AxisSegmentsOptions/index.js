@@ -80,6 +80,8 @@ const AxisSegmentsOptions = ({ t, setCanvas, setOptions, setNumberline, fillSect
 
 AxisSegmentsOptions.propTypes = {
   t: PropTypes.func.isRequired,
+  cleanSections: PropTypes.func.isRequired,
+  fillSections: PropTypes.func.isRequired,
   setCanvas: PropTypes.func.isRequired,
   setNumberline: PropTypes.func.isRequired,
   setOptions: PropTypes.func.isRequired,

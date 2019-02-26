@@ -5,7 +5,6 @@ import { SortableElement } from "react-sortable-hoc";
 import DeleteButton from "../../common/DeleteButton";
 import DragHandle from "../../common/DragHandle";
 import { Container, Item, StyledDragHandle, StyledTextarea } from "../../common/styled_components";
-// import { CustomQuillComponent } from '@edulastic/common';
 
 const OrderListItem = SortableElement(({ children, onQuestionsChange, onDeleteQuestion }) => (
   <Container>
@@ -14,14 +13,6 @@ const OrderListItem = SortableElement(({ children, onQuestionsChange, onDeleteQu
         <DragHandle />
       </StyledDragHandle>
 
-      {/* <CustomQuillComponent
-        readOnly={false}
-        toolbarId={`id${index}`}
-        onChange={onQuestionsChange}
-        showResponseBtn={false}
-        value={children}
-        style={{ minHeight: '50px', padding: 10 }}
-      /> */}
       <StyledTextarea className="small" value={children} onChange={e => onQuestionsChange(e.target.value)} />
     </Item>
     <DeleteButton onDelete={onDeleteQuestion} />

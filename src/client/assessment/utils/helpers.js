@@ -1,3 +1,5 @@
+import { groupBy, intersection } from "lodash";
+
 export const getFontSize = fontSize => {
   switch (fontSize) {
     case "small":
@@ -59,7 +61,7 @@ export const preventEvent = e => {
   e.preventDefault();
 };
 
-export const getInputSelection = (el) => {
+export const getInputSelection = el => {
   let start = 0;
 
   let end = 0;
@@ -74,7 +76,7 @@ export const getInputSelection = (el) => {
 
   let endRange;
 
-  if (typeof el.selectionStart === 'number' && typeof el.selectionEnd === 'number') {
+  if (typeof el.selectionStart === "number" && typeof el.selectionEnd === "number") {
     start = el.selectionStart;
     end = el.selectionEnd;
   } else {
@@ -82,7 +84,7 @@ export const getInputSelection = (el) => {
 
     if (range && range.parentElement() === el) {
       len = el.value.length;
-      normalizedValue = el.value.replace(/\r\n/g, '\n');
+      normalizedValue = el.value.replace(/\r\n/g, "\n");
 
       // Create a working TextRange that lives only in the input
       textInputRange = el.createTextRange();
@@ -94,18 +96,18 @@ export const getInputSelection = (el) => {
       endRange = el.createTextRange();
       endRange.collapse(false);
 
-      if (textInputRange.compareEndPoints('StartToEnd', endRange) > -1) {
+      if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
         // eslint-disable-next-line no-multi-assign
         start = end = len;
       } else {
-        start = -textInputRange.moveStart('character', -len);
-        start += normalizedValue.slice(0, start).split('\n').length - 1;
+        start = -textInputRange.moveStart("character", -len);
+        start += normalizedValue.slice(0, start).split("\n").length - 1;
 
-        if (textInputRange.compareEndPoints('EndToEnd', endRange) > -1) {
+        if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
           end = len;
         } else {
-          end = -textInputRange.moveEnd('character', -len);
-          end += normalizedValue.slice(0, end).split('\n').length - 1;
+          end = -textInputRange.moveEnd("character", -len);
+          end += normalizedValue.slice(0, end).split("\n").length - 1;
         }
       }
     }
@@ -115,4 +117,26 @@ export const getInputSelection = (el) => {
     start,
     end
   };
+};
+
+// group standards into domains.
+export const groupByDomains = (standardsArray, selectedGrades) => {
+  const grouped = groupBy(standardsArray, "tloId");
+  const domainIds = Object.keys(grouped);
+  const domains = domainIds.map(id => {
+    const allStandards = grouped[id];
+    const standards = allStandards.map(({ _id, identifier, grades }) => ({
+      id: _id,
+      name: identifier,
+      grades: intersection(grades, selectedGrades)
+    }));
+
+    return {
+      identifier: allStandards[0].tloDescription,
+      id: allStandards[0].tloId,
+      standards
+    };
+  });
+
+  return domains;
 };

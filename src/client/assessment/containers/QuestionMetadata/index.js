@@ -16,17 +16,20 @@ import {
   clearDictStandardsAction
 } from "../../../author/src/actions/dictionaries";
 import {
-  getCurriculumsListSelector,
-  getStandardsListSelector
-} from '../../../author/src/selectors/dictionaries';
-import {
   setQuestionAlignmentAddRowAction,
   setQuestionAlignmentRemoveRowAction,
   setQuestionDataAction,
-  getQuestionAlignmentSelector,
   getQuestionDataSelector
-} from '../../../author/QuestionEditor/ducks';
-import selectsData from '../../../author/TestPage/components/common/selectsData';
+} from "../../../author/QuestionEditor/ducks";
+import selectsData from "../../../author/TestPage/components/common/selectsData";
+
+import {
+  addAlignmentAction,
+  getQuestionAlignmentSelector,
+  removeAlignmentAction
+} from "../../../author/sharedDucks/questions";
+
+import { getCurriculumsListSelector, getStandardsListSelector } from "../../../author/src/selectors/dictionaries";
 
 import { RowContainer } from "./styled/RowContainer";
 import { ItemBody } from "./styled/ItemBody";
@@ -40,6 +43,7 @@ import { AddButtonContainer } from "./styled/AddButtonContainer";
 import { IconTrash } from "./styled/IconTrash";
 import { IconPencilEdit } from "./styled/IconPencilEdit";
 import { SelectSuffixIcon } from "./styled/SelectSuffixIcon";
+import { groupByDomains } from "../../utils/helpers";
 
 const handleFilter = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
@@ -78,8 +82,8 @@ class QuestionMetadata extends Component {
       authorDifficulty: PropTypes.string
     }).isRequired,
     getCurriculumStandards: PropTypes.func.isRequired,
-    setQuestionAlignmentAddRow: PropTypes.func.isRequired,
-    setQuestionAlignmentRemoveRow: PropTypes.func.isRequired,
+    addAlignment: PropTypes.func.isRequired,
+    removeAlignment: PropTypes.func.isRequired,
     clearDictStandards: PropTypes.func.isRequired,
     setQuestionData: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired
@@ -99,22 +103,31 @@ class QuestionMetadata extends Component {
   };
 
   handleEditRow = (index, rowData) => () => {
+    const domains = rowData.domain;
+    const standards = [];
+    domains.forEach(domain => {
+      if (domain.standards) {
+        standards.push(...domain.standards);
+      }
+    });
+    const grades = _.intersection(standards.map(standard => standard.grades));
+    console.log("grades is", grades);
     this.setState({
       isEditRow: true,
-      grades: [],
+      grades: _.flatten(grades),
       curriculum: rowData.curriculum,
       curriculumId: rowData.curriculumId,
       subject: rowData.subject,
-      standards: rowData.standards
+      standards
     });
-    const { setQuestionAlignmentRemoveRow, clearDictStandards } = this.props;
+    const { clearDictStandards, removeAlignment } = this.props;
     clearDictStandards();
-    setQuestionAlignmentRemoveRow(index);
+    removeAlignment(rowData.curriculumId);
   };
 
-  handleDeleteRow = index => () => {
-    const { setQuestionAlignmentRemoveRow } = this.props;
-    setQuestionAlignmentRemoveRow(index);
+  handleDeleteRow = curriculumId => () => {
+    const { removeAlignment } = this.props;
+    removeAlignment(curriculumId);
   };
 
   handleCurriculumSelect = (curriculumId, option) => {
@@ -147,8 +160,10 @@ class QuestionMetadata extends Component {
       "grades",
       "identifier",
       "tloId",
+      "tloDescription",
       "eloId",
-      "subEloId"
+      "subEloId",
+      "description"
     ]);
     const newStandards = [...standards, newStandard];
     this.setState({ standards: newStandards });
@@ -161,9 +176,18 @@ class QuestionMetadata extends Component {
   };
 
   handleSaveRow = () => {
-    const { setQuestionAlignmentAddRow } = this.props;
-    const newAlignmentRow = _.pick(this.state, ["curriculum", "curriculumId", "subject", "standards"]);
-    setQuestionAlignmentAddRow(newAlignmentRow);
+    const { addAlignment } = this.props;
+    const { curriculum, curriculumId, standards, subject, grades } = this.state;
+    const domain = groupByDomains(standards, grades);
+
+    const alignment = {
+      curriculum,
+      curriculumId,
+      subject,
+      domain
+    };
+
+    addAlignment(alignment);
     this.setState({
       isEditRow: false,
       grades: [],
@@ -195,9 +219,13 @@ class QuestionMetadata extends Component {
   }
 
   renderShowAlignmentRow(row, index) {
-    const { curriculum, standards } = row;
+    const { curriculum, domain } = row;
     const { t } = this.props;
-    const standardsArr = standards.map(el => el.identifier);
+    let standardsArr = [];
+    domain.forEach(item => {
+      standardsArr = [...standardsArr, ...item.standards];
+    });
+
     return (
       <RowContainer key={index}>
         <ItemBody>
@@ -214,7 +242,7 @@ class QuestionMetadata extends Component {
           >
             {standardsArr.map(el => (
               <Select.Option key={el} value={el}>
-                {el}
+                {el.name}
               </Select.Option>
             ))}
           </Select>
@@ -224,7 +252,7 @@ class QuestionMetadata extends Component {
             <Button htmlType="button" onClick={this.handleEditRow(index, row)} shape="circle">
               <IconPencilEdit />
             </Button>
-            <Button htmlType="button" onClick={this.handleDeleteRow(index)} shape="circle">
+            <Button htmlType="button" onClick={this.handleDeleteRow(row.curriculumId)} shape="circle">
               <IconTrash />
             </Button>
           </Buttons>
@@ -236,7 +264,7 @@ class QuestionMetadata extends Component {
   renderEditAlignmentRow() {
     const { curriculums, curriculumStandards, alignment, t } = this.props;
     const { curriculumId, subject, standards, grades } = this.state;
-    const standardsArr = standards.map(el => el.identifier);
+    const standardsArr = standards.map(el => el.name);
     const alignmentCurriculumsArr = alignment.map(el => el.curriculumId);
     const availableCurriculums = curriculums.filter(el => !alignmentCurriculumsArr.includes(el._id));
     return (
@@ -406,7 +434,9 @@ const enhance = compose(
       setQuestionAlignmentAddRow: setQuestionAlignmentAddRowAction,
       setQuestionAlignmentRemoveRow: setQuestionAlignmentRemoveRowAction,
       setQuestionData: setQuestionDataAction,
-      clearDictStandards: clearDictStandardsAction
+      clearDictStandards: clearDictStandardsAction,
+      addAlignment: addAlignmentAction,
+      removeAlignment: removeAlignmentAction
     }
   )
 );

@@ -160,8 +160,6 @@ Container.propTypes = {
   showAnswer: PropTypes.func.isRequired,
   changeView: PropTypes.func.isRequired,
   question: PropTypes.object,
-
-  match: PropTypes.object,
   saveQuestion: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   testItemId: PropTypes.func.isRequired

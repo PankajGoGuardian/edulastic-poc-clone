@@ -7,17 +7,18 @@ exports.default = void 0;
 
 var getPenaltyScore = function getPenaltyScore(_ref) {
   var score = _ref.score,
-      evaluation = _ref.evaluation,
-      penalty = _ref.penalty;
-  var count = Object.keys(evaluation).length;
-  var wrongCount = Object.values(evaluation).reduce(function (acc, val) {
+    evaluation = _ref.evaluation,
+    penalty = _ref.penalty,
+    rightLen = _ref.rightLen;
+  var count = rightLen || Object.keys(evaluation).length;
+  var wrongCount = Object.values(evaluation).reduce(function(acc, val) {
     if (!val) {
       acc += 1;
     }
 
     return acc;
   }, 0);
-  var result = score - penalty / count * wrongCount;
+  var result = score - (penalty / count) * wrongCount;
   return result < 0 ? 0 : result;
 };
 

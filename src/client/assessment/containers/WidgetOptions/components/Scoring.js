@@ -6,7 +6,7 @@ import { cloneDeep } from "lodash";
 import { Input, Checkbox, Select, Col } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
-import { rounding } from "@edulastic/constants";
+import { rounding, evaluationType } from "@edulastic/constants";
 
 import { setQuestionDataAction } from "../../../../author/src/actions/question";
 import { getQuestionDataSelector } from "../../../../author/src/selectors/question";
@@ -142,7 +142,7 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
             </FormGroup>
           </Col>
 
-          {questionData.validation.scoring_type === "partialMatchV2" && (
+          {questionData.validation.scoring_type === evaluationType.PARTIAL_MATCH && (
             <Col md={12}>
               <Label>{t("component.options.rounding")}</Label>
               <Select

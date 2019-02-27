@@ -18,7 +18,7 @@ import withPoints from "../../components/HOC/withPoints";
 import { Subtitle } from "../../styled/Subtitle";
 import { EDIT } from "../../constants/constantsForQuestions";
 
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction, setFirstMountAction } from "../../../author/src/actions/question";
 
 import GroupPossibleResponses from "./components/GroupPossibleResponses";
 import ClassificationPreview from "./ClassificationPreview";
@@ -36,14 +36,14 @@ const actions = {
   SORTEND: "SORTEND"
 };
 
-const EditClassification = ({ item, setQuestionData, theme, t }) => {
+const EditClassification = ({ item, setQuestionData, setFirstMount, theme, t }) => {
   const { stimulus, ui_style, firstMount } = item;
 
   const [correctTab, setCorrectTab] = useState(0);
 
   useEffect(
     () => () => {
-      setQuestionData({ ...item, firstMount: false });
+      setFirstMount(item.id);
     },
     []
   );
@@ -462,6 +462,7 @@ const EditClassification = ({ item, setQuestionData, theme, t }) => {
 EditClassification.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
+  setFirstMount: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired
 };
@@ -471,7 +472,7 @@ const enhance = compose(
   withTheme,
   connect(
     null,
-    { setQuestionData: setQuestionDataAction }
+    { setQuestionData: setQuestionDataAction, setFirstMount: setFirstMountAction }
   )
 );
 

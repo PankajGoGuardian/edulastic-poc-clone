@@ -7,7 +7,7 @@ import {
   SET_QUESTION,
   LOAD_QUESTION
 } from "../constants/actions";
-import { UPDATE_QUESTION } from "../../sharedDucks/questions";
+import { UPDATE_QUESTION, SET_FIRST_MOUNT } from "../../sharedDucks/questions";
 
 export const receiveQuestionByIdAction = id => ({
   type: RECEIVE_QUESTION_REQUEST,
@@ -23,6 +23,11 @@ export const saveQuestionAction = () => ({
 export const setQuestionDataAction = question => ({
   type: UPDATE_QUESTION,
   payload: question
+});
+
+export const setFirstMountAction = id => ({
+  type: SET_FIRST_MOUNT,
+  id
 });
 
 export const setQuestionAlignmentAddRowAction = alignmentRow => ({

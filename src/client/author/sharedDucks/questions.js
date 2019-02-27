@@ -5,6 +5,7 @@ import { values as _values } from "lodash";
 // actions types
 export const LOAD_QUESTIONS = "[author questions] load questions";
 export const UPDATE_QUESTION = "[author questions] update questions";
+export const SET_FIRST_MOUNT = "[author questions] set first mount";
 export const ADD_QUESTION = "[author questions] add question";
 export const CHANGE_CURRENT_QUESTION = "[author quesitons] change current question";
 
@@ -12,6 +13,7 @@ export const CHANGE_CURRENT_QUESTION = "[author quesitons] change current questi
 export const loadQuestionsAction = createAction(LOAD_QUESTIONS);
 export const addQuestionAction = createAction(ADD_QUESTION);
 export const updateQuestionAction = createAction(UPDATE_QUESTION);
+export const setFirstMountAction = createAction(SET_FIRST_MOUNT);
 export const changeCurrentQuestionAction = createAction(CHANGE_CURRENT_QUESTION);
 
 // initialState
@@ -30,6 +32,10 @@ const updateQuestion = (state, { payload }) => {
   state.byId[payload.id] = payload;
 };
 
+const setFirstMount = (state, { id }) => {
+  state.byId[id].firstMount = false;
+};
+
 // add a new question
 const addQuestion = (state, { payload }) => {
   state.byId[payload.id] = payload;
@@ -46,6 +52,7 @@ export default createReducer(initialState, {
   [LOAD_QUESTIONS]: loadQuestions,
   [UPDATE_QUESTION]: updateQuestion,
   [ADD_QUESTION]: addQuestion,
+  [SET_FIRST_MOUNT]: setFirstMount,
   [CHANGE_CURRENT_QUESTION]: changeCurrent
 });
 

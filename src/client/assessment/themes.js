@@ -198,6 +198,11 @@ export const themes = {
       headingFontStyle: "normal",
       headingFontStretch: "normal",
       headingColor: "#4aac8b", // greenDark
+      sectionHeadingFontSize: "20px",
+      sectionHeadingFontWeight: "bold",
+      sectionHeadingFontStyle: "normal",
+      sectionHeadingFontStretch: "normal",
+      sectionHeadingColor: "#434b5d", // secondaryTextColor
       labelFontSize: "13px",
       labelFontWeight: "600",
       labelFontStyle: "normal",

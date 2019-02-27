@@ -15,12 +15,13 @@ import { Block } from "../../../styled/WidgetOptions/Block";
 import { Heading } from "../../../styled/WidgetOptions/Heading";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Label } from "../../../styled/WidgetOptions/Label";
+import { SectionHeading } from "../../../styled/WidgetOptions/SectionHeading";
 
 import { FormGroup } from "../styled/FormGroup";
 
 const roundingTypes = [rounding.roundDown, rounding.none];
 
-const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
+const Scoring = ({ setQuestionData, questionData, t, scoringTypes, isSection }) => {
   const handleChangeValidation = (param, value) => {
     const newData = cloneDeep(questionData);
     newData.validation[param] = value;
@@ -34,8 +35,9 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes }) => {
   };
 
   return (
-    <Block>
-      <Heading>{t("component.options.scoring")}</Heading>
+    <Block isSection={isSection}>
+      {isSection && <SectionHeading>{t("component.options.scoring")}</SectionHeading>}
+      {!isSection && <Heading>{t("component.options.scoring")}</Heading>}
 
       {questionData.validation.automarkable && (
         <Row>
@@ -187,7 +189,12 @@ Scoring.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   questionData: PropTypes.object.isRequired,
-  scoringTypes: PropTypes.array.isRequired
+  scoringTypes: PropTypes.array.isRequired,
+  isSection: PropTypes.bool
+};
+
+Scoring.defaultProps = {
+  isSection: false
 };
 
 const enhance = compose(

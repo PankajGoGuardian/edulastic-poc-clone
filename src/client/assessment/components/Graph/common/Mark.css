@@ -1,20 +1,20 @@
 .mark {
-  width: 100px; 
-  height: 40px; 
-  border-radius: 4px; 
-  background-color: #ffffff; 
-  text-align: center; 
-  border: 1px solid #e6e6e6; 
-  cursor: pointer; 
-  display: flex; 
+  width: 100px;
+  height: 40px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  text-align: center;
+  border: 1px solid #e6e6e6;
+  cursor: pointer;
+  display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   font-family: "Open Sans", sans-serif !important;
-  font-size: 11px; 
+  font-size: 11px;
   font-weight: bold;
   text-transform: uppercase;
-  line-height: 1.36; 
-  letter-spacing: 0.2px; 
+  line-height: 1.36;
+  letter-spacing: 0.2px;
   color: #444444;
   opacity: 1;
 }
@@ -24,7 +24,7 @@
 }
 
 .mark.mounted::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 38.5px;
   right: 37px;
@@ -66,15 +66,15 @@
   width: 100%;
   padding: 0 15px;
   text-align: center;
-  display: flex; 
+  display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   font-family: "Open Sans", sans-serif !important;
-  font-size: 11px; 
+  font-size: 11px;
   font-weight: bold;
-  line-height: 1.36; 
-  letter-spacing: 0.2px; 
+  line-height: 1.36;
+  letter-spacing: 0.2px;
   color: #444444;
   opacity: 1;
-
+  z-index: 8 !important;
 }

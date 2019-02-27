@@ -85,34 +85,32 @@ class GraphAxisLabels extends Component {
           />
         </QuestionSection>
 
-        <QuestionSection section="main" label="GRAPH LINE" cleanSections={cleanSections} fillSections={fillSections}>
-          <PaddingDiv top={30} bottom={30}>
-            <Subtitle>{t("component.graphing.graphline")}</Subtitle>
-            <ContainerStart>
-              <LineParameter>
-                <Label>Minimum value</Label>
-                <LineInput
-                  type="number"
-                  value={canvas.x_min}
-                  name="x_min"
-                  onChange={this.handleCanvasChange}
-                  step={1}
-                  disabled={false}
-                />
-              </LineParameter>
-              <LineParameter>
-                <Label>Maximum value</Label>
-                <LineInput
-                  type="number"
-                  value={canvas.x_max}
-                  name="x_max"
-                  onChange={this.handleCanvasChange}
-                  step={1}
-                  disabled={false}
-                />
-              </LineParameter>
-            </ContainerStart>
-          </PaddingDiv>
+        <QuestionSection section="main" label="LINE" cleanSections={cleanSections} fillSections={fillSections}>
+          <Subtitle>{t("component.graphing.graphline")}</Subtitle>
+          <ContainerStart>
+            <LineParameter>
+              <Label>Minimum value</Label>
+              <LineInput
+                type="number"
+                value={canvas.x_min}
+                name="x_min"
+                onChange={this.handleCanvasChange}
+                step={1}
+                disabled={false}
+              />
+            </LineParameter>
+            <LineParameter>
+              <Label>Maximum value</Label>
+              <LineInput
+                type="number"
+                value={canvas.x_max}
+                name="x_max"
+                onChange={this.handleCanvasChange}
+                step={1}
+                disabled={false}
+              />
+            </LineParameter>
+          </ContainerStart>
         </QuestionSection>
 
         <QuestionSection section="main" label="TITLE" cleanSections={cleanSections} fillSections={fillSections}>

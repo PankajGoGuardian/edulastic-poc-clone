@@ -137,12 +137,7 @@ class AxisSegmentsMoreOptions extends Component {
     const { layout, minWidth, currentRenderingBaseItem } = this.state;
     return (
       <Fragment>
-        <QuestionSection
-          section="advanced"
-          label="LAYOUT OPTIONS"
-          cleanSections={cleanSections}
-          fillSections={fillSections}
-        >
+        <QuestionSection section="advanced" label="LAYOUT" cleanSections={cleanSections} fillSections={fillSections}>
           <MoreOptionsContainer>
             <MoreOptionsSubHeading>{t("component.graphing.layoutoptionstitle")}</MoreOptionsSubHeading>
 
@@ -275,12 +270,7 @@ class AxisSegmentsMoreOptions extends Component {
           </MoreOptionsContainer>
         </QuestionSection>
 
-        <QuestionSection
-          section="advanced"
-          label="TICKS OPTIONS"
-          cleanSections={cleanSections}
-          fillSections={fillSections}
-        >
+        <QuestionSection section="advanced" label="TICKS" cleanSections={cleanSections} fillSections={fillSections}>
           <MoreOptionsContainer>
             <MoreOptionsSubHeading>{t("component.graphing.ticksoptionstitle")}</MoreOptionsSubHeading>
 

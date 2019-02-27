@@ -107,7 +107,8 @@ class ItemDetail extends Component {
   };
 
   handleAdd = ({ rowIndex, tabIndex }) => {
-    const { match, history, t } = this.props;
+    const { match, history, t, changeView } = this.props;
+    changeView("edit");
     history.push({
       pathname: `/author/items/${match.params.id}/pickup-questiontype`,
       state: {
@@ -155,7 +156,8 @@ class ItemDetail extends Component {
   };
 
   handleEditWidget = (widget, rowIndex) => {
-    const { loadQuestion } = this.props;
+    const { loadQuestion, changeView } = this.props;
+    changeView("edit");
     loadQuestion(widget, rowIndex);
   };
 
@@ -339,7 +341,8 @@ ItemDetail.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   changePreview: PropTypes.func.isRequired,
   loadQuestion: PropTypes.func.isRequired,
-  questions: PropTypes.func.isRequired
+  questions: PropTypes.func.isRequired,
+  changeView: PropTypes.func.isRequired
 };
 
 ItemDetail.defaultProps = {

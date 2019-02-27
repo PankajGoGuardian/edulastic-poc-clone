@@ -15,7 +15,7 @@ import {
 import FontSizeDropdown from "./FontSizeDropdown";
 import FractionsFormatDropdown from "./FractionsFormatDropdown";
 import RenderingBaseDropdown from "./RenderingBaseDropdown";
-import { QuestionSection } from "../";
+import { QuestionSection } from "..";
 
 class AxisLabelsMoreOptions extends Component {
   state = {
@@ -130,12 +130,7 @@ class AxisLabelsMoreOptions extends Component {
 
     return (
       <Fragment>
-        <QuestionSection
-          section="advanced"
-          label="LAYOUT OPTIONS"
-          cleanSections={cleanSections}
-          fillSections={fillSections}
-        >
+        <QuestionSection section="advanced" label="LAYOUT" cleanSections={cleanSections} fillSections={fillSections}>
           <MoreOptionsContainer>
             <MoreOptionsSubHeading>{t("component.graphing.layoutoptionstitle")}</MoreOptionsSubHeading>
 
@@ -262,12 +257,7 @@ class AxisLabelsMoreOptions extends Component {
           </MoreOptionsContainer>
         </QuestionSection>
 
-        <QuestionSection
-          section="advanced"
-          label="TICKS OPTIONS"
-          cleanSections={cleanSections}
-          fillSections={fillSections}
-        >
+        <QuestionSection section="advanced" label="TICKS" cleanSections={cleanSections} fillSections={fillSections}>
           <MoreOptionsContainer>
             <MoreOptionsSubHeading>{t("component.graphing.ticksoptionstitle")}</MoreOptionsSubHeading>
 

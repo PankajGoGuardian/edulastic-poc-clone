@@ -7,7 +7,7 @@ import { compose } from "redux";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/src/actions/question";
-import GraphQuadrantsOptions from "./Authoring/GraphQuadrants/GraphQuadrantsOptions";
+import QuadrantsMoreOptions from "./Authoring/GraphQuadrants/QuadrantsMoreOptions";
 import AxisSegmentsOptions from "./Authoring/AxisSegmentsOptions";
 import AxisLabelsOptions from "./Authoring/AxisLabelsLayoutSettings/AxisLabelsOptions";
 import QuadrantsSmallSize from "./components/QuadrantsSmallSize";
@@ -87,7 +87,7 @@ class Graph extends Component {
       case "quadrants":
       case "firstQuadrant":
       default:
-        return GraphQuadrantsOptions;
+        return QuadrantsMoreOptions;
     }
   };
 

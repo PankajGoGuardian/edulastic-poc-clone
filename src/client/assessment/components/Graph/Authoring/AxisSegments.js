@@ -52,54 +52,52 @@ class AxisSegments extends Component {
             value={stimulus}
           />
         </QuestionSection>
-        <QuestionSection
-          section="main"
-          label="GRAPH PARAMETERS"
-          cleanSections={cleanSections}
-          fillSections={fillSections}
-        >
-          <PaddingDiv top={30} bottom={30}>
-            <Subtitle>{t("component.graphing.graphline")}</Subtitle>
-            <Row>
-              <Col md={6}>
-                <Label>{t("component.graphing.minVal")}</Label>
+        <QuestionSection section="main" label="LINE" cleanSections={cleanSections} fillSections={fillSections}>
+          <Subtitle>{t("component.graphing.graphline")}</Subtitle>
+          <Row>
+            <Col md={6}>
+              <Label>{t("component.graphing.minVal")}</Label>
+              <StyledTextField
+                type="number"
+                name="x_min"
+                value={canvas.x_min}
+                onChange={this.handleCanvasChange}
+                disabled={false}
+                step={1}
+              />
+              <div>
+                <Label>{t("component.graphing.responseNumAllowed")}</Label>
                 <StyledTextField
                   type="number"
-                  name="x_min"
-                  value={canvas.x_min}
+                  name="responsesAllowed"
+                  value={canvas.responsesAllowed}
+                  onChange={this.handleCanvasChange}
+                  disabled={false}
+                  step={1}
+                  min={1}
+                />
+              </div>
+            </Col>
+            <Col md={6} style={{ paddingLeft: 30 }}>
+              <div>
+                <Label>{t("component.graphing.maxVal")}</Label>
+                <StyledTextField
+                  type="number"
+                  name="x_max"
+                  value={canvas.x_max}
                   onChange={this.handleCanvasChange}
                   disabled={false}
                   step={1}
                 />
-                <Label>{t("component.graphing.title")}</Label>
-                <TitleTextInput type="text" name="title" value={canvas.title} onChange={this.handleCanvasChange} />
-              </Col>
-              <Col md={6} style={{ paddingLeft: 30 }}>
-                <div>
-                  <Label>{t("component.graphing.maxVal")}</Label>
-                  <StyledTextField
-                    type="number"
-                    name="x_max"
-                    value={canvas.x_max}
-                    onChange={this.handleCanvasChange}
-                    disabled={false}
-                    step={1}
-                  />
-                </div>
-                <div>
-                  <Label>{t("component.graphing.responseNumAllowed")}</Label>
-                  <StyledTextField
-                    type="number"
-                    name="responsesAllowed"
-                    value={canvas.responsesAllowed}
-                    onChange={this.handleCanvasChange}
-                    disabled={false}
-                    step={1}
-                    min={1}
-                  />
-                </div>
-              </Col>
-            </Row>
+              </div>
+            </Col>
+          </Row>
+        </QuestionSection>
+
+        <QuestionSection section="main" label="TITLE" cleanSections={cleanSections} fillSections={fillSections}>
+          <PaddingDiv bottom={30}>
+            <Subtitle>{t("component.graphing.title")}</Subtitle>
+            <TitleTextInput type="text" name="title" value={canvas.title} onChange={this.handleCanvasChange} />
           </PaddingDiv>
         </QuestionSection>
       </div>

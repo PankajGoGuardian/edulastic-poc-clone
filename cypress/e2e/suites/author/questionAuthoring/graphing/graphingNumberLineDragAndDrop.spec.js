@@ -146,5 +146,5 @@ describe('Test Graphing - number line with drag and drop', () => {
 
     cy.contains('PREVIEW').click();
   });
-  
+
 });

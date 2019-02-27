@@ -13,9 +13,9 @@ import {
   MoreOptionsRow,
   MoreOptionsRowInline,
   MoreOptionsSubHeading
-} from "../../../common/styled_components";
-import { GraphDisplay } from "../../../Display";
-import { QuestionSection } from "../../";
+} from "../../common/styled_components";
+import { GraphDisplay } from "../../Display";
+import { AnnotationSettings, ControlsSettings, QuestionSection, ScoreSettings } from "..";
 
 class QuadrantsMoreOptions extends Component {
   handleCheckbox = (name, checked) => {
@@ -55,9 +55,20 @@ class QuadrantsMoreOptions extends Component {
   };
 
   render() {
-    const { t, graphData, stemNumerationList, fontSizeList, setBgShapes, fillSections, cleanSections } = this.props;
+    const {
+      t,
+      graphData,
+      stemNumerationList,
+      fontSizeList,
+      setBgShapes,
+      fillSections,
+      cleanSections,
+      setControls,
+      setAnnotation,
+      setValidation
+    } = this.props;
 
-    const { ui_style, background_image } = graphData;
+    const { ui_style, background_image, controlbar, annotation } = graphData;
 
     const {
       drawLabelZero,
@@ -90,6 +101,10 @@ class QuadrantsMoreOptions extends Component {
 
     return (
       <Fragment>
+        <QuestionSection section="advanced" label="SCORING" cleanSections={cleanSections} fillSections={fillSections}>
+          <ScoreSettings setValidation={setValidation} graphData={graphData} />
+        </QuestionSection>
+
         <QuestionSection section="advanced" label="LAYOUT" cleanSections={cleanSections} fillSections={fillSections}>
           <MoreOptionsContainer>
             <MoreOptionsSubHeading>{t("component.graphing.layoutoptionstitle")}</MoreOptionsSubHeading>
@@ -367,6 +382,19 @@ class QuadrantsMoreOptions extends Component {
           </MoreOptionsContainer>
         </QuestionSection>
 
+        <QuestionSection section="advanced" label="CONTROLS" cleanSections={cleanSections} fillSections={fillSections}>
+          <ControlsSettings onChange={setControls} controlbar={controlbar} />
+        </QuestionSection>
+
+        <QuestionSection
+          section="advanced"
+          label="ANNOTATION"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+        >
+          <AnnotationSettings annotation={annotation} setAnnotation={setAnnotation} />
+        </QuestionSection>
+
         <QuestionSection
           section="advanced"
           label="BACKGROUND IMAGE"
@@ -462,6 +490,7 @@ class QuadrantsMoreOptions extends Component {
           label="BACKGROUND SHAPES"
           cleanSections={cleanSections}
           fillSections={fillSections}
+          marginLast="0"
         >
           <MoreOptionsContainer>
             <MoreOptionsSubHeading>{t("component.graphing.background_shapes")}</MoreOptionsSubHeading>
@@ -490,7 +519,10 @@ QuadrantsMoreOptions.propTypes = {
   fontSizeList: PropTypes.array.isRequired,
   setOptions: PropTypes.func.isRequired,
   setBgImg: PropTypes.func.isRequired,
-  setBgShapes: PropTypes.func.isRequired
+  setBgShapes: PropTypes.func.isRequired,
+  setControls: PropTypes.func.isRequired,
+  setAnnotation: PropTypes.func.isRequired,
+  setValidation: PropTypes.func.isRequired
 };
 
 const enhance = compose(withNamespaces("assessment"));

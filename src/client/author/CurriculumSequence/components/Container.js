@@ -7,9 +7,9 @@ import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import CurriculumSequence from "./CurriculumSequence";
 import {
-  getAllCurriculumSequences,
+  getAllCurriculumSequencesAction,
   putCurriculumSequenceAction,
-  searchCurriculumSequences,
+  searchCurriculumSequencesAction,
   searchGuidesAction,
   toggleAddContentAction,
   addContentToCurriculumSequenceAction
@@ -73,20 +73,6 @@ import {
 class CurriculumContainer extends Component {
   state = {
     expandedModules: [],
-    /** @type {CurriculumSequenceType[]} */
-    curriculumsList: [],
-
-    /** @type {CurriculumSequenceType} */
-    sourceCurriculumSequence: null,
-
-    /** @type {CurriculumSequenceType} */
-    destinationCurriculumSequence: null,
-    selectContent: false,
-
-    /**
-     * Selected publisher
-     */
-    publisher: "",
 
     /**
      * state for handling drag and drop
@@ -97,17 +83,20 @@ class CurriculumContainer extends Component {
   componentDidMount() {
     // NOTE: temporary here,
     // until what will call the component with specified curriculums
-    this.props.getAllCurriculumSequences(["5c6cb72feb85b4b4180e1544", "5c6cc156dac4871b3b76fad0"]);
+    const { getAllCurriculumSequences } = this.props;
+    getAllCurriculumSequences(["5c6cb72feb85b4b4180e1544", "5c6cc156dac4871b3b76fad0"]);
   }
 
   /** @param {String} publisher */
   changePublisher = publisher => {
-    this.props.searchGuides(publisher);
+    const { searchGuides } = this.props;
+    searchGuides(publisher);
   };
 
   /** @param {String} publisher */
   savePublisher = publisher => {
-    this.props.searchCurriculumSequences(publisher);
+    const { searchCurriculumSequences } = this.props;
+    searchCurriculumSequences(publisher);
   };
 
   onDrop = toUnit => {
@@ -133,6 +122,7 @@ class CurriculumContainer extends Component {
         if (module.id === moduleId && module.data && module.data.length > 0) {
           return true;
         }
+        return false;
       }).length > 0;
 
     if (!hasContent) return message.error("Please add some content to this unit.");
@@ -153,17 +143,12 @@ class CurriculumContainer extends Component {
     toggleAddContent();
   };
 
-  /** @param {CurriculumSequence} curriculumSequence */
-  setSourceCurriculumSequence = curriculumSequence => {
-    this.setState({ sourceCurriculumSequence: curriculumSequence });
-  };
-
   getSourceDestinationCurriculum = () => {
     let sourceCurriculumSequence;
     let destinationCurriculumSequence;
     const { curriculumSequences } = this.props;
 
-    curriculumSequences.allCurriculumSequences.forEach((id, index) => {
+    curriculumSequences.allCurriculumSequences.forEach(id => {
       if (curriculumSequences.byId[id].type === "content") {
         sourceCurriculumSequence = curriculumSequences.byId[id];
       } else if (curriculumSequences.byId[id].type === "guide") {
@@ -230,9 +215,13 @@ CurriculumContainer.propTypes = {
   }),
   windowWidth: PropTypes.number.isRequired,
   curriculumSequences: PropTypes.object.isRequired,
-  putCurriculumSequence: PropTypes.func.isRequired,
   isContentExpanded: PropTypes.bool.isRequired,
-  destinationCurriculumSequence: PropTypes.object.isRequired
+  destinationCurriculumSequence: PropTypes.object.isRequired,
+  getAllCurriculumSequences: PropTypes.func.isRequired,
+  searchGuides: PropTypes.func.isRequired,
+  searchCurriculumSequences: PropTypes.func.isRequired,
+  addContentToCurriculumSequence: PropTypes.func.isRequired,
+  toggleAddContent: PropTypes.func.isRequired
 };
 
 CurriculumContainer.defaultProps = {
@@ -241,13 +230,13 @@ CurriculumContainer.defaultProps = {
 
 const mapDispatchToProps = dispatch => ({
   getAllCurriculumSequences(ids) {
-    dispatch(getAllCurriculumSequences(ids));
+    dispatch(getAllCurriculumSequencesAction(ids));
   },
   putCurriculumSequence(id, curriculumSequence) {
     dispatch(putCurriculumSequenceAction(id, curriculumSequence));
   },
   searchCurriculumSequences(publisher) {
-    dispatch(searchCurriculumSequences({ publisher }));
+    dispatch(searchCurriculumSequencesAction({ publisher }));
   },
   searchGuides(publisher) {
     dispatch(searchGuidesAction({ publisher }));

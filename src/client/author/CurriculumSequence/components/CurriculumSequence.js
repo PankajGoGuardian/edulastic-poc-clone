@@ -4,6 +4,7 @@ import { compose } from "redux";
 import { uniqueId } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+
 import * as moment from "moment";
 import { Button, Modal, Input, Cascader, Radio, Icon } from "antd";
 import { FlexContainer } from "@edulastic/common";
@@ -16,13 +17,13 @@ import {
   desktopWidth,
   mobileWidth
 } from "@edulastic/colors";
+/* eslint-disable */
 import customContentIcon from "../assets/custom-content.svg";
 import addUnitIcon from "../assets/add-unit.svg";
 import selectContentIcon from "../assets/select-content.svg";
 import Curriculum from "./Curriculum";
 import ShareIcon from "../assets/share-button.svg";
 import SelectContent from "./SelectContent";
-import Assign from "../../TestPage/components/Assign";
 import {
   changeGuideAction,
   setGuideAction,
@@ -32,10 +33,10 @@ import {
   setDataForAssignAction,
   createAssignmentAction,
   saveCurriculumSequenceAction,
-  addNewUnitToDestinationAction
+  addNewUnitAction
 } from "../ducks";
+/* eslint-enable */
 import EditModal from "../../TestPage/components/Assign/components/EditModal/EditModal";
-// import { fetchGroupsAction } from '../../TestPage/components/Assign/ducks';
 import { fetchGroupsAction, getGroupsSelector, fetchMultipleGroupMembersAction } from "../../sharedDucks/groups";
 
 /** @typedef {object} ModuleData
@@ -75,6 +76,7 @@ import { fetchGroupsAction, getGroupsSelector, fetchMultipleGroupMembersAction }
  * @property {Object} derivedFrom
  * @property {String} description
  * @property {String} id
+ * @property {String} _id
  * @property {Module[]} modules
  * @property {String} status
  * @property {String} thumbnail
@@ -167,15 +169,13 @@ class CurriculumSequence extends Component {
 
     newUnit.id = uniqueId();
     newUnit.data = [];
-    newUnit.afterUnitId = destinationCurriculumSequence.modules.map(module => module.id)[0];
+    [newUnit.afterUnitId] = destinationCurriculumSequence.modules.map(module => module.id);
 
     this.setState(prevState => ({ addUnit: !prevState.addUnit, newUnit }));
   };
 
   handleAddCustomContent = () => {
-    this.setState(prevState => ({
-      addCustomContent: !prevState.addCustomContent
-    }));
+    this.setState(prevState => ({ addCustomContent: !prevState.addCustomContent }));
   };
 
   handleSelectContent = () => {
@@ -194,9 +194,7 @@ class CurriculumSequence extends Component {
   };
 
   handleGuidePopup = () => {
-    this.setState(prevState => ({
-      curriculumGuide: !prevState.curriculumGuide
-    }));
+    this.setState(prevState => ({ curriculumGuide: !prevState.curriculumGuide }));
   };
 
   handleGuideCancel = () => {
@@ -205,13 +203,13 @@ class CurriculumSequence extends Component {
 
   addNewUnitToDestination = () => {
     const { addNewUnitToDestination } = this.props;
-    let { newUnit } = { ...this.state };
+    const { newUnit } = { ...this.state };
 
     /** @type {String} */
-    const afterUnitId = newUnit.afterUnitId;
+    const { afterUnitId } = newUnit;
     delete newUnit.afterUnitId;
 
-    addNewUnitToDestination(afterUnitId, newUnit);
+    addNewUnitToDestination({ afterUnitId, newUnit });
 
     this.setState({ newUnit: {}, addUnit: false });
   };
@@ -238,9 +236,8 @@ class CurriculumSequence extends Component {
   };
 
   render() {
-    const largeDesktopWidthValue = Number(largeDesktopWidth.split("px")[0]);
     const desktopWidthValue = Number(desktopWidth.split("px")[0]);
-    const { onNewUnitNameChange, onUnitAfterIdChange, onGuideChange, updateAssignData } = this;
+    const { onNewUnitNameChange, onUnitAfterIdChange, onGuideChange } = this;
     const { addUnit, addCustomContent, newUnit, curriculumGuide } = this.state;
     const {
       expandedModules,
@@ -258,32 +255,24 @@ class CurriculumSequence extends Component {
       publisher,
       guide,
       isContentExpanded,
-      assignModal,
       setSelectedItemsForAssign,
       group,
       createAssignment,
       selectedItemsForAssign,
       dataForAssign,
-      setDataForAssign,
-      saveCurriculumSequence
+      setDataForAssign
     } = this.props;
 
     const { handleSaveClick } = this;
 
     // Options for add unit
-    const options1 = destinationCurriculumSequence.modules.map(module => ({
-      value: module.id,
-      label: module.name
-    }));
+    const options1 = destinationCurriculumSequence.modules.map(module => ({ value: module.id, label: module.name }));
 
     // TODO: change options2 to something more meaningful
     const options2 = [{ value: "Lesson", label: "Lesson" }, { value: "Lesson 2", label: "Lesson 2" }];
 
     // Dropdown options for guides
-    const guidesDropdownOptions = curriculumGuides.map(item => ({
-      value: item._id,
-      label: item.title
-    }));
+    const guidesDropdownOptions = curriculumGuides.map(item => ({ value: item._id, label: item.title }));
 
     const { title } = destinationCurriculumSequence;
 
@@ -316,7 +305,7 @@ class CurriculumSequence extends Component {
         >
           <AddUnitModalBody>
             <label>Unit Name</label>
-            <Input value={newUnit.name || ""} onChange={onNewUnitNameChange} />
+            <Input data-cy="addNewUnitInputName" value={newUnit.name || ""} onChange={onNewUnitNameChange} />
             <label>Add After</label>
             <Input.Group compact>
               <Cascader
@@ -328,11 +317,11 @@ class CurriculumSequence extends Component {
             </Input.Group>
           </AddUnitModalBody>
           <ModalFooter>
-            <Button type="primary" ghost key="back" onClick={this.handleAddUnit}>
+            <Button data-cy="addUnitCancel" type="primary" ghost key="back" onClick={this.handleAddUnit}>
               CANCEL
             </Button>
             ,
-            <Button key="submit" type="primary" onClick={this.addNewUnitToDestination}>
+            <Button data-cy="addUnitSave" key="submit" type="primary" onClick={this.addNewUnitToDestination}>
               SAVE
             </Button>
           </ModalFooter>
@@ -385,7 +374,7 @@ class CurriculumSequence extends Component {
           <GuideModalBody>
             <ModalSubtitleWrapper>
               <div>Which of these do you use?</div>
-              <div>Select 'Other' if you don't see your curriculum listed.</div>
+              <div>Select &#39;Other&#39; if you don&#39;t see your curriculum listed.</div>
             </ModalSubtitleWrapper>
             <RadioGroupWrapper>
               <Radio.Group onChange={this.onChange} value={publisher}>
@@ -428,11 +417,7 @@ class CurriculumSequence extends Component {
             <HeaderTitle>
               {title}
               <Icon
-                style={{
-                  fontSize: "16px",
-                  cursor: "pointer",
-                  marginLeft: "10px"
-                }}
+                style={{ fontSize: "16px", cursor: "pointer", marginLeft: "10px" }}
                 type={curriculumGuide ? "up" : "down"}
                 onClick={this.handleGuidePopup}
               />
@@ -449,10 +434,8 @@ class CurriculumSequence extends Component {
               </Button>
             </ShareButtonStyle>
             <SaveButtonStyle windowWidth={windowWidth}>
-              <Button type="primary">
-                <SaveButtonText onClick={handleSaveClick}>
-                  {windowWidth > desktopWidthValue ? "Save Changes" : "Save"}
-                </SaveButtonText>
+              <Button type="primary" data-cy="saveCurriculumSequence" onClick={handleSaveClick}>
+                <SaveButtonText>{windowWidth > desktopWidthValue ? "Save Changes" : "Save"}</SaveButtonText>
               </Button>
             </SaveButtonStyle>
           </CurriculumHeader>
@@ -468,19 +451,19 @@ class CurriculumSequence extends Component {
             </ModuleProgressWrapper>
             <SubheaderActions active={isContentExpanded}>
               <AddUnitSubHeaderButtonStyle>
-                <Button onClick={this.handleAddUnitOpen} type="primary">
+                <Button type="primary" data-cy="openAddUnit" onClick={this.handleAddUnitOpen}>
                   <img src={addUnitIcon} alt="Add unit" />
                   <ButtonText>Add Unit</ButtonText>
                 </Button>
               </AddUnitSubHeaderButtonStyle>
               <SelectContentSubHeaderButtonStyle active={isContentExpanded}>
-                <Button onClick={this.handleSelectContent} type="primary">
+                <Button type="primary" data-cy="openAddContent" onClick={this.handleSelectContent}>
                   <img src={selectContentIcon} alt="Select content" />
                   <ButtonText>Select Content</ButtonText>
                 </Button>
               </SelectContentSubHeaderButtonStyle>
               <AddCustomContentSubHeaderButtonStyle>
-                <Button onClick={this.handleAddCustomContent} type="primary">
+                <Button type="primary" data-cy="openAddCustomContentButton" onClick={this.handleAddCustomContent}>
                   <img src={customContentIcon} alt="Custom content" />
                   <ButtonText>Add Custom Content</ButtonText>
                 </Button>
@@ -512,7 +495,6 @@ class CurriculumSequence extends Component {
             />
           )}
         </Wrapper>
-        <Assign />
       </CurriculumSequenceWrapper>
     );
   }
@@ -524,13 +506,28 @@ CurriculumSequence.propTypes = {
   expandedModules: PropTypes.bool,
   curriculumList: PropTypes.array,
   windowWidth: PropTypes.number.isRequired,
-  onPublisherChange: PropTypes.func.isRequired,
-  onPublisherSave: PropTypes.func.isRequired,
+  saveCurriculumSequence: PropTypes.func.isRequired,
   curriculumGuides: PropTypes.array,
   setPublisher: PropTypes.func.isRequired,
   setGuide: PropTypes.func.isRequired,
   saveGuideAlignment: PropTypes.func.isRequired,
-  fetchGroups: PropTypes.func.isRequired
+  fetchGroups: PropTypes.func.isRequired,
+  onSelectContent: PropTypes.func.isRequired,
+  addNewUnitToDestination: PropTypes.func.isRequired,
+  destinationCurriculumSequence: PropTypes.object.isRequired,
+  onCollapseExpand: PropTypes.func.isRequired,
+  sourceCurriculumSequence: PropTypes.object.isRequired,
+  onSourceCurriculumSequenceChange: PropTypes.func.isRequired,
+  selectContent: PropTypes.object.isRequired,
+  onDrop: PropTypes.func.isRequired,
+  onBeginDrag: PropTypes.func.isRequired,
+  isContentExpanded: PropTypes.bool.isRequired,
+  setSelectedItemsForAssign: PropTypes.func.isRequired,
+  group: PropTypes.object.isRequired,
+  createAssignment: PropTypes.func.isRequired,
+  selectedItemsForAssign: PropTypes.array.isRequired,
+  dataForAssign: PropTypes.object.isRequired,
+  setDataForAssign: PropTypes.func.isRequired
 };
 
 CurriculumSequence.defaultProps = {
@@ -548,6 +545,9 @@ const ModuleProgress = ({ modules }) => (
     ))}
   </ModuleProgressBars>
 );
+ModuleProgress.propTypes = {
+  modules: PropTypes.array.isRequired
+};
 
 const TopBar = styled.div`
   display: flex;
@@ -930,7 +930,7 @@ const enhance = compose(
       setDataForAssign: setDataForAssignAction,
       createAssignment: createAssignmentAction,
       saveCurriculumSequence: saveCurriculumSequenceAction,
-      addNewUnitToDestination: addNewUnitToDestinationAction
+      addNewUnitToDestination: addNewUnitAction
     }
   )
 );

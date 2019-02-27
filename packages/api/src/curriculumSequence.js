@@ -1,12 +1,11 @@
-import API from './utils/API';
+import API from "./utils/API";
 
 const api = new API();
 
-const getCurriculumSequences = (id) => {
-  console.log('GETCURRICULUMSEQUENCES', id);
+const getCurriculumSequences = id => {
   return api
     .callApi({
-      method: 'get',
+      method: "get",
       url: `/curriculum-sequence/${id}`
     })
     .then(result => result.data.result);
@@ -14,33 +13,29 @@ const getCurriculumSequences = (id) => {
 
 const updateCurriculumSequence = (id, curriculumSequence) => {
   const _curriculumSequence = { ...curriculumSequence };
-  if (_curriculumSequence._id) {
-    delete _curriculumSequence._id;
-  }
+
+  delete _curriculumSequence._id;
+  delete _curriculumSequence.__v;
 
   const options = {
-    method: 'put',
+    method: "put",
     url: `/curriculum-sequence/${id}`,
     data: _curriculumSequence
   };
 
-  return api
-    .callApi(options)
-    .then(res => res.data.result);
+  return api.callApi(options).then(res => res.data.result);
 };
 
-const searchCurriculumSequences = ({ publisher, type = 'guide' }) => {
+const searchCurriculumSequences = ({ publisher, type = "guide" }) => {
   const options = {
-    method: 'post',
-    url: '/curriculum-sequence/search/',
+    method: "post",
+    url: "/curriculum-sequence/search/",
     data: {
       search: { publisher, type }
     }
   };
-  
-  return api
-    .callApi(options)
-    .then(res => res.data.result);
+
+  return api.callApi(options).then(res => res.data.result);
 };
 
 export default {

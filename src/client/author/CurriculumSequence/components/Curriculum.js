@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 import DropContainer from "../../../assessment/components/DropContainer";
 import CurriculumModuleRow from "./CurriculumModuleRow";
 import { theme } from "../theme";
@@ -14,7 +15,8 @@ import { theme } from "../theme";
 /** @extends Component<CurriculumProps> */
 class Curriculum extends Component {
   onDrop = toModule => {
-    this.props.onDrop(toModule);
+    const { onDrop } = this.props;
+    onDrop(toModule);
   };
 
   render() {
@@ -40,6 +42,14 @@ class Curriculum extends Component {
     );
   }
 }
+
+Curriculum.propTypes = {
+  onDrop: PropTypes.func.isRequired,
+  curriculum: PropTypes.object.isRequired,
+  expandedModules: PropTypes.array.isRequired,
+  padding: PropTypes.string.isRequired,
+  onCollapseExpand: PropTypes.func.isRequired
+};
 
 const ModuleWrapper = styled.div`
   flex-grow: 1;

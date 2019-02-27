@@ -89,13 +89,11 @@ class SelectContent extends Component {
     const {
       curriculum,
       destinationCurriculum,
-      windowWidth,
       dropContent,
       onBeginDrag,
       contentCurriculums,
       setContentCurriculum,
-      toggleCheckedUnitItem,
-      checkedUnitItems
+      toggleCheckedUnitItem
     } = this.props;
     const { title, modules } = curriculum;
 
@@ -152,10 +150,9 @@ SelectContent.propTypes = {
     title: PropTypes.string.isRequired,
     updatedDate: PropTypes.string.isRequired
   }),
+  toggleCheckedUnitItem: PropTypes.any.isRequired,
   onSelectContent: PropTypes.func.isRequired,
   destinationCurriculum: PropTypes.object.isRequired,
-  addContentToCurriculumSequence: PropTypes.func.isRequired,
-  windowWidth: PropTypes.number.isRequired,
   dropContent: PropTypes.any.isRequired,
   onBeginDrag: PropTypes.any.isRequired,
   searchContentCurriculums: PropTypes.func.isRequired,

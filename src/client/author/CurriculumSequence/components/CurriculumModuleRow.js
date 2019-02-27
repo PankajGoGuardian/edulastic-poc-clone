@@ -1,26 +1,17 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Button, Menu, Dropdown } from "antd";
+import PropTypes from "prop-types";
+import { Button, Menu, Dropdown, Icon } from "antd";
 import { Paper, Checkbox } from "@edulastic/common";
-import { random } from "lodash";
-import { withNamespaces } from "@edulastic/localization";
+import { mobileWidth, lightBlue, white, greenDarkSecondary, desktopWidth, tabletWidth } from "@edulastic/colors";
 import {
-  darkBlue,
-  mobileWidth,
-  lightBlue,
-  mainBlueColor,
-  lightGreen,
-  green,
-  white,
-  darkBlueSecondary,
-  greenDarkSecondary,
-  desktopWidth,
-  tabletWidth
-} from "@edulastic/colors";
-import { toggleCheckedUnitItemAction, setSelectedItemsForAssignAction, removeItemFromUnitAction } from "../ducks";
+  toggleCheckedUnitItemAction,
+  setSelectedItemsForAssignAction,
+  removeItemFromUnitAction,
+  removeUnitAction
+} from "../ducks";
 import minusIcon from "../assets/minus.svg";
 import plusIcon from "../assets/plus.svg";
 import visualizationIcon from "../assets/visualization-show.svg";
@@ -58,7 +49,6 @@ class ModuleRow extends Component {
   };
 
   render() {
-    const { completed, data, name, id } = this.props.module;
     const {
       onCollapseExpand,
       collapsed,
@@ -68,8 +58,10 @@ class ModuleRow extends Component {
       isContentExpanded,
       setSelectedItemsForAssign,
       module,
-      removeItemFromUnit
+      removeItemFromUnit,
+      removeUnit
     } = this.props;
+    const { completed, data, name, id } = module;
     const { assignModule } = this;
 
     const totalAssigned = data.length;
@@ -77,7 +69,7 @@ class ModuleRow extends Component {
     const [whichModule, moduleName] = name.split(":");
 
     return (
-      <ModuleWrapper key={`${module.data.length}-${module.id}`} padding={padding}>
+      <ModuleWrapper data-cy="curriculumModuleRow" key={`${module.data.length}-${module.id}`} padding={padding}>
         <Container>
           <Module>
             <ModuleHeader collapsed={collapsed}>
@@ -87,6 +79,7 @@ class ModuleRow extends Component {
                   ghost
                   className="module-btn-expand-collapse"
                   onClick={() => onCollapseExpand(id)}
+                  data-cy="expandCollapseAssignments"
                 >
                   {!collapsed ? (
                     <img src={minusIcon} alt="collapse module " />
@@ -96,7 +89,15 @@ class ModuleRow extends Component {
                 </Button>
                 <ModuleTitleAssignedWrapper>
                   <ModuleTitleWrapper>
-                    <ModuleTitlePrefix>{whichModule}</ModuleTitlePrefix>
+                    <ModuleTitlePrefix>
+                      {whichModule}
+                      <Icon
+                        type="close-circle"
+                        data-cy="removeUnit"
+                        style={{ visibility: "hidden" }}
+                        onClick={() => removeUnit(module.id)}
+                      />
+                    </ModuleTitlePrefix>
                     <ModuleTitle>{moduleName}</ModuleTitle>
                   </ModuleTitleWrapper>
 
@@ -116,12 +117,12 @@ class ModuleRow extends Component {
                     <ModulesWrapper>
                       <ModulesAssigned>
                         Assigned
-                        <NumberOfAssigned>{numberOfAssigned}</NumberOfAssigned>
+                        <NumberOfAssigned data-cy="numberOfAssigned">{numberOfAssigned}</NumberOfAssigned>
                         of
-                        <TotalAssigned>{totalAssigned}</TotalAssigned>
+                        <TotalAssigned data-cy="totalAssigned">{totalAssigned}</TotalAssigned>
                       </ModulesAssigned>
                       <AssignModuleButton>
-                        <Button type="primary" onClick={() => assignModule(module)} ghost>
+                        <Button type="primary" ghost data-cy="AssignWholeModule" onClick={() => assignModule(module)}>
                           ASSIGN MODULE
                         </Button>
                       </AssignModuleButton>
@@ -135,8 +136,9 @@ class ModuleRow extends Component {
               <div>
                 {data.map(moduleData => {
                   const moreMenu = (
-                    <Menu>
+                    <Menu data-cy="moduleItemMoreMenu">
                       <Menu.Item
+                        data-cy="moduleItemMoreMenuItem"
                         onClick={() =>
                           removeItemFromUnit({
                             moduleId: module.id,
@@ -150,7 +152,7 @@ class ModuleRow extends Component {
                   );
 
                   return (
-                    <Assignment key={`${moduleData.id}-${moduleData.assigned}`}>
+                    <Assignment data-cy="moduleAssignment" key={`${moduleData.id}-${moduleData.assigned}`}>
                       <AssignmentInnerWrapper>
                         <ModuleFocused />
 
@@ -183,6 +185,7 @@ class ModuleRow extends Component {
                             </AssignmentIcon>
                             <AssignmentButton>
                               <Button
+                                data-cy="assignButton"
                                 onClick={() => setSelectedItemsForAssign(moduleData.testId)}
                                 type="primary"
                                 icon={moduleData.assigned ? "check" : "arrow-right"}
@@ -193,7 +196,7 @@ class ModuleRow extends Component {
                             </AssignmentButton>
                             <AssignmentIcon>
                               <Dropdown overlay={moreMenu} trigger={["click"]}>
-                                <CustomIcon>
+                                <CustomIcon data-cy="assignmentMoreOptionsIcon">
                                   <img style={{ width: "16px" }} src={moreIcon} alt="more options" />
                                 </CustomIcon>
                               </Dropdown>
@@ -214,14 +217,17 @@ class ModuleRow extends Component {
   }
 }
 
-ModuleRow.defaultProps = {
-  module: null,
-  onCollapseExpand: () => {},
-  collapsed: false,
-  isContentExpanded: false,
-  padding: false,
-  checkedUnitItems: [],
-  removeItemFromUnit: () => {}
+ModuleRow.propTypes = {
+  setSelectedItemsForAssign: PropTypes.array.isRequired,
+  module: PropTypes.object.isRequired,
+  onCollapseExpand: PropTypes.func.isRequired,
+  collapsed: PropTypes.bool.isRequired,
+  padding: PropTypes.bool.isRequired,
+  checkedUnitItems: PropTypes.array.isRequired,
+  isContentExpanded: PropTypes.bool.isRequired,
+  removeItemFromUnit: PropTypes.func.isRequired,
+  toggleUnitItem: PropTypes.func.isRequired,
+  removeUnit: PropTypes.func.isRequired
 };
 
 const CustomIcon = styled.span`
@@ -563,7 +569,8 @@ const enhance = compose(
     {
       toggleUnitItem: toggleCheckedUnitItemAction,
       setSelectedItemsForAssign: setSelectedItemsForAssignAction,
-      removeItemFromUnit: removeItemFromUnitAction
+      removeItemFromUnit: removeItemFromUnitAction,
+      removeUnit: removeUnitAction
     }
   )
 );

@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 import { Menu } from "antd";
 import { Paper } from "@edulastic/common";
-import { toggleCheckedUnitItemAction, addContentToCurriculumSequenceAction } from "../ducks";
 import { mobileWidth, lightBlue } from "@edulastic/colors";
+import { toggleCheckedUnitItemAction, addContentToCurriculumSequenceAction } from "../ducks";
 import AssignmentDragItem from "./AssignmentDragItem";
 import triangleIcon from "../assets/triangle.svg";
 
@@ -59,14 +60,15 @@ class ModuleRow extends Component {
       dropContent,
       module,
       toggleCheckedUnitItem,
-      checkedUnitItems
+      checkedUnitItems,
+      onBeginDrag
     } = this.props;
     const { data, name } = module;
 
     const menu = (
-      <Menu>
+      <Menu data-cy="addContentMenu">
         {destinationCurriculum.modules.map(moduleItem => (
-          <Menu.Item onClick={() => handleAddContentClick(moduleItem)}>
+          <Menu.Item data-cy="addContentMenuItem" onClick={() => handleAddContentClick(moduleItem)}>
             <span>{moduleItem.name}</span>
           </Menu.Item>
         ))}
@@ -79,7 +81,11 @@ class ModuleRow extends Component {
           <Module>
             <ModuleHeader collapsed={collapsed}>
               <span>{name}</span>
-              <UnitIcon onClick={this.handleUnitExpandCollapse} rotated={unitExpanded}>
+              <UnitIcon
+                data-cy="expandCollapseContentUnit"
+                onClick={this.handleUnitExpandCollapse}
+                rotated={unitExpanded}
+              >
                 <img src={triangleIcon} alt="triangle icon " />
               </UnitIcon>
             </ModuleHeader>
@@ -95,7 +101,7 @@ class ModuleRow extends Component {
                     checked={checkedUnitItems.indexOf(moduleData.id) !== -1}
                     menu={menu}
                     handleDrop={dropContent}
-                    onBeginDrag={this.props.onBeginDrag}
+                    onBeginDrag={onBeginDrag}
                   />
                 ))}
               </div>
@@ -107,13 +113,15 @@ class ModuleRow extends Component {
   }
 }
 
-ModuleRow.defaultProps = {
-  module: null,
-  onCollapseExpand: () => {},
-  collapsed: false,
-  padding: false,
-  destinationCurriculum: null,
-  addContentToCurriculumSequence: () => {}
+ModuleRow.propTypes = {
+  addContentToCurriculumSequence: PropTypes.func.isRequired,
+  collapsed: PropTypes.bool.isRequired,
+  destinationCurriculum: PropTypes.object.isRequired,
+  dropContent: PropTypes.any.isRequired,
+  module: PropTypes.object.isRequired,
+  toggleCheckedUnitItem: PropTypes.func.isRequired,
+  checkedUnitItems: PropTypes.array.isRequired,
+  onBeginDrag: PropTypes.func.isRequired
 };
 
 const AssignmentIcon = styled.span`

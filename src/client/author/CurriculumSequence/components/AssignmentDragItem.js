@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Dropdown } from "antd";
 import styled from "styled-components";
 import { DragSource } from "react-dnd";
@@ -45,6 +46,7 @@ class AssignmentDragItem extends Component {
           <AssignmentIconsWrapper>
             <Dropdown overlay={menu} placement="bottomCenter">
               <AssignContent
+                data-cy="assignContentIcon"
                 onMouseOver={() => handleAddContentMouseOver(moduleData)}
                 onFocus={() => handleAddContentMouseOver(moduleData)}
               >
@@ -60,6 +62,12 @@ class AssignmentDragItem extends Component {
     );
   }
 }
+AssignmentDragItem.propTypes = {
+  moduleData: PropTypes.object.isRequired,
+  handleAddContentMouseOver: PropTypes.func.isRequired,
+  menu: PropTypes.any.isRequired,
+  connectDragSource: PropTypes.any.isRequired
+};
 
 export default DragSource("item", itemSource, collect)(AssignmentDragItem);
 

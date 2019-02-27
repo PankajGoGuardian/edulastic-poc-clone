@@ -11,8 +11,7 @@ import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
 import { PaddingDiv, CustomQuillComponent } from "@edulastic/common";
-
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import SortableList from "../../components/SortableList/index";
 import { Subtitle } from "../../styled/Subtitle";

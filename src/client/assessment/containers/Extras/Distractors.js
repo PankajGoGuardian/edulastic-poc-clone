@@ -5,9 +5,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "react-i18next";
 import { get } from "lodash";
-
-import { getQuestionDataSelector } from "../../../author/src/selectors/question";
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 
 import SortableList from "../../components/SortableList";
 import withAddButton from "../../components/HOC/withAddButton";

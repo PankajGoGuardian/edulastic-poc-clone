@@ -7,8 +7,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { arrayMove } from "react-sortable-hoc";
 import { cloneDeep, clone } from "lodash";
 import { Subtitle, Label, ContainerStart, LineParameter, LineInput, TitleTextInput } from "../common/styled_components";
-import { QuestionSection } from "./";
-import { setQuestionDataAction } from "../../../../author/src/actions/question";
+import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../QuestionTextArea";
 import QuillSortableList from "../../QuillSortableList";
 

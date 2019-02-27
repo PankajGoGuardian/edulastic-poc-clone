@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { mobileWidth } from "@edulastic/colors";
 
 export const MathInputStyles = styled.div`
   .input {
@@ -96,6 +97,13 @@ export const MathInputStyles = styled.div`
       border-bottom-left-radius: 0;
     }
   }
+  
+   @media (max-width: ${mobileWidth}) {
+      .keyboard__main {
+        display:flex;
+        flex-direction: column;
+      }
+    }
 `;
 
 export default MathInputStyles;

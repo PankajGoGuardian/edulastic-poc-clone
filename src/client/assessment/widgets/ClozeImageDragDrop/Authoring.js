@@ -13,8 +13,7 @@ import { withTheme } from "styled-components";
 import { PaddingDiv, CustomQuillComponent } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { API_CONFIG } from "@edulastic/api";
-
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import DropArea from "../../containers/DropArea";
 import SortableList from "../../components/SortableList/index";

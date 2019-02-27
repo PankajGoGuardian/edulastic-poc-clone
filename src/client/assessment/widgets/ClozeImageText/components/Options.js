@@ -3,11 +3,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { Divider } from "antd";
-
 import { withNamespaces } from "@edulastic/localization";
-
-import { setQuestionDataAction } from "../../../../author/src/actions/question";
-import { getQuestionDataSelector } from "../../../../author/src/selectors/question";
+import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 
 import WidgetOptions from "../../../containers/WidgetOptions";
 import { Block } from "../../../styled/WidgetOptions/Block";

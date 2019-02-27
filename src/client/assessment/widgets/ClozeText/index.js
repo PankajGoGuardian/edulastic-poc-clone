@@ -5,11 +5,11 @@ import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { cloneDeep } from "lodash";
 import styled, { withTheme } from "styled-components";
+import { Paper } from '@edulastic/common';
+import { withNamespaces } from '@edulastic/localization';
+import { AdaptiveCloze } from '../ClozeDropDown/styled/AdaptiveCloze';
 
-import { PaddingDiv, Paper } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
-
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import Options from "./components/Options";
 import CorrectAnswers from "./CorrectAnswers";
@@ -121,17 +121,10 @@ class ClozeText extends Component {
         <div>
           {view === 'edit' && (
           <React.Fragment>
-            <PaddingDiv
-              style={{
-                borderRadius: 5,
-                background: theme.widgets.clozeText.editViewBgColor
-              }}
-              top={30}
-              bottom={30}
-              left={120}
-              right={120}
+            <AdaptiveCloze
+              background={theme.widgets.clozeText.editViewBgColor}
             >
-              <div style={{ width: 640 }} className="authoring">
+              <div className="authoring">
                 <Authoring item={itemForEdit} />
                 <CorrectAnswers
                   key={duplicatedResponses || showDraghandle || shuffleOptions}
@@ -147,7 +140,7 @@ class ClozeText extends Component {
                   onRemoveAltResponses={this.handleRemoveAltResponses}
                 />
               </div>
-            </PaddingDiv>
+            </AdaptiveCloze>
             <div style={{ marginTop: 35 }}>
               <Options
                 onChange={this.handleOptionsChange}

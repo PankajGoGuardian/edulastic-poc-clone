@@ -21,7 +21,7 @@ import {
 } from "../../ducks";
 import { getSelectedItemSelector } from "../AddItems/ducks";
 import { getUserSelector } from "../../../src/selectors/user";
-import SourceModal from "../../../src/components/QuestionEditor/SourceModal";
+import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
 
 import AddItems from "../AddItems";

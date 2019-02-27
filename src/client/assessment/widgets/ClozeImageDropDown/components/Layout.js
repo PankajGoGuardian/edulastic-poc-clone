@@ -5,10 +5,8 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 
 import { withNamespaces } from "@edulastic/localization";
-
 import styled from "styled-components";
-import { setQuestionDataAction } from "../../../../author/src/actions/question";
-import { getQuestionDataSelector } from "../../../../author/src/selectors/question";
+import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 
 import { AddNewChoiceBtn } from "../../../styled/AddNewChoiceBtn";
 import { Label } from "../../../styled/WidgetOptions/Label";

@@ -183,13 +183,14 @@ ButtonBar.propTypes = {
   onSave: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   onShowSource: PropTypes.func.isRequired,
-  onShowSettings: PropTypes.func.isRequired,
+  onShowSettings: PropTypes.func,
   changePreviewTab: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   clearAnswers: PropTypes.func.isRequired
 };
 
 ButtonBar.defaultProps = {
+  onShowSettings: () => {}
   // saving: false,
 };
 

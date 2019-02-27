@@ -14,17 +14,18 @@ const ClassResponses = lazy(() => import("../ClassResponses"));
 const ExpressGrader = lazy(() => import("./ExpressGrader/components"));
 const TestList = lazy(() => import("../TestList"));
 const TestPage = lazy(() => import("../TestPage"));
-const QuestionEditor = lazy(() => import("./components/QuestionEditor"));
+const QuestionEditor = lazy(() => import("../QuestionEditor"));
 const ItemList = lazy(() => import("../ItemList"));
-const ItemDetail = lazy(() => import("./components/ItemDetail"));
-const ItemAdd = lazy(() => import("./components/ItemAdd"));
-
-const PickUpQuestionType = lazy(() => import("./components/PickUpQuestionType"));
+const ItemDetail = lazy(() => import("../ItemDetail"));
+const ItemAdd = lazy(() => import("../ItemAdd"));
+const PickUpQuestionType = lazy(() => import("../PickUpQuestionType"));
 const CurriculumContainer = lazy(() => import("../CurriculumSequence"));
 
 // eslint-disable-next-line react/prop-types
 const Author = ({ match, history, isSidebarCollapsed }) => {
-  const isPickQuestion = !!history.location.pathname.includes("pickup-questiontype");
+  const isPickQuestion = !!history.location.pathname.includes(
+    "pickup-questiontype"
+  );
   const isCollapsed = isPickQuestion || isSidebarCollapsed;
   return (
     <Layout>
@@ -33,13 +34,37 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
         <Wrapper>
           <Suspense fallback={<Progress />}>
             <Switch>
-              <Route exact path={`${match.url}/assignments`} component={Assignments} />
-              <Route exact path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />
-              <Route exact path={`${match.url}/classresponses/:testActivityId`} component={ClassResponses} />
-              <Route exact path={`${match.url}/expressgrader/:assignmentId/:classId`} component={ExpressGrader} />
+              <Route
+                exact
+                path={`${match.url}/assignments`}
+                component={Assignments}
+              />
+              <Route
+                exact
+                path={`${match.url}/classboard/:assignmentId/:classId`}
+                component={ClassBoard}
+              />
+              <Route
+                exact
+                path={`${match.url}/classresponses/:testActivityId`}
+                component={ClassResponses}
+              />
+              <Route
+                exact
+                path={`${match.url}/expressgrader/:assignmentId/:classId`}
+                component={ExpressGrader}
+              />
               <Route exact path={`${match.url}/items`} component={ItemList} />
-              <Route exact path={`${match.url}/items/:id/item-detail`} component={ItemDetail} />
-              <Route exact path="/author/curriculum-sequence" component={CurriculumContainer} />
+              <Route
+                exact
+                path={`${match.url}/items/:id/item-detail`}
+                component={ItemDetail}
+              />
+              <Route
+                exact
+                path="/author/curriculum-sequence"
+                component={CurriculumContainer}
+              />
               <Route exact path="/author/add-item" component={ItemAdd} />
               <Route
                 exact
@@ -77,9 +102,21 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                   </Suspense>
                 )}
               />
-              <Route exact path="/author/items/:id/pickup-questiontype" component={PickUpQuestionType} />
-              <Route exact path="/author/questions/create" component={QuestionEditor} />
-              <Route exact path="/author/questions/edit" component={QuestionEditor} />
+              <Route
+                exact
+                path="/author/items/:id/pickup-questiontype"
+                component={PickUpQuestionType}
+              />
+              <Route
+                exact
+                path="/author/questions/create"
+                component={QuestionEditor}
+              />
+              <Route
+                exact
+                path="/author/questions/edit"
+                component={QuestionEditor}
+              />
             </Switch>
           </Suspense>
         </Wrapper>
@@ -104,7 +141,7 @@ const MainContainer = styled.div`
     top: 0;
     right: 0;
     left: ${props => (props.isCollapsed ? "100px" : "240px")};
-    z-index: 10;
+    z-index: 999;
   }
   @media (max-width: ${tabletWidth}) {
     padding-left: 0px;

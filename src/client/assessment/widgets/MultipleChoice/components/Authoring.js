@@ -8,8 +8,7 @@ import { cloneDeep } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 import { PaddingDiv } from "@edulastic/common";
-
-import { setQuestionDataAction } from "../../../../author/src/actions/question";
+import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 
 import QuestionTextArea from "../../../components/QuestionTextArea";
 import { Subtitle } from "../../../styled/Subtitle";

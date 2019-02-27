@@ -8,9 +8,7 @@ import { arrayMove } from "react-sortable-hoc";
 
 import { TextField, PaddingDiv } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-
-import { setQuestionDataAction } from "../../../../author/src/actions/question";
-import { getQuestionDataSelector } from "../../../../author/src/selectors/question";
+import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 
 import SortableList from "../../../components/SortableList";
 import { AddNewChoiceBtn } from "../../../styled/AddNewChoiceBtn";

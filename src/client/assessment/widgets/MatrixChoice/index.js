@@ -10,7 +10,7 @@ import { withRouter } from "react-router-dom";
 import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import withAddButton from "../../components/HOC/withAddButton";
 import QuestionTextArea from "../../components/QuestionTextArea";

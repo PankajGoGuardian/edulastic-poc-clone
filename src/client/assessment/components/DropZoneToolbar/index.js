@@ -7,7 +7,7 @@ import { Container } from "./styled/Container";
 import LargeInput from "./components/LargeInput";
 
 const DropZoneToolbar = ({ width, height, altText, handleChange, t }) => (
-  <Container childMarginRight={40}>
+  <Container>
     <LargeInput
       type="number"
       label={t("component.hotspot.widthLabel")}

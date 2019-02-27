@@ -8,7 +8,7 @@ import "react-quill/dist/quill.snow.css";
 import { PaddingDiv, CustomQuillComponent } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../styled/Subtitle";
 

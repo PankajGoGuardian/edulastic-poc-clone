@@ -6,8 +6,7 @@ import styled from "styled-components";
 
 import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../styled/Subtitle";
 

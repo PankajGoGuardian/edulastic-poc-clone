@@ -7,8 +7,7 @@ import { cloneDeep } from "lodash";
 
 import { Checkbox, Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
 

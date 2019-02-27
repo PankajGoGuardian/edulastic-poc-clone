@@ -13,8 +13,7 @@ import { withTheme } from "styled-components";
 import { API_CONFIG } from "@edulastic/api";
 import { PaddingDiv } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import DropArea from "../../containers/DropArea";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";

@@ -7,8 +7,7 @@ import { cloneDeep } from "lodash";
 
 import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 
 import QuestionTextArea from "../../components/QuestionTextArea";

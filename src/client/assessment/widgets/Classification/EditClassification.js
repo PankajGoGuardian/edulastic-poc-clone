@@ -1,28 +1,28 @@
-import React, { Fragment, useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { cloneDeep } from "lodash";
-import { arrayMove } from "react-sortable-hoc";
-import { connect } from "react-redux";
-import { Row, Col, Select } from "antd";
-import { withTheme } from "styled-components";
-import { compose } from "redux";
+import React, { Fragment, useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { cloneDeep } from 'lodash';
+import { arrayMove } from 'react-sortable-hoc';
+import { connect } from 'react-redux';
+import { Row, Col, Select } from 'antd';
+import { withTheme } from 'styled-components';
+import { compose } from 'redux';
 
-import { Paper } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
+import { Paper } from '@edulastic/common';
+import { withNamespaces } from '@edulastic/localization';
 
-import QuillSortableList from "../../components/QuillSortableList/index";
-import QuestionTextArea from "../../components/QuestionTextArea";
-import CorrectAnswers from "../../components/CorrectAnswers";
-import withAddButton from "../../components/HOC/withAddButton";
-import withPoints from "../../components/HOC/withPoints";
-import { Subtitle } from "../../styled/Subtitle";
-import { EDIT } from "../../constants/constantsForQuestions";
+import QuillSortableList from '../../components/QuillSortableList/index';
+import QuestionTextArea from '../../components/QuestionTextArea';
+import CorrectAnswers from '../../components/CorrectAnswers';
+import withAddButton from '../../components/HOC/withAddButton';
+import withPoints from '../../components/HOC/withPoints';
+import { Subtitle } from '../../styled/Subtitle';
+import { EDIT } from '../../constants/constantsForQuestions';
 
-import { setQuestionDataAction, setFirstMountAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction, setFirstMountAction } from '../../../author/QuestionEditor/ducks';
 
-import GroupPossibleResponses from "./components/GroupPossibleResponses";
-import ClassificationPreview from "./ClassificationPreview";
-import AdvancedOptions from "../SortList/components/AdvancedOptions";
+import GroupPossibleResponses from './components/GroupPossibleResponses';
+import ClassificationPreview from './ClassificationPreview';
+import AdvancedOptions from '../SortList/components/AdvancedOptions';
 
 const List = withAddButton(QuillSortableList);
 

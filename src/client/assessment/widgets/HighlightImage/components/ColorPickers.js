@@ -25,7 +25,7 @@ const ColorPikers = ({ onRemove, colors, changeHandler, t, theme }) => {
   return (
     <Row gutter={60}>
       {colors.map((color, i) => (
-        <Col key={i} span={8}>
+        <Col key={i} span={8} xs={24}>
           <Paper style={{ marginBottom: 20 }} padding="16px">
             <Subtitle
               padding="0 0 16px 0"

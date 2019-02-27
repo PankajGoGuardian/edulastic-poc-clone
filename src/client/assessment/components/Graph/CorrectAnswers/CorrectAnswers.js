@@ -8,8 +8,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
 import { Subtitle } from "../common/styled_components";
-import { getQuestionDataSelector } from "../../../../author/src/selectors/question";
-import { setQuestionDataAction } from "../../../../author/src/actions/question";
+import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 import CorrectAnswer from "./CorrectAnswer";
 
 class CorrectAnswers extends Component {

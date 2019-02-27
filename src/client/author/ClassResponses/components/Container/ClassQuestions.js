@@ -10,8 +10,7 @@ import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import { receiveClassResponseAction, receiveTestActivitydAction } from "../../../src/actions/classBoard";
 
 import { getClassResponseSelector, getStudentResponseSelector } from "../../../src/selectors/classBoard";
-
-import { getRows } from "../../../src/selectors/itemDetail";
+import { getRows } from "../../../ItemDetail/ducks";
 
 import { Content } from "./styled";
 import { keyBy as _keyBy } from "lodash";

@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { ThemeProvider } from "styled-components";
-import { Paper } from "@edulastic/common";
+import { PaperWrapper } from "./Graph/common/styled_components";
 import { questionType } from "@edulastic/constants";
 import { themes } from "../themes";
 import QuestionMenu from "./Graph/common/QuestionMenu";
@@ -179,7 +179,7 @@ class QuestionWrapper extends Component {
     const Question = getQuestion(type);
     return (
       <ThemeProvider theme={themes.default}>
-        <Paper>
+        <PaperWrapper>
           {type === "graph" && view === "edit" && (
             <QuestionMenu activeTab={activeTab} main={main} advanced={advanced} />
           )}
@@ -196,7 +196,7 @@ class QuestionWrapper extends Component {
             </div>
             {showFeedback && (multiple ? <FeedbackBottom widget={data} /> : <FeedbackRight widget={data} />)}
           </Fragment>
-        </Paper>
+        </PaperWrapper>
       </ThemeProvider>
     );
   }

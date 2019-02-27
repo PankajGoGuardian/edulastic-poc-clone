@@ -7,13 +7,12 @@ import styled from "styled-components";
 import Modal from "react-responsive-modal";
 
 import TestItemPreview from "../../../../../assessment/components/TestItemPreview";
-
-import { getItemDetailByIdAction } from "../../../actions/itemDetail";
 import {
+  getItemDetailByIdAction,
   getItemDetailLoadingSelector,
   getItemDetailRowsSelector,
   getItemDetailSelector
-} from "../../../selectors/itemDetail";
+} from "../../../../ItemDetail/ducks";
 
 class PreviewModal extends React.Component {
   constructor(props) {

@@ -16,13 +16,17 @@ import {
   clearDictStandardsAction
 } from "../../../author/src/actions/dictionaries";
 import {
+  getCurriculumsListSelector,
+  getStandardsListSelector
+} from '../../../author/src/selectors/dictionaries';
+import {
   setQuestionAlignmentAddRowAction,
   setQuestionAlignmentRemoveRowAction,
-  setQuestionDataAction
-} from "../../../author/src/actions/question";
-import { getCurriculumsListSelector, getStandardsListSelector } from "../../../author/src/selectors/dictionaries";
-import { getQuestionAlignmentSelector, getQuestionDataSelector } from "../../../author/src/selectors/question";
-import selectsData from "../../../author/TestPage/components/common/selectsData";
+  setQuestionDataAction,
+  getQuestionAlignmentSelector,
+  getQuestionDataSelector
+} from '../../../author/QuestionEditor/ducks';
+import selectsData from '../../../author/TestPage/components/common/selectsData';
 
 import { RowContainer } from "./styled/RowContainer";
 import { ItemBody } from "./styled/ItemBody";

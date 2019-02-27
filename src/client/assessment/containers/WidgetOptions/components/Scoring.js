@@ -7,9 +7,7 @@ import { Input, Checkbox, Select, Col } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 import { rounding, evaluationType } from "@edulastic/constants";
-
-import { setQuestionDataAction } from "../../../../author/src/actions/question";
-import { getQuestionDataSelector } from "../../../../author/src/selectors/question";
+import { getQuestionDataSelector, setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 
 import { Block } from "../../../styled/WidgetOptions/Block";
 import { Heading } from "../../../styled/WidgetOptions/Heading";

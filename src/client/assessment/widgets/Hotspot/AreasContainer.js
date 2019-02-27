@@ -4,9 +4,10 @@ import { connect } from "react-redux";
 import { cloneDeep, isEqual } from "lodash";
 
 import { FlexContainer } from "@edulastic/common";
+import { IconEraseText, IconRedo, IconUndo, IconDraw, IconTrash } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import { DRAW_MODE, DELETE_MODE } from "../../constants/constantsForQuestions";
 
@@ -17,11 +18,6 @@ import { Button } from "./styled/Button";
 import { SideBar } from "./styled/SideBar";
 import { ButtonWithShadow } from "./styled/ButtonWithShadow";
 import { AreaText } from "./styled/AreaText";
-import { IconDraw } from "./styled/IconDraw";
-import { IconTrash } from "./styled/IconTrash";
-import { IconUndo } from "./styled/IconUndo";
-import { IconRedo } from "./styled/IconRedo";
-import { IconEraseText } from "./styled/IconEraseText";
 
 const AreasContainer = ({ itemData, areas, width, imageSrc, height, t, setQuestionData }) => {
   const [history, setHistory] = useState([{ areas: [], points: [] }]);

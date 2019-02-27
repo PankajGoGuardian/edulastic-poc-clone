@@ -4,9 +4,12 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
 import { PaddingDiv } from "@edulastic/common";
-import { Col, Label, Row, StyledTextField, Subtitle, TitleTextInput } from "../common/styled_components";
-import { QuestionSection } from "./";
-import { setQuestionDataAction } from "../../../../author/src/actions/question";
+import {
+  Col, Label, Row,
+  StyledTextField,
+  Subtitle, TitleTextInput
+} from "../common/styled_components";
+import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../QuestionTextArea";
 
 class AxisSegments extends Component {

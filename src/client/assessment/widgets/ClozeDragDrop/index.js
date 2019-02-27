@@ -6,12 +6,13 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep } from "lodash";
 import styled, { withTheme } from "styled-components";
 
-import { PaddingDiv, Checkbox, Paper } from "@edulastic/common";
+import { Checkbox, Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
+import { ResponseQuestion } from "./styled/ResponseQuestion";
 
 import Authoring from "./Authoring";
 import CorrectAnswers from "./CorrectAnswers";
@@ -66,11 +67,15 @@ class ClozeDragDrop extends Component {
     setQuestionData(newItem);
   };
 
-  handleRemoveAltResponses = index => {
+  handleRemoveAltResponses = (index) => {
     const { setQuestionData, item } = this.props;
     const newItem = cloneDeep(item);
 
-    if (newItem.validation && newItem.validation.alt_responses && newItem.validation.alt_responses.length) {
+    if (
+      newItem.validation &&
+      newItem.validation.alt_responses &&
+      newItem.validation.alt_responses.length
+    ) {
       newItem.validation.alt_responses.splice(index, 1);
       setQuestionData(newItem);
     }
@@ -83,34 +88,46 @@ class ClozeDragDrop extends Component {
     setQuestionData(newItem);
   };
 
-  handleAddAnswer = userAnswer => {
+  handleAddAnswer = (userAnswer) => {
     const { saveAnswer } = this.props;
     const newAnswer = cloneDeep(userAnswer);
     saveAnswer(newAnswer);
   };
 
   render() {
-    const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation, theme } = this.props;
-    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
-    const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
+    const {
+      view,
+      previewTab,
+      smallSize,
+      item,
+      userAnswer,
+      t,
+      testItem,
+      evaluation,
+      theme
+    } = this.props;
+    const {
+      previewStimulus,
+      previewDisplayOptions,
+      itemForEdit,
+      uiStyle
+    } = this.getRenderData();
+    const {
+      duplicatedResponses,
+      showDraghandle,
+      shuffleOptions
+    } = item;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
     return (
       <div>
-        {view === "edit" && (
+        {view === 'edit' && (
           <React.Fragment>
-            <PaddingDiv
-              style={{
-                borderRadius: 5,
-                background: theme.widgets.clozeDragDrop.editViewBgColor
-              }}
-              top={30}
-              bottom={30}
-              left={120}
-              right={120}
+            <ResponseQuestion
+              background={theme.widgets.clozeDragDrop.editViewBgColor}
             >
-              <div style={{ width: 640 }} className="authoring">
+              <div  className="authoring">
                 <Authoring item={itemForEdit} />
                 <CorrectAnswers
                   key={duplicatedResponses || showDraghandle || shuffleOptions}
@@ -132,41 +149,43 @@ class ClozeDragDrop extends Component {
                   <Checkbox
                     className="additional-options"
                     key={`duplicatedResponses_${duplicatedResponses}`}
-                    onChange={() => this.handleOptionsChange("duplicatedResponses", !duplicatedResponses)}
-                    label={t("component.cloze.dragDrop.duplicatedresponses")}
+                    onChange={() =>
+                      this.handleOptionsChange('duplicatedResponses', !duplicatedResponses)
+                    }
+                    label={t('component.cloze.dragDrop.duplicatedresponses')}
                     checked={duplicatedResponses}
                   />
                   <Checkbox
                     className="additional-options"
                     key={`showDraghandle_${showDraghandle}`}
-                    onChange={() => this.handleOptionsChange("showDraghandle", !showDraghandle)}
-                    label={t("component.cloze.dragDrop.showdraghandle")}
+                    onChange={() => this.handleOptionsChange('showDraghandle', !showDraghandle)}
+                    label={t('component.cloze.dragDrop.showdraghandle')}
                     checked={showDraghandle}
                   />
                   <Checkbox
                     className="additional-options"
                     key={`shuffleOptions_${shuffleOptions}`}
-                    onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
-                    label={t("component.cloze.dragDrop.shuffleoptions")}
+                    onChange={() => this.handleOptionsChange('shuffleOptions', !shuffleOptions)}
+                    label={t('component.cloze.dragDrop.shuffleoptions')}
                     checked={shuffleOptions}
                   />
                 </CorrectAnswerOptions>
               </div>
-            </PaddingDiv>
+            </ResponseQuestion>
             <div style={{ marginTop: 35 }}>
               <Options
                 onChange={this.handleOptionsChange}
                 uiStyle={uiStyle}
                 outerStyle={{
-                  padding: "30px 120px"
+                  padding: '30px 120px'
                 }}
               />
             </div>
           </React.Fragment>
         )}
-        {view === "preview" && (
+        {view === 'preview' && (
           <Wrapper>
-            {previewTab === "check" && (
+            {previewTab === 'check' && (
               <Display
                 item={item}
                 checkAnswer
@@ -186,7 +205,7 @@ class ClozeDragDrop extends Component {
                 evaluation={evaluation}
               />
             )}
-            {previewTab === "show" && (
+            {previewTab === 'show' && (
               <Display
                 showAnswer
                 item={item}
@@ -206,7 +225,7 @@ class ClozeDragDrop extends Component {
                 evaluation={evaluation}
               />
             )}
-            {previewTab === "clear" && (
+            {previewTab === 'clear' && (
               <Display
                 item={item}
                 preview
@@ -249,7 +268,7 @@ ClozeDragDrop.propTypes = {
 };
 
 ClozeDragDrop.defaultProps = {
-  previewTab: "clear",
+  previewTab: 'clear',
   item: {
     options: []
   },
@@ -261,7 +280,7 @@ ClozeDragDrop.defaultProps = {
 
 const enhance = compose(
   withRouter,
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   withTheme,
   connect(
     null,

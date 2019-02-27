@@ -10,8 +10,7 @@ import styled from "styled-components";
 import { Paper } from "@edulastic/common";
 import { typedList as typedListTypes } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
-
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 
 import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";

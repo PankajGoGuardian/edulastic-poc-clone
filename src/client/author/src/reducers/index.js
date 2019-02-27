@@ -1,10 +1,7 @@
 import authorUi from "./authorUi";
 import view from "./view";
 import items from "./items";
-import preview from "./preview";
-import question from "./question";
 import testItem from "./testItem";
-import itemDetail from "./itemDetail";
 import dictionaries from "./dictionaries";
 import author_assignments from "./assignments";
 import author_classboard_gradebook from "./gradeBook";
@@ -14,8 +11,11 @@ import authorQuestions from "../../sharedDucks/questions";
 import classResponse from "./classResponse";
 import studentResponse from "./studentResponse";
 import feedbackResponse from "./feedbackResponse";
+import { itemAdd } from "../../ItemAdd";
 import { testList } from "../../TestList";
 import { tests } from "../../TestPage";
+import { itemDetail } from "../../ItemDetail";
+import { question } from "../../QuestionEditor";
 import { testsAddItems } from "../../TestPage/components/AddItems";
 import { testAssignmentsReducer } from "../../TestPage/components/Assign";
 
@@ -25,7 +25,7 @@ const authorReducers = {
   authorGroups,
   items,
   testsAddItems,
-  preview,
+  itemAdd,
   question,
   testItem,
   itemDetail,

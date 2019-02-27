@@ -4,10 +4,10 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
 import { PaddingDiv } from "@edulastic/common";
+import { QuestionSection } from "..";
 import { Subtitle, StyledTextField, Label, Row, Col } from "../../common/styled_components";
-import { QuestionSection } from "../";
 import GraphToolsParams from "../../components/GraphToolsParams";
-import { setQuestionDataAction } from "../../../../../author/src/actions/question";
+import { setQuestionDataAction } from "../../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../../QuestionTextArea";
 
 class GraphQuadrants extends Component {

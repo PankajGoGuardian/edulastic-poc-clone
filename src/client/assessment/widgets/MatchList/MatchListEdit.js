@@ -6,9 +6,7 @@ import PropTypes from "prop-types";
 
 import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-
-import { setQuestionDataAction } from "../../../author/src/actions/question";
-
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import withAddButton from "../../components/HOC/withAddButton";
 import withPoints from "../../components/HOC/withPoints";
 import QuillSortableList from "../../components/QuillSortableList";

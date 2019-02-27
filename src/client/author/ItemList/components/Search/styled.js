@@ -1,4 +1,3 @@
-import { Icon, Select } from "antd/lib/index";
 import styled from "styled-components";
 import { blue, mainTextColor, secondaryTextColor } from "@edulastic/colors";
 

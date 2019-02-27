@@ -193,7 +193,7 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
 
   return (
     <Container>
-      <StyledRow gutter={32}>
+      <StyledRow>
         <Col span={12}>
           <Label>{t("component.math.method")}</Label>
           <Select size="large" value={method} style={{ width: "100%" }} onChange={val => onChange("method", val)}>

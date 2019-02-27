@@ -1,12 +1,13 @@
-import React, { Fragment, useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { cloneDeep } from "lodash";
-import { Select, Input } from "antd";
-import { compose } from "redux";
-import { withTheme } from "styled-components";
+import React, { Fragment, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { cloneDeep } from 'lodash';
+import { Select, Input } from 'antd';
+import { compose } from 'redux';
+import { withTheme } from 'styled-components';
+import { AdaptiveSelect } from './styled/AdaptiveSelect';
 
-import { Paper, Stimulus, FlexContainer } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
+import { Paper, Stimulus, FlexContainer } from '@edulastic/common';
+import { withNamespaces } from '@edulastic/localization';
 
 import {
   PREVIEW,
@@ -16,15 +17,25 @@ import {
   CLEAR,
   CHECK,
   SHOW
-} from "../../constants/constantsForQuestions";
+} from '../../constants/constantsForQuestions';
 
-import { Subtitle } from "../../styled/Subtitle";
+import { Subtitle } from '../../styled/Subtitle';
 
-import ShadesView from "./components/ShadesView";
+import ShadesView from './components/ShadesView';
 
 const { Option } = Select;
 
-const ShadingPreview = ({ view, item, smallSize, saveAnswer, userAnswer, method, t, previewTab, theme }) => {
+const ShadingPreview = ({
+  view,
+  item,
+  smallSize,
+  saveAnswer,
+  userAnswer,
+  method,
+  t,
+  previewTab,
+  theme
+}) => {
   const { canvas, validation } = item;
 
   const [isCheck, setIsCheck] = useState(false);
@@ -37,38 +48,47 @@ const ShadingPreview = ({ view, item, smallSize, saveAnswer, userAnswer, method,
   const read_only_author_cells = canvas ? canvas.read_only_author_cells : false;
 
   const validAnswer =
-    validation && validation.valid_response && validation.valid_response.value && validation.valid_response.value.value;
+    validation &&
+    validation.valid_response &&
+    validation.valid_response.value &&
+    validation.valid_response.value.value;
   const altAnswers = validation && validation.alt_responses;
 
-  useEffect(() => {
-    if (view === PREVIEW && userAnswer.length === 0) {
-      if (!read_only_author_cells) {
-        saveAnswer(cloneDeep(shaded));
+  useEffect(
+    () => {
+      if (view === PREVIEW && userAnswer.length === 0) {
+        if (!read_only_author_cells) {
+          saveAnswer(cloneDeep(shaded));
+        }
       }
-    }
-  }, [view]);
+    },
+    [view]
+  );
 
-  useEffect(() => {
-    if (previewTab === CLEAR && view !== EDIT && isCheck && userAnswer.length === 0) {
-      if (!read_only_author_cells) {
-        saveAnswer(cloneDeep(shaded));
-      } else {
-        saveAnswer([]);
+  useEffect(
+    () => {
+      if (previewTab === CLEAR && view !== EDIT && isCheck && userAnswer.length === 0) {
+        if (!read_only_author_cells) {
+          saveAnswer(cloneDeep(shaded));
+        } else {
+          saveAnswer([]);
+        }
       }
-    }
-    if (previewTab === CHECK) {
-      setIsCheck(true);
-    } else {
-      setIsCheck(false);
-    }
-  }, [previewTab]);
+      if (previewTab === CHECK) {
+        setIsCheck(true);
+      } else {
+        setIsCheck(false);
+      }
+    },
+    [previewTab]
+  );
 
   const validate = () => {
     const collection = Array.isArray(validAnswer) ? cloneDeep(validAnswer) : [validAnswer];
 
-    altAnswers.forEach(answer => {
+    altAnswers.forEach((answer) => {
       if (Array.isArray(answer.value.value)) {
-        answer.value.value.forEach(val => {
+        answer.value.value.forEach((val) => {
           if (!collection.includes(val)) {
             collection.push(val);
           }
@@ -86,7 +106,9 @@ const ShadingPreview = ({ view, item, smallSize, saveAnswer, userAnswer, method,
   const handleCellClick = (rowNumber, colNumber) => () => {
     const newUserAnswer = cloneDeep(userAnswer);
 
-    const indexOfSameShade = newUserAnswer.findIndex(shade => shade[0] === rowNumber && shade[1] === colNumber);
+    const indexOfSameShade = newUserAnswer.findIndex(
+      shade => shade[0] === rowNumber && shade[1] === colNumber
+    );
 
     if (indexOfSameShade === -1) {
       newUserAnswer.push([rowNumber, colNumber]);
@@ -97,15 +119,17 @@ const ShadingPreview = ({ view, item, smallSize, saveAnswer, userAnswer, method,
     saveAnswer(newUserAnswer);
   };
 
-  const handleSelectMethod = value => {
+  const handleSelectMethod = (value) => {
     saveAnswer(value, true);
   };
 
   const preview = previewTab === CHECK || previewTab === SHOW;
 
   return (
-    <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+    <Paper padding={smallSize} boxShadow={smallSize ? 'none' : ''}>
+      {view === PREVIEW && !smallSize && (
+        <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+      )}
       <FlexContainer alignItems="flex-start" flexDirection="column">
         {view === EDIT && (
           <Fragment>
@@ -114,12 +138,12 @@ const ShadingPreview = ({ view, item, smallSize, saveAnswer, userAnswer, method,
               color={theme.widgets.shading.subtitleColor}
               padding="0 0 16px 0"
             >
-              {t("component.shading.methodSubtitle")}
+              {t('component.shading.methodSubtitle')}
             </Subtitle>
-            <Select style={{ width: 320 }} value={method} onChange={handleSelectMethod}>
+            <AdaptiveSelect value={method} onChange={handleSelectMethod}>
               <Option value={BY_LOCATION_METHOD}>{BY_LOCATION_METHOD}</Option>
               <Option value={BY_COUNT_METHOD}>{BY_COUNT_METHOD}</Option>
-            </Select>
+            </AdaptiveSelect>
           </Fragment>
         )}
 
@@ -183,11 +207,11 @@ ShadingPreview.defaultProps = {
   smallSize: false,
   userAnswer: null,
   previewTab: CLEAR,
-  method: ""
+  method: ''
 };
 
 const enhance = compose(
-  withNamespaces("assessment"),
+  withNamespaces('assessment'),
   withTheme
 );
 

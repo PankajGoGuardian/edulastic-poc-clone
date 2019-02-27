@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Table } from "antd";
+import { mobileWidth } from "@edulastic/colors";
 
 export const StyledTable = styled(Table)`
   table {
@@ -25,4 +26,13 @@ export const StyledTable = styled(Table)`
       }
     }
   }
+   @media (max-width: ${mobileWidth}) {
+    .ant-table-body {
+        overflow-x: scroll; 
+         
+        td {
+            min-width: 100px;
+        }
+     }
+   }
 `;

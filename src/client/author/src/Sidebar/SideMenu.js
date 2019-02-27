@@ -235,7 +235,7 @@ const FixedSidebar = styled.div`
   top: 0px;
   bottom: 0px;
   @media (max-width: 768px) {
-    z-index: 999;
+    z-index: 9999;
   }
 `;
 const SideBar = styled(Layout.Sider)`

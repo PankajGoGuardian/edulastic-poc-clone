@@ -1,10 +1,8 @@
 import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-
 import { PREVIEW, EDIT, CLEAR } from "../../constants/constantsForQuestions";
-import { setQuestionDataAction } from "../../../author/src/actions/question";
-
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import ShadingPreview from "./ShadingPreview";
 import ShadingEdit from "./ShadingEdit";
 

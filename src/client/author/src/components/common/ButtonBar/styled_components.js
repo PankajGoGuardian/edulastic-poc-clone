@@ -86,7 +86,7 @@ export const MobileFirstContainer = styled.div`
 `;
 
 export const MobileSecondContainer = styled.div`
-  display: flex;
+  display: none;
   justify-content: space-between;
   text-align: left;
   margin-bottom: 10px;

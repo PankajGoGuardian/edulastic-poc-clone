@@ -1,11 +1,10 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-
 import DrawingPreview from "./DrawingPreview";
 import DrawingEdit from "./DrawingEdit";
 import { PREVIEW, EDIT, CLEAR } from "../../constants/constantsForQuestions";
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 const Drawing = props => {
   const { view } = props;

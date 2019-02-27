@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import TextareaAutosize from "react-autosize-textarea";
-import { greenDark, grey, tabletWidth, greenDarkSecondary, secondaryTextColor } from "@edulastic/colors";
-import { TextField } from "@edulastic/common";
+import { greenDark, grey, tabletWidth, greenDarkSecondary, secondaryTextColor, mobileWidth } from "@edulastic/colors";
+import { TextField, Paper } from "@edulastic/common";
 
 export const StyledTextarea = styled(TextareaAutosize)`
   resize: none;
@@ -343,4 +343,10 @@ export const Col = styled.div`
   margin-bottom: ${props => (props.marginBottom ? props.marginBottom : "0")}px;
   width: ${({ md }) => (100 / 12) * md}%;
   display: block; 
+`;
+
+export const PaperWrapper = styled(Paper)`
+  @media (max-width: ${mobileWidth}) {
+    padding: 8px;
+  }
 `;

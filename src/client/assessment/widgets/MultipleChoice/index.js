@@ -9,8 +9,7 @@ import { Checkbox } from "antd";
 
 import { PaddingDiv, Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import Options from "./components/Options";
 import Authoring from "./components/Authoring";

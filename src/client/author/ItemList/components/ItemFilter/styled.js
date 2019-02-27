@@ -98,10 +98,10 @@ export const FilterButton = styled.div`
 
 export const MainFilter = styled.div`
   margin-top: 17px;
-  zindex: 0;
+  z-index: 0;
 
   .scrollbar-container {
-    overflow: auto !important;
+    overflow: auto;
     height: calc(100vh - 195px);
 
     ::-webkit-scrollbar {

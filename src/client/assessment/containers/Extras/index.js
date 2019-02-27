@@ -9,9 +9,7 @@ import { withTheme } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { math } from "@edulastic/constants";
 import { CustomQuillComponent } from "@edulastic/common";
-
-import { getQuestionDataSelector } from "../../../author/src/selectors/question";
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction, getQuestionDataSelector } from '../../../author/QuestionEditor/ducks';
 
 import { Block } from "../../styled/WidgetOptions/Block";
 import { Heading } from "../../styled/WidgetOptions/Heading";

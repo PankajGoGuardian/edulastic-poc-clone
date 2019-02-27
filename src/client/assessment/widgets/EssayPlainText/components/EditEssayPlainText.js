@@ -6,6 +6,7 @@ import { Checkbox, Col, Input, Row } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { Paper, FlexContainer } from "@edulastic/common";
 
+import { AdaptiveCheckbox } from "../styled/AdaptiveCheckbox";
 import WidgetOptions from "../../../containers/WidgetOptions";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { FormGroup } from "../../../containers/WidgetOptions/styled/FormGroup";
@@ -40,21 +41,24 @@ const EditEssayPlainText = ({ item, setQuestionData, t }) => {
         />
         <Subtitle>{t("component.essayText.plain.formattingOptions")}</Subtitle>
         <FlexContainer childMarginRight={100}>
-          <Checkbox
+          <AdaptiveCheckbox
             defaultChecked={item.show_copy}
             onChange={e => handleItemChangeChange("show_copy", e.target.checked)}
           >
             {t("component.essayText.copy")}
-          </Checkbox>
-          <Checkbox defaultChecked={item.show_cut} onChange={e => handleItemChangeChange("show_cut", e.target.checked)}>
+          </AdaptiveCheckbox>
+          <AdaptiveCheckbox
+            defaultChecked={item.show_cut}
+            onChange={e => handleItemChangeChange("show_cut", e.target.checked)}
+          >
             {t("component.essayText.cut")}
-          </Checkbox>
-          <Checkbox
+          </AdaptiveCheckbox>
+          <AdaptiveCheckbox
             defaultChecked={item.show_paste}
             onChange={e => handleItemChangeChange("show_paste", e.target.checked)}
           >
             {t("component.essayText.paste")}
-          </Checkbox>
+          </AdaptiveCheckbox>
         </FlexContainer>
 
         <WordLimitAndCount

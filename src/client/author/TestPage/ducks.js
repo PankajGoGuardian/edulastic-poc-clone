@@ -2,10 +2,12 @@ import { createSelector } from "reselect";
 import { test } from "@edulastic/constants";
 import { call, put, all, takeEvery } from "redux-saga/effects";
 import { message } from "antd";
+import { keyBy as _keyBy } from "lodash";
 import { testsApi } from "@edulastic/api";
 
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE } from "../src/constants/actions";
 import { SET_ASSIGNMENT } from "./components/Assign/ducks";
+import { loadQuestionsAction, changeCurrentQuestionAction } from "../sharedDucks/questions";
 
 // constants
 export const CREATE_TEST_REQUEST = "[tests] create test request";
@@ -195,11 +197,22 @@ export const reducer = (state = initialState, { type, payload }) => {
   }
 };
 
+const getQuestions = ({ testItems = [] }) => {
+  const allQuestions = [];
+  testItems.forEach(item => {
+    const { questions = [] } = item.data;
+    allQuestions.push(...questions);
+  });
+  return allQuestions;
+};
+
 // saga
 function* receiveTestByIdSaga({ payload }) {
   try {
     const entity = yield call(testsApi.getById, payload.id, { data: true });
-
+    const questions = getQuestions(entity);
+    yield put(loadQuestionsAction(_keyBy(questions, "id")));
+    yield put(changeCurrentQuestionAction(questions[0].id));
     yield put(receiveTestByIdSuccess(entity));
   } catch (err) {
     const errorMessage = "Receive test by id is failing";

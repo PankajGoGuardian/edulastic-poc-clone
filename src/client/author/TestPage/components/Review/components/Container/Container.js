@@ -12,6 +12,7 @@ import ItemsTable from "../ReviewItemsTable/ReviewItemsTable";
 import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
 import { setTestDataAction } from "../../../../ducks";
 import { getSummarySelector } from "../../../Summary/ducks";
+import { getQuestionsSelector } from "../../../../../sharedDucks/questions";
 import { Calculator, Photo } from "../../../common";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
@@ -146,9 +147,18 @@ class Review extends PureComponent {
   }
 
   render() {
-    const { test, current, windowWidth, rows, standards, types, onChangeGrade, onChangeSubjects } = this.props;
+    const {
+      test,
+      current,
+      windowWidth,
+      rows,
+      standards,
+      types,
+      onChangeGrade,
+      onChangeSubjects,
+      questions
+    } = this.props;
     const { isCollapse, isModalVisible, item } = this.state;
-
     const totalPoints = test.scoring.total;
     const questionsCount = test.testItems.length;
 
@@ -208,6 +218,7 @@ class Review extends PureComponent {
                   onSortEnd={this.moveTestItems}
                   types={types}
                   scoring={test.scoring}
+                  questions={questions}
                   useDragHandle
                 />
               )}
@@ -248,7 +259,8 @@ Review.propTypes = {
   standards: PropTypes.object.isRequired,
   summary: PropTypes.array.isRequired,
   current: PropTypes.string.isRequired,
-  windowWidth: PropTypes.number.isRequired
+  windowWidth: PropTypes.number.isRequired,
+  questions: PropTypes.object.isRequired
 };
 
 const enhance = compose(
@@ -257,7 +269,8 @@ const enhance = compose(
     state => ({
       types: getItemsTypesSelector(state),
       standards: getStandardsSelector(state),
-      summary: getSummarySelector(state)
+      summary: getSummarySelector(state),
+      questions: getQuestionsSelector(state)
     }),
     { setData: setTestDataAction }
   )

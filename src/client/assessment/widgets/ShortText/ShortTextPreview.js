@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Input } from "antd";
 import { compose } from "redux";
@@ -14,6 +14,12 @@ import { SmallStim } from "./styled/SmallStim";
 
 const ShortTextPreview = ({ view, saveAnswer, t, item, previewTab, smallSize, userAnswer, theme }) => {
   const [text, setText] = useState(Array.isArray(userAnswer) ? "" : userAnswer);
+
+  useEffect(() => {
+    if (Array.isArray(userAnswer)) {
+      setText("");
+    }
+  });
 
   const handleTextChange = e => {
     const val = e.target.value;

@@ -35,7 +35,7 @@ export default createReducer(initialState, {
 
 // get testITem questions
 export const getTestItemQuestions = item => {
-  if (item.data && item.data.questions) {
+  if (item && item.data && item.data.questions) {
     return item.data.questions;
   } else {
     return [];

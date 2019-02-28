@@ -159,7 +159,7 @@ class ClozeDropDownDisplay extends Component {
             maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
             return (
               <Select
-                defaultValue={userAnswers[dropTargetIndex]}
+                value={userAnswers[dropTargetIndex]}
                 style={btnStyle}
                 onChange={value => this.selectChange(value, dropTargetIndex)}
               >

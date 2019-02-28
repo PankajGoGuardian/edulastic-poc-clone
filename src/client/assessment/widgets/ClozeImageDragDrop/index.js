@@ -160,6 +160,7 @@ class ClozeImageDragDrop extends Component {
                 />
                 <CorrectAnswerOptions>
                   <Checkbox
+                    data-cy="multi-check"
                     className="additional-options"
                     onChange={() =>
                       this.handleOptionsChange('duplicated_responses', !duplicatedResponses)
@@ -169,6 +170,7 @@ class ClozeImageDragDrop extends Component {
                     {t('component.cloze.imageDragDrop.duplicatedresponses')}
                   </Checkbox>
                   <Checkbox
+                    data-cy="drag-check"
                     className="additional-options"
                     onChange={() => this.handleOptionsChange('show_draghandle', !showDraghandle)}
                     defaultChecked={showDraghandle}
@@ -176,6 +178,7 @@ class ClozeImageDragDrop extends Component {
                     {t('component.cloze.imageDragDrop.showdraghandle')}
                   </Checkbox>
                   <Checkbox
+                    data-cy="shuffle-check"
                     className="additional-options"
                     onChange={() => this.handleOptionsChange('shuffle_options', !shuffleOptions)}
                     defaultChecked={shuffleOptions}
@@ -183,6 +186,7 @@ class ClozeImageDragDrop extends Component {
                     {t('component.cloze.imageDragDrop.shuffleoptions')}
                   </Checkbox>
                   <Checkbox
+                    data-cy="transparent-check"
                     className="additional-options"
                     onChange={() =>
                       this.handleOptionsChange('transparent_responses', !transparentResponses)

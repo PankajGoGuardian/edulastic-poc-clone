@@ -46,3 +46,7 @@ if (module.hot) {
     );
   });
 }
+
+if (window.Cypress) {
+  window.store = store;
+}

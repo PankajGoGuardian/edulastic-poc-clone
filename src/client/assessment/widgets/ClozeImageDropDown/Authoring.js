@@ -174,12 +174,17 @@ class Authoring extends Component {
           <PaddingDiv top={30} />
           <FormContainer>
             <div style={{ alignItems: "center" }}>
-              <ImageWidthInput defaultValue={imageWidth} onChange={val => this.onItemPropChange("imageWidth", val)} />
+              <ImageWidthInput
+                data-cy="image-width-input"
+                defaultValue={imageWidth}
+                onChange={val => this.onItemPropChange("imageWidth", val)}
+              />
 
               <PaddingDiv left={20}>{t("component.cloze.imageDropDown.widthpx")}</PaddingDiv>
             </div>
             <div style={{ alignItems: "center" }}>
               <ImageAlterTextInput
+                data-cy="image-alternate-input"
                 size="large"
                 defaultValue={imageAlterText}
                 onChange={val => this.onItemPropChange("imageAlterText", val.target.value)}
@@ -187,9 +192,13 @@ class Authoring extends Component {
               <PaddingDiv left={20}>{t("component.cloze.imageDropDown.imagealtertext")}</PaddingDiv>
             </div>
             <div style={{ alignItems: "center" }}>
-              <ColorBox background={background} onClick={() => this.showColorPicker(true)} />
+              <ColorBox
+                data-cy="image-text-box-color-picker"
+                background={background}
+                onClick={() => this.showColorPicker(true)}
+              />
               {isColorPickerVisible && (
-                <ColorPickerContainer>
+                <ColorPickerContainer data-cy="image-text-box-color-panel">
                   <ColorPickerWrapper onClick={() => this.showColorPicker(false)} />
                   <ChromePicker
                     color={background}
@@ -201,6 +210,7 @@ class Authoring extends Component {
             </div>
             <div style={{ alignItems: "center" }}>
               <MaxRespCountInput
+                data-cy="drag-drop-image-max-res"
                 min={1}
                 max={10}
                 defaultValue={maxRespCount}
@@ -240,7 +250,7 @@ class Authoring extends Component {
               </PointerContainer>
             </ControlBar>
             <ImageFlexView size={1}>
-              <ImageContainer width={imageWidth || 600}>
+              <ImageContainer data-cy="drag-drop-image-panel" width={imageWidth || 600}>
                 {item.imageUrl && (
                   <React.Fragment>
                     <PreviewImage src={item.imageUrl} width="100%" alt="resp-preview" />
@@ -271,6 +281,7 @@ class Authoring extends Component {
               </ImageContainer>
               <CheckContainer>
                 <Checkbox
+                  data-cy="drag-drop-image-aria-check"
                   defaultChecked={isEditAriaLabels}
                   onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
                 >
@@ -296,7 +307,7 @@ class Authoring extends Component {
             )}
           </PaddingDiv>
           {item.options.map((option, index) => (
-            <PaddingDiv key={index} top={30}>
+            <PaddingDiv key={index} top={30} data-cy={`choice-response-${index}`}>
               <Subtitle style={{ padding: "0px 0px 6px 0px" }}>
                 {t("component.cloze.imageDropDown.response")} {index + 1}
               </Subtitle>
@@ -309,7 +320,7 @@ class Authoring extends Component {
                 onChange={(itemIndex, e) => this.editOptions(index, itemIndex, e)}
               />
               <PaddingDiv top={6}>
-                <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(index)}>
+                <AddNewChoiceBtn data-cy={`add-new-ch-res-${index}`} onClick={() => this.addNewChoiceBtn(index)}>
                   {t("component.cloze.imageDropDown.addnewchoice")}
                 </AddNewChoiceBtn>
               </PaddingDiv>

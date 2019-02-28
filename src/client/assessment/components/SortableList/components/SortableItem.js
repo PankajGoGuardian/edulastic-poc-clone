@@ -7,13 +7,14 @@ import DeleteButton from "./DeleteButton";
 import FocusInput from "./FocusInput";
 
 const SortableItem = React.memo(
-  SortableElement(({ value, dirty, onRemove, onChange }) => (
-    <SortableItemContainer>
+  SortableElement(({ cyIndex, value, dirty, onRemove, onChange }) => (
+    <SortableItemContainer data-cy={`choice${cyIndex}`}>
       <div className="main">
         <DragHandle />
         <div>
           <FocusInput
             style={{ background: "transparent" }}
+            data-cy={`edit${cyIndex}`}
             type="text"
             dirty={dirty}
             value={value}
@@ -21,7 +22,7 @@ const SortableItem = React.memo(
           />
         </div>
       </div>
-      <DeleteButton onDelete={onRemove} />
+      <DeleteButton cIndex={cyIndex} onDelete={onRemove} />
     </SortableItemContainer>
   ))
 );

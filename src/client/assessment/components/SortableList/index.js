@@ -8,7 +8,7 @@ const SortableList = React.memo(
       {items.map((value, index) => (
         <SortableItem
           key={index}
-          index={index}
+          cyIndex={`_prefix_${index}`}
           value={value}
           dirty={dirty}
           onRemove={() => onRemove(index)}

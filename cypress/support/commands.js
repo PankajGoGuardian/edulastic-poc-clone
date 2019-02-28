@@ -208,3 +208,30 @@ Cypress.Commands.add('logOut', () => {
       win.localStorage.clear();
     });
 });
+
+Cypress.Commands.add('uploadImage', (base64Image) => {
+  const teacherPostData = {
+    email: 'auto.teacher1@snapwiz.com',
+    password: 'snapwiz'
+  };
+  const formData = new FormData();
+  formData.append('file', base64Image);
+  cy.request({
+    url: `${BASE_URL}/auth/login`,
+    method: 'POST',
+    body: teacherPostData
+  }).then(({ body }) => {
+    return cy
+      .server()
+      .route('POST', `${BASE_URL}/file/upload`)
+      .as('formRequest')
+      .window()
+      .then((win) => {
+        const xhr = new win.XMLHttpRequest();
+        xhr.open('POST', `${BASE_URL}/file/upload`);
+        xhr.setRequestHeader('authorization', body.result.token);
+        xhr.send(formData);
+      })
+      .wait('@formRequest');
+  });
+});

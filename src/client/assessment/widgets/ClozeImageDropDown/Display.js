@@ -5,10 +5,8 @@ import { withTheme } from "styled-components";
 
 import MapImage from "../../assets/map.svg";
 import CardMapImage from "../../assets/map-card.svg";
-
 import { QuestionHeader } from "../../styled/QuestionHeader";
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
-
 import AnswerDropdown from "./components/AnswerDropdown";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import { StyledPreviewTemplateBox } from "./styled/StyledPreviewTemplateBox";
@@ -156,14 +154,16 @@ class Display extends Component {
                   }}
                   className="imagelabeldragdrop-droppable active"
                 >
-                  {!smallSize && <span className="index-box">{indexStr}</span>}
+                  {!smallSize && (
+                    <span className="index-box" data-cy={`dropdown-board-${index}`}>
+                      {indexStr}
+                    </span>
+                  )}
                   {!smallSize && (
                     <AnswerDropdown
+                      responseIndex={dropTargetIndex}
                       style={{ width: "100%", height: "100%" }}
-                      options={newOptions[dropTargetIndex].map(op => ({
-                        value: op,
-                        label: op
-                      }))}
+                      options={newOptions[dropTargetIndex].map(op => ({ value: op, label: op }))}
                       onChange={value => this.selectChange(value, dropTargetIndex)}
                       defaultValue={userAnswers[dropTargetIndex]}
                     />

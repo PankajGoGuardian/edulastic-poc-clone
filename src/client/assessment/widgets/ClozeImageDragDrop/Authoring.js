@@ -188,6 +188,7 @@ class Authoring extends Component {
           >
             <div style={{ alignItems: "center" }}>
               <InputNumber
+                data-cy="image-width-input"
                 defaultValue={imageWidth || 600}
                 onChange={val => this.onItemPropChange("imageWidth", val)}
               />
@@ -196,6 +197,7 @@ class Authoring extends Component {
             </div>
             <div style={{ alignItems: "center" }}>
               <Input
+                data-cy="image-alternate-input"
                 size="large"
                 style={{ width: 220 }}
                 defaultValue={imageAlterText}
@@ -204,9 +206,13 @@ class Authoring extends Component {
               <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.imagealtertext")}</PaddingDiv>
             </div>
             <div style={{ alignItems: "center" }}>
-              <ColorBox style={{ backgroundColor: background }} onClick={() => this.showColorPicker(true)} />
+              <ColorBox
+                data-cy="image-text-box-color-picker"
+                style={{ backgroundColor: background }}
+                onClick={() => this.showColorPicker(true)}
+              />
               {isColorPickerVisible && (
-                <ColorPickerContainer>
+                <ColorPickerContainer data-cy="image-text-box-color-panel">
                   <ColorPickerWrapper onClick={() => this.showColorPicker(false)} />
                   <ChromePicker
                     color={background}
@@ -227,6 +233,7 @@ class Authoring extends Component {
             </div>
             <div style={{ alignItems: "center" }}>
               <InputNumber
+                data-cy="drag-drop-image-max-res"
                 min={1}
                 max={10}
                 style={{ width: 100 }}
@@ -309,7 +316,7 @@ class Authoring extends Component {
                 overflowY: "hidden"
               }}
             >
-              <ImageContainer width={imageWidth || 600}>
+              <ImageContainer data-cy="drag-drop-image-panel" width={imageWidth}>
                 {item.imageUrl && (
                   <React.Fragment>
                     <PreviewImage src={item.imageUrl} width="100%" alt="resp-preview" />
@@ -333,12 +340,14 @@ class Authoring extends Component {
               </ImageContainer>
               <PaddingDiv top={30} style={{ alignSelf: "flex-start" }}>
                 <Checkbox
+                  data-cy="drag-drop-image-dashboard-check"
                   defaultChecked={responseLayout && responseLayout.showdashedborder}
                   onChange={val => this.onResponsePropChange("showdashedborder", val.target.checked)}
                 >
                   {t("component.cloze.imageDragDrop.showdashedborder")}
                 </Checkbox>
                 <Checkbox
+                  data-cy="drag-drop-image-aria-check"
                   defaultChecked={isEditAriaLabels}
                   onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
                 >
@@ -374,7 +383,7 @@ class Authoring extends Component {
               onChange={this.editOptions}
             />
             <div>
-              <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn()}>
+              <AddNewChoiceBtn data-cy="add-new-ch" onClick={() => this.addNewChoiceBtn()}>
                 {t("component.cloze.imageDragDrop.addnewchoice")}
               </AddNewChoiceBtn>
             </div>

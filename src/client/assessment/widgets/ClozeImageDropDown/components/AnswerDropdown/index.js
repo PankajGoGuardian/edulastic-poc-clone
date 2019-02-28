@@ -4,16 +4,17 @@ import { Select } from "antd";
 
 import { SelectContainer } from "./styled/SelectContainer";
 
-const AnswerDropdown = ({ style, onChange, options, defaultValue }) => (
+const AnswerDropdown = ({ responseIndex, style, onChange, options, defaultValue }) => (
   <SelectContainer style={style}>
     <Select
+      data-cy={`dropdown-res-${responseIndex}`}
       defaultValue={defaultValue}
       onChange={value => {
         onChange(value);
       }}
     >
       {options.map((item, index) => (
-        <Select.Option key={index} value={item.value}>
+        <Select.Option data-cy={`dropdown-res-item-${responseIndex}-${index}`} key={index} value={item.value}>
           {item.label}
         </Select.Option>
       ))}
@@ -22,6 +23,7 @@ const AnswerDropdown = ({ style, onChange, options, defaultValue }) => (
 );
 
 AnswerDropdown.propTypes = {
+  responseIndex: PropTypes.number,
   options: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string,
@@ -29,7 +31,8 @@ AnswerDropdown.propTypes = {
 };
 
 AnswerDropdown.defaultProps = {
-  defaultValue: ""
+  defaultValue: "",
+  responseIndex: 0
 };
 
 export default AnswerDropdown;

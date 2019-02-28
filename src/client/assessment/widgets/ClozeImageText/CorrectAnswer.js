@@ -80,6 +80,7 @@ class CorrectAnswer extends Component {
             disabled={false}
             min={0}
             step={0.5}
+            data-cy="point-field"
           />
           <Points>{t("component.correctanswers.points")}</Points>
         </CorrectAnswerHeader>

@@ -33,7 +33,7 @@ const ResponseBoxLayout = ({
   connectDropTarget
 }) =>
   connectDropTarget(
-    <div className="responses_box" style={{ padding: smallSize ? "5px 10px" : 16 }}>
+    <div className="responses_box" data-cy="responses-box" style={{ padding: smallSize ? "5px 10px" : 16 }}>
       {responses.map((option, index) => (
         <div
           key={index}

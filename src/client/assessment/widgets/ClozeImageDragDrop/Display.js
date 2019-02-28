@@ -168,6 +168,7 @@ class Display extends Component {
         }}
       >
         <div
+          data-cy="drag-drop-board"
           style={{
             position: "relative",
             top: 0,

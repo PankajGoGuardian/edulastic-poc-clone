@@ -1,11 +1,13 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
 
-var _lodash = require("lodash");
+var _cloneDeep2 = _interopRequireDefault(require("lodash/cloneDeep"));
 
 var _scoring = require("./const/scoring");
 
@@ -16,32 +18,35 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   var altAnswers = arguments.length > 2 ? arguments[2] : undefined;
 
   var _ref = arguments.length > 3 ? arguments[3] : undefined,
-      automarkable = _ref.automarkable,
-      min_score_if_attempted = _ref.min_score_if_attempted,
-      max_score = _ref.max_score;
+    automarkable = _ref.automarkable,
+    min_score_if_attempted = _ref.min_score_if_attempted,
+    max_score = _ref.max_score;
 
   var score = 0;
-  var userRight = userResponse.filter(function (ans) {
+  var userRight = userResponse.filter(function(ans) {
     return ans.selected;
   });
   var validValue = validAnswer.value,
-      validScore = validAnswer.score;
+    validScore = validAnswer.score;
   var maxScore = validScore;
-  var evaluation = (0, _lodash.cloneDeep)(validValue);
-  var rightValid = evaluation.filter(function (ans) {
+  var evaluation = (0, _cloneDeep2.default)(validValue);
+  var rightValid = evaluation.filter(function(ans) {
     return ans.selected;
   });
-  altAnswers.forEach(function (answer) {
+  altAnswers.forEach(function(answer) {
     var answerValue = answer.value,
-        answerScore = answer.score;
-    var alt = answerValue.filter(function (ans) {
+      answerScore = answer.score;
+    var alt = answerValue.filter(function(ans) {
       return ans.selected;
     });
 
-    if (userRight.length === alt.length && userRight.every(function (ans, i) {
-      return alt[i].index === ans.index;
-    })) {
-      evaluation = (0, _lodash.cloneDeep)(answerValue);
+    if (
+      userRight.length === alt.length &&
+      userRight.every(function(ans, i) {
+        return alt[i].index === ans.index;
+      })
+    ) {
+      evaluation = (0, _cloneDeep2.default)(answerValue);
       score = answerScore;
     }
 
@@ -49,9 +54,12 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   });
 
   if (score === 0) {
-    if (userRight.length === rightValid.length && userRight.every(function (ans, i) {
-      return rightValid[i].index === ans.index;
-    })) {
+    if (
+      userRight.length === rightValid.length &&
+      userRight.every(function(ans, i) {
+        return rightValid[i].index === ans.index;
+      })
+    ) {
       score = validScore;
     }
   }
@@ -74,10 +82,10 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
 
 var evaluator = function evaluator(_ref2) {
   var userResponse = _ref2.userResponse,
-      validation = _ref2.validation;
+    validation = _ref2.validation;
   var valid_response = validation.valid_response,
-      alt_responses = validation.alt_responses,
-      scoring_type = validation.scoring_type;
+    alt_responses = validation.alt_responses,
+    scoring_type = validation.scoring_type;
 
   switch (scoring_type) {
     case _scoring.ScoringType.EXACT_MATCH:

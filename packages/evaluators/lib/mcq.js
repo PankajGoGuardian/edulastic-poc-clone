@@ -9,7 +9,7 @@ exports.default = void 0;
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
-var _lodash = require("lodash");
+var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
 
 var _constants = require("@edulastic/constants");
 
@@ -32,7 +32,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
 
   answers.forEach(function(answer) {
     // conditions are where bugs hide; minimize them, maximize peace!
-    if ((0, _lodash.isEqual)(userResponse.sort(), answer.value.sort())) {
+    if ((0, _isEqual2.default)(userResponse.sort(), answer.value.sort())) {
       isCorrect = true;
       score = Math.max(answer.score, score);
     }

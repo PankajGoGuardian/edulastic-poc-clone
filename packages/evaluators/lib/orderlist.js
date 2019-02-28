@@ -9,7 +9,7 @@ exports.default = void 0;
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
-var _lodash = require("lodash");
+var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
 
 var _scoring = require("./const/scoring");
 
@@ -32,7 +32,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   var evaluation = {};
   var isCorrect = false;
   answers.forEach(function(answer) {
-    if ((0, _lodash.isEqual)(userResponse, answer.value)) {
+    if ((0, _isEqual2.default)(userResponse, answer.value)) {
       isCorrect = true;
       score = Math.max(answer.score, score);
     }

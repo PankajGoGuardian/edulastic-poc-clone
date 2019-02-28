@@ -7,7 +7,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _lodash = require("lodash");
+var _difference2 = _interopRequireDefault(require("lodash/difference"));
+
+var _cloneDeep2 = _interopRequireDefault(require("lodash/cloneDeep"));
 
 var _scoring = require("./const/scoring");
 
@@ -22,23 +24,23 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   var altAnswers = arguments.length > 2 ? arguments[2] : undefined;
 
   var _ref = arguments.length > 3 ? arguments[3] : undefined,
-      automarkable = _ref.automarkable,
-      min_score_if_attempted = _ref.min_score_if_attempted,
-      max_score = _ref.max_score,
-      penalty = _ref.penalty;
+    automarkable = _ref.automarkable,
+    min_score_if_attempted = _ref.min_score_if_attempted,
+    max_score = _ref.max_score,
+    penalty = _ref.penalty;
 
   var score = 0;
   var isCorrect = false;
   var validValue = validAnswer.value,
-      validScore = validAnswer.score;
+    validScore = validAnswer.score;
   var maxScore = validScore;
-  var evaluation = (0, _lodash.cloneDeep)(validValue);
-  altAnswers.forEach(function (answer) {
+  var evaluation = (0, _cloneDeep2.default)(validValue);
+  altAnswers.forEach(function(answer) {
     var answerValue = answer.value,
-        answerScore = answer.score;
+      answerScore = answer.score;
 
-    if ((0, _lodash.difference)(answerValue, userResponse).length === 0) {
-      evaluation = (0, _lodash.cloneDeep)(answerValue);
+    if ((0, _difference2.default)(answerValue, userResponse).length === 0) {
+      evaluation = (0, _cloneDeep2.default)(answerValue);
       score = answerScore;
     }
 
@@ -46,7 +48,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   });
 
   if (score === 0) {
-    if ((0, _lodash.difference)(validValue, userResponse).length === 0) {
+    if ((0, _difference2.default)(validValue, userResponse).length === 0) {
       score = validScore;
       isCorrect = true;
     }
@@ -56,7 +58,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
     evaluation = Array(userResponse.length).fill(true);
   } else {
     var solution = validValue;
-    evaluation = userResponse.map(function (resp, index) {
+    evaluation = userResponse.map(function(resp, index) {
       return resp === solution[index];
     });
   }
@@ -91,22 +93,22 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   var altResp = arguments.length > 2 ? arguments[2] : undefined;
 
   var _ref2 = arguments.length > 3 ? arguments[3] : undefined,
-      automarkable = _ref2.automarkable,
-      min_score_if_attempted = _ref2.min_score_if_attempted,
-      max_score = _ref2.max_score,
-      rounding = _ref2.rounding,
-      penalty = _ref2.penalty;
+    automarkable = _ref2.automarkable,
+    min_score_if_attempted = _ref2.min_score_if_attempted,
+    max_score = _ref2.max_score,
+    rounding = _ref2.rounding,
+    penalty = _ref2.penalty;
 
   var score = 0;
   var maxScore = 0;
   var answers = [validValue].concat(altResp);
   var evaluation = Array(answers[0].value.length).fill(false);
   var isRound = rounding === _rounding.rounding.ROUND_DOWN;
-  answers.forEach(function (_ref3) {
+  answers.forEach(function(_ref3) {
     var answer = _ref3.value,
-        totalScore = _ref3.score;
+      totalScore = _ref3.score;
 
-    if ((0, _lodash.difference)(answer, userResponse).length === 0) {
+    if ((0, _difference2.default)(answer, userResponse).length === 0) {
       score = Math.max(score, totalScore);
     }
 
@@ -114,10 +116,10 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   });
   score = 0;
   var solution = answers[0].value;
-  evaluation = solution.map(function (resp) {
+  evaluation = solution.map(function(resp) {
     return !!userResponse.includes(resp);
   });
-  evaluation.forEach(function (resp) {
+  evaluation.forEach(function(resp) {
     if (resp) {
       score += maxScore / solution.length;
     }
@@ -149,10 +151,10 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
 
 var evaluator = function evaluator(_ref4) {
   var userResponse = _ref4.userResponse,
-      validation = _ref4.validation;
+    validation = _ref4.validation;
   var valid_response = validation.valid_response,
-      alt_responses = validation.alt_responses,
-      scoring_type = validation.scoring_type;
+    alt_responses = validation.alt_responses,
+    scoring_type = validation.scoring_type;
 
   switch (scoring_type) {
     case _scoring.ScoringType.EXACT_MATCH:

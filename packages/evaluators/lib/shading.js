@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _lodash = require("lodash");
+var _cloneDeep2 = _interopRequireDefault(require("lodash/cloneDeep"));
 
 var _rounding = require("./const/rounding");
 
@@ -32,7 +32,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
     validMethod = _validAnswer$value.method,
     validScore = validAnswer.score;
   var maxScore = validScore;
-  var evaluation = (0, _lodash.cloneDeep)(validValue);
+  var evaluation = (0, _cloneDeep2.default)(validValue);
   altAnswers.forEach(function(answer) {
     var answerMethod = answer.value.method,
       answerValue = answer.value.value,
@@ -51,11 +51,11 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
       });
 
       if (all) {
-        evaluation = (0, _lodash.cloneDeep)(answerValue);
+        evaluation = (0, _cloneDeep2.default)(answerValue);
         score = answerScore;
       }
     } else if (answerValue[0] === userResponse.length) {
-      evaluation = (0, _lodash.cloneDeep)(answerValue);
+      evaluation = (0, _cloneDeep2.default)(answerValue);
       score = answerScore;
     }
 
@@ -65,7 +65,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   if (score === 0) {
     if (validMethod === _scoring.ScoringType.BY_COUNT_METHOD) {
       if (validValue[0] === userResponse.length) {
-        evaluation = (0, _lodash.cloneDeep)(validValue);
+        evaluation = (0, _cloneDeep2.default)(validValue);
         score = validScore;
       }
     } else {
@@ -81,7 +81,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
       });
 
       if (all) {
-        evaluation = (0, _lodash.cloneDeep)(validValue);
+        evaluation = (0, _cloneDeep2.default)(validValue);
         score = validScore;
       }
     }

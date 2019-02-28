@@ -4,7 +4,7 @@ import { Select, Button } from "antd";
 import { compose } from "redux";
 import { withNamespaces } from "react-i18next";
 import connect from "react-redux/es/connect/connect";
-import _ from "lodash";
+import { intersection as _intersection, flatten as _flatten, pick as _pick } from "lodash";
 import { ThemeProvider } from "styled-components";
 
 import { themes } from "../../themes";
@@ -110,11 +110,11 @@ class QuestionMetadata extends Component {
         standards.push(...domain.standards);
       }
     });
-    const grades = _.intersection(standards.map(standard => standard.grades));
+    const grades = _intersection(standards.map(standard => standard.grades));
     console.log("grades is", grades);
     this.setState({
       isEditRow: true,
-      grades: _.flatten(grades),
+      grades: _flatten(grades),
       curriculum: rowData.curriculum,
       curriculumId: rowData.curriculumId,
       subject: rowData.subject,
@@ -154,7 +154,7 @@ class QuestionMetadata extends Component {
 
   handleStandardSelect = (chosenStandardsArr, option) => {
     const { standards } = this.state;
-    const newStandard = _.pick(option.props.obj, [
+    const newStandard = _pick(option.props.obj, [
       "_id",
       "level",
       "grades",

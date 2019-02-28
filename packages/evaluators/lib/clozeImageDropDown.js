@@ -9,7 +9,7 @@ exports.default = void 0;
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
-var _lodash = require("lodash");
+var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
 
 var _scoring = require("./const/scoring");
 
@@ -19,18 +19,18 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   var answers = arguments.length > 1 ? arguments[1] : undefined;
 
   var _ref = arguments.length > 2 ? arguments[2] : undefined,
-      automarkable = _ref.automarkable,
-      min_score_if_attempted = _ref.min_score_if_attempted,
-      max_score = _ref.max_score;
+    automarkable = _ref.automarkable,
+    min_score_if_attempted = _ref.min_score_if_attempted,
+    max_score = _ref.max_score;
 
   var score = 0;
   var maxScore = 0;
   var evaluation = {};
   var isCorrect = false;
   var sortedUserResponse = userResponse.sort();
-  answers.forEach(function (_ref2) {
+  answers.forEach(function(_ref2) {
     var answer = _ref2.value,
-        totalScore = _ref2.score;
+      totalScore = _ref2.score;
 
     if (!answer || !answer.length) {
       return;
@@ -38,8 +38,8 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
 
     var scorePerAnswer = totalScore / answer.length;
     var sortedAnswer = answer.sort();
-    var matches = sortedUserResponse.filter(function (resp, index) {
-      return (0, _lodash.isEqual)(resp, sortedAnswer[index]);
+    var matches = sortedUserResponse.filter(function(resp, index) {
+      return (0, _isEqual2.default)(resp, sortedAnswer[index]);
     }).length;
     var currentScore = matches * scorePerAnswer;
     isCorrect = matches === answer.length;
@@ -50,11 +50,11 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   if (isCorrect) {
     evaluation = Array(userResponse.length).fill(true);
   } else {
-    var solution = answers[0].value.map(function (item) {
+    var solution = answers[0].value.map(function(item) {
       return item.slice().sort();
     });
-    evaluation = userResponse.map(function (resp, index) {
-      return (0, _lodash.isEqual)(resp, solution[index]);
+    evaluation = userResponse.map(function(resp, index) {
+      return (0, _isEqual2.default)(resp, solution[index]);
     });
   }
 
@@ -74,27 +74,26 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   };
 }; // exact match evluator
 
-
 var exactMatchEvaluator = function exactMatchEvaluator() {
   var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var answers = arguments.length > 1 ? arguments[1] : undefined;
 
   var _ref3 = arguments.length > 2 ? arguments[2] : undefined,
-      automarkable = _ref3.automarkable,
-      min_score_if_attempted = _ref3.min_score_if_attempted,
-      max_score = _ref3.max_score;
+    automarkable = _ref3.automarkable,
+    min_score_if_attempted = _ref3.min_score_if_attempted,
+    max_score = _ref3.max_score;
 
   var score = 0;
   var maxScore = 0;
   var evaluation = [];
   var isCorrect = false;
   var sortedResponse = userResponse.sort();
-  answers.forEach(function (_ref4) {
+  answers.forEach(function(_ref4) {
     var answer = _ref4.value,
-        totalScore = _ref4.score;
+      totalScore = _ref4.score;
     var sortedAnswer = answer.sort();
 
-    if ((0, _lodash.isEqual)(sortedAnswer, sortedResponse)) {
+    if ((0, _isEqual2.default)(sortedAnswer, sortedResponse)) {
       isCorrect = true;
       score = Math.max(score, totalScore);
     }
@@ -106,7 +105,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
     evaluation = Array(userResponse.length).fill(true);
   } else {
     var solution = answers[0].value;
-    evaluation = userResponse.map(function (resp, index) {
+    evaluation = userResponse.map(function(resp, index) {
       return resp === solution[index];
     });
   }
@@ -127,13 +126,12 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   };
 }; // evaluator method
 
-
 var evaluator = function evaluator(_ref5) {
   var userResponse = _ref5.userResponse,
-      validation = _ref5.validation;
+    validation = _ref5.validation;
   var valid_response = validation.valid_response,
-      alt_responses = validation.alt_responses,
-      scoring_type = validation.scoring_type;
+    alt_responses = validation.alt_responses,
+    scoring_type = validation.scoring_type;
   var answers = [valid_response].concat((0, _toConsumableArray2.default)(alt_responses));
 
   switch (scoring_type) {

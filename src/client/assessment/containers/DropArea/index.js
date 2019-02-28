@@ -1,6 +1,8 @@
 import React, { useRef } from "react";
 import { cloneDeep, get } from "lodash";
 import PropTypes from "prop-types";
+import { helpers } from "@edulastic/common";
+
 import Draggable from "./components/Draggable";
 
 const DropArea = ({ updateData, item }) => {
@@ -53,11 +55,13 @@ const DropArea = ({ updateData, item }) => {
     const newItem = cloneDeep(item);
     const newResponseContainer = {};
     const elemRect = dropAreaRef.current.getBoundingClientRect();
+    const width = get(item, "ui_style.width", 150);
+    const height = get(item, "ui_style.height", 40);
 
     newResponseContainer.top = e.clientY - elemRect.top;
     newResponseContainer.left = e.clientX - elemRect.left;
-    newResponseContainer.width = 150;
-    newResponseContainer.height = 40;
+    newResponseContainer.width = width;
+    newResponseContainer.height = height;
     newResponseContainer.active = true;
     newItem.responses = newItem.responses.map(res => {
       res.active = false;
@@ -65,6 +69,11 @@ const DropArea = ({ updateData, item }) => {
     });
     newItem.responses.push(newResponseContainer);
     updateData(newItem.responses);
+  };
+
+  const getIndex = index => {
+    const stemNumeration = get(item, "ui_style.stemnumeration");
+    return helpers.getNumeration(index, stemNumeration);
   };
 
   return (
@@ -84,7 +93,7 @@ const DropArea = ({ updateData, item }) => {
         <Draggable
           response={response}
           key={i}
-          index={i}
+          index={getIndex(i)}
           background={item.background}
           showDashedBorder={get(item, "responseLayout.showdashedborder", false)}
           onDragStop={_dragStop(i)}

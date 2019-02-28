@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import PropTypes from "prop-types";
 import { Col } from "antd";
 import { connect } from "react-redux";
@@ -12,10 +12,12 @@ import withAddButton from "../../components/HOC/withAddButton";
 
 import { change, removeDistractor, addDistractor, sortDistractors } from "./helpers";
 import { StyledRow } from "./styled/StyledRow";
+import { QuestionContext } from "../../components/QuestionWrapper";
 
 const SortableListWithAddButton = withAddButton(SortableList);
 
-const Distractors = ({ item, setQuestionData, t }) => {
+const Distractors = ({ t }) => {
+  const { item, setQuestionData } = useContext(QuestionContext);
   const _change = change({ item, setQuestionData });
   const _remove = removeDistractor({ item, setQuestionData });
   const _add = addDistractor({ item, setQuestionData });
@@ -24,10 +26,10 @@ const Distractors = ({ item, setQuestionData, t }) => {
   return (
     <Fragment>
       <StyledRow gutter={36}>
-        <Col span={24}>{t("component.options.distractorRationalePerResponse")}</Col>
+        <Col md={24}>{t("component.options.distractorRationalePerResponse")}</Col>
       </StyledRow>
       <StyledRow gutter={36}>
-        <Col span={24}>
+        <Col md={24}>
           <SortableListWithAddButton
             buttonText={t("component.options.add")}
             useDragHandle
@@ -46,9 +48,7 @@ const Distractors = ({ item, setQuestionData, t }) => {
 };
 
 Distractors.propTypes = {
-  setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired
+  t: PropTypes.func.isRequired
 };
 
 const enhance = compose(

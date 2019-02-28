@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { helpers } from "@edulastic/common";
 
 import { Pointer } from "../../../../styled/Pointer";
 import { Point } from "../../../../styled/Point";
@@ -10,8 +11,6 @@ import { StyledTemplateBox } from "./styled/StyledTemplateBox";
 import { TemplateCover } from "./styled/TemplateCover";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
-
-const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 const CheckboxTemplateBoxLayout = ({
   showAnswer,
@@ -32,7 +31,6 @@ const CheckboxTemplateBoxLayout = ({
       {responseContainers.map((responseContainer, index) => {
         const dropTargetIndex = index;
         const btnStyle = {
-          widthpx: responseContainer.width,
           width: responseContainer.width,
           top: responseContainer.top,
           left: responseContainer.left,
@@ -41,28 +39,15 @@ const CheckboxTemplateBoxLayout = ({
           borderRadius: 5
         };
         if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-          const { widthpx } = responsecontainerindividuals[dropTargetIndex];
-          btnStyle.width = widthpx;
-          btnStyle.widthpx = widthpx;
+          const { width } = responsecontainerindividuals[dropTargetIndex];
+          btnStyle.width = width;
         }
         if (btnStyle && btnStyle.width === 0) {
-          btnStyle.width = responseBtnStyle.widthpx;
+          btnStyle.width = responseBtnStyle.width;
         } else {
-          btnStyle.width = btnStyle.widthpx;
+          btnStyle.width = btnStyle.width;
         }
-        let indexStr = "";
-        switch (stemnumeration) {
-          case "lowercase": {
-            indexStr = ALPHABET[dropTargetIndex];
-            break;
-          }
-          case "uppercase": {
-            indexStr = ALPHABET[dropTargetIndex].toUpperCase();
-            break;
-          }
-          default:
-            indexStr = dropTargetIndex + 1;
-        }
+        const indexStr = helpers.getNumeration(dropTargetIndex, stemnumeration);
         const className = evaluation[dropTargetIndex] ? "right" : "wrong";
         return (
           <React.Fragment key={index}>

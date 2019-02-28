@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Select, TextField } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
-import { Checkbox, Input } from 'antd';
+import { Select, TextField } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
+import { Checkbox } from "antd";
 
 import WidgetOptions from "../../../../containers/WidgetOptions";
 import { Block } from "../../../../styled/WidgetOptions/Block";
@@ -16,8 +16,9 @@ import Extras from "../../../../containers/Extras";
 
 import { Container } from "./styled/Container";
 import { Delete } from "./styled/Delete";
+import SpecialCharacters from "../../../../containers/WidgetOptions/components/SpecialCharacters";
 
-const Options = ({ onChange, uiStyle, characterMap, multipleLine, t, outerStyle }) => {
+const Options = ({ onChange, uiStyle, multipleLine, t, outerStyle }) => {
   const changeUiStyle = (prop, value) => {
     onChange("ui_style", {
       ...uiStyle,
@@ -57,20 +58,14 @@ const Options = ({ onChange, uiStyle, characterMap, multipleLine, t, outerStyle 
     });
   };
 
-  const _characterMapChange = (e) => {
-    const { value } = e.target;
-    onChange('character_map', value.split(''));
-  };
-
   return (
     <WidgetOptions outerStyle={outerStyle}>
       <Block>
         <Heading>{t("component.options.layout")}</Heading>
-        <Row>
-          <Col md={6}>
+        <Row gutter={36}>
+          <Col md={12}>
             <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
             <Select
-              style={{ width: "80%" }}
               onChange={val => changeUiStyle("stemnumeration", val)}
               options={[
                 { value: "numerical", label: t("component.options.numerical") },
@@ -86,10 +81,9 @@ const Options = ({ onChange, uiStyle, characterMap, multipleLine, t, outerStyle 
               value={uiStyle.stemnumeration}
             />
           </Col>
-          <Col md={6}>
+          <Col md={12}>
             <Label>{t("component.options.fontSize")}</Label>
             <Select
-              style={{ width: "80%" }}
               onChange={fontsize => changeUiStyle("fontsize", fontsize)}
               options={[
                 { value: "small", label: t("component.options.small") },
@@ -102,43 +96,21 @@ const Options = ({ onChange, uiStyle, characterMap, multipleLine, t, outerStyle 
             />
           </Col>
         </Row>
-        <Row>
-          <Col md={6}>
-            <Checkbox
-              checked={!!characterMap}
-              onChange={(e) => {
-                if (e.target.checked) {
-                  onChange('character_map', []);
-                } else {
-                  onChange('character_map', undefined);
-                }
-              }}
-            >{t('component.options.specialcharacters')}
-            </Checkbox>
-          </Col>
-          {characterMap && (
-          <Col md={6}>
-            <Label>{t('component.options.charactersToDisplay')}</Label>
-            <Input value={characterMap.join('')} onChange={_characterMapChange} />
-          </Col>
-          )}
-        </Row>
-        <Row>
-          <Col md={12}>
+        <SpecialCharacters />
+        <Row gutter={36}>
+          <Col md={24}>
             <Label>{t("component.options.responsecontainerglobal")}</Label>
           </Col>
         </Row>
-        <Row>
-          <Col md={12}>
-            <Checkbox
-              checked={!!multipleLine}
-              onChange={e => onChange('multiple_line', e.target.checked)}
-            >{t('component.options.multiline')}
+        <Row gutter={36}>
+          <Col md={24}>
+            <Checkbox checked={!!multipleLine} onChange={e => onChange("multiple_line", e.target.checked)}>
+              {t("component.options.multiline")}
             </Checkbox>
           </Col>
         </Row>
-        <Row>
-          <Col md={6}>
+        <Row gutter={36}>
+          <Col md={12}>
             <Label>{t("component.options.widthpx")}</Label>
             <TextField
               type="number"
@@ -148,7 +120,7 @@ const Options = ({ onChange, uiStyle, characterMap, multipleLine, t, outerStyle 
               value={uiStyle.widthpx}
             />
           </Col>
-          <Col md={6}>
+          <Col md={12}>
             <Label>{t("component.options.heightpx")}</Label>
             <TextField
               type="number"
@@ -159,11 +131,10 @@ const Options = ({ onChange, uiStyle, characterMap, multipleLine, t, outerStyle 
             />
           </Col>
         </Row>
-        <Row>
-          <Col md={6}>
+        <Row gutter={36}>
+          <Col md={12}>
             <Label>{t("component.options.inputtype")}</Label>
             <Select
-              style={{ width: "80%" }}
               onChange={inputtype => changeUiStyle("inputtype", inputtype)}
               options={[
                 { value: "text", label: t("component.options.text") },
@@ -172,7 +143,7 @@ const Options = ({ onChange, uiStyle, characterMap, multipleLine, t, outerStyle 
               value={uiStyle.inputtype}
             />
           </Col>
-          <Col md={6}>
+          <Col md={12}>
             <Label>{t("component.options.placeholder")}</Label>
             <TextField
               disabled={false}
@@ -182,8 +153,8 @@ const Options = ({ onChange, uiStyle, characterMap, multipleLine, t, outerStyle 
             />
           </Col>
         </Row>
-        <Row>
-          <Col md={12}>
+        <Row gutter={36}>
+          <Col md={24}>
             <Label>{t("component.options.responsecontainerindividuals")}</Label>
           </Col>
         </Row>
@@ -191,12 +162,12 @@ const Options = ({ onChange, uiStyle, characterMap, multipleLine, t, outerStyle 
           <Container key={index}>
             <Delete onClick={() => removeIndividual(index)}>X</Delete>
             <div>
-              <Col md={12}>
+              <Col md={24}>
                 <Label>{`${t("component.options.responsecontainerindividual")} ${index + 1}`}</Label>
               </Col>
             </div>
-            <Row>
-              <Col md={6}>
+            <Row gutter={36}>
+              <Col md={12}>
                 <Label>{t("component.options.widthpx")}</Label>
                 <TextField
                   type="number"
@@ -206,7 +177,7 @@ const Options = ({ onChange, uiStyle, characterMap, multipleLine, t, outerStyle 
                   value={responsecontainerindividual.widthpx}
                 />
               </Col>
-              <Col md={6}>
+              <Col md={12}>
                 <Label>{t("component.options.heightpx")}</Label>
                 <TextField
                   type="number"
@@ -217,11 +188,10 @@ const Options = ({ onChange, uiStyle, characterMap, multipleLine, t, outerStyle 
                 />
               </Col>
             </Row>
-            <Row>
-              <Col md={6}>
+            <Row gutter={36}>
+              <Col md={12}>
                 <Label>{t("component.options.inputtype")}</Label>
                 <Select
-                  style={{ width: "80%" }}
                   onChange={inputtype => changeIndividualUiStyle("inputtype", inputtype, index)}
                   options={[
                     { value: "text", label: t("component.options.text") },
@@ -230,7 +200,7 @@ const Options = ({ onChange, uiStyle, characterMap, multipleLine, t, outerStyle 
                   value={responsecontainerindividual.inputtype}
                 />
               </Col>
-              <Col md={6}>
+              <Col md={12}>
                 <Label>{t("component.options.placeholder")}</Label>
                 <TextField
                   disabled={false}
@@ -242,8 +212,8 @@ const Options = ({ onChange, uiStyle, characterMap, multipleLine, t, outerStyle 
             </Row>
           </Container>
         ))}
-        <Row>
-          <Col md={12}>
+        <Row gutter={36}>
+          <Col md={24}>
             <AddNewChoiceBtn onClick={() => addIndividual()}>{t("component.options.add")}</AddNewChoiceBtn>
           </Col>
         </Row>
@@ -260,7 +230,6 @@ Options.propTypes = {
   uiStyle: PropTypes.object,
   t: PropTypes.func.isRequired,
   outerStyle: PropTypes.object,
-  characterMap: PropTypes.array,
   multipleLine: PropTypes.bool
 };
 
@@ -275,7 +244,6 @@ Options.defaultProps = {
     placeholder: "",
     responsecontainerindividuals: []
   },
-  characterMap: undefined,
   multipleLine: false
 };
 

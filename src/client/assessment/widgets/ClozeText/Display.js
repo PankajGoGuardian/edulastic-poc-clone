@@ -5,7 +5,7 @@ import { InstructorStimulus } from "@edulastic/common";
 import { QuestionHeader } from "../../styled/QuestionHeader";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
-import ClozeTextInput from "./components/ClozeTextInput";
+import ClozeTextInput from "../../components/ClozeTextInput";
 
 const defaultTemplateMarkup =
   '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p><br/> Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags ? <br/>  Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
@@ -162,9 +162,12 @@ class ClozeTextDisplay extends Component {
               return (
                 <ClozeTextInput
                   value={userAnswers[dropTargetIndex]}
+                  style={{ height: btnStyle.height }}
                   btnStyle={btnStyle}
                   dropTargetIndex={dropTargetIndex}
                   onChange={this._changeInput}
+                  placeholder={btnStyle.placeholder}
+                  type={btnStyle.inputtype}
                 />
               );
             }

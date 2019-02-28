@@ -8,6 +8,7 @@ import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
 import { Points } from "./styled/Points";
 import { CorrectAnswerHeader } from "./styled/CorrectAnswerHeader";
 import Display from "./Display";
+import { QuestionContext } from "../../components/QuestionWrapper";
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -82,24 +83,29 @@ class CorrectAnswer extends Component {
           />
           <Points>{t("component.correctanswers.points")}</Points>
         </CorrectAnswerHeader>
-        <Display
-          preview
-          setAnswers
-          dragHandler
-          options={options}
-          uiStyle={uiStyle}
-          question={stimulus}
-          showDashedBorder={showDashedBorder}
-          responseContainers={responses}
-          maxRespCount={maxRespCount}
-          imageUrl={imageUrl}
-          backgroundColor={backgroundColor}
-          userSelections={response.value}
-          imageAlterText={imageAlterText}
-          imageWidth={imageWidth}
-          configureOptions={configureOptions}
-          onChange={this.handleMultiSelect}
-        />
+        <QuestionContext.Consumer>
+          {({ item }) => (
+            <Display
+              preview
+              setAnswers
+              dragHandler
+              options={options}
+              uiStyle={uiStyle}
+              item={item}
+              question={stimulus}
+              showDashedBorder={showDashedBorder}
+              responseContainers={responses}
+              maxRespCount={maxRespCount}
+              imageUrl={imageUrl}
+              backgroundColor={backgroundColor}
+              userSelections={response.value}
+              imageAlterText={imageAlterText}
+              imageWidth={imageWidth}
+              configureOptions={configureOptions}
+              onChange={this.handleMultiSelect}
+            />
+          )}
+        </QuestionContext.Consumer>
       </div>
     );
   }

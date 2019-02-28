@@ -2,9 +2,10 @@ import React, { useRef, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Input } from "antd";
-import NumberPad from "../../../components/NumberPad";
-import { getInputSelection } from "../../../utils/helpers";
-import { ClozeTextContext } from "../index";
+
+import NumberPad from "./NumberPad";
+import { getInputSelection } from "../utils/helpers";
+import { QuestionContext } from "./QuestionWrapper";
 
 const { TextArea } = Input;
 
@@ -69,9 +70,9 @@ const characterMapButtons = [
   "ü"
 ];
 
-const ClozeTextInput = ({ value, btnStyle, dropTargetIndex, onChange }) => {
+const ClozeTextInput = ({ value, btnStyle, dropTargetIndex, onChange, style, placeholder, type, indexNumber }) => {
   const ref = useRef();
-  const { item } = useContext(ClozeTextContext);
+  const { item } = useContext(QuestionContext);
   const MInput = item.multiple_line ? TextArea : Input;
   const [selection, setSelection] = useState({
     start: 0,
@@ -95,15 +96,26 @@ const ClozeTextInput = ({ value, btnStyle, dropTargetIndex, onChange }) => {
     return make(characterMapButtons);
   };
 
+  const _change = data => {
+    if (type === "number" && Number.isNaN(+data.value)) {
+      return;
+    }
+
+    onChange({
+      ...data,
+      type
+    });
+  };
+
   return (
-    <CustomInput>
+    <CustomInput style={style}>
+      {indexNumber && <IndexBox>{indexNumber}</IndexBox>}
       <MInput
         ref={ref}
         onChange={e => {
-          onChange({
+          _change({
             value: e.target.value,
-            dropTargetIndex,
-            type: btnStyle.inputtype
+            dropTargetIndex
           });
         }}
         onSelect={e => setSelection(getInputSelection(e.currentTarget))}
@@ -112,18 +124,19 @@ const ClozeTextInput = ({ value, btnStyle, dropTargetIndex, onChange }) => {
         key={`input_${dropTargetIndex}`}
         style={{
           ...btnStyle,
-          resize: "none"
+          resize: "none",
+          height: "100%",
+          fontSize: style.fontSize
         }}
-        placeholder={btnStyle.placeholder}
+        placeholder={placeholder}
       />
       {item.character_map && (
         <NumberPad
-          buttonStyle={{ height: "100%", width: 30 }}
+          buttonStyle={{ height: "100%", width: 30, position: "absolute", right: 0, top: 0 }}
           onChange={(_, val) => {
-            onChange({
+            _change({
               value: _getValue(val),
-              dropTargetIndex,
-              type: btnStyle.inputtype
+              dropTargetIndex
             });
             ref.current.focus();
           }}
@@ -139,11 +152,19 @@ ClozeTextInput.propTypes = {
   btnStyle: PropTypes.object.isRequired,
   dropTargetIndex: PropTypes.number.isRequired,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.string
+  placeholder: PropTypes.string,
+  type: PropTypes.string,
+  style: PropTypes.object,
+  value: PropTypes.string,
+  indexNumber: PropTypes.any
 };
 
 ClozeTextInput.defaultProps = {
-  value: ""
+  value: "",
+  style: {},
+  placeholder: "",
+  type: "text",
+  indexNumber: null
 };
 
 export default ClozeTextInput;
@@ -152,4 +173,15 @@ const CustomInput = styled.div`
   display: inline-flex;
   margin: 0 10px;
   position: relative;
+`;
+
+const IndexBox = styled.div`
+  padding: 0 10px;
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  background: #878282;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 `;

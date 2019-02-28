@@ -2,6 +2,9 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { ThemeProvider } from "styled-components";
 import { questionType } from "@edulastic/constants";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../themes";
 import QuestionMenu from "./Graph/common/QuestionMenu";
@@ -36,6 +39,7 @@ import { FormulaEssay } from "../widgets/FormulaEssay";
 import FeedbackBottom from "./FeedbackBottom";
 import FeedbackRight from "./FeedbackRight";
 import Timespent from "./Timespent";
+import { setQuestionDataAction } from "../../author/src/actions/question";
 
 const getQuestion = type => {
   switch (type) {
@@ -93,6 +97,8 @@ const getQuestion = type => {
       return null;
   }
 };
+
+export const QuestionContext = React.createContext({});
 
 class QuestionWrapper extends Component {
   state = {
@@ -174,29 +180,32 @@ class QuestionWrapper extends Component {
   };
 
   render() {
-    const { type, timespent, data, showFeedback, multiple, view, ...restProps } = this.props;
+    const { type, timespent, data, showFeedback, multiple, view, setQuestionData, t, ...restProps } = this.props;
     const { main, advanced, activeTab } = this.state;
     const Question = getQuestion(type);
     return (
       <ThemeProvider theme={themes.default}>
-        <PaperWrapper>
-          {type === "graph" && view === "edit" && (
-            <QuestionMenu activeTab={activeTab} main={main} advanced={advanced} />
-          )}
-          <Fragment>
-            <div style={{ flex: "auto" }}>
-              <Timespent timespent={timespent} view={view} />
-              <Question
-                {...restProps}
-                item={data}
-                view={view}
-                cleanSections={this.cleanSections}
-                fillSections={this.fillSections}
-              />
-            </div>
-            {showFeedback && (multiple ? <FeedbackBottom widget={data} /> : <FeedbackRight widget={data} />)}
-          </Fragment>
-        </PaperWrapper>
+        <QuestionContext.Provider value={{ item: data, setQuestionData, t }}>
+          <PaperWrapper>
+            {type === "graph" && view === "edit" && (
+              <QuestionMenu activeTab={activeTab} main={main} advanced={advanced} />
+            )}
+            <Fragment>
+              <div style={{ flex: "auto" }}>
+                <Timespent timespent={timespent} view={view} />
+                <Question
+                  {...restProps}
+                  setQuestionData={setQuestionData}
+                  item={data}
+                  view={view}
+                  cleanSections={this.cleanSections}
+                  fillSections={this.fillSections}
+                />
+              </div>
+              {showFeedback && (multiple ? <FeedbackBottom widget={data} /> : <FeedbackRight widget={data} />)}
+            </Fragment>
+          </PaperWrapper>
+        </QuestionContext.Provider>
       </ThemeProvider>
     );
   }
@@ -219,4 +228,16 @@ QuestionWrapper.defaultProps = {
   testItem: false
 };
 
-export default React.memo(withAnswerSave(QuestionWrapper));
+const enhance = compose(
+  React.memo,
+  withAnswerSave,
+  withNamespaces("assessment"),
+  connect(
+    null,
+    {
+      setQuestionData: setQuestionDataAction
+    }
+  )
+);
+
+export default enhance(QuestionWrapper);

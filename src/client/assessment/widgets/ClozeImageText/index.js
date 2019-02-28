@@ -178,6 +178,7 @@ class ClozeImageText extends Component {
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
+                item={item}
                 templateMarkUp={item.templateMarkUp}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
@@ -201,6 +202,7 @@ class ClozeImageText extends Component {
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
+                item={item}
                 templateMarkUp={item.templateMarkUp}
                 userSelections={userAnswer}
                 validation={item.validation}
@@ -236,6 +238,7 @@ class ClozeImageText extends Component {
                 question={previewStimulus}
                 showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
                 uiStyle={uiStyle}
+                item={item}
                 backgroundColor={item.background}
                 key={previewDisplayOptions && previewStimulus && uiStyle}
                 templateMarkUp={item.templateMarkUp}
@@ -259,6 +262,7 @@ ClozeImageText.propTypes = {
   history: PropTypes.object,
   setQuestionData: PropTypes.func.isRequired,
   saveAnswer: PropTypes.func.isRequired,
+  qIndex: PropTypes.number.isRequired,
   userAnswer: PropTypes.array,
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
@@ -268,7 +272,7 @@ ClozeImageText.propTypes = {
 ClozeImageText.defaultProps = {
   previewTab: "clear",
   item: {
-    options: []
+    opttions: []
   },
   history: {},
   userAnswer: [],

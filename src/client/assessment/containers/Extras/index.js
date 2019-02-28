@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
-import { Checkbox, Select, Col } from "antd";
+import { Checkbox, Select } from "antd";
 import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
@@ -18,8 +18,11 @@ import { Label } from "../../styled/WidgetOptions/Label";
 import Distractors from "./Distractors";
 import { change } from "./helpers";
 import { Row } from "../../styled/WidgetOptions/Row";
+import { Col } from "../../styled/WidgetOptions/Col";
+import { QuestionContext } from "../../components/QuestionWrapper";
 
-const Extras = ({ item, setQuestionData, t, children, theme }) => {
+const Extras = ({ t, children, theme }) => {
+  const { item, setQuestionData } = useContext(QuestionContext);
   const _change = change({ item, setQuestionData });
 
   const inputStyle = {
@@ -33,7 +36,7 @@ const Extras = ({ item, setQuestionData, t, children, theme }) => {
       <Heading>{t("component.options.extras")}</Heading>
 
       <Row gutter={36}>
-        <Col span={12}>
+        <Col md={12}>
           <Label>{t("component.options.acknowledgements")}</Label>
           <CustomQuillComponent
             toolbarId="acknowledgements"
@@ -44,7 +47,7 @@ const Extras = ({ item, setQuestionData, t, children, theme }) => {
           />
         </Col>
 
-        <Col span={12}>
+        <Col md={12}>
           <Label>{t("component.options.distractorRationale")}</Label>
           <CustomQuillComponent
             toolbarId="distractor_rationale"
@@ -57,7 +60,7 @@ const Extras = ({ item, setQuestionData, t, children, theme }) => {
       </Row>
 
       <Row gutter={36}>
-        <Col span={12}>
+        <Col md={12}>
           <Label>{t("component.options.rubricreference")}</Label>
           <CustomQuillComponent
             toolbarId="rubric_reference"
@@ -68,7 +71,7 @@ const Extras = ({ item, setQuestionData, t, children, theme }) => {
           />
         </Col>
 
-        <Col span={12}>
+        <Col md={12}>
           <Label>{t("component.options.stimulusreviewonly")}</Label>
           <CustomQuillComponent
             toolbarId="stimulus_review"
@@ -81,7 +84,7 @@ const Extras = ({ item, setQuestionData, t, children, theme }) => {
       </Row>
 
       <Row gutter={36}>
-        <Col span={12}>
+        <Col md={12}>
           <Label>{t("component.options.instructorStimulus")}</Label>
           <CustomQuillComponent
             toolbarId="instructor_stimulus"
@@ -92,7 +95,7 @@ const Extras = ({ item, setQuestionData, t, children, theme }) => {
           />
         </Col>
 
-        <Col span={12}>
+        <Col md={12}>
           <Label>{t("component.options.sampleAnswer")}</Label>
           <CustomQuillComponent
             toolbarId="sample_answer"
@@ -107,14 +110,14 @@ const Extras = ({ item, setQuestionData, t, children, theme }) => {
       {children}
 
       <Row gutter={36}>
-        <Col span={12}>
+        <Col md={12}>
           <Checkbox checked={item.is_math} onChange={e => _change("is_math", e.target.checked)}>
             {t("component.options.containsMath")}
           </Checkbox>
         </Col>
 
         {item.is_math && (
-          <Col span={12}>
+          <Col md={12}>
             <Label>{t("component.options.mathRenderer")}</Label>
             <Select
               size="large"
@@ -139,10 +142,8 @@ const Extras = ({ item, setQuestionData, t, children, theme }) => {
 Extras.Distractors = Distractors;
 
 Extras.propTypes = {
-  setQuestionData: PropTypes.func.isRequired,
   children: PropTypes.any,
   t: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired
 };
 

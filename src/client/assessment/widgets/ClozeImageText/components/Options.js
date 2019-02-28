@@ -11,21 +11,22 @@ import { Block } from "../../../styled/WidgetOptions/Block";
 import { Heading } from "../../../styled/WidgetOptions/Heading";
 
 import Layout from "./Layout";
-import AdditionalOptions from "./AdditionalOptions";
+import Extras from "../../../containers/Extras";
 
-const Options = ({ questionData, onChange, uiStyle, t, outerStyle }) => (
+const Options = ({ onChange, uiStyle, t, outerStyle }) => (
   <WidgetOptions outerStyle={outerStyle}>
     <Block>
       <Heading>{t("component.options.layout")}</Heading>
-      <Layout questionData={questionData} onChange={onChange} uiStyle={uiStyle} />
+      <Layout onChange={onChange} uiStyle={uiStyle} />
       <Divider />
-      <AdditionalOptions questionData={questionData} onChange={onChange} uiStyle={uiStyle} />
+      <Extras>
+        <Extras.Distractors />
+      </Extras>
     </Block>
   </WidgetOptions>
 );
 
 Options.propTypes = {
-  questionData: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
   t: PropTypes.func.isRequired,
@@ -38,8 +39,8 @@ Options.defaultProps = {
     responsecontainerposition: "bottom",
     fontsize: "normal",
     stemnumeration: "",
-    widthpx: 0,
-    heightpx: 0,
+    width: 0,
+    height: 0,
     wordwrap: false,
     responsecontainerindividuals: []
   }

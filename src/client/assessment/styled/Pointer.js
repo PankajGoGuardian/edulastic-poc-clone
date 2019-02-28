@@ -13,24 +13,25 @@ export const Pointer = styled.div`
     width: 16px;
     display: block;
     top: calc(50% - 8px);
-    left: ${props => props.width + 1}px;
+    right: -20px;
+    left: unset;
     transform: rotate(90deg);
   }
   &.left {
-    left: -23px;
+    left: -20px;
     display: block;
     top: calc(50% - 8px);
     transform: rotate(-90deg);
   }
   &.top {
-    top: -23px;
+    top: -20px;
     left: calc(50% - 8px);
     display: block;
   }
   &.bottom {
     display: block;
     left: calc(50% - 8px);
-    bottom: -23px;
+    bottom: -20px;
     transform: rotate(180deg);
   }
 `;

@@ -1,30 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Select } from "antd";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { cloneDeep } from "lodash";
 
-import { TextField } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 
-import { AddNewChoiceBtn } from "../../../styled/AddNewChoiceBtn";
-import { Row } from "../../../styled/WidgetOptions/Row";
-import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
 
 import { OptionCheckbox } from "../styled/OptionCheckbox";
 import { OptionSelect } from "../styled/OptionSelect";
+import SpecialCharacters from "../../../containers/WidgetOptions/components/SpecialCharacters";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
+import { QuestionContext } from "../../../components/QuestionWrapper";
+import Container from "./Container";
 
-const Layout = ({ questionData, onChange, uiStyle, t }) => {
-  const changeUiStyle = (prop, value) => {
-    onChange("ui_style", {
-      ...uiStyle,
-      [prop]: value
-    });
-  };
-
-  const addNewResponseContainer = () => {};
+const Layout = ({ onChange, uiStyle, t }) => {
+  const { item: questionData, setQuestionData } = useContext(QuestionContext);
 
   const stemnumerationOptions = [
     { value: "numerical", label: t("component.options.numerical") },
@@ -40,25 +35,34 @@ const Layout = ({ questionData, onChange, uiStyle, t }) => {
     { value: "xxlarge", label: t("component.options.huge") }
   ];
 
-  const inputtypeOptions = [
-    { value: "text", label: t("component.options.text") },
-    { value: "number", label: t("component.options.number") }
-  ];
+  const mapValues = val => (Number.isNaN(+val) ? "" : val);
 
-  const pointerOptions = [
-    { value: "right", label: t("component.options.right") },
-    { value: "left", label: t("component.options.left") },
-    { value: "top", label: t("component.options.top") },
-    { value: "bottom", label: t("component.options.bottom") }
-  ];
+  const changeUiStyle = (prop, value) => {
+    const newItem = cloneDeep(questionData);
+
+    if (prop === "inputtype") {
+      newItem.validation.valid_response.value = newItem.validation.valid_response.value.map(mapValues);
+
+      if (Array.isArray(newItem.validation.alt_responses)) {
+        newItem.validation.alt_responses = newItem.validation.alt_responses.map(res => {
+          res.value = res.value.map(mapValues);
+          return res;
+        });
+      }
+    }
+
+    newItem.ui_style[prop] = value;
+
+    setQuestionData(newItem);
+  };
 
   return (
     <React.Fragment>
-      <Row>
+      <Row gutter={36}>
         <Col md={12}>
           <OptionCheckbox
-            checked={questionData.multiline}
-            onChange={e => onChange("multiline", e.target.checked)}
+            checked={questionData.multiple_line}
+            onChange={e => onChange("multiple_line", e.target.checked)}
             size="large"
           >
             {t("component.options.multiline")}
@@ -74,7 +78,7 @@ const Layout = ({ questionData, onChange, uiStyle, t }) => {
           </OptionCheckbox>
         </Col>
       </Row>
-      <Row>
+      <Row gutter={36}>
         <Col md={12}>
           <OptionCheckbox
             checked={questionData.imagescale}
@@ -94,18 +98,8 @@ const Layout = ({ questionData, onChange, uiStyle, t }) => {
           </OptionCheckbox>
         </Col>
       </Row>
-      <Row>
-        <Col md={12}>
-          <OptionCheckbox
-            checked={questionData.specialcharacters}
-            onChange={e => onChange("specialcharacters", e.target.checked)}
-            size="large"
-          >
-            {t("component.options.specialcharacters")}
-          </OptionCheckbox>
-        </Col>
-      </Row>
-      <Row>
+      <SpecialCharacters />
+      <Row gutter={36}>
         <Col md={12}>
           <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
           <OptionSelect
@@ -135,85 +129,12 @@ const Layout = ({ questionData, onChange, uiStyle, t }) => {
           </OptionSelect>
         </Col>
       </Row>
-      <Row>
-        <Col md={12}>
-          <Label>{t("component.options.inputtype")}</Label>
-          <OptionSelect
-            size="large"
-            onChange={inputtype => changeUiStyle("inputtype", inputtype)}
-            value={uiStyle.inputtype}
-          >
-            {inputtypeOptions.map(({ value: val, label }) => (
-              <Select.Option key={val} value={val}>
-                {label}
-              </Select.Option>
-            ))}
-          </OptionSelect>
-        </Col>
-        <Col md={12}>
-          <Label>{t("component.options.placeholder")}</Label>
-          <TextField
-            disabled={false}
-            containerStyle={{ width: "80%" }}
-            onChange={e => changeUiStyle("placeholder", e.target.value)}
-            value={uiStyle.placeholder}
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col md={12}>
-          <Label>{t("component.options.widthpx")}</Label>
-          <TextField
-            type="number"
-            size="large"
-            disabled={false}
-            containerStyle={{ width: "80%" }}
-            onChange={e => changeUiStyle("widthpx", e.target.value)}
-            value={uiStyle.widthpx}
-          />
-        </Col>
-        <Col md={12}>
-          <Label>{t("component.options.heightpx")}</Label>
-          <TextField
-            type="number"
-            size="large"
-            disabled={false}
-            containerStyle={{ width: "80%" }}
-            onChange={e => changeUiStyle("heightpx", e.target.value)}
-            value={uiStyle.heightpx}
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col md={6}>
-          <Label>{t("component.options.pointers")}</Label>
-          <OptionSelect
-            size="large"
-            onChange={inputtype => changeUiStyle("inputtype", inputtype)}
-            value={uiStyle.inputtype}
-          >
-            {pointerOptions.map(({ value: val, label }) => (
-              <Select.Option key={val} value={val}>
-                {label}
-              </Select.Option>
-            ))}
-          </OptionSelect>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={6}>
-          <Label>{t("component.options.responsecontainerindividual")}</Label>
-          <AddNewChoiceBtn onClick={() => addNewResponseContainer()}>
-            {t("component.options.addnewresponsecontainer")}
-          </AddNewChoiceBtn>
-        </Col>
-      </Row>
+      <Container onChange={changeUiStyle} t={t} uiStyle={uiStyle} />
     </React.Fragment>
   );
 };
 
 Layout.propTypes = {
-  questionData: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
   t: PropTypes.func.isRequired
@@ -224,8 +145,8 @@ Layout.defaultProps = {
     responsecontainerposition: "bottom",
     fontsize: "normal",
     stemnumeration: "",
-    widthpx: 0,
-    heightpx: 0,
+    width: 0,
+    height: 0,
     wordwrap: false,
     responsecontainerindividuals: []
   }

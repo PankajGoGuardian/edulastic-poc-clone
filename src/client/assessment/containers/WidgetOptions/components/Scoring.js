@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep } from "lodash";
-import { Input, Checkbox, Select, Col } from "antd";
+import { Input, Checkbox, Select } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 import { rounding, evaluationType } from "@edulastic/constants";
@@ -12,14 +12,17 @@ import { getQuestionDataSelector, setQuestionDataAction } from "../../../../auth
 import { Block } from "../../../styled/WidgetOptions/Block";
 import { Heading } from "../../../styled/WidgetOptions/Heading";
 import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { SectionHeading } from "../../../styled/WidgetOptions/SectionHeading";
 
 import { FormGroup } from "../styled/FormGroup";
+import { QuestionContext } from "../../../components/QuestionWrapper";
 
 const roundingTypes = [rounding.roundDown, rounding.none];
 
-const Scoring = ({ setQuestionData, questionData, t, scoringTypes, isSection }) => {
+const Scoring = ({ setQuestionData, t, scoringTypes, isSection }) => {
+  const { item: questionData } = useContext(QuestionContext);
   const handleChangeValidation = (param, value) => {
     const newData = cloneDeep(questionData);
     newData.validation[param] = value;
@@ -38,14 +41,13 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes, isSection }) 
       {!isSection && <Heading>{t("component.options.scoring")}</Heading>}
 
       {questionData.validation.automarkable && (
-        <Row>
+        <Row gutter={36}>
           <Col md={12}>
             <Checkbox
               data-cy="unscoredChk"
               checked={questionData.validation.unscored}
               onChange={e => handleChangeValidation("unscored", e.target.checked)}
               size="large"
-              style={{ width: "80%" }}
             >
               {t("component.options.unscored")}
             </Checkbox>
@@ -66,14 +68,13 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes, isSection }) 
         </Row>
       )}
       {questionData.validation.automarkable && (
-        <Row>
+        <Row gutter={36}>
           <Col md={12}>
             <Checkbox
               data-cy="feedbackChk"
               checked={questionData.instant_feedback}
               onChange={e => handleChangeData("instant_feedback", e.target.checked)}
               size="large"
-              style={{ width: "80%" }}
             >
               {t("component.options.checkAnswerButton")}
             </Checkbox>
@@ -94,14 +95,13 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes, isSection }) 
         </Row>
       )}
 
-      <Row>
+      <Row gutter={36}>
         <Col md={12}>
           <Checkbox
             data-cy="autoscoreChk"
             checked={questionData.validation.automarkable}
             onChange={e => handleChangeValidation("automarkable", e.target.checked)}
             size="large"
-            style={{ width: "80%" }}
           >
             {t("component.options.automarkable")}
           </Checkbox>
@@ -109,14 +109,13 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes, isSection }) 
       </Row>
 
       {questionData.validation.automarkable && (
-        <Row>
+        <Row gutter={36}>
           <Col md={12}>
             <Label>{t("component.options.scoringType")}</Label>
             <Select
               size="large"
               data-cy="scoringType"
               value={questionData.validation.scoring_type}
-              style={{ width: "80%" }}
               onChange={value => handleChangeValidation("scoring_type", value)}
             >
               {scoringTypes.map(({ value: val, label }) => (
@@ -148,7 +147,6 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes, isSection }) 
               <Select
                 size="large"
                 value={questionData.validation.rounding}
-                style={{ width: "80%" }}
                 onChange={value => handleChangeValidation("rounding", value)}
               >
                 {roundingTypes.map(({ value: val, label }) => (
@@ -163,7 +161,7 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes, isSection }) 
       )}
 
       {!questionData.validation.automarkable && (
-        <Row>
+        <Row gutter={36}>
           <Col md={12}>
             <FormGroup>
               <Input
@@ -185,9 +183,8 @@ const Scoring = ({ setQuestionData, questionData, t, scoringTypes, isSection }) 
 
 Scoring.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
-  questionData: PropTypes.object.isRequired,
   scoringTypes: PropTypes.array.isRequired,
+  t: PropTypes.func.isRequired,
   isSection: PropTypes.bool
 };
 

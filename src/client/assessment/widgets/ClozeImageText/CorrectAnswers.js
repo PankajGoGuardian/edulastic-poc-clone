@@ -186,6 +186,7 @@ class CorrectAnswers extends Component {
 CorrectAnswers.propTypes = {
   onAddAltResponses: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
+  onRemoveAltResponses: PropTypes.func.isRequired,
   validation: PropTypes.object,
   t: PropTypes.func.isRequired,
   stimulus: PropTypes.string,
@@ -219,8 +220,8 @@ CorrectAnswers.defaultProps = {
     responsecontainerposition: "bottom",
     fontsize: "normal",
     stemnumeration: "",
-    widthpx: 0,
-    heightpx: 0,
+    width: 0,
+    height: 0,
     wordwrap: false
   }
 };

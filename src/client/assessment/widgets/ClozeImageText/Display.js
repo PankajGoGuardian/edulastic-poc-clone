@@ -1,8 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { Input, InputNumber } from "antd";
-import { isUndefined } from "lodash";
 import { withTheme } from "styled-components";
+import { helpers } from "@edulastic/common";
 
 import MapImage from "../../assets/map.svg";
 
@@ -17,8 +16,10 @@ import { StyledDisplayContainer } from "./styled/StyledDisplayContainer";
 import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
 import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
 import { getFontSize } from "../../utils/helpers";
-
-const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+import ClozeTextInput from "../../components/ClozeTextInput";
+import { Pointer } from "../../styled/Pointer";
+import { Triangle } from "../../styled/Triangle";
+import { Point } from "../../styled/Point";
 
 class Display extends Component {
   constructor(props) {
@@ -41,6 +42,12 @@ class Display extends Component {
       });
     }
   }
+
+  getEmWidth = () => {
+    const { uiStyle, imageWidth } = this.props;
+    const fontSize = parseInt(getFontSize(uiStyle.fontsize), 10);
+    return `${imageWidth / 14 + (fontSize - 14)}em`;
+  };
 
   selectChange = (value, index) => {
     const { userAnswers: newAnswers } = this.state;
@@ -74,28 +81,31 @@ class Display extends Component {
       imageWidth,
       showDashedBorder,
       backgroundColor,
-      theme
+      theme,
+      item
     } = this.props;
     const { userAnswers } = this.state;
 
+    const width = item.imagescale ? this.getEmWidth() : imageWidth;
+
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const { heightpx, wordwrap, responsecontainerindividuals, stemnumeration } = uiStyle;
+    const { height, wordwrap, stemnumeration } = uiStyle;
 
     const responseBtnStyle = {
-      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
-      heightpx: heightpx !== 0 ? heightpx : "auto",
+      width: uiStyle.width !== 0 ? uiStyle.width : "auto",
+      height: height !== 0 ? height : "auto",
       whiteSpace: wordwrap ? "inherit" : "nowrap"
     };
 
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox fontSize={fontSize}>
-        <StyledPreviewContainer width={imageWidth}>
+        <StyledPreviewContainer width={width}>
           <StyledPreviewImage src={imageUrl || MapImage} alt={imageAlterText} />
           {responseContainers.map((responseContainer, index) => {
             const dropTargetIndex = index;
             const btnStyle = {
-              widthpx: responseContainer.width,
+              fontSize,
               width: responseContainer.width,
               top: responseContainer.top,
               left: responseContainer.left,
@@ -107,64 +117,29 @@ class Display extends Component {
               background: backgroundColor,
               borderRadius: 5
             };
-            if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-              const { widthpx } = responsecontainerindividuals[dropTargetIndex];
-              btnStyle.width = widthpx;
-              btnStyle.widthpx = widthpx;
-            }
             if (btnStyle && btnStyle.width === 0) {
-              btnStyle.width = responseBtnStyle.widthpx;
+              btnStyle.width = responseBtnStyle.width;
             } else {
-              btnStyle.width = btnStyle.widthpx;
+              btnStyle.width = btnStyle.width;
             }
-            let indexStr = "";
-            switch (stemnumeration) {
-              case "lowercase": {
-                indexStr = ALPHABET[dropTargetIndex];
-                break;
-              }
-              case "uppercase": {
-                indexStr = ALPHABET[dropTargetIndex].toUpperCase();
-                break;
-              }
-              default:
-                indexStr = dropTargetIndex + 1;
-            }
-            const inputStyle = {
-              borderRadius: 0,
-              border: "none",
-              boxShadow: "none",
-              height: "100%"
-            };
+
+            const indexNumber = helpers.getNumeration(dropTargetIndex, stemnumeration);
+
             return (
-              <div
-                key={index}
-                style={{
-                  ...btnStyle,
-                  borderStyle: "solid",
-                  overflow: "hidden"
-                }}
-                className="imagelabeldragdrop-droppable active"
-              >
-                <span className="index-box">{indexStr}</span>
-                {(isUndefined(btnStyle.inputtype) || btnStyle.inputtype === "text") && (
-                  <Input
-                    defaultValue={userAnswers[dropTargetIndex]}
-                    key={`input_${dropTargetIndex}`}
-                    style={inputStyle}
-                    placeholder={btnStyle.placeholder}
-                    onChange={e => this.selectChange(e.target.value, dropTargetIndex)}
-                  />
-                )}
-                {!(isUndefined(btnStyle.inputtype) || btnStyle.inputtype === "text") && (
-                  <InputNumber
-                    defaultValue={userAnswers[dropTargetIndex]}
-                    key={`inputnumber_${dropTargetIndex}`}
-                    style={inputStyle}
-                    placeholder={btnStyle.placeholder}
-                    onChange={e => this.selectChange(e, dropTargetIndex)}
-                  />
-                )}
+              <div style={btnStyle}>
+                <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+                  <Point />
+                  <Triangle />
+                </Pointer>
+                <ClozeTextInput
+                  value={userAnswers[dropTargetIndex]}
+                  style={{ width: "100%", height: "100%", margin: 0 }}
+                  dropTargetIndex={dropTargetIndex}
+                  onChange={({ value }) => this.selectChange(value, dropTargetIndex)}
+                  placeholder={uiStyle.placeholder}
+                  type={uiStyle.inputtype}
+                  indexNumber={indexNumber}
+                />
               </div>
             );
           })}
@@ -175,7 +150,6 @@ class Display extends Component {
     const checkboxTemplateBoxLayout = (
       <CheckboxTemplateBoxLayout
         responseContainers={responseContainers}
-        responsecontainerindividuals={responsecontainerindividuals}
         responseBtnStyle={responseBtnStyle}
         imageUrl={imageUrl || MapImage}
         imageWidth={imageWidth}
@@ -188,7 +162,6 @@ class Display extends Component {
         evaluation={evaluation}
       />
     );
-    console.log("Validation:", validation);
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const correctAnswerBoxLayout = showAnswer ? (
       <CorrectAnswerBoxLayout
@@ -221,6 +194,7 @@ Display.propTypes = {
   checkAnswer: PropTypes.bool,
   showDashedBorder: PropTypes.bool,
   question: PropTypes.string.isRequired,
+  qIndex: PropTypes.number.isRequired,
   validation: PropTypes.object,
   evaluation: PropTypes.array,
   backgroundColor: PropTypes.string,
@@ -228,7 +202,8 @@ Display.propTypes = {
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
   imageWidth: PropTypes.number,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  item: PropTypes.object.isRequired
 };
 
 Display.defaultProps = {
@@ -248,10 +223,9 @@ Display.defaultProps = {
   uiStyle: {
     fontsize: "normal",
     stemnumeration: "numerical",
-    widthpx: 0,
-    heightpx: 0,
-    wordwrap: false,
-    responsecontainerindividuals: []
+    width: 0,
+    height: 0,
+    wordwrap: false
   }
 };
 

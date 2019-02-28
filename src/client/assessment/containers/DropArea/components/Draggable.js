@@ -18,7 +18,7 @@ const Draggable = ({ response, onDragStop, onResize, onDelete, onClick, index, b
     size={{ width: response.width, height: response.height }}
   >
     <FlexContainer justifyContent="space-between" style={{ height: "100%" }}>
-      <IndexBox isActive={response.active}>{index + 1}</IndexBox>
+      <IndexBox isActive={response.active}>{index}</IndexBox>
       <IconTrash onClick={onDelete} color={green} hoverColor={red} width={16} height={16} />
     </FlexContainer>
     {response.pointerPosition && response.pointerPosition !== "none" && <Pointer position={response.pointerPosition} />}

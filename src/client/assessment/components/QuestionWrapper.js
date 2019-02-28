@@ -38,7 +38,6 @@ import { MathFormula } from "../widgets/MathFormula";
 import { FormulaEssay } from "../widgets/FormulaEssay";
 import FeedbackBottom from "./FeedbackBottom";
 import FeedbackRight from "./FeedbackRight";
-import Timespent from "./Timespent";
 import { setQuestionDataAction } from "../../author/src/actions/question";
 
 const getQuestion = type => {
@@ -192,7 +191,6 @@ class QuestionWrapper extends Component {
             )}
             <Fragment>
               <div style={{ flex: "auto" }}>
-                <Timespent timespent={timespent} view={view} />
                 <Question
                   {...restProps}
                   setQuestionData={setQuestionData}

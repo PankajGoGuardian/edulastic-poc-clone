@@ -1,6 +1,7 @@
-import { isEqual } from 'lodash';
-import { ScoringType } from './const/scoring';
-import getPartialPerResponse from './helpers/getPartialPerResponse';
+import { isEqual } from "lodash";
+import { ScoringType } from "./const/scoring";
+import countPartialMatchScores from "./helpers/countPartialMatchScores";
+import partialMatchTemplate from "./helpers/partialMatchTemplate";
 
 const sort = item => (Array.isArray(item) ? item.slice().sort() : []);
 
@@ -16,68 +17,8 @@ const getResponse = (sortedAnswer, userResponse) =>
     return acc;
   }, []);
 
-// partial match evaluation
-const partialMatchEvaluator = (
-  userResponse = [],
-  answers,
-  { automarkable, min_score_if_attempted, max_score }
-) => {
-  let score = 0;
-  let maxScore = 0;
-  let evaluation = {};
-  let isCorrect = false;
-
-  let sortedUserResponse = userResponse.map(item => sort(item));
-
-  answers.forEach(({ value: answer, score: totalScore }) => {
-    if (!answer || !answer.length) {
-      return;
-    }
-
-    const scorePerAnswer = totalScore / answer.length;
-    const sortedAnswer = answer.map(item => sort(item));
-
-    sortedUserResponse = getResponse(sortedAnswer, sortedUserResponse);
-
-    const matches = sortedUserResponse.filter((resp, index) => isEqual(resp, sortedAnswer[index]))
-      .length;
-
-    const currentScore = matches * scorePerAnswer;
-
-    isCorrect = matches === answer.length;
-    score = Math.max(score, currentScore);
-    maxScore = Math.max(maxScore, totalScore);
-  });
-
-  if (isCorrect) {
-    evaluation = Array(sortedUserResponse.length).fill(true);
-  } else {
-    const solution = answers[0].value.map(item => sort(item));
-    evaluation = userResponse.map((resp, index) => isEqual(sortedUserResponse, solution[index]));
-  }
-
-  if (automarkable) {
-    if (min_score_if_attempted) {
-      maxScore = Math.max(maxScore, min_score_if_attempted);
-      score = Math.max(min_score_if_attempted, score);
-    }
-  } else if (max_score) {
-    maxScore = Math.max(max_score, maxScore);
-  }
-
-  return {
-    score,
-    maxScore,
-    evaluation
-  };
-};
-
 // exact match evluator
-const exactMatchEvaluator = (
-  userResponse = [],
-  answers,
-  { automarkable, min_score_if_attempted, max_score }
-) => {
+const exactMatchEvaluator = (userResponse = [], answers, { automarkable, min_score_if_attempted, max_score }) => {
   let score = 0;
   let maxScore = 0;
   let evaluation = [];
@@ -128,15 +69,11 @@ const evaluator = ({ userResponse, validation }) => {
   const answers = [valid_response, ...alt_responses];
 
   switch (scoring_type) {
-    case ScoringType.PARTIAL_MATCH:
-      return getPartialPerResponse(userResponse.length)(
-        partialMatchEvaluator(userResponse, answers, validation)
-      );
-    case ScoringType.PARTIAL_MATCH_V2:
-      return partialMatchEvaluator(userResponse, answers, validation);
     case ScoringType.EXACT_MATCH:
-    default:
       return exactMatchEvaluator(userResponse, answers, validation);
+    case ScoringType.PARTIAL_MATCH:
+    default:
+      return partialMatchTemplate(countPartialMatchScores("isEqual"), { userResponse, answers, validation });
   }
 };
 

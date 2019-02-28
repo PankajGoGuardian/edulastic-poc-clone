@@ -13,7 +13,9 @@ var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
 
 var _constants = require("@edulastic/constants");
 
-var _getPenaltyScore = _interopRequireDefault(require("./helpers/getPenaltyScore"));
+var _partialMatchTemplate = _interopRequireDefault(require("./helpers/partialMatchTemplate"));
+
+var _countPartialMatchScores = _interopRequireDefault(require("./helpers/countPartialMatchScores"));
 
 // exact match evaluator
 var exactMatchEvaluator = function exactMatchEvaluator() {
@@ -65,77 +67,11 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
     maxScore: maxScore,
     evaluation: evaluation
   };
-}; // partial Match evaluator
-
-var partialMatchEvaluator = function partialMatchEvaluator() {
-  var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-  var answers = arguments.length > 1 ? arguments[1] : undefined;
-
-  var _ref2 = arguments.length > 2 ? arguments[2] : undefined,
-    automarkable = _ref2.automarkable,
-    min_score_if_attempted = _ref2.min_score_if_attempted,
-    max_score = _ref2.max_score,
-    penalty = _ref2.penalty;
-
-  var score = 0;
-  var maxScore = 0;
-  var evaluation = {};
-  var rightLen = 0;
-  var rightIndex = 0;
-  answers.forEach(function(_ref3, index) {
-    var totalScore = _ref3.score,
-      correctAnswers = _ref3.value;
-
-    if (!correctAnswers || !correctAnswers.length) {
-      return;
-    }
-
-    var scorePerAnswer = totalScore / correctAnswers.length;
-    var matches = userResponse.filter(function(resp) {
-      return correctAnswers.includes(resp);
-    }).length;
-    var currentScore = matches * scorePerAnswer;
-    score = Math.max(currentScore, score);
-    maxScore = Math.max(totalScore, maxScore);
-
-    if (currentScore === score) {
-      rightLen = correctAnswers.length;
-      rightIndex = index;
-    }
-  });
-  var primaryResponse = answers[rightIndex].value;
-  userResponse.forEach(function(item) {
-    evaluation[item] = primaryResponse.includes(item);
-  });
-
-  if (penalty > 0) {
-    score = (0, _getPenaltyScore.default)({
-      score: score,
-      penalty: penalty,
-      evaluation: evaluation,
-      rightLen: rightLen
-    });
-  }
-
-  if (automarkable) {
-    if (min_score_if_attempted) {
-      maxScore = Math.max(maxScore, min_score_if_attempted);
-      score = Math.max(min_score_if_attempted, score);
-    }
-  } else if (max_score) {
-    maxScore = Math.max(max_score, maxScore);
-  }
-
-  return {
-    score: score,
-    maxScore: maxScore,
-    evaluation: evaluation
-  };
 }; // mcq evaluator method
 
-var evaluator = function evaluator(_ref4) {
-  var userResponse = _ref4.userResponse,
-    validation = _ref4.validation;
+var evaluator = function evaluator(_ref2) {
+  var userResponse = _ref2.userResponse,
+    validation = _ref2.validation;
   var valid_response = validation.valid_response,
     alt_responses = validation.alt_responses,
     scoring_type = validation.scoring_type,
@@ -145,7 +81,11 @@ var evaluator = function evaluator(_ref4) {
 
   switch (scoring_type) {
     case _constants.evaluationType.PARTIAL_MATCH:
-      result = partialMatchEvaluator(userResponse, answers, validation);
+      result = (0, _partialMatchTemplate.default)((0, _countPartialMatchScores.default)("includes"), {
+        userResponse: userResponse,
+        answers: answers,
+        validation: validation
+      });
       break;
 
     case _constants.evaluationType.EXACT_MATCH:

@@ -10,6 +10,11 @@ var getPenaltyScore = function getPenaltyScore(_ref) {
     evaluation = _ref.evaluation,
     penalty = _ref.penalty,
     rightLen = _ref.rightLen;
+
+  if (penalty <= 0) {
+    return score;
+  }
+
   var count = rightLen || Object.keys(evaluation).length;
   var wrongCount = Object.values(evaluation).reduce(function(acc, val) {
     if (!val) {

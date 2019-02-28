@@ -1,6 +1,7 @@
 import { isEqual } from "lodash";
 import { evaluationType } from "@edulastic/constants";
-import getPenaltyScore from "./helpers/getPenaltyScore";
+import partialMatchTemplate from "./helpers/partialMatchTemplate";
+import countPartialMatchScores from "./helpers/countPartialMatchScores";
 
 // exact match evaluator
 const exactMatchEvaluator = (userResponse = [], answers, { automarkable, min_score_if_attempted, max_score }) => {
@@ -48,61 +49,6 @@ const exactMatchEvaluator = (userResponse = [], answers, { automarkable, min_sco
   };
 };
 
-// partial Match evaluator
-const partialMatchEvaluator = (
-  userResponse = [],
-  answers,
-  { automarkable, min_score_if_attempted, max_score, penalty }
-) => {
-  let score = 0;
-  let maxScore = 0;
-  const evaluation = {};
-
-  let rightLen = 0;
-  let rightIndex = 0;
-
-  answers.forEach(({ score: totalScore, value: correctAnswers }, index) => {
-    if (!correctAnswers || !correctAnswers.length) {
-      return;
-    }
-    const scorePerAnswer = totalScore / correctAnswers.length;
-
-    const matches = userResponse.filter(resp => correctAnswers.includes(resp)).length;
-    const currentScore = matches * scorePerAnswer;
-    score = Math.max(currentScore, score);
-    maxScore = Math.max(totalScore, maxScore);
-
-    if (currentScore === score) {
-      rightLen = correctAnswers.length;
-      rightIndex = index;
-    }
-  });
-
-  const primaryResponse = answers[rightIndex].value;
-  userResponse.forEach(item => {
-    evaluation[item] = primaryResponse.includes(item);
-  });
-
-  if (penalty > 0) {
-    score = getPenaltyScore({ score, penalty, evaluation, rightLen });
-  }
-
-  if (automarkable) {
-    if (min_score_if_attempted) {
-      maxScore = Math.max(maxScore, min_score_if_attempted);
-      score = Math.max(min_score_if_attempted, score);
-    }
-  } else if (max_score) {
-    maxScore = Math.max(max_score, maxScore);
-  }
-
-  return {
-    score,
-    maxScore,
-    evaluation
-  };
-};
-
 // mcq evaluator method
 const evaluator = ({ userResponse, validation }) => {
   const { valid_response, alt_responses, scoring_type, min_score_if_attempted: attemptScore } = validation;
@@ -111,7 +57,7 @@ const evaluator = ({ userResponse, validation }) => {
   let result;
   switch (scoring_type) {
     case evaluationType.PARTIAL_MATCH:
-      result = partialMatchEvaluator(userResponse, answers, validation);
+      result = partialMatchTemplate(countPartialMatchScores("includes"), { userResponse, answers, validation });
       break;
     case evaluationType.EXACT_MATCH:
     default:

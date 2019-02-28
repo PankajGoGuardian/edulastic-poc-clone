@@ -170,6 +170,14 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
     }
   }
 
+  if (penalty > 0) {
+    score = (0, _getPenaltyScore.default)({
+      score: score,
+      penalty: penalty,
+      evaluation: evaluation
+    });
+  }
+
   if (automarkable) {
     if (min_score_if_attempted) {
       maxScore = Math.max(maxScore, min_score_if_attempted);
@@ -177,14 +185,6 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
     }
   } else if (max_score) {
     maxScore = Math.max(max_score, maxScore);
-  }
-
-  if (penalty > 0) {
-    score = (0, _getPenaltyScore.default)({
-      score: score,
-      penalty: penalty,
-      evaluation: evaluation
-    });
   }
 
   return {

@@ -31,11 +31,10 @@ var evaluate = function evaluate(data) {
 
 var getChecks = function getChecks(validation) {
   var altResponses = validation.alt_responses || [];
-  var values = [].concat(
-    (0, _toConsumableArray2.default)(validation.valid_response.value),
+  var values = (0, _toConsumableArray2.default)(validation.valid_response.value).concat(
     (0, _toConsumableArray2.default)(
       altResponses.reduce(function(acc, res) {
-        return [].concat((0, _toConsumableArray2.default)(acc), (0, _toConsumableArray2.default)(res.value));
+        return (0, _toConsumableArray2.default)(acc).concat((0, _toConsumableArray2.default)(res.value));
       }, [])
     )
   );
@@ -235,7 +234,7 @@ var exactMatchEvaluator =
                   }
 
                   maxScore = Math.max(answer.score, maxScore);
-                  evaluation = [].concat((0, _toConsumableArray2.default)(evaluation), [valid]);
+                  evaluation = (0, _toConsumableArray2.default)(evaluation).concat([valid]);
 
                 case 49:
                   _iteratorNormalCompletion = true;

@@ -13,7 +13,9 @@ var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
 
 var _scoring = require("./const/scoring");
 
-var _getPartialPerResponse = _interopRequireDefault(require("./helpers/getPartialPerResponse"));
+var _countPartialMatchScores = _interopRequireDefault(require("./helpers/countPartialMatchScores"));
+
+var _partialMatchTemplate = _interopRequireDefault(require("./helpers/partialMatchTemplate"));
 
 var sort = function sort(item) {
   return Array.isArray(item) ? item.slice().sort() : [];
@@ -31,9 +33,9 @@ var getResponse = function getResponse(sortedAnswer, userResponse) {
     acc.push([]);
     return acc;
   }, []);
-}; // partial match evaluation
+}; // exact match evluator
 
-var partialMatchEvaluator = function partialMatchEvaluator() {
+var exactMatchEvaluator = function exactMatchEvaluator() {
   var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var answers = arguments.length > 1 ? arguments[1] : undefined;
 
@@ -44,76 +46,11 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
 
   var score = 0;
   var maxScore = 0;
-  var evaluation = {};
+  var evaluation = [];
   var isCorrect = false;
-  var sortedUserResponse = userResponse.map(function(item) {
-    return sort(item);
-  });
   answers.forEach(function(_ref2) {
     var answer = _ref2.value,
       totalScore = _ref2.score;
-
-    if (!answer || !answer.length) {
-      return;
-    }
-
-    var scorePerAnswer = totalScore / answer.length;
-    var sortedAnswer = answer.map(function(item) {
-      return sort(item);
-    });
-    sortedUserResponse = getResponse(sortedAnswer, sortedUserResponse);
-    var matches = sortedUserResponse.filter(function(resp, index) {
-      return (0, _isEqual2.default)(resp, sortedAnswer[index]);
-    }).length;
-    var currentScore = matches * scorePerAnswer;
-    isCorrect = matches === answer.length;
-    score = Math.max(score, currentScore);
-    maxScore = Math.max(maxScore, totalScore);
-  });
-
-  if (isCorrect) {
-    evaluation = Array(sortedUserResponse.length).fill(true);
-  } else {
-    var solution = answers[0].value.map(function(item) {
-      return sort(item);
-    });
-    evaluation = userResponse.map(function(resp, index) {
-      return (0, _isEqual2.default)(sortedUserResponse, solution[index]);
-    });
-  }
-
-  if (automarkable) {
-    if (min_score_if_attempted) {
-      maxScore = Math.max(maxScore, min_score_if_attempted);
-      score = Math.max(min_score_if_attempted, score);
-    }
-  } else if (max_score) {
-    maxScore = Math.max(max_score, maxScore);
-  }
-
-  return {
-    score: score,
-    maxScore: maxScore,
-    evaluation: evaluation
-  };
-}; // exact match evluator
-
-var exactMatchEvaluator = function exactMatchEvaluator() {
-  var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-  var answers = arguments.length > 1 ? arguments[1] : undefined;
-
-  var _ref3 = arguments.length > 2 ? arguments[2] : undefined,
-    automarkable = _ref3.automarkable,
-    min_score_if_attempted = _ref3.min_score_if_attempted,
-    max_score = _ref3.max_score;
-
-  var score = 0;
-  var maxScore = 0;
-  var evaluation = [];
-  var isCorrect = false;
-  answers.forEach(function(_ref4) {
-    var answer = _ref4.value,
-      totalScore = _ref4.score;
     var sortedAnswer = answer.map(function(item) {
       return sort(item);
     });
@@ -158,26 +95,25 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   };
 }; // evaluator method
 
-var evaluator = function evaluator(_ref5) {
-  var userResponse = _ref5.userResponse,
-    validation = _ref5.validation;
+var evaluator = function evaluator(_ref3) {
+  var userResponse = _ref3.userResponse,
+    validation = _ref3.validation;
   var valid_response = validation.valid_response,
     alt_responses = validation.alt_responses,
     scoring_type = validation.scoring_type;
   var answers = [valid_response].concat((0, _toConsumableArray2.default)(alt_responses));
 
   switch (scoring_type) {
-    case _scoring.ScoringType.PARTIAL_MATCH:
-      return (0, _getPartialPerResponse.default)(userResponse.length)(
-        partialMatchEvaluator(userResponse, answers, validation)
-      );
-
-    case _scoring.ScoringType.PARTIAL_MATCH_V2:
-      return partialMatchEvaluator(userResponse, answers, validation);
-
     case _scoring.ScoringType.EXACT_MATCH:
-    default:
       return exactMatchEvaluator(userResponse, answers, validation);
+
+    case _scoring.ScoringType.PARTIAL_MATCH:
+    default:
+      return (0, _partialMatchTemplate.default)((0, _countPartialMatchScores.default)("isEqual"), {
+        userResponse: userResponse,
+        answers: answers,
+        validation: validation
+      });
   }
 };
 

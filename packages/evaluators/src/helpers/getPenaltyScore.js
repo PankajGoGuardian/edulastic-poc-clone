@@ -1,4 +1,7 @@
 const getPenaltyScore = ({ score, evaluation, penalty, rightLen }) => {
+  if (penalty <= 0) {
+    return score;
+  }
   const count = rightLen || Object.keys(evaluation).length;
   const wrongCount = Object.values(evaluation).reduce((acc, val) => {
     if (!val) {

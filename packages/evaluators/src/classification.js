@@ -1,7 +1,7 @@
-import { cloneDeep, difference, isEqual } from 'lodash';
-import { ScoringType } from './const/scoring';
-import getPenaltyScore from './helpers/getPenaltyScore';
-import getDifferenceCount from './helpers/getDifferenceCount';
+import { cloneDeep, difference, isEqual } from "lodash";
+import { ScoringType } from "./const/scoring";
+import getPenaltyScore from "./helpers/getPenaltyScore";
+import getDifferenceCount from "./helpers/getDifferenceCount";
 
 // exact-match evaluator
 const exactMatchEvaluator = (
@@ -22,7 +22,7 @@ const exactMatchEvaluator = (
 
   let flag = true;
 
-  altAnswers.forEach((ite) => {
+  altAnswers.forEach(ite => {
     const { score: altScore, value: altValue } = ite;
     flag = true;
     altValue.forEach((ans, i) => {
@@ -91,7 +91,7 @@ const partialMatchEvaluator = (
 
   let flag = true;
 
-  altAnswers.forEach((ite) => {
+  altAnswers.forEach(ite => {
     const { score: altScore, value: altValue } = ite;
     flag = true;
     altValue.forEach((ans, i) => {
@@ -104,10 +104,7 @@ const partialMatchEvaluator = (
       score = Math.max(altScore, score);
       isCorrect = true;
     } else {
-      countOfCorrectAnswers = Math.max(
-        getDifferenceCount(altValue, userResponse),
-        countOfCorrectAnswers
-      );
+      countOfCorrectAnswers = Math.max(getDifferenceCount(altValue, userResponse), countOfCorrectAnswers);
       score = Math.max(Math.floor(Math.max(altScore, maxScore) / countOfCorrectAnswers), score);
     }
     maxScore = Math.max(maxScore, altScore);
@@ -135,16 +132,17 @@ const partialMatchEvaluator = (
   if (isEqual(validValue, userResponse)) {
     score = validScore;
   } else if (countOfCorrectAnswers) {
-    countOfCorrectAnswers = Math.max(
-      getDifferenceCount(validValue, userResponse),
-      countOfCorrectAnswers
-    );
+    countOfCorrectAnswers = Math.max(getDifferenceCount(validValue, userResponse), countOfCorrectAnswers);
     score = Math.max(Math.floor(maxScore / countOfCorrectAnswers), score);
   } else {
     countOfCorrectAnswers = getDifferenceCount(validValue, userResponse);
     if (countOfCorrectAnswers !== 0) {
       score = Math.max(Math.floor(maxScore / countOfCorrectAnswers), score);
     }
+  }
+
+  if (penalty > 0) {
+    score = getPenaltyScore({ score, penalty, evaluation });
   }
 
   if (automarkable) {
@@ -154,10 +152,6 @@ const partialMatchEvaluator = (
     }
   } else if (max_score) {
     maxScore = Math.max(max_score, maxScore);
-  }
-
-  if (penalty > 0) {
-    score = getPenaltyScore({ score, penalty, evaluation });
   }
 
   return {

@@ -6,7 +6,6 @@ import { withRouter } from "react-router-dom";
 
 import { setUserAnswerAction } from "../../actions/answers";
 import { getAnswerByQuestionIdSelector } from "../../selectors/answers";
-import createShowAnswerData from "../../../author/src/utils/showAnswer";
 
 const getQuestionId = questionId => questionId || "tmp";
 
@@ -42,16 +41,10 @@ export default WrappedComponent => {
         } else {
           userAnswer = getAnswerByQuestionIdSelector(getQuestionId(qId))(state);
         }
-        const validation = {
-          [qId]: data
-        };
-        let evaluations = [];
-        if (data.validation) {
-          evaluations = createShowAnswerData(validation, userAnswer || {});
-        }
+
         return {
           userAnswer,
-          evaluation: evaluations[[qId]] || []
+          evaluation: state.evaluation[getQuestionId(qId)]
         };
       },
       { setUserAnswer: setUserAnswerAction }

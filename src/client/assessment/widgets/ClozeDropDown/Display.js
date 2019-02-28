@@ -92,10 +92,10 @@ class ClozeDropDownDisplay extends Component {
       uiStyle,
       showAnswer,
       checkAnswer,
-      validation,
       evaluation,
       instructorStimulus,
-      theme
+      theme,
+      item
     } = this.props;
     const { templateParts, userAnswers } = this.state;
     const { shuffleOptions } = configureOptions;
@@ -204,7 +204,7 @@ class ClozeDropDownDisplay extends Component {
       <CorrectAnswerBoxLayout
         fontSize={fontSize}
         groupResponses={options}
-        userAnswers={validation.valid_response && validation.valid_response.value}
+        userAnswers={item.validation.valid_response && item.validation.valid_response.value}
       />
     ) : (
       <div />
@@ -232,11 +232,11 @@ ClozeDropDownDisplay.propTypes = {
   templateMarkUp: PropTypes.string,
   question: PropTypes.string.isRequired,
   configureOptions: PropTypes.object,
-  validation: PropTypes.object,
   evaluation: PropTypes.object,
   uiStyle: PropTypes.object,
   instructorStimulus: PropTypes.string.isRequired,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  item: PropTypes.object.isRequired
 };
 
 ClozeDropDownDisplay.defaultProps = {
@@ -249,7 +249,6 @@ ClozeDropDownDisplay.defaultProps = {
   userSelections: [],
   templateMarkUp: defaultTemplateMarkup,
   smallSize: false,
-  validation: {},
   configureOptions: {
     shuffleOptions: false
   },

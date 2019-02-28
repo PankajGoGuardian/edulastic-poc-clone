@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { ThemeProvider } from "styled-components";
-import { PaperWrapper } from "./Graph/common/styled_components";
 import { questionType } from "@edulastic/constants";
+import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../themes";
 import QuestionMenu from "./Graph/common/QuestionMenu";
 

@@ -111,7 +111,6 @@ class QuestionMetadata extends Component {
       }
     });
     const grades = _intersection(standards.map(standard => standard.grades));
-    console.log("grades is", grades);
     this.setState({
       isEditRow: true,
       grades: _flatten(grades),
@@ -178,13 +177,13 @@ class QuestionMetadata extends Component {
   handleSaveRow = () => {
     const { addAlignment } = this.props;
     const { curriculum, curriculumId, standards, subject, grades } = this.state;
-    const domain = groupByDomains(standards, grades);
+    const domains = groupByDomains(standards, grades);
 
     const alignment = {
       curriculum,
       curriculumId,
       subject,
-      domain
+      domains
     };
 
     addAlignment(alignment);
@@ -219,10 +218,10 @@ class QuestionMetadata extends Component {
   }
 
   renderShowAlignmentRow(row, index) {
-    const { curriculum, domain } = row;
+    const { curriculum, domains } = row;
     const { t } = this.props;
     let standardsArr = [];
-    domain.forEach(item => {
+    domains.forEach(item => {
       standardsArr = [...standardsArr, ...item.standards];
     });
 

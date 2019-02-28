@@ -125,14 +125,16 @@ export const groupByDomains = (standardsArray, selectedGrades) => {
   const domainIds = Object.keys(grouped);
   const domains = domainIds.map(id => {
     const allStandards = grouped[id];
-    const standards = allStandards.map(({ _id, identifier, grades }) => ({
+    const standards = allStandards.map(({ _id, identifier, grades, description, level }) => ({
       id: _id,
       name: identifier,
-      grades: intersection(grades, selectedGrades)
+      grades: intersection(grades, selectedGrades),
+      description,
+      level
     }));
 
     return {
-      identifier: allStandards[0].tloDescription,
+      name: allStandards[0].tloDescription,
       id: allStandards[0].tloId,
       standards
     };

@@ -69,7 +69,7 @@ const addAlignment = (state, { payload }) => {
       for (const domain of alignment.domain) {
         if (domainGrouped[domain.id]) {
           const selected = domainGrouped[domain.id];
-          domain.standards = _intersection(domain.standards, selected.standards, "id");
+          domains.standards = _intersection(domain.standards, selected.standards, "id");
         }
       }
     }

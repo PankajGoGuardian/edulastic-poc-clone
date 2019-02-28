@@ -264,7 +264,7 @@ class QuestionMetadata extends Component {
   renderEditAlignmentRow() {
     const { curriculums, curriculumStandards, alignment, t } = this.props;
     const { curriculumId, subject, standards, grades } = this.state;
-    const standardsArr = standards.map(el => el.name);
+    const standardsArr = standards.map(el => el.identifier);
     const alignmentCurriculumsArr = alignment.map(el => el.curriculumId);
     const availableCurriculums = curriculums.filter(el => !alignmentCurriculumsArr.includes(el._id));
     return (

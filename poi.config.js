@@ -3,7 +3,7 @@ const BundleAnalyzer = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
 const port = process.env.PORT ? parseInt(process.env.PORT) : 3001;
 console.log("port", port);
-module.exports = {
+let config = {
   entry: "./src/client/index.js",
   devServer: {
     port
@@ -23,3 +23,7 @@ module.exports = {
     chain.plugin("MomentsLocale").use(MomentLocalesPlugin);
   }
 };
+if (process.env.PUBLIC_URL) {
+  config.output.publicUrl = process.env.PUBLIC_URL;
+}
+module.exports = config;

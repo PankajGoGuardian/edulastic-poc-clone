@@ -4,15 +4,16 @@ import { Pagination } from "antd";
 
 import { InstructorStimulus } from "./styled/InstructorStimulus";
 import { Heading } from "./styled/Heading";
+const ContentsTitle = Heading;
 
 const PassageView = ({ item }) => {
   const [page, setPage] = useState(1);
 
   return (
     <div>
-      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
-
-      <Heading>{item.heading}</Heading>
+      <InstructorStimulus dangerouslySetInnerHTML={{ __html: item.instructor_stimulus }} />
+      <Heading dangerouslySetInnerHTML={{ __html: item.heading }} />
+      <ContentsTitle dangerouslySetInnerHTML={{ __html: item.contentsTitle }} />
       {!item.paginated_content && item.content && <div dangerouslySetInnerHTML={{ __html: item.content }} />}
       {item.paginated_content && item.pages && !!item.pages.length && (
         <div>

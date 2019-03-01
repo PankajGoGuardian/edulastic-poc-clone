@@ -586,6 +586,7 @@
       "mathJax": "MathJax (response inputs renderer with MathQuill)",
       "mathQuill": "MathQuill",
       "heading": "Heading",
+      "contentsTitle": "Title",
       "contents": "Contents",
       "enterPassageContentHere": "Enter passage content here",
       "contentPages": "Content pages",

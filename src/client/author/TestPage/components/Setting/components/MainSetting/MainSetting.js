@@ -38,10 +38,11 @@ const {
   calculators,
   evalTypes,
   accessibilities,
-  releaseGradeTypes
+  releaseGradeTypes,
+  releaseGradeKeys
 } = test;
 
-const Option = Select.Option;
+const { Option } = Select;
 
 const { ASSESSMENT, PRACTICE } = type;
 
@@ -83,12 +84,12 @@ class MainSetting extends Component {
       if (value === ASSESSMENT) {
         setMaxAttempts(1);
         setTestData({
-          ["releaseScore"]: test.releaseGradeTypes.DONTRELEASE
+          releaseScore: test.releaseGradeKeys[0]
         });
       } else {
         setMaxAttempts(3);
         setTestData({
-          ["releaseScore"]: test.releaseGradeTypes.SCORE_RESPONSE_CORRECTANSWERS
+          releaseScore: test.releaseGradeKeys[3]
         });
       }
     }
@@ -107,8 +108,8 @@ class MainSetting extends Component {
   };
 
   onPerformanceBandUpdate = item => {
-    const { setTestData } = this.props;
-    const { performanceBands } = { ...this.props.entity };
+    const { setTestData, entity = {} } = this.props;
+    const { performanceBands } = entity;
     const newPerformanceBands = {
       ...performanceBands,
       [item]: {
@@ -176,8 +177,8 @@ class MainSetting extends Component {
               <Title>Release Grades Settings</Title>
               <Body>
                 <StyledRadioGroup onChange={this.updateFeatures("releaseScore")} value={releaseScore}>
-                  {Object.keys(releaseGradeTypes).map(item => (
-                    <Radio value={releaseGradeTypes[item]} key={releaseGradeTypes[item]}>
+                  {releaseGradeKeys.map(item => (
+                    <Radio value={item} key={item}>
                       {releaseGradeTypes[item]}
                     </Radio>
                   ))}

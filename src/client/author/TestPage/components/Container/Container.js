@@ -149,7 +149,7 @@ class Container extends PureComponent {
       lastName: user.lastName
     };
 
-    newTest.testItems = testItems;
+    newTest.testItems = testItems || [];
     newTest.scoring.testItems = testItems.map(item => {
       const foundItem = newTest.scoring.testItems.find(({ id }) => item && item._id === id);
       if (!foundItem) {

@@ -148,6 +148,7 @@ function Options({ onChange, uiStyle, t, theme }) {
 
         <Extras>
           <Extras.Distractors />
+          <Extras.Hints />
         </Extras>
       </Block>
     </WidgetOptions>

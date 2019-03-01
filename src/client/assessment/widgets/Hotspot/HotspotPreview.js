@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, difference } from "lodash";
 
-import { Paper, Stimulus } from "@edulastic/common";
+import { Paper, Stimulus, InstructorStimulus } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { PREVIEW, CLEAR, CHECK, SHOW, EDIT } from "../../constants/constantsForQuestions";
@@ -63,6 +63,7 @@ const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, preview
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
       {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
 
       {!smallSize ? (

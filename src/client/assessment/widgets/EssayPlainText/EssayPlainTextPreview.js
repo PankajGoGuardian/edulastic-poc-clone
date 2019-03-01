@@ -4,7 +4,7 @@ import { Input } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
-import { Paper, Stimulus, FlexContainer } from "@edulastic/common";
+import { Paper, Stimulus, FlexContainer, InstructorStimulus } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { COPY, CUT, PASTE, ON_LIMIT, ALWAYS, PREVIEW } from "../../constants/constantsForQuestions";
@@ -95,6 +95,7 @@ const EssayPlainTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswe
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
       {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
 
       <Toolbar borderRadiusOnlyTop style={{ borderBottom: 0 }}>

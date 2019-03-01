@@ -9,13 +9,14 @@ import { withTheme } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { math } from "@edulastic/constants";
 import { CustomQuillComponent } from "@edulastic/common";
-import { setQuestionDataAction, getQuestionDataSelector } from '../../../author/QuestionEditor/ducks';
+import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 
 import { Block } from "../../styled/WidgetOptions/Block";
 import { Heading } from "../../styled/WidgetOptions/Heading";
 import { Label } from "../../styled/WidgetOptions/Label";
 
 import Distractors from "./Distractors";
+import Hints from "./Hints";
 import { change } from "./helpers";
 import { Row } from "../../styled/WidgetOptions/Row";
 import { Col } from "../../styled/WidgetOptions/Col";
@@ -140,6 +141,7 @@ const Extras = ({ t, children, theme }) => {
 };
 
 Extras.Distractors = Distractors;
+Extras.Hints = Hints;
 
 Extras.propTypes = {
   children: PropTypes.any,

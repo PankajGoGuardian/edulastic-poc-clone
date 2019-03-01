@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
 
-import { Paper, FlexContainer, Stimulus } from "@edulastic/common";
+import { Paper, FlexContainer, Stimulus, InstructorStimulus } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { SHOW, CLEAR } from "../../constants/constantsForQuestions";
@@ -200,6 +200,7 @@ class SortListPreview extends PureComponent {
 
     return (
       <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+        <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
         {!smallSize && (
           <Stimulus>
             <div dangerouslySetInnerHTML={{ __html: item.stimulus }} />

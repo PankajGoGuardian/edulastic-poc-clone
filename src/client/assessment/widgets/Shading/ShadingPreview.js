@@ -4,8 +4,7 @@ import { cloneDeep } from "lodash";
 import { Select, Input } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-
-import { Paper, Stimulus, FlexContainer } from "@edulastic/common";
+import { Paper, Stimulus, FlexContainer, InstructorStimulus } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { AdaptiveSelect } from "./styled/AdaptiveSelect";
 
@@ -106,6 +105,9 @@ const ShadingPreview = ({ view, item, smallSize, saveAnswer, userAnswer, method,
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+
+      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+
       {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
       <FlexContainer alignItems="flex-start" flexDirection="column">
         {view === EDIT && (

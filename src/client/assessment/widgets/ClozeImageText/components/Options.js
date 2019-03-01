@@ -21,6 +21,7 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => (
       <Divider />
       <Extras>
         <Extras.Distractors />
+        <Extras.Hints />
       </Extras>
     </Block>
   </WidgetOptions>

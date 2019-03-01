@@ -4,7 +4,7 @@ import ReactQuill from "react-quill";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
-import { Paper, Stimulus, FlexContainer } from "@edulastic/common";
+import { Paper, Stimulus, FlexContainer, InstructorStimulus } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { Toolbar } from "../../styled/Toolbar";
@@ -44,6 +44,7 @@ const EssayRichTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswer
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
       {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
 
       <ReactQuill

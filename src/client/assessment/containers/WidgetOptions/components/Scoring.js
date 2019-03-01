@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { cloneDeep } from "lodash";
+import { cloneDeep, get } from "lodash";
 import { Input, Checkbox, Select } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
@@ -25,6 +25,11 @@ const Scoring = ({ setQuestionData, t, scoringTypes, isSection }) => {
   const { item: questionData } = useContext(QuestionContext);
   const handleChangeValidation = (param, value) => {
     const newData = cloneDeep(questionData);
+
+    if (!newData.validation) {
+      newData.validation = {};
+    }
+
     newData.validation[param] = value;
     setQuestionData(newData);
   };
@@ -35,12 +40,15 @@ const Scoring = ({ setQuestionData, t, scoringTypes, isSection }) => {
     setQuestionData(newData);
   };
 
+  const automarkable = get(questionData, "validation.automarkable", false);
+  const maxScore = get(questionData, "validation.max_score", 0);
+
   return (
     <Block isSection={isSection}>
       {isSection && <SectionHeading>{t("component.options.scoring")}</SectionHeading>}
       {!isSection && <Heading>{t("component.options.scoring")}</Heading>}
 
-      {questionData.validation.automarkable && (
+      {automarkable && (
         <Row gutter={36}>
           <Col md={12}>
             <Checkbox
@@ -67,7 +75,7 @@ const Scoring = ({ setQuestionData, t, scoringTypes, isSection }) => {
           </Col>
         </Row>
       )}
-      {questionData.validation.automarkable && (
+      {automarkable && (
         <Row gutter={36}>
           <Col md={12}>
             <Checkbox
@@ -99,7 +107,7 @@ const Scoring = ({ setQuestionData, t, scoringTypes, isSection }) => {
         <Col md={12}>
           <Checkbox
             data-cy="autoscoreChk"
-            checked={questionData.validation.automarkable}
+            checked={automarkable}
             onChange={e => handleChangeValidation("automarkable", e.target.checked)}
             size="large"
           >
@@ -108,7 +116,7 @@ const Scoring = ({ setQuestionData, t, scoringTypes, isSection }) => {
         </Col>
       </Row>
 
-      {questionData.validation.automarkable && (
+      {automarkable && (
         <Row gutter={36}>
           <Col md={12}>
             <Label>{t("component.options.scoringType")}</Label>
@@ -160,14 +168,14 @@ const Scoring = ({ setQuestionData, t, scoringTypes, isSection }) => {
         </Row>
       )}
 
-      {!questionData.validation.automarkable && (
+      {!automarkable && (
         <Row gutter={36}>
           <Col md={12}>
             <FormGroup>
               <Input
                 data-cy="maxscore"
                 type="number"
-                value={questionData.validation.max_score}
+                value={maxScore}
                 onChange={e => handleChangeValidation("max_score", +e.target.value)}
                 size="large"
                 style={{ width: "20%", marginRight: 30 }}

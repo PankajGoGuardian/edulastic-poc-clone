@@ -7,7 +7,7 @@ import { cloneDeep } from "lodash";
 import styled from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
-import { Paper } from "@edulastic/common";
+import { Paper, InstructorStimulus } from "@edulastic/common";
 
 import CorrectAnswers from "../../components/CorrectAnswers";
 import QuestionTextArea from "../../components/QuestionTextArea";
@@ -258,6 +258,7 @@ class OrderList extends Component {
         )}
         {view === PREVIEW && (
           <Wrapper>
+            <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
             <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
 
             {previewTab === CHECK && (

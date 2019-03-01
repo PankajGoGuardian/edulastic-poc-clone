@@ -4,7 +4,7 @@ import { Input } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
-import { Paper, Stimulus, CorrectAnswersContainer } from "@edulastic/common";
+import { Paper, Stimulus, CorrectAnswersContainer, InstructorStimulus } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { CHECK, SHOW, PREVIEW, CLEAR, CONTAINS } from "../../constants/constantsForQuestions";
@@ -59,6 +59,7 @@ const ShortTextPreview = ({ view, saveAnswer, t, item, previewTab, smallSize, us
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
       {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
 
       {smallSize && (

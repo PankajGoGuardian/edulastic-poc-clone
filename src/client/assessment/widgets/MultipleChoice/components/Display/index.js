@@ -1,12 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { InstructorStimulus } from "@edulastic/common";
 
 import { QuestionHeader } from "../../../../styled/QuestionHeader";
-
 import Options from "./components/Options";
 
-const Display = ({ qIndex, view, smallSize, question, uiStyle, ...restProps }) => (
+const Display = ({ qIndex, view, smallSize, question, uiStyle, instructorStimulus, ...restProps }) => (
   <div>
+    <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
     <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
     <Options view={view} smallSize={smallSize} question={question} uiStyle={uiStyle} {...restProps} />
   </div>
@@ -21,6 +22,7 @@ Display.propTypes = {
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool,
   question: PropTypes.string.isRequired,
+  instructorStimulus: PropTypes.string,
   uiStyle: PropTypes.object
 };
 
@@ -32,6 +34,7 @@ Display.defaultProps = {
   validation: {},
   userSelections: [],
   smallSize: false,
+  instructorStimulus: "",
   uiStyle: {
     type: "standard",
     fontsize: "normal",

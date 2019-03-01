@@ -15,6 +15,7 @@ import withAddButton from "../../../components/HOC/withAddButton";
 import { SOURCE } from "../../../constants/constantsForQuestions";
 
 import ColorPickers from "./ColorPickers";
+import Options from "./Options";
 
 const LineColors = withAddButton(ColorPickers);
 
@@ -138,6 +139,7 @@ const HighlightImageEdit = ({ item, setQuestionData, t }) => {
           onAdd={handleAddLineColor}
         />
       </Paper>
+      <Options />
     </Fragment>
   );
 };

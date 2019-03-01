@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { SortableContainer } from "react-sortable-hoc";
 import { FlexContainer } from "@edulastic/common";
 
@@ -26,4 +26,4 @@ const QuillSortableList = SortableContainer(
   )
 );
 
-export default QuillSortableList;
+export default memo(QuillSortableList);

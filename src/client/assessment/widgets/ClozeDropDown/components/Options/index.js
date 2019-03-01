@@ -208,6 +208,7 @@ const Options = ({ onChange, uiStyle, t, outerStyle }) => {
       </Block>
       <Extras>
         <Extras.Distractors />
+        <Extras.Hints />
       </Extras>
     </WidgetOptions>
   );

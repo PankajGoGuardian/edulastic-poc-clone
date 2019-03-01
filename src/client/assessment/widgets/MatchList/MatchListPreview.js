@@ -3,14 +3,19 @@ import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
 import { withTheme } from "styled-components";
 import { compose } from "redux";
-
-import { Paper, FlexContainer, CorrectAnswersContainer, Stimulus, Subtitle, CorItem } from "@edulastic/common";
+import {
+  Paper,
+  FlexContainer,
+  CorrectAnswersContainer,
+  Stimulus,
+  Subtitle,
+  CorItem,
+  InstructorStimulus
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import DropContainer from "../../components/DropContainer";
-
 import { CHECK, SHOW, PREVIEW, CLEAR } from "../../constants/constantsForQuestions";
-
 import DragItem from "./components/DragItem";
 import { ListItem } from "./styled/ListItem";
 import { Separator } from "./styled/Separator";
@@ -163,6 +168,7 @@ const MatchListPreview = ({
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
       {!smallSize && view === PREVIEW && (
         <Stimulus>
           <div dangerouslySetInnerHTML={{ __html: stimulus }} />

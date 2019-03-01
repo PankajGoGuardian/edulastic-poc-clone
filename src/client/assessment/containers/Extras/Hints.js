@@ -7,18 +7,17 @@ import { withNamespaces } from "react-i18next";
 import { get } from "lodash";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 
-import SortableList from "../../components/SortableList";
 import withAddButton from "../../components/HOC/withAddButton";
-
 import { change, remove, add, sort } from "./helpers";
 import { StyledRow } from "./styled/StyledRow";
 import { QuestionContext } from "../../components/QuestionWrapper";
+import QuillSortableList from "../../components/QuillSortableList";
 
-const SortableListWithAddButton = withAddButton(SortableList);
+const SortableListWithAddButton = withAddButton(QuillSortableList);
 
-const Distractors = ({ t }) => {
+const Hints = ({ t }) => {
   const { item, setQuestionData } = useContext(QuestionContext);
-  const prop = "distractor_rationale_response_level";
+  const prop = "hints";
 
   const _change = change({ item, setQuestionData, prop });
   const _remove = remove({ item, setQuestionData, prop });
@@ -28,20 +27,19 @@ const Distractors = ({ t }) => {
   return (
     <Fragment>
       <StyledRow gutter={36}>
-        <Col md={24}>{t("component.options.distractorRationalePerResponse")}</Col>
+        <Col md={24}>{t("component.options.hint")}</Col>
       </StyledRow>
       <StyledRow gutter={36}>
         <Col md={24}>
           <SortableListWithAddButton
             buttonText={t("component.options.add")}
             useDragHandle
-            label={t("component.options.distractor")}
             items={get(item, `metadata.${prop}`, [])}
             onSortEnd={_sort}
             prefix="distractors"
             onAdd={_add}
             onRemove={_remove}
-            onChange={(index, e) => _change(`metadata.${prop}[${index}]`, e.target.value)}
+            onChange={(index, value) => _change(`metadata.${prop}[${index}]`, value)}
           />
         </Col>
       </StyledRow>
@@ -49,7 +47,7 @@ const Distractors = ({ t }) => {
   );
 };
 
-Distractors.propTypes = {
+Hints.propTypes = {
   t: PropTypes.func.isRequired
 };
 
@@ -65,4 +63,4 @@ const enhance = compose(
   )
 );
 
-export default enhance(Distractors);
+export default enhance(Hints);

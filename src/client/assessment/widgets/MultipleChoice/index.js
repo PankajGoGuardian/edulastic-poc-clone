@@ -209,6 +209,7 @@ class MultipleChoice extends Component {
                   uiStyle={uiStyle}
                   evaluation={evaluation}
                   qIndex={qIndex}
+                  instructorStimulus={item.instructor_stimulus}
                 />
               )}
               {previewTab === "show" && (
@@ -223,6 +224,7 @@ class MultipleChoice extends Component {
                   uiStyle={uiStyle}
                   evaluation={evaluation}
                   qIndex={qIndex}
+                  instructorStimulus={item.instructor_stimulus}
                 />
               )}
               {previewTab === "clear" && (
@@ -238,6 +240,7 @@ class MultipleChoice extends Component {
                   onChange={this.handleAddAnswer}
                   uiStyle={uiStyle}
                   qIndex={qIndex}
+                  instructorStimulus={item.instructor_stimulus}
                 />
               )}
             </Wrapper>

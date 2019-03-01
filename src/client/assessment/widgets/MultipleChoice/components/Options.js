@@ -12,6 +12,7 @@ import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import OrientationSelect from "../../../components/OrientationSelect";
 import FontSizeSelect from "../../../components/FontSizeSelect";
+import Extras from "../../../containers/Extras";
 
 function Options({ onChange, uiStyle, t }) {
   const changeUiStyle = (prop, value) => {
@@ -90,6 +91,10 @@ function Options({ onChange, uiStyle, t }) {
           </Row>
         )}
       </Block>
+      <Extras>
+        <Extras.Distractors />
+        <Extras.Hints />
+      </Extras>
     </WidgetOptions>
   );
 }

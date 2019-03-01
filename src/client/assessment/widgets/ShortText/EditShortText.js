@@ -13,6 +13,7 @@ import CorrectAnswers from "../../components/CorrectAnswers";
 import { Subtitle } from "../../styled/Subtitle";
 
 import CorrectAnswer from "./components/CorrectAnswer";
+import Options from "./components/Options";
 
 const OptionsList = withPoints(CorrectAnswer);
 
@@ -128,6 +129,7 @@ const EditShortText = ({ item, setQuestionData, t }) => {
           onCloseTab={handleCloseTab}
         />
       </Paper>
+      <Options />
     </Fragment>
   );
 };

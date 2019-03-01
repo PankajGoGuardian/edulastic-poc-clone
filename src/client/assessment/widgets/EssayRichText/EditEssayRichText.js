@@ -20,6 +20,7 @@ import { Heading } from "../../styled/WidgetOptions/Heading";
 import SortableList from "./components/SortableList";
 import { ValidList } from "./constants/validList";
 import { QlToolbar } from "./styled/QlToolbar";
+import Extras from "../../containers/Extras";
 
 const EditEssayRichText = ({ item, setQuestionData, t }) => {
   const [act, setAct] = useState(item.formatting_options || []);
@@ -137,6 +138,10 @@ const EditEssayRichText = ({ item, setQuestionData, t }) => {
         >
           {t("component.essayText.submitOverLimit")}
         </Checkbox>
+        <Extras>
+          <Extras.Distractors />
+          <Extras.Hints />
+        </Extras>
       </WidgetOptions>
     </Fragment>
   );

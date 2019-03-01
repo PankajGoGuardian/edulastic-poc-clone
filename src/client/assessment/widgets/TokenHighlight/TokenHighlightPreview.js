@@ -4,7 +4,7 @@ import { cloneDeep } from "lodash";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
-import { Paper, Stimulus } from "@edulastic/common";
+import { Paper, Stimulus, InstructorStimulus } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
@@ -147,6 +147,7 @@ const TokenHighlightPreview = ({
 
   return (
     <Paper style={{ wordBreak: "break-word" }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
       {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
       {item.templeWithTokens.map((el, i) =>
         el.active ? (

@@ -44,6 +44,7 @@ const AdvancedOptions = ({ t, onUiChange }) => {
       </Row>
       <Extras>
         <Extras.Distractors />
+        <Extras.Hints />
       </Extras>
     </WidgetOptions>
   );

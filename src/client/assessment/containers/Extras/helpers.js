@@ -7,40 +7,36 @@ export const change = ({ item, setQuestionData }) => (path, value) => {
   setQuestionData(newData);
 };
 
-export const removeDistractor = ({ item, setQuestionData }) => index => {
-  if (item.metadata && Array.isArray(item.metadata.distractor_rationale_response_level)) {
+export const remove = ({ item, setQuestionData, prop }) => index => {
+  if (item.metadata && Array.isArray(item.metadata[prop])) {
     const newData = cloneDeep(item);
-    newData.metadata.distractor_rationale_response_level.splice(index, 1);
+    newData.metadata[prop].splice(index, 1);
     setQuestionData(newData);
   }
 };
 
-export const sortDistractors = ({ item, setQuestionData }) => ({ oldIndex, newIndex }) => {
+export const sort = ({ item, setQuestionData, prop }) => ({ oldIndex, newIndex }) => {
   const newData = cloneDeep(item);
 
-  if (!newData.metadata || !Array.isArray(newData.metadata.distractor_rationale_response_level)) {
+  if (!newData.metadata || !Array.isArray(newData.metadata[prop])) {
     return;
   }
 
-  newData.metadata.distractor_rationale_response_level = arrayMove(
-    newData.metadata.distractor_rationale_response_level,
-    oldIndex,
-    newIndex
-  );
+  newData.metadata[prop] = arrayMove(newData.metadata[prop], oldIndex, newIndex);
   setQuestionData(newData);
 };
 
-export const addDistractor = ({ item, setQuestionData }) => () => {
+export const add = ({ item, setQuestionData, prop }) => () => {
   const newData = cloneDeep(item);
 
   if (!newData.metadata) {
     newData.metadata = {};
   }
 
-  if (!Array.isArray(newData.metadata.distractor_rationale_response_level)) {
-    newData.metadata.distractor_rationale_response_level = [];
+  if (!Array.isArray(newData.metadata[prop])) {
+    newData.metadata[prop] = [];
   }
 
-  newData.metadata.distractor_rationale_response_level.push("");
+  newData.metadata[prop].push("");
   setQuestionData(newData);
 };

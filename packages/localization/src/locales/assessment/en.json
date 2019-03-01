@@ -83,6 +83,7 @@
       "sampleAnswer": "Sample answer",
       "distractorRationale": "Distractor rationale",
       "distractorRationalePerResponse": "Distractor rationale per response",
+      "hint": "Hint",
       "draganddrop": "DRAG & DROP",
       "multiline": "Multiple line",
       "browserspellcheck": "Browser spellcheck",

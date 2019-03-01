@@ -14,6 +14,7 @@ import { Heading } from "../../../styled/WidgetOptions/Heading";
 import QuestionTextArea from "../../../components/QuestionTextArea";
 import WordLimitAndCount from "../../../components/WordLimitAndCount";
 import { Subtitle } from "../../../styled/Subtitle";
+import Extras from "../../../containers/Extras";
 
 const EditEssayPlainText = ({ item, setQuestionData, t }) => {
   const handleItemChangeChange = (prop, uiStyle) => {
@@ -112,6 +113,10 @@ const EditEssayPlainText = ({ item, setQuestionData, t }) => {
         >
           {t("component.essayText.submitOverLimit")}
         </Checkbox>
+        <Extras>
+          <Extras.Distractors />
+          <Extras.Hints />
+        </Extras>
       </WidgetOptions>
     </Fragment>
   );

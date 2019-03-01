@@ -20,6 +20,7 @@ const Options = ({ questionData, onChange, uiStyle, t, outerStyle }) => (
       <Layout questionData={questionData} onChange={onChange} uiStyle={uiStyle} />
       <Extras>
         <Extras.Distractors />
+        <Extras.Hints />
       </Extras>
     </Block>
   </WidgetOptions>

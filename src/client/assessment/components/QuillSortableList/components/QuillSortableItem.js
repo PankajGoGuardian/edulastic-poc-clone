@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { SortableElement } from "react-sortable-hoc";
 import PropTypes from "prop-types";
 
@@ -42,4 +42,4 @@ QuillSortableItem.defaultProps = {
   firstFocus: false
 };
 
-export default QuillSortableItem;
+export default memo(QuillSortableItem);

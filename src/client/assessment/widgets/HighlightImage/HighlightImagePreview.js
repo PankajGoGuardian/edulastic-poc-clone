@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Select } from "antd";
 
-import { Paper, Stimulus } from "@edulastic/common";
+import { Paper, Stimulus, InstructorStimulus } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconUndo, IconRedo, IconEraseText } from "@edulastic/icons";
 
@@ -33,7 +33,7 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, userAnswer, 
   const altText = image ? image.altText : "";
   const file = image ? image.source : "";
 
-  const drawImage = (context) => {
+  const drawImage = context => {
     if (!Array.isArray(userAnswer)) {
       const img = new Image();
       img.alt = altText;
@@ -64,23 +64,20 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, userAnswer, 
     }
   };
 
-  useEffect(
-    () => {
-      if (canvas) {
-        canvas.current.width = width;
-        canvas.current.height = height;
-        const context = canvas.current.getContext("2d");
-        context.lineWidth = 10;
-        context.lineJoin = "round";
-        context.lineCap = "round";
+  useEffect(() => {
+    if (canvas) {
+      canvas.current.width = width;
+      canvas.current.height = height;
+      const context = canvas.current.getContext("2d");
+      context.lineWidth = 10;
+      context.lineJoin = "round";
+      context.lineCap = "round";
 
-        drawImage(context);
-      }
-    },
-    [file]
-  );
+      drawImage(context);
+    }
+  }, [file]);
 
-  const onCanvasMouseDown = (e) => {
+  const onCanvasMouseDown = e => {
     const bounded = canvas.current.getBoundingClientRect();
     ctx.beginPath();
     ctx.moveTo(e.clientX - bounded.left, e.clientY - bounded.top);
@@ -88,7 +85,7 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, userAnswer, 
     setMouseDown(true);
   };
 
-  const onCanvasMouseUp = (e) => {
+  const onCanvasMouseUp = e => {
     if (mouseDown) {
       const bounded = canvas.current.getBoundingClientRect();
       ctx.lineTo(e.clientX - bounded.left, e.clientY - bounded.top);
@@ -104,7 +101,7 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, userAnswer, 
     }
   };
 
-  const onCanvasMouseMove = (e) => {
+  const onCanvasMouseMove = e => {
     if (mouseDown) {
       const bounded = canvas.current.getBoundingClientRect();
 
@@ -151,9 +148,8 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, userAnswer, 
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      {view === PREVIEW && !smallSize && (
-        <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-      )}
+      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+      {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
 
       <Container style={{ maxWidth: "100%" }} width={`${+width}px`} justifyContent="space-between">
         {line_color.length > 1 && (
@@ -172,10 +168,7 @@ const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, userAnswer, 
             <IconUndo style={{ marginRight: 25 }} width={18} height={18} />
             <Text>{t("component.highlightImage.undo")}</Text>
           </Button>
-          <Button
-            disabled={historyTab === history.length - 1 || history.length === 0}
-            onClick={onRedoClick}
-          >
+          <Button disabled={historyTab === history.length - 1 || history.length === 0} onClick={onRedoClick}>
             <IconRedo style={{ marginRight: 25 }} width={18} height={18} />
             <Text>{t("component.highlightImage.redo")}</Text>
           </Button>

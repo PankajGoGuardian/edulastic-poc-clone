@@ -45,6 +45,7 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
 
   let { ticksDistance } = settings;
   const { fractionsFormat, showLabels, labelShowMax, labelShowMin, minorTicks } = settings;
+  console.log(settings);
   let fracTicksDistance = null;
   if (isString(ticksDistance) && ticksDistance.indexOf("/") !== -1) {
     fracTicksDistance = getFraction(ticksDistance);
@@ -196,7 +197,8 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
 
   if (!labelShowMin) {
     if (labels[0] === 0) {
-      board.$board.removeObject(newAxis.ticks[1].labels[0]);
+      // console.log(newAxis)
+      // board.$board.removeObject(newAxis.ticks[0].labels[0]);
     }
   }
 

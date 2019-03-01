@@ -1,4 +1,4 @@
-const removeObject = (board, elementsUnderMouse) => {
+const removeObject = (board, elementsUnderMouse, setAnswers) => {
   const elementToDelete = elementsUnderMouse.find(
     element => element.elType === "segment" || element.elType === "point"
   );
@@ -11,6 +11,7 @@ const removeObject = (board, elementsUnderMouse) => {
     elementToDelete.inherits.forEach(point => board.$board.removeObject(point));
     board.$board.removeObject(elementToDelete);
     board.elements = board.elements.filter(element => element.id !== elementToDelete.id);
+    setAnswers();
   } else {
     // Check if it's separate point or not
     if (elementToDelete) {
@@ -28,15 +29,17 @@ const removeObject = (board, elementsUnderMouse) => {
         parentSegment.inherits.forEach(point => board.$board.removeObject(point));
         board.$board.removeObject(parentSegment);
         board.elements = board.elements.filter(element => element.id !== parentSegment.id);
+        setAnswers();
       } else {
         board.$board.removeObject(elementToDelete);
         board.elements = board.elements.filter(element => element.id !== elementToDelete.id);
+        setAnswers();
       }
     }
   }
 };
 
-const cleanBoard = board => {
+const cleanBoard = (board, setAnswers) => {
   const segments = board.elements.filter(element => element.elType === "segment" || element.elType === "point");
 
   segments.forEach(segmentToDelete => {
@@ -44,6 +47,7 @@ const cleanBoard = board => {
       segmentToDelete.inherits.forEach(point => board.$board.removeObject(point));
       board.$board.removeObject(segmentToDelete);
       board.elements = board.elements.filter(element => element.id !== segmentToDelete.id);
+      setAnswers();
     } else {
       // Check if it's separate point or not
       if (segmentToDelete) {
@@ -61,9 +65,11 @@ const cleanBoard = board => {
           parentSegment.inherits.forEach(point => board.$board.removeObject(point));
           board.$board.removeObject(parentSegment);
           board.elements = board.elements.filter(element => element.id !== parentSegment.id);
+          setAnswers();
         } else {
           board.$board.removeObject(segmentToDelete);
           board.elements = board.elements.filter(element => element.id !== segmentToDelete.id);
+          setAnswers();
         }
       }
     }

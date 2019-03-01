@@ -23,8 +23,19 @@ class CorrectAnswers extends Component {
     this.setState({ value });
   };
 
+  handleAltResponseClose = i => {
+    const { onRemoveAltResponses, graphData } = this.props;
+    const { validation } = graphData;
+
+    if (i === validation.alt_responses.length - 1) {
+      this.handleTabChange(i);
+    }
+
+    onRemoveAltResponses(i);
+  };
+
   renderAltResponses = () => {
-    const { graphData, t, onRemoveAltResponses } = this.props;
+    const { graphData, t } = this.props;
     const { validation } = graphData;
 
     if (validation.alt_responses && validation.alt_responses.length) {
@@ -32,7 +43,7 @@ class CorrectAnswers extends Component {
         <Tab
           key={i}
           close={true}
-          onClose={() => onRemoveAltResponses(i)}
+          onClose={() => this.handleAltResponseClose(i)}
           label={`${t("component.correctanswers.alternate")} ${i + 1}`}
         />
       ));
@@ -105,14 +116,14 @@ class CorrectAnswers extends Component {
             {this.renderAltResponses()}
           </Tabs>
           {value === 0 && (
-          <TabContainer>
-            <CorrectAnswer
-              graphData={graphData}
-              response={validation.valid_response}
-              onUpdateValidationValue={this.updateValidationValue}
-              onUpdatePoints={this.handleUpdateCorrectScore}
-            />
-          </TabContainer>
+            <TabContainer>
+              <CorrectAnswer
+                graphData={graphData}
+                response={validation.valid_response}
+                onUpdateValidationValue={this.updateValidationValue}
+                onUpdatePoints={this.handleUpdateCorrectScore}
+              />
+            </TabContainer>
           )}
           {validation.alt_responses &&
             !!validation.alt_responses.length &&

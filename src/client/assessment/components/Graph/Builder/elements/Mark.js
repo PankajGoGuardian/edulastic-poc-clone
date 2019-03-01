@@ -19,8 +19,10 @@ const snapMark = (
     let y;
 
     const axis = board.elements.filter(element => element.elType === "axis")[0];
-    const ticks = axis.ticks.filter(t => t.fixedTicks !== null)[0];
-
+    const ticks = axis.ticks
+      .map(t => t.fixedTicks !== null && t.fixedTicks)
+      .reduce((previousValue, currentValue) => previousValue.concat(currentValue))
+      .sort();
     const [markXMeasure, markYMeasure] = calcMeasure(51.5, 45, board);
     const [xMeasure, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
     const lineY = lineSettings.yMax - (yMeasure / 100) * lineSettings.position;
@@ -28,14 +30,14 @@ const snapMark = (
 
     if (point.Y() >= containerY - markYMeasure * 1.35 && point.X() < xCoords[0]) {
       y = lineY;
-      x = getClosestTick(point.X(), ticks.fixedTicks);
+      x = getClosestTick(point.X(), ticks);
     } else if (point.Y() >= containerY - markYMeasure * 1.35 && point.X() > xCoords[1]) {
       y = lineY;
-      x = getClosestTick(point.X(), ticks.fixedTicks);
+      x = getClosestTick(point.X(), ticks);
     } else if (point.Y() >= containerY - markYMeasure * 1.35 && point.X() < xCoords[1] && point.X() > xCoords[0]) {
       y = lineY;
       if (snapToTicks) {
-        x = getClosestTick(point.X(), ticks.fixedTicks);
+        x = getClosestTick(point.X(), ticks);
       } else {
         x = point.X();
       }
@@ -52,7 +54,7 @@ const snapMark = (
     } else {
       mark.setAttribute({ cssClass: "mark", highlightCssClass: "mark" });
     }
-
+    console.log(x);
     point.setPosition(setCoords, [x, y]);
     setValue();
   });

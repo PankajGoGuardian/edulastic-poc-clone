@@ -208,7 +208,7 @@ class AxisSegmentsContainer extends Component {
       validation
     } = this.props;
 
-    this._graph = makeBorder(this._graphId);
+    this._graph = makeBorder(this._graphId, {}, this.getConfig);
     this._graph.setTool(CONSTANT.TOOLS.SEGMENTS_POINT, graphType, canvas.responsesAllowed);
 
     if (this._graph) {
@@ -625,8 +625,9 @@ class AxisSegmentsContainer extends Component {
   };
 
   render() {
-    const { layout, graphType, canvas } = this.props;
+    const { layout, graphType, canvas, elements } = this.props;
     const { selectedTool } = this.state;
+    console.log("Elements: ", elements);
     return (
       <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
         <GraphWrapper>
@@ -635,6 +636,7 @@ class AxisSegmentsContainer extends Component {
           </div>
           <SegmentsTools
             tool={selectedTool}
+            elementsNumber={elements.length}
             getIconByToolName={this.getIconByToolName}
             onSelect={this.onSelectTool}
             fontSize={layout.fontSize}

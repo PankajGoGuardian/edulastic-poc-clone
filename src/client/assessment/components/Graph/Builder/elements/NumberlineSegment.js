@@ -1,10 +1,5 @@
 import { CONSTANT, Colors } from "../config";
-import {
-  orderPoints,
-  findAvailableStackedSegmentPosition,
-  getClosestTick,
-  getSpecialTicks
-} from "../utils";
+import { orderPoints, findAvailableStackedSegmentPosition, getClosestTick, getSpecialTicks } from "../utils";
 import { defaultPointParameters } from "../settings";
 
 const previousPointsPositions = [];
@@ -98,7 +93,7 @@ const findAvailableSegmentDragPlace = (segmentCoords, segments, ticksDistance, d
 
 // Pass board, handling segment, ticksDistance, numberlineAxis
 // Check if there an element inside after segment dragging, then find closest available space and put segment there
-const handleSegmentDrag = (board, segment, ticksDistance, axis) => {
+const handleSegmentDrag = (board, segment, ticksDistance, axis, setAnswers) => {
   segment.on("up", () => {
     const segments = board.elements
       .filter(element => element.elType === "segment" || element.elType === "point")
@@ -128,6 +123,7 @@ const handleSegmentDrag = (board, segment, ticksDistance, axis) => {
     if (newCoords) {
       segment.point1.setPosition(window.JXG.COORDS_BY_USER, [newCoords[0], 0]);
       segment.point2.setPosition(window.JXG.COORDS_BY_USER, [newCoords[1], 0]);
+      setAnswers();
     }
 
     previousPointsPositions.forEach((element, index) => {
@@ -283,7 +279,16 @@ const drawLine = (board, firstPoint, secondPoint, colors) =>
 
 // Pass board, coordinate (closest to ticksDistance click coordinate), left point type (true = filled point, false = unfilled point), right point type
 // Check if space is available for new segment, then draw new segment
-const drawSegment = (board, coord, leftIncluded, rightIncluded, segmentType, stackResponses, stackResponsesSpacing) => {
+const drawSegment = (
+  board,
+  coord,
+  leftIncluded,
+  rightIncluded,
+  segmentType,
+  stackResponses,
+  stackResponsesSpacing,
+  setAnswers
+) => {
   const numberlineAxis = board.elements.filter(element => element.elType === "axis" || element.elType === "arrow");
   const ticksDistance = numberlineAxis[0].ticks[0].getAttribute("ticksDistance");
   const segments = board.elements.filter(element => element.elType === "segment" || element.elType === "point");
@@ -317,7 +322,7 @@ const drawSegment = (board, coord, leftIncluded, rightIncluded, segmentType, sta
 
       handleSegmentPointDrag(firstPoint, board, ticksDistance, segment, numberlineAxis[0], ticks);
       handleSegmentPointDrag(secondPoint, board, ticksDistance, segment, numberlineAxis[0], ticks);
-      handleSegmentDrag(board, segment, ticksDistance, numberlineAxis[0]);
+      handleSegmentDrag(board, segment, ticksDistance, numberlineAxis[0], setAnswers);
 
       return segment;
     }
@@ -347,7 +352,7 @@ const drawSegment = (board, coord, leftIncluded, rightIncluded, segmentType, sta
   }
 };
 
-const determineSegmentType = (type, board, coords, stackResponses, stackResponsesSpacing) => {
+const determineSegmentType = (type, board, coords, stackResponses, stackResponsesSpacing, setAnswers) => {
   switch (type) {
     case CONSTANT.TOOLS.BOTH_INCLUDED_SEGMENT:
       return drawSegment(
@@ -357,7 +362,8 @@ const determineSegmentType = (type, board, coords, stackResponses, stackResponse
         true,
         CONSTANT.TOOLS.BOTH_INCLUDED_SEGMENT,
         stackResponses,
-        stackResponsesSpacing
+        stackResponsesSpacing,
+        setAnswers
       );
     case CONSTANT.TOOLS.BOTH_NOT_INCLUDED_SEGMENT:
       return drawSegment(
@@ -367,7 +373,8 @@ const determineSegmentType = (type, board, coords, stackResponses, stackResponse
         false,
         CONSTANT.TOOLS.BOTH_NOT_INCLUDED_SEGMENT,
         stackResponses,
-        stackResponsesSpacing
+        stackResponsesSpacing,
+        setAnswers
       );
     case CONSTANT.TOOLS.ONLY_RIGHT_INCLUDED_SEGMENT:
       return drawSegment(
@@ -377,7 +384,8 @@ const determineSegmentType = (type, board, coords, stackResponses, stackResponse
         true,
         CONSTANT.TOOLS.ONLY_RIGHT_INCLUDED_SEGMENT,
         stackResponses,
-        stackResponsesSpacing
+        stackResponsesSpacing,
+        setAnswers
       );
     case CONSTANT.TOOLS.ONLY_LEFT_INCLUDED_SEGMENT:
       return drawSegment(
@@ -387,7 +395,8 @@ const determineSegmentType = (type, board, coords, stackResponses, stackResponse
         false,
         CONSTANT.TOOLS.ONLY_LEFT_INCLUDED_SEGMENT,
         stackResponses,
-        stackResponsesSpacing
+        stackResponsesSpacing,
+        setAnswers
       );
     default:
       throw new Error("Unknown tool:");
@@ -409,8 +418,8 @@ const determineAnswerType = (board, config) => {
   }
 };
 
-const onHandler = (type, stackResponses, stackResponsesSpacing) => (board, coords) =>
-  determineSegmentType(type, board, coords, stackResponses, stackResponsesSpacing);
+const onHandler = (type, stackResponses, stackResponsesSpacing, setAnswers) => (board, coords) =>
+  determineSegmentType(type, board, coords, stackResponses, stackResponsesSpacing, setAnswers);
 
 const renderAnswer = (board, config, leftIncluded, rightIncluded) => {
   const firstPoint = drawPoint(board, config.point1, null, leftIncluded, true, config.leftPointColor, config.y);

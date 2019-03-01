@@ -65,7 +65,7 @@ function dragDetector() {
  * @see https://jsxgraph.org/docs/symbols/JXG.JSXGraph.html#.initBoard
  */
 class Board {
-  constructor(id, config = {}) {
+  constructor(id, config = {}, setAnswers = null) {
     /**
      * Elements on the board
      */
@@ -100,6 +100,8 @@ class Board {
     this.stackResponsesSpacing = 30;
 
     this.responsesAllowed = 2;
+
+    this.setAnswers = setAnswers;
 
     this.dragDetector = dragDetector();
 
@@ -167,7 +169,7 @@ class Board {
       case CONSTANT.TOOLS.ONLY_RIGHT_INCLUDED_SEGMENT:
       case CONSTANT.TOOLS.ONLY_LEFT_INCLUDED_SEGMENT:
         this.setCreatingHandler(
-          NumberlineSegment.onHandler(tool, this.stackResponses, this.stackResponsesSpacing),
+          NumberlineSegment.onHandler(tool, this.stackResponses, this.stackResponsesSpacing, this.setAnswers),
           responsesAllowed
         );
         return;
@@ -226,7 +228,7 @@ class Board {
         return;
       }
       if (this.currentTool === CONSTANT.TOOLS.TRASH) {
-        NumberlineTrash.removeObject(this, this.$board.getAllObjectsUnderMouse(event));
+        NumberlineTrash.removeObject(this, this.$board.getAllObjectsUnderMouse(event), this.setAnswers);
       } else {
         let newElement;
 
@@ -255,7 +257,7 @@ class Board {
       this.responsesAllowed !== responsesAllowed ||
       this.stackResponsesSpacing !== stackResponsesSpacing
     ) {
-      NumberlineTrash.cleanBoard(this);
+      NumberlineTrash.cleanBoard(this, this.setAnswers);
     }
 
     if (stackResponses && responsesAllowed > 0 && stackResponsesSpacing > 0) {
@@ -330,19 +332,19 @@ class Board {
       console.log("graphType === axisSegments this.elements", this.elements);
     }
 
-    if (graphType === 'axisSegments') {
-      const points = this.elements.filter(element => element.elType === 'point');
-      console.log('graphType === axisSegments points', points);
-      this.elements = this.elements.filter(element => element.elType !== 'point');
+    if (graphType === "axisSegments") {
+      const points = this.elements.filter(element => element.elType === "point");
+      console.log("graphType === axisSegments points", points);
+      this.elements = this.elements.filter(element => element.elType !== "point");
 
       points.forEach(p => this.removeObject(p));
-      points.forEach((p) => {
-        console.log('p', p);
+      points.forEach(p => {
+        console.log("p", p);
         const newPoint = NumberlinePoint.onHandler(this.stackResponses, this.stackResponsesSpacing)(this, p.X());
-        console.log('newPoint', newPoint);
+        console.log("newPoint", newPoint);
         this.elements.push(newPoint);
       });
-      console.log('graphType === axisSegments this.elements', this.elements);
+      console.log("graphType === axisSegments this.elements", this.elements);
     }
 
     this.$board.fullUpdate();
@@ -928,8 +930,8 @@ class Board {
   }
 }
 
-export function makeBorder(id, config) {
-  return new Board(id, config);
+export function makeBorder(id, config, setAnswers) {
+  return new Board(id, config, setAnswers);
 }
 
 export default Board;

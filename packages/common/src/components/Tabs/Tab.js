@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { textColor, blue, mobileWidth, greenDark, mainBgColor } from '@edulastic/colors';
-import { IconPencilEdit, IconClose } from '@edulastic/icons';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { textColor, blue, mobileWidth, greenDark, mainBgColor } from "@edulastic/colors";
+import { IconPencilEdit, IconClose } from "@edulastic/icons";
 
 const Tab = ({ label, onClick, active, style, editable, close, onClose, onChange }) => {
   const inputTab = (
-    <EditableTab>
+    <EditableTab onClick={onClick}>
       <Input type="text" value={label} onChange={onChange} />
       <IconPencilEdit color={greenDark} width={16} height={16} />
     </EditableTab>
@@ -16,9 +16,10 @@ const Tab = ({ label, onClick, active, style, editable, close, onClose, onChange
       <IconClose color={blue} width={10} height={10} onClick={onClose} />
     </CloseIcon>
   );
+  const labelBar = <span onClick={onClick}>{label}</span>;
   return (
-    <Container onClick={onClick} active={active} style={style}>
-      {editable ? inputTab : label}
+    <Container active={active} style={style}>
+      {editable ? inputTab : labelBar}
       {close && closeButton}
     </Container>
   );
@@ -42,7 +43,7 @@ Tab.defaultProps = {
   editable: false,
   close: false,
   onChange: () => {},
-  onClose: (evt) => {
+  onClose: evt => {
     evt.stopPropagation();
   }
 };

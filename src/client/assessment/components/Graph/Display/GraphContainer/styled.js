@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { greenDark, secondaryTextColor, white, green } from "@edulastic/colors";
+import { greenDark, secondaryTextColor, svgDisabledColor, white, green } from "@edulastic/colors";
 
 export const GraphToolbar = styled.div`
   box-sizing: border-box;
@@ -97,6 +97,32 @@ export const SegmentsToolBtn = styled.li`
   transition: background-color 0.1s ease-in;
   user-select: none;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0);
+
+  &.disabled {
+    background-color: rgba(0, 0, 0, 0.15);
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.15);
+    }
+
+    .dd-header-title svg {
+      color: ${svgDisabledColor};
+      stroke: ${svgDisabledColor};
+      fill: ${svgDisabledColor};
+    }
+
+    .tool-btn-icon svg {
+      color: ${svgDisabledColor};
+      stroke: ${svgDisabledColor};
+      fill: ${svgDisabledColor};
+    }
+
+    svg {
+      color: ${svgDisabledColor};
+      stroke: ${svgDisabledColor};
+      fill: ${svgDisabledColor};
+    }
+  }
 
   svg {
     color: ${secondaryTextColor};

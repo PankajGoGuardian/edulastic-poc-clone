@@ -2,7 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import { GraphToolbar, SegmentsToolBtn, SegmentsToolbarItem, ToolbarItemIcon } from "./styled";
 
-const SegmentsTools = ({ tool, onSelect, fontSize, getIconByToolName, graphType, responsesAllowed }) => {
+const SegmentsTools = ({
+  tool,
+  onSelect,
+  fontSize,
+  getIconByToolName,
+  graphType,
+  responsesAllowed,
+  elementsNumber
+}) => {
   const segmentsTools = [
     "segmentsPoint",
     "bothIncludedSegment",
@@ -24,8 +32,40 @@ const SegmentsTools = ({ tool, onSelect, fontSize, getIconByToolName, graphType,
 
   const isActive = uiTool => uiTool.index === tool.index && uiTool.groupIndex === tool.groupIndex;
 
-  const getIconTemplate = (toolName = "point", options) => getIconByToolName(toolName, options);
+  const getToolClassName = uiTool => {
+    if (uiTool.name === "trash") {
+      if (isActive(uiTool)) {
+        return "active";
+      } else {
+        return "";
+      }
+    } else {
+      if (elementsNumber >= responsesAllowed) {
+        return "disabled";
+      } else {
+        if (isActive(uiTool)) {
+          return "active";
+        } else {
+          return "";
+        }
+      }
+    }
+  };
 
+  const getToolClickHandler = uiTool => {
+    if (uiTool.name === "trash") {
+      return () => onSelect(uiTool, graphType, responsesAllowed);
+    } else {
+      if (elementsNumber >= responsesAllowed) {
+        return null;
+      } else {
+        return () => onSelect(uiTool, graphType, responsesAllowed);
+      }
+    }
+  };
+
+  const getIconTemplate = (toolName = "point", options) => getIconByToolName(toolName, options);
+  console.log("Elements number: ", elementsNumber);
   return (
     <GraphToolbar fontSize={fontSize}>
       {uiTools.map(
@@ -33,8 +73,8 @@ const SegmentsTools = ({ tool, onSelect, fontSize, getIconByToolName, graphType,
           !uiTool.group && (
             <SegmentsToolBtn
               style={{ width: fontSize > 20 ? 105 : 93 }}
-              className={isActive(uiTool) ? "active" : ""}
-              onClick={() => onSelect(uiTool, graphType, responsesAllowed)}
+              className={getToolClassName(uiTool)}
+              onClick={getToolClickHandler(uiTool)}
               key={Math.random().toString(36)}
             >
               <SegmentsToolbarItem>

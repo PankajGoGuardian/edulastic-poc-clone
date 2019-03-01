@@ -4,13 +4,10 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
 import { PaddingDiv } from "@edulastic/common";
-import {
-  Col, Label, Row,
-  StyledTextField,
-  Subtitle, TitleTextInput
-} from "../common/styled_components";
+import { Col, Label, Row, StyledTextField, Subtitle, TitleTextInput } from "../common/styled_components";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../QuestionTextArea";
+import { QuestionSection } from "./";
 
 class AxisSegments extends Component {
   onChangeQuestion = stimulus => {

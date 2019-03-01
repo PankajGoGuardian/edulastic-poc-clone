@@ -10,6 +10,7 @@ import { Subtitle, Label, ContainerStart, LineParameter, LineInput, TitleTextInp
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../QuestionTextArea";
 import QuillSortableList from "../../QuillSortableList";
+import { QuestionSection } from "./";
 
 class GraphAxisLabels extends Component {
   onChangeQuestion = stimulus => {

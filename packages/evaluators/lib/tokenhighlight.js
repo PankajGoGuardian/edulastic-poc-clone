@@ -7,70 +7,55 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _cloneDeep2 = _interopRequireDefault(require("lodash/cloneDeep"));
+var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+
+var _intersection2 = _interopRequireDefault(require("lodash/intersection"));
+
+var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
 
 var _scoring = require("./const/scoring");
 
+var _exactMatchTemplate = _interopRequireDefault(require("./helpers/exactMatchTemplate"));
+
+var _partialMatchTemplate = _interopRequireDefault(require("./helpers/partialMatchTemplate"));
+
 // exact-match evaluator
-var exactMatchEvaluator = function exactMatchEvaluator() {
-  var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-  var validAnswer = arguments.length > 1 ? arguments[1] : undefined;
-  var altAnswers = arguments.length > 2 ? arguments[2] : undefined;
-
-  var _ref = arguments.length > 3 ? arguments[3] : undefined,
-    automarkable = _ref.automarkable,
-    min_score_if_attempted = _ref.min_score_if_attempted,
-    max_score = _ref.max_score;
-
+var exactMatchEvaluator = function exactMatchEvaluator(_ref) {
+  var _ref$userResponse = _ref.userResponse,
+      userResponse = _ref$userResponse === void 0 ? [] : _ref$userResponse,
+      answers = _ref.answers;
   var score = 0;
-  var userRight = userResponse.filter(function(ans) {
+  var maxScore = 0;
+  var evaluation = [];
+  var userAnswer = userResponse.filter(function (ans) {
     return ans.selected;
+  }).map(function (ans) {
+    return ans.index;
   });
-  var validValue = validAnswer.value,
-    validScore = validAnswer.score;
-  var maxScore = validScore;
-  var evaluation = (0, _cloneDeep2.default)(validValue);
-  var rightValid = evaluation.filter(function(ans) {
-    return ans.selected;
-  });
-  altAnswers.forEach(function(answer) {
-    var answerValue = answer.value,
-      answerScore = answer.score;
-    var alt = answerValue.filter(function(ans) {
+  answers.forEach(function (_ref2) {
+    var totalScore = _ref2.score,
+        answer = _ref2.value;
+    var currentAnswer = answer.filter(function (ans) {
       return ans.selected;
+    }).map(function (ans) {
+      return ans.index;
     });
 
-    if (
-      userRight.length === alt.length &&
-      userRight.every(function(ans, i) {
-        return alt[i].index === ans.index;
-      })
-    ) {
-      evaluation = (0, _cloneDeep2.default)(answerValue);
-      score = answerScore;
+    if ((0, _isEqual2.default)(currentAnswer, userAnswer)) {
+      score = Math.max(score, totalScore);
     }
 
-    maxScore = Math.max(answerScore, maxScore);
+    maxScore = Math.max(maxScore, totalScore);
   });
 
-  if (score === 0) {
-    if (
-      userRight.length === rightValid.length &&
-      userRight.every(function(ans, i) {
-        return rightValid[i].index === ans.index;
-      })
-    ) {
-      score = validScore;
-    }
-  }
-
-  if (automarkable) {
-    if (min_score_if_attempted) {
-      maxScore = Math.max(maxScore, min_score_if_attempted);
-      score = Math.max(min_score_if_attempted, score);
-    }
-  } else if (max_score) {
-    maxScore = Math.max(max_score, maxScore);
+  if (score !== 0) {
+    evaluation = Array.from({
+      length: userAnswer.length
+    }).fill(true);
+  } else {
+    evaluation = Array.from({
+      length: userAnswer.length
+    }).fill(false);
   }
 
   return {
@@ -80,17 +65,73 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   };
 };
 
-var evaluator = function evaluator(_ref2) {
-  var userResponse = _ref2.userResponse,
-    validation = _ref2.validation;
+var partialMatchEvaluator = function partialMatchEvaluator(_ref3) {
+  var _ref3$userResponse = _ref3.userResponse,
+      userResponse = _ref3$userResponse === void 0 ? [] : _ref3$userResponse,
+      answers = _ref3.answers;
+  var score = 0;
+  var maxScore = 0;
+  var rightLen = 0;
+  var evaluation = [];
+  var userAnswer = userResponse.filter(function (ans) {
+    return ans.selected;
+  }).map(function (ans) {
+    return ans.index;
+  });
+  var validAnswer = [];
+  answers.forEach(function (_ref4) {
+    var totalScore = _ref4.score,
+        answer = _ref4.value;
+    var currentAnswer = answer.filter(function (ans) {
+      return ans.selected;
+    }).map(function (ans) {
+      return ans.index;
+    });
+    var scorePerResponse = totalScore / currentAnswer.length;
+    var currentScore = scorePerResponse * (0, _intersection2.default)(userAnswer, currentAnswer).length;
+    score = Math.max(currentScore, score);
+    maxScore = Math.max(maxScore, totalScore);
+
+    if (currentScore === score && score !== 0) {
+      rightLen = currentAnswer.length;
+      validAnswer = currentAnswer;
+    }
+  });
+  evaluation = userAnswer.map(function (ans) {
+    return validAnswer.includes(ans);
+  });
+  return {
+    score: score,
+    maxScore: maxScore,
+    rightLen: rightLen,
+    evaluation: evaluation
+  };
+};
+
+var evaluator = function evaluator(_ref5) {
+  var userResponse = _ref5.userResponse,
+      validation = _ref5.validation;
   var valid_response = validation.valid_response,
-    alt_responses = validation.alt_responses,
-    scoring_type = validation.scoring_type;
+      alt_responses = validation.alt_responses,
+      scoring_type = validation.scoring_type;
+  var answers = [valid_response].concat((0, _toConsumableArray2.default)(alt_responses));
 
   switch (scoring_type) {
     case _scoring.ScoringType.EXACT_MATCH:
+      return (0, _exactMatchTemplate.default)(exactMatchEvaluator, {
+        userResponse: userResponse,
+        answers: answers,
+        validation: validation
+      });
+
+    case _scoring.ScoringType.PARTIAL_MATCH:
+    case _scoring.ScoringType.PARTIAL_MATCH_V2:
     default:
-      return exactMatchEvaluator(userResponse, valid_response, alt_responses, validation);
+      return (0, _partialMatchTemplate.default)(partialMatchEvaluator, {
+        userResponse: userResponse,
+        answers: answers,
+        validation: validation
+      });
   }
 };
 

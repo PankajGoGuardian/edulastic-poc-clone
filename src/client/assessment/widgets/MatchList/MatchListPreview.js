@@ -6,7 +6,6 @@ import { compose } from "redux";
 
 import { Paper, FlexContainer, CorrectAnswersContainer, Stimulus, Subtitle, CorItem } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { dashBorderColor, mainTextColor, lightGreen, lightRed, white, separatorColor } from "@edulastic/colors";
 
 import DropContainer from "../../components/DropContainer";
 

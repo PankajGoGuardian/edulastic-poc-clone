@@ -27,7 +27,7 @@ const ShadesView = ({
 
   const isShadeActive = (i, j) => shaded.findIndex(shade => shade[0] === i && shade[1] === j) !== -1;
 
-  const getActiveShadesCount = () => {
+  const getActiveShadesCount = shade => {
     let count = 0;
 
     rowsArray.forEach((row, i) => {
@@ -38,30 +38,39 @@ const ShadesView = ({
       });
     });
 
-    return count;
+    return count <= shade;
   };
 
   const isCorrectAnswer = (i, j) =>
     correctAnswers.findIndex(shade =>
-      Array.isArray(shade) ? shade[0] === i && shade[1] === j : shade === getActiveShadesCount()
+      Array.isArray(shade) ? shade[0] === i && shade[1] === j : getActiveShadesCount(shade)
     ) !== -1;
+
+  let count = -1;
   return (
     <Wrapper marginTop={marginTop}>
       {rowsArray.map((row, i) => (
         <Ul key={i}>
-          {columnsArray.map((col, j) => (
-            <Li
-              correct={isCorrectAnswer(i, j)}
-              checkAnswers={checkAnswers}
-              showAnswers={showAnswers}
-              locked={isLockedIndexExists(i, j)}
-              active={isShadeActive(i, j) || isLockedIndexExists(i, j)}
-              onClick={isLockedIndexExists(i, j) ? undefined : onCellClick(i, j)}
-              height={cellHeight}
-              width={cellWidth}
-              key={j}
-            />
-          ))}
+          {columnsArray.map((col, j) => {
+            if (isShadeActive(i, j)) count++;
+
+            return (
+              <Li
+                correct={
+                  isCorrectAnswer(i, j) ||
+                  (!Array.isArray(correctAnswers[0]) && isShadeActive(i, j) && correctAnswers[0] > count)
+                }
+                checkAnswers={checkAnswers}
+                showAnswers={showAnswers}
+                locked={isLockedIndexExists(i, j)}
+                active={isShadeActive(i, j) || isLockedIndexExists(i, j)}
+                onClick={isLockedIndexExists(i, j) ? undefined : onCellClick(i, j)}
+                height={cellHeight}
+                width={cellWidth}
+                key={j}
+              />
+            );
+          })}
         </Ul>
       ))}
     </Wrapper>

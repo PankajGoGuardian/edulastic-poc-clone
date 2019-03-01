@@ -12,9 +12,9 @@ import {
   math,
   tokenhighlight,
   clozeDragDrop,
-  choiceMatrix,
   essayRichText,
   shading,
+  choiceMatrix,
   graph
 } from "@edulastic/evaluators";
 

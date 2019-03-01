@@ -8,8 +8,8 @@ exports.default = void 0;
 // eslint-disable-next-line max-len
 var getCalculateScores = function getCalculateScores(score, maxScore, _ref) {
   var min_score_if_attempted = _ref.min_score_if_attempted,
-    automarkable = _ref.automarkable,
-    max_score = _ref.max_score;
+      automarkable = _ref.automarkable,
+      max_score = _ref.max_score;
   var newScore = score;
   var newMaxScore = maxScore;
 

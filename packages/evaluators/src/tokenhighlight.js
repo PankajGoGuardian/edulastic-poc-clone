@@ -1,57 +1,30 @@
-import { cloneDeep } from 'lodash';
-import { ScoringType } from './const/scoring';
+import { isEqual, intersection } from "lodash";
+import { ScoringType } from "./const/scoring";
+import exactMatchTemplate from "./helpers/exactMatchTemplate";
+import partialMatchTemplate from "./helpers/partialMatchTemplate";
 
 // exact-match evaluator
-const exactMatchEvaluator = (
-  userResponse = [],
-  validAnswer,
-  altAnswers,
-  { automarkable, min_score_if_attempted, max_score }
-) => {
+const exactMatchEvaluator = ({ userResponse = [], answers }) => {
   let score = 0;
+  let maxScore = 0;
 
-  const userRight = userResponse.filter(ans => ans.selected);
+  let evaluation = [];
 
-  const { value: validValue, score: validScore } = validAnswer;
+  const userAnswer = userResponse.filter(ans => ans.selected).map(ans => ans.index);
 
-  let maxScore = validScore;
-
-  let evaluation = cloneDeep(validValue);
-
-  const rightValid = evaluation.filter(ans => ans.selected);
-
-  altAnswers.forEach((answer) => {
-    const { value: answerValue, score: answerScore } = answer;
-
-    const alt = answerValue.filter(ans => ans.selected);
-
-    if (
-      userRight.length === alt.length &&
-      userRight.every((ans, i) => alt[i].index === ans.index)
-    ) {
-      evaluation = cloneDeep(answerValue);
-      score = answerScore;
+  answers.forEach(({ score: totalScore, value: answer }) => {
+    const currentAnswer = answer.filter(ans => ans.selected).map(ans => ans.index);
+    if (isEqual(currentAnswer, userAnswer)) {
+      score = Math.max(score, totalScore);
     }
 
-    maxScore = Math.max(answerScore, maxScore);
+    maxScore = Math.max(maxScore, totalScore);
   });
 
-  if (score === 0) {
-    if (
-      userRight.length === rightValid.length &&
-      userRight.every((ans, i) => rightValid[i].index === ans.index)
-    ) {
-      score = validScore;
-    }
-  }
-
-  if (automarkable) {
-    if (min_score_if_attempted) {
-      maxScore = Math.max(maxScore, min_score_if_attempted);
-      score = Math.max(min_score_if_attempted, score);
-    }
-  } else if (max_score) {
-    maxScore = Math.max(max_score, maxScore);
+  if (score !== 0) {
+    evaluation = Array.from({ length: userAnswer.length }).fill(true);
+  } else {
+    evaluation = Array.from({ length: userAnswer.length }).fill(false);
   }
 
   return {
@@ -61,13 +34,63 @@ const exactMatchEvaluator = (
   };
 };
 
+const partialMatchEvaluator = ({ userResponse = [], answers }) => {
+  let score = 0;
+  let maxScore = 0;
+
+  let rightLen = 0;
+  let evaluation = [];
+
+  const userAnswer = userResponse.filter(ans => ans.selected).map(ans => ans.index);
+
+  let validAnswer = [];
+
+  answers.forEach(({ score: totalScore, value: answer }) => {
+    const currentAnswer = answer.filter(ans => ans.selected).map(ans => ans.index);
+
+    const scorePerResponse = totalScore / currentAnswer.length;
+
+    const currentScore = scorePerResponse * intersection(userAnswer, currentAnswer).length;
+
+    score = Math.max(currentScore, score);
+    maxScore = Math.max(maxScore, totalScore);
+
+    if (currentScore === score && score !== 0) {
+      rightLen = currentAnswer.length;
+      validAnswer = currentAnswer;
+    }
+  });
+
+  evaluation = userAnswer.map(ans => validAnswer.includes(ans));
+
+  return {
+    score,
+    maxScore,
+    rightLen,
+    evaluation
+  };
+};
+
 const evaluator = ({ userResponse, validation }) => {
   const { valid_response, alt_responses, scoring_type } = validation;
 
+  const answers = [valid_response, ...alt_responses];
+
   switch (scoring_type) {
     case ScoringType.EXACT_MATCH:
+      return exactMatchTemplate(exactMatchEvaluator, {
+        userResponse,
+        answers,
+        validation
+      });
+    case ScoringType.PARTIAL_MATCH:
+    case ScoringType.PARTIAL_MATCH_V2:
     default:
-      return exactMatchEvaluator(userResponse, valid_response, alt_responses, validation);
+      return partialMatchTemplate(partialMatchEvaluator, {
+        userResponse,
+        answers,
+        validation
+      });
   }
 };
 

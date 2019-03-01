@@ -7,93 +7,79 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _cloneDeep2 = _interopRequireDefault(require("lodash/cloneDeep"));
+var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
-var _rounding = require("./const/rounding");
-
-var _getPenaltyScore = _interopRequireDefault(require("./helpers/getPenaltyScore"));
+var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
 
 var _scoring = require("./const/scoring");
 
-// exact-match evaluator
-var exactMatchEvaluator = function exactMatchEvaluator() {
-  var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-  var validAnswer = arguments.length > 1 ? arguments[1] : undefined;
-  var altAnswers = arguments.length > 2 ? arguments[2] : undefined;
+var _partialMatchTemplate = _interopRequireDefault(require("./helpers/partialMatchTemplate"));
 
-  var _ref = arguments.length > 3 ? arguments[3] : undefined,
-    automarkable = _ref.automarkable,
-    min_score_if_attempted = _ref.min_score_if_attempted,
-    max_score = _ref.max_score;
+var _exactMatchTemplate = _interopRequireDefault(require("./helpers/exactMatchTemplate"));
 
+var _constantsForQuestions = require("../../../src/client/assessment/constants/constantsForQuestions");
+
+var exactCompareFunction = function exactCompareFunction(_ref) {
+  var answers = _ref.answers,
+      _ref$userResponse = _ref.userResponse,
+      userResponse = _ref$userResponse === void 0 ? [] : _ref$userResponse;
   var score = 0;
-  var _validAnswer$value = validAnswer.value,
-    validValue = _validAnswer$value.value,
-    validMethod = _validAnswer$value.method,
-    validScore = validAnswer.score;
-  var maxScore = validScore;
-  var evaluation = (0, _cloneDeep2.default)(validValue);
-  altAnswers.forEach(function(answer) {
-    var answerMethod = answer.value.method,
-      answerValue = answer.value.value,
-      answerScore = answer.score;
+  var maxScore = 0;
+  var rightIndex = 0;
+  answers.forEach(function (_ref2, ind) {
+    var _ref2$value = _ref2.value,
+        method = _ref2$value.method,
+        answer = _ref2$value.value,
+        totalScore = _ref2.score;
 
-    if (answerMethod === _scoring.ScoringType.BY_LOCATION_METHOD) {
-      var all = userResponse.length !== 0;
-      userResponse.forEach(function(shade) {
-        if (
-          answerValue.findIndex(function(checkShade) {
-            return checkShade[0] === shade[0] && checkShade[1] === shade[1];
-          }) === -1
-        ) {
-          all = false;
-        }
-      });
-
-      if (all) {
-        evaluation = (0, _cloneDeep2.default)(answerValue);
-        score = answerScore;
-      }
-    } else if (answerValue[0] === userResponse.length) {
-      evaluation = (0, _cloneDeep2.default)(answerValue);
-      score = answerScore;
+    if (!answer || !answer.length) {
+      return;
     }
 
-    maxScore = Math.max(answerScore, maxScore);
-  });
+    var currentScore = 0;
+    var matches = 0;
+    var totalMatches = method === _constantsForQuestions.BY_COUNT_METHOD ? answer[0] : answer.length;
 
-  if (score === 0) {
-    if (validMethod === _scoring.ScoringType.BY_COUNT_METHOD) {
-      if (validValue[0] === userResponse.length) {
-        evaluation = (0, _cloneDeep2.default)(validValue);
-        score = validScore;
-      }
+    if (method === _constantsForQuestions.BY_COUNT_METHOD) {
+      matches = userResponse.length;
     } else {
-      var all = userResponse.length !== 0;
-      userResponse.forEach(function(shade) {
-        if (
-          validValue.findIndex(function(checkShade) {
-            return checkShade[0] === shade[0] && checkShade[1] === shade[1];
-          }) === -1
-        ) {
-          all = false;
+      userResponse.forEach(function (col) {
+        if (answer.some(function (ans) {
+          return (0, _isEqual2.default)(ans, col);
+        })) {
+          matches++;
         }
       });
-
-      if (all) {
-        evaluation = (0, _cloneDeep2.default)(validValue);
-        score = validScore;
-      }
     }
-  }
 
-  if (automarkable) {
-    if (min_score_if_attempted) {
-      maxScore = Math.max(maxScore, min_score_if_attempted);
-      score = Math.max(min_score_if_attempted, score);
+    currentScore = userResponse.length === answer.length && matches === totalMatches ? totalScore : 0;
+    score = Math.max(score, currentScore);
+    maxScore = Math.max(maxScore, totalScore);
+
+    if (currentScore === score && score !== 0) {
+      rightIndex = ind;
     }
-  } else if (max_score) {
-    maxScore = Math.max(max_score, maxScore);
+  });
+  var evaluation = [];
+  var currentIndex = 0;
+
+  if (answers[rightIndex].value.method === _constantsForQuestions.BY_COUNT_METHOD) {
+    if (answers[rightIndex].value.value[0] === userResponse.length) {
+      evaluation = Array.from({
+        length: userResponse.length
+      }).fill(true);
+    } else {
+      evaluation = Array.from({
+        length: userResponse.length
+      }).fill(false);
+    }
+  } else {
+    userResponse.forEach(function (col) {
+      evaluation[currentIndex] = answers[rightIndex].value.value.some(function (ans) {
+        return (0, _isEqual2.default)(ans, col);
+      });
+      currentIndex++;
+    });
   }
 
   return {
@@ -103,134 +89,110 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   };
 };
 
-var partialMatchEvaluator = function partialMatchEvaluator() {
-  var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-  var validAnswer = arguments.length > 1 ? arguments[1] : undefined;
-  var altAnswers = arguments.length > 2 ? arguments[2] : undefined;
-
-  var _ref2 = arguments.length > 3 ? arguments[3] : undefined,
-    automarkable = _ref2.automarkable,
-    min_score_if_attempted = _ref2.min_score_if_attempted,
-    max_score = _ref2.max_score,
-    penalty = _ref2.penalty,
-    rounding = _ref2.rounding;
-
+var partialCompareFunction = function partialCompareFunction(_ref3) {
+  var answers = _ref3.answers,
+      _ref3$userResponse = _ref3.userResponse,
+      userResponse = _ref3$userResponse === void 0 ? [] : _ref3$userResponse;
   var score = 0;
-  var _validAnswer$value2 = validAnswer.value,
-    validValue = _validAnswer$value2.value,
-    validMethod = _validAnswer$value2.method,
-    validScore = validAnswer.score;
-  var maxScore = validScore;
-  var incorrectCount = 0;
-  var evaluation = [];
-  var isRound = rounding === _rounding.rounding.ROUND_DOWN;
-  altAnswers.forEach(function(answer) {
-    var answerMethod = answer.value.method,
-      answerValue = answer.value.value,
-      answerScore = answer.score;
+  var maxScore = 0;
+  var rightIndex = 0;
+  answers.forEach(function (_ref4, ind) {
+    var _ref4$value = _ref4.value,
+        method = _ref4$value.method,
+        answer = _ref4$value.value,
+        totalScore = _ref4.score;
 
-    if (answerMethod === _scoring.ScoringType.BY_LOCATION_METHOD) {
-      var tmp = 0;
-      userResponse.forEach(function(shade) {
-        if (
-          answerValue.findIndex(function(checkShade) {
-            return checkShade[0] === shade[0] && checkShade[1] === shade[1];
-          }) === -1
-        ) {
-          tmp++;
+    if (!answer || !answer.length) {
+      return;
+    }
+
+    var currentScore = 0;
+    var matches = 0;
+    var totalMatches = method === _constantsForQuestions.BY_COUNT_METHOD ? answer[0] : answer.length;
+    var scorePerAnswer = totalScore / totalMatches;
+
+    if (method === _constantsForQuestions.BY_COUNT_METHOD) {
+      matches = userResponse.length;
+    } else {
+      userResponse.forEach(function (col) {
+        if (answer.some(function (ans) {
+          return (0, _isEqual2.default)(ans, col);
+        })) {
+          matches++;
         }
       });
-      maxScore = Math.max(answerScore, maxScore);
-      score = (incorrectCount / answerValue.length) * maxScore;
-      incorrectCount = Math.min(tmp, incorrectCount);
-    } else if (answerValue[0] === userResponse.length) {
-      score = answerScore;
-      maxScore = Math.max(answerScore, maxScore);
-      score = (incorrectCount / answerValue[0]) * maxScore;
-    } else {
-      score = userResponse.length;
-      maxScore = Math.max(answerScore, maxScore);
-      score = (incorrectCount / answerValue[0]) * maxScore;
+    }
+
+    currentScore = scorePerAnswer * matches;
+    score = Math.max(score, currentScore);
+    maxScore = Math.max(maxScore, totalScore);
+
+    if (currentScore === score && score !== 0) {
+      rightIndex = ind;
     }
   });
+  var evaluation = [];
+  var currentIndex = 0;
 
-  if (score === 0) {
-    if (validMethod === _scoring.ScoringType.BY_COUNT_METHOD) {
-      score = (userResponse.length / validValue[0]) * maxScore;
+  if (answers[rightIndex].value.method === _constantsForQuestions.BY_COUNT_METHOD) {
+    if (answers[rightIndex].value.value[0] === userResponse.length) {
+      evaluation = Array.from({
+        length: userResponse.length
+      }).fill(true);
+    } else if (answers[rightIndex].value.value[0] < userResponse.length) {
+      evaluation = Array.from({
+        length: answers[rightIndex].value.value[0]
+      }).fill(true).concat(Array.from({
+        length: userResponse.length - answers[rightIndex].value.value[0]
+      }).fill(false));
     } else {
-      incorrectCount = 0;
-      userResponse.forEach(function(shade) {
-        if (
-          validValue.findIndex(function(checkShade) {
-            return checkShade[0] === shade[0] && checkShade[1] === shade[1];
-          }) !== -1
-        ) {
-          incorrectCount++;
-        }
+      evaluation = Array.from({
+        length: userResponse.length
+      }).fill(true);
+    }
+  } else {
+    userResponse.forEach(function (col) {
+      evaluation[currentIndex] = answers[rightIndex].value.value.some(function (ans) {
+        return (0, _isEqual2.default)(ans, col);
       });
-
-      if (userResponse.length > validValue.length) {
-        score = 0;
-      } else {
-        score = (incorrectCount / validValue.length) * maxScore;
-      }
-    }
-  }
-
-  evaluation = Array(validMethod === _scoring.ScoringType.BY_COUNT_METHOD ? validValue.length : validValue[0]).map(
-    function(item, index) {
-      if (index + 1 <= score) {
-        return true;
-      }
-
-      return false;
-    }
-  );
-
-  if (automarkable) {
-    if (min_score_if_attempted) {
-      maxScore = Math.max(maxScore, min_score_if_attempted);
-      score = Math.max(min_score_if_attempted, score);
-    }
-  } else if (max_score) {
-    maxScore = Math.max(max_score, maxScore);
-  }
-
-  if (penalty > 0) {
-    score = (0, _getPenaltyScore.default)({
-      score: score,
-      penalty: penalty,
-      evaluation: evaluation
+      currentIndex++;
     });
   }
 
-  if (score > maxScore) {
-    score = 0;
-  }
-
+  var rightLen = answers[rightIndex].value.method === _constantsForQuestions.BY_COUNT_METHOD ? answers[rightIndex].value.value[0] : answers[rightIndex].value.value.length;
   return {
-    score: isRound ? Math.floor(score) : +score.toFixed(4),
+    score: score > maxScore ? maxScore : score,
     maxScore: maxScore,
-    evaluation: evaluation
+    evaluation: evaluation,
+    rightLen: rightLen
   };
 };
 
-var evaluator = function evaluator(_ref3) {
-  var userResponse = _ref3.userResponse,
-    validation = _ref3.validation;
+var evaluator = function evaluator(_ref5) {
+  var _ref5$userResponse = _ref5.userResponse,
+      userResponse = _ref5$userResponse === void 0 ? [] : _ref5$userResponse,
+      validation = _ref5.validation;
   var valid_response = validation.valid_response,
-    alt_responses = validation.alt_responses,
-    scoring_type = validation.scoring_type;
+      alt_responses = validation.alt_responses,
+      scoring_type = validation.scoring_type;
+  var answers = [valid_response].concat((0, _toConsumableArray2.default)(alt_responses));
 
   switch (scoring_type) {
     case _scoring.ScoringType.EXACT_MATCH:
-      return exactMatchEvaluator(userResponse, valid_response, alt_responses, validation);
+      return (0, _exactMatchTemplate.default)(exactCompareFunction, {
+        userResponse: userResponse,
+        answers: answers,
+        validation: validation
+      });
 
     case _scoring.ScoringType.PARTIAL_MATCH:
-      return partialMatchEvaluator(userResponse, valid_response, alt_responses, validation);
-
+    case _scoring.ScoringType.PARTIAL_MATCH_V2:
     default:
-      return exactMatchEvaluator(userResponse, valid_response, alt_responses, validation);
+      return (0, _partialMatchTemplate.default)(partialCompareFunction, {
+        userResponse: userResponse,
+        answers: answers,
+        validation: validation
+      });
   }
 };
 

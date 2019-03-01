@@ -1,66 +1,51 @@
-import { cloneDeep, difference, isEqual } from "lodash";
+import { includes } from "lodash";
 import { ScoringType } from "./const/scoring";
-import getPenaltyScore from "./helpers/getPenaltyScore";
-import getDifferenceCount from "./helpers/getDifferenceCount";
+import partialMatchTemplate from "./helpers/partialMatchTemplate";
+import exactMatchTemplate from "./helpers/exactMatchTemplate";
 
-// exact-match evaluator
-const exactMatchEvaluator = (
-  userResponse = [],
-  validAnswer,
-  altAnswers,
-  { automarkable, min_score_if_attempted, max_score, penalty }
-) => {
+const exactCompareFunction = ({ answers, userResponse = [] }) => {
   let score = 0;
+  let maxScore = 0;
 
-  const { value: validValue, score: validScore } = validAnswer;
+  let rightIndex = 0;
 
-  let maxScore = validScore;
-
-  const respArr = userResponse;
-
-  let evaluation = cloneDeep(validValue);
-
-  let flag = true;
-
-  altAnswers.forEach(ite => {
-    const { score: altScore, value: altValue } = ite;
-    flag = true;
-    altValue.forEach((ans, i) => {
-      if (difference(respArr[i], ans).length !== 0) {
-        flag = false;
-      }
-    });
-    if (flag) {
-      evaluation = cloneDeep(altValue);
-      score = altScore;
+  answers.forEach(({ value: answer, score: totalScore }, ind) => {
+    if (!answer || !answer.length) {
+      return;
     }
-    maxScore = Math.max(maxScore, altScore);
+
+    let matches = 0;
+    let totalMatches = 0;
+
+    userResponse.forEach((col, colIndex) => {
+      col.forEach(ans => {
+        totalMatches++;
+        if (includes(answer[colIndex], ans)) {
+          matches++;
+        }
+      });
+    });
+
+    const currentScore = matches === totalMatches ? totalScore : 0;
+
+    score = Math.max(score, currentScore);
+    maxScore = Math.max(maxScore, totalScore);
+
+    if (currentScore === score && score !== 0) {
+      rightIndex = ind;
+    }
   });
 
-  if (score === 0) {
-    flag = true;
-    validValue.forEach((row, i) => {
-      if (difference(row, respArr[i]).length !== 0) {
-        flag = false;
-      }
+  const evaluation = [];
+  let currentIndex = 0;
+
+  userResponse.forEach((col, colIndex) => {
+    col.forEach(ans => {
+      evaluation[currentIndex] = answers[rightIndex].value[colIndex].includes(ans);
+
+      currentIndex++;
     });
-    if (flag) {
-      score = validScore;
-    }
-  }
-
-  if (automarkable) {
-    if (min_score_if_attempted) {
-      maxScore = Math.max(maxScore, min_score_if_attempted);
-      score = Math.max(min_score_if_attempted, score);
-    }
-  } else if (max_score) {
-    maxScore = Math.max(max_score, maxScore);
-  }
-
-  if (penalty > 0) {
-    score = getPenaltyScore({ score, penalty, evaluation });
-  }
+  });
 
   return {
     score,
@@ -69,90 +54,51 @@ const exactMatchEvaluator = (
   };
 };
 
-const partialMatchEvaluator = (
-  userResponse = [],
-  validAnswer,
-  altAnswers,
-  { automarkable, min_score_if_attempted, max_score, penalty }
-) => {
+const partialCompareFunction = ({ answers, userResponse = [] }) => {
   let score = 0;
+  let maxScore = 0;
 
-  let countOfCorrectAnswers = 0;
+  let rightIndex = 0;
 
-  let isCorrect = false;
-
-  const { value: validValue, score: validScore } = validAnswer;
-
-  let maxScore = validScore;
-
-  const respArr = userResponse;
-
-  let evaluation = cloneDeep(validValue);
-
-  let flag = true;
-
-  altAnswers.forEach(ite => {
-    const { score: altScore, value: altValue } = ite;
-    flag = true;
-    altValue.forEach((ans, i) => {
-      if (difference(respArr[i], ans).length !== 0) {
-        flag = false;
-      }
-    });
-    if (flag) {
-      evaluation = cloneDeep(altValue);
-      score = Math.max(altScore, score);
-      isCorrect = true;
-    } else {
-      countOfCorrectAnswers = Math.max(getDifferenceCount(altValue, userResponse), countOfCorrectAnswers);
-      score = Math.max(Math.floor(Math.max(altScore, maxScore) / countOfCorrectAnswers), score);
+  answers.forEach(({ value: answer, score: totalScore }, ind) => {
+    if (!answer || !answer.length) {
+      return;
     }
-    maxScore = Math.max(maxScore, altScore);
+
+    let matches = 0;
+    let totalMatches = 0;
+
+    userResponse.forEach((col, colIndex) => {
+      col.forEach(ans => {
+        totalMatches++;
+        if (includes(answer[colIndex], ans)) {
+          matches++;
+        }
+      });
+    });
+
+    const scorePerAnswer = totalScore / totalMatches;
+
+    const currentScore = matches * scorePerAnswer;
+
+    score = Math.max(score, currentScore);
+    maxScore = Math.max(maxScore, totalScore);
+
+    if (currentScore === score) {
+      rightIndex = ind;
+    }
   });
 
-  if (score === 0) {
-    flag = true;
-    validValue.forEach((row, i) => {
-      if (difference(row, respArr[i]).length !== 0) {
-        flag = false;
-      }
+  const evaluation = [];
+  let currentIndex = 0;
+
+  userResponse.forEach((col, colIndex) => {
+    col.forEach(ans => {
+      evaluation[currentIndex] = answers[rightIndex].value[colIndex].includes(ans);
+
+      currentIndex++;
     });
-    if (flag) {
-      score = validScore;
-    }
-  }
-
-  if (isCorrect) {
-    evaluation = Array(userResponse.length).fill(true);
-  } else {
-    const solution = validAnswer.value;
-    evaluation = userResponse.map((resp, index) => resp === solution[index]);
-  }
-
-  if (isEqual(validValue, userResponse)) {
-    score = validScore;
-  } else if (countOfCorrectAnswers) {
-    countOfCorrectAnswers = Math.max(getDifferenceCount(validValue, userResponse), countOfCorrectAnswers);
-    score = Math.max(Math.floor(maxScore / countOfCorrectAnswers), score);
-  } else {
-    countOfCorrectAnswers = getDifferenceCount(validValue, userResponse);
-    if (countOfCorrectAnswers !== 0) {
-      score = Math.max(Math.floor(maxScore / countOfCorrectAnswers), score);
-    }
-  }
-
-  if (penalty > 0) {
-    score = getPenaltyScore({ score, penalty, evaluation });
-  }
-
-  if (automarkable) {
-    if (min_score_if_attempted) {
-      maxScore = Math.max(maxScore, min_score_if_attempted);
-      score = Math.max(min_score_if_attempted, score);
-    }
-  } else if (max_score) {
-    maxScore = Math.max(max_score, maxScore);
-  }
+  });
 
   return {
     score,
@@ -161,18 +107,25 @@ const partialMatchEvaluator = (
   };
 };
 
-const evaluator = ({ userResponse, validation }) => {
+const evaluator = ({ userResponse = [], validation }) => {
   const { valid_response, alt_responses, scoring_type } = validation;
+  const answers = [valid_response, ...alt_responses];
 
   switch (scoring_type) {
     case ScoringType.EXACT_MATCH:
-      return exactMatchEvaluator(userResponse, valid_response, alt_responses, validation);
-
+      return exactMatchTemplate(exactCompareFunction, {
+        userResponse,
+        answers,
+        validation
+      });
     case ScoringType.PARTIAL_MATCH:
-      return partialMatchEvaluator(userResponse, valid_response, alt_responses, validation);
-
+    case ScoringType.PARTIAL_MATCH_V2:
     default:
-      return exactMatchEvaluator(userResponse, valid_response, alt_responses, validation);
+      return partialMatchTemplate(partialCompareFunction, {
+        userResponse,
+        answers,
+        validation
+      });
   }
 };
 

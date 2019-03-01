@@ -1,29 +1,6 @@
-import { ScoringType } from "./const/scoring";
-import countPartialMatchScores from "./helpers/countPartialMatchScores";
-import partialMatchTemplate from "./helpers/partialMatchTemplate";
-import exactMatchTemplate from "./helpers/exactMatchTemplate";
-import countExactMatchScores from "./helpers/countExactMatchScores";
+import { evaluatorTypes } from "@edulastic/constants";
+import mainEvaluator from "./mainEvaluator";
 
-const evaluator = () => ({ userResponse = [], validation }) => {
-  const { valid_response, alt_responses, scoring_type } = validation;
-  const answers = [valid_response, ...alt_responses];
-
-  switch (scoring_type) {
-    case ScoringType.EXACT_MATCH:
-      return exactMatchTemplate(countExactMatchScores("innerDifference"), {
-        userResponse,
-        answers,
-        validation
-      });
-    case ScoringType.PARTIAL_MATCH:
-    case ScoringType.PARTIAL_MATCH_V2:
-    default:
-      return partialMatchTemplate(countPartialMatchScores("innerDifference"), {
-        userResponse,
-        answers,
-        validation
-      });
-  }
-};
+const evaluator = mainEvaluator(evaluatorTypes.INNER_DIFFERENCE);
 
 export default evaluator;

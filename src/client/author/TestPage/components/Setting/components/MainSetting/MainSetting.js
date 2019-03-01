@@ -29,9 +29,20 @@ import {
   RadioWrapper
 } from "./styled";
 
-const { settingCategories, DATA, type, navigations, completionTypes, calculators, evalTypes, accessibilities } = test;
+const {
+  settingCategories,
+  performanceBandsData,
+  type,
+  navigations,
+  completionTypes,
+  calculators,
+  evalTypes,
+  accessibilities,
+  releaseGradeTypes
+} = test;
 
 const Option = Select.Option;
+
 const { ASSESSMENT, PRACTICE } = type;
 
 const testTypes = {
@@ -71,8 +82,14 @@ class MainSetting extends Component {
     if (key === "testType") {
       if (value === ASSESSMENT) {
         setMaxAttempts(1);
+        setTestData({
+          ["releaseScore"]: test.releaseGradeTypes.DONTRELEASE
+        });
       } else {
         setMaxAttempts(3);
+        setTestData({
+          ["releaseScore"]: test.releaseGradeTypes.SCORE_RESPONSE_CORRECTANSWERS
+        });
       }
     }
     setTestData({
@@ -156,9 +173,15 @@ class MainSetting extends Component {
             </Block>
 
             <Block id="release-scores">
-              <Title>Release Scores Automatically</Title>
+              <Title>Release Grades Settings</Title>
               <Body>
-                <Switch defaultChecked={releaseScore} onChange={this.updateTestData("releaseScore")} />
+                <StyledRadioGroup onChange={this.updateFeatures("releaseScore")} value={releaseScore}>
+                  {Object.keys(releaseGradeTypes).map(item => (
+                    <Radio value={releaseGradeTypes[item]} key={releaseGradeTypes[item]}>
+                      {releaseGradeTypes[item]}
+                    </Radio>
+                  ))}
+                </StyledRadioGroup>
               </Body>
               <Description>
                 {"Select "}
@@ -336,10 +359,13 @@ class MainSetting extends Component {
               </Row>
               <List
                 grid={{ column: 1 }}
-                dataSource={Object.keys(DATA)}
+                dataSource={Object.keys(performanceBandsData)}
                 renderItem={item => (
                   <List.Item>
-                    <ListCard item={DATA[item]} onPerformanceBandUpdate={() => this.onPerformanceBandUpdate(item)} />
+                    <ListCard
+                      item={performanceBandsData[item]}
+                      onPerformanceBandUpdate={() => this.onPerformanceBandUpdate(item)}
+                    />
                   </List.Item>
                 )}
               />

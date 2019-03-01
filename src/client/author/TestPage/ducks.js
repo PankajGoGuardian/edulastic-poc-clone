@@ -7,7 +7,7 @@ import { testsApi } from "@edulastic/api";
 
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE } from "../src/constants/actions";
 import { SET_ASSIGNMENT } from "./components/Assign/ducks";
-import { loadQuestionsAction, changeCurrentQuestionAction } from "../sharedDucks/questions";
+import { loadQuestionsAction } from "../sharedDucks/questions";
 
 // constants
 export const CREATE_TEST_REQUEST = "[tests] create test request";
@@ -199,12 +199,17 @@ export const reducer = (state = initialState, { type, payload }) => {
   }
 };
 
-const getQuestions = ({ testItems = [] }) => {
+/**
+ * Return all question of a test.
+ * @param {Object} testItems - list of test items
+ *
+ */
+const getQuestions = (testItems = []) => {
   const allQuestions = [];
-  testItems.forEach(item => {
-    const { questions = [] } = item.data;
+  for (const item of testItems) {
+    const { questions = [] } = item.data || {};
     allQuestions.push(...questions);
-  });
+  }
   return allQuestions;
 };
 
@@ -212,9 +217,8 @@ const getQuestions = ({ testItems = [] }) => {
 function* receiveTestByIdSaga({ payload }) {
   try {
     const entity = yield call(testsApi.getById, payload.id, { data: true });
-    const questions = getQuestions(entity);
+    const questions = getQuestions(entity.testItems);
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
-    yield put(changeCurrentQuestionAction(questions[0].id));
     yield put(receiveTestByIdSuccess(entity));
   } catch (err) {
     const errorMessage = "Receive test by id is failing";

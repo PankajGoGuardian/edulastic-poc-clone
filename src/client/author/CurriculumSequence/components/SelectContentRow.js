@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { Menu } from "antd";
 import { Paper } from "@edulastic/common";
 import { mobileWidth, lightBlue } from "@edulastic/colors";
-import { toggleCheckedUnitItemAction, addContentToCurriculumSequenceAction } from "../ducks";
+import { toggleCheckedUnitItemAction, addContentToCurriculumSequenceAction, createAssignmentNowAction } from "../ducks";
 import AssignmentDragItem from "./AssignmentDragItem";
 import triangleIcon from "../assets/triangle.svg";
 
@@ -19,6 +19,7 @@ import triangleIcon from "../assets/triangle.svg";
  * @property {function} addContentToCurriculumSequence
  * @property {function} toggleCheckedUnitItem
  * @property {string} checkedUnitItems Is the unit checked or not
+ * @property {function} createAssignmentNow
  */
 
 /**
@@ -51,8 +52,15 @@ class ModuleRow extends Component {
     addContentToCurriculumSequence(selectedContent, toUnit);
   };
 
+  handleAddContentNowClick = () => {
+    console.log("lll");
+    const { createAssignmentNow } = this.props;
+    const { selectedContent } = { ...this.state };
+    createAssignmentNow(selectedContent);
+  };
+
   render() {
-    const { handleAddContentClick, handleAddContentMouseOver } = this;
+    const { handleAddContentClick, handleAddContentMouseOver, handleAddContentNowClick } = this;
     const { unitExpanded } = this.state;
     const {
       collapsed,
@@ -72,6 +80,9 @@ class ModuleRow extends Component {
             <span>{moduleItem.name}</span>
           </Menu.Item>
         ))}
+        <Menu.Item data-cy="addContentMenuItemAssignNow" onClick={handleAddContentNowClick}>
+          <span>Assign Now</span>
+        </Menu.Item>
       </Menu>
     );
 
@@ -121,7 +132,8 @@ ModuleRow.propTypes = {
   module: PropTypes.object.isRequired,
   toggleCheckedUnitItem: PropTypes.func.isRequired,
   checkedUnitItems: PropTypes.array.isRequired,
-  onBeginDrag: PropTypes.func.isRequired
+  onBeginDrag: PropTypes.func.isRequired,
+  createAssignmentNow: PropTypes.func.isRequired
 };
 
 const AssignmentIcon = styled.span`
@@ -205,13 +217,16 @@ const ModuleWrapper = styled.div`
     box-shadow: none;
   }
 `;
-
+// TODO: make it consistent with other components
 const mapDispatchToProps = dispatch => ({
   toggleCheckedUnitItem(id) {
     dispatch(toggleCheckedUnitItemAction(id));
   },
   addContentToCurriculumSequence(contentToAdd, toUnit) {
     dispatch(addContentToCurriculumSequenceAction({ contentToAdd, toUnit }));
+  },
+  createAssignmentNow(contentToAdd) {
+    dispatch(createAssignmentNowAction(contentToAdd));
   }
 });
 

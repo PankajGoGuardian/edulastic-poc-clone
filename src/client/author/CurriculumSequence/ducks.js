@@ -31,6 +31,7 @@ export const SET_CONTENT_CURRICULUM = "[curriculum-sequence] set selected conten
 export const TOGGLE_CHECKED_UNIT_ITEM = "[curriculum-sequence] toggle checked unit item";
 export const TOGGLE_ADD_CONTENT = "[curriculum-sequence-ui] toggle add content";
 export const CREATE_ASSIGNMENT = "[curriculum-sequence] create assignment";
+export const CREATE_ASSIGNMENT_NOW = "[curriculum-sequence] create assignment now";
 export const CREATE_ASSIGNMENT_OK = "[curriculum-sequence] create assignment ok";
 export const SET_SELECTED_ITEMS_FOR_ASSIGN = "[curriculum-sequence] set selected items for assign";
 export const SET_SELECTED_ITEMS_FOR_ASSIGN_INIT = "[curriculum-sequence] set selected items for assign init";
@@ -61,6 +62,7 @@ export const saveGuideAlignmentAction = createAction(SAVE_GUIDE_ALIGNMENT);
 export const toggleCheckedUnitItemAction = createAction(TOGGLE_CHECKED_UNIT_ITEM);
 export const toggleAddContentAction = createAction(TOGGLE_ADD_CONTENT);
 export const createAssignmentAction = createAction(CREATE_ASSIGNMENT);
+export const createAssignmentNowAction = createAction(CREATE_ASSIGNMENT_NOW);
 export const setSelectedItemsForAssignAction = createAction(SET_SELECTED_ITEMS_FOR_ASSIGN_INIT);
 export const setDataForAssignAction = createAction(SET_DATA_FOR_ASSIGN_INIT);
 export const addContentToCurriculumSequenceAction = createAction(ADD_CONTENT_TO_CURRICULUM);
@@ -283,6 +285,102 @@ function* createAssignment({ payload }) {
   }
 }
 
+function* createAssignmentNow({ payload }) {
+  const assignment = payload;
+
+  /** @type {State} */
+  const curriculumSequenceState = yield select(getCurriculumSequenceState);
+  const destinationCurriculumSequence = {
+    ...curriculumSequenceState.destinationCurriculumSequence
+  };
+
+  const destinationModules = destinationCurriculumSequence.modules;
+
+  // Create misc unit if it doesn't exist
+  const haveMiscUnit = destinationModules.map(m => m.name.toLowerCase()).indexOf("misc") !== -1;
+
+  const lastModuleId =
+    destinationModules[destinationModules.length - 1] && destinationModules[destinationModules.length - 1].id;
+
+  // NOTE: what happens if no modules are present?
+  if (!haveMiscUnit) {
+    const newUnit = {
+      id: v4(),
+      data: [],
+      name: "Misc"
+    };
+
+    try {
+      /* eslint-disable-next-line */
+      yield addNewUnit({
+        payload: {
+          afterUnitId: lastModuleId,
+          newUnit,
+          shouldSave: false
+        }
+      });
+      /* eslint-disable-next-line */
+      yield addContentToCurriculumSequence({
+        payload: {
+          contentToAdd: assignment,
+          toUnit: newUnit
+        }
+      });
+    } catch (error) {
+      message.error("Sorry, something went wrong and assign now failed.");
+      console.warn("Error create misc unit.", error);
+      return;
+    }
+  }
+
+  try {
+    // Find misc unit
+    const miscUnitIndex = destinationModules.map(m => m.name.toLowerCase()).indexOf("misc");
+
+    /* eslint-disable*/
+    const response = yield addContentToCurriculumSequence({
+      payload: {
+        contentToAdd: assignment,
+        toUnit: destinationModules[miscUnitIndex]
+      }
+    });
+
+    if (response instanceof Error) return response;
+    /* eslint-enable */
+  } catch (error) {
+    console.warn("Add content to misc unit failed.");
+    message.error("Sorry, something went wrong and assign now failed.");
+    return;
+  }
+
+  destinationCurriculumSequence.modules = [
+    ...destinationCurriculumSequence.modules.map(moduleItem => {
+      const updatedModule = { ...moduleItem };
+      const updatedModuleData = moduleItem.data.map(dataItem => {
+        const updatedDataItem = { ...dataItem };
+        return updatedDataItem;
+      });
+
+      updatedModule.data = updatedModuleData;
+      return updatedModule;
+    })
+  ];
+
+  try {
+    yield curriculumSequencesApi.updateCurriculumSequence(
+      destinationCurriculumSequence._id,
+      destinationCurriculumSequence
+    );
+
+    yield put(updateCurriculumSequenceAction(destinationCurriculumSequence));
+    /* eslint-disable-next-line */
+    yield saveCurriculumSequence();
+  } catch (error) {
+    message.error("There was an error updating the curriculum sequence");
+    console.warn("There was an error updating the curriculum sequence", error);
+  }
+}
+
 function* addContentToCurriculumSequence({ payload }) {
   // TODO: change unit to module to stay consistent
   const { contentToAdd, toUnit } = payload;
@@ -292,7 +390,7 @@ function* addContentToCurriculumSequence({ payload }) {
   // Prevent duplicated items to be added
   if (toUnit.data.map(item => item.id).indexOf(contentToAdd.id) !== -1) {
     message.warning("Assignment already exists.");
-    return;
+    return new Error("Assignment already exists.");
   }
 
   const updatedUnit = { ...toUnit };
@@ -332,7 +430,7 @@ function* setSelectedItemsForAssign({ payload }) {
 }
 
 function* addNewUnit({ payload }) {
-  const { afterUnitId, newUnit } = payload;
+  const { afterUnitId, newUnit, shouldSave = true } = payload;
 
   const curriculumSequenceState = yield select(getCurriculumSequenceState);
   const destinationCurriculumSequence = {
@@ -351,7 +449,9 @@ function* addNewUnit({ payload }) {
     payload: modules
   });
 
-  yield call(saveCurriculumSequence);
+  if (shouldSave) {
+    yield call(saveCurriculumSequence);
+  }
 }
 
 function* removeUnit({ payload }) {
@@ -385,6 +485,7 @@ export function* watcherSaga() {
     yield takeLatest(SET_CONTENT_CURRICULUM, setContentCurriculum),
     yield takeLatest(SAVE_GUIDE_ALIGNMENT, saveGuideAlignment),
     yield takeLatest(CREATE_ASSIGNMENT, createAssignment),
+    yield takeLatest(CREATE_ASSIGNMENT_NOW, createAssignmentNow),
     yield takeLatest(ADD_CONTENT_TO_CURRICULUM, addContentToCurriculumSequence),
     yield takeLatest(SAVE_CURRICULUM_SEQUENCE, saveCurriculumSequence),
     yield takeLatest(SET_DATA_FOR_ASSIGN_INIT, setDataForAssign),
@@ -427,6 +528,13 @@ export function* watcherSaga() {
  * @property {boolean} isContentExpanded
  * @property {any[]} selectedItemsForAssign
  * @property {AssignData} dataForAssign
+ */
+
+/**
+ * @typedef {object} NewUnit
+ * @property {string} id
+ * @property {string} name
+ * @property {any[]} data
  */
 
 /**

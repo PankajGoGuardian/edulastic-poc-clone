@@ -8,6 +8,15 @@ describe("Check Curriculum Sequence Page", () => {
   });
 
   it("Should add a new unit", () => {
+    // Remove cypress unit if exists
+    cy.get("[data-cy=curriculumModuleRow]").then(el => {
+      if (el.find(":contains(Module Cypress Unit)").length > 0) {
+        el.find(":contains(Module Cypress Unit)")
+          .find("[data-cy=removeUnit]")
+          .click();
+      }
+    });
+
     cy.get("[data-cy=openAddUnit]")
       .eq(0)
       .click();
@@ -203,51 +212,107 @@ describe("Check Curriculum Sequence Page", () => {
           .eq(0)
           .click();
 
-        // Check if number of items match
         cy.get("[data-cy=curriculumModuleRow]")
           .eq(0)
           .find("[data-cy=totalAssigned]")
           .then(el => {
             const numberOfItemsAfterAdd = Number(el.text());
-            expect(numberOfItemsAfterAdd).to.equal(initialTotalAssigned + 1);
+            // debugger;
+            if (numberOfItemsAfterAdd !== initialTotalAssigned + 1) {
+              // debugger;
+              cy.get(".ant-message-notice").contains(/exists/gi);
 
-            cy.log("initialTotalAssigned", initialTotalAssigned);
-            cy.log("numberOfItemsAfterAdd", numberOfItemsAfterAdd);
-          });
+              // See if the number of items match
+              cy.get("[data-cy=curriculumModuleRow]")
+                .eq(0)
+                .find("[data-cy=totalAssigned]")
+                .then(totalAssignedEl => {
+                  const numberOfItemsAfterRemove = Number(totalAssignedEl.text());
+                  expect(numberOfItemsAfterRemove, "After remove").to.equal(initialTotalAssigned);
+                });
+            } else {
+              expect(numberOfItemsAfterAdd, "After trying to add duplicated item").to.equal(initialTotalAssigned + 1);
 
-        /* remove added item */
-        // find module row, click expand collapse
-        cy.get("[data-cy=curriculumModuleRow]")
-          .eq(0)
-          .find("[data-cy=expandCollapseAssignments]")
-          .click();
+              /* remove added item */
+              // find module row, click expand collapse
+              cy.get("[data-cy=curriculumModuleRow]")
+                .eq(0)
+                .find("[data-cy=expandCollapseAssignments]")
+                .click();
 
-        // Click on more icon
-        cy.get("[data-cy=curriculumModuleRow]")
-          .eq(0)
-          .find("[data-cy=assignmentMoreOptionsIcon]")
-          .eq(0)
-          .click();
+              // Click on more icon
+              cy.get("[data-cy=curriculumModuleRow]")
+                .eq(0)
+                .find("[data-cy=assignmentMoreOptionsIcon]")
+                .eq(0)
+                .click();
 
-        // Find Menu and make sure it's visible
-        cy.get("[data-cy=moduleItemMoreMenu]")
-          .parent()
-          .should("not.have.class", "ant-dropdown-hidden");
+              // Find Menu and make sure it's visible
+              cy.get("[data-cy=moduleItemMoreMenu]")
+                .parent()
+                .should("not.have.class", "ant-dropdown-hidden");
 
-        cy.get("[data-cy=moduleItemMoreMenuItem]").click();
+              cy.get("[data-cy=moduleItemMoreMenuItem]").click();
 
-        // See if the number of items match
-        cy.get("[data-cy=curriculumModuleRow]")
-          .eq(0)
-          .find("[data-cy=totalAssigned]")
-          .then(el => {
-            const numberOfItemsAfterRemove = Number(el.text());
-            expect(numberOfItemsAfterRemove).to.equal(initialTotalAssigned);
+              cy.get("[data-cy=curriculumModuleRow]")
+                .eq(0)
+                .find("[data-cy=totalAssigned]")
+                .then(totalAssignedEl => {
+                  const numberOfItemsAfterRemove = Number(totalAssignedEl.text());
+                  expect(numberOfItemsAfterRemove, "After remove").to.equal(initialTotalAssigned);
+                });
+            }
+            // expect(numberOfItemsAfterAdd, "After add").to.equal(initialTotalAssigned + 1);
           });
       });
   });
 
+  it("Should assign an item NOW (add to misc)", () => {
+    /* Add an item to make sure we have something to assign */
+    cy.get("[data-cy=openAddContent]")
+      .eq(0)
+      .click();
+
+    // expand content unit
+    cy.get("[data-cy=expandCollapseContentUnit]")
+      .eq(0)
+      .click();
+
+    // add content item to curriculum sequence first module
+    cy.get("[data-cy=assignContentIcon]")
+      .eq(0)
+      .trigger("mouseover");
+
+    cy.get("[data-cy=addContentMenuItemAssignNow]").click();
+
+    cy.get("[data-cy=curriculumModuleRow]").then(el => {
+      // debugger;
+      // cy.debug();
+      if (Cypress.$(el).text() === "Misc" && Cypress.$(el).find("> [data-cy=removeUnit]").length === 1) {
+        const actualLength = el.find("[data-cy=moduleAssignment]").length;
+
+        expect(actualLength).to.be.greaterThan(0);
+      }
+    });
+
+    cy.get(".ant-message-notice").contains(/success|exists/gi);
+
+    // Should not add more than one misc unit
+    cy.get("[data-cy=curriculumModuleRow]")
+      .contains("Misc")
+      .should("have.length", 1);
+  });
+
   it("Should save the curriculum sequence", () => {
+    // Remove cypress unit if exists
+    cy.get("[data-cy=curriculumModuleRow]").then(el => {
+      if (el.find(":contains(Module Cypress Unit)").length > 0) {
+        el.find(":contains(Module Cypress Unit)")
+          .find("[data-cy=removeUnit]")
+          .click();
+      }
+    });
+
     cy.get("[data-cy=saveCurriculumSequence]").click();
     cy.get(".ant-message-notice").contains("Success");
   });

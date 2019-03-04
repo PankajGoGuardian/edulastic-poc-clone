@@ -119,16 +119,21 @@ export const getInputSelection = el => {
   };
 };
 
-// group standards into domains.
-export const groupByDomains = (standardsArray, selectedGrades) => {
-  const grouped = groupBy(standardsArray, "tloId");
+/**
+ * Convert UI alignment row standards to Mongo alignment domains
+ *
+ * @param {Array} alignmentRowStandards - alignment row standards from UI
+ * @returns {Array} - alignment domains for Mongo
+ */
+export const alignmentStandardsFromUIToMongo = alignmentRowStandards => {
+  const grouped = groupBy(alignmentRowStandards, "tloId");
   const domainIds = Object.keys(grouped);
-  const domains = domainIds.map(id => {
+  return domainIds.map(id => {
     const allStandards = grouped[id];
     const standards = allStandards.map(({ _id, identifier, grades, description, level }) => ({
       id: _id,
       name: identifier,
-      grades: intersection(grades, selectedGrades),
+      grades,
       description,
       level
     }));
@@ -139,6 +144,28 @@ export const groupByDomains = (standardsArray, selectedGrades) => {
       standards
     };
   });
+};
 
-  return domains;
+/**
+ * Convert Mongo alignment domains to UI alignment row standards
+ *
+ * @param {Array} alignmentDomains - alignment domains from Mongo
+ * @returns {Array} - alignment row standards for UI
+ */
+export const alignmentStandardsFromMongoToUI = alignmentDomains => {
+  const alignmentRowStandards = [];
+  alignmentDomains.forEach(alignmentDomain => {
+    alignmentDomain.standards.forEach(standard => {
+      alignmentRowStandards.push({
+        description: standard.description,
+        grades: standard.grades,
+        identifier: standard.name,
+        level: standard.level,
+        tloDescription: alignmentDomain.name,
+        tloId: alignmentDomain.id,
+        _id: standard.id
+      });
+    });
+  });
+  return alignmentRowStandards;
 };

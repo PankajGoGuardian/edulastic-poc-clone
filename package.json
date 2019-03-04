@@ -23,6 +23,7 @@
     "start": "APP_MODE_DEV=1 poi --parallel --serve --open",
     "prod-serve": "serve -s dist -p 3001",
     "test": "jest --coverage && ava",
+    "jest": "jest",
     "ava": "ava --watch",
     "test:watch": "jest --watch",
     "test:automation-open": "cypress open",

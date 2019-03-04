@@ -16,7 +16,7 @@ import {
 } from "../../common/styled_components";
 import FontSizeDropdown from "../AxisLabelsLayoutSettings/FontSizeDropdown";
 import RenderingBaseDropdown from "../AxisLabelsLayoutSettings/RenderingBaseDropdown";
-import { QuestionSection } from "../";
+import { QuestionSection, ScoreSettings } from "../";
 
 class AxisSegmentsMoreOptions extends Component {
   state = {
@@ -132,11 +132,17 @@ class AxisSegmentsMoreOptions extends Component {
       options,
       numberlineAxis,
       fillSections,
-      cleanSections
+      cleanSections,
+      setValidation,
+      graphData
     } = this.props;
     const { layout, minWidth, currentRenderingBaseItem } = this.state;
     return (
       <Fragment>
+        <QuestionSection section="advanced" label="SCORING" cleanSections={cleanSections} fillSections={fillSections}>
+          <ScoreSettings setValidation={setValidation} graphData={graphData} />
+        </QuestionSection>
+
         <QuestionSection section="advanced" label="LAYOUT" cleanSections={cleanSections} fillSections={fillSections}>
           <MoreOptionsContainer>
             <MoreOptionsSubHeading>{t("component.graphing.layoutoptionstitle")}</MoreOptionsSubHeading>
@@ -407,7 +413,9 @@ AxisSegmentsMoreOptions.propTypes = {
   setOptions: PropTypes.func.isRequired,
   orientationList: PropTypes.array,
   fontSizeList: PropTypes.array,
-  renderingBaseList: PropTypes.array
+  renderingBaseList: PropTypes.array,
+  setValidation: PropTypes.func.isRequired,
+  graphData: PropTypes.object.isRequired
 };
 
 AxisSegmentsMoreOptions.defaultProps = {

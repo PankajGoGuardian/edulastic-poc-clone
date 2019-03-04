@@ -205,7 +205,8 @@ class AxisSegmentsContainer extends Component {
       graphType,
       showAnswer,
       checkAnswer,
-      validation
+      validation,
+      elements
     } = this.props;
 
     this._graph = makeBorder(this._graphId, {}, this.getConfig);
@@ -279,6 +280,8 @@ class AxisSegmentsContainer extends Component {
       yMin: canvas.yMin
     });
 
+    this._graph.loadSegments(elements);
+
     this.setGraphUpdateEventHandler();
   }
 
@@ -292,7 +295,8 @@ class AxisSegmentsContainer extends Component {
       layout,
       gridParams,
       graphType,
-      tools
+      tools,
+      elements
     } = this.props;
 
     const { selectedTool } = this.state;
@@ -473,6 +477,11 @@ class AxisSegmentsContainer extends Component {
           }
         );
       }
+
+      if (elements.length === 0) {
+        this._graph.segmentsReset();
+        this.mapElementsToGraph();
+      }
     }
   }
 
@@ -627,7 +636,7 @@ class AxisSegmentsContainer extends Component {
   render() {
     const { layout, graphType, canvas, elements } = this.props;
     const { selectedTool } = this.state;
-    console.log("Elements: ", elements);
+
     return (
       <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
         <GraphWrapper>
@@ -657,7 +666,6 @@ AxisSegmentsContainer.propTypes = {
   xAxesParameters: PropTypes.object.isRequired,
   yAxesParameters: PropTypes.object.isRequired,
   gridParams: PropTypes.object.isRequired,
-  list: PropTypes.array,
   evaluation: PropTypes.any,
   setValue: PropTypes.func.isRequired,
   validation: PropTypes.object.isRequired,
@@ -668,7 +676,6 @@ AxisSegmentsContainer.propTypes = {
 };
 
 AxisSegmentsContainer.defaultProps = {
-  list: [],
   evaluation: null,
   showAnswer: false,
   checkAnswer: false,

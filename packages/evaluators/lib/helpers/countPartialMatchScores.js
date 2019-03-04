@@ -14,10 +14,10 @@ var _getMatches = _interopRequireDefault(require("./getMatches"));
 var _getEvaluation = _interopRequireDefault(require("./getEvaluation"));
 
 var countPartialMatchScores = function countPartialMatchScores(compareFunction) {
-  return function (_ref) {
+  return function(_ref) {
     var answers = _ref.answers,
-        _ref$userResponse = _ref.userResponse,
-        userResponse = _ref$userResponse === void 0 ? [] : _ref$userResponse;
+      _ref$userResponse = _ref.userResponse,
+      userResponse = _ref$userResponse === void 0 ? [] : _ref$userResponse;
     var existingResponse = (0, _cloneDeep2.default)(userResponse);
 
     if (!Array.isArray(userResponse)) {
@@ -28,9 +28,9 @@ var countPartialMatchScores = function countPartialMatchScores(compareFunction) 
     var maxScore = 0;
     var rightLen = 0;
     var rightIndex = 0;
-    answers.forEach(function (_ref2, ind) {
+    answers.forEach(function(_ref2, ind) {
       var answer = _ref2.value,
-          totalScore = _ref2.score;
+        totalScore = _ref2.score;
 
       if (!answer || !answer.length) {
         return;

@@ -21,16 +21,16 @@ var _constantsForQuestions = require("../../../src/client/assessment/constants/c
 
 var exactCompareFunction = function exactCompareFunction(_ref) {
   var answers = _ref.answers,
-      _ref$userResponse = _ref.userResponse,
-      userResponse = _ref$userResponse === void 0 ? [] : _ref$userResponse;
+    _ref$userResponse = _ref.userResponse,
+    userResponse = _ref$userResponse === void 0 ? [] : _ref$userResponse;
   var score = 0;
   var maxScore = 0;
   var rightIndex = 0;
-  answers.forEach(function (_ref2, ind) {
+  answers.forEach(function(_ref2, ind) {
     var _ref2$value = _ref2.value,
-        method = _ref2$value.method,
-        answer = _ref2$value.value,
-        totalScore = _ref2.score;
+      method = _ref2$value.method,
+      answer = _ref2$value.value,
+      totalScore = _ref2.score;
 
     if (!answer || !answer.length) {
       return;
@@ -43,10 +43,12 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
     if (method === _constantsForQuestions.BY_COUNT_METHOD) {
       matches = userResponse.length;
     } else {
-      userResponse.forEach(function (col) {
-        if (answer.some(function (ans) {
-          return (0, _isEqual2.default)(ans, col);
-        })) {
+      userResponse.forEach(function(col) {
+        if (
+          answer.some(function(ans) {
+            return (0, _isEqual2.default)(ans, col);
+          })
+        ) {
           matches++;
         }
       });
@@ -74,8 +76,8 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
       }).fill(false);
     }
   } else {
-    userResponse.forEach(function (col) {
-      evaluation[currentIndex] = answers[rightIndex].value.value.some(function (ans) {
+    userResponse.forEach(function(col) {
+      evaluation[currentIndex] = answers[rightIndex].value.value.some(function(ans) {
         return (0, _isEqual2.default)(ans, col);
       });
       currentIndex++;
@@ -91,16 +93,16 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
 
 var partialCompareFunction = function partialCompareFunction(_ref3) {
   var answers = _ref3.answers,
-      _ref3$userResponse = _ref3.userResponse,
-      userResponse = _ref3$userResponse === void 0 ? [] : _ref3$userResponse;
+    _ref3$userResponse = _ref3.userResponse,
+    userResponse = _ref3$userResponse === void 0 ? [] : _ref3$userResponse;
   var score = 0;
   var maxScore = 0;
   var rightIndex = 0;
-  answers.forEach(function (_ref4, ind) {
+  answers.forEach(function(_ref4, ind) {
     var _ref4$value = _ref4.value,
-        method = _ref4$value.method,
-        answer = _ref4$value.value,
-        totalScore = _ref4.score;
+      method = _ref4$value.method,
+      answer = _ref4$value.value,
+      totalScore = _ref4.score;
 
     if (!answer || !answer.length) {
       return;
@@ -114,10 +116,12 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
     if (method === _constantsForQuestions.BY_COUNT_METHOD) {
       matches = userResponse.length;
     } else {
-      userResponse.forEach(function (col) {
-        if (answer.some(function (ans) {
-          return (0, _isEqual2.default)(ans, col);
-        })) {
+      userResponse.forEach(function(col) {
+        if (
+          answer.some(function(ans) {
+            return (0, _isEqual2.default)(ans, col);
+          })
+        ) {
           matches++;
         }
       });
@@ -142,24 +146,31 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
     } else if (answers[rightIndex].value.value[0] < userResponse.length) {
       evaluation = Array.from({
         length: answers[rightIndex].value.value[0]
-      }).fill(true).concat(Array.from({
-        length: userResponse.length - answers[rightIndex].value.value[0]
-      }).fill(false));
+      })
+        .fill(true)
+        .concat(
+          Array.from({
+            length: userResponse.length - answers[rightIndex].value.value[0]
+          }).fill(false)
+        );
     } else {
       evaluation = Array.from({
         length: userResponse.length
       }).fill(true);
     }
   } else {
-    userResponse.forEach(function (col) {
-      evaluation[currentIndex] = answers[rightIndex].value.value.some(function (ans) {
+    userResponse.forEach(function(col) {
+      evaluation[currentIndex] = answers[rightIndex].value.value.some(function(ans) {
         return (0, _isEqual2.default)(ans, col);
       });
       currentIndex++;
     });
   }
 
-  var rightLen = answers[rightIndex].value.method === _constantsForQuestions.BY_COUNT_METHOD ? answers[rightIndex].value.value[0] : answers[rightIndex].value.value.length;
+  var rightLen =
+    answers[rightIndex].value.method === _constantsForQuestions.BY_COUNT_METHOD
+      ? answers[rightIndex].value.value[0]
+      : answers[rightIndex].value.value.length;
   return {
     score: score > maxScore ? maxScore : score,
     maxScore: maxScore,
@@ -170,11 +181,11 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
 
 var evaluator = function evaluator(_ref5) {
   var _ref5$userResponse = _ref5.userResponse,
-      userResponse = _ref5$userResponse === void 0 ? [] : _ref5$userResponse,
-      validation = _ref5.validation;
+    userResponse = _ref5$userResponse === void 0 ? [] : _ref5$userResponse,
+    validation = _ref5.validation;
   var valid_response = validation.valid_response,
-      alt_responses = validation.alt_responses,
-      scoring_type = validation.scoring_type;
+    alt_responses = validation.alt_responses,
+    scoring_type = validation.scoring_type;
   var answers = [valid_response].concat((0, _toConsumableArray2.default)(alt_responses));
 
   switch (scoring_type) {

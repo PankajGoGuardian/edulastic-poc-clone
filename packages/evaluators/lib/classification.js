@@ -19,14 +19,14 @@ var _exactMatchTemplate = _interopRequireDefault(require("./helpers/exactMatchTe
 
 var exactCompareFunction = function exactCompareFunction(_ref) {
   var answers = _ref.answers,
-      _ref$userResponse = _ref.userResponse,
-      userResponse = _ref$userResponse === void 0 ? [] : _ref$userResponse;
+    _ref$userResponse = _ref.userResponse,
+    userResponse = _ref$userResponse === void 0 ? [] : _ref$userResponse;
   var score = 0;
   var maxScore = 0;
   var rightIndex = 0;
-  answers.forEach(function (_ref2, ind) {
+  answers.forEach(function(_ref2, ind) {
     var answer = _ref2.value,
-        totalScore = _ref2.score;
+      totalScore = _ref2.score;
 
     if (!answer || !answer.length) {
       return;
@@ -34,8 +34,8 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
 
     var matches = 0;
     var totalMatches = 0;
-    userResponse.forEach(function (col, colIndex) {
-      col.forEach(function (ans) {
+    userResponse.forEach(function(col, colIndex) {
+      col.forEach(function(ans) {
         totalMatches++;
 
         if ((0, _includes2.default)(answer[colIndex], ans)) {
@@ -53,8 +53,8 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
   });
   var evaluation = [];
   var currentIndex = 0;
-  userResponse.forEach(function (col, colIndex) {
-    col.forEach(function (ans) {
+  userResponse.forEach(function(col, colIndex) {
+    col.forEach(function(ans) {
       evaluation[currentIndex] = answers[rightIndex].value[colIndex].includes(ans);
       currentIndex++;
     });
@@ -68,14 +68,14 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
 
 var partialCompareFunction = function partialCompareFunction(_ref3) {
   var answers = _ref3.answers,
-      _ref3$userResponse = _ref3.userResponse,
-      userResponse = _ref3$userResponse === void 0 ? [] : _ref3$userResponse;
+    _ref3$userResponse = _ref3.userResponse,
+    userResponse = _ref3$userResponse === void 0 ? [] : _ref3$userResponse;
   var score = 0;
   var maxScore = 0;
   var rightIndex = 0;
-  answers.forEach(function (_ref4, ind) {
+  answers.forEach(function(_ref4, ind) {
     var answer = _ref4.value,
-        totalScore = _ref4.score;
+      totalScore = _ref4.score;
 
     if (!answer || !answer.length) {
       return;
@@ -83,8 +83,8 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
 
     var matches = 0;
     var totalMatches = 0;
-    userResponse.forEach(function (col, colIndex) {
-      col.forEach(function (ans) {
+    userResponse.forEach(function(col, colIndex) {
+      col.forEach(function(ans) {
         totalMatches++;
 
         if ((0, _includes2.default)(answer[colIndex], ans)) {
@@ -103,8 +103,8 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
   });
   var evaluation = [];
   var currentIndex = 0;
-  userResponse.forEach(function (col, colIndex) {
-    col.forEach(function (ans) {
+  userResponse.forEach(function(col, colIndex) {
+    col.forEach(function(ans) {
       evaluation[currentIndex] = answers[rightIndex].value[colIndex].includes(ans);
       currentIndex++;
     });
@@ -118,11 +118,11 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
 
 var evaluator = function evaluator(_ref5) {
   var _ref5$userResponse = _ref5.userResponse,
-      userResponse = _ref5$userResponse === void 0 ? [] : _ref5$userResponse,
-      validation = _ref5.validation;
+    userResponse = _ref5$userResponse === void 0 ? [] : _ref5$userResponse,
+    validation = _ref5.validation;
   var valid_response = validation.valid_response,
-      alt_responses = validation.alt_responses,
-      scoring_type = validation.scoring_type;
+    alt_responses = validation.alt_responses,
+    scoring_type = validation.scoring_type;
   var answers = [valid_response].concat((0, _toConsumableArray2.default)(alt_responses));
 
   switch (scoring_type) {

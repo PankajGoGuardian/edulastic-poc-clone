@@ -97,7 +97,7 @@ class Graph extends Component {
 
     switch (graphType) {
       case "axisSegments":
-        return this.getAxisLabelsOptionsProps();
+        return this.getAxisSegmentsOptionsProps();
       case "axisLabels":
         return this.getAxisLabelsOptionsProps();
       case "quadrants":
@@ -134,7 +134,22 @@ class Graph extends Component {
       setCanvas: this.handleCanvasChange,
       graphData: item,
       fillSections,
-      cleanSections
+      cleanSections,
+      setValidation: this.handleValidationChange
+    };
+  };
+
+  getAxisSegmentsOptionsProps = () => {
+    const { item, fillSections, cleanSections } = this.props;
+
+    return {
+      setOptions: this.handleOptionsChange,
+      setNumberline: this.handleNumberlineChange,
+      setCanvas: this.handleCanvasChange,
+      graphData: item,
+      fillSections,
+      cleanSections,
+      setValidation: this.handleValidationChange
     };
   };
 
@@ -288,7 +303,6 @@ class Graph extends Component {
             {previewTab === "check" && (
               <GraphDisplay
                 checkAnswer
-                smallSize
                 graphData={item}
                 onChange={this.handleAddAnswer}
                 elements={userAnswer}
@@ -299,7 +313,6 @@ class Graph extends Component {
             {previewTab === "show" && (
               <GraphDisplay
                 showAnswer
-                smallSize
                 graphData={item}
                 onChange={this.handleAddAnswer}
                 elements={userAnswer}
@@ -310,7 +323,6 @@ class Graph extends Component {
             {previewTab === "clear" && (
               <GraphDisplay
                 clearAnswer
-                smallSize
                 graphData={item}
                 onChange={this.handleAddAnswer}
                 elements={userAnswer}

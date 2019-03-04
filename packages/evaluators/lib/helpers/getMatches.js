@@ -16,10 +16,13 @@ var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
 var _constants = require("@edulastic/constants");
 
 var getMatches = function getMatches(response, answer, compareFunction) {
-  return response.filter(function (resp, index) {
+  return response.filter(function(resp, index) {
     switch (compareFunction) {
       case _constants.evaluatorTypes.INNER_DIFFERENCE:
-        return (0, _difference2.default)(answer[index], resp).length === 0 && (0, _difference2.default)(resp, answer[index]).length === 0;
+        return (
+          (0, _difference2.default)(answer[index], resp).length === 0 &&
+          (0, _difference2.default)(resp, answer[index]).length === 0
+        );
 
       case _constants.evaluatorTypes.IS_EQUAL:
         return (0, _isEqual2.default)(answer[index], resp);

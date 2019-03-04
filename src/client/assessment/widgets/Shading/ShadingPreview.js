@@ -105,7 +105,6 @@ const ShadingPreview = ({ view, item, smallSize, saveAnswer, userAnswer, method,
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
       {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}

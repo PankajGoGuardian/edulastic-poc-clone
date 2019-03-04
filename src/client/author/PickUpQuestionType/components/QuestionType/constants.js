@@ -926,7 +926,8 @@ export const getCards = onSelectQuestionType => {
           valid_response: {
             score: 1,
             value: []
-          }
+          },
+          alt_responses: []
         }
       },
       onSelectQuestionType
@@ -983,7 +984,8 @@ export const getCards = onSelectQuestionType => {
           valid_response: {
             score: 1,
             value: []
-          }
+          },
+          alt_responses: []
         },
         canvas: {
           x_max: 10,
@@ -1044,7 +1046,7 @@ export const getCards = onSelectQuestionType => {
           layout_snapto: "grid",
           xAxisLabel: "X",
           yAxisLabel: "Y",
-          title_position: 15,
+          title_position: 55,
           line_position: 34,
           point_box_position: 60
         },

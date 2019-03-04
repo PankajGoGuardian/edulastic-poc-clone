@@ -45,7 +45,6 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
 
   let { ticksDistance } = settings;
   const { fractionsFormat, showLabels, labelShowMax, labelShowMin, minorTicks } = settings;
-  console.log(settings);
   let fracTicksDistance = null;
   if (isString(ticksDistance) && ticksDistance.indexOf("/") !== -1) {
     fracTicksDistance = getFraction(ticksDistance);
@@ -110,9 +109,7 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
    * Minor ticks
    * */
   if (minorTicks) {
-    console.log("ticks", ticks);
     const minors = createMinorTicks(minorTicks, ticks.sort((a, b) => a - b));
-    console.log("minors", minors);
     board.$board.create("ticks", [newAxis, minors], {
       strokeColor: "#d6d6d6",
       highlightStrokeColor: "#d6d6d6",
@@ -153,10 +150,6 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
     labels = labels.map(t => toFractionHTML(t, fracTicksDistance.denominator, fractionsFormat));
   }
 
-  // todo: clear the code
-  console.log("labelShowMin", labelShowMin);
-  console.log("labelShowMax", labelShowMax);
-  console.log("labels", labels);
   if (!labelShowMin) {
     if (labels[0] !== 0) {
       labels[0] = ""; // todo: clear the code
@@ -165,7 +158,6 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
   if (!labelShowMax) {
     labels[labels.length - 1] = "";
   }
-  console.log("labels", labels);
 
   board.$board.create("ticks", [newAxis, ticks], {
     straightFirst: false,
@@ -197,8 +189,7 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
 
   if (!labelShowMin) {
     if (labels[0] === 0) {
-      // console.log(newAxis)
-      // board.$board.removeObject(newAxis.ticks[0].labels[0]);
+      board.$board.removeObject(newAxis.ticks[1].labels[0]);
     }
   }
 

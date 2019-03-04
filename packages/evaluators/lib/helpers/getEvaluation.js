@@ -17,10 +17,12 @@ var _constants = require("@edulastic/constants");
 
 var getEvaluation = function getEvaluation(response, answers, rightIndex, compareFunction) {
   var evaluation = [];
-  response.forEach(function (item, i) {
+  response.forEach(function(item, i) {
     switch (compareFunction) {
       case _constants.evaluatorTypes.INNER_DIFFERENCE:
-        evaluation[i] = (0, _difference2.default)(answers[rightIndex].value[i], item).length === 0 && (0, _difference2.default)(item, answers[rightIndex].value[i]).length === 0;
+        evaluation[i] =
+          (0, _difference2.default)(answers[rightIndex].value[i], item).length === 0 &&
+          (0, _difference2.default)(item, answers[rightIndex].value[i]).length === 0;
         break;
 
       case _constants.evaluatorTypes.IS_EQUAL:

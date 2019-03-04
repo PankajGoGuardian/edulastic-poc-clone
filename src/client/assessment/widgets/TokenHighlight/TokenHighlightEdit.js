@@ -63,7 +63,7 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
       setTemplate(resultArray);
     } else {
       newItem.templeWithTokens = item.templeWithTokens;
-      setTemplate(item.templeWithTokens);
+      setTemplate(cloneDeep(item.templeWithTokens));
     }
     setQuestionData(newItem);
   }, [mode]);
@@ -74,11 +74,11 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
     if (prop === "template") {
       let resultArray = "";
       if (mode === WORD_MODE) {
-        resultArray = wordsArray;
+        resultArray = cloneDeep(wordsArray);
       } else if (mode === PARAGRAPH_MODE) {
-        resultArray = paragraphsArray;
+        resultArray = cloneDeep(paragraphsArray);
       } else {
-        resultArray = sentencesArray;
+        resultArray = cloneDeep(sentencesArray);
       }
       setTemplate(resultArray);
     }
@@ -186,6 +186,7 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
 
         {templateTab === 0 && (
           <CustomQuillComponent
+            firstFocus={item.firstMount === undefined}
             toolbarId="template"
             onChange={val => handleItemChangeChange("template", val)}
             showResponseBtn={false}

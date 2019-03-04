@@ -1,39 +1,38 @@
 /* eslint-disable no-return-assign */
-import 'react-quill/dist/quill.snow.css';
-import React from 'react';
-import ReactQuill, { Quill } from 'react-quill';
+import "react-quill/dist/quill.snow.css";
+import React from "react";
+import ReactQuill, { Quill } from "react-quill";
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 // eslint-disable-next-line import/no-extraneous-dependencies
-import enhanceWithClickOutside from 'react-click-outside';
+import enhanceWithClickOutside from "react-click-outside";
 
-const Embed = Quill.import('blots/block/embed');
+const Embed = Quill.import("blots/block/embed");
 
 class ResponseCmp extends Embed {
   static create() {
     const node = super.create();
-    const responseCount = document.querySelectorAll('.response-btn').length;
-    node.setAttribute('contenteditable', false);
-    node.innerHTML = `&nbsp;<span class="index">${responseCount +
-      1}</span><span class="text">Response</span>&nbsp;`;
+    const responseCount = document.querySelectorAll(".response-btn").length;
+    node.setAttribute("contenteditable", false);
+    node.innerHTML = `&nbsp;<span class="index">${responseCount + 1}</span><span class="text">Response</span>&nbsp;`;
     return node;
   }
 }
-ResponseCmp.blotName = 'Response';
-ResponseCmp.tagName = 'p';
-ResponseCmp.className = 'response-btn';
+ResponseCmp.blotName = "Response";
+ResponseCmp.tagName = "p";
+ResponseCmp.className = "response-btn";
 Quill.register(ResponseCmp, true);
 
 class NewPara extends Embed {
   static create() {
     const node = super.create();
-    node.innerHTML = '<br>';
+    node.innerHTML = "<br>";
     return node;
   }
 }
-NewPara.blotName = 'NewPara';
-NewPara.tagName = 'p';
-NewPara.className = 'newline_section';
+NewPara.blotName = "NewPara";
+NewPara.tagName = "p";
+NewPara.className = "newline_section";
 Quill.register(NewPara, true);
 
 /*
@@ -41,11 +40,7 @@ Quill.register(NewPara, true);
  * https://octicons.github.io
  */
 const ResponseButton = () => (
-  <div
-    style={{ border: 'dotted 2px #000', padding: '2px 0px 4px', lineHeight: '0.5em', width: 18 }}
-  >
-    r
-  </div>
+  <div style={{ border: "dotted 2px #000", padding: "2px 0px 4px", lineHeight: "0.5em", width: 18 }}>r</div>
 );
 
 /*
@@ -54,7 +49,7 @@ const ResponseButton = () => (
  */
 function insertStar() {
   const cursorPosition = this.quill.getSelection().index;
-  this.quill.insertEmbed(cursorPosition, 'Response', 'value');
+  this.quill.insertEmbed(cursorPosition, "Response", "value");
   this.quill.setSelection(cursorPosition + 2);
 }
 
@@ -62,17 +57,17 @@ function insertPara() {}
 
 const CustomToolbar = ({ showResponseBtn, active, id, maxWidth }) => {
   const getTopStyle = () =>
-    (document.getElementById(id)
+    document.getElementById(id)
       ? document.getElementById(id).offsetHeight
         ? -document.getElementById(id).offsetHeight - 15
         : -76
-      : -76);
+      : -76;
 
   return (
     <div
       id={id}
       style={{
-        display: 'block',
+        display: "block",
         top: getTopStyle(),
         opacity: active ? 1 : 0,
         zIndex: active ? 1000 : -1,
@@ -144,7 +139,7 @@ CustomToolbar.propTypes = {
 CustomToolbar.defaultProps = {
   showResponseBtn: true,
   active: false,
-  id: 'toolbar'
+  id: "toolbar"
 };
 
 /*
@@ -172,13 +167,13 @@ class CustomQuillComponent extends React.Component {
   static defaultProps = {
     onChange: () => {},
     clearOnFirstFocus: true,
-    placeholder: '',
+    placeholder: "",
     firstFocus: false,
     readOnly: false,
     style: {
       minHeight: 134,
-      border: '1px solid rgb(223, 223, 223)',
-      padding: '18px 33px'
+      border: "1px solid rgb(223, 223, 223)",
+      padding: "18px 33px"
     }
   };
 
@@ -190,8 +185,8 @@ class CustomQuillComponent extends React.Component {
     const { clearOnFirstFocus } = this.props;
     const { firstFocus } = this.state;
     if (firstFocus && clearOnFirstFocus) {
-      this.handleChange('');
-      this.quillRef.getEditor().setText('');
+      this.handleChange("");
+      this.quillRef.getEditor().setText("");
       this.setState({ firstFocus: false });
     }
     this.showToolbar();
@@ -205,16 +200,17 @@ class CustomQuillComponent extends React.Component {
     this.hideToolbar();
   }
 
-  onKeyDownHandler = (e) => {
+  onKeyDownHandler = e => {
     if (e.which === 13) {
       const cursorPosition = this.quillRef.getEditor().getSelection().index;
-      this.quillRef.getEditor().insertEmbed(cursorPosition, 'NewPara', 'value');
+      this.quillRef.getEditor().insertEmbed(cursorPosition, "NewPara", "value");
       this.quillRef.getEditor().setSelection(cursorPosition + 1);
     }
   };
 
-  handleChange = (content) => {
+  handleChange = content => {
     const { onChange } = this.props;
+
     onChange(content);
   };
 
@@ -264,18 +260,18 @@ CustomQuillComponent.modules = toolbarId => ({
  * See http://quilljs.com/docs/formats/
  */
 CustomQuillComponent.formats = [
-  'header',
-  'bold',
-  'italic',
-  'underline',
-  'strike',
-  'blockquote',
-  'list',
-  'bullet',
-  'indent',
-  'link',
-  'image',
-  'formula'
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "list",
+  "bullet",
+  "indent",
+  "link",
+  "image",
+  "formula"
 ];
 
 export default enhanceWithClickOutside(CustomQuillComponent);

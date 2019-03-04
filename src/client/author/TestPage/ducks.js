@@ -6,10 +6,10 @@ import { keyBy as _keyBy } from "lodash";
 import { testsApi } from "@edulastic/api";
 
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE } from "../src/constants/actions";
-import { SET_ASSIGNMENT } from "./components/Assign/ducks";
 import { loadQuestionsAction } from "../sharedDucks/questions";
 
 // constants
+export const SET_ASSIGNMENT = "[assignments] set assignment"; // TODO remove cyclic dependency
 export const CREATE_TEST_REQUEST = "[tests] create test request";
 export const CREATE_TEST_SUCCESS = "[tests] create test success";
 export const CREATE_TEST_ERROR = "[tests] create test error";

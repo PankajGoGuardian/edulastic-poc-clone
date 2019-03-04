@@ -2,15 +2,14 @@ import * as moment from "moment";
 import { omit } from "lodash";
 import { createReducer, createAction } from "redux-starter-kit";
 import { assignmentApi } from "@edulastic/api";
+import { test } from "@edulastic/constants";
 import { all, call, put, takeEvery, select } from "redux-saga/effects";
-import { getTestSelector, getTestIdSelector } from "../../ducks";
+import { SET_ASSIGNMENT, getTestSelector, getTestIdSelector } from "../../ducks";
 import { createSelector } from "reselect";
 import { generateClassData, formatAssignment } from "./utils";
 import { getStudentsSelector } from "../../../sharedDucks/groups";
 // constants
-
 export const SAVE_ASSIGNMENT = "[assignments] save assignment";
-export const SET_ASSIGNMENT = "[assignments] set assignment";
 export const UPDATE_ASSIGNMENT = "[assignments] update assignment";
 export const UPDATE_SET_ASSIGNMENT = "[assignments] update set assingment";
 export const FETCH_ASSIGNMENTS = "[assignments] fetch assignments";
@@ -81,8 +80,8 @@ export const getAssignmentsSelector = state => (state[module].isLoading ? [] : s
 export const getCurrentAssignmentSelector = createSelector(
   currentSelector,
   getAssignmentsSelector,
-
-  (current, assignments) => {
+  getTestSelector,
+  (current, assignments, testSettings) => {
     if (current && current !== "new") {
       let assignment = assignments.filter(item => item._id == current)[0];
       return assignment;
@@ -93,7 +92,8 @@ export const getCurrentAssignmentSelector = createSelector(
       openPolicy: "Automatically on Start Date",
       closePolicy: "Automatically on Due Date",
       class: [],
-      specificStudents: false
+      specificStudents: false,
+      releaseScore: testSettings.releaseScore
     };
   }
 );

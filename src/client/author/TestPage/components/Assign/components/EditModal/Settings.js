@@ -5,18 +5,27 @@ import { Row, Col, Select, Radio } from "antd";
 //components
 import { AlignRight, AlignSwitchRight, StyledRowSettings, StyledRowLabel, SettingsWrapper } from "./styled";
 //selectors
-import { getReleaseScoreSelector, getActivityReview } from "../../../Setting/ducks";
+import { getActivityReview } from "../../../Setting/ducks";
+
+import { test } from "@edulastic/constants";
+const { releaseGradeTypes, releaseGradeKeys } = test;
 
 const calculators = ["None", "Scientific", "Basic", "Graphing"];
 const evaluationtypes = ["All or Nothing", "Partial Credit", "Dont penalize for incorrect selection"];
 
-const Settings = ({ modalData, selectsData, onChange, activityReview, releaseScore }) => {
+const Settings = ({ modalData, onChange, activityReview }) => {
   const [isAutomatic, setAssignmentCompletionType] = useState(0);
+  const [releaseGradeType, setReleaseGradeType] = useState(modalData.releaseScore);
   const [calcType, setCalcType] = useState(0);
   const [type, setEvaluationType] = useState(0);
 
   const updateMarkAsDone = e => {
     setAssignmentCompletionType(e.target.value);
+  };
+
+  const updateRleaseGradeType = e => {
+    setReleaseGradeType(e.target.value);
+    onChange("releaseScore", e.target.value);
   };
 
   const calculatorShowMethod = e => {
@@ -27,61 +36,8 @@ const Settings = ({ modalData, selectsData, onChange, activityReview, releaseSco
     setEvaluationType(e.target.value);
   };
 
-  const ClosePolicy = () => {
-    const policy = selectsData.closePolicy || [];
-    return (
-      <Select
-        data-cy="closePolicy"
-        defaultValue="Automatically on Due Date"
-        size="large"
-        style={{ width: "100%" }}
-        value={modalData.closePolicy}
-        onChange={value => onChange("closePolicy", value)}
-      >
-        {policy.map(({ value, text }) => (
-          <Select.Option key={value} value={value} data-cy="close">
-            {text}
-          </Select.Option>
-        ))}
-      </Select>
-    );
-  };
-
-  const OpenPolicy = () => {
-    const policy = selectsData.openPolicy || [];
-    return (
-      <Select
-        data-cy="openPolicy"
-        defaultValue="Automatically on Start Date"
-        size="large"
-        style={{ width: "100%" }}
-        value={modalData.openPolicy}
-        onChange={value => onChange("openPolicy", value)}
-      >
-        {policy.map(({ value, text }) => (
-          <Select.Option key={value} value={value} data-cy="open">
-            {text}
-          </Select.Option>
-        ))}
-      </Select>
-    );
-  };
-
   return (
     <SettingsWrapper>
-      <StyledRowLabel gutter={16}>
-        <Col span={12}>Open Policy</Col>
-        <Col span={12}>Close Policy</Col>
-      </StyledRowLabel>
-      <Row gutter={16}>
-        <Col span={12}>
-          <OpenPolicy />
-        </Col>
-        <Col span={12}>
-          <ClosePolicy />
-        </Col>
-      </Row>
-
       {/* Mark as done */}
       <StyledRowSettings gutter={16}>
         <Col span={8}>MARK AS DONE</Col>
@@ -98,7 +54,13 @@ const Settings = ({ modalData, selectsData, onChange, activityReview, releaseSco
       <StyledRowSettings gutter={16}>
         <Col span={8}>RELEASE SCORES AUTOMATICALLY</Col>
         <Col span={16}>
-          <AlignSwitchRight defaultChecked={releaseScore} />
+          <AlignRight value={releaseGradeType} onChange={updateRleaseGradeType}>
+            {releaseGradeKeys.map(item => (
+              <Radio value={item} key={item}>
+                {releaseGradeTypes[item]}
+              </Radio>
+            ))}
+          </AlignRight>
         </Col>
       </StyledRowSettings>
       {/* Release score */}
@@ -192,7 +154,6 @@ const Settings = ({ modalData, selectsData, onChange, activityReview, releaseSco
 
 export default connect(
   state => ({
-    releaseScore: getReleaseScoreSelector(state),
     activityReview: getActivityReview(state)
   }),
   null

@@ -169,3 +169,10 @@ export const alignmentStandardsFromMongoToUI = alignmentDomains => {
   });
   return alignmentRowStandards;
 };
+
+export const getSpellCheckAttributes = (isSpellCheck = true) => ({
+  spellCheck: isSpellCheck,
+  autoComplete: isSpellCheck,
+  autoCorrect: isSpellCheck,
+  autoCapitalize: isSpellCheck
+});

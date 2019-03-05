@@ -50,6 +50,7 @@
       "responsecontainerglobal": "Response Container (global)",
       "widthpx": "Width (px)",
       "heightpx": "Height (px)",
+      "lineWidth": "Line width (px)",
       "pointers": "Pointers",
       "wordwrap": "Wordwrap",
       "placeholder": "Placeholder",

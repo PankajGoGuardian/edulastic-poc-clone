@@ -1,10 +1,8 @@
 import React, { Fragment, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
-import styled from "styled-components";
-
 import { withNamespaces } from "@edulastic/localization";
-import { Paper, Tabs, Tab, CustomQuillComponent, WithMathFormula } from "@edulastic/common";
+import { Paper, Tabs, Tab, CustomQuillComponent } from "@edulastic/common";
 
 import { WORD_MODE, PARAGRAPH_MODE, SENTENCE_MODE, EDIT } from "../../constants/constantsForQuestions";
 
@@ -169,8 +167,6 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
     />
   );
 
-  const MathSpan = WithMathFormula(styled.span``);
-
   return (
     <Fragment>
       <Paper style={{ marginBottom: 30 }}>
@@ -223,7 +219,7 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
               </ModeButton>
             </Container>
             {template.map((el, i) => (
-              <MathSpan
+              <span
                 onClick={handleTemplateClick(i)}
                 dangerouslySetInnerHTML={{ __html: el.value }}
                 key={i}

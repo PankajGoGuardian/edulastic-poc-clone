@@ -10,7 +10,8 @@ import {
   Stimulus,
   Subtitle,
   CorItem,
-  InstructorStimulus
+  InstructorStimulus,
+  MathFormulaDisplay
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
@@ -169,11 +170,7 @@ const MatchListPreview = ({
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
-      {!smallSize && view === PREVIEW && (
-        <Stimulus>
-          <div dangerouslySetInnerHTML={{ __html: stimulus }} />
-        </Stimulus>
-      )}
+      {!smallSize && view === PREVIEW && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
 
       <FlexContainer flexDirection="column" alignItems="flex-start">
         {list.map((ite, i) => (
@@ -184,7 +181,7 @@ const MatchListPreview = ({
             childMarginRight={smallSize ? 13 : 45}
           >
             <ListItem smallSize={smallSize}>
-              <div dangerouslySetInnerHTML={{ __html: ite }} />
+              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
             </ListItem>
             <Separator smallSize={smallSize} />
             <DropContainer
@@ -277,10 +274,10 @@ const MatchListPreview = ({
           {list.map((ite, i) => (
             <FlexContainer key={i} alignItems="center">
               <CorTitle>
-                <div dangerouslySetInnerHTML={{ __html: ite }} />
+                <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
               </CorTitle>
               <CorItem index={i}>
-                <div dangerouslySetInnerHTML={{ __html: validArray[i] }} />
+                <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: validArray[i] }} />
               </CorItem>
             </FlexContainer>
           ))}

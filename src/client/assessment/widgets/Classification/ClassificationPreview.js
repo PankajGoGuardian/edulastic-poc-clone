@@ -11,7 +11,8 @@ import {
   Stimulus,
   Subtitle,
   CenteredText,
-  InstructorStimulus
+  InstructorStimulus,
+  MathFormulaDisplay
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
@@ -207,11 +208,7 @@ const ClassificationPreview = ({
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
-      {!smallSize && view === PREVIEW && (
-        <Stimulus>
-          <div dangerouslySetInnerHTML={{ __html: stimulus }} />
-        </Stimulus>
-      )}
+      {!smallSize && view === PREVIEW && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
 
       <table style={{ width: "100%" }}>
         <thead>
@@ -328,12 +325,12 @@ const ClassificationPreview = ({
           {arrayOfCols.map((arr, i) => (
             <FlexContainer>
               <Subtitle style={styles.correctAnswersMargins}>
-                <div dangerouslySetInnerHTML={{ __html: colTitles[i] }} />
+                <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: colTitles[i] }} />
               </Subtitle>
               {arr.map(index => (
                 <div style={styles.itemContainerStyle} key={index}>
                   <IndexBox preview={preview}>{index + 1}</IndexBox>
-                  <div
+                  <MathFormulaDisplay
                     style={getStyles(
                       false,
                       theme.widgets.classification.boxBgColor,

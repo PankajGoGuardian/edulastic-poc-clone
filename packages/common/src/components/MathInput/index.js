@@ -1,18 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+import { MathKeyboard } from "@edulastic/common";
 import { math } from "@edulastic/constants";
 
-import { MathInputStyles } from "../styled/MathInputStyles";
-import MathKeyboard from "./MathKeyboard";
-import { WithResources } from "../../utils";
+import { MathInputStyles } from "./MathInputStyles";
+import { WithResources } from "../../HOC/withResources";
 
 const { EMBED_RESPONSE } = math;
 
 class MathInput extends React.PureComponent {
   state = {
     mathField: null,
-    mathFieldFocus: false
+    mathFieldFocus: true
   };
 
   containerRef = React.createRef();
@@ -40,7 +40,6 @@ class MathInput extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const { mathField } = this.state;
-
     if (mathField && mathField.latex() !== nextProps.value) {
       mathField.latex(nextProps.value);
     }
@@ -48,7 +47,6 @@ class MathInput extends React.PureComponent {
 
   componentDidMount() {
     const { value } = this.props;
-
     const MQ = window.MathQuill.getInterface(2);
 
     MQ.registerEmbed("response", () => ({
@@ -89,7 +87,6 @@ class MathInput extends React.PureComponent {
     const { mathField } = this.state;
 
     if (!mathField) return;
-
     if (key === "left_move") {
       mathField.keystroke("Left");
     } else if (key === "right_move") {
@@ -126,7 +123,7 @@ class MathInput extends React.PureComponent {
 
   render() {
     const { mathFieldFocus } = this.state;
-    const { showResponse, style, onFocus, onKeyDown, symbols, numberPad } = this.props;
+    const { alwaysShowKeyboard, showResponse, style, onFocus, onKeyDown, symbols, numberPad } = this.props;
 
     return (
       <MathInputStyles>
@@ -145,14 +142,13 @@ class MathInput extends React.PureComponent {
               onClick={() => this.setState({ mathFieldFocus: true })}
             />
           </div>
-          <div className="input__keyboard">
-            {mathFieldFocus && (
+          <div className={alwaysShowKeyboard ? "input__keyboard" : "input__absolute__keyboard"}>
+            {(alwaysShowKeyboard || mathFieldFocus) && (
               <MathKeyboard
                 symbols={symbols}
                 numberPad={numberPad}
                 showResponse={showResponse}
-                onInput={this.onInput}
-                onClose={this.onClose}
+                onInput={(key, command) => this.onInput(key, command)}
               />
             )}
           </div>
@@ -163,6 +159,7 @@ class MathInput extends React.PureComponent {
 }
 
 MathInput.propTypes = {
+  alwaysShowKeyboard: PropTypes.bool,
   onInput: PropTypes.func.isRequired,
   symbols: PropTypes.array.isRequired,
   numberPad: PropTypes.array.isRequired,
@@ -174,12 +171,15 @@ MathInput.propTypes = {
 };
 
 MathInput.defaultProps = {
+  alwaysShowKeyboard: false,
   value: "",
   showResponse: false,
   style: {},
   onFocus: () => {},
   onKeyDown: () => {}
 };
+
+// export default MathInput;
 
 const MathInputWithResources = ({ ...props }) => (
   <WithResources

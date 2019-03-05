@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
 import { compose } from "redux";
-import { withTheme } from "styled-components";
+import styled, { withTheme } from "styled-components";
 
-import { Paper, Stimulus, InstructorStimulus } from "@edulastic/common";
+import { Paper, Stimulus, InstructorStimulus, WithMathFormula } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
+
+const MathSpan = WithMathFormula(styled.span);
 
 const TokenHighlightPreview = ({
   view,
@@ -151,7 +153,7 @@ const TokenHighlightPreview = ({
       {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
       {item.templeWithTokens.map((el, i) =>
         el.active ? (
-          <span
+          <MathSpan
             onClick={handleSelect(i)}
             dangerouslySetInnerHTML={{ __html: el.value }}
             style={preview ? getStyles(i) : {}}
@@ -159,7 +161,7 @@ const TokenHighlightPreview = ({
             className={getClass(i)}
           />
         ) : (
-          <span
+          <MathSpan
             style={smallSizeStyles}
             className="token without-cursor"
             dangerouslySetInnerHTML={{ __html: el.value }}

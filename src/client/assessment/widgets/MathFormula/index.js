@@ -5,14 +5,13 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { cloneDeep } from "lodash";
 
-import { Paper } from "@edulastic/common";
+import { MathInput, Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 
-import QuestionTextArea from "../../components/QuestionTextArea";
-import MathInput from "../../components/MathInput";
-import { Subtitle } from "../../styled/Subtitle";
+import QuestionTextArea from '../../components/QuestionTextArea';
+import { Subtitle } from '../../styled/Subtitle';
 
 import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
 

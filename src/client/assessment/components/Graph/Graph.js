@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { cloneDeep } from "lodash";
-import { Paper, Select } from "@edulastic/common";
+import { Paper, Select, WithResources } from "@edulastic/common";
 import { compose } from "redux";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
@@ -15,7 +15,6 @@ import AxisSmallSize from "./components/AxisSmallSize";
 import { AxisSegments, GraphAxisLabels, GraphQuadrants, QuestionSection } from "./Authoring";
 import { CorrectAnswers } from "./CorrectAnswers";
 import { GraphDisplay } from "./Display";
-import { WithResources } from "../../../utils";
 
 const EmptyWrapper = styled.div``;
 

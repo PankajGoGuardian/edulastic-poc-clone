@@ -4,12 +4,11 @@ import enhanceWithClickOutside from "react-click-outside";
 import { Icon } from "antd";
 import { compose } from "redux";
 
-import { withNamespaces } from "@edulastic/localization";
+import { MathInput } from '@edulastic/common';
+import { withNamespaces } from '@edulastic/localization';
 
 import { getFontSize } from "../../../../../../utils/helpers";
-
-import MathInput from "../../../../../../components/MathInput";
-import CustomTextInput from "./components/CustomTextInput/index";
+import CustomTextInput from './components/CustomTextInput/index';
 
 import { Wrapper } from "./styled/Wrapper";
 import { Button } from "./styled/Button";

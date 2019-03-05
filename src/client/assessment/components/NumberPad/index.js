@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { NUMBER_PAD_ITEMS } from "../../constants/numberPadItems";
+import { MathKeyboard } from '@edulastic/common';
 
 import NumberPadItem from "./components/NumberPadItem";
 import { NumberPadWrapper } from "./styled/NumberPadWrapper";
@@ -36,7 +36,7 @@ NumberPad.defaultProps = {
   buttonStyle: {},
   style: {},
   items: Array(20).fill({ value: "", label: "empty" }),
-  characterMapButtons: [{ value: "", label: "empty" }, ...NUMBER_PAD_ITEMS]
+  characterMapButtons: [{ value: "", label: "empty" }, ...MathKeyboard.NUMBER_PAD_ITEMS]
 };
 
 export default NumberPad;

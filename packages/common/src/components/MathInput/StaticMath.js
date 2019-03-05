@@ -1,8 +1,10 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 
-import { MathInputStyles } from "../../styled/MathInputStyles";
-import MathKeyboard from "../../components/MathKeyboard";
+import { MathKeyboard } from "@edulastic/common";
+
+import { MathInputStyles } from "./MathInputStyles";
+import { WithResources } from "../../HOC/withResources";
 
 class StaticMath extends PureComponent {
   state = {
@@ -194,4 +196,22 @@ StaticMath.defaultProps = {
   style: {}
 };
 
-export default StaticMath;
+// export default StaticMath;
+
+const StaticMathWithResources = ({ ...props }) => (
+  <WithResources
+    resources={[
+      "https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css",
+      "https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js",
+      "https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js",
+      "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.css"
+    ]}
+    fallBack={<h2>Loading...</h2>}
+  >
+    <StaticMath {...props} />
+  </WithResources>
+);
+
+export default StaticMathWithResources;

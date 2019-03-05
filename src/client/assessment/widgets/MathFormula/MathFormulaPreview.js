@@ -2,14 +2,13 @@ import React, { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 
+import { MathInput, StaticMath, MathFormulaDisplay } from "@edulastic/common";
+
 import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
 
-import MathInput from "../../components/MathInput";
-
-import CorrectAnswerBox from "./components/CorrectAnswerBox";
-import MathInputStatus from "./components/MathInputStatus";
+import CorrectAnswerBox from "./components/CorrectAnswerBox/index";
+import MathInputStatus from "./components/MathInputStatus/index";
 import MathInputWrapper from "./styled/MathInputWrapper";
-import StaticMath from "./StaticMath";
 
 const MathFormulaPreview = ({
   item,
@@ -87,7 +86,7 @@ const MathFormulaPreview = ({
   }
   return (
     <div>
-      <div style={{ marginBottom: 15 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+      <MathFormulaDisplay style={{ marginBottom: 15 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
 
       <MathInputWrapper>
         {isStatic && (

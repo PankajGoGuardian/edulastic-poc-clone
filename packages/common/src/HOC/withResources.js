@@ -1,5 +1,6 @@
 // @ts-check
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { load } from "loaderjs";
 
 const getExtension = url => {
@@ -46,14 +47,6 @@ export const useResources = resources => {
   return loaded;
 };
 
-export function WithResources({ resources, fallBack, children }) {
-  const loaded = useResources(resources);
-  if (!loaded) {
-    return fallBack;
-  }
-  return children;
-}
-
 export function WithResourcesHOC({ resources, fallBack }) {
   return function resourceLoaded(WrappedComponent) {
     return props => {
@@ -65,4 +58,41 @@ export function WithResourcesHOC({ resources, fallBack }) {
       return <WrappedComponent {...props} />;
     };
   };
+}
+
+export class WithResources extends React.Component {
+  state = {
+    loaded: false
+  };
+
+  static propTypes = {
+    children: PropTypes.any.isRequired,
+    fallBack: PropTypes.object.isRequired,
+    resources: PropTypes.object.isRequired,
+    onLoaded: PropTypes.func
+  };
+
+  static defaultProps = {
+    onLoaded: () => {}
+  };
+
+  componentWillMount() {
+    const { resources, onLoaded } = this.props;
+    load(resources).then(() => {
+      this.setState({
+        loaded: true
+      });
+      onLoaded();
+    });
+  }
+
+  render() {
+    const { fallBack, children } = this.props;
+    const { loaded } = this.state;
+
+    if (loaded) {
+      return children;
+    }
+    return fallBack;
+  }
 }

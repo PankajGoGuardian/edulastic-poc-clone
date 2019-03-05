@@ -5,8 +5,8 @@ import { isObject } from "lodash";
 
 import { math } from "@edulastic/constants";
 
-import { KEYBOARD_BUTTONS } from "../../constants/keyboardButtons";
-import { NUMBER_PAD_ITEMS } from "../../constants/numberPadItems";
+import { KEYBOARD_BUTTONS } from './constants/keyboardButtons';
+import { NUMBER_PAD_ITEMS } from './constants/numberPadItems';
 
 import Keyboard from "../Keyboard";
 
@@ -15,6 +15,10 @@ import { MathKeyboardStyles } from "./styled/MathKeyboardStyles";
 const { EMBED_RESPONSE } = math;
 
 class MathKeyboard extends React.PureComponent {
+  static KEYBOARD_BUTTONS = KEYBOARD_BUTTONS;
+
+  static NUMBER_PAD_ITEMS = NUMBER_PAD_ITEMS;
+
   state = {
     dropdownOpened: false,
     // eslint-disable-next-line react/destructuring-assignment

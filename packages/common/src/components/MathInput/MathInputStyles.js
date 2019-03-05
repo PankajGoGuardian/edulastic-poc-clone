@@ -47,13 +47,17 @@ export const MathInputStyles = styled.div`
     height: 16px;
   }
 
-  .input__keyboard {
+  .input__absolute__keyboard {
     position: absolute;
     top: 70px;
     left: 0px;
     right: 0px;
     z-index: 999;
     width: 545px;
+  }
+
+  .input__keyboard {
+    margin-top: 10px;
   }
 
   .response-embed {

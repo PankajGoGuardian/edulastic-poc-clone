@@ -1,10 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { PaddingDiv, FlexContainer } from "@edulastic/common";
+import { PaddingDiv, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
 
 import { ALPHABET } from "../../../constants/alphabet";
-
 import { CheckboxContainer } from "../styled/CheckboxContainer";
 import { MultiChoiceContent } from "../styled/MultiChoiceContent";
 import { Label } from "../styled/Label";
@@ -88,7 +87,7 @@ const Option = props => {
         return (
           <FlexContainer flexDirection="column" justifyContent="center">
             <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} style={{ marginBottom: 10 }}>
-              <div dangerouslySetInnerHTML={{ __html: item.label }} />
+              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
             {container}
           </FlexContainer>
@@ -98,7 +97,7 @@ const Option = props => {
           <FlexContainer alignItems="center">
             {container}
             <MultiChoiceContent fontSize={fontSize} smallSize={smallSize}>
-              <div dangerouslySetInnerHTML={{ __html: item.label }} />
+              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
           </FlexContainer>
         );
@@ -108,7 +107,7 @@ const Option = props => {
           <React.Fragment>
             {container}
             <MultiChoiceContent fontSize={fontSize} smallSize={smallSize}>
-              <div dangerouslySetInnerHTML={{ __html: item.label }} />
+              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
           </React.Fragment>
         );
@@ -147,7 +146,8 @@ Option.propTypes = {
   onChange: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
   uiStyle: PropTypes.object.isRequired,
-  correct: PropTypes.object.isRequired
+  correct: PropTypes.object.isRequired,
+  view: PropTypes.string.isRequired
 };
 
 Option.defaultProps = {

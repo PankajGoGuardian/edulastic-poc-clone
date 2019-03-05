@@ -16,27 +16,30 @@ export const withMathFormula = WrappedComponent => {
   return class extends React.Component {
     state = {
       MQ: null,
+      innerHtml: "",
       mathField: null,
       latexHtmls: [],
       latexes: [],
       mathHtmls: [],
-      newInnerHTML: ""
+      newInnerHtml: ""
     };
 
     mathFieldRef = React.createRef();
 
     UNSAFE_componentWillReceiveProps(nextProps) {
-      const { latexHtmls, latexes } = this.detectLatexes(nextProps);
-      const { latexes: prevLatexes } = this.state;
-      if (isEqual(latexes, prevLatexes)) {
-        return {};
+      const { __html } = nextProps.dangerouslySetInnerHTML;
+      const { innerHtml } = this.state;
+      if (innerHtml === __html) {
+        return;
       }
+      const { latexHtmls, latexes } = this.detectLatexes(nextProps);
       const mathHtmls = this.convertLatexesToMathHtmls(latexes);
       this.setState({
         latexHtmls,
         latexes,
         mathHtmls,
-        newInnerHTML: this.generateNewHtml(nextProps.dangerouslySetInnerHTML.__html, latexHtmls, mathHtmls)
+        innerHtml: __html,
+        newInnerHtml: this.generateNewHtml(__html, latexHtmls, mathHtmls)
       });
     }
 
@@ -71,19 +74,21 @@ export const withMathFormula = WrappedComponent => {
     };
 
     generateNewHtml = (prevHtml, latexHtmls, mathHtmls) => {
-      let newInnerHTML = cloneDeep(prevHtml);
+      let newInnerHtml = cloneDeep(prevHtml);
       for (let i = 0; i < latexHtmls.length; i++) {
-        newInnerHTML = newInnerHTML.replace(latexHtmls[i], mathHtmls[i]);
+        newInnerHtml = newInnerHtml.replace(latexHtmls[i], mathHtmls[i]);
       }
-      return newInnerHTML;
+      return newInnerHtml;
     };
 
     componentDidMount() {
       const { dangerouslySetInnerHTML } = this.props;
-
+      this.setState({
+        innerHtml: dangerouslySetInnerHTML.__html
+      });
       if (!window.MathQuill) {
         this.setState({
-          newInnerHTML: dangerouslySetInnerHTML.__html
+          newInnerHtml: dangerouslySetInnerHTML.__html
         });
         return;
       }
@@ -107,7 +112,8 @@ export const withMathFormula = WrappedComponent => {
           const mathHtmls = this.convertLatexesToMathHtmls(latexes);
           this.setState({
             mathHtmls,
-            newInnerHTML: this.generateNewHtml(dangerouslySetInnerHTML.__html, latexHtmls, mathHtmls)
+            innerHtml: dangerouslySetInnerHTML.__html,
+            newInnerHtml: this.generateNewHtml(dangerouslySetInnerHTML.__html, latexHtmls, mathHtmls)
           });
         }
       );
@@ -125,7 +131,7 @@ export const withMathFormula = WrappedComponent => {
     }
 
     render() {
-      const { newInnerHTML } = this.state;
+      const { newInnerHtml } = this.state;
       return (
         <WithResources
           resources={[
@@ -140,7 +146,7 @@ export const withMathFormula = WrappedComponent => {
           onLoaded={() => this.startMathValidating()}
         >
           <React.Fragment>
-            <StyledWrappedComponent {...this.props} dangerouslySetInnerHTML={{ __html: newInnerHTML }} />
+            <StyledWrappedComponent {...this.props} dangerouslySetInnerHTML={{ __html: newInnerHtml }} />
             <NoneDiv>
               <span ref={this.mathFieldRef} className="input__math__field" />
             </NoneDiv>

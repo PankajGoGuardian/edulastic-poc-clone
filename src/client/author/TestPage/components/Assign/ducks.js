@@ -93,7 +93,10 @@ export const getCurrentAssignmentSelector = createSelector(
       closePolicy: "Automatically on Due Date",
       class: [],
       specificStudents: false,
-      releaseScore: testSettings.releaseScore
+      releaseScore: testSettings.releaseScore,
+      testType: testSettings.testType,
+      maxAttempts: testSettings.maxAttempts,
+      isGenerateReport: testSettings.testType === test.type.PRACTICE ? false : true
     };
   }
 );

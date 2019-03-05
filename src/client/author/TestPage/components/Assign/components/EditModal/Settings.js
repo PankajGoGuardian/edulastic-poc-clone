@@ -1,31 +1,24 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Row, Col, Select, Radio } from "antd";
+import { Col, Radio } from "antd";
 
 //components
-import { AlignRight, AlignSwitchRight, StyledRowSettings, StyledRowLabel, SettingsWrapper } from "./styled";
+import { AlignRight, AlignSwitchRight, StyledRowSettings, SettingsWrapper, MaxAttemptIInput } from "./styled";
 //selectors
 import { getActivityReview } from "../../../Setting/ducks";
-
 import { test } from "@edulastic/constants";
 const { releaseGradeTypes, releaseGradeKeys } = test;
-
 const calculators = ["None", "Scientific", "Basic", "Graphing"];
 const evaluationtypes = ["All or Nothing", "Partial Credit", "Dont penalize for incorrect selection"];
 
-const Settings = ({ modalData, onChange, activityReview }) => {
+const Settings = ({ activityReview, releaseGradeType, maxAttempts, onUpdateRleaseGradeType, onUpdateMaxAttempts }) => {
   const [isAutomatic, setAssignmentCompletionType] = useState(0);
-  const [releaseGradeType, setReleaseGradeType] = useState(modalData.releaseScore);
+
   const [calcType, setCalcType] = useState(0);
   const [type, setEvaluationType] = useState(0);
 
   const updateMarkAsDone = e => {
     setAssignmentCompletionType(e.target.value);
-  };
-
-  const updateRleaseGradeType = e => {
-    setReleaseGradeType(e.target.value);
-    onChange("releaseScore", e.target.value);
   };
 
   const calculatorShowMethod = e => {
@@ -54,7 +47,7 @@ const Settings = ({ modalData, onChange, activityReview }) => {
       <StyledRowSettings gutter={16}>
         <Col span={8}>RELEASE SCORES AUTOMATICALLY</Col>
         <Col span={16}>
-          <AlignRight value={releaseGradeType} onChange={updateRleaseGradeType}>
+          <AlignRight value={releaseGradeType} onChange={e => onUpdateRleaseGradeType(e.target.value)}>
             {releaseGradeKeys.map(item => (
               <Radio value={item} key={item}>
                 {releaseGradeTypes[item]}
@@ -64,6 +57,20 @@ const Settings = ({ modalData, onChange, activityReview }) => {
         </Col>
       </StyledRowSettings>
       {/* Release score */}
+      {/* Maximum attempt */}
+      <StyledRowSettings gutter={16}>
+        <Col span={8}>MAXIMUM ATTEMPTS ALLOWED</Col>
+        <Col span={16}>
+          <MaxAttemptIInput
+            type="number"
+            size="large"
+            value={maxAttempts}
+            onChange={e => onUpdateMaxAttempts(e.target.value)}
+            min={1}
+            step={1}
+          />
+        </Col>
+      </StyledRowSettings>
 
       {/* Require Safe Exam Browser */}
       <StyledRowSettings gutter={16}>

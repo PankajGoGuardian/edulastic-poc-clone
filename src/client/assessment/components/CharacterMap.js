@@ -9,12 +9,16 @@ const CharacterMap = ({ characters, onSelect, style, t }) => {
     return null;
   }
 
+  const filteredCharacters = characters.filter(char => !!char.trim());
+
   return (
     <Wrapper style={style}>
       <Title>{t("component.options.characterMap")}</Title>
       <CharactersWrapper>
-        {characters.map(char => (
-          <Char onClick={() => onSelect(char)}>{char}</Char>
+        {filteredCharacters.map((char, i) => (
+          <Char key={i} onClick={() => onSelect(char)}>
+            {char}
+          </Char>
         ))}
       </CharactersWrapper>
     </Wrapper>

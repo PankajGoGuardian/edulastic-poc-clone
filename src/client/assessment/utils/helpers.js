@@ -170,7 +170,7 @@ export const alignmentStandardsFromMongoToUI = alignmentDomains => {
   return alignmentRowStandards;
 };
 
-export const getSpellCheckAttributes = (isSpellCheck = true) => ({
+export const getSpellCheckAttributes = (isSpellCheck = false) => ({
   spellCheck: isSpellCheck,
   autoComplete: isSpellCheck,
   autoCorrect: isSpellCheck,

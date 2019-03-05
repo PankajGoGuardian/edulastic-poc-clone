@@ -49,7 +49,7 @@ const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, preview
     let collection = cloneDeep(validAnswer);
 
     altAnswers.forEach(answer => {
-      if (difference(answer.value, userAnswer).length === 0) {
+      if (difference(answer.value, userAnswer).length !== answer.value.length) {
         collection = cloneDeep(answer.value);
       }
     });
@@ -58,8 +58,6 @@ const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, preview
   };
 
   const allValidAnswers = validate();
-
-  const preview = previewTab === CHECK || previewTab === SHOW;
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
@@ -73,7 +71,7 @@ const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, preview
             {areas.map((area, i) => (
               <Polygon
                 key={i}
-                showAnswer={view !== EDIT && preview}
+                showAnswer={view !== EDIT && ((previewTab === CHECK && userAnswer.includes(i)) || previewTab === SHOW)}
                 onClick={handleClick(i)}
                 points={area.map(point => `${point.x},${point.y}`).join(" ")}
                 selected={userAnswer.includes(i)}

@@ -52,7 +52,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
   };
 
   const { releaseScore = true, activityReview = true } = test;
-
+  const showReviewButton = releaseScore === "WITH_RESPONSE" || releaseScore === "WITH_ANSWERS";
   const ScoreDetail = (
     <React.Fragment>
       <AnswerAndScore>
@@ -61,7 +61,6 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
         </span>
         <Title>{t("common.correctAnswer")}</Title>
       </AnswerAndScore>
-
       <AnswerAndScore>
         <span data-cy="percent">{Math.floor(scorePercentage * 100) / 100}%</span>
         <Title>{t("common.score")}</Title>
@@ -94,7 +93,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
                   {arrow} &nbsp;&nbsp;{t("common.attemps")}
                 </AttemptsTitle>
               </Attempts>
-              {releaseScore && ScoreDetail}
+              {releaseScore !== "DONT_RELEASE" && ScoreDetail}
             </AttemptDetails>
           )}
           {type === "assignment" ? (
@@ -107,19 +106,28 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
               resume={resume}
             />
           ) : (
-            <ReviewButton
-              data-cy="review"
-              testActivityId={lastAttempt._id}
-              title={test.title}
-              activityReview={activityReview}
-              t={t}
-              attempted={attempted}
-            />
+            showReviewButton && (
+              <ReviewButton
+                data-cy="review"
+                testActivityId={lastAttempt._id}
+                title={test.title}
+                activityReview={activityReview}
+                t={t}
+                attempted={attempted}
+              />
+            )
           )}
         </DetailContainer>
         {showAttempts &&
           newReports.map(attempt => (
-            <Attempt key={attempt._id} data={attempt} activityReview={activityReview} type={type} />
+            <Attempt
+              key={attempt._id}
+              data={attempt}
+              activityReview={activityReview}
+              type={type}
+              releaseScore={releaseScore}
+              showReviewButton={showReviewButton}
+            />
           ))}
       </ButtonAndDetail>
     </CardWrapper>

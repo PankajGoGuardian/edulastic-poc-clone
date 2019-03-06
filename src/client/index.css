@@ -1006,26 +1006,3 @@ span.token.active-word {
   width: 32px !important;
   height: 32px !important;
 }
-
-.MathModal__Overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.2);
-}
-.MathModal__Content {
-  position: fixed;
-  top: calc(50vh - 300px);
-  right: calc(50vw - 293px);
-  bottom: calc(50vh - 300px);
-  left: calc(50vw - 293px);
-  border: 1px solid rgb(204, 204, 204);
-  background: rgb(255, 255, 255);
-  overflow: auto;
-  border-radius: 4px;
-  outline: none;
-  padding: 20px;
-  z-index: 1002;
-}

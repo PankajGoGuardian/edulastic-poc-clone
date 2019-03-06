@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import ReactModal from "react-modal";
-import { Button, Icon } from "antd";
+import { Button, Icon, Modal } from "antd";
 import MathInput from "../MathInput";
 
 const MathModalHeader = styled.div`
@@ -54,7 +53,6 @@ class MathModal extends React.Component {
 
   constructor(props) {
     super(props);
-    ReactModal.setAppElement("#body");
     this.state.latex = props.value;
   }
 
@@ -76,18 +74,13 @@ class MathModal extends React.Component {
     const { latex } = this.state;
 
     return (
-      <ReactModal
-        isOpen={show}
-        onRequestClose={onClose}
-        overlayClassName="MathModal__Overlay"
-        className="MathModal__Content"
+      <Modal
+        visible={show}
+        title="Edit Math"
+        maskClosable={false}
+        onOk={() => onSave(latex)}
+        onCancel={() => onClose()}
       >
-        <MathModalHeader>
-          <h3>Edit Math</h3>
-          <Button onClick={onClose}>
-            <Icon type="close" theme="outlined" />
-          </Button>
-        </MathModalHeader>
         <MathInput
           alwaysShowKeyboard
           symbols={symbols}
@@ -96,13 +89,7 @@ class MathModal extends React.Component {
           value={latex}
           onInput={newLatex => this.onInput(newLatex)}
         />
-        <MathModalFooter>
-          <OKButton type="primary" onClick={() => onSave(latex)}>
-            OK
-          </OKButton>
-          <CancelButton onClick={onClose}>Cancel</CancelButton>
-        </MathModalFooter>
-      </ReactModal>
+      </Modal>
     );
   }
 }

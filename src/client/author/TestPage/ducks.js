@@ -86,7 +86,7 @@ export const setDefaultTestDataAction = () => ({
 const initialTestState = {
   title: "New Test",
   description: "",
-  releaseScore: test.releaseGradeKeys[0],
+  releaseScore: test.releaseGradeLabels.DONT_RELEASE,
   maxAttempts: 1,
   testType: test.type.ASSESSMENT,
   activityReview: true,

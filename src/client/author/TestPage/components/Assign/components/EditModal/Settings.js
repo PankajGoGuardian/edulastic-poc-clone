@@ -7,9 +7,10 @@ import { AlignRight, AlignSwitchRight, StyledRowSettings, SettingsWrapper, MaxAt
 //selectors
 import { getActivityReview } from "../../../Setting/ducks";
 import { test } from "@edulastic/constants";
-const { releaseGradeTypes, releaseGradeKeys } = test;
+const { releaseGradeTypes } = test;
 const calculators = ["None", "Scientific", "Basic", "Graphing"];
 const evaluationtypes = ["All or Nothing", "Partial Credit", "Dont penalize for incorrect selection"];
+const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 
 const Settings = ({ activityReview, releaseGradeType, maxAttempts, onUpdateRleaseGradeType, onUpdateMaxAttempts }) => {
   const [isAutomatic, setAssignmentCompletionType] = useState(0);

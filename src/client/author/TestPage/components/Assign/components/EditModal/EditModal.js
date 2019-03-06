@@ -18,7 +18,7 @@ import { getCurrentAssignmentSelector, saveAssignmentAction } from "../../ducks"
 import Settings from "./Settings";
 import { getListOfStudents } from "../../utils";
 
-const { releaseGradeKeys, type } = test;
+const { releaseGradeLabels, type } = test;
 
 const EditModal = ({ title, visible, onCancel, onOk, modalData, group, students, fetchStudents, saveAssignment }) => {
   let [showSettings, setSettings] = useState(false);
@@ -40,14 +40,14 @@ const EditModal = ({ title, visible, onCancel, onOk, modalData, group, students,
       nextState = {
         ...nextState,
         maxAttempts: 3,
-        releaseScore: releaseGradeKeys[3],
+        releaseScore: releaseGradeLabels.WITH_ANSWERS,
         isGenerateReport: false
       };
     } else {
       nextState = {
         ...nextState,
         maxAttempts: 1,
-        releaseScore: releaseGradeKeys[0],
+        releaseScore: releaseGradeLabels.DONT_RELEASE,
         isGenerateReport: true
       };
     }

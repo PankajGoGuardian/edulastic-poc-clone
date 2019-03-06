@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
+import { test as testConstants } from "@edulastic/constants";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 import { last } from "lodash";
@@ -21,7 +22,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
   const [showAttempts, setShowAttempts] = useState(false);
 
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
-
+  const { releaseGradeLabels } = testConstants;
   const { test = {}, reports = [], endDate, testId, startDate, _id: assignmentId } = data;
 
   const lastAttempt = last(reports) || {};
@@ -52,7 +53,8 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
   };
 
   const { releaseScore = true, activityReview = true } = test;
-  const showReviewButton = releaseScore === "WITH_RESPONSE" || releaseScore === "WITH_ANSWERS";
+  const showReviewButton =
+    releaseScore === releaseGradeLabels.WITH_RESPONSE || releaseScore === releaseGradeLabels.WITH_ANSWERS;
   const ScoreDetail = (
     <React.Fragment>
       <AnswerAndScore>
@@ -93,7 +95,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
                   {arrow} &nbsp;&nbsp;{t("common.attemps")}
                 </AttemptsTitle>
               </Attempts>
-              {releaseScore !== "DONT_RELEASE" && ScoreDetail}
+              {releaseScore !== releaseGradeLabels.DONT_RELEASE && ScoreDetail}
             </AttemptDetails>
           )}
           {type === "assignment" ? (
@@ -127,6 +129,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
               type={type}
               releaseScore={releaseScore}
               showReviewButton={showReviewButton}
+              releaseGradeLabels={releaseGradeLabels}
             />
           ))}
       </ButtonAndDetail>

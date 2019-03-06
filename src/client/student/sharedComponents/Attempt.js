@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 
 import { formatTime } from "../utils";
 
-const Attempt = ({ data, type, activityReview, releaseScore, showReviewButton }) => {
+const Attempt = ({ data, type, activityReview, releaseScore, showReviewButton, releaseGradeLabels }) => {
   const { correct = 0, wrong = 0 } = data;
   const total = correct + wrong;
   const percentage = (correct / total) * 100 || 0;
@@ -15,7 +15,7 @@ const Attempt = ({ data, type, activityReview, releaseScore, showReviewButton })
         <AnswerAndScore>
           <span data-cy="date">{formatTime(data.createdAt)}</span>
         </AnswerAndScore>
-        {releaseScore !== "DONT_RELEASE" && (
+        {releaseScore !== releaseGradeLabels.DONT_RELEASE && (
           <React.Fragment>
             <AnswerAndScore>
               <span data-cy="score">

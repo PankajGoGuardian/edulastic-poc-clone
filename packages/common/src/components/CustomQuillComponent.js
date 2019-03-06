@@ -73,6 +73,9 @@ const ResponseButton = () => (
 function formula() {
   const cursorPosition = this.quill.getSelection().index;
   this.quill.insertEmbed(cursorPosition, "MathInput", "");
+  this.quill.insertText(cursorPosition + 2, " ", {
+    width: "1px"
+  });
   this.quill.setSelection(cursorPosition + 1);
 }
 
@@ -297,9 +300,10 @@ class CustomQuillComponent extends React.Component {
   };
 
   onSaveLatex = latex => {
-    const { mathField } = this.state;
+    const { mathField, curMathRange } = this.state;
     mathField.latex(latex);
 
+    this.quillRef.getEditor().setSelection(curMathRange.index + 3);
     this.setState({
       selLatex: "",
       showMath: false

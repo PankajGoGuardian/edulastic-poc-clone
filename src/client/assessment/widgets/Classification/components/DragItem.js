@@ -38,6 +38,7 @@ const DragItem = ({ connectDragSource, item, isDragging, valid, preview, renderI
   item &&
   connectDragSource(
     <div
+      data-cy={`drag-drop-item-${renderIndex}`}
       style={{
         display: "flex",
         alignItems: "center",

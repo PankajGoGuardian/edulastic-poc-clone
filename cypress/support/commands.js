@@ -1,50 +1,49 @@
-import { userBuilder } from './generate';
-import LoginPage from '../e2e/framework/student/loginPage.js';
+import { userBuilder } from "./generate";
+import LoginPage from "../e2e/framework/student/loginPage.js";
 
 Cypress.LocalStorage.clear = () => {};
-const BASE_URL =
-  'https://pnufcx7h1l.execute-api.us-east-1.amazonaws.com/development/api';
+const BASE_URL = "https://pnufcx7h1l.execute-api.us-east-1.amazonaws.com/development/api";
 
-Cypress.Commands.add('createUser', overrides => {
+Cypress.Commands.add("createUser", overrides => {
   const user = userBuilder(overrides);
   return cy
     .request({
       url: `${BASE_URL}/auth/signup`,
-      method: 'POST',
+      method: "POST",
       body: user
     })
     .then(({ body }) => body.user);
 });
 
-Cypress.Commands.add('login', user =>
+Cypress.Commands.add("login", user =>
   cy
     .request({
       url: `${BASE_URL}/auth/login`,
-      method: 'POST',
+      method: "POST",
       body: user
     })
     .then(({ body }) => {
-      window.localStorage.setItem('access_token', body.token);
+      window.localStorage.setItem("access_token", body.token);
       return body.user;
     })
 );
 
-Cypress.Commands.add('assertHome', () => {
-  cy.url().should('eq', `${Cypress.config().baseUrl}/`);
+Cypress.Commands.add("assertHome", () => {
+  cy.url().should("eq", `${Cypress.config().baseUrl}/`);
 });
 
-Cypress.Commands.add('setToken', (role = 'teacher') => {
+Cypress.Commands.add("setToken", (role = "teacher") => {
   const postData =
-    role == 'teacher'
+    role == "teacher"
       ? {
-          email: 'auto.teacher1@snapwiz.com',
-          password: 'snapwiz'
+          email: "auto.teacher1@snapwiz.com",
+          password: "snapwiz"
         }
       : {
-          email: 'auto.student3@snapwiz.com',
-          password: 'snapwiz'
+          email: "auto.student3@snapwiz.com",
+          password: "snapwiz"
         };
-        /* cy.request({
+  /* cy.request({
           url: `${BASE_URL}/auth/login`,
           method: 'POST',
           body: postData
@@ -53,107 +52,103 @@ Cypress.Commands.add('setToken', (role = 'teacher') => {
           window.localStorage.setItem('access_token', body.result.token);
           return true;
         }); */
-        
+
   cy.clearLocalStorage();
   const login = new LoginPage();
-    cy.visit('/login');
-    cy.server();
-    cy.route('GET','**curriculum**').as('apiLoad');
-    cy.route('GET','**assignments**').as('assignment')
-    login.fillLoginForm(postData.email,postData.password);
-    login.onClickSignin().then(() => {
-      if(role=='teacher'){
-        cy.wait('@apiLoad');
-      }
-      else{
-        cy.wait('@assignment');
-      }
-    });
+  cy.visit("/login");
+  cy.server();
+  cy.route("GET", "**curriculum**").as("apiLoad");
+  cy.route("GET", "**assignments**").as("assignment");
+  login.fillLoginForm(postData.email, postData.password);
+  login.onClickSignin().then(() => {
+    if (role == "teacher") {
+      cy.wait("@apiLoad");
+    } else {
+      cy.wait("@assignment");
+    }
+  });
 });
 
 Cypress.Commands.add(
-  'assignAssignment',
-  (
-    startDt = new Date(),
-    dueDt = new Date(new Date().setDate(startDt.getDate() + 1))
-  ) => {
+  "assignAssignment",
+  (startDt = new Date(), dueDt = new Date(new Date().setDate(startDt.getDate() + 1))) => {
     const accessPostData = {
-      email: 'auto.teacher1@snapwiz.com',
-      password: 'snapwiz'
+      email: "auto.teacher1@snapwiz.com",
+      password: "snapwiz"
     };
 
     cy.request({
       url: `${BASE_URL}/auth/login`,
-      method: 'POST',
+      method: "POST",
       body: accessPostData
     }).then(({ body }) => {
-      console.log('Result = ', body.result);
-      cy.fixture('assignments').then(asgns => {
-        const postData = asgns['default'];
-        postData['startDate'] = startDt.valueOf();
-        postData['endDate'] = dueDt.valueOf();
-        console.log('asdnDO - ', postData);
+      console.log("Result = ", body.result);
+      cy.fixture("assignments").then(asgns => {
+        const postData = asgns["default"];
+        postData["startDate"] = startDt.valueOf();
+        postData["endDate"] = dueDt.valueOf();
+        console.log("asdnDO - ", postData);
         cy.request({
           url: `${BASE_URL}/assignments`,
-          method: 'POST',
+          method: "POST",
           body: [postData],
           headers: {
             authorization: body.result.token,
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json"
           }
         }).then(({ body }) => {
-          console.log('Assignment Assigned = ', body.result._id);
+          console.log("Assignment Assigned = ", body.result._id);
         });
       });
     });
   }
 );
 
-Cypress.Commands.add('deleteAllAssignments', () => {
+Cypress.Commands.add("deleteAllAssignments", () => {
   const teacherPostData = {
-    email: 'auto.teacher1@snapwiz.com',
-    password: 'snapwiz'
+    email: "auto.teacher1@snapwiz.com",
+    password: "snapwiz"
   };
 
   const studentPostData = {
-    email: 'auto.student3@snapwiz.com',
-    password: 'snapwiz'
+    email: "auto.student3@snapwiz.com",
+    password: "snapwiz"
   };
 
   let asgnIds = [];
 
   cy.request({
     url: `${BASE_URL}/auth/login`,
-    method: 'POST',
+    method: "POST",
     body: studentPostData
   }).then(({ body }) => {
     cy.request({
       url: `${BASE_URL}/assignments`,
-      method: 'GET',
+      method: "GET",
       headers: {
         authorization: body.result.token,
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       }
     }).then(({ body }) => {
       body.result.forEach((asgnDO, i) => {
         asgnIds.push(asgnDO._id);
       });
-      console.log('All Assignments = ', asgnIds);
+      console.log("All Assignments = ", asgnIds);
     });
   });
 
   cy.request({
     url: `${BASE_URL}/auth/login`,
-    method: 'POST',
+    method: "POST",
     body: teacherPostData
   }).then(({ body }) => {
     asgnIds.forEach(asgnId => {
       cy.request({
         url: `${BASE_URL}/assignments/${asgnId}`,
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
           authorization: body.result.token,
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json"
         }
       }).then(({ body }) => {
         console.log(`${asgnId} :: `, body.result);
@@ -163,13 +158,13 @@ Cypress.Commands.add('deleteAllAssignments', () => {
 });
 
 Cypress.Commands.add(
-  'makeSelection',
+  "makeSelection",
   {
-    prevSubject: 'element'
+    prevSubject: "element"
   },
   subject => {
     cy.wrap(subject)
-      .trigger('mousedown')
+      .trigger("mousedown")
       .then($el => {
         const el = $el[0];
         const document = el.ownerDocument;
@@ -178,60 +173,140 @@ Cypress.Commands.add(
         document.getSelection().removeAllRanges(range);
         document.getSelection().addRange(range);
       })
-      .trigger('mouseup');
+      .trigger("mouseup");
 
-    cy.document().trigger('selectionchange');
+    cy.document().trigger("selectionchange");
   }
 );
 
 Cypress.Commands.add(
-  'verifyNumInput',
+  "verifyNumInput",
   {
-    prevSubject: 'element'
+    prevSubject: "element"
   },
   (subject, step) => {
     const exp = `${step + 1}`;
     cy.wrap(subject)
-      .type('{selectall}')
+      .type("{selectall}")
       .type(1)
-      .should('have.value', '1')
-      .type('{uparrow}')
-      .should('have.value', exp)
-      .type('{downarrow}')
-      .should('have.value', '1');
+      .should("have.value", "1")
+      .type("{uparrow}")
+      .should("have.value", exp)
+      .type("{downarrow}")
+      .should("have.value", "1");
   }
 );
 
-Cypress.Commands.add('logOut', () => {
-    cy.clearLocalStorage();
-    cy.visit('/').then((win) => {
-      win.localStorage.clear();
-    });
+Cypress.Commands.add("logOut", () => {
+  cy.clearLocalStorage();
+  cy.visit("/").then(win => {
+    win.localStorage.clear();
+  });
 });
 
-Cypress.Commands.add('uploadImage', (base64Image) => {
+Cypress.Commands.add("uploadImage", base64Image => {
   const teacherPostData = {
-    email: 'auto.teacher1@snapwiz.com',
-    password: 'snapwiz'
+    email: "auto.teacher1@snapwiz.com",
+    password: "snapwiz"
   };
   const formData = new FormData();
-  formData.append('file', base64Image);
+  formData.append("file", base64Image);
   cy.request({
     url: `${BASE_URL}/auth/login`,
-    method: 'POST',
+    method: "POST",
     body: teacherPostData
   }).then(({ body }) => {
     return cy
       .server()
-      .route('POST', `${BASE_URL}/file/upload`)
-      .as('formRequest')
+      .route("POST", `${BASE_URL}/file/upload`)
+      .as("formRequest")
       .window()
-      .then((win) => {
+      .then(win => {
         const xhr = new win.XMLHttpRequest();
-        xhr.open('POST', `${BASE_URL}/file/upload`);
-        xhr.setRequestHeader('authorization', body.result.token);
+        xhr.open("POST", `${BASE_URL}/file/upload`);
+        xhr.setRequestHeader("authorization", body.result.token);
         xhr.send(formData);
       })
-      .wait('@formRequest');
+      .wait("@formRequest");
   });
 });
+
+class DndSimulatorDataTransfer {
+  data = {};
+
+  dropEffect = "move";
+
+  effectAllowed = "all";
+
+  files = [];
+
+  items = [];
+
+  types = [];
+
+  clearData(format) {
+    if (format) {
+      delete this.data[format];
+
+      const index = this.types.indexOf(format);
+      delete this.types[index];
+      delete this.data[index];
+    } else {
+      this.data = {};
+    }
+  }
+
+  setData(format, data) {
+    this.data[format] = data;
+    this.items.push(data);
+    this.types.push(format);
+  }
+
+  getData(format) {
+    if (format in this.data) {
+      return this.data[format];
+    }
+
+    return "";
+  }
+
+  setDragImage(img, xOffset, yOffset) {}
+}
+
+Cypress.Commands.add(
+  "customDragDrop",
+  {
+    prevSubject: "element"
+  },
+  (sourceSelector, targetSelector, options) => {
+    const dataTransfer = new DndSimulatorDataTransfer();
+    const opts = {
+      offsetX: 100,
+      offsetY: 100,
+      ...(options || {})
+    };
+
+    cy.wrap(sourceSelector.get(0))
+      .trigger("dragstart", {
+        dataTransfer
+      })
+      .trigger("drag", {});
+
+    cy.get(targetSelector).then($el => {
+      const { x, y } = $el.get(0).getBoundingClientRect();
+
+      cy.wrap($el.get(0))
+        .trigger("dragover", {
+          dataTransfer
+        })
+        .trigger("drop", {
+          dataTransfer,
+          clientX: x + opts.offsetX,
+          clientY: y + opts.offsetY
+        })
+        .trigger("dragend", {
+          dataTransfer
+        });
+    });
+  }
+);

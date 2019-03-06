@@ -1,28 +1,28 @@
-import React, { Fragment, useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { cloneDeep } from 'lodash';
-import { arrayMove } from 'react-sortable-hoc';
-import { connect } from 'react-redux';
-import { Row, Col, Select } from 'antd';
-import { withTheme } from 'styled-components';
-import { compose } from 'redux';
+import React, { Fragment, useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { cloneDeep } from "lodash";
+import { arrayMove } from "react-sortable-hoc";
+import { connect } from "react-redux";
+import { Row, Col, Select } from "antd";
+import { withTheme } from "styled-components";
+import { compose } from "redux";
 
-import { Paper } from '@edulastic/common';
-import { withNamespaces } from '@edulastic/localization';
+import { Paper } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-import QuillSortableList from '../../components/QuillSortableList/index';
-import QuestionTextArea from '../../components/QuestionTextArea';
-import CorrectAnswers from '../../components/CorrectAnswers';
-import withAddButton from '../../components/HOC/withAddButton';
-import withPoints from '../../components/HOC/withPoints';
-import { Subtitle } from '../../styled/Subtitle';
-import { EDIT } from '../../constants/constantsForQuestions';
+import QuillSortableList from "../../components/QuillSortableList/index";
+import QuestionTextArea from "../../components/QuestionTextArea";
+import CorrectAnswers from "../../components/CorrectAnswers";
+import withAddButton from "../../components/HOC/withAddButton";
+import withPoints from "../../components/HOC/withPoints";
+import { Subtitle } from "../../styled/Subtitle";
+import { EDIT } from "../../constants/constantsForQuestions";
 
-import { setQuestionDataAction, setFirstMountAction } from '../../../author/QuestionEditor/ducks';
+import { setQuestionDataAction, setFirstMountAction } from "../../../author/QuestionEditor/ducks";
 
-import GroupPossibleResponses from './components/GroupPossibleResponses';
-import ClassificationPreview from './ClassificationPreview';
-import AdvancedOptions from '../SortList/components/AdvancedOptions';
+import GroupPossibleResponses from "./components/GroupPossibleResponses";
+import ClassificationPreview from "./ClassificationPreview";
+import AdvancedOptions from "../SortList/components/AdvancedOptions";
 
 const List = withAddButton(QuillSortableList);
 
@@ -339,7 +339,7 @@ const EditClassification = ({ item, setQuestionData, setFirstMount, theme, t }) 
         />
 
         <Row gutter={70}>
-          <Col span={12}>
+          <Col data-cy="column-container" span={12}>
             <Subtitle>{t("component.classification.columnsSubtitle")}</Subtitle>
 
             <Subtitle
@@ -351,13 +351,14 @@ const EditClassification = ({ item, setQuestionData, setFirstMount, theme, t }) 
             </Subtitle>
 
             <Select
+              data-cy="classification-column-dropdown"
               size="large"
               style={{ width: "calc(100% - 30px)" }}
               value={ui_style.column_count}
               onChange={value => onUiChange("column_count")(+value)}
             >
               {Array.from({ length: 10 }).map((v, index) => (
-                <Option key={index} value={index + 1}>
+                <Option data-cy={`coloumn-dropdown-list-${index}`} key={index} value={index + 1}>
                   {index + 1}
                 </Option>
               ))}
@@ -383,7 +384,7 @@ const EditClassification = ({ item, setQuestionData, setFirstMount, theme, t }) 
               columns={1}
             />
           </Col>
-          <Col span={12}>
+          <Col data-cy="row-container" span={12}>
             <Subtitle>{t("component.classification.rowsSubtitle")}</Subtitle>
 
             <Subtitle
@@ -395,13 +396,14 @@ const EditClassification = ({ item, setQuestionData, setFirstMount, theme, t }) 
             </Subtitle>
 
             <Select
+              data-cy="classification-row-dropdown"
               size="large"
               style={{ width: "calc(100% - 30px)" }}
               value={ui_style.row_count}
               onChange={value => onUiChange("row_count")(+value)}
             >
               {Array.from({ length: 10 }).map((v, index) => (
-                <Option key={index} value={index + 1}>
+                <Option data-cy={`row-dropdown-list-${index}`} key={index} value={index + 1}>
                   {index + 1}
                 </Option>
               ))}

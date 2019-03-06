@@ -47,7 +47,13 @@ const TableRow = ({
       );
     }
     cols.push(
-      <Column key={index} rowTitles={rowTitles} colCount={colCount}>
+      <Column
+        data-cy={`drag-drop-board-${index}`}
+        id={`drag-drop-board-${index}`}
+        key={index}
+        rowTitles={rowTitles}
+        colCount={colCount}
+      >
         <DropContainer
           style={{
             ...styles.columnContainerStyle,

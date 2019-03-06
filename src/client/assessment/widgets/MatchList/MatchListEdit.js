@@ -18,7 +18,7 @@ import { EDIT } from "../../constants/constantsForQuestions";
 
 import GroupPossibleResponses from "./components/GroupPossibleResponses";
 import MatchListPreview from "./MatchListPreview";
-import AdvancedOptions from "../SortList/components/AdvancedOptions";
+import Options from "./components/Options";
 
 const OptionsList = withPoints(MatchListPreview);
 
@@ -317,7 +317,7 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
           onCloseTab={handleCloseTab}
         />
       </Paper>
-      <AdvancedOptions onUiChange={handleUiStyleChange} />
+      <Options />
     </Fragment>
   );
 };

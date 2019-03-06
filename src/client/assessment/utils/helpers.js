@@ -1,4 +1,4 @@
-import { groupBy, intersection } from "lodash";
+import { groupBy } from "lodash";
 
 export const getFontSize = fontSize => {
   switch (fontSize) {
@@ -176,3 +176,18 @@ export const getSpellCheckAttributes = (isSpellCheck = false) => ({
   autoCorrect: isSpellCheck,
   autoCapitalize: isSpellCheck
 });
+
+export const getDirection = pos => {
+  switch (pos) {
+    case "bottom":
+      return "column";
+    case "top":
+      return "column-reverse";
+    case "right":
+      return "row";
+    case "left":
+      return "row-reverse";
+    default:
+      return "column";
+  }
+};

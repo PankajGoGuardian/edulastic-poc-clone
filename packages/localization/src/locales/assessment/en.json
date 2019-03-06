@@ -144,7 +144,15 @@
       "maxSelection": "Max selection",
       "full": "Full",
       "outer": "Outer",
-      "hideCells": "Hide cells"
+      "hideCells": "Hide cells",
+      "rowHeader": "Row header",
+      "maximumResponsesPerCell": "Maximum responses per cell",
+      "rowTitlesWidth": "Row titles width",
+      "rowMinHeight": "Row min height",
+      "responseContainerPositionOption": "Response container position",
+      "button": "Button",
+      "list": "List",
+      "listStyle": "List style"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",

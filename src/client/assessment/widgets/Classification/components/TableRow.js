@@ -21,6 +21,8 @@ const TableRow = ({
   possible_responses,
   onDrop,
   validArray,
+  width,
+  height,
   theme
 }) => {
   const styles = {
@@ -28,7 +30,8 @@ const TableRow = ({
       display: "flex",
       flexWrap: "wrap",
       padding: "70px 50px",
-      height: "100%",
+      width,
+      height,
       borderRadius: 4,
       backgroundColor: theme.widgets.classification.dropContainerBgColor
     }
@@ -87,6 +90,8 @@ const TableRow = ({
 
 TableRow.propTypes = {
   startIndex: PropTypes.number.isRequired,
+  width: PropTypes.string.isRequired,
+  height: PropTypes.string.isRequired,
   colCount: PropTypes.number.isRequired,
   arrayOfRows: PropTypes.object.isRequired,
   rowTitles: PropTypes.array.isRequired,

@@ -7,6 +7,9 @@ export { default as BrowserSpellcheckOption } from "./BrowserSpellcheckCheckbox"
 export { default as CharactersToDisplayOption } from "./CharactersToDisplay";
 export { default as InputTypeOption } from "./InputType";
 export { default as LineWidthOption } from "./LineWidth";
+export { default as HoverStateCheckbox } from "./HoverStateCheckbox";
+export { default as BorderTypeOption } from "./BorderType";
+export { default as MaxSelectionOption } from "./MaxSelection";
 
 export { default as SpecialCharacters } from "./SpecialCharacters";
 export { default as Scoring } from "./Scoring";

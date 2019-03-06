@@ -138,7 +138,13 @@
       "dividers": "Dividers",
       "charactersToDisplay": "Characters to display",
       "minHeightPx": "Min height (px)",
-      "maxHeightPx": "Max height (px)"
+      "maxHeightPx": "Max height (px)",
+      "hoverState": "Hover state",
+      "borderType": "Border type",
+      "maxSelection": "Max selection",
+      "full": "Full",
+      "outer": "Outer",
+      "hideCells": "Hide cells"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",

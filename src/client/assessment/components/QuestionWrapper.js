@@ -4,7 +4,9 @@ import { ThemeProvider } from "styled-components";
 import { questionType } from "@edulastic/constants";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
+
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../themes";
 import QuestionMenu from "./Graph/common/QuestionMenu";
@@ -182,9 +184,28 @@ class QuestionWrapper extends Component {
     const { type, timespent, data, showFeedback, multiple, view, setQuestionData, t, ...restProps } = this.props;
     const { main, advanced, activeTab } = this.state;
     const Question = getQuestion(type);
+
+    const changeItem = (prop, uiStyle) => {
+      const newItem = cloneDeep(data);
+
+      newItem[prop] = uiStyle;
+      setQuestionData(newItem);
+    };
+
+    const changeUIStyle = (prop, val) => {
+      const newItem = cloneDeep(data);
+
+      if (!newItem.ui_style) {
+        newItem.ui_style = {};
+      }
+
+      newItem.ui_style[prop] = val;
+      setQuestionData(newItem);
+    };
+
     return (
       <ThemeProvider theme={themes.default}>
-        <QuestionContext.Provider value={{ item: data, setQuestionData, t }}>
+        <QuestionContext.Provider value={{ item: data, setQuestionData, t, changeItem, changeUIStyle }}>
           <PaperWrapper>
             {type === "graph" && view === "edit" && (
               <QuestionMenu activeTab={activeTab} main={main} advanced={advanced} />

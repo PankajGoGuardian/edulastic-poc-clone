@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { isEqual, cloneDeep } from "lodash";
+import { cloneDeep } from "lodash";
 
 import { WithResources } from "@edulastic/common";
 
@@ -16,7 +16,6 @@ export const withMathFormula = WrappedComponent => {
   return class extends React.Component {
     state = {
       MQ: null,
-      innerHtml: "",
       mathField: null,
       latexHtmls: [],
       latexes: [],
@@ -26,21 +25,19 @@ export const withMathFormula = WrappedComponent => {
 
     mathFieldRef = React.createRef();
 
-    UNSAFE_componentWillReceiveProps(nextProps) {
-      const { __html } = nextProps.dangerouslySetInnerHTML;
-      const { innerHtml } = this.state;
-      if (innerHtml === __html) {
-        return;
+    componentDidUpdate(prevProps) {
+      const { dangerouslySetInnerHTML } = this.props;
+      if (prevProps.dangerouslySetInnerHTML.__html !== dangerouslySetInnerHTML.__html) {
+        const { latexHtmls, latexes } = this.detectLatexes(this.props);
+        const mathHtmls = this.convertLatexesToMathHtmls(latexes);
+        // eslint-disable-next-line react/no-did-update-set-state
+        this.setState({
+          latexHtmls,
+          latexes,
+          mathHtmls,
+          newInnerHtml: this.generateNewHtml(dangerouslySetInnerHTML.__html, latexHtmls, mathHtmls)
+        });
       }
-      const { latexHtmls, latexes } = this.detectLatexes(nextProps);
-      const mathHtmls = this.convertLatexesToMathHtmls(latexes);
-      this.setState({
-        latexHtmls,
-        latexes,
-        mathHtmls,
-        innerHtml: __html,
-        newInnerHtml: this.generateNewHtml(__html, latexHtmls, mathHtmls)
-      });
     }
 
     detectLatexes = props => {
@@ -83,9 +80,6 @@ export const withMathFormula = WrappedComponent => {
 
     componentDidMount() {
       const { dangerouslySetInnerHTML } = this.props;
-      this.setState({
-        innerHtml: dangerouslySetInnerHTML.__html
-      });
       if (!window.MathQuill) {
         this.setState({
           newInnerHtml: dangerouslySetInnerHTML.__html
@@ -112,7 +106,6 @@ export const withMathFormula = WrappedComponent => {
           const mathHtmls = this.convertLatexesToMathHtmls(latexes);
           this.setState({
             mathHtmls,
-            innerHtml: dangerouslySetInnerHTML.__html,
             newInnerHtml: this.generateNewHtml(dangerouslySetInnerHTML.__html, latexHtmls, mathHtmls)
           });
         }

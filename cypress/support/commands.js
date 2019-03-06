@@ -2,7 +2,7 @@ import { userBuilder } from "./generate";
 import LoginPage from "../e2e/framework/student/loginPage.js";
 
 Cypress.LocalStorage.clear = () => {};
-const BASE_URL = "https://pnufcx7h1l.execute-api.us-east-1.amazonaws.com/development/api";
+const BASE_URL = Cypress.config("API_URL");
 
 Cypress.Commands.add("createUser", overrides => {
   const user = userBuilder(overrides);

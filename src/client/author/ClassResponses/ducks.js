@@ -1,6 +1,7 @@
-import { takeEvery, call, put, all } from "redux-saga/effects";
+import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { classResponseApi } from "@edulastic/api";
 import { message } from "antd";
+import { getCurrentGroup } from "../src/selectors/user";
 
 import {
   RECEIVE_CLASS_RESPONSE_REQUEST,
@@ -34,7 +35,8 @@ function* receiveClassResponseSaga({ payload }) {
 
 function* receiveStudentResponseSaga({ payload }) {
   try {
-    const studentResponse = yield call(classResponseApi.studentResponse, payload);
+    const groupId = yield select(getCurrentGroup);
+    const studentResponse = yield call(classResponseApi.studentResponse, payload, groupId);
 
     yield put({
       type: RECEIVE_STUDENT_RESPONSE_SUCCESS,
@@ -52,7 +54,8 @@ function* receiveStudentResponseSaga({ payload }) {
 
 function* receiveFeedbackResponseSaga({ payload }) {
   try {
-    const feedbackResponse = yield call(classResponseApi.feedbackResponse, payload);
+    const groupId = yield select(getCurrentGroup);
+    const feedbackResponse = yield call(classResponseApi.feedbackResponse, { payload, groupId });
 
     yield put({
       type: RECEIVE_FEEDBACK_RESPONSE_SUCCESS,

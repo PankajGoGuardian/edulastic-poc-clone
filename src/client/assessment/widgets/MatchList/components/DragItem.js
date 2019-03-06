@@ -34,7 +34,7 @@ const specSource = {
 const DragItem = ({ connectDragSource, item, isDragging, flag, correct, preview, renderIndex, getStyles }) =>
   item &&
   connectDragSource(
-    <div style={getStyles({ isDragging, flag, preview, correct })}>
+    <div data-cy={`drag-drop-item-${renderIndex}`} style={getStyles({ isDragging, flag, preview, correct })}>
       {preview && <Index correct={correct}>{renderIndex + 1}</Index>}
       <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item }} />
       {preview && (

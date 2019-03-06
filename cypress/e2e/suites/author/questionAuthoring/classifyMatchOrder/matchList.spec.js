@@ -1,25 +1,24 @@
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
-import ClassificationPage from "../../../../framework/author/itemList/questionType/classifyMatchOrder/classificationPage";
+import MatchListPage from "../../../../framework/author/itemList/questionType/classifyMatchOrder/matchListPage";
 
 describe('Author - "Classification" type question', () => {
   const queData = {
     group: "Classify, Match & Order",
-    queType: "Classification",
+    queType: "Match list",
     queText: "Select the correct option?",
     template: " is the world's largest democracy",
     correctAns: "India",
-    choices: ["China", "India"],
+    list: ["List1", "List2", "List3"],
+    choices: ["Choice1", "Choice2", "Choice3"],
     extlink: "www.testdomain.com",
     testtext: "testtext",
     formula: "s=ar^2",
     column: 2,
     row: 1,
-    columnTitles: ["Column1", "Column2"],
-    rowTitles: ["Row1"],
     points: 2
   };
 
-  const question = new ClassificationPage();
+  const question = new MatchListPage();
   const editItem = new EditItemPage();
   let preview;
 
@@ -35,117 +34,34 @@ describe('Author - "Classification" type question', () => {
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    context("TC_57 => Enter the column and row", () => {
-      it("Enter only numbers", () => {
-        question
-          .getDropDownColumn()
-          .click()
-          .then(() => {
-            question
-              .getDropDownListColumn(queData.column - 1)
-              .should("be.visible")
-              .click();
-          });
-
-        question.getDropDownColumn().contains("div", queData.column);
-
-        question
-          .getDropDownRow()
-          .click()
-          .then(() => {
-            question
-              .getDropDownListRow(queData.row - 1)
-              .should("be.visible")
-              .click();
-          });
-
-        question.getDropDownRow().contains("div", queData.row);
-      });
-    });
-
-    context("TC_58 => Column titles", () => {
-      before("Should have existing titles", () => {
-        question.getColumnTitleInptuList().should("have.length", queData.columnTitles.length);
-      });
-
-      it("Edit the column names", () => {
-        question.getColumnTitleInptuList().each(($el, index) => {
+    context("TC_74 => List", () => {
+      it("Edit the list existing names", () => {
+        question.getListInputs().each(($el, index) => {
           cy.wrap($el)
-            .click()
             .clear()
-            .type(queData.columnTitles[index])
-            .should("contain", queData.columnTitles[index]);
+            .type(queData.list[index])
+            .should("contain", queData.list[index]);
         });
+        cy.get("body").click();
       });
 
-      it("Add new column", () => {
+      it("Add new list items", () => {
         question
-          .getColumnAddButton()
+          .getAddInputButton()
           .click()
           .then(() => {
+            question.getListInputs().should("have.length", queData.list.length + 1);
             question
-              .getColumnTitleInptuList()
-              .should("have.length", queData.columnTitles.length + 1)
-              .last()
+              .getListDeleteByIndex(queData.list.length)
               .click()
-              .clear()
-              .type("Last")
-              .should("contain", "Last");
+              .then(() => {
+                question.getListInputs().should("have.length", queData.list.length);
+              });
           });
-      });
-
-      it("Delete existing column", () => {
-        question
-          .getColumnDeleteByIndex(queData.columnTitles.length)
-          .click()
-          .should("not.exist");
-
-        question.getColumnTitleInptuList().should("have.length", queData.columnTitles.length);
       });
     });
 
-    context("TC_59 => Row titles", () => {
-      before("Should have existing titles", () => {
-        question.getRowTitleInptuList().should("have.length", queData.rowTitles.length);
-      });
-
-      it("Edit the row names for existing", () => {
-        question.getRowTitleInptuList().each(($el, index) => {
-          cy.wrap($el)
-            .click()
-            .clear()
-            .type(queData.rowTitles[index])
-            .should("contain", queData.rowTitles[index]);
-        });
-      });
-
-      it("Add new row", () => {
-        question
-          .getRowAddButton()
-          .click()
-          .then(() => {
-            question
-              .getRowTitleInptuList()
-              .should("have.length", queData.rowTitles.length + 1)
-              .last()
-              .click()
-              .clear()
-              .type("Last")
-              .should("contain", "Last");
-          });
-      });
-
-      it("Delete existing / newly created rows", () => {
-        question
-          .getRowDeleteByIndex(queData.rowTitles.length)
-          .click()
-          .should("not.exist");
-
-        question.getRowTitleInptuList().should("have.length", queData.rowTitles.length);
-      });
-    });
-
-    context("TC_60 => Group possible responses", () => {
+    context("TC_75 => Group possible responses", () => {
       it("Check the group possible responses checkbox", () => {
         question.getGroupResponsesCheckbox().click();
 
@@ -215,7 +131,7 @@ describe('Author - "Classification" type question', () => {
       });
     });
 
-    context("TC_61 => Set Correct Answer(s)", () => {
+    context("TC_76 => Set Correct Answer(s)", () => {
       it("Update Points", () => {
         question
           .getPontsInput()
@@ -224,13 +140,13 @@ describe('Author - "Classification" type question', () => {
           .type("{selectall}1")
           .should("have.value", "1")
           .type("{uparrow}")
-          .should("have.value", "2");
-
+          .should("have.value", "2")
+          .blur();
       });
 
       it("Drag and drop the answer choices inside the box", () => {
         queData.choices.forEach((ch, index) => {
-          question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${index}`);
+          question.getDragDropItemByIndex(index).customDragDrop(`#drag-drop-board-${index}`);
           question.getDragDropBoardByIndex(index).contains("p", ch);
         });
       });
@@ -248,14 +164,14 @@ describe('Author - "Classification" type question', () => {
       });
     });
 
-    context("TC_62 => Save question", () => {
+    context("TC_77 => Save question", () => {
       it("Click on save button", () => {
         question.header.save();
         cy.url().should("contain", "item-detail");
       });
     });
 
-    context("TC_63 => Preview Items", () => {
+    context("TC_78 => Preview Items", () => {
       it("Click on preview", () => {
         preview = editItem.header.preview();
         cy.get("body").contains("span", "Check Answer");
@@ -315,117 +231,34 @@ describe('Author - "Classification" type question', () => {
       editItem.getEditButton().click();
     });
 
-    context("TC_65 => Enter the column and row", () => {
-      it("Enter only numbers", () => {
-        question
-          .getDropDownColumn()
-          .click()
-          .then(() => {
-            question
-              .getDropDownListColumn(queData.column - 1)
-              .should("be.visible")
-              .click();
-          });
-
-        question.getDropDownColumn().contains("div", queData.column);
-
-        question
-          .getDropDownRow()
-          .click()
-          .then(() => {
-            question
-              .getDropDownListRow(queData.row - 1)
-              .should("be.visible")
-              .click();
-          });
-
-        question.getDropDownRow().contains("div", queData.row);
-      });
-    });
-
-    context("TC_66 => Column titles", () => {
-      before("Should have existing titles", () => {
-        question.getColumnTitleInptuList().should("have.length", queData.columnTitles.length);
-      });
-
-      it("Edit the column names", () => {
-        question.getColumnTitleInptuList().each(($el, index) => {
+    context("TC_81 => List", () => {
+      it("Edit the list existing names", () => {
+        question.getListInputs().each(($el, index) => {
           cy.wrap($el)
-            .click()
             .clear()
-            .type(queData.columnTitles[index])
-            .should("contain", queData.columnTitles[index]);
+            .type(queData.list[index])
+            .should("contain", queData.list[index]);
         });
+        cy.get("body").click();
       });
 
-      it("Add new column", () => {
+      it("Add new list items", () => {
         question
-          .getColumnAddButton()
+          .getAddInputButton()
           .click()
           .then(() => {
+            question.getListInputs().should("have.length", queData.list.length + 1);
             question
-              .getColumnTitleInptuList()
-              .should("have.length", queData.columnTitles.length + 1)
-              .last()
+              .getListDeleteByIndex(queData.list.length)
               .click()
-              .clear()
-              .type("Last")
-              .should("contain", "Last");
+              .then(() => {
+                question.getListInputs().should("have.length", queData.list.length);
+              });
           });
-      });
-
-      it("Delete existing column", () => {
-        question
-          .getColumnDeleteByIndex(queData.columnTitles.length)
-          .click()
-          .should("not.exist");
-
-        question.getColumnTitleInptuList().should("have.length", queData.columnTitles.length);
       });
     });
 
-    context("TC_67 => Row titles", () => {
-      before("Should have existing titles", () => {
-        question.getRowTitleInptuList().should("have.length", queData.rowTitles.length);
-      });
-
-      it("Edit the row names for existing", () => {
-        question.getRowTitleInptuList().each(($el, index) => {
-          cy.wrap($el)
-            .click()
-            .clear()
-            .type(queData.rowTitles[index])
-            .should("contain", queData.rowTitles[index]);
-        });
-      });
-
-      it("Add new row", () => {
-        question
-          .getRowAddButton()
-          .click()
-          .then(() => {
-            question
-              .getRowTitleInptuList()
-              .should("have.length", queData.rowTitles.length + 1)
-              .last()
-              .click()
-              .clear()
-              .type("Last")
-              .should("contain", "Last");
-          });
-      });
-
-      it("Delete existing / newly created rows", () => {
-        question
-          .getRowDeleteByIndex(queData.rowTitles.length)
-          .click()
-          .should("not.exist");
-
-        question.getRowTitleInptuList().should("have.length", queData.rowTitles.length);
-      });
-    });
-
-    context("TC_68 => Group possible responses", () => {
+    context("TC_81 => Group possible responses", () => {
       it("Check the group possible responses checkbox", () => {
         question.getGroupResponsesCheckbox().click();
 
@@ -495,7 +328,7 @@ describe('Author - "Classification" type question', () => {
       });
     });
 
-    context("TC_69 => Set Correct Answer(s)", () => {
+    context("TC_82 => Set Correct Answer(s)", () => {
       it("Update Points", () => {
         question
           .getPontsInput()
@@ -504,13 +337,13 @@ describe('Author - "Classification" type question', () => {
           .type("{selectall}1")
           .should("have.value", "1")
           .type("{uparrow}")
-          .should("have.value", "2");
-
+          .should("have.value", "2")
+          .blur();
       });
 
       it("Drag and drop the answer choices inside the box", () => {
         queData.choices.forEach((ch, index) => {
-          question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${index}`);
+          question.getDragDropItemByIndex(index).customDragDrop(`#drag-drop-board-${index}`);
           question.getDragDropBoardByIndex(index).contains("p", ch);
         });
       });
@@ -528,7 +361,7 @@ describe('Author - "Classification" type question', () => {
       });
     });
 
-    context("TC_70 => Save question", () => {
+    context("TC_83 => Save question", () => {
       it("Click on save button", () => {
         question.header.save();
         cy.url().should("contain", "item-detail");
@@ -537,7 +370,7 @@ describe('Author - "Classification" type question', () => {
   });
 
   context("Delete the question after creation", () => {
-    context("TC_70 => Delete option", () => {
+    context("TC_84 => Delete option", () => {
       it("Click on delete button in Item Details page", () => {
         editItem
           .getDelButton()

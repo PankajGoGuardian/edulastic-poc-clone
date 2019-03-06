@@ -281,7 +281,7 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
           onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
         />
-        <Subtitle>{t("component.matchList.list")}</Subtitle>
+        <Subtitle data-cy="list-container">{t("component.matchList.list")}</Subtitle>
         <List
           buttonText={t("component.matchList.addNew")}
           items={item.list}

@@ -228,7 +228,14 @@ const MatchListPreview = ({
                         {i.responses.map(
                           (ite, ind) =>
                             dragItems.includes(ite) && (
-                              <DragItem flag="dragItems" onDrop={onDrop} key={ind} item={ite} getStyles={getStyles} />
+                              <DragItem
+                                flag="dragItems"
+                                onDrop={onDrop}
+                                key={ind}
+                                renderIndex={ind}
+                                item={ite}
+                                getStyles={getStyles}
+                              />
                             )
                         )}
                       </FlexContainer>

@@ -918,7 +918,6 @@ p {
 }
 
 #mainQuill .ql-editor p {
-  font-size: 14px !important;
   display: inherit !important;
 }
 

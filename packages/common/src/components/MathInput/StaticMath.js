@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
-
+import { isEqual } from "lodash";
 import { MathKeyboard } from "@edulastic/common";
 
 import { MathInputStyles } from "./MathInputStyles";
@@ -37,13 +37,35 @@ class StaticMath extends PureComponent {
   }
 
   componentDidMount() {
+    const { latex, innerValues } = this.props;
     const MQ = window.MathQuill.getInterface(2);
 
     const mathField = MQ.StaticMath(this.mathFieldRef.current);
 
-    this.setState({ mathField, MQ });
+    this.setState(
+      {
+        mathField,
+        MQ
+      },
+      () => {
+        this.setLatex(latex);
+        this.setInnerFieldValues(innerValues);
+      }
+    );
 
     document.addEventListener("click", this.handleClick.bind(this), false);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { latex, innerValues } = this.props;
+    if (prevProps.latex !== latex) {
+      this.setLatex(latex);
+      this.setInnerFieldValues(innerValues);
+      return;
+    }
+    if (!isEqual(innerValues, prevProps.innerValues)) {
+      this.setInnerFieldValues(innerValues);
+    }
   }
 
   setInnerFieldsFocuses = () => {
@@ -100,6 +122,12 @@ class StaticMath extends PureComponent {
     }
 
     this.setInnerFieldsFocuses();
+  };
+
+  setInnerFieldValues = values => {
+    for (let i = 0; i < values.length; i++) {
+      this.setInnerFieldValue(values[i], i);
+    }
   };
 
   setInnerFieldValue = (latex, index) => {
@@ -189,11 +217,14 @@ StaticMath.propTypes = {
   onBlur: PropTypes.func.isRequired,
   onInput: PropTypes.func.isRequired,
   symbols: PropTypes.array.isRequired,
-  numberPad: PropTypes.array.isRequired
+  numberPad: PropTypes.array.isRequired,
+  latex: PropTypes.string.isRequired,
+  innerValues: PropTypes.array
 };
 
 StaticMath.defaultProps = {
-  style: {}
+  style: {},
+  innerValues: []
 };
 
 // export default StaticMath;

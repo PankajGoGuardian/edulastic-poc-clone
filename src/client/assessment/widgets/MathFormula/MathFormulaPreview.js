@@ -23,6 +23,7 @@ const MathFormulaPreview = ({
   const isStatic = studentTemplate.search(/\\MathQuillMathField\{(.*)\}/g) !== -1;
 
   const [latex, setLatex] = useState(studentTemplate);
+  const [innerValues, setInnerValues] = useState([]);
 
   const onUserResponse = latexv => {
     setLatex(latexv);
@@ -38,7 +39,6 @@ const MathFormulaPreview = ({
   const escapeRegExp = string => string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
   const setUserResponse = () => {
-    studentRef.current.setLatex(studentTemplate);
     if (!userAnswer) {
       setLatex(studentTemplate);
       return;
@@ -48,10 +48,7 @@ const MathFormulaPreview = ({
       escapeRegExp(studentTemplate).replace(/\\\\MathQuillMathField\\\{\\\}/g, "(.*)"),
       "g"
     );
-    const innerValues = regexTemplate.exec(userAnswer);
-    for (let i = 1; i < innerValues.length; i++) {
-      studentRef.current.setInnerFieldValue(innerValues[i], i - 1);
-    }
+    setInnerValues(regexTemplate.exec(userAnswer).slice(1));
   };
 
   useEffect(() => {
@@ -60,10 +57,9 @@ const MathFormulaPreview = ({
         setLatex(userAnswer || studentTemplate);
         return;
       }
-
       setUserResponse();
     }
-  }, [studentTemplate, previewType]);
+  }, [studentTemplate, previewType, userAnswer]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -71,10 +67,9 @@ const MathFormulaPreview = ({
         setLatex(userAnswer || studentTemplate);
         return;
       }
-
       setUserResponse();
     }, 0);
-  }, [studentTemplate]);
+  }, [studentTemplate, userAnswer]);
 
   let statusColor = theme.widgets.mathFormula.inputColor;
   if (previewType === SHOW || previewType === CHECK) {
@@ -97,6 +92,8 @@ const MathFormulaPreview = ({
             onInput={onUserResponse}
             onBlur={onBlur}
             style={{ background: statusColor }}
+            latex={studentTemplate}
+            innerValues={innerValues}
           />
         )}
         {!isStatic && (

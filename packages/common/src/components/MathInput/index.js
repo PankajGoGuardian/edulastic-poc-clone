@@ -12,7 +12,7 @@ const { EMBED_RESPONSE } = math;
 class MathInput extends React.PureComponent {
   state = {
     mathField: null,
-    mathFieldFocus: true
+    mathFieldFocus: false
   };
 
   containerRef = React.createRef();

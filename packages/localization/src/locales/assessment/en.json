@@ -152,7 +152,8 @@
       "responseContainerPositionOption": "Response container position",
       "button": "Button",
       "list": "List",
-      "listStyle": "List style"
+      "listStyle": "List style",
+      "maximumWidth": "Maximum width"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",

@@ -1,19 +1,19 @@
 import { groupBy } from "lodash";
 
-export const getFontSize = fontSize => {
+export const getFontSize = (fontSize, withRem = false) => {
   switch (fontSize) {
     case "small":
-      return "12px";
+      return withRem ? "0.8rem" : "12px";
     case "normal":
-      return "14px";
+      return withRem ? "1rem" : "14px";
     case "large":
-      return "16px";
+      return withRem ? "1.2rem" : "16px";
     case "xlarge":
-      return "18px";
+      return withRem ? "1.4rem" : "18px";
     case "xxlarge":
-      return "20px";
+      return withRem ? "1.6rem" : "20px";
     default:
-      return "14px";
+      return withRem ? "1rem" : "14px";
   }
 };
 

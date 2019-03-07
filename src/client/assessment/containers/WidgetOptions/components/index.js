@@ -17,6 +17,7 @@ export { default as RowMinHeightOption } from "./RowMinHeight";
 export { default as ResponseContainerPositionOption } from "./ResponseContainerPosition";
 export { default as StemNumerationOption } from "./StemNumeration";
 export { default as ListStyleOption } from "./ListStyle";
+export { default as MaxWidthOption } from "./MaxWidth";
 
 export { default as SpecialCharacters } from "./SpecialCharacters";
 export { default as Scoring } from "./Scoring";

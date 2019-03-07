@@ -11,6 +11,7 @@ import { testsAddItemsSaga } from "../../TestPage/components/AddItems";
 import { testsAssignSaga } from "../../TestPage/components/Assign";
 import assignmentsSaga from "./assignments";
 import { authorGroupsWatcherSaga } from "../../sharedDucks/groups";
+import { assessmentPageSaga } from "../../AssessmentCreate";
 
 const authorSagas = [
   itemsSaga(),
@@ -25,7 +26,8 @@ const authorSagas = [
   testPageSaga(),
   testsAddItemsSaga(),
   testsAssignSaga(),
-  authorGroupsWatcherSaga()
+  authorGroupsWatcherSaga(),
+  assessmentPageSaga()
 ];
 
 export default authorSagas;

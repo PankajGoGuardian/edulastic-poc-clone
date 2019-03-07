@@ -37,8 +37,11 @@ function* receiveItemSaga({ payload }) {
 
 export function* updateItemSaga({ payload }) {
   try {
-    // avoid data part being put into db
-    delete payload.data.data;
+    if (!payload.keepData) {
+      // avoid data part being put into db
+      delete payload.data.data;
+    }
+
     const item = yield call(testItemsApi.updateById, payload.id, payload.data);
 
     yield put({

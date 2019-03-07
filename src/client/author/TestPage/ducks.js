@@ -38,7 +38,7 @@ export const receiveTestByIdSuccess = entity => ({
 });
 
 export const receiveTestByIdError = error => ({
-  type: RECEIVE_TEST_BY_ID_SUCCESS,
+  type: RECEIVE_TEST_BY_ID_ERROR,
   payload: { error }
 });
 
@@ -57,9 +57,9 @@ export const createTestErrorAction = error => ({
   payload: { error }
 });
 
-export const updateTestAction = (id, data) => ({
+export const updateTestAction = (id, data, updateLocal) => ({
   type: UPDATE_TEST_REQUEST,
-  payload: { id, data }
+  payload: { id, data, updateLocal }
 });
 
 export const updateTestSuccessAction = entity => ({
@@ -83,7 +83,7 @@ export const setDefaultTestDataAction = () => ({
 
 // reducer
 
-const initialTestState = {
+export const initialTestState = {
   title: "New Test",
   description: "",
   releaseScore: test.releaseGradeLabels.DONT_RELEASE,
@@ -252,6 +252,10 @@ function* updateTestSaga({ payload }) {
 
     yield put(updateTestSuccessAction(entity));
     yield call(message.success, "Success update");
+
+    if (payload.updateLocal) {
+      yield put(setTestDataAction(payload.data));
+    }
   } catch (err) {
     const errorMessage = "Update test is failing";
     yield call(message.error, errorMessage);
@@ -289,6 +293,11 @@ export const getTestIdSelector = createSelector(
 export const getTestsCreatingSelector = createSelector(
   stateSelector,
   state => state.creating
+);
+
+export const getTestsLoadingSelector = createSelector(
+  stateSelector,
+  state => state.loading
 );
 
 export const getTestItemsRowsSelector = createSelector(

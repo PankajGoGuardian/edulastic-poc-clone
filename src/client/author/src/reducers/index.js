@@ -18,6 +18,7 @@ import { itemDetail } from "../../ItemDetail";
 import { question } from "../../QuestionEditor";
 import { testsAddItems } from "../../TestPage/components/AddItems";
 import { testAssignmentsReducer } from "../../TestPage/components/Assign";
+import { assessmentCreate } from "../../AssessmentCreate";
 
 const authorReducers = {
   authorUi,
@@ -39,7 +40,8 @@ const authorReducers = {
   studentResponse,
   feedbackResponse,
   tests,
-  testList
+  testList,
+  assessmentCreate
 };
 
 export default authorReducers;

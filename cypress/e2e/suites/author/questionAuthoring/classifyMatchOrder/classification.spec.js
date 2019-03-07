@@ -224,8 +224,8 @@ describe('Author - "Classification" type question', () => {
           .type("{selectall}1")
           .should("have.value", "1")
           .type("{uparrow}")
-          .should("have.value", "2");
-
+          .should("have.value", "2")
+          .blur();
       });
 
       it("Drag and drop the answer choices inside the box", () => {
@@ -504,8 +504,8 @@ describe('Author - "Classification" type question', () => {
           .type("{selectall}1")
           .should("have.value", "1")
           .type("{uparrow}")
-          .should("have.value", "2");
-
+          .should("have.value", "2")
+          .blur();
       });
 
       it("Drag and drop the answer choices inside the box", () => {

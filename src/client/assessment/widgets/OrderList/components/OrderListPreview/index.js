@@ -10,7 +10,7 @@ class OrderListPreview extends Component {
     const { questions, smallSize, listStyle } = this.props;
 
     return (
-      <div style={listStyle}>
+      <div data-cy="order-preview-container" style={listStyle}>
         {questions &&
           !!questions.length &&
           questions.map((q, i) => (

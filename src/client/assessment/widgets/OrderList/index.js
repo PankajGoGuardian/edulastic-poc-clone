@@ -187,6 +187,7 @@ class OrderList extends Component {
 
       return (
         <OptionsList
+          data-cy="match-option-list"
           prefix="options2"
           readOnly
           items={
@@ -234,7 +235,7 @@ class OrderList extends Component {
               <Subtitle>{t("component.orderlist.composeQuestion")}</Subtitle>
 
               <QuestionTextArea onChange={handleQuestionChange} value={item.stimulus} style={{ marginBottom: 30 }} />
-              <Subtitle>{t("component.orderlist.list")}</Subtitle>
+              <Subtitle data-cy="list-container">{t("component.orderlist.list")}</Subtitle>
               <List
                 onAdd={handleAddQuestion}
                 items={item.list}

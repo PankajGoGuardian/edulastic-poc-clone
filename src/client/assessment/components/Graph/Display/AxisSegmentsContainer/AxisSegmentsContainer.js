@@ -183,7 +183,7 @@ class AxisSegmentsContainer extends Component {
     const { tools } = this.props;
 
     return {
-      name: tools[0],
+      name: tools[0] || undefined,
       index: 0,
       groupIndex: -1
     };
@@ -302,7 +302,7 @@ class AxisSegmentsContainer extends Component {
     const { selectedTool } = this.state;
     if (JSON.stringify(tools) !== JSON.stringify(prevProps.tools)) {
       this.setDefaultToolState();
-      this._graph.setTool(tools[0], graphType, canvas.responsesAllowed);
+      this._graph.setTool(tools[0] || CONSTANT.TOOLS.SEGMENTS_POINT, graphType, canvas.responsesAllowed);
     }
     if (this._graph) {
       if (
@@ -634,7 +634,7 @@ class AxisSegmentsContainer extends Component {
   };
 
   render() {
-    const { layout, graphType, canvas, elements } = this.props;
+    const { layout, graphType, canvas, elements, tools } = this.props;
     const { selectedTool } = this.state;
 
     return (
@@ -645,6 +645,7 @@ class AxisSegmentsContainer extends Component {
           </div>
           <SegmentsTools
             tool={selectedTool}
+            toolbar={tools}
             elementsNumber={elements.length}
             getIconByToolName={this.getIconByToolName}
             onSelect={this.onSelectTool}

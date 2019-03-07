@@ -16,7 +16,7 @@ import {
 } from "../../common/styled_components";
 import FontSizeDropdown from "../AxisLabelsLayoutSettings/FontSizeDropdown";
 import RenderingBaseDropdown from "../AxisLabelsLayoutSettings/RenderingBaseDropdown";
-import { QuestionSection, ScoreSettings } from "../";
+import { QuestionSection, ScoreSettings, SegmentsToolsSettings } from "../";
 
 class AxisSegmentsMoreOptions extends Component {
   state = {
@@ -26,6 +26,12 @@ class AxisSegmentsMoreOptions extends Component {
     labelDisplaySpecPoints: "",
     currentRenderingBaseItem: {}
   };
+
+  scoringTypes = [
+    { label: "Exact match", value: "exactMatch" },
+    { label: "Partial match", value: "partialMatch" },
+    { label: "Partial match v2", value: "partialMatchV2" }
+  ];
 
   handleNumberlineCheckboxChange = (name, checked) => {
     const { numberlineAxis, setNumberline } = this.props;
@@ -134,13 +140,15 @@ class AxisSegmentsMoreOptions extends Component {
       fillSections,
       cleanSections,
       setValidation,
-      graphData
+      graphData,
+      toolbar,
+      setControls
     } = this.props;
     const { layout, minWidth, currentRenderingBaseItem } = this.state;
     return (
       <Fragment>
         <QuestionSection section="advanced" label="SCORING" cleanSections={cleanSections} fillSections={fillSections}>
-          <ScoreSettings setValidation={setValidation} graphData={graphData} />
+          <ScoreSettings scoringTypes={this.scoringTypes} setValidation={setValidation} graphData={graphData} />
         </QuestionSection>
 
         <QuestionSection section="advanced" label="LAYOUT" cleanSections={cleanSections} fillSections={fillSections}>
@@ -274,6 +282,10 @@ class AxisSegmentsMoreOptions extends Component {
               </Col>
             </Row>
           </MoreOptionsContainer>
+        </QuestionSection>
+
+        <QuestionSection section="advanced" label="TOOLBAR" cleanSections={cleanSections} fillSections={fillSections}>
+          <SegmentsToolsSettings onChange={setControls} toolbar={toolbar} />
         </QuestionSection>
 
         <QuestionSection section="advanced" label="TICKS" cleanSections={cleanSections} fillSections={fillSections}>

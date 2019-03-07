@@ -13,7 +13,9 @@ const AxisSegmentsOptions = ({
   fillSections,
   cleanSections,
   graphData,
-  setValidation
+  setValidation,
+  setControls,
+  toolbar
 }) => {
   const getFontSizeList = () => [
     {
@@ -75,6 +77,8 @@ const AxisSegmentsOptions = ({
         setCanvas={setCanvas}
         canvasConfig={canvas}
         setOptions={setOptions}
+        toolbar={graphData.toolbar}
+        setControls={setControls}
         fillSections={fillSections}
         cleanSections={cleanSections}
         setNumberline={setNumberline}

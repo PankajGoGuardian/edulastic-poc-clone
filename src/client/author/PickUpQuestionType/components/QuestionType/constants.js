@@ -850,8 +850,8 @@ export const getCards = onSelectQuestionType => {
           default_control: "undo"
         },
         toolbar: {
-          tools: ["segmentsPoint"],
-          default_tool: "segmentsPoint"
+          tools: [],
+          default_tool: null
         },
         numberlineAxis: {
           leftArrow: false,
@@ -968,9 +968,9 @@ export const getCards = onSelectQuestionType => {
               .substr(2, 9)}`
           }
         ],
-        controlbar: {
-          controls: ["undo", "redo"],
-          default_control: "undo"
+        toolbar: {
+          controls: [],
+          default_control: ""
         },
         stimulus: "[This is the stem. axisLabels]",
         validation: {

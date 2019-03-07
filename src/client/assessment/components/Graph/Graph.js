@@ -145,11 +145,17 @@ class Graph extends Component {
       setOptions: this.handleOptionsChange,
       setNumberline: this.handleNumberlineChange,
       setCanvas: this.handleCanvasChange,
+      setControls: this.handleToolbarChange,
       graphData: item,
       fillSections,
       cleanSections,
       setValidation: this.handleValidationChange
     };
+  };
+
+  handleToolbarChange = options => {
+    const { setQuestionData, item } = this.props;
+    setQuestionData({ ...item, toolbar: options });
   };
 
   handleControlbarChange = options => {

@@ -14,10 +14,7 @@ import { ButtonBar, SecondHeadBar } from "../../../src/components/common";
 import QuestionWrapper from "../../../../assessment/components/QuestionWrapper";
 import QuestionMetadata from "../../../../assessment/containers/QuestionMetadata";
 import ItemHeader from "../ItemHeader/ItemHeader";
-import {
-  saveQuestionAction,
-  setQuestionDataAction
-} from "../../ducks";
+import { saveQuestionAction, setQuestionDataAction } from "../../ducks";
 import { getItemIdSelector } from "../../../ItemDetail/ducks";
 import { getCurrentQuestionSelector } from "../../../sharedDucks/questions";
 import { checkAnswerAction, showAnswerAction } from "../../../src/actions/testItem";
@@ -107,7 +104,8 @@ class Container extends Component {
         title: "ITEM DETAIL",
         to: `/author/items/${testItemId}/item-detail`
       },
-      { title: question.title,
+      {
+        title: question.title,
         to: ""
       }
     ];
@@ -143,6 +141,8 @@ class Container extends Component {
           changePreviewTab={this.handleChangePreviewTab}
           onSave={this.handleSave}
           view={view}
+          showCheckButton={question.validation.checkAnswerButton}
+          allowedAttempts={question.validation.checkAttempts}
           previewTab={previewTab}
           breadcrumb={this.breadcrumb}
         />

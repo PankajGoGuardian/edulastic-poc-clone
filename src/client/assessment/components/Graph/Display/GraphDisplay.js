@@ -343,7 +343,12 @@ class GraphDisplay extends Component {
 
     return (
       <Fragment>
-        <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: stimulus }} />
+        <QuestionHeader
+          qIndex={qIndex}
+          smallSize={smallSize}
+          dangerouslySetInnerHTML={{ __html: stimulus }}
+          data-cy="questionHeader"
+        />
         {showAnswer ? "showAnswer" : null}
         {checkAnswer ? "checkAnswer" : null}
         {clearAnswer ? "clearAnswer" : null}

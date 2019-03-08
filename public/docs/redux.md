@@ -46,8 +46,8 @@ provided below
 Action types will be a string prefixed with the affecting storeSlice. i.e
 
 ```js
-const SET_ASSIGNMENT = '[studentAssignment] set student assignments';
-const DELETE_ASSIGNMENT = '[studentAssignment] delete student assignment';
+const SET_ASSIGNMENT = "[studentAssignment] set student assignments";
+const DELETE_ASSIGNMENT = "[studentAssignment] delete student assignment";
 ```
 
 ## Actions Creators
@@ -79,7 +79,7 @@ We are using [`reselect`](https://github.com/reduxjs/reselect#readme) for writin
 - Selectors are composable. They can be used as input to other selectors.
 
 ```js
-import { createSelector } from 'reselect';
+import { createSelector } from "reselect";
 
 const shopItemsSelector = state => state.shop.items;
 const taxPercentSelector = state => state.shop.taxPercent;
@@ -104,7 +104,7 @@ export const totalSelector = createSelector(
 let exampleState = {
   shop: {
     taxPercent: 8,
-    items: [{ name: 'apple', value: 1.2 }, { name: 'orange', value: 0.95 }]
+    items: [{ name: "apple", value: 1.2 }, { name: "orange", value: 0.95 }]
   }
 };
 ```
@@ -116,12 +116,12 @@ let exampleState = {
 ### Sample Duck
 
 ```js
-import { createSelector } from 'reselect';
-import { createAction, createReducer } from 'redux-starter-kit';
+import { createSelector } from "reselect";
+import { createAction, createReducer } from "redux-starter-kit";
 
 // action types
-export const ADD_TODO = '[todo] add todo';
-export const DELETE_TODO = '[todo] delete todo';
+export const ADD_TODO = "[todo] add todo";
+export const DELETE_TODO = "[todo] delete todo";
 
 // action creators
 export const addTodoAction = createAction(ADD_TODO);

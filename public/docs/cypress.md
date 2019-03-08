@@ -1,4 +1,4 @@
-# File/Folder Structure 
+# File/Folder Structure
 
 ```
      cypress
@@ -36,12 +36,11 @@
 
 ```
 
-At root level we have following folders - 
+At root level we have following folders -
 
 - **e2e**: contains the page objects and spec files.
-    - **framework**: constains all page objects, organized seperately at author/student level in respective folders.
-    - **suites**: constains all test spec files, organized seperately at author/student level in respective folders.
-        
+  - **framework**: constains all page objects, organized seperately at author/student level in respective folders.
+  - **suites**: constains all test spec files, organized seperately at author/student level in respective folders.
 - **fixtures**: contains the static test data.
 
 - **support**: contains all support files.Cypress includes the support file cypress/support/index.js by default and it runs before every single spec file,so here we can put all reusable Custom Commands (commands.js) or global overrides that we want use across the spec files.Just put the new support files(if any) into support folder and import into index.js.
@@ -56,13 +55,13 @@ At root level we have following folders -
 - Spec files should follow *.spec.js as naming convention and similarly pageObject files should follow *Page.js as naming convention.
 - Use [Cypress best practices](https://docs.cypress.io/guides/references/best-practices.html) and avoid anti- patterns.
 - Description of automated tests should be mapped with the test case id to identify the tests easily.For eg:
-        describe('Author - "Multiple choice - block layout" type question', () => { ...
-          context('User creates question.', () => { ...
-            it('[Tc_301]:test => Enter question text', () => { ...
-            
-            ...})
-          })
-        })
+  describe('Author - "Multiple choice - block layout" type question', () => { ...
+  context('User creates question.', () => { ...
+  it('[Tc_301]:test => Enter question text', () => { ...
+    
+   ...})
+  })
+  })
 
         Report logs will look like below:
 

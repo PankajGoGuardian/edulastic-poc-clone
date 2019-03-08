@@ -26,6 +26,6 @@ Container Components
 
 ## Life Cycle Methods 💓 🚴
 
-- Make api calls  and related actions (dispatch actions that make async calls) in `ComponentDidMount`.
+- Make api calls and related actions (dispatch actions that make async calls) in `ComponentDidMount`.
 - Do cleanup actions in `ComponentWillUnMount`.
 - No other lifecycle methods are recommended.

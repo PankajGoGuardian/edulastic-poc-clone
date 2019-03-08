@@ -29,7 +29,7 @@ export function* sendDataSaga() {
     let response;
     try {
       // Send the data to the server and get a response back
-      response = yield call(apiPost, '/api/data', data);
+      response = yield call(apiPost, "/api/data", data);
     } catch (err) {
       // Report errors to our store
       yield put(sendDataFailure(err));
@@ -37,7 +37,7 @@ export function* sendDataSaga() {
     }
     // Report success to our store and redirect to another page
     yield put(sendDataSuccess(response));
-    yield put(push('/next-page'));
+    yield put(push("/next-page"));
   }
 }
 ```

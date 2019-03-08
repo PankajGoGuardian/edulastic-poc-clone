@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { Dropdown } from "antd";
 import { withNamespaces } from "@edulastic/localization";
+
 import { FlexContainer } from "@edulastic/common";
 
 import arrowUpIcon from "../../assets/arrow-up.svg";
@@ -178,7 +179,7 @@ class TableList extends Component {
   };
 
   render() {
-    const menu = <ActionMenu />;
+    let currentIndex = 0;
     const columns = [
       {
         title: "Assignment Name",
@@ -253,13 +254,20 @@ class TableList extends Component {
       {
         dataIndex: "action",
         width: "14%",
-        render: () => (
-          <ActionDiv>
-            <Dropdown overlay={menu} placement="bottomCenter" trigger={["click"]}>
-              <BtnAction>ACTIONS</BtnAction>
-            </Dropdown>
-          </ActionDiv>
-        )
+        render: () => {
+          currentIndex++;
+          return (
+            <ActionDiv>
+              <Dropdown
+                overlay={ActionMenu(this.props.onOpenReleaseScoreSettings, this.props.assignments[currentIndex])}
+                placement="bottomCenter"
+                trigger={["click"]}
+              >
+                <BtnAction>ACTIONS</BtnAction>
+              </Dropdown>
+            </ActionDiv>
+          );
+        }
       }
     ];
 

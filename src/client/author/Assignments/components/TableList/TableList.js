@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { Dropdown } from "antd";
 import { withNamespaces } from "@edulastic/localization";
+import { test } from "@edulastic/constants";
 
 import { FlexContainer } from "@edulastic/common";
 
@@ -23,6 +24,7 @@ import {
   IconArrowDown,
   BtnAction,
   AssignedImg,
+  PracticeIcon,
   ExpandDivdier,
   BtnSubmitted,
   BtnStarted,
@@ -41,7 +43,8 @@ const convertTableData = data => ({
   submitted: `${data[0].submittedNumber} of ${data.length}`,
   graded: "1",
   action: "",
-  classId: data[0].classId
+  classId: data[0].classId,
+  currentAssignment: data
 });
 const convertExpandTableData = (data, totalNumber) => ({
   name: "",
@@ -95,7 +98,11 @@ class TableList extends Component {
         width: "11%",
         render: () => (
           <div>
-            <AssignedImg src={assignedIcon} />
+            {getInfo && getInfo.type === test.type.PRACTICE ? (
+              <PracticeIcon>P</PracticeIcon>
+            ) : (
+              <AssignedImg src={assignedIcon} />
+            )}
           </div>
         )
       },
@@ -179,7 +186,6 @@ class TableList extends Component {
   };
 
   render() {
-    let currentIndex = 0;
     const columns = [
       {
         title: "Assignment Name",
@@ -254,20 +260,17 @@ class TableList extends Component {
       {
         dataIndex: "action",
         width: "14%",
-        render: () => {
-          currentIndex++;
-          return (
-            <ActionDiv>
-              <Dropdown
-                overlay={ActionMenu(this.props.onOpenReleaseScoreSettings, this.props.assignments[currentIndex])}
-                placement="bottomCenter"
-                trigger={["click"]}
-              >
-                <BtnAction>ACTIONS</BtnAction>
-              </Dropdown>
-            </ActionDiv>
-          );
-        }
+        render: (text, row) => (
+          <ActionDiv>
+            <Dropdown
+              overlay={ActionMenu(this.props.onOpenReleaseScoreSettings, row.currentAssignment)}
+              placement="bottomCenter"
+              trigger={["click"]}
+            >
+              <BtnAction>ACTIONS</BtnAction>
+            </Dropdown>
+          </ActionDiv>
+        )
       }
     ];
 

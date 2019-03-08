@@ -16,7 +16,7 @@ import { Container, StyledMenu, StyledLink, SpaceElement } from "./styled";
 
 const { releaseGradeLabels } = test;
 
-const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment) => {
+const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment = []) => {
   const getDontReleaseGradeAssignments = currentAssignment.filter(item => {
     return item.releaseScore === releaseGradeLabels.DONT_RELEASE;
   });

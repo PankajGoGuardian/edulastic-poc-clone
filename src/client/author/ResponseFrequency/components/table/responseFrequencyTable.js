@@ -14,6 +14,14 @@ export class ResponseFrequencyTable extends Component {
     this.columns = this.props.columns;
 
     this.columns[0].sorter = this.sortTextColumn.bind(null, "qLabel");
+    this.columns[2].render = (data, record) => {
+      if (data && Array.isArray(data)) {
+        return data.join(", ");
+      } else if (typeof data == "string") {
+        return data;
+      }
+      return "";
+    };
     this.columns[4].sorter = this.sortTextColumn.bind(null, "corr_cnt");
     this.columns[4].render = (data, record) => {
       let tooltipText = (record, assessment) => {
@@ -64,6 +72,7 @@ export class ResponseFrequencyTable extends Component {
       let { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record;
       let sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
       let correct = ((corr_cnt / sum) * 100).toFixed(2);
+      if (isNaN(correct)) correct = 0;
 
       return (
         <div style={{ display: "contents" }}>
@@ -80,7 +89,8 @@ export class ResponseFrequencyTable extends Component {
     this.columns[5].render = (data, record) => {
       let { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record;
       let sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
-      let skip = (data / sum) * 100;
+      let skip = (skip_cnt / sum) * 100;
+      if (isNaN(skip)) skip = 0;
       return skip.toFixed(2) + "%";
     };
 
@@ -90,6 +100,7 @@ export class ResponseFrequencyTable extends Component {
       if (!data || Object.keys(data).length === 0) {
         let { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record;
         let sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
+        if (sum == 0) sum = 1;
         arr.push({ value: ((corr_cnt / sum) * 100).toFixed(2), name: "Correct", key: "corr_cnt" });
         arr.push({ value: ((incorr_cnt / sum) * 100).toFixed(2), name: "Incorrect", key: "incorr_cnt" });
         arr.push({ value: ((part_cnt / sum) * 100).toFixed(2), name: "Partially Correct", key: "part_cnt" });
@@ -98,16 +109,17 @@ export class ResponseFrequencyTable extends Component {
         let sum = 0;
         arr = Object.keys(data).map((key, i) => {
           let obj = {
-            value: data[key],
+            value: isNaN(data[key]) ? 0 : data[key],
             name: key,
             key: key
           };
-          sum = sum + data[key];
+          sum = sum + obj.value;
           return obj;
         });
 
         for (let i = 0; i < arr.length; i++) {
           arr[i].value = ((arr[i].value / sum) * 100).toFixed(2);
+          if (isNaN(arr[i].value)) arr[i].value = 0;
         }
       }
 

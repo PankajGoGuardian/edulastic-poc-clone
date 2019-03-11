@@ -58,7 +58,8 @@ export class SimpleBarChart extends PureComponent {
       let sum = tmp.corr_cnt + tmp.incorr_cnt + tmp.skip_cnt + tmp.part_cnt;
       tmp.name = data;
       tmp.correct = ((tmp.corr_cnt / sum) * 100).toFixed(2);
-      tmp.incorrect = 100 - ((tmp.corr_cnt / sum) * 100).toFixed(2);
+      if (isNaN(tmp.correct)) tmp.correct = 0;
+      tmp.incorrect = (100 - tmp.correct).toFixed(2);
       return tmp;
     });
     return arr;

@@ -34,11 +34,10 @@ function* receiveGradeBookSaga({ payload }) {
 
 function* receiveTestActivitySaga({ payload }) {
   try {
-    //test, testItemsData, testActivities, studentNames, testQuestionActivities
-    const { additionalData, ...gradebookData } = yield call(classBoardApi.testActivity, payload);
+    const { result, additionalData } = yield call(classBoardApi.testActivity, payload);
     yield put({
       type: RECEIVE_TESTACTIVITY_SUCCESS,
-      payload: { gradebookData, additionalData }
+      payload: { entities: result, additionalData }
     });
   } catch (err) {
     const errorMessage = "Receive tests is failing";

@@ -51,14 +51,9 @@ class SecondHeadBar extends Component {
   };
 
   handleCheckClick = () => {
-    const { changePreviewTab, allowedAttempts } = this.props;
-    const { attempts } = this.state;
+    const { changePreviewTab } = this.props;
 
-    if (attempts < allowedAttempts) {
-      this.setState({ attempts: attempts + 1 }, () => changePreviewTab(CHECK));
-    } else if (window.location.pathname.includes("author")) {
-      changePreviewTab(CHECK);
-    }
+    changePreviewTab(CHECK);
   };
 
   render() {

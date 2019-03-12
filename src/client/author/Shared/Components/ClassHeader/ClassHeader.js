@@ -1,10 +1,12 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/destructuring-assignment */
 /* eslint-disable jsx-a11y/alt-text */
 import React, { Component } from "react";
 import { compose } from "redux";
-import { withNamespaces } from "@edulastic/localization";
-import { message } from "antd";
+import { Popconfirm, Switch, message } from "antd";
 import moment from "moment";
-import Assigned from "../../assets/assigned.svg";
+import { withNamespaces } from "@edulastic/localization";
+import Assigned from "../../Assets/assigned.svg";
 
 import {
   Container,
@@ -18,13 +20,12 @@ import {
   StyledSwitch,
   StyledDiv,
   StyledTabs,
-  StyledAnchorA,
   StyledAnchor
 } from "./styled";
 
-class ListHeader extends Component {
-  constructor() {
-    super();
+class ClassHeader extends Component {
+  constructor(props) {
+    super(props);
     this.state = {
       visible: false,
       condition: true // Whether meet the condition, if not show popconfirm.
@@ -52,7 +53,6 @@ class ListHeader extends Component {
     }
     // Determining condition before show the popconfirm.
     // eslint-disable-next-line react/destructuring-assignment
-    console.log(this.state.condition);
     // eslint-disable-next-line react/destructuring-assignment
     if (this.state.condition) {
       this.confirm(); // next step
@@ -62,7 +62,7 @@ class ListHeader extends Component {
   };
 
   render() {
-    const { additionalData } = this.props;
+    const { t, active, assignmentId, classId, testActivityId, additionalData = {} } = this.props;
     const endDate = additionalData.endDate;
     const dueDate = isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate));
 
@@ -75,24 +75,34 @@ class ListHeader extends Component {
           </StyledParaSecond>
         </StyledTitle>
         <StyledTabs>
-          <StyledAnchorA>
-            <StyledLink to="/author/classboard">
+          <StyledAnchor isActive={active === "classboard"}>
+            <StyledLink isActive={active === "classboard"} to={`/author/classboard/${assignmentId}/${classId}`}>
               <img src={Assigned} />
               <SpaceD />
-              LIVE CLASS BOARD
-            </StyledLink>
-          </StyledAnchorA>
-          <StyledAnchor>
-            <StyledLink to="/author/expressgrader">
-              <img src={Assigned} />
-              <SpaceD />
-              EXPRESS GRADER
+              {t("common.liveClassBoard")}
             </StyledLink>
           </StyledAnchor>
-          <StyledAnchor>
+          <StyledAnchor isActive={active === "expressgrader"}>
+            <StyledLink
+              isActive={active === "expressgrader"}
+              to={`/author/expressgrader/${assignmentId}/${classId}/${testActivityId}`}
+            >
+              <img src={Assigned} />
+              <SpaceD />
+              {t("common.expressGrader")}
+            </StyledLink>
+          </StyledAnchor>
+          <StyledAnchor isActive={active === "reports"}>
             <img src={Assigned} />
             <SpaceD />
-            REPORTS
+            {t("common.reports")}
+          </StyledAnchor>
+          <StyledAnchor>
+            <StyledLink to={`/author/standardsBasedReport/${this.props.assignmentId}/${this.props.classId}`}>
+              <img src={Assigned} />
+              <SpaceD />
+              {t("common.standardBasedReports")}
+            </StyledLink>
           </StyledAnchor>
         </StyledTabs>
         <StyledDiv>
@@ -113,8 +123,8 @@ class ListHeader extends Component {
   }
 }
 
-ListHeader.propTypes = {};
+ClassHeader.propTypes = {};
 
-const enhance = compose(withNamespaces("author"));
+const enhance = compose(withNamespaces("classBoard"));
 
-export default enhance(ListHeader);
+export default enhance(ClassHeader);

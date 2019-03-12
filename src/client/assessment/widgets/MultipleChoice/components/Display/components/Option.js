@@ -127,8 +127,8 @@ const Option = props => {
         <FlexContainer justifyContent={uiStyle.type === "radioBelow" ? "center" : "space-between"}>
           {renderCheckbox()}
           <IconWrapper>
-            {className === "right" && <IconCheck />}
-            {className === "wrong" && <IconClose />}
+            {isSelected && className === "right" && <IconCheck />}
+            {isSelected && className === "wrong" && <IconClose />}
           </IconWrapper>
         </FlexContainer>
       </PaddingDiv>

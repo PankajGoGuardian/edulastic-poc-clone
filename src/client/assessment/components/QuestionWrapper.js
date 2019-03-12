@@ -40,6 +40,7 @@ import { MathFormula } from "../widgets/MathFormula";
 import { FormulaEssay } from "../widgets/FormulaEssay";
 import FeedbackBottom from "./FeedbackBottom";
 import FeedbackRight from "./FeedbackRight";
+import Timespent from "./Timespent";
 import { setQuestionDataAction } from "../../author/src/actions/question";
 
 const getQuestion = type => {
@@ -184,7 +185,7 @@ class QuestionWrapper extends Component {
     const { type, timespent, data, showFeedback, multiple, view, setQuestionData, t, ...restProps } = this.props;
     const { main, advanced, activeTab } = this.state;
     const Question = getQuestion(type);
-
+    const studentName = ""; //data.activity.studentName;
     const changeItem = (prop, uiStyle) => {
       const newItem = cloneDeep(data);
 
@@ -206,12 +207,13 @@ class QuestionWrapper extends Component {
     return (
       <ThemeProvider theme={themes.default}>
         <QuestionContext.Provider value={{ item: data, setQuestionData, t, changeItem, changeUIStyle }}>
-          <PaperWrapper>
+          <PaperWrapper style={{ width: "-webkit-fill-available", display: "flex" }}>
             {type === "graph" && view === "edit" && (
               <QuestionMenu activeTab={activeTab} main={main} advanced={advanced} />
             )}
             <Fragment>
               <div style={{ flex: "auto" }}>
+                <Timespent timespent={timespent} view={view} />
                 <Question
                   {...restProps}
                   setQuestionData={setQuestionData}
@@ -221,7 +223,12 @@ class QuestionWrapper extends Component {
                   fillSections={this.fillSections}
                 />
               </div>
-              {showFeedback && (multiple ? <FeedbackBottom widget={data} /> : <FeedbackRight widget={data} />)}
+              {showFeedback &&
+                (multiple ? (
+                  <FeedbackBottom widget={data} />
+                ) : (
+                  <FeedbackRight widget={data} studentName={studentName} />
+                ))}
             </Fragment>
           </PaperWrapper>
         </QuestionContext.Provider>

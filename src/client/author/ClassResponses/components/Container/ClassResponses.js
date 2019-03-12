@@ -6,24 +6,22 @@ import { withWindowSizes } from "@edulastic/common";
 import { Link } from "react-router-dom";
 import { withNamespaces } from "@edulastic/localization";
 import { ComposedChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
-
-import ClassQuestions from "./ClassQuestions";
-
-import { receiveStudentResponseAction } from "../../../src/actions/classBoard";
-
+// actions
+import { receiveStudentResponseAction, receiveClassResponseAction } from "../../../src/actions/classBoard";
+// selectors
 import {
   getClassResponseSelector,
   getStudentResponseSelector,
-  getTestActivitySelector
-} from "../../../src/selectors/classBoard";
-
-import { getAdditionalDataSelector } from "../../../ClassBoard/ducks";
-
-import ListHeader from "../ListHeader/ListHeader";
-import SortClass from "../SortClass/SortClass";
-import SortStudent from "../SortStudent/SortStudent";
+  getTestActivitySelector,
+  getAdditionalDataSelector
+} from "../../../ClassBoard/ducks";
+// components
+import ClassSelect from "../../../Shared/Components/ClassSelect/ClassSelect";
+import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
+import StudentSelect from "../../../Shared/Components/StudentSelect/StudentSelect";
 import FeedbackForm from "../FeedbackForm/FeedbackForm";
-
+import ClassQuestions from "./ClassQuestions";
+// styled wrappers
 import {
   PaginationInfo,
   TimeContainer,
@@ -40,6 +38,7 @@ import {
   StyledCard,
   FeedbackButton,
   OverallButton,
+  SelectWrapper,
   FeedbackActiveButton
 } from "./styled";
 
@@ -49,9 +48,28 @@ class ClassResponses extends Component {
   };
 
   componentDidMount() {
-    const { loadStudentResponses, match } = this.props;
+    const { loadStudentResponses, match, testActivity, additionalData, history, loadClassResponses } = this.props;
+    if (testActivity.length === 0) {
+      history.goBack();
+    }
+    const { testId, classId } = additionalData;
     const { testActivityId } = match.params;
-    loadStudentResponses({ testActivityId });
+    loadStudentResponses({ testActivityId, groupId: classId });
+    loadClassResponses({ testId });
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    const {
+      studentResponse: { testActivity }
+    } = props;
+    if (!testActivity) {
+      return null;
+    }
+    const { testId, classId } = testActivity;
+    if (testId !== state.testId) {
+      return { testId, groupId: classId };
+    }
+    return null;
   }
 
   handleCreate = () => {
@@ -71,18 +89,16 @@ class ClassResponses extends Component {
   };
 
   render() {
-    const data = [];
-    const { showFeedbackForm } = this.state;
-    const studentItems = this.props.testActivity;
-    const {
-      classResponse,
-      additionalData,
-      loadStudentResponses,
-      studentResponse: { questionActivities, testActivity }
-    } = this.props;
-    const showClassQuestions = testActivity && !showFeedbackForm;
     let totalScore = 0;
     let totalMaxScore = 0;
+    const data = [];
+    const { showFeedbackForm } = this.state;
+    const { testActivity: studentItems } = this.props;
+    const { classResponse, additionalData, studentResponse, loadStudentResponses } = this.props;
+    const testActivity = studentResponse ? studentResponse.testActivity : null;
+    const questionActivities = studentResponse ? studentResponse.questionActivities : null;
+    const showClassQuestions = !!testActivity && !showFeedbackForm;
+
     if (questionActivities) {
       questionActivities.forEach((item, i) => {
         totalScore += item.score || 0;
@@ -103,6 +119,7 @@ class ClassResponses extends Component {
     const userId = testActivity ? testActivity.userId : "";
     const classassignment = classResponse ? classResponse.title : "";
     const classname = additionalData ? additionalData.className : "";
+    const classnames = [{ name: classname }];
     const currentStudent = studentItems.find(student => student.studentId === userId);
     const studentName = currentStudent ? currentStudent.studentName : "";
     const linkToClass = `/author/classboard/${assignmentId}/${groupId}`;
@@ -110,7 +127,7 @@ class ClassResponses extends Component {
 
     return (
       <div>
-        <ListHeader additionalData={additionalData || {}} onCreate={this.handleCreate} />
+        <ClassHeader additionalData={additionalData || {}} onCreate={this.handleCreate} />
         <StyledFlexContainer justifyContent="space-between">
           <PaginationInfo>
             <a>
@@ -118,21 +135,21 @@ class ClassResponses extends Component {
             </a>{" "}
             /
             <a>
-              &nbsp; <Link to="/author/assignments">{classassignment}</Link>
+              <Link to="/author/assignments">{classassignment}</Link>
             </a>{" "}
             /
             <a>
-              &nbsp; <Link to={linkToClass}>{classname}</Link>
+              <Link to={linkToClass}>{classname}</Link>
             </a>{" "}
             /
             <a>
-              &nbsp; <Link to={linkToResponses}>{studentName}</Link>
+              <Link to={linkToResponses}>{studentName}</Link>
             </a>
           </PaginationInfo>
-          <StyledFlexContainer justifyContent="space-between">
-            <SortStudent students={studentItems} loadStudentResponses={loadStudentResponses} />
-            <SortClass classname={classname} />
-          </StyledFlexContainer>
+          <SelectWrapper>
+            <StudentSelect students={studentItems} loadStudentResponses={loadStudentResponses} />
+            <ClassSelect classname={classnames} />
+          </SelectWrapper>
         </StyledFlexContainer>
         <StyledCard bordered={false}>
           <GraphContainer>
@@ -206,7 +223,13 @@ class ClassResponses extends Component {
             </OverallButton>
           </PaginationButtonGroup>
         </StyledFlexContainer>
-        {showClassQuestions && <ClassQuestions testActivity={testActivity} currentStudent={currentStudent || []} />}
+        {showClassQuestions && !!studentResponse && (
+          <ClassQuestions
+            currentStudent={currentStudent || []}
+            studentResponse={studentResponse}
+            classResponse={classResponse}
+          />
+        )}
         {showFeedbackForm && (
           <StyledFlexContainer justifyContent="flex-end">
             <FeedbackForm />
@@ -228,7 +251,8 @@ const enhance = compose(
       additionalData: getAdditionalDataSelector(state)
     }),
     {
-      loadStudentResponses: receiveStudentResponseAction
+      loadStudentResponses: receiveStudentResponseAction,
+      loadClassResponses: receiveClassResponseAction
     }
   )
 );
@@ -238,7 +262,10 @@ export default enhance(ClassResponses);
 ClassResponses.propTypes = {
   history: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
-  classResponse: PropTypes.shape({}).isRequired,
-  studentResponse: PropTypes.shape({}).isRequired,
-  loadStudentResponses: PropTypes.func.isRequired
+  classResponse: PropTypes.object.isRequired,
+  studentResponse: PropTypes.object.isRequired,
+  testActivity: PropTypes.array.isRequired,
+  additionalData: PropTypes.object.isRequired,
+  loadStudentResponses: PropTypes.func.isRequired,
+  loadClassResponses: PropTypes.func.isRequired
 };

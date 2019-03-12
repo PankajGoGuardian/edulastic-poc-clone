@@ -13,7 +13,7 @@ const AssessmentCreate = lazy(() => import("../AssessmentCreate"));
 const AssessmentPage = lazy(() => import("../AssessmentPage"));
 const ClassBoard = lazy(() => import("../ClassBoard"));
 const ClassResponses = lazy(() => import("../ClassResponses"));
-const ExpressGrader = lazy(() => import("./ExpressGrader/components"));
+const ExpressGrader = lazy(() => import("../ExpressGrader"));
 const TestList = lazy(() => import("../TestList"));
 const TestPage = lazy(() => import("../TestPage"));
 const QuestionEditor = lazy(() => import("../QuestionEditor"));
@@ -23,6 +23,7 @@ const ItemAdd = lazy(() => import("../ItemAdd"));
 const PickUpQuestionType = lazy(() => import("../PickUpQuestionType"));
 const CurriculumContainer = lazy(() => import("../CurriculumSequence"));
 const ResponseFrequency = lazy(() => import("../ResponseFrequency"));
+const StandardsBasedReport = lazy(() => import("./StandardsBasedReport"));
 
 // eslint-disable-next-line react/prop-types
 const Author = ({ match, history, isSidebarCollapsed }) => {
@@ -40,7 +41,16 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               <Route exact path={`${match.url}/assessments/:assessmentId`} component={AssessmentPage} />
               <Route exact path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />
               <Route exact path={`${match.url}/classresponses/:testActivityId`} component={ClassResponses} />
-              <Route exact path={`${match.url}/expressgrader/:assignmentId/:classId`} component={ExpressGrader} />
+              <Route
+                exact
+                path={`${match.url}/expressgrader/:assignmentId/:classId/:testActivityId`}
+                component={ExpressGrader}
+              />
+              <Route
+                exact
+                path={`${match.url}/standardsBasedReport/:assignmentId/:classId`}
+                component={StandardsBasedReport}
+              />
               <Route exact path={`${match.url}/items`} component={ItemList} />
               <Route exact path={`${match.url}/items/:id/item-detail`} component={ItemDetail} />
               <Route exact path="/author/curriculum-sequence" component={CurriculumContainer} />

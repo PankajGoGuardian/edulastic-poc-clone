@@ -12,7 +12,6 @@ import {
   RECEIVE_TESTACTIVITY_SUCCESS,
   RECEIVE_TESTACTIVITY_ERROR
 } from "../src/constants/actions";
-import questions from "@edulastic/api/src/questions";
 
 function* receiveGradeBookSaga({ payload }) {
   try {
@@ -63,21 +62,21 @@ export const stateTestActivitySelector = state => state.author_classboard_testAc
 export const getGradeBookSelector = createSelector(
   stateTestActivitySelector,
   state => {
-    const entities = state.entities;
+    const { entities } = state;
     const total = entities.length;
     const submittedEntities = entities.filter(x => x.status === "submitted");
     const submittedNumber = submittedEntities.length;
-    //TODO: handle absent
+    // TODO: handle absent
     const absentNumber = 0;
     const submittedScores = submittedEntities
       .map(({ score, maxScore }) => score / maxScore)
       .reduce((prev, cur) => prev + cur, 0);
     const submittedScoresAverage = submittedNumber > 0 ? submittedScores / submittedNumber : 0;
-    const startedEntities = entities.filter(x => x.status != "notStarted");
-    let questionMap = {};
-    for (let entity of startedEntities) {
-      const questionActivities = entity.questionActivities;
-      innerloop: for (let { _id, notStarted, skipped, correct, timeSpent, partiallyCorrect } of questionActivities) {
+    const startedEntities = entities.filter(x => x.status !== "notStarted");
+    const questionMap = {};
+    for (const entity of startedEntities) {
+      const { questionActivities } = entity;
+      for (const { _id, notStarted, skipped, correct, timeSpent, partiallyCorrect } of questionActivities) {
         if (!questionMap[_id]) {
           questionMap[_id] = {
             _id,
@@ -92,7 +91,7 @@ export const getGradeBookSelector = createSelector(
         if (!notStarted) {
           questionMap[_id].attemptsNum += 1;
         } else {
-          continue innerloop;
+          continue;
         }
 
         if (skipped) {
@@ -134,4 +133,23 @@ export const getTestActivitySelector = createSelector(
 export const getAdditionalDataSelector = createSelector(
   stateTestActivitySelector,
   state => state.additionalData
+);
+
+export const stateClassResponseSelector = state => state.classResponse;
+export const stateStudentResponseSelector = state => state.studentResponse;
+export const stateFeedbackResponseSelector = state => state.feedbackResponse;
+
+export const getClassResponseSelector = createSelector(
+  stateClassResponseSelector,
+  state => state.data
+);
+
+export const getStudentResponseSelector = createSelector(
+  stateStudentResponseSelector,
+  state => state.data
+);
+
+export const getFeedbackResponseSelector = createSelector(
+  stateFeedbackResponseSelector,
+  state => state.data
 );

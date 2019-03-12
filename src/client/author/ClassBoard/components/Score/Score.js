@@ -57,7 +57,6 @@ export default class Score extends Component {
     // eslint-disable-next-line react/prop-types
     // eslint-disable-next-line react/destructuring-assignment
     this.props.gradebook.itemsSummary.map((data, i) => {
-      console.log(data);
       let avg_per;
       if (data.maxScore) {
         if (data.avgScore) {

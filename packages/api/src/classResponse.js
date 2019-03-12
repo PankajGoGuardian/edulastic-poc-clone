@@ -11,7 +11,7 @@ const classResponse = ({ testId }) =>
 
     .then(result => result.data.result);
 
-const studentResponse = ({ testActivityId }, groupId) =>
+const studentResponse = ({ testActivityId, groupId }) =>
   api
     .callApi({
       url: `/test-activity/${testActivityId}/report`,

@@ -110,7 +110,7 @@ export const FeedbackActiveButton = styled(FeedbackButton)`
   border: 0px solid transparent;
 `;
 
-export const Content = styled(Paper)`
+export const Content = styled.div`
   display: flex;
   margin: 0px 40px 50px 40px;
   flex-wrap: nowrap;
@@ -120,4 +120,10 @@ export const Content = styled(Paper)`
   @media (max-width: ${mobileWidth}) {
     margin: 50px 25px;
   }
+`;
+
+export const SelectWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 13px;
 `;

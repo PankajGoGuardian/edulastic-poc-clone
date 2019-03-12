@@ -9,7 +9,7 @@ import { test } from "@edulastic/constants";
 import { FlexContainer } from "@edulastic/common";
 
 import arrowUpIcon from "../../assets/arrow-up.svg";
-import assignedIcon from "../../assets/assigned.svg";
+import assignedIcon from "../../../Shared/Assets/assigned.svg";
 import presentationIcon from "../../assets/presentation.svg";
 import additemsIcon from "../../assets/add-items.svg";
 import piechartIcon from "../../assets/pie-chart.svg";

@@ -1,8 +1,11 @@
-import { darkBlueSecondary, white } from "@edulastic/colors";
-import styled from "styled-components";
 import { Popconfirm, Switch } from "antd";
+import styled from "styled-components";
+import { darkBlueSecondary, white } from "@edulastic/colors";
 import { Link } from "react-router-dom";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
+import { themes } from "../../../../student/themes";
+
+const classBoardTheme = themes.default.classboard;
 
 export const Container = styled(HeaderWrapper)`
   display: flex;
@@ -14,10 +17,7 @@ export const Container = styled(HeaderWrapper)`
   height: 62px;
   z-index: 1;
 `;
-// const HeaderWrapper = styled.div`
-//   padding-top: 62px;
-//   margin-bottom: 10px;
-// `;
+
 export const StyledTitle = styled.h1`
   color: ${white};
   font-size: 22px;
@@ -27,7 +27,7 @@ export const StyledTitle = styled.h1`
 `;
 
 export const StyledLink = styled(Link)`
-  color: white;
+  color: ${props => (props.isActive ? "#000" : "#fff")};
   :hover {
     color: white;
   }
@@ -58,7 +58,7 @@ export const StyledParaThird = styled.p`
 export const StyledPopconfirm = styled(Popconfirm)``;
 
 export const StyledSwitch = styled(Switch)`
-  background-color: #1fe3a0;
+  background-color: ${classBoardTheme.SwitchColor};
 `;
 
 export const StyledDiv = styled.div`
@@ -66,35 +66,35 @@ export const StyledDiv = styled.div`
 `;
 
 export const StyledTabs = styled.div`
-  width: 43%;
+  width: 37%;
   height: 62px;
   display: flex;
+  align-items: center;
 `;
 
 export const StyledAnchorA = styled.a`
   display: inline-block;
-  font-size: 0.7em;
-  color: white;
+  font-size: 0.8em;
+  font-weight: 600;
+  color: ${white};
   padding: 17px 12px 15px 12px;
   width: 100%;
   text-align: center;
   border-bottom: 4px solid lightgray;
-  background-color: #037fc2;
-  :hover {
-    color: white;
-  }
+  background-color: #3393dc;
 `;
 
 export const StyledAnchor = styled.a`
   display: inline-block;
-  font-size: 0.7em;
+  font-size: 0.8em;
+  font-weight: 600;
   color: white;
-  padding: 19px 12px;
   width: 100%;
   text-align: center;
-  :hover {
-    color: white;
-  }
+  padding: 5px 0px;
+  margin: 0 7px;
+  border-radius: 20px;
+  background-color: ${props => (props.isActive ? "#fff" : "#3393dc")};
   @media (max-width: 1450px) {
     font-size: 0.6em;
   }

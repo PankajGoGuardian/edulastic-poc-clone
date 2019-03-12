@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Card, Button, Input } from "antd";
+import { Avatar, Card, Button, Input } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 
@@ -73,14 +73,37 @@ class FeedbackRight extends Component {
   };
 
   render() {
+    const { studentName } = this.props;
     const { score, maxScore, feedback } = this.state;
-    const { t } = this.props;
+    const { t, user } = this.props;
     const isError = maxScore < score;
+    const isStudentName = studentName !== undefined && studentName.length !== 0;
+    let title;
+
+    if (isStudentName) {
+      title = (
+        <TitleDiv style={{ marginTop: 0 }}>
+          <Avatar
+            style={{ verticalAlign: "middle", background: "#fff", color: "green", border: "1px solid green" }}
+            size="small"
+          >
+            {studentName.charAt(0)}
+          </Avatar>
+          &nbsp;
+          {studentName}
+        </TitleDiv>
+      );
+    } else {
+      title = null;
+    }
+
     return (
-      <StyledCardTwo bordered={false}>
+      <StyledCardTwo bordered={isStudentName} title={title}>
         <StyledDivSec>
-          <ScoreInput onChange={this.onChangeScore} onBlur={this.onFeedbackSubmit} value={score} />
-          <TextPara> / {maxScore}</TextPara>
+          <ScoreInputWrapper>
+            <ScoreInput onChange={this.onChangeScore} onBlur={this.onFeedbackSubmit} value={score} />
+            <TextPara> / {maxScore}</TextPara>
+          </ScoreInputWrapper>
         </StyledDivSec>
         <LeaveDiv>{isError ? "Score is to large" : "Leave a Feedback!"}</LeaveDiv>
         {!isError && (
@@ -91,9 +114,6 @@ class FeedbackRight extends Component {
               value={feedback}
               style={{ height: 240 }}
             />
-            <SolutionButton onClick={this.onFeedbackSubmit}>
-              {t("author:component.feedback.viewSolution")}
-            </SolutionButton>
           </Fragment>
         )}
       </StyledCardTwo>
@@ -129,40 +149,62 @@ const StyledCardTwo = styled(Card)`
   border-radius: 10px;
   box-shadow: 3px 2px 7px lightgray;
   display: inline-block;
-  margin: 0px 0 auto 32px
-  width: 27%;
+  margin: 0px 0 auto 32px;
+  min-width: 250px;
 `;
 
 const StyledDivSec = styled.div`
   height: 50px;
-  border-bottom: 1.4px solid #f7f7f7;
   margin: auto;
   display: flex;
   justify-content: center;
 `;
 
+const ScoreInputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+`;
+
 const ScoreInput = styled(Input)`
-  width: 130px;
+  width: 70%;
   height: 40px;
   border: 1px solid #eaeaea;
   border-radius: 5px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
   font-size: 1.8em;
   font-weight: bold;
   display: inline-block;
 `;
 
 const TextPara = styled.p`
-  margin-left: 10px;
+  padding-left: 10px;
+  padding-right: 15px;
   font-size: 1.8em;
   font-weight: bold;
   display: inline-block;
+  background: #f0f2f5;
+  height: 40px;
+  width: 30%;
+  border: 1px solid #eaeaea;
+  border-left: 0;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
 `;
 
 const LeaveDiv = styled.div`
-  margin: 30px 0px 20px 0px;
+  margin: 20px 0px;
   font-weight: bold;
   color: #545b6b;
   font-size: 0.9em;
+`;
+
+const TitleDiv = styled.div`
+  font-weight: bold;
+  color: #545b6b;
+  font-size: 1em;
+  display: flex;
 `;
 
 const FeedbackInput = styled(TextArea)`

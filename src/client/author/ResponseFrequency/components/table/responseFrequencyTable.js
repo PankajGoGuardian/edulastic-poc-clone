@@ -51,7 +51,7 @@ export class ResponseFrequencyTable extends Component {
             </Row>
             <Row type="flex" justify="start">
               <Col className="response-frequency-table-tooltip-key">Performance: </Col>
-              <Col className="response-frequency-table-tooltip-value">{corr_cnt}</Col>
+              <Col className="response-frequency-table-tooltip-value">{corr_cnt}%</Col>
             </Row>
             <Row type="flex" justify="start">
               <Col className="response-frequency-table-tooltip-key">Students Skipped: </Col>

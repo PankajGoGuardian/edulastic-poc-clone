@@ -13,6 +13,7 @@ import { clearAnswersAction } from "../../../actions/answers";
 import { Container, PreviewBar } from "./styled_components";
 import { ButtonLink } from "..";
 import Breadcrumb from "../../Breadcrumb";
+import { CHECK } from "../../../../../assessment/constants/constantsForQuestions";
 
 class SecondHeadBar extends Component {
   constructor(props) {
@@ -51,11 +52,12 @@ class SecondHeadBar extends Component {
 
   handleCheckClick = () => {
     const { changePreviewTab, allowedAttempts } = this.props;
+    const { attempts } = this.state;
 
-    if (this.state.attempts < allowedAttempts) {
-      this.setState({ attempts: ++this.state.attempts }, () => changePreviewTab("check"));
-    } else {
-      return;
+    if (attempts < allowedAttempts) {
+      this.setState({ attempts: attempts + 1 }, () => changePreviewTab(CHECK));
+    } else if (window.location.pathname.includes("author")) {
+      changePreviewTab(CHECK);
     }
   };
 
@@ -112,16 +114,24 @@ class SecondHeadBar extends Component {
                 justifyContent: "flex-end"
               }}
             >
-              <Button onClick={() => changePreviewTab("check")}>
-                <ButtonLink
-                  color="primary"
-                  icon={<IconCheck color="primary" width={16} height={16} />}
-                  style={{ color: option ? white : blue }}
-                >
-                  {t("component.questioneditor.buttonbar.checkanswer")}
-                </ButtonLink>
-              </Button>
-              )
+              {showCheckButton ||
+                (window.location.pathname.includes("author") && (
+                  <Button onClick={this.handleCheckClick}>
+                    <ButtonLink
+                      color="primary"
+                      icon={
+                        <IconCheck
+                          color={attempts >= allowedAttempts ? darkGrey : option ? white : blue}
+                          width={16}
+                          height={16}
+                        />
+                      }
+                      style={{ color: attempts >= allowedAttempts ? darkGrey : option ? white : blue }}
+                    >
+                      {t("component.questioneditor.buttonbar.checkanswer")}
+                    </ButtonLink>
+                  </Button>
+                ))}
               <Button onClick={() => changePreviewTab("show")}>
                 <ButtonLink
                   color="primary"

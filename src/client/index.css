@@ -1004,6 +1004,3 @@ span.token.active-word {
   width: 32px !important;
   height: 32px !important;
 }
-:global(.ant-card-body) {
-  width: 100% !important;
-}

@@ -13,7 +13,7 @@ export class ResponseFrequencyTable extends Component {
   init() {
     this.columns = this.props.columns;
 
-    this.columns[0].sorter = this.sortTextColumn.bind(null, "qLabel");
+    this.columns[0].sorter = this.sortQuestionColumn.bind(null, "qLabel");
     this.columns[2].render = (data, record) => {
       if (data && Array.isArray(data)) {
         return data.join(", ");
@@ -22,7 +22,7 @@ export class ResponseFrequencyTable extends Component {
       }
       return "";
     };
-    this.columns[4].sorter = this.sortTextColumn.bind(null, "corr_cnt");
+    this.columns[4].sorter = this.sortCorrectColumn.bind(null, "corr_cnt");
     this.columns[4].render = (data, record) => {
       let tooltipText = (record, assessment) => {
         let { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record;
@@ -71,7 +71,7 @@ export class ResponseFrequencyTable extends Component {
 
       let { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record;
       let sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
-      let correct = ((corr_cnt / sum) * 100).toFixed(2);
+      let correct = ((corr_cnt / sum) * 100).toFixed(0);
       if (isNaN(correct)) correct = 0;
 
       return (
@@ -91,7 +91,7 @@ export class ResponseFrequencyTable extends Component {
       let sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
       let skip = (skip_cnt / sum) * 100;
       if (isNaN(skip)) skip = 0;
-      return skip.toFixed(2) + "%";
+      return skip.toFixed(0) + "%";
     };
 
     this.columns[6].render = (data, record) => {
@@ -101,10 +101,10 @@ export class ResponseFrequencyTable extends Component {
         let { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record;
         let sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
         if (sum == 0) sum = 1;
-        arr.push({ value: ((corr_cnt / sum) * 100).toFixed(2), name: "Correct", key: "corr_cnt" });
-        arr.push({ value: ((incorr_cnt / sum) * 100).toFixed(2), name: "Incorrect", key: "incorr_cnt" });
-        arr.push({ value: ((part_cnt / sum) * 100).toFixed(2), name: "Partially Correct", key: "part_cnt" });
-        arr.push({ value: ((skip_cnt / sum) * 100).toFixed(2), name: "Skip", key: "skip_cnt" });
+        arr.push({ value: ((corr_cnt / sum) * 100).toFixed(0), name: "Correct", key: "corr_cnt" });
+        arr.push({ value: ((incorr_cnt / sum) * 100).toFixed(0), name: "Incorrect", key: "incorr_cnt" });
+        arr.push({ value: ((part_cnt / sum) * 100).toFixed(0), name: "Partially Correct", key: "part_cnt" });
+        arr.push({ value: ((skip_cnt / sum) * 100).toFixed(0), name: "Skip", key: "skip_cnt" });
       } else {
         let sum = 0;
         arr = Object.keys(data).map((key, i) => {
@@ -118,7 +118,7 @@ export class ResponseFrequencyTable extends Component {
         });
 
         for (let i = 0; i < arr.length; i++) {
-          arr[i].value = ((arr[i].value / sum) * 100).toFixed(2);
+          arr[i].value = ((arr[i].value / sum) * 100).toFixed(0);
           if (isNaN(arr[i].value)) arr[i].value = 0;
         }
       }
@@ -135,14 +135,14 @@ export class ResponseFrequencyTable extends Component {
     };
   }
 
-  sortTextColumn(key, a, b) {
-    if (a[key] > b[key]) {
-      return -1;
-    } else if (a[key] < b[key]) {
-      return 1;
-    } else {
-      return 0;
-    }
+  sortCorrectColumn(key, a, b) {
+    return a[key] - b[key];
+  }
+
+  sortQuestionColumn(key, a, b) {
+    let _a = Number(a[key].substring(1));
+    let _b = Number(b[key].substring(1));
+    return _a - _b;
   }
 
   render() {

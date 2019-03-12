@@ -174,3 +174,8 @@ export const StyledCustomChartTooltip = styled(CustomChartTooltip)`
   font-weight: 600;
   white-space: pre;
 `;
+
+export const QuestionTypeHeading = styled.p`
+  font-size: 20px;
+  font-weight: 900;
+`;

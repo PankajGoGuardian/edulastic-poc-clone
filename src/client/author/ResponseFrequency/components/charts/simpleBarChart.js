@@ -14,7 +14,7 @@ import {
   LabelList,
   Brush
 } from "recharts";
-import { StyledSimpleBarChart, StyledChartNavButton, StyledCustomChartTooltip } from "../styled";
+import { StyledSimpleBarChart, StyledChartNavButton, StyledCustomChartTooltip, QuestionTypeHeading } from "../styled";
 import colorRange1 from "../../static/json/colorRange1.json";
 
 export class SimpleBarChart extends PureComponent {
@@ -62,9 +62,9 @@ export class SimpleBarChart extends PureComponent {
 
       let sum = tmp.corr_cnt + tmp.incorr_cnt + tmp.skip_cnt + tmp.part_cnt;
       tmp.name = data;
-      tmp.correct = ((tmp.corr_cnt / sum) * 100).toFixed(2);
+      tmp.correct = Number(((tmp.corr_cnt / sum) * 100).toFixed(0));
       if (isNaN(tmp.correct)) tmp.correct = 0;
-      tmp.incorrect = (100 - tmp.correct).toFixed(2);
+      tmp.incorrect = 100 - tmp.correct;
       tmp.fill = colorRange1[Math.floor(tmp.correct / 25)];
       tmp.assessment = nextProps.assessment.testName;
       return tmp;
@@ -119,6 +119,9 @@ export class SimpleBarChart extends PureComponent {
   render() {
     return (
       <StyledSimpleBarChart className="chart-simple-bar-chart">
+        <QuestionTypeHeading>
+          Question Type performance for Assessment: {this.props.assessment.testName}
+        </QuestionTypeHeading>
         <StyledChartNavButton
           type="primary"
           shape="circle"

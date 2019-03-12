@@ -9,8 +9,8 @@ const QuillSortableList = SortableContainer(
     <div data-cy="sortable-list-container" style={{ fontSize }}>
       {items.map((value, index) => (
         <QuillSortableItem
-          key={index}
           fontSize={fontSize}
+          key={index}
           index={index}
           label={label ? `${label} ${index + 1}` : ""}
           indx={prefix + index}

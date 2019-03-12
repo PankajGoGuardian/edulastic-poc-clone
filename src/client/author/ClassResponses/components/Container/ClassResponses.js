@@ -13,7 +13,8 @@ import {
   getClassResponseSelector,
   getStudentResponseSelector,
   getTestActivitySelector,
-  getAdditionalDataSelector
+  getAdditionalDataSelector,
+  getAssignmentClassIdSelector
 } from "../../../ClassBoard/ducks";
 // components
 import ClassSelect from "../../../Shared/Components/ClassSelect/ClassSelect";
@@ -113,9 +114,9 @@ class ClassResponses extends Component {
       });
     }
 
-    const assignmentId = testActivity ? testActivity.assignmentId : "";
+    let assignmentId = testActivity ? testActivity.assignmentId : "";
     const groupId = testActivity ? testActivity.groupId : "";
-    const classId = testActivity ? testActivity._id : "";
+    let classId = testActivity ? testActivity._id : "";
     const userId = testActivity ? testActivity.userId : "";
     const classassignment = classResponse ? classResponse.title : "";
     const classname = additionalData ? additionalData.className : "";
@@ -124,10 +125,18 @@ class ClassResponses extends Component {
     const studentName = currentStudent ? currentStudent.studentName : "";
     const linkToClass = `/author/classboard/${assignmentId}/${groupId}`;
     const linkToResponses = `/author/classresponses/${classId}`;
+    const { assignmentIdClassId } = this.props;
+    assignmentId = assignmentId || assignmentIdClassId.assignmentId;
+    classId = classId || assignmentIdClassId.classId;
 
     return (
       <div>
-        <ClassHeader additionalData={additionalData || {}} onCreate={this.handleCreate} />
+        <ClassHeader
+          additionalData={additionalData || {}}
+          assignmentId={assignmentIdClassId.assignmentId}
+          classId={assignmentIdClassId.classId}
+          onCreate={this.handleCreate}
+        />
         <StyledFlexContainer justifyContent="space-between">
           <PaginationInfo>
             <a>
@@ -248,7 +257,8 @@ const enhance = compose(
       classResponse: getClassResponseSelector(state),
       studentResponse: getStudentResponseSelector(state),
       testActivity: getTestActivitySelector(state),
-      additionalData: getAdditionalDataSelector(state)
+      additionalData: getAdditionalDataSelector(state),
+      assignmentIdClassId: getAssignmentClassIdSelector(state)
     }),
     {
       loadStudentResponses: receiveStudentResponseAction,

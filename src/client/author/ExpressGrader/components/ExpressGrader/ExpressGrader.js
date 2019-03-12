@@ -78,7 +78,6 @@ class ExpressGrader extends Component {
     const { isVisibleModal, record, tableData } = this.state;
     const { assignmentId, classId } = this.props.match.params;
     const questionActivities = studentResponse !== undefined ? studentResponse.questionActivities : [];
-    console.log(additionalData)
     return (
       <div>
         <ClassHeader

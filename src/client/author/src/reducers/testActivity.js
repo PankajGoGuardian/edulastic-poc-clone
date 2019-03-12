@@ -25,7 +25,7 @@ const reducer = (state = initialState, { type, payload }) => {
   let nextState;
   switch (type) {
     case RECEIVE_TESTACTIVITY_REQUEST:
-      return { ...state, loading: true };
+      return { ...state, loading: true, assignmentId: payload.assignmentId, classId: payload.classId };
     case RECEIVE_TESTACTIVITY_SUCCESS:
       return {
         ...state,

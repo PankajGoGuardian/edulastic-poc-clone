@@ -135,6 +135,11 @@ export const getAdditionalDataSelector = createSelector(
   state => state.additionalData
 );
 
+export const getAssignmentClassIdSelector = createSelector(
+  stateTestActivitySelector,
+  ({ classId, assignmentId }) => ({ classId, assignmentId })
+);
+
 export const stateClassResponseSelector = state => state.classResponse;
 export const stateStudentResponseSelector = state => state.studentResponse;
 export const stateFeedbackResponseSelector = state => state.feedbackResponse;

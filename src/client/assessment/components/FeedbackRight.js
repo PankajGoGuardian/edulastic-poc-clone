@@ -21,7 +21,7 @@ class FeedbackRight extends Component {
     } = this.props;
     let feedback = "";
     let score = 0;
-    let maxScore = 0;
+    let maxScore = 1;
     if (activity) {
       const {
         feedback: { text: _feedback },

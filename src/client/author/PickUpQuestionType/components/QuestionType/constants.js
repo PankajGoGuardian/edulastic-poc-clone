@@ -79,7 +79,8 @@ export const getCards = onSelectQuestionType => {
         },
         line_color: [mainBlueColor],
         stimulus: "<p>[This is the stem.]</p>",
-        type: "highlightImage"
+        type: "highlightImage",
+        validation: {}
       },
       onSelectQuestionType
     },
@@ -178,6 +179,7 @@ export const getCards = onSelectQuestionType => {
         show_word_count: true,
         max_word: 5,
         show_word_limit: ON_LIMIT,
+        validation: {},
         formatting_options: [
           { id: "test1", value: "bold", active: true },
           { id: "test2", value: "italic", active: true },
@@ -218,7 +220,8 @@ export const getCards = onSelectQuestionType => {
         show_paste: true,
         max_word: 5,
         show_word_limit: ON_LIMIT,
-        show_word_count: true
+        show_word_count: true,
+        validation: {}
       },
       onSelectQuestionType
     },

@@ -8,12 +8,12 @@ const countExactMatchScores = compareFunction => ({ answers, userResponse = [] }
     existingResponse = cloneDeep(userResponse.value);
   }
   let score = 0;
-  let maxScore = 0;
+  let maxScore = 1;
 
   let rightLen = 0;
-  const rightIndex = 0;
+  let rightIndex = 0;
 
-  answers.forEach(({ value: answer, score: totalScore }) => {
+  answers.forEach(({ value: answer, score: totalScore }, index) => {
     if (!answer || !answer.length) {
       return;
     }
@@ -25,8 +25,9 @@ const countExactMatchScores = compareFunction => ({ answers, userResponse = [] }
     score = Math.max(score, currentScore);
     maxScore = Math.max(maxScore, totalScore);
 
-    if (currentScore === score && score !== 0) {
+    if ((currentScore === score && score !== 0) || (maxScore === totalScore && currentScore === score)) {
       rightLen = answer.length;
+      rightIndex = index;
     }
   });
 

@@ -103,13 +103,13 @@ class ClassResponses extends Component {
     if (questionActivities) {
       questionActivities.forEach((item, i) => {
         totalScore += item.score || 0;
-        totalMaxScore += item.maxScore || 0;
+        totalMaxScore += item.maxScore || 1;
         data.push({
           id: item._id,
           name: `Q${i + 1}`,
-          red: (item.maxScore || 0) - (item.score || 0),
+          red: (item.maxScore || 1) - (item.score || 0),
           green: item.score || 0,
-          all: item.maxScore || 0
+          all: item.maxScore || 1
         });
       });
     }

@@ -38,13 +38,13 @@ const Option = props => {
     onChange,
     smallSize,
     uiStyle,
-    correct,
+    correct = [],
     checkAnswer,
     validation
   } = props;
+
   const isSelected = userSelections.includes(item.value);
-  const indexOfAnswer = userSelections.indexOf(item.value);
-  const isCorrect = indexOfAnswer !== -1 && correct ? correct[indexOfAnswer] : undefined;
+  const isCorrect = correct[item.value];
 
   let validAnswers = [];
 
@@ -57,7 +57,7 @@ const Option = props => {
   if (correct) {
     if (isCorrect && isSelected) {
       className = "right";
-    } else if (!isCorrect && isSelected) {
+    } else if (isCorrect === false && isSelected) {
       className = "wrong";
     }
   }
@@ -96,7 +96,7 @@ const Option = props => {
 
   const container = (
     <CheckboxContainer smallSize={smallSize}>
-      <input type="checkbox" name="mcq_group" value={index} checked={isSelected} onChange={onChange} />
+      <input type="checkbox" name="mcq_group" value={item.value} checked={isSelected} onChange={onChange} />
       <span
         style={{
           display: "flex",

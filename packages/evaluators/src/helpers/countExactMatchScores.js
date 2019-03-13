@@ -7,6 +7,7 @@ const countExactMatchScores = compareFunction => ({ answers, userResponse = [] }
   if (!Array.isArray(userResponse)) {
     existingResponse = cloneDeep(userResponse.value);
   }
+
   let score = 0;
   let maxScore = 1;
 

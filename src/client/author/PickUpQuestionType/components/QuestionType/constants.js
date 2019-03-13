@@ -1,5 +1,6 @@
 import { mainBlueColor, svgMapFillColor, svgMapStrokeColor } from "@edulastic/colors";
 import { math } from "@edulastic/constants";
+import uuid from "uuid/v4";
 import {
   BY_LOCATION_METHOD,
   EXACT_MATCH,
@@ -64,6 +65,9 @@ import GRNumberLinePlot from "../../../src/assets/graphing/line-plot.svg";
 
 export const getCards = onSelectQuestionType => {
   const { EMBED_RESPONSE } = math;
+
+  // use it for ids of MCQ
+  const uuids = [uuid(), uuid(), uuid()];
 
   return [
     {
@@ -254,12 +258,16 @@ export const getCards = onSelectQuestionType => {
         ui_style: {
           type: "horizontal"
         },
-        options: [{ value: 0, label: "Red" }, { value: 1, label: "Violet" }, { value: 2, label: "Green" }],
+        options: [
+          { value: uuids[0], label: "Red" },
+          { value: uuids[1], label: "Violet" },
+          { value: uuids[2], label: "Green" }
+        ],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
-            value: [1]
+            value: [uuids[0]]
           },
           alt_responses: []
         },
@@ -277,12 +285,16 @@ export const getCards = onSelectQuestionType => {
         ui_style: {
           type: "horizontal"
         },
-        options: [{ value: 0, label: "Red" }, { value: 1, label: "Violet" }, { value: 2, label: "Green" }],
+        options: [
+          { value: uuids[0], label: "Red" },
+          { value: uuids[1], label: "Violet" },
+          { value: uuids[2], label: "Green" }
+        ],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
-            value: [1]
+            value: [uuids[1]]
           },
           alt_responses: []
         },
@@ -300,12 +312,12 @@ export const getCards = onSelectQuestionType => {
         ui_style: {
           type: "horizontal"
         },
-        options: [{ value: 0, label: "True" }, { value: 1, label: "False" }],
+        options: [{ value: uuids[0], label: "True" }, { value: uuids[1], label: "False" }],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
-            value: [0]
+            value: [uuids[0]]
           },
           alt_responses: []
         },
@@ -324,12 +336,16 @@ export const getCards = onSelectQuestionType => {
           type: "block",
           choice_label: "upper-alpha"
         },
-        options: [{ value: 0, label: "Dublin" }, { value: 1, label: "London" }, { value: 2, label: "Liverpool" }],
+        options: [
+          { value: uuids[0], label: "Dublin" },
+          { value: uuids[1], label: "London" },
+          { value: uuids[2], label: "Liverpool" }
+        ],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
             score: 1,
-            value: [1]
+            value: [uuids[0]]
           },
           alt_responses: []
         },

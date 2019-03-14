@@ -46,7 +46,7 @@ export class SimpleBarChart extends PureComponent {
   static parseData(nextProps) {
     let hmap = groupBy(nextProps.data, "qType");
     let arr = Object.keys(hmap).map((data, i) => {
-      let catCount = hmap[data].length;
+      let qCount = hmap[data].length;
       let tmp = hmap[data].reduce(
         (total, currentValue, currentIndex) => {
           let { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = currentValue;
@@ -61,7 +61,8 @@ export class SimpleBarChart extends PureComponent {
       );
 
       let sum = tmp.corr_cnt + tmp.incorr_cnt + tmp.skip_cnt + tmp.part_cnt;
-      tmp.name = data + " (" + catCount + ")";
+      tmp.name = data;
+      tmp.qCount = qCount;
       tmp.correct = Number(((tmp.corr_cnt / sum) * 100).toFixed(0));
       if (isNaN(tmp.correct)) tmp.correct = 0;
       tmp.incorrect = 100 - tmp.correct;
@@ -108,6 +109,10 @@ export class SimpleBarChart extends PureComponent {
     }
   };
 
+  getDataByIndex = index => {
+    return this.state.data[index];
+  };
+
   render() {
     return (
       <StyledSimpleBarChart className="chart-simple-bar-chart">
@@ -139,7 +144,7 @@ export class SimpleBarChart extends PureComponent {
         <ResponsiveContainer width={"100%"} height={400}>
           <BarChart width={730} height={400} data={this.state.data}>
             <CartesianGrid vertical={false} strokeWidth={0.5} />
-            <XAxis dataKey="name" tick={<CustomChartXTick />} interval={0} />
+            <XAxis dataKey="name" tick={<CustomChartXTick getDataByIndex={this.getDataByIndex} />} interval={0} />
             <YAxis
               type={"number"}
               domain={[0, 110]}

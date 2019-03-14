@@ -110,7 +110,6 @@ export class ResponseFrequencyTable extends Component {
         arr.push({ value: ((corr_cnt / sum) * 100).toFixed(0), name: "Correct", key: "corr_cnt" });
         arr.push({ value: ((incorr_cnt / sum) * 100).toFixed(0), name: "Incorrect", key: "incorr_cnt" });
         arr.push({ value: ((part_cnt / sum) * 100).toFixed(0), name: "Partially Correct", key: "part_cnt" });
-        arr.push({ value: ((skip_cnt / sum) * 100).toFixed(0), name: "Skip", key: "skip_cnt" });
       } else {
         let sum = 0;
         arr = Object.keys(data).map((key, i) => {

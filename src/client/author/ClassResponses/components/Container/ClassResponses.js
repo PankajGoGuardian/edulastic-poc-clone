@@ -95,7 +95,7 @@ class ClassResponses extends Component {
     const data = [];
     const { showFeedbackForm } = this.state;
     const { testActivity: studentItems } = this.props;
-    const { classResponse, additionalData, studentResponse, loadStudentResponses } = this.props;
+    const { classResponse, additionalData, studentResponse, loadStudentResponses, creating } = this.props;
     const testActivity = studentResponse ? studentResponse.testActivity : null;
     const questionActivities = studentResponse ? studentResponse.questionActivities : null;
     const showClassQuestions = !!testActivity && !showFeedbackForm;
@@ -115,8 +115,8 @@ class ClassResponses extends Component {
     }
 
     let assignmentId = testActivity ? testActivity.assignmentId : "";
-    const groupId = testActivity ? testActivity.groupId : "";
-    let classId = testActivity ? testActivity._id : "";
+    let groupId = testActivity ? testActivity.groupId : "";
+    const testActivityId = testActivity ? testActivity._id : "";
     const userId = testActivity ? testActivity.userId : "";
     const classassignment = classResponse ? classResponse.title : "";
     const classname = additionalData ? additionalData.className : "";
@@ -124,18 +124,20 @@ class ClassResponses extends Component {
     const currentStudent = studentItems.find(student => student.studentId === userId);
     const studentName = currentStudent ? currentStudent.studentName : "";
     const linkToClass = `/author/classboard/${assignmentId}/${groupId}`;
-    const linkToResponses = `/author/classresponses/${classId}`;
+    const linkToResponses = `/author/classresponses/${testActivityId}`;
     const { assignmentIdClassId } = this.props;
     assignmentId = assignmentId || assignmentIdClassId.assignmentId;
-    classId = classId || assignmentIdClassId.classId;
-
+    groupId = groupId || assignmentIdClassId.classId;
     return (
       <div>
         <ClassHeader
-          additionalData={additionalData || {}}
-          assignmentId={assignmentIdClassId.assignmentId}
-          classId={assignmentIdClassId.classId}
+          classId={groupId}
+          active="classboard"
+          creating={creating}
           onCreate={this.handleCreate}
+          assignmentId={assignmentId}
+          additionalData={additionalData}
+          testActivityId={testActivityId}
         />
         <StyledFlexContainer justifyContent="space-between">
           <PaginationInfo>
@@ -269,13 +271,15 @@ const enhance = compose(
 
 export default enhance(ClassResponses);
 
+/* eslint-disable react/require-default-props */
 ClassResponses.propTypes = {
-  history: PropTypes.object.isRequired,
-  match: PropTypes.object.isRequired,
-  classResponse: PropTypes.object.isRequired,
-  studentResponse: PropTypes.object.isRequired,
-  testActivity: PropTypes.array.isRequired,
-  additionalData: PropTypes.object.isRequired,
-  loadStudentResponses: PropTypes.func.isRequired,
-  loadClassResponses: PropTypes.func.isRequired
+  history: PropTypes.object,
+  match: PropTypes.object,
+  classResponse: PropTypes.object,
+  studentResponse: PropTypes.object,
+  testActivity: PropTypes.array,
+  additionalData: PropTypes.object,
+  loadStudentResponses: PropTypes.func,
+  creating: PropTypes.object,
+  loadClassResponses: PropTypes.func
 };

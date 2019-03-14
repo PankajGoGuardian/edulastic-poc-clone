@@ -26,12 +26,7 @@ export const StyledTitle = styled.h1`
   padding: 0;
 `;
 
-export const StyledLink = styled(Link)`
-  color: ${props => (props.isActive ? "#000" : "#fff")};
-  :hover {
-    color: white;
-  }
-`;
+export const StyledLink = styled(Link)``;
 
 export const StyledParaFirst = styled.p`
   font-size: 0.9em;
@@ -66,7 +61,7 @@ export const StyledDiv = styled.div`
 `;
 
 export const StyledTabs = styled.div`
-  width: 37%;
+  width: 72%;
   height: 62px;
   display: flex;
   align-items: center;
@@ -78,24 +73,56 @@ export const StyledAnchorA = styled.a`
   font-weight: 600;
   color: ${white};
   padding: 17px 12px 15px 12px;
-  width: 100%;
+  width: auto;
+  padding: 0px 15px;
   text-align: center;
   border-bottom: 4px solid lightgray;
   background-color: #3393dc;
 `;
 
 export const StyledAnchor = styled.a`
-  display: inline-block;
+  display: flex;
   font-size: 0.8em;
   font-weight: 600;
-  color: white;
-  width: 100%;
+  align-items: center;
+  justify-content: center;
+  color: #e5e5e5;
+  width: auto;
+  padding: 0px 15px;
   text-align: center;
-  padding: 5px 0px;
+  height: 45px;
   margin: 0 7px;
   border-radius: 20px;
-  background-color: ${props => (props.isActive ? "#fff" : "#3393dc")};
+  background-color: ${props => (props.isActive ? "#f3f3f3" : "#0e93dc")};
+  -webkit-transition: background-color 0.3s;
+  transition: background-color 0.3s;
+
   @media (max-width: 1450px) {
     font-size: 0.6em;
   }
+  :hover {
+    color: ${props => (props.isActive ? "#0288d1" : "#e5e5e5")};
+    background-color: ${props => (props.isActive ? "#f3f3f3" : "#f3f3f3")};
+    a {
+      color: ${props => (props.isActive ? "#0288d1" : "#434b5d")};
+    }
+  }
+  a {
+    color: ${props => (props.isActive ? "#434b5d" : "#e5e5e5")};
+  }
+`;
+
+export const Img = styled.img`
+  width: 27px;
+  height: 27px;
+`;
+
+export const StyledButton = styled.button`
+  width: 90px;
+  height: 27px;
+  background: transparent;
+  color: #fff;
+  border: 1px solid #45aaf3;
+  font-size: 12px;
+  border-radius: 3px;
 `;

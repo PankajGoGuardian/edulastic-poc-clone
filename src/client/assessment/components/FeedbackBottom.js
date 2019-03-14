@@ -29,9 +29,9 @@ class FeedbackBottom extends Component {
         score: _score,
         maxScore: _maxScore
       } = activity;
-      feedback = _feedback ? _feedback : "";
-      score = _score ? _score : 0;
-      maxScore = _maxScore ? _maxScore : 1;
+      feedback = _feedback || "";
+      score = _score || 0;
+      maxScore = _maxScore || 1;
     }
     this.state = {
       score,
@@ -55,7 +55,7 @@ class FeedbackBottom extends Component {
       loadFeedbackResponses,
       widget: { id, activity }
     } = this.props;
-    const { testActivityId } = activity;
+    const { testActivityId, groupId } = activity;
     if (!id || !user || !user.user || !testActivityId) {
       return;
     }
@@ -66,7 +66,8 @@ class FeedbackBottom extends Component {
           teacherId: user.user._id,
           teacherName: user.user.firstName,
           text: feedback
-        }
+        },
+        groupId
       },
       testActivityId,
       questionId: id

@@ -14,6 +14,9 @@ export class ResponseFrequencyTable extends Component {
     this.columns = this.props.columns;
 
     this.columns[0].sorter = this.sortQuestionColumn.bind(null, "qLabel");
+
+    // README: below line might work if antd version is upgraded to 3.15.0
+    // this.columns[0].sortDirections = ["descend"];
     this.columns[2].render = (data, record) => {
       if (data && Array.isArray(data)) {
         return data.join(", ");
@@ -23,6 +26,9 @@ export class ResponseFrequencyTable extends Component {
       return "";
     };
     this.columns[4].sorter = this.sortCorrectColumn.bind(null, "corr_cnt");
+
+    // README: below line might work if antd version is upgraded to 3.15.0
+    // this.columns[4].sortDirections = ["descend"];
     this.columns[4].render = (data, record) => {
       let tooltipText = (record, assessment) => {
         let { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record;

@@ -5,6 +5,7 @@ import { CustomTooltip } from "./customToolTip";
 import { CustomChartTooltip } from "./charts/tooltip";
 import { Card } from "@edulastic/common";
 import { darkGrey, grey, lightBlue, black } from "@edulastic/colors";
+import { Text } from "@vx/text";
 
 export const StyledCard = styled(Card)`
   margin: 10px;
@@ -178,4 +179,8 @@ export const StyledCustomChartTooltip = styled(CustomChartTooltip)`
 export const QuestionTypeHeading = styled.p`
   font-size: 20px;
   font-weight: 900;
+`;
+
+export const StyledAxisTickText = styled(Text)`
+  font-size: 12px;
 `;

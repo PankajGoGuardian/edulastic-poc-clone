@@ -1,7 +1,6 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { classResponseApi } from "@edulastic/api";
 import { message } from "antd";
-import { getCurrentGroup } from "../src/selectors/user";
 
 import {
   RECEIVE_CLASS_RESPONSE_REQUEST,

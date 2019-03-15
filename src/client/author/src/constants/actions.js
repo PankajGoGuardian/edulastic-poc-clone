@@ -134,6 +134,11 @@ export const RECEIVE_ASSIGNMENTS_REQUEST = "[assignments] receive list request";
 export const RECEIVE_ASSIGNMENTS_SUCCESS = "[assignments] receive list success";
 export const RECEIVE_ASSIGNMENTS_ERROR = "[assignments] receive list error";
 
+export const FETCH_CURRENT_EDITING_ASSIGNMENT = "[assignments] fetch assignment data";
+export const UPDATE_CURRENT_EDITING_ASSIGNMENT = "[assignments] save current assignment";
+export const UPDATE_RELEASE_SCORE_SETTINGS = "[assignments] update assignment settings";
+export const TOGGLE_RELEASE_GRADE_SETTINGS = "[assignments show release grade settings]";
+
 // answers
 export const CLEAR_ANSWERS = "[answers] clear answers";
 

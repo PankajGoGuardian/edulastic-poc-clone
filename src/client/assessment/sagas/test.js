@@ -37,8 +37,9 @@ function* loadTest({ payload }) {
       }
     });
 
+    const groupId = yield select(getCurrentGroup);
     // if testActivityId is passed, need to load previous responses as well!
-    const getTestActivity = testActivityId ? call(testActivityApi.getById, testActivityId) : false;
+    const getTestActivity = testActivityId ? call(testActivityApi.getById, testActivityId, groupId) : false;
     const [test, testActivity] = yield all([
       call(testsApi.getById, testId, {
         validation: true,

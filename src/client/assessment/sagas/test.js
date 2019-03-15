@@ -50,10 +50,20 @@ function* loadTest({ payload }) {
 
     const questions = getQuestions(test.testItems);
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
+
+    let { testItems } = test;
+
+    const { testActivity: activity } = testActivity;
+    // if questions are shuffled !!!
+    if (activity.shuffleQuestions) {
+      const itemsByKey = _keyBy(testItems, "_id");
+      testItems = (activity.shuffledTestItems || []).map(id => itemsByKey[id]).filter(item => !!item);
+    }
+
     yield put({
       type: LOAD_TEST_ITEMS,
       payload: {
-        items: test.testItems,
+        items: testItems,
         title: test.title
       }
     });

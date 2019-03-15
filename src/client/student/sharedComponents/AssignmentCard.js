@@ -23,7 +23,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
 
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
   const { releaseGradeLabels } = testConstants;
-  const { test = {}, reports = [], endDate, testId, startDate, _id: assignmentId } = data;
+  const { test = {}, reports = [], endDate, testId, startDate, _id: assignmentId, shuffleQuestions = false } = data;
 
   const lastAttempt = last(reports) || {};
   // if last test attempt was not *submitted*, user should be able to resume it.
@@ -48,7 +48,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
         testActivityId: lastAttempt._id
       });
     } else if (attemptCount < test.maxAttempts) {
-      startAssignment({ testId, assignmentId, testType });
+      startAssignment({ testId, assignmentId, testType, shuffleQuestions });
     }
   };
 

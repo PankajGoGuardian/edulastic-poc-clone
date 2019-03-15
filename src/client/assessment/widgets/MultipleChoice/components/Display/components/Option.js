@@ -52,12 +52,6 @@ const Option = props => {
     validAnswers = [validation.valid_response, ...validation.alt_responses];
   }
 
-  let validAnswers = [];
-
-  if (!isEmpty(validation)) {
-    validAnswers = [validation.valid_response, ...validation.alt_responses];
-  }
-
   let className = "";
 
   if (correct) {

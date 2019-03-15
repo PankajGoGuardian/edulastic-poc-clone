@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Row, Col, Button } from "antd";
-import { TableData } from "../../styled/table";
+import { TableData } from "../../../../styled/table";
 import { CustomTooltip } from "./customToolTip";
 import { CustomChartTooltip } from "./charts/tooltip";
 import { Card } from "@edulastic/common";
@@ -13,6 +13,8 @@ export const StyledCard = styled(Card)`
 
 export const StyledContainer = styled(Row)`
   flex-flow: column nowrap;
+  // top: 95px;
+  // position: relative;
 
   .question-area {
     min-height: 110px;

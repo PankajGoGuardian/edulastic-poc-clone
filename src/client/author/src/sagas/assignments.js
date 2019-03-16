@@ -65,7 +65,7 @@ function* updateAssignmetSaga({ payload }) {
       {
         ...payload
       },
-      ["_id", "__v", "createdAt", "updatedAt", "students", "scoreReleasedClasses"]
+      ["_id", "__v", "createdAt", "updatedAt", "students", "scoreReleasedClasses", "termId"]
     );
     yield call(assignmentApi.update, payload._id, data);
     yield put({

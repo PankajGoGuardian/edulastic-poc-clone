@@ -73,7 +73,7 @@ function* fetchAssignments({ payload }) {
  */
 function* startAssignment({ payload }) {
   try {
-    const { assignmentId, testId, testType, shuffleQuestions } = payload;
+    const { assignmentId, testId, testType, shuffleQuestions, shuffleAnswers } = payload;
     if (!assignmentId || !testId) {
       throw new Error("insufficient data");
     }
@@ -87,7 +87,8 @@ function* startAssignment({ payload }) {
       groupId,
       institutionId,
       groupType,
-      shuffleQuestions
+      shuffleQuestions,
+      shuffleAnswers
     });
     // set Activity id
     yield put(push(`/student/${testType}/${testId}/uta/${testActivityId}/qid/0`));

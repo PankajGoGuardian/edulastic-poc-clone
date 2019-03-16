@@ -2,6 +2,7 @@ import { testActivityApi, testsApi } from "@edulastic/api";
 import { takeEvery, call, all, put, select } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import { keyBy as _keyBy } from "lodash";
+import { ShuffleChoices } from "../utils/test";
 import { getCurrentGroup } from "../../student/Login/ducks";
 import {
   LOAD_TEST,
@@ -14,6 +15,7 @@ import {
   LOAD_SCRATCH_PAD
 } from "../constants/actions";
 import { loadQuestionsAction } from "../actions/questions";
+import { setShuffledOptions } from "../actions/shuffledOptions";
 import { SET_RESUME_STATUS } from "../../student/Assignments/ducks";
 
 const getQuestions = (testItems = []) => {
@@ -53,11 +55,17 @@ function* loadTest({ payload }) {
 
     let { testItems } = test;
 
-    const { testActivity: activity } = testActivity;
+    const { testActivity: activity, questionActivities } = testActivity;
     // if questions are shuffled !!!
     if (activity.shuffleQuestions) {
       const itemsByKey = _keyBy(testItems, "_id");
       testItems = (activity.shuffledTestItems || []).map(id => itemsByKey[id]).filter(item => !!item);
+    }
+
+    let shuffles;
+    if (activity.shuffledTestItems) {
+      [testItems, shuffles] = ShuffleChoices(testItems, questionActivities);
+      yield put(setShuffledOptions(shuffles));
     }
 
     yield put({
@@ -78,7 +86,6 @@ function* loadTest({ payload }) {
         payload: { testActivityId }
       });
 
-      const { questionActivities } = testActivity;
       let lastAttemptedQuestion = questionActivities[0];
 
       questionActivities.forEach(item => {
@@ -148,7 +155,6 @@ function* submitTest() {
     const testActivityId = yield select(state => state.test && state.test.testActivityId);
     const groupId = yield select(getCurrentGroup);
     if (testActivityId === "test") {
-      console.log("practice test");
       return;
     }
     yield testActivityApi.submit(testActivityId, groupId);

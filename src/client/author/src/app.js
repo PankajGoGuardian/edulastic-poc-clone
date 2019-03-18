@@ -25,7 +25,7 @@ const CurriculumContainer = lazy(() => import("../CurriculumSequence"));
 const Reports = lazy(() => import("../Reports"));
 const ResponseFrequency = lazy(() => import("../Reports/subPages/ResponseFrequency"));
 const StandardsBasedReport = lazy(() => import("../StandardsBasedReport"));
-
+const ManageClass = lazy(() => import("../ManageClass"));
 // eslint-disable-next-line react/prop-types
 const Author = ({ match, history, isSidebarCollapsed }) => {
   const isPickQuestion = !!history.location.pathname.includes("pickup-questiontype");
@@ -42,6 +42,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               <Route exact path={`${match.url}/assessments/:assessmentId`} component={AssessmentPage} />
               <Route exact path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />
               <Route exact path={`${match.url}/classresponses/:testActivityId`} component={ClassResponses} />
+              <Route exact path={`${match.url}/manageClass`} component={ManageClass} />
               <Route
                 exact
                 path={`${match.url}/expressgrader/:assignmentId/:classId/:testActivityId`}

@@ -20,7 +20,7 @@ import {
 } from "../../ducks";
 // components
 import Score from "../Score/Score";
-import DisneyCard from "../DisneyCard/DisneyCard";
+import DisneyCardContainer from "../DisneyCardContainer/DisneyCardContainer";
 import Graph from "../ProgressGraph/ProgressGraph";
 import ClassSelect from "../../../Shared/Components/ClassSelect/ClassSelect";
 import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
@@ -46,6 +46,7 @@ import {
   CheckContainer,
   ButtonGroup,
   StyledFlexContainer,
+  StudentButtonDiv,
   StudentButton,
   QuestionButton
 } from "./styled";
@@ -55,9 +56,12 @@ class ClassBoard extends Component {
     super(props);
     this.changeStateTrue = this.changeStateTrue.bind(this);
     this.changeStateFalse = this.changeStateFalse.bind(this);
+    this.onSelectAllChange = this.onSelectAllChange.bind(this);
+
     this.state = {
       flag: true,
       selectedTab: "Student",
+      selectAll: false,
       selectedQuestion: 0
     };
   }
@@ -97,6 +101,15 @@ class ClassBoard extends Component {
     });
   }
 
+  onSelectAllChange = e => {
+    this.props.testActivity.map(student => {
+      student.check = e.target.checked;
+    });
+    this.setState({
+      selectAll: e.target.checked
+    });
+  };
+
   handleCreate = () => {
     const { history, match } = this.props;
     history.push(`${match.url}/create`);
@@ -129,9 +142,20 @@ class ClassBoard extends Component {
     return totalQuestions;
   };
 
+  changeCardCheck = (isCheck, studentId) => {
+    let nCountTrue = 0;
+    this.props.testActivity.map(student => {
+      if (student.studentId === studentId) student.check = isCheck;
+      if (student.check) nCountTrue++;
+    });
+    this.setState({
+      selectAll: nCountTrue == this.props.testActivity.length ? true : false
+    });
+  };
+
   render() {
     const { gradebook, testActivity, creating, match, classResponse, additionalData = { classes: [] }, t } = this.props;
-    const { selectedTab, flag, selectedQuestion } = this.state;
+    const { selectedTab, flag, selectedQuestion, selectAll } = this.state;
 
     const { assignmentId, classId } = match.params;
     const testActivityId = this.getTestActivity(testActivity);
@@ -155,7 +179,7 @@ class ClassBoard extends Component {
             &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> /{" "}
             <Anchor>{additionalData.testName}</Anchor> / <Anchor>{additionalData.className}</Anchor>
           </PaginationInfo>
-          <div>
+          <StudentButtonDiv>
             <StudentButton
               type={selectedTab === "Student" ? "primary" : ""}
               onClick={e => this.onTabChange(e, "Student")}
@@ -168,8 +192,9 @@ class ClassBoard extends Component {
             >
               QUESTION
             </QuestionButton>
-          </div>
+          </StudentButtonDiv>
           <ClassSelect
+            classid="DI"
             classname={selectedTab === "Student" ? classname : questionsIds}
             selected={selectedQuestion}
             handleChange={value => {
@@ -184,38 +209,18 @@ class ClassBoard extends Component {
             </StyledCard>
             <StyledFlexContainer justifyContent="space-between">
               <CheckContainer>
-                <StyledAnc onClick={this.changeStateTrue}>
-                  <img src={Ghat} alt="" />
-                </StyledAnc>
-                <SpaceDiv />
-                <StyledAnc onClick={this.changeStateFalse}>
-                  <img src={Stats} alt="" />
-                </StyledAnc>
-                <SpaceDiv />
-                <BarDiv />
-                <SpaceDiv />
-                <StyledCheckbox checked>SELECT ALL</StyledCheckbox>
+                <StyledCheckbox checked={this.state.selectAll} onChange={this.onSelectAllChange}>
+                  SELECT ALL
+                </StyledCheckbox>
               </CheckContainer>
-              <ButtonGroup>
-                <StyledButton>
-                  <img src={Ptools} alt="" />
-                  <ButtonSpace />
-                  {t("common.print")}
-                </StyledButton>
-                <StyledButton>
-                  <img src={Elinks} alt="" />
-                  <ButtonSpace />
-                  {t("common.redirect")}
-                </StyledButton>
-                <StyledButton>
-                  <img src={More} alt="" />
-                  <ButtonSpace />
-                  {t("common.more")}
-                </StyledButton>
-              </ButtonGroup>
             </StyledFlexContainer>
             {flag ? (
-              <DisneyCard testActivity={testActivity} assignmentId={assignmentId} classId={classId} />
+              <DisneyCardContainer
+                testActivity={testActivity}
+                assignmentId={assignmentId}
+                classId={classId}
+                changeCardCheck={this.changeCardCheck}
+              />
             ) : (
               <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
             )}

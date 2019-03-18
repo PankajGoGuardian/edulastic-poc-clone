@@ -1,9 +1,9 @@
 import React from "react";
 import { Select } from "antd";
 import { FlexContainer } from "@edulastic/common";
-import { Container, StyledSelect } from "./styled";
+import { Container, StyledSelect, StyledClassID } from "./styled";
 
-const ClassSelect = ({ classname, selected, handleChange }) => {
+const ClassSelect = ({ classname, selected, handleChange, classid = "" }) => {
   if (classname.length === 0) {
     return null;
   }
@@ -11,9 +11,12 @@ const ClassSelect = ({ classname, selected, handleChange }) => {
   return (
     <FlexContainer>
       <Container>
-        <StyledSelect value={selectedValue} style={{ width: 120 }} onChange={handleChange}>
+        <StyledSelect value={selectedValue} onChange={handleChange}>
           {classname.map(({ name }, index) => (
-            <Select.Option value={index}>{name}</Select.Option>
+            <Select.Option value={index}>
+              {classid.length > 0 && <StyledClassID>{classid}</StyledClassID>}
+              {name}
+            </Select.Option>
           ))}
         </StyledSelect>
       </Container>

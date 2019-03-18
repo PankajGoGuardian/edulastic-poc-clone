@@ -7,11 +7,9 @@ import { themes } from "../../../../student/themes";
 const classBoardTheme = themes.default.classboard;
 
 export const PaginationInfo = styled.span`
-  font-weight: bold;
+  font-weight: 600;
   display: inline-block
-  margin-left:30px;
-
-  font-size: 10px;
+  font-size: 11px;
   word-spacing:5px;
   color: ${classBoardTheme.headerContainerColor}
 `;
@@ -19,9 +17,10 @@ export const PaginationInfo = styled.span`
 export const CheckContainer = styled.span`
   font-weight: bold;
   display: inline-block;
-  margin-left: 30px;
-
   font-size: 15px;
+  > span {
+    margin-left: 0;
+  }
 `;
 
 export const ButtonGroup = styled.div`
@@ -29,7 +28,8 @@ export const ButtonGroup = styled.div`
 `;
 
 export const StyledFlexContainer = styled(FlexContainer)`
-  margin: 20px 10px;
+  width: 95%;
+  margin: 20px auto;
 `;
 
 export const AnchorLink = styled(Link)`
@@ -43,9 +43,20 @@ export const Anchor = styled.a`
 export const StyledCard = styled(Card)`
   margin: auto;
   width: 95%;
-  height: 270px;
   border-radius: 10px;
   box-shadow: 3px 2px 7px lightgray;
+  .ant-card-body {
+    padding: 30px 30px 15px 30px;
+  }
+`;
+
+export const StudentButtonDiv = styled.div`
+  margin-left: auto;
+  margin-right: 20px !important;
+
+  .ant-btn-primary {
+    background-color: #0e93dc;
+  }
 `;
 
 export const StudentButton = styled(Button)`
@@ -54,7 +65,8 @@ export const StudentButton = styled(Button)`
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
   padding: 0px 30px;
-  color: black;
+  font-size: 11px;
+  font-weight: 600;
 `;
 
 export const QuestionButton = styled(Button)`
@@ -63,7 +75,8 @@ export const QuestionButton = styled(Button)`
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
   padding: 0px 30px;
-  color: black;
+  font-size: 11px;
+  font-weight: 600;
 `;
 
 export const BarDiv = styled.div`

@@ -13,16 +13,16 @@ export const Container = styled(HeaderWrapper)`
   align-items: center;
   justify-content: space-between;
   background-color: ${darkBlueSecondary};
-  padding: 0px 15px;
   height: 62px;
   z-index: 1;
+  padding: 0 2.5%;
 `;
 
 export const StyledTitle = styled.h1`
   color: ${white};
   font-size: 22px;
   font-weight: bold;
-  margin: 20px;
+  margin: 20px 0;
   padding: 0;
 `;
 
@@ -38,7 +38,8 @@ export const SpaceD = styled.div`
 `;
 
 export const StyledParaSecond = styled.p`
-  font-size: 0.5em;
+  font-size: 13px;
+  font-weight: 600;
 `;
 
 export const StyledParaThird = styled.p`
@@ -56,15 +57,14 @@ export const StyledSwitch = styled(Switch)`
   background-color: ${classBoardTheme.SwitchColor};
 `;
 
-export const StyledDiv = styled.div`
-  margin-right: 20px;
-`;
+export const StyledDiv = styled.div``;
 
 export const StyledTabs = styled.div`
   width: 72%;
   height: 62px;
   display: flex;
   align-items: center;
+  justify-content: center;
 `;
 
 export const StyledAnchorA = styled.a`
@@ -91,7 +91,7 @@ export const StyledAnchor = styled.a`
   padding: 0px 15px;
   text-align: center;
   height: 45px;
-  margin: 0 7px;
+  margin: 0 10px;
   border-radius: 20px;
   background-color: ${props => (props.isActive ? "#f3f3f3" : "#0e93dc")};
   -webkit-transition: background-color 0.3s;

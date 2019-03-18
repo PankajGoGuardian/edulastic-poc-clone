@@ -57,7 +57,8 @@ class ClassBoard extends Component {
     this.changeStateFalse = this.changeStateFalse.bind(this);
     this.state = {
       flag: true,
-      selectedTab: "Student"
+      selectedTab: "Student",
+      selectedQuestion: 0
     };
   }
 
@@ -118,28 +119,25 @@ class ClassBoard extends Component {
   };
 
   getQuestions = () => {
-    const { classResponse } = this.props;
-    if (classResponse) {
-      const { testItems } = classResponse;
-      if (testItems) {
-        return testItems;
-      }
-    }
-    return [];
+    const { classResponse: { testItems = [] } = {} } = this.props;
+    let totalQuestions = [];
+    testItems.forEach(({ data: { questions = [] } = {} }) =>
+      questions.forEach(q => {
+        totalQuestions = [...totalQuestions, q];
+      })
+    );
+    return totalQuestions;
   };
 
   render() {
     const { gradebook, testActivity, creating, match, classResponse, additionalData = { classes: [] }, t } = this.props;
-    const { selectedTab, flag } = this.state;
+    const { selectedTab, flag, selectedQuestion } = this.state;
 
     const { assignmentId, classId } = match.params;
     const testActivityId = this.getTestActivity(testActivity);
     const classname = additionalData ? additionalData.classes : [];
     const questions = this.getQuestions();
-    const questionsIds = [];
-    for (let i = 0; i < questions.length; i++) {
-      questionsIds.push({ name: `Question ${i + 1}` });
-    }
+    const questionsIds = questions.map((q, i) => ({ name: `Question ${i + 1}` }));
     return (
       <div>
         <HooksContainer classId={classId} assignmentId={assignmentId} />
@@ -171,7 +169,13 @@ class ClassBoard extends Component {
               QUESTION
             </QuestionButton>
           </div>
-          <ClassSelect classname={selectedTab === "Student" ? classname : questionsIds} />
+          <ClassSelect
+            classname={selectedTab === "Student" ? classname : questionsIds}
+            selected={selectedQuestion}
+            handleChange={value => {
+              this.setState({ selectedQuestion: value });
+            }}
+          />
         </StyledFlexContainer>
         {selectedTab === "Student" ? (
           <React.Fragment>
@@ -217,7 +221,11 @@ class ClassBoard extends Component {
             )}
           </React.Fragment>
         ) : (
-          <QuestionContainer classResponse={classResponse} testActivity={testActivity} />
+          <QuestionContainer
+            classResponse={classResponse}
+            testActivity={testActivity}
+            question={questions[selectedQuestion]}
+          />
         )}
       </div>
     );

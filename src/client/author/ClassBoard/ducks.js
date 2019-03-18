@@ -36,7 +36,7 @@ function* receiveGradeBookSaga({ payload }) {
 
 function* receiveTestActivitySaga({ payload }) {
   try {
-    //test, testItemsData, testActivities, studentNames, testQuestionActivities
+    // test, testItemsData, testActivities, studentNames, testQuestionActivities
     const { additionalData, ...gradebookData } = yield call(classBoardApi.testActivity, payload);
     yield put({
       type: RECEIVE_TESTACTIVITY_SUCCESS,
@@ -161,6 +161,8 @@ export const getAssignmentClassIdSelector = createSelector(
 export const stateClassResponseSelector = state => state.classResponse;
 export const stateStudentResponseSelector = state => state.studentResponse;
 export const stateFeedbackResponseSelector = state => state.feedbackResponse;
+export const stateStudentAnswerSelector = state => state.studentQuestionResponse;
+export const stateQuestionAnswersSelector = state => state.classQuestionResponse;
 
 export const getClassResponseSelector = createSelector(
   stateClassResponseSelector,
@@ -179,5 +181,15 @@ export const getStudentResponseSelector = createSelector(
 
 export const getFeedbackResponseSelector = createSelector(
   stateFeedbackResponseSelector,
+  state => state.data
+);
+
+export const getStudentQuestionSelector = createSelector(
+  stateStudentAnswerSelector,
+  state => state.data
+);
+
+export const getClassQuestionSelector = createSelector(
+  stateQuestionAnswersSelector,
   state => state.data
 );

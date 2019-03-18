@@ -5,7 +5,9 @@ import {
   RECEIVE_GRADEBOOK_REQUEST,
   RECEIVE_TESTACTIVITY_REQUEST,
   UPDATE_RELEASE_SCORE,
-  SET_SHOW_SCORE
+  SET_SHOW_SCORE,
+  RECEIVE_STUDENT_QUESTION_REQUEST,
+  RECEIVE_CLASS_QUESTION_REQUEST
 } from "../constants/actions";
 
 export const receiveClassResponseAction = data => ({
@@ -41,4 +43,14 @@ export const releaseScoreAction = (assignmentId, classId, isReleaseScore) => ({
 export const setShowScoreAction = payload => ({
   type: SET_SHOW_SCORE,
   payload
+});
+
+export const receiveStudentQuestionAction = (assignmentId, classId, questionId, studentId) => ({
+  type: RECEIVE_STUDENT_QUESTION_REQUEST,
+  payload: { assignmentId, classId, questionId, studentId }
+});
+
+export const receiveAnswersAction = (assignmentId, classId, questionId) => ({
+  type: RECEIVE_CLASS_QUESTION_REQUEST,
+  payload: { assignmentId, classId, questionId }
 });

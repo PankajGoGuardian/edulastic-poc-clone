@@ -61,7 +61,7 @@ function* loadTest({ payload }) {
 
     let { testItems } = test;
 
-    const { testActivity: activity, questionActivities } = testActivity;
+    const { testActivity: activity, questionActivities = [] } = testActivity;
     // if questions are shuffled !!!
     if (activity.shuffleQuestions) {
       const itemsByKey = _keyBy(testItems, "_id");
@@ -95,7 +95,6 @@ function* loadTest({ payload }) {
       });
 
       let lastAttemptedQuestion = questionActivities[0] || {};
-      const { questionActivities } = testActivity;
 
       questionActivities.forEach(item => {
         allAnswers = {

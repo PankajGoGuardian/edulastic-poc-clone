@@ -23,7 +23,6 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
 
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
   const { releaseGradeLabels } = testConstants;
-  console.log("data here is", data);
   const {
     test = {},
     reports = [],
@@ -62,7 +61,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
     }
   };
 
-  const { releaseScore = true, activityReview = true } = test;
+  const { releaseScore = true, activityReview = true } = data;
   const showReviewButton =
     releaseScore === releaseGradeLabels.WITH_RESPONSE || releaseScore === releaseGradeLabels.WITH_ANSWERS;
   const ScoreDetail = (

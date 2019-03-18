@@ -63,9 +63,10 @@ function* updateAssignmetSaga({ payload }) {
   try {
     const data = omit(
       {
-        ...payload
+        ...payload,
+        updateTestActivities: true
       },
-      ["_id", "__v", "createdAt", "updatedAt", "students", "scoreReleasedClasses", "termId"]
+      ["_id", "__v", "createdAt", "updatedAt", "students", "scoreReleasedClasses", "termId", "reportKey"]
     );
     yield call(assignmentApi.update, payload._id, data);
     yield put({

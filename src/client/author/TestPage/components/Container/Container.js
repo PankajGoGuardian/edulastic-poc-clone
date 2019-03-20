@@ -63,9 +63,6 @@ class Container extends PureComponent {
 
   componentDidMount() {
     const { match, receiveTestById, setDefaultData } = this.props;
-    if (this.props.editAssigned) {
-      console.log("edit assigned");
-    }
     if (match.params.id) {
       receiveTestById(match.params.id);
     } else {
@@ -171,7 +168,7 @@ class Container extends PureComponent {
     });
     if (test._id) {
       if (this.props.editAssigned) {
-        newTest.regrade = true;
+        newTest.versioned = true;
         newTest.oldId = test._id;
         createTest(newTest);
       } else {

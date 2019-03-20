@@ -245,15 +245,7 @@ function* receiveTestByIdSaga({ payload }) {
 function* createTestSaga({ payload }) {
   const { oldId, regrade = false } = payload.data;
   try {
-    const dataToSend = omit(payload.data, [
-      "assignments",
-      "oldId",
-      "_id",
-      "regrade",
-      "_id",
-      "createdDate",
-      "updatedDate"
-    ]);
+    const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate"]);
     const entity = yield call(testsApi.create, dataToSend);
     if (regrade) {
       yield put(push(`/author/assignments/regrade/new/${entity._id}/old/${oldId}`));

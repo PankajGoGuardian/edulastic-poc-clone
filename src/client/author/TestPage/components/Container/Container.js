@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent, useEffect } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -63,6 +63,9 @@ class Container extends PureComponent {
 
   componentDidMount() {
     const { match, receiveTestById, setDefaultData } = this.props;
+    if (this.props.editAssigned) {
+      console.log("edit assigned");
+    }
     if (match.params.id) {
       receiveTestById(match.params.id);
     } else {
@@ -167,7 +170,13 @@ class Container extends PureComponent {
       return foundItem;
     });
     if (test._id) {
-      updateTest(test._id, newTest);
+      if (this.props.editAssigned) {
+        newTest.regrade = true;
+        newTest.oldId = test._id;
+        createTest(newTest);
+      } else {
+        updateTest(test._id, newTest);
+      }
     } else {
       createTest(newTest);
     }

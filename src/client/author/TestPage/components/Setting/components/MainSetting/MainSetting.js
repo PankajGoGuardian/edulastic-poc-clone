@@ -39,6 +39,7 @@ const {
   navigations,
   completionTypes,
   calculators,
+  calculatorKeys,
   evalTypes,
   accessibilities,
   releaseGradeTypes,
@@ -71,7 +72,6 @@ class MainSetting extends Component {
 
     this.state = {
       markAsDoneValue: props.entity.markAsDoneValue,
-      calcType: props.entity.calcType,
       evalType: props.entity.evalType,
       showPassword: false,
       enable: true,
@@ -156,7 +156,7 @@ class MainSetting extends Component {
   };
 
   render() {
-    const { markAsDoneValue, calcType, evalType, enable, showAdvancedOption, showPassword } = this.state;
+    const { markAsDoneValue, evalType, enable, showAdvancedOption, showPassword } = this.state;
     const { history, windowWidth, entity } = this.props;
 
     const {
@@ -169,7 +169,8 @@ class MainSetting extends Component {
       answerOnPaper,
       requirePassword,
       testType,
-      generateReport
+      generateReport,
+      calculatorType
     } = entity;
 
     const isSmallSize = windowWidth > 993 ? 1 : 0;
@@ -338,9 +339,9 @@ class MainSetting extends Component {
             <Block id="show-calculator">
               <Title>Show Calculator</Title>
               <Body>
-                <StyledRadioGroup onChange={this.updateFeatures("calcType")} value={calcType}>
-                  {Object.keys(calculators).map(item => (
-                    <Radio value={calculators[item]} key={calculators[item]}>
+                <StyledRadioGroup onChange={this.updateFeatures("calculatorType")} value={calculatorType}>
+                  {calculatorKeys.map(item => (
+                    <Radio value={item} key={item}>
                       {calculators[item]}
                     </Radio>
                   ))}

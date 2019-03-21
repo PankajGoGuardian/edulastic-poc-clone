@@ -104,6 +104,7 @@ export const initialTestState = {
   // safeBrowsePassword: "", TODO need to add this when field is added to backend collection
   shuffleQuestions: false,
   shuffleAnswers: false,
+  // calculatorType: test.calculatorKeys[0], TODO need to add this when field is added to backend collection
   status: "draft",
   thumbnail: "https://fakeimg.pl/500x135/",
   createdBy: {

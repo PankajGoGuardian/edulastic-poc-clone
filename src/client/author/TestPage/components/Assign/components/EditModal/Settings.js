@@ -4,15 +4,12 @@ import { Col, Radio } from "antd";
 import { AlignRight, AlignSwitchRight, StyledRowSettings, SettingsWrapper, MaxAttemptIInput, Password } from "./styled";
 //selectors
 import { test } from "@edulastic/constants";
-const { releaseGradeTypes } = test;
-const calculators = ["None", "Scientific", "Basic", "Graphing"];
+const { releaseGradeTypes, calculatorKeys, calculators } = test;
 const evaluationtypes = ["All or Nothing", "Partial Credit", "Dont penalize for incorrect selection"];
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 
 const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updateAssignmentSettings }) => {
   const [isAutomatic, setAssignmentCompletionType] = useState(0);
-
-  const [calcType, setCalcType] = useState(0);
   const [type, setEvaluationType] = useState(0);
   const [showPassword, togglePasswordField] = useState(false);
   const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
@@ -52,7 +49,8 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
     safeBrowser = tempTestSettings.safeBrowser,
     safeBrowsePassword = tempTestSettings.safeBrowsePassword,
     shuffleQuestions = tempTestSettings.shuffleQuestions,
-    shuffleAnswers = tempTestSettings.shuffleAnswers
+    shuffleAnswers = tempTestSettings.shuffleAnswers,
+    calculatorType = tempTestSettings.calculatorType
   } = assignmentSettings;
   return (
     <SettingsWrapper>
@@ -149,10 +147,10 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
       <StyledRowSettings gutter={16}>
         <Col span={8}>SHOW CALCULATOR</Col>
         <Col span={16}>
-          <AlignRight onChange={calculatorShowMethod} value={calcType}>
-            {calculators.map((item, index) => (
-              <Radio value={index} key={index}>
-                {item}
+          <AlignRight value={calculatorType} onChange={e => overRideSettings("calculatorType", e.target.value)}>
+            {calculatorKeys.map(item => (
+              <Radio value={item} key={item}>
+                {calculators[item]}
               </Radio>
             ))}
           </AlignRight>

@@ -44,7 +44,8 @@ const menuItems = [
   },
   {
     label: "Manage Class",
-    icon: IconManage
+    icon: IconManage,
+    path: "author/manageClass"
   },
   {
     label: "Item List",

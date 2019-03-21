@@ -13,7 +13,7 @@ import {
   IconMetadata,
   IconSelected
 } from "@edulastic/icons";
-import { white } from "@edulastic/colors";
+import { white, newBlue } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { withWindowSizes } from "@edulastic/common";
 import { connect } from "react-redux";
@@ -63,27 +63,27 @@ class ButtonBar extends Component {
                 <HeadIcon>
                   <IconSelected color={white} width={18} height={16} />
                 </HeadIcon>
-                EDIT
+                Edit Mode
               </MenuItem>
               <MenuItem className={current === "preview" && "active"} onClick={() => this.handleMenuClick("preview")}>
                 <HeadIcon>
                   <IconEye color={white} width={18} height={16} />
                 </HeadIcon>
-                PREVIEW
+                Preview mode
               </MenuItem>
               <MenuItem className={current === "metadata" && "active"} onClick={() => this.handleMenuClick("metadata")}>
                 <HeadIcon>
                   <IconMetadata color={white} width={18} height={16} />
                 </HeadIcon>
-                METADATA
+                Meta data
               </MenuItem>
             </Menu>
             <RightSide>
               <Button onClick={onSave}>
                 <HeadIcon>
-                  <IconSave color={white} width={18} height={16} />
+                  <IconSave color={newBlue} width={18} height={16} />
                 </HeadIcon>
-                SAVE
+                Save
               </Button>
             </RightSide>
           </Container>

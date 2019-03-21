@@ -9,6 +9,7 @@ export const mainBgColor = "#f3f3f3";
 export const mainTextColor = "#444444";
 export const textColor = "#878282";
 export const secondaryTextColor = "#434b5d";
+export const primaryTextColor = "#69727E";
 
 export const separatorColor = "#d6d0d0";
 export const dashBorderColor = "#e6e6e6";
@@ -28,6 +29,7 @@ export const blue = "#12a6e8";
 export const lightBlue = "#93d8f7";
 export const darkBlue = "#0080b9";
 export const darkBlueSecondary = "#0288d1";
+export const newBlue = "#1773F0";
 
 export const green = "#1fe3a1";
 export const lightGreen = "#f5f9fe";

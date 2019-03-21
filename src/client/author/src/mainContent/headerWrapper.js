@@ -19,13 +19,12 @@ HeaderWrapper.propTypes = {
 export default memo(HeaderWrapper);
 
 const HeaderContainer = styled.div`
-  padding-top: 62px;
-  margin-bottom: 10px;
+  padding-top: 96px;
 `;
 
 const Container = styled.div`
-  height: 62px;
-  padding: 0px 2.5%;
+  height: 96px;
+  padding: 0px 3%;
   background: ${darkBlueSecondary};
   display: flex;
   justify-content: space-between;

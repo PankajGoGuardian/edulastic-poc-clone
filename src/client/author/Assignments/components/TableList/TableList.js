@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { Link } from "react-router-dom";
+import { compose } from "redux";
+
+import { Link, withRouter } from "react-router-dom";
 import { Dropdown } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
@@ -186,7 +188,7 @@ class TableList extends Component {
   };
 
   render() {
-    const { assignments, onOpenReleaseScoreSettings } = this.props;
+    const { assignments, onOpenReleaseScoreSettings, history } = this.props;
     const { details } = this.state;
     const columns = [
       {
@@ -265,7 +267,7 @@ class TableList extends Component {
         render: (text, row) => (
           <ActionDiv>
             <Dropdown
-              overlay={ActionMenu(onOpenReleaseScoreSettings, row.currentAssignment)}
+              overlay={ActionMenu(onOpenReleaseScoreSettings, row.currentAssignment, history)}
               placement="bottomCenter"
               trigger={["click"]}
             >
@@ -291,8 +293,13 @@ class TableList extends Component {
   }
 }
 
-export default withNamespaces("assignmentCard")(TableList);
-
 TableList.propTypes = {
   assignments: PropTypes.array.isRequired
 };
+
+const enhance = compose(
+  withRouter,
+  withNamespaces("assignmentCard")
+);
+
+export default enhance(TableList);

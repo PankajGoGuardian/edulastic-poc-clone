@@ -23,6 +23,11 @@ export const getCurrentGroup = createSelector(
   state => state.user && state.user.orgData && state.user.orgData.defaultClass
 );
 
+export const getUserRole = createSelector(
+  stateSelector,
+  state => state.user.role
+);
+
 export const getCurrentTerm = createSelector(
   stateSelector,
   state => _get(state, "user.orgData.defaultTermId")

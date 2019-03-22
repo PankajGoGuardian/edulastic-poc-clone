@@ -6,11 +6,11 @@ import { classResponsesSaga } from "../../ClassResponses";
 import { testsListSaga } from "../../TestList";
 import { testPageSaga } from "../../TestPage";
 import { itemDetailSaga } from "../../ItemDetail";
-import { ManageClassSaga } from "../../ManageClass";
 import { questionSaga } from "../../QuestionEditor";
 import { testsAddItemsSaga } from "../../TestPage/components/AddItems";
 import { testsAssignSaga } from "../../TestPage/components/Assign";
 import assignmentsSaga from "./assignments";
+import { reportAssessmentSummarySaga } from "../../Reports/subPages/AssessmentSummary/ducks";
 import { authorGroupsWatcherSaga } from "../../sharedDucks/groups";
 import { assessmentPageSaga } from "../../AssessmentCreate";
 
@@ -22,14 +22,14 @@ const authorSagas = [
   dictionariesSaga(),
   classBoardSaga(),
   assignmentsSaga(),
+  reportAssessmentSummarySaga(),
   classResponsesSaga(),
   testsListSaga(),
   testPageSaga(),
   testsAddItemsSaga(),
   testsAssignSaga(),
   authorGroupsWatcherSaga(),
-  assessmentPageSaga(),
-  ManageClassSaga()
+  assessmentPageSaga()
 ];
 
 export default authorSagas;

@@ -6,6 +6,9 @@ export const grey = "#dfdfdf";
 export const lightGrey = "#f9f9f9";
 export const fadedGrey = "#e5e5e5";
 export const darkGrey = "#a3a0a0";
+export const greyish = "#f3f3f4";
+export const greyishDarker1 = "#a7b1c2";
+export const greyishDarker2 = "#cccccc";
 export const mainBgColor = "#f3f3f3";
 export const mainTextColor = "#444444";
 export const textColor = "#878282";
@@ -36,6 +39,7 @@ export const lightGreen = "#f5f9fe";
 export const greenDark = "#4aac8b";
 export const greenDarkSecondary = "#057750";
 export const greenSecondary = "#4CD43B";
+export const greenSomeWhatDark = "#17a67d";
 
 export const yellow = "#febe00";
 

@@ -7,13 +7,14 @@ import { test } from "@edulastic/constants";
 import ListCard from "../Card/Card";
 import UiTime from "../UiTime/UiTime";
 
-import { setMaxAttemptsAction } from "../../ducks";
+import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
 import { setTestDataAction, getTestEntitySelector } from "../../../../ducks";
 
 import {
   StyledAnchor,
   RadioGroup,
   InputTitle,
+  InputPassword,
   Body,
   Title,
   Block,
@@ -38,6 +39,7 @@ const {
   navigations,
   completionTypes,
   calculators,
+  calculatorKeys,
   evalTypes,
   accessibilities,
   releaseGradeTypes,
@@ -70,12 +72,16 @@ class MainSetting extends Component {
 
     this.state = {
       markAsDoneValue: props.entity.markAsDoneValue,
-      calcType: props.entity.calcType,
       evalType: props.entity.evalType,
+      showPassword: false,
       enable: true,
       showAdvancedOption: false
     };
   }
+
+  handleShowPassword = () => {
+    this.setState(state => ({ showPassword: !state.showPassword }));
+  };
 
   enableHandler = e => {
     this.setState({ enable: e.target.value });
@@ -89,6 +95,11 @@ class MainSetting extends Component {
   updateAttempt = e => {
     const { setMaxAttempts } = this.props;
     setMaxAttempts(e.target.value);
+  };
+
+  setPassword = e => {
+    const { setSafePassword } = this.props;
+    setSafePassword(e.target.value);
   };
 
   updateTestData = key => value => {
@@ -108,9 +119,16 @@ class MainSetting extends Component {
         setTestData({ generateReport: false });
       }
     }
-    setTestData({
-      [key]: value
-    });
+    if (key === "safeBrowser" && value === false) {
+      setTestData({
+        sebPassword: "",
+        [key]: value
+      });
+    } else {
+      setTestData({
+        [key]: value
+      });
+    }
   };
 
   updateFeatures = key => e => {
@@ -138,21 +156,22 @@ class MainSetting extends Component {
   };
 
   render() {
-    const { markAsDoneValue, calcType, evalType, enable, showAdvancedOption } = this.state;
+    const { markAsDoneValue, evalType, enable, showAdvancedOption, showPassword } = this.state;
     const { history, windowWidth, entity } = this.props;
 
     const {
       releaseScore,
       maxAttempts,
       safeBrowser,
+      sebPassword,
       shuffleQuestions,
       shuffleAnswers,
       answerOnPaper,
       requirePassword,
       testType,
-      generateReport
+      generateReport,
+      calcType
     } = entity;
-
     const isSmallSize = windowWidth > 993 ? 1 : 0;
     return (
       <Paper style={{ marginTop: 27 }}>
@@ -268,6 +287,18 @@ class MainSetting extends Component {
               <Title>Require Safe Exam Browser</Title>
               <Body>
                 <Switch defaultChecked={safeBrowser} onChange={this.updateTestData("safeBrowser")} />
+                {safeBrowser && (
+                  <InputPassword
+                    prefix={
+                      <i className={`fa fa-eye${showPassword ? "-slash" : ""}`} onClick={this.handleShowPassword} />
+                    }
+                    onChange={this.setPassword}
+                    size="large"
+                    value={sebPassword}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                  />
+                )}
               </Body>
               <Description>
                 {
@@ -308,8 +339,8 @@ class MainSetting extends Component {
               <Title>Show Calculator</Title>
               <Body>
                 <StyledRadioGroup onChange={this.updateFeatures("calcType")} value={calcType}>
-                  {Object.keys(calculators).map(item => (
-                    <Radio value={calculators[item]} key={calculators[item]}>
+                  {calculatorKeys.map(item => (
+                    <Radio value={item} key={item}>
                       {calculators[item]}
                     </Radio>
                   ))}
@@ -559,6 +590,7 @@ export default connect(
   }),
   {
     setMaxAttempts: setMaxAttemptsAction,
+    setSafePassword: setSafeBroswePassword,
     setTestData: setTestDataAction
   }
 )(MainSetting);

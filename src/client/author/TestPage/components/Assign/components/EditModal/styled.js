@@ -100,15 +100,26 @@ export const TestTypeDropDown = styled(Select)`
 
 export const AlignRight = styled(RadioGroup)`
   float: right;
+  .ant-radio-wrapper {
+    white-space: normal;
+  }
 `;
 
 export const AlignSwitchRight = styled(Switch)`
   float: right;
 `;
+
 export const MaxAttemptIInput = styled(Input)`
   width: 20%;
   float: right;
 `;
+
+export const Password = styled(Input)`
+  width: 100%;
+  float: right;
+  margin-top: 5px;
+`;
+
 export const StyledRowSettings = styled.div`
   ${props => !props.islast && "border-bottom: 1px solid rgba(128, 128, 128, 0.25);"}
   padding: 15px 0px;

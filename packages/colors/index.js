@@ -4,6 +4,7 @@ export const fadedBlack = "rgba(0, 0, 0, 0.65)";
 
 export const grey = "#dfdfdf";
 export const lightGrey = "#f9f9f9";
+export const fadedGrey = "#e5e5e5";
 export const darkGrey = "#a3a0a0";
 export const mainBgColor = "#f3f3f3";
 export const mainTextColor = "#444444";
@@ -30,6 +31,7 @@ export const lightBlue = "#93d8f7";
 export const darkBlue = "#0080b9";
 export const darkBlueSecondary = "#0288d1";
 export const newBlue = "#1773F0";
+export const blueButton = "#0e93dc";
 
 export const green = "#1fe3a1";
 export const lightGreen = "#f5f9fe";

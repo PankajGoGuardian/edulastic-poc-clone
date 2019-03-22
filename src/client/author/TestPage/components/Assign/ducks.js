@@ -8,7 +8,7 @@ import { all, call, put, takeEvery, select } from "redux-saga/effects";
 import { SET_ASSIGNMENT, getTestSelector, getTestIdSelector } from "../../ducks";
 import { generateClassData, formatAssignment } from "./utils";
 import { getStudentsSelector } from "../../../sharedDucks/groups";
-import { getUserNameSelector } from "../../../src/selectors/user";
+import { getUserNameSelector, getCurrentTerm } from "../../../src/selectors/user";
 // constants
 export const SAVE_ASSIGNMENT = "[assignments] save assignment";
 export const UPDATE_ASSIGNMENT = "[assignments] update assignment";
@@ -101,6 +101,7 @@ function* saveAssignment({ payload }) {
   try {
     const studentsList = yield select(getStudentsSelector);
     const testId = yield select(getTestIdSelector);
+    const termId = yield select(getCurrentTerm);
     let classData = generateClassData(payload.class, payload.students, studentsList, payload.specificStudents);
     const assignedBy = yield select(getUserNameSelector);
     // if no class is selected dont bother sending a request.
@@ -137,7 +138,8 @@ function* saveAssignment({ payload }) {
         class: classData,
         startDate,
         endDate,
-        testId
+        testId,
+        termId
       },
       ["_id", "__v", "createdAt", "updatedAt", "students", "scoreReleasedClasses", "googleAssignmentIds"]
     );

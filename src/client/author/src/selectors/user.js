@@ -1,3 +1,4 @@
+import { get as _get } from "lodash";
 import { createSelector } from "reselect";
 
 export const stateSelector = state => state.user;
@@ -20,4 +21,9 @@ export const getUserNameSelector = createSelector(
 export const getCurrentGroup = createSelector(
   stateSelector,
   state => state.user && state.user.orgData && state.user.orgData.defaultClass
+);
+
+export const getCurrentTerm = createSelector(
+  stateSelector,
+  state => _get(state, "user.orgData.defaultTermId")
 );

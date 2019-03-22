@@ -4,14 +4,11 @@ import styled from "styled-components";
 import { grey } from "@edulastic/colors";
 
 import { LinkItem } from "./linkItem";
-import { BoxHeading } from "../../common/components/boxHeading";
+import { BoxHeading } from "../boxHeading";
 
 export const SingleAssessmentReport = props => {
   const links = [
-    {
-      title: "Assessment Summary",
-      location: "/author/reports/assessment-summary/test/5c90d974a649cb81bc5d4ca2?districtId=5c9089b1a649cb81bc398b1f"
-    },
+    { title: "Assessment Summary", location: "/author/reports/" },
     { title: "Peer Performance", location: "/author/reports/" },
     { title: "Question Analysis", location: "/author/reports/" },
     {

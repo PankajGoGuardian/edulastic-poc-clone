@@ -155,10 +155,10 @@ class TableList extends Component {
       {
         dataIndex: "action",
         width: "14%",
-        render: () => (
+        render: (text, row) => (
           <ActionDiv>
             <FlexContainer justifyContent="space-between" style={{ marginLeft: 20, marginRight: 20 }}>
-              <Link to={`/author/classboard/${getInfo.key}/${getInfo.classId}`}>
+              <Link to={`/author/classboard/${getInfo.key}/${row.classId}`}>
                 <Icon src={presentationIcon} alt="Images" />
               </Link>
               <Link to="/author/expressgrader">

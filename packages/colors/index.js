@@ -5,6 +5,7 @@ export const fadedBlack = "rgba(0, 0, 0, 0.65)";
 export const grey = "#dfdfdf";
 export const lightGrey = "#f9f9f9";
 export const fadedGrey = "#e5e5e5";
+export const lightGreySecondary = "#f8f8f8";
 export const darkGrey = "#a3a0a0";
 export const greyish = "#f3f3f4";
 export const greyishDarker1 = "#a7b1c2";
@@ -31,6 +32,7 @@ export const redDark = "#dd2e44";
 
 export const blue = "#12a6e8";
 export const lightBlue = "#93d8f7";
+export const lightBlueSecondary = "#1774F0";
 export const darkBlue = "#0080b9";
 export const darkBlueSecondary = "#0288d1";
 export const blueButton = "#0e93dc";

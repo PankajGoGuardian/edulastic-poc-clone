@@ -14,7 +14,7 @@ import googleIcon from "../../assets/Google Classroom.svg";
 import { Link } from "react-router-dom";
 import { assignmentApi } from "@edulastic/api";
 
-import { Container, StyledMenu, StyledLink, SpaceElement } from "./styled";
+import { Container, StyledMenu, StyledLink, SpaceElement, ActionButtonWrapper, ActionButton } from "./styled";
 
 const { releaseGradeLabels } = test;
 const { duplicateAssignment } = assignmentApi;
@@ -31,6 +31,11 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history) => {
     });
   };
 
+  MenuItems.push(
+    <ActionButtonWrapper>
+      <ActionButton>Actions</ActionButton>
+    </ActionButtonWrapper>
+  );
   MenuItems.push(
     <Menu.Item>
       <StyledLink target="_blank" rel="noopener noreferrer">

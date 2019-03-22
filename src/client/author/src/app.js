@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Layout } from "antd";
 import { connect } from "react-redux";
 import { Progress } from "@edulastic/common";
-import { tabletWidth } from "@edulastic/colors";
+import { tabletWidth, mainBgColor } from "@edulastic/colors";
 import Sidebar from "./Sidebar/SideMenu";
 /* lazy load routes */
 const Assignments = lazy(() => import("../Assignments"));
@@ -32,7 +32,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
   const isPickQuestion = !!history.location.pathname.includes("pickup-questiontype");
   const isCollapsed = isPickQuestion || isSidebarCollapsed;
   return (
-    <Layout>
+    <StyledLayout>
       <MainContainer isCollapsed={isCollapsed}>
         <SidebarCompnent />
         <Wrapper>
@@ -117,7 +117,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
           </Suspense>
         </Wrapper>
       </MainContainer>
-    </Layout>
+    </StyledLayout>
   );
 };
 
@@ -154,4 +154,8 @@ const SidebarCompnent = styled(Sidebar)`
 `;
 const Wrapper = styled.div`
   position: relative;
+`;
+
+const StyledLayout = styled(Layout)`
+  background: ${mainBgColor};
 `;

@@ -4,6 +4,7 @@ import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { MoveLink, MathFormulaDisplay } from "@edulastic/common";
 import { MAX_TAB_WIDTH } from "../../../src/constants/others";
+import { IconPlus } from "@edulastic/icons";
 import {
   Container,
   Categories,
@@ -20,6 +21,7 @@ import {
   TypeCategory,
   ViewButton,
   ViewButtonStyled,
+  AddButtonStyled,
   HeartIcon,
   ShareIcon
 } from "./styled";
@@ -98,12 +100,15 @@ class Item extends Component {
       <Container>
         <Question>
           <QuestionContent>
-            <MoveLink onClick={this.moveToItem}>{item._id}</MoveLink>
+            <MoveLink onClick={this.moveToItem}>
+              {item.data && item.data.questions ? item.data.questions[0].stimulus : item._id}
+            </MoveLink>
             <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: this.description }} />
           </QuestionContent>
           {windowWidth > MAX_TAB_WIDTH && (
             <ViewButton>
               <ViewButtonStyled onClick={this.moveToItem}>{t("component.item.view")}</ViewButtonStyled>
+              <AddButtonStyled>{<IconPlus />}</AddButtonStyled>
             </ViewButton>
           )}
         </Question>
@@ -117,6 +122,7 @@ class Item extends Component {
         {windowWidth < MAX_TAB_WIDTH && (
           <ViewButton>
             <ViewButtonStyled onClick={this.moveToItem}>{t("component.item.view")}</ViewButtonStyled>
+            <AddButtonStyled>{<IconPlus />}</AddButtonStyled>
           </ViewButton>
         )}
       </Container>

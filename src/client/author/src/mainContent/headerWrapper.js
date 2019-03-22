@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { darkBlueSecondary, mobileWidth } from "@edulastic/colors";
+import { newBlue, mobileWidth } from "@edulastic/colors";
 import { Affix } from "antd";
 
 const HeaderWrapper = ({ children }) => (
@@ -25,7 +25,7 @@ const HeaderContainer = styled.div`
 const Container = styled.div`
   height: 96px;
   padding: 0px 3%;
-  background: ${darkBlueSecondary};
+  background: ${newBlue};
   display: flex;
   justify-content: space-between;
   align-items: center;

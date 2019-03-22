@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { newBlue, primaryTextColor } from "@edulastic/colors";
+import { newBlue, secondaryTextColor } from "@edulastic/colors";
 
 export const CheckboxContainer = styled.div`
   width: ${props => (props.smallSize ? 22 : 40)}px;
@@ -15,7 +15,7 @@ export const CheckboxContainer = styled.div`
   + div {
     font-size: 14px;
     font-weight: 700;
-    color: ${primaryTextColor};
+    color: ${secondaryTextColor};
   }
   & input {
     opacity: 0;

@@ -3,12 +3,12 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { Button } from "@edulastic/common";
-import { IconPlus } from "@edulastic/icons";
+import { IconPlusCircle } from "@edulastic/icons";
 import { Icon } from "antd";
 import { connect } from "react-redux";
 import { FlexContainer } from "@edulastic/common";
 import { toggleSideBarAction } from "../../actions/togglemenu";
-import { tabletWidth, greenDarkSecondary, darkBlueSecondary, white } from "@edulastic/colors";
+import { tabletWidth, greenDarkSecondary, darkBlueSecondary, white, newBlue } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import HeaderWrapper from "../../mainContent/headerWrapper";
 
@@ -27,8 +27,10 @@ const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar }) => {
       <CreateButton
         // disabled={creating}
         onClick={onCreate}
-        color="success"
-        icon={<IconPlusStyled color={greenDarkSecondary} left={-10} width={13} height={13} hoverColor={white} />}
+        color="secondary"
+        variant="create"
+        shadow="none"
+        icon={<IconPlusStyled color={newBlue} left={-40} width={20} height={20} hoverColor={newBlue} />}
       >
         {btnTitle ? btnTitle : t("component.itemlist.header.create")}
       </CreateButton>
@@ -76,7 +78,7 @@ const CreateButton = styled(Button)`
   }
 `;
 
-const IconPlusStyled = styled(IconPlus)`
+const IconPlusStyled = styled(IconPlusCircle)`
   position: relative;
 `;
 

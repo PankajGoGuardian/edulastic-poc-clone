@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Breadcrumb } from "antd";
 import styled from "styled-components";
-import { primaryTextColor } from "@edulastic/colors";
+import { secondaryTextColor } from "@edulastic/colors";
 
 const BreadCrumb = props => {
   const { data, style } = props;
@@ -48,14 +48,14 @@ const Container = styled.div`
   .ant-breadcrumb-separator {
     font-size: 16px;
     font-weight: 600;
-    color: ${primaryTextColor};
+    color: ${secondaryTextColor};
     text-transform: capitalize;
     font-weight: 700;
 
     a {
       font-size: 16px;
       text-transform: capitalize;
-      color: ${primaryTextColor};
+      color: ${secondaryTextColor};
       font-weight: normal;
     }
   }

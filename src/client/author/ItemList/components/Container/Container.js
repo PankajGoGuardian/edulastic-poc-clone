@@ -165,13 +165,14 @@ class Contaier extends Component {
             curriculums={curriculums}
             getCurriculumStandards={getCurriculumStandards}
             curriculumStandards={curriculumStandards}
+            t={t}
           />
           <ListItems>
-            {windowWidth > 468 && this.renderPagination()}
+            {/*{windowWidth > 468 && this.renderPagination()}*/}
             <Element>
-              <Paper padding={windowWidth > 768 ? "25px 39px" : "0px"}>{this.renderItems()}</Paper>
+              <Paper padding={windowWidth > 768 ? "8px 76px 34px 31px" : "0px"}>{this.renderItems()}</Paper>
+              {this.renderPagination()}
             </Element>
-            {this.renderPagination()}
           </ListItems>
         </Container>
       </div>

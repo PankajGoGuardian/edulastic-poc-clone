@@ -1,12 +1,15 @@
-import { greenDark, tabletWidth, textColor } from "@edulastic/colors";
+import { white, greenDark, tabletWidth, textColor, newBlue, secondaryTextColor } from "@edulastic/colors";
 import styled from "styled-components";
 import { Button } from "antd";
 import { IconHeart, IconShare } from "@edulastic/icons";
 
 export const Container = styled.div`
-  border-bottom: 1px solid #f2f2f2;
-  padding: 27px 0;
+  border-bottom: 0;
+  padding: 30px 0 30px 26px;
 
+  &:not(:last-child) {
+    border-bottom: 1px solid #f6f6f6;
+  }
   @media (max-width: ${tabletWidth}) {
     flex-direction: column;
     padding: 28px;
@@ -40,6 +43,7 @@ export const ViewButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: auto;
 
   @media (max-width: ${tabletWidth}) {
     margin-top: 25px;
@@ -47,15 +51,42 @@ export const ViewButton = styled.div`
 `;
 
 export const ViewButtonStyled = styled(Button)`
-  width: 144px;
-  height: 50px;
-  border-radius: 65px;
+  width: 136px;
+  height: 40px;
+  border-radius: 4px;
+  background: ${white};
+  box-shadow: 0 2px 4px 0 rgba(201, 208, 219, 0.5);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: 0;
+  color: ${newBlue};
+`;
+
+export const AddButtonStyled = styled(Button)`
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  background: ${white};
+  box-shadow: 0 2px 4px 0 rgba(201, 208, 219, 0.5);
+  font-size: 11px;
+  text-transform: uppercase;
+  margin-left: 10px;
+  color: ${newBlue};
+  border: 0;
+  padding: 0;
+
+  svg {
+    max-width: 13px;
+    max-height: 13px;
+    fill: ${newBlue};
+  }
 `;
 
 export const Detail = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin-top: 18px;
+  margin-top: 43px;
 
   @media (max-width: ${tabletWidth}) {
     margin-top: 9px;
@@ -76,7 +107,7 @@ export const TypeCategory = styled.div`
 
 export const DetailCategory = styled.div`
   display: flex;
-  margin-right: 24px;
+  margin-left: 24px;
 
   @media (max-width: ${tabletWidth}) {
     width: 48%;
@@ -155,9 +186,9 @@ export const LabelText = styled.span`
 export const GreenText = styled.span`
   display: flex;
   align-items: center;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  color: ${greenDark};
+  color: ${secondaryTextColor};
 
   @media (max-width: ${tabletWidth}) {
     font-size: 14px;
@@ -179,6 +210,8 @@ export const GreyText = styled.span`
 export const Categories = styled.div`
   display: flex;
   align-items: flex-start;
+  margin-left: auto;
+
   @media (max-width: ${tabletWidth}) {
     display: flex;
     justify-content: space-between;

@@ -121,7 +121,7 @@ class MainSetting extends Component {
     }
     if (key === "safeBrowser" && value === false) {
       setTestData({
-        safeBrowsePassword: "",
+        sebPassword: "",
         [key]: value
       });
     } else {
@@ -163,16 +163,15 @@ class MainSetting extends Component {
       releaseScore,
       maxAttempts,
       safeBrowser,
-      safeBrowsePassword,
+      sebPassword,
       shuffleQuestions,
       shuffleAnswers,
       answerOnPaper,
       requirePassword,
       testType,
       generateReport,
-      calculatorType
+      calcType
     } = entity;
-
     const isSmallSize = windowWidth > 993 ? 1 : 0;
     return (
       <Paper style={{ marginTop: 27 }}>
@@ -295,7 +294,7 @@ class MainSetting extends Component {
                     }
                     onChange={this.setPassword}
                     size="large"
-                    value={safeBrowsePassword}
+                    value={sebPassword}
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
                   />
@@ -339,7 +338,7 @@ class MainSetting extends Component {
             <Block id="show-calculator">
               <Title>Show Calculator</Title>
               <Body>
-                <StyledRadioGroup onChange={this.updateFeatures("calculatorType")} value={calculatorType}>
+                <StyledRadioGroup onChange={this.updateFeatures("calcType")} value={calcType}>
                   {calculatorKeys.map(item => (
                     <Radio value={item} key={item}>
                       {calculators[item]}

@@ -18,10 +18,6 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
     setAssignmentCompletionType(e.target.value);
   };
 
-  const calculatorShowMethod = e => {
-    setCalcType(e.target.value);
-  };
-
   const evalMethod = e => {
     setEvaluationType(e.target.value);
   };
@@ -36,10 +32,9 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
       [key]: value
     };
     if (key === "safeBrowser" && value === false) {
-      delete newSettingsState.safeBrowsePassword;
-      delete newTempTestSettingsState.safeBrowsePassword;
+      delete newSettingsState.sebPassword;
+      delete newTempTestSettingsState.sebPassword;
     }
-
     updateTempTestSettings(newTempTestSettingsState);
     updateAssignmentSettings(newSettingsState);
   };
@@ -47,10 +42,11 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
     releaseScore = tempTestSettings.releaseScore,
     maxAttempts = tempTestSettings.maxAttempts,
     safeBrowser = tempTestSettings.safeBrowser,
-    safeBrowsePassword = tempTestSettings.safeBrowsePassword,
+    sebPassword = tempTestSettings.sebPassword,
     shuffleQuestions = tempTestSettings.shuffleQuestions,
     shuffleAnswers = tempTestSettings.shuffleAnswers,
-    calculatorType = tempTestSettings.calculatorType
+    calcType = tempTestSettings.calcType,
+    answerOnPaper = tempTestSettings.answerOnPaper
   } = assignmentSettings;
   return (
     <SettingsWrapper>
@@ -108,9 +104,9 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
                   onClick={() => togglePasswordField(!showPassword)}
                 />
               }
-              onChange={e => overRideSettings("safeBrowsePassword", e.target.value)}
+              onChange={e => overRideSettings("sebPassword", e.target.value)}
               size="large"
-              value={safeBrowsePassword}
+              value={sebPassword}
               type={showPassword ? "text" : "password"}
               placeholder="Password"
             />
@@ -147,7 +143,7 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
       <StyledRowSettings gutter={16}>
         <Col span={8}>SHOW CALCULATOR</Col>
         <Col span={16}>
-          <AlignRight value={calculatorType} onChange={e => overRideSettings("calculatorType", e.target.value)}>
+          <AlignRight value={calcType} onChange={e => overRideSettings("calcType", e.target.value)}>
             {calculatorKeys.map(item => (
               <Radio value={item} key={item}>
                 {calculators[item]}
@@ -162,7 +158,10 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
       <StyledRowSettings gutter={16}>
         <Col span={8}>ANSWER ON PAPER</Col>
         <Col span={16}>
-          <AlignSwitchRight />
+          <AlignSwitchRight
+            defaultChecked={answerOnPaper}
+            onChange={value => overRideSettings("answerOnPaper", value)}
+          />
         </Col>
       </StyledRowSettings>
       {/* Answer on Paper */}

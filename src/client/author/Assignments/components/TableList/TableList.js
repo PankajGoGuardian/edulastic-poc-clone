@@ -48,9 +48,10 @@ const convertTableData = data => ({
   classId: data[0].classId,
   currentAssignment: data[0]
 });
+
 const convertExpandTableData = (data, totalNumber) => ({
   name: "",
-  key: data._id,
+  key: data.classId,
   class: data.className,
   type: data.type,
   assigned: "Lorem Ipsum",
@@ -58,7 +59,8 @@ const convertExpandTableData = (data, totalNumber) => ({
   submitted: `${data.submittedNumber} of ${totalNumber}`,
   graded: "1",
   action: "",
-  classId: data.classId
+  classId: data.classId,
+  testType: data.testType
 });
 
 class TableList extends Component {
@@ -98,9 +100,9 @@ class TableList extends Component {
       {
         dataIndex: "type",
         width: "11%",
-        render: () => (
+        render: (text, row) => (
           <div>
-            {getInfo && getInfo.type === test.type.PRACTICE ? (
+            {row && row.testType === test.type.PRACTICE ? (
               <PracticeIcon>P</PracticeIcon>
             ) : (
               <AssignedImg src={assignedIcon} />

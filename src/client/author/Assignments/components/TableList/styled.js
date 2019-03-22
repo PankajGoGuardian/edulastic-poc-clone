@@ -152,7 +152,6 @@ export const PracticeIcon = styled.span`
   color: ${red};
   border-radius: 50%;
   font-weight: bold;
-  padding-left: 3px;
 `;
 
 export const ExpandDivdier = styled.div`

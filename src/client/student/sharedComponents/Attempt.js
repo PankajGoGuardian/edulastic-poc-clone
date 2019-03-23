@@ -17,11 +17,13 @@ const Attempt = ({ data, type, activityReview, releaseScore, showReviewButton, r
         </AnswerAndScore>
         {releaseScore !== releaseGradeLabels.DONT_RELEASE && (
           <React.Fragment>
-            <AnswerAndScore>
-              <span data-cy="score">
-                {correct}/{total}
-              </span>
-            </AnswerAndScore>
+            {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
+              <AnswerAndScore>
+                <span data-cy="score">
+                  {correct}/{total}
+                </span>
+              </AnswerAndScore>
+            )}
             <AnswerAndScore>
               <span data-cy="percentage">{Math.floor(percentage * 100) / 100}%</span>
             </AnswerAndScore>

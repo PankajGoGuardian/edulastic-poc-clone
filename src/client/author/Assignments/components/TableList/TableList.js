@@ -97,11 +97,7 @@ class TableList extends Component {
         dataIndex: "type",
         width: "11%",
         render: (text, row) =>
-          row && row.testType === test.type.PRACTICE ? (
-            <TypeIcon type="practice">P</TypeIcon>
-          ) : (
-              <TypeIcon>A</TypeIcon>
-            )
+          row && row.testType === test.type.PRACTICE ? <TypeIcon type="practice">P</TypeIcon> : <TypeIcon>A</TypeIcon>
       },
       {
         dataIndex: "assigned",
@@ -119,8 +115,8 @@ class TableList extends Component {
           ) : text === t("common.notStartedTag") ? (
             <BtnStarted size="small">{text}</BtnStarted>
           ) : (
-                  ""
-                )
+            ""
+          )
       },
       {
         dataIndex: "submitted",
@@ -279,7 +275,7 @@ TableList.propTypes = {
 };
 
 TableList.defaultProps = {
-  renderFilter: () => { }
+  renderFilter: () => {}
 };
 
 const enhance = compose(

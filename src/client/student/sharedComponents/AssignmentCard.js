@@ -79,7 +79,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
   const showReviewButton = releaseScore !== releaseGradeLabels.DONT_RELEASE;
   const ScoreDetail = (
     <React.Fragment>
-      {releaseScore !== releaseGradeLabels.SCORE_ONLY && (
+      {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
         <AnswerAndScore>
           <span data-cy="score">
             {correct}/{totalQuestions}

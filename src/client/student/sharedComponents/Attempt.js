@@ -6,9 +6,9 @@ import PropTypes from "prop-types";
 import { formatTime } from "../utils";
 
 const Attempt = ({ data, type, activityReview, releaseScore, showReviewButton, releaseGradeLabels }) => {
-  const { correct = 0, wrong = 0 } = data;
+  const { correct = 0, wrong = 0, maxScore = 0, score = 0 } = data;
   const total = correct + wrong;
-  const percentage = (correct / total) * 100 || 0;
+  const percentage = (score / maxScore) * 100 || 0;
   return (
     <AttemptsData>
       <RowData pagetype={type === "reports"}>

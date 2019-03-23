@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Row, Col } from "antd";
 import styled from "styled-components";
-import { StyledH3 } from "../../../common/styled";
+import { StyledH3, Capitalized } from "../../../common/styled";
 import { greyish, greyishDarker1, greenSomeWhatDark, fadedBlack } from "@edulastic/colors";
 
 export const Stats = props => {
@@ -20,14 +20,12 @@ export const Stats = props => {
       avgStudentScore = 0,
       studentsAssigned = 0,
       studentsGraded = 0,
-      studentsAbsent = 0;
+      studentsAbsent = 0,
+      sumTotalScore = 0,
+      sumTotalMaxScore = 0,
+      sumStudentCount = 0;
 
-    let sumTotalScore = 0,
-      sumTotalMaxScore = 0;
-
-    let sumStudentCount = 0;
-
-    for (let i = 0; i < data.length; i++) {
+    for (let item of data) {
       let {
         studentsGraded: _studentsGraded,
         studentsAssigned: _studentsAssigned,
@@ -35,7 +33,7 @@ export const Stats = props => {
         totalScore: _totalScore,
         totalMaxScore: _totalMaxScore,
         sampleCount: _sampleCount
-      } = data[i];
+      } = item;
       studentsGraded += _studentsGraded;
       studentsAssigned += _studentsAssigned;
       studentsAbsent += _studentsAbsent;
@@ -64,14 +62,18 @@ export const Stats = props => {
 
   return (
     <StyledRow>
-      <StyledH3>District Statistics of {props.name}</StyledH3>
-      <Row type="flex" justify="start" className="average-stats">
+      <StyledH3>
+        <Capitalized>{props.role}</Capitalized> Statistics of {props.name}
+      </StyledH3>
+      <StyledInnerRow type="flex" justify="start" className="average-stats">
         <Col>
           <p className="stats-title">Average Score</p>
-          <p className="stats-value">
-            <span className="stats-value-big">{state.avgScore}</span>
-            <span className="stats-value-small">/ {state.total}</span>
-          </p>
+          <div className="stats-value">
+            <p>
+              <span className="stats-value-big">{state.avgScore}</span>
+              <span className="stats-value-small">/ {Math.round(state.total)}</span>
+            </p>
+          </div>
         </Col>
         <Col>
           <p className="stats-title">Average Student Score</p>
@@ -79,8 +81,8 @@ export const Stats = props => {
             <span className="stats-value-big">{state.avgStudentScore}%</span>
           </p>
         </Col>
-      </Row>
-      <Row type="flex" justify="start" className="students-stats">
+      </StyledInnerRow>
+      <StyledInnerRow type="flex" justify="start" className="students-stats">
         <Col>
           <p className="students-title">Students Assigned</p>
           <p className="students-value">{state.studentsAssigned}</p>
@@ -93,21 +95,23 @@ export const Stats = props => {
           <p className="students-title">Students Absent</p>
           <p className="students-value">{state.studentsAbsent}</p>
         </Col>
-      </Row>
+      </StyledInnerRow>
     </StyledRow>
   );
 };
 
 const StyledRow = styled(Row)`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
   .average-stats {
-    color: ${greyishDarker1};
     flex-wrap: nowrap;
+    min-height: 110px;
 
     > div {
-      height: 110px;
       padding: 10px;
       flex: 1 1 50%;
-      margin: 5px;
       background-color: ${greyish};
 
       .stats-title {
@@ -115,6 +119,9 @@ const StyledRow = styled(Row)`
         font-weight: 600;
       }
       .stats-value {
+        display: flex;
+        align-items: center;
+        flex: 1;
         .stats-value-big {
           font-size: 35px;
           font-weight: 900;
@@ -128,14 +135,8 @@ const StyledRow = styled(Row)`
   }
 
   .students-stats {
-    height: 100px;
-    color: ${greyishDarker1};
-
     > div {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      margin: 5px;
       padding: 10px;
 
       .students-title {
@@ -154,5 +155,16 @@ const StyledRow = styled(Row)`
         border-right: none;
       }
     }
+  }
+`;
+
+const StyledInnerRow = styled(Row)`
+  flex: 1;
+  color: ${greyishDarker1};
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
   }
 `;

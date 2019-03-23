@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { ResponsiveContainer, PieChart, Pie, Legend, Tooltip } from "recharts";
 import { fadedBlack } from "@edulastic/colors";
+import { StyledCustomChartTooltip } from "../styled";
+import { Row, Col } from "antd";
 
 export const SimplePieChart = props => {
   const renderCustomizedLabel = args => {
@@ -30,19 +32,26 @@ export const SimplePieChart = props => {
     return arr;
   }, [props.data]);
 
+  const getTooltipJSX = payload => {
+    if (payload && payload.length) {
+      return (
+        <div>
+          <Row type="flex" justify="start">
+            <Col className="tooltip-key">{payload[0].name} : </Col>
+            <Col className="tooltip-value">{Math.round(payload[0].value)}%</Col>
+          </Row>
+        </div>
+      );
+    }
+    return false;
+  };
+
   return (
     <ResponsiveContainer width={"100%"}>
       <PieChart>
         <Legend layout="vertical" align="left" verticalAlign="middle" />
-        <Tooltip cursor={false} />
-        <Pie
-          name={"name"}
-          data={chartData}
-          labelLine={false}
-          outerRadius={80}
-          dataKey="bandPerf"
-          label={renderCustomizedLabel}
-        />
+        <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltipJSX} />} />
+        <Pie name={"name"} data={chartData} labelLine={false} dataKey="bandPerf" label={renderCustomizedLabel} />
       </PieChart>
     </ResponsiveContainer>
   );

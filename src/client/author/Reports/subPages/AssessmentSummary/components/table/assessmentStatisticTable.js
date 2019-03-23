@@ -162,7 +162,7 @@ export const AssessmentStatisticTable = props => {
           ""
         )}
       </Row>
-      <StyledTable columns={table.columns} dataSource={table.tableData} />
+      <StyledTable columns={table.columns} dataSource={table.tableData} rowKey={"groupId"} />
     </div>
   );
 };

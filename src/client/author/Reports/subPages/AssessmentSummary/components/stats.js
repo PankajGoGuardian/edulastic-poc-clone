@@ -14,6 +14,12 @@ export const Stats = props => {
     studentsAbsent: 0
   };
 
+  const rolesMap = {
+    teacher: "class",
+    sa: "school",
+    da: "district"
+  };
+
   const parseData = data => {
     let avgScore = 0,
       total = 0,
@@ -63,7 +69,7 @@ export const Stats = props => {
   return (
     <StyledRow>
       <StyledH3>
-        <Capitalized>{props.role}</Capitalized> Statistics of {props.name}
+        <Capitalized>{rolesMap[props.role]}</Capitalized> Statistics of {props.name}
       </StyledH3>
       <StyledInnerRow type="flex" justify="start" className="average-stats">
         <Col>
@@ -146,7 +152,7 @@ const StyledRow = styled(Row)`
       }
       .students-value {
         color: ${fadedBlack};
-        font-size: 25px;
+        font-size: 35px;
         border-right: solid 1px ${greyishDarker1};
       }
     }

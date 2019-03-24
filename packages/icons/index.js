@@ -110,3 +110,5 @@ export { default as IconSquareTriangle } from "./src/IconSquareTriangle";
 export { default as IconSelected } from "./src/IconSelected";
 export { default as IconCurriculumSequence } from "./src/IconCurriculumSequence";
 export { default as IconPlusCircle } from "./src/IconPlusCircle";
+export { default as IconUser } from "./src/IconUser";
+export { default as IconId } from "./src/IconId";

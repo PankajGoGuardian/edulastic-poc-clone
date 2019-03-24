@@ -1,11 +1,19 @@
-import { white, greenDark, tabletWidth, textColor, newBlue, secondaryTextColor } from "@edulastic/colors";
+import {
+  white,
+  tabletWidth,
+  textColor,
+  newBlue,
+  secondaryTextColor,
+  greyDarken,
+  greenPrimary
+} from "@edulastic/colors";
 import styled from "styled-components";
 import { Button } from "antd";
-import { IconHeart, IconShare } from "@edulastic/icons";
+import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
 
 export const Container = styled.div`
   border-bottom: 0;
-  padding: 30px 0 30px 26px;
+  padding: 30px 0 5px 26px;
 
   &:not(:last-child) {
     border-bottom: 1px solid #f6f6f6;
@@ -109,6 +117,13 @@ export const DetailCategory = styled.div`
   display: flex;
   margin-left: 24px;
 
+  svg {
+    max-width: 18px;
+    max-height: 16px;
+    width: 100vw;
+    height: 100vh;
+    fill: ${newBlue};
+  }
   @media (max-width: ${tabletWidth}) {
     width: 48%;
     margin-right: 0px;
@@ -121,6 +136,7 @@ export const CategoryName = styled.span`
   align-items: baseline;
   font-size: 13px;
   font-weight: 600;
+  margin-right: 8px;
   color: ${textColor};
 
   @media (max-width: ${tabletWidth}) {
@@ -130,7 +146,7 @@ export const CategoryName = styled.span`
 `;
 
 export const CategoryContent = styled.div`
-  margin-left: 3px;
+  margin-left: 0;
   display: flex;
   flex-wrap: wrap;
 
@@ -145,20 +161,20 @@ export const Label = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 5px;
-  border: solid 1px #b1b1b1;
-  height: 24px;
+  height: 23.5px;
   padding: 6px 14px;
-  margin-left: 10px;
+  margin-right: 10px;
   margin-bottom: 5px;
   border-radius: 5px;
-  border: solid 1px #c8e8f6;
-  background-color: #c8e8f6;
+  border: solid 1px #e2e2e2;
 
   span {
     font-size: 10px;
+    font-weight: 700;
     font-weight: bold;
     letter-spacing: 0.2px;
-    color: #0083be;
+    text-transform: uppercase;
+    color: ${greyDarken};
   }
 
   @media (max-width: ${tabletWidth}) {
@@ -169,8 +185,17 @@ export const Label = styled.div`
   }
 `;
 
+export const Count = styled.div`
+  display: inline-flex;
+  margin-left: 0;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 24px;
+  color: ${greyDarken};
+`;
+
 export const LabelText = styled.span`
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.1px;
   text-align: center;
   color: ${textColor};
@@ -183,24 +208,12 @@ export const LabelText = styled.span`
   }
 `;
 
-export const GreenText = styled.span`
+export const Text = styled.span`
   display: flex;
   align-items: center;
   font-size: 12px;
   font-weight: 600;
   color: ${secondaryTextColor};
-
-  @media (max-width: ${tabletWidth}) {
-    font-size: 14px;
-  }
-`;
-
-export const GreyText = styled.span`
-  display: flex;
-  align-items: center;
-  font-size: 13px;
-  font-weight: 600;
-  color: ${textColor};
 
   @media (max-width: ${tabletWidth}) {
     font-size: 14px;
@@ -224,11 +237,86 @@ export const Categories = styled.div`
 export const ShareIcon = styled(IconShare)`
   display: flex;
   align-items: center;
-  fill: ${greenDark};
+  fill: ${newBlue};
 `;
 
 export const HeartIcon = styled(IconHeart)`
   display: flex;
   align-items: center;
-  fill: ${greenDark};
+  fill: ${newBlue};
+`;
+
+export const UserIcon = styled(IconUser)`
+  display: flex;
+  align-items: center;
+  fill: ${newBlue};
+`;
+
+export const IdIcon = styled(IconId)`
+  display: flex;
+  align-items: center;
+  fill: ${newBlue};
+`;
+
+export const StandardContent = styled.div`
+  margin-right: 65px;
+  display: flex;
+  flex-wrap: wrap;
+
+  @media (max-width: ${tabletWidth}) {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+`;
+
+export const LabelStandard = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  height: 23.5px;
+  padding: 6px 14px;
+  margin-right: 10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  border: solid 1px ${greenPrimary};
+
+  span {
+    font-size: 10px;
+    font-weight: 700;
+    font-weight: bold;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    color: ${greyDarken};
+  }
+
+  @media (max-width: ${tabletWidth}) {
+    margin-left: -3px;
+    width: 48%;
+    margin-top: 8px;
+    height: 30px;
+  }
+`;
+
+export const LabelStandardText = styled.span`
+  font-size: 10px;
+  letter-spacing: 0.1px;
+  text-align: center;
+  color: ${textColor};
+  text-transform: uppercase;
+
+  @media (max-width: ${tabletWidth}) {
+    letter-spacing: 0.2px;
+    font-weight: bold;
+    font-size: 10px;
+  }
+`;
+
+export const CountGreen = styled.div`
+  display: inline-flex;
+  margin-left: 0;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 24px;
+  color: ${greenPrimary};
 `;

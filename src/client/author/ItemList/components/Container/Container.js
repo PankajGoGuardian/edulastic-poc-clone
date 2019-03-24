@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import { Pagination, Spin } from "antd";
 import { Paper, withWindowSizes } from "@edulastic/common";
 import { compose } from "redux";
@@ -139,12 +139,19 @@ class Contaier extends Component {
       return <Spin size="large" />;
     }
     return items.map(item => (
-      <Item key={item._id} item={item} types={itemTypes[item._id]} history={history} windowWidth={windowWidth} />
+      <Item
+        key={`Item_${item._id}`}
+        item={item}
+        types={itemTypes[item._id]}
+        history={history}
+        windowWidth={windowWidth}
+      />
     ));
   };
 
   render() {
     const { windowWidth, creating, t, curriculums, getCurriculumStandards, curriculumStandards } = this.props;
+
     const { search } = this.state;
 
     return (
@@ -168,7 +175,6 @@ class Contaier extends Component {
             t={t}
           />
           <ListItems>
-            {/*{windowWidth > 468 && this.renderPagination()}*/}
             <Element>
               <Paper padding={windowWidth > 768 ? "8px 76px 34px 31px" : "0px"}>{this.renderItems()}</Paper>
               {this.renderPagination()}

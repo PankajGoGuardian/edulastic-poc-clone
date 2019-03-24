@@ -95,6 +95,7 @@ export const Element = styled.div`
       &-active {
         font-size: 13px;
         font-weight: 600;
+        opacity: 1;
         background: ${newBlue};
       }
     }

@@ -34,6 +34,7 @@ export const FixedFilters = styled.div`
     position: relative;
     top: auto;
     padding-right: 0;
+    padding-left: 0;
   }
 `;
 
@@ -47,13 +48,14 @@ export const HeaderRow = styled(Row)`
 
 export const SearchField = styled.div`
   box-shadow: ${boxShadowDefault};
-  border-radius: 10px;
+  border-radius: 0;
 `;
 
 export const TextFieldStyled = styled(TextField)`
   padding: 16px;
   padding-right: 68px;
   outline: none;
+  border-radius: 0;
 `;
 
 export const TextFieldSearch = styled(TextField)`

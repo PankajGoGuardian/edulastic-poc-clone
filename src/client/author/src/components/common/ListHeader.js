@@ -82,6 +82,10 @@ const CreateButton = styled(Button)`
     span {
       display: none;
     }
+
+    svg {
+      position: static;
+    }
   }
 `;
 

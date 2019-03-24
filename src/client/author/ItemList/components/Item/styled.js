@@ -20,7 +20,11 @@ export const Container = styled.div`
   }
   @media (max-width: ${tabletWidth}) {
     flex-direction: column;
-    padding: 28px;
+    padding: 20px 0;
+
+    &:first-child {
+      padding-top: 0;
+    }
   }
 `;
 
@@ -125,9 +129,10 @@ export const DetailCategory = styled.div`
     fill: ${newBlue};
   }
   @media (max-width: ${tabletWidth}) {
-    width: 48%;
+    width: 40%;
     margin-right: 0px;
-    margin-top: 22px;
+    margin-top: 12px;
+    margin-left: 0px;
   }
 `;
 
@@ -152,7 +157,7 @@ export const CategoryContent = styled.div`
 
   @media (max-width: ${tabletWidth}) {
     flex-wrap: wrap;
-    justify-content: space-between;
+    align-items: center;
   }
 `;
 
@@ -265,7 +270,8 @@ export const StandardContent = styled.div`
 
   @media (max-width: ${tabletWidth}) {
     flex-wrap: wrap;
-    justify-content: space-between;
+    margin-right: 0;
+    align-items: center;
   }
 `;
 
@@ -292,7 +298,7 @@ export const LabelStandard = styled.div`
 
   @media (max-width: ${tabletWidth}) {
     margin-left: -3px;
-    width: 48%;
+    width: 29%;
     margin-top: 8px;
     height: 30px;
   }

@@ -37,6 +37,6 @@ const Container = styled.div`
 
   @media (max-width: ${mobileWidth}) {
     height: 61px;
-    padding: 0 26px;
+    padding: 0 20px;
   }
 `;

@@ -82,7 +82,7 @@ class ItemFilter extends Component {
     );
 
     const mobileSearch = (
-      <Header style={{ padding: "0 25px" }}>
+      <Header style={{ padding: "0 20px" }}>
         <SearchField>
           <TextFieldStyled
             onChange={e => onSearch(e.target.value)}
@@ -94,7 +94,7 @@ class ItemFilter extends Component {
           />
         </SearchField>
         <FilterButton>
-          <Button style={{ height: "50px", borderRadius: "4px" }} onClick={() => this.showFilterHandler()}>
+          <Button style={{ height: "48px", borderRadius: "0px" }} onClick={() => this.showFilterHandler()}>
             {!isShowFilter ? "SHOW FILTERS" : "HIDE FILTERS"}
           </Button>
         </FilterButton>
@@ -165,7 +165,8 @@ ItemFilter.propTypes = {
   onClearSearch: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   getCurriculumStandards: PropTypes.func.isRequired,
-  curriculumStandards: PropTypes.array.isRequired
+  curriculumStandards: PropTypes.array.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 export default ItemFilter;

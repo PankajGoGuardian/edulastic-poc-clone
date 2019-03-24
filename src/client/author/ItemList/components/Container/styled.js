@@ -38,7 +38,9 @@ export const ListItems = styled.div`
     display: flex;
     @media (max-width: ${tabletWidth}) {
       justify-content: flex-end;
-      margin-left: 29px !important;
+      padding: 0 20px 20px !important;
+      margin: -10px 0 0 0;
+      width: 100%;
     }
   }
 

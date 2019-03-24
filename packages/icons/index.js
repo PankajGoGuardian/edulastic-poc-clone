@@ -112,3 +112,11 @@ export { default as IconCurriculumSequence } from "./src/IconCurriculumSequence"
 export { default as IconPlusCircle } from "./src/IconPlusCircle";
 export { default as IconUser } from "./src/IconUser";
 export { default as IconId } from "./src/IconId";
+export { default as IconDiskette } from "./src/IconDiskette";
+export { default as IconGraduationCap } from "./src/IconGraduationCap";
+export { default as IconBook } from "./src/IconBook";
+export { default as IconVerified } from "./src/IconVerified";
+export { default as IconVisualization } from "./src/IconVisualization";
+export { default as IconCheckSmall } from "./src/IconCheckSmall";
+export { default as IconMoreVertical } from "./src/IconMoreVertical";
+export { default as IconLeftArrow } from "./src/IconLeftArrow";

@@ -13,7 +13,9 @@ import {
   LabelList,
   Brush
 } from "recharts";
-import { StyledSimpleBarChart, StyledChartNavButton, StyledCustomChartTooltip, QuestionTypeHeading } from "../styled";
+import { StyledSimpleBarChart, StyledChartNavButton, QuestionTypeHeading } from "../styled";
+import { StyledCustomChartTooltip } from "../../../../common/styled";
+import { Row, Col } from "antd";
 import { CustomChartXTick } from "./customChartXTick";
 import colorRange1 from "../../static/json/colorRange1.json";
 
@@ -23,7 +25,8 @@ export class SimpleBarChart extends PureComponent {
   state = {
     data: [],
     startIndex: 0,
-    endIndex: this.page - 1
+    endIndex: this.page - 1,
+    filter: {}
   };
 
   constructor(props) {
@@ -39,11 +42,11 @@ export class SimpleBarChart extends PureComponent {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    let arr = SimpleBarChart.parseData(nextProps);
+    let arr = SimpleBarChart.parseData(nextProps, prevState);
     return { data: [...arr] };
   }
 
-  static parseData(nextProps) {
+  static parseData(nextProps, prevState) {
     let hmap = groupBy(nextProps.data, "qType");
     let arr = Object.keys(hmap).map((data, i) => {
       let qCount = hmap[data].length;
@@ -66,9 +69,13 @@ export class SimpleBarChart extends PureComponent {
       tmp.correct = Number(((tmp.corr_cnt / sum) * 100).toFixed(0));
       if (isNaN(tmp.correct)) tmp.correct = 0;
       tmp.incorrect = 100 - tmp.correct;
-      tmp.fill = colorRange1[Math.floor(tmp.correct / 25)];
+      if (prevState.filter[tmp.name] || Object.keys(prevState.filter).length === 0) {
+        tmp.fill = colorRange1[Math.floor(tmp.correct / 25)];
+      } else {
+        tmp.fill = "#cccccc";
+      }
+
       tmp.assessment = nextProps.assessment.testName;
-      console.log(tmp);
       return tmp;
     });
     return arr;
@@ -110,12 +117,67 @@ export class SimpleBarChart extends PureComponent {
     }
   };
 
+  onBarClick = args => {
+    let filter = { ...this.state.filter };
+    if (filter[args.name]) {
+      delete filter[args.name];
+    } else {
+      filter[args.name] = true;
+    }
+    this.setState({
+      filter: filter
+    });
+    this.props.onBarClickCB(filter);
+  };
+
+  onResetClick = () => {
+    this.setState({
+      filter: {}
+    });
+    this.props.onBarClickCB({});
+  };
+
+  getTooltipJSX = payload => {
+    if (payload && payload.length) {
+      let corr_cnt, incorr_cnt, part_cnt, skip_cnt, qCount;
+      if (payload && payload.length === 2) {
+        corr_cnt = payload[0].payload.corr_cnt;
+        incorr_cnt = payload[0].payload.incorr_cnt;
+        part_cnt = payload[0].payload.part_cnt;
+        skip_cnt = payload[0].payload.skip_cnt;
+        qCount = payload[0].payload.qCount;
+      }
+      return (
+        <div>
+          <Row type="flex" justify="start">
+            <Col className="tooltip-key">{"Avg Performance: "}</Col>
+            <Col className="tooltip-value">{payload[0].value}%</Col>
+          </Row>
+          <Row type="flex" justify="start">
+            <Col className="tooltip-key">{"Assessment: "}</Col>
+            <Col className="tooltip-value">{payload[0].payload.assessment}</Col>
+          </Row>
+          <Row type="flex" justify="start">
+            <Col className="tooltip-key">{"Total Questions: "}</Col>
+            <Col className="tooltip-value">{qCount}</Col>
+          </Row>
+          <Row type="flex" justify="start">
+            <Col className="tooltip-key">{"Question Type: "}</Col>
+            <Col className="tooltip-value">{payload[0].payload.name}</Col>
+          </Row>
+        </div>
+      );
+    }
+    return false;
+  };
+
   render() {
     return (
       <StyledSimpleBarChart className="chart-simple-bar-chart">
         <QuestionTypeHeading>
           Question Type performance for Assessment: {this.props.assessment.testName}
         </QuestionTypeHeading>
+        {Object.keys(this.state.filter).length > 0 ? <a onClick={this.onResetClick}>Reset</a> : ""}
         <StyledChartNavButton
           type="primary"
           shape="circle"
@@ -150,7 +212,7 @@ export class SimpleBarChart extends PureComponent {
               tickFormatter={this.yTickFormatter}
               label={this.constants.Y_AXIS_LABEL}
             />
-            <Tooltip cursor={false} content={<StyledCustomChartTooltip />} />
+            <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={this.getTooltipJSX} />} />
             <Brush
               dataKey="name"
               height={0}
@@ -158,8 +220,8 @@ export class SimpleBarChart extends PureComponent {
               startIndex={this.state.startIndex}
               endIndex={this.state.endIndex}
             />
-            <Bar dataKey="correct" stackId="a" unit={"%"} />
-            <Bar dataKey="incorrect" stackId="a">
+            <Bar dataKey="correct" stackId="a" unit={"%"} onClick={this.onBarClick.bind(this)} />
+            <Bar dataKey="incorrect" stackId="a" onClick={this.onBarClick.bind(this)}>
               <LabelList
                 dataKey="correct"
                 position="insideBottom"

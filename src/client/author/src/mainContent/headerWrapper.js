@@ -20,6 +20,11 @@ export default memo(HeaderWrapper);
 
 const HeaderContainer = styled.div`
   padding-top: 96px;
+
+  @media (max-width: ${mobileWidth}) {
+    padding-top: 62px;
+    margin-bottom: 33px;
+  }
 `;
 
 const Container = styled.div`
@@ -29,8 +34,9 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   @media (max-width: ${mobileWidth}) {
-    flex-direction: column;
-    height: 100px;
+    height: 61px;
+    padding: 0 26px;
   }
 `;

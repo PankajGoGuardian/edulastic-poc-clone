@@ -182,7 +182,9 @@ class Item extends Component {
         <Question>
           <QuestionContent>
             <MoveLink onClick={this.moveToItem}>
-              {item.data && item.data.questions ? item.data.questions[0].stimulus : item._id}
+              {item.data && item.data.questions && item.data.questions[0].stimulus
+                ? item.data.questions[0].stimulus
+                : item._id}
             </MoveLink>
             <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: this.description }} />
           </QuestionContent>

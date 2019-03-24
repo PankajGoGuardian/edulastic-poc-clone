@@ -176,7 +176,9 @@ class Contaier extends Component {
           />
           <ListItems>
             <Element>
-              <Paper padding={windowWidth > 768 ? "8px 76px 34px 31px" : "0px"}>{this.renderItems()}</Paper>
+              <Paper borderRadius="0px" padding={windowWidth > 768 ? "8px 76px 34px 31px" : "0px"}>
+                {this.renderItems()}
+              </Paper>
               {this.renderPagination()}
             </Element>
           </ListItems>

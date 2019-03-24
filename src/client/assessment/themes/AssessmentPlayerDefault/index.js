@@ -16,6 +16,7 @@ import HeaderRightMenu from "../common/HeaderRightMenu";
 import ToolbarModal from "../common/ToolbarModal";
 import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
+
 import {
   ControlBtn,
   ToolButton,
@@ -28,7 +29,8 @@ import {
   ToolBar,
   Clock,
   SaveAndExit,
-  SavePauseMobile
+  SavePauseMobile,
+  CalculatorContainer
 } from "../common";
 import TestItemPreview from "../../components/TestItemPreview";
 import {
@@ -63,7 +65,9 @@ class AssessmentPlayerDefault extends React.Component {
       isSubmitConfirmationVisible: false,
       isSavePauseModalVisible: false,
       history: props.scratchPad ? [props.scratchPad] : [{ points: [], pathes: [], figures: [], texts: [] }],
-      currentTab: 0
+      currentTab: 0,
+      calculateMode: `${this.props.settings.calcType}_DESMOS`,
+      changeMode: 0
     };
   }
 
@@ -156,8 +160,18 @@ class AssessmentPlayerDefault extends React.Component {
     });
   };
 
-  handleModeChange = flag => {
-    this.setState({ scratchPadMode: flag });
+  handleModeChange = (flag, value) => {
+    this.setState({
+      scratchPadMode: flag,
+      changeMode: value
+    });
+  };
+
+  handleModeCaculate = calculateMode => {
+    this.setState({
+      calculateMode: calculateMode,
+      scratchPadMode: false
+    });
   };
 
   handleToolChange = value => () => {
@@ -218,9 +232,9 @@ class AssessmentPlayerDefault extends React.Component {
       itemRows,
       evaluation,
       windowWidth,
-      questions
+      questions,
+      settings
     } = this.props;
-
     const {
       testItemState,
       isToolbarModalVisible,
@@ -233,9 +247,11 @@ class AssessmentPlayerDefault extends React.Component {
       history,
       currentTab,
       lineWidth,
-      fillColor
+      fillColor,
+      changeMode,
+      calculateMode
     } = this.state;
-
+    const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC"];
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
     const item = items[currentItem];
@@ -348,7 +364,14 @@ class AssessmentPlayerDefault extends React.Component {
                     {windowWidth >= MEDIUM_DESKTOP_WIDTH && (
                       <TestButton checkAnwser={() => this.changeTabItemState("check")} />
                     )}
-                    {windowWidth >= LARGE_DESKTOP_WIDTH && <ToolBar changeMode={this.handleModeChange} />}
+                    {windowWidth >= LARGE_DESKTOP_WIDTH && (
+                      <ToolBar
+                        changeMode={this.handleModeChange}
+                        changeCaculateMode={this.handleModeCaculate}
+                        settings={settings}
+                        calcBrands={calcBrands}
+                      />
+                    )}
                     {windowWidth >= MAX_MOBILE_WIDTH && <Clock />}
                     {windowWidth >= MAX_MOBILE_WIDTH && (
                       <SaveAndExit finishTest={() => this.openSubmitConfirmation()} />
@@ -375,6 +398,7 @@ class AssessmentPlayerDefault extends React.Component {
               )}
             </MainWrapper>
           </Main>
+          {changeMode === 2 && <CalculatorContainer calculateMode={calculateMode} calcBrands={calcBrands} />}
         </Container>
       </ThemeProvider>
     );
@@ -391,7 +415,8 @@ const enhance = compose(
       questions: state.assessmentplayerQuestions.byId,
       scratchPad: ownProps.items[ownProps.currentItem]
         ? state.userWork[ownProps.items[ownProps.currentItem]._id] || null
-        : null
+        : null,
+      settings: state.test.settings
     }),
     {
       checkAnswer: checkAnswerAction,

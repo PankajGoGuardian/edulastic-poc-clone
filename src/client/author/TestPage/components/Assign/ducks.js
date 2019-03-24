@@ -1,5 +1,5 @@
 import * as moment from "moment";
-import { omit } from "lodash";
+import { omit, keyBy } from "lodash";
 import { createReducer, createAction } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { assignmentApi } from "@edulastic/api";
@@ -7,7 +7,7 @@ import { test } from "@edulastic/constants";
 import { all, call, put, takeEvery, select } from "redux-saga/effects";
 import { SET_ASSIGNMENT, getTestSelector, getTestIdSelector } from "../../ducks";
 import { generateClassData, formatAssignment } from "./utils";
-import { getStudentsSelector } from "../../../sharedDucks/groups";
+import { getStudentsSelector, getGroupsSelector } from "../../../sharedDucks/groups";
 import { getUserNameSelector, getCurrentTerm } from "../../../src/selectors/user";
 // constants
 export const SAVE_ASSIGNMENT = "[assignments] save assignment";
@@ -100,9 +100,17 @@ export const getCurrentAssignmentSelector = createSelector(
 function* saveAssignment({ payload }) {
   try {
     const studentsList = yield select(getStudentsSelector);
+    const allGroups = yield select(getGroupsSelector);
     const testId = yield select(getTestIdSelector);
     const termId = yield select(getCurrentTerm);
-    let classData = generateClassData(payload.class, payload.students, studentsList, payload.specificStudents);
+
+    let classData = generateClassData(
+      payload.class,
+      payload.students,
+      studentsList,
+      payload.specificStudents,
+      keyBy(allGroups, "_id")
+    );
     const assignedBy = yield select(getUserNameSelector);
     // if no class is selected dont bother sending a request.
     if (!classData.length) {
@@ -113,6 +121,7 @@ function* saveAssignment({ payload }) {
     const endDate = payload.endDate && moment(payload.endDate).valueOf();
 
     const isUpdate = !!payload._id;
+    let updateTestActivities = false;
 
     // if updating, and releaseScore changes,remove the class level settings :D
     if (isUpdate) {
@@ -122,13 +131,15 @@ function* saveAssignment({ payload }) {
         const { scoreReleasedClasses: releasedClasses, googleAssignmentIds } = currentData;
         classData = classData.map(item => {
           if (releasedClasses.includes(item._id)) {
-            item.releaseScore = true;
+            item.releaseScore = "SCORE_ONLY";
           }
           if (googleAssignmentIds[item._id]) {
             item.googleId = googleAssignmentIds[item._id];
           }
           return item;
         });
+      } else {
+        updateTestActivities = true;
       }
     }
 
@@ -144,7 +155,7 @@ function* saveAssignment({ payload }) {
       ["_id", "__v", "createdAt", "updatedAt", "students", "scoreReleasedClasses", "googleAssignmentIds"]
     );
     const result = isUpdate
-      ? yield call(assignmentApi.update, payload._id, data)
+      ? yield call(assignmentApi.update, payload._id, { ...data, updateTestActivities })
       : yield call(assignmentApi.create, { assignments: [data], assignedBy });
     const assignment = isUpdate ? formatAssignment(result) : formatAssignment(result[0]);
 

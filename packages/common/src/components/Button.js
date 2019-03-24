@@ -105,8 +105,21 @@ const getColors = ({ color, variant, outlined }) => {
   return colors;
 };
 
-const Button = ({ onClick, color, icon, children, uppercase, variant, outlined, style, disabled, shadow }) => (
+const Button = ({
+  onClick,
+  color,
+  icon,
+  children,
+  uppercase,
+  variant,
+  outlined,
+  style,
+  disabled,
+  shadow,
+  className
+}) => (
   <Container
+    className={className}
     disabled={disabled}
     onClick={onClick}
     type="button"
@@ -131,7 +144,9 @@ Button.propTypes = {
   variant: PropTypes.string, // fab, extendedFab, transparent
   shadow: PropTypes.string, // none, default, primary
   outlined: PropTypes.bool,
-  style: PropTypes.object
+  style: PropTypes.object,
+  disabled: PropTypes.bool,
+  className: PropTypes.string
 };
 
 Button.defaultProps = {
@@ -142,7 +157,9 @@ Button.defaultProps = {
   variant: "contained",
   outlined: false,
   shadow: "default",
-  style: {}
+  style: {},
+  disabled: false,
+  className: ""
 };
 
 export default Button;

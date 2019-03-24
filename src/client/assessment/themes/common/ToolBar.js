@@ -2,15 +2,22 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Button } from "antd";
-import { white } from "@edulastic/colors";
-import { IconCursor, IconInRuler, IconCalculator, IconClose, IconProtactor, IconScratchPad } from "@edulastic/icons";
 
+import { test } from "@edulastic/constants";
+import { white } from "@edulastic/colors";
+import CalculatorMenu from "./CalculatorMenu";
+
+import { IconCursor, IconInRuler, IconCalculator, IconClose, IconProtactor, IconScratchPad } from "@edulastic/icons";
+const { calculatorTypes } = test;
 class ToolBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
       select: 0
     };
+
+    this.toolbarHandler = this.toolbarHandler.bind(this);
+    this.handleCalculateMode = this.handleCalculateMode.bind(this);
   }
 
   toolbarHandler = value => {
@@ -18,36 +25,56 @@ class ToolBar extends Component {
 
     this.setState({ select: value });
     if (value === 5) {
-      changeMode(true);
+      changeMode(true, value);
     } else {
-      changeMode(false);
+      changeMode(false, value);
     }
   };
 
+  handleCalculateMode = value => {
+    this.setState({ select: 2 });
+
+    const { changeCaculateMode } = this.props;
+    changeCaculateMode(value);
+  };
+
+  componentDidMount() {}
+
   render() {
     const { select } = this.state;
+    const { settings, calcBrands } = this.props;
+    const { calcType } = settings;
     return (
       <Container>
-        <StyledButton enable={select === 0 && true} onClick={() => this.toolbarHandler(0)}>
+        <StyledButton enable={select === 0} GEOGEBRASCIENTIFIConClick={() => this.toolbarHandler(0)}>
           <CursorIcon />
         </StyledButton>
 
-        <StyledButton enable={select === 1 && true} onClick={() => this.toolbarHandler(1)}>
+        <StyledButton enable={select === 1} onClick={() => this.toolbarHandler(1)}>
           <InRulerIcon />
         </StyledButton>
+        {calcType !== calculatorTypes.NONE && (
+          <StyledButton enable={select === 2} onClick={() => this.toolbarHandler(2)}>
+            <CaculatorIcon />
+            {select == 2 && (
+              <CalculatorMenu
+                changeCaculateMode={this.handleCalculateMode}
+                calcType={calcType}
+                calculatorTypes={calculatorTypes}
+                calcBrands={calcBrands}
+              />
+            )}
+          </StyledButton>
+        )}
 
-        <StyledButton enable={select === 2 && true} onClick={() => this.toolbarHandler(2)}>
-          <CaculatorIcon />
-        </StyledButton>
-
-        <StyledButton enable={select === 3 && true} onClick={() => this.toolbarHandler(3)}>
+        <StyledButton enable={select === 3} onClick={() => this.toolbarHandler(3)}>
           <CloseIcon />
         </StyledButton>
 
-        <StyledButton enable={select === 4 && true} onClick={() => this.toolbarHandler(4)}>
+        <StyledButton enable={select === 4} onClick={() => this.toolbarHandler(4)}>
           <ProtactorIcon />
         </StyledButton>
-        <StyledButton enable={select === 5 && true} onClick={() => this.toolbarHandler(5)}>
+        <StyledButton enable={select === 5} onClick={() => this.toolbarHandler(5)}>
           <ScratchPadIcon />
         </StyledButton>
       </Container>
@@ -56,7 +83,8 @@ class ToolBar extends Component {
 }
 
 ToolBar.propTypes = {
-  changeMode: PropTypes.func.isRequired
+  changeMode: PropTypes.func.isRequired,
+  changeCaculateMode: PropTypes.func.isRequired
 };
 
 export default ToolBar;

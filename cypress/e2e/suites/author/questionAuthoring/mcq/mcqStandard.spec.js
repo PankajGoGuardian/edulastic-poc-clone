@@ -1,11 +1,9 @@
-
 import ItemListPage from "../../../../framework/author/itemList/itemListPage.js";
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage.js";
 import MCQStandardPage from "../../../../framework/author/itemList/questionType/mcq/mcqStandardPage.js";
 import FileHelper from "../../../../framework/util/fileHelper";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choice - standard" type question`, () => {
-
   const queData = {
     group: "Multiple Choice",
     queType: "Multiple choice - standard",
@@ -22,7 +20,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
   const text = "testtext";
 
   const { formates } = question;
-
 
   before(() => {
     cy.setToken();
@@ -89,7 +86,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .type(queData.formattext);
 
       formates.forEach(formate => {
-
         const text = queData.formattext;
         const { sel, tag } = formate;
 
@@ -307,7 +303,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
   });
 
   context("User edit the question.", () => {
-
     const queData = {
       group: "Multiple Choice",
       queType: "Multiple choice - standard",
@@ -383,7 +378,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .type(queData.formattext);
 
       formates.forEach(formate => {
-
         const text = queData.formattext;
         const { sel, tag } = formate;
 
@@ -1093,7 +1087,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
           cy.get("label.wrong").should("have.length", 1);
 
           cy.get("label.right").should("have.length", 0);
-
         });
 
       preview

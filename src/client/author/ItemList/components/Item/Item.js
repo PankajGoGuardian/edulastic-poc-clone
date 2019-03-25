@@ -177,15 +177,12 @@ class Item extends Component {
   render() {
     const { item, t, windowWidth } = this.props;
 
+    const questionText = get(item, "data.questions[0].stimulus", undefined);
     return (
       <Container>
         <Question>
           <QuestionContent>
-            <MoveLink onClick={this.moveToItem}>
-              {item.data && item.data.questions && item.data.questions[0].stimulus
-                ? item.data.questions[0].stimulus
-                : item._id}
-            </MoveLink>
+            <MoveLink onClick={this.moveToItem}>{questionText || item._id}</MoveLink>
             <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: this.description }} />
           </QuestionContent>
           {windowWidth > MAX_TAB_WIDTH && (

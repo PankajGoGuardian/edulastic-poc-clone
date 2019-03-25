@@ -41,9 +41,12 @@ import FeedbackBottom from "./FeedbackBottom";
 import FeedbackRight from "./FeedbackRight";
 import Timespent from "./Timespent";
 import { setQuestionDataAction } from "../../author/src/actions/question";
+import { Chart } from "../widgets/Charts";
 
 const getQuestion = type => {
   switch (type) {
+    case questionType.LINE_CHART:
+      return Chart;
     case questionType.DRAWING:
       return Drawing;
     case questionType.HIGHLIGHT_IMAGE:

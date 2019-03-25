@@ -32,7 +32,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       },
       setThousandsSeparator: {
         separators: ["Space", "Comma"],
-        expected: ["\\frac{1}{1 000}", "\\frac{1}{1,000}"],
+        // expected: ["\\frac{1}{1 000}", "\\frac{1}{1,000}"],
+        // expected: ["1/1000", "1/1,000"],
+        expected: ["\\frac{enter}1{downarrow}1 000", "\\frac{enter}1{downarrow}1,000"],
         input: "0.001"
       },
       significantDecimalPlaces: {
@@ -495,6 +497,27 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
       question.getAnswerAllowThousandsSeparator().uncheck({ force: true });
     });
+
+    it("Testing with thousands separators - Space and Comma", () => {
+      const { input, expected, separators } = queData.equivSymbolic.setThousandsSeparator;
+      question.getAnswerValueMathInput().type(input, { force: true });
+      separators.forEach((separator, index) => {
+        question.getAnswerAllowThousandsSeparator().check({ force: true });
+        question
+          .getThousandsSeparatorDropdown()
+          .click()
+          .then(() => {
+            question
+              .getThousandsSeparatorDropdownList(separator)
+              .should("be.visible")
+              .click();
+          });
+        question.checkCorrectAnswer(expected[index], preview, index === 0 ? 0 : input.length, true);
+
+        question.getAnswerAllowThousandsSeparator().uncheck({ force: true });
+      });
+    });
+
     it("Testing with significant decimal '3'", () => {
       const { input, expected, value } = queData.equivSymbolic.significantDecimalPlaces;
       question.getAnswerValueMathInput().type(input, { force: true });
@@ -601,6 +624,27 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
       question.getAnswerAllowThousandsSeparator().uncheck({ force: true });
     });
+
+    it("Testing with decimal separator - Comma", () => {
+      const { input, expected, separator } = queData.equivLiteral.setDecimalSeparator;
+      question.getAnswerAllowThousandsSeparator().check({ force: true });
+      question
+        .getAnswerSetDecimalSeparatorDropdown()
+        .click()
+        .then(() => {
+          question
+            .getAnswerSetDecimalSeparatorDropdownList(separator)
+            .should("be.visible")
+            .click();
+        });
+      input.forEach((item, index) => {
+        question.getAnswerValueMathInput().type(item, { force: true });
+        question.checkCorrectAnswer(expected[index], preview, item.length, false);
+      });
+
+      question.getAnswerAllowThousandsSeparator().uncheck({ force: true });
+    });
+
     it("Testing with ignoring order", () => {
       const { input, expected } = queData.equivLiteral.ignoreOrder;
       question.getAnswerValueMathInput().type(input, { force: true });

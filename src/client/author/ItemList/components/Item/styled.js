@@ -196,6 +196,7 @@ export const Count = styled.div`
   font-size: 12px;
   font-weight: 700;
   line-height: 24px;
+  margin-right: 10px;
   color: ${greyDarken};
 `;
 
@@ -324,5 +325,6 @@ export const CountGreen = styled.div`
   font-size: 12px;
   font-weight: 700;
   line-height: 24px;
+  margin-right: 10px;
   color: ${greenPrimary};
 `;

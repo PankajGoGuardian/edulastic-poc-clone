@@ -32,12 +32,17 @@ const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar }) => (
     </CreateButton>
   </Container>
 );
+
 ListHeader.propTypes = {
   onCreate: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   toggleSideBar: PropTypes.func.isRequired,
-  btnTitle: PropTypes.string.isRequired
+  btnTitle: PropTypes.string
+};
+
+ListHeader.defaultProps = {
+  btnTitle: ""
 };
 
 const enhance = compose(

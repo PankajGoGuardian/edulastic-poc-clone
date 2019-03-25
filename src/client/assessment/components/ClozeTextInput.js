@@ -185,8 +185,9 @@ export default enhance(ClozeTextInput);
 
 const CustomInput = styled.div`
   display: inline-flex;
-  margin: 0 10px;
+  margin: 12px 20px;
   position: relative;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
 `;
 
 const IndexBox = styled.div`

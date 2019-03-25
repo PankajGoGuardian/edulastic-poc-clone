@@ -519,7 +519,7 @@ const GraphWithResources = ({ ...props }) => (
       "http://jsxgraph.uni-bayreuth.de/distrib/jsxgraphcore.js",
       "http://jsxgraph.uni-bayreuth.de/distrib/jsxgraph.css"
     ]}
-    fallBack={<h2>Loading...</h2>}
+    fallBack={<span />}
   >
     <GraphComponent {...props} />
   </WithResources>

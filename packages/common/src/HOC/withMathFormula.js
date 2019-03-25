@@ -140,7 +140,7 @@ export const withMathFormula = WrappedComponent => {
             "https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.js",
             "https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.css"
           ]}
-          fallBack={<h2>Loading...</h2>}
+          fallBack={<span />}
           onLoaded={() => this.startMathValidating()}
           dangerouslySetInnerHTML={{ __html: newInnerHtml }}
         >

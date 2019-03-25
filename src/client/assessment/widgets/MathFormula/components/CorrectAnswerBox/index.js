@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
+import { WithResources } from "@edulastic/common";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 
 import { Wrapper } from "./styled/Wrapper";
 import { Answer } from "./styled/Answer";
-import { WithResources } from "@edulastic/common";
 
 const CorrectAnswerBox = ({ children, t }) => {
   const answerRef = useRef();
@@ -44,7 +44,7 @@ const CorrectAnswerBoxWithResources = ({ ...props }) => (
       "https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.js",
       "https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.css"
     ]}
-    fallBack={<h2>Loading...</h2>}
+    fallBack={<span />}
   >
     <CorrectAnswerBoxComponent {...props} />
   </WithResources>

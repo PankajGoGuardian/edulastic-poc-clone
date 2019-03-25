@@ -239,7 +239,7 @@ const StaticMathWithResources = ({ ...props }) => (
       "https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.js",
       "https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.css"
     ]}
-    fallBack={<h2>Loading...</h2>}
+    fallBack={<span />}
   >
     <StaticMath {...props} />
   </WithResources>

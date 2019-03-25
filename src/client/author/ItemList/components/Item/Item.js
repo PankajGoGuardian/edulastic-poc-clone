@@ -32,25 +32,6 @@ import {
   CountGreen
 } from "./styled";
 
-const details = [
-  {
-    name: <UserIcon />,
-    text: "Kevin Hart"
-  },
-  {
-    name: <IdIcon />,
-    text: "123456"
-  },
-  {
-    name: <ShareIcon />,
-    text: "9578 (1)"
-  },
-  {
-    name: <HeartIcon />,
-    text: "9"
-  }
-];
-
 const standards = [
   {
     name: `7.G.1`
@@ -89,8 +70,7 @@ class Item extends Component {
     item: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     t: PropTypes.func.isRequired,
-    windowWidth: PropTypes.number.isRequired,
-    types: PropTypes.array.isRequired
+    windowWidth: PropTypes.number.isRequired
   };
 
   moveToItem = () => {
@@ -111,7 +91,7 @@ class Item extends Component {
   }
 
   renderTypes = () => {
-    const { types, item } = this.props;
+    const { item } = this.props;
     const itemTypes = [];
 
     if (item.data && item.data.questions) {
@@ -131,31 +111,51 @@ class Item extends Component {
       });
     }
 
-    return itemTypes.length
-      ? itemTypes.map(({ name, count }) => (
-          <React.Fragment key={`TypeName_${name}`}>
-            <Label>
-              <LabelText>{name}</LabelText>
-            </Label>
-            {count > 1 ? <Count>+{count}</Count> : null}
-          </React.Fragment>
-        ))
-      : types.map(type => (
-          <Label key={`TypeName_${type}`}>
-            <LabelText>{type}</LabelText>
-          </Label>
-        ));
+    return itemTypes.map(({ name }, index) =>
+      index + 1 <= 1 ? (
+        <Label key={`TypeName_${name}_${index}`}>
+          <LabelText>{name}</LabelText>
+        </Label>
+      ) : (
+        index + 1 === itemTypes.length && <Count key={`Count_TypeName__${item._id}`}>+{itemTypes.length - 1}</Count>
+      )
+    );
   };
 
-  renderDetails = () =>
-    details.map((detail, index) => (
+  renderDetails = () => {
+    const { item } = this.props;
+
+    const details = [
+      {
+        name: <UserIcon />,
+        text: "Kevin Hart"
+      },
+      {
+        name: <IdIcon />,
+        text: item._id,
+        type: "id"
+      },
+      {
+        name: <ShareIcon />,
+        text: "9578 (1)"
+      },
+      {
+        name: <HeartIcon />,
+        text: "9"
+      }
+    ];
+
+    return details.map((detail, index) => (
       <DetailCategory key={`DetailCategory_${index}`}>
         <CategoryName>{detail.name}</CategoryName>
         <CategoryContent>
-          <Text>{detail.text}</Text>
+          <Text title={detail.type === "id" ? detail.text : ""}>
+            {detail.type === "id" ? detail.text.substr(detail.text.length - 5) : detail.text}
+          </Text>
         </CategoryContent>
       </DetailCategory>
     ));
+  };
 
   renderStandards = () => {
     const outStandardsCount = 3;
@@ -182,7 +182,7 @@ class Item extends Component {
         <Question>
           <QuestionContent>
             <MoveLink onClick={this.moveToItem}>
-              {item.data && item.data.questions && item.data.questions[0].stimulus
+              {item.data && item.data.questions && item.data.questions[0] && item.data.questions[0].stimulus
                 ? item.data.questions[0].stimulus
                 : item._id}
             </MoveLink>

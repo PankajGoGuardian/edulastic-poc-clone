@@ -110,24 +110,24 @@ class ItemFilter extends Component {
 
     return (
       <Container>
-        <FixedFilters>
-          <StyledModal open={isShowFilter} onClose={this.closeSearchModal} center>
-            <StyledModalContainer>
-              <StyledModalTitle>{t("component.itemlist.filter.filters")}</StyledModalTitle>
-              <Search
-                search={search}
-                curriculums={curriculums}
-                onSearchFieldChange={onSearchFieldChange}
-                curriculumStandards={curriculumStandards}
-                onStandardSearch={this.handleStandardSearch}
-              />
-            </StyledModalContainer>
-          </StyledModal>
-          {this.renderFullTextSearch()}
-          <MainFilter isVisible={isShowFilter}>
-            {windowWidth > SMALL_DESKTOP_WIDTH && (
-              <Affix>
-                <PerfectScrollbar style={{ paddingRight: 15 }}>
+        <PerfectScrollbar>
+          <FixedFilters>
+            <StyledModal open={isShowFilter} onClose={this.closeSearchModal} center>
+              <StyledModalContainer>
+                <StyledModalTitle>{t("component.itemlist.filter.filters")}</StyledModalTitle>
+                <Search
+                  search={search}
+                  curriculums={curriculums}
+                  onSearchFieldChange={onSearchFieldChange}
+                  curriculumStandards={curriculumStandards}
+                  onStandardSearch={this.handleStandardSearch}
+                />
+              </StyledModalContainer>
+            </StyledModal>
+            {this.renderFullTextSearch()}
+            <MainFilter isVisible={isShowFilter}>
+              {windowWidth > SMALL_DESKTOP_WIDTH && (
+                <Affix>
                   <MainFilterHeader>
                     <Title>{t("component.itemlist.filter.filters")}</Title>
                     <Clear onClick={onClearSearch}>{t("component.itemlist.filter.clearAll")}</Clear>
@@ -140,11 +140,11 @@ class ItemFilter extends Component {
                     curriculumStandards={curriculumStandards}
                     onStandardSearch={this.handleStandardSearch}
                   />
-                </PerfectScrollbar>
-              </Affix>
-            )}
-          </MainFilter>
-        </FixedFilters>
+                </Affix>
+              )}
+            </MainFilter>
+          </FixedFilters>
+        </PerfectScrollbar>
       </Container>
     );
   }

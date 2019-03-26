@@ -32,38 +32,6 @@ import {
   CountGreen
 } from "./styled";
 
-const standards = [
-  {
-    name: `7.G.1`
-  },
-  {
-    name: `7.G.A.1`
-  },
-  {
-    name: `7.G.1`
-  },
-  {
-    name: `7.G.A.1`
-  },
-  {
-    name: `7.G.1`
-  },
-  {
-    name: `7.G.A.1`
-  },
-  {
-    name: `7.G.1`
-  },
-  {
-    name: `7.G.A.1`
-  },
-  {
-    name: `7.G.1`
-  },
-  {
-    name: `7.G.A.1`
-  }
-];
 // render single item
 class Item extends Component {
   static propTypes = {
@@ -128,7 +96,7 @@ class Item extends Component {
     const details = [
       {
         name: <UserIcon />,
-        text: "Kevin Hart"
+        text: item.authors && item.authors[0] ? item.authors[0].userName : "-"
       },
       {
         name: <IdIcon />,
@@ -160,18 +128,36 @@ class Item extends Component {
   renderStandards = () => {
     const outStandardsCount = 3;
     const { item } = this.props;
+    const domains = [];
+    const standards = [];
 
-    return standards.map((standard, index) =>
-      index + 1 <= outStandardsCount ? (
-        <LabelStandard key={`Standard_${standard.name}_${index}`}>
-          <LabelStandardText>{standard.name}</LabelStandardText>
-        </LabelStandard>
-      ) : (
-        index + 1 === standards.length && (
-          <CountGreen key={`Count_${item._id}`}>+{standards.length - outStandardsCount}</CountGreen>
-        )
-      )
-    );
+    if (item.data && item.data.questions) {
+      item.data.questions.filter(question =>
+        question.alignment
+          ? question.alignment.map(el => (el.domains && el.domains.length ? domains.push(...el.domains) : null))
+          : null
+      );
+
+      if (domains.length) {
+        domains.map(el => (el.standards && el.standards.length ? standards.push(...el.standards) : null));
+      }
+    }
+
+    return standards.length ? (
+      <StandardContent>
+        {standards.map((standard, index) =>
+          index + 1 <= outStandardsCount ? (
+            <LabelStandard key={`Standard_${standard.name}_${index}`}>
+              <LabelStandardText>{standard.name}</LabelStandardText>
+            </LabelStandard>
+          ) : (
+            index + 1 === standards.length && (
+              <CountGreen key={`Count_${item._id}`}>+{standards.length - outStandardsCount}</CountGreen>
+            )
+          )
+        )}
+      </StandardContent>
+    ) : null;
   };
 
   render() {
@@ -197,7 +183,7 @@ class Item extends Component {
         </Question>
         <Detail>
           <TypeCategory>
-            <StandardContent>{this.renderStandards()}</StandardContent>
+            {this.renderStandards()}
             <CategoryContent>{this.renderTypes()}</CategoryContent>
           </TypeCategory>
           <Categories>{this.renderDetails()}</Categories>

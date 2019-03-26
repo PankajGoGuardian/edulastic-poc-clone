@@ -26,7 +26,7 @@ const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar }) => (
       color="secondary"
       variant="create"
       shadow="none"
-      icon={<IconPlusStyled color={newBlue} left={-40} width={20} height={20} hoverColor={newBlue} />}
+      icon={<IconPlusStyled color={newBlue} left={-50} width={20} height={20} hoverColor={newBlue} />}
     >
       {btnTitle && btnTitle.length ? btnTitle : t("component.itemlist.header.create")}
     </CreateButton>

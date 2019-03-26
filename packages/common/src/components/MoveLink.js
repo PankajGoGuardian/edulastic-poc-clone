@@ -33,6 +33,10 @@ const Link = styled.a`
     color: ${darkBlue};
   }
 
+  p {
+    font-size: 15px !important;
+  }
+
   span {
     font-size: 15px;
     font-weight: 500;

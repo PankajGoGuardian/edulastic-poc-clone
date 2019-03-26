@@ -12,11 +12,11 @@ import { Button } from "antd";
 import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
 
 export const Container = styled.div`
-  border-bottom: 0;
+  border-top: 0;
   padding: 30px 0 5px 26px;
 
-  &:not(:last-child) {
-    border-bottom: 1px solid #f6f6f6;
+  &:not(:first-child) {
+    border-top: 1px solid #f6f6f6;
   }
   @media (max-width: ${tabletWidth}) {
     flex-direction: column;
@@ -99,6 +99,7 @@ export const Detail = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-top: 43px;
+  min-height: 39px;
 
   @media (max-width: ${tabletWidth}) {
     margin-top: 9px;
@@ -119,7 +120,7 @@ export const TypeCategory = styled.div`
 
 export const DetailCategory = styled.div`
   display: flex;
-  margin-left: 24px;
+  margin-left: 20px;
 
   svg {
     max-width: 18px;
@@ -172,6 +173,7 @@ export const Label = styled.div`
   margin-bottom: 5px;
   border-radius: 5px;
   border: solid 1px #e2e2e2;
+  line-height: 1;
 
   span {
     font-size: 10px;
@@ -283,6 +285,7 @@ export const LabelStandard = styled.div`
   border-radius: 5px;
   height: 23.5px;
   padding: 6px 14px;
+  line-height: 1;
   margin-right: 10px;
   margin-bottom: 5px;
   border-radius: 5px;

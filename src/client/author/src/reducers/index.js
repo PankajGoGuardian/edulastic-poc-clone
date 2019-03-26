@@ -10,6 +10,7 @@ import author_classboard_gradebook from "./gradeBook";
 import author_classboard_testActivity from "./testActivity";
 import authorGroups from "../../sharedDucks/groups";
 import authorQuestions from "../../sharedDucks/questions";
+import authorUserList from "../../sharedDucks/userDetails";
 import classResponse from "./classResponse";
 import studentResponse from "./studentResponse";
 import feedbackResponse from "./feedbackResponse";
@@ -51,7 +52,8 @@ const authorReducers = {
   assessmentCreate,
   studentQuestionResponse,
   classQuestionResponse,
-  manageClass
+  manageClass,
+  authorUserList
 };
 
 export default authorReducers;

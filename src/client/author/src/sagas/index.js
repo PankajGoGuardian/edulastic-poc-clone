@@ -14,6 +14,7 @@ import assignmentsSaga from "./assignments";
 import { reportAssessmentSummarySaga } from "../../Reports/subPages/AssessmentSummary/ducks";
 import { reportResponseFrequencySaga } from "../../Reports/subPages/ResponseFrequency/ducks";
 import { authorGroupsWatcherSaga } from "../../sharedDucks/groups";
+import { watcherSaga as UserDetails } from "../../sharedDucks/userDetails";
 import { assessmentPageSaga } from "../../AssessmentCreate";
 
 const authorSagas = [
@@ -33,7 +34,8 @@ const authorSagas = [
   testsAssignSaga(),
   authorGroupsWatcherSaga(),
   assessmentPageSaga(),
-  ManageClassSaga()
+  ManageClassSaga(),
+  UserDetails()
 ];
 
 export default authorSagas;

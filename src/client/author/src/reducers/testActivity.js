@@ -48,7 +48,6 @@ const reducer = (state = initialState, { type, payload }) => {
 
       nextState = produce(state, _st => {
         const index = _st.entities.findIndex(x => x.studentId === entity.studentId);
-        console.log("taId student index", index);
         if (index != -1) {
           _st.entities[index].status = "inProgress";
           _st.entities[index].score = 0;
@@ -108,7 +107,6 @@ const reducer = (state = initialState, { type, payload }) => {
         for (const { testActivityId, score, maxScore, ...questionItem } of payload) {
           const entityIndex = _st.entities.findIndex(x => x.testActivityId === testActivityId);
           if (entityIndex != -1) {
-            console.log("entityIndex", entityIndex);
             const itemIndex = _st.entities[entityIndex].questionActivities.findIndex(x => x._id == questionItem._id);
             if (itemIndex == -1) {
               _st.entities[entityIndex].questionActivities.push(questionItem);

@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import CardCheckbox from "./CardCheckbox/CardCheckbox";
+import { Col, Row } from "antd";
+import styled from "styled-components";
 
 import {
   StyledCardContiner,
@@ -48,12 +50,12 @@ export default class DisneyCardContainer extends Component {
     };
   }
 
-  componentWillReceiveProps(props) {
-    this.setState({
-      testActivity: this.props.testActivity,
-      assignmentId: this.props.assignmentId,
-      classId: this.props.classId
-    });
+  static getDerivedStateFromProps(props, state) {
+    return {
+      testActivity: props.testActivity,
+      assignmentId: props.assignmentId,
+      classId: props.classId
+    };
   }
 
   handleChange = value => {
@@ -112,6 +114,7 @@ export default class DisneyCardContainer extends Component {
     let testActivity = this.state.testActivity.slice(this.state.minValue, this.state.maxValue);
 
     if (testActivity.length > 0) {
+      //TODO: need to rewrite this when we have time
       testActivity.map(student => {
         //TODO: use constants
         let status = "NOT STARTED";
@@ -120,6 +123,8 @@ export default class DisneyCardContainer extends Component {
           status = "IN PROGRESS";
         } else if (student.status === "submitted") {
           status = "SUBMITTED";
+        } else if (student.status === "redirected") {
+          status = "REDIRECTED";
         }
 
         let correctAnswers = 0;
@@ -143,11 +148,35 @@ export default class DisneyCardContainer extends Component {
                 <StyledParaF>{student.studentName ? student.studentName : "-"}</StyledParaF>
                 {student.present ? <StyledParaS>{status}</StyledParaS> : <StyledColorParaS>ABSENT</StyledColorParaS>}
               </StyledName>
-              <CardCheckbox
-                changeCardCheck={this.changeCardCheck}
-                isCheck={student.check}
-                studentId={student.studentId}
-              />
+              <SpaceDiv />
+              <RightAlignedCol>
+                <Row>
+                  <Col>
+                    <CardCheckbox
+                      checked={this.props.selectedStudents[student.studentId]}
+                      onChange={e => {
+                        if (e.target.checked) {
+                          this.props.studentSelect(student.studentId);
+                        } else {
+                          this.props.studentUnselect(student.studentId);
+                        }
+                      }}
+                      studentId={student.studentId}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    {student.redirected && (
+                      <i
+                        title="Assessment is redirected to the student. The most recent response will be shown"
+                        class="fa fa-external-link"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </Col>
+                </Row>
+              </RightAlignedCol>
             </PaginationInfoF>
             <PaginationInfoS>
               <StyledParaFF>Performance</StyledParaFF>
@@ -210,3 +239,8 @@ export default class DisneyCardContainer extends Component {
     );
   }
 }
+
+const RightAlignedCol = styled(Col)`
+  align-self: flex-end;
+  flex: 1 1 auto;
+`;

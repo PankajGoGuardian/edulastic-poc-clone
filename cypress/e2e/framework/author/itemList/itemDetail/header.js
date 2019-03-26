@@ -5,17 +5,13 @@ import MetadataPage from "./metadataPage";
 
 class Header {
   edit() {
-    cy.get('[data-cy="editButton"]')
-      .should("be.visible")
-      .click();
+    cy.get('[data-cy="editButton"]').click({ force: true });
 
     return new EditItemPage();
   }
 
   preview() {
-    cy.get('[data-cy="previewButton"]')
-      .should("be.visible")
-      .click();
+    cy.get('[data-cy="previewButton"]').click({ force: true });
 
     return new PreviewItemPage();
   }

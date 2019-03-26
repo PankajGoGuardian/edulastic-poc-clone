@@ -28,7 +28,7 @@ class EditItemPage {
     if (!$button.next().length) {
       cy.get('[data-cy="toggleAdvancedOptionsButton"]')
         .should("be.visible")
-        .click();
+        .click({ force: true });
     }
 
     return this;
@@ -40,7 +40,7 @@ class EditItemPage {
     if ($button.next().length) {
       cy.get('[data-cy="toggleAdvancedOptionsButton"]')
         .should("be.visible")
-        .click();
+        .click({ force: true });
     }
 
     return this;

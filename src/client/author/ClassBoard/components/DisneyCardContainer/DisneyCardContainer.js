@@ -50,12 +50,12 @@ export default class DisneyCardContainer extends Component {
     };
   }
 
-  componentWillReceiveProps(props) {
-    this.setState({
-      testActivity: this.props.testActivity,
-      assignmentId: this.props.assignmentId,
-      classId: this.props.classId
-    });
+  static getDerivedStateFromProps(props, state) {
+    return {
+      testActivity: props.testActivity,
+      assignmentId: props.assignmentId,
+      classId: props.classId
+    };
   }
 
   handleChange = value => {

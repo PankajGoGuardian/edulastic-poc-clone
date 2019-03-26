@@ -33,7 +33,7 @@ class Header {
     cy.route("PUT", "**/testitem/**").as("saveItem");
     cy.route("GET", "**/testitem/**").as("reload");
 
-    cy.contains("div", "SAVE")
+    cy.get('[data-cy="saveButton"]')
       .should("be.visible")
       .click();
 

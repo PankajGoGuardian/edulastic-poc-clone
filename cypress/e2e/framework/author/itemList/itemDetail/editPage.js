@@ -4,14 +4,13 @@ import Header from "./header";
 class EditItemPage {
   constructor() {
     this.header = new Header();
-    this.header.save = function() {
+    this.header.save = () => {
       cy.server();
       cy.route("PUT", "**/testitem/**").as("saveItem");
-      cy.contains("div", "SAVE")
+      cy.get('[data-cy="saveButton"]')
         .should("be.visible")
         .click();
       cy.wait("@saveItem");
-      return this;
     };
   }
 

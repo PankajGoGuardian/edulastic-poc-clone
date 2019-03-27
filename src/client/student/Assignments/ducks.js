@@ -68,7 +68,6 @@ export const getRedirect = (assignment, groupId, userId) => {
 
   const dueDate = Math.max.apply(Math, redirects.map(x => x.endDate));
 
-
   return { attempts, dueDate };
 };
 

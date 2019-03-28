@@ -5,20 +5,22 @@ import { connect } from "react-redux";
 import { get } from "lodash";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-
 // actions
 import {
   receiveTestActivitydAction,
   receiveGradeBookdAction,
-  receiveClassResponseAction
+  receiveClassResponseAction,
+  receiveStudentResponseAction
 } from "../../../src/actions/classBoard";
 import QuestionContainer from "../../../QuestionView";
+import StudentContainer from "../../../StudentView";
 // ducks
 import {
   getTestActivitySelector,
   getGradeBookSelector,
   getAdditionalDataSelector,
-  getClassResponseSelector
+  getClassResponseSelector,
+  getStudentResponseSelector
 } from "../../ducks";
 
 import {
@@ -32,51 +34,53 @@ import {
 import Score from "../Score/Score";
 import DisneyCardContainer from "../DisneyCardContainer/DisneyCardContainer";
 import Graph from "../ProgressGraph/ProgressGraph";
+import BarGraph from "../BarGraph/BarGraph";
 import ClassSelect from "../../../Shared/Components/ClassSelect/ClassSelect";
+import StudentSelect from "../../../Shared/Components/StudentSelect/StudentSelect";
 import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
-import CollapseButton from "../../../Shared/Components/CollpaseButton/CollapseButton";
-
 import HooksContainer from "../HooksContainer/HooksContainer";
 import RedirectPopup from "../RedirectPopUp";
 // icon images
-import More from "../../assets/more.svg";
-import Stats from "../../assets/stats.svg";
-import Ghat from "../../assets/graduation-hat.svg";
-import Ptools from "../../assets/printing-tool.svg";
+// import More from "../../assets/more.svg";
+// import Stats from "../../assets/stats.svg";
+// import Ghat from "../../assets/graduation-hat.svg";
+// import Ptools from "../../assets/printing-tool.svg";
 import Elinks from "../../assets/external-link.svg";
 // styled wrappers
 import {
   Anchor,
-  BarDiv,
-  SpaceDiv,
-  ButtonSpace,
+  // BarDiv,
+  // SpaceDiv,
+  // ButtonSpace,
   AnchorLink,
-  StyledAnc,
-  StyledCardContainer,
+  // StyledAnc,
   StyledCard,
-  StyledButton,
+  // StyledButton,
   StyledCheckbox,
   PaginationInfo,
-  ButtonGroup,
+  CheckContainer,
+  // ButtonGroup,
+  GraphContainer,
   StyledFlexContainer,
   StudentButtonDiv,
   StudentButton,
-  QuestionButton
+  QuestionButton,
+  BothButton,
+  RedirectButton,
+  StudentGrapContainer
 } from "./styled";
-
-import { Button } from "antd";
 
 /**
  * right side button group
  * @param {{redirect: Function }} param0
  */
-const StudentActions = ({ redirect }) => (
-  <Button.Group>
-    <Button>Print</Button>
-    <Button onClick={redirect}>redirect</Button>
-    <Button>more</Button>
-  </Button.Group>
-);
+// const StudentActions = ({ redirect }) => (
+//   <Button.Group>
+//     <Button>Print</Button>
+//     <Button onClick={redirect}>redirect</Button>
+//     <Button>more</Button>
+//   </Button.Group>
+// );
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -87,11 +91,11 @@ class ClassBoard extends Component {
 
     this.state = {
       flag: true,
-      selectedTab: "Student",
+      selectedTab: "Both",
       selectAll: false,
       selectedQuestion: 0,
-      redirectPopup: false,
-      isCollapsed: false
+      nCountTrue: 0,
+      redirectPopup: false
     };
   }
 
@@ -103,9 +107,12 @@ class ClassBoard extends Component {
   }
 
   componentDidUpdate(_, prevState) {
-    const { loadClassResponses, additionalData: { testId } = {} } = this.props;
+    const { loadClassResponses, additionalData = {}, loadStudentResponses, testActivity } = this.props;
+    const { testId, classId } = additionalData;
+    const testActivityId = this.getTestActivity(testActivity);
     const { testId: prevTestId } = prevState;
     if (testId !== prevTestId) {
+      loadStudentResponses({ testActivityId, groupId: classId });
       loadClassResponses({ testId });
     }
   }
@@ -131,15 +138,36 @@ class ClassBoard extends Component {
   }
 
   onSelectAllChange = e => {
-    const checked = e.target.checked;
+    const { checked } = e.target;
+    const { testActivity } = this.props;
+    const { studentSelect, studentUnselectAll, allStudents } = this.props;
+    testActivity.map(student => {
+      student.check = checked;
+      return null;
+    });
     this.setState({
-      selectAll: checked
+      selectAll: checked,
+      nCountTrue: checked ? testActivity.length : 0
     });
     if (checked) {
-      this.props.studentSelect(this.props.allStudents.map(x => x._id));
+      studentSelect(allStudents.map(x => x._id));
     } else {
-      this.props.studentUnselectAll();
+      studentUnselectAll();
     }
+  };
+
+  onSelectCardOne = studentId => {
+    let { nCountTrue } = this.state;
+    const { studentSelect } = this.props;
+    this.setState({ nCountTrue: (nCountTrue += 1) });
+    studentSelect(studentId);
+  };
+
+  onUnselectCardOne = studentId => {
+    let { nCountTrue } = this.state;
+    const { studentUnselect } = this.props;
+    this.setState({ nCountTrue: (nCountTrue -= 1) });
+    studentUnselect(studentId);
   };
 
   handleCreate = () => {
@@ -176,18 +204,15 @@ class ClassBoard extends Component {
 
   changeCardCheck = (isCheck, studentId) => {
     let nCountTrue = 0;
-    this.props.testActivity.map(student => {
+    const { testActivity } = this.props;
+    testActivity.map(student => {
       if (student.studentId === studentId) student.check = isCheck;
       if (student.check) nCountTrue++;
+      return null;
     });
     this.setState({
-      selectAll: nCountTrue == this.props.testActivity.length > 0 ? true : false
-    });
-  };
-
-  onClickCollapse = collapsed => {
-    this.setState({
-      isCollapsed: collapsed
+      selectAll: nCountTrue === testActivity.length,
+      nCountTrue
     });
   };
 
@@ -198,21 +223,23 @@ class ClassBoard extends Component {
       creating,
       match,
       classResponse,
-      additionalData = { classes: [] },
-      t,
+      additionalData = {
+        classes: []
+      },
+      testActivity: studentItems,
+      loadStudentResponses,
+      studentResponse,
       selectedStudents,
-      studentSelect,
-      studentUnselect,
       setSelected,
       allStudents
     } = this.props;
-    const { selectedTab, flag, selectedQuestion, selectAll, isCollapsed } = this.state;
-
+    const { selectedTab, flag, selectedQuestion, selectAll, nCountTrue, redirectPopup } = this.state;
     const { assignmentId, classId } = match.params;
     const testActivityId = this.getTestActivity(testActivity);
     const classname = additionalData ? additionalData.classes : [];
     const questions = this.getQuestions();
     const questionsIds = questions.map((q, i) => ({ name: `Question ${i + 1}` }));
+
     return (
       <div>
         <HooksContainer classId={classId} assignmentId={assignmentId} />
@@ -228,63 +255,55 @@ class ClassBoard extends Component {
         <StyledFlexContainer justifyContent="space-between">
           <PaginationInfo>
             &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> /{" "}
-            <AnchorLink to="/author/assignments">{additionalData.testName}</AnchorLink> /{" "}
-            <Anchor>{additionalData.className}</Anchor>
+            <Anchor>{additionalData.testName}</Anchor> / <Anchor>{additionalData.className}</Anchor>
           </PaginationInfo>
           <StudentButtonDiv>
-            <StudentButton
-              type={selectedTab === "Student" ? "primary" : ""}
-              onClick={e => this.onTabChange(e, "Student")}
-            >
+            <BothButton active={selectedTab === "Both"} onClick={e => this.onTabChange(e, "Both")}>
+              BOTH
+            </BothButton>
+            <StudentButton active={selectedTab === "Student"} onClick={e => this.onTabChange(e, "Student")}>
               STUDENT
             </StudentButton>
-            <QuestionButton
-              type={selectedTab === "questionView" ? "primary" : ""}
-              onClick={e => this.onTabChange(e, "questionView")}
-            >
+            <QuestionButton active={selectedTab === "questionView"} onClick={e => this.onTabChange(e, "questionView")}>
               QUESTION
             </QuestionButton>
           </StudentButtonDiv>
-          <ClassSelect
-            classid="DI"
-            classname={selectedTab === "Student" ? classname : questionsIds}
-            selected={selectedQuestion}
-            handleChange={value => {
-              this.setState({ selectedQuestion: value });
-            }}
-          />
         </StyledFlexContainer>
-        {selectedTab === "Student" ? (
+        {selectedTab === "Both" && (
           <React.Fragment>
-            <StyledCardContainer>
-              <StyledCard bordered={false} isCollapsed={isCollapsed}>
+            <GraphContainer>
+              <StyledCard bordered={false}>
                 <Graph gradebook={gradebook} />
               </StyledCard>
-              <CollapseButton handleClickCollapse={this.onClickCollapse} collapsed={isCollapsed} />
-            </StyledCardContainer>
-
-            <StyledFlexContainer justifyContent="space-between">
-              <StyledCheckbox checked={this.state.selectAll} onChange={this.onSelectAllChange}>
-                {selectAll ? "UNSELECT ALL" : "SELECT ALL"}
-              </StyledCheckbox>
-              <StudentActions redirect={() => this.setState({ redirectPopup: true })} />
-            </StyledFlexContainer>
+            </GraphContainer>
+            {nCountTrue > 0 && (
+              <StyledFlexContainer justifyContent="space-between" style={{ marginBottom: 0, paddingRight: 20 }}>
+                <CheckContainer>
+                  <StyledCheckbox checked={selectAll} onChange={this.onSelectAllChange}>
+                    {selectAll ? "UNSELECT ALL" : "SELECT ALL"}
+                  </StyledCheckbox>
+                </CheckContainer>
+                <RedirectButton onClick={() => this.setState({ redirectPopup: true })}>
+                  <img src={Elinks} alt="" />
+                  REDIRECT
+                </RedirectButton>
+              </StyledFlexContainer>
+            )}
             {flag ? (
               <DisneyCardContainer
                 selectedStudents={selectedStudents}
                 testActivity={testActivity}
                 assignmentId={assignmentId}
                 classId={classId}
-                changeCardCheck={this.changeCardCheck}
-                studentSelect={studentSelect}
-                studentUnselect={studentUnselect}
+                studentSelect={this.onSelectCardOne}
+                studentUnselect={this.onUnselectCardOne}
               />
             ) : (
               <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
             )}
 
             <RedirectPopup
-              open={this.state.redirectPopup}
+              open={redirectPopup}
               allStudents={allStudents}
               selectedStudents={selectedStudents}
               additionalData={additionalData}
@@ -296,12 +315,44 @@ class ClassBoard extends Component {
               groupId={classId}
             />
           </React.Fragment>
-        ) : (
-          <QuestionContainer
-            classResponse={classResponse}
-            testActivity={testActivity}
-            question={questions[selectedQuestion]}
-          />
+        )}
+
+        {selectedTab === "Student" && questions[selectedQuestion] && (
+          <React.Fragment>
+            <StudentGrapContainer>
+              <StyledCard bordered={false} paddingTop={15}>
+                <BarGraph gradebook={gradebook}>
+                  <StudentSelect students={studentItems} loadStudentResponses={loadStudentResponses} />
+                </BarGraph>
+              </StyledCard>
+            </StudentGrapContainer>
+            <StudentContainer
+              classResponse={classResponse}
+              studentResponse={studentResponse}
+              testActivity={testActivity}
+              studentItems={studentItems}
+            />
+          </React.Fragment>
+        )}
+
+        {selectedTab === "questionView" && questions[selectedQuestion] && (
+          <React.Fragment>
+            <QuestionContainer
+              classResponse={classResponse}
+              testActivity={testActivity}
+              question={questions[selectedQuestion]}
+            >
+              <ClassSelect
+                classid="DI"
+                classname={selectedTab === "Student" ? classname : questionsIds}
+                selected={selectedQuestion}
+                justifyContent="flex-end"
+                handleChange={value => {
+                  this.setState({ selectedQuestion: value });
+                }}
+              />
+            </QuestionContainer>
+          </React.Fragment>
         )}
       </div>
     );
@@ -317,6 +368,7 @@ const enhance = compose(
       testActivity: getTestActivitySelector(state),
       classResponse: getClassResponseSelector(state),
       additionalData: getAdditionalDataSelector(state),
+      studentResponse: getStudentResponseSelector(state),
       selectedStudents: get(state, ["author_classboard_gradebook", "selectedStudents"], {}),
       allStudents: get(state, ["author_classboard_testActivity", "data", "students"], [])
     }),
@@ -324,6 +376,7 @@ const enhance = compose(
       loadGradebook: receiveGradeBookdAction,
       loadTestActivity: receiveTestActivitydAction,
       loadClassResponses: receiveClassResponseAction,
+      loadStudentResponses: receiveStudentResponseAction,
       studentSelect: gradebookSelectStudentAction,
       studentUnselect: gradebookUnSelectStudentAction,
       studentUnselectAll: gradebookUnSelectAllAction,
@@ -338,13 +391,21 @@ export default enhance(ClassBoard);
 ClassBoard.propTypes = {
   gradebook: PropTypes.object,
   classResponse: PropTypes.object,
+  studentResponse: PropTypes.object,
   additionalData: PropTypes.object,
   history: PropTypes.object,
   match: PropTypes.object,
   loadTestActivity: PropTypes.func,
   creating: PropTypes.object,
   testActivity: PropTypes.array,
-  t: PropTypes.func,
+  // t: PropTypes.func,
   loadGradebook: PropTypes.func,
-  loadClassResponses: PropTypes.func
+  loadClassResponses: PropTypes.func,
+  loadStudentResponses: PropTypes.func,
+  studentSelect: PropTypes.func.isRequired,
+  studentUnselectAll: PropTypes.func.isRequired,
+  allStudents: PropTypes.array,
+  selectedStudents: PropTypes.object,
+  studentUnselect: PropTypes.func,
+  setSelected: PropTypes.func
 };

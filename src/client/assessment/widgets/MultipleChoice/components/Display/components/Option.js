@@ -81,7 +81,7 @@ const Option = props => {
           return inx + 1;
       }
     } else {
-      return "";
+      return ALPHABET[inx].toUpperCase();
     }
   };
 
@@ -137,8 +137,10 @@ const Option = props => {
   const width = uiStyle.columns ? `${100 / uiStyle.columns - 1}%` : "100%";
 
   return (
-    <Label width={width} smallSize={smallSize} className={className} showAnswer>
-      <PaddingDiv top={smallSize ? 0 : 10} bottom={smallSize ? 0 : 10}>
+    // <Label width={width} smallSize={smallSize} className={className} showAnswer>
+    // TODO setup label background color for each option
+    <Label smallSize={smallSize} className={className} showAnswer>
+      <PaddingDiv top={0} bottom={0}>
         <FlexContainer justifyContent={uiStyle.type === "radioBelow" ? "center" : "space-between"}>
           {renderCheckbox()}
           <IconWrapper>

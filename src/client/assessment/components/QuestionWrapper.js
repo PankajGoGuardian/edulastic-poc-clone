@@ -198,11 +198,11 @@ class QuestionWrapper extends Component {
 
     return (
       <ThemeProvider theme={themes.default}>
-        <PaperWrapper style={PaperWrapperStyles}>
-          {type === "graph" && view === "edit" && (
-            <QuestionMenu activeTab={activeTab} main={main} advanced={advanced} />
-          )}
-          <Fragment>
+        <Fragment>
+          <PaperWrapper style={{ width: "-webkit-fill-available", display: "flex" }}>
+            {type === "graph" && view === "edit" && (
+              <QuestionMenu activeTab={activeTab} main={main} advanced={advanced} />
+            )}
             <div style={{ flex: "auto" }}>
               {timespent ? <Timespent timespent={timespent} view={view} /> : null}
               <Question
@@ -214,10 +214,10 @@ class QuestionWrapper extends Component {
                 fillSections={this.fillSections}
               />
             </div>
-            {showFeedback &&
-              (multiple ? <FeedbackBottom widget={data} /> : <FeedbackRight widget={data} studentName={studentName} />)}
-          </Fragment>
-        </PaperWrapper>
+          </PaperWrapper>
+          {showFeedback &&
+            (multiple ? <FeedbackBottom widget={data} /> : <FeedbackRight widget={data} studentName={studentName} />)}
+        </Fragment>
       </ThemeProvider>
     );
   }

@@ -259,13 +259,19 @@ class CurriculumSequence extends Component {
     const { handleSaveClick } = this;
 
     // Options for add unit
-    const options1 = destinationCurriculumSequence.modules.map(module => ({ value: module.id, label: module.name }));
+    const options1 = destinationCurriculumSequence.modules.map(module => ({
+      value: module.id,
+      label: module.name
+    }));
 
     // TODO: change options2 to something more meaningful
     const options2 = [{ value: "Lesson", label: "Lesson" }, { value: "Lesson 2", label: "Lesson 2" }];
 
     // Dropdown options for guides
-    const guidesDropdownOptions = curriculumGuides.map(item => ({ value: item._id, label: item.title }));
+    const guidesDropdownOptions = curriculumGuides.map(item => ({
+      value: item._id,
+      label: item.title
+    }));
 
     const { title } = destinationCurriculumSequence;
 

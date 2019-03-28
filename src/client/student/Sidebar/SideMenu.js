@@ -69,7 +69,7 @@ class SideMenu extends Component {
     };
   }
 
-  handleMenu = (e) => {
+  handleMenu = e => {
     const { history, windowWidth } = this.props;
     if (menuItems[e.key].path !== undefined) {
       history.push(`/${menuItems[e.key].path}`);
@@ -84,7 +84,7 @@ class SideMenu extends Component {
     toggleSideBar();
   };
 
-  handleVisibleChange = (flag) => {
+  handleVisibleChange = flag => {
     this.setState({ isVisible: flag });
   };
 
@@ -156,7 +156,7 @@ class SideMenu extends Component {
               {isSidebarCollapsed ? <LogoCompact /> : <Logo />}
             </Col>
             {broken ? null : (
-              <Col span={6} style={{ textAlign: "right", color: "#1fe3a1" }}>
+              <Col span={6} style={{ textAlign: "right", color: "#1fe3a1", right: "-5px" }}>
                 <AntIcon className="trigger" type={isSidebarCollapsed ? "right" : "left"} onClick={this.toggleMenu} />
               </Col>
             )}
@@ -253,6 +253,7 @@ const FixedSidebar = styled.div`
   left: 0px;
   top: 0px;
   bottom: 0px;
+  z-index: 1000;
   @media (max-width: 768px) {
     z-index: 3;
   }
@@ -268,7 +269,7 @@ const SideBar = styled(Layout.Sider)`
   z-index: 22;
 
   &.ant-layout-sider-collapsed .logoWrapper {
-    padding: 5px 20px;
+    padding: 22.5px 20px;
   }
   .footerBottom {
     position: fixed;
@@ -326,14 +327,14 @@ const SideBar = styled(Layout.Sider)`
 `;
 
 const LogoWrapper = styled(Row)`
-  padding: 18px 20px;
+  padding: 35px 20px;
   text-align: center;
   display: flex;
   align-items: center;
 `;
 
 const LogoDash = styled.div`
-  width: 90%;
+  width: 100%;
   height: 0;
   opacity: 0.61;
   border-bottom: solid 1px ${props => props.theme.sideMenu.logoBorderBottomColor};
@@ -379,7 +380,7 @@ const Menu = styled(AntMenu)`
     border-right: 0px;
   }
   &.ant-menu-inline {
-    height: calc(100vh - 300px);
+    height: calc(100vh - 150px);
     overflow: auto;
   }
   &.ant-menu-inline .ant-menu-item {
@@ -399,7 +400,7 @@ const Menu = styled(AntMenu)`
   }
   &.ant-menu-inline-collapsed {
     width: 100px;
-    height: calc(100vh - 300px);
+    height: calc(100vh - 150px);
     overflow: auto;
   }
   &.ant-menu-inline-collapsed > .ant-menu-item {
@@ -587,9 +588,9 @@ const Logo = styled(IconHeader)`
 `;
 
 const LogoCompact = styled(IconLogoCompact)`
-  width: 25px;
-  height: 25px;
-  margin: 10px;
+  width: 22px;
+  height: 22px;
+  margin: 14px 0 9px 19px;
   fill: #0eb08d;
   &:hover {
     fill: #0eb08d;

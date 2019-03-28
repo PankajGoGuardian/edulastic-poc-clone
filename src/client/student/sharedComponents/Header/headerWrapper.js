@@ -40,7 +40,7 @@ const FixedHeader = styled(Affix)`
   right: 0;
   position: fixed;
   z-index: 2;
-  left: ${props => (props.iscollapsed ? "100px" : "240px")};
+  left: 100px;
   @media (max-width: 768px) {
     left: 0;
     padding-left: 30px;

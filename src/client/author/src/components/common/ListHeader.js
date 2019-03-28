@@ -16,8 +16,8 @@ const toggleMenu = toggle => {
 
 const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar }) => (
   <Container>
-    <FlexContainer>
-      <MenuIcon onClick={() => toggleMenu(toggleSideBar)} />
+    <FlexContainer style={{ pointerEvents: "none" }}>
+      <MenuIcon className="hamburger" onClick={() => toggleMenu(toggleSideBar)} />
       <Title>{title}</Title>
     </FlexContainer>
 
@@ -111,6 +111,7 @@ const MenuIcon = styled(IconMenuOpenClose)`
   fill: ${white};
   width: 18px;
   margin-right: 25px !important;
+  pointer-events: all;
 
   @media (max-width: ${tabletWidth}) {
     display: block;

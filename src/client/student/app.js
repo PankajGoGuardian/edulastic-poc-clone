@@ -59,13 +59,13 @@ StudentApp.propTypes = {
 };
 
 const MainContainer = styled.div`
-  padding-left: ${props => (props.isCollapsed ? "100px" : "240px")};
+  padding-left: 100px;
   width: 100%;
   .fixed-header {
     position: fixed;
     top: 0;
     right: 0;
-    left: ${props => (props.isCollapsed ? "100px" : "240px")};
+    left: 100px;
     z-index: 1;
   }
   @media (max-width: 768px) {

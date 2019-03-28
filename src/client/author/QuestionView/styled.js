@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { mobileWidth } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
-import { Card } from "antd";
+import { Card, Button } from "antd";
 
 export const PaginationInfo = styled.div`
   font-weight: bold;
@@ -28,13 +28,24 @@ export const StyledCard = styled(Card)`
   width: 95%;
   display: flex;
   justify-content: spance-between;
-  height: 270px;
+  height: ${props => (props.isCollapsed ? "5px" : "270px")}
   border-radius: 10px;
   box-shadow: 3px 2px 7px lightgray;
+  margin-bottom: 40px;
+
   ${"ant-card-body"} {
     width: 500px;
     background: red;
   }
+`;
+
+export const StyledTitle = styled.p`
+  font-size: 16px;
+  line-height: 16px;
+  color: rgba(0, 0, 0, 0.65);
+  font-weight: 600;
+  padding-left: 62px;
+  margin-bottom: 20px;
 `;
 
 export const ResponseCard = styled(Card)`

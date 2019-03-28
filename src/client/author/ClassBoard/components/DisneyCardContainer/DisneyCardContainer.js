@@ -7,10 +7,8 @@ import styled from "styled-components";
 import {
   StyledCardContiner,
   StyledDiv,
-  StyledPagination,
   DisneyCard,
   MainDiv,
-  MainDivLeft,
   PerfomanceSection,
   StyledCard,
   Space,
@@ -42,8 +40,6 @@ export default class DisneyCardContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      minValue: 0,
-      maxValue: 4,
       testActivity: this.props.testActivity,
       assignmentId: this.props.assignmentId,
       classId: this.props.classId
@@ -57,20 +53,6 @@ export default class DisneyCardContainer extends Component {
       classId: props.classId
     };
   }
-
-  handleChange = value => {
-    if (value <= 1) {
-      this.setState({
-        minValue: 0,
-        maxValue: 4
-      });
-    } else {
-      this.setState({
-        minValue: this.state.maxValue,
-        maxValue: value * 4
-      });
-    }
-  };
 
   changeCardCheck = (isCheck, studentId) => {
     this.props.changeCardCheck(isCheck, studentId);
@@ -111,14 +93,17 @@ export default class DisneyCardContainer extends Component {
   render() {
     let styledCard = [];
 
-    let testActivity = this.state.testActivity.slice(this.state.minValue, this.state.maxValue);
+    let { testActivity } = this.state;
 
     if (testActivity.length > 0) {
       //TODO: need to rewrite this when we have time
       testActivity.map(student => {
         //TODO: use constants
         let status = "NOT STARTED";
+        let isDisabled = false;
+
         if (student.status === "notStarted") {
+          isDisabled = true;
         } else if (student.status === "inProgress") {
           status = "IN PROGRESS";
         } else if (student.status === "submitted") {
@@ -126,6 +111,8 @@ export default class DisneyCardContainer extends Component {
         } else if (student.status === "redirected") {
           status = "REDIRECTED";
         }
+
+        if (!student.present) isDisabled = true;
 
         let correctAnswers = 0;
         const questions = student.questionActivities.length;
@@ -207,9 +194,15 @@ export default class DisneyCardContainer extends Component {
             </PaginationInfoT>
             <StyledDivLine />
             <PagInfo>
-              <Link to={`/author/classresponses/${student.testActivityId}`}>
-                VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
-              </Link>
+              {isDisabled ? (
+                <Link to={`/author/classresponses/${student.testActivityId}`} disabled>
+                  VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
+                </Link>
+              ) : (
+                <Link to={`/author/classresponses/${student.testActivityId}`}>
+                  VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
+                </Link>
+              )}
             </PagInfo>
           </StyledCard>
         );
@@ -221,20 +214,9 @@ export default class DisneyCardContainer extends Component {
       <StyledCardContiner>
         {testActivity && testActivity.length > 0 && (
           <DisneyCard>
-            {testActivity && testActivity.length < 4 ? (
-              <MainDivLeft>{styledCard}</MainDivLeft>
-            ) : (
-              <MainDiv>{styledCard}</MainDiv>
-            )}
+            <MainDiv>{styledCard}</MainDiv>
           </DisneyCard>
         )}
-
-        <StyledPagination
-          defaultCurrent={1}
-          defaultPageSize={4}
-          onChange={this.handleChange}
-          total={this.state.testActivity && this.state.testActivity.length > 0 ? this.state.testActivity.length : 0}
-        />
       </StyledCardContiner>
     );
   }

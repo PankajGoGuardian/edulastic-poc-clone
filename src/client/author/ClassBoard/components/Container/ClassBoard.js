@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { get } from "lodash";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+
 // actions
 import {
   receiveTestActivitydAction,
@@ -33,6 +34,8 @@ import DisneyCardContainer from "../DisneyCardContainer/DisneyCardContainer";
 import Graph from "../ProgressGraph/ProgressGraph";
 import ClassSelect from "../../../Shared/Components/ClassSelect/ClassSelect";
 import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
+import CollapseButton from "../../../Shared/Components/CollpaseButton/CollapseButton";
+
 import HooksContainer from "../HooksContainer/HooksContainer";
 import RedirectPopup from "../RedirectPopUp";
 // icon images
@@ -49,11 +52,11 @@ import {
   ButtonSpace,
   AnchorLink,
   StyledAnc,
+  StyledCardContainer,
   StyledCard,
   StyledButton,
   StyledCheckbox,
   PaginationInfo,
-  CheckContainer,
   ButtonGroup,
   StyledFlexContainer,
   StudentButtonDiv,
@@ -87,7 +90,8 @@ class ClassBoard extends Component {
       selectedTab: "Student",
       selectAll: false,
       selectedQuestion: 0,
-      redirectPopup: false
+      redirectPopup: false,
+      isCollapsed: false
     };
   }
 
@@ -170,6 +174,23 @@ class ClassBoard extends Component {
     return totalQuestions;
   };
 
+  changeCardCheck = (isCheck, studentId) => {
+    let nCountTrue = 0;
+    this.props.testActivity.map(student => {
+      if (student.studentId === studentId) student.check = isCheck;
+      if (student.check) nCountTrue++;
+    });
+    this.setState({
+      selectAll: nCountTrue == this.props.testActivity.length > 0 ? true : false
+    });
+  };
+
+  onClickCollapse = collapsed => {
+    this.setState({
+      isCollapsed: collapsed
+    });
+  };
+
   render() {
     const {
       gradebook,
@@ -185,7 +206,7 @@ class ClassBoard extends Component {
       setSelected,
       allStudents
     } = this.props;
-    const { selectedTab, flag, selectedQuestion, selectAll } = this.state;
+    const { selectedTab, flag, selectedQuestion, selectAll, isCollapsed } = this.state;
 
     const { assignmentId, classId } = match.params;
     const testActivityId = this.getTestActivity(testActivity);
@@ -207,7 +228,8 @@ class ClassBoard extends Component {
         <StyledFlexContainer justifyContent="space-between">
           <PaginationInfo>
             &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> /{" "}
-            <Anchor>{additionalData.testName}</Anchor> / <Anchor>{additionalData.className}</Anchor>
+            <AnchorLink to="/author/assignments">{additionalData.testName}</AnchorLink> /{" "}
+            <Anchor>{additionalData.className}</Anchor>
           </PaginationInfo>
           <StudentButtonDiv>
             <StudentButton
@@ -234,15 +256,17 @@ class ClassBoard extends Component {
         </StyledFlexContainer>
         {selectedTab === "Student" ? (
           <React.Fragment>
-            <StyledCard bordered={false}>
-              <Graph gradebook={gradebook} />
-            </StyledCard>
+            <StyledCardContainer>
+              <StyledCard bordered={false} isCollapsed={isCollapsed}>
+                <Graph gradebook={gradebook} />
+              </StyledCard>
+              <CollapseButton handleClickCollapse={this.onClickCollapse} collapsed={isCollapsed} />
+            </StyledCardContainer>
+
             <StyledFlexContainer justifyContent="space-between">
-              <CheckContainer>
-                <StyledCheckbox checked={this.state.selectAll} onChange={this.onSelectAllChange}>
-                  {selectAll ? "UNSELECT ALL" : "SELECT ALL"}
-                </StyledCheckbox>
-              </CheckContainer>
+              <StyledCheckbox checked={this.state.selectAll} onChange={this.onSelectAllChange}>
+                {selectAll ? "UNSELECT ALL" : "SELECT ALL"}
+              </StyledCheckbox>
               <StudentActions redirect={() => this.setState({ redirectPopup: true })} />
             </StyledFlexContainer>
             {flag ? (
@@ -251,6 +275,7 @@ class ClassBoard extends Component {
                 testActivity={testActivity}
                 assignmentId={assignmentId}
                 classId={classId}
+                changeCardCheck={this.changeCardCheck}
                 studentSelect={studentSelect}
                 studentUnselect={studentUnselect}
               />

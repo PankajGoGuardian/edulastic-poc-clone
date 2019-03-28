@@ -4,9 +4,10 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
-import { StyledCard } from "./styled";
+import { StyledCard, StyledTitle } from "./styled";
 import StudentResponse from "./component/studentResponses/studentResponse";
 import ClassQuestions from "../ClassResponses/components/Container/ClassQuestions";
+import CollapseButton from "../Shared/Components/CollpaseButton/CollapseButton";
 
 // actions
 import { receiveAnswersAction } from "../src/actions/classBoard";
@@ -14,10 +15,24 @@ import { receiveAnswersAction } from "../src/actions/classBoard";
 import { getAssignmentClassIdSelector, getClassQuestionSelector } from "../ClassBoard/ducks";
 
 class QuestionViewContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isCollapsed: false
+    };
+    this.onClickCollapse = this.onClickCollapse.bind(this);
+  }
+
   componentDidMount() {
     const { loadClassQuestionResponses, assignmentIdClassId: { assignmentId, classId } = {}, question } = this.props;
     loadClassQuestionResponses(assignmentId, classId, question.id);
   }
+
+  onClickCollapse = collapsed => {
+    this.setState({
+      isCollapsed: collapsed
+    });
+  };
 
   render() {
     const {
@@ -26,6 +41,8 @@ class QuestionViewContainer extends Component {
       question,
       classQuestion
     } = this.props;
+    const { isCollapsed } = this.state;
+
     const filterdItems = testItems.filter(item => item.data.questions.filter(q => q.id === question.id).length > 0);
     filterdItems.forEach(item => {
       item.data.questions = item.data.questions.filter(({ id }) => id === question.id);
@@ -50,8 +67,9 @@ class QuestionViewContainer extends Component {
     }
     return (
       <React.Fragment>
-        <StyledCard bordered={false} width="100%">
-          <ComposedChart barGap={1} barSize={36} data={data} width={1200} height={250}>
+        <StyledCard bordered={false} isCollapsed={isCollapsed}>
+          <StyledTitle>Performance by Questions</StyledTitle>
+          <ComposedChart barGap={1} barSize={36} data={data} width={1200} height={186}>
             <XAxis dataKey="name" axisLine={false} tickSize={0} />
             <YAxis
               dataKey="score"
@@ -81,6 +99,7 @@ class QuestionViewContainer extends Component {
             <Bar stackId="a" dataKey="score" fill="#1fe3a0" onClick={this.onClickChart} />
             <Bar stackId="a" dataKey="time" fill="#ee1b82" onClick={this.onClickChart} />
           </ComposedChart>
+          <CollapseButton handleClickCollapse={this.onClickCollapse} collapsed={isCollapsed} />
         </StyledCard>
         <StudentResponse testActivity={testActivity} />
         {testActivity &&

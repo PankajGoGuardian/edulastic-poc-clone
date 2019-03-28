@@ -1,9 +1,10 @@
-import { Popconfirm, Switch } from "antd";
+import { Popconfirm, Switch, Menu, Dropdown } from "antd";
 import styled from "styled-components";
 import { darkBlueSecondary, white } from "@edulastic/colors";
 import { Link } from "react-router-dom";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 import { themes } from "../../../../student/themes";
+import {} from "antd";
 
 const classBoardTheme = themes.default.classboard;
 
@@ -28,8 +29,18 @@ export const StyledTitle = styled.h1`
 
 export const StyledLink = styled(Link)``;
 
+export const StyledAssignName = styled.p`
+  font-size: 1.3em;
+  line-height: 1.3em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 300px;
+`;
+
 export const StyledParaFirst = styled.p`
   font-size: 0.9em;
+  line-height: 1em;
 `;
 
 export const SpaceD = styled.div`
@@ -65,19 +76,6 @@ export const StyledTabs = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
-
-export const StyledAnchorA = styled.a`
-  display: inline-block;
-  font-size: 0.8em;
-  font-weight: 600;
-  color: ${white};
-  padding: 17px 12px 15px 12px;
-  width: auto;
-  padding: 0px 15px;
-  text-align: center;
-  border-bottom: 4px solid lightgray;
-  background-color: #3393dc;
 `;
 
 export const StyledAnchor = styled.a`
@@ -118,6 +116,24 @@ export const Img = styled.img`
 `;
 
 export const StyledButton = styled.button`
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  border: 0;
+  font-size: 14px;
+  border-radius: 0;
+  outline: none;
+  background: transparent;
+  color: rgba(0, 0, 0, 0.65);
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+`;
+
+export const StyledDropdown = styled(Dropdown)``;
+
+export const StyledAnchorA = styled.a`
   width: 90px;
   height: 27px;
   background: transparent;
@@ -125,11 +141,8 @@ export const StyledButton = styled.button`
   border: 1px solid #45aaf3;
   font-size: 12px;
   border-radius: 3px;
-`;
-
-export const MenuWrapper = styled.div`
-  top: 46px;
-  position: absolute;
-  min-width: 90px;
-  right: 10px;
+  display: block;
+  line-height: 25px;
+  text-align: center;
+  text-decoration: none !important;
 `;

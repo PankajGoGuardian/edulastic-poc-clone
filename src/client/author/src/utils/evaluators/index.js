@@ -39,6 +39,8 @@ const evaluators = {
   matchList: sortList,
   sortList,
   line: charts,
+  bar: charts,
+  histogram: charts,
   hotspot,
   tokenhighlight,
   shading,

@@ -1,16 +1,11 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import CardCheckbox from "./CardCheckbox/CardCheckbox";
 import { Col, Row } from "antd";
-import styled from "styled-components";
+import CardCheckbox from "./CardCheckbox/CardCheckbox";
 
 import {
   StyledCardContiner,
-  StyledDiv,
-  StyledPagination,
-  DisneyCard,
-  MainDiv,
-  MainDivLeft,
+  StyledFlexDiv,
   PerfomanceSection,
   StyledCard,
   Space,
@@ -27,13 +22,11 @@ import {
   SquareColorDivYellow,
   StyledParaF,
   StyledParaFF,
-  ColorSpan,
   StyledName,
-  StyledParaS,
   StyledParaSS,
   StyledParaSSS,
   SpaceDiv,
-  StyledDivLine
+  RightAlignedCol
 } from "./styled";
 
 const roundFraction = n => Math.floor(n * 100) / 100;
@@ -109,16 +102,17 @@ export default class DisneyCardContainer extends Component {
   };
 
   render() {
-    let styledCard = [];
-
-    let testActivity = this.state.testActivity.slice(this.state.minValue, this.state.maxValue);
+    const { testActivity, minValue, maxValue } = this.state;
+    const styledCard = [];
+    // const filteredTestActivity = testActivity.slice(minValue, maxValue);
 
     if (testActivity.length > 0) {
-      //TODO: need to rewrite this when we have time
-      testActivity.map(student => {
-        //TODO: use constants
-        let status = "NOT STARTED";
+      testActivity.map((student, index) => {
+        // TODO: use constants
+        // eslint-disable-next-line no-unused-vars
+        let status = "";
         if (student.status === "notStarted") {
+          status = "NOT STARTED";
         } else if (student.status === "inProgress") {
           status = "IN PROGRESS";
         } else if (student.status === "submitted") {
@@ -133,22 +127,20 @@ export default class DisneyCardContainer extends Component {
           if (questionAct.correct) {
             correctAnswers++;
           }
+          return null;
         });
 
         // eslint-disable-next-line radix
         const stu_per = roundFraction((parseFloat(correctAnswers) / parseFloat(questions)) * 100);
 
         const studentData = (
-          <StyledCard bordered={false}>
+          <StyledCard bordered={false} key={index}>
             <PaginationInfoF>
               <CircularDiv>{this.getAvatarName(student.studentName)}</CircularDiv>
-              <Space />
-              <SpaceDiv />
               <StyledName>
                 <StyledParaF>{student.studentName ? student.studentName : "-"}</StyledParaF>
-                {student.present ? <StyledParaS>{status}</StyledParaS> : <StyledColorParaS>ABSENT</StyledColorParaS>}
+                {/* {student.present ? <StyledParaS>{status}</StyledParaS> : <StyledColorParaS>ABSENT</StyledColorParaS>} */}
               </StyledName>
-              <SpaceDiv />
               <RightAlignedCol>
                 <Row>
                   <Col>
@@ -170,7 +162,7 @@ export default class DisneyCardContainer extends Component {
                     {student.redirected && (
                       <i
                         title="Assessment is redirected to the student. The most recent response will be shown"
-                        class="fa fa-external-link"
+                        className="fa fa-external-link"
                         aria-hidden="true"
                       />
                     )}
@@ -181,66 +173,48 @@ export default class DisneyCardContainer extends Component {
             <PaginationInfoS>
               <StyledParaFF>Performance</StyledParaFF>
               <PerfomanceSection>
-                <StyledParaSS>
-                  <ColorSpan>{correctAnswers}</ColorSpan> / {questions}
-                </StyledParaSS>
-                <StyledParaSSS>{stu_per || stu_per == 0 ? stu_per + "%" : "-%"}</StyledParaSSS>
+                <StyledFlexDiv>
+                  <StyledParaSS>
+                    {correctAnswers} / {questions}
+                  </StyledParaSS>
+                  <StyledParaSSS>{stu_per || stu_per === 0 ? `${stu_per}%` : "-%"}</StyledParaSSS>
+                </StyledFlexDiv>
+                {student.testActivityId && (
+                  <PagInfo>
+                    <Link to={`/author/classresponses/${student.testActivityId}`}>
+                      VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
+                    </Link>
+                  </PagInfo>
+                )}
               </PerfomanceSection>
             </PaginationInfoS>
             <PaginationInfoT>
-              <StyledDiv>
-                <StyledParaFF>Question Responses</StyledParaFF>
-                {student.questionActivities.map(questionAct => {
-                  if (questionAct.correct) {
-                    return <SquareColorDivGreen />;
-                  } else if (questionAct.skipped) {
-                    return <SquareColorDivGray />;
-                  } else if (questionAct.partialCorrect) {
-                    return <SquareColorDivYellow />;
-                  } else if (questionAct.notStarted) {
-                    return <SquareColorDisabled />;
-                  } else if (!questionAct.correct) {
-                    return <SquareColorDivPink />;
-                  }
-                })}
-              </StyledDiv>
+              {student.questionActivities.map(questionAct => {
+                if (questionAct.correct) {
+                  return <SquareColorDivGreen />;
+                }
+                if (questionAct.skipped) {
+                  return <SquareColorDivGray />;
+                }
+                if (questionAct.partialCorrect) {
+                  return <SquareColorDivYellow />;
+                }
+                if (questionAct.notStarted) {
+                  return <SquareColorDisabled />;
+                }
+                if (!questionAct.correct) {
+                  return <SquareColorDivPink />;
+                }
+                return null;
+              })}
             </PaginationInfoT>
-            <StyledDivLine />
-            <PagInfo>
-              <Link to={`/author/classresponses/${student.testActivityId}`}>
-                VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
-              </Link>
-            </PagInfo>
           </StyledCard>
         );
         styledCard.push(studentData);
+        return null;
       });
     }
 
-    return (
-      <StyledCardContiner>
-        {testActivity && testActivity.length > 0 && (
-          <DisneyCard>
-            {testActivity && testActivity.length < 4 ? (
-              <MainDivLeft>{styledCard}</MainDivLeft>
-            ) : (
-              <MainDiv>{styledCard}</MainDiv>
-            )}
-          </DisneyCard>
-        )}
-
-        <StyledPagination
-          defaultCurrent={1}
-          defaultPageSize={4}
-          onChange={this.handleChange}
-          total={this.state.testActivity && this.state.testActivity.length > 0 ? this.state.testActivity.length : 0}
-        />
-      </StyledCardContiner>
-    );
+    return <StyledCardContiner>{styledCard}</StyledCardContiner>;
   }
 }
-
-const RightAlignedCol = styled(Col)`
-  align-self: flex-end;
-  flex: 1 1 auto;
-`;

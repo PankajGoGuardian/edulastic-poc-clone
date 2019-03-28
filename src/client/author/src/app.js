@@ -13,6 +13,7 @@ const Regrade = lazy(() => import("../Regrade"));
 const AssessmentCreate = lazy(() => import("../AssessmentCreate"));
 const AssessmentPage = lazy(() => import("../AssessmentPage"));
 const ClassBoard = lazy(() => import("../ClassBoard"));
+const SummaryBoard = lazy(() => import("../SummaryBoard"));
 const ClassResponses = lazy(() => import("../ClassResponses"));
 const ExpressGrader = lazy(() => import("../ExpressGrader"));
 const TestList = lazy(() => import("../TestList"));
@@ -48,6 +49,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               <Route exact path={`${match.url}/assessments/create`} component={AssessmentCreate} />
               <Route exact path={`${match.url}/assessments/:assessmentId`} component={AssessmentPage} />
               <Route exact path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />
+              <Route exact path={`${match.url}/summary/:assignmentId/:classId`} component={SummaryBoard} />
               <Route exact path={`${match.url}/classresponses/:testActivityId`} component={ClassResponses} />
               <Route exact path={`${match.url}/manageClass`} component={ManageClass} />
               <Route

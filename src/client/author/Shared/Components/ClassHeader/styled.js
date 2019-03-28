@@ -26,15 +26,19 @@ export const StyledTitle = styled.h1`
   padding: 0;
 `;
 
-export const StyledLink = styled(Link)``;
-
-export const StyledParaFirst = styled.p`
-  font-size: 0.9em;
+export const StyledLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
 `;
 
-export const SpaceD = styled.div`
-  display: inline-block;
-  width: 10px;
+export const StyledParaFirst = styled.p`
+  /* font-size: 0.9em; */
+`;
+
+export const LinkLabel = styled.div`
+  padding-left: 22px;
+  padding-right: 15px;
 `;
 
 export const StyledParaSecond = styled.p`
@@ -64,7 +68,7 @@ export const StyledTabs = styled.div`
   height: 62px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 `;
 
 export const StyledAnchorA = styled.a`
@@ -80,20 +84,20 @@ export const StyledAnchorA = styled.a`
   background-color: #3393dc;
 `;
 
-export const StyledAnchor = styled.a`
+export const StyledAnchor = styled.div`
   display: flex;
-  font-size: 0.8em;
+  font-size: 11px;
   font-weight: 600;
   align-items: center;
   justify-content: center;
-  color: #e5e5e5;
+  color: #ffffff;
   width: auto;
-  padding: 0px 15px;
+  padding: 0px 18px;
   text-align: center;
   height: 45px;
   margin: 0 10px;
-  border-radius: 20px;
-  background-color: ${props => (props.isActive ? "#f3f3f3" : "#0e93dc")};
+  border-radius: 4px;
+  background-color: ${props => (props.isActive ? "#5196F3" : "#277DF1")};
   -webkit-transition: background-color 0.3s;
   transition: background-color 0.3s;
 
@@ -102,13 +106,16 @@ export const StyledAnchor = styled.a`
   }
   :hover {
     color: ${props => (props.isActive ? "#0288d1" : "#e5e5e5")};
-    background-color: ${props => (props.isActive ? "#f3f3f3" : "#f3f3f3")};
+    background-color: ${props => (props.isActive ? "#277DF1" : "#5196F3")};
     a {
-      color: ${props => (props.isActive ? "#0288d1" : "#434b5d")};
+      color: ${props => (props.isActive ? "#BED8FA" : "#FFFFFF")};
+      svg {
+        fill: ${props => (props.isActive ? "#BED8FA" : "#FFFFFF")};
+      }
     }
   }
   a {
-    color: ${props => (props.isActive ? "#434b5d" : "#e5e5e5")};
+    color: ${props => (props.isActive ? "#FFFFFF" : "#BED8FA")};
   }
 `;
 
@@ -118,13 +125,20 @@ export const Img = styled.img`
 `;
 
 export const StyledButton = styled.button`
-  width: 90px;
-  height: 27px;
+  width: 31px;
+  height: 45px;
   background: transparent;
   color: #fff;
-  border: 1px solid #45aaf3;
   font-size: 12px;
-  border-radius: 3px;
+  border: 0px;
+  :hover {
+    svg {
+      fill: #bed8fa;
+    }
+  }
+  :focus {
+    outline: none;
+  }
 `;
 
 export const MenuWrapper = styled.div`

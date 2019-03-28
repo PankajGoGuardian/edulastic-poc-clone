@@ -50,7 +50,7 @@ const convertTableData = data => ({
 });
 
 const convertExpandTableData = (data, totalNumber) => ({
-  name: "",
+  name: data.testName,
   key: data.classId,
   assignmentId: data._id,
   class: data.className,

@@ -1,30 +1,36 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { Dropdown, message, Menu } from "antd";
+import { message, Menu } from "antd";
 import moment from "moment";
 import { withNamespaces } from "@edulastic/localization";
-import Assigned from "../../Assets/assigned.svg";
-import classBoard from "../../Assets/presentation.svg";
+import {
+  IconSummaryBoard,
+  IconDeskTopMonitor,
+  IconBookMarkButton,
+  IconNotes,
+  IconMoreVertical
+} from "@edulastic/icons";
 
 import {
   Container,
   StyledTitle,
   StyledLink,
   StyledParaFirst,
-  SpaceD,
+  LinkLabel,
   StyledParaSecond,
   StyledPopconfirm,
   StyledDiv,
   StyledTabs,
   StyledAnchor,
   StyledButton,
-  Img,
   MenuWrapper
 } from "./styled";
 
 import { releaseScoreAction } from "../../../src/actions/classBoard";
 import { showScoreSelector } from "../../../ClassBoard/ducks";
+
 class ClassHeader extends Component {
   constructor(props) {
     super(props);
@@ -54,8 +60,9 @@ class ClassHeader extends Component {
       this.setState({ visible });
       return;
     }
+    const { condition } = this.state;
     // Determining condition before show the popconfirm.
-    if (this.state.condition) {
+    if (condition) {
       this.confirm(); // next step
     } else {
       this.setState({ visible }); // show the popconfirm
@@ -75,8 +82,10 @@ class ClassHeader extends Component {
 
   render() {
     const { t, active, assignmentId, classId, testActivityId, additionalData = {}, showScore } = this.props;
-    const endDate = additionalData.endDate;
-    const dueDate = isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate));
+    const { showDropdown, visible } = this.state;
+    const { endDate } = additionalData;
+    const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
+
     return (
       <Container>
         <StyledTitle>
@@ -87,55 +96,48 @@ class ClassHeader extends Component {
         </StyledTitle>
         <StyledTabs>
           <StyledAnchor isActive={active === "summary"}>
-            <StyledLink isActive={active === "summary"} to={`/author/summary/${assignmentId}/${classId}`}>
-              <Img src={classBoard} />
-              <SpaceD />
-              SUMMARY
+            <StyledLink to={`/author/summary/${assignmentId}/${classId}`}>
+              <IconSummaryBoard color={active === "summary" ? "#FFFFFF" : "#bed8fa"} left={0} />
+              <LinkLabel>{t("common.summaryBoard")}</LinkLabel>
             </StyledLink>
           </StyledAnchor>
-
           <StyledAnchor isActive={active === "classboard"}>
-            <StyledLink isActive={active === "classboard"} to={`/author/classboard/${assignmentId}/${classId}`}>
-              <Img src={classBoard} />
-              <SpaceD />
-              {t("common.liveClassBoard")}
+            <StyledLink to={`/author/classboard/${assignmentId}/${classId}`}>
+              <IconDeskTopMonitor color={active === "classboard" ? "#FFFFFF" : "#bed8fa"} left={0} />
+              <LinkLabel>{t("common.liveClassBoard")}</LinkLabel>
             </StyledLink>
           </StyledAnchor>
           <StyledAnchor isActive={active === "expressgrader"}>
-            <StyledLink
-              isActive={active === "expressgrader"}
-              to={`/author/expressgrader/${assignmentId}/${classId}/${testActivityId}`}
-            >
-              <Img src={Assigned} />
-              <SpaceD />
-              {t("common.expressGrader")}
+            <StyledLink to={`/author/expressgrader/${assignmentId}/${classId}/${testActivityId}`}>
+              <IconBookMarkButton color={active === "expressgrader" ? "#FFFFFF" : "#bed8fa"} left={0} />
+              <LinkLabel>{t("common.expressGrader")}</LinkLabel>
             </StyledLink>
           </StyledAnchor>
-          <StyledAnchor>
-            <StyledLink to={`/author/standardsBasedReport/${this.props.assignmentId}/${this.props.classId}`}>
-              <Img src={Assigned} />
-              <SpaceD />
-              {t("common.standardBasedReports")}
+          <StyledAnchor isActive={active === "standard_report"}>
+            <StyledLink to={`/author/standardsBasedReport/${assignmentId}/${classId}`}>
+              <IconNotes color={active === "standard_report" ? "#FFFFFF" : "#bed8fa"} left={0} />
+              <LinkLabel>{t("common.standardBasedReports")}</LinkLabel>
             </StyledLink>
           </StyledAnchor>
         </StyledTabs>
         <StyledDiv>
           <StyledPopconfirm
-            // eslint-disable-next-line react/destructuring-assignment
-            visible={this.state.visible}
+            visible={visible}
             onVisibleChange={this.handleVisibleChange}
             onConfirm={this.confirm}
             onCancel={this.cancel}
             okText="Yes"
             cancelText="No"
           />
-          <StyledButton onClick={this.toggleDropdown}>... More</StyledButton>
-          {this.state.showDropdown && (
+          <StyledButton onClick={this.toggleDropdown}>
+            <IconMoreVertical color="#FFFFFF" />
+          </StyledButton>
+          {showDropdown && (
             <MenuWrapper>
               <Menu>
-                <Menu.Item key={"1"}>Mark as Done</Menu.Item>
+                <Menu.Item key="1">Mark as Done</Menu.Item>
                 <Menu.Item
-                  key={"2"}
+                  key="2"
                   onClick={this.handleReleaseScore}
                   style={{ textDecoration: showScore ? "line-through" : "none" }}
                 >
@@ -150,7 +152,21 @@ class ClassHeader extends Component {
   }
 }
 
-ClassHeader.propTypes = {};
+ClassHeader.propTypes = {
+  t: PropTypes.func.isRequired,
+  active: PropTypes.string.isRequired,
+  assignmentId: PropTypes.string.isRequired,
+  classId: PropTypes.string.isRequired,
+  testActivityId: PropTypes.string,
+  additionalData: PropTypes.object.isRequired,
+  setReleaseScore: PropTypes.func.isRequired,
+  showScore: PropTypes.bool
+};
+
+ClassHeader.defaultProps = {
+  testActivityId: "",
+  showScore: false
+};
 
 const enhance = compose(
   withNamespaces("classBoard"),

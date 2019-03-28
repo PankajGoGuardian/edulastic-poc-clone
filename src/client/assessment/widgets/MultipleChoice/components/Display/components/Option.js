@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { maxBy, isEmpty } from "lodash";
 
@@ -11,23 +11,7 @@ import { Label } from "../styled/Label";
 import { IconWrapper } from "../styled/IconWrapper";
 import { IconCheck } from "../styled/IconCheck";
 import { IconClose } from "../styled/IconClose";
-
-const getFontSize = size => {
-  switch (size) {
-    case "small":
-      return "10px";
-    case "normal":
-      return "13px";
-    case "large":
-      return "17px";
-    case "xlarge":
-      return "20px";
-    case "xxlarge":
-      return "24px";
-    default:
-      return "12px";
-  }
-};
+import { getFontSize } from "../../../../../utils/helpers";
 
 const Option = props => {
   const {
@@ -42,40 +26,47 @@ const Option = props => {
     checkAnswer,
     validation
   } = props;
-
+  const [className, setClassName] = useState("");
   const isSelected = userSelections.includes(item.value);
-  const isCorrect = correct[item.value];
+  const isCorrect = correct[userSelections.indexOf(item.value)];
+  const fontSize = getFontSize(uiStyle.fontsize);
 
-  let validAnswers = [];
+  useEffect(() => {
+    if (showAnswer) {
+      let validAnswers = [];
 
-  if (!isEmpty(validation)) {
-    validAnswers = [validation.valid_response, ...validation.alt_responses];
-  }
+      if (!isEmpty(validation)) {
+        validAnswers = [validation.valid_response, ...validation.alt_responses];
+      }
 
-  let className = "";
-
-  if (correct) {
-    if (isCorrect && isSelected) {
-      className = "right";
-    } else if (isCorrect === false && isSelected) {
-      className = "wrong";
-    }
-  }
-
-  if (showAnswer) {
-    const correctAnswer = maxBy(validAnswers, "score").value;
-    if (correctAnswer.includes(index)) {
-      className = "right";
-    } else if (isSelected) {
-      if (validAnswers.some(ans => ans.value.includes(index))) {
-        className = "right";
+      const correctAnswer = maxBy(validAnswers, "score").value;
+      if (correctAnswer.includes(item.value)) {
+        setClassName("right");
+      } else if (isSelected) {
+        if (validAnswers.some(ans => ans.value.includes(item.value))) {
+          setClassName("right");
+        } else {
+          setClassName("wrong");
+        }
+      }
+    } else if (checkAnswer) {
+      if (correct.length && checkAnswer) {
+        if (isCorrect && isSelected) {
+          setClassName("right");
+        } else if (isCorrect === false && isSelected) {
+          setClassName("wrong");
+        }
       } else {
-        className = "wrong";
+        setClassName("");
       }
     }
-  }
+  }, [correct, showAnswer]);
 
-  const fontSize = getFontSize(uiStyle.fontsize);
+  useEffect(() => {
+    if (checkAnswer) {
+      setClassName("");
+    }
+  }, [userSelections]);
 
   const getLabel = inx => {
     if (uiStyle.type === "block") {

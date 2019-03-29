@@ -23,12 +23,8 @@ class FeedbackRight extends Component {
     let score = 0;
     let maxScore = 1;
     if (activity) {
-      const {
-        feedback: { text: _feedback },
-        score: _score,
-        maxScore: _maxScore
-      } = activity;
-      feedback = _feedback;
+      const { score: _score, maxScore: _maxScore } = activity;
+      feedback = activity.feedback ? feedback.text : "";
       score = _score;
       maxScore = _maxScore;
     }

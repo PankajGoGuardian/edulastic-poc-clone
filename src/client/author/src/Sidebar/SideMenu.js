@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { tabletWidth } from "@edulastic/colors";
+import { get } from "lodash";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon } from "antd";
@@ -285,7 +286,7 @@ const enhance = compose(
   connect(
     ({ authorUi, user }) => ({
       isSidebarCollapsed: authorUi.isSidebarCollapsed,
-      firstName: user.user.firstName || ""
+      firstName: get(user, "user.firstName", "")
     }),
     { toggleSideBar: toggleSideBarAction, logout: logoutAction }
   )

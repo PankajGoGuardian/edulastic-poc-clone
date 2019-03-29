@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { mobileWidth } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
-import { Card } from "antd";
+import { Card, Button } from "antd";
 
 export const PaginationInfo = styled.div`
   font-weight: bold;
@@ -28,8 +28,18 @@ export const StyledCard = styled(Card)`
   width: 100%;
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px;
   .ant-card-body {
   }
+`;
+
+export const StyledTitle = styled.p`
+  font-size: 16px;
+  line-height: 16px;
+  color: rgba(0, 0, 0, 0.65);
+  font-weight: 600;
+  padding-left: 62px;
+  margin-bottom: 20px;
 `;
 
 export const ResponseCard = styled(Card)`

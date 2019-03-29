@@ -2,7 +2,8 @@ import PropTypes from "prop-types";
 import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { Spin } from "antd";
+import { get } from "lodash";
+import { Spin, Button } from "antd";
 import styled from "styled-components";
 import Modal from "react-responsive-modal";
 
@@ -13,7 +14,13 @@ import {
   getItemDetailRowsSelector,
   getItemDetailSelector
 } from "../../../../ItemDetail/ducks";
+import { getQuestionsSelector } from "../../../../sharedDucks/questions";
 
+const ModalStyles = {
+  minWidth: 750,
+  borderRadius: "5px",
+  padding: "30px"
+};
 class PreviewModal extends React.Component {
   constructor(props) {
     super(props);
@@ -27,7 +34,7 @@ class PreviewModal extends React.Component {
     const { flag } = this.state;
     const { getItemDetailById, data, isVisible } = nextProps;
     if (isVisible && !flag) {
-      getItemDetailById(data.id, { data: true, validation: true });
+      getItemDetailById(data.id, { data: true, validation: true, addItem: true });
       this.setState({ flag: true });
     }
   }
@@ -39,10 +46,18 @@ class PreviewModal extends React.Component {
   };
 
   render() {
-    const { isVisible, loading, item, rows } = this.props;
+    const { isVisible, loading, item, rows, questions, currentAuthorId, authors } = this.props;
+    const getAuthorsId = authors.map(item => item._id);
+    const authorHasPermission = getAuthorsId.includes(currentAuthorId);
     return (
-      <Modal styles={{ minWidth: 200 }} open={isVisible} onClose={this.closeModal} center>
-        <h2 style={{ fontWeight: "bold", fontSize: 20 }}>Preview</h2>
+      <Modal styles={{ modal: ModalStyles }} open={isVisible} onClose={this.closeModal} center>
+        <HeadingWrapper>
+          <Title>Preview</Title>
+          <ButtonsWrapper>
+            <Button>Duplicate</Button>
+            {authorHasPermission && <ButtonEdit>EDIT</ButtonEdit>}
+          </ButtonsWrapper>
+        </HeadingWrapper>
         {loading || item === null ? (
           <ProgressContainer>
             <Spin tip="" />
@@ -54,6 +69,7 @@ class PreviewModal extends React.Component {
             verticalDivider={item.verticalDivider}
             scrolling={item.scrolling}
             style={{ width: "100%" }}
+            questions={questions}
           />
         )}
       </Modal>
@@ -81,7 +97,10 @@ const enhance = compose(
     state => ({
       rows: getItemDetailRowsSelector(state),
       loading: getItemDetailLoadingSelector(state),
-      item: getItemDetailSelector(state)
+      item: getItemDetailSelector(state),
+      questions: getQuestionsSelector(state),
+      currentAuthorId: get(state, ["user", "user", "_id"]),
+      authors: get(state, ["tests", "entity", "authors"], [])
     }),
     {
       getItemDetailById: getItemDetailByIdAction
@@ -97,4 +116,25 @@ const ProgressContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const HeadingWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  justify-content: space-between;
+`;
+
+const Title = styled.div`
+  font-weight: bold;
+  font-size: 20px;
+`;
+
+const ButtonsWrapper = styled.div`
+  display: flex;
+  margin-left: auto;
+  justify-content: space-between;
+`;
+const ButtonEdit = styled(Button)`
+  margin-left: 20px;
 `;

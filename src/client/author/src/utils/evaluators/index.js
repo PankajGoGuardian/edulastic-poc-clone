@@ -41,6 +41,8 @@ const evaluators = {
   line: charts,
   bar: charts,
   histogram: charts,
+  dots: charts,
+  linePlot: charts,
   hotspot,
   tokenhighlight,
   shading,

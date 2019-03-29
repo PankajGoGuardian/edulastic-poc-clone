@@ -27,7 +27,7 @@ class PreviewModal extends React.Component {
     const { flag } = this.state;
     const { getItemDetailById, data, isVisible } = nextProps;
     if (isVisible && !flag) {
-      getItemDetailById(data.id, { data: true, validation: true });
+      getItemDetailById(data.id, { data: true, validation: true, addItem: true });
       this.setState({ flag: true });
     }
   }

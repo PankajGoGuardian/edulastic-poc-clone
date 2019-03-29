@@ -255,7 +255,8 @@ class ClassBoard extends Component {
         <StyledFlexContainer justifyContent="space-between">
           <PaginationInfo>
             &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> /{" "}
-            <Anchor>{additionalData.testName}</Anchor> / <Anchor>{additionalData.className}</Anchor>
+            <AnchorLink to="/author/assignments">{additionalData.testName}</AnchorLink> /{" "}
+            <Anchor>{additionalData.className}</Anchor>
           </PaginationInfo>
           <StudentButtonDiv>
             <BothButton active={selectedTab === "Both"} onClick={e => this.onTabChange(e, "Both")}>

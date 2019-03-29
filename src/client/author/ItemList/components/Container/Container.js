@@ -53,11 +53,11 @@ class Contaier extends Component {
     }
   }
 
-  componentWillReceiveProps = nextProps => {
+  componentDidUpdate = prevProps => {
     const { loading } = this.props;
 
-    if (nextProps.loading !== loading) {
-      this.setState({ loading: nextProps.loading });
+    if (prevProps.loading !== loading) {
+      this.setState({ loading });
     }
   };
 

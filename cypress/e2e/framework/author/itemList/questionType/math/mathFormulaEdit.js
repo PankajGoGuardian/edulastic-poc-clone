@@ -346,13 +346,14 @@ class MathFormulaEdit {
 
   getAnswerInputMathTextarea = () => cy.get(`[data-cy="answer-input-math-textarea"]`);
 
-  setMethod = (methods, setFunction = false, argument) => {
+  setMethod = (methods, setFunction = false, argument, setChecBox) => {
     this.getMethodSelectionDropdow()
       .click()
       .then(() => {
         this.getMethodSelectionDropdowList(methods).click();
       });
     if (setFunction instanceof Function) setFunction(argument);
+    if (setChecBox instanceof Function) setChecBox();
   };
 
   setValue = input => {
@@ -374,9 +375,9 @@ class MathFormulaEdit {
       .then(() => this.getAnswerRuleDropdownByValue(rule).click());
   };
 
-  setSeparator = () => {
+  setSeparator = checBoxName => () => {
     cy.get("input[type='checkbox']").uncheck({ force: true });
-    this.getAnswerAllowThousandsSeparator()
+    this[checBoxName]()
       .check({ force: true })
       .should("be.checked");
   };

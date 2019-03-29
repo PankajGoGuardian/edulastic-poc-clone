@@ -32,6 +32,14 @@ export const ActiveBar = styled.rect`
   fill: ${({ hoverState, color }) => getRightColor(hoverState, color)};
 `;
 
+export const StrokedRect = styled.rect`
+  z-index: 1;
+  stroke: ${({ hoverState }) => (hoverState ? "black" : "none")};
+  stroke-width: 2;
+  stroke-dasharray: 10 5;
+  fill: none;
+`;
+
 export const Text = styled.text`
   user-select: none;
 `;

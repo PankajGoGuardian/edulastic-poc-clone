@@ -1,6 +1,5 @@
 import { Icon, Row } from "antd";
 import {
-  blue,
   boxShadowDefault,
   desktopWidth,
   newBlue,
@@ -15,6 +14,7 @@ import Modal from "react-responsive-modal";
 
 export const Container = styled.div`
   width: 370px;
+  height: 100%;
 
   @media (max-width: ${desktopWidth}) {
     width: 100%;
@@ -22,10 +22,7 @@ export const Container = styled.div`
 `;
 
 export const FixedFilters = styled.div`
-  position: fixed;
-  width: 370px;
-  top: 124px;
-  bottom: 0;
+  padding-top: 28px;
   padding-right: 49px;
   padding-left: 46px;
 
@@ -116,10 +113,6 @@ export const MainFilter = styled.div`
   z-index: 0;
 
   .scrollbar-container {
-    overflow: auto;
-    height: calc(100vh - 183px);
-    margin-right: -15px;
-
     ::-webkit-scrollbar {
       display: none;
     }

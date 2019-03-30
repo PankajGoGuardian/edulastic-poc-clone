@@ -1,8 +1,9 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { compose } from "redux";
+import { tabletWidth } from "@edulastic/colors";
 import { get } from "lodash";
 import { Link, withRouter } from "react-router-dom";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon } from "antd";
 import styled from "styled-components";
@@ -79,7 +80,7 @@ class SideMenu extends Component {
       fill: #1890ff;
     }
     .ant-menu-item-selected > & {
-      fill: #4aac8b;
+      fill: rgb(67, 75, 93);
     }
   `;
 
@@ -103,6 +104,31 @@ class SideMenu extends Component {
     this.setState(prevState => ({ isVisible: !prevState.isVisible }));
   };
 
+  closeMenuByClickOutside = (e, menu) => {
+    const { target } = e;
+    const hamburger = document.querySelector(".hamburger");
+    const footerDropDown = document.querySelector(".footerDropdown");
+    const itsMenu = target === menu || menu.contains(target);
+    const itsHamburger = target === hamburger || hamburger.contains(target);
+    const itsFooterDropDown = target === footerDropDown || footerDropDown.contains(target);
+    const isFull = menu.classList.contains("full");
+
+    if (!itsMenu && !itsHamburger && !itsFooterDropDown && isFull) {
+      this.toggleMenu();
+    }
+  };
+
+  componentDidMount(): void {
+    const fixedSidebarClassName = this.fixedSidebar._reactInternalFiber.stateNode.state.generatedClassName;
+    const menu = document.querySelector(`.${fixedSidebarClassName}`);
+
+    document.addEventListener("click", e => this.closeMenuByClickOutside(e, menu));
+  }
+
+  componentWillMount(): void {
+    document.removeEventListener("click", () => this.closeMenuByClickOutside);
+  }
+
   render() {
     const { broken, isVisible } = this.state;
     const { windowWidth, history, isSidebarCollapsed, firstName, logout } = this.props;
@@ -110,9 +136,10 @@ class SideMenu extends Component {
 
     const isCollapsed = isPickQuestion || isSidebarCollapsed;
     const isMobile = windowWidth < 770;
+    const defaultSelectedMenu = menuItems.findIndex(menuItem => `/${menuItem.path}` === history.location.pathname);
 
     const footerDropdownMenu = (
-      <FooterDropDown isVisible={isVisible}>
+      <FooterDropDown isVisible={isVisible} isCollapsed={isCollapsed}>
         <Menu>
           <Menu.Item key="0" className="removeSelectedBorder">
             <a onClick={logout}>
@@ -127,84 +154,115 @@ class SideMenu extends Component {
         </Menu>
       </FooterDropDown>
     );
+
     return (
-      <FixedSidebar>
+      <FixedSidebar
+        className={`${!isCollapsed ? "full" : ""}`}
+        ref={e => {
+          this.fixedSidebar = e;
+        }}
+        onClick={isCollapsed && !isMobile ? this.toggleMenu : null}
+        isCollapsed={isCollapsed}
+      >
         <SideBar
           collapsed={isCollapsed}
           collapsible
           breakpoint="md"
           onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
-          width={isMobile ? windowWidth : "240"}
+          width="245"
           collapsedWidth={broken ? "0" : "100"}
           theme="light"
           className="sideBarwrapper"
         >
-          <LogoWrapper className="logoWrapper">
-            {broken ? (
-              <Col span={3}>
-                <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
+          {isMobile ? (
+            <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
+          ) : (
+            <LogoWrapper className="logoWrapper">
+              {broken ? (
+                <Col span={3}>
+                  <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
+                </Col>
+              ) : null}
+              <Col span={18} style={{ textAlign: "left" }}>
+                {isCollapsed ? <LogoCompact /> : <Logo />}
               </Col>
-            ) : null}
-            <Col span={18} style={{ textAlign: "left" }}>
-              {isCollapsed ? <LogoCompact /> : <Logo />}
-            </Col>
-            {broken ? null : (
-              <Col span={6} style={{ textAlign: "right", color: "#1fe3a1" }}>
-                {!isPickQuestion && (
-                  <AntIcon className="trigger" type={isCollapsed ? "right" : "left"} onClick={this.toggleMenu} />
-                )}
-              </Col>
-            )}
-          </LogoWrapper>
-          <LogoDash />
+              {broken ? null : (
+                <Col
+                  span={6}
+                  style={{
+                    textAlign: "right",
+                    color: "#1fe3a1",
+                    right: isCollapsed ? "-5px" : "-21px",
+                    top: isCollapsed ? "0" : "-5px"
+                  }}
+                >
+                  {!isPickQuestion && !isCollapsed && (
+                    <AntIcon className="trigger" type={isCollapsed ? "right" : "left"} onClick={this.toggleMenu} />
+                  )}
+                </Col>
+              )}
+            </LogoWrapper>
+          )}
+          {!isMobile && <LogoDash />}
           <MenuWrapper>
-            <Menu theme="light" defaultSelectedKeys={["1"]} mode="inline" onClick={item => this.handleMenu(item)}>
+            <Menu
+              theme="light"
+              defaultSelectedKeys={[defaultSelectedMenu.toString()]}
+              mode="inline"
+              onClick={item => this.handleMenu(item)}
+            >
               {menuItems.map((menu, index) => {
                 const MenuIcon = this.renderIcon(menu.icon, isCollapsed);
                 return (
-                  <MenuItem key={index.toString()}>
+                  <MenuItem key={index.toString()} onClick={this.toggleMenu}>
                     <MenuIcon />
-                    {!isCollapsed && <span>{menu.label}</span>}
+                    {!isCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
                   </MenuItem>
                 );
               })}
             </Menu>
             <MenuFooter className="footerBottom">
-              {!isCollapsed && (
-                <QuestionButton className="questionBtn">
+              <QuestionButton className={`questionBtn ${isCollapsed ? "active" : ""}`}>
+                <IconContainer className={isCollapsed ? "active" : ""}>
                   <HelpIcon />
-                  {isCollapsed ? null : <span>Help Center</span>}
-                </QuestionButton>
-              )}
-              {!isCollapsed && (
-                <UserInfoButton isVisible={isVisible} isCollapsed={isCollapsed} className="userinfoBtn">
-                  <Dropdown
-                    onClick={this.toggleDropdown}
-                    overlayStyle={{ position: "fixed", minWidth: "198px" }}
-                    className="footerDropdown"
-                    overlay={footerDropdownMenu}
-                    trigger={["click"]}
-                    placement="topCenter"
-                    isVisible={isVisible}
-                    onVisibleChange={this.handleVisibleChange}
-                  >
-                    <div>
-                      <img src={Profile} alt="Profile" />
-                      <div style={{ paddingLeft: 11 }}>
-                        {!isCollapsed && <UserName>{firstName || "Zack Oliver"}</UserName>}
-                        {!isCollapsed && <UserType>Teacher</UserType>}
-                      </div>
-                      {!isCollapsed && (
-                        <IconDropdown
-                          style={{ fontSize: 20 }}
-                          className="drop-caret"
-                          type={isVisible ? "caret-up" : "caret-down"}
-                        />
-                      )}
+                </IconContainer>
+                {isCollapsed || isMobile ? null : <span>Help Center</span>}
+              </QuestionButton>
+              <UserInfoButton
+                isVisible={isVisible}
+                isCollapsed={isCollapsed}
+                className={`userinfoBtn ${isCollapsed ? "active" : ""}`}
+              >
+                <Dropdown
+                  onClick={this.toggleDropdown}
+                  overlayStyle={{
+                    position: "fixed",
+                    minWidth: isCollapsed ? "60px" : "198px",
+                    maxWidth: isCollapsed ? "60px" : "0px"
+                  }}
+                  className="footerDropdown"
+                  overlay={footerDropdownMenu}
+                  trigger={["click"]}
+                  placement="topCenter"
+                  isVisible={isVisible}
+                  onVisibleChange={this.handleVisibleChange}
+                >
+                  <div>
+                    <img src={Profile} alt="Profile" />
+                    <div style={{ paddingLeft: 11 }}>
+                      {!isCollapsed && !isMobile && <UserName>{firstName || "Zack Oliver"}</UserName>}
+                      {!isCollapsed && !isMobile && <UserType>Teacher</UserType>}
                     </div>
-                  </Dropdown>
-                </UserInfoButton>
-              )}
+                    {!isCollapsed && !isMobile && (
+                      <IconDropdown
+                        style={{ fontSize: 20 }}
+                        className="drop-caret"
+                        type={isVisible ? "caret-up" : "caret-down"}
+                      />
+                    )}
+                  </div>
+                </Dropdown>
+              </UserInfoButton>
             </MenuFooter>
           </MenuWrapper>
         </SideBar>
@@ -241,25 +299,37 @@ const FixedSidebar = styled.div`
   left: 0px;
   top: 0px;
   bottom: 0px;
-  @media (max-width: 768px) {
-    z-index: 9999;
+  z-index: 1000;
+  cursor: ${props => (props.isCollapsed ? "pointer" : "initial")};
+
+  > * {
+    pointer-events: ${props => (props.isCollapsed ? "none" : "all")};
+  }
+  @media (max-width: ${tabletWidth}) {
+    z-index: 1000;
+    max-width: 245px;
   }
 `;
 const SideBar = styled(Layout.Sider)`
   height: 100vh;
-  width: 240px;
-  max-width: 240px;
-  min-width: 240px;
+  width: 245px;
+  max-width: 245px;
+  min-width: 245px;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
   background-color: #fbfafc;
   z-index: 22;
+
   &.ant-layout-sider-collapsed .logoWrapper {
-    padding: 5px 20px;
+    padding: 22.5px 20px;
   }
   .footerBottom {
     position: fixed;
     bottom: 10px;
-    width: 240px;
+    width: 245px;
+
+    @media (max-width: ${tabletWidth}) {
+      display: flex;
+    }
   }
   &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px 8px 0px;
@@ -279,14 +349,6 @@ const SideBar = styled(Layout.Sider)`
     &:hover {
       background: #1890ff;
     }
-  }
-  &.ant-layout-sider-collapsed .userinfoBtn {
-    border-radius: 10px;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-    background-color: #1fe3a1;
-    justify-content: space-between;
-    padding: 10px;
-    margin: 0px;
   }
   &.ant-layout-sider-collapsed .userinfoBtn .ant-select-arrow {
     right: 15px;
@@ -312,23 +374,42 @@ const SideBar = styled(Layout.Sider)`
   .ant-select {
     width: 125px;
   }
-  @media (max-width: 768px) {
+  @media (max-width: ${tabletWidth}) {
     flex: 0 0 0px;
     max-width: 0px;
     min-width: 0px;
     width: 0px;
+    background-color: rgba(251, 250, 252, 0.94);
+
+    .mobileCloseIcon {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 10;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        width: 20px !important;
+        height: 20px !important;
+        fill: #434b5d;
+      }
+    }
   }
 `;
 
 const LogoWrapper = styled(Row)`
-  padding: 18px 20px;
+  padding: 39px 39px 31px;
   text-align: center;
   display: flex;
   align-items: center;
 `;
 
 const LogoDash = styled.div`
-  width: 90%;
+  width: 100%;
   height: 0;
   opacity: 0.61;
   border-bottom: solid 1px #d9d6d6;
@@ -340,16 +421,19 @@ const MenuWrapper = styled.div`
   justify-content: space-between;
   flex-direction: column;
   height: calc(100vh - 89px);
-  padding: 20px 0px 10px;
+  padding: 6px 0px 10px;
 `;
 
 const Menu = styled(AntMenu)`
   background: transparent;
   &:not(.ant-menu-horizontal) {
     .ant-menu-item-selected {
+      color: #fff;
       background-color: transparent;
-      color: #4aac8b;
-      border-left: 3px solid rgb(74, 172, 139);
+      
+      &:before {
+        opacity: 1;
+      }
       &.removeSelectedBorder {
         border: none;
       }
@@ -368,8 +452,12 @@ const Menu = styled(AntMenu)`
     border-right: 0px;
   }
   &.ant-menu-inline {
-    height: calc(100vh - 300px);
+    height: calc(100vh - 270px);
     overflow: auto;
+    
+    @media (max-width: ${tabletWidth}) {
+      height: calc(100vh - 105px);
+    }
   }
   &.ant-menu-inline .ant-menu-item {
     font-family: Open Sans;
@@ -383,25 +471,55 @@ const Menu = styled(AntMenu)`
     display: flex;
     align-items: center;
     margin-top: 16px;
-    padding: 0px 10px 0px 25px;
+    height: 64px;
+    padding: 10px 39px !important;
     max-width: 100%;
+    
   }
   &.ant-menu-inline-collapsed {
     width: 100px;
-    height: calc(100vh - 300px);
+    height: calc(100vh - 270px);
     overflow: auto;
+    
+    @media (max-width: ${tabletWidth}) {
+      height: calc(100vh - 105px);
+    }
   }
   &.ant-menu-inline-collapsed > .ant-menu-item {
     display: flex;
     text-align: center;
     justify-content: center;
-    margin-top: 10px;
-    padding: 0px 10px 0px 10px !important;
+    margin-top: 14px;
+    padding: 10px 18px !important;
+    height: 64px;
     width: 100%;
   }
   &.ant-menu-inline > .ant-menu-item {
-    margin-top: 10px;
+    margin-top: 14px;
   }
+  .ant-menu-item {
+    position: relative;
+    
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 18px;
+      right: 18px;
+      border-radius: 4px;
+      background: #0EB08D;
+      z-index: -1;
+      opacity: 0;
+      pointer-events: none;
+      transition: all .3s ease;
+    }
+    svg {
+      position: relative;
+      z-index: 5;
+    }
+  }
+}
 `;
 
 const MenuItem = styled(AntMenu.Item)`
@@ -421,12 +539,12 @@ const MenuItem = styled(AntMenu.Item)`
 
 const UserName = styled.div`
   font-size: 14px;
-  color: #057750;
+  color: #444;
 `;
 
 const UserType = styled.div`
   font-size: 12px;
-  color: #ffffff;
+  color: #444;
 `;
 
 const FooterDropDown = styled.div`
@@ -436,15 +554,19 @@ const FooterDropDown = styled.div`
   transition: 0.2s;
   -webkit-transition: 0.2s;
   ul {
-    background: #1fe3a1;
-    border-bottom: 1px solid #4fd08c;
+    background: #fff;
+    border-bottom: 1px solid #fff;
     border-radius: 15px 15px 0px 0px;
     overflow: hidden;
+    max-width: 100%;
+
     &.ant-menu-inline-collapsed {
       width: 84px;
       height: auto;
-      margin-top: 10px;
-      margin-left: 8px;
+      margin-top: ${props => (props.isCollapsed ? "0" : "10px")};
+      margin-left: ${props => (props.isCollapsed ? "0" : "8px")};
+      box-shadow: ${props => (props.isCollapsed ? "0 -3px 5px 0 rgba(0,0,0,0.07)" : "none")};
+
       li {
         &.ant-menu-item {
           margin: 0px;
@@ -459,15 +581,15 @@ const FooterDropDown = styled.div`
         height: 50px;
         &:hover,
         &:focus {
-          background: #4fd08c;
+          background: #fff;
         }
         a {
-          color: white;
+          color: #444;
           font-size: 14px;
           font-weight: 600;
           &:hover,
           &:focus {
-            color: white;
+            color: #444;
           }
           i {
             color: #425066;
@@ -476,6 +598,25 @@ const FooterDropDown = styled.div`
             top: 2px;
             font-size: 20px;
           }
+        }
+      }
+    }
+  }
+  @media (max-width: ${tabletWidth}) {
+    ul {
+      width: 60px;
+      margin: 0 auto;
+      box-shadow: 0 -4px 5px 0 rgba(0, 0, 0, 0.07) !important;
+
+      li {
+        padding: 0 !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        a {
+          height: 20px;
+          font-size: 0 !important;
         }
       }
     }
@@ -489,15 +630,15 @@ const QuestionButton = styled.div`
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   background-color: #ffffff;
   height: 60px;
-  padding-left: 23px;
-  margin: 10px 21px;
+  margin: 0 21px 23px;
   display: flex;
   align-items: center;
+  position: relative;
+  overflow: hidden;
 
   span {
-    padding-left: 25px;
+    font-weight: 600;
   }
-
   &:hover {
     background: #1890ff;
     svg {
@@ -507,18 +648,42 @@ const QuestionButton = styled.div`
       color: #fff;
     }
   }
+  @media (max-width: ${tabletWidth}) {
+    width: 60px;
+    margin: 0 auto 0 18px;
+
+    &.active {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
 `;
 
 const UserInfoButton = styled.div`
+  cursor: pointer;
+
+  &.active {
+    padding: 0;
+    background: transparent;
+    border-radius: 50%;
+    width: 60px;
+    margin: 0 auto;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+
+    img {
+      box-shadow: none;
+    }
+  }
+
   .footerDropdown {
     width: auto;
     height: 60px;
     border-radius: ${props => (props.isVisible ? "0px 0px 30px 30px" : "65px")};
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-    background-color: #1fe3a1;
+    background-color: #fff;
     display: flex;
     align-items: center;
-    padding: ${props => (props.isCollapsed ? 0 : "0px 25px 0px 55px")};
+    padding: ${props => (props.isCollapsed ? 0 : "0px 25px 0px 60px")};
     margin: ${props => (props.isCollapsed ? 0 : "0 21px")};
     position: relative;
     font-weight: 600;
@@ -531,29 +696,73 @@ const UserInfoButton = styled.div`
     }
   }
   img {
-    width: 44px;
+    width: 60px;
+    height: 60px;
     position: absolute;
-    left: 10px;
+    left: 0;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   }
   .ant-select-selection {
     background: transparent;
     border: 0px;
     color: #ffffff;
   }
+
+  @media (max-width: ${tabletWidth}) {
+    width: 60px;
+    padding: 0;
+    margin: 0 18px 0 auto;
+    background: ${props => (props.isVisible ? "#fff" : "transparent")};
+    border-radius: ${props => (props.isVisible ? "0 0 15px 15px" : "50%")};
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+
+    &.active {
+      opacity: 0;
+      pointer-events: none;
+      background: transparent;
+    }
+    .footerDropdown {
+      padding: 0;
+      border-radius: 50%;
+      width: 60px;
+      margin: 0;
+    }
+  }
 `;
 
 const Logo = styled(IconHeader)`
   width: 119px;
-  height: 20px;
+  height: 21px;
 `;
 
 const LogoCompact = styled(IconLogoCompact)`
-  width: 25px;
-  height: 25px;
-  margin: 10px;
+  width: 22px;
+  height: 22px;
+  margin: 14px 0 9px 19px;
   fill: #0eb08d;
   &:hover {
     fill: #0eb08d;
+  }
+`;
+
+const IconContainer = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  width: 60px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  border-radius: 50%;
+  margin-right: 11px;
+
+  &.active {
+    margin-right: 0;
+    box-shadow: none;
+  }
+  @media (max-width: ${tabletWidth}) {
+    margin-right: 0;
+    box-shadow: none;
   }
 `;
 
@@ -564,11 +773,17 @@ const HelpIcon = styled(IconQuestion)`
 `;
 
 const IconDropdown = styled(AntIcon)`
-  color: #ffffff;
+  color: #444;
   position: absolute;
   top: -10px;
 `;
 const LogoutIcon = styled(IconDropdown)`
   transform: rotate(180deg);
   -webkit-transform: rotate(180deg);
+`;
+
+const LabelMenuItem = styled.span`
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;

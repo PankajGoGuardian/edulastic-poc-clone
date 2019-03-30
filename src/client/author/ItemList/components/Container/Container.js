@@ -5,7 +5,8 @@ import { Pagination, Spin } from "antd";
 import { Paper, withWindowSizes } from "@edulastic/common";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { Container, Element, ListItems } from "./styled";
+import PerfectScrollbar from "react-perfect-scrollbar";
+import { Container, Element, ListItems, SpinContainer } from "./styled";
 import Item from "../Item/Item";
 import ItemFilter from "../ItemFilter/ItemFilter";
 import ListHeader from "../../../src/components/common/ListHeader";
@@ -40,7 +41,8 @@ export const getClearSearchState = () => ({
 // container the main entry point to the component
 class Contaier extends Component {
   state = {
-    search: getClearSearchState()
+    search: getClearSearchState(),
+    loading: true
   };
 
   componentDidMount() {
@@ -50,6 +52,14 @@ class Contaier extends Component {
       getCurriculums();
     }
   }
+
+  componentDidUpdate = prevProps => {
+    const { loading } = this.props;
+
+    if (prevProps.loading !== loading) {
+      this.setState({ loading });
+    }
+  };
 
   handleSearch = () => {
     const { search } = this.state;
@@ -115,7 +125,13 @@ class Contaier extends Component {
   handlePaginationChange = page => {
     const { search } = this.state;
     const { receiveItems, limit } = this.props;
-    receiveItems(search, page, limit);
+    const _this = this;
+    this.setState({ loading: true });
+
+    setTimeout(() => {
+      receiveItems(search, page, limit);
+      _this.itemsScrollBar._container.scrollTop = 0;
+    }, 350);
   };
 
   renderPagination = () => {
@@ -133,11 +149,8 @@ class Contaier extends Component {
   };
 
   renderItems = () => {
-    const { loading, items, itemTypes, history, windowWidth } = this.props;
+    const { items, itemTypes, history, windowWidth } = this.props;
 
-    if (loading) {
-      return <Spin size="large" />;
-    }
     return items.map(item => (
       <Item
         key={`Item_${item._id}`}
@@ -151,6 +164,8 @@ class Contaier extends Component {
 
   render() {
     const { windowWidth, creating, t, curriculums, getCurriculumStandards, curriculumStandards } = this.props;
+
+    const { loading } = this.state;
 
     const { search } = this.state;
 
@@ -176,10 +191,20 @@ class Contaier extends Component {
           />
           <ListItems>
             <Element>
-              <Paper borderRadius="0px" padding={windowWidth > 768 ? "8px 76px 34px 31px" : "0px"}>
-                {this.renderItems()}
+              <Paper borderRadius="0px" padding="0px">
+                <SpinContainer loading={loading}>
+                  <Spin size="large" />
+                </SpinContainer>
+                <PerfectScrollbar
+                  ref={e => {
+                    this.itemsScrollBar = e;
+                  }}
+                  style={{ padding: windowWidth > 768 ? "8px 76px 34px 31px" : "0px" }}
+                >
+                  {this.renderItems()}
+                  {this.renderPagination()}
+                </PerfectScrollbar>
               </Paper>
-              {this.renderPagination()}
             </Element>
           </ListItems>
         </Container>

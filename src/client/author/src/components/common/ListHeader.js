@@ -16,8 +16,8 @@ const toggleMenu = toggle => {
 
 const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar }) => (
   <Container>
-    <FlexContainer>
-      <MenuIcon onClick={() => toggleMenu(toggleSideBar)} />
+    <FlexContainer style={{ pointerEvents: "none" }}>
+      <MenuIcon className="hamburger" onClick={() => toggleMenu(toggleSideBar)} />
       <Title>{title}</Title>
     </FlexContainer>
 
@@ -26,18 +26,23 @@ const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar }) => (
       color="secondary"
       variant="create"
       shadow="none"
-      icon={<IconPlusStyled color={newBlue} left={-40} width={20} height={20} hoverColor={newBlue} />}
+      icon={<IconPlusStyled color={newBlue} left={-50} width={20} height={20} hoverColor={newBlue} />}
     >
       {btnTitle && btnTitle.length ? btnTitle : t("component.itemlist.header.create")}
     </CreateButton>
   </Container>
 );
+
 ListHeader.propTypes = {
   onCreate: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   toggleSideBar: PropTypes.func.isRequired,
-  btnTitle: PropTypes.string.isRequired
+  btnTitle: PropTypes.string
+};
+
+ListHeader.defaultProps = {
+  btnTitle: ""
 };
 
 const enhance = compose(
@@ -106,6 +111,7 @@ const MenuIcon = styled(IconMenuOpenClose)`
   fill: ${white};
   width: 18px;
   margin-right: 25px !important;
+  pointer-events: all;
 
   @media (max-width: ${tabletWidth}) {
     display: block;

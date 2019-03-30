@@ -1,7 +1,7 @@
 import { TOGGLE_MENU, RESPONSIVE_TOGGLE_MENU } from "../constants/actions";
 
 const initialState = {
-  isSidebarCollapsed: window.innerWidth < 770 ? true : false,
+  isSidebarCollapsed: true,
   isResponsive: false
 };
 const reducer = (state = initialState, { type }) => {

@@ -444,10 +444,10 @@ template {
 }
 
 .imagedragdrop_template_box {
-  background: white;
-  padding: 18px 33px !important;
-  border-radius: 10px;
-  border: solid 1px #dfdfdf;
+  background: transparent;
+  padding: 0 !important;
+  border-radius: 0;
+  border: 0;
   height: 100%;
   max-height: calc(100vh - 300px);
   overflow-y: auto;
@@ -459,9 +459,8 @@ template {
 }
 
 .imagedropdown_template_box {
-  background: #e6e6e63a;
-  padding: 18px 33px !important;
-  border: solid 1px #e6e6e63a;
+  background: transparent;
+  padding: 0 !important;
   height: 100%;
   max-height: calc(100vh - 300px);
   overflow-y: auto;
@@ -509,8 +508,8 @@ input[type="checkbox"] {
 }
 
 .template_box {
-  background: white;
-  padding: 18px 33px !important;
+  background: transparent;
+  padding: 0 !important;
   border-radius: 10px;
   border: none;
   height: 100%;
@@ -876,6 +875,8 @@ input[type="checkbox"] {
 .template_box .ant-select {
   display: inline-block;
   top: 10px;
+  margin: 0 20px;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
 }
 
 .imagelabeldragdrop-droppable.iseditablearialabel {
@@ -1008,4 +1009,25 @@ span.token.active-word {
 .ant-select-dropdown-menu-item {
   display: flex;
   align-items: center;
+}
+
+.template_box .ant-select-selection {
+  border-color: #fff;
+}
+
+.template_box .ant-select-selection:hover {
+  border-color: #0e93dc;
+}
+
+.template_box .anticon svg {
+  fill: #0e93dc;
+}
+
+.ant-input {
+  border-color: #fff;
+  border-radius: 4px;
+}
+
+.ant-tooltip {
+  display: none;
 }

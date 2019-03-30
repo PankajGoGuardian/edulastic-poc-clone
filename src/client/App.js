@@ -1,9 +1,11 @@
 import React, { Component, Suspense, lazy } from "react";
+import PropTypes from "prop-types";
 import { Switch, Route, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 import { compose } from "redux";
+import { Spin } from "antd";
 import { test } from "@edulastic/constants";
 import { TestAttemptReview } from "./student/TestAttemptReview";
 
@@ -27,9 +29,17 @@ const Dashboard = lazy(() => import(/* webpackChunkName: "student" */ "./student
 
 const Author = lazy(() => import(/* webpackChunkName: "author" */ "./author/src/app"));
 
-const Loading = () => <div> Loading ...</div>;
+const Loading = () => (
+  <div>
+    <Spin />
+  </div>
+);
 
 class App extends Component {
+  static propTypes = {
+    user: PropTypes.object.isRequired
+  };
+
   render() {
     const { user } = this.props;
     let defaultRoute = "/home/assignments";

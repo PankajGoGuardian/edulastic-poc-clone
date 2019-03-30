@@ -201,7 +201,7 @@ const CalculatorContainerWithResources = ({ ...props }) => (
       "https://www.desmos.com/api/v1.2/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6&ext.js",
       "https://cdn.geogebra.org/apps/deployggb.js"
     ]}
-    fallBack={<h2>Loading...</h2>}
+    fallBack={<span />}
   >
     <CalculatorContainer {...props} />
   </WithResources>

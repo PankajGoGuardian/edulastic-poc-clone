@@ -1,12 +1,4 @@
-import {
-  desktopWidth,
-  greenDark,
-  mobileWidth,
-  secondaryTextColor,
-  tabletWidth,
-  white,
-  newBlue
-} from "@edulastic/colors";
+import { desktopWidth, greenDark, mobileWidth, secondaryTextColor, white, newBlue } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -14,9 +6,11 @@ export const Container = styled.div`
   left: 0;
   right: 0;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
   display: flex;
   position: relative;
+  background: #f3f3f8;
+  height: calc(100vh - 96px);
 
   @media (max-width: ${desktopWidth}) {
     flex-direction: column;
@@ -24,6 +18,8 @@ export const Container = styled.div`
 
   @media (max-width: ${mobileWidth}) {
     padding: 0 0 40px 0;
+    height: initial;
+    overflow: auto;
   }
 `;
 
@@ -36,12 +32,6 @@ export const ListItems = styled.div`
 
   .ant-pagination {
     display: flex;
-    @media (max-width: ${tabletWidth}) {
-      justify-content: flex-end;
-      padding: 0 20px 20px !important;
-      margin: -10px 0 0 0;
-      width: 100%;
-    }
   }
 
   .ant-pagination-total-text {
@@ -66,9 +56,22 @@ export const ListItems = styled.div`
 
 export const Element = styled.div`
   margin: 0;
+  height: 100%;
 
+  > div {
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    @media (max-width: ${mobileWidth}) {
+      height: initial;
+      overflow-y: initial;
+      overflow-x: initial;
+    }
+  }
   .ant-pagination {
-    padding: 0 76px 40px;
+    padding: 30px 0 0 0;
     background: ${white};
     justify-content: flex-end;
 
@@ -107,5 +110,29 @@ export const Element = styled.div`
   }
   @media (max-width: ${mobileWidth}) {
     margin: 20px 0px;
+    height: initial;
+
+    .ant-pagination {
+      justify-content: flex-end;
+      padding: 20px 0 0 0;
+      margin: 0;
+      width: 100%;
+    }
   }
+`;
+
+export const SpinContainer = styled.div`
+  transition: all 0.3s ease;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  z-index: 10;
+  pointer-events: ${props => (props.loading ? "all" : "none")};
+  opacity: ${props => (props.loading ? "1" : "0")};
 `;

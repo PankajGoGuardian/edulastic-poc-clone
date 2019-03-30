@@ -1,8 +1,8 @@
+import PropTypes from "prop-types";
 import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { get } from "lodash";
-import PropTypes from "prop-types";
 import { Spin, Button } from "antd";
 import styled from "styled-components";
 import Modal from "react-responsive-modal";
@@ -60,7 +60,7 @@ class PreviewModal extends React.Component {
         </HeadingWrapper>
         {loading || item === null ? (
           <ProgressContainer>
-            <Spin tip="Loading..." />
+            <Spin tip="" />
           </ProgressContainer>
         ) : (
           <TestItemPreview

@@ -32,65 +32,13 @@ import {
   CountGreen
 } from "./styled";
 
-const details = [
-  {
-    name: <UserIcon />,
-    text: "Kevin Hart"
-  },
-  {
-    name: <IdIcon />,
-    text: "123456"
-  },
-  {
-    name: <ShareIcon />,
-    text: "9578 (1)"
-  },
-  {
-    name: <HeartIcon />,
-    text: "9"
-  }
-];
-
-const standards = [
-  {
-    name: `7.G.1`
-  },
-  {
-    name: `7.G.A.1`
-  },
-  {
-    name: `7.G.1`
-  },
-  {
-    name: `7.G.A.1`
-  },
-  {
-    name: `7.G.1`
-  },
-  {
-    name: `7.G.A.1`
-  },
-  {
-    name: `7.G.1`
-  },
-  {
-    name: `7.G.A.1`
-  },
-  {
-    name: `7.G.1`
-  },
-  {
-    name: `7.G.A.1`
-  }
-];
 // render single item
 class Item extends Component {
   static propTypes = {
     item: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     t: PropTypes.func.isRequired,
-    windowWidth: PropTypes.number.isRequired,
-    types: PropTypes.array.isRequired
+    windowWidth: PropTypes.number.isRequired
   };
 
   moveToItem = () => {
@@ -111,7 +59,7 @@ class Item extends Component {
   }
 
   renderTypes = () => {
-    const { types, item } = this.props;
+    const { item } = this.props;
     const itemTypes = [];
 
     if (item.data && item.data.questions) {
@@ -131,58 +79,99 @@ class Item extends Component {
       });
     }
 
-    return itemTypes.length
-      ? itemTypes.map(({ name, count }) => (
-          <React.Fragment key={`TypeName_${name}`}>
-            <Label>
-              <LabelText>{name}</LabelText>
-            </Label>
-            {count > 1 ? <Count>+{count}</Count> : null}
-          </React.Fragment>
-        ))
-      : types.map(type => (
-          <Label key={`TypeName_${type}`}>
-            <LabelText>{type}</LabelText>
-          </Label>
-        ));
+    return itemTypes.map(({ name }, index) =>
+      index + 1 <= 1 ? (
+        <Label key={`TypeName_${name}_${index}`}>
+          <LabelText>{name}</LabelText>
+        </Label>
+      ) : (
+        index + 1 === itemTypes.length && <Count key={`Count_TypeName__${item._id}`}>+{itemTypes.length - 1}</Count>
+      )
+    );
   };
 
-  renderDetails = () =>
-    details.map((detail, index) => (
+  renderDetails = () => {
+    const { item } = this.props;
+
+    const details = [
+      {
+        name: <UserIcon />,
+        text: item.authors && item.authors[0] ? item.authors[0].userName : "-"
+      },
+      {
+        name: <IdIcon />,
+        text: item._id,
+        type: "id"
+      },
+      {
+        name: <ShareIcon />,
+        text: "9578 (1)"
+      },
+      {
+        name: <HeartIcon />,
+        text: "9"
+      }
+    ];
+
+    return details.map((detail, index) => (
       <DetailCategory key={`DetailCategory_${index}`}>
         <CategoryName>{detail.name}</CategoryName>
         <CategoryContent>
-          <Text>{detail.text}</Text>
+          <Text title={detail.type === "id" ? detail.text : ""}>
+            {detail.type === "id" ? detail.text.substr(detail.text.length - 5) : detail.text}
+          </Text>
         </CategoryContent>
       </DetailCategory>
     ));
+  };
 
   renderStandards = () => {
     const outStandardsCount = 3;
     const { item } = this.props;
+    const domains = [];
+    const standards = [];
 
-    return standards.map((standard, index) =>
-      index + 1 <= outStandardsCount ? (
-        <LabelStandard key={`Standard_${standard.name}_${index}`}>
-          <LabelStandardText>{standard.name}</LabelStandardText>
-        </LabelStandard>
-      ) : (
-        index + 1 === standards.length && (
-          <CountGreen key={`Count_${item._id}`}>+{standards.length - outStandardsCount}</CountGreen>
-        )
-      )
-    );
+    if (item.data && item.data.questions) {
+      item.data.questions.filter(question =>
+        question.alignment
+          ? question.alignment.map(el => (el.domains && el.domains.length ? domains.push(...el.domains) : null))
+          : null
+      );
+
+      if (domains.length) {
+        domains.map(el => (el.standards && el.standards.length ? standards.push(...el.standards) : null));
+      }
+    }
+
+    return standards.length ? (
+      <StandardContent>
+        {standards.map((standard, index) =>
+          index + 1 <= outStandardsCount ? (
+            <LabelStandard key={`Standard_${standard.name}_${index}`}>
+              <LabelStandardText>{standard.name}</LabelStandardText>
+            </LabelStandard>
+          ) : (
+            index + 1 === standards.length && (
+              <CountGreen key={`Count_${item._id}`}>+{standards.length - outStandardsCount}</CountGreen>
+            )
+          )
+        )}
+      </StandardContent>
+    ) : null;
   };
 
   render() {
     const { item, t, windowWidth } = this.props;
 
-    const questionText = get(item, "data.questions[0].stimulus", undefined);
     return (
       <Container>
         <Question>
           <QuestionContent>
-            <MoveLink onClick={this.moveToItem}>{questionText || item._id}</MoveLink>
+            <MoveLink onClick={this.moveToItem}>
+              {item.data && item.data.questions && item.data.questions[0] && item.data.questions[0].stimulus
+                ? item.data.questions[0].stimulus
+                : item._id}
+            </MoveLink>
             <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: this.description }} />
           </QuestionContent>
           {windowWidth > MAX_TAB_WIDTH && (
@@ -194,7 +183,7 @@ class Item extends Component {
         </Question>
         <Detail>
           <TypeCategory>
-            <StandardContent>{this.renderStandards()}</StandardContent>
+            {this.renderStandards()}
             <CategoryContent>{this.renderTypes()}</CategoryContent>
           </TypeCategory>
           <Categories>{this.renderDetails()}</Categories>

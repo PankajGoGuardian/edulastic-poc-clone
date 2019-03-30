@@ -166,8 +166,6 @@ class Contaier extends Component {
   render() {
     const { windowWidth, creating, t, curriculums, getCurriculumStandards, curriculumStandards, loading } = this.props;
 
-    const { loading } = this.state;
-
     const { search } = this.state;
 
     return (

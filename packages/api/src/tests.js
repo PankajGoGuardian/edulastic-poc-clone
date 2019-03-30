@@ -38,7 +38,7 @@ const create = data =>
     .then(result => result.data.result);
 
 const update = ({ id, data: test }) => {
-  const data = formatData(test);
+  const { authors, ...data } = formatData(test);
   return api
     .callApi({
       url: `${prefix}/${id}`,

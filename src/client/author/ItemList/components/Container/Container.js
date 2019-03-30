@@ -41,7 +41,8 @@ export const getClearSearchState = () => ({
 // container the main entry point to the component
 class Contaier extends Component {
   state = {
-    search: getClearSearchState()
+    search: getClearSearchState(),
+    loading: true
   };
 
   componentDidMount() {
@@ -51,6 +52,14 @@ class Contaier extends Component {
       getCurriculums();
     }
   }
+
+  componentDidUpdate = prevProps => {
+    const { loading } = this.props;
+
+    if (prevProps.loading !== loading) {
+      this.setState({ loading });
+    }
+  };
 
   handleSearch = () => {
     const { search } = this.state;
@@ -156,6 +165,8 @@ class Contaier extends Component {
 
   render() {
     const { windowWidth, creating, t, curriculums, getCurriculumStandards, curriculumStandards, loading } = this.props;
+
+    const { loading } = this.state;
 
     const { search } = this.state;
 

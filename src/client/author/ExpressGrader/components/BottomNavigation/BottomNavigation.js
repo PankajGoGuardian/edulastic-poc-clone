@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-
-import { Icon } from "antd";
+import { Icon, Switch } from "antd";
 import {
   Link,
   CloseModal,
@@ -9,7 +8,8 @@ import {
   NavigationWrapper,
   StyledText,
   StyledTextInfo,
-  CloseModalText
+  CloseModalText,
+  EditResponse
 } from "./styled";
 
 const BottomNavigation = ({ prevStudent, nextStudent, prevQuestion, nextQuestion, hideModal }) => (
@@ -35,6 +35,10 @@ const BottomNavigation = ({ prevStudent, nextStudent, prevQuestion, nextQuestion
         <StyledText>NEXT QUESTION</StyledText>
         <Icon type="right" />
       </Link>
+      <EditResponse>
+        <StyledText>Edit Response</StyledText>
+        <Switch defaultChecked />
+      </EditResponse>
       <CloseModal onClick={hideModal}>
         <Icon type="close" width={5} height={5} />
         <CloseModalText>EXIT</CloseModalText>

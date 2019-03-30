@@ -99,14 +99,14 @@ class FeedbackRight extends Component {
             <TextPara> {maxScore}</TextPara>
           </ScoreInputWrapper>
         </StyledDivSec>
-        <LeaveDiv>{isError ? "Score is to large" : "Live a feedback:"}</LeaveDiv>
+        <LeaveDiv>{isError ? "Score is to large" : "Leave a feedback!"}</LeaveDiv>
         {!isError && (
           <Fragment>
             <FeedbackInput
               onChange={this.onChangeFeedback}
               onBlur={this.onFeedbackSubmit}
               value={feedback}
-              style={{ height: 240 }}
+              style={{ height: 240, flexGrow: 2 }}
             />
           </Fragment>
         )}
@@ -146,6 +146,11 @@ const StyledCardTwo = styled(Card)`
   margin: 0px 0px 0px 20px;
   min-width: 250px;
   min-height: 100%;
+  .ant-card-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
 `;
 
 const StyledDivSec = styled.div`

@@ -1,20 +1,20 @@
 import styled from "styled-components";
 import { Button } from "antd";
-import { greenDark } from "@edulastic/colors";
-import { white } from "@edulastic/colors";
 
 export const NavigationWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 3%;
-  marginbottom: 25px;
+  svg {
+    fill: #434b5d;
+  }
 `;
 
 export const LinksWrapper = styled.div`
   display: flex;
-  justifycontent: row;
-  alignitems: center;
+  justify-content: row;
+  align-items: center;
   cursor: pointer;
 `;
 
@@ -27,16 +27,33 @@ export const Link = styled.div`
 `;
 
 export const CloseModal = styled(Button)`
+  font-size: 11px;
+  width: 80px;
+  height: 32px;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #1774f0;
+  border: 1px #1774f0 solid;
+  text-transform: uppercase;
   display: flex;
+  justify-content: space-evenly;
   align-items: center;
-  background: ${greenDark};
-  color: ${white};
-  width: 100px;
-  margin-left: 5px;
+  svg {
+    fill: #ffffff;
+  }
+  &:hover {
+    color: #1774f0;
+    background-color: #ffffff;
+    svg {
+      fill: #1774f0;
+    }
+  }
 `;
 
 export const StyledText = styled.span`
   margin: 0 5px;
+  font-size: 12px;
+  font-weight: 600;
 `;
 
 export const CloseModalText = styled.span`
@@ -49,4 +66,10 @@ export const StyledTextInfo = styled.span`
   justify-content: row;
   align-items: center;
   font-weight: 500;
+`;
+
+export const EditResponse = styled.div`
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
 `;

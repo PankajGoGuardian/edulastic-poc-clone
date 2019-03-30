@@ -8,11 +8,12 @@ import { StackedBarChartContainer } from "./components/charts/stackedBarChartCon
 import { StyledContainer, StyledCard, StyledSimpleBarChartContainer, QuestionTypeHeading } from "./components/styled";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import { CustomizedHeaderWrapper } from "../../common/components/header";
-import { StyledSlider } from "../../common/styled";
+import { StyledSlider, StyledH3 } from "../../common/styled";
 import jsonData from "./static/json/data.json";
 import { get, isEmpty } from "lodash";
 
 import { getResponseFrequencyRequestAction, getReportsResponseFrequency } from "./ducks";
+import tempData from "./static/json/temp.json";
 
 const filterData = (data, filter) => (Object.keys(filter).length > 0 ? data.filter(item => filter[item.qType]) : data);
 
@@ -38,7 +39,7 @@ const ResponseFrequency = props => {
   }, []);
 
   let res = get(props, "responseFrequency.data.result", false);
-
+  res = tempData.result;
   const obj = useMemo(() => {
     let obj = {
       metaData: {},
@@ -83,8 +84,8 @@ const ResponseFrequency = props => {
       <CustomizedHeaderWrapper title="Response Frequency" />
       <Breadcrumb data={breadcrumbData} style={{ position: "unset", padding: "10px" }} />
       <StyledContainer type="flex">
-        <StyledSimpleBarChartContainer className="chart-simple-bar-chart">
-          <QuestionTypeHeading>Question Type performance for Assessment: {obj.metaData.testName}</QuestionTypeHeading>
+        <StyledCard>
+          <StyledH3>Question Type performance for Assessment: {obj.metaData.testName}</StyledH3>
           <StackedBarChartContainer
             data={obj.data}
             assessment={obj.metaData}
@@ -92,7 +93,7 @@ const ResponseFrequency = props => {
             onBarClickCB={onBarClickCB}
             onResetClickCB={onResetClickCB}
           />
-        </StyledSimpleBarChartContainer>
+        </StyledCard>
         <StyledCard>
           <Row type="flex" justify="center" className="question-area">
             <Col className="question-container">

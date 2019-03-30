@@ -4,7 +4,8 @@ import styled from "styled-components";
 import { black } from "@edulastic/colors";
 
 const CustomTableTooltip = props => {
-  let { className, overlayClassName, getCellContents, ...attrs } = props;
+  let { className, overlayClassName = "", getCellContents, ...attrs } = props;
+
   return (
     <Tooltip {...attrs} overlayClassName={`custom-table-tooltip ${overlayClassName} ${className}`}>
       {getCellContents(props)}

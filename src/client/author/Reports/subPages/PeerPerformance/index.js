@@ -87,6 +87,7 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
       ...ddfilter,
       analyseBy: selected.key
     });
+    setChartFilter({});
   };
 
   const updateCompareByCB = (event, selected, comData) => {
@@ -94,6 +95,7 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
       ...ddfilter,
       compareBy: selected.key
     });
+    setChartFilter({});
   };
 
   const filterDropDownCB = (event, selected, comData) => {

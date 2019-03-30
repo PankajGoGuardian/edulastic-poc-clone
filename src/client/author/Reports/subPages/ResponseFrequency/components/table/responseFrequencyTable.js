@@ -103,7 +103,6 @@ export class ResponseFrequencyTable extends Component {
           correctThreshold={this.props.correctThreshold}
           placement="top"
           title={tooltipText(record)}
-          // overlayClassName={"response-frequency-table-tooltip"}
           getCellContents={getCellContents}
         />
       );

@@ -122,8 +122,3 @@ export const StyledSimpleBarChartContainer = styled(StyledCard)`
     stroke-opacity: 0;
   }
 `;
-
-export const QuestionTypeHeading = styled.p`
-  font-size: 20px;
-  font-weight: 900;
-`;

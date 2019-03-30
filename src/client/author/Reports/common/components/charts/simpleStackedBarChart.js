@@ -42,7 +42,6 @@ export const SimpleStackedBarChart = ({
     COLOR_BLACK: "#010101",
     TICK_FILL: { fill: "#010101", fontWeight: "bold" },
     Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, position: "insideLeft", textAnchor: "middle" }
-    // ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
   };
 
   const chartData = useMemo(() => {
@@ -52,7 +51,7 @@ export const SimpleStackedBarChart = ({
   const scrollLeft = () => {
     let diff;
     if (pagination.startIndex > 0) {
-      if (pagination.startIndex - 0 >= page) {
+      if (pagination.startIndex >= page) {
         diff = page;
       } else {
         diff = pagination.startIndex;
@@ -168,4 +167,22 @@ export const SimpleStackedBarChart = ({
   );
 };
 
-const StyledStackedBarChartContainer = styled.div``;
+const StyledStackedBarChartContainer = styled.div`
+  padding: 10px;
+  overflow: hidden;
+
+  .navigator-left {
+    left: 5px;
+    top: 50%;
+  }
+
+  .navigator-right {
+    right: 5px;
+    top: 50%;
+  }
+
+  .recharts-wrapper .recharts-cartesian-grid-horizontal line:first-child,
+  .recharts-wrapper .recharts-cartesian-grid-horizontal line:last-child {
+    stroke-opacity: 0;
+  }
+`;

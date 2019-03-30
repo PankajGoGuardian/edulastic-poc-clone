@@ -2,9 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Col, Icon } from "antd";
-import { test } from "@edulastic/constants";
+import { test, testActivity as testActivityConstants } from "@edulastic/constants";
 import { formatTime } from "../utils";
 
+const { gradedStatus } = testActivityConstants;
 const { ASSESSMENT } = test.type;
 
 const AssessmentDetails = ({
@@ -18,7 +19,8 @@ const AssessmentDetails = ({
   dueDate,
   type,
   startDate,
-  safeBrowser
+  safeBrowser,
+  graded = gradedStatus.GRADED
 }) => (
   <Wrapper>
     <Col>
@@ -58,8 +60,8 @@ const AssessmentDetails = ({
             )}
           </React.Fragment>
         ) : (
-          <StatusButton isSubmitted={started}>
-            <span data-cy="status">{started ? t("common.submittedTag") : t("common.missed")}</span>
+          <StatusButton isSubmitted={started} graded={graded}>
+            <span data-cy="status">{started ? t(`common.${graded}`) : t("common.missed")}</span>
           </StatusButton>
         )}
       </StatusWrapper>
@@ -89,7 +91,16 @@ const getStatusBgColor = (props, type) => {
     }
   } else {
     if (props.isSubmitted) {
-      return props.theme.assignment[`cardSubmitedLabel${type}Color`];
+      switch (props.graded) {
+        case gradedStatus.GRADE_HELD:
+          return props.theme.assignment[`cardGradeHeldLabel${type}Color`];
+        case gradedStatus.NOT_GRADED:
+          return props.theme.assignment[`cardNotGradedLabel${type}Color`];
+        case gradedStatus.GRADED:
+          return props.theme.assignment[`cardGradedLabel${type}Color`];
+        default:
+          return props.theme.assignment[`cardSubmitedLabel${type}Color`];
+      }
     } else {
       return props.theme.assignment[`cardMissedLabel${type}Color`];
     }

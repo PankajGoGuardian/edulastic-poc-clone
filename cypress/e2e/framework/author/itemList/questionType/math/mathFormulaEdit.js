@@ -187,6 +187,12 @@ class MathFormulaEdit {
 
   getAddNewMethod = () => cy.get('[data-cy="add-new-method"]');
 
+  deleteLastMethod = () =>
+    this.getMathFormulaAnswers()
+      .last()
+      .find('[data-cy="delete-answer-method"]')
+      .click();
+
   getMathFormulaAnswers = () => cy.get('[data-cy="math-formula-answer"]');
 
   addAlternateAnswer = () => {
@@ -206,16 +212,16 @@ class MathFormulaEdit {
   };
 
   clearAnswerValueInput = length => {
-    for (let i = 0; i < length; i++) {
-      this.getAnswerValueMathInput().type("{del}", { force: true });
-    }
+    // for (let i = 0; i < length; i++) {
+    this.getAnswerValueMathInput().type("{del}".repeat(length), { force: true });
+    // }
   };
 
   getAnswerMathInputField = () => cy.get('[data-cy="answer-math-input-field"]');
 
-  checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect, score = false, scoreValuse = "2/2") => {
+  checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect, score = false, scoreValuse = "1/1") => {
     preview.header.preview();
-    this.getPreviewMathQuill().type(expectedValue, { force: true });
+    this.getPreviewMathQuill().typeWithDelay(expectedValue);
     preview
       .getCheckAnswer()
       .click()
@@ -258,6 +264,8 @@ class MathFormulaEdit {
       .wait(3000)
       .next()
       .find("textarea");
+
+  enterAnswerValueMathInput = input => this.getAnswerValueMathInput().typeWithDelay(input);
 
   getAnswerValueMathOutput = () =>
     cy

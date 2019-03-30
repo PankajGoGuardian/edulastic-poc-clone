@@ -12,6 +12,7 @@ class EditItemPage {
         .click();
       cy.wait("@saveItem");
     };
+    this.ITEM_ID = "5c9a1dbafce41d4fd05c9ee8";
   }
 
   clickAdvancedOptionsButton() {
@@ -79,10 +80,12 @@ class EditItemPage {
   }
 
   chooseQuestion(qGroup, qType) {
-    cy.contains(qGroup)
+    cy.get("body")
+      .contains(qGroup)
       .should("be.visible")
       .click();
-    cy.contains("Select a type of Question or Feature")
+    cy.get("body")
+      .contains("Select a type of Question or Feature")
       .parent()
       .parent()
       .parent()
@@ -111,7 +114,7 @@ class EditItemPage {
     return cy.get('button[title="Delete"]');
   }
 
-  getItemWithId(itemUrl) {
+  getItemWithId(itemUrl = this.ITEM_ID) {
     cy.server();
     cy.route("GET", "**/testitem/**").as("getItem");
     cy.visit(`/author/items/${itemUrl}/item-detail`);

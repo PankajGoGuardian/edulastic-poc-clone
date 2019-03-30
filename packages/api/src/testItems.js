@@ -63,12 +63,12 @@ const update = ({ id, item }) => {
     .then(result => result.data.result);
 };
 
-const evaluation = (id, answers) =>
+const evaluation = (id, data) =>
   api
     .callApi({
       url: `${prefix}/${id}/evaluation`,
       method: "post",
-      data: { answers }
+      data
     })
     .then(result => result.data.result);
 

@@ -1,6 +1,7 @@
 import { takeEvery, put, all, select, call } from "redux-saga/effects";
 import { message } from "antd";
 import { testItemsApi } from "@edulastic/api";
+import { getCurrentGroup } from "../../student/Login/ducks";
 
 // actions
 import { CHECK_ANSWER_EVALUATION, ADD_ITEM_EVALUATION, CHANGE_PREVIEW } from "../constants/actions";
@@ -12,7 +13,8 @@ function* evaluateAnswers() {
     const allAnswers = yield select(answersForCheck);
     const answerIds = Object.keys(allAnswers);
     const userResponse = {};
-
+    const groupId = yield select(getCurrentGroup);
+    const testActivityId = yield select(state => state.test && state.test.testActivityId);
     answerIds.forEach(id => {
       if (questionIds.includes(id)) {
         userResponse[id] = allAnswers[id];
@@ -21,7 +23,11 @@ function* evaluateAnswers() {
 
     const { items, currentItem } = yield select(state => state.test);
     const id = items[currentItem]._id;
-    const result = yield call(testItemsApi.evaluation, id, userResponse);
+    const result = yield call(testItemsApi.evaluation, id, {
+      answers: userResponse,
+      groupId,
+      testActivityId
+    });
 
     yield put({
       type: CHANGE_PREVIEW,

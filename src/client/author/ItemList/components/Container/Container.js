@@ -126,7 +126,8 @@ class Contaier extends Component {
     const { search } = this.state;
     const { receiveItems, limit } = this.props;
     const _this = this;
-    this.setState({ loading: true });
+    const spinner = document.querySelector(`.${this.spinner.state.generatedClassName}`);
+    spinner.classList.add("active");
 
     setTimeout(() => {
       receiveItems(search, page, limit);
@@ -163,7 +164,7 @@ class Contaier extends Component {
   };
 
   render() {
-    const { windowWidth, creating, t, curriculums, getCurriculumStandards, curriculumStandards } = this.props;
+    const { windowWidth, creating, t, curriculums, getCurriculumStandards, curriculumStandards, loading } = this.props;
 
     const { loading } = this.state;
 
@@ -192,7 +193,12 @@ class Contaier extends Component {
           <ListItems>
             <Element>
               <Paper borderRadius="0px" padding="0px">
-                <SpinContainer loading={loading}>
+                <SpinContainer
+                  ref={e => {
+                    this.spinner = e;
+                  }}
+                  className={loading ? "active" : ""}
+                >
                   <Spin size="large" />
                 </SpinContainer>
                 <PerfectScrollbar

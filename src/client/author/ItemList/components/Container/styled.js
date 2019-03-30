@@ -133,6 +133,11 @@ export const SpinContainer = styled.div`
   justify-content: center;
   background: #fff;
   z-index: 10;
-  pointer-events: ${props => (props.loading ? "all" : "none")};
-  opacity: ${props => (props.loading ? "1" : "0")};
+  pointer-events: none;
+  opacity: 0;
+
+  &.active {
+    pointer-events: all;
+    opacity: 1;
+  }
 `;

@@ -41,8 +41,7 @@ export const getClearSearchState = () => ({
 // container the main entry point to the component
 class Contaier extends Component {
   state = {
-    search: getClearSearchState(),
-    loading: true
+    search: getClearSearchState()
   };
 
   componentDidMount() {
@@ -52,14 +51,6 @@ class Contaier extends Component {
       getCurriculums();
     }
   }
-
-  componentDidUpdate = prevProps => {
-    const { loading } = this.props;
-
-    if (prevProps.loading !== loading) {
-      this.setState({ loading });
-    }
-  };
 
   handleSearch = () => {
     const { search } = this.state;
@@ -126,7 +117,8 @@ class Contaier extends Component {
     const { search } = this.state;
     const { receiveItems, limit } = this.props;
     const _this = this;
-    this.setState({ loading: true });
+    const spinner = document.querySelector(`.${this.spinner.state.generatedClassName}`);
+    spinner.classList.add("active");
 
     setTimeout(() => {
       receiveItems(search, page, limit);
@@ -163,9 +155,7 @@ class Contaier extends Component {
   };
 
   render() {
-    const { windowWidth, creating, t, curriculums, getCurriculumStandards, curriculumStandards } = this.props;
-
-    const { loading } = this.state;
+    const { windowWidth, creating, t, curriculums, getCurriculumStandards, curriculumStandards, loading } = this.props;
 
     const { search } = this.state;
 
@@ -192,7 +182,12 @@ class Contaier extends Component {
           <ListItems>
             <Element>
               <Paper borderRadius="0px" padding="0px">
-                <SpinContainer loading={loading}>
+                <SpinContainer
+                  ref={e => {
+                    this.spinner = e;
+                  }}
+                  className={loading ? "active" : ""}
+                >
                   <Spin size="large" />
                 </SpinContainer>
                 <PerfectScrollbar

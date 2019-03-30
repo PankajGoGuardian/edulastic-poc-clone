@@ -74,11 +74,18 @@ const fetchAssessmentSummaryReport = params => {
   // ?testId=5c90d974a649cb81bc5d4ca2&districtId=5c9089b1a649cb81bc398b1f
 };
 
+const fetchPeerPerformanceReport = params => {
+  return api.callApi({
+    url: `/report/peerPerformance?testId=${params.testId}`
+  });
+};
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
   fetchTestActivityReport,
   fetchSkillReport,
   fetchResponseFrequency,
-  fetchAssessmentSummaryReport
+  fetchAssessmentSummaryReport,
+  fetchPeerPerformanceReport
 };

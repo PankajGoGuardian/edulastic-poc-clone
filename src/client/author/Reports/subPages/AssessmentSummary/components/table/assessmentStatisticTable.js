@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Row, Col } from "antd";
-import { StyledTable, StyledControlDropDown } from "../styled";
+import { StyledTable } from "../styled";
 import { groupBy, cloneDeep } from "lodash";
 import Moment from "moment";
 import next from "immer";
 
 import { getStandatdDeviation, getVariance } from "../../../../common/util";
+import { StyledControlDropDown } from "../../../../common/styled";
 
 import columnData from "../../static/json/tableColumns.json";
 
 export const AssessmentStatisticTable = props => {
-  const [tableType, setTableType] = useState("school");
+  const [tableType, setTableType] = useState({ key: "school", title: "School" });
 
   const updateTable = (type, data) => {
     let arr;
@@ -104,7 +105,7 @@ export const AssessmentStatisticTable = props => {
   };
 
   const getColumns = tableType => {
-    return next(columnData[tableType].columns, columns => {
+    return next(columnData[tableType.key].columns, columns => {
       if (props.role === "teacher") {
         columns.splice(0, 1);
         columns[0].sorter = sortAlphabets("groupName");
@@ -112,7 +113,7 @@ export const AssessmentStatisticTable = props => {
         columns[0].sorter = sortAlphabets("schoolId");
       }
 
-      if (tableType === "school" || props.role === "teacher") {
+      if (tableType.key === "school" || props.role === "teacher") {
         columns[1].sorter = sortNumbers("avgStudentScore");
         columns[1].render = (text, record, index) => {
           return text + "%";
@@ -130,12 +131,13 @@ export const AssessmentStatisticTable = props => {
     if (props.data) {
       let tt = tableType;
       if (props.role === "teacher") {
-        setTableType("class");
-        tt = "class";
+        let o = { key: "class", title: "Class" };
+        setTableType(o);
+        tt = o;
       }
       return {
         columns: getColumns(tt),
-        tableData: updateTable(tt, props.data)
+        tableData: updateTable(tt.key, props.data)
       };
     }
     return {
@@ -144,19 +146,25 @@ export const AssessmentStatisticTable = props => {
     };
   }, [props.data, tableType]);
 
-  const updateTableCB = event => {
-    setTableType(event.key);
+  const updateTableCB = (event, selected, comData) => {
+    setTableType(selected);
   };
+
+  const dropDownData = [
+    { key: "school", title: "School" },
+    { key: "teacher", title: "Teacher" },
+    { key: "class", title: "Class" }
+  ];
 
   return (
     <div className={`${props.className}`}>
       <Row type="flex" justify="start" className="top-area">
         <Col className="top-area-col table-title">
-          Assessment Statistics of {props.name} by <span className="stats-grouped-by">{tableType}</span>
+          Assessment Statistics of {props.name} by <span className="stats-grouped-by">{tableType.title}</span>
         </Col>
         {props.role !== "teacher" ? (
           <Col className="top-area-col control-area">
-            <StyledControlDropDown groupby={tableType} updateTableCB={updateTableCB} />
+            <StyledControlDropDown prefix={"Compare by"} by={tableType} updateCB={updateTableCB} data={dropDownData} />
           </Col>
         ) : (
           ""

@@ -2,8 +2,12 @@ import styled from "styled-components";
 import { Card } from "@edulastic/common";
 import { Row, Col, Button, Slider } from "antd";
 import { Table } from "antd";
-import { CustomChartTooltip } from "./components/tooltip";
-import { darkGrey, grey, fadedBlack, fadedGrey } from "@edulastic/colors";
+import { CustomChartTooltip } from "./components/charts/chartUtils/tooltip";
+import { ControlDropDown } from "./components/controlDropDown";
+import { NormalDropDown } from "./components/normalDropDown";
+import { FilterDropDownWithDropDown } from "./components/filterDropDownWithDropDown";
+import { darkGrey, grey, fadedBlack, fadedGrey, black } from "@edulastic/colors";
+import { Text } from "@vx/text";
 
 export const StyledCard = styled(Card)`
   margin: 10px;
@@ -117,4 +121,54 @@ export const StyledSlider = styled(Slider)`
     height: 22px;
     border: solid 4px #69c0ff;
   }
+`;
+
+export const StyledControlDropDown = styled(ControlDropDown)`
+  margin: 0px 5px;
+  button {
+    white-space: pre-wrap;
+  }
+  .ant-dropdown-menu-item-disabled {
+    font-weight: 900;
+    color: ${black};
+    cursor: default;
+  }
+`;
+
+export const StyledNormalDropDown = styled(NormalDropDown)`
+  margin: 0px 5px;
+  button {
+    white-space: pre-wrap;
+  }
+  .ant-dropdown-menu-item-disabled {
+    font-weight: 900;
+    color: ${black};
+    cursor: default;
+  }
+`;
+
+export const StyledFilterDropDownWithDropDown = styled(FilterDropDownWithDropDown)`
+  margin: 0px 5px;
+  button {
+    white-space: pre-wrap;
+  }
+  .ant-dropdown-menu-item-disabled {
+    font-weight: 900;
+    color: ${black};
+    cursor: default;
+  }
+`;
+
+export const StyledChartNavButton = styled(Button)`
+  position: absolute;
+  height: 50px;
+  width: 50px;
+  border: solid 1px #c0c0c0;
+  border-radius: 25px;
+  background-color: white;
+  color: black;
+`;
+
+export const StyledAxisTickText = styled(Text)`
+  font-size: 12px;
 `;

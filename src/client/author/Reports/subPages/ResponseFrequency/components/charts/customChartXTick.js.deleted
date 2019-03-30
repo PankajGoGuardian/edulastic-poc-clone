@@ -1,5 +1,5 @@
 import React from "react";
-import { StyledAxisTickText } from "../styled";
+// import { StyledAxisTickText } from "../styled";
 
 export const CustomChartXTick = props => {
   const { x, y, payload, data } = props;

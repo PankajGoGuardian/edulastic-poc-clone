@@ -12,7 +12,7 @@ export const SingleAssessmentReport = props => {
       title: "Assessment Summary",
       location: "/author/reports/assessment-summary/test/5c90d974a649cb81bc5d4ca2?districtId=5c9089b1a649cb81bc398b1f"
     },
-    { title: "Peer Performance", location: "/author/reports/" },
+    { title: "Peer Performance", location: "/author/reports/peer-performance/test/5c822ff4732e4679700e73a6" },
     { title: "Question Analysis", location: "/author/reports/" },
     {
       title: "Response Frequency",

@@ -16,3 +16,7 @@ export const getVariance = arr => {
 export const getStandatdDeviation = variance => {
   return Number(Math.sqrt(variance, 2).toFixed(2));
 };
+
+export const getHSLFromRange1 = val => {
+  return "hsla(" + val + ", 64%, 47%, 1)";
+};

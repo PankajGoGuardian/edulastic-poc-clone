@@ -4,13 +4,13 @@ import { connect } from "react-redux";
 import queryString from "query-string";
 import { Row, Col } from "antd";
 import { ResponseFrequencyTable } from "./components/table/responseFrequencyTable";
-import { SimpleBarChart } from "./components/charts/simpleBarChart";
-import { StyledContainer, StyledCard } from "./components/styled";
+import { StackedBarChartContainer } from "./components/charts/stackedBarChartContainer";
+import { StyledContainer, StyledCard, StyledSimpleBarChartContainer, QuestionTypeHeading } from "./components/styled";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import { CustomizedHeaderWrapper } from "../../common/components/header";
 import { StyledSlider } from "../../common/styled";
 import jsonData from "./static/json/data.json";
-import { get } from "lodash";
+import { get, isEmpty } from "lodash";
 
 import { getResponseFrequencyRequestAction, getReportsResponseFrequency } from "./ducks";
 
@@ -38,13 +38,14 @@ const ResponseFrequency = props => {
   }, []);
 
   let res = get(props, "responseFrequency.data.result", false);
+
   const obj = useMemo(() => {
     let obj = {
       metaData: {},
       data: [],
       filteredData: []
     };
-    if (res) {
+    if (res && res.metrics && !isEmpty(res.metrics)) {
       let arr = Object.keys(res.metrics).map((key, i) => {
         res.metrics[key].uid = key;
         return res.metrics[key];
@@ -70,6 +71,10 @@ const ResponseFrequency = props => {
   };
 
   const onBarClickCB = filter => {
+    setFilter({ ...filter });
+  };
+
+  const onResetClickCB = filter => {
     setFilter(filter);
   };
 
@@ -78,7 +83,16 @@ const ResponseFrequency = props => {
       <CustomizedHeaderWrapper title="Response Frequency" />
       <Breadcrumb data={breadcrumbData} style={{ position: "unset", padding: "10px" }} />
       <StyledContainer type="flex">
-        <SimpleBarChart data={obj.data} assessment={obj.metaData} onBarClickCB={onBarClickCB} />
+        <StyledSimpleBarChartContainer className="chart-simple-bar-chart">
+          <QuestionTypeHeading>Question Type performance for Assessment: {obj.metaData.testName}</QuestionTypeHeading>
+          <StackedBarChartContainer
+            data={obj.data}
+            assessment={obj.metaData}
+            filter={filter}
+            onBarClickCB={onBarClickCB}
+            onResetClickCB={onResetClickCB}
+          />
+        </StyledSimpleBarChartContainer>
         <StyledCard>
           <Row type="flex" justify="center" className="question-area">
             <Col className="question-container">

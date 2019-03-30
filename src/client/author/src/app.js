@@ -27,6 +27,7 @@ const CurriculumContainer = lazy(() => import("../CurriculumSequence"));
 const Reports = lazy(() => import("../Reports"));
 const ResponseFrequency = lazy(() => import("../Reports/subPages/ResponseFrequency"));
 const AssessmentSummary = lazy(() => import("../Reports/subPages/AssessmentSummary"));
+const PeerPerformance = lazy(() => import("../Reports/subPages/PeerPerformance"));
 const StandardsBasedReport = lazy(() => import("../StandardsBasedReport"));
 const ManageClass = lazy(() => import("../ManageClass"));
 // eslint-disable-next-line react/prop-types
@@ -117,6 +118,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               <Route exact path="/author/reports/" component={Reports} />
               <Route exact path="/author/reports/response-frequency/test/:testId" component={ResponseFrequency} />
               <Route exact path="/author/reports/assessment-summary/test/:testId" component={AssessmentSummary} />
+              <Route exact path="/author/reports/peer-performance/test/:testId" component={PeerPerformance} />
             </Switch>
           </Suspense>
         </Wrapper>

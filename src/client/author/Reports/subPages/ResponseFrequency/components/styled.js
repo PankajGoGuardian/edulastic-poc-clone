@@ -1,9 +1,7 @@
 import styled from "styled-components";
 import { Row, Col, Button } from "antd";
 import { StyledTable as Table, StyledCard as Card } from "../../../common/styled";
-import { CustomTooltip } from "./customToolTip";
 import { darkGrey, black, blue, fadedBlack } from "@edulastic/colors";
-import { Text } from "@vx/text";
 
 export const StyledCard = Card;
 
@@ -105,7 +103,7 @@ export const StyledResponseTagContainer = styled(Col)`
   }
 `;
 
-export const StyledSimpleBarChart = styled(StyledCard)`
+export const StyledSimpleBarChartContainer = styled(StyledCard)`
   padding: 10px;
   overflow: hidden;
 
@@ -125,40 +123,7 @@ export const StyledSimpleBarChart = styled(StyledCard)`
   }
 `;
 
-export const StyledCustomTooltip = styled(CustomTooltip)`
-  max-width: 500px;
-
-  .ant-tooltip-content {
-    .ant-tooltip-arrow {
-      border-top-color: white;
-    }
-    .ant-tooltip-inner {
-      background-color: white;
-      color: ${black};
-
-      .response-frequency-table-tooltip-value {
-        font-weight: 900;
-        margin-left: 5px;
-      }
-    }
-  }
-`;
-
-export const StyledChartNavButton = styled(Button)`
-  position: absolute;
-  height: 50px;
-  width: 50px;
-  border: solid 1px #c0c0c0;
-  border-radius: 25px;
-  background-color: white;
-  color: black;
-`;
-
 export const QuestionTypeHeading = styled.p`
   font-size: 20px;
   font-weight: 900;
-`;
-
-export const StyledAxisTickText = styled(Text)`
-  font-size: 12px;
 `;

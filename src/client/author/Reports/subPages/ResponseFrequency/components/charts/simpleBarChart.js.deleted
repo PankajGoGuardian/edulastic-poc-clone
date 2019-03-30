@@ -13,8 +13,7 @@ import {
   LabelList,
   Brush
 } from "recharts";
-import { StyledSimpleBarChart, StyledChartNavButton, QuestionTypeHeading } from "../styled";
-import { StyledCustomChartTooltip } from "../../../../common/styled";
+import { StyledCustomChartTooltip, StyledChartNavButton } from "../../../../common/styled";
 import { Row, Col } from "antd";
 import { CustomChartXTick } from "./customChartXTick";
 import colorRange1 from "../../static/json/colorRange1.json";
@@ -173,10 +172,7 @@ export class SimpleBarChart extends PureComponent {
 
   render() {
     return (
-      <StyledSimpleBarChart className="chart-simple-bar-chart">
-        <QuestionTypeHeading>
-          Question Type performance for Assessment: {this.props.assessment.testName}
-        </QuestionTypeHeading>
+      <div>
         <a
           onClick={this.onResetClick}
           style={Object.keys(this.state.filter).length > 0 ? { visibility: "visible" } : { visibility: "hidden" }}
@@ -240,7 +236,7 @@ export class SimpleBarChart extends PureComponent {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-      </StyledSimpleBarChart>
+      </div>
     );
   }
 }

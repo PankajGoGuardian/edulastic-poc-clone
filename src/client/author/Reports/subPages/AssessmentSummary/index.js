@@ -3,6 +3,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import queryString from "query-string";
 import { Row, Col } from "antd";
+import { get } from "lodash";
 import { SimplePieChart } from "./components/charts/pieChart";
 import { StyledCard, StyledH3 } from "../../common/styled";
 import { UpperContainer, TableContainer, StyledAssessmentStatisticTable } from "./components/styled";
@@ -31,13 +32,19 @@ const AssessmentSummary = props => {
     props.getAssessmentSummaryRequestAction(q);
   }, []);
 
-  const state = props.assessmentSummary.data
-    ? props.assessmentSummary.data.result
-    : {
-        assessmentName: "",
-        bandInfo: [],
-        metricInfo: []
-      };
+  console.log(props);
+  const state = get(props, "assessmentSummary.data.result", {
+    assessmentName: "",
+    bandInfo: [],
+    metricInfo: []
+  });
+  // const state = props.assessmentSummary.data
+  //   ? props.assessmentSummary.data.result
+  //   : {
+  //       assessmentName: "",
+  //       bandInfo: [],
+  //       metricInfo: []
+  //     };
 
   return (
     <div>
@@ -60,7 +67,7 @@ const AssessmentSummary = props => {
         <Col>
           <StyledCard>
             {props.role ? (
-              <StyledAssessmentStatisticTable name={state.assessmentName} data={state.metricInfo} role={props.role} />
+              <StyledAssessmentStatisticTable name={state.assessmentName} data={state.metricInfo} role={"props.role"} />
             ) : (
               ""
             )}

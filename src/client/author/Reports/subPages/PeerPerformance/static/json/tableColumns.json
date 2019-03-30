@@ -1,0 +1,218 @@
+{
+  "columns": {
+    "score(%)": {
+      "schoolId": [
+        { "title": "School", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+        { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 250 },
+        { "title": "#Absent", "dataIndex": "absent", "key": "absent", "width": 250 },
+        { "title": "District(Score%)", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
+        {
+          "title": "Avg.Student(Score%)",
+          "dataIndex": "avgStudentScorePercent",
+          "key": "avgStudentScorePercent",
+          "width": 250
+        }
+      ],
+      "teacherId": [
+        { "title": "Teacher", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+        { "title": "School", "dataIndex": "schoolName", "key": "schoolName", "width": 250 },
+        { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 250 },
+        { "title": "#Absent", "dataIndex": "absent", "key": "absent", "width": 250 },
+        { "title": "District(Score%)", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
+        {
+          "title": "Avg.Student(Score%)",
+          "dataIndex": "avgStudentScorePercent",
+          "key": "avgStudentScorePercent",
+          "width": 250
+        }
+      ],
+      "groupId": [
+        { "title": "Class", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+        { "title": "Teacher", "dataIndex": "teacherName", "key": "teacherName", "width": 250 },
+        { "title": "School", "dataIndex": "schoolName", "key": "schoolName", "width": 250 },
+        { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 250 },
+        { "title": "#Absent", "dataIndex": "absent", "key": "absent", "width": 250 },
+        { "title": "District(Score%)", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
+        {
+          "title": "Avg.Student(Score%)",
+          "dataIndex": "avgStudentScorePercent",
+          "key": "avgStudentScorePercent",
+          "width": 250
+        }
+      ],
+      "race": [
+        { "title": "Race", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+        { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 250 },
+        { "title": "#Absent", "dataIndex": "absent", "key": "absent", "width": 250 },
+        { "title": "District(Score%)", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
+        {
+          "title": "Avg.Student(Score%)",
+          "dataIndex": "avgStudentScorePercent",
+          "key": "avgStudentScorePercent",
+          "width": 250
+        }
+      ],
+      "gender": [
+        { "title": "Gender", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+        { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 250 },
+        { "title": "#Absent", "dataIndex": "absent", "key": "absent", "width": 250 },
+        { "title": "District(Score%)", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
+        {
+          "title": "Avg.Student(Score%)",
+          "dataIndex": "avgStudentScorePercent",
+          "key": "avgStudentScorePercent",
+          "width": 250
+        }
+      ],
+      "frlStatus": [
+        { "title": "FRL Status", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+        { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 250 },
+        { "title": "#Absent", "dataIndex": "absent", "key": "absent", "width": 250 },
+        { "title": "District(Score%)", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
+        {
+          "title": "Avg.Student(Score%)",
+          "dataIndex": "avgStudentScorePercent",
+          "key": "avgStudentScorePercent",
+          "width": 250
+        }
+      ],
+      "ellStatus": [
+        { "title": "ELL Status", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+        { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 250 },
+        { "title": "#Absent", "dataIndex": "absent", "key": "absent", "width": 250 },
+        { "title": "District(Score%)", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
+        {
+          "title": "Avg.Student(Score%)",
+          "dataIndex": "avgStudentScorePercent",
+          "key": "avgStudentScorePercent",
+          "width": 250
+        }
+      ],
+      "iepStatus": [
+        { "title": "IEP Status", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+        { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 250 },
+        { "title": "#Absent", "dataIndex": "absent", "key": "absent", "width": 250 },
+        { "title": "District(Score%)", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
+        {
+          "title": "Avg.Student(Score%)",
+          "dataIndex": "avgStudentScorePercent",
+          "key": "avgStudentScorePercent",
+          "width": 250
+        }
+      ]
+    },
+    "rawScore": {
+      "schoolId": [
+        { "title": "School", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+        { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 250 },
+        { "title": "#Absent", "dataIndex": "absent", "key": "absent", "width": 250 },
+        { "title": "District Avg.Score", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
+        {
+          "title": "Avg.Score",
+          "dataIndex": "avgStudentScore",
+          "key": "avgStudentScore",
+          "width": 250
+        }
+      ],
+      "teacherId": [
+        { "title": "Teacher", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+        { "title": "School", "dataIndex": "schoolName", "key": "schoolName", "width": 250 },
+        { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 250 },
+        { "title": "#Absent", "dataIndex": "absent", "key": "absent", "width": 250 },
+        { "title": "District Avg.Score", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
+        {
+          "title": "Avg.Score",
+          "dataIndex": "avgStudentScore",
+          "key": "avgStudentScore",
+          "width": 250
+        }
+      ],
+      "groupId": [
+        { "title": "Class", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+        { "title": "Teacher", "dataIndex": "teacherName", "key": "teacherName", "width": 250 },
+        { "title": "School", "dataIndex": "schoolName", "key": "schoolName", "width": 250 },
+        { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 250 },
+        { "title": "#Absent", "dataIndex": "absent", "key": "absent", "width": 250 },
+        { "title": "District Avg.Score", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
+        {
+          "title": "Avg.Score",
+          "dataIndex": "avgStudentScore",
+          "key": "avgStudentScore",
+          "width": 250
+        }
+      ],
+      "race": [
+        { "title": "Race", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+        { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 250 },
+        { "title": "#Absent", "dataIndex": "absent", "key": "absent", "width": 250 },
+        { "title": "District Avg.Score", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
+        {
+          "title": "Avg.Score",
+          "dataIndex": "avgStudentScore",
+          "key": "avgStudentScore",
+          "width": 250
+        }
+      ],
+      "gender": [
+        { "title": "Gender", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+        { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 250 },
+        { "title": "#Absent", "dataIndex": "absent", "key": "absent", "width": 250 },
+        { "title": "District Avg.Score", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
+        {
+          "title": "Avg.Score",
+          "dataIndex": "avgStudentScore",
+          "key": "avgStudentScore",
+          "width": 250
+        }
+      ],
+      "frlStatus": [
+        { "title": "FRL Status", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+        { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 250 },
+        { "title": "#Absent", "dataIndex": "absent", "key": "absent", "width": 250 },
+        { "title": "District Avg.Score", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
+        {
+          "title": "Avg.Score",
+          "dataIndex": "avgStudentScore",
+          "key": "avgStudentScore",
+          "width": 250
+        }
+      ],
+      "ellStatus": [
+        { "title": "ELL Status", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+        { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 250 },
+        { "title": "#Absent", "dataIndex": "absent", "key": "absent", "width": 250 },
+        { "title": "District Avg.Score", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
+        {
+          "title": "Avg.Score",
+          "dataIndex": "avgStudentScore",
+          "key": "avgStudentScore",
+          "width": 250
+        }
+      ],
+      "iepStatus": [
+        { "title": "IEP Status", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+        { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 250 },
+        { "title": "#Absent", "dataIndex": "absent", "key": "absent", "width": 250 },
+        { "title": "District Avg.Score", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
+        {
+          "title": "Avg.Score",
+          "dataIndex": "avgStudentScore",
+          "key": "avgStudentScore",
+          "width": 250
+        }
+      ]
+    },
+    "aboveBelowStandard": [],
+    "proficiencyBand": []
+  },
+  "compareBy": {
+    "schoolId": { "title": "School", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+    "teacherId": { "title": "Teacher", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+    "groupId": { "title": "Class", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+    "race": { "title": "Race", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+    "gender": { "title": "Gender", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+    "frlStatus": { "title": "FRL Status", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+    "ellStatus": { "title": "ELL Status", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
+    "iepStatus": { "title": "IEP Status", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 }
+  }
+}

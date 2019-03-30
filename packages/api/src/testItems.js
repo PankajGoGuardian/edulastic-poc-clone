@@ -72,11 +72,20 @@ const evaluation = (id, answers) =>
     })
     .then(result => result.data.result);
 
+const duplicateTestItem = id =>
+  api
+    .callApi({
+      url: `${prefix}/${id}/duplicate`,
+      method: "post"
+    })
+    .then(result => result.data.result);
+
 export default {
   getAll,
   getById,
   updateById,
   create,
   update,
-  evaluation
+  evaluation,
+  duplicateTestItem
 };

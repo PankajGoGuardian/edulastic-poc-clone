@@ -19,7 +19,9 @@ import {
   getTestSelector,
   getTestItemsRowsSelector,
   getTestsCreatingSelector,
-  getTestsLoadingSelector
+  getTestsLoadingSelector,
+  publishTestAction,
+  getTestStatusSelector
 } from "../../ducks";
 import { getSelectedItemSelector } from "../AddItems/ducks";
 import { getUserSelector } from "../../../src/selectors/user";
@@ -31,6 +33,12 @@ import Review from "../Review";
 import Summary from "../Summary";
 import Assign from "../Assign";
 import Setting from "../Setting";
+
+const statusConstants = {
+  DRAFT: "draft",
+  ARCHIVED: "archived",
+  PUBLISHED: "published"
+};
 
 class Container extends PureComponent {
   propTypes = {
@@ -203,6 +211,12 @@ class Container extends PureComponent {
     });
   };
 
+  handlePublishTest = () => {
+    const { publishTest, test } = this.props;
+    const { _id } = test;
+    publishTest(_id);
+  };
+
   renderModal = () => {
     const { test } = this.props;
     const { showModal } = this.state;
@@ -217,8 +231,10 @@ class Container extends PureComponent {
   };
 
   render() {
-    const { creating, windowWidth, test } = this.props;
+    const { creating, windowWidth, test, testStatus } = this.props;
     const { showShareModal, current } = this.state;
+    const { _id: testId } = test;
+    const showPublishButton = testStatus && testStatus !== statusConstants.PUBLISHED && testId;
     return (
       <>
         {this.renderModal()}
@@ -228,9 +244,11 @@ class Container extends PureComponent {
           current={current}
           onSave={this.handleSave}
           onShare={this.onShareModalChange}
+          onPublish={this.handlePublishTest}
           title={test.title}
           creating={creating}
           windowWidth={windowWidth}
+          showPublishButton={showPublishButton}
         />
         <Content>{this.renderContent()}</Content>
       </>
@@ -248,14 +266,16 @@ const enhance = compose(
       creating: getTestsCreatingSelector(state),
       selectedRows: getSelectedItemSelector(state),
       user: getUserSelector(state),
-      isTestLoading: getTestsLoadingSelector(state)
+      isTestLoading: getTestsLoadingSelector(state),
+      testStatus: getTestStatusSelector(state)
     }),
     {
       createTest: createTestAction,
       updateTest: updateTestAction,
       receiveTestById: receiveTestByIdAction,
       setData: setTestDataAction,
-      setDefaultData: setDefaultTestDataAction
+      setDefaultData: setDefaultTestDataAction,
+      publishTest: publishTestAction
     }
   )
 );

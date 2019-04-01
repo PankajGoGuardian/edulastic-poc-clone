@@ -56,11 +56,19 @@ const shareTest = ({ data, testId }) =>
       data
     })
     .then(result => result.data.result);
+const publishTest = testId =>
+  api
+    .callApi({
+      url: `${prefix}/${testId}/publish`,
+      method: "put"
+    })
+    .then(result => result.data.result);
 
 export default {
   getAll,
   getById,
   create,
   update,
-  shareTest
+  shareTest,
+  publishTest
 };

@@ -107,14 +107,13 @@ class SideMenu extends Component {
   closeMenuByClickOutside = (e, menu) => {
     const { target } = e;
     const hamburger = document.querySelector(".hamburger");
-    const footerDropDown = document.querySelector(".footerDropdown");
-    const itsMenu = target === menu && menu.contains(target);
-    const itsHamburger = target === hamburger && hamburger.contains(target);
-    const itsFooterDropDown = target === footerDropDown && footerDropDown.contains(target);
+    const itsMenu = target === menu || menu.contains(target);
+    const itsHamburger = target === hamburger || hamburger.contains(target);
     const isFull = menu.classList.contains("full");
 
-    if (!itsMenu && !itsHamburger && !itsFooterDropDown && isFull) {
+    if (!itsMenu && !itsHamburger && isFull) {
       this.toggleMenu();
+      this.setState({ isVisible: false });
     }
   };
 
@@ -255,7 +254,7 @@ class SideMenu extends Component {
                     </div>
                     {!isCollapsed && !isMobile && (
                       <IconDropdown
-                        style={{ fontSize: 20 }}
+                        style={{ fontSize: 20, pointerEvents: "none" }}
                         className="drop-caret"
                         type={isVisible ? "caret-up" : "caret-down"}
                       />

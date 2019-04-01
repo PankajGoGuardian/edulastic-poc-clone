@@ -33,7 +33,18 @@ const getById = (id, params = {}) =>
     .then(result => result.data.result);
 
 const updateById = (id, item) => {
-  const { updatedAt, createdAt, authors, autoGrade, ...data } = formatData(item);
+  const {
+    updatedAt,
+    createdAt,
+    authors,
+    autoGrade,
+    sharedType,
+    algoVariablesEnabled,
+    owner,
+    sharedWith,
+    origTestItemId,
+    ...data
+  } = formatData(item);
   return api
     .callApi({
       url: `${prefix}/${id}`,

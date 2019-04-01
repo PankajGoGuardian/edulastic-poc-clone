@@ -7,6 +7,7 @@ import { compose } from "redux";
 
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { mobileWidth } from "@edulastic/colors";
 
 import { getUserSelector } from "../../author/src/selectors/user";
 import { receiveFeedbackResponseAction } from "../../author/src/actions/classBoard";
@@ -150,6 +151,9 @@ const StyledCardTwo = styled(Card)`
     display: flex;
     flex-direction: column;
     height: 100%;
+  }
+  @media (max-width: ${mobileWidth}) {
+    margin-left: 0px;
   }
 `;
 

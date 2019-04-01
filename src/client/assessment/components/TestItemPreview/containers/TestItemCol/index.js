@@ -23,7 +23,8 @@ class TestItemCol extends Component {
     showFeedback: PropTypes.bool,
     multiple: PropTypes.bool,
     style: PropTypes.object,
-    questions: PropTypes.object.isRequired
+    questions: PropTypes.object.isRequired,
+    index: PropTypes.number.isRequired
   };
 
   static defaultProps = {
@@ -38,18 +39,13 @@ class TestItemCol extends Component {
     });
   };
 
-  renderTabContent = (widget, qIndex) => {
+  renderTabContent = (widget, qIndex, restProps) => {
     const { preview, showFeedback, multiple, questions } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
 
     const question = questions[widget.reference];
     return (
-      <Tabs.TabContainer
-        style={{
-          padding: 0,
-          display: !multiple && showFeedback ? "flex" : "initial"
-        }}
-      >
+      <Tabs.TabContainer>
         <QuestionWrapper
           testItem
           showFeedback={showFeedback}
@@ -61,13 +57,18 @@ class TestItemCol extends Component {
           timespent={timespent}
           questionId={widget.reference}
           data={{ ...question, smallSize: true }}
+          style={{
+            padding: 0,
+            display: !multiple && showFeedback ? "flex" : "initial"
+          }}
+          {...restProps}
         />
       </Tabs.TabContainer>
     );
   };
 
   render() {
-    const { col, style, windowWidth } = this.props;
+    const { col, style, windowWidth, ...restProps } = this.props;
     const { value } = this.state;
     return (
       <Container
@@ -89,6 +90,7 @@ class TestItemCol extends Component {
                   textAlign: "center",
                   padding: "30px 20px 15px"
                 }}
+                {...restProps}
               />
             ))}
           </Tabs>
@@ -105,8 +107,8 @@ class TestItemCol extends Component {
         )}
         {col.widgets.map((widget, i) => (
           <React.Fragment>
-            {col.tabs && !!col.tabs.length && value === widget.tabIndex && this.renderTabContent(widget, i)}
-            {col.tabs && !col.tabs.length && this.renderTabContent(widget, i)}
+            {col.tabs && !!col.tabs.length && value === widget.tabIndex && this.renderTabContent(widget, i, restProps)}
+            {col.tabs && !col.tabs.length && this.renderTabContent(widget, i, restProps)}
           </React.Fragment>
         ))}
       </Container>

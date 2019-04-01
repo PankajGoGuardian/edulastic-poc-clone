@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Table, Card, Progress } from "antd";
 
-import { darkBlueSecondary, white, tabletWidth } from "@edulastic/colors";
+import { darkBlueSecondary, white, tabletWidth, mobileWidth } from "@edulastic/colors";
 import { Link } from "react-router-dom";
 import { FlexContainer } from "@edulastic/common";
 import HeaderWrapper from "../../src/mainContent/headerWrapper";
@@ -10,6 +10,27 @@ export const StyledFlexContainer = styled(FlexContainer)`
   width: 95%;
   margin: 20px auto;
   align-items: flex-start;
+`;
+
+export const MoblieFlexContainer = styled(FlexContainer)`
+  margin: 10px;
+  overflow: auto;
+  width: 95%;
+`;
+
+export const MoblieSubFlexContainer = styled(MoblieFlexContainer)`
+  justify-content: space-around;
+  flex-direction: ${props => (props.column ? "column" : "row")};
+  label {
+    text-transform: uppercase;
+    color: #aaafb5;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+  img {
+    transform: rotate(-270deg);
+  }
 `;
 
 export const Anchor = styled.a`
@@ -26,6 +47,9 @@ export const PaginationInfo = styled.span`
   word-spacing: 5px;
   color: #69727e;
   font-family: Open Sans, SemiBold;
+  @media (max-width: ${mobileWidth}) {
+    display: none;
+  }
 `;
 
 export const StyledCard = styled(Card)`
@@ -34,6 +58,13 @@ export const StyledCard = styled(Card)`
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   .ant-card-body {
     padding: 30px 35px 30px 40px;
+    @media (max-width: ${mobileWidth}) {
+      padding: 18px;
+      width: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
   }
 `;
 
@@ -49,6 +80,13 @@ export const DetailCard = styled(StyledCard)`
   width: 48%;
   .ant-card-body {
     padding: 0px;
+    @media (max-width: ${mobileWidth}) {
+      width: 100%;
+    }
+  }
+  @media (max-width: ${mobileWidth}) {
+    width: 95%;
+    margin: 10px;
   }
 `;
 
@@ -56,6 +94,9 @@ export const DetailCardHeader = styled.div`
   background-color: #f8f8f8;
   padding: 38px 35px 30px 40px;
   border-radius: 10px 10px 0px 0px;
+  @media (max-width: ${mobileWidth}) {
+    padding: 30px 15px 25px 15px;
+  }
 `;
 export const DetailCardTitle = styled.div`
   color: #434b5d;
@@ -91,10 +132,25 @@ export const DetailTable = styled(Table)`
     align-items: center;
     justify-content: center;
   }
+  .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters {
+    @media (max-width: ${mobileWidth}) {
+      padding-right: 15px !important;
+      background-color: white;
+    }
+  }
+  .ant-table-tbody > tr > td {
+    @media (max-width: ${mobileWidth}) {
+      background-color: #f8f8f8;
+      border-bottom: 10px solid white;
+    }
+  }
   .ant-table-thead > tr > th .ant-table-column-sorter {
     position: relative;
     top: 3px;
     left: 10px;
+  }
+  @media (max-width: ${mobileWidth}) {
+    padding: 0px;
   }
 `;
 
@@ -307,6 +363,9 @@ export const TableData = styled(Table)`
 export const DivWrapper = styled(StyledFlexContainer)`
   display: flex;
   align-items: flex-start;
+  @media (max-width: ${mobileWidth}) {
+    flex-direction: column;
+  }
 `;
 
 export const StandardsCell = styled.div`
@@ -316,6 +375,18 @@ export const StandardsCell = styled.div`
   color: #4aac8b;
   font-size: 10px;
   font-weight: bold;
+`;
+
+export const StandardsMobile = styled.div`
+  width: 150px;
+  height: 29px;
+  background-color: #62ebbd;
+  border-radius: 5px;
+  color: white;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
 `;
 
 export const QuestionCell = styled.div`
@@ -337,6 +408,9 @@ export const MasterySummary = styled(Progress)`
   }
   .ant-progress-outer {
     width: calc(100% - 30px);
+    @media (max-width: ${mobileWidth}) {
+      width: 100%;
+    }
   }
   .ant-progress-text {
     color: #434b5d;
@@ -346,8 +420,19 @@ export const MasterySummary = styled(Progress)`
   }
 `;
 
+export const MasterySummaryInfo = styled.div`
+  margin-top: 15px;
+  color: #434b5d;
+`;
+
 export const PerformanceSummary = styled.div`
   color: #434b5d;
   font-weight: 600;
   font-size: 14px;
+`;
+
+export const InfoCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;

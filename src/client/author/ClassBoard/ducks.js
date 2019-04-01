@@ -139,7 +139,7 @@ export const getGradeBookSelector = createSelector(
       avgScore: submittedScoresAverage,
       itemsSummary
     };
-    console.log("classboard gradebook data", state);
+
     return result;
   }
 );

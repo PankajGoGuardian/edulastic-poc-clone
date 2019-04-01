@@ -44,6 +44,10 @@ export const MainDivLeft = styled.div`
 export const PerfomanceSection = styled(StyledFlexContainer)`
   align-items: baseline;
   justify-content: space-between;
+  @media (max-width: ${mobileWidth}) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 export const StyledCard = styled(Card)`
@@ -65,10 +69,9 @@ export const StyledCard = styled(Card)`
     min-width: calc((100% - 80px) / 2);
   }
   @media only screen and (max-width: ${mobileWidth}) {
-    max-width: 100%;
-  }
-  &:last-child {
-    margin-right: 20px;
+    max-width: calc((100% - 20px) / 2);
+    min-width: calc((100% - 20px) / 2);
+    margin-right: 15px;
   }
 `;
 
@@ -119,6 +122,8 @@ export const CircularDiv = styled.div`
 export const StyledFlexDiv = styled.div`
   display: flex;
   align-items: baseline;
+  @media (max-width: ${mobileWidth}) {
+  }
 `;
 
 export const StyledName = styled.div`

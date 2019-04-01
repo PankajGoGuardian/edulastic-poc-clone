@@ -4,7 +4,15 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
-import { StyledFlexContainer, StyledCard, LegendContainer, LegendItem, LegendIcon, LegendLabel } from "./styled";
+import {
+  StyledFlexContainer,
+  StyledCard,
+  LegendContainer,
+  LegendItems,
+  LegendItem,
+  LegendIcon,
+  LegendLabel
+} from "./styled";
 import StudentResponse from "./component/studentResponses/studentResponse";
 import ClassQuestions from "../ClassResponses/components/Container/ClassQuestions";
 
@@ -18,6 +26,8 @@ class QuestionViewContainer extends Component {
     const { loadClassQuestionResponses, assignmentIdClassId: { assignmentId, classId } = {}, question } = this.props;
     loadClassQuestionResponses(assignmentId, classId, question.id);
   }
+
+  isMobile = () => window.innerWidth < 480;
 
   render() {
     const {
@@ -37,7 +47,8 @@ class QuestionViewContainer extends Component {
         widgets: row.widgets.filter(({ reference }) => reference === question.id)
       }));
     });
-    const data = [];
+    const isMobile = this.isMobile();
+    let data = [];
     if (testActivity.length > 0) {
       testActivity.map(student => {
         if (student.status === "submitted") {
@@ -51,32 +62,39 @@ class QuestionViewContainer extends Component {
         return "";
       });
     }
+
+    if (isMobile) {
+      data = data.slice(0, 2);
+    }
+
     return (
       <React.Fragment>
         <StyledFlexContainer>
           <StyledCard bordered={false}>
-            {children}
             <LegendContainer>
-              <LegendItem>
-                <LegendIcon color="#1FE3A1" />
-                <LegendLabel>CORRECT</LegendLabel>
-              </LegendItem>
-              <LegendItem>
-                <LegendIcon color="#F35F5F" />
-                <LegendLabel>INCORRECT</LegendLabel>
-              </LegendItem>
-              <LegendItem>
-                <LegendIcon color="#ebaa28" />
-                <LegendLabel>PARTIALLY CORRECT</LegendLabel>
-              </LegendItem>
-              <LegendItem>
-                <LegendIcon color="#B1B1B1" />
-                <LegendLabel>SKIPPED</LegendLabel>
-              </LegendItem>
-              <LegendItem>
-                <LegendIcon color="#7BC0DF" />
-                <LegendLabel>MANUALLY GRADED</LegendLabel>
-              </LegendItem>
+              <LegendItems>
+                <LegendItem>
+                  <LegendIcon color="#1FE3A1" />
+                  <LegendLabel>CORRECT</LegendLabel>
+                </LegendItem>
+                <LegendItem>
+                  <LegendIcon color="#F35F5F" />
+                  <LegendLabel>INCORRECT</LegendLabel>
+                </LegendItem>
+                <LegendItem>
+                  <LegendIcon color="#ebaa28" />
+                  <LegendLabel>PARTIALLY CORRECT</LegendLabel>
+                </LegendItem>
+                <LegendItem>
+                  <LegendIcon color="#B1B1B1" />
+                  <LegendLabel>SKIPPED</LegendLabel>
+                </LegendItem>
+                <LegendItem>
+                  <LegendIcon color="#7BC0DF" />
+                  <LegendLabel>MANUALLY GRADED</LegendLabel>
+                </LegendItem>
+              </LegendItems>
+              {children}
             </LegendContainer>
             <ResponsiveContainer width="100%" height={250}>
               <ComposedChart barGap={1} barSize={36} data={data}>

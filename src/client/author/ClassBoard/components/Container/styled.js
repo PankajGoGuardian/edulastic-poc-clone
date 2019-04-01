@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, Checkbox, Button } from "antd";
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
+import { mobileWidth } from "@edulastic/colors";
 import { themes } from "../../../../student/themes";
 
 const classBoardTheme = themes.default.classboard;
@@ -19,6 +20,9 @@ export const PaginationInfo = styled.span`
   font-size: 11px;
   word-spacing: 5px;
   color: #69727e;
+  @media (max-width: ${mobileWidth}) {
+    display: none;
+  }
 `;
 
 export const CheckContainer = styled.span`
@@ -43,6 +47,9 @@ export const GraphContainer = styled(FlexContainer)`
   width: 95%;
   margin: 20px auto;
   padding-right: 20px;
+  @media (max-width: ${mobileWidth}) {
+    padding-right: 5px;
+  }
 `;
 
 export const StudentGrapContainer = styled(FlexContainer)`
@@ -64,6 +71,9 @@ export const StudentButtonDiv = styled.div`
   margin-right: 20px !important;
   .ant-btn-primary {
     background-color: #0e93dc;
+  }
+  @media (max-width: ${mobileWidth}) {
+    margin: auto;
   }
 `;
 

@@ -1,15 +1,24 @@
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
+import { mobileWidth } from "@edulastic/colors";
 
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 95%;
   margin: 20px auto;
+  @media (max-width: ${mobileWidth}) {
+    flex: none;
+    overflow: auto;
+  }
 `;
 
 export const StudentButtonDiv = styled.div`
   margin-right: 20px !important;
   .ant-btn-primary {
     background-color: #0e93dc;
+  }
+  @media (max-width: ${mobileWidth}) {
+    display: flex;
+    flex: none;
   }
 `;
 
@@ -62,4 +71,9 @@ export const GiveOverallFeedBackButton = styled(StyledTabButton)`
   display: flex;
   padding: 20px 70px;
   align-items: center;
+  @media (max-width: ${mobileWidth}) {
+    padding: 20px 20px;
+    min-width: 175px;
+    justify-content: center;
+  }
 `;

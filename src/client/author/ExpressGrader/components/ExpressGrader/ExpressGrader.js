@@ -21,6 +21,7 @@ import {
 } from "../../../ClassBoard/ducks";
 // components
 import ScoreTable from "../ScoreTable/ScoreTable";
+import ScoreCard from "../ScoreCard/ScoreCard";
 import QuestionModal from "../QuestionModal/QuestionModal";
 import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
 // styled wrappers
@@ -73,12 +74,14 @@ class ExpressGrader extends Component {
     });
   };
 
+  isMobile = () => window.innerWidth < 480;
+
   render() {
     const { testActivity, studentResponse, additionalData, match } = this.props;
     const { isVisibleModal, record, tableData } = this.state;
     const { assignmentId, classId } = match.params;
     const questionActivities = studentResponse !== undefined ? studentResponse.questionActivities : [];
-    console.log(this.props);
+    const isMobile = this.isMobile();
     return (
       <div>
         <ClassHeader
@@ -94,11 +97,16 @@ class ExpressGrader extends Component {
             {additionalData && <a>{additionalData.testName}</a>} / {additionalData && <a>{additionalData.className}</a>}
           </PaginationInfo>
         </StyledFlexContainer>
-        <ScoreTable
-          testActivity={testActivity}
-          questionActivities={questionActivities}
-          showQuestionModal={this.showQuestionModal}
-        />
+        {!isMobile && (
+          <ScoreTable
+            testActivity={testActivity}
+            questionActivities={questionActivities}
+            showQuestionModal={this.showQuestionModal}
+          />
+        )}
+
+        {isMobile && <ScoreCard testActivity={testActivity} questionActivities={questionActivities} />}
+
         {isVisibleModal && (
           <QuestionModal
             record={record}

@@ -234,7 +234,7 @@ class SummaryBoard extends Component {
                 <ActionTitle>Differentiation</ActionTitle>
                 <ActionDescription>
                   {"Recommendations for each student"}
-                  {"are based on their performance on this assessment."}
+                  {" are based on their performance on this assessment."}
                 </ActionDescription>
               </ActionDescriptionWrapper>
               <ViewRecommendationsBtn>VIEW RECOMMENDATIONS</ViewRecommendationsBtn>

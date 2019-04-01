@@ -216,6 +216,8 @@ class ClassBoard extends Component {
     });
   };
 
+  isMobile = () => window.innerWidth < 480;
+
   render() {
     const {
       gradebook,
@@ -239,6 +241,7 @@ class ClassBoard extends Component {
     const classname = additionalData ? additionalData.classes : [];
     const questions = this.getQuestions();
     const questionsIds = questions.map((q, i) => ({ name: `Question ${i + 1}` }));
+    const isMobile = this.isMobile();
 
     return (
       <div>
@@ -278,7 +281,10 @@ class ClassBoard extends Component {
               </StyledCard>
             </GraphContainer>
             {nCountTrue > 0 && (
-              <StyledFlexContainer justifyContent="space-between" style={{ marginBottom: 0, paddingRight: 20 }}>
+              <StyledFlexContainer
+                justifyContent="space-between"
+                style={{ marginBottom: 0, paddingRight: isMobile ? 5 : 20 }}
+              >
                 <CheckContainer>
                   <StyledCheckbox checked={selectAll} onChange={this.onSelectAllChange}>
                     {selectAll ? "UNSELECT ALL" : "SELECT ALL"}

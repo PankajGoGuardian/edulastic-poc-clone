@@ -68,7 +68,7 @@ class ScoreTable extends Component {
     const { showQuestionModal } = this.props;
     const columns = [
       {
-        title: <TableTitle>Questions&Standards</TableTitle>,
+        title: <TableTitle>Questions & Standards</TableTitle>,
         fixed: "left",
         width: 230,
         children: [

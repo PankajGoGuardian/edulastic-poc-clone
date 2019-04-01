@@ -7,7 +7,7 @@ import { getRows } from "../../../sharedDucks/itemDetail";
 // styled wrappers
 import { StyledFlexContainer } from "./styled";
 
-function Preview({ item }) {
+function Preview({ item, index }) {
   const rows = getRows(item);
   const questions = (item.data && item.data.questions) || [];
   const questionsKeyed = _keyBy(questions, "id");
@@ -22,13 +22,15 @@ function Preview({ item }) {
         verticalDivider={item.verticalDivider}
         scrolling={item.scrolling}
         style={{ width: "100%" }}
+        index={index}
       />
     </StyledFlexContainer>
   );
 }
 
 Preview.propTypes = {
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  index: PropTypes.number.isRequired
 };
 
 class ClassQuestions extends Component {
@@ -74,7 +76,7 @@ class ClassQuestions extends Component {
 
   render() {
     const testItems = this.getTestItems();
-    return testItems.map((item, index) => <Preview key={index} item={item} />);
+    return testItems.map((item, index) => <Preview key={index} item={item} index={index} />);
   }
 }
 

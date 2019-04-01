@@ -22,6 +22,7 @@ import {
   StyledParaSecond,
   StyledPopconfirm,
   StyledDiv,
+  StyledTabContainer,
   StyledTabs,
   StyledAnchor,
   StyledButton,
@@ -94,32 +95,34 @@ class ClassHeader extends Component {
             Done(Due on {additionalData.endDate && moment(dueDate).format("D MMMM YYYY")})
           </StyledParaSecond>
         </StyledTitle>
-        <StyledTabs>
-          <StyledAnchor isActive={active === "summary"}>
-            <StyledLink to={`/author/summary/${assignmentId}/${classId}`}>
-              <IconSummaryBoard color={active === "summary" ? "#FFFFFF" : "#bed8fa"} left={0} />
-              <LinkLabel>{t("common.summaryBoard")}</LinkLabel>
-            </StyledLink>
-          </StyledAnchor>
-          <StyledAnchor isActive={active === "classboard"}>
-            <StyledLink to={`/author/classboard/${assignmentId}/${classId}`}>
-              <IconDeskTopMonitor color={active === "classboard" ? "#FFFFFF" : "#bed8fa"} left={0} />
-              <LinkLabel>{t("common.liveClassBoard")}</LinkLabel>
-            </StyledLink>
-          </StyledAnchor>
-          <StyledAnchor isActive={active === "expressgrader"}>
-            <StyledLink to={`/author/expressgrader/${assignmentId}/${classId}/${testActivityId}`}>
-              <IconBookMarkButton color={active === "expressgrader" ? "#FFFFFF" : "#bed8fa"} left={0} />
-              <LinkLabel>{t("common.expressGrader")}</LinkLabel>
-            </StyledLink>
-          </StyledAnchor>
-          <StyledAnchor isActive={active === "standard_report"}>
-            <StyledLink to={`/author/standardsBasedReport/${assignmentId}/${classId}`}>
-              <IconNotes color={active === "standard_report" ? "#FFFFFF" : "#bed8fa"} left={0} />
-              <LinkLabel>{t("common.standardBasedReports")}</LinkLabel>
-            </StyledLink>
-          </StyledAnchor>
-        </StyledTabs>
+        <StyledTabContainer>
+          <StyledTabs>
+            <StyledAnchor isActive={active === "summary"}>
+              <StyledLink to={`/author/summary/${assignmentId}/${classId}`}>
+                <IconSummaryBoard color={active === "summary" ? "#FFFFFF" : "#bed8fa"} left={0} />
+                <LinkLabel>{t("common.summaryBoard")}</LinkLabel>
+              </StyledLink>
+            </StyledAnchor>
+            <StyledAnchor isActive={active === "classboard"}>
+              <StyledLink to={`/author/classboard/${assignmentId}/${classId}`}>
+                <IconDeskTopMonitor color={active === "classboard" ? "#FFFFFF" : "#bed8fa"} left={0} />
+                <LinkLabel>{t("common.liveClassBoard")}</LinkLabel>
+              </StyledLink>
+            </StyledAnchor>
+            <StyledAnchor isActive={active === "expressgrader"}>
+              <StyledLink to={`/author/expressgrader/${assignmentId}/${classId}/${testActivityId}`}>
+                <IconBookMarkButton color={active === "expressgrader" ? "#FFFFFF" : "#bed8fa"} left={0} />
+                <LinkLabel>{t("common.expressGrader")}</LinkLabel>
+              </StyledLink>
+            </StyledAnchor>
+            <StyledAnchor isActive={active === "standard_report"}>
+              <StyledLink to={`/author/standardsBasedReport/${assignmentId}/${classId}`}>
+                <IconNotes color={active === "standard_report" ? "#FFFFFF" : "#bed8fa"} left={0} />
+                <LinkLabel>{t("common.standardBasedReports")}</LinkLabel>
+              </StyledLink>
+            </StyledAnchor>
+          </StyledTabs>
+        </StyledTabContainer>
         <StyledDiv>
           <StyledPopconfirm
             visible={visible}

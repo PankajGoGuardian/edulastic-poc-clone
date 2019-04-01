@@ -21,7 +21,9 @@ import {
   getItemDetailRowsSelector,
   getItemDetailSelector,
   getItemDetailUpdatingSelector,
-  getItemDetailDimensionTypeSelector
+  getItemDetailDimensionTypeSelector,
+  publishTestItemAction,
+  getTestItemStatusSelector
 } from "../../ducks";
 
 import { getQuestionsSelector } from "../../../sharedDucks/questions";
@@ -34,6 +36,12 @@ import ItemHeader from "../ItemHeader/ItemHeader";
 import SettingsBar from "../SettingsBar";
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import TestItemMetadata from "../../../../assessment/components/TestItemMetadata";
+
+const testItemStatusConstants = {
+  DRAFT: "draft",
+  PUBLISHED: "published",
+  ARCHIVED: "archived"
+};
 
 class Container extends Component {
   state = {
@@ -197,6 +205,12 @@ class Container extends Component {
     });
   };
 
+  handlePublishTestItem = () => {
+    const { publishTestItem, item } = this.props;
+    const { _id } = item;
+    publishTestItem(_id);
+  };
+
   renderPreview = () => {
     const { rows, item, preview, questions } = this.props;
     return (
@@ -233,8 +247,16 @@ class Container extends Component {
       updateTabTitle,
       useTabs,
       changePreview,
-      windowWidth
+      windowWidth,
+      testItemStatus
     } = this.props;
+
+    let showPublishButton = false;
+
+    if (item) {
+      const { _id: testItemId } = item;
+      showPublishButton = testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED;
+    }
 
     return (
       <Layout>
@@ -270,9 +292,11 @@ class Container extends Component {
             changePreview={changePreview}
             changePreviewTab={this.handleChangePreviewTab}
             onSave={this.handleSave}
+            onPublishTestItem={this.handlePublishTestItem}
             saving={updating}
             view={view}
             previewTab={previewTab}
+            showPublishButton={showPublishButton}
           />
         </ItemHeader>
         {windowWidth > MAX_MOBILE_WIDTH && (
@@ -286,6 +310,7 @@ class Container extends Component {
             saving={updating}
             view={view}
             previewTab={previewTab}
+            showPublishButton={showPublishButton}
           />
         )}
         {view === "edit" && (
@@ -337,7 +362,8 @@ Container.propTypes = {
   changePreview: PropTypes.func.isRequired,
   loadQuestion: PropTypes.func.isRequired,
   questions: PropTypes.func.isRequired,
-  changeView: PropTypes.func.isRequired
+  changeView: PropTypes.func.isRequired,
+  testItemStatus: PropTypes.string.isRequired
 };
 
 Container.defaultProps = {
@@ -355,6 +381,7 @@ const enhance = compose(
       updating: getItemDetailUpdatingSelector(state),
       type: getItemDetailDimensionTypeSelector(state),
       questions: getQuestionsSelector(state),
+      testItemStatus: getTestItemStatusSelector(state),
       preview: state.view.preview
     }),
     {
@@ -369,7 +396,8 @@ const enhance = compose(
       deleteWidget: deleteWidgetAction,
       updateTabTitle: updateTabTitleAction,
       useTabs: useTabsAction,
-      loadQuestion: loadQuestionAction
+      loadQuestion: loadQuestionAction,
+      publishTestItem: publishTestItemAction
     }
   )
 );

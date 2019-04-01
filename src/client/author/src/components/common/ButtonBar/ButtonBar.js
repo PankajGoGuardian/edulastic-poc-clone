@@ -53,7 +53,17 @@ class ButtonBar extends Component {
 
   render() {
     const { current } = this.state;
-    const { t, onSave, onShowSource, onShowSettings, windowWidth, changePreviewTab, clearAnswers } = this.props;
+    const {
+      t,
+      onSave,
+      onPublishTestItem,
+      onShowSource,
+      onShowSettings,
+      windowWidth,
+      changePreviewTab,
+      clearAnswers,
+      showPublishButton
+    } = this.props;
     return (
       <React.Fragment>
         {windowWidth > 468 ? (
@@ -91,6 +101,7 @@ class ButtonBar extends Component {
               </MenuItem>
             </Menu>
             <RightSide>
+              {showPublishButton && <Button onClick={onPublishTestItem}>Publish</Button>}
               <Button data-cy="saveButton" onClick={onSave}>
                 <HeadIcon>
                   <IconSave color={newBlue} width={18} height={16} />

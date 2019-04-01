@@ -6,6 +6,7 @@ import { get } from "lodash";
 import { Spin, Button } from "antd";
 import styled from "styled-components";
 import Modal from "react-responsive-modal";
+import { withRouter } from "react-router-dom";
 
 import TestItemPreview from "../../../../../assessment/components/TestItemPreview";
 import {
@@ -16,11 +17,15 @@ import {
 } from "../../../../ItemDetail/ducks";
 import { getQuestionsSelector } from "../../../../sharedDucks/questions";
 
+import { testItemsApi } from "@edulastic/api";
+
 const ModalStyles = {
   minWidth: 750,
   borderRadius: "5px",
   padding: "30px"
 };
+
+const { duplicateTestItem } = testItemsApi;
 class PreviewModal extends React.Component {
   constructor(props) {
     super(props);
@@ -45,6 +50,21 @@ class PreviewModal extends React.Component {
     onClose();
   };
 
+  handleDuplicateTestItem = () => {
+    const { data, history } = this.props;
+    const itemId = data.id;
+    duplicateTestItem(itemId).then(duplicateId => {
+      const duplicateTestItemId = duplicateId._id;
+      history.push(`/author/items/${duplicateTestItemId}/item-detail`);
+    });
+  };
+
+  editTestItem = () => {
+    const { data, history } = this.props;
+    const itemId = data.id;
+    history.push(`/author/items/${itemId}/item-detail`);
+  };
+
   render() {
     const { isVisible, loading, item, rows, questions, currentAuthorId, authors } = this.props;
     const getAuthorsId = authors.map(item => item._id);
@@ -54,8 +74,8 @@ class PreviewModal extends React.Component {
         <HeadingWrapper>
           <Title>Preview</Title>
           <ButtonsWrapper>
-            <Button>Duplicate</Button>
-            {authorHasPermission && <ButtonEdit>EDIT</ButtonEdit>}
+            <Button onClick={this.handleDuplicateTestItem}>Duplicate</Button>
+            {authorHasPermission && <ButtonEdit onClick={this.editTestItem}>EDIT</ButtonEdit>}
           </ButtonsWrapper>
         </HeadingWrapper>
         {loading || item === null ? (
@@ -93,6 +113,7 @@ PreviewModal.defaultProps = {
 };
 
 const enhance = compose(
+  withRouter,
   connect(
     state => ({
       rows: getItemDetailRowsSelector(state),

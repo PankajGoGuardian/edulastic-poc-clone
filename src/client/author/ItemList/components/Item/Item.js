@@ -38,7 +38,13 @@ class Item extends Component {
     item: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     t: PropTypes.func.isRequired,
-    windowWidth: PropTypes.number.isRequired
+    windowWidth: PropTypes.number.isRequired,
+    onToggleToCart: PropTypes.func.isRequired,
+    selectedToCart: PropTypes.bool
+  };
+
+  static defaultProps = {
+    selectedToCart: false
   };
 
   moveToItem = () => {
@@ -51,6 +57,11 @@ class Item extends Component {
         itemDetail: true
       }
     });
+  };
+
+  handleToggleItemToCart = itemId => () => {
+    const { onToggleToCart } = this.props;
+    onToggleToCart(itemId);
   };
 
   get description() {
@@ -161,7 +172,7 @@ class Item extends Component {
   };
 
   render() {
-    const { item, t, windowWidth } = this.props;
+    const { item, t, windowWidth, selectedToCart } = this.props;
 
     return (
       <Container>
@@ -177,7 +188,9 @@ class Item extends Component {
           {windowWidth > MAX_TAB_WIDTH && (
             <ViewButton>
               <ViewButtonStyled onClick={this.moveToItem}>{t("component.item.view")}</ViewButtonStyled>
-              <AddButtonStyled>{<IconPlus />}</AddButtonStyled>
+              <AddButtonStyled onClick={this.handleToggleItemToCart(item._id)}>
+                {selectedToCart ? "Remove" : <IconPlus />}
+              </AddButtonStyled>
             </ViewButton>
           )}
         </Question>
@@ -191,7 +204,9 @@ class Item extends Component {
         {windowWidth < MAX_TAB_WIDTH && (
           <ViewButton>
             <ViewButtonStyled onClick={this.moveToItem}>{t("component.item.view")}</ViewButtonStyled>
-            <AddButtonStyled>{<IconPlus />}</AddButtonStyled>
+            <AddButtonStyled onClick={this.handleToggleItemToCart(item._id)}>
+              {selectedToCart ? "Remove" : <IconPlus />}
+            </AddButtonStyled>
           </ViewButton>
         )}
       </Container>

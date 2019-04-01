@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import Question from "../Question/Question";
-import { ModalWrapper } from "./styled";
+import { ModalWrapper, QuestionWrapper, BottomNavigationWrapper } from "./styled";
 import BottomNavigation from "../BottomNavigation/BottomNavigation";
 
 class QuestionModal extends React.Component {
@@ -10,8 +10,8 @@ class QuestionModal extends React.Component {
     super();
     this.state = {
       loaded: false,
-      visible: false,
-      question: null,
+      // visible: false,
+      // question: null,
       rowIndex: null,
       colIndex: null,
       maxQuestions: null,
@@ -135,11 +135,12 @@ class QuestionModal extends React.Component {
     if (colIndex !== null && rowIndex !== null) {
       question = tableData[rowIndex][`Q${colIndex}`];
     }
-
+    console.log("quetions modal");
     return (
       <ModalWrapper
-        width="100%"
-        height="100%"
+        centered
+        width="95%"
+        height="95%"
         footer={null}
         closable={false}
         onOk={this.hideModal}
@@ -149,14 +150,19 @@ class QuestionModal extends React.Component {
       >
         {isVisibleModal && question && loaded && (
           <React.Fragment>
-            <Question record={question} />
-            <BottomNavigation
-              hideModal={this.hideModal}
-              prevStudent={this.prevStudent}
-              nextStudent={this.nextStudent}
-              prevQuestion={this.prevQuestion}
-              nextQuestion={this.nextQuestion}
-            />
+            <QuestionWrapper>
+              <Question record={question} />
+            </QuestionWrapper>
+            <BottomNavigationWrapper>
+              <BottomNavigation
+                hideModal={this.hideModal}
+                prevStudent={this.prevStudent}
+                nextStudent={this.nextStudent}
+                prevQuestion={this.prevQuestion}
+                nextQuestion={this.nextQuestion}
+                style={{ padding: "20px 3%" }}
+              />
+            </BottomNavigationWrapper>
           </React.Fragment>
         )}
       </ModalWrapper>

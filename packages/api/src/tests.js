@@ -38,7 +38,7 @@ const create = data =>
     .then(result => result.data.result);
 
 const update = ({ id, data: test }) => {
-  const data = formatData(test);
+  const { authors, ...data } = formatData(test);
   return api
     .callApi({
       url: `${prefix}/${id}`,
@@ -56,11 +56,19 @@ const shareTest = ({ data, testId }) =>
       data
     })
     .then(result => result.data.result);
+const publishTest = testId =>
+  api
+    .callApi({
+      url: `${prefix}/${testId}/publish`,
+      method: "put"
+    })
+    .then(result => result.data.result);
 
 export default {
   getAll,
   getById,
   create,
   update,
-  shareTest
+  shareTest,
+  publishTest
 };

@@ -1,8 +1,10 @@
 import React from "react";
 import { Component } from "react";
-import { StyledCard, StyledTable, StyledCustomTooltip } from "../styled";
+import { StyledCard, StyledTable } from "../styled";
+import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
 import { Row, Col } from "antd";
 import { ResponseTag } from "./responseTag";
+import { getHSLFromRange1 } from "../../../../common/util";
 
 export class ResponseFrequencyTable extends Component {
   constructor(props) {
@@ -30,47 +32,62 @@ export class ResponseFrequencyTable extends Component {
     // README: below line might work if antd version is upgraded to 3.15.0
     // this.columns[4].sortDirections = ["descend"];
     this.columns[4].render = (data, record) => {
-      let tooltipText = (record, assessment) => {
+      const tooltipText = record => () => {
         let { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record;
         let sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
         return (
           <div>
             <Row type="flex" justify="start">
-              <Col className="response-frequency-table-tooltip-key">Assessment Name: </Col>
-              <Col className="response-frequency-table-tooltip-value">{this.props.assessment.testName}</Col>
+              <Col className="custom-table-tooltip-key">Assessment Name: </Col>
+              <Col className="custom-table-tooltip-value">{this.props.assessment.testName}</Col>
             </Row>
             <Row type="flex" justify="start">
-              <Col className="response-frequency-table-tooltip-key">Question: </Col>
-              <Col className="response-frequency-table-tooltip-value">{record.qLabel}</Col>
+              <Col className="custom-table-tooltip-key">Question: </Col>
+              <Col className="custom-table-tooltip-value">{record.qLabel}</Col>
             </Row>
             <Row type="flex" justify="start">
-              <Col className="response-frequency-table-tooltip-key">Question Type: </Col>
-              <Col className="response-frequency-table-tooltip-value">{record.qType}</Col>
+              <Col className="custom-table-tooltip-key">Question Type: </Col>
+              <Col className="custom-table-tooltip-value">{record.qType}</Col>
             </Row>
             <Row type="flex" justify="start">
-              <Col className="response-frequency-table-tooltip-key">Standards: </Col>
-              <Col className="response-frequency-table-tooltip-value">{record.standards}</Col>
+              <Col className="custom-table-tooltip-key">Standards: </Col>
+              <Col className="custom-table-tooltip-value">{record.standards}</Col>
             </Row>
             <Row type="flex" justify="start">
-              <Col className="response-frequency-table-tooltip-key">Max Score: </Col>
-              <Col className="response-frequency-table-tooltip-value">{record.maxScore}</Col>
+              <Col className="custom-table-tooltip-key">Max Score: </Col>
+              <Col className="custom-table-tooltip-value">{record.maxScore}</Col>
             </Row>
             <Row type="flex" justify="start">
-              <Col className="response-frequency-table-tooltip-key">Performance: </Col>
-              <Col className="response-frequency-table-tooltip-value">{corr_cnt}%</Col>
+              <Col className="custom-table-tooltip-key">Performance: </Col>
+              <Col className="custom-table-tooltip-value">{corr_cnt}%</Col>
             </Row>
             <Row type="flex" justify="start">
-              <Col className="response-frequency-table-tooltip-key">Students Skipped: </Col>
-              <Col className="response-frequency-table-tooltip-value">{skip_cnt}</Col>
+              <Col className="custom-table-tooltip-key">Students Skipped: </Col>
+              <Col className="custom-table-tooltip-value">{skip_cnt}</Col>
             </Row>
             <Row type="flex" justify="start">
-              <Col className="response-frequency-table-tooltip-key">Students Correct: </Col>
-              <Col className="response-frequency-table-tooltip-value">{corr_cnt}</Col>
+              <Col className="custom-table-tooltip-key">Students Correct: </Col>
+              <Col className="custom-table-tooltip-value">{corr_cnt}</Col>
             </Row>
             <Row type="flex" justify="start">
-              <Col className="response-frequency-table-tooltip-key">Total Students: </Col>
-              <Col className="response-frequency-table-tooltip-value">{sum}</Col>
+              <Col className="custom-table-tooltip-key">Total Students: </Col>
+              <Col className="custom-table-tooltip-value">{sum}</Col>
             </Row>
+          </div>
+        );
+      };
+
+      const getCellContents = props => {
+        let { correct, correctThreshold } = props;
+        return (
+          <div style={{ width: "100%", height: "100%" }}>
+            {correct < correctThreshold ? (
+              <div className="response-frequency-table-correct-td" style={{ backgroundColor: getHSLFromRange1(0) }}>
+                {correct}%
+              </div>
+            ) : (
+              <div className="response-frequency-table-correct-td">{correct}%</div>
+            )}
           </div>
         );
       };
@@ -81,14 +98,13 @@ export class ResponseFrequencyTable extends Component {
       if (isNaN(correct)) correct = 0;
 
       return (
-        <div style={{ display: "contents" }}>
-          <StyledCustomTooltip
-            correct={correct}
-            correctThreshold={this.props.correctThreshold}
-            placement="top"
-            title={tooltipText.bind(null, record)}
-          />
-        </div>
+        <CustomTableTooltip
+          correct={correct}
+          correctThreshold={this.props.correctThreshold}
+          placement="top"
+          title={tooltipText(record)}
+          getCellContents={getCellContents}
+        />
       );
     };
 

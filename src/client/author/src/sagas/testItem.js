@@ -1,6 +1,6 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { message } from "antd";
-import { isArray, isNull, isBoolean } from "lodash";
+import { isArray, isNull, isBoolean, get as _get } from "lodash";
 import { testItemsApi } from "@edulastic/api";
 import { evaluateItem } from "../utils/evalution";
 import createShowAnswerData from "../utils/showAnswer";
@@ -114,17 +114,21 @@ function* showAnswers() {
 }
 
 function* setAnswerSaga() {
-  const answers = yield select(state => state.answers);
-  const id = yield select(state => state.question.entity.data.id);
+  try {
+    const answers = yield select(state => state.answers);
+    const id = yield select(state => _get(state, "question.entity.data.id", {}));
 
-  if (!answers[id]) {
-    yield put({
-      type: SET_ANSWER,
-      payload: {
-        id,
-        data: []
-      }
-    });
+    if (!answers[id]) {
+      yield put({
+        type: SET_ANSWER,
+        payload: {
+          id,
+          data: []
+        }
+      });
+    }
+  } catch (e) {
+    console.log("error:", e);
   }
 }
 

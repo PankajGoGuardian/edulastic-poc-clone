@@ -338,3 +338,13 @@ Cypress.Commands.add("deleteOldQuestion", ({ editItem, itemId = ITEM_ID }) => {
   editItem.getItemWithId(itemId);
   editItem.deleteAllQuestion();
 });
+
+Cypress.Commands.add(
+  "typeWithDelay",
+  {
+    prevSubject: "element"
+  },
+  (subject, typeObject) => {
+    cy.wrap(subject).type(typeObject, { force: true, delay: 100 });
+  }
+);

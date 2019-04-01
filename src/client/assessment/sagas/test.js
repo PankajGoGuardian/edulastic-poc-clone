@@ -54,7 +54,9 @@ function* loadTest({ payload }) {
     const [test, testActivity] = yield all([
       call(testsApi.getById, testId, {
         validation: true,
-        data: true
+        data: true,
+        groupId,
+        testActivityId
       }),
       getTestActivity
     ]);

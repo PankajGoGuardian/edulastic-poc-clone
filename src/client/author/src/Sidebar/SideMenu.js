@@ -108,9 +108,9 @@ class SideMenu extends Component {
     const { target } = e;
     const hamburger = document.querySelector(".hamburger");
     const footerDropDown = document.querySelector(".footerDropdown");
-    const itsMenu = target === menu || menu.contains(target);
-    const itsHamburger = target === hamburger || hamburger.contains(target);
-    const itsFooterDropDown = target === footerDropDown || footerDropDown.contains(target);
+    const itsMenu = target === menu && menu.contains(target);
+    const itsHamburger = target === hamburger && hamburger.contains(target);
+    const itsFooterDropDown = target === footerDropDown && footerDropDown.contains(target);
     const isFull = menu.classList.contains("full");
 
     if (!itsMenu && !itsHamburger && !itsFooterDropDown && isFull) {

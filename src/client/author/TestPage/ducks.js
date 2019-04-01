@@ -9,8 +9,16 @@ import { testsApi, assignmentApi } from "@edulastic/api";
 
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
 import { loadQuestionsAction } from "../sharedDucks/questions";
+import { setTestItemsAction } from "./components/AddItems/ducks";
 
 // constants
+
+const testItemStatusConstants = {
+  DRAFT: "draft",
+  PUBLISHED: "published",
+  ARCHIVED: "archived"
+};
+
 export const SET_ASSIGNMENT = "[assignments] set assignment"; // TODO remove cyclic dependency
 export const CREATE_TEST_REQUEST = "[tests] create test request";
 export const CREATE_TEST_SUCCESS = "[tests] create test success";
@@ -29,6 +37,8 @@ export const SET_DEFAULT_TEST_DATA = "[tests] set default test data";
 export const SET_TEST_EDIT_ASSIGNED = "[tests] set edit assigned";
 export const REGRADE_TEST = "[regrade] set regrade data";
 export const TEST_SHARE = "[test] send test share request";
+export const TEST_PUBLISH = "[test] publish test";
+export const UPDATE_TEST_STATUS = "[test] update test status";
 
 // actions
 
@@ -47,9 +57,9 @@ export const receiveTestByIdError = error => ({
   payload: { error }
 });
 
-export const createTestAction = data => ({
+export const createTestAction = (data, toReview = false) => ({
   type: CREATE_TEST_REQUEST,
-  payload: { data }
+  payload: { data, toReview }
 });
 
 export const createTestSuccessAction = entity => ({
@@ -93,6 +103,8 @@ export const setRegradeSettingsDataAction = payload => ({
 });
 
 export const sendTestShareAction = createAction(TEST_SHARE);
+export const publishTestAction = createAction(TEST_PUBLISH);
+export const updateTestStatusAction = createAction(UPDATE_TEST_STATUS);
 // reducer
 
 export const initialTestState = {
@@ -210,6 +222,14 @@ export const reducer = (state = initialState, { type, payload }) => {
           sebPassword: payload.data
         }
       };
+    case UPDATE_TEST_STATUS:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          status: payload
+        }
+      };
     default:
       return state;
   }
@@ -248,6 +268,9 @@ function* createTestSaga({ payload }) {
   try {
     const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate"]);
     const entity = yield call(testsApi.create, dataToSend);
+
+    yield put(setTestItemsAction([]));
+
     yield put({
       type: SET_TEST_DATA,
       payload: {
@@ -258,8 +281,11 @@ function* createTestSaga({ payload }) {
     if (regrade) {
       yield put(push(`/author/assignments/regrade/new/${entity._id}/old/${oldId}`));
     } else {
+      const hash = payload.toReview ? "#review" : "";
+
       yield put(createTestSuccessAction(entity));
-      yield put(replace(`/author/tests/${entity._id}`));
+      yield put(replace(`/author/tests/${entity._id}${hash}`));
+
       yield call(message.success, "Test created");
     }
   } catch (err) {
@@ -275,6 +301,7 @@ function* updateTestSaga({ payload }) {
     delete payload.data.updatedDate;
     delete payload.data.createdDate;
     delete payload.data.assignments;
+    delete payload.data.authors;
 
     const entity = yield call(testsApi.update, payload);
 
@@ -311,13 +338,25 @@ function* shareTestSaga({ payload }) {
   }
 }
 
+function* publishTestSaga({ payload }) {
+  try {
+    yield call(testsApi.publishTest, payload);
+    yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
+    yield call(message.success, "Successfully published");
+  } catch (e) {
+    const errorMessage = "publish failed";
+    yield call(message.error, errorMessage);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
     yield takeEvery(CREATE_TEST_REQUEST, createTestSaga),
     yield takeEvery(UPDATE_TEST_REQUEST, updateTestSaga),
     yield takeEvery(REGRADE_TEST, updateRegradeDataSaga),
-    yield takeEvery(TEST_SHARE, shareTestSaga)
+    yield takeEvery(TEST_SHARE, shareTestSaga),
+    yield takeEvery(TEST_PUBLISH, publishTestSaga)
   ]);
 }
 
@@ -333,6 +372,11 @@ export const getTestSelector = createSelector(
 export const getTestEntitySelector = createSelector(
   stateSelector,
   state => state.entity
+);
+
+export const getTestStatusSelector = createSelector(
+  getTestEntitySelector,
+  state => state.status
 );
 
 export const getTestIdSelector = createSelector(

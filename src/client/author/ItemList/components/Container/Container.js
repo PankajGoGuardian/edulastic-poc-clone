@@ -9,6 +9,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { Container, Element, ListItems, SpinContainer } from "./styled";
 import Item from "../Item/Item";
 import ItemFilter from "../ItemFilter/ItemFilter";
+import CartButton from "../CartButton/CartButton";
 import ListHeader from "../../../src/components/common/ListHeader";
 import { createTestItemAction } from "../../../src/actions/testItem";
 import {
@@ -22,11 +23,14 @@ import {
   getTestsItemsLimitSelector,
   getTestsItemsPageSelector,
   getTestItemsLoadingSelector,
-  receiveTestItemsAction
+  receiveTestItemsAction,
+  getSelectedItemSelector
 } from "../../../TestPage/components/AddItems/ducks";
+import { setDefaultTestDataAction } from "../../../TestPage/ducks";
 import { getItemsTypesSelector } from "../../../TestPage/components/Review/ducks";
 import { getTestItemCreatingSelector } from "../../../src/selectors/testItem";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
+import { addItemToCartAction } from "../../ducks";
 
 export const getClearSearchState = () => ({
   subject: "",
@@ -45,7 +49,8 @@ class Contaier extends Component {
   };
 
   componentDidMount() {
-    const { receiveItems, curriculums, getCurriculums } = this.props;
+    const { receiveItems, curriculums, getCurriculums, setDefaultTestData } = this.props;
+    setDefaultTestData();
     receiveItems();
     if (curriculums.length === 0) {
       getCurriculums();
@@ -141,7 +146,7 @@ class Contaier extends Component {
   };
 
   renderItems = () => {
-    const { items, itemTypes, history, windowWidth } = this.props;
+    const { items, itemTypes, history, windowWidth, addItemToCart, selectedCartItems } = this.props;
 
     return items.map(item => (
       <Item
@@ -150,9 +155,13 @@ class Contaier extends Component {
         types={itemTypes[item._id]}
         history={history}
         windowWidth={windowWidth}
+        onToggleToCart={addItemToCart}
+        selectedToCart={selectedCartItems.includes(item._id)}
       />
     ));
   };
+
+  renderCartButton = () => <CartButton />;
 
   render() {
     const { windowWidth, creating, t, curriculums, getCurriculumStandards, curriculumStandards, loading } = this.props;
@@ -166,6 +175,7 @@ class Contaier extends Component {
           creating={creating}
           windowWidth={windowWidth}
           title={t("component.itemlist.header.itemlist")}
+          renderExtra={this.renderCartButton}
         />
         <Container>
           <ItemFilter
@@ -232,7 +242,10 @@ Contaier.propTypes = {
   getCurriculumStandards: PropTypes.func.isRequired,
   curriculumStandards: PropTypes.array.isRequired,
   clearDictStandards: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired
+  loading: PropTypes.bool.isRequired,
+  setDefaultTestData: PropTypes.func.isRequired,
+  addItemToCart: PropTypes.func.isRequired,
+  selectedCartItems: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
 const enhance = compose(
@@ -248,14 +261,17 @@ const enhance = compose(
       creating: getTestItemCreatingSelector(state),
       itemTypes: getItemsTypesSelector(state),
       curriculums: getCurriculumsListSelector(state),
-      curriculumStandards: getStandardsListSelector(state)
+      curriculumStandards: getStandardsListSelector(state),
+      selectedCartItems: getSelectedItemSelector(state).data
     }),
     {
       receiveItems: receiveTestItemsAction,
       createItem: createTestItemAction,
       getCurriculums: getDictCurriculumsAction,
       getCurriculumStandards: getDictStandardsForCurriculumAction,
-      clearDictStandards: clearDictStandardsAction
+      clearDictStandards: clearDictStandardsAction,
+      setDefaultTestData: setDefaultTestDataAction,
+      addItemToCart: addItemToCartAction
     }
   )
 );

@@ -9,7 +9,7 @@ export const Container = styled.div`
   min-height: 62px;
   position: ${props => props.position};
   z-index: ${props => props.zIndex};
-  right: 101px;
+  right: ${props => (props.showPublishButton ? "208px" : "101px")};
   top: 13px;
   @media (max-width: ${mobileWidth}) {
     margin-top: 32px;

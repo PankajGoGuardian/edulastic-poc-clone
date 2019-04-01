@@ -17,6 +17,9 @@
     "score": "Score",
     "finishedIn": "Finished in",
     "missed": "MISSED",
-    "safeExamToolTip": "This test requires Safe Exam Browser"
+    "safeExamToolTip": "This test requires Safe Exam Browser",
+    "GRADED": "GRADED",
+    "GRADE_HELD": "GRADE HELD",
+    "NOT_GRADED": "NOT GRADED"
   }
 }

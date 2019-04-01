@@ -52,7 +52,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
     title,
     thumbnail
   } = data;
-  console.log("data here is", data);
+
   const lastAttempt = last(reports) || {};
   // if last test attempt was not *submitted*, user should be able to resume it.
   const resume = lastAttempt.status == 0;
@@ -111,6 +111,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
         dueDate={endDate}
         startDate={startDate}
         safeBrowser={safeBrowser}
+        graded={lastAttempt.graded}
       />
       <ButtonAndDetail>
         <DetailContainer>

@@ -58,6 +58,7 @@ export const reportAssessmentSummaryReducer = createReducer(initialState, {
 function* getReportsAssessmentSummaryRequest({ payload }) {
   try {
     const assessmentSummary = yield call(reportsApi.fetchAssessmentSummaryReport, payload);
+    console.log("assessmentSummary", assessmentSummary);
     yield put({
       type: GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_SUCCESS,
       payload: { assessmentSummary }

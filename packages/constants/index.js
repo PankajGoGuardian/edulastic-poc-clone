@@ -12,6 +12,7 @@ const rounding = require("./const/rounding");
 const test = require("./const/test");
 const evaluatorTypes = require("./const/evaluatorTypes");
 const variableTypes = require("./const/variableTypes");
+const testActivity = require("./const/testActivity");
 
 module.exports = {
   questionType,
@@ -27,5 +28,6 @@ module.exports = {
   drawTools,
   rounding,
   variableTypes,
-  test
+  test,
+  testActivity
 };

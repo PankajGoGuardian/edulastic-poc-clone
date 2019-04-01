@@ -40,7 +40,18 @@ export const navButtons = [
   }
 ];
 // TODO mobile look
-const TestPageHeader = ({ onChangeNav, current, onSave, title, creating, onShare, windowWidth, toggleSideBar }) =>
+const TestPageHeader = ({
+  onChangeNav,
+  current,
+  onSave,
+  title,
+  creating,
+  onShare,
+  onPublish,
+  windowWidth,
+  toggleSideBar,
+  showPublishButton
+}) =>
   windowWidth > 993 ? (
     <HeaderWrapper>
       <Title>{title}</Title>
@@ -48,6 +59,12 @@ const TestPageHeader = ({ onChangeNav, current, onSave, title, creating, onShare
       <TestPageNav onChange={onChangeNav} current={current} buttons={navButtons} />
 
       <FlexContainer justifyContent="space-between">
+        {showPublishButton && (
+          <EduButton style={{ width: 120 }} size="large" onClick={onPublish}>
+            Publish
+          </EduButton>
+        )}
+
         <EduButton style={{ width: 120 }} size="large" onClick={onShare}>
           Share
         </EduButton>

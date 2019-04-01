@@ -4,6 +4,7 @@ import { fadedBlack } from "@edulastic/colors";
 import { StyledCustomChartTooltip } from "../styled";
 import { Row, Col } from "antd";
 import { sumBy } from "lodash";
+import { getHSLFromRange1 } from "../../../../common/util";
 
 export const SimplePieChart = props => {
   const renderCustomizedLabel = args => {
@@ -28,7 +29,8 @@ export const SimplePieChart = props => {
       for (let i = 0; i < props.data.length; i++) {
         arr.push({
           bandPerf: props.data[i].bandPerf,
-          fill: props.data[i].color,
+          // fill: props.data[i].color,
+          fill: getHSLFromRange1(props.data[i].bandPerf),
           name: props.data[i].masteryName,
           sum: sum
         });

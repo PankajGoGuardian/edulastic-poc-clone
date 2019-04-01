@@ -3,7 +3,6 @@ import { Row } from "antd";
 import { StyledTable as Table, StyledCustomChartTooltip as CustomChartTooltip } from "../../../common/styled";
 import { AssessmentStatisticTable } from "./table/assessmentStatisticTable";
 import { fadedBlack, black } from "@edulastic/colors";
-import { ControlDropDown } from "./table/controlDropDown";
 
 export const UpperContainer = styled(Row)`
   .sub-container {
@@ -74,18 +73,6 @@ export const StyledTable = styled(Table)`
         }
       }
     }
-  }
-`;
-
-export const StyledControlDropDown = styled(ControlDropDown)`
-  button {
-    white-space: pre-wrap;
-    text-transform: capitalize;
-  }
-  .ant-dropdown-menu-item-disabled {
-    font-weight: 900;
-    color: ${black};
-    cursor: default;
   }
 `;
 

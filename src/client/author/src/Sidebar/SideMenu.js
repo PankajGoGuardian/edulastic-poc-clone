@@ -108,7 +108,7 @@ class SideMenu extends Component {
     const { target } = e;
     const hamburger = document.querySelector(".hamburger");
     const itsMenu = target === menu || menu.contains(target);
-    const itsHamburger = target === hamburger || hamburger.contains(target);
+    const itsHamburger = hamburger ? target === hamburger || hamburger.contains(target) : null;
     const isFull = menu.classList.contains("full");
 
     if (!itsMenu && !itsHamburger && isFull) {
@@ -320,15 +320,6 @@ const SideBar = styled(Layout.Sider)`
 
   &.ant-layout-sider-collapsed .logoWrapper {
     padding: 22.5px 20px;
-  }
-  .footerBottom {
-    position: fixed;
-    bottom: 10px;
-    width: 245px;
-
-    @media (max-width: ${tabletWidth}) {
-      display: flex;
-    }
   }
   &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px 8px 0px;
@@ -622,7 +613,15 @@ const FooterDropDown = styled.div`
   }
 `;
 
-const MenuFooter = styled.div``;
+const MenuFooter = styled.div`
+  position: fixed;
+  bottom: 10px;
+  width: 245px;
+
+  @media (max-width: ${tabletWidth}) {
+    display: flex;
+  }
+`;
 
 const QuestionButton = styled.div`
   border-radius: 65px;

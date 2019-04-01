@@ -421,11 +421,15 @@ const LogoDash = styled.div`
 `;
 
 const MenuWrapper = styled.div`
-  display: ${props => (props.isSidebarCollapsed ? "none" : "flex")};
+  display: flex;
   justify-content: space-between;
   flex-direction: column;
   height: calc(100vh - 89px);
   padding: 6px 0px 10px;
+
+  @media (max-width: ${tabletWidth}) {
+    display: ${props => (props.isSidebarCollapsed ? "none" : "flex")};
+  }
 `;
 
 const Menu = styled(AntMenu)`

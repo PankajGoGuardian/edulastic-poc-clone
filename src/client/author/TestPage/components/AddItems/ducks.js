@@ -51,7 +51,10 @@ const initialState = {
   loading: false,
   page: 1,
   limit: 10,
-  count: 0
+  count: 0,
+  selectedItems: {
+    data: []
+  }
 };
 
 export const reducer = (state = initialState, { type, payload }) => {

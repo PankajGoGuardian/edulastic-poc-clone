@@ -14,22 +14,25 @@ const toggleMenu = toggle => {
   toggle();
 };
 
-const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar }) => (
+const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar, renderExtra }) => (
   <Container>
     <FlexContainer style={{ pointerEvents: "none" }}>
       <MenuIcon className="hamburger" onClick={() => toggleMenu(toggleSideBar)} />
       <Title>{title}</Title>
     </FlexContainer>
 
-    <CreateButton
-      onClick={onCreate}
-      color="secondary"
-      variant="create"
-      shadow="none"
-      icon={<IconPlusStyled color={newBlue} left={-50} width={20} height={20} hoverColor={newBlue} />}
-    >
-      {btnTitle && btnTitle.length ? btnTitle : t("component.itemlist.header.create")}
-    </CreateButton>
+    <RightButtonWrapper>
+      <CreateButton
+        onClick={onCreate}
+        color="secondary"
+        variant="create"
+        shadow="none"
+        icon={<IconPlusStyled color={newBlue} left={-50} width={20} height={20} hoverColor={newBlue} />}
+      >
+        {btnTitle && btnTitle.length ? btnTitle : t("component.itemlist.header.create")}
+      </CreateButton>
+      {renderExtra()}
+    </RightButtonWrapper>
   </Container>
 );
 
@@ -38,11 +41,13 @@ ListHeader.propTypes = {
   t: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   toggleSideBar: PropTypes.func.isRequired,
-  btnTitle: PropTypes.string
+  btnTitle: PropTypes.string,
+  renderExtra: PropTypes.func
 };
 
 ListHeader.defaultProps = {
-  btnTitle: ""
+  btnTitle: "",
+  renderExtra: () => null
 };
 
 const enhance = compose(
@@ -116,4 +121,8 @@ const MenuIcon = styled(IconMenuOpenClose)`
   @media (max-width: ${tabletWidth}) {
     display: block;
   }
+`;
+
+const RightButtonWrapper = styled.div`
+  display: flex;
 `;

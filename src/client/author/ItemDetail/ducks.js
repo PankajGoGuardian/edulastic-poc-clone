@@ -6,6 +6,11 @@ import { message } from "antd";
 import { loadQuestionsAction, addItemsQuestionAction } from "../sharedDucks/questions";
 
 // constants
+const testItemStatusConstants = {
+  DRAFT: "draft",
+  PUBLISHED: "published",
+  ARCHIVED: "archived"
+};
 
 export const RECEIVE_ITEM_DETAIL_REQUEST = "[itemDetail] receive request";
 export const RECEIVE_ITEM_DETAIL_SUCCESS = "[itemDetail] receive success";
@@ -24,7 +29,8 @@ export const DELETE_ITEM_DETAIL_WIDGET = "[itemDetail] delete widget";
 export const UPDATE_TAB_TITLE = "[itemDetail] update tab title";
 export const USE_TABS = "[itemDetail] is use tabs";
 export const MOVE_WIDGET = "[itemDetail] move widget";
-
+export const ITEM_DETAIL_PUBLISH = "[itemDetail] publish test item";
+export const UPDATE_TESTITEM_STATUS = "[itemDetail] update test item status";
 // actions
 
 export const getItemDetailByIdAction = (id, params) => ({
@@ -90,6 +96,16 @@ export const useTabsAction = ({ rowIndex, isUseTabs }) => ({
 export const moveItemDetailWidgetAction = ({ from, to }) => ({
   type: MOVE_WIDGET,
   payload: { from, to }
+});
+
+export const publishTestItemAction = testItemId => ({
+  type: ITEM_DETAIL_PUBLISH,
+  payload: testItemId
+});
+
+export const updateTestItemStatusAction = status => ({
+  type: UPDATE_TESTITEM_STATUS,
+  payload: status
 });
 
 // reducer
@@ -190,7 +206,14 @@ export function reducer(state = initialState, { type, payload }) {
       return { ...state, item: payload.item, updating: false };
     case UPDATE_ITEM_DETAIL_ERROR:
       return { ...state, updating: false, updateError: payload.error };
-
+    case UPDATE_TESTITEM_STATUS:
+      return {
+        ...state,
+        item: {
+          ...state.item,
+          status: payload
+        }
+      };
     default:
       return state;
   }
@@ -252,10 +275,22 @@ export function* updateItemSaga({ payload }) {
   }
 }
 
+function* publishTestItemSaga({ payload }) {
+  try {
+    yield call(testItemsApi.publishTestItem, payload);
+    yield put(updateTestItemStatusAction(testItemStatusConstants.PUBLISHED));
+    yield call(message.success, "Successfully published");
+  } catch (e) {
+    const errorMessage = "publish failed";
+    yield call(message.error, errorMessage);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
-    yield takeEvery(UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga)
+    yield takeEvery(UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga),
+    yield takeEvery(ITEM_DETAIL_PUBLISH, publishTestItemSaga)
   ]);
 }
 
@@ -271,6 +306,11 @@ export const getItemDetailSelector = createSelector(
 export const getItemIdSelector = createSelector(
   getItemDetailSelector,
   item => item && item._id
+);
+
+export const getTestItemStatusSelector = createSelector(
+  getItemDetailSelector,
+  item => item && item.status
 );
 
 export const getRows = item =>

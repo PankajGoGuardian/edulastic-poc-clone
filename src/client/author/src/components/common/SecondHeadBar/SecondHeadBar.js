@@ -75,11 +75,12 @@ class SecondHeadBar extends Component {
       changePreviewTab,
       clearAnswers,
       showCheckButton,
-      allowedAttempts
+      allowedAttempts,
+      showPublishButton
     } = this.props;
 
     return (
-      <Container zIndex={option ? 1000 : 1} position={option ? "fixed" : "unset"}>
+      <Container zIndex={option ? 1000 : 1} position={option ? "fixed" : "unset"} showPublishButton={showPublishButton}>
         {!option && <Breadcrumb data={breadcrumbData} style={{ position: "unset", width: "100%" }} />}
 
         <DisplayBlock>

@@ -80,6 +80,14 @@ const duplicateTestItem = id =>
     })
     .then(result => result.data.result);
 
+const publishTestItem = id =>
+  api
+    .callApi({
+      url: `${prefix}/${id}/publish`,
+      method: "put"
+    })
+    .then(result => result.data.result);
+
 export default {
   getAll,
   getById,
@@ -87,5 +95,6 @@ export default {
   create,
   update,
   evaluation,
-  duplicateTestItem
+  duplicateTestItem,
+  publishTestItem
 };

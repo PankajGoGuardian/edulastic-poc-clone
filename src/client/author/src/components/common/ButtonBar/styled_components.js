@@ -115,9 +115,11 @@ export const HeadIcon = styled.div`
 `;
 
 export const RightSide = styled.div`
+  display: flex;
   .ant-btn {
     width: 86px;
     background: #fff;
+    margin-left: 10px;
 
     span {
       color: ${newBlue};

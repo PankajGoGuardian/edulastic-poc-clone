@@ -98,19 +98,19 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
       { totalMaxScore: 0, totalTotalScore: 0 }
     );
 
-    let avgStudentScore = Math.round(item.totalTotalScore / groupedData[data].length);
+    let avgStudentScore = Number((item.totalTotalScore / groupedData[data].length).toFixed(2));
     let maxScore = groupedData[data][0].maxScore;
     let schoolName = groupedData[data][0].schoolName;
     let teacherName = groupedData[data][0].teacherName;
     let className = groupedData[data][0].className;
-    let districtAvg = Math.round((rawData.districtAvg / 100) * maxScore);
-    let interval = maxScore / 4;
+    let districtAvg = Number(((rawData.districtAvg / 100) * maxScore).toFixed(2));
+
     item = {
       ...item,
       maxScore: maxScore,
       avgStudentScore: avgStudentScore,
       correct: avgStudentScore,
-      incorrect: Math.round(maxScore - avgStudentScore),
+      incorrect: Number((maxScore - avgStudentScore).toFixed(2)),
       districtAvg: districtAvg,
       absent: 0,
       graded: groupedData[data].length,

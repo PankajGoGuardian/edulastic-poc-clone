@@ -1,10 +1,5 @@
 {
-  "analyseByDropDownData": [
-    { "key": "score(%)", "title": "Score (%)" },
-    { "key": "rawScore", "title": "Raw Score" },
-    { "key": "aboveBelowStandard", "title": "Above/Below Standard" },
-    { "key": "proficiencyBand", "title": "Proficiency Band" }
-  ],
+  "analyseByDropDownData": [{ "key": "score(%)", "title": "Score (%)" }, { "key": "rawScore", "title": "Raw Score" }],
   "compareByDropDownData": [
     { "key": "schoolId", "title": "School" },
     { "key": "teacherId", "title": "Teacher" },

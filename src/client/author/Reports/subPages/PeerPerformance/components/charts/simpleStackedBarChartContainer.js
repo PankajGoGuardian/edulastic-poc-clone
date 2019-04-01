@@ -84,7 +84,7 @@ export const SimpleStackedBarChartContainer = ({
           return val + "%";
         }
       };
-    } else if (analyseBy === "rawScore") {
+    } else if (analyseBy === "rawScore" && chartData.length > 0) {
       let maxScore = chartData[0].maxScore;
       let interval = Math.ceil(maxScore / 10);
       let arr = [];
@@ -105,8 +105,8 @@ export const SimpleStackedBarChartContainer = ({
           return val;
         }
       };
-    } else if (analyseBy === "aboveBelowStandard") {
-    } else if (analyseBy === "proficiencyBand") {
+    } else {
+      return {};
     }
   };
 

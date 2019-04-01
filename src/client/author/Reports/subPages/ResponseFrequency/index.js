@@ -154,3 +154,7 @@ const enhance = compose(
 );
 
 export default enhance(ResponseFrequency);
+
+// put it in dropdownformat.json
+// { "key": "aboveBelowStandard", "title": "Above/Below Standard" },
+// { "key": "proficiencyBand", "title": "Proficiency Band" }

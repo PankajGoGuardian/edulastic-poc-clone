@@ -65,6 +65,74 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
         expected: ["100,000.1", "100 000.1"],
         input: "100000.1"
       }
+    },
+    equivLiteral: {
+      simpleFractions: {
+        expected: "2/4",
+        input: "1/2"
+      },
+      inverseResult: {
+        expected: "2*3",
+        input: "2*3"
+      },
+      ignoreTrailingZeros: {
+        expected: ["1.50", "1.500"],
+        input: "1.5"
+      },
+      setDecimalSeparator: {
+        thousand: "Dot",
+        separator: "Comma",
+        expected: ["1,1", "1,1+1"],
+        input: ["1.1", "1.1+1"]
+      },
+      setThousandsSeparator: {
+        separators: ["Comma", "Space"],
+        expected: ["1,000,000", "1 000 000"],
+        input: "1000000"
+      },
+      ignoreOrder: {
+        expected: "1+x",
+        input: "x+1"
+      },
+      ignoreCoefficientOfOne: {
+        expected: "1x+2",
+        input: "x+2"
+      },
+      allowInterval: {
+        expected: "[1, 2)",
+        input: "[1, 2)"
+      }
+    },
+    equivValue: {
+      numericalForm: {
+        input: "1m",
+        expected: "100cm"
+      },
+      inverse: {
+        expected: "44",
+        input: "44"
+      },
+      ignoreText: {
+        expected: "33sdf",
+        input: "33"
+      },
+      significantDecimal: {
+        input: "1\\div3",
+        expected: "0.33",
+        decimalPlaces: 2
+      },
+      compareSides: {
+        expected: "4+5=9",
+        input: "4+5=9"
+      },
+      tolerance: {
+        input: "10",
+        expected: "8.5",
+        tolerance: "±1.5"
+      },
+      decimalMarks: {
+        expected: "25"
+      }
     }
   };
   const question = new MathFractionPage();
@@ -229,7 +297,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       });
       it("Testing equivSymbolic method options", () => {
         question.setMethod(methods.EQUIV_SYMBOLIC);
-        question.getAnswerValueMathInput().type(queData.answer.value, { force: true });
+        question.enterAnswerValueMathInput(queData.answer.value);
         question.getAnswerValueMathOutput().should("have.length", 5);
         question
           .getAnswerAriaLabel()
@@ -311,19 +379,24 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      question.clearAnswerValueInput(4);
       question.getTemplateInput().type("{del}".repeat(4), { force: true });
       question.getComposeQuestionTextBox().click();
-      question.clearAnswerValueInput(4);
     });
 
     context("TC_446 => equivSymbolic method", () => {
-      beforeEach(() => {
+      before("Change to equivSymbolic method", () => {
+        question.setMethod(methods.EQUIV_SYMBOLIC);
+      });
+
+      beforeEach("Go to Edit Mode", () => {
         editItem.header.edit();
+        question.clearAnswerValueInput(10);
       });
 
       it("Testing with basic value", () => {
         const { input, expected } = queData.equivSymbolic.value;
-        question.getAnswerValueMathInput().typeWithDelay(input);
+        question.enterAnswerValueMathInput(input);
         question.checkCorrectAnswer(expected, preview, input.length, true, true, "1/1");
       });
       it("Testing with ignore text", () => {
@@ -456,6 +529,121 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
         });
 
         question.getAnswerAllowThousandsSeparator().uncheck({ force: true });
+      });
+    });
+
+    context("TC_447 => equivLiteral method", () => {
+      before("Set method to equivLiteral", () => {
+        question.setMethod(methods.EQUIV_LITERAL);
+      });
+
+      beforeEach("Go to Edit Mode", () => {
+        editItem.header.edit();
+        question.clearAnswerValueInput(10);
+      });
+
+      it("Testing simple fractions value", () => {
+        const { input, expected } = queData.equivLiteral.simpleFractions;
+        question.enterAnswerValueMathInput(input);
+        // incorrect
+        question.checkCorrectAnswer(expected, preview, 0, false);
+        // correct
+        question.checkCorrectAnswer(input, preview, input.length, true);
+      });
+
+      it("Testing with allow Interval", () => {
+        const { input, expected } = queData.equivLiteral.allowInterval;
+        question.enterAnswerValueMathInput(input);
+        question.getAnswerAllowInterval().check({ force: true });
+        question.checkCorrectAnswer(expected, preview, input.length, true);
+        question.getAnswerIgnoreCoefficientOfOne().uncheck({ force: true });
+      });
+
+      it("Testing with ignoring order", () => {
+        const { input, expected } = queData.equivLiteral.ignoreOrder;
+        question.enterAnswerValueMathInput(input);
+        question.getAnswerIgnoreOrder().check({ force: true });
+
+        question.checkCorrectAnswer(expected, preview, input.length, true);
+
+        question.getAnswerIgnoreOrder().uncheck({ force: true });
+      });
+
+      it("Testing  with ignore trailing zeros", () => {
+        const { input, expected } = queData.equivLiteral.ignoreTrailingZeros;
+        question.getAnswerIgnoreTrailingZeros().check({ force: true });
+        question.enterAnswerValueMathInput(input);
+        expected.forEach((item, index) => {
+          question.checkCorrectAnswer(item, preview, index === 0 ? 0 : input.length, true);
+        });
+        question.getAnswerIgnoreTrailingZeros().uncheck({ force: true });
+      });
+
+      it("Testing with ignore coefficient of 1", () => {
+        const { input, expected } = queData.equivLiteral.ignoreCoefficientOfOne;
+        question.enterAnswerValueMathInput(input);
+        question.getAnswerIgnoreCoefficientOfOne().check({ force: true });
+
+        question.checkCorrectAnswer(expected, preview, input.length, true);
+
+        question.getAnswerIgnoreCoefficientOfOne().uncheck({ force: true });
+      });
+
+      it("Testing inverse result", () => {
+        const { input, expected } = queData.equivLiteral.inverseResult;
+        question.enterAnswerValueMathInput(input);
+        question.getAnswerInverseResult().check({ force: true });
+
+        question.checkCorrectAnswer(expected, preview, input.length, false);
+
+        question.getAnswerInverseResult().uncheck({ force: true });
+      });
+
+      it("Testing with decimal separator - Comma", () => {
+        const { input, expected, separator, thousand } = queData.equivLiteral.setDecimalSeparator;
+        question.getAnswerAllowThousandsSeparator().check({ force: true });
+        question
+          .getAnswerSetDecimalSeparatorDropdown()
+          .click()
+          .then(() => {
+            question
+              .getAnswerSetDecimalSeparatorDropdownList(separator)
+              .should("be.visible")
+              .click();
+          });
+        // change thounsand seperator as both can not be same
+        question
+          .getThousandsSeparatorDropdown()
+          .click()
+          .then(() => {
+            question
+              .getThousandsSeparatorDropdownList(thousand)
+              .should("be.visible")
+              .click();
+          });
+
+        input.forEach((item, index) => {
+          question.enterAnswerValueMathInput(item);
+          question.checkCorrectAnswer(expected[index], preview, item.length, true);
+        });
+
+        question.getAnswerAllowThousandsSeparator().uncheck({ force: true });
+      });
+
+      it("Testing with thousands separators - Comma, Space", () => {
+        const { separators, input, expected } = queData.equivLiteral.setThousandsSeparator;
+        question.getAnswerAllowThousandsSeparator().check({ force: true });
+        question.enterAnswerValueMathInput(input);
+        separators.forEach((item, index) => {
+          question
+            .getThousandsSeparatorDropdown()
+            .click()
+            .then(() => {
+              question.getThousandsSeparatorDropdownList(item).click();
+            });
+
+          question.checkCorrectAnswer(expected[index], preview, index === 0 ? 0 : input.length, true);
+        });
       });
     });
   });

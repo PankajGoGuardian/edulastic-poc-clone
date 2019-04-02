@@ -69,7 +69,8 @@ class ScoreTable extends Component {
     const columns = [
       {
         title: <TableTitle>Questions & Standards</TableTitle>,
-        fixed: "left",
+        // TODO: find another way to determine fixed column by questions length
+        fixed: window.innerWidth - 500 / length < 160,
         width: 230,
         children: [
           {
@@ -107,12 +108,14 @@ class ScoreTable extends Component {
       let successAnswer = 0;
       const { testActivity: students } = this.props;
       const key = `Q${index}`;
-      // const isQuestionActivities = questionActivities !== undefined && questionActivities.length !== 0;
+      // const isQuestionActivities = questionActivities !== undefined
+      // && questionActivities.length !== 0;
       const title = (
         <StyledDivMid>
           Q{index + 1}
           <img src={InfoIcon} alt="help" />
-          {/* {isQuestionActivities && questionActivities[index].standards.map(tag => <StyledTag>{tag.level}</StyledTag>)} */}
+          {/* {isQuestionActivities && questionActivities[index].standards
+          .map(tag => <StyledTag>{tag.level}</StyledTag>)} */}
         </StyledDivMid>
       );
       students.forEach(student => {

@@ -10,8 +10,16 @@ import Points from "./components/Points";
 import ArrowPair from "./components/ArrowPair";
 import withGrid from "./HOC/withGrid";
 import { getGridVariables, getReCalculatedPoints } from "./helpers";
+import { SHOW } from "../../constants/constantsForQuestions";
 
-const LineChart = ({ data, saveAnswer, ui_style: { width, height, margin, yAxisCount, stepSize }, view }) => {
+const LineChart = ({
+  data,
+  previewTab,
+  validation,
+  saveAnswer,
+  ui_style: { width, height, margin, yAxisCount, stepSize },
+  view
+}) => {
   const { yAxis, padding, yAxisStep, changingStep, step } = getGridVariables(
     yAxisCount,
     stepSize,
@@ -39,7 +47,11 @@ const LineChart = ({ data, saveAnswer, ui_style: { width, height, margin, yAxisC
   }, []);
 
   const getPolylinePoints = () =>
-    localData.map((dot, index) => `${step * index + margin / 2 + padding},${height - margin - dot.y}`).join(" ");
+    previewTab === SHOW
+      ? validation.valid_response.value
+          .map((dot, index) => `${step * index + margin / 2 + padding},${height - margin - dot.y}`)
+          .join(" ")
+      : localData.map((dot, index) => `${step * index + margin / 2 + padding},${height - margin - dot.y}`).join(" ");
 
   const getActivePoint = index =>
     active !== null
@@ -84,7 +96,9 @@ const LineChart = ({ data, saveAnswer, ui_style: { width, height, margin, yAxisC
       <Points
         isMouseDown={activeIndex !== null}
         onPointOver={setActive}
-        circles={localData}
+        previewTab={previewTab}
+        validation={validation}
+        circles={previewTab === SHOW ? validation.valid_response.value : localData}
         view={view}
         step={step}
         height={height}
@@ -106,7 +120,9 @@ LineChart.propTypes = {
     yAxisCount: PropTypes.number,
     stepSize: PropTypes.number
   }).isRequired,
-  view: PropTypes.string.isRequired
+  previewTab: PropTypes.string.isRequired,
+  view: PropTypes.string.isRequired,
+  validation: PropTypes.object.isRequired
 };
 
 export default withGrid(LineChart);

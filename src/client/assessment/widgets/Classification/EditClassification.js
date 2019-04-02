@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { cloneDeep } from "lodash";
 import { arrayMove } from "react-sortable-hoc";
 import { connect } from "react-redux";
 import { Row, Col, Select } from "antd";

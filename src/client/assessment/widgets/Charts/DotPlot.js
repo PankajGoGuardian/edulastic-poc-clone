@@ -7,8 +7,16 @@ import withGrid from "./HOC/withGrid";
 import { getGridVariables, getReCalculatedPoints } from "./helpers";
 import { Line } from "./styled";
 import Circles from "./components/Circles";
+import { SHOW } from "../../constants/constantsForQuestions";
 
-const DotPlot = ({ data, saveAnswer, ui_style: { width, height, margin, yAxisCount, stepSize }, view }) => {
+const DotPlot = ({
+  data,
+  saveAnswer,
+  previewTab,
+  validation,
+  ui_style: { width, height, margin, yAxisCount, stepSize },
+  view
+}) => {
   const { padding, yAxisStep, changingStep, step } = getGridVariables(
     yAxisCount,
     stepSize,
@@ -36,7 +44,11 @@ const DotPlot = ({ data, saveAnswer, ui_style: { width, height, margin, yAxisCou
   }, []);
 
   const getPolylinePoints = () =>
-    localData.map((dot, index) => `${step * index + step / 2 + 2},${height - margin - dot.y}`).join(" ");
+    previewTab === SHOW
+      ? validation.valid_response.value
+          .map((dot, index) => `${step * index + step / 2 + 2},${height - margin - dot.y}`)
+          .join(" ")
+      : localData.map((dot, index) => `${step * index + step / 2 + 2},${height - margin - dot.y}`).join(" ");
 
   const getActivePoint = index =>
     active !== null
@@ -81,7 +93,9 @@ const DotPlot = ({ data, saveAnswer, ui_style: { width, height, margin, yAxisCou
       <Circles
         isMouseDown={activeIndex !== null}
         onPointOver={setActive}
-        bars={localData}
+        previewTab={previewTab}
+        validation={validation}
+        bars={previewTab === SHOW ? validation.valid_response.value : localData}
         view={view}
         step={step}
         yAxisStep={yAxisStep}
@@ -105,7 +119,9 @@ DotPlot.propTypes = {
     yAxisCount: PropTypes.number,
     stepSize: PropTypes.number
   }).isRequired,
-  view: PropTypes.string.isRequired
+  view: PropTypes.string.isRequired,
+  previewTab: PropTypes.string.isRequired,
+  validation: PropTypes.object.isRequired
 };
 
 export default withGrid(DotPlot);

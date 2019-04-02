@@ -51,6 +51,11 @@ function onHandler() {
   };
 }
 
+const cleanPoints = board => {
+  points.forEach(point => board.$board.removeObject(point));
+  points = [];
+};
+
 function getConfig(parabola) {
   return {
     _type: parabola.type,
@@ -83,6 +88,7 @@ function abort(cb) {
 export default {
   onHandler,
   getConfig,
+  cleanPoints,
   parseConfig,
   abort
 };

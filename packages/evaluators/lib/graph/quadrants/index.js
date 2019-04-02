@@ -90,7 +90,8 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
         sameShapesType !== _shapeTypes.ShapeTypes.POINT &&
         sameShapesType !== _shapeTypes.ShapeTypes.SEGMENT &&
         sameShapesType !== _shapeTypes.ShapeTypes.VECTOR &&
-        sameShapesType !== _shapeTypes.ShapeTypes.POLYGON
+        sameShapesType !== _shapeTypes.ShapeTypes.POLYGON &&
+        sameShapesType !== _shapeTypes.ShapeTypes.POLYNOM
       ) {
         var allowedSubElementsIds = userResponse.find(function(item) {
           return item.id === sameShapes[0].id;
@@ -103,6 +104,8 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
 
           switch (checkableShape.type) {
             case _shapeTypes.ShapeTypes.CIRCLE:
+            case _shapeTypes.ShapeTypes.EXPONENT:
+            case _shapeTypes.ShapeTypes.LOGARITHM:
               if (checkableShape.subElementsIds.endPoint !== allowedSubElementsIds.endPoint) {
                 sameShapes[j].result = false;
                 result.commonResult = false;
@@ -121,6 +124,8 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
 
             case _shapeTypes.ShapeTypes.PARABOLA:
             case _shapeTypes.ShapeTypes.SINE:
+            case _shapeTypes.ShapeTypes.TANGENT:
+            case _shapeTypes.ShapeTypes.SECANT:
             case _shapeTypes.ShapeTypes.LINE:
             case _shapeTypes.ShapeTypes.RAY:
             default:

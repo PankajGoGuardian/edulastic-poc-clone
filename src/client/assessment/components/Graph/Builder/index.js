@@ -250,6 +250,22 @@ class Board {
         break;
       case CONSTANT.TOOLS.HYPERBOLA:
         Hyperbola.abort(points => points.map(this.removeObject.bind(this)));
+        break;
+      case CONSTANT.TOOLS.EXPONENT:
+        Exponent.abort(points => points.map(this.removeObject.bind(this)));
+        break;
+      case CONSTANT.TOOLS.LOGARITHM:
+        Logarithm.abort(points => points.map(this.removeObject.bind(this)));
+        break;
+      case CONSTANT.TOOLS.POLYNOM:
+        Polynom.abort(points => points.map(this.removeObject.bind(this)));
+        break;
+      case CONSTANT.TOOLS.TANGENT:
+        Tangent.abort(points => points.map(this.removeObject.bind(this)));
+        break;
+      case CONSTANT.TOOLS.SECANT:
+        Secant.abort(points => points.map(this.removeObject.bind(this)));
+        break;
       default:
         break;
     }
@@ -1147,11 +1163,12 @@ class Board {
                   )
                 );
                 const newElem = this.createElement(name, makeFn(points), {
-                  ...props,
-                  ...attrs
+                  ...attrs,
+                  ...props
                 });
-                newElem.ancestors = Polynom.flatConfigPoints(points);
+                newElem.type = 95;
                 newElem.addParents(points);
+                newElem.ancestors = Polynom.flatConfigPoints(points);
                 handleSnap(newElem, Object.values(newElem.ancestors));
                 return newElem;
               }
@@ -1500,10 +1517,12 @@ class Board {
                 );
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
-                  ...attrs
+                  ...attrs,
+                  fixed: true
                 });
-                newElem.ancestors = Polynom.flatConfigPoints(points);
+                newElem.type = 95;
                 newElem.addParents(points);
+                newElem.ancestors = Polynom.flatConfigPoints(points);
                 handleSnap(newElem, Object.values(newElem.ancestors));
                 return newElem;
               }

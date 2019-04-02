@@ -38,6 +38,11 @@ function onLineHandler(type) {
   };
 }
 
+const cleanPoints = board => {
+  points.forEach(point => board.$board.removeObject(point));
+  points = [];
+};
+
 function getConfig(line) {
   return {
     _type: line.type,
@@ -68,5 +73,6 @@ export default {
   },
   getConfig,
   parseConfig,
+  cleanPoints,
   abort
 };

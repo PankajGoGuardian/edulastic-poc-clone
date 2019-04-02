@@ -46,7 +46,7 @@ class ToolBar extends Component {
     const { calcType } = settings;
     return (
       <Container>
-        <StyledButton enable={select === 0} GEOGEBRASCIENTIFIConClick={() => this.toolbarHandler(0)}>
+        <StyledButton enable={select === 0} onClick={() => this.toolbarHandler(0)}>
           <CursorIcon />
         </StyledButton>
 

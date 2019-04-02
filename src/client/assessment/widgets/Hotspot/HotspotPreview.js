@@ -46,7 +46,7 @@ const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, preview
   };
 
   const validAnswer = validation && validation.valid_response && validation.valid_response.value;
-  const altAnswers = validation && validation.alt_responses;
+  const altAnswers = (validation && validation.alt_responses) || [];
 
   const validate = () => {
     let collection = cloneDeep(validAnswer);
@@ -73,26 +73,29 @@ const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, preview
         <BlockContainer data-cy="hotspotMap" style={{ maxWidth }} justifyContent="center">
           <Svg data-cy="answer-container" width={+width} height={+height}>
             <image href={source} width={+width} height={+height} preserveAspectRatio="none" x={0} y={0} />
-            {areas.map((area, i) => (
-              <Polygon
-                key={i}
-                showAnswer={view !== EDIT && ((previewTab === CHECK && userAnswer.includes(i)) || previewTab === SHOW)}
-                onClick={handleClick(i)}
-                points={area.map(point => `${point.x},${point.y}`).join(" ")}
-                selected={userAnswer.includes(i)}
-                correct={view !== EDIT && allValidAnswers.includes(i)}
-                fill={
-                  area_attributes.local.find(attr => attr.area === i)
-                    ? area_attributes.local.find(attr => attr.area === i).fill
-                    : area_attributes.global.fill
-                }
-                stroke={
-                  area_attributes.local.find(attr => attr.area === i)
-                    ? area_attributes.local.find(attr => attr.area === i).stroke
-                    : area_attributes.global.stroke
-                }
-              />
-            ))}
+            {areas &&
+              areas.map((area, i) => (
+                <Polygon
+                  key={i}
+                  showAnswer={
+                    view !== EDIT && ((previewTab === CHECK && userAnswer.includes(i)) || previewTab === SHOW)
+                  }
+                  onClick={handleClick(i)}
+                  points={area.map(point => `${point.x},${point.y}`).join(" ")}
+                  selected={userAnswer.includes(i)}
+                  correct={view !== EDIT && allValidAnswers && allValidAnswers.includes(i)}
+                  fill={
+                    area_attributes.local.find(attr => attr.area === i)
+                      ? area_attributes.local.find(attr => attr.area === i).fill
+                      : area_attributes.global.fill
+                  }
+                  stroke={
+                    area_attributes.local.find(attr => attr.area === i)
+                      ? area_attributes.local.find(attr => attr.area === i).stroke
+                      : area_attributes.global.stroke
+                  }
+                />
+              ))}
           </Svg>
         </BlockContainer>
       ) : (

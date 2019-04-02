@@ -10,14 +10,10 @@ import { connect } from "react-redux";
 import HeaderWrapper from "../../mainContent/headerWrapper";
 import { toggleSideBarAction } from "../../actions/togglemenu";
 
-const toggleMenu = toggle => {
-  toggle();
-};
-
 const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar, renderExtra }) => (
   <Container>
     <FlexContainer style={{ pointerEvents: "none" }}>
-      <MenuIcon className="hamburger" onClick={() => toggleMenu(toggleSideBar)} />
+      <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
       <Title>{title}</Title>
     </FlexContainer>
 

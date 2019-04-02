@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
+import ReactOutsideEvent from "react-outside-event";
 import { tabletWidth } from "@edulastic/colors";
 import { get } from "lodash";
 import { Link, withRouter } from "react-router-dom";
@@ -104,29 +105,14 @@ class SideMenu extends Component {
     this.setState(prevState => ({ isVisible: !prevState.isVisible }));
   };
 
-  closeMenuByClickOutside = (e, menu) => {
-    const { target } = e;
-    const hamburger = document.querySelector(".hamburger");
-    const itsMenu = target === menu || menu.contains(target);
-    const itsHamburger = hamburger ? target === hamburger || hamburger.contains(target) : null;
-    const isFull = menu.classList.contains("full");
+  onOutsideEvent = event => {
+    const { isSidebarCollapsed } = this.props;
 
-    if (!itsMenu && !itsHamburger && isFull) {
+    if (event.type === "mousedown" && !isSidebarCollapsed) {
       this.toggleMenu();
       this.setState({ isVisible: false });
     }
   };
-
-  componentDidMount(): void {
-    const fixedSidebarClassName = this.fixedSidebar._reactInternalFiber.stateNode.state.generatedClassName;
-    const menu = document.querySelector(`.${fixedSidebarClassName}`);
-
-    document.addEventListener("click", e => this.closeMenuByClickOutside(e, menu));
-  }
-
-  componentWillMount(): void {
-    document.removeEventListener("click", () => this.closeMenuByClickOutside);
-  }
 
   render() {
     const { broken, isVisible } = this.state;
@@ -157,9 +143,6 @@ class SideMenu extends Component {
     return (
       <FixedSidebar
         className={`${!isCollapsed ? "full" : ""}`}
-        ref={e => {
-          this.fixedSidebar = e;
-        }}
         onClick={isCollapsed && !isMobile ? this.toggleMenu : null}
         isCollapsed={isCollapsed}
       >
@@ -291,7 +274,7 @@ const enhance = compose(
   )
 );
 
-export default enhance(SideMenu);
+export default enhance(ReactOutsideEvent(SideMenu, ["mousedown"]));
 
 const FixedSidebar = styled.div`
   position: fixed;
@@ -334,7 +317,7 @@ const SideBar = styled(Layout.Sider)`
     padding: 0px;
     margin: 0 auto;
     justify-content: center;
-    margin-bottom: 15px;
+    margin-bottom: 23px;
 
     &:hover {
       background: #1890ff;

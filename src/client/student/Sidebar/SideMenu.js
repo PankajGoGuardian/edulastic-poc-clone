@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import ReactOutsideEvent from "react-outside-event";
 import { withNamespaces } from "@edulastic/localization";
 import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -114,29 +115,14 @@ class SideMenu extends Component {
     }
   };
 
-  closeMenuByClickOutside = (e, menu) => {
-    const { target } = e;
-    const hamburger = document.querySelector(".hamburger");
-    const itsMenu = target === menu || menu.contains(target);
-    const itsHamburger = hamburger ? target === hamburger || hamburger.contains(target) : null;
-    const isFull = menu.classList.contains("full");
+  onOutsideEvent = event => {
+    const { isSidebarCollapsed } = this.props;
 
-    if (!itsMenu && !itsHamburger && isFull) {
+    if (event.type === "mousedown" && !isSidebarCollapsed) {
       this.toggleMenu();
       this.setState({ isVisible: false });
     }
   };
-
-  componentDidMount(): void {
-    const fixedSidebarClassName = this.fixedSidebar._reactInternalFiber.stateNode.state.generatedClassName;
-    const menu = document.querySelector(`.${fixedSidebarClassName}`);
-
-    document.addEventListener("click", e => this.closeMenuByClickOutside(e, menu));
-  }
-
-  componentWillMount(): void {
-    document.removeEventListener("click", () => this.closeMenuByClickOutside);
-  }
 
   render() {
     const { broken, isVisible } = this.state;
@@ -164,9 +150,6 @@ class SideMenu extends Component {
     return (
       <FixedSidebar
         className={`${!isSidebarCollapsed ? "full" : ""}`}
-        ref={e => {
-          this.fixedSidebar = e;
-        }}
         onClick={isSidebarCollapsed && !isMobile ? this.toggleMenu : null}
         isSidebarCollapsed={isSidebarCollapsed}
       >
@@ -304,7 +287,7 @@ const enhance = compose(
   )
 );
 
-export default enhance(SideMenu);
+export default enhance(ReactOutsideEvent(SideMenu, ["mousedown"]));
 
 const FixedSidebar = styled.div`
   position: fixed;

@@ -7,15 +7,10 @@ import { tabletWidth, white } from "@edulastic/colors";
 import { Affix, Layout, Row, Col } from "antd";
 import { toggleSideBarAction } from "../../Sidebar/ducks";
 
-const toggleMenu = toggle => {
-  console.log(toggle);
-  toggle();
-};
-
 const HeaderWrapper = ({ children, isSidebarCollapsed, toggleSideBar }) => (
   <HeaderContainer>
     <FixedHeader iscollapsed={isSidebarCollapsed}>
-      <MenuIcon className="hamburger" onClick={() => toggleMenu(toggleSideBar)} />
+      <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
       <AssignmentsHeader>
         <HeaderRow>
           <Col span={24}>

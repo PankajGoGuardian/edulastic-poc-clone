@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { mobileWidth } from "@edulastic/colors";
+import { throttle } from "lodash";
 
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../themes";
@@ -121,7 +122,7 @@ class QuestionWrapper extends Component {
   };
 
   componentDidMount() {
-    window.addEventListener("scroll", this.findActiveTab);
+    window.addEventListener("scroll", throttle(this.findActiveTab, 200));
   }
 
   componentWillUnmount() {

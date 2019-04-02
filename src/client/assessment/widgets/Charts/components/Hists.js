@@ -1,10 +1,25 @@
 import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
+import { isEqual } from "lodash";
 
+import { red, green } from "@edulastic/colors";
+import { IconCheck, IconClose } from "@edulastic/icons";
 import { Bar, ActiveBar, Text } from "../styled";
-import { EDIT } from "../../../constants/constantsForQuestions";
+import { EDIT, CLEAR } from "../../../constants/constantsForQuestions";
 
-const Hists = ({ bars, step, padding, height, margin, onPointOver, onMouseDown, isMouseDown, view }) => {
+const Hists = ({
+  bars,
+  step,
+  padding,
+  height,
+  margin,
+  onPointOver,
+  onMouseDown,
+  isMouseDown,
+  view,
+  validation,
+  previewTab
+}) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const handleMouseAction = value => () => {
@@ -35,10 +50,38 @@ const Hists = ({ bars, step, padding, height, margin, onPointOver, onMouseDown, 
     "#F325A1"
   ];
 
+  const newValidation = [validation.valid_response, ...validation.alt_responses];
+
+  let matches = 0;
+  let validatingIndex = 0;
+
+  newValidation.forEach(({ value }, mainIndex) => {
+    const currentMatches = value.filter((ans, ind) => isEqual(ans.y.toFixed(4), bars[ind].y.toFixed(4))).length;
+    matches = Math.max(currentMatches, matches);
+    if (matches === currentMatches) {
+      validatingIndex = mainIndex;
+    }
+  });
+  const renderValidationIcons = index => {
+    if (isEqual(newValidation[validatingIndex].value[index].y.toFixed(4), bars[index].y.toFixed(4))) {
+      return (
+        <g transform={`translate(${getCenterX(index) + step / 2 - 6},${getCenterY(bars[index]) - 30})`}>
+          <IconCheck color={green} width={12} height={12} />
+        </g>
+      );
+    }
+    return (
+      <g transform={`translate(${getCenterX(index) + step / 2 - 6},${getCenterY(bars[index]) - 30})`}>
+        <IconClose color={red} width={12} height={12} />
+      </g>
+    );
+  };
+
   return (
     <Fragment>
       {bars.map((dot, index) => (
         <Fragment>
+          {previewTab !== CLEAR && renderValidationIcons(index)}
           <Bar
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}
@@ -79,7 +122,15 @@ Hists.propTypes = {
   onPointOver: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
   isMouseDown: PropTypes.bool.isRequired,
-  view: PropTypes.string.isRequired
+  view: PropTypes.string.isRequired,
+  previewTab: PropTypes.string,
+  validation: PropTypes.object
 };
-
+Hists.defaultProps = {
+  previewTab: CLEAR,
+  validation: {
+    valid_response: { value: [] },
+    alt_responses: [{ value: [] }]
+  }
+};
 export default Hists;

@@ -36,6 +36,11 @@ function onHandler() {
   };
 }
 
+const cleanPoints = board => {
+  points.forEach(point => board.$board.removeObject(point));
+  points = [];
+};
+
 function getConfig(hyperbola) {
   return {
     _type: 90,
@@ -64,6 +69,7 @@ function abort(cb) {
 export default {
   onHandler,
   getConfig,
+  cleanPoints,
   parseConfig,
   abort
 };

@@ -67,13 +67,16 @@ const checkAnswer = (answer, userResponse, ignoreRepeatedShapes) => {
         sameShapesType !== ShapeTypes.POINT &&
         sameShapesType !== ShapeTypes.SEGMENT &&
         sameShapesType !== ShapeTypes.VECTOR &&
-        sameShapesType !== ShapeTypes.POLYGON
+        sameShapesType !== ShapeTypes.POLYGON &&
+        sameShapesType !== ShapeTypes.POLYNOM
       ) {
         const allowedSubElementsIds = userResponse.find(item => item.id === sameShapes[0].id).subElementsIds;
         for (let j = 1; j < sameShapes.length; j++) {
           const checkableShape = userResponse.find(item => item.id === sameShapes[j].id);
           switch (checkableShape.type) {
             case ShapeTypes.CIRCLE:
+            case ShapeTypes.EXPONENT:
+            case ShapeTypes.LOGARITHM:
               if (checkableShape.subElementsIds.endPoint !== allowedSubElementsIds.endPoint) {
                 sameShapes[j].result = false;
                 result.commonResult = false;
@@ -90,6 +93,8 @@ const checkAnswer = (answer, userResponse, ignoreRepeatedShapes) => {
 
             case ShapeTypes.PARABOLA:
             case ShapeTypes.SINE:
+            case ShapeTypes.TANGENT:
+            case ShapeTypes.SECANT:
             case ShapeTypes.LINE:
             case ShapeTypes.RAY:
             default:

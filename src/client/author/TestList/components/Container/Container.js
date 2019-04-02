@@ -46,12 +46,12 @@ import SortBar from "../SortBar/SortBar";
 import ListHeader from "../../../src/components/common/ListHeader";
 import filterData from "./FilterData";
 
-const items = [
-  { icon: "book", key: "library", text: "Entire Library" },
-  { icon: "folder", key: "byMe", text: "Authored by me" },
-  { icon: "copy", key: "coAuthor", text: "I am a Co-Author" },
-  { icon: "reload", key: "previously", text: "Previously Used" },
-  { icon: "heart", key: "favorites", text: "My Favorites" }
+const filterMenuItems = [
+  { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
+  { icon: "folder", filter: "AUTHORED_BY_ME", path: "by-me", text: "Authored by me" },
+  { icon: "copy", filter: "CO_AUTHOR", path: "co-author", text: "I am a Co-Author" },
+  { icon: "reload", filter: "PREVIOUS", path: "previous", text: "Previously Used" },
+  { icon: "heart", filter: "FAVORITES", path: "favourites", text: "My Favorites" }
 ];
 
 export const getClearSearchState = () => ({
@@ -62,7 +62,8 @@ export const getClearSearchState = () => ({
   curriculumId: "",
   grades: [],
   standardIds: [],
-  tags: []
+  tags: [],
+  filter: filterMenuItems[0].filter
 });
 
 class TestList extends Component {
@@ -112,11 +113,22 @@ class TestList extends Component {
     } = this.props;
     const { search } = this.state;
     const parsedQueryData = qs.parse(location.search);
-
     if (!curriculums.length) {
       getCurriculums();
     }
-    if (Object.entries(parsedQueryData).length > 0) {
+    const { filterType } = params;
+    if (filterType) {
+      const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
+      const { filter: filterParams } = getMatchingObj[0];
+      receiveTests({
+        page,
+        limit,
+        search: {
+          ...search,
+          filter: filterParams
+        }
+      });
+    } else if (Object.entries(parsedQueryData).length > 0) {
       this.setFilterParams(parsedQueryData, params);
     } else if (params.page && params.limit) {
       receiveTests({
@@ -327,8 +339,25 @@ class TestList extends Component {
     );
   };
 
+  handleLabelSearch = e => {
+    const { key: filterType } = e;
+    const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
+    const { filter: filterParam } = getMatchingObj[0];
+    const { history, receiveTests, page, limit } = this.props;
+    const { search } = this.state;
+    history.push(`/author/tests/filter/${filterType}`);
+    receiveTests({
+      page,
+      limit,
+      search: {
+        ...search,
+        filter: filterParam
+      }
+    });
+  };
+
   render() {
-    const { page, limit, count, creating } = this.props;
+    const { page, limit, count, creating, match } = this.props;
 
     const { searchStr, blockStyle, isShowFilter, search } = this.state;
 
@@ -354,7 +383,7 @@ class TestList extends Component {
           <Modal open={isShowFilter} onClose={this.closeSearchModal}>
             <SearchModalContainer>
               <TestFilters clearFilter={this.handleClearFilter} state={search} filterData={filters}>
-                <TestFiltersNav items={items} />
+                <TestFiltersNav items={filterMenuItems} onSelect={this.handleLabelSearch} routerParams={match} />
               </TestFilters>
             </SearchModalContainer>
           </Modal>
@@ -376,7 +405,11 @@ class TestList extends Component {
                         filterData={filters}
                         onChange={this.handleFiltersChange}
                       >
-                        <TestFiltersNav items={items} />
+                        <TestFiltersNav
+                          items={filterMenuItems}
+                          onSelect={this.handleLabelSearch}
+                          routerParams={match}
+                        />
                       </TestFilters>
                     </ScrollBox>
                   </PerfectScrollbar>

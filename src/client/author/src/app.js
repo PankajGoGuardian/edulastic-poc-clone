@@ -67,12 +67,23 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                 component={StandardsBasedReport}
               />
               <Route exact path={`${match.url}/items`} component={ItemList} />
+              <Route exact path={`${match.url}/items/filter/:filterType`} component={ItemList} />
               <Route exact path={`${match.url}/items/:id/item-detail`} component={ItemDetail} />
               <Route exact path="/author/curriculum-sequence" component={CurriculumContainer} />
               <Route exact path="/author/add-item" component={ItemAdd} />
               <Route
                 exact
                 path={`${match.url}/tests`}
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <TestList {...props} />
+                  </Suspense>
+                )}
+              />
+
+              <Route
+                exact
+                path={`${match.url}/tests/filter/:filterType`}
                 render={props => (
                   <Suspense fallback={<Progress />}>
                     <TestList {...props} />

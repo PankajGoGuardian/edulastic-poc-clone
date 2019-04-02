@@ -190,7 +190,7 @@ class QuestionWrapper extends Component {
     const { type, timespent, data, showFeedback, multiple, view, setQuestionData, t, ...restProps } = this.props;
     const { main, advanced, activeTab } = this.state;
     const Question = getQuestion(type);
-    const studentName = ""; // data.activity.studentName;
+    const studentName = data.activity && data.activity.studentName;
     const PaperWrapperStyles = {
       width: "-webkit-fill-available",
       display: "flex",

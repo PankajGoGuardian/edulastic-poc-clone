@@ -221,6 +221,7 @@ class MathFormulaEdit {
 
   checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect, score = false, scoreValuse = "1/1") => {
     preview.header.preview();
+    preview.getClear().click();
     this.getPreviewMathQuill().typeWithDelay(expectedValue);
     preview
       .getCheckAnswer()

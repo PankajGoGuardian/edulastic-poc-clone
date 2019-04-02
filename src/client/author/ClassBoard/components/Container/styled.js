@@ -113,6 +113,18 @@ export const RedirectButton = styled(StyledTabButton)`
   }
 `;
 
+export const PrintButton = styled(StyledTabButton)`
+  margin-left: auto;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+  padding-right: 25px;
+  img {
+    margin-right: 10px;
+  }
+`;
+
 export const BarDiv = styled.div`
   width: 1px;
   height: 30px;

@@ -17,6 +17,7 @@ import { reportPeerPerformanceSaga } from "../../Reports/subPages/PeerPerformanc
 import { authorGroupsWatcherSaga } from "../../sharedDucks/groups";
 import { watcherSaga as UserDetails } from "../../sharedDucks/userDetails";
 import { assessmentPageSaga } from "../../AssessmentCreate";
+import { itemListSaga } from "../../ItemList";
 
 const authorSagas = [
   itemsSaga(),
@@ -37,7 +38,8 @@ const authorSagas = [
   authorGroupsWatcherSaga(),
   assessmentPageSaga(),
   ManageClassSaga(),
-  UserDetails()
+  UserDetails(),
+  itemListSaga()
 ];
 
 export default authorSagas;

@@ -251,8 +251,12 @@ class Container extends Component {
       testItemStatus
     } = this.props;
 
-    const { _id: testItemId } = item;
-    const showPublishButton = testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED;
+    let showPublishButton = false;
+
+    if (item) {
+      const { _id: testItemId } = item;
+      showPublishButton = testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED;
+    }
 
     return (
       <Layout>
@@ -358,7 +362,8 @@ Container.propTypes = {
   changePreview: PropTypes.func.isRequired,
   loadQuestion: PropTypes.func.isRequired,
   questions: PropTypes.func.isRequired,
-  changeView: PropTypes.func.isRequired
+  changeView: PropTypes.func.isRequired,
+  testItemStatus: PropTypes.string.isRequired
 };
 
 Container.defaultProps = {

@@ -15,6 +15,7 @@ const AssessmentPage = lazy(() => import("../AssessmentPage"));
 const ClassBoard = lazy(() => import("../ClassBoard"));
 const SummaryBoard = lazy(() => import("../SummaryBoard"));
 const ClassResponses = lazy(() => import("../ClassResponses"));
+const PrintPreview = lazy(() => import("../PrintPreview"));
 const ExpressGrader = lazy(() => import("../ExpressGrader"));
 const TestList = lazy(() => import("../TestList"));
 const TestPage = lazy(() => import("../TestPage"));
@@ -34,10 +35,11 @@ const ManageClass = lazy(() => import("../ManageClass"));
 const Author = ({ match, history, isSidebarCollapsed }) => {
   const isPickQuestion = !!history.location.pathname.includes("pickup-questiontype");
   const isCollapsed = isPickQuestion || isSidebarCollapsed;
+  const isPrintPreview = history.location.pathname.includes("printpreview");
   return (
     <StyledLayout>
-      <MainContainer isCollapsed={isCollapsed}>
-        <SidebarCompnent />
+      <MainContainer isCollapsed={isCollapsed} isPrintPreview={isPrintPreview}>
+        <SidebarCompnent isPrintPreview={isPrintPreview} />
         <Wrapper>
           <Suspense fallback={<Progress />}>
             <Switch>
@@ -52,6 +54,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               <Route exact path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />
               <Route exact path={`${match.url}/summary/:assignmentId/:classId`} component={SummaryBoard} />
               <Route exact path={`${match.url}/classresponses/:testActivityId`} component={ClassResponses} />
+              <Route exact path={`${match.url}/printpreview/:testActivityId`} component={PrintPreview} />
               <Route exact path={`${match.url}/manageClass`} component={ManageClass} />
               <Route
                 exact
@@ -136,7 +139,17 @@ Author.propTypes = {
 };
 
 const MainContainer = styled.div`
-  padding-left: 100px;
+  padding-left: ${props => {
+    if (props.isPrintPreview) {
+      return "0";
+    } else {
+      if (props.isCollapsed) {
+        return "100px";
+      } else {
+        return "240px";
+      }
+    }
+  }};
   width: 100%;
   .fixed-header {
     position: fixed;
@@ -154,6 +167,7 @@ const MainContainer = styled.div`
   }
 `;
 const SidebarCompnent = styled(Sidebar)`
+  display: ${props => (props.isPrintPreview ? "none" : "block")};
   @media (max-width: ${tabletWidth}) {
     display: none;
   }

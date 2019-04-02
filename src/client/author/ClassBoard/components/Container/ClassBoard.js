@@ -41,10 +41,9 @@ import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
 import HooksContainer from "../HooksContainer/HooksContainer";
 import RedirectPopup from "../RedirectPopUp";
 // icon images
-// import More from "../../assets/more.svg";
 // import Stats from "../../assets/stats.svg";
 // import Ghat from "../../assets/graduation-hat.svg";
-// import Ptools from "../../assets/printing-tool.svg";
+import Ptools from "../../assets/printing-tool.svg";
 import Elinks from "../../assets/external-link.svg";
 // styled wrappers
 import {
@@ -67,6 +66,7 @@ import {
   QuestionButton,
   BothButton,
   RedirectButton,
+  PrintButton,
   StudentGrapContainer
 } from "./styled";
 
@@ -233,7 +233,8 @@ class ClassBoard extends Component {
       studentResponse,
       selectedStudents,
       setSelected,
-      allStudents
+      allStudents,
+      history
     } = this.props;
     const { selectedTab, flag, selectedQuestion, selectAll, nCountTrue, redirectPopup } = this.state;
     const { assignmentId, classId } = match.params;
@@ -290,6 +291,10 @@ class ClassBoard extends Component {
                     {selectAll ? "UNSELECT ALL" : "SELECT ALL"}
                   </StyledCheckbox>
                 </CheckContainer>
+                <PrintButton onClick={() => history.push(`/author/printpreview/${additionalData.testId}`)}>
+                  <img src={Ptools} alt="" />
+                  PRINT
+                </PrintButton>
                 <RedirectButton onClick={() => this.setState({ redirectPopup: true })}>
                   <img src={Elinks} alt="" />
                   REDIRECT

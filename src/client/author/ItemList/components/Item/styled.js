@@ -76,17 +76,17 @@ export const ViewButtonStyled = styled(Button)`
 `;
 
 export const AddButtonStyled = styled(Button)`
-  width: 40px;
   height: 40px;
   border-radius: 4px;
   background: ${white};
   box-shadow: 0 2px 4px 0 rgba(201, 208, 219, 0.5);
   font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
   margin-left: 10px;
   color: ${newBlue};
   border: 0;
-  padding: 0;
+  padding: 0 15px;
 
   svg {
     max-width: 13px;

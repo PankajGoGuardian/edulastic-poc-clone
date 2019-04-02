@@ -72,6 +72,11 @@ function onHandler() {
   };
 }
 
+const cleanPoints = board => {
+  points.forEach(point => board.$board.removeObject(point));
+  points = [];
+};
+
 function flatConfigPoints(pointsConfig) {
   return pointsConfig.reduce((acc, p, i) => {
     acc[i] = p;
@@ -112,6 +117,7 @@ export default {
   onHandler,
   getConfig,
   parseConfig,
+  cleanPoints,
   flatConfigPoints,
   abort
 };

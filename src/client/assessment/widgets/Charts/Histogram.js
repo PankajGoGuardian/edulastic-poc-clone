@@ -7,8 +7,16 @@ import ArrowPair from "./components/ArrowPair";
 import withGrid from "./HOC/withGrid";
 import { getGridVariables, getReCalculatedPoints } from "./helpers";
 import Hists from "./components/Hists";
+import { SHOW } from "../../constants/constantsForQuestions";
 
-const Histogram = ({ data, saveAnswer, ui_style: { width, height, margin, yAxisCount, stepSize }, view }) => {
+const Histogram = ({
+  data,
+  previewTab,
+  validation,
+  saveAnswer,
+  ui_style: { width, height, margin, yAxisCount, stepSize },
+  view
+}) => {
   const { yAxis, padding, yAxisStep, changingStep, step } = getGridVariables(
     yAxisCount,
     stepSize,
@@ -36,9 +44,13 @@ const Histogram = ({ data, saveAnswer, ui_style: { width, height, margin, yAxisC
   }, []);
 
   const getPolylinePoints = () =>
-    localData
-      .map((dot, index) => `${step * index + margin / 2 + padding + step / 2 - 10},${height - margin - dot.y}`)
-      .join(" ");
+    previewTab === SHOW
+      ? validation.valid_response.value
+          .map((dot, index) => `${step * index + margin / 2 + padding + step / 2 - 10},${height - margin - dot.y}`)
+          .join(" ")
+      : localData
+          .map((dot, index) => `${step * index + margin / 2 + padding + step / 2 - 10},${height - margin - dot.y}`)
+          .join(" ");
 
   const getActivePoint = index =>
     active !== null
@@ -90,7 +102,9 @@ const Histogram = ({ data, saveAnswer, ui_style: { width, height, margin, yAxisC
       <Hists
         isMouseDown={activeIndex !== null}
         onPointOver={setActive}
-        bars={localData}
+        previewTab={previewTab}
+        validation={validation}
+        bars={previewTab === SHOW ? validation.valid_response.value : localData}
         view={view}
         step={step}
         height={height}
@@ -113,7 +127,9 @@ Histogram.propTypes = {
     yAxisCount: PropTypes.number,
     stepSize: PropTypes.number
   }).isRequired,
-  view: PropTypes.string.isRequired
+  view: PropTypes.string.isRequired,
+  previewTab: PropTypes.string.isRequired,
+  validation: PropTypes.object.isRequired
 };
 
 export default withGrid(Histogram);

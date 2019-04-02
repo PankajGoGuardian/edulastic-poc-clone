@@ -33,6 +33,11 @@ function onHandler() {
   };
 }
 
+const cleanPoints = board => {
+  points.forEach(point => board.$board.removeObject(point));
+  points = [];
+};
+
 function getConfig(circle) {
   return {
     _type: circle.type,
@@ -61,6 +66,7 @@ function abort(cb) {
 export default {
   onHandler,
   getConfig,
+  cleanPoints,
   parseConfig,
   abort
 };

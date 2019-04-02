@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { get } from "lodash";
+import { get, cloneDeep } from "lodash";
 
 import { Paper, Stimulus, InstructorStimulus } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -15,7 +15,7 @@ import Histogram from "./Histogram";
 import DotPlot from "./DotPlot";
 import LinePlot from "./LinePlot";
 
-const ChartPreview = ({ item, smallSize, saveAnswer, userAnswer, view }) => {
+const ChartPreview = ({ item, smallSize, saveAnswer, userAnswer, previewTab, view }) => {
   const fontSize = getFontSize(get(item, "ui_style.fontsize"));
   const chartType = get(item, "ui_style.chart_type");
 
@@ -60,7 +60,13 @@ const ChartPreview = ({ item, smallSize, saveAnswer, userAnswer, view }) => {
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
       <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
 
-      <CurrentChart {...passData} view={view} saveAnswer={saveAnswer} />
+      <CurrentChart
+        {...passData}
+        view={view}
+        validation={cloneDeep(item.validation)}
+        previewTab={previewTab}
+        saveAnswer={saveAnswer}
+      />
     </Paper>
   );
 };

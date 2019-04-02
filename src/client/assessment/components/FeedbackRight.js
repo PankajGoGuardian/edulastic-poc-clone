@@ -42,6 +42,7 @@ class FeedbackRight extends Component {
       loadFeedbackResponses,
       widget: { id, activity }
     } = this.props;
+
     const { testActivityId, groupId } = activity;
     if (!id || !user || !user.user || !testActivityId) {
       return;
@@ -70,9 +71,11 @@ class FeedbackRight extends Component {
   };
 
   render() {
-    const { studentName } = this.props;
+    const {
+      studentName,
+      widget: { activity }
+    } = this.props;
     const { score, maxScore, feedback } = this.state;
-    const { t, user } = this.props;
     const isError = maxScore < score;
     const isStudentName = studentName !== undefined && studentName.length !== 0;
     let title;
@@ -110,7 +113,9 @@ class FeedbackRight extends Component {
             />
           </Fragment>
         )}
-        <UpdateButton>UPDATE</UpdateButton>
+        <UpdateButton disabled={!activity} onClick={this.onFeedbackSubmit}>
+          UPDATE
+        </UpdateButton>
       </StyledCardTwo>
     );
   }
@@ -121,7 +126,7 @@ FeedbackRight.propTypes = {
     evaluation: PropTypes.object
   }).isRequired,
   user: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired,
+  studentName: PropTypes.string.isRequired,
   loadFeedbackResponses: PropTypes.func.isRequired
 };
 

@@ -61,6 +61,11 @@ function onHandler() {
   };
 }
 
+const cleanPoints = board => {
+  points.forEach(point => board.$board.removeObject(point));
+  points = [];
+};
+
 function getConfig(polygon) {
   return {
     _type: polygon.type,
@@ -101,6 +106,7 @@ export default {
   onHandler,
   getConfig,
   parseConfig,
+  cleanPoints,
   flatConfigPoints,
   abort
 };

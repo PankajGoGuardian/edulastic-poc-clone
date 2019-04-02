@@ -11,6 +11,7 @@ export const Line = styled.line`
 
 export const Circle = styled.circle`
   cursor: pointer;
+  position: relative;
   z-index: 10;
   stroke: ${mainBlueColor};
   fill: ${mainBlueColor};

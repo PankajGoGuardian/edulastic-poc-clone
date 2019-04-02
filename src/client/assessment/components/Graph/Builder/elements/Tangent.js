@@ -54,6 +54,11 @@ function onHandler() {
   };
 }
 
+const cleanPoints = board => {
+  points.forEach(point => board.$board.removeObject(point));
+  points = [];
+};
+
 function parseConfig(pointsConfig) {
   return [
     "functiongraph",
@@ -74,5 +79,6 @@ function abort(cb) {
 export default {
   onHandler,
   parseConfig,
+  cleanPoints,
   abort
 };

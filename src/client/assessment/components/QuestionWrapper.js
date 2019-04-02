@@ -5,6 +5,7 @@ import { questionType } from "@edulastic/constants";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
+import { throttle } from "lodash";
 
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../themes";
@@ -114,7 +115,7 @@ class QuestionWrapper extends Component {
   };
 
   componentDidMount() {
-    window.addEventListener("scroll", this.findActiveTab);
+    window.addEventListener("scroll", throttle(this.findActiveTab, 200));
   }
 
   componentWillUnmount() {
@@ -189,7 +190,7 @@ class QuestionWrapper extends Component {
     const { type, timespent, data, showFeedback, multiple, view, setQuestionData, t, ...restProps } = this.props;
     const { main, advanced, activeTab } = this.state;
     const Question = getQuestion(type);
-    const studentName = ""; // data.activity.studentName;
+    const studentName = data.activity && data.activity.studentName;
     const PaperWrapperStyles = {
       width: "-webkit-fill-available",
       display: "flex",

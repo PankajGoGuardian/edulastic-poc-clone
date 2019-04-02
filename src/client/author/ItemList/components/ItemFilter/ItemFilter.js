@@ -24,14 +24,6 @@ import TestFiltersNav from "../../../src/components/common/TestFilters/TestFilte
 import Search from "../Search/Search";
 import { SMALL_DESKTOP_WIDTH, MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 
-const items = [
-  { icon: "book", key: "library", text: "Entire Library" },
-  { icon: "folder", key: "byMe", text: "Authored by me" },
-  { icon: "copy", key: "coAuthor", text: "I am a Co-Author" },
-  { icon: "reload", key: "previously", text: "Previously Used" },
-  { icon: "heart", key: "favorites", text: "My Favorites" }
-];
-
 class ItemFilter extends Component {
   state = {
     isShowFilter: false
@@ -105,7 +97,17 @@ class ItemFilter extends Component {
   };
 
   render() {
-    const { windowWidth, onClearSearch, search, curriculums, onSearchFieldChange, curriculumStandards, t } = this.props;
+    const {
+      windowWidth,
+      onClearSearch,
+      search,
+      onLabelSearch,
+      curriculums,
+      onSearchFieldChange,
+      curriculumStandards,
+      t,
+      items
+    } = this.props;
     const { isShowFilter } = this.state;
 
     return (
@@ -132,7 +134,7 @@ class ItemFilter extends Component {
                     <Title>{t("component.itemlist.filter.filters")}</Title>
                     <Clear onClick={onClearSearch}>{t("component.itemlist.filter.clearAll")}</Clear>
                   </MainFilterHeader>
-                  <TestFiltersNav items={items} />
+                  <TestFiltersNav items={items} onSelect={onLabelSearch} />
                   <Search
                     search={search}
                     curriculums={curriculums}

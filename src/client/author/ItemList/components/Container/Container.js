@@ -32,6 +32,14 @@ import { getTestItemCreatingSelector } from "../../../src/selectors/testItem";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import { addItemToCartAction } from "../../ducks";
 
+export const filterMenuItems = [
+  { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
+  { icon: "folder", filter: "AUTHORED_BY_ME", path: "by-me", text: "Authored by me" },
+  { icon: "copy", filter: "CO_AUTHOR", path: "co-author", text: "I am a Co-Author" },
+  { icon: "reload", filter: "PREVIOUS", path: "previous", text: "Previously Used" },
+  { icon: "heart", filter: "FAVORITES", path: "favourites", text: "My Favorites" }
+];
+
 export const getClearSearchState = () => ({
   subject: "",
   curriculumId: "",
@@ -39,7 +47,8 @@ export const getClearSearchState = () => ({
   questionType: "",
   depthOfKnowledge: "",
   authorDifficulty: "",
-  grades: []
+  grades: [],
+  filter: filterMenuItems[0].filter
 });
 
 // container the main entry point to the component
@@ -49,9 +58,17 @@ class Contaier extends Component {
   };
 
   componentDidMount() {
-    const { receiveItems, curriculums, getCurriculums, setDefaultTestData } = this.props;
+    const { search } = this.state;
+    const { receiveItems, curriculums, getCurriculums, match = {}, limit, setDefaultTestData } = this.props;
+    const { params = {} } = match;
     setDefaultTestData();
-    receiveItems();
+    if (params.filterType) {
+      const getMatchingObj = filterMenuItems.filter(item => item.path === params.filterType);
+      const { filter } = getMatchingObj[0];
+      receiveItems({ ...search, filter }, 1, limit);
+    } else {
+      receiveItems();
+    }
     if (curriculums.length === 0) {
       getCurriculums();
     }
@@ -61,6 +78,16 @@ class Contaier extends Component {
     const { search } = this.state;
     const { limit, receiveItems } = this.props;
     receiveItems(search, 1, limit);
+  };
+
+  handleLabelSearch = e => {
+    const { search } = this.state;
+    const { limit, receiveItems, history } = this.props;
+    const { key: filterType } = e;
+    const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
+    const { filter } = getMatchingObj[0];
+    receiveItems({ ...search, filter }, 1, limit);
+    history.push(`/author/items/filter/${filterType}`);
   };
 
   handleClearSearch = () => {
@@ -182,11 +209,13 @@ class Contaier extends Component {
             onSearchFieldChange={this.handleSearchFieldChange}
             onSearch={this.handleSearch}
             onClearSearch={this.handleClearSearch}
+            onLabelSearch={this.handleLabelSearch}
             windowWidth={windowWidth}
             search={search}
             curriculums={curriculums}
             getCurriculumStandards={getCurriculumStandards}
             curriculumStandards={curriculumStandards}
+            items={filterMenuItems}
             t={t}
           />
           <ListItems>

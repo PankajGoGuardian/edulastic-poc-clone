@@ -24,7 +24,7 @@ import {
 } from "./ducks";
 import ItemsTable from "../common/ItemsTable/ItemsTable";
 import ItemFilter from "../../../ItemList/components/ItemFilter/ItemFilter";
-import { getClearSearchState } from "../../../ItemList";
+import { getClearSearchState, filterMenuItems } from "../../../ItemList";
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -58,19 +58,35 @@ class AddItems extends PureComponent {
   };
 
   componentDidMount() {
-    const { selectedItems, getCurriculums } = this.props;
+    const { search } = this.state;
+    const { selectedItems, getCurriculums, receiveTestItems, match, limit } = this.props;
+    const { params = {} } = match;
     this.setState({
       selectedTestItems: selectedItems
     });
 
     getCurriculums();
-    this.handleSearch();
+    if (params.filterType) {
+      const getMatchingObj = filterMenuItems.filter(item => item.path === params.filterType);
+      const { filter } = getMatchingObj[0];
+      receiveTestItems({ ...search, filter }, 1, limit);
+    } else {
+      receiveTestItems(search, 1, limit);
+    }
   }
 
   handleSearch = () => {
     const { receiveTestItems, limit } = this.props;
     const { search } = this.state;
     receiveTestItems(search, 1, limit);
+  };
+  handleLabelSearch = e => {
+    const { search } = this.state;
+    const { limit, receiveTestItems } = this.props;
+    const { key: filterType } = e;
+    const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
+    const { filter } = getMatchingObj[0];
+    receiveTestItems({ ...search, filter }, 1, limit);
   };
 
   handleClearSearch = () => {
@@ -184,11 +200,13 @@ class AddItems extends PureComponent {
             onSearchFieldChange={this.handleSearchFieldChange}
             onSearch={this.handleSearch}
             onClearSearch={this.handleClearSearch}
+            onLabelSearch={this.handleLabelSearch}
             windowWidth={windowWidth}
             search={search}
             curriculums={curriculums}
             getCurriculumStandards={getCurriculumStandards}
             curriculumStandards={curriculumStandards}
+            items={filterMenuItems}
             t={t}
           />
           <ListItems id="item-list">

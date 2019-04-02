@@ -11,5 +11,8 @@ export const ShapeTypes = {
   SECANT: "secant",
   POLYGON: "polygon",
   ELLIPSE: "ellipse",
-  HYPERBOLA: "hyperbola"
+  HYPERBOLA: "hyperbola",
+  EXPONENT: "exponent",
+  LOGARITHM: "logarithm",
+  POLYNOM: "polynom"
 };

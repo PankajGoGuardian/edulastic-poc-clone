@@ -7,8 +7,16 @@ import withGrid from "./HOC/withGrid";
 import { getGridVariables, getReCalculatedPoints } from "./helpers";
 import { Line } from "./styled";
 import Crosses from "./components/Crosses";
+import { SHOW } from "../../constants/constantsForQuestions";
 
-const LinePlot = ({ data, saveAnswer, ui_style: { width, height, margin, yAxisCount, stepSize }, view }) => {
+const LinePlot = ({
+  data,
+  previewTab,
+  validation,
+  saveAnswer,
+  ui_style: { width, height, margin, yAxisCount, stepSize },
+  view
+}) => {
   const { padding, yAxisStep, changingStep, step } = getGridVariables(
     yAxisCount,
     stepSize,
@@ -32,7 +40,11 @@ const LinePlot = ({ data, saveAnswer, ui_style: { width, height, margin, yAxisCo
   }, [data]);
 
   const getPolylinePoints = () =>
-    localData.map((dot, index) => `${step * index + step / 2 + 2},${height - margin - dot.y}`).join(" ");
+    previewTab === SHOW
+      ? validation.valid_response.value
+          .map((dot, index) => `${step * index + step / 2 + 2},${height - margin - dot.y}`)
+          .join(" ")
+      : localData.map((dot, index) => `${step * index + step / 2 + 2},${height - margin - dot.y}`).join(" ");
 
   const getActivePoint = index =>
     active !== null
@@ -77,7 +89,9 @@ const LinePlot = ({ data, saveAnswer, ui_style: { width, height, margin, yAxisCo
       <Crosses
         isMouseDown={activeIndex !== null}
         onPointOver={setActive}
-        bars={localData}
+        previewTab={previewTab}
+        validation={validation}
+        bars={previewTab === SHOW ? validation.valid_response.value : localData}
         view={view}
         step={step}
         yAxisStep={yAxisStep}
@@ -101,7 +115,9 @@ LinePlot.propTypes = {
     yAxisCount: PropTypes.number,
     stepSize: PropTypes.number
   }).isRequired,
-  view: PropTypes.string.isRequired
+  view: PropTypes.string.isRequired,
+  previewTab: PropTypes.string.isRequired,
+  validation: PropTypes.object.isRequired
 };
 
 export default withGrid(LinePlot);

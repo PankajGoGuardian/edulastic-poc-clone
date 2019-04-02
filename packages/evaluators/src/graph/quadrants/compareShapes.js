@@ -4,6 +4,9 @@ import LineFunction from "./lineFunction";
 import ParabolaFunction from "./parabolaFunction";
 import EllipseFunction from "./ellipseFunction";
 import HyperbolaFunction from "./hyperbolaFunction";
+import ExponentFunction from "./exponentFunction";
+import LogarithmFunction from "./logarithmFunction";
+import PolynomFunction from "./polynomFunction";
 
 class CompareShapes {
   constructor(trueAnswerValue, testAnswer) {
@@ -47,6 +50,12 @@ class CompareShapes {
         return this.compareEllipses(testShape, trueShape);
       case ShapeTypes.HYPERBOLA:
         return this.compareHyperbolas(testShape, trueShape);
+      case ShapeTypes.EXPONENT:
+        return this.compareExponents(testShape, trueShape);
+      case ShapeTypes.LOGARITHM:
+        return this.compareLogarithms(testShape, trueShape);
+      case ShapeTypes.POLYNOM:
+        return this.comparePolynoms(testShape, trueShape);
       default:
         return {
           id: testId,
@@ -524,6 +533,119 @@ class CompareShapes {
     return {
       id: testHyperbola.id,
       result: false
+    };
+  }
+
+  compareExponents(testExponent, trueExponent) {
+    const testExponentPoints = {
+      startX: +this.testAnswer.find(item => item.id === testExponent.subElementsIds.startPoint).x,
+      startY: +this.testAnswer.find(item => item.id === testExponent.subElementsIds.startPoint).y,
+      endX: +this.testAnswer.find(item => item.id === testExponent.subElementsIds.endPoint).x,
+      endY: +this.testAnswer.find(item => item.id === testExponent.subElementsIds.endPoint).y
+    };
+
+    const trueExponentPoints = {
+      startX: +this.trueAnswerValue.find(item => item.id === trueExponent.subElementsIds.startPoint).x,
+      startY: +this.trueAnswerValue.find(item => item.id === trueExponent.subElementsIds.startPoint).y,
+      endX: +this.trueAnswerValue.find(item => item.id === trueExponent.subElementsIds.endPoint).x,
+      endY: +this.trueAnswerValue.find(item => item.id === trueExponent.subElementsIds.endPoint).y
+    };
+
+    const testFunc = new ExponentFunction(testExponentPoints);
+    const trueFunc = new ExponentFunction(trueExponentPoints);
+
+    if (
+      testExponentPoints.startX === trueExponentPoints.startX &&
+      testExponentPoints.startY === trueExponentPoints.startY &&
+      testFunc.getBC() === trueFunc.getBC()
+    ) {
+      return {
+        id: testExponent.id,
+        relatedId: testExponent.id,
+        result: true
+      };
+    }
+
+    return {
+      id: testExponent.id,
+      result: false
+    };
+  }
+
+  compareLogarithms(testLogarithm, trueLogarithm) {
+    const testLogarithmPoints = {
+      startX: +this.testAnswer.find(item => item.id === testLogarithm.subElementsIds.startPoint).x,
+      startY: +this.testAnswer.find(item => item.id === testLogarithm.subElementsIds.startPoint).y,
+      endX: +this.testAnswer.find(item => item.id === testLogarithm.subElementsIds.endPoint).x,
+      endY: +this.testAnswer.find(item => item.id === testLogarithm.subElementsIds.endPoint).y
+    };
+
+    const trueLogarithmPoints = {
+      startX: +this.trueAnswerValue.find(item => item.id === trueLogarithm.subElementsIds.startPoint).x,
+      startY: +this.trueAnswerValue.find(item => item.id === trueLogarithm.subElementsIds.startPoint).y,
+      endX: +this.trueAnswerValue.find(item => item.id === trueLogarithm.subElementsIds.endPoint).x,
+      endY: +this.trueAnswerValue.find(item => item.id === trueLogarithm.subElementsIds.endPoint).y
+    };
+
+    const testFunc = new LogarithmFunction(testLogarithmPoints);
+    const trueFunc = new LogarithmFunction(trueLogarithmPoints);
+
+    if (
+      testLogarithmPoints.startX === trueLogarithmPoints.startX &&
+      testLogarithmPoints.startY === trueLogarithmPoints.startY &&
+      testFunc.getBC() === trueFunc.getBC()
+    ) {
+      return {
+        id: testLogarithm.id,
+        relatedId: testLogarithm.id,
+        result: true
+      };
+    }
+
+    return {
+      id: testLogarithm.id,
+      result: false
+    };
+  }
+
+  comparePolynoms(testPolynom, truePolynom) {
+    const testPolynomPoints = [];
+    Object.getOwnPropertyNames(testPolynom.subElementsIds).forEach(value => {
+      const pointId = testPolynom.subElementsIds[value];
+      const point = this.testAnswer.find(item => item.id === pointId);
+      testPolynomPoints.push({ x: point.x, y: point.y });
+    });
+
+    const truePolynomPoints = [];
+    Object.getOwnPropertyNames(truePolynom.subElementsIds).forEach(value => {
+      const pointId = truePolynom.subElementsIds[value];
+      const point = this.trueAnswerValue.find(item => item.id === pointId);
+      truePolynomPoints.push({ x: point.x, y: point.y });
+    });
+
+    const testFunc = new PolynomFunction(testPolynomPoints);
+    const trueFunc = new PolynomFunction(truePolynomPoints);
+
+    const allX = testPolynomPoints.map(point => point.x).concat(truePolynomPoints.map(point => point.x));
+    const xMin = Math.min(...allX) - 0.5;
+    const xMax = Math.max(...allX) + 0.5;
+
+    let x = xMin;
+    while (x <= xMax) {
+      if (testFunc.getYbyX(x) !== trueFunc.getYbyX(x)) {
+        return {
+          id: testPolynom.id,
+          result: false
+        };
+      }
+
+      x += 0.1;
+    }
+
+    return {
+      id: testPolynom.id,
+      relatedId: testPolynom.id,
+      result: true
     };
   }
 }

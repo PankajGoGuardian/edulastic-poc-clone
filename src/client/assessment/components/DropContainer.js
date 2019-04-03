@@ -23,7 +23,7 @@ function collectTarget(connector, monitor) {
   };
 }
 
-const DropContainer = ({ connectDropTarget, index, isOver, style, children, noBorder, noTopBorder, theme }) => {
+const DropContainer = ({ connectDropTarget, index, isOver, flag, style, children, noBorder, noTopBorder, theme }) => {
   const border = `${
     !noBorder
       ? isOver
@@ -37,7 +37,7 @@ const DropContainer = ({ connectDropTarget, index, isOver, style, children, noBo
   return connectDropTarget(
     <div
       data-cy={`drag-drop-board-${index}`}
-      id={`drag-drop-board-${index}`}
+      id={`drag-drop-board-${index}${flag === "selected" ? "-target" : ""}`}
       style={{
         zIndex: 1,
         ...style,

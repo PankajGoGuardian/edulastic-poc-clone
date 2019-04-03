@@ -187,6 +187,7 @@ class Container extends PureComponent {
     if (test._id) {
       if (this.props.editAssigned) {
         newTest.versioned = true;
+        delete newTest["authors"];
         createTest(newTest);
       } else {
         updateTest(test._id, newTest);

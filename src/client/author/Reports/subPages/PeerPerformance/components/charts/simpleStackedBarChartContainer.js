@@ -3,7 +3,7 @@ import { groupBy } from "lodash";
 import { Row, Col } from "antd";
 import { SimpleStackedBarChart } from "../../../../common/components/charts/simpleStackedBarChart";
 import { getHSLFromRange1 } from "../../../../common/util";
-import { idToName, analyseByToName } from "../../util/parser";
+import { idToName, analyseByToName } from "../../util/transformers";
 
 export const SimpleStackedBarChartContainer = ({
   data,
@@ -78,11 +78,12 @@ export const SimpleStackedBarChartContainer = ({
   const getChartSpecifics = () => {
     if (analyseBy === "score(%)") {
       return {
-        domain: [0, 110],
+        yDomain: [0, 110],
         ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
         yTickFormatter: val => {
           return val + "%";
-        }
+        },
+        yAxisLabel: "Avg. Score %"
       };
     } else if (analyseBy === "rawScore" && chartData.length > 0) {
       let maxScore = chartData[0].maxScore;
@@ -99,11 +100,12 @@ export const SimpleStackedBarChartContainer = ({
       }
 
       return {
-        domain: [0, max + interval],
+        yDomain: [0, max + interval],
         ticks: arr,
         yTickFormatter: val => {
           return val;
-        }
+        },
+        yAxisLabel: "Avg. Score"
       };
     } else {
       return {};
@@ -115,7 +117,7 @@ export const SimpleStackedBarChartContainer = ({
   return (
     <SimpleStackedBarChart
       data={chartData}
-      domain={chartSpecifics.domain}
+      yDomain={chartSpecifics.yDomain}
       ticks={chartSpecifics.ticks}
       yTickFormatter={chartSpecifics.yTickFormatter}
       xAxisDataKey={compareBy}
@@ -126,7 +128,7 @@ export const SimpleStackedBarChartContainer = ({
       onBarClickCB={_onBarClickCB}
       onResetClickCB={_onResetClickCB}
       getXTickText={getXTickText}
-      yAxisLabel="Performance"
+      yAxisLabel={chartSpecifics.yAxisLabel}
     />
   );
 };

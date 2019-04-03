@@ -51,10 +51,10 @@ class ClassResponses extends Component {
     if (testActivity.length === 0) {
       history.goBack();
     }
-    // const { testId, classId } = additionalData;
-    // const { testActivityId } = match.params;
-    // loadStudentResponses({ testActivityId, groupId: classId });
-    // loadClassResponses({ testId });
+    const { testId, classId } = additionalData;
+    const { testActivityId } = match.params;
+    loadStudentResponses({ testActivityId, groupId: classId });
+    loadClassResponses({ testId });
   }
 
   static getDerivedStateFromProps(props, state) {

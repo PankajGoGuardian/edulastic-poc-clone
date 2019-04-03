@@ -51,6 +51,7 @@ const RedirectPopUp = ({
     <Modal
       title="Redirect"
       visible={open}
+      closable={false}
       footer={[
         <Button key="cancel" onClick={() => closePopup()}>
           cancel

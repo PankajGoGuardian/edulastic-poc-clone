@@ -6785,49 +6785,40 @@
   "assessmentName": "ELA A#1",
   "metaInfo": [
     {
-      "schoolId": 162136,
-      "schoolName": "MAST Middle",
-      "tFName": "Conrad",
-      "className": "Pawlowicz-G7-1",
-      "tLName": "Pawlowicz",
-      "teacherId": 4842759,
-      "groupId": 898487
+      "schoolId": 162134,
+      "schoolName": "Sams Middle",
+      "tFName": "Yuki",
+      "className": "Chean-G7-2",
+      "tLName": "Chean",
+      "teacherId": 4841889,
+      "groupId": 898421
     },
     {
       "schoolId": 162136,
       "schoolName": "MAST Middle",
       "tFName": "Allison",
-      "className": "Odwyer-G7-3",
+      "className": "Odwyer-G7-5",
       "tLName": "Odwyer",
       "teacherId": 4842872,
-      "groupId": 898489
+      "groupId": 898496
     },
     {
-      "schoolId": 162135,
-      "schoolName": "Murphy Middle",
-      "tFName": "Rachelle",
-      "className": "Funderburg-G7-2",
-      "tLName": "Funderburg",
-      "teacherId": 4842406,
-      "groupId": 898462
+      "schoolId": 162136,
+      "schoolName": "MAST Middle",
+      "tFName": "Allison",
+      "className": "Odwyer-G7-4",
+      "tLName": "Odwyer",
+      "teacherId": 4842872,
+      "groupId": 898490
     },
     {
-      "schoolId": 162108,
-      "schoolName": "Ford Middle",
-      "tFName": "Royce",
-      "className": "Mullinex-G7-2",
-      "tLName": "Mullinex",
-      "teacherId": 4842128,
-      "groupId": 898445
-    },
-    {
-      "schoolId": 162108,
-      "schoolName": "Ford Middle",
-      "tFName": "Sage",
-      "className": "Dreckman-G7-4",
-      "tLName": "Dreckman",
-      "teacherId": 4842265,
-      "groupId": 898447
+      "schoolId": 162134,
+      "schoolName": "Sams Middle",
+      "tFName": "Yuki",
+      "className": "Chean-G7-3",
+      "tLName": "Chean",
+      "teacherId": 4841889,
+      "groupId": 898422
     },
     {
       "schoolId": 162134,
@@ -6842,19 +6833,127 @@
       "schoolId": 162135,
       "schoolName": "Murphy Middle",
       "tFName": "Sharice",
-      "className": "Rubulcaba-G7-5",
+      "className": "Rubulcaba-G7-4",
       "tLName": "Rubulcaba",
       "teacherId": 4842543,
-      "groupId": 898467
+      "groupId": 898465
+    },
+    {
+      "schoolId": 162136,
+      "schoolName": "MAST Middle",
+      "tFName": "Allison",
+      "className": "Odwyer-G7-3",
+      "tLName": "Odwyer",
+      "teacherId": 4842872,
+      "groupId": 898489
+    },
+    {
+      "schoolId": 162136,
+      "schoolName": "MAST Middle",
+      "tFName": "Allison",
+      "className": "Odwyer-G7-2",
+      "tLName": "Odwyer",
+      "teacherId": 4842872,
+      "groupId": 898488
+    },
+    {
+      "schoolId": 162135,
+      "schoolName": "Murphy Middle",
+      "tFName": "Rachelle",
+      "className": "Funderburg-G7-1",
+      "tLName": "Funderburg",
+      "teacherId": 4842406,
+      "groupId": 898460
+    },
+    {
+      "schoolId": 162135,
+      "schoolName": "Murphy Middle",
+      "tFName": "Sharice",
+      "className": "Rubulcaba-G7-3",
+      "tLName": "Rubulcaba",
+      "teacherId": 4842543,
+      "groupId": 898463
+    },
+    {
+      "schoolId": 162135,
+      "schoolName": "Murphy Middle",
+      "tFName": "Rachelle",
+      "className": "Funderburg-G7-2",
+      "tLName": "Funderburg",
+      "teacherId": 4842406,
+      "groupId": 898462
+    },
+    {
+      "schoolId": 162108,
+      "schoolName": "Ford Middle",
+      "tFName": "Sage",
+      "className": "Dreckman-G7-4",
+      "tLName": "Dreckman",
+      "teacherId": 4842265,
+      "groupId": 898447
+    },
+    {
+      "schoolId": 162108,
+      "schoolName": "Ford Middle",
+      "tFName": "Sage",
+      "className": "Dreckman-G7-3",
+      "tLName": "Dreckman",
+      "teacherId": 4842265,
+      "groupId": 898446
+    },
+    {
+      "schoolId": 162108,
+      "schoolName": "Ford Middle",
+      "tFName": "Royce",
+      "className": "Mullinex-G7-2",
+      "tLName": "Mullinex",
+      "teacherId": 4842128,
+      "groupId": 898445
+    },
+    {
+      "schoolId": 162108,
+      "schoolName": "Ford Middle",
+      "tFName": "Royce",
+      "className": "Mullinex-G7-1",
+      "tLName": "Mullinex",
+      "teacherId": 4842128,
+      "groupId": 898444
     },
     {
       "schoolId": 162134,
       "schoolName": "Sams Middle",
       "tFName": "Yuki",
-      "className": "Chean-G7-3",
+      "className": "Chean-G7-5",
       "tLName": "Chean",
       "teacherId": 4841889,
-      "groupId": 898422
+      "groupId": 898424
+    },
+    {
+      "schoolId": 162136,
+      "schoolName": "MAST Middle",
+      "tFName": "Conrad",
+      "className": "Pawlowicz-G7-1",
+      "tLName": "Pawlowicz",
+      "teacherId": 4842759,
+      "groupId": 898487
+    },
+    {
+      "schoolId": 162134,
+      "schoolName": "Sams Middle",
+      "tFName": "Yuki",
+      "className": "Chean-G7-4",
+      "tLName": "Chean",
+      "teacherId": 4841889,
+      "groupId": 898423
+    },
+    {
+      "schoolId": 162135,
+      "schoolName": "Murphy Middle",
+      "tFName": "Sharice",
+      "className": "Rubulcaba-G7-5",
+      "tLName": "Rubulcaba",
+      "teacherId": 4842543,
+      "groupId": 898467
     }
   ],
   "districtAvg": 55.49

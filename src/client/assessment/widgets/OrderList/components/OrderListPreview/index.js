@@ -10,11 +10,11 @@ class OrderListPreview extends Component {
     const { questions, smallSize, listStyle, columns } = this.props;
 
     return (
-      <div data-cy="order-preview-container" style={listStyle}>
+      <div data-cy="order-preview-container" id="order-preview-container" style={listStyle}>
         {questions &&
           !!questions.length &&
           questions.map((q, i) => (
-            <OrderListPreviewItem columns={columns} showDragHandle smallSize={smallSize} key={i} index={i}>
+            <OrderListPreviewItem columns={columns} showDragHandle smallSize={smallSize} key={i} index={i} cIndex={i}>
               {q}
             </OrderListPreviewItem>
           ))}

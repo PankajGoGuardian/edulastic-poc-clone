@@ -1,12 +1,16 @@
 import React from "react";
-import { connect } from "react-redux";
-import styled from "styled-components";
 import PropTypes from "prop-types";
+import styled from "styled-components";
+import { connect } from "react-redux";
+import { IconMenuOpenClose } from "@edulastic/icons";
+import { tabletWidth, white } from "@edulastic/colors";
 import { Affix, Layout, Row, Col } from "antd";
+import { toggleSideBarAction } from "../../Sidebar/ducks";
 
-const HeaderWrapper = ({ children, isSidebarCollapsed }) => (
+const HeaderWrapper = ({ children, isSidebarCollapsed, toggleSideBar }) => (
   <HeaderContainer>
     <FixedHeader iscollapsed={isSidebarCollapsed}>
+      <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
       <AssignmentsHeader>
         <HeaderRow>
           <Col span={24}>
@@ -20,12 +24,16 @@ const HeaderWrapper = ({ children, isSidebarCollapsed }) => (
 
 HeaderWrapper.propTypes = {
   children: PropTypes.object.isRequired,
-  isSidebarCollapsed: PropTypes.bool.isRequired
+  isSidebarCollapsed: PropTypes.bool.isRequired,
+  toggleSideBar: PropTypes.func.isRequired
 };
 
-export default connect(({ ui }) => ({
-  isSidebarCollapsed: ui.isSidebarCollapsed
-}))(HeaderWrapper);
+export default connect(
+  ({ ui }) => ({
+    isSidebarCollapsed: ui.isSidebarCollapsed
+  }),
+  { toggleSideBar: toggleSideBarAction }
+)(HeaderWrapper);
 
 const HeaderContainer = styled.div`
   padding-top: 62px;
@@ -43,7 +51,7 @@ const FixedHeader = styled(Affix)`
   left: 100px;
   @media (max-width: 768px) {
     left: 0;
-    padding-left: 30px;
+    padding-left: 60px;
     background: ${props => props.theme.headerBgColor};
   }
 `;
@@ -79,5 +87,19 @@ const Wrapper = styled.div`
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
+  }
+`;
+
+const MenuIcon = styled(IconMenuOpenClose)`
+  display: none;
+  fill: ${white};
+  width: 18px;
+  pointer-events: all;
+
+  @media (max-width: ${tabletWidth}) {
+    display: block;
+    position: absolute;
+    top: 25px;
+    left: 20px;
   }
 `;

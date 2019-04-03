@@ -212,9 +212,7 @@ class MathFormulaEdit {
   };
 
   clearAnswerValueInput = length => {
-    // for (let i = 0; i < length; i++) {
-    this.getAnswerValueMathInput().type("{del}".repeat(length), { force: true });
-    // }
+    this.getAnswerValueMathInput().type("{del}".repeat(length || 1), { force: true });
   };
 
   getAnswerMathInputField = () => cy.get('[data-cy="answer-math-input-field"]');
@@ -222,6 +220,7 @@ class MathFormulaEdit {
   checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect, score = false, scoreValuse = "1/1") => {
     preview.header.preview();
     preview.getClear().click();
+    this.getPreviewMathQuill().should("be.empty");
     this.getPreviewMathQuill().typeWithDelay(expectedValue);
     preview
       .getCheckAnswer()
@@ -357,7 +356,7 @@ class MathFormulaEdit {
 
   setMethod = (methods, setFunction = false, argument, setChecBox) => {
     this.getMethodSelectionDropdow()
-      .click()
+      .click({ force: true })
       .then(() => {
         this.getMethodSelectionDropdowList(methods).click();
       });
@@ -389,6 +388,19 @@ class MathFormulaEdit {
     this[checBoxName]()
       .check({ force: true })
       .should("be.checked");
+  };
+
+  allowDecimalMarks = (separator, expected, preview, isCorrect = false, score, value) => {
+    this.getAnswerAllowThousandsSeparator().check({ force: true });
+    this.getThousandsSeparatorDropdown()
+      .click()
+      .then(() => {
+        this.getThousandsSeparatorDropdownList(separator)
+          .should("be.visible")
+          .click();
+      });
+    this.checkCorrectAnswer(expected, preview, 0, isCorrect, score, value);
+    this.getAnswerAllowThousandsSeparator().uncheck({ force: true });
   };
 }
 

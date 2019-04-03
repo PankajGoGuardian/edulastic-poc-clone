@@ -54,8 +54,7 @@ export const getClearSearchState = () => ({
 // container the main entry point to the component
 class Contaier extends Component {
   state = {
-    search: getClearSearchState(),
-    loading: true
+    search: getClearSearchState()
   };
 
   componentDidMount() {
@@ -65,23 +64,21 @@ class Contaier extends Component {
     setDefaultTestData();
     if (params.filterType) {
       const getMatchingObj = filterMenuItems.filter(item => item.path === params.filterType);
-      const { filter } = getMatchingObj[0];
+      const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
+      this.setState(prevState => ({
+        search: {
+          ...prevState.search,
+          filter
+        }
+      }));
       receiveItems({ ...search, filter }, 1, limit);
     } else {
-      receiveItems();
+      receiveItems(search, 1, limit);
     }
     if (curriculums.length === 0) {
       getCurriculums();
     }
   }
-
-  componentDidUpdate = prevProps => {
-    const { loading } = this.props;
-
-    if (prevProps.loading !== loading) {
-      this.setState({ loading });
-    }
-  };
 
   handleSearch = () => {
     const { search } = this.state;
@@ -94,7 +91,13 @@ class Contaier extends Component {
     const { limit, receiveItems, history } = this.props;
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
-    const { filter } = getMatchingObj[0];
+    const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
+    this.setState(prevState => ({
+      search: {
+        ...prevState.search,
+        filter
+      }
+    }));
     receiveItems({ ...search, filter }, 1, limit);
     history.push(`/author/items/filter/${filterType}`);
   };

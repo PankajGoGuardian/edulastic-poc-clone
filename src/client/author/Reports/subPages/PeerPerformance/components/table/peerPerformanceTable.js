@@ -3,9 +3,18 @@ import { Row, Col } from "antd";
 import next from "immer";
 import { StyledTable } from "../styled";
 import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
-import { idToName, analyseByToName } from "../../util/parser";
+import { idToName, analyseByToName } from "../../util/transformers";
 
-export const PeerPerformanceTable = ({ columns, dataSource, rowKey, analyseBy, compareBy, assessmentName, filter }) => {
+export const PeerPerformanceTable = ({
+  columns,
+  dataSource,
+  rowKey,
+  analyseBy,
+  compareBy,
+  assessmentName,
+  filter,
+  bandInfo
+}) => {
   const sortNumbers = key => (a, b) => {
     let _a = a[key] || 0;
     let _b = b[key] || 0;
@@ -13,7 +22,9 @@ export const PeerPerformanceTable = ({ columns, dataSource, rowKey, analyseBy, c
     return _a - _b;
   };
 
-  const colorCell = key => (data, record) => {
+  let _columns = [];
+
+  const colorCell = (colorkey, columnKey) => (data, record) => {
     const tooltipText = record => () => {
       return (
         <div>
@@ -21,11 +32,14 @@ export const PeerPerformanceTable = ({ columns, dataSource, rowKey, analyseBy, c
             <Col className="custom-table-tooltip-key">Assessment Name: </Col>
             <Col className="custom-table-tooltip-value">{assessmentName}</Col>
           </Row>
-          {columns.map((data, index) => {
+          {_columns.map((column, index) => {
             return (
-              <Row type="flex" justify="start" key={data.key}>
-                <Col className="custom-table-tooltip-key">{data.title + ": "}</Col>
-                <Col className="custom-table-tooltip-value">{record[data.key]}</Col>
+              <Row type="flex" justify="start" key={column.key}>
+                <Col className="custom-table-tooltip-key">{column.title + ": "}</Col>
+                <Col className="custom-table-tooltip-value">
+                  {record[column.key]}
+                  {record[column.key + "Percentage"] ? " (" + Math.abs(record[column.key + "Percentage"]) + "%)" : ""}
+                </Col>
               </Row>
             );
           })}
@@ -38,10 +52,15 @@ export const PeerPerformanceTable = ({ columns, dataSource, rowKey, analyseBy, c
       return <div style={{ backgroundColor: record[colorKey] }}>{printData}</div>;
     };
 
+    let printData = data;
+    if (analyseBy === "proficiencyBand" || analyseBy === "aboveBelowStandard") {
+      printData = data + " (" + Math.abs(record[columnKey + "Percentage"]) + "%)";
+    }
+
     return (
       <CustomTableTooltip
-        printData={data}
-        colorKey={key}
+        printData={printData}
+        colorKey={colorkey}
         placement="top"
         title={tooltipText(record)}
         getCellContents={getCellContents}
@@ -49,20 +68,33 @@ export const PeerPerformanceTable = ({ columns, dataSource, rowKey, analyseBy, c
     );
   };
 
-  let tableClass = null;
+  let colouredCellsNo = 0;
 
-  const _columns = next(columns, obj => {
-    obj[obj.length - 1].sorter = sortNumbers(obj[obj.length - 1].key);
-    if (analyseBy === "score(%)" || analyseBy === "rawScore" || analyseBy === "aboveBelowStandard") {
+  _columns = next(columns, obj => {
+    if (analyseBy === "score(%)" || analyseBy === "rawScore") {
       obj[obj.length - 1].render = colorCell("fill");
       obj[obj.length - 2].render = colorCell("dFill");
-      tableClass = "pad-0-2";
+      colouredCellsNo = 2;
+    } else if (analyseBy === "aboveBelowStandard") {
+      obj[obj.length - 1].render = colorCell("fill_0", "aboveStandard");
+      obj[obj.length - 2].render = colorCell("fill_1", "belowStandard");
+      colouredCellsNo = 2;
     } else {
-      obj[obj.length - 1].render = colorCell("fill");
-      obj[obj.length - 2].render = colorCell();
-      obj[obj.length - 3].render = colorCell();
-      tableClass = "pad-0-3";
+      bandInfo.sort((a, b) => {
+        return a.threshold - b.threshold;
+      });
+      for (let [index, value] of bandInfo.entries()) {
+        obj.push({
+          title: value.name,
+          dataIndex: value.name,
+          key: value.name,
+          width: 250,
+          render: colorCell("fill_" + index, value.name)
+        });
+      }
+      colouredCellsNo = bandInfo.length;
     }
+    obj[obj.length - 1].sorter = sortNumbers(obj[obj.length - 1].key);
   });
 
   const tableData = useMemo(() => {
@@ -75,5 +107,5 @@ export const PeerPerformanceTable = ({ columns, dataSource, rowKey, analyseBy, c
     return arr;
   }, [dataSource, filter]);
 
-  return <StyledTable className={tableClass} columns={_columns} dataSource={tableData} rowKey={rowKey} />;
+  return <StyledTable colouredCellsNo={colouredCellsNo} columns={_columns} dataSource={tableData} rowKey={rowKey} />;
 };

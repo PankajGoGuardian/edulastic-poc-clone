@@ -10,14 +10,10 @@ import { connect } from "react-redux";
 import HeaderWrapper from "../../mainContent/headerWrapper";
 import { toggleSideBarAction } from "../../actions/togglemenu";
 
-const toggleMenu = toggle => {
-  toggle();
-};
-
 const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar, renderExtra }) => (
   <Container>
     <FlexContainer style={{ pointerEvents: "none" }}>
-      <MenuIcon className="hamburger" onClick={() => toggleMenu(toggleSideBar)} />
+      <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
       <Title>{title}</Title>
     </FlexContainer>
 
@@ -27,7 +23,7 @@ const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar, renderExtra }
         color="secondary"
         variant="create"
         shadow="none"
-        icon={<IconPlusStyled color={newBlue} left={-50} width={20} height={20} hoverColor={newBlue} />}
+        icon={<IconPlusStyled color={newBlue} width={20} height={20} hoverColor={newBlue} />}
       >
         {btnTitle && btnTitle.length ? btnTitle : t("component.itemlist.header.create")}
       </CreateButton>
@@ -77,11 +73,10 @@ const CreateButton = styled(Button)`
   position: relative;
   width: 194px;
   height: 45px;
-  padding-left: 44px !important;
-  color: ${lightBlueSecondary} !important;
-  border-radius: 3px !important;
-  background: ${white} !important;
-  margin: 0;
+  color: ${lightBlueSecondary};
+  border-radius: 3px;
+  background: ${white};
+  justify-content: space-around;
 
   @media (max-width: ${tabletWidth}) {
     width: 45px;

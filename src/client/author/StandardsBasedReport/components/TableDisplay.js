@@ -9,7 +9,7 @@ import { getAdditionalDataSelector } from "../../ClassBoard/ducks";
 
 import {
   TableData,
-  StandardsCell,
+  StandardCell,
   QuestionCell,
   MasterySummary,
   PerformanceSummary,
@@ -45,10 +45,11 @@ class TableDisplay extends Component {
     const { additionalData: { standards = [] } = {} } = this.props;
     const columns = [
       {
-        title: "Standard",
+        title: "Standards",
         dataIndex: "standard",
         key: "standard",
-        render: text => <StandardsCell>{text}</StandardsCell>
+        sorter: (a, b) => a.age - b.age,
+        render: text => <StandardCell>{text}</StandardCell>
       },
       {
         title: "Question",
@@ -102,7 +103,7 @@ class TableDisplay extends Component {
       <React.Fragment>
         {isMobile && (
           <MoblieFlexContainer>
-            <ReportTitle>Standards performance</ReportTitle>
+            <ReportTitle>Standard performance</ReportTitle>
           </MoblieFlexContainer>
         )}
         {isMobile && (
@@ -135,7 +136,7 @@ class TableDisplay extends Component {
 
         {!isMobile && (
           <StyledCard>
-            <ReportTitle>Standards performance</ReportTitle>
+            <ReportTitle>Standard performance</ReportTitle>
             <TableData columns={columns} dataSource={data} pagination={false} />
           </StyledCard>
         )}

@@ -31,7 +31,8 @@ class MathInputCmp extends Embed {
 
   static create() {
     const node = super.create();
-    node.innerHTML = '<span class="input__math__field"></span>';
+    node.setAttribute("contenteditable", false);
+    node.innerHTML = '&nbsp;<span class="input__math__field"></span>&nbsp;';
     return node;
   }
 
@@ -42,7 +43,7 @@ class MathInputCmp extends Embed {
   constructor(domNode, value) {
     super(domNode, value);
     const MQ = window.MathQuill.getInterface(2);
-    const mathField = MQ.StaticMath(domNode.firstChild);
+    const mathField = MQ.StaticMath(domNode.childNodes[1]);
     mathField.latex(value);
     this.state = {
       mathField
@@ -73,10 +74,11 @@ const ResponseButton = () => (
 function formula() {
   const cursorPosition = this.quill.getSelection().index;
   this.quill.insertEmbed(cursorPosition, "MathInput", "");
-  this.quill.insertText(cursorPosition + 2, " ", {
-    width: "2px"
-  });
-  this.quill.setSelection(cursorPosition + 1);
+  if (cursorPosition === 0) {
+    this.quill.setSelection(cursorPosition, 1);
+  } else {
+    this.quill.setSelection(cursorPosition + 1);
+  }
 }
 
 function insertStar() {
@@ -284,8 +286,8 @@ class CustomQuillComponent extends React.Component {
 
   onChangeSelection = range => {
     const { showMath } = this.state;
-    if (showMath) return;
     if (!range) return;
+    if (showMath) return;
 
     const leaf = this.quillRef.getEditor().getLeaf(range.index);
     if (range.length > 1) {
@@ -307,7 +309,6 @@ class CustomQuillComponent extends React.Component {
           mathField,
           curMathRange: range
         });
-        this.hideToolbar();
       }
     } else if (showMath) {
       this.setState({
@@ -321,7 +322,7 @@ class CustomQuillComponent extends React.Component {
     const { mathField, curMathRange } = this.state;
     mathField.latex(latex);
 
-    this.quillRef.getEditor().setSelection(curMathRange.index + 3);
+    this.quillRef.getEditor().setSelection(curMathRange.index + 1);
     this.setState({
       selLatex: "",
       showMath: false
@@ -331,7 +332,7 @@ class CustomQuillComponent extends React.Component {
   onCloseModal = () => {
     const { selLatex, curMathRange } = this.state;
     if (selLatex === "" && curMathRange) {
-      this.quillRef.getEditor().deleteText(curMathRange.index, 2);
+      this.quillRef.getEditor().deleteText(curMathRange.index, 1);
     }
     this.setState({
       showMath: false,
@@ -383,7 +384,7 @@ class CustomQuillComponent extends React.Component {
           onKeyDown={this.onKeyDownHandler}
           onChangeSelection={this.onChangeSelection}
           placeholder={placeholder}
-          value={quillVal}
+          defaultValue={quillVal}
         />
         <MathModal
           show={showMath}

@@ -1,0 +1,18 @@
+{
+  "testTypes": {
+    "sample": "5c52f36b24d89e24b60560b0",
+    "multipleChoice": "5c97a3884e7b2e5506fedb40",
+    "fillInBlanks": "5ca1f35e76ede387452bf172",
+    "classifyMatchOrder": "5ca2cecb6b84e067a44ced66"
+  },
+  "definedAnswers": {
+    "right": "FC Barcelona",
+    "wrong": "Real Madrid",
+    "other": "Pari SG"
+  },
+  "definedIndex": {
+    "right": 0,
+    "wrong": 1,
+    "other": 2
+  }
+}

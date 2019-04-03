@@ -57,10 +57,8 @@ class TestItemCol extends Component {
           timespent={timespent}
           questionId={widget.reference}
           data={{ ...question, smallSize: true }}
-          style={{
-            padding: 0,
-            display: !multiple && showFeedback ? "flex" : "initial"
-          }}
+          noPadding
+          isFlex
           {...restProps}
         />
       </Tabs.TabContainer>

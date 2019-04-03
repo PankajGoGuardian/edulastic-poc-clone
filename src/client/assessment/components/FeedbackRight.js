@@ -148,7 +148,8 @@ export default enhance(FeedbackRight);
 const StyledCardTwo = styled(Card)`
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
   margin: 0px 0px 0px 20px;
   min-width: 250px;
   min-height: 100%;

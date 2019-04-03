@@ -46,6 +46,8 @@ import { setQuestionDataAction } from "../../author/src/actions/question";
 import { Chart } from "../widgets/Charts";
 
 const QuestionContainer = styled.div`
+  padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
+  display: ${({ isFlex }) => (isFlex ? "flex" : "block")};
   @media (max-width: ${mobileWidth}) {
     flex-direction: column;
   }
@@ -194,7 +196,19 @@ class QuestionWrapper extends Component {
   };
 
   render() {
-    const { style, type, timespent, data, showFeedback, multiple, view, setQuestionData, t, ...restProps } = this.props;
+    const {
+      noPadding,
+      isFlex,
+      type,
+      timespent,
+      data,
+      showFeedback,
+      multiple,
+      view,
+      setQuestionData,
+      t,
+      ...restProps
+    } = this.props;
     const { main, advanced, activeTab } = this.state;
     const Question = getQuestion(type);
     const studentName = data.activity && data.activity.studentName;
@@ -209,7 +223,7 @@ class QuestionWrapper extends Component {
 
     return (
       <ThemeProvider theme={themes.default}>
-        <QuestionContainer style={style}>
+        <QuestionContainer noPadding={noPadding} isFlex={isFlex}>
           <PaperWrapper style={{ width: "-webkit-fill-available", display: "flex" }}>
             {type === "graph" && view === "edit" && (
               <QuestionMenu activeTab={activeTab} main={main} advanced={advanced} />
@@ -241,7 +255,8 @@ QuestionWrapper.propTypes = {
   data: PropTypes.object,
   saveClicked: PropTypes.bool,
   testItem: PropTypes.bool,
-  style: PropTypes.object
+  noPadding: PropTypes.bool,
+  isFlex: PropTypes.bool
 };
 
 QuestionWrapper.defaultProps = {
@@ -250,7 +265,8 @@ QuestionWrapper.defaultProps = {
   data: {},
   saveClicked: false,
   testItem: false,
-  style: {}
+  noPadding: false,
+  isFlex: false
 };
 
 const enhance = compose(

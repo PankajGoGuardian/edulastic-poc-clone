@@ -364,10 +364,6 @@ export const ExpandedTable = styled(Table)`
   }
 `;
 
-export const IconExpand = styled(IconChevronLeft)`
-  height: 12px;
-  transform: rotate(-90deg);
-  margin: 0 16px 0 12px;
+export const IconExpand = styled.div`
   cursor: pointer;
-  fill: ${lightBlueSecondary};
 `;

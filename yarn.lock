@@ -11561,6 +11561,11 @@ react-notifications@^1.4.3:
     prop-types "^15.5.10"
     react-transition-group "^1.2.0"
 
+react-outside-event@^1.2.7:
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/react-outside-event/-/react-outside-event-1.2.7.tgz#9055552998ec4f665b0fe1325718ff36fd210653"
+  integrity sha1-kFVVKZjsT2ZbD+EyVxj/Nv0hBlM=
+
 react-pdf@^4.0.4:
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/react-pdf/-/react-pdf-4.0.5.tgz#4f5584005a504cb7941b01670b40355f4706b726"

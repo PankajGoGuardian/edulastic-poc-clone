@@ -70,7 +70,17 @@ class Container extends PureComponent {
   };
 
   componentDidMount() {
-    const { match, receiveTestById, setDefaultData } = this.props;
+    const {
+      match,
+      receiveTestById,
+      setDefaultData,
+      history: { location }
+    } = this.props;
+
+    if (location.hash === "#review") {
+      this.handleNavChange("review")();
+    }
+
     if (match.params.id) {
       receiveTestById(match.params.id);
     } else {
@@ -177,6 +187,7 @@ class Container extends PureComponent {
     if (test._id) {
       if (this.props.editAssigned) {
         newTest.versioned = true;
+        delete newTest["authors"];
         createTest(newTest);
       } else {
         updateTest(test._id, newTest);

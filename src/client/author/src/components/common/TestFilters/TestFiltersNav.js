@@ -5,15 +5,22 @@ import styled from "styled-components";
 
 import { greenDark, white, mainTextColor } from "@edulastic/colors";
 
-const TestFiltersNav = ({ items, onSelect }) => (
-  <Container onSelect={onSelect} defaultSelectedKeys={["library"]}>
-    {items.map(item => (
-      <Item key={item.key}>
-        <Icon type={item.icon} /> {item.text}
-      </Item>
-    ))}
-  </Container>
-);
+const TestFiltersNav = ({ items, onSelect, routerParams = {} }) => {
+  const { params = {} } = routerParams;
+  let defaultSelected = items[0].path;
+  if (params.filterType) {
+    defaultSelected = params.filterType;
+  }
+  return (
+    <Container onSelect={onSelect} defaultSelectedKeys={[defaultSelected]}>
+      {items.map(item => (
+        <Item key={item.path}>
+          <Icon type={item.icon} /> {item.text}
+        </Item>
+      ))}
+    </Container>
+  );
+};
 
 TestFiltersNav.propTypes = {
   items: PropTypes.array.isRequired,

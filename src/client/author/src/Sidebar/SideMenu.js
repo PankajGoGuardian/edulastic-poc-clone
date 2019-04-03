@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
+import ReactOutsideEvent from "react-outside-event";
 import { tabletWidth } from "@edulastic/colors";
 import { get } from "lodash";
 import { Link, withRouter } from "react-router-dom";
@@ -104,31 +105,14 @@ class SideMenu extends Component {
     this.setState(prevState => ({ isVisible: !prevState.isVisible }));
   };
 
-  closeMenuByClickOutside = (e, menu) => {
-    const { target } = e;
+  onOutsideEvent = event => {
+    const { isSidebarCollapsed } = this.props;
 
-    const hamburger = document.querySelector(".hamburger");
-    const footerDropDown = document.querySelector(".footerDropdown");
-    const itsMenu = target === menu && menu.contains(target);
-    const itsHamburger = target === hamburger && hamburger.contains(target);
-    const itsFooterDropDown = target === footerDropDown && footerDropDown.contains(target);
-    const isFull = menu.classList.contains("full");
-
-    if (!itsMenu && !itsHamburger && !itsFooterDropDown && isFull) {
+    if (event.type === "mousedown" && !isSidebarCollapsed) {
       this.toggleMenu();
+      this.setState({ isVisible: false });
     }
   };
-
-  componentDidMount(): void {
-    const fixedSidebarClassName = this.fixedSidebar._reactInternalFiber.stateNode.state.generatedClassName;
-    const menu = document.querySelector(`.${fixedSidebarClassName}`);
-
-    document.addEventListener("click", e => this.closeMenuByClickOutside(e, menu));
-  }
-
-  componentWillMount(): void {
-    document.removeEventListener("click", () => this.closeMenuByClickOutside);
-  }
 
   render() {
     const { broken, isVisible } = this.state;
@@ -159,9 +143,6 @@ class SideMenu extends Component {
     return (
       <FixedSidebar
         className={`${!isCollapsed ? "full" : ""}`}
-        ref={e => {
-          this.fixedSidebar = e;
-        }}
         onClick={isCollapsed && !isMobile ? this.toggleMenu : null}
         isCollapsed={isCollapsed}
       >
@@ -256,7 +237,7 @@ class SideMenu extends Component {
                     </div>
                     {!isCollapsed && !isMobile && (
                       <IconDropdown
-                        style={{ fontSize: 20 }}
+                        style={{ fontSize: 20, pointerEvents: "none" }}
                         className="drop-caret"
                         type={isVisible ? "caret-up" : "caret-down"}
                       />
@@ -293,7 +274,7 @@ const enhance = compose(
   )
 );
 
-export default enhance(SideMenu);
+export default enhance(ReactOutsideEvent(SideMenu, ["mousedown"]));
 
 const FixedSidebar = styled.div`
   position: fixed;
@@ -323,15 +304,6 @@ const SideBar = styled(Layout.Sider)`
   &.ant-layout-sider-collapsed .logoWrapper {
     padding: 22.5px 20px;
   }
-  .footerBottom {
-    position: fixed;
-    bottom: 10px;
-    width: 245px;
-
-    @media (max-width: ${tabletWidth}) {
-      display: flex;
-    }
-  }
   &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px 8px 0px;
     width: 100px;
@@ -345,7 +317,7 @@ const SideBar = styled(Layout.Sider)`
     padding: 0px;
     margin: 0 auto;
     justify-content: center;
-    margin-bottom: 15px;
+    margin-bottom: 23px;
 
     &:hover {
       background: #1890ff;
@@ -624,7 +596,15 @@ const FooterDropDown = styled.div`
   }
 `;
 
-const MenuFooter = styled.div``;
+const MenuFooter = styled.div`
+  position: fixed;
+  bottom: 10px;
+  width: 245px;
+
+  @media (max-width: ${tabletWidth}) {
+    display: flex;
+  }
+`;
 
 const QuestionButton = styled.div`
   border-radius: 65px;

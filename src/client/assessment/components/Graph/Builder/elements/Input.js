@@ -35,17 +35,11 @@ function getInputCoords(element, board) {
     case "line":
       const [x, y] = calcLineLabelPosition(element);
       if (element.hasLabel) {
-        return [
-          x,
-          y
-        ];
+        return [x, y];
       }
       element.setLabel("");
       element.label.setAttribute({ visible: false });
-      return [
-        x,
-        y
-      ];
+      return [x, y];
     case "polygon":
     case "circle":
     case "curve":
@@ -68,10 +62,12 @@ export default element => {
       return element.id;
     },
     sub() {
-      if (!element.label.eventHandlers.up) {
-        element.label.on("up", () => {
-          this.update.call(this);
-        });
+      if (element.hasLabel) {
+        if (!element.label.eventHandlers.up) {
+          element.label.on("up", () => {
+            this.update.call(this);
+          });
+        }
       }
     },
     init() {
@@ -111,7 +107,9 @@ export default element => {
     removeInput() {
       if (input) {
         if (!input.rendNodeInput.value) {
-          element.label.setAttribute({ visible: false });
+          if (element.hasLabel) {
+            element.label.setAttribute({ visible: false });
+          }
         }
         input.remove();
         input = null;

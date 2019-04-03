@@ -35,6 +35,11 @@ function onHandler() {
   };
 }
 
+const cleanPoints = board => {
+  points.forEach(point => board.$board.removeObject(point));
+  points = [];
+};
+
 function getConfig(ellipse) {
   return {
     _type: ellipse.type,
@@ -63,6 +68,7 @@ function abort(cb) {
 export default {
   onHandler,
   getConfig,
+  cleanPoints,
   parseConfig,
   abort
 };

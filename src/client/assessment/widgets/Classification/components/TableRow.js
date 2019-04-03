@@ -72,7 +72,7 @@ const TableRow = ({
             answers[index].length > 0 &&
             answers[index].map((answerValue, answerIndex) => (
               <DragItem
-                valid={validArray[index].includes(possible_responses.indexOf(answerValue))}
+                valid={validArray[index] && validArray[index].includes(possible_responses.indexOf(answerValue))}
                 preview={preview}
                 key={answerIndex}
                 renderIndex={possible_responses.indexOf(answerValue)}

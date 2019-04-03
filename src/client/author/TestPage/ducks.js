@@ -9,6 +9,7 @@ import { testsApi, assignmentApi } from "@edulastic/api";
 
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
 import { loadQuestionsAction } from "../sharedDucks/questions";
+import { setTestItemsAction } from "./components/AddItems/ducks";
 
 // constants
 
@@ -56,9 +57,9 @@ export const receiveTestByIdError = error => ({
   payload: { error }
 });
 
-export const createTestAction = data => ({
+export const createTestAction = (data, toReview = false) => ({
   type: CREATE_TEST_REQUEST,
-  payload: { data }
+  payload: { data, toReview }
 });
 
 export const createTestSuccessAction = entity => ({
@@ -267,6 +268,9 @@ function* createTestSaga({ payload }) {
   try {
     const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate"]);
     const entity = yield call(testsApi.create, dataToSend);
+
+    yield put(setTestItemsAction([]));
+
     yield put({
       type: SET_TEST_DATA,
       payload: {
@@ -277,8 +281,11 @@ function* createTestSaga({ payload }) {
     if (regrade) {
       yield put(push(`/author/assignments/regrade/new/${entity._id}/old/${oldId}`));
     } else {
+      const hash = payload.toReview ? "#review" : "";
+
       yield put(createTestSuccessAction(entity));
-      yield put(replace(`/author/tests/${entity._id}`));
+      yield put(replace(`/author/tests/${entity._id}${hash}`));
+
       yield call(message.success, "Test created");
     }
   } catch (err) {
@@ -294,6 +301,7 @@ function* updateTestSaga({ payload }) {
     delete payload.data.updatedDate;
     delete payload.data.createdDate;
     delete payload.data.assignments;
+    delete payload.data.authors;
 
     const entity = yield call(testsApi.update, payload);
 

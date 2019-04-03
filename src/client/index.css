@@ -1027,3 +1027,7 @@ span.token.active-word {
   border-color: #fff;
   border-radius: 4px;
 }
+
+.ant-tooltip {
+  display: none;
+}

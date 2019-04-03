@@ -7,6 +7,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
@@ -22,6 +24,12 @@ var _parabolaFunction = _interopRequireDefault(require("./parabolaFunction"));
 var _ellipseFunction = _interopRequireDefault(require("./ellipseFunction"));
 
 var _hyperbolaFunction = _interopRequireDefault(require("./hyperbolaFunction"));
+
+var _exponentFunction = _interopRequireDefault(require("./exponentFunction"));
+
+var _logarithmFunction = _interopRequireDefault(require("./logarithmFunction"));
+
+var _polynomFunction = _interopRequireDefault(require("./polynomFunction"));
 
 var CompareShapes =
   /*#__PURE__*/
@@ -87,6 +95,15 @@ var CompareShapes =
 
               case _shapeTypes.ShapeTypes.HYPERBOLA:
                 return this.compareHyperbolas(testShape, trueShape);
+
+              case _shapeTypes.ShapeTypes.EXPONENT:
+                return this.compareExponents(testShape, trueShape);
+
+              case _shapeTypes.ShapeTypes.LOGARITHM:
+                return this.compareLogarithms(testShape, trueShape);
+
+              case _shapeTypes.ShapeTypes.POLYNOM:
+                return this.comparePolynoms(testShape, trueShape);
 
               default:
                 return {
@@ -746,6 +763,174 @@ var CompareShapes =
             return {
               id: testHyperbola.id,
               result: false
+            };
+          }
+        },
+        {
+          key: "compareExponents",
+          value: function compareExponents(testExponent, trueExponent) {
+            var testExponentPoints = {
+              startX: +this.testAnswer.find(function(item) {
+                return item.id === testExponent.subElementsIds.startPoint;
+              }).x,
+              startY: +this.testAnswer.find(function(item) {
+                return item.id === testExponent.subElementsIds.startPoint;
+              }).y,
+              endX: +this.testAnswer.find(function(item) {
+                return item.id === testExponent.subElementsIds.endPoint;
+              }).x,
+              endY: +this.testAnswer.find(function(item) {
+                return item.id === testExponent.subElementsIds.endPoint;
+              }).y
+            };
+            var trueExponentPoints = {
+              startX: +this.trueAnswerValue.find(function(item) {
+                return item.id === trueExponent.subElementsIds.startPoint;
+              }).x,
+              startY: +this.trueAnswerValue.find(function(item) {
+                return item.id === trueExponent.subElementsIds.startPoint;
+              }).y,
+              endX: +this.trueAnswerValue.find(function(item) {
+                return item.id === trueExponent.subElementsIds.endPoint;
+              }).x,
+              endY: +this.trueAnswerValue.find(function(item) {
+                return item.id === trueExponent.subElementsIds.endPoint;
+              }).y
+            };
+            var testFunc = new _exponentFunction.default(testExponentPoints);
+            var trueFunc = new _exponentFunction.default(trueExponentPoints);
+
+            if (
+              testExponentPoints.startX === trueExponentPoints.startX &&
+              testExponentPoints.startY === trueExponentPoints.startY &&
+              testFunc.getBC() === trueFunc.getBC()
+            ) {
+              return {
+                id: testExponent.id,
+                relatedId: testExponent.id,
+                result: true
+              };
+            }
+
+            return {
+              id: testExponent.id,
+              result: false
+            };
+          }
+        },
+        {
+          key: "compareLogarithms",
+          value: function compareLogarithms(testLogarithm, trueLogarithm) {
+            var testLogarithmPoints = {
+              startX: +this.testAnswer.find(function(item) {
+                return item.id === testLogarithm.subElementsIds.startPoint;
+              }).x,
+              startY: +this.testAnswer.find(function(item) {
+                return item.id === testLogarithm.subElementsIds.startPoint;
+              }).y,
+              endX: +this.testAnswer.find(function(item) {
+                return item.id === testLogarithm.subElementsIds.endPoint;
+              }).x,
+              endY: +this.testAnswer.find(function(item) {
+                return item.id === testLogarithm.subElementsIds.endPoint;
+              }).y
+            };
+            var trueLogarithmPoints = {
+              startX: +this.trueAnswerValue.find(function(item) {
+                return item.id === trueLogarithm.subElementsIds.startPoint;
+              }).x,
+              startY: +this.trueAnswerValue.find(function(item) {
+                return item.id === trueLogarithm.subElementsIds.startPoint;
+              }).y,
+              endX: +this.trueAnswerValue.find(function(item) {
+                return item.id === trueLogarithm.subElementsIds.endPoint;
+              }).x,
+              endY: +this.trueAnswerValue.find(function(item) {
+                return item.id === trueLogarithm.subElementsIds.endPoint;
+              }).y
+            };
+            var testFunc = new _logarithmFunction.default(testLogarithmPoints);
+            var trueFunc = new _logarithmFunction.default(trueLogarithmPoints);
+
+            if (
+              testLogarithmPoints.startX === trueLogarithmPoints.startX &&
+              testLogarithmPoints.startY === trueLogarithmPoints.startY &&
+              testFunc.getBC() === trueFunc.getBC()
+            ) {
+              return {
+                id: testLogarithm.id,
+                relatedId: testLogarithm.id,
+                result: true
+              };
+            }
+
+            return {
+              id: testLogarithm.id,
+              result: false
+            };
+          }
+        },
+        {
+          key: "comparePolynoms",
+          value: function comparePolynoms(testPolynom, truePolynom) {
+            var _this2 = this;
+
+            var testPolynomPoints = [];
+            Object.getOwnPropertyNames(testPolynom.subElementsIds).forEach(function(value) {
+              var pointId = testPolynom.subElementsIds[value];
+
+              var point = _this2.testAnswer.find(function(item) {
+                return item.id === pointId;
+              });
+
+              testPolynomPoints.push({
+                x: point.x,
+                y: point.y
+              });
+            });
+            var truePolynomPoints = [];
+            Object.getOwnPropertyNames(truePolynom.subElementsIds).forEach(function(value) {
+              var pointId = truePolynom.subElementsIds[value];
+
+              var point = _this2.trueAnswerValue.find(function(item) {
+                return item.id === pointId;
+              });
+
+              truePolynomPoints.push({
+                x: point.x,
+                y: point.y
+              });
+            });
+            var testFunc = new _polynomFunction.default(testPolynomPoints);
+            var trueFunc = new _polynomFunction.default(truePolynomPoints);
+            var allX = testPolynomPoints
+              .map(function(point) {
+                return point.x;
+              })
+              .concat(
+                truePolynomPoints.map(function(point) {
+                  return point.x;
+                })
+              );
+            var xMin = Math.min.apply(Math, (0, _toConsumableArray2.default)(allX)) - 0.5;
+            var xMax = Math.max.apply(Math, (0, _toConsumableArray2.default)(allX)) + 0.5;
+            var x = xMin;
+
+            while (x <= xMax) {
+              if (testFunc.getYbyX(x) !== trueFunc.getYbyX(x)) {
+                return {
+                  id: testPolynom.id,
+                  result: false
+                };
+              }
+
+              x += 0.1;
+            }
+
+            return {
+              id: testPolynom.id,
+              relatedId: testPolynom.id,
+              result: true
             };
           }
         }

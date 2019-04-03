@@ -8,8 +8,16 @@ import withGrid from "./HOC/withGrid";
 import { getGridVariables, getReCalculatedPoints } from "./helpers";
 import Bars from "./components/Bars";
 import BarsAxises from "./components/BarsAxises";
+import { SHOW } from "../../constants/constantsForQuestions";
 
-const BarChart = ({ data, saveAnswer, ui_style: { width, height, margin, yAxisCount, stepSize }, view }) => {
+const BarChart = ({
+  data,
+  previewTab,
+  validation,
+  saveAnswer,
+  ui_style: { width, height, margin, yAxisCount, stepSize },
+  view
+}) => {
   const { yAxis, padding, yAxisStep, changingStep, step } = getGridVariables(
     yAxisCount,
     stepSize,
@@ -37,9 +45,13 @@ const BarChart = ({ data, saveAnswer, ui_style: { width, height, margin, yAxisCo
   }, []);
 
   const getPolylinePoints = () =>
-    localData
-      .map((dot, index) => `${step * index + margin / 2 + padding + step / 2 - 10},${height - margin - dot.y}`)
-      .join(" ");
+    previewTab === SHOW
+      ? validation.valid_response.value
+          .map((dot, index) => `${step * index + margin / 2 + padding + step / 2 - 10},${height - margin - dot.y}`)
+          .join(" ")
+      : localData
+          .map((dot, index) => `${step * index + margin / 2 + padding + step / 2 - 10},${height - margin - dot.y}`)
+          .join(" ");
 
   const getActivePoint = index =>
     active !== null
@@ -93,7 +105,9 @@ const BarChart = ({ data, saveAnswer, ui_style: { width, height, margin, yAxisCo
       <Bars
         isMouseDown={activeIndex !== null}
         onPointOver={setActive}
-        bars={localData}
+        previewTab={previewTab}
+        validation={validation}
+        bars={previewTab === SHOW ? validation.valid_response.value : localData}
         view={view}
         step={step}
         height={height}
@@ -116,7 +130,9 @@ BarChart.propTypes = {
     yAxisCount: PropTypes.number,
     stepSize: PropTypes.number
   }).isRequired,
-  view: PropTypes.string.isRequired
+  view: PropTypes.string.isRequired,
+  previewTab: PropTypes.string.isRequired,
+  validation: PropTypes.object.isRequired
 };
 
 export default withGrid(BarChart);

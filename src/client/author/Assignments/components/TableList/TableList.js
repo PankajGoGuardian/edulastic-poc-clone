@@ -15,6 +15,7 @@ import presentationIcon from "../../assets/presentation.svg";
 import additemsIcon from "../../assets/add-items.svg";
 import piechartIcon from "../../assets/pie-chart.svg";
 import ActionMenu from "../ActionMenu/ActionMenu";
+import ExpandIcon from "../../assets/expand.svg";
 
 import {
   Container,
@@ -251,7 +252,9 @@ class TableList extends Component {
             <IconExpand
               onMouseEnter={() => this.setState({ details: true })}
               onMouseLeave={() => this.setState({ details: false })}
-            />
+            >
+              <Icon src={ExpandIcon} alt="Images" />
+            </IconExpand>
           </ActionDiv>
         )
       }

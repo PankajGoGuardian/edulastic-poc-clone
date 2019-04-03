@@ -129,7 +129,7 @@ const reducer = (state = initialState, { type, payload }) => {
         if (specificStudents && students.length > 0) {
           const studentIndexes = students
             .map(studentId => _st.entities.findIndex(x => x.studentId === studentId))
-            .filter(x => x > 0);
+            .filter(x => x > -1);
           for (let index of studentIndexes) {
             _st.entities[index].status = "redirected";
             _st.entities[index].redirected = true;

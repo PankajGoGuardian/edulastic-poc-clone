@@ -17,7 +17,7 @@ var _partialMatchTemplate = _interopRequireDefault(require("./helpers/partialMat
 
 var _exactMatchTemplate = _interopRequireDefault(require("./helpers/exactMatchTemplate"));
 
-var _constantsForQuestions = require("../../../src/client/assessment/constants/constantsForQuestions");
+var BY_COUNT_METHOD = "byCount";
 
 var exactCompareFunction = function exactCompareFunction(_ref) {
   var answers = _ref.answers,
@@ -38,9 +38,9 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
 
     var currentScore = 0;
     var matches = 0;
-    var totalMatches = method === _constantsForQuestions.BY_COUNT_METHOD ? answer[0] : answer.length;
+    var totalMatches = method === BY_COUNT_METHOD ? answer[0] : answer.length;
 
-    if (method === _constantsForQuestions.BY_COUNT_METHOD) {
+    if (method === BY_COUNT_METHOD) {
       matches = userResponse.length;
     } else {
       userResponse.forEach(function(col) {
@@ -65,7 +65,7 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
   var evaluation = [];
   var currentIndex = 0;
 
-  if (answers[rightIndex].value.method === _constantsForQuestions.BY_COUNT_METHOD) {
+  if (answers[rightIndex].value.method === BY_COUNT_METHOD) {
     if (answers[rightIndex].value.value[0] === userResponse.length) {
       evaluation = Array.from({
         length: userResponse.length
@@ -110,10 +110,10 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
 
     var currentScore = 0;
     var matches = 0;
-    var totalMatches = method === _constantsForQuestions.BY_COUNT_METHOD ? answer[0] : answer.length;
+    var totalMatches = method === BY_COUNT_METHOD ? answer[0] : answer.length;
     var scorePerAnswer = totalScore / totalMatches;
 
-    if (method === _constantsForQuestions.BY_COUNT_METHOD) {
+    if (method === BY_COUNT_METHOD) {
       matches = userResponse.length;
     } else {
       userResponse.forEach(function(col) {
@@ -138,7 +138,7 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
   var evaluation = [];
   var currentIndex = 0;
 
-  if (answers[rightIndex].value.method === _constantsForQuestions.BY_COUNT_METHOD) {
+  if (answers[rightIndex].value.method === BY_COUNT_METHOD) {
     if (answers[rightIndex].value.value[0] === userResponse.length) {
       evaluation = Array.from({
         length: userResponse.length
@@ -168,7 +168,7 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
   }
 
   var rightLen =
-    answers[rightIndex].value.method === _constantsForQuestions.BY_COUNT_METHOD
+    answers[rightIndex].value.method === BY_COUNT_METHOD
       ? answers[rightIndex].value.value[0]
       : answers[rightIndex].value.value.length;
   return {

@@ -68,7 +68,13 @@ class AddItems extends PureComponent {
     getCurriculums();
     if (params.filterType) {
       const getMatchingObj = filterMenuItems.filter(item => item.path === params.filterType);
-      const { filter } = getMatchingObj[0];
+      const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
+      this.setState(prevState => ({
+        search: {
+          ...prevState.search,
+          filter
+        }
+      }));
       receiveTestItems({ ...search, filter }, 1, limit);
     } else {
       receiveTestItems(search, 1, limit);
@@ -85,7 +91,13 @@ class AddItems extends PureComponent {
     const { limit, receiveTestItems } = this.props;
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
-    const { filter } = getMatchingObj[0];
+    const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
+    this.setState(prevState => ({
+      search: {
+        ...prevState.search,
+        filter
+      }
+    }));
     receiveTestItems({ ...search, filter }, 1, limit);
   };
 

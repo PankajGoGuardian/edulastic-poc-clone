@@ -1,7 +1,6 @@
 import AssignmentsPage from "../../../framework/student/assignmentsPage";
 import SidebarPage from "../../../framework/student/sidebarPage";
 import FileHelper from "../../../framework/util/fileHelper";
-import TestTypes from "./testTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`, () => {
   const sideBarPage = new SidebarPage();
@@ -43,16 +42,25 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
   ];
 
   let test;
+  let TestTypes;
+  let DefinedAnswers;
+  let DefinedIndex;
 
   before(() => {
     cy.setToken("student");
   });
   context("Assignment attempt and stats", () => {
     before(() => {
-      cy.deleteAllAssignments();
-      cy.assignAssignment(TestTypes.multipleChoice);
-      cy.reload();
-      cy.wait("@assignment");
+      cy.fixture("studentsAttempt").then(data => {
+        TestTypes = data.testTypes;
+        DefinedAnswers = data.definedAnswers;
+        DefinedIndex = data.definedIndex;
+
+        cy.deleteAllAssignments();
+        cy.assignAssignment(TestTypes.multipleChoice);
+        cy.reload();
+        cy.wait("@assignment");
+      });
     });
 
     context("1st attempt - test assessment player,attempt all questions and submit the test,validate", () => {

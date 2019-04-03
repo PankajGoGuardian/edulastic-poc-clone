@@ -39,7 +39,7 @@ const ResponseFrequency = props => {
   }, []);
 
   let res = get(props, "responseFrequency.data.result", false);
-  res = tempData.result;
+
   const obj = useMemo(() => {
     let obj = {
       metaData: {},
@@ -154,7 +154,3 @@ const enhance = compose(
 );
 
 export default enhance(ResponseFrequency);
-
-// put it in dropdownformat.json
-// { "key": "aboveBelowStandard", "title": "Above/Below Standard" },
-// { "key": "proficiencyBand", "title": "Proficiency Band" }

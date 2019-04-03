@@ -105,7 +105,6 @@ class TestList extends Component {
     const {
       receiveTests,
       curriculums,
-      page,
       getCurriculums,
       limit,
       location,
@@ -119,13 +118,19 @@ class TestList extends Component {
     const { filterType } = params;
     if (filterType) {
       const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
-      const { filter: filterParams } = getMatchingObj[0];
+      const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
+      this.setState(prevState => ({
+        search: {
+          ...prevState.search,
+          filter
+        }
+      }));
       receiveTests({
-        page,
+        page: 1,
         limit,
         search: {
           ...search,
-          filter: filterParams
+          filter
         }
       });
     } else if (Object.entries(parsedQueryData).length > 0) {
@@ -137,7 +142,7 @@ class TestList extends Component {
         search
       });
     } else {
-      receiveTests({ page, limit, search });
+      receiveTests({ page: 1, limit, search });
     }
   }
 
@@ -342,16 +347,22 @@ class TestList extends Component {
   handleLabelSearch = e => {
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
-    const { filter: filterParam } = getMatchingObj[0];
-    const { history, receiveTests, page, limit } = this.props;
+    const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
+    const { history, receiveTests, limit } = this.props;
     const { search } = this.state;
     history.push(`/author/tests/filter/${filterType}`);
+    this.setState(prevState => ({
+      search: {
+        ...prevState.search,
+        filter
+      }
+    }));
     receiveTests({
-      page,
+      page: 1,
       limit,
       search: {
         ...search,
-        filter: filterParam
+        filter
       }
     });
   };

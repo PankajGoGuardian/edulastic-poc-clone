@@ -18,5 +18,5 @@ export const getStandatdDeviation = variance => {
 };
 
 export const getHSLFromRange1 = val => {
-  return "hsla(" + val + ", 64%, 47%, 1)";
+  return "hsla(" + val + ", 100%, 79%, 1)";
 };

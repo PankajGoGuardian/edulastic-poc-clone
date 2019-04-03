@@ -43,6 +43,7 @@ export const ReportTitle = styled.div`
   color: #434b5d;
   font-weight: 800;
   margin-bottom: 5px;
+  text-transform: capitalize;
 `;
 
 export const DetailCard = styled(StyledCard)`
@@ -309,13 +310,14 @@ export const DivWrapper = styled(StyledFlexContainer)`
   align-items: flex-start;
 `;
 
-export const StandardsCell = styled.div`
+export const StandardCell = styled.div`
   border-radius: 5px;
   border: 1px #4aac8b solid;
   background-color: rgba(31, 227, 161, 0.2);
   color: #4aac8b;
   font-size: 10px;
   font-weight: bold;
+  text-transform: uppercase;
 `;
 
 export const QuestionCell = styled.div`

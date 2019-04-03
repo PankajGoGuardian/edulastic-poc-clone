@@ -1,7 +1,7 @@
 import { createAction, createSelector as createSelectorator } from "redux-starter-kit";
 import { maxBy as _maxBy } from "lodash";
 import { takeLatest, put, call, all, select } from "redux-saga/effects";
-import { values, groupBy, last } from "lodash";
+import { values, groupBy, last, partial } from "lodash";
 import { createSelector } from "reselect";
 import { normalize } from "normalizr";
 import { push } from "react-router-redux";
@@ -9,7 +9,6 @@ import { assignmentApi, reportsApi, testActivityApi } from "@edulastic/api";
 import { getCurrentSchool, fetchUserAction, fetchUser } from "../Login/ducks";
 
 import { getCurrentGroup } from "../Reports/ducks";
-import { partial } from "lodash";
 
 // external actions
 import {
@@ -18,6 +17,7 @@ import {
   setAssignmentsLoadingAction,
   setActiveAssignmentAction
 } from "../sharedDucks/AssignmentModule/ducks";
+
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
 
 // constants
@@ -193,8 +193,7 @@ function* launchAssignment({ payload }) {
     ]);
     const lastActivity = _maxBy(testActivities, "createdAt");
     const { testId, testType = "assessment" } = assignment;
-
-    if (lastActivity) {
+    if (lastActivity && lastActivity.status === "0") {
       yield put(resumeAssignmentAction({ testId, testType, assignmentId, testActivityId: lastActivity._id }));
     } else {
       yield put(startAssignmentAction({ testId, assignmentId, testType }));

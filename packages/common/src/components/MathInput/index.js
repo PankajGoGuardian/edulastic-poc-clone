@@ -150,7 +150,7 @@ class MathInput extends React.PureComponent {
           }}
           className="input"
         >
-          <div onKeyDown={onKeyDown} className="input__math" style={style} data-cy="answer-math-input-field">
+          <div onKeyDown={onKeyDown} className="input__math" style={style} data-cy="answer-math-input-style">
             <span
               className="input__math__field"
               ref={this.mathFieldRef}

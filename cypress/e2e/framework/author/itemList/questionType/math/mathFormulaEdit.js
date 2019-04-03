@@ -215,7 +215,7 @@ class MathFormulaEdit {
     this.getAnswerValueMathInput().type("{del}".repeat(length || 1), { force: true });
   };
 
-  getAnswerMathInputField = () => cy.get('[data-cy="answer-math-input-field"]');
+  getAnswerMathInputField = () => cy.get('[data-cy="answer-math-input-style"]');
 
   checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect, score = false, scoreValuse = "1/1") => {
     preview.header.preview();
@@ -385,9 +385,10 @@ class MathFormulaEdit {
 
   setSeparator = checBoxName => () => {
     cy.get("input[type='checkbox']").uncheck({ force: true });
-    this[checBoxName]()
-      .check({ force: true })
-      .should("be.checked");
+    if (checBoxName)
+      this[checBoxName]()
+        .check({ force: true })
+        .should("be.checked");
   };
 
   allowDecimalMarks = (separator, expected, preview, isCorrect = false, score, value) => {

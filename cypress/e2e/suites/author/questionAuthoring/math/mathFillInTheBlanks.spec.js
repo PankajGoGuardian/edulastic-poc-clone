@@ -16,16 +16,47 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
     answer: {
       value: "1234",
       ariaLabel: "test"
+    },
+    equivSymbolic: {
+      value: {
+        input: "100",
+        expected: ["40", "60"]
+      },
+      ignoreText: {
+        expected: "25m",
+        input: "25",
+        checkboxValues: ["getAnswerIgnoreTextCheckox", null],
+        isCirrectUnsver: [true, false]
+      },
+      compareSides: {
+        expected: "4 + 3 = 7",
+        input: "3+4=7"
+      },
+      eulersNumber: {
+        input: "2.718+2.718=5,436",
+        expected: "e+e=5,436"
+      },
+      setDecimalSeparator: {
+        separator: "Comma",
+        expected: "1,01",
+        input: "1.01"
+      },
+      setThousandsSeparator: {
+        separators: ["Comma", "Space"],
+        expected: ["1,000,000", "1 000 000"],
+        input: "1000000"
+      },
+      significantDecimal: {
+        expected: "0.33",
+        input: "1\\div3",
+        decimalPlaces: 2
+      }
     }
   };
   const question = new MathFillInTheBlanksPage();
   const editItem = new EditItemPage();
-  const numpadButtons = question.virtualKeyBoardNumpad;
-  const buttons = question.virtualKeyBoardButtons;
   const { syntaxes, fields, methods } = math;
-  const ruleArguments = question.argumentMethods;
   const editToolBar = new EditToolBar();
-  const [fraction, numrator, denominator] = [".mq-fraction", ".mq-numerator", ".mq-denominator"];
   const preview = new PreviewItemPage();
 
   before(() => {
@@ -137,6 +168,151 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
           })
           .should("not.exist");
         question.returnToCorrectTab();
+      });
+    });
+
+    context("TC_489 => equivSymbolic method", () => {
+      before("Change to equivSymbolic method", () => {
+        question.setMethod(methods.EQUIV_SYMBOLIC);
+      });
+      it("Testing Value", () => {
+        const { input, expected } = queData.equivSymbolic.value;
+        question
+          .getAnswerMathInputField()
+          .find("[mathquill-block-id]")
+          .then(inputElements => {
+            const { length } = inputElements[0].children;
+            question
+              .getTemplateInput()
+              .type("{rightarrow}".repeat(length), { force: true })
+              .type(input, { force: true });
+          });
+        question.setValue(input);
+
+        preview.header.preview();
+        preview.getClear().click();
+        question.getPreviewMathQuill().then(inputElements => {
+          expected.forEach((expectedValue, index) => {
+            cy.wrap(inputElements[index]).type(expectedValue, { force: true });
+          });
+        });
+        preview
+          .getCheckAnswer()
+          .click()
+          .then(() =>
+            cy
+              .get("body")
+              .children()
+              .should("contain", "score: 0/1")
+          );
+        question.checkAttr(false);
+        preview
+          .getClear()
+          .click()
+          .then(() => {
+            cy.get("body")
+              .children()
+              .should("not.contain", "Correct Answers");
+          });
+        preview.header.edit();
+      });
+      it("Testing check/uncheck Ignore text check box", () => {
+        const { input, expected, checkboxValues, isCirrectUnsver } = queData.equivSymbolic.ignoreText;
+        question
+          .getAnswerMathInputField()
+          .find("[mathquill-block-id]")
+          .then(inputElements => {
+            const { length } = inputElements[0].children;
+            question.getTemplateInput().type("{del}".repeat(length || 1), { force: true });
+          });
+        checkboxValues.forEach((checkboxValue, index) => {
+          question.setValue(input);
+          question.setSeparator(checkboxValue)();
+          question.checkCorrectAnswer(expected, preview, input.length, isCirrectUnsver[index], true);
+        });
+      });
+      it("Testing with compare sides", () => {
+        const { expected, input } = queData.equivSymbolic.compareSides;
+
+        question.setValue(input);
+        question.setSeparator("getAnswerCompareSides")();
+
+        question.checkCorrectAnswer(expected, preview, 0, true);
+      });
+      it("Testing Treat 'e' as Euler's numbe", () => {
+        const { expected, input } = queData.equivSymbolic.eulersNumber;
+
+        question.setValue(input);
+        question.setSeparator("getAnswerCompareSides")();
+        question
+          .getAnswerCompareSides()
+          .check({ force: true })
+          .should("be.checked");
+        question.checkCorrectAnswer(expected, preview, input.length, false, true);
+      });
+
+      it("Testing with decimal separator - Comma", () => {
+        const { input, expected, separator } = queData.equivSymbolic.setDecimalSeparator;
+        question.getAnswerValueMathInput().type(input, { force: true });
+        question.setSeparator("getAnswerAllowThousandsSeparator")();
+        question
+          .getAnswerSetDecimalSeparatorDropdown()
+          .click()
+          .then(() => {
+            question
+              .getAnswerSetDecimalSeparatorDropdownList(separator)
+              .should("be.visible")
+              .click();
+          });
+
+        question.checkCorrectAnswer(expected, preview, input.length, false);
+      });
+
+      it("Testing with thousands separators - Space and Comma", () => {
+        const { input, expected, separators } = queData.equivSymbolic.setThousandsSeparator;
+        question.getAnswerValueMathInput().type(input, { force: true });
+        separators.forEach((separator, index) => {
+          question.setSeparator("getAnswerAllowThousandsSeparator")();
+          question
+            .getThousandsSeparatorDropdown()
+            .click()
+            .then(() => {
+              question
+                .getThousandsSeparatorDropdownList(separator)
+                .should("be.visible")
+                .click();
+            });
+          question.checkCorrectAnswer(expected[index], preview, index === 0 ? 0 : input.length, true);
+        });
+      });
+
+      it("Testing significant decimal places", () => {
+        const { input, expected, decimalPlaces } = queData.equivSymbolic.significantDecimal;
+
+        question.setValue(input);
+        question
+          .getAnswerSignificantDecimalPlaces()
+          .clear({ force: true })
+          .type("{uparrow}".repeat(decimalPlaces), { force: true });
+
+        question.checkCorrectAnswer(expected, preview, 0, true);
+      });
+
+      it("Add and remove new method", () => {
+        question
+          .getAddNewMethod()
+          .click()
+          .then(() => {
+            question.getMathFormulaAnswers().should("have.length", 2);
+          });
+        question
+          .getMathFormulaAnswers()
+          .last()
+          .find('[data-cy="delete-answer-method"]')
+          .click()
+          .then(() => {
+            question.getMathFormulaAnswers().should("have.length", 1);
+          });
       });
     });
   });

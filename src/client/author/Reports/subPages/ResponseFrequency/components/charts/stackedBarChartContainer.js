@@ -100,14 +100,27 @@ export const StackedBarChartContainer = props => {
     props.onResetClickCB(filter);
   };
 
+  const getChartSpecifics = () => {
+    return {
+      barsData: [
+        { key: "correct", stackId: "a", fill: getHSLFromRange1(100), unit: "%" },
+        { key: "incorrect", stackId: "a", fill: getHSLFromRange1(0), unit: "%" }
+      ],
+      yAxisLabel: "Above/Below Standard"
+    };
+  };
+
+  const chartSpecifics = getChartSpecifics();
+  console.log("chartSpecifics", chartSpecifics);
+
   return (
     <SimpleStackedBarChart
       data={chartData}
+      barsData={chartSpecifics.barsData}
       xAxisDataKey={"name"}
       bottomStackDataKey={"correct"}
       topStackDataKey={"incorrect"}
       getTooltipJSX={getTooltipJSX}
-      dataParser={dataParser}
       onBarClickCB={onBarClickCB}
       onResetClickCB={onResetClickCB}
       getXTickText={getXTickText}

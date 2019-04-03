@@ -15,41 +15,7 @@ export const UpperContainer = styled.div`
   }
 `;
 
-export const TableContainer = styled.div`
-  .pad-0-2 {
-    table {
-      tbody {
-        tr {
-          td:nth-last-child(-n + 2) {
-            padding: 0px;
-            div {
-              height: 100%;
-              width: 100%;
-              padding: 10px;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .pad-0-3 {
-    table {
-      tbody {
-        tr {
-          td:nth-last-child(-n + 2) {
-            padding: 0px;
-            div {
-              height: 100%;
-              width: 100%;
-              padding: 10px;
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+export const TableContainer = styled.div``;
 
 export const StyledFilterDropDownWithDropDown = styled(FilterDropDownWithDropDown)`
   button {
@@ -61,7 +27,7 @@ export const StyledTable = styled(Table)`
     table {
       thead {
         tr {
-          th:nth-last-child(-n + 4) {
+          th:nth-last-child(-n + ${props => props.colouredCellsNo + 2}) {
             text-align: right;
           }
         }
@@ -69,8 +35,16 @@ export const StyledTable = styled(Table)`
 
       tbody {
         tr {
-          td:nth-last-child(-n + 4) {
+          td:nth-last-child(-n + ${props => props.colouredCellsNo + 2}) {
             text-align: right;
+          }
+          td:nth-last-child(-n + ${props => props.colouredCellsNo}) {
+            padding: 0px;
+            div {
+              height: 100%;
+              width: 100%;
+              padding: 10px;
+            }
           }
         }
       }

@@ -41,6 +41,8 @@ export const ButtonGroup = styled.div`
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 95%;
   margin: 20px auto;
+  margin-bottom: ${({ marginBottom }) => marginBottom || "20px"};
+  padding-right: ${({ paddingRight }) => paddingRight || "0px"};
 `;
 
 export const GraphContainer = styled(FlexContainer)`

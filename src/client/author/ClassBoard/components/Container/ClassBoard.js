@@ -297,7 +297,8 @@ class ClassBoard extends Component {
             {nCountTrue > 0 && (
               <StyledFlexContainer
                 justifyContent="space-between"
-                style={{ marginBottom: 0, paddingRight: isMobile ? 5 : 20 }}
+                marginBottom="0px"
+                paddingRight={isMobile ? "5px" : "20px"}
               >
                 <CheckContainer>
                   <StyledCheckbox checked={selectAll} onChange={this.onSelectAllChange}>

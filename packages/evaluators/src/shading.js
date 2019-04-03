@@ -2,7 +2,8 @@ import { isEqual } from "lodash";
 import { ScoringType } from "./const/scoring";
 import partialMatchTemplate from "./helpers/partialMatchTemplate";
 import exactMatchTemplate from "./helpers/exactMatchTemplate";
-import { BY_COUNT_METHOD } from "../../../src/client/assessment/constants/constantsForQuestions";
+
+const BY_COUNT_METHOD = "byCount";
 
 const exactCompareFunction = ({ answers, userResponse = [] }) => {
   let score = 0;

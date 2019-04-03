@@ -406,6 +406,11 @@ template {
   color: #12a6e8;
 }
 
+.input__math-container {
+  display: inline;
+  margin: 0 5px;
+}
+
 .ql-editor p,
 .response-editor p {
   display: inline;

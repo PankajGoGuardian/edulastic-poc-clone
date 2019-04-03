@@ -153,13 +153,8 @@ const MainContainer = styled.div`
   padding-left: ${props => {
     if (props.isPrintPreview) {
       return "0";
-    } else {
-      if (props.isCollapsed) {
-        return "100px";
-      } else {
-        return "240px";
-      }
     }
+    return "100px";
   }};
   width: 100%;
   .fixed-header {

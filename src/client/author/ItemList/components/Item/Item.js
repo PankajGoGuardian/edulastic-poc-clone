@@ -39,7 +39,6 @@ class Item extends Component {
     history: PropTypes.object.isRequired,
     t: PropTypes.func.isRequired,
     windowWidth: PropTypes.number.isRequired,
-    types: PropTypes.array.isRequired,
     onToggleToCart: PropTypes.func.isRequired,
     selectedToCart: PropTypes.bool
   };
@@ -97,8 +96,8 @@ class Item extends Component {
           <LabelText>{name}</LabelText>
         </Label>
       ) : (
-          index + 1 === itemTypes.length && <Count key={`Count_TypeName__${item._id}`}>+{itemTypes.length - 1}</Count>
-        )
+        index + 1 === itemTypes.length && <Count key={`Count_TypeName__${item._id}`}>+{itemTypes.length - 1}</Count>
+      )
     );
   };
 
@@ -163,10 +162,10 @@ class Item extends Component {
               <LabelStandardText>{standard.name}</LabelStandardText>
             </LabelStandard>
           ) : (
-              index + 1 === standards.length && (
-                <CountGreen key={`Count_${item._id}`}>+{standards.length - outStandardsCount}</CountGreen>
-              )
+            index + 1 === standards.length && (
+              <CountGreen key={`Count_${item._id}`}>+{standards.length - outStandardsCount}</CountGreen>
             )
+          )
         )}
       </StandardContent>
     ) : null;

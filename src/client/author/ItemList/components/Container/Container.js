@@ -54,8 +54,7 @@ export const getClearSearchState = () => ({
 // container the main entry point to the component
 class Contaier extends Component {
   state = {
-    search: getClearSearchState(),
-    loading: true
+    search: getClearSearchState()
   };
 
   componentDidMount() {
@@ -74,14 +73,6 @@ class Contaier extends Component {
       getCurriculums();
     }
   }
-
-  componentDidUpdate = prevProps => {
-    const { loading } = this.props;
-
-    if (prevProps.loading !== loading) {
-      this.setState({ loading });
-    }
-  };
 
   handleSearch = () => {
     const { search } = this.state;

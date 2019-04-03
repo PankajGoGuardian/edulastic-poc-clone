@@ -109,7 +109,7 @@ class MathKeyboard extends React.PureComponent {
     const { onInput, showResponse, symbols } = this.props;
     return (
       <MathKeyboardStyles>
-        <div className="keyboard">
+        <div className="keyboard" data-cy="keyboard">
           <div className="keyboard__header">
             <div>
               <Select

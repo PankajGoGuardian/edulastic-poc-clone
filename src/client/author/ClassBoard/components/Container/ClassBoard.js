@@ -14,6 +14,7 @@ import {
 } from "../../../src/actions/classBoard";
 import QuestionContainer from "../../../QuestionView";
 import StudentContainer from "../../../StudentView";
+import { message } from "antd";
 // ducks
 import {
   getTestActivitySelector,
@@ -100,10 +101,11 @@ class ClassBoard extends Component {
   }
 
   componentDidMount() {
-    const { loadGradebook, loadTestActivity, match } = this.props;
+    const { loadGradebook, loadTestActivity, match, studentUnselectAll } = this.props;
     const { assignmentId, classId } = match.params;
     loadGradebook(assignmentId, classId);
     loadTestActivity(assignmentId, classId);
+    studentUnselectAll();
   }
 
   componentDidUpdate(_, prevState) {
@@ -202,6 +204,17 @@ class ClassBoard extends Component {
     return totalQuestions;
   };
 
+  handleRedirect = () => {
+    const { selectedStudents, testActivity } = this.props;
+    const notStartedStudents = testActivity.filter(x => selectedStudents[x.studentId] && x.status === "notStarted");
+
+    if (notStartedStudents.length > 0) {
+      message.warn("Only absent and submitted students can be redirected");
+      return;
+    }
+    this.setState({ redirectPopup: true });
+  };
+
   changeCardCheck = (isCheck, studentId) => {
     let nCountTrue = 0;
     const { testActivity } = this.props;
@@ -278,7 +291,7 @@ class ClassBoard extends Component {
                 <Graph gradebook={gradebook} />
               </StyledCard>
             </GraphContainer>
-            {nCountTrue > 0 && (
+            {Object.keys(selectedStudents).length > 0 && (
               <StyledFlexContainer justifyContent="space-between" style={{ marginBottom: 0, paddingRight: 20 }}>
                 <CheckContainer>
                   <StyledCheckbox checked={selectAll} onChange={this.onSelectAllChange}>
@@ -289,7 +302,7 @@ class ClassBoard extends Component {
                   <img src={Ptools} alt="" />
                   PRINT
                 </PrintButton>
-                <RedirectButton onClick={() => this.setState({ redirectPopup: true })}>
+                <RedirectButton onClick={this.handleRedirect}>
                   <img src={Elinks} alt="" />
                   REDIRECT
                 </RedirectButton>

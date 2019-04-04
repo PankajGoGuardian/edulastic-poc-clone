@@ -122,8 +122,6 @@ export const CircularDiv = styled.div`
 export const StyledFlexDiv = styled.div`
   display: flex;
   align-items: baseline;
-  @media (max-width: ${mobileWidth}) {
-  }
 `;
 
 export const StyledName = styled.div`

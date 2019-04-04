@@ -105,12 +105,12 @@ export const SignedStackedBarChartContainer = ({
 
   const chartData = useMemo(() => dataParser(), [data, filter]);
 
-  const _onBarClickCB = filter => {
-    onBarClickCB(filter);
+  const _onBarClickCB = key => {
+    onBarClickCB(key);
   };
 
-  const _onResetClickCB = filter => {
-    onResetClickCB(filter);
+  const _onResetClickCB = () => {
+    onResetClickCB();
   };
 
   const getChartSpecifics = () => {

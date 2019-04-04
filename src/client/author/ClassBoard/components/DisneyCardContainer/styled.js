@@ -1,7 +1,7 @@
 import { Pagination, Card, Col } from "antd";
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidth } from "@edulastic/colors";
+import { mobileWidth, red } from "@edulastic/colors";
 
 import { themes } from "../../../../student/themes";
 
@@ -81,6 +81,8 @@ export const PagInfo = styled.span`
   font-weight: 600;
   font-size: 12px;
   color: #1774f0;
+  text-overflow: ellipsis;
+  width: 50%;
 `;
 
 export const GSpan = styled.span`
@@ -119,6 +121,8 @@ export const CircularDiv = styled.div`
 export const StyledFlexDiv = styled.div`
   display: flex;
   align-items: baseline;
+  text-overflow: ellipsis;
+  width: 50%;
 `;
 
 export const StyledName = styled.div`
@@ -173,13 +177,13 @@ export const StyledParaS = styled.p`
   font-size: 10px;
   line-height: 10px;
   font-weight: bold;
-  color: ${classBoardTheme.CardCircularColor};
+  color: ${({ color }) => color || classBoardTheme.CardCircularColor};
 `;
 
 export const StyledColorParaS = styled.p`
   font-size: 0.6em;
   font-weight: bold;
-  color: ${classBoardTheme.CardDisneyColor};
+  color: ${red};
 `;
 
 export const StyledParaFF = styled.p`
@@ -195,6 +199,8 @@ export const StyledParaSS = styled.p`
   font-size: 20px;
   font-weight: bold;
   color: #434b5d;
+  text-overflow: ellipsis;
+  width: 50%;
 `;
 
 export const StyledParaSSS = styled.p`
@@ -202,6 +208,8 @@ export const StyledParaSSS = styled.p`
   font-weight: 600;
   margin-left: 18px;
   color: #5eb500;
+  text-overflow: ellipsis;
+  width: 50%;
 `;
 
 export const SpaceDiv = styled.div`

@@ -67,12 +67,12 @@ export const SimpleStackedBarChartContainer = ({
 
   const chartData = useMemo(() => dataParser(), [data, filter]);
 
-  const _onBarClickCB = filter => {
-    onBarClickCB(filter);
+  const _onBarClickCB = key => {
+    onBarClickCB(key);
   };
 
-  const _onResetClickCB = filter => {
-    onResetClickCB(filter);
+  const _onResetClickCB = () => {
+    onResetClickCB();
   };
 
   const getChartSpecifics = () => {
@@ -81,7 +81,11 @@ export const SimpleStackedBarChartContainer = ({
         yDomain: [0, 110],
         ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
         yTickFormatter: val => {
-          return val + "%";
+          if (val !== 0) {
+            return val + "%";
+          } else {
+            return "";
+          }
         },
         yAxisLabel: "Avg. Score %"
       };
@@ -103,7 +107,11 @@ export const SimpleStackedBarChartContainer = ({
         yDomain: [0, max + interval],
         ticks: arr,
         yTickFormatter: val => {
-          return val;
+          if (val !== 0) {
+            return val;
+          } else {
+            return "";
+          }
         },
         yAxisLabel: "Avg. Score"
       };

@@ -5,8 +5,8 @@ import { values, groupBy, last, partial } from "lodash";
 import { createSelector } from "reselect";
 import { normalize } from "normalizr";
 import { push } from "react-router-redux";
-import { assignmentApi, reportsApi, testActivityApi } from "@edulastic/api";
-import { getCurrentSchool, fetchUserAction, fetchUser } from "../Login/ducks";
+import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
+import { getCurrentSchool, fetchUserAction, fetchUser, getUserRole } from "../Login/ducks";
 
 import { getCurrentGroup } from "../Reports/ducks";
 
@@ -186,17 +186,35 @@ function* bootstrapAssesment({ payload }) {
 // launch assignment
 function* launchAssignment({ payload }) {
   try {
+    const role = yield select(getUserRole);
     const { assignmentId, groupId } = payload;
-    const [assignment, testActivities] = yield Promise.all([
-      assignmentApi.getById(assignmentId),
-      assignmentApi.fetchTestActivities(assignmentId, groupId)
-    ]);
-    const lastActivity = _maxBy(testActivities, "createdAt");
-    const { testId, testType = "assessment" } = assignment;
-    if (lastActivity && lastActivity.status === "0") {
-      yield put(resumeAssignmentAction({ testId, testType, assignmentId, testActivityId: lastActivity._id }));
+    if (role === "student") {
+      const [assignment, testActivities] = yield Promise.all([
+        assignmentApi.getById(assignmentId),
+        assignmentApi.fetchTestActivities(assignmentId, groupId)
+      ]);
+      const lastActivity = _maxBy(testActivities, "createdAt");
+      const { testId, testType = "assessment" } = assignment;
+
+      if (lastActivity && lastActivity.status === 0) {
+        yield put(resumeAssignmentAction({ testId, testType, assignmentId, testActivityId: lastActivity._id }));
+      } else {
+        let maxAttempt;
+        if (assignment.maxAttempts) {
+          maxAttempt = assignment.maxAttempts;
+        } else {
+          const test = yield call(testsApi.getById, testId);
+          maxAttempt = test.maxAttempts;
+        }
+
+        if (maxAttempt > testActivities.length) {
+          yield put(startAssignmentAction({ testId, assignmentId, testType }));
+        } else {
+          yield put(push(`/home/reports`));
+        }
+      }
     } else {
-      yield put(startAssignmentAction({ testId, assignmentId, testType }));
+      yield put(push(`/author/classboard/${assignmentId}/${groupId}`));
     }
   } catch (e) {
     console.log(e);

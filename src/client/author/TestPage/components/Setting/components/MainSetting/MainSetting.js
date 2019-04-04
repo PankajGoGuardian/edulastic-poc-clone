@@ -302,7 +302,7 @@ class MainSetting extends Component {
               </Body>
               <Description>
                 {
-                  "Ensure secure testing environment by using Safe Exam Browser to lockdown the studen's device. To use this feature Safe Exam Browser (on Windows/Mac only) must be"
+                  "Ensure secure testing environment by using Safe Exam Browser to lockdown the student's device. To use this feature Safe Exam Browser (on Windows/Mac only) must be installed."
                 }
               </Description>
             </Block>

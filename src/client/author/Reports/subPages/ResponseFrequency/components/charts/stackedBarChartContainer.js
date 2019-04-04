@@ -92,12 +92,12 @@ export const StackedBarChartContainer = props => {
 
   const chartData = useMemo(() => dataParser(props.filter), [props.filter]);
 
-  const onBarClickCB = filter => {
-    props.onBarClickCB(filter);
+  const onBarClickCB = key => {
+    props.onBarClickCB(key);
   };
 
-  const onResetClickCB = filter => {
-    props.onResetClickCB(filter);
+  const onResetClickCB = () => {
+    props.onResetClickCB();
   };
 
   const getChartSpecifics = () => {
@@ -111,7 +111,6 @@ export const StackedBarChartContainer = props => {
   };
 
   const chartSpecifics = getChartSpecifics();
-  console.log("chartSpecifics", chartSpecifics);
 
   return (
     <SimpleStackedBarChart

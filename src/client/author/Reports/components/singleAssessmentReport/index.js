@@ -10,16 +10,30 @@ export const SingleAssessmentReport = props => {
   const links = [
     {
       title: "Assessment Summary",
-      location: "/author/reports/assessment-summary/test/5c90d974a649cb81bc5d4ca2?districtId=5c9089b1a649cb81bc398b1f"
+      location: "/author/reports/assessment-summary/test/5c90d974a649cb81bc5d4ca2"
     },
-    { title: "Peer Performance", location: "/author/reports/peer-performance/test/5c822ff4732e4679700e73a6" },
-    { title: "Question Analysis", location: "/author/reports/" },
+    {
+      title: "Peer Performance",
+      location: "/author/reports/peer-performance/test/5c822ff4732e4679700e73a6"
+    },
+    {
+      title: "Question Analysis",
+      location: "/author/reports/"
+    },
     {
       title: "Response Frequency",
-      location: "/author/reports/response-frequency/test/5c7f99baa649cb81bcd007f0?districtId=5c7f9632a649cb81bccd97f1"
+      location: "/author/reports/response-frequency/test/5ca345a36035875063c1a2cd"
+      //5ca345a36035875063c1a2cd
+      //5c7f99baa649cb81bcd007f0
     },
-    { title: "Performance by Standards", location: "/author/reports/" },
-    { title: "Performance by Students", location: "/author/reports/" }
+    {
+      title: "Performance by Standards",
+      location: "/author/reports/"
+    },
+    {
+      title: "Performance by Students",
+      location: "/author/reports/"
+    }
   ];
 
   return (

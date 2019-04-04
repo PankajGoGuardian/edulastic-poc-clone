@@ -1,9 +1,21 @@
+/// <reference types="Cypress"/>
 /* eslint-disable no-shadow */
 import { userBuilder } from "./generate";
 import LoginPage from "../e2e/framework/student/loginPage";
 
 Cypress.LocalStorage.clear = () => {};
 const BASE_URL = Cypress.config("API_URL");
+const DEFAULT_USERS = {
+  teacher: {
+    email: "auto.teacher1@snapwiz.com",
+    password: "snapwiz"
+  },
+  student: {
+    email: "auto.student3@snapwiz.com",
+    password: "snapwiz"
+  }
+};
+
 const ITEM_ID = "5c358b480c8e6f22190d5ce0";
 
 Cypress.Commands.add("createUser", overrides => {
@@ -35,16 +47,8 @@ Cypress.Commands.add("assertHome", () => {
 });
 
 Cypress.Commands.add("setToken", (role = "teacher") => {
-  const postData =
-    role === "teacher"
-      ? {
-          email: "auto.teacher1@snapwiz.com",
-          password: "snapwiz"
-        }
-      : {
-          email: "auto.student3@snapwiz.com",
-          password: "snapwiz"
-        };
+  const postData = role === "teacher" ? DEFAULT_USERS.teacher : DEFAULT_USERS.student;
+
   /* cy.request({
           url: `${BASE_URL}/auth/login`,
           method: 'POST',
@@ -74,14 +78,10 @@ Cypress.Commands.add("setToken", (role = "teacher") => {
 Cypress.Commands.add(
   "assignAssignment",
   (testId = "", startDt = new Date(), dueDt = new Date(new Date().setDate(startDt.getDate() + 1))) => {
-    const accessPostData = {
-      email: "auto.teacher1@snapwiz.com",
-      password: "snapwiz"
-    };
     cy.request({
       url: `${BASE_URL}/auth/login`,
       method: "POST",
-      body: accessPostData
+      body: DEFAULT_USERS.teacher
     }).then(({ body }) => {
       cy.fixture("assignments").then(asgns => {
         const postData = asgns.default;
@@ -105,22 +105,12 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add("deleteAllAssignments", () => {
-  const teacherPostData = {
-    email: "auto.teacher1@snapwiz.com",
-    password: "snapwiz"
-  };
-
-  const studentPostData = {
-    email: "auto.student3@snapwiz.com",
-    password: "snapwiz"
-  };
-
   const asgnIds = [];
 
   cy.request({
     url: `${BASE_URL}/auth/login`,
     method: "POST",
-    body: studentPostData
+    body: DEFAULT_USERS.student
   }).then(({ body }) => {
     cy.request({
       url: `${BASE_URL}/assignments`,
@@ -140,7 +130,7 @@ Cypress.Commands.add("deleteAllAssignments", () => {
   cy.request({
     url: `${BASE_URL}/auth/login`,
     method: "POST",
-    body: teacherPostData
+    body: DEFAULT_USERS.teacher
   }).then(({ body }) => {
     asgnIds.forEach(asgnId => {
       cy.request({
@@ -205,16 +195,12 @@ Cypress.Commands.add("logOut", () => {
 });
 
 Cypress.Commands.add("uploadImage", base64Image => {
-  const teacherPostData = {
-    email: "auto.teacher1@snapwiz.com",
-    password: "snapwiz"
-  };
   const formData = new FormData();
   formData.append("file", base64Image);
   cy.request({
     url: `${BASE_URL}/auth/login`,
     method: "POST",
-    body: teacherPostData
+    body: DEFAULT_USERS.teacher
   }).then(({ body }) =>
     cy
       .server()

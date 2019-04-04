@@ -33,8 +33,9 @@ const ResponseFrequency = props => {
   const [filter, setFilter] = useState({});
 
   useEffect(() => {
-    let q = queryString.parse(props.location.search);
-    q.testId = props.match.params.testId;
+    let q = {
+      testId: props.match.params.testId
+    };
     props.getResponseFrequencyRequestAction(q);
   }, []);
 
@@ -71,12 +72,18 @@ const ResponseFrequency = props => {
     setMisunderstoodItems(value);
   };
 
-  const onBarClickCB = filter => {
-    setFilter({ ...filter });
+  const onBarClickCB = key => {
+    let _filter = { ...filter };
+    if (_filter[key]) {
+      delete _filter[key];
+    } else {
+      _filter[key] = true;
+    }
+    setFilter(_filter);
   };
 
-  const onResetClickCB = filter => {
-    setFilter(filter);
+  const onResetClickCB = () => {
+    setFilter({});
   };
 
   return (

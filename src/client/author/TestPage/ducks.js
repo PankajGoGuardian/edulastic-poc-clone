@@ -141,7 +141,7 @@ export const initialTestState = {
   grades: [],
   subjects: [],
   courses: [],
-  collections: "",
+  collectionName: "",
   analytics: {
     usage: "0",
     likes: "0"

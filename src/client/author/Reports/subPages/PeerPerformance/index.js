@@ -29,8 +29,7 @@ const denormalizeData = res => {
     let denormArr = filteredArr.map((data, index) => {
       return {
         ...hMap[data.groupId],
-        ...data,
-        teacherName: hMap[data.groupId].tFName + " " + hMap[data.groupId].tLName
+        ...data
       };
     });
 
@@ -74,7 +73,8 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
     return columns.columns[ddfilter.analyseBy][ddfilter.compareBy];
   };
 
-  const res = get(peerPerformance, "data.result", false);
+  // const res = get(peerPerformance, "data.result", false);
+  const res = tempData;
 
   const denormData = useMemo(() => {
     return denormalizeData(res);
@@ -109,12 +109,18 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
   };
   //
 
-  const onBarClickCB = filter => {
-    setChartFilter(filter);
+  const onBarClickCB = key => {
+    let _chartFilter = { ...chartFilter };
+    if (_chartFilter[key]) {
+      delete _chartFilter[key];
+    } else {
+      _chartFilter[key] = true;
+    }
+    setChartFilter(_chartFilter);
   };
 
-  const onResetClickCB = filter => {
-    setChartFilter(filter);
+  const onResetClickCB = () => {
+    setChartFilter({});
   };
 
   return (

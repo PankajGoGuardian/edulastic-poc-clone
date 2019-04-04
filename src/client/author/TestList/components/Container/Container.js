@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { debounce } from "lodash";
 import * as qs from "query-string";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
@@ -63,7 +64,8 @@ export const getClearSearchState = () => ({
   grades: [],
   standardIds: [],
   tags: [],
-  filter: filterMenuItems[0].filter
+  filter: filterMenuItems[0].filter,
+  searchString: ""
 });
 
 class TestList extends Component {
@@ -95,7 +97,6 @@ class TestList extends Component {
 
   state = {
     search: getClearSearchState(),
-    searchStr: "",
     standardQuery: "",
     blockStyle: "tile",
     isShowFilter: false
@@ -146,10 +147,31 @@ class TestList extends Component {
     }
   }
 
-  handleSearchInputChange = e => {
-    this.setState({
-      searchStr: e.target.value
+  searchTest = debounce(() => {
+    const { receiveTests, limit } = this.props;
+
+    receiveTests({
+      page: 1,
+      limit,
+      search: this.state.search
     });
+  }, 500);
+
+  handleSearchInputChange = e => {
+    const { search } = this.state;
+    const searchString = e.target.value;
+    const newSearch = {
+      ...search,
+      searchString
+    };
+    this.setState(
+      {
+        search: newSearch
+      },
+      () => {
+        this.searchTest();
+      }
+    );
   };
 
   handleStandardSearch = searchStr => {
@@ -370,7 +392,8 @@ class TestList extends Component {
   render() {
     const { page, limit, count, creating, match } = this.props;
 
-    const { searchStr, blockStyle, isShowFilter, search } = this.state;
+    const { blockStyle, isShowFilter, search } = this.state;
+    const { searchString } = search;
 
     const { from, to } = helpers.getPaginationInfo({ page, limit, count });
     const filters = this.getFilters(filterData);
@@ -383,7 +406,7 @@ class TestList extends Component {
               placeholder="Search by skills and keywords"
               onChange={this.handleSearchInputChange}
               size="large"
-              value={searchStr}
+              value={searchString}
             />
             <FilterButton>
               <Button onClick={() => this.showFilterHandler()}>
@@ -405,7 +428,7 @@ class TestList extends Component {
                   placeholder="Search by skills and keywords"
                   onChange={this.handleSearchInputChange}
                   size="large"
-                  value={searchStr}
+                  value={searchString}
                 />
                 <ScrollbarWrapper>
                   <PerfectScrollbar>

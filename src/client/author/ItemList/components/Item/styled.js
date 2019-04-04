@@ -20,11 +20,7 @@ export const Container = styled.div`
   }
   @media (max-width: ${tabletWidth}) {
     flex-direction: column;
-    padding: 20px 0;
-
-    &:first-child {
-      padding-top: 0;
-    }
+    padding: 28px;
   }
 `;
 
@@ -38,8 +34,9 @@ export const Question = styled.div`
 
   @media (max-width: ${tabletWidth}) {
     width: 100%;
-    margin-bottom: 15px;
+    margin-bottom: 0;
     text-align: center;
+    margin-top: -0.5em;
   }
 `;
 
@@ -58,7 +55,11 @@ export const ViewButton = styled.div`
   margin-bottom: auto;
 
   @media (max-width: ${tabletWidth}) {
-    margin-top: 25px;
+    width: 40%;
+    display: inline-flex;
+    justify-content: flex-end;
+    margin-top: 13px;
+    padding-right: 5px;
   }
 `;
 
@@ -73,6 +74,27 @@ export const ViewButtonStyled = styled(Button)`
   text-transform: uppercase;
   border: 0;
   color: ${newBlue};
+
+  svg {
+    display: none;
+  }
+  @media (max-width: ${tabletWidth}) {
+    width: 40px;
+    height: 40px;
+    border-radius: 3px;
+    padding: 0;
+
+    span {
+      font-size: 0;
+    }
+    svg {
+      display: initial;
+      width: 20px;
+      height: 20px;
+      margin-bottom: -3px;
+      fill: ${newBlue};
+    }
+  }
 `;
 
 export const AddButtonStyled = styled(Button)`
@@ -93,6 +115,18 @@ export const AddButtonStyled = styled(Button)`
     max-height: 13px;
     fill: ${newBlue};
   }
+
+  @media (max-width: ${tabletWidth}) {
+    width: 40px;
+    height: 40px;
+    border-radius: 3px;
+    padding: 0;
+
+    svg {
+      margin-top: 4px;
+      stroke: ${newBlue};
+    }
+  }
 `;
 
 export const Detail = styled.div`
@@ -103,6 +137,8 @@ export const Detail = styled.div`
 
   @media (max-width: ${tabletWidth}) {
     margin-top: 9px;
+    width: 60%;
+    display: inline-flex;
   }
 `;
 
@@ -185,10 +221,12 @@ export const Label = styled.div`
   }
 
   @media (max-width: ${tabletWidth}) {
-    margin-left: -3px;
-    width: 48%;
+    margin-left: 0;
+    width: auto;
     margin-top: 8px;
-    height: 30px;
+    height: 26px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 `;
 
@@ -239,6 +277,8 @@ export const Categories = styled.div`
     flex-wrap: wrap;
     width: 100%;
     margin-top: 2px;
+
+    display: none;
   }
 `;
 
@@ -275,6 +315,8 @@ export const StandardContent = styled.div`
     flex-wrap: wrap;
     margin-right: 0;
     align-items: center;
+
+    display: none;
   }
 `;
 
@@ -301,7 +343,7 @@ export const LabelStandard = styled.div`
   }
 
   @media (max-width: ${tabletWidth}) {
-    margin-left: -3px;
+    margin-left: 0;
     width: 29%;
     margin-top: 8px;
     height: 30px;

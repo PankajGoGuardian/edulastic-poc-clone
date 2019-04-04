@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { IconPlus } from "@edulastic/icons";
+import { IconPlus, IconEye } from "@edulastic/icons";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { MoveLink, MathFormulaDisplay } from "@edulastic/common";
@@ -203,7 +203,10 @@ class Item extends Component {
         </Detail>
         {windowWidth < MAX_TAB_WIDTH && (
           <ViewButton>
-            <ViewButtonStyled onClick={this.moveToItem}>{t("component.item.view")}</ViewButtonStyled>
+            <ViewButtonStyled onClick={this.moveToItem}>
+              {t("component.item.view")}
+              <IconEye />
+            </ViewButtonStyled>
             <AddButtonStyled onClick={this.handleToggleItemToCart(item._id)}>
               {selectedToCart ? "Remove" : <IconPlus />}
             </AddButtonStyled>

@@ -1,13 +1,17 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-import { white, secondaryTextColor } from "@edulastic/colors";
+import { white, secondaryTextColor, mobileWidth, desktopWidth } from "@edulastic/colors";
 
 import iconCart from "./shopping-cart.svg";
 
 export const Container = styled.div`
   position: relative;
   margin-left: 20px;
+
+  @media (max-width: ${mobileWidth}) {
+    margin-left: 5px;
+  }
 `;
 
 export const CartButtonWrapper = styled(Button)`
@@ -21,6 +25,17 @@ export const CartButtonWrapper = styled(Button)`
   &:active {
     background: url(${iconCart}) center center no-repeat, ${white};
     background-size: 60%;
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    background-size: 50%;
+  }
+
+  @media (max-width: ${mobileWidth}) {
+    height: 40px;
+    width: 45px;
+    border-radius: 3px;
+    background-size: 40%;
   }
 `;
 

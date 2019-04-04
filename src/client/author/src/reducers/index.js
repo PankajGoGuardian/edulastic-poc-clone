@@ -27,6 +27,7 @@ import { testsAddItems } from "../../TestPage/components/AddItems";
 import { testAssignmentsReducer } from "../../TestPage/components/Assign";
 import { assessmentCreate } from "../../AssessmentCreate";
 import { manageClass } from "../../ManageClass";
+import filter from "./filter";
 
 const authorReducers = {
   authorUi,
@@ -57,7 +58,8 @@ const authorReducers = {
   studentQuestionResponse,
   classQuestionResponse,
   manageClass,
-  authorUserList
+  authorUserList,
+  filter
 };
 
 export default authorReducers;

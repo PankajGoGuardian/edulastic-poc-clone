@@ -6,7 +6,7 @@ import { Paper, withWindowSizes } from "@edulastic/common";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Container, Element, ListItems, SpinContainer } from "./styled";
+import { Container, Element, ListItems, SpinContainer, PaginationContainer } from "./styled";
 import Item from "../Item/Item";
 import ItemFilter from "../ItemFilter/ItemFilter";
 import CartButton from "../CartButton/CartButton";
@@ -17,6 +17,7 @@ import {
   getDictStandardsForCurriculumAction,
   clearDictStandardsAction
 } from "../../../src/actions/dictionaries";
+import { toggleFilter } from "../../../src/actions/filter";
 import {
   getTestItemsSelector,
   getTestsItemsCountSelector,
@@ -31,6 +32,8 @@ import { getItemsTypesSelector } from "../../../TestPage/components/Review/ducks
 import { getTestItemCreatingSelector } from "../../../src/selectors/testItem";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import { addItemToCartAction } from "../../ducks";
+import FilterButton from "../FilterButton/FilterButton";
+import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -174,7 +177,7 @@ class Contaier extends Component {
     const { windowWidth, count, page } = this.props;
     return (
       <Pagination
-        simple={windowWidth <= 768 && true}
+        simple={false}
         showTotal={(total, range) => `${range[0]} to ${range[1]} of ${total}`}
         onChange={this.handlePaginationChange}
         defaultPageSize={10}
@@ -202,8 +205,24 @@ class Contaier extends Component {
 
   renderCartButton = () => <CartButton />;
 
+  renderFilterButton = () => {
+    const { toggleFilter, isShowFilter, windowWidth, t } = this.props;
+
+    return <FilterButton toggleFilter={toggleFilter} isShowFilter={isShowFilter} windowWidth={windowWidth} t={t} />;
+  };
+
   render() {
-    const { windowWidth, creating, t, curriculums, getCurriculumStandards, curriculumStandards, loading } = this.props;
+    const {
+      windowWidth,
+      creating,
+      t,
+      curriculums,
+      getCurriculumStandards,
+      curriculumStandards,
+      loading,
+      toggleFilter,
+      isShowFilter
+    } = this.props;
 
     const { search } = this.state;
 
@@ -215,6 +234,7 @@ class Contaier extends Component {
           windowWidth={windowWidth}
           title={t("component.itemlist.header.itemlist")}
           renderExtra={this.renderCartButton}
+          renderFilter={this.renderFilterButton}
         />
         <Container>
           <ItemFilter
@@ -229,6 +249,8 @@ class Contaier extends Component {
             curriculumStandards={curriculumStandards}
             items={filterMenuItems}
             t={t}
+            toggleFilter={toggleFilter}
+            isShowFilter={isShowFilter}
           />
           <ListItems>
             <Element>
@@ -248,9 +270,13 @@ class Contaier extends Component {
                   style={{ padding: windowWidth > 768 ? "8px 76px 34px 31px" : "0px" }}
                 >
                   {this.renderItems()}
-                  {this.renderPagination()}
+                  {windowWidth > SMALL_DESKTOP_WIDTH && this.renderPagination()}
                 </PerfectScrollbar>
               </Paper>
+
+              {windowWidth < SMALL_DESKTOP_WIDTH && (
+                <PaginationContainer>{this.renderPagination()}</PaginationContainer>
+              )}
             </Element>
           </ListItems>
         </Container>
@@ -286,7 +312,9 @@ Contaier.propTypes = {
   loading: PropTypes.bool.isRequired,
   setDefaultTestData: PropTypes.func.isRequired,
   addItemToCart: PropTypes.func.isRequired,
-  selectedCartItems: PropTypes.arrayOf(PropTypes.string).isRequired
+  selectedCartItems: PropTypes.arrayOf(PropTypes.string).isRequired,
+  isShowFilter: PropTypes.bool.isRequired,
+  toggleFilter: PropTypes.func.isRequired
 };
 
 const enhance = compose(
@@ -303,7 +331,8 @@ const enhance = compose(
       itemTypes: getItemsTypesSelector(state),
       curriculums: getCurriculumsListSelector(state),
       curriculumStandards: getStandardsListSelector(state),
-      selectedCartItems: getSelectedItemSelector(state).data
+      selectedCartItems: getSelectedItemSelector(state).data,
+      isShowFilter: state.filter.isShowFilter
     }),
     {
       receiveItems: receiveTestItemsAction,
@@ -312,7 +341,8 @@ const enhance = compose(
       getCurriculumStandards: getDictStandardsForCurriculumAction,
       clearDictStandards: clearDictStandardsAction,
       setDefaultTestData: setDefaultTestDataAction,
-      addItemToCart: addItemToCartAction
+      addItemToCart: addItemToCartAction,
+      toggleFilter
     }
   )
 );

@@ -32,11 +32,17 @@ export const FixedFilters = styled.div`
     top: auto;
     padding-right: 0;
     padding-left: 0;
+    display: none;
   }
 `;
 
 export const Header = styled.div`
   display: flex;
+
+  @media (max-width: ${desktopWidth}) {
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
 `;
 
 export const HeaderRow = styled(Row)`

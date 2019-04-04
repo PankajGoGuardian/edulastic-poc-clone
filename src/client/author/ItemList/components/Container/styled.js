@@ -17,7 +17,7 @@ export const Container = styled.div`
   }
 
   @media (max-width: ${mobileWidth}) {
-    padding: 0 0 40px 0;
+    padding: 0;
     height: initial;
     overflow: auto;
   }
@@ -27,7 +27,7 @@ export const ListItems = styled.div`
   flex: 1;
 
   @media (max-width: ${mobileWidth}) {
-    padding: 20px;
+    padding: 0 26px 20px;
   }
 
   .ant-pagination {
@@ -68,6 +68,8 @@ export const Element = styled.div`
       height: initial;
       overflow-y: initial;
       overflow-x: initial;
+      border-radius: 10px;
+      padding: 0;
     }
   }
   .ant-pagination {
@@ -109,7 +111,7 @@ export const Element = styled.div`
     display: none;
   }
   @media (max-width: ${mobileWidth}) {
-    margin: 20px 0px;
+    margin: 0 0 20px 0;
     height: initial;
 
     .ant-pagination {
@@ -139,5 +141,27 @@ export const SpinContainer = styled.div`
   &.active {
     pointer-events: all;
     opacity: 1;
+  }
+`;
+
+export const PaginationContainer = styled.div`
+  .ant-pagination {
+    padding: 0;
+    background: transparent;
+    margin-top: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ant-pagination-item,
+  .ant-pagination-next,
+  ant-pagination-prev,
+  .ant-pagination-disabled {
+    min-width: 44px;
+    height: 44px;
+    font-size: 18px;
+    font-weight: normal;
+    line-height: 44px;
+    margin: 0 8px;
   }
 `;

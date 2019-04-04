@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { maxBy } from "lodash";
 
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle } from "recharts";
 import { MainDiv } from "./styled";
@@ -10,14 +11,15 @@ const RectangleBar = ({ fill, x, y, width, height }) => (
 );
 
 // eslint-disable-next-line react/prop-types
-const CustomizedTick = ({ payload, x, y, left }) => {
-  const isPoint = payload.value % 10 === 0;
+const CustomizedTick = ({ payload, x, y, left, index, maxValue, pointValue }) => {
+  const isPoint = payload.value % pointValue === 0;
   const x2 = left ? x + 10 : x - 10;
   const textX2 = left ? x - 10 : x + 10;
+  const isLastPoint = index + 1 === maxValue;
   return (
     <g>
-      {isPoint && <line x1={x} y1={y} x2={x2} y2={y} style={{ stroke: "#4a4a4a", strokeWidth: 2 }} />}
-      {isPoint && (
+      {(isLastPoint || isPoint) && <line x1={x} y1={y} x2={x2} y2={y} style={{ stroke: "#4a4a4a", strokeWidth: 2 }} />}
+      {(isLastPoint || isPoint) && (
         <text x={textX2} y={y} textAnchor="middle" fill="#B1B1B1" alignmentBaseline="middle" fontSize="10">
           {payload.value}
         </text>
@@ -54,6 +56,16 @@ export default class BarGraph extends Component {
         }))
         .slice(0, 15);
     }
+    const maxItem = maxBy(data, d => d.all) || {};
+    const maxValue = (maxItem.all || 0) + 2;
+    let pointValue = 2;
+    if (maxValue > 10) {
+      pointValue = 10;
+    } else if (maxValue > 5 && maxValue < 10) {
+      pointValue = 5;
+    } else {
+      pointValue = 1;
+    }
 
     return (
       <MainDiv className="studentBarChart">
@@ -74,8 +86,8 @@ export default class BarGraph extends Component {
               allowDecimals={false}
               label={{ value: "ATTEMPTS", angle: -90, fill: "#b1b1b1", fontSize: "10px" }}
               axisLine={false}
-              tickCount={31}
-              tick={props => <CustomizedTick left {...props} />}
+              tickCount={maxValue}
+              tick={props => <CustomizedTick left {...props} pointValue={pointValue} maxValue={maxValue} />}
               tickFormatter={() => ""}
             />
             <YAxis
@@ -89,8 +101,8 @@ export default class BarGraph extends Component {
                 fontSize: "10px"
               }}
               axisLine={false}
-              tickCount={31}
-              tick={props => <CustomizedTick {...props} />}
+              tickCount={maxValue}
+              tick={props => <CustomizedTick {...props} pointValue={pointValue} maxValue={maxValue} />}
               tickFormatter={() => ""}
               orientation="right"
             />

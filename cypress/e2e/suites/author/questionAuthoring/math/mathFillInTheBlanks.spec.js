@@ -132,8 +132,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
     context("TC_429 => Enter the text/inputs to Template Markup", () => {
       it("On click of template box a latex keyboard should appear", () => {
         question
-          .getAnswerMathInputField()
-          .find("[mathquill-block-id]")
+          .getMathquillBlockId()
           .then(inputElements => {
             expect(inputElements[0].innerText).to.equal("R\nRESPONSE\n+\nR\nRESPONSE\n=");
           })
@@ -177,54 +176,22 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
       });
       it("Testing Value", () => {
         const { input, expected } = queData.equivSymbolic.value;
-        question
-          .getAnswerMathInputField()
-          .find("[mathquill-block-id]")
-          .then(inputElements => {
-            const { length } = inputElements[0].children;
-            question
-              .getTemplateInput()
-              .type("{rightarrow}".repeat(length), { force: true })
-              .type(input, { force: true });
-          });
-        question.setValue(input);
-
-        preview.header.preview();
-        preview.getClear().click();
-        question.getPreviewMathQuill().then(inputElements => {
-          expected.forEach((expectedValue, index) => {
-            cy.wrap(inputElements[index]).type(expectedValue, { force: true });
-          });
+        question.getMathquillBlockId().then(inputElements => {
+          const { length } = inputElements[0].children;
+          question
+            .getTemplateInput()
+            .type("{rightarrow}".repeat(length), { force: true })
+            .type(input, { force: true });
         });
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() =>
-            cy
-              .get("body")
-              .children()
-              .should("contain", "score: 0/1")
-          );
-        question.checkAttr(false);
-        preview
-          .getClear()
-          .click()
-          .then(() => {
-            cy.get("body")
-              .children()
-              .should("not.contain", "Correct Answers");
-          });
-        preview.header.edit();
+        question.setValue(input);
+        question.checkCorrectAnswerWithResponse(expected, preview);
       });
       it("Testing check/uncheck Ignore text check box", () => {
         const { input, expected, checkboxValues, isCirrectUnsver } = queData.equivSymbolic.ignoreText;
-        question
-          .getAnswerMathInputField()
-          .find("[mathquill-block-id]")
-          .then(inputElements => {
-            const { length } = inputElements[0].children;
-            question.getTemplateInput().type("{del}".repeat(length || 1), { force: true });
-          });
+        question.getMathquillBlockId().then(inputElements => {
+          const { length } = inputElements[0].children;
+          question.getTemplateInput().type("{del}".repeat(length || 1), { force: true });
+        });
         checkboxValues.forEach((checkboxValue, index) => {
           question.setValue(input);
           question.setSeparator(checkboxValue)();
@@ -306,9 +273,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
             question.getMathFormulaAnswers().should("have.length", 2);
           });
         question
-          .getMathFormulaAnswers()
-          .last()
-          .find('[data-cy="delete-answer-method"]')
+          .getDeleteAnswerMethod()
           .click()
           .then(() => {
             question.getMathFormulaAnswers().should("have.length", 1);

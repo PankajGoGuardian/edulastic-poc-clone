@@ -217,7 +217,7 @@ class MathFormulaEdit {
 
   getAnswerMathInputField = () => cy.get('[data-cy="answer-math-input-style"]');
 
-  checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect, score = false, scoreValuse = "1/1") => {
+  checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect, score = false, scoreValuse = "2/2") => {
     preview.header.preview();
     preview.getClear().click();
     this.getPreviewMathQuill().should("be.empty");

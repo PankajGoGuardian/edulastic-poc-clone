@@ -2,7 +2,13 @@ import styled from "styled-components";
 import { Card } from "antd";
 import { FlexContainer } from "@edulastic/common";
 import { IconChevronLeft } from "@edulastic/icons";
-import { lightBlueSecondary } from "@edulastic/colors";
+import {
+  lightBlueSecondary,
+  secondaryTextColor,
+  lightGreySecondary,
+  blue,
+  greyScoreCardTitleColor
+} from "@edulastic/colors";
 
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 95%;
@@ -41,7 +47,7 @@ export const StudentsCardRow = styled.div`
 `;
 
 export const TableTitle = styled.div`
-  color: #434b5d;
+  color: ${secondaryTextColor};
   font-size: 21px;
   line-height: 30px;
   font-weight: bold;
@@ -61,7 +67,7 @@ export const StyledDivColor = styled.span`
 
 export const StyledDivMid = styled.div`
   font-size: 16px;
-  color: #434b5d;
+  color: ${secondaryTextColor};
   font-weight: 800;
   text-align: center;
   margin-bottom: 15px;
@@ -80,7 +86,7 @@ export const QuestionContainer = styled.div`
 
 export const QuestionRow = styled.div`
   width: 100%;
-  background-color: #f8f8f8;
+  background-color: ${lightGreySecondary};
   padding: 10px 25px;
   margin-bottom: 10px;
   display: flex;
@@ -88,7 +94,7 @@ export const QuestionRow = styled.div`
 `;
 
 export const QuestionLabel = styled.div`
-  color: #434b5d;
+  color: ${secondaryTextColor};
   font-size: 16px;
   font-weight: bold;
 `;
@@ -101,7 +107,7 @@ export const StyledText = styled.div`
 `;
 
 const TitleText = styled.div`
-  color: #aaafb5;
+  color: ${greyScoreCardTitleColor};
   font-size: 14px;
   font-weight: bold;
   text-transform: uppercase;
@@ -110,7 +116,7 @@ const TitleText = styled.div`
 export const StudentsTitle = styled(TitleText)``;
 export const ScoreTitle = styled(TitleText)``;
 export const ViewDetails = styled(TitleText)`
-  color: #1774f0;
+  color: ${blue};
   font-weight: 600;
 `;
 

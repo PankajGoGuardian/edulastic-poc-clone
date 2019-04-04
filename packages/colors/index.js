@@ -16,6 +16,7 @@ export const textColor = "#848993";
 export const secondaryTextColor = "#434b5d";
 export const greyDarken = "#979BA1";
 export const titleColor = "#304050";
+export const greyScoreCardTitleColor = "#aaafb5";
 
 export const whiteSmoke = "#f5f5f5";
 

@@ -33,8 +33,9 @@ const ResponseFrequency = props => {
   const [filter, setFilter] = useState({});
 
   useEffect(() => {
-    let q = queryString.parse(props.location.search);
-    q.testId = props.match.params.testId;
+    let q = {
+      testId: props.match.params.testId
+    };
     props.getResponseFrequencyRequestAction(q);
   }, []);
 

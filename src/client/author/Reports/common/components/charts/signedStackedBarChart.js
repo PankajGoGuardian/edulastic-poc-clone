@@ -19,7 +19,11 @@ import { CustomChartXTick } from "./chartUtils/customChartXTick";
 import next from "immer";
 
 const yTickFormatter = val => {
-  return val + "%";
+  if (val !== 0) {
+    return val + "%";
+  } else {
+    return "";
+  }
 };
 
 export const SignedStackedBarChart = ({
@@ -159,6 +163,7 @@ export const SignedStackedBarChart = ({
                 fill={bdItem.fill}
                 unit={bdItem.unit}
                 onClick={onBarClick}
+                barSize={70}
               >
                 <LabelList
                   dataKey={bdItem.key}

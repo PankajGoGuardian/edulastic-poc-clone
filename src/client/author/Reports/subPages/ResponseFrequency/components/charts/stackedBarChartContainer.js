@@ -111,7 +111,6 @@ export const StackedBarChartContainer = props => {
   };
 
   const chartSpecifics = getChartSpecifics();
-  console.log("chartSpecifics", chartSpecifics);
 
   return (
     <SimpleStackedBarChart

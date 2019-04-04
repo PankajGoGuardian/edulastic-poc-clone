@@ -16,7 +16,11 @@ import { StyledCustomChartTooltip, StyledChartNavButton } from "../../styled";
 import { CustomChartXTick } from "./chartUtils/customChartXTick";
 
 const yTickFormatter = val => {
-  return val + "%";
+  if (val !== 0) {
+    return val + "%";
+  } else {
+    return "";
+  }
 };
 
 export const SimpleStackedBarChart = ({
@@ -148,8 +152,8 @@ export const SimpleStackedBarChart = ({
             startIndex={pagination.startIndex}
             endIndex={pagination.endIndex}
           />
-          <Bar dataKey={bottomStackDataKey} stackId="a" unit={"%"} onClick={onBarClick} />
-          <Bar dataKey={topStackDataKey} stackId="a" onClick={onBarClick}>
+          <Bar dataKey={bottomStackDataKey} stackId="a" unit={"%"} onClick={onBarClick} barSize={70} />
+          <Bar dataKey={topStackDataKey} stackId="a" onClick={onBarClick} barSize={70}>
             <LabelList
               dataKey={bottomStackDataKey}
               position="insideBottom"

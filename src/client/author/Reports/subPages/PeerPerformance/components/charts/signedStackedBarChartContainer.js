@@ -59,7 +59,7 @@ export const SignedStackedBarChartContainer = ({
       return (
         <div>
           <Row type="flex" justify="start">
-            <Col className="tooltip-key">"Assessment Name: "</Col>
+            <Col className="tooltip-key">Assessment Name: </Col>
             <Col className="tooltip-value">{assessmentName}</Col>
           </Row>
           {arr.map((item, index) => {
@@ -87,7 +87,11 @@ export const SignedStackedBarChartContainer = ({
   };
 
   const yTickFormatter = val => {
-    return Math.abs(val) + "%";
+    if (val !== 0) {
+      return Math.abs(val) + "%";
+    } else {
+      return "";
+    }
   };
 
   const getXTickText = (payload, data) => {

@@ -9,11 +9,14 @@ import {
   Tooltip,
   ResponsiveContainer,
   LabelList,
-  Brush
+  Brush,
+  ReferenceLine
 } from "recharts";
+import { isEmpty } from "lodash";
 import styled from "styled-components";
 import { StyledCustomChartTooltip, StyledChartNavButton } from "../../styled";
 import { CustomChartXTick } from "./chartUtils/customChartXTick";
+import next from "immer";
 
 const yTickFormatter = val => {
   if (val !== 0) {
@@ -23,20 +26,20 @@ const yTickFormatter = val => {
   }
 };
 
-export const SimpleStackedBarChart = ({
+export const SignedStackedBarChart = ({
   pageSize,
+  barsData,
   data = [],
-  yDomain = [0, 110],
-  ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+  yDomain = [-110, 110],
+  ticks = [-100, -90, -80, -70, -60, -50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
   xAxisDataKey,
-  bottomStackDataKey,
-  topStackDataKey,
   onBarClickCB,
   onResetClickCB,
   getXTickText,
   getTooltipJSX,
   yAxisLabel = "",
-  yTickFormatter = yTickFormatter
+  yTickFormatter = yTickFormatter,
+  referenceLine = 0
 }) => {
   const page = pageSize || 7;
   const [pagination, setPagination] = useState({ startIndex: 0, endIndex: page - 1 });
@@ -45,11 +48,15 @@ export const SimpleStackedBarChart = ({
   const constants = {
     COLOR_BLACK: "#010101",
     TICK_FILL: { fill: "#010101", fontWeight: "bold" },
-    Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, position: "insideLeft", textAnchor: "middle" }
+    Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, dx: -30 }
   };
 
   const chartData = useMemo(() => {
     return [...data];
+  }, [pagination, data]);
+
+  const renderData = useMemo(() => {
+    return chartData.slice(pagination.startIndex, pagination.startIndex + page);
   }, [pagination, data]);
 
   const scrollLeft = () => {
@@ -99,7 +106,7 @@ export const SimpleStackedBarChart = ({
   };
 
   return (
-    <StyledStackedBarChartContainer>
+    <StyledSignedStackedBarChartContainer>
       <a
         onClick={onResetClick}
         style={Object.keys(filter).length > 0 ? { visibility: "visible" } : { visibility: "hidden" }}
@@ -129,11 +136,11 @@ export const SimpleStackedBarChart = ({
         }}
       />
       <ResponsiveContainer width={"100%"} height={400}>
-        <BarChart width={730} height={400} data={chartData}>
+        <BarChart width={730} height={400} data={renderData} stackOffset="sign">
           <CartesianGrid vertical={false} strokeWidth={0.5} />
           <XAxis
             dataKey={xAxisDataKey}
-            tick={<CustomChartXTick data={chartData} getXTickText={getXTickText} />}
+            tick={<CustomChartXTick data={renderData} getXTickText={getXTickText} />}
             interval={0}
           />
           <YAxis
@@ -145,33 +152,45 @@ export const SimpleStackedBarChart = ({
             label={constants.Y_AXIS_LABEL}
           />
           <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltipJSX} />} />
-          <Brush
-            dataKey={xAxisDataKey}
-            height={0}
-            width={0}
-            startIndex={pagination.startIndex}
-            endIndex={pagination.endIndex}
-          />
-          <Bar dataKey={bottomStackDataKey} stackId="a" unit={"%"} onClick={onBarClick} barSize={70} />
-          <Bar dataKey={topStackDataKey} stackId="a" onClick={onBarClick} barSize={70}>
-            <LabelList
-              dataKey={bottomStackDataKey}
-              position="insideBottom"
-              fill="#010101"
-              offset={5}
-              formatter={yTickFormatter}
-            />
-            {chartData.map((entry, index) => {
-              return <Cell key={entry[xAxisDataKey]} fill={"#c0c0c0"} />;
-            })}
-          </Bar>
+          <ReferenceLine y={referenceLine} stroke={constants.COLOR_BLACK} />
+          {barsData.map((bdItem, bdIndex) => {
+            return (
+              <Bar
+                key={bdItem.key}
+                dataKey={bdItem.key}
+                name={bdItem.name}
+                stackId={bdItem.stackId}
+                fill={bdItem.fill}
+                unit={bdItem.unit}
+                onClick={onBarClick}
+                barSize={70}
+              >
+                <LabelList
+                  dataKey={bdItem.key}
+                  position="inside"
+                  fill="#010101"
+                  offset={5}
+                  formatter={yTickFormatter}
+                />
+                {renderData.map((cdItem, cdIndex) => {
+                  {
+                    return filter[cdItem[xAxisDataKey]] || isEmpty(filter) ? (
+                      <Cell key={cdItem[xAxisDataKey]} fill={cdItem["fill_" + bdIndex]} />
+                    ) : (
+                      <Cell key={cdItem[xAxisDataKey]} fill={"#c0c0c0"} />
+                    );
+                  }
+                })}
+              </Bar>
+            );
+          })}
         </BarChart>
       </ResponsiveContainer>
-    </StyledStackedBarChartContainer>
+    </StyledSignedStackedBarChartContainer>
   );
 };
 
-const StyledStackedBarChartContainer = styled.div`
+const StyledSignedStackedBarChartContainer = styled.div`
   padding: 10px;
   overflow: hidden;
 
@@ -188,5 +207,13 @@ const StyledStackedBarChartContainer = styled.div`
   .recharts-wrapper .recharts-cartesian-grid-horizontal line:first-child,
   .recharts-wrapper .recharts-cartesian-grid-horizontal line:last-child {
     stroke-opacity: 0;
+  }
+
+  .recharts-yAxis {
+    .recharts-text {
+      tspan {
+        white-space: pre;
+      }
+    }
   }
 `;

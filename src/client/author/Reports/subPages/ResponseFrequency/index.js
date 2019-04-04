@@ -33,13 +33,14 @@ const ResponseFrequency = props => {
   const [filter, setFilter] = useState({});
 
   useEffect(() => {
-    let q = queryString.parse(props.location.search);
-    q.testId = props.match.params.testId;
+    let q = {
+      testId: props.match.params.testId
+    };
     props.getResponseFrequencyRequestAction(q);
   }, []);
 
   let res = get(props, "responseFrequency.data.result", false);
-  res = tempData.result;
+
   const obj = useMemo(() => {
     let obj = {
       metaData: {},
@@ -154,7 +155,3 @@ const enhance = compose(
 );
 
 export default enhance(ResponseFrequency);
-
-// put it in dropdownformat.json
-// { "key": "aboveBelowStandard", "title": "Above/Below Standard" },
-// { "key": "proficiencyBand", "title": "Proficiency Band" }

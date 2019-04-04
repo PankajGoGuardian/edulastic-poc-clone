@@ -18,5 +18,9 @@ export const getStandatdDeviation = variance => {
 };
 
 export const getHSLFromRange1 = val => {
-  return "hsla(" + val + ", 64%, 47%, 1)";
+  return "hsla(" + val + ", 100%, 79%, 1)";
+};
+
+export const isMobileScreen = () => {
+  return window.matchMedia("only screen and (max-width: 1033px) and (min-width : 1px)").matches;
 };

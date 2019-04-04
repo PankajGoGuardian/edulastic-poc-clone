@@ -2,18 +2,20 @@ import React, { useEffect, useState, useMemo } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { Row, Col } from "antd";
-import { get, keyBy, isEmpty } from "lodash";
+import { get, keyBy, isEmpty, cloneDeep } from "lodash";
 
-import { parseData, idToName } from "./util/parser";
+import { parseData, idToName } from "./util/transformers";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import { CustomizedHeaderWrapper } from "../../common/components/header";
 import { StyledCard, StyledH3, StyledControlDropDown, StyledFilterDropDownWithDropDown } from "../../common/styled";
 import { SimpleStackedBarChartContainer } from "./components/charts/simpleStackedBarChartContainer";
+import { SignedStackedBarChartContainer } from "./components/charts/signedStackedBarChartContainer";
 import { UpperContainer, TableContainer, StyledTable } from "./components/styled";
 import { PeerPerformanceTable } from "./components/table/peerPerformanceTable";
 import { getPeerPerformanceRequestAction, getReportsPeerPerformance } from "./ducks";
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import columns from "./static/json/tableColumns.json";
+import tempData from "./static/json/tempData";
 
 const denormalizeData = res => {
   let hMap = keyBy(res.metaInfo, "groupId");
@@ -73,6 +75,7 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
   };
 
   const res = get(peerPerformance, "data.result", false);
+
   const denormData = useMemo(() => {
     return denormalizeData(res);
   }, [res]);
@@ -143,15 +146,29 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
             </Col>
           </Row>
           <div>
-            <SimpleStackedBarChartContainer
-              data={parsedData.data}
-              analyseBy={ddfilter.analyseBy}
-              compareBy={ddfilter.compareBy}
-              filter={chartFilter}
-              assessmentName={res.assessmentName}
-              onBarClickCB={onBarClickCB}
-              onResetClickCB={onResetClickCB}
-            />
+            {ddfilter.analyseBy === "score(%)" || ddfilter.analyseBy === "rawScore" ? (
+              <SimpleStackedBarChartContainer
+                data={parsedData.data}
+                analyseBy={ddfilter.analyseBy}
+                compareBy={ddfilter.compareBy}
+                filter={chartFilter}
+                assessmentName={res.assessmentName}
+                onBarClickCB={onBarClickCB}
+                onResetClickCB={onResetClickCB}
+                bandInfo={res.bandInfo}
+              />
+            ) : (
+              <SignedStackedBarChartContainer
+                data={parsedData.data}
+                analyseBy={ddfilter.analyseBy}
+                compareBy={ddfilter.compareBy}
+                filter={chartFilter}
+                assessmentName={res.assessmentName}
+                onBarClickCB={onBarClickCB}
+                onResetClickCB={onResetClickCB}
+                bandInfo={res.bandInfo}
+              />
+            )}
           </div>
         </StyledCard>
       </UpperContainer>
@@ -165,6 +182,7 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
             analyseBy={ddfilter.analyseBy}
             compareBy={ddfilter.compareBy}
             assessmentName={res.assessmentName}
+            bandInfo={res.bandInfo}
           />
         </StyledCard>
       </TableContainer>

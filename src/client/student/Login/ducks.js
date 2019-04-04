@@ -154,4 +154,9 @@ export const getCurrentSchool = createSelector(
   r => r
 );
 
+export const getUserRole = createSelector(
+  ["user.user.role"],
+  r => r
+);
+
 const routeSelector = state => state.router.location.pathname;

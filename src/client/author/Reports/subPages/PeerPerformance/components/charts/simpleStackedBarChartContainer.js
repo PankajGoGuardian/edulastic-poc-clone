@@ -12,7 +12,8 @@ export const SimpleStackedBarChartContainer = ({
   filter,
   onBarClickCB,
   onResetClickCB,
-  assessmentName
+  assessmentName,
+  role
 }) => {
   const dataParser = () => {
     for (let item of data) {
@@ -39,16 +40,12 @@ export const SimpleStackedBarChartContainer = ({
             <Col className="tooltip-value">{assessmentName}</Col>
           </Row>
           <Row type="flex" justify="start">
-            <Col className="tooltip-key">{analyseByToName[analyseBy] + ": "}</Col>
-            <Col className="tooltip-value">{analyseBy === "score(%)" ? correct + "%" : correct}</Col>
+            <Col className="tooltip-key">{idToName[compareBy] + ": "}</Col>
+            <Col className="tooltip-value">{compareBylabel}</Col>
           </Row>
           <Row type="flex" justify="start">
             <Col className="tooltip-key">{"District Average: "}</Col>
             <Col className="tooltip-value">{analyseBy === "score(%)" ? districtAvg + "%" : districtAvg}</Col>
-          </Row>
-          <Row type="flex" justify="start">
-            <Col className="tooltip-key">{idToName[compareBy] + ": "}</Col>
-            <Col className="tooltip-value">{compareBylabel}</Col>
           </Row>
         </div>
       );
@@ -77,6 +74,10 @@ export const SimpleStackedBarChartContainer = ({
 
   const getChartSpecifics = () => {
     if (analyseBy === "score(%)") {
+      let yAxisLabel = "Avg. Score %";
+      if (role === "teacher") {
+        yAxisLabel = "Avg. Class Performance %";
+      }
       return {
         yDomain: [0, 110],
         ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
@@ -87,7 +88,7 @@ export const SimpleStackedBarChartContainer = ({
             return "";
           }
         },
-        yAxisLabel: "Avg. Score %"
+        yAxisLabel: yAxisLabel
       };
     } else if (analyseBy === "rawScore" && chartData.length > 0) {
       let maxScore = chartData[0].maxScore;

@@ -173,6 +173,7 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
                 onBarClickCB={onBarClickCB}
                 onResetClickCB={onResetClickCB}
                 bandInfo={res.bandInfo}
+                role={role}
               />
             ) : (
               <SignedStackedBarChartContainer
@@ -184,6 +185,7 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
                 onBarClickCB={onBarClickCB}
                 onResetClickCB={onResetClickCB}
                 bandInfo={res.bandInfo}
+                role={role}
               />
             )}
           </div>

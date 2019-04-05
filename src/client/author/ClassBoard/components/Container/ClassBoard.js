@@ -288,7 +288,7 @@ class ClassBoard extends Component {
           <React.Fragment>
             <GraphContainer>
               <StyledCard bordered={false}>
-                <Graph gradebook={gradebook} />
+                <Graph gradebook={gradebook} testActivity={testActivity} />
               </StyledCard>
             </GraphContainer>
             {Object.keys(selectedStudents).length > 0 && (

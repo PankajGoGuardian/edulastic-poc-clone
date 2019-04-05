@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
@@ -5,7 +6,6 @@ import { connect } from "react-redux";
 import { receiveStudentQuestionAction } from "../../../src/actions/classBoard";
 import {
   getClassResponseSelector,
-  getAdditionalDataSelector,
   getAssignmentClassIdSelector,
   getStudentQuestionSelector
 } from "../../../ClassBoard/ducks";
@@ -57,7 +57,6 @@ const enhance = compose(
   connect(
     state => ({
       classResponse: getClassResponseSelector(state),
-      additionalData: getAdditionalDataSelector(state),
       assignmentClassId: getAssignmentClassIdSelector(state),
       studentQuestion: getStudentQuestionSelector(state)
     }),
@@ -72,8 +71,7 @@ Question.propTypes = {
   loadStudentQuestionResponses: PropTypes.func.isRequired,
   assignmentClassId: PropTypes.object,
   studentQuestion: PropTypes.object,
-  classResponse: PropTypes.object,
-  additionalData: PropTypes.object
+  classResponse: PropTypes.object
 };
 
 export default enhance(Question);

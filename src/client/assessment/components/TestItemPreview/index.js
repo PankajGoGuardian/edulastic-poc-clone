@@ -49,7 +49,7 @@ class TestItemPreview extends Component {
 
   render() {
     const { cols, preview, style, windowWidth, showFeedback, questions, index } = this.props;
-    console.log(this.props);
+
     let questionCount = 0;
     cols.forEach(({ widgets }) => {
       questionCount += widgets.length;

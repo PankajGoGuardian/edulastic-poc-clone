@@ -26,7 +26,7 @@ function getDataForTable(data) {
         question.testActivityId = testActivityId;
         question.score = Number.isNaN(question.score) ? 0 : question.score;
       });
-
+      students.questions = student.questionActivities.length;
       students.students = studentInfo;
       students.score = {
         score: Number.isNaN(student.score) ? 0 : student.score,

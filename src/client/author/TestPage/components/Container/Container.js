@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Spin } from "antd";
 import { withRouter } from "react-router-dom";
-import { cloneDeep } from "lodash";
+import { cloneDeep, identity as _identity, isObject as _isObject } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
 import { Content } from "./styled";
@@ -33,6 +33,7 @@ import Review from "../Review";
 import Summary from "../Summary";
 import Assign from "../Assign";
 import Setting from "../Setting";
+import { isObject } from "util";
 
 const statusConstants = {
   DRAFT: "draft",
@@ -134,7 +135,7 @@ class Container extends PureComponent {
       return <Spin />;
     }
     const { current } = this.state;
-    const selectedItems = test.testItems.map(({ _id = uuidv4() }) => _id);
+    const selectedItems = test.testItems.map(item => (_isObject(item) ? item._id : item)).filter(_identity);
     switch (current) {
       case "addItems":
         return <AddItems onAddItems={this.handleAddItems} selectedItems={selectedItems} current={current} />;

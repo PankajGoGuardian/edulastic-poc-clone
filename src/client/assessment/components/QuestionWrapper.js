@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled, { ThemeProvider } from "styled-components";
 import { questionType } from "@edulastic/constants";
@@ -207,19 +207,12 @@ class QuestionWrapper extends Component {
       view,
       setQuestionData,
       t,
+      qIndex,
       ...restProps
     } = this.props;
     const { main, advanced, activeTab } = this.state;
     const Question = getQuestion(type);
     const studentName = data.activity && data.activity.studentName;
-    const PaperWrapperStyles = {
-      width: "-webkit-fill-available",
-      display: "flex",
-      padding: "25px 20px",
-      background: "#F8F8FB",
-      boxShadow: "none",
-      marginBottom: 30
-    };
 
     return (
       <ThemeProvider theme={themes.default}>
@@ -235,6 +228,7 @@ class QuestionWrapper extends Component {
                 setQuestionData={setQuestionData}
                 item={data}
                 view={view}
+                qIndex={qIndex}
                 cleanSections={this.cleanSections}
                 fillSections={this.fillSections}
               />
@@ -256,7 +250,13 @@ QuestionWrapper.propTypes = {
   saveClicked: PropTypes.bool,
   testItem: PropTypes.bool,
   noPadding: PropTypes.bool,
-  isFlex: PropTypes.bool
+  isFlex: PropTypes.bool,
+  t: PropTypes.func,
+  timespent: PropTypes.string,
+  showFeedback: PropTypes.bool,
+  multiple: PropTypes.bool,
+  setQuestionData: PropTypes.func,
+  qIndex: PropTypes.number
 };
 
 QuestionWrapper.defaultProps = {
@@ -266,7 +266,13 @@ QuestionWrapper.defaultProps = {
   saveClicked: false,
   testItem: false,
   noPadding: false,
-  isFlex: false
+  isFlex: false,
+  t: () => {},
+  timespent: "",
+  multiple: false,
+  showFeedback: false,
+  setQuestionData: () => {},
+  qIndex: 0
 };
 
 const enhance = compose(

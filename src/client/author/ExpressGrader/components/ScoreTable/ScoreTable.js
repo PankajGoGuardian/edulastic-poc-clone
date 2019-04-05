@@ -43,8 +43,8 @@ function getDataForTable(data) {
 
 class ScoreTable extends Component {
   static propTypes = {
-    showQuestionModal: PropTypes.bool.isRequired,
-    testActivity: PropTypes.object
+    showQuestionModal: PropTypes.func.isRequired,
+    testActivity: PropTypes.array
   };
 
   static defaultProps = {
@@ -172,7 +172,13 @@ class ScoreTable extends Component {
 
     return (
       <StyledCard bordered={false}>
-        <TableData pagination={false} columns={columnInfo} dataSource={columnData} scroll={{ x: true }} />
+        <TableData
+          pagination={false}
+          columns={columnInfo}
+          dataSource={columnData}
+          scroll={{ x: true }}
+          rowKey={(record, i) => i}
+        />
       </StyledCard>
     );
   }

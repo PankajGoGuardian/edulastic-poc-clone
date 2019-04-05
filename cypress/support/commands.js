@@ -7,7 +7,8 @@ Cypress.LocalStorage.clear = () => {};
 const BASE_URL = Cypress.config("API_URL");
 const DEFAULT_USERS = {
   teacher: {
-    email: "auto.teacher1@snapwiz.com",
+    // email: "auto.teacher1@snapwiz.com",
+    email: "ashishsnap@snawpiz.com",
     password: "snapwiz"
   },
   student: {

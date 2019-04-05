@@ -219,7 +219,9 @@ class MathFormulaEdit {
 
   getAnswerMathInputStyle = () => cy.get(".input__math");
 
-  checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect, score = false, scoreValuse = "1/1") => {
+  // getAnswerMathInputStyle = () => cy.get('[data-cy="answer-math-input-style"]');
+
+  checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect) => {
     preview.header.preview();
     preview.getClear().click();
     this.getPreviewMathQuill().should("be.empty");
@@ -231,7 +233,7 @@ class MathFormulaEdit {
         cy
           .get("body")
           .children()
-          .should("contain", `score: ${isCorrect ? scoreValuse : `0/${score ? "2" : "1"}`}`)
+          .should("contain", `score: ${isCorrect ? "1/1" : `0/1`}`)
       );
 
     this.checkAttr(isCorrect);
@@ -412,7 +414,7 @@ class MathFormulaEdit {
         .should("be.checked");
   };
 
-  allowDecimalMarks = (separator, expected, preview, isCorrect = false, score, value) => {
+  allowDecimalMarks = (separator, expected, preview, isCorrect = false) => {
     this.getAnswerAllowThousandsSeparator().check({ force: true });
     this.getThousandsSeparatorDropdown()
       .click()
@@ -421,9 +423,19 @@ class MathFormulaEdit {
           .should("be.visible")
           .click();
       });
-    this.checkCorrectAnswer(expected, preview, 0, isCorrect, score, value);
+    this.checkCorrectAnswer(expected, preview, 0, isCorrect);
     this.getAnswerAllowThousandsSeparator().uncheck({ force: true });
   };
-}
 
+  mapIsFactorisedMethodFields = fields =>
+    Object.values(fields).forEach(field =>
+      this.getAnswerFieldDropdown()
+        .click()
+        .then(() =>
+          this.getAnswerFieldDropdownListValue(field)
+            .click()
+            .should("be.visible")
+        )
+    );
+}
 export default MathFormulaEdit;

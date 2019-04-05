@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { sumBy } from "lodash";
 import PropTypes from "prop-types";
 
 import DetailedDisplay from "./DetailedDisplay";
 
-import { getAdditionalDataSelector } from "../../ClassBoard/ducks";
+import { getAdditionalDataSelector, getTestActivitySelector } from "../../ClassBoard/ducks";
 
 import {
   TableData,
@@ -33,9 +34,43 @@ class TableDisplay extends Component {
     this.setState({ selectedRow: id, stdId: data });
   };
 
+  filteredData = data => {
+    const { testActivity } = this.props;
+    const studentData = testActivity.filter(std =>
+      std.questionActivities.filter(
+        questionActivity => data.qIds.filter(qId => questionActivity._id === qId).length > 0
+      )
+    );
+    return studentData;
+  };
+
+  getPerfomancePercentage = data => {
+    const studentData = this.filteredData(data);
+    const totalMaxScore = sumBy(studentData, std => std.maxScore);
+    const totalScore = sumBy(studentData, std => std.score);
+    const perfomancePercentage = parseFloat(((totalScore / totalMaxScore) * 100).toFixed(0));
+    return perfomancePercentage;
+  };
+
+  getMasterySummary = data => {
+    const {
+      additionalData: { assignmentMastery }
+    } = this.props;
+    const studentData = this.filteredData(data);
+    let totalMastered = 0;
+    studentData.forEach(student => {
+      const score = student.score || 0;
+      if (assignmentMastery[1].threshold < ((score / student.maxScore) * 100).toFixed(10)) {
+        totalMastered += 1;
+      }
+    });
+    return Math.round((totalMastered / studentData.length) * 100 * 100) / 100;
+  };
+
   render() {
     const { selectedRow, stdId } = this.state;
     const { additionalData: { standards = [] } = {} } = this.props;
+
     const columns = [
       {
         title: "Standards",
@@ -72,23 +107,28 @@ class TableDisplay extends Component {
       }
     ];
 
-    const data = standards.map((std, index) => ({
-      key: index + 1,
-      standard: <p className="first-data">{std.identifier}</p>,
-      question: "Q1", // std.qIds ? std.qIds[0] : "",
-      masterySummary: "00",
-      performanceSummary: "45",
-      icon:
-        selectedRow === index + 1 ? (
-          <div onClick={e => this.onCaretClick(e, 0, std._id)}>
-            <img src={ArrowRightIcon} alt="right" />
-          </div>
-        ) : (
-          <div onClick={e => this.onCaretClick(e, index + 1, std._id)}>
-            <img src={ArrowLeftIcon} alt="left" />
-          </div>
-        )
-    }));
+    const data = standards.map((std, index) => {
+      const perfomancePercentage = this.getPerfomancePercentage(std);
+      const masterySummaryPercentage = this.getMasterySummary(std);
+
+      return {
+        key: index + 1,
+        standard: <p className="first-data">{std.identifier}</p>,
+        question: `Q${index + 1}`, // std.qIds ? std.qIds[0] : "",
+        masterySummary: masterySummaryPercentage,
+        performanceSummary: perfomancePercentage,
+        icon:
+          selectedRow === index + 1 ? (
+            <div onClick={e => this.onCaretClick(e, 0, std._id)}>
+              <img src={ArrowRightIcon} alt="right" />
+            </div>
+          ) : (
+            <div onClick={e => this.onCaretClick(e, index + 1, std._id)}>
+              <img src={ArrowLeftIcon} alt="left" />
+            </div>
+          )
+      };
+    });
 
     return (
       <React.Fragment>
@@ -109,6 +149,7 @@ class TableDisplay extends Component {
 
 const enhance = compose(
   connect(state => ({
+    testActivity: getTestActivitySelector(state),
     additionalData: getAdditionalDataSelector(state)
   }))
 );
@@ -117,5 +158,6 @@ export default enhance(TableDisplay);
 
 TableDisplay.propTypes = {
   /* eslint-disable react/require-default-props */
+  testActivity: PropTypes.object,
   additionalData: PropTypes.object
 };

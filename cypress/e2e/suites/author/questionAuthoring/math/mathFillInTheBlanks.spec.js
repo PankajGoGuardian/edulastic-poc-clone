@@ -78,7 +78,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
           .clear()
           .type(queData.testtext)
           .then($input => {
-            console.log("$input", $input[0].innerText);
             expect($input[0].innerText).to.contain(queData.testtext);
           });
       });
@@ -192,18 +191,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
             .type(input, { force: true });
         });
         question.setValue(input);
-        question.checkCorrectAnswerWithResponse(expected, preview);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, false);
       });
       it("Testing check/uncheck Ignore text check box", () => {
         const { input, expected, checkboxValues, isCirrectUnsver } = queData.equivSymbolic.ignoreText;
         question.getMathquillBlockId().then(inputElements => {
           const { length } = inputElements[0].children;
-          question.getTemplateInput().type("{del}".repeat(length || 1), { force: true });
+          question
+            .getTemplateInput()
+            .type("{rightarrow}".repeat(length), { force: true })
+            .type("{backspace}".repeat(length - 1 || 1), { force: true });
         });
         checkboxValues.forEach((checkboxValue, index) => {
           question.setValue(input);
           question.setSeparator(checkboxValue)();
-          question.checkCorrectAnswer(expected, preview, input.length, isCirrectUnsver[index]);
+          question.checkCorrectAnswerWithResponse(expected, preview, input.length, isCirrectUnsver[index]);
         });
       });
       it("Testing with compare sides", () => {
@@ -212,7 +214,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         question.setValue(input);
         question.setSeparator("getAnswerCompareSides")();
 
-        question.checkCorrectAnswer(expected, preview, 0, true);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
       });
       it("Testing Treat 'e' as Euler's numbe", () => {
         const { expected, input } = queData.equivSymbolic.eulersNumber;
@@ -223,7 +225,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
           .getAnswerCompareSides()
           .check({ force: true })
           .should("be.checked");
-        question.checkCorrectAnswer(expected, preview, input.length, false);
+        question.checkCorrectAnswerWithResponse(expected, preview, input.length, false);
       });
 
       it("Testing with decimal separator - Comma", () => {
@@ -240,7 +242,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
               .click();
           });
 
-        question.checkCorrectAnswer(expected, preview, input.length, false);
+        question.checkCorrectAnswerWithResponse(expected, preview, input.length, false);
       });
 
       it("Testing with thousands separators - Space and Comma", () => {
@@ -257,7 +259,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
                 .should("be.visible")
                 .click();
             });
-          question.checkCorrectAnswer(expected[index], preview, index === 0 ? 0 : input.length, true);
+          question.checkCorrectAnswerWithResponse(expected[index], preview, index === 0 ? 0 : input.length, true);
         });
       });
 
@@ -270,7 +272,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
           .clear({ force: true })
           .type("{uparrow}".repeat(decimalPlaces), { force: true });
 
-        question.checkCorrectAnswer(expected, preview, 0, true);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
       });
 
       it("Add and remove new method", () => {

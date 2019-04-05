@@ -18,13 +18,17 @@ class MathFillInTheBlanksPage extends MathFractionPage {
 
   getMathquillBlockId = () => this.getAnswerMathInputField().find("[mathquill-block-id]");
 
-  checkCorrectAnswerWithResponse = (expectedValues, preview) => {
+  checkCorrectAnswerWithResponse = (expectedValues, preview, inputLength, isCorrect) => {
     preview.header.preview();
     preview.getClear().click();
     this.getPreviewMathQuill().then(inputElements => {
-      expectedValues.forEach((expectedValue, index) => {
-        cy.wrap(inputElements[index]).type(expectedValue, { force: true });
-      });
+      if (Array.isArray(expectedValues)) {
+        expectedValues.forEach((expectedValue, index) => {
+          cy.wrap(inputElements[index]).typeWithDelay(expectedValue);
+        });
+      } else {
+        cy.wrap(inputElements).typeWithDelay(expectedValues);
+      }
     });
     preview
       .getCheckAnswer()
@@ -33,9 +37,9 @@ class MathFillInTheBlanksPage extends MathFractionPage {
         cy
           .get("body")
           .children()
-          .should("contain", "score: 0/1")
+          .should("contain", `score: ${isCorrect ? "1/1" : "0/1"}`)
       );
-    this.checkAttr(false);
+    this.checkAttr(isCorrect);
     preview
       .getClear()
       .click()
@@ -45,6 +49,8 @@ class MathFillInTheBlanksPage extends MathFractionPage {
           .should("not.contain", "Correct Answers");
       });
     preview.header.edit();
+
+    if (inputLength > 0) this.clearAnswerValueInput(inputLength);
   };
 }
 

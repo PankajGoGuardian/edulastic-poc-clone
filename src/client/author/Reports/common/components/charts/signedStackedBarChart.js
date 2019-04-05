@@ -25,14 +25,6 @@ const yTickFormatter = val => {
   }
 };
 
-const barsLabelFormatter = val => {
-  if (val !== 0) {
-    return val + "%";
-  } else {
-    return "";
-  }
-};
-
 export const SignedStackedBarChart = ({
   pageSize,
   barsData,

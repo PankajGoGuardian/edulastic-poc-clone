@@ -235,29 +235,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       // create new que and select type
 
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      Cypress.on("uncaught:exception", (err, runnable) => {
+        debugger;
+        return false;
+      });
     });
 
     context("TC_429 => Enter question text in Compose Question text box", () => {
       it("Write text in textbox", () => {
-        question
-          .getComposeQuestionTextBox()
-          .clear()
-          .type(queData.testtext)
-          .then($input => {
-            console.log("$input", $input[0].innerText);
-            expect($input[0].innerText).to.contain(queData.testtext);
-          });
+        question.checkIfTextExist(queData.testtext);
       });
 
       it("give external link", () => {
-        question
-          .getComposeQuestionTextBox()
-          .clear()
-          .type(queData.testtext)
-          .then($input => {
-            expect($input[0].innerText).to.contain(queData.testtext);
-          })
-          .type("{selectall}");
+        question.checkIfTextExist(queData.testtext).type("{selectall}");
         editToolBar.link().click();
         question.getSaveLink().click();
         question
@@ -271,14 +261,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       });
 
       it("insert formula", () => {
-        question
-          .getComposeQuestionTextBox()
-          .clear()
-          .type(queData.testtext)
-          .then($input => {
-            expect($input[0].innerText).to.contain(queData.testtext);
-          })
-          .clear();
+        question.checkIfTextExist(queData.testtext).clear();
       });
       it("Upload image to server", () => {
         question.getComposeQuestionTextBox().focus();
@@ -321,10 +304,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
         question.removeLastValue();
         numpadButtons.forEach(button => {
           const { value, label } = button;
-          question
-            .getVirtualKeyBoard()
-            .find(`button[data-cy="virtual-keyboard-${value}"]`)
-            .click();
+          question.getVirtualKeyBoardItem(value).click();
           question
             .getTemplateOutput()
             .last()
@@ -335,10 +315,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
           .filter(item => item.types.includes(queData.symbols[0]))
           .forEach(button => {
             const { label } = button;
-            question
-              .getVirtualKeyBoard()
-              .find(`button[data-cy="virtual-keyboard-${label}"]`)
-              .click();
+            question.getVirtualKeyBoardItem(label).click();
             question
               .getTemplateOutput()
               .last()
@@ -359,10 +336,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
           .filter(item => item.types.includes(queData.symbols[1]))
           .forEach(button => {
             const { label, handler } = button;
-            question
-              .getVirtualKeyBoard()
-              .find(`button[data-cy="virtual-keyboard-${handler}"]`)
-              .click();
+            question.getVirtualKeyBoardItem(handler).click();
             question
               .getTemplateOutput()
               .last()
@@ -394,14 +368,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
           .then(() => {
             question.getMathFormulaAnswers().should("have.length", 2);
           });
-        question
-          .getMathFormulaAnswers()
-          .last()
-          .find('[data-cy="delete-answer-method"]')
-          .click()
-          .then(() => {
-            question.getMathFormulaAnswers().should("have.length", 1);
-          });
+        question.deleteLastMethod().then(() => {
+          question.getMathFormulaAnswers().should("have.length", 1);
+        });
       });
       it("Add and remove alternate answer", () => {
         question.addAlternateAnswer();
@@ -458,15 +427,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
           .check({ force: true })
           .should("be.checked");
         queData.decimalSeparators.forEach(item => {
-          question
-            .getAnswerSetDecimalSeparatorDropdown()
-            .click()
-            .then(() => {
-              question
-                .getAnswerSetDecimalSeparatorDropdownList(item)
-                .should("be.visible")
-                .click();
-            });
+          question.setAnswerSetDecimalSeparatorDropdown(item);
           question.getAnswerSetDecimalSeparatorDropdown().contains("div", item);
         });
         question
@@ -568,15 +529,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       const { input, expected, separator } = queData.equivSymbolic.setDecimalSeparator;
       question.getAnswerValueMathInput().type(input, { force: true });
       question.getAnswerAllowThousandsSeparator().check({ force: true });
-      question
-        .getAnswerSetDecimalSeparatorDropdown()
-        .click()
-        .then(() => {
-          question
-            .getAnswerSetDecimalSeparatorDropdownList(separator)
-            .should("be.visible")
-            .click();
-        });
+      question.setAnswerSetDecimalSeparatorDropdown(separator);
 
       question.checkCorrectAnswer(expected, preview, input.length, false);
 
@@ -587,19 +540,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       const { input, expected, separators } = queData.equivSymbolic.setThousandsSeparator;
       question.getAnswerValueMathInput().type(input, { force: true });
       separators.forEach((separator, index) => {
-        question.getAnswerAllowThousandsSeparator().check({ force: true });
-        question
-          .getThousandsSeparatorDropdown()
-          .click()
-          .then(() => {
-            question
-              .getThousandsSeparatorDropdownList(separator)
-              .should("be.visible")
-              .click();
-          });
-        question.checkCorrectAnswer(expected[index], preview, index === 0 ? 0 : input.length, true);
-
-        question.getAnswerAllowThousandsSeparator().uncheck({ force: true });
+        question.allowDecimalMarks(separator, expected[index], preview, true);
+        // question.getAnswerAllowThousandsSeparator().check({ force: true });
+        // question
+        //   .getThousandsSeparatorDropdown()
+        //   .click()
+        //   .then(() => {
+        //     question
+        //       .getThousandsSeparatorDropdownList(separator)
+        //       .should("be.visible")
+        //       .click();
+        //   });
+        // question.checkCorrectAnswer(expected[index], preview, index === 0 ? 0 : input.length, true);
+        //
+        // question.getAnswerAllowThousandsSeparator().uncheck({ force: true });
       });
     });
 
@@ -688,15 +642,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
     it("Testing with decimal separator - Comma", () => {
       const { input, expected, separator } = queData.equivLiteral.setDecimalSeparator;
       question.getAnswerAllowThousandsSeparator().check({ force: true });
-      question
-        .getAnswerSetDecimalSeparatorDropdown()
-        .click()
-        .then(() => {
-          question
-            .getAnswerSetDecimalSeparatorDropdownList(separator)
-            .should("be.visible")
-            .click();
-        });
+      question.setAnswerSetDecimalSeparatorDropdown(separator);
       input.forEach((item, index) => {
         question.getAnswerValueMathInput().type(item, { force: true });
         question.checkCorrectAnswer(expected[index], preview, item.length, false);
@@ -869,11 +815,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       const { input, expected } = queData.equivSyntax.decimal;
 
       question.setMethod(methods.EQUIV_SYNTAX, question.setRule, syntaxes.DECIMAL);
-
-      question
-        .getAnswerRuleArgumentInput()
-        .clear()
-        .type("{uparrow}".repeat(input), { force: true });
+      question.setArgumentInput("getAnswerRuleArgumentInput", input);
 
       question.checkCorrectAnswer(expected, preview, 0, true);
     });
@@ -1010,10 +952,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       const { input, expected } = queData.isTrue.significantDecimal;
 
       question.setMethod(methods.IS_TRUE);
-      question
-        .getAnswerSignificantDecimalPlaces()
-        .clear()
-        .type("{uparrow}".repeat(input), { force: true });
+      question.getAnswerRuleArgumentInput("getAnswerSignificantDecimalPlaces", input);
       question.checkCorrectAnswer(expected, preview, 0, false);
     });
 
@@ -1066,11 +1005,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
       question.setMethod(methods.IS_UNIT, question.setValue, input);
 
-      question
-        .getAnswerAllowedUnits()
-        .clear({ force: true })
-        .type(units, { force: true });
-
+      question.setAllowedUnitsInput(units);
       question.checkCorrectAnswer(expected, preview, 0, false);
     });
     it("Testing with allowed units", () => {
@@ -1078,11 +1013,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
       question.setMethod(methods.IS_UNIT);
 
-      question
-        .getAnswerAllowedUnits()
-        .clear({ force: true })
-        .type(units, { force: true });
-
+      question.setAllowedUnitsInput(units);
       question.checkCorrectAnswer(expected, preview, 0, false);
     });
     it("Testing with allow decimal marks", () => {
@@ -1128,11 +1059,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       const { expected, input, decimalPlaces } = queData.equivValue.significantDecimal;
 
       question.setMethod(methods.EQUIV_VALUE, question.setValue, input);
-      question
-        .getAnswerSignificantDecimalPlaces()
-        .clear({ force: true })
-        .type("{uparrow}".repeat(decimalPlaces), { force: true });
-
+      question.getAnswerRuleArgumentInput("getAnswerSignificantDecimalPlaces", input);
       question.checkCorrectAnswer(expected, preview, 0, true);
       question.getAnswerSignificantDecimalPlaces().clear({ force: true });
     });

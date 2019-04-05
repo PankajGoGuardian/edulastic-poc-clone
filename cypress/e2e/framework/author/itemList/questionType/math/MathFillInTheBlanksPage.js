@@ -26,13 +26,17 @@ class MathFillInTheBlanksPage extends MathFractionPage {
     });
   };
 
-  checkCorrectAnswerWithResponse = (expectedValues, preview) => {
+  checkCorrectAnswerWithResponse = (expectedValues, preview, inputLength, isCorrect) => {
     preview.header.preview();
     preview.getClear().click();
     this.getPreviewMathQuill().then(inputElements => {
-      expectedValues.forEach((expectedValue, index) => {
-        cy.wrap(inputElements[index]).type(expectedValue, { force: true });
-      });
+      if (Array.isArray(expectedValues)) {
+        expectedValues.forEach((expectedValue, index) => {
+          cy.wrap(inputElements[index]).typeWithDelay(expectedValue);
+        });
+      } else {
+        cy.wrap(inputElements).typeWithDelay(expectedValues);
+      }
     });
     preview
       .getCheckAnswer()
@@ -41,9 +45,9 @@ class MathFillInTheBlanksPage extends MathFractionPage {
         cy
           .get("body")
           .children()
-          .should("contain", "score: 0/1")
+          .should("contain", `score: ${isCorrect ? "1/1" : "0/1"}`)
       );
-    this.checkAttr(false);
+    this.checkAttr(isCorrect);
     preview
       .getClear()
       .click()
@@ -53,6 +57,8 @@ class MathFillInTheBlanksPage extends MathFractionPage {
           .should("not.contain", "Correct Answers");
       });
     preview.header.edit();
+
+    if (inputLength > 0) this.clearAnswerValueInput(inputLength);
   };
 
   setAnswerArgumentDropdownValue = value =>
@@ -60,24 +66,18 @@ class MathFillInTheBlanksPage extends MathFractionPage {
       .click()
       .then(() => this.getAnswerArgumentDropdownByValue(value).click());
 
-  setArgumentInput = (selector, input) =>
-    this[selector]()
-      .clear({ force: true })
-      .type("{uparrow}".repeat(input), { force: true });
-
-  setAllowedUnitsInput = units =>
-    this.getAnswerAllowedUnits()
-      .clear({ force: true })
-      .type(units, { force: true });
-
-  setAnswerSetDecimalSeparatorDropdown = separator =>
-    this.getAnswerSetDecimalSeparatorDropdown()
+  allowDecimalMarksWithResponse = (separator, expected, preview, isCorrect = false) => {
+    this.getAnswerAllowThousandsSeparator().check({ force: true });
+    this.getThousandsSeparatorDropdown()
       .click()
       .then(() => {
-        this.getAnswerSetDecimalSeparatorDropdownList(separator)
+        this.getThousandsSeparatorDropdownList(separator)
           .should("be.visible")
           .click();
       });
+    this.checkCorrectAnswerWithResponse(expected, preview, 0, isCorrect);
+    this.getAnswerAllowThousandsSeparator().uncheck({ force: true });
+  };
 }
 
 export default MathFillInTheBlanksPage;

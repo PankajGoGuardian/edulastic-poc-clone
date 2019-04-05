@@ -437,5 +437,34 @@ class MathFormulaEdit {
             .should("be.visible")
         )
     );
+
+  setAnswerSetDecimalSeparatorDropdown = separator =>
+    this.getAnswerSetDecimalSeparatorDropdown()
+      .click()
+      .then(() => {
+        this.getAnswerSetDecimalSeparatorDropdownList(separator)
+          .should("be.visible")
+          .click();
+      });
+
+  setAllowedUnitsInput = units =>
+    this.getAnswerAllowedUnits()
+      .clear({ force: true })
+      .type(units, { force: true });
+
+  setArgumentInput = (selector, input) =>
+    this[selector]()
+      .clear({ force: true })
+      .type("{uparrow}".repeat(input), { force: true });
+
+  checkIfTextExist = data =>
+    this.getComposeQuestionTextBox()
+      .clear()
+      .type(data)
+      .then($input => {
+        expect($input[0].innerText).to.contain(data);
+      });
+
+  getVirtualKeyBoardItem = value => this.getVirtualKeyBoard().find(`button[data-cy="virtual-keyboard-${value}"]`);
 }
 export default MathFormulaEdit;

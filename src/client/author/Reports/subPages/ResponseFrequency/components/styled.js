@@ -82,25 +82,6 @@ export const StyledTable = styled(Table)`
 
 export const StyledResponseTagContainer = styled(Col)`
   flex: 1 1 100px;
-  .table-tag {
-    border: solid 2px ${darkGrey};
-    border-radius: 40px;
-    margin: 2px 5px;
-    text-align: center;
-    padding: 3px 10px;
-    min-width: 100px;
-    p {
-      margin: 2px;
-    }
-  }
-
-  .table-tag-correct {
-    border-color: #81a342;
-  }
-
-  .table-tag-warn {
-    border-color: #d8ad38;
-  }
 `;
 
 export const StyledSimpleBarChartContainer = styled(StyledCard)`

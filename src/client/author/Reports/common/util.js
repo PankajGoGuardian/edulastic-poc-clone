@@ -21,6 +21,11 @@ export const getHSLFromRange1 = val => {
   return "hsla(" + val + ", 100%, 79%, 1)";
 };
 
+export const getHSLFromRange2 = val => {
+  let tmp = val / 2;
+  return "hsla(" + tmp + ", 100%, 48%, 1)";
+};
+
 export const isMobileScreen = () => {
   return window.matchMedia("only screen and (max-width: 1033px) and (min-width : 1px)").matches;
 };

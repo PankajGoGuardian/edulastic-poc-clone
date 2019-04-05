@@ -3,6 +3,7 @@ import { Component } from "react";
 import { StyledCard, StyledTable } from "../styled";
 import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
 import { Row, Col } from "antd";
+import { find } from "lodash";
 import { ResponseTag } from "./responseTag";
 import { getHSLFromRange1 } from "../../../../common/util";
 
@@ -59,7 +60,7 @@ export class ResponseFrequencyTable extends Component {
             </Row>
             <Row type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Performance: </Col>
-              <Col className="custom-table-tooltip-value">{corr_cnt}%</Col>
+              <Col className="custom-table-tooltip-value">{Math.round((corr_cnt / sum) * 100)}%</Col>
             </Row>
             <Row type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Students Skipped: </Col>
@@ -113,7 +114,7 @@ export class ResponseFrequencyTable extends Component {
       let sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
       let skip = (skip_cnt / sum) * 100;
       if (isNaN(skip)) skip = 0;
-      return skip.toFixed(0) + "%";
+      return Math.round(skip) + "%";
     };
 
     this.columns[6].render = (data, record) => {
@@ -122,19 +123,36 @@ export class ResponseFrequencyTable extends Component {
       let sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
       if (sum == 0) sum = 1;
       if (!data || Object.keys(data).length === 0) {
-        arr.push({ value: ((corr_cnt / sum) * 100).toFixed(0), name: "Correct", key: "corr_cnt" });
-        arr.push({ value: ((incorr_cnt / sum) * 100).toFixed(0), name: "Incorrect", key: "incorr_cnt" });
-        arr.push({ value: ((part_cnt / sum) * 100).toFixed(0), name: "Partially Correct", key: "part_cnt" });
+        arr.push({ value: ((corr_cnt / sum) * 100).toFixed(0), name: "Correct", key: "corr_cnt", isCorrect: true });
+        arr.push({
+          value: ((incorr_cnt / sum) * 100).toFixed(0),
+          name: "Incorrect",
+          key: "incorr_cnt",
+          isCorrect: false
+        });
+        arr.push({
+          value: ((part_cnt / sum) * 100).toFixed(0),
+          name: "Partially Correct",
+          key: "part_cnt",
+          isCorrect: false
+        });
       } else {
         let numToAlp = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         arr = Object.keys(data).map((comboKey, i) => {
+          let validMap = {};
+
           let slittedKeyArr = comboKey.split(",");
           let str = "";
+          let isCorrect = true;
           for (let key of slittedKeyArr) {
             for (let i = 0; i < record.options.length; i++) {
               // IMPORTANT: double == instead of === cuz we need to compare number keys with string keys
               if (record.options[i].value == key) {
                 str = str + numToAlp[i];
+                let tmp = find(record.validation, vstr => {
+                  return key == vstr;
+                });
+                isCorrect = isCorrect && (tmp ? true : false);
               }
             }
           }
@@ -142,7 +160,8 @@ export class ResponseFrequencyTable extends Component {
           return {
             value: Math.round((data[comboKey] / sum) * 100),
             name: str,
-            key: str
+            key: str,
+            isCorrect: isCorrect
           };
         });
       }

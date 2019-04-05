@@ -106,6 +106,7 @@ class Container extends PureComponent {
     const newTest = cloneDeep(test);
 
     newTest.testItems = testItems;
+
     newTest.scoring.testItems = testItems.map(item => {
       const foundItem = newTest.scoring.testItems.find(({ id }) => item && item._id === id);
       if (!foundItem) {
@@ -135,6 +136,7 @@ class Container extends PureComponent {
       return <Spin />;
     }
     const { current } = this.state;
+    // TODO: fix this shit!!
     const selectedItems = test.testItems.map(item => (_isObject(item) ? item._id : item)).filter(_identity);
     switch (current) {
       case "addItems":

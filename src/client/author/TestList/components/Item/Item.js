@@ -33,17 +33,11 @@ class Item extends Component {
     history.push(`/author/tests/${item._id}`);
   };
 
-  get name() {
-    const {
-      item: { createdBy = {} }
-    } = this.props;
-    return `${createdBy.firstName} ${createdBy.lastName}`;
-  }
-
   render() {
     const {
       item: { title, tags, analytics },
-      t
+      t,
+      authorName
     } = this.props;
     return (
       <Container
@@ -62,13 +56,15 @@ class Item extends Component {
           <Tags tags={tags} />
         </Inner>
         <Footer>
-          <Author>
-            <span>
-              {t("component.item.by")}
-              :&nbsp;
-            </span>
-            <AuthorName>{this.name}</AuthorName>
-          </Author>
+          {authorName && (
+            <Author>
+              <span>
+                {t("component.item.by")}
+                :&nbsp;
+              </span>
+              <AuthorName>{authorName}</AuthorName>
+            </Author>
+          )}
           <Icons>
             <IconWrapper>
               <IconHeart color={greenDark} width={16} height={16} />

@@ -7,6 +7,7 @@ import { compose } from "redux";
 import { withWindowSizes } from "@edulastic/common";
 
 import styled from "styled-components";
+import { getTestItemAuthorName } from "../../../../dataUtils";
 import MainInfoCell from "./MainInfoCell";
 import MetaInfoCell from "./MetaInfoCell";
 import { getItemsTypesSelector, getStandardsSelector } from "../../Review/ducks";
@@ -68,7 +69,7 @@ const ItemsTable = ({ items, types, setSelectedTests, selectedTests, onAddItems,
     const meta = {
       id: item._id,
       title: item._id,
-      by: "Kevin Hart",
+      by: getTestItemAuthorName(item),
       shared: "9578 (1)",
       likes: 9,
       types: types[item._id],

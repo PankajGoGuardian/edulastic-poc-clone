@@ -4,6 +4,7 @@ import { IconPlus } from "@edulastic/icons";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { MoveLink, MathFormulaDisplay } from "@edulastic/common";
+import { getTestItemAuthorName } from "../../../dataUtils";
 import { MAX_TAB_WIDTH } from "../../../src/constants/others";
 import {
   Container,
@@ -107,7 +108,7 @@ class Item extends Component {
     const details = [
       {
         name: <UserIcon />,
-        text: item.authors && item.authors[0] ? item.authors[0].userName : "-"
+        text: getTestItemAuthorName(item)
       },
       {
         name: <IdIcon />,

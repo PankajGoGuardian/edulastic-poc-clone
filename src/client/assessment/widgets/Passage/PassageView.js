@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { isArray } from "lodash";
 import PropTypes from "prop-types";
 import { Pagination } from "antd";
 import ReactQuill from "react-quill";
@@ -13,7 +14,10 @@ const PassageView = ({ item, preview }) => {
 
   useEffect(() => {
     if (preview) {
-      document.getElementsByClassName("ql-editor")[0].contentEditable = false;
+      const editors = document.getElementsByClassName("ql-editor");
+      if (isArray(editors) && editors.length) {
+        editors[0].contentEditable = false;
+      }
     }
   }, []);
 

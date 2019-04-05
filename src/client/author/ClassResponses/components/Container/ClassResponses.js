@@ -97,7 +97,7 @@ class ClassResponses extends Component {
     const testActivity = studentResponse ? studentResponse.testActivity : null;
     const questionActivities = studentResponse ? studentResponse.questionActivities : null;
     const showClassQuestions = !!testActivity && !showFeedbackForm;
-    console.log("&&&&&", testActivity);
+
     if (questionActivities) {
       questionActivities.forEach((item, i) => {
         totalScore += item.score || 0;

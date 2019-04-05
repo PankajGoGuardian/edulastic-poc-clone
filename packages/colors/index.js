@@ -16,6 +16,10 @@ export const textColor = "#848993";
 export const secondaryTextColor = "#434b5d";
 export const greyDarken = "#979BA1";
 export const titleColor = "#304050";
+export const cardTitleColor = "#aaafb5";
+export const linkColor = "#69727e";
+export const linkColor1 = "#6a737f";
+export const lightGrey3 = "#f4f3f3";
 
 export const whiteSmoke = "#f5f5f5";
 
@@ -36,6 +40,9 @@ export const redDark = "#dd2e44";
 export const blue = "#1774F0";
 export const lightBlue = "#93d8f7";
 export const lightBlueSecondary = "#1774F0";
+export const lightBlue3 = "#3793dc";
+export const lightBlue4 = "#40a1ee";
+export const lightBlue5 = "#91d5dc";
 export const darkBlue = "#0080b9";
 export const darkBlueSecondary = "#0288d1";
 export const newBlue = "#1774F0";
@@ -43,6 +50,7 @@ export const blueButton = "#0e93dc";
 
 export const green = "#1fe3a1";
 export const lightGreen = "#f5f9fe";
+export const lightGreen1 = "#62ebbd";
 export const greenDark = "#4aac8b";
 export const greenDarkSecondary = "#057750";
 export const greenSecondary = "#4CD43B";
@@ -57,6 +65,14 @@ export const yellow = "#febe00";
 
 // shadows
 export const boxShadowDefault = "0 2px 5px 0 rgba(0, 0, 0, 0.07)";
+
+// Graph colors
+export const greyGraphstroke = "#999";
+export const barGrapColor1 = "#1fe3a0";
+export const barGrapColor2 = "#ee1b82";
+export const incorrect = "#F35F5F";
+export const pCorrect = "#ebaa28";
+export const graded = "#7BC0DF";
 
 // Sizes
 export const mobileWidth = "480px";

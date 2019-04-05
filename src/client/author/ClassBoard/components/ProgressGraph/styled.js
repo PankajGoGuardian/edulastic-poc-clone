@@ -1,5 +1,6 @@
 import { Progress } from "antd";
 import styled from "styled-components";
+import { mobileWidth } from "@edulastic/colors";
 
 export const StyledProgress = styled(Progress)`
   margin: 0 30px 15px 30px;
@@ -13,6 +14,9 @@ export const StyledProgress = styled(Progress)`
 
 export const StyledDiv = styled.div`
   display: flex;
+  @media (max-width: ${mobileWidth}) {
+    flex-direction: column;
+  }
 `;
 export const StyledDivF = styled.div``;
 
@@ -42,4 +46,12 @@ export const GraphInfo = styled.div`
   padding: 6px 17px;
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+`;
+
+export const ProgressBarContainer = styled.div`
+  @media (max-width: ${mobileWidth}) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 `;

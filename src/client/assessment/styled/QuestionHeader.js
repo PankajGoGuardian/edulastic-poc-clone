@@ -6,7 +6,13 @@ export const QuestionHeader = WithMathFormula(
     font-size: 15px;
     color: #434b5d;
     line-height: 1.63;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    label {
+      font-size: 16px;
+      font-weight: 700;
+      margin-right: 10px;
+    }
   `
 );
 // ?Original style

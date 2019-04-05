@@ -71,18 +71,6 @@ import {
   StudentGrapContainer
 } from "./styled";
 
-/**
- * right side button group
- * @param {{redirect: Function }} param0
- */
-// const StudentActions = ({ redirect }) => (
-//   <Button.Group>
-//     <Button>Print</Button>
-//     <Button onClick={redirect}>redirect</Button>
-//     <Button>more</Button>
-//   </Button.Group>
-// );
-
 class ClassBoard extends Component {
   constructor(props) {
     super(props);
@@ -206,7 +194,9 @@ class ClassBoard extends Component {
 
   handleRedirect = () => {
     const { selectedStudents, testActivity } = this.props;
-    const notStartedStudents = testActivity.filter(x => selectedStudents[x.studentId] && x.status === "notStarted");
+    const notStartedStudents = testActivity.filter(
+      x => selectedStudents[x.studentId] && (x.status === "notStarted" || x.status === "inProgress")
+    );
 
     if (notStartedStudents.length > 0) {
       message.warn("Only absent and submitted students can be redirected");

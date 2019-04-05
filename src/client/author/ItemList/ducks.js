@@ -15,8 +15,11 @@ export const addItemToCartAction = itemId => ({
   }
 });
 
-export const createTestFromCartAction = () => ({
-  type: CREATE_TEST_FROM_CART
+export const createTestFromCartAction = testName => ({
+  type: CREATE_TEST_FROM_CART,
+  payload: {
+    testName
+  }
 });
 
 export function* addItemToCartSaga({ payload }) {
@@ -35,11 +38,16 @@ export function* addItemToCartSaga({ payload }) {
   yield put(setTestDataAction(updatedTest));
 }
 
-export function* createTestFromCart() {
+export function* createTestFromCart({ payload: { testName = "New Test" } }) {
   const test = yield select(getTestEntitySelector);
 
+  const updatedTest = {
+    ...test,
+    title: testName
+  };
+
   yield call(message.info, "Creating a test with selected items");
-  yield put(createTestAction(test, true));
+  yield put(createTestAction(updatedTest, true));
 }
 
 export function* watcherSaga() {

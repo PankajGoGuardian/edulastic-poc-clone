@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-import { white, secondaryTextColor, mobileWidth, desktopWidth } from "@edulastic/colors";
+import { white, green, mobileWidth, desktopWidth } from "@edulastic/colors";
 
 import iconCart from "./shopping-cart.svg";
 
@@ -12,19 +12,28 @@ export const Container = styled.div`
   @media (max-width: ${mobileWidth}) {
     margin-left: 5px;
   }
+
+  opacity: ${props => (props.disabled ? 0.5 : 1)};
+  transition: opacity 300ms ease-in-out;
+  pointer-events: ${props => (props.disabled ? "none" : "all")};
+  cursor: ${props => (props.disabled ? "default" : "pointer")};
 `;
 
 export const CartButtonWrapper = styled(Button)`
   height: 44px;
-  width: 44px;
-  background: url(${iconCart}) center center no-repeat, ${white};
-  background-size: 60%;
+  width: 160px;
+  padding-left: 60px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: url(${iconCart}) -20% center no-repeat, ${white};
+  background-size: 60% 50%;
 
   &:hover,
   &:focus,
   &:active {
-    background: url(${iconCart}) center center no-repeat, ${white};
-    background-size: 60%;
+    background: url(${iconCart}) -20% center no-repeat, ${white};
+    background-size: 60% 50%;
   }
 
   @media (max-width: ${desktopWidth}) {
@@ -42,16 +51,15 @@ export const CartButtonWrapper = styled(Button)`
 export const ItemsAmount = styled.span`
   display: block;
   position: absolute;
-  top: 6px;
-  right: 4px;
-  width: 16px;
-  height: 16px;
+  top: -10px;
+  right: -10px;
+  width: 22px;
+  height: 21px;
   text-align: center;
-  border: 2px solid ${secondaryTextColor};
   border-radius: 10px;
-  background: ${white};
-  color: ${secondaryTextColor};
-  font-size: 9px;
-  line-height: 13px;
+  background: ${green};
+  color: ${white};
+  font-size: 14px;
+  line-height: 22px;
   font-weight: bold;
 `;

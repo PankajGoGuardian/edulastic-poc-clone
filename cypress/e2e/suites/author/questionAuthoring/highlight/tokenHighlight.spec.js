@@ -43,7 +43,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
 
   context("User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId("5c88a7c965790664ff78b4ba");
+      editItem.getItemWithId();
       editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
@@ -308,7 +308,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
 
   context("Advanced Options", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId("5c88a7c965790664ff78b4ba");
+      editItem.getItemWithId();
       editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);

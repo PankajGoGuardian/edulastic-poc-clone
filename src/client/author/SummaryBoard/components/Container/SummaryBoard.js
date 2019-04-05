@@ -8,9 +8,7 @@ import { IconCircleCheck, IconArrowCircleUp } from "@edulastic/icons";
 // ducks
 import {
   getTestActivitySelector,
-  getGradeBookSelector,
   getAdditionalDataSelector,
-  getClassResponseSelector,
   getTestQuestionActivitiesSelector
 } from "../../../ClassBoard/ducks";
 
@@ -70,29 +68,29 @@ class SummaryBoard extends Component {
     return id;
   };
 
-  getQuestions = () => {
-    const { classResponse: { testItems = [] } = {} } = this.props;
-    let totalQuestions = [];
-    testItems.forEach(({ data: { questions = [] } = {} }) =>
-      questions.forEach(q => {
-        totalQuestions = [...totalQuestions, q];
-      })
-    );
-    return totalQuestions;
-  };
-
-  getAverageScore = () => {
-    const { gradebook } = this.props;
-    const avgScore = gradebook && gradebook.avgScore;
+  getAverageScore = students => {
+    if (!students.length) {
+      return 0;
+    }
+    const totalScore = students.reduce((_totalScore, student) => _totalScore + student.scorePercent, 0);
+    const avgScore = totalScore / students.length;
     return Math.round(avgScore * 100) / 100;
   };
 
   getAverageTimeSpent = () => {
-    const {
-      gradebook: { itemsSummary }
-    } = this.props;
-    const avgTimeSpent = itemsSummary.reduce((t, item) => t + item.avgTimeSpent, 0);
-    return avgTimeSpent;
+    const { testActivity } = this.props;
+    if (!testActivity.length) {
+      return 0;
+    }
+    const totalSpentTime = testActivity.reduce((_totalSpent, student) => {
+      const { questionActivities } = student;
+      if (!questionActivities.length) {
+        return _totalSpent;
+      }
+      const spentTime = questionActivities.reduce((spent, question) => spent + parseFloat(question.timespent) || 0, 0);
+      return _totalSpent + spentTime;
+    }, 0);
+    return totalSpentTime / testActivity.length;
   };
 
   getMostCommonMistakes = () => {
@@ -123,12 +121,37 @@ class SummaryBoard extends Component {
   getLowestPerformers = () => {
     const { testActivity: studentItems } = this.props;
     const submittedStudents = studentItems.filter(student => student.status === "submitted");
+
+    submittedStudents.map(student => {
+      const { questionActivities } = student;
+      let totalScore = 0;
+      questionActivities.forEach(question => {
+        const score = parseFloat(question.score) || 0;
+        totalScore += score;
+      });
+
+      let totalMaxScore = 0;
+      questionActivities.forEach(question => {
+        const maxScore = parseFloat(question.maxScore) || 0;
+        totalMaxScore += maxScore;
+      });
+      student.scorePercent = (totalScore / totalMaxScore) * 100;
+
+      return student;
+    });
+
     submittedStudents.sort((a, b) => a.score - b.score);
-    return submittedStudents.slice(0, 5);
+    return submittedStudents;
+  };
+
+  getSubmmitedStudents = () => {
+    const { testActivity: student } = this.props;
+    const submitted = student.filter(st => st.status === "submitted");
+    return `${submitted.length} / ${student.length}`;
   };
 
   render() {
-    const { testActivity, creating, match, additionalData = { classes: [] }, gradebook } = this.props;
+    const { testActivity, creating, match, additionalData = { classes: [] } } = this.props;
     const { assignmentId, classId } = match.params;
     const testActivityId = this.getTestActivity(testActivity);
     const commonMistakes = this.getMostCommonMistakes();
@@ -165,7 +188,7 @@ class SummaryBoard extends Component {
                 </SubInfoRow>
                 <SubInfoRow>
                   <ValueTitle>Students</ValueTitle>
-                  <InfoValue>{`${gradebook.submittedNumber}/${gradebook.total}`}</InfoValue>
+                  <InfoValue>{this.getSubmmitedStudents()}</InfoValue>
                 </SubInfoRow>
               </StyledSummaryCard>
               <StyledSummaryCard>
@@ -175,7 +198,7 @@ class SummaryBoard extends Component {
                 </SubInfoRow>
                 <SubInfoRow>
                   <ValueTitle>Percent</ValueTitle>
-                  <InfoValue>{this.getAverageScore()}</InfoValue>
+                  <InfoValue>{this.getAverageScore(lowestPerformers)}</InfoValue>
                 </SubInfoRow>
               </StyledSummaryCard>
             </InfoRow>
@@ -216,10 +239,10 @@ class SummaryBoard extends Component {
                 <img src={ArrowDownIcon} alt="Lowest Performers" />
               </SubInfoRow>
               <ListContainer>
-                {lowestPerformers.map((lp, index) => (
+                {lowestPerformers.slice(0, 5).map((lp, index) => (
                   <ListItem key={index}>
                     <ListItemTitle>{lp.studentName}</ListItemTitle>
-                    <ListItemValue>{lp.maxScore}%</ListItemValue>
+                    <ListItemValue>{Math.round(lp.scorePercent * 100) / 100}%</ListItemValue>
                   </ListItem>
                 ))}
               </ListContainer>
@@ -251,9 +274,7 @@ const enhance = compose(
   withNamespaces("summary"),
   connect(
     state => ({
-      gradebook: getGradeBookSelector(state),
       testActivity: getTestActivitySelector(state),
-      classResponse: getClassResponseSelector(state),
       additionalData: getAdditionalDataSelector(state),
       testQuestionActivities: getTestQuestionActivitiesSelector(state)
     }),
@@ -267,14 +288,10 @@ export default enhance(SummaryBoard);
 
 /* eslint-disable react/require-default-props */
 SummaryBoard.propTypes = {
-  classResponse: PropTypes.object,
   additionalData: PropTypes.object,
-  gradebook: PropTypes.object,
   match: PropTypes.object,
   loadTestActivity: PropTypes.func,
   creating: PropTypes.object,
   testActivity: PropTypes.array,
   testQuestionActivities: PropTypes.array
-  // loadGradebook: PropTypes.func,
-  // loadClassResponses: PropTypes.func
 };

@@ -7,7 +7,8 @@ import {
   secondaryTextColor,
   lightGreySecondary,
   blue,
-  greyScoreCardTitleColor
+  greyScoreCardTitleColor,
+  cardTitleColor
 } from "@edulastic/colors";
 
 export const StyledFlexContainer = styled(FlexContainer)`
@@ -107,7 +108,7 @@ export const StyledText = styled.div`
 `;
 
 const TitleText = styled.div`
-  color: ${greyScoreCardTitleColor};
+  color: ${cardTitleColor};
   font-size: 14px;
   font-weight: bold;
   text-transform: uppercase;
@@ -116,7 +117,7 @@ const TitleText = styled.div`
 export const StudentsTitle = styled(TitleText)``;
 export const ScoreTitle = styled(TitleText)``;
 export const ViewDetails = styled(TitleText)`
-  color: ${blue};
+  color: ${lightBlueSecondary};
   font-weight: 600;
 `;
 

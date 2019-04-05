@@ -16,7 +16,6 @@ import { isEmpty } from "lodash";
 import styled from "styled-components";
 import { StyledCustomChartTooltip, StyledChartNavButton } from "../../styled";
 import { CustomChartXTick } from "./chartUtils/customChartXTick";
-import next from "immer";
 
 const yTickFormatter = val => {
   if (val !== 0) {
@@ -39,11 +38,12 @@ export const SignedStackedBarChart = ({
   getTooltipJSX,
   yAxisLabel = "",
   yTickFormatter = yTickFormatter,
-  referenceLine = 0
+  referenceLine = 0,
+  filter = {}
 }) => {
   const page = pageSize || 7;
   const [pagination, setPagination] = useState({ startIndex: 0, endIndex: page - 1 });
-  const [filter, setFilter] = useState({});
+  const [copyData, setCopyData] = useState(null);
 
   const constants = {
     COLOR_BLACK: "#010101",
@@ -51,9 +51,17 @@ export const SignedStackedBarChart = ({
     Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, dx: -30 }
   };
 
+  if (data !== copyData) {
+    setPagination({
+      startIndex: 0,
+      endIndex: page - 1
+    });
+    setCopyData(data);
+  }
+
   const chartData = useMemo(() => {
     return [...data];
-  }, [pagination, data]);
+  }, [pagination]);
 
   const renderData = useMemo(() => {
     return chartData.slice(pagination.startIndex, pagination.startIndex + page);
@@ -90,19 +98,11 @@ export const SignedStackedBarChart = ({
   };
 
   const onBarClick = args => {
-    let _filter = { ...filter };
-    if (_filter[args[xAxisDataKey]]) {
-      delete _filter[args[xAxisDataKey]];
-    } else {
-      _filter[args[xAxisDataKey]] = true;
-    }
-    setFilter(_filter);
-    onBarClickCB(_filter);
+    onBarClickCB(args[xAxisDataKey]);
   };
 
   const onResetClick = () => {
-    setFilter({});
-    onResetClickCB({});
+    onResetClickCB();
   };
 
   return (

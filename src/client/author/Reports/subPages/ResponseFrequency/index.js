@@ -72,12 +72,18 @@ const ResponseFrequency = props => {
     setMisunderstoodItems(value);
   };
 
-  const onBarClickCB = filter => {
-    setFilter({ ...filter });
+  const onBarClickCB = key => {
+    let _filter = { ...filter };
+    if (_filter[key]) {
+      delete _filter[key];
+    } else {
+      _filter[key] = true;
+    }
+    setFilter(_filter);
   };
 
-  const onResetClickCB = filter => {
-    setFilter(filter);
+  const onResetClickCB = () => {
+    setFilter({});
   };
 
   return (

@@ -6,7 +6,9 @@ export const CustomChartXTick = props => {
   const { x, y, payload, data, getXTickText } = props;
 
   let text;
+  let isMobile = false;
   if (isMobileScreen()) {
+    isMobile = true;
     if (getXTickText) {
       text = getXTickText(payload, data);
     } else {
@@ -19,7 +21,7 @@ export const CustomChartXTick = props => {
 
   return (
     <g transform={`translate(${x},${y})`}>
-      {!isMobileScreen() ? (
+      {!isMobile ? (
         <StyledAxisTickText textAnchor="middle" verticalAnchor="start" width={70}>
           {getXTickText ? getXTickText(payload, data) : payload.value}
         </StyledAxisTickText>

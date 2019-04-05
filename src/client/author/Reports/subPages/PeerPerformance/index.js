@@ -14,6 +14,8 @@ import { UpperContainer, TableContainer, StyledTable } from "./components/styled
 import { PeerPerformanceTable } from "./components/table/peerPerformanceTable";
 import { getPeerPerformanceRequestAction, getReportsPeerPerformance } from "./ducks";
 import dropDownFormat from "./static/json/dropDownFormat.json";
+import { getUserRole } from "../../../src/selectors/user";
+import next from "immer";
 import columns from "./static/json/tableColumns.json";
 import tempData from "./static/json/tempData";
 
@@ -29,8 +31,7 @@ const denormalizeData = res => {
     let denormArr = filteredArr.map((data, index) => {
       return {
         ...hMap[data.groupId],
-        ...data,
-        teacherName: hMap[data.groupId].tFName + " " + hMap[data.groupId].tLName
+        ...data
       };
     });
 
@@ -42,10 +43,10 @@ const denormalizeData = res => {
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
-const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestAction }) => {
+const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestAction, role }) => {
   const [ddfilter, setDdFilter] = useState({
     analyseBy: "score(%)",
-    compareBy: "schoolId",
+    compareBy: role === "teacher" ? "groupId" : "schoolId",
     gender: "all",
     frlStatus: "all",
     ellStatus: "all",
@@ -69,6 +70,15 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
     q.testId = match.params.testId;
     getPeerPerformanceRequestAction(q);
   }, []);
+
+  let compareByDropDownData = dropDownFormat.compareByDropDownData;
+  if (role === "teacher") {
+    compareByDropDownData = next(dropDownFormat.compareByDropDownData, tempCompareBy => {
+      if (role === "teacher") {
+        tempCompareBy.splice(0, 2);
+      }
+    });
+  }
 
   const getColumns = () => {
     return columns.columns[ddfilter.analyseBy][ddfilter.compareBy];
@@ -109,12 +119,18 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
   };
   //
 
-  const onBarClickCB = filter => {
-    setChartFilter(filter);
+  const onBarClickCB = key => {
+    let _chartFilter = { ...chartFilter };
+    if (_chartFilter[key]) {
+      delete _chartFilter[key];
+    } else {
+      _chartFilter[key] = true;
+    }
+    setChartFilter(_chartFilter);
   };
 
-  const onResetClickCB = filter => {
-    setChartFilter(filter);
+  const onResetClickCB = () => {
+    setChartFilter({});
   };
 
   return (
@@ -138,9 +154,9 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
               />
               <StyledControlDropDown
                 prefix={"Compare by"}
-                by={dropDownFormat.compareByDropDownData[0]}
+                by={compareByDropDownData[0]}
                 updateCB={updateCompareByCB}
-                data={dropDownFormat.compareByDropDownData}
+                data={compareByDropDownData}
               />
               <StyledFilterDropDownWithDropDown updateCB={filterDropDownCB} data={dropDownFormat.filterDropDownData} />
             </Col>
@@ -183,6 +199,7 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
             compareBy={ddfilter.compareBy}
             assessmentName={res.assessmentName}
             bandInfo={res.bandInfo}
+            role={role}
           />
         </StyledCard>
       </TableContainer>
@@ -193,7 +210,8 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
 const enhance = compose(
   connect(
     state => ({
-      peerPerformance: getReportsPeerPerformance(state)
+      peerPerformance: getReportsPeerPerformance(state),
+      role: getUserRole(state)
     }),
     {
       getPeerPerformanceRequestAction: getPeerPerformanceRequestAction

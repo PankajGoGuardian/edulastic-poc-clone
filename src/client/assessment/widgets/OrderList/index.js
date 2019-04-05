@@ -66,7 +66,7 @@ const OrderList = ({
   const onSortOrderListEnd = ({ oldIndex, newIndex }) => {
     const newData = cloneDeep(item);
 
-    newData.list = arrayMove(newData.list, oldIndex, newIndex);
+    newData.list = arrayMove(item.list, oldIndex, newIndex);
 
     setQuestionData(newData);
   };

@@ -15,7 +15,7 @@ export const SimplePieChart = props => {
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
     return (
       <text x={x} y={y} fill={fadedBlack} textAnchor={"middle"} dominantBaseline="central" fontSize={"11px"}>
-        {`${(percent * 100).toFixed(0)}%`}
+        {Math.round(percent * 100) ? `${Math.round(percent * 100)}%` : ""}
       </text>
     );
   };
@@ -29,8 +29,7 @@ export const SimplePieChart = props => {
       for (let i = 0; i < props.data.length; i++) {
         arr.push({
           bandPerf: props.data[i].bandPerf,
-          // fill: props.data[i].color,
-          fill: getHSLFromRange1(props.data[i].bandPerf),
+          fill: props.data[i].color,
           name: props.data[i].masteryName,
           sum: sum
         });

@@ -23,7 +23,7 @@ import {
   publishTestAction,
   getTestStatusSelector
 } from "../../ducks";
-import { getSelectedItemSelector } from "../AddItems/ducks";
+import { getSelectedItemSelector, clearSelectedItemsAction } from "../AddItems/ducks";
 import { getUserSelector } from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
@@ -55,7 +55,8 @@ class Container extends PureComponent {
     selectedRows: PropTypes.object,
     test: PropTypes.object,
     user: PropTypes.object,
-    isTestLoading: PropTypes.bool.isRequired
+    isTestLoading: PropTypes.bool.isRequired,
+    clearSelectedItems: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -75,7 +76,8 @@ class Container extends PureComponent {
       match,
       receiveTestById,
       setDefaultData,
-      history: { location }
+      history: { location },
+      clearSelectedItems
     } = this.props;
 
     if (location.hash === "#review") {
@@ -85,6 +87,7 @@ class Container extends PureComponent {
     if (match.params.id) {
       receiveTestById(match.params.id);
     } else {
+      clearSelectedItems();
       setDefaultData();
     }
   }
@@ -289,7 +292,8 @@ const enhance = compose(
       receiveTestById: receiveTestByIdAction,
       setData: setTestDataAction,
       setDefaultData: setDefaultTestDataAction,
-      publishTest: publishTestAction
+      publishTest: publishTestAction,
+      clearSelectedItems: clearSelectedItemsAction
     }
   )
 );

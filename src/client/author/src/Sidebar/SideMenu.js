@@ -132,9 +132,9 @@ class SideMenu extends Component {
             </a>
           </Menu.Item>
           <Menu.Item key="1" className="removeSelectedBorder">
-            <Link to="/home/profile">
+            <a onClick={() => event.preventDefault()}>
               <IconDropdown type="user" /> {isCollapsed ? "" : "MY PROFILE"}
-            </Link>
+            </a>
           </Menu.Item>
         </Menu>
       </FooterDropDown>

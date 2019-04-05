@@ -13,7 +13,8 @@ export const PeerPerformanceTable = ({
   compareBy,
   assessmentName,
   filter,
-  bandInfo
+  bandInfo,
+  role
 }) => {
   const sortNumbers = key => (a, b) => {
     let _a = a[key] || 0;
@@ -70,21 +71,21 @@ export const PeerPerformanceTable = ({
 
   let colouredCellsNo = 0;
 
-  _columns = next(columns, obj => {
+  _columns = next(columns, arr => {
     if (analyseBy === "score(%)" || analyseBy === "rawScore") {
-      obj[obj.length - 1].render = colorCell("fill");
-      obj[obj.length - 2].render = colorCell("dFill");
+      arr[arr.length - 1].render = colorCell("fill");
+      arr[arr.length - 2].render = colorCell("dFill");
       colouredCellsNo = 2;
     } else if (analyseBy === "aboveBelowStandard") {
-      obj[obj.length - 1].render = colorCell("fill_0", "aboveStandard");
-      obj[obj.length - 2].render = colorCell("fill_1", "belowStandard");
+      arr[arr.length - 1].render = colorCell("fill_0", "aboveStandard");
+      arr[arr.length - 2].render = colorCell("fill_1", "belowStandard");
       colouredCellsNo = 2;
     } else {
       bandInfo.sort((a, b) => {
         return a.threshold - b.threshold;
       });
       for (let [index, value] of bandInfo.entries()) {
-        obj.push({
+        arr.push({
           title: value.name,
           dataIndex: value.name,
           key: value.name,
@@ -94,7 +95,10 @@ export const PeerPerformanceTable = ({
       }
       colouredCellsNo = bandInfo.length;
     }
-    obj[obj.length - 1].sorter = sortNumbers(obj[obj.length - 1].key);
+    arr[arr.length - 1].sorter = sortNumbers(arr[arr.length - 1].key);
+    if (role === "teacher" && compareBy === "groupId") {
+      arr.splice(1, 2);
+    }
   });
 
   const tableData = useMemo(() => {

@@ -9,7 +9,7 @@ export const getSignedUrl = async () => {
   const res = await api.callApi({
     url: "/realtime/url"
   });
-  const url = res ? res.data.url : "";
+  const url = res ? (res.data ? res.data.url : "") : "";
   return url;
 };
 

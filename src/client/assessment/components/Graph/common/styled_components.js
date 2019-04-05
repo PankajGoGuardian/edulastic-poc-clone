@@ -358,5 +358,6 @@ export const PaperWrapper = styled(Paper)`
   padding: 15px 25px;
   @media (max-width: ${mobileWidth}) {
     padding: 8px;
+    margin-bottom: 15px;
   }
 `;

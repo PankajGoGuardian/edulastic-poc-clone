@@ -38,10 +38,12 @@ export default class BarGraph extends Component {
     children: null
   };
 
+  isMobile = () => window.innerWidth < 480;
+
   render() {
     const { gradebook, children } = this.props;
     const itemsSum = gradebook.itemsSummary;
-
+    const isMobile = this.isMobile();
     let data = [];
     if (itemsSum) {
       data = itemsSum
@@ -65,6 +67,10 @@ export default class BarGraph extends Component {
       pointValue = 5;
     } else {
       pointValue = 1;
+    }
+
+    if (isMobile) {
+      data = data.slice(0, 2);
     }
 
     return (

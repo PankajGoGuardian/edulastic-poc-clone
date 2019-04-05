@@ -3,8 +3,26 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import {
+  green,
+  dropZoneTitleColor,
+  greyGraphstroke,
+  barGrapColor1,
+  barGrapColor2,
+  incorrect,
+  pCorrect,
+  graded
+} from "@edulastic/colors";
 
-import { StyledFlexContainer, StyledCard, LegendContainer, LegendItem, LegendIcon, LegendLabel } from "./styled";
+import {
+  StyledFlexContainer,
+  StyledCard,
+  LegendContainer,
+  LegendItems,
+  LegendItem,
+  LegendIcon,
+  LegendLabel
+} from "./styled";
 import StudentResponse from "./component/studentResponses/studentResponse";
 import ClassQuestions from "../ClassResponses/components/Container/ClassQuestions";
 
@@ -18,6 +36,8 @@ class QuestionViewContainer extends Component {
     const { loadClassQuestionResponses, assignmentIdClassId: { assignmentId, classId } = {}, question } = this.props;
     loadClassQuestionResponses(assignmentId, classId, question.id);
   }
+
+  isMobile = () => window.innerWidth < 480;
 
   render() {
     const {
@@ -37,7 +57,8 @@ class QuestionViewContainer extends Component {
         widgets: row.widgets.filter(({ reference }) => reference === question.id)
       }));
     });
-    const data = [];
+    const isMobile = this.isMobile();
+    let data = [];
     if (testActivity.length > 0) {
       testActivity.map(student => {
         if (student.status === "submitted") {
@@ -51,32 +72,39 @@ class QuestionViewContainer extends Component {
         return "";
       });
     }
+
+    if (isMobile) {
+      data = data.slice(0, 2);
+    }
+
     return (
       <React.Fragment>
         <StyledFlexContainer>
           <StyledCard bordered={false}>
-            {children}
             <LegendContainer>
-              <LegendItem>
-                <LegendIcon color="#1FE3A1" />
-                <LegendLabel>CORRECT</LegendLabel>
-              </LegendItem>
-              <LegendItem>
-                <LegendIcon color="#F35F5F" />
-                <LegendLabel>INCORRECT</LegendLabel>
-              </LegendItem>
-              <LegendItem>
-                <LegendIcon color="#ebaa28" />
-                <LegendLabel>PARTIALLY CORRECT</LegendLabel>
-              </LegendItem>
-              <LegendItem>
-                <LegendIcon color="#B1B1B1" />
-                <LegendLabel>SKIPPED</LegendLabel>
-              </LegendItem>
-              <LegendItem>
-                <LegendIcon color="#7BC0DF" />
-                <LegendLabel>MANUALLY GRADED</LegendLabel>
-              </LegendItem>
+              <LegendItems>
+                <LegendItem>
+                  <LegendIcon color={green} />
+                  <LegendLabel>CORRECT</LegendLabel>
+                </LegendItem>
+                <LegendItem>
+                  <LegendIcon color={incorrect} />
+                  <LegendLabel>INCORRECT</LegendLabel>
+                </LegendItem>
+                <LegendItem>
+                  <LegendIcon color={pCorrect} />
+                  <LegendLabel>PARTIALLY CORRECT</LegendLabel>
+                </LegendItem>
+                <LegendItem>
+                  <LegendIcon color={dropZoneTitleColor} />
+                  <LegendLabel>SKIPPED</LegendLabel>
+                </LegendItem>
+                <LegendItem>
+                  <LegendIcon color={graded} />
+                  <LegendLabel>MANUALLY GRADED</LegendLabel>
+                </LegendItem>
+              </LegendItems>
+              {children}
             </LegendContainer>
             <ResponsiveContainer width="100%" height={250}>
               <ComposedChart barGap={1} barSize={36} data={data}>
@@ -86,28 +114,28 @@ class QuestionViewContainer extends Component {
                   yAxisId={0}
                   tickCount={4}
                   allowDecimals={false}
-                  tick={{ strokeWidth: 0, fill: "#999" }}
+                  tick={{ strokeWidth: 0, fill: greyGraphstroke }}
                   tickSize={6}
-                  label={{ value: "PERFORMANCE", angle: -90, fill: "#999" }}
-                  stroke="#999"
+                  label={{ value: "PERFORMANCE", angle: -90, fill: greyGraphstroke }}
+                  stroke={greyGraphstroke}
                 />
                 <YAxis
                   dataKey="time"
                   yAxisId={1}
                   tickCount={4}
                   allowDecimals={false}
-                  tick={{ strokeWidth: 0, fill: "#999" }}
+                  tick={{ strokeWidth: 0, fill: greyGraphstroke }}
                   tickSize={6}
                   label={{
                     value: "AVG TIME (SECONDS)",
                     angle: -90,
-                    fill: "#999"
+                    fill: greyGraphstroke
                   }}
                   orientation="right"
-                  stroke="#999"
+                  stroke={greyGraphstroke}
                 />
-                <Bar stackId="a" dataKey="score" fill="#1fe3a0" onClick={this.onClickChart} />
-                <Bar stackId="a" dataKey="time" fill="#ee1b82" onClick={this.onClickChart} />
+                <Bar stackId="a" dataKey="score" fill={barGrapColor1} onClick={this.onClickChart} />
+                <Bar stackId="a" dataKey="time" fill={barGrapColor2} onClick={this.onClickChart} />
               </ComposedChart>
             </ResponsiveContainer>
           </StyledCard>

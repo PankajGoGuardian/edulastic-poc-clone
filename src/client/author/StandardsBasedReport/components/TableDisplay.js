@@ -15,7 +15,12 @@ import {
   MasterySummary,
   PerformanceSummary,
   StyledCard,
-  ReportTitle
+  ReportTitle,
+  MoblieFlexContainer,
+  MoblieSubFlexContainer,
+  StandardsMobile,
+  InfoCard,
+  MasterySummaryInfo
 } from "./styled";
 
 import ArrowLeftIcon from "../Assets/left-arrow.svg";
@@ -33,6 +38,8 @@ class TableDisplay extends Component {
   onCaretClick = (e, id = 0, data) => {
     this.setState({ selectedRow: id, stdId: data });
   };
+
+  isMobile = () => window.innerWidth < 480;
 
   filteredData = data => {
     const { testActivity } = this.props;
@@ -130,12 +137,50 @@ class TableDisplay extends Component {
       };
     });
 
+    const isMobile = this.isMobile();
+
     return (
       <React.Fragment>
-        <StyledCard>
-          <ReportTitle>Standard performance</ReportTitle>
-          <TableData columns={columns} dataSource={data} pagination={false} />
-        </StyledCard>
+        {isMobile && (
+          <MoblieFlexContainer>
+            <ReportTitle>Standard performance</ReportTitle>
+          </MoblieFlexContainer>
+        )}
+        {isMobile && (
+          <MoblieFlexContainer>
+            {data.map((d, i) => (
+              <StyledCard key={i}>
+                <StandardsMobile>{d.standard}</StandardsMobile>
+                <MoblieSubFlexContainer>
+                  <InfoCard>
+                    <label>Question</label>
+                    <QuestionCell>{d.question}</QuestionCell>
+                  </InfoCard>
+                  <InfoCard>
+                    <label>Performance %</label>
+                    <PerformanceSummary>{d.performanceSummary}</PerformanceSummary>
+                  </InfoCard>
+                </MoblieSubFlexContainer>
+
+                <MoblieSubFlexContainer column>
+                  <label>Mastery Summary</label>
+                  <MasterySummary percent={parseFloat(d.masterySummary)} showInfo={false} />
+                  <MasterySummaryInfo>{d.masterySummary}%</MasterySummaryInfo>
+                </MoblieSubFlexContainer>
+
+                <MoblieSubFlexContainer>{d.icon}</MoblieSubFlexContainer>
+              </StyledCard>
+            ))}
+          </MoblieFlexContainer>
+        )}
+
+        {!isMobile && (
+          <StyledCard>
+            <ReportTitle>Standard performance</ReportTitle>
+            <TableData columns={columns} dataSource={data} pagination={false} />
+          </StyledCard>
+        )}
+
         {selectedRow !== 0 && (
           <DetailedDisplay
             onClose={e => this.onCaretClick(e, 0, stdId)}

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Card, Table, Tag } from "antd";
-import { lightGrey, secondaryTextColor, white, greenDark, lightGreen, green } from "@edulastic/colors";
+import { secondaryTextColor, greenDark, lightGreen, green } from "@edulastic/colors";
 
 export const StyledCard = styled(Card)`
   margin: 0px auto 60px auto;

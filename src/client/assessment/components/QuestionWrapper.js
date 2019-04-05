@@ -1,10 +1,11 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-import { ThemeProvider } from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 import { questionType } from "@edulastic/constants";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
+import { mobileWidth } from "@edulastic/colors";
 import { throttle } from "lodash";
 
 import { PaperWrapper } from "./Graph/common/styled_components";
@@ -43,6 +44,14 @@ import FeedbackRight from "./FeedbackRight";
 import Timespent from "./Timespent";
 import { setQuestionDataAction } from "../../author/src/actions/question";
 import { Chart } from "../widgets/Charts";
+
+const QuestionContainer = styled.div`
+  padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
+  display: ${({ isFlex }) => (isFlex ? "flex" : "block")};
+  @media (max-width: ${mobileWidth}) {
+    flex-direction: column;
+  }
+`;
 
 const getQuestion = type => {
   switch (type) {
@@ -187,7 +196,19 @@ class QuestionWrapper extends Component {
   };
 
   render() {
-    const { type, timespent, data, showFeedback, multiple, view, setQuestionData, t, ...restProps } = this.props;
+    const {
+      noPadding,
+      isFlex,
+      type,
+      timespent,
+      data,
+      showFeedback,
+      multiple,
+      view,
+      setQuestionData,
+      t,
+      ...restProps
+    } = this.props;
     const { main, advanced, activeTab } = this.state;
     const Question = getQuestion(type);
     const studentName = data.activity && data.activity.studentName;
@@ -202,7 +223,7 @@ class QuestionWrapper extends Component {
 
     return (
       <ThemeProvider theme={themes.default}>
-        <Fragment>
+        <QuestionContainer noPadding={noPadding} isFlex={isFlex}>
           <PaperWrapper style={{ width: "-webkit-fill-available", display: "flex" }}>
             {type === "graph" && view === "edit" && (
               <QuestionMenu activeTab={activeTab} main={main} advanced={advanced} />
@@ -221,7 +242,7 @@ class QuestionWrapper extends Component {
           </PaperWrapper>
           {showFeedback &&
             (multiple ? <FeedbackBottom widget={data} /> : <FeedbackRight widget={data} studentName={studentName} />)}
-        </Fragment>
+        </QuestionContainer>
       </ThemeProvider>
     );
   }
@@ -233,7 +254,9 @@ QuestionWrapper.propTypes = {
   isNew: PropTypes.bool,
   data: PropTypes.object,
   saveClicked: PropTypes.bool,
-  testItem: PropTypes.bool
+  testItem: PropTypes.bool,
+  noPadding: PropTypes.bool,
+  isFlex: PropTypes.bool
 };
 
 QuestionWrapper.defaultProps = {
@@ -241,7 +264,9 @@ QuestionWrapper.defaultProps = {
   type: null,
   data: {},
   saveClicked: false,
-  testItem: false
+  testItem: false,
+  noPadding: false,
+  isFlex: false
 };
 
 const enhance = compose(

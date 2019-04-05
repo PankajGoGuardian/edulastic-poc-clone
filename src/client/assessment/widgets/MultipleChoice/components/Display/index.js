@@ -5,10 +5,14 @@ import { InstructorStimulus } from "@edulastic/common";
 import { QuestionHeader } from "../../../../styled/QuestionHeader";
 import Options from "./components/Options";
 
-const Display = ({ qIndex, view, smallSize, question, uiStyle, instructorStimulus, ...restProps }) => (
+const Display = ({ qIndex, view, smallSize, question, uiStyle, instructorStimulus, index, ...restProps }) => (
   <div>
     <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
-    <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+    <QuestionHeader
+      qIndex={qIndex}
+      smallSize={smallSize}
+      dangerouslySetInnerHTML={{ __html: `<label>Q${index + 1}</label>${question}` }}
+    />
     <Options view={view} smallSize={smallSize} question={question} uiStyle={uiStyle} {...restProps} />
   </div>
 );
@@ -25,7 +29,8 @@ Display.propTypes = {
   instructorStimulus: PropTypes.string,
   uiStyle: PropTypes.object,
   view: PropTypes.string.isRequired,
-  qIndex: PropTypes.number.isRequired
+  qIndex: PropTypes.number.isRequired,
+  index: PropTypes.number.isRequired
 };
 
 Display.defaultProps = {

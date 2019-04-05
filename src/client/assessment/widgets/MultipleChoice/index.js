@@ -154,7 +154,7 @@ class MultipleChoice extends Component {
   };
 
   render() {
-    const { qIndex, view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation } = this.props;
+    const { qIndex, view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation, ...restProps } = this.props;
     const { shuffledOptions } = this.state;
     const {
       previewStimulus,
@@ -182,6 +182,7 @@ class MultipleChoice extends Component {
                   onAddAltResponses={this.handleAddAltResponses}
                   onRemoveAltResponses={this.handleRemoveAltResponses}
                   validation={item.validation}
+                  {...restProps}
                 />
                 <Checkbox
                   data-cy="multi"
@@ -197,7 +198,7 @@ class MultipleChoice extends Component {
                   {t("component.multiplechoice.shuffleOptions")}
                 </Checkbox>
               </Paper>
-              <Options onChange={this.handleOptionsChange} uiStyle={uiStyle} />
+              <Options onChange={this.handleOptionsChange} uiStyle={uiStyle} {...restProps} />
             </React.Fragment>
           )}
           {view === PREVIEW && (
@@ -216,6 +217,7 @@ class MultipleChoice extends Component {
                   evaluation={evaluation}
                   qIndex={qIndex}
                   instructorStimulus={item.instructor_stimulus}
+                  {...restProps}
                 />
               )}
               {previewTab === SHOW && (
@@ -232,6 +234,7 @@ class MultipleChoice extends Component {
                   validation={item.validation}
                   qIndex={qIndex}
                   instructorStimulus={item.instructor_stimulus}
+                  {...restProps}
                 />
               )}
               {previewTab === CLEAR && (
@@ -247,6 +250,7 @@ class MultipleChoice extends Component {
                   onChange={this.handleAddAnswer}
                   qIndex={qIndex}
                   instructorStimulus={item.instructor_stimulus}
+                  {...restProps}
                 />
               )}
             </Wrapper>

@@ -3,7 +3,14 @@ import PropTypes from "prop-types";
 import { sumBy, round } from "lodash";
 import BarGraph from "../BarGraph/BarGraph";
 
-import { StyledProgress, StyledDiv, StyledProgressDiv, GraphInfo, GraphDescription } from "./styled";
+import {
+  StyledProgress,
+  StyledDiv,
+  StyledProgressDiv,
+  GraphInfo,
+  GraphDescription,
+  ProgressBarContainer
+} from "./styled";
 
 export default class Graph extends Component {
   static propTypes = {
@@ -29,7 +36,7 @@ export default class Graph extends Component {
     const percentage = this.calculateAvgScore();
     return (
       <StyledDiv>
-        <div>
+        <ProgressBarContainer>
           <StyledProgressDiv>
             {
               // TODO: need to implement gradient stoke color
@@ -50,7 +57,7 @@ export default class Graph extends Component {
             {gradebook.submittedNumber} out of {gradebook.total} Submitted
             {/* <p>({gradebook.total - gradebook.submittedNumber} Absent)</p> */}
           </GraphInfo>
-        </div>
+        </ProgressBarContainer>
         <BarGraph gradebook={gradebook} />
       </StyledDiv>
     );

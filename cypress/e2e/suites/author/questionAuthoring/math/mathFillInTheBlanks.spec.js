@@ -175,6 +175,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
     context("TC_489 => equivSymbolic method", () => {
       before("Change to equivSymbolic method", () => {
         question.setMethod(methods.EQUIV_SYMBOLIC);
+        Cypress.on("uncaught:exception", (err, runnable) => {
+          if (runnable.title === "Testing Value") {
+            return false;
+          }
+          return true;
+        });
       });
       it("Testing Value", () => {
         const { input, expected } = queData.equivSymbolic.value;
@@ -190,8 +196,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
       });
       it("Testing check/uncheck Ignore text check box", () => {
         const { input, expected, checkboxValues, isCirrectUnsver } = queData.equivSymbolic.ignoreText;
-        // TODO remove after fix
-        preview.header.edit();
         question.getMathquillBlockId().then(inputElements => {
           const { length } = inputElements[0].children;
           question.getTemplateInput().type("{del}".repeat(length || 1), { force: true });

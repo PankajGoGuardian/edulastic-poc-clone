@@ -217,6 +217,8 @@ class MathFormulaEdit {
 
   getAnswerMathInputField = () => cy.get('[data-cy="answer-math-input-field"]');
 
+  getAnswerMathInputStyle = () => cy.get(".input__math");
+
   checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect, score = false, scoreValuse = "1/1") => {
     preview.header.preview();
     preview.getClear().click();
@@ -248,9 +250,9 @@ class MathFormulaEdit {
 
   checkAttr = isCorrect => {
     if (isCorrect) {
-      this.getAnswerMathInputField().should("have.attr", "style", "background: rgb(225, 251, 242);");
+      this.getAnswerMathInputStyle().should("have.attr", "style", "background: rgb(225, 251, 242);");
     } else {
-      this.getAnswerMathInputField().should("have.attr", "style", "background: rgb(252, 224, 232);");
+      this.getAnswerMathInputStyle().should("have.attr", "style", "background: rgb(252, 224, 232);");
     }
   };
 

@@ -31,7 +31,8 @@ const denormalizeData = res => {
     let denormArr = filteredArr.map((data, index) => {
       return {
         ...hMap[data.groupId],
-        ...data
+        ...data,
+        gender: data.gender.toLowerCase() === "m" ? "Male" : data.gender.toLowerCase() === "f" ? "Female" : data.gender
       };
     });
 

@@ -54,7 +54,9 @@ export const PeerPerformanceTable = ({
     };
 
     let printData = data;
-    if (analyseBy === "proficiencyBand" || analyseBy === "aboveBelowStandard") {
+    if (analyseBy === "score(%)") {
+      printData = printData + "%";
+    } else if (analyseBy === "proficiencyBand" || analyseBy === "aboveBelowStandard") {
       printData = data + " (" + Math.abs(record[columnKey + "Percentage"]) + "%)";
     }
 

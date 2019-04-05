@@ -73,7 +73,7 @@ export const SignedStackedBarChartContainer = ({
             );
           })}
           <Row type="flex" justify="start">
-            <Col className="tooltip-key">"District Average: "</Col>
+            <Col className="tooltip-key">District Average: </Col>
             <Col className="tooltip-value">{districtAvg}</Col>
           </Row>
           <Row type="flex" justify="start">

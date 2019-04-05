@@ -40,11 +40,11 @@ export const SimpleStackedBarChartContainer = ({
           </Row>
           <Row type="flex" justify="start">
             <Col className="tooltip-key">{analyseByToName[analyseBy] + ": "}</Col>
-            <Col className="tooltip-value">{correct}</Col>
+            <Col className="tooltip-value">{analyseBy === "score(%)" ? correct + "%" : correct}</Col>
           </Row>
           <Row type="flex" justify="start">
             <Col className="tooltip-key">{"District Average: "}</Col>
-            <Col className="tooltip-value">{districtAvg}</Col>
+            <Col className="tooltip-value">{analyseBy === "score(%)" ? districtAvg + "%" : districtAvg}</Col>
           </Row>
           <Row type="flex" justify="start">
             <Col className="tooltip-key">{idToName[compareBy] + ": "}</Col>

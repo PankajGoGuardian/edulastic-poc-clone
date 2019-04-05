@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Col } from "antd";
+import { getTestAuthorName } from "../../../dataUtils";
 import Item from "../Item/Item";
 import ListItem from "../ListItem/ListItem";
 
@@ -19,14 +20,14 @@ class CardWrapper extends Component {
     if (blockStyle === "tile") {
       return (
         <Col key={item._id} span={windowWidth > 468 ? 8 : 24} style={{ marginBottom: 15 }}>
-          <Item item={item} history={history} match={match} />
+          <Item item={item} history={history} match={match} authorName={getTestAuthorName(item)} />
         </Col>
       );
     }
 
     return (
       <Col key={item._id} span={24}>
-        <ListItem item={item} history={history} match={match} />
+        <ListItem item={item} history={history} match={match} authorName={getTestAuthorName(item)} />
       </Col>
     );
   }

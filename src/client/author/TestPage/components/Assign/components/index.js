@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Paper, FlexContainer } from "@edulastic/common";
+import { message } from "antd";
 import {
   fetchAssignmentsAction,
   deleteAssignmentAction,
@@ -35,8 +36,13 @@ class Assign extends Component {
   };
 
   openAssignmentModal = id => {
-    this.props.setCurrentAssignment(id);
-    this.setState({ showModal: true });
+    const { test } = this.props;
+    if (test.status !== "draft") {
+      this.props.setCurrentAssignment(id);
+      this.setState({ showModal: true });
+    } else {
+      message.warning("Please save and publish the test before assigning");
+    }
   };
 
   openBlankModal = () => this.openAssignmentModal("new");

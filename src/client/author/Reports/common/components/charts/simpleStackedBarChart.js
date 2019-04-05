@@ -16,7 +16,11 @@ import { StyledCustomChartTooltip, StyledChartNavButton } from "../../styled";
 import { CustomChartXTick } from "./chartUtils/customChartXTick";
 
 const yTickFormatter = val => {
-  return val + "%";
+  if (val !== 0) {
+    return val + "%";
+  } else {
+    return "";
+  }
 };
 
 export const SimpleStackedBarChart = ({
@@ -32,11 +36,12 @@ export const SimpleStackedBarChart = ({
   getXTickText,
   getTooltipJSX,
   yAxisLabel = "",
-  yTickFormatter = yTickFormatter
+  yTickFormatter = yTickFormatter,
+  filter = {}
 }) => {
   const page = pageSize || 7;
   const [pagination, setPagination] = useState({ startIndex: 0, endIndex: page - 1 });
-  const [filter, setFilter] = useState({});
+  const [copyData, setCopyData] = useState(null);
 
   const constants = {
     COLOR_BLACK: "#010101",
@@ -44,9 +49,17 @@ export const SimpleStackedBarChart = ({
     Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, position: "insideLeft", textAnchor: "middle" }
   };
 
+  if (data !== copyData) {
+    setPagination({
+      startIndex: 0,
+      endIndex: page - 1
+    });
+    setCopyData(data);
+  }
+
   const chartData = useMemo(() => {
     return [...data];
-  }, [pagination, data]);
+  }, [pagination]);
 
   const scrollLeft = () => {
     let diff;
@@ -79,19 +92,11 @@ export const SimpleStackedBarChart = ({
   };
 
   const onBarClick = args => {
-    let _filter = { ...filter };
-    if (_filter[args[xAxisDataKey]]) {
-      delete _filter[args[xAxisDataKey]];
-    } else {
-      _filter[args[xAxisDataKey]] = true;
-    }
-    setFilter(_filter);
-    onBarClickCB(_filter);
+    onBarClickCB(args[xAxisDataKey]);
   };
 
   const onResetClick = () => {
-    setFilter({});
-    onResetClickCB({});
+    onResetClickCB();
   };
 
   return (
@@ -148,8 +153,8 @@ export const SimpleStackedBarChart = ({
             startIndex={pagination.startIndex}
             endIndex={pagination.endIndex}
           />
-          <Bar dataKey={bottomStackDataKey} stackId="a" unit={"%"} onClick={onBarClick} />
-          <Bar dataKey={topStackDataKey} stackId="a" onClick={onBarClick}>
+          <Bar dataKey={bottomStackDataKey} stackId="a" unit={"%"} onClick={onBarClick} barSize={70} />
+          <Bar dataKey={topStackDataKey} stackId="a" onClick={onBarClick} barSize={70}>
             <LabelList
               dataKey={bottomStackDataKey}
               position="insideBottom"

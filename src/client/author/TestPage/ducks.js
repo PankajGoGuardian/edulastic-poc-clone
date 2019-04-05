@@ -141,7 +141,7 @@ export const initialTestState = {
   grades: [],
   subjects: [],
   courses: [],
-  collections: "",
+  collectionName: "",
   analytics: {
     usage: "0",
     likes: "0"
@@ -269,8 +269,9 @@ function* createTestSaga({ payload }) {
     const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate"]);
     const entity = yield call(testsApi.create, dataToSend);
 
-    yield put(setTestItemsAction([]));
-
+    // FIXIT: temp fix.. bigger issues to be fixed!!!
+    yield put(setTestItemsAction(entity.testItems));
+    // Oh btw, 9 people cannot make a baby in a month!
     yield put({
       type: SET_TEST_DATA,
       payload: {

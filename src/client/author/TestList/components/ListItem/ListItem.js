@@ -37,13 +37,6 @@ class ListItem extends Component {
     history.push(`${match.url}/${item._id}`);
   };
 
-  get name() {
-    const {
-      item: { createdBy = {} }
-    } = this.props;
-    return `${createdBy.firstName} ${createdBy.lastName}`;
-  }
-
   get id() {
     const {
       item: { createdBy = {} }
@@ -54,7 +47,8 @@ class ListItem extends Component {
   render() {
     const {
       item: { title, analytics, tags },
-      t
+      t,
+      authorName
     } = this.props;
     return (
       <Container>
@@ -84,13 +78,15 @@ class ListItem extends Component {
             <ItemInformation>
               <ContentWrapper style={{ paddingTop: "15px" }}>
                 <Col span={8}>
-                  <Author>
-                    <span>
-                      {t("component.item.by")}
-                      :&nbsp;
-                    </span>
-                    <AuthorName>{this.name}</AuthorName>
-                  </Author>
+                  {authorName && (
+                    <Author>
+                      <span>
+                        {t("component.item.by")}
+                        :&nbsp;
+                      </span>
+                      <AuthorName>{authorName}</AuthorName>
+                    </Author>
+                  )}
                 </Col>
                 <Col span={8}>
                   <Author>

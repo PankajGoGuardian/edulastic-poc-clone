@@ -296,6 +296,25 @@ class MathFormulaEdit {
 
   getThousandsSeparatorDropdown = () => cy.get('[data-cy="thousands-separator-dropdown"]');
 
+  setThousandSeperator = seperator =>
+    this.getThousandsSeparatorDropdown()
+      .click()
+      .then(() => {
+        this.getThousandsSeparatorDropdownList(seperator)
+          .should("be.visible")
+          .click();
+      });
+
+  setDecimalSeperator = separator => {
+    this.getAnswerSetDecimalSeparatorDropdown()
+      .click()
+      .then(() => {
+        this.getAnswerSetDecimalSeparatorDropdownList(separator)
+          .should("be.visible")
+          .click();
+      });
+  };
+
   getThousandsSeparatorDropdownList = index => cy.get(`[data-cy="thousands-separator-dropdown-list-${index}"]`);
 
   getPreviewMathQuill = () =>

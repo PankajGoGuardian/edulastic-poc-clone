@@ -13,6 +13,11 @@ import columnData from "../../static/json/tableColumns.json";
 export const AssessmentStatisticTable = props => {
   const [tableType, setTableType] = useState({ key: "school", title: "School" });
 
+  if (props.role === "teacher" && tableType.key != "class") {
+    let o = { key: "class", title: "Class" };
+    setTableType(o);
+  }
+
   const updateTable = (type, data) => {
     let arr;
     let hMap;
@@ -132,7 +137,6 @@ export const AssessmentStatisticTable = props => {
       let tt = tableType;
       if (props.role === "teacher") {
         let o = { key: "class", title: "Class" };
-        setTableType(o);
         tt = o;
       }
       return {

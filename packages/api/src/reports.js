@@ -42,34 +42,12 @@ const fetchSkillReport = classId =>
     .then(result => result.data.result);
 
 const fetchResponseFrequency = params => {
-  let { testId, districtId, schoolId, teacherId } = params;
-  let str = "";
-
-  if (testId) {
-    str += "testId=" + testId;
-  }
-
-  if (districtId) {
-    if (str != "") str += "&";
-    str += "districtId=" + districtId;
-  }
-
-  if (schoolId) {
-    if (str != "") str += "&";
-    str += "schoolId=" + schoolId;
-  }
-
-  if (teacherId) {
-    if (str != "") str += "&";
-    str += "schoolId=" + schoolId;
-  }
-
-  return api.callApi({ url: `/report/responseFrequency?${str}` });
+  return api.callApi({ url: `/report/responseFrequency?testId=${params.testId}` });
 };
 
 const fetchAssessmentSummaryReport = params => {
   return api.callApi({
-    url: `/report/assessmentSummary?testId=${params.testId}&districtId=${params.districtId}`
+    url: `/report/assessmentSummary?testId=${params.testId}`
   });
   // ?testId=5c90d974a649cb81bc5d4ca2&districtId=5c9089b1a649cb81bc398b1f
 };

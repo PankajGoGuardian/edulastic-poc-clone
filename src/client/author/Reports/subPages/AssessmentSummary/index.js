@@ -67,7 +67,7 @@ const AssessmentSummary = props => {
         <Col>
           <StyledCard>
             {props.role ? (
-              <StyledAssessmentStatisticTable name={state.assessmentName} data={state.metricInfo} role={"props.role"} />
+              <StyledAssessmentStatisticTable name={state.assessmentName} data={state.metricInfo} role={props.role} />
             ) : (
               ""
             )}

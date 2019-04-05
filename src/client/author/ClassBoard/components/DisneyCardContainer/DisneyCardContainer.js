@@ -1,6 +1,9 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { Col, Row } from "antd";
+import { greenSecondary, yellow, red } from "@edulastic/colors";
+
 import CardCheckbox from "./CardCheckbox/CardCheckbox";
 
 import {
@@ -8,7 +11,6 @@ import {
   StyledFlexDiv,
   PerfomanceSection,
   StyledCard,
-  Space,
   PagInfo,
   GSpan,
   PaginationInfoF,
@@ -21,53 +23,38 @@ import {
   SquareColorDivPink,
   SquareColorDivYellow,
   StyledParaF,
+  StyledParaS,
+  StyledColorParaS,
   StyledParaFF,
   StyledName,
   StyledParaSS,
   StyledParaSSS,
-  SpaceDiv,
   RightAlignedCol
 } from "./styled";
 
 const roundFraction = n => Math.floor(n * 100) / 100;
 
 export default class DisneyCardContainer extends Component {
+  static propTypes = {
+    selectedStudents: PropTypes.func.isRequired,
+    studentSelect: PropTypes.func.isRequired,
+    studentUnselect: PropTypes.func.isRequired
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      minValue: 0,
-      maxValue: 4,
-      testActivity: this.props.testActivity,
-      assignmentId: this.props.assignmentId,
-      classId: this.props.classId
+      testActivity: []
     };
   }
 
-  static getDerivedStateFromProps(props, state) {
+  static getDerivedStateFromProps(props) {
     return {
       testActivity: props.testActivity,
       assignmentId: props.assignmentId,
       classId: props.classId
     };
   }
-
-  handleChange = value => {
-    if (value <= 1) {
-      this.setState({
-        minValue: 0,
-        maxValue: 4
-      });
-    } else {
-      this.setState({
-        minValue: this.state.maxValue,
-        maxValue: value * 4
-      });
-    }
-  };
-
-  changeCardCheck = (isCheck, studentId) => {
-    this.props.changeCardCheck(isCheck, studentId);
-  };
 
   getAvatarName = studentName => {
     let firstLetter = "";
@@ -76,7 +63,7 @@ export default class DisneyCardContainer extends Component {
     if (studentName.length > 0) {
       if (studentName.indexOf(" ") >= 0) {
         firstLetter = studentName.substring(0, 1);
-        econdLetter = studentName.substring(studentName.indexOf(" "), 1);
+        secondLetter = studentName.substring(studentName.indexOf(" "), 1);
       } else if (this.countUpperCaseChars(studentName) >= 2) {
         firstLetter = studentName.match(/^[A-Z]{4}/);
         secondLetter = studentName.substring(
@@ -102,23 +89,28 @@ export default class DisneyCardContainer extends Component {
   };
 
   render() {
-    const { testActivity, minValue, maxValue } = this.state;
+    const { testActivity } = this.state;
+    const { selectedStudents, studentSelect, studentUnselect } = this.props;
     const styledCard = [];
-    // const filteredTestActivity = testActivity.slice(minValue, maxValue);
 
     if (testActivity.length > 0) {
       testActivity.map((student, index) => {
-        // TODO: use constants
-        // eslint-disable-next-line no-unused-vars
-        let status = "";
+        const status = {
+          color: "",
+          status: ""
+        };
         if (student.status === "notStarted") {
-          status = "NOT STARTED";
+          status.status = "NOT STARTED";
+          status.color = red;
         } else if (student.status === "inProgress") {
-          status = "IN PROGRESS";
+          status.status = "IN PROGRESS";
+          status.color = yellow;
         } else if (student.status === "submitted") {
-          status = "SUBMITTED";
+          status.status = "SUBMITTED";
+          status.color = greenSecondary;
         } else if (student.status === "redirected") {
-          status = "REDIRECTED";
+          status.status = "REDIRECTED";
+          status.color = greenSecondary;
         }
 
         let correctAnswers = 0;
@@ -130,7 +122,6 @@ export default class DisneyCardContainer extends Component {
           return null;
         });
 
-        // eslint-disable-next-line radix
         const stu_per = roundFraction((parseFloat(correctAnswers) / parseFloat(questions)) * 100);
 
         const studentData = (
@@ -139,18 +130,22 @@ export default class DisneyCardContainer extends Component {
               <CircularDiv>{this.getAvatarName(student.studentName)}</CircularDiv>
               <StyledName>
                 <StyledParaF>{student.studentName ? student.studentName : "-"}</StyledParaF>
-                {/* {student.present ? <StyledParaS>{status}</StyledParaS> : <StyledColorParaS>ABSENT</StyledColorParaS>} */}
+                {student.present ? (
+                  <StyledParaS color={status.color}>{status.status}</StyledParaS>
+                ) : (
+                  <StyledColorParaS>ABSENT</StyledColorParaS>
+                )}
               </StyledName>
               <RightAlignedCol>
                 <Row>
                   <Col>
                     <CardCheckbox
-                      checked={this.props.selectedStudents[student.studentId]}
+                      checked={selectedStudents[student.studentId]}
                       onChange={e => {
                         if (e.target.checked) {
-                          this.props.studentSelect(student.studentId);
+                          studentSelect(student.studentId);
                         } else {
-                          this.props.studentUnselect(student.studentId);
+                          studentUnselect(student.studentId);
                         }
                       }}
                       studentId={student.studentId}

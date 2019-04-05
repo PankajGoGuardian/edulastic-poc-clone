@@ -172,3 +172,7 @@ export const StyledChartNavButton = styled(Button)`
 export const StyledAxisTickText = styled(Text)`
   font-size: 12px;
 `;
+
+export const StyledText = styled.text`
+  font-size: 12px;
+`;

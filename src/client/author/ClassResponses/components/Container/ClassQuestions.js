@@ -34,6 +34,9 @@ Preview.propTypes = {
 class ClassQuestions extends Component {
   getTestItems() {
     const { currentStudent, questionActivities } = this.props;
+    if (!currentStudent || !questionActivities) {
+      return [];
+    }
     let {
       classResponse: { testItems }
     } = this.props;

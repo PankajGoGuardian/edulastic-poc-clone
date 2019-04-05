@@ -16,7 +16,12 @@ var exactMatchTemplate = function exactMatchTemplate(mainFunction, mainArguments
     maxScore = _mainFunction.maxScore,
     evaluation = _mainFunction.evaluation;
 
-  var _getCalculateScores = (0, _getCalculateScores2.default)(score, maxScore, mainArguments.validation),
+  var _getCalculateScores = (0, _getCalculateScores2.default)(
+      score,
+      maxScore,
+      mainArguments.validation,
+      mainArguments.userResponse
+    ),
     newScore = _getCalculateScores.newScore,
     newMaxScore = _getCalculateScores.newMaxScore;
 

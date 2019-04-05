@@ -111,7 +111,7 @@ class DetailedDisplay extends Component {
               Student Performance
               <Icon type="close" onClick={onClose} />
             </DetailCardTitle>
-            <DetailCardSubTitle>Standard: 2.LS2.1</DetailCardSubTitle>
+            <DetailCardSubTitle>{`Standard: ${data.identifier}`}</DetailCardSubTitle>
             <DetailCardDesc>{data.desc}</DetailCardDesc>
           </DetailCardHeader>
           <DetailTable columns={columns} dataSource={this.displayData()} pagination={false} />

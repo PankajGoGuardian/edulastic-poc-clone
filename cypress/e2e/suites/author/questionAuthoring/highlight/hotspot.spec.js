@@ -29,7 +29,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
 
   context("User creates question.", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId("5c358b480c8e6f22190d5ce0");
+      editItem.getItemWithId();
       editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
@@ -393,7 +393,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
 
   context("Advanced Options", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId("5c95d4cb98393e6bddf612ae");
+      editItem.getItemWithId();
       editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);

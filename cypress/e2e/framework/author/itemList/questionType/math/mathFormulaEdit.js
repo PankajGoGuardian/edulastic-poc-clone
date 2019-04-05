@@ -215,9 +215,9 @@ class MathFormulaEdit {
     this.getAnswerValueMathInput().type("{del}".repeat(length || 1), { force: true });
   };
 
-  getAnswerMathInputField = () => cy.get('[data-cy="answer-math-input-style"]');
+  getAnswerMathInputField = () => cy.get('[data-cy="answer-math-input-field"]');
 
-  checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect, score = false, scoreValuse = "2/2") => {
+  checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect, score = false, scoreValuse = "1/1") => {
     preview.header.preview();
     preview.getClear().click();
     this.getPreviewMathQuill().should("be.empty");

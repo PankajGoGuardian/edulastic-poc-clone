@@ -7,7 +7,7 @@ class MathFillInTheBlanksPage extends MathFractionPage {
   }
 
   // template
-  getKeyboard = () => cy.get('[data-cy="keyboard"]');
+  getKeyboard = () => cy.get(".keyboard");
 
   gettemplate = () => cy.get("[answer-math-input-field] [mathquill-block-id]");
 

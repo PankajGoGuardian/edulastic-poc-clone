@@ -60,7 +60,7 @@ const MathFormulaPreview = ({
       escapeRegExp(studentTemplate).replace(/\\\\MathQuillMathField\\\{\\\}/g, "(.*)"),
       "g"
     );
-    if (!userAnswer) setInnerValues(regexTemplate.exec(userAnswer).slice(1));
+    setInnerValues(regexTemplate.exec(userAnswer).slice(1));
   };
 
   useEffect(() => {

@@ -154,6 +154,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
           .should("have.value", "1")
           .type("{uparrow}")
           .should("have.value", "2")
+          .type("{selectall}1")
+          .should("have.value", "1")
           .blur();
       });
       it("Add and remove alternate answer", () => {
@@ -188,6 +190,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
       });
       it("Testing check/uncheck Ignore text check box", () => {
         const { input, expected, checkboxValues, isCirrectUnsver } = queData.equivSymbolic.ignoreText;
+        // TODO remove after fix
+        preview.header.edit();
         question.getMathquillBlockId().then(inputElements => {
           const { length } = inputElements[0].children;
           question.getTemplateInput().type("{del}".repeat(length || 1), { force: true });
@@ -195,7 +199,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         checkboxValues.forEach((checkboxValue, index) => {
           question.setValue(input);
           question.setSeparator(checkboxValue)();
-          question.checkCorrectAnswer(expected, preview, input.length, isCirrectUnsver[index], true);
+          question.checkCorrectAnswer(expected, preview, input.length, isCirrectUnsver[index]);
         });
       });
       it("Testing with compare sides", () => {
@@ -215,7 +219,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
           .getAnswerCompareSides()
           .check({ force: true })
           .should("be.checked");
-        question.checkCorrectAnswer(expected, preview, input.length, false, true);
+        question.checkCorrectAnswer(expected, preview, input.length, false);
       });
 
       it("Testing with decimal separator - Comma", () => {

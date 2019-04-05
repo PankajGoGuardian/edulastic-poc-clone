@@ -1,15 +1,8 @@
 import { Point } from ".";
 import { CONSTANT, Colors } from "../config";
+import { getLabelParameters } from "../settings";
 
 export const defaultConfig = {};
-
-export const getCircleLabelParameters = () => ({
-  offset: [0, 10],
-  anchorX: "middle",
-  anchorY: "bottom",
-  cssClass: "myLabel",
-  highlightCssClass: "myLabel"
-});
 
 let points = [];
 
@@ -23,7 +16,7 @@ function onHandler() {
       const newLine = board.$board.create("circle", points, {
         ...defaultConfig,
         ...Colors.default[CONSTANT.TOOLS.CIRCLE],
-        label: getCircleLabelParameters()
+        label: getLabelParameters(window.JXG.OBJECT_TYPE_CIRCLE)
       });
       if (newLine) {
         points = [];
@@ -54,7 +47,7 @@ function parseConfig() {
   return {
     fillColor: "transparent",
     highlightFillColor: "transparent",
-    label: getCircleLabelParameters()
+    label: getLabelParameters(window.JXG.OBJECT_TYPE_CIRCLE)
   };
 }
 

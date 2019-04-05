@@ -100,14 +100,16 @@ const bgImageParameters = {
 };
 
 const inputParameters = {
-  offset: [0, 10],
-  anchorX: "middle",
-  anchorY: "bottom",
   cssClass: "myLabelInput",
   highlightCssClass: "myLabelInput",
   fixed: true,
   highlightFillOpacity: 1,
   highlightStrokeOpacity: 1
+};
+
+export const labelParameters = {
+  cssClass: "myLabel",
+  highlightCssClass: "myLabel"
 };
 
 const textParameters = {
@@ -117,7 +119,55 @@ const textParameters = {
   highlightCssClass: "mark"
 };
 
-export const defaultInputParameters = () => ({ ...inputParameters });
+const getLabelPositionParameters = elementType => {
+  switch (elementType) {
+    case window.JXG.OBJECT_TYPE_POINT:
+      return {
+        position: "top",
+        offset: [0, 10],
+        anchorX: "middle",
+        anchorY: "bottom"
+      };
+    case 96:
+      return {
+        position: "lft",
+        offset: [10, 0],
+        anchorX: "left",
+        anchorY: "middle"
+      };
+    case 97:
+      return {
+        position: "top",
+        offset: [0, -10],
+        anchorX: "middle",
+        anchorY: "top"
+      };
+    case 94:
+      return {
+        position: "rt",
+        offset: [-10, 0],
+        anchorX: "right",
+        anchorY: "middle"
+      };
+    default:
+      return {
+        position: "top",
+        offset: [0, 0],
+        anchorX: "middle",
+        anchorY: "middle"
+      };
+  }
+};
+
+export const getInputParameters = elementType => ({
+  ...inputParameters,
+  ...getLabelPositionParameters(elementType)
+});
+
+export const getLabelParameters = elementType => ({
+  ...labelParameters,
+  ...getLabelPositionParameters(elementType)
+});
 
 export const defaultTextParameters = () => ({ ...textParameters });
 

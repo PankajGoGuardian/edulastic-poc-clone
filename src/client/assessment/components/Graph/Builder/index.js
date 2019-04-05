@@ -548,12 +548,19 @@ class Board {
           return Polygon.getConfig(e);
         case window.JXG.OBJECT_TYPE_TEXT:
           return Mark.getConfig(e);
-        case window.JXG.OBJECT_TYPE_CURVE:
         case 90:
+          return Hyperbola.getConfig(e);
         case 91:
+          return Tangent.getConfig(e);
         case 92:
+          return Secant.getConfig(e);
         case 93:
+          return Exponent.getConfig(e);
         case 94:
+          return Logarithm.getConfig(e);
+        case 96:
+          return Sin.getConfig(e);
+        case 97:
           return Parabola.getConfig(e);
         case 95:
           return Polynom.getConfig(e);
@@ -561,8 +568,7 @@ class Board {
           throw new Error("Unknown element type:", e.name, e.type);
       }
     });
-    const flatCfg = Object.values(flatConfig(config));
-    return flatCfg;
+    return Object.values(flatConfig(config));
   }
 
   getMarks() {
@@ -734,17 +740,17 @@ class Board {
         fillColor: "transparent",
         highlightFillColor: "transparent",
         highlightStrokeWidth: 1
+      },
+      [CONSTANT.TOOLS.POLYNOM]: {
+        ...defaultBgObjectParameters(),
+        fillColor: "transparent",
+        highlightFillColor: "transparent",
+        highlightStrokeWidth: 1
       }
     };
     this.bgElements.push(
       ...this.loadObjects(config, ({ objectCreator, el }) => {
-        const { _type, colors = {} } = el;
-        let type;
-        if (_type === window.JXG.OBJECT_TYPE_CURVE) {
-          type = el.type === CONSTANT.TOOLS.PARABOLA ? CONSTANT.TOOLS.PARABOLA : CONSTANT.TOOLS.SIN;
-        } else {
-          ({ type } = el);
-        }
+        const { type, colors = {} } = el;
         return objectCreator({
           ...objectOptions[type],
           ...colors
@@ -797,27 +803,6 @@ class Board {
               ) {
                 return CONSTANT.TOOLS.LINE;
               }
-              if (type === CONSTANT.TOOLS.ELLIPSE) {
-                return CONSTANT.TOOLS.ELLIPSE;
-              }
-              if (type === CONSTANT.TOOLS.HYPERBOLA) {
-                return CONSTANT.TOOLS.HYPERBOLA;
-              }
-              if (type === CONSTANT.TOOLS.TANGENT) {
-                return CONSTANT.TOOLS.TANGENT;
-              }
-              if (type === CONSTANT.TOOLS.SECANT) {
-                return CONSTANT.TOOLS.SECANT;
-              }
-              if (type === CONSTANT.TOOLS.EXPONENT) {
-                return CONSTANT.TOOLS.EXPONENT;
-              }
-              if (type === CONSTANT.TOOLS.LOGARITHM) {
-                return CONSTANT.TOOLS.LOGARITHM;
-              }
-              if (type === CONSTANT.TOOLS.POLYNOM) {
-                return CONSTANT.TOOLS.POLYNOM;
-              }
               return type;
             })(el.type)
           ],
@@ -847,27 +832,6 @@ class Board {
               ) {
                 return CONSTANT.TOOLS.LINE;
               }
-              if (type === CONSTANT.TOOLS.ELLIPSE) {
-                return CONSTANT.TOOLS.ELLIPSE;
-              }
-              if (type === CONSTANT.TOOLS.HYPERBOLA) {
-                return CONSTANT.TOOLS.HYPERBOLA;
-              }
-              if (type === CONSTANT.TOOLS.TANGENT) {
-                return CONSTANT.TOOLS.TANGENT;
-              }
-              if (type === CONSTANT.TOOLS.SECANT) {
-                return CONSTANT.TOOLS.SECANT;
-              }
-              if (type === CONSTANT.TOOLS.EXPONENT) {
-                return CONSTANT.TOOLS.EXPONENT;
-              }
-              if (type === CONSTANT.TOOLS.LOGARITHM) {
-                return CONSTANT.TOOLS.LOGARITHM;
-              }
-              if (type === CONSTANT.TOOLS.POLYNOM) {
-                return CONSTANT.TOOLS.POLYNOM;
-              }
               return type;
             })(el.type)
           ],
@@ -895,7 +859,7 @@ class Board {
   }
 
   loadMarks(elements) {
-    this.elements.push(...elements.map(element => Mark.loadMarks()));
+    this.elements.push(...elements.map(() => Mark.loadMarks()));
   }
 
   loadSegments(elements) {
@@ -1094,6 +1058,27 @@ class Board {
             })
           );
           break;
+        case window.JXG.OBJECT_TYPE_POLYGON:
+          objects.push(
+            mixProps({
+              el,
+              objectCreator: attrs =>
+                this.createElement(
+                  "polygon",
+                  el.points.map(pointEl =>
+                    mixProps({
+                      el: pointEl,
+                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes)
+                    })
+                  ),
+                  {
+                    ...Polygon.parseConfig(),
+                    ...attrs
+                  }
+                )
+            })
+          );
+          break;
         case 90:
           objects.push(
             mixProps({
@@ -1124,83 +1109,6 @@ class Board {
                 handleSnap(newLine, Object.values(newLine.ancestors));
 
                 return newLine;
-              }
-            })
-          );
-          break;
-        case window.JXG.OBJECT_TYPE_POLYGON:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs =>
-                this.createElement(
-                  "polygon",
-                  el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes)
-                    })
-                  ),
-                  {
-                    ...Polygon.parseConfig(),
-                    ...attrs
-                  }
-                )
-            })
-          );
-          break;
-        case 95:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs => {
-                const [name, [makeFn, points], props] = Polynom.parseConfig(
-                  el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes)
-                    })
-                  )
-                );
-                const newElem = this.createElement(name, makeFn(points), {
-                  ...attrs,
-                  ...props
-                });
-                newElem.type = 95;
-                newElem.addParents(points);
-                newElem.ancestors = Polynom.flatConfigPoints(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
-                return newElem;
-              }
-            })
-          );
-          break;
-        case window.JXG.OBJECT_TYPE_CURVE:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs => {
-                const [name, [makeFn, points], props] = [Parabola, Sin][
-                  el.type === CONSTANT.TOOLS.PARABOLA ? 0 : 1
-                ].parseConfig(
-                  el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes)
-                    })
-                  )
-                );
-                const newElem = this.createElement(name, makeFn(points), {
-                  ...props,
-                  ...attrs
-                });
-                newElem.ancestors = {
-                  [points[0].id]: points[0],
-                  [points[1].id]: points[1]
-                };
-                newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
-                return newElem;
               }
             })
           );
@@ -1317,6 +1225,88 @@ class Board {
             })
           );
           break;
+        case 95:
+          objects.push(
+            mixProps({
+              el,
+              objectCreator: attrs => {
+                const [name, [makeFn, points], props] = Polynom.parseConfig(
+                  el.points.map(pointEl =>
+                    mixProps({
+                      el: pointEl,
+                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes)
+                    })
+                  )
+                );
+                const newElem = this.createElement(name, makeFn(points), {
+                  ...attrs,
+                  ...props
+                });
+                newElem.type = 95;
+                newElem.addParents(points);
+                newElem.ancestors = Polynom.flatConfigPoints(points);
+                handleSnap(newElem, Object.values(newElem.ancestors));
+                return newElem;
+              }
+            })
+          );
+          break;
+        case 96:
+          objects.push(
+            mixProps({
+              el,
+              objectCreator: attrs => {
+                const [name, [makeFn, points], props] = Sin.parseConfig(
+                  el.points.map(pointEl =>
+                    mixProps({
+                      el: pointEl,
+                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes)
+                    })
+                  )
+                );
+                const newElem = this.createElement(name, makeFn(points), {
+                  ...props,
+                  ...attrs
+                });
+                newElem.ancestors = {
+                  [points[0].id]: points[0],
+                  [points[1].id]: points[1]
+                };
+                newElem.addParents(points);
+                handleSnap(newElem, Object.values(newElem.ancestors));
+                return newElem;
+              }
+            })
+          );
+          break;
+        case 97:
+          objects.push(
+            mixProps({
+              el,
+              objectCreator: attrs => {
+                const [name, [makeFn, points], props] = Parabola.parseConfig(
+                  el.points.map(pointEl =>
+                    mixProps({
+                      el: pointEl,
+                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes)
+                    })
+                  )
+                );
+                const newElem = this.createElement(name, makeFn(points), {
+                  ...props,
+                  ...attrs
+                });
+                newElem.ancestors = {
+                  [points[0].id]: points[0],
+                  [points[1].id]: points[1]
+                };
+                newElem.addParents(points);
+                handleSnap(newElem, Object.values(newElem.ancestors));
+                return newElem;
+              }
+            })
+          );
+          break;
         case window.JXG.OBJECT_TYPE_TEXT:
           objects.push(
             mixProps({
@@ -1327,6 +1317,7 @@ class Board {
               }
             })
           );
+          break;
         default:
           throw new Error("Unknown element:", el);
       }
@@ -1445,6 +1436,28 @@ class Board {
             })
           );
           break;
+        case window.JXG.OBJECT_TYPE_POLYGON:
+          objects.push(
+            mixProps({
+              el,
+              objectCreator: attrs =>
+                this.createElement(
+                  "polygon",
+                  el.points.map(pointEl =>
+                    mixProps({
+                      el: pointEl,
+                      objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
+                    })
+                  ),
+                  {
+                    ...Polygon.parseConfig(),
+                    ...attrs,
+                    fixed: true
+                  }
+                )
+            })
+          );
+          break;
         case 90:
           objects.push(
             mixProps({
@@ -1476,86 +1489,6 @@ class Board {
                 handleSnap(newLine, Object.values(newLine.ancestors));
 
                 return newLine;
-              }
-            })
-          );
-          break;
-        case window.JXG.OBJECT_TYPE_POLYGON:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs =>
-                this.createElement(
-                  "polygon",
-                  el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
-                    })
-                  ),
-                  {
-                    ...Polygon.parseConfig(),
-                    ...attrs,
-                    fixed: true
-                  }
-                )
-            })
-          );
-          break;
-        case 95:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs => {
-                const [name, [makeFn, points], props] = Polynom.parseConfig(
-                  el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
-                    })
-                  )
-                );
-                const newElem = this.createElement(name, makeFn(points), {
-                  ...props,
-                  ...attrs,
-                  fixed: true
-                });
-                newElem.type = 95;
-                newElem.addParents(points);
-                newElem.ancestors = Polynom.flatConfigPoints(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
-                return newElem;
-              }
-            })
-          );
-          break;
-        case window.JXG.OBJECT_TYPE_CURVE:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs => {
-                const [name, [makeFn, points], props] = [Parabola, Sin][
-                  el.type === CONSTANT.TOOLS.PARABOLA ? 0 : 1
-                ].parseConfig(
-                  el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
-                    })
-                  )
-                );
-                const newElem = this.createElement(name, makeFn(points), {
-                  ...props,
-                  ...attrs,
-                  fixed: true
-                });
-                newElem.ancestors = {
-                  [points[0].id]: points[0],
-                  [points[1].id]: points[1]
-                };
-                newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
-                return newElem;
               }
             })
           );
@@ -1676,6 +1609,91 @@ class Board {
             })
           );
           break;
+        case 95:
+          objects.push(
+            mixProps({
+              el,
+              objectCreator: attrs => {
+                const [name, [makeFn, points], props] = Polynom.parseConfig(
+                  el.points.map(pointEl =>
+                    mixProps({
+                      el: pointEl,
+                      objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
+                    })
+                  )
+                );
+                const newElem = this.createElement(name, makeFn(points), {
+                  ...props,
+                  ...attrs,
+                  fixed: true
+                });
+                newElem.type = 95;
+                newElem.addParents(points);
+                newElem.ancestors = Polynom.flatConfigPoints(points);
+                handleSnap(newElem, Object.values(newElem.ancestors));
+                return newElem;
+              }
+            })
+          );
+          break;
+        case 96:
+          objects.push(
+            mixProps({
+              el,
+              objectCreator: attrs => {
+                const [name, [makeFn, points], props] = Sin.parseConfig(
+                  el.points.map(pointEl =>
+                    mixProps({
+                      el: pointEl,
+                      objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
+                    })
+                  )
+                );
+                const newElem = this.createElement(name, makeFn(points), {
+                  ...props,
+                  ...attrs,
+                  fixed: true
+                });
+                newElem.ancestors = {
+                  [points[0].id]: points[0],
+                  [points[1].id]: points[1]
+                };
+                newElem.addParents(points);
+                handleSnap(newElem, Object.values(newElem.ancestors));
+                return newElem;
+              }
+            })
+          );
+          break;
+        case 97:
+          objects.push(
+            mixProps({
+              el,
+              objectCreator: attrs => {
+                const [name, [makeFn, points], props] = Parabola.parseConfig(
+                  el.points.map(pointEl =>
+                    mixProps({
+                      el: pointEl,
+                      objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
+                    })
+                  )
+                );
+                const newElem = this.createElement(name, makeFn(points), {
+                  ...props,
+                  ...attrs,
+                  fixed: true
+                });
+                newElem.ancestors = {
+                  [points[0].id]: points[0],
+                  [points[1].id]: points[1]
+                };
+                newElem.addParents(points);
+                handleSnap(newElem, Object.values(newElem.ancestors));
+                return newElem;
+              }
+            })
+          );
+          break;
         case window.JXG.OBJECT_TYPE_TEXT:
           objects.push(
             mixProps({
@@ -1686,6 +1704,7 @@ class Board {
               }
             })
           );
+          break;
         default:
           throw new Error("Unknown element:", el);
       }

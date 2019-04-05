@@ -1,16 +1,9 @@
 import { Point } from ".";
 import { CONSTANT, Colors } from "../config";
 import { handleSnap } from "../utils";
+import { getLabelParameters } from "../settings";
 
 export const defaultConfig = { fixed: false };
-
-export const getEllipseLabelParameters = () => ({
-  offset: [0, 10],
-  anchorX: "middle",
-  anchorY: "bottom",
-  cssClass: "myLabel",
-  highlightCssClass: "myLabel"
-});
 
 let points = [];
 
@@ -24,7 +17,7 @@ function onHandler() {
       const newLine = board.$board.create("ellipse", points, {
         ...defaultConfig,
         ...Colors.default[CONSTANT.TOOLS.CIRCLE],
-        label: getEllipseLabelParameters()
+        label: getLabelParameters(window.JXG.OBJECT_TYPE_CONIC)
       });
       handleSnap(newLine, points.filter(point => point.elType === "point"));
       if (newLine) {
@@ -56,7 +49,7 @@ function parseConfig() {
   return {
     fillColor: "transparent",
     highlightFillColor: "transparent",
-    label: getEllipseLabelParameters()
+    label: getLabelParameters(window.JXG.OBJECT_TYPE_CONIC)
   };
 }
 

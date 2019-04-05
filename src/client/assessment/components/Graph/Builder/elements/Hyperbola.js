@@ -1,16 +1,11 @@
 import { Point } from ".";
 import { CONSTANT, Colors } from "../config";
 import { handleSnap } from "../utils";
+import { getLabelParameters } from "../settings";
+
+const jxgType = 90;
 
 export const defaultConfig = { fixed: false };
-
-export const getHyperbolaLabelParameters = () => ({
-  offset: [0, 10],
-  anchorX: "middle",
-  anchorY: "bottom",
-  cssClass: "myLabel",
-  highlightCssClass: "myLabel"
-});
 
 let points = [];
 
@@ -24,9 +19,9 @@ function onHandler() {
       const newLine = board.$board.create("hyperbola", points, {
         ...defaultConfig,
         ...Colors.default[CONSTANT.TOOLS.HYPERBOLA],
-        label: getHyperbolaLabelParameters()
+        label: getLabelParameters(jxgType)
       });
-      newLine.type = 90;
+      newLine.type = jxgType;
       handleSnap(newLine, points.filter(point => point.elType === "point"));
       if (newLine) {
         points = [];
@@ -43,7 +38,7 @@ const cleanPoints = board => {
 
 function getConfig(hyperbola) {
   return {
-    _type: 90,
+    _type: hyperbola.type,
     type: CONSTANT.TOOLS.HYPERBOLA,
     id: hyperbola.id,
     label: hyperbola.hasLabel ? hyperbola.label.plaintext : false,
@@ -57,7 +52,7 @@ function parseConfig() {
   return {
     fillColor: "transparent",
     highlightFillColor: "transparent",
-    label: getHyperbolaLabelParameters()
+    label: getLabelParameters(jxgType)
   };
 }
 

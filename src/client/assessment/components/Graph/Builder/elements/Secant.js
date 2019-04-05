@@ -1,20 +1,14 @@
 import { Point } from ".";
 import { CONSTANT, Colors } from "../config";
 import { handleSnap } from "../utils";
+import { getLabelParameters } from "../settings";
+
+const jxgType = 92;
 
 export const defaultConfig = {
   type: CONSTANT.TOOLS.SECANT,
   fixed: false
 };
-
-export const getSecantLabelParameters = () => ({
-  offset: [0, 10],
-  position: "mdl",
-  anchorX: "middle",
-  anchorY: "middle",
-  cssClass: "myLabel",
-  highlightCssClass: "myLabel"
-});
 
 const makeCallback = (p1, p2) => x => {
   const a = p1.Y();
@@ -36,9 +30,9 @@ function onHandler() {
       const newLine = board.$board.create("functiongraph", [makeCallback(...points)], {
         ...defaultConfig,
         ...Colors.default[CONSTANT.TOOLS.SECANT],
-        label: getSecantLabelParameters()
+        label: getLabelParameters(jxgType)
       });
-      newLine.type = 92;
+      newLine.type = jxgType;
       handleSnap(newLine, points);
 
       if (newLine) {
@@ -59,6 +53,18 @@ const cleanPoints = board => {
   points = [];
 };
 
+function getConfig(secant) {
+  return {
+    _type: secant.type,
+    type: CONSTANT.TOOLS.SECANT,
+    id: secant.id,
+    label: secant.hasLabel ? secant.label.plaintext : false,
+    points: Object.keys(secant.ancestors)
+      .sort()
+      .map(n => Point.getConfig(secant.ancestors[n]))
+  };
+}
+
 function parseConfig(pointsConfig) {
   return [
     "functiongraph",
@@ -66,7 +72,7 @@ function parseConfig(pointsConfig) {
     {
       ...defaultConfig,
       fillColor: "transparent",
-      label: getSecantLabelParameters()
+      label: getLabelParameters(jxgType)
     }
   ];
 }
@@ -78,6 +84,7 @@ function abort(cb) {
 
 export default {
   onHandler,
+  getConfig,
   parseConfig,
   cleanPoints,
   abort

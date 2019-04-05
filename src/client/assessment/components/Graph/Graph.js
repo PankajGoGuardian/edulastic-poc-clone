@@ -16,7 +16,6 @@ import { AxisSegments, GraphAxisLabels, GraphQuadrants, QuestionSection } from "
 import { CorrectAnswers } from "./CorrectAnswers";
 import { GraphDisplay } from "./Display";
 import { InstructorStimulus } from "./common/styled_components";
-import { parse } from "parse5";
 
 const EmptyWrapper = styled.div``;
 
@@ -97,7 +96,8 @@ class Graph extends Component {
   // }
 
   componentDidUpdate(prevProps) {
-    if (this.props.item !== prevProps.item) {
+    const { item } = this.props;
+    if (item !== prevProps.item) {
       this.validateGraph();
     }
   }
@@ -128,10 +128,8 @@ class Graph extends Component {
       if (graphIsValid) {
         this.setState({ graphIsValid: false });
       }
-    } else {
-      if (!graphIsValid) {
-        this.setState({ graphIsValid: true });
-      }
+    } else if (!graphIsValid) {
+      this.setState({ graphIsValid: true });
     }
   };
 
@@ -214,7 +212,6 @@ class Graph extends Component {
       setControls: this.handleControlbarChange,
       setBgImg: this.handleBgImgChange,
       setBgShapes: this.handleBgShapesChange,
-      setExtras: this.handleExtraOptionsChange,
       graphData: item,
       setAnnotation: this.handleAnnotationChange,
       fillSections,
@@ -229,7 +226,6 @@ class Graph extends Component {
       setOptions: this.handleOptionsChange,
       setNumberline: this.handleNumberlineChange,
       setCanvas: this.handleCanvasChange,
-      setExtras: this.handleExtraOptionsChange,
       graphData: item,
       fillSections,
       cleanSections,
@@ -245,7 +241,6 @@ class Graph extends Component {
       setNumberline: this.handleNumberlineChange,
       setCanvas: this.handleCanvasChange,
       setControls: this.handleToolbarChange,
-      setExtras: this.handleExtraOptionsChange,
       graphData: item,
       fillSections,
       cleanSections,
@@ -276,11 +271,6 @@ class Graph extends Component {
   handleOptionsChange = options => {
     const { setQuestionData, item } = this.props;
     setQuestionData({ ...item, ui_style: options });
-  };
-
-  handleExtraOptionsChange = options => {
-    const { setQuestionData, item } = this.props;
-    setQuestionData({ ...item, extra_options: options });
   };
 
   handleAnnotationChange = options => {
@@ -489,7 +479,9 @@ Graph.propTypes = {
   userAnswer: PropTypes.any,
   saveAnswer: PropTypes.func.isRequired,
   changePreviewTab: PropTypes.func,
-  evaluation: PropTypes.any
+  evaluation: PropTypes.any,
+  cleanSections: PropTypes.func.isRequired,
+  fillSections: PropTypes.func.isRequired
 };
 
 Graph.defaultProps = {

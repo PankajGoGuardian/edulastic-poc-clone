@@ -4,11 +4,13 @@ const elWeight = {
   point: 1,
   polygon: 2,
   circle: 3,
-  line: 4,
-  curve: 5
+  ellipse: 4,
+  hyperbola: 5,
+  line: 6,
+  curve: 7
 };
 
-const allowElements = ["polygon", "point", "circle", "line", "curve"];
+const allowElements = ["polygon", "point", "circle", "ellipse", "hyperbola", "line", "curve"];
 
 /**
  * @param {array} elements
@@ -17,20 +19,8 @@ function getElementUnderMouse(elements) {
   const filteredElements = elements
     .filter(el => ~allowElements.indexOf(el.elType))
     .sort((a, b) => elWeight[a.elType] - elWeight[b.elType]);
-  let element;
-  if (filteredElements[0] && filteredElements[0].elType === "point") {
-    return (element = filteredElements[0]);
-  } else if (filteredElements[0] && filteredElements[0].ancestors) {
-    Object.values(filteredElements[0].ancestors).forEach(ancestor => {
-      if (!ancestor.hasLabel || (ancestor.label && ancestor.label.plaintext.length === 0)) {
-        return (element = ancestor);
-      }
-    });
-  } else {
-    return (element = null);
-  }
-
-  return element;
+  // todo: filter background shapes
+  return filteredElements[0] || null;
 }
 
 function onHandler() {

@@ -31,7 +31,8 @@ const denormalizeData = res => {
     let denormArr = filteredArr.map((data, index) => {
       return {
         ...hMap[data.groupId],
-        ...data
+        ...data,
+        gender: data.gender.toLowerCase() === "m" ? "Male" : data.gender.toLowerCase() === "f" ? "Female" : data.gender
       };
     });
 
@@ -172,6 +173,7 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
                 onBarClickCB={onBarClickCB}
                 onResetClickCB={onResetClickCB}
                 bandInfo={res.bandInfo}
+                role={role}
               />
             ) : (
               <SignedStackedBarChartContainer
@@ -183,6 +185,7 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
                 onBarClickCB={onBarClickCB}
                 onResetClickCB={onResetClickCB}
                 bandInfo={res.bandInfo}
+                role={role}
               />
             )}
           </div>

@@ -16,7 +16,6 @@ class CardWrapper extends Component {
 
   render() {
     const { blockStyle, item, windowWidth, history, match } = this.props;
-    console.log("owner", this.props.owner);
     if (blockStyle === "tile") {
       return (
         <Col key={item._id} span={windowWidth > 468 ? 8 : 24} style={{ marginBottom: 15 }}>

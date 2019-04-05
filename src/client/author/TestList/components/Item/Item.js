@@ -66,9 +66,7 @@ class Item extends Component {
       >
         <Inner>
           <Question>
-            <StyledLink
-            //  onClick={this.moveToItem}
-            >
+            <StyledLink onClick={this.moveToItem}>
               {title}# <FaAngleDoubleRight />
             </StyledLink>
           </Question>

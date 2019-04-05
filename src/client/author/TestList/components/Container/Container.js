@@ -236,13 +236,20 @@ class TestList extends Component {
     this.setState({ isShowFilter: false });
   };
 
-  handleClearFilter = () => {
-    const { receiveTests, limit } = this.props;
+  resetFilter = () => {
+    const { receiveTests, limit, history } = this.props;
+    const { search } = this.state;
+    receiveTests({ page: 1, limit, search });
+    history.push(`/author/tests`);
+  };
 
-    this.setState({
-      search: getClearSearchState()
-    });
-    receiveTests({ page: 1, limit });
+  handleClearFilter = () => {
+    this.setState(
+      {
+        search: getClearSearchState()
+      },
+      this.resetFilter
+    );
   };
 
   get filterUrl() {

@@ -174,5 +174,3 @@ export const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_SUCCESS = "[reports] get rep
 export const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_ERROR = "[reports] get reports assessment summary error";
 
 // -----|-----|-----|----- REPORTS ENDED -----|-----|-----|----- //
-
-export const TOGGLE_FILTER = "[filter] toggle filter";

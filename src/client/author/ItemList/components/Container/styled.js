@@ -69,7 +69,7 @@ export const Element = styled.div`
       overflow-y: initial;
       overflow-x: initial;
       border-radius: 10px;
-      padding: 0;
+      padding: 0 0 28px 0;
     }
   }
   .ant-pagination {

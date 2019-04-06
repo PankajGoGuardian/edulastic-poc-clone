@@ -86,6 +86,7 @@ export const ViewButtonStyled = styled(Button)`
 
     span {
       font-size: 0;
+      display: none;
     }
     svg {
       display: initial;

@@ -12,7 +12,15 @@ class FilterButton extends Component {
     return (
       <FilterButtonContainer>
         <Button onClick={toggleFilter}>
-          {windowWidth > SMALL_DESKTOP_WIDTH ? !isShowFilter ? "SHOW FILTERS" : "HIDE FILTERS" : <IconFilter />}
+          {windowWidth > SMALL_DESKTOP_WIDTH ? (
+            !isShowFilter ? (
+              t("component.itemlist.filter.showFilters")
+            ) : (
+              t("component.itemlist.filter.hideFilters")
+            )
+          ) : (
+            <IconFilter />
+          )}
         </Button>
       </FilterButtonContainer>
     );

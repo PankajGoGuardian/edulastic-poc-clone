@@ -85,7 +85,9 @@
       },
       "filter": {
         "filters": "Filters",
-        "clearAll": "Clear all"
+        "clearAll": "Clear all",
+        "showFilters": "Show filters",
+        "hideFilters": "Hide filters"
       }
     },
     "itemAdd": {

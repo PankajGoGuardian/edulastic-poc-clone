@@ -17,7 +17,6 @@ import {
   getDictStandardsForCurriculumAction,
   clearDictStandardsAction
 } from "../../../src/actions/dictionaries";
-import { toggleFilter } from "../../../src/actions/filter";
 import {
   getTestItemsSelector,
   getTestsItemsCountSelector,
@@ -57,7 +56,8 @@ export const getClearSearchState = () => ({
 // container the main entry point to the component
 class Contaier extends Component {
   state = {
-    search: getClearSearchState()
+    search: getClearSearchState(),
+    isShowFilter: false
   };
 
   componentDidMount() {
@@ -174,7 +174,7 @@ class Contaier extends Component {
   };
 
   renderPagination = () => {
-    const { windowWidth, count, page } = this.props;
+    const { count, page } = this.props;
     return (
       <Pagination
         simple={false}
@@ -203,28 +203,29 @@ class Contaier extends Component {
     ));
   };
 
+  toggleFilter = () => {
+    const { isShowFilter } = this.state;
+
+    this.setState({
+      isShowFilter: !isShowFilter
+    });
+  };
+
   renderCartButton = () => <CartButton />;
 
   renderFilterButton = () => {
-    const { toggleFilter, isShowFilter, windowWidth, t } = this.props;
+    const { windowWidth, t } = this.props;
+    const { isShowFilter } = this.state;
 
-    return <FilterButton toggleFilter={toggleFilter} isShowFilter={isShowFilter} windowWidth={windowWidth} t={t} />;
+    return (
+      <FilterButton toggleFilter={this.toggleFilter} isShowFilter={isShowFilter} windowWidth={windowWidth} t={t} />
+    );
   };
 
   render() {
-    const {
-      windowWidth,
-      creating,
-      t,
-      curriculums,
-      getCurriculumStandards,
-      curriculumStandards,
-      loading,
-      toggleFilter,
-      isShowFilter
-    } = this.props;
+    const { windowWidth, creating, t, curriculums, getCurriculumStandards, curriculumStandards, loading } = this.props;
 
-    const { search } = this.state;
+    const { search, isShowFilter } = this.state;
 
     return (
       <div>
@@ -249,7 +250,7 @@ class Contaier extends Component {
             curriculumStandards={curriculumStandards}
             items={filterMenuItems}
             t={t}
-            toggleFilter={toggleFilter}
+            toggleFilter={this.toggleFilter}
             isShowFilter={isShowFilter}
           />
           <ListItems>
@@ -312,9 +313,7 @@ Contaier.propTypes = {
   loading: PropTypes.bool.isRequired,
   setDefaultTestData: PropTypes.func.isRequired,
   addItemToCart: PropTypes.func.isRequired,
-  selectedCartItems: PropTypes.arrayOf(PropTypes.string).isRequired,
-  isShowFilter: PropTypes.bool.isRequired,
-  toggleFilter: PropTypes.func.isRequired
+  selectedCartItems: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
 const enhance = compose(
@@ -331,8 +330,7 @@ const enhance = compose(
       itemTypes: getItemsTypesSelector(state),
       curriculums: getCurriculumsListSelector(state),
       curriculumStandards: getStandardsListSelector(state),
-      selectedCartItems: getSelectedItemSelector(state).data,
-      isShowFilter: state.filter.isShowFilter
+      selectedCartItems: getSelectedItemSelector(state).data
     }),
     {
       receiveItems: receiveTestItemsAction,
@@ -341,8 +339,7 @@ const enhance = compose(
       getCurriculumStandards: getDictStandardsForCurriculumAction,
       clearDictStandards: clearDictStandardsAction,
       setDefaultTestData: setDefaultTestDataAction,
-      addItemToCart: addItemToCartAction,
-      toggleFilter
+      addItemToCart: addItemToCartAction
     }
   )
 );

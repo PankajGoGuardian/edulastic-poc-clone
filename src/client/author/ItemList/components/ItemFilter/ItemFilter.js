@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Button, Affix, Col } from "antd";
+import { Affix } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import {
   Container,
   Title,
   Clear,
-  FilterButton,
   FixedFilters,
   Header,
   HeaderRow,
@@ -20,7 +19,7 @@ import {
 } from "./styled";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import Search from "../Search/Search";
-import { SMALL_DESKTOP_WIDTH, MAX_MOBILE_WIDTH } from "../../../src/constants/others";
+import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 
 class ItemFilter extends Component {
   handleStandardSearch = searchStr => {

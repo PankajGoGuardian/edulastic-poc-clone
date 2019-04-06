@@ -33,16 +33,17 @@ import {
   GreyFont,
   ExpandedTable,
   IconExpand,
-  ActionsWrapper
+  ActionsWrapper,
+  BtnProgress
 } from "./styled";
 
 const convertTableData = data => ({
   name: data[0].testName,
   key: data[0]._id,
-  class: data[0].className,
+  class: data.length,
   type: data[0].type,
-  assigned: "Lorem Ipsum",
-  status: "",
+  assigned: data[0].assignedBy.name,
+  status: data[0].status,
   submitted: `${data[0].submittedNumber || 0} of ${data.length}`,
   graded: "1",
   action: "",
@@ -56,7 +57,7 @@ const convertExpandTableData = (data, totalNumber) => ({
   assignmentId: data._id,
   class: data.className,
   type: data.type,
-  assigned: "Lorem Ipsum",
+  assigned: data.assignedBy.name,
   status: data.status,
   submitted: `${data.submittedNumber || 0} of ${totalNumber}`,
   graded: "1",
@@ -93,7 +94,7 @@ class TableList extends Component {
       {
         dataIndex: "class",
         width: "11%",
-        render: () => <GreyFont />
+        render: text => <GreyFont>{text}</GreyFont>
       },
       {
         dataIndex: "type",
@@ -190,9 +191,10 @@ class TableList extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: true,
         width: "11%",
-        render: () => (
+        render: text => (
           <ExpandDivdier>
-            <IconArrowDown onclick={() => false} src={arrowUpIcon} />1
+            <IconArrowDown onclick={() => false} src={arrowUpIcon} />
+            {text}
           </ExpandDivdier>
         )
       },
@@ -277,11 +279,15 @@ class TableList extends Component {
 
 TableList.propTypes = {
   assignments: PropTypes.array.isRequired,
-  renderFilter: PropTypes.func
+  onOpenReleaseScoreSettings: PropTypes.func,
+  renderFilter: PropTypes.func,
+  history: PropTypes.object
 };
 
 TableList.defaultProps = {
-  renderFilter: () => {}
+  onOpenReleaseScoreSettings: () => {},
+  renderFilter: () => {},
+  history: {}
 };
 
 const enhance = compose(

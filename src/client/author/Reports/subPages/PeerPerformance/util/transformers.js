@@ -58,7 +58,7 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
       },
       { totalMaxScore: 0, totalTotalScore: 0 }
     );
-    let avgStudentScorePercent = Number(((item.totalTotalScore / item.totalMaxScore) * 100).toFixed(0));
+    let avgStudentScorePercent = Math.round((item.totalTotalScore / item.totalMaxScore) * 100);
     let schoolName = groupedData[data][0].schoolName;
     let teacherName = groupedData[data][0].teacherName;
     let className = groupedData[data][0].className;
@@ -67,8 +67,8 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
       ...item,
       avgStudentScorePercent: avgStudentScorePercent,
       correct: avgStudentScorePercent,
-      incorrect: Number((100 - avgStudentScorePercent).toFixed(0)),
-      districtAvg: Number(rawData.districtAvg.toFixed(0)),
+      incorrect: Math.round(100 - avgStudentScorePercent),
+      districtAvg: Math.round(rawData.districtAvgPerf),
       absent: 0,
       graded: groupedData[data].length,
       schoolName: schoolName,
@@ -76,9 +76,9 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
       className: className,
       [compareBy]: data,
       compareBy: compareBy,
-      compareBylabel: groupedData[data][0][idToLabel[compareBy]],
+      compareBylabel: groupedData[data][0][idToLabel[compareBy]] ? groupedData[data][0][idToLabel[compareBy]] : "NA",
       fill: getHSLFromRange1(avgStudentScorePercent),
-      dFill: getHSLFromRange1(rawData.districtAvg)
+      dFill: getHSLFromRange1(rawData.districtAvgPerf)
     };
     return item;
   });
@@ -103,7 +103,6 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
     let schoolName = groupedData[data][0].schoolName;
     let teacherName = groupedData[data][0].teacherName;
     let className = groupedData[data][0].className;
-    let districtAvg = Number(((rawData.districtAvg / 100) * maxScore).toFixed(2));
 
     item = {
       ...item,
@@ -111,7 +110,7 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
       avgStudentScore: avgStudentScore,
       correct: avgStudentScore,
       incorrect: Number((maxScore - avgStudentScore).toFixed(2)),
-      districtAvg: districtAvg,
+      districtAvg: Number(rawData.districtAvg.toFixed(2)),
       absent: 0,
       graded: groupedData[data].length,
       schoolName: schoolName,
@@ -119,9 +118,9 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
       className: className,
       [compareBy]: data,
       compareBy: compareBy,
-      compareBylabel: groupedData[data][0][idToLabel[compareBy]],
+      compareBylabel: groupedData[data][0][idToLabel[compareBy]] ? groupedData[data][0][idToLabel[compareBy]] : "NA",
       fill: getHSLFromRange1((avgStudentScore / maxScore) * 100),
-      dFill: getHSLFromRange1((districtAvg / maxScore) * 100)
+      dFill: getHSLFromRange1(rawData.districtAvgPerf)
     };
     return item;
   });
@@ -168,7 +167,7 @@ const analyseByAboveBelowStandard = (rawData, groupedData, compareBy) => {
       aboveStandardPercentage: aboveStandardPercentage,
       belowStandardPercentage: belowStandardPercentage,
 
-      districtAvg: Math.round(rawData.districtAvg),
+      districtAvg: Number(rawData.districtAvg.toFixed(2)),
       absent: 0,
       graded: groupedData[data].length,
       schoolName: schoolName,
@@ -176,7 +175,7 @@ const analyseByAboveBelowStandard = (rawData, groupedData, compareBy) => {
       className: className,
       [compareBy]: data,
       compareBy: compareBy,
-      compareBylabel: groupedData[data][0][idToLabel[compareBy]],
+      compareBylabel: groupedData[data][0][idToLabel[compareBy]] ? groupedData[data][0][idToLabel[compareBy]] : "NA",
       fill_0: getHSLFromRange1(100),
       fill_1: getHSLFromRange1(0)
     };
@@ -244,7 +243,7 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
       ...item,
       ...proficiencyPercentages,
 
-      districtAvg: Number(rawData.districtAvg.toFixed(0)),
+      districtAvg: Number(rawData.districtAvg.toFixed(2)),
       absent: 0,
       graded: groupedData[data].length,
       schoolName: schoolName,
@@ -252,7 +251,7 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
       className: className,
       [compareBy]: data,
       compareBy: compareBy,
-      compareBylabel: groupedData[data][0][idToLabel[compareBy]]
+      compareBylabel: groupedData[data][0][idToLabel[compareBy]] ? groupedData[data][0][idToLabel[compareBy]] : "NA"
     };
 
     return item;

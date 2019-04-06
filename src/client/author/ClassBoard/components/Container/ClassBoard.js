@@ -3,6 +3,7 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get } from "lodash";
+import { message } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 // actions
@@ -14,7 +15,6 @@ import {
 } from "../../../src/actions/classBoard";
 import QuestionContainer from "../../../QuestionView";
 import StudentContainer from "../../../StudentView";
-import { message } from "antd";
 // ducks
 import {
   getTestActivitySelector,
@@ -70,18 +70,6 @@ import {
   PrintButton,
   StudentGrapContainer
 } from "./styled";
-
-/**
- * right side button group
- * @param {{redirect: Function }} param0
- */
-// const StudentActions = ({ redirect }) => (
-//   <Button.Group>
-//     <Button>Print</Button>
-//     <Button onClick={redirect}>redirect</Button>
-//     <Button>more</Button>
-//   </Button.Group>
-// );
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -206,7 +194,9 @@ class ClassBoard extends Component {
 
   handleRedirect = () => {
     const { selectedStudents, testActivity } = this.props;
-    const notStartedStudents = testActivity.filter(x => selectedStudents[x.studentId] && x.status === "notStarted");
+    const notStartedStudents = testActivity.filter(
+      x => selectedStudents[x.studentId] && (x.status === "notStarted" || x.status === "inProgress")
+    );
 
     if (notStartedStudents.length > 0) {
       message.warn("Only absent and submitted students can be redirected");
@@ -228,6 +218,8 @@ class ClassBoard extends Component {
       nCountTrue
     });
   };
+
+  isMobile = () => window.innerWidth < 480;
 
   render() {
     const {
@@ -253,6 +245,7 @@ class ClassBoard extends Component {
     const classname = additionalData ? additionalData.classes : [];
     const questions = this.getQuestions();
     const questionsIds = questions.map((q, i) => ({ name: `Question ${i + 1}` }));
+    const isMobile = this.isMobile();
 
     return (
       <div>
@@ -288,11 +281,15 @@ class ClassBoard extends Component {
           <React.Fragment>
             <GraphContainer>
               <StyledCard bordered={false}>
-                <Graph gradebook={gradebook} />
+                <Graph gradebook={gradebook} testActivity={testActivity} />
               </StyledCard>
             </GraphContainer>
-            {Object.keys(selectedStudents).length > 0 && (
-              <StyledFlexContainer justifyContent="space-between" style={{ marginBottom: 0, paddingRight: 20 }}>
+            {nCountTrue > 0 && (
+              <StyledFlexContainer
+                justifyContent="space-between"
+                marginBottom="0px"
+                paddingRight={isMobile ? "5px" : "20px"}
+              >
                 <CheckContainer>
                   <StyledCheckbox checked={selectAll} onChange={this.onSelectAllChange}>
                     {selectAll ? "UNSELECT ALL" : "SELECT ALL"}

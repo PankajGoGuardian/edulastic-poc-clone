@@ -1,21 +1,26 @@
 import { Popconfirm, Switch } from "antd";
 import styled from "styled-components";
-import { darkBlueSecondary, white } from "@edulastic/colors";
+import { white, mobileWidth, newBlue } from "@edulastic/colors";
 import { Link } from "react-router-dom";
-import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 import { themes } from "../../../../student/themes";
 
 const classBoardTheme = themes.default.classboard;
 
-export const Container = styled(HeaderWrapper)`
+export const Container = styled.div`
   display: flex;
   border-radius: 5px;
   align-items: center;
   justify-content: space-between;
-  background-color: ${darkBlueSecondary};
+  background-color: ${newBlue};
   height: 62px;
   z-index: 1;
   padding: 0 2.5%;
+  @media (max-width: ${mobileWidth}) {
+    height: 150px;
+    padding: 0 20px;
+    flex-wrap: wrap;
+    border-radius: 0px;
+  }
 `;
 
 export const StyledTitle = styled.h1`
@@ -24,6 +29,9 @@ export const StyledTitle = styled.h1`
   font-weight: bold;
   margin: 20px 0;
   padding: 0;
+  @media (max-width: ${mobileWidth}) {
+    margin: 5px 0;
+  }
 `;
 
 export const StyledLink = styled(Link)`
@@ -61,11 +69,20 @@ export const StyledSwitch = styled(Switch)`
   background-color: ${classBoardTheme.SwitchColor};
 `;
 
-export const StyledDiv = styled.div``;
+export const StyledDiv = styled.div`
+  @media (max-width: ${mobileWidth}) {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+  }
+`;
+
+export const StyledTabContainer = styled.div`
+  overflow: auto;
+`;
 
 export const StyledTabs = styled.div`
-  width: 72%;
-  height: 62px;
+  min-width: 750px;
   display: flex;
   align-items: center;
   justify-content: flex-start;

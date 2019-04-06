@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Row, Col } from "antd";
 import { StyledTable } from "../styled";
+import { StyledH3 } from "../../../../common/styled";
 import { groupBy, cloneDeep } from "lodash";
 import Moment from "moment";
 import next from "immer";
@@ -12,6 +13,11 @@ import columnData from "../../static/json/tableColumns.json";
 
 export const AssessmentStatisticTable = props => {
   const [tableType, setTableType] = useState({ key: "school", title: "School" });
+
+  if (props.role === "teacher" && tableType.key != "class") {
+    let o = { key: "class", title: "Class" };
+    setTableType(o);
+  }
 
   const updateTable = (type, data) => {
     let arr;
@@ -132,7 +138,6 @@ export const AssessmentStatisticTable = props => {
       let tt = tableType;
       if (props.role === "teacher") {
         let o = { key: "class", title: "Class" };
-        setTableType(o);
         tt = o;
       }
       return {
@@ -160,7 +165,9 @@ export const AssessmentStatisticTable = props => {
     <div className={`${props.className}`}>
       <Row type="flex" justify="start" className="top-area">
         <Col className="top-area-col table-title">
-          Assessment Statistics of {props.name} by <span className="stats-grouped-by">{tableType.title}</span>
+          <StyledH3>
+            Assessment Statistics of {props.name} by <span className="stats-grouped-by">{tableType.title}</span>
+          </StyledH3>
         </Col>
         {props.role !== "teacher" ? (
           <Col className="top-area-col control-area">

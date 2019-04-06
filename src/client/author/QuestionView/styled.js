@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { mobileWidth } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
-import { Card, Button } from "antd";
+import { Card } from "antd";
 
 export const PaginationInfo = styled.div`
   font-weight: bold;
@@ -106,15 +106,29 @@ export const OptionDiv = styled.div`
 
 export const LegendContainer = styled.div`
   display: flex;
-  position: absolute;
-  top: 24px;
+  justify-content: space-between;
+  @media (max-width: ${mobileWidth}) {
+    margin-bottom: 10px;
+  }
 `;
+
+export const LegendItems = styled.div`
+  display: flex;
+  @media (max-width: ${mobileWidth}) {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+`;
+
 export const LegendItem = styled.div`
   display: flex;
   align-items: center;
   margin-right: 25px;
   &:last-child {
     margin-right: 0px;
+  }
+  @media (max-width: ${mobileWidth}) {
+    margin-top: 10px;
   }
 `;
 export const LegendIcon = styled.div`

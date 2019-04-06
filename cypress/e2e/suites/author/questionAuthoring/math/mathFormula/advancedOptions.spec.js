@@ -16,7 +16,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Extras on "Math formul
 
   context("User creates question.", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId("5c358b480c8e6f22190d5ce0");
+      editItem.getItemWithId();
       editItem.deleteAllQuestion();
 
       // create new que and select type

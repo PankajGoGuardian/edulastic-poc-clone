@@ -35,7 +35,7 @@ const Passage = ({ item, view, smallSize, setQuestionData, t }) => {
   if (view === "preview") {
     return (
       <Wrapper>
-        <PassageView item={itemForPreview} />
+        <PassageView preview item={itemForPreview} />
       </Wrapper>
     );
   }

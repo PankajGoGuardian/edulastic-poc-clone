@@ -118,10 +118,10 @@ export class ResponseFrequencyTable extends Component {
 
     this.columns[6].render = (data, record) => {
       let arr = [];
+      let { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record;
+      let sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
+      if (sum == 0) sum = 1;
       if (!data || Object.keys(data).length === 0) {
-        let { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record;
-        let sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
-        if (sum == 0) sum = 1;
         arr.push({ value: ((corr_cnt / sum) * 100).toFixed(0), name: "Correct", key: "corr_cnt" });
         arr.push({ value: ((incorr_cnt / sum) * 100).toFixed(0), name: "Incorrect", key: "incorr_cnt" });
         arr.push({ value: ((part_cnt / sum) * 100).toFixed(0), name: "Partially Correct", key: "part_cnt" });
@@ -132,13 +132,15 @@ export class ResponseFrequencyTable extends Component {
           let str = "";
           for (let key of slittedKeyArr) {
             for (let i = 0; i < record.options.length; i++) {
-              if (record.options[i].value === key) {
+              // IMPORTANT: double == instead of === cuz we need to compare number keys with string keys
+              if (record.options[i].value == key) {
                 str = str + numToAlp[i];
               }
             }
           }
+
           return {
-            value: data[comboKey],
+            value: Math.round((data[comboKey] / sum) * 100),
             name: str,
             key: str
           };

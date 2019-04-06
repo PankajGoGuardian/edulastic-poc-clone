@@ -2,8 +2,10 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Row, Col } from "antd";
 import next from "immer";
 import { StyledTable } from "../styled";
+import { StyledH3 } from "../../../../common/styled";
 import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
 import { idToName, analyseByToName } from "../../util/transformers";
+import styled from "styled-components";
 
 export const PeerPerformanceTable = ({
   columns,
@@ -13,7 +15,8 @@ export const PeerPerformanceTable = ({
   compareBy,
   assessmentName,
   filter,
-  bandInfo
+  bandInfo,
+  role
 }) => {
   const sortNumbers = key => (a, b) => {
     let _a = a[key] || 0;
@@ -53,7 +56,9 @@ export const PeerPerformanceTable = ({
     };
 
     let printData = data;
-    if (analyseBy === "proficiencyBand" || analyseBy === "aboveBelowStandard") {
+    if (analyseBy === "score(%)") {
+      printData = printData + "%";
+    } else if (analyseBy === "proficiencyBand" || analyseBy === "aboveBelowStandard") {
       printData = data + " (" + Math.abs(record[columnKey + "Percentage"]) + "%)";
     }
 
@@ -70,21 +75,21 @@ export const PeerPerformanceTable = ({
 
   let colouredCellsNo = 0;
 
-  _columns = next(columns, obj => {
+  _columns = next(columns, arr => {
     if (analyseBy === "score(%)" || analyseBy === "rawScore") {
-      obj[obj.length - 1].render = colorCell("fill");
-      obj[obj.length - 2].render = colorCell("dFill");
+      arr[arr.length - 1].render = colorCell("fill");
+      arr[arr.length - 2].render = colorCell("dFill");
       colouredCellsNo = 2;
     } else if (analyseBy === "aboveBelowStandard") {
-      obj[obj.length - 1].render = colorCell("fill_0", "aboveStandard");
-      obj[obj.length - 2].render = colorCell("fill_1", "belowStandard");
+      arr[arr.length - 1].render = colorCell("fill_0", "aboveStandard");
+      arr[arr.length - 2].render = colorCell("fill_1", "belowStandard");
       colouredCellsNo = 2;
     } else {
       bandInfo.sort((a, b) => {
         return a.threshold - b.threshold;
       });
       for (let [index, value] of bandInfo.entries()) {
-        obj.push({
+        arr.push({
           title: value.name,
           dataIndex: value.name,
           key: value.name,
@@ -94,7 +99,10 @@ export const PeerPerformanceTable = ({
       }
       colouredCellsNo = bandInfo.length;
     }
-    obj[obj.length - 1].sorter = sortNumbers(obj[obj.length - 1].key);
+    arr[arr.length - 1].sorter = sortNumbers(arr[arr.length - 1].key);
+    if (role === "teacher" && compareBy === "groupId") {
+      arr.splice(1, 2);
+    }
   });
 
   const tableData = useMemo(() => {
@@ -107,5 +115,18 @@ export const PeerPerformanceTable = ({
     return arr;
   }, [dataSource, filter]);
 
-  return <StyledTable colouredCellsNo={colouredCellsNo} columns={_columns} dataSource={tableData} rowKey={rowKey} />;
+  return (
+    <div>
+      <StyledDiv>
+        <StyledH3>
+          Assessment Statistics By {idToName[compareBy]} | {assessmentName}
+        </StyledH3>
+      </StyledDiv>
+      <StyledTable colouredCellsNo={colouredCellsNo} columns={_columns} dataSource={tableData} rowKey={rowKey} />
+    </div>
+  );
 };
+
+const StyledDiv = styled.div`
+  padding: 10px;
+`;

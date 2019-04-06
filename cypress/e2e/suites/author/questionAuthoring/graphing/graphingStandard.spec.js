@@ -74,7 +74,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
 
   context("User creates question.", () => {
     before("visit items page and select question type", () => {
-      editItemPage.getItemWithId("5c358b480c8e6f22190d5ce0");
+      editItemPage.getItemWithId();
       editItemPage.deleteAllQuestion();
 
       // create new que and select type

@@ -135,7 +135,7 @@ class QuestionModal extends React.Component {
     if (colIndex !== null && rowIndex !== null) {
       question = tableData[rowIndex][`Q${colIndex}`];
     }
-    console.log("quetions modal");
+
     return (
       <ModalWrapper
         centered

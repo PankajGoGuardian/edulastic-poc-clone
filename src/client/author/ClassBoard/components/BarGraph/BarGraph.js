@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { maxBy } from "lodash";
-
+import { white } from "@edulastic/colors";
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle } from "recharts";
 import { MainDiv } from "./styled";
 
@@ -38,10 +38,12 @@ export default class BarGraph extends Component {
     children: null
   };
 
+  isMobile = () => window.innerWidth < 480;
+
   render() {
     const { gradebook, children } = this.props;
     const itemsSum = gradebook.itemsSummary;
-
+    const isMobile = this.isMobile();
     let data = [];
     if (itemsSum) {
       data = itemsSum
@@ -65,6 +67,10 @@ export default class BarGraph extends Component {
       pointValue = 5;
     } else {
       pointValue = 1;
+    }
+
+    if (isMobile) {
+      data = data.slice(0, 2);
     }
 
     return (
@@ -116,8 +122,7 @@ export default class BarGraph extends Component {
               stroke="#1774F0"
               strokeWidth="3"
               type="monotone"
-              // dot={{ stroke: "#FFFFFF", strokeWidth: 10, fill: "#FFFFFF" }}
-              dot={false}
+              dot={{ stroke: white, strokeWidth: 6, fill: white }}
             />
           </ComposedChart>
         </ResponsiveContainer>

@@ -46,7 +46,7 @@ export const SimpleStackedBarChart = ({
   const constants = {
     COLOR_BLACK: "#010101",
     TICK_FILL: { fill: "#010101", fontWeight: "bold" },
-    Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, position: "insideLeft", textAnchor: "middle" }
+    Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, dx: -30 }
   };
 
   if (data !== copyData) {

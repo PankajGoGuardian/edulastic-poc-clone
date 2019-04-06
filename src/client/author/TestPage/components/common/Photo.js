@@ -59,10 +59,11 @@ class Photo extends React.Component {
       listType: "picture-card",
       className: "avatar-uploader",
       showUploadList: false,
-      action: `${API_CONFIG.api}/file/upload`,
+      action: `${API_CONFIG.api}file/upload`,
       onChange: this.handleChange,
       beforeUpload,
       headers: {
+        "X-Requested-With": null,
         authorization: localStorage.getItem("access_token")
       }
     };

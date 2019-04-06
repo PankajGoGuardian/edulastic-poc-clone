@@ -2,11 +2,15 @@ import { Link } from "react-router-dom";
 import { Card, Button } from "antd";
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
+import { mobileWidth } from "@edulastic/colors";
 
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 95%;
   margin: 20px auto;
   align-items: flex-start;
+  @media (max-width: ${mobileWidth}) {
+    flex-wrap: wrap;
+  }
 `;
 
 export const StyledCard = styled(Card)`
@@ -16,6 +20,9 @@ export const StyledCard = styled(Card)`
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   .ant-card-body {
     padding: 30px 35px 30px 40px;
+    @media (max-width: ${mobileWidth}) {
+      padding: 15px;
+    }
   }
 `;
 
@@ -23,6 +30,14 @@ export const StyledSummaryCard = styled(StyledCard)`
   width: calc(50% - 18px);
   margin-bottom: 20px;
   margin-right: 18px;
+  @media (max-width: ${mobileWidth}) {
+    width: 50%;
+    margin-bottom: 8px;
+    margin-right: 8px;
+    &:last-child {
+      margin-right: 0px;
+    }
+  }
 `;
 
 export const SummaryInfoWrapper = styled.div`
@@ -30,6 +45,10 @@ export const SummaryInfoWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
+  @media (max-width: ${mobileWidth}) {
+    width: 100%;
+    margin-right: 0px;
+  }
 `;
 
 export const InfoRow = styled.div`
@@ -45,10 +64,20 @@ export const SubInfoRow = styled(InfoRow)`
   &:first-child {
     margin-top: 0px;
   }
+  @media (max-width: ${mobileWidth}) {
+    img,
+    svg {
+      width: 32px;
+      height: 32px;
+    }
+  }
 `;
 
 export const LowestPerformersWrapper = styled.div`
   width: 40%;
+  @media (max-width: ${mobileWidth}) {
+    width: 100%;
+  }
 `;
 
 export const InfoLabel = styled.div`
@@ -56,6 +85,9 @@ export const InfoLabel = styled.div`
   font-family: Open Sans, SemiBold;
   font-size: 16px;
   font-weight: 600;
+  @media (max-width: ${mobileWidth}) {
+    font-size: 12px;
+  }
 `;
 
 export const InfoIcon = styled.div``;
@@ -70,19 +102,32 @@ export const ValueTitle = styled.div`
   font-size: 25px;
   font-family: Open Sans, Bold;
   font-weight: 800;
+  @media (max-width: ${mobileWidth}) {
+    font-size: 14px;
+  }
 `;
 
 export const ActionContainer = styled(InfoRow)`
   justify-content: space-between;
   align-items: center;
+  @media (max-width: ${mobileWidth}) {
+    flex-direction: column;
+  }
 `;
 export const ActionDescriptionWrapper = styled.div``;
-export const ActionTitle = styled(InfoLabel)``;
+export const ActionTitle = styled(InfoLabel)`
+  @media (max-width: ${mobileWidth}) {
+    font-size: 16px;
+  }
+`;
 export const ActionDescription = styled.div`
   color: #6a737f;
   font-size: 15px;
   margin-top: 5px;
   font-family: Open Sans, Regular;
+  @media (max-width: ${mobileWidth}) {
+    margin-bottom: 15px;
+  }
 `;
 export const ViewRecommendationsBtn = styled(Button)`
   background-color: #1774f0;
@@ -136,6 +181,9 @@ export const MistakesTitle = styled.div`
   font-family: Open Sans, Bold;
   font-size: 14px;
   font-weight: 700;
+  @media (max-width: ${mobileWidth}) {
+    font-size: 12px;
+  }
 `;
 
 export const MistakesValue = styled.div`
@@ -172,4 +220,7 @@ export const PaginationInfo = styled.span`
   font-size: 11px;
   word-spacing: 5px;
   color: #69727e;
+  @media (max-width: ${mobileWidth}) {
+    display: none;
+  }
 `;

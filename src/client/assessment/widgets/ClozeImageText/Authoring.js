@@ -172,8 +172,9 @@ class Authoring extends Component {
 
     const draggerProps = {
       name: "file",
-      action: `${API_CONFIG.api}/file/upload`,
+      action: `${API_CONFIG.api}file/upload`,
       headers: {
+        "X-Requested-With": null,
         authorization: localStorage.getItem("access_token")
       },
       className: "drag-full-parent"

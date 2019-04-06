@@ -59,8 +59,8 @@ export const SignedStackedBarChartContainer = ({
       return (
         <div>
           <Row type="flex" justify="start">
-            <Col className="tooltip-key">Assessment Name: </Col>
-            <Col className="tooltip-value">{assessmentName}</Col>
+            <Col className="tooltip-key">{idToName[compareBy] + ": "}</Col>
+            <Col className="tooltip-value">{compareBylabel}</Col>
           </Row>
           {arr.map((item, index) => {
             return (
@@ -73,12 +73,8 @@ export const SignedStackedBarChartContainer = ({
             );
           })}
           <Row type="flex" justify="start">
-            <Col className="tooltip-key">"District Average: "</Col>
+            <Col className="tooltip-key">District Average: </Col>
             <Col className="tooltip-value">{districtAvg}</Col>
-          </Row>
-          <Row type="flex" justify="start">
-            <Col className="tooltip-key">{idToName[compareBy] + ": "}</Col>
-            <Col className="tooltip-value">{compareBylabel}</Col>
           </Row>
         </div>
       );
@@ -87,6 +83,10 @@ export const SignedStackedBarChartContainer = ({
   };
 
   const yTickFormatter = val => {
+    return "";
+  };
+
+  const barsLabelFormatter = val => {
     if (val !== 0) {
       return Math.abs(val) + "%";
     } else {
@@ -170,6 +170,7 @@ export const SignedStackedBarChartContainer = ({
       getXTickText={getXTickText}
       yAxisLabel={chartSpecifics.yAxisLabel}
       yTickFormatter={yTickFormatter}
+      barsLabelFormatter={barsLabelFormatter}
     />
   );
 };

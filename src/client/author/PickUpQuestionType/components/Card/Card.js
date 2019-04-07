@@ -25,7 +25,7 @@ const Card = ({ title, cardImage, onSelectQuestionType, data, setUserAnswer }) =
   return (
     <Fragment>
       <RoundDiv onClick={() => onSelectQuestionType(smallData)}>
-        <Header>{title}</Header>
+        <Header className="card-title">{title}</Header>
         <Content>
           <StyledPreviewImage src={cardImage || CardMapImage} />
         </Content>

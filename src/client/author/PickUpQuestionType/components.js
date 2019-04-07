@@ -1,21 +1,24 @@
+import { newBlue } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const RoundDiv = styled.div`
   display: flex;
   flex-direction: column;
-  width: calc(16.67% - 20px);
-  margin: 0px 0px 27px 0px;
-  background-color: #0288d1;
+  width: calc(25% - 20px);
+  margin: 0px 0px 20px 0px;
+  background-color: #f8f8fb;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   cursor: pointer;
   overflow: hidden;
+  transition: all 0.3s ease;
 
   @media (max-width: 2048px) {
-    width: calc(25% - 20px);
+    width: calc(33.3333% - 12px);
+    margin: 0px 0px 12px 0px;
   }
   @media (max-width: 1460px) {
-    width: calc(33% - 20px);
+    width: calc(33.3333% - 12px);
   }
   @media (max-width: 1024px) {
     width: calc(50% - 20px);
@@ -25,19 +28,23 @@ export const RoundDiv = styled.div`
   }
 
   &:hover {
-    background-color: #255681;
+    background-color: ${newBlue};
+
+    .card-title {
+      color: #fff;
+    }
   }
 `;
 
 export const Header = styled.div`
-  height: 54px;
   display: flex;
   align-items: center;
-  padding: 0 20px;
-  color: white;
+  padding: 18px 20px 6px;
+  color: #434b5d;
   font-family: Open Sans;
   font-size: 16px;
   font-weight: bold;
+  transition: all 0.3s ease;
 `;
 
 export const Content = styled.div`
@@ -71,15 +78,15 @@ export const Dump = styled.div`
   @media (max-width: 1820px) {
     width: calc(25% - 20px);
   }
-  
+
   @media (max-width: 1460px) {
     width: calc(33% - 20px);
   }
-  
+
   @media (max-width: 1024px) {
     width: calc(50% - 20px);
   }
-  
+
   @media (max-width: 480px) {
     width: 100%;
   }

@@ -1,4 +1,4 @@
-import { white, darkBlueSecondary, mobileWidth } from "@edulastic/colors";
+import { white, newBlue, mobileWidth } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -9,9 +9,10 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 70px;
-  background: ${darkBlueSecondary};
-  padding: 0px 40px;
-  height: 62px;
+  background: ${newBlue};
+  padding: 0px 45px;
+  height: 96px;
+  z-index: 10;
 
   @media (max-width: ${mobileWidth}) {
     margin-bottom: 30px;

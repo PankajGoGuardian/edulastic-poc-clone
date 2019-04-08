@@ -221,7 +221,7 @@ class MathFormulaEdit {
 
   // getAnswerMathInputStyle = () => cy.get('[data-cy="answer-math-input-style"]');
 
-  checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect) => {
+  checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect, score = false, scoreValuse = "1/1") => {
     preview.header.preview();
     preview.getClear().click();
     this.getPreviewMathQuill().should("be.empty");
@@ -233,7 +233,7 @@ class MathFormulaEdit {
         cy
           .get("body")
           .children()
-          .should("contain", `score: ${isCorrect ? "1/1" : `0/1`}`)
+          .should("contain", `score: ${isCorrect ? scoreValuse : `0/1`}`)
       );
 
     this.checkAttr(isCorrect);

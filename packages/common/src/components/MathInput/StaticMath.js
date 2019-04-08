@@ -196,8 +196,8 @@ class StaticMath extends PureComponent {
     return (
       <MathInputStyles>
         <div ref={this.containerRef} className="input" onBlur={onBlur}>
-          <div className="input__math" style={style}>
-            <span className="input__math__field" ref={this.mathFieldRef} />
+          <div className="input__math" style={style} data-cy="answer-math-input-style">
+            <span className="input__math__field" ref={this.mathFieldRef} data-cy="answer-math-input-field" />
           </div>
           <div className="input__keyboard">
             {showKeyboard && (

@@ -138,6 +138,7 @@ export const SimpleStackedBarChartContainer = ({
       onResetClickCB={_onResetClickCB}
       getXTickText={getXTickText}
       yAxisLabel={chartSpecifics.yAxisLabel}
+      filter={filter}
     />
   );
 };

@@ -49,29 +49,29 @@ export const SignedStackedBarChartContainer = ({
     return arr;
   };
 
-  const getTooltipJSX = payload => {
-    if (payload && payload.length) {
+  const getTooltipJSX = (payload, barIndex) => {
+    if (payload && payload.length && barIndex !== null) {
       let { districtAvg, compareBy, compareBylabel, correct } = payload[0].payload;
-      let arr = [...payload];
-      if (analyseBy === proficiencyBand) {
-        arr.reverse();
-      }
+
       return (
         <div>
           <Row type="flex" justify="start">
             <Col className="tooltip-key">{idToName[compareBy] + ": "}</Col>
             <Col className="tooltip-value">{compareBylabel}</Col>
           </Row>
-          {arr.map((item, index) => {
-            return (
-              <Row key={item.name} type="flex" justify="start" style={{ backgroundColor: item.fill }}>
-                <Col className="tooltip-key">{item.name + ": "}</Col>
-                <Col className="tooltip-value">
-                  {`${Math.abs(item.value)}% (${item.payload[item.dataKey.substring(0, item.dataKey.length - 10)]})`}
-                </Col>
-              </Row>
-            );
-          })}
+          <Row
+            key={payload[barIndex].name}
+            type="flex"
+            justify="start"
+            style={{ backgroundColor: payload[barIndex].fill }}
+          >
+            <Col className="tooltip-key">{"Student (%): "}</Col>
+            <Col className="tooltip-value">
+              {`${Math.abs(payload[barIndex].value)}% (${
+                payload[barIndex].payload[payload[barIndex].dataKey.substring(0, payload[barIndex].dataKey.length - 10)]
+              })`}
+            </Col>
+          </Row>
           <Row type="flex" justify="start">
             <Col className="tooltip-key">District Average: </Col>
             <Col className="tooltip-value">{districtAvg}</Col>
@@ -171,6 +171,7 @@ export const SignedStackedBarChartContainer = ({
       yAxisLabel={chartSpecifics.yAxisLabel}
       yTickFormatter={yTickFormatter}
       barsLabelFormatter={barsLabelFormatter}
+      filter={filter}
     />
   );
 };

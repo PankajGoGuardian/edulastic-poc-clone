@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { round } from "lodash";
 import { Link } from "react-router-dom";
 import { Col, Row } from "antd";
 import { greenSecondary, yellow, red } from "@edulastic/colors";
@@ -32,11 +33,9 @@ import {
   RightAlignedCol
 } from "./styled";
 
-const roundFraction = n => Math.floor(n * 100) / 100;
-
 export default class DisneyCardContainer extends Component {
   static propTypes = {
-    selectedStudents: PropTypes.func.isRequired,
+    selectedStudents: PropTypes.object.isRequired,
     studentSelect: PropTypes.func.isRequired,
     studentUnselect: PropTypes.func.isRequired
   };
@@ -122,7 +121,7 @@ export default class DisneyCardContainer extends Component {
           return null;
         });
 
-        const stu_per = roundFraction((parseFloat(correctAnswers) / parseFloat(questions)) * 100);
+        const stu_per = round((parseFloat(correctAnswers) / parseFloat(questions)) * 100, 2);
 
         const studentData = (
           <StyledCard bordered={false} key={index}>
@@ -184,21 +183,21 @@ export default class DisneyCardContainer extends Component {
               </PerfomanceSection>
             </PaginationInfoS>
             <PaginationInfoT>
-              {student.questionActivities.map(questionAct => {
+              {student.questionActivities.map((questionAct, questionIndex) => {
                 if (questionAct.correct) {
-                  return <SquareColorDivGreen />;
+                  return <SquareColorDivGreen key={questionIndex} />;
                 }
                 if (questionAct.skipped) {
-                  return <SquareColorDivGray />;
+                  return <SquareColorDivGray key={questionIndex} />;
                 }
                 if (questionAct.partialCorrect) {
-                  return <SquareColorDivYellow />;
+                  return <SquareColorDivYellow key={questionIndex} />;
                 }
                 if (questionAct.notStarted) {
-                  return <SquareColorDisabled />;
+                  return <SquareColorDisabled key={questionIndex} />;
                 }
                 if (!questionAct.correct) {
-                  return <SquareColorDivPink />;
+                  return <SquareColorDivPink key={questionIndex} />;
                 }
                 return null;
               })}

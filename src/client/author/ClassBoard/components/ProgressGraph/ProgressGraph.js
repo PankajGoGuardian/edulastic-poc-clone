@@ -15,7 +15,7 @@ import {
 export default class Graph extends Component {
   static propTypes = {
     gradebook: PropTypes.object.isRequired,
-    testActivity: PropTypes.object.isRequired
+    testActivity: PropTypes.array.isRequired
   };
 
   calculateAvgScore = () => {

@@ -219,6 +219,8 @@ class MathFormulaEdit {
 
   getAnswerMathInputStyle = () => cy.get(".input__math");
 
+  // getAnswerMathInputStyle = () => cy.get('[data-cy="answer-math-input-style"]');
+
   checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect, score = false, scoreValuse = "1/1") => {
     preview.header.preview();
     preview.getClear().click();
@@ -231,7 +233,7 @@ class MathFormulaEdit {
         cy
           .get("body")
           .children()
-          .should("contain", `score: ${isCorrect ? scoreValuse : `0/${score ? "2" : "1"}`}`)
+          .should("contain", `score: ${isCorrect ? scoreValuse : `0/1`}`)
       );
 
     this.checkAttr(isCorrect);
@@ -375,6 +377,14 @@ class MathFormulaEdit {
 
   getAnswerInputMathTextarea = () => cy.get(`[data-cy="answer-input-math-textarea"]`);
 
+  getCorrectAnswerBox = () => cy.get('[data-cy="correct-answer-box"]');
+
+  getUploadImageIcon = () => cy.get(".ql-image");
+
+  getEditorData = () => cy.get(".ql-editor p");
+
+  getBody = () => cy.get("body");
+
   setMethod = (methods, setFunction = false, argument, setChecBox) => {
     this.getMethodSelectionDropdow()
       .click({ force: true })
@@ -412,7 +422,7 @@ class MathFormulaEdit {
         .should("be.checked");
   };
 
-  allowDecimalMarks = (separator, expected, preview, isCorrect = false, score, value) => {
+  allowDecimalMarks = (separator, inputLength, expected, preview, isCorrect = false) => {
     this.getAnswerAllowThousandsSeparator().check({ force: true });
     this.getThousandsSeparatorDropdown()
       .click()
@@ -421,9 +431,48 @@ class MathFormulaEdit {
           .should("be.visible")
           .click();
       });
-    this.checkCorrectAnswer(expected, preview, 0, isCorrect, score, value);
+    this.checkCorrectAnswer(expected, preview, inputLength, isCorrect);
     this.getAnswerAllowThousandsSeparator().uncheck({ force: true });
   };
-}
 
+  mapIsFactorisedMethodFields = fields =>
+    Object.values(fields).forEach(field =>
+      this.getAnswerFieldDropdown()
+        .click()
+        .then(() =>
+          this.getAnswerFieldDropdownListValue(field)
+            .click()
+            .should("be.visible")
+        )
+    );
+
+  setAnswerSetDecimalSeparatorDropdown = separator =>
+    this.getAnswerSetDecimalSeparatorDropdown()
+      .click()
+      .then(() => {
+        this.getAnswerSetDecimalSeparatorDropdownList(separator)
+          .should("be.visible")
+          .click();
+      });
+
+  setAllowedUnitsInput = units =>
+    this.getAnswerAllowedUnits()
+      .clear({ force: true })
+      .type(units, { force: true });
+
+  setArgumentInput = (selector, input) =>
+    this[selector]()
+      .clear({ force: true })
+      .type("{uparrow}".repeat(input), { force: true });
+
+  checkIfTextExist = data =>
+    this.getComposeQuestionTextBox()
+      .clear()
+      .type(data)
+      .then($input => {
+        expect($input[0].innerText).to.contain(data);
+      });
+
+  getVirtualKeyBoardItem = value => this.getVirtualKeyBoard().find(`button[data-cy="virtual-keyboard-${value}"]`);
+}
 export default MathFormulaEdit;

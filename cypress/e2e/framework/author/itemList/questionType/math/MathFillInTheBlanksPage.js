@@ -18,6 +18,14 @@ class MathFillInTheBlanksPage extends MathFractionPage {
 
   getMathquillBlockId = () => this.getAnswerMathInputField().find("[mathquill-block-id]");
 
+  checkUncheckChecbox = (preview, input, expected, checkboxValues, isCorrectAnswer) => {
+    checkboxValues.forEach((checkboxValue, index) => {
+      this.setValue(input);
+      this.setSeparator(checkboxValue)();
+      this.checkCorrectAnswer(expected, preview, input.length, isCorrectAnswer[index]);
+    });
+  };
+
   checkCorrectAnswerWithResponse = (expectedValues, preview, inputLength, isCorrect) => {
     preview.header.preview();
     preview.getClear().click();
@@ -51,6 +59,24 @@ class MathFillInTheBlanksPage extends MathFractionPage {
     preview.header.edit();
 
     if (inputLength > 0) this.clearAnswerValueInput(inputLength);
+  };
+
+  setAnswerArgumentDropdownValue = value =>
+    this.getAnswerRuleArgumentSelect()
+      .click()
+      .then(() => this.getAnswerArgumentDropdownByValue(value).click());
+
+  allowDecimalMarksWithResponse = (separator, inputLength, expected, preview, isCorrect = false) => {
+    this.getAnswerAllowThousandsSeparator().check({ force: true });
+    this.getThousandsSeparatorDropdown()
+      .click()
+      .then(() => {
+        this.getThousandsSeparatorDropdownList(separator)
+          .should("be.visible")
+          .click();
+      });
+    this.checkCorrectAnswerWithResponse(expected, preview, inputLength, isCorrect);
+    this.getAnswerAllowThousandsSeparator().uncheck({ force: true });
   };
 }
 

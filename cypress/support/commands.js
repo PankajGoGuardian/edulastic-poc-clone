@@ -334,3 +334,13 @@ Cypress.Commands.add(
     cy.wrap(subject).type(typeObject, { force: true, delay: 100 });
   }
 );
+
+Cypress.Commands.add(
+  "movesCursorToEnd",
+  {
+    prevSubject: "element"
+  },
+  (subject, length) => {
+    cy.wrap(subject).type("{rightarrow}".repeat(length), { force: true });
+  }
+);

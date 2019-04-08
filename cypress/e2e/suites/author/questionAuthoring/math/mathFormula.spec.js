@@ -541,19 +541,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       question.getAnswerValueMathInput().type(input, { force: true });
       separators.forEach((separator, index) => {
         question.allowDecimalMarks(separator, expected[index], preview, true);
-        // question.getAnswerAllowThousandsSeparator().check({ force: true });
-        // question
-        //   .getThousandsSeparatorDropdown()
-        //   .click()
-        //   .then(() => {
-        //     question
-        //       .getThousandsSeparatorDropdownList(separator)
-        //       .should("be.visible")
-        //       .click();
-        //   });
-        // question.checkCorrectAnswer(expected[index], preview, index === 0 ? 0 : input.length, true);
-        //
-        // question.getAnswerAllowThousandsSeparator().uncheck({ force: true });
       });
     });
 

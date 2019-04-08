@@ -1,20 +1,14 @@
 import { Point } from ".";
 import { CONSTANT, Colors } from "../config";
 import { handleSnap } from "../utils";
+import { getLabelParameters } from "../settings";
+
+const jxgType = 97;
 
 export const defaultConfig = {
   type: CONSTANT.TOOLS.PARABOLA,
   fixed: false
 };
-
-export const getParabolaLabelParameters = () => ({
-  offset: [0, 10],
-  position: "mdl",
-  anchorX: "middle",
-  anchorY: "middle",
-  cssClass: "myLabel",
-  highlightCssClass: "myLabel"
-});
 
 const makeCallback = (p1, p2) => x => {
   const a = (1 / (p2.X() - p1.X()) ** 2) * (p2.Y() - p1.Y());
@@ -33,9 +27,9 @@ function onHandler() {
       const newLine = board.$board.create("functiongraph", [makeCallback(...points)], {
         ...defaultConfig,
         ...Colors.default[CONSTANT.TOOLS.PARABOLA],
-        label: getParabolaLabelParameters()
+        label: getLabelParameters(jxgType)
       });
-
+      newLine.type = jxgType;
       handleSnap(newLine, points);
 
       if (newLine) {
@@ -59,7 +53,7 @@ const cleanPoints = board => {
 function getConfig(parabola) {
   return {
     _type: parabola.type,
-    type: parabola.getAttributes().type,
+    type: CONSTANT.TOOLS.PARABOLA,
     id: parabola.id,
     label: parabola.hasLabel ? parabola.label.plaintext : false,
     points: Object.keys(parabola.ancestors)
@@ -75,7 +69,7 @@ function parseConfig(pointsConfig) {
     {
       ...defaultConfig,
       fillColor: "transparent",
-      label: getParabolaLabelParameters()
+      label: getLabelParameters(jxgType)
     }
   ];
 }

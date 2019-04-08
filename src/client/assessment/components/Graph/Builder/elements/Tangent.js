@@ -1,20 +1,14 @@
 import { Point } from ".";
 import { CONSTANT, Colors } from "../config";
 import { handleSnap } from "../utils";
+import { getLabelParameters } from "../settings";
+
+const jxgType = 91;
 
 export const defaultConfig = {
   type: CONSTANT.TOOLS.TANGENT,
   fixed: false
 };
-
-export const getTangentLabelParameters = () => ({
-  offset: [0, 10],
-  position: "mdl",
-  anchorX: "middle",
-  anchorY: "middle",
-  cssClass: "myLabel",
-  highlightCssClass: "myLabel"
-});
 
 const makeCallback = (p1, p2) => x => {
   const a = p1.Y();
@@ -36,9 +30,9 @@ function onHandler() {
       const newLine = board.$board.create("functiongraph", [makeCallback(...points)], {
         ...defaultConfig,
         ...Colors.default[CONSTANT.TOOLS.TANGENT],
-        label: getTangentLabelParameters()
+        label: getLabelParameters(jxgType)
       });
-      newLine.type = 91;
+      newLine.type = jxgType;
       handleSnap(newLine, points);
 
       if (newLine) {
@@ -59,6 +53,18 @@ const cleanPoints = board => {
   points = [];
 };
 
+function getConfig(tangent) {
+  return {
+    _type: tangent.type,
+    type: CONSTANT.TOOLS.TANGENT,
+    id: tangent.id,
+    label: tangent.hasLabel ? tangent.label.plaintext : false,
+    points: Object.keys(tangent.ancestors)
+      .sort()
+      .map(n => Point.getConfig(tangent.ancestors[n]))
+  };
+}
+
 function parseConfig(pointsConfig) {
   return [
     "functiongraph",
@@ -66,7 +72,7 @@ function parseConfig(pointsConfig) {
     {
       ...defaultConfig,
       fillColor: "transparent",
-      label: getTangentLabelParameters()
+      label: getLabelParameters(jxgType)
     }
   ];
 }
@@ -78,6 +84,7 @@ function abort(cb) {
 
 export default {
   onHandler,
+  getConfig,
   parseConfig,
   cleanPoints,
   abort

@@ -2,13 +2,18 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import styled from "styled-components";
+import { throttle } from "lodash";
 
 class QuestionMenu extends Component {
   state = {
-    advancedAreOpen: false
+    advancedAreOpen: false,
+    activeTab: 0
   };
 
-  handleAdvancedOpen = () => this.setState({ advancedAreOpen: !this.state.advancedAreOpen });
+  handleAdvancedOpen = () => {
+    const { advancedAreOpen } = this.state;
+    this.setState({ advancedAreOpen: !advancedAreOpen });
+  };
 
   handleScroll = (option, index) =>
     window.scrollTo({
@@ -16,9 +21,78 @@ class QuestionMenu extends Component {
       behavior: "smooth"
     });
 
+  componentDidMount() {
+    window.addEventListener("scroll", this.throttledFindActiveTab);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.throttledFindActiveTab);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ activeTab: nextProps.activeTab });
+  }
+
+  calcScrollPosition = (index, offset) => {
+    const scrollYMax =
+      Math.max(
+        document.body.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.clientHeight,
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight
+      ) - window.innerHeight;
+
+    if (index === 0) {
+      return window.scrollY + 90;
+    }
+    if (index !== 0 && offset < scrollYMax) {
+      return window.scrollY + 250;
+    }
+    if (index !== 0 && offset >= scrollYMax) {
+      return window.scrollY + 650;
+      // return window.scrollY + (offset - scrollYMax + 200)
+    }
+  };
+
+  isActive = (index, options) => {
+    const scrollPosition = this.calcScrollPosition(index, options[index].offset);
+
+    if (index === 0) {
+      if (scrollPosition <= options[index].offset) {
+        return true;
+      }
+    } else if (index === options.length - 1) {
+      if (scrollPosition <= document.documentElement.scrollHeight && scrollPosition >= options[index].offset) {
+        return true;
+      }
+    } else if (scrollPosition >= options[index].offset && scrollPosition <= options[index + 1].offset) {
+      return true;
+    }
+    return false;
+  };
+
+  findActiveTab = () => {
+    const { main, advanced } = this.props;
+    const { activeTab } = this.state;
+    const allOptions = main.concat(advanced);
+
+    if (allOptions) {
+      allOptions.forEach((option, index) => {
+        if (this.isActive(index, allOptions)) {
+          if (index !== activeTab) {
+            return this.setState({ activeTab: index });
+          }
+        }
+      });
+    }
+  };
+
+  throttledFindActiveTab = throttle(this.findActiveTab, 200);
+
   render() {
-    const { activeTab, main, advanced, isSidebarCollapsed } = this.props;
-    const { advancedAreOpen } = this.state;
+    const { main, advanced, isSidebarCollapsed } = this.props;
+    const { advancedAreOpen, activeTab } = this.state;
     return (
       <Menu isSidebarCollapsed={isSidebarCollapsed}>
         <MainOptions activeTab={activeTab} main={main}>
@@ -95,7 +169,7 @@ const MainOptions = styled.ul`
     left: -6.5px;
     top: 14px;
     transition: 0.2s ease transform, 0.2s ease opacity;
-    transform: translateY(${props => props.activeTab * 47.5 + "px"});
+    transform: translateY(${props => `${props.activeTab * 47.5}px`});
   }
 `;
 
@@ -112,6 +186,7 @@ const Option = styled.li`
   color: #b1b1b1;
   margin-bottom: 25px;
   transition: 0.2s ease color;
+  text-transform: uppercase;
 
   &:last-of-type {
     margin-bottom: 0;

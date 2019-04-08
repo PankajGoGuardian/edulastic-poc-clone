@@ -1,4 +1,3 @@
-export { default as AdditionalSettings } from "./AdditionalSettings";
 export { default as AnnotationSettings } from "./AnnotationSettings";
 export { default as AxisSegments } from "./AxisSegments";
 export { default as ControlsSettings } from "./ControlsSettings";

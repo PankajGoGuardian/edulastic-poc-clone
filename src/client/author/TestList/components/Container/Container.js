@@ -34,7 +34,8 @@ import {
   getTestsLimitSelector,
   getTestsPageSelector
 } from "../../ducks";
-import { getTestsCreatingSelector } from "../../../TestPage/ducks";
+import { getTestsCreatingSelector, clearTestDataAction } from "../../../TestPage/ducks";
+import { clearSelectedItemsAction } from "../../../TestPage/components/AddItems/ducks";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import {
   clearDictStandardsAction,
@@ -210,8 +211,10 @@ class TestList extends Component {
   };
 
   handleCreate = () => {
-    const { history } = this.props;
+    const { history, clearSelectedItems, clearTestData } = this.props;
     history.push("/author/tests/create");
+    clearTestData();
+    clearSelectedItems();
   };
 
   handlePaginationChange = page => {
@@ -511,7 +514,9 @@ const enhance = compose(
       getCurriculums: getDictCurriculumsAction,
       getCurriculumStandards: getDictStandardsForCurriculumAction,
       receiveTests: receiveTestsAction,
-      clearDictStandards: clearDictStandardsAction
+      clearDictStandards: clearDictStandardsAction,
+      clearSelectedItems: clearSelectedItemsAction,
+      clearTestData: clearTestDataAction
     }
   )
 );

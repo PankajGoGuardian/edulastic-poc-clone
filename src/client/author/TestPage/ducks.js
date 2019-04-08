@@ -39,7 +39,7 @@ export const REGRADE_TEST = "[regrade] set regrade data";
 export const TEST_SHARE = "[test] send test share request";
 export const TEST_PUBLISH = "[test] publish test";
 export const UPDATE_TEST_STATUS = "[test] update test status";
-
+export const CLEAR_TEST_DATA = "[test] clear test data";
 // actions
 
 export const receiveTestByIdAction = id => ({
@@ -90,6 +90,9 @@ export const updateTestErrorAction = error => ({
 export const setTestDataAction = data => ({
   type: SET_TEST_DATA,
   payload: { data }
+});
+export const clearTestDataAction = () => ({
+  type: CLEAR_TEST_DATA
 });
 
 export const setDefaultTestDataAction = () => ({
@@ -228,6 +231,14 @@ export const reducer = (state = initialState, { type, payload }) => {
         entity: {
           ...state.entity,
           status: payload
+        }
+      };
+    case CLEAR_TEST_DATA:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          testItems: []
         }
       };
     default:

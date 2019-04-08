@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { round } from "lodash";
-import { Link } from "react-router-dom";
 import { Col, Row } from "antd";
 import { greenSecondary, yellow, red } from "@edulastic/colors";
 
@@ -37,7 +36,8 @@ export default class DisneyCardContainer extends Component {
   static propTypes = {
     selectedStudents: PropTypes.object.isRequired,
     studentSelect: PropTypes.func.isRequired,
-    studentUnselect: PropTypes.func.isRequired
+    studentUnselect: PropTypes.func.isRequired,
+    viewResponses: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -89,7 +89,7 @@ export default class DisneyCardContainer extends Component {
 
   render() {
     const { testActivity } = this.state;
-    const { selectedStudents, studentSelect, studentUnselect } = this.props;
+    const { selectedStudents, studentSelect, studentUnselect, viewResponses } = this.props;
     const styledCard = [];
 
     if (testActivity.length > 0) {
@@ -174,10 +174,10 @@ export default class DisneyCardContainer extends Component {
                   <StyledParaSSS>{stu_per || stu_per === 0 ? `${stu_per}%` : "-%"}</StyledParaSSS>
                 </StyledFlexDiv>
                 {student.testActivityId && (
-                  <PagInfo>
-                    <Link to={`/author/classresponses/${student.testActivityId}`}>
-                      VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
-                    </Link>
+                  <PagInfo onClick={e => viewResponses(e, student.studentId)}>
+                    {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
+                    VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
+                    {/* </Link> */}
                   </PagInfo>
                 )}
               </PerfomanceSection>

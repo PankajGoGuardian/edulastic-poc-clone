@@ -1,6 +1,7 @@
 import React from "react";
 import { Component } from "react";
 import styled from "styled-components";
+import { get } from "lodash";
 
 import { getHSLFromRange1, getHSLFromRange2 } from "../../../../common/util";
 import { StyledResponseTagContainer } from "../styled";
@@ -12,19 +13,22 @@ export class ResponseTag extends Component {
   }
 
   render() {
+    let name = get(this.props, "data.name", "");
+    let value = Number(get(this.props, "data.value", 0));
+
     return (
       <StyledResponseTagContainer>
         <StyledTag
           style={
             this.props.data.isCorrect
               ? { borderColor: getHSLFromRange1(100) }
-              : Number(this.props.data.value) > this.props.incorrectFrequencyThreshold
-              ? { borderColor: getHSLFromRange2(100 - this.props.data.value) }
+              : value > this.props.incorrectFrequencyThreshold
+              ? { borderColor: getHSLFromRange2(100 - value) }
               : { borderColor: "#cccccc" }
           }
         >
-          {<p>{this.props.data.name}</p>}
-          <p>{this.props.data.value}%</p>
+          {<p>{name}</p>}
+          <p>{value}%</p>
         </StyledTag>
       </StyledResponseTagContainer>
     );

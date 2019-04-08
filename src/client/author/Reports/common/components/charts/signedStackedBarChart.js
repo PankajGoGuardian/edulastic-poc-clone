@@ -17,12 +17,23 @@ import styled from "styled-components";
 import { StyledCustomChartTooltip, StyledChartNavButton } from "../../styled";
 import { CustomChartXTick } from "./chartUtils/customChartXTick";
 
-const yTickFormatter = val => {
+const _yTickFormatter = val => {
   if (val !== 0) {
     return val + "%";
   } else {
     return "";
   }
+};
+
+const LabelText = props => {
+  let { x, y, width, height, value, formatter, onBarMouseOver, onBarMouseLeave, bdIndex } = props;
+  return (
+    <g class="asd-asd" onMouseOver={onBarMouseOver(bdIndex)} onMouseLeave={onBarMouseLeave(bdIndex)}>
+      <text x={x + width / 2} y={y + height / 2} textAnchor="middle" dominantBaseline="middle">
+        {formatter(value)}
+      </text>
+    </g>
+  );
 };
 
 export const SignedStackedBarChart = ({
@@ -37,19 +48,20 @@ export const SignedStackedBarChart = ({
   getXTickText,
   getTooltipJSX,
   yAxisLabel = "",
-  yTickFormatter = yTickFormatter,
-  barsLabelFormatter = yTickFormatter,
+  yTickFormatter = _yTickFormatter,
+  barsLabelFormatter = _yTickFormatter,
   referenceLine = 0,
   filter = {}
 }) => {
   const page = pageSize || 7;
   const [pagination, setPagination] = useState({ startIndex: 0, endIndex: page - 1 });
   const [copyData, setCopyData] = useState(null);
+  const [barIndex, setBarIndex] = useState(null);
 
   const constants = {
     COLOR_BLACK: "#010101",
     TICK_FILL: { fill: "#010101", fontWeight: "bold" },
-    Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, dx: -30 }
+    Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, dx: -25 }
   };
 
   if (data !== copyData) {
@@ -106,6 +118,14 @@ export const SignedStackedBarChart = ({
     onResetClickCB();
   };
 
+  const onBarMouseOver = index => () => {
+    setBarIndex(index);
+  };
+
+  const onBarMouseLeave = index => () => {
+    setBarIndex(null);
+  };
+
   return (
     <StyledSignedStackedBarChartContainer>
       <a
@@ -152,7 +172,7 @@ export const SignedStackedBarChart = ({
             tickFormatter={yTickFormatter}
             label={constants.Y_AXIS_LABEL}
           />
-          <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltipJSX} />} />
+          <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltipJSX} barIndex={barIndex} />} />
           <Legend align="left" verticalAlign="top" />
           <ReferenceLine y={referenceLine} stroke={constants.COLOR_BLACK} />
           {barsData.map((bdItem, bdIndex) => {
@@ -166,13 +186,24 @@ export const SignedStackedBarChart = ({
                 unit={bdItem.unit}
                 onClick={onBarClick}
                 barSize={70}
+                onMouseOver={onBarMouseOver(bdIndex)}
+                onMouseLeave={onBarMouseLeave(bdIndex)}
               >
                 <LabelList
                   dataKey={bdItem.key}
                   position="inside"
                   fill="#010101"
                   offset={5}
-                  formatter={barsLabelFormatter}
+                  onMouseOver={onBarMouseOver(bdIndex)}
+                  onMouseLeave={onBarMouseLeave(bdIndex)}
+                  content={
+                    <LabelText
+                      onBarMouseOver={onBarMouseOver}
+                      onBarMouseLeave={onBarMouseLeave}
+                      bdIndex={bdIndex}
+                      formatter={barsLabelFormatter}
+                    />
+                  }
                 />
                 {renderData.map((cdItem, cdIndex) => {
                   {

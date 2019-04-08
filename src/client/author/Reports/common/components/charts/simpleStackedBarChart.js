@@ -15,12 +15,23 @@ import styled from "styled-components";
 import { StyledCustomChartTooltip, StyledChartNavButton } from "../../styled";
 import { CustomChartXTick } from "./chartUtils/customChartXTick";
 
-const yTickFormatter = val => {
+const _yTickFormatter = val => {
   if (val !== 0) {
     return val + "%";
   } else {
     return "";
   }
+};
+
+const LabelText = props => {
+  let { x, y, width, height, value, formatter, onBarMouseOver, onBarMouseLeave } = props;
+  return (
+    <g class="asd-asd" onMouseOver={onBarMouseOver()} onMouseLeave={onBarMouseLeave()}>
+      <text x={x + width / 2} y={y + height} textAnchor="middle" dominantBaseline="text-after-edge">
+        {formatter(value)}
+      </text>
+    </g>
+  );
 };
 
 export const SimpleStackedBarChart = ({
@@ -36,17 +47,18 @@ export const SimpleStackedBarChart = ({
   getXTickText,
   getTooltipJSX,
   yAxisLabel = "",
-  yTickFormatter = yTickFormatter,
+  yTickFormatter = _yTickFormatter,
   filter = {}
 }) => {
   const page = pageSize || 7;
   const [pagination, setPagination] = useState({ startIndex: 0, endIndex: page - 1 });
   const [copyData, setCopyData] = useState(null);
+  const [barIndex, setBarIndex] = useState(null);
 
   const constants = {
     COLOR_BLACK: "#010101",
     TICK_FILL: { fill: "#010101", fontWeight: "bold" },
-    Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, dx: -30 }
+    Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, dx: -25 }
   };
 
   if (data !== copyData) {
@@ -99,6 +111,14 @@ export const SimpleStackedBarChart = ({
     onResetClickCB();
   };
 
+  const onBarMouseOver = index => () => {
+    setBarIndex(index);
+  };
+
+  const onBarMouseLeave = index => () => {
+    setBarIndex(null);
+  };
+
   return (
     <StyledStackedBarChartContainer>
       <a
@@ -145,7 +165,7 @@ export const SimpleStackedBarChart = ({
             tickFormatter={yTickFormatter}
             label={constants.Y_AXIS_LABEL}
           />
-          <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltipJSX} />} />
+          <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltipJSX} barIndex={barIndex} />} />
           <Brush
             dataKey={xAxisDataKey}
             height={0}
@@ -153,14 +173,37 @@ export const SimpleStackedBarChart = ({
             startIndex={pagination.startIndex}
             endIndex={pagination.endIndex}
           />
-          <Bar dataKey={bottomStackDataKey} stackId="a" unit={"%"} onClick={onBarClick} barSize={70} />
-          <Bar dataKey={topStackDataKey} stackId="a" onClick={onBarClick} barSize={70}>
+          <Bar
+            dataKey={bottomStackDataKey}
+            stackId="a"
+            unit={"%"}
+            onClick={onBarClick}
+            barSize={70}
+            onMouseOver={onBarMouseOver(1)}
+            onMouseLeave={onBarMouseLeave(null)}
+          />
+          <Bar
+            dataKey={topStackDataKey}
+            stackId="a"
+            onClick={onBarClick}
+            barSize={70}
+            onMouseOver={onBarMouseOver(1)}
+            onMouseLeave={onBarMouseLeave(null)}
+          >
             <LabelList
               dataKey={bottomStackDataKey}
               position="insideBottom"
               fill="#010101"
               offset={5}
-              formatter={yTickFormatter}
+              onMouseOver={onBarMouseOver(1)}
+              onMouseLeave={onBarMouseLeave(null)}
+              content={
+                <LabelText
+                  onBarMouseOver={onBarMouseOver}
+                  onBarMouseLeave={onBarMouseLeave}
+                  formatter={yTickFormatter}
+                />
+              }
             />
             {chartData.map((entry, index) => {
               return <Cell key={entry[xAxisDataKey]} fill={"#c0c0c0"} />;

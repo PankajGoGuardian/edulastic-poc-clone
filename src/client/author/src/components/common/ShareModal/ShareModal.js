@@ -5,6 +5,7 @@ import Modal from "react-responsive-modal";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Radio, Spin, Button, Row, Col, Select, message, Typography } from "antd";
+import { debounce } from "lodash";
 
 import { FlexContainer } from "@edulastic/common";
 import { mainBlueColor, whiteSmoke, greenDark, fadedGrey, white } from "@edulastic/colors";
@@ -72,12 +73,13 @@ class ShareModal extends React.Component {
   };
 
   permissionHandler = value => {
-    this.setState({ permission: value });
+    const { currentUser } = this.state;
+    this.setState({ permission: value, currentUser: { ...currentUser, permission: value } });
   };
 
-  handleSearch(value) {
+  searchUser = debounce(value => {
     const { sharedType } = this.state;
-    const { getUsers, updateShareList } = this.props;
+    const { getUsers } = this.props;
     const searchBody = {
       limit: 10,
       page: 1,
@@ -87,8 +89,16 @@ class ShareModal extends React.Component {
         searchString: value
       }
     };
-    if (value.length > 1) getUsers(searchBody);
-    else updateShareList({ data: [] });
+    getUsers(searchBody);
+  }, 500);
+
+  handleSearch(value) {
+    const { updateShareList } = this.props;
+    if (value.length > 1) {
+      this.searchUser(value);
+    } else {
+      updateShareList({ data: [] });
+    }
   }
 
   handleChange = value => {
@@ -151,7 +161,7 @@ class ShareModal extends React.Component {
   render() {
     const { sharedType, peopleArray, permission } = this.state;
     const { isVisible, onClose, userList = [], fetching } = this.props;
-
+    const filteredUserList = userList.filter(user => peopleArray.every(people => user._id !== people._userId));
     return (
       <Modal open={isVisible} onClose={onClose} center styles={{ modal: { borderRadius: 5 } }}>
         <ModalContainer>
@@ -217,7 +227,7 @@ class ShareModal extends React.Component {
                 disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
                 notFoundContent={fetching ? <Spin size="small" /> : null}
               >
-                {userList.map(item => (
+                {filteredUserList.map(item => (
                   <Select.Option
                     value={`${item._source.firstName}${"||"}${item._source.email}${"||"}${item._id}`}
                     key={item._id}

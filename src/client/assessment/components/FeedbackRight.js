@@ -127,8 +127,12 @@ FeedbackRight.propTypes = {
     evaluation: PropTypes.object
   }).isRequired,
   user: PropTypes.object.isRequired,
-  studentName: PropTypes.string.isRequired,
+  studentName: PropTypes.string,
   loadFeedbackResponses: PropTypes.func.isRequired
+};
+
+FeedbackRight.defaultProps = {
+  studentName: ""
 };
 
 const enhance = compose(

@@ -28,8 +28,8 @@ class QuestionModal extends React.Component {
     const rowIndex = record ? record.rowIndex : null;
 
     if (rowIndex !== null) {
-      maxQuestions = tableData.length;
-      maxStudents = tableData[rowIndex].length;
+      maxQuestions = tableData[rowIndex].questions;
+      maxStudents = tableData.length;
     }
 
     this.setState({ rowIndex, colIndex, loaded, maxQuestions, maxStudents });
@@ -44,8 +44,8 @@ class QuestionModal extends React.Component {
     const { rowIndex, colIndex } = this.state;
 
     if (rowIndex === null && colIndex === null) {
-      const maxQuestions = tableData.length;
-      const maxStudents = tableData[rowIndex].length;
+      const maxQuestions = tableData[rowIndex].questions;
+      const maxStudents = tableData.length;
       this.setState({
         loaded,
         rowIndex: newrowIndex,

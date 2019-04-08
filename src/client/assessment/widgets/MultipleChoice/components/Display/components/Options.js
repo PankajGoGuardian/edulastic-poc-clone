@@ -30,7 +30,7 @@ Options.propTypes = {
   smallSize: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object.isRequired,
-  evaluation: PropTypes.object.isRequired
+  evaluation: PropTypes.any.isRequired
 };
 
 Options.defaultProps = {

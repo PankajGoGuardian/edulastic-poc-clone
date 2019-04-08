@@ -104,7 +104,7 @@ class TestItemCol extends Component {
           </MobileLeftSide>
         )}
         {col.widgets.map((widget, i) => (
-          <React.Fragment>
+          <React.Fragment key={i}>
             {col.tabs && !!col.tabs.length && value === widget.tabIndex && this.renderTabContent(widget, i, restProps)}
             {col.tabs && !col.tabs.length && this.renderTabContent(widget, i, restProps)}
           </React.Fragment>

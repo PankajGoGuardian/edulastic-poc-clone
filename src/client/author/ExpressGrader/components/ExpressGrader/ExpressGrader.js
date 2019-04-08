@@ -144,7 +144,7 @@ export default enhance(ExpressGrader);
 ExpressGrader.propTypes = {
   history: PropTypes.object,
   match: PropTypes.object,
-  testActivity: PropTypes.object,
+  testActivity: PropTypes.array,
   additionalData: PropTypes.object,
   studentResponse: PropTypes.object,
   loadGradebook: PropTypes.func,

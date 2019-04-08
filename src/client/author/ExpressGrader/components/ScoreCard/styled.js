@@ -2,7 +2,14 @@ import styled from "styled-components";
 import { Card } from "antd";
 import { FlexContainer } from "@edulastic/common";
 import { IconChevronLeft } from "@edulastic/icons";
-import { lightBlueSecondary, secondaryTextColor, lightGreySecondary, cardTitleColor } from "@edulastic/colors";
+import {
+  lightBlueSecondary,
+  secondaryTextColor,
+  lightGreySecondary,
+  blue,
+  greyScoreCardTitleColor,
+  cardTitleColor
+} from "@edulastic/colors";
 
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 95%;

@@ -50,6 +50,7 @@ class App extends Component {
     } else {
       defaultRoute = "/Login";
     }
+    //signup routes hidden till org reference is not done
     return (
       <div>
         <Suspense fallback={<Loading />}>
@@ -57,11 +58,12 @@ class App extends Component {
             <Redirect exact path="/" to={defaultRoute} />
             <Route path="/author" component={Author} />
             <Route path="/home" component={Dashboard} />
-            <Route path="/Signup" component={TeacherSignup} />
+
+            {/* <Route path="/Signup" component={TeacherSignup} /> */}
             <Route path="/Login" component={Login} />
             <Route path="/GetStarted" component={GetStarted} />
-            <Route path="/AdminSignup" component={AdminSignup} />
-            <Route path="/StudentSignup" component={StudentSignup} />
+            {/* <Route path="/AdminSignup" component={AdminSignup} /> */}
+            {/* <Route path="/StudentSignup" component={StudentSignup} /> */}
 
             <Route path={`/student/${ASSESSMENT}/:id/uta/:utaId`} render={() => <AssessmentPlayer defaultAP />} />
             <Route path={`/student/${ASSESSMENT}/:id`} render={() => <AssessmentPlayer defaultAP />} />

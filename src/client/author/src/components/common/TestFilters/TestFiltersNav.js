@@ -5,14 +5,14 @@ import styled from "styled-components";
 
 import { greenDark, white, mainTextColor } from "@edulastic/colors";
 
-const TestFiltersNav = ({ items, onSelect, routerParams = {} }) => {
-  const { params = {} } = routerParams;
-  let defaultSelected = items[0].path;
-  if (params.filterType) {
-    defaultSelected = params.filterType;
+const TestFiltersNav = ({ items, onSelect, search = {} }) => {
+  let selected = items[0].path;
+  if (search.filter) {
+    const getCurrent = items.find(item => item.filter === search.filter);
+    selected = getCurrent.path;
   }
   return (
-    <Container onSelect={onSelect} selectedKeys={[defaultSelected]}>
+    <Container onSelect={onSelect} selectedKeys={[selected]}>
       {items.map(item => (
         <Item key={item.path}>
           <Icon type={item.icon} /> {item.text}

@@ -4,13 +4,21 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer, Button } from "@edulastic/common";
-import { tabletWidth, darkBlueSecondary, white, lightBlueSecondary, newBlue } from "@edulastic/colors";
+import {
+  mobileWidth,
+  tabletWidth,
+  desktopWidth,
+  darkBlueSecondary,
+  white,
+  lightBlueSecondary,
+  newBlue
+} from "@edulastic/colors";
 import { IconPlusCircle, IconMenuOpenClose } from "@edulastic/icons";
 import { connect } from "react-redux";
 import HeaderWrapper from "../../mainContent/headerWrapper";
 import { toggleSideBarAction } from "../../actions/togglemenu";
 
-const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar, renderExtra }) => (
+const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar, renderExtra, renderFilter }) => (
   <Container>
     <FlexContainer style={{ pointerEvents: "none" }}>
       <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
@@ -18,6 +26,7 @@ const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar, renderExtra }
     </FlexContainer>
 
     <RightButtonWrapper>
+      {renderFilter()}
       <CreateButton
         onClick={onCreate}
         color="secondary"
@@ -38,12 +47,14 @@ ListHeader.propTypes = {
   title: PropTypes.string.isRequired,
   toggleSideBar: PropTypes.func.isRequired,
   btnTitle: PropTypes.string,
-  renderExtra: PropTypes.func
+  renderExtra: PropTypes.func,
+  renderFilter: PropTypes.func
 };
 
 ListHeader.defaultProps = {
   btnTitle: "",
-  renderExtra: () => null
+  renderExtra: () => null,
+  renderFilter: () => null
 };
 
 const enhance = compose(
@@ -77,10 +88,12 @@ const CreateButton = styled(Button)`
   border-radius: 3px;
   background: ${white};
   justify-content: space-around;
+  margin-left: 20px;
 
-  @media (max-width: ${tabletWidth}) {
-    width: 45px;
-    height: 40px;
+  @media (max-width: ${desktopWidth}) {
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
     padding: 0 !important;
     min-width: 0 !important;
 
@@ -91,6 +104,12 @@ const CreateButton = styled(Button)`
     svg {
       position: static;
     }
+  }
+  @media (max-width: ${mobileWidth}) {
+    width: 45px;
+    height: 40px;
+    min-height: 40px;
+    margin-left: 5px;
   }
 `;
 
@@ -120,4 +139,5 @@ const MenuIcon = styled(IconMenuOpenClose)`
 
 const RightButtonWrapper = styled.div`
   display: flex;
+  margin: 8px 0 5px auto;
 `;

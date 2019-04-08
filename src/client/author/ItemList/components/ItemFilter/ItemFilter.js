@@ -1,42 +1,27 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Button, Affix, Col } from "antd";
+import { Affix } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import {
   Container,
   Title,
   Clear,
-  FilterButton,
   FixedFilters,
   Header,
   HeaderRow,
   MainFilter,
   MainFilterHeader,
-  SearchField,
   SearchIcon,
   StyledModal,
   StyledModalContainer,
   StyledModalTitle,
-  TextFieldSearch,
-  TextFieldStyled
+  TextFieldSearch
 } from "./styled";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import Search from "../Search/Search";
-import { SMALL_DESKTOP_WIDTH, MAX_MOBILE_WIDTH } from "../../../src/constants/others";
+import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 
 class ItemFilter extends Component {
-  state = {
-    isShowFilter: false
-  };
-
-  showFilterHandler = () => {
-    this.setState({ isShowFilter: true });
-  };
-
-  closeSearchModal = () => {
-    this.setState({ isShowFilter: false });
-  };
-
   handleStandardSearch = searchStr => {
     const {
       getCurriculumStandards,
@@ -48,52 +33,22 @@ class ItemFilter extends Component {
   };
 
   renderFullTextSearch = () => {
-    const { onSearch, windowWidth } = this.props;
-    const { isShowFilter } = this.state;
+    const { onSearch } = this.props;
     const placeholder = "Search by skills and keywords";
 
-    const desktopSearch = (
+    return (
       <Header>
         <HeaderRow>
-          <Col lg={24} md={18} xs={18}>
-            <TextFieldSearch
-              onChange={e => onSearch(e.target.value)}
-              type="search"
-              icon={<SearchIcon type="search" />}
-              containerStyle={{ marginRight: 20 }}
-              placeholder={placeholder}
-            />
-          </Col>
-          <Col span={6}>
-            <FilterButton>
-              <Button onClick={this.showFilterHandler}>{!isShowFilter ? "SHOW FILTERS" : "HIDE FILTERS"}</Button>
-            </FilterButton>
-          </Col>
-        </HeaderRow>
-      </Header>
-    );
-
-    const mobileSearch = (
-      <Header style={{ padding: "0 20px" }}>
-        <SearchField>
-          <TextFieldStyled
+          <TextFieldSearch
             onChange={e => onSearch(e.target.value)}
-            height="50px"
             type="search"
             icon={<SearchIcon type="search" />}
             containerStyle={{ marginRight: 20 }}
             placeholder={placeholder}
           />
-        </SearchField>
-        <FilterButton>
-          <Button style={{ height: "48px", borderRadius: "0px" }} onClick={() => this.showFilterHandler()}>
-            {!isShowFilter ? "SHOW FILTERS" : "HIDE FILTERS"}
-          </Button>
-        </FilterButton>
+        </HeaderRow>
       </Header>
     );
-
-    return windowWidth > MAX_MOBILE_WIDTH ? desktopSearch : mobileSearch;
   };
 
   render() {
@@ -106,17 +61,19 @@ class ItemFilter extends Component {
       onSearchFieldChange,
       curriculumStandards,
       t,
-      items
+      items,
+      toggleFilter,
+      isShowFilter
     } = this.props;
-    const { isShowFilter } = this.state;
 
     return (
       <Container>
         <PerfectScrollbar>
           <FixedFilters>
-            <StyledModal open={isShowFilter} onClose={this.closeSearchModal} center>
+            <StyledModal open={isShowFilter} onClose={toggleFilter} center>
               <StyledModalContainer>
                 <StyledModalTitle>{t("component.itemlist.filter.filters")}</StyledModalTitle>
+                {this.renderFullTextSearch()}
                 <Search
                   search={search}
                   curriculums={curriculums}
@@ -126,24 +83,22 @@ class ItemFilter extends Component {
                 />
               </StyledModalContainer>
             </StyledModal>
-            {this.renderFullTextSearch()}
+            {windowWidth > SMALL_DESKTOP_WIDTH ? this.renderFullTextSearch() : null}
             <MainFilter isVisible={isShowFilter}>
-              {windowWidth > SMALL_DESKTOP_WIDTH && (
-                <Affix>
-                  <MainFilterHeader>
-                    <Title>{t("component.itemlist.filter.filters")}</Title>
-                    <Clear onClick={onClearSearch}>{t("component.itemlist.filter.clearAll")}</Clear>
-                  </MainFilterHeader>
-                  <TestFiltersNav items={items} onSelect={onLabelSearch} />
-                  <Search
-                    search={search}
-                    curriculums={curriculums}
-                    onSearchFieldChange={onSearchFieldChange}
-                    curriculumStandards={curriculumStandards}
-                    onStandardSearch={this.handleStandardSearch}
-                  />
-                </Affix>
-              )}
+              <Affix>
+                <MainFilterHeader>
+                  <Title>{t("component.itemlist.filter.filters")}</Title>
+                  <Clear onClick={onClearSearch}>{t("component.itemlist.filter.clearAll")}</Clear>
+                </MainFilterHeader>
+                <TestFiltersNav items={items} onSelect={onLabelSearch} />
+                <Search
+                  search={search}
+                  curriculums={curriculums}
+                  onSearchFieldChange={onSearchFieldChange}
+                  curriculumStandards={curriculumStandards}
+                  onStandardSearch={this.handleStandardSearch}
+                />
+              </Affix>
             </MainFilter>
           </FixedFilters>
         </PerfectScrollbar>
@@ -168,7 +123,9 @@ ItemFilter.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   getCurriculumStandards: PropTypes.func.isRequired,
   curriculumStandards: PropTypes.array.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  toggleFilter: PropTypes.func.isRequired,
+  isShowFilter: PropTypes.bool.isRequired
 };
 
 export default ItemFilter;

@@ -14,9 +14,11 @@ const BreadCrumb = props => {
           data.map((breadCrumb, index) => (
             <Breadcrumb.Item key={`bread${index}`}>
               {index !== data.length - 1 ? (
-                <Link to={breadCrumb.to}>{breadCrumb.title.toLowerCase()}</Link>
+                <Link to={breadCrumb.to}>
+                  <span dangerouslySetInnerHTML={{ __html: breadCrumb.title.toLowerCase() }} />
+                </Link>
               ) : (
-                breadCrumb.title.toLowerCase()
+                <span dangerouslySetInnerHTML={{ __html: breadCrumb.title.toLowerCase() }} />
               )}
             </Breadcrumb.Item>
           ))}

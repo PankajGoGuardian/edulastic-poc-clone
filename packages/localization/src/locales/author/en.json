@@ -85,7 +85,9 @@
       },
       "filter": {
         "filters": "Filters",
-        "clearAll": "Clear all"
+        "clearAll": "Clear all",
+        "showFilters": "Show filters",
+        "hideFilters": "Hide filters"
       }
     },
     "itemAdd": {
@@ -116,7 +118,10 @@
     "pickupcomponent": {
       "headertitle": "Select a type of Question or Feature",
       "backToAddNew": "Back to Add New",
-      "backToSelect": "Back to Select Question Type or Feature"
+      "backToSelect": "Back to Select Question Type or Feature",
+      "question": "Question",
+      "feature": "Feature",
+      "selectAWidget": "Select a widget"
     },
     "feedback": {
       "viewSolution": "VIEW SOLUTION",

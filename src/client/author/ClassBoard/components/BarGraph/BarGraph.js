@@ -31,6 +31,7 @@ const CustomizedTick = ({ payload, x, y, left, index, maxValue, pointValue }) =>
 export default class BarGraph extends Component {
   static propTypes = {
     gradebook: PropTypes.object.isRequired,
+    onClickHandler: PropTypes.func.isRequired,
     children: PropTypes.node
   };
 
@@ -39,6 +40,13 @@ export default class BarGraph extends Component {
   };
 
   isMobile = () => window.innerWidth < 480;
+
+  handleClick = (data, index) => {
+    const { onClickHandler } = this.props;
+    if (onClickHandler) {
+      onClickHandler(index);
+    }
+  };
 
   render() {
     const { gradebook, children } = this.props;
@@ -112,11 +120,11 @@ export default class BarGraph extends Component {
               tickFormatter={() => ""}
               orientation="right"
             />
-            <Bar stackId="a" dataKey="green" fill="#1FE3A1" />
-            <Bar stackId="a" dataKey="yellow" fill="#FDCC3B" />
-            <Bar stackId="a" dataKey="red" fill="#F35F5F" shape={<RectangleBar />} />
-            <Bar stackId="a" dataKey="lightGrey" fill="#f5f5f5" />
-            <Bar stackId="a" dataKey="darkGrey" fill="#e5e5e5" />
+            <Bar stackId="a" dataKey="green" fill="#1FE3A1" onClick={this.handleClick} />
+            <Bar stackId="a" dataKey="yellow" fill="#FDCC3B" onClick={this.handleClick} />
+            <Bar stackId="a" dataKey="red" fill="#F35F5F" shape={<RectangleBar />} onClick={this.handleClick} />
+            <Bar stackId="a" dataKey="lightGrey" fill="#f5f5f5" onClick={this.handleClick} />
+            <Bar stackId="a" dataKey="darkGrey" fill="#e5e5e5" onClick={this.handleClick} />
             <Line
               dataKey="green"
               stroke="#1774F0"

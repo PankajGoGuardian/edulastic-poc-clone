@@ -252,6 +252,7 @@ class Container extends PureComponent {
     const { showShareModal, current } = this.state;
     const { _id: testId } = test;
     const showPublishButton = testStatus && testStatus !== statusConstants.PUBLISHED && testId;
+    const showShareButton = !!testId;
     return (
       <>
         {this.renderModal()}
@@ -266,6 +267,7 @@ class Container extends PureComponent {
           creating={creating}
           windowWidth={windowWidth}
           showPublishButton={showPublishButton}
+          showShareButton={showShareButton}
         />
         <Content>{this.renderContent()}</Content>
       </>

@@ -4,8 +4,9 @@ import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
 import { compose } from "redux";
 import { Row, Col } from "antd";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
+//signup routes hidden till org reference is not done
 const Header = ({ t }) => (
   <RegistrationHeader type="flex" align="middle">
     <Col span={12}>
@@ -13,7 +14,7 @@ const Header = ({ t }) => (
     </Col>
     <Col span={12} align="right">
       <span>{t("common.donthaveanaccount")}</span>
-      <Link to="/getstarted">{t("common.signupbtn")}</Link>
+      {/* <Link to="/getstarted">{t("common.signupbtn")}</Link> */}
     </Col>
   </RegistrationHeader>
 );

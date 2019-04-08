@@ -11,7 +11,7 @@ const modalRoot = document.getElementById("modal-root");
 
 class Modal extends Component {
   render() {
-    const { onClose, onApply, title, children, t } = this.props;
+    const { onClose, onApply, title, children, t, cancelLabel, applyLabel } = this.props;
 
     return ReactDOM.createPortal(
       <Container>
@@ -26,10 +26,10 @@ class Modal extends Component {
           {children}
           <Footer>
             <Button onClick={onClose} variant="extendedFab" style={{ width: "40%" }}>
-              {t("component.common.modal.cancel")}
+              {cancelLabel || t("component.common.modal.cancel")}
             </Button>
             <Button onClick={onApply} variant="extendedFab" color="primary" style={{ width: "40%" }}>
-              {t("component.common.modal.apply")}
+              {applyLabel || t("component.common.modal.apply")}
             </Button>
           </Footer>
         </Content>
@@ -44,7 +44,14 @@ Modal.propTypes = {
   onApply: PropTypes.func.isRequired,
   children: PropTypes.any.isRequired,
   title: PropTypes.string.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  cancelLabel: PropTypes.string,
+  applyLabel: PropTypes.string
+};
+
+Modal.defaultProps = {
+  cancelLabel: undefined,
+  applyLabel: undefined
 };
 
 export default withNamespaces("author")(Modal);
@@ -64,8 +71,8 @@ const Content = styled.div`
   position: absolute;
   z-index: 101;
   padding: 30px;
-  min-height: 300px;
-  min-width: 300px;
+  min-height: 200px;
+  min-width: 450px;
   background: ${white};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   border-radius: 5px;

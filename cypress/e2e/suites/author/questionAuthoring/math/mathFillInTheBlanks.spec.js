@@ -237,10 +237,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
       it("Upload image to server", () => {
         question.getComposeQuestionTextBox().focus();
 
-        cy.get(".ql-image").click();
+        question.getUploadImageIcon().click();
         cy.uploadFile("testImages/sample.jpg", "input.ql-image[type=file]").then(() =>
-          cy
-            .get(".ql-editor p")
+          question
+            .getEditorData()
             .find("img")
             .should("be.visible")
         );
@@ -537,7 +537,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         const { expected, separators } = queData.equivSymbolic.setThousandsSeparator;
 
         separators.forEach((separator, index) =>
-          question.allowDecimalMarksWithResponse(separator, expected[index], preview, false)
+          question.allowDecimalMarksWithResponse(separator, 0, expected[index], preview, false)
         );
       });
     });
@@ -561,7 +561,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         const { expected, separators } = queData.equivSymbolic.setThousandsSeparator;
 
         separators.forEach((separator, index) =>
-          question.allowDecimalMarksWithResponse(separator, expected[index], preview)
+          question.allowDecimalMarksWithResponse(separator, 0, expected[index], preview)
         );
       });
     });
@@ -579,7 +579,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         const { expected, separators } = queData.equivSymbolic.setThousandsSeparator;
 
         separators.forEach((separator, index) =>
-          question.allowDecimalMarksWithResponse(separator, expected[index], preview, true)
+          question.allowDecimalMarksWithResponse(separator, 0, expected[index], preview, true)
         );
       });
     });
@@ -606,7 +606,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         const { expected, separators, input } = queData.equivSymbolic.setThousandsSeparator;
         question.getAnswerValueMathInput().type(input, { force: true });
         separators.forEach((separator, index) =>
-          question.allowDecimalMarksWithResponse(separator, expected[index], preview, false)
+          question.allowDecimalMarksWithResponse(separator, input.length, expected[index], preview, false)
         );
       });
     });
@@ -631,7 +631,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         const { expected, separators } = queData.equivSymbolic.setThousandsSeparator;
 
         separators.forEach((separator, index) =>
-          question.allowDecimalMarksWithResponse(separator, expected[index], preview, true)
+          question.allowDecimalMarksWithResponse(separator, 0, expected[index], preview, true)
         );
       });
     });
@@ -730,11 +730,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
     });
 
     context("TC_413 => Preview Items", () => {
+      before("Handel uncaught exception", () => {
+        Cypress.on("uncaught:exception", (err, runnable) => {
+          if (runnable.title === "Click on preview") {
+            return false;
+          }
+          return true;
+        });
+      });
       it("Click on preview", () => {
         previewItems = editItem.header.preview();
-        cy.get("body").contains("span", "Check Answer");
+        question.getBody().contains("span", "Check Answer");
 
-        question.getPreviewMathQuill().type(queData.answer.value, { force: true });
+        question.getPreviewMathQuill().typeWithDelay(queData.answer.value);
       });
 
       it("Click on Check answer", () => {
@@ -742,8 +750,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
           .getCheckAnswer()
           .click()
           .then(() =>
-            cy
-              .get("body")
+            question
+              .getBody()
               .children()
               .should("contain", "score: 0/1")
           );
@@ -754,7 +762,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
           .getShowAnswer()
           .click()
           .then(() => {
-            cy.get('[data-cy="correct-answer-box"]').should("be.visible");
+            question.getCorrectAnswerBox().should("be.visible");
           });
       });
 

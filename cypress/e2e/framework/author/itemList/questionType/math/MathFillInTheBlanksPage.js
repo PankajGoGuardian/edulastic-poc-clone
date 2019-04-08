@@ -66,7 +66,7 @@ class MathFillInTheBlanksPage extends MathFractionPage {
       .click()
       .then(() => this.getAnswerArgumentDropdownByValue(value).click());
 
-  allowDecimalMarksWithResponse = (separator, expected, preview, isCorrect = false) => {
+  allowDecimalMarksWithResponse = (separator, inputLength, expected, preview, isCorrect = false) => {
     this.getAnswerAllowThousandsSeparator().check({ force: true });
     this.getThousandsSeparatorDropdown()
       .click()
@@ -75,7 +75,7 @@ class MathFillInTheBlanksPage extends MathFractionPage {
           .should("be.visible")
           .click();
       });
-    this.checkCorrectAnswerWithResponse(expected, preview, 0, isCorrect);
+    this.checkCorrectAnswerWithResponse(expected, preview, inputLength, isCorrect);
     this.getAnswerAllowThousandsSeparator().uncheck({ force: true });
   };
 }

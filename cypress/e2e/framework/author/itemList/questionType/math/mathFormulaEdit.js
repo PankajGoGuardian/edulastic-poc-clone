@@ -377,6 +377,14 @@ class MathFormulaEdit {
 
   getAnswerInputMathTextarea = () => cy.get(`[data-cy="answer-input-math-textarea"]`);
 
+  getCorrectAnswerBox = () => cy.get('[data-cy="correct-answer-box"]');
+
+  getUploadImageIcon = () => cy.get(".ql-image");
+
+  getEditorData = () => cy.get(".ql-editor p");
+
+  getBody = () => cy.get("body");
+
   setMethod = (methods, setFunction = false, argument, setChecBox) => {
     this.getMethodSelectionDropdow()
       .click({ force: true })
@@ -414,7 +422,7 @@ class MathFormulaEdit {
         .should("be.checked");
   };
 
-  allowDecimalMarks = (separator, expected, preview, isCorrect = false) => {
+  allowDecimalMarks = (separator, inputLength, expected, preview, isCorrect = false) => {
     this.getAnswerAllowThousandsSeparator().check({ force: true });
     this.getThousandsSeparatorDropdown()
       .click()
@@ -423,7 +431,7 @@ class MathFormulaEdit {
           .should("be.visible")
           .click();
       });
-    this.checkCorrectAnswer(expected, preview, 0, isCorrect);
+    this.checkCorrectAnswer(expected, preview, inputLength, isCorrect);
     this.getAnswerAllowThousandsSeparator().uncheck({ force: true });
   };
 

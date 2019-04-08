@@ -11,7 +11,7 @@ const Display = ({ qIndex, view, smallSize, question, uiStyle, instructorStimulu
     <QuestionHeader
       qIndex={qIndex}
       smallSize={smallSize}
-      dangerouslySetInnerHTML={{ __html: `<label>Q${index + 1}</label>${question}` }}
+      dangerouslySetInnerHTML={{ __html: `<label>Q${qIndex}</label>${question}` }}
     />
     <Options view={view} smallSize={smallSize} question={question} uiStyle={uiStyle} {...restProps} />
   </div>

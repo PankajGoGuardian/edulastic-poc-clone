@@ -10,6 +10,7 @@ import { Container, Element, ListItems, SpinContainer, PaginationContainer } fro
 import Item from "../Item/Item";
 import ItemFilter from "../ItemFilter/ItemFilter";
 import CartButton from "../CartButton/CartButton";
+import ModalCreateTest from "../ModalCreateTest/ModalCreateTest";
 import ListHeader from "../../../src/components/common/ListHeader";
 import { createTestItemAction } from "../../../src/actions/testItem";
 import {
@@ -57,7 +58,8 @@ export const getClearSearchState = () => ({
 class Contaier extends Component {
   state = {
     search: getClearSearchState(),
-    isShowFilter: false
+    isShowFilter: false,
+    modalCreateTestVisible: false
   };
 
   componentDidMount() {
@@ -173,6 +175,8 @@ class Contaier extends Component {
     }, 350);
   };
 
+  handleToggleModalCreateTest = value => () => this.setState({ modalCreateTestVisible: value });
+
   renderPagination = () => {
     const { count, page } = this.props;
     return (
@@ -211,7 +215,7 @@ class Contaier extends Component {
     });
   };
 
-  renderCartButton = () => <CartButton />;
+  renderCartButton = () => <CartButton onClick={this.handleToggleModalCreateTest(true)} />;
 
   renderFilterButton = () => {
     const { windowWidth, t } = this.props;
@@ -225,7 +229,7 @@ class Contaier extends Component {
   render() {
     const { windowWidth, creating, t, curriculums, getCurriculumStandards, curriculumStandards, loading } = this.props;
 
-    const { search, isShowFilter } = this.state;
+    const { search, isShowFilter, modalCreateTestVisible } = this.state;
 
     return (
       <div>
@@ -281,6 +285,12 @@ class Contaier extends Component {
             </Element>
           </ListItems>
         </Container>
+        {modalCreateTestVisible && (
+          <ModalCreateTest
+            onProceed={this.handleToggleModalCreateTest(false)}
+            onCancel={this.handleToggleModalCreateTest(false)}
+          />
+        )}
       </div>
     );
   }

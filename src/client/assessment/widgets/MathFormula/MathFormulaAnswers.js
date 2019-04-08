@@ -10,6 +10,8 @@ import CorrectAnswers from "../../components/CorrectAnswers";
 import MathFormulaAnswer from "./components/MathFormulaAnswer";
 import { updateVariables } from "../../utils/variables";
 
+import { latexKeys } from "./constants";
+
 const { methods } = math;
 
 const MathFormulaWithPoints = withPoints(MathFormulaAnswer);
@@ -35,7 +37,7 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
           value: [initialMethod]
         });
 
-        updateVariables(draft);
+        updateVariables(draft, latexKeys);
       })
     );
     setCorrectTab(correctTab + 1);
@@ -45,7 +47,7 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
     setQuestionData(
       produce(item, draft => {
         draft.validation.valid_response.score = points;
-        updateVariables(draft);
+        updateVariables(draft, latexKeys);
       })
     );
   };
@@ -54,7 +56,7 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
     setQuestionData(
       produce(item, draft => {
         draft.validation.alt_responses[i].score = points;
-        updateVariables(draft);
+        updateVariables(draft, latexKeys);
       })
     );
   };
@@ -63,7 +65,7 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
     setQuestionData(
       produce(item, draft => {
         draft.validation.alt_responses.splice(tabIndex, 1);
-        updateVariables(draft);
+        updateVariables(draft, latexKeys);
       })
     );
   };
@@ -85,7 +87,7 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
           delete draft.validation.valid_response.value[index].value;
         }
 
-        updateVariables(draft);
+        updateVariables(draft, latexKeys);
       })
     );
   };
@@ -94,7 +96,7 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
     setQuestionData(
       produce(item, draft => {
         draft.validation.alt_responses[answerIndex].value[index][prop] = value;
-        updateVariables(draft);
+        updateVariables(draft, latexKeys);
       })
     );
   };
@@ -103,7 +105,7 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
     setQuestionData(
       produce(item, draft => {
         draft.validation.valid_response.value.push(initialMethod);
-        updateVariables(draft);
+        updateVariables(draft, latexKeys);
       })
     );
   };
@@ -112,7 +114,7 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
     setQuestionData(
       produce(item, draft => {
         draft.validation.alt_responses[answerIndex].value.push(initialMethod);
-        updateVariables(draft);
+        updateVariables(draft, latexKeys);
       })
     );
   };
@@ -121,7 +123,7 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
     setQuestionData(
       produce(item, draft => {
         draft.validation.valid_response.value.splice(index, 1);
-        updateVariables(draft);
+        updateVariables(draft, latexKeys);
       })
     );
   };
@@ -130,7 +132,7 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
     setQuestionData(
       produce(item, draft => {
         draft.validation.alt_responses[answerIndex].value.splice(index, 1);
-        updateVariables(draft);
+        updateVariables(draft, latexKeys);
       })
     );
   };

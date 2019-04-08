@@ -15,6 +15,7 @@ import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
 
 import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
+import { latexKeys } from "./constants";
 
 import MathFormulaAnswers from "./MathFormulaAnswers";
 import MathFormulaOptions from "./components/MathFormulaOptions";
@@ -35,13 +36,12 @@ const MathFormula = ({
   t
 }) => {
   const Wrapper = testItem ? EmptyWrapper : Paper;
-  const studentTemplate = item.template.replace(/\\embed\{response\}/g, "\\MathQuillMathField{}");
 
   const handleItemChangeChange = (prop, uiStyle) => {
     setQuestionData(
       produce(item, draft => {
         draft[prop] = uiStyle;
-        updateVariables(draft);
+        updateVariables(draft, latexKeys);
       })
     );
   };
@@ -50,12 +50,13 @@ const MathFormula = ({
     setQuestionData(
       produce(item, draft => {
         draft.template = val;
-        updateVariables(draft);
+        updateVariables(draft, latexKeys);
       })
     );
   };
 
-  const itemForPreview = useMemo(() => replaceVariables(item), [item]);
+  const itemForPreview = useMemo(() => replaceVariables(item, latexKeys), [item]);
+  const studentTemplate = itemForPreview.template.replace(/\\embed\{response\}/g, "\\MathQuillMathField{}");
 
   return (
     <Fragment>

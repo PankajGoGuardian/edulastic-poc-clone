@@ -50,6 +50,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         expected: "0.33",
         input: "1\\div3",
         decimalPlaces: 2
+      },
+      combinationIgnoreTxt: {
+        expected: "7.00001m",
+        input: "7",
+        decimalPlaces: 3
+      },
+      combinationSetDecimalSeparator: {
+        expected: "1,000001",
+        input: "1.000001"
       }
     },
     equivLiteral: {
@@ -397,6 +406,22 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
           .then(() => {
             question.getMathFormulaAnswers().should("have.length", 1);
           });
+      });
+
+      it("Combination of methods ignoreText and significantDecimalPlaces", () => {
+        const { input, decimalPlaces, expected } = queData.equivSymbolic.combinationIgnoreTxt;
+        question.setValue(input);
+        question.setArgumentInput("getAnswerSignificantDecimalPlaces", decimalPlaces);
+        question.setSeparator("getAnswerIgnoreTextCheckox")();
+
+        question.checkCorrectAnswerWithResponse(expected, preview, input.length, true);
+      });
+
+      it("Combination of methods setDecimalSeparator", () => {
+        const { expected, input } = queData.equivSymbolic.combinationSetDecimalSeparator;
+        question.setValue(input);
+        question.setSeparator("getAnswerAllowThousandsSeparator")();
+        question.checkCorrectAnswerWithResponse(expected, preview, input.length, true);
       });
     });
 

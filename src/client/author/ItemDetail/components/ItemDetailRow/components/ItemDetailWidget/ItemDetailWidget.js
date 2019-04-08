@@ -22,6 +22,7 @@ const ItemDetailWidget = ({
   connectDragSource,
   connectDragPreview,
   t,
+  widgetIndex,
   question
 }) =>
   connectDragPreview &&
@@ -33,6 +34,7 @@ const ItemDetailWidget = ({
           {(widget.widgetType === "question" || widget.widgetType === "resource") && (
             <QuestionWrapper
               testItem
+              qIndex={widgetIndex}
               type={widget.type}
               view="preview"
               questionId={widget.reference}

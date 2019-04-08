@@ -52,7 +52,7 @@ class TestItemCol extends Component {
           multiple={multiple}
           type={widget.type}
           view="preview"
-          qIndex={++qIndex}
+          qIndex={qIndex}
           previewTab={preview}
           timespent={timespent}
           questionId={widget.reference}

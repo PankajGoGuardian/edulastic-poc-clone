@@ -2,12 +2,12 @@ import React, { useMemo } from "react";
 import { groupBy } from "lodash";
 import { Row, Col } from "antd";
 import { SimpleStackedBarChart } from "../../../../common/components/charts/simpleStackedBarChart";
-// import colorRange1 from "../../../../common/static/json/colorRange1.json";
 import { getHSLFromRange1 } from "../../../../common/util";
 
 export const StackedBarChartContainer = props => {
   const dataParser = filter => {
     let hmap = groupBy(props.data, "qType");
+
     let arr = Object.keys(hmap).map((data, i) => {
       let qCount = hmap[data].length;
       let tmp = hmap[data].reduce(
@@ -30,7 +30,6 @@ export const StackedBarChartContainer = props => {
       if (isNaN(tmp.correct)) tmp.correct = 0;
       tmp.incorrect = 100 - tmp.correct;
       if (props.filter[tmp.name] || Object.keys(props.filter).length === 0) {
-        // tmp.fill = colorRange1[Math.floor(tmp.correct / 25)];
         tmp.fill = getHSLFromRange1(tmp.correct);
       } else {
         tmp.fill = "#cccccc";
@@ -90,7 +89,7 @@ export const StackedBarChartContainer = props => {
     return payload.value + " (" + getDataByName(payload.value) + ")";
   };
 
-  const chartData = useMemo(() => dataParser(props.filter), [props.filter]);
+  const chartData = useMemo(() => dataParser(props.filter), [props.data, props.filter]);
 
   const onBarClickCB = key => {
     props.onBarClickCB(key);

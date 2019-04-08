@@ -54,6 +54,7 @@ export const StyledText = styled.span`
   margin: 0 5px;
   font-size: 12px;
   font-weight: 600;
+  user-select: none;
 `;
 
 export const CloseModalText = styled.span`

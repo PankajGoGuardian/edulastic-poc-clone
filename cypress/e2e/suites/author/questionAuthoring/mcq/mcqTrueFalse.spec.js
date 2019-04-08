@@ -27,7 +27,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
 
   context("User creates question.", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId("5c358b480c8e6f22190d5ce0");
+      editItem.getItemWithId();
       editItem.deleteAllQuestion();
 
       // create new que and select type
@@ -272,7 +272,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
     };
 
     before("delete old question and create dummy que to edit", () => {
-      editItem.getItemWithId("5c358b480c8e6f22190d5ce0");
+      editItem.getItemWithId();
       editItem.deleteAllQuestion();
 
       // create new que and select type
@@ -516,7 +516,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
 
   context("[sanity]:test => Create question using different options and validate", () => {
     before("visit items list page and select question type", () => {
-      editItem.getItemWithId("5c358b480c8e6f22190d5ce0");
+      editItem.getItemWithId();
       editItem.deleteAllQuestion();
 
       // add new question

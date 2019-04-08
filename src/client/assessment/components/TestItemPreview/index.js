@@ -19,7 +19,7 @@ class TestItemPreview extends Component {
     showFeedback: PropTypes.bool,
     style: PropTypes.object,
     questions: PropTypes.object.isRequired,
-    index: PropTypes.object.isRequired
+    index: PropTypes.number.isRequired
   };
 
   static defaultProps = {
@@ -49,6 +49,7 @@ class TestItemPreview extends Component {
 
   render() {
     const { cols, preview, style, windowWidth, showFeedback, questions, index } = this.props;
+
     let questionCount = 0;
     cols.forEach(({ widgets }) => {
       questionCount += widgets.length;

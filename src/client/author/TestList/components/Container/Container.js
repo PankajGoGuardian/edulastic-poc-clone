@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { Button, Row, Input, Spin } from "antd";
 import Modal from "react-responsive-modal";
+import { get } from "lodash";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
 
 import {
@@ -235,13 +236,20 @@ class TestList extends Component {
     this.setState({ isShowFilter: false });
   };
 
-  handleClearFilter = () => {
-    const { receiveTests, limit } = this.props;
+  resetFilter = () => {
+    const { receiveTests, limit, history } = this.props;
+    const { search } = this.state;
+    receiveTests({ page: 1, limit, search });
+    history.push(`/author/tests`);
+  };
 
-    this.setState({
-      search: getClearSearchState()
-    });
-    receiveTests({ page: 1, limit });
+  handleClearFilter = () => {
+    this.setState(
+      {
+        search: getClearSearchState()
+      },
+      this.resetFilter
+    );
   };
 
   get filterUrl() {
@@ -340,7 +348,7 @@ class TestList extends Component {
   }
 
   renderCardContent = () => {
-    const { loading, tests, windowWidth, history, match } = this.props;
+    const { loading, tests, windowWidth, history, match, userId } = this.props;
     const { blockStyle } = this.state;
 
     if (loading) {
@@ -351,7 +359,14 @@ class TestList extends Component {
       return (
         <Row gutter={16} type="flex">
           {tests.map(item => (
-            <CardWrapper item={item} blockStyle="tile" windowWidth={windowWidth} history={history} match={match} />
+            <CardWrapper
+              item={item}
+              owner={item.authors.find(x => x._id === userId)}
+              blockStyle="tile"
+              windowWidth={windowWidth}
+              history={history}
+              match={match}
+            />
           ))}
         </Row>
       );
@@ -359,9 +374,11 @@ class TestList extends Component {
 
     return (
       <Row>
-        {tests.map(item => (
-          <CardWrapper item={item} history={history} match={match} />
-        ))}
+        {tests.map(item => {
+          return (
+            <CardWrapper owner={item.authors.find(x => x._id === userId)} item={item} history={history} match={match} />
+          );
+        })}
       </Row>
     );
   };
@@ -487,7 +504,8 @@ const enhance = compose(
       count: getTestsCountSelector(state),
       creating: getTestsCreatingSelector(state),
       curriculums: getCurriculumsListSelector(state),
-      curriculumStandards: getStandardsListSelector(state)
+      curriculumStandards: getStandardsListSelector(state),
+      userId: get(state, "user.user._id", false)
     }),
     {
       getCurriculums: getDictCurriculumsAction,

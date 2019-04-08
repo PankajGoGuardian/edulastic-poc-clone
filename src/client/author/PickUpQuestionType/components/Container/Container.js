@@ -11,6 +11,7 @@ import { withNamespaces } from "@edulastic/localization";
 import QuestionTypes from "../QuestionType/QuestionTypes";
 import { getItemSelector } from "../../../src/selectors/items";
 import Header from "../Header/Header";
+import Breadcrumb from "../../../src/components/Breadcrumb";
 import { setQuestionAction } from "../../../QuestionEditor/ducks";
 import { addQuestionAction } from "../../../sharedDucks/questions";
 import {
@@ -27,7 +28,8 @@ import {
   RightSide,
   SelectionIcon,
   TargetIcon,
-  LineMobileIcon
+  LineMobileIcon,
+  MenuTitle
 } from "./styled";
 
 class Container extends Component {
@@ -91,17 +93,34 @@ class Container extends Component {
   };
 
   handleMobileViewChange = () => {
+    const { mobileViewShow } = this.state;
+
     this.setState({
-      mobileViewShow: !this.state.mobileViewShow
+      mobileViewShow: !mobileViewShow
     });
   };
 
   render() {
     const { t } = this.props;
     const { currentQuestion, currentTab, mobileViewShow } = this.state;
+    const breadcrumbData = [
+      {
+        title: "<&nbsp;&nbsp;&nbsp;ITEM LIST",
+        to: "/author/items"
+      },
+      {
+        title: "ITEM DETAIL",
+        to: `/author/items/${window.location.pathname.split("/")[3]}/item-detail`
+      },
+      {
+        title: "SELECT A QUESTION TYPE",
+        to: ""
+      }
+    ];
 
     return (
       <Content showMobileView={mobileViewShow}>
+        <Header title={t("component.pickupcomponent.headertitle")} link={this.link} />
         <LineMobileIcon
           onClick={this.handleMobileViewChange}
           type="left"
@@ -109,13 +128,26 @@ class Container extends Component {
           style={{ color: mobileViewShow ? darkBlueSecondary : white }}
         />
         <LeftSide>
-          <Menu mode="horizontal" selectedKeys={[currentTab]} onClick={this.handleChangeTab}>
-            <Menu.Item key="question-tab">Question</Menu.Item>
-            <Menu.Item key="feature-tab">Feature</Menu.Item>
+          <Menu
+            mode="horizontal"
+            selectedKeys={[currentTab]}
+            onClick={this.handleChangeTab}
+            style={{
+              background: "transparent",
+              borderBottom: 0,
+              display: "none"
+            }}
+          >
+            <Menu.Item key="question-tab">{t("component.pickupcomponent.question")}</Menu.Item>
+            <Menu.Item key="feature-tab">{t("component.pickupcomponent.feature")}</Menu.Item>
           </Menu>
+          <MenuTitle>{t("component.pickupcomponent.selectAWidget")}</MenuTitle>
           <Menu
             mode="inline"
-            style={{ background: "#fbfafc" }}
+            style={{
+              background: "transparent",
+              border: 0
+            }}
             selectedKeys={[currentQuestion]}
             onClick={this.handleCategory}
           >
@@ -162,20 +194,25 @@ class Container extends Component {
           </Menu>
         </LeftSide>
         <RightSide>
-          <Header
-            title={t("component.pickupcomponent.headertitle")}
-            link={this.link}
+          <Breadcrumb
+            data={breadcrumbData}
+            style={{
+              position: "relative",
+              top: 0,
+              padding: "17px 0px"
+            }}
           />
           <PaddingDiv
-            left={30}
-            right={30}
             style={{
-              position: "absolute",
-              left: 0,
-              right: 0,
-              top: 140,
+              position: "relative",
+              top: 0,
               overflow: "auto",
-              height: "calc(100% - 140px)"
+              height: "auto",
+              background: "#fff",
+              borderRadius: "10px",
+              padding: "35px",
+              boxShadow: "0 2px 5px 0 rgba(0, 0, 0, 0.07)",
+              minHeight: "calc(100vh - 190px)"
             }}
           >
             <QuestionTypes onSelectQuestionType={this.selectQuestionType} questionType={currentQuestion} />

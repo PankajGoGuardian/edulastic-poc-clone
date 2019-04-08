@@ -4,7 +4,7 @@ import { FaAngleDoubleRight } from "react-icons/fa";
 import { greenDark } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { IconHeart, IconShare } from "@edulastic/icons";
-import { Col } from "antd";
+import { Col, Button } from "antd";
 import Tags from "../../../src/components/common/Tags";
 import {
   Container,
@@ -24,6 +24,7 @@ import {
   ContentWrapper
 } from "./styled";
 
+const ButtonGroup = Button.Group;
 class ListItem extends Component {
   static propTypes = {
     item: PropTypes.object.isRequired,
@@ -48,7 +49,8 @@ class ListItem extends Component {
     const {
       item: { title, analytics, tags },
       t,
-      authorName
+      authorName,
+      owner = false
     } = this.props;
     return (
       <Container>
@@ -63,7 +65,9 @@ class ListItem extends Component {
           <Col span={12}>
             <Inner>
               <div>
-                <StyledLink onClick={this.moveToItem}>
+                <StyledLink
+                // onClick={this.moveToItem}
+                >
                   {title}# <FaAngleDoubleRight />
                 </StyledLink>
               </div>
@@ -72,6 +76,15 @@ class ListItem extends Component {
                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum metus et luctus lacinia. Nullam vel tincidunt nibh. Duis ac eros nunc."
                 }
               </Description>
+              <ButtonGroup>
+                {owner && (
+                  <Button type="primary" onClick={this.moveToItem}>
+                    Edit
+                  </Button>
+                )}
+
+                <Button type="primary">duplicate</Button>
+              </ButtonGroup>
             </Inner>
           </Col>
           <AuthorWrapper span={12}>

@@ -16,7 +16,7 @@ const DEFAULT_USERS = {
   }
 };
 
-const ITEM_ID = "5c358b480c8e6f22190d5ce0";
+const ITEM_ID = "5ca369b88682ac3dab2fe2aa";
 
 Cypress.Commands.add("createUser", overrides => {
   const user = userBuilder(overrides);

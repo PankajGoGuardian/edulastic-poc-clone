@@ -32,19 +32,11 @@ const AssessmentSummary = props => {
     props.getAssessmentSummaryRequestAction(q);
   }, []);
 
-  console.log(props);
   const state = get(props, "assessmentSummary.data.result", {
     assessmentName: "",
     bandInfo: [],
     metricInfo: []
   });
-  // const state = props.assessmentSummary.data
-  //   ? props.assessmentSummary.data.result
-  //   : {
-  //       assessmentName: "",
-  //       bandInfo: [],
-  //       metricInfo: []
-  //     };
 
   return (
     <div>

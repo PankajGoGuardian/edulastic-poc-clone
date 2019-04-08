@@ -9,7 +9,7 @@ export const RECEIVE_TEST_ITEMS_REQUEST = "[addItems] receive items request";
 export const RECEIVE_TEST_ITEMS_SUCCESS = "[addItems] receive items success";
 export const RECEIVE_TEST_ITEMS_ERROR = "[addItems] receive items error";
 export const SET_TEST_ITEMS_REQUEST = "[addItems] set items request";
-
+export const CLEAR_SELECTED_ITEMS = "[addItems] clear selected items";
 // actions
 
 export const receiveTestItemsSuccess = (items, count, page, limit) => ({
@@ -43,6 +43,9 @@ export const setTestItemsAction = data => ({
   payload: { data }
 });
 
+export const clearSelectedItemsAction = () => ({
+  type: CLEAR_SELECTED_ITEMS
+});
 // reducer
 
 const initialState = {
@@ -76,6 +79,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         selectedItems: payload
+      };
+    case CLEAR_SELECTED_ITEMS:
+      return {
+        ...state,
+        selectedItems: []
       };
     default:
       return state;

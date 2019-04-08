@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { Checkbox } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+
+import Extras from "../../../../containers/Extras";
 import {
   MoreOptionsContainer,
   MoreOptionsColumn,
@@ -12,10 +14,11 @@ import {
   MoreOptionsSubHeading,
   MoreOptionsColumnContainer
 } from "../../common/styled_components";
+
 import FontSizeDropdown from "./FontSizeDropdown";
 import FractionsFormatDropdown from "./FractionsFormatDropdown";
 import RenderingBaseDropdown from "./RenderingBaseDropdown";
-import { AdditionalSettings, QuestionSection, ScoreSettings } from "..";
+import { QuestionSection, ScoreSettings } from "..";
 
 class AxisLabelsMoreOptions extends Component {
   state = {
@@ -28,15 +31,6 @@ class AxisLabelsMoreOptions extends Component {
     { label: "Partial match", value: "partialMatch" },
     { label: "Partial match per response", value: "partialMatchV2" }
   ];
-
-  handleExtraOptionsChange = event => {
-    const {
-      target: { name, value }
-    } = event;
-    const { graphData, setExtras } = this.props;
-    const { extra_options } = graphData;
-    setExtras({ ...extra_options, [name]: value });
-  };
 
   handleNumberlineCheckboxChange = (name, checked) => {
     const { graphData, setNumberline } = this.props;
@@ -157,7 +151,7 @@ class AxisLabelsMoreOptions extends Component {
       setValidation
     } = this.props;
 
-    const { canvas, ui_style, numberlineAxis, extra_options } = graphData;
+    const { canvas, ui_style, numberlineAxis } = graphData;
 
     return (
       <Fragment>
@@ -400,12 +394,15 @@ class AxisLabelsMoreOptions extends Component {
         </QuestionSection>
         <QuestionSection
           section="advanced"
-          label="ADDITIONAL OPTIONS"
+          label={t("component.options.extras")}
           cleanSections={cleanSections}
           fillSections={fillSections}
           marginLast={0}
         >
-          <AdditionalSettings handleChange={this.handleExtraOptionsChange} {...extra_options} />
+          <Extras isSection>
+            <Extras.Distractors />
+            <Extras.Hints />
+          </Extras>
         </QuestionSection>
       </Fragment>
     );
@@ -421,7 +418,6 @@ AxisLabelsMoreOptions.propTypes = {
   fractionsFormatList: PropTypes.array.isRequired,
   renderingBaseList: PropTypes.array.isRequired,
   setOptions: PropTypes.func.isRequired,
-  setExtras: PropTypes.func.isRequired,
   setNumberline: PropTypes.func.isRequired,
   setCanvas: PropTypes.func.isRequired,
   setValidation: PropTypes.func.isRequired

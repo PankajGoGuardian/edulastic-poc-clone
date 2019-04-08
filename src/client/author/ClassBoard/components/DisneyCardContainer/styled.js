@@ -86,6 +86,10 @@ export const PagInfo = styled.span`
   color: #1774f0;
   text-overflow: ellipsis;
   width: 50%;
+  @media (max-width: ${mobileWidth}) {
+    width: 100%;
+    text-align: center;
+  }
 `;
 
 export const GSpan = styled.span`
@@ -126,6 +130,10 @@ export const StyledFlexDiv = styled.div`
   align-items: baseline;
   text-overflow: ellipsis;
   width: 50%;
+  @media (max-width: ${mobileWidth}) {
+    width: 100%;
+    text-align: center;
+  }
 `;
 
 export const StyledName = styled.div`
@@ -213,6 +221,9 @@ export const StyledParaSSS = styled.p`
   color: #5eb500;
   text-overflow: ellipsis;
   width: 50%;
+  @media (max-width: ${mobileWidth}) {
+    margin-left: 0px;
+  }
 `;
 
 export const SpaceDiv = styled.div`

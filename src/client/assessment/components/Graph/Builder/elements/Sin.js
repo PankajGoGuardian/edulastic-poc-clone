@@ -1,20 +1,14 @@
 import { Point } from ".";
 import { CONSTANT, Colors } from "../config";
 import { handleSnap } from "../utils";
+import { getLabelParameters } from "../settings";
+
+const jxgType = 96;
 
 export const defaultConfig = {
   type: CONSTANT.TOOLS.SIN,
   fixed: false
 };
-
-export const getSinLabelParameters = () => ({
-  offset: [0, 10],
-  position: "mdl",
-  anchorX: "middle",
-  anchorY: "middle",
-  cssClass: "myLabel",
-  highlightCssClass: "myLabel"
-});
 
 const makeCallback = (p1, p2) => x => {
   const a = p1.Y();
@@ -36,9 +30,9 @@ function onHandler() {
       const newLine = board.$board.create("functiongraph", [makeCallback(...points)], {
         ...defaultConfig,
         ...Colors.default[CONSTANT.TOOLS.SIN],
-        label: getSinLabelParameters()
+        label: getLabelParameters(jxgType)
       });
-
+      newLine.type = jxgType;
       handleSnap(newLine, points);
 
       if (newLine) {
@@ -54,6 +48,18 @@ function onHandler() {
   };
 }
 
+function getConfig(sine) {
+  return {
+    _type: sine.type,
+    type: CONSTANT.TOOLS.SIN,
+    id: sine.id,
+    label: sine.hasLabel ? sine.label.plaintext : false,
+    points: Object.keys(sine.ancestors)
+      .sort()
+      .map(n => Point.getConfig(sine.ancestors[n]))
+  };
+}
+
 function parseConfig(pointsConfig) {
   return [
     "functiongraph",
@@ -61,7 +67,7 @@ function parseConfig(pointsConfig) {
     {
       ...defaultConfig,
       fillColor: "transparent",
-      label: getSinLabelParameters()
+      label: getLabelParameters(jxgType)
     }
   ];
 }
@@ -73,6 +79,7 @@ function abort(cb) {
 
 export default {
   onHandler,
+  getConfig,
   parseConfig,
   abort
 };

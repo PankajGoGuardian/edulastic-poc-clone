@@ -1,6 +1,9 @@
 import { Point } from ".";
 import { CONSTANT, Colors } from "../config";
 import { handleSnap } from "../utils";
+import { getLabelParameters } from "../settings";
+
+const jxgType = 94;
 
 export const defaultConfig = {
   type: CONSTANT.TOOLS.LOGARITHM,
@@ -8,8 +11,8 @@ export const defaultConfig = {
 };
 
 export const getLogarithmLabelParameters = () => ({
-  offset: [0, 10],
-  position: "mdl",
+  offset: [0, 0],
+  position: "top",
   anchorX: "middle",
   anchorY: "middle",
   cssClass: "myLabel",
@@ -36,9 +39,9 @@ function onHandler() {
       const newLine = board.$board.create("functiongraph", [makeCallback(...points)], {
         ...defaultConfig,
         ...Colors.default[CONSTANT.TOOLS.LOGARITHM],
-        label: getLogarithmLabelParameters()
+        label: getLabelParameters(jxgType)
       });
-      newLine.type = 94;
+      newLine.type = jxgType;
       handleSnap(newLine, points);
 
       if (newLine) {
@@ -59,6 +62,18 @@ const cleanPoints = board => {
   points = [];
 };
 
+function getConfig(logarithm) {
+  return {
+    _type: logarithm.type,
+    type: CONSTANT.TOOLS.LOGARITHM,
+    id: logarithm.id,
+    label: logarithm.hasLabel ? logarithm.label.plaintext : false,
+    points: Object.keys(logarithm.ancestors)
+      .sort()
+      .map(n => Point.getConfig(logarithm.ancestors[n]))
+  };
+}
+
 function parseConfig(pointsConfig) {
   return [
     "functiongraph",
@@ -66,7 +81,7 @@ function parseConfig(pointsConfig) {
     {
       ...defaultConfig,
       fillColor: "transparent",
-      label: getLogarithmLabelParameters()
+      label: getLabelParameters(jxgType)
     }
   ];
 }
@@ -78,6 +93,7 @@ function abort(cb) {
 
 export default {
   onHandler,
+  getConfig,
   parseConfig,
   cleanPoints,
   abort

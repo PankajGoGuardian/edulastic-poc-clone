@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { IconPlus } from "@edulastic/icons";
+import { IconPlus, IconEye, IconDown } from "@edulastic/icons";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { MoveLink, MathFormulaDisplay } from "@edulastic/common";
@@ -30,7 +30,9 @@ import {
   StandardContent,
   LabelStandard,
   LabelStandardText,
-  CountGreen
+  CountGreen,
+  MoreInfo,
+  Details
 } from "./styled";
 
 // render single item
@@ -46,6 +48,10 @@ class Item extends Component {
 
   static defaultProps = {
     selectedToCart: false
+  };
+
+  state = {
+    isOpenedDetails: false
   };
 
   moveToItem = () => {
@@ -172,8 +178,17 @@ class Item extends Component {
     ) : null;
   };
 
+  toggleDetails = () => {
+    const { isOpenedDetails } = this.state;
+
+    this.setState({
+      isOpenedDetails: !isOpenedDetails
+    });
+  };
+
   render() {
     const { item, t, windowWidth, selectedToCart } = this.props;
+    const { isOpenedDetails } = this.state;
 
     return (
       <Container>
@@ -197,18 +212,30 @@ class Item extends Component {
         </Question>
         <Detail>
           <TypeCategory>
-            {this.renderStandards()}
+            {windowWidth > MAX_TAB_WIDTH && this.renderStandards()}
             <CategoryContent>{this.renderTypes()}</CategoryContent>
           </TypeCategory>
-          <Categories>{this.renderDetails()}</Categories>
+          {windowWidth > MAX_TAB_WIDTH && <Categories>{this.renderDetails()}</Categories>}
         </Detail>
         {windowWidth < MAX_TAB_WIDTH && (
           <ViewButton>
-            <ViewButtonStyled onClick={this.moveToItem}>{t("component.item.view")}</ViewButtonStyled>
+            <MoreInfo onClick={this.toggleDetails} isOpenedDetails={isOpenedDetails}>
+              <IconDown />
+            </MoreInfo>
+            <ViewButtonStyled onClick={this.moveToItem}>
+              {t("component.item.view")}
+              <IconEye />
+            </ViewButtonStyled>
             <AddButtonStyled onClick={this.handleToggleItemToCart(item._id)}>
               {selectedToCart ? "Remove" : <IconPlus />}
             </AddButtonStyled>
           </ViewButton>
+        )}
+        {windowWidth < MAX_TAB_WIDTH && (
+          <Details isOpenedDetails={isOpenedDetails}>
+            {this.renderStandards()}
+            <Categories>{this.renderDetails()}</Categories>
+          </Details>
         )}
       </Container>
     );

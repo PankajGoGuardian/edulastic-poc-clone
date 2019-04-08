@@ -18,19 +18,22 @@ import Hints from "./Hints";
 import { change } from "./helpers";
 import { Row } from "../../styled/WidgetOptions/Row";
 import { Col } from "../../styled/WidgetOptions/Col";
+import { SectionHeading } from "../../styled/WidgetOptions/SectionHeading";
 
-const Extras = ({ t, children, theme, item, setQuestionData }) => {
+const Extras = ({ t, children, theme, item, setQuestionData, isSection }) => {
   const _change = change({ item, setQuestionData });
 
   const inputStyle = {
     minHeight: 35,
     border: `1px solid ${theme.extras.inputBorderColor}`,
-    padding: "5px 15px"
+    padding: "5px 15px",
+    background: theme.extras.inputBgColor
   };
 
   return (
-    <Block>
-      <Heading>{t("component.options.extras")}</Heading>
+    <Block isSection={isSection}>
+      {isSection && <SectionHeading>{t("component.options.extras")}</SectionHeading>}
+      {!isSection && <Heading>{t("component.options.extras")}</Heading>}
 
       <Row gutter={36}>
         <Col md={12}>
@@ -117,11 +120,13 @@ Extras.propTypes = {
   t: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  isSection: PropTypes.bool
 };
 
 Extras.defaultProps = {
-  children: null
+  children: null,
+  isSection: false
 };
 
 const enhance = compose(

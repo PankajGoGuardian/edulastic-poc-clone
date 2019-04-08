@@ -12,7 +12,7 @@ const TestFiltersNav = ({ items, onSelect, routerParams = {} }) => {
     defaultSelected = params.filterType;
   }
   return (
-    <Container onSelect={onSelect} defaultSelectedKeys={[defaultSelected]}>
+    <Container onSelect={onSelect} selectedKeys={[defaultSelected]}>
       {items.map(item => (
         <Item key={item.path}>
           <Icon type={item.icon} /> {item.text}

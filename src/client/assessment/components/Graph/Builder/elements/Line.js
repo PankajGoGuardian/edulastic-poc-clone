@@ -1,20 +1,12 @@
 import { Point } from ".";
 import { getLineTypeByProp, getPropsByLineType } from "../utils";
 import { Colors, CONSTANT } from "../config";
+import { getLabelParameters } from "../settings";
 
 export const defaultConfig = {
   firstarrow: true,
   lastarrow: true
 };
-
-export const getLineLabelParameters = () => ({
-  offset: [0, 10],
-  position: "mdl",
-  anchorX: "middle",
-  anchorY: "bottom",
-  cssClass: "myLabel",
-  highlightCssClass: "myLabel"
-});
 
 let points = [];
 
@@ -28,7 +20,7 @@ function onLineHandler(type) {
       const newLine = board.$board.create("line", points, {
         ...getPropsByLineType(type),
         ...Colors.default[CONSTANT.TOOLS.LINE],
-        label: getLineLabelParameters()
+        label: getLabelParameters(window.JXG.OBJECT_TYPE_LINE)
       });
       if (newLine) {
         points = [];
@@ -58,7 +50,7 @@ function getConfig(line) {
 function parseConfig(type) {
   return {
     ...getPropsByLineType(type),
-    label: getLineLabelParameters()
+    label: getLabelParameters(window.JXG.OBJECT_TYPE_LINE)
   };
 }
 

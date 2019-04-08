@@ -184,7 +184,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_TEST_SUCCESS:
       return {
         ...state,
-        entity: { ...state.entity, version: payload.entity.version },
+        entity: { ...payload.entity },
         creating: false
       };
     case CREATE_TEST_ERROR:
@@ -299,6 +299,7 @@ function* createTestSaga({ payload }) {
 function* updateTestSaga({ payload }) {
   try {
     // remove createdDate and updatedDate
+    const oldId = payload.data._id;
     delete payload.data.updatedDate;
     delete payload.data.createdDate;
     delete payload.data.assignments;
@@ -307,7 +308,13 @@ function* updateTestSaga({ payload }) {
     const entity = yield call(testsApi.update, payload);
 
     yield put(updateTestSuccessAction(entity));
-    yield call(message.success, "Update Sucessful");
+    const newId = entity._id;
+    if (oldId != newId) {
+      yield call(message.success, "Test versioned");
+      yield put(push(`/author/tests/${newId}`));
+    } else {
+      yield call(message.success, "Update Successful");
+    }
 
     if (payload.updateLocal) {
       yield put(setTestDataAction(payload.data));

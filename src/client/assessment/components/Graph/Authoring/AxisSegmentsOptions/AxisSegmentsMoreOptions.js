@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { Checkbox, Select } from "@edulastic/common";
+
+import Extras from "../../../../containers/Extras";
 import {
   MoreOptionsContainer,
   MoreOptionsInput,
@@ -14,16 +16,17 @@ import {
   MoreOptionsColumnContainer,
   MoreOptionsColumn
 } from "../../common/styled_components";
+
 import FontSizeDropdown from "../AxisLabelsLayoutSettings/FontSizeDropdown";
 import RenderingBaseDropdown from "../AxisLabelsLayoutSettings/RenderingBaseDropdown";
-import { AdditionalSettings, QuestionSection, ScoreSettings, SegmentsToolsSettings } from "../";
+import { QuestionSection, ScoreSettings, SegmentsToolsSettings } from "..";
 
 class AxisSegmentsMoreOptions extends Component {
   state = {
     layout: "horizontal",
     minWidth: "550px",
-    renderingBase: "lineMinValue",
-    labelDisplaySpecPoints: "",
+    // renderingBase: "lineMinValue",
+    // labelDisplaySpecPoints: "",
     currentRenderingBaseItem: {}
   };
 
@@ -32,14 +35,6 @@ class AxisSegmentsMoreOptions extends Component {
     { label: "Partial match", value: "partialMatch" },
     { label: "Partial match per response", value: "partialMatchV2" }
   ];
-
-  handleExtraOptionsChange = event => {
-    const {
-      target: { name, value }
-    } = event;
-    const { extra_options, setExtras } = this.props;
-    setExtras({ ...extra_options, [name]: value });
-  };
 
   handleNumberlineCheckboxChange = (name, checked) => {
     const { numberlineAxis, setNumberline } = this.props;
@@ -149,7 +144,6 @@ class AxisSegmentsMoreOptions extends Component {
       cleanSections,
       setValidation,
       graphData,
-      extra_options,
       toolbar,
       setControls
     } = this.props;
@@ -413,12 +407,15 @@ class AxisSegmentsMoreOptions extends Component {
         </QuestionSection>
         <QuestionSection
           section="advanced"
-          label="ADDITIONAL OPTIONS"
+          label={t("component.options.extras")}
           cleanSections={cleanSections}
           fillSections={fillSections}
           marginLast={0}
         >
-          <AdditionalSettings handleChange={this.handleExtraOptionsChange} {...extra_options} />
+          <Extras isSection>
+            <Extras.Distractors />
+            <Extras.Hints />
+          </Extras>
         </QuestionSection>
       </Fragment>
     );
@@ -439,7 +436,9 @@ AxisSegmentsMoreOptions.propTypes = {
   fontSizeList: PropTypes.array,
   renderingBaseList: PropTypes.array,
   setValidation: PropTypes.func.isRequired,
-  graphData: PropTypes.object.isRequired
+  graphData: PropTypes.object.isRequired,
+  setControls: PropTypes.func.isRequired,
+  toolbar: PropTypes.object.isRequired
 };
 
 AxisSegmentsMoreOptions.defaultProps = {

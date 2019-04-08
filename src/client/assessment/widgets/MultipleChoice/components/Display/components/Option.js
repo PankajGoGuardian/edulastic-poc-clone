@@ -134,7 +134,7 @@ const Option = props => {
     }
   };
 
-  const width = uiStyle.columns ? `${100 / uiStyle.columns - 1}%` : "100%";
+  // const width = uiStyle.columns ? `${100 / uiStyle.columns - 1}%` : "100%";
 
   return (
     // <Label width={width} smallSize={smallSize} className={className} showAnswer>
@@ -163,7 +163,7 @@ Option.propTypes = {
   checkAnswer: PropTypes.bool.isRequired,
   validation: PropTypes.any.isRequired,
   uiStyle: PropTypes.object.isRequired,
-  correct: PropTypes.object.isRequired
+  correct: PropTypes.any.isRequired
 };
 
 Option.defaultProps = {

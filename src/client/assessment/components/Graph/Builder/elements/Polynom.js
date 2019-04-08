@@ -1,14 +1,9 @@
 import { Point } from ".";
 import { CONSTANT, Colors } from "../config";
 import { handleSnap } from "../utils";
+import { getLabelParameters } from "../settings";
 
-export const getPointLabelParameters = () => ({
-  offset: [0, 10],
-  anchorX: "middle",
-  anchorY: "middle",
-  cssClass: "myLabel",
-  highlightCssClass: "myLabel"
-});
+const jxgType = 95;
 
 export const defaultConfig = {
   hasInnerPoints: true,
@@ -38,6 +33,13 @@ const makeCallback = (...points) => x => {
 
 let points = [];
 
+function flatConfigPoints(pointsConfig) {
+  return pointsConfig.reduce((acc, p, i) => {
+    acc[i] = p;
+    return acc;
+  }, {});
+}
+
 function onHandler() {
   return (board, event) => {
     if (points.length >= 1) {
@@ -48,9 +50,9 @@ function onHandler() {
         const newPolynom = board.$board.create("functiongraph", [makeCallback(...points)], {
           ...defaultConfig,
           ...Colors.default[CONSTANT.TOOLS.POLYNOM],
-          label: getPointLabelParameters()
+          label: getLabelParameters(jxgType)
         });
-        newPolynom.type = 95;
+        newPolynom.type = jxgType;
         handleSnap(newPolynom, points);
 
         if (newPolynom) {
@@ -77,16 +79,9 @@ const cleanPoints = board => {
   points = [];
 };
 
-function flatConfigPoints(pointsConfig) {
-  return pointsConfig.reduce((acc, p, i) => {
-    acc[i] = p;
-    return acc;
-  }, {});
-}
-
 function getConfig(polynom) {
   return {
-    _type: 95,
+    _type: polynom.type,
     type: CONSTANT.TOOLS.POLYNOM,
     id: polynom.id,
     label: polynom.hasLabel ? polynom.label.plaintext : false,
@@ -103,7 +98,7 @@ function parseConfig(pointsConfig) {
     {
       ...defaultConfig,
       fillColor: "transparent",
-      label: getPointLabelParameters()
+      label: getLabelParameters(jxgType)
     }
   ];
 }

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { maxBy } from "lodash";
-
+import { white } from "@edulastic/colors";
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle } from "recharts";
 import { MainDiv } from "./styled";
 
@@ -122,8 +122,7 @@ export default class BarGraph extends Component {
               stroke="#1774F0"
               strokeWidth="3"
               type="monotone"
-              // dot={{ stroke: "#FFFFFF", strokeWidth: 10, fill: "#FFFFFF" }}
-              dot={false}
+              dot={{ stroke: white, strokeWidth: 6, fill: white }}
             />
           </ComposedChart>
         </ResponsiveContainer>

@@ -1,14 +1,7 @@
 import { Point } from ".";
 import segmentConfig from "./Segment";
 import { CONSTANT, Colors } from "../config";
-
-export const getPointLabelParameters = () => ({
-  offset: [0, 10],
-  anchorX: "middle",
-  anchorY: "middle",
-  cssClass: "myLabel",
-  highlightCssClass: "myLabel"
-});
+import { getLabelParameters } from "../settings";
 
 export const defaultConfig = {
   hasInnerPoints: true
@@ -35,7 +28,7 @@ function onHandler() {
         const newPolygon = board.$board.create("polygon", points, {
           ...defaultConfig,
           ...Colors.default[CONSTANT.TOOLS.POLYGON],
-          label: getPointLabelParameters()
+          label: getLabelParameters(window.JXG.OBJECT_TYPE_POLYGON)
         });
         points = [];
         lines = [];
@@ -92,7 +85,7 @@ function parseConfig() {
     highlightFillOpacity: 0.3,
     fillColor: "#ccc",
     ...defaultConfig,
-    label: getPointLabelParameters()
+    label: getLabelParameters(window.JXG.OBJECT_TYPE_POLYGON)
   };
 }
 

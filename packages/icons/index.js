@@ -126,3 +126,5 @@ export { default as IconBookMarkButton } from "./src/IconBookMarkButton";
 export { default as IconNotes } from "./src/IconNotes";
 export { default as IconCircleCheck } from "./src/IconCircleCheck";
 export { default as IconArrowCircleUp } from "./src/IconArrowCircleUp";
+export { default as IconFilter } from "./src/IconFilter";
+export { default as IconDown } from "./src/IconDown";

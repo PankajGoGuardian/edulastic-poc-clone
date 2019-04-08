@@ -20,10 +20,21 @@ export const Container = styled.div`
   }
   @media (max-width: ${tabletWidth}) {
     flex-direction: column;
-    padding: 20px 0;
+    padding: 28px 28px 0 28px;
 
-    &:first-child {
-      padding-top: 0;
+    &:not(:first-child) {
+      border-top: 0;
+      position: relative;
+
+      &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 28px;
+        right: 28px;
+        height: 1px;
+        background: #f6f6f6;
+      }
     }
   }
 `;
@@ -38,8 +49,9 @@ export const Question = styled.div`
 
   @media (max-width: ${tabletWidth}) {
     width: 100%;
-    margin-bottom: 15px;
+    margin-bottom: 0;
     text-align: center;
+    margin-top: -0.5em;
   }
 `;
 
@@ -58,7 +70,11 @@ export const ViewButton = styled.div`
   margin-bottom: auto;
 
   @media (max-width: ${tabletWidth}) {
-    margin-top: 25px;
+    width: 50%;
+    display: inline-flex;
+    justify-content: flex-end;
+    margin-top: 13px;
+    padding-right: 5px;
   }
 `;
 
@@ -73,6 +89,28 @@ export const ViewButtonStyled = styled(Button)`
   text-transform: uppercase;
   border: 0;
   color: ${newBlue};
+
+  svg {
+    display: none;
+  }
+  @media (max-width: ${tabletWidth}) {
+    width: 40px;
+    height: 40px;
+    border-radius: 3px;
+    padding: 0;
+
+    span {
+      font-size: 0;
+      display: none;
+    }
+    svg {
+      display: initial;
+      width: 20px;
+      height: 20px;
+      margin-bottom: -3px;
+      fill: ${newBlue};
+    }
+  }
 `;
 
 export const AddButtonStyled = styled(Button)`
@@ -93,6 +131,18 @@ export const AddButtonStyled = styled(Button)`
     max-height: 13px;
     fill: ${newBlue};
   }
+
+  @media (max-width: ${tabletWidth}) {
+    width: 40px;
+    height: 40px;
+    border-radius: 3px;
+    padding: 0;
+
+    svg {
+      margin-top: 4px;
+      stroke: ${newBlue};
+    }
+  }
 `;
 
 export const Detail = styled.div`
@@ -102,7 +152,10 @@ export const Detail = styled.div`
   min-height: 39px;
 
   @media (max-width: ${tabletWidth}) {
-    margin-top: 9px;
+    margin: 0;
+    width: 50%;
+    display: inline-flex;
+    min-height: 0;
   }
 `;
 
@@ -115,6 +168,9 @@ export const TypeCategory = styled.div`
     display: block;
     margin-right: 0px;
     width: 100%;
+    margin: 0;
+    position: relative;
+    top: -4px;
   }
 `;
 
@@ -130,10 +186,17 @@ export const DetailCategory = styled.div`
     fill: ${newBlue};
   }
   @media (max-width: ${tabletWidth}) {
-    width: 40%;
+    width: auto;
     margin-right: 0px;
-    margin-top: 12px;
+    margin-top: 17px;
     margin-left: 0px;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+
+    > div {
+      justify-content: center;
+    }
   }
 `;
 
@@ -148,6 +211,7 @@ export const CategoryName = styled.span`
   @media (max-width: ${tabletWidth}) {
     display: block;
     font-size: 14px;
+    margin: 0 auto;
   }
 `;
 
@@ -159,6 +223,8 @@ export const CategoryContent = styled.div`
   @media (max-width: ${tabletWidth}) {
     flex-wrap: wrap;
     align-items: center;
+    justify-content: flex-start;
+    width: 100%;
   }
 `;
 
@@ -185,10 +251,12 @@ export const Label = styled.div`
   }
 
   @media (max-width: ${tabletWidth}) {
-    margin-left: -3px;
-    width: 48%;
+    margin-left: 0;
+    width: auto;
     margin-top: 8px;
-    height: 30px;
+    height: 26px;
+    padding-left: 18px;
+    padding-right: 18px;
   }
 `;
 
@@ -200,6 +268,10 @@ export const Count = styled.div`
   line-height: 24px;
   margin-right: 10px;
   color: ${greyDarken};
+
+  @media (max-width: ${tabletWidth}) {
+    display: none;
+  }
 `;
 
 export const LabelText = styled.span`
@@ -224,6 +296,7 @@ export const Text = styled.span`
   color: ${secondaryTextColor};
 
   @media (max-width: ${tabletWidth}) {
+    margin-top: 8px;
     font-size: 14px;
   }
 `;
@@ -236,9 +309,10 @@ export const Categories = styled.div`
   @media (max-width: ${tabletWidth}) {
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;
-    width: 100%;
-    margin-top: 2px;
+    flex-wrap: nowrap;
+    width: calc(100% + 15px);
+    margin-top: 0;
+    margin: 0 -7.5px;
   }
 `;
 
@@ -301,10 +375,11 @@ export const LabelStandard = styled.div`
   }
 
   @media (max-width: ${tabletWidth}) {
-    margin-left: -3px;
-    width: 29%;
+    margin-left: 0;
+    width: 26.6%;
     margin-top: 8px;
-    height: 30px;
+    height: 26px;
+    padding: 4px;
   }
 `;
 
@@ -330,4 +405,50 @@ export const CountGreen = styled.div`
   line-height: 24px;
   margin-right: 10px;
   color: ${greenPrimary};
+`;
+
+export const MoreInfo = styled.div`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: ${props => (props.isOpenedDetails ? newBlue : white)};
+  box-shadow: 0 2px 4px 0 rgba(201, 208, 219, 0.5);
+  border: 0;
+  color: ${newBlue};
+  width: 40px;
+  height: 40px;
+  border-radius: 3px;
+  padding: 0;
+  margin-right: 10px;
+  transition: all 0.3s ease;
+
+  &:focus,
+  &:hover {
+    svg {
+      fill: ${props => (props.isOpenedDetails ? white : newBlue)};
+    }
+  }
+
+  svg {
+    display: initial;
+    width: 18px;
+    height: 15px;
+    margin-bottom: -3px;
+    fill: ${props => (props.isOpenedDetails ? white : newBlue)};
+    position: relative;
+    transition: all 0.3s ease;
+    transform: ${props => (props.isOpenedDetails ? "rotate(180deg)" : "rotate(0deg)")};
+  }
+`;
+
+export const Details = styled.div`
+  background: #f8f8f8;
+  border-radius: 3px;
+  margin-top: 17px;
+  padding: ;
+  padding: ${props => (props.isOpenedDetails ? "22px 20px 20px" : "0 20px 0")};
+  transition: all 0.3s ease;
+  max-height: ${props => (props.isOpenedDetails ? "150px" : "0")};
+  position: relative;
+  overflow: hidden;
 `;

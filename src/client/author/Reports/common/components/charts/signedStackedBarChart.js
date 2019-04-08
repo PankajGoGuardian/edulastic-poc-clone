@@ -9,7 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   LabelList,
-  Brush,
+  Legend,
   ReferenceLine
 } from "recharts";
 import { isEmpty } from "lodash";
@@ -30,7 +30,7 @@ export const SignedStackedBarChart = ({
   barsData,
   data = [],
   yDomain = [-110, 110],
-  ticks = [-100, -90, -80, -70, -60, -50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+  ticks = [-110, -81, -54, -27, 27, 54, 81, 110],
   xAxisDataKey,
   onBarClickCB,
   onResetClickCB,
@@ -38,6 +38,7 @@ export const SignedStackedBarChart = ({
   getTooltipJSX,
   yAxisLabel = "",
   yTickFormatter = yTickFormatter,
+  barsLabelFormatter = yTickFormatter,
   referenceLine = 0,
   filter = {}
 }) => {
@@ -152,6 +153,7 @@ export const SignedStackedBarChart = ({
             label={constants.Y_AXIS_LABEL}
           />
           <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltipJSX} />} />
+          <Legend align="left" verticalAlign="top" />
           <ReferenceLine y={referenceLine} stroke={constants.COLOR_BLACK} />
           {barsData.map((bdItem, bdIndex) => {
             return (
@@ -170,7 +172,7 @@ export const SignedStackedBarChart = ({
                   position="inside"
                   fill="#010101"
                   offset={5}
-                  formatter={yTickFormatter}
+                  formatter={barsLabelFormatter}
                 />
                 {renderData.map((cdItem, cdIndex) => {
                   {

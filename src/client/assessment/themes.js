@@ -170,7 +170,8 @@ export const themes = {
       draggableSolidBorderColor: "lightgray"
     },
     extras: {
-      inputBorderColor: "rgb(223, 223, 223)"
+      inputBorderColor: "rgb(223, 223, 223)",
+      inputBgColor: "white"
     },
     questionMetadata: {
       antButtonCircleBgColor: "#1fe3a1", // green

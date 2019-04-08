@@ -1,4 +1,4 @@
-//@ts-check
+// @ts-check
 import { API } from "@edulastic/api";
 import { useEffect, useState } from "react";
 import mqtt from "mqtt";
@@ -9,7 +9,7 @@ export const getSignedUrl = async () => {
   const res = await api.callApi({
     url: "/realtime/url"
   });
-  const url = res.data.url;
+  const url = res ? (res.data ? res.data.url : "") : "";
   return url;
 };
 

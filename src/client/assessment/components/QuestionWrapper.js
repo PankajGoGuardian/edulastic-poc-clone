@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled, { ThemeProvider } from "styled-components";
 import { questionType } from "@edulastic/constants";
@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { mobileWidth } from "@edulastic/colors";
-import { throttle } from "lodash";
 
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../themes";
@@ -123,68 +122,6 @@ class QuestionWrapper extends Component {
     activeTab: 0
   };
 
-  componentDidMount() {
-    window.addEventListener("scroll", throttle(this.findActiveTab, 200));
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("scroll", this.findActiveTab);
-  }
-
-  calcScrollPosition = (index, offset) => {
-    const scrollYMax =
-      Math.max(
-        document.body.scrollHeight,
-        document.body.offsetHeight,
-        document.documentElement.clientHeight,
-        document.documentElement.scrollHeight,
-        document.documentElement.offsetHeight
-      ) - window.innerHeight;
-
-    if (index === 0) {
-      return window.scrollY + 90;
-    }
-    if (index !== 0 && offset < scrollYMax) {
-      return window.scrollY + 250;
-    }
-    if (index !== 0 && offset >= scrollYMax) {
-      return window.scrollY + 650;
-      // return window.scrollY + (offset - scrollYMax + 200)
-    }
-  };
-
-  isActive = (index, options) => {
-    const scrollPosition = this.calcScrollPosition(index, options[index].offset);
-
-    if (index === 0) {
-      if (scrollPosition <= options[index].offset) {
-        return true;
-      }
-    } else if (index === options.length - 1) {
-      if (scrollPosition <= document.documentElement.scrollHeight && scrollPosition >= options[index].offset) {
-        return true;
-      }
-    } else if (scrollPosition >= options[index].offset && scrollPosition <= options[index + 1].offset) {
-      return true;
-    }
-    return false;
-  };
-
-  findActiveTab = () => {
-    const { main, advanced, activeTab } = this.state;
-    const allOptions = main.concat(advanced);
-
-    if (allOptions) {
-      allOptions.forEach((option, index) => {
-        if (this.isActive(index, allOptions)) {
-          if (index !== activeTab) {
-            return this.setState({ activeTab: index });
-          }
-        }
-      });
-    }
-  };
-
   fillSections = (section, label, offset) => {
     this.setState(state => ({
       [section]: state[section].concat({ label, offset })
@@ -207,19 +144,12 @@ class QuestionWrapper extends Component {
       view,
       setQuestionData,
       t,
+      qIndex,
       ...restProps
     } = this.props;
     const { main, advanced, activeTab } = this.state;
     const Question = getQuestion(type);
     const studentName = data.activity && data.activity.studentName;
-    const PaperWrapperStyles = {
-      width: "-webkit-fill-available",
-      display: "flex",
-      padding: "25px 20px",
-      background: "#F8F8FB",
-      boxShadow: "none",
-      marginBottom: 30
-    };
 
     return (
       <ThemeProvider theme={themes.default}>
@@ -235,6 +165,7 @@ class QuestionWrapper extends Component {
                 setQuestionData={setQuestionData}
                 item={data}
                 view={view}
+                qIndex={qIndex}
                 cleanSections={this.cleanSections}
                 fillSections={this.fillSections}
               />
@@ -256,7 +187,13 @@ QuestionWrapper.propTypes = {
   saveClicked: PropTypes.bool,
   testItem: PropTypes.bool,
   noPadding: PropTypes.bool,
-  isFlex: PropTypes.bool
+  isFlex: PropTypes.bool,
+  t: PropTypes.func,
+  timespent: PropTypes.string,
+  showFeedback: PropTypes.bool,
+  multiple: PropTypes.bool,
+  setQuestionData: PropTypes.func,
+  qIndex: PropTypes.number
 };
 
 QuestionWrapper.defaultProps = {
@@ -266,7 +203,13 @@ QuestionWrapper.defaultProps = {
   saveClicked: false,
   testItem: false,
   noPadding: false,
-  isFlex: false
+  isFlex: false,
+  t: () => {},
+  timespent: "",
+  multiple: false,
+  showFeedback: false,
+  setQuestionData: () => {},
+  qIndex: 0
 };
 
 const enhance = compose(

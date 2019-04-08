@@ -4,6 +4,7 @@ import { FaAngleDoubleRight } from "react-icons/fa";
 import { greenDark } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { IconHeart, IconShare } from "@edulastic/icons";
+import { Button } from "antd";
 import {
   Container,
   Inner,
@@ -19,6 +20,8 @@ import {
   IconText
 } from "./styled";
 import Tags from "../../../src/components/common/Tags";
+import { assignmentApi } from "@edulastic/api";
+const ButtonGroup = Button.Group;
 
 class Item extends Component {
   static propTypes = {
@@ -33,11 +36,25 @@ class Item extends Component {
     history.push(`/author/tests/${item._id}`);
   };
 
+  duplicate = async () => {
+    const { history, item } = this.props;
+    const test = await assignmentApi.duplicateAssignment(item._id);
+    history.push(`/author/tests/${item._id}`);
+  };
+
+  get name() {
+    const {
+      item: { createdBy = {} }
+    } = this.props;
+    return `${createdBy.firstName} ${createdBy.lastName}`;
+  }
+
   render() {
     const {
       item: { title, tags, analytics },
       t,
-      authorName
+      authorName,
+      owner
     } = this.props;
     return (
       <Container
@@ -78,6 +95,17 @@ class Item extends Component {
             </IconWrapper>
           </Icons>
         </Footer>
+        <ButtonGroup>
+          {owner && (
+            <Button onClick={this.moveToItem} type="primary">
+              Edit
+            </Button>
+          )}
+
+          <Button type="primary" onClick={this.duplicate}>
+            duplicate
+          </Button>
+        </ButtonGroup>
       </Container>
     );
   }

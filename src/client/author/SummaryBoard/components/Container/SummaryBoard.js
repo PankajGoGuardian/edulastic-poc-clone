@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
+import { sumBy, round } from "lodash";
 import { connect } from "react-redux";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -72,9 +73,9 @@ class SummaryBoard extends Component {
     if (!students.length) {
       return 0;
     }
-    const totalScore = students.reduce((_totalScore, student) => _totalScore + student.scorePercent, 0);
+    const totalScore = sumBy(students, student => student.scorePercent);
     const avgScore = totalScore / students.length;
-    return Math.round(avgScore * 100) / 100;
+    return round(avgScore, 2);
   };
 
   getAverageTimeSpent = () => {
@@ -82,14 +83,10 @@ class SummaryBoard extends Component {
     if (!testActivity.length) {
       return 0;
     }
-    const totalSpentTime = testActivity.reduce((_totalSpent, student) => {
+    const totalSpentTime = sumBy(testActivity, student => {
       const { questionActivities } = student;
-      if (!questionActivities.length) {
-        return _totalSpent;
-      }
-      const spentTime = questionActivities.reduce((spent, question) => spent + parseFloat(question.timespent) || 0, 0);
-      return _totalSpent + spentTime;
-    }, 0);
+      return sumBy(questionActivities, question => question.timespent || 0);
+    });
     return totalSpentTime / testActivity.length;
   };
 
@@ -123,20 +120,8 @@ class SummaryBoard extends Component {
     const submittedStudents = studentItems.filter(student => student.status === "submitted");
 
     submittedStudents.map(student => {
-      const { questionActivities } = student;
-      let totalScore = 0;
-      questionActivities.forEach(question => {
-        const score = parseFloat(question.score) || 0;
-        totalScore += score;
-      });
-
-      let totalMaxScore = 0;
-      questionActivities.forEach(question => {
-        const maxScore = parseFloat(question.maxScore) || 0;
-        totalMaxScore += maxScore;
-      });
-      student.scorePercent = (totalScore / totalMaxScore) * 100;
-
+      const scorePercent = ((student.score || 0) / (student.maxScore || 1)) * 100;
+      student.scorePercent = scorePercent;
       return student;
     });
 

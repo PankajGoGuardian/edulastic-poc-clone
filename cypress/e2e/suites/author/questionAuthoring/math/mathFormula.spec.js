@@ -230,7 +230,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
   context("User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId("5ca30647c36d3dffd6fec3ae");
+      editItem.getItemWithId();
       editItem.deleteAllQuestion();
       // create new que and select type
 
@@ -698,7 +698,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
   context("Edit the Math formula created", () => {
     before("delete old question and create dummy que to edit", () => {
-      editItem.getItemWithId("5ca30647c36d3dffd6fec3ae");
+      editItem.getItemWithId();
       editItem.deleteAllQuestion();
 
       //create new que and select type
@@ -805,7 +805,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
   context("Testing equivSyntax methods", () => {
     before("delete old question and create dummy que to edit", () => {
       preview = editItem.header.preview();
-      editItem.getItemWithId("5ca30647c36d3dffd6fec3ae");
+      editItem.getItemWithId();
       editItem.deleteAllQuestion();
 
       editItem.addNew().chooseQuestion(queData.group, queData.queType);

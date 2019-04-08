@@ -70,7 +70,7 @@ const Variables = ({ setQuestionData, calculateFormula, t, questionData }) => {
         if (!variable.set) {
           return "";
         }
-        const values = variable.set.split(",");
+        const values = variable.set.split(",").filter(val => !!val);
         if (values.length > 0) {
           return values[Math.floor(Math.random() * values.length)];
         }

@@ -162,6 +162,7 @@ class ShareModal extends React.Component {
     const { sharedType, peopleArray, permission } = this.state;
     const { isVisible, onClose, userList = [], fetching } = this.props;
     const filteredUserList = userList.filter(user => peopleArray.every(people => user._id !== people._userId));
+    const sharableURL = window.location.href;
     return (
       <Modal open={isVisible} onClose={onClose} center styles={{ modal: { borderRadius: 5 } }}>
         <ModalContainer>
@@ -169,9 +170,9 @@ class ShareModal extends React.Component {
           <ShareBlock>
             <ShareLabel>Share</ShareLabel>
             <FlexContainer>
-              <ShareTitle>https://edulastic.com/assessment/76y8gyug-b8ug-8</ShareTitle>
+              <ShareTitle>{sharableURL}</ShareTitle>
               <CopyWrapper>
-                <TitleCopy copyable={{ text: "https://edulastic.com/assessment/76y8gyug-b8ug-8" }} />
+                <TitleCopy copyable={{ text: sharableURL }} />
                 <span>COPY</span>
               </CopyWrapper>
             </FlexContainer>

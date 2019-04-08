@@ -50,7 +50,8 @@ const TestPageHeader = ({
   onPublish,
   windowWidth,
   toggleSideBar,
-  showPublishButton
+  showPublishButton,
+  showShareButton
 }) =>
   windowWidth > 993 ? (
     <HeaderWrapper>
@@ -64,10 +65,12 @@ const TestPageHeader = ({
             Publish
           </EduButton>
         )}
+        {showShareButton && (
+          <EduButton style={{ width: 120 }} size="large" onClick={onShare}>
+            Share
+          </EduButton>
+        )}
 
-        <EduButton style={{ width: 120 }} size="large" onClick={onShare}>
-          Share
-        </EduButton>
         <EduButton style={{ width: 120 }} disabled={creating} size="large" type="secondary" onClick={onSave}>
           {creating ? "Saving..." : "Save changes"}
         </EduButton>

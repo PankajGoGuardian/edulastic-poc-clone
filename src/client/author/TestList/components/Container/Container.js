@@ -410,7 +410,7 @@ class TestList extends Component {
   };
 
   render() {
-    const { page, limit, count, creating, match } = this.props;
+    const { page, limit, count, creating } = this.props;
 
     const { blockStyle, isShowFilter, search } = this.state;
     const { searchString } = search;
@@ -437,7 +437,7 @@ class TestList extends Component {
           <Modal open={isShowFilter} onClose={this.closeSearchModal}>
             <SearchModalContainer>
               <TestFilters clearFilter={this.handleClearFilter} state={search} filterData={filters}>
-                <TestFiltersNav items={filterMenuItems} onSelect={this.handleLabelSearch} routerParams={match} />
+                <TestFiltersNav items={filterMenuItems} onSelect={this.handleLabelSearch} search={search} />
               </TestFilters>
             </SearchModalContainer>
           </Modal>
@@ -459,11 +459,7 @@ class TestList extends Component {
                         filterData={filters}
                         onChange={this.handleFiltersChange}
                       >
-                        <TestFiltersNav
-                          items={filterMenuItems}
-                          onSelect={this.handleLabelSearch}
-                          routerParams={match}
-                        />
+                        <TestFiltersNav items={filterMenuItems} onSelect={this.handleLabelSearch} search={search} />
                       </TestFilters>
                     </ScrollBox>
                   </PerfectScrollbar>

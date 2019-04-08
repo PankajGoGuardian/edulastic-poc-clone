@@ -90,7 +90,7 @@ class ItemFilter extends Component {
                   <Title>{t("component.itemlist.filter.filters")}</Title>
                   <Clear onClick={onClearSearch}>{t("component.itemlist.filter.clearAll")}</Clear>
                 </MainFilterHeader>
-                <TestFiltersNav items={items} onSelect={onLabelSearch} />
+                <TestFiltersNav items={items} onSelect={onLabelSearch} search={search} />
                 <Search
                   search={search}
                   curriculums={curriculums}

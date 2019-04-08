@@ -180,21 +180,9 @@ CustomToolbar.defaultProps = {
  * Editor component with custom toolbar and content containers
  */
 class CustomQuillComponent extends React.Component {
-  state = {
-    active: false,
-    // eslint-disable-next-line react/destructuring-assignment
-    firstFocus: this.props.firstFocus,
-    showMath: false,
-    mathField: null,
-    selLatex: "",
-    quillVal: null,
-    curMathRange: null
-  };
-
   static propTypes = {
     value: PropTypes.string.isRequired,
     placeholder: PropTypes.string,
-    firstFocus: PropTypes.bool,
     showResponseBtn: PropTypes.bool.isRequired,
     toolbarId: PropTypes.string.isRequired,
     onChange: PropTypes.func,
@@ -207,7 +195,6 @@ class CustomQuillComponent extends React.Component {
     onChange: () => {},
     clearOnFirstFocus: true,
     placeholder: "",
-    firstFocus: false,
     readOnly: false,
     style: {
       minHeight: 134,
@@ -219,6 +206,12 @@ class CustomQuillComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      active: false,
+      firstFocus: true,
+      showMath: false,
+      mathField: null,
+      selLatex: "",
+      curMathRange: null,
       quillVal: props.value,
       modules: CustomQuillComponent.modules(props.toolbarId)
     };

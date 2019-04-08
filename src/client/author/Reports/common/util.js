@@ -18,7 +18,12 @@ export const getStandatdDeviation = variance => {
 };
 
 export const getHSLFromRange1 = val => {
-  return "hsla(" + val + ", 100%, 79%, 1)";
+  return `hsla(${val}, 100%, 79%, 1)`;
+};
+
+export const getHSLFromRange2 = val => {
+  let tmp = val / 2;
+  return `hsla(${tmp}, 100%, 48%, 1)`;
 };
 
 export const isMobileScreen = () => {

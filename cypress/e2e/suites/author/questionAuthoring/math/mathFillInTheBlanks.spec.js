@@ -421,7 +421,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         const { expected, input } = queData.equivSymbolic.combinationSetDecimalSeparator;
         question.setValue(input);
         question.setSeparator("getAnswerAllowThousandsSeparator")();
-        question.checkCorrectAnswerWithResponse(expected, preview, input.length, true);
+        question.checkCorrectAnswerWithResponse(expected, preview, input.length, false);
       });
     });
 

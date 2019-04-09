@@ -81,10 +81,12 @@ class CurriculumContainer extends Component {
   };
 
   componentDidMount() {
-    // NOTE: temporary here,
-    // until what will call the component with specified curriculums
+    // Hardcoded because we currently don't have a way to store/read what are the
+    // default curriculumSequences for the user(and grade)
+    // What we would need is an API to set it on the user and get it with the user object
+    // Also - only 6ath grade has both content and guides mapped to testIds
     const { getAllCurriculumSequences } = this.props;
-    getAllCurriculumSequences(["5c6cb72feb85b4b4180e1544", "5c6cc156dac4871b3b76fad0"]);
+    getAllCurriculumSequences(["5ca5ff6d323a535eb1f4fbd3", "5ca529138bd1f8b64c49aa46"]);
   }
 
   /** @param {String} publisher */

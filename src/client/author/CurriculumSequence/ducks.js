@@ -1,17 +1,33 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import * as moment from "moment";
 import { message } from "antd";
-import { takeLatest, put, call, all, select } from "redux-saga/effects";
-import { flatten, cloneDeep } from "lodash";
+import { takeLatest, put, call, all, select, take } from "redux-saga/effects";
+import { flatten, cloneDeep, isEmpty, keyBy } from "lodash";
 import { v4 } from "uuid";
 import { normalize, schema } from "normalizr";
 import { curriculumSequencesApi, assignmentApi } from "@edulastic/api";
 import { setCurrentAssignmentAction } from "../TestPage/components/Assign/ducks";
 import { getUserSelector } from "../src/selectors/user";
+import {
+  publishTestAction,
+  receiveTestByIdAction,
+  getTestSelector,
+  UPDATE_TEST_STATUS,
+  RECEIVE_TEST_BY_ID_SUCCESS
+} from "../TestPage/ducks";
+import {
+  fetchGroupMembersAction,
+  SET_GROUP_MEMBERS,
+  getStudentsSelector,
+  getGroupsSelector
+} from "../sharedDucks/groups";
+import { generateClassData } from "../TestPage/components/Assign/utils";
 
 // Constants
 export const CURRICULUM_TYPE_GUIDE = "guide";
 export const CURRICULUM_TYPE_CONTENT = "content";
+const PUBLISHED = "published";
+const DRAFT = "draft";
 
 // Types
 export const FETCH_CURRICULUM_SEQUENCES = "[curriculum-sequence] fetch list of curriculum sequences";
@@ -46,6 +62,11 @@ export const ADD_NEW_UNIT_INIT = "[curriculum-sequence] add new unit init";
 export const ADD_NEW_UNIT = "[curriculum-sequence] add new unit";
 export const REMOVE_UNIT_INIT = "[curriculum-sequence] remove unit init";
 export const REMOVE_UNIT = "[curriculum-sequence] remove unit";
+export const UPDATE_ASSIGNMENT = "[curriculum-sequence] update assignment";
+export const BATCH_ASSIGN = "[curriculum-sequence] batch assign request";
+export const BATCH_ASSIGN_RESULT = "[curriculum-sequence] batch assign result";
+export const FETCH_ASSIGNED_REQUEST = "[curriculum-sequence] fetch assigned request";
+export const FETCH_ASSIGNED_RESULT = "[curriculum-sequence] fetch assigned result";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -70,6 +91,8 @@ export const addContentToCurriculumSequenceAction = createAction(ADD_CONTENT_TO_
 export const saveCurriculumSequenceAction = createAction(SAVE_CURRICULUM_SEQUENCE);
 export const addNewUnitAction = createAction(ADD_NEW_UNIT_INIT);
 export const removeUnitAction = createAction(REMOVE_UNIT_INIT);
+export const batchAssignAction = createAction(BATCH_ASSIGN);
+export const fetchAssignedAction = createAction(FETCH_ASSIGNED_REQUEST);
 
 export const removeItemFromUnitAction = createAction(REMOVE_ITEM_FROM_UNIT);
 export const putCurriculumSequenceAction = createAction(PUT_CURRICULUM_SEQUENCE);
@@ -108,6 +131,7 @@ const getSelectedItemsForAssign = state => {
 const getDestinationCurriculumSequence = state => state.curriculumSequence.destinationCurriculumSequence;
 
 function* makeApiRequest(idsForFetch = []) {
+  yield put(fetchAssignedAction());
   try {
     const unflattenedItems = yield all(idsForFetch.map(id => call(curriculumSequencesApi.getCurriculums, id)));
 
@@ -231,65 +255,36 @@ function* saveGuideAlignment() {
 }
 
 function* createAssignment({ payload }) {
-  const assignment = payload;
+  const currentAssignment = { ...payload };
 
-  /** @type {String[]} */
-  const selectedItemsForAssign = yield select(getSelectedItemsForAssign);
-  const assignments = selectedItemsForAssign.filter(testId => testId).map(testId => ({ ...assignment, testId }));
-
-  /** @type {State} */
-  const curriculumSequenceState = yield select(getCurriculumSequenceState);
-  const destinationCurriculumSequence = {
-    ...curriculumSequenceState.destinationCurriculumSequence
-  };
+  // Make sure startDate and endDate are numbers
+  if (currentAssignment.startDate instanceof moment) {
+    currentAssignment.startDate = currentAssignment.startDate.valueOf();
+    currentAssignment.endDate = currentAssignment.endDate.valueOf();
+  }
 
   const { user } = yield select(getUserSelector);
 
-  /** @type {AssignData[]} */
-  const assignmentApiResponse = yield call(assignmentApi.create, { assignedBy: user._id, assignments });
-  const testIdsFromResponse = assignmentApiResponse.map(item => item.testId);
-
-  destinationCurriculumSequence.modules = [
-    ...destinationCurriculumSequence.modules.map(moduleItem => {
-      const updatedModule = { ...moduleItem };
-      const updatedModuleData = moduleItem.data.map(dataItem => {
-        const updatedDataItem = { ...dataItem };
-        if (testIdsFromResponse.indexOf(dataItem.testId) !== -1) {
-          updatedDataItem.assigned = true;
-        }
-        return updatedDataItem;
-      });
-
-      updatedModule.data = updatedModuleData;
-      return updatedModule;
-    })
-  ];
-
   try {
-    yield curriculumSequencesApi.updateCurriculumSequence(
-      destinationCurriculumSequence._id,
-      destinationCurriculumSequence
+    const studentsList = yield select(getStudentsSelector);
+    const allGroups = yield select(getGroupsSelector);
+    // let testId = yield select(getTestIdSelector);
+    // const termId = yield select(getCurrentTerm);
+    currentAssignment.class = generateClassData(
+      payload.class,
+      payload.students,
+      studentsList,
+      payload.specificStudents,
+      keyBy(allGroups, "_id")
     );
-
-    yield put(updateCurriculumSequenceAction(destinationCurriculumSequence));
-
-    message.success("Successfully assigned");
   } catch (error) {
-    message.error("There was an error updating the curriculum sequence");
-    console.warn("There was an error updating the curriculum sequence", error);
-    return;
+    message.warn(error.message);
+    return error;
   }
 
-  try {
-    yield put({ type: CREATE_ASSIGNMENT_OK, payload: assignmentApiResponse });
-  } catch (error) {
-    message.error("Assign was not successful, please try again");
-    console.warn("createAssignment error", error);
-  }
-}
-
-function* createAssignmentNow({ payload }) {
-  const assignment = payload;
+  /** @type {String[]} */
+  const selectedItemsForAssign = yield select(getSelectedItemsForAssign);
+  const assignments = selectedItemsForAssign.filter(testId => testId).map(testId => ({ ...currentAssignment, testId }));
 
   /** @type {State} */
   const curriculumSequenceState = yield select(getCurriculumSequenceState);
@@ -297,90 +292,234 @@ function* createAssignmentNow({ payload }) {
     ...curriculumSequenceState.destinationCurriculumSequence
   };
 
-  const destinationModules = destinationCurriculumSequence.modules;
+  try {
+    /** @type {AssignData[]} */
+    const assignmentApiResponse = yield call(assignmentApi.create, { assignedBy: user._id, assignments });
+    const testIdsFromResponse = assignmentApiResponse.map(item => item.testId);
 
-  // Create misc unit if it doesn't exist
-  const haveMiscUnit = destinationModules.map(m => m.name.toLowerCase()).indexOf("misc") !== -1;
+    destinationCurriculumSequence.modules = [
+      ...destinationCurriculumSequence.modules.map(moduleItem => {
+        const updatedModule = { ...moduleItem };
+        const updatedModuleData = moduleItem.data.map(dataItem => {
+          const updatedDataItem = { ...dataItem };
+          if (testIdsFromResponse.indexOf(dataItem.testId) !== -1) {
+            updatedDataItem.assigned = true;
+          }
+          return updatedDataItem;
+        });
 
-  const lastModuleId =
-    destinationModules[destinationModules.length - 1] && destinationModules[destinationModules.length - 1].id;
-
-  // NOTE: what happens if no modules are present?
-  if (!haveMiscUnit) {
-    const newUnit = {
-      id: v4(),
-      data: [],
-      name: "Misc"
-    };
+        updatedModule.data = updatedModuleData;
+        return updatedModule;
+      })
+    ];
 
     try {
-      /* eslint-disable-next-line */
-      yield addNewUnit({
-        payload: {
-          afterUnitId: lastModuleId,
-          newUnit,
-          shouldSave: false
-        }
-      });
-      /* eslint-disable-next-line */
-      yield addContentToCurriculumSequence({
-        payload: {
-          contentToAdd: assignment,
-          toUnit: newUnit
-        }
-      });
+      yield curriculumSequencesApi.updateCurriculumSequence(
+        destinationCurriculumSequence._id,
+        destinationCurriculumSequence
+      );
+
+      yield put(updateCurriculumSequenceAction(destinationCurriculumSequence));
     } catch (error) {
-      message.error("Sorry, something went wrong and assign now failed.");
-      console.warn("Error create misc unit.", error);
+      message.error("There was an error updating the curriculum sequence");
+      console.warn("There was an error updating the curriculum sequence", error);
       return;
     }
+
+    try {
+      yield put({ type: CREATE_ASSIGNMENT_OK, payload: assignmentApiResponse });
+    } catch (error) {
+      message.error("Assign was not successful, please try again");
+      console.warn("createAssignment error", error);
+    }
+  } catch (error) {
+    message.warn(error.message);
+    return error;
   }
+}
+
+function* batchAssign({ payload }) {
+  const assignData = payload;
+  /** @type{any[]} */
+  const assignments = yield select(getSelectedItemsForAssign);
 
   try {
-    // Find misc unit
-    const miscUnitIndex = destinationModules.map(m => m.name.toLowerCase()).indexOf("misc");
+    const createAssignmentYield = yield all(
+      assignments.map(assignment => {
+        const assignmentWithData = { ...assignData, testId: assignment };
+        return call(createAssignment, { payload: assignmentWithData });
+      })
+    );
 
-    /* eslint-disable*/
-    const response = yield addContentToCurriculumSequence({
-      payload: {
-        contentToAdd: assignment,
-        toUnit: destinationModules[miscUnitIndex]
-      }
-    });
+    if (createAssignmentYield.filter(item => item instanceof Error).length) {
+      return createAssignmentYield;
+    }
 
-    if (response instanceof Error) return response;
-    /* eslint-enable */
+    message.success("Successfully assigned");
   } catch (error) {
-    console.warn("Add content to misc unit failed.");
-    message.error("Sorry, something went wrong and assign now failed.");
+    message.warn(error.message);
+  }
+}
+
+function* assign({ payload }) {
+  const { assignment, assignData } = payload;
+  const { user } = yield select(getUserSelector);
+
+  assignData.testId = assignment.testId;
+
+  try {
+    yield call(assignmentApi.create, {
+      assignedBy: user._id,
+      assignments: [assignData]
+    });
+  } catch (error) {
+    message.warning(error.message);
+    return error;
+  }
+
+  assignment.assigned = true;
+
+  yield put({
+    type: UPDATE_ASSIGNMENT,
+    payload: assignment
+  });
+
+  message.info(`${assignment.id} successfully assigned`);
+
+  return assignment;
+}
+
+function* createAssignmentNow({ payload }) {
+  const currentAssignment = payload;
+
+  /** @type {State} */
+  const curriculumSequenceState = yield select(getCurriculumSequenceState);
+  const destinationCurriculumSequence = {
+    ...curriculumSequenceState.destinationCurriculumSequence
+  };
+
+  // Fetch test and see if it's published
+  yield put(receiveTestByIdAction(currentAssignment.testId));
+  yield take(RECEIVE_TEST_BY_ID_SUCCESS);
+  const test = yield select(getTestSelector);
+
+  // Publish it if it's not already published
+  if (test.status === DRAFT) {
+    yield put(publishTestAction(currentAssignment.testId));
+    yield take(UPDATE_TEST_STATUS);
+  }
+
+  const { user } = yield select(getUserSelector);
+  const userClass = user.orgData.defaultClass;
+  const assignData = { ...curriculumSequenceState.dataForAssign };
+
+  yield put(fetchGroupMembersAction({ classId: userClass }));
+  yield take(SET_GROUP_MEMBERS);
+  const students = yield select(getStudentsSelector);
+
+  // NOTE: assign count is missing, how to implement it?
+  assignData.class.push({ students, _id: userClass });
+
+  const curriculumAssignment = getCurriculumAsssignmentMatch(currentAssignment, destinationCurriculumSequence);
+
+  // assignment already in curriculum
+  if (!isEmpty(curriculumAssignment)) {
+    const assignData = curriculumSequenceState.dataForAssign;
+    yield assign({ payload: { assignment: currentAssignment, assignData } });
+    yield saveCurriculumSequence();
     return;
   }
 
-  destinationCurriculumSequence.modules = [
-    ...destinationCurriculumSequence.modules.map(moduleItem => {
-      const updatedModule = { ...moduleItem };
-      const updatedModuleData = moduleItem.data.map(dataItem => {
-        const updatedDataItem = { ...dataItem };
-        return updatedDataItem;
+  // assignment not in destination curriculum
+  if (isEmpty(curriculumAssignment)) {
+    const destinationModules = destinationCurriculumSequence.modules;
+
+    // Create misc unit if it doesn't exist
+    const haveMiscUnit = destinationModules.map(m => m.name.toLowerCase()).indexOf("misc") !== -1;
+
+    const lastModuleId =
+      destinationModules[destinationModules.length - 1] && destinationModules[destinationModules.length - 1].id;
+
+    // NOTE: what happens if no modules are present?
+    if (!haveMiscUnit) {
+      const newUnit = {
+        id: v4(),
+        data: [],
+        name: "Misc"
+      };
+
+      try {
+        /* eslint-disable-next-line */
+        yield addNewUnit({
+          payload: {
+            afterUnitId: lastModuleId,
+            newUnit,
+            shouldSave: false
+          }
+        });
+        /* eslint-disable-next-line */
+        yield addContentToCurriculumSequence({
+          payload: {
+            contentToAdd: currentAssignment,
+            toUnit: newUnit
+          }
+        });
+        yield assign({ payload: { assignment: currentAssignment, assignData } });
+      } catch (error) {
+        message.error("Sorry, something went wrong and assign now failed.");
+        console.warn("Error create misc unit.", error);
+        return;
+      }
+    }
+
+    try {
+      // Find misc unit
+      const miscUnitIndex = destinationModules.map(m => m.name.toLowerCase()).indexOf("misc");
+
+      /* eslint-disable*/
+      const response = yield addContentToCurriculumSequence({
+        payload: {
+          contentToAdd: currentAssignment,
+          toUnit: destinationModules[miscUnitIndex]
+        }
       });
+      const assignResult = yield assign({ payload: { assignment: currentAssignment, assignData } });
 
-      updatedModule.data = updatedModuleData;
-      return updatedModule;
-    })
-  ];
+      if (response instanceof Error) return response;
+      if (assignResult instanceof Error) return assignResult;
+      /* eslint-enable */
+    } catch (error) {
+      console.warn("Add content to misc unit failed.");
+      message.error("Sorry, something went wrong and assign now failed.");
+      return;
+    }
 
-  try {
-    yield curriculumSequencesApi.updateCurriculumSequence(
-      destinationCurriculumSequence._id,
-      destinationCurriculumSequence
-    );
+    destinationCurriculumSequence.modules = [
+      ...destinationCurriculumSequence.modules.map(moduleItem => {
+        const updatedModule = { ...moduleItem };
+        const updatedModuleData = moduleItem.data.map(dataItem => {
+          const updatedDataItem = { ...dataItem };
+          return updatedDataItem;
+        });
 
-    yield put(updateCurriculumSequenceAction(destinationCurriculumSequence));
-    /* eslint-disable-next-line */
-    yield saveCurriculumSequence();
-  } catch (error) {
-    message.error("There was an error updating the curriculum sequence");
-    console.warn("There was an error updating the curriculum sequence", error);
+        updatedModule.data = updatedModuleData;
+        return updatedModule;
+      })
+    ];
+
+    try {
+      yield curriculumSequencesApi.updateCurriculumSequence(
+        destinationCurriculumSequence._id,
+        destinationCurriculumSequence
+      );
+
+      yield put(updateCurriculumSequenceAction(destinationCurriculumSequence));
+      /* eslint-disable-next-line */
+      yield saveCurriculumSequence();
+    } catch (error) {
+      message.error("There was an error updating the curriculum sequence");
+      console.warn("There was an error updating the curriculum sequence", error);
+    }
   }
 }
 
@@ -475,6 +614,15 @@ function* removeUnit({ payload }) {
   });
 }
 
+function* fetchAssigned() {
+  const assigned = yield call(assignmentApi.fetchAssigned, "");
+
+  yield put({
+    type: FETCH_ASSIGNED_RESULT,
+    payload: assigned
+  });
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeLatest(FETCH_CURRICULUM_SEQUENCES, fetchItemsFromApi),
@@ -494,7 +642,9 @@ export function* watcherSaga() {
     yield takeLatest(SET_DATA_FOR_ASSIGN_INIT, setDataForAssign),
     yield takeLatest(SET_SELECTED_ITEMS_FOR_ASSIGN_INIT, setSelectedItemsForAssign),
     yield takeLatest(ADD_NEW_UNIT_INIT, addNewUnit),
-    yield takeLatest(REMOVE_UNIT_INIT, removeUnit)
+    yield takeLatest(REMOVE_UNIT_INIT, removeUnit),
+    yield takeLatest(BATCH_ASSIGN, batchAssign),
+    yield takeLatest(FETCH_ASSIGNED_REQUEST, fetchAssigned)
   ]);
 }
 
@@ -540,16 +690,6 @@ export function* watcherSaga() {
  * @property {any[]} data
  */
 
-/**
- *       class: item.class,
-students: item.students,
-specificStudents: item.specificStudents || false,
-openPolicy: item.openPolicy || '',
-closePolicy: item.closePolicy || '',
-openDate: item.startDate,
-closeDate: item.endDate,
- */
-
 const getDefaultAssignData = () => ({
   startDate: moment().valueOf(),
   endDate: moment().valueOf(),
@@ -557,7 +697,8 @@ const getDefaultAssignData = () => ({
   closePolicy: "Automatically on Due Date",
   class: [],
   specificStudents: false,
-  students: []
+  students: [],
+  testId: ""
 });
 
 // Reducers
@@ -643,11 +784,40 @@ const setCurriculumSequencesReducer = (state, { payload }) => {
   state.checkedUnitItems = [];
 };
 
+/**
+ * @param {State} state
+ * @param {Object} param2
+ * @param {import('./components/CurriculumSequence').CurriculumSequenceType} [param2.payload]
+ */
 const updateCurriculumSequenceReducer = (state, { payload }) => {
   const curriculumSequence = payload;
   const id = curriculumSequence._id;
-  // debugger;
+
   state.byId[id] = curriculumSequence;
+
+  if (curriculumSequence.type === "guide") {
+    state.destinationCurriculumSequence = curriculumSequence;
+  }
+};
+
+/**
+ * @param {State} state
+ * @param {Object} param2
+ * @param {import('./components/CurriculumSequence').ModuleData} [param2.payload]
+ */
+const updateAssignmentReducer = (state, { payload }) => {
+  const assignment = payload;
+  const updatedModules = state.destinationCurriculumSequence.modules.map(module => {
+    module.data = module.data.map(moduleDataItem => {
+      if (moduleDataItem.testId === payload.testId) {
+        return assignment;
+      }
+      return moduleDataItem;
+    });
+    return module;
+  });
+
+  state.destinationCurriculumSequence.modules = updatedModules;
 };
 
 const searchGuidesReducer = (state, { payload }) => {
@@ -883,6 +1053,38 @@ const removeUnitReducer = (state, { payload }) => {
   };
 };
 
+/**
+ * @param {State} state
+ * @param {Object<String, Object>} param2
+ *
+ */
+const loadAssignedReducer = (state, { payload }) => {
+  return {
+    ...state,
+    assigned: payload
+  };
+};
+
+/**
+ * @param {import('./components/CurriculumSequence').ModuleData} unitItem
+ * @param {import('./components/CurriculumSequence').CurriculumSequenceType} curriculumSequence
+ */
+function getCurriculumAsssignmentMatch(unitItem, curriculumSequence) {
+  let matchingUnitItem = {};
+
+  // here we should go with checking the testIds instead
+
+  curriculumSequence.modules.forEach(m => {
+    m.data.forEach(d => {
+      if (d.testId === unitItem.testId) {
+        matchingUnitItem = d;
+      }
+    });
+  });
+
+  return { ...matchingUnitItem };
+}
+
 export default createReducer(initialState, {
   [UPDATE_CURRICULUM_SEQUENCE_LIST]: setCurriculumSequencesReducer,
   [UPDATE_CURRICULUM_SEQUENCE]: updateCurriculumSequenceReducer,
@@ -899,5 +1101,7 @@ export default createReducer(initialState, {
   [ADD_CONTENT_TO_CURRICULUM_RESULT]: addContentToCurriculumSequenceReducer,
   [REMOVE_ITEM_FROM_UNIT]: removeItemFromUnitReducer,
   [ADD_NEW_UNIT]: addNewUnitReducer,
-  [REMOVE_UNIT]: removeUnitReducer
+  [REMOVE_UNIT]: removeUnitReducer,
+  [UPDATE_ASSIGNMENT]: updateAssignmentReducer,
+  [FETCH_ASSIGNED_RESULT]: loadAssignedReducer
 });

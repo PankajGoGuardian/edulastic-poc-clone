@@ -39,9 +39,9 @@ import {
   saveGuideAlignmentAction,
   setSelectedItemsForAssignAction,
   setDataForAssignAction,
-  createAssignmentAction,
   saveCurriculumSequenceAction,
-  addNewUnitAction
+  addNewUnitAction,
+  batchAssignAction
 } from "../ducks";
 /* eslint-enable */
 import EditModal from "../../TestPage/components/Assign/components/EditModal/EditModal";
@@ -79,6 +79,10 @@ import AddUnitModalBody from "./AddUnitModalBody";
  */
 
 /**
+ * @typedef {("guide"|"content")} CurriculumType
+ */
+
+/**
  * @typedef {object} CurriculumSequenceType
  * @property {CreatedBy} createdBy
  * @property {String} createdDate
@@ -90,7 +94,7 @@ import AddUnitModalBody from "./AddUnitModalBody";
  * @property {String} status
  * @property {String} thumbnail
  * @property {String} title
- * @property {String} type
+ * @property {CurriculumType} type
  * @property {String} updatedDate
  */
 
@@ -124,7 +128,7 @@ import AddUnitModalBody from "./AddUnitModalBody";
  * @property {boolean} isContentExpanded
  * @property {function} setSelectedItemsForAssign
  * @property {any[]} selectedItemsForAssign
- * @property {function} createAssignment
+ * @property {function} batchAssign
  * @property {function} fetchGroups
  * @property {import('./ducks').AssignData} dataForAssign
  */
@@ -250,10 +254,9 @@ class CurriculumSequence extends Component {
       isContentExpanded,
       setSelectedItemsForAssign,
       group,
-      createAssignment,
+      batchAssign,
       selectedItemsForAssign,
-      dataForAssign,
-      setDataForAssign
+      dataForAssign
     } = this.props;
 
     const { handleSaveClick } = this;
@@ -287,11 +290,10 @@ class CurriculumSequence extends Component {
         <EditModal
           visible={isAssignModalVisible}
           title="New Assignment"
-          onOk={() => createAssignment(dataForAssign)}
+          onOk={batchAssign}
           onCancel={() => setSelectedItemsForAssign(null)}
           onClose={() => setSelectedItemsForAssign(null)}
           modalData={dataForAssign}
-          setModalData={setDataForAssign}
           group={group}
         />
         <Modal
@@ -531,7 +533,7 @@ CurriculumSequence.propTypes = {
   isContentExpanded: PropTypes.bool.isRequired,
   setSelectedItemsForAssign: PropTypes.func.isRequired,
   group: PropTypes.array.isRequired,
-  createAssignment: PropTypes.func.isRequired,
+  batchAssign: PropTypes.func.isRequired,
   selectedItemsForAssign: PropTypes.array.isRequired,
   dataForAssign: PropTypes.object.isRequired,
   setDataForAssign: PropTypes.func.isRequired
@@ -1142,7 +1144,7 @@ const enhance = compose(
       fetchGroups: fetchGroupsAction,
       fetchMultipleGroupMembers: fetchMultipleGroupMembersAction,
       setDataForAssign: setDataForAssignAction,
-      createAssignment: createAssignmentAction,
+      batchAssign: batchAssignAction,
       saveCurriculumSequence: saveCurriculumSequenceAction,
       addNewUnitToDestination: addNewUnitAction
     }

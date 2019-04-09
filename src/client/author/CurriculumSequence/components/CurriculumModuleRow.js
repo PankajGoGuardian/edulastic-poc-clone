@@ -22,6 +22,7 @@ import {
 } from "../ducks";
 import assessmentRed from "../assets/assessment.svg";
 import assessmentGreen from "../assets/concept-check.svg";
+import { matchAssigned, getNumberOfAssigned } from "../util";
 
 /**
  * @typedef {object} Props
@@ -31,7 +32,11 @@ import assessmentGreen from "../assets/concept-check.svg";
  * @property {boolean} collapsed
  * @property {string[]} checkedUnitItems
  * @property {boolean} isContentExpanded
+ * @property {any[]} assigned
  * @property {function} setSelectedItemsForAssign
+ * @property {function} removeItemFromUnit
+ * @property {function} removeUnit
+ * @property {boolean} padding
  * set module item that will be assigned, also
  * when there's more than 0 elements set, modal for assignment will be shown
  * when empty array is set, modal is hidden
@@ -56,8 +61,7 @@ class ModuleRow extends Component {
       onCollapseExpand,
       collapsed,
       padding,
-      // checkedUnitItems,
-      // toggleUnitItem,
+      assigned,
       isContentExpanded,
       setSelectedItemsForAssign,
       module,
@@ -74,7 +78,7 @@ class ModuleRow extends Component {
     }
 
     const totalAssigned = data.length;
-    const numberOfAssigned = data.filter(item => item.assigned).length;
+    const numberOfAssigned = getNumberOfAssigned(assigned, data.map(d => d.testId));
     const [whichModule, moduleName] = name.split(":");
 
     return (
@@ -159,6 +163,8 @@ class ModuleRow extends Component {
                     </Menu>
                   );
 
+                  const isAssigned = matchAssigned(assigned, moduleData.testId).length > 0;
+
                   return (
                     <Assignment
                       data-cy="moduleAssignment"
@@ -199,17 +205,17 @@ class ModuleRow extends Component {
                                 <IconVisualization color="#1774F0" />
                               </CustomIcon>
                             </AssignmentIcon>
-                            <AssignmentButton assigned={moduleData.assigned}>
+                            <AssignmentButton assigned={isAssigned}>
                               <Button
                                 data-cy="assignButton"
                                 onClick={() => setSelectedItemsForAssign(moduleData.testId)}
                               >
-                                {moduleData.assigned ? (
+                                {isAssigned ? (
                                   <IconCheckSmall color={white} />
                                 ) : (
                                   <IconLeftArrow color="#1774F0" width={13.3} height={9.35} />
                                 )}
-                                {moduleData.assigned ? IS_ASSIGNED : NOT_ASSIGNED}
+                                {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
                               </Button>
                             </AssignmentButton>
                             <AssignmentIcon>
@@ -243,7 +249,7 @@ ModuleRow.propTypes = {
   // checkedUnitItems: PropTypes.array.isRequired,
   isContentExpanded: PropTypes.bool.isRequired,
   removeItemFromUnit: PropTypes.func.isRequired,
-  // toggleUnitItem: PropTypes.func.isRequired,
+  assigned: PropTypes.array.isRequired,
   removeUnit: PropTypes.func.isRequired
 };
 
@@ -658,7 +664,8 @@ const enhance = compose(
   connect(
     ({ curriculumSequence }) => ({
       checkedUnitItems: curriculumSequence.checkedUnitItems,
-      isContentExpanded: curriculumSequence.isContentExpanded
+      isContentExpanded: curriculumSequence.isContentExpanded,
+      assigned: curriculumSequence.assigned
     }),
     {
       toggleUnitItem: toggleCheckedUnitItemAction,

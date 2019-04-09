@@ -74,14 +74,10 @@ const EditModal = ({
 
   // save the assingment and close the modal
   const addAssignment = () => {
-    // We want the ability to override onOk logic of the component so
-    // if we supply the component onOK callback prop,
-    // use that instead of the components handlers
     if (onOk) {
-      onOk();
+      onOk(assignment);
       return;
     }
-
     saveAssignment(assignment);
     onCancel();
   };

@@ -1,15 +1,29 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
+import { find } from "lodash";
 import { Select } from "antd";
 import { FlexContainer } from "@edulastic/common";
 import { Container, StyledSelect } from "./styled";
 
-// eslint-disable-next-line react/prop-types
-const SortBar = ({ loadStudentResponses, students }) => {
+const SortBar = ({ loadStudentResponses, handleChange, students, selectedStudent }) => {
   const onSortChange = testActivityId => {
     if (testActivityId !== undefined) {
+      if (handleChange) {
+        const selected = find(students, student => student.testActivityId === testActivityId);
+        handleChange(selected.studentId);
+      }
       loadStudentResponses({ testActivityId });
     }
+  };
+
+  const getDefaultValue = () => {
+    if (selectedStudent) {
+      const selected = find(students, student => student.studentId === selectedStudent);
+      if (selected) {
+        return selected.studentName;
+      }
+    }
+    return students[0].studentName;
   };
 
   return (
@@ -17,7 +31,7 @@ const SortBar = ({ loadStudentResponses, students }) => {
       {students && students.length !== 0 && (
         <FlexContainer justifyContent="flex-end">
           <Container>
-            <StyledSelect defaultValue={students[0].studentName} onChange={onSortChange}>
+            <StyledSelect defaultValue={getDefaultValue()} onChange={onSortChange}>
               {students.map((student, index) => {
                 const testActivityId = student.testActivityId ? student.testActivityId : null;
                 const isActive = testActivityId === null;
@@ -36,11 +50,15 @@ const SortBar = ({ loadStudentResponses, students }) => {
 };
 
 SortBar.propTypes = {
-  onSortChange: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/no-unused-prop-types
-  onStyleChange: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/no-unused-prop-types
-  activeStyle: PropTypes.string.isRequired
+  loadStudentResponses: PropTypes.func.isRequired,
+  handleChange: PropTypes.func,
+  students: PropTypes.array.isRequired,
+  selectedStudent: PropTypes.string
+};
+
+SortBar.defaultProps = {
+  selectedStudent: "",
+  handleChange: () => {}
 };
 
 export default SortBar;

@@ -27,14 +27,13 @@ import {
   BtnAction,
   TypeIcon,
   ExpandDivdier,
-  BtnSubmitted,
-  BtnStarted,
+  BtnStatus,
   ActionDiv,
   GreyFont,
   ExpandedTable,
   IconExpand,
   ActionsWrapper,
-  BtnProgress
+  TitleCase
 } from "./styled";
 
 const convertTableData = data => ({
@@ -48,7 +47,8 @@ const convertTableData = data => ({
   graded: "1",
   action: "",
   classId: data[0].classId,
-  currentAssignment: data[0]
+  currentAssignment: data[0],
+  testType: data[0].testType
 });
 
 const convertExpandTableData = (data, totalNumber) => ({
@@ -97,9 +97,9 @@ class TableList extends Component {
         render: text => <GreyFont>{text}</GreyFont>
       },
       {
-        dataIndex: "type",
+        dataIndex: "testType",
         width: "11%",
-        render: (text, row) =>
+        render: (_, row) =>
           row && row.testType === test.type.PRACTICE ? <TypeIcon type="practice">P</TypeIcon> : <TypeIcon>A</TypeIcon>
       },
       {
@@ -110,16 +110,7 @@ class TableList extends Component {
       {
         dataIndex: "status",
         width: "12%",
-        render: text =>
-          text === "IN PROGRESS" ? (
-            <BtnProgress size="small">{text}</BtnProgress>
-          ) : text === t("common.submittedTag") ? (
-            <BtnSubmitted size="small">{text}</BtnSubmitted>
-          ) : text === t("common.notStartedTag") ? (
-            <BtnStarted size="small">{text}</BtnStarted>
-          ) : (
-            ""
-          )
+        render: text => (text ? <BtnStatus status={text}>{text}</BtnStatus> : "")
       },
       {
         dataIndex: "submitted",
@@ -167,7 +158,7 @@ class TableList extends Component {
   };
 
   render() {
-    const { assignments, onOpenReleaseScoreSettings, history, renderFilter } = this.props;
+    const { assignments, onOpenReleaseScoreSettings, history, renderFilter, t } = this.props;
     const { details } = this.state;
     const columns = [
       {
@@ -200,11 +191,13 @@ class TableList extends Component {
       },
       {
         title: "Type",
-        dataIndex: "type",
+        dataIndex: "testType",
         sortDirections: ["descend", "ascend"],
         sorter: true,
         width: "11%",
-        render: text => <div>{text}</div>
+        render: (text = test.type.ASSESSMENT) => {
+          return <TitleCase>{text}</TitleCase>;
+        }
       },
       {
         title: "Assigned by",
@@ -220,7 +213,7 @@ class TableList extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: true,
         width: "12%",
-        render: text => <div> {text} </div>
+        render: () => <div>{t("common.assigned")} </div>
       },
       {
         title: "Submitted",
@@ -242,7 +235,7 @@ class TableList extends Component {
         title: renderFilter(),
         dataIndex: "action",
         width: "14%",
-        render: (text, row) => (
+        render: (_, row) => (
           <ActionDiv>
             <Dropdown
               overlay={ActionMenu(onOpenReleaseScoreSettings, row.currentAssignment, history)}

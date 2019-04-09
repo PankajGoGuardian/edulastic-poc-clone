@@ -1,8 +1,6 @@
 import styled from "styled-components";
 import { Table, Button } from "antd";
-
-import { IconChevronLeft } from "@edulastic/icons";
-
+import { testActivity } from "@edulastic/constants";
 import {
   mobileWidth,
   tabletWidth,
@@ -11,8 +9,35 @@ import {
   lightBlueSecondary,
   lightGreySecondary,
   white,
-  green
+  authorAssignment,
+  lightGreenSecondary
 } from "@edulastic/colors";
+
+const { assignmentStatus, lightBlue } = authorAssignment;
+const {
+  authorAssignmentConstants: {
+    gradedStatus: { NOT_OPEN, IN_PROGRESS, IN_GRADING, NOT_GRADED, GRADES_HELD, DONE }
+  }
+} = testActivity;
+
+const defineStatusBg = status => {
+  switch (status) {
+    case NOT_OPEN:
+      return assignmentStatus.NOT_OPEN;
+    case IN_PROGRESS:
+      return assignmentStatus.IN_PROGRESS;
+    case IN_GRADING:
+      return assignmentStatus.IN_GRADING;
+    case NOT_GRADED:
+      return assignmentStatus.NOT_GRADED;
+    case GRADES_HELD:
+      return assignmentStatus.GRADES_HELD;
+    case DONE:
+      return assignmentStatus.DONE;
+    default:
+      return "";
+  }
+};
 
 export const Container = styled.div`
   padding: 30;
@@ -203,7 +228,7 @@ export const TableData = styled(Table)`
 `;
 
 export const BtnGreen = styled(Button)`
-  background-color: #1cd6dc !important;
+  background-color: ${lightBlue};
   border: 0px;
   width: 71px;
   height: 23px;
@@ -221,7 +246,7 @@ export const AssignmentTD = styled.div`
 `;
 
 export const IconArrowDown = styled.img`
-  color: #12a6e8;
+  color: ${lightBlue};
   margin-right: 5px;
   width: 6px;
 `;
@@ -241,17 +266,17 @@ export const BtnAction = styled(Button)`
 
   :active {
     background-color: ${lightBlueSecondary};
-    color: #fff;
+    color: ${white};
   }
 
   :hover {
     background-color: ${lightBlueSecondary};
-    color: #fff;
+    color: ${white};
   }
 `;
 
 export const AssignedImg = styled.img`
-  color: #12a6e8;
+  color: ${lightBlue};
 `;
 
 export const TypeIcon = styled.span`
@@ -259,7 +284,7 @@ export const TypeIcon = styled.span`
   width: 18px;
   height: 18px;
   max-width: 18px;
-  background: ${props => (props.type === "practice" ? red : "#5EB500")};
+  background: ${props => (props.type === "practice" ? red : lightGreenSecondary)};
   text-align: center;
   color: ${white};
   border-radius: 50%;
@@ -270,47 +295,24 @@ export const TypeIcon = styled.span`
 `;
 
 export const ExpandDivdier = styled.div`
-  color: #12a6e8;
+  color: ${lightBlue};
   cursor: pointer;
 `;
 
-export const BtnProgress = styled(Button)`
-  color: #d1a422;
-  background-color: #deba5b;
+export const BtnStatus = styled(Button)`
+  color:${white}
   border: 0px;
   font-size: 0.7em;
   font-weight: bold;
-  max-width: 145px;
-  width: 100%;
-  padding: 0px 20px;
+  width: 90px;
   height: 26px;
+  text-align: center;
   border-radius: 8px;
+  background-color:${props => defineStatusBg(props.status)}
 `;
 
-export const BtnSubmitted = styled(Button)`
-  color: #8750ac;
-  background-color: #e7c8fb;
-  border: 0px;
-  font-size: 0.7em;
-  font-weight: bold;
-  max-width: 145px;
-  width: 100%;
-  padding: 0px 20px;
-  height: 26px;
-  border-radius: 8px;
-`;
-
-export const BtnStarted = styled(Button)`
-  color: #0686c0;
-  background-color: #c8ebfb;
-  border: 1px solid #eaf3f6;
-  font-size: 0.7em;
-  width: 100%;
-  font-weight: bold;
-  max-width: 145px;
-  height: 26px;
-  border-radius: 8px;
-  padding: 0px 20px;
+export const TitleCase = styled.div`
+  text-transform: Capitalize;
 `;
 
 export const ActionDiv = styled.div`

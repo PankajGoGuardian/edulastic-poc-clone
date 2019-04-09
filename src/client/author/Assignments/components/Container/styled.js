@@ -10,7 +10,7 @@ export const Container = styled.div`
   right: 0;
   height: 100%;
   overflow: auto;
-
+  margin-top: 30px;
   @media (max-width: ${mobileWidth}) {
     padding: 0 26px 45px 26px;
   }

@@ -83,3 +83,15 @@ export const tabletWidth = "768px";
 export const desktopWidth = "992px";
 export const largeDesktopWidth = "1200px";
 export const extraDesktopWidth = "1440px";
+
+export const authorAssignment = {
+  assignmentStatus: {
+    NOT_OPEN: "#999999",
+    IN_PROGRESS: "#6c9eeb",
+    IN_GRADING: "#fc9a2b",
+    NOT_GRADED: "#e06666",
+    GRADES_HELD: "#f8f033",
+    DONE: "#6aa84f"
+  },
+  lightBlue: "#12a6e8"
+};

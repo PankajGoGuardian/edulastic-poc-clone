@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -25,16 +24,18 @@ class StudentViewContainer extends Component {
   render() {
     const {
       classResponse, // : { testItems, ...others },
-      testActivity,
-      question,
-      classQuestion,
       studentItems,
-      studentResponse
+      studentResponse,
+      selectedStudent
     } = this.props;
 
     const userId = studentResponse.testActivity ? studentResponse.testActivity.userId : "";
-    const currentStudent = studentItems.find(({ studentId }) => studentId === userId);
-
+    const currentStudent = studentItems.find(({ studentId }) => {
+      if (selectedStudent) {
+        return studentId === selectedStudent;
+      }
+      return studentId === userId;
+    });
     return (
       <React.Fragment>
         <StyledFlexContainer justifyContent="space-between">
@@ -47,7 +48,7 @@ class StudentViewContainer extends Component {
           <GiveOverallFeedBackButton active>GIVE OVERALL FEEDBACK</GiveOverallFeedBackButton>
         </StyledFlexContainer>
         <ClassQuestions
-          currentStudent={currentStudent || []}
+          currentStudent={currentStudent || {}}
           questionActivities={studentResponse.questionActivities}
           classResponse={classResponse}
         />
@@ -71,12 +72,10 @@ export default enhance(StudentViewContainer);
 
 StudentViewContainer.propTypes = {
   classResponse: PropTypes.object.isRequired,
-  question: PropTypes.object.isRequired,
-  testActivity: PropTypes.array.isRequired,
-  classQuestion: PropTypes.array,
   studentItems: PropTypes.array.isRequired,
-  studentResponse: PropTypes.object.isRequired
+  studentResponse: PropTypes.object.isRequired,
+  selectedStudent: PropTypes.string
 };
 StudentViewContainer.defaultProps = {
-  classQuestion: []
+  selectedStudent: ""
 };

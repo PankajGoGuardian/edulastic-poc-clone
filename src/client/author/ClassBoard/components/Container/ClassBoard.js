@@ -84,7 +84,8 @@ class ClassBoard extends Component {
       selectAll: false,
       selectedQuestion: 0,
       nCountTrue: 0,
-      redirectPopup: false
+      redirectPopup: false,
+      selectedStudentId: ""
     };
   }
 
@@ -175,9 +176,10 @@ class ClassBoard extends Component {
     return id;
   };
 
-  onTabChange = (e, name) => {
+  onTabChange = (e, name, selectedStudentId) => {
     this.setState({
-      selectedTab: name
+      selectedTab: name,
+      selectedStudentId
     });
   };
 
@@ -243,7 +245,7 @@ class ClassBoard extends Component {
       allStudents,
       history
     } = this.props;
-    const { selectedTab, flag, selectedQuestion, selectAll, nCountTrue, redirectPopup } = this.state;
+    const { selectedTab, flag, selectedQuestion, selectAll, nCountTrue, redirectPopup, selectedStudentId } = this.state;
     const { assignmentId, classId } = match.params;
     const testActivityId = this.getTestActivity(testActivity);
     const classname = additionalData ? additionalData.classes : [];
@@ -317,6 +319,7 @@ class ClassBoard extends Component {
                 classId={classId}
                 studentSelect={this.onSelectCardOne}
                 studentUnselect={this.onUnselectCardOne}
+                viewResponses={(e, selected) => this.onTabChange(e, "Student", selected)}
               />
             ) : (
               <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
@@ -341,8 +344,15 @@ class ClassBoard extends Component {
           <React.Fragment>
             <StudentGrapContainer>
               <StyledCard bordered={false} paddingTop={15}>
-                <BarGraph gradebook={gradebook} onClickHandler={this.onClickBarGraph}>
-                  <StudentSelect students={studentItems} loadStudentResponses={loadStudentResponses} />
+                <BarGraph gradebook={gradebook}>
+                  <StudentSelect
+                    students={studentItems}
+                    loadStudentResponses={loadStudentResponses}
+                    selectedStudent={selectedStudentId}
+                    handleChange={value => {
+                      this.setState({ selectedStudentId: value });
+                    }}
+                  />
                 </BarGraph>
               </StyledCard>
             </StudentGrapContainer>
@@ -351,6 +361,7 @@ class ClassBoard extends Component {
               studentResponse={studentResponse}
               testActivity={testActivity}
               studentItems={studentItems}
+              selectedStudent={selectedStudentId}
             />
           </React.Fragment>
         )}

@@ -39,6 +39,10 @@ export const StyledTable = styled(Table)`
             padding: 10px;
             text-align: left;
             font-weight: 900;
+
+            .ant-table-column-sorters {
+              display: inline;
+            }
           }
         }
       }

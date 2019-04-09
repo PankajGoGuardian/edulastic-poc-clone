@@ -167,6 +167,7 @@ class ClozeDropDownDisplay extends Component {
                 value={userAnswers[dropTargetIndex]}
                 style={btnStyle}
                 onChange={value => this.selectChange(value, dropTargetIndex)}
+                key={index}
               >
                 <Option value="**default_value**" disabled>
                   {placeholder}
@@ -241,7 +242,8 @@ ClozeDropDownDisplay.propTypes = {
   uiStyle: PropTypes.object,
   instructorStimulus: PropTypes.string.isRequired,
   theme: PropTypes.object.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  qIndex: PropTypes.number.isRequired
 };
 
 ClozeDropDownDisplay.defaultProps = {

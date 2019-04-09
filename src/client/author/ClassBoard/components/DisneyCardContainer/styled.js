@@ -86,6 +86,8 @@ export const PagInfo = styled.span`
   color: #1774f0;
   text-overflow: ellipsis;
   width: 50%;
+  cursor: pointer;
+  user-select: none;
   @media (max-width: ${mobileWidth}) {
     width: 100%;
     text-align: center;

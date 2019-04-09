@@ -70,6 +70,7 @@ class CorrectAnswer extends Component {
         </CorrectAnswerHeader>
         <Display
           preview
+          qIndex={0}
           setAnswers
           uiStyle={uiStyle}
           options={options}

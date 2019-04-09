@@ -22,10 +22,13 @@ export const generateClassData = (
   groupsData
 ) => {
   if (!specificStudents) {
-    return classes.map(_id => ({
-      _id,
-      assignedCount: get(groupsData, `${_id}.studentCount`, 0)
-    }));
+    return classes.map(_id => {
+      return {
+        _id,
+        name: (groupsData[_id] && groupsData[_id].name) || "",
+        assignedCount: get(groupsData, `${_id}.studentCount`, 0)
+      };
+    });
   }
 
   selectedStudents = studentList.filter(({ _id }) => selectedStudents.includes(_id));

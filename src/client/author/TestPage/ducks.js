@@ -40,6 +40,7 @@ export const TEST_SHARE = "[test] send test share request";
 export const TEST_PUBLISH = "[test] publish test";
 export const UPDATE_TEST_STATUS = "[test] update test status";
 export const CLEAR_TEST_DATA = "[test] clear test data";
+export const TEST_CREATE_SUCCESS = "[test] create test succes";
 // actions
 
 export const receiveTestByIdAction = id => ({
@@ -97,6 +98,10 @@ export const clearTestDataAction = () => ({
 
 export const setDefaultTestDataAction = () => ({
   type: SET_DEFAULT_TEST_DATA
+});
+
+export const setCreateSuccessAction = () => ({
+  type: TEST_CREATE_SUCCESS
 });
 
 export const setTestEditAssignedAction = createAction(SET_TEST_EDIT_ASSIGNED);
@@ -241,6 +246,11 @@ export const reducer = (state = initialState, { type, payload }) => {
           testItems: []
         }
       };
+    case TEST_CREATE_SUCCESS:
+      return {
+        ...state,
+        creating: false
+      };
     default:
       return state;
   }
@@ -291,6 +301,7 @@ function* createTestSaga({ payload }) {
     });
 
     if (regrade) {
+      yield put(setCreateSuccessAction());
       yield put(push(`/author/assignments/regrade/new/${entity._id}/old/${oldId}`));
     } else {
       const hash = payload.toReview ? "#review" : "";

@@ -221,6 +221,10 @@ class ClassBoard extends Component {
     });
   };
 
+  onClickBarGraph = selectedQuestion => {
+    this.setState({ selectedQuestion, selectedTab: "questionView" });
+  };
+
   isMobile = () => window.innerWidth < 480;
 
   render() {
@@ -283,7 +287,7 @@ class ClassBoard extends Component {
           <React.Fragment>
             <GraphContainer>
               <StyledCard bordered={false}>
-                <Graph gradebook={gradebook} testActivity={testActivity} />
+                <Graph gradebook={gradebook} testActivity={testActivity} onClickHandler={this.onClickBarGraph} />
               </StyledCard>
             </GraphContainer>
             {nCountTrue > 0 && (

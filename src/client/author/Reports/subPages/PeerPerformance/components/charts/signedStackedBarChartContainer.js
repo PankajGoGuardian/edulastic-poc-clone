@@ -51,7 +51,7 @@ export const SignedStackedBarChartContainer = ({
 
   const getTooltipJSX = (payload, barIndex) => {
     if (payload && payload.length && barIndex !== null) {
-      let { districtAvg, compareBy, compareBylabel, correct } = payload[0].payload;
+      let { compareBy, compareBylabel } = payload[0].payload;
 
       return (
         <div>
@@ -59,22 +59,17 @@ export const SignedStackedBarChartContainer = ({
             <Col className="tooltip-key">{idToName[compareBy] + ": "}</Col>
             <Col className="tooltip-value">{compareBylabel}</Col>
           </Row>
-          <Row
-            key={payload[barIndex].name}
-            type="flex"
-            justify="start"
-            style={{ backgroundColor: payload[barIndex].fill }}
-          >
+          <Row type="flex" justify="start">
+            <Col className="tooltip-key">Band: </Col>
+            <Col className="tooltip-value">{payload[barIndex].name}</Col>
+          </Row>
+          <Row type="flex" justify="start" style={{ backgroundColor: payload[barIndex].fill }}>
             <Col className="tooltip-key">{"Student (%): "}</Col>
             <Col className="tooltip-value">
               {`${Math.abs(payload[barIndex].value)}% (${
                 payload[barIndex].payload[payload[barIndex].dataKey.substring(0, payload[barIndex].dataKey.length - 10)]
               })`}
             </Col>
-          </Row>
-          <Row type="flex" justify="start">
-            <Col className="tooltip-key">District Average: </Col>
-            <Col className="tooltip-value">{districtAvg}</Col>
           </Row>
         </div>
       );

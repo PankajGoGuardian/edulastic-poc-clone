@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { Menu } from "antd";
 import { PaddingDiv } from "@edulastic/common";
-import { darkBlueSecondary, white } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 
 import QuestionTypes from "../QuestionType/QuestionTypes";
@@ -14,6 +13,7 @@ import Header from "../Header/Header";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import { setQuestionAction } from "../../../QuestionEditor/ducks";
 import { addQuestionAction } from "../../../sharedDucks/questions";
+import { toggleSideBarAction } from "../../../src/actions/togglemenu";
 import {
   Content,
   LeftSide,
@@ -28,15 +28,22 @@ import {
   RightSide,
   SelectionIcon,
   TargetIcon,
-  LineMobileIcon,
-  MenuTitle
+  MenuTitle,
+  StyledModal,
+  StyledModalContainer,
+  MobileButtons,
+  SelectWidget,
+  BackLink,
+  RulerIcon,
+  PlayIcon
 } from "./styled";
+import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 
 class Container extends Component {
   state = {
     currentQuestion: "multiple-choice",
     currentTab: "question-tab",
-    mobileViewShow: true
+    isShowCategories: false
   };
 
   // when a particular question type is picked, populate the "authorQuestions" collection
@@ -92,17 +99,17 @@ class Container extends Component {
     }
   };
 
-  handleMobileViewChange = () => {
-    const { mobileViewShow } = this.state;
+  toggleCategories = () => {
+    const { isShowCategories } = this.state;
 
     this.setState({
-      mobileViewShow: !mobileViewShow
+      isShowCategories: !isShowCategories
     });
   };
 
   render() {
-    const { t } = this.props;
-    const { currentQuestion, currentTab, mobileViewShow } = this.state;
+    const { t, windowWidth, toggleSideBar } = this.props;
+    const { currentQuestion, currentTab, mobileViewShow, isShowCategories } = this.state;
     const breadcrumbData = [
       {
         title: "<&nbsp;&nbsp;&nbsp;ITEM LIST",
@@ -120,13 +127,7 @@ class Container extends Component {
 
     return (
       <Content showMobileView={mobileViewShow}>
-        <Header title={t("component.pickupcomponent.headertitle")} link={this.link} />
-        <LineMobileIcon
-          onClick={this.handleMobileViewChange}
-          type="left"
-          showMobileView={mobileViewShow}
-          style={{ color: mobileViewShow ? darkBlueSecondary : white }}
-        />
+        <Header title={t("component.pickupcomponent.headertitle")} link={this.link} toggleSideBar={toggleSideBar} />
         <LeftSide>
           <Menu
             mode="horizontal"
@@ -141,7 +142,7 @@ class Container extends Component {
             <Menu.Item key="question-tab">{t("component.pickupcomponent.question")}</Menu.Item>
             <Menu.Item key="feature-tab">{t("component.pickupcomponent.feature")}</Menu.Item>
           </Menu>
-          <MenuTitle>{t("component.pickupcomponent.selectAWidget")}</MenuTitle>
+          <MenuTitle>{t("component.pickupcomponent.selectAType")}</MenuTitle>
           <Menu
             mode="inline"
             style={{
@@ -187,6 +188,14 @@ class Container extends Component {
               <MoleculeIcon />
               {"Chemistry"}
             </Menu.Item>
+            <Menu.Item key="video-passages">
+              <PlayIcon />
+              {"Video & Passages"}
+            </Menu.Item>
+            <Menu.Item key="rulers-calculators">
+              <RulerIcon />
+              {"Rulers & Calculators"}
+            </Menu.Item>
             <Menu.Item key="other">
               <MoreIcon />
               {"Other"}
@@ -199,9 +208,16 @@ class Container extends Component {
             style={{
               position: "relative",
               top: 0,
-              padding: "17px 0px"
+              padding: "17px 0px",
+              display: windowWidth > SMALL_DESKTOP_WIDTH ? "initial" : "none"
             }}
           />
+          <MobileButtons>
+            <BackLink to={`/author/items/${window.location.pathname.split("/")[3]}/item-detail`}>
+              Back to Item Detail
+            </BackLink>
+            <SelectWidget onClick={this.toggleCategories}>Select widget</SelectWidget>
+          </MobileButtons>
           <PaddingDiv
             style={{
               position: "relative",
@@ -210,7 +226,7 @@ class Container extends Component {
               height: "auto",
               background: "#fff",
               borderRadius: "10px",
-              padding: "35px",
+              padding: windowWidth > SMALL_DESKTOP_WIDTH ? "35px" : "20px 15px 10px",
               boxShadow: "0 2px 5px 0 rgba(0, 0, 0, 0.07)",
               minHeight: "calc(100vh - 190px)"
             }}
@@ -218,6 +234,77 @@ class Container extends Component {
             <QuestionTypes onSelectQuestionType={this.selectQuestionType} questionType={currentQuestion} />
           </PaddingDiv>
         </RightSide>
+
+        <StyledModal
+          open={isShowCategories}
+          onClose={this.toggleCategories}
+          classNames={{
+            overlay: "modal-overlay",
+            modal: "modal"
+          }}
+        >
+          <StyledModalContainer>
+            <MenuTitle>{t("component.pickupcomponent.selectAType")}</MenuTitle>
+            <Menu
+              mode="inline"
+              style={{
+                background: "transparent",
+                border: 0
+              }}
+              selectedKeys={[currentQuestion]}
+              onClick={this.handleCategory}
+            >
+              <Menu.Item key="multiple-choice" onClick={this.toggleCategories}>
+                <NewListIcon />
+                {"Multiple Choice"}
+              </Menu.Item>
+              <Menu.Item key="fill-blanks" onClick={this.toggleCategories}>
+                <SelectionIcon />
+                {"Fill in the Blanks"}
+              </Menu.Item>
+              <Menu.Item key="classify" onClick={this.toggleCategories}>
+                <LayoutIcon />
+                {"Classify, Match & Order"}
+              </Menu.Item>
+              <Menu.Item key="edit" onClick={this.toggleCategories}>
+                <EditIcon />
+                {"Written & Spoken"}
+              </Menu.Item>
+              <Menu.Item key="highlight" onClick={this.toggleCategories}>
+                <TargetIcon />
+                {"Highlight"}
+              </Menu.Item>
+              <Menu.Item key="math" onClick={this.toggleCategories}>
+                <MathIcon />
+                {"Math"}
+              </Menu.Item>
+              <Menu.Item key="graphing" onClick={this.toggleCategories}>
+                <LineChartIcon />
+                {"Graphing"}
+              </Menu.Item>
+              <Menu.Item key="charts" onClick={this.toggleCategories}>
+                <BarChartIcon />
+                {"Charts"}
+              </Menu.Item>
+              <Menu.Item key="chemistry" onClick={this.toggleCategories}>
+                <MoleculeIcon />
+                {"Chemistry"}
+              </Menu.Item>
+              <Menu.Item key="video-passages" onClick={this.toggleCategories}>
+                <PlayIcon />
+                {"Video & Passages"}
+              </Menu.Item>
+              <Menu.Item key="rulers-calculators" onClick={this.toggleCategories}>
+                <RulerIcon />
+                {"Rulers & Calculators"}
+              </Menu.Item>
+              <Menu.Item key="other" onClick={this.toggleCategories}>
+                <MoreIcon />
+                {"Other"}
+              </Menu.Item>
+            </Menu>
+          </StyledModalContainer>
+        </StyledModal>
       </Content>
     );
   }
@@ -231,7 +318,8 @@ const enhance = compose(
     }),
     {
       setQuestion: setQuestionAction,
-      addQuestion: addQuestionAction
+      addQuestion: addQuestionAction,
+      toggleSideBar: toggleSideBarAction
     }
   )
 );
@@ -241,7 +329,9 @@ Container.propTypes = {
   t: PropTypes.func.isRequired,
   setQuestion: PropTypes.func.isRequired,
   addQuestion: PropTypes.func.isRequired,
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
+  windowWidth: PropTypes.number.isRequired,
+  toggleSideBar: PropTypes.func.isRequired
 };
 
 export default enhance(Container);

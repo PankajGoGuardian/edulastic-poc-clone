@@ -1395,7 +1395,7 @@ export const getCards = onSelectQuestionType => {
       onSelectQuestionType
     },
     {
-      type: "feature",
+      type: "rulers-calculators",
       data: {
         title: "Protractor",
         type: "protractor",
@@ -1533,7 +1533,7 @@ export const getCards = onSelectQuestionType => {
       onSelectQuestionType
     },
     {
-      type: "feature",
+      type: "video-passages",
       data: {
         title: "Passage",
         type: "passage",

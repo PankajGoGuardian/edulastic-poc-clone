@@ -1,5 +1,6 @@
-import { white, newBlue, mobileWidth } from "@edulastic/colors";
+import { white, newBlue, mobileWidth, tabletWidth } from "@edulastic/colors";
 import styled from "styled-components";
+import { IconMenuOpenClose } from "@edulastic/icons";
 
 export const Container = styled.div`
   position: absolute;
@@ -16,6 +17,7 @@ export const Container = styled.div`
 
   @media (max-width: ${mobileWidth}) {
     margin-bottom: 30px;
+    padding: 0 26px;
   }
 `;
 
@@ -24,4 +26,22 @@ export const Title = styled.div`
   font-weight: bold;
   line-height: 1.36;
   color: ${white};
+
+  @media (max-width: ${mobileWidth}) {
+    padding-left: 0;
+    margin-top: -5px;
+  }
+`;
+
+export const MenuIcon = styled(IconMenuOpenClose)`
+  display: none;
+  fill: ${white};
+  width: 22.3px;
+  margin-top: 1px;
+  margin-right: 25px !important;
+  pointer-events: all;
+
+  @media (max-width: ${tabletWidth}) {
+    display: block;
+  }
 `;

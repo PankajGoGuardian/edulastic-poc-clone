@@ -116,12 +116,12 @@
       "tags": "Tags"
     },
     "pickupcomponent": {
-      "headertitle": "Select a type of Question or Feature",
+      "headertitle": "Select a Widget (Question or Resource)",
       "backToAddNew": "Back to Add New",
       "backToSelect": "Back to Select Question Type or Feature",
       "question": "Question",
       "feature": "Feature",
-      "selectAWidget": "Select a widget"
+      "selectAType": "Select a type"
     },
     "feedback": {
       "viewSolution": "VIEW SOLUTION",

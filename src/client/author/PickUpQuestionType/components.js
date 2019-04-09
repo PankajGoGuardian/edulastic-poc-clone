@@ -15,7 +15,7 @@ export const RoundDiv = styled.div`
 
   @media (max-width: 2048px) {
     width: calc(33.3333% - 12px);
-    margin: 0px 0px 12px 0px;
+    margin: 0px 0px 20px 0px;
   }
   @media (max-width: 1460px) {
     width: calc(33.3333% - 12px);

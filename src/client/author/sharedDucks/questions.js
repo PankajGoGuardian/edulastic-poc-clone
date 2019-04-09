@@ -1,6 +1,12 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
-import { values as _values, groupBy as _groupBy, intersection as _intersection, cloneDeep as _cloneDeep } from "lodash";
+import {
+  values as _values,
+  groupBy as _groupBy,
+  intersection as _intersection,
+  cloneDeep as _cloneDeep,
+  get
+} from "lodash";
 
 // actions types
 export const LOAD_QUESTIONS = "[author questions] load questions";
@@ -129,7 +135,16 @@ export default createReducer(initialState, {
 const module = "authorQuestions";
 
 export const getCurrentQuestionIdSelector = state => state[module].current;
-export const getQuestionsSelector = state => state[module].byId;
+export const getQuestionsSelector = state => {
+  const testItems = get(state, "tests.entity.testItems", []);
+  return testItems.reduce((acc, item) => {
+    const questions = get(item, "data.questions", []);
+    for (let question of questions) {
+      acc[question.id] = question;
+    }
+    return acc;
+  }, {});
+};
 
 // get current Question
 export const getCurrentQuestionSelector = createSelector(

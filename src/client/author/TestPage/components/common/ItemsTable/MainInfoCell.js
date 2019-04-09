@@ -30,7 +30,7 @@ class MainInfoCell extends React.Component {
       <div>
         <MoveLink onClick={() => this.previewItem()}>{data.title}</MoveLink>
         <STIMULUS dangerouslySetInnerHTML={{ __html: data.stimulus }} />
-        <PreviewModal isVisible={isShowPreviewModal} onClose={this.closeModal} data={data} />
+        <PreviewModal isVisible={isShowPreviewModal} page="addItems" onClose={this.closeModal} data={data} />
       </div>
     );
   }

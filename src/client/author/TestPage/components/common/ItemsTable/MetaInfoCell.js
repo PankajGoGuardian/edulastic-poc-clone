@@ -150,7 +150,7 @@ class MetaInfoCell extends Component {
 
     return (
       <Container>
-        <PreviewModal isVisible={isShowPreviewModal} onClose={this.closeModal} data={data} />
+        <PreviewModal isVisible={isShowPreviewModal} page="addItems" onClose={this.closeModal} data={data} />
         {windowWidth > 468 ? (
           <FlexContainer justifyContent="space-between" style={{ fontWeight: 600, color: textColor, flexWrap: "wrap" }}>
             <div style={{ width: "70%" }}>

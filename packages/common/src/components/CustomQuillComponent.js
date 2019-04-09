@@ -255,7 +255,7 @@ class CustomQuillComponent extends React.Component {
   }
 
   handleChange = content => {
-    const { onChange } = this.props;
+    const { onChange, showResponseBtn } = this.props;
     if (this.quillRef) {
       const lines = this.quillRef.getEditor().getLines();
       const val = lines
@@ -270,10 +270,26 @@ class CustomQuillComponent extends React.Component {
           return line.domNode.outerHTML;
         })
         .join("");
+
       this.setState({
         quillVal: content
       });
-      onChange(val);
+
+      if (showResponseBtn) {
+        // eslint-disable-next-line func-names, no-undef
+        const responseIndexes = $(val)
+          .find(".index")
+          // eslint-disable-next-line func-names
+          .map(function() {
+            // eslint-disable-next-line no-undef
+            return +$(this).text();
+          })
+          .toArray();
+
+        onChange(val, responseIndexes);
+      } else {
+        onChange(val);
+      }
     }
   };
 

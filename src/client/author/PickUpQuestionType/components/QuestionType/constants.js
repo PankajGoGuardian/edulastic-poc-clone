@@ -1,5 +1,6 @@
 import { mainBlueColor, svgMapFillColor, svgMapStrokeColor } from "@edulastic/colors";
-import { math } from "@edulastic/constants";
+import { math, questionType } from "@edulastic/constants";
+
 import uuid from "uuid/v4";
 import {
   BY_LOCATION_METHOD,
@@ -54,7 +55,7 @@ import MTText from "../../../src/assets/math/math-text.svg";
 import MTMatrices from "../../../src/assets/math/math-matrices.svg";
 import MTUnits from "../../../src/assets/math/math-units.svg";
 import MTEssay from "../../../src/assets/math/math-essay.svg";
-// import MTClozeMath from '../../assets/math/cloze-math.svg';
+import MTClozeMath from "../../../src/assets/math/cloze-math.svg";
 // import MTClozeMathWithImage from '../../assets/math/cloze-math-img.svg';
 
 // Graphing
@@ -331,7 +332,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Bar chart",
         firstMount: true,
-        type: "bar",
+        type: questionType.BAR_CHART,
         stimulus: "Sort the sine and cosine values from lower to higher.",
         chart_data: {
           data: [
@@ -416,7 +417,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Line chart",
         firstMount: true,
-        type: "line",
+        type: questionType.LINE_CHART,
         stimulus: "Sort the sine and cosine values from lower to higher.",
         chart_data: {
           data: [
@@ -508,7 +509,7 @@ export const getCards = onSelectQuestionType => {
         },
         line_color: [mainBlueColor],
         stimulus: "<p>[This is the stem.]</p>",
-        type: "highlightImage",
+        type: questionType.HIGHLIGHT_IMAGE,
         validation: {}
       },
       onSelectQuestionType
@@ -527,7 +528,7 @@ export const getCards = onSelectQuestionType => {
           read_only_author_cells: false
         },
         stimulus: "<p>[This is the stem.]</p>",
-        type: "shading",
+        type: questionType.SHADING,
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -548,7 +549,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Hotspot",
         stimulus: "<p>[This is the stem.]</p>",
-        type: "hotspot",
+        type: questionType.HOTSPOT,
         image: {
           source: "https://assets.learnosity.com/organisations/1/bead7655-fb71-41af-aeea-9e08a47eac68.png",
           width: 900,
@@ -586,7 +587,7 @@ export const getCards = onSelectQuestionType => {
           '<p>Risus et tincidunt turpis facilisis.</p><p class="newline_section"><br></p><p>Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. dignissim, et tincidunt turpis facilisis.</p><p class="newline_section"><br></p><p>Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>',
         templeWithTokens: templateWithTokens,
         tokenization: SENTENCE_MODE,
-        type: "tokenhighlight",
+        type: questionType.TOKEN_HIGHLIGHT,
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -604,7 +605,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Essay with rich text",
         stimulus: "[This is the stem.]",
-        type: "essayRichText",
+        type: questionType.ESSAY_RICH_TEXT,
         show_word_count: true,
         max_word: 5,
         show_word_limit: ON_LIMIT,
@@ -643,7 +644,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Essay with plain text",
         stimulus: "[This is the stem.]",
-        type: "essayPlainText",
+        type: questionType.ESSAY_PLAIN_TEXT,
         show_copy: true,
         show_cut: true,
         show_paste: true,
@@ -660,7 +661,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Short text",
         stimulus: "[This is the stem.]",
-        type: "shortText",
+        type: questionType.SHORT_TEXT,
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -678,7 +679,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: MCStandard,
       data: {
         title: "Multiple choice - standard",
-        type: "multipleChoice",
+        type: questionType.MULTIPLE_CHOICE,
         stimulus: "Which color has the smallest walvelenght?",
         ui_style: {
           type: "horizontal"
@@ -705,7 +706,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: MCMultipleResponses,
       data: {
         title: "Multiple choice - multiple response",
-        type: "multipleChoice",
+        type: questionType.MULTIPLE_CHOICE,
         stimulus: "Which color has the smallest walvelenght?",
         ui_style: {
           type: "horizontal"
@@ -732,7 +733,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: MCTrueFalse,
       data: {
         title: "True or false",
-        type: "multipleChoice",
+        type: questionType.MULTIPLE_CHOICE,
         stimulus: "The sky is blue due to gases.",
         ui_style: {
           type: "horizontal"
@@ -755,7 +756,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: MCBlockLayout,
       data: {
         title: "Multiple choice - block layout",
-        type: "multipleChoice",
+        type: questionType.MULTIPLE_CHOICE,
         stimulus: "What is the capital city of England?",
         ui_style: {
           type: "block",
@@ -784,7 +785,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Sort List",
         firstMount: true,
-        type: "sortList",
+        type: questionType.SORT_LIST,
         stimulus: "Sort the sine and cosine values from lower to higher.",
         ui_style: {},
         source: ["Item A", "Item B", "Item C", "Item D"],
@@ -814,7 +815,7 @@ export const getCards = onSelectQuestionType => {
         ],
         possible_responses: ["Choice B", "Choice C", "Choice A", "Choice D"],
         stimulus: "Your question is here",
-        type: "classification",
+        type: questionType.CLASSIFICATION,
         ui_style: {
           column_count: 2,
           column_titles: ["COLUMN 1", "COLUMN 2"],
@@ -846,7 +847,7 @@ export const getCards = onSelectQuestionType => {
           }
         ],
         possible_responses: ["Choice A", "Choice B", "Choice C"],
-        type: "matchList",
+        type: questionType.MATCH_LIST,
         stimulus: "<p>This is the stem.</p>",
         list: ["Stem 1", "Stem 2", "Stem 3"],
         validation: {
@@ -865,7 +866,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: CMOrderList,
       data: {
         title: "OrderList",
-        type: "orderList",
+        type: questionType.ORDER_LIST,
         stimulus: "Which color has the smallest walvelenght?",
         list: ["Item A", "Item B", "Item C"],
         validation: {
@@ -885,7 +886,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Choice matrix - standard",
         firstMount: true,
-        type: "choiceMatrix",
+        type: questionType.CHOICE_MATRIX,
         stimulus: "This is the stem.",
         ui_style: {
           type: "table",
@@ -914,7 +915,7 @@ export const getCards = onSelectQuestionType => {
         options: ["True", "False"],
         stems: ["[Stem 1]", "[Stem 2]", "[Stem 3]", "[Stem 4]"],
         stimulus: "This is the stem.",
-        type: "choiceMatrix",
+        type: questionType.CHOICE_MATRIX,
         ui_style: {
           type: "inline",
           horizontal_lines: false
@@ -939,7 +940,7 @@ export const getCards = onSelectQuestionType => {
         options: ["True", "False"],
         stems: ["[Stem 1]", "[Stem 2]", "[Stem 3]", "[Stem 4]"],
         stimulus: "This is the stem.",
-        type: "choiceMatrix",
+        type: questionType.CHOICE_MATRIX,
         ui_style: {
           stem_numeration: "upper-alpha",
           type: "table",
@@ -962,7 +963,7 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Cloze with Drag & Drop",
-        type: "clozeDragDrop",
+        type: questionType.CLOZE_DRAG_DROP,
         stimulus: "",
         options: ["WHISPERED", "HOLMES", "INTRUDER"],
         validation: {
@@ -982,7 +983,7 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Cloze with Drop Down",
-        type: "clozeDropDown",
+        type: questionType.CLOZE_DROP_DOWN,
         stimulus: "",
         options: {
           0: ["A", "B"],
@@ -1005,7 +1006,7 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Cloze with Text",
-        type: "clozeText",
+        type: questionType.CLOZE_TEXT,
         stimulus: "",
         options: {
           0: "",
@@ -1028,7 +1029,7 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Label Image with Drag & Drop",
-        type: "clozeImageDragDrop",
+        type: questionType.CLOZE_IMAGE_DRAG_DROP,
         firstMount: true,
         stimulus: "",
         options: ["Country A", "Country B", "Country C"],
@@ -1057,7 +1058,7 @@ export const getCards = onSelectQuestionType => {
       },
       data: {
         title: "Label Image with Drop Down",
-        type: "clozeImageDropDown",
+        type: questionType.CLOZE_IMAGE_DROP_DOWN,
         firstMount: true,
         stimulus: "",
         options: [["A", "B"], ["Choice A", "Choice B"], ["Select A", "Select B"]],
@@ -1090,7 +1091,7 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Label Image with Text",
-        type: "clozeImageText",
+        type: questionType.CLOZE_IMAGE_TEXT,
         stimulus: "",
         options: [],
         validation: {
@@ -1122,7 +1123,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: GRGraphing,
       data: {
         title: "Graphing",
-        type: "graph",
+        type: questionType.GRAPH,
         graphType: "quadrants",
         stimulus: "Which color has the smallest walvelenght?",
         canvas: {
@@ -1205,7 +1206,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: GRGraphingQuadrant,
       data: {
         title: "Graphing in the 1st quadrant",
-        type: "graph",
+        type: questionType.GRAPH,
         graphType: "firstQuadrant",
         stimulus: "[This is the stem2.]",
         canvas: {
@@ -1288,7 +1289,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: GRNumberLinePlot,
       data: {
         title: "Number line with plot",
-        type: "graph",
+        type: questionType.GRAPH,
         stimulus: "[This is the stem3.]",
         graphType: "axisSegments",
         canvas: {
@@ -1398,7 +1399,7 @@ export const getCards = onSelectQuestionType => {
       type: "rulers-calculators",
       data: {
         title: "Protractor",
-        type: "protractor",
+        type: questionType.PROTRACTOR,
         stimulus: "",
         image: "",
         label: "Protractor",
@@ -1414,7 +1415,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: GRNumberLineDragDrop,
       data: {
         title: "Number line with drag & drop",
-        type: "graph",
+        type: questionType.GRAPH,
         graphType: "axisLabels",
         list: [
           {
@@ -1536,7 +1537,7 @@ export const getCards = onSelectQuestionType => {
       type: "video-passages",
       data: {
         title: "Passage",
-        type: "passage",
+        type: questionType.PASSAGE,
         heading: "Section 3",
         math_renderer: "",
         content: "Enabling a <b>highlightable</b> text passage that can be used across multiple items."
@@ -1552,7 +1553,7 @@ export const getCards = onSelectQuestionType => {
         title: "Math formula",
         is_math: true,
         stimulus: "<p>[This is the stem.]</p>",
-        type: "math",
+        type: questionType.MATH,
         validation: {
           scoring_type: "exactMatch",
           valid_response: {
@@ -1601,6 +1602,68 @@ export const getCards = onSelectQuestionType => {
     },
     {
       type: "math",
+      cardImage: MTClozeMath,
+      stimulus: "",
+      data: {
+        title: "Cloze Math",
+        stimulus: "<p>[This is the stem.]</p>",
+        template:
+          '<p>Risus</p> <span class="response-btn" contenteditable="false">&nbsp;<span class="index">1</span><span class="text">Response</span>&nbsp;</span>, <p>et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et. Nunc diam enim, porta sed eros vitae.</p>',
+        type: questionType.CLOZE_MATH,
+        response_container: {
+          template: ""
+        },
+        ui_style: {
+          type: "floating-keyboard"
+        },
+        validation: {
+          scoring_type: "exactMatch",
+          valid_response: {
+            score: 1,
+            value: [
+              [
+                {
+                  method: "equivSymbolic",
+                  value: "",
+                  options: {
+                    inverseResult: false,
+                    decimalPlaces: 10
+                  }
+                }
+              ]
+            ]
+          }
+        },
+        is_math: true,
+        response_containers: [],
+        symbols: ["basic", "qwerty"],
+        numberPad: [
+          "7",
+          "8",
+          "9",
+          "\\div",
+          "4",
+          "5",
+          "6",
+          "\\times",
+          "1",
+          "2",
+          "3",
+          "-",
+          "0",
+          ".",
+          ",",
+          "+",
+          "left_move",
+          "right_move",
+          "Backspace",
+          "="
+        ]
+      },
+      onSelectQuestionType
+    },
+    {
+      type: "math",
       cardImage: MTFractions,
       stimulus: "",
       data: {
@@ -1608,7 +1671,7 @@ export const getCards = onSelectQuestionType => {
         is_math: true,
         stimulus: "<p>[This is the stem.]</p>",
         template: `\\frac${EMBED_RESPONSE}${EMBED_RESPONSE}`,
-        type: "math",
+        type: questionType.MATH,
         validation: {
           scoring_type: "exactMatch",
           valid_response: {
@@ -1663,7 +1726,7 @@ export const getCards = onSelectQuestionType => {
         is_math: true,
         stimulus: "<p>[This is the stem.]</p>",
         template: `${EMBED_RESPONSE} + ${EMBED_RESPONSE} =`,
-        type: "math",
+        type: questionType.MATH,
         validation: {
           scoring_type: "exactMatch",
           valid_response: {
@@ -1722,7 +1785,7 @@ export const getCards = onSelectQuestionType => {
           }
         ],
         stimulus: "<p>[This is the stem.]</p>",
-        type: "math",
+        type: questionType.MATH,
         template: `${EMBED_RESPONSE}\\text{q ft}`,
         validation: {
           scoring_type: "exactMatch",
@@ -1778,7 +1841,7 @@ export const getCards = onSelectQuestionType => {
         is_math: true,
         stimulus: "<p>[This is the stem.]</p>",
         template: `\\begin{bmatrix}4&0\\\\1&-9\\end{bmatrix}\\times2=${EMBED_RESPONSE}`,
-        type: "math",
+        type: questionType.MATH,
         validation: {
           scoring_type: "exactMatch",
           valid_response: {
@@ -1833,7 +1896,7 @@ export const getCards = onSelectQuestionType => {
         is_math: true,
         stimulus: "<p>[This is the stem.]</p>",
         template: `${EMBED_RESPONSE}=1m`,
-        type: "math",
+        type: questionType.MATH,
         validation: {
           scoring_type: "exactMatch",
           valid_response: {
@@ -1907,7 +1970,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Math essay",
         stimulus: "<p>[This is the stem.]</p>",
-        type: "formulaessay",
+        type: questionType.FORMULA_ESSAY,
         ui_style: {
           default_mode: "math",
           fontsize: "",

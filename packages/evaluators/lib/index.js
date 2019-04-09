@@ -53,6 +53,12 @@ Object.defineProperty(exports, "math", {
     return _math.default;
   }
 });
+Object.defineProperty(exports, "clozeMath", {
+  enumerable: true,
+  get: function get() {
+    return _clozeMath.default;
+  }
+});
 Object.defineProperty(exports, "hotspot", {
   enumerable: true,
   get: function get() {
@@ -129,6 +135,8 @@ var _clozeImageText = _interopRequireDefault(require("./clozeImageText"));
 var _clozeText = _interopRequireDefault(require("./clozeText"));
 
 var _math = _interopRequireDefault(require("./math"));
+
+var _clozeMath = _interopRequireDefault(require("./clozeMath"));
 
 var _hotspot = _interopRequireDefault(require("./hotspot"));
 

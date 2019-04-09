@@ -167,8 +167,7 @@ Container.propTypes = {
 };
 
 Container.defaultProps = {
-  question: null,
-  match: {}
+  question: null
 };
 
 const enhance = compose(

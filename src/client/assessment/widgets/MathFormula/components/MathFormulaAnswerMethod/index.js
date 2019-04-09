@@ -2,12 +2,13 @@ import React, { Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Col, Select, Input, Checkbox } from "antd";
 import { pick } from "lodash";
-
 import { FlexContainer, MathInput } from "@edulastic/common";
+
 import { math } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 
 import { Label } from "../../../../styled/WidgetOptions/Label";
+
 import { IconTrash } from "../../styled/IconTrash";
 import ThousandsSeparators from "../ThousandsSeparators";
 import { Container } from "./styled/Container";

@@ -6,6 +6,7 @@ export { default as clozeImageDropDown } from "./clozeImageDropDown";
 export { default as clozeImageText } from "./clozeImageText";
 export { default as clozeText } from "./clozeText";
 export { default as math } from "./math";
+export { default as clozeMath } from "./clozeMath";
 export { default as hotspot } from "./hotspot";
 export { default as sortList } from "./sortList";
 export { default as classification } from "./classification";

@@ -38,6 +38,7 @@ import { Protractor } from "../widgets/Protractor";
 import { Passage } from "../widgets/Passage";
 import { MathFormula } from "../widgets/MathFormula";
 import { FormulaEssay } from "../widgets/FormulaEssay";
+import ClozeMath from "../widgets/ClozeMath";
 import FeedbackBottom from "./FeedbackBottom";
 import FeedbackRight from "./FeedbackRight";
 import Timespent from "./Timespent";
@@ -108,7 +109,9 @@ const getQuestion = type => {
       return MathFormula;
     case questionType.FORMULA_ESSAY:
       return FormulaEssay;
-    case "graph":
+    case questionType.CLOZE_MATH:
+      return ClozeMath;
+    case questionType.GRAPH:
       return Graph;
     default:
       return null;
@@ -180,19 +183,19 @@ class QuestionWrapper extends Component {
 }
 
 QuestionWrapper.propTypes = {
-  type: PropTypes.any,
+  setQuestionData: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
+  multiple: PropTypes.bool,
+  showFeedback: PropTypes.bool,
+  type: PropTypes.any,
   isNew: PropTypes.bool,
   data: PropTypes.object,
   saveClicked: PropTypes.bool,
   testItem: PropTypes.bool,
   noPadding: PropTypes.bool,
   isFlex: PropTypes.bool,
-  t: PropTypes.func,
   timespent: PropTypes.string,
-  showFeedback: PropTypes.bool,
-  multiple: PropTypes.bool,
-  setQuestionData: PropTypes.func,
   qIndex: PropTypes.number
 };
 
@@ -204,11 +207,9 @@ QuestionWrapper.defaultProps = {
   testItem: false,
   noPadding: false,
   isFlex: false,
-  t: () => {},
   timespent: "",
   multiple: false,
   showFeedback: false,
-  setQuestionData: () => {},
   qIndex: 0
 };
 

@@ -13,6 +13,7 @@ const PROTRACTOR = "protractor";
 const PASSAGE = "passage";
 const MATH = "math";
 const FORMULA_ESSAY = "formulaessay";
+const CLOZE_MATH = "clozemath";
 const ORDER_LIST = "orderList";
 const MULTIPLE_CHOICE = "multipleChoice";
 const CLOZE_TEXT = "clozeText";
@@ -27,6 +28,7 @@ const BAR_CHART = "bar";
 const HISTOGRAM = "histogram";
 const DOT_PLOT = "dots";
 const LINE_PLOT = "linePlot";
+const GRAPH = "graph";
 
 const selectsData = [
   { value: "", text: "All Types" },
@@ -45,6 +47,7 @@ const selectsData = [
   { value: PASSAGE, text: "Passage" },
   { value: MATH, text: "Math" },
   { value: FORMULA_ESSAY, text: "Formula Essay" },
+  { value: CLOZE_MATH, text: "Cloze Math" },
   { value: ORDER_LIST, text: "Order List" },
   { value: MULTIPLE_CHOICE, text: "Multiple Choice" },
   { value: CLOZE_TEXT, text: "Cloze Text" },
@@ -57,7 +60,8 @@ const selectsData = [
   { value: BAR_CHART, text: "Bar Chart" },
   { value: HISTOGRAM, text: "Histogram" },
   { value: DOT_PLOT, text: "Dot plot" },
-  { value: LINE_PLOT, text: "Line plot" }
+  { value: LINE_PLOT, text: "Line plot" },
+  { value: GRAPH, text: "Graph" }
 ];
 
 module.exports = {
@@ -78,6 +82,7 @@ module.exports = {
   PASSAGE,
   MATH,
   FORMULA_ESSAY,
+  CLOZE_MATH,
   ORDER_LIST,
   MULTIPLE_CHOICE,
   CLOZE_TEXT,
@@ -90,5 +95,6 @@ module.exports = {
   HISTOGRAM,
   DOT_PLOT,
   LINE_PLOT,
+  GRAPH,
   selectsData
 };

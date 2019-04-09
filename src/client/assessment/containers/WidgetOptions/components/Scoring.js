@@ -34,6 +34,11 @@ const Scoring = ({ setQuestionData, t, scoringTypes, isSection, questionData, sh
 
   const handleChangeData = (param, value) => {
     const newData = cloneDeep(questionData);
+
+    if (["instant_feedback", "feedback_attempts"].includes(param)) {
+      newData[param] = value;
+    }
+
     newData.validation[param] = value;
 
     setQuestionData(newData);
@@ -79,8 +84,8 @@ const Scoring = ({ setQuestionData, t, scoringTypes, isSection, questionData, sh
           <Col md={12}>
             <Checkbox
               data-cy="checkAnswerButton"
-              checked={questionData.validation.checkAnswerButton}
-              onChange={e => handleChangeData("checkAnswerButton", e.target.checked)}
+              checked={questionData.instant_feedback}
+              onChange={e => handleChangeData("instant_feedback", e.target.checked)}
               size="large"
             >
               {t("component.options.checkAnswerButton")}
@@ -91,8 +96,8 @@ const Scoring = ({ setQuestionData, t, scoringTypes, isSection, questionData, sh
               <Input
                 data-cy="checkAttempts"
                 type="number"
-                value={questionData.validation.checkAttempts}
-                onChange={e => handleChangeData("checkAttempts", +e.target.value)}
+                value={questionData.feedback_attempts}
+                onChange={e => handleChangeData("feedback_attempts", +e.target.value)}
                 size="large"
                 style={{ width: "20%", marginRight: 30 }}
               />

@@ -13,7 +13,7 @@ export const getVariance = arr => {
   let variance = Number((sum / arr.length).toFixed(2));
   return variance;
 };
-export const getStandatdDeviation = variance => {
+export const getStandardDeviation = variance => {
   return Number(Math.sqrt(variance, 2).toFixed(2));
 };
 

@@ -6,7 +6,7 @@ import { groupBy, cloneDeep } from "lodash";
 import Moment from "moment";
 import next from "immer";
 
-import { getStandatdDeviation, getVariance } from "../../../../common/util";
+import { getStandardDeviation, getVariance } from "../../../../common/util";
 import { StyledControlDropDown } from "../../../../common/styled";
 
 import columnData from "../../static/json/tableColumns.json";
@@ -80,7 +80,7 @@ export const AssessmentStatisticTable = props => {
         ...obj,
         avgStudentScore: Number(((sumTotalScore / sumTotalMaxScore) * 100).toFixed(0)),
         scoreVariance: scoreVariance.toFixed(2),
-        scoreStdDeviation: getStandatdDeviation(scoreVariance).toFixed(2),
+        scoreStdDeviation: getStandardDeviation(scoreVariance).toFixed(2),
         avgScore: (sumTotalScore / sumSampleCount).toFixed(2),
         assessmentDate: Moment(maxAssessmentDate).format("MMMM, DD YYYY"),
         studentsAbsent: sumStudentsAbsent,

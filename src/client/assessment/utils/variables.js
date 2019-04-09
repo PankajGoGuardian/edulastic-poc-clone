@@ -6,11 +6,14 @@ const mathRegex = /<span class="input__math" data-latex="([^"]+)"><\/span>/g;
 
 const detectVariables = (str, isLatex = false) => {
   if (isLatex) {
-    const matches = str.match(/!([a-zA-Z])+([a-zA-Z]|[0-9])*/g);
+    // const matches = str.match(/!([a-zA-Z])+([a-zA-Z]|[0-9])*/g);
+    const matches = str.match(/_([a-zA-Z])+([a-zA-Z]|[0-9])*/g);
     return matches ? matches.map(match => match.slice(1)) : [];
   }
-  const matches = ` ${str}`.match(/([^\\]?\[)([a-zA-Z])+([a-zA-Z]|[0-9])*\]/g);
-  return matches ? matches.map(match => (match.startsWith("[") ? match.slice(1, -1) : match.slice(2, -1))) : [];
+  // const matches = ` ${str}`.match(/([^\\]?\[)([a-zA-Z])+([a-zA-Z]|[0-9])*\]/g);
+  // return matches ? matches.map(match => (match.startsWith("[") ? match.slice(1, -1) : match.slice(2, -1))) : [];
+  const matches = str.match(/_([a-zA-Z])+([a-zA-Z]|[0-9])*/g);
+  return matches ? matches.map(match => match.slice(1)) : [];
 };
 
 export const detectVariablesFromObj = (item, exceptions = []) => {
@@ -67,9 +70,10 @@ const replaceValue = (str, variables, isLatex = false) => {
   let result = str;
   Object.keys(variables).forEach(variableName => {
     if (isLatex) {
-      result = result.replace(new RegExp(`!${variableName}`, "g"), `${variables[variableName].exampleValue}`);
+      result = result.replace(new RegExp(`_${variableName}`, "g"), `${variables[variableName].exampleValue}`);
     } else {
-      result = result.replace(new RegExp(`\\[${variableName}\\]`, "g"), `${variables[variableName].exampleValue}`);
+      // result = result.replace(new RegExp(`\\[${variableName}\\]`, "g"), `${variables[variableName].exampleValue}`);
+      result = result.replace(new RegExp(`_${variableName}`, "g"), `${variables[variableName].exampleValue}`);
     }
   });
   return result;

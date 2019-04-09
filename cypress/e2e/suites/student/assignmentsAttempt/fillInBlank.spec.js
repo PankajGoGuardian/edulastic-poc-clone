@@ -25,9 +25,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
     },
     {
       "Question 4": "Q4"
-    },
-    {
-      "Question 5": "Q5"
     }
   ];
 
@@ -182,22 +179,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsRight();
 
         // checking preserve with dropdown and browswer navigation
-        test.clickQuestionDropdown(ques[4], 4, 5);
+        test.clickQuestionDropdown(ques[2], 2, 5);
         test.browserBack();
-        // check preserved Status
-        test.getRenderedDropDownLabels().each(($el, index) => {
-          if (index === 1) {
-            cy.wrap($el).contains("div", DefinedAnswers.right);
-          } else if (index === 2) {
-            cy.wrap($el).contains("div", DefinedAnswers.wrong);
-          } else if (index === 3) {
-            cy.wrap($el).contains("div", DefinedAnswers.other);
-          }
-        });
-        test.checkAnsValidateAsRight();
-
-        // refresh & check preserved answer
-        test.pageRefreshWithNavButton("Q4");
         // check preserved Status
         test.getRenderedDropDownLabels().each(($el, index) => {
           if (index === 1) {
@@ -212,43 +195,43 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
 
         // attempt 5th que
         // wrong
-        test.clickOnNext();
-        cy.contains("Q5").should("be.visible");
-        test.typeTextToAnswerBoard(DefinedAnswers.wrong, DefinedIndex.right);
-        test.typeTextToAnswerBoard(DefinedAnswers.right, DefinedIndex.wrong);
+        // test.clickOnNext();
+        // cy.contains("Q5").should("be.visible");
+        // test.typeTextToAnswerBoard(DefinedAnswers.wrong, DefinedIndex.right);
+        // test.typeTextToAnswerBoard(DefinedAnswers.right, DefinedIndex.wrong);
 
-        test.checkAnsValidateAsWrong();
+        // test.checkAnsValidateAsWrong();
 
-        // right
-        test.typeTextToAnswerBoard(DefinedAnswers.right, DefinedIndex.right);
-        test.typeTextToAnswerBoard(DefinedAnswers.wrong, DefinedIndex.wrong);
+        // // right
+        // test.typeTextToAnswerBoard(DefinedAnswers.right, DefinedIndex.right);
+        // test.typeTextToAnswerBoard(DefinedAnswers.wrong, DefinedIndex.wrong);
 
-        test.checkAnsValidateAsRight();
+        // test.checkAnsValidateAsRight();
 
-        // checking preserve with dropdown and browswer navigation
-        test.clickQuestionDropdown(ques[3], 3, 5);
-        test.browserBack();
-        // check preserved Status
-        test.getInputsLabelText().each(($el, index) => {
-          if (index === 0) {
-            cy.wrap($el).should("have.value", DefinedAnswers.right);
-          } else if (index === 1) {
-            cy.wrap($el).should("have.value", DefinedAnswers.wrong);
-          }
-        });
-        test.checkAnsValidateAsRight();
+        // // checking preserve with dropdown and browswer navigation
+        // test.clickQuestionDropdown(ques[3], 3, 5);
+        // test.browserBack();
+        // // check preserved Status
+        // test.getInputsLabelText().each(($el, index) => {
+        //   if (index === 0) {
+        //     cy.wrap($el).should("have.value", DefinedAnswers.right);
+        //   } else if (index === 1) {
+        //     cy.wrap($el).should("have.value", DefinedAnswers.wrong);
+        //   }
+        // });
+        // test.checkAnsValidateAsRight();
 
-        // refresh & check preserved answer
-        test.pageRefreshWithNavButton("Q5");
-        // check preserved Status
-        test.getInputsLabelText().each(($el, index) => {
-          if (index === 0) {
-            cy.wrap($el).should("have.value", DefinedAnswers.right);
-          } else if (index === 1) {
-            cy.wrap($el).should("have.value", DefinedAnswers.wrong);
-          }
-        });
-        test.checkAnsValidateAsRight();
+        // // refresh & check preserved answer
+        // test.pageRefreshWithNavButton("Q5");
+        // // check preserved Status
+        // test.getInputsLabelText().each(($el, index) => {
+        //   if (index === 0) {
+        //     cy.wrap($el).should("have.value", DefinedAnswers.right);
+        //   } else if (index === 1) {
+        //     cy.wrap($el).should("have.value", DefinedAnswers.wrong);
+        //   }
+        // });
+        // test.checkAnsValidateAsRight();
 
         // Q6 - Todo - Cloze Image With Text, site crashing entering cloze text detail page
 
@@ -259,7 +242,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
 
         // validate stats
         assignmentPage.validateAssignment(assignmentName, asgnstatus.inprogress, buttonText.retake);
-        assignmentPage.validateStats(1, "1/2", "5/5", "100%");
+        assignmentPage.validateStats(1, "1/2", "4/4", "100%");
       });
     });
 
@@ -324,16 +307,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
 
         // attempt 5th que
         // wrong
-        test.clickQuestionDropdown(ques[4], 4, 5);
-        cy.contains("Q5").should("be.visible");
-        test.typeTextToAnswerBoard(DefinedAnswers.wrong, DefinedIndex.right);
-        test.typeTextToAnswerBoard(DefinedAnswers.right, DefinedIndex.wrong);
+        // test.clickQuestionDropdown(ques[4], 4, 5);
+        // cy.contains("Q5").should("be.visible");
+        // test.typeTextToAnswerBoard(DefinedAnswers.wrong, DefinedIndex.right);
+        // test.typeTextToAnswerBoard(DefinedAnswers.right, DefinedIndex.wrong);
 
-        test.checkAnsValidateAsWrong();
+        // test.checkAnsValidateAsWrong();
 
-        // refresh & check preserved answer
-        test.pageRefreshWithNavButton("Q5");
-        test.checkAnsValidateAsWrong();
+        // // refresh & check preserved answer
+        // test.pageRefreshWithNavButton("Q5");
+        // test.checkAnsValidateAsWrong();
 
         // Q6 - Todo - Cloze Image With Text, site crashing entering cloze text detail page
 
@@ -343,8 +326,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         const reportsPage = test.submitTest();
         // validate stats
         reportsPage.validateAssignment(assignmentName, asgnstatus.sub, buttonText.review);
-        reportsPage.validateStats(2, "2/2", "3/5", "60%");
-        reportsPage.validateAttemptLinkStats(2, 1, "5/5", "100%");
+        reportsPage.validateStats(2, "2/2", "3/4", "75%");
+        reportsPage.validateAttemptLinkStats(2, 1, "4/4", "100%");
 
         sideBarPage.clickOnAssignment();
         cy.contains(assignmentName).should("not.be.visible");

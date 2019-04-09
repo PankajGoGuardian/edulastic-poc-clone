@@ -161,6 +161,7 @@ class SideMenu extends Component {
           width="245"
           collapsedWidth={broken ? "0" : "100"}
           className="sideBarwrapper"
+          data-cy="side-wrapper"
         >
           {isMobile ? (
             <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />

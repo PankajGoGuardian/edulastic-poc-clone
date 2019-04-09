@@ -94,6 +94,34 @@ class StudentTestPage {
     return cy.contains("bookmark").should("be.visible");
   }
 
+  // MCQ
+
+  checkHighLightByAnswer = answer => {
+    cy.contains(answer)
+      .should("be.visible")
+      .click()
+      .then($el => {
+        cy.wrap($el)
+          .closest("label")
+          .find("input")
+          .should("be.checked");
+      });
+    return this;
+  };
+
+  checkHighLightUncheckedByAnswer = answer => {
+    cy.contains(answer)
+      .should("be.visible")
+      .click()
+      .then($el => {
+        cy.wrap($el)
+          .closest("label")
+          .find("input")
+          .should("not.checked");
+      });
+    return this;
+  };
+
   clickFirstRadioByTitle = title =>
     cy
       .contains("p", title)
@@ -106,6 +134,29 @@ class StudentTestPage {
       .should("have.class", "ant-radio-checked");
 
   clickSecondRadioByTitle = title =>
+    cy
+      .contains("p", title)
+      .closest("td")
+      .next()
+      .next()
+      .find(">div")
+      .find("input")
+      .click()
+      .parent()
+      .should("have.class", "ant-radio-checked");
+
+  shouldCheckedFirstRadio = title =>
+    cy
+      .contains("p", title)
+      .closest("td")
+      .next()
+      .find(">div")
+      .find("input")
+      .click()
+      .parent()
+      .should("have.class", "ant-radio-checked");
+
+  shouldCheckedSecondRadio = title =>
     cy
       .contains("p", title)
       .closest("td")

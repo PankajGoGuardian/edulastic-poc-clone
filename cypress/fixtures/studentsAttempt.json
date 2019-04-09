@@ -1,8 +1,9 @@
 {
   "testTypes": {
     "sample": "5c52f36b24d89e24b60560b0",
-    "multipleChoice": "5c97a3884e7b2e5506fedb40",
-    "fillInBlanks": "5ca1f35e76ede387452bf172",
+    "multipleChoice1": "5caac272239c2059af29bdea",
+    "multipleChoice2": "5caba52f0cd42bddb6356923",
+    "fillInBlanks": "5cab9ae02e7401c53187e6d1",
     "classifyMatchOrder": "5ca2cecb6b84e067a44ced66"
   },
   "definedAnswers": {

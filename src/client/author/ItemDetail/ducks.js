@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { cloneDeep, keyBy as _keyBy, omit as _omit } from "lodash";
+import { cloneDeep, keyBy as _keyBy, omit as _omit, get } from "lodash";
 import { testItemsApi } from "@edulastic/api";
 import { call, put, all, takeEvery } from "redux-saga/effects";
 import { message } from "antd";
@@ -302,6 +302,20 @@ export const getItemDetailSelector = createSelector(
   stateSelector,
   state => state.item
 );
+
+export const getItemDetailSelectorForPreview = (state, id, page) => {
+  let item = undefined;
+  let testItems = [];
+  if (page === "addItems") {
+    testItems = get(state, "testsAddItems.items", []);
+  } else if (page === "review") {
+    testItems = get(state, "tests.entity.testItems", []);
+  } else {
+    console.warn("unknown page type ", page);
+  }
+  item = testItems.find(x => x._id === id);
+  return item || undefined;
+};
 
 export const getItemIdSelector = createSelector(
   getItemDetailSelector,

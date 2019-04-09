@@ -2,20 +2,14 @@ import PropTypes from "prop-types";
 import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { get } from "lodash";
+import { get, keyBy } from "lodash";
 import { Spin, Button } from "antd";
 import styled from "styled-components";
 import Modal from "react-responsive-modal";
 import { withRouter } from "react-router-dom";
 
 import TestItemPreview from "../../../../../assessment/components/TestItemPreview";
-import {
-  getItemDetailByIdAction,
-  getItemDetailLoadingSelector,
-  getItemDetailRowsSelector,
-  getItemDetailSelector
-} from "../../../../ItemDetail/ducks";
-import { getQuestionsSelector } from "../../../../sharedDucks/questions";
+import { getItemDetailSelectorForPreview } from "../../../../ItemDetail/ducks";
 
 import { testItemsApi } from "@edulastic/api";
 
@@ -37,9 +31,8 @@ class PreviewModal extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { flag } = this.state;
-    const { getItemDetailById, data, isVisible } = nextProps;
+    const { isVisible } = nextProps;
     if (isVisible && !flag) {
-      getItemDetailById(data.id, { data: true, validation: true, addItem: true });
       this.setState({ flag: true });
     }
   }
@@ -66,7 +59,9 @@ class PreviewModal extends React.Component {
   };
 
   render() {
-    const { isVisible, loading, item, rows, questions, currentAuthorId, authors } = this.props;
+    const { isVisible, loading, item = { rows: [], data: {}, authors: [] }, currentAuthorId } = this.props;
+    const questions = keyBy(get(item, "data.questions", []), "id");
+    const { authors, rows } = item;
     const getAuthorsId = authors.map(item => item._id);
     const authorHasPermission = getAuthorsId.includes(currentAuthorId);
     return (
@@ -101,32 +96,15 @@ PreviewModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   data: PropTypes.object.isRequired,
-  getItemDetailById: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
-  rows: PropTypes.array,
   item: PropTypes.object
-};
-
-PreviewModal.defaultProps = {
-  rows: [],
-  item: null
 };
 
 const enhance = compose(
   withRouter,
-  connect(
-    state => ({
-      rows: getItemDetailRowsSelector(state),
-      loading: getItemDetailLoadingSelector(state),
-      item: getItemDetailSelector(state),
-      questions: getQuestionsSelector(state),
-      currentAuthorId: get(state, ["user", "user", "_id"]),
-      authors: get(state, ["tests", "entity", "authors"], [])
-    }),
-    {
-      getItemDetailById: getItemDetailByIdAction
-    }
-  )
+  connect((state, ownProps) => ({
+    item: getItemDetailSelectorForPreview(state, (ownProps.data || {}).id, ownProps.page),
+    currentAuthorId: get(state, ["user", "user", "_id"])
+  }))
 );
 
 export default enhance(PreviewModal);

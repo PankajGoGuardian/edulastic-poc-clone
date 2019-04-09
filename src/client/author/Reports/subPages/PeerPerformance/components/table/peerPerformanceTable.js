@@ -27,7 +27,7 @@ export const PeerPerformanceTable = ({
 
   let _columns = [];
 
-  const colorCell = (colorkey, columnKey) => (data, record) => {
+  const colorCell = (colorkey, columnKey, columnTitle) => (data, record) => {
     const tooltipText = record => () => {
       return (
         <div>
@@ -35,17 +35,53 @@ export const PeerPerformanceTable = ({
             <Col className="custom-table-tooltip-key">Assessment Name: </Col>
             <Col className="custom-table-tooltip-value">{assessmentName}</Col>
           </Row>
-          {_columns.map((column, index) => {
-            return (
-              <Row type="flex" justify="start" key={column.key}>
-                <Col className="custom-table-tooltip-key">{column.title + ": "}</Col>
+          <Row type="flex" justify="start">
+            <Col className="custom-table-tooltip-key">{`${idToName[compareBy]}: `}</Col>
+            <Col className="custom-table-tooltip-value">{record.compareBylabel}</Col>
+          </Row>
+          {analyseBy === "score(%)" || analyseBy === "rawScore" ? (
+            <>
+              <Row type="flex" justify="start">
+                <Col className="custom-table-tooltip-key">Assigned: </Col>
+                <Col className="custom-table-tooltip-value">{record.graded + record.absent}</Col>
+              </Row>
+              <Row type="flex" justify="start">
+                <Col className="custom-table-tooltip-key">Graded: </Col>
+                <Col className="custom-table-tooltip-value">{record.graded}</Col>
+              </Row>
+              <Row type="flex" justify="start">
+                <Col className="custom-table-tooltip-key">Absent: </Col>
+                <Col className="custom-table-tooltip-value">{record.absent}</Col>
+              </Row>
+              <Row type="flex" justify="start">
+                <Col className="custom-table-tooltip-key">District Avg: </Col>
                 <Col className="custom-table-tooltip-value">
-                  {record[column.key]}
-                  {record[column.key + "Percentage"] ? " (" + Math.abs(record[column.key + "Percentage"]) + "%)" : ""}
+                  {analyseBy === "score(%)" ? record.districtAvg + "%" : record.districtAvg}
                 </Col>
               </Row>
-            );
-          })}
+              <Row type="flex" justify="start">
+                <Col className="custom-table-tooltip-key">Student Avg Score: </Col>
+                <Col className="custom-table-tooltip-value">
+                  {analyseBy === "score(%)" ? record.avgStudentScorePercent + "%" : record.avgStudentScore.toFixed(2)}
+                </Col>
+              </Row>
+            </>
+          ) : (
+            <>
+              <Row type="flex" justify="start">
+                <Col className="custom-table-tooltip-key">Performance Band: </Col>
+                <Col className="custom-table-tooltip-value">{columnTitle}</Col>
+              </Row>
+              <Row type="flex" justify="start">
+                <Col className="custom-table-tooltip-key">Student#: </Col>
+                <Col className="custom-table-tooltip-value">{record[columnKey]}</Col>
+              </Row>
+              <Row type="flex" justify="start">
+                <Col className="custom-table-tooltip-key">Student(%): </Col>
+                <Col className="custom-table-tooltip-value">{Math.abs(record[columnKey + "Percentage"]) + "%"}</Col>
+              </Row>
+            </>
+          )}
         </div>
       );
     };
@@ -58,6 +94,8 @@ export const PeerPerformanceTable = ({
     let printData = data;
     if (analyseBy === "score(%)") {
       printData = printData + "%";
+    } else if (analyseBy === "rawScore") {
+      printData = printData.toFixed(2);
     } else if (analyseBy === "proficiencyBand" || analyseBy === "aboveBelowStandard") {
       printData = data + " (" + Math.abs(record[columnKey + "Percentage"]) + "%)";
     }
@@ -81,8 +119,8 @@ export const PeerPerformanceTable = ({
       arr[arr.length - 2].render = colorCell("dFill");
       colouredCellsNo = 2;
     } else if (analyseBy === "aboveBelowStandard") {
-      arr[arr.length - 1].render = colorCell("fill_0", "aboveStandard");
-      arr[arr.length - 2].render = colorCell("fill_1", "belowStandard");
+      arr[arr.length - 1].render = colorCell("fill_0", "aboveStandard", "Above Standard");
+      arr[arr.length - 2].render = colorCell("fill_1", "belowStandard", "Below Standard");
       colouredCellsNo = 2;
     } else {
       bandInfo.sort((a, b) => {
@@ -94,7 +132,7 @@ export const PeerPerformanceTable = ({
           dataIndex: value.name,
           key: value.name,
           width: 250,
-          render: colorCell("fill_" + index, value.name)
+          render: colorCell("fill_" + index, value.name, value.name)
         });
       }
       colouredCellsNo = bandInfo.length;

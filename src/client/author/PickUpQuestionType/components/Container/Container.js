@@ -4,9 +4,8 @@ import uuid from "uuid/v4";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { Menu } from "antd";
-import { PaddingDiv } from "@edulastic/common";
+import { PaddingDiv, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-
 import QuestionTypes from "../QuestionType/QuestionTypes";
 import { getItemSelector } from "../../../src/selectors/items";
 import Header from "../Header/Header";
@@ -125,6 +124,7 @@ class Container extends Component {
       }
     ];
 
+  
     return (
       <Content showMobileView={mobileViewShow}>
         <Header title={t("component.pickupcomponent.headertitle")} link={this.link} toggleSideBar={toggleSideBar} />
@@ -209,7 +209,7 @@ class Container extends Component {
               position: "relative",
               top: 0,
               padding: "17px 0px",
-              display: windowWidth > SMALL_DESKTOP_WIDTH ? "initial" : "none"
+              display: windowWidth > SMALL_DESKTOP_WIDTH ? "block" : "none"
             }}
           />
           <MobileButtons>
@@ -312,6 +312,7 @@ class Container extends Component {
 
 const enhance = compose(
   withNamespaces("author"),
+  withWindowSizes,
   connect(
     state => ({
       item: getItemSelector(state)

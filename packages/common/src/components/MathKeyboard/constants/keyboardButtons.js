@@ -288,10 +288,10 @@ export const KEYBOARD_BUTTONS = [
     command: "cmd"
   },
   {
-    handler: "\\begin{bmatrix}&\\\\&\\end{bmatrix}",
+    handler: "\\bmatrix",
     label: <CustomImage src={Group1004} role="presentation" />,
     types: ["all", "matrices"],
-    command: "write"
+    command: "cmd"
   },
   {
     handler: "\\vdots",

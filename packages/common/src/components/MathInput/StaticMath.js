@@ -148,7 +148,7 @@ class StaticMath extends PureComponent {
     return mathField.latex();
   };
 
-  onInput = key => {
+  onInput = (key, command = "cmd") => {
     const { innerField } = this.state;
     const { onInput } = this.props;
 
@@ -171,7 +171,7 @@ class StaticMath extends PureComponent {
     } else if (key === "up_move") {
       innerField.keystroke("Up");
     } else {
-      innerField.write(key);
+      innerField[command](key);
     }
     innerField.focus();
 
@@ -245,8 +245,8 @@ const StaticMathWithResources = (props, ref) => {
         "https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js",
         "https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js",
         "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-        "https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.js",
-        "https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.css"
+        "http://cdnedupoc.snapwiz.net/mathquill/mathquill.css",
+        "http://cdnedupoc.snapwiz.net/mathquill/mathquill.min.js"
       ]}
       fallBack={<span />}
     >

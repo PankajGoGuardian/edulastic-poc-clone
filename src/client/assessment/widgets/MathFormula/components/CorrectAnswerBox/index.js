@@ -41,8 +41,8 @@ const CorrectAnswerBoxWithResources = ({ ...props }) => (
       "https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js",
       "https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/auto-render.min.js",
       "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-      "https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.js",
-      "https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.css"
+      "http://cdnedupoc.snapwiz.net/mathquill/mathquill.css",
+      "http://cdnedupoc.snapwiz.net/mathquill/mathquill.min.js"
     ]}
     fallBack={<span />}
   >

@@ -135,7 +135,9 @@ export default createReducer(initialState, {
 const module = "authorQuestions";
 
 export const getCurrentQuestionIdSelector = state => state[module].current;
-export const getQuestionsSelector = state => {
+export const getQuestionsSelector = state => state[module].byId;
+
+export const getQuestionsSelectorForReview = state => {
   const testItems = get(state, "tests.entity.testItems", []);
   return testItems.reduce((acc, item) => {
     const questions = get(item, "data.questions", []);

@@ -12,7 +12,7 @@ import ItemsTable from "../ReviewItemsTable/ReviewItemsTable";
 import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
 import { setTestDataAction } from "../../../../ducks";
 import { getSummarySelector } from "../../../Summary/ducks";
-import { getQuestionsSelector } from "../../../../../sharedDucks/questions";
+import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
 import { Calculator, Photo } from "../../../common";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
@@ -270,7 +270,7 @@ const enhance = compose(
       types: getItemsTypesSelector(state),
       standards: getStandardsSelector(state),
       summary: getSummarySelector(state),
-      questions: getQuestionsSelector(state)
+      questions: getQuestionsSelectorForReview(state)
     }),
     { setData: setTestDataAction }
   )

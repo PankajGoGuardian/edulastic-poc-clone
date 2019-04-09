@@ -6,6 +6,7 @@ const shuffleOptions = (questions = [], qActivitiesById = {}) => {
   const modifiedQuestions = questions.map(question => {
     if (question.type === "multipleChoice") {
       let { shuffledOptions } = qActivitiesById[question.id] || {};
+
       if (!shuffledOptions) {
         shuffledOptions = _shuffle(question.options.map(item => item.value));
       }

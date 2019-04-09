@@ -76,7 +76,7 @@ function* loadTest({ payload }) {
       calcType: activity.calcType || testContants.calculatorTypes.NONE
     };
     let shuffles;
-    if (activity.shuffledTestItems) {
+    if (activity.shuffleAnswers) {
       [testItems, shuffles] = ShuffleChoices(testItems, questionActivities);
       yield put(setShuffledOptions(shuffles));
     }

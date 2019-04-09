@@ -74,7 +74,7 @@ export default class DisneyCardContainer extends Component {
         return studentName.substring(0, 2).toUpperCase();
       }
 
-      return (firstLetter + secondLetter).toUpperCase();
+      return (`${firstLetter}` + `${secondLetter}`).toUpperCase();
     }
   };
 

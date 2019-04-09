@@ -228,8 +228,7 @@ function* receiveItemSaga({ payload }) {
     const resources = (data.data && data.data.resources) || [];
     questions = [...questions, ...resources];
     questions = _keyBy(questions, "id");
-    //TODO: revert the original
-    const item = data;
+    const item = _omit(data, "data");
     yield put({
       type: RECEIVE_ITEM_DETAIL_SUCCESS,
       payload: item

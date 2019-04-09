@@ -508,8 +508,8 @@ const GraphComponent = enhance(Graph);
 const GraphWithResources = ({ ...props }) => (
   <WithResources
     resources={[
-      "http://jsxgraph.uni-bayreuth.de/distrib/jsxgraphcore.js",
-      "http://jsxgraph.uni-bayreuth.de/distrib/jsxgraph.css"
+      "https://jsxgraph.uni-bayreuth.de/distrib/jsxgraphcore.js",
+      "https://jsxgraph.uni-bayreuth.de/distrib/jsxgraph.css"
     ]}
     fallBack={<span />}
   >

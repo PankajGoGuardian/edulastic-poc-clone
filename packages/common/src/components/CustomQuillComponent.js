@@ -207,7 +207,7 @@ class CustomQuillComponent extends React.Component {
     super(props);
     this.state = {
       active: false,
-      firstFocus: true,
+      firstFocus: !props.value,
       showMath: false,
       mathField: null,
       selLatex: "",

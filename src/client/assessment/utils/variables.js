@@ -16,32 +16,38 @@ const detectVariables = (str, isLatex = false) => {
   return matches ? matches.map(match => match.slice(1)) : [];
 };
 
-export const detectVariablesFromObj = (item, exceptions = []) => {
+export const detectVariablesFromObj = (item, key = null, latexKeys = [], exceptions = []) => {
   if (!item) return [];
   const variables = [];
 
   if (typeof item === "string") {
-    const latexes = item.match(mathRegex) || [];
-    latexes.forEach(latex => {
-      variables.push(...detectVariables(latex, true));
-      item.replace(latex, "");
-    });
+    if (key && latexKeys.includes(key)) {
+      variables.push(...detectVariables(item, true));
+    } else {
+      const latexes = item.match(mathRegex) || [];
+      latexes.forEach(latex => {
+        variables.push(...detectVariables(latex, true));
+        item.replace(latex, "");
+      });
 
-    variables.push(...detectVariables(item));
+      variables.push(...detectVariables(item));
+    }
   } else if (Array.isArray(item)) {
     item.forEach(elem => {
-      variables.push(...detectVariablesFromObj(elem));
+      variables.push(...detectVariablesFromObj(elem, key, latexKeys, exceptions));
     });
   } else if (typeof item === "object") {
-    for (const key of Object.keys(item)) {
-      if ([...exceptions, "variable"].includes(key)) continue;
-      variables.push(...detectVariablesFromObj(item[key]));
+    for (const itemKey of Object.keys(item)) {
+      if ([...exceptions, "variable"].includes(itemKey)) continue;
+      variables.push(
+        ...detectVariablesFromObj(item[itemKey], key ? `${key}.${itemKey}` : itemKey, latexKeys, exceptions)
+      );
     }
   }
   return variables;
 };
 
-export const updateVariables = item => {
+export const updateVariables = (item, latexKeys = []) => {
   if (!item) return;
   if (!item.variable) {
     item.variable = {
@@ -49,7 +55,7 @@ export const updateVariables = item => {
     };
   }
   const { variables: itemVars } = item.variable;
-  const newVariableNames = detectVariablesFromObj(item);
+  const newVariableNames = detectVariablesFromObj(item, null, latexKeys);
   const newVariables = {};
   newVariableNames.forEach(variableName => {
     newVariables[variableName] = itemVars[variableName] || {
@@ -79,34 +85,38 @@ const replaceValue = (str, variables, isLatex = false) => {
   return result;
 };
 
-export const replaceValues = (item, variableConfig) => {
+export const replaceValues = (item, variableConfig, key = null, latexKeys = []) => {
   if (!item || !variableConfig || !variableConfig.enabled) return item;
   const { variables } = variableConfig;
   if (!variables) return item;
   if (typeof item === "string") {
-    item = replaceValue(item, variables);
-    const latexes = item.match(mathRegex) || [];
-    for (let i = 0; i < latexes.length; i++) {
-      item = item.replace(latexes[i], replaceValue(latexes[i], variables, true));
+    if (key && latexKeys.includes(key)) {
+      item = replaceValue(item, variables, true);
+    } else {
+      item = replaceValue(item, variables);
+      const latexes = item.match(mathRegex) || [];
+      for (let i = 0; i < latexes.length; i++) {
+        item = item.replace(latexes[i], replaceValue(latexes[i], variables, true));
+      }
     }
   } else if (Array.isArray(item)) {
     for (let i = 0; i < item.length; i++) {
-      item[i] = replaceValues(item[i], variableConfig);
+      item[i] = replaceValues(item[i], variableConfig, key, latexKeys);
     }
   } else if (typeof item === "object") {
-    for (const key of Object.keys(item)) {
-      item[key] = replaceValues(item[key], variableConfig);
+    for (const itemKey of Object.keys(item)) {
+      item[itemKey] = replaceValues(item[itemKey], variableConfig, key ? `${key}.${itemKey}` : itemKey, latexKeys);
     }
   }
   return item;
 };
 
-export const replaceVariables = item => {
+export const replaceVariables = (item, latexKeys = []) => {
   if (!has(item, "variable.variables") || !has(item, "variable.enabled") || !item.variable.enabled) return item;
   return produce(item, draft => {
     Object.keys(item).forEach(key => {
       if (key === "id" || key === "variable") return;
-      draft[key] = replaceValues(draft[key], item.variable);
+      draft[key] = replaceValues(draft[key], item.variable, key, latexKeys);
     });
   });
 };

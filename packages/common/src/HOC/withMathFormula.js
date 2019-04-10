@@ -150,7 +150,7 @@ export const withMathFormula = WrappedComponent => {
           dangerouslySetInnerHTML={{ __html: newInnerHtml }}
         >
           <React.Fragment>
-            <StyledWrappedComponent {...this.props} />
+            <StyledWrappedComponent {...this.props} data-cy="styled-wrapped-component" />
             <NoneDiv>
               <span ref={this.mathFieldRef} className="input__math__field" />
             </NoneDiv>

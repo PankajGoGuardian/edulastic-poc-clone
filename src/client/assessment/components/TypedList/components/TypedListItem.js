@@ -11,9 +11,15 @@ const TypedListItem = ({ type, selectData, value, onRemove, onChange, columns, i
   <SortableItemContainer columns={columns}>
     <div className="main">
       {type === types.SELECT && !!selectData.length && (
-        <Select size="large" value={value} style={{ width: "100%" }} onChange={onChange}>
+        <Select
+          size="large"
+          value={value}
+          style={{ width: "100%" }}
+          onChange={onChange}
+          data-cy="text-formatting-options-select"
+        >
           {selectData.map(({ value: val, label }) => (
-            <Select.Option key={val} value={val}>
+            <Select.Option key={val} value={val} data-cy={`text-formatting-options-selected-${val}`}>
               {label}
             </Select.Option>
           ))}
@@ -21,7 +27,9 @@ const TypedListItem = ({ type, selectData, value, onRemove, onChange, columns, i
       )}
       {type === types.INPUT && <Input value={value} onChange={e => onChange(e.target.value)} size="large" />}
     </div>
-    {onRemove && <IconTrash data-cy={`delete${indx}`} onClick={onRemove} width={20} height={20} />}
+    {onRemove && (
+      <IconTrash data-cy={`delete${indx}`} data-cypress="deleteButton" onClick={onRemove} width={20} height={20} />
+    )}
   </SortableItemContainer>
 );
 

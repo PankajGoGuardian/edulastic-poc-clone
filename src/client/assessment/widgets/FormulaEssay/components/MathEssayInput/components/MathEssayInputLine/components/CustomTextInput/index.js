@@ -27,22 +27,58 @@ const CustomToolbar = ({ active, toolbarId }) => {
         case "bold":
         case "italic":
         case "underline":
-          result.push(<button key={opt} type="button" className={`ql-${opt}`} />);
+          result.push(
+            <button key={opt} type="button" className={`ql-${opt}`} data-cy={`text-formatting-options-${opt}`} />
+          );
           break;
         case "unorderedList":
-          result.push(<button key="unorderedList" type="button" className="ql-list" value="bullet" />);
+          result.push(
+            <button
+              key="unorderedList"
+              type="button"
+              className="ql-list"
+              value="bullet"
+              data-cy="text-formatting-options-bullet"
+            />
+          );
           break;
         case "orderedList":
-          result.push(<button key="orderedList" type="button" className="ql-list" value="ordered" />);
+          result.push(
+            <button
+              key="orderedList"
+              type="button"
+              className="ql-list"
+              value="ordered"
+              data-cy="text-formatting-options-ordered"
+            />
+          );
           break;
         case "removeFormat":
-          result.push(<button key="removeFormat" type="button" className="ql-clean" />);
+          result.push(
+            <button key="removeFormat" type="button" className="ql-clean" data-cy="text-formatting-options-clean" />
+          );
           break;
         case "superscript":
-          result.push(<button key="superscript" type="button" className="ql-script" value="super" />);
+          result.push(
+            <button
+              key="superscript"
+              type="button"
+              className="ql-script"
+              value="super"
+              data-cy="text-formatting-options-super"
+            />
+          );
           break;
         case "subscript":
-          result.push(<button key="subscript" type="button" className="ql-script" value="sub" />);
+          result.push(
+            <button
+              key="subscript"
+              type="button"
+              className="ql-script"
+              value="sub"
+              data-cy="text-formatting-options-sub"
+            />
+          );
           break;
         default:
           return result;
@@ -105,7 +141,7 @@ class CustomTextInput extends Component {
     const { active } = this.state;
 
     return (
-      <div className="text-editor" style={style}>
+      <div className="text-editor" style={style} data-cy="answer-text-editor">
         <CustomToolbar active={active} toolbarId={toolbarId} />
         <Wrapper fontSize={fontSize}>
           <ReactQuill

@@ -11,7 +11,7 @@ import TypedListItem from "./components/TypedListItem";
 
 const TypedList = SortableContainer(
   ({ type, selectData, items = [], onRemove, onChange, prefix = "prefix", columns = 1 }) => (
-    <FlexContainer style={{ flexWrap: "wrap" }} justifyContent="space-between">
+    <FlexContainer style={{ flexWrap: "wrap" }} justifyContent="space-between" data-cy="answer-typed-list-item">
       {items.map((value, index) => {
         if (isObject(value)) {
           return <CustomGroup onRemove={() => onRemove(index)} onChange={val => onChange(index, val)} value={value} />;

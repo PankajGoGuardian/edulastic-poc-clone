@@ -127,7 +127,7 @@ export const SignedStackedBarChartContainer = ({
             name: "Below Standard"
           }
         ],
-        yAxisLabel: "Below standard/Above standard"
+        yAxisLabel: "Below Standard                Above Standard"
       };
     } else if (analyseBy === proficiencyBand) {
       bandInfo.sort((a, b) => {
@@ -145,7 +145,7 @@ export const SignedStackedBarChartContainer = ({
       }
       return {
         barsData: barsData,
-        yAxisLabel: "Below standard/Above standard"
+        yAxisLabel: "Below Standard                Above Standard"
       };
     } else {
       return {};

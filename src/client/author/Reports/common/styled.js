@@ -44,6 +44,9 @@ export const StyledTable = styled(Table)`
               display: inline;
             }
           }
+          th.ant-table-column-has-actions.ant-table-column-has-sorters {
+            padding: 10px !important;
+          }
         }
       }
 

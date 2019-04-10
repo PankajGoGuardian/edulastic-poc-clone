@@ -486,6 +486,158 @@ const runMatrixPageTests = queData => {
       });
     });
   });
+
+  context("Scoring Block test", () => {
+    before("visit items page and select question type", () => {
+      editItem.getItemWithId();
+      editItem.deleteAllQuestion();
+      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+    });
+
+    afterEach(() => {
+      const preview = question.header.preview();
+
+      preview
+        .getClear()
+        .click()
+        .then(() => {
+          question.header.edit();
+
+          question.clickOnAdvancedOptions();
+        });
+    });
+
+    it("test score with alternate answer", () => {
+      question.clickOnAdvancedOptions();
+
+      queData.forScoringCorrectAns.forEach((element, index) => {
+        question.markAnswerInput(index, element + 1, "input");
+      });
+
+      question
+        .getPoints()
+        .clear()
+        .type("8{del}");
+
+      question.addAlternate();
+
+      queData.forScoringAltAns.forEach((element, index) => {
+        question.markAnswerInput(index, element + 1, "input");
+      });
+
+      question
+        .getPoints()
+        .clear()
+        .type("16{del}");
+
+      const preview = question.header.preview();
+
+      queData.forScoringAltAns.forEach((element, index) => {
+        question.markAnswerInput(index, element + 1, "input");
+      });
+
+      preview
+        .getCheckAnswer()
+        .click()
+        .then(() => {
+          preview.getAntMsg().should("contain", "score: 16/16");
+        });
+
+      preview.getClear().click();
+
+      queData.forScoringCorrectAns.forEach((element, index) => {
+        question.markAnswerInput(index, element + 1, "input");
+      });
+
+      preview
+        .getCheckAnswer()
+        .click()
+        .then(() => {
+          preview.getAntMsg().should("contain", "score: 8/16");
+        });
+    });
+
+    it("test score with min score if attempted", () => {
+      question.getEnableAutoScoring().click();
+
+      question
+        .getMinScore()
+        .clear()
+        .type(1);
+
+      const preview = question.header.preview();
+
+      queData.forScoringCorrectAns.forEach((element, index) => {
+        question.markAnswerInput(index, element, "input");
+      });
+
+      preview
+        .getCheckAnswer()
+        .click()
+        .then(() => {
+          preview.getAntMsg().should("contain", "score: 1/16");
+        });
+    });
+
+    it("test score with partial match, multiple responses and penalty", () => {
+      question.getMinScore().clear();
+
+      question
+        .getPenalty()
+        .clear()
+        .type(4);
+
+      question.selectScoringType("Partial match");
+
+      cy.contains("Multiple responses").click();
+
+      cy.get("tbody > tr")
+        .eq(1)
+        .find("td")
+        .eq(1)
+        .find("label")
+        .click();
+
+      const preview = question.header.preview();
+
+      queData.forScoringCorrectAns.forEach((element, index) => {
+        question.markAnswerInput(index, element + 1, "label");
+      });
+
+      preview
+        .getCheckAnswer()
+        .click()
+        .then(() => {
+          preview.getAntMsg().should("contain", "score: 6/16");
+        });
+    });
+
+    it("test score with max score", () => {
+      question.getPenalty().clear();
+
+      question.selectScoringType("Exact match");
+
+      question.getEnableAutoScoring().click();
+
+      question
+        .getMaxScore()
+        .clear()
+        .type(2);
+
+      const preview = question.header.preview();
+
+      queData.forScoringCorrectAns.forEach((element, index) => {
+        question.markAnswerInput(index, element + 1, "label");
+      });
+
+      preview
+        .getCheckAnswer()
+        .click()
+        .then(() => {
+          preview.getAntMsg().should("contain", "score: 0/20");
+        });
+    });
+  });
 };
 
 export default runMatrixPageTests;

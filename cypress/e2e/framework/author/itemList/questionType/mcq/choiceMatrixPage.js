@@ -30,12 +30,23 @@ class ChoiceMatrixStandardPage {
       "Uppercase alphabet": "upper-alpha",
       "Lowercase alphabet": "lower-alpha"
     };
+
+    this.scoringTypeOption = { "Exact match": "exactMatch", "Partial match": "partialMatch" };
   }
 
   // question content
   getQuestionEditor() {
     return cy.get('[data-placeholder="Enter question"]');
   }
+
+  markAnswerInput = (index, element, target) =>
+    cy
+      .get("tbody > tr")
+      .eq(index)
+      .find("td")
+      .eq(element)
+      .find(target)
+      .click();
 
   // choices
   getChoiceByIndex(index) {
@@ -99,6 +110,43 @@ class ChoiceMatrixStandardPage {
       .should("be.visible")
       .click({ force: true });
     return this;
+  }
+
+  getMaxScore() {
+    return cy.get('[data-cy="maxscore"]').should("be.visible");
+  }
+
+  selectScoringType(option) {
+    const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`;
+    cy.get('[data-cy="scoringType"]')
+      .should("be.visible")
+      .click();
+
+    cy.get(selectOp)
+      .should("be.visible")
+      .click();
+
+    cy.get('[data-cy="scoringType"]')
+      .find(".ant-select-selection-selected-value")
+      .should("contain", option);
+
+    return this;
+  }
+
+  getPenalty() {
+    return cy.get('[data-cy="penalty"]').should("be.visible");
+  }
+
+  getMinScore() {
+    return cy.get('[data-cy="minscore"]').should("be.visible");
+  }
+
+  getEnableAutoScoring() {
+    return cy.contains("Enable auto scoring").should("be.visible");
+  }
+
+  getPoints() {
+    return cy.get('[data-cy="points"]').should("be.visible");
   }
 
   // correct ans

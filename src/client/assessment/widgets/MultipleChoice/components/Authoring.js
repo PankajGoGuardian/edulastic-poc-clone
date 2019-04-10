@@ -84,7 +84,9 @@ class Authoring extends Component {
       produce(item, draft => {
         draft.options.splice(index, 1);
         for (let i = index + 1; i < draft.options.length; i++) {
-          draft.variable.variableStatus[`option-${index - 1}`] = draft.variable.variableStatus[`option-${index}`];
+          if (draft.variable) {
+            draft.variable.variableStatus[`option-${index - 1}`] = draft.variable.variableStatus[`option-${index}`];
+          }
         }
         updateVariables(draft);
       })

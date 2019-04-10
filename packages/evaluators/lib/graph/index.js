@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _graphTypes = require("./constants/graphTypes");
 
@@ -23,13 +23,13 @@ var evaluator = function evaluator(_ref) {
 
   switch (graphType) {
     case _graphTypes.GraphTypes.AXIS_LABELS:
-      return (0, _axisLabels.default)({
+      return (0, _axisLabels["default"])({
         userResponse: userResponse,
         validation: validation
       });
 
     case _graphTypes.GraphTypes.AXIS_SEGMENTS:
-      return (0, _axisSegments.default)({
+      return (0, _axisSegments["default"])({
         userResponse: userResponse,
         validation: validation
       });
@@ -37,7 +37,7 @@ var evaluator = function evaluator(_ref) {
     case _graphTypes.GraphTypes.QUADRANTS:
     case _graphTypes.GraphTypes.FIRST_QUADRANT:
     default:
-      return (0, _quadrants.default)({
+      return (0, _quadrants["default"])({
         userResponse: userResponse,
         validation: validation
       });
@@ -45,4 +45,4 @@ var evaluator = function evaluator(_ref) {
 };
 
 var _default = evaluator;
-exports.default = _default;
+exports["default"] = _default;

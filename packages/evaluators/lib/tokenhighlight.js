@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
@@ -45,7 +45,7 @@ var exactMatchEvaluator = function exactMatchEvaluator(_ref) {
         return ans.index;
       });
 
-    if ((0, _isEqual2.default)(currentAnswer, userAnswer)) {
+    if ((0, _isEqual2["default"])(currentAnswer, userAnswer)) {
       score = Math.max(score, totalScore);
     }
 
@@ -96,7 +96,7 @@ var partialMatchEvaluator = function partialMatchEvaluator(_ref3) {
         return ans.index;
       });
     var scorePerResponse = totalScore / currentAnswer.length;
-    var currentScore = scorePerResponse * (0, _intersection2.default)(userAnswer, currentAnswer).length;
+    var currentScore = scorePerResponse * (0, _intersection2["default"])(userAnswer, currentAnswer).length;
     score = Math.max(currentScore, score);
     maxScore = Math.max(maxScore, totalScore);
 
@@ -122,11 +122,11 @@ var evaluator = function evaluator(_ref5) {
   var valid_response = validation.valid_response,
     alt_responses = validation.alt_responses,
     scoring_type = validation.scoring_type;
-  var answers = [valid_response].concat((0, _toConsumableArray2.default)(alt_responses));
+  var answers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
 
   switch (scoring_type) {
     case _scoring.ScoringType.EXACT_MATCH:
-      return (0, _exactMatchTemplate.default)(exactMatchEvaluator, {
+      return (0, _exactMatchTemplate["default"])(exactMatchEvaluator, {
         userResponse: userResponse,
         answers: answers,
         validation: validation
@@ -135,7 +135,7 @@ var evaluator = function evaluator(_ref5) {
     case _scoring.ScoringType.PARTIAL_MATCH:
     case _scoring.ScoringType.PARTIAL_MATCH_V2:
     default:
-      return (0, _partialMatchTemplate.default)(partialMatchEvaluator, {
+      return (0, _partialMatchTemplate["default"])(partialMatchEvaluator, {
         userResponse: userResponse,
         answers: answers,
         validation: validation
@@ -144,4 +144,4 @@ var evaluator = function evaluator(_ref5) {
 };
 
 var _default = evaluator;
-exports.default = _default;
+exports["default"] = _default;

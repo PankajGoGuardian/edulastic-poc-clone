@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _scoring = require("./const/scoring");
 
@@ -14,15 +14,15 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   var altAnswers = arguments.length > 2 ? arguments[2] : undefined;
 
   var _ref = arguments.length > 3 ? arguments[3] : undefined,
-      automarkable = _ref.automarkable,
-      min_score_if_attempted = _ref.min_score_if_attempted,
-      max_score = _ref.max_score;
+    automarkable = _ref.automarkable,
+    min_score_if_attempted = _ref.min_score_if_attempted,
+    max_score = _ref.max_score;
 
   var score = 0;
   var text = userResponse;
   var validValue = validAnswer.value,
-      validScore = validAnswer.score,
-      matching_rule = validAnswer.matching_rule;
+    validScore = validAnswer.score,
+    matching_rule = validAnswer.matching_rule;
   var maxScore = validScore;
   var evaluation = false;
 
@@ -31,7 +31,11 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
     score = validScore;
   }
 
-  if (matching_rule === _scoring.ScoringType.CONTAINS && text && text.toLowerCase().includes(validValue.toLowerCase())) {
+  if (
+    matching_rule === _scoring.ScoringType.CONTAINS &&
+    text &&
+    text.toLowerCase().includes(validValue.toLowerCase())
+  ) {
     evaluation = true;
 
     if (score === 0) {
@@ -39,10 +43,10 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
     }
   }
 
-  altAnswers.forEach(function (ite) {
+  altAnswers.forEach(function(ite) {
     var altValue = ite.value,
-        altScore = ite.score,
-        altMatch = ite.matching_rule;
+      altScore = ite.score,
+      altMatch = ite.matching_rule;
 
     if (altValue === text) {
       evaluation = true;
@@ -81,10 +85,10 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
 
 var evaluator = function evaluator(_ref2) {
   var userResponse = _ref2.userResponse,
-      validation = _ref2.validation;
+    validation = _ref2.validation;
   var valid_response = validation.valid_response,
-      alt_responses = validation.alt_responses,
-      scoring_type = validation.scoring_type;
+    alt_responses = validation.alt_responses,
+    scoring_type = validation.scoring_type;
 
   switch (scoring_type) {
     case _scoring.ScoringType.EXACT_MATCH:
@@ -94,4 +98,4 @@ var evaluator = function evaluator(_ref2) {
 };
 
 var _default = evaluator;
-exports.default = _default;
+exports["default"] = _default;

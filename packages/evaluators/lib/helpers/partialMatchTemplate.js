@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _getPenaltyScore = _interopRequireDefault(require("./getPenaltyScore"));
 
@@ -25,14 +25,14 @@ var partialMatchTemplate = function partialMatchTemplate(mainFunction, mainArgum
     evaluation = _mainFunction.evaluation,
     rightLen = _mainFunction.rightLen;
 
-  score = (0, _getPenaltyScore.default)({
+  score = (0, _getPenaltyScore["default"])({
     score: score,
     penalty: penalty,
     evaluation: evaluation,
     rightLen: rightLen
   });
 
-  var _getCalculateScores = (0, _getCalculateScores2.default)(score, maxScore, mainArguments.validation),
+  var _getCalculateScores = (0, _getCalculateScores2["default"])(score, maxScore, mainArguments.validation),
     newScore = _getCalculateScores.newScore,
     newMaxScore = _getCalculateScores.newMaxScore;
 
@@ -44,4 +44,4 @@ var partialMatchTemplate = function partialMatchTemplate(mainFunction, mainArgum
 };
 
 var _default = partialMatchTemplate;
-exports.default = _default;
+exports["default"] = _default;

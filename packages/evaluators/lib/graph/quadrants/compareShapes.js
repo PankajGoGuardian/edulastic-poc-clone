@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
@@ -35,12 +35,12 @@ var CompareShapes =
   /*#__PURE__*/
   (function() {
     function CompareShapes(trueAnswerValue, testAnswer) {
-      (0, _classCallCheck2.default)(this, CompareShapes);
+      (0, _classCallCheck2["default"])(this, CompareShapes);
       this.trueAnswerValue = trueAnswerValue;
       this.testAnswer = testAnswer;
     }
 
-    (0, _createClass2.default)(
+    (0, _createClass2["default"])(
       CompareShapes,
       [
         {
@@ -144,8 +144,8 @@ var CompareShapes =
                 return item.id === trueLine.subElementsIds.endPoint;
               }).y
             };
-            var testLineFunc = new _lineFunction.default(testLinePoints);
-            var trueLineFunc = new _lineFunction.default(trueLinePoints);
+            var testLineFunc = new _lineFunction["default"](testLinePoints);
+            var trueLineFunc = new _lineFunction["default"](trueLinePoints);
 
             if (
               testLineFunc.getKoefA() === trueLineFunc.getKoefA() &&
@@ -425,8 +425,8 @@ var CompareShapes =
                 return item.id === trueParabola.subElementsIds.endPoint;
               }).y
             };
-            var testFunc = new _parabolaFunction.default(testParabolaPoints);
-            var trueFunc = new _parabolaFunction.default(trueParabolaPoints);
+            var testFunc = new _parabolaFunction["default"](testParabolaPoints);
+            var trueFunc = new _parabolaFunction["default"](trueParabolaPoints);
 
             if (
               testParabolaPoints.startX === trueParabolaPoints.startX &&
@@ -671,8 +671,8 @@ var CompareShapes =
                 return item.id === trueEllipse.subElementsIds[2];
               }).y
             };
-            var testFunc = new _ellipseFunction.default(testEllipsePoints);
-            var trueFunc = new _ellipseFunction.default(trueEllipsePoints);
+            var testFunc = new _ellipseFunction["default"](testEllipsePoints);
+            var trueFunc = new _ellipseFunction["default"](trueEllipsePoints);
             var focusPointsAreMatched =
               (testEllipsePoints.focusPoint1X === trueEllipsePoints.focusPoint1X &&
                 testEllipsePoints.focusPoint1Y === trueEllipsePoints.focusPoint1Y &&
@@ -740,8 +740,8 @@ var CompareShapes =
                 return item.id === trueHyperbola.subElementsIds[2];
               }).y
             };
-            var testFunc = new _hyperbolaFunction.default(testHyperbolaPoints);
-            var trueFunc = new _hyperbolaFunction.default(trueHyperbolaPoints);
+            var testFunc = new _hyperbolaFunction["default"](testHyperbolaPoints);
+            var trueFunc = new _hyperbolaFunction["default"](trueHyperbolaPoints);
             var focusPointsAreMatched =
               (testHyperbolaPoints.focusPoint1X === trueHyperbolaPoints.focusPoint1X &&
                 testHyperbolaPoints.focusPoint1Y === trueHyperbolaPoints.focusPoint1Y &&
@@ -797,8 +797,8 @@ var CompareShapes =
                 return item.id === trueExponent.subElementsIds.endPoint;
               }).y
             };
-            var testFunc = new _exponentFunction.default(testExponentPoints);
-            var trueFunc = new _exponentFunction.default(trueExponentPoints);
+            var testFunc = new _exponentFunction["default"](testExponentPoints);
+            var trueFunc = new _exponentFunction["default"](trueExponentPoints);
 
             if (
               testExponentPoints.startX === trueExponentPoints.startX &&
@@ -849,8 +849,8 @@ var CompareShapes =
                 return item.id === trueLogarithm.subElementsIds.endPoint;
               }).y
             };
-            var testFunc = new _logarithmFunction.default(testLogarithmPoints);
-            var trueFunc = new _logarithmFunction.default(trueLogarithmPoints);
+            var testFunc = new _logarithmFunction["default"](testLogarithmPoints);
+            var trueFunc = new _logarithmFunction["default"](trueLogarithmPoints);
 
             if (
               testLogarithmPoints.startX === trueLogarithmPoints.startX &&
@@ -901,8 +901,8 @@ var CompareShapes =
                 y: point.y
               });
             });
-            var testFunc = new _polynomFunction.default(testPolynomPoints);
-            var trueFunc = new _polynomFunction.default(truePolynomPoints);
+            var testFunc = new _polynomFunction["default"](testPolynomPoints);
+            var trueFunc = new _polynomFunction["default"](truePolynomPoints);
             var allX = testPolynomPoints
               .map(function(point) {
                 return point.x;
@@ -912,8 +912,8 @@ var CompareShapes =
                   return point.x;
                 })
               );
-            var xMin = Math.min.apply(Math, (0, _toConsumableArray2.default)(allX)) - 0.5;
-            var xMax = Math.max.apply(Math, (0, _toConsumableArray2.default)(allX)) + 0.5;
+            var xMin = Math.min.apply(Math, (0, _toConsumableArray2["default"])(allX)) - 0.5;
+            var xMax = Math.max.apply(Math, (0, _toConsumableArray2["default"])(allX)) + 0.5;
             var x = xMin;
 
             while (x <= xMax) {
@@ -959,4 +959,4 @@ var CompareShapes =
   })();
 
 var _default = CompareShapes;
-exports.default = _default;
+exports["default"] = _default;

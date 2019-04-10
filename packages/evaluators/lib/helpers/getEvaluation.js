@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _isBoolean2 = _interopRequireDefault(require("lodash/isBoolean"));
 
@@ -23,24 +23,24 @@ var getEvaluation = function getEvaluation(response, answers, rightIndex, compar
     switch (compareFunction) {
       case _constants.evaluatorTypes.INNER_DIFFERENCE:
         evaluation[i] =
-          (0, _difference2.default)(answers[rightIndex].value[i], item).length === 0 &&
-          (0, _difference2.default)(item, answers[rightIndex].value[i]).length === 0;
+          (0, _difference2["default"])(answers[rightIndex].value[i], item).length === 0 &&
+          (0, _difference2["default"])(item, answers[rightIndex].value[i]).length === 0;
         break;
 
       case _constants.evaluatorTypes.IS_EQUAL:
-        evaluation[i] = (0, _isEqual2.default)(answers[rightIndex].value[i], item);
+        evaluation[i] = (0, _isEqual2["default"])(answers[rightIndex].value[i], item);
         break;
 
       case _constants.evaluatorTypes.MCQ_TYPE:
       default:
-        evaluation[i] = (0, _includes2.default)(answers[rightIndex].value, item);
+        evaluation[i] = (0, _includes2["default"])(answers[rightIndex].value, item);
         break;
     }
   });
   return evaluation.filter(function(item) {
-    return (0, _isBoolean2.default)(item);
+    return (0, _isBoolean2["default"])(item);
   });
 };
 
 var _default = getEvaluation;
-exports.default = _default;
+exports["default"] = _default;

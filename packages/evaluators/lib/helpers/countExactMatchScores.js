@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _cloneDeep2 = _interopRequireDefault(require("lodash/cloneDeep"));
 
@@ -18,10 +18,10 @@ var countExactMatchScores = function countExactMatchScores(compareFunction) {
     var answers = _ref.answers,
       _ref$userResponse = _ref.userResponse,
       userResponse = _ref$userResponse === void 0 ? [] : _ref$userResponse;
-    var existingResponse = (0, _cloneDeep2.default)(userResponse);
+    var existingResponse = (0, _cloneDeep2["default"])(userResponse);
 
     if (!Array.isArray(userResponse)) {
-      existingResponse = (0, _cloneDeep2.default)(userResponse.value);
+      existingResponse = (0, _cloneDeep2["default"])(userResponse.value);
     }
 
     var score = 0;
@@ -36,7 +36,7 @@ var countExactMatchScores = function countExactMatchScores(compareFunction) {
         return;
       }
 
-      var matches = (0, _getMatches.default)(existingResponse, answer, compareFunction) === answer.length;
+      var matches = (0, _getMatches["default"])(existingResponse, answer, compareFunction) === answer.length;
       var currentScore = matches && existingResponse.length === answer.length ? totalScore : 0;
       score = Math.max(score, currentScore);
       maxScore = Math.max(maxScore, totalScore);
@@ -46,7 +46,7 @@ var countExactMatchScores = function countExactMatchScores(compareFunction) {
         rightIndex = index;
       }
     });
-    var evaluation = (0, _getEvaluation.default)(existingResponse, answers, rightIndex, compareFunction);
+    var evaluation = (0, _getEvaluation["default"])(existingResponse, answers, rightIndex, compareFunction);
     return {
       score: score,
       maxScore: maxScore,
@@ -57,4 +57,4 @@ var countExactMatchScores = function countExactMatchScores(compareFunction) {
 };
 
 var _default = countExactMatchScores;
-exports.default = _default;
+exports["default"] = _default;

@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
@@ -157,7 +157,7 @@ var evaluator = function evaluator(_ref) {
   var answers = [valid_response];
 
   if (alt_responses) {
-    answers = answers.concat((0, _toConsumableArray2.default)(alt_responses));
+    answers = answers.concat((0, _toConsumableArray2["default"])(alt_responses));
   }
 
   var roundingIsNone = rounding && rounding === "none";
@@ -176,4 +176,4 @@ var evaluator = function evaluator(_ref) {
 };
 
 var _default = evaluator;
-exports.default = _default;
+exports["default"] = _default;

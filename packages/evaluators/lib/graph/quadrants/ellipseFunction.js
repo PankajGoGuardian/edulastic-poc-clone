@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 
@@ -17,7 +17,7 @@ var EllipseFunction =
   /*#__PURE__*/
   (function() {
     function EllipseFunction(points) {
-      (0, _classCallCheck2.default)(this, EllipseFunction);
+      (0, _classCallCheck2["default"])(this, EllipseFunction);
       this.focusPoint1X = +points.focusPoint1X;
       this.focusPoint1Y = +points.focusPoint1Y;
       this.focusPoint2X = +points.focusPoint2X;
@@ -26,7 +26,7 @@ var EllipseFunction =
       this.linePointY = +points.linePointY;
     }
 
-    (0, _createClass2.default)(EllipseFunction, [
+    (0, _createClass2["default"])(EllipseFunction, [
       {
         key: "getR1R2Sum",
         value: function getR1R2Sum() {
@@ -46,4 +46,4 @@ var EllipseFunction =
   })();
 
 var _default = EllipseFunction;
-exports.default = _default;
+exports["default"] = _default;

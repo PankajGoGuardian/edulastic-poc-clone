@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var exactMatchEvaluator = function exactMatchEvaluator(_ref) {
   var min_score_if_attempted = _ref.min_score_if_attempted,
@@ -22,4 +22,4 @@ var evaluator = function evaluator(_ref2) {
 };
 
 var _default = evaluator;
-exports.default = _default;
+exports["default"] = _default;

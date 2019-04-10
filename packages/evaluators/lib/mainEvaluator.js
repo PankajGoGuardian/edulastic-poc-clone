@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
@@ -27,11 +27,11 @@ var evaluator = function evaluator(evaluatorType) {
     var valid_response = validation.valid_response,
       alt_responses = validation.alt_responses,
       scoring_type = validation.scoring_type;
-    var answers = [valid_response].concat((0, _toConsumableArray2.default)(alt_responses));
+    var answers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
 
     switch (scoring_type) {
       case _scoring.ScoringType.EXACT_MATCH:
-        return (0, _exactMatchTemplate.default)((0, _countExactMatchScores.default)(evaluatorType), {
+        return (0, _exactMatchTemplate["default"])((0, _countExactMatchScores["default"])(evaluatorType), {
           userResponse: userResponse,
           answers: answers,
           validation: validation
@@ -40,7 +40,7 @@ var evaluator = function evaluator(evaluatorType) {
       case _scoring.ScoringType.PARTIAL_MATCH:
       case _scoring.ScoringType.PARTIAL_MATCH_V2:
       default:
-        return (0, _partialMatchTemplate.default)((0, _countPartialMatchScores.default)(evaluatorType), {
+        return (0, _partialMatchTemplate["default"])((0, _countPartialMatchScores["default"])(evaluatorType), {
           userResponse: userResponse,
           answers: answers,
           validation: validation
@@ -50,4 +50,4 @@ var evaluator = function evaluator(evaluatorType) {
 };
 
 var _default = evaluator;
-exports.default = _default;
+exports["default"] = _default;

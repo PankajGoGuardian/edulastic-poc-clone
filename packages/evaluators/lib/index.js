@@ -8,49 +8,49 @@ Object.defineProperty(exports, "__esModule", {
 Object.defineProperty(exports, "multipleChoice", {
   enumerable: true,
   get: function get() {
-    return _mcq.default;
+    return _mcq["default"];
   }
 });
 Object.defineProperty(exports, "orderList", {
   enumerable: true,
   get: function get() {
-    return _orderlist.default;
+    return _orderlist["default"];
   }
 });
 Object.defineProperty(exports, "graph", {
   enumerable: true,
   get: function get() {
-    return _graph.default;
+    return _graph["default"];
   }
 });
 Object.defineProperty(exports, "clozeImageDragDrop", {
   enumerable: true,
   get: function get() {
-    return _clozeImageDragDrop.default;
+    return _clozeImageDragDrop["default"];
   }
 });
 Object.defineProperty(exports, "clozeImageDropDown", {
   enumerable: true,
   get: function get() {
-    return _clozeImageDropDown.default;
+    return _clozeImageDropDown["default"];
   }
 });
 Object.defineProperty(exports, "clozeImageText", {
   enumerable: true,
   get: function get() {
-    return _clozeImageText.default;
+    return _clozeImageText["default"];
   }
 });
 Object.defineProperty(exports, "clozeText", {
   enumerable: true,
   get: function get() {
-    return _clozeText.default;
+    return _clozeText["default"];
   }
 });
 Object.defineProperty(exports, "math", {
   enumerable: true,
   get: function get() {
-    return _math.default;
+    return _math["default"];
   }
 });
 Object.defineProperty(exports, "clozeMath", {
@@ -62,61 +62,61 @@ Object.defineProperty(exports, "clozeMath", {
 Object.defineProperty(exports, "hotspot", {
   enumerable: true,
   get: function get() {
-    return _hotspot.default;
+    return _hotspot["default"];
   }
 });
 Object.defineProperty(exports, "sortList", {
   enumerable: true,
   get: function get() {
-    return _sortList.default;
+    return _sortList["default"];
   }
 });
 Object.defineProperty(exports, "classification", {
   enumerable: true,
   get: function get() {
-    return _classification.default;
+    return _classification["default"];
   }
 });
 Object.defineProperty(exports, "shortText", {
   enumerable: true,
   get: function get() {
-    return _shortText.default;
+    return _shortText["default"];
   }
 });
 Object.defineProperty(exports, "tokenhighlight", {
   enumerable: true,
   get: function get() {
-    return _tokenhighlight.default;
+    return _tokenhighlight["default"];
   }
 });
 Object.defineProperty(exports, "shading", {
   enumerable: true,
   get: function get() {
-    return _shading.default;
+    return _shading["default"];
   }
 });
 Object.defineProperty(exports, "choiceMatrix", {
   enumerable: true,
   get: function get() {
-    return _choiceMatrix.default;
+    return _choiceMatrix["default"];
   }
 });
 Object.defineProperty(exports, "clozeDragDrop", {
   enumerable: true,
   get: function get() {
-    return _clozeDragDrop.default;
+    return _clozeDragDrop["default"];
   }
 });
 Object.defineProperty(exports, "essayRichText", {
   enumerable: true,
   get: function get() {
-    return _essayRichText.default;
+    return _essayRichText["default"];
   }
 });
 Object.defineProperty(exports, "charts", {
   enumerable: true,
   get: function get() {
-    return _charts.default;
+    return _charts["default"];
   }
 });
 

@@ -9,6 +9,7 @@ const getCalculateScores = (score, maxScore, { min_score_if_attempted, automarka
       newScore = Math.max(min_score_if_attempted, score);
     }
   } else if (max_score) {
+    newScore = 0;
     newMaxScore = Math.max(max_score, maxScore);
   }
 

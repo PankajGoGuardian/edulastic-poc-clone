@@ -306,13 +306,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     const queData = {
       group: "Multiple Choice",
       queType: "Multiple choice - standard",
-      queText: "editIndian state known as garden spice is:",
-      choices: ["editKarnataka", "editWest Bengal", "editKerala", "editDelhi", "KL"],
-      correct: ["editKerala"],
-      alterate: ["editKL"],
-      extlink: "editwww.testdomain.com",
+      queText: "Indian state known as garden spice is:",
+      choices: ["Karnataka", "West Bengal", "Kerala", "Delhi", "KL"],
+      correct: ["Kerala"],
+      alterate: ["KL"],
+      extlink: "www.testdomain.com",
       formattext: "editformattedtext",
-      formula: "edits=ar^2"
+      formula: "s=ar^2"
     };
 
     before("delete old question and create dummy que to edit", () => {
@@ -646,7 +646,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       question.header.save();
     });
 
-    it("[mcq_std_test1]:test => Validate basic question with default setting", () => {
+    it("[mcq_std_test]:test => Validate basic question with default setting", () => {
       // preview
       const preview = editItem.header.preview();
 
@@ -720,13 +720,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/0");
+          preview.getAntMsg().should("contain", "score: 0/1");
 
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
     });
 
-    it("[mcq_std_test2]:test => Enable multiple responses (exact & partial match) and validate", () => {
+    it("[mcq_std_test]:test => Enable multiple responses exact and validate", () => {
       question.header
         .edit()
         .getEditButton()
@@ -761,8 +761,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getShowAnswer()
         .click()
         .then(() => {
-          // cy.get("label.wrong").should("have.length", queData.choices.length - 2);
-
           cy.get("label.right")
             .should("have.length", 2)
             .and("contain", queData.correct[0])
@@ -802,7 +800,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
 
-      // give partial wrong ans and check
+      // give exact wrong ans and check
       cy.contains(queData.choices[0]).click();
       cy.contains(queData.correct[0]).click();
 
@@ -833,10 +831,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/0");
+          preview.getAntMsg().should("contain", "score: 0/1");
 
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
+    });
+
+    it("[mcq_std_test]:test => Enable partial match with multiple responses and validate", () => {
+      const preview = question.header.preview();
 
       // partial match
       preview.header
@@ -930,20 +932,41 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/0");
+          preview.getAntMsg().should("contain", "score: 0/1");
 
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
     });
+  });
 
-    it("[mcq_std_test3]:test => Testing scoring block", () => {
-      question.header
-        .edit()
-        .getEditButton()
-        .click();
+  context("Scoring Block testing", () => {
+    before("visit items list page and select question type", () => {
+      editItem.getItemWithId();
+      editItem.deleteAllQuestion();
 
-      // select multiple correct ans
-      question.getMultipleResponse().click();
+      // add new question
+      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+
+      question
+        .getQuestionEditor()
+        .clear()
+        .type(queData.queText);
+
+      question.getAllChoices().each(($el, index, $list) => {
+        const cusIndex = $list.length - (index + 1);
+        question.deleteChoiceByIndex(cusIndex);
+      });
+
+      // add choices
+      const { choices } = queData;
+      choices.forEach((ch, index) => {
+        question
+          .addNewChoice()
+          .getChoiceByIndex(index)
+          .clear()
+          .type(ch)
+          .should("contain", ch);
+      });
 
       question
         .getAllAnsChoicesLabel()
@@ -952,6 +975,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .closest("label")
         .find("input")
         .should("be.checked");
+
+      // save
+      question.header.save();
+    });
+
+    it("[mcq_std_scoring]:test => Test score with exact match", () => {
+      question.header
+        .edit()
+        .getEditButton()
+        .click();
 
       question
         .addAlternate()
@@ -965,9 +998,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       // advanced
       question.clickOnAdvancedOptions();
 
+      // enable Auto Scoring option
       question.getEnableAutoScoring().click();
 
-      // >> exact match
+      // exact match
       question.selectScoringType("Exact match");
 
       // save
@@ -985,7 +1019,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/1");
+          preview.getAntMsg().should("contain", "score: 1/1");
         });
 
       preview
@@ -1015,6 +1049,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .then(() => {
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
+    });
+
+    it("[mcq_std_scoring]:test => Testing min score if attempted and with alternate answer", () => {
+      const preview = question.header.preview();
 
       preview.header
         .edit()
@@ -1095,6 +1133,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .then(() => {
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
+    });
+
+    it("[mcq_std_scoring]:test => Testing partial match and multiple responses with penalty", () => {
+      const preview = question.header.preview();
 
       preview.header
         .edit()
@@ -1104,10 +1146,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       // advanced
       question.clickOnAdvancedOptions();
 
+      question.getMultipleResponse().click();
+
       question
         .getPoints()
         .clear()
         .type(8);
+
       question.selectScoringType("Partial match");
 
       question
@@ -1120,7 +1165,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
 
       question
         .getAllAnsChoicesLabel()
-        .contains(queData.choices[4])
+        .contains(queData.correct[0])
+        .click()
+        .closest("label")
+        .find("input")
+        .should("not.checked");
+
+      question
+        .getAllAnsChoicesLabel()
+        .contains(queData.alterate[0])
         .click()
         .closest("label")
         .find("input")
@@ -1148,6 +1201,53 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .click()
         .then(() => {
           preview.getAntMsg().should("contain", "score: 2/8");
+
+          cy.get("label.wrong").should("have.length", 1);
+
+          cy.get("label.right").should("have.length", 1);
+        });
+
+      preview
+        .getClear()
+        .click()
+        .then(() => {
+          cy.get("label.right,label.wrong").should("have.length", 0);
+        });
+    });
+
+    it("[mcq_std_scoring]:test => Testing max score without Auto Scoring option", () => {
+      const preview = question.header.preview();
+
+      preview.header
+        .edit()
+        .getEditButton()
+        .click();
+
+      question.clickOnAdvancedOptions();
+
+      question
+        .getEnableAutoScoring()
+        .click()
+        .should("not.have.class", "ant-checkbox-checked");
+
+      question
+        .getMaxScore()
+        .clear()
+        .type(1);
+
+      // save
+      question.header.save();
+
+      question.header.preview();
+
+      cy.contains(queData.choices[1]).click();
+      cy.contains(queData.choices[0]).click();
+
+      preview
+        .getCheckAnswer()
+        .click()
+        .then(() => {
+          preview.getAntMsg().should("contain", "score: 0/10");
 
           cy.get("label.wrong").should("have.length", 1);
 

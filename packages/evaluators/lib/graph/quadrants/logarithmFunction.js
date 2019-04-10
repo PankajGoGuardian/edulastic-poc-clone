@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 
@@ -17,14 +17,14 @@ var LogarithmFunction =
   /*#__PURE__*/
   (function() {
     function LogarithmFunction(points) {
-      (0, _classCallCheck2.default)(this, LogarithmFunction);
+      (0, _classCallCheck2["default"])(this, LogarithmFunction);
       this.startX = +points.startX;
       this.startY = +points.startY;
       this.endX = +points.endX;
       this.endY = +points.endY;
     }
 
-    (0, _createClass2.default)(LogarithmFunction, [
+    (0, _createClass2["default"])(LogarithmFunction, [
       {
         key: "getBC",
         value: function getBC() {
@@ -38,4 +38,4 @@ var LogarithmFunction =
   })();
 
 var _default = LogarithmFunction;
-exports.default = _default;
+exports["default"] = _default;

@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
@@ -46,7 +46,7 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
       userResponse.forEach(function(col) {
         if (
           answer.some(function(ans) {
-            return (0, _isEqual2.default)(ans, col);
+            return (0, _isEqual2["default"])(ans, col);
           })
         ) {
           matches++;
@@ -78,7 +78,7 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
   } else {
     userResponse.forEach(function(col) {
       evaluation[currentIndex] = answers[rightIndex].value.value.some(function(ans) {
-        return (0, _isEqual2.default)(ans, col);
+        return (0, _isEqual2["default"])(ans, col);
       });
       currentIndex++;
     });
@@ -119,7 +119,7 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
       userResponse.forEach(function(col) {
         if (
           answer.some(function(ans) {
-            return (0, _isEqual2.default)(ans, col);
+            return (0, _isEqual2["default"])(ans, col);
           })
         ) {
           matches++;
@@ -161,7 +161,7 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
   } else {
     userResponse.forEach(function(col) {
       evaluation[currentIndex] = answers[rightIndex].value.value.some(function(ans) {
-        return (0, _isEqual2.default)(ans, col);
+        return (0, _isEqual2["default"])(ans, col);
       });
       currentIndex++;
     });
@@ -186,11 +186,11 @@ var evaluator = function evaluator(_ref5) {
   var valid_response = validation.valid_response,
     alt_responses = validation.alt_responses,
     scoring_type = validation.scoring_type;
-  var answers = [valid_response].concat((0, _toConsumableArray2.default)(alt_responses));
+  var answers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
 
   switch (scoring_type) {
     case _scoring.ScoringType.EXACT_MATCH:
-      return (0, _exactMatchTemplate.default)(exactCompareFunction, {
+      return (0, _exactMatchTemplate["default"])(exactCompareFunction, {
         userResponse: userResponse,
         answers: answers,
         validation: validation
@@ -199,7 +199,7 @@ var evaluator = function evaluator(_ref5) {
     case _scoring.ScoringType.PARTIAL_MATCH:
     case _scoring.ScoringType.PARTIAL_MATCH_V2:
     default:
-      return (0, _partialMatchTemplate.default)(partialCompareFunction, {
+      return (0, _partialMatchTemplate["default"])(partialCompareFunction, {
         userResponse: userResponse,
         answers: answers,
         validation: validation
@@ -208,4 +208,4 @@ var evaluator = function evaluator(_ref5) {
 };
 
 var _default = evaluator;
-exports.default = _default;
+exports["default"] = _default;

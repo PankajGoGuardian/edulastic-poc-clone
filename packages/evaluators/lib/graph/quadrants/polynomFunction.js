@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 
@@ -17,11 +17,11 @@ var PolynomFunction =
   /*#__PURE__*/
   (function() {
     function PolynomFunction(points) {
-      (0, _classCallCheck2.default)(this, PolynomFunction);
+      (0, _classCallCheck2["default"])(this, PolynomFunction);
       this.points = points;
     }
 
-    (0, _createClass2.default)(PolynomFunction, [
+    (0, _createClass2["default"])(PolynomFunction, [
       {
         key: "getYbyX",
         value: function getYbyX(x) {
@@ -47,4 +47,4 @@ var PolynomFunction =
   })();
 
 var _default = PolynomFunction;
-exports.default = _default;
+exports["default"] = _default;

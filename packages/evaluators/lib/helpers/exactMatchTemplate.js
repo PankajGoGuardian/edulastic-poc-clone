@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _getCalculateScores2 = _interopRequireDefault(require("./getCalculateScores"));
 
@@ -16,7 +16,7 @@ var exactMatchTemplate = function exactMatchTemplate(mainFunction, mainArguments
     maxScore = _mainFunction.maxScore,
     evaluation = _mainFunction.evaluation;
 
-  var _getCalculateScores = (0, _getCalculateScores2.default)(score, maxScore, mainArguments.validation),
+  var _getCalculateScores = (0, _getCalculateScores2["default"])(score, maxScore, mainArguments.validation),
     newScore = _getCalculateScores.newScore,
     newMaxScore = _getCalculateScores.newMaxScore;
 
@@ -28,4 +28,4 @@ var exactMatchTemplate = function exactMatchTemplate(mainFunction, mainArguments
 };
 
 var _default = exactMatchTemplate;
-exports.default = _default;
+exports["default"] = _default;

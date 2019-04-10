@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var getPenaltyScore = function getPenaltyScore(_ref) {
   var score = _ref.score,
@@ -29,4 +29,4 @@ var getPenaltyScore = function getPenaltyScore(_ref) {
 };
 
 var _default = getPenaltyScore;
-exports.default = _default;
+exports["default"] = _default;

@@ -393,6 +393,7 @@ class CustomQuillComponent extends React.Component {
           onKeyDown={this.onKeyDownHandler}
           onChangeSelection={this.onChangeSelection}
           placeholder={placeholder}
+          value={quillVal}
           defaultValue={quillVal}
         />
         <MathModal

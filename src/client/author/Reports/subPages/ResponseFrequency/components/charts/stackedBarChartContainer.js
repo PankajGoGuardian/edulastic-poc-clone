@@ -123,6 +123,7 @@ export const StackedBarChartContainer = props => {
       onResetClickCB={onResetClickCB}
       getXTickText={getXTickText}
       yAxisLabel="Performance"
+      filter={props.filter}
     />
   );
 };

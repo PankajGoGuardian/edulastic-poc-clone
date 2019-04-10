@@ -118,6 +118,7 @@ export class ResponseFrequencyTable extends Component {
     };
 
     this.columns[6].render = (data, record) => {
+      let numToAlp = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       let arr = [];
       let { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record;
       let sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
@@ -137,7 +138,6 @@ export class ResponseFrequencyTable extends Component {
           isCorrect: false
         });
       } else {
-        let numToAlp = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         arr = Object.keys(data).map((comboKey, i) => {
           let validMap = {};
 
@@ -159,12 +159,45 @@ export class ResponseFrequencyTable extends Component {
 
           return {
             value: Math.round((data[comboKey] / sum) * 100),
+            count: data[comboKey],
             name: str,
             key: str,
-            isCorrect: isCorrect
+            isCorrect: isCorrect,
+            isUnselected: false,
+            record: record
           };
         });
       }
+
+      if (record.qType === "Multiple choice - standard") {
+        let selectedMap = {};
+        for (let i = 0; i < arr.length; i++) {
+          selectedMap[arr[i].key] = true;
+        }
+
+        for (let i = 0; i < record.options.length; i++) {
+          if (!selectedMap[numToAlp[i]]) {
+            arr.push({
+              value: 0,
+              count: 0,
+              name: numToAlp[i],
+              key: numToAlp[i],
+              isCorrect: false,
+              isUnselected: true,
+              record: record
+            });
+          }
+        }
+      }
+
+      arr.sort((a, b) => {
+        if (a.name < b.name) {
+          return -1;
+        } else if (a.name > b.name) {
+          return 1;
+        }
+        return 0;
+      });
 
       return (
         <Row type="flex" justify="start" className="table-tag-container">

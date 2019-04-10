@@ -26,8 +26,11 @@ import FormulaEssayOptions from "./components/FormulaEssayOptions";
 
 const EmptyWrapper = styled.div``;
 
-const FormulaEssay = ({ view, previewTab, item, testItem, setQuestionData, smallSize, t }) => {
+const FormulaEssay = ({ view, previewTab, item, testItem, setQuestionData, smallSize, userAnswer, t }) => {
   const [lines, setLines] = useState([{ text: "", type: item.ui_style.default_mode, index: uuidv4() }]);
+  const resetLines = () => {
+    setLines([{ text: "", type: item.ui_style.default_mode, index: uuidv4() }]);
+  };
 
   const Wrapper = testItem ? EmptyWrapper : Paper;
 
@@ -120,9 +123,11 @@ const FormulaEssay = ({ view, previewTab, item, testItem, setQuestionData, small
           <FormulaEssayPreview
             lines={lines}
             setLines={handleSetLines}
+            resetLines={resetLines}
             type={previewTab}
             item={itemForPreview}
             smallSize={smallSize}
+            userAnswer={userAnswer}
           />
         </Wrapper>
       )}
@@ -137,14 +142,16 @@ FormulaEssay.propTypes = {
   item: PropTypes.object,
   testItem: PropTypes.bool,
   smallSize: PropTypes.bool,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  userAnswer: PropTypes.any
 };
 
 FormulaEssay.defaultProps = {
   previewTab: CLEAR,
   item: {},
   testItem: false,
-  smallSize: false
+  smallSize: false,
+  userAnswer: null
 };
 
 const enhance = compose(

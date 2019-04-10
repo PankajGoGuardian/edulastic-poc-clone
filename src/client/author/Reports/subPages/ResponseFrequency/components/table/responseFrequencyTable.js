@@ -124,18 +124,32 @@ export class ResponseFrequencyTable extends Component {
       let sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
       if (sum == 0) sum = 1;
       if (!data || Object.keys(data).length === 0) {
-        arr.push({ value: ((corr_cnt / sum) * 100).toFixed(0), name: "Correct", key: "corr_cnt", isCorrect: true });
+        arr.push({
+          value: ((corr_cnt / sum) * 100).toFixed(0),
+          count: corr_cnt,
+          name: "Correct",
+          key: "corr_cnt",
+          isCorrect: true,
+          isUnselected: corr_cnt ? false : true,
+          record: record
+        });
         arr.push({
           value: ((incorr_cnt / sum) * 100).toFixed(0),
+          count: incorr_cnt,
           name: "Incorrect",
           key: "incorr_cnt",
-          isCorrect: false
+          isCorrect: false,
+          isUnselected: incorr_cnt ? false : true,
+          record: record
         });
         arr.push({
           value: ((part_cnt / sum) * 100).toFixed(0),
+          count: part_cnt,
           name: "Partially Correct",
           key: "part_cnt",
-          isCorrect: false
+          isCorrect: false,
+          isUnselected: part_cnt ? false : true,
+          record: record
         });
       } else {
         arr = Object.keys(data).map((comboKey, i) => {

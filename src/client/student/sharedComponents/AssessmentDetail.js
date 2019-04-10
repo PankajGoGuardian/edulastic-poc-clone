@@ -5,7 +5,9 @@ import { Col, Icon } from "antd";
 import { test, testActivity as testActivityConstants } from "@edulastic/constants";
 import { formatTime } from "../utils";
 
-const { gradedStatus } = testActivityConstants;
+const {
+  studentAssignmentConstants: { assignmentStatus }
+} = testActivityConstants;
 const { ASSESSMENT } = test.type;
 
 const AssessmentDetails = ({
@@ -20,7 +22,7 @@ const AssessmentDetails = ({
   type,
   startDate,
   safeBrowser,
-  graded = gradedStatus.GRADED
+  graded = assignmentStatus.GRADED
 }) => (
   <Wrapper>
     <Col>
@@ -92,11 +94,11 @@ const getStatusBgColor = (props, type) => {
   } else {
     if (props.isSubmitted) {
       switch (props.graded) {
-        case gradedStatus.GRADE_HELD:
+        case assignmentStatus.GRADE_HELD:
           return props.theme.assignment[`cardGradeHeldLabel${type}Color`];
-        case gradedStatus.NOT_GRADED:
+        case assignmentStatus.NOT_GRADED:
           return props.theme.assignment[`cardNotGradedLabel${type}Color`];
-        case gradedStatus.GRADED:
+        case assignmentStatus.GRADED:
           return props.theme.assignment[`cardGradedLabel${type}Color`];
         default:
           return props.theme.assignment[`cardSubmitedLabel${type}Color`];

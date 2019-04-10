@@ -13,27 +13,27 @@ import {
   lightGreenSecondary
 } from "@edulastic/colors";
 
-const { assignmentStatus, lightBlue } = authorAssignment;
+const { assignmentStatusBg, lightBlue } = authorAssignment;
 const {
   authorAssignmentConstants: {
-    gradedStatus: { NOT_OPEN, IN_PROGRESS, IN_GRADING, NOT_GRADED, GRADES_HELD, DONE }
+    assignmentStatus: { NOT_OPEN, IN_PROGRESS, IN_GRADING, NOT_GRADED, GRADES_HELD, DONE }
   }
 } = testActivity;
 
 const defineStatusBg = status => {
   switch (status) {
     case NOT_OPEN:
-      return assignmentStatus.NOT_OPEN;
+      return assignmentStatusBg.NOT_OPEN;
     case IN_PROGRESS:
-      return assignmentStatus.IN_PROGRESS;
+      return assignmentStatusBg.IN_PROGRESS;
     case IN_GRADING:
-      return assignmentStatus.IN_GRADING;
+      return assignmentStatusBg.IN_GRADING;
     case NOT_GRADED:
-      return assignmentStatus.NOT_GRADED;
+      return assignmentStatusBg.NOT_GRADED;
     case GRADES_HELD:
-      return assignmentStatus.GRADES_HELD;
+      return assignmentStatusBg.GRADES_HELD;
     case DONE:
-      return assignmentStatus.DONE;
+      return assignmentStatusBg.DONE;
     default:
       return "";
   }

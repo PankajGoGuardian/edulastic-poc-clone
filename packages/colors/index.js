@@ -85,7 +85,7 @@ export const largeDesktopWidth = "1200px";
 export const extraDesktopWidth = "1440px";
 
 export const authorAssignment = {
-  assignmentStatus: {
+  assignmentStatusBg: {
     NOT_OPEN: "#999999",
     IN_PROGRESS: "#6c9eeb",
     IN_GRADING: "#fc9a2b",

@@ -5,14 +5,13 @@ import { Select } from "antd";
 import { FlexContainer } from "@edulastic/common";
 import { Container, StyledSelect } from "./styled";
 
-const SortBar = ({ loadStudentResponses, handleChange, students, selectedStudent }) => {
+const SortBar = ({ handleChange, students, selectedStudent }) => {
   const onSortChange = testActivityId => {
     if (testActivityId !== undefined) {
       if (handleChange) {
         const selected = find(students, student => student.testActivityId === testActivityId);
         handleChange(selected.studentId);
       }
-      loadStudentResponses({ testActivityId });
     }
   };
 
@@ -50,7 +49,6 @@ const SortBar = ({ loadStudentResponses, handleChange, students, selectedStudent
 };
 
 SortBar.propTypes = {
-  loadStudentResponses: PropTypes.func.isRequired,
   handleChange: PropTypes.func,
   students: PropTypes.array.isRequired,
   selectedStudent: PropTypes.string

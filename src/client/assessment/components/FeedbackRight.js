@@ -1,7 +1,8 @@
 import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Avatar, Card, Button, Input } from "antd";
+import { get, isUndefined } from "lodash";
+import { Avatar, Card, Button, Input, message } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 
@@ -11,37 +12,58 @@ import { mobileWidth } from "@edulastic/colors";
 
 import { getUserSelector } from "../../author/src/selectors/user";
 import { receiveFeedbackResponseAction } from "../../author/src/actions/classBoard";
+import { getFeedbackResponseSelector, getStatus, getErrorResponse } from "../../author/src/selectors/feedback";
 
 const { TextArea } = Input;
 
+const showNotification = (type, msg) => {
+  message.open({ type, content: msg });
+  return {
+    submitted: false,
+    changed: false
+  };
+};
 class FeedbackRight extends Component {
-  constructor(props) {
-    super(props);
-    const {
+  static getDerivedStateFromProps(
+    {
+      successFullMessage,
+      waitingResponse,
+      errorMessage,
       widget: { activity }
-    } = this.props;
-    let feedback = "";
-    let score = 0;
-    let maxScore = 1;
-    if (activity) {
-      const { score: _score, maxScore: _maxScore } = activity;
-      feedback = activity.feedback ? feedback.text : "";
-      score = _score;
-      maxScore = _maxScore;
+    },
+    preState
+  ) {
+    let newState = {};
+    const { submitted, feedback, score, maxScore, changed } = preState || {};
+
+    if (!waitingResponse && successFullMessage && submitted) {
+      const [type, content] = successFullMessage ? ["success", successFullMessage] : ["error", errorMessage];
+      newState = showNotification(type, content);
     }
-    this.state = {
-      score,
-      maxScore,
-      feedback
-    };
+
+    if (activity && isUndefined(changed)) {
+      const { score: _score, maxScore: _maxScore } = activity;
+      const _feedback = get(activity, "feedback.text", "");
+      if (_score !== score) {
+        newState = { ...newState, score: _score };
+      }
+      if (_maxScore !== maxScore) {
+        newState = { ...newState, maxScore: _maxScore };
+      }
+      if (_feedback !== feedback) {
+        newState = { ...newState, feedback: _feedback };
+      }
+    }
+    return newState;
   }
 
-  onFeedbackSubmit = () => {
+  onFeedbackSubmit() {
     const { score, feedback } = this.state;
+
     const {
       user,
       loadFeedbackResponses,
-      widget: { id, activity }
+      widget: { id, activity = {} }
     } = this.props;
 
     const { testActivityId, groupId } = activity;
@@ -61,14 +83,21 @@ class FeedbackRight extends Component {
       testActivityId,
       questionId: id
     });
+  }
+
+  preCheckSubmit = () => {
+    const { changed } = this.state;
+    if (changed) {
+      this.setState({ submitted: true }, this.onFeedbackSubmit);
+    }
   };
 
   onChangeScore = e => {
-    this.setState({ score: e.target.value });
+    this.setState({ score: e.target.value, changed: true });
   };
 
   onChangeFeedback = e => {
-    this.setState({ feedback: e.target.value });
+    this.setState({ feedback: e.target.value, changed: true });
   };
 
   render() {
@@ -76,7 +105,7 @@ class FeedbackRight extends Component {
       studentName,
       widget: { activity }
     } = this.props;
-    const { score, maxScore, feedback } = this.state;
+    const { score, maxScore, feedback, submitted } = this.state;
     const isError = maxScore < score;
     const isStudentName = studentName !== undefined && studentName.length !== 0;
     let title;
@@ -99,7 +128,7 @@ class FeedbackRight extends Component {
       <StyledCardTwo bordered={isStudentName} title={title}>
         <StyledDivSec>
           <ScoreInputWrapper>
-            <ScoreInput onChange={this.onChangeScore} onBlur={this.onFeedbackSubmit} value={score} />
+            <ScoreInput onChange={this.onChangeScore} onBlur={this.preCheckSubmit} value={score} disabled={!activity} />
             <TextPara> {maxScore}</TextPara>
           </ScoreInputWrapper>
         </StyledDivSec>
@@ -108,13 +137,14 @@ class FeedbackRight extends Component {
           <Fragment>
             <FeedbackInput
               onChange={this.onChangeFeedback}
-              onBlur={this.onFeedbackSubmit}
+              onBlur={this.preCheckSubmit}
               value={feedback}
               style={{ height: 240, flexGrow: 2 }}
+              disabled={!activity}
             />
           </Fragment>
         )}
-        <UpdateButton disabled={!activity} onClick={this.onFeedbackSubmit}>
+        <UpdateButton disabled={!activity || submitted} onClick={this.preCheckSubmit}>
           UPDATE
         </UpdateButton>
       </StyledCardTwo>
@@ -140,7 +170,10 @@ const enhance = compose(
   withNamespaces("header"),
   connect(
     state => ({
-      user: getUserSelector(state)
+      user: getUserSelector(state),
+      successFullMessage: getFeedbackResponseSelector(state),
+      waitingResponse: getStatus(state),
+      errorMessage: getErrorResponse(state)
     }),
     {
       loadFeedbackResponses: receiveFeedbackResponseAction
@@ -154,13 +187,16 @@ const StyledCardTwo = styled(Card)`
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  margin: 0px 0px 0px 20px;
+  margin: 0px 0px 0px 15px;
   min-width: 250px;
   min-height: 100%;
   .ant-card-body {
     display: flex;
     flex-direction: column;
     height: 100%;
+    .ant-input-disabled {
+      padding: 4px 22px;
+    }
   }
   @media (max-width: ${mobileWidth}) {
     margin-left: 0px;

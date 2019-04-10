@@ -10,8 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 import {
   receiveTestActivitydAction,
   receiveGradeBookdAction,
-  receiveClassResponseAction,
-  receiveStudentResponseAction
+  receiveClassResponseAction
 } from "../../../src/actions/classBoard";
 import QuestionContainer from "../../../QuestionView";
 import StudentContainer from "../../../StudentView";
@@ -20,8 +19,7 @@ import {
   getTestActivitySelector,
   getGradeBookSelector,
   getAdditionalDataSelector,
-  getClassResponseSelector,
-  getStudentResponseSelector
+  getClassResponseSelector
 } from "../../ducks";
 
 import {
@@ -98,12 +96,10 @@ class ClassBoard extends Component {
   }
 
   componentDidUpdate(_, prevState) {
-    const { loadClassResponses, additionalData = {}, loadStudentResponses, testActivity } = this.props;
-    const { testId, classId } = additionalData;
-    const testActivityId = this.getTestActivity(testActivity);
+    const { loadClassResponses, additionalData = {} } = this.props;
+    const { testId } = additionalData;
     const { testId: prevTestId } = prevState;
     if (testId !== prevTestId) {
-      loadStudentResponses({ testActivityId, groupId: classId });
       loadClassResponses({ testId });
     }
   }
@@ -238,8 +234,6 @@ class ClassBoard extends Component {
         classes: []
       },
       testActivity: studentItems,
-      loadStudentResponses,
-      studentResponse,
       selectedStudents,
       setSelected,
       allStudents,
@@ -340,14 +334,13 @@ class ClassBoard extends Component {
           </React.Fragment>
         )}
 
-        {selectedTab === "Student" && questions[selectedQuestion] && (
+        {selectedTab === "Student" && studentItems && (
           <React.Fragment>
             <StudentGrapContainer>
               <StyledCard bordered={false} paddingTop={15}>
                 <BarGraph gradebook={gradebook}>
                   <StudentSelect
                     students={studentItems}
-                    loadStudentResponses={loadStudentResponses}
                     selectedStudent={selectedStudentId}
                     handleChange={value => {
                       this.setState({ selectedStudentId: value });
@@ -358,7 +351,6 @@ class ClassBoard extends Component {
             </StudentGrapContainer>
             <StudentContainer
               classResponse={classResponse}
-              studentResponse={studentResponse}
               testActivity={testActivity}
               studentItems={studentItems}
               selectedStudent={selectedStudentId}
@@ -399,7 +391,6 @@ const enhance = compose(
       testActivity: getTestActivitySelector(state),
       classResponse: getClassResponseSelector(state),
       additionalData: getAdditionalDataSelector(state),
-      studentResponse: getStudentResponseSelector(state),
       selectedStudents: get(state, ["author_classboard_gradebook", "selectedStudents"], {}),
       allStudents: get(state, ["author_classboard_testActivity", "data", "students"], [])
     }),
@@ -407,7 +398,6 @@ const enhance = compose(
       loadGradebook: receiveGradeBookdAction,
       loadTestActivity: receiveTestActivitydAction,
       loadClassResponses: receiveClassResponseAction,
-      loadStudentResponses: receiveStudentResponseAction,
       studentSelect: gradebookSelectStudentAction,
       studentUnselect: gradebookUnSelectStudentAction,
       studentUnselectAll: gradebookUnSelectAllAction,
@@ -422,7 +412,6 @@ export default enhance(ClassBoard);
 ClassBoard.propTypes = {
   gradebook: PropTypes.object,
   classResponse: PropTypes.object,
-  studentResponse: PropTypes.object,
   additionalData: PropTypes.object,
   history: PropTypes.object,
   match: PropTypes.object,
@@ -432,7 +421,6 @@ ClassBoard.propTypes = {
   // t: PropTypes.func,
   loadGradebook: PropTypes.func,
   loadClassResponses: PropTypes.func,
-  loadStudentResponses: PropTypes.func,
   studentSelect: PropTypes.func.isRequired,
   studentUnselectAll: PropTypes.func.isRequired,
   allStudents: PropTypes.array,

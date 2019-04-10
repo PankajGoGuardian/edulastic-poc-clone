@@ -5,7 +5,7 @@ import {
 } from "../constants/actions";
 
 const initialState = {
-  data: {},
+  data: "",
   error: null,
   loading: false
 };
@@ -13,15 +13,15 @@ const initialState = {
 const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case RECEIVE_FEEDBACK_RESPONSE_REQUEST:
-      return { ...state, loading: true };
+      return { ...initialState, loading: true };
     case RECEIVE_FEEDBACK_RESPONSE_SUCCESS:
       return {
-        ...state,
+        error: null,
         loading: false,
         data: payload
       };
     case RECEIVE_FEEDBACK_RESPONSE_ERROR:
-      return { ...state, loading: false, error: payload.error };
+      return { data: "", loading: false, error: payload.error };
     default:
       return state;
   }

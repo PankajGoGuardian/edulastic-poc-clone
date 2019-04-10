@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { mobileWidth } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import { Card, Button } from "antd";
-import { Paper } from "@edulastic/common";
 
 export const PaginationInfo = styled.div`
   font-weight: bold;
@@ -68,7 +67,7 @@ export const GraphContainer = styled.div`
 
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 95%;
-  margin: 20px auto;
+  margin: 0px auto;
 `;
 
 export const StyledCard = styled(Card)`

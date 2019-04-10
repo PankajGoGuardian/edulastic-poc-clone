@@ -32,9 +32,16 @@ import { receiveAnswersAction } from "../src/actions/classBoard";
 import { getAssignmentClassIdSelector, getClassQuestionSelector } from "../ClassBoard/ducks";
 
 class QuestionViewContainer extends Component {
-  componentDidMount() {
-    const { loadClassQuestionResponses, assignmentIdClassId: { assignmentId, classId } = {}, question } = this.props;
-    loadClassQuestionResponses(assignmentId, classId, question.id);
+  static getDerivedStateFromProps(nextProps, preState) {
+    const { loadClassQuestionResponses, assignmentIdClassId: { assignmentId, classId } = {}, question } = nextProps;
+    const { question: _question = {} } = preState || {};
+    if (question.id !== _question.id) {
+      loadClassQuestionResponses(assignmentId, classId, question.id);
+    }
+    return {
+      question,
+      loading: question.id !== _question.id
+    };
   }
 
   isMobile = () => window.innerWidth < 480;
@@ -47,6 +54,7 @@ class QuestionViewContainer extends Component {
       classQuestion,
       children
     } = this.props;
+    const { loading } = this.state;
 
     const filterdItems = testItems.filter(item => item.data.questions.filter(q => q.id === question.id).length > 0);
 
@@ -142,6 +150,7 @@ class QuestionViewContainer extends Component {
         </StyledFlexContainer>
         <StudentResponse testActivity={testActivity} />
         {testActivity &&
+          !loading &&
           testActivity.map((student, index) => {
             if (!student.testActivityId || classQuestion.length === 0) {
               return null;
@@ -175,15 +184,12 @@ export default enhance(QuestionViewContainer);
 
 QuestionViewContainer.propTypes = {
   classResponse: PropTypes.object.isRequired,
-  assignmentIdClassId: PropTypes.object.isRequired,
   question: PropTypes.object.isRequired,
   testActivity: PropTypes.array.isRequired,
   classQuestion: PropTypes.array,
-  loadClassQuestionResponses: PropTypes.func,
   children: PropTypes.node
 };
 QuestionViewContainer.defaultProps = {
   classQuestion: [],
-  children: null,
-  loadClassQuestionResponses: () => {}
+  children: null
 };

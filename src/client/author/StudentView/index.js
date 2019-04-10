@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
+import { findIndex } from "lodash";
 
 import {
   StyledFlexContainer,
@@ -16,18 +17,36 @@ import {
 import ClassQuestions from "../ClassResponses/components/Container/ClassQuestions";
 
 // actions
-import { receiveAnswersAction } from "../src/actions/classBoard";
+import { receiveStudentResponseAction } from "../src/actions/classBoard";
 // selectors
-import { getAssignmentClassIdSelector, getClassQuestionSelector } from "../ClassBoard/ducks";
+import {
+  getAssignmentClassIdSelector,
+  getClassQuestionSelector,
+  getStudentResponseSelector
+} from "../ClassBoard/ducks";
 
 class StudentViewContainer extends Component {
+  static getDerivedStateFromProps(nextProps, preState) {
+    const { selectedStudent, loadStudentResponses, studentItems, assignmentIdClassId: { classId } = {} } = nextProps;
+    const { selectedStudent: _selectedStudent } = preState || {};
+
+    if (selectedStudent !== _selectedStudent) {
+      let index = 0;
+      if (selectedStudent) {
+        index = findIndex(studentItems, student => student.studentId === selectedStudent);
+      }
+      const { testActivityId } = studentItems[index];
+      loadStudentResponses({ testActivityId, groupId: classId });
+    }
+    return {
+      selectedStudent,
+      loading: selectedStudent !== _selectedStudent
+    };
+  }
+
   render() {
-    const {
-      classResponse, // : { testItems, ...others },
-      studentItems,
-      studentResponse,
-      selectedStudent
-    } = this.props;
+    const { classResponse, studentItems, studentResponse, selectedStudent } = this.props;
+    const { loading } = this.state;
 
     const userId = studentResponse.testActivity ? studentResponse.testActivity.userId : "";
     const currentStudent = studentItems.find(({ studentId }) => {
@@ -47,11 +66,13 @@ class StudentViewContainer extends Component {
           </StudentButtonDiv>
           <GiveOverallFeedBackButton active>GIVE OVERALL FEEDBACK</GiveOverallFeedBackButton>
         </StyledFlexContainer>
-        <ClassQuestions
-          currentStudent={currentStudent || {}}
-          questionActivities={studentResponse.questionActivities}
-          classResponse={classResponse}
-        />
+        {!loading && (
+          <ClassQuestions
+            currentStudent={currentStudent || {}}
+            questionActivities={studentResponse.questionActivities}
+            classResponse={classResponse}
+          />
+        )}
       </React.Fragment>
     );
   }
@@ -61,10 +82,11 @@ const enhance = compose(
   connect(
     state => ({
       classQuestion: getClassQuestionSelector(state),
+      studentResponse: getStudentResponseSelector(state),
       assignmentIdClassId: getAssignmentClassIdSelector(state)
     }),
     {
-      loadClassQuestionResponses: receiveAnswersAction
+      loadStudentResponses: receiveStudentResponseAction
     }
   )
 );

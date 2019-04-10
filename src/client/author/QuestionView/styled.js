@@ -13,7 +13,7 @@ export const PaginationInfo = styled.div`
 `;
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 95%;
-  margin: 20px auto;
+  margin: 0px auto;
 `;
 
 export const LabelContainer = styled.div`
@@ -28,7 +28,7 @@ export const StyledCard = styled(Card)`
   width: 100%;
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 40px;
+  margin-bottom: 10px;
   .ant-card-body {
   }
 `;

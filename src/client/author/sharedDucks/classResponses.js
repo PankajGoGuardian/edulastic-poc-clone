@@ -61,7 +61,7 @@ function* receiveStudentResponseSaga({ payload }) {
 
 function* receiveClassStudentResponseSaga({ payload }) {
   try {
-    let classStudentResponse = [];
+    const classStudentResponse = [];
     for (let i = 0; i < payload.selectedActivities.length; i++) {
       classStudentResponse.push(
         yield call(classResponseApi.studentResponse, {

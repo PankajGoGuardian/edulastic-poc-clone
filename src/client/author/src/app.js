@@ -31,6 +31,13 @@ const AssessmentSummary = lazy(() => import("../Reports/subPages/AssessmentSumma
 const PeerPerformance = lazy(() => import("../Reports/subPages/PeerPerformance"));
 const StandardsBasedReport = lazy(() => import("../StandardsBasedReport"));
 const ManageClass = lazy(() => import("../ManageClass"));
+const DistrictProfile = lazy(() => import("../DistrictProfile"));
+const TestSetting = lazy(() => import("../TestSetting"));
+const Term = lazy(() => import("../Term"));
+const DistrictPolicy = lazy(() => import("../DistrictPolicy"));
+const PerformanceBand = lazy(() => import("../PerformanceBand"));
+const StandardsProficiency = lazy(() => import("../StandardsProficiency"));
+
 // eslint-disable-next-line react/prop-types
 const Author = ({ match, history, isSidebarCollapsed }) => {
   const isPickQuestion = !!history.location.pathname.includes("pickup-questiontype");
@@ -133,6 +140,12 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               <Route exact path="/author/reports/response-frequency/test/:testId" component={ResponseFrequency} />
               <Route exact path="/author/reports/assessment-summary/test/:testId" component={AssessmentSummary} />
               <Route exact path="/author/reports/peer-performance/test/:testId" component={PeerPerformance} />
+              <Route exact path="/author/districtprofile" component={DistrictProfile} />
+              <Route exact path="/author/settings/testsettings" component={TestSetting} />
+              <Route exact path="/author/settings/term" component={Term} />
+              <Route exact path="/author/settings/districtpolicies" component={DistrictPolicy} />
+              <Route exact path="/author/settings/performance-bands" component={PerformanceBand} />
+              <Route exact path="/author/settings/standards-proficiency" component={StandardsProficiency} />
             </Switch>
           </Suspense>
         </Wrapper>
@@ -161,7 +174,7 @@ const MainContainer = styled.div`
     position: fixed;
     top: 0;
     right: 0;
-    left: 100px;
+    left: ${props => (props.isCollapsed ? "100px" : "240px")};
     z-index: 999;
   }
   @media (max-width: ${tabletWidth}) {

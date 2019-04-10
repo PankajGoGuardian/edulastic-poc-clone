@@ -18,6 +18,12 @@ import { authorGroupsWatcherSaga } from "../../sharedDucks/groups";
 import { watcherSaga as UserDetails } from "../../sharedDucks/userDetails";
 import { assessmentPageSaga } from "../../AssessmentCreate";
 import { itemListSaga } from "../../ItemList";
+import { districtProfileSaga } from "../../DistrictProfile";
+import { testSettingSaga } from "../../TestSetting";
+import { termSaga } from "../../Term";
+import { districtPolicySaga } from "../../DistrictPolicy";
+import { performanceBandSaga } from "../../PerformanceBand";
+import { standardsProficiencySaga } from "../../StandardsProficiency";
 
 const authorSagas = [
   itemsSaga(),
@@ -39,7 +45,13 @@ const authorSagas = [
   assessmentPageSaga(),
   ManageClassSaga(),
   UserDetails(),
-  itemListSaga()
+  itemListSaga(),
+  districtProfileSaga(),
+  testSettingSaga(),
+  termSaga(),
+  districtPolicySaga(),
+  performanceBandSaga(),
+  standardsProficiencySaga()
 ];
 
 export default authorSagas;

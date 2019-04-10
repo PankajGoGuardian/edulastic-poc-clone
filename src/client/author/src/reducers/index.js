@@ -27,6 +27,12 @@ import { testsAddItems } from "../../TestPage/components/AddItems";
 import { testAssignmentsReducer } from "../../TestPage/components/Assign";
 import { assessmentCreate } from "../../AssessmentCreate";
 import { manageClass } from "../../ManageClass";
+import { districtProfileReducer } from "../../DistrictProfile";
+import { testSettingReducer } from "../../TestSetting";
+import { termReducer } from "../../Term";
+import { districtPolicyReducer } from "../../DistrictPolicy";
+import { performanceBandReducer } from "../../PerformanceBand";
+import { standardsProficiencyReducer } from "../../StandardsProficiency";
 
 const authorReducers = {
   authorUi,
@@ -57,7 +63,13 @@ const authorReducers = {
   studentQuestionResponse,
   classQuestionResponse,
   manageClass,
-  authorUserList
+  authorUserList,
+  districtProfileReducer,
+  testSettingReducer,
+  termReducer,
+  districtPolicyReducer,
+  performanceBandReducer,
+  standardsProficiencyReducer
 };
 
 export default authorReducers;

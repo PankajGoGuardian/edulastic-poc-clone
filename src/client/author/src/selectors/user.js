@@ -32,3 +32,8 @@ export const getCurrentTerm = createSelector(
   stateSelector,
   state => _get(state, "user.orgData.defaultTermId")
 );
+
+export const getUserOrgId = createSelector(
+  stateSelector,
+  state => _get(state, "user.orgData.districtId")
+);

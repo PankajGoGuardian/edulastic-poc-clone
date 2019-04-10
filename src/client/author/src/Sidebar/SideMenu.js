@@ -18,7 +18,8 @@ import {
   IconQuestion,
   IconItemList,
   IconTestList,
-  IconCurriculumSequence
+  IconCurriculumSequence,
+  IconSettings
 } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
 import { logoutAction } from "../actions/auth";
@@ -59,6 +60,11 @@ const menuItems = [
     label: "Test List",
     icon: IconTestList,
     path: "author/tests"
+  },
+  {
+    label: "Admin",
+    icon: IconSettings,
+    path: "author/districtprofile"
   }
 ];
 
@@ -76,7 +82,6 @@ class SideMenu extends Component {
     height: 22px;
     fill: rgb(67, 75, 93);
     margin-right: ${() => (isSidebarCollapsed ? "0rem" : "1rem")};
-
     .ant-menu-item-active > & {
       fill: #1890ff;
     }
@@ -283,7 +288,6 @@ const FixedSidebar = styled.div`
   bottom: 0px;
   z-index: 1000;
   cursor: ${props => (props.isCollapsed ? "pointer" : "initial")};
-
   > * {
     pointer-events: ${props => (props.isCollapsed ? "none" : "all")};
   }
@@ -300,7 +304,6 @@ const SideBar = styled(Layout.Sider)`
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
   background-color: #fbfafc;
   z-index: 22;
-
   &.ant-layout-sider-collapsed .logoWrapper {
     padding: 22.5px 20px;
   }
@@ -318,7 +321,6 @@ const SideBar = styled(Layout.Sider)`
     margin: 0 auto;
     justify-content: center;
     margin-bottom: 23px;
-
     &:hover {
       background: #1890ff;
     }
@@ -353,7 +355,6 @@ const SideBar = styled(Layout.Sider)`
     min-width: 0px;
     width: 0px;
     background-color: rgba(251, 250, 252, 0.94);
-
     .mobileCloseIcon {
       position: absolute;
       top: 0;
@@ -364,7 +365,6 @@ const SideBar = styled(Layout.Sider)`
       display: flex;
       align-items: center;
       justify-content: center;
-
       svg {
         width: 20px !important;
         height: 20px !important;
@@ -412,7 +412,6 @@ const Menu = styled(AntMenu)`
       }
     }
   }
-
   &.ant-menu-vertical .ant-menu-item:after,
   &.ant-menu-vertical-left .ant-menu-item:after,
   &.ant-menu-vertical-right .ant-menu-item:after,
@@ -532,14 +531,12 @@ const FooterDropDown = styled.div`
     border-radius: 15px 15px 0px 0px;
     overflow: hidden;
     max-width: 100%;
-
     &.ant-menu-inline-collapsed {
       width: 84px;
       height: auto;
       margin-top: ${props => (props.isCollapsed ? "0" : "10px")};
       margin-left: ${props => (props.isCollapsed ? "0" : "8px")};
       box-shadow: ${props => (props.isCollapsed ? "0 -3px 5px 0 rgba(0,0,0,0.07)" : "none")};
-
       li {
         &.ant-menu-item {
           margin: 0px;
@@ -580,13 +577,11 @@ const FooterDropDown = styled.div`
       width: 60px;
       margin: 0 auto;
       box-shadow: 0 -4px 5px 0 rgba(0, 0, 0, 0.07) !important;
-
       li {
         padding: 0 !important;
         display: flex;
         align-items: center;
         justify-content: center;
-
         a {
           height: 20px;
           font-size: 0 !important;
@@ -600,7 +595,6 @@ const MenuFooter = styled.div`
   position: fixed;
   bottom: 10px;
   width: 245px;
-
   @media (max-width: ${tabletWidth}) {
     display: flex;
   }
@@ -616,7 +610,6 @@ const QuestionButton = styled.div`
   align-items: center;
   position: relative;
   overflow: hidden;
-
   span {
     font-weight: 600;
   }
@@ -632,7 +625,6 @@ const QuestionButton = styled.div`
   @media (max-width: ${tabletWidth}) {
     width: 60px;
     margin: 0 auto 0 18px;
-
     &.active {
       opacity: 0;
       pointer-events: none;
@@ -642,7 +634,6 @@ const QuestionButton = styled.div`
 
 const UserInfoButton = styled.div`
   cursor: pointer;
-
   &.active {
     padding: 0;
     background: transparent;
@@ -650,12 +641,10 @@ const UserInfoButton = styled.div`
     width: 60px;
     margin: 0 auto;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-
     img {
       box-shadow: none;
     }
   }
-
   .footerDropdown {
     width: auto;
     height: 60px;
@@ -689,7 +678,6 @@ const UserInfoButton = styled.div`
     border: 0px;
     color: #ffffff;
   }
-
   @media (max-width: ${tabletWidth}) {
     width: 60px;
     padding: 0;
@@ -697,7 +685,6 @@ const UserInfoButton = styled.div`
     background: ${props => (props.isVisible ? "#fff" : "transparent")};
     border-radius: ${props => (props.isVisible ? "0 0 15px 15px" : "50%")};
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-
     &.active {
       opacity: 0;
       pointer-events: none;
@@ -736,7 +723,6 @@ const IconContainer = styled.span`
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   border-radius: 50%;
   margin-right: 11px;
-
   &.active {
     margin-right: 0;
     box-shadow: none;

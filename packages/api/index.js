@@ -21,3 +21,4 @@ export { default as userApi } from "./src/user";
 export { default as curriculumSequencesApi } from "./src/curriculumSequence";
 export { default as API } from "./src/utils/API";
 export { default as googleApi } from "./src/google";
+export { default as settingsApi } from "./src/settings";

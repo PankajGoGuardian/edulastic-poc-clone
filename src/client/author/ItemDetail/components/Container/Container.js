@@ -48,6 +48,7 @@ class Container extends Component {
     showModal: false,
     showSettings: false,
     view: "edit",
+    enableEdit: false,
     previewTab: "clear"
   };
 
@@ -209,8 +210,12 @@ class Container extends Component {
     const { publishTestItem, item } = this.props;
     const { _id } = item;
     publishTestItem(_id);
+    this.setState({ enableEdit: false });
   };
 
+  handleEnableEdit = () => {
+    this.setState({ enableEdit: true });
+  };
   renderPreview = () => {
     const { rows, item, preview, questions } = this.props;
     return (
@@ -235,7 +240,7 @@ class Container extends Component {
   );
 
   render() {
-    const { showModal, showSettings, view, previewTab } = this.state;
+    const { showModal, showSettings, view, previewTab, enableEdit } = this.state;
     const {
       t,
       match,
@@ -252,12 +257,11 @@ class Container extends Component {
     } = this.props;
 
     let showPublishButton = false;
-
     if (item) {
       const { _id: testItemId } = item;
-      showPublishButton = testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED;
+      showPublishButton =
+        (testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit;
     }
-
     return (
       <Layout>
         {showModal && item && (
@@ -296,6 +300,7 @@ class Container extends Component {
             saving={updating}
             view={view}
             previewTab={previewTab}
+            onEnableEdit={this.handleEnableEdit}
             showPublishButton={showPublishButton}
           />
         </ItemHeader>

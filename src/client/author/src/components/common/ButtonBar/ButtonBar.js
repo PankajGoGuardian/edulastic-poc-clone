@@ -61,6 +61,7 @@ class ButtonBar extends Component {
       onShowSettings,
       windowWidth,
       changePreviewTab,
+      onEnableEdit,
       clearAnswers,
       showPublishButton
     } = this.props;
@@ -102,12 +103,19 @@ class ButtonBar extends Component {
             </Menu>
             <RightSide>
               {showPublishButton && <Button onClick={onPublishTestItem}>Publish</Button>}
-              <Button data-cy="saveButton" onClick={onSave}>
-                <HeadIcon>
-                  <IconSave color={newBlue} width={18} height={16} />
-                </HeadIcon>
-                Save
-              </Button>
+              {(showPublishButton || showPublishButton === undefined) && (
+                <Button data-cy="saveButton" onClick={onSave}>
+                  <HeadIcon>
+                    <IconSave color={newBlue} width={18} height={16} />
+                  </HeadIcon>
+                  Save
+                </Button>
+              )}
+              {!(showPublishButton || showPublishButton === undefined) && (
+                <Button style={{ width: 120 }} size="large" onClick={onEnableEdit}>
+                  Edit
+                </Button>
+              )}
             </RightSide>
           </Container>
         ) : (
@@ -209,6 +217,7 @@ ButtonBar.propTypes = {
   onShowSettings: PropTypes.func,
   changePreviewTab: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
+  onEnableEdit: PropTypes.func.isRequired,
   clearAnswers: PropTypes.func.isRequired
 };
 

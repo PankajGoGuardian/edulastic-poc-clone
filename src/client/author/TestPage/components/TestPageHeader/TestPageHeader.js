@@ -49,6 +49,7 @@ const TestPageHeader = ({
   onShare,
   onPublish,
   windowWidth,
+  onEnableEdit,
   toggleSideBar,
   showPublishButton,
   showShareButton
@@ -70,10 +71,16 @@ const TestPageHeader = ({
             Share
           </EduButton>
         )}
-
-        <EduButton style={{ width: 120 }} disabled={creating} size="large" type="secondary" onClick={onSave}>
-          {creating ? "Saving..." : "Save changes"}
-        </EduButton>
+        {showPublishButton && (
+          <EduButton style={{ width: 120 }} disabled={creating} size="large" type="secondary" onClick={onSave}>
+            {creating ? "Saving..." : "Save changes"}
+          </EduButton>
+        )}
+        {!showPublishButton && (
+          <EduButton style={{ width: 120 }} size="large" onClick={onEnableEdit}>
+            Edit
+          </EduButton>
+        )}
       </FlexContainer>
     </HeaderWrapper>
   ) : (
@@ -121,6 +128,7 @@ TestPageHeader.propTypes = {
   title: PropTypes.string.isRequired,
   creating: PropTypes.bool.isRequired,
   onShare: PropTypes.func.isRequired,
+  onEnableEdit: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired
 };
 

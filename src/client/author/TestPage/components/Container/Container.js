@@ -68,6 +68,7 @@ class Container extends PureComponent {
   state = {
     current: "addItems",
     showModal: false,
+    editEnable: false,
     showShareModal: false
   };
 
@@ -232,6 +233,11 @@ class Container extends PureComponent {
     const { publishTest, test } = this.props;
     const { _id } = test;
     publishTest(_id);
+    this.setState({ editEnable: false });
+  };
+
+  onEnableEdit = () => {
+    this.setState({ editEnable: true });
   };
 
   renderModal = () => {
@@ -249,9 +255,9 @@ class Container extends PureComponent {
 
   render() {
     const { creating, windowWidth, test, testStatus } = this.props;
-    const { showShareModal, current } = this.state;
+    const { showShareModal, current, editEnable } = this.state;
     const { _id: testId } = test;
-    const showPublishButton = testStatus && testStatus !== statusConstants.PUBLISHED && testId;
+    const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId) || editEnable;
     const showShareButton = !!testId;
     return (
       <>
@@ -268,6 +274,7 @@ class Container extends PureComponent {
           windowWidth={windowWidth}
           showPublishButton={showPublishButton}
           showShareButton={showShareButton}
+          onEnableEdit={this.onEnableEdit}
         />
         <Content>{this.renderContent()}</Content>
       </>

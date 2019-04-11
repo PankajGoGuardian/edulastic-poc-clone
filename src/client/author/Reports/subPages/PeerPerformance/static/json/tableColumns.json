@@ -8,8 +8,8 @@
         { "title": "District(Score%)", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
         {
           "title": "Avg.Student(Score%)",
-          "dataIndex": "avgStudentScorePercent",
-          "key": "avgStudentScorePercent",
+          "dataIndex": "avgStudentScorePercentUnrounded",
+          "key": "avgStudentScorePercentUnrounded",
           "width": 250
         }
       ],
@@ -21,8 +21,8 @@
         { "title": "District(Score%)", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
         {
           "title": "Avg.Student(Score%)",
-          "dataIndex": "avgStudentScorePercent",
-          "key": "avgStudentScorePercent",
+          "dataIndex": "avgStudentScorePercentUnrounded",
+          "key": "avgStudentScorePercentUnrounded",
           "width": 250
         }
       ],
@@ -35,8 +35,8 @@
         { "title": "District(Score%)", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
         {
           "title": "Avg.Student(Score%)",
-          "dataIndex": "avgStudentScorePercent",
-          "key": "avgStudentScorePercent",
+          "dataIndex": "avgStudentScorePercentUnrounded",
+          "key": "avgStudentScorePercentUnrounded",
           "width": 250
         }
       ],
@@ -47,8 +47,8 @@
         { "title": "District(Score%)", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
         {
           "title": "Avg.Student(Score%)",
-          "dataIndex": "avgStudentScorePercent",
-          "key": "avgStudentScorePercent",
+          "dataIndex": "avgStudentScorePercentUnrounded",
+          "key": "avgStudentScorePercentUnrounded",
           "width": 250
         }
       ],
@@ -59,8 +59,8 @@
         { "title": "District(Score%)", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
         {
           "title": "Avg.Student(Score%)",
-          "dataIndex": "avgStudentScorePercent",
-          "key": "avgStudentScorePercent",
+          "dataIndex": "avgStudentScorePercentUnrounded",
+          "key": "avgStudentScorePercentUnrounded",
           "width": 250
         }
       ],
@@ -71,8 +71,8 @@
         { "title": "District(Score%)", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
         {
           "title": "Avg.Student(Score%)",
-          "dataIndex": "avgStudentScorePercent",
-          "key": "avgStudentScorePercent",
+          "dataIndex": "avgStudentScorePercentUnrounded",
+          "key": "avgStudentScorePercentUnrounded",
           "width": 250
         }
       ],
@@ -83,8 +83,8 @@
         { "title": "District(Score%)", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
         {
           "title": "Avg.Student(Score%)",
-          "dataIndex": "avgStudentScorePercent",
-          "key": "avgStudentScorePercent",
+          "dataIndex": "avgStudentScorePercentUnrounded",
+          "key": "avgStudentScorePercentUnrounded",
           "width": 250
         }
       ],
@@ -95,8 +95,8 @@
         { "title": "District(Score%)", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
         {
           "title": "Avg.Student(Score%)",
-          "dataIndex": "avgStudentScorePercent",
-          "key": "avgStudentScorePercent",
+          "dataIndex": "avgStudentScorePercentUnrounded",
+          "key": "avgStudentScorePercentUnrounded",
           "width": 250
         }
       ]
@@ -109,8 +109,8 @@
         { "title": "District Avg.Score", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
         {
           "title": "Avg.Score",
-          "dataIndex": "avgStudentScore",
-          "key": "avgStudentScore",
+          "dataIndex": "avgStudentScoreUnrounded",
+          "key": "avgStudentScoreUnrounded",
           "width": 250
         }
       ],
@@ -122,8 +122,8 @@
         { "title": "District Avg.Score", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
         {
           "title": "Avg.Score",
-          "dataIndex": "avgStudentScore",
-          "key": "avgStudentScore",
+          "dataIndex": "avgStudentScoreUnrounded",
+          "key": "avgStudentScoreUnrounded",
           "width": 250
         }
       ],
@@ -136,8 +136,8 @@
         { "title": "District Avg.Score", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
         {
           "title": "Avg.Score",
-          "dataIndex": "avgStudentScore",
-          "key": "avgStudentScore",
+          "dataIndex": "avgStudentScoreUnrounded",
+          "key": "avgStudentScoreUnrounded",
           "width": 250
         }
       ],
@@ -148,8 +148,8 @@
         { "title": "District Avg.Score", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
         {
           "title": "Avg.Score",
-          "dataIndex": "avgStudentScore",
-          "key": "avgStudentScore",
+          "dataIndex": "avgStudentScoreUnrounded",
+          "key": "avgStudentScoreUnrounded",
           "width": 250
         }
       ],
@@ -160,8 +160,8 @@
         { "title": "District Avg.Score", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
         {
           "title": "Avg.Score",
-          "dataIndex": "avgStudentScore",
-          "key": "avgStudentScore",
+          "dataIndex": "avgStudentScoreUnrounded",
+          "key": "avgStudentScoreUnrounded",
           "width": 250
         }
       ],
@@ -172,8 +172,8 @@
         { "title": "District Avg.Score", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
         {
           "title": "Avg.Score",
-          "dataIndex": "avgStudentScore",
-          "key": "avgStudentScore",
+          "dataIndex": "avgStudentScoreUnrounded",
+          "key": "avgStudentScoreUnrounded",
           "width": 250
         }
       ],
@@ -184,8 +184,8 @@
         { "title": "District Avg.Score", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
         {
           "title": "Avg.Score",
-          "dataIndex": "avgStudentScore",
-          "key": "avgStudentScore",
+          "dataIndex": "avgStudentScoreUnrounded",
+          "key": "avgStudentScoreUnrounded",
           "width": 250
         }
       ],
@@ -196,8 +196,8 @@
         { "title": "District Avg.Score", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
         {
           "title": "Avg.Score",
-          "dataIndex": "avgStudentScore",
-          "key": "avgStudentScore",
+          "dataIndex": "avgStudentScoreUnrounded",
+          "key": "avgStudentScoreUnrounded",
           "width": 250
         }
       ]

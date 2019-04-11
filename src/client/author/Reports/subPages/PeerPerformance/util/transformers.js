@@ -58,13 +58,20 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
       },
       { totalMaxScore: 0, totalTotalScore: 0 }
     );
-    let avgStudentScorePercent = Math.round((item.totalTotalScore / item.totalMaxScore) * 100);
+
+    let avgStudentScorePercentUnrounded = (item.totalTotalScore / item.totalMaxScore) * 100;
+    avgStudentScorePercentUnrounded = !isNaN(avgStudentScorePercentUnrounded) ? avgStudentScorePercentUnrounded : 0;
+
+    let avgStudentScorePercent = !isNaN(avgStudentScorePercentUnrounded)
+      ? Math.round(avgStudentScorePercentUnrounded)
+      : 0;
     let schoolName = groupedData[data][0].schoolName;
     let teacherName = groupedData[data][0].teacherName;
     let className = groupedData[data][0].className;
 
     item = {
       ...item,
+      avgStudentScorePercentUnrounded: avgStudentScorePercentUnrounded,
       avgStudentScorePercent: avgStudentScorePercent,
       correct: avgStudentScorePercent,
       incorrect: Math.round(100 - avgStudentScorePercent),
@@ -98,7 +105,10 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
       { totalMaxScore: 0, totalTotalScore: 0 }
     );
 
-    let avgStudentScore = Number((item.totalTotalScore / groupedData[data].length).toFixed(2));
+    let avgStudentScoreUnrounded = item.totalTotalScore / groupedData[data].length;
+    avgStudentScoreUnrounded = !isNaN(avgStudentScoreUnrounded) ? avgStudentScoreUnrounded : 0;
+
+    let avgStudentScore = !isNaN(avgStudentScoreUnrounded) ? Number(avgStudentScoreUnrounded.toFixed(2)) : 0;
     let maxScore = groupedData[data][0].maxScore;
     let schoolName = groupedData[data][0].schoolName;
     let teacherName = groupedData[data][0].teacherName;
@@ -107,6 +117,7 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
     item = {
       ...item,
       maxScore: maxScore,
+      avgStudentScoreUnrounded: avgStudentScoreUnrounded,
       avgStudentScore: avgStudentScore,
       correct: avgStudentScore,
       incorrect: Number((maxScore - avgStudentScore).toFixed(2)),

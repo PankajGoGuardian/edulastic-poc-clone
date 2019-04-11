@@ -86,8 +86,8 @@ export const AssessmentStatisticTable = props => {
         studentsAbsent: sumStudentsAbsent,
         studentsAssigned: sumStudentsAssigned,
         studentsGraded: sumStudentsGraded,
-        minScore,
-        maxScore
+        minScore: minScore.toFixed(2),
+        maxScore: maxScore.toFixed(2)
       };
 
       return result;

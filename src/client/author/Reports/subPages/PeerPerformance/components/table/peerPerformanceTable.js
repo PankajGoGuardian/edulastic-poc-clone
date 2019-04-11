@@ -7,6 +7,22 @@ import { CustomTableTooltip } from "../../../../common/components/customTableToo
 import { idToName, analyseByToName } from "../../util/transformers";
 import styled from "styled-components";
 
+const getDisplayValue = (data, record, analyseBy, columnKey) => {
+  let printData = data;
+  let NA = "N/A";
+  if (printData === 0) {
+    return NA;
+  }
+  if (analyseBy === "score(%)") {
+    printData = record[columnKey] + "%";
+  } else if (analyseBy === "rawScore") {
+    printData = record[columnKey].toFixed(2);
+  } else if (analyseBy === "proficiencyBand" || analyseBy === "aboveBelowStandard") {
+    printData = data + " (" + Math.abs(record[columnKey + "Percentage"]) + "%)";
+  }
+  return printData;
+};
+
 export const PeerPerformanceTable = ({
   columns,
   dataSource,
@@ -56,13 +72,20 @@ export const PeerPerformanceTable = ({
               <Row type="flex" justify="start">
                 <Col className="custom-table-tooltip-key">District Avg: </Col>
                 <Col className="custom-table-tooltip-value">
-                  {analyseBy === "score(%)" ? record.districtAvg + "%" : record.districtAvg}
+                  {getDisplayValue(record.districtAvg, record, analyseBy, "districtAvg")}
                 </Col>
               </Row>
               <Row type="flex" justify="start">
                 <Col className="custom-table-tooltip-key">Student Avg Score: </Col>
                 <Col className="custom-table-tooltip-value">
-                  {analyseBy === "score(%)" ? record.avgStudentScorePercent + "%" : record.avgStudentScore.toFixed(2)}
+                  {analyseBy === "score(%)"
+                    ? getDisplayValue(
+                        record.avgStudentScorePercentUnrounded,
+                        record,
+                        analyseBy,
+                        "avgStudentScorePercent"
+                      )
+                    : getDisplayValue(record.avgStudentScoreUnrounded, record, analyseBy, "avgStudentScore")}
                 </Col>
               </Row>
             </>
@@ -74,11 +97,13 @@ export const PeerPerformanceTable = ({
               </Row>
               <Row type="flex" justify="start">
                 <Col className="custom-table-tooltip-key">Student#: </Col>
-                <Col className="custom-table-tooltip-value">{record[columnKey]}</Col>
+                <Col className="custom-table-tooltip-value">{record[columnKey] === 0 ? "N/A" : record[columnKey]}</Col>
               </Row>
               <Row type="flex" justify="start">
                 <Col className="custom-table-tooltip-key">Student(%): </Col>
-                <Col className="custom-table-tooltip-value">{Math.abs(record[columnKey + "Percentage"]) + "%"}</Col>
+                <Col className="custom-table-tooltip-value">
+                  {record[columnKey] === 0 ? "N/A" : Math.abs(record[columnKey + "Percentage"]) + "%"}
+                </Col>
               </Row>
             </>
           )}
@@ -91,14 +116,7 @@ export const PeerPerformanceTable = ({
       return <div style={{ backgroundColor: record[colorKey] }}>{printData}</div>;
     };
 
-    let printData = data;
-    if (analyseBy === "score(%)") {
-      printData = printData + "%";
-    } else if (analyseBy === "rawScore") {
-      printData = printData.toFixed(2);
-    } else if (analyseBy === "proficiencyBand" || analyseBy === "aboveBelowStandard") {
-      printData = data + " (" + Math.abs(record[columnKey + "Percentage"]) + "%)";
-    }
+    let printData = getDisplayValue(data, record, analyseBy, columnKey);
 
     return (
       <CustomTableTooltip
@@ -114,9 +132,13 @@ export const PeerPerformanceTable = ({
   let colouredCellsNo = 0;
 
   _columns = next(columns, arr => {
-    if (analyseBy === "score(%)" || analyseBy === "rawScore") {
-      arr[arr.length - 1].render = colorCell("fill");
-      arr[arr.length - 2].render = colorCell("dFill");
+    if (analyseBy === "score(%)") {
+      arr[arr.length - 1].render = colorCell("fill", "avgStudentScorePercent");
+      arr[arr.length - 2].render = colorCell("dFill", "districtAvg");
+      colouredCellsNo = 2;
+    } else if (analyseBy === "rawScore") {
+      arr[arr.length - 1].render = colorCell("fill", "avgStudentScore");
+      arr[arr.length - 2].render = colorCell("dFill", "districtAvg");
       colouredCellsNo = 2;
     } else if (analyseBy === "aboveBelowStandard") {
       arr[arr.length - 1].render = colorCell("fill_0", "aboveStandard", "Above Standard");

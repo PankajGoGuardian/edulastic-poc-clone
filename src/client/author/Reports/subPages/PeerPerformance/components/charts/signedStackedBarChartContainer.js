@@ -63,7 +63,7 @@ export const SignedStackedBarChartContainer = ({
             <Col className="tooltip-key">Band: </Col>
             <Col className="tooltip-value">{payload[barIndex].name}</Col>
           </Row>
-          <Row type="flex" justify="start" style={{ backgroundColor: payload[barIndex].fill }}>
+          <Row type="flex" justify="start">
             <Col className="tooltip-key">{"Student (%): "}</Col>
             <Col className="tooltip-value">
               {`${Math.abs(payload[barIndex].value)}% (${

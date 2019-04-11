@@ -1,3 +1,4 @@
+import { get } from "lodash";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
@@ -112,7 +113,19 @@ class Container extends Component {
   }
 
   render() {
-    const { view, question } = this.props;
+    const { view, question, history } = this.props;
+
+    if (!question) {
+      const backUrl = get(history, "location.state.backUrl", "");
+      if (backUrl.includes("pickup-questiontype")) {
+        history.push(backUrl);
+      } else {
+        history.push("/author/items");
+      }
+
+      return <div />;
+    }
+
     const { previewTab, showModal } = this.state;
     const itemId = question === null ? "" : question._id;
     const { checkAnswerButton = false, checkAttempts = 1 } = question.validation || {};
@@ -163,7 +176,8 @@ Container.propTypes = {
   question: PropTypes.object,
   saveQuestion: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  testItemId: PropTypes.func.isRequired
+  testItemId: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired
 };
 
 Container.defaultProps = {

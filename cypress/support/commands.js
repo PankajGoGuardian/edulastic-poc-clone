@@ -48,7 +48,7 @@ Cypress.Commands.add("assertHome", () => {
 
 Cypress.Commands.add("setToken", (role = "teacher") => {
   const postData = role === "teacher" ? DEFAULT_USERS.teacher : DEFAULT_USERS.student;
-
+  window.localStorage.clear();
   /* cy.request({
           url: `${BASE_URL}/auth/login`,
           method: 'POST',
@@ -59,7 +59,6 @@ Cypress.Commands.add("setToken", (role = "teacher") => {
           return true;
         }); */
 
-  cy.clearLocalStorage();
   const login = new LoginPage();
   cy.visit("/login");
   cy.server();

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { size, isEmpty } from "lodash";
 
 import HooksContainer from "../ClassBoard/components/HooksContainer/HooksContainer";
 import ClassHeader from "../Shared/Components/ClassHeader/ClassHeader";
@@ -13,9 +14,11 @@ import { Anchor, AnchorLink, PaginationInfo, StyledFlexContainer, DivWrapper } f
 
 class StandardsBasedReport extends Component {
   componentDidMount() {
-    const { loadTestActivity, match } = this.props;
-    const { assignmentId, classId } = match.params;
-    loadTestActivity(assignmentId, classId);
+    const { loadTestActivity, match, testActivity, additionalData } = this.props;
+    if (!size(testActivity) && isEmpty(additionalData)) {
+      const { assignmentId, classId } = match.params;
+      loadTestActivity(assignmentId, classId);
+    }
   }
 
   getTestActivity = data => {

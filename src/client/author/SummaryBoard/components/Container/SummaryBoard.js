@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
-import { sumBy, round } from "lodash";
+import { sumBy, round, size, isEmpty } from "lodash";
 import { connect } from "react-redux";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -54,9 +54,11 @@ import {
 
 class SummaryBoard extends Component {
   componentDidMount() {
-    const { loadTestActivity, match } = this.props;
-    const { assignmentId, classId } = match.params;
-    loadTestActivity(assignmentId, classId);
+    const { loadTestActivity, match, testActivity, additionalData } = this.props;
+    if (!size(testActivity) && isEmpty(additionalData)) {
+      const { assignmentId, classId } = match.params;
+      loadTestActivity(assignmentId, classId);
+    }
   }
 
   getTestActivity = data => {

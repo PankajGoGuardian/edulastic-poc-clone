@@ -14,7 +14,8 @@ import {
   toggleReleaseScoreSettingsAction
 } from "../../../src/actions/assignments";
 import {
-  getAssignmentsSelector,
+  getAssignmentsByTestSelector,
+  getTestsSelector,
   getCurrentAssignmentSelector,
   getToggleReleaseGradeStateSelector
 } from "../../../src/selectors/assignments";
@@ -69,7 +70,7 @@ class Assignments extends Component {
   };
 
   render() {
-    const { assignments, creating, t, isShowReleaseSettingsPopup, toggleReleaseGradePopUp } = this.props;
+    const { assignmentsByTestId, tests, creating, t, isShowReleaseSettingsPopup, toggleReleaseGradePopUp } = this.props;
 
     const tabletWidth = 768;
 
@@ -87,7 +88,8 @@ class Assignments extends Component {
               {window.innerWidth >= tabletWidth && (
                 <StyledCard>
                   <TableList
-                    assignments={assignments}
+                    assignmentsByTestId={assignmentsByTestId}
+                    tests={tests}
                     renderFilter={this.renderFilter}
                     onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                   />
@@ -95,7 +97,8 @@ class Assignments extends Component {
               )}
               {window.innerWidth < tabletWidth && (
                 <MobileTableList
-                  assignments={assignments}
+                  assignmentsByTestId={assignmentsByTestId}
+                  tests={tests}
                   onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                 />
               )}
@@ -115,7 +118,7 @@ class Assignments extends Component {
 }
 
 Assignments.propTypes = {
-  assignments: PropTypes.array.isRequired,
+  assignmentsByTestId: PropTypes.array.isRequired,
   loadAssignments: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
@@ -129,7 +132,8 @@ const enhance = compose(
   withNamespaces("header"),
   connect(
     state => ({
-      assignments: getAssignmentsSelector(state),
+      assignmentsByTestId: getAssignmentsByTestSelector(state),
+      tests: getTestsSelector(state),
       currentEditableAssignment: getCurrentAssignmentSelector(state),
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state)
     }),

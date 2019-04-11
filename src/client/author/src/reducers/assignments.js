@@ -7,7 +7,7 @@ import {
 } from "../constants/actions";
 
 const initialState = {
-  entities: [],
+  entities: {},
   error: null,
   page: 1,
   limit: 20,

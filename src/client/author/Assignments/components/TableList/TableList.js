@@ -36,31 +36,32 @@ import {
   TitleCase
 } from "./styled";
 
-const convertTableData = data => ({
-  name: data[0].testName,
-  key: data[0]._id,
-  class: data.length,
-  type: data[0].type,
-  assigned: data[0].assignedBy.name,
-  status: data[0].status,
-  submitted: `${data[0].submittedNumber || 0} of ${data.length}`,
-  graded: "1",
+const convertTableData = (data, assignments) => ({
+  name: data.title,
+  key: data._id,
+  testId: data._id,
+  class: assignments.length,
+  assigned: "",
+  status: "status",
+  submitted: `${assignments.map(item => item.submittedNumber).reduce((t, c) => t + c) || 0} of ${assignments
+    .map(item => item.totalNumber)
+    .reduce((t, c) => t + c) || 0}`,
+  graded: `${assignments.map(item => item.gradedCount).reduce((t, c) => t + c) || 0}`,
   action: "",
-  classId: data[0].classId,
-  currentAssignment: data[0],
-  testType: data[0].testType
+  classId: assignments[0].classId,
+  currentAssignment: assignments[0],
+  testType: data.testType
 });
 
-const convertExpandTableData = (data, totalNumber) => ({
-  name: data.testName,
+const convertExpandTableData = (data, test) => ({
+  name: test.title,
   key: data.classId,
   assignmentId: data._id,
   class: data.className,
-  type: data.type,
   assigned: data.assignedBy.name,
   status: data.status,
-  submitted: `${data.submittedNumber || 0} of ${totalNumber}`,
-  graded: "1",
+  submitted: `${data.submittedCount || 0} of ${data.totalNumber}`,
+  graded: data.gradedCount,
   action: "",
   classId: data.classId,
   testType: data.testType
@@ -84,7 +85,6 @@ class TableList extends Component {
 
   expandedRowRender = parentData => {
     const { t } = this.props;
-    let getInfo;
     const columns = [
       {
         dataIndex: "name",
@@ -141,24 +141,19 @@ class TableList extends Component {
       }
     ];
 
-    const { assignments } = this.props;
+    const { assignmentsByTestId } = this.props;
     const expandTableList = [];
-    assignments.forEach(expandData => {
-      if (parentData.key === expandData[0]._id) {
-        expandData
-          .filter(x => !x.redirect)
-          .forEach(data => {
-            getInfo = convertExpandTableData(data, expandData.length);
-            expandTableList.push(getInfo);
-          });
-      }
+    let getInfo;
+    assignmentsByTestId[parentData.testId].forEach(assignment => {
+      getInfo = convertExpandTableData(assignment, parentData);
+      expandTableList.push(getInfo);
     });
 
     return <ExpandedTable columns={columns} dataSource={expandTableList} pagination={false} class="expandTable" />;
   };
 
   render() {
-    const { assignments, onOpenReleaseScoreSettings, history, renderFilter, t } = this.props;
+    const { assignmentsByTestId = {}, tests = [], onOpenReleaseScoreSettings, history, renderFilter, t } = this.props;
     const { details } = this.state;
     const columns = [
       {
@@ -263,7 +258,7 @@ class TableList extends Component {
           expandIconColumnIndex={-1}
           expandRowByClick={details}
           expandedRowRender={this.expandedRowRender}
-          dataSource={assignments.map(data => convertTableData(data))}
+          dataSource={tests.map(test => convertTableData(test, assignmentsByTestId[test._id]))}
         />
       </Container>
     );
@@ -271,7 +266,7 @@ class TableList extends Component {
 }
 
 TableList.propTypes = {
-  assignments: PropTypes.array.isRequired,
+  assignmentsByTestId: PropTypes.array.isRequired,
   onOpenReleaseScoreSettings: PropTypes.func,
   renderFilter: PropTypes.func,
   history: PropTypes.object

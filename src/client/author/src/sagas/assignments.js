@@ -16,17 +16,9 @@ import {
 function* receiveAssignmentsSaga() {
   try {
     const entities = yield call(assignmentApi.fetchAssigned);
-    const sort_entities = {};
-    entities.forEach(entitiy => {
-      if (sort_entities[entitiy._id] == undefined) {
-        sort_entities[entitiy._id] = [];
-      }
-      sort_entities[`${entitiy._id}`].push(entitiy);
-    });
-
     yield put({
       type: RECEIVE_ASSIGNMENTS_SUCCESS,
-      payload: { entities: Object.values(sort_entities) }
+      payload: { entities }
     });
   } catch (err) {
     const errorMessage = "Receive tests is failing";

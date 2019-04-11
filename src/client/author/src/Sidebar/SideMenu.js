@@ -4,7 +4,8 @@ import { compose } from "redux";
 import ReactOutsideEvent from "react-outside-event";
 import { tabletWidth } from "@edulastic/colors";
 import { get } from "lodash";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
+import PerfectScrollbar from "react-perfect-scrollbar";
 import { connect } from "react-redux";
 import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon } from "antd";
 import styled from "styled-components";
@@ -82,6 +83,7 @@ class SideMenu extends Component {
     height: 22px;
     fill: rgb(67, 75, 93);
     margin-right: ${() => (isSidebarCollapsed ? "0rem" : "1rem")};
+
     .ant-menu-item-active > & {
       fill: #1890ff;
     }
@@ -122,9 +124,9 @@ class SideMenu extends Component {
   render() {
     const { broken, isVisible } = this.state;
     const { windowWidth, history, isSidebarCollapsed, firstName, logout } = this.props;
-    const isPickQuestion = !!history.location.pathname.includes("pickup-questiontype");
+    // const isPickQuestion = !!history.location.pathname.includes("pickup-questiontype");
 
-    const isCollapsed = isPickQuestion || isSidebarCollapsed;
+    const isCollapsed = isSidebarCollapsed;
     const isMobile = windowWidth < 770;
     const defaultSelectedMenu = menuItems.findIndex(menuItem => `/${menuItem.path}` === history.location.pathname);
 
@@ -137,7 +139,7 @@ class SideMenu extends Component {
             </a>
           </Menu.Item>
           <Menu.Item key="1" className="removeSelectedBorder">
-            <a onClick={() => event.preventDefault()}>
+            <a onClick={event => event.preventDefault()}>
               <IconDropdown type="user" /> {isCollapsed ? "" : "MY PROFILE"}
             </a>
           </Menu.Item>
@@ -161,97 +163,99 @@ class SideMenu extends Component {
           theme="light"
           className="sideBarwrapper"
         >
-          {isMobile ? (
-            <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
-          ) : (
-            <LogoWrapper className="logoWrapper">
-              {broken ? (
-                <Col span={3}>
-                  <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
+          <PerfectScrollbar>
+            {isMobile ? (
+              <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
+            ) : (
+              <LogoWrapper className="logoWrapper">
+                {broken ? (
+                  <Col span={3}>
+                    <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
+                  </Col>
+                ) : null}
+                <Col span={18} style={{ textAlign: "left" }}>
+                  {isCollapsed ? <LogoCompact /> : <Logo />}
                 </Col>
-              ) : null}
-              <Col span={18} style={{ textAlign: "left" }}>
-                {isCollapsed ? <LogoCompact /> : <Logo />}
-              </Col>
-              {broken ? null : (
-                <Col
-                  span={6}
-                  style={{
-                    textAlign: "right",
-                    color: "#1fe3a1",
-                    right: isCollapsed ? "-5px" : "-21px",
-                    top: isCollapsed ? "0" : "-5px"
-                  }}
-                >
-                  {!isPickQuestion && !isCollapsed && (
-                    <AntIcon className="trigger" type={isCollapsed ? "right" : "left"} onClick={this.toggleMenu} />
-                  )}
-                </Col>
-              )}
-            </LogoWrapper>
-          )}
-          {!isMobile && <LogoDash />}
-          <MenuWrapper>
-            <Menu
-              theme="light"
-              defaultSelectedKeys={[defaultSelectedMenu.toString()]}
-              mode="inline"
-              onClick={item => this.handleMenu(item)}
-            >
-              {menuItems.map((menu, index) => {
-                const MenuIcon = this.renderIcon(menu.icon, isCollapsed);
-                return (
-                  <MenuItem key={index.toString()} onClick={this.toggleMenu}>
-                    <MenuIcon />
-                    {!isCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
-                  </MenuItem>
-                );
-              })}
-            </Menu>
-            <MenuFooter className="footerBottom">
-              <QuestionButton className={`questionBtn ${isCollapsed ? "active" : ""}`}>
-                <IconContainer className={isCollapsed ? "active" : ""}>
-                  <HelpIcon />
-                </IconContainer>
-                {isCollapsed || isMobile ? null : <span>Help Center</span>}
-              </QuestionButton>
-              <UserInfoButton
-                isVisible={isVisible}
-                isCollapsed={isCollapsed}
-                className={`userinfoBtn ${isCollapsed ? "active" : ""}`}
-              >
-                <Dropdown
-                  onClick={this.toggleDropdown}
-                  overlayStyle={{
-                    position: "fixed",
-                    minWidth: isCollapsed ? "60px" : "198px",
-                    maxWidth: isCollapsed ? "60px" : "0px"
-                  }}
-                  className="footerDropdown"
-                  overlay={footerDropdownMenu}
-                  trigger={["click"]}
-                  placement="topCenter"
-                  isVisible={isVisible}
-                  onVisibleChange={this.handleVisibleChange}
-                >
-                  <div>
-                    <img src={Profile} alt="Profile" />
-                    <div style={{ paddingLeft: 11 }}>
-                      {!isCollapsed && !isMobile && <UserName>{firstName || "Zack Oliver"}</UserName>}
-                      {!isCollapsed && !isMobile && <UserType>Teacher</UserType>}
-                    </div>
-                    {!isCollapsed && !isMobile && (
-                      <IconDropdown
-                        style={{ fontSize: 20, pointerEvents: "none" }}
-                        className="drop-caret"
-                        type={isVisible ? "caret-up" : "caret-down"}
-                      />
+                {broken ? null : (
+                  <Col
+                    span={6}
+                    style={{
+                      textAlign: "right",
+                      color: "#1fe3a1",
+                      right: isCollapsed ? "-5px" : "-21px",
+                      top: isCollapsed ? "0" : "-5px"
+                    }}
+                  >
+                    {!isCollapsed && (
+                      <AntIcon className="trigger" type={isCollapsed ? "right" : "left"} onClick={this.toggleMenu} />
                     )}
-                  </div>
-                </Dropdown>
-              </UserInfoButton>
-            </MenuFooter>
-          </MenuWrapper>
+                  </Col>
+                )}
+              </LogoWrapper>
+            )}
+            {!isMobile && <LogoDash />}
+            <MenuWrapper>
+              <Menu
+                theme="light"
+                defaultSelectedKeys={[defaultSelectedMenu.toString()]}
+                mode="inline"
+                onClick={item => this.handleMenu(item)}
+              >
+                {menuItems.map((menu, index) => {
+                  const MenuIcon = this.renderIcon(menu.icon, isCollapsed);
+                  return (
+                    <MenuItem key={index.toString()} onClick={this.toggleMenu}>
+                      <MenuIcon />
+                      {!isCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
+                    </MenuItem>
+                  );
+                })}
+              </Menu>
+              <MenuFooter className="footerBottom">
+                <QuestionButton className={`questionBtn ${isCollapsed ? "active" : ""}`}>
+                  <IconContainer className={isCollapsed ? "active" : ""}>
+                    <HelpIcon />
+                  </IconContainer>
+                  {isCollapsed || isMobile ? null : <span>Help Center</span>}
+                </QuestionButton>
+                <UserInfoButton
+                  isVisible={isVisible}
+                  isCollapsed={isCollapsed}
+                  className={`userinfoBtn ${isCollapsed ? "active" : ""}`}
+                >
+                  <Dropdown
+                    onClick={this.toggleDropdown}
+                    overlayStyle={{
+                      position: "fixed",
+                      minWidth: isCollapsed ? "60px" : "198px",
+                      maxWidth: isCollapsed ? "60px" : "0px"
+                    }}
+                    className="footerDropdown"
+                    overlay={footerDropdownMenu}
+                    trigger={["click"]}
+                    placement="topCenter"
+                    isVisible={isVisible}
+                    onVisibleChange={this.handleVisibleChange}
+                  >
+                    <div>
+                      <img src={Profile} alt="Profile" />
+                      <div style={{ paddingLeft: 11 }}>
+                        {!isCollapsed && !isMobile && <UserName>{firstName || "Zack Oliver"}</UserName>}
+                        {!isCollapsed && !isMobile && <UserType>Teacher</UserType>}
+                      </div>
+                      {!isCollapsed && !isMobile && (
+                        <IconDropdown
+                          style={{ fontSize: 20, pointerEvents: "none" }}
+                          className="drop-caret"
+                          type={isVisible ? "caret-up" : "caret-down"}
+                        />
+                      )}
+                    </div>
+                  </Dropdown>
+                </UserInfoButton>
+              </MenuFooter>
+            </MenuWrapper>
+          </PerfectScrollbar>
         </SideBar>
       </FixedSidebar>
     );
@@ -288,22 +292,34 @@ const FixedSidebar = styled.div`
   bottom: 0px;
   z-index: 1000;
   cursor: ${props => (props.isCollapsed ? "pointer" : "initial")};
-  > * {
-    pointer-events: ${props => (props.isCollapsed ? "none" : "all")};
+
+  .scrollbar-container {
+    max-height: 100vh;
+
+    > * {
+      pointer-events: ${props => (props.isCollapsed ? "none" : "all")};
+    }
   }
+
+  .ant-layout-sider-children {
+    height: 100vh !important;
+  }
+
   @media (max-width: ${tabletWidth}) {
     z-index: 1000;
     max-width: 245px;
   }
 `;
 const SideBar = styled(Layout.Sider)`
-  height: 100vh;
+  min-height: 100vh;
   width: 245px;
   max-width: 245px;
   min-width: 245px;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
   background-color: #fbfafc;
   z-index: 22;
+  padding-bottom: 0;
+
   &.ant-layout-sider-collapsed .logoWrapper {
     padding: 22.5px 20px;
   }
@@ -321,6 +337,7 @@ const SideBar = styled(Layout.Sider)`
     margin: 0 auto;
     justify-content: center;
     margin-bottom: 23px;
+
     &:hover {
       background: #1890ff;
     }
@@ -355,6 +372,7 @@ const SideBar = styled(Layout.Sider)`
     min-width: 0px;
     width: 0px;
     background-color: rgba(251, 250, 252, 0.94);
+
     .mobileCloseIcon {
       position: absolute;
       top: 0;
@@ -365,6 +383,7 @@ const SideBar = styled(Layout.Sider)`
       display: flex;
       align-items: center;
       justify-content: center;
+
       svg {
         width: 20px !important;
         height: 20px !important;
@@ -391,10 +410,15 @@ const LogoDash = styled.div`
 
 const MenuWrapper = styled.div`
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   flex-direction: column;
-  height: calc(100vh - 89px);
   padding: 6px 0px 10px;
+  min-height: calc(100% - 100px);
+
+  @media (max-width: ${tabletWidth}) {
+    min-height: 100%;
+  }
 `;
 
 const Menu = styled(AntMenu)`
@@ -412,6 +436,7 @@ const Menu = styled(AntMenu)`
       }
     }
   }
+
   &.ant-menu-vertical .ant-menu-item:after,
   &.ant-menu-vertical-left .ant-menu-item:after,
   &.ant-menu-vertical-right .ant-menu-item:after,
@@ -424,11 +449,10 @@ const Menu = styled(AntMenu)`
     border-right: 0px;
   }
   &.ant-menu-inline {
-    height: calc(100vh - 270px);
     overflow: auto;
     
     @media (max-width: ${tabletWidth}) {
-      height: calc(100vh - 105px);
+      height: auto;
     }
   }
   &.ant-menu-inline .ant-menu-item {
@@ -450,12 +474,6 @@ const Menu = styled(AntMenu)`
   }
   &.ant-menu-inline-collapsed {
     width: 100px;
-    height: calc(100vh - 270px);
-    overflow: auto;
-    
-    @media (max-width: ${tabletWidth}) {
-      height: calc(100vh - 105px);
-    }
   }
   &.ant-menu-inline-collapsed > .ant-menu-item {
     display: flex;
@@ -531,12 +549,14 @@ const FooterDropDown = styled.div`
     border-radius: 15px 15px 0px 0px;
     overflow: hidden;
     max-width: 100%;
+
     &.ant-menu-inline-collapsed {
       width: 84px;
       height: auto;
       margin-top: ${props => (props.isCollapsed ? "0" : "10px")};
       margin-left: ${props => (props.isCollapsed ? "0" : "8px")};
       box-shadow: ${props => (props.isCollapsed ? "0 -3px 5px 0 rgba(0,0,0,0.07)" : "none")};
+
       li {
         &.ant-menu-item {
           margin: 0px;
@@ -577,11 +597,13 @@ const FooterDropDown = styled.div`
       width: 60px;
       margin: 0 auto;
       box-shadow: 0 -4px 5px 0 rgba(0, 0, 0, 0.07) !important;
+
       li {
         padding: 0 !important;
         display: flex;
         align-items: center;
         justify-content: center;
+
         a {
           height: 20px;
           font-size: 0 !important;
@@ -592,9 +614,10 @@ const FooterDropDown = styled.div`
 `;
 
 const MenuFooter = styled.div`
-  position: fixed;
-  bottom: 10px;
-  width: 245px;
+  position: static;
+  width: 100%;
+  margin-top: auto;
+
   @media (max-width: ${tabletWidth}) {
     display: flex;
   }
@@ -610,6 +633,7 @@ const QuestionButton = styled.div`
   align-items: center;
   position: relative;
   overflow: hidden;
+
   span {
     font-weight: 600;
   }
@@ -625,6 +649,7 @@ const QuestionButton = styled.div`
   @media (max-width: ${tabletWidth}) {
     width: 60px;
     margin: 0 auto 0 18px;
+
     &.active {
       opacity: 0;
       pointer-events: none;
@@ -634,6 +659,7 @@ const QuestionButton = styled.div`
 
 const UserInfoButton = styled.div`
   cursor: pointer;
+
   &.active {
     padding: 0;
     background: transparent;
@@ -641,10 +667,12 @@ const UserInfoButton = styled.div`
     width: 60px;
     margin: 0 auto;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+
     img {
       box-shadow: none;
     }
   }
+
   .footerDropdown {
     width: auto;
     height: 60px;
@@ -678,6 +706,7 @@ const UserInfoButton = styled.div`
     border: 0px;
     color: #ffffff;
   }
+
   @media (max-width: ${tabletWidth}) {
     width: 60px;
     padding: 0;
@@ -685,6 +714,7 @@ const UserInfoButton = styled.div`
     background: ${props => (props.isVisible ? "#fff" : "transparent")};
     border-radius: ${props => (props.isVisible ? "0 0 15px 15px" : "50%")};
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+
     &.active {
       opacity: 0;
       pointer-events: none;
@@ -723,6 +753,7 @@ const IconContainer = styled.span`
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   border-radius: 50%;
   margin-right: 11px;
+
   &.active {
     margin-right: 0;
     box-shadow: none;

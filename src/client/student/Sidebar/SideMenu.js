@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import ReactOutsideEvent from "react-outside-event";
+import PerfectScrollbar from "react-perfect-scrollbar";
 import { withNamespaces } from "@edulastic/localization";
 import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -163,100 +164,102 @@ class SideMenu extends Component {
           className="sideBarwrapper"
           data-cy="side-wrapper"
         >
-          {isMobile ? (
-            <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
-          ) : (
-            <LogoWrapper className="logoWrapper">
-              {broken ? (
-                <Col span={3}>
-                  <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
+          <PerfectScrollbar>
+            {isMobile ? (
+              <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
+            ) : (
+              <LogoWrapper className="logoWrapper">
+                {broken ? (
+                  <Col span={3}>
+                    <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
+                  </Col>
+                ) : null}
+                <Col span={18} style={{ textAlign: "left" }}>
+                  {isSidebarCollapsed ? <LogoCompact /> : <Logo />}
                 </Col>
-              ) : null}
-              <Col span={18} style={{ textAlign: "left" }}>
-                {isSidebarCollapsed ? <LogoCompact /> : <Logo />}
-              </Col>
-              {broken ? null : (
-                <Col
-                  span={6}
-                  style={{
-                    textAlign: "right",
-                    color: "#1fe3a1",
-                    right: isSidebarCollapsed ? "-5px" : "-21px",
-                    top: isSidebarCollapsed ? "0" : "-5px"
-                  }}
-                >
-                  {!isSidebarCollapsed && (
-                    <AntIcon
-                      className="trigger"
-                      type={isSidebarCollapsed ? "right" : "left"}
-                      onClick={this.toggleMenu}
-                    />
-                  )}
-                </Col>
-              )}
-            </LogoWrapper>
-          )}
-          <LogoDash />
-          <MenuWrapper isSidebarCollapsed={isSidebarCollapsed}>
-            {isMobile && isSidebarCollapsed ? <IconBars type="bars" onClick={this.toggleMenu} /> : null}
-            <Menu defaultSelectedKeys={[menuIndex.toString()]} mode="inline" onClick={this.handleMenu}>
-              {menuItems.map((menu, index) => {
-                const MenuIcon = this.renderIcon(menu.icon, isSidebarCollapsed);
-                return (
-                  <MenuItem key={index.toString()} data-cy={`label${index}`} onClick={this.toggleMenu}>
-                    <MenuIcon />
-                    {!isSidebarCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
-                  </MenuItem>
-                );
-              })}
-            </Menu>
-            <MenuFooter className="footerBottom">
-              <QuestionButton className={`questionBtn ${isSidebarCollapsed ? "active" : ""}`}>
-                <IconContainer className={isSidebarCollapsed ? "active" : ""}>
-                  <HelpIcon />
-                </IconContainer>
-                {isSidebarCollapsed || isMobile ? null : <span>{t("common.helpButtonText")}</span>}
-              </QuestionButton>
-
-              <UserInfoButton
-                data-cy="userInfo"
-                isVisible={isVisible}
-                isSidebarCollapsed={isSidebarCollapsed}
-                className={`userinfoBtn ${isSidebarCollapsed ? "active" : ""}`}
-              >
-                <DropdownBtn
-                  onClick={this.toggleDropdown}
-                  overlayStyle={{
-                    position: "fixed",
-                    minWidth: isSidebarCollapsed ? "60px" : "198px",
-                    maxWidth: isSidebarCollapsed ? "60px" : "0px"
-                  }}
-                  className="footerDropdown"
-                  overlay={footerDropdownMenu}
-                  trigger={["click"]}
-                  placement="topCenter"
-                  isVisible={isVisible}
-                  isSidebarCollapsed={isSidebarCollapsed}
-                  onVisibleChange={this.handleVisibleChange}
-                >
-                  <div>
-                    <img src={Profile} alt="Profile" />
-                    <div style={{ paddingLeft: 11 }}>
-                      {!isSidebarCollapsed && <UserName>{firstName || "Zack Oliver"}</UserName>}
-                      {!isSidebarCollapsed && <UserType>{t("common.userRoleStudent")}</UserType>}
-                    </div>
-                    {!isSidebarCollapsed && !isMobile && (
-                      <IconDropdown
-                        style={{ fontSize: 20, pointerEvents: "none" }}
-                        className="drop-caret"
-                        type={isVisible ? "caret-up" : "caret-down"}
+                {broken ? null : (
+                  <Col
+                    span={6}
+                    style={{
+                      textAlign: "right",
+                      color: "#1fe3a1",
+                      right: isSidebarCollapsed ? "-5px" : "-21px",
+                      top: isSidebarCollapsed ? "0" : "-5px"
+                    }}
+                  >
+                    {!isSidebarCollapsed && (
+                      <AntIcon
+                        className="trigger"
+                        type={isSidebarCollapsed ? "right" : "left"}
+                        onClick={this.toggleMenu}
                       />
                     )}
-                  </div>
-                </DropdownBtn>
-              </UserInfoButton>
-            </MenuFooter>
-          </MenuWrapper>
+                  </Col>
+                )}
+              </LogoWrapper>
+            )}
+            <LogoDash />
+            <MenuWrapper isSidebarCollapsed={isSidebarCollapsed}>
+              {isMobile && isSidebarCollapsed ? <IconBars type="bars" onClick={this.toggleMenu} /> : null}
+              <Menu defaultSelectedKeys={[menuIndex.toString()]} mode="inline" onClick={this.handleMenu}>
+                {menuItems.map((menu, index) => {
+                  const MenuIcon = this.renderIcon(menu.icon, isSidebarCollapsed);
+                  return (
+                    <MenuItem key={index.toString()} data-cy={`label${index}`} onClick={this.toggleMenu}>
+                      <MenuIcon />
+                      {!isSidebarCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
+                    </MenuItem>
+                  );
+                })}
+              </Menu>
+              <MenuFooter className="footerBottom">
+                <QuestionButton className={`questionBtn ${isSidebarCollapsed ? "active" : ""}`}>
+                  <IconContainer className={isSidebarCollapsed ? "active" : ""}>
+                    <HelpIcon />
+                  </IconContainer>
+                  {isSidebarCollapsed || isMobile ? null : <span>{t("common.helpButtonText")}</span>}
+                </QuestionButton>
+
+                <UserInfoButton
+                  data-cy="userInfo"
+                  isVisible={isVisible}
+                  isSidebarCollapsed={isSidebarCollapsed}
+                  className={`userinfoBtn ${isSidebarCollapsed ? "active" : ""}`}
+                >
+                  <DropdownBtn
+                    onClick={this.toggleDropdown}
+                    overlayStyle={{
+                      position: "fixed",
+                      minWidth: isSidebarCollapsed ? "60px" : "198px",
+                      maxWidth: isSidebarCollapsed ? "60px" : "0px"
+                    }}
+                    className="footerDropdown"
+                    overlay={footerDropdownMenu}
+                    trigger={["click"]}
+                    placement="topCenter"
+                    isVisible={isVisible}
+                    isSidebarCollapsed={isSidebarCollapsed}
+                    onVisibleChange={this.handleVisibleChange}
+                  >
+                    <div>
+                      <img src={Profile} alt="Profile" />
+                      <div style={{ paddingLeft: 11 }}>
+                        {!isSidebarCollapsed && <UserName>{firstName || "Zack Oliver"}</UserName>}
+                        {!isSidebarCollapsed && <UserType>{t("common.userRoleStudent")}</UserType>}
+                      </div>
+                      {!isSidebarCollapsed && !isMobile && (
+                        <IconDropdown
+                          style={{ fontSize: 20, pointerEvents: "none" }}
+                          className="drop-caret"
+                          type={isVisible ? "caret-up" : "caret-down"}
+                        />
+                      )}
+                    </div>
+                  </DropdownBtn>
+                </UserInfoButton>
+              </MenuFooter>
+            </MenuWrapper>
+          </PerfectScrollbar>
         </SideBar>
       </FixedSidebar>
     );
@@ -298,9 +301,18 @@ const FixedSidebar = styled.div`
   z-index: 1000;
   cursor: ${props => (props.isSidebarCollapsed ? "pointer" : "initial")};
 
-  > * {
-    pointer-events: ${props => (props.isSidebarCollapsed ? "none" : "all")};
+  .scrollbar-container {
+    max-height: 100vh;
+
+    > * {
+      pointer-events: ${props => (props.isSidebarCollapsed ? "none" : "all")};
+    }
   }
+
+  .ant-layout-sider-children {
+    height: 100vh !important;
+  }
+
   @media (max-width: ${tabletWidth}) {
     z-index: 1000;
     max-width: 245px;
@@ -308,13 +320,14 @@ const FixedSidebar = styled.div`
 `;
 
 const SideBar = styled(Layout.Sider)`
-  height: 100vh;
+  min-height: 100vh;
   width: 245px;
   max-width: 245px;
   min-width: 245px;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
   background-color: #fbfafc;
   z-index: 22;
+  padding-bottom: 0;
 
   &.ant-layout-sider-collapsed .logoWrapper {
     padding: 22.5px 20px;
@@ -408,10 +421,11 @@ const MenuWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  height: calc(100vh - 89px);
   padding: 6px 0px 10px;
+  min-height: calc(100% - 100px);
 
   @media (max-width: ${tabletWidth}) {
+    min-height: 100%;
     display: ${props => (props.isSidebarCollapsed ? "none" : "flex")};
   }
 `;
@@ -444,11 +458,10 @@ const Menu = styled(AntMenu)`
     border-right: 0px;
   }
   &.ant-menu-inline {
-    height: calc(100vh - 270px);
     overflow: auto;
     
     @media (max-width: ${tabletWidth}) {
-      height: calc(100vh - 105px);
+      height: auto;
     }
   }
   &.ant-menu-inline .ant-menu-item {
@@ -470,12 +483,6 @@ const Menu = styled(AntMenu)`
   }
   &.ant-menu-inline-collapsed {
     width: 100px;
-    height: calc(100vh - 270px);
-    overflow: auto;
-    
-    @media (max-width: ${tabletWidth}) {
-      height: calc(100vh - 105px);
-    }
   }
   &.ant-menu-inline-collapsed > .ant-menu-item {
     display: flex;
@@ -530,9 +537,9 @@ const MenuItem = styled(AntMenu.Item)`
 `;
 
 const MenuFooter = styled.div`
-  position: fixed;
-  bottom: 10px;
-  width: 245px;
+  position: static;
+  width: 100%;
+  margin-top: auto;
 
   @media (max-width: ${tabletWidth}) {
     display: flex;

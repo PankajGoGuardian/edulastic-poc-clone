@@ -124,7 +124,6 @@ class Container extends Component {
       }
     ];
 
-  
     return (
       <Content showMobileView={mobileViewShow}>
         <Header title={t("component.pickupcomponent.headertitle")} link={this.link} toggleSideBar={toggleSideBar} />

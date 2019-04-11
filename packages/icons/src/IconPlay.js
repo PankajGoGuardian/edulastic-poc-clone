@@ -3,9 +3,8 @@ import withIconStyles from "./HOC/withIconStyles";
 import SVG from "./common/SVG";
 
 const IconPlay = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" {...props}>
-    <path d="M50,10c22.1,0,40,17.9,40,40S72.1,90,50,90S10,72.1,10,50S27.9,10,50,10 M50,0C22.4,0,0,22.4,0,50  s22.4,50,50,50s50-22.4,50-50S77.6,0,50,0L50,0z" />
-    <polygon points="38.7,27.2 73.6,49.8 38.7,72.4 " />
+  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19" {...props}>
+    <path d="M9.5,0A9.5,9.5,0,1,0,19,9.5,9.51,9.51,0,0,0,9.5,0Zm0,17.273A7.773,7.773,0,1,1,17.273,9.5,7.781,7.781,0,0,1,9.5,17.273ZM8.2,12.091,12.091,9.5,8.2,6.909Z" />
   </SVG>
 );
 

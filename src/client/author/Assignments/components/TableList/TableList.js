@@ -43,7 +43,7 @@ const convertTableData = (data, assignments) => ({
   class: assignments.length,
   assigned: "",
   status: "status",
-  submitted: `${assignments.map(item => item.submittedNumber).reduce((t, c) => t + c) || 0} of ${assignments
+  submitted: `${assignments.map(item => item.submittedCount).reduce((t, c) => t + c) || 0} of ${assignments
     .map(item => item.totalNumber)
     .reduce((t, c) => t + c) || 0}`,
   graded: `${assignments.map(item => item.gradedCount).reduce((t, c) => t + c) || 0}`,
@@ -145,8 +145,10 @@ class TableList extends Component {
     const expandTableList = [];
     let getInfo;
     assignmentsByTestId[parentData.testId].forEach(assignment => {
-      getInfo = convertExpandTableData(assignment, parentData);
-      expandTableList.push(getInfo);
+      if (!assignment.redirect) {
+        getInfo = convertExpandTableData(assignment, parentData);
+        expandTableList.push(getInfo);
+      }
     });
 
     return <ExpandedTable columns={columns} dataSource={expandTableList} pagination={false} class="expandTable" />;
@@ -249,6 +251,8 @@ class TableList extends Component {
         )
       }
     ];
+
+    const getAssignmentsByTestId = Id => assignmentsByTestId[Id].filter(item => !item.redirect);
     return (
       <Container>
         <TableData
@@ -258,7 +262,7 @@ class TableList extends Component {
           expandIconColumnIndex={-1}
           expandRowByClick={details}
           expandedRowRender={this.expandedRowRender}
-          dataSource={tests.map(test => convertTableData(test, assignmentsByTestId[test._id]))}
+          dataSource={tests.map(test => convertTableData(test, getAssignmentsByTestId(test._id)))}
         />
       </Container>
     );

@@ -4,6 +4,7 @@ import { Table, Input, Popconfirm, Form, Icon, Radio, Select } from "antd";
 
 const Option = Select.Option;
 
+import StandardsProficiencyEditableCell from "./StandardsProficiencyEditableCell/StandardsProficiencyEditableCell";
 import ScoreContentDiv from "./ScoreContentDiv/ScoreContentDiv";
 
 import {
@@ -16,104 +17,22 @@ import {
   StyledUl,
   StyledDescription,
   StyledMasterDiv,
-  StyledScoreSelect,
-  StyledMasteryLevelSelect,
   StyledButton,
   StyledSaveButton,
   StyledAddButton,
-  StyledRadioGroup
+  StyledRadioGroup,
+  StyledAverageRadioDiv,
+  StyledAverageInput,
+  StyledLabel
 } from "./styled";
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
 
-class EditableCell extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const { editing, dataIndex, title, inputType, record, index, ...restProps } = this.props;
-    return (
-      <EditableContext.Consumer>
-        {form => {
-          const { getFieldDecorator } = form;
-
-          return (
-            <td {...restProps}>
-              {editing ? (
-                <FormItem style={{ margin: 0 }}>
-                  {inputType === "shortName" &&
-                    getFieldDecorator(dataIndex, {
-                      rules: [
-                        {
-                          required: true,
-                          message: "Please Input " + title + "!"
-                        }
-                      ],
-                      initialValue: record[dataIndex]
-                    })(<Input />)}
-                  {inputType === "threshold" &&
-                    getFieldDecorator(dataIndex, {
-                      rules: [
-                        {
-                          required: true,
-                          message: "Please Input " + title + "!"
-                        }
-                      ],
-                      initialValue: record[dataIndex]
-                    })(<Input />)}
-                  {inputType === "score" &&
-                    getFieldDecorator(dataIndex, {
-                      rules: [
-                        {
-                          required: true,
-                          message: "Please Input " + title + "!"
-                        }
-                      ],
-                      initialValue: record[dataIndex]
-                    })(
-                      <StyledScoreSelect>
-                        <Option value={4}>
-                          <ScoreContentDiv text={4} />
-                        </Option>
-                        <Option value={3}>
-                          <ScoreContentDiv text={3} />
-                        </Option>
-                        <Option value={2}>
-                          <ScoreContentDiv text={2} />
-                        </Option>
-                        <Option value={1}>
-                          <ScoreContentDiv text={1} />
-                        </Option>
-                      </StyledScoreSelect>
-                    )}
-                  {inputType === "masteryLevel" &&
-                    getFieldDecorator(dataIndex, {
-                      rules: [
-                        {
-                          required: true,
-                          message: "Please Input " + title + "!"
-                        }
-                      ],
-                      initialValue: record[dataIndex]
-                    })(<Input />)}
-                </FormItem>
-              ) : (
-                restProps.children
-              )}
-            </td>
-          );
-        }}
-      </EditableContext.Consumer>
-    );
-  }
-}
-
 class StandardsProficiencyTable extends React.Component {
   constructor(props) {
     super(props);
-    const { scale } = this.props;
+    const { scale, calcType, calcAttribute } = this.props.standardsProficiencyData;
     const data = [];
     for (let i = 0; i < scale.length; i++) {
       data.push({
@@ -130,7 +49,10 @@ class StandardsProficiencyTable extends React.Component {
       data,
       editingKey: "",
       isAdding: false,
-      isChangeState: false
+      isChangeState: false,
+      calcType: calcType,
+      calcDecayingAttr: calcType === "DECAYING_AVERAGE" ? calcAttribute : 0,
+      calcMovingAvrAttr: calcType === "MOVING_AVERAGE" ? calcAttribute : 0
     };
 
     this.columns = [
@@ -274,26 +196,50 @@ class StandardsProficiencyTable extends React.Component {
   saveScale = e => {
     if (this.state.isAdding) return;
 
+    const dataSource = [];
     const { data } = this.state;
     data.map(row => {
-      delete row.key;
-      delete row._id;
+      dataSource.push({
+        score: row.score,
+        masteryLevel: row.masteryLevel,
+        shortName: row.shortName,
+        threshold: row.threshold
+      });
     });
 
+    const { calcType } = this.state;
     const updateData = {
-      scale: data,
-      calcType: this.state.calcType
+      scale: dataSource,
+      calcType: calcType
     };
+
+    if (calcType === "DECAYING_AVERAGE") {
+      const { calcDecayingAttr } = this.state;
+      updateData.calcAttribute = calcDecayingAttr;
+    } else if (calcType === "MOVING_AVERAGE") {
+      const { calcMovingAvrAttr } = this.state;
+      updateData.calcAttribute = calcMovingAvrAttr;
+    }
 
     this.setState({ isChangeState: false });
 
     this.props.updateStandardsProficiency(updateData);
   };
 
+  onChangeCalcAttr = (e, keyName) => {
+    const { value } = e.target;
+    const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
+    if ((!Number.isNaN(value) && reg.test(value)) || value === "" || value === "-") {
+      if (keyName === "DECAYING_AVERAGE") this.setState({ calcDecayingAttr: value });
+      else if (keyName === "MOVING_AVERAGE") this.setState({ calcMovingAvrAttr: value });
+      this.setState({ isChangeState: true });
+    }
+  };
+
   render() {
     const components = {
       body: {
-        cell: EditableCell
+        cell: StandardsProficiencyEditableCell
       }
     };
 
@@ -308,12 +254,13 @@ class StandardsProficiencyTable extends React.Component {
           inputType: col.dataIndex,
           dataIndex: col.dataIndex,
           title: col.title,
-          editing: this.isEditing(record)
+          editing: this.isEditing(record),
+          context: EditableContext
         })
       };
     });
 
-    const { isChangeState } = this.state;
+    const { isChangeState, calcType, calcDecayingAttr, calcMovingAvrAttr } = this.state;
 
     return (
       <StyledTableContainer>
@@ -351,14 +298,39 @@ class StandardsProficiencyTable extends React.Component {
             <li>Standards based scores persist across classes(they do NOT reset automatically)</li>
             <li>Mastery score is rounded up when the calcaulated score is at/above mid point between two levels</li>
           </StyledUl>
-          <StyledRadioGroup onChange={this.changeCalcType}>
-            <Radio value="most recent">Most Recent</Radio>
-            <Radio value="max score">Max Score</Radio>
-            <Radio value="mode score">Mode Score</Radio>
-            <Radio value="simple average">Simple Average</Radio>
-            <Radio value="decaying average">Decaying Average</Radio>
-            <Radio value="moving average">Moving Average</Radio>
-            <Radio value="power law">Power Law</Radio>
+          <StyledRadioGroup defaultValue={calcType} onChange={this.changeCalcType}>
+            <Radio value="MOST_RECENT">Most Recent</Radio>
+            <Radio value="MAX_SCORE">Max Score</Radio>
+            <Radio value="MODE_SCORE">Mode Score</Radio>
+            <Radio value="AVERAGE">Simple Average</Radio>
+            <StyledAverageRadioDiv>
+              <Radio value="DECAYING_AVERAGE">Decaying Average</Radio>
+              {calcType === "DECAYING_AVERAGE" && (
+                <React.Fragment>
+                  <StyledLabel>Decay %</StyledLabel>
+                  <StyledAverageInput
+                    defaultValue={calcDecayingAttr}
+                    value={calcDecayingAttr}
+                    maxLength={2}
+                    onChange={e => this.onChangeCalcAttr(e, "DECAYING_AVERAGE")}
+                  />
+                </React.Fragment>
+              )}
+            </StyledAverageRadioDiv>
+            <StyledAverageRadioDiv>
+              <Radio value="MOVING_AVERAGE">Moving Average</Radio>
+              {calcType === "MOVING_AVERAGE" && (
+                <React.Fragment>
+                  <StyledLabel>Not of Assesments</StyledLabel>
+                  <StyledAverageInput
+                    defaultValue={calcMovingAvrAttr}
+                    value={calcMovingAvrAttr}
+                    onChange={e => this.onChangeCalcAttr(e, "MOVING_AVERAGE")}
+                  />
+                </React.Fragment>
+              )}
+            </StyledAverageRadioDiv>
+            <Radio value="POWER_LOW">Power Law</Radio>
           </StyledRadioGroup>
         </StyledMasterDiv>
       </StyledTableContainer>

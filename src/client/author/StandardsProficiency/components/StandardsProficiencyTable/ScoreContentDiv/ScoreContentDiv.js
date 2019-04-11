@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 
 import { StyledContent, ScoreSpan1, ScoreSpan2, ScoreSpan3, ScoreSpan4, SpanValue } from "./styled";
 

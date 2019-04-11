@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Select, Button, Radio } from "antd";
+import { Select, Button, Radio, Input } from "antd";
 const RadioGroup = Radio.Group;
 
 export const StyledTableContainer = styled.div`
@@ -36,15 +36,9 @@ export const StyledH3 = styled.h3``;
 
 export const StyledDescription = styled.p``;
 
-export const StyledScoreSelect = styled(Select)``;
-
 export const StyledButton = styled.a`
   margin-right: 20px;
   font-size: 20px;
-`;
-
-export const StyledMasteryLevelSelect = styled(Select)`
-  width: 100%;
 `;
 
 export const SaveButtonDiv = styled.div`
@@ -96,4 +90,19 @@ export const StyledRadioGroup = styled(RadioGroup)`
   .ant-radio-wrapper {
     margin-bottom: 5px;
   }
+`;
+
+export const StyledAverageRadioDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+export const StyledLabel = styled.label`
+  margin-right: 5px;
+`;
+
+export const StyledAverageInput = styled(Input)`
+  width: 80px;
+  min-width: 80px;
+  margin-top: -3px;
 `;

@@ -37,7 +37,10 @@ class StandardsProficiency extends Component {
       orgId: this.props.standardsProficiency.orgId,
       scale: standardsProficiencyData.scale,
       orgType: this.props.standardsProficiency.orgType,
-      calcType: standardsProficiencyData.calcType
+      calcType: standardsProficiencyData.calcType,
+      calcAttribute: standardsProficiencyData.calcAttribute,
+      decay: this.props.standardsProficiency.decay,
+      noOfAssessment: this.props.standardsProficiency.noOfAssessment
     };
     this.props.updateStandardsProficiency({ body: data });
   };
@@ -58,7 +61,7 @@ class StandardsProficiency extends Component {
             )}
             {Object.keys(standardsProficiency).length > 0 && standardsProficiency.scale.length > 0 && (
               <StandardsProficiencyTable
-                scale={standardsProficiency.scale}
+                standardsProficiencyData={standardsProficiency}
                 updateStandardsProficiency={this.updateStandardsProficiency}
               />
             )}

@@ -246,6 +246,7 @@ function* receiveItemSaga({ payload }) {
       type: RECEIVE_ITEM_DETAIL_SUCCESS,
       payload: item
     });
+
     if (payload.params.addItem) {
       yield put(addItemsQuestionAction(questions));
     } else {

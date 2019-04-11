@@ -58,7 +58,7 @@ class Container extends Component {
     const { getItemDetailById, match } = this.props;
     getItemDetailById(match.params.id, { data: true, validation: true });
     if (match.params.testId) {
-      setRedirectTestAction(match.params.testId);
+      this.props.setRedirectTest(match.params.testId);
     }
   }
 

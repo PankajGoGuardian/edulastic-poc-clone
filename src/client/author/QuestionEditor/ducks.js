@@ -1,10 +1,10 @@
 import { createSelector } from "reselect";
 import { testItemsApi, evaluateApi, questionsApi } from "@edulastic/api";
 import { call, put, all, takeEvery, takeLatest, select } from "redux-saga/effects";
-import { cloneDeep, values } from "lodash";
+import { cloneDeep, values, get } from "lodash";
 import { message } from "antd";
 import { questionType } from "@edulastic/constants";
-import { getItemDetailSelector, UPDATE_ITEM_DETAIL_SUCCESS } from "../ItemDetail/ducks";
+import { getItemDetailSelector, UPDATE_ITEM_DETAIL_SUCCESS, setRedirectTestAction } from "../ItemDetail/ducks";
 import { history } from "../../configureStore";
 import {
   UPDATE_QUESTION,
@@ -237,6 +237,8 @@ export const getQuestionIds = item => {
   return questionIds;
 };
 
+export const redirectTestIdSelector = state => get(state, "itemDetail.redirectTestId", false);
+
 function* saveQuestionSaga() {
   try {
     const question = yield select(getCurrentQuestionSelector);
@@ -283,7 +285,12 @@ function* saveQuestionSaga() {
         resources: currentResources
       }
     };
-    const item = yield call(testItemsApi.updateById, itemDetail._id, data);
+    const redirectTestId = yield select(redirectTestIdSelector);
+    console.log("redirectTestId", redirectTestId);
+    const { testId, ...item } = yield call(testItemsApi.updateById, itemDetail._id, data, redirectTestId);
+    if (testId) {
+      yield put(setRedirectTestAction(testId));
+    }
     yield put({
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item }
@@ -293,7 +300,7 @@ function* saveQuestionSaga() {
 
     if (itemDetail) {
       yield call(history.push, {
-        pathname: `/author/items/${itemDetail._id}/item-detail`,
+        pathname: `/author/items/${item._id}/item-detail`,
         state: {
           backText: "Back to item list",
           backUrl: "/author/items",

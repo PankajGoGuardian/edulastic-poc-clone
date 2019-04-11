@@ -3,22 +3,13 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
-
+import { isEmpty, size } from "lodash";
 // actions
-import {
-  receiveGradeBookdAction,
-  receiveClassResponseAction,
-  receiveTestActivitydAction,
-  receiveStudentResponseAction
-} from "../../../src/actions/classBoard";
+import { receiveTestActivitydAction, clearFeedbackResponseAction } from "../../../src/actions/classBoard";
+
 // ducks
-import {
-  getGradeBookSelector,
-  getTestActivitySelector,
-  getAdditionalDataSelector,
-  getClassResponseSelector,
-  getStudentResponseSelector
-} from "../../../ClassBoard/ducks";
+import { getTestActivitySelector, getAdditionalDataSelector } from "../../../ClassBoard/ducks";
+import { getFeedbackResponseSelector } from "../../../src/selectors/feedback";
 // components
 import ScoreTable from "../ScoreTable/ScoreTable";
 import ScoreCard from "../ScoreCard/ScoreCard";
@@ -38,20 +29,17 @@ class ExpressGrader extends Component {
   }
 
   componentDidMount() {
-    const { loadGradebook, loadTestActivity, loadStudentResponses, match } = this.props;
-    const { assignmentId, classId, testActivityId } = match.params;
-    loadGradebook(assignmentId, classId);
-    loadTestActivity(assignmentId, classId);
-    loadStudentResponses({ testActivityId, groupId: classId });
+    const { loadTestActivity, match, testActivity, additionalData } = this.props;
+    if (!size(testActivity) && isEmpty(additionalData)) {
+      const { assignmentId, classId } = match.params;
+      loadTestActivity(assignmentId, classId);
+    }
   }
 
-  static getDerivedStateFromProps(props, state) {
-    const { loadClassResponses, additionalData: { testId } = {} } = props;
-    if (testId !== state.testId) {
-      loadClassResponses({ testId });
-      return { testId };
-    }
-    return null;
+  static getDerivedStateFromProps(props) {
+    const { changedFeedback } = props;
+    const newState = { changedFeedback: !isEmpty(changedFeedback) };
+    return newState;
   }
 
   handleCreate = () => {
@@ -68,6 +56,19 @@ class ExpressGrader extends Component {
   };
 
   hideQuestionModal = () => {
+    const { changedFeedback } = this.state;
+    if (changedFeedback) {
+      const {
+        clearFeedbackResponse,
+        loadTestActivity,
+        match: {
+          params: { assignmentId, classId }
+        }
+      } = this.props;
+
+      loadTestActivity(assignmentId, classId);
+      clearFeedbackResponse();
+    }
     this.setState({
       isVisibleModal: false,
       record: null
@@ -77,10 +78,9 @@ class ExpressGrader extends Component {
   isMobile = () => window.innerWidth < 480;
 
   render() {
-    const { testActivity, studentResponse, additionalData, match } = this.props;
+    const { testActivity, additionalData, match } = this.props;
     const { isVisibleModal, record, tableData } = this.state;
     const { assignmentId, classId } = match.params;
-    const questionActivities = studentResponse !== undefined ? studentResponse.questionActivities : [];
     const isMobile = this.isMobile();
     return (
       <div>
@@ -97,15 +97,9 @@ class ExpressGrader extends Component {
             {additionalData && <a>{additionalData.testName}</a>} / {additionalData && <a>{additionalData.className}</a>}
           </PaginationInfo>
         </StyledFlexContainer>
-        {!isMobile && (
-          <ScoreTable
-            testActivity={testActivity}
-            questionActivities={questionActivities}
-            showQuestionModal={this.showQuestionModal}
-          />
-        )}
+        {!isMobile && <ScoreTable testActivity={testActivity} showQuestionModal={this.showQuestionModal} />}
 
-        {isMobile && <ScoreCard testActivity={testActivity} questionActivities={questionActivities} />}
+        {isMobile && <ScoreCard testActivity={testActivity} />}
 
         {isVisibleModal && (
           <QuestionModal
@@ -124,17 +118,13 @@ class ExpressGrader extends Component {
 const enhance = compose(
   connect(
     state => ({
-      gradebook: getGradeBookSelector(state),
       testActivity: getTestActivitySelector(state),
       additionalData: getAdditionalDataSelector(state),
-      classResponse: getClassResponseSelector(state),
-      studentResponse: getStudentResponseSelector(state)
+      changedFeedback: getFeedbackResponseSelector(state)
     }),
     {
-      loadGradebook: receiveGradeBookdAction,
       loadTestActivity: receiveTestActivitydAction,
-      loadClassResponses: receiveClassResponseAction,
-      loadStudentResponses: receiveStudentResponseAction
+      clearFeedbackResponse: clearFeedbackResponseAction
     }
   )
 );
@@ -146,10 +136,8 @@ ExpressGrader.propTypes = {
   match: PropTypes.object,
   testActivity: PropTypes.array,
   additionalData: PropTypes.object,
-  studentResponse: PropTypes.object,
-  loadGradebook: PropTypes.func,
   loadTestActivity: PropTypes.func,
-  loadStudentResponses: PropTypes.func
+  clearFeedbackResponse: PropTypes.func
 };
 
 ExpressGrader.defaultProps = {
@@ -157,8 +145,6 @@ ExpressGrader.defaultProps = {
   match: {},
   testActivity: [],
   additionalData: {},
-  studentResponse: {},
-  loadGradebook: () => {},
   loadTestActivity: () => {},
-  loadStudentResponses: () => {}
+  clearFeedbackResponse: () => {}
 };

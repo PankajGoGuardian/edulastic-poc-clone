@@ -122,6 +122,7 @@ export const RECEIVE_CLASSSTUDENT_RESPONSE_SUCCESS = "[classStudentResponse] rec
 export const RECEIVE_CLASSSTUDENT_RESPONSE_ERROR = "[classStudentResponse] receive list error";
 export const RECEIVE_FEEDBACK_RESPONSE_REQUEST = "[feedbackResponse] receive list request";
 export const RECEIVE_FEEDBACK_RESPONSE_SUCCESS = "[feedbackResponse] receive list success";
+export const CLEAR_FEEDBACK_RESPONSE = "[feedbackResonse] clear feedback response";
 export const RECEIVE_FEEDBACK_RESPONSE_ERROR = "[feedbackResponse] receive list error";
 
 // Classboard

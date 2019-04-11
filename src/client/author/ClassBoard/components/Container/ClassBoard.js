@@ -267,13 +267,13 @@ class ClassBoard extends Component {
           </PaginationInfo>
           <StudentButtonDiv>
             <BothButton active={selectedTab === "Both"} onClick={e => this.onTabChange(e, "Both")}>
-              BOTH
+              CARDS
             </BothButton>
             <StudentButton active={selectedTab === "Student"} onClick={e => this.onTabChange(e, "Student")}>
-              STUDENT
+              STUDENTS
             </StudentButton>
             <QuestionButton active={selectedTab === "questionView"} onClick={e => this.onTabChange(e, "questionView")}>
-              QUESTION
+              QUESTIONS
             </QuestionButton>
           </StudentButtonDiv>
         </StyledFlexContainer>

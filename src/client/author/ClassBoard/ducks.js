@@ -2,7 +2,7 @@ import { takeEvery, call, put, all } from "redux-saga/effects";
 import { classBoardApi } from "@edulastic/api";
 import { message } from "antd";
 import { createSelector } from "reselect";
-import { values as _values } from "lodash";
+import { values as _values, get } from "lodash";
 
 import { setShowScoreAction } from "../src/actions/classBoard";
 
@@ -151,6 +151,11 @@ export const getTestActivitySelector = createSelector(
 export const getAdditionalDataSelector = createSelector(
   stateTestActivitySelector,
   state => state.additionalData
+);
+
+export const getTestItemsDataSelector = createSelector(
+  stateTestActivitySelector,
+  state => get(state, "data.testItemsData")
 );
 
 export const getAssignmentClassIdSelector = createSelector(

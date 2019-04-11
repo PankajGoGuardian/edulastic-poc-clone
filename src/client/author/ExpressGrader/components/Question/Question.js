@@ -3,11 +3,12 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import { isEmpty } from "lodash";
 import { receiveStudentQuestionAction } from "../../../src/actions/classBoard";
 import {
-  getClassResponseSelector,
   getAssignmentClassIdSelector,
-  getStudentQuestionSelector
+  getStudentQuestionSelector,
+  getTestItemsDataSelector
 } from "../../../ClassBoard/ducks";
 import ClassQuestions from "../../../ClassResponses/components/Container/ClassQuestions";
 
@@ -30,24 +31,23 @@ class Question extends Component {
   }
 
   render() {
-    let isEmpty = true;
-    const { classResponse, record, studentQuestion } = this.props;
+    const { record, studentQuestion, testItems = [] } = this.props;
     const currentStudent = {
       studentName: ""
     };
-    isEmpty = !Object.keys(studentQuestion).length;
-    const { testItems = [], ...others } = classResponse;
     const selectedItems = testItems.filter(
       ({ data: { questions = [] } = {} }) => questions.filter(({ id }) => id === record._id).length > 0
     );
-    if (isEmpty) {
+
+    if (isEmpty(studentQuestion)) {
       return null;
     }
+
     return (
       <ClassQuestions
         currentStudent={currentStudent}
         questionActivities={studentQuestion ? [studentQuestion] : []}
-        classResponse={{ testItems: selectedItems, ...others }}
+        classResponse={{ testItems: selectedItems }}
       />
     );
   }
@@ -56,7 +56,7 @@ class Question extends Component {
 const enhance = compose(
   connect(
     state => ({
-      classResponse: getClassResponseSelector(state),
+      testItems: getTestItemsDataSelector(state),
       assignmentClassId: getAssignmentClassIdSelector(state),
       studentQuestion: getStudentQuestionSelector(state)
     }),
@@ -68,10 +68,10 @@ const enhance = compose(
 
 Question.propTypes = {
   record: PropTypes.object.isRequired,
+  testItems: PropTypes.array.isRequired,
   loadStudentQuestionResponses: PropTypes.func.isRequired,
   assignmentClassId: PropTypes.object,
-  studentQuestion: PropTypes.object,
-  classResponse: PropTypes.object
+  studentQuestion: PropTypes.object
 };
 
 export default enhance(Question);

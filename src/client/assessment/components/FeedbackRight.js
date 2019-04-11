@@ -24,6 +24,11 @@ const showNotification = (type, msg) => {
   };
 };
 class FeedbackRight extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   static getDerivedStateFromProps(
     {
       successFullMessage,

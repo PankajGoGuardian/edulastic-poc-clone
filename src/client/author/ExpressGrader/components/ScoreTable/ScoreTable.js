@@ -108,14 +108,10 @@ class ScoreTable extends Component {
       let successAnswer = 0;
       const { testActivity: students } = this.props;
       const key = `Q${index}`;
-      // const isQuestionActivities = questionActivities !== undefined
-      // && questionActivities.length !== 0;
       const title = (
         <StyledDivMid>
           Q{index + 1}
           <img src={InfoIcon} alt="help" />
-          {/* {isQuestionActivities && questionActivities[index].standards
-          .map(tag => <StyledTag>{tag.level}</StyledTag>)} */}
         </StyledDivMid>
       );
       students.forEach(student => {

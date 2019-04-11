@@ -3,6 +3,7 @@ import {
   RECEIVE_STUDENT_RESPONSE_REQUEST,
   RECEIVE_CLASSSTUDENT_RESPONSE_REQUEST,
   RECEIVE_FEEDBACK_RESPONSE_REQUEST,
+  CLEAR_FEEDBACK_RESPONSE,
   RECEIVE_GRADEBOOK_REQUEST,
   RECEIVE_TESTACTIVITY_REQUEST,
   UPDATE_RELEASE_SCORE,
@@ -29,6 +30,10 @@ export const receiveClassStudentResponseAction = data => ({
 export const receiveFeedbackResponseAction = data => ({
   type: RECEIVE_FEEDBACK_RESPONSE_REQUEST,
   payload: data
+});
+
+export const clearFeedbackResponseAction = () => ({
+  type: CLEAR_FEEDBACK_RESPONSE
 });
 
 export const receiveGradeBookdAction = (assignmentId, classId) => ({

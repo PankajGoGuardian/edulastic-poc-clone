@@ -309,8 +309,8 @@ function* publishTestItemSaga({ payload }) {
     yield put(updateTestItemStatusAction(testItemStatusConstants.PUBLISHED));
     const redirectTestId = yield select(getRedirectTestSelector);
     if (redirectTestId) {
-      console.log("redirectTestId", redirectTestId);
       yield put(push(`/author/tests/${redirectTestId}`));
+      yield put(clearRedirectTestAction());
     }
     yield call(message.success, "Successfully published");
   } catch (e) {

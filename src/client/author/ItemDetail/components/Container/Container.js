@@ -24,7 +24,8 @@ import {
   getItemDetailDimensionTypeSelector,
   publishTestItemAction,
   getTestItemStatusSelector,
-  clearRedirectTestAction
+  clearRedirectTestAction,
+  setRedirectTestAction
 } from "../../ducks";
 
 import { getQuestionsSelector } from "../../../sharedDucks/questions";
@@ -56,10 +57,9 @@ class Container extends Component {
   componentDidMount() {
     const { getItemDetailById, match } = this.props;
     getItemDetailById(match.params.id, { data: true, validation: true });
-  }
-
-  componentWillUnmount() {
-    this.props.clearRedirectTest();
+    if (match.params.testId) {
+      setRedirectTestAction(match.params.testId);
+    }
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -416,7 +416,8 @@ const enhance = compose(
       useTabs: useTabsAction,
       loadQuestion: loadQuestionAction,
       publishTestItem: publishTestItemAction,
-      clearRedirectTest: clearRedirectTestAction
+      clearRedirectTest: clearRedirectTestAction,
+      setRedirectTest: setRedirectTestAction
     }
   )
 );

@@ -84,6 +84,7 @@ class Display extends Component {
       theme,
       item
     } = this.props;
+
     const { userAnswers } = this.state;
 
     const width = item.imagescale ? this.getEmWidth() : imageWidth;
@@ -139,6 +140,7 @@ class Display extends Component {
                   placeholder={uiStyle.placeholder}
                   type={uiStyle.inputtype}
                   indexNumber={indexNumber}
+                  item={item}
                 />
               </div>
             );

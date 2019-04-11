@@ -179,9 +179,7 @@ ClozeTextInput.defaultProps = {
   indexNumber: null
 };
 
-const enhance = compose(connect(state => ({ item: getQuestionDataSelector(state) })));
-
-export default enhance(ClozeTextInput);
+export default ClozeTextInput;
 
 const CustomInput = styled.div`
   display: inline-flex;

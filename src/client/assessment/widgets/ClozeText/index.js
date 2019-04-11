@@ -154,6 +154,7 @@ class ClozeText extends Component {
                 evaluation={evaluation}
                 instructorStimulus={item.instructor_stimulus}
                 qIndex={qIndex}
+                item={item}
               />
             )}
             {previewTab === "show" && (
@@ -171,6 +172,7 @@ class ClozeText extends Component {
                 validation={item.validation}
                 evaluation={evaluation}
                 instructorStimulus={item.instructor_stimulus}
+                item={item}
               />
             )}
             {previewTab === "clear" && (
@@ -188,6 +190,7 @@ class ClozeText extends Component {
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 instructorStimulus={item.instructor_stimulus}
+                item={item}
               />
             )}
           </Wrapper>

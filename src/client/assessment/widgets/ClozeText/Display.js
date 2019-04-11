@@ -97,7 +97,8 @@ class ClozeTextDisplay extends Component {
       checkAnswer,
       validation,
       evaluation,
-      instructorStimulus
+      instructorStimulus,
+      item
     } = this.props;
     const { templateParts, userAnswers } = this.state;
     let responseIndex = 0;
@@ -175,6 +176,7 @@ class ClozeTextDisplay extends Component {
                   onChange={this._changeInput}
                   placeholder={btnStyle.placeholder}
                   type={btnStyle.inputtype}
+                  item={item}
                 />
               );
             }
@@ -243,7 +245,8 @@ ClozeTextDisplay.propTypes = {
   uiStyle: PropTypes.object,
   instructorStimulus: PropTypes.string,
   /* eslint-disable react/no-unused-prop-types */
-  templateMarkUp: PropTypes.string
+  templateMarkUp: PropTypes.string,
+  item: PropTypes.object
 };
 
 ClozeTextDisplay.defaultProps = {
@@ -255,6 +258,7 @@ ClozeTextDisplay.defaultProps = {
   checkAnswer: false,
   userSelections: [],
   smallSize: false,
+  item: {},
   validation: {},
   uiStyle: {
     fontsize: "normal",

@@ -12,14 +12,14 @@ import MainInfoCell from "./MainInfoCell";
 import MetaInfoCell from "./MetaInfoCell";
 import { getItemsTypesSelector, getStandardsSelector } from "../../Review/ducks";
 
-const ItemsTable = ({ items, types, setSelectedTests, selectedTests, onAddItems, standards, windowWidth }) => {
+const ItemsTable = ({ items, types, setSelectedTests, selectedTests, onAddItems, standards, windowWidth, testId }) => {
   const columns = [
     {
       title: "Main info",
       dataIndex: "main",
       key: "main",
       width: "30%",
-      render: data => <MainInfoCell data={data} />
+      render: data => <MainInfoCell testId={testId} data={data} />
     },
     {
       title: "Meta info",
@@ -49,6 +49,7 @@ const ItemsTable = ({ items, types, setSelectedTests, selectedTests, onAddItems,
           selectedTests={selectedTests}
           onAddItems={onAddItems}
           windowWidth={windowWidth}
+          testId={testId}
         />
       )
     }

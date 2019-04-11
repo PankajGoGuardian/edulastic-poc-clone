@@ -52,7 +52,8 @@ const TestPageHeader = ({
   onEnableEdit,
   toggleSideBar,
   showPublishButton,
-  showShareButton
+  showShareButton,
+  testStatus
 }) =>
   windowWidth > 993 ? (
     <HeaderWrapper>
@@ -61,7 +62,7 @@ const TestPageHeader = ({
       <TestPageNav onChange={onChangeNav} current={current} buttons={navButtons} />
 
       <FlexContainer justifyContent="space-between">
-        {showPublishButton && (
+        {showPublishButton && testStatus === "draft" && (
           <EduButton style={{ width: 120 }} size="large" onClick={onPublish}>
             Publish
           </EduButton>

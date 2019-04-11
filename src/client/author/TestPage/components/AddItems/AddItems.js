@@ -219,6 +219,7 @@ class AddItems extends PureComponent {
                     setSelectedTests={this.setSelectedTestItems}
                     selectedTests={selectedTestItems}
                     onAddItems={onAddItems}
+                    testId={this.props.match.params.id}
                   />
                 )}
               </Paper>

@@ -23,7 +23,8 @@ import {
   getItemDetailUpdatingSelector,
   getItemDetailDimensionTypeSelector,
   publishTestItemAction,
-  getTestItemStatusSelector
+  getTestItemStatusSelector,
+  clearRedirectTestAction
 } from "../../ducks";
 
 import { getQuestionsSelector } from "../../../sharedDucks/questions";
@@ -55,6 +56,18 @@ class Container extends Component {
   componentDidMount() {
     const { getItemDetailById, match } = this.props;
     getItemDetailById(match.params.id, { data: true, validation: true });
+  }
+
+  componentWillUnmount() {
+    this.props.clearRedirectTest();
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const oldId = prevProps.match.params.id;
+    const newId = this.props.match.params.id;
+    if (oldId !== newId) {
+      this.props.getItemDetailById(newId, { data: true, validation: true });
+    }
   }
 
   getSizes = type => {
@@ -159,7 +172,7 @@ class Container extends Component {
 
   handleSave = () => {
     const { updateItemDetailById, match, item } = this.props;
-    updateItemDetailById(match.params.id, item);
+    updateItemDetailById(match.params.id, item, match.params.testId);
   };
 
   handleEditWidget = (widget, rowIndex) => {
@@ -402,7 +415,8 @@ const enhance = compose(
       updateTabTitle: updateTabTitleAction,
       useTabs: useTabsAction,
       loadQuestion: loadQuestionAction,
-      publishTestItem: publishTestItemAction
+      publishTestItem: publishTestItemAction,
+      clearRedirectTest: clearRedirectTestAction
     }
   )
 );

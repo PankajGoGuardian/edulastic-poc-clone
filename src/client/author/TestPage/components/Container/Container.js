@@ -230,9 +230,9 @@ class Container extends PureComponent {
   };
 
   handlePublishTest = () => {
-    const { publishTest, test } = this.props;
+    const { publishTest, test, match } = this.props;
     const { _id } = test;
-    publishTest(_id);
+    publishTest({ _id, oldId: match.params.oldId });
     this.setState({ editEnable: false });
   };
 
@@ -273,6 +273,7 @@ class Container extends PureComponent {
           creating={creating}
           windowWidth={windowWidth}
           showPublishButton={showPublishButton}
+          testStatus={testStatus}
           showShareButton={showShareButton}
           onEnableEdit={this.onEnableEdit}
         />

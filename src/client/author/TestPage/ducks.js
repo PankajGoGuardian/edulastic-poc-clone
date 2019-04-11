@@ -333,7 +333,7 @@ function* updateTestSaga({ payload }) {
     const newId = entity._id;
     if (oldId != newId) {
       yield call(message.success, "Test versioned");
-      yield put(push(`/author/tests/${newId}`));
+      yield put(push(`/author/tests/${newId}/versioned/old/${oldId}`));
     } else {
       yield call(message.success, "Update Successful");
     }
@@ -370,9 +370,13 @@ function* shareTestSaga({ payload }) {
 
 function* publishTestSaga({ payload }) {
   try {
-    yield call(testsApi.publishTest, payload);
+    const { _id: id, oldId } = payload;
+    yield call(testsApi.publishTest, id);
     yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
     yield call(message.success, "Successfully published");
+    if (oldId) {
+      yield put(push(`/author/assignments/regrade/new/${id}/old/${oldId}`));
+    }
   } catch (e) {
     const errorMessage = "publish failed";
     yield call(message.error, errorMessage);

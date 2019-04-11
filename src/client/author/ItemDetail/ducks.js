@@ -1,8 +1,10 @@
 import { createSelector } from "reselect";
 import { cloneDeep, keyBy as _keyBy, omit as _omit, get } from "lodash";
 import { testItemsApi } from "@edulastic/api";
-import { call, put, all, takeEvery } from "redux-saga/effects";
+import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { message } from "antd";
+import { createAction } from "redux-starter-kit";
+import { replace, push } from "connected-react-router";
 import { loadQuestionsAction, addItemsQuestionAction } from "../sharedDucks/questions";
 
 // constants
@@ -31,6 +33,8 @@ export const USE_TABS = "[itemDetail] is use tabs";
 export const MOVE_WIDGET = "[itemDetail] move widget";
 export const ITEM_DETAIL_PUBLISH = "[itemDetail] publish test item";
 export const UPDATE_TESTITEM_STATUS = "[itemDetail] update test item status";
+export const ITEM_SET_REDIRECT_TEST = "[itemDetail] set redirect test id";
+export const ITEM_CLEAR_REDIRECT_TEST = "[itemDetail] clear redirect test id";
 // actions
 
 export const getItemDetailByIdAction = (id, params) => ({
@@ -53,9 +57,9 @@ export const setItemDetailDataAction = item => ({
   payload: { item }
 });
 
-export const updateItemDetailByIdAction = (id, data) => ({
+export const updateItemDetailByIdAction = (id, data, testId) => ({
   type: UPDATE_ITEM_DETAIL_REQUEST,
-  payload: { id, data }
+  payload: { id, data, testId }
 });
 
 export const updateItemDetailSuccess = item => ({
@@ -108,6 +112,9 @@ export const updateTestItemStatusAction = status => ({
   payload: status
 });
 
+export const setRedirectTestAction = createAction(ITEM_SET_REDIRECT_TEST);
+export const clearRedirectTestAction = createAction(ITEM_CLEAR_REDIRECT_TEST);
+
 // reducer
 
 const initialState = {
@@ -116,7 +123,8 @@ const initialState = {
   loading: false,
   updating: false,
   updateError: null,
-  dragging: false
+  dragging: false,
+  redirectTestId: null
 };
 
 const deleteWidget = (state, { rowIndex, widgetIndex }) => {
@@ -206,6 +214,10 @@ export function reducer(state = initialState, { type, payload }) {
       return { ...state, item: payload.item, updating: false };
     case UPDATE_ITEM_DETAIL_ERROR:
       return { ...state, updating: false, updateError: payload.error };
+    case ITEM_SET_REDIRECT_TEST:
+      return { ...state, redirectTestId: payload };
+    case ITEM_CLEAR_REDIRECT_TEST:
+      return { ...state, redirectTestId: undefined };
     case UPDATE_TESTITEM_STATUS:
       return {
         ...state,
@@ -224,6 +236,7 @@ export function reducer(state = initialState, { type, payload }) {
 function* receiveItemSaga({ payload }) {
   try {
     const data = yield call(testItemsApi.getById, payload.id, payload.params);
+    console.log("data", data);
     let questions = (data.data && data.data.questions) || [];
     const resources = (data.data && data.data.resources) || [];
     questions = [...questions, ...resources];
@@ -256,9 +269,24 @@ export function* updateItemSaga({ payload }) {
       delete payload.data.data;
     }
 
-    const data = _omit(payload.data, ["authors"]);
-    const item = yield call(testItemsApi.updateById, payload.id, data);
-
+    let data = _omit(payload.data, ["authors", "active", "versionId", "__v"]);
+    if (payload.testId) {
+      data.testId = testId;
+    }
+    const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
+    console.log("update by id item itemId ", item._id, "payload.id", payload.id);
+    if (item._id != payload.id) {
+      yield put(
+        replace(
+          payload.testId
+            ? `/author/items/${item._id}/item-detail/test/${payload.testId}`
+            : `/author/items/${item._id}/item-detail`
+        )
+      );
+    }
+    if (testId) {
+      yield put(setRedirectTestAction(testId));
+    }
     yield put({
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item }
@@ -279,8 +307,14 @@ function* publishTestItemSaga({ payload }) {
   try {
     yield call(testItemsApi.publishTestItem, payload);
     yield put(updateTestItemStatusAction(testItemStatusConstants.PUBLISHED));
+    const redirectTestId = yield select(getRedirectTestSelector);
+    if (redirectTestId) {
+      console.log("redirectTestId", redirectTestId);
+      yield put(push(`/author/tests/${redirectTestId}`));
+    }
     yield call(message.success, "Successfully published");
   } catch (e) {
+    console.error("publish error", e, e.stack);
     const errorMessage = "publish failed";
     yield call(message.error, errorMessage);
   }
@@ -301,6 +335,11 @@ export const stateSelector = state => state.itemDetail;
 export const getItemDetailSelector = createSelector(
   stateSelector,
   state => state.item
+);
+
+export const getRedirectTestSelector = createSelector(
+  stateSelector,
+  state => state.redirectTestId
 );
 
 export const getItemDetailSelectorForPreview = (state, id, page) => {

@@ -32,7 +32,7 @@ const getById = (id, params = {}) =>
     })
     .then(result => result.data.result);
 
-const updateById = (id, item) => {
+const updateById = (id, item, testId) => {
   const {
     updatedAt,
     createdAt,
@@ -47,7 +47,7 @@ const updateById = (id, item) => {
   } = formatData(item);
   return api
     .callApi({
-      url: `${prefix}/${id}`,
+      url: `${prefix}/${id}${testId ? `?testId=${testId}` : ""}`,
       method: "put",
       data
     })

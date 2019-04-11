@@ -118,7 +118,8 @@ class Container extends Component {
     if (!question) {
       const backUrl = get(history, "location.state.backUrl", "");
       if (backUrl.includes("pickup-questiontype")) {
-        history.push(backUrl);
+        const itemId = backUrl.split("/")[3];
+        history.push(`/author/items/${itemId}/item-detail`);
       } else {
         history.push("/author/items");
       }

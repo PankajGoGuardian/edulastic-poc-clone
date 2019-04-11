@@ -15,7 +15,6 @@ export class ResponseTag extends Component {
   }
 
   tooltipText = data => () => {
-    console.log("tooltipText, data", data);
     let { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = data.record;
     let sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
     let skip = (skip_cnt / sum) * 100;

@@ -166,7 +166,7 @@ export class ResponseFrequencyTable extends Component {
                 let tmp = find(record.validation, vstr => {
                   return key == vstr;
                 });
-                isCorrect = isCorrect && (tmp ? true : false);
+                isCorrect = isCorrect && (!isNaN(tmp) ? true : false);
               }
             }
           }

@@ -3,6 +3,8 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import queryString from "query-string";
 import { Row, Col } from "antd";
+import next from "immer";
+
 import { ResponseFrequencyTable } from "./components/table/responseFrequencyTable";
 import { StackedBarChartContainer } from "./components/charts/stackedBarChartContainer";
 import { StyledContainer, StyledCard, StyledSimpleBarChartContainer, QuestionTypeHeading } from "./components/styled";
@@ -10,6 +12,7 @@ import Breadcrumb from "../../../src/components/Breadcrumb";
 import { CustomizedHeaderWrapper } from "../../common/components/header";
 import { StyledSlider, StyledH3 } from "../../common/styled";
 import { NavigatorTabs } from "../../common/components/navigatorTabs";
+import { getNavigationTabLinks } from "./../../common/util";
 import chartNavigatorLinks from "../../common/static/json/singleAssessmentSummaryChartNavigator.json";
 import jsonData from "./static/json/data.json";
 import { get, isEmpty } from "lodash";
@@ -88,11 +91,17 @@ const ResponseFrequency = props => {
     setFilter({});
   };
 
+  const computedChartNavigatorLinks = useMemo(() => {
+    return next(chartNavigatorLinks, arr => {
+      getNavigationTabLinks(arr, props.match.params.testId);
+    });
+  }, [props.match.params.testId]);
+
   return (
     <div>
       <CustomizedHeaderWrapper title="Response Frequency" />
       <Breadcrumb data={breadcrumbData} style={{ position: "unset", padding: "10px" }} />
-      <NavigatorTabs data={chartNavigatorLinks} selectedTab={"responseFrequency"} />
+      <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={"responseFrequency"} />
       <StyledContainer type="flex">
         <StyledCard>
           <StyledH3>Question Type performance for Assessment: {obj.metaData.testName}</StyledH3>

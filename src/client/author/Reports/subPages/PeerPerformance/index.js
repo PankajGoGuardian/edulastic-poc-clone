@@ -3,6 +3,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { Row, Col } from "antd";
 import { get, keyBy, isEmpty, cloneDeep } from "lodash";
+import next from "immer";
 
 import { parseData, idToName } from "./util/transformers";
 import Breadcrumb from "../../../src/components/Breadcrumb";
@@ -15,8 +16,8 @@ import { PeerPerformanceTable } from "./components/table/peerPerformanceTable";
 import { getPeerPerformanceRequestAction, getReportsPeerPerformance } from "./ducks";
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import { getUserRole } from "../../../src/selectors/user";
-import next from "immer";
 import { NavigatorTabs } from "../../common/components/navigatorTabs";
+import { getNavigationTabLinks } from "../../common/util";
 import chartNavigatorLinks from "../../common/static/json/singleAssessmentSummaryChartNavigator.json";
 import columns from "./static/json/tableColumns.json";
 import tempData from "./static/json/tempData";
@@ -136,11 +137,17 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
     setChartFilter({});
   };
 
+  const computedChartNavigatorLinks = useMemo(() => {
+    return next(chartNavigatorLinks, arr => {
+      getNavigationTabLinks(arr, match.params.testId);
+    });
+  }, [match.params.testId]);
+
   return (
     <div>
       <CustomizedHeaderWrapper title="Peer Performance" />
       <Breadcrumb data={breadcrumbData} style={{ position: "unset", padding: "10px" }} />
-      <NavigatorTabs data={chartNavigatorLinks} selectedTab={"peerPerformance"} />
+      <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={"peerPerformance"} />
       <UpperContainer>
         <StyledCard>
           <Row type="flex" justify="start">

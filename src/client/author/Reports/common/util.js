@@ -29,3 +29,9 @@ export const getHSLFromRange2 = val => {
 export const isMobileScreen = () => {
   return window.matchMedia("only screen and (max-width: 1033px) and (min-width : 1px)").matches;
 };
+
+export const getNavigationTabLinks = (list, id) => {
+  for (let item of list) {
+    item.location += id;
+  }
+};

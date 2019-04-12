@@ -1,9 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import queryString from "query-string";
 import { Row, Col } from "antd";
 import { get } from "lodash";
+import next from "immer";
+
 import { SimplePieChart } from "./components/charts/pieChart";
 import { StyledCard, StyledH3 } from "../../common/styled";
 import { UpperContainer, TableContainer, StyledAssessmentStatisticTable } from "./components/styled";
@@ -11,6 +13,7 @@ import Breadcrumb from "../../../src/components/Breadcrumb";
 import { CustomizedHeaderWrapper } from "../../common/components/header";
 import { Stats } from "./components/stats";
 import { NavigatorTabs } from "../../common/components/navigatorTabs";
+import { getNavigationTabLinks } from "./../../common/util";
 import chartNavigatorLinks from "../../common/static/json/singleAssessmentSummaryChartNavigator.json";
 import data from "./static/json/data.json";
 
@@ -40,11 +43,17 @@ const AssessmentSummary = props => {
     metricInfo: []
   });
 
+  const computedChartNavigatorLinks = useMemo(() => {
+    return next(chartNavigatorLinks, arr => {
+      getNavigationTabLinks(arr, props.match.params.testId);
+    });
+  }, [props.match.params.testId]);
+
   return (
     <div>
       <CustomizedHeaderWrapper title="Assessment Summary" />
       <Breadcrumb data={breadcrumbData} style={{ position: "unset", padding: "10px" }} />
-      <NavigatorTabs data={chartNavigatorLinks} selectedTab={"assessmentSummary"} />
+      <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={"assessmentSummary"} />
       <UpperContainer type="flex">
         <Col className="sub-container district-statistics" xs={24} sm={24} md={12} lg={12} xl={12}>
           <StyledCard>

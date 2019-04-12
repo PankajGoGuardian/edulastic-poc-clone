@@ -1,13 +1,19 @@
 import React from "react";
 import styled from "styled-components";
+import next from "immer";
 
 import { grey } from "@edulastic/colors";
 
 import { LinkItem } from "./linkItem";
 import { BoxHeading } from "../../common/components/boxHeading";
-import links from "../../common/static/json/singleAssessmentSummaryChartNavigator.json";
+import { getNavigationTabLinks } from "../../common/util";
+import chartNavigationLinks from "../../common/static/json/singleAssessmentSummaryChartNavigator.json";
 
 export const SingleAssessmentReport = props => {
+  const links = next(chartNavigationLinks, arr => {
+    getNavigationTabLinks(arr, "5ca6e89fd39ce88f5babb02a");
+  });
+
   return (
     <div>
       <BoxHeading heading={"Single Assessment Report"} iconType={"bar-chart"} />

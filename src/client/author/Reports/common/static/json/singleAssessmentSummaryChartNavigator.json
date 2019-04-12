@@ -2,12 +2,12 @@
   {
     "key": "assessmentSummary",
     "title": "Assessment Summary",
-    "location": "/author/reports/assessment-summary/test/5c90d974a649cb81bc5d4ca2"
+    "location": "/author/reports/assessment-summary/test/"
   },
   {
     "key": "peerPerformance",
     "title": "Peer Performance",
-    "location": "/author/reports/peer-performance/test/5c822ff4732e4679700e73a6"
+    "location": "/author/reports/peer-performance/test/"
   },
   {
     "key": "questionAnalysis",
@@ -17,7 +17,7 @@
   {
     "key": "responseFrequency",
     "title": "Response Frequency",
-    "location": "/author/reports/response-frequency/test/5ca345a36035875063c1a2cd"
+    "location": "/author/reports/response-frequency/test/"
   },
   {
     "key": "performanceByStandards",

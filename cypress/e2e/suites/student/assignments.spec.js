@@ -1,7 +1,6 @@
 import AssignmentsPage from "../../framework/student/assignmentsPage";
 import SidebarPage from "../../framework/student/sidebarPage";
 import FileHelper from "../../framework/util/fileHelper";
-import TestTypes from "./assignmentsAttempt/testTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`, () => {
   const sideBarPage = new SidebarPage();
@@ -10,17 +9,23 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
   const asgnstatus = {
     notstarted: "NOT STARTED",
     inprogress: "IN PROGRESS",
-    sub: "SUBMITTED"
+    sub: "SUBMITTED",
+    graded: "GRADED"
   };
   const buttonText = { start: "START ASSIGNMENT", retake: "RETAKE", resume: "RESUME", review: "REVIEW" };
+  let TestTypes;
 
   before(() => {
     cy.setToken("student");
+    cy.fixture("studentsAttempt").then(data => {
+      TestTypes = data.testTypes;
+    });
   });
+
   context("Assignment attempt and stats", () => {
     before(() => {
       cy.deleteAllAssignments();
-      cy.assignAssignment(TestTypes.sample);
+      cy.assignAssignment(TestTypes.default);
       cy.reload();
       cy.wait("@assignment");
     });
@@ -56,7 +61,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
 
         cy.contains(queNum[key]).should("be.visible");
 
-        if (index == 0) {
+        if (index === 0) {
           test.getPrevious().should("be.disabled");
 
           test.getNext().should("not.be.disabled");
@@ -66,7 +71,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
 
           test.getNext().should("not.be.disabled");
         }
-        if (index == total - 1) {
+        if (index === total - 1) {
           test.getPrevious().should("not.be.disabled");
 
           test.getNext().should("not.have.class", "ant-btn-icon-only");
@@ -227,7 +232,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
       cy.contains("Q1").should("be.visible");
       // attempt 1st que
       // wrong ans
-      cy.contains("White")
+      cy.contains("Red")
         .should("be.visible")
         .click();
       test.checkAnsValidateAsWrong();
@@ -267,7 +272,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
       // review page
       const reportsPage = test.submitTest();
       // validate stats
-      reportsPage.validateAssignment(assignmentName, asgnstatus.sub, buttonText.review);
+      reportsPage.validateAssignment(assignmentName, asgnstatus.graded, buttonText.review);
       reportsPage.validateStats(3, "3/3", "2/4", "50%");
       reportsPage.validateAttemptLinkStats(3, 1, "4/4", "100%");
       reportsPage.validateAttemptLinkStats(3, 2, "1/4", "25%");
@@ -279,6 +284,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
 
   context("Assignment with start and due-date scenarios", () => {
     before("delete all old assignment", () => {
+      cy.visit("/home/assignments");
       cy.deleteAllAssignments();
     });
 
@@ -292,7 +298,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
       end.setSeconds(end.getSeconds() + 30);
 
       // assign assignment with 30 sec future duedate
-      cy.assignAssignment(TestTypes.sample, start, end);
+      cy.assignAssignment(TestTypes.default, start, end);
       // validate assignment entry present
       cy.reload();
       cy.wait("@asgns");

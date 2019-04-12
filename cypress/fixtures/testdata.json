@@ -1,0 +1,1309 @@
+{
+  "testTypes": {
+    "default": {
+      "test": {
+        "title": "Auto Test Assignment",
+        "description": "",
+        "releaseScore": "WITH_ANSWERS",
+        "maxAttempts": "3",
+        "testType": "assessment",
+        "generateReport": true,
+        "safeBrowser": false,
+        "sebPassword": "",
+        "shuffleQuestions": false,
+        "shuffleAnswers": false,
+        "calcType": "NONE",
+        "answerOnPaper": false,
+        "status": "draft",
+        "thumbnail": "https://fakeimg.pl/500x135/",
+        "createdBy": {},
+        "tags": [],
+        "scoring": {
+          "total": 0,
+          "testItems": [
+            {
+              "points": 0
+            },
+            {
+              "points": 0
+            },
+            {
+              "points": 0
+            },
+            {
+              "points": 0
+            }
+          ]
+        },
+        "testItems": [],
+        "standardsTag": {
+          "curriculum": "",
+          "standards": []
+        },
+        "grades": [],
+        "subjects": [],
+        "courses": [],
+        "collectionName": "",
+        "analytics": {
+          "usage": "0",
+          "likes": "0"
+        }
+      },
+      "items": [
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "multipleChoice",
+                  "title": "Multiple choice - standard",
+                  "reference": "3dd5edc2-7659-4635-8f13-787354c41942",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "3dd5edc2-7659-4635-8f13-787354c41942",
+                "title": "Multiple choice - standard",
+                "type": "multipleChoice",
+                "stimulus": "<p>Q1 - Which color has the smallest walvelenght?</p>",
+                "ui_style": {
+                  "type": "horizontal"
+                },
+                "options": [
+                  {
+                    "value": "f82ad49b-da56-49e5-a865-da7774f46737",
+                    "label": "Red"
+                  },
+                  {
+                    "value": "a940173a-4494-472f-ab49-5d85b4c75c75",
+                    "label": "Violet"
+                  },
+                  {
+                    "value": "bcc37bf6-52f5-4f38-8199-a103485e670b",
+                    "label": "Green"
+                  }
+                ],
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": ["a940173a-4494-472f-ab49-5d85b4c75c75"]
+                  },
+                  "alt_responses": []
+                },
+                "multiple_responses": false,
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                }
+              }
+            ],
+            "resources": []
+          }
+        },
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "multipleChoice",
+                  "title": "Multiple choice - multiple response",
+                  "reference": "0fd7b976-bd40-4c97-8dd5-2b9e68f54bed",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "0fd7b976-bd40-4c97-8dd5-2b9e68f54bed",
+                "title": "Multiple choice - multiple response",
+                "type": "multipleChoice",
+                "stimulus": "<p>Q2 - Select all correct choices</p>",
+                "ui_style": {
+                  "type": "horizontal"
+                },
+                "options": [
+                  {
+                    "value": 0,
+                    "label": "<p>TRUE</p>"
+                  },
+                  {
+                    "value": 1,
+                    "label": "<p>FALSE</p>"
+                  },
+                  {
+                    "value": 2,
+                    "label": "<p>true</p>"
+                  },
+                  {
+                    "value": 3,
+                    "label": "<p>false</p>"
+                  }
+                ],
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": [0, 2]
+                  },
+                  "alt_responses": []
+                },
+                "multiple_responses": true,
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                }
+              }
+            ],
+            "resources": []
+          }
+        },
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "multipleChoice",
+                  "title": "True or false",
+                  "reference": "fc5005ed-3a45-44f8-98bc-4e850ace4d4e",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "fc5005ed-3a45-44f8-98bc-4e850ace4d4e",
+                "title": "True or false",
+                "type": "multipleChoice",
+                "stimulus": "<p>Q3 - MCQ - T/F , correct - F</p>",
+                "ui_style": {
+                  "type": "horizontal"
+                },
+                "options": [
+                  {
+                    "value": "5dcd68d8-5ed4-49e2-9867-276347e07ce8",
+                    "label": "True"
+                  },
+                  {
+                    "value": "62ac05b0-86e0-4a2e-bdea-bd7c77b7f362",
+                    "label": "False"
+                  }
+                ],
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": ["62ac05b0-86e0-4a2e-bdea-bd7c77b7f362"]
+                  },
+                  "alt_responses": []
+                },
+                "multiple_responses": false,
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                }
+              }
+            ],
+            "resources": []
+          }
+        },
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "clozeDropDown",
+                  "title": "Cloze with Drop Down",
+                  "reference": "dcbbe76d-fe5f-4167-8a6c-494d0e37856b",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "dcbbe76d-fe5f-4167-8a6c-494d0e37856b",
+                "title": "Cloze with Drop Down",
+                "type": "clozeDropDown",
+                "stimulus": "<p>Q4 -  cloze drop down</p>",
+                "options": {
+                  "0": ["optionA", "optionB"],
+                  "1": ["Choice A", "Choice B"]
+                },
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": ["optionA"]
+                  },
+                  "alt_responses": []
+                },
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                },
+                "templateMarkUp": "<p>select a option = </p><p class=\"response-btn\" contenteditable=\"false\">&nbsp;<span class=\"index\">1</span><span class=\"text\">Response</span>&nbsp;</p><p><br></p>"
+              }
+            ],
+            "resources": []
+          }
+        }
+      ]
+    },
+    "multipleChoice1": {
+      "test": {
+        "title": "MCQ Auto Test 1",
+        "description": "",
+        "releaseScore": "WITH_ANSWERS",
+        "maxAttempts": "2",
+        "testType": "assessment",
+        "generateReport": true,
+        "safeBrowser": false,
+        "sebPassword": "",
+        "shuffleQuestions": false,
+        "shuffleAnswers": false,
+        "calcType": "NONE",
+        "answerOnPaper": false,
+        "status": "draft",
+        "thumbnail": "https://fakeimg.pl/500x135/",
+        "createdBy": {},
+        "tags": [],
+        "scoring": {
+          "total": 0,
+          "testItems": [
+            {
+              "points": 0
+            },
+            {
+              "points": 0
+            },
+            {
+              "points": 0
+            },
+            {
+              "points": 0
+            }
+          ]
+        },
+        "testItems": [],
+        "standardsTag": {
+          "curriculum": "",
+          "standards": []
+        },
+        "grades": [],
+        "subjects": [],
+        "courses": [],
+        "collectionName": "",
+        "analytics": {
+          "usage": "0",
+          "likes": "0"
+        }
+      },
+      "items": [
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "multipleChoice",
+                  "title": "Multiple choice - standard",
+                  "reference": "d3d7a6b1-8d80-499b-955b-5e007e64fb31",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "d3d7a6b1-8d80-499b-955b-5e007e64fb31",
+                "title": "Multiple choice - standard",
+                "type": "multipleChoice",
+                "stimulus": "<p><strong style=\"background-color: rgb(243, 243, 243); color: rgb(67, 75, 93);\">Q1 - Multiple Choice - Standard</strong></p>",
+                "ui_style": {
+                  "type": "horizontal"
+                },
+                "options": [
+                  {
+                    "value": 0,
+                    "label": "<p>FC Barcelona</p>"
+                  },
+                  {
+                    "value": 1,
+                    "label": "<p>Real Madrid</p>"
+                  }
+                ],
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": [0]
+                  },
+                  "alt_responses": []
+                },
+                "multiple_responses": false,
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                }
+              }
+            ],
+            "resources": []
+          }
+        },
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "multipleChoice",
+                  "title": "Multiple choice - multiple response",
+                  "reference": "4071ebcc-2fa8-452a-9381-d3c7966985a6",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "4071ebcc-2fa8-452a-9381-d3c7966985a6",
+                "title": "Multiple choice - multiple response",
+                "type": "multipleChoice",
+                "stimulus": "<p>Q2 - <strong style=\"background-color: rgb(243, 243, 243); color: rgb(67, 75, 93);\">Multiple Choice - Multiple Response</strong></p>",
+                "ui_style": {
+                  "type": "horizontal"
+                },
+                "options": [
+                  {
+                    "value": 0,
+                    "label": "<p>FC Barcelona</p>"
+                  },
+                  {
+                    "value": 1,
+                    "label": "<p>Real Madrid</p>"
+                  },
+                  {
+                    "value": 2,
+                    "label": "<p>Pari SG</p>"
+                  }
+                ],
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": ["fa817dbe-2540-4b6e-933d-f57f6196e22b", 0, 2]
+                  },
+                  "alt_responses": []
+                },
+                "multiple_responses": true,
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                }
+              }
+            ],
+            "resources": []
+          }
+        },
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "multipleChoice",
+                  "title": "True or false",
+                  "reference": "d603d315-aec6-4c2d-b154-813e768f8cd6",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "d603d315-aec6-4c2d-b154-813e768f8cd6",
+                "title": "True or false",
+                "type": "multipleChoice",
+                "stimulus": "<p><strong style=\"color: rgb(67, 75, 93); background-color: rgb(243, 243, 243);\">Q3 - True Or False</strong></p>",
+                "ui_style": {
+                  "type": "horizontal"
+                },
+                "options": [
+                  {
+                    "value": 0,
+                    "label": "<p>FC Barcelona</p>"
+                  },
+                  {
+                    "value": 1,
+                    "label": "<p>Real Madrid</p>"
+                  }
+                ],
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": [0]
+                  },
+                  "alt_responses": []
+                },
+                "multiple_responses": false,
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                }
+              }
+            ],
+            "resources": []
+          }
+        },
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "multipleChoice",
+                  "title": "Multiple choice - block layout",
+                  "reference": "2d688b3c-3218-4dcd-a03a-12196b230b3d",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "2d688b3c-3218-4dcd-a03a-12196b230b3d",
+                "title": "Multiple choice - block layout",
+                "type": "multipleChoice",
+                "stimulus": "<p><strong style=\"background-color: rgb(243, 243, 243); color: rgb(67, 75, 93);\">Q4 - Multiple Choice - Block Layout</strong></p>",
+                "ui_style": {
+                  "type": "block",
+                  "choice_label": "upper-alpha"
+                },
+                "options": [
+                  {
+                    "value": 0,
+                    "label": "<p>FC Barcelona</p>"
+                  },
+                  {
+                    "value": 1,
+                    "label": "<p>Real Madrid</p>"
+                  },
+                  {
+                    "value": 2,
+                    "label": "<p>Pari SG</p>"
+                  }
+                ],
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": ["259b3ae1-7bd5-4cee-9ef9-b017d1bcb13f", 0, 2]
+                  },
+                  "alt_responses": []
+                },
+                "multiple_responses": true,
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                }
+              }
+            ],
+            "resources": []
+          }
+        }
+      ]
+    },
+    "multipleChoice2": {
+      "test": {
+        "title": "MCQ Auto Test 2",
+        "description": "",
+        "releaseScore": "WITH_ANSWERS",
+        "maxAttempts": "2",
+        "testType": "assessment",
+        "generateReport": true,
+        "safeBrowser": false,
+        "sebPassword": "",
+        "shuffleQuestions": false,
+        "shuffleAnswers": false,
+        "calcType": "NONE",
+        "answerOnPaper": false,
+        "status": "draft",
+        "thumbnail": "https://fakeimg.pl/500x135/",
+        "createdBy": {},
+        "tags": [],
+        "scoring": {
+          "total": 0,
+          "testItems": [
+            {
+              "points": 0
+            },
+            {
+              "points": 0
+            },
+            {
+              "points": 0
+            }
+          ]
+        },
+        "testItems": [],
+        "standardsTag": {
+          "curriculum": "",
+          "standards": []
+        },
+        "grades": [],
+        "subjects": [],
+        "courses": [],
+        "collectionName": "",
+        "analytics": {
+          "usage": "0",
+          "likes": "0"
+        }
+      },
+      "items": [
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "choiceMatrix",
+                  "title": "Choice matrix - standard",
+                  "reference": "2d6b0199-bcfc-4363-8d2a-68aa83281d72",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "2d6b0199-bcfc-4363-8d2a-68aa83281d72",
+                "title": "Choice matrix - standard",
+                "firstMount": true,
+                "type": "choiceMatrix",
+                "stimulus": "<p>Q1: <strong style=\"color: rgb(67, 75, 93); background-color: rgb(243, 243, 243);\">Choice Matrix - Standard</strong></p>",
+                "ui_style": {
+                  "type": "table",
+                  "horizontal_lines": false
+                },
+                "stems": ["<p>FC Barcelona</p>", "<p>Real Madrid</p>", "<p>Pari SG</p>"],
+                "options": ["True", "False"],
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": [[0], [1], [0], null]
+                  },
+                  "alt_responses": []
+                },
+                "multiple_responses": false,
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                }
+              }
+            ],
+            "resources": []
+          }
+        },
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "choiceMatrix",
+                  "title": "Choice matrix - inline",
+                  "reference": "582c7c9a-6045-4193-bb1a-51141a096f4a",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "582c7c9a-6045-4193-bb1a-51141a096f4a",
+                "title": "Choice matrix - inline",
+                "firstMount": true,
+                "options": ["True", "False"],
+                "stems": ["<p>FC Barcelona</p>", "<p>Real Madrid</p>", "<p>Pari SG</p>"],
+                "stimulus": "<p>Q2 - <strong style=\"color: rgb(67, 75, 93); background-color: rgb(243, 243, 243);\">Choice Matrix - Inline</strong></p>",
+                "type": "choiceMatrix",
+                "ui_style": {
+                  "type": "inline",
+                  "horizontal_lines": false
+                },
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": [[0], [1], [0], null]
+                  },
+                  "alt_responses": []
+                },
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                }
+              }
+            ],
+            "resources": []
+          }
+        },
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "choiceMatrix",
+                  "title": "Choice matrix - labels",
+                  "reference": "5d35c3e9-76b0-4a9a-97b8-d66055e25fdd",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "5d35c3e9-76b0-4a9a-97b8-d66055e25fdd",
+                "title": "Choice matrix - labels",
+                "firstMount": true,
+                "options": ["True", "False"],
+                "stems": ["<p>FC Barcelona</p>", "<p>Real Madrid</p>", "<p>Pari SG</p>"],
+                "stimulus": "<p>Q3 - <strong style=\"color: rgb(67, 75, 93); background-color: rgb(243, 243, 243);\">Choice Matrix - Labels</strong></p>",
+                "type": "choiceMatrix",
+                "ui_style": {
+                  "stem_numeration": "upper-alpha",
+                  "type": "table",
+                  "horizontal_lines": false
+                },
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": [[0], [1], [0], null]
+                  },
+                  "alt_responses": []
+                },
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                }
+              }
+            ],
+            "resources": []
+          }
+        }
+      ]
+    },
+    "fillInBlanks": {
+      "test": {
+        "title": "Fill in the Blank Auto Test",
+        "description": "",
+        "releaseScore": "WITH_ANSWERS",
+        "maxAttempts": "2",
+        "testType": "assessment",
+        "generateReport": true,
+        "safeBrowser": false,
+        "sebPassword": "",
+        "shuffleQuestions": false,
+        "shuffleAnswers": false,
+        "calcType": "NONE",
+        "answerOnPaper": false,
+        "status": "draft",
+        "thumbnail": "https://fakeimg.pl/500x135/",
+        "createdBy": {},
+        "tags": [],
+        "scoring": {
+          "total": 0,
+          "testItems": [
+            {
+              "points": 0
+            },
+            {
+              "points": 0
+            },
+            {
+              "points": 0
+            },
+            {
+              "points": 0
+            }
+          ]
+        },
+        "testItems": [],
+        "standardsTag": {
+          "curriculum": "",
+          "standards": []
+        },
+        "grades": [],
+        "subjects": [],
+        "courses": [],
+        "collectionName": "",
+        "analytics": {
+          "usage": "0",
+          "likes": "0"
+        }
+      },
+      "items": [
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "clozeDragDrop",
+                  "title": "Cloze with Drag & Drop",
+                  "reference": "bf4f2bb1-d76e-4f6d-8272-ef9a39a837c0",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "bf4f2bb1-d76e-4f6d-8272-ef9a39a837c0",
+                "title": "Cloze with Drag & Drop",
+                "type": "clozeDragDrop",
+                "stimulus": "<p>Q1 - <strong style=\"background-color: rgb(243, 243, 243); color: rgb(67, 75, 93);\">Cloze With Drag &amp; Drop</strong></p>",
+                "options": ["FC Barcelona", "Real Madrid"],
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": ["FC Barcelona", "Real Madrid"]
+                  },
+                  "alt_responses": []
+                },
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                },
+                "templateMarkUp": "<p>My favorite team is </p><p class=\"response-btn\" contenteditable=\"false\">&nbsp;<span class=\"index\">1</span><span class=\"text\">Response</span>&nbsp;</p><p>, not </p><p class=\"response-btn\" contenteditable=\"false\">&nbsp;<span class=\"index\">2</span><span class=\"text\">Response</span>&nbsp;</p><p><br></p>"
+              }
+            ],
+            "resources": []
+          }
+        },
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "clozeDropDown",
+                  "title": "Cloze with Drop Down",
+                  "reference": "9212295d-541d-4b51-9597-1febefabb857",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "9212295d-541d-4b51-9597-1febefabb857",
+                "title": "Cloze with Drop Down",
+                "type": "clozeDropDown",
+                "stimulus": "<p><strong style=\"background-color: rgb(243, 243, 243); color: rgb(67, 75, 93);\">Q2 - Cloze With Drop Down</strong></p>",
+                "options": {
+                  "0": ["FC Barcelona", "Real Madrid"],
+                  "1": ["FC Barcelona", "Real Madrid"]
+                },
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": ["FC Barcelona", "Real Madrid"]
+                  },
+                  "alt_responses": []
+                },
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                },
+                "templateMarkUp": "<p>My team is </p><p class=\"response-btn\" contenteditable=\"false\">&nbsp;<span class=\"index\">1</span><span class=\"text\">Response</span>&nbsp;</p><p>, not </p><p class=\"response-btn\" contenteditable=\"false\">&nbsp;<span class=\"index\">2</span><span class=\"text\">Response</span>&nbsp;</p><p><br></p>"
+              }
+            ],
+            "resources": []
+          }
+        },
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "clozeImageDragDrop",
+                  "title": "Label Image with Drag & Drop",
+                  "reference": "2ec7e143-7a65-4eac-a744-e8f7b602e3e6",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "2ec7e143-7a65-4eac-a744-e8f7b602e3e6",
+                "title": "Label Image with Drag & Drop",
+                "type": "clozeImageDragDrop",
+                "firstMount": true,
+                "stimulus": "<p><strong style=\"background-color: rgb(243, 243, 243); color: rgb(67, 75, 93);\">Q3 - Label Image With Drag &amp; Drop</strong></p>",
+                "options": ["FC Barcelona", "Real Madrid", "Pari SG"],
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": [["FC Barcelona"], ["Real Madrid"], ["Pari SG"]]
+                  },
+                  "alt_responses": []
+                },
+                "responses": [
+                  {
+                    "top": 0,
+                    "left": 240,
+                    "width": 200,
+                    "height": 40
+                  },
+                  {
+                    "top": 100,
+                    "left": 120,
+                    "width": 220,
+                    "height": 40
+                  },
+                  {
+                    "top": 220,
+                    "left": 200,
+                    "width": 200,
+                    "height": 40
+                  }
+                ],
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                }
+              }
+            ],
+            "resources": []
+          }
+        },
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "clozeImageDropDown",
+                  "title": "Label Image with Drop Down",
+                  "reference": "62efc864-dc88-43b9-9858-a91814a583ce",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "62efc864-dc88-43b9-9858-a91814a583ce",
+                "title": "Label Image with Drop Down",
+                "type": "clozeImageDropDown",
+                "firstMount": true,
+                "stimulus": "<p><strong style=\"background-color: rgb(243, 243, 243); color: rgb(67, 75, 93);\">Q4 - Label Image With Drop Down</strong></p>",
+                "options": [["FC Barcelona", "Real Madrid"], ["Real Madrid", "Pari SG"], ["Pari SG", "FC Barcelona"]],
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": ["FC Barcelona", "Real Madrid", "Pari SG"]
+                  },
+                  "alt_responses": []
+                },
+                "responses": [
+                  {
+                    "top": 0,
+                    "left": 240,
+                    "width": 200,
+                    "height": 40
+                  },
+                  {
+                    "top": 100,
+                    "left": 120,
+                    "width": 220,
+                    "height": 40
+                  },
+                  {
+                    "top": 220,
+                    "left": 200,
+                    "width": 200,
+                    "height": 40
+                  }
+                ],
+                "imageWidth": 600,
+                "stimulusReviewonly": "",
+                "instructorStimulus": "",
+                "rubricReference": "",
+                "sampleAnswer": "",
+                "distractorRationalePerResponse": "",
+                "distractorRationaleOptions": [],
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                }
+              }
+            ],
+            "resources": []
+          }
+        }
+      ]
+    },
+    "classifyMatchOrder": {
+      "test": {
+        "title": "Classify, Match & Order Auto Test",
+        "description": "",
+        "releaseScore": "WITH_ANSWERS",
+        "maxAttempts": "2",
+        "testType": "assessment",
+        "generateReport": true,
+        "safeBrowser": false,
+        "sebPassword": "",
+        "shuffleQuestions": false,
+        "shuffleAnswers": false,
+        "calcType": "NONE",
+        "answerOnPaper": false,
+        "status": "draft",
+        "thumbnail": "https://fakeimg.pl/500x135/",
+        "createdBy": {},
+        "tags": [],
+        "scoring": {
+          "total": 0,
+          "testItems": [
+            {
+              "points": 0
+            },
+            {
+              "points": 0
+            },
+            {
+              "points": 0
+            },
+            {
+              "points": 0
+            }
+          ]
+        },
+        "testItems": [],
+        "standardsTag": {
+          "curriculum": "",
+          "standards": []
+        },
+        "grades": [],
+        "subjects": [],
+        "courses": [],
+        "collectionName": "",
+        "analytics": {
+          "usage": "0",
+          "likes": "0"
+        }
+      },
+      "items": [
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "sortList",
+                  "title": "Sort List",
+                  "reference": "32f4c411-f40f-4e36-8f53-3ff51c58c7f2",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "32f4c411-f40f-4e36-8f53-3ff51c58c7f2",
+                "title": "Sort List",
+                "firstMount": true,
+                "type": "sortList",
+                "stimulus": "<p>Q1 - <strong style=\"background-color: rgb(243, 243, 243); color: rgb(67, 75, 93);\">Sort List</strong></p>",
+                "ui_style": {},
+                "source": ["<p>Real Madrid</p>", "<p>FC Barcelona</p>"],
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": [1, 0]
+                  },
+                  "alt_responses": []
+                },
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                }
+              }
+            ],
+            "resources": []
+          }
+        },
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "classification",
+                  "title": "Classification",
+                  "reference": "e5eb08c2-a64d-41a3-84be-9b21fd963751",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "e5eb08c2-a64d-41a3-84be-9b21fd963751",
+                "title": "Classification",
+                "firstMount": false,
+                "group_possible_responses": false,
+                "possible_response_groups": [
+                  {
+                    "title": "",
+                    "responses": ["Choice B", "Choice C", "Choice A", "Choice D"]
+                  }
+                ],
+                "possible_responses": ["<p>FC Barcelona</p>", "<p>Real Madrid</p>"],
+                "stimulus": "<p>Q2 - <strong style=\"background-color: rgb(243, 243, 243); color: rgb(67, 75, 93);\">Classification</strong></p>",
+                "type": "classification",
+                "ui_style": {
+                  "column_count": 2,
+                  "column_titles": ["<p>My First Team</p>", "<p>My Second Team</p>"],
+                  "row_count": 1,
+                  "row_titles": []
+                },
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": [[0], [1]]
+                  },
+                  "alt_responses": []
+                },
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                }
+              }
+            ],
+            "resources": []
+          }
+        },
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "matchList",
+                  "title": "Match list",
+                  "reference": "4ea30d65-9ea8-4378-b349-e5cba1df03ca",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "4ea30d65-9ea8-4378-b349-e5cba1df03ca",
+                "title": "Match list",
+                "firstMount": true,
+                "group_possible_responses": false,
+                "possible_response_groups": [
+                  {
+                    "title": "",
+                    "responses": ["Choice B", "Choice C", "Choice A"]
+                  }
+                ],
+                "possible_responses": ["<p>FC Barcelona</p>", "<p>Real Madrid</p>", "<p>Pari SG</p>"],
+                "type": "matchList",
+                "stimulus": "<p>Q3 - <strong style=\"background-color: rgb(243, 243, 243); color: rgb(67, 75, 93);\">Match List</strong></p>",
+                "list": ["<p>FC Barcelona</p>", "<p>Real Madrid</p>", "<p>Pari SG</p>"],
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": ["<p>FC Barcelona</p>", "<p>Real Madrid</p>", "<p>Pari SG</p>"]
+                  },
+                  "alt_responses": []
+                },
+                "smallSize": true
+              }
+            ],
+            "resources": []
+          }
+        },
+        {
+          "rows": [
+            {
+              "tabs": [],
+              "dimension": "100%",
+              "widgets": [
+                {
+                  "widgetType": "question",
+                  "type": "orderList",
+                  "title": "OrderList",
+                  "reference": "2bdee21b-c5ae-42f9-aadd-663d304085bc",
+                  "tabIndex": 0
+                }
+              ]
+            }
+          ],
+          "columns": [],
+          "status": "draft",
+          "version": 0,
+          "data": {
+            "questions": [
+              {
+                "id": "2bdee21b-c5ae-42f9-aadd-663d304085bc",
+                "title": "OrderList",
+                "type": "orderList",
+                "stimulus": "<p>Q4 - <strong style=\"background-color: rgb(243, 243, 243); color: rgb(67, 75, 93);\">Orderlist</strong></p>",
+                "list": ["<p>FC Barcelona</p>", "<p>Real Madrid</p>", "<p>Pari SG</p>"],
+                "validation": {
+                  "scoring_type": "exactMatch",
+                  "valid_response": {
+                    "score": 1,
+                    "value": [0, 1, 2]
+                  },
+                  "alt_responses": []
+                },
+                "smallSize": true,
+                "variable": {
+                  "variables": {}
+                }
+              }
+            ],
+            "resources": []
+          }
+        }
+      ]
+    }
+  }
+}

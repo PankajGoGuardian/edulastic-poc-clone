@@ -334,7 +334,8 @@ class CustomQuillComponent extends React.Component {
     this.quillRef.getEditor().setSelection(curMathRange.index + 1);
     this.setState({
       selLatex: "",
-      showMath: false
+      showMath: false,
+      active: true
     });
   };
 
@@ -345,7 +346,8 @@ class CustomQuillComponent extends React.Component {
     }
     this.setState({
       showMath: false,
-      selLatex: ""
+      selLatex: "",
+      active: true
     });
   };
 

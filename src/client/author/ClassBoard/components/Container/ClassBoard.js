@@ -241,7 +241,6 @@ class ClassBoard extends Component {
     const questions = this.getQuestions();
     const questionsIds = questions.map((q, i) => ({ name: `Question ${i + 1}` }));
     const isMobile = this.isMobile();
-    console.log(questions);
 
     return (
       <div>
@@ -263,7 +262,7 @@ class ClassBoard extends Component {
           </PaginationInfo>
           <StudentButtonDiv>
             <BothButton active={selectedTab === "Both"} onClick={e => this.onTabChange(e, "Both")}>
-              CARDS
+              CARD VIEW
             </BothButton>
             <StudentButton active={selectedTab === "Student"} onClick={e => this.onTabChange(e, "Student")}>
               STUDENTS

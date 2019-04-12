@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
-import { findIndex } from "lodash";
+import { findIndex, isUndefined } from "lodash";
 
 import {
   StyledFlexContainer,
@@ -36,7 +36,9 @@ class StudentViewContainer extends Component {
         index = findIndex(studentItems, student => student.studentId === selectedStudent);
       }
       const { testActivityId } = studentItems[index];
-      loadStudentResponses({ testActivityId, groupId: classId });
+      if (!isUndefined(testActivityId) && !isUndefined(classId)) {
+        loadStudentResponses({ testActivityId, groupId: classId });
+      }
     }
     return {
       selectedStudent,

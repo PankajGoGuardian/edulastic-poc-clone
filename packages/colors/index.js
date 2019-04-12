@@ -63,6 +63,7 @@ export const lightGreenSecondary = "#5EB500";
 export const greenSomeWhatDark = "#17a67d";
 
 export const yellow = "#febe00";
+export const yellow1 = "#FDCC3B";
 
 // shadows
 export const boxShadowDefault = "0 2px 5px 0 rgba(0, 0, 0, 0.07)";
@@ -74,6 +75,8 @@ export const barGrapColor2 = "#ee1b82";
 export const incorrect = "#F35F5F";
 export const pCorrect = "#ebaa28";
 export const graded = "#7BC0DF";
+export const pointColor = "#4a4a4a";
+export const notStarted = "#bfbfbf";
 
 // Sizes
 export const mobileWidth = "480px";

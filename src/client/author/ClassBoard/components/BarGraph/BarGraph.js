@@ -1,16 +1,51 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { maxBy, head, get } from "lodash";
-import { white } from "@edulastic/colors";
+import {
+  white,
+  pointColor,
+  dropZoneTitleColor,
+  secondaryTextColor,
+  green,
+  yellow1,
+  notStarted,
+  darkGrey,
+  incorrect,
+  blue
+} from "@edulastic/colors";
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle, Tooltip } from "recharts";
 import { MainDiv, TooltipContainer } from "./styled";
 
-// eslint-disable-next-line react/prop-types
-const RectangleBar = ({ fill, x, y, width, height }) => (
-  <Rectangle x={x} y={y} width={width} height={height} fill={fill} radius={[10, 10, 0, 0]} />
-);
+const RectangleBar = ({ fill, x, y, width, height, dataKey, payload }) => {
+  let radius = [10, 10, 0, 0];
+  switch (dataKey) {
+    case "green":
+      if (payload.yellow || payload.lightGrey || payload.red || payload.darkGrey) {
+        radius = null;
+      }
+      break;
+    case "yellow":
+      if (payload.lightGrey || payload.red || payload.darkGrey) {
+        radius = null;
+      }
+      break;
+    case "lightGrey":
+      if (payload.red || payload.darkGrey) {
+        radius = null;
+      }
+      break;
+    case "darkGrey":
+      if (!payload.red) {
+        radius = null;
+      }
+      break;
+    default:
+      break;
+  }
+  return <Rectangle x={x} y={y} width={width} height={height} fill={fill} radius={radius} />;
+};
 
-// eslint-disable-next-line react/prop-types
 const CustomizedTick = ({ payload, x, y, left, index, maxValue, pointValue }) => {
   const isPoint = payload.value % pointValue === 0;
   const x2 = left ? x + 10 : x - 10;
@@ -18,9 +53,9 @@ const CustomizedTick = ({ payload, x, y, left, index, maxValue, pointValue }) =>
   const isLastPoint = index + 1 === maxValue;
   return (
     <g>
-      {(isLastPoint || isPoint) && <line x1={x} y1={y} x2={x2} y2={y} style={{ stroke: "#4a4a4a", strokeWidth: 2 }} />}
+      {(isLastPoint || isPoint) && <line x1={x} y1={y} x2={x2} y2={y} style={{ stroke: pointColor, strokeWidth: 2 }} />}
       {(isLastPoint || isPoint) && (
-        <text x={textX2} y={y} textAnchor="middle" fill="#B1B1B1" alignmentBaseline="middle" fontSize="10">
+        <text x={textX2} y={y} textAnchor="middle" fill={dropZoneTitleColor} alignmentBaseline="middle" fontSize="10">
           {payload.value}
         </text>
       )}
@@ -28,7 +63,6 @@ const CustomizedTick = ({ payload, x, y, left, index, maxValue, pointValue }) =>
   );
 };
 
-// eslint-disable-next-line react/prop-types
 const CustomTooltip = ({ label, payload }) => {
   const firstItem = head(payload) || {};
   const timeSpent = get(firstItem, "payload.avgTimeSpent");
@@ -66,16 +100,17 @@ export default class BarGraph extends Component {
           name: `Q${index + 1}`,
           green: item.correctNum !== 0 ? item.correctNum : 0,
           yellow: item.partialNum !== 0 ? item.partialNum : 0,
-          red: item.wrongNum !== 0 && !item.skippedNum ? item.wrongNum : 0,
-          all: (item.wrongNum || 0) + (item.correctNum || 0) + (item.partialNum || 0),
+          red: item.wrongNum !== 0 && !item.skippedNum && !item.notStartedNum ? item.wrongNum : 0,
+          all: (item.wrongNum || 0) + (item.correctNum || 0) + (item.partialNum || 0) + (item.notStartedNum || 0),
           darkGrey: item.wrongNum === item.attemptsNum && item.skippedNum !== 0 ? item.attemptsNum : 0,
-          lightGrey: item.wrongNum !== item.attemptsNum && item.skippedNum !== 0 ? item.skippedNum : 0,
+          lightGrey: item.notStartedNum !== 0 ? item.notStartedNum : 0,
           avgTimeSpent: item.avgTimeSpent
         }))
         .slice(0, 15);
     }
     const maxItem = maxBy(data, d => d.all) || {};
     const maxValue = (maxItem.all || 0) + 2;
+
     let pointValue = 2;
     if (maxValue > 10) {
       pointValue = 10;
@@ -99,14 +134,14 @@ export default class BarGraph extends Component {
               axisLine={false}
               tickSize={0}
               dy={8}
-              tick={{ fontSize: "10px", strokeWidth: 2, fill: "#434b5d" }}
+              tick={{ fontSize: "10px", strokeWidth: 2, fill: secondaryTextColor }}
               padding={{ left: 20, right: 20 }}
             />
             <YAxis
               dataKey="all"
               yAxisId={0}
               allowDecimals={false}
-              label={{ value: "ATTEMPTS", angle: -90, fill: "#b1b1b1", fontSize: "10px" }}
+              label={{ value: "ATTEMPTS", angle: -90, fill: dropZoneTitleColor, fontSize: "10px" }}
               axisLine={false}
               tickCount={maxValue}
               tick={props => <CustomizedTick left {...props} pointValue={pointValue} maxValue={maxValue} />}
@@ -119,7 +154,7 @@ export default class BarGraph extends Component {
               label={{
                 value: "AVG TIME (SECONDS)",
                 angle: -90,
-                fill: "#b1b1b1",
+                fill: dropZoneTitleColor,
                 fontSize: "10px"
               }}
               axisLine={false}
@@ -128,14 +163,44 @@ export default class BarGraph extends Component {
               tickFormatter={() => ""}
               orientation="right"
             />
-            <Bar stackId="a" dataKey="green" fill="#1FE3A1" onClick={this.handleClick} />
-            <Bar stackId="a" dataKey="yellow" fill="#FDCC3B" onClick={this.handleClick} />
-            <Bar stackId="a" dataKey="red" fill="#F35F5F" shape={<RectangleBar />} onClick={this.handleClick} />
-            <Bar stackId="a" dataKey="lightGrey" fill="#f5f5f5" onClick={this.handleClick} />
-            <Bar stackId="a" dataKey="darkGrey" fill="#e5e5e5" onClick={this.handleClick} />
+            <Bar
+              stackId="a"
+              dataKey="green"
+              fill={green}
+              shape={<RectangleBar dataKey="green" />}
+              onClick={this.handleClick}
+            />
+            <Bar
+              stackId="a"
+              dataKey="yellow"
+              fill={yellow1}
+              shape={<RectangleBar dataKey="yellow" />}
+              onClick={this.handleClick}
+            />
+            <Bar
+              stackId="a"
+              dataKey="lightGrey"
+              fill={notStarted}
+              shape={<RectangleBar dataKey="lightGrey" />}
+              onClick={this.handleClick}
+            />
+            <Bar
+              stackId="a"
+              dataKey="darkGrey"
+              fill={darkGrey}
+              shape={<RectangleBar dataKey="darkGrey" />}
+              onClick={this.handleClick}
+            />
+            <Bar
+              stackId="a"
+              dataKey="red"
+              fill={incorrect}
+              shape={<RectangleBar dataKey="red" />}
+              onClick={this.handleClick}
+            />
             <Line
               dataKey="green"
-              stroke="#1774F0"
+              stroke={blue}
               strokeWidth="3"
               type="monotone"
               dot={{ stroke: white, strokeWidth: 6, fill: white }}

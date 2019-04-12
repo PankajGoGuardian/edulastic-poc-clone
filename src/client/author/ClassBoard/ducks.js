@@ -90,9 +90,9 @@ export const getGradeBookSelector = createSelector(
       .map(({ score, maxScore }) => score / maxScore)
       .reduce((prev, cur) => prev + cur, 0);
     const submittedScoresAverage = submittedNumber > 0 ? submittedScores / submittedNumber : 0;
-    const startedEntities = entities.filter(x => x.status !== "notStarted");
+    // const startedEntities = entities.filter(x => x.status !== "notStarted");
     const questionMap = {};
-    for (const entity of startedEntities) {
+    for (const entity of entities) {
       const { questionActivities } = entity;
       for (const { _id, notStarted, skipped, correct, timeSpent, partiallyCorrect } of questionActivities) {
         if (!questionMap[_id]) {
@@ -103,13 +103,14 @@ export const getGradeBookSelector = createSelector(
             correctNum: 0,
             skippedNum: 0,
             wrongNum: 0,
-            partialNum: 0
+            partialNum: 0,
+            notStartedNum: 0
           };
         }
         if (!notStarted) {
           questionMap[_id].attemptsNum += 1;
         } else {
-          continue;
+          questionMap[_id].notStartedNum += 1;
         }
 
         if (skipped) {
@@ -118,7 +119,9 @@ export const getGradeBookSelector = createSelector(
 
         if (correct) {
           questionMap[_id].correctNum += 1;
-        } else {
+        }
+
+        if (!correct && !notStarted) {
           questionMap[_id].wrongNum += 1;
         }
 

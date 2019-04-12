@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { maxBy } from "lodash";
+import { maxBy, head, get } from "lodash";
 import { white } from "@edulastic/colors";
-import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle } from "recharts";
-import { MainDiv } from "./styled";
+import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle, Tooltip } from "recharts";
+import { MainDiv, TooltipContainer } from "./styled";
 
 // eslint-disable-next-line react/prop-types
 const RectangleBar = ({ fill, x, y, width, height }) => (
@@ -26,6 +26,13 @@ const CustomizedTick = ({ payload, x, y, left, index, maxValue, pointValue }) =>
       )}
     </g>
   );
+};
+
+// eslint-disable-next-line react/prop-types
+const CustomTooltip = ({ label, payload }) => {
+  const firstItem = head(payload) || {};
+  const timeSpent = get(firstItem, "payload.avgTimeSpent");
+  return <TooltipContainer title={label}>{`Time(seconds): ${timeSpent}`}</TooltipContainer>;
 };
 
 export default class BarGraph extends Component {
@@ -62,7 +69,8 @@ export default class BarGraph extends Component {
           red: item.wrongNum !== 0 && !item.skippedNum ? item.wrongNum : 0,
           all: (item.wrongNum || 0) + (item.correctNum || 0) + (item.partialNum || 0),
           darkGrey: item.wrongNum === item.attemptsNum && item.skippedNum !== 0 ? item.attemptsNum : 0,
-          lightGrey: item.wrongNum !== item.attemptsNum && item.skippedNum !== 0 ? item.skippedNum : 0
+          lightGrey: item.wrongNum !== item.attemptsNum && item.skippedNum !== 0 ? item.skippedNum : 0,
+          avgTimeSpent: item.avgTimeSpent
         }))
         .slice(0, 15);
     }
@@ -132,6 +140,7 @@ export default class BarGraph extends Component {
               type="monotone"
               dot={{ stroke: white, strokeWidth: 6, fill: white }}
             />
+            <Tooltip content={<CustomTooltip />} cursor={false} />
           </ComposedChart>
         </ResponsiveContainer>
       </MainDiv>

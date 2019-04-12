@@ -615,12 +615,16 @@ function* removeUnit({ payload }) {
 }
 
 function* fetchAssigned() {
-  const assigned = yield call(assignmentApi.fetchAssigned, "");
+  try {
+    const assigned = yield call(assignmentApi.fetchAssigned, "");
 
-  yield put({
-    type: FETCH_ASSIGNED_RESULT,
-    payload: assigned
-  });
+    yield put({
+      type: FETCH_ASSIGNED_RESULT,
+      payload: assigned.assignments
+    });
+  } catch (error) {
+    return error;
+  }
 }
 
 export function* watcherSaga() {
@@ -736,6 +740,8 @@ const initialState = {
   selectedItemsForAssign: [],
 
   destinationCurriculumSequence: {},
+
+  assigned: [],
 
   dataForAssign: getDefaultAssignData()
 };

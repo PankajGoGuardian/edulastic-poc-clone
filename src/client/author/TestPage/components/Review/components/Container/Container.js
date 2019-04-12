@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Row, Col } from "antd";
 import PropTypes from "prop-types";
-import { cloneDeep } from "lodash";
+import { cloneDeep, get } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { Paper, withWindowSizes } from "@edulastic/common";

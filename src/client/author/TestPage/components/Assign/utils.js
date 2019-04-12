@@ -39,9 +39,9 @@ export const generateClassData = (
     classes
       .map(classId => {
         const tempStudents = uniq((groupedByClass[classId] || []).map(item => item._id));
-
         return {
           _id: classId,
+          name: (groupsData[classId] && groupsData[classId].name) || "",
           students: tempStudents,
           assignedCount: tempStudents.length
         };

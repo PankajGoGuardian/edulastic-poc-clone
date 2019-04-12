@@ -244,7 +244,7 @@ class Review extends PureComponent {
           </Col>
         </Row>
         <PreviewModal
-          testId={this.props.match.params.id}
+          testId={get(this.props, "match.params.id", false)}
           isVisible={isModalVisible}
           onClose={this.closeModal}
           page="review"

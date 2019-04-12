@@ -80,7 +80,7 @@ class ExpressGrader extends Component {
   render() {
     const { testActivity, additionalData, match } = this.props;
     const { isVisibleModal, record, tableData } = this.state;
-    const { assignmentId, classId } = match.params;
+    const { assignmentId, classId, testActivityId } = match.params;
     const isMobile = this.isMobile();
     return (
       <div>
@@ -90,6 +90,7 @@ class ExpressGrader extends Component {
           assignmentId={assignmentId}
           onCreate={this.handleCreate}
           additionalData={additionalData || {}}
+          testActivityId={testActivityId}
         />
         <StyledFlexContainer justifyContent="space-between">
           <PaginationInfo>

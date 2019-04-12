@@ -123,7 +123,7 @@ class SideMenu extends Component {
 
   render() {
     const { broken, isVisible } = this.state;
-    const { windowWidth, history, isSidebarCollapsed, firstName, logout } = this.props;
+    const { windowWidth, history, isSidebarCollapsed, firstName, logout, userRole } = this.props;
     // const isPickQuestion = !!history.location.pathname.includes("pickup-questiontype");
 
     const isCollapsed = isSidebarCollapsed;
@@ -204,7 +204,11 @@ class SideMenu extends Component {
                 {menuItems.map((menu, index) => {
                   const MenuIcon = this.renderIcon(menu.icon, isCollapsed);
                   return (
-                    <MenuItem key={index.toString()} onClick={this.toggleMenu}>
+                    <MenuItem
+                      key={index.toString()}
+                      onClick={this.toggleMenu}
+                      visible={menu.label === "Admin" && userRole !== "district-admin" ? false : true}
+                    >
                       <MenuIcon />
                       {!isCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
                     </MenuItem>
@@ -267,6 +271,7 @@ SideMenu.propTypes = {
   history: PropTypes.object.isRequired,
   toggleSideBar: PropTypes.func.isRequired,
   firstName: PropTypes.string.isRequired,
+  userRole: PropTypes.string.isRequired,
   isSidebarCollapsed: PropTypes.bool.isRequired,
   logout: PropTypes.func.isRequired
 };
@@ -277,7 +282,8 @@ const enhance = compose(
   connect(
     ({ authorUi, user }) => ({
       isSidebarCollapsed: authorUi.isSidebarCollapsed,
-      firstName: get(user, "user.firstName", "")
+      firstName: get(user, "user.firstName", ""),
+      userRole: get(user, "user.role", "")
     }),
     { toggleSideBar: toggleSideBarAction, logout: logoutAction }
   )
@@ -525,6 +531,7 @@ const MenuItem = styled(AntMenu.Item)`
   display: flex;
   align-items: center;
   margin-top: 16px;
+  display: ${props => (props.visible ? "flex" : "none !important")};
 `;
 
 const UserName = styled.div`

@@ -243,7 +243,13 @@ class Review extends PureComponent {
             </Calculator>
           </Col>
         </Row>
-        <PreviewModal isVisible={isModalVisible} onClose={this.closeModal} page="review" data={item} />
+        <PreviewModal
+          testId={this.props.match.params.id}
+          isVisible={isModalVisible}
+          onClose={this.closeModal}
+          page="review"
+          data={item}
+        />
       </div>
     );
   }

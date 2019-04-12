@@ -270,7 +270,7 @@ export function* updateItemSaga({ payload }) {
       delete payload.data.data;
     }
 
-    let data = _omit(payload.data, ["authors", "active", "versionId", "__v"]);
+    let data = _omit(payload.data, ["authors", "__v"]);
     if (payload.testId) {
       data.testId = testId;
     }

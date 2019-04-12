@@ -47,7 +47,8 @@ const OrderList = ({
   const [correctTab, setCorrectTab] = useState(0);
   useEffect(() => {
     if (userAnswer.length === 0) {
-      saveAnswer(item.list.map((q, i) => i));
+      const { list = [] } = item;
+      saveAnswer(list.map((q, i) => i));
     }
   }, [item, userAnswer]);
 
@@ -280,7 +281,7 @@ const OrderList = ({
           {previewTab === CLEAR && (
             <OrderListPreview
               onSortEnd={onSortPreviewEnd}
-              questions={userAnswer.map(index => itemForPreview.list[index])}
+              questions={userAnswer.map(index => itemForPreview.list && itemForPreview.list[index])}
               smallSize={smallSize}
               listStyle={{ fontSize }}
               axis={axis}

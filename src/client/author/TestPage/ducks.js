@@ -194,9 +194,10 @@ export const reducer = (state = initialState, { type, payload }) => {
       return { ...state, creating: true };
     case CREATE_TEST_SUCCESS:
     case UPDATE_TEST_SUCCESS:
+      const { testItems, ...entity } = payload.entity;
       return {
         ...state,
-        entity: { ...payload.entity },
+        entity: { ...state.entity, ...entity },
         creating: false
       };
     case CREATE_TEST_ERROR:

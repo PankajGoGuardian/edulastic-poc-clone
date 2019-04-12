@@ -28,7 +28,7 @@ import { getFontSize, getDirection } from "../../utils/helpers";
 const ClassificationPreview = ({
   view,
   saveAnswer,
-  item,
+  item = { ui_style: {} },
   t,
   userAnswer,
   previewTab,

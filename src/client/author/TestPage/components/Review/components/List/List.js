@@ -87,7 +87,7 @@ const List = SortableContainer(
         item = scoring.testItems.find(({ id }) => id === testItems[i]._id);
       }
 
-      return item && item.points ? item.points : 0;
+      return testItems && testItems[i] && testItems[i].maxScore ? testItems[i].maxScore : 0;
     };
 
     return (

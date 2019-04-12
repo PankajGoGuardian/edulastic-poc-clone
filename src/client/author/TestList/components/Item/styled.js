@@ -1,15 +1,21 @@
 import styled from "styled-components";
 import { Rate } from "antd/lib/index";
-import { blue, darkBlue, greenDark, grey } from "@edulastic/colors";
+import { blue, darkBlue, darkGrey, fadedGrey, lightGrey } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled(Card)`
+  border: 1px solid #eeeeee;
+  box-shadow: none;
+  padding: 15px;
+  border-radius: 8px;
   .ant-card-body {
     padding: 0;
   }
 
   .ant-card-head {
     padding: 0;
+    border-radius: 5px;
+    overflow: hidden;
   }
 
   .ant-card-head-title {
@@ -18,12 +24,7 @@ export const Container = styled(Card)`
 `;
 
 export const Inner = styled.div`
-  padding: 15px;
-  border-bottom: 1px solid ${grey};
-
   div:last-child {
-    width: 250px;
-
     & > span {
       width: 114.5px;
       height: 23.5px;
@@ -35,61 +36,129 @@ export const Inner = styled.div`
   }
 `;
 
+export const CardDescription = styled.div`
+  font-size: 12px;
+  height: 55px;
+  overflow: hidden;
+`;
+
 export const Footer = styled.div`
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 export const Author = styled.div`
-  width: 70%;
-  padding: 15px;
-  display: flex;
-  align-items: center;
-  border-right: 1px solid ${grey};
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
+  color: ${darkGrey};
+  flex-basis: 65px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 export const AuthorName = styled.span`
-  color: ${greenDark};
+  svg {
+    fill: ${darkGrey};
+    vertical-align: bottom;
+    &:hover {
+      fill: ${darkGrey};
+      width: 14px;
+      height: 14px;
+    }
+  }
 `;
 
-export const Icons = styled.div`
-  display: flex;
-  padding: 15px;
-  width: 30%;
-  display: flex;
-  flex-direction: column;
-`;
-
-export const IconWrapper = styled.div`
+export const LikeIcon = styled.div`
   display: flex;
   align-items: center;
 `;
 
+export const ShareIcon = styled.div`
+  display: flex;
+  align-items: center;
+  svg {
+    transform: rotate(180deg);
+  }
+`;
+
 export const IconText = styled.span`
-  font-size: 13px;
+  font-size: 11px;
+  color: ${darkGrey};
+`;
+export const CardIdWrapper = styled.div`
+  color: ${darkGrey};
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  svg {
+    fill: ${darkGrey};
+    width: 13px;
+    height: 13px;
+  }
+`;
+export const CardId = styled.span``;
+export const ViewButton = styled.div`
+  font-size: 12px;
+  color: ${blue};
+  background: white;
+  padding: 10px;
+  margin: 10px 0px 15px;
+  box-shadow: 0px 1px 1px 1px ${fadedGrey};
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  &:hover {
+    background: ${lightGrey};
+  }
+`;
+
+export const ButtonWrapper = styled.div`
+  position: absolute;
+  height: 100%;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  display: none;
+  background: rgba(0, 0, 0, 0.5);
 `;
 
 export const Header = styled.div`
   min-height: 100px;
   position: relative;
-  background: url("https://fakeimg.pl/250x100/");
+  background: url("https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg");
   background-repeat: no-repeat;
   background-size: cover;
+  &: hover {
+    .showHover {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+  }
 `;
 
 export const Stars = styled(Rate)`
+  font-size: 13px;
   position: absolute;
-  bottom: 5px;
-  right: 5px;
+  left: 10px;
+  top: 5px;
+  z-index: 1;
 `;
 
 export const StyledLink = styled.a`
   font-size: 14px;
   font-weight: bold;
-  display: inline-flex;
-  align-items: center;
+  display: inline-block;
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
   text-decoration: none;
   color: ${blue};
   cursor: pointer;
@@ -100,5 +169,6 @@ export const StyledLink = styled.a`
 `;
 
 export const Question = styled.div`
-  margin-bottom: 15px;
+  padding: 15px 0px 4px;
+  text-align: center;
 `;

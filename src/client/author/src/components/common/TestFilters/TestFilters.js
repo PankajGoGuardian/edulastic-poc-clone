@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { blue, secondaryTextColor } from "@edulastic/colors";
+import { blue, secondaryTextColor, titleColor, lightGreySecondary } from "@edulastic/colors";
 import PropTypes from "prop-types";
 import { FlexContainer } from "@edulastic/common";
 import { Select } from "antd";
@@ -8,8 +8,8 @@ import { Select } from "antd";
 const TestFilters = ({ children, onChange, style, filterData, state, clearFilter }) => (
   <Container style={style}>
     <FilerHeading justifyContent="space-between">
-      <Title>Filters</Title>
-      <ClearAll onClick={clearFilter}>Clear all</ClearAll>
+      <Title>FILTERS</Title>
+      <ClearAll onClick={clearFilter}>CLEAR ALL</ClearAll>
     </FilerHeading>
     {children}
 
@@ -66,7 +66,7 @@ const Container = styled.div`
   }
 
   .ant-select-selection {
-    background: transparent;
+    background: ${lightGreySecondary};
   }
 
   .ant-select-lg {
@@ -74,6 +74,15 @@ const Container = styled.div`
     font-weight: 600;
     letter-spacing: 0.2px;
     color: #434b5d;
+    .ant-select-selection--multiple {
+      .ant-select-selection__rendered {
+        li.ant-select-selection__choice {
+          height: 24px;
+          line-height: 24px;
+          margin-top: 7px;
+        }
+      }
+    }
   }
 
   .ant-select-selection__choice {
@@ -114,14 +123,14 @@ const FilerHeading = styled(FlexContainer)`
 `;
 
 const Title = styled.span`
-  color: #4aac8b;
-  font-size: 14px;
+  color: ${titleColor};
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.3px;
 `;
 
 const ClearAll = styled.span`
-  color: #00b0ff;
+  color: ${blue};
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;

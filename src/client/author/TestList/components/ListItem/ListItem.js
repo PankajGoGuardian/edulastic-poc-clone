@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { FaAngleDoubleRight } from "react-icons/fa";
-import { greenDark } from "@edulastic/colors";
+import { darkGrey } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
-import { IconHeart, IconShare } from "@edulastic/icons";
+import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
 import { Col, Button } from "antd";
 import Tags from "../../../src/components/common/Tags";
 import {
@@ -20,8 +19,14 @@ import {
   TypeContainer,
   IconWrapper,
   IconText,
-  AuthorWrapper,
-  ContentWrapper
+  ViewButtonWrapper,
+  ContentWrapper,
+  TagsWrapper,
+  ViewButton,
+  CardIdWrapper,
+  CardId,
+  Footer,
+  ButtonWrapper
 } from "./styled";
 
 const ButtonGroup = Button.Group;
@@ -54,21 +59,30 @@ class ListItem extends Component {
     } = this.props;
     return (
       <Container>
-        <ListCard
-          title={
-            <Header>
-              <Stars size="small" />
-            </Header>
-          }
-        />
-        <ContentWrapper gutter={32}>
-          <Col span={12}>
+        <ContentWrapper>
+          <Col span={18}>
+            <ListCard
+              title={
+                <Header>
+                  <Stars size="small" />
+                  <ButtonWrapper className="showHover">
+                    {owner && (
+                      <Button type="primary" onClick={this.moveToItem}>
+                        Edit
+                      </Button>
+                    )}
+
+                    <Button type="primary">duplicate</Button>
+                  </ButtonWrapper>
+                </Header>
+              }
+            />
             <Inner>
               <div>
                 <StyledLink
                 // onClick={this.moveToItem}
                 >
-                  {title}# <FaAngleDoubleRight />
+                  {title}
                 </StyledLink>
               </div>
               <Description>
@@ -76,58 +90,53 @@ class ListItem extends Component {
                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum metus et luctus lacinia. Nullam vel tincidunt nibh. Duis ac eros nunc."
                 }
               </Description>
-              <ButtonGroup>
-                {owner && (
-                  <Button type="primary" onClick={this.moveToItem}>
-                    Edit
-                  </Button>
-                )}
-
-                <Button type="primary">duplicate</Button>
-              </ButtonGroup>
             </Inner>
           </Col>
-          <AuthorWrapper span={12}>
-            <ItemInformation>
-              <ContentWrapper style={{ paddingTop: "15px" }}>
-                <Col span={8}>
+
+          <ViewButtonWrapper span={6}>
+            <TypeContainer>{""}</TypeContainer>
+            <ViewButton>VIEW</ViewButton>
+          </ViewButtonWrapper>
+
+          <Footer span={24}>
+            <TagsWrapper span={12}>
+              <Tags tags={tags} />
+            </TagsWrapper>
+
+            <ItemInformation span={12}>
+              <ContentWrapper>
+                <Col span={7}>
                   {authorName && (
                     <Author>
-                      <span>
-                        {t("component.item.by")}
-                        :&nbsp;
-                      </span>
-                      <AuthorName>{authorName}</AuthorName>
+                      <IconUser /> &nbsp;
+                      <AuthorName title={authorName}>{authorName}</AuthorName>
                     </Author>
                   )}
                 </Col>
-                <Col span={8}>
-                  <Author>
-                    <span>ID:&nbsp;</span>
-                    <AuthorName>{this.id}</AuthorName>
-                  </Author>
-                </Col>
-                <Col span={4}>
-                  <IconWrapper>
-                    <IconShare color={greenDark} width={16} height={16} />
+                <Col span={7}>
+                  <CardIdWrapper>
+                    <IconId />
                     &nbsp;
-                    {analytics && <IconText>{analytics.usage}</IconText>}
+                    <CardId>{this.id}</CardId>
+                  </CardIdWrapper>
+                </Col>
+                <Col span={5}>
+                  <IconWrapper>
+                    <IconShare color={darkGrey} width={14} height={14} />
+                    &nbsp;
+                    {analytics && <IconText>{analytics.usage} 000</IconText>}
                   </IconWrapper>
                 </Col>
-                <Col span={4}>
+                <Col span={5}>
                   <IconWrapper>
-                    <IconHeart color={greenDark} width={16} height={16} />
+                    <IconHeart color={darkGrey} width={14} height={14} />
                     &nbsp;
-                    {analytics && <IconText>{analytics.likes}</IconText>}
+                    {analytics && <IconText>{analytics.likes} 000</IconText>}
                   </IconWrapper>
                 </Col>
               </ContentWrapper>
             </ItemInformation>
-            <TypeContainer>
-              {"Type: "}
-              <Tags tags={tags} />
-            </TypeContainer>
-          </AuthorWrapper>
+          </Footer>
         </ContentWrapper>
       </Container>
     );

@@ -361,7 +361,7 @@ class TestList extends Component {
 
     if (blockStyle === "tile") {
       return (
-        <Row gutter={16} type="flex">
+        <Row gutter={24} type="flex">
           {tests.map(item => (
             <CardWrapper
               item={item}
@@ -445,15 +445,15 @@ class TestList extends Component {
           <FlexContainer>
             <Filter>
               <AffixWrapper>
-                <Input.Search
-                  placeholder="Search by skills and keywords"
-                  onChange={this.handleSearchInputChange}
-                  size="large"
-                  value={searchString}
-                />
                 <ScrollbarWrapper>
                   <PerfectScrollbar>
                     <ScrollBox>
+                      <Input.Search
+                        placeholder="Search by skills and keywords"
+                        onChange={this.handleSearchInputChange}
+                        size="large"
+                        value={searchString}
+                      />
                       <TestFilters
                         clearFilter={this.handleClearFilter}
                         state={search}

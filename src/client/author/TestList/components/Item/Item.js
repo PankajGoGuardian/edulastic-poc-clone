@@ -1,27 +1,30 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { FaAngleDoubleRight } from "react-icons/fa";
-import { greenDark } from "@edulastic/colors";
+import { darkGrey } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
-import { IconHeart, IconShare } from "@edulastic/icons";
+import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
 import { Button } from "antd";
+import { assignmentApi } from "@edulastic/api";
 import {
   Container,
   Inner,
+  CardDescription,
   Footer,
   Author,
   AuthorName,
-  Icons,
   Header,
   Stars,
   StyledLink,
   Question,
-  IconWrapper,
-  IconText
+  LikeIcon,
+  ShareIcon,
+  CardIdWrapper,
+  CardId,
+  IconText,
+  ViewButton,
+  ButtonWrapper
 } from "./styled";
 import Tags from "../../../src/components/common/Tags";
-import { assignmentApi } from "@edulastic/api";
-const ButtonGroup = Button.Group;
 
 class Item extends Component {
   static propTypes = {
@@ -61,51 +64,57 @@ class Item extends Component {
         title={
           <Header>
             <Stars />
+            <ButtonWrapper className="showHover">
+              {owner && (
+                <Button onClick={this.moveToItem} type="primary">
+                  Edit
+                </Button>
+              )}
+
+              <Button type="primary" onClick={this.duplicate}>
+                duplicate
+              </Button>
+            </ButtonWrapper>
           </Header>
         }
       >
         <Inner>
           <Question>
-            <StyledLink onClick={this.moveToItem}>
-              {title}# <FaAngleDoubleRight />
+            <StyledLink title={title} onClick={this.moveToItem}>
+              {title}
             </StyledLink>
           </Question>
+          <CardDescription>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sollicitudin congue metus ut pulvinar. Sed in
+            nunc sollicitudin, sodales odio non, lobortis tellus
+          </CardDescription>
           <Tags tags={tags} />
         </Inner>
+        <ViewButton>VIEW</ViewButton>
         <Footer>
           {authorName && (
             <Author>
-              <span>
-                {t("component.item.by")}
-                :&nbsp;
-              </span>
-              <AuthorName>{authorName}</AuthorName>
+              <AuthorName title={authorName}>
+                <IconUser /> {authorName}
+              </AuthorName>
             </Author>
           )}
-          <Icons>
-            <IconWrapper>
-              <IconHeart color={greenDark} width={16} height={16} />
-              &nbsp;
-              {analytics && <IconText>{analytics.likes}</IconText>}
-            </IconWrapper>
-            <IconWrapper>
-              <IconShare color={greenDark} width={16} height={16} />
-              &nbsp;
-              {analytics && <IconText>{analytics.usage}</IconText>}
-            </IconWrapper>
-          </Icons>
+          <CardIdWrapper>
+            <IconId />
+            &nbsp;
+            <CardId>123456</CardId>
+          </CardIdWrapper>
+          <ShareIcon>
+            <IconShare color={darkGrey} width={14} height={14} />
+            &nbsp;
+            {analytics && <IconText>{analytics.usage} 123</IconText>}
+          </ShareIcon>
+          <LikeIcon>
+            <IconHeart color={darkGrey} width={14} height={14} />
+            &nbsp;
+            {analytics && <IconText>{analytics.likes} 123</IconText>}
+          </LikeIcon>
         </Footer>
-        <ButtonGroup>
-          {owner && (
-            <Button onClick={this.moveToItem} type="primary">
-              Edit
-            </Button>
-          )}
-
-          <Button type="primary" onClick={this.duplicate}>
-            duplicate
-          </Button>
-        </ButtonGroup>
       </Container>
     );
   }

@@ -1,18 +1,17 @@
 import styled from "styled-components";
-import { desktopWidth, textColor } from "@edulastic/colors";
+import { desktopWidth, textColor, grey } from "@edulastic/colors";
 import { Pagination, Affix } from "antd";
 import { Card } from "@edulastic/common";
 
 export const ScrollBox = styled.div`
+  padding-right: 30px;
   & > div {
-    padding-top: 0px;
-    padding-bottom: 5px;
-    padding-right: 15px;
+    padding: 20px 0px 5px;
   }
 `;
 
 export const Container = styled.div`
-  padding: 20px;
+  padding: 0px 0px 0px 20px;
   left: 0;
   right: 0;
   height: 100%;
@@ -37,7 +36,7 @@ export const Container = styled.div`
 
   .scrollbar-container {
     overflow: auto !important;
-    height: calc(100vh - 160px);
+    height: calc(100vh - 125px);
 
     ::-webkit-scrollbar {
       display: none;
@@ -45,9 +44,7 @@ export const Container = styled.div`
   }
 `;
 
-export const ScrollbarWrapper = styled.div`
-  margin-top: 15px;
-`;
+export const ScrollbarWrapper = styled.div``;
 
 export const PaginationInfo = styled.span`
   font-weight: 600;
@@ -64,8 +61,10 @@ export const Filter = styled.div`
 `;
 
 export const CardContainer = styled(Card)`
+  box-shadow: none;
+  border-radius: 0px;
   .ant-card-body {
-    padding: ${props => (props.type !== "tile" ? "0" : "auto")};
+    padding: 0px;
   }
 `;
 
@@ -86,6 +85,10 @@ export const MobileFilter = styled.div`
 
 export const Main = styled.div`
   flex: 1;
+  background: white;
+  min-height: calc(100vh - 96px);
+  box-shadow: -1px 0px 5px 1px ${grey};
+  padding: 20px 25px;
 `;
 
 export const FilterButton = styled.div`
@@ -118,11 +121,12 @@ export const SearchModalContainer = styled.div`
 
 export const AffixWrapper = styled(Affix)`
   position: fixed;
-  width: 250px;
-  top: 85px;
-  padding-right: 15px;
+  width: 260px;
+  top: 96px;
+  padding: 20px 0px;
 `;
 
 export const PaginationWrapper = styled(Pagination)`
   padding: ${props => (props.type === "tile" ? "20px 0" : "24px 32px")};
+  text-align: right;
 `;

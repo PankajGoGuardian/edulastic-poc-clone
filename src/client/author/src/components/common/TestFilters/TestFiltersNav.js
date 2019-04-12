@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Menu, Icon } from "antd";
 import styled from "styled-components";
 
-import { greenDark, white, mainTextColor } from "@edulastic/colors";
+import { white, mainTextColor, blue } from "@edulastic/colors";
 
 const TestFiltersNav = ({ items, onSelect, search = {} }) => {
   let selected = items[0].path;
@@ -50,7 +50,7 @@ const Item = styled(Menu.Item)`
   }
 
   :hover {
-    color: ${greenDark};
+    color: ${blue};
   }
 
   &.ant-menu-item {
@@ -60,9 +60,10 @@ const Item = styled(Menu.Item)`
   }
 
   &.ant-menu-item-selected {
-    border-left: 2px solid ${greenDark};
+    border-left: 3px solid ${blue};
     background-color: ${white} !important;
-    color: ${greenDark};
+    color: ${blue};
     box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 0px 10px 10px 0px;
   }
 `;

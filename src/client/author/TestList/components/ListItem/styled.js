@@ -1,18 +1,20 @@
 import styled from "styled-components";
-import { blue, darkBlue, greenDark, grey } from "@edulastic/colors";
+import { blue, darkBlue, greenDark, grey, fadedGrey, lightGrey, darkGrey } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 import { Col, Rate, Row } from "antd";
 
 export const Container = styled.div`
   display: flex;
-  padding: 36px;
+  padding: 30px 0px;
   border-bottom: 1px solid ${grey};
 `;
 
 export const ListCard = styled(Card)`
-  width: 190px;
-  height: 106px;
-  border-radius: 4px;
+  width: 180px;
+  height: 90px;
+  border-radius: 5px;
+  display: inline-block;
+  vertical-align: middle;
 
   .ant-card-body {
     padding: 0;
@@ -28,7 +30,10 @@ export const ListCard = styled(Card)`
 `;
 
 export const Inner = styled.div`
-  padding: 10px 0px 0px 25px;
+  padding: 0px 0px 0px 25px;
+  width: calc(100% - 190px);
+  display: inline-block;
+  vertical-align: middle;
 `;
 
 export const Description = styled.div`
@@ -36,30 +41,68 @@ export const Description = styled.div`
   color: #444444;
 `;
 
+export const TagsWrapper = styled(Col)``;
+
 export const Author = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
+  color: ${darkGrey};
+  flex-basis: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  line-height: 21px;
+  float: right;
+  svg {
+    fill: ${darkGrey};
+    vertical-align: middle;
+    &:hover {
+      fill: ${darkGrey};
+      width: 14px;
+      height: 14px;
+    }
+  }
 `;
 
 export const AuthorName = styled.span`
-  color: ${greenDark};
+  vertical-align: middle;
+`;
+
+export const ButtonWrapper = styled.div`
+  position: absolute;
+  height: 100%;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  display: none;
+  background: rgba(0, 0, 0, 0.5);
 `;
 
 export const Header = styled.div`
-  min-height: 106px;
-  min-width: 190px;
+  min-height: 90px;
+  min-width: 180px;
   position: relative;
-  background: url("https://fakeimg.pl/250x100/");
+  background: url("https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg");
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center center;
+  border-radius: 5px;
+  &: hover {
+    .showHover {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+  }
 `;
 
 export const Stars = styled(Rate)`
+  font-size: 13px;
   position: absolute;
+  left: 10px;
   top: 5px;
-  left: 11px;
+  z-index: 1;
 `;
 
 export const StyledLink = styled.a`
@@ -76,9 +119,7 @@ export const StyledLink = styled.a`
   }
 `;
 
-export const ItemInformation = styled.div`
-  display: flex;
-`;
+export const ItemInformation = styled(Col)``;
 
 export const TypeContainer = styled.div`
   display: flex;
@@ -104,18 +145,57 @@ export const TypeContainer = styled.div`
 
 export const IconWrapper = styled.div`
   display: flex;
-  align-items: 'center;
+  align-items: center;
+  float: right;
 `;
 
 export const IconText = styled.span`
-  font-size: 13;
+  font-size: 11px;
+  color: ${darkGrey};
 `;
 
-export const AuthorWrapper = styled(Col)`
+export const CardIdWrapper = styled.div`
+  color: ${darkGrey};
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  line-height: 21px;
+  float: right;
+  svg {
+    fill: ${darkGrey};
+    width: 13px;
+    height: 13px;
+  }
+`;
+export const CardId = styled.span``;
+
+export const ViewButtonWrapper = styled(Col)`
   padding-left: 45px !important;
   padding-right: 0px !important;
 `;
 
 export const ContentWrapper = styled(Row)`
   width: 100%;
+`;
+
+export const ViewButton = styled.div`
+  width: 120px;
+  float: right;
+  font-size: 12px;
+  color: ${blue};
+  background: white;
+  padding: 10px;
+  box-shadow: 0px 1px 1px 1px ${fadedGrey};
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  &:hover {
+    background: ${lightGrey};
+  }
+`;
+
+export const Footer = styled(Col)`
+  margin-top: 15px;
 `;

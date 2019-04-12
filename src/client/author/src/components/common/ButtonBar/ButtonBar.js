@@ -63,8 +63,10 @@ class ButtonBar extends Component {
       changePreviewTab,
       onEnableEdit,
       clearAnswers,
-      showPublishButton
+      showPublishButton,
+      itemStatus
     } = this.props;
+
     return (
       <React.Fragment>
         {windowWidth > 468 ? (
@@ -102,7 +104,7 @@ class ButtonBar extends Component {
               </MenuItem>
             </Menu>
             <RightSide>
-              {showPublishButton && <Button onClick={onPublishTestItem}>Publish</Button>}
+              {showPublishButton && itemStatus === "draft" && <Button onClick={onPublishTestItem}>Publish</Button>}
               {(showPublishButton || showPublishButton === undefined) && (
                 <Button data-cy="saveButton" onClick={onSave}>
                   <HeadIcon>

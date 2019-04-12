@@ -315,6 +315,7 @@ class Container extends Component {
             previewTab={previewTab}
             onEnableEdit={this.handleEnableEdit}
             showPublishButton={showPublishButton}
+            itemStatus={item && item.status}
           />
         </ItemHeader>
         {windowWidth > MAX_MOBILE_WIDTH && (
@@ -328,6 +329,7 @@ class Container extends Component {
             saving={updating}
             view={view}
             previewTab={previewTab}
+            itemStatus={item && item.status}
             showPublishButton={showPublishButton}
           />
         )}

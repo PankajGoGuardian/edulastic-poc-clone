@@ -32,27 +32,17 @@ import {
 } from "./styled_components";
 
 class ButtonBar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      current: "edit"
-    };
-  }
-
   handleMenuClick = view => {
     const { onChangeView } = this.props;
     onChangeView(view);
-    this.setState({ current: view });
   };
 
   optionHandler = key => {
     const { onChangeView } = this.props;
     onChangeView(key);
-    this.setState({ current: key });
   };
 
   render() {
-    const { current } = this.state;
     const {
       t,
       onSave,
@@ -63,26 +53,30 @@ class ButtonBar extends Component {
       changePreviewTab,
       onEnableEdit,
       clearAnswers,
-      showPublishButton
+      showPublishButton,
+      view,
+      hasAuthorPermission
     } = this.props;
     return (
       <React.Fragment>
         {windowWidth > 468 ? (
           <Container>
-            <Menu mode="horizontal" selectedKeys={[current]} style={{ marginLeft: 80 }}>
-              <MenuItem
-                data-cy="editButton"
-                className={current === "edit" && "active"}
-                onClick={() => this.handleMenuClick("edit")}
-              >
-                <HeadIcon>
-                  <IconSelected color={white} width={18} height={16} />
-                </HeadIcon>
-                Edit Mode
-              </MenuItem>
+            <Menu mode="horizontal" selectedKeys={[view]} style={{ marginLeft: 80 }}>
+              {hasAuthorPermission && (
+                <MenuItem
+                  data-cy="editButton"
+                  className={view === "edit" && "active"}
+                  onClick={() => this.handleMenuClick("edit")}
+                >
+                  <HeadIcon>
+                    <IconSelected color={white} width={18} height={16} />
+                  </HeadIcon>
+                  Edit Mode
+                </MenuItem>
+              )}
               <MenuItem
                 data-cy="previewButton"
-                className={current === "preview" && "active"}
+                className={view === "preview" && "active"}
                 onClick={() => this.handleMenuClick("preview")}
               >
                 <HeadIcon>
@@ -92,7 +86,7 @@ class ButtonBar extends Component {
               </MenuItem>
               <MenuItem
                 data-cy="metadataButton"
-                className={current === "metadata" && "active"}
+                className={view === "metadata" && "active"}
                 onClick={() => this.handleMenuClick("metadata")}
               >
                 <HeadIcon>
@@ -111,7 +105,7 @@ class ButtonBar extends Component {
                   Save
                 </Button>
               )}
-              {!(showPublishButton || showPublishButton === undefined) && (
+              {!(showPublishButton || showPublishButton === undefined) && hasAuthorPermission && (
                 <Button style={{ width: 120 }} size="large" onClick={onEnableEdit}>
                   Edit
                 </Button>
@@ -147,7 +141,7 @@ class ButtonBar extends Component {
                 </HeadIcon>
               </Button>
             </MobileFirstContainer>
-            {current === "preview" && (
+            {view === "preview" && (
               <MobileSecondContainer>
                 <Button
                   style={{

@@ -10,6 +10,8 @@ import { UpperContainer, TableContainer, StyledAssessmentStatisticTable } from "
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import { CustomizedHeaderWrapper } from "../../common/components/header";
 import { Stats } from "./components/stats";
+import { NavigatorTabs } from "../../common/components/navigatorTabs";
+import chartNavigatorLinks from "../../common/static/json/singleAssessmentSummaryChartNavigator.json";
 import data from "./static/json/data.json";
 
 import { getAssessmentSummaryRequestAction, getReportsAssessmentSummary } from "./ducks";
@@ -42,6 +44,7 @@ const AssessmentSummary = props => {
     <div>
       <CustomizedHeaderWrapper title="Assessment Summary" />
       <Breadcrumb data={breadcrumbData} style={{ position: "unset", padding: "10px" }} />
+      <NavigatorTabs data={chartNavigatorLinks} selectedTab={"assessmentSummary"} />
       <UpperContainer type="flex">
         <Col className="sub-container district-statistics" xs={24} sm={24} md={12} lg={12} xl={12}>
           <StyledCard>

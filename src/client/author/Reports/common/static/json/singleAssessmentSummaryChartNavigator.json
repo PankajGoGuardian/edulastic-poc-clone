@@ -1,0 +1,32 @@
+[
+  {
+    "key": "assessmentSummary",
+    "title": "Assessment Summary",
+    "location": "/author/reports/assessment-summary/test/5c90d974a649cb81bc5d4ca2"
+  },
+  {
+    "key": "peerPerformance",
+    "title": "Peer Performance",
+    "location": "/author/reports/peer-performance/test/5c822ff4732e4679700e73a6"
+  },
+  {
+    "key": "questionAnalysis",
+    "title": "Question Analysis",
+    "location": "/author/reports/"
+  },
+  {
+    "key": "responseFrequency",
+    "title": "Response Frequency",
+    "location": "/author/reports/response-frequency/test/5ca345a36035875063c1a2cd"
+  },
+  {
+    "key": "performanceByStandards",
+    "title": "Performance by Standards",
+    "location": "/author/reports/"
+  },
+  {
+    "key": "performanceByStudents",
+    "title": "Performance by Students",
+    "location": "/author/reports/"
+  }
+]

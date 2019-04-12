@@ -9,6 +9,8 @@ import { StyledContainer, StyledCard, StyledSimpleBarChartContainer, QuestionTyp
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import { CustomizedHeaderWrapper } from "../../common/components/header";
 import { StyledSlider, StyledH3 } from "../../common/styled";
+import { NavigatorTabs } from "../../common/components/navigatorTabs";
+import chartNavigatorLinks from "../../common/static/json/singleAssessmentSummaryChartNavigator.json";
 import jsonData from "./static/json/data.json";
 import { get, isEmpty } from "lodash";
 
@@ -27,8 +29,8 @@ const ResponseFrequency = props => {
       title: "RESPONSE FREQUENCY"
     }
   ];
-  const [difficultItems, setDifficultItems] = useState(10);
-  const [misunderstoodItems, setMisunderstoodItems] = useState(0);
+  const [difficultItems, setDifficultItems] = useState(40);
+  const [misunderstoodItems, setMisunderstoodItems] = useState(20);
 
   const [filter, setFilter] = useState({});
 
@@ -90,6 +92,7 @@ const ResponseFrequency = props => {
     <div>
       <CustomizedHeaderWrapper title="Response Frequency" />
       <Breadcrumb data={breadcrumbData} style={{ position: "unset", padding: "10px" }} />
+      <NavigatorTabs data={chartNavigatorLinks} selectedTab={"responseFrequency"} />
       <StyledContainer type="flex">
         <StyledCard>
           <StyledH3>Question Type performance for Assessment: {obj.metaData.testName}</StyledH3>

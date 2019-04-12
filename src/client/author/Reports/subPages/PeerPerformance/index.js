@@ -16,6 +16,8 @@ import { getPeerPerformanceRequestAction, getReportsPeerPerformance } from "./du
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import { getUserRole } from "../../../src/selectors/user";
 import next from "immer";
+import { NavigatorTabs } from "../../common/components/navigatorTabs";
+import chartNavigatorLinks from "../../common/static/json/singleAssessmentSummaryChartNavigator.json";
 import columns from "./static/json/tableColumns.json";
 import tempData from "./static/json/tempData";
 
@@ -138,6 +140,7 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
     <div>
       <CustomizedHeaderWrapper title="Peer Performance" />
       <Breadcrumb data={breadcrumbData} style={{ position: "unset", padding: "10px" }} />
+      <NavigatorTabs data={chartNavigatorLinks} selectedTab={"peerPerformance"} />
       <UpperContainer>
         <StyledCard>
           <Row type="flex" justify="start">

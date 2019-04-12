@@ -9,7 +9,8 @@ import {
   Tooltip,
   ResponsiveContainer,
   LabelList,
-  Brush
+  Brush,
+  ReferenceLine
 } from "recharts";
 import styled from "styled-components";
 import { StyledCustomChartTooltip, StyledChartNavButton } from "../../styled";
@@ -48,7 +49,8 @@ export const SimpleStackedBarChart = ({
   getTooltipJSX,
   yAxisLabel = "",
   yTickFormatter = _yTickFormatter,
-  filter = {}
+  filter = {},
+  referenceLineY = null
 }) => {
   const page = pageSize || 7;
   const [pagination, setPagination] = useState({ startIndex: 0, endIndex: page - 1 });
@@ -209,6 +211,7 @@ export const SimpleStackedBarChart = ({
               return <Cell key={entry[xAxisDataKey]} fill={"#c0c0c0"} />;
             })}
           </Bar>
+          {referenceLineY > 0 ? <ReferenceLine y={referenceLineY} stroke="#010101" /> : null}
         </BarChart>
       </ResponsiveContainer>
     </StyledStackedBarChartContainer>

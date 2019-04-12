@@ -57,7 +57,6 @@ export const StyledTable = styled(Table)`
       thead {
         tr {
           th:first-child {
-            min-width: 250px;
           }
           th:nth-child(n + 2) {
             text-align: right;

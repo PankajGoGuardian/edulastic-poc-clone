@@ -5,13 +5,13 @@
         "title": "School",
         "dataIndex": "schoolName",
         "key": "schoolName",
-        "width": 250
+        "width": 210
       },
       {
         "title": "Avg. Student Score (%)",
         "dataIndex": "avgStudentScore",
         "key": "avgStudentScore",
-        "width": 150
+        "width": 190
       },
       {
         "title": "#Assigned",

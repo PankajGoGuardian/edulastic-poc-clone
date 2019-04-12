@@ -73,6 +73,10 @@ export const SimpleStackedBarChartContainer = ({
   };
 
   const getChartSpecifics = () => {
+    let referenceLineY = 0;
+    if (chartData.length) {
+      referenceLineY = chartData[0].districtAvg;
+    }
     if (analyseBy === "score(%)") {
       let yAxisLabel = "Avg. Score %";
       if (role === "teacher") {
@@ -88,7 +92,8 @@ export const SimpleStackedBarChartContainer = ({
             return "";
           }
         },
-        yAxisLabel: yAxisLabel
+        yAxisLabel: yAxisLabel,
+        referenceLineY: referenceLineY
       };
     } else if (analyseBy === "rawScore" && chartData.length > 0) {
       let maxScore = chartData[0].maxScore;
@@ -114,7 +119,8 @@ export const SimpleStackedBarChartContainer = ({
             return "";
           }
         },
-        yAxisLabel: "Avg. Score"
+        yAxisLabel: "Avg. Score",
+        referenceLineY: referenceLineY
       };
     } else {
       return {};
@@ -139,6 +145,7 @@ export const SimpleStackedBarChartContainer = ({
       getXTickText={getXTickText}
       yAxisLabel={chartSpecifics.yAxisLabel}
       filter={filter}
+      referenceLineY={chartSpecifics.referenceLineY}
     />
   );
 };

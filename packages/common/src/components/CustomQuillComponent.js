@@ -74,7 +74,7 @@ const ResponseButton = () => (
 function formula() {
   const cursorPosition = this.quill.getSelection().index;
   this.quill.insertEmbed(cursorPosition, "MathInput", "");
-  if (cursorPosition === 0) {
+  if (this.quill.getLength() - cursorPosition === 2) {
     this.quill.setSelection(cursorPosition, 1);
   } else {
     this.quill.setSelection(cursorPosition + 1);

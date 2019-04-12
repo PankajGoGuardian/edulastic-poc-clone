@@ -20,7 +20,7 @@ const TokenHighlightPreview = ({
   previewTab,
   theme
 }) => {
-  const initialArray = item.templeWithTokens.map((el, i) => ({
+  const initialArray = (item.templeWithTokens || []).map((el, i) => ({
     value: el.value,
     index: i,
     selected: !!smallSize

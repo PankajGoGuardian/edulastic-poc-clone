@@ -163,7 +163,7 @@ class Display extends Component {
                     <AnswerDropdown
                       responseIndex={dropTargetIndex}
                       style={{ width: "100%", height: "100%" }}
-                      options={newOptions[dropTargetIndex].map(op => ({ value: op, label: op }))}
+                      options={(newOptions[dropTargetIndex] || []).map(op => ({ value: op, label: op }))}
                       onChange={value => this.selectChange(value, dropTargetIndex)}
                       defaultValue={userAnswers[dropTargetIndex]}
                     />

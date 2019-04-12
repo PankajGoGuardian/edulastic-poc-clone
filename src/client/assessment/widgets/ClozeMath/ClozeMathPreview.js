@@ -136,7 +136,7 @@ const ClozeMathPreview = ({ type, item, userAnswer, saveAnswer, evaluation }) =>
           // eslint-disable-next-line no-undef
           const mQuill = MQ.StaticMath($(this).get(0));
 
-          newAnswers[index] = mQuill.innerFields[0].latex();
+          newAnswers[index] = mQuill.innerFields[0].latex("");
 
           // eslint-disable-next-line no-undef
           $(wrappedRef.current)

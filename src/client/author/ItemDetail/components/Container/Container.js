@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
 import { Progress, withWindowSizes } from "@edulastic/common";
-import { cloneDeep, get } from "lodash";
+import { cloneDeep } from "lodash";
 import { Layout } from "antd";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
@@ -49,10 +49,9 @@ class Container extends Component {
   state = {
     showModal: false,
     showSettings: false,
-    view: "preview",
+    view: "edit",
     enableEdit: false,
-    previewTab: "clear",
-    hasAuthorPermission: false
+    previewTab: "clear"
   };
 
   componentDidMount() {
@@ -69,18 +68,6 @@ class Container extends Component {
     if (oldId !== newId) {
       this.props.getItemDetailById(newId, { data: true, validation: true });
     }
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    const authors = (props.item && props.item.authors) || [];
-    const isAuthor = authors.some(author => author._id === props.currentAuthorId);
-    if (isAuthor !== state.hasAuthorPermission) {
-      return {
-        view: "edit",
-        hasAuthorPermission: true
-      };
-    }
-    return null;
   }
 
   getSizes = type => {
@@ -243,8 +230,7 @@ class Container extends Component {
     this.setState({ enableEdit: true });
   };
   renderPreview = () => {
-    const { rows, preview, questions } = this.props;
-    const item = this.props.item || {};
+    const { rows, item, preview, questions } = this.props;
     return (
       <PreviewContent>
         <TestItemPreview
@@ -267,7 +253,7 @@ class Container extends Component {
   );
 
   render() {
-    const { showModal, showSettings, view, previewTab, enableEdit, hasAuthorPermission } = this.state;
+    const { showModal, showSettings, view, previewTab, enableEdit } = this.state;
     const {
       t,
       match,
@@ -329,7 +315,6 @@ class Container extends Component {
             previewTab={previewTab}
             onEnableEdit={this.handleEnableEdit}
             showPublishButton={showPublishButton}
-            hasAuthorPermission={hasAuthorPermission}
           />
         </ItemHeader>
         {windowWidth > MAX_MOBILE_WIDTH && (
@@ -415,8 +400,7 @@ const enhance = compose(
       type: getItemDetailDimensionTypeSelector(state),
       questions: getQuestionsSelector(state),
       testItemStatus: getTestItemStatusSelector(state),
-      preview: state.view.preview,
-      currentAuthorId: get(state, ["user", "user", "_id"])
+      preview: state.view.preview
     }),
     {
       changeView: changeViewAction,

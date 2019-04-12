@@ -21,7 +21,8 @@ import {
   getTestsCreatingSelector,
   getTestsLoadingSelector,
   publishTestAction,
-  getTestStatusSelector
+  getTestStatusSelector,
+  setRegradeOldIdAction
 } from "../../ducks";
 import { getSelectedItemSelector, clearSelectedItemsAction } from "../AddItems/ducks";
 import { getUserSelector } from "../../../src/selectors/user";
@@ -90,6 +91,16 @@ class Container extends PureComponent {
     } else {
       clearSelectedItems();
       setDefaultData();
+    }
+
+    if (match.params.oldId) {
+      this.props.setRegradeOldId(match.params.oldId);
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.props.match.params.oldId) {
+      this.props.setRegradeOldId(this.props.match.params.oldId);
     }
   }
 
@@ -303,7 +314,8 @@ const enhance = compose(
       setData: setTestDataAction,
       setDefaultData: setDefaultTestDataAction,
       publishTest: publishTestAction,
-      clearSelectedItems: clearSelectedItemsAction
+      clearSelectedItems: clearSelectedItemsAction,
+      setRegradeOldId: setRegradeOldIdAction
     }
   )
 );

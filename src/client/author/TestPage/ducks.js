@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
 import { test } from "@edulastic/constants";
-import { call, put, all, takeEvery } from "redux-saga/effects";
+import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import { keyBy as _keyBy, omit } from "lodash";
@@ -41,6 +41,7 @@ export const TEST_PUBLISH = "[test] publish test";
 export const UPDATE_TEST_STATUS = "[test] update test status";
 export const CLEAR_TEST_DATA = "[test] clear test data";
 export const TEST_CREATE_SUCCESS = "[test] create test succes";
+export const SET_REGRADE_OLD_TESTID = "[test] set regrade old test_id";
 // actions
 
 export const receiveTestByIdAction = id => ({
@@ -113,6 +114,7 @@ export const setRegradeSettingsDataAction = payload => ({
 export const sendTestShareAction = createAction(TEST_SHARE);
 export const publishTestAction = createAction(TEST_PUBLISH);
 export const updateTestStatusAction = createAction(UPDATE_TEST_STATUS);
+export const setRegradeOldIdAction = createAction(SET_REGRADE_OLD_TESTID);
 // reducer
 
 export const initialTestState = {
@@ -174,6 +176,8 @@ export const reducer = (state = initialState, { type, payload }) => {
       return { ...state, loading: true };
     case SET_TEST_EDIT_ASSIGNED:
       return { ...state, editAssigned: true };
+    case SET_REGRADE_OLD_TESTID:
+      return { ...state, regradeTestId: payload };
     case RECEIVE_TEST_BY_ID_SUCCESS:
       return {
         ...state,
@@ -370,12 +374,14 @@ function* shareTestSaga({ payload }) {
 
 function* publishTestSaga({ payload }) {
   try {
-    const { _id: id, oldId } = payload;
+    const { _id: id } = payload;
     yield call(testsApi.publishTest, id);
     yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
     yield call(message.success, "Successfully published");
+    const oldId = yield select(state => state.tests.regradeTestId);
     if (oldId) {
       yield put(push(`/author/assignments/regrade/new/${id}/old/${oldId}`));
+      yield put(setRegradeOldIdAction(undefined));
     }
   } catch (e) {
     const errorMessage = "publish failed";

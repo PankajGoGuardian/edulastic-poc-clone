@@ -1,7 +1,9 @@
 import { createSelector } from "reselect";
 import { cloneDeep, keyBy as _keyBy, omit as _omit, get } from "lodash";
 import { testItemsApi } from "@edulastic/api";
-import { call, put, all, takeEvery, select, delay } from "redux-saga/effects";
+import { delay } from "redux-saga";
+import { call, put, all, takeEvery, select } from "redux-saga/effects";
+
 import { message } from "antd";
 import { createAction } from "redux-starter-kit";
 import { replace, push } from "connected-react-router";

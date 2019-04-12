@@ -7,33 +7,35 @@ import InfoIcon from "../../Assets/info.svg";
 function getDataForTable(data) {
   let dataSource;
   if (data && data.length !== 0) {
-    dataSource = data.map((student, index) => {
-      const students = [];
-      const rowIndex = index;
-      const studentInfo = {
-        studentId: student.studentId,
-        studentName: student.studentName
-      };
-      const testActivityId = student.testActivityId ? student.testActivityId : null;
-      student.questionActivities.forEach((question, index1) => {
-        const key = `Q${index1}`;
-        question.key = key;
-        students[key] = question;
-        question.colIndex = index1;
-        question.id = question._id;
-        question.rowIndex = rowIndex;
-        question.studentId = student.studentId;
-        question.testActivityId = testActivityId;
-        question.score = Number.isNaN(question.score) ? 0 : question.score;
+    dataSource = data
+      .filter(std => std.status === "submitted")
+      .map((student, index) => {
+        const students = [];
+        const rowIndex = index;
+        const studentInfo = {
+          studentId: student.studentId,
+          studentName: student.studentName
+        };
+        const testActivityId = student.testActivityId ? student.testActivityId : null;
+        student.questionActivities.forEach((question, index1) => {
+          const key = `Q${index1}`;
+          question.key = key;
+          students[key] = question;
+          question.colIndex = index1;
+          question.id = question._id;
+          question.rowIndex = rowIndex;
+          question.studentId = student.studentId;
+          question.testActivityId = testActivityId;
+          question.score = Number.isNaN(question.score) ? 0 : question.score;
+        });
+        students.questions = student.questionActivities.length;
+        students.students = studentInfo;
+        students.score = {
+          score: Number.isNaN(student.score) ? 0 : student.score,
+          maxScore: student.maxScore
+        };
+        return students;
       });
-      students.questions = student.questionActivities.length;
-      students.students = studentInfo;
-      students.score = {
-        score: Number.isNaN(student.score) ? 0 : student.score,
-        maxScore: student.maxScore
-      };
-      return students;
-    });
   } else {
     dataSource = [];
   }

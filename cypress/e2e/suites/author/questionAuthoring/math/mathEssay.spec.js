@@ -1,4 +1,3 @@
-// import { math } from "@edulastic/constants";
 import MathEssayPage from "../../../../framework/author/itemList/questionType/math/mathEssayPage";
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
 import FileHelper from "../../../../framework/util/fileHelper";
@@ -23,6 +22,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
   const { selectData } = question;
   const editToolBar = new EditToolBar();
   const preview = new PreviewItemPage();
+  let previewItems;
 
   before(() => {
     cy.setToken();
@@ -90,11 +90,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
         question.setFormattingOptions(option);
 
         preview.header.preview();
-        question.getAnswerMathInputField().click();
-        question.getAddedAlternateAnswer().click({ force: true });
-        question.getAnswerMathTextBtn().click();
-        question.getAnswerTextEditor().click();
-
+        question.setTestInput();
         question.getTextFormattingEditorOptions(option).click();
 
         question.checkAnswerTextEditorValue(tag, testText);
@@ -120,7 +116,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
 
         question.setFormattingOptions(option);
         question.moveToPreview(preview);
-
         question.getAnswerTextEditorValue().clear({ force: true });
         question.getTextFormattingEditorOptions(EditorOption).click();
         question.getAnswerTextInput().type(testText, { force: true });
@@ -136,8 +131,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
 
         question.setFormattingOptions(option);
         question.moveToPreview(preview);
-
-        question.getAnswerTextEditorBulletList().clear({ force: true });
         question.getTextFormattingEditorOptions(EditorOption).click();
         question.getAnswerTextEditorOrderedList().type(testText, { force: true });
 
@@ -152,11 +145,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
         question.setFormattingOptions(option);
         question.moveToPreview(preview);
 
-        question
-          .getAnswerTextEditorOrderedList()
-          .clear({ force: true })
-          .type("{backspace}", { force: true });
-
         question.getTextFormattingEditorOptions(EditorOption).click();
         question.checkAnswerTextEditorValue(tag, testText);
       });
@@ -169,11 +157,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
         question.setFormattingOptions(option);
         question.moveToPreview(preview);
 
-        question
-          .getAnswerTextEditorValue()
-          .clear({ force: true })
-          .type("{backspace}", { force: true });
-
         question.getTextFormattingEditorOptions(EditorOption).click();
         question.checkAnswerTextEditorValue(tag, testText);
       });
@@ -182,12 +165,91 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
         const { testText } = queData;
         const { option, tag } = selectData.REMOVE_FORMAT;
         const { option: EditorOption } = selectData.CLEAN;
+        const { option: superOption } = selectData.SUPER;
+        const { option: superScriptOption } = selectData.SUPER_SCRIPT;
 
         question.setFormattingOptions(option);
+        question.getAddButton().click();
+        question
+          .getTextFormattingOptionsSelect()
+          .last()
+          .click({ force: true })
+          .then(() => {
+            question
+              .getMethodSelectionDropdowList(superScriptOption)
+              .last()
+              .click();
+          });
+
         question.moveToPreview(preview);
+        question.getTextFormattingEditorOptions(superOption).click();
+        question.checkAnswerTextEditorValue(tag, testText);
+
+        question.getTextFormattingEditorOptions(EditorOption).click();
+
         question.getAnswerTextEditorValue().type("{selectall}", { force: true });
         question.getTextFormattingEditorOptions(EditorOption).click();
-        question.getEditirInput().contains(tag, testText);
+        question.getEditorInput().contains(tag, testText);
+      });
+    });
+
+    context("TC_413 => Preview Items", () => {
+      before("visit items page and select question type", () => {
+        editItem.getItemWithId();
+        editItem.deleteAllQuestion();
+        // create new que and select type
+        editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      });
+      it("Click on preview", () => {
+        previewItems = editItem.header.preview();
+        question.getAnswerMathInputField().click();
+        cy.get(".keyboard").should("be.visible");
+        question.getAddedAlternateAnswer().click({ force: true });
+        question.getAnswerMathTextBtn().click();
+        question.getAnswerTextEditor().click();
+        question.getAnswerToolbarTextEditor().should("be.visible");
+      });
+
+      it("Click on Check answer", () => {
+        previewItems
+          .getCheckAnswer()
+          .click()
+          .then(() =>
+            question
+              .getBody()
+              .children()
+              .should("contain", "score: 0/0")
+          );
+      });
+
+      it("Click on Show Answers", () => {
+        previewItems
+          .getShowAnswer()
+          .click()
+          .then(() => {
+            question.getCorrectAnswerBox().should("not.be.visible");
+          });
+      });
+
+      it("Click on Clear", () => {
+        const { testText } = queData;
+        question.getEditorInput().type(testText, { force: true });
+        previewItems.getClear().click();
+        question.getAnswerMathInputField().then($el => expect($el[0].innerText).to.equal(""));
+      });
+    });
+
+    context("TC_415 => Save question", () => {
+      it("Click on save button", () => {
+        question.header.save();
+        cy.url().should("contain", "item-detail");
+      });
+    });
+
+    context("TC_484 => delete the question after creation", () => {
+      it("Click on delete button", () => {
+        editItem.getDelButton().click();
+        question.getQuestionContainer().should("not.exist");
       });
     });
   });

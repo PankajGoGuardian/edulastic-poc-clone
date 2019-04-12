@@ -96,6 +96,7 @@ const CustomToolbar = ({ active, toolbarId }) => {
         position: "absolute",
         top: -48
       }}
+      data-cy="answer-toolbar-text-editor"
     >
       {getButtons()}
     </div>

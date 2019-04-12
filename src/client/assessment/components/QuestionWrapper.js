@@ -156,7 +156,7 @@ class QuestionWrapper extends Component {
 
     return (
       <ThemeProvider theme={themes.default}>
-        <QuestionContainer noPadding={noPadding} isFlex={isFlex}>
+        <QuestionContainer noPadding={noPadding} isFlex={isFlex} data-cy="question-container">
           <PaperWrapper style={{ width: "-webkit-fill-available", display: "flex" }}>
             {type === "graph" && view === "edit" && (
               <QuestionMenu activeTab={activeTab} main={main} advanced={advanced} />

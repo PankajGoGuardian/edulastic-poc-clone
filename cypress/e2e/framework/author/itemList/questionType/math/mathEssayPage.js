@@ -64,6 +64,8 @@ class mathEssayPage extends MathFractionPage {
 
   getDeleteIcon = () => cy.get('[data-cy="TypedListItem"]').find('[data-cypress="deleteButton"]');
 
+  getAnswerToolbarTextEditor = () => cy.get('[data-cy="answer-toolbar-text-editor"]');
+
   getDeleteButton = () => cy.get('[data-cypress="deleteButton"]');
 
   getAnswerMathTextBtn = () => cy.get('[data-cy="answer-math-text-btn"]');
@@ -80,14 +82,15 @@ class mathEssayPage extends MathFractionPage {
 
   getAnswerTextEditorOrderedList = () => this.getAnswerTextEditor().find(".ql-editor ol li");
 
-  getEditirInput = () => this.getAnswerTextEditor().find(".ql-editor");
+  getEditorInput = () => this.getAnswerTextEditor().find(".ql-editor");
+
+  getQuestionContainer = () => cy.get('[data-cy="question-container"]');
 
   getAddButton = () => cy.get('[data-cy="addButton"]');
 
   getTextFormattingOptionsSelect = () => cy.get('[data-cy="text-formatting-options-select"]');
 
   getTextFormattingEditorOptions = option => cy.get(`[data-cy="text-formatting-options-${option}"]`);
-  // getTextFormattingEditorOptions
 
   getMethodSelectionDropdowList = method => cy.get(`[data-cy="text-formatting-options-selected-${method}"]`);
 
@@ -109,12 +112,19 @@ class mathEssayPage extends MathFractionPage {
 
   moveToPreview = preview => {
     preview.header.preview();
-    this.getAnswerTextEditor().click();
+    this.setActive();
+    this.getEditorInput().click();
   };
 
   moveToEdit = preview => {
     preview.header.edit();
     this.removeAllFormattingOptions();
+  };
+
+  setActive = () => {
+    this.getAnswerMathInputField().click();
+    this.getAddedAlternateAnswer().click({ force: true });
+    this.getAnswerMathTextBtn().click();
   };
 
   checkAnswerTextEditorValue = (tag, testText) =>
@@ -124,14 +134,20 @@ class mathEssayPage extends MathFractionPage {
       .contains(tag, testText);
 
   checkDataExist = (tag, testText) =>
-    this.getEditirInput()
+    this.getEditorInput()
       .find(tag)
       .contains("li", testText);
 
+  setTestInput = () => {
+    this.getAnswerMathInputField().click();
+    this.getAddedAlternateAnswer().click({ force: true });
+    this.getAnswerMathTextBtn().click();
+    this.getAnswerTextEditor().click();
+  };
+
   checkTextFormattingOption = (preview, option, expectedText, expectedTag) => {
     preview.header.preview();
-    this.getAnswerTextEditor().click();
-
+    this.setTestInput();
     this.getAnswerTextEditorValue().clear({ force: true });
     this.getTextFormattingEditorOptions(option).click();
 

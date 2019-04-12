@@ -16,7 +16,7 @@ class Keyboard extends React.PureComponent {
     isUpper: false
   };
 
-  buttonClickHandler(e) {
+  buttonClickHandler = e => {
     const { key } = e.target.dataset;
     const { isUpper } = this.state;
     const { onInput } = this.props;
@@ -29,7 +29,7 @@ class Keyboard extends React.PureComponent {
     }
 
     onInput(key);
-  }
+  };
 
   render() {
     const { isUpper } = this.state;

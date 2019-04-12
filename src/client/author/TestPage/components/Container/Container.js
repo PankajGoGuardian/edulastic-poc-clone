@@ -93,14 +93,14 @@ class Container extends PureComponent {
       setDefaultData();
     }
 
-    if (match.params.oldId) {
-      this.props.setRegradeOldId(match.params.oldId);
+    if (this.props.editAssigned) {
+      this.props.setRegradeOldId(match.params.id);
     }
   }
 
   componentDidUpdate() {
-    if (this.props.match.params.oldId) {
-      this.props.setRegradeOldId(this.props.match.params.oldId);
+    if (this.props.editAssigned) {
+      this.props.setRegradeOldId(this.props.match.params.id);
     }
   }
 

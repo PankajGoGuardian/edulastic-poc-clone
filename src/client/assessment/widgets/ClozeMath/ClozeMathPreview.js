@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { cloneDeep } from "lodash";
 import { MathKeyboard } from "@edulastic/common";
-import { greenDark, red, white, black } from "@edulastic/colors";
+import { black } from "@edulastic/colors";
 
-import { SHOW, CLEAR } from "../../constants/constantsForQuestions";
+import { SHOW, CLEAR, CHECK } from "../../constants/constantsForQuestions";
 import AnswerBox from "./AnswerBox";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
 
@@ -110,21 +110,6 @@ const ClozeMathPreview = ({ type, item, userAnswer, saveAnswer, evaluation }) =>
   }, []);
 
   useEffect(() => {
-    wrappedRef.current.querySelectorAll(".mathField").forEach((element, index) => {
-      if (evaluation[index] === true) {
-        element.style.background = greenDark;
-        element.style.color = white;
-      } else if (evaluation[index] === false) {
-        element.style.background = red;
-        element.style.color = white;
-      } else {
-        element.style.background = "";
-        element.style.color = black;
-      }
-    });
-  }, [evaluation]);
-
-  useEffect(() => {
     const MQ = window.MathQuill.getInterface(2);
     // eslint-disable-next-line no-undef
     $(mathRef.current)
@@ -145,24 +130,70 @@ const ClozeMathPreview = ({ type, item, userAnswer, saveAnswer, evaluation }) =>
               // eslint-disable-next-line no-undef
               const $element = $(element);
 
+              $element.find(".mq-editable-field").each((ind, el) => {
+                // eslint-disable-next-line no-undef
+                const $el = $(el);
+                $el.css({
+                  padding: 5
+                });
+              });
+
               $element.css({
                 background: "",
                 color: black
               });
             });
+          // eslint-disable-next-line no-undef
+          $(this).removeClass("success");
+          // eslint-disable-next-line no-undef
+          $(this).removeClass("wrong");
+          // eslint-disable-next-line no-undef
+          $(this).removeClass("check");
+          // eslint-disable-next-line no-undef
+          $(this).removeAttr("data-index");
 
           saveAnswer(newAnswers);
-        } else if (typeof evaluation[index] !== "undefined") {
-          if (evaluation[index]) {
-            // eslint-disable-next-line no-undef
-            $(this).addClass("success");
-          } else {
-            // eslint-disable-next-line no-undef
-            $(this).addClass("wrong");
-          }
         }
       });
   }, [type]);
+
+  useEffect(() => {
+    if (type === CHECK) {
+      // eslint-disable-next-line no-undef
+      $(mathRef.current)
+        .find(".mathField")
+        // eslint-disable-next-line func-names
+        .each(function(index) {
+          if (typeof evaluation[index] !== "undefined") {
+            if (evaluation[index]) {
+              // eslint-disable-next-line no-undef
+              $(this).addClass("success");
+              // eslint-disable-next-line no-undef
+              $(this).removeClass("wrong");
+              // eslint-disable-next-line no-undef
+              $(this).removeClass("check");
+            } else {
+              // eslint-disable-next-line no-undef
+              $(this).addClass("wrong");
+              // eslint-disable-next-line no-undef
+              $(this).removeClass("success");
+              // eslint-disable-next-line no-undef
+              $(this).removeClass("check");
+            }
+          } else {
+            // eslint-disable-next-line no-undef
+            $(this).addClass("check");
+            // eslint-disable-next-line no-undef
+            $(this).addClass("wrong");
+            // eslint-disable-next-line no-undef
+            $(this).removeClass("success");
+          }
+
+          // eslint-disable-next-line no-undef
+          $(this).attr("data-index", index + 1);
+        });
+    }
+  }, [evaluation]);
 
   return (
     <div ref={wrappedRef}>

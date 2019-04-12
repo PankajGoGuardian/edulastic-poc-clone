@@ -1047,3 +1047,61 @@ span.token.active-word {
 .modal-overlay {
   padding: 0 !important;
 }
+
+.mq-math-mode.success .mq-editable-field,
+.mq-math-mode.wrong .mq-editable-field,
+.mq-math-mode.check .mq-editable-field {
+  border: none !important;
+  font-weight: bold;
+}
+.mathField.wrong {
+  position: relative;
+  background: #fce0e8 !important;
+}
+.mathField.success {
+  position: relative;
+  background: rgba(31, 227, 161, 0.13) !important;
+}
+
+.mq-math-mode.success,
+.mq-math-mode.wrong,
+.mq-math-mode.check {
+  padding-right: 20px;
+  padding-left: 30px;
+  border-radius: 4px;
+}
+
+.mq-math-mode.wrong:after {
+  position: absolute;
+  right: 5px;
+  top: calc(50% - 10px);
+  content: "\274C";
+  font-size: 20px;
+  color: #dd2e44;
+}
+.mq-math-mode.success:after {
+  position: absolute;
+  right: 5px;
+  top: calc(50% - 8px);
+  content: "\2714";
+  font-size: 16px;
+  color: #1fe3a1;
+}
+
+.mathField.wrong:before,
+.mathField.success:before {
+  content: attr(data-index);
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  width: 30px;
+  height: 100%;
+  font-size: 16px;
+  font-weight: bold;
+  background: #1890ff;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  color: white;
+}

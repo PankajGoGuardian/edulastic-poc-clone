@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { cloneDeep, keyBy as _keyBy, omit as _omit, get } from "lodash";
 import { testItemsApi } from "@edulastic/api";
-import { call, put, all, takeEvery, select } from "redux-saga/effects";
+import { call, put, all, takeEvery, select, delay } from "redux-saga/effects";
 import { message } from "antd";
 import { createAction } from "redux-starter-kit";
 import { replace, push } from "connected-react-router";
@@ -236,7 +236,6 @@ export function reducer(state = initialState, { type, payload }) {
 function* receiveItemSaga({ payload }) {
   try {
     const data = yield call(testItemsApi.getById, payload.id, payload.params);
-    console.log("data", data);
     let questions = (data.data && data.data.questions) || [];
     const resources = (data.data && data.data.resources) || [];
     questions = [...questions, ...resources];
@@ -310,6 +309,7 @@ function* publishTestItemSaga({ payload }) {
     yield put(updateTestItemStatusAction(testItemStatusConstants.PUBLISHED));
     const redirectTestId = yield select(getRedirectTestSelector);
     if (redirectTestId) {
+      yield delay(1500);
       yield put(push(`/author/tests/${redirectTestId}`));
       yield put(clearRedirectTestAction());
     }

@@ -133,6 +133,87 @@ class SortListPage {
 
     this.header.edit();
   }
+
+  getListInputs = () =>
+    cy
+      .get('[data-cy="sortable-list-container"]')
+      .first()
+      .find("div .ql-editor");
+
+  getAddInputButton = () =>
+    cy
+      .contains("span", "Add new choice")
+      .closest("button")
+      .first();
+
+  getListInputByIndex = index =>
+    cy
+      .get(`#drag-handler-prefix${index}`)
+      .next()
+      .find("div .ql-editor");
+
+  getDeleteChoiceButtons = () =>
+    cy
+      .get('[data-cy="sortable-list-container"]')
+      .first()
+      .find('[data-cypress="deleteButton"]');
+
+  getListDeleteByIndex = index => cy.get(`[data-cy="deleteprefix${index}"]`);
+
+  getPonitsInput = () => cy.get('[data-cy="points"]');
+
+  getAnswerLists = () =>
+    cy
+      .get(`[data-cy="sortable-list-container"]`)
+      .last()
+      .find("div .ql-editor");
+
+  addAlternate = () => {
+    cy.get('[data-cy="alternate"]')
+      .should("be.visible")
+      .click();
+    return this;
+  };
+
+  getAddedAlternate = () => cy.get('[data-cy="del-alter"]');
+
+  getPreviewList = () => cy.get('[data-cy="sortListComponent"]');
+
+  getSourceBoard = () => cy.get("#drag-drop-board-0").parent();
+
+  getTargetBoard = () => cy.get("#drag-drop-board-0-target").parent();
+
+  dragAndDropFromAnswerToBoard = (sLabel, sIndex, tIndex) => {
+    cy.get(`#drag-drop-board-${sIndex}`)
+      .customDragDrop(`#drag-drop-board-${tIndex}-target`)
+      .then(() => {
+        this.getSourceBoard()
+          .contains("p", sLabel)
+          .should("not.exist");
+        this.getTargetBoard()
+          .contains("p", sLabel)
+          .should("be.visible");
+      });
+    return this;
+  };
+
+  dragAndDropInsideTarget = (sLabel, sIndex, tIndex) => {
+    cy.get(`#drag-drop-board-${tIndex}-target`)
+      .customDragDrop(`#drag-drop-board-${sIndex}-target`)
+      .then(() => {
+        cy.get(`#drag-drop-board-${tIndex}-target`)
+          .contains("p", sLabel)
+          .should("be.visible");
+      });
+    return this;
+  };
+
+  getCorrectAnswerList = () =>
+    cy
+      .get("body")
+      .find("h3", "Correct Answers")
+      .next()
+      .children();
 }
 
 export default SortListPage;

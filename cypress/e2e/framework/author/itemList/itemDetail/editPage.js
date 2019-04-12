@@ -85,7 +85,9 @@ class EditItemPage {
       .should("be.visible")
       .click();
     cy.get("body")
-      .contains("Select a Widget (Question or Resource)")
+      .contains("select a question type")
+      .parent()
+      .parent()
       .parent()
       .parent()
       .parent()

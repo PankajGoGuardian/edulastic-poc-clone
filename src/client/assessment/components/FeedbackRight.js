@@ -27,6 +27,7 @@ class FeedbackRight extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.scoreInput = React.createRef();
   }
 
   static getDerivedStateFromProps(
@@ -62,9 +63,18 @@ class FeedbackRight extends Component {
     return newState;
   }
 
+  componentDidUpdate() {
+    this.focusScoreInput();
+  }
+
   onFeedbackSubmit() {
-    const { score, feedback } = this.state;
+    const { score, feedback, maxScore } = this.state;
     const _score = toNumber(score);
+
+    if (_score > maxScore) {
+      return;
+    }
+
     const {
       user,
       loadFeedbackResponses,
@@ -105,6 +115,28 @@ class FeedbackRight extends Component {
     this.setState({ feedback: e.target.value, changed: true });
   };
 
+  onKeyDownFeedback = e => {
+    this.arrowKeyHandler(e.keyCode);
+    if (e.key === "Tab") {
+      e.stopPropagation();
+      e.preventDefault();
+      this.focusScoreInput();
+    }
+  };
+
+  arrowKeyHandler = ({ keyCode }) => {
+    if (keyCode >= 37 && keyCode <= 40) {
+      this.preCheckSubmit();
+    }
+  };
+
+  focusScoreInput() {
+    const { current } = this.scoreInput;
+    if (current) {
+      current.focus();
+    }
+  }
+
   render() {
     const {
       studentName,
@@ -133,7 +165,14 @@ class FeedbackRight extends Component {
       <StyledCardTwo bordered={isStudentName} title={title}>
         <StyledDivSec>
           <ScoreInputWrapper>
-            <ScoreInput onChange={this.onChangeScore} onBlur={this.preCheckSubmit} value={score} disabled={!activity} />
+            <ScoreInput
+              onChange={this.onChangeScore}
+              onBlur={this.preCheckSubmit}
+              value={score}
+              disabled={!activity}
+              innerRef={this.scoreInput}
+              onKeyDown={this.arrowKeyHandler}
+            />
             <TextPara> {maxScore}</TextPara>
           </ScoreInputWrapper>
         </StyledDivSec>
@@ -146,6 +185,7 @@ class FeedbackRight extends Component {
               value={feedback}
               style={{ height: 240, flexGrow: 2 }}
               disabled={!activity}
+              onKeyDown={this.onKeyDownFeedback}
             />
           </Fragment>
         )}

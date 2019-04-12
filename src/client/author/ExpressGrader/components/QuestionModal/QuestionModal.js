@@ -33,7 +33,7 @@ class QuestionModal extends React.Component {
     }
 
     this.setState({ rowIndex, colIndex, loaded, maxQuestions, maxStudents });
-    document.addEventListener("keydown", this.keyListener, false);
+    document.addEventListener("keyup", this.keyListener, false);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -57,7 +57,7 @@ class QuestionModal extends React.Component {
   }
 
   componentWillUnmount() {
-    document.removeEventListener("keydown", this.keyListener, false);
+    document.removeEventListener("keyup", this.keyListener, false);
   }
 
   keyListener = event => {

@@ -335,7 +335,7 @@ function* updateTestSaga({ payload }) {
 
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
-    if (oldId != newId) {
+    if (oldId != newId && newId) {
       yield call(message.success, "Test versioned");
       yield put(push(`/author/tests/${newId}/versioned/old/${oldId}`));
     } else {

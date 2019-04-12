@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { get, isUndefined } from "lodash";
+import { get, isUndefined, toNumber, isNaN } from "lodash";
 import { Avatar, Card, Button, Input, message } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -64,7 +64,7 @@ class FeedbackRight extends Component {
 
   onFeedbackSubmit() {
     const { score, feedback } = this.state;
-
+    const _score = toNumber(score);
     const {
       user,
       loadFeedbackResponses,
@@ -77,7 +77,7 @@ class FeedbackRight extends Component {
     }
     loadFeedbackResponses({
       body: {
-        score,
+        score: isNaN(_score) ? 0 : _score,
         feedback: {
           teacherId: user.user._id,
           teacherName: user.user.firstName,

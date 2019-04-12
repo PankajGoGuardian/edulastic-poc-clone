@@ -7,11 +7,7 @@ import { message } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 // actions
-import {
-  receiveTestActivitydAction,
-  receiveGradeBookdAction,
-  receiveClassResponseAction
-} from "../../../src/actions/classBoard";
+import { receiveTestActivitydAction, receiveClassResponseAction } from "../../../src/actions/classBoard";
 import QuestionContainer from "../../../QuestionView";
 import StudentContainer from "../../../StudentView";
 // ducks
@@ -88,9 +84,8 @@ class ClassBoard extends Component {
   }
 
   componentDidMount() {
-    const { loadGradebook, loadTestActivity, match, studentUnselectAll } = this.props;
+    const { loadTestActivity, match, studentUnselectAll } = this.props;
     const { assignmentId, classId } = match.params;
-    loadGradebook(assignmentId, classId);
     loadTestActivity(assignmentId, classId);
     studentUnselectAll();
   }
@@ -246,6 +241,7 @@ class ClassBoard extends Component {
     const questions = this.getQuestions();
     const questionsIds = questions.map((q, i) => ({ name: `Question ${i + 1}` }));
     const isMobile = this.isMobile();
+    console.log(questions);
 
     return (
       <div>
@@ -395,7 +391,6 @@ const enhance = compose(
       allStudents: get(state, ["author_classboard_testActivity", "data", "students"], [])
     }),
     {
-      loadGradebook: receiveGradeBookdAction,
       loadTestActivity: receiveTestActivitydAction,
       loadClassResponses: receiveClassResponseAction,
       studentSelect: gradebookSelectStudentAction,
@@ -419,7 +414,6 @@ ClassBoard.propTypes = {
   creating: PropTypes.object,
   testActivity: PropTypes.array,
   // t: PropTypes.func,
-  loadGradebook: PropTypes.func,
   loadClassResponses: PropTypes.func,
   studentSelect: PropTypes.func.isRequired,
   studentUnselectAll: PropTypes.func.isRequired,

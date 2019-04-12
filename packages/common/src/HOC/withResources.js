@@ -11,7 +11,7 @@ window[NAMESPACE] = {};
  */
 const handleLoadedResources = resources => {
   const allResources = Array.isArray(resources) ? resources : [resources];
-  for (let r of resources) {
+  for (const r of allResources) {
     window[NAMESPACE][r] = true;
   }
 };

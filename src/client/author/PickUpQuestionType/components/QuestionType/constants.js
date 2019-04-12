@@ -1670,7 +1670,7 @@ export const getCards = onSelectQuestionType => {
         title: "Math with fractions",
         is_math: true,
         stimulus: "<p>[This is the stem.]</p>",
-        template: `\\frac${EMBED_RESPONSE}${EMBED_RESPONSE}`,
+        template: `\\frac{${EMBED_RESPONSE}}{${EMBED_RESPONSE}}`,
         type: questionType.MATH,
         validation: {
           scoring_type: "exactMatch",

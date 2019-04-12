@@ -58,6 +58,7 @@ const getQuestionIds = item => {
 
 function* saveUserResponse({ payload }) {
   try {
+    const ts = payload.timeSpent || 0;
     const itemIndex = payload.itemId;
     const items = yield select(state => state.test && state.test.items);
     const answers = yield select(state => state.answers);
@@ -68,7 +69,9 @@ function* saveUserResponse({ payload }) {
     const questions = getQuestionIds(currentItem);
     const itemAnswers = {};
     const shuffles = {};
+    let timesSpent = {};
     questions.forEach(question => {
+      timesSpent[question] = ts / questions.length;
       itemAnswers[question] = answers[question];
       if (shuffledOptions[question]) {
         shuffles[question] = shuffledOptions[question];
@@ -86,6 +89,7 @@ function* saveUserResponse({ payload }) {
       assignmentId,
       testActivityId: userTestActivityId,
       groupId,
+      timesSpent,
       shuffledOptions: shuffles
     };
     if (userWork) activity.userWork = userWork;

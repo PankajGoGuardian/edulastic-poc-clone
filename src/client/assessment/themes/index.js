@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -50,9 +50,14 @@ const AssessmentContainer = ({
     startAssessment();
   }, []);
 
+  let lastTime = useRef(Date.now());
+  useEffect(() => {
+    lastTime.current = Date.now();
+  }, [currentItem]);
   const gotoQuestion = index => {
+    const timeSpent = Date.now() - lastTime.current;
     history.push(`${url}/qid/${index}`);
-    saveUser(currentItem);
+    saveUser(currentItem, timeSpent);
     changePreview("clear");
   };
 
@@ -61,17 +66,20 @@ const AssessmentContainer = ({
       gotoQuestion(Number(currentItem) + 1);
     }
     if (isLast()) {
-      saveUser(currentItem);
+      const timeSpent = Date.now() - lastTime.current;
+      saveUser(currentItem, timeSpent);
       history.push("/student/test-summary");
     }
   };
 
   const saveProgress = () => {
-    saveUser(currentItem);
+    const timeSpent = Date.now() - lastTime.current;
+    saveUser(currentItem, timeSpent);
   };
 
   const gotoSummary = () => {
-    saveUser(currentItem);
+    const timeSpent = Date.now() - lastTime.current;
+    saveUser(currentItem, timeSpent);
     history.push("/student/test-summary");
   };
 

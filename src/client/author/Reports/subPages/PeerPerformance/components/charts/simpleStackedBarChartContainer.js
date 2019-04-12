@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { groupBy } from "lodash";
 import { Row, Col } from "antd";
+import { ticks } from "d3-array";
 import { SimpleStackedBarChart } from "../../../../common/components/charts/simpleStackedBarChart";
 import { getHSLFromRange1 } from "../../../../common/util";
 import { idToName, analyseByToName } from "../../util/transformers";
@@ -97,24 +98,14 @@ export const SimpleStackedBarChartContainer = ({
       };
     } else if (analyseBy === "rawScore" && chartData.length > 0) {
       let maxScore = chartData[0].maxScore;
-      let interval = Math.ceil(maxScore / 10);
-      let arr = [];
-      let count = 0;
-      while (count * interval <= maxScore) {
-        arr.push(count * interval);
-        count++;
-      }
+      let arr = ticks(0, maxScore, 10);
       let max = arr[arr.length - 1];
-      if (max < maxScore) {
-        arr.push(maxScore);
-      }
-
       return {
-        yDomain: [0, max + interval],
+        yDomain: [0, max + (arr[1] - arr[0])],
         ticks: arr,
         yTickFormatter: val => {
           if (val !== 0) {
-            return val.toFixed(2);
+            return val;
           } else {
             return "";
           }
@@ -135,6 +126,7 @@ export const SimpleStackedBarChartContainer = ({
       yDomain={chartSpecifics.yDomain}
       ticks={chartSpecifics.ticks}
       yTickFormatter={chartSpecifics.yTickFormatter}
+      barsLabelFormatter={chartSpecifics.yTickFormatter}
       xAxisDataKey={compareBy}
       bottomStackDataKey={"correct"}
       topStackDataKey={"incorrect"}

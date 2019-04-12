@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Row, Col } from "antd";
 import styled from "styled-components";
-import { darkBlue, black, darkGrey } from "@edulastic/colors";
+import { darkBlue, black, darkGrey, grey } from "@edulastic/colors";
 
 const Tab = ({ className, tabData, isLast, selectedTab }) => {
   return (
@@ -23,31 +23,41 @@ const Tab = ({ className, tabData, isLast, selectedTab }) => {
 
 export const NavigatorTabs = ({ data, selectedTab }) => {
   return (
-    <StyledRow type="flex" justify="start">
-      {data.map((tabData, index) => {
-        return (
-          <StyledTab
-            key={tabData.key}
-            tabData={tabData}
-            isLast={data.length - 1 === index ? true : false}
-            selectedTab={selectedTab}
-          />
-        );
-      })}
-    </StyledRow>
+    <StyledContainer>
+      <StyledRow className="navigator-tabs-container" type="flex" justify="start">
+        {data.map((tabData, index) => {
+          return (
+            <StyledTab
+              key={tabData.key}
+              tabData={tabData}
+              isLast={data.length - 1 === index ? true : false}
+              selectedTab={selectedTab}
+            />
+          );
+        })}
+      </StyledRow>
+    </StyledContainer>
   );
 };
 
+const StyledContainer = styled.div`
+  min-height: 35px;
+  .navigator-tabs-container::-webkit-scrollbar {
+    height: 0px;
+  }
+`;
+
 const StyledRow = styled(Row)`
-  height: 35px;
+  height: 100%;
   overflow: auto;
+  flex-flow: nowrap;
 `;
 
 const StyledTab = styled(Tab)`
   flex: 1;
   display: flex;
   height: 100%;
-  min-width: 200px;
+  min-width: 150px;
   text-align: center;
   overflow: hidden;
   font-weight: 900;

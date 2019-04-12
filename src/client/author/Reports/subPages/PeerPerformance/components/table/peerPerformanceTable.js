@@ -10,7 +10,7 @@ import styled from "styled-components";
 const getDisplayValue = (data, record, analyseBy, columnKey) => {
   let printData = data;
   let NA = "N/A";
-  if (printData === 0) {
+  if (printData === 0 && (analyseBy === "aboveBelowStandard" || analyseBy === "proficiencyBand")) {
     return NA;
   }
   if (analyseBy === "score(%)") {

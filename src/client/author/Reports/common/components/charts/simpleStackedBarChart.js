@@ -49,6 +49,7 @@ export const SimpleStackedBarChart = ({
   getTooltipJSX,
   yAxisLabel = "",
   yTickFormatter = _yTickFormatter,
+  barsLabelFormatter = _yTickFormatter,
   filter = {},
   referenceLineY = null
 }) => {
@@ -203,7 +204,7 @@ export const SimpleStackedBarChart = ({
                 <LabelText
                   onBarMouseOver={onBarMouseOver}
                   onBarMouseLeave={onBarMouseLeave}
-                  formatter={yTickFormatter}
+                  formatter={barsLabelFormatter}
                 />
               }
             />

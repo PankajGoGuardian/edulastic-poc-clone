@@ -25,7 +25,7 @@ export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS);
 export const setCurrentAssignmentAction = createAction(SET_CURRENT_ASSIGNMENT);
 export const saveAssignmentAction = createAction(SAVE_ASSIGNMENT);
 export const deleteAssignmentAction = createAction(DELETE_ASSIGNMENT);
-export const loadAssignmentsActions = createAction(LOAD_ASSIGNMENTS);
+export const loadAssignmentsAction = createAction(LOAD_ASSIGNMENTS);
 export const removeAssignmentsAction = createAction(REMOVE_ASSIGNMENT);
 
 const initialState = {
@@ -195,7 +195,7 @@ function* loadAssignments({ payload }) {
 
     const data = yield call(assignmentApi.fetchAssignments, testId);
     const assignments = data.map(formatAssignment);
-    yield put(loadAssignmentsActions(assignments));
+    yield put(loadAssignmentsAction(assignments));
   } catch (e) {
     console.error(e);
   }

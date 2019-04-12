@@ -1,4 +1,4 @@
-import React, { PureComponent, useEffect } from "react";
+import React, { PureComponent } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -25,6 +25,7 @@ import {
   setRegradeOldIdAction
 } from "../../ducks";
 import { getSelectedItemSelector, clearSelectedItemsAction } from "../AddItems/ducks";
+import { loadAssignmentsAction } from "../Assign/ducks";
 import { getUserSelector } from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
@@ -34,7 +35,6 @@ import Review from "../Review";
 import Summary from "../Summary";
 import Assign from "../Assign";
 import Setting from "../Setting";
-import { isObject } from "util";
 
 const statusConstants = {
   DRAFT: "draft",
@@ -79,7 +79,8 @@ class Container extends PureComponent {
       receiveTestById,
       setDefaultData,
       history: { location },
-      clearSelectedItems
+      clearSelectedItems,
+      clearTestAssignments
     } = this.props;
 
     if (location.hash === "#review") {
@@ -89,6 +90,7 @@ class Container extends PureComponent {
     if (match.params.id) {
       receiveTestById(match.params.id);
     } else {
+      clearTestAssignments([]);
       clearSelectedItems();
       setDefaultData();
     }
@@ -315,7 +317,8 @@ const enhance = compose(
       setDefaultData: setDefaultTestDataAction,
       publishTest: publishTestAction,
       clearSelectedItems: clearSelectedItemsAction,
-      setRegradeOldId: setRegradeOldIdAction
+      setRegradeOldId: setRegradeOldIdAction,
+      clearTestAssignments: loadAssignmentsAction
     }
   )
 );

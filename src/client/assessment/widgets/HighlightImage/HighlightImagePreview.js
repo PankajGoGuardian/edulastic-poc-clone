@@ -19,14 +19,14 @@ import { getFontSize } from "../../utils/helpers";
 
 const { Option } = Select;
 
-const HighlightImagePreview = ({ view, item, smallSize, saveAnswer, userAnswer, t }) => {
+const HighlightImagePreview = ({ view, item = {}, smallSize, saveAnswer, userAnswer, t }) => {
   const canvas = useRef(null);
   const [ctx, setCtx] = useState(null);
   const [history, setHistory] = useState([]);
   const [historyTab, setHistoryTab] = useState(0);
   const [mouseDown, setMouseDown] = useState(false);
 
-  const { image, line_color } = item;
+  const { image, line_color = [] } = item;
 
   const [currentColor, setCurrentColor] = useState(line_color[0]);
 

@@ -38,7 +38,6 @@ class ButtonBar extends Component {
       current: "edit"
     };
   }
-
   handleMenuClick = view => {
     const { onChangeView } = this.props;
     onChangeView(view);
@@ -64,6 +63,8 @@ class ButtonBar extends Component {
       onEnableEdit,
       clearAnswers,
       showPublishButton,
+      view,
+      hasAuthorPermission = true,
       itemStatus
     } = this.props;
 
@@ -72,16 +73,18 @@ class ButtonBar extends Component {
         {windowWidth > 468 ? (
           <Container>
             <Menu mode="horizontal" selectedKeys={[current]} style={{ marginLeft: 80 }}>
-              <MenuItem
-                data-cy="editButton"
-                className={current === "edit" && "active"}
-                onClick={() => this.handleMenuClick("edit")}
-              >
-                <HeadIcon>
-                  <IconSelected color={white} width={18} height={16} />
-                </HeadIcon>
-                Edit Mode
-              </MenuItem>
+              {hasAuthorPermission && (
+                <MenuItem
+                  data-cy="editButton"
+                  className={current === "edit" && "active"}
+                  onClick={() => this.handleMenuClick("edit")}
+                >
+                  <HeadIcon>
+                    <IconSelected color={white} width={18} height={16} />
+                  </HeadIcon>
+                  Edit Mode
+                </MenuItem>
+              )}
               <MenuItem
                 data-cy="previewButton"
                 className={current === "preview" && "active"}
@@ -103,22 +106,28 @@ class ButtonBar extends Component {
                 Meta data
               </MenuItem>
             </Menu>
-            <RightSide>
-              {showPublishButton && itemStatus === "draft" && <Button onClick={onPublishTestItem}>Publish</Button>}
-              {(showPublishButton || showPublishButton === undefined) && (
-                <Button data-cy="saveButton" onClick={onSave}>
-                  <HeadIcon>
-                    <IconSave color={newBlue} width={18} height={16} />
-                  </HeadIcon>
-                  Save
-                </Button>
-              )}
-              {!(showPublishButton || showPublishButton === undefined) && (
-                <Button style={{ width: 120 }} size="large" onClick={onEnableEdit}>
-                  Edit
-                </Button>
-              )}
-            </RightSide>
+
+            {hasAuthorPermission && (
+              <RightSide>
+                {showPublishButton && itemStatus === "draft" && <Button onClick={onPublishTestItem}>Publish</Button>}
+                {(showPublishButton || showPublishButton === undefined) && (
+                  <Button data-cy="saveButton" onClick={onSave}>
+                    <HeadIcon>
+                      <IconSave color={newBlue} width={18} height={16} />
+                    </HeadIcon>
+                    Save
+                  </Button>
+                )}
+                {!(showPublishButton || showPublishButton === undefined) && (
+                  <Button style={{ width: 120 }} size="large" onClick={onEnableEdit}>
+                    Edit
+                  </Button>
+                )}
+              </RightSide>
+            )}
+
+           
+
           </Container>
         ) : (
           <MobileContainer>
@@ -225,7 +234,6 @@ ButtonBar.propTypes = {
 
 ButtonBar.defaultProps = {
   onShowSettings: () => {}
-  // saving: false,
 };
 
 const enhance = compose(

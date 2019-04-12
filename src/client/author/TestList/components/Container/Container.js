@@ -411,7 +411,7 @@ class TestList extends Component {
   };
 
   render() {
-    const { page, limit, count, creating } = this.props;
+    const { page, limit, count, creating, t } = this.props;
 
     const { blockStyle, isShowFilter, search } = this.state;
     const { searchString } = search;
@@ -420,7 +420,7 @@ class TestList extends Component {
     const filters = this.getFilters(filterData);
     return (
       <>
-        <ListHeader onCreate={this.handleCreate} creating={creating} title="Test List" />
+        <ListHeader onCreate={this.handleCreate} creating={creating} title="Test Library" />
         <Container>
           <MobileFilter>
             <Input.Search
@@ -505,7 +505,8 @@ const enhance = compose(
       creating: getTestsCreatingSelector(state),
       curriculums: getCurriculumsListSelector(state),
       curriculumStandards: getStandardsListSelector(state),
-      userId: get(state, "user.user._id", false)
+      userId: get(state, "user.user._id", false),
+      t: PropTypes.func.isRequired
     }),
     {
       getCurriculums: getDictCurriculumsAction,

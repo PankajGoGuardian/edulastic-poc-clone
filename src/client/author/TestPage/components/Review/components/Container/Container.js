@@ -171,7 +171,7 @@ class Review extends PureComponent {
 
     const breadcrumbData = [
       {
-        title: "TESTS LIST",
+        title: "TESTS LIBRARY",
         to: "/author/tests"
       },
       {

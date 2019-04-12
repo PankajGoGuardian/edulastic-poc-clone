@@ -53,12 +53,12 @@ const menuItems = [
     path: "author/manageClass"
   },
   {
-    label: "Item List",
+    label: "Item Library",
     icon: IconItemList,
     path: "author/items"
   },
   {
-    label: "Test List",
+    label: "Test Library",
     icon: IconTestList,
     path: "author/tests"
   },

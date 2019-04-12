@@ -99,7 +99,7 @@ function* saveQuestionSaga() {
       yield call(history.push, {
         pathname: `/author/items/${itemDetail._id}/item-detail`,
         state: {
-          backText: "Back to item list",
+          backText: "Back to item library",
           backUrl: "/author/items",
           itemDetail: false
         }

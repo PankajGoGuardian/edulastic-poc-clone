@@ -38,7 +38,7 @@ const Summary = ({ setData, test, summary, current, t, onShowSource, windowWidth
 
   const breadcrumbData = [
     {
-      title: "TESTS LIST",
+      title: "TESTS LIBRARY",
       to: "/author/tests"
     },
     {

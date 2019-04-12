@@ -111,7 +111,7 @@ class Container extends Component {
     const { currentQuestion, currentTab, mobileViewShow, isShowCategories } = this.state;
     const breadcrumbData = [
       {
-        title: "<&nbsp;&nbsp;&nbsp;ITEM LIST",
+        title: "<&nbsp;&nbsp;&nbsp;ITEM LIBRARY",
         to: "/author/items"
       },
       {

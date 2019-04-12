@@ -24,7 +24,7 @@ class SecondHeadBar extends Component {
       option: false,
       breadcrumbData: [
         {
-          title: "ITEM LIST",
+          title: "ITEM LIBRARY",
           to: "/author/items"
         },
         // eslint-disable-next-line react/destructuring-assignment

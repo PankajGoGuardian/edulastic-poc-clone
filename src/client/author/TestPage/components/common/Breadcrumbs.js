@@ -17,7 +17,7 @@ const getCurrentText = current => {
 
 const Breadcrumbs = ({ current, style }) => (
   <Title style={style}>
-    {"<"} <BackLink to="/author/tests">Test List</BackLink> / {getCurrentText(current)}
+    {"<"} <BackLink to="/author/tests">Test Library</BackLink> / {getCurrentText(current)}
   </Title>
 );
 

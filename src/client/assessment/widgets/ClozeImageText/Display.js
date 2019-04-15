@@ -67,7 +67,6 @@ class Display extends Component {
 
   render() {
     const {
-      qIndex,
       question,
       options,
       uiStyle,
@@ -177,7 +176,7 @@ class Display extends Component {
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
     return (
       <StyledDisplayContainer fontSize={fontSize}>
-        <QuestionHeader qIndex={qIndex} dangerouslySetInnerHTML={{ __html: question }} />
+        <QuestionHeader dangerouslySetInnerHTML={{ __html: question }} />
         <TemplateBoxContainer>
           <TemplateBoxLayoutContainer>{templateBoxLayout}</TemplateBoxLayoutContainer>
         </TemplateBoxContainer>
@@ -196,7 +195,6 @@ Display.propTypes = {
   checkAnswer: PropTypes.bool,
   showDashedBorder: PropTypes.bool,
   question: PropTypes.string.isRequired,
-  qIndex: PropTypes.number.isRequired,
   validation: PropTypes.object,
   evaluation: PropTypes.array,
   backgroundColor: PropTypes.string,

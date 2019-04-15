@@ -28,7 +28,8 @@ const EmptyWrapper = styled.div``;
 class ClozeDragDrop extends Component {
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props;
-    const item = view === EDIT ? templateItem : replaceVariables(templateItem);
+    const itemForPreview = replaceVariables(templateItem);
+    const item = view === EDIT ? templateItem : itemForPreview;
 
     const locationState = history.location.state;
     const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
@@ -51,6 +52,7 @@ class ClozeDragDrop extends Component {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
+      itemForPreview,
       uiStyle: item.ui_style
     };
   };
@@ -103,7 +105,7 @@ class ClozeDragDrop extends Component {
 
   render() {
     const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation, theme } = this.props;
-    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
+    const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
@@ -183,7 +185,7 @@ class ClozeDragDrop extends Component {
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
-                templateMarkUp={item.templateMarkUp}
+                templateMarkUp={itemForPreview.templateMarkUp}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 evaluation={evaluation}
@@ -203,7 +205,7 @@ class ClozeDragDrop extends Component {
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
-                templateMarkUp={item.templateMarkUp}
+                templateMarkUp={itemForPreview.templateMarkUp}
                 userSelections={userAnswer}
                 validation={item.validation}
                 evaluation={evaluation}
@@ -224,7 +226,7 @@ class ClozeDragDrop extends Component {
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
-                templateMarkUp={item.templateMarkUp}
+                templateMarkUp={itemForPreview.templateMarkUp}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
               />

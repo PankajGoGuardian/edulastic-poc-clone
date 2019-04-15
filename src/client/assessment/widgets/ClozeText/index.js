@@ -24,7 +24,8 @@ const EmptyWrapper = styled.div``;
 class ClozeText extends Component {
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props;
-    const item = view === EDIT ? templateItem : replaceVariables(templateItem);
+    const itemForPreview = replaceVariables(templateItem);
+    const item = view === EDIT ? templateItem : itemForPreview;
 
     const locationState = history.location.state;
     const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
@@ -47,6 +48,7 @@ class ClozeText extends Component {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
+      itemForPreview,
       uiStyle: item.ui_style
     };
   };
@@ -97,8 +99,8 @@ class ClozeText extends Component {
   };
 
   render() {
-    const { view, previewTab, qIndex, smallSize, item, userAnswer, testItem, evaluation, theme } = this.props;
-    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
+    const { view, previewTab, smallSize, item, userAnswer, testItem, evaluation, theme } = this.props;
+    const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
     const Wrapper = testItem ? EmptyWrapper : Paper;
     return (
@@ -148,13 +150,12 @@ class ClozeText extends Component {
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
-                templateMarkUp={item.templateMarkUp}
+                templateMarkUp={itemForPreview.templateMarkUp}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 evaluation={evaluation}
-                instructorStimulus={item.instructor_stimulus}
-                qIndex={qIndex}
-                item={item}
+                instructorStimulus={itemForPreview.instructor_stimulus}
+                item={itemForPreview}
               />
             )}
             {previewTab === "show" && (
@@ -167,12 +168,12 @@ class ClozeText extends Component {
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
-                templateMarkUp={item.templateMarkUp}
+                templateMarkUp={itemForPreview.templateMarkUp}
                 userSelections={userAnswer}
-                validation={item.validation}
+                validation={itemForPreview.validation}
                 evaluation={evaluation}
-                instructorStimulus={item.instructor_stimulus}
-                item={item}
+                instructorStimulus={itemForPreview.instructor_stimulus}
+                item={itemForPreview}
               />
             )}
             {previewTab === "clear" && (
@@ -186,11 +187,11 @@ class ClozeText extends Component {
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
-                templateMarkUp={item.templateMarkUp}
+                templateMarkUp={itemForPreview.templateMarkUp}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
-                instructorStimulus={item.instructor_stimulus}
-                item={item}
+                instructorStimulus={itemForPreview.instructor_stimulus}
+                item={itemForPreview}
               />
             )}
           </Wrapper>
@@ -211,8 +212,7 @@ ClozeText.propTypes = {
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
-  theme: PropTypes.object.isRequired,
-  qIndex: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired
 };
 
 ClozeText.defaultProps = {

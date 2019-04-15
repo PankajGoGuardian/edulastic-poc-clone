@@ -194,7 +194,6 @@ class ClozeDragDropDisplay extends Component {
 
   render() {
     const {
-      qIndex,
       smallSize,
       question,
       configureOptions,
@@ -353,7 +352,7 @@ class ClozeDragDropDisplay extends Component {
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
     return (
       <div style={{ fontSize }}>
-        <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+        <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         <div>
           {responsecontainerposition === "top" && (
             <React.Fragment>

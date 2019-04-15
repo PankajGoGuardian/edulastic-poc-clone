@@ -32,7 +32,8 @@ class ClozeImageDropDown extends Component {
 
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props;
-    const item = view === EDIT ? templateItem : replaceVariables(templateItem);
+    const itemForPreview = replaceVariables(templateItem);
+    const item = view === EDIT ? templateItem : itemForPreview;
 
     const locationState = history.location.state;
     const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
@@ -55,6 +56,7 @@ class ClozeImageDropDown extends Component {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
+      itemForPreview,
       uiStyle: item.ui_style
     };
   };
@@ -152,7 +154,7 @@ class ClozeImageDropDown extends Component {
 
   render() {
     const { qIndex, view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation } = this.props;
-    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
+    const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
 
     const Wrapper = testItem ? React.Fragment : Paper;
@@ -212,7 +214,7 @@ class ClozeImageDropDown extends Component {
               preview={previewTab === "clear"}
               showAnswer={previewTab === "show"}
               checkAnswer={previewTab === "check"}
-              validation={item.validation}
+              validation={itemForPreview.validation}
               configureOptions={{
                 duplicatedResponses,
                 showDraghandle,
@@ -222,7 +224,7 @@ class ClozeImageDropDown extends Component {
               options={previewDisplayOptions}
               imageAlterText={item.imageAlterText}
               imagescale={imagescale}
-              responseContainers={item.responses}
+              responseContainers={itemForPreview.responses}
               evaluation={evaluation}
               imageUrl={item.imageUrl}
               imageWidth={item.imageWidth}
@@ -232,7 +234,7 @@ class ClozeImageDropDown extends Component {
               backgroundColor={item.background}
               key={previewDisplayOptions && previewStimulus && uiStyle}
               smallSize={smallSize}
-              templateMarkUp={item.templateMarkUp}
+              templateMarkUp={itemForPreview.templateMarkUp}
               userSelections={userAnswer}
               maxRespCount={item.maxRespCount}
               onChange={this.handleAddAnswer}

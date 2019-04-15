@@ -31,7 +31,8 @@ class ClozeImageText extends Component {
 
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props;
-    const item = view === EDIT ? templateItem : replaceVariables(templateItem);
+    const itemForPreview = replaceVariables(templateItem);
+    const item = view === EDIT ? templateItem : itemForPreview;
 
     const locationState = history.location.state;
     const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
@@ -125,7 +126,7 @@ class ClozeImageText extends Component {
 
   render() {
     const { qIndex, view, previewTab, item, userAnswer, t, testItem, evaluation } = this.props;
-    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
+    const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
 
     const Wrapper = testItem ? React.Fragment : Paper;
@@ -187,8 +188,8 @@ class ClozeImageText extends Component {
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
-                item={item}
-                templateMarkUp={item.templateMarkUp}
+                item={itemForPreview}
+                templateMarkUp={itemForPreview.templateMarkUp}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 configureOptions={{
@@ -198,7 +199,7 @@ class ClozeImageText extends Component {
                   transparentResponses
                 }}
                 imageAlterText={item.imageAlterText}
-                responseContainers={item.responses}
+                responseContainers={itemForPreview.responses}
                 imageUrl={item.imageUrl}
                 imageWidth={item.imageWidth}
                 evaluation={evaluation}
@@ -211,10 +212,10 @@ class ClozeImageText extends Component {
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
-                item={item}
-                templateMarkUp={item.templateMarkUp}
+                item={itemForPreview}
+                templateMarkUp={itemForPreview.templateMarkUp}
                 userSelections={userAnswer}
-                validation={item.validation}
+                validation={itemForPreview.validation}
                 configureOptions={{
                   duplicatedResponses,
                   showDraghandle,
@@ -232,7 +233,7 @@ class ClozeImageText extends Component {
             {previewTab === "clear" && (
               <Display
                 preview
-                validation={item.validation}
+                validation={itemForPreview.validation}
                 configureOptions={{
                   duplicatedResponses,
                   showDraghandle,
@@ -247,10 +248,10 @@ class ClozeImageText extends Component {
                 question={previewStimulus}
                 showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
                 uiStyle={uiStyle}
-                item={item}
+                item={itemForPreview}
                 backgroundColor={item.background}
                 key={previewDisplayOptions && previewStimulus && uiStyle}
-                templateMarkUp={item.templateMarkUp}
+                templateMarkUp={itemForPreview.templateMarkUp}
                 userSelections={userAnswer}
                 maxRespCount={item.maxRespCount}
                 onChange={this.handleAddAnswer}

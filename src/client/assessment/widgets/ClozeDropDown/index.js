@@ -28,6 +28,7 @@ const EmptyWrapper = styled.div``;
 class ClozeDropDown extends Component {
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props;
+    const itemForPreview = replaceVariables(templateItem);
     const item = view === EDIT ? templateItem : replaceVariables(templateItem);
 
     const locationState = history.location.state;
@@ -51,6 +52,7 @@ class ClozeDropDown extends Component {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
+      itemForPreview,
       uiStyle: item.ui_style,
       instantFeedback: item.instant_feedback,
       instructorStimulus: item.instructor_stimulus
@@ -93,7 +95,14 @@ class ClozeDropDown extends Component {
 
   render() {
     const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation, theme } = this.props;
-    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle, instructorStimulus } = this.getRenderData();
+    const {
+      previewStimulus,
+      previewDisplayOptions,
+      itemForEdit,
+      itemForPreview,
+      uiStyle,
+      instructorStimulus
+    } = this.getRenderData();
     const { shuffleOptions } = item;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
@@ -147,12 +156,12 @@ class ClozeDropDown extends Component {
               configureOptions={{
                 shuffleOptions
               }}
-              item={item}
+              item={itemForPreview}
               smallSize={smallSize}
               options={previewDisplayOptions}
               question={previewStimulus}
               uiStyle={uiStyle}
-              templateMarkUp={item.templateMarkUp}
+              templateMarkUp={itemForPreview.templateMarkUp}
               userAnswer={userAnswer}
               userSelections={userAnswer}
               onChange={this.handleAddAnswer}

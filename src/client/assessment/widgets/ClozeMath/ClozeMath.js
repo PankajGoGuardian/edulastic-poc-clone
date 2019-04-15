@@ -30,8 +30,6 @@ const ClozeMath = ({ view, previewTab, item, setQuestionData, saveAnswer, checkA
 
   const _updateTemplate = (val, responseIndexes) => {
     const newItem = produce(item, draft => {
-      // const regExp = /<span class="index">(.*?)<\/span>/g;
-      // draft.template = val.replace(regExp, (_, i) => `<span class="index">${i + 1}</span>`);
       draft.template = val;
 
       draft.validation.valid_response.value = _reduceResponseButtons(

@@ -35,7 +35,8 @@ class ClozeImageDragDrop extends Component {
 
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props;
-    const item = view === EDIT ? templateItem : replaceVariables(templateItem);
+    const itemForPreview = replaceVariables(templateItem);
+    const item = view === EDIT ? templateItem : itemForPreview;
 
     const locationState = history.location.state;
     const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
@@ -58,6 +59,7 @@ class ClozeImageDragDrop extends Component {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
+      itemForPreview,
       uiStyle: item.ui_style
     };
   };
@@ -118,7 +120,7 @@ class ClozeImageDragDrop extends Component {
 
   render() {
     const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation, theme } = this.props;
-    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
+    const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
@@ -202,12 +204,12 @@ class ClozeImageDragDrop extends Component {
             {previewTab === "check" && (
               <Display
                 checkAnswer
-                item={item}
+                item={itemForPreview}
                 options={previewDisplayOptions}
-                instructorStimulus={item.instructor_stimulus}
+                instructorStimulus={itemForPreview.instructor_stimulus}
                 question={previewStimulus}
                 uiStyle={uiStyle}
-                templateMarkUp={item.templateMarkUp}
+                templateMarkUp={itemForPreview.templateMarkUp}
                 userAnswer={userAnswer}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
@@ -230,17 +232,17 @@ class ClozeImageDragDrop extends Component {
             {previewTab === "show" && (
               <Display
                 showAnswer
-                item={item}
-                instructorStimulus={item.instructor_stimulus}
+                item={itemForPreview}
+                instructorStimulus={itemForPreview.instructor_stimulus}
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
-                templateMarkUp={item.templateMarkUp}
+                templateMarkUp={itemForPreview.templateMarkUp}
                 maxRespCount={item.maxRespCount}
                 userAnswer={userAnswer}
                 userSelections={userAnswer}
-                validation={item.validation}
-                showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+                validation={itemForPreview.validation}
+                showDashedBorder={itemForPreview.responseLayout && itemForPreview.responseLayout.showdashedborder}
                 configureOptions={{
                   duplicatedResponses,
                   showDraghandle,
@@ -258,9 +260,9 @@ class ClozeImageDragDrop extends Component {
             {previewTab === "clear" && (
               <Display
                 preview
-                item={item}
-                instructorStimulus={item.instructor_stimulus}
-                validation={item.validation}
+                item={itemForPreview}
+                instructorStimulus={itemForPreview.instructor_stimulus}
+                validation={itemForPreview.validation}
                 configureOptions={{
                   duplicatedResponses,
                   showDraghandle,
@@ -279,7 +281,7 @@ class ClozeImageDragDrop extends Component {
                 uiStyle={uiStyle}
                 backgroundColor={item.background}
                 smallSize={smallSize}
-                templateMarkUp={item.templateMarkUp}
+                templateMarkUp={itemForPreview.templateMarkUp}
                 userSelections={userAnswer}
                 userAnswer={userAnswer}
                 onChange={this.handleAddAnswer}

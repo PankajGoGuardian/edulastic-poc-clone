@@ -57,7 +57,6 @@ class Display extends Component {
 
   render() {
     const {
-      qIndex,
       smallSize,
       question,
       configureOptions,
@@ -206,7 +205,7 @@ class Display extends Component {
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
     return (
       <StyledDisplayContainer fontSize={fontSize} smallSize={smallSize}>
-        <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+        <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         <TemplateBoxContainer smallSize={smallSize}>
           <TemplateBoxLayoutContainer smallSize={smallSize}>{templateBoxLayout}</TemplateBoxLayoutContainer>
         </TemplateBoxContainer>

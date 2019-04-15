@@ -72,19 +72,17 @@ class MCQStandardPage {
   }
 
   // question content
-  getQuestionEditor() {
-    return cy.get('[data-placeholder="[This is the stem.]"');
-  }
+  getQuestionEditor = () => cy.get('[data-placeholder="[This is the stem.]"');
 
   // choices
-  getChoiceByIndex(index) {
+  getChoiceByIndex = index => {
     const selector = `#idprefix${index}`;
     return cy
       .get(".text-editor")
       .find(selector)
       .next()
       .find(".ql-editor");
-  }
+  };
 
   deleteChoiceByIndex(index) {
     const selector = `[data-cy=deleteprefix${index}]`;
@@ -92,21 +90,19 @@ class MCQStandardPage {
     return this;
   }
 
-  getAllChoices() {
-    return cy
+  getAllChoices = () =>
+    cy
       .contains("div", "Multiple Choice Options")
       .next()
       .find(".ql-editor");
-  }
 
-  getAllAnsChoicesLabel() {
-    return cy
+  getAllAnsChoicesLabel = () =>
+    cy
       .get('[data-cy="points"]')
       .parent()
       .parent()
       .next()
       .find("label");
-  }
 
   addNewChoice() {
     cy.get('[data-cy="add-new-ch"]')
@@ -117,17 +113,14 @@ class MCQStandardPage {
 
   // correct ans
 
-  getPoints() {
-    return cy.get('[data-cy="points"]').should("be.visible");
-  }
+  getPoints = () => cy.get('[data-cy="points"]').should("be.visible");
 
-  getCorrectAnsOptions() {
-    return cy
+  getCorrectAnsOptions = () =>
+    cy
       .contains("div", "Set Correct Answer(s)")
       .next()
       .children()
       .contains("label");
-  }
 
   addAlternate() {
     cy.get('[data-cy="alternate"]')
@@ -136,20 +129,17 @@ class MCQStandardPage {
     return this;
   }
 
-  getAlternates() {
-    return cy
+  getAlternates = () =>
+    cy
       .contains("div", "Set Correct Answer(s)")
       .next()
       .contains("span", "Alternate");
-  }
 
   deleteAlternate() {
     return this;
   }
 
-  getMultipleResponse() {
-    return cy.get('[data-cy="multi"]').closest("label");
-  }
+  getMultipleResponse = () => cy.get('[data-cy="multi"]').closest("label");
 
   // advance options
   clickOnAdvancedOptions() {
@@ -228,57 +218,40 @@ class MCQStandardPage {
     return this;
   }
 
-  getPanalty() {
-    return cy.get('[data-cy="penalty"]').should("be.visible");
-  }
+  getPanalty = () => cy.get('[data-cy="penalty"]').should("be.visible");
 
-  getCheckAnsAttempt() {
-    return cy.get('[data-cy="checkAttempts"]').should("be.visible");
-  }
+  getCheckAnsAttempt = () => cy.get('[data-cy="checkAttempts"]').should("be.visible");
 
-  getEnableAutoScoring() {
-    return cy
+  getEnableAutoScoring = () =>
+    cy
       .contains("Enable auto scoring")
       .children()
       .eq(0)
       .should("be.visible");
-  }
 
-  getMinScore() {
-    return cy.get("[data-cy=minscore]").should("be.visible");
-  }
+  getMinScore = () => cy.get("[data-cy=minscore]").should("be.visible");
 
-  getMaxScore() {
-    return cy.get('[data-cy="maxscore"]').should("be.visible");
-  }
+  getMaxScore = () => cy.get('[data-cy="maxscore"]').should("be.visible");
 
-  getCheckAnswerCheckbox() {
-    return cy
+  getCheckAnswerCheckbox = () =>
+    cy
       .contains("Check answer button")
       .children()
       .eq(0)
       .should("be.visible");
-  }
 
-  getUnscore() {
-    return cy
+  getUnscore = () =>
+    cy
       .contains("Unscored")
       .children()
       .eq(0)
       .should("be.visible");
-  }
 
-  getNumofCol() {
-    return cy.get('[data-cy="columns"]');
-  }
+  getNumofCol = () => cy.get('[data-cy="columns"]');
 
-  getSource() {
-    return cy.get('[data-cy="source"]').should("be.visible");
-  }
+  getSource = () => cy.get('[data-cy="source"]').should("be.visible");
 
-  getCancel() {
-    return cy.contains("Cancel").should("be.visible");
-  }
+  getCancel = () => cy.contains("Cancel").should("be.visible");
 }
 
 export default MCQStandardPage;

@@ -82,15 +82,13 @@ class LabelImageStandardPage {
 
   // get current question from Store
 
-  getCurrentStoreQuestion() {
+  getCurrentStoreQuestion = () => {
     const storeValue = JSON.parse(window.localStorage.getItem("persist:root")).question;
     return JSON.parse(storeValue).entity.data;
-  }
+  };
 
   // question content
-  getQuestionEditor() {
-    return cy.get('[data-placeholder="[This is the stem.]"');
-  }
+  getQuestionEditor = () => cy.get('[data-placeholder="[This is the stem.]"');
 
   addImageOnEditor(base64Data) {
     cy.document().then(doc => {
@@ -120,9 +118,7 @@ class LabelImageStandardPage {
     return this;
   }
 
-  getImageWidth() {
-    return cy.get('[data-cy="drag-drop-image-panel"]');
-  }
+  getImageWidth = () => cy.get('[data-cy="drag-drop-image-panel"]');
 
   // image alternate
 
@@ -156,42 +152,35 @@ class LabelImageStandardPage {
     return this;
   }
 
-  getAllInputPanel() {
-    return cy
+  getAllInputPanel = () =>
+    cy
       .get('[data-cy="drag-drop-image-panel"]')
       .find("img")
       .next()
       .children(".react-draggable");
-  }
 
   // max response
 
-  getMaxResponseInput() {
-    return cy.get('[data-cy="drag-drop-image-max-res"]');
-  }
+  getMaxResponseInput = () => cy.get('[data-cy="drag-drop-image-max-res"]');
 
   // dashboard border
 
-  getDashboardBorderCheck() {
-    return cy
+  getDashboardBorderCheck = () =>
+    cy
       .get('[data-cy="drag-drop-image-dashboard-check"]')
       .closest("label")
       .should("be.visible");
-  }
 
   // edit ARIA labels
 
-  getAriaLabelCheck() {
-    return cy
+  getAriaLabelCheck = () =>
+    cy
       .get('[data-cy="drag-drop-image-aria-check"]')
       .closest("label")
       .should("be.visible");
-  }
 
   // choices
-  getChoiceByIndex(index) {
-    return cy.get(`[data-cy=edit_prefix_${index}]`);
-  }
+  getChoiceByIndex = index => cy.get(`[data-cy=edit_prefix_${index}]`);
 
   deleteChoiceByIndex(index) {
     const selector = `[data-cy=choice_prefix_${index}]`;
@@ -202,12 +191,11 @@ class LabelImageStandardPage {
     return this;
   }
 
-  getAllChoices() {
-    return cy
+  getAllChoices = () =>
+    cy
       .contains("div", "Possible responses")
       .next()
       .find("input");
-  }
 
   addNewChoice() {
     cy.get('[data-cy="add-new-ch"]')
@@ -216,25 +204,21 @@ class LabelImageStandardPage {
     return this;
   }
 
-  checkAddedAnswers(text) {
-    return cy
+  checkAddedAnswers = text =>
+    cy
       .get(".draggable_box")
       .children()
       .contains("div", text)
       .should("be.visible");
-  }
 
-  getPointsEditor() {
-    return cy.get('[data-cy="point-field"]').should("be.visible");
-  }
+  getPointsEditor = () => cy.get('[data-cy="point-field"]').should("be.visible");
 
-  getCorrectAnsOptions() {
-    return cy
+  getCorrectAnsOptions = () =>
+    cy
       .contains("div", "Set Correct Answer(s)")
       .next()
       .children()
       .contains("label");
-  }
 
   addAlternate() {
     cy.get('[data-cy="alternate"]')
@@ -243,8 +227,8 @@ class LabelImageStandardPage {
     return this;
   }
 
-  checkAndDeleteAlternates() {
-    return cy
+  checkAndDeleteAlternates = () =>
+    cy
       .contains("div", "Set Correct Answer(s)")
       .next()
       .children()
@@ -259,26 +243,21 @@ class LabelImageStandardPage {
       .first()
       .click()
       .should("not.exist");
-  }
 
-  getResponsesBox() {
-    return cy
+  getResponsesBox = () =>
+    cy
       .get('[data-cy="responses-box"]')
       .find(".draggable_box")
       .children()
       .should("be.visible");
-  }
 
-  getResponsesBoxTransparent() {
-    return cy
+  getResponsesBoxTransparent = () =>
+    cy
       .get('[data-cy="responses-box"]')
       .find(".draggable_box_transparent")
       .children();
-  }
 
-  getResponsesBoard() {
-    return cy.get('[data-cy="drag-drop-board"]').find("div .container");
-  }
+  getResponsesBoard = () => cy.get('[data-cy="drag-drop-board"]').find("div .container");
 
   dragAndDropResponseToBoard(toIndex) {
     this.getResponsesBox()
@@ -296,37 +275,31 @@ class LabelImageStandardPage {
     return this;
   }
 
-  getMultipleResponse() {
-    return cy
+  getMultipleResponse = () =>
+    cy
       .get('[data-cy="multi-check"]')
       .closest("label")
       .should("be.visible");
-  }
 
-  getDragHandle() {
-    return cy
+  getDragHandle = () =>
+    cy
       .get('[data-cy="drag-check"]')
       .closest("label")
       .should("be.visible");
-  }
 
-  getShuffleResponse() {
-    return cy
+  getShuffleResponse = () =>
+    cy
       .get('[data-cy="shuffle-check"]')
       .closest("label")
       .should("be.visible");
-  }
 
-  getShuffleDropDown() {
-    return cy.get('[data-cy="multi"]').should("be.visible");
-  }
+  getShuffleDropDown = () => cy.get('[data-cy="multi"]').should("be.visible");
 
-  getTransparentResponse() {
-    return cy
+  getTransparentResponse = () =>
+    cy
       .get('[data-cy="transparent-check"]')
       .closest("label")
       .should("be.visible");
-  }
 
   // Label Image Drop Down
 
@@ -338,15 +311,15 @@ class LabelImageStandardPage {
     return this;
   }
 
-  getChoiceByIndexRes(resIndex, choiceIndex) {
+  getChoiceByIndexRes = (resIndex, choiceIndex) => {
     const selector = `[data-cy=choice-response-${resIndex}]`;
     return cy
       .get(selector)
       .children()
       .find(`[data-cy=edit_prefix_${choiceIndex}]`);
-  }
+  };
 
-  getAllChoicesRes(resIndex) {
+  getAllChoicesRes = resIndex => {
     const selector = `[data-cy=choice-response-${resIndex}]`;
     return cy
       .get(selector)
@@ -354,9 +327,9 @@ class LabelImageStandardPage {
       .first()
       .next()
       .children();
-  }
+  };
 
-  deleteChoiceIndexRes(resIndex, choiceIndex) {
+  deleteChoiceIndexRes = (resIndex, choiceIndex) => {
     const selector = `[data-cy=choice-response-${resIndex}]`;
     return cy
       .get(selector)
@@ -365,7 +338,7 @@ class LabelImageStandardPage {
       .children()
       .last()
       .click();
-  }
+  };
 
   checkAddedAnswersRes(resIndex, value) {
     const selector = `[data-cy=dropdown-board-${resIndex}]`;
@@ -378,27 +351,27 @@ class LabelImageStandardPage {
     return this;
   }
 
-  getDropDownByRes(resIndex) {
+  getDropDownByRes = resIndex => {
     const selector = `[data-cy=dropdown-board-${resIndex}]`;
     return cy
       .get(selector)
       .next()
       .should("be.visible");
-  }
+  };
 
-  getDropDownMenuItem(resIndex, itemIndex) {
+  getDropDownMenuItem = (resIndex, itemIndex) => {
     const selector = `[data-cy=dropdown-res-item-${resIndex}-${itemIndex}]`;
     return cy.get(selector).should("be.visible");
-  }
+  };
 
-  checkShuffled(resIndex, content) {
+  checkShuffled = (resIndex, content) => {
     const selector = `[data-cy=dropdown-res-item-${resIndex}-0]`;
     return cy
       .get(selector)
       .parent()
       .children()
       .contains("li", content);
-  }
+  };
 
   setAnswerOnBoard(resIndex, itemIndex) {
     this.getDropDownByRes(resIndex).click();
@@ -408,14 +381,12 @@ class LabelImageStandardPage {
 
   // Text Page
 
-  getAnswersFieldOnTextPage() {
+  getAnswersFieldOnTextPage = () => {
     const selector = `[data-cy="image-text-answer-board"]`;
     return cy.get(selector).find("input");
-  }
+  };
 
-  getShuffleTextImage() {
-    return cy.get('[data-cy="multi"]').should("be.visible");
-  }
+  getShuffleTextImage = () => cy.get('[data-cy="multi"]').should("be.visible");
 }
 
 export default LabelImageStandardPage;

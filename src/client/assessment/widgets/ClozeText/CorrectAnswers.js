@@ -31,7 +31,10 @@ class CorrectAnswers extends Component {
         <Tab
           close
           key={i}
-          onClose={() => onRemoveAltResponses(i)}
+          onClose={() => {
+            onRemoveAltResponses(i);
+            this.setState({ value: 0 });
+          }}
           label={`${t("component.correctanswers.alternate")} ${i + 1}`}
         />
       ));
@@ -177,6 +180,7 @@ CorrectAnswers.propTypes = {
   templateMarkUp: PropTypes.string,
   question: PropTypes.object.isRequired,
   hasGroupResponses: PropTypes.bool,
+  onRemoveAltResponses: PropTypes.func,
   configureOptions: PropTypes.object.isRequired,
   uiStyle: PropTypes.object
 };
@@ -185,6 +189,7 @@ CorrectAnswers.defaultProps = {
   stimulus: "",
   options: [],
   validation: {},
+  onRemoveAltResponses: () => {},
   hasGroupResponses: false,
   templateMarkUp: "",
   uiStyle: {

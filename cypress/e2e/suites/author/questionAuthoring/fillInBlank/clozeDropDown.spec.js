@@ -1,4 +1,4 @@
-import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage.js";
+import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
 import ClozeDropDownPage from "../../../../framework/author/itemList/questionType/fillInBlank/clozeWithDropDownPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 

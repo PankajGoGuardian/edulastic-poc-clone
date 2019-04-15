@@ -221,11 +221,13 @@ class MathFormulaEdit {
 
   // getAnswerMathInputStyle = () => cy.get('[data-cy="answer-math-input-style"]');
 
+  getAnswerMathTextArea = () => this.getAnswerMathInputField().find("textarea");
+
   checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect, score = false, scoreValuse = "1/1") => {
     preview.header.preview();
     preview.getClear().click();
-    this.getPreviewMathQuill().should("be.empty");
-    this.getPreviewMathQuill().typeWithDelay(expectedValue);
+    this.getAnswerMathTextArea().should("be.empty");
+    this.getAnswerMathTextArea().typeWithDelay(expectedValue);
     preview
       .getCheckAnswer()
       .click()
@@ -389,7 +391,7 @@ class MathFormulaEdit {
     this.getMethodSelectionDropdow()
       .click({ force: true })
       .then(() => {
-        this.getMethodSelectionDropdowList(methods).click();
+        this.getMethodSelectionDropdowList(methods).click({ force: true });
       });
     if (setFunction instanceof Function) setFunction(argument);
     if (setChecBox instanceof Function) setChecBox();

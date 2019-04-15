@@ -29,7 +29,7 @@ class MathFillInTheBlanksPage extends MathFractionPage {
   checkCorrectAnswerWithResponse = (expectedValues, preview, inputLength, isCorrect) => {
     preview.header.preview();
     preview.getClear().click();
-    this.getPreviewMathQuill().then(inputElements => {
+    this.getAnswerMathTextArea().then(inputElements => {
       if (Array.isArray(expectedValues)) {
         expectedValues.forEach((expectedValue, index) => {
           cy.wrap(inputElements[index]).typeWithDelay(expectedValue);

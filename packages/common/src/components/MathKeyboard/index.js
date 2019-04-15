@@ -135,7 +135,9 @@ class MathKeyboard extends React.PureComponent {
               {showResponse && (
                 <span className="response-embed" style={{ cursor: "pointer" }} onClick={() => onInput(EMBED_RESPONSE)}>
                   <span className="response-embed__char">R</span>
-                  <span className="response-embed__text">Response</span>
+                  <span className="response-embed__text" data-cy="math-keyboard-response">
+                    Response
+                  </span>
                 </span>
               )}
             </div>

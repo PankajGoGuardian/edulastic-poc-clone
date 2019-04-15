@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { blue, darkBlue, greenDark, grey, fadedGrey, lightGrey, darkGrey } from "@edulastic/colors";
+import { blue, darkBlue, grey, fadedGrey, lightGrey, darkGrey } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 import { Col, Rate, Row } from "antd";
 
@@ -47,25 +47,24 @@ export const Author = styled.div`
   font-size: 11px;
   font-weight: 600;
   color: ${darkGrey};
-  flex-basis: 100px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  line-height: 21px;
-  float: right;
+  display: inline-flex;
+  align-items: center;
+  max-width: 100px;
   svg {
+    width: 14px;
+    height: 14px;
     fill: ${darkGrey};
     vertical-align: middle;
     &:hover {
       fill: ${darkGrey};
-      width: 14px;
-      height: 14px;
     }
   }
 `;
 
 export const AuthorName = styled.span`
-  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 export const ButtonWrapper = styled.div`
@@ -119,7 +118,9 @@ export const StyledLink = styled.a`
   }
 `;
 
-export const ItemInformation = styled(Col)``;
+export const ItemInformation = styled(Col)`
+  text-align: right;
+`;
 
 export const TypeContainer = styled.div`
   display: flex;
@@ -133,20 +134,16 @@ export const TypeContainer = styled.div`
     margin-left: 10px;
 
     & > span {
-      width: 114.5px;
-      height: 23.5px;
-
-      &:nth-child(3) {
-        margin-top: 6px;
-      }
+      padding: 4px 15px;
     }
   }
 `;
 
 export const IconWrapper = styled.div`
-  display: flex;
+  max-width: 100px;
+  display: inline-flex;
   align-items: center;
-  float: right;
+  margin-left: 30px;
 `;
 
 export const IconText = styled.span`
@@ -158,17 +155,23 @@ export const CardIdWrapper = styled.div`
   color: ${darkGrey};
   font-size: 11px;
   font-weight: 600;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  line-height: 21px;
-  float: right;
+  max-width: 100px;
+  margin-left: 30px;
   svg {
     fill: ${darkGrey};
     width: 13px;
     height: 13px;
+    &:hover {
+      fill: ${darkGrey};
+    }
   }
 `;
-export const CardId = styled.span``;
+export const CardId = styled.span`
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
 
 export const ViewButtonWrapper = styled(Col)`
   padding-left: 45px !important;

@@ -3,9 +3,10 @@ import {
   tabletWidth,
   textColor,
   newBlue,
-  secondaryTextColor,
+  lightGrey,
   greyDarken,
-  greenPrimary
+  greenPrimary,
+  darkGrey
 } from "@edulastic/colors";
 import styled from "styled-components";
 import { Button } from "antd";
@@ -13,7 +14,7 @@ import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
 
 export const Container = styled.div`
   border-top: 0;
-  padding: 30px 0 5px 26px;
+  padding: 30px 0 15px;
 
   &:not(:first-child) {
     border-top: 1px solid #f6f6f6;
@@ -83,12 +84,15 @@ export const ViewButtonStyled = styled(Button)`
   height: 40px;
   border-radius: 4px;
   background: ${white};
-  box-shadow: 0 2px 4px 0 rgba(201, 208, 219, 0.5);
+  box-shadow: 0px 1px 1px 1px rgba(201, 208, 219, 0.5);
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   border: 0;
   color: ${newBlue};
+  &:hover {
+    background: ${lightGrey};
+  }
 
   svg {
     display: none;
@@ -179,11 +183,14 @@ export const DetailCategory = styled.div`
   margin-left: 20px;
 
   svg {
-    max-width: 18px;
-    max-height: 16px;
+    max-width: 16px;
+    max-height: 14px;
     width: 100vw;
     height: 100vh;
-    fill: ${newBlue};
+    fill: ${darkGrey};
+    &:hover {
+      fill: ${darkGrey};
+    }
   }
   @media (max-width: ${tabletWidth}) {
     width: auto;
@@ -203,10 +210,10 @@ export const DetailCategory = styled.div`
 export const CategoryName = styled.span`
   display: flex;
   align-items: baseline;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  margin-right: 8px;
-  color: ${textColor};
+  margin-right: 5px;
+  color: ${darkGrey};
 
   @media (max-width: ${tabletWidth}) {
     display: block;
@@ -293,7 +300,7 @@ export const Text = styled.span`
   align-items: center;
   font-size: 12px;
   font-weight: 600;
-  color: ${secondaryTextColor};
+  color: ${darkGrey};
 
   @media (max-width: ${tabletWidth}) {
     margin-top: 8px;

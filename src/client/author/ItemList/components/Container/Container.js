@@ -273,7 +273,7 @@ class Contaier extends Component {
                   ref={e => {
                     this.itemsScrollBar = e;
                   }}
-                  style={{ padding: windowWidth > 768 ? "8px 76px 34px 31px" : "0px" }}
+                  style={{ padding: windowWidth > 768 ? "0px 30px 30px" : "0px" }}
                 >
                   {this.renderItems()}
                   {windowWidth > SMALL_DESKTOP_WIDTH && this.renderPagination()}

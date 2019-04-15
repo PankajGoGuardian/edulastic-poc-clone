@@ -13,7 +13,7 @@ import styled from "styled-components";
 import Modal from "react-responsive-modal";
 
 export const Container = styled.div`
-  width: 370px;
+  width: 280px;
   height: 100%;
 
   @media (max-width: ${desktopWidth}) {
@@ -22,9 +22,7 @@ export const Container = styled.div`
 `;
 
 export const FixedFilters = styled.div`
-  padding-top: 28px;
-  padding-right: 49px;
-  padding-left: 46px;
+  padding: 25px 25px 0px;
 
   @media (max-width: ${desktopWidth}) {
     width: 100%;

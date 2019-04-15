@@ -95,9 +95,8 @@ class Item extends Component {
         <Footer>
           {authorName && (
             <Author>
-              <AuthorName title={authorName}>
-                <IconUser /> {authorName}
-              </AuthorName>
+              <IconUser /> &nbsp;
+              <AuthorName title={authorName}>{authorName}</AuthorName>
             </Author>
           )}
           <CardIdWrapper>
@@ -106,14 +105,12 @@ class Item extends Component {
             <CardId>{testItemId}</CardId>
           </CardIdWrapper>
           <ShareIcon>
-            <IconShare color={darkGrey} width={14} height={14} />
-            &nbsp;
-            {analytics && <IconText>{analytics.usage} 123</IconText>}
+            <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
+            {analytics && <IconText>{analytics.usage} 0</IconText>}
           </ShareIcon>
           <LikeIcon>
-            <IconHeart color={darkGrey} width={14} height={14} />
-            &nbsp;
-            {analytics && <IconText>{analytics.likes} 123</IconText>}
+            <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
+            {analytics && <IconText>{analytics.likes} 0</IconText>}
           </LikeIcon>
         </Footer>
       </Container>

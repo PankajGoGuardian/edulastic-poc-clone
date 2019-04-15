@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Rate } from "antd/lib/index";
-import { blue, darkBlue, darkGrey, fadedGrey, lightGrey } from "@edulastic/colors";
+import { blue, darkBlue, darkGrey, fadedGrey, lightGrey, lightGreySecondary } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled(Card)`
@@ -26,12 +26,7 @@ export const Container = styled(Card)`
 export const Inner = styled.div`
   div:last-child {
     & > span {
-      width: 114.5px;
-      height: 23.5px;
-
-      &:nth-child(3) {
-        margin-top: 6px;
-      }
+      padding: 4px 15px;
     }
   }
 `;
@@ -40,6 +35,7 @@ export const CardDescription = styled.div`
   font-size: 12px;
   height: 55px;
   overflow: hidden;
+  margin-bottom: 5px;
 `;
 
 export const Footer = styled.div`
@@ -53,32 +49,38 @@ export const Author = styled.div`
   font-size: 11px;
   font-weight: 600;
   color: ${darkGrey};
-  flex-basis: 65px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`;
-
-export const AuthorName = styled.span`
+  display: inline-flex;
+  align-items: center;
+  max-width: 80px;
   svg {
+    width: 14px;
+    height: 14px;
     fill: ${darkGrey};
     vertical-align: bottom;
     &:hover {
       fill: ${darkGrey};
-      width: 14px;
-      height: 14px;
     }
   }
 `;
 
+export const AuthorName = styled.span`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
 export const LikeIcon = styled.div`
-  display: flex;
+  max-width: 60px;
+  display: inline-flex;
   align-items: center;
+  margin-left: 15px;
 `;
 
 export const ShareIcon = styled.div`
-  display: flex;
+  max-width: 60px;
+  display: inline-flex;
   align-items: center;
+  margin-left: 15px;
   svg {
     transform: rotate(180deg);
   }
@@ -92,15 +94,23 @@ export const CardIdWrapper = styled.div`
   color: ${darkGrey};
   font-size: 11px;
   font-weight: 600;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  max-width: 60px;
+  margin-left: 15px;
   svg {
     fill: ${darkGrey};
     width: 13px;
     height: 13px;
+    &:hover {
+      fill: ${darkGrey};
+    }
   }
 `;
-export const CardId = styled.span``;
+export const CardId = styled.span`
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
 export const ViewButton = styled.div`
   font-size: 12px;
   color: ${blue};

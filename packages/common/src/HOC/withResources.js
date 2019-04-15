@@ -49,7 +49,7 @@ export const useResources = (resources, onLoaded) => {
         onLoaded();
       }
     }
-  }, []);
+  }, [resources]);
   return loaded;
 };
 

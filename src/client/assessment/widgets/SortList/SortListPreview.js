@@ -1,8 +1,9 @@
-import React, { PureComponent } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { cloneDeep, isEqual, get } from "lodash";
+import { isEqual, get } from "lodash";
+import produce from "immer";
 
-import { Paper, FlexContainer, Stimulus, InstructorStimulus, MathFormulaDisplay } from "@edulastic/common";
+import { Paper, FlexContainer, Stimulus, InstructorStimulus } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { SHOW, CLEAR } from "../../constants/constantsForQuestions";
@@ -28,264 +29,227 @@ const styles = {
   }),
   wrapperStyles: smallSize => ({ marginTop: smallSize ? 0 : 40 })
 };
-class SortListPreview extends PureComponent {
-  static propTypes = {
-    previewTab: PropTypes.string,
-    t: PropTypes.func.isRequired,
-    smallSize: PropTypes.bool,
-    item: PropTypes.object,
-    userAnswer: PropTypes.any.isRequired,
-    saveAnswer: PropTypes.func.isRequired
-  };
+const SortListPreview = ({ previewTab, t, smallSize, item, userAnswer, saveAnswer }) => {
+  const { source, instructor_stimulus, stimulus } = item;
 
-  static defaultProps = {
-    previewTab: CLEAR,
-    smallSize: false,
-    item: {}
-  };
-
-  get getInitialState() {
-    const {
-      item: { source },
-      userAnswer
-    } = this.props;
-
-    return {
-      items: source.map((item, i) => {
-        if (!userAnswer.includes(i)) {
-          return item;
-        }
-        return null;
-      }),
-      selected:
-        userAnswer && userAnswer.length > 0
-          ? userAnswer.map(index => (index !== null ? source[index] : null))
-          : Array.from({ length: source.length }).fill(null),
-      active: ""
-    };
-  }
-
-  state = this.getInitialState;
-
-  componentDidUpdate() {
-    const {
-      item: { source },
-      userAnswer
-    } = this.props;
-
-    const { items, selected } = this.state;
-
-    const newItems = source.map((item, i) => {
+  const getItemsFromUserAnswer = () =>
+    source.map((sourceItem, i) => {
       if (!userAnswer.includes(i)) {
-        return item;
+        return sourceItem;
       }
       return null;
     });
 
-    const newSelected =
-      userAnswer && userAnswer.length > 0
-        ? userAnswer.map(index => (index !== null ? source[index] : null))
-        : Array.from({ length: source.length }).fill(null);
+  const getSelectedFromUserAnswer = () =>
+    userAnswer && userAnswer.length > 0
+      ? userAnswer.map(index => (index !== null ? source[index] : null))
+      : Array.from({ length: source.length }).fill(null);
 
-    if (!isEqual(items, newItems)) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ items: newItems, active: "" });
+  const [items, setItems] = useState(getItemsFromUserAnswer());
+  const [selected, setSelected] = useState(getSelectedFromUserAnswer());
+
+  const [active, setActive] = useState("");
+
+  useEffect(() => {
+    setItems(getItemsFromUserAnswer());
+    setSelected(getSelectedFromUserAnswer());
+    setActive("");
+  }, [source, userAnswer]);
+
+  const getFromFlag = flag => {
+    if (flag === "items") {
+      return items;
     }
-
-    if (!isEqual(selected, newSelected)) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ selected: newSelected, active: "" });
-    }
-  }
-
-  onDrop = (itemCurrent, itemTo, flag) => {
-    const data = cloneDeep(this.state);
-    const { saveAnswer, item } = this.props;
-
-    let tmp = [];
-
-    [tmp] = data[flag].splice(itemCurrent.index, 1, data[itemTo.flag][itemTo.index]);
-
-    data[itemTo.flag][itemTo.index] = tmp;
-
-    this.setState(data);
-
-    saveAnswer(data.selected.map(currentAns => (currentAns ? item.source.indexOf(currentAns) : null)));
-  };
-
-  setActive = item => {
-    this.setState({ active: typeof item === "string" ? item : "" });
-  };
-
-  onRightLeftClick = () => {
-    const { items, selected, active } = cloneDeep(this.state);
-    const { saveAnswer, item } = this.props;
-
-    if (items.includes(active)) {
-      items.splice(items.indexOf(active), 1, null);
-      selected.splice(selected.indexOf(null), 1, active);
-    } else if (active && Object.keys(active).length !== 0) {
-      selected.splice(selected.indexOf(active), 1, null);
-      items.splice(items.indexOf(null), 1, active);
-    }
-
-    if (active) {
-      this.setState({
-        items,
-        selected,
-        active: ""
-      });
-      saveAnswer(selected.map(currentAns => (currentAns ? item.source.indexOf(currentAns) : null)));
+    if (flag === "selected") {
+      return selected;
     }
   };
 
-  onUpDownClick = indicator => () => {
-    const { selected, active } = cloneDeep(this.state);
-    const { saveAnswer, item } = this.props;
-
-    let tmp;
-
-    if (selected.includes(active)) {
-      const activeIndex = selected.indexOf(active);
-      if (indicator === "Up" && activeIndex !== 0) {
-        tmp = selected[activeIndex - 1];
-        selected[activeIndex - 1] = selected[activeIndex];
-        selected[activeIndex] = tmp;
+  const onDrop = (itemCurrent, itemTo, flag) => {
+    const newObj = produce(getFromFlag(flag), draft => {
+      let tmp = [];
+      if (flag === "items") {
+        [tmp] = draft.splice(itemCurrent.index, 1, getFromFlag(itemTo.flag)[itemTo.index]);
       }
-      if (indicator === "Down" && activeIndex !== selected.length - 1) {
-        tmp = selected[activeIndex + 1];
-        selected[activeIndex + 1] = selected[activeIndex];
-        selected[activeIndex] = tmp;
-      }
-      this.setState({
-        selected,
-        active
-      });
-      saveAnswer(selected.map(currentAns => (currentAns ? item.source.indexOf(currentAns) : null)));
+      draft[itemTo.index] = tmp;
+    });
+    if (flag === "items") {
+      setItems(newObj);
+    } else if (flag === "selected") {
+      setSelected(newObj);
+      saveAnswer(newObj.map(currentAns => (currentAns ? source.indexOf(currentAns) : null)));
     }
   };
 
-  drop = ({ obj, index, flag }) => ({ obj, index, flag });
+  const setActiveItem = activeItem => {
+    setActive(typeof activeItem === "string" ? activeItem : "");
+  };
 
-  render() {
-    const {
-      previewTab,
-      item,
-      t,
-      smallSize,
-      item: { validation }
-    } = this.props;
+  const onRightLeftClick = () => {
+    const { items: newItems, selected: newSelected } = produce({ items, selected }, draft => {
+      if (draft.items.includes(active)) {
+        draft.items.splice(draft.items.indexOf(active), 1, null);
+        draft.selected.splice(draft.selected.indexOf(null), 1, active);
+      } else if (active && Object.keys(active).length !== 0) {
+        draft.selected.splice(draft.selected.indexOf(active), 1, null);
+        draft.items.splice(draft.items.indexOf(null), 1, active);
+      }
 
-    const fontSize = getFontSize(get(item, "ui_style.fontsize"));
-    const orientation = get(item, "ui_style.orientation");
-    const flexDirection = orientation === "vertical" ? "column" : "row";
-
-    let valid_response = validation && validation.valid_response && validation.valid_response.value;
-    valid_response = valid_response || [];
-    let alt_responses = validation && validation.alt_responses && validation.alt_responses;
-    alt_responses = alt_responses || [];
-    const { items, selected, active } = this.state;
-
-    const inCorrectList = selected
-      .filter((selectedItem, i) => selectedItem && selectedItem !== item.source[valid_response[i]])
-      .concat(items.filter(i => i !== null));
-
-    const validRespCorrect = selected.filter(
-      (selectedItem, i) => selectedItem && selectedItem === item.source[valid_response[i]]
-    );
-
-    let altRespCorrect = [...validRespCorrect];
-
-    alt_responses.forEach(ob => {
-      const alt = selected.filter((selectedItem, i) => selectedItem && selectedItem === item.source[ob.value[i]]);
-      if (alt.length > altRespCorrect.length) {
-        altRespCorrect = [...alt];
+      if (active) {
+        saveAnswer(draft.selected.map(currentAns => (currentAns ? source.indexOf(currentAns) : null)));
       }
     });
+    setItems(newItems);
+    setSelected(newSelected);
+  };
 
-    return (
-      <Paper data-cy="sortListPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-        <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
-        {item && item.stimulus && !smallSize && (
-          <Stimulus>
-            <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-          </Stimulus>
-        )}
-        <FlexContainer
-          data-cy="sortListComponent"
-          flexDirection={flexDirection}
-          alignItems="flex-start"
-          style={styles.wrapperStyles(smallSize)}
-        >
-          <FullWidthContainer>
-            {!smallSize && <Title smallSize={smallSize}>{t("component.sortList.containerSourcePreview")}</Title>}
-            {items.map((draggableItem, i) => (
-              <DropContainer
-                key={i}
-                noBorder={!!draggableItem}
-                style={styles.dropContainerStyles(smallSize)}
-                index={i}
-                flag="items"
-                obj={draggableItem}
-                drop={this.drop}
-              >
-                <DragItem
-                  index={i}
-                  smallSize={smallSize}
-                  active={isEqual(active, draggableItem)}
-                  onClick={this.setActive}
-                  flag="items"
-                  onDrop={this.onDrop}
-                  obj={draggableItem}
-                />
-              </DropContainer>
-            ))}
-          </FullWidthContainer>
+  const onUpDownClick = indicator => () => {
+    let tmp;
 
-          <FlexWithMargins smallSize={smallSize}>
-            <IconLeft smallSize={smallSize} onClick={this.onRightLeftClick} />
-            <IconRight smallSize={smallSize} onClick={this.onRightLeftClick} />
-          </FlexWithMargins>
+    setSelected(
+      produce(selected, draft => {
+        if (draft.includes(active)) {
+          const activeIndex = draft.indexOf(active);
+          if (indicator === "Up" && activeIndex !== 0) {
+            tmp = draft[activeIndex - 1];
+            draft[activeIndex - 1] = draft[activeIndex];
+            draft[activeIndex] = tmp;
+          }
+          if (indicator === "Down" && activeIndex !== draft.length - 1) {
+            tmp = draft[activeIndex + 1];
+            draft[activeIndex + 1] = draft[activeIndex];
+            draft[activeIndex] = tmp;
+          }
 
-          <FullWidthContainer>
-            {!smallSize && <Title smallSize={smallSize}>{t("component.sortList.containerTargetPreview")}</Title>}
-            {selected.map((selectedItem, i) => (
-              <DropContainer
-                key={i}
-                noBorder={!!selectedItem}
-                style={styles.dropContainerStyles(smallSize)}
-                index={i}
-                flag="selected"
-                obj={selectedItem}
-                drop={this.drop}
-              >
-                <DragItem
-                  index={i}
-                  correct={altRespCorrect.includes(selectedItem)}
-                  smallSize={smallSize}
-                  previewTab={previewTab}
-                  flag="selected"
-                  active={isEqual(active, selectedItem)}
-                  onClick={this.setActive}
-                  onDrop={this.onDrop}
-                  obj={selectedItem}
-                />
-              </DropContainer>
-            ))}
-          </FullWidthContainer>
-
-          <FlexCol smallSize={smallSize}>
-            <IconUp smallSize={smallSize} onClick={this.onUpDownClick("Up")} />
-            <IconDown smallSize={smallSize} onClick={this.onUpDownClick("Down")} />
-          </FlexCol>
-        </FlexContainer>
-
-        {previewTab === SHOW && inCorrectList.length > 0 && (
-          <ShowCorrect source={item.source} list={inCorrectList} correctList={valid_response} />
-        )}
-      </Paper>
+          saveAnswer(draft.map(currentAns => (currentAns ? source.indexOf(currentAns) : null)));
+        }
+      })
     );
-  }
-}
+  };
+
+  const drop = ({ obj, index, flag }) => ({ obj, index, flag });
+
+  const { validation } = item;
+
+  const fontSize = getFontSize(get(item, "ui_style.fontsize"));
+  const orientation = get(item, "ui_style.orientation");
+  const flexDirection = orientation === "vertical" ? "column" : "row";
+
+  let valid_response = validation && validation.valid_response && validation.valid_response.value;
+  valid_response = valid_response || [];
+  let alt_responses = validation && validation.alt_responses && validation.alt_responses;
+  alt_responses = alt_responses || [];
+
+  const inCorrectList = selected
+    .filter((selectedItem, i) => selectedItem && selectedItem !== source[valid_response[i]])
+    .concat(items.filter(i => i !== null));
+
+  const validRespCorrect = selected.filter(
+    (selectedItem, i) => selectedItem && selectedItem === source[valid_response[i]]
+  );
+
+  let altRespCorrect = [...validRespCorrect];
+
+  alt_responses.forEach(ob => {
+    const alt = selected.filter((selectedItem, i) => selectedItem && selectedItem === source[ob.value[i]]);
+    if (alt.length > altRespCorrect.length) {
+      altRespCorrect = [...alt];
+    }
+  });
+
+  return (
+    <Paper data-cy="sortListPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+      <InstructorStimulus>{instructor_stimulus}</InstructorStimulus>
+      {stimulus && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
+      <FlexContainer
+        data-cy="sortListComponent"
+        flexDirection={flexDirection}
+        alignItems="flex-start"
+        style={styles.wrapperStyles(smallSize)}
+      >
+        <FullWidthContainer>
+          {!smallSize && <Title smallSize={smallSize}>{t("component.sortList.containerSourcePreview")}</Title>}
+          {items.map((draggableItem, i) => (
+            <DropContainer
+              key={i}
+              noBorder={!!draggableItem}
+              style={styles.dropContainerStyles(smallSize)}
+              index={i}
+              flag="items"
+              obj={draggableItem}
+              drop={drop}
+            >
+              <DragItem
+                index={i}
+                smallSize={smallSize}
+                active={isEqual(active, draggableItem)}
+                onClick={setActiveItem}
+                flag="items"
+                onDrop={onDrop}
+                obj={draggableItem}
+              />
+            </DropContainer>
+          ))}
+        </FullWidthContainer>
+
+        <FlexWithMargins smallSize={smallSize}>
+          <IconLeft smallSize={smallSize} onClick={onRightLeftClick} />
+          <IconRight smallSize={smallSize} onClick={onRightLeftClick} />
+        </FlexWithMargins>
+
+        <FullWidthContainer>
+          {!smallSize && <Title smallSize={smallSize}>{t("component.sortList.containerTargetPreview")}</Title>}
+          {selected.map((selectedItem, i) => (
+            <DropContainer
+              key={i}
+              noBorder={!!selectedItem}
+              style={styles.dropContainerStyles(smallSize)}
+              index={i}
+              flag="selected"
+              obj={selectedItem}
+              drop={drop}
+            >
+              <DragItem
+                index={i}
+                correct={altRespCorrect.includes(selectedItem)}
+                smallSize={smallSize}
+                previewTab={previewTab}
+                flag="selected"
+                active={isEqual(active, selectedItem)}
+                onClick={setActiveItem}
+                onDrop={onDrop}
+                obj={selectedItem}
+              />
+            </DropContainer>
+          ))}
+        </FullWidthContainer>
+
+        <FlexCol smallSize={smallSize}>
+          <IconUp smallSize={smallSize} onClick={onUpDownClick("Up")} />
+          <IconDown smallSize={smallSize} onClick={onUpDownClick("Down")} />
+        </FlexCol>
+      </FlexContainer>
+
+      {previewTab === SHOW && inCorrectList.length > 0 && (
+        <ShowCorrect source={source} list={inCorrectList} correctList={valid_response} />
+      )}
+    </Paper>
+  );
+};
+
+SortListPreview.propTypes = {
+  previewTab: PropTypes.string,
+  t: PropTypes.func.isRequired,
+  smallSize: PropTypes.bool,
+  item: PropTypes.object,
+  userAnswer: PropTypes.any.isRequired,
+  saveAnswer: PropTypes.func.isRequired
+};
+
+SortListPreview.defaultProps = {
+  previewTab: CLEAR,
+  smallSize: false,
+  item: {}
+};
 
 export default withNamespaces("assessment")(SortListPreview);

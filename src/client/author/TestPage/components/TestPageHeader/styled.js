@@ -16,6 +16,8 @@ export const Container = styled.div`
 export const Title = styled.div`
   font-size: 22px;
   margin: 0;
+  max-width: 35vw;
+  word-break: break-all;
   font-weight: bold;
   font-style: normal;
   font-stretch: normal;

@@ -57,7 +57,8 @@ class Item extends Component {
       item: { title, tags, analytics },
       t,
       authorName,
-      owner
+      owner,
+      testItemId
     } = this.props;
     return (
       <Container
@@ -102,7 +103,7 @@ class Item extends Component {
           <CardIdWrapper>
             <IconId />
             &nbsp;
-            <CardId>123456</CardId>
+            <CardId>{testItemId}</CardId>
           </CardIdWrapper>
           <ShareIcon>
             <IconShare color={darkGrey} width={14} height={14} />

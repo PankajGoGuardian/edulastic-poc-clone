@@ -15,7 +15,15 @@ class CardWrapper extends Component {
   };
 
   render() {
-    const { blockStyle, item, windowWidth, history, match } = this.props;
+    const {
+      blockStyle,
+      item,
+      item: { _id },
+      windowWidth,
+      history,
+      match
+    } = this.props;
+    const itemId = _id.substr(_id.length - 5);
     if (blockStyle === "tile") {
       return (
         <Col key={item._id} span={windowWidth > 468 ? 8 : 24} style={{ marginBottom: 20 }}>
@@ -25,6 +33,7 @@ class CardWrapper extends Component {
             history={history}
             match={match}
             authorName={getTestAuthorName(item)}
+            testItemId={itemId}
           />
         </Col>
       );
@@ -38,6 +47,7 @@ class CardWrapper extends Component {
           history={history}
           match={match}
           authorName={getTestAuthorName(item)}
+          testItemId={itemId}
         />
       </Col>
     );

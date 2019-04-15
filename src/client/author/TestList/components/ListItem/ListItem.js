@@ -55,7 +55,8 @@ class ListItem extends Component {
       item: { title, analytics, tags },
       t,
       authorName,
-      owner = false
+      owner = false,
+      testItemId
     } = this.props;
     return (
       <Container>
@@ -117,7 +118,7 @@ class ListItem extends Component {
                   <CardIdWrapper>
                     <IconId />
                     &nbsp;
-                    <CardId>{this.id}</CardId>
+                    <CardId>{testItemId}</CardId>
                   </CardIdWrapper>
                 </Col>
                 <Col span={5}>

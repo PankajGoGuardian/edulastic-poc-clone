@@ -474,5 +474,7 @@ class MathFormulaEdit {
       });
 
   getVirtualKeyBoardItem = value => this.getVirtualKeyBoard().find(`button[data-cy="virtual-keyboard-${value}"]`);
+
+  getVirtualKeyBoardResponse = () => this.getVirtualKeyBoard().find("span.response-embed");
 }
 export default MathFormulaEdit;

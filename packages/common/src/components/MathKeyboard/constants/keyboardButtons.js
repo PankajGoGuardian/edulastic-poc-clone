@@ -273,61 +273,71 @@ export const KEYBOARD_BUTTONS = [
     handler: "\\ldots",
     label: <CustomImage src={Group2206} role="presentation" />,
     types: ["all", "matrices"],
-    command: "cmd"
+    command: "cmd",
+    name: "ldots"
   },
   {
     handler: "[",
     label: <CustomImage src={Group944v2} role="presentation" />,
     types: ["all", "matrices"],
-    command: "cmd"
+    command: "cmd",
+    name: "squareBrackets"
   },
   {
     handler: "\\ddots",
     label: <CustomImage src={Group2207} role="presentation" />,
     types: ["all", "matrices"],
-    command: "cmd"
+    command: "cmd",
+    name: "ldoddotsts"
   },
   {
     handler: "\\bmatrix",
     label: <CustomImage src={Group1004} role="presentation" />,
     types: ["all", "matrices"],
-    command: "cmd"
+    command: "cmd",
+    name: "bmatrix"
   },
   {
     handler: "\\vdots",
     label: <CustomImage src={Group2208} role="presentation" />,
     types: ["all", "matrices"],
-    command: "cmd"
+    command: "cmd",
+    name: "vdots"
   },
   {
     handler: "\\begin{bmatrix}{}&{}&{}\\\\{}&{}&{}\\\\{}&{}&{}\\end{bmatrix}",
     label: <CustomImage src={Group1005} role="presentation" />,
     types: ["all", "matrices"],
-    command: "write"
+    command: "write",
+    name: "tripleMatrix"
   },
   {
     handler: "^",
     label: <CustomImage src={Group1001} role="presentation" />,
     types: ["all", "matrices"],
-    command: "cmd"
+    command: "cmd",
+    name: "caret"
   },
   {
     handler: "_",
     label: <CustomImage src={Group1002} role="presentation" />,
     types: ["all", "matrices"],
-    command: "cmd"
+    command: "cmd",
+    name: "underscore"
   },
   {
     handler: "Shift-Spacebar",
     label: <CustomImage src={Group1006} role="presentation" />,
     types: ["all", "matrices"],
-    command: "keystroke"
+    command: "keystroke",
+    name: "shiftSpacebar"
   },
   {
     handler: "Shift-Enter",
     label: <CustomImage src={Group1007} role="presentation" />,
     types: ["all", "matrices"],
-    command: "keystroke"
+    command: "keystroke",
+    name: "shiftEnter"
   },
   // Trigonometry
   {

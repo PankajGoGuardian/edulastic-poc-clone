@@ -40,11 +40,11 @@ class MathKeyboard extends React.PureComponent {
     const { onInput } = this.props;
     const { type } = this.state;
 
-    return this.keyboardButtons.map(({ label, labelcy, handler, command = "cmd", types }, i) => {
+    return this.keyboardButtons.map(({ label, labelcy, handler, command = "cmd", types, name }, i) => {
       if (types.includes(type)) {
         return (
           <Button
-            data-cy={`virtual-keyboard-${labelcy || label}`}
+            data-cy={`virtual-keyboard-${name || (labelcy || label)}`}
             key={i}
             className="num num--type-3"
             onClick={() => onInput(handler, command)}
@@ -107,6 +107,7 @@ class MathKeyboard extends React.PureComponent {
   render() {
     const { dropdownOpened, type } = this.state;
     const { onInput, showResponse, symbols } = this.props;
+
     return (
       <MathKeyboardStyles>
         <div className="keyboard">

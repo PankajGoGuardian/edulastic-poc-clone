@@ -289,10 +289,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
           .parent()
           .parent()
           .click();
-        question
-          .getVirtualKeyBoard()
-          .find("span.response-embed")
-          .click();
+        question.getVirtualKeyBoardResponse().click();
         question
           .getTemplateOutput()
           .last()

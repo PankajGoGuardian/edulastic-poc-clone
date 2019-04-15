@@ -18,7 +18,7 @@ class AdminHeader extends Component {
               District Profile
             </StyledLink>
             <StyledLink isActive={active.mainMenu === "Schools"} to={`/author/Schools`}>
-              Schools(20)
+              Schools
             </StyledLink>
             <StyledLink isActive={active.mainMenu === "Users"} to={`/author/Users`}>
               Users

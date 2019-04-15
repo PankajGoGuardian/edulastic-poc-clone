@@ -33,6 +33,8 @@ import { termReducer } from "../../Term";
 import { districtPolicyReducer } from "../../DistrictPolicy";
 import { performanceBandReducer } from "../../PerformanceBand";
 import { standardsProficiencyReducer } from "../../StandardsProficiency";
+import { schoolsReducer } from "../../Schools";
+import { countryReducer } from "../../sharedDucks/country";
 
 const authorReducers = {
   authorUi,
@@ -69,7 +71,9 @@ const authorReducers = {
   termReducer,
   districtPolicyReducer,
   performanceBandReducer,
-  standardsProficiencyReducer
+  standardsProficiencyReducer,
+  schoolsReducer,
+  countryReducer
 };
 
 export default authorReducers;

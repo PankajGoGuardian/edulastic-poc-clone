@@ -22,3 +22,5 @@ export { default as curriculumSequencesApi } from "./src/curriculumSequence";
 export { default as API } from "./src/utils/API";
 export { default as googleApi } from "./src/google";
 export { default as settingsApi } from "./src/settings";
+export { default as schoolApi } from "./src/school";
+export { default as countryApi } from "./src/country";

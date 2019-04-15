@@ -42,6 +42,7 @@ export const UPDATE_TEST_STATUS = "[test] update test status";
 export const CLEAR_TEST_DATA = "[test] clear test data";
 export const TEST_CREATE_SUCCESS = "[test] create test succes";
 export const SET_REGRADE_OLD_TESTID = "[test] set regrade old test_id";
+export const UPDATE_ENTITY_DATA = "[test] update entity data";
 // actions
 
 export const receiveTestByIdAction = id => ({
@@ -200,6 +201,12 @@ export const reducer = (state = initialState, { type, payload }) => {
         entity: { ...state.entity, ...entity },
         creating: false
       };
+    case UPDATE_ENTITY_DATA:
+      const { testItems: items, ...dataRest } = payload.entity;
+      return {
+        ...state,
+        entity: { ...state.entity, ...dataRest }
+      };
     case CREATE_TEST_ERROR:
     case UPDATE_TEST_ERROR:
       return { ...state, creating: false, error: payload.error };
@@ -295,7 +302,7 @@ function* createTestSaga({ payload }) {
     const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate"]);
     const entity = yield call(testsApi.create, dataToSend);
     yield put({
-      type: UPDATE_TEST_SUCCESS,
+      type: UPDATE_ENTITY_DATA,
       payload: {
         entity
       }

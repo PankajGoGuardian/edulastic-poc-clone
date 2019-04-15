@@ -139,8 +139,9 @@ export const alignmentStandardsFromUIToMongo = alignmentRowStandards => {
     }));
 
     return {
-      name: allStandards[0].tloDescription,
+      name: allStandards[0].identifier,
       id: allStandards[0].tloId,
+      description: allStandards[0].tloDescription,
       standards
     };
   });

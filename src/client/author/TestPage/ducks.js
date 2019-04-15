@@ -294,14 +294,10 @@ function* createTestSaga({ payload }) {
   try {
     const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate"]);
     const entity = yield call(testsApi.create, dataToSend);
-
-    // FIXIT: temp fix.. bigger issues to be fixed!!!
-    yield put(setTestItemsAction(entity.testItems));
-    // Oh btw, 9 people cannot make a baby in a month!
     yield put({
-      type: SET_TEST_DATA,
+      type: UPDATE_TEST_SUCCESS,
       payload: {
-        data: entity
+        entity
       }
     });
 

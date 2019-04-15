@@ -64,9 +64,8 @@ class PreviewModal extends React.Component {
 
   render() {
     const { isVisible, loading, item = { rows: [], data: {}, authors: [] }, currentAuthorId } = this.props;
-    console.log("item", item);
     const questions = keyBy(get(item, "data.questions", []), "id");
-    const { authors, rows } = item;
+    const { authors = [], rows } = item;
     const getAuthorsId = authors.map(item => item._id);
     const authorHasPermission = getAuthorsId.includes(currentAuthorId);
     return (

@@ -48,10 +48,10 @@ class ShareModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      sharedType: sharedKeysObj.PUBLIC,
+      sharedType: sharedKeysObj.INDIVIDUAL,
       peopleArray: [],
       currentUser: {},
-      permission: "VIEW"
+      permission: "EDIT"
     };
     this.handleSearch = this.handleSearch.bind(this);
   }
@@ -61,6 +61,10 @@ class ShareModal extends React.Component {
     if (e.target.value !== sharedKeysObj.INDIVIDUAL) {
       this.setState({
         permission: "VIEW"
+      });
+    } else {
+      this.setState({
+        permission: "EDIT"
       });
     }
   };

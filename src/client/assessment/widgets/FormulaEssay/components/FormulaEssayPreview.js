@@ -23,7 +23,7 @@ const FormulaEssayPreview = ({ item, type: previewType, lines, setLines, resetLi
 
       <MathEssayInput
         item={item}
-        textFormattingOptions={item.ui_style.text_formatting_options}
+        textFormattingOptions={item.ui_style && item.ui_style.text_formatting_options}
         uiStyle={item.ui_style}
         value={item.template}
         lines={lines}

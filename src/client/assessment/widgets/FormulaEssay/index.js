@@ -27,9 +27,11 @@ import FormulaEssayOptions from "./components/FormulaEssayOptions";
 const EmptyWrapper = styled.div``;
 
 const FormulaEssay = ({ view, previewTab, item, testItem, setQuestionData, smallSize, userAnswer, t }) => {
-  const [lines, setLines] = useState([{ text: "", type: item.ui_style.default_mode, index: uuidv4() }]);
+  const [lines, setLines] = useState([
+    { text: "", type: item.ui_style && item.ui_style.default_mode, index: uuidv4() }
+  ]);
   const resetLines = () => {
-    setLines([{ text: "", type: item.ui_style.default_mode, index: uuidv4() }]);
+    setLines([{ text: "", type: item.ui_style && item.ui_style.default_mode, index: uuidv4() }]);
   };
 
   const Wrapper = testItem ? EmptyWrapper : Paper;

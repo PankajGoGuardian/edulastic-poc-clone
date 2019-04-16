@@ -12,7 +12,7 @@ class EditItemPage {
         .click();
       cy.wait("@saveItem");
     };
-    this.ITEM_ID = "5ca369b88682ac3dab2fe2aa";
+    this.ITEM_ID = "5cb448f65d32be222489062b";
   }
 
   clickAdvancedOptionsButton() {

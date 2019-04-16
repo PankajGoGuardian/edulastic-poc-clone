@@ -416,16 +416,17 @@ class MathFormulaEdit {
       .then(() => this.getAnswerRuleDropdownByValue(rule).click());
   };
 
+  unCheckAllCheckBox = () => cy.get("input[type='checkbox']").uncheck({ force: true });
+
   setSeparator = checBoxName => () => {
-    cy.get("input[type='checkbox']").uncheck({ force: true });
+    this.unCheckAllCheckBox();
     if (checBoxName)
       this[checBoxName]()
         .check({ force: true })
         .should("be.checked");
   };
 
-  allowDecimalMarks = (separator, inputLength, expected, preview, isCorrect = false) => {
-    this.getAnswerAllowThousandsSeparator().check({ force: true });
+  setThousandsSeparatorDropdown = separator =>
     this.getThousandsSeparatorDropdown()
       .click()
       .then(() => {
@@ -433,20 +434,26 @@ class MathFormulaEdit {
           .should("be.visible")
           .click();
       });
+
+  allowDecimalMarks = (separator, thousand, inputLength, expected, preview, isCorrect = false) => {
+    this.getAnswerAllowThousandsSeparator().check({ force: true });
+    this.setAnswerSetDecimalSeparatorDropdown(separator);
+    this.setThousandsSeparatorDropdown(thousand);
     this.checkCorrectAnswer(expected, preview, inputLength, isCorrect);
     this.getAnswerAllowThousandsSeparator().uncheck({ force: true });
   };
 
+  setIsFactorisedMethodField = field =>
+    this.getAnswerFieldDropdown()
+      .click()
+      .then(() =>
+        this.getAnswerFieldDropdownListValue(field)
+          .click()
+          .should("be.visible")
+      );
+
   mapIsFactorisedMethodFields = fields =>
-    Object.values(fields).forEach(field =>
-      this.getAnswerFieldDropdown()
-        .click()
-        .then(() =>
-          this.getAnswerFieldDropdownListValue(field)
-            .click()
-            .should("be.visible")
-        )
-    );
+    Object.values(fields).forEach(field => this.setIsFactorisedMethodField(field));
 
   setAnswerSetDecimalSeparatorDropdown = separator =>
     this.getAnswerSetDecimalSeparatorDropdown()

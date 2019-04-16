@@ -26,13 +26,17 @@ class MathFillInTheBlanksPage extends MathFractionPage {
     });
   };
 
-  checkCorrectAnswerWithResponse = (expectedValues, preview, inputLength, isCorrect) => {
+  checkCorrectAnswerWithResponse = (expectedValues, preview, inputLength, isCorrect, clearedResponse = false) => {
     preview.header.preview();
     preview.getClear().click();
     this.getAnswerMathTextArea().then(inputElements => {
       if (Array.isArray(expectedValues)) {
         expectedValues.forEach((expectedValue, index) => {
-          cy.wrap(inputElements[index]).typeWithDelay(expectedValue);
+          if (!clearedResponse) {
+            cy.wrap(inputElements[index]).typeWithDelay(expectedValue);
+          } else {
+            this.getAnswerMathTextArea().typeWithDelay(expectedValue);
+          }
         });
       } else {
         cy.wrap(inputElements).typeWithDelay(expectedValues);
@@ -68,15 +72,32 @@ class MathFillInTheBlanksPage extends MathFractionPage {
 
   allowDecimalMarksWithResponse = (separator, inputLength, expected, preview, isCorrect = false) => {
     this.getAnswerAllowThousandsSeparator().check({ force: true });
-    this.getThousandsSeparatorDropdown()
-      .click()
-      .then(() => {
-        this.getThousandsSeparatorDropdownList(separator)
-          .should("be.visible")
-          .click();
-      });
+    this.setThousandsSeparatorDropdown(separator);
     this.checkCorrectAnswerWithResponse(expected, preview, inputLength, isCorrect);
     this.getAnswerAllowThousandsSeparator().uncheck({ force: true });
+  };
+
+  getMathKeyboardResponse = () => cy.get('[data-cy="math-keyboard-response"]');
+
+  clearTemplateInput = () =>
+    this.getMathquillBlockId().then(inputElements => {
+      const { length } = inputElements[0].children;
+      this.getTemplateInput()
+        .movesCursorToEnd(length)
+        .type("{backspace}".repeat(length || 1), { force: true });
+    });
+
+  setResponseInput = () =>
+    this.getTemplateInput()
+      .click({ force: true })
+      .then(() => this.getMathKeyboardResponse().click({ force: true }));
+
+  setTemplateValue = (keyName, valueAfterEqualSign) => {
+    this.clearTemplateInput();
+    this.setResponseInput();
+    this.getTemplateInput().type(valueAfterEqualSign, { force: true });
+    this.setResponseInput();
+    this.getVirtualKeyBoardItem(keyName).click();
   };
 }
 

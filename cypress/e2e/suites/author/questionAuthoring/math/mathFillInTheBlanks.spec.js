@@ -20,16 +20,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
     equivSymbolic: {
       value: {
         input: "100",
-        expected: ["40", "60"]
+        expected: "40 + 60"
       },
       ignoreText: {
         expected: "25m",
         input: "25",
         checkboxValues: ["getAnswerIgnoreTextCheckox", null],
-        isCirrectUnsver: [true, false]
+        isCirrectAnsver: [true, false]
       },
       compareSides: {
-        expected: "4 + 3 = 7",
+        expected: ["4", "3"],
         input: "3+4=7"
       },
       eulersNumber: {
@@ -37,13 +37,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         expected: "e+e=5,436"
       },
       setDecimalSeparator: {
-        separator: "Comma",
-        expected: "1,01",
+        thousands: ["Comma", "Dot"],
+        separators: ["Dot", "Comma"],
+        expected: ["1.01", "1,01"],
         input: "1.01"
       },
       setThousandsSeparator: {
-        separators: ["Comma", "Space"],
-        expected: ["1,000,000", "1 000 000"],
+        thousands: ["Comma", "Dot"],
+        separators: ["Dot", "Comma"],
+        expected: ["1,000,000", "1.000.000"],
         input: "1000000"
       },
       significantDecimal: {
@@ -58,7 +60,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
       },
       combinationSetDecimalSeparator: {
         expected: "1,000001",
-        input: "1.000001"
+        input: "1.000001",
+        decimalSeparators: "Comma",
+        thousandsSeparators: "Dot"
+      },
+      setDecimalSeparatorComma: {
+        thousand: "Comma",
+        separator: "Dot",
+        expected: "1,01",
+        input: "1.01"
       }
     },
     equivLiteral: {
@@ -67,11 +77,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         expected: "1+2"
       },
       allowInterval: {
-        expected: "(0,4]",
+        expected: ["0,4", "{leftarrow}".repeat(2), "(", "{backspace}", "]"],
         input: "(0,4]",
         checkboxValues: ["getAnswerAllowInterval", null],
-        // TODO
-        isCorrectAnswer: [false, false]
+        isCorrectAnswer: [true, false]
       },
       ignoreOrder: {
         expected: "1+x",
@@ -83,7 +92,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         expected: "1000.000",
         input: "1000",
         checkboxValues: ["getAnswerIgnoreTrailingZeros", null],
-        isCorrectAnswer: [false, false]
+        isCorrectAnswer: [true, false]
       },
       ignoreCoefficientOfOne: {
         expected: "1x+2",
@@ -92,15 +101,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         isCorrectAnswer: [true, false]
       },
       inverseResult: {
-        expected: "(x+2)2",
+        expected: "x+2)2",
         input: "(x+2)2",
         checkboxValues: ["getAnswerInverseResult", null],
-        // TODO {result: error}
-        // isCorrectAnswer: [false, true]
-        isCorrectAnswer: [false, false]
+        isCorrectAnswer: [false, true]
       }
     },
     equivValue: {
+      value: {
+        expected: "4+6",
+        input: "4+6"
+      },
       compareSides: {
         expected: "4 + 5 = 9",
         input: "5+4=9"
@@ -121,22 +132,29 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
       tolerance: {
         input: "10",
         expected: "8.5",
-        tolerance: "±1.5"
+        tolerance: "1.5"
       }
     },
     isSimplified: {
       simplifiedVersion: {
-        expected: "4x+1"
+        expected: "4x+1",
+        checkboxValues: ["getAnswerInverseResult", null],
+        isCorrectAnswer: [false, true]
+      },
+      setThousandsSeparator: {
+        thousands: ["Comma", "Dot"],
+        separators: ["Dot", "Comma"],
+        expected: ["1,000", "1.000.000"]
       }
     },
     isFactorised: {
       inverseResult: {
-        expected: "(x−1)(x−2)"
+        expected: ["x−1)x−2", "{leftarrow}".repeat(3), "("]
       }
     },
     isExpanded: {
       expandedForm: {
-        expected: "x^2+3x"
+        expected: ["x^", "{uparrow}", "2+3x"]
       }
     },
     isUnit: {
@@ -148,6 +166,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
       allowedUnits: {
         expected: "12km",
         units: "km"
+      },
+      setThousandsSeparator: {
+        thousands: ["Comma", "Dot"],
+        separators: ["Dot", "Comma"],
+        expected: ["1,000,000mi", "1.000.000mi"],
+        input: "1000000mi",
+        units: "mi"
       }
     },
     isTrue: {
@@ -179,25 +204,25 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         input: "3"
       },
       simpleFraction: {
-        expected: "1/2"
+        expected: ["1/", "{downarrow}", "2"]
       },
       mixedFraction: {
-        expected: "1+1/2"
+        expected: ["1+1/", "{downarrow}", "2"]
       },
       exponent: {
-        expected: "2^2"
+        expected: ["2^", "{uparrow}", "2"]
       },
       standardFormLinear: {
         expected: "Ax+By=C"
       },
       standardFormQuadratic: {
-        expected: "5x^2+3x=4"
+        expected: ["5x^", "{uparrow}", "2+3x=4"]
       },
       slopeIntercept: {
         expected: "y=-x+1"
       },
       pointSlope: {
-        expected: "(y-1)=2(x+3)"
+        expected: ["y-1)=2x+3", "{leftarrow}".repeat(3), "("]
       }
     }
   };
@@ -215,7 +240,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
 
   context("User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId("5ca369b88682ac3dab2fe2aa");
+      editItem.getItemWithId();
       editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
@@ -303,7 +328,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
 
     context("TC_489 => equivSymbolic method", () => {
       before("Change to equivSymbolic method", () => {
-        question.setMethod(methods.EQUIV_SYMBOLIC);
         Cypress.on("uncaught:exception", (err, runnable) => {
           if (runnable.title === "Testing Value") {
             return false;
@@ -311,76 +335,66 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
           return true;
         });
       });
+      beforeEach("Back to create question", () => {
+        preview.header.edit();
+        question.setMethod(methods.EQUIV_SYMBOLIC);
+      });
       it("Testing Value", () => {
         const { input, expected } = queData.equivSymbolic.value;
-        question.getMathquillBlockId().then(inputElements => {
-          const { length } = inputElements[0].children;
-          question
-            .getTemplateInput()
-            .movesCursorToEnd(length)
-            .type(input, { force: true });
-        });
+        question.clearTemplateInput();
+        question.setResponseInput();
         question.setValue(input);
-        question.checkCorrectAnswerWithResponse(expected, preview, 0, false);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
       });
       it("Testing check/uncheck Ignore text check box", () => {
-        const { input, expected, checkboxValues, isCirrectUnsver } = queData.equivSymbolic.ignoreText;
-        question.getMathquillBlockId().then(inputElements => {
-          const { length } = inputElements[0].children;
-          question
-            .getTemplateInput()
-            .movesCursorToEnd(length)
-            .type("{backspace}".repeat(length - 1 || 1), { force: true });
-        });
+        const { input, expected, checkboxValues, isCirrectAnsver } = queData.equivSymbolic.ignoreText;
         checkboxValues.forEach((checkboxValue, index) => {
           question.setValue(input);
           question.setSeparator(checkboxValue)();
-          question.checkCorrectAnswerWithResponse(expected, preview, input.length, isCirrectUnsver[index]);
+          question.checkCorrectAnswerWithResponse(expected, preview, input.length, isCirrectAnsver[index]);
         });
       });
       it("Testing with compare sides", () => {
         const { expected, input } = queData.equivSymbolic.compareSides;
-
+        question.clearTemplateInput();
+        question.setTemplateValue("+", "=10");
         question.setValue(input);
         question.setSeparator("getAnswerCompareSides")();
 
-        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
+        question.checkCorrectAnswerWithResponse(expected, preview, input.length, true);
       });
       it("Testing Treat 'e' as Euler's numbe", () => {
         const { expected, input } = queData.equivSymbolic.eulersNumber;
-
+        question.clearTemplateInput();
+        question.setResponseInput();
         question.setValue(input);
         question.setSeparator("getAnswerCompareSides")();
         question
           .getAnswerCompareSides()
           .check({ force: true })
           .should("be.checked");
-        question.checkCorrectAnswerWithResponse(expected, preview, input.length, false);
+        question.checkCorrectAnswerWithResponse(expected, preview, input.length, true);
       });
 
       it("Testing with decimal separator - Comma", () => {
-        const { input, expected, separator } = queData.equivSymbolic.setDecimalSeparator;
-        question.getAnswerValueMathInput().type(input, { force: true });
-        question.setSeparator("getAnswerAllowThousandsSeparator")();
+        const { input, expected, separator } = queData.equivSymbolic.setDecimalSeparatorComma;
+        question.setValue(input);
+        question.getAnswerAllowThousandsSeparator().check({ force: true });
         question.setAnswerSetDecimalSeparatorDropdown(separator);
-        question.checkCorrectAnswerWithResponse(expected, preview, input.length, false);
+
+        question.checkCorrectAnswer(expected, preview, input.length, true);
+
+        question.getAnswerAllowThousandsSeparator().uncheck({ force: true });
       });
 
       it("Testing with thousands separators - Space and Comma", () => {
-        const { input, expected, separators } = queData.equivSymbolic.setThousandsSeparator;
-        question.getAnswerValueMathInput().type(input, { force: true });
-        separators.forEach((separator, index) => {
-          question.setSeparator("getAnswerAllowThousandsSeparator")();
-          question
-            .getThousandsSeparatorDropdown()
-            .click()
-            .then(() => {
-              question
-                .getThousandsSeparatorDropdownList(separator)
-                .should("be.visible")
-                .click();
-            });
-          question.checkCorrectAnswerWithResponse(expected[index], preview, index === 0 ? 0 : input.length, true);
+        const { input, expected, separators, thousands } = queData.equivSymbolic.setThousandsSeparator;
+        question.clearTemplateInput();
+        question.setResponseInput();
+        question.unCheckAllCheckBox();
+        thousands.forEach((thousand, index) => {
+          question.setValue(input);
+          question.allowDecimalMarks(separators[index], thousand, input.length, expected[index], preview, true);
         });
       });
 
@@ -418,15 +432,24 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
       });
 
       it("Combination of methods setDecimalSeparator", () => {
-        const { expected, input } = queData.equivSymbolic.combinationSetDecimalSeparator;
+        const {
+          expected,
+          input,
+          decimalSeparators,
+          thousandsSeparators
+        } = queData.equivSymbolic.combinationSetDecimalSeparator;
         question.setValue(input);
         question.setSeparator("getAnswerAllowThousandsSeparator")();
-        question.checkCorrectAnswerWithResponse(expected, preview, input.length, false);
+        question.setDecimalSeperator(decimalSeparators);
+        question.getAnswerSetDecimalSeparatorDropdown().contains("div", decimalSeparators);
+        question.setThousandsSeparatorDropdown(thousandsSeparators);
+        question.checkCorrectAnswerWithResponse(expected, preview, input.length, true);
       });
     });
 
     context("TC_490 => equivLiteral method", () => {
-      before("Change to equivLiteral method", () => {
+      beforeEach("Change to equivLiteral method", () => {
+        preview.header.edit();
         question.setMethod(methods.EQUIV_LITERAL);
       });
       it("Testing Value", () => {
@@ -437,17 +460,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
       it("Testing check/uncheck Allow interval check boxl", () => {
         const { input, expected, checkboxValues, isCorrectAnswer } = queData.equivLiteral.allowInterval;
 
-        question.checkUncheckChecbox(preview, input, expected, checkboxValues, isCorrectAnswer);
+        checkboxValues.forEach((checkboxValue, index) => {
+          question.setValue(input);
+          question.setSeparator(checkboxValue)();
+          question.checkCorrectAnswerWithResponse(expected, preview, input.length, isCorrectAnswer[index], true);
+        });
       });
 
       it("Testing check/uncheck Ignore order check box", () => {
         const { input, expected, checkboxValues, isCorrectAnswer } = queData.equivLiteral.ignoreOrder;
-
-        question.checkUncheckChecbox(preview, input, expected, checkboxValues, isCorrectAnswer);
-      });
-
-      it("Testing check/uncheck Ignore trailing zeros check box", () => {
-        const { input, expected, checkboxValues, isCorrectAnswer } = queData.equivLiteral.ignoreTrailing;
 
         question.checkUncheckChecbox(preview, input, expected, checkboxValues, isCorrectAnswer);
       });
@@ -471,22 +492,24 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
       });
 
       it("Testing Allow decimal marks", () => {
-        const { input, expected, separator } = queData.equivSymbolic.setDecimalSeparator;
-        question.getAnswerValueMathInput().type(input, { force: true });
-        question.setSeparator("getAnswerAllowThousandsSeparator")();
-        question.setAnswerSetDecimalSeparatorDropdown(separator);
-        question.checkCorrectAnswerWithResponse(expected, preview, input.length, false);
+        const { expected, separators, input, thousands } = queData.equivSymbolic.setDecimalSeparator;
+
+        separators.forEach((separator, index) => {
+          question.setValue(input);
+          question.allowDecimalMarks(separator, thousands[index], input.length, expected[index], preview, true);
+        });
       });
     });
     context("TC_491 => equivValue method", () => {
-      before("Change to equivLiteral method", () => {
+      beforeEach("Change to equivLiteral method", () => {
+        preview.header.edit();
         question.setMethod(methods.EQUIV_VALUE);
       });
       it("Testing Value", () => {
-        const { expected, input } = queData.equivValue.compareSides;
+        const { expected, input } = queData.equivValue.value;
 
         question.setValue(input);
-        question.checkCorrectAnswerWithResponse(expected, preview, 0, false);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
       });
 
       it("Testing Inverse result", () => {
@@ -522,6 +545,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
       });
 
+      it("Testing Allow decimal marks", () => {
+        const { expected, separators, input, thousands } = queData.equivSymbolic.setDecimalSeparator;
+
+        separators.forEach((separator, index) => {
+          question.setValue(input);
+          question.allowDecimalMarks(separator, thousands[index], input.length, expected[index], preview, true);
+        });
+      });
+
       it("Testing with tolerance that will be deemed as correct", () => {
         const { expected, input, tolerance } = queData.equivValue.tolerance;
 
@@ -532,43 +564,37 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
           .clear({ force: true })
           .type(tolerance, { force: true });
 
-        question.checkCorrectAnswerWithResponse(expected, preview, 0, false);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
         question.getAnswerTolerance().clear({ force: true });
-      });
-
-      it("Testing Allow decimal marks", () => {
-        const { input, expected, separator } = queData.equivSymbolic.setDecimalSeparator;
-
-        question.setValue(input);
-        question.setSeparator("getAnswerAllowThousandsSeparator")();
-        question.setAnswerSetDecimalSeparatorDropdown(separator);
-        question.checkCorrectAnswerWithResponse(expected, preview, input.length, false);
       });
     });
 
     context("TC_492 => isSimplified method", () => {
-      before("Change to isSimplified method", () => {
+      beforeEach("Change to isSimplified method", () => {
+        preview.header.edit();
         question.setMethod(methods.IS_SIMPLIFIED);
       });
 
       it("Testing inverse result", () => {
-        const { expected } = queData.isSimplified.simplifiedVersion;
+        const { expected, isCorrectAnswer, checkboxValues } = queData.isSimplified.simplifiedVersion;
 
-        question.setSeparator("getAnswerInverseResult")();
-
-        question.checkCorrectAnswerWithResponse(expected, preview, 0, false);
+        checkboxValues.forEach((checkboxValue, index) => {
+          question.setSeparator(checkboxValue)();
+          question.checkCorrectAnswerWithResponse(expected, preview, 0, isCorrectAnswer[index]);
+        });
       });
       it("Testing with allow decimal marks", () => {
-        const { expected, separators } = queData.equivSymbolic.setThousandsSeparator;
+        const { expected, separators, thousands } = queData.equivSymbolic.setThousandsSeparator;
 
-        separators.forEach((separator, index) =>
-          question.allowDecimalMarksWithResponse(separator, 0, expected[index], preview, false)
-        );
+        thousands.forEach((thousand, index) => {
+          question.allowDecimalMarks(separators[index], thousand, 0, expected[index], preview, true);
+        });
       });
     });
 
     context("TC_493 => isFactorised method", () => {
-      before("Change to isFactorised method", () => {
+      beforeEach("Change to equivLiteral method", () => {
+        preview.header.edit();
         question.setMethod(methods.IS_FACTORISED);
       });
       it("Testing with field", () => {
@@ -577,67 +603,72 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
 
       it("Testing inverse result", () => {
         const { expected } = queData.isFactorised.inverseResult;
+        question.setIsFactorisedMethodField(fields.INTEGER);
+        question.setSeparator("getAnswerInverseResult")();
 
-        question.setMethod(methods.IS_FACTORISED, question.setSeparator("getAnswerInverseResult"));
-
-        question.checkCorrectAnswerWithResponse(expected, preview, 0, false);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true, true);
       });
       it("Testing with allow decimal marks", () => {
-        const { expected, separators } = queData.equivSymbolic.setThousandsSeparator;
+        const { expected, separators, thousands } = queData.equivSymbolic.setThousandsSeparator;
 
-        separators.forEach((separator, index) =>
-          question.allowDecimalMarksWithResponse(separator, 0, expected[index], preview)
-        );
+        thousands.forEach((thousand, index) => {
+          question.allowDecimalMarks(separators[index], thousand, 0, expected[index], preview, true);
+        });
       });
     });
 
     context("TC_494 => isExpanded method", () => {
-      before("Change to isFactorised method", () => {
+      beforeEach("Change to isExpanded method", () => {
+        preview.header.edit();
         question.setMethod(methods.IS_EXPANDED);
       });
       it("Testing that a mathematical expression is in factorised form", () => {
         const { expected } = queData.isExpanded.expandedForm;
 
-        question.checkCorrectAnswerWithResponse(expected, preview, 0, false);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true, true);
       });
       it("Testing with allow decimal marks", () => {
-        const { expected, separators } = queData.equivSymbolic.setThousandsSeparator;
+        const { expected, separators, thousands } = queData.equivSymbolic.setThousandsSeparator;
 
-        separators.forEach((separator, index) =>
-          question.allowDecimalMarksWithResponse(separator, 0, expected[index], preview, true)
-        );
+        thousands.forEach((thousand, index) => {
+          question.allowDecimalMarks(separators[index], thousand, 0, expected[index], preview, true);
+        });
       });
     });
 
     context("TC_495 => isUnit method", () => {
-      before("Change to isFactorised method", () => {
+      beforeEach("Change to isUnit method", () => {
+        preview.header.edit();
         question.setMethod(methods.IS_UNIT);
       });
       it("Testing with expression contains the expected units", () => {
-        const { input, expected, units } = queData.isUnit.expectedUnits;
+        const { input, units } = queData.isUnit.expectedUnits;
 
         question.setValue(input);
         question.setAllowedUnitsInput(units);
-        question.checkCorrectAnswerWithResponse(expected, preview, input.length, false);
+        question.checkCorrectAnswerWithResponse(units, preview, input.length, true);
       });
 
       it("Testing with allowed units", () => {
-        const { expected, units } = queData.isUnit.allowedUnits;
+        const { units } = queData.isUnit.allowedUnits;
 
         question.setAllowedUnitsInput(units);
-        question.checkCorrectAnswerWithResponse(expected, preview, 0, false);
+        question.checkCorrectAnswerWithResponse(units, preview, 0, true);
       });
       it("Testing with allow decimal marks", () => {
-        const { expected, separators, input } = queData.equivSymbolic.setThousandsSeparator;
-        question.getAnswerValueMathInput().type(input, { force: true });
-        separators.forEach((separator, index) =>
-          question.allowDecimalMarksWithResponse(separator, input.length, expected[index], preview, false)
-        );
+        const { expected, separators, thousands, input, units } = queData.isUnit.setThousandsSeparator;
+
+        thousands.forEach((thousand, index) => {
+          question.setValue(input);
+          question.setAllowedUnitsInput(units);
+          question.allowDecimalMarks(separators[index], thousand, 0, expected[index], preview, true);
+        });
       });
     });
 
     context("TC_496 =>  isTrue method", () => {
-      before("Change to isFactorised method", () => {
+      beforeEach("Change to isTrue method", () => {
+        preview.header.edit();
         question.setMethod(methods.IS_TRUE);
       });
       it("Testing that an expression has a comparison, or equality", () => {
@@ -649,20 +680,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         const { input, expected } = queData.isTrue.significantDecimal;
 
         question.setArgumentInput("getAnswerSignificantDecimalPlaces", input);
-        question.checkCorrectAnswerWithResponse(expected, preview, 0, false);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
       });
 
       it("Testing with allow decimal marks", () => {
-        const { expected, separators } = queData.equivSymbolic.setThousandsSeparator;
-
-        separators.forEach((separator, index) =>
-          question.allowDecimalMarksWithResponse(separator, 0, expected[index], preview, true)
-        );
+        const { expected, separators, thousands } = queData.equivSymbolic.setThousandsSeparator;
+        thousands.forEach((thousand, index) => {
+          question.allowDecimalMarks(separators[index], thousand, 0, expected[index], preview, true);
+        });
       });
     });
 
     context("TC_497 =>  stringMatch method", () => {
-      before("Change to isFactorised method", () => {
+      beforeEach("Change to stringMatch method", () => {
+        preview.header.edit();
         question.setMethod(methods.STRING_MATCH);
       });
       it("Testing with literal string comparison", () => {
@@ -690,7 +721,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
     });
 
     context("TC_497 =>  equivSyntax method", () => {
-      before("Change to equivSyntax method", () => {
+      beforeEach("Change to equivSyntax method", () => {
+        preview.header.edit();
         question.setMethod(methods.EQUIV_SYNTAX);
       });
 
@@ -706,21 +738,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         const { expected } = queData.equivSyntax.simpleFraction;
 
         question.setRule(syntaxes.SIMPLE_FRACTION);
-        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true, true);
       });
 
       it("Testing Rule : mixed Fraction", () => {
         const { expected } = queData.equivSyntax.mixedFraction;
 
         question.setRule(syntaxes.MIXED_FRACTION);
-        question.checkCorrectAnswerWithResponse(expected, preview, 0, false);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true, true);
       });
 
       it("Testing Rule : Exponent", () => {
         const { expected } = queData.equivSyntax.exponent;
 
         question.setRule(syntaxes.EXPONENT);
-        question.checkCorrectAnswerWithResponse(expected, preview, 0, false);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true, true);
       });
 
       it("Testing Rule : Standard form, Argument: linear", () => {
@@ -736,7 +768,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
 
         question.setRule(syntaxes.STANDARD_FORM);
         question.setAnswerArgumentDropdownValue(ruleArguments[1]);
-        question.checkCorrectAnswerWithResponse(expected, preview, 0, false);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true, true);
       });
 
       it("Testing Rule : Slope intercept form", () => {
@@ -750,7 +782,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         const { expected } = queData.equivSyntax.pointSlope;
 
         question.setRule(syntaxes.POINT_SLOPE_FORM);
-        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true, true);
       });
     });
 
@@ -767,7 +799,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         previewItems = editItem.header.preview();
         question.getBody().contains("span", "Check Answer");
 
-        question.getPreviewMathQuill().typeWithDelay(queData.answer.value);
+        question.getAnswerMathTextArea().typeWithDelay(queData.answer.value);
       });
 
       it("Click on Check answer", () => {
@@ -778,7 +810,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
             question
               .getBody()
               .children()
-              .should("contain", "score: 0/1")
+              .should("contain", "score: 1/1")
           );
       });
 
@@ -793,7 +825,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
 
       it("Click on Clear", () => {
         previewItems.getClear().click();
-        question.getPreviewMathQuill().then(inputElements =>
+        question.getAnswerMathTextArea().then(inputElements =>
           cy.wrap(inputElements).then(inputElement => {
             expect(inputElement[0].offsetParent.parentElement.innerText).to.be.equal("");
             preview.header.edit();

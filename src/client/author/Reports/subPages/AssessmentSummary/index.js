@@ -25,14 +25,12 @@ const AssessmentSummary = props => {
 
   const getTitleByTestId = testId => {
     let arr = get(props, "assignments.data.result.tests", []);
-    let title;
-    for (let item of arr) {
-      if (testId === item._id) {
-        title = item.title;
-        break;
-      }
+    let item = arr.find(o => o._id === testId);
+
+    if (item) {
+      return item.title;
     }
-    return title;
+    return "";
   };
 
   useEffect(() => {

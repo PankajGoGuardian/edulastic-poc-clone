@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { Row, Col } from "antd";
-import { get, keyBy, isEmpty, cloneDeep } from "lodash";
+import { get, keyBy, isEmpty } from "lodash";
 import next from "immer";
 
 import { parseData, idToName } from "./util/transformers";
@@ -81,14 +81,12 @@ const PeerPerformance = ({
 
   const getTitleByTestId = testId => {
     let arr = get(assignments, "data.result.tests", []);
-    let title;
-    for (let item of arr) {
-      if (testId === item._id) {
-        title = item.title;
-        break;
-      }
+    let item = arr.find(o => o._id === testId);
+
+    if (item) {
+      return item.title;
     }
-    return title;
+    return "";
   };
 
   useEffect(() => {

@@ -219,3 +219,12 @@ export const getTestQuestionActivitiesSelector = createSelector(
     return [];
   }
 );
+
+export const getDynamicVariablesSetIdForViewResponse = (state, studentId) => {
+  const testActivities = get(state, "author_classboard_testActivity.data.testActivities", []);
+  const studentTestActivity = testActivities.find(x => x.userId === studentId);
+  if (!studentTestActivity) {
+    return false;
+  }
+  return studentTestActivity.algoVariableSetIds;
+};

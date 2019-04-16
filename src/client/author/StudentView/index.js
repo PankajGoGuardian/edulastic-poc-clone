@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
-import { findIndex, isUndefined } from "lodash";
+import { findIndex, isUndefined, get, keyBy } from "lodash";
+import produce, { setAutoFreeze } from "immer";
 
 import {
   StyledFlexContainer,
@@ -22,9 +23,47 @@ import { receiveStudentResponseAction } from "../src/actions/classBoard";
 import {
   getAssignmentClassIdSelector,
   getClassQuestionSelector,
-  getStudentResponseSelector
+  getStudentResponseSelector,
+  getDynamicVariablesSetIdForViewResponse
 } from "../ClassBoard/ducks";
 
+setAutoFreeze(false);
+/**
+ *
+ * @param {Object[]} testItems
+ * @param {Object} variablesSetIds
+ */
+const transformTestItemsForAlgoVariables = (classResponse, variablesSetIds) =>
+  produce(classResponse, draft => {
+    if (!draft.testItems) {
+      return;
+    }
+    const qidSetIds = keyBy(variablesSetIds, "qid");
+    for (let [idxItem, item] of draft.testItems.entries()) {
+      if (!item.algoVariablesEnabled) {
+        continue;
+      }
+      const questions = get(item, "data.questions", []);
+      for (let [idxQuestion, question] of questions.entries()) {
+        const qid = question.id;
+        const setIds = qidSetIds[qid];
+        if (!setIds) {
+          continue;
+        }
+        const setKeyId = setIds.setId;
+        const examples = get(question, "variable.examples", []);
+        const variables = get(question, "variable.variables", {});
+        const example = examples.find(x => x.key === setKeyId);
+        if (!example) {
+          continue;
+        }
+        for (let variable of Object.keys(variables)) {
+          draft.testItems[idxItem].data.questions[idxQuestion].variable.variables[variable].exampleValue =
+            example[variable];
+        }
+      }
+    }
+  });
 class StudentViewContainer extends Component {
   static getDerivedStateFromProps(nextProps, preState) {
     const { selectedStudent, loadStudentResponses, studentItems, assignmentIdClassId: { classId } = {} } = nextProps;
@@ -47,9 +86,9 @@ class StudentViewContainer extends Component {
   }
 
   render() {
-    const { classResponse, studentItems, studentResponse, selectedStudent } = this.props;
+    const { classResponse, studentItems, studentResponse, selectedStudent, variableSetIds } = this.props;
     const { loading } = this.state;
-
+    const classResponseProcessed = transformTestItemsForAlgoVariables(classResponse, variableSetIds);
     const userId = studentResponse.testActivity ? studentResponse.testActivity.userId : "";
     const currentStudent = studentItems.find(({ studentId }) => {
       if (selectedStudent) {
@@ -72,7 +111,7 @@ class StudentViewContainer extends Component {
           <ClassQuestions
             currentStudent={currentStudent || {}}
             questionActivities={studentResponse.questionActivities}
-            classResponse={classResponse}
+            classResponse={classResponseProcessed}
           />
         )}
       </React.Fragment>
@@ -82,10 +121,11 @@ class StudentViewContainer extends Component {
 
 const enhance = compose(
   connect(
-    state => ({
+    (state, ownProps) => ({
       classQuestion: getClassQuestionSelector(state),
       studentResponse: getStudentResponseSelector(state),
-      assignmentIdClassId: getAssignmentClassIdSelector(state)
+      assignmentIdClassId: getAssignmentClassIdSelector(state),
+      variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.selectedStudent)
     }),
     {
       loadStudentResponses: receiveStudentResponseAction

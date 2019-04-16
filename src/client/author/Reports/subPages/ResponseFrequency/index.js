@@ -8,11 +8,9 @@ import next from "immer";
 import { ResponseFrequencyTable } from "./components/table/responseFrequencyTable";
 import { StackedBarChartContainer } from "./components/charts/stackedBarChartContainer";
 import { StyledContainer, StyledCard, StyledSimpleBarChartContainer, QuestionTypeHeading } from "./components/styled";
-import Breadcrumb from "../../../src/components/Breadcrumb";
-import { CustomizedHeaderWrapper } from "../../common/components/header";
-import { StyledSlider, StyledH3 } from "../../common/styled";
+import { StyledSlider, StyledH3, FullWidthControlDropDown } from "../../common/styled";
 import { NavigatorTabs } from "../../common/components/navigatorTabs";
-import { getNavigationTabLinks } from "./../../common/util";
+import { getNavigationTabLinks, getDropDownTestIds } from "./../../common/util";
 import chartNavigatorLinks from "../../common/static/json/singleAssessmentSummaryChartNavigator.json";
 import jsonData from "./static/json/data.json";
 import { get, isEmpty } from "lodash";
@@ -23,26 +21,50 @@ import tempData from "./static/json/temp.json";
 const filterData = (data, filter) => (Object.keys(filter).length > 0 ? data.filter(item => filter[item.qType]) : data);
 
 const ResponseFrequency = props => {
-  const breadcrumbData = [
-    {
-      title: "REPORTS",
-      to: "/author/reports"
-    },
-    {
-      title: "RESPONSE FREQUENCY"
-    }
-  ];
+  const [selectedTest, setSelectedTest] = useState({});
+
   const [difficultItems, setDifficultItems] = useState(40);
   const [misunderstoodItems, setMisunderstoodItems] = useState(20);
 
   const [filter, setFilter] = useState({});
 
+  // -----|-----|-----|-----|-----| ROUTE RELATED BEGIN |-----|-----|-----|-----|----- //
+
+  const getTitleByTestId = testId => {
+    let arr = get(props, "assignments.data.result.tests", []);
+    let title;
+    for (let item of arr) {
+      if (testId === item._id) {
+        title = item.title;
+        break;
+      }
+    }
+    return title;
+  };
+
   useEffect(() => {
-    let q = {
-      testId: props.match.params.testId
-    };
-    props.getResponseFrequencyRequestAction(q);
-  }, []);
+    if (!isEmpty(props.assignments)) {
+      if (props.match.params.testId) {
+        let q = {};
+        q.testId = props.match.params.testId;
+        props.getResponseFrequencyRequestAction(q);
+        setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
+      } else {
+        let arr = [...get(props, "assignments.data.result.tests", [])];
+        arr.sort((a, b) => {
+          return b.updatedDate - a.updatedDate;
+        });
+
+        let testId = arr[0]._id;
+        let q = { testId: testId };
+        props.history.push(props.location.pathname + testId);
+        props.getResponseFrequencyRequestAction(q);
+        setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
+      }
+    }
+  }, [props.assignments]);
+
+  // -----|-----|-----|-----|-----| ROUTE RELATED ENDED |-----|-----|-----|-----|----- //
 
   let res = get(props, "responseFrequency.data.result", false);
 
@@ -97,10 +119,31 @@ const ResponseFrequency = props => {
     });
   }, [props.match.params.testId]);
 
+  const testIds = useMemo(() => {
+    const _testsArr = get(props, "assignments.data.result.tests", []);
+    return getDropDownTestIds(_testsArr);
+  }, [props.assignments]);
+
+  const updateTestIdCB = (event, selected, comData) => {
+    let url = props.match.path.substring(0, props.match.path.length - 8);
+    props.history.push(url + selected.key);
+    let q = { testId: selected.key };
+    props.getResponseFrequencyRequestAction(q);
+    setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
+  };
+
   return (
     <div>
-      <CustomizedHeaderWrapper title="Response Frequency" />
-      <Breadcrumb data={breadcrumbData} style={{ position: "unset", padding: "10px" }} />
+      {props.showFilter ? (
+        <FullWidthControlDropDown
+          prefix="Assessment Name"
+          showPrefixOnSelected={false}
+          by={selectedTest}
+          updateCB={updateTestIdCB}
+          data={testIds}
+          trigger="click"
+        />
+      ) : null}
       <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={"responseFrequency"} />
       <StyledContainer type="flex">
         <StyledCard>

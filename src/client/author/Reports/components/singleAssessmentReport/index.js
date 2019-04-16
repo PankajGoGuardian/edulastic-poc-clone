@@ -11,7 +11,7 @@ import chartNavigationLinks from "../../common/static/json/singleAssessmentSumma
 
 export const SingleAssessmentReport = props => {
   const links = next(chartNavigationLinks, arr => {
-    getNavigationTabLinks(arr, "5ca6e89fd39ce88f5babb02a");
+    getNavigationTabLinks(arr, "");
   });
 
   return (

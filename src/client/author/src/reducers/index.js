@@ -4,6 +4,7 @@ import items from "./items";
 import testItem from "./testItem";
 import dictionaries from "./dictionaries";
 import author_assignments from "./assignments";
+import { reportAssignmentsReducer } from "../../Reports/assignmentsDucks";
 import { reportAssessmentSummaryReducer } from "../../Reports/subPages/AssessmentSummary/ducks";
 import { reportResponseFrequencyReducer } from "../../Reports/subPages/ResponseFrequency/ducks";
 import { reportPeerPerformanceReducer } from "../../Reports/subPages/PeerPerformance/ducks";
@@ -49,6 +50,7 @@ const authorReducers = {
   dictionaries,
   authorQuestions,
   author_assignments,
+  reportAssignmentsReducer,
   reportAssessmentSummaryReducer,
   reportResponseFrequencyReducer,
   reportPeerPerformanceReducer,

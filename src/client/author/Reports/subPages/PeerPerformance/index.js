@@ -6,18 +6,24 @@ import { get, keyBy, isEmpty, cloneDeep } from "lodash";
 import next from "immer";
 
 import { parseData, idToName } from "./util/transformers";
-import Breadcrumb from "../../../src/components/Breadcrumb";
-import { CustomizedHeaderWrapper } from "../../common/components/header";
-import { StyledCard, StyledH3, StyledControlDropDown, StyledFilterDropDownWithDropDown } from "../../common/styled";
+
+import {
+  StyledCard,
+  StyledH3,
+  StyledControlDropDown,
+  StyledFilterDropDownWithDropDown,
+  FullWidthControlDropDown
+} from "../../common/styled";
 import { SimpleStackedBarChartContainer } from "./components/charts/simpleStackedBarChartContainer";
 import { SignedStackedBarChartContainer } from "./components/charts/signedStackedBarChartContainer";
 import { UpperContainer, TableContainer, StyledTable } from "./components/styled";
 import { PeerPerformanceTable } from "./components/table/peerPerformanceTable";
 import { getPeerPerformanceRequestAction, getReportsPeerPerformance } from "./ducks";
+
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import { getUserRole } from "../../../src/selectors/user";
 import { NavigatorTabs } from "../../common/components/navigatorTabs";
-import { getNavigationTabLinks } from "../../common/util";
+import { getNavigationTabLinks, getDropDownTestIds } from "../../common/util";
 import chartNavigatorLinks from "../../common/static/json/singleAssessmentSummaryChartNavigator.json";
 import columns from "./static/json/tableColumns.json";
 import tempData from "./static/json/tempData";
@@ -47,7 +53,19 @@ const denormalizeData = res => {
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
-const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestAction, role }) => {
+const PeerPerformance = ({
+  peerPerformance,
+  assignments,
+  match,
+  getPeerPerformanceRequestAction,
+  getAssignmentsRequestAction,
+  role,
+  history,
+  location,
+  showFilter
+}) => {
+  const [selectedTest, setSelectedTest] = useState({});
+
   const [ddfilter, setDdFilter] = useState({
     analyseBy: "score(%)",
     compareBy: role === "teacher" ? "groupId" : "schoolId",
@@ -59,21 +77,43 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
   });
   const [chartFilter, setChartFilter] = useState({});
 
-  const breadcrumbData = [
-    {
-      title: "REPORTS",
-      to: "/author/reports"
-    },
-    {
-      title: "PEER PERFORMANCE"
+  // -----|-----|-----|-----|-----| ROUTE RELATED BEGIN |-----|-----|-----|-----|----- //
+
+  const getTitleByTestId = testId => {
+    let arr = get(assignments, "data.result.tests", []);
+    let title;
+    for (let item of arr) {
+      if (testId === item._id) {
+        title = item.title;
+        break;
+      }
     }
-  ];
+    return title;
+  };
 
   useEffect(() => {
-    let q = {};
-    q.testId = match.params.testId;
-    getPeerPerformanceRequestAction(q);
-  }, []);
+    if (!isEmpty(assignments)) {
+      if (match.params.testId) {
+        let q = {};
+        q.testId = match.params.testId;
+        getPeerPerformanceRequestAction(q);
+        setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
+      } else {
+        let arr = [...get(assignments, "data.result.tests", [])];
+        arr.sort((a, b) => {
+          return b.updatedDate - a.updatedDate;
+        });
+
+        let testId = arr[0]._id;
+        let q = { testId: testId };
+        history.push(location.pathname + testId);
+        getPeerPerformanceRequestAction(q);
+        setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
+      }
+    }
+  }, [assignments]);
+
+  // -----|-----|-----|-----|-----| ROUTE RELATED ENDED |-----|-----|-----|-----|----- //
 
   let compareByDropDownData = dropDownFormat.compareByDropDownData;
   if (role === "teacher") {
@@ -143,10 +183,31 @@ const PeerPerformance = ({ peerPerformance, match, getPeerPerformanceRequestActi
     });
   }, [match.params.testId]);
 
+  const testIds = useMemo(() => {
+    const _testsArr = get(assignments, "data.result.tests", []);
+    return getDropDownTestIds(_testsArr);
+  }, [assignments]);
+
+  const updateTestIdCB = (event, selected, comData) => {
+    let url = match.path.substring(0, match.path.length - 8);
+    history.push(url + selected.key);
+    let q = { testId: selected.key };
+    getPeerPerformanceRequestAction(q);
+    setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
+  };
+
   return (
     <div>
-      <CustomizedHeaderWrapper title="Peer Performance" />
-      <Breadcrumb data={breadcrumbData} style={{ position: "unset", padding: "10px" }} />
+      {showFilter ? (
+        <FullWidthControlDropDown
+          prefix="Assessment Name"
+          showPrefixOnSelected={false}
+          by={selectedTest}
+          updateCB={updateTestIdCB}
+          data={testIds}
+          trigger="click"
+        />
+      ) : null}
       <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={"peerPerformance"} />
       <UpperContainer>
         <StyledCard>

@@ -42,6 +42,7 @@ export const NavigatorTabs = ({ data, selectedTab }) => {
 
 const StyledContainer = styled.div`
   min-height: 35px;
+  margin: 5px 0;
   .navigator-tabs-container::-webkit-scrollbar {
     height: 0px;
   }

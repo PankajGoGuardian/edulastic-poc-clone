@@ -1,18 +1,24 @@
 import Helpers from "../../../../util/Helpers";
 import ChoiceMatrixPage from "./choiceMatrixPage";
 import EditItemPage from "../../itemDetail/editPage";
+import ItemListPage from "../../itemListPage";
 
 const runMatrixPageTests = queData => {
   const editItem = new EditItemPage();
   const question = new ChoiceMatrixPage();
+  const itemList = new ItemListPage();
+  let testItemId;
 
   before(() => {
     cy.setToken();
+    itemList.clickOnCreate().then(id => {
+      testItemId = id;
+    });
   });
 
   context("User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
@@ -105,7 +111,7 @@ const runMatrixPageTests = queData => {
 
   context("[sanity-test] => create basic question and validate", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
@@ -198,7 +204,7 @@ const runMatrixPageTests = queData => {
 
   context("Advanced Options", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
@@ -489,7 +495,7 @@ const runMatrixPageTests = queData => {
 
   context("Scoring Block test", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });

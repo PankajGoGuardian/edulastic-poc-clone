@@ -1,20 +1,33 @@
-import EditItemPage from './itemDetail/editPage.js';
+import promisify from "cypress-promise";
 
 class ItemListPage {
-    clickOnCreate() {
-        cy.server();
-        cy.route('POST','**/testitem**').as('saveItem');
-        cy.route('GET','**/testitem/**').as('reload');
+  clickOnCreate = async () => {
+    const fileWritePath = "cypress/fixtures";
+    const fixtureFile = "toDelete/testData.json";
 
-        cy.contains('Create')
-            .should('be.visible')
-            .click();
+    cy.server();
+    cy.route("POST", "**/testitem**").as("saveItem");
+    cy.route("GET", "**/testitem/**").as("reload");
 
-        cy.wait('@saveItem');
-        cy.wait('@reload');
+    cy.contains("Create")
+      .should("be.visible")
+      .click();
 
-        return new EditItemPage();
-    }
+    cy.wait("@saveItem");
+
+    const xhr = await promisify(cy.wait("@reload"));
+    expect(xhr.status).to.eq(200);
+    const itemId = xhr.response.body.result._id;
+    cy.log("New Item Created : ", itemId);
+    console.log("Item created with _id : ", itemId);
+
+    cy.readFile(`${fileWritePath}/${fixtureFile}`).then(json => {
+      if (!json.testItems) json.testItems = [];
+      json.testItems.push(itemId);
+      cy.writeFile(`${fileWritePath}/${fixtureFile}`, json);
+    });
+    return itemId;
+  };
 }
 
 export default ItemListPage;

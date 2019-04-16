@@ -3,6 +3,7 @@ import MathFormulaEdit from "../../../../framework/author/itemList/questionType/
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import EditToolBar from "../../../../framework/author/itemList/questionType/common/editToolBar";
+import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" type question`, () => {
   const queData = {
@@ -218,6 +219,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
   const question = new MathFormulaEdit();
   const editItem = new EditItemPage();
+  const itemList = new ItemListPage();
   const numpadButtons = question.virtualKeyBoardNumpad;
   const buttons = question.virtualKeyBoardButtons;
   const { syntaxes, fields, methods } = math;
@@ -225,13 +227,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
   const editToolBar = new EditToolBar();
   let preview;
 
+  let testItemId;
+
   before(() => {
     cy.setToken();
+    itemList.clickOnCreate().then(id => {
+      testItemId = id;
+    });
   });
 
   context("User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       // create new que and select type
 
@@ -679,7 +686,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
   context("Edit the Math formula created", () => {
     before("delete old question and create dummy que to edit", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
 
       //create new que and select type
@@ -786,7 +793,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
   context("Testing equivSyntax methods", () => {
     before("delete old question and create dummy que to edit", () => {
       preview = editItem.header.preview();
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
 
       editItem.addNew().chooseQuestion(queData.group, queData.queType);

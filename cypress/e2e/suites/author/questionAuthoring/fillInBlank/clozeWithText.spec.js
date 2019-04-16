@@ -2,6 +2,7 @@ import EditItemPage from "../../../../framework/author/itemList/itemDetail/editP
 import ClozeWithTextPage from "../../../../framework/author/itemList/questionType/fillInBlank/clozeWithTextPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import ScoringBlock from "../../../../framework/author/itemList/questionType/common/scoringBlock";
+import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Text" type question`, () => {
   const queData = {
@@ -20,15 +21,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
   const scoringBlock = new ScoringBlock();
   const question = new ClozeWithTextPage();
   const editItem = new EditItemPage();
+  const itemList = new ItemListPage();
   let preview;
+
+  let testItemId;
 
   before(() => {
     cy.setToken();
+    itemList.clickOnCreate().then(id => {
+      testItemId = id;
+    });
   });
 
   context("Create basic question and validate.", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
@@ -113,7 +120,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
 
   context("Scoring Block test", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);

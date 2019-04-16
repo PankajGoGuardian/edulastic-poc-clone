@@ -18,16 +18,22 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
   };
   const question = new MCQTrueFalsePage();
   const editItem = new EditItemPage();
+  const itemList = new ItemListPage();
   const text = "testtext";
   const formates = question.formates;
 
+  let testItemId;
+
   before(() => {
     cy.setToken();
+    itemList.clickOnCreate().then(id => {
+      testItemId = id;
+    });
   });
 
   context("User creates question.", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
 
       // create new que and select type
@@ -272,7 +278,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
     };
 
     before("delete old question and create dummy que to edit", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
 
       // create new que and select type
@@ -516,7 +522,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
 
   context("[sanity]:test => Create question using different options and validate", () => {
     before("visit items list page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
 
       // add new question

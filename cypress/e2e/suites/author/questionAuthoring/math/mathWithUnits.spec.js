@@ -4,6 +4,7 @@ import EditItemPage from "../../../../framework/author/itemList/itemDetail/editP
 import FileHelper from "../../../../framework/util/fileHelper";
 import EditToolBar from "../../../../framework/author/itemList/questionType/common/editToolBar";
 import PreviewItemPage from "../../../../framework/author/itemList/itemDetail/previewPage";
+import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill in the blanks" type question`, () => {
   const queData = {
@@ -118,19 +119,25 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
   };
   const question = new MathWithUnitsPage();
   const editItem = new EditItemPage();
+  const itemList = new ItemListPage();
   const { syntaxes, fields, methods } = math;
   const editToolBar = new EditToolBar();
   const preview = new PreviewItemPage();
   const ruleArguments = question.argumentMethods;
   let previewItems;
 
+  let testItemId;
+
   before(() => {
     cy.setToken();
+    itemList.clickOnCreate().then(id => {
+      testItemId = id;
+    });
   });
 
   context("User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);

@@ -2,6 +2,7 @@ import EditItemPage from "../../../../framework/author/itemList/itemDetail/editP
 import ClassificationPage from "../../../../framework/author/itemList/questionType/classifyMatchOrder/classificationPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import Helpers from "../../../../framework/util/Helpers";
+import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification" type question`, () => {
   const queData = {
@@ -23,15 +24,22 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
   const question = new ClassificationPage();
   const editItem = new EditItemPage();
+  const itemList = new ItemListPage();
   let preview;
+
+  let testItemId;
 
   before(() => {
     cy.setToken();
+    itemList.clickOnCreate().then(id => {
+      testItemId = id;
+    });
   });
 
   context("Advanced Options", () => {
     before("visit items page and select question type", () => {
-      cy.selectQuestionType({ editItem, queData });
+      editItem.getItemWithId(testItemId);
+      editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
     beforeEach(() => {
@@ -247,7 +255,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
   context("User creates question", () => {
     before("visit items page and select question type", () => {
-      cy.selectQuestionType({ editItem, queData });
+      editItem.getItemWithId(testItemId);
+      editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
     context("TC_57 => Enter the column and row", () => {
@@ -521,8 +530,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
   context("Edit the questin created", () => {
     before("delete old question and create dummy que to edit", () => {
-      cy.deleteOldQuestion({ editItem });
-      cy.selectQuestionType({ editItem, queData });
+      editItem.getItemWithId(testItemId);
+      editItem.deleteAllQuestion();
+      editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
     context("TC_65 => Enter the column and row", () => {

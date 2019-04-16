@@ -129,6 +129,7 @@
     "babel-watch": "^2.0.7",
     "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^1.0.1",
+    "cypress-promise": "^1.0.2",
     "cypress-testing-library": "^2.2.1",
     "cypress-xpath": "^1.3.0",
     "enzyme": "^3.7.0",

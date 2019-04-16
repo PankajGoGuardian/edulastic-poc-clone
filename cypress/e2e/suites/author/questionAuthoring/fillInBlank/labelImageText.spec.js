@@ -1,6 +1,7 @@
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
 import TextPage from "../../../../framework/author/itemList/questionType/fillInBlank/textPage";
 import FileHelper from "../../../../framework/util/fileHelper";
+import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image with Text" type question`, () => {
   const queData = {
@@ -21,14 +22,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
 
   const question = new TextPage();
   const editItem = new EditItemPage();
+  const itemList = new ItemListPage();
+
+  let testItemId;
 
   before(() => {
     cy.setToken();
+    itemList.clickOnCreate().then(id => {
+      testItemId = id;
+    });
   });
 
   context("User creates question.", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
@@ -211,7 +218,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
 
   context("Edit the question created.", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);

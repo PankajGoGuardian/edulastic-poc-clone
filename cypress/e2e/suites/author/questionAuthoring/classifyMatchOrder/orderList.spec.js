@@ -2,6 +2,7 @@ import EditItemPage from "../../../../framework/author/itemList/itemDetail/editP
 import OrderListPage from "../../../../framework/author/itemList/questionType/classifyMatchOrder/orderListPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import Helpers from "../../../../framework/util/Helpers";
+import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" type question`, () => {
   const queData = {
@@ -23,15 +24,22 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
 
   const question = new OrderListPage();
   const editItem = new EditItemPage();
+  const itemList = new ItemListPage();
   let preview;
+
+  let testItemId;
 
   before(() => {
     cy.setToken();
+    itemList.clickOnCreate().then(id => {
+      testItemId = id;
+    });
   });
 
   context("User creates question", () => {
     before("visit items page and select question type", () => {
-      cy.selectQuestionType({ editItem, queData });
+      editItem.getItemWithId(testItemId);
+      editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
     context("TC_87 => List", () => {
@@ -153,8 +161,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
 
   context("Edit the questin created", () => {
     before("delete old question and create dummy que to edit", () => {
-      cy.deleteOldQuestion({ editItem });
-      cy.selectQuestionType({ editItem, queData });
+      editItem.getItemWithId(testItemId);
+      editItem.deleteAllQuestion();
+      editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
     context("TC_92 => List", () => {
@@ -242,7 +251,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
 
   context("Advanced Options", () => {
     before("visit items page and select question type", () => {
-      cy.selectQuestionType({ editItem, queData });
+      editItem.getItemWithId(testItemId);
+      editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
     beforeEach(() => {

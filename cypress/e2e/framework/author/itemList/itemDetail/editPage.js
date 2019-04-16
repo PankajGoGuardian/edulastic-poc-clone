@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import Header from "./header";
+import ItemListPage from "../itemListPage";
 
 class EditItemPage {
   constructor() {
@@ -12,7 +13,6 @@ class EditItemPage {
         .click();
       cy.wait("@saveItem");
     };
-    this.ITEM_ID = "5ca369b88682ac3dab2fe2aa";
   }
 
   clickAdvancedOptionsButton() {
@@ -116,10 +116,10 @@ class EditItemPage {
     return cy.get('button[title="Delete"]');
   }
 
-  getItemWithId(itemUrl = this.ITEM_ID) {
+  getItemWithId(itemId) {
     cy.server();
     cy.route("GET", "**/testitem/**").as("getItem");
-    cy.visit(`/author/items/${itemUrl}/item-detail`);
+    cy.visit(`/author/items/${itemId}/item-detail`);
     cy.wait("@getItem");
   }
 

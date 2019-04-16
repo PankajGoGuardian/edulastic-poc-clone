@@ -1,6 +1,7 @@
 import EditItemPage from "../../../../../framework/author/itemList/itemDetail/editPage";
 import ExtrasOptions from "../../../../../framework/author/itemList/questionType/math/mathFormula/extarsOptions";
 import FileHelper from "../../../../../framework/util/fileHelper";
+import ItemListPage from "../../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Extras on "Math formula" type question`, () => {
   const queData = {
@@ -9,14 +10,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Extras on "Math formul
   };
   const extras = new ExtrasOptions();
   const editItem = new EditItemPage();
+  const itemList = new ItemListPage();
+
+  let testItemId;
 
   before(() => {
     cy.setToken();
+    itemList.clickOnCreate().then(id => {
+      testItemId = id;
+    });
   });
 
   context("User creates question.", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
 
       // create new que and select type

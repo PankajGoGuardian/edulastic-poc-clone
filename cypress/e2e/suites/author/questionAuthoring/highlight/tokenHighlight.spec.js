@@ -5,6 +5,7 @@ import TokenHighlightPage from "../../../../framework/author/itemList/questionTy
 import PreviewItemPage from "../../../../framework/author/itemList/itemDetail/previewPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import Helpers from "../../../../framework/util/Helpers";
+import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highlight" type question`, () => {
   const queData = {
@@ -27,6 +28,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
 
   const question = new TokenHighlightPage();
   const editItem = new EditItemPage();
+  const itemList = new ItemListPage();
   const preview = new PreviewItemPage();
 
   const RED_BG = "rgb(251, 223, 231)";
@@ -37,13 +39,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
   const ACTIVE = "rgb(31, 227, 161)";
   const ACTIVEWORD = "active-word";
 
+  let testItemId;
+
   before(() => {
     cy.setToken();
+    itemList.clickOnCreate().then(id => {
+      testItemId = id;
+    });
   });
 
   context("User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
@@ -308,7 +315,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
 
   context("Advanced Options", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);

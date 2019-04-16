@@ -1,19 +1,17 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import queryString from "query-string";
 import { Row, Col } from "antd";
-import { get } from "lodash";
+import { get, isEmpty } from "lodash";
 import next from "immer";
 
 import { SimplePieChart } from "./components/charts/pieChart";
-import { StyledCard, StyledH3 } from "../../common/styled";
+import { StyledCard, StyledH3, FullWidthControlDropDown } from "../../common/styled";
 import { UpperContainer, TableContainer, StyledAssessmentStatisticTable } from "./components/styled";
-import Breadcrumb from "../../../src/components/Breadcrumb";
-import { CustomizedHeaderWrapper } from "../../common/components/header";
 import { Stats } from "./components/stats";
 import { NavigatorTabs } from "../../common/components/navigatorTabs";
-import { getNavigationTabLinks } from "./../../common/util";
+import { getNavigationTabLinks, getDropDownTestIds } from "./../../common/util";
 import chartNavigatorLinks from "../../common/static/json/singleAssessmentSummaryChartNavigator.json";
 import data from "./static/json/data.json";
 
@@ -21,21 +19,45 @@ import { getAssessmentSummaryRequestAction, getReportsAssessmentSummary } from "
 import { getUserRole } from "../../../src/selectors/user";
 
 const AssessmentSummary = props => {
-  const breadcrumbData = [
-    {
-      title: "REPORTS",
-      to: "/author/reports"
-    },
-    {
-      title: "ASSESSMENT SUMMARY"
+  const [selectedTest, setSelectedTest] = useState({});
+
+  // -----|-----|-----|-----|-----| ROUTE RELATED BEGIN |-----|-----|-----|-----|----- //
+
+  const getTitleByTestId = testId => {
+    let arr = get(props, "assignments.data.result.tests", []);
+    let title;
+    for (let item of arr) {
+      if (testId === item._id) {
+        title = item.title;
+        break;
+      }
     }
-  ];
+    return title;
+  };
 
   useEffect(() => {
-    let q = queryString.parse(props.location.search);
-    q.testId = props.match.params.testId;
-    props.getAssessmentSummaryRequestAction(q);
-  }, []);
+    if (!isEmpty(props.assignments)) {
+      if (props.match.params.testId) {
+        let q = {};
+        q.testId = props.match.params.testId;
+        props.getAssessmentSummaryRequestAction(q);
+        setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
+      } else {
+        let arr = [...get(props, "assignments.data.result.tests", [])];
+        arr.sort((a, b) => {
+          return b.updatedDate - a.updatedDate;
+        });
+
+        let testId = arr[0]._id;
+        let q = { testId: testId };
+        props.history.push(props.location.pathname + testId);
+        props.getAssessmentSummaryRequestAction(q);
+        setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
+      }
+    }
+  }, [props.assignments]);
+
+  // -----|-----|-----|-----|-----| ROUTE RELATED ENDED |-----|-----|-----|-----|----- //
 
   const state = get(props, "assessmentSummary.data.result", {
     assessmentName: "",
@@ -49,10 +71,31 @@ const AssessmentSummary = props => {
     });
   }, [props.match.params.testId]);
 
+  const testIds = useMemo(() => {
+    const _testsArr = get(props, "assignments.data.result.tests", []);
+    return getDropDownTestIds(_testsArr);
+  }, [props.assignments]);
+
+  const updateTestIdCB = (event, selected, comData) => {
+    let url = props.match.path.substring(0, props.match.path.length - 8);
+    props.history.push(url + selected.key);
+    let q = { testId: selected.key };
+    props.getAssessmentSummaryRequestAction(q);
+    setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
+  };
+
   return (
     <div>
-      <CustomizedHeaderWrapper title="Assessment Summary" />
-      <Breadcrumb data={breadcrumbData} style={{ position: "unset", padding: "10px" }} />
+      {props.showFilter ? (
+        <FullWidthControlDropDown
+          prefix="Assessment Name"
+          showPrefixOnSelected={false}
+          by={selectedTest}
+          updateCB={updateTestIdCB}
+          data={testIds}
+          trigger="click"
+        />
+      ) : null}
       <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={"assessmentSummary"} />
       <UpperContainer type="flex">
         <Col className="sub-container district-statistics" xs={24} sm={24} md={12} lg={12} xl={12}>

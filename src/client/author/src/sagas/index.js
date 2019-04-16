@@ -11,6 +11,7 @@ import { questionSaga } from "../../QuestionEditor";
 import { testsAddItemsSaga } from "../../TestPage/components/AddItems";
 import { testsAssignSaga } from "../../TestPage/components/Assign";
 import assignmentsSaga from "./assignments";
+import { reportAssignmentsSaga } from "../../Reports/assignmentsDucks";
 import { reportAssessmentSummarySaga } from "../../Reports/subPages/AssessmentSummary/ducks";
 import { reportResponseFrequencySaga } from "../../Reports/subPages/ResponseFrequency/ducks";
 import { reportPeerPerformanceSaga } from "../../Reports/subPages/PeerPerformance/ducks";
@@ -35,6 +36,7 @@ const authorSagas = [
   dictionariesSaga(),
   classBoardSaga(),
   assignmentsSaga(),
+  reportAssignmentsSaga(),
   reportAssessmentSummarySaga(),
   reportResponseFrequencySaga(),
   reportPeerPerformanceSaga(),

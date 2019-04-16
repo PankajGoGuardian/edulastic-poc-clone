@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Button, Dropdown, Menu, Icon } from "antd";
 import { partial } from "lodash";
 
@@ -19,8 +19,21 @@ const CustomMenu = (className, data, handleMenuClick, prefix) => {
   );
 };
 
-export const ControlDropDown = ({ className, prefix, by, updateCB, data, comData }) => {
+export const ControlDropDown = ({
+  className,
+  prefix,
+  showPrefixOnSelected = true,
+  by,
+  updateCB,
+  data,
+  comData,
+  trigger = "hover"
+}) => {
   const [selected, setSelected] = useState(by);
+
+  useEffect(() => {
+    setSelected(by);
+  }, [by]);
 
   const handleMenuClick = useCallback(
     event => {
@@ -34,10 +47,10 @@ export const ControlDropDown = ({ className, prefix, by, updateCB, data, comData
   );
 
   return (
-    <div className={`${className}`}>
-      <Dropdown overlay={partial(CustomMenu, className, data, handleMenuClick, prefix)}>
+    <div className={`${className}`} style={{ overflow: "hidden" }}>
+      <Dropdown overlay={partial(CustomMenu, className, data, handleMenuClick, prefix)} trigger={trigger}>
         <Button>
-          {prefix} {selected.title}
+          {(showPrefixOnSelected ? prefix + " " : "") + selected.title}
           <Icon type="caret-down" />
         </Button>
       </Dropdown>

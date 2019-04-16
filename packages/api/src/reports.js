@@ -41,6 +41,10 @@ const fetchSkillReport = classId =>
     })
     .then(result => result.data.result);
 
+const fetchAssignments = () => {
+  return api.callApi({ url: `/assignments` });
+};
+
 const fetchResponseFrequency = params => {
   return api.callApi({ url: `/report/responseFrequency?testId=${params.testId}` });
 };
@@ -63,6 +67,7 @@ export default {
   fetchTestActivityDetail,
   fetchTestActivityReport,
   fetchSkillReport,
+  fetchAssignments,
   fetchResponseFrequency,
   fetchAssessmentSummaryReport,
   fetchPeerPerformanceReport

@@ -220,8 +220,27 @@ export const StyledControlDropDown = styled(ControlDropDown)`
 
 export const StyledNormalDropDown = styled(NormalDropDown)`
   margin: 0px 5px;
+  max-height: 400px;
+  overflow: auto;
   button {
     white-space: pre-wrap;
+  }
+`;
+
+export const FullWidthControlDropDown = styled(ControlDropDown)`
+  margin: 0px 5px;
+  max-height: 400px;
+  overflow: auto;
+  button {
+    white-space: pre-wrap;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    span {
+      flex: 1;
+    }
   }
   .ant-dropdown-menu-item-disabled {
     font-weight: 900;

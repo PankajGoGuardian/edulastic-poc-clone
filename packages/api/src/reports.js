@@ -62,6 +62,12 @@ const fetchPeerPerformanceReport = params => {
   });
 };
 
+const fetchPerformanceByStandard = params => {
+  return api.callApi({
+    url: `/report/performanceByStandards?testId=${params.testId}`
+  });
+};
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -70,5 +76,6 @@ export default {
   fetchAssignments,
   fetchResponseFrequency,
   fetchAssessmentSummaryReport,
-  fetchPeerPerformanceReport
+  fetchPeerPerformanceReport,
+  fetchPerformanceByStandard
 };

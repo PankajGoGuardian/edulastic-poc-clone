@@ -8,6 +8,7 @@ import Breadcrumb from "../src/components/Breadcrumb";
 import ResponseFrequency from "./subPages/singleAssessmentReport/ResponseFrequency";
 import AssessmentSummary from "./subPages/singleAssessmentReport/AssessmentSummary";
 import PeerPerformance from "./subPages/singleAssessmentReport/PeerPerformance";
+import PerformanceByStandards from "./subPages/singleAssessmentReport/PerformanceByStandards";
 
 // import { StyledContainer, StyledCard } from "./components/styled";
 import { StyledContainer, StyledCard } from "./common/styled";
@@ -21,7 +22,8 @@ import { getAssignmentsRequestAction, getReportsAssignments } from "./assignment
 const locToTitle = {
   "assessment-summary": "Assessment Summary",
   "peer-performance": "Peer Performance",
-  "response-frequency": "Response Frequency"
+  "response-frequency": "Response Frequency",
+  "performance-by-standards": "Performance By Standards"
 };
 
 const locToBreadcrumb = {
@@ -50,6 +52,15 @@ const locToBreadcrumb = {
     },
     {
       title: "RESPONSE FREQUENCY"
+    }
+  ],
+  "performance-by-standards": [
+    {
+      title: "REPORTS",
+      to: "/author/reports"
+    },
+    {
+      title: "PERFORMANCE BY STANDARDS"
     }
   ]
 };
@@ -124,6 +135,13 @@ const Container = props => {
         exact
         path={`${props.match.path}response-frequency/test/:testId?`}
         render={_props => <ResponseFrequency {..._props} showFilter={showFilter} assignments={props.assignments} />}
+      />
+      <Route
+        exact
+        path={`${props.match.path}performance-by-standards/test/:testId?`}
+        render={_props => (
+          <PerformanceByStandards {..._props} showFilter={showFilter} assignments={props.assignments} />
+        )}
       />
     </div>
   );

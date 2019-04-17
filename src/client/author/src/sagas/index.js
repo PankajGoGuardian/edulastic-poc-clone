@@ -15,6 +15,7 @@ import { reportAssignmentsSaga } from "../../Reports/assignmentsDucks";
 import { reportAssessmentSummarySaga } from "../../Reports/subPages/singleAssessmentReport/AssessmentSummary/ducks";
 import { reportResponseFrequencySaga } from "../../Reports/subPages/singleAssessmentReport/ResponseFrequency/ducks";
 import { reportPeerPerformanceSaga } from "../../Reports/subPages/singleAssessmentReport/PeerPerformance/ducks";
+import { performanceByStandardsSaga } from "../../Reports/subPages/singleAssessmentReport/PerformanceByStandards/ducks";
 import { authorGroupsWatcherSaga } from "../../sharedDucks/groups";
 import { watcherSaga as UserDetails } from "../../sharedDucks/userDetails";
 import { assessmentPageSaga } from "../../AssessmentCreate";
@@ -55,7 +56,8 @@ const authorSagas = [
   districtPolicySaga(),
   performanceBandSaga(),
   standardsProficiencySaga(),
-  schoolsSaga()
+  schoolsSaga(),
+  performanceByStandardsSaga()
 ];
 
 export default authorSagas;

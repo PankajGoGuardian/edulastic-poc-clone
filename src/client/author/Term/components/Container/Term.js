@@ -42,11 +42,11 @@ class Term extends Component {
   };
 
   render() {
-    const { termSetting, loading, creating } = this.props;
+    const { termSetting, loading, creating, history } = this.props;
     const showSpin = loading || creating;
     return (
       <TermDiv>
-        <AdminHeader title={title} active={menuActive} />
+        <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
             {loading && (

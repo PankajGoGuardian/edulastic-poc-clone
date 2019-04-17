@@ -35,12 +35,12 @@ class Schools extends Component {
   }
 
   render() {
-    const { schoolsData, loading, updating, creating, userOrgId, deleting } = this.props;
+    const { schoolsData, loading, updating, creating, userOrgId, deleting, history } = this.props;
     const showSpin = loading || updating || creating || deleting;
 
     return (
       <SchoolsDiv>
-        <AdminHeader title={title} active={menuActive} />
+        <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
             {showSpin && (

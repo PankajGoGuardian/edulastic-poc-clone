@@ -129,19 +129,19 @@ class Container extends Component {
           }
         ]
       : [
-        {
-          title: "<&nbsp;&nbsp;&nbsp;ITEM LIBRARY",
-          to: "/author/items"
-        },
-        {
-          title: "ITEM DETAIL",
-          to: `/author/items/${window.location.pathname.split("/")[3]}/item-detail`
-        },
-        {
-          title: "SELECT A QUESTION TYPE",
-          to: ""
-        }
-      ];
+          {
+            title: "<&nbsp;&nbsp;&nbsp;ITEM LIBRARY",
+            to: "/author/items"
+          },
+          {
+            title: "ITEM DETAIL",
+            to: `/author/items/${window.location.pathname.split("/")[3]}/item-detail`
+          },
+          {
+            title: "SELECT A QUESTION TYPE",
+            to: ""
+          }
+        ];
 
     return (
       <Content showMobileView={mobileViewShow}>

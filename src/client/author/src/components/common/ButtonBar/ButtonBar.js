@@ -127,11 +127,7 @@ class ButtonBar extends Component {
                 {renderExtra()}
               </RightSide>
             )}
-            {!hasAuthorPermission && (
-              <RightSide>
-                {renderExtra()}
-              </RightSide>
-            )}
+            {!hasAuthorPermission && <RightSide>{renderExtra()}</RightSide>}
           </Container>
         ) : (
           <MobileContainer>

@@ -43,12 +43,12 @@ class PerformanceBand extends Component {
   };
 
   render() {
-    const { performanceBand, loading, updating } = this.props;
+    const { performanceBand, loading, updating, history } = this.props;
     const showSpin = loading || updating;
 
     return (
       <PerformanceBandDiv>
-        <AdminHeader title={title} active={menuActive} />
+        <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
             {loading && (

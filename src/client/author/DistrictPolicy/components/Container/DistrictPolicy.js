@@ -35,11 +35,11 @@ class DistrictPolicy extends Component {
   };
 
   render() {
-    const { districtPolicy, loading } = this.props;
+    const { districtPolicy, loading, history } = this.props;
 
     return (
       <DistrictPolicyDiv>
-        <AdminHeader title={title} active={menuActive} />
+        <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={loading ? "true" : "false"}>
             {loading && (

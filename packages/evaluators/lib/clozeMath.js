@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
@@ -26,27 +26,27 @@ var _scoring = require("./const/scoring");
 var url = "https://1nz4dq81w6.execute-api.us-east-1.amazonaws.com/dev/evaluate";
 
 var evaluate = function evaluate(data) {
-  return _axios.default.post(url, (0, _objectSpread2.default)({}, data)).then(function(result) {
+  return _axios["default"].post(url, (0, _objectSpread2["default"])({}, data)).then(function(result) {
     return result.data;
   });
 };
 
 var getChecks = function getChecks(validation) {
   var altResponses = validation.alt_responses || [];
-  var flattenValidResponses = (0, _flatten2.default)(validation.valid_response.value);
+  var flattenValidResponses = (0, _flatten2["default"])(validation.valid_response.value);
   var flattenAltResponses = altResponses.reduce(function(acc, res) {
     return [].concat(
-      (0, _toConsumableArray2.default)(acc),
-      (0, _toConsumableArray2.default)((0, _flatten2.default)(res.value))
+      (0, _toConsumableArray2["default"])(acc),
+      (0, _toConsumableArray2["default"])((0, _flatten2["default"])(res.value))
     );
   }, []);
   var values = [].concat(
-    (0, _toConsumableArray2.default)(flattenValidResponses),
-    (0, _toConsumableArray2.default)(flattenAltResponses)
+    (0, _toConsumableArray2["default"])(flattenValidResponses),
+    (0, _toConsumableArray2["default"])(flattenAltResponses)
   );
   return values.reduce(function(valAcc, val, valIndex) {
     var options = val.options || {};
-    options = (0, _omitBy2.default)(options, function(f) {
+    options = (0, _omitBy2["default"])(options, function(f) {
       return f === false;
     });
     var midRes = Object.keys(options).reduce(function(acc, key, i) {
@@ -101,9 +101,9 @@ var getChecks = function getChecks(validation) {
 var checkCorrect =
   /*#__PURE__*/
   (function() {
-    var _ref2 = (0, _asyncToGenerator2.default)(
+    var _ref2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator.default.mark(function _callee(_ref) {
+      _regenerator["default"].mark(function _callee(_ref) {
         var correctAnswers,
           userResponse,
           checks,
@@ -124,7 +124,7 @@ var checkCorrect =
           _ref3,
           result;
 
-        return _regenerator.default.wrap(
+        return _regenerator["default"].wrap(
           function _callee$(_context) {
             while (1) {
               switch ((_context.prev = _context.next)) {
@@ -206,8 +206,8 @@ var checkCorrect =
                   _context.prev = 39;
                   _context.prev = 40;
 
-                  if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-                    _iterator2.return();
+                  if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+                    _iterator2["return"]();
                   }
 
                 case 42:
@@ -245,8 +245,8 @@ var checkCorrect =
                   _context.prev = 56;
                   _context.prev = 57;
 
-                  if (!_iteratorNormalCompletion && _iterator.return != null) {
-                    _iterator.return();
+                  if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+                    _iterator["return"]();
                   }
 
                 case 59:
@@ -289,9 +289,9 @@ var checkCorrect =
 var exactMatchEvaluator =
   /*#__PURE__*/
   (function() {
-    var _ref4 = (0, _asyncToGenerator2.default)(
+    var _ref4 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator.default.mark(function _callee2(userResponse, answers, checks) {
+      _regenerator["default"].mark(function _callee2(userResponse, answers, checks) {
         var score,
           maxScore,
           evaluation,
@@ -313,7 +313,7 @@ var exactMatchEvaluator =
           res,
           isExact;
 
-        return _regenerator.default.wrap(
+        return _regenerator["default"].wrap(
           function _callee2$(_context2) {
             while (1) {
               switch ((_context2.prev = _context2.next)) {
@@ -399,8 +399,8 @@ var exactMatchEvaluator =
                   _context2.prev = 35;
                   _context2.prev = 36;
 
-                  if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
-                    _iterator4.return();
+                  if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
+                    _iterator4["return"]();
                   }
 
                 case 38:
@@ -421,7 +421,7 @@ var exactMatchEvaluator =
 
                 case 43:
                   maxScore = Math.max(answer.score, maxScore);
-                  evaluation = [].concat((0, _toConsumableArray2.default)(evaluation), valid);
+                  evaluation = [].concat((0, _toConsumableArray2["default"])(evaluation), valid);
 
                   isExact = function isExact(element) {
                     return element;
@@ -450,8 +450,8 @@ var exactMatchEvaluator =
                   _context2.prev = 56;
                   _context2.prev = 57;
 
-                  if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                    _iterator3.return();
+                  if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
+                    _iterator3["return"]();
                   }
 
                 case 59:
@@ -508,9 +508,9 @@ var exactMatchEvaluator =
 var evaluator =
   /*#__PURE__*/
   (function() {
-    var _ref7 = (0, _asyncToGenerator2.default)(
+    var _ref7 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator.default.mark(function _callee3(_ref6) {
+      _regenerator["default"].mark(function _callee3(_ref6) {
         var userResponse,
           validation,
           valid_response,
@@ -522,7 +522,7 @@ var evaluator =
           result,
           checks;
 
-        return _regenerator.default.wrap(function _callee3$(_context3) {
+        return _regenerator["default"].wrap(function _callee3$(_context3) {
           while (1) {
             switch ((_context3.prev = _context3.next)) {
               case 0:
@@ -532,7 +532,7 @@ var evaluator =
                   (alt_responses = _validation$alt_respo === void 0 ? [] : _validation$alt_respo),
                   (scoring_type = validation.scoring_type),
                   (attemptScore = validation.min_score_if_attempted);
-                answers = [valid_response].concat((0, _toConsumableArray2.default)(alt_responses));
+                answers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
                 _context3.t0 = scoring_type;
                 _context3.next = _context3.t0 === _scoring.ScoringType.EXACT_MATCH ? 6 : 6;
                 break;
@@ -569,4 +569,4 @@ var evaluator =
   })();
 
 var _default = evaluator;
-exports.default = _default;
+exports["default"] = _default;

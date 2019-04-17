@@ -41,7 +41,9 @@ export const EVENT_NAMES = {
 
   // local
   CHANGE_NEW: "change.new",
-  CHANGE_MOVE: "change.move"
+  CHANGE_MOVE: "change.move",
+  CHANGE_UPDATE: "change.update",
+  CHANGE_DELETE: "change.delete"
 };
 
 export default {

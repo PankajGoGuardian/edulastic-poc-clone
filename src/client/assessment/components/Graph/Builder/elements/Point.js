@@ -38,15 +38,15 @@ export function findPoint(elements, coords) {
 
 function onHandler(board, event) {
   const coords = board.getCoords(event);
-  const point = findPoint(board.elements, coords.usrCoords);
-  if (!point) {
-    return board.$board.create("point", coords.usrCoords, {
-      ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
-      ...Colors.default[CONSTANT.TOOLS.POINT],
-      label: getLabelParameters(window.JXG.OBJECT_TYPE_POINT)
-    });
-  }
-  return point;
+  // const point = findPoint(board.elements, coords.usrCoords);
+  // if (!point) {
+  return board.$board.create("point", coords.usrCoords, {
+    ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
+    ...Colors.default[CONSTANT.TOOLS.POINT],
+    label: getLabelParameters(window.JXG.OBJECT_TYPE_POINT)
+  });
+  // }
+  // return point;
 }
 
 function getConfig(point) {
@@ -56,7 +56,7 @@ function getConfig(point) {
     x: point.coords.usrCoords[1],
     y: point.coords.usrCoords[2],
     id: point.id,
-    label: point.hasLabel ? point.label.plaintext : false
+    label: point.labelHTML || false
   };
 }
 

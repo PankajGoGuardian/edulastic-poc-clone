@@ -30,17 +30,19 @@ function onLineHandler(type) {
   };
 }
 
-const cleanPoints = board => {
+function clean(board) {
+  const result = points.length > 0;
   points.forEach(point => board.$board.removeObject(point));
   points = [];
-};
+  return result;
+}
 
 function getConfig(line) {
   return {
     _type: line.type,
     type: getLineTypeByProp(line.getAttributes()),
     id: line.id,
-    label: line.hasLabel ? line.label.plaintext : false,
+    label: line.labelHTML || false,
     points: Object.keys(line.ancestors)
       .sort()
       .map(n => Point.getConfig(line.ancestors[n]))
@@ -54,9 +56,8 @@ function parseConfig(type) {
   };
 }
 
-function abort(cb) {
-  cb(points);
-  points = [];
+function getPoints() {
+  return points;
 }
 
 export default {
@@ -65,6 +66,6 @@ export default {
   },
   getConfig,
   parseConfig,
-  cleanPoints,
-  abort
+  clean,
+  getPoints
 };

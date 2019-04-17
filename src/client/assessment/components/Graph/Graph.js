@@ -59,100 +59,6 @@ const getStemNumerationList = () => [
 ];
 
 class Graph extends Component {
-  state = {
-    graphIsValid: false
-  };
-
-  componentDidMount() {
-    this.validateGraph();
-  }
-
-  // componentDidUpdate(prevProps) {
-  //   const { item } = this.props
-  //   const { canvas, ui_style } = item
-  //   console.log(this.props.item.canvas, prevProps.item.canvas)
-  //   const parsedGraphData = {
-  //     width: ui_style.layout_width ? parseInt(ui_style.layout_width, 10) : ui_style.layout_width,
-  //     height: ui_style.layout_height ? parseInt(ui_style.layout_height, 10) : ui_style.layout_height,
-  //     xMin: canvas.x_min ? parseInt(canvas.x_min, 10) : canvas.x_min,
-  //     xMax: canvas.x_max ? parseInt(canvas.x_max, 10) : canvas.x_max
-  //   }
-
-  //   const parsedPrevGraphData = {
-  //     width: prevProps.item.ui_style.layout_width ? parseInt(prevProps.item.ui_style.layout_width, 10) : prevProps.item.ui_style.layout_width,
-  //     height: prevProps.item.ui_style.layout_height ? parseInt(prevProps.item.ui_style.layout_height, 10) : prevProps.item.ui_style.layout_height,
-  //     xMin: prevProps.item.canvas.x_min ? parseInt(prevProps.item.canvas.x_min, 10) : prevProps.item.canvas.x_min,
-  //     xMax: prevProps.item.canvas.x_max ? parseInt(prevProps.item.canvas.x_max, 10) : prevProps.item.canvas.x_max
-  //   }
-  //   if (
-  //     parsedGraphData.xMin !== parsedPrevGraphData.xMin ||
-  //     parsedGraphData.xMax !== parsedPrevGraphData.xMax ||
-  //     parsedGraphData.height !== parsedPrevGraphData.height ||
-  //     parsedGraphData.width !== parsedPrevGraphData.width
-  //   ) {
-  //     console.log("Call")
-  //     this.validateGraph()
-  //   }
-  // }
-
-  componentDidUpdate(prevProps) {
-    const { item } = this.props;
-    if (item !== prevProps.item) {
-      this.validateGraph();
-    }
-  }
-
-  validateNumberline = () => {
-    const { item } = this.props;
-    const { canvas, ui_style } = item;
-    const { graphIsValid } = this.state;
-
-    const parsedGraphData = {
-      width: ui_style.layout_width ? parseInt(ui_style.layout_width, 10) : ui_style.layout_width,
-      height: ui_style.layout_height ? parseInt(ui_style.layout_height, 10) : ui_style.layout_height,
-      xMin: canvas.x_min ? parseInt(canvas.x_min, 10) : canvas.x_min,
-      xMax: canvas.x_max ? parseInt(canvas.x_max, 10) : canvas.x_max
-    };
-
-    if (
-      parsedGraphData.width === 0 ||
-      parsedGraphData.height === 0 ||
-      parsedGraphData.xMin === parsedGraphData.xMax ||
-      parsedGraphData.xMax < parsedGraphData.xMin ||
-      parsedGraphData.xMin > parsedGraphData.xMax ||
-      parsedGraphData.xMin.length === 0 ||
-      parsedGraphData.xMax.length === 0 ||
-      parsedGraphData.width.length === 0 ||
-      parsedGraphData.height.length === 0
-    ) {
-      if (graphIsValid) {
-        this.setState({ graphIsValid: false });
-      }
-    } else if (!graphIsValid) {
-      this.setState({ graphIsValid: true });
-    }
-  };
-
-  validateQuadrants = () => {
-    this.setState({ graphIsValid: true });
-  };
-
-  validateGraph = () => {
-    const { item } = this.props;
-    const { graphType } = item;
-
-    switch (graphType) {
-      case "axisSegments":
-      case "axisLabels":
-        this.validateNumberline();
-        break;
-      case "quadrants":
-      case "firstQuadrant":
-      default:
-        this.validateQuadrants();
-    }
-  };
-
   getOptionsComponent = () => {
     const { item } = this.props;
     const { graphType } = item;
@@ -298,6 +204,7 @@ class Graph extends Component {
     const newItem = cloneDeep(item);
 
     const response = {
+      id: `alt-${Math.random().toString(36)}`,
       score: 1,
       value: []
     };
@@ -348,7 +255,6 @@ class Graph extends Component {
       cleanSections
     } = this.props;
     const { graphType, extra_options } = item;
-    const { graphIsValid } = this.state;
     const OptionsComponent = this.getOptionsComponent();
     const MoreOptionsComponent = this.getMoreOptionsComponent();
 
@@ -372,33 +278,31 @@ class Graph extends Component {
                 cleanSections={cleanSections}
                 fillSections={fillSections}
               >
-                {graphIsValid ? (
-                  <React.Fragment>
-                    <CorrectAnswers
-                      graphData={item}
-                      onRemoveAltResponses={this.handleRemoveAltResponses}
-                      onAddAltResponses={this.handleAddAltResponses}
-                    />
-                    {(graphType === "quadrants" || graphType === "firstQuadrant") && (
-                      <React.Fragment>
-                        <Select
-                          style={{
-                            width: "auto",
-                            marginTop: "11px",
-                            marginRight: "10px",
-                            borderRadius: "10px"
-                          }}
-                          onChange={val => this.handleSelectIgnoreRepeatedShapes(val)}
-                          options={getIgnoreRepeatedShapesOptions()}
-                          value={item.validation.ignore_repeated_shapes}
-                        />{" "}
-                        Ignore repeated shapes
-                      </React.Fragment>
-                    )}
-                  </React.Fragment>
-                ) : (
-                  "Wrong parameters"
-                )}
+                <React.Fragment>
+                  <CorrectAnswers
+                    graphData={item}
+                    previewTab={previewTab}
+                    changePreviewTab={changePreviewTab}
+                    onRemoveAltResponses={this.handleRemoveAltResponses}
+                    onAddAltResponses={this.handleAddAltResponses}
+                  />
+                  {(graphType === "quadrants" || graphType === "firstQuadrant") && (
+                    <React.Fragment>
+                      <Select
+                        style={{
+                          width: "auto",
+                          marginTop: "11px",
+                          marginRight: "10px",
+                          borderRadius: "10px"
+                        }}
+                        onChange={val => this.handleSelectIgnoreRepeatedShapes(val)}
+                        options={getIgnoreRepeatedShapesOptions()}
+                        value={item.validation.ignore_repeated_shapes}
+                      />{" "}
+                      Ignore repeated shapes
+                    </React.Fragment>
+                  )}
+                </React.Fragment>
               </QuestionSection>
               <MoreOptionsComponent {...this.getMoreOptionsProps()} />
             </div>
@@ -413,9 +317,10 @@ class Graph extends Component {
               <GraphDisplay
                 checkAnswer
                 graphData={item}
+                previewTab={previewTab}
+                changePreviewTab={changePreviewTab}
                 onChange={this.handleAddAnswer}
                 elements={userAnswer}
-                changePreviewTab={changePreviewTab}
                 evaluation={evaluation}
               />
             )}
@@ -425,6 +330,7 @@ class Graph extends Component {
                 graphData={item}
                 onChange={this.handleAddAnswer}
                 elements={userAnswer}
+                previewTab={previewTab}
                 changePreviewTab={changePreviewTab}
                 evaluation={evaluation}
               />
@@ -435,6 +341,7 @@ class Graph extends Component {
                 graphData={item}
                 onChange={this.handleAddAnswer}
                 elements={userAnswer}
+                previewTab={previewTab}
                 changePreviewTab={changePreviewTab}
               />
             )}

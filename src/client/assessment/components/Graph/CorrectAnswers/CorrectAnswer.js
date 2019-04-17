@@ -26,7 +26,7 @@ class CorrectAnswer extends Component {
   };
 
   render() {
-    const { t, response, graphData } = this.props;
+    const { t, response, graphData, changePreviewTab, previewTab } = this.props;
     const { responseScore } = this.state;
     return (
       <div>
@@ -42,7 +42,14 @@ class CorrectAnswer extends Component {
           />
           <span>{t("component.correctanswers.points")}</span>
         </Header>
-        <GraphDisplay graphData={graphData} elements={response.value} onChange={this.setResponseValue} />
+        <GraphDisplay
+          changePreviewTab={changePreviewTab}
+          previewTab={previewTab}
+          graphData={graphData}
+          altAnswerId={response.id}
+          elements={response.value}
+          onChange={this.setResponseValue}
+        />
       </div>
     );
   }

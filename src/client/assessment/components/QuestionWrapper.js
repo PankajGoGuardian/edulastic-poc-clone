@@ -147,6 +147,7 @@ class QuestionWrapper extends Component {
       view,
       setQuestionData,
       t,
+      changePreviewTab,
       qIndex,
       ...restProps
     } = this.props;
@@ -168,6 +169,7 @@ class QuestionWrapper extends Component {
                 setQuestionData={setQuestionData}
                 item={data}
                 view={view}
+                changePreviewTab={changePreviewTab}
                 qIndex={qIndex}
                 cleanSections={this.cleanSections}
                 fillSections={this.fillSections}

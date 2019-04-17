@@ -105,7 +105,7 @@ class QuadrantsMoreOptions extends Component {
     return (
       <Fragment>
         <QuestionSection section="advanced" label="SCORING" cleanSections={cleanSections} fillSections={fillSections}>
-          <ScoreSettings setValidation={setValidation} graphData={graphData} />
+          <ScoreSettings showSelect={false} setValidation={setValidation} graphData={graphData} />
         </QuestionSection>
 
         <QuestionSection section="advanced" label="LAYOUT" cleanSections={cleanSections} fillSections={fillSections}>
@@ -502,7 +502,7 @@ class QuadrantsMoreOptions extends Component {
                 onChange={setBgShapes}
                 elements={graphData.background_shapes}
                 changePreviewTab={() => {}}
-                shapes
+                bgShapes
               />
             </MoreOptionsRow>
           </MoreOptionsContainer>

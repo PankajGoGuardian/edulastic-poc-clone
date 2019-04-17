@@ -277,17 +277,17 @@ const drawLine = (board, firstPoint, secondPoint, colors) =>
     ...colors
   });
 
-const loadSegment = (board, coords, leftIncluded, rightIncluded, segmentType, stackResponses, setAnswers) => {
-  const numberlineAxis = board.elements.filter(element => element.elType === "axis" || element.elType === "arrow");
+const loadSegment = (board, element, leftIncluded, rightIncluded, segmentType, stackResponses, setAnswers) => {
+  const numberlineAxis = board.elements.filter(el => el.elType === "axis" || el.elType === "arrow");
   const ticksDistance = numberlineAxis[0].ticks[0].getAttribute("ticksDistance");
 
   let ticks = getSpecialTicks(numberlineAxis[0]);
   ticks = ticks.sort((a, b) => a - b);
 
   if (!stackResponses) {
-    const firstPoint = drawPoint(board, coords[0], null, leftIncluded, false);
-    const secondPoint = drawPoint(board, coords[1], null, rightIncluded, false);
-    const segment = drawLine(board, firstPoint, secondPoint);
+    const firstPoint = drawPoint(board, element.point1, null, leftIncluded, false, element.leftPointColor);
+    const secondPoint = drawPoint(board, element.point2, null, rightIncluded, false, element.rightPointColor);
+    const segment = drawLine(board, firstPoint, secondPoint, element.lineColor);
     segment.segmentType = segmentType;
 
     previousPointsPositions.push(
@@ -301,24 +301,32 @@ const loadSegment = (board, coords, leftIncluded, rightIncluded, segmentType, st
 
     return segment;
   } else {
-    const firstPoint = drawPoint(board, coords[0], null, leftIncluded, false, coords[2]);
-    const secondPoint = drawPoint(board, coords[1], ticksDistance, rightIncluded, false, coords[2]);
+    const firstPoint = drawPoint(board, element.point1, null, leftIncluded, false, element.leftPointColor, element.y);
+    const secondPoint = drawPoint(
+      board,
+      element.point2,
+      ticksDistance,
+      rightIncluded,
+      false,
+      element.rightPointColor,
+      element.y
+    );
 
     firstPoint.setAttribute({ snapSizeY: 0.05 });
-    firstPoint.setPosition(window.JXG.COORDS_BY_USER, [firstPoint.X(), coords[2]]);
-    board.$board.on("move", () => firstPoint.moveTo([firstPoint.X(), coords[2]]));
+    firstPoint.setPosition(window.JXG.COORDS_BY_USER, [firstPoint.X(), element.y]);
+    board.$board.on("move", () => firstPoint.moveTo([firstPoint.X(), element.y]));
 
     secondPoint.setAttribute({ snapSizeY: 0.05 });
-    secondPoint.setPosition(window.JXG.COORDS_BY_USER, [secondPoint.X(), coords[2]]);
-    board.$board.on("move", () => secondPoint.moveTo([secondPoint.X(), coords[2]]));
+    secondPoint.setPosition(window.JXG.COORDS_BY_USER, [secondPoint.X(), element.y]);
+    board.$board.on("move", () => secondPoint.moveTo([secondPoint.X(), element.y]));
 
-    const segment = drawLine(board, firstPoint, secondPoint);
+    const segment = drawLine(board, firstPoint, secondPoint, element.lineColor);
     segment.segmentType = segmentType;
 
-    board.$board.on("drag", () => handleStackedSegmentDrag(segment, ticksDistance, numberlineAxis[0], coords[2]));
+    board.$board.on("drag", () => handleStackedSegmentDrag(segment, ticksDistance, numberlineAxis[0], element.y));
 
-    handleStackedSegmentPointDrag(firstPoint, numberlineAxis[0], coords[2]);
-    handleStackedSegmentPointDrag(secondPoint, numberlineAxis[0], coords[2]);
+    handleStackedSegmentPointDrag(firstPoint, numberlineAxis[0], element.y);
+    handleStackedSegmentPointDrag(secondPoint, numberlineAxis[0], element.y);
 
     return segment;
   }

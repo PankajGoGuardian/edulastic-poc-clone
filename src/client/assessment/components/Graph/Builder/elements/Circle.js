@@ -26,17 +26,19 @@ function onHandler() {
   };
 }
 
-const cleanPoints = board => {
+function clean(board) {
+  const result = points.length > 0;
   points.forEach(point => board.$board.removeObject(point));
   points = [];
-};
+  return result;
+}
 
 function getConfig(circle) {
   return {
     _type: circle.type,
     type: CONSTANT.TOOLS.CIRCLE,
     id: circle.id,
-    label: circle.hasLabel ? circle.label.plaintext : false,
+    label: circle.labelHTML || false,
     points: Object.keys(circle.ancestors)
       .sort()
       .map(n => Point.getConfig(circle.ancestors[n]))
@@ -51,15 +53,14 @@ function parseConfig() {
   };
 }
 
-function abort(cb) {
-  cb(points);
-  points = [];
+function getPoints() {
+  return points;
 }
 
 export default {
   onHandler,
   getConfig,
-  cleanPoints,
+  clean,
   parseConfig,
-  abort
+  getPoints
 };

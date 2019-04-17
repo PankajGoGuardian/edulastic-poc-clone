@@ -20,11 +20,13 @@ var shapesAreEqual = function shapesAreEqual(shape1, shape2) {
 
   switch (shape1.type) {
     case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.SEGMENTS_POINT:
-    case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.RAY_LEFT_DIRECTION:
     case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.RAY_RIGHT_DIRECTION:
-    case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
     case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
       return shape1.point1 === shape2.point1;
+
+    case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.RAY_LEFT_DIRECTION:
+    case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
+      return shape1.point2 === shape2.point2;
 
     case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.SEGMENT_BOTH_POINT_INCLUDED:
     case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.SEGMENT_LEFT_POINT_HOLLOW:

@@ -14,7 +14,7 @@ import Dropdown from "./Dropdown";
 import utils from "./utils";
 
 export default function Tools(props) {
-  const { tools, tool, shapes, controls, onSelect, fontSize, getIconByToolName, getHandlerByControlName } = props;
+  const { tools, tool, bgShapes, controls, onSelect, fontSize, getIconByToolName, getHandlerByControlName } = props;
 
   const uiTools = tools.map((_tool, index) => {
     if (Array.isArray(_tool)) {
@@ -49,7 +49,7 @@ export default function Tools(props) {
           uiTool =>
             !uiTool.group && (
               <ToolBtn
-                style={{ width: shapes ? 70 : fontSize > 20 ? 105 : 93 }}
+                style={{ width: bgShapes ? 70 : fontSize > 20 ? 105 : 93 }}
                 className={isActive(uiTool) ? "active" : ""}
                 onClick={() => onSelect(uiTool)}
                 key={Math.random().toString(36)}
@@ -112,7 +112,7 @@ export default function Tools(props) {
 Tools.propTypes = {
   tool: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   tools: PropTypes.array,
-  shapes: PropTypes.bool,
+  bgShapes: PropTypes.bool.isRequired,
   controls: PropTypes.shape.isRequired,
   getIconByToolName: PropTypes.func.isRequired,
   getHandlerByControlName: PropTypes.func.isRequired,

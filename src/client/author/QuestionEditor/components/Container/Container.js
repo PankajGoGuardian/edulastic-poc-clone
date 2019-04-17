@@ -92,6 +92,7 @@ class Container extends Component {
           type={questionType}
           view={view}
           previewTab={previewTab}
+          changePreviewTab={this.handleChangePreviewTab}
           key={questionType && view && saveClicked}
           data={question}
           questionId={question.id}

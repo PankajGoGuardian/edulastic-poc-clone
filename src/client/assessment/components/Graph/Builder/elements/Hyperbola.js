@@ -31,17 +31,19 @@ function onHandler() {
   };
 }
 
-const cleanPoints = board => {
+function clean(board) {
+  const result = points.length > 0;
   points.forEach(point => board.$board.removeObject(point));
   points = [];
-};
+  return result;
+}
 
 function getConfig(hyperbola) {
   return {
     _type: hyperbola.type,
     type: CONSTANT.TOOLS.HYPERBOLA,
     id: hyperbola.id,
-    label: hyperbola.hasLabel ? hyperbola.label.plaintext : false,
+    label: hyperbola.labelHTML || false,
     points: Object.keys(hyperbola.ancestors)
       .sort()
       .map(n => Point.getConfig(hyperbola.ancestors[n]))
@@ -56,15 +58,14 @@ function parseConfig() {
   };
 }
 
-function abort(cb) {
-  cb(points);
-  points = [];
+function getPoints() {
+  return points;
 }
 
 export default {
   onHandler,
   getConfig,
-  cleanPoints,
+  clean,
   parseConfig,
-  abort
+  getPoints
 };

@@ -9,7 +9,6 @@ import { testsApi, assignmentApi } from "@edulastic/api";
 
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
 import { loadQuestionsAction } from "../sharedDucks/questions";
-import { setTestItemsAction } from "./components/AddItems/ducks";
 
 // constants
 
@@ -43,6 +42,9 @@ export const CLEAR_TEST_DATA = "[test] clear test data";
 export const TEST_CREATE_SUCCESS = "[test] create test succes";
 export const SET_REGRADE_OLD_TESTID = "[test] set regrade old test_id";
 export const UPDATE_ENTITY_DATA = "[test] update entity data";
+export const RECEIVE_SHARED_USERS_LIST = "[test] receive shared users list";
+export const UPDATE_SHARED_USERS_LIST = "[test] update shared with users list";
+export const DELETE_SHARED_USER = "[test] delete share user from list";
 // actions
 
 export const receiveTestByIdAction = id => ({
@@ -116,6 +118,9 @@ export const sendTestShareAction = createAction(TEST_SHARE);
 export const publishTestAction = createAction(TEST_PUBLISH);
 export const updateTestStatusAction = createAction(UPDATE_TEST_STATUS);
 export const setRegradeOldIdAction = createAction(SET_REGRADE_OLD_TESTID);
+export const updateSharedWithListAction = createAction(UPDATE_SHARED_USERS_LIST);
+export const receiveSharedWithListAction = createAction(RECEIVE_SHARED_USERS_LIST);
+export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
 // reducer
 
 export const initialTestState = {
@@ -166,7 +171,8 @@ const initialState = {
   limit: 20,
   count: 0,
   loading: false,
-  creating: false
+  creating: false,
+  sharedUsersList: []
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -262,6 +268,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         creating: false
+      };
+    case UPDATE_SHARED_USERS_LIST:
+      return {
+        ...state,
+        sharedUsersList: payload
       };
     default:
       return state;
@@ -369,6 +380,7 @@ function* updateRegradeDataSaga({ payload }) {
 function* shareTestSaga({ payload }) {
   try {
     yield call(testsApi.shareTest, payload);
+    yield put(receiveSharedWithListAction(payload.testId));
     yield call(message.success, "Successfully shared");
   } catch (e) {
     const errorMessage = "Sharing failed";
@@ -393,6 +405,32 @@ function* publishTestSaga({ payload }) {
   }
 }
 
+function* receiveSharedWithListSaga({ payload }) {
+  try {
+    const result = yield call(testsApi.getSharedUsersList, payload);
+    const coAuthors = result.map(({ permission, sharedWith, sharedType, _id }) => ({
+      permission,
+      sharedWith,
+      sharedType,
+      sharedId: _id
+    }));
+    yield put(updateSharedWithListAction(coAuthors));
+  } catch (e) {
+    const errorMessage = "receive share with users list is failing";
+    yield call(message.error, errorMessage);
+  }
+}
+
+function* deleteSharedUserSaga({ payload }) {
+  try {
+    const authors = yield call(testsApi.deleteSharedUser, payload);
+    yield put(receiveSharedWithListAction(payload.testId));
+  } catch (e) {
+    const errorMessage = "delete shared user is failing";
+    yield call(message.error, errorMessage);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
@@ -400,7 +438,9 @@ export function* watcherSaga() {
     yield takeEvery(UPDATE_TEST_REQUEST, updateTestSaga),
     yield takeEvery(REGRADE_TEST, updateRegradeDataSaga),
     yield takeEvery(TEST_SHARE, shareTestSaga),
-    yield takeEvery(TEST_PUBLISH, publishTestSaga)
+    yield takeEvery(TEST_PUBLISH, publishTestSaga),
+    yield takeEvery(RECEIVE_SHARED_USERS_LIST, receiveSharedWithListSaga),
+    yield takeEvery(DELETE_SHARED_USER, deleteSharedUserSaga)
   ]);
 }
 
@@ -436,6 +476,34 @@ export const getTestsCreatingSelector = createSelector(
 export const getTestsLoadingSelector = createSelector(
   stateSelector,
   state => state.loading
+);
+
+export const getUserListSelector = createSelector(
+  stateSelector,
+  state => {
+    const usersList = state.sharedUsersList;
+    const flattenUsers = [];
+    usersList.forEach(({ permission, sharedType, sharedWith, sharedId }) => {
+      if (sharedType === "INDIVIDUAL" || sharedType === "SCHOOL") {
+        sharedWith.forEach(user => {
+          flattenUsers.push({
+            userName: user.name,
+            email: user.email || "",
+            _userId: user._id,
+            permission,
+            sharedId
+          });
+        });
+      } else {
+        flattenUsers.push({
+          userName: sharedType,
+          permission,
+          sharedId
+        });
+      }
+    });
+    return flattenUsers;
+  }
 );
 
 export const getTestItemsRowsSelector = createSelector(

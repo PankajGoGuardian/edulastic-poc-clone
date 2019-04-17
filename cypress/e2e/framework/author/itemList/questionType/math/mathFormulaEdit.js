@@ -219,7 +219,9 @@ class MathFormulaEdit {
 
   getAnswerMathInputStyle = () => cy.get(".input__math");
 
-  // getAnswerMathInputStyle = () => cy.get('[data-cy="answer-math-input-style"]');
+  getAnswerMathInputStyleasd = () => cy.get('[data-cy="answer-math-input-style"]');
+
+  getAnswerMathTextArea = () => this.getAnswerMathInputField().find("textarea");
 
   getAnswerMathTextArea = () => this.getAnswerMathInputField().find("textarea");
 
@@ -416,8 +418,10 @@ class MathFormulaEdit {
       .then(() => this.getAnswerRuleDropdownByValue(rule).click());
   };
 
+  unCheckAllCheckBox = () => cy.get("input[type='checkbox']").uncheck({ force: true });
+
   setSeparator = checBoxName => () => {
-    cy.get("input[type='checkbox']").uncheck({ force: true });
+    this.unCheckAllCheckBox();
     if (checBoxName)
       this[checBoxName]()
         .check({ force: true })

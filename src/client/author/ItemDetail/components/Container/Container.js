@@ -341,6 +341,7 @@ class Container extends Component {
             showPublishButton={showPublishButton}
             hasAuthorPermission={hasAuthorPermission}
             itemStatus={item && item.status}
+
             renderExtra={() =>
               modalItemId && (
                 <ButtonClose onClick={onModalClose}>

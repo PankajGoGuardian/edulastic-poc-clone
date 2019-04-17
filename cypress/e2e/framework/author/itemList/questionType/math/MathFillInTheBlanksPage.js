@@ -26,13 +26,17 @@ class MathFillInTheBlanksPage extends MathFractionPage {
     });
   };
 
-  checkCorrectAnswerWithResponse = (expectedValues, preview, inputLength, isCorrect) => {
+  checkCorrectAnswerWithResponse = (expectedValues, preview, inputLength, isCorrect, clearedResponse = false) => {
     preview.header.preview();
     preview.getClear().click();
     this.getAnswerMathTextArea().then(inputElements => {
       if (Array.isArray(expectedValues)) {
         expectedValues.forEach((expectedValue, index) => {
-          cy.wrap(inputElements[index]).typeWithDelay(expectedValue);
+          if (!clearedResponse) {
+            cy.wrap(inputElements[index]).typeWithDelay(expectedValue);
+          } else {
+            this.getAnswerMathTextArea().typeWithDelay(expectedValue);
+          }
         });
       } else {
         cy.wrap(inputElements).typeWithDelay(expectedValues);
@@ -66,8 +70,7 @@ class MathFillInTheBlanksPage extends MathFractionPage {
       .click()
       .then(() => this.getAnswerArgumentDropdownByValue(value).click());
 
-  allowDecimalMarksWithResponse = (separator, inputLength, expected, preview, isCorrect = false) => {
-    this.getAnswerAllowThousandsSeparator().check({ force: true });
+  setThousandsSeparatorDropdown = separator =>
     this.getThousandsSeparatorDropdown()
       .click()
       .then(() => {
@@ -75,6 +78,11 @@ class MathFillInTheBlanksPage extends MathFractionPage {
           .should("be.visible")
           .click();
       });
+
+  allowDecimalMarksWithResponse = (separator, inputLength, expected, preview, isCorrect = false) => {
+    this.unCheckAllCheckBox();
+    this.getAnswerAllowThousandsSeparator().check({ force: true });
+    this.setThousandsSeparatorDropdown(separator);
     this.checkCorrectAnswerWithResponse(expected, preview, inputLength, isCorrect);
     this.getAnswerAllowThousandsSeparator().uncheck({ force: true });
   };

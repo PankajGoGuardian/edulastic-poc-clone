@@ -6,7 +6,7 @@ import EditToolBar from "../../../../framework/author/itemList/questionType/comm
 import PreviewItemPage from "../../../../framework/author/itemList/itemDetail/previewPage";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
-describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill in the blanks" type question`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math units" type question`, () => {
   const queData = {
     mockString: "10-5+8-4",
     group: "Math",
@@ -41,10 +41,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
       setDecimalSeparator: {
         thousand: "Dot",
         separator: "Comma",
-        expected: "1,01",
-        input: "1.01"
+        expected: "1,01cm",
+        input: "1.01cm"
       },
       setThousandsSeparator: {
+        thousand: "Dot",
         separators: ["Comma", "Space"],
         expected: ["1,000,000", "1 000 000"],
         input: "1000000"
@@ -75,7 +76,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
       },
       ignoreTrailing: {
         expected: "1000.000cm",
-        input: "1000cm",
+        input: "1000ccm",
         checkboxValues: ["getAnswerIgnoreTrailingZeros", null],
         isCorrectAnswer: [true, false]
       },
@@ -94,8 +95,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
     },
     equivValue: {
       compareSides: {
-        expected: "4cm+5cm=9cm",
-        input: "5cm+4cm=9cm"
+        expected: "4cm + 3cm = 7cm",
+        input: "3cm+4cm=7cm"
       },
       inverse: {
         expected: "44",
@@ -115,7 +116,114 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         expected: "8.5",
         tolerance: "±1.5"
       }
-    }
+    },
+    isSimplified: {
+      simplifiedVersion: {
+        expected: "10cm"
+      }
+    },
+    isFactorised: {
+      inverseResult: {
+        expected: "(x−1)(x−2)"
+      }
+    },
+    isExpanded: {
+      expandedForm: {
+        expected: "x"
+      }
+    },
+    isUnit: {
+      expectedUnits: {
+        expected: "7ft",
+        input: "7ft",
+        units: "ft"
+      },
+      allowedUnits: {
+        expected: "12km",
+        units: "km"
+      }
+    },
+    isTrue: {
+      comparison: {
+        expected: "6cm=6cm"
+      },
+      significantDecimal: {
+        expected: "0.33",
+        input: 2
+      }
+    },
+    stringMatch: {
+      literalStringComparison: {
+        expected: "abc",
+        input: "abc"
+      },
+      leadingAndTrailing: {
+        expected: " a ",
+        input: "a"
+      },
+      multipleSpaces: {
+        expected: "a   b",
+        input: "a b"
+      }
+    },
+    equivSyntax: {
+      decimal: {
+        expected: "2.165cm",
+        input: "3"
+      },
+      simpleFraction: {
+        expected: "2÷4"
+      },
+      mixedFraction: {
+        expected: "1+2cm÷5cm"
+      },
+      exponent: {
+        expected: ["2^2", "{downarrow}", "cm"]
+      },
+      standardFormLinear: {
+        expected: "Ax+By=C"
+      },
+      standardFormQuadratic: {
+        expected: ["5x^2", "{downarrow}", "+3x=4"]
+      },
+      slopeIntercept: {
+        expected: "y=-x+1"
+      },
+      pointSlope: {
+        expected: "(y-1)=2(x+3)"
+      }
+    },
+    combination: {
+      ignoreTxt: {
+        expected: "7.00001m",
+        input: "7",
+        decimalPlaces: 3
+      },
+      significantDecimalPlaces: {
+        expected: "5cm",
+        inputs: ["5.001cm", "5.0001cm"],
+        isCorrectAnswer: [false, true],
+        decimalPlaces: 3
+      },
+      setDecimalSeparator: {
+        expected: "1.000001cm",
+        input: "1,000001cm",
+        decimalSeparators: "Comma",
+        thousandsSeparators: "Dot"
+      },
+      setThousandsSeparator: {
+        separators: ["Space", "Comma"],
+        inputs: ["\\frac{enter}1{downarrow}1 000cm", "\\frac{enter}1{downarrow}1,000cm"],
+        expected: "0.001cm",
+        isCirrectUnsver: [true, true]
+      },
+      compareSides: {
+        input: "3cm+4cm=7cm",
+        expected: "4cm + 3cm = 7cm"
+      }
+    },
+    decimalSeparators: ["Dot", "Comma"],
+    thousandsSeparators: ["Space", "Dot", "Comma"]
   };
   const question = new MathWithUnitsPage();
   const editItem = new EditItemPage();
@@ -225,7 +333,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
     });
 
     context("TC_523 => equivSymbolic method", () => {
-      beforeEach("Back to create question", () => {
+      beforeEach("Back to create question and set math method", () => {
         preview.header.edit();
         question.setMethod(methods.EQUIV_SYMBOLIC);
       });
@@ -323,7 +431,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
     });
 
     context("TC_524 => equivLiteral method", () => {
-      beforeEach("Back to create question", () => {
+      beforeEach("Back to create question and set math method", () => {
         preview.header.edit();
         question.setMethod(methods.EQUIV_LITERAL);
       });
@@ -379,7 +487,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
     });
 
     context("TC_525 => equivValue method", () => {
-      beforeEach("Back to create question", () => {
+      beforeEach("Back to create question and set math method", () => {
         preview.header.edit();
         question.setMethod(methods.EQUIV_VALUE);
       });
@@ -445,8 +553,335 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
       });
     });
 
-    // context("TC_552 => Combination of methods", () => {
-    // TODO
-    // });
+    context("TC_526 => isSimplified method", () => {
+      beforeEach("Back to create question and set math method", () => {
+        preview.header.edit();
+        question.setMethod(methods.IS_SIMPLIFIED);
+      });
+      it("Testing inverse result", () => {
+        const { expected } = queData.isSimplified.simplifiedVersion;
+
+        question.setSeparator("getAnswerInverseResult")();
+
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
+      });
+      it("Testing with allow decimal marks", () => {
+        const { expected, separators } = queData.equivSymbolic.setThousandsSeparator;
+
+        separators.forEach((separator, index) =>
+          question.allowDecimalMarksWithResponse(separator, 0, expected[index], preview, true)
+        );
+      });
+    });
+
+    context("TC_527 => isFactorised method", () => {
+      beforeEach("Back to create question and set math method", () => {
+        preview.header.edit();
+        question.setMethod(methods.IS_FACTORISED);
+      });
+      it("Testing with allow decimal marks", () => {
+        const { expected, separators } = queData.equivSymbolic.setThousandsSeparator;
+
+        separators.forEach((separator, index) =>
+          question.allowDecimalMarksWithResponse(separator, 0, expected[index], preview, true)
+        );
+      });
+      it("Testing with field", () => {
+        question.mapIsFactorisedMethodFields(fields);
+      });
+
+      it("Testing inverse result", () => {
+        const { expected } = queData.isFactorised.inverseResult;
+
+        question.setMethod(methods.IS_FACTORISED, question.setSeparator("getAnswerInverseResult"));
+
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, false);
+      });
+    });
+
+    context("TC_528 => isExpanded method", () => {
+      beforeEach("Back to create question and set math method", () => {
+        preview.header.edit();
+        question.setMethod(methods.IS_EXPANDED);
+      });
+      it("Testing with allow decimal marks", () => {
+        const { expected, separators } = queData.equivSymbolic.setThousandsSeparator;
+
+        separators.forEach((separator, index) =>
+          question.allowDecimalMarksWithResponse(separator, 0, expected[index], preview, true)
+        );
+      });
+      it("Testing that a mathematical expression is in factorised form", () => {
+        const { expected } = queData.isExpanded.expandedForm;
+
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
+      });
+    });
+
+    context("TC_529 => isUnit method", () => {
+      beforeEach("Back to create question and set math method", () => {
+        preview.header.edit();
+        question.setMethod(methods.IS_UNIT);
+      });
+      it("Testing with allow decimal marks", () => {
+        const { expected, separators, input } = queData.equivSymbolic.setThousandsSeparator;
+        question.getAnswerValueMathInput().type(input, { force: true });
+        separators.forEach((separator, index) =>
+          question.allowDecimalMarksWithResponse(separator, input.length, expected[index], preview, true)
+        );
+      });
+      it("Testing with expression contains the expected units", () => {
+        const { input, expected, units } = queData.isUnit.expectedUnits;
+
+        question.setValue(input);
+        question.setAllowedUnitsInput(units);
+        question.checkCorrectAnswerWithResponse(expected, preview, input.length, true);
+      });
+
+      it("Testing with allowed units", () => {
+        const { expected, units } = queData.isUnit.allowedUnits;
+
+        question.setAllowedUnitsInput(units);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
+        question.getAnswerAllowedUnits().clear({ force: true });
+      });
+    });
+
+    context("TC_530 =>  isTrue method", () => {
+      beforeEach("Back to create question and set math method", () => {
+        preview.header.edit();
+        question.setMethod(methods.IS_TRUE);
+      });
+      it("Testing that an expression has a comparison, or equality", () => {
+        const { expected } = queData.isTrue.comparison;
+
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
+      });
+      it("Testing significant decimal places", () => {
+        const { input, expected } = queData.isTrue.significantDecimal;
+
+        question.setArgumentInput("getAnswerSignificantDecimalPlaces", input);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
+      });
+
+      it("Testing with allow decimal marks", () => {
+        const { expected, separators } = queData.equivSymbolic.setThousandsSeparator;
+
+        separators.forEach((separator, index) =>
+          question.allowDecimalMarksWithResponse(separator, 0, expected[index], preview, true)
+        );
+      });
+    });
+
+    context("TC_531 =>  stringMatch method", () => {
+      beforeEach("Back to create question and set math method", () => {
+        preview.header.edit();
+        question.setMethod(methods.STRING_MATCH);
+      });
+      it("Testing with literal string comparison", () => {
+        const { input, expected } = queData.stringMatch.literalStringComparison;
+
+        question.setValue(input);
+
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
+      });
+
+      it("Testing ignores spaces before and after a value", () => {
+        const { input, expected } = queData.stringMatch.leadingAndTrailing;
+
+        question.setValue(input);
+        question.setSeparator("getAnswerIgnoreLeadingAndTrailingSpaces")();
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
+      });
+      it("Testing multiple spaces will be ignored and treated as one", () => {
+        const { input, expected } = queData.stringMatch.multipleSpaces;
+
+        question.setValue(input);
+        question.setSeparator("getAnswerTreatMultipleSpacesAsOne")();
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
+      });
+    });
+
+    context("TC_532 =>  equivSyntax method", () => {
+      beforeEach("Change to equivSyntax method", () => {
+        preview.header.edit();
+        question.setMethod(methods.EQUIV_SYNTAX);
+      });
+
+      it("Testing Rule : Decimal", () => {
+        const { input, expected } = queData.equivSyntax.decimal;
+
+        question.setRule(syntaxes.DECIMAL);
+        question.setArgumentInput("getAnswerRuleArgumentInput", input);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
+      });
+
+      it("Testing Rule : Simple Fraction", () => {
+        const { expected } = queData.equivSyntax.simpleFraction;
+
+        question.setRule(syntaxes.SIMPLE_FRACTION);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
+      });
+
+      it("Testing Rule : mixed Fraction", () => {
+        const { expected } = queData.equivSyntax.mixedFraction;
+
+        question.setRule(syntaxes.MIXED_FRACTION);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
+      });
+
+      it("Testing Rule : Exponent", () => {
+        const { expected } = queData.equivSyntax.exponent;
+
+        question.setRule(syntaxes.EXPONENT);
+        question.clearTemplateInput();
+
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true, true);
+        question.setResponseInput();
+      });
+
+      it("Testing Rule : Standard form, Argument: linear", () => {
+        const { expected } = queData.equivSyntax.standardFormLinear;
+
+        question.setRule(syntaxes.STANDARD_FORM);
+        question.setAnswerArgumentDropdownValue(ruleArguments[0]);
+        question.setResponseInput();
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
+      });
+
+      it("Testing Rule : Standard form, Argument: quadratic", () => {
+        const { expected } = queData.equivSyntax.standardFormQuadratic;
+
+        question.setRule(syntaxes.STANDARD_FORM);
+        question.setAnswerArgumentDropdownValue(ruleArguments[1]);
+        question.clearTemplateInput();
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true, true);
+        question.setResponseInput();
+      });
+
+      it("Testing Rule : Slope intercept form", () => {
+        const { expected } = queData.equivSyntax.slopeIntercept;
+
+        question.setRule(syntaxes.SLOPE_INTERCEPT_FORM);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
+      });
+
+      it("Testing Rule : point slope form", () => {
+        const { expected } = queData.equivSyntax.pointSlope;
+
+        question.setRule(syntaxes.POINT_SLOPE_FORM);
+        question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
+      });
+    });
+
+    context("TC_552 => Validate different evaluation methods", () => {
+      before("visit items page and select question type", () => {
+        editItem.getItemWithId();
+        editItem.deleteAllQuestion();
+        // create new que and select type
+        editItem.addNew().chooseQuestion(queData.group, queData.queType);
+        question.clearTemplateInput();
+        question.setResponseInput();
+      });
+      beforeEach("Change to equivSyntax method", () => {
+        preview.header.edit();
+        question.setMethod(methods.EQUIV_SYMBOLIC);
+      });
+
+      it("Combination of methods ignoreText and significantDecimalPlaces", () => {
+        const { input, decimalPlaces, expected } = queData.combination.ignoreTxt;
+        question.setValue(input);
+        question.setArgumentInput("getAnswerSignificantDecimalPlaces", decimalPlaces);
+        question.setSeparator("getAnswerIgnoreTextCheckox")();
+
+        question.checkCorrectAnswerWithResponse(expected, preview, input.length, true);
+      });
+
+      it("Combination of methods setDecimalSeparator", () => {
+        const { expected, input, decimalSeparators, thousandsSeparators } = queData.combination.setDecimalSeparator;
+
+        question.setValue(input);
+        question.setSeparator("getAnswerAllowThousandsSeparator")();
+        question.setDecimalSeperator(decimalSeparators);
+        question.getAnswerSetDecimalSeparatorDropdown().contains("div", decimalSeparators);
+        question.setThousandsSeparatorDropdown(thousandsSeparators);
+
+        question.checkCorrectAnswerWithResponse(expected, preview, input.length, true);
+      });
+
+      it("Combination of methods significantDecimalPlaces", () => {
+        const { expected, inputs, isCorrectAnswer, decimalPlaces } = queData.combination.significantDecimalPlaces;
+        question.unCheckAllCheckBox();
+        inputs.forEach((input, index) => {
+          question.setValue(input);
+          question.setArgumentInput("getAnswerSignificantDecimalPlaces", decimalPlaces);
+          question.checkCorrectAnswerWithResponse(expected, preview, input.length, isCorrectAnswer[index]);
+        });
+      });
+
+      it("Combination of methods setThousandsSeparator - Space and Comma", () => {
+        const { inputs, expected, separators, isCirrectUnsver } = queData.combination.setThousandsSeparator;
+
+        separators.forEach((separator, index) => {
+          const input = inputs[index];
+          question.setValue(input);
+          question.allowDecimalMarks(separator, input.length, expected, preview, isCirrectUnsver[index]);
+        });
+      });
+
+      it("Combination of methods ignoreText", () => {
+        const { expected, input } = queData.combination.compareSides;
+        question.setValue(input);
+        question.setSeparator("getAnswerCompareSides")();
+        question.checkCorrectAnswer(expected, preview, 0, true);
+      });
+    });
+
+    context("TC_534 => Preview Items", () => {
+      it("Click on preview", () => {
+        previewItems = editItem.header.preview();
+        question.getBody().contains("span", "Check Answer");
+
+        question.getAnswerMathTextArea().typeWithDelay(queData.answer.value);
+      });
+
+      it("Click on Check answer", () => {
+        previewItems
+          .getCheckAnswer()
+          .click()
+          .then(() =>
+            question
+              .getBody()
+              .children()
+              .should("contain", "score: 1/1")
+          );
+      });
+
+      it("Click on Show Answers", () => {
+        previewItems
+          .getShowAnswer()
+          .click()
+          .then(() => {
+            question.getCorrectAnswerBox().should("be.visible");
+          });
+      });
+
+      it("Click on Clear", () => {
+        preview.getClear().click();
+        question.getAnswerMathTextArea().then(inputElements =>
+          cy.wrap(inputElements).then(inputElement => {
+            expect(inputElement[0].offsetParent.parentElement.innerText).to.be.equal("");
+            preview.header.edit();
+          })
+        );
+      });
+    });
+
+    context("TC_533 => Save question", () => {
+      it("Click on save button", () => {
+        question.header.save();
+        cy.url().should("contain", "item-detail");
+      });
+    });
   });
 });

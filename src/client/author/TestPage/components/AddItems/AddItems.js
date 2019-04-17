@@ -9,11 +9,13 @@ import { Paper, FlexContainer, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { Container, TopMenu, MainList, ListItems, ItemsTableContainer, StyledButton, StyledSelect } from "./styled";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
+import { getCreateItemModalVisibleSelector } from "../../../src/selectors/testItem";
 import {
   clearDictStandardsAction,
   getDictCurriculumsAction,
   getDictStandardsForCurriculumAction
 } from "../../../src/actions/dictionaries";
+import { createTestItemAction } from "../../../src/actions/testItem";
 import {
   getTestItemsLoadingSelector,
   getTestItemsSelector,
@@ -25,6 +27,7 @@ import {
 import ItemsTable from "../common/ItemsTable/ItemsTable";
 import ItemFilter from "../../../ItemList/components/ItemFilter/ItemFilter";
 import { getClearSearchState, filterMenuItems } from "../../../ItemList";
+import ModalCreateTestItem from "../ModalCreateTestItem/ModalCreateTestItem";
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -49,7 +52,14 @@ class AddItems extends PureComponent {
     getCurriculums: PropTypes.func.isRequired,
     getCurriculumStandards: PropTypes.func.isRequired,
     curriculumStandards: PropTypes.array.isRequired,
-    clearDictStandards: PropTypes.func.isRequired
+    clearDictStandards: PropTypes.func.isRequired,
+    onSaveTestId: PropTypes.func.isRequired,
+    createTestItem: PropTypes.func.isRequired,
+    createTestItemModalVisible: PropTypes.bool
+  };
+
+  static defaultProps = {
+    createTestItemModalVisible: false
   };
 
   state = {
@@ -95,8 +105,18 @@ class AddItems extends PureComponent {
   };
 
   handleCreateNewItem = () => {
-    const { history } = this.props;
-    history.push("/author/items");
+    const { onSaveTestId, createTestItem } = this.props;
+    const defaultWidgets = {
+      rows: [
+        {
+          tabs: [],
+          dimension: "100%",
+          widgets: []
+        }
+      ]
+    };
+    onSaveTestId();
+    createTestItem(defaultWidgets, true);
   };
 
   handleSearchFieldChangeCurriculumId = value => {
@@ -171,7 +191,8 @@ class AddItems extends PureComponent {
       loading,
       items,
       onAddItems,
-      t
+      t,
+      createTestItemModalVisible
     } = this.props;
 
     const { search, selectedTestItems } = this.state;
@@ -232,6 +253,7 @@ class AddItems extends PureComponent {
             {this.renderPagination()}
           </ListItems>
         </MainList>
+        {createTestItemModalVisible && <ModalCreateTestItem />}
       </Container>
     );
   }
@@ -249,13 +271,15 @@ const enhance = compose(
       limit: getTestsItemsLimitSelector(state),
       count: getTestsItemsCountSelector(state),
       curriculums: getCurriculumsListSelector(state),
-      curriculumStandards: getStandardsListSelector(state)
+      curriculumStandards: getStandardsListSelector(state),
+      createTestItemModalVisible: getCreateItemModalVisibleSelector(state)
     }),
     {
       receiveTestItems: receiveTestItemsAction,
       getCurriculums: getDictCurriculumsAction,
       getCurriculumStandards: getDictStandardsForCurriculumAction,
-      clearDictStandards: clearDictStandardsAction
+      clearDictStandards: clearDictStandardsAction,
+      createTestItem: createTestItemAction
     }
   )
 );

@@ -26,6 +26,7 @@ import {
 } from "../../ducks";
 import { getSelectedItemSelector, clearSelectedItemsAction } from "../AddItems/ducks";
 import { loadAssignmentsAction } from "../Assign/ducks";
+import { saveCurrentEditingTestIdAction } from "../../../ItemDetail/ducks";
 import { getUserSelector } from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
@@ -57,7 +58,8 @@ class Container extends PureComponent {
     test: PropTypes.object,
     user: PropTypes.object,
     isTestLoading: PropTypes.bool.isRequired,
-    clearSelectedItems: PropTypes.func.isRequired
+    clearSelectedItems: PropTypes.func.isRequired,
+    saveCurrentEditingTestId: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -147,6 +149,11 @@ class Container extends PureComponent {
     setData({ ...test, subjects });
   };
 
+  handleSaveTestId = () => {
+    const { test, saveCurrentEditingTestId } = this.props;
+    saveCurrentEditingTestId(test._id);
+  };
+
   renderContent = () => {
     const { test, setData, rows, isTestLoading } = this.props;
     if (isTestLoading) {
@@ -157,7 +164,14 @@ class Container extends PureComponent {
     const selectedItems = test.testItems.map(item => (_isObject(item) ? item._id : item)).filter(_identity);
     switch (current) {
       case "addItems":
-        return <AddItems onAddItems={this.handleAddItems} selectedItems={selectedItems} current={current} />;
+        return (
+          <AddItems
+            onAddItems={this.handleAddItems}
+            selectedItems={selectedItems}
+            current={current}
+            onSaveTestId={this.handleSaveTestId}
+          />
+        );
       case "summary":
         return (
           <Summary onShowSource={this.handleNavChange("source")} setData={setData} test={test} current={current} />
@@ -318,7 +332,8 @@ const enhance = compose(
       publishTest: publishTestAction,
       clearSelectedItems: clearSelectedItemsAction,
       setRegradeOldId: setRegradeOldIdAction,
-      clearTestAssignments: loadAssignmentsAction
+      clearTestAssignments: loadAssignmentsAction,
+      saveCurrentEditingTestId: saveCurrentEditingTestIdAction
     }
   )
 );

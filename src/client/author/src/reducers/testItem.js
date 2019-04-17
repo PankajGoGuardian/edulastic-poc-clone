@@ -1,9 +1,16 @@
-import { CREATE_TEST_ITEM_REQUEST, CREATE_TEST_ITEM_SUCCESS, CREATE_TEST_ITEM_ERROR } from "../constants/actions";
+import {
+  CREATE_TEST_ITEM_REQUEST,
+  CREATE_TEST_ITEM_SUCCESS,
+  CREATE_TEST_ITEM_ERROR,
+  TOGGLE_CREATE_ITEM_MODAL
+} from "../constants/actions";
 
 const initialState = {
   item: [],
   createError: null,
-  creating: false
+  creating: false,
+  createItemModalVisible: false,
+  modalItemId: undefined
 };
 
 export default (state = initialState, { type, payload }) => {
@@ -18,6 +25,12 @@ export default (state = initialState, { type, payload }) => {
       };
     case CREATE_TEST_ITEM_ERROR:
       return { ...state, creating: false, createError: payload.error };
+    case TOGGLE_CREATE_ITEM_MODAL:
+      return {
+        ...state,
+        createItemModalVisible: payload.modalVisible,
+        modalItemId: payload.itemId
+      };
     default:
       return state;
   }

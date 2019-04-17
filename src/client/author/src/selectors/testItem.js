@@ -14,3 +14,13 @@ export const getTestItemErrorSelector = createSelector(
   stateSelector,
   state => state.createError
 );
+
+export const getCreateItemModalVisibleSelector = createSelector(
+  stateSelector,
+  state => state.createItemModalVisible
+);
+
+export const getCreateItemModalItemIdSelector = createSelector(
+  stateSelector,
+  state => state.modalItemId
+);

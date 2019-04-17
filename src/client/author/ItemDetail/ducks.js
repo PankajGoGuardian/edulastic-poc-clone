@@ -37,6 +37,8 @@ export const ITEM_DETAIL_PUBLISH = "[itemDetail] publish test item";
 export const UPDATE_TESTITEM_STATUS = "[itemDetail] update test item status";
 export const ITEM_SET_REDIRECT_TEST = "[itemDetail] set redirect test id";
 export const ITEM_CLEAR_REDIRECT_TEST = "[itemDetail] clear redirect test id";
+
+export const SAVE_CURRENT_EDITING_TEST_ID = "[itemDetail] save current editing test id";
 // actions
 
 export const getItemDetailByIdAction = (id, params) => ({
@@ -117,6 +119,11 @@ export const updateTestItemStatusAction = status => ({
 export const setRedirectTestAction = createAction(ITEM_SET_REDIRECT_TEST);
 export const clearRedirectTestAction = createAction(ITEM_CLEAR_REDIRECT_TEST);
 
+export const saveCurrentEditingTestIdAction = id => ({
+  type: SAVE_CURRENT_EDITING_TEST_ID,
+  payload: id
+});
+
 // reducer
 
 const initialState = {
@@ -126,7 +133,8 @@ const initialState = {
   updating: false,
   updateError: null,
   dragging: false,
-  redirectTestId: null
+  redirectTestId: null,
+  currentEditingTestId: null
 };
 
 const deleteWidget = (state, { rowIndex, widgetIndex }) => {
@@ -227,6 +235,11 @@ export function reducer(state = initialState, { type, payload }) {
           ...state.item,
           status: payload
         }
+      };
+    case SAVE_CURRENT_EDITING_TEST_ID:
+      return {
+        ...state,
+        currentEditingTestId: payload
       };
     default:
       return state;

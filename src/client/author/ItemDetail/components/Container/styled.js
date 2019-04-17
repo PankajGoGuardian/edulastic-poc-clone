@@ -1,5 +1,5 @@
 import { Paper } from "@edulastic/common";
-import { mobileWidth } from "@edulastic/colors";
+import { mobileWidth, white } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Content = styled(Paper)`
@@ -31,5 +31,22 @@ export const ItemDetailWrapper = styled.div`
   @media (max-width: ${mobileWidth}) {
     margin-top: 50px;
     padding: 0px 25px;
+  }
+`;
+
+export const ButtonClose = styled.div`
+  width: 40px;
+  height: 40px;
+  padding: 10px;
+  cursor: pointer;
+
+  &:hover {
+    svg {
+      fill: ${white};
+    }
+  }
+
+  svg {
+    fill: ${white};
   }
 `;

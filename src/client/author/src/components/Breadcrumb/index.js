@@ -14,7 +14,7 @@ const BreadCrumb = props => {
           data.map((breadCrumb, index) => (
             <Breadcrumb.Item key={`bread${index}`}>
               {index !== data.length - 1 ? (
-                <Link to={breadCrumb.to}>
+                <Link to={breadCrumb.to} onClick={breadCrumb.onClick}>
                   <span dangerouslySetInnerHTML={{ __html: breadCrumb.title.toLowerCase() }} />
                 </Link>
               ) : (

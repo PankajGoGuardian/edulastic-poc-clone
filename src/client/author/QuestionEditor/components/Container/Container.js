@@ -7,6 +7,7 @@ import { withRouter } from "react-router-dom";
 
 import { withNamespaces } from "@edulastic/localization";
 import { ContentWrapper, withWindowSizes } from "@edulastic/common";
+import { IconClose } from "@edulastic/icons";
 
 import SourceModal from "../SourceModal/SourceModal";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
@@ -14,6 +15,7 @@ import { getViewSelector } from "../../../src/selectors/view";
 import { ButtonBar, SecondHeadBar } from "../../../src/components/common";
 import QuestionWrapper from "../../../../assessment/components/QuestionWrapper";
 import QuestionMetadata from "../../../../assessment/containers/QuestionMetadata";
+import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
 import ItemHeader from "../ItemHeader/ItemHeader";
 import { saveQuestionAction, setQuestionDataAction } from "../../ducks";
 import { getItemIdSelector } from "../../../ItemDetail/ducks";
@@ -55,8 +57,9 @@ class Container extends Component {
   };
 
   handleSave = () => {
-    const { saveQuestion } = this.props;
-    saveQuestion();
+    const { saveQuestion, modalItemId, onCompleteItemCreation } = this.props;
+    saveQuestion(modalItemId);
+    onCompleteItemCreation();
   };
 
   handleChangePreviewTab = previewTab => {
@@ -99,7 +102,27 @@ class Container extends Component {
   };
 
   get breadcrumb() {
-    const { question, testItemId } = this.props;
+    const { question, testItemId, modalItemId, navigateToPickupQuestionType, navigateToItemDetail } = this.props;
+
+    if (modalItemId) {
+      return [
+        {
+          title: "ITEM DETAIL",
+          to: "",
+          onClick: navigateToItemDetail
+        },
+        {
+          title: "SELECT A QUESTION TYPE",
+          to: "",
+          onClick: navigateToPickupQuestionType
+        },
+        {
+          title: question.title,
+          to: ""
+        }
+      ];
+    }
+
     return [
       {
         title: "ITEM DETAIL",
@@ -113,7 +136,7 @@ class Container extends Component {
   }
 
   render() {
-    const { view, question, history } = this.props;
+    const { view, question, history, modalItemId, onModalClose } = this.props;
 
     if (!question) {
       const backUrl = get(history, "location.state.backUrl", "");
@@ -146,6 +169,13 @@ class Container extends Component {
             onSave={this.handleSave}
             view={view}
             previewTab={previewTab}
+            renderExtra={() =>
+              modalItemId && (
+                <ButtonClose onClick={onModalClose}>
+                  <IconClose />
+                </ButtonClose>
+              )
+            }
           />
         </ItemHeader>
 
@@ -178,11 +208,21 @@ Container.propTypes = {
   saveQuestion: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   testItemId: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  modalItemId: PropTypes.string,
+  onModalClose: PropTypes.func,
+  navigateToPickupQuestionType: PropTypes.func,
+  navigateToItemDetail: PropTypes.func,
+  onCompleteItemCreation: PropTypes.func
 };
 
 Container.defaultProps = {
-  question: null
+  question: null,
+  modalItemId: undefined,
+  navigateToPickupQuestionType: () => {},
+  navigateToItemDetail: () => {},
+  onCompleteItemCreation: () => {},
+  onModalClose: () => {}
 };
 
 const enhance = compose(

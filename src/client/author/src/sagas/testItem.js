@@ -21,15 +21,21 @@ import {
 import { history } from "../../../configureStore";
 import { getQuestionsSelector } from "../../sharedDucks/questions";
 import { SET_ANSWER } from "../../../assessment/constants/actions";
+import { toggleCreateItemModalAction } from "../actions/testItem";
 
-function* createTestItemSaga({ payload }) {
+function* createTestItemSaga({ payload: { data, showModal } }) {
   try {
-    const item = yield call(testItemsApi.create, payload);
+    const item = yield call(testItemsApi.create, data);
     yield put({
       type: CREATE_TEST_ITEM_SUCCESS,
       payload: { item: item.data }
     });
-    yield call(history.push, `/author/items/${item._id}/item-detail`);
+
+    if (!showModal) {
+      yield call(history.push, `/author/items/${item._id}/item-detail`);
+    } else {
+      yield put(toggleCreateItemModalAction({ modalVisible: true, itemId: item._id }));
+    }
   } catch (err) {
     console.error(err);
     const errorMessage = "Create item is failed";

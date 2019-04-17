@@ -9,6 +9,7 @@ export const Container = styled.div`
   right: 0px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 70px;
   background: ${newBlue};
   padding: 0px 45px;

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Popover, Icon, Modal, Input, Checkbox } from "antd";
+import { Popover, Icon, Modal, Checkbox } from "antd";
 
 import { mobileWidth, tabletWidth, lightBlueSecondary, white, lightGreySecondary } from "@edulastic/colors";
 
@@ -141,17 +141,6 @@ export const StyledCloseIcon = styled(Icon)`
   font-weight: bolder;
   font-size: 22px;
   cursor: pointer;
-`;
-
-export const FilterInput = styled(Input.Search)`
-  .ant-input {
-    border: none;
-    background: ${lightGreySecondary};
-  }
-
-  .ant-input-search-icon {
-    color: ${lightBlueSecondary};
-  }
 `;
 
 export const FilterCheckboxWrapper = styled.div`

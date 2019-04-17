@@ -45,6 +45,14 @@ const fetchAssigned = groupId =>
     })
     .then(result => result.data.result);
 
+const fetchTeacherAssignments = ({ groupId = "", filters: { grades = [], subject = "", termId = "" } }) =>
+  api
+    .callApi({
+      url: `${prefix}?groupId=${groupId}&grade=${grades}&subject=${subject}&termId=${termId}`,
+      method: "get"
+    })
+    .then(result => result.data.result);
+
 const regrade = data => {
   return api
     .callApi({
@@ -95,6 +103,7 @@ export default {
   remove,
   fetchAssignments,
   fetchAssigned,
+  fetchTeacherAssignments,
   regrade,
   getById,
   fetchTestActivities,

@@ -26,7 +26,9 @@ export const generateClassData = (
       return {
         _id,
         name: (groupsData[_id] && groupsData[_id].name) || "",
-        assignedCount: get(groupsData, `${_id}.studentCount`, 0)
+        assignedCount: get(groupsData, `${_id}.studentCount`, 0),
+        grade: groupsData[_id].grade,
+        subject: groupsData[_id].subject
       };
     });
   }
@@ -43,7 +45,9 @@ export const generateClassData = (
           _id: classId,
           name: (groupsData[classId] && groupsData[classId].name) || "",
           students: tempStudents,
-          assignedCount: tempStudents.length
+          assignedCount: tempStudents.length,
+          grade: groupsData[classId].grade,
+          subject: groupsData[classId].subject
         };
       })
       // remove classes without students

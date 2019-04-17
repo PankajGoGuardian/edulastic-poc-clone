@@ -1,8 +1,11 @@
-import React, { Component } from "react";
-import { Dropdown } from "antd";
+import React, { useState } from "react";
+import { Dropdown, Select } from "antd";
+import { connect } from "react-redux";
+import { get } from "lodash";
 
 import { FlexContainer } from "@edulastic/common";
-
+import selectsData from "../../../../author/TestPage/components/common/selectsData";
+import { receiveAssignmentsAction } from "../../../src/actions/assignments";
 import FilterIcon from "../../assets/filter.svg";
 import {
   Container,
@@ -15,100 +18,117 @@ import {
   HeaderContent,
   FilterHeader,
   StyledCloseIcon,
-  FilterInput,
   FilterCheckbox,
   FilterCheckboxWrapper,
   FilterButtonWrapper
 } from "./styled";
 
-class FilterBar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      modalshow: false,
-      popoverVisible: false
-    };
-  }
+const { allGrades, allSubjects } = selectsData;
+const filterState = {
+  grades: [],
+  subject: "",
+  termId: ""
+};
 
-  togglePopover = () =>
-    this.setState(state => ({
-      popoverVisible: !state.popoverVisible
-    }));
-
-  showModal = () => {
-    this.setState({
-      modalshow: !this.state.modalshow
-    });
+const FilterBar = ({ windowWidth, windowHeight, loadAssignments, termsData }) => {
+  const [modalshow, toggleModal] = useState(false);
+  const [popoverVisible, togglePopover] = useState(false);
+  const handleChange = key => value => {
+    filterState[key] = value;
+    const filters = { filters: filterState };
+    loadAssignments(filters);
   };
+  const FilterElement = (
+    <MainContainer>
+      <FilterButtonWrapper>
+        <Container active={popoverVisible}>
+          <FilterImg src={FilterIcon} /> Filter
+        </Container>
+      </FilterButtonWrapper>
+      <StyledBoldText>Grade</StyledBoldText>
+      <Select mode="multiple" style={{ width: "100%" }} placeholder="All grades" onChange={handleChange("grades")}>
+        {allGrades.map(
+          ({ value, text, isContentGrade }) =>
+            !isContentGrade && (
+              <Select.Option key={value} value={value}>
+                {text}
+              </Select.Option>
+            )
+        )}
+      </Select>
+      ,
+      <FilterCheckboxWrapper>
+        <StyledParagraph>
+          <FilterCheckbox>All</FilterCheckbox>
+        </StyledParagraph>
+        <StyledParagraph>
+          <FilterCheckbox>Lorem</FilterCheckbox>
+        </StyledParagraph>
+        <StyledParagraph>
+          <FilterCheckbox>Lorem</FilterCheckbox>
+        </StyledParagraph>
+      </FilterCheckboxWrapper>
+      <StyledBoldText>Subject</StyledBoldText>
+      <Select mode="default" style={{ width: "100%" }} placeholder="All subjects" onChange={handleChange("subject")}>
+        {allSubjects.map(({ value, text }) => (
+          <Select.Option key={value} value={value}>
+            {text}
+          </Select.Option>
+        ))}
+      </Select>
+      <StyledBoldText>Year</StyledBoldText>
+      <Select mode="default" style={{ width: "100%" }} placeholder="All years" onChange={handleChange("termId")}>
+        <Select.Option key="all" value="">
+          {"All years"}
+        </Select.Option>
+        {termsData.map(({ _id, name }) => (
+          <Select.Option key={_id} value={_id}>
+            {name}
+          </Select.Option>
+        ))}
+      </Select>
+    </MainContainer>
+  );
 
-  handleCancel = e => {
-    this.setState({
-      modalshow: false
-    });
-  };
-
-  render() {
-    const { modalshow, popoverVisible } = this.state;
-    const { windowWidth, windowHeight } = this.props;
-    const FilterElement = (
-      <MainContainer>
-        <FilterButtonWrapper>
-          <Container active={popoverVisible}>
-            <FilterImg src={FilterIcon} /> Filter
-          </Container>
-        </FilterButtonWrapper>
-        <StyledBoldText>Grade</StyledBoldText>
-        <FilterInput size="large" />
-        <FilterCheckboxWrapper>
-          <StyledParagraph>
-            <FilterCheckbox>All</FilterCheckbox>
-          </StyledParagraph>
-          <StyledParagraph>
-            <FilterCheckbox>Lorem</FilterCheckbox>
-          </StyledParagraph>
-          <StyledParagraph>
-            <FilterCheckbox>Lorem</FilterCheckbox>
-          </StyledParagraph>
-        </FilterCheckboxWrapper>
-        <StyledBoldText>Subject</StyledBoldText>
-        <FilterInput size="large" />
-        <StyledBoldText>Year</StyledBoldText>
-        <FilterInput size="large" />
-      </MainContainer>
-    );
-    return (
-      <FlexContainer>
-        <Dropdown
-          overlay={FilterElement}
-          placement="bottomRight"
-          trigger={["click"]}
-          visible={popoverVisible}
-          onVisibleChange={this.togglePopover}
+  return (
+    <FlexContainer>
+      <Dropdown
+        overlay={FilterElement}
+        placement="bottomRight"
+        trigger={["click"]}
+        visible={popoverVisible}
+        onVisibleChange={() => togglePopover(!popoverVisible)}
+      >
+        <Container active={popoverVisible}>
+          <FilterImg src={FilterIcon} /> Filter
+        </Container>
+      </Dropdown>
+      <ModalContent>
+        <Container active={modalshow} onClick={() => toggleModal(true)}>
+          <FilterImg src={FilterIcon} /> Filter
+        </Container>
+        <StyledModal
+          footer={false}
+          closable={false}
+          visible={modalshow}
+          bodyStyle={{ height: windowHeight, width: windowWidth }}
         >
-          <Container active={popoverVisible}>
-            <FilterImg src={FilterIcon} /> Filter
-          </Container>
-        </Dropdown>
-        <ModalContent>
-          <Container active={modalshow} onClick={this.showModal}>
-            <FilterImg src={FilterIcon} /> Filter
-          </Container>
-          <StyledModal
-            footer={false}
-            closable={false}
-            visible={modalshow}
-            bodyStyle={{ height: windowHeight, width: windowWidth }}
-          >
-            <HeaderContent>
-              <FilterHeader>Filters</FilterHeader>
-              <StyledCloseIcon onClick={this.handleCancel} type="close" />
-            </HeaderContent>
-            {FilterElement}
-          </StyledModal>
-        </ModalContent>
-      </FlexContainer>
-    );
-  }
-}
+          <HeaderContent>
+            <FilterHeader>Filters</FilterHeader>
+            <StyledCloseIcon onClick={() => toggleModal(false)} type="close" />
+          </HeaderContent>
+          {FilterElement}
+        </StyledModal>
+      </ModalContent>
+    </FlexContainer>
+  );
+};
 
-export default FilterBar;
+export default connect(
+  state => ({
+    termsData: get(state, "user.user.orgData.terms", [])
+  }),
+  {
+    loadAssignments: receiveAssignmentsAction
+  }
+)(FilterBar);

@@ -5,8 +5,9 @@ import {
   TOGGLE_RELEASE_GRADE_SETTINGS
 } from "../constants/actions";
 
-export const receiveAssignmentsAction = () => ({
-  type: RECEIVE_ASSIGNMENTS_REQUEST
+export const receiveAssignmentsAction = payload => ({
+  type: RECEIVE_ASSIGNMENTS_REQUEST,
+  payload
 });
 
 export const receiveAssignmentByIdAction = payload => ({

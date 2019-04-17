@@ -13,9 +13,10 @@ import {
   TOGGLE_RELEASE_GRADE_SETTINGS
 } from "../constants/actions";
 
-function* receiveAssignmentsSaga() {
+function* receiveAssignmentsSaga({ payload = {} }) {
   try {
-    const entities = yield call(assignmentApi.fetchAssigned);
+    const { groupId, filters = {} } = payload;
+    const entities = yield call(assignmentApi.fetchTeacherAssignments, { groupId, filters });
     yield put({
       type: RECEIVE_ASSIGNMENTS_SUCCESS,
       payload: { entities }

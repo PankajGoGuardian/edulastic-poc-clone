@@ -69,7 +69,11 @@ export const withMathFormula = WrappedComponent => {
       if (mathField || !window.MathQuill) return;
       if (mathFieldRef) {
         const MQ = window.MathQuill.getInterface(2);
-        setMathField(MQ.StaticMath(mathFieldRef));
+        try {
+          setMathField(MQ.StaticMath(mathFieldRef));
+        } catch (e) {
+          console.warn("setMathField Error", e.message, e.stack);
+        }
       }
     };
 

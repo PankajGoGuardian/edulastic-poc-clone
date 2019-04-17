@@ -31,11 +31,11 @@ function* receiveCurriculumsSaga() {
 
 function* receiveStandardsSaga({ payload }) {
   try {
-    const items = yield call(dictionariesApi.receiveStandards, payload);
+    const { elo, tlo } = yield call(dictionariesApi.receiveStandards, payload);
 
     yield put({
       type: RECEIVE_DICT_STANDARDS_SUCCESS,
-      payload: { items }
+      payload: { elo, tlo }
     });
   } catch (err) {
     console.error(err);

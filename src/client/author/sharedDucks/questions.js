@@ -98,10 +98,10 @@ const addAlignment = (state, { payload }) => {
     if (alignment.curriculumId === payload.curriculumId) {
       existing = true;
       const domainGrouped = _groupBy(payload.domain, "id");
-      for (const domain of alignment.domain) {
+      for (const domain of alignment.domains) {
         if (domainGrouped[domain.id]) {
           const selected = domainGrouped[domain.id];
-          domains.standards = _intersection(domain.standards, selected.standards, "id");
+          domain.standards = _intersection(domain.standards, selected.standards, "id");
         }
       }
     }
@@ -141,7 +141,7 @@ export const getQuestionsSelectorForReview = state => {
   const testItems = get(state, "tests.entity.testItems", []);
   return testItems.reduce((acc, item) => {
     const questions = get(item, "data.questions", []);
-    for (let question of questions) {
+    for (const question of questions) {
       acc[question.id] = question;
     }
     return acc;

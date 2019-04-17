@@ -49,7 +49,6 @@ const Container = styled.div`
   .ant-breadcrumb-link,
   .ant-breadcrumb-separator {
     font-size: 16px;
-    font-weight: 600;
     color: ${secondaryTextColor};
     text-transform: capitalize;
     font-weight: 700;
@@ -59,6 +58,9 @@ const Container = styled.div`
       text-transform: capitalize;
       color: ${secondaryTextColor};
       font-weight: normal;
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 

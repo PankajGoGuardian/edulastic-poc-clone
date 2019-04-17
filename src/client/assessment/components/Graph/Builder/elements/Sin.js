@@ -48,12 +48,19 @@ function onHandler() {
   };
 }
 
+function clean(board) {
+  const result = points.length > 0;
+  points.forEach(point => board.$board.removeObject(point));
+  points = [];
+  return result;
+}
+
 function getConfig(sine) {
   return {
     _type: sine.type,
     type: CONSTANT.TOOLS.SIN,
     id: sine.id,
-    label: sine.hasLabel ? sine.label.plaintext : false,
+    label: sine.labelHTML || false,
     points: Object.keys(sine.ancestors)
       .sort()
       .map(n => Point.getConfig(sine.ancestors[n]))
@@ -72,14 +79,14 @@ function parseConfig(pointsConfig) {
   ];
 }
 
-function abort(cb) {
-  cb(points);
-  points = [];
+function getPoints() {
+  return points;
 }
 
 export default {
   onHandler,
   getConfig,
   parseConfig,
-  abort
+  clean,
+  getPoints
 };

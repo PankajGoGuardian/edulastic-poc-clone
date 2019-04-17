@@ -5,6 +5,7 @@ import evaluation from "./evaluation";
 import userWork from "./userWork";
 import questions from "./questions";
 import shuffledOptions from "./shuffledOptions";
+import graphTools from "./graphTools";
 
 const assessmentReducers = {
   userWork,
@@ -13,7 +14,8 @@ const assessmentReducers = {
   answers,
   evaluation,
   assessmentplayerQuestions: questions,
-  shuffledOptions
+  shuffledOptions,
+  graphTools
 };
 
 export default assessmentReducers;

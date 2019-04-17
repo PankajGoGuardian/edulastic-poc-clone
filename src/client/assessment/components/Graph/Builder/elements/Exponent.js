@@ -48,17 +48,19 @@ function onHandler() {
   };
 }
 
-const cleanPoints = board => {
+function clean(board) {
+  const result = points.length > 0;
   points.forEach(point => board.$board.removeObject(point));
   points = [];
-};
+  return result;
+}
 
 function getConfig(exponent) {
   return {
     _type: exponent.type,
     type: CONSTANT.TOOLS.EXPONENT,
     id: exponent.id,
-    label: exponent.hasLabel ? exponent.label.plaintext : false,
+    label: exponent.labelHTML || false,
     points: Object.keys(exponent.ancestors)
       .sort()
       .map(n => Point.getConfig(exponent.ancestors[n]))
@@ -77,15 +79,14 @@ function parseConfig(pointsConfig) {
   ];
 }
 
-function abort(cb) {
-  cb(points);
-  points = [];
+function getPoints() {
+  return points;
 }
 
 export default {
   onHandler,
   getConfig,
   parseConfig,
-  cleanPoints,
-  abort
+  clean,
+  getPoints
 };

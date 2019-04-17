@@ -162,18 +162,25 @@ const drawVectorLine = (board, visiblePoint, invisiblePoint, vectorDirection, co
   });
 };
 
-const loadVector = (board, coords, pointIncluded, vectorDirection, segmentType, stackResponses) => {
-  const numberlineAxis = board.elements.filter(element => element.elType === "axis" || element.elType === "arrow");
+const loadVector = (board, element, pointIncluded, vectorDirection, segmentType, stackResponses) => {
+  const numberlineAxis = board.elements.filter(el => el.elType === "axis" || el.elType === "arrow");
   const xMin = numberlineAxis[0].point1.X();
   const xMax = numberlineAxis[0].point2.X();
 
   let ticks = getSpecialTicks(numberlineAxis[0]);
   ticks = ticks.sort((a, b) => a - b);
 
+  const visiblePointCoord = [
+    CONSTANT.TOOLS.RAY_RIGHT_DIRECTION,
+    CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW
+  ].includes(segmentType)
+    ? element.point1
+    : element.point2;
+
   if (!stackResponses) {
-    const visiblePoint = drawPoint(board, coords[0], null, pointIncluded, false);
+    const visiblePoint = drawPoint(board, visiblePointCoord, null, pointIncluded, false, element.pointColor);
     const invisiblePoint = drawVectorPoint(board, xMin, xMax, vectorDirection);
-    const vector = drawVectorLine(board, visiblePoint, invisiblePoint, vectorDirection);
+    const vector = drawVectorLine(board, visiblePoint, invisiblePoint, vectorDirection, element.colors);
 
     vector.segmentType = segmentType;
 
@@ -186,20 +193,20 @@ const loadVector = (board, coords, pointIncluded, vectorDirection, segmentType, 
 
     return vector;
   } else {
-    const visiblePoint = drawPoint(board, coords[0], null, pointIncluded, false, coords[1]);
-    const invisiblePoint = drawVectorPoint(board, xMin, xMax, vectorDirection, coords[1]);
-    const vector = drawVectorLine(board, visiblePoint, invisiblePoint, vectorDirection);
+    const visiblePoint = drawPoint(board, visiblePointCoord, null, pointIncluded, false, element.pointColor, element.y);
+    const invisiblePoint = drawVectorPoint(board, xMin, xMax, vectorDirection, element.y);
+    const vector = drawVectorLine(board, visiblePoint, invisiblePoint, vectorDirection, element.colors);
 
     vector.segmentType = segmentType;
 
     visiblePoint.setAttribute({ snapSizeY: 0.05 });
-    visiblePoint.setPosition(window.JXG.COORDS_BY_USER, [visiblePoint.X(), coords[1]]);
-    board.$board.on("move", () => visiblePoint.moveTo([visiblePoint.X(), coords[1]]));
+    visiblePoint.setPosition(window.JXG.COORDS_BY_USER, [visiblePoint.X(), element.y]);
+    board.$board.on("move", () => visiblePoint.moveTo([visiblePoint.X(), element.y]));
 
     invisiblePoint.setAttribute({ snapSizeY: 0.05 });
-    invisiblePoint.setPosition(window.JXG.COORDS_BY_USER, [invisiblePoint.X(), coords[1]]);
+    invisiblePoint.setPosition(window.JXG.COORDS_BY_USER, [invisiblePoint.X(), element.y]);
 
-    handleStackedSegmentPointDrag(visiblePoint, numberlineAxis[0], coords[1]);
+    handleStackedSegmentPointDrag(visiblePoint, numberlineAxis[0], element.y);
 
     return vector;
   }

@@ -81,6 +81,8 @@ const getColoredElems = (elements, compareResult) => {
             pointColor: detail && detail.result ? greenHollow : redHollow,
             ...el
           };
+        default:
+          return null;
       }
     });
     return newElems;
@@ -135,6 +137,8 @@ const getColoredAnswer = answerArr => {
             pointColor: Colors.yellow[CONSTANT.TOOLS.SEGMENTS_POINT],
             ...el
           };
+        default:
+          return null;
       }
     });
   }
@@ -202,14 +206,10 @@ class AxisSegmentsContainer extends Component {
       yAxesParameters,
       layout,
       gridParams,
-      graphType,
-      showAnswer,
-      checkAnswer,
-      validation,
-      elements
+      graphType
     } = this.props;
 
-    this._graph = makeBorder(this._graphId, {}, this.getConfig);
+    this._graph = makeBorder(this._graphId, {}, () => {});
     this._graph.setTool(CONSTANT.TOOLS.SEGMENTS_POINT, graphType, canvas.responsesAllowed);
 
     if (this._graph) {
@@ -260,15 +260,7 @@ class AxisSegmentsContainer extends Component {
         snapSizeX: numberlineAxis.ticksDistance
       });
 
-      if (showAnswer) {
-        this._graph.loadSegmentsAnswers(getColoredAnswer(validation ? validation.valid_response.value : []));
-      } else {
-        this._graph.removeAnswers();
-      }
-
-      if (checkAnswer) {
-        this.mapElementsToGraph();
-      }
+      this.setElementsToGraph();
     }
 
     this._graph.renderTitle({
@@ -279,10 +271,6 @@ class AxisSegmentsContainer extends Component {
       yMax: canvas.yMax,
       yMin: canvas.yMin
     });
-
-    if (!showAnswer && !checkAnswer) {
-      this._graph.loadSegments(elements);
-    }
 
     this.setGraphUpdateEventHandler();
   }
@@ -297,8 +285,7 @@ class AxisSegmentsContainer extends Component {
       layout,
       gridParams,
       graphType,
-      tools,
-      elements
+      tools
     } = this.props;
 
     const { selectedTool } = this.state;
@@ -480,10 +467,7 @@ class AxisSegmentsContainer extends Component {
         );
       }
 
-      if (elements.length === 0) {
-        this._graph.segmentsReset();
-        this.mapElementsToGraph();
-      }
+      this.setElementsToGraph();
     }
   }
 
@@ -517,17 +501,17 @@ class AxisSegmentsContainer extends Component {
   setGraphUpdateEventHandler = () => {
     this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, () => this.getConfig());
     this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, () => this.getConfig());
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, () => this.getConfig());
   };
 
-  mapElementsToGraph = () => {
+  setElementsToGraph = () => {
     const { elements, checkAnswer, showAnswer, evaluation, validation } = this.props;
 
-    let newElems = elements;
-
-    if (checkAnswer) {
+    if (checkAnswer || showAnswer) {
+      let coloredElements;
       if (evaluation && evaluation.length) {
         const compareResult = getCompareResult(evaluation);
-        newElems = getColoredElems(elements, compareResult);
+        coloredElements = getColoredElems(elements, compareResult);
       } else {
         const compareResult = getCompareResult(
           checkAnswerMethod({
@@ -535,19 +519,21 @@ class AxisSegmentsContainer extends Component {
             validation
           })
         );
-        newElems = getColoredElems(elements, compareResult);
+        coloredElements = getColoredElems(elements, compareResult);
       }
-    } else if (showAnswer) {
-      const compareResult = getCompareResult(
-        checkAnswerMethod({
-          userResponse: elements,
-          validation
-        })
-      );
-      newElems = getColoredElems(elements, compareResult);
-    }
 
-    this._graph.loadSegmentsAnswers(newElems);
+      if (showAnswer) {
+        this._graph.resetAnswers();
+        this._graph.loadSegmentsAnswers(getColoredAnswer(validation ? validation.valid_response.value : []));
+      }
+
+      this._graph.segmentsReset();
+      this._graph.loadSegments(coloredElements);
+    } else {
+      this._graph.segmentsReset();
+      this._graph.resetAnswers();
+      this._graph.loadSegments(elements);
+    }
   };
 
   getIconByToolName = (toolName, options) => {
@@ -675,7 +661,9 @@ AxisSegmentsContainer.propTypes = {
   elements: PropTypes.array.isRequired,
   showAnswer: PropTypes.bool,
   checkAnswer: PropTypes.bool,
-  changePreviewTab: PropTypes.func
+  changePreviewTab: PropTypes.func,
+  tools: PropTypes.array.isRequired,
+  graphType: PropTypes.string.isRequired
 };
 
 AxisSegmentsContainer.defaultProps = {

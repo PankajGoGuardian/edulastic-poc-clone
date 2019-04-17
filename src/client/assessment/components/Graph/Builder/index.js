@@ -1,3 +1,4 @@
+import { cloneDeep, isEqual } from "lodash";
 import getDefaultConfig, { CONSTANT, Colors } from "./config";
 import {
   Point,
@@ -9,7 +10,7 @@ import {
   Parabola,
   Hyperbola,
   Label,
-  Input,
+  QuillInput,
   Mark,
   Numberline,
   NumberlinePoint,
@@ -46,7 +47,7 @@ import {
 } from "./utils";
 import _events from "./events";
 
-import "../common/MyLabelInput.css";
+import "../common/GraphShapeLabel.css";
 import "../common/Mark.css";
 
 // export const JXG = window.JXG;
@@ -59,12 +60,56 @@ function dragDetector() {
     x: 0,
     y: 0
   };
+  let elementsCopy = [];
+  let toolTempPointsCopy = [];
   return {
-    start(coords) {
-      [start.x, start.y] = coords;
+    start(event, elements, points) {
+      start.x = event.clientX;
+      start.y = event.clientY;
+      elementsCopy = cloneDeep(elements);
+      toolTempPointsCopy = cloneDeep(points);
     },
-    isSame(coords) {
-      return start.x === coords[0] && start.y === coords[1];
+    isDragElements(event, elements) {
+      if (start.x === event.clientX && start.y === event.clientY) {
+        return false;
+      }
+
+      for (let i = 0; i < elements.length; i++) {
+        const element = elements[i];
+        const copyElement = elementsCopy.find(el => el.id === element.id);
+
+        if (element.elType === "point") {
+          if (!isEqual(copyElement.coords.usrCoords, element.coords.usrCoords)) {
+            return true;
+          }
+        } else if (element.ancestors && copyElement.ancestors) {
+          const ancestors = Object.values(element.ancestors);
+          for (let j = 0; j < ancestors.length; j++) {
+            const ancestor = ancestors[j];
+            const copyAncestor = Object.values(copyElement.ancestors).find(el => el.id === ancestor.id);
+            if (!isEqual(copyAncestor.coords.usrCoords, ancestor.coords.usrCoords)) {
+              return true;
+            }
+          }
+        }
+      }
+
+      return false;
+    },
+    isDragToolTempPoints(event, points) {
+      if (start.x === event.clientX && start.y === event.clientY) {
+        return false;
+      }
+
+      for (let i = 0; i < points.length; i++) {
+        const point = points[i];
+        const copyPoint = toolTempPointsCopy.find(el => el.id === point.id);
+        if (!isEqual(copyPoint.coords.usrCoords, point.coords.usrCoords)) {
+          return true;
+        }
+      }
+
+      return false;
     }
   };
 }
@@ -117,8 +162,52 @@ class Board {
 
     this.$board = window.JXG.JSXGraph.initBoard(id, mergeParams(getDefaultConfig(), this.parameters));
     this.$board.setZoom(1, 1);
-    this.$board.on(CONSTANT.EVENT_NAMES.DOWN, () => {
-      this.dragDetector.start(this.$board.drag_position);
+    this.$board.on(CONSTANT.EVENT_NAMES.DOWN, event => {
+      this.dragDetector.start(event, this.elements, this.getToolTempPoints());
+    });
+  }
+
+  isAnyElementsHasFocus() {
+    if (!this.elements) {
+      return false;
+    }
+
+    for (let i = 0; i < this.elements.length; i++) {
+      const element = this.elements[i];
+      if (element.hasFocus) {
+        return true;
+      }
+
+      if (element.ancestors) {
+        const ancestors = Object.values(element.ancestors);
+        for (let j = 0; j < ancestors.length; j++) {
+          if (ancestors[j].hasFocus) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  setElementsFixedAttribute(fixed) {
+    if (!this.elements) {
+      return;
+    }
+
+    this.elements.forEach(element => {
+      element.setAttribute({ fixed });
+      if (element.ancestors) {
+        Object.values(element.ancestors).forEach(ancestor => {
+          ancestor.setAttribute({ fixed });
+        });
+      }
+      if (element.borders) {
+        element.borders.forEach(border => {
+          border.setAttribute({ fixed });
+        });
+      }
     });
   }
 
@@ -136,7 +225,7 @@ class Board {
       return;
     }
     if (this.currentTool !== tool) {
-      if (!graphType === "axisSegments") {
+      if (graphType !== "axisSegments") {
         this.abortTool();
       }
     }
@@ -223,51 +312,73 @@ class Board {
     }
   }
 
-  abortTool() {
+  getToolTempPoints() {
     switch (this.currentTool) {
-      case CONSTANT.TOOLS.POINT:
-        break;
       case CONSTANT.TOOLS.LINE:
       case CONSTANT.TOOLS.RAY:
       case CONSTANT.TOOLS.SEGMENT:
       case CONSTANT.TOOLS.VECTOR:
-        Line.abort(points => points.map(this.removeObject.bind(this)));
-        break;
+        return Line.getPoints();
       case CONSTANT.TOOLS.CIRCLE:
-        Circle.abort(points => points.map(this.removeObject.bind(this)));
-        break;
+        return Circle.getPoints();
       case CONSTANT.TOOLS.POLYGON:
-        Polygon.abort(points => points.map(this.removeObject.bind(this)));
-        break;
+        return Polygon.getPoints();
       case CONSTANT.TOOLS.SIN:
-        Sin.abort(points => points.map(this.removeObject.bind(this)));
-        break;
+        return Sin.getPoints();
       case CONSTANT.TOOLS.PARABOLA:
-        Parabola.abort(points => points.map(this.removeObject.bind(this)));
-        break;
+        return Parabola.getPoints();
       case CONSTANT.TOOLS.ELLIPSE:
-        Ellipse.abort(points => points.map(this.removeObject.bind(this)));
-        break;
+        return Ellipse.getPoints();
       case CONSTANT.TOOLS.HYPERBOLA:
-        Hyperbola.abort(points => points.map(this.removeObject.bind(this)));
-        break;
+        return Hyperbola.getPoints();
       case CONSTANT.TOOLS.EXPONENT:
-        Exponent.abort(points => points.map(this.removeObject.bind(this)));
-        break;
+        return Exponent.getPoints();
       case CONSTANT.TOOLS.LOGARITHM:
-        Logarithm.abort(points => points.map(this.removeObject.bind(this)));
-        break;
+        return Logarithm.getPoints();
       case CONSTANT.TOOLS.POLYNOM:
-        Polynom.abort(points => points.map(this.removeObject.bind(this)));
-        break;
+        return Polynom.getPoints();
       case CONSTANT.TOOLS.TANGENT:
-        Tangent.abort(points => points.map(this.removeObject.bind(this)));
-        break;
+        return Tangent.getPoints();
       case CONSTANT.TOOLS.SECANT:
-        Secant.abort(points => points.map(this.removeObject.bind(this)));
-        break;
+        return Secant.getPoints();
       default:
-        break;
+        return [];
+    }
+  }
+
+  abortTool() {
+    switch (this.currentTool) {
+      case CONSTANT.TOOLS.POINT:
+        return false;
+      case CONSTANT.TOOLS.LINE:
+      case CONSTANT.TOOLS.RAY:
+      case CONSTANT.TOOLS.SEGMENT:
+      case CONSTANT.TOOLS.VECTOR:
+        return Line.clean(this);
+      case CONSTANT.TOOLS.CIRCLE:
+        return Circle.clean(this);
+      case CONSTANT.TOOLS.POLYGON:
+        return Polygon.clean(this);
+      case CONSTANT.TOOLS.SIN:
+        return Sin.clean(this);
+      case CONSTANT.TOOLS.PARABOLA:
+        return Parabola.clean(this);
+      case CONSTANT.TOOLS.ELLIPSE:
+        return Ellipse.clean(this);
+      case CONSTANT.TOOLS.HYPERBOLA:
+        return Hyperbola.clean(this);
+      case CONSTANT.TOOLS.EXPONENT:
+        return Exponent.clean(this);
+      case CONSTANT.TOOLS.LOGARITHM:
+        return Logarithm.clean(this);
+      case CONSTANT.TOOLS.POLYNOM:
+        return Polynom.clean(this);
+      case CONSTANT.TOOLS.TANGENT:
+        return Tangent.clean(this);
+      case CONSTANT.TOOLS.SECANT:
+        return Secant.clean(this);
+      default:
+        return false;
     }
   }
 
@@ -277,12 +388,16 @@ class Board {
    */
   setCreatingHandler(handler, responsesAllowed) {
     this.$board.on(CONSTANT.EVENT_NAMES.UP, event => {
-      if (!this.dragDetector.isSame(this.$board.drag_position)) {
+      if (this.dragDetector.isDragToolTempPoints(event, this.getToolTempPoints())) {
+        return;
+      }
+      if (this.dragDetector.isDragElements(event, this.elements)) {
         this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
         return;
       }
       if (this.currentTool === CONSTANT.TOOLS.TRASH) {
         NumberlineTrash.removeObject(this, this.$board.getAllObjectsUnderMouse(event), this.setAnswers);
+        this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE);
       } else {
         let newElement;
 
@@ -409,7 +524,6 @@ class Board {
           calcMeasure(51.5, 45, this),
           xCoords,
           settings.snapToTicks,
-          settings.ticksDistance,
           setValue,
           lineSettings,
           containerSettings
@@ -457,7 +571,6 @@ class Board {
         calcMeasure(51.5, 45, this),
         xCoords,
         settings.snapToTicks,
-        settings.ticksDistance,
         setValue,
         lineSettings,
         containerSettings
@@ -507,10 +620,19 @@ class Board {
     NumberlineTrash.cleanBoard(this, this.setAnswers);
   }
 
+  cleanToolTempPoints() {
+    return this.abortTool();
+  }
+
   reset() {
     this.abortTool();
     this.elements.map(this.removeObject.bind(this));
     this.elements = [];
+  }
+
+  resetAnswers() {
+    this.answers.map(this.removeObject.bind(this));
+    this.answers = [];
   }
 
   resetBg() {
@@ -558,12 +680,12 @@ class Board {
           return Exponent.getConfig(e);
         case 94:
           return Logarithm.getConfig(e);
+        case 95:
+          return Polynom.getConfig(e);
         case 96:
           return Sin.getConfig(e);
         case 97:
           return Parabola.getConfig(e);
-        case 95:
-          return Polynom.getConfig(e);
         default:
           throw new Error("Unknown element type:", e.name, e.type);
       }
@@ -662,7 +784,7 @@ class Board {
    * @see https://jsxgraph.org/docs/symbols/JXG.Board.html#resizeContainer
    */
   resizeContainer(canvasWidth, canvasHeight) {
-    this.$board.resizeContainer(canvasWidth, canvasHeight);
+    this.$board.resizeContainer(canvasWidth || 0, canvasHeight || 0);
   }
 
   setBgObjects(flatCfg, showPoints = true) {
@@ -751,23 +873,44 @@ class Board {
     this.bgElements.push(
       ...this.loadObjects(config, ({ objectCreator, el }) => {
         const { type, colors = {} } = el;
-        return objectCreator({
+        const newElement = objectCreator({
           ...objectOptions[type],
           ...colors
         });
+        QuillInput(newElement, this).setLabel(el.label, true);
+        return newElement;
       })
     );
   }
 
-  loadMarksAnswers(marks) {
+  loadMarksAnswers(marks, xCoords, settings, setValue, lineSettings, containerSettings) {
     if (marks) {
-      this.answers.push(marks.map(config => Mark.renderMarkAnswer(this, config, calcMeasure(51.5, 45, this))));
+      this.elements.push(
+        ...marks.map(config =>
+          Mark.renderMarkAnswer(
+            this,
+            config,
+            calcMeasure(51.5, 45, this),
+            xCoords,
+            settings.snapToTicks,
+            setValue,
+            lineSettings,
+            containerSettings
+          )
+        )
+      );
+    }
+  }
+
+  loadMarksShowAnswers(marks) {
+    if (marks) {
+      this.answers.push(marks.map(config => Mark.renderMarkShowAnswer(this, config, calcMeasure(51.5, 45, this))));
     }
   }
 
   loadSegmentsAnswers(segments) {
     this.answers.push(
-      segments.map(segment => {
+      ...segments.map(segment => {
         switch (segment.type) {
           case CONSTANT.TOOLS.SEGMENTS_POINT:
             return NumberlinePoint.renderAnswer(this, segment);
@@ -808,10 +951,7 @@ class Board {
           ],
           ...el.colors
         });
-        if (el.label) {
-          newElement.setLabel(el.label);
-          Input(newElement).sub();
-        }
+        QuillInput(newElement, this).setLabel(el.label);
         return newElement;
       })
     );
@@ -819,7 +959,7 @@ class Board {
 
   loadAnswersFromConfig(flatCfg) {
     const config = flat2nestedConfig(flatCfg);
-    this.elements.push(
+    this.answers.push(
       ...this.loadAnswersObjects(config, ({ objectCreator, el }) => {
         const newElement = objectCreator({
           ...Colors.default[
@@ -837,24 +977,9 @@ class Board {
           ],
           ...el.colors
         });
-        if (el.label) {
-          newElement.setLabel(el.label);
-          Input(newElement).sub();
-        }
+        QuillInput(newElement, this).setLabel(el.label, true);
         return newElement;
       })
-    );
-  }
-
-  setAnswer(flatCfg) {
-    const config = flat2nestedConfig(flatCfg);
-    this.answers.push(
-      ...this.loadObjects(config, ({ objectCreator, el }) =>
-        objectCreator({
-          ...el.colors,
-          fixed: true
-        })
-      )
     );
   }
 
@@ -867,11 +992,11 @@ class Board {
       ...elements.map(element => {
         switch (element.type) {
           case CONSTANT.TOOLS.SEGMENTS_POINT:
-            return NumberlinePoint.loadPoint(this, [element.point1, element.y], this.stackResponses);
+            return NumberlinePoint.loadPoint(this, element, this.stackResponses);
           case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
             return NumberlineSegment.loadSegment(
               this,
-              [element.point1, element.point2, element.y],
+              element,
               true,
               true,
               CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED,
@@ -881,7 +1006,7 @@ class Board {
           case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
             return NumberlineSegment.loadSegment(
               this,
-              [element.point1, element.point2, element.y],
+              element,
               false,
               false,
               CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW,
@@ -891,7 +1016,7 @@ class Board {
           case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
             return NumberlineSegment.loadSegment(
               this,
-              [element.point1, element.point2, element.y],
+              element,
               false,
               true,
               CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW,
@@ -901,7 +1026,7 @@ class Board {
           case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
             return NumberlineSegment.loadSegment(
               this,
-              [element.point1, element.point2, element.y],
+              element,
               true,
               false,
               CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW,
@@ -911,7 +1036,7 @@ class Board {
           case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
             return NumberlineVector.loadVector(
               this,
-              [element.point2, element.y],
+              element,
               true,
               false,
               CONSTANT.TOOLS.RAY_LEFT_DIRECTION,
@@ -920,7 +1045,7 @@ class Board {
           case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
             return NumberlineVector.loadVector(
               this,
-              [element.point2, element.y],
+              element,
               false,
               false,
               CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW,
@@ -929,7 +1054,7 @@ class Board {
           case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
             return NumberlineVector.loadVector(
               this,
-              [element.point1, element.y],
+              element,
               true,
               true,
               CONSTANT.TOOLS.RAY_RIGHT_DIRECTION,
@@ -938,7 +1063,7 @@ class Board {
           case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
             return NumberlineVector.loadVector(
               this,
-              [element.point1, element.y],
+              element,
               false,
               true,
               CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW,
@@ -1106,6 +1231,7 @@ class Board {
                   }
                 );
 
+                newLine.type = 90;
                 handleSnap(newLine, Object.values(newLine.ancestors));
 
                 return newLine;
@@ -1134,6 +1260,7 @@ class Board {
                   [points[0].id]: points[0],
                   [points[1].id]: points[1]
                 };
+                newElem.type = 91;
                 newElem.addParents(points);
                 handleSnap(newElem, Object.values(newElem.ancestors));
                 return newElem;
@@ -1162,6 +1289,7 @@ class Board {
                   [points[0].id]: points[0],
                   [points[1].id]: points[1]
                 };
+                newElem.type = 92;
                 newElem.addParents(points);
                 handleSnap(newElem, Object.values(newElem.ancestors));
                 return newElem;
@@ -1190,6 +1318,7 @@ class Board {
                   [points[0].id]: points[0],
                   [points[1].id]: points[1]
                 };
+                newElem.type = 93;
                 newElem.addParents(points);
                 handleSnap(newElem, Object.values(newElem.ancestors));
                 return newElem;
@@ -1218,6 +1347,7 @@ class Board {
                   [points[0].id]: points[0],
                   [points[1].id]: points[1]
                 };
+                newElem.type = 94;
                 newElem.addParents(points);
                 handleSnap(newElem, Object.values(newElem.ancestors));
                 return newElem;
@@ -1272,6 +1402,7 @@ class Board {
                   [points[0].id]: points[0],
                   [points[1].id]: points[1]
                 };
+                newElem.type = 96;
                 newElem.addParents(points);
                 handleSnap(newElem, Object.values(newElem.ancestors));
                 return newElem;
@@ -1300,6 +1431,7 @@ class Board {
                   [points[0].id]: points[0],
                   [points[1].id]: points[1]
                 };
+                newElem.type = 97;
                 newElem.addParents(points);
                 handleSnap(newElem, Object.values(newElem.ancestors));
                 return newElem;
@@ -1486,6 +1618,7 @@ class Board {
                   }
                 );
 
+                newLine.type = 90;
                 handleSnap(newLine, Object.values(newLine.ancestors));
 
                 return newLine;
@@ -1515,6 +1648,7 @@ class Board {
                   [points[0].id]: points[0],
                   [points[1].id]: points[1]
                 };
+                newElem.type = 91;
                 newElem.addParents(points);
                 handleSnap(newElem, Object.values(newElem.ancestors));
                 return newElem;
@@ -1544,6 +1678,7 @@ class Board {
                   [points[0].id]: points[0],
                   [points[1].id]: points[1]
                 };
+                newElem.type = 92;
                 newElem.addParents(points);
                 handleSnap(newElem, Object.values(newElem.ancestors));
                 return newElem;
@@ -1573,6 +1708,7 @@ class Board {
                   [points[0].id]: points[0],
                   [points[1].id]: points[1]
                 };
+                newElem.type = 93;
                 newElem.addParents(points);
                 handleSnap(newElem, Object.values(newElem.ancestors));
                 return newElem;
@@ -1602,6 +1738,7 @@ class Board {
                   [points[0].id]: points[0],
                   [points[1].id]: points[1]
                 };
+                newElem.type = 94;
                 newElem.addParents(points);
                 handleSnap(newElem, Object.values(newElem.ancestors));
                 return newElem;
@@ -1658,6 +1795,7 @@ class Board {
                   [points[0].id]: points[0],
                   [points[1].id]: points[1]
                 };
+                newElem.type = 96;
                 newElem.addParents(points);
                 handleSnap(newElem, Object.values(newElem.ancestors));
                 return newElem;
@@ -1687,6 +1825,7 @@ class Board {
                   [points[0].id]: points[0],
                   [points[1].id]: points[1]
                 };
+                newElem.type = 97;
                 newElem.addParents(points);
                 handleSnap(newElem, Object.values(newElem.ancestors));
                 return newElem;
@@ -1719,10 +1858,10 @@ class Board {
    * @see Point::getConfig
    */
   createPointFromConfig(el, attrs) {
-    const point = Point.findPoint(this.$board.objectsList, [1, el.x, el.y]);
-    if (point && el.x !== 0 && el.y !== 0) {
-      return point;
-    }
+    // const point = Point.findPoint(this.$board.objectsList, [1, el.x, el.y]);
+    // if (point && el.x !== 0 && el.y !== 0) {
+    //   return point;
+    // }
     const [name, points, props] = Point.parseConfig(el, this.getParameters(CONSTANT.TOOLS.POINT));
     return this.createElement(name, points, { ...props, ...attrs });
   }
@@ -1734,10 +1873,10 @@ class Board {
    * @see Point::getConfig
    */
   createAnswerPointFromConfig(el, attrs) {
-    const point = Point.findPoint(this.$board.objectsList, [1, el.x, el.y]);
-    if (point && el.x !== 0 && el.y !== 0) {
-      return point;
-    }
+    // const point = Point.findPoint(this.$board.objectsList, [1, el.x, el.y]);
+    // if (point && el.x !== 0 && el.y !== 0) {
+    //   return point;
+    // }
     const [name, points, props] = Point.parseConfig(el, this.getParameters(CONSTANT.TOOLS.POINT));
     return this.createElement(name, points, { ...props, ...attrs, fixed: true });
   }
@@ -1761,10 +1900,6 @@ class Board {
 
   removeBgImage() {
     this.$board.removeObject(this.bgImage);
-  }
-
-  removeAnswers() {
-    this.$board.removeObject(this.answers);
   }
 
   isDragMode() {

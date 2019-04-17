@@ -105,26 +105,26 @@ const drawPoint = (board, coord, fixed, colors, yPosition) =>
     snapToGrid: false
   });
 
-const loadPoint = (board, coords, stackResponses) => {
-  const numberlineAxis = board.elements.filter(element => element.elType === "axis" || element.elType === "arrow");
+const loadPoint = (board, element, stackResponses) => {
+  const numberlineAxis = board.elements.filter(el => el.elType === "axis" || el.elType === "arrow");
   const ticksDistance = numberlineAxis[0].ticks[0].getAttribute("ticksDistance");
 
   if (!stackResponses) {
-    const point = drawPoint(board, coords[0], false, null);
+    const point = drawPoint(board, element.point1, false, element.colors);
     point.segmentType = "segments_point";
     previousPointsPositions.push({ id: point.id, position: point.X() });
     handlePointDrag(point, board, ticksDistance, numberlineAxis[0]);
 
     return point;
   } else {
-    const point = drawPoint(board, coords[0], false, null, coords[1]);
+    const point = drawPoint(board, element.point1, false, element.colors, element.y);
     point.segmentType = "segments_point";
 
     point.setAttribute({ snapSizeY: 0.05 });
-    point.setPosition(window.JXG.COORDS_BY_USER, [point.X(), coords[1]]);
-    board.$board.on("move", () => point.moveTo([point.X(), coords[1]]));
+    point.setPosition(window.JXG.COORDS_BY_USER, [point.X(), element.y]);
+    board.$board.on("move", () => point.moveTo([point.X(), element.y]));
 
-    handleStackedPointDrag(point, numberlineAxis[0], coords[1]);
+    handleStackedPointDrag(point, numberlineAxis[0], element.y);
 
     return point;
   }

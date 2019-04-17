@@ -102,7 +102,7 @@ class CorrectAnswers extends Component {
   };
 
   render() {
-    const { t, graphData } = this.props;
+    const { t, graphData, changePreviewTab, previewTab } = this.props;
     const { validation } = graphData;
 
     const { value } = this.state;
@@ -119,6 +119,8 @@ class CorrectAnswers extends Component {
             <TabContainer>
               <CorrectAnswer
                 graphData={graphData}
+                previewTab={previewTab}
+                changePreviewTab={changePreviewTab}
                 response={validation.valid_response}
                 onUpdateValidationValue={this.updateValidationValue}
                 onUpdatePoints={this.handleUpdateCorrectScore}
@@ -134,6 +136,8 @@ class CorrectAnswers extends Component {
                     <CorrectAnswer
                       graphData={graphData}
                       response={alter}
+                      previewTab={previewTab}
+                      changePreviewTab={changePreviewTab}
                       onUpdateValidationValue={val => this.updateAltValidationValue(val, i)}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                     />

@@ -72,3 +72,7 @@ export const LOAD_SCRATCH_PAD = "[userWork] load scratchPad data";
 
 // shuffled options
 export const SET_SHUFFLED_OPTIONS = "[shuffledOptions] set shuffled options";
+
+// graphTools
+export const SET_ELEMENTS_STASH = "[graphTools] set elements stash";
+export const SET_STASH_INDEX = "[graphTools] set stash index";

@@ -119,7 +119,7 @@ export const calcRoundedToTicksDistance = (x, ticksDistance) => {
 // Calculate unitX
 export const calcUnitX = (xMin, xMax, layoutWidth) => {
   const unitLength = -xMin + xMax;
-  return layoutWidth / unitLength;
+  return !layoutWidth ? 1 : layoutWidth / unitLength;
 };
 
 // Return different element from new array

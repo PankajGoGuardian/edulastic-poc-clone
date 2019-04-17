@@ -48,17 +48,19 @@ function onHandler() {
   };
 }
 
-const cleanPoints = board => {
+function clean(board) {
+  const result = points.length > 0;
   points.forEach(point => board.$board.removeObject(point));
   points = [];
-};
+  return result;
+}
 
 function getConfig(secant) {
   return {
     _type: secant.type,
     type: CONSTANT.TOOLS.SECANT,
     id: secant.id,
-    label: secant.hasLabel ? secant.label.plaintext : false,
+    label: secant.labelHTML || false,
     points: Object.keys(secant.ancestors)
       .sort()
       .map(n => Point.getConfig(secant.ancestors[n]))
@@ -77,15 +79,14 @@ function parseConfig(pointsConfig) {
   ];
 }
 
-function abort(cb) {
-  cb(points);
-  points = [];
+function getPoints() {
+  return points;
 }
 
 export default {
   onHandler,
   getConfig,
   parseConfig,
-  cleanPoints,
-  abort
+  clean,
+  getPoints
 };

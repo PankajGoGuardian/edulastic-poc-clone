@@ -39,6 +39,101 @@ const getSnapSize = (snapTo, axisDistance) => {
 };
 
 class GraphDisplay extends Component {
+  state = {
+    graphIsValid: false
+  };
+
+  componentDidMount() {
+    this.validateGraph();
+  }
+
+  componentDidUpdate(prevProps) {
+    console.log("display");
+    const { graphData } = this.props;
+    if (graphData !== prevProps.graphData) {
+      this.validateGraph();
+    }
+  }
+
+  validateNumberline = () => {
+    const { graphData } = this.props;
+    const { canvas, ui_style } = graphData;
+    const { graphIsValid } = this.state;
+
+    const parsedGraphData = {
+      width: ui_style.layout_width ? parseInt(ui_style.layout_width, 10) : ui_style.layout_width,
+      height: ui_style.layout_height ? parseInt(ui_style.layout_height, 10) : ui_style.layout_height,
+      xMin: canvas.x_min ? parseFloat(canvas.x_min, 10) : canvas.x_min,
+      xMax: canvas.x_max ? parseFloat(canvas.x_max, 10) : canvas.x_max
+    };
+
+    if (
+      parsedGraphData.width === 0 ||
+      parsedGraphData.height === 0 ||
+      parsedGraphData.xMin >= parsedGraphData.xMax ||
+      parsedGraphData.xMin.length === 0 ||
+      parsedGraphData.xMax.length === 0 ||
+      parsedGraphData.width.length === 0 ||
+      parsedGraphData.height.length === 0
+    ) {
+      if (graphIsValid) {
+        this.setState({ graphIsValid: false });
+      }
+    } else if (!graphIsValid) {
+      this.setState({ graphIsValid: true });
+    }
+  };
+
+  validateQuadrants = () => {
+    const { graphData } = this.props;
+    const { canvas, ui_style } = graphData;
+    const { graphIsValid } = this.state;
+
+    const parsedGraphData = {
+      width: ui_style.layout_width ? parseInt(ui_style.layout_width, 10) : ui_style.layout_width,
+      height: ui_style.layout_height ? parseInt(ui_style.layout_height, 10) : ui_style.layout_height,
+      xMin: canvas.x_min ? parseFloat(canvas.x_min, 10) : canvas.x_min,
+      xMax: canvas.x_max ? parseFloat(canvas.x_max, 10) : canvas.x_max,
+      yMin: canvas.y_min ? parseFloat(canvas.y_min, 10) : canvas.y_min,
+      yMax: canvas.y_max ? parseFloat(canvas.y_max, 10) : canvas.y_max
+    };
+
+    if (
+      parsedGraphData.width === 0 ||
+      parsedGraphData.height === 0 ||
+      parsedGraphData.xMin >= parsedGraphData.xMax ||
+      parsedGraphData.yMin >= parsedGraphData.yMax ||
+      parsedGraphData.xMin.length === 0 ||
+      parsedGraphData.xMax.length === 0 ||
+      parsedGraphData.yMin.length === 0 ||
+      parsedGraphData.yMax.length === 0 ||
+      parsedGraphData.width.length === 0 ||
+      parsedGraphData.height.length === 0
+    ) {
+      if (graphIsValid) {
+        this.setState({ graphIsValid: false });
+      }
+    } else if (!graphIsValid) {
+      this.setState({ graphIsValid: true });
+    }
+  };
+
+  validateGraph = () => {
+    const { graphData } = this.props;
+    const { graphType } = graphData;
+
+    switch (graphType) {
+      case "axisSegments":
+      case "axisLabels":
+        this.validateNumberline();
+        break;
+      case "quadrants":
+      case "firstQuadrant":
+      default:
+        this.validateQuadrants();
+    }
+  };
+
   getGraphContainer = () => {
     const { graphData } = this.props;
     const { graphType } = graphData;
@@ -72,7 +167,17 @@ class GraphDisplay extends Component {
   };
 
   getQuadrantsProps = () => {
-    const { graphData, evaluation, onChange, showAnswer, checkAnswer, changePreviewTab, elements, shapes } = this.props;
+    const {
+      graphData,
+      evaluation,
+      onChange,
+      showAnswer,
+      checkAnswer,
+      changePreviewTab,
+      elements,
+      bgShapes,
+      altAnswerId
+    } = this.props;
 
     const {
       ui_style,
@@ -82,7 +187,8 @@ class GraphDisplay extends Component {
       toolbar,
       controlbar,
       validation,
-      annotation
+      annotation,
+      id
     } = graphData;
 
     return {
@@ -135,7 +241,7 @@ class GraphDisplay extends Component {
         size: [background_image.width, background_image.height]
       },
       backgroundShapes: {
-        values: background_shapes || [],
+        values: bgShapes ? [] : background_shapes || [],
         showPoints: !!background_image.showShapePoints
       },
       evaluation,
@@ -147,8 +253,10 @@ class GraphDisplay extends Component {
       showAnswer,
       checkAnswer,
       changePreviewTab,
-      shapes,
-      annotation
+      bgShapes,
+      annotation,
+      questionId: id,
+      altAnswerId
     };
   };
 
@@ -244,7 +352,16 @@ class GraphDisplay extends Component {
   };
 
   getAxisLabelsProps = () => {
-    const { graphData, evaluation, onChange, showAnswer, checkAnswer, changePreviewTab, elements } = this.props;
+    const {
+      graphData,
+      evaluation,
+      onChange,
+      showAnswer,
+      checkAnswer,
+      changePreviewTab,
+      previewTab,
+      elements
+    } = this.props;
 
     const { ui_style, canvas, numberlineAxis, validation, list, graphType } = graphData;
 
@@ -331,28 +448,36 @@ class GraphDisplay extends Component {
       elements,
       showAnswer,
       checkAnswer,
-      changePreviewTab
+      changePreviewTab,
+      previewTab
     };
   };
 
   render() {
     const { graphData, smallSize, showAnswer, checkAnswer, clearAnswer, qIndex } = this.props;
     const { stimulus } = graphData;
+    const { graphIsValid } = this.state;
 
     const GraphContainer = this.getGraphContainer();
 
     return (
       <Fragment>
-        <QuestionHeader
-          qIndex={qIndex}
-          smallSize={smallSize}
-          dangerouslySetInnerHTML={{ __html: stimulus }}
-          data-cy="questionHeader"
-        />
-        {showAnswer ? "showAnswer" : null}
-        {checkAnswer ? "checkAnswer" : null}
-        {clearAnswer ? "clearAnswer" : null}
-        <GraphContainer {...this.getGraphContainerProps()} />
+        {graphIsValid ? (
+          <Fragment>
+            <QuestionHeader
+              qIndex={qIndex}
+              smallSize={smallSize}
+              dangerouslySetInnerHTML={{ __html: stimulus }}
+              data-cy="questionHeader"
+            />
+            {showAnswer ? "showAnswer" : null}
+            {checkAnswer ? "checkAnswer" : null}
+            {clearAnswer ? "clearAnswer" : null}
+            <GraphContainer {...this.getGraphContainerProps()} />
+          </Fragment>
+        ) : (
+          <div>Wrong parameters</div>
+        )}
       </Fragment>
     );
   }
@@ -367,7 +492,9 @@ GraphDisplay.propTypes = {
   evaluation: PropTypes.any,
   showAnswer: PropTypes.bool,
   checkAnswer: PropTypes.bool,
-  clearAnswer: PropTypes.bool
+  clearAnswer: PropTypes.bool,
+  bgShapes: PropTypes.bool,
+  altAnswerId: PropTypes.string
 };
 
 GraphDisplay.defaultProps = {
@@ -378,7 +505,9 @@ GraphDisplay.defaultProps = {
   evaluation: null,
   showAnswer: false,
   checkAnswer: false,
-  clearAnswer: false
+  clearAnswer: false,
+  bgShapes: false,
+  altAnswerId: null
 };
 
 export default GraphDisplay;

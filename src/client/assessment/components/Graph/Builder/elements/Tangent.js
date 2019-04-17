@@ -48,17 +48,19 @@ function onHandler() {
   };
 }
 
-const cleanPoints = board => {
+function clean(board) {
+  const result = points.length > 0;
   points.forEach(point => board.$board.removeObject(point));
   points = [];
-};
+  return result;
+}
 
 function getConfig(tangent) {
   return {
     _type: tangent.type,
     type: CONSTANT.TOOLS.TANGENT,
     id: tangent.id,
-    label: tangent.hasLabel ? tangent.label.plaintext : false,
+    label: tangent.labelHTML || false,
     points: Object.keys(tangent.ancestors)
       .sort()
       .map(n => Point.getConfig(tangent.ancestors[n]))
@@ -77,15 +79,14 @@ function parseConfig(pointsConfig) {
   ];
 }
 
-function abort(cb) {
-  cb(points);
-  points = [];
+function getPoints() {
+  return points;
 }
 
 export default {
   onHandler,
   getConfig,
   parseConfig,
-  cleanPoints,
-  abort
+  clean,
+  getPoints
 };

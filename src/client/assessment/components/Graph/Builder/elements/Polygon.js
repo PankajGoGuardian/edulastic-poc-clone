@@ -7,10 +7,8 @@ export const defaultConfig = {
   hasInnerPoints: true
 };
 
-function isStart(point, coords) {
-  const x = Math.round(coords[1]);
-  const y = Math.round(coords[2]);
-  return point.coords.usrCoords[1] === x && point.coords.usrCoords[2] === y;
+function isStart(startPointCoords, testPointCoords) {
+  return startPointCoords[1] === testPointCoords[1] && startPointCoords[2] === testPointCoords[2];
 }
 
 let points = [];
@@ -18,11 +16,18 @@ let lines = [];
 
 function onHandler() {
   return (board, event) => {
+    const newPoint = Point.onHandler(board, event);
+    if (!points.length) {
+      newPoint.setAttribute(Colors.yellow[CONSTANT.TOOLS.POINT]);
+      points.push(newPoint);
+      return;
+    }
+
     if (points.length >= 3) {
       // wait 3 points
       // handle closing polygon
-      const coords = board.getCoords(event);
-      if (isStart(points[0], coords.usrCoords)) {
+      if (isStart(points[0].coords.usrCoords, newPoint.coords.usrCoords)) {
+        board.$board.removeObject(newPoint);
         lines.map(board.$board.removeObject.bind(board.$board));
         points[0].setAttribute(Colors.default[CONSTANT.TOOLS.POINT]);
         const newPolygon = board.$board.create("polygon", points, {
@@ -35,36 +40,32 @@ function onHandler() {
         return newPolygon;
       }
     }
-    const newPoint = Point.onHandler(board, event);
-    if (newPoint) {
-      // mark first point
-      if (!points.length) {
-        newPoint.setAttribute(Colors.yellow[CONSTANT.TOOLS.POINT]);
-      }
-      if (points.length > 0) {
-        lines.push(
-          board.$board.create("line", [points[points.length - 1], newPoint], {
-            ...segmentConfig,
-            ...Colors.default[CONSTANT.TOOLS.LINE]
-          })
-        );
-      }
-      points.push(newPoint);
+    if (points.length > 0) {
+      lines.push(
+        board.$board.create("line", [points[points.length - 1], newPoint], {
+          ...segmentConfig,
+          ...Colors.default[CONSTANT.TOOLS.LINE]
+        })
+      );
     }
+    points.push(newPoint);
   };
 }
 
-const cleanPoints = board => {
+function clean(board) {
+  const result = points.length > 0;
   points.forEach(point => board.$board.removeObject(point));
   points = [];
-};
+  lines = [];
+  return result;
+}
 
 function getConfig(polygon) {
   return {
     _type: polygon.type,
     type: CONSTANT.TOOLS.POLYGON,
     id: polygon.id,
-    label: polygon.hasLabel ? polygon.label.plaintext : false,
+    label: polygon.labelHTML || false,
     points: Object.keys(polygon.ancestors)
       .sort()
       .map(n => Point.getConfig(polygon.ancestors[n]))
@@ -89,17 +90,15 @@ function parseConfig() {
   };
 }
 
-function abort(cb) {
-  cb([...points]);
-  points = [];
-  lines = [];
+function getPoints() {
+  return points;
 }
 
 export default {
   onHandler,
   getConfig,
   parseConfig,
-  cleanPoints,
+  clean,
   flatConfigPoints,
-  abort
+  getPoints
 };

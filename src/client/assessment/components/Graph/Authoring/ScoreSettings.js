@@ -21,11 +21,13 @@ class ScoreSettings extends Component {
 }
 
 ScoreSettings.propTypes = {
-  scoringTypes: PropTypes.array
+  scoringTypes: PropTypes.array,
+  showSelect: PropTypes.bool
 };
 
 ScoreSettings.defaultProps = {
-  scoringTypes: types
+  scoringTypes: types,
+  showSelect: true
 };
 
 const enhance = compose(withNamespaces("assessment"));

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
 import { graph as checkAnswerMethod } from "@edulastic/evaluators";
@@ -24,6 +25,7 @@ import {
   defaultGridParameters
 } from "../../Builder/settings";
 import { GraphWrapper, JSXBox, LabelTop, LabelBottom, LabelLeft, LabelRight, Title } from "./styled";
+import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -41,7 +43,8 @@ const getColoredElems = (elements, compareResult) => {
         if (detail && detail.result) {
           newEl = {
             colors: {
-              strokeColor: green
+              strokeColor: green,
+              highlightStrokeColor: green
             },
             ...el
           };
@@ -49,12 +52,16 @@ const getColoredElems = (elements, compareResult) => {
         } else {
           newEl = {
             colors: {
-              strokeColor: red
+              strokeColor: red,
+              highlightStrokeColor: red
             },
             ...el
           };
         }
-        if (newEl.type === "point") newEl.colors.fillColor = result ? green : red;
+        if (newEl.type === "point") {
+          newEl.colors.fillColor = result ? green : red;
+          newEl.colors.highlightFillColor = result ? green : red;
+        }
 
         if (el.subElementsIds) {
           Object.values(el.subElementsIds).forEach(val => {
@@ -77,7 +84,9 @@ const getColoredElems = (elements, compareResult) => {
           newEl = {
             colors: {
               strokeColor: green,
-              fillColor: green
+              highlightStrokeColor: green,
+              fillColor: green,
+              highlightFillColor: green
             },
             ...el
           };
@@ -85,7 +94,9 @@ const getColoredElems = (elements, compareResult) => {
           newEl = {
             colors: {
               fillColor: red,
-              strokeColor: red
+              highlightFillColor: red,
+              strokeColor: red,
+              highlightStrokeColor: red
             },
             ...el
           };
@@ -144,6 +155,7 @@ const getColoredAnswer = answerArr => {
           break;
         case CONSTANT.TOOLS.POLYNOM:
           colors = Colors.yellow[CONSTANT.TOOLS.POLYNOM];
+          break;
         default:
           break;
       }
@@ -187,9 +199,7 @@ class GraphContainer extends Component {
     this._graph = null;
 
     this.state = {
-      selectedTool: this.getDefaultTool(),
-      elementsStash: [],
-      currentStashIndex: 0
+      selectedTool: this.getDefaultTool()
     };
 
     this.onSelectTool = this.onSelectTool.bind(this);
@@ -221,11 +231,8 @@ class GraphContainer extends Component {
       gridParams,
       bgImgOptions,
       backgroundShapes,
-      showAnswer,
-      checkAnswer,
-      validation,
       tools,
-      elements
+      setElementsStash
     } = this.props;
 
     this._graph = makeBorder(this._graphId);
@@ -258,29 +265,11 @@ class GraphContainer extends Component {
       this._graph.setBgImage(bgImgOptions);
       this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
 
-      if (showAnswer) {
-        this._graph.setAnswer(getColoredAnswer(validation ? validation.valid_response.value : []));
-      } else {
-        this._graph.removeAnswers();
-      }
-    }
-
-    if (checkAnswer) {
-      this.mapElementsToGraph();
-    }
-
-    if (!showAnswer && !checkAnswer) {
-      this._graph.loadFromConfig(elements);
+      this.setElementsToGraph();
     }
 
     this.setGraphUpdateEventHandler();
-
-    const elementsStash = this.state.elementsStash.concat([this._graph.getConfig()]);
-
-    this.setState({
-      elementsStash: elementsStash,
-      currentStashIndex: elementsStash.length - 1
-    });
+    setElementsStash(this._graph.getConfig(), this.getStashId());
   }
 
   componentDidUpdate(prevProps) {
@@ -293,8 +282,7 @@ class GraphContainer extends Component {
       gridParams,
       bgImgOptions,
       backgroundShapes,
-      tools,
-      elements
+      tools
     } = this.props;
 
     if (JSON.stringify(tools) !== JSON.stringify(prevProps.tools)) {
@@ -387,10 +375,7 @@ class GraphContainer extends Component {
         this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
       }
 
-      if (JSON.stringify(elements) !== JSON.stringify(this._graph.getConfig())) {
-        this._graph.reset();
-        this.mapElementsToGraph();
-      }
+      this.setElementsToGraph();
     }
   }
 
@@ -400,7 +385,7 @@ class GraphContainer extends Component {
   }
 
   onReset() {
-    const { tools } = this.props;
+    const { tools, setElementsStash } = this.props;
 
     this.setState({
       selectedTool: this.getDefaultTool()
@@ -409,39 +394,41 @@ class GraphContainer extends Component {
     this._graph.setTool(tools[0]);
     this._graph.reset();
     this.getConfig();
-    const elementsStash = this.state.elementsStash.concat([this._graph.getConfig()]);
-    this.setState({
-      elementsStash: elementsStash,
-      currentStashIndex: elementsStash.length - 1
-    });
+    setElementsStash(this._graph.getConfig(), this.getStashId());
   }
 
   onUndo = () => {
-    const { currentStashIndex, elementsStash } = this.state;
-    if (currentStashIndex > 0 && currentStashIndex <= elementsStash.length - 1) {
-      this.setState(
-        state => ({ currentStashIndex: state.currentStashIndex - 1 }),
-        () => {
-          this._graph.reset();
-          this._graph.loadFromConfig(elementsStash[this.state.currentStashIndex]);
-          this.props.setValue(elementsStash[this.state.currentStashIndex]);
-        }
-      );
+    if (this._graph.cleanToolTempPoints()) {
+      return;
+    }
+    const { stash, stashIndex, setStashIndex, setValue } = this.props;
+    const id = this.getStashId();
+    if (stashIndex[id] > 0 && stashIndex[id] <= stash[id].length - 1) {
+      this._graph.reset();
+      this._graph.loadFromConfig(stash[id][stashIndex[id] - 1]);
+      setValue(stash[id][stashIndex[id] - 1]);
+      setStashIndex(stashIndex[id] - 1, id);
     }
   };
 
   onRedo() {
-    const { currentStashIndex, elementsStash } = this.state;
-    if (currentStashIndex >= 0 && currentStashIndex < elementsStash.length - 1) {
-      this.setState(
-        state => ({ currentStashIndex: state.currentStashIndex + 1 }),
-        () => {
-          this._graph.reset();
-          this._graph.loadFromConfig(elementsStash[this.state.currentStashIndex]);
-          this.props.setValue(elementsStash[this.state.currentStashIndex]);
-        }
-      );
+    if (this._graph.cleanToolTempPoints()) {
+      return;
     }
+    const { stash, stashIndex, setStashIndex, setValue } = this.props;
+    const id = this.getStashId();
+    if (stashIndex[id] >= 0 && stashIndex[id] < stash[id].length - 1) {
+      this._graph.reset();
+      this._graph.loadFromConfig(stash[id][stashIndex[id] + 1]);
+      setValue(stash[id][stashIndex[id] + 1]);
+      setStashIndex(stashIndex[id] + 1, id);
+    }
+  }
+
+  getStashId() {
+    const { questionId, altAnswerId, view, bgShapes } = this.props;
+    const type = bgShapes ? "bgShapes" : altAnswerId || view;
+    return `${questionId}_${type}`;
   }
 
   getHandlerByControlName = control => {
@@ -467,34 +454,26 @@ class GraphContainer extends Component {
     }
   }
 
-  setGraphUpdateEventHandler = () => {
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, () => {
-      this.getConfig();
-      const elementsStash = this.state.elementsStash.concat([this._graph.getConfig()]);
-      this.setState({
-        elementsStash: elementsStash,
-        currentStashIndex: elementsStash.length - 1
-      });
-    });
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, () => {
-      this.getConfig();
-      const elementsStash = this.state.elementsStash.concat([this._graph.getConfig()]);
-      this.setState({
-        elementsStash: elementsStash,
-        currentStashIndex: elementsStash.length - 1
-      });
-    });
+  graphUpdateHandler = () => {
+    const { setElementsStash } = this.props;
+    this.getConfig();
+    setElementsStash(this._graph.getConfig(), this.getStashId());
   };
 
-  mapElementsToGraph = () => {
+  setGraphUpdateEventHandler = () => {
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, this.graphUpdateHandler);
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, this.graphUpdateHandler);
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_UPDATE, this.graphUpdateHandler);
+  };
+
+  setElementsToGraph = () => {
     const { elements, checkAnswer, showAnswer, evaluation, validation } = this.props;
 
-    let newElems = elements;
-
-    if (checkAnswer) {
+    if (checkAnswer || showAnswer) {
+      let coloredElements;
       if (evaluation && evaluation.length) {
         const compareResult = getCompareResult(evaluation);
-        newElems = getColoredElems(elements, compareResult);
+        coloredElements = getColoredElems(elements, compareResult);
       } else {
         const compareResult = getCompareResult(
           checkAnswerMethod({
@@ -502,19 +481,21 @@ class GraphContainer extends Component {
             validation
           })
         );
-        newElems = getColoredElems(elements, compareResult);
+        coloredElements = getColoredElems(elements, compareResult);
       }
-    } else if (showAnswer) {
-      const compareResult = getCompareResult(
-        checkAnswerMethod({
-          userResponse: elements,
-          validation
-        })
-      );
-      newElems = getColoredElems(elements, compareResult);
-    }
 
-    this._graph.loadAnswersFromConfig(newElems);
+      if (showAnswer) {
+        this._graph.resetAnswers();
+        this._graph.loadAnswersFromConfig(getColoredAnswer(validation ? validation.valid_response.value : []));
+      }
+
+      this._graph.reset();
+      this._graph.loadFromConfig(coloredElements);
+    } else {
+      this._graph.reset();
+      this._graph.resetAnswers();
+      this._graph.loadFromConfig(elements);
+    }
   };
 
   getIconByToolName = (toolName, options) => {
@@ -618,7 +599,7 @@ class GraphContainer extends Component {
   allControls = ["undo", "redo", "reset"];
 
   render() {
-    const { tools, layout, annotation, controls, shapes } = this.props;
+    const { tools, layout, annotation, controls, bgShapes } = this.props;
     const { selectedTool } = this.state;
     const hasAnnotation =
       annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
@@ -627,15 +608,15 @@ class GraphContainer extends Component {
         <GraphWrapper>
           {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
           <Tools
-            tools={shapes ? this.allTools : tools}
-            controls={shapes ? this.allControls : controls}
+            tools={bgShapes ? this.allTools : tools}
+            controls={bgShapes ? this.allControls : controls}
             tool={selectedTool}
-            shapes={shapes}
+            bgShapes={bgShapes}
             getIconByToolName={this.getIconByToolName}
             getHandlerByControlName={this.getHandlerByControlName}
             onSelect={this.onSelectTool}
             onReset={this.onReset}
-            fontSize={shapes ? 12 : layout.fontSize}
+            fontSize={bgShapes ? 12 : layout.fontSize}
           />
           <div
             style={{
@@ -685,7 +666,17 @@ GraphContainer.propTypes = {
   elements: PropTypes.array.isRequired,
   showAnswer: PropTypes.bool,
   checkAnswer: PropTypes.bool,
-  changePreviewTab: PropTypes.func
+  changePreviewTab: PropTypes.func,
+  bgShapes: PropTypes.bool.isRequired,
+  annotation: PropTypes.object,
+  controls: PropTypes.array,
+  view: PropTypes.string.isRequired,
+  setElementsStash: PropTypes.func.isRequired,
+  setStashIndex: PropTypes.func.isRequired,
+  stash: PropTypes.object,
+  stashIndex: PropTypes.object,
+  questionId: PropTypes.string.isRequired,
+  altAnswerId: PropTypes.string
 };
 
 GraphContainer.defaultProps = {
@@ -693,7 +684,22 @@ GraphContainer.defaultProps = {
   evaluation: null,
   showAnswer: false,
   checkAnswer: false,
-  changePreviewTab: () => {}
+  changePreviewTab: () => {},
+  annotation: null,
+  controls: [],
+  stash: {},
+  stashIndex: {},
+  altAnswerId: null
 };
 
-export default GraphContainer;
+export default connect(
+  state => ({
+    stash: state.graphTools.stash,
+    stashIndex: state.graphTools.stashIndex,
+    view: state.view.view
+  }),
+  {
+    setElementsStash: setElementsStashAction,
+    setStashIndex: setStashIndexAction
+  }
+)(GraphContainer);

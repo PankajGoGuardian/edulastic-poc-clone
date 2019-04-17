@@ -57,17 +57,18 @@ function onHandler() {
   };
 }
 
-const cleanPoints = board => {
+function clean(board) {
+  const result = points.length > 0;
   points.forEach(point => board.$board.removeObject(point));
   points = [];
-};
-
+  return result;
+}
 function getConfig(logarithm) {
   return {
     _type: logarithm.type,
     type: CONSTANT.TOOLS.LOGARITHM,
     id: logarithm.id,
-    label: logarithm.hasLabel ? logarithm.label.plaintext : false,
+    label: logarithm.labelHTML || false,
     points: Object.keys(logarithm.ancestors)
       .sort()
       .map(n => Point.getConfig(logarithm.ancestors[n]))
@@ -86,15 +87,14 @@ function parseConfig(pointsConfig) {
   ];
 }
 
-function abort(cb) {
-  cb(points);
-  points = [];
+function getPoints() {
+  return points;
 }
 
 export default {
   onHandler,
   getConfig,
   parseConfig,
-  cleanPoints,
-  abort
+  clean,
+  getPoints
 };

@@ -99,17 +99,9 @@ const bgImageParameters = {
   opacity: 0.5
 };
 
-const inputParameters = {
-  cssClass: "myLabelInput",
-  highlightCssClass: "myLabelInput",
-  fixed: true,
-  highlightFillOpacity: 1,
-  highlightStrokeOpacity: 1
-};
-
 export const labelParameters = {
-  cssClass: "myLabel",
-  highlightCssClass: "myLabel"
+  cssClass: "graph-shape-label",
+  highlightCssClass: "graph-shape-label"
 };
 
 const textParameters = {
@@ -149,6 +141,13 @@ const getLabelPositionParameters = elementType => {
         anchorX: "right",
         anchorY: "middle"
       };
+    case 91:
+      return {
+        position: "top",
+        offset: [0, -10],
+        anchorX: "middle",
+        anchorY: "middle"
+      };
     default:
       return {
         position: "top",
@@ -159,11 +158,6 @@ const getLabelPositionParameters = elementType => {
   }
 };
 
-export const getInputParameters = elementType => ({
-  ...inputParameters,
-  ...getLabelPositionParameters(elementType)
-});
-
 export const getLabelParameters = elementType => ({
   ...labelParameters,
   ...getLabelPositionParameters(elementType)
@@ -173,7 +167,7 @@ export const defaultTextParameters = () => ({ ...textParameters });
 
 export const defaultBgImageParameters = () => ({ ...bgImageParameters });
 
-export const graphParameters2Boundingbox = p => [p.xMin, p.yMax, p.xMax, p.yMin];
+export const graphParameters2Boundingbox = p => [p.xMin || 0, p.yMax || 0, p.xMax || 0, p.yMin || 0];
 
 export const numberlineGraphParametersToBoundingbox = (coords, margin) => [
   coords.xMin - margin,

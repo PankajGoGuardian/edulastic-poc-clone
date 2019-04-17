@@ -45,17 +45,19 @@ function onHandler() {
   };
 }
 
-const cleanPoints = board => {
+function clean(board) {
+  const result = points.length > 0;
   points.forEach(point => board.$board.removeObject(point));
   points = [];
-};
+  return result;
+}
 
 function getConfig(parabola) {
   return {
     _type: parabola.type,
     type: CONSTANT.TOOLS.PARABOLA,
     id: parabola.id,
-    label: parabola.hasLabel ? parabola.label.plaintext : false,
+    label: parabola.labelHTML || false,
     points: Object.keys(parabola.ancestors)
       .sort()
       .map(n => Point.getConfig(parabola.ancestors[n]))
@@ -74,15 +76,14 @@ function parseConfig(pointsConfig) {
   ];
 }
 
-function abort(cb) {
-  cb(points);
-  points = [];
+function getPoints() {
+  return points;
 }
 
 export default {
   onHandler,
   getConfig,
-  cleanPoints,
+  clean,
   parseConfig,
-  abort
+  getPoints
 };

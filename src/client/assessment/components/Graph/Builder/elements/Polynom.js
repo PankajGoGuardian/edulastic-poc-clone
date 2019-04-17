@@ -10,10 +10,8 @@ export const defaultConfig = {
   fixed: false
 };
 
-function isStart(point, coords) {
-  const x = Math.round(coords[1]);
-  const y = Math.round(coords[2]);
-  return point.coords.usrCoords[1] === x && point.coords.usrCoords[2] === y;
+function isStart(startPointCoords, testPointCoords) {
+  return startPointCoords[1] === testPointCoords[1] && startPointCoords[2] === testPointCoords[2];
 }
 
 const makeCallback = (...points) => x => {
@@ -42,49 +40,49 @@ function flatConfigPoints(pointsConfig) {
 
 function onHandler() {
   return (board, event) => {
-    if (points.length >= 1) {
-      // handle closing polynom
-      const coords = board.getCoords(event);
-      if (isStart(points[0], coords.usrCoords)) {
-        points[0].setAttribute(Colors.default[CONSTANT.TOOLS.POINT]);
-        const newPolynom = board.$board.create("functiongraph", [makeCallback(...points)], {
-          ...defaultConfig,
-          ...Colors.default[CONSTANT.TOOLS.POLYNOM],
-          label: getLabelParameters(jxgType)
-        });
-        newPolynom.type = jxgType;
-        handleSnap(newPolynom, points);
-
-        if (newPolynom) {
-          newPolynom.addParents(points);
-          newPolynom.ancestors = flatConfigPoints(points);
-          points = [];
-          return newPolynom;
-        }
-      }
-    }
     const newPoint = Point.onHandler(board, event);
-    if (newPoint) {
-      // mark first point
-      if (!points.length) {
-        newPoint.setAttribute(Colors.yellow[CONSTANT.TOOLS.POINT]);
-      }
+    if (!points.length) {
+      newPoint.setAttribute(Colors.yellow[CONSTANT.TOOLS.POINT]);
       points.push(newPoint);
+      return;
     }
+
+    if (isStart(points[0].coords.usrCoords, newPoint.coords.usrCoords)) {
+      board.$board.removeObject(newPoint);
+      points[0].setAttribute(Colors.default[CONSTANT.TOOLS.POINT]);
+      const newPolynom = board.$board.create("functiongraph", [makeCallback(...points)], {
+        ...defaultConfig,
+        ...Colors.default[CONSTANT.TOOLS.POLYNOM],
+        label: getLabelParameters(jxgType)
+      });
+      newPolynom.type = jxgType;
+      handleSnap(newPolynom, points);
+
+      if (newPolynom) {
+        newPolynom.addParents(points);
+        newPolynom.ancestors = flatConfigPoints(points);
+        points = [];
+        return newPolynom;
+      }
+    }
+
+    points.push(newPoint);
   };
 }
 
-const cleanPoints = board => {
+function clean(board) {
+  const result = points.length > 0;
   points.forEach(point => board.$board.removeObject(point));
   points = [];
-};
+  return result;
+}
 
 function getConfig(polynom) {
   return {
     _type: polynom.type,
     type: CONSTANT.TOOLS.POLYNOM,
     id: polynom.id,
-    label: polynom.hasLabel ? polynom.label.plaintext : false,
+    label: polynom.labelHTML || false,
     points: Object.keys(polynom.ancestors)
       .sort()
       .map(n => Point.getConfig(polynom.ancestors[n]))
@@ -103,16 +101,15 @@ function parseConfig(pointsConfig) {
   ];
 }
 
-function abort(cb) {
-  cb([...points]);
-  points = [];
+function getPoints() {
+  return points;
 }
 
 export default {
   onHandler,
   getConfig,
   parseConfig,
-  cleanPoints,
+  clean,
   flatConfigPoints,
-  abort
+  getPoints
 };

@@ -2,9 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Row, Col } from "antd";
 import styled from "styled-components";
-import { darkBlue, black, darkGrey, grey } from "@edulastic/colors";
+import { darkBlue, black, darkGrey, titleColor } from "@edulastic/colors";
 
-const Tab = ({ className, tabData, isLast, selectedTab }) => {
+const Tab = ({ className, tabData, selectedTab }) => {
   return (
     <Col
       className={
@@ -16,7 +16,6 @@ const Tab = ({ className, tabData, isLast, selectedTab }) => {
           {tabData.title}
         </StyledSpan>
       </StyledLink>
-      {!isLast ? <div class="navigator-tab-divider" /> : null}
     </Col>
   );
 };
@@ -49,19 +48,30 @@ const StyledContainer = styled.div`
 `;
 
 const StyledRow = styled(Row)`
-  height: 100%;
   overflow: auto;
+  display: flex;
   flex-flow: nowrap;
+  padding: 15px 0px 10px;
 `;
 
 const StyledTab = styled(Tab)`
-  flex: 1;
-  display: flex;
-  height: 100%;
-  min-width: 150px;
   text-align: center;
   overflow: hidden;
-  font-weight: 900;
+  font-weight: 600;
+  padding: 0px 20px;
+  position: relative;
+  &:not(:last-child) {
+    &:after {
+      content: "|";
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      color: ${darkGrey};
+    }
+  }
+  &:hover span {
+    color: ${titleColor};
+  }
 
   span {
     color: ${props => (props.tabData.key === props.selectedTab ? black : darkGrey)};
@@ -70,13 +80,6 @@ const StyledTab = styled(Tab)`
   .navigator-tab-highlighter {
     height: 2px;
     background-color: ${darkBlue};
-  }
-
-  .navigator-tab-divider {
-    height: 100%;
-    width: 1px;
-    background-color: ${darkGrey};
-    margin: 10px;
   }
 `;
 

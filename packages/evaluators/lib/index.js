@@ -56,7 +56,7 @@ Object.defineProperty(exports, "math", {
 Object.defineProperty(exports, "clozeMath", {
   enumerable: true,
   get: function get() {
-    return _clozeMath.default;
+    return _clozeMath["default"];
   }
 });
 Object.defineProperty(exports, "hotspot", {

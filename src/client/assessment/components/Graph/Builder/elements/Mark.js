@@ -2,17 +2,7 @@ import { clone } from "lodash";
 import { defaultTextParameters } from "../settings";
 import { calcMeasure, checkMarksRenderSpace, getClosestTick } from "../utils";
 
-const snapMark = (
-  mark,
-  point,
-  xCoords,
-  snapToTicks,
-  ticksDistance,
-  setValue,
-  lineSettings,
-  containerSettings,
-  board
-) => {
+const snapMark = (mark, point, xCoords, snapToTicks, setValue, lineSettings, containerSettings, board) => {
   mark.on("up", () => {
     const setCoords = window.JXG.COORDS_BY_USER;
     let x;
@@ -59,18 +49,7 @@ const snapMark = (
   });
 };
 
-const onHandler = (
-  board,
-  coords,
-  data,
-  measure,
-  xCoords,
-  snapToTicks,
-  ticksDistance,
-  setValue,
-  lineSettings,
-  containerSettings
-) => {
+const onHandler = (board, coords, data, measure, xCoords, snapToTicks, setValue, lineSettings, containerSettings) => {
   const [markXMeasure, markYMeasure] = calcMeasure(51.5, 45, board);
   const [xMeasure, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
   const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
@@ -84,7 +63,7 @@ const onHandler = (
     defaultTextParameters()
   );
   const group = board.$board.create("group", [point, mark], { id: data.id });
-  snapMark(mark, point, xCoords, snapToTicks, ticksDistance, setValue, lineSettings, containerSettings, board);
+  snapMark(mark, point, xCoords, snapToTicks, setValue, lineSettings, containerSettings, board);
 
   if (point.Y() >= containerY - markYMeasure * 1.35) {
     mark.setAttribute({
@@ -98,7 +77,26 @@ const onHandler = (
   return group;
 };
 
-const renderMarkAnswer = (board, config, measure) => {
+const renderMarkAnswer = (board, config, measure, xCoords, snapToTicks, setValue, lineSettings, containerSettings) => {
+  const point = board.$board.create("point", [config.position, config.y], {
+    name: "",
+    visible: false
+  });
+
+  const mark = board.$board.create("text", [config.position - measure[0], config.y + measure[1], config.point], {
+    ...defaultTextParameters(),
+    cssClass: "mark " + config.className + " mounted",
+    highlightCssClass: "mark " + config.className + " mounted",
+    visible: true
+  });
+
+  const group = board.$board.create("group", [point, mark], { id: config.id });
+  snapMark(mark, point, xCoords, snapToTicks, setValue, lineSettings, containerSettings, board);
+
+  return group;
+};
+
+const renderMarkShowAnswer = (board, config, measure) => {
   const point = board.$board.create("point", [config.position, config.y], {
     name: "",
     visible: false,
@@ -312,5 +310,6 @@ export default {
   removeMark,
   rerenderMark,
   getConfig,
-  renderMarkAnswer
+  renderMarkAnswer,
+  renderMarkShowAnswer
 };

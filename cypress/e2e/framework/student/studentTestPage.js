@@ -433,5 +433,74 @@ class StudentTestPage {
       });
     return this;
   };
+
+  // Highlight
+
+  getShadeItemByIndex = index =>
+    cy
+      .get('[data-cy="shadesViewItem"]')
+      .should("be.visible")
+      .eq(index);
+
+  checkSelectedShadeItemByIndex = index => {
+    this.getShadeItemByIndex(index)
+      .click()
+      .then($el => {
+        cy.wrap($el).should("have.css", "background-color", "rgba(0, 176, 255, 0.8)");
+      });
+  };
+
+  checkUnSelectedShadeItemByIndex = index => {
+    this.getShadeItemByIndex(index)
+      .click()
+      .then($el => {
+        cy.wrap($el).should("have.css", "background-color", "rgba(0, 176, 255, 0.19)");
+      });
+    return this;
+  };
+
+  getHotspotPolygonByIndex = index =>
+    cy
+      .get('[data-cy="answer-container"]')
+      .find("polygon")
+      .eq(index);
+
+  checkSelectedPolygonByIndex = index => {
+    this.getHotspotPolygonByIndex(index)
+      .click()
+      .then($el => {
+        cy.wrap($el).should("have.css", "stroke", "rgb(0, 123, 179)");
+      });
+    return this;
+  };
+
+  checkUnselectedPolygonByIndex = index => {
+    this.getHotspotPolygonByIndex(index)
+      .click()
+      .then($el => {
+        cy.wrap($el).should("have.css", "stroke", "rgba(0, 176, 255, 1)");
+      });
+    return this;
+  };
+
+  getHighlightToken = answer => cy.get('[data-cy="previewWrapper"]').contains("span", answer);
+
+  checkSelectedToken = answer => {
+    this.getHighlightToken(answer)
+      .click()
+      .then($el => {
+        cy.wrap($el).should("have.class", "active-word");
+      });
+    return this;
+  };
+
+  checkUnselectedToken = answer => {
+    this.getHighlightToken(answer)
+      .click()
+      .then($el => {
+        cy.wrap($el).should("not.have.class", "active-word");
+      });
+    return this;
+  };
 }
 export default StudentTestPage;

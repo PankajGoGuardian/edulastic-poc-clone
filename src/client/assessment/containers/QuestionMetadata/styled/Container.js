@@ -5,17 +5,14 @@ import { mobileWidth } from "@edulastic/colors";
 export const Container = styled(Paper)`
   width: 100%;
   margin-bottom: 20px;
-  background: ${props => props.theme.questionMetadata.containerBackground};
-  box-shadow: none;
-
-  @media (max-width: ${mobileWidth}) {
+  
+   @media (max-width: ${mobileWidth}) {
     display: flex;
     flex-direction: column;
     align-items: center;
-
+    
     & > div {
       display: flex;
       flex-direction: column;
     }
-  }
 `;

@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Button, Typography } from "antd";
+import { Select, Button } from "antd";
 import { compose } from "redux";
 import { withNamespaces } from "react-i18next";
 import connect from "react-redux/es/connect/connect";
+import { union as _union, pick as _pick } from "lodash";
 import { ThemeProvider } from "styled-components";
-import _ from "lodash";
 
 import { themes } from "../../themes";
+import { Subtitle } from "../../styled/Subtitle";
 
 import {
   getDictCurriculumsAction,
-  getDictStandardsForCurriculumAction
+  getDictStandardsForCurriculumAction,
+  clearDictStandardsAction
 } from "../../../author/src/actions/dictionaries";
 import {
   setQuestionAlignmentAddRowAction,
@@ -19,6 +21,7 @@ import {
   setQuestionDataAction,
   getQuestionDataSelector
 } from "../../../author/QuestionEditor/ducks";
+import selectsData from "../../../author/TestPage/components/common/selectsData";
 
 import {
   addAlignmentAction,
@@ -26,66 +29,166 @@ import {
   removeAlignmentAction
 } from "../../../author/sharedDucks/questions";
 
-import {
-  getCurriculumsListSelector,
-  getStandardsListSelector,
-  getStandardsLoadingSelector
-} from "../../../author/src/selectors/dictionaries";
+import { getCurriculumsListSelector, getStandardsListSelector } from "../../../author/src/selectors/dictionaries";
 
+import { RowContainer } from "./styled/RowContainer";
+import { ItemBody } from "./styled/ItemBody";
+import { CurruculumName } from "./styled/CurruculumName";
+import { Buttons } from "./styled/Buttons";
+import { ButtonSave } from "./styled/ButtonSave";
+import { SecondBlockContainer } from "./styled/SecondBlockContainer";
 import { Container } from "./styled/Container";
 import { ShowAlignmentRowsContainer } from "./styled/ShowAlignmentRowsContainer";
 import { AddButtonContainer } from "./styled/AddButtonContainer";
-import SecondBlock from "./SecondBlock";
-import AlignmentRow from "./AlignmentRow";
+import { IconTrash } from "./styled/IconTrash";
+import { IconPencilEdit } from "./styled/IconPencilEdit";
+import { SelectSuffixIcon } from "./styled/SelectSuffixIcon";
+import { alignmentStandardsFromMongoToUI, alignmentStandardsFromUIToMongo } from "../../utils/helpers";
 
-const { Title } = Typography;
-
-const getNewAlignmentState = () => ({
-  curriculum: "",
-  curriculumId: "",
-  subject: "",
+const handleFilter = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+const getNewState = () => ({
+  isEditRow: false,
   grades: [],
-  domains: []
+  curriculum: undefined,
+  curriculumId: undefined,
+  subject: undefined,
+  standards: []
 });
 
-const QuestionMetadata = ({
-  t,
-  alignment,
-  questionData,
-  setQuestionData,
-  addAlignment,
-  curriculumStandards,
-  getCurriculumStandards,
-  curriculums,
-  getCurriculums,
-  removeAlignment,
-  curriculumStandardsLoading
-}) => {
-  useEffect(() => {
-    if (curriculums.length === 0) {
-      getCurriculums();
-    }
-  }, []);
+// todo: move to author folder
+class QuestionMetadata extends Component {
+  static propTypes = {
+    getCurriculums: PropTypes.func.isRequired,
+    curriculums: PropTypes.arrayOf(
+      PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        curriculum: PropTypes.string.isRequired,
+        grades: PropTypes.array.isRequired,
+        subject: PropTypes.string.isRequired
+      })
+    ).isRequired,
+    curriculumStandards: PropTypes.array.isRequired,
+    alignment: PropTypes.arrayOf(
+      PropTypes.shape({
+        curriculumId: PropTypes.string.isRequired,
+        curriculum: PropTypes.string.isRequired,
+        subject: PropTypes.string.isRequired,
+        standards: PropTypes.arrayOf(
+          PropTypes.shape({
+            _id: PropTypes.string.isRequired,
+            level: PropTypes.string.isRequired,
+            identifier: PropTypes.string.isRequired,
+            tloId: PropTypes.string,
+            eloId: PropTypes.string,
+            subEloId: PropTypes.string
+          })
+        )
+      })
+    ),
+    questionData: PropTypes.shape({
+      depthOfKnowledge: PropTypes.string,
+      authorDifficulty: PropTypes.string
+    }).isRequired,
+    getCurriculumStandards: PropTypes.func.isRequired,
+    addAlignment: PropTypes.func.isRequired,
+    removeAlignment: PropTypes.func.isRequired,
+    clearDictStandards: PropTypes.func.isRequired,
+    setQuestionData: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired
+  };
 
-  const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
+  static defaultProps = {
+    alignment: []
+  };
 
-  const handleDelete = curriculumId => () => {
+  state = getNewState();
+
+  handleEditRow = (index, rowData) => () => {
+    const standards = alignmentStandardsFromMongoToUI(rowData.domains);
+    const grades = _union(...standards.map(standard => standard.grades));
+    this.setState({
+      isEditRow: true,
+      grades,
+      curriculum: rowData.curriculum,
+      curriculumId: rowData.curriculumId,
+      subject: rowData.subject,
+      standards
+    });
+    const { clearDictStandards, removeAlignment } = this.props;
+    clearDictStandards();
+    removeAlignment(rowData.curriculumId);
+  };
+
+  handleDeleteRow = curriculumId => () => {
+    const { removeAlignment } = this.props;
     removeAlignment(curriculumId);
   };
 
-  const handleChangeTags = ({ target: { value } }) => {
-    const newQuestionData = {
-      ...questionData,
-      tags: value.split(",").map(tag => tag.trim())
+  handleCurriculumSelect = (curriculumId, option) => {
+    const { curriculum, subject } = option.props.obj;
+    this.setState({
+      curriculum,
+      curriculumId,
+      subject,
+      standards: []
+    });
+  };
+
+  handleGradeChange = grades => {
+    this.setState({ grades });
+  };
+
+  handleStandardSearch = searchStr => {
+    const { getCurriculumStandards } = this.props;
+    const { grades, curriculumId } = this.state;
+    if (curriculumId && searchStr.length >= 2) {
+      getCurriculumStandards(curriculumId, grades, searchStr);
+    }
+  };
+
+  handleStandardSelect = (chosenStandardsArr, option) => {
+    const { standards } = this.state;
+    const newStandard = _pick(option.props.obj, [
+      "_id",
+      "level",
+      "grades",
+      "identifier",
+      "tloId",
+      "tloDescription",
+      "eloId",
+      "subEloId",
+      "description"
+    ]);
+    const newStandards = [...standards, newStandard];
+    this.setState({ standards: newStandards });
+  };
+
+  handleStandardDeselect = removedElement => {
+    const { standards } = this.state;
+    const newStandards = standards.filter(el => el.identifier !== removedElement);
+    this.setState({ standards: newStandards });
+  };
+
+  handleSaveRow = () => {
+    const { addAlignment } = this.props;
+    const { curriculum, curriculumId, standards, subject, grades } = this.state;
+    const domains = alignmentStandardsFromUIToMongo(standards);
+    const alignment = {
+      curriculum,
+      curriculumId,
+      subject,
+      domains
     };
-    setQuestionData(newQuestionData);
+    addAlignment(alignment);
+    this.setState(getNewState());
   };
 
-  const handleAdd = () => {
-    addAlignment(getNewAlignmentState());
+  handleAdd = () => {
+    this.setState({ isEditRow: true });
   };
 
-  const handleQuestionDataSelect = fieldName => value => {
+  handleQuestionDataSelect = fieldName => value => {
+    const { questionData, setQuestionData } = this.props;
     const newQuestionData = {
       ...questionData,
       [fieldName]: value
@@ -93,112 +196,216 @@ const QuestionMetadata = ({
     setQuestionData(newQuestionData);
   };
 
-  const handleUpdateQuestionAlignment = (index, alignment) => {
-    const newAlignments = questionData.alignment.map((c, i) => (i === index ? alignment : c));
-    const newQuestionData = {
-      ...questionData,
-      alignment: newAlignments
-    };
-    setQuestionData(newQuestionData);
-  };
-
-  const searchCurriculumStandards = searchObject => {
-    if (!_.isEqual(searchProps, searchObject)) {
-      setSearchProps(searchObject);
-      getCurriculumStandards(searchObject.id, searchObject.grades, searchObject.searchStr);
+  componentDidMount() {
+    const { curriculums, getCurriculums } = this.props;
+    if (curriculums.length === 0) {
+      getCurriculums();
     }
-  };
+  }
 
-  return (
-    <ThemeProvider theme={themes.default}>
-      <div>
-        <Container>
-          <Title level={3}>{t("component.options.addSkillsForQuestion")}</Title>
+  renderShowAlignmentRow(row, index) {
+    const { curriculum, domains } = row;
+    const { t } = this.props;
+    const standardsArr = alignmentStandardsFromMongoToUI(domains).map(el => el.identifier);
 
-          <ShowAlignmentRowsContainer>
-            {alignment.map((el, index) => (
-              <AlignmentRow
-                key={index}
-                t={t}
-                alignmentIndex={index}
-                handleUpdateQuestionAlignment={handleUpdateQuestionAlignment}
-                alignment={el}
-                curriculums={curriculums}
-                getCurriculumStandards={searchCurriculumStandards}
-                onDelete={handleDelete}
-                curriculumStandardsELO={curriculumStandards.elo}
-                curriculumStandardsTLO={curriculumStandards.tlo}
-                curriculumStandardsLoading={curriculumStandardsLoading}
-              />
+    return (
+      <RowContainer key={index}>
+        <ItemBody>
+          <CurruculumName>{curriculum}</CurruculumName>
+        </ItemBody>
+        <ItemBody>
+          <Select
+            mode="multiple"
+            style={{ width: 600 }}
+            placeholder={t("component.options.selectStandards")}
+            filterOption={false}
+            value={standardsArr}
+            disabled
+          >
+            {standardsArr.map(el => (
+              <Select.Option key={el.identifier} value={el.identifier}>
+                {el.identifier}
+              </Select.Option>
             ))}
-          </ShowAlignmentRowsContainer>
-
-          <AddButtonContainer>
-            <Button htmlType="button" type="primary" onClick={handleAdd}>
-              <span>{t("component.options.newAligment")}</span>
+          </Select>
+        </ItemBody>
+        <ItemBody>
+          <Buttons>
+            <Button htmlType="button" onClick={this.handleEditRow(index, row)} shape="circle">
+              <IconPencilEdit />
             </Button>
-          </AddButtonContainer>
-        </Container>
+            <Button htmlType="button" onClick={this.handleDeleteRow(row.curriculumId)} shape="circle">
+              <IconTrash />
+            </Button>
+          </Buttons>
+        </ItemBody>
+      </RowContainer>
+    );
+  }
 
-        <SecondBlock
-          t={t}
-          depthOfKnowledge={questionData.depthOfKnowledge}
-          authorDifficulty={questionData.authorDifficulty}
-          tags={questionData.tags}
-          onChangeTags={handleChangeTags}
-          onQuestionDataSelect={handleQuestionDataSelect}
-        />
-      </div>
-    </ThemeProvider>
-  );
-};
+  renderEditAlignmentRow() {
+    const { curriculums, curriculumStandards, alignment, t } = this.props;
+    const { curriculumId, subject, standards, grades } = this.state;
+    const standardsArr = standards.map(el => el.identifier);
+    const alignmentCurriculumsArr = alignment.map(el => el.curriculumId);
+    const availableCurriculums = curriculums.filter(el => !alignmentCurriculumsArr.includes(el._id));
+    return (
+      <RowContainer>
+        <ItemBody>
+          <Select
+            showSearch
+            style={{ width: 200 }}
+            placeholder={t("component.options.selectCurriculum")}
+            optionFilterProp="children"
+            onSelect={this.handleCurriculumSelect}
+            filterOption={handleFilter}
+            value={curriculumId}
+            suffixIcon={<SelectSuffixIcon type="caret-down" />}
+          >
+            {availableCurriculums.map(el => (
+              <Select.Option key={el._id} value={el._id} obj={el}>
+                {el.curriculum}
+              </Select.Option>
+            ))}
+          </Select>
+        </ItemBody>
+        <ItemBody>
+          <Select
+            showSearch
+            style={{ width: 200 }}
+            placeholder={t("component.options.selectSubject")}
+            optionFilterProp="children"
+            filterOption={handleFilter}
+            value={subject}
+            suffixIcon={<SelectSuffixIcon type="caret-down" />}
+          >
+            {curriculumId && (
+              <Select.Option key={subject} value={subject}>
+                {subject}
+              </Select.Option>
+            )}
+          </Select>
+        </ItemBody>
+        <ItemBody>
+          <Select
+            mode="multiple"
+            style={{ width: 200 }}
+            placeholder={t("component.options.selectGrade")}
+            onChange={this.handleGradeChange}
+            value={grades}
+          >
+            {curriculumId &&
+              selectsData.allGrades.map(el => (
+                <Select.Option key={el.value} value={el.value}>
+                  {el.text}
+                </Select.Option>
+              ))}
+          </Select>
+        </ItemBody>
+        <ItemBody>
+          <Select
+            onSearch={this.handleStandardSearch}
+            mode="multiple"
+            style={{ width: 200 }}
+            placeholder={t("component.options.selectStandards")}
+            onSelect={this.handleStandardSelect}
+            onDeselect={this.handleStandardDeselect}
+            filterOption={false}
+            value={standardsArr}
+          >
+            {curriculumStandards.map(el => (
+              <Select.Option key={el.identifier} value={el.identifier} obj={el}>
+                {`${el.identifier}: ${el.description}`}
+              </Select.Option>
+            ))}
+          </Select>
+        </ItemBody>
+        <ButtonSave>
+          <Button htmlType="button" type="primary" onClick={this.handleSaveRow}>
+            <span>{t("component.options.save")}</span>
+          </Button>
+        </ButtonSave>
+      </RowContainer>
+    );
+  }
 
-QuestionMetadata.propTypes = {
-  getCurriculums: PropTypes.func.isRequired,
-  curriculums: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      curriculum: PropTypes.string.isRequired,
-      grades: PropTypes.array.isRequired,
-      subject: PropTypes.string.isRequired
-    })
-  ).isRequired,
-  curriculumStandards: PropTypes.array.isRequired,
-  curriculumStandardsLoading: PropTypes.bool.isRequired,
-  alignment: PropTypes.arrayOf(
-    PropTypes.shape({
-      curriculumId: PropTypes.string.isRequired,
-      curriculum: PropTypes.string.isRequired,
-      subject: PropTypes.string.isRequired,
-      standards: PropTypes.arrayOf(
-        PropTypes.shape({
-          _id: PropTypes.string.isRequired,
-          level: PropTypes.string.isRequired,
-          identifier: PropTypes.string.isRequired,
-          tloId: PropTypes.string,
-          eloId: PropTypes.string,
-          subEloId: PropTypes.string
-        })
-      )
-    })
-  ).isRequired,
-  questionData: PropTypes.shape({
-    depthOfKnowledge: PropTypes.string,
-    authorDifficulty: PropTypes.string
-  }).isRequired,
-  getCurriculumStandards: PropTypes.func.isRequired,
-  addAlignment: PropTypes.func.isRequired,
-  removeAlignment: PropTypes.func.isRequired,
-  setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
-};
+  renderEditSecondBlock() {
+    const {
+      questionData: { depthOfKnowledge, authorDifficulty },
+      t
+    } = this.props;
+    return (
+      <SecondBlockContainer>
+        <ItemBody>
+          <div>
+            <b>{t("component.options.depthOfKnowledge")}</b>
+          </div>
+          <Select
+            style={{ width: 200 }}
+            placeholder={t("component.options.selectDOK")}
+            onSelect={this.handleQuestionDataSelect("depthOfKnowledge")}
+            value={depthOfKnowledge}
+            suffixIcon={<SelectSuffixIcon type="caret-down" />}
+          >
+            {selectsData.allDepthOfKnowledge.map(el => (
+              <Select.Option key={el.value} value={el.value}>
+                {el.text}
+              </Select.Option>
+            ))}
+          </Select>
+        </ItemBody>
+        <ItemBody>
+          <div>
+            <b>{t("component.options.difficultyLevel")}</b>
+          </div>
+          <Select
+            style={{ width: 200 }}
+            placeholder={t("component.options.selectDifficulty")}
+            onSelect={this.handleQuestionDataSelect("authorDifficulty")}
+            value={authorDifficulty}
+            suffixIcon={<SelectSuffixIcon type="caret-down" />}
+          >
+            {selectsData.allAuthorDifficulty.map(el => (
+              <Select.Option key={el.value} value={el.value}>
+                {el.text}
+              </Select.Option>
+            ))}
+          </Select>
+        </ItemBody>
+      </SecondBlockContainer>
+    );
+  }
+
+  render() {
+    const { alignment, t } = this.props;
+    const { isEditRow } = this.state;
+    return (
+      <ThemeProvider theme={themes.default}>
+        <div>
+          <Container>
+            <Subtitle>{t("component.options.associatedStandards")}</Subtitle>
+            <ShowAlignmentRowsContainer>
+              {alignment.map((el, index) => this.renderShowAlignmentRow(el, index))}
+            </ShowAlignmentRowsContainer>
+            {isEditRow && this.renderEditAlignmentRow()}
+            <AddButtonContainer>
+              <Button htmlType="button" icon="plus" type="primary" onClick={this.handleAdd} disabled={isEditRow}>
+                <span>{t("component.options.newcurriculum")}</span>
+              </Button>
+            </AddButtonContainer>
+          </Container>
+          <Container>{this.renderEditSecondBlock()}</Container>
+        </div>
+      </ThemeProvider>
+    );
+  }
+}
 
 const enhance = compose(
   withNamespaces("assessment"),
   connect(
     state => ({
       curriculums: getCurriculumsListSelector(state),
-      curriculumStandardsLoading: getStandardsLoadingSelector(state),
       curriculumStandards: getStandardsListSelector(state),
       alignment: getQuestionAlignmentSelector(state),
       questionData: getQuestionDataSelector(state)
@@ -209,6 +416,7 @@ const enhance = compose(
       setQuestionAlignmentAddRow: setQuestionAlignmentAddRowAction,
       setQuestionAlignmentRemoveRow: setQuestionAlignmentRemoveRowAction,
       setQuestionData: setQuestionDataAction,
+      clearDictStandards: clearDictStandardsAction,
       addAlignment: addAlignmentAction,
       removeAlignment: removeAlignmentAction
     }

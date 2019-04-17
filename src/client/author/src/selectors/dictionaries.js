@@ -16,13 +16,5 @@ export const standardsSelector = createSelector(
 );
 export const getStandardsListSelector = createSelector(
   standardsSelector,
-  state => ({
-    elo: state.elo,
-    tlo: state.tlo
-  })
-);
-
-export const getStandardsLoadingSelector = createSelector(
-  standardsSelector,
-  state => state.loading
+  state => state.standards
 );

@@ -176,21 +176,17 @@ export const themes = {
     questionMetadata: {
       antButtonCircleBgColor: "#1fe3a1", // green
       antButtonCircleShadowColor: "rgba(0, 0, 0, 0.16)",
-      antSelectSelectionBgColor: "#fff",
+      antSelectSelectionBgColor: "transparent",
       antSelectSelectionChoiceBorderColor: "#444444",
-      textColor: "#434b5d",
       antSelectSelectionChoiceContentColor: "#434b5d",
-      antSelectSelectionChoiceContentFontSize: "11px",
+      antSelectSelectionChoiceContentFontSize: "9px",
       antSelectSelectionChoiceContentFontWeight: "bold",
       antSelectSelectionSelectedValueFontSize: "13px",
       antSelectSelectionSelectedValueFontWeight: "600",
-      antSelectSelectionSelectedValueColor: "#00b0ff",
-      antSelectSelectionSelectedValueBackground: "#d1e3fc",
-      containerBackground: "#f8f8fb",
+      antSelectSelectionSelectedValueColor: "#434b5d",
       antSelectArrowIconColor: "#12a6e8", // blue
       curruculumNameFontWeight: "bold",
-      iconTrashColor: "#4aac8b",
-      iconHoverTrashColor: "#ee1658",
+      iconTrashColor: "#fff", // white
       iconPencilEditColor: "#fff", // white
       selectSuffixIconColor: "#12a6e8", // blue
       selectSuffixIconFontSize: "16px"

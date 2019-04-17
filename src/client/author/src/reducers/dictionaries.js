@@ -15,8 +15,7 @@ const initialItemsState = {
     error: null
   },
   standards: {
-    elo: [],
-    tlo: [],
+    standards: [],
     loading: false,
     error: null
   }
@@ -63,8 +62,7 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
         ...state,
         standards: {
           ...state.standards,
-          elo: payload.elo,
-          tlo: payload.tlo,
+          standards: payload.items,
           loading: false
         }
       };
@@ -82,8 +80,7 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
         ...state,
         standards: {
           ...state.standards,
-          elo: [],
-          tlo: []
+          standards: []
         }
       };
     default:

@@ -8,10 +8,10 @@ import next from "immer";
 import { ResponseFrequencyTable } from "./components/table/responseFrequencyTable";
 import { StackedBarChartContainer } from "./components/charts/stackedBarChartContainer";
 import { StyledContainer, StyledCard, StyledSimpleBarChartContainer, QuestionTypeHeading } from "./components/styled";
-import { StyledSlider, StyledH3, FullWidthControlDropDown } from "../../common/styled";
-import { NavigatorTabs } from "../../common/components/navigatorTabs";
-import { getNavigationTabLinks, getDropDownTestIds } from "./../../common/util";
-import chartNavigatorLinks from "../../common/static/json/singleAssessmentSummaryChartNavigator.json";
+import { StyledSlider, StyledH3, FullWidthControlDropDown } from "../../../common/styled";
+import { NavigatorTabs } from "../../../common/components/navigatorTabs";
+import { getNavigationTabLinks, getDropDownTestIds } from "./../../../common/util";
+import chartNavigatorLinks from "../../../common/static/json/singleAssessmentSummaryChartNavigator.json";
 import jsonData from "./static/json/data.json";
 import { get, isEmpty } from "lodash";
 

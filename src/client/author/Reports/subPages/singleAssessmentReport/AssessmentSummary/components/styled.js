@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Row } from "antd";
-import { StyledTable as Table, StyledCustomChartTooltip as CustomChartTooltip } from "../../../common/styled";
+import { StyledTable as Table, StyledCustomChartTooltip as CustomChartTooltip } from "../../../../common/styled";
 import { AssessmentStatisticTable } from "./table/assessmentStatisticTable";
 import { fadedBlack, black } from "@edulastic/colors";
 

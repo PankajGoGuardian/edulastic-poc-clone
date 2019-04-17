@@ -1,5 +1,5 @@
 import { groupBy, minBy, cloneDeep } from "lodash";
-import { getHSLFromRange1 } from "../../../common/util";
+import { getHSLFromRange1 } from "../../../../common/util";
 
 export const idToLabel = {
   schoolId: "schoolName",

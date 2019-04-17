@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Row, Col } from "antd";
 import { StyledTable } from "../styled";
-import { StyledH3 } from "../../../../common/styled";
+import { StyledH3 } from "../../../../../common/styled";
 import { groupBy, cloneDeep } from "lodash";
 import Moment from "moment";
 import next from "immer";
 
-import { getStandardDeviation, getVariance } from "../../../../common/util";
-import { StyledControlDropDown } from "../../../../common/styled";
+import { getStandardDeviation, getVariance } from "../../../../../common/util";
+import { StyledControlDropDown } from "../../../../../common/styled";
 
 import columnData from "../../static/json/tableColumns.json";
 

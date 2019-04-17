@@ -13,7 +13,7 @@ import {
   StyledControlDropDown,
   StyledFilterDropDownWithDropDown,
   FullWidthControlDropDown
-} from "../../common/styled";
+} from "../../../common/styled";
 import { SimpleStackedBarChartContainer } from "./components/charts/simpleStackedBarChartContainer";
 import { SignedStackedBarChartContainer } from "./components/charts/signedStackedBarChartContainer";
 import { UpperContainer, TableContainer, StyledTable } from "./components/styled";
@@ -21,10 +21,10 @@ import { PeerPerformanceTable } from "./components/table/peerPerformanceTable";
 import { getPeerPerformanceRequestAction, getReportsPeerPerformance } from "./ducks";
 
 import dropDownFormat from "./static/json/dropDownFormat.json";
-import { getUserRole } from "../../../src/selectors/user";
-import { NavigatorTabs } from "../../common/components/navigatorTabs";
-import { getNavigationTabLinks, getDropDownTestIds } from "../../common/util";
-import chartNavigatorLinks from "../../common/static/json/singleAssessmentSummaryChartNavigator.json";
+import { getUserRole } from "../../../../src/selectors/user";
+import { NavigatorTabs } from "../../../common/components/navigatorTabs";
+import { getNavigationTabLinks, getDropDownTestIds } from "../../../common/util";
+import chartNavigatorLinks from "../../../common/static/json/singleAssessmentSummaryChartNavigator.json";
 import columns from "./static/json/tableColumns.json";
 import tempData from "./static/json/tempData";
 

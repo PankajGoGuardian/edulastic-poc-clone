@@ -3,8 +3,8 @@ import { Row, Col } from "antd";
 import {
   StyledFilterDropDownWithDropDown as FilterDropDownWithDropDown,
   StyledTable as Table
-} from "../../../common/styled";
-import { CustomTableTooltip } from "../../../common/components/customTableTooltip";
+} from "../../../../common/styled";
+import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
 
 export const UpperContainer = styled.div`
   .dropdown-container {

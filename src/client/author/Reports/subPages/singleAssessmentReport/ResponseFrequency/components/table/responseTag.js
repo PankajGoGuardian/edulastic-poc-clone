@@ -4,9 +4,9 @@ import styled from "styled-components";
 import { get } from "lodash";
 import { Row, Col } from "antd";
 
-import { getHSLFromRange1, getHSLFromRange2 } from "../../../../common/util";
+import { getHSLFromRange1, getHSLFromRange2 } from "../../../../../common/util";
 import { StyledResponseTagContainer } from "../styled";
-import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
+import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import { darkGrey } from "@edulastic/colors";
 
 export class ResponseTag extends Component {

@@ -5,9 +5,9 @@ import { Route, Switch } from "react-router-dom";
 
 import Breadcrumb from "../src/components/Breadcrumb";
 
-import ResponseFrequency from "./subPages/ResponseFrequency";
-import AssessmentSummary from "./subPages/AssessmentSummary";
-import PeerPerformance from "./subPages/PeerPerformance";
+import ResponseFrequency from "./subPages/singleAssessmentReport/ResponseFrequency";
+import AssessmentSummary from "./subPages/singleAssessmentReport/AssessmentSummary";
+import PeerPerformance from "./subPages/singleAssessmentReport/PeerPerformance";
 
 // import { StyledContainer, StyledCard } from "./components/styled";
 import { StyledContainer, StyledCard } from "./common/styled";

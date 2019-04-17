@@ -7,16 +7,16 @@ import { get, isEmpty } from "lodash";
 import next from "immer";
 
 import { SimplePieChart } from "./components/charts/pieChart";
-import { StyledCard, StyledH3, FullWidthControlDropDown } from "../../common/styled";
+import { StyledCard, StyledH3, FullWidthControlDropDown } from "../../../common/styled";
 import { UpperContainer, TableContainer, StyledAssessmentStatisticTable } from "./components/styled";
 import { Stats } from "./components/stats";
-import { NavigatorTabs } from "../../common/components/navigatorTabs";
-import { getNavigationTabLinks, getDropDownTestIds } from "./../../common/util";
-import chartNavigatorLinks from "../../common/static/json/singleAssessmentSummaryChartNavigator.json";
+import { NavigatorTabs } from "../../../common/components/navigatorTabs";
+import { getNavigationTabLinks, getDropDownTestIds } from "./../../../common/util";
+import chartNavigatorLinks from "../../../common/static/json/singleAssessmentSummaryChartNavigator.json";
 import data from "./static/json/data.json";
 
 import { getAssessmentSummaryRequestAction, getReportsAssessmentSummary } from "./ducks";
-import { getUserRole } from "../../../src/selectors/user";
+import { getUserRole } from "../../../../src/selectors/user";
 
 const AssessmentSummary = props => {
   const [selectedTest, setSelectedTest] = useState({});

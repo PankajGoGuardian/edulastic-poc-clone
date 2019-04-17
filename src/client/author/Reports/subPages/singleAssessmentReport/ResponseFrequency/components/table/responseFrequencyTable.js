@@ -1,11 +1,11 @@
 import React from "react";
 import { Component } from "react";
 import { StyledCard, StyledTable } from "../styled";
-import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
+import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import { Row, Col } from "antd";
 import { find } from "lodash";
 import { ResponseTag } from "./responseTag";
-import { getHSLFromRange1 } from "../../../../common/util";
+import { getHSLFromRange1 } from "../../../../../common/util";
 
 export class ResponseFrequencyTable extends Component {
   constructor(props) {

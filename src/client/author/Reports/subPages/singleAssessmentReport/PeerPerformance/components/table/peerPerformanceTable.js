@@ -2,8 +2,8 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Row, Col } from "antd";
 import next from "immer";
 import { StyledTable } from "../styled";
-import { StyledH3 } from "../../../../common/styled";
-import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
+import { StyledH3 } from "../../../../../common/styled";
+import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import { idToName, analyseByToName } from "../../util/transformers";
 import styled from "styled-components";
 

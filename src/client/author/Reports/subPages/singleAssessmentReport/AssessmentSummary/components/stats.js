@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Row, Col } from "antd";
 import styled from "styled-components";
-import { StyledH3, Capitalized } from "../../../common/styled";
+import { StyledH3, Capitalized } from "../../../../common/styled";
 import { greyish, greyishDarker1, greenSomeWhatDark, fadedBlack } from "@edulastic/colors";
 
 export const Stats = props => {

@@ -12,6 +12,14 @@ import { Text } from "@vx/text";
 export const StyledCard = styled(Card)`
   margin: 8px;
 
+  .recharts-default-legend {
+    .recharts-legend-item {
+      &:nth-child(1) {
+        padding-left: 90px;
+      }
+    }
+  }
+
   .ant-card-body {
     padding: 18px;
   }
@@ -80,8 +88,7 @@ export const StyledTable = styled(Table)`
             }
           }
           th.ant-table-column-has-actions.ant-table-column-has-sorters {
-            // IMPORTANT: padding is width of sorter icons added with right css property value of sorter
-            padding-right: 17px !important;
+            padding: 8px !important;
 
             .ant-table-column-sorter {
               right: 3px;
@@ -159,9 +166,10 @@ export const StyledTable = styled(Table)`
 `;
 
 export const StyledH3 = styled.h3`
-  font-weight: 900;
+  font-weight: 700;
   color: ${fadedBlack};
-  margin: 0;
+  font-size: 14px;
+  margin: 0px 0px 10px;
 `;
 
 export const StyledCustomChartTooltip = styled(CustomChartTooltip)`

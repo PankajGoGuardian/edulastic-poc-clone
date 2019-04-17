@@ -2,17 +2,14 @@ import React, { useState, useEffect } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { Route, Switch } from "react-router-dom";
-
-import Breadcrumb from "../src/components/Breadcrumb";
+import { Row, Col } from "antd";
 
 import ResponseFrequency from "./subPages/singleAssessmentReport/ResponseFrequency";
 import AssessmentSummary from "./subPages/singleAssessmentReport/AssessmentSummary";
 import PeerPerformance from "./subPages/singleAssessmentReport/PeerPerformance";
 import PerformanceByStandards from "./subPages/singleAssessmentReport/PerformanceByStandards";
 
-// import { StyledContainer, StyledCard } from "./components/styled";
 import { StyledContainer, StyledCard } from "./common/styled";
-import { Row, Col } from "antd";
 
 import { SingleAssessmentReport } from "./components/singleAssessmentReport";
 import { CustomizedHeaderWrapper } from "./common/components/header";
@@ -111,15 +108,14 @@ const Container = props => {
   return (
     <div>
       <CustomizedHeaderWrapper
+        breadcrumbsData={headerSettings.breadcrumbData}
         title={headerSettings.title}
         onShareClickCB={headerSettings.onShareClickCB}
         onPrintClickCB={headerSettings.onPrintClickCB}
         onDownloadCSVClickCB={headerSettings.onDownloadCSVClickCB}
         onRefineResultsCB={headerSettings.onRefineResultsCB}
       />
-      {headerSettings.title !== "Reports" ? (
-        <Breadcrumb data={headerSettings.breadcrumbData} style={{ position: "unset", padding: "10px" }} />
-      ) : null}
+
       <Route exact path={props.match.path} component={Reports} />
       <Route
         exact

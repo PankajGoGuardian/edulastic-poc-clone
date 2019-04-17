@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Button, Col } from "antd";
+import { white, fadedGrey } from "@edulastic/colors";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
-import { Title } from "../../../src/components/common/ListHeader";
+import Breadcrumb from "../../../src/components/Breadcrumb";
 
 export const CustomizedHeaderWrapper = ({
+  breadcrumbsData,
   title,
   onShareClickCB,
   onPrintClickCB,
@@ -32,20 +34,22 @@ export const CustomizedHeaderWrapper = ({
 
   return (
     <HeaderWrapper>
-      <Title>{title}</Title>
+      <HeaderTitle>
+        {title !== "Reports" ? <Breadcrumb data={breadcrumbsData} style={{ position: "unset" }} /> : null}
+      </HeaderTitle>
       <StyledCol>
         {onShareClickCB ? (
-          <StyledButton shape="round" size="large" icon="share-alt" onClick={_onShareClickCB}>
+          <StyledButton shape="round" size="medium" icon="share-alt" onClick={_onShareClickCB}>
             Share
           </StyledButton>
         ) : null}
         {onPrintClickCB ? (
-          <StyledButton shape="round" size="large" onClick={_onPrintClickCB}>
+          <StyledButton shape="round" size="medium" icon="printer" onClick={_onPrintClickCB}>
             Print
           </StyledButton>
         ) : null}
         {onDownloadCSVClickCB ? (
-          <StyledButton type="primary" shape="round" size="large" onClick={_onDownloadCSVClickCB}>
+          <StyledButton type="primary" shape="round" size="medium" icon="download" onClick={_onDownloadCSVClickCB}>
             Download CSV
           </StyledButton>
         ) : null}
@@ -53,7 +57,7 @@ export const CustomizedHeaderWrapper = ({
           <StyledButton
             type={refineButtonActive ? "default" : "primary"}
             shape="round"
-            size="large"
+            size="medium"
             icon="filter"
             onClick={_onRefineResultsCB}
           >
@@ -66,12 +70,25 @@ export const CustomizedHeaderWrapper = ({
 };
 
 const StyledCol = styled(Col)`
-  flex: 1;
   text-align: right;
 `;
 
 const StyledButton = styled(Button)`
-  margin: 0 5px;
+  margin-left: 10px;
+  font-size: 14px;
 `;
 
-// #18a67d
+const HeaderTitle = styled.div`
+  .ant-breadcrumb {
+    .ant-breadcrumb-link {
+      color: ${white};
+      a {
+        color: ${white};
+      }
+    }
+    .ant-breadcrumb-separator {
+      font-weight: normal;
+      color: ${fadedGrey};
+    }
+  }
+`;

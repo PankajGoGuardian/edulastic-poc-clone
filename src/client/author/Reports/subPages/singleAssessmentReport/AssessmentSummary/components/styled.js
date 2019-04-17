@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { Row } from "antd";
+import { fadedBlack } from "@edulastic/colors";
 import { StyledTable as Table, StyledCustomChartTooltip as CustomChartTooltip } from "../../../../common/styled";
 import { AssessmentStatisticTable } from "./table/assessmentStatisticTable";
-import { fadedBlack, black } from "@edulastic/colors";
 
 export const UpperContainer = styled(Row)`
   .sub-container {
@@ -29,7 +29,7 @@ export const TableContainer = styled(Row)``;
 export const StyledAssessmentStatisticTable = styled(AssessmentStatisticTable)`
   .top-area {
     min-height: 50px;
-    font-weight: 900;
+    font-weight: 700;
     font-size: 14px;
     color: ${fadedBlack};
     align-content: center;
@@ -56,7 +56,9 @@ export const StyledTable = styled(Table)`
     table {
       thead {
         tr {
-          th:first-child {
+          th {
+            white-space: nowrap;
+            color: ${fadedBlack};
           }
           th:nth-child(n + 2) {
             text-align: right;

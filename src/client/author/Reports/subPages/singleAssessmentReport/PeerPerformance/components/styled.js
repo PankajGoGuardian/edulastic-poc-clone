@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Row, Col } from "antd";
+import { fadedBlack } from "@edulastic/colors";
 import {
   StyledFilterDropDownWithDropDown as FilterDropDownWithDropDown,
   StyledTable as Table
@@ -27,6 +28,10 @@ export const StyledTable = styled(Table)`
     table {
       thead {
         tr {
+          th {
+            white-space: nowrap;
+            color: ${fadedBlack};
+          }
           th:nth-last-child(-n + ${props => props.colouredCellsNo + 2}) {
             text-align: right;
           }

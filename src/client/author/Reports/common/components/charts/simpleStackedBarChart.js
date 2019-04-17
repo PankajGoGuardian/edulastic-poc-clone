@@ -60,7 +60,7 @@ export const SimpleStackedBarChart = ({
 
   const constants = {
     COLOR_BLACK: "#010101",
-    TICK_FILL: { fill: "#010101", fontWeight: "bold" },
+    TICK_FILL: { fill: "#010101", fontWeight: "normal" },
     Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, dx: -25 }
   };
 
@@ -222,6 +222,10 @@ export const SimpleStackedBarChart = ({
 const StyledStackedBarChartContainer = styled.div`
   padding: 10px;
   overflow: hidden;
+
+  .recharts-cartesian-axis-ticks {
+    font-size: 12px;
+  }
 
   .navigator-left {
     left: 5px;

@@ -13,7 +13,6 @@ class EditItemPage {
         .click();
       cy.wait("@saveItem");
     };
-    this.ITEM_ID = "5cb448f65d32be222489062b";
   }
 
   clickAdvancedOptionsButton() {
@@ -117,10 +116,10 @@ class EditItemPage {
     return cy.get('button[title="Delete"]');
   }
 
-  getItemWithId(itemUrl = this.ITEM_ID) {
+  getItemWithId(itemId) {
     cy.server();
     cy.route("GET", "**/testitem/**").as("getItem");
-    cy.visit(`/author/items/${itemUrl}/item-detail`);
+    cy.visit(`/author/items/${itemId}/item-detail`);
     cy.wait("@getItem");
   }
 

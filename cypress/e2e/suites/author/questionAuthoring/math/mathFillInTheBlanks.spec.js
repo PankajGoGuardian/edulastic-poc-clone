@@ -66,8 +66,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         thousandsSeparators: "Dot"
       },
       setDecimalSeparatorComma: {
-        thousand: "Comma",
-        separator: "Dot",
+        thousand: "Dot",
+        separator: "Comma",
         expected: "1,01",
         input: "1.01"
       }
@@ -247,7 +247,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
 
   context("User creates question", () => {
     before("visit items page and select question type", () => {
-      // editItem.getItemWithId();
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       // create new que and select type
@@ -385,14 +384,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
       });
 
       it("Testing with decimal separator - Comma", () => {
-        const { input, expected, separator } = queData.equivSymbolic.setDecimalSeparatorComma;
+        const { input, expected, separator, thousand } = queData.equivSymbolic.setDecimalSeparatorComma;
         question.setValue(input);
-        question.getAnswerAllowThousandsSeparator().check({ force: true });
-        question.setAnswerSetDecimalSeparatorDropdown(separator);
-
-        question.checkCorrectAnswer(expected, preview, input.length, true);
-
-        question.getAnswerAllowThousandsSeparator().uncheck({ force: true });
+        question.unCheckAllCheckBox();
+        question.allowDecimalMarks(separator, thousand, input.length, expected, preview, true);
       });
 
       it("Testing with thousands separators - Space and Comma", () => {

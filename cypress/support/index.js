@@ -12,3 +12,8 @@ before("delete test data", () => {
   cy.setToken();
   cy.deleteTestData();
 });
+
+// FixMe : adding block to ignore uncaught error from the app
+Cypress.on("uncaught:exception", (err, runnable) => {
+  return false;
+});

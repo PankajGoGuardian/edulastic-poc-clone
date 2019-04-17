@@ -70,7 +70,21 @@ class MathFillInTheBlanksPage extends MathFractionPage {
       .click()
       .then(() => this.getAnswerArgumentDropdownByValue(value).click());
 
+  // allowDecimalMarksWithResponse = (separator, inputLength, expected, preview, isCorrect = false) => {
+  //   this.getAnswerAllowThousandsSeparator().check({ force: true });
+  //   this.setThousandsSeparatorDropdown(separator);
+
+  setThousandsSeparatorDropdown = separator =>
+    this.getThousandsSeparatorDropdown()
+      .click()
+      .then(() => {
+        this.getThousandsSeparatorDropdownList(separator)
+          .should("be.visible")
+          .click();
+      });
+
   allowDecimalMarksWithResponse = (separator, inputLength, expected, preview, isCorrect = false) => {
+    this.unCheckAllCheckBox();
     this.getAnswerAllowThousandsSeparator().check({ force: true });
     this.setThousandsSeparatorDropdown(separator);
     this.checkCorrectAnswerWithResponse(expected, preview, inputLength, isCorrect);

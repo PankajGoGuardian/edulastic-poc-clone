@@ -16,8 +16,6 @@ const DEFAULT_USERS = {
   }
 };
 
-const ITEM_ID = "5ca369b88682ac3dab2fe2aa";
-
 Cypress.Commands.add("createUser", overrides => {
   const user = userBuilder(overrides);
   return cy
@@ -311,18 +309,6 @@ Cypress.Commands.add("uploadFile", (fileName, selector) =>
       })
   )
 );
-
-Cypress.Commands.add("selectQuestionType", ({ editItem, queData, itemId = ITEM_ID }) => {
-  // create new que and select type
-  editItem.getItemWithId(itemId);
-  editItem.deleteAllQuestion();
-  editItem.addNew().chooseQuestion(queData.group, queData.queType);
-});
-
-Cypress.Commands.add("deleteOldQuestion", ({ editItem, itemId = ITEM_ID }) => {
-  editItem.getItemWithId(itemId);
-  editItem.deleteAllQuestion();
-});
 
 Cypress.Commands.add(
   "typeWithDelay",

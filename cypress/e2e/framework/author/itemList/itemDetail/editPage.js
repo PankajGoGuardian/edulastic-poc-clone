@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import Header from "./header";
+import ItemListPage from "../itemListPage";
 
 class EditItemPage {
   constructor() {

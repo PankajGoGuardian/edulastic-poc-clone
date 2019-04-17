@@ -6,10 +6,12 @@ import { compose } from "redux";
 import { Menu } from "antd";
 import { PaddingDiv, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { IconClose } from "@edulastic/icons";
 import QuestionTypes from "../QuestionType/QuestionTypes";
 import { getItemSelector } from "../../../src/selectors/items";
 import Header from "../Header/Header";
 import Breadcrumb from "../../../src/components/Breadcrumb";
+import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
 import { setQuestionAction } from "../../../QuestionEditor/ducks";
 import { addQuestionAction } from "../../../sharedDucks/questions";
 import { toggleSideBarAction } from "../../../src/actions/togglemenu";
@@ -47,7 +49,7 @@ class Container extends Component {
 
   // when a particular question type is picked, populate the "authorQuestions" collection
   selectQuestionType = data => {
-    const { setQuestion, addQuestion, history, match, t } = this.props;
+    const { setQuestion, addQuestion, history, match, t, modalItemId, navigateToQuestionEdit } = this.props;
     const question = {
       id: uuid(),
       ...data
@@ -56,6 +58,11 @@ class Container extends Component {
     setQuestion(question);
     // add question to the questions store.
     addQuestion(question);
+
+    if (modalItemId) {
+      navigateToQuestionEdit();
+      return;
+    }
 
     history.push({
       pathname: "/author/questions/create",
@@ -107,26 +114,49 @@ class Container extends Component {
   };
 
   render() {
-    const { t, windowWidth, toggleSideBar } = this.props;
+    const { t, windowWidth, toggleSideBar, modalItemId, onModalClose, navigateToItemDetail } = this.props;
     const { currentQuestion, currentTab, mobileViewShow, isShowCategories } = this.state;
-    const breadcrumbData = [
-      {
-        title: "<&nbsp;&nbsp;&nbsp;ITEM LIBRARY",
-        to: "/author/items"
-      },
-      {
-        title: "ITEM DETAIL",
-        to: `/author/items/${window.location.pathname.split("/")[3]}/item-detail`
-      },
-      {
-        title: "SELECT A QUESTION TYPE",
-        to: ""
-      }
-    ];
+    const breadcrumbData = modalItemId
+      ? [
+          {
+            title: "ITEM DETAIL",
+            to: "",
+            onClick: navigateToItemDetail
+          },
+          {
+            title: "SELECT A QUESTION TYPE",
+            to: ""
+          }
+        ]
+      : [
+          {
+            title: "<&nbsp;&nbsp;&nbsp;ITEM LIBRARY",
+            to: "/author/items"
+          },
+          {
+            title: "ITEM DETAIL",
+            to: `/author/items/${window.location.pathname.split("/")[3]}/item-detail`
+          },
+          {
+            title: "SELECT A QUESTION TYPE",
+            to: ""
+          }
+        ];
 
     return (
       <Content showMobileView={mobileViewShow}>
-        <Header title={t("component.pickupcomponent.headertitle")} link={this.link} toggleSideBar={toggleSideBar} />
+        <Header
+          title={t("component.pickupcomponent.headertitle")}
+          link={this.link}
+          toggleSideBar={toggleSideBar}
+          renderExtra={() =>
+            modalItemId && (
+              <ButtonClose onClick={onModalClose}>
+                <IconClose />
+              </ButtonClose>
+            )
+          }
+        />
         <LeftSide>
           <Menu
             mode="horizontal"
@@ -331,7 +361,18 @@ Container.propTypes = {
   addQuestion: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  toggleSideBar: PropTypes.func.isRequired
+  toggleSideBar: PropTypes.func.isRequired,
+  modalItemId: PropTypes.string,
+  onModalClose: PropTypes.func,
+  navigateToQuestionEdit: PropTypes.func,
+  navigateToItemDetail: PropTypes.func
+};
+
+Container.defaultProps = {
+  modalItemId: undefined,
+  onModalClose: () => {},
+  navigateToQuestionEdit: () => {},
+  navigateToItemDetail: () => {}
 };
 
 export default enhance(Container);

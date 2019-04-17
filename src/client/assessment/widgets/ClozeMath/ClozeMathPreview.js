@@ -15,6 +15,25 @@ const ClozeMathPreview = ({ type, item, userAnswer, saveAnswer, evaluation }) =>
   const [showKeyboard, setShowKeyboard] = useState(false);
   const [currentMathQuill, setCurrentMathQuill] = useState();
 
+  useEffect(() => {
+    if (showKeyboard) {
+      // eslint-disable-next-line no-undef
+      $(mathRef.current)
+        .find(".mathField")
+        // eslint-disable-next-line func-names
+        .each(function() {
+          // eslint-disable-next-line no-undef
+          $(this).removeClass("success");
+          // eslint-disable-next-line no-undef
+          $(this).removeClass("wrong");
+          // eslint-disable-next-line no-undef
+          $(this).removeClass("check");
+          // eslint-disable-next-line no-undef
+          $(this).removeAttr("data-index");
+        });
+    }
+  }, [showKeyboard]);
+
   const _onInput = (key, command = "cmd") => {
     if (!currentMathQuill) return;
     const innerField = currentMathQuill.innerFields[0];

@@ -4,11 +4,12 @@ import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
 import { Progress, withWindowSizes } from "@edulastic/common";
+import { IconClose } from "@edulastic/icons";
 import { cloneDeep, get } from "lodash";
 import { Layout } from "antd";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
-import { checkAnswerAction, showAnswerAction } from "../../../src/actions/testItem";
+import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
 import {
   getItemDetailByIdAction,
   updateItemDetailByIdAction,
@@ -29,7 +30,7 @@ import {
 } from "../../ducks";
 
 import { getQuestionsSelector } from "../../../sharedDucks/questions";
-import { Content, ItemDetailWrapper, PreviewContent } from "./styled";
+import { Content, ItemDetailWrapper, PreviewContent, ButtonClose } from "./styled";
 import { loadQuestionAction } from "../../../QuestionEditor/ducks";
 import ItemDetailRow from "../ItemDetailRow";
 import { ButtonBar, SecondHeadBar } from "../../../src/components/common";
@@ -56,8 +57,8 @@ class Container extends Component {
   };
 
   componentDidMount() {
-    const { getItemDetailById, match } = this.props;
-    getItemDetailById(match.params.id, { data: true, validation: true });
+    const { getItemDetailById, match, modalItemId } = this.props;
+    getItemDetailById(modalItemId || match.params.id, { data: true, validation: true });
     if (match.params.testId) {
       this.props.setRedirectTest(match.params.testId);
     }
@@ -140,8 +141,14 @@ class Container extends Component {
   };
 
   handleAdd = ({ rowIndex, tabIndex }) => {
-    const { match, history, t, changeView } = this.props;
+    const { match, history, t, changeView, modalItemId, navigateToPickupQuestionType } = this.props;
     changeView("edit");
+
+    if (modalItemId) {
+      navigateToPickupQuestionType();
+      return;
+    }
+
     history.push({
       pathname: `/author/items/${match.params.id}/pickup-questiontype`,
       state: {
@@ -242,6 +249,7 @@ class Container extends Component {
   handleEnableEdit = () => {
     this.setState({ enableEdit: true });
   };
+
   renderPreview = () => {
     const { rows, preview, questions } = this.props;
     const item = this.props.item || {};
@@ -280,7 +288,9 @@ class Container extends Component {
       useTabs,
       changePreview,
       windowWidth,
-      testItemStatus
+      testItemStatus,
+      modalItemId,
+      onModalClose
     } = this.props;
 
     let showPublishButton = false;
@@ -331,7 +341,13 @@ class Container extends Component {
             showPublishButton={showPublishButton}
             hasAuthorPermission={hasAuthorPermission}
             itemStatus={item && item.status}
-
+            renderExtra={() =>
+              modalItemId && (
+                <ButtonClose onClick={onModalClose}>
+                  <IconClose />
+                </ButtonClose>
+              )
+            }
           />
         </ItemHeader>
         {windowWidth > MAX_MOBILE_WIDTH && (
@@ -399,11 +415,17 @@ Container.propTypes = {
   loadQuestion: PropTypes.func.isRequired,
   questions: PropTypes.func.isRequired,
   changeView: PropTypes.func.isRequired,
-  testItemStatus: PropTypes.string.isRequired
+  testItemStatus: PropTypes.string.isRequired,
+  modalItemId: PropTypes.string,
+  onModalClose: PropTypes.func,
+  navigateToPickupQuestionType: PropTypes.func
 };
 
 Container.defaultProps = {
-  rows: []
+  rows: [],
+  modalItemId: undefined,
+  onModalClose: () => {},
+  navigateToPickupQuestionType: () => {}
 };
 
 const enhance = compose(
@@ -436,7 +458,8 @@ const enhance = compose(
       loadQuestion: loadQuestionAction,
       publishTestItem: publishTestItemAction,
       clearRedirectTest: clearRedirectTestAction,
-      setRedirectTest: setRedirectTestAction
+      setRedirectTest: setRedirectTestAction,
+      toggleCreateItemModal: toggleCreateItemModalAction
     }
   )
 );

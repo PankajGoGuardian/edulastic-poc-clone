@@ -77,6 +77,8 @@ export const SHOW_ANSWER = "[testItem] show test item answer";
 
 export const ADD_ITEM_EVALUATION = "[evaluation] add evaluation";
 
+export const TOGGLE_CREATE_ITEM_MODAL = "[testItem] toggle create item modal";
+
 // Tests
 export const RECEIVE_TESTS_REQUEST = "[tests] receive list request";
 export const RECEIVE_TESTS_SUCCESS = "[tests] receive list success";

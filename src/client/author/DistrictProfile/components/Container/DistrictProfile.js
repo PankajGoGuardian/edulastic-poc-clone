@@ -52,11 +52,11 @@ class DistrictProfile extends Component {
   };
 
   render() {
-    const { districtProfile, updating, loading } = this.props;
+    const { districtProfile, updating, loading, history } = this.props;
 
     return (
       <DistrictProfileDiv>
-        <AdminHeader title={title} active={menuActive} />
+        <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout>
             {(updating || loading) && (

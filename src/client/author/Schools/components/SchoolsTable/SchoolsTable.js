@@ -25,11 +25,10 @@ import CreateSchoolModal from "./CreateSchoolModal/CreateSchoolModal";
 import EditSchoolModal from "./EditSchoolModal/EditSchoolModal";
 
 // actions
-import { receiveCountryListAction } from "../../../sharedDucks/country";
 import { createSchoolsAction, updateSchoolsAction, deleteSchoolsAction } from "../../ducks";
 
 // selectors
-import { getUpdateSchoolSelector, getCreatedSchoolSelector, getDeletedSchoolSelector } from "../../ducks";
+import { getCreatedSchoolSelector } from "../../ducks";
 
 function compareByAlph(a, b) {
   if (a > b) {
@@ -58,7 +57,8 @@ class SchoolsTable extends React.Component {
       filtersColumn: "",
       filtersValue: "",
       filterStr: "",
-      filterAdded: false
+      filterAdded: false,
+      created: props.created
     };
 
     this.columns = [
@@ -124,26 +124,19 @@ class SchoolsTable extends React.Component {
     ];
   }
 
-  componentDidMount() {
-    const { loadCountryList } = this.props;
-    loadCountryList();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const preCreatedSchool = this.props.created;
-    const nextCreatedSchool = nextProps.created;
-    const { dataSource } = this.state;
-    if (Object.keys(nextCreatedSchool).length > 0) {
-      if (preCreatedSchool._id != nextCreatedSchool._id) {
-        const newSchool = {
-          key: dataSource.length,
-          ...nextCreatedSchool
-        };
-        this.setState({
-          dataSource: [newSchool, ...dataSource]
-        });
-      }
-    }
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.created._id !== prevState.created._id) {
+      debugger;
+      const { dataSource } = prevState;
+      const newSchool = {
+        key: dataSource.length,
+        ...nextProps.created
+      };
+      return {
+        dataSource: [newSchool, ...dataSource],
+        created: nextProps.created
+      };
+    } else return null;
   }
 
   initialDataSrouce = data => {
@@ -382,6 +375,8 @@ class SchoolsTable extends React.Component {
       onChange: this.onSelectChange
     };
 
+    const editSchoolData = dataSource.filter(item => item.key === editSchoolKey);
+
     return (
       <StyledTableContainer>
         <StyledControlDiv>
@@ -432,7 +427,7 @@ class SchoolsTable extends React.Component {
         />
         {editSchoolModaVisible && editSchoolKey >= 0 && (
           <EditSchoolModal
-            schoolData={dataSource[editSchoolKey]}
+            schoolData={editSchoolData[0]}
             modalVisible={editSchoolModaVisible}
             updateSchool={this.updateSchool}
             closeModal={this.closeEditSchoolModal}
@@ -447,12 +442,9 @@ const EditableSchoolsTable = Form.create()(SchoolsTable);
 const enhance = compose(
   connect(
     state => ({
-      created: getCreatedSchoolSelector(state),
-      updated: getUpdateSchoolSelector(state),
-      deleted: getDeletedSchoolSelector(state)
+      created: getCreatedSchoolSelector(state)
     }),
     {
-      loadCountryList: receiveCountryListAction,
       createSchool: createSchoolsAction,
       updateSchool: updateSchoolsAction,
       deleteSchool: deleteSchoolsAction

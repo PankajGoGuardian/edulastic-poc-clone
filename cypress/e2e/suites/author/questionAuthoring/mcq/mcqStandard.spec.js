@@ -17,17 +17,23 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
   };
   const question = new MCQStandardPage();
   const editItem = new EditItemPage();
+  const itemList = new ItemListPage();
   const text = "testtext";
+  let testItemId;
 
   const { formates } = question;
 
   before(() => {
     cy.setToken();
+    itemList.clickOnCreate().then(id => {
+      testItemId = id;
+    });
   });
 
   context("User creates question.", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      console.log("testItemId : ", testItemId);
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
 
       // create new que and select type
@@ -316,7 +322,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     };
 
     before("delete old question and create dummy que to edit", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
 
       // create new que and select type
@@ -607,7 +613,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
 
   context("[sanity]:test => Create question using different options and validate", () => {
     before("visit items list page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
 
       // add new question
@@ -941,7 +947,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
 
   context("Scoring Block testing", () => {
     before("visit items list page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
 
       // add new question

@@ -3,6 +3,7 @@ import EditItemPage from "../../../../framework/author/itemList/itemDetail/editP
 import Header from "../../../../framework/author/itemList/itemDetail/header";
 import PreviewItemPage from "../../../../framework/author/itemList/itemDetail/previewPage";
 import FileHelper from "../../../../framework/util/fileHelper";
+import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type question`, () => {
   const queData = {
@@ -67,14 +68,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
   const editItemPage = new EditItemPage();
   const previewItemPage = new PreviewItemPage();
   const header = new Header();
+  const itemList = new ItemListPage();
+
+  let testItemId;
 
   before(() => {
     cy.setToken();
+    itemList.clickOnCreate().then(id => {
+      testItemId = id;
+    });
   });
 
   context("User creates question.", () => {
     before("visit items page and select question type", () => {
-      editItemPage.getItemWithId();
+      editItemPage.getItemWithId(testItemId);
       editItemPage.deleteAllQuestion();
 
       // create new que and select type

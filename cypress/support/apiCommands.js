@@ -3,7 +3,8 @@
 import uuidv4 from "uuid/v4";
 
 const BASE_URL = Cypress.config("API_URL");
-const folderPath = "cypress/fixtures";
+const fixtureFolderPath = "cypress/fixtures";
+const deleteTestDataFile = "toDelete/testData.json";
 
 Cypress.Commands.add("createTestData", () => {
   let studentsAttemptJson;
@@ -101,9 +102,40 @@ Cypress.Commands.add("createTestData", () => {
           expect(status).to.eq(200);
           console.log(`Test created for the type - ${testKey} , _id :`, testId);
           studentsAttemptJson.testTypes[testKey] = testId;
-          cy.writeFile(`${folderPath}/studentsAttempt.json`, studentsAttemptJson);
+          cy.writeFile(`${fixtureFolderPath}/studentsAttempt.json`, studentsAttemptJson);
         });
       });
+    });
+  });
+});
+
+Cypress.Commands.add("deleteItem", itemId => {
+  cy.request({
+    url: `${BASE_URL}/testitem/${itemId}`,
+    method: "DELETE",
+    headers: {
+      Authorization: window.localStorage.getItem("access_token")
+    }
+  }).then(({ status }) => {
+    expect(status).to.eq(200);
+    console.log("Item deleted with _id :", itemId);
+  });
+});
+
+Cypress.Commands.add("deleteTestData", () => {
+  cy.fixture(deleteTestDataFile).then(testData => {
+    console.log("testDataJson in deleteTestData", testData);
+    // delete testItems
+    if (testData.testItems && testData.testItems.length > 0) {
+      testData.testItems.forEach(item => {
+        cy.deleteItem(item);
+      });
+      delete testData.testItems;
+    }
+    // TODO : add other collections
+
+    cy.writeFile(`${fixtureFolderPath}/${deleteTestDataFile}`, testData).then(json => {
+      expect(Object.keys(json).length).to.equal(0);
     });
   });
 });

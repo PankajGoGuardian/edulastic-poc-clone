@@ -2,6 +2,7 @@ import EditItemPage from "../../../../framework/author/itemList/itemDetail/editP
 import ShadingPage from "../../../../framework/author/itemList/questionType/highlight/shadingPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import Helpers from "../../../../framework/util/Helpers";
+import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type question`, () => {
   describe("Shading", () => {
@@ -16,10 +17,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
 
     const question = new ShadingPage();
     const editItem = new EditItemPage();
+    const itemList = new ItemListPage();
     let preview;
+    let testItemId;
 
     before(() => {
       cy.setToken();
+      itemList.clickOnCreate().then(id => {
+        testItemId = id;
+      });
     });
 
     const RED = "rgb(238, 22, 88)";
@@ -29,7 +35,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
 
     context("Create basic question and validate.", () => {
       before("visit items page and select question type", () => {
-        editItem.getItemWithId();
+        editItem.getItemWithId(testItemId);
         editItem.deleteAllQuestion();
         // create new que and select type
         editItem.addNew().chooseQuestion(queData.group, queData.queType);
@@ -154,7 +160,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
 
     context("Advanced Options", () => {
       before("visit items page and select question type", () => {
-        editItem.getItemWithId();
+        editItem.getItemWithId(testItemId);
         editItem.deleteAllQuestion();
         // create new que and select type
         editItem.addNew().chooseQuestion(queData.group, queData.queType);

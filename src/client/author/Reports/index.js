@@ -56,15 +56,10 @@ const locToBreadcrumb = {
 
 const Container = props => {
   const [showFilter, setShowFilter] = useState(false);
-  const [assignments, setAssignments] = useState({});
 
   useEffect(() => {
     props.getAssignmentsRequestAction();
   }, []);
-
-  useEffect(() => {
-    setAssignments(props.assignments);
-  }, [props.assignments]);
 
   const onShareClickCB = () => {
     console.log("not implemented yet");
@@ -118,17 +113,17 @@ const Container = props => {
       <Route
         exact
         path={`${props.match.path}assessment-summary/test/:testId?`}
-        render={props => <AssessmentSummary {...props} showFilter={showFilter} assignments={assignments} />}
+        render={_props => <AssessmentSummary {..._props} showFilter={showFilter} assignments={props.assignments} />}
       />
       <Route
         exact
         path={`${props.match.path}peer-performance/test/:testId?`}
-        render={props => <PeerPerformance {...props} showFilter={showFilter} assignments={assignments} />}
+        render={_props => <PeerPerformance {..._props} showFilter={showFilter} assignments={props.assignments} />}
       />
       <Route
         exact
         path={`${props.match.path}response-frequency/test/:testId?`}
-        render={props => <ResponseFrequency {...props} showFilter={showFilter} assignments={assignments} />}
+        render={_props => <ResponseFrequency {..._props} showFilter={showFilter} assignments={props.assignments} />}
       />
     </div>
   );

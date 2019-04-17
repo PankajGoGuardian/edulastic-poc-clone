@@ -65,7 +65,8 @@ class ButtonBar extends Component {
       showPublishButton,
       view,
       hasAuthorPermission = true,
-      itemStatus
+      itemStatus,
+      renderExtra
     } = this.props;
 
     return (
@@ -123,11 +124,10 @@ class ButtonBar extends Component {
                     Edit
                   </Button>
                 )}
+                {renderExtra()}
               </RightSide>
             )}
-
-           
-
+            {!hasAuthorPermission && <RightSide>{renderExtra()}</RightSide>}
           </Container>
         ) : (
           <MobileContainer>
@@ -229,11 +229,13 @@ ButtonBar.propTypes = {
   changePreviewTab: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   onEnableEdit: PropTypes.func.isRequired,
-  clearAnswers: PropTypes.func.isRequired
+  clearAnswers: PropTypes.func.isRequired,
+  renderExtra: PropTypes.func
 };
 
 ButtonBar.defaultProps = {
-  onShowSettings: () => {}
+  onShowSettings: () => {},
+  renderExtra: () => null
 };
 
 const enhance = compose(

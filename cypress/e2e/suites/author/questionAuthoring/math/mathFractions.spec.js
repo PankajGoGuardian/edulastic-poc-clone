@@ -6,6 +6,7 @@ import EditItemPage from "../../../../framework/author/itemList/itemDetail/editP
 import FileHelper from "../../../../framework/util/fileHelper";
 import EditToolBar from "../../../../framework/author/itemList/questionType/common/editToolBar";
 import PreviewItemPage from "../../../../framework/author/itemList/itemDetail/previewPage";
+import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" type question`, () => {
   const queData = {
@@ -281,6 +282,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
   };
   const question = new MathFractionPage();
   const editItem = new EditItemPage();
+  const itemList = new ItemListPage();
   const numpadButtons = question.virtualKeyBoardNumpad;
   const buttons = question.virtualKeyBoardButtons;
   const { syntaxes, fields, methods } = math;
@@ -289,13 +291,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
   const [fraction, numrator, denominator] = [".mq-fraction", ".mq-numerator", ".mq-denominator"];
   const preview = new PreviewItemPage();
 
+  let testItemId;
+
   before(() => {
     cy.setToken();
+    itemList.clickOnCreate().then(id => {
+      testItemId = id;
+    });
   });
 
   context("User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
@@ -519,7 +526,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
   context("Validate different evaluation methods", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);

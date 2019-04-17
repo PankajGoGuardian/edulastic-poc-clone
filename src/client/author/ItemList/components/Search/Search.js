@@ -53,7 +53,15 @@ class Search extends Component {
           <Item>
             <ItemHeader>Curriculum</ItemHeader>
             <ItemBody>
-              <Select size="large" onSelect={onSearchFieldChange("curriculumId")} value={curriculumId}>
+              <Select
+                showSearch
+                size="large"
+                optionFilterProp="children"
+                onSelect={onSearchFieldChange("curriculumId")}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                value={curriculumId}
+                defaultValue="All Curriculums"
+              >
                 <Select.Option key="" value="">
                   All Curriculums
                 </Select.Option>

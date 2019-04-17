@@ -42,11 +42,6 @@ export const getSchoolsLoadingSelector = createSelector(
   state => state.loading
 );
 
-export const getUpdateSchoolSelector = createSelector(
-  stateSchoolsSelector,
-  state => state.update
-);
-
 export const getSchoolUpdatingSelector = createSelector(
   stateSchoolsSelector,
   state => state.updating
@@ -60,11 +55,6 @@ export const getCreatedSchoolSelector = createSelector(
 export const getSchoolCreatingSelector = createSelector(
   stateSchoolsSelector,
   state => state.creating
-);
-
-export const getDeletedSchoolSelector = createSelector(
-  stateSchoolsSelector,
-  state => state.delete
 );
 
 export const getSchoolDeletingSelector = createSelector(
@@ -88,144 +78,102 @@ const initialState = {
   deleteError: null
 };
 
-const receiveSchoolsRequest = state => ({
-  ...state,
-  loading: true
-});
-
-const receiveSchoolsSuccess = (state, { payload }) => {
-  const schoolsData = [];
-  payload.map(row => {
-    let school = {};
-    school = row;
-
-    school["districtId"] = row._source.districtId;
-    school.name = row._source.name;
-
-    if (row._source.hasOwnProperty("location")) {
-      const location = row._source.location;
-      Object.keys(location).map((key, value) => {
-        school[key] = location[key];
-      });
-    }
-    delete school._source;
-    schoolsData.push(school);
-  });
-
-  return {
-    ...state,
-    loading: false,
-    data: schoolsData
-  };
-};
-
-const receiveSchoolsError = (state, { payload }) => ({
-  ...state,
-  loading: false,
-  error: payload.error
-});
-
-const updateSchoolRequest = state => ({
-  ...state,
-  updating: true
-});
-
-const updateSchoolSuccess = (state, { payload }) => {
-  const schoolsData = state.data.map(school => {
-    if (school._id === payload._id) {
-      const newData = {
-        name: payload.name,
-        ...payload.location
-      };
-      return { ...school, ...newData };
-    } else return school;
-  });
-
-  return {
-    ...state,
-    update: payload,
-    updating: false,
-    data: schoolsData
-  };
-};
-
-const updateSchoolError = (state, { payload }) => ({
-  ...state,
-  updateError: payload.error,
-  updating: false
-});
-
-const createSchoolRequest = state => ({
-  ...state,
-  creating: true
-});
-
-const createSchoolSuccess = (state, { payload }) => {
-  const createdSchoolData = {
-    _id: payload._id,
-    name: payload.name,
-    districtId: payload.districtId,
-    address: payload.location.address,
-    city: payload.location.city,
-    state: payload.location.state,
-    country: payload.location.country,
-    zip: payload.location.zip,
-    teachersCount: 0,
-    studentsCount: 0,
-    sectionsCount: 0
-  };
-
-  return {
-    ...state,
-    creating: false,
-    create: createdSchoolData,
-    data: [createdSchoolData, ...state.data]
-  };
-};
-
-const createSchoolError = (state, { payload }) => ({
-  ...state,
-  createError: payload.error,
-  creating: false
-});
-
-const deleteSchoolRequest = state => ({
-  ...state,
-  deleting: true
-});
-
-const deleteSchoolSuccess = (state, { payload }) => ({
-  ...state,
-  delete: payload,
-  deleting: false,
-  data: state.data.filter(school => {
-    let nMatchCount = 0;
-    payload.map(row => {
-      if (row.schoolId === school._id) nMatchCount++;
-    });
-    if (nMatchCount == 0) return school;
-  })
-});
-
-const deleteSchoolError = (state, { payload }) => ({
-  ...state,
-  deleteError: payload.error,
-  deleting: false
-});
-
 export const reducer = createReducer(initialState, {
-  [RECEIVE_SCHOOLS_REQUEST]: receiveSchoolsRequest,
-  [RECEIVE_SCHOOLS_SUCCESS]: receiveSchoolsSuccess,
-  [RECEIVE_SCHOOLS_ERROR]: receiveSchoolsError,
-  [UPDATE_SCHOOLS_REQUEST]: updateSchoolRequest,
-  [UPDATE_SCHOOLS_SUCCESS]: updateSchoolSuccess,
-  [UPDATE_SCHOOLS_ERROR]: updateSchoolError,
-  [CREATE_SCHOOLS_REQUEST]: createSchoolRequest,
-  [CREATE_SCHOOLS_SUCCESS]: createSchoolSuccess,
-  [CREATE_SCHOOLS_ERROR]: createSchoolError,
-  [DELETE_SCHOOLS_REQUEST]: deleteSchoolRequest,
-  [DELETE_SCHOOLS_SUCCESS]: deleteSchoolSuccess,
-  [DELETE_SCHOOLS_ERROR]: deleteSchoolError
+  [RECEIVE_SCHOOLS_REQUEST]: state => {
+    state.loading = true;
+  },
+  [RECEIVE_SCHOOLS_SUCCESS]: (state, { payload }) => {
+    const schoolsData = [];
+    payload.map(row => {
+      let school = {};
+      school = row;
+
+      school["districtId"] = row._source.districtId;
+      school.name = row._source.name;
+
+      if (row._source.hasOwnProperty("location")) {
+        const location = row._source.location;
+        Object.keys(location).map((key, value) => {
+          school[key] = location[key];
+        });
+      }
+      delete school._source;
+      schoolsData.push(school);
+    });
+
+    state.loading = false;
+    state.data = schoolsData;
+  },
+  [RECEIVE_SCHOOLS_ERROR]: (state, { payload }) => {
+    state.loading = false;
+    state.error = payload.error;
+  },
+  [UPDATE_SCHOOLS_REQUEST]: state => {
+    state.updating = true;
+  },
+  [UPDATE_SCHOOLS_SUCCESS]: (state, { payload }) => {
+    const schoolsData = state.data.map(school => {
+      if (school._id === payload._id) {
+        const newData = {
+          name: payload.name,
+          ...payload.location
+        };
+        return { ...school, ...newData };
+      } else return school;
+    });
+
+    state.update = payload;
+    state.updating = false;
+    state.data = schoolsData;
+  },
+  [UPDATE_SCHOOLS_ERROR]: (state, { payload }) => {
+    state.updating = false;
+    state.updateError = payload.error;
+  },
+  [CREATE_SCHOOLS_REQUEST]: state => {
+    state.creating = true;
+  },
+  [CREATE_SCHOOLS_SUCCESS]: (state, { payload }) => {
+    const createdSchoolData = {
+      _id: payload._id,
+      name: payload.name,
+      districtId: payload.districtId,
+      address: payload.location.address,
+      city: payload.location.city,
+      state: payload.location.state,
+      country: payload.location.country,
+      zip: payload.location.zip,
+      teachersCount: 0,
+      studentsCount: 0,
+      sectionsCount: 0
+    };
+
+    state.creating = false;
+    state.create = createdSchoolData;
+    state.data = [createdSchoolData, ...state.data];
+  },
+  [CREATE_SCHOOLS_ERROR]: (state, { payload }) => {
+    state.createError = payload.error;
+    state.creating = false;
+  },
+  [DELETE_SCHOOLS_REQUEST]: state => {
+    state.deleting = true;
+  },
+  [DELETE_SCHOOLS_SUCCESS]: (state, { payload }) => {
+    state.delete = payload;
+    state.deleting = false;
+    state.data = state.data.filter(school => {
+      let nMatchCount = 0;
+      payload.map(row => {
+        if (row.schoolId === school._id) nMatchCount++;
+      });
+      if (nMatchCount == 0) return school;
+    });
+  },
+  [DELETE_SCHOOLS_ERROR]: (state, { payload }) => {
+    state.deleting = false;
+    state.deleteError = payload.error;
+  }
 });
 
 // sagas

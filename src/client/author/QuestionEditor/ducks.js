@@ -5,6 +5,8 @@ import { cloneDeep, values, get } from "lodash";
 import { message } from "antd";
 import { questionType } from "@edulastic/constants";
 import { getItemDetailSelector, UPDATE_ITEM_DETAIL_SUCCESS, setRedirectTestAction } from "../ItemDetail/ducks";
+import { setTestDataAction, getTestEntitySelector } from "../TestPage/ducks";
+import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
 import { history } from "../../configureStore";
 import {
   UPDATE_QUESTION,
@@ -50,8 +52,9 @@ export const receiveQuestionByIdAction = id => ({
   }
 });
 
-export const saveQuestionAction = () => ({
-  type: SAVE_QUESTION_REQUEST
+export const saveQuestionAction = modalItemId => ({
+  type: SAVE_QUESTION_REQUEST,
+  payload: modalItemId
 });
 
 export const setQuestionDataAction = question => ({
@@ -239,12 +242,12 @@ export const getQuestionIds = item => {
 
 export const redirectTestIdSelector = state => get(state, "itemDetail.redirectTestId", false);
 
-function* saveQuestionSaga() {
+function* saveQuestionSaga({ payload: modalItemId }) {
   try {
     const question = yield select(getCurrentQuestionSelector);
     const itemDetail = yield select(getItemDetailSelector);
     let currentQuestionIds = getQuestionIds(itemDetail);
-    const { rowIndex, tabIndex } = history.location.state || {};
+    const { rowIndex, tabIndex } = history.location.state || { rowIndex: 0, tabIndex: 1 };
     const { id } = question;
     const entity = {
       ...question,
@@ -297,6 +300,23 @@ function* saveQuestionSaga() {
     });
 
     yield call(message.success, "Update item by id is success", "Success");
+
+    if (modalItemId) {
+      // add item to test entity
+      const testItems = yield select(getSelectedItemSelector);
+      const nextTestItems = [...testItems.data, itemDetail._id];
+
+      yield put(setTestItemsAction(nextTestItems));
+
+      const testEntity = yield select(getTestEntitySelector);
+      const updatedTestEntity = {
+        ...testEntity,
+        testItems: [...testEntity.testItems, item]
+      };
+
+      yield put(setTestDataAction(updatedTestEntity));
+      return;
+    }
 
     if (itemDetail) {
       yield call(history.push, {

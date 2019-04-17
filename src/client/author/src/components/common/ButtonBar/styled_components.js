@@ -116,6 +116,8 @@ export const HeadIcon = styled.div`
 
 export const RightSide = styled.div`
   display: flex;
+  align-item: center;
+
   .ant-btn {
     width: 86px;
     background: #fff;

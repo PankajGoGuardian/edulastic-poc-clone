@@ -6,12 +6,19 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Radio, Spin, Button, Row, Col, Select, message, Typography } from "antd";
 import { debounce } from "lodash";
+import { withRouter } from "react-router-dom";
 
 import { FlexContainer } from "@edulastic/common";
 import { mainBlueColor, whiteSmoke, greenDark, fadedGrey, white } from "@edulastic/colors";
 import { IconClose, IconShare } from "@edulastic/icons";
 
-import { getTestIdSelector, sendTestShareAction } from "../../../../TestPage/ducks";
+import {
+  getTestIdSelector,
+  getUserListSelector,
+  sendTestShareAction,
+  receiveSharedWithListAction,
+  deleteSharedUserAction
+} from "../../../../TestPage/ducks";
 
 import {
   getUsersListSelector,
@@ -49,11 +56,15 @@ class ShareModal extends React.Component {
     super(props);
     this.state = {
       sharedType: sharedKeysObj.INDIVIDUAL,
-      peopleArray: [],
       currentUser: {},
       permission: "EDIT"
     };
     this.handleSearch = this.handleSearch.bind(this);
+  }
+  componentDidMount() {
+    const { getSharedUsers, match } = this.props;
+    const testId = match.params.id;
+    if (testId) getSharedUsers(testId);
   }
 
   radioHandler = e => {
@@ -69,11 +80,10 @@ class ShareModal extends React.Component {
     }
   };
 
-  removeHandler = index => {
-    const { peopleArray } = this.state;
-    const temp = peopleArray.slice();
-    temp.splice(index, 1);
-    this.setState({ peopleArray: temp, currentUser: {} });
+  removeHandler = data => {
+    const { deleteShared, testId } = this.props;
+    const { sharedId, _userId: sharedWith } = data;
+    deleteShared({ testId, sharedId, sharedWith });
   };
 
   permissionHandler = value => {
@@ -120,38 +130,34 @@ class ShareModal extends React.Component {
   };
 
   handleShare = () => {
-    const { currentUser, peopleArray, sharedType, permission } = this.state;
-    const isExisting = peopleArray.filter(item => item._userId === currentUser._userId);
-    const { shareTest, testId } = this.props;
+    const { currentUser, sharedType, permission } = this.state;
+    const { shareTest, testId, sharedUsersList } = this.props;
+    const isExisting = sharedUsersList.some(item => item._userId === currentUser._userId);
+
     let person = {};
     if (sharedType === sharedKeysObj.INDIVIDUAL) {
       if (Object.keys(currentUser).length === 0) {
         message.error("Please select any user which are not in the shared list");
         return;
-      } else if (isExisting.length > 0) {
-        message.error("This is an existing user");
+      } else if (isExisting) {
+        message.error("This user has permission");
         return;
       } else {
         const { _userId, userName } = currentUser;
         person = { sharedWith: [{ _id: _userId, name: userName }] };
-        this.setState(prevState => ({
-          peopleArray: [...prevState.peopleArray, currentUser],
+        this.setState({
           currentUser: {}
-        }));
+        });
       }
     } else {
-      const isTypeExisting = peopleArray.filter(item => item.userName === shareTypes[sharedType]).length > 0;
+      const isTypeExisting = sharedUsersList.some(item => item.userName === shareTypes[sharedType]);
       if (isTypeExisting) {
         message.error(`You have shared with ${shareTypes[sharedType]} try other option`);
         return;
       } else {
-        this.setState(prevState => ({
-          peopleArray: [
-            ...prevState.peopleArray,
-            { userName: shareTypes[sharedType], email: null, permission: "VIEW" }
-          ],
+        this.setState({
           currentUser: {}
-        }));
+        });
       }
     }
     const data = {
@@ -163,9 +169,9 @@ class ShareModal extends React.Component {
   };
 
   render() {
-    const { sharedType, peopleArray, permission } = this.state;
-    const { isVisible, onClose, userList = [], fetching } = this.props;
-    const filteredUserList = userList.filter(user => peopleArray.every(people => user._id !== people._userId));
+    const { sharedType, permission } = this.state;
+    const { isVisible, onClose, userList = [], fetching, sharedUsersList } = this.props;
+    const filteredUserList = userList.filter(user => sharedUsersList.every(people => user._id !== people._userId));
     const sharableURL = window.location.href;
     return (
       <Modal open={isVisible} onClose={onClose} center styles={{ modal: { borderRadius: 5 } }}>
@@ -180,9 +186,9 @@ class ShareModal extends React.Component {
                 <span>COPY</span>
               </CopyWrapper>
             </FlexContainer>
-            {peopleArray.length !== 0 && (
+            {sharedUsersList.length !== 0 && (
               <ShareList>
-                {peopleArray.map((data, index) => (
+                {sharedUsersList.map((data, index) => (
                   <Row
                     key={index}
                     style={{
@@ -200,7 +206,7 @@ class ShareModal extends React.Component {
                       <span>{data.permission === "VIEW" && "Can View & Duplicate"}</span>
                     </Col>
                     <Col span={1}>
-                      <a onClick={() => this.removeHandler(index)}>
+                      <a onClick={() => this.removeHandler(data)}>
                         <CloseIcon />
                       </a>
                     </Col>
@@ -282,16 +288,20 @@ ShareModal.defaultProps = {
 };
 
 const enhance = compose(
+  withRouter,
   connect(
     state => ({
       userList: getUsersListSelector(state),
       fetching: getFetchingSelector(state),
-      testId: getTestIdSelector(state)
+      testId: getTestIdSelector(state),
+      sharedUsersList: getUserListSelector(state)
     }),
     {
       getUsers: fetchUsersListAction,
       updateShareList: updateUsersListAction,
-      shareTest: sendTestShareAction
+      shareTest: sendTestShareAction,
+      getSharedUsers: receiveSharedWithListAction,
+      deleteShared: deleteSharedUserAction
     }
   )
 );

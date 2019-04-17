@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Select } from "antd";
 
-import { Select, TextField } from "@edulastic/common";
+import { TextField } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import WidgetOptions from "../../../containers/WidgetOptions";
@@ -22,6 +23,27 @@ function Options({ onChange, uiStyle, t }) {
     });
   };
 
+  const styleOptions = [
+    { value: "standard", label: t("component.options.standard") },
+    { value: "block", label: t("component.options.block") },
+    {
+      value: "radioBelow",
+      label: t("component.options.radioButtonBelow")
+    }
+  ];
+
+  const labelTypeOptions = [
+    { value: "number", label: t("component.options.numerical") },
+    {
+      value: "upper-alpha",
+      label: t("component.options.uppercase")
+    },
+    {
+      value: "lower-alpha",
+      label: t("component.options.lowercase")
+    }
+  ];
+
   return (
     <WidgetOptions>
       <Block>
@@ -31,19 +53,18 @@ function Options({ onChange, uiStyle, t }) {
           <Col md={6}>
             <Label>{t("component.options.style")}</Label>
             <Select
+              size="large"
               id="select"
               style={{ width: "80%" }}
               onChange={val => changeUiStyle("type", val)}
-              options={[
-                { value: "standard", label: t("component.options.standard") },
-                { value: "block", label: t("component.options.block") },
-                {
-                  value: "radioBelow",
-                  label: t("component.options.radioButtonBelow")
-                }
-              ]}
               value={uiStyle.type}
-            />
+            >
+              {styleOptions.map(({ value: val, label }) => (
+                <Select.Option data-cy={val} key={val} value={val}>
+                  {label}
+                </Select.Option>
+              ))}
+            </Select>
           </Col>
           <Col md={6}>
             <Label>{t("component.options.columns")}</Label>
@@ -72,21 +93,17 @@ function Options({ onChange, uiStyle, t }) {
             <Col md={6}>
               <Label>{t("component.options.labelType")}</Label>
               <Select
+                size="large"
                 style={{ width: "80%" }}
                 onChange={val => changeUiStyle("choice_label", val)}
-                options={[
-                  { value: "number", label: t("component.options.numerical") },
-                  {
-                    value: "upper-alpha",
-                    label: t("component.options.uppercase")
-                  },
-                  {
-                    value: "lower-alpha",
-                    label: t("component.options.lowercase")
-                  }
-                ]}
                 value={uiStyle.choice_label}
-              />
+              >
+                {labelTypeOptions.map(({ value: val, label }) => (
+                  <Select.Option data-cy={val} key={val} value={val}>
+                    {label}
+                  </Select.Option>
+                ))}
+              </Select>
             </Col>
           </Row>
         )}

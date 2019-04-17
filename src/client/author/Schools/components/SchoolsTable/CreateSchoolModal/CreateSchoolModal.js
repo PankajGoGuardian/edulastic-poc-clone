@@ -2,9 +2,25 @@ import React, { Component } from "react";
 import { Form, Input, Row, Col } from "antd";
 import { StyledCreateSchoolModal, ModalTtile, StyledButton, StyledDescription, ModalFormItem } from "./styled";
 
+// countryAPI
+import { countryApi } from "@edulastic/api";
 import CountrySelect from "../../../../Shared/Components/CountrySelect/CountrySelect";
 
 class CreateSchoolModal extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      countryList: []
+    };
+  }
+
+  async componentDidMount() {
+    const returnedCountryList = await countryApi.getCountries();
+    this.setState({
+      countryList: returnedCountryList
+    });
+  }
+
   onCreateSchool = () => {
     this.props.form.validateFields((err, row) => {
       if (!err) {
@@ -20,6 +36,8 @@ class CreateSchoolModal extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     const { modalVisible, form } = this.props;
+    const { countryList } = this.state;
+
     return (
       <StyledCreateSchoolModal
         visible={modalVisible}
@@ -104,7 +122,7 @@ class CreateSchoolModal extends React.Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Country">
-              <CountrySelect form={form} />
+              <CountrySelect form={form} countryList={countryList} />
             </ModalFormItem>
           </Col>
         </Row>

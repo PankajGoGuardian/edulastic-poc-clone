@@ -84,11 +84,11 @@ class TestSetting extends Component {
   };
 
   render() {
-    const { testSetting, loading, updating } = this.props;
+    const { testSetting, loading, updating, history } = this.props;
 
     return (
       <TestSettingDiv>
-        <AdminHeader title={title} active={menuActive} />
+        <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={updating || loading ? "true" : "false"}>
             {(updating || loading) && (

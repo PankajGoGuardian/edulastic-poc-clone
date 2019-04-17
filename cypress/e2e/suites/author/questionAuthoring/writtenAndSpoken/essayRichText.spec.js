@@ -1,6 +1,7 @@
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage.js";
 import EssayRichTextPage from "../../../../framework/author/itemList/questionType/writtenAndSpoken/essayRichTextPage";
 import FileHelper from "../../../../framework/util/fileHelper";
+import ItemListPage from "../../../../framework/author/itemList/itemListPage.js";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with rich text" type question`, () => {
   const queData = {
@@ -14,15 +15,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with ric
 
   const question = new EssayRichTextPage();
   const editItem = new EditItemPage();
+  const itemList = new ItemListPage();
   let preview;
+
+  let testItemId;
 
   before(() => {
     cy.setToken();
+    itemList.clickOnCreate().then(id => {
+      testItemId = id;
+    });
   });
 
   context("User creates question.", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId();
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);

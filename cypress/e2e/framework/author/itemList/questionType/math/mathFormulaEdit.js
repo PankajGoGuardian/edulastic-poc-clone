@@ -219,7 +219,9 @@ class MathFormulaEdit {
 
   getAnswerMathInputStyle = () => cy.get(".input__math");
 
-  // getAnswerMathInputStyle = () => cy.get('[data-cy="answer-math-input-style"]');
+  getAnswerMathInputStyleasd = () => cy.get('[data-cy="answer-math-input-style"]');
+
+  getAnswerMathTextArea = () => this.getAnswerMathInputField().find("textarea");
 
   getAnswerMathTextArea = () => this.getAnswerMathInputField().find("textarea");
 

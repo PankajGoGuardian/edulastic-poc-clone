@@ -3,6 +3,7 @@ import MathMatricesPage from "../../../../framework/author/itemList/questionType
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import EditToolBar from "../../../../framework/author/itemList/questionType/common/editToolBar";
+import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matrices" type question`, () => {
   const queData = {
@@ -27,20 +28,25 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
 
   const question = new MathMatricesPage();
   const editItem = new EditItemPage();
+  const itemList = new ItemListPage();
   const numpadButtons = question.virtualKeyBoardNumpad;
   const buttons = question.virtualMatrixKeyBoardButtons;
   const { syntaxes, fields, methods } = math;
   const ruleArguments = question.argumentMethods;
   const editToolBar = new EditToolBar();
   let preview;
+  let testItemId;
 
   before(() => {
     cy.setToken();
+    itemList.clickOnCreate().then(id => {
+      testItemId = id;
+    });
   });
 
   context("User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId("5c358b480c8e6f22190d5ce0");
+      editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       // create new que and select type
 

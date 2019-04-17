@@ -46,12 +46,12 @@ class StandardsProficiency extends Component {
   };
 
   render() {
-    const { standardsProficiency, loading, updating } = this.props;
+    const { standardsProficiency, loading, updating, history } = this.props;
     const showSpin = loading || updating;
 
     return (
       <StandardsProficiencyDiv>
-        <AdminHeader title={title} active={menuActive} />
+        <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
             {showSpin && (

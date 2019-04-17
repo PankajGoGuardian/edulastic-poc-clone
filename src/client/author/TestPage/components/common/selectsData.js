@@ -12,6 +12,9 @@ const allGrades = [
   { value: "10", text: "Grade 10" },
   { value: "11", text: "Grade 11" },
   { value: "12", text: "Grade 12" },
+  { value: "Algebra", text: "Algebra" },
+  { value: "Calculus", text: "Calculus" },
+  { value: "Trigonometry", text: "Trigonometry" },
   { value: "other", text: "Other" }
 ];
 

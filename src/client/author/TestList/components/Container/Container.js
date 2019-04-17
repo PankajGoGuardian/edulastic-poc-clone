@@ -309,7 +309,9 @@ class TestList extends Component {
       }
     );
   }
-
+  searchCurriculum(input, option) {
+    return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+  }
   getFilters(filters) {
     const { curriculums, curriculumStandards } = this.props;
     const {
@@ -335,7 +337,10 @@ class TestList extends Component {
         size: "large",
         title: "Curriculum",
         onChange: "curriculumId",
-        data: [{ value: "", text: "All Curriculum" }, ...formattedCuriculums]
+        data: [{ value: "", text: "All Curriculum" }, ...formattedCuriculums],
+        optionFilterProp: "children",
+        filterOption: this.searchCurriculum,
+        showSearch: true
       },
       {
         onSearch: this.handleStandardSearch,

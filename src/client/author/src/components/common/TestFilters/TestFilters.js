@@ -17,11 +17,13 @@ const TestFilters = ({ children, onChange, style, filterData, state, clearFilter
       <>
         <SubTitle>{filterItem.title}</SubTitle>
         <Select
+          showSearch={filterItem.showSearch}
           onSearch={filterItem.onSearch && filterItem.onSearch}
           mode={filterItem.mode}
           size={filterItem.size}
           placeholder={filterItem.placeholder}
           filterOption={filterItem.filterOption}
+          optionFilterProp={filterItem.optionFilterProp}
           defaultValue={filterItem.mode === "multiple" ? undefined : filterItem.data[0].text}
           value={state[filterItem.onChange]}
           onChange={value => onChange(filterItem.onChange, value)}

@@ -26,7 +26,6 @@ import { districtPolicySaga } from "../../DistrictPolicy";
 import { performanceBandSaga } from "../../PerformanceBand";
 import { standardsProficiencySaga } from "../../StandardsProficiency";
 import { schoolsSaga } from "../../Schools";
-import { countryWatcherSaga } from "../../sharedDucks/country";
 
 const authorSagas = [
   itemsSaga(),
@@ -56,8 +55,7 @@ const authorSagas = [
   districtPolicySaga(),
   performanceBandSaga(),
   standardsProficiencySaga(),
-  schoolsSaga(),
-  countryWatcherSaga()
+  schoolsSaga()
 ];
 
 export default authorSagas;

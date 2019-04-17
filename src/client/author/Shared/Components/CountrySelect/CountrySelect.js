@@ -1,13 +1,9 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
+import React from "react";
 
 import { Select } from "antd";
 const Option = Select.Option;
 
 import { StyledSelect } from "./styled";
-
-import { getCountryListSelector } from "../../../sharedDucks/country";
 
 class CountrySelect extends React.Component {
   render() {
@@ -27,9 +23,4 @@ class CountrySelect extends React.Component {
   }
 }
 
-const enhance = compose(
-  connect(state => ({
-    countryList: getCountryListSelector(state)
-  }))
-);
-export default enhance(CountrySelect);
+export default CountrySelect;

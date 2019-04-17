@@ -78,7 +78,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         expected: "1+2"
       },
       allowInterval: {
-        expected: ["0,4", "{leftarrow}".repeat(2), "(", "{backspace}", "]"],
+        expected: ["0,4", "{leftarrow}".repeat(3), "(", "{backspace}", "]"],
         input: "(0,4]",
         checkboxValues: ["getAnswerAllowInterval", null],
         isCorrectAnswer: [true, false]
@@ -460,7 +460,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         question.setValue(input);
         question.checkCorrectAnswerWithResponse(expected, preview, 0, true);
       });
-      it("Testing check/uncheck Allow interval check boxl", () => {
+      it("Testing check/uncheck Allow interval check box", () => {
         const { input, expected, checkboxValues, isCorrectAnswer } = queData.equivLiteral.allowInterval;
 
         checkboxValues.forEach((checkboxValue, index) => {
@@ -791,6 +791,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
 
     context("TC_413 => Preview Items", () => {
       before("Handel uncaught exception", () => {
+        editItem.getItemWithId(testItemId);
+        editItem.deleteAllQuestion();
+        // create new que and select type
+        editItem.addNew().chooseQuestion(queData.group, queData.queType);
         Cypress.on("uncaught:exception", (err, runnable) => {
           if (runnable.title === "Click on preview") {
             return false;
@@ -799,6 +803,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
         });
       });
       it("Click on preview", () => {
+        question.setValue(queData.answer.value);
+        question.clearTemplateInput();
+        question.setResponseInput();
         previewItems = editItem.header.preview();
         question.getBody().contains("span", "Check Answer");
 

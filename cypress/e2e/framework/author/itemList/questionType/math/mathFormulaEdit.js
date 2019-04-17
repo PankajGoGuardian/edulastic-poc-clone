@@ -223,8 +223,6 @@ class MathFormulaEdit {
 
   getAnswerMathTextArea = () => this.getAnswerMathInputField().find("textarea");
 
-  getAnswerMathTextArea = () => this.getAnswerMathInputField().find("textarea");
-
   checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect, score = false, scoreValuse = "1/1") => {
     preview.header.preview();
     preview.getClear().click();

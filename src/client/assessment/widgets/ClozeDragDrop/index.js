@@ -110,6 +110,7 @@ class ClozeDragDrop extends Component {
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
+    console.log("itemForPreview.templateMarkUp: ", itemForPreview.templateMarkUp);
     return (
       <div>
         {view === "edit" && (

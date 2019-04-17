@@ -70,10 +70,6 @@ class MathFillInTheBlanksPage extends MathFractionPage {
       .click()
       .then(() => this.getAnswerArgumentDropdownByValue(value).click());
 
-  // allowDecimalMarksWithResponse = (separator, inputLength, expected, preview, isCorrect = false) => {
-  //   this.getAnswerAllowThousandsSeparator().check({ force: true });
-  //   this.setThousandsSeparatorDropdown(separator);
-
   setThousandsSeparatorDropdown = separator =>
     this.getThousandsSeparatorDropdown()
       .click()

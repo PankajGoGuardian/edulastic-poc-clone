@@ -13,7 +13,7 @@ package-lock.json
 .sass-cache
 .env
 cypress/screenshots/
-cypress/fixtures/toDelete/testData.json
+cypress/fixtures/toDelete/
 dist/
 
 # vi swap files

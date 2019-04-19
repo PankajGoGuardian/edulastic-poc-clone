@@ -130,3 +130,13 @@ export const PaginationWrapper = styled(Pagination)`
   padding: ${props => (props.type === "tile" ? "20px 0" : "24px 32px")};
   text-align: right;
 `;
+
+export const StyleChangeWrapper = styled.div`
+  svg {
+    cursor: pointer;
+    margin-right: 23px;
+    &:last-child {
+      margin-right: 0px;
+    }
+  }
+`;

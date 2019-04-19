@@ -28,13 +28,26 @@ import {
   Footer,
   ButtonWrapper
 } from "./styled";
+import ViewModal from "../ViewModal";
 
 class ListItem extends Component {
   static propTypes = {
     item: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
-    t: PropTypes.func.isRequired
+    authorName: PropTypes.string,
+    owner: PropTypes.object,
+    testItemId: PropTypes.string
+  };
+
+  static defaultProps = {
+    authorName: "",
+    owner: {},
+    testItemId: ""
+  };
+
+  state = {
+    isOpenModal: false
   };
 
   moveToItem = () => {
@@ -42,85 +55,94 @@ class ListItem extends Component {
     history.push(`${match.url}/${item._id}`);
   };
 
+  closeModal = () => {
+    this.setState({ isOpenModal: false });
+  };
+
+  openModal = () => {
+    this.setState({ isOpenModal: true });
+  };
+
   render() {
     const {
       item: { title, analytics, tags },
-      t,
+      item,
       authorName,
       owner = false,
       testItemId
     } = this.props;
+    const { isOpenModal } = this.state;
+
     return (
-      <Container>
-        <ContentWrapper>
-          <Col span={18}>
-            <ListCard
-              title={
-                <Header>
-                  <Stars size="small" />
-                  <ButtonWrapper className="showHover">
-                    {owner && (
-                      <Button type="primary" onClick={this.moveToItem}>
-                        Edit
-                      </Button>
-                    )}
+      <>
+        <ViewModal isShow={isOpenModal} close={this.closeModal} item={item} />
+        <Container>
+          <ContentWrapper>
+            <Col span={18}>
+              <ListCard
+                title={
+                  <Header>
+                    <Stars size="small" />
+                    <ButtonWrapper className="showHover">
+                      {owner && (
+                        <Button type="primary" onClick={this.moveToItem}>
+                          Edit
+                        </Button>
+                      )}
 
-                    <Button type="primary">duplicate</Button>
-                  </ButtonWrapper>
-                </Header>
-              }
-            />
-            <Inner>
-              <div>
-                <StyledLink
-                // onClick={this.moveToItem}
-                >
-                  {title}
-                </StyledLink>
-              </div>
-              <Description>
-                {
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum metus et luctus lacinia. Nullam vel tincidunt nibh. Duis ac eros nunc."
+                      <Button type="primary">duplicate</Button>
+                    </ButtonWrapper>
+                  </Header>
                 }
-              </Description>
-            </Inner>
-          </Col>
+              />
+              <Inner>
+                <div>
+                  <StyledLink>{title}</StyledLink>
+                </div>
+                <Description>
+                  {
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum metus et luctus lacinia. Nullam vel tincidunt nibh. Duis ac eros nunc."
+                  }
+                </Description>
+              </Inner>
+            </Col>
 
-          <ViewButtonWrapper span={6}>
-            <TypeContainer>{""}</TypeContainer>
-            <ViewButton>VIEW</ViewButton>
-          </ViewButtonWrapper>
+            <ViewButtonWrapper span={6}>
+              <TypeContainer />
+              <ViewButton onClick={this.openModal}>VIEW</ViewButton>
+            </ViewButtonWrapper>
 
-          <Footer span={24}>
-            <TagsWrapper span={12}>
-              <Tags tags={tags} />
-            </TagsWrapper>
+            <Footer span={24}>
+              <TagsWrapper span={12}>
+                <Tags tags={tags} />
+              </TagsWrapper>
 
-            <ItemInformation span={12}>
-              <ContentWrapper>
-                {authorName && (
-                  <Author>
-                    <IconUser /> &nbsp;
-                    <AuthorName title={authorName}>{authorName}</AuthorName>
-                  </Author>
-                )}
-                <CardIdWrapper>
-                  <IconId /> &nbsp;
-                  <CardId>{testItemId}</CardId>
-                </CardIdWrapper>
-                <IconWrapper>
-                  <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
-                  {analytics && <IconText>{analytics.usage} 000</IconText>}
-                </IconWrapper>
-                <IconWrapper>
-                  <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
-                  {analytics && <IconText>{analytics.likes} 000</IconText>}
-                </IconWrapper>
-              </ContentWrapper>
-            </ItemInformation>
-          </Footer>
-        </ContentWrapper>
-      </Container>
+              <ItemInformation span={12}>
+                <ContentWrapper>
+                  {authorName && (
+                    <Author>
+                      <IconUser /> &nbsp;
+                      <AuthorName title={authorName}>{authorName}</AuthorName>
+                    </Author>
+                  )}
+                  <CardIdWrapper>
+                    <IconId /> &nbsp;
+                    <CardId>{testItemId}</CardId>
+                  </CardIdWrapper>
+                  <IconWrapper>
+                    <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
+                    {analytics && <IconText>{analytics.usage} 000</IconText>}
+                  </IconWrapper>
+                  <IconWrapper>
+                    <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
+                    {analytics && <IconText>{analytics.likes} 000</IconText>}
+                  </IconWrapper>
+                </ContentWrapper>
+              </ItemInformation>
+            </Footer>
+          </ContentWrapper>
+        </Container>
+      </>
     );
   }
 }

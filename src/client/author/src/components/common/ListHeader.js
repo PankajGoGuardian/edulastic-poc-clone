@@ -140,4 +140,5 @@ const MenuIcon = styled(IconMenuOpenClose)`
 const RightButtonWrapper = styled.div`
   display: flex;
   margin: 8px 0 5px auto;
+  align-items: center;
 `;

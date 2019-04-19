@@ -17,54 +17,52 @@ const DragHandle = SortableHandle(() => (
 ));
 
 const SortableItem = SortableElement(
-  ({ indx, selected, item, onCheck, points, onChangePoints, metaInfoData, onPreview, questions }) => {
-    return (
-      <TestItemWrapper>
-        <FlexContainer justifyContent="space-between">
-          <FlexContainer>
-            <DragHandle />
-            <Checkbox checked={selected.includes(indx)} onChange={e => onCheck(indx, e.target.checked)}>
-              Q{indx + 1}
-            </Checkbox>
-          </FlexContainer>
+  ({ indx, selected, item, onCheck, points, onChangePoints, metaInfoData, onPreview, questions }) => (
+    <TestItemWrapper>
+      <FlexContainer justifyContent="space-between">
+        <FlexContainer>
+          <DragHandle />
+          <Checkbox checked={selected.includes(indx)} onChange={e => onCheck(indx, e.target.checked)}>
+            Q{indx + 1}
+          </Checkbox>
+        </FlexContainer>
 
-          <FlexContainer>
-            <PreviewContainer onClick={() => onPreview(metaInfoData.id)}>
-              <IconPreview color={blue} width={16} height={16} />{" "}
-              <span
-                style={{
-                  textTransform: "uppercase",
-                  fontSize: 11,
-                  fontWeight: 600
-                }}
-              >
-                Preview
-              </span>
-            </PreviewContainer>
-            <span style={{ fontWeight: 600, fontSize: 14 }}>Points</span>{" "}
-            <Input
-              size="large"
-              type="number"
-              value={points}
-              onChange={e => onChangePoints(metaInfoData._id, +e.target.value)}
-              style={{ width: 70, fontSize: 13, fontWeight: 600 }}
-            />
-          </FlexContainer>
+        <FlexContainer>
+          <PreviewContainer onClick={() => onPreview(metaInfoData.id)}>
+            <IconPreview color={blue} width={16} height={16} />{" "}
+            <span
+              style={{
+                textTransform: "uppercase",
+                fontSize: 11,
+                fontWeight: 600
+              }}
+            >
+              Preview
+            </span>
+          </PreviewContainer>
+          <span style={{ fontWeight: 600, fontSize: 14 }}>Points</span>{" "}
+          <Input
+            size="large"
+            type="number"
+            value={points}
+            onChange={e => onChangePoints(metaInfoData._id, +e.target.value)}
+            style={{ width: 70, fontSize: 13, fontWeight: 600 }}
+          />
         </FlexContainer>
-        <TestItemPreview
-          style={{ padding: 0, boxShadow: "none", display: "flex" }}
-          cols={item}
-          previewTab="clear"
-          verticalDivider={item.verticalDivider}
-          scrolling={item.scrolling}
-          questions={questions}
-        />
-        <FlexContainer style={{ margin: "20px 0" }}>
-          <MetaInfoCell data={metaInfoData} />
-        </FlexContainer>
-      </TestItemWrapper>
-    );
-  }
+      </FlexContainer>
+      <TestItemPreview
+        style={{ padding: 0, boxShadow: "none", display: "flex" }}
+        cols={item}
+        previewTab="clear"
+        verticalDivider={item.verticalDivider}
+        scrolling={item.scrolling}
+        questions={questions}
+      />
+      <FlexContainer style={{ margin: "20px 0" }}>
+        <MetaInfoCell data={metaInfoData} />
+      </FlexContainer>
+    </TestItemWrapper>
+  )
 );
 
 const List = SortableContainer(

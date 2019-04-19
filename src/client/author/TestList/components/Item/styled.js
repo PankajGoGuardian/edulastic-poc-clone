@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Rate } from "antd/lib/index";
-import { blue, darkBlue, darkGrey, fadedGrey, lightGrey, lightGreySecondary } from "@edulastic/colors";
+import { blue, darkBlue, darkGrey, fadedGrey, lightGrey } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled(Card)`
@@ -115,10 +115,10 @@ export const ViewButton = styled.div`
   font-size: 12px;
   color: ${blue};
   background: white;
-  padding: 10px;
+  padding: 8px;
   margin: 10px 0px 15px;
   box-shadow: 0px 1px 1px 1px ${fadedGrey};
-  border-radius: 8px;
+  border-radius: 4px;
   font-weight: 600;
   text-align: center;
   cursor: pointer;
@@ -144,7 +144,7 @@ export const Header = styled.div`
   background: url("https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg");
   background-repeat: no-repeat;
   background-size: cover;
-  &: hover {
+  &:hover {
     .showHover {
       display: flex;
       justify-content: space-around;

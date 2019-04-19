@@ -1,12 +1,12 @@
 import styled from "styled-components";
-import { blue, darkBlue, grey, fadedGrey, lightGrey, darkGrey } from "@edulastic/colors";
+import { blue, darkBlue, fadedGrey, lightGrey, darkGrey } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 import { Col, Rate, Row } from "antd";
 
 export const Container = styled.div`
   display: flex;
   padding: 30px 0px;
-  border-bottom: 1px solid ${grey};
+  border-bottom: 1px solid ${fadedGrey};
 `;
 
 export const ListCard = styled(Card)`
@@ -87,7 +87,7 @@ export const Header = styled.div`
   background-size: cover;
   background-position: center center;
   border-radius: 5px;
-  &: hover {
+  &:hover {
     .showHover {
       display: flex;
       justify-content: space-around;
@@ -188,9 +188,9 @@ export const ViewButton = styled.div`
   font-size: 12px;
   color: ${blue};
   background: white;
-  padding: 10px;
+  padding: 8px;
   box-shadow: 0px 1px 1px 1px ${fadedGrey};
-  border-radius: 8px;
+  border-radius: 4px;
   font-weight: 600;
   text-align: center;
   cursor: pointer;

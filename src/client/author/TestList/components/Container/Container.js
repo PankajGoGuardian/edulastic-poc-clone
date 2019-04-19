@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { debounce } from "lodash";
+import { debounce, get, has } from "lodash";
 import * as qs from "query-string";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { Button, Row, Input, Spin } from "antd";
 import Modal from "react-responsive-modal";
-import { get } from "lodash";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
+import { IconList, IconTile } from "@edulastic/icons";
+import { grey, white } from "@edulastic/colors";
 
 import {
   ScrollBox,
@@ -22,7 +23,8 @@ import {
   SearchModalContainer,
   CardContainer,
   PaginationWrapper,
-  AffixWrapper
+  AffixWrapper,
+  StyleChangeWrapper
 } from "./styled";
 
 import CardWrapper from "../CardWrapper/CardWrapper";
@@ -45,7 +47,7 @@ import {
 
 import TestFilters from "../../../src/components/common/TestFilters";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
-import SortBar from "../SortBar/SortBar";
+// import SortBar from "../SortBar/SortBar";
 import ListHeader from "../../../src/components/common/ListHeader";
 import filterData from "./FilterData";
 
@@ -95,7 +97,15 @@ class TestList extends Component {
     curriculumStandards: PropTypes.array.isRequired,
     getCurriculums: PropTypes.func.isRequired,
     getCurriculumStandards: PropTypes.func.isRequired,
-    clearDictStandards: PropTypes.func.isRequired
+    clearDictStandards: PropTypes.func.isRequired,
+    userId: PropTypes.string.isRequired,
+    clearTestData: PropTypes.func,
+    clearSelectedItems: PropTypes.func
+  };
+
+  static defaultProps = {
+    clearSelectedItems: () => null,
+    clearTestData: () => null
   };
 
   state = {
@@ -152,11 +162,12 @@ class TestList extends Component {
 
   searchTest = debounce(() => {
     const { receiveTests, limit } = this.props;
+    const { search } = this.state;
 
     receiveTests({
       page: 1,
       limit,
-      search: this.state.search
+      search
     });
   }, 500);
 
@@ -204,7 +215,8 @@ class TestList extends Component {
         }
       },
       () => {
-        receiveTests({ search: this.state.search, page: 1, limit });
+        const { search: updatedSearch } = this.state;
+        receiveTests({ search: updatedSearch, page: 1, limit });
 
         history.push(`/author/tests/limit/${limit}/page/${page}/filter?${this.filterUrl}`);
       }
@@ -261,7 +273,7 @@ class TestList extends Component {
     return qs.stringify({ ...search, standardQuery });
   }
 
-  typeCheck(parsedQueryData, search) {
+  typeCheck = (parsedQueryData, search) => {
     const parsedQueryDataClone = {};
     for (const key of Object.keys(parsedQueryData)) {
       if (search[key] instanceof Array && !(parsedQueryData.standardIds instanceof Array)) {
@@ -271,7 +283,7 @@ class TestList extends Component {
       }
     }
     return parsedQueryDataClone;
-  }
+  };
 
   setFilterParams(parsedQueryData) {
     const {
@@ -285,7 +297,7 @@ class TestList extends Component {
     const searchClone = {};
 
     for (const key of Object.keys(parsedQueryData)) {
-      if (search.hasOwnProperty(key)) {
+      if (has(search, key)) {
         searchClone[key] = parsedQueryData[key];
       }
     }
@@ -296,7 +308,8 @@ class TestList extends Component {
       },
       () => {
         const {
-          search: { curriculumId, grade }
+          search: { curriculumId, grade },
+          search: updatedSearch
         } = this.state;
         if (curriculumId.length && parsedQueryData.standardQuery.length >= 2) {
           getCurriculumStandards(curriculumId, grade, parsedQueryData.standardQuery);
@@ -304,14 +317,14 @@ class TestList extends Component {
         receiveTests({
           page: Number(params.page),
           limit: Number(params.limit),
-          search: this.state.search
+          search: updatedSearch
         });
       }
     );
   }
-  searchCurriculum(input, option) {
-    return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-  }
+
+  searchCurriculum = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+
   getFilters(filters) {
     const { curriculums, curriculumStandards } = this.props;
     const {
@@ -367,9 +380,10 @@ class TestList extends Component {
     if (blockStyle === "tile") {
       return (
         <Row gutter={24} type="flex">
-          {tests.map(item => (
+          {tests.map((item, index) => (
             <CardWrapper
               item={item}
+              key={index}
               owner={item.authors.find(x => x._id === userId)}
               blockStyle="tile"
               windowWidth={windowWidth}
@@ -383,11 +397,15 @@ class TestList extends Component {
 
     return (
       <Row>
-        {tests.map(item => {
-          return (
-            <CardWrapper owner={item.authors.find(x => x._id === userId)} item={item} history={history} match={match} />
-          );
-        })}
+        {tests.map((item, index) => (
+          <CardWrapper
+            key={index}
+            owner={item.authors.find(x => x._id === userId)}
+            item={item}
+            history={history}
+            match={match}
+          />
+        ))}
       </Row>
     );
   };
@@ -416,7 +434,7 @@ class TestList extends Component {
   };
 
   render() {
-    const { page, limit, count, creating, t } = this.props;
+    const { page, limit, count, creating } = this.props;
 
     const { blockStyle, isShowFilter, search } = this.state;
     const { searchString } = search;
@@ -425,7 +443,28 @@ class TestList extends Component {
     const filters = this.getFilters(filterData);
     return (
       <>
-        <ListHeader onCreate={this.handleCreate} creating={creating} title="Test Library" />
+        <ListHeader
+          onCreate={this.handleCreate}
+          creating={creating}
+          title="Test Library"
+          btnTitle="New Assignment"
+          renderFilter={() => (
+            <StyleChangeWrapper>
+              <IconTile
+                onClick={() => this.handleStyleChange("tile")}
+                width={18}
+                height={18}
+                color={blockStyle === "tile" ? white : grey}
+              />
+              <IconList
+                onClick={() => this.handleStyleChange("horizontal")}
+                width={18}
+                height={18}
+                color={blockStyle === "horizontal" ? white : grey}
+              />
+            </StyleChangeWrapper>
+          )}
+        />
         <Container>
           <MobileFilter>
             <Input.Search
@@ -477,7 +516,7 @@ class TestList extends Component {
                 <PaginationInfo>
                   {from} to {to} of <i>{count}</i>
                 </PaginationInfo>
-                <SortBar onStyleChange={this.handleStyleChange} activeStyle={blockStyle} />
+                {/* <SortBar onStyleChange={this.handleStyleChange} activeStyle={blockStyle} /> */}
               </FlexContainer>
               <CardContainer type={blockStyle}>
                 {this.renderCardContent()}

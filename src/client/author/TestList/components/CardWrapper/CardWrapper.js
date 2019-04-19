@@ -11,7 +11,14 @@ class CardWrapper extends Component {
     history: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
     windowWidth: PropTypes.number,
-    blockStyle: PropTypes.string
+    blockStyle: PropTypes.string,
+    owner: PropTypes.object
+  };
+
+  static defaultProps = {
+    owner: {},
+    windowWidth: null,
+    blockStyle: ""
   };
 
   render() {
@@ -21,14 +28,16 @@ class CardWrapper extends Component {
       item: { _id },
       windowWidth,
       history,
-      match
+      match,
+      owner
     } = this.props;
+
     const itemId = _id.substr(_id.length - 5);
     if (blockStyle === "tile") {
       return (
         <Col key={item._id} span={windowWidth > 468 ? 8 : 24} style={{ marginBottom: 20 }}>
           <Item
-            owner={this.props.owner}
+            owner={owner}
             item={item}
             history={history}
             match={match}
@@ -42,7 +51,7 @@ class CardWrapper extends Component {
     return (
       <Col key={item._id} span={24}>
         <ListItem
-          owner={this.props.owner}
+          owner={owner}
           item={item}
           history={history}
           match={match}

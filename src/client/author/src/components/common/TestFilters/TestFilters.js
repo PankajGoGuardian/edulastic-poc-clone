@@ -13,8 +13,8 @@ const TestFilters = ({ children, onChange, style, filterData, state, clearFilter
     </FilerHeading>
     {children}
 
-    {filterData.map(filterItem => (
-      <>
+    {filterData.map((filterItem, index) => (
+      <React.Fragment key={index}>
         <SubTitle>{filterItem.title}</SubTitle>
         <Select
           showSearch={filterItem.showSearch}
@@ -29,32 +29,31 @@ const TestFilters = ({ children, onChange, style, filterData, state, clearFilter
           onChange={value => onChange(filterItem.onChange, value)}
           disabled={filterItem.disabled}
         >
-          {filterItem.data.map(({ value, text }) => (
-            <Select.Option value={value} key={value}>
+          {filterItem.data.map(({ value, text }, index1) => (
+            <Select.Option value={value} key={index1}>
               {text}
             </Select.Option>
           ))}
         </Select>
-      </>
+      </React.Fragment>
     ))}
   </Container>
 );
 
 TestFilters.propTypes = {
   children: PropTypes.any,
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
   clearFilter: PropTypes.func.isRequired,
   style: PropTypes.object,
   state: PropTypes.object.isRequired,
-  filterOption: PropTypes.bool,
   filterData: PropTypes.array
 };
 
 TestFilters.defaultProps = {
   children: null,
-  filterOption: true,
   filterData: [],
-  style: {}
+  style: {},
+  onChange: () => null
 };
 
 export default TestFilters;

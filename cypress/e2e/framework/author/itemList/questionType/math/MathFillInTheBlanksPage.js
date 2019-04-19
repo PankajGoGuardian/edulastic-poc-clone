@@ -66,10 +66,11 @@ class MathFillInTheBlanksPage extends MathFractionPage {
           .click();
       });
 
-  allowDecimalMarksWithResponse = (separator, inputLength, expected, preview, isCorrect = false) => {
+  allowDecimalMarksWithResponse = (separator, thousand, inputLength, expected, preview, isCorrect = false) => {
     this.unCheckAllCheckBox();
     this.getAnswerAllowThousandsSeparator().check({ force: true });
-    this.setThousandsSeparatorDropdown(separator);
+    this.setAnswerSetDecimalSeparatorDropdown(separator);
+    this.setThousandsSeparatorDropdown(thousand);
     this.checkCorrectAnswerWithResponse(expected, preview, inputLength, isCorrect);
     this.getAnswerAllowThousandsSeparator().uncheck({ force: true });
   };

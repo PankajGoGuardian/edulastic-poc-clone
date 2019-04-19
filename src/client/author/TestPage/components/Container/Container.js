@@ -69,7 +69,7 @@ class Container extends PureComponent {
   };
 
   state = {
-    current: "addItems",
+    current: "summary",
     showModal: false,
     editEnable: false,
     showShareModal: false

@@ -12,3 +12,14 @@ module.exports = (on, config) => {
 
   return getConfigurationByFile(file);
 };
+
+module.exports = on => {
+  on("task", {
+    readFileContent(filename) {
+      if (fs.existsSync(filename)) {
+        return fs.readFileSync(filename, "utf8");
+      }
+      return null;
+    }
+  });
+};

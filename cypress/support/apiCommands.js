@@ -123,18 +123,25 @@ Cypress.Commands.add("deleteItem", itemId => {
 });
 
 Cypress.Commands.add("deleteTestData", () => {
-  cy.fixture(deleteTestDataFile).then(testData => {
-    console.log("testDataJson in deleteTestData", testData);
-    // delete testItems
-    if (testData.testItems && testData.testItems.length > 0) {
-      testData.testItems.forEach(item => {
-        cy.deleteItem(item);
-      });
-      delete testData.testItems;
-    }
-    // TODO : add other collections
+  const fileFullPath = `${fixtureFolderPath}/${deleteTestDataFile}`;
+  cy.task("readFileContent", fileFullPath).then(fileContent => {
+    console.log("fileContent", fileContent);
+    let testData;
+    if (fileContent !== null) {
+      testData = JSON.parse(fileContent);
+      console.log("testDataJson in deleteTestData", testData);
 
-    cy.writeFile(`${fixtureFolderPath}/${deleteTestDataFile}`, testData).then(json => {
+      // delete testItems
+      if (testData.testItems && testData.testItems.length > 0) {
+        testData.testItems.forEach(item => {
+          cy.deleteItem(item);
+        });
+        delete testData.testItems;
+      }
+
+      // TODO : add other collections API
+    } else testData = {};
+    cy.writeFile(fileFullPath, testData).then(json => {
       expect(Object.keys(json).length).to.equal(0);
     });
   });

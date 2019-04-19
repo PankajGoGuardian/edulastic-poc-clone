@@ -227,7 +227,13 @@ class MathFormulaEdit {
     preview.header.preview();
     preview.getClear().click();
     this.getAnswerMathTextArea().should("be.empty");
-    this.getAnswerMathTextArea().typeWithDelay(expectedValue);
+
+    if (Array.isArray(expectedValue)) {
+      expectedValue.forEach(expValue => this.getAnswerMathTextArea().typeWithDelay(expValue));
+    } else {
+      this.getAnswerMathTextArea().typeWithDelay(expectedValue);
+    }
+
     preview
       .getCheckAnswer()
       .click()
@@ -485,5 +491,18 @@ class MathFormulaEdit {
   getVirtualKeyBoardItem = value => this.getVirtualKeyBoard().find(`button[data-cy="virtual-keyboard-${value}"]`);
 
   getVirtualKeyBoardResponse = () => this.getVirtualKeyBoard().find("span.response-embed");
+
+  checkUncheckChecbox = (preview, input, expected, checkboxValues, isCorrectAnswer) => {
+    checkboxValues.forEach((checkboxValue, index) => {
+      this.setValue(input);
+      this.setSeparator(checkboxValue)();
+      this.checkCorrectAnswer(expected, preview, input.length, isCorrectAnswer[index]);
+    });
+  };
+
+  setAnswerArgumentDropdownValue = value =>
+    this.getAnswerRuleArgumentSelect()
+      .click()
+      .then(() => this.getAnswerArgumentDropdownByValue(value).click());
 }
 export default MathFormulaEdit;

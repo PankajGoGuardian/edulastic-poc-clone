@@ -86,6 +86,29 @@ class MathFillInTheBlanksPage extends MathFractionPage {
     this.checkCorrectAnswerWithResponse(expected, preview, inputLength, isCorrect);
     this.getAnswerAllowThousandsSeparator().uncheck({ force: true });
   };
+
+  getMathKeyboardResponse = () => cy.get('[data-cy="math-keyboard-response"]');
+
+  clearTemplateInput = () =>
+    this.getMathquillBlockId().then(inputElements => {
+      const { length } = inputElements[0].children;
+      this.getTemplateInput()
+        .movesCursorToEnd(length)
+        .type("{backspace}".repeat(length || 1), { force: true });
+    });
+
+  setResponseInput = () =>
+    this.getTemplateInput()
+      .click({ force: true })
+      .then(() => this.getMathKeyboardResponse().click({ force: true }));
+
+  setTemplateValue = (keyName, valueAfterEqualSign) => {
+    this.clearTemplateInput();
+    this.setResponseInput();
+    this.getTemplateInput().type(valueAfterEqualSign, { force: true });
+    this.setResponseInput();
+    this.getVirtualKeyBoardItem(keyName).click();
+  };
 }
 
 export default MathFillInTheBlanksPage;

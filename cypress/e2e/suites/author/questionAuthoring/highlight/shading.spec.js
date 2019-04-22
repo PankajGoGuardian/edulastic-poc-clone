@@ -416,5 +416,329 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
         });
       });
     });
+
+    context("Scoring block test", () => {
+      before("visit items page and select question type", () => {
+        editItem.getItemWithId(testItemId);
+        editItem.deleteAllQuestion();
+        // create new que and select type
+        editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      });
+
+      afterEach(() => {
+        preview
+          .getClear()
+          .click()
+          .then(() => {
+            question
+              .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+              .find("li")
+              .then($cells => {
+                cy.wrap($cells).each(ele => {
+                  expect(ele).to.have.css("background-color", CLEAR);
+                });
+              });
+          });
+
+        editItem.header.edit();
+        editItem.showAdvancedOptions();
+      });
+
+      it("Test with alternate answer", () => {
+        // enter question
+        question
+          .getQuestionEditor()
+          .clear()
+          .type(queData.queText)
+          .should("have.text", queData.queText);
+
+        // set correct ans
+        question
+          .getCorrectAnsRowByIndex(0)
+          .find("li")
+          .first()
+          .click()
+          .should("not.have.css", "background-color", "transparent");
+
+        question
+          .getCorrectAnsRowByIndex(0)
+          .find("li")
+          .last()
+          .click()
+          .should("not.have.css", "background-color", "transparent");
+
+        question
+          .getPoints()
+          .clear()
+          .type("4{del}");
+
+        question.addAlternate();
+        question.switchOnAlternateAnswer();
+
+        question
+          .getPoints()
+          .clear()
+          .type("6{del}");
+
+        question
+          .getCorrectAnsRowByIndex(0)
+          .find("li")
+          .last()
+          .click();
+
+        question
+          .getCorrectAnsRowByIndex(0)
+          .find("li")
+          .eq(1)
+          .click();
+
+        question
+          .getCorrectAnsRowByIndex(0)
+          .find("li")
+          .eq(2)
+          .click();
+
+        preview = editItem.header.preview();
+        // enter right ans
+        question
+          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .find("li")
+          .first()
+          .as("first")
+          .click();
+        question
+          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .find("li")
+          .last()
+          .as("last")
+          .click();
+
+        preview
+          .getCheckAnswer()
+          .click()
+          .then(() => {
+            preview.getAntMsg().should("contain", "score: 4/6");
+
+            cy.get("@first").should("have.css", "background-color", GREEN);
+
+            cy.get("@last").should("have.css", "background-color", GREEN);
+          });
+
+        preview
+          .getClear()
+          .click()
+          .then(() => {
+            question
+              .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+              .find("li")
+              .then($cells => {
+                cy.wrap($cells).each(ele => {
+                  expect(ele).to.have.css("background-color", CLEAR);
+                });
+              });
+          });
+
+        question
+          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .find("li")
+          .first()
+          .as("first")
+          .click();
+
+        question
+          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .find("li")
+          .eq(1)
+          .as("second")
+          .click();
+
+        question
+          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .find("li")
+          .eq(2)
+          .as("third")
+          .click();
+
+        preview
+          .getCheckAnswer()
+          .click()
+          .then(() => {
+            preview.getAntMsg().should("contain", "score: 6/6");
+
+            cy.get("@first").should("have.css", "background-color", GREEN);
+
+            cy.get("@second").should("have.css", "background-color", GREEN);
+
+            cy.get("@third").should("have.css", "background-color", GREEN);
+          });
+
+        preview
+          .getClear()
+          .click()
+          .then(() => {
+            question
+              .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+              .find("li")
+              .then($cells => {
+                cy.wrap($cells).each(ele => {
+                  expect(ele).to.have.css("background-color", CLEAR);
+                });
+              });
+          });
+
+        question
+          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .find("li")
+          .last()
+          .as("last")
+          .click();
+        question
+          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .find("li")
+          .first()
+          .as("first")
+          .click();
+
+        question
+          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .find("li")
+          .eq(1)
+          .as("second")
+          .click();
+
+        preview
+          .getCheckAnswer()
+          .click()
+          .then(() => {
+            preview.getAntMsg().should("contain", "score: 0/6");
+
+            cy.get("@first").should("have.css", "background-color", GREEN);
+
+            cy.get("@second").should("have.css", "background-color", GREEN);
+
+            cy.get("@last").should("have.css", "background-color", GREEN);
+          });
+      });
+
+      it("Test with max score", () => {
+        question
+          .getMaxScore()
+          .clear()
+          .type(1);
+
+        preview = editItem.header.preview();
+        // enter right ans
+        question
+          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .find("li")
+          .first()
+          .as("first")
+          .click();
+        question
+          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .find("li")
+          .last()
+          .as("last")
+          .click();
+
+        preview
+          .getCheckAnswer()
+          .click()
+          .then(() => {
+            preview.getAntMsg().should("contain", "score: 0/10");
+
+            cy.get("@first").should("have.css", "background-color", GREEN);
+
+            cy.get("@last").should("have.css", "background-color", GREEN);
+          });
+      });
+
+      it("Test with min score if attempted", () => {
+        question.getMaxScore().clear();
+
+        question.getEnableAutoScoring().click();
+
+        question.getMinScore().type(1);
+
+        preview = editItem.header.preview();
+
+        question
+          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .find("li")
+          .last()
+          .as("last")
+          .click();
+        question
+          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .find("li")
+          .first()
+          .as("first")
+          .click();
+
+        question
+          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .find("li")
+          .eq(1)
+          .as("second")
+          .click();
+
+        preview
+          .getCheckAnswer()
+          .click()
+          .then(() => {
+            preview.getAntMsg().should("contain", "score: 1/6");
+
+            cy.get("@first").should("have.css", "background-color", GREEN);
+
+            cy.get("@second").should("have.css", "background-color", GREEN);
+
+            cy.get("@last").should("have.css", "background-color", GREEN);
+          });
+      });
+
+      it("Test with penalty and partial match", () => {
+        question.selectScoringType("Partial match");
+
+        question.getMinScore().clear();
+
+        question.getPanalty().type(3);
+
+        preview = editItem.header.preview();
+
+        question
+          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .find("li")
+          .first()
+          .as("first")
+          .click();
+
+        question
+          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .find("li")
+          .eq(1)
+          .as("second")
+          .click();
+
+        question
+          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .find("li")
+          .eq(3)
+          .as("fourth")
+          .click();
+
+        preview
+          .getCheckAnswer()
+          .click()
+          .then(() => {
+            preview.getAntMsg().should("contain", "score: 3/6");
+
+            cy.get("@first").should("have.css", "background-color", GREEN);
+
+            cy.get("@second").should("have.css", "background-color", GREEN);
+
+            cy.get("@fourth").should("have.css", "background-color", RED);
+          });
+      });
+    });
   });
 });

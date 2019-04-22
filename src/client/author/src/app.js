@@ -35,6 +35,9 @@ const DistrictPolicy = lazy(() => import("../DistrictPolicy"));
 const PerformanceBand = lazy(() => import("../PerformanceBand"));
 const StandardsProficiency = lazy(() => import("../StandardsProficiency"));
 const Schools = lazy(() => import("../Schools"));
+
+const DistrictAdmin = lazy(() => import("../DistrictAdmin"));
+
 const SchoolAdmin = lazy(() => import("../SchoolAdmin"));
 
 // eslint-disable-next-line react/prop-types
@@ -155,7 +158,11 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               <Route exact path="/author/settings/performance-bands" component={PerformanceBand} />
               <Route exact path="/author/settings/standards-proficiency" component={StandardsProficiency} />
               <Route exact path="/author/schools" component={Schools} />
+
+              <Route exact path="/author/users/district-admin" component={DistrictAdmin} />
+
               <Route exact path="/author/users/school-admin" component={SchoolAdmin} />
+
             </Switch>
           </Suspense>
         </Wrapper>

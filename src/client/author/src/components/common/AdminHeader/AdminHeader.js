@@ -40,6 +40,9 @@ class AdminHeader extends Component {
       case "Settings":
         history.push(`/author/settings/districtpolicies`);
         return;
+      case "Users":
+        history.push(`/author/users/district-admin`);
+        return;
     }
   };
 
@@ -61,6 +64,11 @@ class AdminHeader extends Component {
       case "Standards Proficiency":
         history.push(`/author/settings/standards-proficiency`);
         return;
+
+      case "District Admin":
+        history.push(`/author/users/district-admin`);
+        return;
+
       case "School Admin":
         history.push(`/author/users/school-admin`);
         return;

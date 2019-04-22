@@ -8,12 +8,6 @@ function getConfigurationByFile(file) {
 }
 
 module.exports = (on, config) => {
-  const file = config.env.configFile || "production";
-
-  return getConfigurationByFile(file);
-};
-
-module.exports = on => {
   on("task", {
     readFileContent(filename) {
       if (fs.existsSync(filename)) {
@@ -22,4 +16,7 @@ module.exports = on => {
       return null;
     }
   });
+
+  const file = config.env.configFile || "production";
+  return getConfigurationByFile(file);
 };

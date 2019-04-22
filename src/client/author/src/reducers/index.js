@@ -36,6 +36,7 @@ import { districtPolicyReducer } from "../../DistrictPolicy";
 import { performanceBandReducer } from "../../PerformanceBand";
 import { standardsProficiencyReducer } from "../../StandardsProficiency";
 import { schoolsReducer } from "../../Schools";
+import { teacherReducer } from "../../Teacher";
 import { districtAdminReducer } from "../../DistrictAdmin";
 import { schoolAdminReducer } from "../../SchoolAdmin";
 
@@ -78,6 +79,7 @@ const authorReducers = {
   standardsProficiencyReducer,
   schoolsReducer,
   reportPerformanceByStandards: reportPerformanceByStandardsReducer,
+  teacherReducer,
   districtAdminReducer,
   schoolAdminReducer
 };

@@ -35,6 +35,7 @@ const DistrictPolicy = lazy(() => import("../DistrictPolicy"));
 const PerformanceBand = lazy(() => import("../PerformanceBand"));
 const StandardsProficiency = lazy(() => import("../StandardsProficiency"));
 const Schools = lazy(() => import("../Schools"));
+const Teacher = lazy(() => import("../Teacher"));
 
 const DistrictAdmin = lazy(() => import("../DistrictAdmin"));
 
@@ -158,6 +159,8 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               <Route exact path="/author/settings/performance-bands" component={PerformanceBand} />
               <Route exact path="/author/settings/standards-proficiency" component={StandardsProficiency} />
               <Route exact path="/author/schools" component={Schools} />
+              <Route exact path="/author/users/teacher" component={Teacher} />
+
 
               <Route exact path="/author/users/district-admin" component={DistrictAdmin} />
 

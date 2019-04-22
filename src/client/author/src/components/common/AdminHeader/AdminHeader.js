@@ -23,6 +23,9 @@ class AdminHeader extends Component {
         history.push(`/author/Schools`);
         return;
       case "Users":
+        history.push(`/author/users/teacher`);
+        return;
+        
         history.push(`/author/users/school-admin`);
         return;
       case "Classes":
@@ -65,6 +68,10 @@ class AdminHeader extends Component {
         history.push(`/author/settings/standards-proficiency`);
         return;
 
+      case "Teacher":
+        history.push(`/author/users/teacher`);
+        return;
+        
       case "District Admin":
         history.push(`/author/users/district-admin`);
         return;

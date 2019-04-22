@@ -5,7 +5,10 @@ import {
   RECEIVE_DICT_STANDARDS_REQUEST,
   RECEIVE_DICT_STANDARDS_SUCCESS,
   RECEIVE_DICT_STANDARDS_ERROR,
-  CLEAR_DICT_STANDARDS
+  CLEAR_DICT_STANDARDS,
+  ADD_DICT_ALIGNMENT,
+  REMOVE_DICT_ALINMENT,
+  UPDATE_DICT_ALIGNMENT
 } from "../constants/actions";
 
 const initialItemsState = {
@@ -15,10 +18,12 @@ const initialItemsState = {
     error: null
   },
   standards: {
-    standards: [],
+    elo: [],
+    tlo: [],
     loading: false,
     error: null
-  }
+  },
+  alignments: []
 };
 
 const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
@@ -62,7 +67,8 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
         ...state,
         standards: {
           ...state.standards,
-          standards: payload.items,
+          elo: payload.elo,
+          tlo: payload.tlo,
           loading: false
         }
       };
@@ -80,9 +86,29 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
         ...state,
         standards: {
           ...state.standards,
-          standards: []
+          elo: [],
+          tlo: []
         }
       };
+    case ADD_DICT_ALIGNMENT:
+      const alignments = [...state.alignments];
+      if (!alignments.some(c => c.curriculumId === payload.curriculumId)) alignments.push(payload);
+      return {
+        ...state,
+        alignments
+      };
+    case REMOVE_DICT_ALINMENT:
+      return {
+        ...state,
+        alignments: state.alignments.filter(item => item.curriculumId !== payload)
+      };
+    case UPDATE_DICT_ALIGNMENT:
+      const editedAlignments = [...state.alignments].map((c, index) => {
+        if (index === payload.index) return { ...c, ...payload.changedFields };
+        return c;
+      });
+
+      return { ...state, alignments: editedAlignments };
     default:
       return state;
   }

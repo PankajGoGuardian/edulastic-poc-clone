@@ -1,4 +1,5 @@
 import API from "./utils/API";
+import _ from "lodash";
 
 const api = new API();
 
@@ -9,12 +10,26 @@ const receiveStandards = ({ curriculumId, grades = [], search }) => {
   return api
     .callApi({
       method: "post",
-      url: "/search/standards",
+      url: "/search/browseStandards",
       data
     })
-    .then(result =>
-      result.data.result.hits.hits.map(el => ({ _id: el._id, ...el._source })).filter(item => item.level === "ELO")
-    );
+    .then(result => {
+      const mappedRes = result.data.result.map(el => ({ _id: el.id, ...el }));
+      const elo = mappedRes.filter(item => item.level === "ELO");
+      const tlo = _.uniqBy(
+        mappedRes.map(item => ({
+          identifier: item.tloIdentifier,
+          description: item.tloDescription,
+          _id: item.tloId
+        })),
+        "_id"
+      );
+
+      return {
+        elo,
+        tlo
+      };
+    });
 };
 
 export default {

@@ -9,12 +9,18 @@ export const getCurriculumsListSelector = createSelector(
   curriculumsSelector,
   state => state.curriculums
 );
-
+export const getDictionariesAlignmentsSelector = createSelector(
+  stateSelector,
+  state => state.alignments
+);
 export const standardsSelector = createSelector(
   stateSelector,
   state => state.standards
 );
 export const getStandardsListSelector = createSelector(
   standardsSelector,
-  state => state.standards
+  state => ({
+    elo: state.elo,
+    tlo: state.tlo
+  })
 );

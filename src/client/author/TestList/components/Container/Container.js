@@ -326,7 +326,7 @@ class TestList extends Component {
   searchCurriculum = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   getFilters(filters) {
-    const { curriculums, curriculumStandards } = this.props;
+    const { curriculums, curriculumStandards = { elo: [], tlo: [] } } = this.props;
     const {
       search: { curriculumId }
     } = this.state;
@@ -335,7 +335,7 @@ class TestList extends Component {
       text: item.curriculum
     }));
 
-    const formattedStandards = curriculumStandards.map(item => ({
+    const formattedStandards = (curriculumStandards.elo || []).map(item => ({
       value: item._id,
       text: `${item.identifier} : ${item.description}`
     }));

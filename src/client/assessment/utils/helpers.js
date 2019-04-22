@@ -126,6 +126,7 @@ export const getInputSelection = el => {
  * @returns {Array} - alignment domains for Mongo
  */
 export const alignmentStandardsFromUIToMongo = alignmentRowStandards => {
+  if (!alignmentRowStandards || alignmentRowStandards.length === 0) return [];
   const grouped = groupBy(alignmentRowStandards, "tloId");
   const domainIds = Object.keys(grouped);
   return domainIds.map(id => {

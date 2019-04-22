@@ -23,7 +23,36 @@ const fetchUsers = data =>
     })
     .then(result => result.data.result);
 
+const createUser = data =>
+  api
+    .callApi({
+      url: `${prefix}/`,
+      method: "post",
+      data
+    })
+    .then(result => result.data.result);
+
+const updateUser = ({ data, userId }) =>
+  api
+    .callApi({
+      url: `${prefix}/${userId}`,
+      method: "put",
+      data
+    })
+    .then(result => result.data.result);
+
+const deleteUser = data =>
+  api
+    .callApi({
+      url: `${prefix}/:${data.userId}?districtId:${data.districtId}`,
+      method: "delete"
+    })
+    .then(result => result.data.result);
+
 export default {
   getUser,
-  fetchUsers
+  fetchUsers,
+  createUser,
+  updateUser,
+  deleteUser
 };

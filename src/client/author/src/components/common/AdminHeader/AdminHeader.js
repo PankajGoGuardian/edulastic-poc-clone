@@ -22,6 +22,9 @@ class AdminHeader extends Component {
       case "Schools":
         history.push(`/author/Schools`);
         return;
+      case "Users":
+        history.push(`/author/users/school-admin`);
+        return;
       case "Classes":
         history.push(`/author/Classes`);
         return;
@@ -58,6 +61,9 @@ class AdminHeader extends Component {
       case "Standards Proficiency":
         history.push(`/author/settings/standards-proficiency`);
         return;
+      case "School Admin":
+        history.push(`/author/users/school-admin`);
+        return;
     }
   };
 
@@ -71,6 +77,7 @@ class AdminHeader extends Component {
           <StyledTabs defaultActiveKey={active.mainMenu} onTabClick={this.onHeaderTabClick}>
             <StyledTabPane tab="District Profile" key={"District Profile"} />
             <StyledTabPane tab="Schools" key={"Schools"} />
+            <StyledTabPane tab="Users" key={"Users"} />
             <StyledTabPane tab="Classes" key={"Classes"} />
             <StyledTabPane tab="Courses" key={"Courses"} />
             <StyledTabPane tab="Class Enrollment" key={"Class Enrollment"} />
@@ -85,6 +92,14 @@ class AdminHeader extends Component {
             <StyledTabPane tab="Term" key={"Term"} />
             <StyledTabPane tab="Performance Bands" key={"Performance Bands"} />
             <StyledTabPane tab="Standards Proficiency" key={"Standards Proficiency"} />
+          </StyledSubMenu>
+        )}
+        {active.mainMenu === "Users" && (
+          <StyledSubMenu mode="horizontal" defaultActiveKey={active.subMenu} onTabClick={this.onSubTab}>
+            <StyledTabPane tab="District Admin" key={"District Admin"} />
+            <StyledTabPane tab="School Admin" key={"School Admin"} />
+            <StyledTabPane tab="Teacher" key={"Teacher"} />
+            <StyledTabPane tab="Student" key={"Student"} />
           </StyledSubMenu>
         )}
       </React.Fragment>

@@ -64,7 +64,7 @@ export const getSchoolDeletingSelector = createSelector(
 
 // reducers
 const initialState = {
-  data: {},
+  data: [],
   loading: false,
   error: null,
   update: {},

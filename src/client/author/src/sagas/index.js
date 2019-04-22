@@ -27,6 +27,7 @@ import { districtPolicySaga } from "../../DistrictPolicy";
 import { performanceBandSaga } from "../../PerformanceBand";
 import { standardsProficiencySaga } from "../../StandardsProficiency";
 import { schoolsSaga } from "../../Schools";
+import { schoolAdminSaga } from "../../SchoolAdmin";
 
 const authorSagas = [
   itemsSaga(),
@@ -57,7 +58,8 @@ const authorSagas = [
   performanceBandSaga(),
   standardsProficiencySaga(),
   schoolsSaga(),
-  performanceByStandardsSaga()
+  performanceByStandardsSaga(),
+  schoolAdminSaga()
 ];
 
 export default authorSagas;

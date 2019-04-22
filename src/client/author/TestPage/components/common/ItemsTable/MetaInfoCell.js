@@ -14,7 +14,12 @@ import Tags from "../../../../src/components/common/Tags";
 import PreviewModal from "../../../../src/components/common/PreviewModal";
 import { setTestDataAction, getTestSelector } from "../../../ducks";
 
-import { setTestItemsAction, getSelectedItemSelector, getTestItemsSelector } from "../../AddItems/ducks";
+import {
+  setTestItemsAction,
+  getItemsSubjectAndGradeAction,
+  getSelectedItemSelector,
+  getTestItemsSelector
+} from "../../AddItems/ducks";
 
 class MetaInfoCell extends Component {
   constructor(props) {
@@ -36,7 +41,15 @@ class MetaInfoCell extends Component {
   }
 
   handleSelection = row => {
-    const { setSelectedTests, setTestItems, selectedRows, setTestData, test, tests } = this.props;
+    const {
+      setSelectedTests,
+      setTestItems,
+      getItemsSubjectAndGrade,
+      selectedRows,
+      setTestData,
+      test,
+      tests
+    } = this.props;
     const newTest = cloneDeep(test);
     let keys = [];
     if (selectedRows !== undefined) {
@@ -58,6 +71,28 @@ class MetaInfoCell extends Component {
       message.info(`${row.id} was removed`, 2);
       newTest.testItems = newTest.testItems.filter(el => row.id !== el._id);
     }
+
+    // getting grades and subjects from each question array in test items
+    const { testItems = [] } = newTest;
+
+    //alignment object inside questions contains subject and domains
+    const getAlignmentsObject = testItems
+      .map(item => item.data.questions)
+      .flat()
+      .map(({ alignment = [] }) => alignment)
+      .flat();
+
+    const subjects = getAlignmentsObject.map(alignment => alignment.subject);
+
+    //domains inside alignment object holds standards with grades
+    const grades = getAlignmentsObject
+      .map(alignment => alignment.domains)
+      .flat()
+      .map(domain => domain.standards)
+      .flat()
+      .map(standard => standard.grades)
+      .flat();
+    getItemsSubjectAndGrade({ subjects, grades });
     setTestData(newTest);
   };
 
@@ -245,7 +280,8 @@ const enhance = compose(
     }),
     {
       setTestItems: setTestItemsAction,
-      setTestData: setTestDataAction
+      setTestData: setTestDataAction,
+      getItemsSubjectAndGrade: getItemsSubjectAndGradeAction
     }
   )
 );

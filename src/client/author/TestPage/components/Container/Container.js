@@ -24,7 +24,12 @@ import {
   getTestStatusSelector,
   setRegradeOldIdAction
 } from "../../ducks";
-import { getSelectedItemSelector, clearSelectedItemsAction } from "../AddItems/ducks";
+import {
+  getSelectedItemSelector,
+  clearSelectedItemsAction,
+  getItemsSubjectAndGradeAction,
+  getItemsSubjectAndGradeSelector
+} from "../AddItems/ducks";
 import { loadAssignmentsAction } from "../Assign/ducks";
 import { saveCurrentEditingTestIdAction } from "../../../ItemDetail/ducks";
 import { getUserSelector } from "../../../src/selectors/user";
@@ -140,13 +145,15 @@ class Container extends PureComponent {
   };
 
   handleChangeGrade = grades => {
-    const { setData, test } = this.props;
+    const { setData, getItemsSubjectAndGrade, test, itemsSubjectAndGrade } = this.props;
     setData({ ...test, grades });
+    getItemsSubjectAndGrade({ subjects: itemsSubjectAndGrade.subjects, grades: [] });
   };
 
   handleChangeSubject = subjects => {
-    const { setData, test } = this.props;
+    const { setData, getItemsSubjectAndGrade, test, itemsSubjectAndGrade } = this.props;
     setData({ ...test, subjects });
+    getItemsSubjectAndGrade({ grades: itemsSubjectAndGrade.grades, subjects: [] });
   };
 
   handleSaveTestId = () => {
@@ -174,7 +181,14 @@ class Container extends PureComponent {
         );
       case "summary":
         return (
-          <Summary onShowSource={this.handleNavChange("source")} setData={setData} test={test} current={current} />
+          <Summary
+            onShowSource={this.handleNavChange("source")}
+            setData={setData}
+            test={test}
+            current={current}
+            onChangeGrade={this.handleChangeGrade}
+            onChangeSubjects={this.handleChangeSubject}
+          />
         );
       case "review":
         return (
@@ -196,9 +210,12 @@ class Container extends PureComponent {
   };
 
   handleSave = async () => {
-    const { selectedRows, user, test, updateTest, createTest } = this.props;
+    const { selectedRows, user, test, updateTest, createTest, itemsSubjectAndGrade } = this.props;
     const testItems = selectedRows.data;
     const newTest = cloneDeep(test);
+
+    newTest.subjects = [...new Set([...newTest.subjects, ...itemsSubjectAndGrade.subjects])];
+    newTest.grades = [...new Set([...newTest.grades, ...itemsSubjectAndGrade.grades])];
 
     newTest.createdBy = {
       id: user._id,
@@ -218,6 +235,7 @@ class Container extends PureComponent {
       }
       return foundItem;
     });
+
     if (test._id) {
       if (this.props.editAssigned) {
         newTest.versioned = true;
@@ -321,7 +339,8 @@ const enhance = compose(
       selectedRows: getSelectedItemSelector(state),
       user: getUserSelector(state),
       isTestLoading: getTestsLoadingSelector(state),
-      testStatus: getTestStatusSelector(state)
+      testStatus: getTestStatusSelector(state),
+      itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),
     {
       createTest: createTestAction,
@@ -333,7 +352,8 @@ const enhance = compose(
       clearSelectedItems: clearSelectedItemsAction,
       setRegradeOldId: setRegradeOldIdAction,
       clearTestAssignments: loadAssignmentsAction,
-      saveCurrentEditingTestId: saveCurrentEditingTestIdAction
+      saveCurrentEditingTestId: saveCurrentEditingTestIdAction,
+      getItemsSubjectAndGrade: getItemsSubjectAndGradeAction
     }
   )
 );

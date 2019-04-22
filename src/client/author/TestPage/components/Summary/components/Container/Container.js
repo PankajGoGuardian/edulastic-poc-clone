@@ -9,6 +9,7 @@ import { blue } from "@edulastic/colors";
 import { Paper, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
+import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
 import { Container, ButtonLink } from "../../../../../src/components/common";
 import Sidebar from "../Sidebar/Sidebar";
 import { Calculator } from "../../../common";
@@ -16,17 +17,20 @@ import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
 import { getSummarySelector } from "../../ducks";
 
-const Summary = ({ setData, test, summary, current, t, onShowSource, windowWidth }) => {
+const Summary = ({
+  setData,
+  test,
+  itemsSubjectAndGrade,
+  summary,
+  current,
+  t,
+  onShowSource,
+  windowWidth,
+  onChangeGrade,
+  onChangeSubjects
+}) => {
   const handleChangeField = (field, value) => {
     setData({ ...test, [field]: value });
-  };
-
-  const handleChangeGrade = grades => {
-    setData({ ...test, grades });
-  };
-
-  const handleChangeSubjects = subjects => {
-    setData({ ...test, subjects });
   };
 
   const tableData = summary.map(data => ({
@@ -46,7 +50,8 @@ const Summary = ({ setData, test, summary, current, t, onShowSource, windowWidth
       to: ""
     }
   ];
-
+  const grades = [...new Set([...test.grades, ...itemsSubjectAndGrade.grades])];
+  const subjects = [...new Set([...test.subjects, ...itemsSubjectAndGrade.subjects])];
   return (
     <Container>
       <SecondHeader>
@@ -82,10 +87,10 @@ const Summary = ({ setData, test, summary, current, t, onShowSource, windowWidth
                 <Calculator
                   totalPoints={test.scoring.total}
                   questionsCount={test.scoring.testItems.length}
-                  grades={test.grades}
-                  subjects={test.subjects}
-                  onChangeGrade={handleChangeGrade}
-                  onChangeSubjects={handleChangeSubjects}
+                  grades={grades}
+                  subjects={subjects}
+                  onChangeGrade={onChangeGrade}
+                  onChangeSubjects={onChangeSubjects}
                   tableData={tableData}
                   windowWidth={windowWidth}
                 />
@@ -112,9 +117,13 @@ const enhance = compose(
   memo,
   withWindowSizes,
   withNamespaces("author"),
-  connect(state => ({
-    summary: getSummarySelector(state)
-  }))
+  connect(
+    state => ({
+      summary: getSummarySelector(state),
+      itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
+    }),
+    null
+  )
 );
 
 export default enhance(Summary);

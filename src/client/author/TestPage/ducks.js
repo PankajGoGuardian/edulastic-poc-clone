@@ -261,7 +261,9 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: {
           ...state.entity,
-          testItems: []
+          testItems: [],
+          grades: [],
+          subjects: []
         }
       };
     case TEST_CREATE_SUCCESS:

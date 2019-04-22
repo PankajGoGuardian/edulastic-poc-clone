@@ -10,6 +10,7 @@ export const RECEIVE_TEST_ITEMS_SUCCESS = "[addItems] receive items success";
 export const RECEIVE_TEST_ITEMS_ERROR = "[addItems] receive items error";
 export const SET_TEST_ITEMS_REQUEST = "[addItems] set items request";
 export const CLEAR_SELECTED_ITEMS = "[addItems] clear selected items";
+export const GET_ITEMS_SUBJECT_AND_GRADE = "[addItems] get subjects and grades";
 // actions
 
 export const receiveTestItemsSuccess = (items, count, page, limit) => ({
@@ -46,6 +47,12 @@ export const setTestItemsAction = data => ({
 export const clearSelectedItemsAction = () => ({
   type: CLEAR_SELECTED_ITEMS
 });
+
+export const getItemsSubjectAndGradeAction = data => ({
+  type: GET_ITEMS_SUBJECT_AND_GRADE,
+  payload: data
+});
+
 // reducer
 
 const initialState = {
@@ -57,6 +64,10 @@ const initialState = {
   count: 0,
   selectedItems: {
     data: []
+  },
+  itemsSubjectAndGrade: {
+    subjects: [],
+    grades: []
   }
 };
 
@@ -83,7 +94,16 @@ export const reducer = (state = initialState, { type, payload }) => {
     case CLEAR_SELECTED_ITEMS:
       return {
         ...state,
-        selectedItems: []
+        selectedItems: [],
+        itemsSubjectAndGrade: {
+          subjects: [],
+          grades: []
+        }
+      };
+    case GET_ITEMS_SUBJECT_AND_GRADE:
+      return {
+        ...state,
+        itemsSubjectAndGrade: payload
       };
     default:
       return state;
@@ -143,4 +163,9 @@ export const getTestsItemsPageSelector = createSelector(
 export const getSelectedItemSelector = createSelector(
   stateTestItemsSelector,
   state => state.selectedItems
+);
+
+export const getItemsSubjectAndGradeSelector = createSelector(
+  stateTestItemsSelector,
+  state => state.itemsSubjectAndGrade
 );

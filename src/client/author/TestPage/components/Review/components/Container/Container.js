@@ -9,6 +9,7 @@ import PreviewModal from "../../../../../src/components/common/PreviewModal";
 import HeaderBar from "../HeaderBar/HeaderBar";
 import List from "../List/List";
 import ItemsTable from "../ReviewItemsTable/ReviewItemsTable";
+import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
 import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
 import { setTestDataAction } from "../../../../ducks";
 import { getSummarySelector } from "../../../Summary/ducks";
@@ -156,7 +157,8 @@ class Review extends PureComponent {
       types,
       onChangeGrade,
       onChangeSubjects,
-      questions
+      questions,
+      itemsSubjectAndGrade
     } = this.props;
     const { isCollapse, isModalVisible, item } = this.state;
     const totalPoints = test.scoring.total;
@@ -182,7 +184,8 @@ class Review extends PureComponent {
 
     const isSmallSize = windowWidth > 993 ? 1 : 0;
     const isMobileSize = windowWidth > 468 ? 1 : 0;
-
+    const grades = [...new Set([...test.grades, ...itemsSubjectAndGrade.grades])];
+    const subjects = [...new Set([...test.subjects, ...itemsSubjectAndGrade.subjects])];
     return (
       <div style={{ paddingTop: 10 }}>
         <Row>
@@ -233,8 +236,8 @@ class Review extends PureComponent {
             <Calculator
               totalPoints={totalPoints}
               questionsCount={questionsCount}
-              grades={test.grades}
-              subjects={test.subjects}
+              grades={grades}
+              subjects={subjects}
               onChangeGrade={onChangeGrade}
               onChangeSubjects={onChangeSubjects}
               tableData={this.tableData}
@@ -276,7 +279,8 @@ const enhance = compose(
       types: getItemsTypesSelector(state),
       standards: getStandardsSelector(state),
       summary: getSummarySelector(state),
-      questions: getQuestionsSelectorForReview(state)
+      questions: getQuestionsSelectorForReview(state),
+      itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),
     { setData: setTestDataAction }
   )

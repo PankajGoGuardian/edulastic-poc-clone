@@ -102,7 +102,7 @@ class ClozeDropDownAuthoring extends Component {
     if (!templateMarkUpStr) {
       templateMarkUpStr = defaultTemplateMarkup;
     }
-    const templateParts = templateMarkUpStr.match(/(<p.*?<\/p>)|(<span class="input__math".*?<\/span>)/g);
+    const templateParts = templateMarkUpStr.match(/(<p.*?<\/p>)|(<span.*?><\/span>)/g);
     const responseParts = templateMarkUpStr.match(/<p class="response-btn.*?<\/p>/g);
     const responseContainersCount = responseParts !== null ? responseParts.length : 0;
     return { templateParts, responseContainersCount };

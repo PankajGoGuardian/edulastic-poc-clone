@@ -22,7 +22,7 @@ export const withMathFormula = WrappedComponent => {
     const [latexes, setLatexes] = useState([]);
     const [mathHtmls, setMathHtmls] = useState([]);
     const [newInnerHtml, setNewInnerHtml] = useState("");
-    let mathFieldRef = null;
+    const mathFieldRef = React.createRef();
 
     const detectLatexes = () => {
       if (!dangerouslySetInnerHTML || !dangerouslySetInnerHTML.__html) {
@@ -66,11 +66,12 @@ export const withMathFormula = WrappedComponent => {
     };
 
     const startMathValidating = () => {
+      console.log("startMathValidation: ", mathField, window.MathQuill);
       if (mathField || !window.MathQuill) return;
-      if (mathFieldRef) {
+      if (mathFieldRef.current) {
         const MQ = window.MathQuill.getInterface(2);
         try {
-          setMathField(MQ.StaticMath(mathFieldRef));
+          setMathField(MQ.StaticMath(mathFieldRef.current));
         } catch (e) {
           console.warn("setMathField Error", e.message, e.stack);
         }
@@ -80,7 +81,7 @@ export const withMathFormula = WrappedComponent => {
     const convertLatexToHTML = latex => {
       if (!mathField) return latex;
       mathField.latex(latex);
-      return `<span class="input__math" data-latex="${latex}">${mathFieldRef.outerHTML}</span>`;
+      return `<span class="input__math" data-latex="${latex}">${mathFieldRef.current.outerHTML}</span>`;
     };
 
     const convertLatexesToMathHtmls = () => {
@@ -88,18 +89,15 @@ export const withMathFormula = WrappedComponent => {
       setMathHtmls(newMathHtmls);
     };
 
-    const setMathfieldRef = ref => {
-      if (ref) {
-        mathFieldRef = ref;
-        startMathValidating();
-      }
-    };
+    useEffect(() => {
+      startMathValidating();
+    }, [mathFieldRef.current, window.MathQuill]);
 
     useEffect(() => {
       if (!window.MathQuill && dangerouslySetInnerHTML !== undefined) {
         setNewInnerHtml(dangerouslySetInnerHTML.__html);
       }
-    });
+    }, [dangerouslySetInnerHTML, window.MathQuill]);
 
     useEffect(() => {
       detectLatexes();
@@ -124,7 +122,9 @@ export const withMathFormula = WrappedComponent => {
           "https://cdnedupoc.snapwiz.net/mathquill/mathquill.min.js"
         ]}
         fallBack={<span />}
-        onLoaded={() => startMathValidating()}
+        onLoaded={() => {
+          startMathValidating();
+        }}
       >
         <React.Fragment>
           <StyledWrappedComponent
@@ -133,7 +133,7 @@ export const withMathFormula = WrappedComponent => {
             dangerouslySetInnerHTML={{ __html: newInnerHtml }}
           />
           <NoneDiv>
-            <span ref={ref => setMathfieldRef(ref)} className="input__math__field" />
+            <span ref={mathFieldRef} className="input__math__field" />
           </NoneDiv>
         </React.Fragment>
       </WithResources>

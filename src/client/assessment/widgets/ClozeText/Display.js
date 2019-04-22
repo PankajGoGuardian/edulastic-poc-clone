@@ -41,7 +41,7 @@ class ClozeTextDisplay extends Component {
 
   getTemplateParts = props => {
     const { templateMarkUp } = props;
-    const templateParts = templateMarkUp.match(/(<p.*?<\/p>)|(<span class="input__math".*?<\/span>)/g);
+    const templateParts = templateMarkUp.match(/(<p.*?<\/p>)|(<span.*?><\/span>)/g);
     const responseParts = templateMarkUp.match(/<p class="response-btn.*?<\/p>/g);
     const respLength = responseParts !== null ? responseParts.length : 0;
     return { templateParts, respLength };

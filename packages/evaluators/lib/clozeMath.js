@@ -113,12 +113,6 @@ var checkCorrect =
           _iteratorError,
           _iterator,
           _step,
-          res,
-          _iteratorNormalCompletion2,
-          _didIteratorError2,
-          _iteratorError2,
-          _iterator2,
-          _step2,
           correct,
           data,
           _ref3,
@@ -135,140 +129,88 @@ var checkCorrect =
                   _didIteratorError = false;
                   _iteratorError = undefined;
                   _context.prev = 5;
-                  _iterator = userResponse[Symbol.iterator]();
+                  _iterator = correctAnswers[Symbol.iterator]();
 
                 case 7:
                   if ((_iteratorNormalCompletion = (_step = _iterator.next()).done)) {
-                    _context.next = 50;
+                    _context.next = 26;
                     break;
                   }
 
-                  res = _step.value;
-                  _iteratorNormalCompletion2 = true;
-                  _didIteratorError2 = false;
-                  _iteratorError2 = undefined;
-                  _context.prev = 12;
-                  _iterator2 = correctAnswers[Symbol.iterator]();
-
-                case 14:
-                  if ((_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done)) {
-                    _context.next = 33;
-                    break;
-                  }
-
-                  correct = _step2.value;
+                  correct = _step.value;
                   data = {
-                    input: res.replace(/\\ /g, " "),
+                    input: userResponse.replace(/\\ /g, " "),
                     expected: correct ? correct.replace(/\\ /g, " ") : ":",
                     checks: checks
                   };
-                  _context.prev = 17;
-                  _context.next = 20;
+                  _context.prev = 10;
+                  _context.next = 13;
                   return evaluate(data);
 
-                case 20:
+                case 13:
                   _ref3 = _context.sent;
                   result = _ref3.result;
 
                   if (!(result === "true")) {
-                    _context.next = 25;
+                    _context.next = 18;
                     break;
                   }
 
                   valid = true;
-                  return _context.abrupt("break", 33);
+                  return _context.abrupt("break", 26);
 
-                case 25:
-                  _context.next = 30;
+                case 18:
+                  _context.next = 23;
                   break;
 
-                case 27:
-                  _context.prev = 27;
-                  _context.t0 = _context["catch"](17);
-                  return _context.abrupt("continue", 30);
+                case 20:
+                  _context.prev = 20;
+                  _context.t0 = _context["catch"](10);
+                  return _context.abrupt("continue", 23);
 
-                case 30:
-                  _iteratorNormalCompletion2 = true;
-                  _context.next = 14;
-                  break;
-
-                case 33:
-                  _context.next = 39;
-                  break;
-
-                case 35:
-                  _context.prev = 35;
-                  _context.t1 = _context["catch"](12);
-                  _didIteratorError2 = true;
-                  _iteratorError2 = _context.t1;
-
-                case 39:
-                  _context.prev = 39;
-                  _context.prev = 40;
-
-                  if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
-                    _iterator2["return"]();
-                  }
-
-                case 42:
-                  _context.prev = 42;
-
-                  if (!_didIteratorError2) {
-                    _context.next = 45;
-                    break;
-                  }
-
-                  throw _iteratorError2;
-
-                case 45:
-                  return _context.finish(42);
-
-                case 46:
-                  return _context.finish(39);
-
-                case 47:
+                case 23:
                   _iteratorNormalCompletion = true;
                   _context.next = 7;
                   break;
 
-                case 50:
-                  _context.next = 56;
+                case 26:
+                  _context.next = 32;
                   break;
 
-                case 52:
-                  _context.prev = 52;
-                  _context.t2 = _context["catch"](5);
+                case 28:
+                  _context.prev = 28;
+                  _context.t1 = _context["catch"](5);
                   _didIteratorError = true;
-                  _iteratorError = _context.t2;
+                  _iteratorError = _context.t1;
 
-                case 56:
-                  _context.prev = 56;
-                  _context.prev = 57;
+                case 32:
+                  _context.prev = 32;
+                  _context.prev = 33;
 
                   if (!_iteratorNormalCompletion && _iterator["return"] != null) {
                     _iterator["return"]();
                   }
 
-                case 59:
-                  _context.prev = 59;
+                case 35:
+                  _context.prev = 35;
 
                   if (!_didIteratorError) {
-                    _context.next = 62;
+                    _context.next = 38;
                     break;
                   }
 
                   throw _iteratorError;
 
-                case 62:
-                  return _context.finish(59);
+                case 38:
+                  return _context.finish(35);
 
-                case 63:
-                  return _context.finish(56);
+                case 39:
+                  return _context.finish(32);
 
-                case 64:
+                case 40:
                   return _context.abrupt("return", valid);
 
-                case 65:
+                case 41:
                 case "end":
                   return _context.stop();
               }
@@ -276,7 +218,7 @@ var checkCorrect =
           },
           _callee,
           null,
-          [[5, 52, 56, 64], [12, 35, 39, 47], [17, 27], [40, , 42, 46], [57, , 59, 63]]
+          [[5, 28, 32, 40], [10, 20], [33, , 35, 39]]
         );
       })
     );
@@ -291,43 +233,66 @@ var exactMatchEvaluator =
   (function() {
     var _ref4 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee2(userResponse, answers, checks) {
-        var score,
-          maxScore,
-          evaluation,
-          getAnswerCorrectMethods,
-          _iteratorNormalCompletion3,
-          _didIteratorError3,
-          _iteratorError3,
-          _iterator3,
-          _step3,
-          answer,
-          corrects,
-          valid,
-          _iteratorNormalCompletion4,
-          _didIteratorError4,
-          _iteratorError4,
-          _iterator4,
-          _step4,
-          correctAnswers,
-          res,
-          isExact;
-
+      _regenerator["default"].mark(function _callee5(userResponse, answers, checks) {
+        var score, maxScore, evaluation, correctIndex, asyncForEach, getAnswerCorrectMethods;
         return _regenerator["default"].wrap(
-          function _callee2$(_context2) {
+          function _callee5$(_context5) {
             while (1) {
-              switch ((_context2.prev = _context2.next)) {
+              switch ((_context5.prev = _context5.next)) {
                 case 0:
                   score = 0;
                   maxScore = 1;
                   evaluation = [];
-                  _context2.prev = 3;
+                  correctIndex = 0;
+
+                  asyncForEach =
+                    /*#__PURE__*/
+                    (function() {
+                      var _ref5 = (0, _asyncToGenerator2["default"])(
+                        /*#__PURE__*/
+                        _regenerator["default"].mark(function _callee2(array, callback) {
+                          var index;
+                          return _regenerator["default"].wrap(function _callee2$(_context2) {
+                            while (1) {
+                              switch ((_context2.prev = _context2.next)) {
+                                case 0:
+                                  index = 0;
+
+                                case 1:
+                                  if (!(index < array.length)) {
+                                    _context2.next = 7;
+                                    break;
+                                  }
+
+                                  _context2.next = 4;
+                                  return callback(array[index], index, array);
+
+                                case 4:
+                                  index++;
+                                  _context2.next = 1;
+                                  break;
+
+                                case 7:
+                                case "end":
+                                  return _context2.stop();
+                              }
+                            }
+                          }, _callee2);
+                        })
+                      );
+
+                      return function asyncForEach(_x5, _x6) {
+                        return _ref5.apply(this, arguments);
+                      };
+                    })();
+
+                  _context5.prev = 5;
 
                   getAnswerCorrectMethods = function getAnswerCorrectMethods(answer) {
                     if (Array.isArray(answer.value)) {
                       return answer.value.map(function(val) {
-                        return val.map(function(_ref5) {
-                          var value = _ref5.value;
+                        return val.map(function(_ref6) {
+                          var value = _ref6.value;
                           return value;
                         });
                       });
@@ -335,167 +300,116 @@ var exactMatchEvaluator =
 
                     return [];
                   };
-                  /* eslint-disable */
 
-                  _iteratorNormalCompletion3 = true;
-                  _didIteratorError3 = false;
-                  _iteratorError3 = undefined;
-                  _context2.prev = 8;
-                  _iterator3 = answers[Symbol.iterator]();
+                  _context5.next = 9;
+                  return asyncForEach(
+                    answers,
+                    /*#__PURE__*/
+                    (function() {
+                      var _ref7 = (0, _asyncToGenerator2["default"])(
+                        /*#__PURE__*/
+                        _regenerator["default"].mark(function _callee4(answer, answerIndex) {
+                          var corrects, valid, isExact;
+                          return _regenerator["default"].wrap(function _callee4$(_context4) {
+                            while (1) {
+                              switch ((_context4.prev = _context4.next)) {
+                                case 0:
+                                  corrects = getAnswerCorrectMethods(answer);
+                                  valid = [];
+                                  _context4.next = 4;
+                                  return asyncForEach(
+                                    userResponse,
+                                    /*#__PURE__*/
+                                    (function() {
+                                      var _ref8 = (0, _asyncToGenerator2["default"])(
+                                        /*#__PURE__*/
+                                        _regenerator["default"].mark(function _callee3(userAns, index) {
+                                          var res;
+                                          return _regenerator["default"].wrap(function _callee3$(_context3) {
+                                            while (1) {
+                                              switch ((_context3.prev = _context3.next)) {
+                                                case 0:
+                                                  _context3.next = 2;
+                                                  return checkCorrect({
+                                                    correctAnswers: corrects[index],
+                                                    userResponse: userAns,
+                                                    checks: checks
+                                                  });
 
-                case 10:
-                  if ((_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done)) {
-                    _context2.next = 50;
-                    break;
-                  }
+                                                case 2:
+                                                  res = _context3.sent;
+                                                  valid.push(res);
 
-                  answer = _step3.value;
-                  corrects = getAnswerCorrectMethods(answer);
-                  valid = [];
-                  _iteratorNormalCompletion4 = true;
-                  _didIteratorError4 = false;
-                  _iteratorError4 = undefined;
-                  _context2.prev = 17;
-                  _iterator4 = corrects[Symbol.iterator]();
+                                                case 4:
+                                                case "end":
+                                                  return _context3.stop();
+                                              }
+                                            }
+                                          }, _callee3);
+                                        })
+                                      );
 
-                case 19:
-                  if ((_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done)) {
-                    _context2.next = 29;
-                    break;
-                  }
+                                      return function(_x9, _x10) {
+                                        return _ref8.apply(this, arguments);
+                                      };
+                                    })()
+                                  );
 
-                  correctAnswers = _step4.value;
-                  _context2.next = 23;
-                  return checkCorrect({
-                    correctAnswers: correctAnswers,
-                    userResponse: userResponse,
-                    checks: checks
-                  });
+                                case 4:
+                                  evaluation.push([].concat(valid));
 
-                case 23:
-                  res = _context2.sent;
-                  valid.push(res);
+                                  isExact = function isExact(element) {
+                                    return element;
+                                  };
 
-                  if (res) {
-                    score = Math.max(answer.score, score);
-                  }
+                                  if (valid.every(isExact)) {
+                                    score = Math.max(answer.score, score);
+                                    correctIndex = answerIndex;
+                                  }
 
-                case 26:
-                  _iteratorNormalCompletion4 = true;
-                  _context2.next = 19;
+                                  maxScore = Math.max(answer.score, maxScore);
+
+                                case 8:
+                                case "end":
+                                  return _context4.stop();
+                              }
+                            }
+                          }, _callee4);
+                        })
+                      );
+
+                      return function(_x7, _x8) {
+                        return _ref7.apply(this, arguments);
+                      };
+                    })()
+                  );
+
+                case 9:
+                  _context5.next = 14;
                   break;
 
-                case 29:
-                  _context2.next = 35;
-                  break;
+                case 11:
+                  _context5.prev = 11;
+                  _context5.t0 = _context5["catch"](5);
+                  console.error(_context5.t0);
 
-                case 31:
-                  _context2.prev = 31;
-                  _context2.t0 = _context2["catch"](17);
-                  _didIteratorError4 = true;
-                  _iteratorError4 = _context2.t0;
-
-                case 35:
-                  _context2.prev = 35;
-                  _context2.prev = 36;
-
-                  if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
-                    _iterator4["return"]();
-                  }
-
-                case 38:
-                  _context2.prev = 38;
-
-                  if (!_didIteratorError4) {
-                    _context2.next = 41;
-                    break;
-                  }
-
-                  throw _iteratorError4;
-
-                case 41:
-                  return _context2.finish(38);
-
-                case 42:
-                  return _context2.finish(35);
-
-                case 43:
-                  maxScore = Math.max(answer.score, maxScore);
-                  evaluation = [].concat((0, _toConsumableArray2["default"])(evaluation), valid);
-
-                  isExact = function isExact(element) {
-                    return element;
-                  };
-
-                  if (!evaluation.every(isExact)) {
-                    score = 0;
-                  }
-
-                case 47:
-                  _iteratorNormalCompletion3 = true;
-                  _context2.next = 10;
-                  break;
-
-                case 50:
-                  _context2.next = 56;
-                  break;
-
-                case 52:
-                  _context2.prev = 52;
-                  _context2.t1 = _context2["catch"](8);
-                  _didIteratorError3 = true;
-                  _iteratorError3 = _context2.t1;
-
-                case 56:
-                  _context2.prev = 56;
-                  _context2.prev = 57;
-
-                  if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
-                    _iterator3["return"]();
-                  }
-
-                case 59:
-                  _context2.prev = 59;
-
-                  if (!_didIteratorError3) {
-                    _context2.next = 62;
-                    break;
-                  }
-
-                  throw _iteratorError3;
-
-                case 62:
-                  return _context2.finish(59);
-
-                case 63:
-                  return _context2.finish(56);
-
-                case 64:
-                  _context2.next = 69;
-                  break;
-
-                case 66:
-                  _context2.prev = 66;
-                  _context2.t2 = _context2["catch"](3);
-                  console.error(_context2.t2);
-
-                case 69:
-                  _context2.prev = 69;
-                  return _context2.abrupt("return", {
+                case 14:
+                  _context5.prev = 14;
+                  return _context5.abrupt("return", {
                     score: score,
                     maxScore: maxScore,
-                    evaluation: evaluation
+                    evaluation: evaluation[correctIndex]
                   });
 
-                case 72:
+                case 17:
                 case "end":
-                  return _context2.stop();
+                  return _context5.stop();
               }
             }
           },
-          _callee2,
+          _callee5,
           null,
-          [[3, 66, 69, 72], [8, 52, 56, 64], [17, 31, 35, 43], [36, , 38, 42], [57, , 59, 63]]
+          [[5, 11, 14, 17]]
         );
       })
     );
@@ -508,9 +422,9 @@ var exactMatchEvaluator =
 var evaluator =
   /*#__PURE__*/
   (function() {
-    var _ref7 = (0, _asyncToGenerator2["default"])(
+    var _ref10 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee3(_ref6) {
+      _regenerator["default"].mark(function _callee6(_ref9) {
         var userResponse,
           validation,
           valid_response,
@@ -522,28 +436,28 @@ var evaluator =
           result,
           checks;
 
-        return _regenerator["default"].wrap(function _callee3$(_context3) {
+        return _regenerator["default"].wrap(function _callee6$(_context6) {
           while (1) {
-            switch ((_context3.prev = _context3.next)) {
+            switch ((_context6.prev = _context6.next)) {
               case 0:
-                (userResponse = _ref6.userResponse), (validation = _ref6.validation);
+                (userResponse = _ref9.userResponse), (validation = _ref9.validation);
                 (valid_response = validation.valid_response),
                   (_validation$alt_respo = validation.alt_responses),
                   (alt_responses = _validation$alt_respo === void 0 ? [] : _validation$alt_respo),
                   (scoring_type = validation.scoring_type),
                   (attemptScore = validation.min_score_if_attempted);
                 answers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
-                _context3.t0 = scoring_type;
-                _context3.next = _context3.t0 === _scoring.ScoringType.EXACT_MATCH ? 6 : 6;
+                _context6.t0 = scoring_type;
+                _context6.next = _context6.t0 === _scoring.ScoringType.EXACT_MATCH ? 6 : 6;
                 break;
 
               case 6:
                 checks = getChecks(validation);
-                _context3.next = 9;
+                _context6.next = 9;
                 return exactMatchEvaluator(userResponse, answers, checks);
 
               case 9:
-                result = _context3.sent;
+                result = _context6.sent;
 
               case 10:
                 // if score for attempting is greater than current score
@@ -552,19 +466,19 @@ var evaluator =
                   result.score = attemptScore;
                 }
 
-                return _context3.abrupt("return", result);
+                return _context6.abrupt("return", result);
 
               case 12:
               case "end":
-                return _context3.stop();
+                return _context6.stop();
             }
           }
-        }, _callee3);
+        }, _callee6);
       })
     );
 
-    return function evaluator(_x5) {
-      return _ref7.apply(this, arguments);
+    return function evaluator(_x11) {
+      return _ref10.apply(this, arguments);
     };
   })();
 

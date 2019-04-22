@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Paper, CustomQuillComponent, Subtitle } from "@edulastic/common";
 import { compose } from "redux";
@@ -14,6 +14,8 @@ import { setQuestionDataAction } from "../../../author/src/actions/question";
 import QuestionTextArea from "../../components/QuestionTextArea";
 
 const ClozeMath = ({ view, previewTab, item, setQuestionData, saveAnswer, checkAnswer, evaluation, userAnswer }) => {
+  const [template, setTemplate] = useState("");
+
   const _itemChange = (prop, uiStyle) => {
     const newItem = produce(item, draft => {
       draft[prop] = uiStyle;
@@ -47,6 +49,20 @@ const ClozeMath = ({ view, previewTab, item, setQuestionData, saveAnswer, checkA
 
     setQuestionData(newItem);
   };
+
+  const getPreviewTemplate = tmpl => {
+    let temp = ` ${tmpl}`.slice(1);
+    temp = temp.replace(/<p class="response-btn.*?<\/p>/g, '<span class="mathField">\\MathQuillMathField{}</span>');
+    temp = temp.replace(
+      /<span class="response-btn.*?<\/span>/g,
+      '<span class="mathField">\\MathQuillMathField{}</span>'
+    );
+    return temp;
+  };
+
+  useEffect(() => {
+    setTemplate(getPreviewTemplate(item.template));
+  }, [item.template]);
 
   return (
     <Fragment>
@@ -85,6 +101,7 @@ const ClozeMath = ({ view, previewTab, item, setQuestionData, saveAnswer, checkA
           <ClozeMathPreview
             type={previewTab}
             item={item}
+            template={template}
             saveAnswer={saveAnswer}
             check={checkAnswer}
             userAnswer={userAnswer}

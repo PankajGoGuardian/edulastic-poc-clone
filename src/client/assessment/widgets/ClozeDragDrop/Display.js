@@ -59,7 +59,7 @@ class ClozeDragDropDisplay extends Component {
     if (!templateMarkUpStr) {
       templateMarkUpStr = defaultTemplateMarkup;
     }
-    const templateParts = templateMarkUpStr.match(/(<p.*?<\/p>)|(<span class="input__math".*?<\/span>)/g);
+    const templateParts = templateMarkUpStr.match(/(<p.*?<\/p>)|(<span.*?><\/span>)/g);
     const responseParts = templateMarkUpStr.match(/<p class="response-btn.*?<\/p>/g);
     const respLength = responseParts !== null ? responseParts.length : 0;
     return { templateParts, respLength };
@@ -352,6 +352,7 @@ class ClozeDragDropDisplay extends Component {
     );
     const responseBoxLayout = showAnswer ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
+
     return (
       <div style={{ fontSize }}>
         <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />

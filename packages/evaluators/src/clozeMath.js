@@ -72,24 +72,22 @@ const getChecks = validation => {
 const checkCorrect = async ({ correctAnswers, userResponse, checks }) => {
   let valid = false;
 
-  for (const res of userResponse) {
-    for (const correct of correctAnswers) {
-      const data = {
-        input: res.replace(/\\ /g, " "),
-        expected: correct ? correct.replace(/\\ /g, " ") : ":",
-        checks
-      };
+  for (const correct of correctAnswers) {
+    const data = {
+      input: userResponse.replace(/\\ /g, " "),
+      expected: correct ? correct.replace(/\\ /g, " ") : ":",
+      checks
+    };
 
-      try {
-        const { result } = await evaluate(data);
+    try {
+      const { result } = await evaluate(data);
 
-        if (result === "true") {
-          valid = true;
-          break;
-        }
-      } catch {
-        continue;
+      if (result === "true") {
+        valid = true;
+        break;
       }
+    } catch {
+      continue;
     }
   }
 
@@ -100,7 +98,15 @@ const checkCorrect = async ({ correctAnswers, userResponse, checks }) => {
 const exactMatchEvaluator = async (userResponse, answers, checks) => {
   let score = 0;
   let maxScore = 1;
-  let evaluation = [];
+  const evaluation = [];
+  let correctIndex = 0;
+
+  const asyncForEach = async (array, callback) => {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array);
+    }
+  };
+
   try {
     const getAnswerCorrectMethods = answer => {
       if (Array.isArray(answer.value)) {
@@ -109,36 +115,36 @@ const exactMatchEvaluator = async (userResponse, answers, checks) => {
       return [];
     };
 
-    /* eslint-disable */
-    for (let answer of answers) {
+    await asyncForEach(answers, async (answer, answerIndex) => {
       const corrects = getAnswerCorrectMethods(answer);
+
       const valid = [];
 
-      for (let correctAnswers of corrects) {
-        const res = await checkCorrect({ correctAnswers, userResponse, checks });
+      await asyncForEach(userResponse, async (userAns, index) => {
+        const res = await checkCorrect({ correctAnswers: corrects[index], userResponse: userAns, checks });
         valid.push(res);
+      });
 
-        if (res) {
-          score = Math.max(answer.score, score);
-        }
-      }
-
-      maxScore = Math.max(answer.score, maxScore);
-      evaluation = [...evaluation, ...valid];
+      evaluation.push([...valid]);
 
       const isExact = element => element;
 
-      if (!evaluation.every(isExact)) {
-        score = 0;
+      if (valid.every(isExact)) {
+        score = Math.max(answer.score, score);
+        correctIndex = answerIndex;
       }
-    }
+
+      maxScore = Math.max(answer.score, maxScore);
+    });
+
+    /* eslint-disable */
   } catch (e) {
     console.error(e);
   } finally {
     return {
       score,
       maxScore,
-      evaluation
+      evaluation: evaluation[correctIndex]
     };
   }
 };

@@ -44,7 +44,7 @@ const Answer = styled.div`
 `;
 
 const Label = styled.div`
-  width: 30px;
+  width: 40px;
   color: ${white};
   background: ${blue};
   border-top-left-radius: 5px;
@@ -53,5 +53,5 @@ const Label = styled.div`
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  padding: 10px;
+  padding: 5px 0;
 `;

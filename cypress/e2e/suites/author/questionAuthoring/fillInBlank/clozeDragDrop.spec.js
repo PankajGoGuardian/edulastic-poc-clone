@@ -11,6 +11,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
     template: " is the world's largest democracy",
     correctAns: "India",
     choices: ["China", "India", "US"],
+    forScoring: ["WHISPERED", "HOLMES", "INTRUDER"],
     extlink: "www.testdomain.com",
     testtext: "testtext",
     formula: "s=ar^2"
@@ -126,12 +127,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       });
 
       it("Drag and drop the responses", () => {
-        question
-          .getResponseItemByIndex(0)
-          .customDragDrop(`#response-container-${0}`)
-          .then(() => {
-            question.getResponseContainerByIndex(0).contains("div", queData.choices[0]);
-          });
+        question.setAnswerToResponseBox(queData.choices[0], 0, 0);
       });
 
       it("Check/Uncheck duplicate response checkbox", () => {
@@ -199,6 +195,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .find("input")
           .should("not.checked");
 
+        question.setAnswerToResponseBox();
+
         question
           .getResponseItemByIndex(1)
           .parent()
@@ -246,9 +244,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .getCheckAnswer()
           .click()
           .then(() => {
-            cy.get("body")
-              .children()
-              .should("contain", "score: 2/2");
+            question.checkExpectedScore("2/2");
           });
       });
 
@@ -291,9 +287,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
 
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
-      question.header.save();
-      // edit
-      editItem.getEditButton().click();
     });
 
     context("TC_8 => Enter the text/inputs to Template Markup", () => {
@@ -384,12 +377,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       });
 
       it("Drag and drop the responses", () => {
-        question
-          .getResponseItemByIndex(0)
-          .customDragDrop(`#response-container-${0}`)
-          .then(() => {
-            question.getResponseContainerByIndex(0).contains("div", queData.choices[0]);
-          });
+        question.setAnswerToResponseBox(queData.choices[0], 0, 0);
       });
 
       it("Check/Uncheck duplicate response checkbox", () => {
@@ -486,7 +474,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
     context("TC_11 => Save question", () => {
       it("Click on save button", () => {
         question.header.save();
-        cy.url().should("contain", "item-detail");
       });
     });
 
@@ -498,6 +485,125 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .click()
           .should("have.length", 0);
       });
+    });
+  });
+
+  context.only("Scoring block tests", () => {
+    before("visit items page and select question type", () => {
+      editItem.getItemWithId(testItemId);
+      editItem.deleteAllQuestion();
+      // create new que and select type
+      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+    });
+
+    afterEach(() => {
+      preview = question.header.preview();
+
+      preview.getClear().click();
+
+      preview.header.edit();
+
+      question.clickOnAdvancedOptions();
+    });
+
+    it("Test scoring with max score", () => {
+      question.clickOnAdvancedOptions();
+
+      question
+        .getMaxScore()
+        .clear()
+        .type(1);
+
+      preview = question.header.preview();
+
+      preview
+        .getCheckAnswer()
+        .click()
+        .then(() => {
+          question.checkExpectedScore("0/10");
+        });
+    });
+
+    it("Test scoring with alternate answer", () => {
+      question.getMaxScore().clear();
+
+      question
+        .getPontsInput()
+        .clear()
+        .type(2);
+
+      question.setAnswerToResponseBox(queData.forScoring[0], 0, 0);
+      question.setAnswerToResponseBox(queData.forScoring[2], 1, 1);
+
+      question.getAddAlternative().click();
+
+      question.getAddedAlternateTab().click();
+
+      question
+        .getPontsInput()
+        .clear()
+        .type(6);
+
+      question.setAnswerToResponseBox(queData.forScoring[1], 0, 1);
+      question.setAnswerToResponseBox(queData.forScoring[2], 1, 1);
+
+      preview = question.header.preview();
+
+      question.setAnswerToResponseBox(queData.forScoring[0], 0, 0);
+      question.setAnswerToResponseBox(queData.forScoring[2], 1, 1);
+
+      preview
+        .getCheckAnswer()
+        .click()
+        .then(() => {
+          question.checkExpectedScore("2/6");
+        });
+
+      preview.getClear().click();
+
+      question.setAnswerToResponseBox(queData.forScoring[1], 0, 1);
+      question.setAnswerToResponseBox(queData.forScoring[2], 1, 1);
+
+      preview
+        .getCheckAnswer()
+        .click()
+        .then(() => {
+          question.checkExpectedScore("6/6");
+        });
+    });
+
+    it("Test scoring with partial match, min score if attempted and penalty", () => {
+      question.getEnableAutoScoring().click();
+
+      question.getPanalty().type(2);
+
+      question.getMinScore().type(1);
+
+      question.selectScoringType("Partial match");
+
+      preview = question.header.preview();
+
+      question.setAnswerToResponseBox(queData.forScoring[2], 0, 2);
+      question.setAnswerToResponseBox(queData.forScoring[0], 1, 0);
+
+      preview
+        .getCheckAnswer()
+        .click()
+        .then(() => {
+          question.checkExpectedScore("1/6");
+        });
+
+      preview.getClear().click();
+
+      question.setAnswerToResponseBox(queData.forScoring[1], 0, 1);
+      question.setAnswerToResponseBox(queData.forScoring[0], 1, 0);
+
+      preview
+        .getCheckAnswer()
+        .click()
+        .then(() => {
+          question.checkExpectedScore("2/6");
+        });
     });
   });
 });

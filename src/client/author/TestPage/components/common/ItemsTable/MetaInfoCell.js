@@ -77,21 +77,16 @@ class MetaInfoCell extends Component {
 
     //alignment object inside questions contains subject and domains
     const getAlignmentsObject = testItems
-      .map(item => item.data.questions)
-      .flat()
-      .map(({ alignment = [] }) => alignment)
-      .flat();
+      .flatMap(item => item.data.questions)
+      .flatMap(question => question.alignment || []);
 
     const subjects = getAlignmentsObject.map(alignment => alignment.subject);
 
     //domains inside alignment object holds standards with grades
     const grades = getAlignmentsObject
-      .map(alignment => alignment.domains)
-      .flat()
-      .map(domain => domain.standards)
-      .flat()
-      .map(standard => standard.grades)
-      .flat();
+      .flatMap(alignment => alignment.domains)
+      .flatMap(domain => domain.standards)
+      .flatMap(standard => standard.grades);
     getItemsSubjectAndGrade({ subjects, grades });
     setTestData(newTest);
   };

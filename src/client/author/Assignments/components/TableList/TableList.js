@@ -21,7 +21,7 @@ import {
   Container,
   Icon,
   TableData,
-  BtnGreen,
+  TestThumbnail,
   AssignmentTD,
   IconArrowDown,
   BtnAction,
@@ -36,9 +36,10 @@ import {
   TitleCase
 } from "./styled";
 
-const convertTableData = (data, assignments) => ({
+const convertTableData = (data, assignments, index) => ({
   name: data.title,
-  key: data._id,
+  thumbnail: data.thumbnail,
+  key: index.toString(),
   testId: data._id,
   class: assignments.length,
   assigned: "",
@@ -68,23 +69,7 @@ const convertExpandTableData = (data, test) => ({
 });
 
 class TableList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      details: false
-    };
-  }
-
-  static propTypes = {
-    t: PropTypes.func.isRequired
-  };
-
-  onShowDetails = () => {
-    this.setState({ details: true });
-  };
-
   expandedRowRender = parentData => {
-    const { t } = this.props;
     const columns = [
       {
         dataIndex: "name",
@@ -156,7 +141,6 @@ class TableList extends Component {
 
   render() {
     const { assignmentsByTestId = {}, tests = [], onOpenReleaseScoreSettings, history, renderFilter, t } = this.props;
-    const { details } = this.state;
     const columns = [
       {
         title: "Assignment Name",
@@ -164,10 +148,10 @@ class TableList extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: true,
         width: "22%",
-        render: text => (
+        render: (text, row) => (
           <FlexContainer style={{ marginLeft: 0 }}>
             <div>
-              <BtnGreen type="primary" size="small" />
+              <TestThumbnail src={row.thumbnail} />
             </div>
             <AssignmentTD>{text}</AssignmentTD>
           </FlexContainer>
@@ -238,13 +222,11 @@ class TableList extends Component {
               overlay={ActionMenu(onOpenReleaseScoreSettings, row.currentAssignment, history)}
               placement="bottomCenter"
               trigger={["click"]}
+              onClick={e => e.stopPropagation()}
             >
               <BtnAction>ACTIONS</BtnAction>
             </Dropdown>
-            <IconExpand
-              onMouseEnter={() => this.setState({ details: true })}
-              onMouseLeave={() => this.setState({ details: false })}
-            >
+            <IconExpand>
               <Icon src={ExpandIcon} alt="Images" />
             </IconExpand>
           </ActionDiv>
@@ -253,6 +235,7 @@ class TableList extends Component {
     ];
 
     const getAssignmentsByTestId = Id => assignmentsByTestId[Id].filter(item => !item.redirect);
+
     return (
       <Container>
         <TableData
@@ -260,9 +243,10 @@ class TableList extends Component {
           columns={columns}
           expandIconAsCell={false}
           expandIconColumnIndex={-1}
-          expandRowByClick={details}
           expandedRowRender={this.expandedRowRender}
-          dataSource={tests.map(test => convertTableData(test, getAssignmentsByTestId(test._id)))}
+          dataSource={tests.map((test, i) => convertTableData(test, getAssignmentsByTestId(test._id), i))}
+          expandRowByClick={true}
+          defaultExpandedRowKeys={["0", "1", "2"]}
         />
       </Container>
     );

@@ -32,7 +32,7 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history) => {
   };
 
   MenuItems.push(
-    <ActionButtonWrapper>
+    <ActionButtonWrapper onClick={e => e.stopPropagation()}>
       <ActionButton>Actions</ActionButton>
     </ActionButtonWrapper>
   );

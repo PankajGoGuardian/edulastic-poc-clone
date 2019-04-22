@@ -227,9 +227,9 @@ export const TableData = styled(Table)`
   }
 `;
 
-export const BtnGreen = styled(Button)`
-  background-color: ${lightBlue};
-  border: 0px;
+export const TestThumbnail = styled.img`
+  border: 1px solid ${darkGrey};
+  border-radius: 5px;
   width: 71px;
   height: 23px;
   margin-right: 9px;

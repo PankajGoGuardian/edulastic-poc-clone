@@ -13,7 +13,7 @@ const AnswerBoxText = ({ children }) => {
   }, []);
 
   return (
-    <Text>
+    <Text data-cy="correct-answer-box">
       <span ref={elemRef}>{children}</span>
     </Text>
   );

@@ -403,12 +403,12 @@ class MathFormulaEdit {
     if (setChecBox instanceof Function) setChecBox();
   };
 
-  setValue = input => {
+  setValue = (input, order = 1) => {
     this.getMathFormulaAnswers()
       .find(`[data-cy="answer-input-math-textarea"]`)
       .then(element => {
         cy.get("[mathquill-block-id]").then(elements => {
-          const { length } = elements[1].innerText;
+          const { length } = elements[order].innerText;
           cy.wrap(element)
             .type("{del}".repeat(length === 0 ? 1 : length), { force: true })
             .type(input, { force: true });
@@ -482,6 +482,7 @@ class MathFormulaEdit {
 
   checkIfTextExist = data =>
     this.getComposeQuestionTextBox()
+      .first()
       .clear()
       .type(data)
       .then($input => {
@@ -504,5 +505,27 @@ class MathFormulaEdit {
     this.getAnswerRuleArgumentSelect()
       .click()
       .then(() => this.getAnswerArgumentDropdownByValue(value).click());
+
+  checkNoticeMessageScore = (preview, isCorrect, checkAnswerHighlightColor) => {
+    preview
+      .getCheckAnswer()
+      .click()
+      .then(() =>
+        cy
+          .get("body")
+          .children()
+          .should("contain", `score: ${isCorrect ? "1/1" : "0/1"}`)
+      );
+    checkAnswerHighlightColor();
+
+    preview
+      .getClear()
+      .click()
+      .then(() => {
+        cy.get("body")
+          .children()
+          .should("not.contain", "Correct Answers");
+      });
+  };
 }
 export default MathFormulaEdit;

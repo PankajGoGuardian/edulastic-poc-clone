@@ -28,7 +28,7 @@ const ClozeMathAnswer = ({ answer, onChange, onAdd, onDelete, item }) => {
                 MathFormulaAnswer
               </MathFormulaAnswerMethod>
             ))}
-            <EduButton onClick={() => onAdd(i)} type="primary" size="large">
+            <EduButton onClick={() => onAdd(i)} type="primary" size="large" data-cy="add-new-method">
               Add new method
             </EduButton>
           </Panel>

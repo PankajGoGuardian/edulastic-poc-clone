@@ -17,6 +17,37 @@ export const getFontSize = (fontSize, withRem = false) => {
   }
 };
 
+export const getStylesFromUiStyleToCssStyle = ui_style => {
+  const cssStyles = {};
+  Object.keys(ui_style).forEach(item => {
+    const value = ui_style[item];
+    switch (item) {
+      case "fontsize":
+        cssStyles.fontSize = getFontSize(value, true);
+        break;
+      case "min_width":
+        cssStyles.minWidth = value + "px";
+        break;
+      case "transparent_background":
+        if (value) cssStyles.background = "transparent";
+        break;
+      case "response_font_scale":
+        if (value === "boosted") {
+          if (ui_style.fontsize) cssStyles.fontScale = parseFloat(getFontSize(ui_style.fontsize, true)) * 1.5 + "rem";
+          else cssStyles.fontScale = "1.5rem";
+        }
+        break;
+      default:
+        break;
+    }
+  });
+  if (cssStyles.fontScale) {
+    cssStyles.fontSize = cssStyles.fontScale;
+    delete cssStyles.fontScale;
+  }
+  return cssStyles;
+};
+
 export const topAndLeftRatio = (styleNumber, imagescale, fontsize, smallSize) => {
   const getValueWithRatio = newRatio => (smallSize ? styleNumber / 2 : styleNumber * newRatio);
 

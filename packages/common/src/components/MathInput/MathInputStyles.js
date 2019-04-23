@@ -39,6 +39,9 @@ export const MathInputStyles = styled.div`
     &.mq-focused {
       box-shadow: none;
     }
+    .mq-editable-field {
+      min-width: ${({ minWidth }) => minWidth || "auto"};
+    }
   }
 
   .input__math__icon {

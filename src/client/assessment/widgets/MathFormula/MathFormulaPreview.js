@@ -10,6 +10,8 @@ import CorrectAnswerBox from "./components/CorrectAnswerBox/index";
 import MathInputStatus from "./components/MathInputStatus/index";
 import MathInputWrapper from "./styled/MathInputWrapper";
 
+import { getStylesFromUiStyleToCssStyle } from "../../utils/helpers";
+
 const MathFormulaPreview = ({
   item,
   studentTemplate,
@@ -99,6 +101,8 @@ const MathFormulaPreview = ({
       : theme.widgets.mathFormula.inputIncorrectColor;
   }
 
+  const cssStyles = getStylesFromUiStyleToCssStyle(item.ui_style);
+
   return (
     <div>
       <MathFormulaDisplay
@@ -115,7 +119,7 @@ const MathFormulaPreview = ({
             ref={studentRef}
             onInput={onUserResponse}
             onBlur={onBlur}
-            style={{ background: statusColor }}
+            style={{ background: statusColor, ...cssStyles }}
             latex={studentTemplate}
             innerValues={innerValues}
           />
@@ -128,7 +132,7 @@ const MathFormulaPreview = ({
             onInput={onUserResponse}
             onBlur={onBlur}
             disabled={evaluation && !evaluation[0]}
-            style={{ background: statusColor }}
+            style={{ background: statusColor, ...cssStyles }}
           />
         )}
         {(previewType === SHOW || previewType === CHECK) && <MathInputStatus valid={!!evaluation && !!evaluation[0]} />}

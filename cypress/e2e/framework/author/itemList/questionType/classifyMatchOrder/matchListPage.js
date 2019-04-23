@@ -7,6 +7,8 @@ class MatchListPage {
   constructor() {
     this.editToolBar = new EditToolBar();
     this.header = new Header();
+
+    this.scoringTypeOption = { "Exact match": "exactMatch", "Partial match": "partialMatch" };
   }
 
   // question content
@@ -23,6 +25,8 @@ class MatchListPage {
       .first();
 
   getListDeleteByIndex = index => cy.get(`[data-cy="deleteprefix${index}"]`);
+
+  getMaxScore = () => cy.get('[data-cy="maxscore"]').should("be.visible");
 
   getGroupResponsesCheckbox = () =>
     cy
@@ -70,6 +74,8 @@ class MatchListPage {
       .should("be.visible");
 
   getPontsInput = () => cy.get('[data-cy="points"]');
+
+  getItemByIndex = index => cy.get('[data-cy="drag-drop-board-undefined"]').find(`[data-cy="drag-drop-item-${index}"]`);
 
   getDragDropItemByIndex = index => cy.get(`[data-cy="drag-drop-item-${index}"]`);
 
@@ -165,6 +171,34 @@ class MatchListPage {
 
     this.header.edit();
   }
+
+  selectScoringType(option) {
+    const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`;
+    cy.get('[data-cy="scoringType"]')
+      .should("be.visible")
+      .click();
+
+    cy.get(selectOp)
+      .should("be.visible")
+      .click();
+
+    cy.get('[data-cy="scoringType"]')
+      .find(".ant-select-selection-selected-value")
+      .should("contain", option);
+
+    return this;
+  }
+
+  getPanalty = () => cy.get('[data-cy="penalty"]').should("be.visible");
+
+  getEnableAutoScoring = () =>
+    cy
+      .contains("Enable auto scoring")
+      .children()
+      .eq(0)
+      .should("be.visible");
+
+  getMinScore = () => cy.get("[data-cy=minscore]").should("be.visible");
 
   checkResponseContainerPosition(position) {
     this.header.preview();

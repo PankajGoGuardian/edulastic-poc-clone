@@ -13,6 +13,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
     correctAns: "India",
     list: ["List1", "List2", "List3"],
     choices: ["Choice1", "Choice2", "Choice3"],
+    forScoring: ["Choice B", "Choice A", "Choice C"],
     extlink: "www.testdomain.com",
     testtext: "testtext",
     formula: "s=ar^2",
@@ -557,6 +558,112 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
         select.should("contain", name);
         question.checkFontSize(font);
       });
+    });
+  });
+
+  context("Scoring block test", () => {
+    before("delete old question and create dummy que to edit", () => {
+      editItem.getItemWithId(testItemId);
+      editItem.deleteAllQuestion();
+      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+    });
+
+    afterEach(() => {
+      preview = question.header.preview();
+
+      preview.getClear().click();
+
+      question.header.edit();
+
+      editItem.showAdvancedOptions();
+    });
+
+    it("Test score with max score", () => {
+      editItem.showAdvancedOptions();
+
+      question
+        .getMaxScore()
+        .clear()
+        .type(1);
+
+      preview = question.header.preview();
+
+      preview.checkScore("0/10");
+    });
+
+    it("Test score with alternate and min score if attempted", () => {
+      question.getMaxScore().clear();
+
+      question.getEnableAutoScoring().click();
+
+      question
+        .getMinScore()
+        .clear()
+        .type(2);
+
+      question
+        .getPontsInput()
+        .clear()
+        .type("9{del}");
+
+      question.addAlternate();
+
+      question
+        .getAddedAlternate()
+        .parent()
+        .click();
+
+      question
+        .getPontsInput()
+        .clear()
+        .type("12{del}");
+
+      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${1}`);
+      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${0}`);
+      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${2}`);
+
+      preview = question.header.preview();
+
+      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${1}`);
+      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${0}`);
+      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${2}`);
+
+      preview.checkScore("12/12");
+
+      preview.getClear().click();
+
+      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${0}`);
+      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${1}`);
+      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${2}`);
+
+      preview.checkScore("9/12");
+
+      preview.getClear().click();
+
+      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${1}`);
+
+      preview.checkScore("2/12");
+    });
+
+    it("Test score with partial match and panalty", () => {
+      question.getAddedAlternate().click();
+
+      question
+        .getPanalty()
+        .clear()
+        .type(3);
+
+      question.getMinScore().clear();
+
+      question.selectScoringType("Partial match");
+
+      preview = question.header.preview();
+
+      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${0}`);
+      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${2}`);
+      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${1}`);
+
+      preview.checkScore("1/9");
     });
   });
 });

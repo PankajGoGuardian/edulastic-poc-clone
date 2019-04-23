@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Spin } from "antd";
+import { Spin, message } from "antd";
 import { withRouter } from "react-router-dom";
 import { cloneDeep, identity as _identity, isObject as _isObject } from "lodash";
 import uuidv4 from "uuid/v4";
@@ -276,7 +276,13 @@ class Container extends PureComponent {
 
   handlePublishTest = () => {
     const { publishTest, test, match } = this.props;
-    const { _id } = test;
+    const { grades = [], subjects = [], _id } = test;
+    if (!grades.length) {
+      return message.error("Grade field cannot be empty");
+    }
+    if (!subjects.length) {
+      return message.error("Subject field cannot be empty");
+    }
     publishTest({ _id, oldId: match.params.oldId });
     this.setState({ editEnable: false });
   };

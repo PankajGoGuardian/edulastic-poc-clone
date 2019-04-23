@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { AdminHeaderContent, StyledTitle, StyledTabs, StyledTabPane, StyledSubMenu } from "./styled";
@@ -25,9 +25,7 @@ class AdminHeader extends Component {
       case "Users":
         history.push(`/author/users/teacher`);
         return;
-
-        history.push(`/author/users/school-admin`);
-        return;
+      
       case "Classes":
         history.push(`/author/Classes`);
         return;
@@ -67,15 +65,12 @@ class AdminHeader extends Component {
       case "Standards Proficiency":
         history.push(`/author/settings/standards-proficiency`);
         return;
-
       case "Teacher":
         history.push(`/author/users/teacher`);
         return;
-
       case "District Admin":
         history.push(`/author/users/district-admin`);
         return;
-
       case "School Admin":
         history.push(`/author/users/school-admin`);
         return;

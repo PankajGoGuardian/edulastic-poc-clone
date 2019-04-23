@@ -40,7 +40,7 @@ import { teacherReducer } from "../../Teacher";
 import { districtAdminReducer } from "../../DistrictAdmin";
 import { schoolAdminReducer } from "../../SchoolAdmin";
 import { coursesReducer } from "../../Courses";
-
+import { classesReducer } from "../../Classes";
 const authorReducers = {
   authorUi,
   view,
@@ -83,7 +83,8 @@ const authorReducers = {
   teacherReducer,
   districtAdminReducer,
   schoolAdminReducer,
-  coursesReducer
+  coursesReducer,
+  classesReducer
 };
 
 export default authorReducers;

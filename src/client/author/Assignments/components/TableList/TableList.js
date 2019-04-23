@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 
 import { Link, withRouter } from "react-router-dom";
-import { Dropdown } from "antd";
+import { Dropdown, Checkbox } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 
@@ -15,7 +15,6 @@ import presentationIcon from "../../assets/presentation.svg";
 import additemsIcon from "../../assets/add-items.svg";
 import piechartIcon from "../../assets/pie-chart.svg";
 import ActionMenu from "../ActionMenu/ActionMenu";
-import ExpandIcon from "../../assets/expand.svg";
 
 import {
   Container,
@@ -31,7 +30,6 @@ import {
   ActionDiv,
   GreyFont,
   ExpandedTable,
-  IconExpand,
   ActionsWrapper,
   TitleCase
 } from "./styled";
@@ -54,9 +52,9 @@ const convertTableData = (data, assignments, index) => ({
   testType: data.testType
 });
 
-const convertExpandTableData = (data, test) => ({
-  name: test.title,
-  key: data.classId,
+const convertExpandTableData = (data, testItem, index) => ({
+  name: testItem.title,
+  key: index,
   assignmentId: data._id,
   class: data.className,
   assigned: data.assignedBy.name,
@@ -69,6 +67,14 @@ const convertExpandTableData = (data, test) => ({
 });
 
 class TableList extends Component {
+  static propTypes = {
+    t: PropTypes.func.isRequired
+  };
+
+  state = {
+    details: true
+  };
+
   expandedRowRender = parentData => {
     const columns = [
       {
@@ -129,9 +135,9 @@ class TableList extends Component {
     const { assignmentsByTestId } = this.props;
     const expandTableList = [];
     let getInfo;
-    assignmentsByTestId[parentData.testId].forEach(assignment => {
+    assignmentsByTestId[parentData.testId].forEach((assignment, index) => {
       if (!assignment.redirect) {
-        getInfo = convertExpandTableData(assignment, parentData);
+        getInfo = convertExpandTableData(assignment, parentData, index);
         expandTableList.push(getInfo);
       }
     });
@@ -139,15 +145,40 @@ class TableList extends Component {
     return <ExpandedTable columns={columns} dataSource={expandTableList} pagination={false} class="expandTable" />;
   };
 
+  enableExtend = () => this.setState({ details: false });
+
+  disableExtend = () => this.setState({ details: true });
+
   render() {
-    const { assignmentsByTestId = {}, tests = [], onOpenReleaseScoreSettings, history, renderFilter, t } = this.props;
+    const {
+      assignmentsByTestId = {},
+      tests = [],
+      onOpenReleaseScoreSettings,
+      history,
+      renderFilter,
+      t,
+      onSelectRow
+    } = this.props;
+    const { details } = this.state;
     const columns = [
+      {
+        title: <Checkbox />,
+        dataIndex: "checkbox",
+        width: "5%",
+        className: "select-row",
+        render: (_, row) => <Checkbox onChange={e => onSelectRow(row, e.target.checked)} />,
+        onCell: () => ({
+          onMouseEnter: () => this.enableExtend(),
+          onMouseLeave: () => this.disableExtend()
+        })
+      },
       {
         title: "Assignment Name",
         dataIndex: "name",
         sortDirections: ["descend", "ascend"],
         sorter: true,
         width: "22%",
+        className: "assignment-name",
         render: (text, row) => (
           <FlexContainer style={{ marginLeft: 0 }}>
             <div>
@@ -176,9 +207,7 @@ class TableList extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: true,
         width: "11%",
-        render: (text = test.type.ASSESSMENT) => {
-          return <TitleCase>{text}</TitleCase>;
-        }
+        render: (text = test.type.ASSESSMENT) => <TitleCase>{text}</TitleCase>
       },
       {
         title: "Assigned by",
@@ -226,11 +255,12 @@ class TableList extends Component {
             >
               <BtnAction>ACTIONS</BtnAction>
             </Dropdown>
-            <IconExpand>
-              <Icon src={ExpandIcon} alt="Images" />
-            </IconExpand>
           </ActionDiv>
-        )
+        ),
+        onCell: () => ({
+          onMouseEnter: () => this.enableExtend(),
+          onMouseLeave: () => this.disableExtend()
+        })
       }
     ];
 
@@ -239,13 +269,12 @@ class TableList extends Component {
     return (
       <Container>
         <TableData
-          style={{ width: "auto" }}
           columns={columns}
           expandIconAsCell={false}
           expandIconColumnIndex={-1}
           expandedRowRender={this.expandedRowRender}
-          dataSource={tests.map((test, i) => convertTableData(test, getAssignmentsByTestId(test._id), i))}
-          expandRowByClick={true}
+          dataSource={tests.map((testItem, i) => convertTableData(testItem, getAssignmentsByTestId(testItem._id), i))}
+          expandRowByClick={details}
           defaultExpandedRowKeys={["0", "1", "2"]}
         />
       </Container>
@@ -254,16 +283,20 @@ class TableList extends Component {
 }
 
 TableList.propTypes = {
-  assignmentsByTestId: PropTypes.array.isRequired,
+  assignmentsByTestId: PropTypes.object.isRequired,
   onOpenReleaseScoreSettings: PropTypes.func,
+  onSelectRow: PropTypes.func,
   renderFilter: PropTypes.func,
-  history: PropTypes.object
+  history: PropTypes.object,
+  tests: PropTypes.array
 };
 
 TableList.defaultProps = {
   onOpenReleaseScoreSettings: () => {},
   renderFilter: () => {},
-  history: {}
+  onSelectRow: () => {},
+  history: {},
+  tests: []
 };
 
 const enhance = compose(

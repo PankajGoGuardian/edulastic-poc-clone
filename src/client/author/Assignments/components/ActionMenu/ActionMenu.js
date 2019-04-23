@@ -1,7 +1,11 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-lone-blocks */
 /* eslint-disable jsx-a11y/alt-text */
 import React from "react";
 import { Menu } from "antd";
 import { test } from "@edulastic/constants";
+import { Link } from "react-router-dom";
+import { assignmentApi } from "@edulastic/api";
 import simpleIcon from "../../assets/icon.svg";
 import classIcon from "../../assets/manage-class.svg";
 import copyItem from "../../assets/copy-item.svg";
@@ -11,8 +15,6 @@ import responsiveIcon from "../../assets/responses.svg";
 import toolsIcon from "../../assets/printing-tool.svg";
 import devIcon from "../../assets/dev.svg";
 import googleIcon from "../../assets/Google Classroom.svg";
-import { Link } from "react-router-dom";
-import { assignmentApi } from "@edulastic/api";
 
 import { Container, StyledMenu, StyledLink, SpaceElement, ActionButtonWrapper, ActionButton } from "./styled";
 
@@ -25,19 +27,19 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history) => {
   const currentAssignmentId = currentAssignment._id;
   const MenuItems = [];
   const createDuplicateAssignment = () => {
-    duplicateAssignment(currentAssignment.testId).then(test => {
-      const duplicateTestId = test._id;
+    duplicateAssignment(currentAssignment.testId).then(testItem => {
+      const duplicateTestId = testItem._id;
       history.push(`/author/tests/${duplicateTestId}`);
     });
   };
 
   MenuItems.push(
-    <ActionButtonWrapper onClick={e => e.stopPropagation()}>
+    <ActionButtonWrapper key="action-button" onClick={e => e.stopPropagation()}>
       <ActionButton>Actions</ActionButton>
     </ActionButtonWrapper>
   );
   MenuItems.push(
-    <Menu.Item>
+    <Menu.Item key="add-edit-Assignment">
       <StyledLink target="_blank" rel="noopener noreferrer">
         <img alt="icon" src={simpleIcon} />
         <SpaceElement />
@@ -46,7 +48,7 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history) => {
     </Menu.Item>
   );
   MenuItems.push(
-    <Menu.Item>
+    <Menu.Item key="edit-Assignment">
       <Link style={{ marginTop: 2 }} to={`/author/tests/${currentAssignment.testId}/editAssigned`}>
         <img alt="icon" src={classIcon} />
         <SpaceElement />
@@ -55,7 +57,7 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history) => {
     </Menu.Item>
   );
   MenuItems.push(
-    <Menu.Item onClick={createDuplicateAssignment}>
+    <Menu.Item key="duplicate" onClick={createDuplicateAssignment}>
       <StyledLink target="_blank" rel="noopener noreferrer">
         <img alt="icon" src={copyItem} />
         <SpaceElement />
@@ -64,7 +66,7 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history) => {
     </Menu.Item>
   );
   MenuItems.push(
-    <Menu.Item>
+    <Menu.Item key="preview">
       <StyledLink target="_blank" rel="noopener noreferrer">
         <img alt="icon" src={viewIcon} />
         <SpaceElement />
@@ -73,7 +75,7 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history) => {
     </Menu.Item>
   );
   MenuItems.push(
-    <Menu.Item>
+    <Menu.Item key="view-details">
       <StyledLink target="_blank" rel="noopener noreferrer">
         <img alt="icon" src={infomationIcon} />
         <SpaceElement />
@@ -84,7 +86,7 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history) => {
   {
     showRleaseGrade &&
       MenuItems.push(
-        <Menu.Item onClick={() => onOpenReleaseScoreSettings(currentTestId, currentAssignmentId)}>
+        <Menu.Item key="release-grades" onClick={() => onOpenReleaseScoreSettings(currentTestId, currentAssignmentId)}>
           <StyledLink target="_blank" rel="noopener noreferrer">
             <img alt="icon" src={responsiveIcon} />
             <SpaceElement />
@@ -95,7 +97,7 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history) => {
   }
 
   MenuItems.push(
-    <Menu.Item>
+    <Menu.Item key="print">
       <StyledLink target="_blank" rel="noopener noreferrer">
         <img alt="icon" src={toolsIcon} />
         <SpaceElement />
@@ -104,7 +106,7 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history) => {
     </Menu.Item>
   );
   MenuItems.push(
-    <Menu.Item>
+    <Menu.Item key="embed">
       <StyledLink target="_blank" rel="noopener noreferrer">
         <img alt="icon" src={devIcon} />
         <SpaceElement />
@@ -113,7 +115,7 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history) => {
     </Menu.Item>
   );
   MenuItems.push(
-    <Menu.Item>
+    <Menu.Item key="GClassroom">
       <StyledLink target="_blank" rel="noopener noreferrer">
         <img alt="icon" src={googleIcon} />
         <SpaceElement />

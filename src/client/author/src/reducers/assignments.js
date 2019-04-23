@@ -1,12 +1,20 @@
 import {
   RECEIVE_ASSIGNMENTS_REQUEST,
   RECEIVE_ASSIGNMENTS_SUCCESS,
+  RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST,
+  RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
+  RECEIVE_ASSIGNMENTS_SUMMARY_ERROR,
+  RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST,
+  RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS,
+  RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR,
   RECEIVE_ASSIGNMENTS_ERROR,
   UPDATE_CURRENT_EDITING_ASSIGNMENT,
   TOGGLE_RELEASE_GRADE_SETTINGS
 } from "../constants/actions";
 
 const initialState = {
+  summaryEntities: [],
+  assignmentClassList: [],
   entities: {},
   error: null,
   page: 1,
@@ -29,6 +37,27 @@ const reducer = (state = initialState, { type, payload }) => {
         entities: payload.entities
       };
     case RECEIVE_ASSIGNMENTS_ERROR:
+      return { ...state, loading: false, error: payload.error };
+
+    case RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST:
+      return { ...state, loading: true, summaryEntities: [] };
+    case RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        summaryEntities: payload.entities
+      };
+    case RECEIVE_ASSIGNMENTS_SUMMARY_ERROR:
+      return { ...state, loading: false, error: payload.error };
+    case RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST:
+      return { ...state, loading: true, assignmentClassList: [] };
+    case RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        assignmentClassList: payload.entities
+      };
+    case RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR:
       return { ...state, loading: false, error: payload.error };
     case UPDATE_CURRENT_EDITING_ASSIGNMENT:
       return {

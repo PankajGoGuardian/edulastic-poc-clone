@@ -53,15 +53,14 @@ const fetchTeacherAssignments = ({ groupId = "", filters: { grades = [], subject
     })
     .then(result => result.data.result);
 
-const regrade = data => {
-  return api
+const regrade = data =>
+  api
     .callApi({
       url: `${prefix}/regrade`,
       method: "post",
       data
     })
     .then(result => result.data.result);
-};
 
 const getById = id =>
   api
@@ -97,6 +96,22 @@ const redirect = (assignmentId, data) =>
     })
     .then(result => result.data.result);
 
+const fetchAssignmentsSummary = districtId =>
+  api
+    .callApi({
+      url: `${prefix}/district/${districtId}`,
+      method: "get"
+    })
+    .then(result => result.data.result);
+
+const fetchAssignmentsClassList = ({ districtId, testId }) =>
+  api
+    .callApi({
+      url: `${prefix}/district/${districtId}/test/${testId}`,
+      method: "get"
+    })
+    .then(result => result.data.result);
+
 export default {
   create,
   update,
@@ -104,6 +119,8 @@ export default {
   fetchAssignments,
   fetchAssigned,
   fetchTeacherAssignments,
+  fetchAssignmentsSummary,
+  fetchAssignmentsClassList,
   regrade,
   getById,
   fetchTestActivities,

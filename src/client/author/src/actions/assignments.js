@@ -1,5 +1,7 @@
 import {
   RECEIVE_ASSIGNMENTS_REQUEST,
+  RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST,
+  RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST,
   FETCH_CURRENT_EDITING_ASSIGNMENT,
   UPDATE_RELEASE_SCORE_SETTINGS,
   TOGGLE_RELEASE_GRADE_SETTINGS
@@ -7,6 +9,11 @@ import {
 
 export const receiveAssignmentsAction = payload => ({
   type: RECEIVE_ASSIGNMENTS_REQUEST,
+  payload
+});
+
+export const receiveAssignmentsSummaryAction = payload => ({
+  type: RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST,
   payload
 });
 
@@ -19,6 +26,12 @@ export const updateReleaseScoreSettingsAction = payload => ({
   type: UPDATE_RELEASE_SCORE_SETTINGS,
   payload
 });
+
+export const receiveAssignmentClassList = payload => ({
+  type: RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST,
+  payload
+});
+
 export const toggleReleaseScoreSettingsAction = payload => ({
   type: TOGGLE_RELEASE_GRADE_SETTINGS,
   payload

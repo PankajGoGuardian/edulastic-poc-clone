@@ -16,7 +16,7 @@ import {
   dashBorderColor,
   secondaryTextColor,
   lightGreySecondary,
-  lightGreenSecondary,
+  greenThird,
   tabletWidth,
   mobileWidth
 } from "@edulastic/colors";
@@ -187,7 +187,7 @@ export const MasteryCell = styled.div`
 `;
 
 export const PerformanceScore = styled.span`
-  color: ${lightGreenSecondary};
+  color: ${greenThird};
   font-size: 14px;
   font-weight: 600;
 `;
@@ -410,7 +410,7 @@ export const StandardsMobile = styled.div`
 `;
 
 export const QuestionCell = styled.div`
-  color: ${lightGreenSecondary};
+  color: ${greenThird};
   font-size: 14px;
   font-weight: 600;
 `;

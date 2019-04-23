@@ -10,7 +10,7 @@ import {
   white,
   desktopWidth,
   tabletWidth,
-  lightGreenSecondary,
+  greenThird,
   extraDesktopWidth
 } from "@edulastic/colors";
 import { IconVerified, IconVisualization, IconCheckSmall, IconMoreVertical, IconLeftArrow } from "@edulastic/icons";
@@ -119,7 +119,7 @@ class ModuleRow extends Component {
                         <ModuleCompletedLabel>MODULE COMPLETED</ModuleCompletedLabel>
                         <ModuleCompletedIcon>
                           <CustomIcon>
-                            <IconVerified color={lightGreenSecondary} />
+                            <IconVerified color={greenThird} />
                           </CustomIcon>
                         </ModuleCompletedIcon>
                       </ModuleCompleted>
@@ -309,7 +309,7 @@ const ModuleTitleWrapper = styled.div`
 `;
 
 const ModuleCompletedLabel = styled.div`
-  color: ${lightGreenSecondary};
+  color: ${greenThird};
   font-size: 11px;
   @media only screen and (max-width: ${tabletWidth}) {
     display: none;

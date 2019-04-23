@@ -10,8 +10,49 @@ import {
   FETCH_CURRENT_EDITING_ASSIGNMENT,
   UPDATE_CURRENT_EDITING_ASSIGNMENT,
   UPDATE_RELEASE_SCORE_SETTINGS,
-  TOGGLE_RELEASE_GRADE_SETTINGS
+  TOGGLE_RELEASE_GRADE_SETTINGS,
+  RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST,
+  RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
+  RECEIVE_ASSIGNMENTS_SUMMARY_ERROR,
+  RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST,
+  RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS,
+  RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR
 } from "../constants/actions";
+
+function* receiveAssignmentClassList({ payload = {} }) {
+  try {
+    const entities = yield call(assignmentApi.fetchAssignmentsClassList, payload);
+    yield put({
+      type: RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS,
+      payload: { entities }
+    });
+  } catch (error) {
+    const errorMessage = "Receive class list failing";
+    yield call(message.error, errorMessage);
+    yield put({
+      type: RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR,
+      payload: { error: errorMessage }
+    });
+  }
+}
+
+function* receiveAssignmentsSummary({ payload = {} }) {
+  try {
+    const { districtId = {} } = payload;
+    const entities = yield call(assignmentApi.fetchAssignmentsSummary, districtId);
+    yield put({
+      type: RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
+      payload: { entities }
+    });
+  } catch (error) {
+    const errorMessage = "Receive tests is failing";
+    yield call(message.error, errorMessage);
+    yield put({
+      type: RECEIVE_ASSIGNMENTS_SUMMARY_ERROR,
+      payload: { error: errorMessage }
+    });
+  }
+}
 
 function* receiveAssignmentsSaga({ payload = {} }) {
   try {
@@ -82,7 +123,9 @@ function* updateAssignmetSaga({ payload }) {
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ASSIGNMENTS_REQUEST, receiveAssignmentsSaga),
+    yield takeLatest(RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST, receiveAssignmentsSummary),
     yield takeEvery(FETCH_CURRENT_EDITING_ASSIGNMENT, receiveAssignmentByIdSaga),
-    yield takeLatest(UPDATE_RELEASE_SCORE_SETTINGS, updateAssignmetSaga)
+    yield takeLatest(UPDATE_RELEASE_SCORE_SETTINGS, updateAssignmetSaga),
+    yield takeEvery(RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST, receiveAssignmentClassList)
   ]);
 }

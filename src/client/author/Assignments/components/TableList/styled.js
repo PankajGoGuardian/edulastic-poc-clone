@@ -10,7 +10,8 @@ import {
   lightGreySecondary,
   white,
   authorAssignment,
-  lightGreenSecondary
+  greenThird,
+  blue
 } from "@edulastic/colors";
 
 const { assignmentStatusBg, lightBlue } = authorAssignment;
@@ -60,24 +61,22 @@ export const Icon = styled.img`
 
 export const TableData = styled(Table)`
   text-align: center;
-
-  .ant-table-thead > tr > th .ant-table-column-sorter {
-    position: relative;
-    margin-left: 20px;
-  }
+  width: auto;
 
   .ant-table-thead > tr {
     th {
       .ant-table-column-sorters {
         display: flex;
-        align-items: center;
         justify-content: center;
       }
 
       &:first-child {
+        text-align: center;
+      }
+
+      &:nth-child(2) {
         .ant-table-column-sorters {
           justify-content: flex-start;
-          padding-left: 26px;
         }
       }
     }
@@ -92,6 +91,10 @@ export const TableData = styled(Table)`
 
     &:hover {
       background: transparent !important;
+    }
+
+    &.assignment-name {
+      text-align: left !important;
     }
   }
 
@@ -134,6 +137,9 @@ export const TableData = styled(Table)`
 
       &:first-child {
         padding-left: 26px;
+      }
+      &.select-row {
+        padding: 0px;
       }
     }
   }
@@ -246,7 +252,7 @@ export const AssignmentTD = styled.div`
 `;
 
 export const IconArrowDown = styled.img`
-  color: ${lightBlue};
+  color: ${blue};
   margin-right: 5px;
   width: 6px;
 `;
@@ -284,7 +290,7 @@ export const TypeIcon = styled.span`
   width: 18px;
   height: 18px;
   max-width: 18px;
-  background: ${props => (props.type === "practice" ? red : lightGreenSecondary)};
+  background: ${props => (props.type === "practice" ? red : greenThird)};
   text-align: center;
   color: ${white};
   border-radius: 50%;
@@ -295,12 +301,12 @@ export const TypeIcon = styled.span`
 `;
 
 export const ExpandDivdier = styled.div`
-  color: ${lightBlue};
+  color: ${blue};
   cursor: pointer;
 `;
 
 export const BtnStatus = styled(Button)`
-  color:${white}
+  color: ${white};
   border: 0px;
   font-size: 0.7em;
   font-weight: bold;
@@ -308,7 +314,7 @@ export const BtnStatus = styled(Button)`
   height: 26px;
   text-align: center;
   border-radius: 8px;
-  background-color:${props => defineStatusBg(props.status)}
+  background-color: ${props => defineStatusBg(props.status)};
 `;
 
 export const TitleCase = styled.div`
@@ -328,9 +334,9 @@ export const ActionsWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-right: 20px;
+  margin-right: 15px;
   padding: 0;
-  width: 110px;
+  width: 80px;
 `;
 
 export const GreyFont = styled.span`

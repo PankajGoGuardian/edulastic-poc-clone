@@ -148,6 +148,14 @@ export const RECEIVE_ASSIGNMENTS_REQUEST = "[assignments] receive list request";
 export const RECEIVE_ASSIGNMENTS_SUCCESS = "[assignments] receive list success";
 export const RECEIVE_ASSIGNMENTS_ERROR = "[assignments] receive list error";
 
+export const RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST = "[assignmentsSummary] receive list request";
+export const RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS = "[assignmentsSummary] receive list success";
+export const RECEIVE_ASSIGNMENTS_SUMMARY_ERROR = "[assignmentsSummary] receive list error";
+
+export const RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST = "[assignment’s class list] receive list request";
+export const RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS = "[assignment’s class list] receive list success";
+export const RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR = "[assignment’s class list] receive list error";
+
 export const FETCH_CURRENT_EDITING_ASSIGNMENT = "[assignments] fetch assignment data";
 export const UPDATE_CURRENT_EDITING_ASSIGNMENT = "[assignments] save current assignment";
 export const UPDATE_RELEASE_SCORE_SETTINGS = "[assignments] update assignment settings";

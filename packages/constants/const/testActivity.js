@@ -13,6 +13,8 @@ module.exports = {
       IN_GRADING: "IN GRADING",
       NOT_GRADED: "NOT GRADED",
       GRADES_HELD: "GRADES HELD",
+      SUBMITTED: "SUBMITTED",
+      NOT_STARTED: "NOT STARTED",
       DONE: "DONE"
     }
   }

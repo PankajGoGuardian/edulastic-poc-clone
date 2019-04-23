@@ -59,7 +59,6 @@ export const greenSecondary = "#4CD43B";
 
 export const greenPrimary = "#0EB08D";
 export const greenThird = "#5eb500";
-export const lightGreenSecondary = "#5EB500";
 
 export const greenSomeWhatDark = "#17a67d";
 
@@ -91,11 +90,18 @@ export const extraDesktopWidth = "1440px";
 export const authorAssignment = {
   assignmentStatusBg: {
     NOT_OPEN: "#999999",
-    IN_PROGRESS: "#6c9eeb",
+    IN_PROGRESS: "#F9942D",
     IN_GRADING: "#fc9a2b",
     NOT_GRADED: "#e06666",
     GRADES_HELD: "#f8f033",
+    SUBMITTED: "#5EB500",
+    NOT_STARTED: "#AAAFB5",
     DONE: "#6aa84f"
   },
   lightBlue: "#12a6e8"
 };
+
+export const fadedWhite = "#5196f3";
+export const fadedBlue = "#BED8FA";
+
+export const orange = "#FFA200";

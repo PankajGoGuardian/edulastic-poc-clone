@@ -18,7 +18,17 @@ import { connect } from "react-redux";
 import HeaderWrapper from "../../mainContent/headerWrapper";
 import { toggleSideBarAction } from "../../actions/togglemenu";
 
-const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar, renderExtra, renderFilter }) => (
+const ListHeader = ({
+  onCreate,
+  t,
+  title,
+  btnTitle,
+  toggleSideBar,
+  renderExtra,
+  renderFilter,
+  isAdvancedView,
+  hasButton
+}) => (
   <Container>
     <FlexContainer style={{ pointerEvents: "none" }}>
       <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
@@ -26,35 +36,42 @@ const ListHeader = ({ onCreate, t, title, btnTitle, toggleSideBar, renderExtra, 
     </FlexContainer>
 
     <RightButtonWrapper>
-      {renderFilter()}
-      <CreateButton
-        onClick={onCreate}
-        color="secondary"
-        variant="create"
-        shadow="none"
-        icon={<IconPlusStyled color={newBlue} width={20} height={20} hoverColor={newBlue} />}
-      >
-        {btnTitle && btnTitle.length ? btnTitle : t("component.itemlist.header.create")}
-      </CreateButton>
+      {renderFilter(isAdvancedView)}
+      {hasButton && (
+        <CreateButton
+          onClick={onCreate}
+          color="secondary"
+          variant="create"
+          shadow="none"
+          icon={<IconPlusStyled color={newBlue} width={20} height={20} hoverColor={newBlue} />}
+        >
+          {btnTitle && btnTitle.length ? btnTitle : t("component.itemlist.header.create")}
+        </CreateButton>
+      )}
       {renderExtra()}
     </RightButtonWrapper>
   </Container>
 );
 
 ListHeader.propTypes = {
-  onCreate: PropTypes.func.isRequired,
+  onCreate: PropTypes.func,
   t: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   toggleSideBar: PropTypes.func.isRequired,
   btnTitle: PropTypes.string,
   renderExtra: PropTypes.func,
-  renderFilter: PropTypes.func
+  renderFilter: PropTypes.func,
+  isAdvancedView: PropTypes.bool,
+  hasButton: PropTypes.bool
 };
 
 ListHeader.defaultProps = {
   btnTitle: "",
   renderExtra: () => null,
-  renderFilter: () => null
+  renderFilter: () => null,
+  onCreate: () => {},
+  isAdvancedView: false,
+  hasButton: true
 };
 
 const enhance = compose(

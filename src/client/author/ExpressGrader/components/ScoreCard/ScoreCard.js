@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { lightGreenSecondary } from "@edulastic/colors";
+import { greenThird } from "@edulastic/colors";
 import {
   StyledFlexContainer,
   StyledCard,
@@ -55,7 +55,7 @@ export default class ScoreCard extends Component {
                 <img src={InfoIcon} alt="help" />
               </StyledDivMid>
               <StyledDivMid>
-                <StyledText color={lightGreenSecondary}>
+                <StyledText color={greenThird}>
                   {`${Math.round((this.getCorrectAnswers(question) / questions.length) * 100)}%`}
                 </StyledText>
                 <StyledText>
@@ -75,7 +75,7 @@ export default class ScoreCard extends Component {
                 </StyledDivMid>
                 <StyledDivMid>
                   <ScoreTitle>score</ScoreTitle>
-                  <StyledDivColor color={lightGreenSecondary}>
+                  <StyledDivColor color={greenThird}>
                     {student.maxScore === 0 ? "-" : `${((100 * student.score) / student.maxScore).toFixed(0)}%`}
                   </StyledDivColor>
                   <StyledDivColor>

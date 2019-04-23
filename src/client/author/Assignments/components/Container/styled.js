@@ -1,8 +1,8 @@
-import { Radio } from "antd";
+import { Radio, Switch } from "antd";
 import styled from "styled-components";
 
-import { mobileWidth, tabletWidth } from "@edulastic/colors";
-import { FlexContainer, Card } from "@edulastic/common";
+import { mobileWidth, tabletWidth, fadedWhite, blue, white, fadedBlue } from "@edulastic/colors";
+import { FlexContainer, Card, Button } from "@edulastic/common";
 
 export const Container = styled.div`
   padding: 0 44px 20px 46px;
@@ -31,6 +31,8 @@ export const PaginationInfo = styled.span`
 export const Main = styled.div`
   flex: 1;
   width: 100%;
+  display: flex;
+  position: relative;
 `;
 
 export const DRadio = styled(Radio)``;
@@ -74,4 +76,51 @@ export const StyledFlexContainer = styled(FlexContainer)`
     flex-direction: row-reverse;
     width: 100%;
   }
+`;
+
+export const ViewSwitch = styled(Switch)`
+  width: 35px;
+  margin: 0px 15px;
+  background-color: ${fadedWhite};
+`;
+
+export const TestButton = styled(Button)`
+  height: 45px;
+  width: 130px;
+  color: ${blue};
+  border-radius: 3px;
+  margin-left: 25px;
+  background: ${white};
+`;
+
+export const SwitchWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const SwitchLabel = styled.div`
+  font-size: 10px;
+  font-weight: 600;
+  color: ${fadedBlue};
+`;
+
+export const FilterButton = styled(Button)`
+  min-width: 35px;
+  min-height: 25px;
+  padding: 2px;
+  padding-top: 5px;
+  border-radius: 3px;
+  position: absolute;
+  left: -20px;
+  top: 25px;
+  z-index: 1;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+  &:focus {
+    outline: unset;
+  }
+`;
+
+export const TableWrapper = styled.div`
+  position: relative;
+  width: 100%;
 `;

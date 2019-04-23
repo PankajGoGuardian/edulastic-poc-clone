@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { round } from "lodash";
-import { lightGreenSecondary } from "@edulastic/colors";
+import { greenThird } from "@edulastic/colors";
 import QuestionScore from "../QuestionScore/QuestionScore";
 import { StyledCard, TableData, StyledDivMid, StyledText, TableTitle, StudentsTitle, ScoreTitle } from "./styled";
 import InfoIcon from "../../Assets/info.svg";
@@ -97,7 +97,7 @@ class ScoreTable extends Component {
               const percent = maxScore === 0 ? "-" : `${((100 * score) / maxScore).toFixed(0)}%`;
               return (
                 <StyledDivMid style={{ textAlign: "left", paddingLeft: 25 }}>
-                  <StyledText color={lightGreenSecondary}>{percent}</StyledText>({round(score, 1)} / {maxScore})
+                  <StyledText color={greenThird}>{percent}</StyledText>({round(score, 1)} / {maxScore})
                 </StyledDivMid>
               );
             },
@@ -123,8 +123,8 @@ class ScoreTable extends Component {
       });
       const questionAvarageScore = (
         <StyledDivMid>
-          <StyledText color={lightGreenSecondary}>{`${Math.round((successAnswer / length) * 100)}%`}</StyledText>(
-          {successAnswer}/ {length})
+          <StyledText color={greenThird}>{`${Math.round((successAnswer / length) * 100)}%`}</StyledText>({successAnswer}
+          / {length})
         </StyledDivMid>
       );
 

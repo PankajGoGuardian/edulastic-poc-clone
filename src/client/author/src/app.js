@@ -9,6 +9,7 @@ import { tabletWidth, mainBgColor } from "@edulastic/colors";
 import Sidebar from "./Sidebar/SideMenu";
 /* lazy load routes */
 const Assignments = lazy(() => import("../Assignments"));
+const AssignmentAdvanced = lazy(() => import("../AssignmentAdvanced"));
 const Regrade = lazy(() => import("../Regrade"));
 const AssessmentCreate = lazy(() => import("../AssessmentCreate"));
 const AssessmentPage = lazy(() => import("../AssessmentPage"));
@@ -54,6 +55,11 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
           <Suspense fallback={<Progress />}>
             <Switch>
               <Route exact path={`${match.url}/assignments`} component={Assignments} />
+              <Route
+                exact
+                path={`${match.url}/assignments/:districtId/:testId`}
+                component={props => <AssignmentAdvanced {...props} />}
+              />
               <Route
                 exact
                 path={`${match.url}/assignments/regrade/new/:newTestId/old/:oldTestId`}
@@ -161,11 +167,9 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               <Route exact path="/author/schools" component={Schools} />
               <Route exact path="/author/users/teacher" component={Teacher} />
 
-
               <Route exact path="/author/users/district-admin" component={DistrictAdmin} />
 
               <Route exact path="/author/users/school-admin" component={SchoolAdmin} />
-
             </Switch>
           </Suspense>
         </Wrapper>

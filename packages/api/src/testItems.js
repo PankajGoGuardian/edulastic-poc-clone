@@ -45,6 +45,7 @@ const updateById = (id, item, testId) => {
     origTestItemId,
     ...data
   } = formatData(item);
+  console.log(`${prefix}/${id}${testId ? `?testId=${testId}` : ""}`, "URL");
   return api
     .callApi({
       url: `${prefix}/${id}${testId ? `?testId=${testId}` : ""}`,

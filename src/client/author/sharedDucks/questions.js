@@ -19,6 +19,7 @@ export const ADD_QUESTION = "[author questions] add question";
 export const CHANGE_CURRENT_QUESTION = "[author quesitons] change current question";
 export const ADD_ALIGNMENT = "[author questions] add alignment";
 export const REMOVE_ALIGNMENT = "[author questions] remove alignment";
+export const DELETE_QUESTION = "[author questions] delete question by id";
 
 // actions creators
 export const loadQuestionsAction = createAction(LOAD_QUESTIONS);
@@ -31,6 +32,7 @@ export const setFirstMountAction = createAction(SET_FIRST_MOUNT);
 export const changeCurrentQuestionAction = createAction(CHANGE_CURRENT_QUESTION);
 export const addAlignmentAction = createAction(ADD_ALIGNMENT);
 export const removeAlignmentAction = createAction(REMOVE_ALIGNMENT);
+export const deleteQuestionAction = createAction(DELETE_QUESTION);
 
 // initialState
 const initialState = {
@@ -46,6 +48,14 @@ const loadQuestions = (state, { payload }) => {
 const addQuestions = (state, { payload }) => {
   state.byId = { ...state.byId, ...payload };
 };
+
+const deleteQuestion = (state, { payload }) => {
+  const newState = _cloneDeep(state);
+
+  delete newState.byId[payload];
+  state.byId = { ...newState.byId };
+};
+
 // update question by id
 const updateQuestion = (state, { payload }) => {
   state.byId[payload.id] = payload;
@@ -128,7 +138,8 @@ export default createReducer(initialState, {
   [SET_FIRST_MOUNT]: setFirstMount,
   [CHANGE_CURRENT_QUESTION]: changeCurrent,
   [ADD_ALIGNMENT]: addAlignment,
-  [REMOVE_ALIGNMENT]: removeAlignment
+  [REMOVE_ALIGNMENT]: removeAlignment,
+  [DELETE_QUESTION]: deleteQuestion
 });
 
 // selectors

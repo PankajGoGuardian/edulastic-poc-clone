@@ -7,7 +7,7 @@ import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { message } from "antd";
 import { createAction } from "redux-starter-kit";
 import { replace, push } from "connected-react-router";
-import { loadQuestionsAction, addItemsQuestionAction } from "../sharedDucks/questions";
+import { loadQuestionsAction, addItemsQuestionAction, deleteQuestionAction } from "../sharedDucks/questions";
 
 // constants
 const testItemStatusConstants = {
@@ -37,6 +37,7 @@ export const ITEM_DETAIL_PUBLISH = "[itemDetail] publish test item";
 export const UPDATE_TESTITEM_STATUS = "[itemDetail] update test item status";
 export const ITEM_SET_REDIRECT_TEST = "[itemDetail] set redirect test id";
 export const ITEM_CLEAR_REDIRECT_TEST = "[itemDetail] clear redirect test id";
+export const DELETE_ITEM_DETAIL_WIDGET_APPLY = "[itemDetail] delete widget apply";
 
 export const SAVE_CURRENT_EDITING_TEST_ID = "[itemDetail] save current editing test id";
 // actions
@@ -124,226 +125,6 @@ export const saveCurrentEditingTestIdAction = id => ({
   payload: id
 });
 
-// reducer
-
-const initialState = {
-  item: null,
-  error: null,
-  loading: false,
-  updating: false,
-  updateError: null,
-  dragging: false,
-  redirectTestId: null,
-  currentEditingTestId: null
-};
-
-const deleteWidget = (state, { rowIndex, widgetIndex }) => {
-  const newState = cloneDeep(state);
-  newState.item.rows[rowIndex].widgets = newState.item.rows[rowIndex].widgets.filter((w, i) => i !== widgetIndex);
-
-  return newState;
-};
-
-const updateDimension = (state, { left, right }) => {
-  const newState = cloneDeep(state);
-  newState.item.rows[0].dimension = left;
-
-  if (left === "100%") {
-    newState.item.rows[0].widgets = [...newState.item.rows[0].widgets, ...newState.item.rows[1].widgets];
-    newState.item.rows.length = 1;
-  } else if (!newState.item.rows[1]) {
-    newState.item.rows[1] = {
-      tabs: ["Tab 1", "Tab 2"],
-      dimension: right,
-      widgets: []
-    };
-  } else {
-    newState.item.rows[1].dimension = right;
-  }
-  return newState;
-};
-
-const updateTabTitle = (state, { rowIndex, tabIndex, value }) => {
-  const newState = cloneDeep(state);
-  newState.item.rows[rowIndex].tabs[tabIndex] = value;
-  return newState;
-};
-
-const useTabs = (state, { rowIndex, isUseTabs }) => {
-  const newState = cloneDeep(state);
-  if (isUseTabs) {
-    newState.item.rows[rowIndex].tabs = ["Tab 1", "Tab 2"];
-  }
-  if (!isUseTabs) {
-    newState.item.rows[rowIndex].tabs = [];
-  }
-  return newState;
-};
-
-const moveWidget = (state, { from, to }) => {
-  const newState = cloneDeep(state);
-  const [movedWidget] = newState.item.rows[from.rowIndex].widgets.splice(from.widgetIndex, 1);
-  movedWidget.tabIndex = to.tabIndex || 0;
-  newState.item.rows[to.rowIndex].widgets.splice(to.widgetIndex, 0, movedWidget);
-  return newState;
-};
-
-export function reducer(state = initialState, { type, payload }) {
-  switch (type) {
-    case RECEIVE_ITEM_DETAIL_REQUEST:
-      return { ...state, loading: true };
-    case RECEIVE_ITEM_DETAIL_SUCCESS:
-      return { ...state, item: payload, loading: false, error: null };
-    case RECEIVE_ITEM_DETAIL_ERROR:
-      return { ...state, loading: false, error: payload.error };
-
-    case SET_ITEM_DETAIL_DATA:
-      return { ...state, item: payload.item };
-
-    case DELETE_ITEM_DETAIL_WIDGET:
-      return deleteWidget(state, payload);
-
-    case UPDATE_TAB_TITLE:
-      return updateTabTitle(state, payload);
-
-    case MOVE_WIDGET:
-      return moveWidget(state, payload);
-
-    case USE_TABS:
-      return useTabs(state, payload);
-
-    case SET_DRAGGING:
-      return { ...state, dragging: payload.dragging };
-
-    case UPDATE_ITEM_DETAIL_DIMENSION:
-      return updateDimension(state, payload);
-
-    case UPDATE_ITEM_DETAIL_REQUEST:
-      return { ...state, updating: true };
-    case UPDATE_ITEM_DETAIL_SUCCESS:
-      return { ...state, item: payload.item, updating: false };
-    case UPDATE_ITEM_DETAIL_ERROR:
-      return { ...state, updating: false, updateError: payload.error };
-    case ITEM_SET_REDIRECT_TEST:
-      return { ...state, redirectTestId: payload };
-    case ITEM_CLEAR_REDIRECT_TEST:
-      return { ...state, redirectTestId: undefined };
-    case UPDATE_TESTITEM_STATUS:
-      return {
-        ...state,
-        item: {
-          ...state.item,
-          status: payload
-        }
-      };
-    case SAVE_CURRENT_EDITING_TEST_ID:
-      return {
-        ...state,
-        currentEditingTestId: payload
-      };
-    default:
-      return state;
-  }
-}
-
-// saga
-
-function* receiveItemSaga({ payload }) {
-  try {
-    const data = yield call(testItemsApi.getById, payload.id, payload.params);
-    let questions = (data.data && data.data.questions) || [];
-    const resources = (data.data && data.data.resources) || [];
-    questions = [...questions, ...resources];
-    questions = _keyBy(questions, "id");
-    const item = _omit(data, "data");
-    yield put({
-      type: RECEIVE_ITEM_DETAIL_SUCCESS,
-      payload: item
-    });
-
-    if (payload.params.addItem) {
-      yield put(addItemsQuestionAction(questions));
-    } else {
-      yield put(loadQuestionsAction(questions));
-    }
-  } catch (err) {
-    console.log("err is", err);
-    const errorMessage = "Receive item by id is failing";
-    yield call(message.error, errorMessage);
-    yield put({
-      type: RECEIVE_ITEM_DETAIL_ERROR,
-      payload: { error: errorMessage }
-    });
-  }
-}
-
-export function* updateItemSaga({ payload }) {
-  try {
-    if (!payload.keepData) {
-      // avoid data part being put into db
-      delete payload.data.data;
-    }
-
-    let data = _omit(payload.data, ["authors", "__v"]);
-    if (payload.testId) {
-      data.testId = testId;
-    }
-    const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
-    console.log("update by id item itemId ", item._id, "payload.id", payload.id);
-    if (item._id != payload.id) {
-      yield put(
-        replace(
-          payload.testId
-            ? `/author/items/${item._id}/item-detail/test/${payload.testId}`
-            : `/author/items/${item._id}/item-detail`
-        )
-      );
-    }
-    if (testId) {
-      yield put(setRedirectTestAction(testId));
-    }
-    yield put({
-      type: UPDATE_ITEM_DETAIL_SUCCESS,
-      payload: { item }
-    });
-    yield call(message.success, "Update item by id is success", "Success");
-  } catch (err) {
-    console.error(err);
-    const errorMessage = "Update item by id is failing";
-    yield call(message.error, errorMessage);
-    yield put({
-      type: UPDATE_ITEM_DETAIL_ERROR,
-      payload: { error: errorMessage }
-    });
-  }
-}
-
-function* publishTestItemSaga({ payload }) {
-  try {
-    yield call(testItemsApi.publishTestItem, payload);
-    yield put(updateTestItemStatusAction(testItemStatusConstants.PUBLISHED));
-    const redirectTestId = yield select(getRedirectTestSelector);
-    if (redirectTestId) {
-      yield delay(1500);
-      yield put(push(`/author/tests/${redirectTestId}`));
-      yield put(clearRedirectTestAction());
-    }
-    yield call(message.success, "Successfully published");
-  } catch (e) {
-    console.error("publish error", e, e.stack);
-    const errorMessage = "publish failed";
-    yield call(message.error, errorMessage);
-  }
-}
-
-export function* watcherSaga() {
-  yield all([
-    yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
-    yield takeEvery(UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga),
-    yield takeEvery(ITEM_DETAIL_PUBLISH, publishTestItemSaga)
-  ]);
-}
-
 // selectors
 
 export const stateSelector = state => state.itemDetail;
@@ -359,7 +140,6 @@ export const getRedirectTestSelector = createSelector(
 );
 
 export const getItemDetailSelectorForPreview = (state, id, page) => {
-  let item = undefined;
   let testItems = [];
   if (page === "addItems") {
     testItems = get(state, "testsAddItems.items", []);
@@ -368,7 +148,7 @@ export const getItemDetailSelectorForPreview = (state, id, page) => {
   } else {
     console.warn("unknown page type ", page);
   }
-  item = testItems.find(x => x._id === id);
+  const item = testItems.find(x => x._id === id);
   return item || undefined;
 };
 
@@ -459,3 +239,233 @@ export const getItemDetailValidationSelector = createSelector(
     return validations;
   }
 );
+
+// reducer
+
+const initialState = {
+  item: null,
+  error: null,
+  loading: false,
+  updating: false,
+  updateError: null,
+  dragging: false,
+  redirectTestId: null,
+  currentEditingTestId: null
+};
+
+const deleteWidget = (state, { rowIndex, widgetIndex }) => {
+  const newState = cloneDeep(state);
+  newState.item.rows[rowIndex].widgets = newState.item.rows[rowIndex].widgets.filter((w, i) => i !== widgetIndex);
+
+  return newState;
+};
+
+const updateDimension = (state, { left, right }) => {
+  const newState = cloneDeep(state);
+  newState.item.rows[0].dimension = left;
+
+  if (left === "100%") {
+    newState.item.rows[0].widgets = [...newState.item.rows[0].widgets, ...newState.item.rows[1].widgets];
+    newState.item.rows.length = 1;
+  } else if (!newState.item.rows[1]) {
+    newState.item.rows[1] = {
+      tabs: ["Tab 1", "Tab 2"],
+      dimension: right,
+      widgets: []
+    };
+  } else {
+    newState.item.rows[1].dimension = right;
+  }
+  return newState;
+};
+
+const updateTabTitle = (state, { rowIndex, tabIndex, value }) => {
+  const newState = cloneDeep(state);
+  newState.item.rows[rowIndex].tabs[tabIndex] = value;
+  return newState;
+};
+
+const useTabs = (state, { rowIndex, isUseTabs }) => {
+  const newState = cloneDeep(state);
+  if (isUseTabs) {
+    newState.item.rows[rowIndex].tabs = ["Tab 1", "Tab 2"];
+  }
+  if (!isUseTabs) {
+    newState.item.rows[rowIndex].tabs = [];
+  }
+  return newState;
+};
+
+const moveWidget = (state, { from, to }) => {
+  const newState = cloneDeep(state);
+  const [movedWidget] = newState.item.rows[from.rowIndex].widgets.splice(from.widgetIndex, 1);
+  movedWidget.tabIndex = to.tabIndex || 0;
+  newState.item.rows[to.rowIndex].widgets.splice(to.widgetIndex, 0, movedWidget);
+  return newState;
+};
+
+export function reducer(state = initialState, { type, payload }) {
+  switch (type) {
+    case RECEIVE_ITEM_DETAIL_REQUEST:
+      return { ...state, loading: true };
+    case RECEIVE_ITEM_DETAIL_SUCCESS:
+      return { ...state, item: payload, loading: false, error: null };
+    case RECEIVE_ITEM_DETAIL_ERROR:
+      return { ...state, loading: false, error: payload.error };
+
+    case SET_ITEM_DETAIL_DATA:
+      return { ...state, item: payload.item };
+
+    case DELETE_ITEM_DETAIL_WIDGET_APPLY:
+      return deleteWidget(state, payload);
+
+    case UPDATE_TAB_TITLE:
+      return updateTabTitle(state, payload);
+
+    case MOVE_WIDGET:
+      return moveWidget(state, payload);
+
+    case USE_TABS:
+      return useTabs(state, payload);
+
+    case SET_DRAGGING:
+      return { ...state, dragging: payload.dragging };
+
+    case UPDATE_ITEM_DETAIL_DIMENSION:
+      return updateDimension(state, payload);
+
+    case UPDATE_ITEM_DETAIL_REQUEST:
+      return { ...state, updating: true };
+    case UPDATE_ITEM_DETAIL_SUCCESS:
+      return { ...state, item: payload.item, updating: false };
+    case UPDATE_ITEM_DETAIL_ERROR:
+      return { ...state, updating: false, updateError: payload.error };
+    case ITEM_SET_REDIRECT_TEST:
+      return { ...state, redirectTestId: payload };
+    case ITEM_CLEAR_REDIRECT_TEST:
+      return { ...state, redirectTestId: undefined };
+    case UPDATE_TESTITEM_STATUS:
+      return {
+        ...state,
+        item: {
+          ...state.item,
+          status: payload
+        }
+      };
+    case SAVE_CURRENT_EDITING_TEST_ID:
+      return {
+        ...state,
+        currentEditingTestId: payload
+      };
+    default:
+      return state;
+  }
+}
+
+// saga
+
+function* receiveItemSaga({ payload }) {
+  try {
+    const data = yield call(testItemsApi.getById, payload.id, payload.params);
+    let questions = (data.data && data.data.questions) || [];
+    const resources = (data.data && data.data.resources) || [];
+    questions = [...questions, ...resources];
+    questions = _keyBy(questions, "id");
+    const item = _omit(data, "data");
+    yield put({
+      type: RECEIVE_ITEM_DETAIL_SUCCESS,
+      payload: item
+    });
+
+    if (payload.params.addItem) {
+      yield put(addItemsQuestionAction(questions));
+    } else {
+      yield put(loadQuestionsAction(questions));
+    }
+  } catch (err) {
+    console.log("err is", err);
+    const errorMessage = "Receive item by id is failing";
+    yield call(message.error, errorMessage);
+    yield put({
+      type: RECEIVE_ITEM_DETAIL_ERROR,
+      payload: { error: errorMessage }
+    });
+  }
+}
+
+export function* updateItemSaga({ payload }) {
+  try {
+    if (!payload.keepData) {
+      // avoid data part being put into db
+      delete payload.data.data;
+    }
+
+    const data = _omit(payload.data, ["authors", "__v"]);
+    if (payload.testId) {
+      data.testId = testId;
+    }
+    const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
+    console.log("update by id item itemId ", item._id, "payload.id", payload.id);
+    if (item._id !== payload.id) {
+      yield put(
+        replace(
+          payload.testId
+            ? `/author/items/${item._id}/item-detail/test/${payload.testId}`
+            : `/author/items/${item._id}/item-detail`
+        )
+      );
+    }
+    if (testId) {
+      yield put(setRedirectTestAction(testId));
+    }
+    yield put({
+      type: UPDATE_ITEM_DETAIL_SUCCESS,
+      payload: { item }
+    });
+    yield call(message.success, "Update item by id is success", "Success");
+  } catch (err) {
+    console.error(err);
+    const errorMessage = "Update item by id is failing";
+    yield call(message.error, errorMessage);
+    yield put({
+      type: UPDATE_ITEM_DETAIL_ERROR,
+      payload: { error: errorMessage }
+    });
+  }
+}
+
+function* publishTestItemSaga({ payload }) {
+  try {
+    yield call(testItemsApi.publishTestItem, payload);
+    yield put(updateTestItemStatusAction(testItemStatusConstants.PUBLISHED));
+    const redirectTestId = yield select(getRedirectTestSelector);
+    if (redirectTestId) {
+      yield delay(1500);
+      yield put(push(`/author/tests/${redirectTestId}`));
+      yield put(clearRedirectTestAction());
+    }
+    yield call(message.success, "Successfully published");
+  } catch (e) {
+    console.error("publish error", e, e.stack);
+    const errorMessage = "publish failed";
+    yield call(message.error, errorMessage);
+  }
+}
+
+function* deleteWidgetSaga({ payload: { rowIndex, widgetIndex } }) {
+  const newState = yield select(state => state.itemDetail);
+  const targetId = newState.item.rows[rowIndex].widgets[widgetIndex].reference;
+
+  yield put({ type: DELETE_ITEM_DETAIL_WIDGET_APPLY, payload: { rowIndex, widgetIndex } });
+
+  yield put(deleteQuestionAction(targetId));
+}
+
+export function* watcherSaga() {
+  yield all([
+    yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
+    yield takeEvery(UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga),
+    yield takeEvery(ITEM_DETAIL_PUBLISH, publishTestItemSaga),
+    yield takeEvery(DELETE_ITEM_DETAIL_WIDGET, deleteWidgetSaga)
+  ]);
+}

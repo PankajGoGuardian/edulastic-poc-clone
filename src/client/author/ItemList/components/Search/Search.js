@@ -86,7 +86,7 @@ class Search extends Component {
               disabled={isStandardsDisabled}
             >
               {curriculumStandards.elo.map(el => (
-                <Select.Option key={el.identifier} value={el.identifier}>
+                <Select.Option key={el._id} value={el._id}>
                   {`${el.identifier}: ${el.description}`}
                 </Select.Option>
               ))}

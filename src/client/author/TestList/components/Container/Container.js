@@ -328,12 +328,14 @@ class TestList extends Component {
   getFilters(filters) {
     const { curriculums, curriculumStandards = { elo: [], tlo: [] } } = this.props;
     const {
-      search: { curriculumId }
+      search: { curriculumId, subject }
     } = this.state;
-    const formattedCuriculums = curriculums.map(item => ({
-      value: item._id,
-      text: item.curriculum
-    }));
+    const formattedCuriculums = curriculums
+      .filter(curriculum => curriculum.subject === subject || !subject)
+      .map(item => ({
+        value: item._id,
+        text: item.curriculum
+      }));
 
     const formattedStandards = (curriculumStandards.elo || []).map(item => ({
       value: item._id,

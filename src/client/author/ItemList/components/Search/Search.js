@@ -65,11 +65,14 @@ class Search extends Component {
                 <Select.Option key="" value="">
                   All Curriculums
                 </Select.Option>
-                {curriculums.map(el => (
-                  <Select.Option key={el._id} value={el._id}>
-                    {el.curriculum}
-                  </Select.Option>
-                ))}
+                {curriculums.map(
+                  el =>
+                    (!subject || el.subject === subject) && (
+                      <Select.Option key={el._id} value={el._id}>
+                        {el.curriculum}
+                      </Select.Option>
+                    )
+                )}
               </Select>
             </ItemBody>
           </Item>

@@ -40,35 +40,35 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
 
     context("TC_238 => Image upload area", () => {
       it("Upload image to server", () => {
-        // cy.fixture("testImages/sample.jpg").then(logo => {
-        //   Cypress.Blob.base64StringToBlob(logo, "image/jpg").then(blob => {
-        //     cy.uploadImage(blob).then(result => {
-        //       // update uploaded image link to store
-        //       const imageUrl = result.response.body.result.fileUri;
-        //       const currentQuestion = question.getCurrentStoreQuestion();
-        //       currentQuestion.image.source = imageUrl;
-        //       cy.window()
-        //         .its("store")
-        //         .invoke("dispatch", { type: "[author questions] update questions", payload: currentQuestion });
-        //       question
-        //         .getDropZoneImageContainer()
-        //         .find("img")
-        //         .should("have.attr", "src", imageUrl);
-        //     });
-        //   });
-        // });
+        cy.fixture("testImages/sample.jpg").then(logo => {
+          Cypress.Blob.base64StringToBlob(logo, "image/jpg").then(blob => {
+            cy.uploadImage(blob).then(result => {
+              // update uploaded image link to store
+              const imageUrl = result.response.body.result.fileUri;
+              const currentQuestion = question.getCurrentStoreQuestion();
+              currentQuestion.image.source = imageUrl;
+              cy.window()
+                .its("store")
+                .invoke("dispatch", { type: "[author questions] update questions", payload: currentQuestion });
+              question
+                .getDropZoneImageContainer()
+                .find("img")
+                .should("have.attr", "src", imageUrl);
+            });
+          });
+        });
 
         // test with local image
-        const testImageUrl = "https://edureact-dev.s3.amazonaws.com/1551154644960_blob";
-        const currentQuestion = question.getCurrentStoreQuestion();
-        currentQuestion.image.source = testImageUrl;
-        cy.window()
-          .its("store")
-          .invoke("dispatch", { type: "[author questions] update questions", payload: currentQuestion });
-        question
-          .getDropZoneImageContainer()
-          .find("img")
-          .should("have.attr", "src", testImageUrl);
+        // const testImageUrl = "https://edureact-dev.s3.amazonaws.com/1551154644960_blob";
+        // const currentQuestion = question.getCurrentStoreQuestion();
+        // currentQuestion.image.source = testImageUrl;
+        // cy.window()
+        //   .its("store")
+        //   .invoke("dispatch", { type: "[author questions] update questions", payload: currentQuestion });
+        // question
+        //   .getDropZoneImageContainer()
+        //   .find("img")
+        //   .should("have.attr", "src", testImageUrl);
       });
 
       it("Enter Width (px)", () => {

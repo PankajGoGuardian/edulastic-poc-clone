@@ -32,9 +32,8 @@ class HighlightImage {
   // get current question from Store
 
   getCurrentStoreQuestion = () => {
-    const storeValue = JSON.parse(window.localStorage.getItem("persist:root")).authorQuestions;
-    const currentId = JSON.parse(storeValue).current;
-    return JSON.parse(storeValue).byId[currentId];
+    const storeValue = JSON.parse(window.localStorage.getItem("persist:root")).question;
+    return JSON.parse(storeValue).entity.data;
   };
 
   getDropZoneImageContainer = () => cy.get('[data-cy="dropzone-image-container"]');

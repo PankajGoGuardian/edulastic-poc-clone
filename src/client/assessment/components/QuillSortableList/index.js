@@ -7,21 +7,24 @@ import QuillSortableItem from "./components/QuillSortableItem";
 const QuillSortableList = SortableContainer(
   ({ items, readOnly, firstFocus, onRemove, onChange, fontSize = 14, prefix = "prefix", columns = 1, label = "" }) => (
     <div data-cy="sortable-list-container" style={{ fontSize }}>
-      {items.map((value, index) => (
-        <QuillSortableItem
-          fontSize={fontSize}
-          key={index}
-          index={index}
-          label={label ? `${label} ${index + 1}` : ""}
-          indx={prefix + index}
-          value={value}
-          firstFocus={firstFocus}
-          rOnly={readOnly}
-          columns={columns}
-          onRemove={() => onRemove(index)}
-          onChange={val => (typeof onChange === "function" ? onChange(index, val) : () => {})}
-        />
-      ))}
+      {items.map(
+        (value, index) =>
+          console.log(value) || (
+            <QuillSortableItem
+              fontSize={fontSize}
+              key={index}
+              index={index}
+              label={label ? `${label} ${index + 1}` : ""}
+              indx={prefix + index}
+              value={value}
+              firstFocus={firstFocus}
+              rOnly={readOnly}
+              columns={columns}
+              onRemove={() => onRemove(index)}
+              onChange={val => (typeof onChange === "function" ? onChange(index, val) : () => {})}
+            />
+          )
+      )}
     </div>
   )
 );

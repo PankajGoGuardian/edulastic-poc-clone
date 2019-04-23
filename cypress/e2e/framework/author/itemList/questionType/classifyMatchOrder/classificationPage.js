@@ -7,6 +7,8 @@ class ClassificationPage {
   constructor() {
     this.editToolBar = new EditToolBar();
     this.header = new Header();
+
+    this.scoringTypeOption = { "Exact match": "exactMatch", "Partial match": "partialMatch" };
   }
 
   // question content
@@ -95,6 +97,43 @@ class ClassificationPage {
 
   addAlternate = () => {
     cy.get('[data-cy="alternate"]')
+      .should("be.visible")
+      .click();
+    return this;
+  };
+
+  selectScoringType(option) {
+    const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`;
+    cy.get('[data-cy="scoringType"]')
+      .should("be.visible")
+      .click();
+
+    cy.get(selectOp)
+      .should("be.visible")
+      .click();
+
+    cy.get('[data-cy="scoringType"]')
+      .find(".ant-select-selection-selected-value")
+      .should("contain", option);
+
+    return this;
+  }
+
+  getPanalty = () => cy.get('[data-cy="penalty"]').should("be.visible");
+
+  getEnableAutoScoring = () =>
+    cy
+      .contains("Enable auto scoring")
+      .children()
+      .eq(0)
+      .should("be.visible");
+
+  getMinScore = () => cy.get("[data-cy=minscore]").should("be.visible");
+
+  getMaxScore = () => cy.get('[data-cy="maxscore"]').should("be.visible");
+
+  clickOnAdvancedOptions = () => {
+    cy.contains("span", "Advanced Options")
       .should("be.visible")
       .click();
     return this;

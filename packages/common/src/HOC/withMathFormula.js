@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
@@ -22,7 +22,8 @@ export const withMathFormula = WrappedComponent => {
     const [latexes, setLatexes] = useState([]);
     const [mathHtmls, setMathHtmls] = useState([]);
     const [newInnerHtml, setNewInnerHtml] = useState("");
-    const mathFieldRef = React.createRef();
+    let mathFieldRef = useRef(null);
+    const ref = useRef(null);
 
     const detectLatexes = () => {
       if (!dangerouslySetInnerHTML || !dangerouslySetInnerHTML.__html) {
@@ -78,6 +79,11 @@ export const withMathFormula = WrappedComponent => {
       }
     };
 
+    useEffect(() => {
+      mathFieldRef = ref.current;
+      startMathValidating();
+    });
+
     const convertLatexToHTML = latex => {
       if (!mathField) return latex;
       mathField.latex(latex);
@@ -88,10 +94,6 @@ export const withMathFormula = WrappedComponent => {
       const newMathHtmls = latexes.map(latex => convertLatexToHTML(latex));
       setMathHtmls(newMathHtmls);
     };
-
-    useEffect(() => {
-      startMathValidating();
-    }, [mathFieldRef.current, window.MathQuill]);
 
     useEffect(() => {
       if (!window.MathQuill && dangerouslySetInnerHTML !== undefined) {
@@ -133,7 +135,7 @@ export const withMathFormula = WrappedComponent => {
             dangerouslySetInnerHTML={{ __html: newInnerHtml }}
           />
           <NoneDiv>
-            <span ref={mathFieldRef} className="input__math__field" />
+            <span ref={ref} className="input__math__field" />
           </NoneDiv>
         </React.Fragment>
       </WithResources>

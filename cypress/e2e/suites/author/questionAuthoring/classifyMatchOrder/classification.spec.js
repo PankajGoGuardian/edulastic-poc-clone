@@ -1,8 +1,8 @@
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
 import ClassificationPage from "../../../../framework/author/itemList/questionType/classifyMatchOrder/classificationPage";
 import FileHelper from "../../../../framework/util/fileHelper";
-import Helpers from "../../../../framework/util/Helpers";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
+import Helpers from "../../../../framework/util/Helpers";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification" type question`, () => {
   const queData = {
@@ -12,13 +12,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
     template: " is the world's largest democracy",
     correctAns: "India",
     choices: ["China", "India"],
+    forScoring: ["Choice B", "Choice C", "Choice A", "Choice D"],
     extlink: "www.testdomain.com",
     testtext: "testtext",
     formula: "s=ar^2",
     column: 2,
     row: 1,
     columnTitles: ["Column1", "Column2"],
-    rowTitles: ["Row1"],
+    rowTitles: [],
     points: 2
   };
 
@@ -256,6 +257,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
   context("User creates question", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
+      editItem.deleteAllQuestion();
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
@@ -334,16 +336,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         question.getRowTitleInptuList().should("have.length", queData.rowTitles.length);
       });
 
-      it("Edit the row names for existing", () => {
-        question.getRowTitleInptuList().each(($el, index) => {
-          cy.wrap($el)
-            .click()
-            .clear()
-            .type(queData.rowTitles[index])
-            .should("contain", queData.rowTitles[index]);
-        });
-      });
-
       it("Add new row", () => {
         question
           .getRowAddButton()
@@ -358,6 +350,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
               .type("Last")
               .should("contain", "Last");
           });
+      });
+
+      it("Edit the row names for existing", () => {
+        question.getRowTitleInptuList().each(($el, index) => {
+          cy.wrap($el)
+            .click()
+            .clear()
+            .type(queData.rowTitles[index])
+            .should("contain", queData.rowTitles[index]);
+        });
       });
 
       it("Delete existing / newly created rows", () => {
@@ -766,6 +768,98 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
           .click()
           .should("have.length", 0);
       });
+    });
+  });
+
+  context("Scoring block tests", () => {
+    before("visit items page and select question type", () => {
+      editItem.getItemWithId(testItemId);
+      editItem.deleteAllQuestion();
+      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+    });
+
+    afterEach(() => {
+      const preiview = question.header.preview();
+      preiview.getClear().click();
+
+      question.header.edit();
+
+      question.clickOnAdvancedOptions();
+    });
+
+    it("test score with max score", () => {
+      question.clickOnAdvancedOptions();
+
+      question
+        .getMaxScore()
+        .clear()
+        .type(1);
+
+      const preiview = question.header.preview();
+
+      preiview
+        .getCheckAnswer()
+        .click()
+        .then(() => {
+          cy.get("body")
+            .children()
+            .should("contain", "score: 0/10");
+        });
+    });
+
+    it("test score with min score if attemted", () => {
+      question.getMaxScore().clear();
+
+      question.getEnableAutoScoring().click();
+
+      question
+        .getPontsInput()
+        .clear()
+        .type("12{del}");
+
+      question
+        .getMinScore()
+        .clear()
+        .type(2);
+
+      const preiview = question.header.preview();
+
+      question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${0}`);
+
+      preiview
+        .getCheckAnswer()
+        .click()
+        .then(() => {
+          cy.get("body")
+            .children()
+            .should("contain", "score: 2/12");
+        });
+    });
+
+    it("test score with partial match and penalty", () => {
+      question.getMinScore().clear();
+
+      question.selectScoringType("Partial match");
+
+      question
+        .getPanalty()
+        .clear()
+        .type(4);
+
+      const preiview = question.header.preview();
+
+      queData.forScoring.forEach((choice, index) => {
+        question.getDragDropItemByIndex(index).customDragDrop(`#drag-drop-board-${index < 2 ? 0 : 1}`);
+      });
+
+      preiview
+        .getCheckAnswer()
+        .click()
+        .then(() => {
+          cy.get("body")
+            .children()
+            .should("contain", "score: 4/12");
+        });
     });
   });
 });

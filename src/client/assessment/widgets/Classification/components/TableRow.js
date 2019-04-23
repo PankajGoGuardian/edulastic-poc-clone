@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 
-import { CenteredText, MathFormulaDisplay } from "@edulastic/common";
+import { CenteredText } from "@edulastic/common";
 
 import DropContainer from "../../../components/DropContainer";
 
@@ -43,9 +43,10 @@ const TableRow = ({
     if (arrayOfRows.has(index) && rowTitles.length > 0) {
       cols.push(
         <RowTitleCol key={index + startIndex + colCount} colCount={colCount}>
-          <CenteredText style={{ wordWrap: "break-word", textAlign: "left" }}>
-            <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] }} />
-          </CenteredText>
+          <CenteredText
+            style={{ wordWrap: "break-word", textAlign: "left" }}
+            dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] || "" }}
+          />
         </RowTitleCol>
       );
     }

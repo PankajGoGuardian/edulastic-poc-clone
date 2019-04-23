@@ -209,7 +209,9 @@ const EditClassification = ({ item, setQuestionData, setFirstMount, theme, t }) 
                 });
               });
             } else if (prop === "row_titles") {
-              draft.ui_style.row_count += 1;
+              if (draft.ui_style.row_titles.length > draft.ui_style.row_count) {
+                draft.ui_style.row_count += 1;
+              }
               Array.from({ length: draft.ui_style.column_count }).forEach(() => {
                 draft.validation.valid_response.value.push([]);
               });
@@ -389,6 +391,51 @@ const EditClassification = ({ item, setQuestionData, setFirstMount, theme, t }) 
         />
 
         <Row gutter={70}>
+          <Col data-cy="row-container" span={12}>
+            <Subtitle>{t("component.classification.rowsSubtitle")}</Subtitle>
+
+            <Subtitle
+              fontSize={theme.widgets.classification.subtitleFontSize}
+              color={theme.widgets.classification.subtitleColor}
+              padding="0 0 16px 0"
+            >
+              {t("component.classification.rowsCountSubtitle")}
+            </Subtitle>
+
+            <Select
+              data-cy="classification-row-dropdown"
+              size="large"
+              style={{ width: "calc(100% - 30px)" }}
+              value={ui_style.row_count}
+              onChange={value => onUiChange("row_count")(+value)}
+            >
+              {Array.from({ length: 10 }).map((v, index) => (
+                <Option data-cy={`row-dropdown-list-${index}`} key={index} value={index + 1}>
+                  {index + 1}
+                </Option>
+              ))}
+            </Select>
+
+            <Subtitle
+              fontSize={theme.widgets.classification.subtitleFontSize}
+              color={theme.widgets.classification.subtitleColor}
+            >
+              {t("component.classification.editRowListSubtitle")}
+            </Subtitle>
+
+            <List
+              prefix="rows"
+              buttonText={t("component.classification.addNewRow")}
+              items={item.ui_style.row_titles}
+              onAdd={handleMain(actions.ADD, "row_titles")}
+              onSortEnd={handleMain(actions.SORTEND, "row_titles")}
+              onChange={handleChange("row_titles")}
+              onRemove={handleMain(actions.REMOVE, "row_titles")}
+              firstFocus={firstMount}
+              useDragHandle
+              columns={1}
+            />
+          </Col>
           <Col data-cy="column-container" span={12}>
             <Subtitle>{t("component.classification.columnsSubtitle")}</Subtitle>
 
@@ -430,51 +477,6 @@ const EditClassification = ({ item, setQuestionData, setFirstMount, theme, t }) 
               onChange={handleChange("column_titles")}
               onRemove={handleMain(actions.REMOVE, "column_titles")}
               firstFocus={firstMount}
-              useDragHandle
-              columns={1}
-            />
-          </Col>
-          <Col data-cy="row-container" span={12}>
-            <Subtitle>{t("component.classification.rowsSubtitle")}</Subtitle>
-
-            <Subtitle
-              fontSize={theme.widgets.classification.subtitleFontSize}
-              color={theme.widgets.classification.subtitleColor}
-              padding="0 0 16px 0"
-            >
-              {t("component.classification.rowsCountSubtitle")}
-            </Subtitle>
-
-            <Select
-              data-cy="classification-row-dropdown"
-              size="large"
-              style={{ width: "calc(100% - 30px)" }}
-              value={ui_style.row_count}
-              onChange={value => onUiChange("row_count")(+value)}
-            >
-              {Array.from({ length: 10 }).map((v, index) => (
-                <Option data-cy={`row-dropdown-list-${index}`} key={index} value={index + 1}>
-                  {index + 1}
-                </Option>
-              ))}
-            </Select>
-
-            <Subtitle
-              fontSize={theme.widgets.classification.subtitleFontSize}
-              color={theme.widgets.classification.subtitleColor}
-            >
-              {t("component.classification.editRowListSubtitle")}
-            </Subtitle>
-
-            <List
-              prefix="rows"
-              firstFocus={firstMount}
-              buttonText={t("component.classification.addNewRow")}
-              items={item.ui_style.row_titles}
-              onAdd={handleMain(actions.ADD, "row_titles")}
-              onSortEnd={handleMain(actions.SORTEND, "row_titles")}
-              onChange={handleChange("row_titles")}
-              onRemove={handleMain(actions.REMOVE, "row_titles")}
               useDragHandle
               columns={1}
             />

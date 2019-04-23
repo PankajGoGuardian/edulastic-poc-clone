@@ -37,11 +37,9 @@ const PerformanceBand = lazy(() => import("../PerformanceBand"));
 const StandardsProficiency = lazy(() => import("../StandardsProficiency"));
 const Schools = lazy(() => import("../Schools"));
 const Teacher = lazy(() => import("../Teacher"));
-
 const DistrictAdmin = lazy(() => import("../DistrictAdmin"));
-
 const SchoolAdmin = lazy(() => import("../SchoolAdmin"));
-
+const Courses = lazy(() => import("../Courses"));
 // eslint-disable-next-line react/prop-types
 const Author = ({ match, history, isSidebarCollapsed }) => {
   const isPickQuestion = !!history.location.pathname.includes("pickup-questiontype");
@@ -166,10 +164,9 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               <Route exact path="/author/settings/standards-proficiency" component={StandardsProficiency} />
               <Route exact path="/author/schools" component={Schools} />
               <Route exact path="/author/users/teacher" component={Teacher} />
-
               <Route exact path="/author/users/district-admin" component={DistrictAdmin} />
-
               <Route exact path="/author/users/school-admin" component={SchoolAdmin} />
+              <Route exact path="/author/courses" component={Courses} />
             </Switch>
           </Suspense>
         </Wrapper>

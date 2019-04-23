@@ -30,6 +30,7 @@ import { schoolsSaga } from "../../Schools";
 import { teacherSaga } from "../../Teacher";
 import { districtAdminSaga } from "../../DistrictAdmin";
 import { schoolAdminSaga } from "../../SchoolAdmin";
+import { coursesSaga } from "../../Courses";
 
 const authorSagas = [
   itemsSaga(),
@@ -63,7 +64,8 @@ const authorSagas = [
   performanceByStandardsSaga(),
   teacherSaga(),
   districtAdminSaga(),
-  schoolAdminSaga()
+  schoolAdminSaga(),
+  coursesSaga()
 ];
 
 export default authorSagas;

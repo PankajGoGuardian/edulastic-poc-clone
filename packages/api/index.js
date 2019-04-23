@@ -24,3 +24,4 @@ export { default as googleApi } from "./src/google";
 export { default as settingsApi } from "./src/settings";
 export { default as schoolApi } from "./src/school";
 export { default as countryApi } from "./src/country";
+export { default as courseApi } from "./src/course";

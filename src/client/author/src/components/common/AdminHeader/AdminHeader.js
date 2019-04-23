@@ -88,8 +88,7 @@ class AdminHeader extends Component {
     return (
       <React.Fragment>
         <AdminHeaderContent>
-          <StyledTitle>{title}</StyledTitle>
-          <StyledTabs defaultActiveKey={active.mainMenu} onTabClick={this.onHeaderTabClick}>
+          <StyledTabs type="card" defaultActiveKey={active.mainMenu} onTabClick={this.onHeaderTabClick}>
             <StyledTabPane tab="District Profile" key={"District Profile"} />
             <StyledTabPane tab="Schools" key={"Schools"} />
             <StyledTabPane tab="Users" key={"Users"} />

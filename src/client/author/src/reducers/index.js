@@ -39,6 +39,7 @@ import { schoolsReducer } from "../../Schools";
 import { teacherReducer } from "../../Teacher";
 import { districtAdminReducer } from "../../DistrictAdmin";
 import { schoolAdminReducer } from "../../SchoolAdmin";
+import { coursesReducer } from "../../Courses";
 
 const authorReducers = {
   authorUi,
@@ -81,7 +82,8 @@ const authorReducers = {
   reportPerformanceByStandards: reportPerformanceByStandardsReducer,
   teacherReducer,
   districtAdminReducer,
-  schoolAdminReducer
+  schoolAdminReducer,
+  coursesReducer
 };
 
 export default authorReducers;

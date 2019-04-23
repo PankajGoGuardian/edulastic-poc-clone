@@ -5,7 +5,7 @@ import Modal from "react-responsive-modal";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Radio, Spin, Button, Row, Col, Select, message, Typography } from "antd";
-import { debounce } from "lodash";
+import { debounce, get as _get } from "lodash";
 import { withRouter } from "react-router-dom";
 
 import { FlexContainer } from "@edulastic/common";
@@ -170,8 +170,10 @@ class ShareModal extends React.Component {
 
   render() {
     const { sharedType, permission } = this.state;
-    const { isVisible, onClose, userList = [], fetching, sharedUsersList } = this.props;
-    const filteredUserList = userList.filter(user => sharedUsersList.every(people => user._id !== people._userId));
+    const { isVisible, onClose, userList = [], fetching, sharedUsersList, currentUserId } = this.props;
+    const filteredUserList = userList.filter(
+      user => sharedUsersList.every(people => user._id !== people._userId) && user._id !== currentUserId
+    );
     const sharableURL = window.location.href;
     return (
       <Modal open={isVisible} onClose={onClose} center styles={{ modal: { borderRadius: 5 } }}>
@@ -294,7 +296,8 @@ const enhance = compose(
       userList: getUsersListSelector(state),
       fetching: getFetchingSelector(state),
       testId: getTestIdSelector(state),
-      sharedUsersList: getUserListSelector(state)
+      sharedUsersList: getUserListSelector(state),
+      currentUserId: _get(state, "user.user._id", "")
     }),
     {
       getUsers: fetchUsersListAction,

@@ -264,7 +264,8 @@ export const reducer = (state = initialState, { type, payload }) => {
           testItems: [],
           grades: [],
           subjects: []
-        }
+        },
+        sharedUsersList: []
       };
     case TEST_CREATE_SUCCESS:
       return {
